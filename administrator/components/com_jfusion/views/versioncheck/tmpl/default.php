@@ -259,13 +259,13 @@ if ($this->up2date) {
 				var install_url,confirm_text;
 				if (action == 'build') {
 				    confirm_text = '<?php echo JText::_('UPGRADE_CONFIRM_BUILD'); ?>';
-				    install_url = 'http://jfusion.googlecode.com/svn/branches/1.8.x/jfusion_package.zip';
-				} else if (action == 'svn') {
-				    confirm_text = '<?php echo JText::_('UPGRADE_CONFIRM_SVN'); ?> ' + document.adminForm2.svn_build.value;
-				    install_url = 'http://jfusion.googlecode.com/svn-history/r' + document.adminForm2.svn_build.value + '/branches/1.8.x/jfusion_package.zip';
+				    install_url = 'https://github.com/jfusion/org.jfusion.jfusion/blob/develop/jfusion_package.zip?raw=true';
+				} else if (action == 'git') {
+				    confirm_text = '<?php echo JText::_('UPGRADE_CONFIRM_SVN'); ?> ' + document.adminForm2.git_tree.value;
+				    install_url = 'https://github.com/joomla/joomla-cms/raw/' + document.adminForm2.git_tree.value + '/jfusion_package.zip';
 				} else {
 				    confirm_text = '<?php echo JText::_('UPGRADE_CONFIRM_RELEASE') . ' ' . $this->JFusion->version; ?>';
-				    install_url = 'http://jfusion.googlecode.com/svn/branches/jfusion_package.zip';
+				    install_url = 'https://github.com/jfusion/org.jfusion.jfusion/blob/develop/jfusion_package.zip?raw=true';
 				}
 				
 				var agree = confirm(confirm_text);
@@ -294,8 +294,8 @@ if ($this->up2date) {
                 });
 			});
 			window.addEvent('domready',function() {
-			    $('svn').addEvent('click', function(e) {
-			    	confirmSubmit('svn');
+			    $('git').addEvent('click', function(e) {
+			    	confirmSubmit('git');
                 });
 			});
 			// -->
@@ -319,11 +319,11 @@ if ($this->up2date) {
 				
 				<input id="release" type="button" value="<?php echo JText::_('INSTALL') . ' ' . JText::_('LATEST') . ' ' . JText::_('RELEASE'); ?>"/>
 				<br/>
-				<input id="build" type="button" value="<?php echo JText::_('INSTALL') . ' ' . JText::_('LATEST') . ' SVN Build'; ?>"/>
+				<input id="build" type="button" value="<?php echo JText::_('INSTALL') . ' ' . JText::_('LATEST') . ' Git Tree'; ?>"/>
 				<br/>
-				SVN build:
-				<input type="text" name="svn_build" size="4"/>
-				<input id="svn" type="button" value="<?php echo JText::_('INSTALL') . ' ' . JText::_('SPECIFIC') . ' SVN Build'; ?>"/>
+				Git Tree:
+				<input type="text" name="git_tree" size="40"/>
+				<input id="git" type="button" value="<?php echo JText::_('INSTALL') . ' ' . JText::_('SPECIFIC') . ' Git Tree'; ?>"/>
 				<br/>
 			</form>
 		</td>

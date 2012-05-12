@@ -16,9 +16,9 @@ IF NOT EXIST c:\WINDOWS\system32\sed.exe (
 	echo "sed.exe does not exist! Please see create_release_readme.txt". 
 	goto end
 )
-IF NOT EXIST "C:\Program Files\CollabNet\Subversion Client\svnversion.exe"  (
-	IF NOT EXIST "C:\Program Files (x86)\CollabNet\Subversion Client\svnversion.exe"  (
-		echo "CollabNet SVN client not installed!  Please see create_release_readme.txt". 
+IF NOT EXIST "C:\Program Files\Git\bin\git.exe"  (
+	IF NOT EXIST "C:\Program Files (x86)\Git\bin\git.exe"  (
+		echo "Git client not installed!  Please see create_release_readme.txt". 
 		goto end
 	)
 )

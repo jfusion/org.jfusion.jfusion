@@ -4,7 +4,7 @@ Windows:
 1) The following tools must be installed in which all can be obtained from the create_release_tools:
 	7za.exe -> copy to c:\WINDOWS\system32
 	sed.exe -> copy to c:\WINDOWS\system32
-	svnversion.exe -> install CollabNetSubversion-client-1.6.5-6.win32.exe (you may need version 1.7.4-1)
+	You must have Git, you can get it here http://git-scm.com/downloads you must install it so that you can use it from command line
 2) Make sure that your local copy is updated to the latest SVN revision (otherwise the revision number will be set to a range of revisions rather the latest)
 3) Run the bat file by either
 	a) Open a command prompt (Start -> Run -> cmd)
@@ -18,9 +18,7 @@ Windows:
 
 
 Linux:
-1) Install zip and subversion.  For debian based distributions you can "sudo apt-get install zip subversion"
-	Note: CD into your local working copy from a terminal and run the command svnrevision.  If you get the error "This client is too old to work with working copy," upgrade SVN.
-	For Ubuntu, see http://blog.wlindley.com/2009/09/subversion-1-6-5-on-ubuntu-9-04/.
+1) You must have Git, you can get it here http://git-scm.com/downloads you must install it so that you can use it from command line
 2) cd into your local copy of the SVN repository
 3) Type "./create_release.sh ACTION"
 Action can be one of the following
@@ -32,9 +30,9 @@ Action can be one of the following
 	create_packages - creates the zips for the modules and plugins in administrator/components/com_jfusion/packages
 	create - creates all of the above
 
-IMPORTANT NOTICE ABOUT SVN REVISION:
-The script will attempt to automatically update the revision variable in the component's jfusion.xml.  It uses the command svnversion
-to accomplish this.  svnversion is part of the subversion package.  In the jfusion.xml file, there is a placeholder $revision$ that must
+IMPORTANT NOTICE ABOUT GIT:
+The script will attempt to automatically update the revision variable in the component's jfusion.xml.  It uses the command git rev-parse HEAD
+to accomplish this. In the jfusion.xml file, there is a placeholder $revision$ that must
 remain in order for the script to work correctly. Before building a package to be committed, make sure you have updated your working copy
 to the latest revision.  Then run the create_release.sh script.
 
