@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <fields addfieldpath="/components/com_jfusion/plugins/gallery2/fields">
+        <fieldset name="basic">
+        	<field name="itemid" type="JFusionItemid" size="5" default="" label="ITEMID" description="ITEMID_DESCR" />
+
+	        <field name="@spacer" type="spacer" default="" label="" description="" />
+	        <field name="g2_align" type="list" default="center" label="ALIGNMENT" description="G2_ALIGN">
+	            <option value="">INACTIVE</option>
+	            <option value="left">LEFT</option>
+	            <option value="center">CENTER</option>
+	            <option value="right">RIGHT</option>
+	        </field>
+	        <field name="g2_count" type="hidden" size="3" label="G2_COUNT" description="G2_COUNT_DESCR"/>
+	        
+	        <field name="g2_block" type="hidden" default="specificItem" label="G2_BLOCK" description="G2_BLOCK_DESCR" />
+	        
+	        <field name="g2_header" type="radio" default="1" label="SHOW_HEADER">
+	            <option value="1">JYES</option>
+	            <option value="0">JNO</option>
+	        </field>
+	        <field name="g2_title" type="radio" default="1" label="SHOW_TITLE">
+	            <option value="1">JYES</option>
+	            <option value="0">JNO</option>
+	        </field>
+	        <field name="g2_date" type="radio" default="1" label="SHOW_DATE">
+	            <option value="1">JYES</option>
+	            <option value="0">JNO</option>
+	        </field>
+	        <field name="g2_views" type="radio" default="1" label="SHOW_VIEWS">
+	            <option value="1">JYES</option>
+	            <option value="0">JNO</option>
+	        </field>
+	        <field name="g2_owner" type="radio" default="1" label="SHOW_OWNER">
+	            <option value="1">JYES</option>
+	            <option value="0">JNO</option>
+	        </field>
+	        <field name="g2_maxSize" type="text" size="3" label="G2_MAXSIZE" description="G2_MAXSIZE_DESCR">
+	        </field>
+	        <field name="g2_link_target" type="list" default="" label="G2_LINKTARGET" description=" G2_LINKTARGET_DESCR">
+	            <option value="">INACTIVE</option>      
+	            <option value="_self">SELF</option>
+	            <option value="_blank">BLANK</option>
+	        </field>
+	        <field name="g2_frame" type="list" label="G2_FRAME" description="G2_FRAME_DESCR">
+	            <option value="none">none</option>
+	            <option label="Solid" value="solid">Solid</option>
+	            <option label="Book" value="book">Book</option>
+	            <option label="Dots" value="dots">Dots</option>
+	            <option label="Gold" value="gold">Gold</option>
+	            <option label="Wood" value="wood">Wood</option>
+	            <option label="Spiral Notebook" value="notebook">Spiral Notebook</option>
+	            <option label="Branded Wood" value="brand">Branded Wood</option>
+	            <option label="Gold 2" value="gold2">Gold 2</option>
+	            <option label="Shells" value="shell">Shells</option>
+	            <option label="Slide" value="slide">Slide</option>
+	            <option label="Polaroid" value="polaroid">Polaroid</option>
+	            <option label="Polaroids" value="polaroids">Polaroids</option>
+	            <option label="Bamboo" value="bamboo">Bamboo</option>
+	            <option label="Shadow" value="shadow">Shadow</option>
+	        </field>
+	        <field name="g2_strip_anchor" type="radio" default="0" label="G2_STRIP_ANCHOR">
+	            <option value="1">JYES</option>
+	            <option value="0">JNO</option>
+	        </field>        
+        </fieldset>
+    </fields>
+
+	<params addpath="/components/com_jfusion/plugins/gallery2/elements">
+		<param name="itemid" type="JFusionItemid" size="5" default="" label="ITEMID" description="ITEMID_DESCR" />
+
+		<param name="@spacer" type="spacer" default="" label="" description="" />
+		<param name="g2_align" type="list" default="center" label="ALIGNMENT" description="G2_ALIGN">
+			<option value="">INACTIVE</option>
+			<option value="left">LEFT</option>
+			<option value="center">CENTER</option>
+			<option value="right">RIGHT</option>
+		</param>
+		<param name="g2_count" type="hidden" size="3" label="G2_COUNT" description="G2_COUNT_DESCR"/>
+		
+		<param name="g2_block" type="hidden" default="specificItem" label="G2_BLOCK" description="G2_BLOCK_DESCR" />
+
+		<param name="g2_header" type="radio" default="1" label="SHOW_HEADER">
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
+		</param>
+		<param name="g2_title" type="radio" default="1" label="SHOW_TITLE">
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
+		</param>
+		<param name="g2_date" type="radio" default="1" label="SHOW_DATE">
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
+		</param>
+		<param name="g2_views" type="radio" default="1" label="SHOW_VIEWS">
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
+		</param>
+		<param name="g2_owner" type="radio" default="1" label="SHOW_OWNER">
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
+		</param>
+		<param name="g2_maxSize" type="text" size="3" label="G2_MAXSIZE" description="G2_MAXSIZE_DESCR">
+		</param>
+		<param name="g2_link_target" type="list" label="G2_LINKTARGET" description="G2_LINKTARGET">
+			<option value="">INACTIVE</option>		
+			<option value="_self">SELF</option>
+			<option value="_blank">BLANK</option>
+		</param>
+		<param name="g2_frame" type="list" label="G2_FRAME" description="G2_FRAME_DESCR">
+			<option value="none">none</option>
+			<option label="Solid" value="solid">Solid</option>
+			<option label="Book" value="book">Book</option>
+			<option label="Dots" value="dots">Dots</option>
+			<option label="Gold" value="gold">Gold</option>
+			<option label="Wood" value="wood">Wood</option>
+			<option label="Spiral Notebook" value="notebook">Spiral Notebook</option>
+			<option label="Branded Wood" value="brand">Branded Wood</option>
+			<option label="Gold 2" value="gold2">Gold 2</option>
+			<option label="Shells" value="shell">Shells</option>
+			<option label="Slide" value="slide">Slide</option>
+			<option label="Polaroid" value="polaroid">Polaroid</option>
+			<option label="Polaroids" value="polaroids">Polaroids</option>
+			<option label="Bamboo" value="bamboo">Bamboo</option>
+			<option label="Shadow" value="shadow">Shadow</option>
+		</param>
+		<param name="g2_strip_anchor" type="radio" default="0" label="G2_STRIP_ANCHOR">
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
+		</param>
+	</params>
+</config>

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+	<name>JFusion</name>
+	<description>JFusion provides universal user integration by extending the Joomla 1.5 user authentication framework without any core hacks.</description>
+	<layout title="Frameless/Wrapper integration">
+		<message>
+			<![CDATA[You can select the type of integration to set for your integrated software ]]>
+		</message>
+	</layout>
+	<fields name="params" addfieldpath="/administrator/components/com_jfusion/fields"><fieldset name="basic">
+		<field name="JFusionPluginParam" type="JFusionAdvancedParam" default=""
+			label="JFUSION_PLUGIN" configfile="1"
+			description="JFUSION_PLUGIN_DESCR" addfieldpath="/administrator/components/com_jfusion/fields"/>
+		<field name=" " type="helptext" default="frameless_limits" />
+		<field name="visual_integration" type="radio" default="wrapper"
+			description="VISUAL_INTEGRATION">
+			<option value="wrapper">WRAPPER</option>
+			<option value="frameless">FRAMELESS</option>
+		</field>
+		<field name="wrapper_scroll" type="radio" default="auto"
+			description="WRAPPER_SCROLL">
+			<option value="hidden">JNO</option>
+			<option value="scroll">JYES</option>
+			<option value="auto">AUTO</option>
+		</field>
+		<field name="wrapper_width" type="text" default='100%' size="10"
+			description="WRAPPER_WIDTH" />
+		<field name="wrapper_height" type="text" default='500' size="10"
+			description="WRAPPER_HEIGHT" />
+		<field name="wrapper_autoheight" type="radio" default="1"
+			description="WRAPPER_AUTOHEIGHT">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+		<field name="wrapper_transparency" type="radio" default="1"
+			description="WRAPPER_TRANSPARENCY">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+		<field name="wrapper_scrolltotop" type="radio" default="1"
+			description="WRAPPER_SCROLLTOTOP">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+			<field name="parse_css" type="list" default="1" label="PARSE_CSS" description="PARSE_CSS">
+				<option value="1">YES</option>
+				<option value="0">NO</option>
+			</field>
+			<field name="parse_infile_css" type="list" default="1" label="PARSE_INFILE_CSS" description="PARSE_INFILE_CSS">
+				<option value="1">YES</option>
+				<option value="0">NO</option>
+			</field>
+			<field name="default_css" type="list" default="1" label="DEFAULT_CSS" description="DEFAULT_CSS">
+				<option value="1">YES</option>
+				<option value="0">NO</option>
+			</field>		
+		
+			<field name="parse_anchors" type="list" default="1" label="PARSE_ANCHORS" description="PARSE_ANCHORS">
+				<option value="1">YES</option>
+				<option value="0">NO</option>
+			</field>
+			<field name="parse_rel_url" type="list" default="1" label="PARSE_REL_URL" description="PARSE_REL_URL">
+				<option value="1">YES</option>
+				<option value="0">NO</option>
+			</field>
+			<field name="parse_abs_url" type="list" default="1" label="PARSE_ABS_URL" description="PARSE_ABS_URL">
+				<option value="1">YES</option>
+				<option value="0">NO</option>
+			</field>
+			<field name="parse_abs_path" type="list" default="1" label="PARSE_ABS_PATH" description="PARSE_ABS_PATH">
+				<option value="1">YES</option>
+				<option value="0">NO</option>
+			</field>
+			<field name="parse_rel_img" type="list" default="1" label="PARSE_REL_IMG" description="PARSE_REL_IMG">
+				<option value="1">YES</option>
+				<option value="0">NO</option>
+			</field>
+			<field name="parse_action" type="list" default="1" label="PARSE_ACTION" description="PARSE_ACTION">
+				<option value="1">YES</option>
+				<option value="0">NO</option>
+			</field>
+			<field name="parse_popup" type="list" default="1" label="PARSE_POPUP" description="PARSE_POPUP">
+				<option value="1">YES</option>
+				<option value="0">NO</option>
+			</field>
+			<field name="parse_redirect" type="list" default="1" label="PARSE_REDIRECT" description="PARSE_REDIRECT">
+				<option value="1">YES</option>
+				<option value="0">NO</option>
+			</field>
+	
+			<field name="default_css_overflow" type="list" default="visible" label="DEFAULT_CSS_OVERFLOW" description="DEFAULT_CSS_OVERFLOW">
+				<option value="visible">visible</option>
+				<option value="hidden">hidden</option>
+				<option value="scroll">scroll</option>
+				<option value="auto">auto</option>
+				<option value="inherit">inherit</option>
+			</field>
+	</fieldset></fields>
+	<params addpath="/administrator/components/com_jfusion/elements">
+		<param name="JFusionPluginParam" type="JFusionAdvancedParam" default=""
+			label="JFUSION_PLUGIN" configfile="1"
+			description="JFUSION_PLUGIN_DESCR" />
+		<param name=" " type="helptext" default="frameless_limits" />
+		<param name="visual_integration" type="radio" default="wrapper"
+			description="VISUAL_INTEGRATION">
+			<option value="wrapper">WRAPPER</option>
+			<option value="frameless">FRAMELESS</option>
+		</param>
+		<param name="wrapper_scroll" type="radio" default="auto"
+			description="WRAPPER_SCROLL">
+			<option value="hidden">JNO</option>
+			<option value="scroll">JYES</option>
+			<option value="auto">AUTO</option>
+		</param>
+		<param name="wrapper_width" type="text" default='100%' size="10"
+			description="WRAPPER_WIDTH" />
+		<param name="wrapper_height" type="text" default='500' size="10"
+			description="WRAPPER_HEIGHT" />
+		<param name="wrapper_autoheight" type="radio" default="1"
+			description="WRAPPER_AUTOHEIGHT">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</param>
+		<param name="wrapper_transparency" type="radio" default="1"
+			description="WRAPPER_TRANSPARENCY">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		<param name="wrapper_scrolltotop" type="radio" default="1"
+			description="WRAPPER_SCROLLTOTOP">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</param>
+		
+		<param name="parse_css" type="list" default="1" label="PARSE_CSS" description="PARSE_CSS">
+			<option value="1">YES</option>
+			<option value="0">NO</option>
+		</param>
+		<param name="parse_infile_css" type="list" default="1" label="PARSE_INFILE_CSS" description="PARSE_INFILE_CSS">
+			<option value="1">YES</option>
+			<option value="0">NO</option>
+		</param>
+		<param name="default_css" type="list" default="1" label="DEFAULT_CSS" description="DEFAULT_CSS">
+			<option value="1">YES</option>
+			<option value="0">NO</option>
+		</param>		
+		
+		<param name="parse_anchors" type="list" default="1" label="PARSE_ANCHORS" description="PARSE_ANCHORS">
+			<option value="1">YES</option>
+			<option value="0">NO</option>
+		</param>
+		<param name="parse_rel_url" type="list" default="1" label="PARSE_REL_URL" description="PARSE_REL_URL">
+			<option value="1">YES</option>
+			<option value="0">NO</option>
+		</param>
+		<param name="parse_abs_url" type="list" default="1" label="PARSE_ABS_URL" description="PARSE_ABS_URL">
+			<option value="1">YES</option>
+			<option value="0">NO</option>
+		</param>
+		<param name="parse_abs_path" type="list" default="1" label="PARSE_ABS_PATH" description="PARSE_ABS_PATH">
+			<option value="1">YES</option>
+			<option value="0">NO</option>
+		</param>
+		<param name="parse_rel_img" type="list" default="1" label="PARSE_REL_IMG" description="PARSE_REL_IMG">
+			<option value="1">YES</option>
+			<option value="0">NO</option>
+		</param>
+		<param name="parse_action" type="list" default="1" label="PARSE_ACTION" description="PARSE_ACTION">
+			<option value="1">YES</option>
+			<option value="0">NO</option>
+		</param>
+		<param name="parse_popup" type="list" default="1" label="PARSE_POPUP" description="PARSE_POPUP">
+			<option value="1">YES</option>
+			<option value="0">NO</option>
+		</param>
+		<param name="parse_redirect" type="list" default="1" label="PARSE_REDIRECT" description="PARSE_REDIRECT">
+			<option value="1">YES</option>
+			<option value="0">NO</option>
+		</param>
+
+		<param name="default_css_overflow" type="list" default="visible" label="DEFAULT_CSS_OVERFLOW" description="DEFAULT_CSS_OVERFLOW">
+			<option value="visible">visible</option>
+			<option value="hidden">hidden</option>
+			<option value="scroll">scroll</option>
+			<option value="auto">auto</option>
+			<option value="inherit">inherit</option>
+		</param>		
+		</param>
+	</params>	
+</metadata>

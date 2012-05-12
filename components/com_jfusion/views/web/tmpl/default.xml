@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+	<name>JFusion</name>
+	<description>JFusion provides universal user integration by extending the Joomla 1.5 user authentication framework without any core hacks.</description>
+	<layout title="Web View integration">
+		<message>
+			<![CDATA[You can select the type of integration to set for your integrated software ]]>
+		</message>
+	</layout>
+	<fields name="params" addfieldpath="/administrator/components/com_jfusion/fields">
+	    <fieldset name="basic">
+			<field name="source_url" type="text" size="60" default="http://www.yourdomain.com/" label="SOURCE_URL" description="SOURCE_URL" />
+			<field name="cookie_domain" type="text" size="60" default="" label="COOKIE_DOMAIN" description="COOKIE_DOMAIN" />
+			<field name="cookie_path" type="text" size="20" default="/" label="COOKIE_PATH" description="COOKIE_PATH" />
+			<field name="cookie_name" type="text" size="20" default="" label="COOKIE_NAME" description="COOKIE_NAME" />
+	
+			<field name="@spacer" type="spacer" default="" label="" description="" />
+	
+			<field name="sefmode" type="list" default="0" label="SEFMODE" description="SEFMODE">
+				<option value="1"><![CDATA[yourdomain.com/index.php/menu_name/filename.php/option1,value1/option2,value2]]></option>
+				<option value="0"><![CDATA[yourdomain.com/index.php/menu_name/filename.php?option1=value1&option2=value2]]></option>
+			</field>
+	
+			<field name="@spacer" type="spacer" default="" label="" description="" />
+	
+			<field name="parse_anchors" type="list" default="1" label="PARSE_ANCHORS" description="PARSE_ANCHORS">
+				<option value="1">YES</option>
+				<option value="0">NO</option>
+			</field>
+			<field name="parse_rel_url" type="list" default="1" label="PARSE_REL_URL" description="PARSE_REL_URL">
+				<option value="1">YES</option>
+				<option value="0">NO</option>
+			</field>
+			<field name="parse_abs_url" type="list" default="1" label="PARSE_ABS_URL" description="PARSE_ABS_URL">
+				<option value="1">YES</option>
+				<option value="0">NO</option>
+			</field>
+			<field name="parse_abs_path" type="list" default="1" label="PARSE_ABS_PATH" description="PARSE_ABS_PATH">
+				<option value="1">YES</option>
+				<option value="0">NO</option>
+			</field>
+			<field name="parse_rel_img" type="list" default="1" label="PARSE_REL_IMG" description="PARSE_REL_IMG">
+				<option value="1">YES</option>
+				<option value="0">NO</option>
+			</field>
+			<field name="parse_action" type="list" default="1" label="PARSE_ACTION" description="PARSE_ACTION">
+				<option value="1">YES</option>
+				<option value="0">NO</option>
+			</field>
+			<field name="parse_popup" type="list" default="1" label="PARSE_POPUP" description="PARSE_POPUP">
+				<option value="1">YES</option>
+				<option value="0">NO</option>
+			</field>
+			<field name="parse_redirect" type="list" default="1" label="PARSE_REDIRECT" description="PARSE_REDIRECT">
+				<option value="1">YES</option>
+				<option value="0">NO</option>
+			</field>
+	
+			<field name="parse_css" type="list" default="1" label="PARSE_CSS" description="PARSE_CSS">
+				<option value="1">YES</option>
+				<option value="0">NO</option>
+			</field>
+			<field name="parse_infile_css" type="list" default="1" label="PARSE_INFILE_CSS" description="PARSE_INFILE_CSS">
+				<option value="1">YES</option>
+				<option value="0">NO</option>
+			</field>
+			<field name="default_css" type="list" default="1" label="DEFAULT_CSS" description="DEFAULT_CSS">
+				<option value="1">YES</option>
+				<option value="0">NO</option>
+			</field>
+	
+			<field name="default_css_overflow" type="list" default="visible" label="DEFAULT_CSS_OVERFLOW" description="DEFAULT_CSS_OVERFLOW">
+				<option value="visible">visible</option>
+				<option value="hidden">hidden</option>
+				<option value="scroll">scroll</option>
+				<option value="auto">auto</option>
+				<option value="inherit">inherit</option>
+			</field>
+		</fieldset>
+	</fields>
+	<params addpath="/administrator/components/com_jfusion/elements">
+		<param name="source_url" type="text" size="60" default="http://www.yourdomain.com/" description="SOURCE_URL" />
+		<param name="cookie_domain" type="text" size="60" default="" description="COOKIE_DOMAIN" />
+		<param name="cookie_path" type="text" size="20" default="/" description="COOKIE_PATH" />
+		<param name="cookie_name" type="text" size="20" default="" description="COOKIE_NAME" />
+
+		<param name="@spacer" type="spacer" default="" label="" description="" />
+
+		<param name="sefmode" type="list" default="0" label="SEFMODE" description="SEFMODE">
+			<option value="1"><![CDATA[yourdomain.com/index.php/menu_name/filename.php/option1,value1/option2,value2]]></option>
+			<option value="0"><![CDATA[yourdomain.com/index.php/menu_name/filename.php?option1=value1&option2=value2]]></option>
+		</param>
+
+		<param name="@spacer" type="spacer" default="" label="" description="" />
+
+		<param name="parse_anchors" type="list" default="1" label="PARSE_ANCHORS" description="PARSE_ANCHORS">
+			<option value="1">YES</option>
+			<option value="0">NO</option>
+		</param>
+		<param name="parse_rel_url" type="list" default="1" label="PARSE_REL_URL" description="PARSE_REL_URL">
+			<option value="1">YES</option>
+			<option value="0">NO</option>
+		</param>
+		<param name="parse_abs_url" type="list" default="1" label="PARSE_ABS_URL" description="PARSE_ABS_URL">
+			<option value="1">YES</option>
+			<option value="0">NO</option>
+		</param>
+		<param name="parse_abs_path" type="list" default="1" label="PARSE_ABS_PATH" description="PARSE_ABS_PATH">
+			<option value="1">YES</option>
+			<option value="0">NO</option>
+		</param>
+		<param name="parse_rel_img" type="list" default="1" label="PARSE_REL_IMG" description="PARSE_REL_IMG">
+			<option value="1">YES</option>
+			<option value="0">NO</option>
+		</param>
+		<param name="parse_action" type="list" default="1" label="PARSE_ACTION" description="PARSE_ACTION">
+			<option value="1">YES</option>
+			<option value="0">NO</option>
+		</param>
+		<param name="parse_popup" type="list" default="1" label="PARSE_POPUP" description="PARSE_POPUP">
+			<option value="1">YES</option>
+			<option value="0">NO</option>
+		</param>
+		<param name="parse_redirect" type="list" default="1" label="PARSE_REDIRECT" description="PARSE_REDIRECT">
+			<option value="1">YES</option>
+			<option value="0">NO</option>
+		</param>
+
+		<param name="parse_css" type="list" default="1" label="PARSE_CSS" description="PARSE_CSS">
+			<option value="1">YES</option>
+			<option value="0">NO</option>
+		</param>
+		<param name="parse_infile_css" type="list" default="1" label="PARSE_INFILE_CSS" description="PARSE_INFILE_CSS">
+			<option value="1">YES</option>
+			<option value="0">NO</option>
+		</param>
+		<param name="default_css" type="list" default="1" label="DEFAULT_CSS" description="DEFAULT_CSS">
+			<option value="1">YES</option>
+			<option value="0">NO</option>
+		</param>
+
+		<param name="default_css_overflow" type="list" default="visible" label="DEFAULT_CSS_OVERFLOW" description="DEFAULT_CSS_OVERFLOW">
+			<option value="visible">visible</option>
+			<option value="hidden">hidden</option>
+			<option value="scroll">scroll</option>
+			<option value="auto">auto</option>
+			<option value="inherit">inherit</option>
+		</param>
+	</params>
+</metadata>

@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<config>
+	<modules>
+		<Jfusion_Joomla>
+			<version>1.0.3</version>
+		</Jfusion_Joomla>
+	</modules>
+
+	<default>
+		<joomla>
+			<joomlaconfig>
+				<cache>0</cache>
+			</joomlaconfig>
+		</joomla>
+	</default>
+
+	<global>
+		<blocks>
+			<joomla>
+				<class>Jfusion_Joomla_Block</class>
+			</joomla>
+		</blocks>
+		<helpers>
+			<joomla>
+				<class>Jfusion_Joomla_Helper</class>
+			</joomla>
+		</helpers>
+	</global>
+	
+	<frontend>
+		<layout>
+			<updates>
+				<joomla>
+					<file>joomla.xml</file>
+				</joomla>
+			</updates>
+		</layout>
+	</frontend>
+
+	<admin>
+		<routers>
+			<Jfusion_Joomla>
+				<use>admin</use>
+				<args>
+					<module>Jfusion_Joomla</module>
+					<frontName>joomla</frontName>
+				</args>
+			</Jfusion_Joomla>
+		</routers>
+	</admin>
+</config>

@@ -1,0 +1,191 @@
+#jfusionButtonArea {
+	margin-bottom: 10px;
+}
+
+.jfusionPostArea {
+	width:99%;
+}
+
+.jfusionPostHeader {
+	font-size:15px; 
+	color:#000000; 
+	font-weight:bold; 
+}
+
+.jfusionRefreshLink {
+		
+}
+
+.jfusionPostBody {
+	border:2px solid #afafaf; 
+	min-height: 90px;
+	padding:10px;
+	margin-top:10px;
+	position: relative;
+}
+
+.jfusionPostTitle {
+	 color:#000000; 
+	 float:left; 
+	 margin-right:4px;
+	 font-size:15px;
+}
+
+.jfusionNoPostMsg {
+	 font-weight:bold; 
+}
+
+.jfusionPostUser {
+	font-size:15px;
+}
+
+.jfusionUserAvatar {
+	 float:left; 
+	 margin-right:10px; 
+}
+
+.jfusionPostDate {
+	 font-size:10px; 
+}
+
+.jfusionPostText {
+	 margin-top:5px;
+	 font-size:12px;
+}
+
+.jfusionToolbar {	
+	text-align:right;
+	width:100%;
+	position: absolute;
+	bottom: 0;
+	margin-bottom: 5px;
+	left: -5px;
+}
+
+.jfusionToolbar span {
+	float:right;
+}
+
+.jfusionToolbar a, .jfusionToolbar a:hover, .jfusionToolbar a:active, .jfusionToolbar a:focus {
+	text-decoration:none;
+}
+
+.jfusionQuickReply {
+	margin-top: 10px;
+}
+
+.jfusionQuickReply textarea {
+	 width:99%; 
+	 height: 150px; 
+}
+
+.jfusionQuickReplyHeader {
+	 font-weight:bold; 
+}
+
+.jfusionButton {
+	margin-right: 5px;
+}
+
+#jfusionMessage, #jfusionErrorMessage {
+	margin-left:40px;
+}
+
+.jfusionErrorMessage {
+	color: #c00; 
+	background: #E6C0C0 url(images/error.png) 4px center no-repeat;
+	border-top: 3px solid #DE7A7B; 
+	border-bottom: 3px solid #DE7A7B; 
+	width:99%;
+	margin-bottom:10px;
+	font-size: 12px;
+	font-weight:bold;
+	padding: 5px;
+}
+
+.jfusionLoadingMessage {
+	color: #c00;
+	background: #EFE7B8 url(images/loading.gif) 4px center no-repeat;
+	border-top: 3px solid #F0DC7E; 
+	border-bottom: 3px solid #F0DC7E;
+	width:99%;
+	margin-bottom:10px;
+	font-size: 12px;
+	font-weight:bold;
+	padding: 5px;
+}
+
+.jfusionSuccessMessage {
+	color: #0055BB;
+	background: #C3D2E5 url(images/success.png) 4px center no-repeat;
+	border-top: 3px solid #84A7DB; 
+	border-bottom: 3px solid #84A7DB; 
+	width:99%;
+	margin-bottom:10px;
+	font-size: 12px;
+	font-weight:bold;
+	padding: 5px;
+}
+
+.jfusionButtonConfirmationBox {
+    color: #0055BB;
+    background: #C3D2E5;
+    border-top: 3px solid #84A7DB; 
+    border-bottom: 3px solid #84A7DB;
+    padding: 5px;
+}
+
+.jfusionclearfix:after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+.bbcode_quote, .bbcode_code {
+    margin-left: 10px;
+    padding: 4px;
+    border: 1px dashed black;
+    background-color: #F5F5F5;
+    
+}
+
+.bbcode_quote .bbcode_quote {
+    background-color: #ECECEC;
+}
+
+.bbcode_quote .bbcode_quote .bbcode_quote {
+	background-color: #E5E5E5;
+	margin-bottom:4px;
+}
+
+.bbcode_quote_head, .bbcode_code_head {
+    font-weight: bold;	
+}
+
+/* .jfusionclearfix {display: inline-block;}  /* for IE/Mac  */
+
+/*<!--[if IE]>
+* html .jfusionclearfix {
+	zoom: 1;
+	display: block;
+	height: 1%;
+}
+<![endif]-->
+*/
+
+.jfusionclearfix {
+   display: inline-block;
+}
+ 
+html[xmlns] .jfusionclearfix {
+   display: block;
+}
+
+/* debug styles put here as well so that IE does not loose CSS formatting when ajax rewrites data */
+div.debug_0 .value {  background-color:#ecf8fd;  }
+div.debug_0 .a_key {  background-color:#dbfede;  }
+div.debug_0 .o_key {  background-color:#dbfede;  }
+div.debug_0 .title {  background-color:#d6f2ff;  }
+div.debug_0 .grid  {  font-family:arial; background-color:#fbfed6; vertical-align:top;  }

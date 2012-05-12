@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+	<modules>
+		<Jfusion_Joomla>
+			<active>true</active>
+			<codePool>local</codePool>
+		</Jfusion_Joomla>
+	</modules>
+</config>

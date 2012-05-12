@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<layout version="0.2.0">
+
+<!--
+Joomla data
+-->
+	<default>
+		<!-- Jfusion_Joomla -->
+		<!-- 
+		NOTICE: Maybe some modules won't work cause of bad urls build of the module in Joomla - use relative instead of absolute urls.
+		
+		The element 'action' with the method loadJModule as attribute allow you to load the desired module.
+		The options	are the following:
+		- type: the name of the type of the module (exple: mod_mainmenu, the type is mainmenu without the 'mod') - required if id not provided
+		- title: if you want to provide a precise frontend module which is enabled in your Joomla backend - optional (if 'type' used)
+		- id: the id of the module instead to use title and type. You can find this id in the joomla backend module list, in the id column - required if no type
+		- style: Style according to the one of your template in Joomla (exple: xhtml or beezDivision). By default, its 'none'
+		If you want only use the id, you have to set the elements in the tag action as following: <type/><title/><id>10</id> -> 10 = the id number of your module
+
+		If you want to use a template for custom output or else, provide a template file (e.g. like this template="joomla/module.phtml") in the block element as attribute of this element
+		and create the file in the appropriate folder, then in this new file put this PHP code : echo $this->getModule();
+		
+		If you don't want to do the previous step or if the reference block doesn't use $this->getChildHtml(); in his template file,
+		call the block like this: $this->getChildHtml('name_of_the_block_below'); in the template/page/html/header.phtml file
+		or page template/page/html/footer.phtml depends of the reference name. See Magento Doc for more info or google ;-)
+		-->
+		<reference name="header">
+			<block type="joomla/module" name="joomla_mainmenu" template="joomla/module.phtml" before="-">
+				<action method="loadJModule"><type>mainmenu</type><title/><id/><style/></action>
+			</block>
+		</reference>
+		<reference name="footer">
+			<block type="joomla/module" name="joomla_footer_menu" template="joomla/module.phtml" before="-">
+			<!-- Display the banner thanks to the module's id (30 in this case but you have to adapt to your installation) and the joomla copyright thanks to the type of the module-->
+				<action method="loadJModule"><type/><title/><id>30</id><style/></action>
+				<action method="loadJModule"><type>footer</type><title/><id/><style/></action>
+			</block>
+		</reference>
+	</default>
+</layout>

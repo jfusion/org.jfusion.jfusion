@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<tabs>
+		<jfusion translate="label" module="joomla">
+			<label>Jfusion</label>
+			<sort_order>520</sort_order>
+		</jfusion>
+	</tabs>
+	<sections>
+		<joomla translate="label" module="joomla">
+			<label>JFusion</label>
+			<tab>jfusion</tab>
+			<frontend_type>text</frontend_type>
+			<sort_order>100</sort_order>
+			<show_in_default>1</show_in_default>
+			<show_in_website>0</show_in_website>
+			<show_in_store>0</show_in_store>
+			<groups>
+				<joomlaconfig translate="label">
+					<label>Global Joomla Configuration</label>
+					<frontend_type>text</frontend_type>
+					<sort_order>10</sort_order>
+					<show_in_default>1</show_in_default>
+					<show_in_website>0</show_in_website>
+					<show_in_store>0</show_in_store>
+					<fields>
+						<baseurl translate="label">
+							<label>Joomla Base URL</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>20</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>0</show_in_website>
+							<show_in_store>0</show_in_store>
+						</baseurl>
+						<custom_adminurl translate="label">
+							<label>Joomla Custom Admin URL</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>30</sort_order>
+							<comment>If you have a customized backend URL for Joomla, please write it here.</comment>
+							<show_in_default>1</show_in_default>
+							<show_in_website>0</show_in_website>
+							<show_in_store>0</show_in_store>
+						</custom_adminurl>						
+						<secret_key translate="label">
+							<label>Secret key for Joomla! modules</label>
+							<frontend_type>text</frontend_type>
+							<comment>This secret key allow Magento to get access to Joomla modules. JFusion component and plugin system for Joomla must be installed and configured.</comment>
+							<sort_order>40</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>0</show_in_website>
+							<show_in_store>0</show_in_store>
+						</secret_key>
+						<cache traslate="label">
+							<label>Cache activation</label>
+							<frontend_type>select</frontend_type>
+							<comment>Allow to reduce the number of calls to joomla application.</comment>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>50</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+						</cache>
+					</fields>
+				</joomlaconfig>
+			</groups>
+		</joomla>
+	</sections>
+</config>

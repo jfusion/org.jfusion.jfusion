@@ -1,0 +1,102 @@
+.jfusionThreadLink {
+    font-size:12px; 
+    margin:5px; 
+}
+
+.jfusionPostArea {
+    width:99%; 
+    margin:10px; 
+}
+
+.jfusionPostHeader {
+    font-size:11px; 
+    color:#000000; 
+    font-weight:bold; 
+}
+
+.jfusionPostBody {
+    border:1px solid #eee; 
+    min-height: 90px;
+    margin-bottom:15px;
+    padding:5px;
+}
+
+.jfusionPostTitle {
+     color:#000000; 
+     float:left; 
+     margin-right:4px; 
+}
+
+.jfusionNoPostMsg {
+     font-weight:bold; 
+}
+
+.jfusionPostUser {
+}
+
+.jfusionUserAvatar {
+     float:left; 
+     margin-right:5px; 
+     clear:both;
+}
+
+.jfusionPostDate {
+     font-size:9px; 
+}
+
+.jfusionPostText {
+     margin-top:5px; 
+}
+.jfusionQuickReply textarea {
+     width:99%; 
+     height: 100px; 
+}
+
+.jfusionQuickReply .inputbox {
+     width:99%; 
+}
+
+.jfusionQuickReplyHeader {
+     font-weight:bold; 
+}
+
+.bbcode_quote, .bbcode_code {
+    margin-left: 10px;
+    padding: 4px;
+    border: 1px dashed black;
+    background-color: #F5F5F5;
+    
+}
+
+.bbcode_quote .bbcode_quote {
+    background-color: #ECECEC;
+}
+
+.bbcode_quote .bbcode_quote .bbcode_quote {
+    background-color: #E5E5E5;
+    margin-bottom:4px;
+}
+
+.bbcode_quote_head, .bbcode_code_head {
+    font-weight: bold;  
+}
+table.jfusionpagination {
+	width: 100%;
+}
+
+table.jfusionpagination .pagination { 
+    display:table; 
+	padding:0;  
+	margin:0 auto;
+}
+
+.jfusionPostArea .pagination div.limit {
+    float: left;
+    height: 22px;
+    line-height: 22px;
+    margin: 0 10px;
+}
+
+/** stu nicholls solution for centering divs **/
+.jfusionPostArea .container {clear:both; text-decoration:none;}
+* html .jfusionPostArea.container {display:inline-block;}

@@ -1,0 +1,7 @@
+base   jfusion
+author JFusion Team
+email  webmaster@jfusion.org
+date   2010-05-26
+name   jfusion plugin
+desc   JFusion Auth Plugin
+url    http://www.jfusion.org

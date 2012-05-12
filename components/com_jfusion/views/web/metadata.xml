@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+	<name>JFusion</name>
+	<description>JFusion provides universal user integration by extending the Joomla 1.5 user authentication framework without any core hacks.</description>
+	<view title="Integration type">
+		<message>
+			<![CDATA[You can select the type of integration to set for your integrated software ]]>
+		</message>	
+	</view>
+</metadata>

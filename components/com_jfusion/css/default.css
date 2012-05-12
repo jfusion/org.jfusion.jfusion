@@ -1,0 +1,320 @@
+#jfusionframeless , body #jfusionframeless {
+	position: relative;
+}
+
+#jfusionframeless * {
+	text-decoration: none;
+	font-size: 1em;
+	outline: none;
+	padding: 0;
+	margin: 0;
+}
+
+#jfusionframeless div {
+	background: none;
+}
+
+#jfusionframeless html, #jfusionframeless address, #jfusionframeless blockquote,
+#jfusionframeless dd, #jfusionframeless div, #jfusionframeless dl,
+#jfusionframeless dt, #jfusionframeless fieldset, #jfusionframeless form, #jfusionframeless frame,
+#jfusionframeless frameset, #jfusionframeless h1, #jfusionframeless h2, #jfusionframeless h3,
+#jfusionframeless h4, #jfusionframeless h5, #jfusionframeless h6, #jfusionframeless noframes,
+#jfusionframeless ol, #jfusionframeless p, #jfusionframeless ul, #jfusionframeless center,
+#jfusionframeless dir, #jfusionframeless hr, #jfusionframeless menu, #jfusionframeless pre {
+	display: block;
+}
+
+#jfusionframeless li {
+	display: list-item;
+}
+
+#jfusionframeless head {
+	display: none;
+}
+
+#jfusionframeless table {
+	display: table;
+	border-collapse: collapse;
+	border-spacing: 0;
+	border: none;
+}
+
+#jfusionframeless tr {
+	display: table-row;
+}
+
+#jfusionframeless thead {
+	display: table-header-group;
+}
+
+#jfusionframeless tbody {
+	display: table-row-group;
+}
+
+#jfusionframeless tfoot {
+	display: table-footer-group;
+}
+
+#jfusionframeless col {
+	display: table-column;
+}
+
+#jfusionframeless colgroup {
+	display: table-column-group:
+}
+
+#jfusionframeless td, #jfusionframeless th {
+	display: table-cell;
+}
+
+#jfusionframeless caption {
+	display: table-caption;
+}
+
+#jfusionframeless th {
+	font-weight: bolder;
+	text-align: center;
+}
+
+#jfusionframeless caption {
+	text-align: center;
+}
+
+body #jfusionframeless {
+	margin: 8px;
+	background: white;
+	line-height: 1;
+	color: black;
+	display: block;
+}
+
+#jfusionframeless h1 {
+	font-size: 2em;
+	margin: .67em 0;
+}
+
+#jfusionframeless h2 {
+	font-size: 1.5em;
+	margin: .75em 0;
+}
+
+#jfusionframeless h3 {
+	font-size: 1.17em;
+	margin: .83em 0;
+}
+
+#jfusionframeless h4, #jfusionframeless p,
+#jfusionframeless blockquote, #jfusionframeless ul,
+#jfusionframeless fieldset, #jfusionframeless form,
+#jfusionframeless ol, #jfusionframeless dl, #jfusionframeless dir,
+#jfusionframeless menu {
+	margin: 1.12em 0;
+}
+
+#jfusionframeless h5 {
+	font-size: .83em; margin: 1.5em 0;
+}
+
+#jfusionframeless h6 {
+	font-size: .75em;
+	margin: 1.67em 0;
+}
+
+#jfusionframeless h1, #jfusionframeless h2, #jfusionframeless h3, #jfusionframeless h4,
+#jfusionframeless h5, #jfusionframeless h6, #jfusionframeless b,
+#jfusionframeless strong {
+	font-weight: bolder;
+}
+
+#jfusionframeless blockquote {
+	margin-left: 40px;
+	margin-right: 40px;
+}
+
+#jfusionframeless i, #jfusionframeless cite, #jfusionframeless em,
+#jfusionframeless var, #jfusionframeless address {
+	font-style: italic;
+}
+
+#jfusionframeless pre, #jfusionframeless tt, #jfusionframeless code,
+#jfusionframeless kbd, #jfusionframeless samp {
+	font-family: monospace;
+}
+
+#jfusionframeless code, #jfusionframeless kbd, #jfusionframeless samp, #jfusionframeless pre, #jfusionframeless tt, #jfusionframeless var, #jfusionframeless textarea,
+#jfusionframeless input, #jfusionframeless select, isindex, #jfusionframeless listing, #jfusionframeless xmp, #jfusionframeless plaintext {
+	white-space: normal;
+	font-size: 1em;
+	font: inherit;
+}
+
+#jfusionframeless dfn, #jfusionframeless i, #jfusionframeless cite, #jfusionframeless var, #jfusionframeless address, #jfusionframeless em {
+	font-style: normal;
+}
+
+#jfusionframeless th, #jfusionframeless b, #jfusionframeless strong, #jfusionframeless h1, #jfusionframeless h2, #jfusionframeless h3, #jfusionframeless h4, #jfusionframeless h5, #jfusionframeless h6 {
+	font-weight: normal;
+}
+
+#jfusionframeless a, #jfusionframeless img, #jfusionframeless a img, #jfusionframeless iframe, #jfusionframeless form, #jfusionframeless fieldset,
+#jfusionframeless abbr, #jfusionframeless acronym, #jfusionframeless object, #jfusionframeless applet {
+	border: none;
+}
+
+#jfusionframeless center {
+	vertical-align: top;
+	text-align: center;
+}
+
+#jfusionframeless q {
+	quotes: "" "";
+}
+
+#jfusionframeless ul, #jfusionframeless ol, #jfusionframeless dir, #jfusionframeless menu {
+	list-style: none;
+}
+
+#jfusionframeless sub, #jfusionframeless sup {
+	vertical-align: baseline;
+}
+
+#jfusionframeless a {
+	color: inherit;
+}
+
+#jfusionframeless hr {
+	display: none;
+}
+
+#jfusionframeless font {
+	color: inherit !important;
+	font: inherit !important;
+	color: inherit !important; /* editor's note: necessary? */
+}
+
+#jfusionframeless marquee {
+	overflow: inherit !important;
+}
+
+#jfusionframeless blink {
+	text-decoration: none;
+}
+
+#jfusionframeless nobr {
+	white-space: normal;
+}
+
+#jfusionframeless pre {
+	white-space: pre;
+}
+
+#jfusionframeless button, #jfusionframeless textarea,
+#jfusionframeless input, #jfusionframeless select {
+	display: inline-block;
+}
+
+#jfusionframeless big {
+	font-size: 1.17em;
+}
+
+#jfusionframeless small, #jfusionframeless sub, #jfusionframeless sup {
+	font-size: .83em;
+}
+
+#jfusionframeless sub {
+	vertical-align: sub;
+}
+
+#jfusionframeless sup {
+	vertical-align: super;
+}
+
+#jfusionframeless table {
+	border-spacing: 2px;
+}
+
+#jfusionframeless thead, #jfusionframeless tbody,
+#jfusionframeless tfoot {
+	vertical-align: middle;
+}
+
+#jfusionframeless td, #jfusionframeless th, #jfusionframeless tr {
+	vertical-align: inherit;
+}
+
+#jfusionframeless s, #jfusionframeless strike, #jfusionframeless del {
+	text-decoration: line-through;
+}
+
+#jfusionframeless hr {
+	border: 1px inset
+}
+
+#jfusionframeless ol, #jfusionframeless ul, #jfusionframeless dir,
+#jfusionframeless menu, #jfusionframeless dd {
+	margin-left: 40px;
+}
+
+#jfusionframeless ol {
+	list-style-type: decimal;
+}
+
+#jfusionframeless ol ul, #jfusionframeless ul ol,
+#jfusionframeless ul ul, #jfusionframeless ol ol {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+#jfusionframeless ul {
+	list-style-position:outside;
+}
+
+#jfusionframeless u, #jfusionframeless ins {
+	text-decoration: underline;
+}
+#jfusionframeless br:before {
+	content: "A"; white-space: pre-line;
+}
+#jfusionframeless center {
+	text-align: center;
+}
+
+#jfusionframeless :link, #jfusionframeless :visited {
+	text-decoration: none;
+	color:none;
+}
+
+#jfusionframeless :focus {
+	outline: thin dotted invert;
+}
+
+/* Begin bidirectionality settings (do not change) */
+#jfusionframeless BDO[DIR="ltr"]  {
+	direction: ltr;
+	unicode-bidi: bidi-override;
+}
+#jfusionframeless BDO[DIR="rtl"]  {
+	direction: rtl;
+	unicode-bidi: bidi-override;
+}
+
+#jfusionframeless *[DIR="ltr"] {
+	direction: ltr; unicode-bidi: embed;
+}
+#jfusionframeless *[DIR="rtl"] {
+	direction: rtl; unicode-bidi: embed;
+}
+
+@media print {
+	#jfusionframeless h1 {
+		page-break-before: always;
+	}
+	#jfusionframeless h1, #jfusionframeless h2, #jfusionframeless h3,
+	#jfusionframeless h4, #jfusionframeless h5, #jfusionframeless h6 {
+		page-break-after: avoid;
+	}
+	#jfusionframeless ul, #jfusionframeless ol, #jfusionframeless dl {
+		page-break-before: avoid;
+	}
+}
+

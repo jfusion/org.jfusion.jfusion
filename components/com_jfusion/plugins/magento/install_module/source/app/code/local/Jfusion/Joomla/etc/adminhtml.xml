@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<menu>
+		<cms translate="title" module="cms">
+			<children>
+				<joomla translate="title" module="joomla">
+					<title>Joomla Backend</title>
+					<action>joomla/admin</action>
+					<sort_order>100</sort_order>
+				</joomla>
+			</children>
+		</cms>
+	</menu>
+
+	<acl>
+		<resources>
+			<admin>
+				<children>
+					<cms>
+						<children>
+							<joomla translate="title">
+								<title>Joomla Backend</title>
+							</joomla>
+						</children>
+					</cms>
+					<system>
+						<children>
+							<config>
+								<children>
+									<joomla translate="title">
+										<title>Joomla integration by Jfusion</title>
+									</joomla>
+								</children>
+							</config>
+						</children>
+					</system>
+				</children>
+			</admin>
+		</resources>
+	</acl>
+	
+	<translate>
+		<modules>
+			<Jfusion_Joomla>
+				<files>
+					<default>Jfusion_Joomla.csv</default>
+				</files>
+			</Jfusion_Joomla>
+		</modules>
+	</translate>
+</config>

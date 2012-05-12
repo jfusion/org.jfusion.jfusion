@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<language filename='plg_search_jfusion' location='admin' />
+
+    <fields>
+        <fieldset name="basic">
+	        <field name="itemid" type="JFusionItemid" size="5" default="" label="ITEMID"
+	            description="ITEMID_DESCR" />
+	        <field name="search_limit" type="text" size="5" default="50" label="SEARCH_LIMIT" description="SEARCH_LIMIT_DESCR"/>
+	    </fieldset>
+    </fields>
+
+	<params addpath="/administrator/components/com_jfusion/elements">
+		<param name="itemid" type="JFusionItemid" size="5" default="" label="ITEMID"
+			description="ITEMID_DESCR" />
+		<param name="search_limit" type="text" size="5" default="50" label="SEARCH_LIMIT" description="SEARCH_LIMIT_DESCR"/>
+	</params>
+</config>

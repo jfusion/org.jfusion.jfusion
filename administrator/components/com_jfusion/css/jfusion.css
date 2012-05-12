@@ -1,0 +1,172 @@
+/**
+* @package JFusion
+* @subpackage Views
+* @author JFusion development team
+* @copyright Copyright (C) 2008 JFusion. All rights reserved.
+* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+*/
+
+* {
+	margin: 0;
+	padding: 0;
+}
+body {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	line-height: 1.5;
+	padding-top: 30px;
+}
+.icon-32-addusers{
+    background-image: url(templates/khepri/images/toolbar/icon-32-adduser.png);
+    background-repeat: no-repeat;
+}
+h2 { font-size:15px; }
+
+/** cpanel **/
+#cpanel div.icon {
+	text-align: center;
+	margin-right: 5px;
+	float: left;
+	margin-bottom: 5px;
+}
+#cpanel div.icon a {
+	display: block;
+	float: left;
+	border: 1px solid #f0f0f0;
+	height: 97px;
+	width: 100px;
+	color: #666;
+	vertical-align: middle;
+	text-decoration: none;
+}
+
+#cpanel div.icon a:hover {
+	border-left: 1px solid #eee;
+	border-top: 1px solid #eee;
+	border-right: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
+	background-color: #CCE6FF;
+	border: 1px solid #3300FF;
+	color: #0B55C4;
+}
+
+#cpanel img  { padding: 10px 0; margin: 0 auto; }
+#cpanel span { display: block; text-align: center; }
+
+/** plugineditor **/
+.contentbox {
+	width: 700px;
+	background: url(../images/table1.png) no-repeat left bottom;
+	padding-bottom: 17px;
+	margin: 0 auto;
+}
+.contentbox h2 {
+	height: 24px;
+	width: 670px;
+	background: url(../images/table1.png) no-repeat left top;
+	padding: 5px 15px;
+	font-size: 16px;
+	color: #fff;
+}
+.contentbox table {
+	width: 100%;
+	background: #eeeff1;				
+	border-left: 2px solid #4e607e;
+	border-right: 2px solid #4e607e;				
+}
+
+.contentbox tr {
+	width: 100%;
+	padding: 0 16px 0 16px;
+}
+
+.contentbox tr td {
+	padding: 3px;
+	vertical-align:top;
+}
+
+.contentbox tr td.contentbox_label {
+	width:180px;
+}
+
+.contentbox tr td.contentbox_param {
+	width:480px;
+}
+
+table.usergroups {
+	width:100%; border:0;
+}
+
+table.usergroups tr:hover {
+	 background-color: #ffd ;
+}
+
+/** sync **/
+#ajax_bar {
+    background-color: #e4ecf2;
+    border: 1px solid #d6d6d6;
+    border-left-color: #e4e4e4;
+    border-top-color: #e4e4e4;
+    margin-top: 0pt auto;
+    height: 20px;
+    padding: 3px 5px;
+    vertical-align: center;
+}
+
+#log {
+    float: left;
+    padding: 0.5em;
+    margin-left: 10px;
+    width: 600px;
+    border: 1px solid #d6d6d6;
+    border-left-color: #e4e4e4;
+    border-top-color: #e4e4e4;
+    margin-top: 10px;
+}
+
+#log_res {
+    overflow: auto;
+}
+
+#aspin.ajax-loading {
+    background: url(../images/ajax_loader.gif) no-repeat center;
+}
+
+div.edit{
+	float:left;
+	margin-right:10px;
+	display:inline;
+}
+
+div.edit IMG,
+div.wizard IMG{
+	width:16px;
+	height:16px;
+}
+
+/** donate butoon **/
+#navButton {
+     position: relative;
+     width: 160px;
+     height: 30px;
+     margin-top: 0px;
+     margin-left: 0px;
+     z-index: 2;
+}
+
+a.navButton {
+     vertical-align:middle;
+     display: inline-block;     
+     width: 160px;
+     height: 30px;
+     outline: none;
+     background-image: url(../images/donate.png);
+     background-repeat: no-repeat;
+     background-position: 0px 0px;
+     z-index: 2;
+}
+     
+a.navButton:hover {
+     background-position: 0px -30px;
+     z-index: 2;
+}  
