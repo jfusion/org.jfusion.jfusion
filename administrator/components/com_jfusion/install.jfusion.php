@@ -582,6 +582,9 @@ function com_install() {
 	}
 
 	//output some info to the user
+	
+	$parser = JFactory::getXMLParser('Simple');
+	$parser->loadFile($basedir . DS. 'jfusion.xml');
 	?>
 <table>
 	<tr>
@@ -594,7 +597,7 @@ function com_install() {
 		</td>
 		<td>
 			<h2>
-			<?php echo JText::_('JFUSION') . ' 1.8.0 ' . JText::_('INSTALLATION'); ?>
+			<?php echo JText::_('JFUSION') . ' '.$parser->document->version[0]->data().' ' . JText::_('INSTALLATION'); ?>
 			</h2>
 		</td>
 	</tr>
