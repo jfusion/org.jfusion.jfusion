@@ -147,12 +147,9 @@ echo Update the revision number
 
 move "%FULLPATH%\tmp\jfusion.xml" "%FULLPATH%\tmp\jfusion.tmp"
 
-for /f "tokens=*" %%a in ( 'svnversion' ) do ( set REVISION=%%a )
+SET REVISION=Unknown
 
-if "%REVISION:~-1%" == " " SET REVISION=%REVISION:~0,-1%
-if "%REVISION:~-1%" == "P" SET REVISION=%REVISION:~0,-1%
-if "%REVISION:~-1%" == "S" SET REVISION=%REVISION:~0,-1%
-if "%REVISION:~-1%" == "M" SET REVISION=%REVISION:~0,-1%
+for /f "tokens=*" %%a in ( 'git rev-parse HEAD' ) do ( set REVISION=%%a )
 
 echo Revision set to %REVISION%
 c:\WINDOWS\system32\sed.exe "s/<revision>\$revision\$<\/revision>/<revision>%REVISION%<\/revision>/g" "%FULLPATH%\tmp\jfusion.tmp" > "%FULLPATH%\tmp\jfusion.xml"
