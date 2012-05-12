@@ -473,7 +473,9 @@ class JFusionFactory
     	if (!isset($instances)) {
     		//  load the Abstract Public Class
     		require_once (JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.cookie.php');
-    		$instances = new JFusionCookies();
+    		
+			$params = JFusionFactory::getParams('joomla_int');
+    		$instances = new JFusionCookies($params->get('secret'));
     	}
     	return $instances;
     }

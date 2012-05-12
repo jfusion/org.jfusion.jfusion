@@ -8,6 +8,11 @@ class JFusionCookies {
      */
 	var $_cookies = array ();
 
+	public function __construct($secret = null)
+	{
+		$this->secret = $secret;
+	}
+	
 	/**
      * Set a value
      */
@@ -54,7 +59,7 @@ class JFusionCookies {
      */
     function executeRedirect($return=null) {
     	$mainframe = & JFactory::getApplication();
-    	if (!$mainframe->isAdmin() ) {
+    	if (!$mainframe->isAdmin() || !$this->secret) {
 	    	if(!count($this->_cookies)) {
 	    		if (empty($return)) {
 	    			$source_url = $params->get('source_url');
@@ -67,21 +72,17 @@ class JFusionCookies {
 	    			}
 	    		}
 		
-				$params = JFusionFactory::getParams('joomla_int');
-				$secret = $params->get('secret');
-				if($secret) {
-					require_once(JPATH_SITE.DS.'components'.DS.'com_jfusion'.DS.'jfusionapi.php');
+				require_once(JPATH_SITE.DS.'components'.DS.'com_jfusion'.DS.'jfusionapi.php');
 
-			    	foreach( $this->_cookies as $key => $cookies ) {
-			    		$api = new JFusionAPI($key,$secret);
-			    		if ($api->set('Cookie','Cookies',$cookies)) {
-			    			$data['url'][$api->url] = $api->sid;
-			    		}
-					}
-					
-					unset($data['url'][$api->url]);
-					$api->execute('cookie','cookies',$data,$return);
+		    	foreach( $this->_cookies as $key => $cookies ) {
+		    		$api = new JFusionAPI($key,$this->secret);
+		    		if ($api->set('Cookie','Cookies',$cookies)) {
+		    			$data['url'][$api->url] = $api->sid;
+		    		}
 				}
+				
+				unset($data['url'][$api->url]);
+				$api->execute('cookie','cookies',$data,$return);
 	    	}
 	    	if (!empty($return)) {
 	    		$mainframe->redirect($return);
@@ -111,7 +112,7 @@ class JFusionCookies {
 	 * @param string $type
 	 * @return string or array
 	 */
-	public function buildCookie($type = 'string'){
+	public static function buildCookie($type = 'string'){
 		switch ($type) {
 			case 'array':
 				return $_COOKIE;

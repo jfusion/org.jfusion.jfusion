@@ -620,7 +620,7 @@ class JFusionCurl
 		}
 		if ($crossdomain_url) {
 			$jc = JFusionFactory::getCookies();
-			$jc->addCookie($crossdomain_url, $name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
+			$jc->addCookie $name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
 		}
 	}
 
