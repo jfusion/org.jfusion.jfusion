@@ -160,15 +160,16 @@ class JFusionAdmin
             $jfc = JFusionFactory::getCookies();
             list($url) = $jfc->getApiUrl($cookie_domain);
             if ($url) {
-            	require_once(JPATH_SITE.DS.'components'.DS.'com_jfusion'.DS.'jfusionapi.php');
-            	
             	$joomla_int = JFusionFactory::getParams('joomla_int');
-            	$api = new JFusionAPI($url,$joomla_int->get('secret'));
-            	if (!$api->ping()) {
-            		list ($message) = $api->getError();
-            		$status['config'] = 0;
-            		$status['message'] = $api->url. ' ' .$message;
-            		return $status;
+            	if ($joomla_int) {
+	            	require_once(JPATH_SITE.DS.'components'.DS.'com_jfusion'.DS.'jfusionapi.php');
+	            	$api = new JFusionAPI($url,$joomla_int->get('secret'));
+	            	if (!$api->ping()) {
+	            		list ($message) = $api->getError();
+	            		$status['config'] = 0;
+	            		$status['message'] = $api->url. ' ' .$message;
+	            		return $status;
+	            	}
             	}
             }
             

@@ -232,7 +232,7 @@ class JFusionAPI {
     	return $keyinfo;
     }
 
-    static function encrypt($keyinfo, $payload)
+    public static function encrypt($keyinfo, $payload)
     {
     	if (isset($keyinfo->key) && isset($keyinfo->hash)) {
 	    	$encrypted = trim(base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $keyinfo->key, serialize($payload), MCRYPT_MODE_NOFB, $keyinfo->hash)));
@@ -242,10 +242,10 @@ class JFusionAPI {
 		return $encrypted;    	
     }
 
-    static function decrypt($keyinfo, $payload)
+    public static function decrypt($keyinfo, $payload)
     {
     	if (isset($keyinfo->key) && isset($keyinfo->hash)) {
-	        $decrypted = unserialize(trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $keyinfo->key, base64_decode($payload), MCRYPT_MODE_NOFB, $keyinfo->hash)));
+	        $decrypted = @unserialize(trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $keyinfo->key, base64_decode($payload), MCRYPT_MODE_NOFB, $keyinfo->hash)));
     	} else {
     		$decrypted = false;
     	}
@@ -314,7 +314,7 @@ class JFusionAPI {
 	{
 		$return = JFusionAPI::decrypt($this->createkey() , $input);
 		if (!is_array($return)) {
-			$return = unserialize(base64_decode($input));
+			$return = @unserialize(trim(base64_decode($input)));
 		}
 		if (!is_array($return)) {
 			$this->error[] = 'JfusionAPI: error output: '. $input;
@@ -352,7 +352,7 @@ class JFusionAPIBase {
     protected function readPayload($encrypt)
     {
 		if (!$encrypt && isset($_GET['jfpayload'])) {
-			$payload = unserialize(base64_decode($_GET['jfpayload']));
+			$payload = @unserialize(trim(base64_decode($_GET['jfpayload'])));
     	} else if ($encrypt && isset($_POST['jfpayload'])) { 
 	    	$payload = JFusionAPI::decrypt($this->key , $_POST['jfpayload']);
     	}
