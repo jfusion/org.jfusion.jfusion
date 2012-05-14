@@ -151,7 +151,7 @@ class JFusionForum
      */
     function getForumList()
     {
-        return 0;
+        return array();
     }
 
     /**
