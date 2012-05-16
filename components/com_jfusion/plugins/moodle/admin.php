@@ -36,13 +36,14 @@ class JFusionAdmin_moodle extends JFusionAdmin
      * returns the name of this JFusion plugin
      * @return string name of current JFusion plugin
      */
-    function getJname()
-    {
+    function getJname(){
         return 'moodle';
     }
+    
     function getTablename() {
         return 'user';
     }
+    
     function setupFromPath($forumPath) {
         //check for trailing slash and generate file path
         if (substr($forumPath, -1) == DS) {
