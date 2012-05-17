@@ -351,7 +351,10 @@ class JFusionUser_mediawiki extends JFusionUser {
         }
         $user->user_newpass_time = $user->user_newpassword = null;
 
-        $user->user_options = ' ';
+        $db->setQuery("SHOW COLUMNS FROM #__user LIKE 'user_options'");
+        if ($db->query() && $db->getNumRows() ) {
+        	$user->user_options = ' ';
+        }
 
         $user->user_email_authenticated = $user->user_registration = $user->user_touched = gmdate( 'YmdHis', time() );
         $user->user_editcount = 0;
