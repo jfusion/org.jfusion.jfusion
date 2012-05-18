@@ -35,7 +35,7 @@ foreach($results as $r) {
 
 	if ($config['showuser']):
     	if (!empty($output->profile_url)) :
-    		echo ' - <a href="'.$output->profile_url.'" target="'.$config['new_window'].'">'.$output->display_name.'</a></b>';
+    		echo '<b> - <a href="'.$output->profile_url.'" target="'.$config['new_window'].'">'.$output->display_name.'</a></b>';
     	elseif(!empty($r->guest)) :
     		echo ' - ' . $output->display_name . ' ('.JText::_('GUEST').')';
         else :
