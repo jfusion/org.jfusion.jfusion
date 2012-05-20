@@ -204,7 +204,7 @@ class JFusionUser_wordpress extends JFusionUser {
 				$curl_options['post_url'] = $params->get('source_url').$logout_url."?action=logout&_wpnonce=".$sessionkey;
 				$cookies_to_set_index=0;
 				$status=JFusionCurl::RemoteLogoutUrl($curl_options);
-				$status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname(),$params->get('logout_type'),$curl_options);
+//				$status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname(),$params->get('logout_type'),$curl_options);
 			}
 		}
 		return $status;
