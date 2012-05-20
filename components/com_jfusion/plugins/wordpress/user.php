@@ -78,19 +78,19 @@ class JFusionUser_wordpress extends JFusionUser {
 			$jFusionUserObject = $this->convertUserobjectToJFusion($result);
 			$jFusionUserObject->{$this->getJname().'_UserObject'}=$result;
 			return $jFusionUserObject;
-        } else {
-            return $result;
+		} else {
+			return $result;
 		}
 	}
 
 
 	/*
 	 * Routine to convert userobject to standardized JFusion version
-	 */
+	*/
 
 	function convertUserobjectToJFusion($user) {
-        $result = new stdClass;
-		
+		$result = new stdClass;
+
 		$result->userid       = $user->ID;
 		// have to figure out what to use a s the name. Guess display name will do.
 		//     $result->name         = $user->first_name;
@@ -137,76 +137,59 @@ class JFusionUser_wordpress extends JFusionUser {
 
 	function destroySession($userinfo, $options) {
 
-		global $ch;
-		global $cookiearr;
-		global $cookies_to_set;
-		global $cookies_to_set_index;
-		$cookiearr=array();
-		$cookies_to_set=array();
-		$cookies_to_set_index=0;
 		$status = array();
-		$tmpurl = array();
-		$overridearr = array();		$status = array();
-		$tmpurl = array();
-		$overridearr = array();
-		$newhidden = array();
-		$lines = array();
-		$line=array();
-		$status['debug']=array();
-		$status['error']=array();
-		$status['cURL']=array();
-		$status['cURL']['data']= array();
+		$status['error'] = array();
+		$status['debug'] =array();
+		$params = & JFusionFactory::getParams($this->getJname());
+		$cookie_domain = $params->get('cookie_domain');
+		$cookie_path = $params->get('cookie_path');
+		$cookie_hash = $params->get('cookie_hash');
+		$forumPath =   $params->get('source_path');
 
-		// check if curl extension is loaded
-		if (!extension_loaded('curl')) {
-			$status['error'][] = JFusionCurl::_('CURL_NOTINSTALLED');
-			return $status;
-		}
-
-		$jname = $this->getJname();
-		$params = & JFusionFactory::getParams($jname);
-		$logout_url = $params->get('logout_url');
-
-		$curl_options['post_url'] = $params->get('source_url').$logout_url;
-		$curl_options['cookiedomain'] = $params->get('cookie_domain');
-		$curl_options['cookiepath'] = $params->get('cookie_path');
-		$curl_options['leavealone'] = $params->get('leavealone');
-		$curl_options['secure'] = $params->get('secure');
-		$curl_options['httponly'] = $params->get('httponly');
-		$curl_options['verifyhost'] = 0; //$params->get('ssl_verifyhost');
-		$curl_options['httpauth'] = $params->get('httpauth');
-		$curl_options['httpauth_username'] = $params->get('curl_username');
-		$curl_options['httpauth_password'] = $params->get('curl_password');
-		$curl_options['integrationtype']=1;
-		//       $curl_options['debug']=true;
-
-		// to prevent endless loops on systems where there are multiple places where a user can login
-		// we post an unique ID for the initiating software so we can make a difference between
-		// a user logging out or another jFusion installation, or even another system with reverse dual login code.
-		// We always use the source url of the initializing system, here the source_url as defined in the joomla_int
-		// plugin. This is totally transparent for the the webmaster. No additional setup is needed
-
-
-		$my_ID = rtrim(parse_url(JURI::root(), PHP_URL_HOST).parse_url(JURI::root(), PHP_URL_PATH), '/');
-		$curl_options['jnodeid'] = $my_ID;
-
-		$remotedata =JFusionCurl::ReadPage($curl_options, $status, true);
-		if (!empty($status['error'])) {
-			$status['debug'][]= JText::_('CURL_COULD_NOT_READ_PAGE: '). $curl_options['post_url'];
+		if (substr($forumPath, -1) == DS) {
+			$myfile = $forumPath . 'wp-config.php';
 		} else {
-			// get the wpnonce value
-			$ipos = strpos($remotedata,'wpnonce=');
-		if ($ipos === false) {
-				// did not find a session key, so perform a brute force logout
-				$status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname());
-			} else {
-			  $sessionkey =substr($remotedata,$ipos+8,10);
-				$curl_options['post_url'] = $params->get('source_url').$logout_url."?action=logout&_wpnonce=".$sessionkey;
-				$cookies_to_set_index=0;
-				$status=JFusionCurl::RemoteLogoutUrl($curl_options);
-//				$status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname(),$params->get('logout_type'),$curl_options);
-			}
+			$myfile = $forumPath . DS . 'wp-config.php';
 		}
+
+		if (($file_handle = @fopen($myfile, 'r')) === false) {
+			JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));
+			$result = false;
+			return $result;
+		} else {
+			//parse the file line by line to get only the config variables
+			//			$file_handle = fopen($myfile, 'r');
+			while (!feof($file_handle)) {
+				$line = fgets($file_handle);
+				if (strpos(trim($line), 'define') === 0) {
+					eval($line);
+				}
+				if (strpos(trim($line), '$table_prefix') === 0) {
+					eval($line);
+				}
+			}
+			fclose($file_handle);
+		}
+		// lets try deleting the cookies
+		if (defined('COOKIEHASH')) {
+			$cookie_hash = COOKIEHASH;
+		} else {$cookie_hash = '';
+		}
+		if ($cookie_hash) {
+			$cookie_hash = '_'.$cookie_hash;
+		}
+		$cookies = array();
+		$cookies[0][0] ='wordpress_logged_in'.$cookie_hash.'=';
+		$cookies[1][0] ='wordpress'.$cookie_hash.'=';
+
+		$status = JFusionCurl::deletemycookies($status, $cookies, $cookie_domain, $cookie_path, "");
+
+		$cookies = array();
+		$cookies[1][0] ='wordpress'.$cookie_hash.'=';
+
+		$cookie_path .= 'wp-content/plugins';
+		$status = JFusionCurl::deletemycookies($status, $cookies, $cookie_domain, $cookie_path, "");
+
 		return $status;
 	}
 
@@ -323,7 +306,7 @@ class JFusionUser_wordpress extends JFusionUser {
 		if (isset($userinfo->password_clear)) {
 			//we can update the password
 			if (!class_exists('PasswordHashOrg')) {
-			    require_once JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'PasswordHashOrg.php';
+				require_once JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'PasswordHashOrg.php';
 			}
 			$t_hasher = new PasswordHashOrg(8, true);
 			$user_password = $t_hasher->HashPassword($userinfo->password_clear);
