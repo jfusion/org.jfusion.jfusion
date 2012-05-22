@@ -56,7 +56,7 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
     return 'index.php?action=reminder';
     }*/
     function getBuffer(&$data) {
-    	$this->data = $data;    	
+
         // We're going to want a few globals... these are all set later.
         global $INFO, $ACT, $ID, $QUERY, $USERNAME, $CLEAR, $QUIET, $USERINFO, $DOKU_PLUGINS, $PARSER_MODES, $TOC, $EVENT_HANDLER, $AUTH, $IMG, $JUMPTO;
         global $HTTP_RAW_POST_DATA, $RANGE, $HIGH, $MSG, $DATE, $PRE, $TEXT, $SUF, $AUTH_ACL, $QUIET, $SUM, $SRC, $IMG, $NS, $IDX, $REV, $INUSE, $NS, $AUTH_ACL;
@@ -378,7 +378,6 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
             fclose($handle);
         }
         return $text ? $text : "Please, follow the given link to get the DokuWiki article where we found one or more keyword(s).";
-        "Please, follow the given link to get the DokuWiki article where we found one or more keyword(s).";
     }
     function getPageModifiedDateTime($path, $page) {
         $datetime = '';
