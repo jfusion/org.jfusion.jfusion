@@ -916,4 +916,3 @@ class JFvBulletinTask {
         }
     }
 }
-?>

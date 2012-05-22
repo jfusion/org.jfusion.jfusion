@@ -22,4 +22,3 @@ endif;
 echo "</a>\n";
 
 endforeach;
-?>

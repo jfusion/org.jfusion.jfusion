@@ -1525,5 +1525,3 @@ class JFusionCurl
 		return $status;
 	}
 }
-
-?>

@@ -733,4 +733,3 @@ class JFusionForum_vbulletin extends JFusionForum
     }
 
 }
-?>

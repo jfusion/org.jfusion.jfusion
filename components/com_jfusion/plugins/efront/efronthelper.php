@@ -192,5 +192,4 @@ class JFusionEfrontHelper {
         return $status;
     }
     
-}    
-?>
+}

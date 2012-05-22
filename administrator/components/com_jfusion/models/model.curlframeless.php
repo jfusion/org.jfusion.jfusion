@@ -243,4 +243,3 @@ class JFusionCurlFrameless{
 		return http_build_query($var);
 	}
 }
-?>

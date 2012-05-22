@@ -98,4 +98,3 @@ class modjfusionUserActivityHelper {
 		return $output;
 	}
 }
-?>

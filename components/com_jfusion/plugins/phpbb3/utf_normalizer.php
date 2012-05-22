@@ -1041,4 +1041,3 @@ class utf_normalizer_phpbb {
         return $str;
     }
 }
-?>

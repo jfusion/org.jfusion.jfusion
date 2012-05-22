@@ -223,4 +223,3 @@ if (!class_exists('jFusion_g2BridgeCore')) {
 	    }
 	}
 }
-?>

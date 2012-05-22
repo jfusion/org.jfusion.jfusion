@@ -1488,4 +1488,3 @@ class JFusionJplugin
         }
     }
 }
-?>

@@ -82,4 +82,3 @@ class JFusionPublic_oscommerce extends JFusionPublic
 		}
 	}
 }
-?>

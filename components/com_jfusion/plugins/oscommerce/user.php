@@ -605,4 +605,3 @@ class JFusionUser_oscommerce extends JFusionUser
         }
     }
 }
-?>

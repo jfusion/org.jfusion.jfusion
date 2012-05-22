@@ -41,4 +41,3 @@ class JFusionAuth_efront extends JFusionAuth
         return 'efront';
     }
 }
-?>

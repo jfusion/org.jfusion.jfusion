@@ -39,5 +39,3 @@ $string['auth_jfusion_verifyhost_help'] = '';
 $string['auth_jfusion_leavealone_help'] = '';
 $string['auth_jfusion_postfields_help'] = '';
 $string['auth_jfusion_expires_help'] = 'seconds';
-
-?>

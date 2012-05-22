@@ -410,4 +410,3 @@ if ( !class_exists('JFusionMap') ) {
 	    }
 	}
 }
-?>

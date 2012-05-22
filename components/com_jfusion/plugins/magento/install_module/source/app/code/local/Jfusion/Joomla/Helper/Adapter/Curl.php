@@ -59,5 +59,3 @@ class Jfusion_Joomla_Helper_Adapter_Curl extends Varien_Http_Adapter_Curl {
 		}
 	}
 }
-
-?>

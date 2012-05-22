@@ -404,5 +404,3 @@ class auth_plugin_jfusion extends auth_plugin_base {
 		return;
 	}
 }
-
-?>

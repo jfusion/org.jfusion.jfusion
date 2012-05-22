@@ -44,9 +44,9 @@ class JFusionFunction
 			if ($jfusion_master) {
 				return $jfusion_master;
 			}
-		} else {
-			return $jfusion_master;
 		}
+		return $jfusion_master;
+
 	}
 	
 	/**

@@ -54,4 +54,3 @@ class JFusionAuth_oscommerce extends JFusionAuth
         return 'oscommerce';
     }
 }
-?>

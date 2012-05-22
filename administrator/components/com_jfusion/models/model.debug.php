@@ -69,7 +69,7 @@ class std {
      *    @returns a POST/GET-Like structured Array
      */
     private static function rearrangeFiles($files) {
-        // Hilfsfunktion für std::getRequest() (rekursiv)
+        // Hilfsfunktion fï¿½r std::getRequest() (rekursiv)
         $retArr = array();
         foreach ($files as $key => $value) {
             if (arrayfunc::isOneDimensional($value)) {
@@ -773,9 +773,9 @@ class trans {
         $hashy = array();
         foreach ($arr as $zuw) {
             $arr2 = explode($delim2, $zuw);
-            if (count($arr2) == 1) $hashy[$arr2[0]] = $arr2[0]; // 040928 hinzugefügt (tylmann)
+            if (count($arr2) == 1) $hashy[$arr2[0]] = $arr2[0]; // 040928 hinzugefï¿½gt (tylmann)
             if (count($arr2) == 2) $hashy[$arr2[0]] = $arr2[1];
-            if (count($arr2) > 2) $hashy[array_shift($arr2) ] = implode($delim2, $arr2); // 040928 hinzugefügt (tylmann)
+            if (count($arr2) > 2) $hashy[array_shift($arr2) ] = implode($delim2, $arr2); // 040928 hinzugefï¿½gt (tylmann)
 
         }
         return $hashy;
@@ -993,8 +993,8 @@ class arrayfunc {
     /*------------     HOWTO  -------------------------
 
     $data : 2 Dimensionales Array, keys des 2. Dimension kommen als Kriterium in Frage
-    $criteria  : String oder 1-Dimsionales Array von kriterien, meherere Krinerien können auch
-    komma-getrennt als String übergeben werden
+    $criteria  : String oder 1-Dimsionales Array von kriterien, meherere Krinerien kï¿½nnen auch
+    komma-getrennt als String ï¿½bergeben werden
 
     --------------------------------------------------*/
     /**
@@ -1274,7 +1274,7 @@ class arrayfunc {
      *    @return boolean, if the value mathces the given pattern
      */
     private static function likeCompare($value, $pattern) {
-        $pattern = strtolower($pattern); // Damit das ganze Case-INsensitive  läuft
+        $pattern = strtolower($pattern); // Damit das ganze Case-INsensitive  lï¿½uft
         $value = strtolower($value);
         $pttrn = explode("%", $pattern);
         $lastIdx = count($pttrn) - 1;
@@ -1359,4 +1359,3 @@ class arrayfunc {
         return $liste;
     }
 }
-?>

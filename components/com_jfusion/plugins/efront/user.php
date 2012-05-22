@@ -500,4 +500,3 @@ class JFusionUser_efront extends JFusionUser
     }
     
 }
-?>

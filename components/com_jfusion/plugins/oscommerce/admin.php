@@ -250,4 +250,3 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
 		return 'JNO';
 	}    
 }
-?>

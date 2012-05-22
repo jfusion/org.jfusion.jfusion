@@ -400,4 +400,3 @@ class jfusionViewadvancedparam extends JView
         }
     }
 }
-?>

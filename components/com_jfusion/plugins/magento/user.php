@@ -568,4 +568,3 @@ class JFusionUser_magento extends JFusionUser {
         }
     }
 }
-?>

@@ -1514,4 +1514,3 @@ class plgContentJfusion extends JPlugin
         die($this->_render_buttons(true));
     }
 }
-?>
