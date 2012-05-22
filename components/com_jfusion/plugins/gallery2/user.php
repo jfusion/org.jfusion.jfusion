@@ -45,9 +45,10 @@ class JFusionUser_gallery2 extends JFusionUser {
         jFusion_g2BridgeCore::loadGallery2Api($this->getJname(),false);
         list($ret, $g2_user) = GalleryCoreApi::fetchUserByUserName($username);
         if ($ret) {
-            return $g2_user;
+            return false;
+        } else {
+        	return $this->_getUser($g2_user);
         }
-        return $this->_getUser($g2_user);
     }
     function &_getUser($g2_user) {
         $userinfo = new stdClass;
@@ -59,9 +60,11 @@ class JFusionUser_gallery2 extends JFusionUser {
         $userinfo->password_salt = substr($g2_user->hashedPassword, 0, 4);
         list($ret, $groups) = GalleryCoreApi::fetchGroupsForUser($g2_user->id); //,1, 2);
         //var_dump($groups);
-        foreach ($groups as $group_id => $group_name) {
-            $userinfo->group_id = $group_id;
-            $userinfo->group_name = $group_name;
+        if (!$ret) {
+	        foreach ($groups as $group_id => $group_name) {
+	            $userinfo->group_id = $group_id;
+	            $userinfo->group_name = $group_name;
+	        }
         }
         //TODO: Research if and in how to detect blocked Users
         $userinfo->block = 0; //(0 if allowed to access site, 1 if user access is blocked)
@@ -94,6 +97,10 @@ class JFusionUser_gallery2 extends JFusionUser {
         return $status;        
     }
     function createSession($userinfo, $options, $framework = true) {
+    	$status = array();
+    	$status['debug'] = array();
+    	$status['error'] = array();
+    	
         if ($framework) {
             require JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'gallery2.php';
             jFusion_g2BridgeCore::loadGallery2Api($this->getJname(),true);
@@ -103,37 +110,42 @@ class JFusionUser_gallery2 extends JFusionUser {
         $session = & $gallery->getSession();
         $activeUserId = $session->getUserId();
         if ($activeUserId === $userinfo->userid) {
-            return null;
+            return $status;
         }
         /* Logout the existing user from Gallery */
         if (!empty($activeUserId)) {
             list($ret, $anonymousUserId) = GalleryCoreApi::getAnonymousUserId();
             if ($ret) {
-                return $ret;
+                $status['error'][] = $ret->getErrorMessage();
+                return $status;
             }
             /* Can't use getActiveUser() since it might not be set at this point */
             $activeGalleryUserId = $gallery->getActiveUserId();
             if ($anonymousUserId != $activeGalleryUserId) {
                 list($ret, $activeUser) = GalleryCoreApi::loadEntitiesById($activeGalleryUserId, 'GalleryUser');
                 if ($ret) {
-                    return $ret;
+                    $status['error'][] = $ret->getErrorMessage();
+                    return $status;
                 }
                 $event = GalleryCoreApi::newEvent('Gallery::Logout');
                 $event->setEntity($activeUser);
                 list($ret, $ignored) = GalleryCoreApi::postEvent($event);
                 if ($ret) {
-                    return $ret;
+                    $status['error'][] = $ret->getErrorMessage();
+                    return $status;
                 }
             }
             $ret = $session->reset();
             if ($ret) {
-                return $ret;
+                $status['error'][] = $ret->getErrorMessage();
+                return $status;
             }
         }
         //Code is paticulary taken from the GalleryEmbed::login function
         list($ret, $user) = GalleryCoreApi::fetchUserByUserName($userinfo->username);
         if ($ret) {
-            return null;
+            $status['error'][] = $ret->getErrorMessage();
+            return $status;
         }
         //Login the Current User
         $gallery->setActiveUser($user);
@@ -143,7 +155,8 @@ class JFusionUser_gallery2 extends JFusionUser {
         //Set Siteadmin if necessarey
         list($ret, $isSiteAdmin) = GalleryCoreApi::isUserInSiteAdminGroup($user->id);
         if ($ret) {
-            return $ret;
+            $status['error'][] = $ret->getErrorMessage();
+            return $status;
         }
         if ($isSiteAdmin) {
             $session->put('session.siteAdminActivityTimestamp', $phpVm->time());
@@ -157,6 +170,7 @@ class JFusionUser_gallery2 extends JFusionUser {
         if ($framework) {
             GalleryEmbed::done();
         }
+        return $status;
     }
     function deleteUser($userinfo) {
         //setup status array to hold debug info and errors
@@ -169,26 +183,26 @@ class JFusionUser_gallery2 extends JFusionUser {
         //Fetch GalleryUser
         list($ret, $user) = GalleryCoreApi::fetchUserByUserName($username);
         if ($ret) {
-         $status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . $userinfo->username;       
-           return $status;
+			$status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . $userinfo->username;       
+			return $status;
         }
         //Get Write Lock
         list($ret, $lockId) = GalleryCoreApi::acquireWriteLock($user->getId());
         if ($ret) {
-         $status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . $userinfo->username;       
-           return $status;
+			$status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . $userinfo->username;       
+			return $status;
         }
         //Delete User name
         $ret = $user->delete();
         if ($ret) {
-         $status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . $userinfo->username;       
-           return $status;
+			$status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . $userinfo->username;       
+			return $status;
         }
         //Release Lock
         $ret = GalleryCoreApi::releaseLocks($lockId);
         if ($ret) {
-         $status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . $userinfo->username;       
-           return $status;
+			$status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . $userinfo->username;       
+			return $status;
         }
         $status['error'] = false;
 		$status['debug'][] = JText::_('USER_DELETION') . ' ' . $userinfo->username;       
@@ -201,7 +215,8 @@ class JFusionUser_gallery2 extends JFusionUser {
         $usergroup = $params->get('usergroup');
         list($ret, $g2_user) = GalleryCoreApi::newFactoryInstance('GalleryEntity', 'GalleryUser');
         if ($ret) {
-            return $ret;
+			$status['error'][] = $ret->getErrorMessage();
+			return
         }
         if (!isset($g2_user)) {
             $status['error'][] = JText::_('ERROR_CREATING_USER') . ": ".$this->getJname()." : " . $userinfo->username;
@@ -282,7 +297,7 @@ class JFusionUser_gallery2 extends JFusionUser {
         //Set Write Lock
         list($ret, $id) = GalleryCoreApi::acquireWriteLock($g2_existinguser->getId());
         if ($ret) {
-            echo $ret->getAsHtml();
+            $status['error'][] = $ret->getErrorMessage();
         }
         //Check Password
         if (isset($userinfo->password_clear) && !empty($userinfo->password_clear)) {
@@ -299,7 +314,7 @@ class JFusionUser_gallery2 extends JFusionUser {
         if ($changed) {
             $ret = $g2_existinguser->save();
             if ($ret) {
-                echo $ret->getAsHtml();
+                $status['error'][] = $ret->getErrorMessage();
             }
         }
         GalleryEmbed::done();
@@ -314,14 +329,15 @@ class JFusionUser_gallery2 extends JFusionUser {
         //Set Write Lock
         list($ret, $id) = GalleryCoreApi::acquireWriteLock($g2_existinguser->getId());
         if ($ret) {
-            echo $ret->getAsHtml();
-        }
-        //Set new Email
-        $g2_existinguser->setEmail($userinfo->email);
-        //Save to DB
-        $ret = $g2_existinguser->save();
-        if ($ret) {
-            echo $ret->getAsHtml();
+            $status['error'][] = $ret->getErrorMessage();
+        } else {
+	        //Set new Email
+	        $g2_existinguser->setEmail($userinfo->email);
+	        //Save to DB
+	        $ret = $g2_existinguser->save();
+	        if ($ret) {
+	            $status['error'][] = $ret->getErrorMessage();
+	        }
         }
         GalleryEmbed::done();
     }

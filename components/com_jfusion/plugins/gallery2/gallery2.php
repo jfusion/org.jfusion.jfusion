@@ -91,14 +91,14 @@ if (!class_exists('jFusion_g2BridgeCore')) {
 	            if (!empty($cookie_domain)) {
 	                $ret = GalleryCoreApi::setPluginParameter('module', 'core', 'cookie.domain', $cookie_domain);
 	                if ($ret) {
-	                    return $ret->getAsHtml();
+	                	return false;
 	                }
 	            }
 	            $cookie_path = $params->get('cookie_path');
 	            if (!empty($cookie_path)) {
 	                $ret = GalleryCoreApi::setPluginParameter('module', 'core', 'cookie.path', $cookie_path);
 	                if ($ret) {
-	                    return $ret->getAsHtml();
+	                	return false;
 	                }
 	            }
 	        }
