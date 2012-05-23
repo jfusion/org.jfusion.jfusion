@@ -143,7 +143,6 @@ class Archive_Tar extends PEAR
             } else {
                 die("Unsupported compression type '$p_compress'\n".
                     "Supported types are 'gz' and 'bz2'.\n");
-                return false;
             }
         }
         $this->_tarname = $p_tarname;
@@ -160,7 +159,6 @@ class Archive_Tar extends PEAR
                 die("The extension '$extname' couldn't be found.\n".
                     "Please make sure your version of PHP was built ".
                     "with '$extname' support.\n");
-                return false;
             }
         }
     }

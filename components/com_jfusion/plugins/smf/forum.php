@@ -350,6 +350,7 @@ class JFusionForum_smf extends JFusionForum
                 return $url;
             }
         }
+        return false;
     }
 
     /**

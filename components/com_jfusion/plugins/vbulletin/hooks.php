@@ -149,8 +149,6 @@ class executeJFusionHook
                 }
             }
         }
-
-        return true;
     }
     function getHooks($plugin)
     {
@@ -301,7 +299,7 @@ class executeJFusionHook
         //reworks the URL for header redirects ie header('Location: $url');
         //if this is a forum link, return without parsing the URL
         if (!empty($foruminfo['link']) && (THIS_SCRIPT != 'subscription' || $_REQUEST['do'] != 'removesubscription')) {
-            return;
+            return false;
         }
         if (defined('_JFUSION_DEBUG')) {
             $debug = array();

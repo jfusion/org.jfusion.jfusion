@@ -870,7 +870,7 @@ class JFusionPublic_smf extends JFusionPublic
      *
      * @param object $post convert post info in to a link
      *
-     * @return void
+     * @return string
      */
     function getSearchResultLink($post)
     {

@@ -1073,7 +1073,7 @@ class JFusionJplugin
                 if (!$db->insertObject('#__users', $user, 'id')) {
                     //return the error
                     $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-                    return;
+                    return $status;
                 }
 
                 if(JFusionFunction::isJoomlaVersion('1.6',$jname)) {
@@ -1097,13 +1097,14 @@ class JFusionJplugin
 	                if (!$db->insertObject('#__core_acl_aro', $acl, 'id')) {
 	                    //return the error
 	                    $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-	                    return;
+                        return $status;
 	                }
 	                // and finally add the user to the core_acl_groups_aro_map
 	                $query = 'INSERT INTO #__core_acl_groups_aro_map (group_id, aro_id) VALUES (' . $gid . ',' . $acl->id . ')';
 	                $db->setQuery($query);
 	                if (!$db->query()) {
 	                    $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
+                        return $status;
 	                }
                 }
             }
@@ -1113,17 +1114,17 @@ class JFusionJplugin
                 //report back success
                 $status['userinfo'] = $joomla_user;
                 $status['debug'][] = JText::_('USER_CREATION');
-                return;
+                return $status;
             } else {
                 $status['error'] = JText::_('COULD_NOT_CREATE_USER');
-                return;
+                return $status;
             }
         } else {
             //Joomla does not allow duplicate emails report error
             $status['debug'][] = JText::_('USERNAME') . ' ' . JText::_('CONFLICT') . ': ' . $existinguser->username . ' -> ' . $userinfo->username;
             $status['error'] = JText::_('EMAIL_CONFLICT') . '. UserID: ' . $existinguser->userid . ' JFusionPlugin: ' . $jname;
             $status['userinfo'] = $existinguser;
-            return;
+            return $status;
         }
     }
 
@@ -1389,6 +1390,7 @@ class JFusionJplugin
         } else {
             $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST');
         }
+        return $status;
     }
     /************************************************
     * Functions For JFusion Who's Online Module

@@ -187,6 +187,7 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
                 $result = $db->loadObjectList();
                 return $result;
         }
+        return false;
     }
     function getDefaultUsergroup() {
         $params = JFusionFactory::getParams($this->getJname());
@@ -222,6 +223,7 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
                 $db->setQuery($query);
                 return $db->loadResult();
         }
+        return false;
     }
     function allowRegistration() {
         $result = true;

@@ -257,6 +257,7 @@ class plgContentJfusion extends JPlugin
         }
 
         $this->helper->_debug('onAfterContentSave complete', true);
+        return true;
     }
 
 

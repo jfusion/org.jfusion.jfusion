@@ -413,5 +413,6 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
             }
             return $pathway;
         }
+        return false;
     }
 }

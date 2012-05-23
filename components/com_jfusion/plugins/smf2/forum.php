@@ -165,6 +165,7 @@ class JFusionForum_smf2 extends JFusionForum
 				return $url;
 			}
 		}
+        return false;
 	}
 
      /**

@@ -232,7 +232,7 @@ class JFusionFunctionAdmin
             if ($FileInfo['http_code'] != 200) {
                 //there was an error
                 JError::raiseWarning(0,$FileInfo['http_code'] . ' error for file:' . $url);
-                return;
+                return false;
             }
         } else {
             //see if we can use fopen to get file
@@ -241,7 +241,7 @@ class JFusionFunctionAdmin
                 $FileData = file_get_contents($url);
             } else {
                 JError::raiseWarning(0,JText::_('CURL_DISABLED'));
-                return;
+                return false;
             }
         }
 

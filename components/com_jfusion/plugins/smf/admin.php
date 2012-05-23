@@ -284,7 +284,7 @@ if (!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') ===
     /**
      * Disable redirect mod
      *
-     * @return void
+     * @return string
      */
     function disableRedirectMod()
     {

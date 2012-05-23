@@ -679,6 +679,7 @@ class JFusionDiscussBotHelper {
         } else {
             die(DISCUSSION_TEMPLATE_PATH . $file . " is missing!");
         }
+        return false;
     }
 
     public function _debug($text, $save = false)

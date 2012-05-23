@@ -58,6 +58,7 @@ if ( !class_exists('JFusionMap') ) {
 					return $this->_mapraw[$type];
 				}
 			}
+            return false;
 		}
 
 		function getMap($type='user') {
@@ -93,6 +94,7 @@ if ( !class_exists('JFusionMap') ) {
 					return $this->_map[$type];
 				}
 			}
+            return false;
 		}
 
 		function getFieldUserID() {

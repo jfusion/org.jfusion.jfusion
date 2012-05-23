@@ -273,6 +273,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             $this->parseBody($jfdata);
             die('<html><head>' . $jfdata->header . '</head><body>' . $jfdata->body . '</body></html>');
         }
+        return true;
     }
     function parseBody(&$data) {
 

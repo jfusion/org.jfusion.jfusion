@@ -368,6 +368,7 @@ public function installModule() {
 		}else{
 			$status['message'] = $jname .': ' . JText::_('UNINSTALL_MODULE_SUCCESS');
 		}
+        return $status;
 	}
 
 public function moduleActivation() {

@@ -225,7 +225,7 @@ class JFusionUser_mediawiki extends JFusionUser {
         //check to make sure that if using the advanced group mode, $userinfo->group_id exists
         if (is_array($usergroups) && !isset($userinfo->group_id)) {
             $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
-            return false;
+            return;
         }
         $usergroup = (is_array($usergroups)) ? $usergroups[$userinfo->group_id] : $usergroups;
 		
@@ -398,7 +398,7 @@ class JFusionUser_mediawiki extends JFusionUser {
         	if (!$db->query()) {
 	            //return the error
             	$status['error'][] = JText::_('USER_CREATION_ERROR')  . ' ' .  $db->stderr();
-	            return;
+                return $status;
         	}
 
 	        //prepare the user variables

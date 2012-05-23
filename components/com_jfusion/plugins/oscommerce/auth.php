@@ -44,6 +44,7 @@ class JFusionAuth_oscommerce extends JFusionAuth
             case 'oscseo':
                 return md5($userinfo->password_clear);
         }
+        return md5($userinfo->password_clear);
     }
     /**
      * returns the name of this JFusion plugin

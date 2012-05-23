@@ -464,6 +464,7 @@ class JFusionUser_efront extends JFusionUser
             $status['debug'][] = JText::_('DELETED').JTEXT::_(' USER: ' ).$login;
             return $status;
         }
+        return false;
     }
     function updateUsergroup($userinfo, &$existinguser, &$status) {
         $params = & JFusionFactory::getParams($this->getJname());

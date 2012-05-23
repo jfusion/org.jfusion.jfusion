@@ -157,6 +157,7 @@ class JFusionUser_gallery2 extends JFusionUser {
         if ($framework) {
             GalleryEmbed::done();
         }
+        return true;
     }
     function deleteUser($userinfo) {
         //setup status array to hold debug info and errors
@@ -226,7 +227,7 @@ class JFusionUser_gallery2 extends JFusionUser {
             $ret = GalleryCoreApi::addUserToGroup($g2_user->id, (int)$usergroup);
             if ($ret) {
                 $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $existinguser->group_id . ' -> ' . $usergroups[$userinfo->group_id];
-                return;
+                return false;
             }
         } else {
             $usergroups = unserialize($params->get('usergroup'));
@@ -234,7 +235,7 @@ class JFusionUser_gallery2 extends JFusionUser {
                 $ret = GalleryCoreApi::addUserToGroup($g2_user->id, (int)($usergroups[$userinfo->group_id]));
                 if ($ret) {
                     $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $existinguser->group_id . ' -> ' . $usergroups[$userinfo->group_id];
-                    return;
+                    return false;
                 }
             }
         }
@@ -243,6 +244,7 @@ class JFusionUser_gallery2 extends JFusionUser {
         if (empty($status['error'])) {
             $status['action'] = 'created';
         }
+        return true;
     }
     function updateUsergroup($userinfo, &$existinguser, &$status) {
         require JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'gallery2.php';

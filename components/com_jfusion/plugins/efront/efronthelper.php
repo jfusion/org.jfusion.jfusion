@@ -68,17 +68,18 @@ class JFusionEfrontHelper {
            case 0: return 'student';
            case 1: return 'professor';
            case 2: return 'administrator';
-           default:
-                // correct id
-                $group_id = $group_id - 2;
-                $db = JFusionFactory::getDatabase($this->getJname());
-                if (!empty($db)){ 
-                    $query = 'SELECT name, basic_user_type from #__user_types WHERE id = '.$group_id;
-                    $db->setQuery($query);
-                    $user_type = (array)$db->loadObject();
-                    return $user_type['name'].' ('.$user_type['basic_user_type'].')';
-                }
         }
+
+         // correct id
+         $group_id = $group_id - 2;
+         $db = JFusionFactory::getDatabase($this->getJname());
+         if (!empty($db)){
+              $query = 'SELECT name, basic_user_type from #__user_types WHERE id = '.$group_id;
+              $db->setQuery($query);
+              $user_type = (array)$db->loadObject();
+              return $user_type['name'].' ('.$user_type['basic_user_type'].')';
+         }
+        return false;
     }
     function getUsergroupList() {
         // efront has three build in user_types: student, professor and administrator

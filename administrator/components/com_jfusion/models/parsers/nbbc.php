@@ -229,6 +229,7 @@ class BBCodeLexer {
                     }
             }
         }
+        return false;
     }
     function UngetToken() {
         if ($this->token !== BBCODE_EOI) $this->unget = true;

@@ -174,6 +174,7 @@ class JFusionUser_prestashop extends JFusionUser {
 				}
 			}
 		}
+        return false;
 	}
     function filterUsername($username) {
         return $username;
@@ -575,13 +576,13 @@ class JFusionUser_prestashop extends JFusionUser {
         }
     }
     function activateUser($userinfo, &$existinguser, &$status) {
-        /* change the “active” field of the customer in the ps_customer table to 1 */
+        /* change the ï¿½activeï¿½ field of the customer in the ps_customer table to 1 */
 		$params = JFusionFactory::getParams($this->getJname());
         $query = "UPDATE #__customer SET active ='1' WHERE id_customer ='" . (int)$existinguser->userid . "'";
         $db->setQuery($query);
     }
     function inactivateUser($userinfo, &$existinguser, &$status) {
-        /* change the “active” field of the customer in the ps_customer table to 0 */
+        /* change the ï¿½activeï¿½ field of the customer in the ps_customer table to 0 */
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = "UPDATE #__customer SET active ='0' WHERE id_customer ='" . (int)$existinguser->userid . "'";
         $db->setQuery($query);
