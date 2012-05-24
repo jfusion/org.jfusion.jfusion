@@ -152,4 +152,3 @@ class JFusionCookies {
 		return $output;
 	}
 }
-?>

@@ -88,6 +88,7 @@ class JFusionUser_smf2 extends JFusionUser {
 		$db->setQuery($query);
         if (!$db->query()) {
        		$status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' .  $db->stderr();
+            return $status;
         } else {
 	        //update the stats
         	$query = 'UPDATE #__settings SET value = value - 1 	WHERE variable = \'totalMembers\' ';
@@ -95,7 +96,7 @@ class JFusionUser_smf2 extends JFusionUser {
         	if (!$db->query()) {
 	            //return the error
             	$status['error'][] = JText::_('USER_DELETION_ERROR')  . ' ' .  $db->stderr();
-	            return;
+                return $status;
         	}
 
         	$query = 'SELECT MAX(id_member) as id_member FROM #__members WHERE is_activated = 1';
@@ -104,7 +105,7 @@ class JFusionUser_smf2 extends JFusionUser {
             if (!$resultID) {
                 //return the error
                 $status['error'][] = JText::_('USER_DELETION_ERROR') . $db->stderr();
-                return;
+                return $status;
             }
 
 			$query = 'SELECT real_name as name FROM #__members WHERE id_member = '.$db->quote($resultID->id_member).' LIMIT 1';
@@ -113,7 +114,7 @@ class JFusionUser_smf2 extends JFusionUser {
             if (!$resultName) {
                 //return the error
                 $status['error'][] = JText::_('USER_DELETION_ERROR') . $db->stderr();
-                return;
+                return $status;
             }
 
             $query = 'REPLACE INTO #__settings (variable, value) VALUES (\'latestMember\', ' . $resultID->id_member . '), (\'latestRealName\', ' . $db->quote($resultName->name) . ')';
@@ -121,7 +122,7 @@ class JFusionUser_smf2 extends JFusionUser {
             if (!$db->query()) {
                 //return the error
                 $status['error'][] = JText::_('USER_DELETION_ERROR') . $db->stderr();
-                return;
+                return $status;
             }
 
 			$status['error'] = false;
@@ -375,7 +376,7 @@ class JFusionUser_smf2 extends JFusionUser {
             if (!$db->query()) {
                 //return the error
                 $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-                return;
+                return $status;
             }
 
             $date = strftime('%Y-%m-%d');
@@ -384,7 +385,7 @@ class JFusionUser_smf2 extends JFusionUser {
             if (!$db->query()) {
                 //return the error
                 $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-                return;
+                return $status;
             }
 
             $query = 'REPLACE INTO #__settings (variable, value) VALUES (\'latestMember\', ' . $user->id_member . '), (\'latestRealName\', ' . $db->quote($userinfo->name) . ')';
@@ -392,7 +393,7 @@ class JFusionUser_smf2 extends JFusionUser {
             if (!$db->query()) {
                 //return the error
                 $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-                return;
+                return $status;
             }
 
             //return the good news

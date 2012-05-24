@@ -206,6 +206,7 @@ class JFusionUser_vbulletin extends JFusionUser
             $status = array();
             $status['debug'] = 'Joomla initiated a logout of a blocked user thus skipped vBulletin destroySession() to prevent current user from getting logged out.';
         }
+        return $status;
     }
 
     function createSession(&$userinfo, $options)

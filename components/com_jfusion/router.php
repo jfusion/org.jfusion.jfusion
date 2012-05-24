@@ -63,7 +63,7 @@ function jfusionBuildRoute(&$query)
 /**
  * reconstruct the SEF URL
  *
- * @param string $segments segments to parse
+ * @param array $segments segments to parse
  *
  * @return string vars
  */

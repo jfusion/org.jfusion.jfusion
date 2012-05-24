@@ -730,6 +730,7 @@ class JFusionUser_phpbb3 extends JFusionUser
             }
         } elseif ($db->stderr()) {
             $status["error"][] = "Error Could not retrieve reported posts/topics by user $user_id: {$db->stderr() }";
+            return $status;
         }
         if (sizeof($report_posts)) {
             $report_posts = array_unique($report_posts);
@@ -946,7 +947,7 @@ class JFusionUser_phpbb3 extends JFusionUser
         if (!$db->query()) {
             //return the error
             $status['error'][] = JText::_('USER_DELETION_ERROR') . $db->stderr();
-            return;
+            return $status;
         }
         //check to see if this user was the newest user
         $query = "SELECT COUNT(*) FROM #__config WHERE config_name = 'newest_user_id' AND config_value = '$user_id'";
@@ -962,7 +963,7 @@ class JFusionUser_phpbb3 extends JFusionUser
                 if (!$db->query()) {
                     //return the error
                     $status['error'][] = JText::_('USER_DELETION_ERROR') . $db->stderr();
-                    return;
+                    return $status;
                 }
                 //update the newest userid
                 $query = 'UPDATE #__config SET config_value = ' . $newest_user->user_id . ' WHERE config_name = \'newest_user_id\'';
@@ -970,7 +971,7 @@ class JFusionUser_phpbb3 extends JFusionUser
                 if (!$db->query()) {
                     //return the error
                     $status['error'][] = JText::_('USER_DELETION_ERROR') . $db->stderr();
-                    return;
+                    return $status;
                 }
                 //set the correct new username color
                 $query = 'UPDATE #__config SET config_value = ' . $db->Quote($newest_user->user_colour) . ' WHERE config_name = \'newest_user_colour\'';
@@ -978,7 +979,7 @@ class JFusionUser_phpbb3 extends JFusionUser
                 if (!$db->query()) {
                     //return the error
                     $status['error'][] = JText::_('USER_DELETION_ERROR') . $db->stderr();
-                    return;
+                    return $status;
                 }
             }
         }
@@ -1142,5 +1143,6 @@ class JFusionUser_phpbb3 extends JFusionUser
                 }
             }
         }
+        return 0;
     }
 }

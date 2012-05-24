@@ -85,4 +85,3 @@ class JFusionAuth_moodle extends JFusionAuth {
         }
     }
 }
-?>

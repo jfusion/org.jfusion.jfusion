@@ -249,5 +249,3 @@ class PasswordHashOrg {
     return $hash == $stored_hash;
   }
 }
-
-?>

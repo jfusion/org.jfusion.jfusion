@@ -44,9 +44,9 @@ class JFusionFunction
 			if ($jfusion_master) {
 				return $jfusion_master;
 			}
-		} else {
-			return $jfusion_master;
 		}
+		return $jfusion_master;
+
 	}
 	
 	/**
@@ -90,7 +90,7 @@ class JFusionFunction
 				static $discussion_plugins;
 				break;
 			default:
-				return;
+				return false;
 		}
 		$plugins =& ${
 			$criteria . "_plugins"};
@@ -228,13 +228,11 @@ class JFusionFunction
         if ($view == 'direct') {
             $params = & JFusionFactory::getParams($jname);
             $url = $params->get('source_url') . $url;
-            return $url;
         } elseif ($view == 'wrapper') {
             //use base64_encode to encode the URL for passing.  But, base64_code uses / which throws off SEF urls.  Thus slashes
             //must be translated into something base64_encode will not generate and something that will not get changed by Joomla or Apache.
             $url = $base_url . '&amp;wrap=' . str_replace("/", "_slash_", base64_encode($url));
             $url = JRoute::_($url);
-            return $url;
         } elseif ($view == 'frameless') {
             //split the filename from the query
             $parts = explode('?', $url);
@@ -244,8 +242,8 @@ class JFusionFunction
                 $base_url.= '&amp;jfile=' . $parts[0];
             }
             $url = JRoute::_($base_url);
-            return $url;
         }
+        return $url;
     }
 
     /**
@@ -892,6 +890,7 @@ class JFusionFunction
             $url = JRoute::_($joomla_url . $matches);
             return $url;
         }
+        return false;
     }
 
     /**
@@ -1395,6 +1394,7 @@ class JFusionFunction
 			jimport('joomla.plugin.plugin');
 			JPlugin::loadLanguage($extension, $basePath);
     	}
+        return false;
     }
 
     /*

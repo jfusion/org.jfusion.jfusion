@@ -19,6 +19,7 @@ class Jfusion_Joomla_Helper_Adapter_Curl extends Varien_Http_Adapter_Curl {
 		if (! extension_loaded ( 'curl' )) {
 			return Mage::helper('jfusion')->__( 'CURL_LIBRARY_NOT_INSTALLED' );
 		}
+        return true;
 	}
 
 	function init($url = '') {
@@ -59,5 +60,3 @@ class Jfusion_Joomla_Helper_Adapter_Curl extends Varien_Http_Adapter_Curl {
 		}
 	}
 }
-
-?>

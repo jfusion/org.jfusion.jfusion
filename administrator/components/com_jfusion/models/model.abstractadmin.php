@@ -563,7 +563,7 @@ class JFusionAdmin
         }
         
         ?><script type="text/javascript">
-			var jfPlugin = <?php echo json_encode($plugin);?>
+			var jfPlugin = <?php echo json_encode($plugin);?>;
 	        
 	        function usergroupSelect(option)
 	        {

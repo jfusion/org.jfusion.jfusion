@@ -107,6 +107,7 @@ class action_plugin_jfusion extends DokuWiki_Action_Plugin {
         }
         //just to be sure
         $this->logoutDokuwiki(true);
+        return false;
     }
 
     function jfusion_logout(&$event, $param) {

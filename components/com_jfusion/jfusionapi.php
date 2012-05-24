@@ -259,7 +259,7 @@ class JFusionAPI {
 		//check to see if cURL is loaded
         if (!function_exists('curl_init')) {
         	$this->error[] = 'JfusionAPI: sorry cURL is needed for JFusionAPI';
-        	return;
+        	return false;
         }
         if ($this->sid) {
         	$post['PHPSESSID'] = $this->sid;

@@ -520,7 +520,7 @@ EOD;
             }
 
         }
-
+        return $status;
     }
 
     public function moduleActivation() {
@@ -594,7 +594,8 @@ EOD;
             $key = array_search('jfusion',$auths);
 
             if ($key !== false){ // already enabled ?!
-                return;
+                $status['error'] = 'key already enabled?';
+                return $status;
             }
             $value .= ',jfusion';
             $query = "UPDATE #__config SET value = '".$value."' WHERE name = 'auth' ;";
@@ -633,6 +634,7 @@ EOD;
 
             }
         }
+        return false;
     }
 
 	/*

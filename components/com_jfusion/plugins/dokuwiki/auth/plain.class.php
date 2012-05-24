@@ -268,7 +268,7 @@ class doku_auth_plain extends doku_auth_basic {
         if (is_array($this->users)) return $this->users;
         $users = array();
         $file = $this->auth_file();
-        if (!@file_exists($file)) return;
+        if (!@file_exists($file)) return false;
         $lines = file($file);
         foreach ($lines as $line) {
             $line = preg_replace('/#.*$/', '', $line); //ignore comments

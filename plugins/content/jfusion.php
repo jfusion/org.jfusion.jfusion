@@ -257,6 +257,7 @@ class plgContentJfusion extends JPlugin
         }
 
         $this->helper->_debug('onAfterContentSave complete', true);
+        return true;
     }
 
 
@@ -1514,4 +1515,3 @@ class plgContentJfusion extends JPlugin
         die($this->_render_buttons(true));
     }
 }
-?>

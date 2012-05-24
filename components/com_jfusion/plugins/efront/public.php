@@ -74,5 +74,4 @@ class JFusionPublic_efront extends JFusionPublic
         $result = $db->loadResult();
         return $result;
     }
-}    
-?>
+}

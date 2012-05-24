@@ -241,6 +241,8 @@ class plgAuthenticationjfusion extends JPlugin
                 $response->debug[] = JText::_('JOOMLA_AUTH_PLUGIN_USED_NO_MASTER');
             }
         }
+        return false;
+
     }
 
     function onUserAuthenticate($credentials, $options, &$response){

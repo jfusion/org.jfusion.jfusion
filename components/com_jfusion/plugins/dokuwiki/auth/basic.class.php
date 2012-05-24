@@ -144,6 +144,7 @@ class doku_auth_basic
             default:
                 JError::raiseWarning(500, "Unsupported crypt method $method");
             }
+        return false;
     }
 
     /**

@@ -287,6 +287,7 @@ class JFusionCurlHtmlFormParser
 			unset($string);
 			return trim($val_match, '"');
 		}
+        return false;
 	}
 
 	/**
@@ -304,6 +305,7 @@ class JFusionCurlHtmlFormParser
 			unset($string);
 			return $val_match;
 		}
+        return false;
 	}
 
 	/**
@@ -322,6 +324,7 @@ class JFusionCurlHtmlFormParser
 			unset($string);
 			return $val_match;
 		}
+        return false;
 	}
 
 	/**
@@ -339,6 +342,7 @@ class JFusionCurlHtmlFormParser
 			unset($string);
 			return $val_match;
 		}
+        return false;
 	}
 }
 
@@ -1525,5 +1529,3 @@ class JFusionCurl
 		return $status;
 	}
 }
-
-?>

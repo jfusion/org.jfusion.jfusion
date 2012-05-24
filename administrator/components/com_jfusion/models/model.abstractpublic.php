@@ -331,7 +331,7 @@ class JFusionPublic
                 $color = (!empty($temp[0])) ? $temp[0] : '#6374AB';
                 $dir = (!empty($temp[1])) ? $temp[1] : 'left';
                 $x = ($dir == 'left') ? '-0.2em' : '0.2em';
-                $return = "<span style=\"text-shadow: $colo $x 0.1em 0.2em;\">$content</span>";
+                $return = "<span style=\"text-shadow: $color $x 0.1em 0.2em;\">$content</span>";
                 break;
             case 'move':
                 $return = "<marquee>$content</marquee>";

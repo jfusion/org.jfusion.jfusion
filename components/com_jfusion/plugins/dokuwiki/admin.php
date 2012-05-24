@@ -314,7 +314,7 @@ if (!defined(\'_JEXEC\'))';
     /**
      * Disable redirect mod
      *
-     * @return void
+     * @return string
      */
     function disableRedirectMod()
     {
@@ -469,7 +469,7 @@ JS;
                 if (!JFile::exists($config_file)) {
                     if (!JFile::create($config_file)) {
                        //config file couldn't be installed so abort
-                       return 0;
+                       return;
                     }
                 }
 
@@ -499,7 +499,7 @@ CODE;
     /**
      * Disable redirect mod
      *
-     * @return void
+     * @return string
      */
     function disableAuthMod()
     {

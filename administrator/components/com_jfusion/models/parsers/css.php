@@ -323,4 +323,3 @@ class cssparser {
 		return $content;
 	}
 }
-?>

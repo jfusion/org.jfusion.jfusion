@@ -211,4 +211,3 @@ class modjfusionActivityHelper
 		return array($count,$name);
 	}	
 }
-?>

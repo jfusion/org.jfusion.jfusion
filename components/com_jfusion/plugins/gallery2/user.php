@@ -47,7 +47,7 @@ class JFusionUser_gallery2 extends JFusionUser {
         if ($ret) {
             return false;
         } else {
-        	return $this->_getUser($g2_user);
+            return $this->_getUser($g2_user);
         }
     }
     function &_getUser($g2_user) {
@@ -61,10 +61,10 @@ class JFusionUser_gallery2 extends JFusionUser {
         list($ret, $groups) = GalleryCoreApi::fetchGroupsForUser($g2_user->id); //,1, 2);
         //var_dump($groups);
         if (!$ret) {
-	        foreach ($groups as $group_id => $group_name) {
-	            $userinfo->group_id = $group_id;
-	            $userinfo->group_name = $group_name;
-	        }
+            foreach ($groups as $group_id => $group_name) {
+                $userinfo->group_id = $group_id;
+                $userinfo->group_name = $group_name;
+            }
         }
         //TODO: Research if and in how to detect blocked Users
         $userinfo->block = 0; //(0 if allowed to access site, 1 if user access is blocked)
@@ -97,10 +97,10 @@ class JFusionUser_gallery2 extends JFusionUser {
         return $status;        
     }
     function createSession($userinfo, $options, $framework = true) {
-    	$status = array();
-    	$status['debug'] = array();
-    	$status['error'] = array();
-    	
+        $status = array();
+        $status['debug'] = array();
+        $status['error'] = array();
+        
         if ($framework) {
             require JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'gallery2.php';
             jFusion_g2BridgeCore::loadGallery2Api($this->getJname(),true);
@@ -183,26 +183,26 @@ class JFusionUser_gallery2 extends JFusionUser {
         //Fetch GalleryUser
         list($ret, $user) = GalleryCoreApi::fetchUserByUserName($username);
         if ($ret) {
-			$status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . $userinfo->username;       
-			return $status;
+         $status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . $userinfo->username;       
+           return $status;
         }
         //Get Write Lock
         list($ret, $lockId) = GalleryCoreApi::acquireWriteLock($user->getId());
         if ($ret) {
-			$status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . $userinfo->username;       
-			return $status;
+         $status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . $userinfo->username;       
+           return $status;
         }
         //Delete User name
         $ret = $user->delete();
         if ($ret) {
-			$status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . $userinfo->username;       
-			return $status;
+         $status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . $userinfo->username;       
+           return $status;
         }
         //Release Lock
         $ret = GalleryCoreApi::releaseLocks($lockId);
         if ($ret) {
-			$status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . $userinfo->username;       
-			return $status;
+         $status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . $userinfo->username;       
+           return $status;
         }
         $status['error'] = false;
 		$status['debug'][] = JText::_('USER_DELETION') . ' ' . $userinfo->username;       
@@ -215,8 +215,8 @@ class JFusionUser_gallery2 extends JFusionUser {
         $usergroup = $params->get('usergroup');
         list($ret, $g2_user) = GalleryCoreApi::newFactoryInstance('GalleryEntity', 'GalleryUser');
         if ($ret) {
-			$status['error'][] = $ret->getErrorMessage();
-			return
+            $status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . $userinfo->username;
+            return $status;
         }
         if (!isset($g2_user)) {
             $status['error'][] = JText::_('ERROR_CREATING_USER') . ": ".$this->getJname()." : " . $userinfo->username;
@@ -241,7 +241,7 @@ class JFusionUser_gallery2 extends JFusionUser {
             $ret = GalleryCoreApi::addUserToGroup($g2_user->id, (int)$usergroup);
             if ($ret) {
                 $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $existinguser->group_id . ' -> ' . $usergroups[$userinfo->group_id];
-                return;
+                return $status;
             }
         } else {
             $usergroups = unserialize($params->get('usergroup'));
@@ -249,7 +249,7 @@ class JFusionUser_gallery2 extends JFusionUser {
                 $ret = GalleryCoreApi::addUserToGroup($g2_user->id, (int)($usergroups[$userinfo->group_id]));
                 if ($ret) {
                     $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $existinguser->group_id . ' -> ' . $usergroups[$userinfo->group_id];
-                    return;
+                    return $status;
                 }
             }
         }
@@ -258,6 +258,7 @@ class JFusionUser_gallery2 extends JFusionUser {
         if (empty($status['error'])) {
             $status['action'] = 'created';
         }
+        return $status;
     }
     function updateUsergroup($userinfo, &$existinguser, &$status) {
         require JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'gallery2.php';
@@ -331,13 +332,13 @@ class JFusionUser_gallery2 extends JFusionUser {
         if ($ret) {
             $status['error'][] = $ret->getErrorMessage();
         } else {
-	        //Set new Email
-	        $g2_existinguser->setEmail($userinfo->email);
-	        //Save to DB
-	        $ret = $g2_existinguser->save();
-	        if ($ret) {
-	            $status['error'][] = $ret->getErrorMessage();
-	        }
+            //Set new Email
+            $g2_existinguser->setEmail($userinfo->email);
+            //Save to DB
+            $ret = $g2_existinguser->save();
+            if ($ret) {
+                $status['error'][] = $ret->getErrorMessage();
+            }
         }
         GalleryEmbed::done();
     }

@@ -746,6 +746,7 @@ class plgUserJfusion extends JPlugin
         }
         //stop output buffer
         ob_end_clean();
+        return true;
     }
 
     //joomla 1.6 compatibility code

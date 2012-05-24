@@ -38,5 +38,6 @@ class jfusionViewWeb extends JView {
 			$this->assignRef ( 'body', $data->body );
 		}
 		parent::display ( $tpl );
+        return true;
 	}
 }

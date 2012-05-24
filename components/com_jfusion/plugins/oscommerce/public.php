@@ -48,6 +48,7 @@ class JFusionPublic_oscommerce extends JFusionPublic
 			case 'osczen':
 				return 'index.php?main_page=login';
 		}
+        return 'index.php';
 	}
 	function getLostPasswordURL() {
 		$params = JFusionFactory::getParams($this->getJname());
@@ -64,6 +65,7 @@ class JFusionPublic_oscommerce extends JFusionPublic
 			case 'oscseo':
 				return 'cpassword_double_opt.php';
 		}
+        return 'index.php';
 	}
 	function getLostUsernameURL() {
 		$params = JFusionFactory::getParams($this->getJname());
@@ -80,6 +82,6 @@ class JFusionPublic_oscommerce extends JFusionPublic
 			case 'oscseo':
 				return 'cpassword_double_opt.php';
 		}
+        return 'index.php?';
 	}
 }
-?>

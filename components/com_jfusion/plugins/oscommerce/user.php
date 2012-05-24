@@ -94,6 +94,7 @@ class JFusionUser_oscommerce extends JFusionUser
             }
             return $result;
         }
+        return false;
     }
     /**
      * returns the name of this JFusion plugin
@@ -541,6 +542,7 @@ class JFusionUser_oscommerce extends JFusionUser
             }
             return $status;
         }
+        return false;
     }
     function updateUsergroup($userinfo, &$existinguser, &$status) {
         $params = JFusionFactory::getParams($this->getJname());
@@ -605,4 +607,3 @@ class JFusionUser_oscommerce extends JFusionUser
         }
     }
 }
-?>

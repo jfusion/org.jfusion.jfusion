@@ -85,6 +85,7 @@ class JFusionAdmin_elgg extends JFusionAdmin
             $params['source_path'] = $path;
             return $params;
         }
+        return false;
     }
     function getUserList($start = 0, $count = '') {
         //getting the connection to the db

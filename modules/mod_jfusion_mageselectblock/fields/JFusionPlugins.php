@@ -14,4 +14,3 @@ class JFieldJFusionMagentoPlugins extends JFormFieldJFusionActivePlugins{
 		
 	}
 }
-?>

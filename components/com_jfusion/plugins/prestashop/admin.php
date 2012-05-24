@@ -104,6 +104,7 @@ class JFusionAdmin_prestashop extends JFusionAdmin
 			//return the parameters so it can be saved permanently
             return $params;
         }
+        return false;
     }
     function getUserList() {
         //getting the connection to the db

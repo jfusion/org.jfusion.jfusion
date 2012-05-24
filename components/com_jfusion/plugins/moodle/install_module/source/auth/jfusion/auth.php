@@ -109,7 +109,7 @@ class auth_plugin_jfusion extends auth_plugin_base {
 		$local_login = empty($_REQUEST['jnodeid']);
 		if (!$local_login)
 		{
-			return;
+			return false;
 		}
 		// So Moodle is slave and we have a local login, just call Joomla, with nodeid NOT set
 		$this->LoginJoomla($username, $password, false);
@@ -171,7 +171,7 @@ class auth_plugin_jfusion extends auth_plugin_base {
 		$local_login = empty($_REQUEST['jnodeid']);
 		if (!$local_login)
 		{
-			return;
+			return false;
 		}
 		return $this->LoginJoomla($username, $password, true);
 	}
@@ -269,9 +269,10 @@ class auth_plugin_jfusion extends auth_plugin_base {
 		if (!empty($status['error']))
 		{
 			$message= "Fatal JFusion Dual logout Error : statusdump: ".print_r($status,true) ;
-			return;
+			return false;
 		}
-		return false;
+        return true;
+
 	}
 
 	/**
@@ -404,5 +405,3 @@ class auth_plugin_jfusion extends auth_plugin_base {
 		return;
 	}
 }
-
-?>

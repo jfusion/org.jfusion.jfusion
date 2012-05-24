@@ -246,6 +246,7 @@ function mageCoreErrorHandler($errno, $errstr, $errfile, $errline){
     } else {
         Mage::log($errorMessage, Zend_Log::ERR);
     }
+    return false;
 }
 
 function mageDebugBacktrace($return=false, $html=true, $showFirst=false)
@@ -263,9 +264,9 @@ function mageDebugBacktrace($return=false, $html=true, $showFirst=false)
     if ($html) $out .= "</pre>";
     if ($return) {
         return $out;
-    } else {
-        echo $out;
     }
+    echo $out;
+    return false;
 }
 
 function mageSendErrorHeader()
