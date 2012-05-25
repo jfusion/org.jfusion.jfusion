@@ -399,7 +399,6 @@ class JFusionCurl
 				return JFusionCurl::implodeCookies($_COOKIE, ';');
 				break;
 		}
-		return false;
 	}
 
 	/**

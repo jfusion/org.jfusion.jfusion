@@ -833,7 +833,7 @@ function fixJS($matches)
         $debug['parsed'] = "window.location='$url'";;
         $_SESSION["jfvbdebug"][] = $debug;
     }
-    return "window.location='$url'";;
+    return "window.location='$url'";
 }
 function fixInclude($matches)
 {

@@ -122,7 +122,6 @@ class JFusionCookies {
 				return JFusionCookies::implodeCookies( $_COOKIE, ';' );
 			break;
 		}
-		return false;
 	}
 
 	/**

@@ -201,7 +201,7 @@ class jfusionViewconfigdump extends JView {
     
     function clearParameters(&$new,$name,$type=null) {
 // TODO: disabled for now, i want to at some point make this an option
-    	return;
+    	/*
         foreach($new->params as $key => $value) {
     		if (is_array($value) || is_object($value)) {
     			foreach($value as $akey => $avalue) {
@@ -215,6 +215,7 @@ class jfusionViewconfigdump extends JView {
     			unset($new->params->$key);
     		}
     	}
+    	*/
     }    
     
     function addMissingParameters(&$new,$name,$type) {

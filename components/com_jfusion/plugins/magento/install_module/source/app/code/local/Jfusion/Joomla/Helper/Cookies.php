@@ -204,7 +204,6 @@ class Jfusion_Joomla_Helper_Cookies extends Mage_Core_Helper_Abstract {
 				return self::implodeCookies( $_COOKIE, ';' );
 			break;
 		}
-		return false;
 	}
 	
 	/**

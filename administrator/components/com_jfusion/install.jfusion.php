@@ -483,7 +483,6 @@ function com_install() {
 		foreach ($installedPlugins as $plugin) {
 			//attempt to restore missing plugins
 			if (!file_exists(JFUSION_PLUGIN_PATH . DS . $plugin->name)) {
-				die('file_exists '.JFUSION_PLUGIN_PATH . DS . $plugin->name);
 				//restore files for custom/copied plugins if available
 				$restorePlugins[] = $plugin->name;
 				$config = JFactory::getConfig();

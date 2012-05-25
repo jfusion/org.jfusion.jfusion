@@ -159,7 +159,6 @@ class JFusionAPI {
 		} else {
 			return $this->_raw('execute',$class, $task, $payload);
 		}
-		return false;
 	}
 	
     private function _raw($type, $class, $task, $payload, $needkey=true)

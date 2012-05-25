@@ -514,6 +514,7 @@ class JFusionUser_smf extends JFusionUser
     function syncSessions($keepalive = false)
     {
     	return 0;
+        /*
         //retrieve the smf cookie name
         $params = & JFusionFactory::getParams($this->getJname());
         $cookie_name = $params->get('cookie_name');
@@ -550,5 +551,6 @@ class JFusionUser_smf extends JFusionUser
             }
         }
         return 1;
+        */
     }
 }
