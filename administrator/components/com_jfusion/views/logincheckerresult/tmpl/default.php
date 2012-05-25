@@ -44,7 +44,7 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.debug.p
     </tr>
 </table>
 
-<div style="border: 0pt none ; margin: 0pt; padding: 0pt 5px; width: 800px; float: left;">
+<div style="border:0 none ; margin:0; padding:0 5px; width: 800px; float: left;">
 	<form method="post" action="index.php" name="adminForm" id="adminForm">
 		<input type="hidden" name="option" value="com_jfusion" />
 		<input type="hidden" name="show_unsensored" value="<?php echo $options['show_unsensored']; ?>" />

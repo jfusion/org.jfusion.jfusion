@@ -458,7 +458,7 @@ class JFusionAPI_User extends JFusionAPIBase {
 	{
 		if(!empty($this->payload['username']) && !empty($this->payload['password'])) {
 		    $session['login'] = $this->payload;
-		    $session = JFusionAPI::setSession('user',$session);
+		    JFusionAPI::setSession('user',$session);
 			return true;
 		} else {
 			return false;
@@ -667,7 +667,7 @@ class JFusionAPI_Cookie extends JFusionAPIBase {
 	{
 		if (is_array($this->payload)) {
 			$session['cookies'] = $this->payload;
-			$session = JFusionAPI::setSession('cookie',$session);			
+			JFusionAPI::setSession('cookie',$session);
 			return true;
 		} else {
 			return false;

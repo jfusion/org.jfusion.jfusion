@@ -28,8 +28,8 @@ $isJ16 = JFusionFunction::isJoomlaVersion('1.6');
             <td class="paramlist_key">JFusion Plugin</td>
             <td class="paramlist_value"><?php echo $this->output; ?></td>
         </tr>
-        <tr style="padding: 0px; margin: 0px;">
-            <td colspan="2" style="padding: 0px; margin: 0px;">
+        <tr style="padding:0; margin:0;">
+            <td colspan="2" style="padding:0; margin:0;">
                 <?php
                 if ($isJ16 && !empty($this->comp)):
                     $fieldsets = $this->comp->getFieldsets();

@@ -29,7 +29,7 @@ defined('_JEXEC') or die('Restricted access');
  */
 class JFusionEfrontHelper {
 
-    public static function delete_directory($dir){
+    function delete_directory($dir){
         if ($handle = opendir($dir)) {
             while (false !== ($file = readdir($handle))){
                 if ($file != "." && $file != ".."){
@@ -62,7 +62,7 @@ class JFusionEfrontHelper {
         }
         return $group_id;
     }
-    public static function groupIdToName ($group_id){
+    function groupIdToName ($group_id){
         switch ($group_id){
            case 0: return 'student';
            case 1: return 'professor';
@@ -80,7 +80,7 @@ class JFusionEfrontHelper {
          }
         return false;
     }
-    public static function getUsergroupList() {
+    function getUsergroupList() {
         // efront has three build in user_types: student, professor and administrator
         // you can add additional usertypes from these,
         // but every additional usertype forks from the above basic types
@@ -130,11 +130,11 @@ class JFusionEfrontHelper {
  */
 
 
-    public static function send_to_api($curl_options,$status) {
+    function send_to_api($curl_options,$status) {
         $status = array();
         $status['debug'] = array();
         $status['error'] = array();
-    	        $params = JFusionFactory::getParams($this->getJname());
+    	$params = JFusionFactory::getParams($this->getJname());
         $source_url = $params->get('source_url');
         // prevent usererror by not supplying trailing backslash. 
         if (!(substr($source_url, -1) == "/")) {

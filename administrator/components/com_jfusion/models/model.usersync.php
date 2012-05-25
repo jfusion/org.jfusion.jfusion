@@ -159,7 +159,7 @@ class JFusionUsersync
     {
         //Load debug library
         include_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.debug.php';
-        ?><div style="border: 0pt none ; margin: 0pt; padding: 0pt 5px; width: 800px;">
+        ?><div style="border: 0 none ; margin: 0; padding: 0 5px; width: 800px;">
         <?php
         $synclog = JFusionUsersync::getLogData($syncid,'error');
         foreach ($syncError as $id => $error) {

@@ -281,7 +281,7 @@ class plgUserJfusion extends JPlugin
                     //make sure Joomla's salt is Joomla-compatible while we have the clear password
                     if (!empty($userinfo->password_clear) && strlen($userinfo->password_clear) != 32 && strpos($JoomlaUserinfo->password_salt, ':') !== false) {
                         $JoomlaUserinfo->password_clear = $userinfo->password_clear;
-                        $JFusionJoomla->updatePassword($userinfo, $JoomlaUserinfo, $JFusionDebug);
+                        $JFusionJoomla->updatePassword($userinfo, $JoomlaUserinfo, $jfusionDebug);
                     }
                     ob_end_clean();
                     $success = true;
@@ -568,7 +568,6 @@ class plgUserJfusion extends JPlugin
      * @param boolean $isnew   is new user
      *
      * @access public
-     * @return void
      */
     function onBeforeStoreUser($olduser, $isnew)
     {
@@ -578,6 +577,8 @@ class plgUserJfusion extends JPlugin
             $session = JFactory::getSession();
             $session->set('olduser', $olduser);
         }
+        $result = true;
+        return $result;
     }
     /**
      * This method is called after user is stored
@@ -752,20 +753,16 @@ class plgUserJfusion extends JPlugin
 
     //joomla 1.6 compatibility code
  	public function onUserLogin($user, $options = array()){
- 	    $result = $this->onLoginUser($user, $options);
- 	    return $result;
+ 	    return $this->onLoginUser($user, $options);
  	}
 	public function onUserLogout($user, $options = array())	{
- 	    $result = $this->onLogoutUser($user, $options);
- 	    return $result;
+ 	    return $this->onLogoutUser($user, $options);
 	}
 	public function onUserAfterDelete($user, $succes, $msg)	{
- 	    $result = $this->onAfterDeleteUser($user, $succes, $msg);
- 	    return $result;
+ 	    return $this->onAfterDeleteUser($user, $succes, $msg);
 	}
 	public function onUserBeforeSave($user, $isnew, $new){
- 	    $result = $this->onBeforeStoreUser($user, $isnew, $new);
- 	    return $result;
+ 	    return $this->onBeforeStoreUser($user, $isnew, $new);
 	}
 	public function onUserAfterSave($user, $isnew, $success, $msg) {
 	        if (!JPluginHelper::isEnabled('user','joomla')) {

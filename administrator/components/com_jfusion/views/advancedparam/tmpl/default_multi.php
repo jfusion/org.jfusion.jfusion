@@ -33,8 +33,8 @@ if (isset($this->error)) {
             <td class="paramlist_key">JFusion Plugin</td>
             <td class="paramlist_value"><?php echo $this->output; ?></td>
         </tr>
-        <tr style="padding: 0px; margin: 0px;">
-            <td colspan="2" style="padding: 0px; margin: 0px;">
+        <tr style="padding:0; margin:0;">
+            <td colspan="2" style="padding:0; margin:0;">
             <?php
             global $jname;
             foreach ($this->comp as $key => $value) {

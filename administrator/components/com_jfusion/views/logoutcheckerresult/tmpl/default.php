@@ -45,7 +45,7 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.debug.p
 	</tr>
 </table>
 
-<div style="border: 0pt none ; margin: 0pt; padding: 0pt 5px; width: 800px; float: left;">
+<div style="border:0 none ; margin:0; padding:0 5px; width: 800px; float: left;">
 	<?php
     debug::show($this->debug, JText::_('LOGOUT') . ' ' . JText::_('DEBUG'), 1);
 	?>

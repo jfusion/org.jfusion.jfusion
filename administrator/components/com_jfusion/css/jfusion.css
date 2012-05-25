@@ -107,7 +107,7 @@ table.usergroups tr:hover {
     border: 1px solid #d6d6d6;
     border-left-color: #e4e4e4;
     border-top-color: #e4e4e4;
-    margin-top: 0pt auto;
+    margin-top: 0 auto;
     height: 20px;
     padding: 3px 5px;
     vertical-align: middle;
@@ -149,8 +149,8 @@ div.wizard IMG{
      position: relative;
      width: 160px;
      height: 30px;
-     margin-top: 0px;
-     margin-left: 0px;
+     margin-top: 0;
+     margin-left: 0;
      z-index: 2;
 }
 
@@ -162,11 +162,11 @@ a.navButton {
      outline: none;
      background-image: url(../images/donate.png);
      background-repeat: no-repeat;
-     background-position: 0px 0px;
+     background-position: 0 0;
      z-index: 2;
 }
      
 a.navButton:hover {
-     background-position: 0px -30px;
+     background-position: 0 -30px;
      z-index: 2;
 }  
