@@ -368,12 +368,12 @@ $jfusion_plugins = $this->VersionData->plugins[0]->children(); ?>
 				    </tr>
 				    <tr>
 					    <td width="120">
-						    <label for="install_url">
+						    <label for="install_url2">
 							    <?php echo JText::_('PLUGIN') . ' ' . JText::_('NAME'); ?> :
 						    </label>
 					    </td>
 					    <td>
-							<select name="install_url" id="install_url">
+							<select name="install_url2" id="install_url2">
 							<?php foreach ($jfusion_plugins as $plugin): ?>
 								<option value="<?php echo $plugin->remotefile[0]->data() ?>"><?php echo $plugin->name() . ' - ' . $plugin->description[0]->data(); ?></option>
 							<?php endforeach; ?>
