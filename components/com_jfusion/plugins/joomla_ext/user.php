@@ -55,7 +55,6 @@ class JFusionUser_joomla_ext extends JFusionUser {
         $status['error'] = array();
         $username = $userinfo->username;
         $userid = $userinfo->userid;
-        $deleted = false;
         $query = 'DELETE FROM #__users WHERE id = ' . (int)$userid;
         $db->setQuery($query);
         if (!$db->query()) {

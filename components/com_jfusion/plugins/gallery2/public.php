@@ -113,11 +113,8 @@ class JFusionPublic_gallery2 extends JFusionPublic {
     }
 
     function parseBody(&$data) {
-        $regex_body = array();
-        $replace_body = array();
         //fix for form actions    	
         $data->body = preg_replace_callback('#action="(.*?)"(.*?)>#m',array( &$this,'fixAction'), $data->body);
-
     }
 
     function parseHeader(&$data) {
@@ -205,6 +202,9 @@ class JFusionPublic_gallery2 extends JFusionPublic {
                 $info = new stdClass();
                 $info->href = $urlGenerator->generateUrl(array('view' => 'core.ShowItem', 'itemId' => $array['itemId']));
                 list($ret, $item) = GalleryCoreApi::loadEntitiesById($array['itemId']);
+                if ($ret) {
+                    continue;
+                }
                 $info->title = $item->getTitle() ? $item->getTitle() : $item->getPathComponent();
                 $info->title = preg_replace('/\r\n/', ' ', $info->title);
                 $info->section = $section;
@@ -215,20 +215,23 @@ class JFusionPublic_gallery2 extends JFusionPublic {
                 $item->getparentId();
                 if ($item->getparentId() != 0) {
                     list($ret, $parent) = GalleryCoreApi::loadEntitiesById($item->getparentId());
+                    if ($ret) {
+                        continue;
+                    }
                     $parent = $parent->getTitle() ? $parent->getTitle() : $parent->getPathComponent();
                     $info->section = preg_replace('/\r\n/', ' ', $parent);
                     if (strpos(strtolower($info->section), 'gallery') !== 0) {
                         $info->section = 'Gallery/' . $info->section;
                     }
                 }
-                
+
                 $config['itemid'] = $itemid;
                 $config['debug'] = true;
                 $pluginParam->set('g2_itemId',$array['itemId']);
-                
+
                 $forum = JFusionFactory::getForum($this->getJname());
                 $info->galleryImage = $forum->renderImageBlock($config, 'image_block', $pluginParam);
-                
+
                 list(, $views) = GalleryCoreApi::fetchItemViewCount($array['itemId']);
                 $return[] = $info;
             }

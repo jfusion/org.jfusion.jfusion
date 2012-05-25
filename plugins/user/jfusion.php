@@ -281,7 +281,7 @@ class plgUserJfusion extends JPlugin
                     //make sure Joomla's salt is Joomla-compatible while we have the clear password
                     if (!empty($userinfo->password_clear) && strlen($userinfo->password_clear) != 32 && strpos($JoomlaUserinfo->password_salt, ':') !== false) {
                         $JoomlaUserinfo->password_clear = $userinfo->password_clear;
-                        $JoomlaPlugin->updatePassword($userinfo, $JoomlaUserinfo, $JFusionDebug);
+                        $JFusionJoomla->updatePassword($userinfo, $JoomlaUserinfo, $JFusionDebug);
                     }
                     ob_end_clean();
                     $success = true;
@@ -605,7 +605,8 @@ class plgUserJfusion extends JPlugin
         if (!$JFusionActive) {
             //A change has been made to a user without JFusion knowing about it
             //we need to make sure that group_id is in the $user array
-            if (!key_exists('group_id', $user) && key_exists('gid', $user)) {
+            ;
+            if (!isset($user['group_id']) && !isset($user['gid'])) {
                 $user['group_id'] = $user['gid'];
             }
             //convert the user array into a user object

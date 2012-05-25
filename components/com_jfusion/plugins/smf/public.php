@@ -823,6 +823,7 @@ class JFusionPublic_smf extends JFusionPublic
                 break;
             case 'popular':
                 $sort = 't.numViews DESC, p.posterTime DESC';
+                break;
             case 'alpha':
                 $sort = 'title ASC';
                 break;

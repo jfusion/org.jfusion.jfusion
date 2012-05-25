@@ -180,7 +180,6 @@ class JFusionUser_elgg extends JFusionUser {
     }
     function createUser($userinfo, &$status) {
         //found out what usergroup should be used
-        $db = JFusionFactory::getDatabase($this->getJname());
         $params = JFusionFactory::getParams($this->getJname());
         $usergroup = $params->get('usergroup');
         $username_clean = $this->filterUsername($userinfo->username);

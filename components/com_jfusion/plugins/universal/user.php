@@ -29,13 +29,10 @@ class JFusionUser_universal extends JFusionUser {
     function &getUser($userinfo)
     {
         // initialise some objects
-        $params = JFusionFactory::getParams($this->getJname());
-
 		$map = JFusionMap::getInstance($this->getJname());
 
 		$email = $map->getFieldEmail();
 		$username = $map->getFieldUsername();
-		$userid = $map->getFieldUserID();
 
 		//get the identifier
 		list($identifier_type,$identifier) = $this->getUserIdentifier($userinfo,$username->field,$email->field);
@@ -127,7 +124,7 @@ class JFusionUser_universal extends JFusionUser {
 
 			$maped = $map->getMap('group');
 			$andwhere = '';
-			foreach ($maped as $key => $value) {
+			foreach ($maped as $value) {
 		    	$field = $value->field;
 				switch ($value->type) {
 		          	case 'DEFAULT':
@@ -198,7 +195,7 @@ class JFusionUser_universal extends JFusionUser {
 		$userid = $map->getFieldUserID();
 		$qset = array();
 
-		foreach ($maped as $key => $value) {
+		foreach ($maped as $value) {
 			switch ($value->type) {
 				case 'PASSWORD':
 					if ( isset($userinfo->password_clear) ) {

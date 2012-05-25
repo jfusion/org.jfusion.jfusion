@@ -31,7 +31,7 @@ if (!class_exists('jFusion_g2BridgeCore')) {
 	class jFusion_g2BridgeCore {
 	    static $loadedGallery = null;
 	    static $registry = array();
-	    function loadGallery2Api($jname,$fullInit, $itemId = null) {
+        public static function loadGallery2Api($jname,$fullInit, $itemId = null) {
 	        if (self::$loadedGallery == $jname) {
 	            return true;
 	        }
@@ -105,7 +105,7 @@ if (!class_exists('jFusion_g2BridgeCore')) {
 	        self::$loadedGallery = $jname;
 	        return true;
 	    }
-	    function getEmbedUri($jname,$itemId = null) {
+        public static function getEmbedUri($jname,$itemId = null) {
 	        $mainframe = JFactory::getApplication();
 	        $router = $mainframe->getRouter();
 	        $id = JRequest::getVar('Itemid', -1);
@@ -149,7 +149,7 @@ if (!class_exists('jFusion_g2BridgeCore')) {
 	        }
 	        return $default;
 	    }
-	    function setPathway($jname) {
+        public static function setPathway($jname) {
 	        global $gallery;
 	        $session =& $gallery->getSession();
 	        if ($session) {

@@ -79,7 +79,7 @@ class Dokuwiki
      * @since 1.5
      * @access public
      */
-    function &getInstance($jname)
+    public static function &getInstance($jname)
     {
         static $instances;
         if (!isset($instances[$jname])) {
@@ -120,9 +120,9 @@ class Dokuwiki
 
         $conf = null;
 
-        foreach ($myfile as $key => $file) {
+        foreach ($myfile as $file) {
             if (file_exists($file)) {
-                require ($file);
+                require($file);
             }
         }
 

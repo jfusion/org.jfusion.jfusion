@@ -152,7 +152,6 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
         }
     }
     function parseBody(&$data) {
-        static $regex_body, $replace_body;
         $regex_body = array();
         $replace_body = array();
         $callback_body = array();

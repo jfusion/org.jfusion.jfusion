@@ -19,9 +19,6 @@ if ( !class_exists('JFusionMap') ) {
 
 	    function getTablename($type='user')
 	    {
-	        $params = JFusionFactory::getParams($this->getJname());
-			$database_prefix = $params->get('database_prefix');
-
 			$map = JFusionMap::getInstance($this->getJname());
 
 			$maped = $map->getMapRaw($type);
@@ -34,7 +31,7 @@ if ( !class_exists('JFusionMap') ) {
 	        return $this->_jname;
 	    }
 
-		function &getInstance( $jname )
+        public static function &getInstance( $jname )
 		{
 			static $instances;
 
@@ -126,7 +123,7 @@ if ( !class_exists('JFusionMap') ) {
 	// a.validation_code as activation, a.is_activated, NULL as reason, a.lastLogin as lastvisit '.
 			$query = array();
 			$map = $this->getMap($type);
-			foreach ($map as $key => $value) {
+			foreach ($map as $value) {
 				if ( $include == null || in_array($value->type, $include) ) {
 					switch ($value->type) {
 					    case 'LASTVISIT':
@@ -200,7 +197,7 @@ if ( !class_exists('JFusionMap') ) {
 		function getFieldType($field=null,$type='user') {
 			$maped = $this->getMap($type);
 			if ($maped && is_array($maped)) {
-				foreach ($maped as $key => $value) {
+				foreach ($maped as $value) {
 					if ( $field == $value->type ) {
 						return $value;
 					}

@@ -29,9 +29,8 @@ defined('_JEXEC') or die('Restricted access');
  */
 class JFusionEfrontHelper {
 
-    function delete_directory($dir){
+    public static function delete_directory($dir){
         if ($handle = opendir($dir)) {
-            $array = array();
             while (false !== ($file = readdir($handle))){
                 if ($file != "." && $file != ".."){
                     if(is_dir($dir.$file)){
@@ -47,7 +46,7 @@ class JFusionEfrontHelper {
             @rmdir($dir);
         }
     }
-    function groupNameToID($user_type,$user_types_ID){
+    public static function groupNameToID($user_type,$user_types_ID){
         $group_id = 0;
         if ($user_types_ID == 0){
             switch ($user_type){
@@ -63,7 +62,7 @@ class JFusionEfrontHelper {
         }
         return $group_id;
     }
-    function groupIdToName ($group_id){
+    public static function groupIdToName ($group_id){
         switch ($group_id){
            case 0: return 'student';
            case 1: return 'professor';
@@ -81,7 +80,7 @@ class JFusionEfrontHelper {
          }
         return false;
     }
-    function getUsergroupList() {
+    public static function getUsergroupList() {
         // efront has three build in user_types: student, professor and administrator
         // you can add additional usertypes from these,
         // but every additional usertype forks from the above basic types
@@ -129,9 +128,9 @@ class JFusionEfrontHelper {
  * connects to api, using userbame and password
  * returns token, or empty string when not successful
  */
-    
-    
-    function send_to_api($curl_options,$status) {
+
+
+    public static function send_to_api($curl_options,$status) {
         $status = array();
         $status['debug'] = array();
         $status['error'] = array();

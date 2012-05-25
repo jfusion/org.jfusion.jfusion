@@ -20,8 +20,7 @@ require_once (JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS 
  */
 
 class JFusionFrameless{
-
-	function initData($jname,$isPlugin=true)
+    public static function initData($jname,$isPlugin=true)
 	{
 		$uri = JURI::getInstance ();
 
@@ -105,7 +104,7 @@ class JFusionFrameless{
 		return $data;
 	}
 
-	function displayContent($data)
+    public static function displayContent($data)
 	{
 		$mainframe = JFactory::getApplication();
 		$document = JFactory::getDocument();

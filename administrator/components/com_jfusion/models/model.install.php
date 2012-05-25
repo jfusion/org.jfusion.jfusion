@@ -61,7 +61,6 @@ class JFusionModelInstaller extends InstallerModelInstall
     {
     	$result = array();
     	$result['status'] = false;
-        $mainframe = JFactory::getApplication();
         $this->setState('action', 'install');
         switch (JRequest::getWord('installtype')) {
         case 'folder':

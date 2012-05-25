@@ -32,7 +32,7 @@ function ft_pageSearch($query, &$highlight) {
     }
     // create a list of unwanted docs
     $not = array();
-    foreach ($q['not'] as $pos => $w) {
+    foreach ($q['not'] as $w) {
         $not = array_merge($not, array_keys($result[$w]));
     }
     // combine and-words

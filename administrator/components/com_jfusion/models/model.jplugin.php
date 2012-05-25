@@ -40,7 +40,7 @@ class JFusionJplugin
      *
      * @return string Returns generated password
      */
-    function generateEncryptedPassword($userinfo)
+    public static function generateEncryptedPassword($userinfo)
     {
         jimport('joomla.user.helper');
         $crypt = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt);
@@ -52,7 +52,7 @@ class JFusionJplugin
      *
      * @return string table name
      */
-    function getTablename()
+    public static function getTablename()
     {
         return 'users';
     }
@@ -62,7 +62,7 @@ class JFusionJplugin
      *
      * @return string registration URL
      */
-    function getRegistrationURL($jname='joomla_int')
+    public static function getRegistrationURL($jname='joomla_int')
     {
         if(JFusionFunction::isJoomlaVersion('1.6',$jname)){
             return 'index.php?option=com_users&view=registration';
@@ -76,7 +76,7 @@ class JFusionJplugin
      *
      * @return string lost password URL
      */
-    function getLostPasswordURL($jname='joomla_int')
+    public static function getLostPasswordURL($jname='joomla_int')
     {
         if(JFusionFunction::isJoomlaVersion('1.6',$jname)){
             return 'index.php?option=com_users&view=reset';
@@ -90,7 +90,7 @@ class JFusionJplugin
      *
      * @return string lost username URL
      */
-    function getLostUsernameURL($jname='joomla_int')
+    public static function getLostUsernameURL($jname='joomla_int')
     {
         if(JFusionFunction::isJoomlaVersion('1.6',$jname)){
             return 'index.php?option=com_users&view=remind';
@@ -106,7 +106,7 @@ class JFusionJplugin
      *
      * @return array List of usernames/emails
      */
-    function getUserList($jname)
+    public static function getUserList($jname)
     {
         $db = & JFusionFactory::getDatabase($jname);
         $query = 'SELECT username, email from #__users';
@@ -121,7 +121,7 @@ class JFusionJplugin
      *
      * @return integer Number of registered users
      */
-    function getUserCount($jname)
+    public static function getUserCount($jname)
     {
         $db = & JFusionFactory::getDatabase($jname);
         $query = 'SELECT count(*) from #__users';
@@ -137,7 +137,7 @@ class JFusionJplugin
      *
      * @return array List of usergroups
      */
-    function getUsergroupList($jname)
+    public static function getUsergroupList($jname)
     {
         $db = & JFusionFactory::getDatabase($jname);
         if(JFusionFunction::isJoomlaVersion('1.6',$jname)){
@@ -157,7 +157,7 @@ class JFusionJplugin
      *
      * @return string Default usergroup name
      */
-    function getDefaultUsergroup($jname)
+    public static function getDefaultUsergroup($jname)
     {
         $params = & JFusionFactory::getParams($jname);
         $db = & JFusionFactory::getDatabase($jname);
@@ -217,7 +217,7 @@ class JFusionJplugin
      *
      * @return boolean True if new user registration is allowed, otherwise returns false
      */
-    function allowRegistration($jname)
+    public static function allowRegistration($jname)
     {
 		// Get the component parameters object for the users component.
 		$params = JComponentHelper::getParams('com_users');
@@ -234,7 +234,7 @@ class JFusionJplugin
      * @return object JParam JParam objects with ne newly found configuration
      * Now Joomla 1.6+ compatible
      */
-    function setupFromPath($path)
+    public static function setupFromPath($path)
     {
         //check for trailing slash and generate file path
         if (substr($path, -1) == DS) {
@@ -246,7 +246,7 @@ class JFusionJplugin
             $test_version_file = $path . DS . 'includes' . DS . 'version.php';
         }
         if (($file_handle = @fopen($configfile, 'r')) === false) {
-            JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));
+            JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $configfile " . JText::_('WIZARD_MANUAL'));
             $result = false;
             return $result;
         } else {
@@ -296,7 +296,7 @@ class JFusionJplugin
      *
      * @return string nothing
      */
-    function createSession($userinfo, $options, $jname, $type = "brute_force",$curl_options_merge=null)
+    public static function createSession($userinfo, $options, $jname, $type = "brute_force",$curl_options_merge=null)
     {
         global $ch;
         global $cookiearr;
@@ -452,7 +452,7 @@ class JFusionJplugin
      *
      * @return array result Array containing the result of the session destroy
      */
-    function destroySession($userinfo, $options, $jname, $type = "brute_force",$curl_options_merge=null)
+    public static function destroySession($userinfo, $options, $jname, $type = "brute_force",$curl_options_merge=null)
     {
         global $ch;
         global $cookiearr;
@@ -596,7 +596,7 @@ class JFusionJplugin
      *
      * @return object userinfo Object containing the user information
      */
-    function getUser($userinfo, $jname)
+    public static function getUser($userinfo, $jname)
     {
     	$db = & JFusionFactory::getDatabase($jname);
         $JFusionUser = & JFusionFactory::getUser($jname);
@@ -729,7 +729,7 @@ class JFusionJplugin
      *
      * @return string updates are passed on into the $status array
      */
-    function updateEmail($userinfo, &$existinguser, &$status, $jname)
+    public static function updateEmail($userinfo, &$existinguser, &$status, $jname)
     {
         $db = & JFusionFactory::getDatabase($jname);
         $query = 'UPDATE #__users SET email =' . $db->Quote($userinfo->email) . ' WHERE id =' . $existinguser->userid;
@@ -751,7 +751,7 @@ class JFusionJplugin
      *
      * @return string updates are passed on into the $status array
      */
-    function updatePassword($userinfo, &$existinguser, &$status, $jname)
+    public static function updatePassword($userinfo, &$existinguser, &$status, $jname)
     {
         $db = & JFusionFactory::getDatabase($jname);
         $userinfo->password_salt = JUserHelper::genRandomPassword(32);
@@ -776,7 +776,7 @@ class JFusionJplugin
      *
      * @return string updates are passed on into the $status array
      */
-    function blockUser($userinfo, &$existinguser, &$status, $jname)
+    public static function blockUser($userinfo, &$existinguser, &$status, $jname)
     {
         //do not block super administrators
         if ($existinguser->group_id != 25) {
@@ -804,7 +804,7 @@ class JFusionJplugin
      *
      * @return string updates are passed on into the $status array
      */
-    function unblockUser($userinfo, &$existinguser, &$status, $jname)
+    public static function unblockUser($userinfo, &$existinguser, &$status, $jname)
     {
         //unblock the user
         $db = & JFusionFactory::getDatabase($jname);
@@ -827,7 +827,7 @@ class JFusionJplugin
      *
      * @return string updates are passed on into the $status array
      */
-    function activateUser($userinfo, &$existinguser, &$status, $jname)
+    public static function activateUser($userinfo, &$existinguser, &$status, $jname)
     {
         //unblock the user
         $db = & JFusionFactory::getDatabase($jname);
@@ -850,7 +850,7 @@ class JFusionJplugin
      *
      * @return string updates are passed on into the $status array
      */
-    function inactivateUser($userinfo, &$existinguser, &$status, $jname)
+    public static function inactivateUser($userinfo, &$existinguser, &$status, $jname)
     {
     	//TODO joomla 1.6 need to support multi usergroup
         if ($existinguser->group_id != 25) {
@@ -876,7 +876,7 @@ class JFusionJplugin
      *
      * @return string filtered username
      */
-    function filterUsername($username, $jname)
+    public static function filterUsername($username, $jname)
     {
         //check to see if additional username filtering need to be applied
         $params = JFusionFactory::getParams($jname);
@@ -910,7 +910,7 @@ class JFusionJplugin
      *
      * @return string updates are passed on into the $status array
      */
-    function updateUsername($userinfo, &$existinguser, &$status, $jname)
+    public static function updateUsername($userinfo, &$existinguser, &$status, $jname)
     {
         //generate the filtered integration username
         $db = & JFusionFactory::getDatabase($jname);
@@ -945,7 +945,7 @@ class JFusionJplugin
      *
      * @return string updates are passed on into the $status array
      */
-    function createUser($userinfo, &$status, $jname)
+    public static function createUser($userinfo, &$status, $jname)
     {
         $params = & JFusionFactory::getParams($jname);
         //get the default user group and determine if we are using simple or advanced
@@ -1137,7 +1137,7 @@ class JFusionJplugin
      *
      * @return array result Array containing the result of the user update
      */
-    function updateUser($userinfo, $overwrite, $jname)
+    public static function updateUser($userinfo, $overwrite, $jname)
     {
         // Initialise some variables
         $params = & JFusionFactory::getParams($jname);
@@ -1260,7 +1260,7 @@ class JFusionJplugin
 
             //Update the user language in the one existing from an other plugin
             if (!empty($userinfo->language) && !empty($existinguser->language) && $userinfo->language != $existinguser->language) {
-                $this->updateUserLanguage($userinfo, $existinguser, $status, $jname);
+                JFusionJplugin::updateUserLanguage($userinfo, $existinguser, $status, $jname);
                 $existinguser->language = $userinfo->language;
                 $changed = true;
             } else {
@@ -1299,7 +1299,7 @@ class JFusionJplugin
      *
      * @return string updates are passed on into the $status array
      */
-    function updateUsergroup($userinfo, &$existinguser, &$status, $jname, $fire_user_plugins = true)
+    public static function updateUsergroup($userinfo, &$existinguser, &$status, $jname, $fire_user_plugins = true)
     {
         //check to see if we have a group_id in the $userinfo, if not return
         if (!isset($userinfo->group_id) && !isset($userinfo->groups)) {
@@ -1404,7 +1404,7 @@ class JFusionJplugin
      *
      * @return string online user query
      */
-    function getOnlineUserQuery($limit)
+    public static function getOnlineUserQuery($limit)
     {
         $limiter = (!empty($limit)) ? "LIMIT 0,$limit" : '';
         $query = 'SELECT DISTINCT u.id AS userid, u.username, u.name, u.email' . ' FROM #__users AS u INNER JOIN #__session AS s' . ' ON u.id = s.userid' . ' WHERE s.client_id = 0' . ' AND s.guest = 0 ' . $limiter;
@@ -1416,7 +1416,7 @@ class JFusionJplugin
      *
      * @return int
      */
-    function getNumberOnlineGuests()
+    public static function getNumberOnlineGuests()
     {
         $db = JFactory::getDBO();
         $query = 'SELECT COUNT(*)' . ' FROM #__session' . ' WHERE guest = 1 AND usertype = "" AND client_id = 0';
@@ -1429,7 +1429,7 @@ class JFusionJplugin
      *
      * @return int
      */
-    function getNumberOnlineMembers()
+    public static function getNumberOnlineMembers()
     {
         $db = JFactory::getDBO();
         $query = 'SELECT COUNT(DISTINCT userid) AS c' . ' FROM #__session' . ' WHERE guest = 0 AND client_id = 0';
@@ -1475,7 +1475,7 @@ class JFusionJplugin
      * @param array  &$status       Array containing the errors and result of the function
      * @param string $jname			current plugin name
      */
-    function updateUserLanguage($userinfo, &$existinguser, &$status, $jname)
+    public static function updateUserLanguage($userinfo, &$existinguser, &$status, $jname)
     {
     	//TODO joomla 1.5/1.6 if we are talking to external joomla since joomla 1.5 store params in json
         $db = & JFusionFactory::getDatabase($jname);

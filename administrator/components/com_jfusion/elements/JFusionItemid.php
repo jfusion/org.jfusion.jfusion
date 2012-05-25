@@ -50,9 +50,7 @@ class JElementJFusionItemid extends JElement
         } else {
             $elId++;
         }
-        $db = JFactory::getDBO();
         $doc = JFactory::getDocument();
-        $template = $mainframe->getTemplate();
         $fieldName = $control_name . '[' . $name . ']';
 		if (!$js) {
 	        $js = "

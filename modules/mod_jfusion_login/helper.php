@@ -38,7 +38,7 @@ class modjfusionLoginHelper
      *
      * @return string url
      */
-    function getReturnURL($params, $type)
+    public static function getReturnURL($params, $type)
     {
     	$override_return = JRequest::getVar('return', '', 'method', 'base64');
         if (!empty($override_return)) {
@@ -59,7 +59,7 @@ class modjfusionLoginHelper
      *
      * @return string type
      */
-    function getType()
+    public static function getType()
     {
         $user = JFactory::getUser();
         return (!$user->get('guest')) ? 'logout' : 'login';

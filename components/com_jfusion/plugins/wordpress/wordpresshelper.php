@@ -32,8 +32,8 @@ class JFusionWordpressHelper {
 	function getJname()	{
 		return 'wordpress';
 	}
-	
-	function getUsergroupListWP() {
+
+    public static function getUsergroupListWP() {
 		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = "SELECT option_value FROM #__options WHERE option_name = 'wp_user_roles'";
 		$db->setQuery($query);
@@ -51,7 +51,7 @@ class JFusionWordpressHelper {
 		return $usergroups;
 	}
 
-	function getUsergroupNameWP($usergroup_id){
+    public static function getUsergroupNameWP($usergroup_id){
 		$userGroupName = '';
 		$userGroupList = JFusionWordpressHelper::getUsergroupListWP();
 		foreach ($userGroupList as $usergroup) {
@@ -75,7 +75,7 @@ class JFusionWordpressHelper {
 		return $groupid;
 	}
 
-	function WP_userlevel_from_role( $max, $role ) {
+    public static function WP_userlevel_from_role( $max, $role ) {
 		static $allroles;
 		if (!isset($allroles)){
 			$db = JFusionFactory::getDatabase($this->getJname());
@@ -99,7 +99,7 @@ class JFusionWordpressHelper {
 		return array_reduce(  $userroles , 'JFusionWordpressHelper::WP_userlevel_from_role' , 0 );
 	}
 
-	function remove_accentsWP($string) {
+    public static function remove_accentsWP($string) {
 		if ( !preg_match('/[\x80-\xff]/', $string) )
 		return $string;
 

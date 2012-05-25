@@ -736,7 +736,7 @@ class JFvBulletinTask {
     function _unblockUser() {
         $userdm =& datamanager_init('User', $this->vbulletin, ERRTYPE_SILENT);
         $existinguser =& $this->data['existinguser'];
-        $bannedgroup &= $this->data['bannedgroup'];
+        $bannedgroup =& $this->data['bannedgroup'];
         $defaultgroup =& $this->data['defaultgroup'];
         $displaygroup =& $this->data['displaygroup'];
 
@@ -846,6 +846,8 @@ class JFvBulletinTask {
         $userinfo =& $this->data['userinfo'];
         $postdm->set_info('user', $userinfo);
         $postdm->set('userid', $userinfo['userid']);
+        /*
+         * TODO: $guest udefined ?
         if ($guest) {
             $postdm->set('username', $userinfo['username']);
 			if($this->data['post_approved']) {
@@ -856,6 +858,7 @@ class JFvBulletinTask {
         } else {
             $postdm->set('visible', 1);
         }
+        */
         $postdm->setr('parentid', $this->data['ids']->postid);
         $postdm->setr('threadid', $this->data['ids']->threadid);
         $postdm->setr('ipaddress', $this->data['ipaddress']);
@@ -879,6 +882,7 @@ class JFvBulletinTask {
     }
 
     function _updateThread() {
+        global $vbulletin;
         $ids =& $this->data['existingthread'];
 
         $postinfo = array();

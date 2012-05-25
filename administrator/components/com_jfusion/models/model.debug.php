@@ -437,7 +437,7 @@ class debug {
      *        the measurement stops stops if stopMessung is Called and the given name is identical
      *
      */
-    private static function startMessung($name) {
+    static function startMessung($name) {
         if (count(debug::$laufzeitStack) == 0) {
             $prtLaufzeit = & debug::$laufzeit;
         } else {
@@ -455,7 +455,7 @@ class debug {
      *
      *    @param string $name the Name of the Measurement to stop
      */
-    private static function stopMessung($name) {
+    static function stopMessung($name) {
         $tiefe = 0;
         for ($n = count(debug::$laufzeitStack) - 1;$n >= 0;$n--) {
             if (debug::$stackName[$n] == $name) $tiefe = max($tiefe, $n);
@@ -678,7 +678,7 @@ class trans {
                 }
             }
         }
-        if ($phpCode == "") $phpCode = "$pre$phpVarName = \"Type $type not supported yet\";\n";
+        if ($phpCode == "") $phpCode = "$pre$phpVarName = \"Type not supported yet\";\n";
         return $phpCode;
     }
     /**

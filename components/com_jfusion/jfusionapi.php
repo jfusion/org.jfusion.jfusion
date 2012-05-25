@@ -23,9 +23,7 @@ class JFusionAPI {
 	private $secretkey = null;
 	private $hash = null;
 	private $error = null;
-	private $debug = null;	
-	
-	private $session_backup = null;
+	private $debug = null;
 
 	public function __construct($url = '', $secretkey = '')
 	{

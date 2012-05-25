@@ -65,7 +65,6 @@ class JFusionUser_prestashop extends JFusionUser {
         if (is_object($userinfo)) {
             $identifier = $userinfo->id_customer;
         }
-		$params = JFusionFactory::getParams($this->getJname());
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'UPDATE #__customer SET deleted ="1" WHERE id_customer =' . $db->Quote($identifier);
         $db->setQuery($query);

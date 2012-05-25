@@ -112,11 +112,9 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 			$query = "SELECT option_value FROM #__options WHERE option_name = 'siteurl'";
 			$db->setQuery($query);
 			$params['source_url'] = $db-> loadResult();
-			if (substr($params['source_url'], -1) == '/') {
-				$params['source_url'] = $params['source_url'];
-			} else {
-				//no slashes found, we need to add one
-				$params['source_url'] = $params['source_url'] . '/' ;
+			if (substr($params['source_url'], -1) != '/') {
+                //no slashes found, we need to add one
+                $params['source_url'] = $params['source_url'] . '/' ;
 			}
 
 			// now get the default usergroup

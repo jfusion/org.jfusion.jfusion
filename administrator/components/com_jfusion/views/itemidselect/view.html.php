@@ -45,7 +45,6 @@ class jfusionViewitemidselect extends JView
         $lang->load('com_jfusion');
 
         // Initialize variables
-        $db = JFactory::getDBO();
         JHTML::_('behavior.modal');
         $document = JFactory::getDocument();
         $document->setTitle('Plugin Selection');

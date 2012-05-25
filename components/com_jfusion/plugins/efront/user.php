@@ -37,7 +37,6 @@ class JFusionUser_efront extends JFusionUser
 	
 	function &getUser($userinfo) {
         $db = JFusionFactory::getDatabase($this->getJname());
-        $params = JFusionFactory::getParams($this->getJname());
         //get the identifier
         list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'login', 'email');
         if ($identifier_type == 'login') {
@@ -45,7 +44,6 @@ class JFusionUser_efront extends JFusionUser
         }
         
         //initialise some params
-        $update_block = $params->get('update_block');
         $query = 'SELECT * FROM #__users WHERE ' . $identifier_type . ' = ' . $db->Quote($identifier);
         $db->setQuery($query);
         $result = $db->loadObject();

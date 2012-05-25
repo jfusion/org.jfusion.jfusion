@@ -706,10 +706,6 @@ class JFusionPagination extends JPagination {
 
 	public function getPagesLinks()
 	{
-		$mainframe = JFactory::getApplication();
-
-		$lang = JFactory::getLanguage();
-
 		// Build the page navigation list
 		$data = $this->_buildDataObject();
 
@@ -776,8 +772,6 @@ class JFusionPagination extends JPagination {
 
 	public function getListFooter()
 	{
-		$mainframe = JFactory::getApplication();
-
 		$list = array();
 		$list['limit']			= $this->limit;
 		$list['limitstart']		= $this->limitstart;

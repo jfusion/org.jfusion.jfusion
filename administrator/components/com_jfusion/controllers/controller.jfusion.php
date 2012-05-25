@@ -199,8 +199,6 @@ class JFusionController extends JController
         if (substr($post['source_url'], 0, 7) != 'http://' && substr($post['source_url'], 0, 8) != 'https://') {
             if (substr($post['source_url'], 0, 1) != '/') {
                 $post['source_url'] = 'http://' . $post['source_url'];
-            } else {
-                $post['source_url'] = $post['source_url'];
             }
         }
         if (!empty($post['source_path'])) {

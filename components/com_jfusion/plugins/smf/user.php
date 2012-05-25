@@ -50,7 +50,6 @@ class JFusionUser_smf extends JFusionUser
         //get the identifier
         list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'a.memberName', 'a.emailAddress');
         // initialise some objects
-        $params = JFusionFactory::getParams($this->getJname());
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'SELECT a.ID_MEMBER as userid, a.memberName as username, a.realName as name, a.emailAddress as email, a.passwd as password, a.passwordSalt as password_salt, a.validation_code as activation, a.is_activated, null as reason, a.lastLogin as lastvisit, a.ID_GROUP as group_id ' . 'FROM #__members as a ' . 'WHERE ' . $identifier_type . '=' . $db->Quote($identifier);
         $db->setQuery($query);

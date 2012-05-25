@@ -31,7 +31,6 @@ class JFusionUser_mediawiki extends JFusionUser {
 		}
 		$username = ucfirst($username);
         // initialise some objects
-        $params = JFusionFactory::getParams($this->getJname());
         $db = JFusionFactory::getDatabase($this->getJname());
 
         $query = 'SELECT user_id as userid, user_name as username, user_token, user_real_name as name, user_email as email, user_password as password, NULL as password_salt, NULL as activation, TRUE as is_activated, NULL as reason, user_touched as lastvisit '.

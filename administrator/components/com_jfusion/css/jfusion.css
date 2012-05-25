@@ -110,7 +110,7 @@ table.usergroups tr:hover {
     margin-top: 0pt auto;
     height: 20px;
     padding: 3px 5px;
-    vertical-align: center;
+    vertical-align: middle;
 }
 
 #log {

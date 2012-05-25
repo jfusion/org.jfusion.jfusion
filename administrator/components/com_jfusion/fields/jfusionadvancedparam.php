@@ -43,8 +43,6 @@ class JFormFieldJFusionAdvancedParam extends JFormField
         $lang = JFactory::getLanguage();
         $lang->load('com_jfusion');
 
-        $mainframe = JFactory::getApplication();
-        $db = JFactory::getDBO();
         $doc = JFactory::getDocument();
         $fieldName = $this->name;
         $configfile = $this->element["configfile"];

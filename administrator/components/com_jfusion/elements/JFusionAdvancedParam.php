@@ -48,8 +48,6 @@ class JElementJFusionAdvancedParam extends JElement
         $lang = JFactory::getLanguage();
         $lang->load('com_jfusion');
 
-        $mainframe = JFactory::getApplication();
-        $db = JFactory::getDBO();
         $doc = JFactory::getDocument();
         $fieldName = $control_name . '[' . $name . ']';
         $configfile = $node->attributes("configfile");

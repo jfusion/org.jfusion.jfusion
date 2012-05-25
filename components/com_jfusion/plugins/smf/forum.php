@@ -120,7 +120,6 @@ class JFusionForum_smf extends JFusionForum
         if ($numargs > 3) {
             $db = & JFusionFactory::getDatabase($this->getJname());
             $filters = func_get_args();
-            $i = 3;
             for ($i = 3; $i < $numargs; $i++) {
                 if ($filters[$i][0] == 'userid') {
                     $where.= ' HAVING userid = ' . $db->Quote($filters[$i][1]);

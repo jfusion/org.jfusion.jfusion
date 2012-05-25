@@ -61,8 +61,8 @@ function _uninstallPlugin($type, $id, $group, $description)
     }
     if ($result) {
         $tmpinstaller = new JInstaller();
-        $installer_result = $tmpinstaller->uninstall($type, $result, 0);
-        if (!$result) {
+        $uninstall_result = $tmpinstaller->uninstall($type, $result, 0);
+        if (!$uninstall_result) {
             ?>
             <table style="background-color:#f9ded9;width:100%;"><tr style="height:30px">
             <td><font size="2"><b><?php echo JText::_('UNINSTALL') . ' ' . $description . ' ' . JText::_('FAILED'); ?></b></font></td></tr></table>

@@ -43,11 +43,11 @@ class JFusionHelper
 	    return (!$user->get('guest')) ? 'logout' : 'login';
 	}
 
-	public function getModuleById($id = null) {
+    public static function getModuleById($id = null) {
 		return self::getModuleQuery('id', $id);
 	}
-	
-	public function getModuleByTitle($title = null){
+
+    public static function getModuleByTitle($title = null){
 		return self::getModuleQuery('title', $title);
 	}
 	

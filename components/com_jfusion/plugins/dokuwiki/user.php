@@ -41,8 +41,6 @@ class JFusionUser_dokuwiki extends JFusionUser {
         $params = JFusionFactory::getParams($this->getJname());
         $share = Dokuwiki::getInstance($this->getJname());
         $userinfo->username = $this->filterUsername($userinfo->username);
-        $update_block = $params->get('update_block');
-        $update_activation = $params->get('update_activation');
         $update_email = $params->get('update_email');
         $usergroup = $params->get('usergroup');
         $status = array();
@@ -103,8 +101,8 @@ class JFusionUser_dokuwiki extends JFusionUser {
                 }
                 $correct_usergroup = explode(',', $correct_usergroup);
                 $update_group = 0;
-                foreach ($correct_usergroup as $key => $value) {
-                    foreach ($existinguser->group_id as $key2 => $value2) {
+                foreach ($correct_usergroup as $value) {
+                    foreach ($existinguser->group_id as $value2) {
                         if (trim($value) == trim($value2)) {
                             $update_group++;
                             break;

@@ -178,7 +178,7 @@ class plgContentJfusion extends JPlugin
                     ($this->creationMode=='reply' && $this->helper->thread_status)) {
 
                     //update/create thread
-                    $status = $this->helper->_check_thread_exists();
+                    $this->helper->_check_thread_exists();
 
                 } else {
                     $this->helper->_debug('Article did not meet requirements to update/create thread');
@@ -187,7 +187,7 @@ class plgContentJfusion extends JPlugin
                 $this->helper->_debug('Failed validity test but creationMode is set to new and this is a new article');
 
                 $mainframe = JFactory::getApplication();
-                $publishUp = JFactory::getDate($this->article->publish_up)->toUnix();
+                $publish_up = JFactory::getDate($this->article->publish_up)->toUnix();
                 $now = JFactory::getDate('now', $mainframe->getCfg('offset'))->toUnix();
                 if ($now < $publish_up || !$this->article->state) {
                     $this->helper->_debug('Article set to be published in the future or is unpublished thus creating an entry in the database so that the thread is created when appropriate.');
@@ -250,7 +250,7 @@ class plgContentJfusion extends JPlugin
             if (!empty($threadinfo) && $threadinfo->published == 1 && $threadinfo->manual == 1) {
                 $this->helper->_debug('Article has been initialized...updating thread');
                 //update thread
-                $status = $this->helper->_check_thread_exists();
+                $this->helper->_check_thread_exists();
             } else {
                 $this->helper->_debug('Article has not been initialized');
             }
@@ -263,7 +263,6 @@ class plgContentJfusion extends JPlugin
 
     public function onPrepareContent(&$subject, $params)
     {
-        $mainframe = JFactory::getApplication();
         $this->article =& $subject;
         $this->helper->article =& $this->article;
         if ($this->debug_mode) {
@@ -424,13 +423,13 @@ class plgContentJfusion extends JPlugin
     //joomla 1.6 compatibility layer
     public function onContentAfterSave($context, &$article, $isNew)
 	{
- 	    $result = $this->onAfterContentSave($article, $isNew);
+ 	    $this->onAfterContentSave($article, $isNew);
 	}
 
 	public function onContentPrepare($context, &$article, &$params, $limitstart=0)
 	{
  		//seems syntax has completely changed :(
-		$result = $this->onPrepareContent($article, $params);
+		$this->onPrepareContent($article, $params);
 	}
 
 	public function onContentAfterDisplay($context, &$article, &$params, $limitstart=0)
@@ -441,7 +440,7 @@ class plgContentJfusion extends JPlugin
         if ($this->helper->option == 'com_content') {
             if ($view == 'featured' || ($view == 'category' && $layout == 'blog')) {
                 $article->text = $article->introtext;
-                $result = $this->onPrepareContent($article, $params);
+                $this->onPrepareContent($article, $params);
                 $article->introtext = $article->text;
             }
         }
@@ -636,7 +635,7 @@ class plgContentJfusion extends JPlugin
 
             ob_start();
             debug::show($this->helper->debug_output, 'Discussion bot debug info',1);
-            $debug_contents .= ob_get_contents();
+            $debug_contents = ob_get_contents();
             ob_end_clean();
 
             if ($this->ajax_request) {
@@ -652,7 +651,6 @@ class plgContentJfusion extends JPlugin
     public function _create_thread()
     {
         $JoomlaUser = JFactory::getUser();
-        $JFusionForum =& JFusionFactory::getForum($this->jname);
         $mainframe = JFactory::getApplication();
 
         if ($return = JRequest::getVar('return')) {
@@ -834,7 +832,6 @@ class plgContentJfusion extends JPlugin
     public function _unpublish_discussion()
     {
         $JoomlaUser = JFactory::getUser();
-        $JFusionForum =& JFusionFactory::getForum($this->jname);
 
         //make sure the article submitted matches the one loaded
         $submittedArticleId = JRequest::getInt('articleId', 0, 'post');
@@ -878,7 +875,6 @@ class plgContentJfusion extends JPlugin
     public function _publish_discussion()
     {
         $JoomlaUser = JFactory::getUser();
-        $JFusionForum =& JFusionFactory::getForum($this->jname);
 
         //make sure the article submitted matches the one loaded
         $submittedArticleId = JRequest::getInt('articleId', 0, 'post');

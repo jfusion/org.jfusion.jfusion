@@ -36,7 +36,6 @@ class JFormFieldDiscussionbotparam extends JFormField
 
 		$db			= JFactory::getDBO();
 		$doc 		= JFactory::getDocument();
-		$template 	= $mainframe->getTemplate();
 		$fieldName = $this->formControl.'['.$this->group.'][' . $this->fieldname . ']';
         $name = (string) $this->fieldname;
         $value = $this->value;

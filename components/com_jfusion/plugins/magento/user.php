@@ -60,10 +60,8 @@ class JFusionUser_magento extends JFusionUser {
         $status['error'] = array();
         $params = JFusionFactory::getParams($this->getJname());
         $apipath = $params->get('source_url') . 'index.php/api/?wsdl';
-        $apiuser = '';
-        $apikey = '';
-        $apiuser = $params->get('apiuser');
-        $apikey = $params->get('apikey');
+        $apiuser = $params->get('apiuser','');
+        $apikey = $params->get('apikey','');
         if (!$apiuser || !$apikey) {
             $status['error'][] = 'Could not login to Magento API (empty apiuser and/or apikey)';
             return $status;

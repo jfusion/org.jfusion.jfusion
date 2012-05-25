@@ -119,8 +119,8 @@ class cssparser {
 				} elseif(strlen($temp) == 0) {
 					$temp = ":".$_subtag;
 				}
-				foreach($this->css[$temp] as $property => $value) {
-					$result[$property] = $value;
+				foreach($this->css[$temp] as $property => $property_value) {
+					$result[$property] = $property_value;
 				}
 			}
 		}
@@ -179,7 +179,7 @@ class cssparser {
 				$codestr = trim($parts[2][$key]);
 				$keys = explode(",",trim($keystr));
 				if(count($keys)) {
-					foreach($keys as $key => $value) {
+					foreach($keys as $value) {
 						$value = trim($value);
 						if(strlen($value)) {
 							$this->Add($value, $codestr);

@@ -120,7 +120,7 @@ class utf_normalizer_phpbb {
      * @param    string    &$str    Unchecked UTF string
      * @return    string            The string, validated and in normal form
      */
-    function nfkc(&$str) {
+    public static function nfkc(&$str) {
         $pos = strspn($str, UTF8_ASCII_RANGE);
         $len = strlen($str);
         if ($pos == $len) {

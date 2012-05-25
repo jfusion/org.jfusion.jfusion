@@ -165,11 +165,11 @@ class JFusionPublic_smf2 extends JFusionPublic{
 	    $jFusion_Route = JRequest::getVar('jFusion_Route',null);
         if ($jFusion_Route) {
         	$jFusion_Route = unserialize ($jFusion_Route);
-        	foreach ($jFusion_Route as $key => $value) {
+        	foreach ($jFusion_Route as $value) {
         		if (stripos($value, 'action') === 0) {
-	        		list ($key,$value) = explode ( ',' , $value);
-	        		if ($key == 'action') {
-	        			JRequest::setVar('action',$value);
+	        		list ($k,$v) = explode ( ',' , $value);
+	        		if ($k == 'action') {
+	        			JRequest::setVar('action',$v);
 	        		}
         		}
         	}
@@ -776,6 +776,7 @@ class JFusionPublic_smf2 extends JFusionPublic{
                 break;
             case 'popular':
                 $sort = 't.num_views DESC, p.poster_time DESC';
+                break;
             case 'alpha':
                 $sort = 'title ASC';
                 break;

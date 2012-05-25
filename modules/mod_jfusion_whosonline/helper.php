@@ -25,7 +25,7 @@
  * @link       http://www.jfusion.org
 */
 class modjfusionWhosOnlineHelper {
-	function appendAutoOutput($jname, $config, $params, $output) {
+    public static function appendAutoOutput($jname, $config, $params, $output) {
 		//get the itemid and jname to get any missing urls
 		$link_itemid = $config['itemid'];
 		if (is_numeric($link_itemid)) {
@@ -87,7 +87,7 @@ class modjfusionWhosOnlineHelper {
 						} else {
 				 			$userlookup = JFusionFunction::lookupUser($link_jname, $userinfo->userid, false, $userinfo->username);
 							if(!empty($userlookup)) {
-								$joomla_id = $userlookup->id;
+                                $joomla_userid = $userlookup->id;
 							}
 						}
 					}

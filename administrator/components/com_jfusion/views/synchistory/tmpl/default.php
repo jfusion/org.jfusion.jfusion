@@ -26,13 +26,13 @@ checked=false;
 function applyAll() {
      if (checked == false)
           {
-           checked = true;
+              checked = true;
           }
         else
           {
           checked = false;
           }
-    for(i=0; i<document.adminForm.elements.length; i++)
+    for(var i=0; i<document.adminForm.elements.length; i++)
     {
         if (document.adminForm.elements[i].type=="checkbox")
         {

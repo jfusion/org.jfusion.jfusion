@@ -666,6 +666,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
                 break;
             case 'popular':
                 $sort = 't.topic_views DESC, p.post_time DESC';
+                break;
             case 'alpha':
                 $sort = 'title ASC';
                 break;

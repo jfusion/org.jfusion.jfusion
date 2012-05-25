@@ -48,7 +48,6 @@ class jfusionViewadvancedparam extends JView
             jimport('joomla.html.pane');
         }
 
-        $option = JRequest::getCmd('option');
         $mainframe = JFactory::getApplication();
 
         $lang = JFactory::getLanguage();

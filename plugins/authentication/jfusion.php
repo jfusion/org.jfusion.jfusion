@@ -74,7 +74,6 @@ class plgAuthenticationjfusion extends JPlugin
         $mainframe = JFactory::getApplication();
         // Initialize variables
         $response->debug = array();
-        $conditions = '';
         $db = JFactory::getDBO();
         //get the JFusion master
         $master = JFusionFunction::getMaster();
@@ -242,7 +241,6 @@ class plgAuthenticationjfusion extends JPlugin
             }
         }
         return false;
-
     }
 
     function onUserAuthenticate($credentials, $options, &$response){

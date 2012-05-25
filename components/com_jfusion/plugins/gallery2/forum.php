@@ -99,7 +99,7 @@ class JFusionForum_gallery2 extends JFusionForum {
         if (!empty($itemId) && $itemId != - 1) {
             $array['itemId'] = $itemId;
         } else {
-        	list ($ret, $itemId) = GalleryCoreApi::getPluginParameter('module', 'core', 'id.rootAlbum');
+        	list (, $itemId) = GalleryCoreApi::getPluginParameter('module', 'core', 'id.rootAlbum');
         	$array['itemId'] = $itemId;
         }
         /* set the rest */

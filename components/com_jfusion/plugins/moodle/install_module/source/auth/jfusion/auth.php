@@ -47,7 +47,7 @@ class DualLogin {
 	function login($curl_options){
 		$status = array();
 		$helper = new JFusionCurl;
-		$status= $helper->RemoteLogin($curl_options);
+		$status = $helper->RemoteLogin($curl_options);
 		unset($helper);
 		return $status;
 

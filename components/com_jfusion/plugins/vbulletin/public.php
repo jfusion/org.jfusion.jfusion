@@ -631,6 +631,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
                 break;
             case 'popular':
                 $sort = 't.views DESC, p.dateline DESC';
+                break;
             case 'alpha':
                 $sort = 'title ASC';
                 break;
@@ -880,7 +881,10 @@ function fixCSS($matches)
         $selectors = explode(",", $element[0]);
         foreach ($selectors as $sk => $sv) {
             //add vb framless container
-            if (strpos($sv, '<!--') !== false) die(var_dump($sv));
+            if (strpos($sv, '<!--') !== false) {
+                var_dump($sv);
+                die();
+            }
             if ($sv == 'body' || $sv == 'html' || $sv == '*') {
                 $selectors[$sk] = "$sv #framelessVb";
             } elseif (strpos($sv, '@') === 0) {

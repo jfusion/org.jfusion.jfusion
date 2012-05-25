@@ -88,7 +88,6 @@ function &plgSearchjfusionAreas()
             if (is_array($enabledPlugins) && array_key_exists($plugin->name, $enabledPlugins)) {
                 if ($plugin->name != "joomla_int") {
                     //make sure that search is enabled
-                    $public = & JFusionFactory::getPublic($plugin->name);
                     $title = (!empty($enabledPlugins[$plugin->name]['title'])) ? $enabledPlugins[$plugin->name]['title'] : $plugin->name;
                     $areas[$plugin->name] = $title;
                 }
@@ -152,7 +151,7 @@ function plgSearchjfusion($text, $phrase = '', $ordering = '', $areas = null)
         break;
     }
 
-    foreach ($searchPlugins AS $key => $jname) {
+    foreach ($searchPlugins AS $jname) {
         $searchMe = & JFusionFactory::getPublic($jname);
         if (is_array($pluginParamValue)) {
             $pluginParam = new JParameter('');

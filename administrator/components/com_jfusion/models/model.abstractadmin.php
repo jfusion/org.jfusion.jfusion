@@ -636,7 +636,7 @@ class JFusionAdmin
 					elSelNew.multiple='multiple';
 				}
 				elSelNew.name='params[multiusergroup]['+name+']['+count+'][]';
-				for (x in groups) {
+				for (var x in groups) {
 					var elOptNew = document.createElement('option');
 					elOptNew.text = groups[x];
 					elOptNew.value = x;

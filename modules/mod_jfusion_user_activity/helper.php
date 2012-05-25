@@ -25,11 +25,10 @@
  * @link       http://www.jfusion.org
 */
 class modjfusionUserActivityHelper {
-	function prepareAutoOutput($jname, $config, $params) {
+    public static function prepareAutoOutput($jname, $config, $params) {
 		$output = new stdClass();
 
         $forum =& JFusionFactory::getForum($jname);
-        $db =& JFusionFactory::getDatabase($jname);
 		$joomlaUser = JFactory::getUser();
 
 		$PluginUser =& JFusionFactory::getUser($jname);

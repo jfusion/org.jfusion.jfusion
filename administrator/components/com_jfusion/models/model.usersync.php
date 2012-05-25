@@ -47,7 +47,7 @@ class JFusionUsersync
      *
      * @return string nothing
      */
-    function getLogData($syncid, $type = 'all', $limitstart=null, $limit=null, $sort='id', $dir='')
+    public static function getLogData($syncid, $type = 'all', $limitstart=null, $limit=null, $sort='id', $dir='')
     {
         $db = JFactory::getDBO();
 
@@ -80,7 +80,7 @@ class JFusionUsersync
      *
      * @return int count results
      */
-    function countLogData($syncid, $type = 'all')
+    public static function countLogData($syncid, $type = 'all')
     {
         $db = JFactory::getDBO();
         $whereStatement = "WHERE syncid = {$db->Quote($syncid)}";
@@ -99,7 +99,7 @@ class JFusionUsersync
      *
      * @return string nothing
      */
-    function saveSyncdata(&$syncdata)
+    public static function saveSyncdata(&$syncdata)
     {
         //serialize the $syncdata to allow storage in a SQL field
         $serialized = base64_encode(serialize($syncdata));
@@ -134,7 +134,7 @@ class JFusionUsersync
      *
      * @return string nothing
      */
-    function getSyncdata($syncid)
+    public static function getSyncdata($syncid)
     {
         $db = JFactory::getDBO();
         $query = 'SELECT syncdata FROM #__jfusion_sync WHERE syncid =' . $db->Quote($syncid);
@@ -155,7 +155,7 @@ class JFusionUsersync
      *
      * @return string nothing
      */
-    function syncError($syncid, $syncError)
+    public static function syncError($syncid, $syncError)
     {
         //Load debug library
         include_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.debug.php';
@@ -253,7 +253,7 @@ class JFusionUsersync
      *
      * @return string nothing
      */
-    function syncExecute(&$syncdata, $action, $plugin_offset, $user_offset)
+    public static function syncExecute(&$syncdata, $action, $plugin_offset, $user_offset)
     {
         if (empty($syncdata['completed'])) {
             //setup some variables
@@ -427,14 +427,14 @@ class JFusionUsersync
         }
     }
 
-    function changeSyncStatus($syncid, $status) {
+    public static function changeSyncStatus($syncid, $status) {
         $db = JFactory::getDBO();
         $query = "UPDATE #__jfusion_sync SET active = " . (int) $status . " WHERE syncid = " . $db->Quote($syncid);
         $db->setQuery($query);
         $db->query();
     }
 
-    function getSyncStatus($syncid = '') {
+    public static function getSyncStatus($syncid = '') {
         if (!empty($syncid)) {
             $db = JFactory::getDBO();
             $query = "SELECT active FROM #__jfusion_sync WHERE syncid = " . $db->Quote($syncid);

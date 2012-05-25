@@ -7,7 +7,7 @@ class JFusion_Helper_Mageselectblock {
 	 * @param integer $blockId
 	 * @return string
 	 */
-	function callblock($blockId = null) {
+	public static function callblock($blockId = null) {
 		if ($blockId) {
 			$block = Mage::getModel ( 'cms/block' )->setStoreId ( Mage::app ()->getStore ()->getId () )->load ( $blockId );
 			if (! $block->getIsActive ()) {

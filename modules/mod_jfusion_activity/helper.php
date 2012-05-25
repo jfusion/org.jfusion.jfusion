@@ -41,7 +41,7 @@ class modjfusionActivityHelper
      * @return string html
      */
 
-	function appendAutoOutput(&$results, $jname, &$config, &$params) {
+    public static function appendAutoOutput(&$results, $jname, &$config, &$params) {
 		$forum =& JFusionFactory::getForum($jname);
 		$public =& JFusionFactory::getPublic($jname);
 		if(is_array($results)) {

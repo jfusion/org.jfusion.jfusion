@@ -376,7 +376,7 @@ class JFusionCurl
 	 *
 	 * @return string The translation of the string
 	 **/
-	public function _($string, $jsSafe = false)
+    public static function _($string, $jsSafe = false)
 	{
 		return JText::_($string, $jsSafe);
 	}
@@ -611,7 +611,7 @@ class JFusionCurl
 	 *
 	 * @return string nothing
 	 */
-	function addCookie($name, $value='', $expires=0, $cookiepath='', $cookiedomain='', $secure=0, $httponly=0, $crossdomain_url='')
+    public static function addCookie($name, $value='', $expires=0, $cookiepath='', $cookiedomain='', $secure=0, $httponly=0, $crossdomain_url='')
 	{
 
 		// Versions of PHP prior to 5.2 do not support HttpOnly cookies
@@ -642,7 +642,7 @@ class JFusionCurl
 	 *
 	 * @return string nothing
 	 */
-	function setmycookies($status, $mycookies_to_set, $cookiedomain, $cookiepath, $expires=0, $secure=0, $httponly=1, $crossdomain_url='')
+    public static function setmycookies($status, $mycookies_to_set, $cookiedomain, $cookiepath, $expires=0, $secure=0, $httponly=1, $crossdomain_url='')
 	{
 		$cookies=array();
 		$cookies=JFusionCurl::parsecookies($mycookies_to_set);
@@ -702,7 +702,7 @@ class JFusionCurl
 	 *
 	 * @return string nothing
 	 */
-	function deletemycookies($status, $mycookies_to_set, $cookiedomain, $cookiepath, $leavealone, $secure=0, $httponly=1, $crossdomain_url='')
+    public static function deletemycookies($status, $mycookies_to_set, $cookiedomain, $cookiepath, $leavealone, $secure=0, $httponly=1, $crossdomain_url='')
 	{
 		$cookies=array();
 		$cookies=JFusionCurl::parsecookies($mycookies_to_set);
@@ -803,7 +803,7 @@ class JFusionCurl
 	 * @return string page read
 	 */
 
-	function ReadPage($curl_options, &$status, $curlinit=true)
+    public static function ReadPage($curl_options, &$status, $curlinit=true)
 	{
 		global $ch;
 		global $cookiearr;
@@ -903,7 +903,7 @@ class JFusionCurl
 	 *
 	 * @return string something
 	 */
-	function RemoteLogin($curl_options)
+    public static function RemoteLogin($curl_options)
 	{
 		global $ch;
 		global $cookiearr;
@@ -1283,7 +1283,7 @@ class JFusionCurl
 	 *
 	 * @return string something
 	 */
-	function RemoteLogout($curl_options)
+    public static function RemoteLogout($curl_options)
 	{
 		$status=array();
 		global $ch;
@@ -1399,7 +1399,7 @@ class JFusionCurl
 	 *
 	 * @return string something
 	 */
-	function RemoteLogoutUrl($curl_options)
+    public static function RemoteLogoutUrl($curl_options)
 	{
 		$status=array();
 		global $ch;

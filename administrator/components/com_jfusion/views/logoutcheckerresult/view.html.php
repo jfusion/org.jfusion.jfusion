@@ -43,7 +43,6 @@ class jfusionViewLogoutCheckerResult extends JView
 	    $joomlaid = JRequest::getVar('joomlaid');
 	    $user = (array)JFactory::getUser($joomlaid);
 	    $options = array();
-	    $textOutput = array();
 	    $options['group'] = 'USERS';
 	    if (JRequest::getVar('show_unsensored') == 1) {
 	        $options['show_unsensored'] = 1;

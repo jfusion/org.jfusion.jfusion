@@ -210,9 +210,9 @@ if (isset($_GET[\'jfile\'])) {
             $db->setQuery($query);
             $mod_list = $db->loadObjectList();
             $mod_array = array();
-            foreach ($mod_list as $mod_list) {
-                if (!isset($mod_array[$mod_list->user_id])) {
-                    $mod_array[$mod_list->user_id] = $mod_list->user_id;
+            foreach ($mod_list as $mod) {
+                if (!isset($mod_array[$mod->user_id])) {
+                    $mod_array[$mod->user_id] = $mod->user_id;
                 }
             }
             $mod_ids = implode(",", $mod_array);

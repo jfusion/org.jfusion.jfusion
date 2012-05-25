@@ -260,7 +260,7 @@ class jfusionViewconfigdump extends JView {
     	}    
     	
     	if( $check ) {
-    		$checks = split ( '\|' , $check );
+    		$checks = explode( '\|' , $check );
     		
     		$valid = 0;
     		foreach($checks as $check) {

@@ -60,7 +60,7 @@
 }
 
 #jfusionframeless colgroup {
-	display: table-column-group:
+	display: table-column-group;
 }
 
 #jfusionframeless td, #jfusionframeless th {
@@ -273,7 +273,7 @@ body #jfusionframeless {
 	text-decoration: underline;
 }
 #jfusionframeless br:before {
-	content: "A"; white-space: pre-line;
+	content: "A"; white-space: normal;
 }
 #jfusionframeless center {
 	text-align: center;
@@ -281,7 +281,6 @@ body #jfusionframeless {
 
 #jfusionframeless :link, #jfusionframeless :visited {
 	text-decoration: none;
-	color:none;
 }
 
 #jfusionframeless :focus {
