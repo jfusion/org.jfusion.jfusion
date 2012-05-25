@@ -934,7 +934,7 @@ YAHOO.util.Connect =
 			oForm = formId;
 		}
 		else{
-			return;
+			return '';
 		}
 
 		// If the isUpload argument is true, setForm will call createFrame to initialize
@@ -953,7 +953,7 @@ YAHOO.util.Connect =
 			this._isFileUpload = true;
 			this._formNode = oForm;
 
-			return;
+			return '';
 
 		}
 

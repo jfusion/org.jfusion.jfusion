@@ -819,7 +819,7 @@ class JFusionPluginInstaller extends JObject
      * get files functopm
      *
      *  @param string $folder folder name
-     *  @param strinf $jname  jname
+     *  @param string $jname  jname
      *
      *  @return array files
      */

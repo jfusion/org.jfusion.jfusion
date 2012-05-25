@@ -17,9 +17,9 @@ jimport('joomla.application.component.view');
 * @package JFusion
 */
 
-class jfusionViewconfigdump extends JView {
-
-    private var $checkvalue = array();
+class jfusionViewconfigdump extends JView
+{
+    public $checkvalue = array();
 
     function display($tpl = null)
     {

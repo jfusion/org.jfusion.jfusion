@@ -590,6 +590,9 @@ class BBCode_Parser {
     var $debug;
     var $quote_style;
     var $charset;
+    var $stack;
+    var $lexer;
+    var $smiley_info;
     function BBCode_Parser() {
         $this->defaults = new BBCodeLibrary;
         $this->tag_rules = $this->defaults->default_tag_rules;

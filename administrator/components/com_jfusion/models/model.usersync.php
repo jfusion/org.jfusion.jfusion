@@ -57,7 +57,7 @@ class JFusionUsersync
             $option     = JRequest::getCmd('option');
             $sort       = $mainframe->getUserStateFromRequest( "$option.$client.filter_order",      'filter_order',     'id',       'cmd' );
             $dir        = $mainframe->getUserStateFromRequest( "$option.$client.filter_order_Dir",  'filter_order_Dir', '',         'word' );
-            $limit      = $mainframe->getUserStateFromRequest( 'global.list.limit', 'limit', $mainframe->getCfg('list_limit'), 'int' );
+            $limit      = (int)$mainframe->getUserStateFromRequest( 'global.list.limit', 'limit', $mainframe->getCfg('list_limit'), 'int' );
             $limitstart = 0;
         }
 
@@ -151,7 +151,7 @@ class JFusionUsersync
      * Fix sync errors
      *
      * @param string $syncid    the usersync id
-     * @param string $syncError the actual syncError data
+     * @param array $syncError the actual syncError data
      *
      * @return string nothing
      */

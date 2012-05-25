@@ -443,7 +443,7 @@ class JFusionCurl
 	/**
 	 * curl redir exec
 	 *
-	 * @param string $ch ch
+	 * @param resource $ch ch
 	 *
 	 * @return string something
 	 */
@@ -493,7 +493,7 @@ class JFusionCurl
 	 * Basic  code was found on Svetlozar Petrovs website http://svetlozar.net/page/free-code.html.
 	 * The code is free to use and similar code can be found on other places on the net.
 	 *
-	 * @param string $ch     ch
+	 * @param resource $ch     ch
 	 * @param string $string string
 	 *
 	 * @return string something

@@ -591,7 +591,7 @@ class JFvBulletinTask {
             unset($data['error']);
         }
 
-        $this->xml = new SimpleXMLElement('<root/>');
+        $this->xml = new SimpleXMLElement('<root></root>');
         array_walk($data, array ($this, 'addDataToXML'));
         $xml_string = $this->xml->asXML();
         die($xml_string);

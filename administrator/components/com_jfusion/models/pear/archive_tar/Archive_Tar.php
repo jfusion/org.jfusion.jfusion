@@ -77,7 +77,7 @@ class Archive_Tar extends PEAR
     var $_separator=' ';
 
     /**
-    * @var file descriptor
+    * @var resource file descriptor
     */
     var $_file=0;
 

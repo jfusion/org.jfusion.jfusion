@@ -143,8 +143,8 @@ class doku_auth_plain extends doku_auth_basic {
      * Modify user data
      *
      * @author  Chris Smith <chris@jalakai.co.uk>
-     * @param   $user      nick of the user to be changed
-     * @param   $changes   array of field/value pairs to be changed (password will be clear text)
+     * @param   string $user     nick of the user to be changed
+     * @param   array $changes   array of field/value pairs to be changed (password will be clear text)
      * @return  bool
      */
     function modifyUser($user, $changes) {

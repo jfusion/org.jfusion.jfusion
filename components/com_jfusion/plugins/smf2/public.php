@@ -787,7 +787,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 		$where .= ' AND p.id_board IN ('.implode(',',$list).') ORDER BY ' . $sort;
 	}
 
-	function filterSearchResults(&$results, &$pluginParam)
+	function filterSearchResults(&$results = array(), &$pluginParam)
 	{
 		$db =& JFusionFactory::getDatabase($this->getJname());
 		$query = "SELECT value FROM #__settings WHERE variable='censor_vulgar'";

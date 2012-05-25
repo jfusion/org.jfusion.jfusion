@@ -144,7 +144,6 @@ body #jfusionframeless {
 #jfusionframeless code, #jfusionframeless kbd, #jfusionframeless samp, #jfusionframeless pre, #jfusionframeless tt, #jfusionframeless var, #jfusionframeless textarea,
 #jfusionframeless input, #jfusionframeless select, isindex, #jfusionframeless listing, #jfusionframeless xmp, #jfusionframeless plaintext {
 	white-space: normal;
-	font-size: 1em;
 	font: inherit;
 }
 

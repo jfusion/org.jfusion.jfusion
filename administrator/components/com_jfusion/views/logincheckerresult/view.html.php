@@ -62,7 +62,8 @@ class jfusionViewLoginCheckerResult extends JView
 		$this->getPlugin();
 		
 		$this->getAuth($credentials, $options);
-		
+
+        $this->assignRef('options', $options);
         parent::display($tpl);
     }
     
@@ -273,7 +274,7 @@ class jfusionViewLoginCheckerResult extends JView
     /**
 	 * retrieves version numbers
 	 *
-	 * @param strinf $filename         filename
+	 * @param string $filename         filename
 	 * @param string $name             name
 	 * @param string &$jfusion_version version number of the current jfusion
 	 *

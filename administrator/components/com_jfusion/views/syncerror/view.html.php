@@ -51,8 +51,8 @@ class jfusionViewsyncerror extends JView
         $option = JRequest::getCmd('option');
         $filter_order       = $mainframe->getUserStateFromRequest( "$option.$client.filter_order",      'filter_order',     'id',       'cmd' );
         $filter_order_Dir   = $mainframe->getUserStateFromRequest( "$option.$client.filter_order_Dir",  'filter_order_Dir', '',         'word' );
-        $limit              = $mainframe->getUserStateFromRequest( 'global.list.limit', 'limit', $mainframe->getCfg('list_limit'), 'int' );
-        $limitstart         = $mainframe->getUserStateFromRequest( $option.'.limitstart', 'limitstart', 0, 'int' );
+        $limit              = (int)$mainframe->getUserStateFromRequest( 'global.list.limit', 'limit', $mainframe->getCfg('list_limit'), 'int' );
+        $limitstart         = (int)$mainframe->getUserStateFromRequest( $option.'.limitstart', 'limitstart', 0, 'int' );
 
         $synclog = JFusionUsersync::getLogData($syncid, 'error', $limitstart, $limit, $filter_order, $filter_order_Dir);
         $filter = array('order' => $filter_order, 'dir' => $filter_order_Dir, 'limit' => $limit, 'limitstart' => $limitstart, 'client' => $client);

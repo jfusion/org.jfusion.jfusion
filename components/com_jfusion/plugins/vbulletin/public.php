@@ -896,7 +896,6 @@ function fixCSS($matches)
                 } else {
                     $selectors[$sk] = "#framelessVb $sv";
                 }
-                $selectors[$sk] - "framelessVb $sv";
                 $imports[] = $import;
             } elseif (strpos($sv, 'wysiwyg') === false) {
                 $selectors[$sk] = "#framelessVb $sv";

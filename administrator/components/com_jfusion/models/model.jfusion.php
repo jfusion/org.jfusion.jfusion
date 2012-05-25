@@ -500,7 +500,7 @@ class JFusionFunction
      * Raise warning function that can handle arrays
      *
      * @param string $type      type of warning
-     * @param string $warning   warning itself
+     * @param array $warning   warning itself
      * @param int    $redundant not used
      *
      * @return string nothing
@@ -1280,7 +1280,7 @@ class JFusionFunction
      * @param string $jname plugin name
      * @param object $userinfo user with correct usergroups
      *
-     * @return true/false
+     * @return array
      */
     public static function getCorrectUserGroups($jname,$userinfo) {
         $params = & JFusionFactory::getParams($jname);

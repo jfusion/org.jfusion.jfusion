@@ -593,6 +593,14 @@ class PEAR
     }
 
     // }}}
+    /**
+     * staticPushErrorHandling
+     *
+     * @param    string  $mode  Mode
+     * @param    callable $options
+     *
+     * @access boolean
+     */
     function staticPushErrorHandling($mode, $options = null)
     {
         $stack = &$GLOBALS['_PEAR_error_handler_stack'];

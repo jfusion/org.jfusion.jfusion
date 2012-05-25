@@ -440,17 +440,20 @@ class plgUserJfusion extends JPlugin
             $session = & JTable::getInstance('session');
             $session->purge($expire);
 
+
             $params = & JFusionFactory::getParams('joomla_int');
-            $allowredir = $params->get('allow_redirect_login', 0);
-            $URLredir = $params->get('redirecturl_login', '');
+            $allow_redirect_login = $params->get('allow_redirect_login', 0);
+            $redirecturl_login = $params->get('redirecturl_login', '');
+            $source_url = $params->get('source_url', '');
             ob_end_clean();
             $jfc = JFusionFactory::getCookies();
-            if ( $allowredir && !empty($URLredir)) // only redirect if we are in the frontend and allowed and have an URL
+            if ( $allow_redirect_login && !empty($redirecturl_login)) // only redirect if we are in the frontend and allowed and have an URL
             {
-            	$jfc->executeRedirect($URLredir);
+                $jfc->executeRedirect($source_url,$redirecturl_login);
             } else {
-            	$jfc->executeRedirect();
+                $jfc->executeRedirect($source_url);
             }
+
             
             $result = true;
             return $result;
@@ -547,15 +550,16 @@ class plgUserJfusion extends JPlugin
         }
 
         $params = & JFusionFactory::getParams('joomla_int');
-        $allowredir = $params->get('allow_redirect_logout', 0);
-        $URLredir = $params->get('redirecturl_logout', '');
+        $allow_redirect_logout = $params->get('allow_redirect_logout', 0);
+        $redirecturl_logout = $params->get('redirecturl_logout', '');
+        $source_url = $params->get('source_url', '');
         ob_end_clean();
         $jfc = JFusionFactory::getCookies();
-        if ( $allowredir && !empty($URLredir)) // only redirect if we are in the frontend and allowed and have an URL
+        if ( $allow_redirect_logout && !empty($redirecturl_logout)) // only redirect if we are in the frontend and allowed and have an URL
         {
-        	$jfc->executeRedirect($URLredir);
+        	$jfc->executeRedirect($source_url,$redirecturl_logout);
         } else {
-        	$jfc->executeRedirect();
+        	$jfc->executeRedirect($source_url);
         }
         
         $result = true;

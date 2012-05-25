@@ -78,7 +78,7 @@ class Jfusion_Joomla_Block_Module extends Mage_Core_Block_Template {
 			return '';
 		}
 		
-		return $this->getModule ();;
+		return $this->getModule ();
 	}
 }
 

@@ -585,7 +585,7 @@ class trans {
      *    Converts a PHP-Value into a JSON-String
      *    This function works recursively
      *
-     *    @param nixed $phpValue: the Value to transform into JSON
+     *    @param mixed $phpValue: the Value to transform into JSON
      *    @return string the JSON String
      */
     public static function phpValue2js($phpValue) {
@@ -787,7 +787,7 @@ class trans {
      *
      *    @param string $delim1, the delemiter that seperates the entries
      *    @param string $delim2, the delimiter that seperates the key from the Value
-     *    @param string $hashy the Hashtable to join
+     *    @param array $hashy the Hashtable to join
      *
      *    @return the created string
      */
@@ -803,7 +803,7 @@ class trans {
      *
      *    Useful to build-up attribute-lists for HTML Tags
      *
-     *    @param string $hashy the Hashtable to join
+     *    @param array $hashy the Hashtable to join
      *    @param string $delim, the delemiter that seperates the entries, typically ' '
      *    @param string $Quote, The Charachter used to Quote the Values, typically '"'
      *    @param string $equiv, the delimiter that seperates the key from the Value, typically '='
@@ -821,7 +821,7 @@ class trans {
     /**
      *    Creates a Mail-Header String from the given hashtable
      *
-     *    @param string $header the Hashtable to use
+     *    @param array $header the Hashtable to use
      *
      *    a shortcut for trans::hashJoin("\r\n", ": ", $header);
      *
@@ -1116,7 +1116,7 @@ class arrayfunc {
      *    Summates all values of a particular column
      *
      *    @param array $data: an Array of "tableRows", tablerows as a Hashtable colName => value
-     *    @param strign $field: the column to summate
+     *    @param string $field: the column to summate
      *
      *    @return number, the sum of the spec. column,
      *

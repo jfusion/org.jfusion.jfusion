@@ -9,7 +9,7 @@
 if ( !class_exists('JFusionMap') ) {
 	class JFusionMap {
 		var $_jname = null;
-		var $_map = null;
+		var $_map = array();
 		var $_mapraw = null;
 
 		function JFusionMap($jname)
@@ -59,7 +59,7 @@ if ( !class_exists('JFusionMap') ) {
 		}
 
 		function getMap($type='user') {
-			if( !is_array($this->_map) ) {
+			if( empty($this->_map) ) {
 		        $params = JFusionFactory::getParams($this->getJname());
 		        $map = $params->get('map');
 		        if(is_array($map)) {
@@ -91,7 +91,7 @@ if ( !class_exists('JFusionMap') ) {
 					return $this->_map[$type];
 				}
 			}
-            return false;
+            return array();
 		}
 
 		function getFieldUserID() {
@@ -119,12 +119,12 @@ if ( !class_exists('JFusionMap') ) {
 	    	return $username;
 		}
 
-		function getQuery($include=null,$type='user') {
+		function getQuery($include=array(),$type='user') {
 	// a.validation_code as activation, a.is_activated, NULL as reason, a.lastLogin as lastvisit '.
 			$query = array();
 			$map = $this->getMap($type);
 			foreach ($map as $value) {
-				if ( $include == null || in_array($value->type, $include) ) {
+				if ( in_array($value->type, $include) ) {
 					switch ($value->type) {
 					    case 'LASTVISIT':
 					    	$query[] = $value->field.' as lastvisit';
@@ -196,13 +196,11 @@ if ( !class_exists('JFusionMap') ) {
 
 		function getFieldType($field=null,$type='user') {
 			$maped = $this->getMap($type);
-			if ($maped && is_array($maped)) {
-				foreach ($maped as $value) {
-					if ( $field == $value->type ) {
-						return $value;
-					}
-				}
-			}
+            foreach ($maped as $value) {
+                if ( $field == $value->type ) {
+                    return $value;
+                }
+            }
 			return null;
 		}
 
@@ -377,7 +375,7 @@ if ( !class_exists('JFusionMap') ) {
 					$out = eval("return $value;");
 					$error = ob_get_contents();
 					ob_end_clean();
-					if ($testcrypt===false && strlen($error)) {
+					if (strlen($error)) {
 						die($error);
 					}
 			    	break;

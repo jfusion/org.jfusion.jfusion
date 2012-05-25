@@ -57,12 +57,11 @@ class JFusionCookies {
     /**
      * Execute the cross domain login redirects
      */
-    function executeRedirect($return=null) {
+    function executeRedirect($source_url=null,$return=null) {
     	$mainframe = & JFactory::getApplication();
     	if (!$mainframe->isAdmin() || !$this->secret) {
 	    	if(!count($this->_cookies)) {
 	    		if (empty($return)) {
-	    			$source_url = $params->get('source_url');
 	    			if ($return = JRequest::getVar ( 'return', '', 'method', 'base64' )) {
 	    				$return = base64_decode ( $return );
 	    				if( stripos($return,'http://') === false && stripos($return,'https://') === false ) {

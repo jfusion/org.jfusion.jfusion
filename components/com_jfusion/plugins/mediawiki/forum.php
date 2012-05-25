@@ -112,17 +112,17 @@ class JFusionForum_mediawiki extends JFusionForum
 						$o_avatar = '';
 					}
 					if ( !empty( $o_avatar_source ) ) {
-						echo "<li style='clear:left;'>";
-						echo "<img style='vertical-align:middle; float:left; margin:3px;' src='{$o_avatar_source}' height='{$o_avatar_height}' width='{$o_avatar_width}' alt='avatar' />";
+						echo '<li style="clear:left;">';
+						echo '<img style="vertical-align:middle; float:left; margin:3px;" src="'.$o_avatar_source.'" height="'.$o_avatar_height.'" width="'.$o_avatar_width.'" alt="avatar" />';
 					} else {
-						echo "<li>";
+						echo '<li>';
 					}
 					$url = JFusionFunction::routeURL('index.php?title='.$value->title, $itemid, $this->getJname());
 					if (JString::strlen($value->title) > $display_limit_subject) {
 						//we need to shorten the subject
 						$value->pagename = JString::substr($value->title,0,$display_limit_subject) . '...';
 					}
-					echo "<a href='{$url}' target='{$new_window}'>{$value->title}</a> - ";
+					echo '<a href="'.$url.'" target="'.$new_window.'">'.$value->title.'</a> - ';
 					if ($showuser) {
 						echo $value->user;
 					}

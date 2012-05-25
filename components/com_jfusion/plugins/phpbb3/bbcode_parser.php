@@ -28,7 +28,7 @@ defined('_JEXEC') or die('Restricted access');
 class phpbb_bbcode_parser {
     var $text = '';
     var $bbcode_uid = false;
-    var $bbcodes = '';
+    var $bbcodes = array();
     var $bbcode_bitfield = '';
     var $jname = '';
     var $db = '';
