@@ -31,7 +31,7 @@ class JFusionAuth
     /**
      * Generates an encrypted password based on the userinfo passed to this function
      *
-     * @param array $userinfo userdata object containing the userdata
+     * @param object $userinfo userdata object containing the userdata
      * 
      * @return string Returns generated password
      */

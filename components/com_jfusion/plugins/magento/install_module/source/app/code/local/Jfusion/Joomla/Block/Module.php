@@ -8,6 +8,8 @@
 
 class Jfusion_Joomla_Block_Module extends Mage_Core_Block_Template {
 
+    private $_data;
+
 	/**
 	 * Save the data of each modules before to render them
 	 * $type: it should be the name of the type of module loaded (exple: mod_mainmenu -> $type=mainmenu) - required

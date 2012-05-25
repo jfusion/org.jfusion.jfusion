@@ -53,7 +53,7 @@ class JFusionPublic_gallery2 extends JFusionPublic {
     return '';
     }*/
     function getBuffer($data) {
-    	$this->data = $data;    	
+    	$this->data = $data;
         $jPluginParam = & $data->jPluginParam;
         //Handle PHP based Gallery Rewrite
         $segments = JRequest::getVar('jFusion_Route');

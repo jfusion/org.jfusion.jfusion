@@ -19,11 +19,12 @@ jimport('joomla.application.component.view');
 
 class jfusionViewconfigdump extends JView {
 
+    private var $checkvalue = array();
+
     function display($tpl = null)
     {
     	$db = JFactory::getDBO();
-    	
-    	$this->checkvalue=array();
+
     	// menuitem Checks
     	$this->checkvalue['menu_item']['jfusionplugin'] = 'is_string|not_empty';
     	$this->checkvalue['menu_item']['source_url'] = 'is_url';

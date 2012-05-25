@@ -199,6 +199,7 @@ class JFusionModelInstaller extends InstallerModelInstall
  */
 class JFusionPluginInstaller extends JObject
 {
+    var $manifest;
     /**
      * Overridden constructor
      *

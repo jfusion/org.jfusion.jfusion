@@ -1,6 +1,6 @@
 //<!--
 function submitbutton(pressbutton) {
-var form = document.adminForm;
+    var form = document.adminForm;
     if (pressbutton == 'applyconfig') {
         form.action.value = 'apply';
         submitform('saveconfig');

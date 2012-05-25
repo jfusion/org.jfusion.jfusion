@@ -15,8 +15,7 @@ defined('_JEXEC' ) or die('Restricted access' );
  * For detailed descriptions on these functions please check the model.abstractpublic.php
  * @package JFusion_SMF
  */
-class JFusionPublic_smf2 extends JFusionPublic{
-
+class JFusionPublic_smf2 extends JFusionPublic {
 	var $callbackdata = null;
 	var $callbackbypass = null;
 

@@ -16,10 +16,7 @@ body {
 	line-height: 1.5;
 	padding-top: 30px;
 }
-.icon-32-addusers{
-    background-image: url(templates/khepri/images/toolbar/icon-32-adduser.png);
-    background-repeat: no-repeat;
-}
+
 h2 { font-size:15px; }
 
 /** cpanel **/

@@ -21,6 +21,7 @@ require_once (JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS 
  * @package JFusion
  */
 class jfusionViewPlugin extends JView {
+    var $jname;
 
 	function frameless($tpl = null) {
 		$data = JFusionFrameless::initData($this->jname);

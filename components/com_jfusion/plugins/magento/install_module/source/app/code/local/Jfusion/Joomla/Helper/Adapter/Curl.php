@@ -14,6 +14,8 @@ class Jfusion_Joomla_Helper_Adapter_Curl extends Varien_Http_Adapter_Curl {
 
 	public $error_number;
 
+    private $_resource;
+
 	function __construct() {
 		// check if curl extension is loaded
 		if (! extension_loaded ( 'curl' )) {

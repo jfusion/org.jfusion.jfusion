@@ -28,6 +28,7 @@ defined('_JEXEC') or die('Restricted access');
  */
 class JFusionPublic
 {
+    var $data;
     /**
      * returns the name of this JFusion plugin
      *
