@@ -302,7 +302,7 @@ $output .= <<<JS
         function changefield(ref,name,parmtype) {
             var id = document.getElementById(name);
             id.innerHTML = '';
-            if ( TypeAry[ref.value] != undefined ) {
+            if ( TypeAry[ref.value] !== undefined ) {
                 var type = document.createElement("select");
                 type.setAttribute("type", "option");
                 type.setAttribute("id", "paramsmap"+parmtype+"type"+name);

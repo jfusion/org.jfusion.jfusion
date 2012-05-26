@@ -24,15 +24,9 @@ JHTML::_('behavior.modal', 'a.modal');
 <!--
 checked=false;
 function applyAll() {
-    if (checked == false) {
-        checked = true;
-    } else {
-        checked = false;
-    }
-    for(var i=0; i<document.adminForm.elements.length; i++)
-    {
-        if (document.adminForm.elements[i].type=="checkbox")
-        {
+    checked = !checked;
+    for(var i=0; i<document.adminForm.elements.length; i++) {
+        if (document.adminForm.elements[i].type=="checkbox") {
             document.adminForm.elements[i].checked = checked;
         }
     }

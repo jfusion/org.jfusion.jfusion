@@ -37,8 +37,8 @@ class Jfusion_Customer_Model_Entity_Customer extends Mage_Customer_Model_Entity_
             }
             $select->where('website_id=?', (int)$customer->getWebsiteId());
         }
-
-        if ($id = $this->_getReadAdapter()->fetchOne($select, 'entity_id')) {
+        $id = $this->_getReadAdapter()->fetchOne($select, 'entity_id');
+        if ($id) {
             $this->load($customer, $id);
         }
         else {

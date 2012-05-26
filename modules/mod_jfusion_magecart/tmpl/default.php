@@ -19,7 +19,7 @@ defined('_JEXEC') or die('Restricted access'); ?>
 <?php endif ?>
 
 <p class="subtotal"><?php echo JText::_('Cart Subtotal:') ?> <strong><?php echo Mage::helper('checkout')->formatPrice($sidebar->getSubtotal()) ?></strong>
-<?php if ($_subtotalInclTax = $sidebar->getSubtotalInclTax()): ?> <br /> (<strong><?php echo Mage::helper('checkout')->formatPrice($_subtotalInclTax) ?></strong>
+<?php $_subtotalInclTax = $sidebar->getSubtotalInclTax(); if ($_subtotalInclTax): ?> <br /> (<strong><?php echo Mage::helper('checkout')->formatPrice($_subtotalInclTax) ?></strong>
 <?php echo Mage::helper('tax')->getIncExcText(true) ?>) <?php endif; ?>
 </p>
 <?php endif ?>

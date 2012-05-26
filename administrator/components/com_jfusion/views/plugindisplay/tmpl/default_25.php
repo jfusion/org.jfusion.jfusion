@@ -80,20 +80,20 @@ function showSpinner(jname,fieldname) {
 }
 
 function copyplugin(jname) {
-	var new_jname = prompt('Please type in the name to use for the copied plugin. This name must not already be in use.', '');
-    if(new_jname) {
+	var newjname = prompt('Please type in the name to use for the copied plugin. This name must not already be in use.', '');
+    if(newjname) {
         var url = '<?php echo JURI::root() . 'administrator/index.php'; ?>';
 
      // this code will send a data object via a GET request and alert the retrieved data.
        new Request.JSON({url: url ,
             onSuccess: function(results){
-            	if(results.status == true) {
+            	if(results.status === true) {
 	                //add new row
 	                addRow(results.new_jname, results.rowhtml);
 				}
             	alert(results.message);
 			}
-		}).get({'option': 'com_jfusion', 'task': 'plugincopy', 'jname': jname, 'new_jname': new_jname});            
+		}).get({'option': 'com_jfusion', 'task': 'plugincopy', 'jname': jname, 'new_jname': newjname});
     }
 }
 
@@ -115,8 +115,8 @@ function initSortables() {
 
     new Sortables('sort_table',{
 		/* set options */
-		handle: 'div.dragHandles', 
-		
+		handle: 'div.dragHandles',
+
 		/* initialization stuff here */
 		initialize: function() {
 			// do nothing yet
@@ -129,23 +129,23 @@ function initSortables() {
 				checkme[1].setStyle('display','none');
 			}
 		},
-	
+
 		onComplete: function(el) {
 			//build a string of the order
-			var sort_order = '';
+			var sortorder = '';
 			var rowcount = 0;
 			$$('#sort_table tr').each(function(tr) {
 				document.getElementById(tr.id).setAttribute('class', 'row' + rowcount);
-				if (rowcount == 0) {
+				if (rowcount === 0) {
 					rowcount = 1;
 				} else {
 					rowcount = 0;
 				}
-			    sort_order = sort_order +  tr.id  + '|';
+                sortorder = sortorder +  tr.id  + '|';
 		    });
 	
 			//update the database
-			sync_vars = 'option=com_jfusion&task=saveorder&tmpl=component&sort_order='+sort_order;
+			sync_vars = 'option=com_jfusion&task=saveorder&tmpl=component&sort_order='+sortorder;
 	        ajaxsync.send(sync_vars);
 		}
 	});
@@ -161,7 +161,7 @@ function deleteplugin(jname) {
         new Request.JSON({url: url , 
             onSuccess: function(results) {
         	
-            	if(results.status ==  true) {
+            	if(results.status ===  true) {
 	            	var el = document.getElementById(results.jname);
 	               	el.parentNode.removeChild(el);
             	}
@@ -177,7 +177,7 @@ window.addEvent('domready',function() {
 	$('installSVN').set('send',
 		{ onComplete: function(JSONobject) {
 			var response = JSON.decode(JSONobject);
-			if (response.overwrite != 1 && response.status == true) {
+			if (response.overwrite != 1 && response.status === true) {
 				addRow(response.jname, response.rowhtml);
 			}
 			var spinner = document.getElementById('spinnerSVN');
@@ -197,7 +197,7 @@ window.addEvent('domready',function() {
 	$('installURL').set('send',
 			{ onComplete: function(JSONobject) {
 			 	var response = JSON.decode(JSONobject);
-				if (response.overwrite != 1 && response.status == true) {
+				if (response.overwrite != 1 && response.status === true) {
 					addRow(response.jname, response.rowhtml);
 				}
 				var spinner = document.getElementById('spinnerURL');
@@ -215,7 +215,7 @@ window.addEvent('domready',function() {
 	$('installDIR').set('send',
 			{ onComplete: function(JSONobject) {
 				var response = JSON.decode(JSONobject);
-				if (response.overwrite != 1 && response.status == true) {
+				if (response.overwrite != 1 && response.status === true) {
 					addRow(response.jname, response.rowhtml);
 				}
 				var spinner = document.getElementById('spinnerDIR');
@@ -234,7 +234,7 @@ window.addEvent('domready',function() {
 		new Event(e).stop();
 		var spinner = document.getElementById('spinnerZIP');
 		spinner.innerHTML = '<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">';
-		if (typeof FormData !== "undefined") {		
+		if (typeof FormData !== "undefined") {
 			var upload = new File.Upload({
 				url: '<?php echo JURI::root() . 'administrator/index.php'; ?>',
 				data: {
@@ -246,7 +246,7 @@ window.addEvent('domready',function() {
 				images: ['install_package'],
 				onComplete: function(JSONobject){
 					var response = JSON.decode(JSONobject);
-					if (response.overwrite != 1 && response.status == true) {
+					if (response.overwrite != 1 && response.status === true) {
 						addRow(response.jname, response.rowhtml);
 					}
 					var spinner = document.getElementById('spinnerZIP');
@@ -254,7 +254,7 @@ window.addEvent('domready',function() {
 					alert(response.message);
 				}
 			});
-			upload.send();	
+			upload.send();
 		} else {
 			this.submit();
 		}

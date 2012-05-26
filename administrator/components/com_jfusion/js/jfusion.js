@@ -39,13 +39,14 @@ function submitbutton4(pressbutton)
 function setCheckedValue(radioObj, newValue) {
 	if (radioObj) {
         var radioLength = radioObj.length;
-        if (radioLength == undefined) {
+        if (radioLength === undefined) {
             radioObj.checked = (radioObj.value == newValue.toString());
         } else {
             for (var i = 0; i < radioLength; i++) {
-                radioObj[i].checked = false;
                 if(radioObj[i].value == newValue.toString()) {
                     radioObj[i].checked = true;
+                } else {
+                    radioObj[i].checked = false;
                 }
             }
         }
@@ -67,13 +68,12 @@ function setSort(col) {
     }
     form.log_sort.value = col;
     form.submit();
-    return;
 }
 
 function getCheckedValue(radioObj) {
 	if (radioObj) {
         var radioLength = radioObj.length;
-        if(radioLength == undefined) {
+        if(radioLength === undefined) {
             if(radioObj.checked) {
                 return radioObj.value;
             }

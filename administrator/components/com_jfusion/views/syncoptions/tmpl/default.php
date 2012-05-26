@@ -35,24 +35,24 @@ window.addEvent('domready', function() {
     var url = '<?php echo JURI::current(); ?>';
     // refresh every 15 seconds
     var timer = 1;
-    var time_update = 10;
+    var timeupdate = 10;
     var counter = 10;
     // periodical and dummy variables for later use
-    var periodical, dummy, sub_vars;
+    var periodical, dummy, subvars;
     var start = $('start');
     var stop = $('stop');
     var log = $('log_res');
 
-    var isJ1_6;
+    var isJ16;
     <?php if (JFusionFunction::isJoomlaVersion('1.6')) { ?>
-    isJ1_6 = true;
+    isJ16 = true;
     <?php } else {?>
-    isJ1_6 = false;
+    isJ16 = false;
     <?php } ?>
     var ajax;
     var ajaxsync;
     /* our ajax istance for starting the sync */
-    if ( isJ1_6 ) {
+    if ( isJ16 ) {
         ajax = new Request.HTML({
             url: url,
             update: log,
@@ -89,26 +89,26 @@ window.addEvent('domready', function() {
         if (counter < 1) {
             div_content = document.getElementById('log_res').innerHTML;
             if (div_content.search(/finished/) == -1) {
-                counter = time_update;
+                counter = timeupdate;
                 // dummy to prevent caching of php
                 dummy = $time() + $random(0, 100);
                 //generate the get variable for submission
 
-                sub_vars = 'option=com_jfusion&task=syncresume&tmpl=component&dummy=' + dummy + '&syncid=' + '<?php echo $this->syncid; ?>';
+                subvars = 'option=com_jfusion&task=syncresume&tmpl=component&dummy=' + dummy + '&syncid=' + '<?php echo $this->syncid; ?>';
                 for (i = 0; i < document.adminForm.elements.length; i++) {
                     if (document.adminForm.elements[i].name == 'userbatch') {
-                        sub_vars = sub_vars + '&' + document.adminForm.elements[i].name + '=' + document.adminForm.elements[i].value;
+                        subvars = subvars + '&' + document.adminForm.elements[i].name + '=' + document.adminForm.elements[i].value;
                     }
                 }
 
                 progress_vars = 'option=com_jfusion&tmpl=component&task=syncprogress&syncid=' + '<?php echo $this->syncid; ?>';
 
-                if ( isJ1_6 ) {
+                if ( isJ16 ) {
                     ajax.send(progress_vars);
-                    ajaxsync.send(sub_vars);
+                    ajaxsync.send(subvars);
                 } else {
                     ajax.request(progress_vars);
-                    ajaxsync.request(sub_vars);
+                    ajaxsync.request(subvars);
                 }
             } else {
                 // let's stop our timed ajax
@@ -148,7 +148,7 @@ window.addEvent('domready', function() {
                 }
             }
 
-            if ( isJ1_6 ) {
+            if ( isJ16 ) {
                 new Request.HTML({url: url, method: 'get'}).send(paramString);
             } else {
                 new Ajax(url, {method: 'get'}).request(paramString);

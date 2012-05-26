@@ -274,17 +274,16 @@ if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\'
         return $error;
     }
     function outputJavascript() {
-        static $phpBBjsLoaded;
-        if (empty($phpBBjsLoaded)) {
-            $phpBBjsLoaded = 1;
+        static $jsLoaded;
+        if (empty($jsLoaded)) {
+            $jsLoaded = 1;
             $js = <<<JS
-function auth_mod(action) {
-    var form = document.adminForm;
-    form.customcommand.value = action;
-    form.action.value = 'apply';
-    submitform('saveconfig');
-    return;
-}
+                function auth_mod(action) {
+                    var form = document.adminForm;
+                    form.customcommand.value = action;
+                    form.action.value = 'apply';
+                    submitform('saveconfig');
+                }
 JS;
             $document = JFactory::getDocument();
             $document->addScriptDeclaration($js);

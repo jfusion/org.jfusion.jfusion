@@ -309,21 +309,21 @@ if (!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') ===
      *
      * @return void
      */
-    function outputJavascript()
-    {
-        ?>
-        <script type="text/javascript">
-        <!--
-        function auth_mod(action) {
-        var form = document.adminForm;
-        form.customcommand.value = action;
-        form.action.value = 'apply';
-        submitform('saveconfig');
-        return;
+    function outputJavascript(){
+        static $jsLoaded;
+        if (empty($jsLoaded)) {
+            $jsLoaded = 1;
+            $js = <<<JS
+            function auth_mod(action) {
+                var form = document.adminForm;
+                form.customcommand.value = action;
+                form.action.value = 'apply';
+                submitform('saveconfig');
+            }
+JS;
+            $document = JFactory::getDocument();
+            $document->addScriptDeclaration($js);
         }
-        //-->
-        </script>
-        <?php
     }
 
     /**

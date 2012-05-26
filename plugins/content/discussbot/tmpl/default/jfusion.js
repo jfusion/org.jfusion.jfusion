@@ -303,7 +303,7 @@ function showMessage(msg, type)
 
 function hideMessage(error)
 {
-	delayHiding = setTimeout('ajaxMessageSlide.slideOut()',5000);
+	delayHiding = setTimeout(ajaxMessageSlide.slideOut(),5000);
 }
 
 function highlightPost(postid)
@@ -563,7 +563,7 @@ function toggleDiscussionVisibility() {
         }
     }
 
-    if (override!=null) {
+    if (override!==null) {
         showdiscussion = override;
     }
 
@@ -572,7 +572,7 @@ function toggleDiscussionVisibility() {
             url: jfdb_article_url,
             method: 'get',
             onComplete: function() {
-                if (discusslink!=null) {
+                if (discusslink!==null) {
                     window.location=discusslink;
                 }
             }
@@ -582,7 +582,7 @@ function toggleDiscussionVisibility() {
         var setdiscussionvisibility = new Ajax(jfdb_article_url, {
             method: 'get',
             onComplete: function() {
-                if (discusslink!=null) {
+                if (discusslink!==null) {
                     window.location=discusslink;
                 }
             }

@@ -339,18 +339,17 @@ if (!defined(\'_JEXEC\'))';
      *
      * @return void
      */
-    function outputJavascript() {
-        static $dokuwikiJsLoaded;
-        if (empty($dokuwikiJsLoaded)) {
-            $dokuwikiJsLoaded = 1;
+    function outputJavascript(){
+        static $jsLoaded;
+        if (empty($jsLoaded)) {
+            $jsLoaded = 1;
             $js = <<<JS
-function update_mod(action) {
-    var form = document.adminForm;
-    form.customcommand.value = action;
-    form.action.value = 'apply';
-    submitform('saveconfig');
-    return;
-}
+            function auth_mod(action) {
+                var form = document.adminForm;
+                form.customcommand.value = action;
+                form.action.value = 'apply';
+                submitform('saveconfig');
+            }
 JS;
             $document = JFactory::getDocument();
             $document->addScriptDeclaration($js);
