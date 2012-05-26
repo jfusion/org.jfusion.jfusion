@@ -497,12 +497,12 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
                             $membergroups = $usergroups[$group->id]['membergroups'];
                             $defaultgroup = $usergroups[$group->id]['defaultgroup'];
                             if ((is_array($membergroups) && in_array($defaultgroup, $membergroups)) || $defaultgroup == $membergroups) {
-                                JError::raiseWarning(0, $jname . ': ' . JText::sprintf('VB_GROUP_MISMATCH', $group->name));
+                                JError::raiseWarning(0, $this->getJname() . ': ' . JText::sprintf('VB_GROUP_MISMATCH', $group->name));
                             }
                         }
                     }
                 } else {
-                    JError::raiseWarning(0, $jname . ': ' . JText::_('ADVANCED_GROUPMODE_ONLY_SUPPORTED_FORSLAVES'));
+                    JError::raiseWarning(0, $this->getJname() . ': ' . JText::_('ADVANCED_GROUPMODE_ONLY_SUPPORTED_FORSLAVES'));
                 }
             }
         }
@@ -667,6 +667,9 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
 
     function uninstall()
     {
+        $return = true;
+        $reasons = array();
+
         $db =& JFusionFactory::getDatabase($this->getJname());
         $hookNames = array();
         $hookNames[] = 'JFusion Global Fix Plugin';
@@ -678,10 +681,10 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
         $query = "DELETE FROM #__plugin WHERE hookname = 'init_startup' AND title IN ('" . implode("', '", $hookNames) . "')";
         $db->setQuery($query);
         if (!$db->query()) {
-            $reason = $db->stderr();
-            return array(false, $reason);
+            $reasons[] = $db->stderr();
+            $return = false;
         }
-        return array(true, '');
+        return array($return, $reasons);
     }
     
 	/*

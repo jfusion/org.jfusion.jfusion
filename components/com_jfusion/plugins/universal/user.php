@@ -317,6 +317,7 @@ class JFusionUser_universal extends JFusionUser {
 		$inactive = $map->getFieldType('INACTIVE');
 
 		if ( $userid && ( isset($active) || isset($inactive) ) ) {
+            $userStatus = null;
 			if ($userinfo->block) {
 				if ( isset($inactive) ) {
 					$userStatus = $inactive->value['on'];
@@ -332,16 +333,18 @@ class JFusionUser_universal extends JFusionUser {
 					$userStatus = $active->value['on'];
 				}
 			}
-			$db = JFusionFactory::getDatabase($this->getJname());
-			$query = 'UPDATE #__'.$map->getTablename().' '.
-					'SET '.$active->field.' = '. $db->Quote($userStatus) .' '.
-					'WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid);
-			$db->setQuery($query );
-	        if (!$db->query()) {
-	            $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $db->stderr();
-	        } else {
-	          $status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
-	        }
+            if ($userStatus != null) {
+                $db = JFusionFactory::getDatabase($this->getJname());
+                $query = 'UPDATE #__'.$map->getTablename().' '.
+                    'SET '.$active->field.' = '. $db->Quote($userStatus) .' '.
+                    'WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid);
+                $db->setQuery($query );
+                if (!$db->query()) {
+                    $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $db->stderr();
+                } else {
+                    $status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+                }
+            }
 		}
     }
 

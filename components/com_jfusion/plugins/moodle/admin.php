@@ -363,7 +363,7 @@ EOD;
         return $status;
     }
 
-    public function uninstallModule(){
+    public function uninstallModule() {
 
         $status = array();
         jimport ( 'joomla.filesystem.file' );

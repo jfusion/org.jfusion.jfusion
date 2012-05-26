@@ -74,15 +74,17 @@ class JFusionCookies {
 		
 				require_once(JPATH_SITE.DS.'components'.DS.'com_jfusion'.DS.'jfusionapi.php');
 
+                $api = null;
 		    	foreach( $this->_cookies as $key => $cookies ) {
 		    		$api = new JFusionAPI($key,$this->secret);
 		    		if ($api->set('Cookie','Cookies',$cookies)) {
 		    			$data['url'][$api->url] = $api->sid;
 		    		}
 				}
-				
-				unset($data['url'][$api->url]);
-				$api->execute('cookie','cookies',$data,$return);
+                if ($api) {
+                    unset($data['url'][$api->url]);
+                    $api->execute('cookie','cookies',$data,$return);
+                }
 	    	}
 	    	if (!empty($return)) {
 	    		$mainframe->redirect($return);

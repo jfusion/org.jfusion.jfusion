@@ -530,10 +530,9 @@ JS;
 
         $error = $this->disableRedirectMod();
         if (!empty($error)) {
-           $reasons[] = JText::_('REDIRECT_MOD_UNINSTALL_FAILED');
-           $return = false;
+            $reasons[] = JText::_('REDIRECT_MOD_UNINSTALL_FAILED');
+            $return = false;
         }
-
         return array($return, $reasons);
     }
     

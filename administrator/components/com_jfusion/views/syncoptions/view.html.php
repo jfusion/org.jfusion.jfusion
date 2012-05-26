@@ -76,6 +76,7 @@ class jfusionViewsyncoptions extends JView
             }
             //get the master data
             $JFusionPlugin = & JFusionFactory::getAdmin($master->name);
+            $master_data = $slave_data = array();
             $master_data['total'] = $JFusionPlugin->getUserCount();
             $master_data['jname'] = $master->name;
             //get the slave data

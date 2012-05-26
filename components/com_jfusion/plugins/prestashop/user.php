@@ -468,7 +468,7 @@ class JFusionUser_prestashop extends JFusionUser {
 	        foreach($ps_customer as $key => $value) {
 	            if($key == "id_customer" || $key == "secure_key" || $key == "last_passwd_gen" || $key == "newsletter_date_add" || $key == "date_add" || $key == "date_upd"){
 	                if($key == "id_customer"){
-	                    $insert_sql_columns = "INSERT INTO " . $tbp . "customer (";
+	                    $insert_sql_columns = "INSERT INTO #__customer (";
                         $insert_sql_values = "VALUES ("; 
 			        }
 					
@@ -573,7 +573,7 @@ class JFusionUser_prestashop extends JFusionUser {
     }
     function activateUser($userinfo, &$existinguser, &$status) {
         /* change the �active� field of the customer in the ps_customer table to 1 */
-		$params = JFusionFactory::getParams($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
         $query = "UPDATE #__customer SET active ='1' WHERE id_customer ='" . (int)$existinguser->userid . "'";
         $db->setQuery($query);
     }

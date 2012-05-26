@@ -702,7 +702,7 @@ class JFusionAdmin
      */
     function uninstall()
     {
-        return array(true, '');
+        return array(true, array());
     }
     
 	/*

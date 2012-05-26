@@ -443,7 +443,7 @@ class JFusionUser_magento extends JFusionUser {
         $this->fillMagentouser($magento_user, 'password_hash', md5($password_salt . $userinfo->password_clear) . ':' . $password_salt);
         $errors = $this->update_create_Magentouser($magento_user, $existinguser->userid);
         if ($errors) {
-            $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . $db->stderr();
+            $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR');
         } else {
             $status['debug'][] = JText::_('PASSWORD_UPDATE') . $existinguser->password;
         }
@@ -456,7 +456,7 @@ class JFusionUser_magento extends JFusionUser {
         $this->fillMagentouser($magento_user, 'confirmation', '');
         $errors = $this->update_create_Magentouser($magento_user, $existinguser->userid);
         if ($errors) {
-            $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $db->stderr();
+            $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR');
         } else {
             $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
         }
@@ -466,7 +466,7 @@ class JFusionUser_magento extends JFusionUser {
         $this->fillMagentouser($magento_user, 'confirmation', $userinfo->activation);
         $errors = $this->update_create_Magentouser($magento_user, $existinguser->userid);
         if ($errors) {
-            $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $db->stderr();
+            $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR');
         } else {
             $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
         }

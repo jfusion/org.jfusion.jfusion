@@ -395,6 +395,7 @@ class JFusionForum_vbulletin extends JFusionForum
             $db->setQuery($query);
             $avatar = $db->loadObject();
 
+            $usefileavatar = $avatarurl = null;
             $query = "SELECT varname, value FROM #__setting WHERE varname = 'usefileavatar' OR varname = 'avatarurl'";
             $db->setQuery($query);
             $settings = $db->loadObjectList();
@@ -409,7 +410,7 @@ class JFusionForum_vbulletin extends JFusionForum
                     $url = $avatar->avatarpath;
                 }
             } elseif ($avatar->usecustom) {
-                if ($usefileavatar) {
+                if ($usefileavatar && $avatarurl) {
                     //avatars are saved to the filesystem
                     $url = (strpos($avatarurl, 'http') === false) ? $this->params->get('source_url') . $avatarurl : $avatarurl;
                     $url.= "/avatar{$userid}_{$avatar->avatarrevision}.gif";

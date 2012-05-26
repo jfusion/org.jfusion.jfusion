@@ -313,13 +313,14 @@ JS;
     function uninstall()
     {
         $error = $this->disableRedirectMod();
+        $return = true;
+        $reasons = array();
 
         if (!empty($error)) {
-           $reason = JText::_('REDIRECT_MOD_UNINSTALL_FAILED');
-           return array(false, $reason);
+            $reason[] = JText::_('REDIRECT_MOD_UNINSTALL_FAILED');
+            $return = false;
         }
-
-        return array(true, '');
+        return array($return, $reasons);
     }
     
 	/*

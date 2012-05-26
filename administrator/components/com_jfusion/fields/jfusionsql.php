@@ -46,7 +46,7 @@ class JFormFieldjfusionsql extends JFormField
 		$multiple = ($this->element["multiple"]) ? " MULTIPLE " : "";
 		$add_default = $this->element['add_default'];
 		$key = ($this->element['key_field']) ? (string) $this->element['key_field'] : 'value';
-		$val = ($this->element['value_field']) ? (string) $this->element['value_field'] : $name;
+		$val = ($this->element['value_field']) ? (string) $this->element['value_field'] : '';
         $param_name = ($multiple) ? $this->formControl.'['.$this->group.']['.$this->fieldname.'][]' : $this->formControl.'['.$this->group.']['.$this->fieldname.']';
 
 		if(!empty($jname)) {

@@ -234,7 +234,7 @@ class JFusionUser_dokuwiki extends JFusionUser {
 			if ( version_compare($version, '2009-12-02 "Mulled Wine"') >= 0) {
 				$cookie_value = base64_encode($userinfo->username).'|'. $sticky . '|'.base64_encode($pass);
 			} else {
-				$cookie = base64_encode($userinfo->username.'|'.$sticky.'|'.$pass);
+                $cookie_value = base64_encode($userinfo->username.'|'.$sticky.'|'.$pass);
 			}
             $time = 60*60*24*365;
             $debug_expiration = date("Y-m-d H:i:s", time()+$time);

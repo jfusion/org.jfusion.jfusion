@@ -41,10 +41,11 @@ class JElementDiscussionBotParam extends JElement
 	    $query = "SELECT params FROM #__plugins WHERE element = 'jfusion' AND folder = 'content'";
         $db->setQuery($query);
         $results = $db->loadResult();
+        $pluginParams = new JParameter();
         if($results) {
-            $pluginParams = new JParameter( $results );
-            $jname = $pluginParams->get('jname');
+            $pluginParams->loadString($results);
         }
+        $jname = $pluginParams->get('jname');
 
 	 	if(empty($jname)) {
 	 		return JText::_('NO_PLUGIN_SELECT');

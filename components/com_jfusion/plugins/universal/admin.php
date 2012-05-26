@@ -166,6 +166,7 @@ class JFusionAdmin_universal extends JFusionAdmin{
                     }
                 }
 
+                $mapuser = array();
                 if ( $value['table'] ) {
                     $mapuser = $fl[$value['table']];
                 } else {

@@ -159,7 +159,7 @@ class JFusionUser_oscommerce extends JFusionUser
         $existinguser->password = md5($salt . $userinfo->password_clear) . ':' . $salt;
         $db = JFusionFactory::getDatabase($this->getJname());
         $modified_date = date('Y-m-d H:i:s', time());
-        $query1 = null;
+        $query1 = $query2 = null;
         switch ($osCversion) {
             case 'osc2':
             case 'osczen':
@@ -208,7 +208,7 @@ class JFusionUser_oscommerce extends JFusionUser
         //we need to update the email
         $db = JFusionFactory::getDatabase($this->getJname());
         $modified_date = date('Y-m-d H:i:s', time());
-        $query1 = null;
+        $query1 = $query2 = null;
         switch ($osCversion) {
             case 'osc2':
             case 'osczen':
@@ -594,7 +594,7 @@ class JFusionUser_oscommerce extends JFusionUser
                         }
                         //set the usergroup name  in the user table
                         $db1 = JFusionFactory::getDatabase($this->getJname());
-                        $query = 'SELECT customers_group_name from #__customers_groups WHERE customers_group_id = ' . $usergroup_id . " AND language_id = " . $default_language;
+                        $query = 'SELECT customers_group_name from #__customers_groups WHERE customers_group_id = ' . $existinguser->group_id . " AND language_id = " . $default_language;
                         $db1->setQuery($query);
                         $customers_group_name = $db1->loadResult();
                         $query = 'UPDATE #__customers SET customers_group_iname = ' . $customers_group_name . ' WHERE entity_id =' . $existinguser->userid;
