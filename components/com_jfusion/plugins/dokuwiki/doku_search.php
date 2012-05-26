@@ -156,6 +156,7 @@ function ft_mediause($id, $max) {
             $img = trim($img);
             if (preg_match('/^https?:\/\//i', $img)) continue; // skip external images
             list($img) = explode('?', $img); // remove any parameters
+            $exists = null;
             resolve_mediaid($ns, $img, $exists); // resolve the possibly relative img
             if ($img == $id) { // we have a match
                 $result[] = $doc;

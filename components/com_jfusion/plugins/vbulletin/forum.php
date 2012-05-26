@@ -118,7 +118,8 @@ class JFusionForum_vbulletin extends JFusionForum
                 $query.= 'threadcount = threadcount + 1';
                 $query.= ', replycount = replycount + 1';
                 //is this really the forum's latest thread?
-                if ($timestamp > $foruminfo['lastpost']) {
+                // TODO: $foruminfo undefined ... if ($timestamp > $foruminfo['lastpost']) { not sure what to replace it with
+                if ($timestamp > 0) {
                     $query.= ", lastpost = $timestamp";
                     $query.= ", lastpostid = $postid";
                     $query.= ", lastthreadid = $threadid";

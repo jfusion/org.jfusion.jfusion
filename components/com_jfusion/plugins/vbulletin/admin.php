@@ -238,6 +238,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
         $db = & JFusionFactory::getDatabase($this->getJname());
         if (!JError::isError($db) && !empty($db)) {
             if ($hook != "framelessoptimization") {
+                $hookName = null;
                 switch ($hook) {
                     case 'globalfix':
                         $hookName = 'JFusion Global Fix Plugin';
@@ -255,9 +256,13 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
                         $hookName = 'JFusion API Plugin - REQUIRED';
                     break;
                 }
-                $query = "SELECT COUNT(*) FROM #__plugin WHERE hookname = 'init_startup' AND title = '$hookName' AND active = 1";
-                $db->setQuery($query);
-                $check = ($db->loadResult() > 0) ? true : false;
+                if ($hookName) {
+                    $query = "SELECT COUNT(*) FROM #__plugin WHERE hookname = 'init_startup' AND title = '$hookName' AND active = 1";
+                    $db->setQuery($query);
+                    $check = ($db->loadResult() > 0) ? true : false;
+                } else {
+                    $check = false;
+                }
                 if ($check) {
                     //return success
                     $output = '<img style="float: left;" src="components/com_jfusion/images/check_good.png" height="20px" width="20px"><span style="float: left; margin-left: 5px;">' . JText::_('ENABLED') . '</span>';
