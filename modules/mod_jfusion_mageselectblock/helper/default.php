@@ -8,11 +8,10 @@ class JFusion_Helper_Mageselectblock {
 	 * @return string
 	 */
 	public static function callblock($blockId = null) {
+        $html = '';
 		if ($blockId) {
 			$block = Mage::getModel ( 'cms/block' )->setStoreId ( Mage::app ()->getStore ()->getId () )->load ( $blockId );
-			if (! $block->getIsActive ()) {
-				$html = '';
-			} else {
+			if ($block->getIsActive()) {
 				$content = $block->getContent ();
 				
 				$processor = Mage::getModel ( 'core/email_template_filter' );

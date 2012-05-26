@@ -1319,7 +1319,6 @@ class JFusionJplugin
 				$old = new JUser($existinguser->userid);
 				//Fire the onBeforeStoreUser event.
 				JPluginHelper::importPlugin('user');
-				$dispatcher = & JDispatcher::getInstance();
 				$dispatcher->trigger('onBeforeStoreUser', array($old->getProperties(), false));
 			}
 
