@@ -51,7 +51,13 @@ class JFusionPublic_efront extends JFusionPublic
     }
     /************************************************
     * Functions For JFusion Who's Online Module
+    * @return string
     ***********************************************/
+
+    /*
+     * getOnlineUserQuery
+     * @return string
+     */
     function getOnlineUserQuery($limit) {
         $limiter = (!empty($limit)) ? "LIMIT 0,$limit" : '';
         //get a unix time from 5 mintues ago

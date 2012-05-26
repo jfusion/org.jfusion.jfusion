@@ -60,6 +60,8 @@ class JFusionJplugin
     /**
      * Returns the registration URL for the integrated software
      *
+     * @param string $jname
+     *
      * @return string registration URL
      */
     public static function getRegistrationURL($jname='joomla_int')
@@ -74,6 +76,8 @@ class JFusionJplugin
     /**
      * Returns the lost password URL for the integrated software
      *
+     * @param string $jname
+     *
      * @return string lost password URL
      */
     public static function getLostPasswordURL($jname='joomla_int')
@@ -87,6 +91,8 @@ class JFusionJplugin
 
     /**
      * Returns the lost username URL for the integrated software
+     *
+     * @param string $jname
      *
      * @return string lost username URL
      */

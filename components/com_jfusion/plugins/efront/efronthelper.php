@@ -128,9 +128,9 @@ class JFusionEfrontHelper {
 /**
  * connects to api, using userbame and password
  * returns token, or empty string when not successful
+ *
+ * @return array
  */
-
-
     function send_to_api($curl_options,$status) {
         $status = array();
         $status['debug'] = array();

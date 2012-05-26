@@ -95,6 +95,8 @@ class doku_auth_plain extends doku_auth_basic {
      * grps array   list of groups the user is in
      *
      * @author  Andreas Gohr <andi@splitbrain.org>
+     *
+     * @return array
      */
     function getUserData($user = null) {
         $this->_loadUserData();
@@ -112,6 +114,8 @@ class doku_auth_plain extends doku_auth_basic {
      *
      * @author  Andreas Gohr <andi@splitbrain.org>
      * @author  Chris Smith <chris@jalakai.co.uk>
+     *
+     * @return mixed
      */
     function createUser($user,$pwd,$name,$mail,$grps=null)
     {

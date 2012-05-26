@@ -57,6 +57,8 @@ if(JFusionFunction::isJoomlaVersion('1.6')) {
 	     * @param string mathcing option, exact|any|all
 	     * @param string ordering option, newest|oldest|popular|alpha|category
 	     * @param mixed An array if the search it to be restricted to areas, null if search all
+         *
+         * @return array
 	     */
 	    function onContentSearch($text, $phrase='', $ordering='', $areas=null)
 	    {

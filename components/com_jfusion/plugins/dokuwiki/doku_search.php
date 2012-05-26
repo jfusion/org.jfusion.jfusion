@@ -12,6 +12,8 @@
  * @copyright  2008 JFusion. All rights reserved.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
+ *
+ * @return array
  */
 
 function ft_pageSearch($query, &$highlight) {
@@ -98,6 +100,8 @@ function ft_pageSearch($query, &$highlight) {
  *
  * Does a quick lookup with the fulltext index, then
  * evaluates the instructions of the found pages
+ *
+ * @return array
  */
 function ft_backlinks($id) {
     global $conf;
@@ -134,6 +138,8 @@ function ft_backlinks($id) {
  * evaluates the instructions of the found pages
  *
  * Aborts after $max found results
+ *
+ * @return array
  */
 function ft_mediause($id, $max) {
     global $conf;

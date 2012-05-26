@@ -123,6 +123,12 @@ class JFusionPublic_phpbb3 extends JFusionPublic
     /************************************************
     * Functions For JFusion Who's Online Module
     ***********************************************/
+
+    /*
+     * getOnlineUserQuery
+     *
+     * @return string
+     */
     function getOnlineUserQuery($limit) {
         $limiter = (!empty($limit)) ? "LIMIT 0,$limit" : '';
         //get a unix time from 5 mintues ago

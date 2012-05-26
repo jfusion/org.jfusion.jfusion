@@ -41,7 +41,9 @@ class JFusionMySQL extends JDatabaseMySQL
     
     /**
      * added execute query as Joomla 1.6 has removed functions
-     * 
+     *
+     * @param string $query
+     *
      * @return string nothing
      */        
     function Execute($query)

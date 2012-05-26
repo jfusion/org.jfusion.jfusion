@@ -14,7 +14,15 @@ class JFusionCookies {
 	}
 	
 	/**
-     * Set a value
+     * addCookie
+     *
+     * @param string $cookie_name
+     * @param string $cookie_value
+     * @param int $cookie_name
+     * @param string $cookiepath
+     * @param string $cookiedomain
+     * @param int $cookie_secure
+     * @param int $cookie_httponly
      */
     function addCookie($cookie_name, $cookie_value='', $cookie_expires_time=0, $cookiepath='', $cookiedomain='', $cookie_secure=0, $cookie_httponly=0) {
     	if ($cookie_expires_time != 0) {
@@ -56,6 +64,9 @@ class JFusionCookies {
 
     /**
      * Execute the cross domain login redirects
+     *
+     * @param string $source_url
+     * @param string $return
      */
     function executeRedirect($source_url=null,$return=null) {
     	$mainframe = & JFactory::getApplication();
@@ -136,6 +147,7 @@ class JFusionCookies {
 	 *        4. 4 Delimeters in between key-value pairs
 	 *
 	 * @see model.curl.php and model.curlframeless.php
+     * @returns string
 	 */
 	public static function implodeCookies($array, $delimeter, $keyssofar = '') {
 		$output = '';

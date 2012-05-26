@@ -102,6 +102,7 @@ class JFusionPublic
     
     /**
      * function that parses the HTML and fix the css
+     *
      * @param string $html data to parse
      * @param string $infile_only parse only infile (body)
      */

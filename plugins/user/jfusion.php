@@ -572,6 +572,8 @@ class plgUserJfusion extends JPlugin
      * @param boolean $isnew   is new user
      *
      * @access public
+     *
+     * @return boolean
      */
     function onBeforeStoreUser($olduser, $isnew)
     {

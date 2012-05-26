@@ -28,13 +28,22 @@ class JFusionPublic_mediawiki extends JFusionPublic{
 	{
 	    $regex_body		= array();
 	    $replace_body	= array();
-		$regex_body[]	= '#addButton\("/(.*?)"#mS';		$replace_body[]	= 'addButton("'.$data->integratedURL.'$1"';
+
+		$regex_body[]	= '#addButton\("/(.*?)"#mS';
+		$replace_body[]	= 'addButton("'.$data->integratedURL.'$1"';
+
 	    $data->body = preg_replace($regex_body, $replace_body, $data->body);
 	}
 
 	/************************************************
 	 * For JFusion Search Plugin
 	 ***********************************************/
+
+    /*
+    * getSearchQueryColumns
+     *
+    * @return string
+    */
 	function getSearchQueryColumns()
 	{
 		$columns = new stdClass();

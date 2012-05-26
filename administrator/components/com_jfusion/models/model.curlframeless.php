@@ -28,7 +28,7 @@ class JFusionCurlFrameless{
 
     /**
     * Gets an Fusion front object
-    * @param string $jname name of the JFusion plugin used
+    *
     * @return object JFusionCurlFrameless JFusionCurlFrameless object for the JFusionCurlFrameless
     */
     function &getInstance()

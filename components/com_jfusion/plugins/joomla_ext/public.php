@@ -52,6 +52,12 @@ class JFusionPublic_joomla_ext extends JFusionPublic {
     /************************************************
     * Functions For JFusion Who's Online Module
     ***********************************************/
+
+    /*
+    * getOnlineUserQuery
+    *
+    * @return string
+    */
     function getOnlineUserQuery($limit) {
         return JFusionJplugin::getOnlineUserQuery($limit);
     }

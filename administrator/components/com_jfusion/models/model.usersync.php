@@ -44,6 +44,11 @@ class JFusionUsersync
      * Retrieve log data
      *
      * @param string $syncid the usersync id
+     * @param string $type
+     * @param int $limitstart
+     * @param int $limit
+     * @param string $sort
+     * @param string $dir
      *
      * @return string nothing
      */
@@ -77,6 +82,7 @@ class JFusionUsersync
      * Count log data
      *
      * @param string $syncid the usersync id
+     * @param string $type
      *
      * @return int count results
      */

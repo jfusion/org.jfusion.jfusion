@@ -70,7 +70,7 @@ class JFusionFunction
 	 * By default, returns the JFusion plugin of the software that is currently the slave of user management, minus the joomla_int plugin.
 	 * If activity, search, or discussion is passed in, returns the plugins with that feature enabled
 	 *
-	 * @param array $criteria the type of plugins to retrieve
+	 * @param string $criteria the type of plugins to retrieve
 	 *
 	 * @return object plugin details
 	 */
@@ -92,19 +92,21 @@ class JFusionFunction
 			default:
 				return false;
 		}
-		$plugins =& ${
-			$criteria . "_plugins"};
-			if (empty($plugins)) {
-				$query = "SELECT * FROM #__jfusion WHERE ($criteria = 1 AND status = 1 AND name NOT LIKE 'joomla_int')";
-				$db = JFactory::getDBO();
-				$db->setQuery($query);
-				$plugins = $db->loadObjectList();
-			}
-			return $plugins;
+		$plugins =& ${$criteria."_plugins"};
+        if (empty($plugins)) {
+            $query = "SELECT * FROM #__jfusion WHERE ($criteria = 1 AND status = 1 AND name NOT LIKE 'joomla_int')";
+            $db = JFactory::getDBO();
+            $db->setQuery($query);
+            $plugins = $db->loadObjectList();
+        }
+        return $plugins;
 	}
 	
     /**
      * Changes plugin status in both Joomla 1.5 and Joomla 1.6
+     *
+     * @param string $element
+     * @param string $folder
      *
      * @return object master details
      */

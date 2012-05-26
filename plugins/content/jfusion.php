@@ -62,7 +62,7 @@ class plgContentJfusion extends JPlugin
     * observer design pattern.
      *
      * @param object &$subject The object to observe
-     * @param array  $config   An array that holds the plugin configuration
+     * @param array  $params   An array that holds the plugin configuration
      *
      * @since 1.5
      * @return void

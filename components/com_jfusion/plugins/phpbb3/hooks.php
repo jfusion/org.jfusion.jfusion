@@ -52,6 +52,8 @@ function phpbb_hook_register(&$hook)
 class JFusionHook {
     /**
      * Throws an exeption at the end of the phpBB3 execution to return to JFusion
+     *
+     * @throws Exception
      */
     public static function exit_handler($hook) {
         //throw an exception to allow Joomla to continue

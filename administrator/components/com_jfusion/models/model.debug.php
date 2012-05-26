@@ -45,7 +45,7 @@ class std {
      *
      *    @uses arrayfunc::recursiveMerge
      *
-     *    @returns array, a recursively merged Array
+     *    @returns array a recursively merged Array
      */
     public static function getRequest($post, $get, $files) {
         // Setzt verschiedene $_REQUEST-Daten sinnvoll zusammen
@@ -66,7 +66,7 @@ class std {
      *
      *    @param the raw FILE-Array
      *
-     *    @returns a POST/GET-Like structured Array
+     *    @returns array a POST/GET-Like structured Array
      */
     private static function rearrangeFiles($files) {
         // Hilfsfunktion f�r std::getRequest() (rekursiv)
@@ -94,7 +94,7 @@ class std {
      *    @param string $text, the Text to remove the empty Lines From
      *    @param string $newLineChar - OPTIONAL - the New-Line indicator, default is "\n"
      *
-     *    @returns the text without blank lines
+     *    @returns string the text without blank lines
      */
     public static function removeEmptyLines($text, $newLineChar = "\n") {
         $lines = explode($newLineChar, $text);
@@ -152,6 +152,8 @@ class debug {
     /**
      *    Creates and returns the JavaScript-Snippet used to toggle values by klicking on the keys
      *    returns the code only once, i.e. the first time, print it to the standard output if you get the snippet
+     *
+     * @returns string
      */
     private static function getToggleScript() {
         $script = "";
@@ -398,7 +400,8 @@ class debug {
      *    Returns the results of the measurements, HTML-Encoded
      *
      *    @uses debug::get()
-     *    @returns the HTML-Code
+     *
+     *    @returns string the HTML-Code
      */
     function getTime() {
         return debug::get(debug::$messungen, "Zeitmessungen");
@@ -481,10 +484,10 @@ class debug {
      *
      *    @param array $laufzeit, the raw-array produced by calling start- and stopMessung
      *
-     *    @returns a humen-understandable Version
+     *    @returns array a humen-understandable Version
      */
     private static function createLaufzeitResult($laufzeit) {
-        $result = "";
+        $result = array();
         if (isset($laufzeit['childs'])) {
             $childTime = 0;
             if (isset($laufzeit['time'])) $result['Calls'] = $laufzeit['count'];
@@ -534,7 +537,7 @@ class debug {
      *    - the null-Value will be bold and italic
      *
      *    @param mixed $value: the Value to HMTL-Encode
-     *    @returns the HTML-Encoded Value
+     *    @returns string the HTML-Encoded Value
      */
     private static function decorateValue($value) {
         if (is_string($value)) {

@@ -120,6 +120,8 @@ class phpbb_bbcode_parser {
      */
     /**
      * Making some pre-checks for bbcodes as well as increasing the number of parsed items
+     *
+     * @return bool
      */
     function check_bbcode($bbcode, &$in) {
         // when using the /e modifier, preg_replace slashes double-quotes but does not
@@ -133,6 +135,8 @@ class phpbb_bbcode_parser {
     }
     /**
      * Transform some characters in valid bbcodes
+     *
+     * @return string
      */
     function bbcode_specialchars($text) {
         $str_from = array('<', '>', '[', ']', '.', ':');
@@ -141,6 +145,8 @@ class phpbb_bbcode_parser {
     }
     /**
      * Parse size tag
+     *
+     * @return string
      */
     function bbcode_size($stx, $in) {
         global $user, $config;
@@ -155,6 +161,8 @@ class phpbb_bbcode_parser {
     }
     /**
      * Parse color tag
+     *
+     * @return string
      */
     function bbcode_color($stx, $in) {
         if (!$this->check_bbcode('color', $in)) {
@@ -164,6 +172,8 @@ class phpbb_bbcode_parser {
     }
     /**
      * Parse u tag
+     *
+     * @return string
      */
     function bbcode_underline($in) {
         if (!$this->check_bbcode('u', $in)) {
@@ -173,6 +183,8 @@ class phpbb_bbcode_parser {
     }
     /**
      * Parse b tag
+     *
+     * @return string
      */
     function bbcode_strong($in) {
         if (!$this->check_bbcode('b', $in)) {
@@ -182,6 +194,8 @@ class phpbb_bbcode_parser {
     }
     /**
      * Parse i tag
+     *
+     * @return string
      */
     function bbcode_italic($in) {
         if (!$this->check_bbcode('i', $in)) {
@@ -191,6 +205,8 @@ class phpbb_bbcode_parser {
     }
     /**
      * Parse img tag
+     *
+     * @return string
      */
     function bbcode_img($in) {
         global $user, $config;
@@ -211,6 +227,8 @@ class phpbb_bbcode_parser {
     }
     /**
      * Parse flash tag
+     *
+     * @return string
      */
     function bbcode_flash($width, $height, $in) {
         global $user, $config;
@@ -226,6 +244,8 @@ class phpbb_bbcode_parser {
     }
     /**
      * Parse inline attachments [ia]
+     *
+     * @return string
      */
     function bbcode_attachment($stx, $in) {
         if (!$this->check_bbcode('attachment', $in)) {
@@ -236,6 +256,8 @@ class phpbb_bbcode_parser {
     /**
      * Parse code text from code tag
      * @access private
+     *
+     * @return string
      */
     function bbcode_parse_code($stx, &$code) {
         switch (strtolower($stx)) {
@@ -284,6 +306,8 @@ class phpbb_bbcode_parser {
     /**
      * Parse code tag
      * Expects the argument to start right after the opening [code] tag and to end with [/code]
+     *
+     * @return string
      */
     function bbcode_code($stx, $in) {
         if (!$this->check_bbcode('code', $in)) {

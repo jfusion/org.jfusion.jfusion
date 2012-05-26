@@ -127,6 +127,8 @@ class auth_plugin_jfusion extends auth_plugin_base {
 
 	/**
 	 * No password updates.
+     *
+     * @return bool
 	 */
 	function user_update_password($user, $newpassword) {
 		return false;

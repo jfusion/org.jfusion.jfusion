@@ -104,6 +104,8 @@ class JFusionModelInstaller extends InstallerModelInstall
     /**
      * Replaces original Install() method.
      *
+     * @param string $filename
+     *
      * @return true|false Result of the JFusion plugin install
      */
     function installZIP($filename)
