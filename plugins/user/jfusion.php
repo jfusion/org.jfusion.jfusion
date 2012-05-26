@@ -769,9 +769,9 @@ class plgUserJfusion extends JPlugin
  	    return $this->onBeforeStoreUser($user, $isnew, $new);
 	}
 	public function onUserAfterSave($user, $isnew, $success, $msg) {
-	        if (!JPluginHelper::isEnabled('user','joomla')) {
-            $user = JFactory::getUser();
-            $levels = implode(',', $user->getAuthorisedViewLevels());
+        if (!JPluginHelper::isEnabled('user','joomla')) {
+            $userInfo = JFactory::getUser();
+            $levels = implode(',', $userInfo->getAuthorisedViewLevels());
             
             $db = JFactory::getDbo();
             $query = $db->getQuery(true);
