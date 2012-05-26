@@ -1137,8 +1137,9 @@ class JFusionCurl
 				break;
 		}
 
+        $input_username_name="";
+        $input_password_name = "";
 		if (empty($curl_options['logout'])){
-			$input_username_name="";
 			for ($i = 0; $i <= $elements_count-1; $i++) {
 				if ($curl_options['input_username_id']) {
 					if (strtolower($elements_keys[$i]) == strtolower($curl_options['input_username_id'])) {
@@ -1162,7 +1163,6 @@ class JFusionCurl
 				return $status;
 			}
 
-			$input_password_name = "";
 			for ($i = 0; $i <= $elements_count-1; $i++) {
 				if ($curl_options['input_password_id']) {
 					if (strtolower($elements_keys[$i]) == strtolower($curl_options['input_password_id'])) {

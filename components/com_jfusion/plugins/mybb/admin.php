@@ -50,6 +50,7 @@ class JFusionAdmin_mybb extends JFusionAdmin
         }
         $myfile = $forumPath . 'inc' . DS . 'config.php';
         //include config file
+        $config = array();
         require_once $myfile;
         //Save the parameters into the standard JFusion params format
         $params = array();

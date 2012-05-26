@@ -33,16 +33,18 @@ class JFormFieldGalleries extends JFormField {
             return "<div>Couldn't query Gallery-Tree</div>";
         } else {
             if (!empty($tree)) {
+                $titles = array();
                 list($ret, $items) = GalleryCoreApi::loadEntitiesById(GalleryUtilities::arrayKeysRecursive($tree));
-                foreach ($items as $item) {
-                    $title = $item->getTitle() ? $item->getTitle() : $item->getPathComponent();
-                    $title = preg_replace('/\r\n/', ' ', $title);
-                    $titles[$item->getId() ] = $title;
-                }
-
                 if ($ret) {
                     return "<div>Couldn't query Gallery-Tree</div>";
+                } else {
+                    foreach ($items as $item) {
+                        $title = $item->getTitle() ? $item->getTitle() : $item->getPathComponent();
+                        $title = preg_replace('/\r\n/', ' ', $title);
+                        $titles[$item->getId() ] = $title;
+                    }
                 }
+
                 $output[] = JHTML::_('select.option',  - 1, "Default Album" );
                 $this->buildTree($tree, $titles, $output, "----| ", true);
             }

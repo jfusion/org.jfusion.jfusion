@@ -301,6 +301,7 @@ class JFusionUser_gallery2 extends JFusionUser {
             $status['error'][] = $ret->getErrorMessage();
         }
         //Check Password
+        $changed = false;
         if (isset($userinfo->password_clear) && !empty($userinfo->password_clear)) {
             $testcrypt = GalleryUtilities::md5Salt($userinfo->password_clear, $g2_existinguser->hashedPassword);
             if ($testcrypt != $g2_existinguser->hashedPassword) {

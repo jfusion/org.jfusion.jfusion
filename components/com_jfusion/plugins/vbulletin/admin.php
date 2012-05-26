@@ -62,6 +62,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
         } else {
             //parse the file line by line to get only the config variables
             $file_handle = fopen($configfile, 'r');
+            $config = array();
             while (!feof($file_handle)) {
                 $line = fgets($file_handle);
                 if (strpos($line, '$config') === 0) {
@@ -109,6 +110,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
             if (($file_handle = @fopen($funcfile, 'r')) !== false) {
                 //parse the functions file line by line to get the cookie salt
                 $file_handle = fopen($funcfile, 'r');
+                $cookie_salt = '';
                 while (!feof($file_handle)) {
                     $line = fgets($file_handle);
                     if (strpos($line, 'COOKIE_SALT') !== false) {

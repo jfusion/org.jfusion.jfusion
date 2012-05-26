@@ -51,6 +51,7 @@ class JFusionAdmin_smf2 extends JFusionAdmin{
             return $params;
 
         } else {
+            $config = array();
             //parse the file line by line to get only the config variables
             $file_handle = fopen($myfile, 'r');
             while (!feof($file_handle)) {

@@ -44,6 +44,7 @@ class JFusionUser_oscommerce extends JFusionUser
         $db->setQuery($query);
         $userid = $db->loadResult();
         if ($userid) {
+            $query1 = $query2 = null;
             switch ($osCversion) {
                 case 'osc2':
                     $query1 = 'SELECT ' . 'customers_id          as userid,' . '0                        as group_id,' . 'customers_firstname   as name,' . 'customers_lastname    as lastname,' . 'customers_password    as password,' . 'null                  as password_salt ' . 'FROM #__customers WHERE customers_id = ' . $db->Quote($userid);
@@ -67,32 +68,34 @@ class JFusionUser_oscommerce extends JFusionUser
                     $query2 = 'SELECT ' . 'customers_info_date_account_created as registerDate,' . 'customers_info_date_of_last_logon   as lastvisitDate, ' . 'customers_info_date_account_last_modified as modifiedDate ' . 'FROM #__customers_info WHERE customers_info_id = ' . $db->Quote($userid);
                 break;
             }
-            // get the details
-            $db->setQuery($query1);
-            $result = $db->loadObject();
-            $result->username = $identifier;
-            $result->email = $identifier;
-            if (!empty($result->activation)) {$result->activation = !$result->activation;}
-            $result->activation = "";
-            $result->block = 0;
-            $password = $result->password;
-            $hashArr = explode(':', $password);
-            $result->password = $hashArr[0];
-            if (!empty($hashArr[1])) {
-                $result->password_salt = $hashArr[1];
-            }
-            if ($result) {
-                if ($query2) {
-                    $db->setQuery($query2);
-                    $result1 = $db->loadObject();
-                    if ($result1) {
-                        $result->registerDate = $result1->registerDate;
-                        $result->lastvisitDate = $result1->lastvisitDate;
-                        $result->modifiedDate = $result1->modifiedDate;
+            if ($query1 && $query2) {
+                // get the details
+                $db->setQuery($query1);
+                $result = $db->loadObject();
+                $result->username = $identifier;
+                $result->email = $identifier;
+                if (!empty($result->activation)) {$result->activation = !$result->activation;}
+                $result->activation = "";
+                $result->block = 0;
+                $password = $result->password;
+                $hashArr = explode(':', $password);
+                $result->password = $hashArr[0];
+                if (!empty($hashArr[1])) {
+                    $result->password_salt = $hashArr[1];
+                }
+                if ($result) {
+                    if ($query2) {
+                        $db->setQuery($query2);
+                        $result1 = $db->loadObject();
+                        if ($result1) {
+                            $result->registerDate = $result1->registerDate;
+                            $result->lastvisitDate = $result1->lastvisitDate;
+                            $result->modifiedDate = $result1->modifiedDate;
+                        }
                     }
                 }
+                return $result;
             }
-            return $result;
         }
         return false;
     }
@@ -156,6 +159,7 @@ class JFusionUser_oscommerce extends JFusionUser
         $existinguser->password = md5($salt . $userinfo->password_clear) . ':' . $salt;
         $db = JFusionFactory::getDatabase($this->getJname());
         $modified_date = date('Y-m-d H:i:s', time());
+        $query1 = null;
         switch ($osCversion) {
             case 'osc2':
             case 'osczen':
@@ -170,24 +174,29 @@ class JFusionUser_oscommerce extends JFusionUser
                 $query2 = '';
             break;
         }
-        $db->BeginTrans();
-        $db->setQuery($query1);
-        if (!$db->query()) {
-            $db->RollbackTrans();
-            $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . $db->stderr();
-            return;
-        } else {
-            if ($query2) {
-                $db->setQuery($query2);
-                if (!$db->query()) {
-                    $db->RollbackTrans();
-                    $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . $db->stderr();
-                    return;
+        if ($query1) {
+            $db->BeginTrans();
+            $db->setQuery($query1);
+            if (!$db->query()) {
+                $db->RollbackTrans();
+                $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . $db->stderr();
+                return;
+            } else {
+                if ($query2) {
+                    $db->setQuery($query2);
+                    if (!$db->query()) {
+                        $db->RollbackTrans();
+                        $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . $db->stderr();
+                        return;
+                    }
                 }
             }
+            $db->CommitTrans();
+            $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
+        } else {
+            $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR');
         }
-        $db->CommitTrans();
-        $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
+
     }
     function updateUsername($userinfo, &$existinguser, &$status) {
         // no username in oscommerce
@@ -199,6 +208,7 @@ class JFusionUser_oscommerce extends JFusionUser
         //we need to update the email
         $db = JFusionFactory::getDatabase($this->getJname());
         $modified_date = date('Y-m-d H:i:s', time());
+        $query1 = null;
         switch ($osCversion) {
             case 'osc2':
             case 'osczen':
@@ -213,21 +223,25 @@ class JFusionUser_oscommerce extends JFusionUser
                 $query2 = '';
             break;
         }
-        $db->BeginTrans();
-        $db->setQuery($query1);
-        if (!$db->query()) {
-            $db->RollbackTrans();
-            $status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $db->stderr();
-            return;
-        } else {
-            if ($query2) {
-                $db->setQuery($query2);
-                if (!$db->query()) {
-                    $db->RollbackTrans();
-                    $status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $db->stderr();
-                    return;
+        if ($query1) {
+            $db->BeginTrans();
+            $db->setQuery($query1);
+            if (!$db->query()) {
+                $db->RollbackTrans();
+                $status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $db->stderr();
+                return;
+            } else {
+                if ($query2) {
+                    $db->setQuery($query2);
+                    if (!$db->query()) {
+                        $db->RollbackTrans();
+                        $status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $db->stderr();
+                        return;
+                    }
                 }
             }
+        } else {
+            $status['error'][] = JText::_('EMAIL_UPDATE_ERROR');
         }
     }
     function activateUser($userinfo, &$existinguser, &$status) {
@@ -248,6 +262,7 @@ class JFusionUser_oscommerce extends JFusionUser
         $user->customers_gender = 'm'; // ouch, empty is female, so this is an arbritairely choice
         $parts = explode(' ', $userinfo->name);
         $user->customers_firstname = $parts[0];
+        $lastname = '';
         if ($parts[(count($parts) - 1) ]) {
             for ($i = 1;$i < (count($parts));$i++) {
                 $lastname = $lastname . ' ' . $parts[$i];

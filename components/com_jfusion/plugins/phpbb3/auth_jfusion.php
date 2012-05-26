@@ -104,6 +104,7 @@ function login_jfusion(&$username, &$password) {
             }
 
             //recreate phpBB's database connection
+            $dbhost = $dbuser = $dbpasswd = $dbname = $dbport = null;
             include $phpbb_root_path . 'config.' . $phpEx;
             $db->sql_connect($dbhost, $dbuser, $dbpasswd, $dbname, $dbport, false, false);
             unset($dbpasswd);
@@ -117,6 +118,7 @@ function login_jfusion(&$username, &$password) {
             exit();
         } else {
             //recreate phpBB's database connection
+            $dbhost = $dbuser = $dbpasswd = $dbname = $dbport = null;
             include $phpbb_root_path . 'config.' . $phpEx;
             $db->sql_connect($dbhost, $dbuser, $dbpasswd, $dbname, $dbport, false, false);
             unset($dbpasswd);
@@ -160,6 +162,7 @@ function logout_jfusion(&$data) {
         }
 
         //recreate phpBB's database connection
+        $dbhost = $dbuser = $dbpasswd = $dbname = $dbport = null;
         include $phpbb_root_path . 'config.' . $phpEx;
         $db->sql_connect($dbhost, $dbuser, $dbpasswd, $dbname, $dbport, false, false);
         unset($dbpasswd);

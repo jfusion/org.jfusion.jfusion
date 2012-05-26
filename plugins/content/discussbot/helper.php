@@ -228,10 +228,10 @@ class JFusionDiscussBotHelper {
 
         //allowed components
         $components = array('com_content', 'com_k2');
-
+        $valid = 0;
         //make sure we have an article
         if (!$this->article->id || !in_array($this->option, $components)) {
-            return array(0, JText::sprintf('REASON_NOT_AN_ARTICLE', $this->option));
+            return array($valid, JText::sprintf('REASON_NOT_AN_ARTICLE', $this->option));
         }
 
         //if in K2, make sure we are after the article itself and not video or gallery
@@ -247,30 +247,30 @@ class JFusionDiscussBotHelper {
             }
 
             if ($k2_tracker != 'item') {
-                return array(0, JTEXT::_('REASON_NOT_IN_K2_ARTICLE_TEXT'));
+                return array($valid, JTEXT::_('REASON_NOT_IN_K2_ARTICLE_TEXT'));
             }
         }
 
         //make sure there is a default user set
         if ($this->params->get("default_userid",false)===false) {
-            return array(0, JText::_('REASON_NO_DEFAULT_USER'));
+            return array($valid, JText::_('REASON_NO_DEFAULT_USER'));
         }
 
         $JFusionForum =& JFusionFactory::getForum($this->jname);
         $forumid = $JFusionForum->getDefaultForum($this->params, $this->article);
         if (empty($forumid)) {
-            return array(0, JText::_('REASON_NO_FORUM_FOUND'));
+            return array($valid, JText::_('REASON_NO_FORUM_FOUND'));
         }
 
         $dbtask = JRequest::getVar('dbtask', 'render_content', 'post');
         $bypass_tasks = array('create_thread', 'render_content', 'publish_discussion', 'unpublish_discussion');
         if (!empty($dbtask) && !in_array($dbtask, $bypass_tasks)) {
-            return array(0, JText::_('REASON_DISCUSSION_MANUALLY_INITIALISED'));
+            return array($valid, JText::_('REASON_DISCUSSION_MANUALLY_INITIALISED'));
         } else {
             //make sure article is published
             $state = ($this->option == 'com_k2') ? $this->article->published : $this->article->state;
             if (!$state) {
-                return array(0, JText::_('REASON_ARTICLE_NOT_PUBLISHED'));
+                return array($valid, JText::_('REASON_ARTICLE_NOT_PUBLISHED'));
             }
 
             //make sure the article is set to be published
@@ -279,23 +279,23 @@ class JFusionDiscussBotHelper {
             $now = JFactory::getDate('now', $mainframe->getCfg('offset'))->toUnix();
 
             if ($now < $publish_up) {
-                return array(0, JText::_('REASON_PUBLISHED_IN_FUTURE'));
+                return array($valid, JText::_('REASON_PUBLISHED_IN_FUTURE'));
             }
 
             $creationMode =& $this->params->get('create_thread','load');
             //make sure create_thread is appropriate
             if ($creationMode == 'reply' && $dbtask != 'create_thread') {
-                return array(0, JText::_('REASON_CREATED_ON_FIRST_REPLY'));
+                return array($valid, JText::_('REASON_CREATED_ON_FIRST_REPLY'));
             } elseif ($creationMode == 'view') {
                 //only create the article if we are in the article view
                 $test_view = ($this->option == 'com_k2') ? 'item' : 'article';
                 if (JRequest::getVar('view') != $test_view) {
-                    return array(0, JText::_('REASON_CREATED_ON_VIEW'));
+                    return array($valid, JText::_('REASON_CREATED_ON_VIEW'));
                 }
             } elseif ($creationMode == 'new' && !$skip_new_check) {
                 //if set to create a thread for new articles only, make sure the thread was created with onAfterContentSave
                 if (!$this->thread_status) {
-                    return array(0, JText::_('REASON_ARTICLE_NOT_NEW'));
+                    return array($valid, JText::_('REASON_ARTICLE_NOT_NEW'));
                 }
             }
 
@@ -351,7 +351,6 @@ class JFusionDiscussBotHelper {
                         //make sure the category is not in an excluded category
                         if ($valid && !empty($excludedCategories)) {
                             if (in_array($catid, $excludedCategories)) {
-                                $valid = 0;
                                 $validity_reason = JText::_('REASON_IN_EXCLUDED_CATEGORY');
                             }
                         }
@@ -375,7 +374,6 @@ class JFusionDiscussBotHelper {
                                         }
                                     } else {
                                         $stop = true;
-                                        $valid = 0;
                                         $validity_reason = JText::_('REASON_IN_EXCLUDED_CATEGORY_PARENT');
                                     }
                                 }
@@ -398,7 +396,7 @@ class JFusionDiscussBotHelper {
                         if ($this->params->get('include_static',false)) {
                             return array(1, JText::_('REASON_INCLUDE_UNCATEGORIZED'));
                         } else {
-                            return array(0, JText::_('REASON_DISCLUDE_UNCATEGORIZED'));
+                            return array($valid, JText::_('REASON_DISCLUDE_UNCATEGORIZED'));
                         }
                     }
 
@@ -428,14 +426,12 @@ class JFusionDiscussBotHelper {
                         if (!in_array($secid,$includedSections)) {
                             //this article is not in one of the sections to include
                             $validity_reason = 'REASON_NOT_IN_INCLUDE_SECTION';
-                            $valid = 0;
                         } elseif (!empty($includedCategories)) {
                             //there are both specific sections and categories to include
                             //check to see if this article is not in the selected categories within the included sections
 
                             if (!in_array($catid,$includedCategories)) {
                                 $validity_reason = JText::_('REASON_IN_INCLUDED_SECTION_NOT_IN_INCLUDED_CATEGORY');
-                                $valid = 0;
                             } else {
                                 $validity_reason = JText::_('REASON_IN_INCLUDED_SECTION_AND_CATEGORY');
                                 $valid = 1;
@@ -444,7 +440,6 @@ class JFusionDiscussBotHelper {
                             //exclude this article if it is in one of the excluded categories
                             if (in_array($catid,$excludedCategories)) {
                                 $validity_reason = JText::_('REASON_IN_INCLUDED_SECTION_BUT_IN_EXCLUDED_CATEGORY');
-                                $valid = 0;
                             } else {
                                 $validity_reason = JText::_('REASON_IN_INCLUDED_SECTION_NOT_IN_EXCLUDED_CATEGORY');
                                 $valid = 1;
@@ -547,7 +542,6 @@ class JFusionDiscussBotHelper {
                         //if valid, make sure the category is not in an exluded cat
                         if ($valid && !empty($excludedCategories)) {
                             if (in_array($catid, $excludedCategories)) {
-                                $valid = 0;
                                 $validity_reason = JText::_('REASON_IN_EXCLUDED_CATEGORY');
                             }
                         }
@@ -562,7 +556,6 @@ class JFusionDiscussBotHelper {
                             if (!empty($parent_id)) {
                                 if (in_array($parent_id, $excludedCategories)) {
                                     $stop = true;
-                                    $valid = 0;
                                     $validity_reason = JText::_('REASON_IN_EXCLUDED_CATEGORY_PARENT');
                                 } else {
                                     //get the parent's parent
@@ -582,7 +575,6 @@ class JFusionDiscussBotHelper {
                     $validity_reason = JText::_('REASON_NO_STIPULATIONS');
                 }
             }
-
             return array($valid, $validity_reason);
         }
     }

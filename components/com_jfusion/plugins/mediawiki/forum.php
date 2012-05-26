@@ -77,6 +77,7 @@ class JFusionForum_mediawiki extends JFusionForum
 			foreach($results as $value ) {
 				if (strlen($value->text)) {
 					//get the avatar of the logged in user
+                    $o_avatar_height = $o_avatar_width = '';
 					if ($avatar) {
 						// retrieve avatar
 						$avatarSrc =& $avatar_software;

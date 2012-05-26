@@ -568,6 +568,7 @@ class JFvBulletinTask {
     }
 
     function decryptApiData($data) {
+        $decrypted_data = array();
     	if (function_exists('mcrypt_decrypt')) {
 	        $decrypted_data = @unserialize(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $this->key, base64_decode($data), MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND)));
 	        if (!is_array($decrypted_data)) {

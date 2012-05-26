@@ -50,6 +50,7 @@ class JFusionAdmin_elgg extends JFusionAdmin
         } else {
             $myfile = $path . 'engine' . DS . 'settings.php';
         }
+        $config = array();
         //check if the file exists
         if (($file_handle = @fopen($myfile, 'r')) === false) {
             JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));

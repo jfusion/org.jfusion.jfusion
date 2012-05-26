@@ -57,6 +57,7 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
         } else {
             //parse the file line by line to get only the config variables
             $file_handle = fopen($myfile, 'r');
+            $config = array();
             while (!feof($file_handle)) {
                 $line = fgets($file_handle);
                 if (strpos($line, '$') === 0) {

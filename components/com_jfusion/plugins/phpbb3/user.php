@@ -600,6 +600,7 @@ class JFusionUser_phpbb3 extends JFusionUser
         $query = "SELECT config_name, config_value FROM #__config WHERE config_name IN('board_timezone', 'default_dateformat', 'default_lang', 'default_style', 'board_dst', 'rand_seed');";
         $db->setQuery($query);
         $rows = $db->loadObjectList();
+        $config = array();
         foreach ($rows as $row) {
             $config[$row->config_name] = $row->config_value;
         }

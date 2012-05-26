@@ -568,34 +568,36 @@ class doku_auth_mysql extends doku_auth_basic {
      * @author  Chris Smith <chris@jalakai.co.uk>
      * @author  Matthias Grimm <matthiasgrimm@users.sourceforge.net>
      */
-    function _addUser($user,$pwd,$name,$mail,$grps){
-      if($this->dbcon && is_array($grps)) {
-        $sql = str_replace('%{user}', $this->_escape($user),$this->cnf['addUser']);
-        $sql = str_replace('%{pass}', $this->_escape($pwd),$sql);
-        $sql = str_replace('%{name}', $this->_escape($name),$sql);
-        $sql = str_replace('%{email}',$this->_escape($mail),$sql);
-        $uid = $this->_modifyDB($sql);
+    function _addUser($user,$pwd,$name,$mail,$grps) {
+        if($this->dbcon && is_array($grps)) {
+            $sql = str_replace('%{user}', $this->_escape($user),$this->cnf['addUser']);
+            $sql = str_replace('%{pass}', $this->_escape($pwd),$sql);
+            $sql = str_replace('%{name}', $this->_escape($name),$sql);
+            $sql = str_replace('%{email}',$this->_escape($mail),$sql);
+            $uid = $this->_modifyDB($sql);
 
-        if ($uid) {
-          foreach($grps as $group) {
-            $gid = $this->_addUserToGroup($user, $group, 1);
-            if ($gid === false) break;
-          }
+            if ($uid) {
+                $group = '';
+                $gid = false;
+                foreach($grps as $group) {
+                    $gid = $this->_addUserToGroup($user, $group, 1);
+                    if ($gid === false) break;
+                }
 
-          if ($gid) return true;
-          else {
-            /* remove the new user and all group relations if a group can't
-             * be assigned. Newly created groups will remain in the database
-             * and won't be removed. This might create orphaned groups but
-             * is not a big issue so we ignore this problem here.
-             */
-            $this->_delUser($user);
-            if ($this->cnf['debug'])
-              JError::raiseWarning(500,"MySQL err: Adding user '$user' to group '$group' failed.");
-          }
+                if ($gid) {
+                    return true;
+                } else {
+                    /* remove the new user and all group relations if a group can't
+                    * be assigned. Newly created groups will remain in the database
+                    * and won't be removed. This might create orphaned groups but
+                    * is not a big issue so we ignore this problem here.
+                    */
+                    $this->_delUser($user);
+                    if ($this->cnf['debug']) JError::raiseWarning(500,"MySQL err: Adding user '$user' to group '$group' failed.");
+                }
+            }
         }
-      }
-      return false;
+        return false;
     }
 
     /**

@@ -173,6 +173,7 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
 		
 		$usergroupmap = explode (',', $usergroupmap);
 
+        $usergrouplist = array();
 		if ( is_array($usergroupmap) ) {
 			foreach ($usergroupmap as $key => $value) {
 	         	//append the default usergroup

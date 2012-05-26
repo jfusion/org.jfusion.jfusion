@@ -456,6 +456,7 @@ class JFusionUser_moodle extends JFusionUser {
 		// $user->idnumber= ??
 		$parts = explode(' ', $userinfo->name);
 		$user->firstname = trim($parts[0]);
+        $lastname = '';
 		if ($parts[(count($parts) - 1) ]) {
 			for ($i = 1;$i < (count($parts));$i++) {
 				$lastname = $lastname . ' ' . $parts[$i];

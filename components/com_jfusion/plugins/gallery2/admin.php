@@ -55,6 +55,7 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
         } else {
             $myfile = $forumPath . DS . 'config.php';
         }
+        $config = array();
         //try to open the file
         if (($file_handle = @fopen($myfile, 'r')) === false) {
             JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));

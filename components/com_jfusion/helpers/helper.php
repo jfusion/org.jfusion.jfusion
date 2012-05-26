@@ -55,6 +55,7 @@ class JFusionHelper {
 			return $modules [$identifier];
 		}
 		switch ($type) {
+            default;
 			case 'id' :
 				$where = 'id=' . ( int ) $identifier;
 				break;

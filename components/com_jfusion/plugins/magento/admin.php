@@ -46,9 +46,9 @@ class JFusionAdmin_magento extends JFusionAdmin
     function setupFromPath($forumPath) {
         //check for trailing slash and generate file path
         if (substr($forumPath, -1) != DS) {
-            $forumpath = $forumPath . DS;
+            $forumPath = $forumPath . DS;
         }
-        $xmlfile = $forumpath . 'app' . DS . 'etc' . DS . 'local.xml';
+        $xmlfile = $forumPath . 'app' . DS . 'etc' . DS . 'local.xml';
         if (file_exists($xmlfile)) {
             $xml = JFactory::getXMLParser('Simple');
             if (!$xml->loadFile($xmlfile)) {
@@ -65,7 +65,7 @@ class JFusionAdmin_magento extends JFusionAdmin
             $params['database_password'] = (string)$xml->document->global[0]->resources[0]->default_setup[0]->connection[0]->password[0]->data();
             $params['database_prefix'] = (string)$xml->document->global[0]->resources[0]->db[0]->table_prefix[0]->data();
             $params['database_type'] = "mysql";
-            $params['source_path'] = $forumpath;
+            $params['source_path'] = $forumPath;
             unset($xml);
             return $params;
         } else {

@@ -82,6 +82,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 		} else {
 			//parse the file line by line to get only the config variables
 			//			$file_handle = fopen($myfile, 'r');
+            $table_prefix = '';
 			while (!feof($file_handle)) {
 				$line = fgets($file_handle);
 				if (strpos(trim($line), 'define') === 0) {

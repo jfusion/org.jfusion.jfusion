@@ -601,7 +601,6 @@ class JFusionAPI_User extends JFusionAPIBase {
 		} else {
 			$this->error[] = 'invalid payload';
 		}
-		return $return;
 	}
 	
 	public function executeUpdate()
@@ -655,7 +654,6 @@ class JFusionAPI_User extends JFusionAPIBase {
 		} else {
 			$this->error[] = 'invalid payload';
 		}
-		return $return;
 	}
 }
 

@@ -194,6 +194,7 @@ class JFusionUser_prestashop extends JFusionUser {
     function createUser($userinfo, &$status) {
 		$db = JFusionFactory::getDatabase($this->getJname());
 	    $params = JFusionFactory::getParams($this->getJname());
+        $errors = array();
 		require($params->get('source_path') . DS . "classes" . DS . "Validate.php");
 		require($params->get('source_path') . DS . "classes" . DS . "ObjectModel.php");
 		require($params->get('source_path') . DS . "classes" . DS . "Db.php");
@@ -444,27 +445,27 @@ class JFusionUser_prestashop extends JFusionUser {
 	    }
 	
 	    // Validate alias
-	    elseif (!Validate::isMessage($user_variables['alias'])){
+	    elseif (!Validate::isMessage($user_variables['alias'])) {
 	        $errors[] = Tools::displayError('invalid alias');
 	        unset($ps_address);
 	    }
 	
         // Validate extra information 	
-	    elseif (!Validate::isMessage($user_variables['other'])){
+	    elseif (!Validate::isMessage($user_variables['other'])) {
 	        $errors[] = Tools::displayError('invalid extra information');
 	        unset($ps_address);
 	    }
 	
 	    /* Check if account already exists (not a validation) */
-	    elseif (Customer::customerExists($user_variables['email'])){
+	    elseif (Customer::customerExists($user_variables['email'])) {
 	        $errors[] = Tools::displayError('someone has already registered with this e-mail address');
 	        unset($ps_customer);
 	    }
 		
 		/* enter customer account into prestashop database */ // if all information is validated
-	    if(isset($ps_customer) && isset($ps_customer_group) && isset($ps_address))
-	    {
-	        foreach($ps_customer as $key => $value){
+	    if(isset($ps_customer) && isset($ps_customer_group) && isset($ps_address)) {
+            $insert_sql_columns = $insert_sql_values = '';
+	        foreach($ps_customer as $key => $value) {
 	            if($key == "id_customer" || $key == "secure_key" || $key == "last_passwd_gen" || $key == "newsletter_date_add" || $key == "date_add" || $key == "date_upd"){
 	                if($key == "id_customer"){
 	                    $insert_sql_columns = "INSERT INTO " . $tbp . "customer (";
@@ -477,7 +478,7 @@ class JFusionUser_prestashop extends JFusionUser {
 					}
 	            }
 				
-	            elseif($key == "id_gender"){
+	            elseif($key == "id_gender") {
 	                $insert_sql_columns .= "" . $key;
                     $insert_sql_values .= "'" . $value . "'";
                 }
@@ -497,23 +498,19 @@ class JFusionUser_prestashop extends JFusionUser {
 	        $query="SELECT id_customer FROM #__customer WHERE email = " . $db-Quote($ps_customer['email']);
             $db->setQuery($query);
 			$result = $db->loadResult();
-		    if (!$result)
-			{
+		    if (!$result) {
 			    JText::_('REGISTRATION_ERROR');
 			    echo('no matching userid');
-			}
-			else
-			{
+			} else {
 	            $ps_customer_group['id_customer'] = $result;
                 $ps_address['id_customer'] = $result;
 			}
 			
-	        foreach($ps_customer_group as $key => $value){
-	            if($key == "id_customer"){
+	        foreach($ps_customer_group as $key => $value) {
+	            if($key == "id_customer") {
 	                $insert_sql_columns = "INSERT INTO #__customer_group (" . $key;
                     $insert_sql_values = "VALUES (" . $db->Quote($value) ;
-                }
-	            else{
+                } else{
                     $insert_sql_columns .= ", " . $key;
                     $insert_sql_values .= ", " . $db->Quote($value);
                 }

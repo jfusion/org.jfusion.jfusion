@@ -82,6 +82,7 @@ class doku_auth_basic
         if (empty($method)) $method = $conf['passcrypt'];
         //prepare a salt
         if (empty($salt)) $salt = md5(uniqid(rand(), true));
+        $magic = null;
         switch (strtolower($method)) {
 	        case 'smd5':
 	            if(defined('CRYPT_MD5') && CRYPT_MD5) return crypt($clear,'$1$'.substr($salt,0,8).'$');
