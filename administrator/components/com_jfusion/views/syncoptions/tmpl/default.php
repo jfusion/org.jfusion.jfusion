@@ -33,7 +33,7 @@ window.addEvent('domready', function() {
     // periodical and dummy variables for later use
     var periodical, dummy, sub_vars;
     var start = $('start'), stop = $('stop'), log = $('log_res');
-
+ //test
     /* our ajax istance for starting the sync */
     <?php  if(JFusionFunction::isJoomlaVersion('1.6')){
  echo 'var ajax = new Request.HTML({
