@@ -141,7 +141,8 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
         $query = "SELECT g_active FROM #__PluginMap
                   WHERE g_pluginType = 'module' and g_pluginId = 'register';";
         $db->setQuery($query);
-        if ($new_registration = $db->loadResult()) {
+        $new_registration = $db->loadResult();
+        if ($new_registration) {
             if ($new_registration == 0) {
                 return false;
             } else {

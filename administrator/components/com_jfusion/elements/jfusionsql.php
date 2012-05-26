@@ -85,12 +85,11 @@ class JElementjfusionsql extends JElement
             	    return JHTML::_('select.genericlist',  $results, $param_name, 'class="inputbox" '.$multiple, $key, $val, $value, $control_name.$name);
                 } else {
     				$db->setQuery($query);
-    				if($results = $db->loadObjectList()) {
-
+                    $results = $db->loadObjectList();
+    				if($results) {
     					if(!empty($add_default)) {
     						array_unshift($results, JHTML::_('select.option', '', '- '.JText::_('SELECT_ONE').' -', $key, $val));
     					}
-
     					return JHTML::_('select.genericlist',  $results, $param_name, 'class="inputbox" '.$multiple, $key, $val, $value, $control_name.$name);
     				} else {
     					return $db->stderr();

@@ -104,9 +104,9 @@ function copyplugin(jname) {
     }
 }
 
-function addRow(new_jname, rowhtml) {
+function addRow(newjname, rowhtml) {
     var div = new Element('div');
-    div.setHTML('<table>' + '<tr id="'+new_jname+'">'+rowhtml+'</tr>' + '</table>');
+    div.setHTML('<table>' + '<tr id="'+newjname+'">'+rowhtml+'</tr>' + '</table>');
     div.getElement('tr').inject($("sort_table"),'top');
     initSortables();
 }

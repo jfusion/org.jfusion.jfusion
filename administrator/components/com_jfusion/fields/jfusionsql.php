@@ -97,11 +97,11 @@ class JFormFieldjfusionsql extends JFormField
             		return JHTML::_('select.genericlist',  $results, $param_name, 'class="inputbox" '.$multiple, $key, $val, $this->value, $this->formControl.'_'.$this->group.'_'.$this->fieldname);
 		    	} else {
     				$db->setQuery($this->element['query']);
-    				if($results = $db->loadObjectList()) {
+                    $results = $db->loadObjectList();
+    				if($results) {
     					if(!empty($add_default)) {
     						array_unshift($results, JHTML::_('select.option', '', '- '.JText::_('SELECT_ONE').' -', $key, $val));
     					}
-
     					return JHTML::_('select.genericlist',  $results, $param_name, 'class="inputbox" '.$multiple, $key, $val, $this->value, $this->formControl.'_'.$this->group.'_'.$this->fieldname);
     				} else {
     					return "<span style='float:left; margin: 5px 0; font-weight: bold;'>" . $db->stderr() . "</span>";

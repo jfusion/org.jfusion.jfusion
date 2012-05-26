@@ -721,7 +721,8 @@ class JFusionUser_phpbb3 extends JFusionUser
         $db->setQuery($query);
         $report_posts = $report_topics = array();
         if ($db->query()) {
-            if ($results = $db->loadObjectList()) {
+            $results = $db->loadObjectList();
+            if ($results) {
                 foreach ($results as $row) {
                     $report_posts[] = $row->post_id;
                     $report_topics[] = $row->topic_id;
@@ -744,7 +745,8 @@ class JFusionUser_phpbb3 extends JFusionUser
             $db->setQuery($query);
             $keep_report_topics = array();
             if ($db->query()) {
-                if ($results = $db->loadObjectList()) {
+                $results = $db->loadObjectList();
+                if ($results) {
                     foreach ($results as $row) {
                         $keep_report_topics[] = $row->topic_id;
                     }
@@ -869,7 +871,8 @@ class JFusionUser_phpbb3 extends JFusionUser
         $db->setQuery($query);
         $undelivered_msg = $undelivered_user = array();
         if ($db->query()) {
-            if ($results = $db->loadObjectList()) {
+            $results = $db->loadObjectList();
+            if ($results) {
                 foreach ($results as $row) {
                     $undelivered_msg[] = $row->msg_id;
                     $undelivered_user[$row->user_id][] = true;
@@ -956,7 +959,8 @@ class JFusionUser_phpbb3 extends JFusionUser
             //retrieve the new newest user
             $query = "SELECT user_id, username, user_colour FROM #__users WHERE user_regdate = (SELECT MAX(user_regdate) FROM #__users)";
             $db->setQuery($query);
-            if ($newest_user = $db->loadObject()) {
+            $newest_user = $db->loadObject();
+            if ($newest_user) {
                 //update the newest username
                 $query = 'UPDATE #__config SET config_value = ' . $db->Quote($newest_user->username) . ' WHERE config_name = \'newest_username\'';
                 $db->setQuery($query);

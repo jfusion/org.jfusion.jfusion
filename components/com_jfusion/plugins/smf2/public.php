@@ -824,15 +824,15 @@ class JFusionPublic_smf2 extends JFusionPublic {
 	 * Returns a query to find online users
 	 * Make sure columns are named as userid, username, username_clean (if applicable), name (of user), and email
 	 **/
-	function getOnlineUserQuery($limit, $usergroups = '')
+	function getOnlineUserQuery($limit, $usergroups = array())
 	{
 		$usergroup_query = "";
-		if($usergroups!='') {
+		if(!empty($usergroups)) {
 			if(is_array($usergroups)) {
-				$usergroups = implode(',',$usergroups);
-				$usergroup_query .= "AND (u.id_group IN ($usergroups) OR u.id_post_group IN ($usergroups)";
-				foreach($usergroups AS $u) {
-					$usergroup_query .= " OR FIND_IN_SET(" . intval($u) . ", u.additional_groups)";
+				$usergroups_string = implode(',',$usergroups);
+				$usergroup_query .= "AND (u.id_group IN ($usergroups_string) OR u.id_post_group IN ($usergroups_string)";
+				foreach($usergroups AS $usergroup) {
+					$usergroup_query .= " OR FIND_IN_SET(" . intval($usergroup) . ", u.additional_groups)";
 				}
 				$usergroup_query .= ")";
 			} else {
@@ -861,15 +861,15 @@ class JFusionPublic_smf2 extends JFusionPublic {
 	 * Returns number of logged in users
 	 * @return int
 	 */
-	function getNumberOnlineMembers($usergroups = '', $total = 1)
+	function getNumberOnlineMembers($usergroups = array(), $total = 1)
 	{
 		$usergroup_query = "";
-		if($usergroups!='' && empty($total)) {
+		if(!empty($usergroups) && empty($total)) {
 			if(is_array($usergroups)) {
-				$usergroups = implode(',',$usergroups);
-				$usergroup_query .= "AND (u.id_group IN ($usergroups) OR u.id_post_group IN ($usergroups)";
-				foreach($usergroups AS $u) {
-					$usergroup_query .= " OR FIND_IN_SET(" . intval($u) . ", u.additional_groups)";
+                $usergroups_string = implode(',',$usergroups);
+				$usergroup_query .= "AND (u.id_group IN ($usergroups_string) OR u.id_post_group IN ($usergroups_string)";
+				foreach($usergroups AS $usergroup) {
+					$usergroup_query .= " OR FIND_IN_SET(" . intval($usergroup) . ", u.additional_groups)";
 				}
 				$usergroup_query .= ")";
 			} else {
@@ -878,6 +878,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 		}
 
 		$db =& JFusionFactory::getDatabase($this->getJname());
+
 		$query = "SELECT COUNT(DISTINCT(l.ip)) FROM #__log_online AS l JOIN #__members AS u ON l.id_member = u.id_member WHERE l.id_member != 0 $usergroup_query";
 
 		$db->setQuery($query);

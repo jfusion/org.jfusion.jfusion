@@ -4,11 +4,9 @@ function submitbutton(pressbutton) {
     if (pressbutton == 'applyconfig') {
         form.action.value = 'apply';
         submitform('saveconfig');
-        return;
+    } else {
+        submitform(pressbutton);
     }
-
-    submitform(pressbutton);
-    return;
 }
 
 function submitbutton3(pressbutton)
@@ -39,51 +37,54 @@ function submitbutton4(pressbutton)
 
 
 function setCheckedValue(radioObj, newValue) {
-	if(!radioObj)
-		return;
-	var radioLength = radioObj.length;
-	if(radioLength == undefined) {
-		radioObj.checked = (radioObj.value == newValue.toString());
-		return;
-	}
-	for(var i = 0; i < radioLength; i++) {
-		radioObj[i].checked = false;
-		if(radioObj[i].value == newValue.toString()) {
-			radioObj[i].checked = true;
-		}
-	}
+	if (radioObj) {
+        var radioLength = radioObj.length;
+        if (radioLength == undefined) {
+            radioObj.checked = (radioObj.value == newValue.toString());
+        } else {
+            for (var i = 0; i < radioLength; i++) {
+                radioObj[i].checked = false;
+                if(radioObj[i].value == newValue.toString()) {
+                    radioObj[i].checked = true;
+                }
+            }
+        }
+    }
 }
 
-function setSort(col){
-	var form = document.adminForm;
-	var prevCol = form.log_sort.value;
-	if(prevCol != col) {
-		form.log_dir.value = '1';
-	} else {
-		var direction = form.log_dir.value;
-		if(direction == '1') form.log_dir.value = '-1';
-		else form.log_dir.value = '1';
-	}
-	form.log_sort.value=col;
-	form.submit();
-	return;
+function setSort(col) {
+    var form = document.adminForm;
+    var prevCol = form.log_sort.value;
+    if (prevCol == col) {
+        var direction = form.log_dir.value;
+        if (direction == '1') {
+            form.log_dir.value = '-1';
+        } else {
+            form.log_dir.value = '1';
+        }
+    } else {
+        form.log_dir.value = '1';
+    }
+    form.log_sort.value = col;
+    form.submit();
+    return;
 }
 
 function getCheckedValue(radioObj) {
-	if(!radioObj)
-		return "";
-	var radioLength = radioObj.length;
-	if(radioLength == undefined) {
-		if(radioObj.checked) {
-			return radioObj.value;
-		}
-	} else {
-		for(var i = 0; i < radioLength; i++) {
-			if(radioObj[i].checked) {
-				return radioObj[i].value;
-			}
-		}
-	}
+	if (radioObj) {
+        var radioLength = radioObj.length;
+        if(radioLength == undefined) {
+            if(radioObj.checked) {
+                return radioObj.value;
+            }
+        } else {
+            for(var i = 0; i < radioLength; i++) {
+                if(radioObj[i].checked) {
+                    return radioObj[i].value;
+                }
+            }
+        }
+    }
 	return "";
 }
 
@@ -94,11 +95,9 @@ if (typeof Joomla != 'undefined') {
 	    if (pressbutton == 'applyconfig') {
 	        form.action.value = 'apply';
 	        submitform('saveconfig');
-	        return;
-	    }
-
-	    submitform(pressbutton);
-	    return;
+	    } else {
+            submitform(pressbutton);
+        }
 	};
 	
 	Joomla.getCheckedValue = function(radioObj) {

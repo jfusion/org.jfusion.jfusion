@@ -114,7 +114,8 @@ class auth_plugin_jfusion extends auth_plugin_base {
 		// So Moodle is slave and we have a local login, just call Joomla, with nodeid NOT set
 		$this->LoginJoomla($username, $password, false);
 		// now test if we have a valid user, the host should have created one
-		if ($user = get_record('user', 'username', $username, 'mnethostid', $CFG->mnet_localhost_id)) {
+        $user = get_record('user', 'username', $username, 'mnethostid', $CFG->mnet_localhost_id);
+		if ($user) {
 			$valid = validate_internal_user_password($user, $password);
 			if ($valid){
 				redirect($CFG->wwwroot);

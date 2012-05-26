@@ -280,7 +280,8 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
                     foreach ($tables as $tbl => $col) {
                         $q = "SELECT $col FROM #__$tbl";
                         $db->setQuery($q);
-                        if ($images = $db->loadRowList()) {
+                        $images = $db->loadRowList();
+                        if ($images) {
                             foreach ($images as $image) {
                                 $check = (strpos($image[0], 'http') !== false) ? true : false;
                                 if (!$check) break;

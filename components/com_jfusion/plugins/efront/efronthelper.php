@@ -29,8 +29,9 @@ defined('_JEXEC') or die('Restricted access');
  */
 class JFusionEfrontHelper {
 
-    function delete_directory($dir){
-        if ($handle = opendir($dir)) {
+    function delete_directory($dir) {
+        $handle = opendir($dir);
+        if ($handle) {
             while (false !== ($file = readdir($handle))){
                 if ($file != "." && $file != ".."){
                     if(is_dir($dir.$file)){

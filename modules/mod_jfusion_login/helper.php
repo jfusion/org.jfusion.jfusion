@@ -41,9 +41,10 @@ class modjfusionLoginHelper
     public static function getReturnURL($params, $type)
     {
     	$override_return = JRequest::getVar('return', '', 'method', 'base64');
+        $itemid = $params->get($type);
         if (!empty($override_return)) {
     	    return $override_return;
-    	} elseif ($itemid = $params->get($type)) {
+    	} elseif ($itemid) {
             $url = 'index.php?Itemid=' . $itemid;
             $url = JRoute::_($url);
         } else {

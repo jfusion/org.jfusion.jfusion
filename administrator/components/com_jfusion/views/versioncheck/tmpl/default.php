@@ -254,8 +254,7 @@ if ($this->up2date) {
 			</h3>
 			<script type="text/javascript">
 			<!--
-			function confirmSubmit(action)
-			{
+			function confirmSubmit(action) {
 				var install_url,confirm_text;
 				if (action == 'build') {
 				    confirm_text = '<?php echo JText::_('UPGRADE_CONFIRM_BUILD'); ?>';
@@ -274,6 +273,7 @@ if ($this->up2date) {
 				    $('install').submit();
 				    return true ;
 				}
+                return false;
 			}
 
 			

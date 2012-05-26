@@ -62,7 +62,8 @@ class JFusionCookies {
     	if (!$mainframe->isAdmin() || !$this->secret) {
 	    	if(!count($this->_cookies)) {
 	    		if (empty($return)) {
-	    			if ($return = JRequest::getVar ( 'return', '', 'method', 'base64' )) {
+                    $return = JRequest::getVar ( 'return', '', 'method', 'base64' );
+	    			if ($return) {
 	    				$return = base64_decode ( $return );
 	    				if( stripos($return,'http://') === false && stripos($return,'https://') === false ) {
 	    					$return = ltrim($return,'/');

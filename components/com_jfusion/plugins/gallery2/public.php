@@ -75,7 +75,7 @@ class JFusionPublic_gallery2 extends JFusionPublic {
             GalleryEmbed::setThemeForRequest($theme);
         }
         //Check displaying Sidebar
-        GalleryCapabilities::set('showSidebarBlocks', ($jPluginParam->get("dispSideBar") == 1));
+        GalleryCapabilities::set('showSidebarBlocks', ($jPluginParam->get('dispSideBar') == 1));
         // Start the Embed Handler
         ob_start();
         //$ret = $gallery->setActiveUser($userinfo);
@@ -85,12 +85,12 @@ class JFusionPublic_gallery2 extends JFusionPublic {
         // Handle File Output
         if (trim($output)) {
             if (preg_match('%<h2>\s(?<head>.*)\s</h2>%', $output, $match1) && preg_match('%<p class="giDescription">\s(?<desc>.*)\s</p>%', $output, $match2)) {
-                echo "<pre>";
+                echo '<pre>';
                 var_dump($match1);
                 var_dump($match2);
-                echo "</pre>";
-                if (isset($match1["head"]) && isset($match2["desc"])) {
-                    JError::raiseError(500, $match1["head"], $match2["desc"]);
+                echo '</pre>';
+                if (isset($match1['head']) && isset($match2['desc'])) {
+                    JError::raiseError(500, $match1['head'], $match2['desc']);
                 } else {
                     JError::raiseError(500, 'Gallery2 Internal Error');
                 }
@@ -101,11 +101,11 @@ class JFusionPublic_gallery2 extends JFusionPublic {
         }
         /* Register Sidebare for Module Usage */
         if (isset($g2data["sidebarBlocksHtml"])) {
-            jFusion_g2BridgeCore::setVar($this->getJname(),"sidebar", $g2data["sidebarBlocksHtml"]);
+            jFusion_g2BridgeCore::setVar($this->getJname(),'sidebar', $g2data["sidebarBlocksHtml"]);
         }
         jFusion_g2BridgeCore::setPathway($this->getJname());
         if (isset($g2data['bodyHtml']) && isset($g2data['headHtml'])) {
-            $buffer = "<html><head>" . $g2data['headHtml'] . "</head><body>" . $g2data['bodyHtml'] . "</body></html>";
+            $buffer = '<html><head>' . $g2data['headHtml'] . '</head><body>' . $g2data['bodyHtml'] . '</body></html>';
             $data->body = & $g2data['bodyHtml'];
             $data->header = & $g2data['headHtml'];
             $data->buffer = & $buffer;

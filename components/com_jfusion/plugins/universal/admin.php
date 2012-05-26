@@ -323,8 +323,12 @@ $output .= <<<JS
             var oldON = document.getElementById("paramsmap"+parmtype+"value"+name+"on");
             var oldOFF = document.getElementById("paramsmap"+parmtype+"value"+name+"off");
 
-            if (oldON) oldON.remove();
-            if (oldOFF) oldOFF.remove();
+            if (oldON) {
+                oldON.remove();
+            }
+            if (oldOFF) {
+                oldOFF.remove();
+            }
 
             var oldvalue = '';
             if ( old ) {
@@ -345,9 +349,11 @@ $output .= <<<JS
                 value.setAttribute("id", "paramsmap"+parmtype+"value"+name);
                 value.setAttribute("name", "params[map]["+parmtype+"][value]["+name+"]");
                 value.setAttribute("size", "100");
-                if ( oldvalue ) value.setAttribute("value", oldvalue);
-                else if (ref.value == 'DATE') value.setAttribute("value", 'Y-m-d H:i:s');
-
+                if ( oldvalue ) {
+                    value.setAttribute("value", oldvalue);
+                } else if (ref.value == 'DATE') {
+                    value.setAttribute("value", 'Y-m-d H:i:s');
+                }
                 id.appendChild(value);
             } else if ( ref.value == 'ONOFF') {
                 var valueON = document.createElement("input");

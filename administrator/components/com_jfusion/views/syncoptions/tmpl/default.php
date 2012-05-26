@@ -66,46 +66,42 @@ echo 'var ajaxsync = new Ajax(url, {';
 
     /* our usersync status update function: */
     var refresh = (function() {
-
             //add another second to the counter
-            counter = counter - 1;
+            counter -= 1;
             if (counter < 1) {
             div_content = document.getElementById('log_res').innerHTML;
-            if (div_content.search(/finished/) != -1) {
-                // let's stop our timed ajax
-                $clear(periodical);
-                document.getElementById("counter").innerHTML = '<b><?php echo JText::_('FINISHED'); ?></b>';
-            } else {
+            if (div_content.search(/finished/) == -1) {
                 counter = time_update;
                 // dummy to prevent caching of php
                 dummy = $time() + $random(0, 100);
                 //generate the get variable for submission
 
                 sub_vars = 'option=com_jfusion&task=syncresume&tmpl=component&dummy=' + dummy + '&syncid=' + '<?php echo $this->syncid; ?>';
-                for(i=0; i<document.adminForm.elements.length; i++)
-                {
-                    if (document.adminForm.elements[i].name=='userbatch')
-                    {
+                for (i = 0; i < document.adminForm.elements.length; i++) {
+                    if (document.adminForm.elements[i].name == 'userbatch') {
                         sub_vars = sub_vars + '&' + document.adminForm.elements[i].name + '=' + document.adminForm.elements[i].value;
                     }
                 }
-                //document.getElementById("log_res").innerHTML = '<img src="<?php echo 'components/com_jfusion/images/ajax_loader.gif'; ?>"> Loading ....';
+                    //document.getElementById("log_res").innerHTML = '<img src="<?php echo 'components/com_jfusion/images/ajax_loader.gif'; ?>"> Loading ....';
                 progress_vars = 'option=com_jfusion&tmpl=component&task=syncprogress&syncid=' + '<?php echo $this->syncid; ?>';
-    <?php  if(JFusionFunction::isJoomlaVersion('1.6')){
-echo ' ajax.send(progress_vars);
+                <?php  if (JFusionFunction::isJoomlaVersion('1.6')) {
+                    echo ' ajax.send(progress_vars);
                 ajaxsync.send(sub_vars);';
-    } else {
-echo '                ajax.request(progress_vars);
+                } else {
+                    echo '                ajax.request(progress_vars);
                 ajaxsync.request(sub_vars);';
-    }    ?>
+                }    ?>
 
-            }
+                }else {
+                    // let's stop our timed ajax
+                    $clear(periodical);
+                    document.getElementById("counter").innerHTML =     <?php echo JText::_('FINISHED'); ?>     ;
+                    }
         } else {
             //update the counter
             document.getElementById("counter").innerHTML = '<b><?php echo JText::_('UPDATE_IN'); ?> ' + counter + ' <?php echo JText::_('SECONDS'); ?></b>';
-           }
-    }
-    );
+        }
+    });
 
     // start and stop click events
     start.addEvent('click', function(e) {

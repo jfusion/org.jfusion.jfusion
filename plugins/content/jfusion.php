@@ -652,8 +652,8 @@ class plgContentJfusion extends JPlugin
     {
         $JoomlaUser = JFactory::getUser();
         $mainframe = JFactory::getApplication();
-
-        if ($return = JRequest::getVar('return')) {
+        $return = JRequest::getVar('return');
+        if ($return) {
             $url = base64_decode($return);
         } else {
             $uri = JFactory::getURI();

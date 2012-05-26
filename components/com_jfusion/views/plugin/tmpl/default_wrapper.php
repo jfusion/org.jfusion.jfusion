@@ -23,11 +23,12 @@ defined('_JEXEC') or die('Restricted access');
         var frame=getElement(aID);
         // if contentDocument exists, W3C compliant (e.g. Mozilla)
 
-        if (frame.contentDocument)
+        if (frame.contentDocument) {
             rv = frame.contentDocument;
-        else // bad IE  ;)
-
+        } else {
+            // bad IE  ;)
             rv = document.frames[aID].document;
+        }
         return rv;
     }
 

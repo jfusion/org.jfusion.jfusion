@@ -97,9 +97,9 @@ function copyplugin(jname) {
     }
 }
 
-function addRow(new_jname, rowhtml){
+function addRow(newjname, rowhtml){
     var div = new Element('div');
-    div.set('html', '<table>' + '<tr id="'+new_jname+'">'+rowhtml+'</tr>' + '</table>');
+    div.set('html', '<table>' + '<tr id="'+newjname+'">'+rowhtml+'</tr>' + '</table>');
     div.getElement('tr').inject($("sort_table"),'top');
     div.dispose();
     initSortables();
@@ -133,13 +133,13 @@ function initSortables() {
 		onComplete: function(el) {
 			//build a string of the order
 			var sort_order = '';
-			var rowcount = '0';
+			var rowcount = 0;
 			$$('#sort_table tr').each(function(tr) {
 				document.getElementById(tr.id).setAttribute('class', 'row' + rowcount);
-				if (rowcount == '0') {
-					rowcount = '1';
+				if (rowcount == 0) {
+					rowcount = 1;
 				} else {
-					rowcount = '0';
+					rowcount = 0;
 				}
 			    sort_order = sort_order +  tr.id  + '|';
 		    });

@@ -146,10 +146,12 @@ class JFusionDiscussBotHelper {
             } else {
                 $url = ContentHelperRoute::getArticleRoute($this->article->slug, $this->article->catslug, $this->article->sectionid);
             }
-            if ($start = JRequest::getInt('start',0)) {
+            $start = JRequest::getInt('start',0);
+            if ($start) {
                 $url .= "&start=$start";
             }
-            if ($limitstart = JRequest::getInt('limitstart',0)) {
+            $limitstart = JRequest::getInt('limitstart',0);
+            if ($limitstart) {
                 $url .= "&limitstart=$limitstart";
             }
             $url .= $query;

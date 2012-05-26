@@ -14,21 +14,15 @@ defined('_JEXEC') or die('Restricted access');
  * Class for the JFusion front-end login module
  * @package JFusion
  */
-class JFusionHelper
-{
-	function getReturnURL($params, $type)
-	{
-		if( preg_match('(login_custom_redirect|logout_custom_redirect)', $type) && strlen($params->get($type)) > 0 )
-		{
+class JFusionHelper {
+	function getReturnURL($params, $type) {
+        $itemid = $params->get($type);
+		if( preg_match('(login_custom_redirect|logout_custom_redirect)', $type) && strlen($params->get($type)) > 0 ) {
 			$url = $params->get($type);
-		}
-		elseif($itemid = $params->get($type))
-		{
+		} elseif($itemid) {
 			$url = 'index.php?Itemid='.$itemid;
 			$url = JRoute::_($url);
-		}
-		else
-		{
+		} else {
 			// Redirect to login
 			$uri = JFactory::getURI();
 			$url = $uri->toString();
@@ -37,8 +31,7 @@ class JFusionHelper
 		return base64_encode($url);
 	}
 
-	function getType()
-	{
+	function getType() {
 		$user = JFactory::getUser();
 	    return (!$user->get('guest')) ? 'logout' : 'login';
 	}
@@ -47,7 +40,7 @@ class JFusionHelper
 		return self::getModuleQuery('id', $id);
 	}
 
-    public static function getModuleByTitle($title = null){
+    public static function getModuleByTitle($title = null) {
 		return self::getModuleQuery('title', $title);
 	}
 	
