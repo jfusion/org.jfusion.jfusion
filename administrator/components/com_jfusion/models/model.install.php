@@ -322,6 +322,7 @@ class JFusionPluginInstaller extends JObject
          * ---------------------------------------------------------------------------------------------
          */
         //determine the features of the plugin
+        $dual_login = $slave = $activity = $search = $discussion = null;
         $features = array('master', 'slave', 'dual_login', 'check_encryption', 'activity', 'search', 'discussion');
         foreach ($features as $f) {
         	if(JFusionFunction::isJoomlaVersion('1.6')) {
@@ -437,7 +438,7 @@ class JFusionPluginInstaller extends JObject
                 $success = $jname . ': ' . $result;
             }
             if (!$success) {
-                $msg = JText::_('PLUGIN') . ' ' .$plugin->name .' ' . JText::_('UNINSTALL') . ' ' . JText::_('FAILED') . ': ' . $reason;
+                $msg = JText::_('PLUGIN') . ' ' .$jname .' ' . JText::_('UNINSTALL') . ' ' . JText::_('FAILED') . ': ' . $reason;
                 $this->parent->abort($msg);
                 $result['message'] = $msg;
                 return $result;

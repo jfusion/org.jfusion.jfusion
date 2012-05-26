@@ -595,7 +595,7 @@ class JFusionForum
 					$lang = $dbparams->get('recaptcha_lang','en');
 
 					$document = JFactory::getDocument();
-					$script .= "<script>\n";
+					$script = "<script>\n";
 					$script .= "var RecaptchaOptions = {\n";
    					$script .= "theme : '$theme',\n";
    					$script .= "lang: '$lang'\n";

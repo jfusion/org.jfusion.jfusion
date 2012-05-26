@@ -718,8 +718,8 @@ class JFusionCurl
 		// 0=> will keep all cookies that are not sessioncookies
 		// 0=0 will keep all cookies
 
+        $leavealonearr = array();
 		if (trim($leavealone)) {
-			$leavealonearr = array();
 			$lines = array();
 			$line=array();
 			$lines = explode(',', $leavealone);
@@ -756,7 +756,9 @@ class JFusionCurl
 			}
 			if (isset($cookie['expires'])) {
 				$expires_time=$cookie['expires'];
-			}
+			} else {
+                $expires_time = 0;
+            }
 			if (!$cookiepath) {
 				if (isset($cookie['path'])) {
 					$cookiepath=$cookie['path'];
@@ -770,6 +772,7 @@ class JFusionCurl
 			if ($name=='MOODLEID_') {
 				$status['cURL']['moodle'] = urldecode($cookie['value']['value']);
 			}
+
 			if (!$leaveit) {
 				$expires_time=time()-30*60;
 				$value = '';

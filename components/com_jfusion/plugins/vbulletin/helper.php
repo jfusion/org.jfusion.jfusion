@@ -334,6 +334,7 @@ class JFusionHelper_vbulletin
                     $pid = $uri->getVar('p');
                     $tid = $uri->getVar('t');
 
+                    $title = null;
                     if (empty($tid)) {
                         $query = 'SELECT threadid FROM #__post WHERE postid = ' . $pid;
                         $db->setQuery($query);

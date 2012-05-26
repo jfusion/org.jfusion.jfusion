@@ -174,7 +174,7 @@ class JFusionUser_efront extends JFusionUser
         $query = "SELECT value FROM #__configuration WHERE name = 'autologout_time'";
         $db->setQuery($query);
         $autologout_time = $db->loadResult(); // this is in minutes
-        $expires = 60 * $autologout_times; // converted to seconds
+        $expires = 60 * $autologout_time; // converted to seconds
         // correct for remember me option
         if (isset($options['remember'])) {
             if ($options['remember']) {

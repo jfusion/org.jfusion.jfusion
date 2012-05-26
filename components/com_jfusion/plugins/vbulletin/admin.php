@@ -315,6 +315,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
         $action = $params['hook_action'];
         $db = & JFusionFactory::getDatabase($this->getJname());
         if ($hook != 'framelessoptimization') {
+            $hookName = null;
             switch ($hook) {
                 case 'globalfix':
                     $hookName = 'JFusion Global Fix Plugin';
@@ -332,30 +333,32 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
                     $hookName = 'JFusion API Plugin - REQUIRED';
                 break;
             }
-            //all three cases, we want to remove the old hook
-            $query = "DELETE FROM #__plugin WHERE hookname = 'init_startup' AND title = " . $db->Quote($hookName);
-            $db->setQuery($query);
-            if (!$db->query()) {
-                JError::raiseWarning(500, $db->stderr());
-            }
-            //enable or renable the plugin
-            if ($action != "disable") {
-                if (($hook == "redirect" || $hook == "frameless") && empty($itemid) && !is_numeric($itemid)) {
-                    JError::raiseWarning(500, JText::_('VB_REDIRECT_HOOK_ITEMID_EMPTY'));
-                    return;
+            if ($hookName) {
+                //all three cases, we want to remove the old hook
+                $query = "DELETE FROM #__plugin WHERE hookname = 'init_startup' AND title = " . $db->Quote($hookName);
+                $db->setQuery($query);
+                if (!$db->query()) {
+                    JError::raiseWarning(500, $db->stderr());
                 }
-                //install the hook
-                $php = $this->getHookPHP($hook, $itemid);
-                $query = "INSERT INTO #__plugin SET
+                //enable or renable the plugin
+                if ($action != "disable") {
+                    if (($hook == "redirect" || $hook == "frameless") && empty($itemid) && !is_numeric($itemid)) {
+                        JError::raiseWarning(500, JText::_('VB_REDIRECT_HOOK_ITEMID_EMPTY'));
+                        return;
+                    }
+                    //install the hook
+                    $php = $this->getHookPHP($hook, $itemid);
+                    $query = "INSERT INTO #__plugin SET
                     title = " . $db->Quote($hookName) . ",
                     hookname = 'init_startup',
                     phpcode = " . $db->Quote($php) . ",
                     product = 'vbulletin',
                     active = 1,
                     executionorder = 1";
-                $db->setQuery($query);
-                if (!$db->query()) {
-                    JError::raiseWarning(500, $db->stderr());
+                    $db->setQuery($query);
+                    if (!$db->query()) {
+                        JError::raiseWarning(500, $db->stderr());
+                    }
                 }
             }
         } else {

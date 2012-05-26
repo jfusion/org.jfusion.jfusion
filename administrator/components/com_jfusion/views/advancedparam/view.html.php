@@ -383,13 +383,12 @@ class jfusionViewadvancedparam extends JView
                 $lang = $xml->document->language[0]->attributes();
                 if (!empty($lang)) {
                     if (!empty($lang['filename'])) {
+                        $location = null;
                         if (!empty($lang['location'])) {
                             if ($lang['location'] == 'site' || $lang['location'] == 'frontend') {
                                 $location = JPATH_SITE;
                             } elseif ($lang['location'] == 'admin' || $lang['location'] == 'administrator') {
                                 $location = JPATH_ADMINISTRATOR;
-                            } else {
-                                $location = null;
                             }
                         }
                         jimport('joomla.plugin.plugin');

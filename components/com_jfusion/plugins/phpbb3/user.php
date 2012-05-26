@@ -226,8 +226,8 @@ class JFusionUser_phpbb3 extends JFusionUser
                     $jautologin = $options['remember'] ? 1 : 0;
                 }
 
+                $create_persistant_cookie = false;
                 if (!empty($phpbb_allow_autologin)) {
-                    $create_persistant_cookie = true;
                     //check for a valid persistant cookie
                     $persistant_cookie = ($phpbb_allow_autologin) ? JRequest::getVar($phpbb_cookie_name . '_k', '', 'cookie') : '';
                     if (!empty($persistant_cookie)) {
@@ -241,6 +241,8 @@ class JFusionUser_phpbb3 extends JFusionUser
                             //$options['remember'] does not get set if Joomla's remember me plugin reinitiates the login
                             $jautologin = 1;
                         }
+                    } else {
+                        $create_persistant_cookie = true;
                     }
                 }
 

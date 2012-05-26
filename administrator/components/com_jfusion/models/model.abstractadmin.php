@@ -439,7 +439,8 @@ class JFusionAdmin
         
 		$params = JFusionFactory::getParams($jname);
 		$multiusergroupdefault = $params->get('multiusergroupdefault');
-        
+
+        $master_usergroups = array();
 		if ( !empty($master) ) {
 			$JFusionMaster = JFusionFactory::getAdmin($master->name);
 			$master_usergroups = $JFusionMaster->getUsergroupList();
@@ -533,7 +534,8 @@ class JFusionAdmin
             $advanced_usergroup = '';
         }
         $list_box.= '</select>';
-        
+
+        $plugin = array();
         if (!empty($master)) {
 	        $new = new stdClass;
 	        if ($master_usergroups) {
