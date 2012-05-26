@@ -207,9 +207,11 @@ class executeJFusionHook
     /**
      * global_complete
      *
+     * @throws Exception
+     *
      * @return void
      */
-functi
+
     function global_complete()
     {
         if (!defined('_JEXEC')) {

@@ -385,6 +385,8 @@ class JFusionForum_phpbb3 extends JFusionForum {
      * @param object $contentitem object containing content information
      * @param int Id of forum to create thread
      * @param array $status contains errors and status of actions
+      *
+      * @return void
      */
 	function createThread(&$dbparams, &$contentitem, $forumid, &$status)
 	{
@@ -779,9 +781,10 @@ class JFusionForum_phpbb3 extends JFusionForum {
 
 	/**
      * Retrieves the posts to be displayed in the content item if enabled
-     * @param object with discussion bot parameters
-     * @param int Id of thread
-     * @param int Id of first post which is useful if you do not want the first post to be included in results
+     *
+     * @param object &$dbparams with discussion bot parameters
+     * @param object &$existingthread
+     *
      * @return array or object Returns retrieved posts
      */
 	function getPosts(&$dbparams, &$existingthread)

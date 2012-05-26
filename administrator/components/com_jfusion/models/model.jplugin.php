@@ -298,11 +298,13 @@ class JFusionJplugin
      *
      * @param object $userinfo userinfo
      * @param object $options  options
-     * @param object $jname    jname
+     * @param string $jname    jname
+     * @param string $type    jname
+     * @param array $curl_options_merge
      *
      * @return string nothing
      */
-    public static function createSession($userinfo, $options, $jname, $type = "brute_force",$curl_options_merge=null)
+    public static function createSession($userinfo, $options, $jname, $type = "brute_force",$curl_options_merge=array())
     {
         global $ch;
         global $cookiearr;
@@ -455,10 +457,11 @@ class JFusionJplugin
      * @param array  $options  contains Array with the login options, such as remember_me
      * @param string $jname    jname
      * @param string $type     method of destruction
+     * @param array $curl_options_merge
      *
      * @return array result Array containing the result of the session destroy
      */
-    public static function destroySession($userinfo, $options, $jname, $type = "brute_force",$curl_options_merge=null)
+    public static function destroySession($userinfo, $options, $jname, $type = "brute_force",$curl_options_merge=array())
     {
         global $ch;
         global $cookiearr;
@@ -1301,7 +1304,7 @@ class JFusionJplugin
      * @param object &$existinguser     Object containg the old userinfo
      * @param array  &$status           Array containing the errors and result of the function
      * @param string $jname             jname
-     * @param int    $fire_user_plugins needs more detail
+     * @param bool $fire_user_plugins needs more detail
      *
      * @return string updates are passed on into the $status array
      */

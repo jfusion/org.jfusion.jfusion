@@ -56,7 +56,7 @@ class JFusionUser
      * @param object &$userinfo    object with user identifing information
      * @param string $username_col Database column for username
      * @param string $email_col    Database column for email
-     * @param string $lowerEmail   Boolean to lowercase emails for comparison
+     * @param bool $lowerEmail   Boolean to lowercase emails for comparison
      *
      * @return array($identifier, $identifier_type)
      */

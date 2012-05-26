@@ -37,9 +37,10 @@ class JFusionHelper_mediawiki
 
     /**
      * Backup Joomla session info and start one for the software
-     * @param $options array login options
+     *
+     * @param array $options login options
      */
-    function startSession($options = '') {
+    function startSession($options = array()) {
         $params =& JFusionFactory::getParams($this->getJname());
 		$this->joomlaSessionName = session_name();
 		$this->joomlaSessionId = session_id();

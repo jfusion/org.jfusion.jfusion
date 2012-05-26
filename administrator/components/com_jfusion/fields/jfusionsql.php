@@ -35,6 +35,7 @@ class JFormFieldjfusionsql extends JFormField
     public $type = "jfusionsql";
     /**
      * Get an element
+     *
      * @return string html
      */
     protected function getInput()

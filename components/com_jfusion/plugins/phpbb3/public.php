@@ -63,7 +63,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
      *
      * @return array  $status           Information passed back to calling script such as limit_applied
      */
-    function prepareText(&$text, $for = 'forum', $params = '', $object = '')
+    function prepareText(&$text, $for = 'forum', $params = null, $object = null)
     {
         $status = array();
         if ($for == 'forum') {
@@ -620,9 +620,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 
         return $pathway;
     }
-    /************************************************
-    * For JFusion Search Plugin
-    ***********************************************/
+
     function getSearchQueryColumns() {
         $columns = new stdClass();
         $columns->title = "p.post_subject";

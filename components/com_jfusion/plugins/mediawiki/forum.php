@@ -24,11 +24,6 @@ class JFusionForum_mediawiki extends JFusionForum
         return 'mediawiki';
     }
 
-
-	/************************************************
-	 * Functions For JFusion Activity Module
-	 ***********************************************/
-
 	function renderActivityModule($config, $view, $pluginParam) {
 		$db =& JFusionFactory::getDatabase($this->getJname());
 		$params = JFusionFactory::getParams($this->getJname());

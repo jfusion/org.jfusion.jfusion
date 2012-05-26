@@ -165,6 +165,8 @@ class JFusionForum_gallery2 extends JFusionForum {
      * Returns the Profile Url in Gallery2
      * This Link requires Modules:members enabled in gallery2
      *
+     * @param string $uid
+     *
      * @return string
      * @see Gallery2:Modules:members
      */

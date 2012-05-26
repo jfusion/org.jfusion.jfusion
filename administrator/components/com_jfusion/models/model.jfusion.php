@@ -459,8 +459,8 @@ class JFusionFunction
      * @param int    $expires_time cookie expiry time
      * @param string $cookiepath   cookie path
      * @param string $cookiedomain cookie domain
-     * @param string $secure       is the secute
-     * @param string $httponly     is the cookie http only
+     * @param bool $secure       is the secute
+     * @param bool $httponly     is the cookie http only
      *
      * @return string nothing
      */
@@ -549,10 +549,13 @@ class JFusionFunction
 
 	/**
 	 * Updates the discussion bot lookup table
-	 * @param $contentid
-	 * @param $threadinfo object with postid, threadid, and forumid
-	 * @param $jname
-	 * @param $published
+	 * @param int $contentid
+	 * @param mixed &$threadinfo object with postid, threadid, and forumid
+     * @param string $jname
+	 * @param int $published
+	 * @param int $manual
+     *
+     * @return void
 	 */
 	public static function updateDiscussionBotLookup($contentid, &$threadinfo, $jname, $published = 1, $manual = 0)
 	{
@@ -681,9 +684,10 @@ class JFusionFunction
      * character_limit - if $to==html OR $to==plaintext, limits the number of visible characters to the user
      * plaintext_line_breaks - if $to=='plaintext', should line breaks when converting to plaintext be replaced with <br /> (br) (default), converted to spaces (space), or left as \n (n)
      * plain_tags - if $to=='plaintext', array of custom bbcode tags (without brackets) that should be stripped
+     *
      * @param string $text    the actual text
      * @param string $to      what to convert the text to; bbcode, html, or plaintext
-     * @param array  $options array with parser options
+     * @param mixed  $options array with parser options
      *
      * @return string with converted text
      */
@@ -867,7 +871,10 @@ class JFusionFunction
      * Used by the JFusionFunction::parseCode function to parse various tags when parsing to bbcode.
      * For example, some Joomla editors like to use an empty paragraph tag for line breaks which gets
      * parsed into a lot of unnecesary line breaks
-     * @param $matches mixed values from preg functions
+     *
+     * @param mixed $matches mixed values from preg functions
+     * @param string $tag
+     *
      * @return string to replace search subject with
      */
     public static function parseTag($matches, $tag = 'p')
@@ -897,6 +904,8 @@ class JFusionFunction
 
     /**
      * Reconnects Joomla DB if it gets disconnected
+     *
+     * @param bool $forceReload
      *
      * @return string nothing
      */

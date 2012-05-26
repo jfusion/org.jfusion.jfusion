@@ -87,7 +87,8 @@ function destruct($object)
  * Translator function
  *
  * @deprecated 1.3
- * @param string $text the text to translate
+ *
+ * @param mixed $text the text to translate
  * @param mixed optional parameters to use in sprintf
  */
 function __()
@@ -113,7 +114,8 @@ function uc_words($str, $destSep='_', $srcSep='_')
 /**
  * Simple sql format date
  *
- * @param string $format
+ * @param bool $dayOnly
+ *
  * @return string
  */
 function now($dayOnly=false)

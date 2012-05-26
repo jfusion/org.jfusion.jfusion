@@ -18,7 +18,11 @@ defined('_JEXEC') or die();
 class JFormFieldSecret extends JFormField
 {
     public $type = 'Secret';
-
+    /**
+     * Get an element
+     *
+     * @return string html
+     */
     protected function getInput()
     {
 		if(!empty($this->value)){

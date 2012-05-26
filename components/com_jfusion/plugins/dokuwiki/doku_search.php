@@ -16,6 +16,14 @@
  * @return array
  */
 
+/**
+ * ft_pageSearch
+ *
+ * @param string $query
+ * @param array &$highlight
+ *
+ * @return array
+ */
 function ft_pageSearch($query, &$highlight) {
     $q = ft_queryParser($query);
     $highlight = array();
@@ -101,6 +109,8 @@ function ft_pageSearch($query, &$highlight) {
  * Does a quick lookup with the fulltext index, then
  * evaluates the instructions of the found pages
  *
+ * @param string $id
+ *
  * @return array
  */
 function ft_backlinks($id) {
@@ -138,6 +148,9 @@ function ft_backlinks($id) {
  * evaluates the instructions of the found pages
  *
  * Aborts after $max found results
+ *
+ * @param string $id
+ * @param int $max
  *
  * @return array
  */
@@ -183,6 +196,9 @@ function ft_mediause($id, $max) {
  *
  * @author Andreas Gohr <andi@splitbrain.org>
  *
+ * @param string $id
+ * @param bool $pageonly
+ *
  * @return array
  */
 function ft_pageLookup($id, $pageonly = true) {
@@ -219,6 +235,9 @@ function ft_pageLookup($id, $pageonly = true) {
  * Creates a snippet extract
  *
  * @author Andreas Gohr <andi@splitbrain.org>
+ *
+ * @param string $id
+ * @param array $highlight
  *
  * @return string
  */
@@ -287,6 +306,8 @@ function ft_snippet($id, $highlight) {
  * based upon PEAR's PHP_Compat function for array_intersect_key()
  *
  * @param array $args An array of page arrays
+ *
+ * @return array
  */
 function ft_resultCombine($args) {
     $array_count = count($args);
@@ -312,6 +333,10 @@ function ft_resultCombine($args) {
  * Builds an array of search words from a query
  *
  * @todo support OR and parenthesises?
+ *
+ * @param string $query
+ *
+ * @return array
  */
 function ft_queryParser($query) {
     global $conf;

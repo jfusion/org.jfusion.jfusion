@@ -18,7 +18,7 @@ class JFusionCookies {
      *
      * @param string $cookie_name
      * @param string $cookie_value
-     * @param int $cookie_name
+     * @param int $cookie_expires_time
      * @param string $cookiepath
      * @param string $cookiedomain
      * @param int $cookie_secure
@@ -147,6 +147,10 @@ class JFusionCookies {
 	 *        4. 4 Delimeters in between key-value pairs
 	 *
 	 * @see model.curl.php and model.curlframeless.php
+     *
+     * @param array $array
+     * @param string $delimeter
+     * @param string $keyssofar
      *
      * @return string
 	 */

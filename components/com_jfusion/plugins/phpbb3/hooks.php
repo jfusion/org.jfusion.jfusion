@@ -26,6 +26,8 @@ defined('_JEXEC') or die('Restricted access');
  * @copyright  2008 JFusion. All rights reserved.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
+ *
+ * @param object &$hook
  */
 function phpbb_hook_register(&$hook)
 {
@@ -52,6 +54,8 @@ function phpbb_hook_register(&$hook)
 class JFusionHook {
     /**
      * Throws an exeption at the end of the phpBB3 execution to return to JFusion
+     *
+     * @param mixed $hook
      *
      * @throws Exception
      */
@@ -117,6 +121,8 @@ class JFusionHook {
     }
     /**
      * Function that allows for the user object to contain the correct url
+     *
+     * @param $hook
      */
     public static function phpbb_user_session_handler($hook) {
         //we need to change the $user->page array as it does not detect some POST values
@@ -196,6 +202,11 @@ class JFusionHook {
     }
     /**
      * Function not implemented
+     *
+     * @param string $errno
+     * @param string $msg_text
+     * @param string $errfile
+     * @param string $errline
      */
     public static function msg_handler($errno, $msg_text, $errfile, $errline) {
         msg_handler($errno, $msg_text, $errfile, $errline);

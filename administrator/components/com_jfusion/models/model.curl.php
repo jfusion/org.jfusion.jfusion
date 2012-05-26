@@ -604,8 +604,8 @@ class JFusionCurl
 	 * @param int    $expires         cookie expiry time
 	 * @param string $cookiepath      cookie path
 	 * @param string $cookiedomain    cookie domain
-	 * @param string $secure          secure
-	 * @param string $httponly        is the cookie http only
+	 * @param int $secure          secure
+	 * @param int $httponly        is the cookie http only
 	 * @param string $crossdomain_url cross domain url
 	 *
 	 * @return string nothing
@@ -634,9 +634,9 @@ class JFusionCurl
 	 * @param string $mycookies_to_set cookie value
 	 * @param string $cookiedomain     cookie domain
 	 * @param string $cookiepath       cookie path
-	 * @param string $expires          expires
-	 * @param string $secure           secure
-	 * @param string $httponly         is the cookie http only
+	 * @param int $expires          expires
+	 * @param int $secure           secure
+	 * @param int $httponly         is the cookie http only
 	 * @param string $crossdomain_url  cross domain url
 	 *
 	 * @return string nothing
@@ -695,8 +695,8 @@ class JFusionCurl
 	 * @param string $cookiedomain     cookie domain
 	 * @param string $cookiepath       cookie path
 	 * @param string $leavealone       leavealone
-	 * @param string $secure           secure
-	 * @param string $httponly         is the cookie http only
+	 * @param int $secure           secure
+	 * @param int $httponly         is the cookie http only
 	 * @param string $crossdomain_url  cross domain url
 	 *
 	 * @return string nothing
@@ -800,7 +800,10 @@ class JFusionCurl
 	 * function ReadPage
 	 * This function will read a page of an integration
 	 * Caller should make sure that the Curl extension is loaded
+     *
 	 * @param array $curl_options curl options
+     * @param array &$status
+     * @param bool $curlinit
 	 *
 	 * @return string page read
 	 */

@@ -162,7 +162,7 @@ class JFusionModelInstaller extends InstallerModelInstall
      *
      * @param string $jname     name of the JFusion plugin used
      * @param string $new_jname name of the new plugin
-     * @param string $update    update existing plugin
+     * @param bool $update    update existing plugin
      *
      * @return true|false Result of the JFusion plugin uninstall
      */
@@ -220,7 +220,8 @@ class JFusionPluginInstaller extends JObject
     /**
      * handles JFusion plugin installation
      *
-     * @param string $dir install path
+     * @param mixed $dir install path
+     * @param array &$result
      *
      * @return boolean
      */

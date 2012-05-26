@@ -102,6 +102,9 @@ class JFusionHelper_dokuwiki
     
     /**
      * Retrieves, sets, and returns Dokuwiki's Version
+     *
+     * @param string $v
+     *
      * @return string   version
      */
 

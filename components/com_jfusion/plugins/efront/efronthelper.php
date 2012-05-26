@@ -129,6 +129,9 @@ class JFusionEfrontHelper {
  * connects to api, using userbame and password
  * returns token, or empty string when not successful
  *
+ * @param array $curl_options
+ * @param array $status
+ *
  * @return array
  */
     function send_to_api($curl_options,$status) {

@@ -28,6 +28,11 @@ define('FORCE_REDIRECT_AFTER_LOGOUT', 0);  //set this to one if you are getting 
 
 /**
  * Login function
+ *
+ * @param string &$username
+ * @param string &$password
+ *
+ * @return array
  */
 function login_jfusion(&$username, &$password) {
     require_once 'auth_db.php';

@@ -24,7 +24,16 @@ require_once JPATH_ADMINISTRATOR.DS.'components'.DS.'com_jfusion'.DS.'models'.DS
 class JElementJFusionUsergroupList extends JElement
 {
     var $_name = 'JFusionUsergroupList';
-
+    /**
+     * Get an element
+     *
+     * @param string $name         name of element
+     * @param string $value        value of element
+     * @param string &$node        node of element
+     * @param string $control_name name of controler
+     *
+     * @return string html
+     */
     function fetchElement($name, $value, &$node, $control_name)
     {
         global $jname;

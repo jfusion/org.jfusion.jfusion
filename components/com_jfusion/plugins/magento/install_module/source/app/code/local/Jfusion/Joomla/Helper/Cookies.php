@@ -21,6 +21,8 @@ class Jfusion_Joomla_Helper_Cookies extends Mage_Core_Helper_Abstract {
 	/**
 	 * Singleton pattern implementation
 	 *
+     * @param resource $ch
+     *
 	 * @return Jfusion_Joomla_Helper_Curl
 	 */
 	static public function instance($ch) {
@@ -73,11 +75,11 @@ class Jfusion_Joomla_Helper_Cookies extends Mage_Core_Helper_Abstract {
 	 *
 	 * @param string $name
 	 * @param string $value
-	 * @param string $expires
+	 * @param int $expires
 	 * @param string $cookiepath
 	 * @param string $cookiedomain
-	 * @param integer $secure
-	 * @param integer $httponly
+	 * @param int $secure
+	 * @param int $httponly
 	 */
 	private function addCookie($name, $value = '', $expires = 0, $cookiepath = '', $cookiedomain = '', $secure = 0, $httponly = 0) {
 		// Versions of PHP prior to 5.2 do not support HttpOnly cookies and IE is buggy when specifying a blank domain so set the cookie manually
@@ -140,7 +142,7 @@ class Jfusion_Joomla_Helper_Cookies extends Mage_Core_Helper_Abstract {
 	 * @param array $mycookies_to_set
 	 * @param string $cookiedomain
 	 * @param string $cookiepath
-	 * @param string $expires
+	 * @param integer $expires
 	 * @param integer $secure
 	 * @param integer $httponly
 	 */
@@ -213,6 +215,10 @@ class Jfusion_Joomla_Helper_Cookies extends Mage_Core_Helper_Abstract {
 	 *        2. 2 Delimeters in between keys
 	 *        3. 3 Delimeters in between key and value
 	 *        4. 4 Delimeters in between key-value pairs
+     *
+     * @param array $array
+     * @param string $delimeter
+     * @param string $keyssofar
      *
      * @return string
 	 */

@@ -26,6 +26,8 @@ class doku_auth_mysql extends doku_auth_basic {
      * checks if the mysql interface is available, otherwise it will
      * set the variable $success of the basis class to false
      *
+     * @param string $jname
+     *
      * @author Matthias Grimm <matthiasgrimm@users.sourceforge.net>
      */
     function doku_auth_mysql($jname) {
@@ -105,7 +107,11 @@ class doku_auth_mysql extends doku_auth_basic {
     /**
      * Check if the given config strings are set
      *
+     * @param array $keys
+     * @param bool $wop
+     *
      * @author  Matthias Grimm <matthiasgrimm@users.sourceforge.net>
+     *
      * @return  bool
      */
     function _chkcnf($keys, $wop=false) {
@@ -347,9 +353,10 @@ class doku_auth_mysql extends doku_auth_basic {
     /**
      * Bulk retrieval of user data. [public function]
      *
-     * @param   first     index of first user to be returned
-     * @param   limit     max number of users to be returned
-     * @param   filter    array of field/pattern pairs
+     * @param int $first     index of first user to be returned
+     * @param int $limit     max number of users to be returned
+     * @param array $filter    array of field/pattern pairs
+     *
      * @return  array of userinfo (refer getUserData for internal userinfo details)
      *
      * @author  Matthias Grimm <matthiasgrimm@users.sourceforge.net>
@@ -420,6 +427,8 @@ class doku_auth_mysql extends doku_auth_basic {
 
     /**
      * MySQL is case-insensitive
+     *
+     * @return bool
      */
     function isCaseSensitive(){
         return false;
@@ -841,6 +850,8 @@ class doku_auth_mysql extends doku_auth_basic {
      * @param string $mode  could be 'READ' or 'WRITE'
      *
      * @author Matthias Grimm <matthiasgrimm@users.sourceforge.net>
+     *
+     * @return bool
      */
     function _lockTables($mode) {
       if ($this->dbcon) {
@@ -865,6 +876,8 @@ class doku_auth_mysql extends doku_auth_basic {
      * abrogated.
      *
      * @author Matthias Grimm <matthiasgrimm@users.sourceforge.net>
+     *
+     * @return bool
      */
     function _unlockTables() {
       if ($this->dbcon) {
@@ -927,6 +940,8 @@ class doku_auth_mysql extends doku_auth_basic {
      * @author Andreas Gohr <andi@splitbrain.org>
      * @param  string  $string The string to escape
      * @param  boolean $like   Escape wildcard chars as well?
+     *
+     * @return string
      */
     function _escape($string,$like=false) {
         if($this->dbcon && false) {

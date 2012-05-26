@@ -509,7 +509,10 @@ class JFusionUser_smf extends JFusionUser
      * Keep alive function called by system plugin to keep session alive
      *
      * @access public
-     * @return boolean False on Falior
+     *
+     * @param bool $keepalive
+     *
+     * @return int False on Falior
      */
     function syncSessions($keepalive = false)
     {

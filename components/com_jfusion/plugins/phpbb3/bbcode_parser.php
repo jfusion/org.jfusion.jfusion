@@ -121,6 +121,9 @@ class phpbb_bbcode_parser {
     /**
      * Making some pre-checks for bbcodes as well as increasing the number of parsed items
      *
+     * @param $bbcode
+     * @param string &$in
+     *
      * @return bool
      */
     function check_bbcode($bbcode, &$in) {
@@ -136,6 +139,8 @@ class phpbb_bbcode_parser {
     /**
      * Transform some characters in valid bbcodes
      *
+     * @param string $text
+     *
      * @return string
      */
     function bbcode_specialchars($text) {
@@ -145,6 +150,9 @@ class phpbb_bbcode_parser {
     }
     /**
      * Parse size tag
+     *
+     * @param string $stx
+     * @param string $in
      *
      * @return string
      */
@@ -162,6 +170,9 @@ class phpbb_bbcode_parser {
     /**
      * Parse color tag
      *
+     * @param string $stx
+     * @param string $in
+     *
      * @return string
      */
     function bbcode_color($stx, $in) {
@@ -172,6 +183,8 @@ class phpbb_bbcode_parser {
     }
     /**
      * Parse u tag
+     *
+     * @param string $in
      *
      * @return string
      */
@@ -184,6 +197,8 @@ class phpbb_bbcode_parser {
     /**
      * Parse b tag
      *
+     * @param string $in
+     *
      * @return string
      */
     function bbcode_strong($in) {
@@ -195,6 +210,8 @@ class phpbb_bbcode_parser {
     /**
      * Parse i tag
      *
+     * @param string $in
+     *
      * @return string
      */
     function bbcode_italic($in) {
@@ -205,6 +222,8 @@ class phpbb_bbcode_parser {
     }
     /**
      * Parse img tag
+     *
+     * @param string $in
      *
      * @return string
      */
@@ -228,6 +247,10 @@ class phpbb_bbcode_parser {
     /**
      * Parse flash tag
      *
+     * @param int $width
+     * @param int $height
+     * @param string $in
+     *
      * @return string
      */
     function bbcode_flash($width, $height, $in) {
@@ -245,6 +268,9 @@ class phpbb_bbcode_parser {
     /**
      * Parse inline attachments [ia]
      *
+     * @param string $stx
+     * @param string $in
+     *
      * @return string
      */
     function bbcode_attachment($stx, $in) {
@@ -256,6 +282,9 @@ class phpbb_bbcode_parser {
     /**
      * Parse code text from code tag
      * @access private
+     *
+     * @param string $stx
+     * @param string &$code
      *
      * @return string
      */
@@ -306,6 +335,9 @@ class phpbb_bbcode_parser {
     /**
      * Parse code tag
      * Expects the argument to start right after the opening [code] tag and to end with [/code]
+     *
+     * @param string $stx
+     * @param string $in
      *
      * @return string
      */
@@ -374,6 +406,10 @@ class phpbb_bbcode_parser {
     /**
      * Parse list bbcode
      * Expects the argument to start with a tag
+     *
+     * @param string $in
+     *
+     * @return string
      */
     function bbcode_parse_list($in) {
         if (!$this->check_bbcode('list', $in)) {
@@ -459,6 +495,10 @@ class phpbb_bbcode_parser {
     /**
      * Parse quote bbcode
      * Expects the argument to start with a tag
+     *
+     * @param string $in
+     *
+     * @return string
      */
     function bbcode_quote($in) {
         global $config, $user;
@@ -588,6 +628,11 @@ class phpbb_bbcode_parser {
     }
     /**
      * Validate email
+     *
+     * @param string $var1
+     * @param string $var2
+     *
+     * @return string
      */
     function validate_email($var1, $var2) {
         $var1 = str_replace("\r\n", "\n", str_replace('\"', '"', trim($var1)));
@@ -613,6 +658,8 @@ class phpbb_bbcode_parser {
      *
      * @param string $var1 optional url parameter for url bbcode: [url(=$var1)]$var2[/url]
      * @param string $var2 url bbcode content: [url(=$var1)]$var2[/url]
+     *
+     * @return string
      */
     function validate_url($var1, $var2) {
         global $config;
@@ -650,6 +697,10 @@ class phpbb_bbcode_parser {
      * This function returns a regular expression pattern for commonly used expressions
      * Use with / as delimiter for email mode and # for url modes
      * mode can be: email|bbcode_htm|url|url_inline|www_url|www_url_inline|relative_url|relative_url_inline|ipv4|ipv6
+     *
+     * @param string $mode
+     *
+     * @return string
      */
     function get_preg_expression($mode) {
         switch ($mode) {

@@ -49,13 +49,12 @@ class JFusionPublic_efront extends JFusionPublic
     {
         return 'index.php?ctg=reset_pwd';
     }
-    /************************************************
-    * Functions For JFusion Who's Online Module
-    * @return string
-    ***********************************************/
 
     /*
      * getOnlineUserQuery
+     *
+     * @param int $limit
+     *
      * @return string
      */
     function getOnlineUserQuery($limit) {

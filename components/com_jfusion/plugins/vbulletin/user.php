@@ -835,6 +835,10 @@ class JFusionUser_vbulletin extends JFusionUser
 
     /**
      * AEC Integration Functions
+     *
+     * @param array &$current_settings
+     *
+     * @return array
      */
 
     function AEC_Settings(&$current_settings)

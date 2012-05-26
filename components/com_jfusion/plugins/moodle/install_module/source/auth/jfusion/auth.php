@@ -128,6 +128,9 @@ class auth_plugin_jfusion extends auth_plugin_base {
 	/**
 	 * No password updates.
      *
+     * @param string $user
+     * @param string $newpassword
+     *
      * @return bool
 	 */
 	function user_update_password($user, $newpassword) {
@@ -165,6 +168,10 @@ class auth_plugin_jfusion extends auth_plugin_base {
 	/**
 	 * This function is called when a user is authenticated by another plugin
 	 * We use it to start a login procedure in case we have a non JFusion login on Moodle
+     *
+     * @param string $user
+     * @param string $username
+     * @param string $password
      *
      * @return bool
 	 */
@@ -290,14 +297,19 @@ class auth_plugin_jfusion extends auth_plugin_base {
 	 * This function is called from admin/auth.php, and outputs a full page with
 	 * a form for configuring this plugin.
 	 *
-	 * @param array $page An object containing all the data for this page.
+	 * @param array $config An object containing all the data for this page.
+     * @param string $err
+     * @param string $user_fields
 	 */
 	function config_form($config, $err, $user_fields) {
+
 		include "config.phtml";
 	}
 
 	/**
 	 * Processes and stores configuration data for this authentication plugin.
+     *
+     * @param object $config
 	 */
 	function process_config($config) {
 		set_config('jf_enabled',          $config->jf_enabled,            'auth/jfusion');
@@ -323,6 +335,10 @@ class auth_plugin_jfusion extends auth_plugin_base {
 
 	/***
 	 * Logs into Joomla using Curl
+     *
+     * @param string $username
+     * @param string $password
+     * @param string $jnodeid
 	 */
 	function LoginJoomla($username, $password, $jnodeid){
 		global $CFG;

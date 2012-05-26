@@ -167,6 +167,8 @@ class JFusionPublic_vbulletin extends JFusionPublic
      * Returns a query to find online users
      * Make sure columns are named as userid, username, username_clean (if applicable), name (of user), and email
      *
+     * @param int $limit
+     *
      * @return string
      */
     function getOnlineUserQuery($limit)
@@ -587,9 +589,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
         }
         return $url;
     }
-    /************************************************
-    * For JFusion Search Plugin
-    ***********************************************/
+
     function getSearchQueryColumns()
     {
         $columns = new stdClass();

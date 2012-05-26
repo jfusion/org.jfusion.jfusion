@@ -103,8 +103,11 @@ class JFusionPublic
     /**
      * function that parses the HTML and fix the css
      *
+     * @param object &$data data to parse
      * @param string $html data to parse
-     * @param string $infile_only parse only infile (body)
+     * @param bool $infile_only parse only infile (body)
+     *
+     * @return void
      */
     function parseCSS(&$data,&$html,$infile_only=false)
     {
@@ -263,13 +266,13 @@ class JFusionPublic
      *
      * @param string  &$text             Text to be modified
      * @param string  $for              (optional) Determines how the text should be prepared.
-     * Options for $for as passed in by JFusion's plugins and modules are:
-     * joomla (to be displayed in an article; used by discussion bot)
-     * forum (to be published in a thread or post; used by discussion bot)
-     * activity (displayed in activity module; used by the activity module)
-     * search (displayed as search results; used by search plugin)
-     * @param object  $params           (optional) Joomla parameter object passed in by JFusion's module/plugin
-     * @param object  $object           (optional) Object with information for the specific element the text is from
+     *                                  Options for $for as passed in by JFusion's plugins and modules are:
+     *                                  joomla (to be displayed in an article; used by discussion bot)
+     *                                  forum (to be published in a thread or post; used by discussion bot)
+     *                                  activity (displayed in activity module; used by the activity module)
+     *                                  search (displayed as search results; used by search plugin)
+     * @param mixed  $params           (optional) Joomla parameter object passed in by JFusion's module/plugin
+     * @param mixed  $object           (optional) Object with information for the specific element the text is from
      *
      * @return array  $status           Information passed back to calling script such as limit_applied
      */
@@ -310,7 +313,14 @@ class JFusionPublic
     /**
      * Parses custom BBCode defined in $this->prepareText() and called by the nbbc parser via JFusionFunction::parseCode()
      *
-     * @return bbcode converted to html
+     * @param mixed $bbcode
+     * @param int $action
+     * @param string $name
+     * @param string $default
+     * @param mixed $params
+     * @param string $content
+     *
+     * @return mixed bbcode converted to html
      */
     function parseCustomBBCode ($bbcode, $action, $name, $default, $params, $content)
     {

@@ -123,9 +123,7 @@ class JFusionPublic_gallery2 extends JFusionPublic {
     /**
      * Fix action
      *
-     * @param string $url     string with html
-     * @param string $extra   string with html
-     * @param string $baseURL string with html
+     * @param array $matches
      *
      * @return string html
      */
@@ -244,6 +242,8 @@ class JFusionPublic_gallery2 extends JFusionPublic {
     /**
      * Returns a query to find online users
      * Make sure columns are named as userid, username, username_clean (if applicable), name (of user), and email
+     *
+     * @param int $limit
      *
      * @return string
      */

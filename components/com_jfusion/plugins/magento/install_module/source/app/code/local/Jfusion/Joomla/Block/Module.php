@@ -20,8 +20,10 @@ class Jfusion_Joomla_Block_Module extends Mage_Core_Block_Template {
 	 *
 	 * @param string $type
 	 * @param string $title
+     * @param mixed $id
 	 * @param string $style
-	 * @param string $debug
+	 * @param bool $debug
+     *
 	 * @return object Jfusion_Joomla_Block_Module
 	 */
 	public function loadJModule($type = '', $title = '', $id = null, $style = 'none', $debug = false) {
@@ -67,6 +69,7 @@ class Jfusion_Joomla_Block_Module extends Mage_Core_Block_Template {
 	* This method allows you to get only li tags from a Joomla menu or any module using only <ul><li>...</li></ul>
 	* Very usefull to integrate a menu module to Magento for example. You need then to bring the module into the catalog/navigation/top.html for example
 	*
+    * @param $value
 	*/	
 	public function setPrepareLayoutMenu($value){
 		parent::setPrepareLayoutMenu($value);

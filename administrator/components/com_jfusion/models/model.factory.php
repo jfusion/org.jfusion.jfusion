@@ -418,7 +418,8 @@ class JFusionFactory
     }
     /**
      * Gets the plugin name for a JFusion Plugin given the jnodeid
-     * @param string $jnodeid jnodeid to use
+     * @param string $jnode_id jnodeid to use
+     *
      * @return string jname name for the JFusion Plugin, empty if no plugin found
      */
     public static function getPluginNameFromNodeId($jnode_id) {

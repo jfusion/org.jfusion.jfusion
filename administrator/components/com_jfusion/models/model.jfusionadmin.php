@@ -32,6 +32,10 @@ class JFusionFunctionAdmin
     /**
      * Changes plugin status in both Joomla 1.5 and Joomla 1.6
      *
+     * @param string $element
+     * @param string $folder
+     * @param int $status
+     *
      * @return object master details
      */
 	public static function changePluginStatus($element,$folder,$status) {
