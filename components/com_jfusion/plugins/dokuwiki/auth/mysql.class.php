@@ -509,23 +509,23 @@ class doku_auth_mysql extends doku_auth_basic {
      * 'false'.
      *
      * @param string $user  user whose groups should be listed
-     * @return bool   false on error
      * @return array    array containing all groups on success
      *
      * @author Matthias Grimm <matthiasgrimm@users.sourceforge.net>
      */
     function _getGroups($user) {
-      $groups = array();
+        $groups = array();
 
-      if($this->dbcon) {
-        $sql = str_replace('%{user}',$this->_escape($user),$this->cnf['getGroups']);
-        $result = $this->_queryDB($sql);
+        if($this->dbcon) {
+            $sql = str_replace('%{user}',$this->_escape($user),$this->cnf['getGroups']);
+            $result = $this->_queryDB($sql);
 
-        if($result !== false && count($result)) {
-          foreach($result as $row)
-            $groups[] = $row['group'];
+            if($result !== false && count($result)) {
+                foreach($result as $row) {
+                    $groups[] = $row['group'];
+                }
+            }
         }
-      }
         return $groups;
     }
 

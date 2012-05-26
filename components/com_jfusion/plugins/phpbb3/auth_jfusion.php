@@ -148,6 +148,7 @@ function logout_jfusion(&$data) {
         $session = JFactory::getSession();
         $session->close();
 
+        $link = null;
         if (FORCE_REDIRECT_AFTER_LOGOUT) {
             //redirect to prevent fatal errors on some servers
             $uri = & JURI::getInstance();

@@ -715,7 +715,7 @@ function fixURL($matches)
         $debug = array();
         $debug['original'] = $matches[0];
         $debug['url'] = $url;
-        $debug['extra'] = $parts;
+        $debug['extra'] = $extra;
         $debug['function'] = 'fixURL';
     }
     $uri = & JURI::getInstance();
