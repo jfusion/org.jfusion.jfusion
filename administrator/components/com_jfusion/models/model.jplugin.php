@@ -1308,6 +1308,7 @@ class JFusionJplugin
         }
         $db = & JFusionFactory::getDatabase($jname);
         $params = & JFusionFactory::getParams($jname);
+        $dispatcher = & JDispatcher::getInstance();
 
 		$groups = JFusionFunction::getCorrectUserGroups($jname,$userinfo);
         //make sure the group exists
