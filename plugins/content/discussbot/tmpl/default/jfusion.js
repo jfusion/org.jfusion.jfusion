@@ -303,7 +303,7 @@ function showMessage(msg, type)
 
 function hideMessage(error)
 {
-	delayHiding = setTimeout(ajaxMessageSlide.slideOut(),5000);
+	delayHiding = setTimeout('ajaxMessageSlide.slideOut()',5000);
 }
 
 function highlightPost(postid)

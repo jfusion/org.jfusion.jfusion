@@ -10,7 +10,7 @@ function jfusion_doQuote(messageid, cursessionid) {
 		} else {
 			reqWin(jf_scripturl + "&action=quotefast;quote=" + messageid + ";sesc=" + cursessionid, 240, 90);
         }
-		if (navigator.appName == "Microsoft Internet Explorer") {
+		if (navigator.appName === "Microsoft Internet Explorer") {
 			window.location.hash = "quickreply";
         } else {
 			window.location.hash = "#quickreply";
@@ -26,7 +26,7 @@ function jfusion_modify_msg(msgid, cursessionid) {
                 return;
             }
         }
-        if (in_edit_mode == 1){
+        if (in_edit_mode == 1) {
             modify_cancel();
         }
         in_edit_mode = 1;
@@ -48,7 +48,7 @@ function jfusion_modify_save(cursessionid) {
 	x[x.length] = 'topic=' + parseInt(document.forms.quickModForm.elements['topic'].value);
 	x[x.length] = 'msg=' + parseInt(document.forms.quickModForm.elements['msg'].value);
 
-	if (typeof window.ajax_indicator == "function") {
+	if (typeof window.ajax_indicator === "function") {
 		ajax_indicator(true);
     }
 

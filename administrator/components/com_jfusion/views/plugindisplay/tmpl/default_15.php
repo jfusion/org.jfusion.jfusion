@@ -84,8 +84,8 @@ function showSpinner(jname,fieldname) {
 }
 
 function copyplugin(jname) {
-	var new_jname = prompt('Please type in the name to use for the copied plugin. This name must not already be in use.', '');
-    if(new_jname) {
+	var newjname = prompt('Please type in the name to use for the copied plugin. This name must not already be in use.', '');
+    if(newjname) {
         var url = '<?php echo JURI::root() . 'administrator/index.php'; ?>';
 
      // this code will send a data object via a GET request and alert the retrieved data.
@@ -95,12 +95,12 @@ function copyplugin(jname) {
 		
 		        if(results.status === true) {
 		            //add new row
-		            addRow(results.new_jname, results.rowhtml);
+		            addRow(results.newjname, results.rowhtml);
 		        }
 		        alert(results.message);
           	} 
         });
-        jsonRequest.request('option=com_jfusion&task=plugincopy&jname=' + jname + '&new_jname=' + new_jname); 
+        jsonRequest.request('option=com_jfusion&task=plugincopy&jname=' + jname + '&new_jname=' + newjname);
     }
 }
 

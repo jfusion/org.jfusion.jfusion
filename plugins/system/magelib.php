@@ -103,7 +103,7 @@ class plgSystemMagelib {
 				$error_message = JText::sprintf ( 'The file %s doesn\'t exists', $bootstrap );
 				$error = JError::raiseWarning ( 0, $error_message );
 				$error->message = get_class ( $this ) . '::loadAndStartMagentoBootstrap - ' . $error_message;
-				JError::handleLog ( $error, null );
+				JError::handleLog ( $error, array() );
 				return false;
 			}
 			

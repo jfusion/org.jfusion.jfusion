@@ -1396,7 +1396,7 @@ class plgContentJfusion extends JPlugin
                 jimport('joomla.utilities.date');
                 $tz_offset =& JFusionFunction::getJoomlaTimezone();
                 $dateline += ($tz_offset * 3600);
-                $date = gmstrftime($date_format, $dateline);
+                $date = gmstrftime($date_format, (int) $dateline);
                 $post_output[$i]->date = $date;
             } else {
                 $post_output[$i]->date = '';

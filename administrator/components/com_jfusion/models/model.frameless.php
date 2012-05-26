@@ -320,13 +320,13 @@ class JFusionFrameless{
 					$elements = $html->find(trim($value));
 					if ( $elements ) {
 						foreach( $elements as $element ) {
-							$data->body = $element->outertext;
+							$data->body = $element->outertext();
 							return;
 						}
 					}
 				}
 			}
-			$data->body = $html->outertext;
+			$data->body = $html->outertext();
 		}
 	}
 }

@@ -191,11 +191,11 @@ class doku_auth_mysql extends doku_auth_basic {
      * The new user will be added to the default group by this
      * function if grps are not specified (default behaviour).
      *
-     * @param $user  nick of the user
-     * @param $pwd   clear text password
-     * @param $name  full name of the user
-     * @param $mail  email address
-     * @param $grps  array of groups the user should become member of
+     * @param string $user  nick of the user
+     * @param string $pwd   clear text password
+     * @param string $name  full name of the user
+     * @param string $mail  email address
+     * @param array $grps  array of groups the user should become member of
      *
      * @author  Andreas Gohr <andi@splitbrain.org>
      * @author  Chris Smith <chris@jalakai.co.uk>
@@ -242,8 +242,8 @@ class doku_auth_mysql extends doku_auth_basic {
      * should be modified). In this case we asure that we don't touch groups
      * even $changes['grps'] is set by mistake.
      *
-     * @param   $user     nick of the user to be changed
-     * @param   $changes  array of field/value pairs to be changed (password
+     * @param string $user     nick of the user to be changed
+     * @param string $changes  array of field/value pairs to be changed (password
      *                    will be clear text)
      * @return  bool      true on success, false on error
      *
@@ -431,9 +431,9 @@ class doku_auth_mysql extends doku_auth_basic {
      * recommended to call this function only after all participating
      * tables (group and usergroup) have been locked.
      *
-     * @param   $user    user to add to a group
-     * @param   $group   name of the group
-     * @param   $force   '1' create missing groups
+     * @param string $user    user to add to a group
+     * @param string $group   name of the group
+     * @param int $force   '1' create missing groups
      * @return  bool     'true' on success, 'false' on error
      *
      * @author Matthias Grimm <matthiasgrimm@users.sourceforge.net>
@@ -474,8 +474,8 @@ class doku_auth_mysql extends doku_auth_basic {
     /**
      * Remove user from a group
      *
-     * @param   $user    user that leaves a group
-     * @param   $group   group to leave
+     * @param string $user    user that leaves a group
+     * @param  string $group   group to leave
      * @return  bool     true on success, false on error
      *
      * @author  Matthias Grimm <matthiasgrimm@users.sourceforge.net>
@@ -508,9 +508,9 @@ class doku_auth_mysql extends doku_auth_basic {
      * for this function to work. Otherwise it will return
      * 'false'.
      *
-     * @param  $user  user whose groups should be listed
+     * @param string $user  user whose groups should be listed
      * @return bool   false on error
-     * @return array  array containing all groups on success
+     * @return array    array containing all groups on success
      *
      * @author Matthias Grimm <matthiasgrimm@users.sourceforge.net>
      */
@@ -525,9 +525,8 @@ class doku_auth_mysql extends doku_auth_basic {
           foreach($result as $row)
             $groups[] = $row['group'];
         }
-        return $groups;
       }
-      return false;
+        return $groups;
     }
 
     /**
@@ -537,7 +536,7 @@ class doku_auth_mysql extends doku_auth_basic {
      * for this function to work. Otherwise it will return
      * 'false'.
      *
-     * @param  $user   user whose id is desired
+     * @param string $user   user whose id is desired
      * @return user id
      *
      * @author Matthias Grimm <matthiasgrimm@users.sourceforge.net>
@@ -558,11 +557,11 @@ class doku_auth_mysql extends doku_auth_basic {
      * for this function to work. Otherwise it will return
      * 'false'.
      *
-     * @param  $user  login of the user
-     * @param  $pwd   encrypted password
-     * @param  $name  full name of the user
-     * @param  $mail  email address
-     * @param  $grps  array of groups the user should become member of
+     * @param string $user  login of the user
+     * @param string $pwd   encrypted password
+     * @param string $name  full name of the user
+     * @param string $mail  email address
+     * @param array $grps  array of groups the user should become member of
      * @return bool
      *
      * @author  Andreas Gohr <andi@splitbrain.org>
@@ -606,7 +605,7 @@ class doku_auth_mysql extends doku_auth_basic {
      * for this function to work. Otherwise it will return
      * 'false'.
      *
-     * @param  $user   user whose id is desired
+     * @param string $user   user whose id is desired
      * @return bool
      *
      * @author Matthias Grimm <matthiasgrimm@users.sourceforge.net>
@@ -633,7 +632,7 @@ class doku_auth_mysql extends doku_auth_basic {
      * must already be established for this function to work.
      * Otherwise it will return 'false'.
      *
-     * @param  $user  user's nick to get data for
+     * @param string $user  user's nick to get data for
      * @return bool   false on error
      * @return array  user info on success
      *
@@ -765,7 +764,7 @@ class doku_auth_mysql extends doku_auth_basic {
      * This function is only able to handle queries that returns a
      * table such as SELECT.
      *
-     * @param $query  SQL string that contains the query
+     * @param string $query  SQL string that contains the query
      * @return array with the result table
      *
      * @author Matthias Grimm <matthiasgrimm@users.sourceforge.net>
@@ -797,7 +796,7 @@ class doku_auth_mysql extends doku_auth_basic {
      * This function is only able to handle queries that returns
      * either nothing or an id value such as INPUT, DELETE, UPDATE, etc.
      *
-     * @param $query  SQL string that contains the query
+     * @param string $query  SQL string that contains the query
      * @return insert id or 0, false on error
      *
      * @author Matthias Grimm <matthiasgrimm@users.sourceforge.net>
@@ -833,7 +832,7 @@ class doku_auth_mysql extends doku_auth_basic {
      * so that this functionality is simulated by this function. Nevertheless
      * it is not as powerful as transactions, it is a good compromise in safty.
      *
-     * @param $mode  could be 'READ' or 'WRITE'
+     * @param string $mode  could be 'READ' or 'WRITE'
      *
      * @author Matthias Grimm <matthiasgrimm@users.sourceforge.net>
      */
