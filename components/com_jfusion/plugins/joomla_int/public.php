@@ -49,9 +49,6 @@ class JFusionPublic_joomla_int extends JFusionPublic {
     function getLostUsernameURL() {
         return JFusionJplugin::getLostUsernameURL();
     }
-    /************************************************
-    * Functions For JFusion Who's Online Module
-    ***********************************************/
 
     /*
     * getOnlineUserQuery

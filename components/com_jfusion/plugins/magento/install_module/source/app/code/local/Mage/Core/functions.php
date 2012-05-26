@@ -160,7 +160,7 @@ function mageFindClassFile($class)
  *
  * @throws Exception
  *
- * @return boolean
+ * @return bool
  */
 function mageCoreErrorHandler($errno, $errstr, $errfile, $errline){
     if (strpos($errstr, 'DateTimeZone::__construct')!==false) {

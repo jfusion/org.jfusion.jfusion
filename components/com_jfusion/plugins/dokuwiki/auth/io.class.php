@@ -229,6 +229,8 @@ class JFusionDokuwiki_Io {
      * This is used when the safemode workaround is enabled
      *
      * @author <andi@splitbrain.org>
+     *
+     * @return bool
      */
     function mkdir_ftp($dir) {
         $share = Dokuwiki::getInstance($this->jname);
@@ -261,6 +263,8 @@ class JFusionDokuwiki_Io {
      *
      * @author <richpageau at yahoo dot co dot uk>
      * @link   http://de3.php.net/manual/en/function.realpath.php#75992
+     *
+     * @return bool
      */
     function fullpath($path) {
         $iswin = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN');

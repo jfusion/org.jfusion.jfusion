@@ -169,11 +169,13 @@ class JFusionForum_smf2 extends JFusionForum
 	}
 
      /**
-     * Creates new thread and posts first post
+      * Creates new thread and posts first post
+      *
      * @param object with discussion bot parameters
      * @param object $contentitem object containing content information
      * @param int Id of forum to create thread
-     * @param array $status contains errors and status of actions
+     *
+     * @param array contains errors and status of actions
      */
 	function createThread(&$dbparams, &$contentitem, $forumid, &$status)
 	{

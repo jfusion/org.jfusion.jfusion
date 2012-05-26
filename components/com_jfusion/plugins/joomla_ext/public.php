@@ -49,9 +49,6 @@ class JFusionPublic_joomla_ext extends JFusionPublic {
     function getLostUsernameURL() {
         return JFusionJplugin::getLostUsernameURL($this->getJname());
     }
-    /************************************************
-    * Functions For JFusion Who's Online Module
-    ***********************************************/
 
     /*
     * getOnlineUserQuery

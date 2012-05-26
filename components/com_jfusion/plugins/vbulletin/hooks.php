@@ -193,6 +193,8 @@ class executeJFusionHook
     }
     /**
      * HOOK FUNCTIONS
+     *
+     * @return bool
      */
     function album_picture_complete()
     {
@@ -202,6 +204,12 @@ class executeJFusionHook
         $this->vars['pictureurl'] = $tempURL;
         return true;
     }
+    /**
+     * global_complete
+     *
+     * @return void
+     */
+functi
     function global_complete()
     {
         if (!defined('_JEXEC')) {

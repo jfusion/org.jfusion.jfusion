@@ -34,18 +34,17 @@ class std {
         return ($usec + $sec);
     }
     /**
-     *    getRequest
+     * getRequest
+     * merges HTTP_GET, HTTP_POST and HTPP-FILE requests togehter so that you have
+     * afterwards an all in one array
      *
-     *    merges HTTP_GET, HTTP_POST and HTPP-FILE requests togehter so that you have
-     *    afterwards an all in one array
+     * @param array $post The HTTP_POST request ($_POST)
+     * @param array $get The HTTP-GET request ($_GET)
+     * @param array $files The HTTP-FILE request, if a form uploaded Files ($_FILES)
      *
-     *    @param array $post: The HTTP_POST request ($_POST)
-     *    @param array $get: The HTTP-GET request ($_GET)
-     *    @param array $files : The HTTP-FILE request, if a form uploaded Files ($_FILES)
+     * @uses arrayfunc::recursiveMerge
      *
-     *    @uses arrayfunc::recursiveMerge
-     *
-     *    @return array a recursively merged Array
+     * @return array a recursively merged Array
      */
     public static function getRequest($post, $get, $files) {
         // Setzt verschiedene $_REQUEST-Daten sinnvoll zusammen
@@ -59,14 +58,13 @@ class std {
         return $request;
     }
     /**
-     *    rearrangeFiles - PRIVATE
+     * rearrangeFiles - PRIVATE
+     * re-arrranges the HTTP-FILE-REQUEST array so that its
+     * organized like the POST and GET array afterwards
      *
-     *    re-arrranges the HTTP-FILE-REQUEST array so that its
-     *    organized like the POST and GET array afterwards
+     * @param array $files the raw FILE-Array
      *
-     *    @param the raw FILE-Array
-     *
-     *    @return array a POST/GET-Like structured Array
+     * @return array a POST/GET-Like structured Array
      */
     private static function rearrangeFiles($files) {
         // Hilfsfunktion f�r std::getRequest() (rekursiv)
@@ -87,14 +85,14 @@ class std {
         return $retArr;
     }
     /**
-     *    removeEmptyLines
+     * removeEmptyLines
      *
-     *    removes Empty Lines from a Text
+     * removes Empty Lines from a Text
      *
-     *    @param string $text, the Text to remove the empty Lines From
-     *    @param string $newLineChar - OPTIONAL - the New-Line indicator, default is "\n"
+     * @param string $text the Text to remove the empty Lines From
+     * @param string $newLineChar - OPTIONAL - the New-Line indicator, default is "\n"
      *
-     *    @return string the text without blank lines
+     * @return string the text without blank lines
      */
     public static function removeEmptyLines($text, $newLineChar = "\n") {
         $lines = explode($newLineChar, $text);
@@ -150,8 +148,8 @@ class debug {
         debug::$colorScheme[] = array('vc' => "#f96", 'akc' => "#c66", 'okc' => "#966", 'tc' => '#CCCCCC', 'gc' => '#AAAAFF');
     }
     /**
-     *    Creates and returns the JavaScript-Snippet used to toggle values by klicking on the keys
-     *    returns the code only once, i.e. the first time, print it to the standard output if you get the snippet
+     * Creates and returns the JavaScript-Snippet used to toggle values by klicking on the keys
+     * returns the code only once, i.e. the first time, print it to the standard output if you get the snippet
      *
      * @return string
      */
@@ -482,7 +480,7 @@ class debug {
      *
      *    Rearaanges the results from all Measurements so that they will get human-understandable
      *
-     *    @param array $laufzeit, the raw-array produced by calling start- and stopMessung
+     *    @param array $laufzeit the raw-array produced by calling start- and stopMessung
      *
      *    @return array a humen-understandable Version
      */
@@ -536,7 +534,8 @@ class debug {
      *    - booleans and all numbers will be bold.
      *    - the null-Value will be bold and italic
      *
-     *    @param mixed $value: the Value to HMTL-Encode
+     *    @param mixed $value the Value to HMTL-Encode
+     *
      *    @return string the HTML-Encoded Value
      */
     private static function decorateValue($value) {

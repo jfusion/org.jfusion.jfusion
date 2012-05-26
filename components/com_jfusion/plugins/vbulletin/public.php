@@ -166,6 +166,8 @@ class JFusionPublic_vbulletin extends JFusionPublic
     /**
      * Returns a query to find online users
      * Make sure columns are named as userid, username, username_clean (if applicable), name (of user), and email
+     *
+     * @return string
      */
     function getOnlineUserQuery($limit)
     {
@@ -198,9 +200,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
         $db->setQuery($query);
         return $db->loadResult();
     }
-    /************************************************
-    * Functions For Frameless View
-    ************************************************/
+
     function getBuffer(&$jfdata)
     {
         global $vbsefmode, $vbJname, $vbsefenabled, $baseURL, $integratedURL, $hookFile;

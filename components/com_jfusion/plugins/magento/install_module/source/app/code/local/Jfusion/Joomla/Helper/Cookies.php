@@ -213,6 +213,8 @@ class Jfusion_Joomla_Helper_Cookies extends Mage_Core_Helper_Abstract {
 	 *        2. 2 Delimeters in between keys
 	 *        3. 3 Delimeters in between key and value
 	 *        4. 4 Delimeters in between key-value pairs
+     *
+     * @return string
 	 */
 	function implodeCookies($array, $delimeter, $keyssofar = '') {
 		$output = '';

@@ -182,6 +182,8 @@ function ft_mediause($id, $max) {
  * namespace. This can be changed with the second parameter
  *
  * @author Andreas Gohr <andi@splitbrain.org>
+ *
+ * @return array
  */
 function ft_pageLookup($id, $pageonly = true) {
     global $conf, $rootFolder;
@@ -217,6 +219,8 @@ function ft_pageLookup($id, $pageonly = true) {
  * Creates a snippet extract
  *
  * @author Andreas Gohr <andi@splitbrain.org>
+ *
+ * @return string
  */
 function ft_snippet($id, $highlight) {
     $text = rawWiki($id);

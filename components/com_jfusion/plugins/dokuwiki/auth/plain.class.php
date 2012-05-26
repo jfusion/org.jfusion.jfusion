@@ -222,6 +222,8 @@ class doku_auth_plain extends doku_auth_basic {
      * Return a count of the number of user which meet $filter criteria
      *
      * @author  Chris Smith <chris@jalakai.co.uk>
+     *
+     * @return int
      */
     function getUserCount($filter = array()) {
         $this->_loadUserData();
@@ -267,6 +269,8 @@ class doku_auth_plain extends doku_auth_basic {
      * loads the user file into a datastructure
      *
      * @author  Andreas Gohr <andi@splitbrain.org>
+     *
+     * @return mixed
      */
     function _loadUserData() {
         if (is_array($this->users)) return $this->users;

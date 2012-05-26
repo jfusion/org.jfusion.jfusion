@@ -35,10 +35,6 @@ class JFusionPublic_mediawiki extends JFusionPublic{
 	    $data->body = preg_replace($regex_body, $replace_body, $data->body);
 	}
 
-	/************************************************
-	 * For JFusion Search Plugin
-	 ***********************************************/
-
     /*
     * getSearchQueryColumns
      *

@@ -170,6 +170,8 @@ class doku_auth_mysql extends doku_auth_basic {
      *
      * @author  Andreas Gohr <andi@splitbrain.org>
      * @author  Matthias Grimm <matthiasgrimm@users.sourceforge.net>
+     *
+     * @return mixed
      */
     function getUserData($user){
       if($this->_openDB()) {
@@ -200,6 +202,8 @@ class doku_auth_mysql extends doku_auth_basic {
      * @author  Andreas Gohr <andi@splitbrain.org>
      * @author  Chris Smith <chris@jalakai.co.uk>
      * @author  Matthias Grimm <matthiasgrimm@users.sourceforge.net>
+     *
+     * @return mixed
      */
     function createUser($user,$pwd,$name,$mail,$grps=null) {
       if($this->_openDB()) {

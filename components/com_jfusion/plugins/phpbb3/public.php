@@ -120,9 +120,6 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 
         return $status;
     }
-    /************************************************
-    * Functions For JFusion Who's Online Module
-    ***********************************************/
 
     /*
      * getOnlineUserQuery
@@ -157,9 +154,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
         $result = $db->loadResult();
         return $result;
     }
-    /************************************************
-    * Functions For Frameless Integration
-    ***********************************************/
+
     function getBuffer(&$jfdata) {
     	$this->data = $jfdata;
     	$session = JFactory::getSession();

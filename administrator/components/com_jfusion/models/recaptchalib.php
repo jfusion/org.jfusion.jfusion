@@ -212,6 +212,8 @@ function recaptcha_mailhide_url($pubkey, $privkey, $email) {
  * eg, given johndoe@example,com return ["john", "example.com"].
  * the email is then displayed as john...@example.com
  *
+ * @param string $email
+ *
  * @return array
  */
 function _recaptcha_mailhide_email_parts($email) {
@@ -230,6 +232,10 @@ function _recaptcha_mailhide_email_parts($email) {
  * to get a key, go to:
  *
  * http://mailhide.recaptcha.net/apikey
+ *
+ * @param string $pubkey
+ * @param string $privkey
+ * @param string $email
  *
  * @return string
  */
