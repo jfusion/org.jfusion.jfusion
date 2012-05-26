@@ -107,8 +107,8 @@ class JFusionController extends JController
         $field_name = JRequest::getVar('field_name');
         $field_value = JRequest::getVar('field_value');
         //check to see if an integration was selected
+        $db = JFactory::getDBO();
         if ($jname) {
-            $db = JFactory::getDBO();
             if ($field_name == 'master') {
                 //If a master is being set make sure all other masters are disabled first
                 $query = 'UPDATE #__jfusion SET master = 0';

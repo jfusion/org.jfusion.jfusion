@@ -263,7 +263,7 @@ if ($this->up2date) {
                     confirmtext = '<?php echo JText::_('UPGRADE_CONFIRM_SVN'); ?> ' + document.adminForm2.git_tree.value;
                     installurl = 'https://github.com/joomla/joomla-cms/raw/' + document.adminForm2.git_tree.value + '/jfusion_package.zip';
 				} else {
-                    confirmtext = '<?php echo JText::_('UPGRADE_CONFIRM_RELEASE') . ' ' . $this->JFusion->version; ?>';
+                    confirmtext = '<?php echo JText::_('UPGRADE_CONFIRM_RELEASE') . ' ' . $this->JFusionVersion; ?>';
                     installurl = 'https://github.com/jfusion/org.jfusion.jfusion/blob/develop/jfusion_package.zip?raw=true';
 				}
 				

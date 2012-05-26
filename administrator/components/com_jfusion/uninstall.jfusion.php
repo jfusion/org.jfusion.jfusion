@@ -117,13 +117,7 @@ function com_uninstall() {
     $plugins = JFusionFactory::getPlugins();
     foreach($plugins as $plugin) {
     	$JFusionPlugin =& JFusionFactory::getAdmin($plugin->name);
-    	$result = $JFusionPlugin->uninstall();
-    	if (is_array($result)) {
-    	    $success = $result[0];
-    	    $reasons = $result[1];
-    	} else {
-    	    $success = $result;
-    	}
+        list ($success,$reasons) = $JFusionPlugin->uninstall();
     	if (!$success) {
             echo '<table style="background-color:#f9ded9;" width ="100%"><tr style="height:30px">' . "\n";
             echo '<td><font size="2"><b>'.JText::_('UNINSTALL') . ' ' . $plugin->name . ' ' . JText::_('FAILED') . ': </b></font></td></tr>' . "\n";
@@ -131,8 +125,6 @@ function com_uninstall() {
                 foreach ($reasons as $r) {
                     echo '<td style="padding-left: 15px;">'.$r.'</td></tr>' . "\n";
                 }
-            } elseif (!empty($reasons)) {
-                    echo '<td style="padding-left: 15px;">'.$reasons.'</td></tr>' . "\n";
             }
             echo "</table>\n";
     	    $return = false;

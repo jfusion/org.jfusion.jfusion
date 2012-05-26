@@ -75,6 +75,7 @@ class JFusionCookies {
 				require_once(JPATH_SITE.DS.'components'.DS.'com_jfusion'.DS.'jfusionapi.php');
 
                 $api = null;
+                $data = array();
 		    	foreach( $this->_cookies as $key => $cookies ) {
 		    		$api = new JFusionAPI($key,$this->secret);
 		    		if ($api->set('Cookie','Cookies',$cookies)) {
