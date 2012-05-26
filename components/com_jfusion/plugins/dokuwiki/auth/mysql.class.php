@@ -475,7 +475,7 @@ class doku_auth_mysql extends doku_auth_basic {
      * Remove user from a group
      *
      * @param string $user    user that leaves a group
-     * @param  string $group   group to leave
+     * @param string $group   group to leave
      * @return  bool     true on success, false on error
      *
      * @author  Matthias Grimm <matthiasgrimm@users.sourceforge.net>
@@ -717,7 +717,7 @@ class doku_auth_mysql extends doku_auth_basic {
      * for this function to work. Otherwise it will return
      * 'false'.
      *
-     * @param  $group   group name which id is desired
+     * @param string $group   group name which id is desired
      * @return group id
      *
      * @author Matthias Grimm <matthiasgrimm@users.sourceforge.net>
@@ -924,16 +924,16 @@ class doku_auth_mysql extends doku_auth_basic {
      * @param  string  $string The string to escape
      * @param  boolean $like   Escape wildcard chars as well?
      */
-    function _escape($string,$like=false){
-      if($this->dbcon && false){
-      	$string = $this->dbcon->Quote($string);
-      }else{
-        $string = addslashes($string);
-      }
-      if($like){
-        $string = addcslashes($string,'%_');
-      }
-      return $string;
+    function _escape($string,$like=false) {
+        if($this->dbcon && false) {
+            $string = $this->dbcon->Quote($string);
+        } else {
+            $string = addslashes($string);
+        }
+        if($like) {
+            $string = addcslashes($string,'%_');
+        }
+        return $string;
     }
 }
 

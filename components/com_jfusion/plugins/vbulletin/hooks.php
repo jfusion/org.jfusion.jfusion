@@ -257,8 +257,7 @@ class executeJFusionHook
             //run the api task
             global $vbulletin;
             $jfaction = new JFvBulletinTask($vbulletin, $this->key);
-            $response = $jfaction->performTask($_POST['jfvbtask']);
-            $jfaction->outputResponse($response);
+            $jfaction->performTask($_POST['jfvbtask']);
         } elseif (defined('_JEXEC')) {
             //If Joomla SEF is enabled, the dash in the logout hash gets converted to a colon which must be corrected
             global $vbulletin, $show, $vbsefenabled, $vbsefmode;

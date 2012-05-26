@@ -388,7 +388,7 @@ class JFusionHelper_vbulletin
     /**
      * Prepares text for a vB SEF URL
      *
-     * @param &$string text to be cleaned
+     * @param string &$string text to be cleaned
      */
     function cleanForVbURL(&$string)
     {
