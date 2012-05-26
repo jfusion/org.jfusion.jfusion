@@ -19,7 +19,12 @@ require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS .
 class JFormFieldJFusionCmsBlock extends JFormField {
 	
     public $type = "JFusionCmsBlock";
-    
+
+    /**
+     * Get an element
+     *
+     * @return string html
+     */
 	function getInput() {
 		
 		$output = "";

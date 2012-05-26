@@ -25,6 +25,13 @@
  * @link       http://www.jfusion.org
 */
 class modjfusionUserActivityHelper {
+    /*
+    * prepareAutoOutput
+    *
+    * @param string $jname
+    *
+    * @return object
+    */
     public static function prepareAutoOutput($jname, $config, $params) {
 		$output = new stdClass();
 

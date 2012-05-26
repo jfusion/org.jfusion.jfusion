@@ -183,7 +183,14 @@ class modjfusionActivityHelper
 			$results = array();
 		}
 	}
-	
+
+    /*
+     * timeSince
+     *
+     * @param int $original
+     *
+     * @return array
+     */
 	function timeSince($original) {
 		// array of time period chunks
 		$chunks = array(

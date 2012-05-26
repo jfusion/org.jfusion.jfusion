@@ -155,7 +155,10 @@ class JFusionAdmin_moodle extends JFusionAdmin
         return true;
     }
     /**
+     * outputJavascript
      * Put specific javascript script
+     *
+     * @return void
      */
     public function outputJavascript(){
         $js = <<< EOD

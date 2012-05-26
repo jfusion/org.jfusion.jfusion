@@ -17,7 +17,12 @@ require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS .
  * @package mod_jfusion_magecustomblock
  */
 class JElementJFusionCmsBlock extends JElement {
-	
+
+    /**
+     * Get an element
+     *
+     * @return string html
+     */
 	function fetchElement($name, $value, &$node, $control_name) {
 		
 		$output = "";

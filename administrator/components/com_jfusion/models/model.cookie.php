@@ -147,7 +147,7 @@ class JFusionCookies {
 	 *        4. 4 Delimeters in between key-value pairs
 	 *
 	 * @see model.curl.php and model.curlframeless.php
-     * @returns string
+     * @return string
 	 */
 	public static function implodeCookies($array, $delimeter, $keyssofar = '') {
 		$output = '';

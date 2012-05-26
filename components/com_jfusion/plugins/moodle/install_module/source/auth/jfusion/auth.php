@@ -155,6 +155,8 @@ class auth_plugin_jfusion extends auth_plugin_base {
 
 	/**
 	 * No password resetting.
+     *
+     * @return boolean
 	 */
 	function can_reset_password() {
 		return false;
@@ -163,6 +165,8 @@ class auth_plugin_jfusion extends auth_plugin_base {
 	/**
 	 * This function is called when a user is authenticated by another plugin
 	 * We use it to start a login procedure in case we have a non JFusion login on Moodle
+     *
+     * @return boolean
 	 */
 
 	function user_authenticated_hook($user, $username, $password){

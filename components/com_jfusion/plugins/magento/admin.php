@@ -173,9 +173,12 @@ class JFusionAdmin_magento extends JFusionAdmin
 		if ($registration_disabled){$result = false;}
 		return $result;
 	}
-	/**
-	 * Put specific javascript script 
-	 */
+    /**
+     * outputJavascript
+     * Put specific javascript script
+     *
+     * @return void
+     */
 	public function outputJavascript(){
 $js = <<< EOD
 <script language="javascript" type="text/javascript">
