@@ -40,7 +40,7 @@ function submitbutton4(pressbutton)
 function setCheckedValue(radioObj, newValue) {
 	if(radioObj) {
         var radioLength = radioObj.length;
-        if(radioLength == undefined) {
+        if(radioLength === undefined) {
             radioObj.checked = (radioObj.value == newValue.toString());
             return;
         }
@@ -70,7 +70,7 @@ function setSort(col){
 function getCheckedValue(radioObj) {
 	if(radioObj) {
         var radioLength = radioObj.length;
-        if(radioLength == undefined) {
+        if(radioLength === undefined) {
             if(radioObj.checked) {
                 return radioObj.value;
             }
