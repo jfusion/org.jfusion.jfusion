@@ -292,6 +292,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
             }
 
             $groupids = array();
+            $usertype = 2;
              if ($userid == 'find') {
                 $JUser = JFactory::getUser();
                 if (!$JUser->guest) {
@@ -311,14 +312,12 @@ class JFusionForum_phpbb3 extends JFusionForum {
                         $query = "SELECT group_id FROM #__groups WHERE group_name = 'GUESTS'";
                         $db->setQuery($query);
                         $groupids[] = $db->loadResult();
-                        $usertype = 2;
                     }
                 } else {
                     $userid = 1;
                     $query = "SELECT group_id FROM #__groups WHERE group_name = 'GUESTS'";
                     $db->setQuery($query);
                     $groupids[] = $db->loadResult();
-                    $usertype = 2;
                 }
             }
 
