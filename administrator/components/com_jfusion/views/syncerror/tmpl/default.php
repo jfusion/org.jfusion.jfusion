@@ -94,12 +94,11 @@ JHTML::_('behavior.modal', 'a.modal');
 		<script type="text/javascript">
 		<!--
 		function applyAll() {
-		    var defaultvalue = document.forms['adminForm'].elements['default_value'].selectedIndex;
-		    for(var i=0; i<document.adminForm.elements.length; i++)
-		    {
-		        if (document.adminForm.elements[i].type=="select-one")
-		        {
-		            document.adminForm.elements[i].selectedIndex = defaultvalue;
+            var form = $('adminForm');
+		    var defaultvalue = form.elements['default_value'].selectedIndex;
+		    for(var i=0; i<form.elements.length; i++) {
+		        if (form.elements[i].type=="select-one") {
+                    form.elements[i].selectedIndex = defaultvalue;
 		        }
 		    }
 		

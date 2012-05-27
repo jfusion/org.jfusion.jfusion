@@ -374,13 +374,9 @@ class JFusionAdmin
         }
         $list_box.= '</select>';
         ?><script type="text/javascript">
-        function usergroupSelect(option)
-        {
-            var myArray = new Array();
+            var myArray = [];
             myArray[0] = '<?php echo $simple_usergroup; ?>';
             myArray[1] = '<?php echo $advanced_usergroup; ?>';
-            document.getElementById("JFusionUsergroup").innerHTML = myArray[option];
-        }
         </script>
         <?php
        	$return = '<table><tr><td>'.JText::_('USERGROUP'). ' '. JText::_('MODE').'</td><td>'.$list_box.'</td></tr><tr><td COLSPAN=2><div id="JFusionUsergroup">';        
@@ -452,7 +448,7 @@ class JFusionAdmin
         $query = 'SELECT slave FROM #__jfusion WHERE name = ' . $db->Quote($jname);
         $db->setQuery($query);
         $slave = $db->loadResult();
-        $list_box = '<select onchange="usergroupSelect(this.selectedIndex);">';
+        $list_box = '<select onchange="multiUsergroupSelect(this.selectedIndex);">';
         if ($advanced == 1) {
             $list_box.= '<option value="0">Simple</option>';
         } else {
@@ -567,21 +563,10 @@ class JFusionAdmin
         
         ?><script type="text/javascript">
 			var jfPlugin = <?php echo json_encode($plugin);?>;
-	        
-	        function usergroupSelect(option)
-	        {
-	            var myArray = new Array();
-	            myArray[0] = '<?php echo $simple_usergroup; ?>';
-	            myArray[1] = '<?php echo $advanced_usergroup; ?>';
-	            document.getElementById("JFusionUsergroup").innerHTML = myArray[option];
 
-	            var addgroupset = document.getElementById('addgroupset');
-	            if (option== 1) {
-	            	addgroupset.style.display = 'block';
-	            } else {
-	            	addgroupset.style.display = 'none';
-	            }
-	        }
+            var myArray = [];
+            myArray[0] = '<?php echo $simple_usergroup; ?>';
+            myArray[1] = '<?php echo $advanced_usergroup; ?>';
 
 	        function addRow() {
 	        	jfPlugin['count']++;
@@ -754,17 +739,6 @@ class JFusionAdmin
 		$action = JRequest::getVar('action');
 		$VersionCurrent = JFusionFunctionAdmin::currentVersion();
 	
-		$document =& JFactory::getDocument();
-	
-		$js = 'function doImport() {
-		document.adminForm.action.value=\'import\';
-		document.adminForm.jname.value=\''.$jname.'\';
-		document.adminForm.encoding=\'multipart/form-data\';
-		submitbutton(\'plugineditor\');
-	}';
-	
-		$document->addScriptDeclaration($js);
-	
 		$output = '<input name="file" size="60" type="file"><br/>
 		<table style="border: 0px;"><tr style="padding: 0px;"><td style="padding: 0px; width: 150px;">'.JText::_('DATABASE_TYPE').'</td><td style="padding: 0px;"><input name="database_type" id="database_type" value="" class="text_area" size="20" type="text"></td></tr>
 		<tr style="padding: 0px;"><td style="padding: 0px; width: 150px;">'.JText::_('DATABASE_HOST').'</td><td style="padding: 0px;"><input name="database_host" id="database_host" value="" class="text_area" size="20" type="text"></td></tr>
@@ -790,9 +764,6 @@ class JFusionAdmin
 			$output .= JText::_('IMPORT_FROM_SERVER').'<br/>';
 			$output .= '<input type=radio name="xmlname" value="" checked> None<br/>';
 	
-	
-	
-	
 			foreach ($xmlList->document->children() as $key => $val) {
 				$pluginName = $val->attributes('name');
 				if ($pluginName) {
@@ -805,7 +776,7 @@ class JFusionAdmin
 					$output .= JText::_('CREATOR').': '.$pluginCreator.'</div><br/>';
 				}
 			}
-			$output .= '<div style="text-align: right;"><input type="Button" onclick="javascript: doImport();" value="'.JText::_('IMPORT').'" /></div>';
+			$output .= '<div style="text-align: right;"><input type="Button" onclick="javascript: doImport('."'".$jname."'".');" value="'.JText::_('IMPORT').'" /></div>';
 		} else {
 			$output .= 'No conection to jfusion Server, try import later!!<br/>';
 		}
@@ -994,17 +965,8 @@ class JFusionAdmin
 			exit();
 		}
 	
-		$document =& JFactory::getDocument();
-	
-		$js = 'function doExport() {
-		document.adminForm.action.value=\'export\';
-		document.adminForm.jname.value=\''.$jname.'\';
-		submitbutton(\'plugineditor\');
-	}';
-		$document->addScriptDeclaration($js);
-	
 		$output = JText::_('EXPORT_DATABASE_INFO').' <input name="dbinfo" type="checkbox"><br/>';
-		$output .= '<div style="text-align: right;"><input type="Button" onclick="javascript: doExport();" value="'.JText::_('EXPORT').'" /></div>';
+		$output .= '<div style="text-align: right;"><input type="Button" onclick="javascript: doExport('."'".$jname."'".');" value="'.JText::_('EXPORT').'" /></div>';
 		return $output;
 	}
 

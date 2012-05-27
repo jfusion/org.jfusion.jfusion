@@ -396,7 +396,7 @@ $jfusion_plugins = $this->VersionData->plugins[0]->children(); ?>
 		    				</td>
 		   					 <td>
 		    					<input class="input_box" id="install_package" name="install_package" type="file" size="57" />
-		    					<input type="button" value="<?php echo JText::_('UPLOAD_FILE'); ?> &amp; <?php echo JText::_('INSTALL'); ?>"  onclick="document.forms['installZIP'].submit();"/>
+		    					<input type="button" value="<?php echo JText::_('UPLOAD_FILE'); ?> &amp; <?php echo JText::_('INSTALL'); ?>"  onclick="$('installZIP').submit();"/>
 		    					<div id="spinnerZIP"></div>
 		    				</td>
 		    			</tr>

@@ -262,8 +262,8 @@ if ($this->up2date) {
                     confirmtext = '<?php echo JText::_('UPGRADE_CONFIRM_BUILD'); ?>';
                     installurl = 'https://github.com/jfusion/org.jfusion.jfusion/blob/develop/jfusion_package.zip?raw=true';
 				} else if (action == 'git') {
-                    confirmtext = '<?php echo JText::_('UPGRADE_CONFIRM_SVN'); ?> ' + document.adminForm2.git_tree.value;
-                    installurl = 'https://github.com/joomla/joomla-cms/raw/' + document.adminForm2.git_tree.value + '/jfusion_package.zip';
+                    confirmtext = '<?php echo JText::_('UPGRADE_CONFIRM_SVN'); ?> ' + $('adminForm2').git_tree.value;
+                    installurl = 'https://github.com/joomla/joomla-cms/raw/' + $('adminForm2').git_tree.value + '/jfusion_package.zip';
 				} else {
                     confirmtext = '<?php echo JText::_('UPGRADE_CONFIRM_RELEASE') . ' ' . $this->JFusion->version; ?>';
                     installurl = 'https://github.com/jfusion/org.jfusion.jfusion/blob/develop/jfusion_package.zip?raw=true';
@@ -271,7 +271,7 @@ if ($this->up2date) {
 				
 				var agree = confirm(confirmtext);
 				if (agree) {
-				    document.adminForm2.install_url.value = installurl;
+                    $('adminForm2').install_url.value = installurl;
 				    $('install').submit();
                     r = true;
 				}

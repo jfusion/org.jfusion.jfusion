@@ -338,28 +338,6 @@ if (!defined(\'_JEXEC\'))';
     }
 
     /**
-     * Output javascript
-     *
-     * @return void
-     */
-    function outputJavascript() {
-        static $dokuwikiJsLoaded;
-        if (empty($dokuwikiJsLoaded)) {
-            $dokuwikiJsLoaded = 1;
-            $js = <<<JS
-function update_mod(action) {
-    var form = document.adminForm;
-    form.customcommand.value = action;
-    form.action.value = 'apply';
-    submitform('saveconfig');
-}
-JS;
-            $document = JFactory::getDocument();
-            $document->addScriptDeclaration($js);
-        }
-    }
-
-    /**
      * Used to display and conofigure the redirect mod
      *
      * @param string $name         name of element
@@ -386,16 +364,15 @@ JS;
             }
         }
         //add the javascript to enable buttons
-        $this->outputJavascript();
         if ($error == 0) {
             //return success
             $output = '<img src="components/com_jfusion/images/check_good.png" height="20px" width="20px">' . JText::_('REDIRECTION_MOD') . ' ' . JText::_('ENABLED');
-            $output.= ' <a href="javascript:void(0);" onclick="return update_mod(\'disableRedirectMod\')">' . JText::_('MOD_DISABLE') . '</a>';
-            $output.= ' <a href="javascript:void(0);" onclick="return update_mod(\'enableRedirectMod\')">' . JText::_('MOD_UPDATE') . '</a>';
+            $output.= ' <a href="javascript:void(0);" onclick="return module(\'disableRedirectMod\')">' . JText::_('MOD_DISABLE') . '</a>';
+            $output.= ' <a href="javascript:void(0);" onclick="return module(\'enableRedirectMod\')">' . JText::_('MOD_UPDATE') . '</a>';
             return $output;
         } else {
             $output = '<img src="components/com_jfusion/images/check_bad.png" height="20px" width="20px">' . JText::_('REDIRECTION_MOD') . ' ' . JText::_('DISABLED') . ': ' . $reason;
-            $output.= ' <a href="javascript:void(0);" onclick="return update_mod(\'enableRedirectMod\')">' . JText::_('MOD_ENABLE') . '</a>';
+            $output.= ' <a href="javascript:void(0);" onclick="return module(\'enableRedirectMod\')">' . JText::_('MOD_ENABLE') . '</a>';
             return $output;
         }
     }
@@ -429,16 +406,15 @@ JS;
         }
 
         //add the javascript to enable buttons
-        $this->outputJavascript();
         if ($error == 0) {
             //return success
             $output = '<img src="components/com_jfusion/images/check_good.png" height="20px" width="20px">' . JText::_('REDIRECTION_MOD') . ' ' . JText::_('ENABLED');
-            $output.= ' <a href="javascript:void(0);" onclick="return update_mod(\'disableAuthMod\')">' . JText::_('MOD_DISABLE') . '</a>';
-            $output.= ' <a href="javascript:void(0);" onclick="return update_mod(\'enableAuthMod\')">' . JText::_('MOD_UPDATE') . '</a>';
+            $output.= ' <a href="javascript:void(0);" onclick="return module(\'disableAuthMod\')">' . JText::_('MOD_DISABLE') . '</a>';
+            $output.= ' <a href="javascript:void(0);" onclick="return module(\'enableAuthMod\')">' . JText::_('MOD_UPDATE') . '</a>';
             return $output;
         } else {
             $output = '<img src="components/com_jfusion/images/check_bad.png" height="20px" width="20px">' . JText::_('REDIRECTION_MOD') . ' ' . JText::_('DISABLED') . ': ' . $reason;
-            $output.= ' <a href="javascript:void(0);" onclick="return update_mod(\'enableAuthMod\')">' . JText::_('MOD_ENABLE') . '</a>';
+            $output.= ' <a href="javascript:void(0);" onclick="return module(\'enableAuthMod\')">' . JText::_('MOD_ENABLE') . '</a>';
             return $output;
         }
     }

@@ -320,22 +320,6 @@ if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\'
         }
         return $error;
     }
-    function outputJavascript() {
-        static $phpBBjsLoaded;
-        if (empty($phpBBjsLoaded)) {
-            $phpBBjsLoaded = 1;
-            $js = <<<JS
-function auth_mod(action) {
-    var form = document.adminForm;
-    form.customcommand.value = action;
-    form.action.value = 'apply';
-    submitform('saveconfig');
-}
-JS;
-            $document = JFactory::getDocument();
-            $document->addScriptDeclaration($js);
-        }
-    }
 
     /**
      * @param $name
@@ -360,16 +344,15 @@ JS;
             }
         }
         //add the javascript to enable buttons
-        $this->outputJavascript();
         if ($error == 0) {
             //return success
             $output = '<img src="components/com_jfusion/images/check_good.png" height="20px" width="20px">' . JText::_('REDIRECTION_MOD') . ' ' . JText::_('ENABLED');
-            $output.= ' <a href="javascript:void(0);" onclick="return auth_mod(\'disableRedirectMod\')">' . JText::_('MOD_DISABLE') . '</a>';
-            $output.= ' <a href="javascript:void(0);" onclick="return auth_mod(\'enableRedirectMod\')">' . JText::_('MOD_UPDATE') . '</a>';
+            $output.= ' <a href="javascript:void(0);" onclick="return module(\'disableRedirectMod\')">' . JText::_('MOD_DISABLE') . '</a>';
+            $output.= ' <a href="javascript:void(0);" onclick="return module(\'enableRedirectMod\')">' . JText::_('MOD_UPDATE') . '</a>';
             return $output;
         } else {
             $output = '<img src="components/com_jfusion/images/check_bad.png" height="20px" width="20px">' . JText::_('REDIRECTION_MOD') . ' ' . JText::_('DISABLED') . ': ' . $reason;
-            $output.= ' <a href="javascript:void(0);" onclick="return auth_mod(\'enableRedirectMod\')">' . JText::_('MOD_ENABLE') . '</a>';
+            $output.= ' <a href="javascript:void(0);" onclick="return module(\'enableRedirectMod\')">' . JText::_('MOD_ENABLE') . '</a>';
             return $output;
         }
     }
@@ -413,15 +396,14 @@ JS;
             }
         }
         //add the javascript to enable buttons
-        $this->outputJavascript();
         if ($error == 0) {
             //return success
             $output = '<img src="components/com_jfusion/images/check_good.png" height="20px" width="20px">' . JText::_('AUTHENTICATION_MOD') . ' ' . JText::_('ENABLED');
-            $output.= ' <a href="javascript:void(0);" onclick="return auth_mod(\'disable_auth_mod\')">' . JText::_('MOD_DISABLE') . '</a>';
+            $output.= ' <a href="javascript:void(0);" onclick="return module(\'disable_auth_mod\')">' . JText::_('MOD_DISABLE') . '</a>';
             return $output;
         } else {
             $output = '<img src="components/com_jfusion/images/check_bad.png" height="20px" width="20px">' . JText::_('AUTHENTICATION_MOD') . ' ' . JText::_('DISABLED') . ': ' . $reason;
-            $output.= ' <a href="javascript:void(0);" onclick="return auth_mod(\'enable_auth_mod\')">' . JText::_('MOD_ENABLE') . '</a>';
+            $output.= ' <a href="javascript:void(0);" onclick="return module(\'enable_auth_mod\')">' . JText::_('MOD_ENABLE') . '</a>';
             return $output;
         }
     }
@@ -536,15 +518,14 @@ JS;
             }
         }
         //add the javascript to enable buttons
-        $this->outputJavascript();
         if ($error == 0) {
             //return success
             $output = '<img src="components/com_jfusion/images/check_good.png" height="20px" width="20px">' . JText::_('QUICKTOOLS') . ' ' . JText::_('ENABLED');
-            $output.= ' <a href="javascript:void(0);" onclick="return auth_mod(\'disable_quick_mod\')">' . JText::_('MOD_DISABLE') . '</a>';
+            $output.= ' <a href="javascript:void(0);" onclick="return module(\'disable_quick_mod\')">' . JText::_('MOD_DISABLE') . '</a>';
             return $output;
         } else {
             $output = '<img src="components/com_jfusion/images/check_bad.png" height="20px" width="20px">' . JText::_('QUICKTOOLS') . ' ' . JText::_('DISABLED') . ': ' . $reason;
-            $output.= ' <a href="javascript:void(0);" onclick="return auth_mod(\'enable_quick_mod\')">' . JText::_('MOD_ENABLE') . '</a>';
+            $output.= ' <a href="javascript:void(0);" onclick="return module(\'enable_quick_mod\')">' . JText::_('MOD_ENABLE') . '</a>';
             return $output;
         }
     }

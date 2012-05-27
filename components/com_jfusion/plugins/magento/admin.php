@@ -212,30 +212,6 @@ class JFusionAdmin_magento extends JFusionAdmin
 	}
 
     /**
-     * outputJavascript
-     * Put specific javascript script
-     *
-     * @return string
-     */
-	public function outputJavascript() {
-$js = <<< EOD
-<script language="javascript" type="text/javascript">
-<!--
-function module(action) {
-var form = document.adminForm;
-form.customcommand.value = action;
-form.action.value = 'apply';
-submitform('saveconfig');
-return;
-}
-
-//-->
-</script>
-EOD;
-	return $js;
-	}
-
-    /**
      * @return mixed|string
      */
     public function moduleInstallation() {
@@ -249,10 +225,6 @@ EOD;
 				if (! file_exists ( $source_path . DS . 'app' . DS . 'Mage.php' )) {
 					return JText::_ ( 'MAGE_CONFIG_SOURCE_PATH' );
 				}
-				
-				$js = $this->outputJavascript ();
-				$document = &JFactory::getDocument ();
-				$document->addCustomTag ( $js );
 				
 				$mod_exists = false;
 				if (file_exists ( $source_path . DS . 'app' . DS . 'etc' . DS . 'modules' . DS . 'Jfusion_All.xml' )) {
@@ -442,10 +414,6 @@ EOD;
 			}else{
 				$activated = 1;
 			}
-			
-			$js = $this->outputJavascript();
-			$document = &JFactory::getDocument();
-			$document->addCustomTag($js);
 			
 			$html = '<div class="button2-left"><div class="blank"><a href="javascript:void(0);"  onclick="return module(\'activateModule\');">' . ((!$activated)?JText::_ ( 'MODULE_DEACTIVATION_BUTTON' ):JText::_ ( 'MODULE_ACTIVATION_BUTTON' )) . '</a></div></div>' . "\n";
 			$html .= '<input type="hidden" name="activation" id="activation" value="'.(($activated)?0:1).'"/>';

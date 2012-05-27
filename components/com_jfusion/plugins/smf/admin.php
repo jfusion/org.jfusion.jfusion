@@ -306,27 +306,6 @@ if (!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') ===
     }
 
     /**
-     * Output javascript
-     *
-     * @return void
-     */
-    function outputJavascript()
-    {
-        ?>
-        <script type="text/javascript">
-        <!--
-        function auth_mod(action) {
-        var form = document.adminForm;
-        form.customcommand.value = action;
-        form.action.value = 'apply';
-        submitform('saveconfig');
-        }
-        //-->
-        </script>
-        <?php
-    }
-
-    /**
      * Called by Framework user for displaying and configuring usergroups
      *
      * @param string $name         name of element
@@ -353,16 +332,15 @@ if (!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') ===
             }
         }
         //add the javascript to enable buttons
-        $this->outputJavascript();
         if ($error == 0) {
             //return success
             $output = '<img src="components/com_jfusion/images/check_good.png" height="20px" width="20px">' . JText::_('REDIRECTION_MOD') . ' ' . JText::_('ENABLED');
-            $output.= ' <a href="javascript:void(0);" onclick="return auth_mod(\'disableRedirectMod\')">' . JText::_('MOD_DISABLE') . '</a>';
-            $output.= ' <a href="javascript:void(0);" onclick="return auth_mod(\'enableRedirectMod\')">' . JText::_('MOD_UPDATE') . '</a>';
+            $output.= ' <a href="javascript:void(0);" onclick="return module(\'disableRedirectMod\')">' . JText::_('MOD_DISABLE') . '</a>';
+            $output.= ' <a href="javascript:void(0);" onclick="return module(\'enableRedirectMod\')">' . JText::_('MOD_UPDATE') . '</a>';
             return $output;
         } else {
             $output = '<img src="components/com_jfusion/images/check_bad.png" height="20px" width="20px">' . JText::_('REDIRECTION_MOD') . ' ' . JText::_('DISABLED') . ': ' . $reason;
-            $output.= ' <a href="javascript:void(0);" onclick="return auth_mod(\'enableRedirectMod\')">' . JText::_('MOD_ENABLE') . '</a>';
+            $output.= ' <a href="javascript:void(0);" onclick="return module(\'enableRedirectMod\')">' . JText::_('MOD_ENABLE') . '</a>';
             return $output;
         }
     }

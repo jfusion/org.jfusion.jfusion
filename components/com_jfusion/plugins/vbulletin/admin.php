@@ -254,7 +254,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
             $js = "<script language=\"javascript\" type=\"text/javascript\">\n";
             $js.= "<!--\n";
             $js.= "function toggleHook(hook, action) {\n";
-            $js.= "var form = document.adminForm;\n";            
+            $js.= "var form = $('adminForm');\n";
 			if (JFusionFunction::isJoomlaVersion('1.6')) {
             	$js.= "var itemid=document.getElementById('params[plugin_itemid]_id0');";				
 			} else {
@@ -686,12 +686,10 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
             $advanced_usergroup = str_replace("'", "\'", $advanced_usergroup);
         }
         $list_box.= '</select>';
-        $js = "function usergroupSelect(option){\n";
-        $js.= "var myArray = new Array();\n";
+        $js= "var myArray = [];\n";
         $js.= "myArray[0] = '$simple_usergroup';\n";
         $js.= "myArray[1] = '$advanced_usergroup';\n";
-        $js.= "document.getElementById('JFusionUsergroup').innerHTML = myArray[option];\n";
-        $js.= "}\n";
+
         $js.= "function toggleSecondaryGroups(vbid,masterid){\n";
         $js.= "var groups = new Array(" . implode(',', $jsGroups) . ");\n";
         $js.= "for(i=0; i<groups.length; i++){\n";

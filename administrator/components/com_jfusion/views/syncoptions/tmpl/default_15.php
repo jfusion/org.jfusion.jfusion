@@ -54,7 +54,6 @@ JFusionFunctionAdmin::displayDonate();
 
             /* our usersync status update function: */
             var refresh = (function() {
-
                 //add another second to the counter
                 counter -= 1;
                 if (counter < 1) {
@@ -66,9 +65,10 @@ JFusionFunctionAdmin::displayDonate();
                         //generate the get variable for submission
 
                         subvars = 'option=com_jfusion&task=syncresume&tmpl=component&dummy=' + dummy + '&syncid=' + '<?php echo $this->syncid; ?>';
-                        for (var i = 0; i < document.adminForm.elements.length; i++) {
-                            if (document.adminForm.elements[i].name == 'userbatch') {
-                                subvars = subvars + '&' + document.adminForm.elements[i].name + '=' + document.adminForm.elements[i].value;
+                        var form = $('adminForm');
+                        for (var i = 0; i < form.elements.length; i++) {
+                            if (form.elements[i].name == 'userbatch') {
+                                subvars = subvars + '&' + form.elements[i].name + '=' + form.elements[i].value;
                             }
                         }
                         ajax.request('option=com_jfusion&tmpl=component&task=syncprogress&syncid=' + '<?php echo $this->syncid; ?>');
@@ -77,14 +77,13 @@ JFusionFunctionAdmin::displayDonate();
                     } else {
                         // let's stop our timed ajax
                         $clear(periodical);
-                        document.getElementById("counter").innerHTML =     <?php echo JText::_('FINISHED'); ?>     ;
+                        document.getElementById("counter").innerHTML = '<?php echo JText::_('FINISHED'); ?>';
                     }
                 } else {
                     //update the counter
                     document.getElementById("counter").innerHTML = '<b><?php echo JText::_('UPDATE_IN'); ?> ' + counter + ' <?php echo JText::_('SECONDS'); ?></b>';
                 }
-            }
-                );
+            });
 
             // start and stop click events
             start.addEvent('click', function(e) {
@@ -102,17 +101,18 @@ JFusionFunctionAdmin::displayDonate();
                     var answer = confirm("<?php echo JText::_('SYNC_CONFIRM_START'); ?>");
                     if (answer) {
                         var paramString = 'option=com_jfusion&task=syncinitiate&tmpl=component&syncid=<?php echo $this->syncid; ?>';
-                        for(var i=0; i<document.adminForm.elements.length; i++){
-                            if (document.adminForm.elements[i].type=="select-one")
+                        var form = $('adminForm');
+                        for(var i=0; i<form.elements.length; i++){
+                            if (form.elements[i].type=="select-one")
                             {
-                                if (document.adminForm.elements[i].options[document.adminForm.elements[i].selectedIndex].value)
+                                if (form.elements[i].options[form.elements[i].selectedIndex].value)
                                 {
-                                    paramString = paramString + '&' + document.adminForm.elements[i].name + '=' + document.adminForm.elements[i].options[document.adminForm.elements[i].selectedIndex].value;
+                                    paramString = paramString + '&' + form.elements[i].name + '=' + form.elements[i].options[form.elements[i].selectedIndex].value;
                                 }
                             }
-                            if (document.adminForm.elements[i].name=='userbatch')
+                            if (form.elements[i].name=='userbatch')
                             {
-                                paramString = paramString + '&' + document.adminForm.elements[i].name + '=' + document.adminForm.elements[i].value;
+                                paramString = paramString + '&' + form.elements[i].name + '=' + form.elements[i].value;
                             }
                         }
 

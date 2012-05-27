@@ -1,34 +1,30 @@
 //<!--
 function submitbutton(pressbutton) {
-    var form = document.adminForm;
     if (pressbutton == 'applyconfig') {
-        form.action.value = 'apply';
+        $('adminForm').action.value = 'apply';
         submitform('saveconfig');
     } else {
         submitform(pressbutton);
     }
 }
 
-function submitbutton3(pressbutton)
-{
-    var form = document.adminForm;
-
+function submitbutton3(pressbutton) {
+    var form = $('adminForm');
     // do field validation
-    if (form.install_directory.value == "") {
-        alert("<?php echo JText::_( 'NO_DIRECTORY'); ?>" );
+    if (form.install_directory.value === "") {
+        alert("<?php echo JText::_( 'NO_DIRECTORY'); ?>");
     } else {
         form.installtype.value = 'folder';
         form.submit();
     }
 }
 
-function submitbutton4(pressbutton)
-{
-    var form = document.adminForm;
+function submitbutton4(pressbutton) {
+    var form = $('adminForm');
 
     // do field validation
-    if (form.install_url.value == "" || form.install_url.value == "http://") {
-        alert("<?php echo JText::_( 'NO_URL'); ?>" );
+    if (form.install_url.value === "" || form.install_url.value == "http://") {
+        alert("<?php echo JText::_( 'NO_URL'); ?>");
     } else {
         form.installtype.value = 'url';
         form.submit();
@@ -37,12 +33,12 @@ function submitbutton4(pressbutton)
 
 
 function setCheckedValue(radioObj, newValue) {
-	if(radioObj) {
+	if (radioObj) {
         var radioLength = radioObj.length;
-        if(radioLength === undefined) {
+        if (radioLength === undefined) {
             radioObj.checked = (radioObj.value == newValue.toString());
         } else {
-            for(var i = 0; i < radioLength; i++) {
+            for (var i= 0; i < radioLength; i++) {
                 radioObj[i].checked = radioObj[i].value == newValue.toString();
             }
         }
@@ -50,7 +46,7 @@ function setCheckedValue(radioObj, newValue) {
 }
 
 function setSort(col){
-	var form = document.adminForm;
+	var form = $('adminForm');
 	var prevCol = form.log_sort.value;
 	if (prevCol == col) {
         var direction = form.log_dir.value;
@@ -85,17 +81,53 @@ function getCheckedValue(radioObj) {
 	return r;
 }
 
+function doImport(jname) {
+    var form = $('adminForm');
+    form.action.value='import';
+    form.jname.value=jname;
+    form.encoding='multipart/form-data';
+    submitbutton('plugineditor');
+}
+
+function doExport(jname) {
+    var form = $('adminForm');
+    form.action.value='export';
+    form.jname.value=jname;
+    submitbutton('plugineditor');
+}
+
+function module(action) {
+    var form = $('adminForm');
+    form.customcommand.value = action;
+    form.action.value = 'apply';
+    submitform('saveconfig');
+}
+
+function usergroupSelect(option)
+{
+    document.getElementById("JFusionUsergroup").innerHTML = myArray[option];
+}
+
+function multiUsergroupSelect(option)
+{
+    usergroupSelect(option);
+
+    var addgroupset = document.getElementById('addgroupset');
+    if (option== 1) {
+        addgroupset.style.display = 'block';
+    } else {
+        addgroupset.style.display = 'none';
+    }
+}
 
 if (typeof Joomla != 'undefined') {
 	Joomla.submitbutton = function(pressbutton) {
-		var form = document.adminForm;
-	    if (pressbutton == 'applyconfig') {
-	        form.action.value = 'apply';
-	        submitform('saveconfig');
-	        return;
-	    }
-
-	    submitform(pressbutton);
+        if (pressbutton == 'applyconfig') {
+            $('adminForm').action.value = 'apply';
+            submitform('saveconfig');
+        } else {
+            submitform(pressbutton);
+        }
 	};
 	
 	Joomla.getCheckedValue = function(radioObj) {
@@ -104,12 +136,12 @@ if (typeof Joomla != 'undefined') {
 	
 	
 	Joomla.submitbutton3 = function(pressbutton){
-	    return submitbutton3(pressbutton);
+        return submitbutton3(pressbutton);
 	};
 	
 	Joomla.submitbutton4 = function(pressbutton)
 	{
-	    return submitbutton4(pressbutton);
+        return submitbutton4(pressbutton);
 	};
 	
 	Joomla.setCheckedValue= function(radioObj, newValue) {
