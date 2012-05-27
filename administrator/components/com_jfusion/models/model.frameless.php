@@ -313,12 +313,11 @@ class JFusionFrameless{
 		return $buffer;
 	}
 
-    /*
-     * parseEncoding
-     *
-     * @param object &$data
+    /**
+     * @param $data
+     * @return mixed
      */
-	function parseBody(&$data) {
+    function parseBody(&$data) {
 		if ( !empty($data->bodyextract) || !empty($data->bodyremove) ) {
 			require_once (JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'parsers' . DS . 'simple_html_dom.php');
 			$html = str_get_html($data->body);

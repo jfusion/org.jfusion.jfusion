@@ -202,6 +202,12 @@ class JFusionUser_prestashop extends JFusionUser {
             $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
         }
     }
+
+    /**
+     * @param object $userinfo
+     * @param array $status
+     * @return string
+     */
     function createUser($userinfo, &$status) {
 		$db = JFusionFactory::getDatabase($this->getJname());
 	    $params = JFusionFactory::getParams($this->getJname());

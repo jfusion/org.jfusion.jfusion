@@ -40,6 +40,9 @@ class JFusionAdmin_elgg extends JFusionAdmin
         return 'elgg';
     }
 
+    /**
+     * @return string
+     */
     function getTablename() {
         return 'users_entity';
     }

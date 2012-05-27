@@ -249,6 +249,11 @@ class action_plugin_jfusion extends DokuWiki_Action_Plugin {
         ini_set('session.save_handler',$this->session_save_handler);
     }
 
+    /**
+     * @param $username
+     * @param $password
+     * @param $sticky
+     */
     function loginJoomla($username, $password, $sticky) {
         global $JFusionActive, $conf;
         if (empty($JFusionActive)) {

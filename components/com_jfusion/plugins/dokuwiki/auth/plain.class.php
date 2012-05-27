@@ -42,8 +42,11 @@ class doku_auth_plain extends doku_auth_basic {
     var $users = null;
     var $io = null;
     var $_pattern = array();
-    var $jname = null;    
+    var $jname = null;
 
+    /**
+     * @param $jname
+     */
     function doku_auth_plain($jname) {
 		$this->jname = $jname;
     }    

@@ -193,20 +193,26 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 	}
 
 
-	function allowEmptyCookiePath() {
+    /**
+     * @return bool
+     */
+    function allowEmptyCookiePath() {
 		return true;
 	}
-	function allowEmptyCookieDomain() {
+
+    /**
+     * @return bool
+     */
+    function allowEmptyCookieDomain() {
 		return true;
 	}
-	/*
-	 * do plugin support multi usergroups
-	 * return UNKNOWN for unknown
-	 * return JNO for NO
-	 * return JYES for YES
-	 * return ... ??
-	 */
-	function requireFileAccess()
+
+    /**
+     * do plugin support multi usergroups
+     *
+     * @return string UNKNOWN or JNO or JYES or ???
+     */
+    function requireFileAccess()
 	{
 		return 'JNO';
 	}

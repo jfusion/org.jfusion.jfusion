@@ -45,7 +45,10 @@ class JFusionPublic_universal extends JFusionPublic{
 		return $params->get('lostpasswordurl');
 	}
 
-	function getLostUsernameURL()
+    /**
+     * @return string
+     */
+    function getLostUsernameURL()
 	{
         $params = JFusionFactory::getParams($this->getJname());
 		return $params->get('lostusernameurl');

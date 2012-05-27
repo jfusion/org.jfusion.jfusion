@@ -195,6 +195,9 @@ EOD;
         return $js;
     }
 
+    /**
+     * @return mixed|string
+     */
     public function moduleInstallation() {
         $jname = $this->getJname ();
         $params = & JFusionFactory::getParams ( $jname );
@@ -230,6 +233,9 @@ EOD;
         }
     }
 
+    /**
+     * @return array
+     */
     public function installModule() {
 
         $jname =  $this->getJname ();

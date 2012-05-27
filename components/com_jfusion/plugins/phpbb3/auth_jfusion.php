@@ -220,6 +220,10 @@ function logout_jfusion(&$data) {
         jfusion_backup_restore_globals('restore');
     }
 }
+
+/**
+ * @return JApplication
+ */
 function startJoomla() {
     if (!defined('_JEXEC')) {
         global $phpbb_root_path;
@@ -263,6 +267,9 @@ function startJoomla() {
     return $mainframe;
 }
 
+/**
+ * @param $action
+ */
 function jfusion_backup_restore_globals($action) {
     static $phpbb_globals;
 

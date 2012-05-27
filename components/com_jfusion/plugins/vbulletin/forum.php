@@ -233,6 +233,13 @@ class JFusionForum_vbulletin extends JFusionForum
 
         return $status;
     }
+
+    /**
+     * @param object $dbparams
+     * @param object $existingthread
+     * @param object $contentitem
+     * @param object $status
+     */
     function updateThread(&$dbparams, &$existingthread, &$contentitem, &$status)
     {
         //strip title of all html characters and convert entities back to applicable characaters (to prevent double encoding by vB)

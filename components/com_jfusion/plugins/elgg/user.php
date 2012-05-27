@@ -30,6 +30,10 @@ defined('_JEXEC') or die('Restricted access');
  * @link       http://www.jfusion.org
  */
 class JFusionUser_elgg extends JFusionUser {
+    /**
+     * @param object $userinfo
+     * @return object
+     */
     function &getUser($userinfo) {
         //get the identifier
         $identifier = $userinfo;

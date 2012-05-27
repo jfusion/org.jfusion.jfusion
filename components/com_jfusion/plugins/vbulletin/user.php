@@ -215,6 +215,11 @@ class JFusionUser_vbulletin extends JFusionUser
         return $status;
     }
 
+    /**
+     * @param object $userinfo
+     * @param array $options
+     * @return array
+     */
     function createSession(&$userinfo, $options)
     {
         require_once JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.curl.php';
@@ -302,6 +307,10 @@ class JFusionUser_vbulletin extends JFusionUser
         return $status;
     }
 
+    /**
+     * @param string $username
+     * @return string
+     */
     function filterUsername($username)
     {
         //lower username for case insensitivity purposes

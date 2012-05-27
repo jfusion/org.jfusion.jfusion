@@ -215,7 +215,12 @@ if ( !class_exists('JFusionMap') ) {
 			return $query;
 		}
 
-		function getFieldType($field=null,$type='user') {
+        /**
+         * @param null $field
+         * @param string $type
+         * @return null
+         */
+        function getFieldType($field=null,$type='user') {
 			$maped = $this->getMap($type);
             foreach ($maped as $value) {
                 if ( $field == $value->type ) {

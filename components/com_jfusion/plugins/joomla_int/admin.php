@@ -44,6 +44,10 @@ class JFusionAdmin_joomla_int extends JFusionAdmin {
     {
         return 'joomla_int';
     }
+
+    /**
+     * @return string
+     */
     function getTablename() {
         return JFusionJplugin::getTablename();
     }

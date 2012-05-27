@@ -88,6 +88,10 @@ class JFusionForum_mybb extends JFusionForum {
         $result = $db->loadResult();
         return $result;
     }
+
+    /**
+     * @return array
+     */
     function getForumList() {
         //get the connection to the db
         $db = JFusionFactory::getDatabase($this->getJname());

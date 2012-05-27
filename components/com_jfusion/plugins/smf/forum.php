@@ -225,6 +225,10 @@ class JFusionForum_smf extends JFusionForum
         }
     }
 
+    /**
+     * @param object $post
+     * @return int
+     */
     function checkReadStatus(&$post)
     {
         $JUser = JFactory::getUser();

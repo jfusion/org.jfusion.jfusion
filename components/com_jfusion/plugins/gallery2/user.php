@@ -87,6 +87,11 @@ class JFusionUser_gallery2 extends JFusionUser {
     {
         return 'gallery2';
     }
+
+    /**
+     * @param string $username
+     * @return string
+     */
     function filterUsername($username) {
         //TODO: Implement User filtering
         return $username;
@@ -212,6 +217,12 @@ class JFusionUser_gallery2 extends JFusionUser {
         }
         return $status;
     }
+
+    /**
+     * @param object $userinfo
+     * @param array $status
+     * @return array|string
+     */
     function createUser($userinfo, &$status) {
         require JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'gallery2.php';
         jFusion_g2BridgeCore::loadGallery2Api($this->getJname(),false);
@@ -257,6 +268,13 @@ class JFusionUser_gallery2 extends JFusionUser {
         GalleryEmbed::done();
         return $status;
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     * @return null
+     */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
         require JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'gallery2.php';
         jFusion_g2BridgeCore::loadGallery2Api($this->getJname(),false);
