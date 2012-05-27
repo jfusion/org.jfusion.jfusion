@@ -21,27 +21,18 @@ require_once(JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.D
  * For detailed descriptions on these functions please check the model.abstractadmin.php
  * @package JFusion_SMF
  */
-class JFusionAdmin_smf2 extends JFusionAdmin {
-    /**
-     * @return string
-     */
+class JFusionAdmin_smf2 extends JFusionAdmin{
+
     function getJname()
     {
         return 'smf2';
     }
 
-    /**
-     * @return string
-     */
     function getTablename()
     {
         return 'members';
     }
 
-    /**
-     * @param string $forumPath
-     * @return array|object
-     */
     function setupFromPath($forumPath)
     {
         //check for trailing slash and generate file path
@@ -60,7 +51,6 @@ class JFusionAdmin_smf2 extends JFusionAdmin {
             return $params;
 
         } else {
-            $config = array();
             //parse the file line by line to get only the config variables
             $file_handle = fopen($myfile, 'r');
             while (!feof($file_handle)) {
@@ -102,9 +92,6 @@ class JFusionAdmin_smf2 extends JFusionAdmin {
         return $userlist;
     }
 
-    /**
-     * @return int
-     */
     function getUserCount()
     {
         //getting the connection to the db
@@ -270,20 +257,20 @@ if(!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') === 
     }
 
 	function outputJavascript(){
-        static $jsLoaded;
-        if (empty($jsLoaded)) {
-            $jsLoaded = 1;
-        $js = <<<JS
-            function auth_mod(action) {
-                var form = document.adminForm;
-                form.customcommand.value = action;
-                form.action.value = 'apply';
-                submitform('saveconfig');
-            }
-JS;
-            $document = JFactory::getDocument();
-            $document->addScriptDeclaration($js);
-        }
+?>
+<script type="text/javascript">
+<!--
+function auth_mod(action) {
+var form = document.adminForm;
+form.customcommand.value = action;
+form.action.value = 'apply';
+submitform('saveconfig');
+return;
+}
+
+//-->
+</script>
+<?php
 	}
 
     function showRedirectMod($name, $value, $node, $control_name)
@@ -328,14 +315,13 @@ JS;
     function uninstall()
     {
         $error = $this->disableRedirectMod();
-        $return = true;
-        $reasons = array();
 
         if (!empty($error)) {
-            $reason[] = JText::_('REDIRECT_MOD_UNINSTALL_FAILED');
-            $return = false;
+           $reason = JText::_('REDIRECT_MOD_UNINSTALL_FAILED');
+           return array(false, $reason);
         }
-        return array($return, $reasons);
+
+        return array(true, '');
     }
     
 	/*

@@ -254,27 +254,26 @@ if ($this->up2date) {
 			</h3>
 			<script type="text/javascript">
 			<!--
-			function confirmSubmit(action) {
-				var installurl,confirmtext;
+			function confirmSubmit(action)
+			{
+				var install_url,confirm_text;
 				if (action == 'build') {
-                    confirmtext = '<?php echo JText::_('UPGRADE_CONFIRM_BUILD'); ?>';
-                    installurl = 'https://github.com/jfusion/org.jfusion.jfusion/blob/develop/jfusion_package.zip?raw=true';
+				    confirm_text = '<?php echo JText::_('UPGRADE_CONFIRM_BUILD'); ?>';
+				    install_url = 'https://github.com/jfusion/org.jfusion.jfusion/blob/develop/jfusion_package.zip?raw=true';
 				} else if (action == 'git') {
-                    confirmtext = '<?php echo JText::_('UPGRADE_CONFIRM_SVN'); ?> ' + document.adminForm2.git_tree.value;
-                    installurl = 'https://github.com/joomla/joomla-cms/raw/' + document.adminForm2.git_tree.value + '/jfusion_package.zip';
+				    confirm_text = '<?php echo JText::_('UPGRADE_CONFIRM_SVN'); ?> ' + document.adminForm2.git_tree.value;
+				    install_url = 'https://github.com/joomla/joomla-cms/raw/' + document.adminForm2.git_tree.value + '/jfusion_package.zip';
 				} else {
-                    confirmtext = '<?php echo JText::_('UPGRADE_CONFIRM_RELEASE') . ' ' . $this->JFusionVersion; ?>';
-                    installurl = 'https://github.com/jfusion/org.jfusion.jfusion/blob/develop/jfusion_package.zip?raw=true';
+				    confirm_text = '<?php echo JText::_('UPGRADE_CONFIRM_RELEASE') . ' ' . $this->JFusion->version; ?>';
+				    install_url = 'https://github.com/jfusion/org.jfusion.jfusion/blob/develop/jfusion_package.zip?raw=true';
 				}
 				
-				var agree = confirm(confirmtext);
+				var agree = confirm(confirm_text);
 				if (agree) {
-				    document.adminForm2.install_url.value = installurl;
+				    document.adminForm2.install_url.value = install_url;
 				    $('install').submit();
 				    return true ;
-				} else {
-                    return false;
-                }
+				}
 			}
 
 			

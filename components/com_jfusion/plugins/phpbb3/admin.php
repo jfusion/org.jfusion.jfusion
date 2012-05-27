@@ -40,10 +40,6 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
     {
         return 'phpbb3';
     }
-
-    /**
-     * @return string
-     */
     function getTablename() {
         return 'users';
     }
@@ -61,7 +57,6 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
         } else {
             //parse the file line by line to get only the config variables
             $file_handle = fopen($myfile, 'r');
-            $config = array();
             while (!feof($file_handle)) {
                 $line = fgets($file_handle);
                 if (strpos($line, '$') === 0) {
@@ -148,10 +143,6 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
         //getting the results
         return $db->loadObjectList();
     }
-
-    /**
-     * @return string
-     */
     function getDefaultUsergroup() {
         $params = JFusionFactory::getParams($this->getJname());
         $usergroup_id = $params->get('usergroup');
@@ -266,10 +257,6 @@ if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\'
             JFile::write($mod_file, $file_data);
         }
     }
-
-    /**
-     * @return int
-     */
     function disableRedirectMod() {
         $error = 0;
         $reason = '';
@@ -287,16 +274,17 @@ if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\'
         return $error;
     }
     function outputJavascript() {
-        static $jsLoaded;
-        if (empty($jsLoaded)) {
-            $jsLoaded = 1;
+        static $phpBBjsLoaded;
+        if (empty($phpBBjsLoaded)) {
+            $phpBBjsLoaded = 1;
             $js = <<<JS
-                function auth_mod(action) {
-                    var form = document.adminForm;
-                    form.customcommand.value = action;
-                    form.action.value = 'apply';
-                    submitform('saveconfig');
-                }
+function auth_mod(action) {
+    var form = document.adminForm;
+    form.customcommand.value = action;
+    form.action.value = 'apply';
+    submitform('saveconfig');
+    return;
+}
 JS;
             $document = JFactory::getDocument();
             $document->addScriptDeclaration($js);
@@ -516,10 +504,6 @@ JS;
         }
         return $error;
     }
-
-    /**
-     * @return bool
-     */
     function clearConfigCache() {
         $params = & JFusionFactory::getParams($this->getJname());
         $source_path = $params->get('source_path');
@@ -546,18 +530,21 @@ JS;
 
         $error = $this->disableRedirectMod();
         if (!empty($error)) {
-            $reasons[] = JText::_('REDIRECT_MOD_UNINSTALL_FAILED');
-            $return = false;
+           $reasons[] = JText::_('REDIRECT_MOD_UNINSTALL_FAILED');
+           $return = false;
         }
+
         return array($return, $reasons);
     }
-
-    /**
-     * do plugin support multi usergroups
-     *
-     * @return string
-     */
-    function requireFileAccess()
+    
+	/*
+	 * do plugin support multi usergroups
+	 * return UNKNOWN for unknown
+	 * return JNO for NO
+	 * return JYES for YES
+	 * return ... ??
+	 */
+	function requireFileAccess()
 	{
 		return 'DEPENDS';
 	}    

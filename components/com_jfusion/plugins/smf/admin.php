@@ -82,7 +82,6 @@ class JFusionAdmin_smf extends JFusionAdmin
         } else {
             //parse the file line by line to get only the config variables
             $file_handle = fopen($myfile, 'r');
-            $config = array();
             while (!feof($file_handle)) {
                 $line = fgets($file_handle);
                 if (strpos($line, '$') === 0) {
@@ -310,21 +309,21 @@ if (!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') ===
      *
      * @return void
      */
-    function outputJavascript(){
-        static $jsLoaded;
-        if (empty($jsLoaded)) {
-            $jsLoaded = 1;
-            $js = <<<JS
-            function auth_mod(action) {
-                var form = document.adminForm;
-                form.customcommand.value = action;
-                form.action.value = 'apply';
-                submitform('saveconfig');
-            }
-JS;
-            $document = JFactory::getDocument();
-            $document->addScriptDeclaration($js);
+    function outputJavascript()
+    {
+        ?>
+        <script type="text/javascript">
+        <!--
+        function auth_mod(action) {
+        var form = document.adminForm;
+        form.customcommand.value = action;
+        form.action.value = 'apply';
+        submitform('saveconfig');
+        return;
         }
+        //-->
+        </script>
+        <?php
     }
 
     /**
@@ -374,13 +373,12 @@ JS;
     function uninstall()
     {
     	$error = $this->disableRedirectMod();
-        $return = true;
-        $reasons = array();
-        if (!empty($error)) {
-            $reasons[]= JText::_('REDIRECT_MOD_UNINSTALL_FAILED');
-            $return = false;
+    	if (!empty($error)) {
+    	   $reason= JText::_('REDIRECT_MOD_UNINSTALL_FAILED');
+    	   return array(false, $reason);
     	}
-    	return array($return, $reasons);
+
+    	return array(true, '');
     }
     
 	/*

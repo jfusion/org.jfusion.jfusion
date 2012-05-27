@@ -137,9 +137,6 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
     /**
      * Get a list of users
      *
-     * @param int $limitstart
-     * @param int $limit
-     *
      * @return object with list of users
      */
     function getUserList($limitstart = null, $limit = null)
@@ -176,7 +173,6 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
 		
 		$usergroupmap = explode (',', $usergroupmap);
 
-        $usergrouplist = array();
 		if ( is_array($usergroupmap) ) {
 			foreach ($usergroupmap as $key => $value) {
 	         	//append the default usergroup
@@ -343,17 +339,18 @@ if (!defined(\'_JEXEC\'))';
      *
      * @return void
      */
-    function outputJavascript(){
-        static $jsLoaded;
-        if (empty($jsLoaded)) {
-            $jsLoaded = 1;
+    function outputJavascript() {
+        static $dokuwikiJsLoaded;
+        if (empty($dokuwikiJsLoaded)) {
+            $dokuwikiJsLoaded = 1;
             $js = <<<JS
-            function auth_mod(action) {
-                var form = document.adminForm;
-                form.customcommand.value = action;
-                form.action.value = 'apply';
-                submitform('saveconfig');
-            }
+function update_mod(action) {
+    var form = document.adminForm;
+    form.customcommand.value = action;
+    form.action.value = 'apply';
+    submitform('saveconfig');
+    return;
+}
 JS;
             $document = JFactory::getDocument();
             $document->addScriptDeclaration($js);
@@ -539,10 +536,8 @@ CODE;
         return true;
     }
 
-    /**
+    /*
      * uninstall function is to disable verious mods
-     *
-     * @return array
      */
     function uninstall()
     {
