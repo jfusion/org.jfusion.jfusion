@@ -27,7 +27,7 @@ class JFusionForum_mediawiki extends JFusionForum
     /**
      * @param $config
      * @param $view
-     * @param $pluginParam
+     * @param JParameter $pluginParam
      */
     function renderActivityModule($config, $view, $pluginParam) {
 		$db =& JFusionFactory::getDatabase($this->getJname());

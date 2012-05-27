@@ -42,7 +42,7 @@ class JFusionDiscussBotHelper {
     var $isJ16;
 
     /**
-     * @param $params
+     * @param JParameter $params
      * @param $jname
      * @param $mode
      * @param $debug_mode

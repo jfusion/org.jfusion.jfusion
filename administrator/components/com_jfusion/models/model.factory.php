@@ -63,7 +63,7 @@ class JFusionFactory
      *
      * @param string $jname name of the JFusion plugin used
      *
-     * @return object JFusionPlugin JFusionPlugin object for the JFusion plugin
+     * @return JFusionPublic object for the JFusion plugin
      */
     public static function &getPublic($jname)
     {
@@ -95,7 +95,7 @@ class JFusionFactory
      *
      * @param string $jname name of the JFusion plugin used
      *
-     * @return object JFusionPlugin JFusionPlugin object for the JFusion plugin
+     * @return JFusionAdmin object for the JFusion plugin
      */
     public static function &getAdmin($jname)
     {
@@ -119,10 +119,8 @@ class JFusionFactory
                 $class = "JFusionAdmin";
             }
             $admin_instances[$jname] = new $class;
-            return $admin_instances[$jname];
-        } else {
-            return $admin_instances[$jname];
         }
+        return $admin_instances[$jname];
     }
 
     /**
@@ -130,7 +128,7 @@ class JFusionFactory
      *
      * @param string $jname name of the JFusion plugin used
      *
-     * @return object JFusionAuth JFusion Authentication class for the JFusion plugin
+     * @return JFusionAuth JFusion Authentication class for the JFusion plugin
      */
     public static function &getAuth($jname)
     {
@@ -163,7 +161,7 @@ class JFusionFactory
      *
      * @param string $jname name of the JFusion plugin used
      *
-     * @return object JFusionUser JFusion User class for the JFusion plugin
+     * @return JFusionUser JFusion User class for the JFusion plugin
      */
     public static function &getUser($jname)
     {
@@ -196,7 +194,7 @@ class JFusionFactory
      *
      * @param string $jname name of the JFusion plugin used
      *
-     * @return object JFusionForum JFusion Thread class for the JFusion plugin
+     * @return JFusionForum JFusion Thread class for the JFusion plugin
      */
     public static function &getForum($jname)
     {
@@ -282,7 +280,7 @@ class JFusionFactory
      * @param string  $jname name of the JFusion plugin used
      * @param boolean $reset switch to force a recreate of the instance
      *
-     * @return object JParam JParam object for the JFusion plugin
+     * @return JParameter JParam object for the JFusion plugin
      */
     public static function &getParams($jname, $reset = false)
     {
@@ -304,7 +302,7 @@ class JFusionFactory
      *
      * @param string $jname name of the JFusion plugin used
      *
-     * @return object JParam JParam object for the JFusion plugin
+     * @return JParameter JParam object for the JFusion plugin
      */
     public static function &createParams($jname)
     {
@@ -447,7 +445,7 @@ class JFusionFactory
     /**
      * Returns an object of the specified parser class
      * @param $type
-     * @return object of parser class
+     * @return BBCode_Parser|bool of parser class
      */
     public static function &getCodeParser($type = 'bbcode') {
         static $jfusion_code_parsers;
@@ -475,7 +473,8 @@ class JFusionFactory
     
     /**
      * Gets an JFusion cross domain cookie object
-     * @return object JFusionCookies JFusionCookies object for the JFusion cookies
+     *
+     * @return JFusionCookies object for the JFusion cookies
      */
     public static function &getCookies() {
     	static $instances;

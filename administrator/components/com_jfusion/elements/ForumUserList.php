@@ -47,7 +47,7 @@ class JElementForumUserList extends JElement
         if ($jname) {
             if (JFusionFunction::validPlugin($jname)) {
                 $JFusionPlugin = & JFusionFactory::getForum($jname);
-                $users = $JFusionPlugin->getUserList();
+                $users = $JFusionPlugin->getAdmin();
                 if (!empty($users)) {
                     return JHTML::_('select.genericlist', $users, $control_name . '[' . $name . ']', '', 'id', 'name', $value);
                 } else {

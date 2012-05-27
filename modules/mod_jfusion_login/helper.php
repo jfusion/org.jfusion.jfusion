@@ -33,7 +33,7 @@ class modjfusionLoginHelper
     /**
      * gets the return url
      *
-     * @param string $params params
+     * @param JParameter $params params
      * @param string $type   type
      *
      * @return string url

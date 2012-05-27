@@ -43,8 +43,8 @@ class JFormFieldJFusionUserpostgroups extends JFormField
         global $jname;
         if ($jname) {
             if (JFusionFunction::validPlugin($jname)) {
-                $JFusionPlugin = & JFusionFactory::getAdmin($jname);
-                $usergroups = $JFusionPlugin->getUserpostgroupList();
+                $JFusionAdmin = JFusionFactory::getAdmin($jname);
+                $usergroups = $JFusionAdmin->getUserpostgroupList();
                 if (!empty($usergroups)) {
                     return JHTML::_('select.genericlist', $usergroups, $this->name, '', 'id', 'name', $this->value);
                 } else {

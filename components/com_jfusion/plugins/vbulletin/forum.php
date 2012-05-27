@@ -172,7 +172,7 @@ class JFusionForum_vbulletin extends JFusionForum
 
     /**
      * @param object $dbparams
-     * @param array $ids
+     * @param object $ids
      * @param object $contentitem
      * @param object $userinfo
      * @return array

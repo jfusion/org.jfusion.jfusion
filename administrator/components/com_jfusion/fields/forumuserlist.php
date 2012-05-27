@@ -41,8 +41,8 @@ class JFormFieldForumUserList extends JFormField
         global $jname;
         if ($jname) {
             if (JFusionFunction::validPlugin($jname)) {
-                $JFusionPlugin = & JFusionFactory::getForum($jname);
-                $users = $JFusionPlugin->getUserList();
+                $JFusionForum = & JFusionFactory::getAdmin($jname);
+                $users = $JFusionForum->getUserList();
                 if (!empty($users)) {
                     return JHTML::_('select.genericlist', $users, $this->name, '', 'id', 'name', $this->value);
                 } else {

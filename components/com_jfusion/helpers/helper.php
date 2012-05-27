@@ -16,8 +16,9 @@ defined('_JEXEC') or die('Restricted access');
  */
 class JFusionHelper {
     /**
-     * @param $params
-     * @param $type
+     * @param JParameter $params
+     * @param string $type
+     *
      * @return string
      */
     function getReturnURL($params, $type) {

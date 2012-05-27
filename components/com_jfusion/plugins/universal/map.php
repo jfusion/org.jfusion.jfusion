@@ -55,7 +55,8 @@ if ( !class_exists('JFusionMap') ) {
         /**
          * @static
          * @param $jname
-         * @return mixed
+         *
+         * @return JFusionMap
          */
         public static function &getInstance( $jname )
 		{
