@@ -38,9 +38,7 @@ function jfusion_modify_msg(msgid, cursessionid) {
 }
 
 function jfusion_modify_save(cursessionid) {
-	if (!in_edit_mode) {
-        return true;
-    } else {
+	if (in_edit_mode) {
         var x = new Array();
         x[x.length] = 'subject=' + escape(textToEntities(document.forms.quickModForm['subject'].value.replace(/&#/g, "&#38;#"))).replace(/\+/g, "%2B");
         x[x.length] = 'message=' + escape(textToEntities(document.forms.quickModForm['message'].value.replace(/&#/g, "&#38;#"))).replace(/\+/g, "%2B");
@@ -54,4 +52,5 @@ function jfusion_modify_save(cursessionid) {
         sendXMLDocument(jf_scripturl + "&action=jsmodify;topic=" + smf_topic + ";sesc=" + cursessionid + ";xml", x.join("&"), modify_done);
         return false;
     }
+    return true;
 }

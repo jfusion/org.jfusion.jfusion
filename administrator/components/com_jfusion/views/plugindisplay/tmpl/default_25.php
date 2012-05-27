@@ -234,30 +234,42 @@ window.addEvent('domready',function() {
 		new Event(e).stop();
 		var spinner = document.getElementById('spinnerZIP');
 		spinner.innerHTML = '<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">';
-		if (typeof FormData !== "undefined") {
-			var upload = new File.Upload({
-				url: '<?php echo JURI::root() . 'administrator/index.php'; ?>',
-				data: {
-					option: 'com_jfusion',
-					task: 'installplugin',
-					installtype: 'upload',
-					ajax: 'true'
-				},
-				images: ['install_package'],
-				onComplete: function(JSONobject){
-					var response = JSON.decode(JSONobject);
-					if (response.overwrite != 1 && response.status === true) {
-						addRow(response.jname, response.rowhtml);
-					}
-					var spinner = document.getElementById('spinnerZIP');
-					spinner.innerHTML = '';
-					alert(response.message);
-				}
-			});
-			upload.send();
-		} else {
-			this.submit();
-		}
+		if (typeof FormData === "undefined") {
+            this.submit();
+        } else {
+        var upload = new File.Upload({
+        url:  <?php echo JURI::root() . 'administrator/index.php'; ?> ,
+            data:
+            {
+                option: 'com_jfusion',
+                    task
+            :
+                'installplugin',
+                    installtype
+            :
+                'upload',
+                    ajax
+            :
+                'true'
+            }
+        ,
+            images: ['install_package'],
+                onComplete
+        :
+            function (JSONobject) {
+                var response = JSON.decode(JSONobject);
+                if (response.overwrite != 1 && response.status === true) {
+                    addRow(response.jname, response.rowhtml);
+                }
+                var spinner = document.getElementById('spinnerZIP');
+                spinner.innerHTML = '';
+                alert(response.message);
+            }
+        }
+        )
+        ;
+        upload.send();
+    }
 	});
 	initSortables();
 });

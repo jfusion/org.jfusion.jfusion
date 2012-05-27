@@ -38,48 +38,50 @@ function submitbutton4(pressbutton)
 
 
 function setCheckedValue(radioObj, newValue) {
-	if(!radioObj)
-		return;
-	var radioLength = radioObj.length;
-	if(radioLength == undefined) {
-		radioObj.checked = (radioObj.value == newValue.toString());
-		return;
-	}
-	for(var i = 0; i < radioLength; i++) {
-
-		radioObj[i].checked = radioObj[i].value == newValue.toString();
-	}
+	if(radioObj) {
+        var radioLength = radioObj.length;
+        if(radioLength == undefined) {
+            radioObj.checked = (radioObj.value == newValue.toString());
+            return;
+        }
+        for(var i = 0; i < radioLength; i++) {
+            radioObj[i].checked = radioObj[i].value == newValue.toString();
+        }
+    }
 }
 
 function setSort(col){
 	var form = document.adminForm;
 	var prevCol = form.log_sort.value;
-	if(prevCol != col) {
-		form.log_dir.value = '1';
-	} else {
-		var direction = form.log_dir.value;
-		if(direction == '1') form.log_dir.value = '-1';
-		else form.log_dir.value = '1';
-	}
+	if (prevCol == col) {
+        var direction = form.log_dir.value;
+        if (direction == '1') {
+            form.log_dir.value = '-1';
+        } else {
+            form.log_dir.value = '1';
+        }
+    } else {
+        form.log_dir.value = '1';
+    }
 	form.log_sort.value=col;
 	form.submit();
 }
 
 function getCheckedValue(radioObj) {
-	if(!radioObj)
-		return "";
-	var radioLength = radioObj.length;
-	if(radioLength == undefined) {
-		if(radioObj.checked) {
-			return radioObj.value;
-		}
-	} else {
-		for(var i = 0; i < radioLength; i++) {
-			if(radioObj[i].checked) {
-				return radioObj[i].value;
-			}
-		}
-	}
+	if(radioObj) {
+        var radioLength = radioObj.length;
+        if(radioLength == undefined) {
+            if(radioObj.checked) {
+                return radioObj.value;
+            }
+        } else {
+            for(var i = 0; i < radioLength; i++) {
+                if(radioObj[i].checked) {
+                    return radioObj[i].value;
+                }
+            }
+        }
+    }
 	return "";
 }
 

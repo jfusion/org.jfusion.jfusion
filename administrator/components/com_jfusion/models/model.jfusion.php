@@ -1420,10 +1420,10 @@ class JFusionFunction
      * Convert a utf-8 joomla string in to a valid encoding matching the table/filed it will be sent to
      *
      * @static
-     * @param $string string to convert
-     * @param $jname used to get the database object, and point to the static stored data
-     * @param $table table that we will be looking at
-     * @param $field field that we will be looking at
+     * @param string $string string to convert
+     * @param string $jname used to get the database object, and point to the static stored data
+     * @param string $table table that we will be looking at
+     * @param string $field field that we will be looking at
      * @return bool|string
      */
     public static function encodeDBString($string, $jname, $table, $field) {
