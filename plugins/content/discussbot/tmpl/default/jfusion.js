@@ -96,7 +96,7 @@ function initializeDiscussbot() {
 
                 if (jfdb_enable_ajax) {
                     //update pagination
-                    var frm = document.jfusionPaginationForm;
+                    var frm = $('jfusionPaginationForm');
                     var paramString = 'tmpl=component&dbtask=update_pagination&ajax_request=1&threadid=' + threadid;
                     if (frm) {
                         for (var i=0; i<frm.elements.length; i++) {
@@ -159,7 +159,7 @@ function initializeDiscussbot() {
 
                 if (jfdb_enable_ajax) {
                     //update pagination
-                    var frm = document.jfusionPaginationForm;
+                    var frm = $('jfusionPaginationForm');
                     var paramString = 'tmpl=component&dbtask=update_pagination&ajax_request=1&threadid=' + threadid;
                     if(frm) {
                         for(var i=0; i<frm.elements.length; i++){
@@ -235,9 +235,7 @@ function updateAjax() {
 
         if (jfdb_enable_ajax) {
             //update pagination
-            $('jfusionPostPagination');
-
-            var frm = document.jfusionPaginationForm;
+            var frm = $('jfusionPaginationForm');
             var paramString = 'tmpl=component&dbtask=update_pagination&ajax_request=1&threadid=' + threadid;
             if(frm) {
                 for(var i=0; i<frm.elements.length; i++){

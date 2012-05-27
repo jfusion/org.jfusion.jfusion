@@ -1057,15 +1057,15 @@ class plgContentJfusion extends JPlugin
                     $application = JFactory::getApplication() ;
                     $limitstart = JRequest::getInt( 'limitstart_discuss', 0 );
                     $limit = $application->getUserStateFromRequest( 'global.list.limit', 'limit_discuss', 5, 'int' );
-                    $this->helper->output['post_pagination']  = "<div id='jfusionPostPagination' class='pagination'>\n";
+                    $this->helper->output['post_pagination']  = '<div id="jfusionPostPagination" class="pagination">';
                     if (!empty($this->helper->reply_count) && $this->helper->reply_count > 5) {
                         $pageNav = new JFusionPagination($this->helper->reply_count, $limitstart, $limit, '_discuss' );
-                        $this->helper->output['post_pagination'] .= "<form method='post' name='jfusionPaginationForm' action='$action_url'>\n";
-                        $this->helper->output['post_pagination'] .= "<input type='hidden' name='jumpto_discussion' value='1' />\n";
+                        $this->helper->output['post_pagination'] .= '<form method="post" id="jfusionPaginationForm" name="jfusionPaginationForm" action="'.$action_url.'">';
+                        $this->helper->output['post_pagination'] .= '<input type="hidden" name="jumpto_discussion" value="1" />';
                         $this->helper->output['post_pagination'] .= $pageNav->getListFooter();
-                        $this->helper->output['post_pagination'] .= "</form>\n";
+                        $this->helper->output['post_pagination'] .= '</form>';
                     }
-                    $this->helper->output['post_pagination'] .= "</div>\n";
+                    $this->helper->output['post_pagination'] .= '</div>';
                 } else {
                     $this->helper->output['post_pagination'] = '';
                 }
@@ -1533,22 +1533,22 @@ class plgContentJfusion extends JPlugin
         if (!empty($reply_count) && $reply_count > 5) {
             $pageNav = new JFusionPagination($reply_count, $limitstart, $limit, '_discuss');
 
-            $pagination = "<form method='post' name='jfusionPaginationForm' action='$action_url'>\n";
-            $pagination .= "<input type='hidden' name='jumpto_discussion' value='1' />\n";
+            $pagination = '<form method="post" id="jfusionPaginationForm" name="jfusionPaginationForm" action="'.$action_url.'">';
+            $pagination .= '<input type="hidden" name="jumpto_discussion" value="1"/>';
             $pagination .= $pageNav->getListFooter();
-            $pagination .= "</form>\n";
+            $pagination .= '</form>';
 
             //remove the unnecessary vars added by ajax
             $search = array();
-            $search[] = "&amp;tmpl=component";
-            $search[] = "&amp;update_pagination=1";
-            $search[] = "&amp;ajax_request=1";
-            $search[] = "tmpl=component&amp;";
-            $search[] = "update_pagination=1&amp;";
-            $search[] = "ajax_request=1&amp;";
-            $search[] = "tmpl=component";
-            $search[] = "update_pagination=1";
-            $search[] = "ajax_request=1";
+            $search[] = '&amp;tmpl=component';
+            $search[] = '&amp;update_pagination=1';
+            $search[] = '&amp;ajax_request=1';
+            $search[] = 'tmpl=component&amp;';
+            $search[] = 'update_pagination=1&amp;';
+            $search[] = 'ajax_request=1&amp;';
+            $search[] = 'tmpl=component';
+            $search[] = 'update_pagination=1';
+            $search[] = 'ajax_request=1';
             $pagination = str_replace($search,'',$pagination);
         } else {
             $pagination = "";

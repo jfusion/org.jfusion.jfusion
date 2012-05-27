@@ -905,10 +905,11 @@ class JFusionPagination extends JPagination {
      */
     public function jfusion_item_active(&$item)
     {
-    	if($item->base>0)
-    		return "<a href=\"#\" title=\"".$item->text."\" onclick=\"javascript: document.jfusionPaginationForm.limitstart".$this->identifier.".value=".$item->base."; document.jfusionPaginationForm.submit(); return false;\">".$item->text."</a>";
-    	else
-    		return "<a href=\"#\" title=\"".$item->text."\" onclick=\"javascript: document.jfusionPaginationForm.limitstart".$this->identifier.".value=0; document.jfusionPaginationForm.submit(); return false;\">".$item->text."</a>";
+    	if($item->base>0) {
+            return '<a href="#" title="'.$item->text.'" onclick="javascript: document.jfusionPaginationForm.limitstart'.$this->identifier.'.value='.$item->base.'; document.jfusionPaginationForm.submit(); return false;">'.$item->text.'</a>';
+        } else{
+            return '<a href="#" title="'.$item->text.'" onclick="javascript: document.jfusionPaginationForm.limitstart'.$this->identifier.'.value=0; document.jfusionPaginationForm.submit(); return false;">'.$item->text.'</a>';
+        }
     }
 
 
@@ -918,6 +919,6 @@ class JFusionPagination extends JPagination {
      */
     public function jfusion_item_inactive(&$item)
     {
-        return "<span class=\"pagenav\">".$item->text."</span>";
+        return '<span class="pagenav">'.$item->text.'</span>';
     }
 }
