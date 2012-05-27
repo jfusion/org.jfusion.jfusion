@@ -888,13 +888,13 @@ class JFusionPagination extends JPagination {
     public function jfusion_list_footer($list)
 	{
 		// Initialize variables
-		$html = "<div class=\"list-footer\">\n";
-		$html .= "\n<div class=\"limit\">".JText::_('JGLOBAL_DISPLAY_NUM').$list['limitfield']."</div>";
-		$html .= "\n<p class=\"counter\" style='font-weight: bold; margin: 8px 0;'>".$list['pagescounter']."</p>";
+		$html = '<div class="list-footer">';
+		$html .= '<div class="limit">'.JText::_('JGLOBAL_DISPLAY_NUM').$list['limitfield'].'</div>';
+		$html .= '<p class="counter" style="font-weight: bold; margin: 8px 0;">'.$list['pagescounter'].'</p>';
 		$html .= $list['pageslinks'];
 
-		$html .= "\n<input type=\"hidden\" name=\"limitstart" . $this->identifier . "\" value=\"".$list['limitstart']."\" />";
-		$html .= "\n</div>";
+		$html .= '<input type="hidden" name="limitstart'.$this->identifier.'" value="'.$list['limitstart'].'"/>';
+		$html .= '</div>';
 
 		return $html;
 	}
