@@ -179,7 +179,7 @@ class JFusionUser_oscommerce extends JFusionUser
         $osCversion = $params->get('osCversion');
         $existinguser->password = '';
         for ($i = 0;$i < 10;$i++) {
-            $existinguser->password.= mt_srand((double)microtime() * 1000000);
+            $existinguser->password.= mt_rand((double)microtime() * 1000000);
         }
         $salt = substr(md5($existinguser->password), 0, 2);
         $existinguser->password = md5($salt . $userinfo->password_clear) . ':' . $salt;
@@ -335,7 +335,7 @@ class JFusionUser_oscommerce extends JFusionUser
             if ($osCversion != 'oscxt') {
                 $user->customers_password = '';
                 for ($i = 0;$i < 10;$i++) {
-                    $user->customers_password.= mt_srand((double)microtime() * 1000000);
+                    $user->customers_password.= mt_rand((double)microtime() * 1000000);
                 }
                 $salt = substr(md5($user->customers_password), 0, 2);
                 $user->customers_password = md5($salt . $userinfo->password_clear) . ':' . $salt;
@@ -555,10 +555,10 @@ class JFusionUser_oscommerce extends JFusionUser
                     $db->setQuery($query);
                     if (!$db->query()) {
                         $status["error"][] = "Error Could not delete admin accessid $user_id: {$db->stderr() }";
-                        return $status;
                     } else {
                         $status["debug"][] = "Deleted admin accessith id $user_id.";
                     }
+                    return $status;
                 case 'osc2':
                 case 'osczen':
                 case 'oscmax':

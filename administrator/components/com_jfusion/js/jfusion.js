@@ -8,7 +8,6 @@ function submitbutton(pressbutton) {
     }
 
     submitform(pressbutton);
-    return;
 }
 
 function submitbutton3(pressbutton)
@@ -47,10 +46,8 @@ function setCheckedValue(radioObj, newValue) {
 		return;
 	}
 	for(var i = 0; i < radioLength; i++) {
-		radioObj[i].checked = false;
-		if(radioObj[i].value == newValue.toString()) {
-			radioObj[i].checked = true;
-		}
+
+		radioObj[i].checked = radioObj[i].value == newValue.toString();
 	}
 }
 
@@ -66,7 +63,6 @@ function setSort(col){
 	}
 	form.log_sort.value=col;
 	form.submit();
-	return;
 }
 
 function getCheckedValue(radioObj) {
@@ -98,7 +94,6 @@ if (typeof Joomla != 'undefined') {
 	    }
 
 	    submitform(pressbutton);
-	    return;
 	};
 	
 	Joomla.getCheckedValue = function(radioObj) {

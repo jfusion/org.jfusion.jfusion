@@ -88,8 +88,6 @@ function destruct($object)
  *
  * @deprecated 1.3
  *
- * @param mixed $text the text to translate
- * @param mixed optional parameters to use in sprintf
  */
 function __()
 {
