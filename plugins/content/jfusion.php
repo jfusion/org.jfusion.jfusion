@@ -62,7 +62,7 @@ class plgContentJfusion extends JPlugin
     * observer design pattern.
      *
      * @param object &$subject The object to observe
-     * @param array  $params   An array that holds the plugin configuration
+     * @param array|object  $params   An array or object that holds the plugin configuration
      *
      * @since 1.5
      * @return void
@@ -75,7 +75,12 @@ class plgContentJfusion extends JPlugin
 
         //retrieve plugin software for discussion bot
         if ($this->params===false) {
-            $this->params = new JParameter( $params->params);
+            if (is_array($params)) {
+                $this->params = new JParameter( $params['params']);
+            } else {
+                $this->params = new JParameter( $params->params);
+            }
+
         }
 
         $this->jname =& $this->params->get('jname',false);

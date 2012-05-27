@@ -23,7 +23,7 @@ class Jfusion_Joomla_Helper_Cookies extends Mage_Core_Helper_Abstract {
 	 *
      * @param resource $ch
      *
-	 * @return Jfusion_Joomla_Helper_Curl
+	 * @return Jfusion_Joomla_Helper_Cookies
 	 */
 	static public function instance($ch) {
 		if (! self::$_instance) {

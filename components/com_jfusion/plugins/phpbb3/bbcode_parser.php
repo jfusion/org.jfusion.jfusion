@@ -29,6 +29,7 @@ class phpbb_bbcode_parser {
     var $text = '';
     var $bbcode_uid = false;
     var $bbcodes = array();
+    var $warn_msg = array();
     var $bbcode_bitfield = '';
     var $jname = '';
     var $db = '';

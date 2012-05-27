@@ -96,7 +96,7 @@ class plgSystemMagelib {
 					$langs = explode ( ";", $language_store_view );
 					foreach ( $langs as $lang ) {
 						$codes = explode ( "=", $lang );
-						if ($codes [0] == $JLang->_lang) {
+						if ($codes [0] == $JLang->getTag()) {
 							$defaultStore = $codes [1];
 							break;
 						}

@@ -206,7 +206,7 @@ class JFusionUser_magento extends JFusionUser {
         if (is_object($userinfo)) {
             $identifier = $userinfo->email;
         }
-        $result = array();
+
         // Get the user id
         $db = JFusionFactory::getDataBase($this->getJname());
         $query = "SELECT entity_id FROM #__customer_entity WHERE email =" . $db->Quote($identifier);
@@ -214,12 +214,12 @@ class JFusionUser_magento extends JFusionUser {
         $entity = (int)$db->loadResult();
         // check if we have found the user, if not return failure
         if (!$entity) {
-            return $result;
+            return null;
         }
         // Return a Magento customer array
         $magento_user = $this->fillMagentoDataObject("customer", $entity, 1);
         if (!$magento_user) {
-            return $result;
+            return null;
         }
         $instance = array();
         // get the static data also
