@@ -66,6 +66,7 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
         } else {
             //parse the file line by line to get only the config variables
             $file_handle = fopen($myfile, 'r');
+            $config = array();
             while (!feof($file_handle)) {
                 $line = fgets($file_handle);
                 if (strpos($line, '$') === 0) {
@@ -79,14 +80,14 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
             fclose($file_handle);
             //save the parameters into array
             $params = array();
-            $params['database_host'] = $config['dbhost'];
-            $params['database_name'] = $config['dbname'];
-            $params['database_user'] = $config['dbuser'];
-            $params['database_password'] = $config['dbpasswd'];
-            $params['database_prefix'] = $config['table_prefix'];
-            $params['database_type'] = $config['dbms'];
+            $params['database_host'] = isset($config['dbhost']) ? $config['dbhost'] : '';
+            $params['database_name'] = isset($config['dbname']) ? $config['dbname'] : '';
+            $params['database_user'] = isset($config['dbuser']) ? $config['dbuser'] : '';
+            $params['database_password'] = isset($config['dbpasswd']) ? $config['dbpasswd'] : '';
+            $params['database_prefix'] = isset($config['table_prefix']) ? $config['table_prefix'] : '';
+            $params['database_type'] = isset($config['dbms']) ? $config['dbms'] : '';
             //create a connection to the database
-            $options = array('driver' => $config['dbms'], 'host' => $config['dbhost'], 'user' => $config['dbuser'], 'password' => $config['dbpasswd'], 'database' => $config['dbname'], 'prefix' => $config['table_prefix']);
+            $options = array('driver' => $params['database_type'], 'host' => $params['database_host'], 'user' => $params['database_user'], 'password' => $params['database_password'], 'database' => $params['database_name'], 'prefix' => $params['database_prefix']);
             //Get configuration settings stored in the database
             $vdb = & JDatabase::getInstance($options);
             $query = "SELECT config_name, config_value FROM #__config WHERE config_name IN ('script_path', 'cookie_path', 'server_name', 'cookie_domain', 'cookie_name', 'allow_autologin');";
@@ -101,22 +102,25 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
                     $config[$row->config_name] = $row->config_value;
                 }
                 //store the new found parameters
-                $params['cookie_path'] = $config['cookie_path'];
-                $params['cookie_domain'] = $config['cookie_domain'];
-                $params['cookie_prefix'] = $config['cookie_name'];
-                $params['allow_autologin'] = $config['allow_autologin'];
+                $params['cookie_path'] = isset($config['cookie_path']) ? $config['cookie_path'] : '';
+                $params['cookie_domain'] = isset($config['cookie_domain']) ? $config['cookie_domain'] : '';
+                $params['cookie_prefix'] = isset($config['cookie_name']) ? $config['cookie_name'] : '';
+                $params['allow_autologin'] = isset($config['allow_autologin']) ? $config['allow_autologin'] : '';
                 $params['source_path'] = $forumPath;
             }
-            //check for trailing slash
-            if (substr($config['server_name'], -1) == '/' && substr($config['script_path'], 0, 1) == '/') {
-                //too many slashes, we need to remove one
-                $params['source_url'] = $config['server_name'] . substr($config['script_path'], 1);
-            } else if (substr($config['server_name'], -1) == '/' || substr($config['script_path'], 0, 1) == '/') {
-                //the correct number of slashes
-                $params['source_url'] = $config['server_name'] . $config['script_path'];
-            } else {
-                //no slashes found, we need to add one
-                $params['source_url'] = $config['server_name'] . '/' . $config['script_path'];
+            $params['source_url'] = '';
+            if (isset($config['server_name'])) {
+                //check for trailing slash
+                if (substr($config['server_name'], -1) == '/' && substr($config['script_path'], 0, 1) == '/') {
+                    //too many slashes, we need to remove one
+                    $params['source_url'] = $config['server_name'] . substr($config['script_path'], 1);
+                } else if (substr($config['server_name'], -1) == '/' || substr($config['script_path'], 0, 1) == '/') {
+                    //the correct number of slashes
+                    $params['source_url'] = $config['server_name'] . $config['script_path'];
+                } else {
+                    //no slashes found, we need to add one
+                    $params['source_url'] = $config['server_name'] . '/' . $config['script_path'];
+                }
             }
             //return the parameters so it can be saved permanently
             return $params;

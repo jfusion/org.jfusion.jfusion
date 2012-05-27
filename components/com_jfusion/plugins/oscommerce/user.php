@@ -402,7 +402,7 @@ class JFusionUser_oscommerce extends JFusionUser
                 $user->customers_group_id = $default_group_id;
                 // get the groupname
                 $db1 = JFusionFactory::getDatabase($this->getJname());
-                $query = 'SELECT customers_group_name from #__customers_groups WHERE customers_group_id = ' . $usergroup_id . " AND language_id = " . $default_language;
+                $query = 'SELECT customers_group_name from #__customers_groups WHERE customers_group_id = ' . $default_group_id . " AND language_id = " . $userinfo->language;
                 $db1->setQuery($query);
                 $user->customers_group_name = $db1->loadResult();
             break;

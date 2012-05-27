@@ -167,7 +167,7 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
     /**
      * get default user group list
      *
-     * @return object with default user group list
+     * @return array with default user group list
      */
     function getUsergroupList()
     {
@@ -175,7 +175,7 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
 		$usergroupmap = $params->get('usergroupmap','user,admin');
 		
 		$usergroupmap = explode (',', $usergroupmap);
-
+        $usergrouplist = array();
 		if ( is_array($usergroupmap) ) {
 			foreach ($usergroupmap as $key => $value) {
 	         	//append the default usergroup
@@ -195,7 +195,7 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
     /**
      * get default user group
      *
-     * @return object with default user group
+     * @return string with default user group
      */
     function getDefaultUsergroup()
     {

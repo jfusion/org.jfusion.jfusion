@@ -624,6 +624,8 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
         } else {
             $list_box.= '<option value="0">Simple</option>';
         }
+        $advanced_usergroup = '';
+        $jsGroups = array();
         if ($slave == 1 && !empty($master)) {
             //allow usergroup sync
             if ($advanced == 1) {
@@ -682,9 +684,6 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
             $advanced_usergroup.= "</table>";
             //escape single quotes to prevent JS errors
             $advanced_usergroup = str_replace("'", "\'", $advanced_usergroup);
-        } else {
-            $advanced_usergroup = '';
-            $jsGroups = array();
         }
         $list_box.= '</select>';
         $js = "function usergroupSelect(option){\n";

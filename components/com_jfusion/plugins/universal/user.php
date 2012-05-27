@@ -408,6 +408,7 @@ class JFusionUser_universal extends JFusionUser {
 		$inactive = $map->getFieldType('INACTIVE');
 
 		if ( $userid && ( $active || $inactive ) ) {
+            $userStatus = null;
 			if ( isset($inactive) ) $userStatus = $inactive->value['off'];
 			if ( isset($active) ) $userStatus = $active->value['on'];
 

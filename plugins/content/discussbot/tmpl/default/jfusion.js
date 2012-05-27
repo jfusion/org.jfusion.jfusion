@@ -301,7 +301,7 @@ function showMessage(msg, type)
     }
 }
 
-function hideMessage(error)
+function hideMessage()
 {
 	delayHiding = setTimeout('ajaxMessageSlide.slideOut()',5000);
 }

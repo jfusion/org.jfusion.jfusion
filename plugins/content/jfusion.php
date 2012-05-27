@@ -533,7 +533,7 @@ class plgContentJfusion extends JPlugin
                     $this->manual_threadid = $match[1];
 
                     //get the existing thread information
-                    $threadinfo = $JFusionForum->getThread($id);
+                    $threadinfo = $JFusionForum->getThread($this->manual_threadid);
 
                     if (!empty($threadinfo)) {
                         //manually plugged so definitely published
@@ -760,6 +760,7 @@ class plgContentJfusion extends JPlugin
                 }
 
                 if ($captcha_verification) {
+                    $threadinfo = null;
                     if ($this->dbtask=='create_threadpost') {
                         $status = $this->helper->_check_thread_exists();
                         $threadinfo = $status['threadinfo'];
@@ -768,7 +769,7 @@ class plgContentJfusion extends JPlugin
                     }
 
                     //create the post
-                    if (!empty($threadinfo->threadid) && !empty($threadinfo->forumid)) {
+                    if (!empty($threadinfo) && !empty($threadinfo->threadid) && !empty($threadinfo->forumid)) {
                         $status = $JFusionForum->createPost($this->params, $threadinfo, $this->article, $userinfo);
 
                         if ($status['error']){
@@ -1136,9 +1137,10 @@ class plgContentJfusion extends JPlugin
         //prevent notices and warnings in default_buttons.php if there are no buttons to display
         $this->helper->output = array();
         $this->helper->output['buttons'] = array();
-
+        $attribs = $readmore_param = $article_params = null;
+        $show_readmore = $readmore_catch = 0;
         if ($this->helper->option == 'com_content') {
-            $attribs = new JParameter( $this->article->attribs);
+            $attribs = new JParameter($this->article->attribs);
             if (isset($this->article->params)) {
                 //blog view
                 $article_params =& $this->article->params;
@@ -1163,8 +1165,6 @@ class plgContentJfusion extends JPlugin
                 $readmore_param = 'genericItemReadMore';
             }
             $show_readmore = $readmore_catch = $article_params->get($readmore_param);
-        } else {
-            $show_readmore = $readmore_catch = 0;
         }
 
         //let's overwrite the readmore link with our own
@@ -1192,7 +1192,9 @@ class plgContentJfusion extends JPlugin
         						$readmore.= JHtml::_('string.truncate', ($this->article->title), $this->article->params->get('readmore_limit'));
                             }
                         } else {
-                            $readmore = $attribs->get('readmore');
+                            if ($attribs) {
+                                $readmore = $attribs->get('readmore');
+                            }
                         }
                     }
                     if (!empty($readmore)) {
@@ -1216,7 +1218,9 @@ class plgContentJfusion extends JPlugin
                 }
 
                 //hide the articles standard read more
-                $article_params->set($readmore_param, 0);
+                if ($readmore_param && $article_params) {
+                    $article_params->set($readmore_param, 0);
+                }
             }
         }
 

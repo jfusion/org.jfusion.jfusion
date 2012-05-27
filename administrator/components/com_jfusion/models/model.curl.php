@@ -216,6 +216,7 @@ class JFusionCurlHtmlFormParser
 				if (preg_match_all("/<select.*>.+<\/select>/isU", $form, $selects)) {
 					foreach ($selects[0] as $select) {
 						if (preg_match_all("/<option.*>.+<\/option>/isU", $select, $all_options)) {
+                            $option_value = '';
 							foreach ($all_options[0] as $option) {
 								if (preg_match("/selected/i", $option)) {
 									if (preg_match("/value=[\"'](.*)[\"']\s/iU", $option, $option_value)) {

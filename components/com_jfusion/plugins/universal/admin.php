@@ -428,14 +428,14 @@ $output .= <<<JS
                 value.setAttribute("name", "params[map]["+parmtype+"][value]["+name+"][on]");
                 value.setAttribute("size", "40");
 
-                var value2 = document.createElement("input");
-                value2.setAttribute("type", "text");
-                value2.setAttribute("id", "paramsmap"+parmtype+"value"+name+"off");
-                value2.setAttribute("name", "params[map]["+parmtype+"][value]["+name+"][off]");
-                value2.setAttribute("size", "40");
+                var valueoff = document.createElement("input");
+                valueoff.setAttribute("type", "text");
+                valueoff.setAttribute("id", "paramsmap"+parmtype+"value"+name+"off");
+                valueoff.setAttribute("name", "params[map]["+parmtype+"][value]["+name+"][off]");
+                valueoff.setAttribute("size", "40");
 
                 id.appendChild(value);
-                id.appendChild(value2);
+                id.appendChild(valueoff);
             }
         }
 JS;

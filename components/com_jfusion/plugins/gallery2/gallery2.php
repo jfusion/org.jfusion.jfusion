@@ -191,6 +191,7 @@ if (!class_exists('jFusion_g2BridgeCore')) {
 	        if ($session) {
 	            $session->doNotUseTempId();
 	        }
+            $entities = array();
 	        $mainframe = JFactory::getApplication();
 	        $urlGenerator = $gallery->getUrlGenerator();
 	        $itemId = (int)GalleryUtilities::getRequestVariables('itemId');

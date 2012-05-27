@@ -82,6 +82,7 @@ class JFusionAdmin_smf extends JFusionAdmin
         } else {
             //parse the file line by line to get only the config variables
             $file_handle = fopen($myfile, 'r');
+            $config = array();
             while (!feof($file_handle)) {
                 $line = fgets($file_handle);
                 if (strpos($line, '$') === 0) {
@@ -96,14 +97,14 @@ class JFusionAdmin_smf extends JFusionAdmin
             fclose($file_handle);
             //Save the parameters into the standard JFusion params format
             $params = array();
-            $params['database_host'] = $config['db_server'];
+            $params['database_host'] = isset($config['db_server']) ? $config['db_server'] : '';
             $params['database_type'] = 'mysql';
-            $params['database_name'] = $config['db_name'];
-            $params['database_user'] = $config['db_user'];
-            $params['database_password'] = $config['db_passwd'];
-            $params['database_prefix'] = $config['db_prefix'];
-            $params['source_url'] = $config['boardurl'];
-            $params['cookie_name'] = $config['cookiename'];
+            $params['database_name'] = isset($config['db_name']) ? $config['db_name'] : '';
+            $params['database_user'] = isset($config['db_user']) ? $config['db_user'] : '';
+            $params['database_password'] = isset($config['db_passwd']) ? $config['db_passwd'] : '';
+            $params['database_prefix'] = isset($config['db_prefix']) ? $config['db_prefix'] : '';
+            $params['source_url'] = isset($config['boardurl']) ? $config['boardurl'] : '';
+            $params['cookie_name'] = isset($config['cookiename']) ? $config['cookiename'] : '';
             $params['source_path'] = $forumPath;
             return $params;
         }

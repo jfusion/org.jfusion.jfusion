@@ -259,6 +259,7 @@ class JFusionJplugin
             //parse the file line by line to get only the config variables
             //we can not directly include the config file as JConfig is already defined
             $file_handle = fopen($configfile, 'r');
+            $config = array();
             while (!feof($file_handle)) {
                 $line = fgets($file_handle);
                 if (strpos($line, '$')) {
@@ -279,12 +280,12 @@ class JFusionJplugin
 
             //Save the parameters into the standard JFusion params format
             $params = array();
-            $params['database_host'] = $config['host'];
-            $params['database_name'] = $config['db'];
-            $params['database_user'] = $config['user'];
-            $params['database_password'] = $config['password'];
-            $params['database_prefix'] = $config['dbprefix'];
-            $params['database_type'] = $config['dbtype'];
+            $params['database_host'] = isset($config['host']) ? $config['host'] : '';
+            $params['database_name'] = isset($config['db']) ? $config['db'] : '';
+            $params['database_user'] = isset($config['user']) ? $config['user'] : '';
+            $params['database_password'] = isset($config['password']) ? $config['password'] : '';
+            $params['database_prefix'] = isset($config['dbprefix']) ? $config['dbprefix'] : '';
+            $params['database_type'] = isset($config['dbtype']) ? $config['dbtype'] : '';
             $params['source_path'] = $path;
 
             //determine if this is 1.5 or 1.6+
@@ -1003,25 +1004,21 @@ class JFusionJplugin
             $instance->set('activation', $userinfo->activation);
             $instance->set('sendEmail', 0);
             //find out what usergroup the new user should have
-
+            //the $userinfo object was probably reconstructed in the user plugin and autregister = 1
+            if(JFusionFunction::isJoomlaVersion('1.6',$jname)) {
+                $groups = array(2);
+            } else {
+                $groups = array(18);
+            }
+            $isadmin = false;
             if (isset($userinfo->group_id) || isset($userinfo->groups)) {
-				$gid = JFusionFunction::getCorrectUserGroups($jname,$userinfo);
+                $groups = JFusionFunction::getCorrectUserGroups($jname,$userinfo);
 
 				if(JFusionFunction::isJoomlaVersion('1.6',$jname)) {
-					$groups = $gid;
-					$isadmin = (in_array ( 7 , $gid,true ) || in_array ( 8 , $gid,true )) ? true : false;
+					$isadmin = (in_array ( 7 , $groups,true ) || in_array ( 8 , $groups,true )) ? true : false;
             	} else {
-            		$gid = $gid[0];
-					$isadmin = ($gid == 24 || $gid == 25) ? true : false;
+					$isadmin = ($groups[0] == 24 || $groups[0] == 25) ? true : false;
             	}
-            } else {
-                //the $userinfo object was probably reconstructed in the user plugin and autregister = 1
-            	if(JFusionFunction::isJoomlaVersion('1.6',$jname)) {
-            		$groups = array(2);
-            	} else {
-            		$gid = 18;
-            	}
-                $isadmin = false;
             }
 
 			//work around the issue where joomla will not allow the creation of an admin or super admin if the logged in user is not a super admin
@@ -1029,7 +1026,7 @@ class JFusionJplugin
             	if(JFusionFunction::isJoomlaVersion('1.6',$jname)) {
             		$groups = array(2);
             	} else {
-            		$gid = 18;
+                    $groups = array(18);
             	}
             }
             
@@ -1037,9 +1034,9 @@ class JFusionJplugin
                 $instance->set('usertype', 'deprecated');
                 $instance->set('groups', $groups);
 			} else {
-				$usergroup = JFusionJplugin::getUsergroupName($jname,$gid);
+				$usergroup = JFusionJplugin::getUsergroupName($jname,$groups[0]);
 				$instance->set('usertype', $usergroup);
-				$instance->set('gid', $gid);
+				$instance->set('gid', $groups[0]);
             }
             if ($jname == 'joomla_int') {
                 //store the username passed into this to prevent the user plugin from attempting to recreate users
@@ -1109,7 +1106,7 @@ class JFusionJplugin
                         return $status;
 	                }
 	                // and finally add the user to the core_acl_groups_aro_map
-	                $query = 'INSERT INTO #__core_acl_groups_aro_map (group_id, aro_id) VALUES (' . $gid . ',' . $acl->id . ')';
+	                $query = 'INSERT INTO #__core_acl_groups_aro_map (group_id, aro_id) VALUES (' . $groups[0] . ',' . $acl->id . ')';
 	                $db->setQuery($query);
 	                if (!$db->query()) {
 	                    $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
