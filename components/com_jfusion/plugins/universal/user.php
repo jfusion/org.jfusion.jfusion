@@ -233,11 +233,21 @@ class JFusionUser_universal extends JFusionUser {
         }
     }
 
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function updateUsername($userinfo, &$existinguser, &$status)
     {
 
     }
 
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function updateEmail($userinfo, &$existinguser, &$status)
     {
     	$map = JFusionMap::getInstance($this->getJname());
@@ -316,6 +326,11 @@ class JFusionUser_universal extends JFusionUser {
 		}
 	}
 
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function blockUser($userinfo, &$existinguser, &$status)
     {
 		$map = JFusionMap::getInstance($this->getJname());

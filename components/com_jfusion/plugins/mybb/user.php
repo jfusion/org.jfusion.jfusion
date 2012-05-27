@@ -199,6 +199,12 @@ class JFusionUser_mybb extends JFusionUser {
             $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
         }
     }
+
+    /**
+     * @param object $userinfo
+     * @param array $status
+     * @return string
+     */
     function createUser($userinfo, &$status) {
         //found out what usergroup should be used
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -244,6 +250,12 @@ class JFusionUser_mybb extends JFusionUser {
             return;
         }
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function updateEmail($userinfo, &$existinguser, &$status) {
         //we need to update the email
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -269,6 +281,12 @@ class JFusionUser_mybb extends JFusionUser {
             $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
         }
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function inactivateUser($userinfo, &$existinguser, &$status) {
         //found out what usergroup should be used
         $params = JFusionFactory::getParams($this->getJname());

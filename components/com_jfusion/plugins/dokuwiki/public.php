@@ -45,6 +45,10 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
     {
         return 'dokuwiki';
     }
+
+    /**
+     * @return string
+     */
     function getRegistrationURL() {
         return 'doku.php?do=login';
     }
@@ -211,6 +215,10 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
         
         $this->replaceForm($data);
     }
+
+    /**
+     * @param object $data
+     */
     function parseHeader(&$data) {
         static $regex_header, $replace_header;
         if (!$regex_header || !$replace_header) {
@@ -236,6 +244,11 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
         }
         $data->header = preg_replace($regex_header, $replace_header, $data->header);
     }
+
+    /**
+     * @param $matches
+     * @return mixed|string
+     */
     function fixUrl($matches) {
 		$q = $matches[1];
 		$integratedURL = $this->data->integratedURL;		
@@ -303,12 +316,20 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
         }
         return $url;
     }
+
+    /**
+     * @param $url
+     */
     function trimUrl(&$url) {
         $url = ltrim($url, '/');
         $order = array('/', '?');
         $replace = array(';', '&');
         $url = str_replace($order, $replace, $url);
     }
+
+    /**
+     * @param $data
+     */
     function replaceForm(&$data) {
         $pattern = '#<form(.*?)action=["|\'](.\S*?)["|\'](.*?)>(.*?)</form>#mSsi';
         $getData = '';

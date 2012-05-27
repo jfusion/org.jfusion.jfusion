@@ -251,10 +251,22 @@ class JFusionUser_magento extends JFusionUser {
     {
         return 'magento';
     }
+
+    /**
+     * @param object $userinfo
+     * @param array $options
+     * @return array
+     */
     function destroySession($userinfo, $options) {
     	$params = JFusionFactory::getParams($this->getJname());    	
         return JFusionJplugin::destroySession($userinfo, $options, $this->getJname(),$params->get('logout_type'));
     }
+
+    /**
+     * @param object $userinfo
+     * @param array $options
+     * @return array|string
+     */
     function createSession($userinfo, $options) {
     	$params = JFusionFactory::getParams($this->getJname());
         return JFusionJplugin::createSession($userinfo, $options, $this->getJname(),$params->get('brute_force'));
@@ -269,6 +281,11 @@ class JFusionUser_magento extends JFusionUser {
         }
         return $str;
     }
+
+    /**
+     * @param string $username
+     * @return string
+     */
     function filterUsername($username) {
         //no username filtering implemented yet
         return $username;

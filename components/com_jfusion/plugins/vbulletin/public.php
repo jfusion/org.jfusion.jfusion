@@ -203,6 +203,10 @@ class JFusionPublic_vbulletin extends JFusionPublic
         return $db->loadResult();
     }
 
+    /**
+     * @param object $jfdata
+     * @return null
+     */
     function getBuffer(&$jfdata)
     {
         global $vbsefmode, $vbJname, $vbsefenabled, $baseURL, $integratedURL, $hookFile;

@@ -213,7 +213,11 @@ class PasswordHashOrg {
     return $output;
   }
 
-  function HashPassword($password)
+    /**
+     * @param $password
+     * @return string
+     */
+    function HashPassword($password)
   {
     $random = '';
 
@@ -248,7 +252,12 @@ class PasswordHashOrg {
     return '*';
   }
 
-  function CheckPassword($password, $stored_hash)
+    /**
+     * @param $password
+     * @param $stored_hash
+     * @return bool
+     */
+    function CheckPassword($password, $stored_hash)
   {
     $hash = $this->crypt_private($password, $stored_hash);
     if ($hash[0] == '*')

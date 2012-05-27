@@ -196,12 +196,21 @@ class JFusionUser_wordpress extends JFusionUser {
 		return $status;
 	}
 
-	function createSession($userinfo, $options) {
+    /**
+     * @param object $userinfo
+     * @param array $options
+     * @return array|string
+     */
+    function createSession($userinfo, $options) {
 		$params = JFusionFactory::getParams($this->getJname());
 		return JFusionJplugin::createSession($userinfo, $options, $this->getJname(),$params->get('brute_force'));
 	}
 
-	function filterUsername($username) {
+    /**
+     * @param string $username
+     * @return mixed|string
+     */
+    function filterUsername($username) {
 		// strip all tags
 		$username = preg_replace( '@<(script|style)[^>]*?>.*?</\\1>@si', '', $username );
 		$username = strip_tags($username);
@@ -223,7 +232,12 @@ class JFusionUser_wordpress extends JFusionUser {
 		return $username;
 	}
 
-	function updatePassword($userinfo, $existinguser, &$status) {
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
+    function updatePassword($userinfo, $existinguser, &$status) {
 		// get the encryption PHP file
 		if (!class_exists('PasswordHashOrg')) {
 			require_once JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'PasswordHashOrg.php';
@@ -241,11 +255,21 @@ class JFusionUser_wordpress extends JFusionUser {
 		}
 	}
 
-	function updateUsername($userinfo, &$existinguser, &$status) {
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
+    function updateUsername($userinfo, &$existinguser, &$status) {
 		// not implemented in jFusion 1.x
 	}
 
-	function updateEmail($userinfo, &$existinguser, &$status) {
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
+    function updateEmail($userinfo, &$existinguser, &$status) {
 		//we need to update the email
 		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = 'UPDATE #__users SET user_email =' . $db->Quote($userinfo->email) . ' WHERE ID =' . (int)$existinguser->userid;
@@ -294,7 +318,12 @@ class JFusionUser_wordpress extends JFusionUser {
 		}
 	}
 
-	function createUser($userinfo, &$status) {
+    /**
+     * @param object $userinfo
+     * @param array $status
+     * @return null
+     */
+    function createUser($userinfo, &$status) {
 		//find out what usergroup should be used
 		$db = JFusionFactory::getDatabase($this->getJname());
 		$params = JFusionFactory::getParams($this->getJname());

@@ -202,10 +202,23 @@ class JFusionUser_oscommerce extends JFusionUser
         }
 
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function updateUsername($userinfo, &$existinguser, &$status) {
         // no username in oscommerce
         
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     * @return string
+     */
     function updateEmail($userinfo, &$existinguser, &$status) {
         $params = JFusionFactory::getParams($this->getJname());
         $osCversion = $params->get('osCversion');
@@ -248,10 +261,22 @@ class JFusionUser_oscommerce extends JFusionUser
             $status['error'][] = JText::_('EMAIL_UPDATE_ERROR');
         }
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function activateUser($userinfo, &$existinguser, &$status) {
         //activate the user not supported
         
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function inactivateUser($userinfo, &$existinguser, &$status) {
         // inactivate the user is not supported
         

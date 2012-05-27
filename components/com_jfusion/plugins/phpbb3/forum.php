@@ -222,6 +222,11 @@ class JFusionForum_phpbb3 extends JFusionForum {
         }
         return $forumids;
     }
+
+    /**
+     * @param string $userid
+     * @return array
+     */
     function getForumPermissions($userid = 'find') {
         static $phpbb_acl;
         if (!is_array($phpbb_acl)) {

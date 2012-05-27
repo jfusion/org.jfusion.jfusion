@@ -260,6 +260,12 @@ class JFusionUser_dokuwiki extends JFusionUser {
         $username = str_replace(':', '', $username);
         return strtolower($username);
     }
+
+    /**
+     * @param object $userinfo
+     * @param array $status
+     * @return array|string
+     */
     function createUser($userinfo, &$status) {
         $share = Dokuwiki::getInstance($this->getJname());
         if (isset($userinfo->password_clear)) {
@@ -299,12 +305,24 @@ class JFusionUser_dokuwiki extends JFusionUser {
             return $status;
         }
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function updatePassword($userinfo, &$existinguser, &$status)
     {
     }
     function updateEmail($userinfo, &$existinguser, &$status)
     {
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function updateUsergroup($userinfo, &$existinguser, &$status)
     {
     }

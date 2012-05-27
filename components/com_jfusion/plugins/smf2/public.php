@@ -302,10 +302,12 @@ class JFusionPublic_smf2 extends JFusionPublic {
 			JError::raiseWarning(500, 'Could not find SMF in the specified directory');
 		}
 	}
-	
-	/*
-	 * undo damage caused by plgSystemSef
-	 */	
+
+    /**
+     * undo damage caused by plgSystemSef
+     *
+     * @return bool
+     */
     function onAfterRender()
     {	
         $buffer = JResponse::getBody();    	

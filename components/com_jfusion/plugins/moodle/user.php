@@ -264,7 +264,13 @@ class JFusionUser_moodle extends JFusionUser {
 		}
 		return $status;
 	}
-	function createSession($userinfo, $options) {
+
+    /**
+     * @param object $userinfo
+     * @param array $options
+     * @return array|string
+     */
+    function createSession($userinfo, $options) {
 		$status = array();
 
 		// If a session expired by not accessing Moodle for a long time we cannot login normally.
@@ -292,13 +298,24 @@ class JFusionUser_moodle extends JFusionUser {
 		}
 		return $status;
 	}
-	function filterUsername($username) {
+
+    /**
+     * @param string $username
+     * @return string
+     */
+    function filterUsername($username) {
 		//Moodle has a switch to allow any character or just alphanumeric, dot, hypen (will be extendedn with @ and _ in Moodle 2.0
 		// I recommend to set allow extended usernames to true in Moodles config.
 		// must make note of this in docs.
 		return $username;
 	}
-	function updatePassword($userinfo, $existinguser, &$status) {
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
+    function updatePassword($userinfo, $existinguser, &$status) {
 		$params = JFusionFactory::getParams('moodle');
 		if ($params->get('passwordsaltmain')) {
 			$existinguser->password = md5($userinfo->password_clear . $params->get('passwordsaltmain'));
@@ -314,10 +331,22 @@ class JFusionUser_moodle extends JFusionUser {
 			$status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
 		}
 	}
-	function updateUsername($userinfo, &$existinguser, &$status) {
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
+    function updateUsername($userinfo, &$existinguser, &$status) {
 		// not implemented in jFusion 1.x
 	}
-	function updateEmail($userinfo, &$existinguser, &$status) {
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
+    function updateEmail($userinfo, &$existinguser, &$status) {
 		//TODO ? check for duplicates, or leave it atdb error
 		//we need to update the email
 		$db = JFusionFactory::getDatabase($this->getJname());

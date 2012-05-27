@@ -203,8 +203,14 @@ class JFusionAPI {
     	}
     	return false;
     }
-	
-	static function getSession($class=null,$delete=false)
+
+    /**
+     * @static
+     * @param null $class
+     * @param bool $delete
+     * @return null
+     */
+    static function getSession($class=null,$delete=false)
 	{
 		$return = null;
 	    if (empty($class)) {
@@ -224,8 +230,13 @@ class JFusionAPI {
         }
 		return $return;
 	}
-	
-	static function setSession($class=null,$value)
+
+    /**
+     * @static
+     * @param null $class
+     * @param $value
+     */
+    static function setSession($class=null,$value)
 	{
 		if (empty($class)) {
 			$_SESSION['JFusionAPI'] = $value;
@@ -233,7 +244,10 @@ class JFusionAPI {
 			$_SESSION['JFusionAPI'][$class] = $value;
 		}
 	}
-	
+
+    /**
+     * @return \stdClass
+     */
     private function createkey()
     {
     	$keyinfo = new stdClass;
@@ -246,6 +260,12 @@ class JFusionAPI {
     	return $keyinfo;
     }
 
+    /**
+     * @static
+     * @param $keyinfo
+     * @param $payload
+     * @return null|string
+     */
     public static function encrypt($keyinfo, $payload)
     {
     	if (isset($keyinfo->key) && isset($keyinfo->hash)) {
@@ -256,6 +276,12 @@ class JFusionAPI {
 		return $encrypted;    	
     }
 
+    /**
+     * @static
+     * @param $keyinfo
+     * @param $payload
+     * @return bool|mixed
+     */
     public static function decrypt($keyinfo, $payload)
     {
     	if (isset($keyinfo->key) && isset($keyinfo->hash)) {
@@ -315,6 +341,10 @@ class JFusionAPI {
 		return $result;
     }
 
+    /**
+     * @param $output
+     * @param bool $encrypt
+     */
     private function doOutput($output,$encrypt=false)
     {
 		$output['PHPSESSID'] = $this->sid;

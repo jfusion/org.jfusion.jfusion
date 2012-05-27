@@ -196,7 +196,12 @@ class JFusionUser_efront extends JFusionUser
         JFusionFunction::addCookie($name, $value, $expires, $cookiepath, $cookiedomain, false, $httponly);
         $status['debug'][] = JText::_('CREATED') . ' ' . JText::_('COOKIE') . ': ' . JText::_('NAME') . '=' . $name . ', ' . JText::_('VALUE') . '=' . urldecode($value) .', ' .JText::_('EXPIRES') . '=' .$expires_time .', ' . JText::_('COOKIE_PATH') . '=' . $cookiepath . ', ' . JText::_('COOKIE_DOMAIN') . '=' . $cookiedomain. ', '.JText::_('COOKIE_SECURE') . '=' .$secure. ', '.JText::_('COOKIE_HTTPONLY') . '=' .$httponly;
         return $status;
-    } 
+    }
+
+    /**
+     * @param string $username
+     * @return mixed|string
+     */
     function filterUsername($username) {
         // as the username also is used as a directory we probably must strip unwanted characters.
         $bad           = array("\\", "/", ":", ";", "~", "|", "(", ")", "\"", "#", "*", "$", "@", "%", "[", "]", "{", "}", "<", ">", "`", "'", ",", " ", "ÄŸ", "Äž", "Ã¼", "Ãœ", "ÅŸ", "Åž", "Ä±", "Ä°", "Ã¶", "Ã–", "Ã§", "Ã‡");
@@ -204,6 +209,12 @@ class JFusionUser_efront extends JFusionUser
         $username = str_replace($bad, $replacement, $username);
     	return $username;
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function updatePassword($userinfo, $existinguser, &$status) {
         $params = JFusionFactory::getParams($this->getJname());
         $md5_key = $params->get('md5_key');
@@ -217,9 +228,21 @@ class JFusionUser_efront extends JFusionUser
             $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
         }
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function updateUsername($userinfo, &$existinguser, &$status) {
         // not implemented in jFusion 1.x
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function updateEmail($userinfo, &$existinguser, &$status) {
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'UPDATE #__users SET email =' . $db->Quote($userinfo->email) . ' WHERE id =' . (int)$existinguser->userid;
@@ -230,6 +253,12 @@ class JFusionUser_efront extends JFusionUser
             $status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
         }
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function blockUser($userinfo, &$existinguser, &$status) {
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'UPDATE #__users SET active = 0 WHERE id =' . (int)$existinguser->userid;
@@ -240,6 +269,12 @@ class JFusionUser_efront extends JFusionUser
             $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
         }
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function unblockUser($userinfo, &$existinguser, &$status) {
         //unblock the user
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -251,6 +286,12 @@ class JFusionUser_efront extends JFusionUser
             $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
         }
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function activateUser($userinfo, &$existinguser, &$status) {
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'UPDATE #__users SET pending = 0 WHERE id =' . (int)$existinguser->userid;
@@ -271,6 +312,12 @@ class JFusionUser_efront extends JFusionUser
             $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
         }
     }
+
+    /**
+     * @param object $userinfo
+     * @param array $status
+     * @return null
+     */
     function createUser($userinfo, &$status) {
        /**
         * NOTE: eFront does a charactercheck on the user credentials. I think we are ok (HW): if (preg_match("/^.*[$\/\'\"]+.*$/", $parameter))

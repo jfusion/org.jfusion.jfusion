@@ -237,9 +237,13 @@ class JFusionUser_smf2 extends JFusionUser {
         } else {
             $status['error'][] = JText::_('GROUP_UPDATE_ERROR');
         }
-    }    
-    
+    }
 
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function blockUser($userinfo, &$existinguser, &$status)
     {
 
@@ -270,6 +274,11 @@ class JFusionUser_smf2 extends JFusionUser {
             }
     }
 
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function unblockUser($userinfo, &$existinguser, &$status)
     {
         	$db = JFusionFactory::getDatabase($this->getJname());
@@ -319,6 +328,11 @@ class JFusionUser_smf2 extends JFusionUser {
         }
     }
 
+    /**
+     * @param object $userinfo
+     * @param array $status
+     * @return array|null|string
+     */
     function createUser($userinfo, &$status)
     {
         //we need to create a new SMF user

@@ -204,8 +204,11 @@ return;
 EOD;
 	return $js;
 	}
-	
-	public function moduleInstallation() {
+
+    /**
+     * @return mixed|string
+     */
+    public function moduleInstallation() {
 			$jname = $this->getJname ();
 			$params = & JFusionFactory::getParams ( $jname );
 			
@@ -239,8 +242,11 @@ EOD;
 				return JText::_ ( 'MAGE_CONFIG_FIRST' );
 		}
 	}
-	
-public function installModule() {
+
+    /**
+     * @return array
+     */
+    public function installModule() {
 		
 		$jname =  $this->getJname ();
 		$db = JFusionFactory::getDatabase($jname);

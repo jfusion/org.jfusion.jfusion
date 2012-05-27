@@ -45,6 +45,10 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
     {
         return 'gallery2';
     }
+
+    /**
+     * @return string
+     */
     function getTablename() {
         return 'User';
     }
@@ -217,6 +221,14 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
         }
         return $albums;
     }
+
+    /**
+     * @param $name
+     * @param $value
+     * @param $node
+     * @param $control_name
+     * @return array|string
+     */
     function show_templateList($name, $value, $node, $control_name) {
         require JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'gallery2.php';
         jFusion_g2BridgeCore::loadGallery2Api($this->getJname(),false);
@@ -242,15 +254,13 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
         $output.= "</select>";
         return $output;
     }
-    
-	/*
-	 * do plugin support multi usergroups
-	 * return UNKNOWN for unknown
-	 * return JNO for NO
-	 * return JYES for YES
-	 * return ... ??
-	 */
-	function requireFileAccess()
+
+    /**
+     * do plugin support multi usergroups
+     *
+     * @return string UNKNOWN or JNO or JYES or ??
+     */
+    function requireFileAccess()
 	{
 		return 'JYES';
 	}    

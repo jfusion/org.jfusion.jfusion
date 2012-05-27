@@ -267,6 +267,10 @@ class executeJFusionHook
         echo trim($this->vars, "\n\r\t.");
         Throw new Exception("vBulletin exited.");
     }
+
+    /**
+     * @return bool
+     */
     function global_setup_complete()
     {
         if (!empty($_POST['jfvbtask'])) {
@@ -293,6 +297,10 @@ class executeJFusionHook
         }
         return true;
     }
+
+    /**
+     * @return bool
+     */
     function global_start()
     {
         //lets rewrite the img urls now while we can
@@ -308,6 +316,10 @@ class executeJFusionHook
         }
         return true;
     }
+
+    /**
+     * @return bool
+     */
     function header_redirect()
     {
         global $vbsefenabled, $vbsefmode, $baseURL, $integratedURL, $foruminfo, $vbulletin;

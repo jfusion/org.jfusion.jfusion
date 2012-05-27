@@ -86,6 +86,9 @@ class JFusionUser_mediawiki extends JFusionUser {
         return $result;
     }
 
+    /**
+     * @return string
+     */
     function getJname()
     {
         return 'mediawiki';
@@ -199,6 +202,10 @@ class JFusionUser_mediawiki extends JFusionUser {
 	}
 
 
+    /**
+     * @param string $username
+     * @return string
+     */
     function filterUsername($username)
     {
         //no username filtering implemented yet
@@ -223,6 +230,11 @@ class JFusionUser_mediawiki extends JFusionUser {
         }
     }
 
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function updateUsername($userinfo, &$existinguser, &$status)
     {
 
@@ -246,6 +258,12 @@ class JFusionUser_mediawiki extends JFusionUser {
         }
     }
 
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     * @return string
+     */
     function updateUsergroup($userinfo, &$existinguser, &$status)
 	{
         $params = JFusionFactory::getParams($this->getJname());
@@ -280,6 +298,11 @@ class JFusionUser_mediawiki extends JFusionUser {
 		}
 	}
 
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function blockUser($userinfo, &$existinguser, &$status)
     {
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -312,6 +335,11 @@ class JFusionUser_mediawiki extends JFusionUser {
     	}
     }
 
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function unblockUser($userinfo, &$existinguser, &$status)
     {
     	$db = JFusionFactory::getDatabase($this->getJname());

@@ -198,6 +198,10 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
         }
         return false;
     }
+
+    /**
+     * @return bool|string
+     */
     function getDefaultUsergroup() {
         $params = JFusionFactory::getParams($this->getJname());
         $osCversion = $params->get('osCversion');
@@ -234,6 +238,10 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
         }
         return false;
     }
+
+    /**
+     * @return bool
+     */
     function allowRegistration() {
         $result = true;
         $params = JFusionFactory::getParams($this->getJname());
@@ -243,9 +251,17 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
         }
         return $result;
     }
+
+    /**
+     * @return bool
+     */
     function allowEmptyCookiePath() {
         return true;
     }
+
+    /**
+     * @return bool
+     */
     function allowEmptyCookieDomain() {
         return true;
     }

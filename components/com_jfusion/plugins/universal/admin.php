@@ -296,6 +296,13 @@ class JFusionAdmin_universal extends JFusionAdmin{
 		return $output;
     }
 
+    /**
+     * @param $name
+     * @param $value
+     * @param $node
+     * @param $control_name
+     * @return string
+     */
     function js($name, $value, $node, $control_name)
     {
         $document =& JFactory::getDocument();
