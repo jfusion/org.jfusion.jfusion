@@ -431,9 +431,10 @@ function confirmThreadAction(id,task,vars,url) {
 			},
 			events: {
 				click: function() {
-                    $('JFusionTaskForm').articleId.value = id;
-                    $('JFusionTaskForm').dbtask.value = task;
-                    $('JFusionTaskForm').submit();
+                    var form = $('JFusionTaskForm');
+                    form.articleId.value = id;
+                    form.dbtask.value = task;
+                    form.submit();
 				}
 			}
 		}).inject(divBtnContainer);
@@ -461,9 +462,10 @@ function confirmThreadAction(id,task,vars,url) {
 			},	
 			events: {
 				click: function() {
-                    $('JFusionTaskForm').articleId.value = id;
-                    $('JFusionTaskForm').dbtask.value = 'create_thread';
-                    $('JFusionTaskForm').submit();
+                    var form = $('JFusionTaskForm');
+                    form.articleId.value = id;
+                    form.dbtask.value = 'create_thread';
+                    form.submit();
 				}
 			}
 		}).inject(divBtnContainer);
@@ -552,7 +554,7 @@ function submitAjaxRequest(id, task, vars, url) {
                     $('discussion').setStyle('display','none');
                 } else if (task=='publish_discussion') {
                     initializeDiscussbot();
-                    toggleDiscussionVisibility('1');
+                    toggleDiscussionVisibility(1);
                 }
                 
                 if (typeof jfdb_debug != 'undefined') {
@@ -569,7 +571,7 @@ function submitAjaxRequest(id, task, vars, url) {
                     $('discussion').setStyle('display','none');
                 } else if (task=='publish_discussion') {
                     initializeDiscussbot();
-                    toggleDiscussionVisibility('1');
+                    toggleDiscussionVisibility(1);
                 }
                 
                 if (typeof jfdb_debug != 'undefined') {
@@ -581,8 +583,8 @@ function submitAjaxRequest(id, task, vars, url) {
 }
 
 function toggleDiscussionVisibility() {
-    var override = toggleDiscussionVisibility.arguments[0];
-    var discusslink = toggleDiscussionVisibility.arguments[1];
+    var override = arguments[0];
+    var discusslink = arguments[1];
     var showdiscussion = '';
     if ($('discussion')) {
         var state = $('discussion').style.display;
