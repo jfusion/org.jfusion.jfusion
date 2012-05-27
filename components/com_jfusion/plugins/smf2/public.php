@@ -153,19 +153,29 @@ class JFusionPublic_smf2 extends JFusionPublic {
             }
         }
         return $status;
-    }	
+    }
 
-	function getLostPasswordURL()
+    /**
+     * @return string
+     */
+    function getLostPasswordURL()
 	{
 		return 'index.php?action=reminder';
 	}
 
-	function getLostUsernameURL()
+    /**
+     * @return string
+     */
+    function getLostUsernameURL()
 	{
 		return 'index.php?action=reminder';
 	}
 
-	function getBuffer(&$data)
+    /**
+     * @param object $data
+     * @return null
+     */
+    function getBuffer(&$data)
 	{
 		$this->data = $data;
 	    $jFusion_Route = JRequest::getVar('jFusion_Route',null);
@@ -322,16 +332,23 @@ class JFusionPublic_smf2 extends JFusionPublic {
         JResponse::setBody($buffer);
         return true;    	
     }
-    
+
+    /**
+     * @param $args
+     * @return bool
+     */
     function update($args)
     {
     	if (isset($args['event']) && $args['event'] == 'onAfterRender') {
     		return $this->onAfterRender();
     	}
     	return true;
-    }    
+    }
 
-	function parseBody(&$data)
+    /**
+     * @param object $data
+     */
+    function parseBody(&$data)
 	{
 		$regex_body		= array();
 		$replace_body	= array();
@@ -375,7 +392,10 @@ class JFusionPublic_smf2 extends JFusionPublic {
         }
 	}
 
-	function parseHeader(&$data)
+    /**
+     * @param object $data
+     */
+    function parseHeader(&$data)
 	{
 		static $regex_header, $replace_header;
 		if ( ! $regex_header || ! $replace_header )
@@ -413,7 +433,11 @@ class JFusionPublic_smf2 extends JFusionPublic {
 		$data->header = preg_replace($regex_header, $replace_header, $data->header);
 	}
 
-    function fixUrl($matches)    
+    /**
+     * @param $matches
+     * @return string
+     */
+    function fixUrl($matches)
     {
 		$q = $matches[1];
 
@@ -456,8 +480,12 @@ class JFusionPublic_smf2 extends JFusionPublic {
 		$url = $this->fixUrl($matches);
 		$url = str_replace('&amp;', '&', $url);
         return $url;
-    }    
+    }
 
+    /**
+     * @param $matches
+     * @return string
+     */
     function fixAction($matches)
     {
 		$url = $matches[1];
@@ -516,6 +544,10 @@ class JFusionPublic_smf2 extends JFusionPublic {
         return $replacement;
     }
 
+    /**
+     * @param $matches
+     * @return string
+     */
     function fixRedirect($matches) {
 		$url = $matches[1];
 		$baseURL = $this->data->baseURL;
@@ -562,7 +594,10 @@ class JFusionPublic_smf2 extends JFusionPublic {
         return $return;
     }
 
-	function getPathWay()
+    /**
+     * @return array
+     */
+    function getPathWay()
 	{
 		$db = JFusionFactory::getDatabase($this->getJname());
 		$pathway = array();
@@ -707,7 +742,10 @@ class JFusionPublic_smf2 extends JFusionPublic {
 		return $pathway;
 	}
 
-	function getSearchQueryColumns()
+    /**
+     * @return \stdClass
+     */
+    function getSearchQueryColumns()
 	{
 		$columns = new stdClass();
 		$columns->title = "p.subject";
@@ -715,7 +753,11 @@ class JFusionPublic_smf2 extends JFusionPublic {
 		return $columns;
 	}
 
-	function getSearchQuery(&$pluginParam)
+    /**
+     * @param object $pluginParam
+     * @return string
+     */
+    function getSearchQuery(&$pluginParam)
 	{
 		//need to return threadid, postid, title, text, created, section
 		$query = 'SELECT p.id_topic, p.id_msg, p.id_board, CASE WHEN p.subject = "" THEN CONCAT("Re: ",fp.subject) ELSE p.subject END AS title, p.body AS text,
@@ -793,7 +835,11 @@ class JFusionPublic_smf2 extends JFusionPublic {
 		$where .= ' AND p.id_board IN ('.implode(',',$list).') ORDER BY ' . $sort;
 	}
 
-	function filterSearchResults(&$results = array(), &$pluginParam)
+    /**
+     * @param array $results
+     * @param object $pluginParam
+     */
+    function filterSearchResults(&$results = array(), &$pluginParam)
 	{
 		$db =& JFusionFactory::getDatabase($this->getJname());
 		$query = "SELECT value FROM #__settings WHERE variable='censor_vulgar'";
@@ -816,7 +862,11 @@ class JFusionPublic_smf2 extends JFusionPublic {
 		}
 	}
 
-	function getSearchResultLink($post)
+    /**
+     * @param mixed $post
+     * @return string
+     */
+    function getSearchResultLink($post)
 	{
 		$forum = JFusionFactory::getForum($this->getJname());
 		return $forum->getPostURL($post->id_topic,$post->id_msg);
@@ -918,7 +968,11 @@ class JFusionPublic_smf2 extends JFusionPublic {
 		}
 	}
 
-	function callback($buffer) {
+    /**
+     * @param $buffer
+     * @return mixed|string
+     */
+    function callback($buffer) {
 		$data = $this->callbackdata;
 		$headers_list = headers_list();
 		foreach ($headers_list as $key => $value) {

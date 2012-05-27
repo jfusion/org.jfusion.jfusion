@@ -49,9 +49,13 @@ class JFusionAuth_wordpress extends JFusionAuth
  * PasswordHashOrg.php and the class PasswordHash has been renamed to PasswordHashOrg.
  * This way we have no clash in the hash classnames. 
  * 
- */    
-    
-    
+ */
+
+
+    /**
+     * @param array|object $userinfo
+     * @return string
+     */
     function generateEncryptedPassword($userinfo) {
         // get the encryption PHP file
         if (!class_exists('PasswordHashOrg')) {

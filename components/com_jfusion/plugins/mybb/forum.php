@@ -62,6 +62,13 @@ class JFusionForum_mybb extends JFusionForum {
     function getProfileURL($uid) {
         return 'member.php?action=profile&uid=' . $uid;
     }
+
+    /**
+     * @param array $usedforums
+     * @param string $result_order
+     * @param int $result_limit
+     * @return array
+     */
     function getActivityQuery($usedforums, $result_order, $result_limit) {
         $where = (!empty($usedforums)) ? ' WHERE a.fid IN (' . $usedforums . ')' : '';
         $end = $result_order . " LIMIT 0," . $result_limit;
@@ -74,6 +81,11 @@ class JFusionForum_mybb extends JFusionForum {
         LCP => "SELECT tid AS threadid, pid AS postid, username, uid AS userid, subject, dateline, message AS body FROM #__posts " . str_replace('a.fid', 'fid', $where) . " ORDER BY dateline $end");
         return $query;
     }
+
+    /**
+     * @param int $threadid
+     * @return object
+     */
     function getThread($threadid) {
         $db = & JFusionFactory::getDatabase($this->getJname());
         $query = "SELECT tid AS threadid, fid AS forumid, firstpost AS postid FROM #__threads WHERE tid = (int)$threadid";
@@ -81,6 +93,11 @@ class JFusionForum_mybb extends JFusionForum {
         $results = $db->loadObject();
         return $results;
     }
+
+    /**
+     * @param object $existingthread
+     * @return int
+     */
     function getReplyCount(&$existingthread) {
         $db = & JFusionFactory::getDatabase($this->getJname());
         $query = 'SELECT replies FROM #__threads WHERE tid = ' .(int) $existingthread->threadid;
@@ -100,6 +117,11 @@ class JFusionForum_mybb extends JFusionForum {
         //getting the results
         return $db->loadObjectList();
     }
+
+    /**
+     * @param int $userid
+     * @return array
+     */
     function getPrivateMessageCounts($userid) {
         if ($userid) {
             //get the connection to the db
@@ -118,9 +140,18 @@ class JFusionForum_mybb extends JFusionForum {
     function getPrivateMessageURL() {
         return 'private.php';
     }
+
+    /**
+     * @return string
+     */
     function getViewNewMessagesURL() {
         return 'search.php?action=getnew';
     }
+
+    /**
+     * @param int $userid
+     * @return string
+     */
     function getAvatar($userid) {
         //get the connection to the db
         $db = JFusionFactory::getDatabase($this->getJname());

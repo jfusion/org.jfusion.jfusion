@@ -54,8 +54,12 @@ class Jfusion_Joomla_Helper_Data extends Mage_Core_Helper_Data {
     function isCacheActivated(){
 		return ($this->_data['cache'])?$this->_data['cache']:'';
 	}
-	
-	function getData($key = null){
+
+    /**
+     * @param null $key
+     * @return null
+     */
+    function getData($key = null){
 		if($key != null && isset($this->_data[$key])){
 			return $this->_data[$key];
 		}else{

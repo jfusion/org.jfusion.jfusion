@@ -51,12 +51,21 @@ class JFusionHelper_vbulletin
         return 'vbulletin';
     }
 
+    /**
+     * @param $data
+     * @return string
+     */
     function encryptApiData($data) {
         $key = $this->params->get('vb_secret', JFactory::getConfig()->getValue('config.secret'));
         $data['jfvbkey'] = $key;
         return base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, serialize($data), MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND)));
     }
 
+    /**
+     * @param $task
+     * @param $data
+     * @return array|mixed
+     */
     function apiCall($task, $data) {
     	if (!function_exists('mcrypt_encrypt')) {
     		$response['errors'][] = 'mcrypt_encrypt Missing';
@@ -290,12 +299,13 @@ class JFusionHelper_vbulletin
         return $jfusion_vb_version;
     }
 
-    /*
+    /**
      * Creates a basic vB SEF url for vB 4
      *
-     * @param (array) $uri  Array with uri pieces
-     * @param (string) $type Type of url eg. forum, thread, member
+     * @param $url
+     * @param bool|string $type Type of url eg. forum, thread, member
      *
+     * @internal param array $uri Array with uri pieces
      * @return string $url  Appropriate URL
      */
     function getVbURL($url, $type = false)

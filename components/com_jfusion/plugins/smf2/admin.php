@@ -23,16 +23,26 @@ require_once(JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.D
  */
 class JFusionAdmin_smf2 extends JFusionAdmin{
 
+    /**
+     * @return string
+     */
     function getJname()
     {
         return 'smf2';
     }
 
+    /**
+     * @return string
+     */
     function getTablename()
     {
         return 'members';
     }
 
+    /**
+     * @param string $forumPath
+     * @return array|object
+     */
     function setupFromPath($forumPath)
     {
         //check for trailing slash and generate file path
@@ -81,6 +91,9 @@ class JFusionAdmin_smf2 extends JFusionAdmin{
         }
     }
 
+    /**
+     * @return array
+     */
     function getUserList()
     {
         // initialise some objects
@@ -92,6 +105,9 @@ class JFusionAdmin_smf2 extends JFusionAdmin{
         return $userlist;
     }
 
+    /**
+     * @return int
+     */
     function getUserCount()
     {
         //getting the connection to the db
@@ -123,6 +139,9 @@ class JFusionAdmin_smf2 extends JFusionAdmin{
         return $usergrouplist;
     }
 
+    /**
+     * @return string
+     */
     function getDefaultUsergroup()
     {
         $params = JFusionFactory::getParams($this->getJname());
@@ -149,8 +168,11 @@ class JFusionAdmin_smf2 extends JFusionAdmin{
         $query = 'SELECT id_group as id, group_name as name FROM #__membergroups WHERE min_posts != -1';
         $db->setQuery($query);
         return $db->loadObjectList();
-    }    
+    }
 
+    /**
+     * @return bool
+     */
     function allowRegistration()
     {
 
@@ -168,7 +190,10 @@ class JFusionAdmin_smf2 extends JFusionAdmin{
         }
     }
 
-	function generateRedirectCode()
+    /**
+     * @return string
+     */
+    function generateRedirectCode()
 	{
         	$params = JFusionFactory::getParams($this->getJname());
         	$joomla_params = JFusionFactory::getParams('joomla_int');
@@ -273,6 +298,13 @@ return;
 <?php
 	}
 
+    /**
+     * @param $name
+     * @param $value
+     * @param $node
+     * @param $control_name
+     * @return string
+     */
     function showRedirectMod($name, $value, $node, $control_name)
     {
     	$error = 0;
@@ -309,8 +341,10 @@ return;
 
     }
 
-    /*
+    /**
      * uninstall function is to disable verious mods
+     *
+     * @return array
      */
     function uninstall()
     {
@@ -327,18 +361,20 @@ return;
 	/*
 	 * do plugin support multi usergroups
 	 */
-	function isMultiGroup()
+    /**
+     * @return bool
+     */
+    function isMultiGroup()
 	{
 		return false;
 	}
-	/*
-	 * do plugin support multi usergroups
-	 * return UNKNOWN for unknown
-	 * return JNO for NO
-	 * return JYES for YES
-	 * return ... ??
-	 */
-	function requireFileAccess()
+
+    /**
+     * do plugin support multi usergroups
+     *
+     * @return string UNKNOWN or JNO or JYES or ??
+     */
+    function requireFileAccess()
 	{
 		return 'JNO';
 	}

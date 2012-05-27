@@ -80,7 +80,11 @@ class JFusionUser_elgg extends JFusionUser {
     {
         return 'elgg';
     }
-    
+
+    /**
+     * @param object $userinfo
+     * @return array
+     */
     function deleteUser($userinfo) {
         $params = JFusionFactory::getParams($this->getJname());
 
@@ -103,7 +107,11 @@ class JFusionUser_elgg extends JFusionUser {
 		}
 		return $status;
     }
-    
+
+    /**
+     * @param string $userinfo
+     * @param string $option
+     */
     function destroySession($userinfo = "", $option = "") {
         /*
         NOTE:
@@ -114,6 +122,13 @@ class JFusionUser_elgg extends JFusionUser {
         setcookie('Elgg', '', time() + 60 * 60 * 24 * 365, $params->get('cookie_path'), $params->get('cookie_domain'));
         setcookie('elggperm', '', time() + 60 * 60 * 24 * 365, '/');
     }
+
+    /**
+     * @param object $userinfo
+     * @param array $options
+     * @param bool $framework
+     * @return bool
+     */
     function createSession($userinfo, $options, $framework = true) {
         //destroy a cookie if it exists already, this will prevent the person logging in from having to refresh twice to appear as logged in
         $this->destroySession();
@@ -167,6 +182,11 @@ class JFusionUser_elgg extends JFusionUser {
         }
         return true;
     }
+
+    /**
+     * @param string $username
+     * @return string
+     */
     function filterUsername($username) {
         return $username;
     }
@@ -189,6 +209,12 @@ class JFusionUser_elgg extends JFusionUser {
             $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
         }
     }
+
+    /**
+     * @param object $userinfo
+     * @param array $status
+     * @return string
+     */
     function createUser($userinfo, &$status) {
         //found out what usergroup should be used
         $params = JFusionFactory::getParams($this->getJname());
@@ -256,6 +282,12 @@ class JFusionUser_elgg extends JFusionUser {
             $status['error'][] = JText::_('USER_CREATION_ERROR').' '.$r->getMessage();
         }
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function updateEmail($userinfo, &$existinguser, &$status) {
         //we need to update the email
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -330,8 +362,13 @@ class JFusionUser_elgg extends JFusionUser {
         } else {
         	$status['error'][] = JText::_('BLOCK_UPDATE_ERROR');
 		}
-    }    
-    
+    }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function activateUser($userinfo, &$existinguser, &$status) {
         $params = JFusionFactory::getParams($this->getJname());
 
@@ -352,6 +389,12 @@ class JFusionUser_elgg extends JFusionUser {
         	$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR');
 		}    
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function inactivateUser($userinfo, &$existinguser, &$status) {
         $params = JFusionFactory::getParams($this->getJname());
 

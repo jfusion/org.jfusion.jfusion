@@ -54,6 +54,11 @@ class JFusionUser_gallery2 extends JFusionUser {
             return $this->_getUser($g2_user);
         }
     }
+
+    /**
+     * @param $g2_user
+     * @return \stdClass
+     */
     function &_getUser($g2_user) {
         $userinfo = new stdClass;
         $userinfo->userid = $g2_user->id;
@@ -96,6 +101,12 @@ class JFusionUser_gallery2 extends JFusionUser {
         //TODO: Implement User filtering
         return $username;
     }
+
+    /**
+     * @param object $userinfo
+     * @param array $options
+     * @return array
+     */
     function destroySession($userinfo, $options) {
         require JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'gallery2.php';
         jFusion_g2BridgeCore::loadGallery2Api($this->getJname(),true);
@@ -105,6 +116,13 @@ class JFusionUser_gallery2 extends JFusionUser {
         $status = array();
         return $status;        
     }
+
+    /**
+     * @param object $userinfo
+     * @param array $options
+     * @param bool $framework
+     * @return array
+     */
     function createSession($userinfo, $options, $framework = true) {
         $status = array();
         $status['debug'] = array();
@@ -181,6 +199,11 @@ class JFusionUser_gallery2 extends JFusionUser {
         }
         return $status;
     }
+
+    /**
+     * @param object $userinfo
+     * @return array
+     */
     function deleteUser($userinfo) {
         //setup status array to hold debug info and errors
         $status = array();
@@ -303,6 +326,12 @@ class JFusionUser_gallery2 extends JFusionUser {
         }
         GalleryEmbed::done();
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function updatePassword($userinfo, &$existinguser, &$status) {
         require JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'gallery2.php';
         jFusion_g2BridgeCore::loadGallery2Api($this->getJname(),false);
@@ -336,6 +365,12 @@ class JFusionUser_gallery2 extends JFusionUser {
         }
         GalleryEmbed::done();
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function updateEmail($userinfo, &$existinguser, &$status) {
         require JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'gallery2.php';
         jFusion_g2BridgeCore::loadGallery2Api($this->getJname(),false);
@@ -358,12 +393,36 @@ class JFusionUser_gallery2 extends JFusionUser {
         }
         GalleryEmbed::done();
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function blockUser($userinfo, &$existinguser, &$status) {
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function unblockUser($userinfo, &$existinguser, &$status) {
     }
+
+    /**
+     * @param $userinfo
+     * @param $existinguser
+     * @param $status
+     */
     function activeUser($userinfo, &$existinguser, &$status) {
     }
+
+    /**
+     * @param $userinfo
+     * @param $existinguser
+     * @param $status
+     */
     function inactiveUser($userinfo, &$existinguser, &$status) {
     }
 }

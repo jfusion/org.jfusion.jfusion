@@ -105,6 +105,10 @@ class JFusionUser_universal extends JFusionUser {
         return 'universal';
     }
 
+    /**
+     * @param object $userinfo
+     * @return array
+     */
     function deleteUser($userinfo)
     {
       //setup status array to hold debug info and errors
@@ -157,6 +161,11 @@ class JFusionUser_universal extends JFusionUser {
 		return $status;
     }
 
+    /**
+     * @param object $userinfo
+     * @param array $options
+     * @return array
+     */
     function destroySession($userinfo, $options) {
     	$cookie_backup = $_COOKIE;
 		$_COOKIE = array();
@@ -168,6 +177,11 @@ class JFusionUser_universal extends JFusionUser {
 		return $status;
 	}
 
+    /**
+     * @param object $userinfo
+     * @param array $options
+     * @return array|string
+     */
     function createSession($userinfo, $options) {
 		//do not create sessions for blocked users
 		if (!empty($userinfo->block) || !empty($userinfo->activation)) {
@@ -192,6 +206,11 @@ class JFusionUser_universal extends JFusionUser {
         return $username;
     }
 */
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function updatePassword($userinfo, &$existinguser, &$status)
     {
 		$map = JFusionMap::getInstance($this->getJname());
@@ -268,6 +287,12 @@ class JFusionUser_universal extends JFusionUser {
         }
     }
 
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     * @return null
+     */
     function updateUsergroup($userinfo, &$existinguser, &$status)
   	{
     	//get the usergroup and determine if working in advanced or simple mode
@@ -370,6 +395,11 @@ class JFusionUser_universal extends JFusionUser {
 		}
     }
 
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function unblockUser($userinfo, &$existinguser, &$status)
     {
 		$map = JFusionMap::getInstance($this->getJname());
@@ -394,6 +424,11 @@ class JFusionUser_universal extends JFusionUser {
 		}
     }
 
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function activateUser($userinfo, &$existinguser, &$status)
     {
 		$map = JFusionMap::getInstance($this->getJname());
@@ -414,6 +449,11 @@ class JFusionUser_universal extends JFusionUser {
 		}
     }
 
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function inactivateUser($userinfo, &$existinguser, &$status)
     {
 		$map = JFusionMap::getInstance($this->getJname());
@@ -434,6 +474,11 @@ class JFusionUser_universal extends JFusionUser {
 		}
     }
 
+    /**
+     * @param object $userinfo
+     * @param array $status
+     * @return array|null|string
+     */
     function createUser($userinfo, &$status)
     {
 	    $params = JFusionFactory::getParams($this->getJname());

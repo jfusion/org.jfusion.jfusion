@@ -52,6 +52,10 @@ class JFusionPublic_wordpress extends JFusionPublic
     function getLostPasswordURL() {
         return 'wp-login.php?action=lostpassword';
     }
+
+    /**
+     * @return string
+     */
     function getLostUsernameURL() {
         return 'wp-login.php?action=lostpassword';
     }

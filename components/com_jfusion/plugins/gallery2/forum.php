@@ -56,6 +56,13 @@ class JFusionForum_gallery2 extends JFusionForum {
                 return JText::_('NOT IMPLEMENTED YET');
         }
     }
+
+    /**
+     * @param $config
+     * @param $view
+     * @param $pluginParam
+     * @return mixed|string
+     */
     function renderImageBlock($config, $view, $pluginParam) {
 		//Initialize the Framework
         require JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'gallery2.php';    	
@@ -159,6 +166,13 @@ class JFusionForum_gallery2 extends JFusionForum {
         $content.= '</div>';
         return $content;
     }
+
+    /**
+     * @param $config
+     * @param $view
+     * @param $pluginParam
+     * @return string
+     */
     function renderSideBar($config, $view, $pluginParam) {
         require JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'gallery2.php';
         $g2sidebar = jFusion_g2BridgeCore::getVar($this->getJname(),"sidebar", -1);

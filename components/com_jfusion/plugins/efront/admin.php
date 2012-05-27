@@ -48,9 +48,18 @@ class JFusionAdmin_efront extends JFusionAdmin
     {
         return 'efront';
     }
+
+    /**
+     * @return string
+     */
     function getTablename() {
         return 'users';
     }
+
+    /**
+     * @param string $forumPath
+     * @return array|bool
+     */
     function setupFromPath($forumPath) {
         //check for trailing slash and generate file path
         if (substr($forumPath, -1) == DS) {
@@ -122,6 +131,10 @@ class JFusionAdmin_efront extends JFusionAdmin
         $userlist = $db->loadObjectList();
         return $userlist;
     }
+
+    /**
+     * @return int
+     */
     function getUserCount() {
         //getting the connection to the db
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -155,11 +168,19 @@ class JFusionAdmin_efront extends JFusionAdmin
     function getUsergroupList() {
          return JFusionEfrontHelper::getUsergroupList();
     }
-   function getDefaultUsergroup() {
+
+    /**
+     * @return bool|string
+     */
+    function getDefaultUsergroup() {
         $params = JFusionFactory::getParams($this->getJname());
         $usergroup_id = $params->get('usergroup');
         return JFusionEfrontHelper::groupIdToName($usergroup_id);
     }
+
+    /**
+     * @return bool
+     */
     function allowRegistration() {
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = "SELECT value FROM #__configuration WHERE name = 'signup'";
@@ -180,6 +201,10 @@ class JFusionAdmin_efront extends JFusionAdmin
     function allowEmptyCookiePath() {
         return true;
     }
+
+    /**
+     * @return bool
+     */
     function allowEmptyCookieDomain() {
         return true;
     }
@@ -209,14 +234,11 @@ class JFusionAdmin_efront extends JFusionAdmin
             JError::raiseWarning(0, $jname . ': ' . JText::_('CURL_NOTINSTALLED'));
         }
     }
-	/*
-	 * do plugin support multi usergroups
-	 * return UNKNOWN for unknown
-	 * return JNO for NO
-	 * return JYES for YES
-	 * return ... ??
-	 */
-	function requireFileAccess()
+
+    /**
+     * @return string UNKNOWN or JNO or JYES or ??
+     */
+    function requireFileAccess()
 	{
 		return 'JNO';
 	}    

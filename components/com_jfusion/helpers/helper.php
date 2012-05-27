@@ -61,8 +61,13 @@ class JFusionHelper {
     public static function getModuleByTitle($title = null) {
 		return self::getModuleQuery('title', $title);
 	}
-	
-	public function getModuleQuery($type = 'id', $identifier = null) {
+
+    /**
+     * @param string $type
+     * @param null $identifier
+     * @return bool
+     */
+    public function getModuleQuery($type = 'id', $identifier = null) {
 		
 		if ($identifier == null) {
 			return false;

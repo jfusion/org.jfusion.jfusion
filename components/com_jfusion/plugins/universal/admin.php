@@ -63,6 +63,9 @@ class JFusionAdmin_universal extends JFusionAdmin{
      	return $usergrouplist;
 	}
 
+    /**
+     * @return null|string
+     */
     function getDefaultUsergroup()
     {
         $params = JFusionFactory::getParams($this->getJname());
@@ -77,6 +80,9 @@ class JFusionAdmin_universal extends JFusionAdmin{
         return null;
     }
 
+    /**
+     * @return array
+     */
     function getUserList()
     {
     	$map = JFusionMap::getInstance($this->getJname());
@@ -92,6 +98,9 @@ class JFusionAdmin_universal extends JFusionAdmin{
         return $userlist;
     }
 
+    /**
+     * @return int
+     */
     function getUserCount()
     {
         //getting the connection to the db
@@ -103,11 +112,21 @@ class JFusionAdmin_universal extends JFusionAdmin{
         return $db->loadResult();
     }
 
+    /**
+     * @return bool
+     */
     function allowRegistration()
     {
         return false;
     }
 
+    /**
+     * @param $name
+     * @param $value
+     * @param $node
+     * @param $control_name
+     * @return string
+     */
     function mapuser($name, $value, $node, $control_name)
     {
         $map = JFusionMap::getInstance($this->getJname());
@@ -117,12 +136,26 @@ class JFusionAdmin_universal extends JFusionAdmin{
         return $this->map('map', $value, $node, $control_name,'user');
     }
 
+    /**
+     * @param $name
+     * @param $value
+     * @param $node
+     * @param $control_name
+     * @return string
+     */
     function user_auth($name, $value, $node, $control_name)
     {    	
     	$output = '<textarea name="'.$control_name.'['.$name.']" rows="20" cols="55">'.$value.'</textarea>';
     	return $output;
     }
-    
+
+    /**
+     * @param $name
+     * @param $value
+     * @param $node
+     * @param $control_name
+     * @return string
+     */
     function mapgroup($name, $value, $node, $control_name)
     {
         $map = JFusionMap::getInstance($this->getJname());
@@ -130,6 +163,14 @@ class JFusionAdmin_universal extends JFusionAdmin{
         return $this->map('map', $value, $node, $control_name,'group');
     }
 
+    /**
+     * @param $name
+     * @param $value
+     * @param $node
+     * @param $control_name
+     * @param $type
+     * @return string
+     */
     function map($name, $value, $node, $control_name,$type)
     {
         $jname = $this->getJname();
@@ -400,8 +441,11 @@ JS;
         $document->addScriptDeclaration($output);
 		return '';
     }
-    
-	function generateRedirectCode()
+
+    /**
+     * @return string
+     */
+    function generateRedirectCode()
 	{
         $params = JFusionFactory::getParams($this->getJname());
         $joomla_params = JFusionFactory::getParams('joomla_int');
@@ -433,7 +477,14 @@ if(!isset($_COOKIE[\'jfusionframeless\']))';
 ';
 	    return $redirect_code;
 	}
-	
+
+    /**
+     * @param $name
+     * @param $value
+     * @param $node
+     * @param $control_name
+     * @return string
+     */
     function show_redirect_mod($name, $value, $node, $control_name)
     {
 		$action = JRequest::getVar('action');

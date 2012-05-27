@@ -47,6 +47,11 @@ class JFusionAdmin_magento extends JFusionAdmin
     function getTablename() {
         return 'admin_user';
     }
+
+    /**
+     * @param string $forumPath
+     * @return array|bool
+     */
     function setupFromPath($forumPath) {
         //check for trailing slash and generate file path
         if (substr($forumPath, -1) != DS) {
@@ -78,6 +83,12 @@ class JFusionAdmin_magento extends JFusionAdmin
             return $result;
         }
     }
+
+    /**
+     * @param int $start
+     * @param string $count
+     * @return array
+     */
     function getUserList($start = 0, $count = '') {
         //getting the connection to the db
         $db = JFusionFactory::getDataBase($this->getJname());
@@ -90,6 +101,9 @@ class JFusionAdmin_magento extends JFusionAdmin
         $userlist = $db->loadObjectList();
         return $userlist;
     }
+    /**
+     * @return int
+     */
     function getUserCount() {
         //getting the connection to the db
         $db = JFusionFactory::getDataBase($this->getJname());
@@ -111,6 +125,9 @@ class JFusionAdmin_magento extends JFusionAdmin
         //getting the results
         return $db->loadObjectList();
     }
+    /**
+     * @return string
+     */
     function getDefaultUsergroup() {
         $params = JFusionFactory::getParams($this->getJname());
         $usergroup_id = $params->get('usergroup');
@@ -120,9 +137,17 @@ class JFusionAdmin_magento extends JFusionAdmin
         $db->setQuery($query);
         return $db->loadResult();
     }
+
+    /**
+     * @return bool
+     */
     function allowEmptyCookiePath() {
         return true;
     }
+
+    /**
+     * @return bool
+     */
     function allowEmptyCookieDomain() {
         return true;
     }
@@ -174,6 +199,10 @@ class JFusionAdmin_magento extends JFusionAdmin
             JError::raiseWarning(0, $jname . ': ' . JText::_('CURL_NOTINSTALLED'));
         }
     }
+
+    /**
+     * @return bool
+     */
     function allowRegistration() {
         $result = true;
         $params = JFusionFactory::getParams($this->getJname());
@@ -181,13 +210,14 @@ class JFusionAdmin_magento extends JFusionAdmin
 		if ($registration_disabled){$result = false;}
 		return $result;
 	}
+
     /**
      * outputJavascript
      * Put specific javascript script
      *
      * @return void
      */
-	public function outputJavascript(){
+	public function outputJavascript() {
 $js = <<< EOD
 <script language="javascript" type="text/javascript">
 <!--
@@ -317,8 +347,11 @@ EOD;
 		
 		return $status;
 	}
-	
-	public function uninstallModule(){
+
+    /**
+     * @return array
+     */
+    public function uninstallModule(){
 		
 		jimport ( 'joomla.filesystem.file' );
 		jimport ( 'joomla.filesystem.folder' );
@@ -388,7 +421,10 @@ EOD;
         return $status;
 	}
 
-public function moduleActivation() {
+    /**
+     * @return mixed|string
+     */
+    public function moduleActivation() {
 		$jname =  $this->getJname ();
 		$params = JFusionFactory::getParams ( $jname );
 		$source_path = $params->get ( 'source_path' );
@@ -449,14 +485,12 @@ public function moduleActivation() {
 		JFile::write($jfusion_mod_xml, $buffer);
 	}
 
-	/*
-	 * do plugin support multi usergroups
-	 * return UNKNOWN for unknown
-	 * return JNO for NO
-	 * return JYES for YES
-	 * return ... ??
-	 */
-	function requireFileAccess()
+    /**
+     * do plugin support multi usergroups
+     *
+     * @return string UNKNOWN or JNO or JYES or ??
+     */
+    function requireFileAccess()
 	{
 		return 'JNO';
 	}	

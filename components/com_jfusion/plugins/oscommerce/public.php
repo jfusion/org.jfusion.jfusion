@@ -54,7 +54,11 @@ class JFusionPublic_oscommerce extends JFusionPublic
 		}
         return 'index.php';
 	}
-	function getLostPasswordURL() {
+
+    /**
+     * @return string
+     */
+    function getLostPasswordURL() {
 		$params = JFusionFactory::getParams($this->getJname());
 		$osCversion = $params->get('osCversion');
 		switch ($osCversion) {
@@ -71,7 +75,11 @@ class JFusionPublic_oscommerce extends JFusionPublic
 		}
         return 'index.php';
 	}
-	function getLostUsernameURL() {
+
+    /**
+     * @return string
+     */
+    function getLostUsernameURL() {
 		$params = JFusionFactory::getParams($this->getJname());
 		$osCversion = $params->get('osCversion');
 		switch ($osCversion) {

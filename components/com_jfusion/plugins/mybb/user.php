@@ -58,10 +58,20 @@ class JFusionUser_mybb extends JFusionUser {
     {
         return 'mybb';
     }
+
+    /**
+     * @param object $userinfo
+     */
     function deleteUser($userinfo) {
         //TODO: create a function that deletes a user
         
     }
+
+    /**
+     * @param object $userinfo
+     * @param array $options
+     * @return array
+     */
     function destroySession($userinfo, $options) {
         $params = JFusionFactory::getParams($this->getJname());
         $cookiedomain = $params->get('cookie_domain');
@@ -85,6 +95,12 @@ class JFusionUser_mybb extends JFusionUser {
         $status['error'] = false;
         return $status;
     }
+
+    /**
+     * @param object $userinfo
+     * @param array $options
+     * @return array
+     */
     function createSession($userinfo, $options) {
         $status = array();
         $status['error'] = array();
@@ -125,11 +141,24 @@ class JFusionUser_mybb extends JFusionUser {
         $status = array();
         $status['debug'][] = JText::_('NAME') . '=' . $name . ', ' . JText::_('VALUE') . '=' . substr($value, 0, 6) . '********, ' . JText::_('COOKIE_PATH') . '=' . $cookiepath . ', ' . JText::_('COOKIE_DOMAIN') . '=' . $cookiedomain;
         return $status;
-    } 
+    }
+
+    /**
+     * @TODO: no username filtering implemented yet
+     *
+     * @param string $username
+     * @return string
+     */
     function filterUsername($username) {
-        //TODO: no username filtering implemented yet
         return $username;
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     * @return string
+     */
     function blockUser($userinfo, &$existinguser, &$status) {
         $db = JFusionFactory::getDatabase($this->getJname());
         $user = new stdClass;
@@ -157,6 +186,13 @@ class JFusionUser_mybb extends JFusionUser {
         }
         $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     * @return string
+     */
     function unblockUser($userinfo, &$existinguser, &$status) {
         $db = JFusionFactory::getDatabase($this->getJname());
         //found out what the old usergroup was
@@ -186,6 +222,12 @@ class JFusionUser_mybb extends JFusionUser {
         }
         $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function updatePassword($userinfo, &$existinguser, &$status) {
         jimport('joomla.user.helper');
         $existinguser->password_salt = JUserHelper::genRandomPassword(6);
@@ -267,6 +309,12 @@ class JFusionUser_mybb extends JFusionUser {
             $status['debug'][] = JText::_('PASSWORD_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
         }
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function activateUser($userinfo, &$existinguser, &$status) {
         //found out what usergroup should be used
         $params = JFusionFactory::getParams($this->getJname());

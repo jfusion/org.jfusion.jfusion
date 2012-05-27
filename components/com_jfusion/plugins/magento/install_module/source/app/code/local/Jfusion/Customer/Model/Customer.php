@@ -55,7 +55,12 @@ class Jfusion_Customer_Model_Customer extends Mage_Customer_Model_Customer{
         $this->_getResource()->loadByUsername($this, $customerUsername);
         return $this;
     }
-    
+
+    /**
+     * @param $username
+     * @param null $websiteId
+     * @return bool|\Jfusion_Customer_Model_Customer
+     */
     public function customerUsernameExists($username, $websiteId = null)
     {
         if($websiteId){

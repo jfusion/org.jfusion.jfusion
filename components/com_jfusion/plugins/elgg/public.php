@@ -54,6 +54,10 @@ class JFusionPublic_elgg extends JFusionPublic {
     function getLostPasswordURL() {
         return 'account/forgotten_password.php';
     }
+
+    /**
+     * @return string
+     */
     function getLostUsernameURL() {
         return '';
     }

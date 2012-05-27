@@ -565,6 +565,10 @@ class JFusionPublic_smf extends JFusionPublic
         return '<select name="jumpto" id="jumpto" onchange="if (this.selectedIndex > 0 && this.options[this.selectedIndex].value && this.options[this.selectedIndex].value.length) window.location.href = jf_scripturl + this.options[this.selectedIndex].value;">' . $content . '</select>';
     }
 
+    /**
+     * @param $matches
+     * @return string
+     */
     function fixRedirect($matches) {
 		$url = $matches[1];
 		$baseURL = $this->data->baseURL;

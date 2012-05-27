@@ -51,18 +51,38 @@ class JFusionAdmin_joomla_int extends JFusionAdmin {
     function getTablename() {
         return JFusionJplugin::getTablename();
     }
+
+    /**
+     * @return array
+     */
     function getUserList() {
         return JFusionJplugin::getUserList($this->getJname());
     }
+
+    /**
+     * @return int
+     */
     function getUserCount() {
         return JFusionJplugin::getUserCount($this->getJname());
     }
+
+    /**
+     * @return array
+     */
     function getUsergroupList() {
         return JFusionJplugin::getUsergroupList($this->getJname());
     }
+
+    /**
+     * @return string
+     */
     function getDefaultUsergroup() {
         return JFusionJplugin::getDefaultUsergroup($this->getJname());
     }
+
+    /**
+     * @return bool
+     */
     function allowRegistration() {
         return JFusionJplugin::allowRegistration($this->getJname());
     }
@@ -113,15 +133,11 @@ class JFusionAdmin_joomla_int extends JFusionAdmin {
         	return parent::usergroup($name, $value, $node, $control_name);
         }
     }
-    
-	/*
-	 * do plugin support multi usergroups
-	 * return UNKNOWN for unknown
-	 * return JNO for NO
-	 * return JYES for YES
-	 * return ... ??
-	 */
-	function requireFileAccess()
+
+    /**
+     * @return string UNKNOWN or JNO or JYES or ??
+     */
+    function requireFileAccess()
 	{
 		return 'JNO';
 	}    

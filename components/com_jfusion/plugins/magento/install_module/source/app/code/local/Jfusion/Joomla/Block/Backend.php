@@ -25,8 +25,11 @@ class Jfusion_Joomla_Block_Backend extends Mage_Core_Block_Template {
     public function getCustomAdminUrl() {
 		return Mage::helper('joomla')->getData ( 'custom_adminurl' );
 	}
-	
-	public function getJoomlaBaseUrl() {
+
+    /**
+     * @return mixed
+     */
+    public function getJoomlaBaseUrl() {
 		return Mage::helper('joomla')->getData ( 'baseurl' );
 	}
 }

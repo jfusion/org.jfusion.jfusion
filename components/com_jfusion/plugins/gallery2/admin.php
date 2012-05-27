@@ -52,6 +52,11 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
     function getTablename() {
         return 'User';
     }
+
+    /**
+     * @param string $forumPath
+     * @return array|object
+     */
     function setupFromPath($forumPath) {
         //check for trailing slash and generate file path
         if (substr($forumPath, -1) == DS) {
@@ -106,6 +111,10 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
         }
         return $params;
     }
+
+    /**
+     * @return array
+     */
     function getUserList() {
         // initialise some objects
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -114,6 +123,10 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
         $userlist = $db->loadObjectList();
         return $userlist;
     }
+
+    /**
+     * @return int
+     */
     function getUserCount() {
         //getting the connection to the db
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -123,6 +136,10 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
         $no_users = $db->loadResult();
         return $no_users;
     }
+
+    /**
+     * @return array
+     */
     function getUsergroupList() {
         //getting the connection to the db
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -132,6 +149,9 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
         //getting the results
         return $db->loadObjectList();
     }
+    /**
+     * @return string
+     */
     function getDefaultUsergroup() {
         $params = JFusionFactory::getParams($this->getJname());
         $usergroup_id = $params->get('usergroup');
@@ -141,6 +161,9 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
         $db->setQuery($query);
         return $db->loadResult();
     }
+    /**
+     * @return bool
+     */
     function allowRegistration() {
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = "SELECT g_active FROM #__PluginMap
@@ -185,6 +208,12 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
         $tree = $this->_getTree($rootItems, $urlGenerator, $parent);
         return $tree;
     }
+    /**
+     * @param $items
+     * @param $urlGenerator
+     * @param $parent
+     * @return array|null
+     */
     function _getTree(&$items, $urlGenerator, $parent) {
         $albums = array();
         if (!$items) return null;

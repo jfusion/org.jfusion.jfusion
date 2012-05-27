@@ -63,6 +63,16 @@ class JFusionHook {
         //throw an exception to allow Joomla to continue
         throw new Exception('phpBB exited.');
     }
+
+    /**
+     * @static
+     * @param $hook
+     * @param $url
+     * @param bool $params
+     * @param bool $is_amp
+     * @param bool $session_id
+     * @return string
+     */
     public static function append_sid($hook, $url, $params = false, $is_amp = true, $session_id = false) {
         global $_SID, $_EXTRA_URL, $phpbb_hook;
         $params_is_array = is_array($params);
@@ -182,6 +192,13 @@ class JFusionHook {
             $user->host = $uri->getHost();
         }
     }
+
+    /**
+     * @static
+     * @param $hook
+     * @param $handle
+     * @param bool $include_once
+     */
     public static function template_display($hook, $handle, $include_once = true) {
         global $template, $jname;
         $params = JFusionFactory::getParams($jname);

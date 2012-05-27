@@ -52,12 +52,15 @@ class JFusionPublic_efront extends JFusionPublic
         return 'index.php?ctg=reset_pwd';
     }
 
-    function getLostUsernameURL() 
+    /**
+     * @return string
+     */
+    function getLostUsernameURL()
     {
         return 'index.php?ctg=reset_pwd';
     }
 
-    /*
+    /**
      * getOnlineUserQuery
      *
      * @param int $limit
@@ -72,10 +75,18 @@ class JFusionPublic_efront extends JFusionPublic
         $query = "SELECT DISTINCT u.id AS userid, u.login as username, u.login as username_clean, concat(u.name,' ', u.surname) AS name, u.email as email FROM #__users AS u INNER JOIN #__users_online AS s ON u.login = s.users_LOGIN $limiter" ; //WHERE  s.timestamp > $active $limiter";
         return $query;
     }
+
+    /**
+     * @return \stdClass
+     */
     function getNumberOnlineGuests() {
         $result = new stdClass;
       return $result;
     }
+
+    /**
+     * @return int
+     */
     function getNumberOnlineMembers() {
         //get a unix time from 5 mintues ago
         date_default_timezone_set('UTC');

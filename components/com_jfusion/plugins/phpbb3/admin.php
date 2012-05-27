@@ -40,9 +40,18 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
     {
         return 'phpbb3';
     }
+
+    /**
+     * @return string
+     */
     function getTablename() {
         return 'users';
     }
+
+    /**
+     * @param string $forumPath
+     * @return array|bool
+     */
     function setupFromPath($forumPath) {
         //check for trailing slash and generate file path
         if (substr($forumPath, -1) == DS) {
@@ -113,6 +122,12 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
             return $params;
         }
     }
+
+    /**
+     * @param null $limitstart
+     * @param null $limit
+     * @return array
+     */
     function getUserList($limitstart = null, $limit = null) {
         //getting the connection to the db
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -126,6 +141,10 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
         $userlist = $db->loadObjectList();
         return $userlist;
     }
+
+    /**
+     * @return int
+     */
     function getUserCount() {
         //getting the connection to the db
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -135,6 +154,10 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
         $no_users = $db->loadResult();
         return $no_users;
     }
+
+    /**
+     * @return array
+     */
     function getUsergroupList() {
         //get the connection to the db
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -143,6 +166,10 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
         //getting the results
         return $db->loadObjectList();
     }
+
+    /**
+     * @return string
+     */
     function getDefaultUsergroup() {
         $params = JFusionFactory::getParams($this->getJname());
         $usergroup_id = $params->get('usergroup');
@@ -152,6 +179,10 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
         $db->setQuery($query);
         return $db->loadResult();
     }
+
+    /**
+     * @return bool
+     */
     function allowRegistration() {
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = "SELECT config_value FROM #__config WHERE config_name = 'require_activation'";
@@ -166,6 +197,10 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
             return $result;
         }
     }
+
+    /**
+     * @return string
+     */
     function generateRedirectCode() {
         $params = JFusionFactory::getParams($this->getJname());
         $joomla_params = JFusionFactory::getParams('joomla_int');
@@ -257,6 +292,10 @@ if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\'
             JFile::write($mod_file, $file_data);
         }
     }
+
+    /**
+     * @return int
+     */
     function disableRedirectMod() {
         $error = 0;
         $reason = '';
@@ -290,6 +329,14 @@ JS;
             $document->addScriptDeclaration($js);
         }
     }
+
+    /**
+     * @param $name
+     * @param $value
+     * @param $node
+     * @param $control_name
+     * @return string
+     */
     function showRedirectMod($name, $value, $node, $control_name) {
         $error = 0;
         $reason = '';
@@ -319,6 +366,14 @@ JS;
             return $output;
         }
     }
+
+    /**
+     * @param $name
+     * @param $value
+     * @param $node
+     * @param $control_name
+     * @return mixed|string
+     */
     function show_auth_mod($name, $value, $node, $control_name) {
         //do a database check to avoid fatal error with incorrect database settings
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -412,6 +467,10 @@ JS;
         //clear the config cache so that phpBB recognizes the change
         $this->clearConfigCache();
     }
+
+    /**
+     * @return bool
+     */
     function disable_auth_mod() {
         $return = true;
         //check to see if the mod is enabled
@@ -446,6 +505,14 @@ JS;
 
         return $return;
     }
+
+    /**
+     * @param $name
+     * @param $value
+     * @param $node
+     * @param $control_name
+     * @return string
+     */
     function show_quick_mod($name, $value, $node, $control_name) {
         $error = 0;
         $reason = '';
@@ -488,6 +555,10 @@ JS;
             JFile::write($mod_file, $file_data);
         }
     }
+
+    /**
+     * @return int
+     */
     function disable_quick_mod() {
         $error = 0;
         $reason = '';
@@ -504,6 +575,10 @@ JS;
         }
         return $error;
     }
+
+    /**
+     * @return bool
+     */
     function clearConfigCache() {
         $params = & JFusionFactory::getParams($this->getJname());
         $source_path = $params->get('source_path');
@@ -515,6 +590,9 @@ JS;
         return true;
     }
 
+    /**
+     * @return array
+     */
     function uninstall() {
         $return = true;
         $reasons = array();
@@ -536,15 +614,13 @@ JS;
 
         return array($return, $reasons);
     }
-    
-	/*
-	 * do plugin support multi usergroups
-	 * return UNKNOWN for unknown
-	 * return JNO for NO
-	 * return JYES for YES
-	 * return ... ??
-	 */
-	function requireFileAccess()
+
+    /**
+     * do plugin support multi usergroups
+     *
+     * @return string UNKNOWN or JNO or JYES or ??
+     */
+    function requireFileAccess()
 	{
 		return 'DEPENDS';
 	}    

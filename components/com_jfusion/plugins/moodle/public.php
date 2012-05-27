@@ -51,6 +51,10 @@ class JFusionPublic_moodle extends JFusionPublic {
     function getLostPasswordURL() {
         return 'login/forgot_password.php';
     }
+
+    /**
+     * @return string
+     */
     function getLostUsernameURL() {
         return 'login/forgot_password.php';
     }

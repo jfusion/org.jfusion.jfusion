@@ -72,6 +72,12 @@ class JFusionUser_efront extends JFusionUser
     {
         return 'efront';
     }
+
+    /**
+     * @param object $userinfo
+     * @param array $options
+     * @return array
+     */
     function destroySession($userinfo, $options) {
         $status = array();
         $status['error'] = array();
@@ -154,6 +160,12 @@ class JFusionUser_efront extends JFusionUser
         $status['error'] = false;
         return $status;
     }
+
+    /**
+     * @param object $userinfo
+     * @param array $options
+     * @return array
+     */
     function createSession($userinfo, $options) {
         $status = array();
         $status['error'] = array();
@@ -302,6 +314,12 @@ class JFusionUser_efront extends JFusionUser
             $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
         }
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function inactivateUser($userinfo, &$existinguser, &$status) {
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'UPDATE #__users SET pending = 1 WHERE id =' . (int)$existinguser->userid;
@@ -439,6 +457,11 @@ class JFusionUser_efront extends JFusionUser
         $status['userinfo'] = $this->getUser($userinfo);
         return;
     }
+
+    /**
+     * @param object $userinfo
+     * @return array|bool
+     */
     function deleteUser($userinfo){
         // we are using the api function remove_user here. 
         // User deletion is not a time critical function and deleting a user is
@@ -514,6 +537,13 @@ class JFusionUser_efront extends JFusionUser
         }
         return false;
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     * @return null
+     */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
         $params = & JFusionFactory::getParams($this->getJname());
     	//get the usergroup and determine if working in advanced or simple mode

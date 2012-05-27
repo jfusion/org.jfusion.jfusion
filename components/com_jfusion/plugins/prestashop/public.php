@@ -45,14 +45,25 @@ class JFusionPublic_prestashop extends JFusionPublic {
     {
         return 'prestashop';
     }
-    
+
+    /**
+     * @return string
+     */
     function getRegistrationURL() {
         return 'authentication.php';
     }
+
+    /**
+     * @return string
+     */
     function getLostPasswordURL() {
         return 'password.php';
     }
-	function getLostUsernameURL() {
+
+    /**
+     * @return string
+     */
+    function getLostUsernameURL() {
         return '';
     }
 }

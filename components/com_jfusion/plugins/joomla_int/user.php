@@ -52,6 +52,11 @@ class JFusionUser_joomla_int extends JFusionUser {
         $status = JFusionJplugin::updateUser($userinfo, $overwrite, $this->getJname());
         return $status;
     }
+
+    /**
+     * @param object $userinfo
+     * @return array
+     */
     function deleteUser($userinfo) {
         //get the database ready
         $db = JFactory::getDBO();
@@ -96,15 +101,30 @@ class JFusionUser_joomla_int extends JFusionUser {
         }
         return $status;
     }
+
+    /**
+     * @param object $userinfo
+     * @return object
+     */
     function &getUser($userinfo) {
         $userinfo = JFusionJplugin::getUser($userinfo, $this->getJname());
         return $userinfo;
     }
+
+    /**
+     * @param string $username
+     * @return string
+     */
     function filterUsername($username) {
         $username = JFusionJplugin::filterUsername($username, $this->getJname());
         return $username;
     }
 
+    /**
+     * @param $userinfo
+     * @param $options
+     * @return array
+     */
     function createSession16($userinfo, $options) {
 
     	jimport('joomla.user.helper');
@@ -165,6 +185,11 @@ class JFusionUser_joomla_int extends JFusionUser {
 
     }
 
+    /**
+     * @param object $userinfo
+     * @param array $options
+     * @return array
+     */
     function createSession($userinfo, $options) {
         if(JFusionFunction::isJoomlaVersion('1.6')){
             //joomla 1.6 detected
@@ -268,6 +293,12 @@ class JFusionUser_joomla_int extends JFusionUser {
             $table->destroy($user['id'], $options['clientid']);
         }
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function updateUsergroup($userinfo, $existinguser, &$status) {
         JFusionJplugin::updateUsergroup($userinfo, $existinguser, $status, $this->getJname());
     }
@@ -280,6 +311,12 @@ class JFusionUser_joomla_int extends JFusionUser {
     function updatePassword($userinfo, &$existinguser, &$status) {
         JFusionJplugin::updatePassword($userinfo, $existinguser, $status, $this->getJname());
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function updateUsername($userinfo, &$existinguser, &$status) {
         JFusionJplugin::updateUsername($userinfo, $existinguser, $status, $this->getJname());
     }
@@ -330,6 +367,12 @@ class JFusionUser_joomla_int extends JFusionUser {
     function activateUser($userinfo, &$existinguser, &$status) {
         JFusionJplugin::activateUser($userinfo, $existinguser, $status, $this->getJname());
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function inactivateUser($userinfo, &$existinguser, &$status) {
         JFusionJplugin::inactivateUser($userinfo, $existinguser, $status, $this->getJname());
     }

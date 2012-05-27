@@ -52,6 +52,11 @@ if ( !class_exists('JFusionMap') ) {
 	        return $this->_jname;
 	    }
 
+        /**
+         * @static
+         * @param $jname
+         * @return mixed
+         */
         public static function &getInstance( $jname )
 		{
 			static $instances;
@@ -63,7 +68,11 @@ if ( !class_exists('JFusionMap') ) {
 			return $instances[$jname];
 		}
 
-		function getMapRaw($type='user') {
+        /**
+         * @param string $type
+         * @return bool
+         */
+        function getMapRaw($type='user') {
 			if( !is_array($this->_mapraw) ) {
 		        $params = JFusionFactory::getParams($this->getJname());
 		        $map = $params->get('map');
@@ -79,7 +88,11 @@ if ( !class_exists('JFusionMap') ) {
             return false;
 		}
 
-		function getMap($type='user') {
+        /**
+         * @param string $type
+         * @return array
+         */
+        function getMap($type='user') {
 			if( empty($this->_map) ) {
 		        $params = JFusionFactory::getParams($this->getJname());
 		        $map = $params->get('map');
@@ -115,13 +128,19 @@ if ( !class_exists('JFusionMap') ) {
             return array();
 		}
 
-		function getFieldUserID() {
+        /**
+         * @return null
+         */
+        function getFieldUserID() {
 			$userid = $this->getFieldType('USERID');
 	    	if(empty($userid)) $userid = $this->getFieldType('USERNAMEID');
 	    	return $userid;
 		}
 
-		function getFieldEmail() {
+        /**
+         * @return null
+         */
+        function getFieldEmail() {
 			$email = $this->getFieldType('USERNAMEEMAIL');
 			if (empty($email)) {
 				$email = $this->getFieldType('EMAIL');
@@ -129,7 +148,10 @@ if ( !class_exists('JFusionMap') ) {
 	    	return $email;
 		}
 
-		function getFieldUsername() {
+        /**
+         * @return null
+         */
+        function getFieldUsername() {
 			$username = $this->getFieldType('USERNAME');
 			if (empty($username)) {
 				$username = $this->getFieldType('USERNAMEEMAIL');
@@ -140,7 +162,12 @@ if ( !class_exists('JFusionMap') ) {
 	    	return $username;
 		}
 
-		function getQuery($include=array(),$type='user') {
+        /**
+         * @param array $include
+         * @param string $type
+         * @return array|string
+         */
+        function getQuery($include=array(),$type='user') {
 	// a.validation_code as activation, a.is_activated, NULL as reason, a.lastLogin as lastvisit '.
 			$query = array();
 			$map = $this->getMap($type);
@@ -399,7 +426,13 @@ if ( !class_exists('JFusionMap') ) {
 			return $fields;
 	    }
 
-	    function getValue($type,$value, $userinfo=null ) {
+        /**
+         * @param $type
+         * @param $value
+         * @param null $userinfo
+         * @return int|null|string
+         */
+        function getValue($type,$value, $userinfo=null ) {
 	    	$out = '';
 	    	$value = html_entity_decode($value);
 			switch ($type) {

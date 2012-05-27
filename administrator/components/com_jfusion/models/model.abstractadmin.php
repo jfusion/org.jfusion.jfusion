@@ -727,7 +727,7 @@ class JFusionAdmin
 		return $muiltisupport;
 	}
 
-    /*
+    /**
      * do plugin support multi usergroups
      *
      * @return string
@@ -737,13 +737,14 @@ class JFusionAdmin
 		return 'UNKNOWN';
 	}
 
-    /*
+    /**
      * import function for importing config in to a plugin
      *
      * @param $name
      * @param $value
      * @param $node
      * @param $control_name
+     *
      * @return string
      */
     function import($name, $value, $node, $control_name)
@@ -916,13 +917,14 @@ class JFusionAdmin
 		return $output;
 	}
 
-    /*
+    /**
      * export function for importing config in to a plugin
      *
      * @param $name
      * @param $value
      * @param $node
      * @param $control_name
+     *
      * @return string
      */
     function export($name, $value, $node, $control_name)

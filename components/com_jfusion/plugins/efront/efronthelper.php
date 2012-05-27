@@ -50,6 +50,13 @@ class JFusionEfrontHelper {
             @rmdir($dir);
         }
     }
+
+    /**
+     * @static
+     * @param $user_type
+     * @param $user_types_ID
+     * @return int
+     */
     public static function groupNameToID($user_type,$user_types_ID){
         $group_id = 0;
         if ($user_types_ID == 0){
@@ -66,6 +73,11 @@ class JFusionEfrontHelper {
         }
         return $group_id;
     }
+
+    /**
+     * @param $group_id
+     * @return bool|string
+     */
     function groupIdToName ($group_id){
         switch ($group_id){
            case 0: return 'student';
@@ -84,6 +96,10 @@ class JFusionEfrontHelper {
          }
         return false;
     }
+
+    /**
+     * @return array
+     */
     function getUsergroupList() {
         // efront has three build in user_types: student, professor and administrator
         // you can add additional usertypes from these,

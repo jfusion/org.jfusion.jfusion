@@ -60,39 +60,67 @@ class JFusionAPI {
 		}
 		$this->setTarget($url, $secretkey);
 	}
-	
-	public function setTarget($url = '', $secretkey = '')
+
+    /**
+     * @param string $url
+     * @param string $secretkey
+     */
+    public function setTarget($url = '', $secretkey = '')
 	{
 		$this->url = $url;
 		$this->secretkey = $secretkey;
-	}	
+	}
 
+    /**
+     * @return null
+     */
     public function getError() {
 		return $this->error;
     }
-    
+
+    /**
+     * @return null
+     */
     public function getDebug() {
 		return $this->debug;
-    }    
-	
+    }
+
+    /**
+     * @param $class
+     */
     private function setClass($class)
     {
 		$this->class = ucfirst(strtolower($class));
     }
+
+    /**
+     * @param $type
+     */
     private function setType($type)
     {
 		$this->type = strtolower($type);
     }
+
+    /**
+     * @param $task
+     */
     private function setTask($task)
     {
 		$this->task = ucfirst(strtolower($task));
     }
 
+    /**
+     * @param $read
+     * @return string
+     */
     public function read($read)
     {
 		return (string) preg_replace( '/[^A-Z_]/i', '', $_REQUEST[$read]);
     }
-    
+
+    /**
+     * @param $payload
+     */
     private function setPayload($payload)
     {
 		$this->payload = $payload;
@@ -113,7 +141,10 @@ class JFusionAPI {
 		}
 		return false;
 	}
-	
+
+    /**
+     * @return bool
+     */
     public function ping()
     {
         if ($this->hash && $this->sid) return true;
@@ -148,8 +179,14 @@ class JFusionAPI {
     	    $this->doOutput($data, $class->encrypt);
 		}
     }
-	
-	public function getExecuteURL($class,$task,$return)
+
+    /**
+     * @param $class
+     * @param $task
+     * @param $return
+     * @return string
+     */
+    public function getExecuteURL($class,$task,$return)
 	{
 		$url = $this->url.'?jftask='.$task.'&jfclass='.$class.'&jftype=execute&jfreturn='.base64_encode($return);
 		if ($this->sid) {
@@ -157,18 +194,37 @@ class JFusionAPI {
 		}
 		return $url;
 	}
-	
-	public function set($class, $task, $payload)
+
+    /**
+     * @param $class
+     * @param $task
+     * @param $payload
+     * @return bool
+     */
+    public function set($class, $task, $payload)
 	{
     	return $this->_raw('set',$class, $task, $payload);
 	}
-	
-	public function get($class, $task, $payload=null)
+
+    /**
+     * @param $class
+     * @param $task
+     * @param null $payload
+     * @return bool
+     */
+    public function get($class, $task, $payload=null)
 	{
     	return $this->_raw('get',$class, $task, $payload);
 	}
-	
-	public function execute($class, $task, $payload=array(), $return='')
+
+    /**
+     * @param $class
+     * @param $task
+     * @param array $payload
+     * @param string $return
+     * @return bool
+     */
+    public function execute($class, $task, $payload=array(), $return='')
 	{
 		if (!empty($return)) {
 			header('Location: '.$this->getExecuteURL($class,$task,$return).'&jfpayload='.base64_encode(serialize($payload)));
@@ -177,7 +233,15 @@ class JFusionAPI {
 			return $this->_raw('execute',$class, $task, $payload);
 		}
 	}
-	
+
+    /**
+     * @param $type
+     * @param $class
+     * @param $task
+     * @param $payload
+     * @param bool $needkey
+     * @return bool
+     */
     private function _raw($type, $class, $task, $payload, $needkey=true)
     {
     	$key = false;
@@ -357,8 +421,12 @@ class JFusionAPI {
 		}
 		exit();
 	}
-	
-	private function getOutput($input)
+
+    /**
+     * @param $input
+     * @return bool
+     */
+    private function getOutput($input)
 	{
 		$return = JFusionAPI::decrypt($this->createkey() , $input);
 		if (!is_array($return)) {
@@ -384,19 +452,29 @@ class JFusionAPI {
 	}
 }
 
+/**
+ *
+ */
 class JFusionAPIBase {
 	public $encrypt = true;
 	public $payload = array();
 	public $error = null;
 	public $debug = null;	
 	public $key = null;
-	
-	public function __construct($key)
+
+    /**
+     * @param $key
+     */
+    public function __construct($key)
 	{
 		$this->key = $key;
 		$this->readPayload($this->encrypt);
 	}
-	
+
+    /**
+     * @param $encrypt
+     * @return bool
+     */
     protected function readPayload($encrypt)
     {
 		if (!$encrypt && isset($_GET['jfpayload'])) {
@@ -410,13 +488,20 @@ class JFusionAPIBase {
 	    }
     	return false;
     }
-    
-	protected function buildPayload($payload)
+
+    /**
+     * @param $payload
+     * @return string
+     */
+    protected function buildPayload($payload)
 	{
 		return base64_encode(serialize($payload));
-    }	
-	
-	protected function startJoomla()
+    }
+
+    /**
+     * @return JApplication
+     */
+    protected function startJoomla()
 	{
 		$old = error_reporting(0);
 		if (!defined('_JEXEC')) {	    	
@@ -461,10 +546,16 @@ class JFusionAPIBase {
 	}
 }
 
+/**
+ *
+ */
 class JFusionAPI_Status extends JFusionAPIBase {
 	public $encrypt = false;
 
-	public function getKey()
+    /**
+     * @return array
+     */
+    public function getKey()
 	{
 //      $hash = sha1($hash); //to improve variance
 //		srand((double) microtime() * 1000000);
@@ -495,6 +586,9 @@ class JFusionAPI_Status extends JFusionAPIBase {
 	}
 }
 
+/**
+ *
+ */
 class JFusionAPI_User extends JFusionAPIBase {
 	public $encrypt = true;
 	
@@ -507,7 +601,10 @@ class JFusionAPI_User extends JFusionAPIBase {
         return $userPlugin->getUser($this->payload['username']);
 	}
 
-	public function setLogin()
+    /**
+     * @return bool
+     */
+    public function setLogin()
 	{
 		if(!empty($this->payload['username']) && !empty($this->payload['password'])) {
 		    $session['login'] = $this->payload;
@@ -711,10 +808,16 @@ class JFusionAPI_User extends JFusionAPIBase {
 	}
 }
 
+/**
+ *
+ */
 class JFusionAPI_Cookie extends JFusionAPIBase {
 	public $encrypt = true;
-	
-	public function setCookies()
+
+    /**
+     * @return bool
+     */
+    public function setCookies()
 	{
 		if (is_array($this->payload)) {
 			$session['cookies'] = $this->payload;

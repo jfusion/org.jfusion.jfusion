@@ -134,6 +134,10 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
             return $params;
         }
     }
+
+    /**
+     * @return array
+     */
     function getUserList() {
         //getting the connection to the db
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -143,6 +147,10 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
         $userlist = $db->loadObjectList();
         return $userlist;
     }
+
+    /**
+     * @return int
+     */
     function getUserCount() {
         //getting the connection to the db
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -152,6 +160,10 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
         $no_users = $db->loadResult();
         return $no_users;
     }
+
+    /**
+     * @return array|bool
+     */
     function getUsergroupList() {
         $params = JFusionFactory::getParams($this->getJname());
         $osCversion = $params->get('osCversion');
@@ -265,14 +277,13 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
     function allowEmptyCookieDomain() {
         return true;
     }
-	/*
-	 * do plugin support multi usergroups
-	 * return UNKNOWN for unknown
-	 * return JNO for NO
-	 * return JYES for YES
-	 * return ... ??
-	 */
-	function requireFileAccess()
+
+    /**
+     * do plugin support multi usergroups
+     *
+     * @return string UNKNOWN or JNO or JYES or ???
+     */
+    function requireFileAccess()
 	{
 		return 'JNO';
 	}    

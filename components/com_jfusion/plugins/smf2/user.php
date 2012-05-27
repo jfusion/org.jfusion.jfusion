@@ -73,11 +73,18 @@ class JFusionUser_smf2 extends JFusionUser {
         return $result;
     }
 
+    /**
+     * @return string
+     */
     function getJname()
     {
         return 'smf2';
     }
 
+    /**
+     * @param object $userinfo
+     * @return array
+     */
     function deleteUser($userinfo)
     {
     	//setup status array to hold debug info and errors
@@ -134,6 +141,11 @@ class JFusionUser_smf2 extends JFusionUser {
 		return $status;
     }
 
+    /**
+     * @param object $userinfo
+     * @param array $options
+     * @return array
+     */
     function destroySession($userinfo, $options){
         $params = JFusionFactory::getParams($this->getJname());
         $crossdomain_url = $params->get('crossdomain_url');
@@ -147,6 +159,11 @@ class JFusionUser_smf2 extends JFusionUser {
 		return $status;
      }
 
+    /**
+     * @param object $userinfo
+     * @param array $options
+     * @return array|string
+     */
     function createSession($userinfo, $options){
 
 		//do not create sessions for blocked users
@@ -162,13 +179,21 @@ class JFusionUser_smf2 extends JFusionUser {
 		return $status;
     }
 
-
+    /**
+     * @param string $username
+     * @return string
+     */
     function filterUsername($username)
     {
         //no username filtering implemented yet
         return $username;
     }
 
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function updatePassword($userinfo, &$existinguser, &$status)
     {
         $existinguser->password = sha1(strtolower($userinfo->username) . $userinfo->password_clear);
@@ -184,11 +209,21 @@ class JFusionUser_smf2 extends JFusionUser {
         }
     }
 
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function updateUsername($userinfo, &$existinguser, &$status)
     {
 
     }
 
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function updateEmail($userinfo, &$existinguser, &$status)
     {
         //we need to update the email
@@ -316,6 +351,11 @@ class JFusionUser_smf2 extends JFusionUser {
         }
     }
 
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function inactivateUser($userinfo, &$existinguser, &$status)
     {
         $db = JFusionFactory::getDatabase($this->getJname());

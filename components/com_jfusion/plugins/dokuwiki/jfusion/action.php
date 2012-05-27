@@ -56,6 +56,13 @@ class action_plugin_jfusion extends DokuWiki_Action_Plugin {
         $this->loginDokuwiki($user, $password, $sticky, $silent);
     }
 
+    /**
+     * @param $user
+     * @param $password
+     * @param $sticky
+     * @param $silent
+     * @return bool
+     */
     function loginDokuwiki($user, $password, $sticky, $silent) {
         global $USERINFO, $conf, $lang, $auth;
 
@@ -127,6 +134,10 @@ class action_plugin_jfusion extends DokuWiki_Action_Plugin {
         return false;
     }
 
+    /**
+     * @param $event
+     * @param $param
+     */
     function jfusion_logout(&$event, $param) {
         global $ACT;
 
@@ -151,6 +162,9 @@ class action_plugin_jfusion extends DokuWiki_Action_Plugin {
         }
     }
 
+    /**
+     * @param bool $keepbc
+     */
     function logoutDokuwiki($keepbc = false) {
         global $conf, $USERINFO, $auth;
 
@@ -182,6 +196,9 @@ class action_plugin_jfusion extends DokuWiki_Action_Plugin {
         }
     }
 
+    /**
+     * @return JApplication
+     */
     function startJoomla() {
     	$this->session_save_handler = ini_get('session.save_handler');
     	global $conf;

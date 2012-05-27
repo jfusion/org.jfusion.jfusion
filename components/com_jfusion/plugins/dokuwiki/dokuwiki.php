@@ -48,6 +48,10 @@ class Dokuwiki
 	var $jname = null;
     var $auth = null;
     var $io = null;
+
+    /**
+     * @param $jname
+     */
     function Dokuwiki($jname)
     {
     	$this->jname = $jname;

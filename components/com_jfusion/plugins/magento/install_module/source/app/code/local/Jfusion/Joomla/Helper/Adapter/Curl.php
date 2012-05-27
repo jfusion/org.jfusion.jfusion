@@ -55,8 +55,11 @@ class Jfusion_Joomla_Helper_Adapter_Curl extends Varien_Http_Adapter_Curl {
     function setOption($key, $value) {
 		return curl_setopt ( $this->_resource, $key, $value );
 	}
-	
-	function exec() {
+
+    /**
+     * @return bool
+     */
+    function exec() {
 		if ($this->_resource) {
 			$this->data = curl_exec ( $this->_resource );
 			if (curl_error ( $this->_resource )) {

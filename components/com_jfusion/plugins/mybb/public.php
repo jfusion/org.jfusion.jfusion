@@ -51,9 +51,17 @@ class JFusionPublic_mybb extends JFusionPublic {
     function getLostPasswordURL() {
         return 'member.php?action=lostpw';
     }
+
+    /**
+     * @return string
+     */
     function getLostUsernameURL() {
         return 'member.php?action=lostpw';
     }
+
+    /**
+     * @return null|string
+     */
     function &getBuffer() {
         // Get the path
         $params = JFusionFactory::getParams($this->getJname());
@@ -88,6 +96,13 @@ class JFusionPublic_mybb extends JFusionPublic {
         chdir(JPATH_SITE);
         return $buffer;
     }
+
+    /**
+     * @param object $buffer
+     * @param $baseURL
+     * @param $fullURL
+     * @param $integratedURL
+     */
     function parseBody(&$buffer, $baseURL, $fullURL, $integratedURL) {
         static $regex_body, $replace_body;
         if (!$regex_body || !$replace_body) {
@@ -116,6 +131,13 @@ class JFusionPublic_mybb extends JFusionPublic {
         }
         $buffer = preg_replace($regex_body, $replace_body, $buffer);
     }
+
+    /**
+     * @param object $buffer
+     * @param $baseURL
+     * @param $fullURL
+     * @param $integratedURL
+     */
     function parseHeader(&$buffer, $baseURL, $fullURL, $integratedURL) {
         static $regex_header, $replace_header;
         if (!$regex_header || !$replace_header) {

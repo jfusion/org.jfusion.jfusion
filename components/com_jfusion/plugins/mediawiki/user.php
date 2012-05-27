@@ -94,6 +94,10 @@ class JFusionUser_mediawiki extends JFusionUser {
         return 'mediawiki';
     }
 
+    /**
+     * @param object $userinfo
+     * @return array
+     */
     function deleteUser($userinfo)
     {
     	//setup status array to hold debug info and errors
@@ -119,6 +123,11 @@ class JFusionUser_mediawiki extends JFusionUser {
 		return $status;
     }
 
+    /**
+     * @param object $userinfo
+     * @param array $options
+     * @return array
+     */
     function destroySession($userinfo, $options){
 		//$status = JFusionJplugin::destroySession($userinfo, $options,$this->getJname());
         //$params = JFusionFactory::getParams($this->getJname());
@@ -377,6 +386,11 @@ class JFusionUser_mediawiki extends JFusionUser {
     }
 */
 
+    /**
+     * @param object $userinfo
+     * @param array $status
+     * @return array|bool|string
+     */
     function createUser($userinfo, &$status)
     {
         //we need to create a new SMF user

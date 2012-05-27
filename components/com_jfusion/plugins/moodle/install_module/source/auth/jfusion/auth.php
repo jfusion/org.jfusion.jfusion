@@ -51,9 +51,16 @@ class JText {
 
 }
 
+/**
+ *
+ */
 class DualLogin {
 
-	function login($curl_options){
+    /**
+     * @param $curl_options
+     * @return array|string
+     */
+    function login($curl_options){
 		$status = array();
 		$helper = new JFusionCurl;
 		$status = $helper->RemoteLogin($curl_options);

@@ -45,7 +45,10 @@ class jfusionViewPlugin extends JView {
         return true;
 	}
 
-	function wrapper($tpl = null) {
+    /**
+     * @param null $tpl
+     */
+    function wrapper($tpl = null) {
 		//get the url
 		$query = ($_GET);
 		if(isset($query['jfile'])){

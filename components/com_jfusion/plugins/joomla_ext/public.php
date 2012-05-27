@@ -54,21 +54,33 @@ class JFusionPublic_joomla_ext extends JFusionPublic {
     function getLostPasswordURL() {
         return JFusionJplugin::getLostPasswordURL($this->getJname());
     }
+
+    /**
+     * @return string
+     */
     function getLostUsernameURL() {
         return JFusionJplugin::getLostUsernameURL($this->getJname());
     }
 
-    /*
-    * getOnlineUserQuery
-    *
-    * @return string
-    */
+    /**
+     * @param int $limit
+     *
+     * @return string
+     */
     function getOnlineUserQuery($limit) {
         return JFusionJplugin::getOnlineUserQuery($limit);
     }
+
+    /**
+     * @return int
+     */
     function getNumberOnlineGuests() {
         return JFusionJplugin::getNumberOnlineGuests();
     }
+
+    /**
+     * @return int
+     */
     function getNumberOnlineMembers() {
         return JFusionJplugin::getNumberOnlineMembers();
     }

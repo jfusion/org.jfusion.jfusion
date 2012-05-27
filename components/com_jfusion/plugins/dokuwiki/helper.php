@@ -128,8 +128,12 @@ class JFusionHelper_dokuwiki
         	return $dokuwiki_version[$v];
         }
         return null;
-    }    
+    }
 
+    /**
+     * @param bool $path
+     * @return bool|string
+     */
     function getConfigPath($path = false) {
         static $config_path;
 

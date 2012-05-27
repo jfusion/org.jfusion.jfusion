@@ -106,9 +106,19 @@ class JFusionDokuWikiHook {
         header('Location: ' . htmlspecialchars_decode($url));
         exit();
     }
+
+    /**
+     * @param $event
+     * @param $param
+     */
     function _ACTION_ACT_PREPROCESS(&$event, $param) {
         ini_set("session.save_handler", "files");
     }
+
+    /**
+     * @param $event
+     * @param $param
+     */
     function _DOKUWIKI_STARTED(&$event, $param) {
         global $ID;
     }

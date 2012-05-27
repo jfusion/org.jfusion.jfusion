@@ -47,6 +47,11 @@ class JFusionAdmin_mybb extends JFusionAdmin
     function getTablename() {
         return 'users';
     }
+
+    /**
+     * @param string $forumPath
+     * @return array
+     */
     function setupFromPath($forumPath) {
         //check for trailing slash and generate config file path
         if (substr($forumPath, -1) != DS) {
@@ -89,6 +94,10 @@ class JFusionAdmin_mybb extends JFusionAdmin
         $params['cookie_path'] = $cookiepath;
         return $params;
     }
+
+    /**
+     * @return array
+     */
     function getUserList() {
         //getting the connection to the db
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -109,6 +118,10 @@ class JFusionAdmin_mybb extends JFusionAdmin
         //getting the results
         return $db->loadResult();
     }
+
+    /**
+     * @return array
+     */
     function getUsergroupList() {
         //getting the connection to the db
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -117,6 +130,10 @@ class JFusionAdmin_mybb extends JFusionAdmin
         //getting the results
         return $db->loadObjectList();
     }
+
+    /**
+     * @return string
+     */
     function getDefaultUsergroup() {
         $params = JFusionFactory::getParams($this->getJname());
         $usergroup_id = $params->get('usergroup');
@@ -126,6 +143,10 @@ class JFusionAdmin_mybb extends JFusionAdmin
         $db->setQuery($query);
         return $db->loadResult();
     }
+
+    /**
+     * @return bool
+     */
     function allowRegistration() {
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = "SELECT value FROM #__settings  WHERE name ='disableregs'";
@@ -139,14 +160,13 @@ class JFusionAdmin_mybb extends JFusionAdmin
             return $result;
         }
     }
-	/*
-	 * do plugin support multi usergroups
-	 * return UNKNOWN for unknown
-	 * return JNO for NO
-	 * return JYES for YES
-	 * return ... ??
-	 */
-	function requireFileAccess()
+
+    /**
+     * do plugin support multi usergroups
+     *
+     * @return string UNKNOWN or JNO or JYES or ??
+     */
+    function requireFileAccess()
 	{
 		return 'JNO';
 	}

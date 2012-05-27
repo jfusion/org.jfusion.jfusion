@@ -122,6 +122,10 @@ class JFusionAdmin_moodle extends JFusionAdmin
         $userlist = $db->loadObjectList();
         return $userlist;
     }
+
+    /**
+     * @return int
+     */
     function getUserCount() {
         //getting the connection to the db
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -131,6 +135,9 @@ class JFusionAdmin_moodle extends JFusionAdmin
         $no_users = $db->loadResult();
         return $no_users;
     }
+    /**
+     * @return array
+     */
     function getUsergroupList() {
         //get the connection to the db
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -139,6 +146,9 @@ class JFusionAdmin_moodle extends JFusionAdmin
         //getting the results
         return $db->loadObjectList();
     }
+    /**
+     * @return string
+     */
     function getDefaultUsergroup() {
         $params = JFusionFactory::getParams($this->getJname());
         $usergroup_id = $params->get('usergroup');
@@ -165,9 +175,17 @@ class JFusionAdmin_moodle extends JFusionAdmin
             return $result;
         }
     }
+
+    /**
+     * @return bool
+     */
     function allowEmptyCookiePath() {
         return true;
     }
+
+    /**
+     * @return bool
+     */
     function allowEmptyCookieDomain() {
         return true;
     }
@@ -389,6 +407,9 @@ EOD;
         return $status;
     }
 
+    /**
+     * @return array
+     */
     public function uninstallModule() {
 
         $status = array();
@@ -549,6 +570,9 @@ EOD;
         return $status;
     }
 
+    /**
+     * @return mixed|string
+     */
     public function moduleActivation() {
         $jname =  $this->getJname ();
         $params = JFusionFactory::getParams ( $jname );
@@ -596,8 +620,10 @@ EOD;
         }
     }
 
+    /**
+     * @return array|bool
+     */
     public function activateModule(){
-
         $jname =  $this->getJname ();
         $params = JFusionFactory::getParams ( $jname );
         $db = JFusionFactory::getDatabase($jname);
@@ -663,14 +689,12 @@ EOD;
         return false;
     }
 
-	/*
-	 * do plugin support multi usergroups
-	 * return UNKNOWN for unknown
-	 * return JNO for NO
-	 * return JYES for YES
-	 * return ... ??
-	 */
-	function requireFileAccess()
+    /**
+     * do plugin support multi usergroups
+     *
+     * @return string UNKNOWN or JNO or JYES or ??
+     */
+    function requireFileAccess()
 	{
 		return 'JNO';
 	}    

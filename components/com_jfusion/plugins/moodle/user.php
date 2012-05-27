@@ -120,7 +120,11 @@ class JFusionUser_moodle extends JFusionUser {
 		return $cipher;
 	}
 
-	function &getUser($userinfo) {
+    /**
+     * @param object $userinfo
+     * @return null|object
+     */
+    function &getUser($userinfo) {
 		$db = JFusionFactory::getDatabase($this->getJname());
 		//get the identifier
 		list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'username', 'email');
@@ -161,7 +165,13 @@ class JFusionUser_moodle extends JFusionUser {
 	{
 		return 'moodle';
 	}
-	function destroySession($userinfo, $options) {
+
+    /**
+     * @param object $userinfo
+     * @param array $options
+     * @return array
+     */
+    function destroySession($userinfo, $options) {
 
 		global $ch;
 		global $cookiearr;
@@ -358,7 +368,13 @@ class JFusionUser_moodle extends JFusionUser {
 			$status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
 		}
 	}
-	function blockUser($userinfo, &$existinguser, &$status) {
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
+    function blockUser($userinfo, &$existinguser, &$status) {
 		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = 'SELECT value FROM #__config WHERE  name = \'sitepolicy\'';
 		$db->setQuery($query);
@@ -375,7 +391,13 @@ class JFusionUser_moodle extends JFusionUser {
 			$status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . JText::_('BLOCK_UPDATE_SITEPOLICY_NOT_SET');
 		}
 	}
-	function unblockUser($userinfo, &$existinguser, &$status) {
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
+    function unblockUser($userinfo, &$existinguser, &$status) {
 		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = 'SELECT value FROM #__config WHERE  name = sitepolicy';
 		$db->setQuery($query);
@@ -392,7 +414,13 @@ class JFusionUser_moodle extends JFusionUser {
 			$status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . JText::_('BLOCK_UPDATE_SITEPOLICY_NOT_SET');
 		}
 	}
-	function activateUser($userinfo, &$existinguser, &$status) {
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
+    function activateUser($userinfo, &$existinguser, &$status) {
 		//activate the user
 		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = 'UPDATE #__user SET confirmed = true WHERE id =' . (int)$existinguser->userid;
@@ -419,7 +447,13 @@ class JFusionUser_moodle extends JFusionUser {
 			$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 		}
 	}
-	function createUser($userinfo, &$status) {
+
+    /**
+     * @param object $userinfo
+     * @param array $status
+     * @return null
+     */
+    function createUser($userinfo, &$status) {
 		// first find out if the user already exists, but with deleted flag set
 		$db = JFusionFactory::getDatabase($this->getJname());
 		$params = JFusionFactory::getParams($this->getJname());
@@ -548,7 +582,12 @@ class JFusionUser_moodle extends JFusionUser {
 		$status['userinfo'] = $this->getUser($userinfo);
 		$status['debug'][] = JText::_('USER_CREATION');
 	}
-	function deleteUser($userinfo) {
+
+    /**
+     * @param object $userinfo
+     * @return array
+     */
+    function deleteUser($userinfo) {
 		//setup status array to hold debug info and errors
 		$status = array();
 		$status['debug'] = array();

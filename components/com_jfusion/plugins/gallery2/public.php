@@ -55,11 +55,10 @@ class JFusionPublic_gallery2 extends JFusionPublic {
     function getLostPasswordURL() {
         return '?g2_view=core.UserAdmin&g2_subView=core.UserRecoverPassword';
     }
-    /*
-    function getLostUsernameURL()
-    {
-    return '';
-    }*/
+
+    /**
+     * @param object $data
+     */
     function getBuffer($data) {
     	$this->data = $data;
         $jPluginParam = & $data->jPluginParam;
@@ -120,11 +119,17 @@ class JFusionPublic_gallery2 extends JFusionPublic {
         }
     }
 
+    /**
+     * @param object $data
+     */
     function parseBody(&$data) {
         //fix for form actions    	
         $data->body = preg_replace_callback('#action="(.*?)"(.*?)>#m',array( &$this,'fixAction'), $data->body);
     }
 
+    /**
+     * @param object $data
+     */
     function parseHeader(&$data) {
     }
 
@@ -184,6 +189,13 @@ class JFusionPublic_gallery2 extends JFusionPublic {
         return $replacement;
     }
 
+    /**
+     * @param string $text
+     * @param string $phrase
+     * @param object $pluginParam
+     * @param int $itemid
+     * @return array
+     */
     function getSearchResults(&$text, &$phrase, &$pluginParam, $itemid) {
         require JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'gallery2.php';
         jFusion_g2BridgeCore::loadGallery2Api($this->getJname(),true, $itemid);

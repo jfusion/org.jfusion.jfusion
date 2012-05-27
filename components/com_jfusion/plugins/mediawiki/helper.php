@@ -91,6 +91,10 @@ class JFusionHelper_mediawiki
 		session_start();
     }
 
+    /**
+     * @param $getVar
+     * @return mixed
+     */
     function getConfig( $getVar ) {
     	static $config = array();
 

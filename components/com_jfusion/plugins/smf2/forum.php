@@ -64,16 +64,25 @@ class JFusionForum_smf2 extends JFusionForum
         return  'index.php?action=profile&u='.$uid;
     }
 
+    /**
+     * @return string
+     */
     function getPrivateMessageURL()
     {
         return 'index.php?action=pm';
     }
 
+    /**
+     * @return string
+     */
     function getViewNewMessagesURL()
     {
         return 'index.php?action=unread';
     }
 
+    /**
+     * @return array
+     */
     function getForumList()
     {
         // initialise some objects
@@ -85,6 +94,10 @@ class JFusionForum_smf2 extends JFusionForum
         return $db->loadObjectList('id');
     }
 
+    /**
+     * @param object $post
+     * @return int
+     */
     function checkReadStatus(&$post)
     {
 		$JUser = JFactory::getUser();
@@ -126,6 +139,10 @@ class JFusionForum_smf2 extends JFusionForum
         return $newstatus;
     }
 
+    /**
+     * @param int $userid
+     * @return array
+     */
     function getPrivateMessageCounts($userid)
     {
         if ($userid) {
@@ -146,7 +163,11 @@ class JFusionForum_smf2 extends JFusionForum
         return array('unread' => 0, 'total' => 0);
     }
 
-	function getAvatar($puser_id)
+    /**
+     * @param int $puser_id
+     * @return bool|string
+     */
+    function getAvatar($puser_id)
     {
 		if ($puser_id) {
 			// Get SMF Params and get an instance of the database
@@ -578,7 +599,11 @@ class JFusionForum_smf2 extends JFusionForum
 		return $posts;
 	}
 
-	function getReplyCount(&$existingthread)
+    /**
+     * @param object $existingthread
+     * @return int
+     */
+    function getReplyCount(&$existingthread)
 	{
 		$db =& JFusionFactory::getDatabase($this->getJname());
 		$query = "SELECT num_replies FROM #__topics WHERE id_topic = {$existingthread->threadid}";
@@ -629,6 +654,10 @@ class JFusionForum_smf2 extends JFusionForum
 		return $results;
     }
 
+    /**
+     * @param int $threadid
+     * @return bool
+     */
     function getThreadLockedStatus($threadid) {
         $db = & JFusionFactory::getDatabase($this->getJname());
         $query = "SELECT locked FROM #__topics WHERE id_topic = $threadid";
@@ -637,6 +666,12 @@ class JFusionForum_smf2 extends JFusionForum
         return $locked;
     }
 
+    /**
+     * @param array $usedforums
+     * @param string $result_order
+     * @param int $result_limit
+     * @return array|string
+     */
     function getActivityQuery($usedforums, $result_order, $result_limit)
     {
         $db = & JFusionFactory::getDatabase($this->getJname());

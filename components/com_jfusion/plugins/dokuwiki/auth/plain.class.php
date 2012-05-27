@@ -62,6 +62,10 @@ class doku_auth_plain extends doku_auth_basic {
     function auth_plain() {
         $this->io = new JFusionDokuwiki_Io($this->jname);
     }
+
+    /**
+     * @return string
+     */
     function auth_file() {
         $share = Dokuwiki::getInstance($this->jname);
         $params = JFusionFactory::getParams($share->getJname());
@@ -336,6 +340,10 @@ class doku_auth_plain extends doku_auth_basic {
         }
         return 1;
     }
+
+    /**
+     * @param $filter
+     */
     function _constructPattern($filter) {
         $this->_pattern = array();
         foreach ($filter as $item => $pattern) {

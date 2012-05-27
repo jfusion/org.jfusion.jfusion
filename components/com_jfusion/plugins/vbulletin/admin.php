@@ -48,6 +48,11 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
     {
         return 'user';
     }
+
+    /**
+     * @param string $forumPath
+     * @return array|bool
+     */
     function setupFromPath($forumPath)
     {
         //check for trailing slash and generate file path
@@ -132,18 +137,36 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
             return $params;
         }
     }
+
+    /**
+     * @return string
+     */
     function getRegistrationURL()
     {
         return 'register.php';
     }
+
+    /**
+     * @return string
+     */
     function getLostPasswordURL()
     {
         return 'login.php?do=lostpw';
     }
+
+    /**
+     * @return string
+     */
     function getLostUsernameURL()
     {
         return 'login.php?do=lostpw';
     }
+
+    /**
+     * @param null $limitstart
+     * @param null $limit
+     * @return array
+     */
     function getUserList($limitstart = null, $limit = null)
     {
         // initialise some objects
@@ -158,6 +181,10 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
         $userlist = $db->loadObjectList();
         return $userlist;
     }
+
+    /**
+     * @return int
+     */
     function getUserCount()
     {
         //getting the connection to the db
@@ -168,6 +195,10 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
         $no_users = $db->loadResult();
         return $no_users;
     }
+
+    /**
+     * @return array
+     */
     function getUsergroupList()
     {
         //get the connection to the db
@@ -177,6 +208,10 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
         //getting the results
         return $db->loadObjectList();
     }
+
+    /**
+     * @return string
+     */
     function getDefaultUsergroup()
     {
         $params = & JFusionFactory::getParams($this->getJname());
@@ -187,6 +222,10 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
         $db->setQuery($query);
         return $db->loadResult();
     }
+
+    /**
+     * @return bool
+     */
     function allowRegistration()
     {
         $db = & JFusionFactory::getDatabase($this->getJname());
@@ -417,6 +456,12 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
             }
         }
     }
+
+    /**
+     * @param $plugin
+     * @param $itemid
+     * @return string
+     */
     function getHookPHP($plugin, $itemid)
     {
         $params = & JFusionFactory::getParams($this->getJname());
@@ -526,6 +571,13 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
         }
     }
 
+    /**
+     * @param string $name
+     * @param string $value
+     * @param string $node
+     * @param string $control_name
+     * @return mixed|string
+     */
     function usergroup($name, $value, $node, $control_name)
     {
         //get the master plugin to be throughout
@@ -657,6 +709,13 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
         }
     }
 
+    /**
+     * @param $name
+     * @param $value
+     * @param $node
+     * @param $control_name
+     * @return mixed|string
+     */
     function name_field($name, $value, $node, $control_name)
     {
         if (JFusionFunction::validPlugin($this->getJname())) {
@@ -683,6 +742,9 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
         }
     }
 
+    /**
+     * @return array
+     */
     function uninstall()
     {
         $return = true;
@@ -712,7 +774,10 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
 	 * return JYES for YES
 	 * return ... ??
 	 */
-	function requireFileAccess()
+    /**
+     * @return string
+     */
+    function requireFileAccess()
 	{
 		return 'JNO';
 	}    

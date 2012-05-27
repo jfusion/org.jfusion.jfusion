@@ -84,6 +84,12 @@ class JFusionUser_phpbb3 extends JFusionUser
     {
         return 'phpbb3';
     }
+
+    /**
+     * @param object $userinfo
+     * @param array $options
+     * @return array
+     */
     function destroySession($userinfo, $options) {
         $status = array();
         $status['error'] = array();
@@ -129,6 +135,12 @@ class JFusionUser_phpbb3 extends JFusionUser
         }
         return $status;
     }
+
+    /**
+     * @param object $userinfo
+     * @param array $options
+     * @return array
+     */
     function createSession($userinfo, $options) {
         $status = array();
         $status['error'] = array();
@@ -321,6 +333,11 @@ class JFusionUser_phpbb3 extends JFusionUser
             return $status;
         }
     }
+
+    /**
+     * @param string $username
+     * @return string
+     */
     function filterUsername($username) {
         if (!function_exists('utf8_clean_string_phpbb')) {
             //load the filtering functions for phpBB3
@@ -330,6 +347,12 @@ class JFusionUser_phpbb3 extends JFusionUser
         //die($username . ':' . $username_clean);
         return $username_clean;
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function updatePassword($userinfo, &$existinguser, &$status) {
         // get the encryption PHP file
         if (!class_exists('PasswordHash')) {
@@ -347,8 +370,20 @@ class JFusionUser_phpbb3 extends JFusionUser
             $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
         }
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function updateUsername($userinfo, &$existinguser, &$status) {
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function updateEmail($userinfo, &$existinguser, &$status) {
         //we need to update the email
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -360,6 +395,13 @@ class JFusionUser_phpbb3 extends JFusionUser
             $status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
         }
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     * @return null
+     */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
         //check to see if we have a group_id in the $userinfo, if not return
         if (!isset($userinfo->group_id)) {
@@ -476,6 +518,12 @@ class JFusionUser_phpbb3 extends JFusionUser
             $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST');
         }
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function blockUser($userinfo, &$existinguser, &$status) {
         //block the user
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -504,6 +552,12 @@ class JFusionUser_phpbb3 extends JFusionUser
             $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
         }
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function activateUser($userinfo, &$existinguser, &$status) {
         //activate the user
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -515,6 +569,12 @@ class JFusionUser_phpbb3 extends JFusionUser
             $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
         }
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function inactivateUser($userinfo, &$existinguser, &$status) {
         //set activation key
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -526,6 +586,12 @@ class JFusionUser_phpbb3 extends JFusionUser
             $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
         }
     }
+
+    /**
+     * @param object $userinfo
+     * @param array $status
+     * @return null
+     */
     function createUser($userinfo, &$status) {
     	//found out what usergroup should be used
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -717,6 +783,11 @@ class JFusionUser_phpbb3 extends JFusionUser
             $status['userinfo'] = $this->getUser($userinfo);
         }
     }
+
+    /**
+     * @param object $userinfo
+     * @return array
+     */
     function deleteUser($userinfo) {
         //setup status array to hold debug info and errors
         $status = array();
@@ -1003,6 +1074,11 @@ class JFusionUser_phpbb3 extends JFusionUser
         $status['debug'][] = JText::_('USER_DELETION'). ' ' . $user_id;
         return $status;
     }
+
+    /**
+     * @param bool $keepalive
+     * @return int
+     */
     function syncSessions($keepalive = false) {
         $debug = (defined('DEBUG_SYSTEM_PLUGIN') ? true : false);
         if ($debug) {

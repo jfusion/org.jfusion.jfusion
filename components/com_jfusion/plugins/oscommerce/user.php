@@ -111,6 +111,12 @@ class JFusionUser_oscommerce extends JFusionUser
     {
         return 'oscommerce';
     }
+
+    /**
+     * @param object $userinfo
+     * @param array $options
+     * @return array
+     */
     function destroySession($userinfo, $options) {
         $status = array();
         $status['error'] = '';
@@ -119,39 +125,55 @@ class JFusionUser_oscommerce extends JFusionUser
         $params = JFusionFactory::getParams($this->getJname());
         $osCversion = $params->get('osCversion');
 
-            switch ($osCversion) {
-                case 'osc3':
-                      $session_id=$_COOKIE['osCsid'];
-                      if ($session_id == ''){
-                          $status["error"][] = "Error Could find session cookie make sure COOKIE PATH IS SET TO / in both osC and JFusion plugin settings";
-                          return $status;
-                      }
-                      $db = JFusionFactory::getDatabase($this->getJname());
-                      $query = "DELETE FROM #__sessions WHERE id = '" . $session_id . "'";
-                      $db->setQuery($query);
-                      if (!$db->query()) {
-                          $status["error"][] = "Error Could not delete session with sessionID $session_id: {$db->stderr() }";
-                          return $status;
-                      } else {
-                          $status["debug"][] = "Deleted sessionrecord with id $session_id.";
-                      }
-                  break;
-                default:
-                  return JFusionJplugin::destroySession($userinfo, $options, $this->getJname(),$params->get('logout_type'));
-            }
+        switch ($osCversion) {
+            case 'osc3':
+                $session_id=$_COOKIE['osCsid'];
+                if ($session_id == '') {
+                    $status["error"][] = "Error Could find session cookie make sure COOKIE PATH IS SET TO / in both osC and JFusion plugin settings";
+                } else {
+                    $db = JFusionFactory::getDatabase($this->getJname());
+                    $query = "DELETE FROM #__sessions WHERE id = '" . $session_id . "'";
+                    $db->setQuery($query);
+                    if (!$db->query()) {
+                        $status["error"][] = "Error Could not delete session with sessionID $session_id: {$db->stderr() }";
+                    } else {
+                        $status["debug"][] = "Deleted sessionrecord with id $session_id.";
+                    }
+                }
+                break;
+            default:
+                $status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname(),$params->get('logout_type'));
+        }
+        return $status;
+    }
 
-       return $status;
-    	    }
+    /**
+     * @param object $userinfo
+     * @param array $options
+     * @return array|string
+     */
     function createSession($userinfo, $options) {
         $params = JFusionFactory::getParams($this->getJname());
         // need to make the username equal the email
         $userinfo->username = $userinfo->email;
         return JFusionJplugin::createSession($userinfo, $options, $this->getJname(),$params->get('brute_force'));
     }
+
+    /**
+     * @param string $username
+     * @return string
+     */
     function filterUsername($username) {
         //no username filtering implemented yet
         return $username;
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     * @return string
+     */
     function updatePassword($userinfo, $existinguser, &$status) {
         $params = JFusionFactory::getParams($this->getJname());
         $osCversion = $params->get('osCversion');
@@ -281,6 +303,12 @@ class JFusionUser_oscommerce extends JFusionUser
         // inactivate the user is not supported
         
     }
+
+    /**
+     * @param object $userinfo
+     * @param array $status
+     * @return null
+     */
     function createUser($userinfo, &$status) {
         $params = JFusionFactory::getParams($this->getJname());
         $osCversion = $params->get('osCversion');
@@ -430,6 +458,11 @@ class JFusionUser_oscommerce extends JFusionUser
         $db->RollbackTrans();
         return;
     }
+
+    /**
+     * @param object $userinfo
+     * @return array|bool
+     */
     function deleteUser($userinfo) {
         $params = JFusionFactory::getParams($this->getJname());
         $osCversion = $params->get('osCversion');
@@ -588,6 +621,13 @@ class JFusionUser_oscommerce extends JFusionUser
         }
         return false;
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     * @return null
+     */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
         $params = JFusionFactory::getParams($this->getJname());
         $osCversion = $params->get('osCversion');

@@ -75,8 +75,11 @@ class Jfusion_Joomla_Block_Module extends Mage_Core_Block_Template {
 		parent::setPrepareLayoutMenu($value);
 		return;
 	}
-	
-	protected function _toHtml() {
+
+    /**
+     * @return string
+     */
+    protected function _toHtml() {
 		if (! $this->_beforeToHtml ()) {
 			return '';
 		}

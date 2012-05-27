@@ -50,11 +50,20 @@ class JFusionForum_vbulletin extends JFusionForum
         return 'vbulletin';
     }
 
+    /**
+     * @param int $forumid
+     * @param int $threadid
+     * @return string
+     */
     function getReplyURL($forumid, $threadid)
     {
         return "newreply.php?do=newreply&t=$threadid&noquote=1";
     }
 
+    /**
+     * @param int $threadid
+     * @return object
+     */
     function getThread($threadid)
     {
         $db = & JFusionFactory::getDatabase($this->getJname());
@@ -63,6 +72,11 @@ class JFusionForum_vbulletin extends JFusionForum
         $results = $db->loadObject();
         return $results;
     }
+
+    /**
+     * @param int $threadid
+     * @return int
+     */
     function getThreadLockedStatus($threadid)
     {
         $db = & JFusionFactory::getDatabase($this->getJname());
@@ -72,6 +86,13 @@ class JFusionForum_vbulletin extends JFusionForum
         $locked = ($open) ? 0 : 1;
         return $locked;
     }
+
+    /**
+     * @param object $dbparams
+     * @param object $contentitem
+     * @param int $forumid
+     * @param object $status
+     */
     function createThread(&$dbparams, &$contentitem, $forumid, &$status)
     {
         $userid = $this->getThreadAuthor($dbparams, $contentitem);
@@ -280,7 +301,11 @@ class JFusionForum_vbulletin extends JFusionForum
         return $threadinfo;
     }
 
-	function getForumInfo($id) {
+    /**
+     * @param $id
+     * @return array
+     */
+    function getForumInfo($id) {
 		$jdb =& JFusionFactory::getDatabase($this->getJname());
 		$query = "SELECT * FROM #__forum WHERE forumid = " . (int) $id;
 		$jdb->setQuery($query);
@@ -354,6 +379,11 @@ class JFusionForum_vbulletin extends JFusionForum
         $posts = $jdb->loadObjectList();
         return $posts;
     }
+
+    /**
+     * @param object $existingthread
+     * @return int
+     */
     function getReplyCount(&$existingthread)
     {
         $db = & JFusionFactory::getDatabase($this->getJname());
@@ -362,6 +392,10 @@ class JFusionForum_vbulletin extends JFusionForum
         $result = $db->loadResult();
         return $result;
     }
+
+    /**
+     * @return \stdClass
+     */
     function getDiscussionColumns()
     {
         $columns = new stdClass();
@@ -377,18 +411,39 @@ class JFusionForum_vbulletin extends JFusionForum
         $columns->guest = "guest";
         return $columns;
     }
+
+    /**
+     * @param int $threadid
+     * @return string
+     */
     function getThreadURL($threadid)
     {
         return $this->helper->getVbURL('showthread.php?t=' . $threadid, 'threads');
     }
+
+    /**
+     * @param int $threadid
+     * @param int $postid
+     * @return string
+     */
     function getPostURL($threadid, $postid)
     {
         return $this->helper->getVbURL('showthread.php?p=' . $postid . '#post' . $postid, 'post');
     }
+
+    /**
+     * @param int $uid
+     * @return string
+     */
     function getProfileURL($uid)
     {
         return $this->helper->getVbURL('member.php?u=' . $uid, 'members');
     }
+
+    /**
+     * @param int $userid
+     * @return array
+     */
     function getPrivateMessageCounts($userid)
     {
         // initialise some objects
@@ -400,14 +455,27 @@ class JFusionForum_vbulletin extends JFusionForum
         $pmcount['unread'] = $vbPMData->pmunread;
         return $pmcount;
     }
+
+    /**
+     * @return string
+     */
     function getPrivateMessageURL()
     {
         return 'private.php';
     }
+
+    /**
+     * @return string
+     */
     function getViewNewMessagesURL()
     {
         return 'search.php?do=getnew';
     }
+
+    /**
+     * @param int $userid
+     * @return int|null|string
+     */
     function getAvatar($userid)
     {
         $url = 0;
@@ -450,6 +518,13 @@ class JFusionForum_vbulletin extends JFusionForum
 
         return $url;
     }
+
+    /**
+     * @param array $usedforums
+     * @param string $result_order
+     * @param int $result_limit
+     * @return array|string
+     */
     function getActivityQuery($usedforums, $result_order, $result_limit)
     {
         $usedforums = $this->filterForumList($usedforums);
@@ -557,6 +632,11 @@ class JFusionForum_vbulletin extends JFusionForum
         }
         return $newstatus;
     }
+
+    /**
+     * @param bool $objectList
+     * @return array
+     */
     function getForumList($objectList = true)
     {
         //get the connection to the db
@@ -581,6 +661,11 @@ class JFusionForum_vbulletin extends JFusionForum
         }
         return $results;
     }
+
+    /**
+     * @param string $userid
+     * @return array
+     */
     function getForumPermissions($userid = 'find')
     {
         static $forumPerms, $groupPerms;
@@ -683,6 +768,13 @@ class JFusionForum_vbulletin extends JFusionForum
         }
         return array($groupPerms, $forumPerms);
     }
+
+    /**
+     * @param object $results
+     * @param int $limit
+     * @param string $idKey
+     * @param bool $search
+     */
     function filterActivityResults(&$results, $limit = 0, $idKey = 'forumid', $search = false)
     {
         //get the joomla user
@@ -739,6 +831,11 @@ class JFusionForum_vbulletin extends JFusionForum
             }
         }
     }
+
+    /**
+     * @param $forumids
+     * @return array
+     */
     function filterForumList($forumids)
     {
         list($groupPerms, $forumPerms) = $this->getForumPermissions();

@@ -64,6 +64,12 @@ if (!class_exists('PasswordHash')) {
             }
             return $output;
         }
+
+        /**
+         * @param $input
+         * @param $count
+         * @return string
+         */
         function encode64($input, $count) {
             $output = '';
             $i = 0;
@@ -81,12 +87,23 @@ if (!class_exists('PasswordHash')) {
             while ($i < $count);
             return $output;
         }
+
+        /**
+         * @param $input
+         * @return string
+         */
         function gensalt_private($input) {
             $output = '$H$';
             $output.= $this->itoa64[min($this->iteration_count_log2 + ((PHP_VERSION >= '5') ? 5 : 3), 30) ];
             $output.= $this->encode64($input, 6);
             return $output;
         }
+
+        /**
+         * @param $password
+         * @param $setting
+         * @return string
+         */
         function crypt_private($password, $setting) {
             $output = '*0';
             if (substr($setting, 0, 2) == $output) $output = '*1';
@@ -119,6 +136,11 @@ if (!class_exists('PasswordHash')) {
             $output.= $this->encode64($hash, 16);
             return $output;
         }
+
+        /**
+         * @param $input
+         * @return string
+         */
         function gensalt_extended($input) {
             $count_log2 = min($this->iteration_count_log2 + 8, 24);
             # This should be odd to not reveal weak DES keys, and the
@@ -132,6 +154,11 @@ if (!class_exists('PasswordHash')) {
             $output.= $this->encode64($input, 3);
             return $output;
         }
+
+        /**
+         * @param $input
+         * @return string
+         */
         function gensalt_blowfish($input) {
             # This one needs to use a different order of characters and a
             # different encoding scheme from the one in encode64() above.
@@ -192,6 +219,12 @@ if (!class_exists('PasswordHash')) {
             # hashes and for validating passwords against existing hashes.
             return '*';
         }
+
+        /**
+         * @param $password
+         * @param $stored_hash
+         * @return bool
+         */
         function CheckPassword($password, $stored_hash) {
             $hash = $this->crypt_private($password, $stored_hash);
             if ($hash[0] == '*') $hash = crypt($password, $stored_hash);

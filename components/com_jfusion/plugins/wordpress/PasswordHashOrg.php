@@ -49,30 +49,39 @@ class PasswordHashOrg {
       $this->random_state .= getmypid();
   }
 
-  function get_random_bytes($count)
-  {
-    $output = '';
-    if (is_readable('/dev/urandom') &&
+    /**
+     * @param $count
+     * @return string
+     */
+    function get_random_bytes($count)
+    {
+        $output = '';
+        if (is_readable('/dev/urandom') &&
         ($fh = @fopen('/dev/urandom', 'rb'))) {
-      $output = fread($fh, $count);
-      fclose($fh);
+            $output = fread($fh, $count);
+            fclose($fh);
+        }
+
+        if (strlen($output) < $count) {
+            $output = '';
+            for ($i = 0; $i < $count; $i += 16) {
+                $this->random_state =
+                md5(microtime() . $this->random_state);
+                $output .=
+                pack('H*', md5($this->random_state));
+            }
+            $output = substr($output, 0, $count);
+        }
+
+        return $output;
     }
 
-    if (strlen($output) < $count) {
-      $output = '';
-      for ($i = 0; $i < $count; $i += 16) {
-        $this->random_state =
-            md5(microtime() . $this->random_state);
-        $output .=
-            pack('H*', md5($this->random_state));
-      }
-      $output = substr($output, 0, $count);
-    }
-
-    return $output;
-  }
-
-  function encode64($input, $count)
+    /**
+     * @param $input
+     * @param $count
+     * @return string
+     */
+    function encode64($input, $count)
   {
     $output = '';
     $i = 0;
@@ -95,17 +104,26 @@ class PasswordHashOrg {
     return $output;
   }
 
-  function gensalt_private($input)
-  {
-    $output = '$P$';
-    $output .= $this->itoa64[min($this->iteration_count_log2 +
-      ((PHP_VERSION >= '5') ? 5 : 3), 30)];
-    $output .= $this->encode64($input, 6);
+    /**
+     * @param $input
+     * @return string
+     */
+    function gensalt_private($input)
+    {
+        $output = '$P$';
+        $output .= $this->itoa64[min($this->iteration_count_log2 +
+          ((PHP_VERSION >= '5') ? 5 : 3), 30)];
+        $output .= $this->encode64($input, 6);
 
-    return $output;
-  }
+        return $output;
+    }
 
-  function crypt_private($password, $setting)
+    /**
+     * @param $password
+     * @param $setting
+     * @return string
+     */
+    function crypt_private($password, $setting)
   {
     $output = '*0';
     if (substr($setting, 0, 2) == $output)
@@ -150,7 +168,11 @@ class PasswordHashOrg {
     return $output;
   }
 
-  function gensalt_extended($input)
+    /**
+     * @param $input
+     * @return string
+     */
+    function gensalt_extended($input)
   {
     $count_log2 = min($this->iteration_count_log2 + 8, 24);
     # This should be odd to not reveal weak DES keys, and the

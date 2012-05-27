@@ -64,6 +64,14 @@ class JElementGalleries extends JElement {
         }
         return JHTML::_('select.genericlist', $output, $control_name . '[' . $name . ']', null, 'value', 'text', $value);
     }
+
+    /**
+     * @param $tree
+     * @param $titles
+     * @param $ar
+     * @param string $limiter
+     * @param bool $sub
+     */
     function buildTree($tree, $titles, &$ar, $limiter = '', $sub = false) {
         foreach ($tree as $tItemID => $tItemArray) {
             $name = htmlspecialchars($titles[$tItemID], ENT_QUOTES);

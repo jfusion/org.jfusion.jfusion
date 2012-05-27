@@ -113,6 +113,13 @@ if (!class_exists('jFusion_g2BridgeCore')) {
 	        self::$loadedGallery = $jname;
 	        return true;
 	    }
+
+        /**
+         * @static
+         * @param $jname
+         * @param null $itemId
+         * @return mixed|string|The
+         */
         public static function getEmbedUri($jname,$itemId = null) {
 	        $mainframe = JFactory::getApplication();
 	        $router = $mainframe->getRouter();
@@ -148,15 +155,36 @@ if (!class_exists('jFusion_g2BridgeCore')) {
 	        }
 	        return $uri;
 	    }
-	    static function setVar($jname,$key, $value) {
+
+        /**
+         * @static
+         * @param $jname
+         * @param $key
+         * @param $value
+         */
+        static function setVar($jname,$key, $value) {
 	        self::$registry[$jname][$key] = $value;
 	    }
-	    static function getVar($jname,$key, $default = null) {
+
+        /**
+         * @static
+         * @param $jname
+         * @param $key
+         * @param null $default
+         * @return null
+         */
+        static function getVar($jname,$key, $default = null) {
 	        if (isset(self::$registry[$jname][$key])) {
 	            return self::$registry[$jname][$key];
 	        }
 	        return $default;
 	    }
+
+        /**
+         * @static
+         * @param $jname
+         * @return null
+         */
         public static function setPathway($jname) {
 	        global $gallery;
 	        $session =& $gallery->getSession();

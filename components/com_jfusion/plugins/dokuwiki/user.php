@@ -139,6 +139,11 @@ class JFusionUser_dokuwiki extends JFusionUser {
             return $status;
         }
     }
+
+    /**
+     * @param object $userinfo
+     * @return bool|\stdClass
+     */
     function &getUser($userinfo) {
         $share = Dokuwiki::getInstance($this->getJname());
     	if (is_object($userinfo)) {
@@ -190,6 +195,12 @@ class JFusionUser_dokuwiki extends JFusionUser {
         }
         return $status;
     }
+
+    /**
+     * @param object $userinfo
+     * @param array $options
+     * @return array
+     */
     function destroySession($userinfo, $options) {
         $status = array();
         $status['debug'] = array();
@@ -218,6 +229,12 @@ class JFusionUser_dokuwiki extends JFusionUser {
 
         return $status;
     }
+
+    /**
+     * @param object $userinfo
+     * @param array $options
+     * @return array
+     */
     function createSession($userinfo, $options) {
         $status = array();
         $status['debug'] = array();
@@ -255,6 +272,11 @@ class JFusionUser_dokuwiki extends JFusionUser {
 
         return $status;
     }
+
+    /**
+     * @param string $username
+     * @return string
+     */
     function filterUsername($username) {
         $username = str_replace(' ', '_', $username);
         $username = str_replace(':', '', $username);
@@ -314,6 +336,12 @@ class JFusionUser_dokuwiki extends JFusionUser {
     function updatePassword($userinfo, &$existinguser, &$status)
     {
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function updateEmail($userinfo, &$existinguser, &$status)
     {
     }

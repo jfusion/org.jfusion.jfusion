@@ -59,10 +59,11 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
     function getLostPasswordURL() {
         return 'doku.php?do=resendpwd';
     }
-    /*  function getLostUsernameURL()
-    {
-    return 'index.php?action=reminder';
-    }*/
+
+    /**
+     * @param object $data
+     * @return null
+     */
     function getBuffer(&$data) {
 
         // We're going to want a few globals... these are all set later.
@@ -396,6 +397,12 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
         }
         return $rows;
     }
+
+    /**
+     * @param $path
+     * @param $page
+     * @return string
+     */
     function getPage($path, $page) {
         $file = $path . DS . 'data' . DS . 'pages' . DS . str_replace(":", DS, $page) . '.txt';
         $text = '';
@@ -408,6 +415,12 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
         }
         return $text ? $text : "Please, follow the given link to get the DokuWiki article where we found one or more keyword(s).";
     }
+
+    /**
+     * @param $path
+     * @param $page
+     * @return string
+     */
     function getPageModifiedDateTime($path, $page) {
         $datetime = '';
         $file = $path . DS . 'data' . DS . 'pages' . DS . str_replace(":", DS, $page) . '.txt';
@@ -416,11 +429,24 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
         }
         return $datetime;
     }
+
+    /**
+     * @param string $results
+     */
     function filterSearchResults(&$results) {
     }
+
+    /**
+     * @param mixed $post
+     * @return string
+     */
     function getSearchResultLink($post) {
         return "doku.php?id=" . $post;
     }
+
+    /**
+     * @return array|bool
+     */
     function getPathWay() {
         if (JRequest::getVar('id')) {
             $bread = explode(';', JRequest::getVar('id'));

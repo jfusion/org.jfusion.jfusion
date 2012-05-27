@@ -75,6 +75,10 @@ class JFusionAdmin_mediawiki extends JFusionAdmin{
         }
     }
 
+    /**
+     * @param $source_path
+     * @return array
+     */
     function includeFramework( & $source_path ) {
     	//check for trailing slash and generate file path
     	if (substr($source_path, -1) == DS) {
@@ -96,7 +100,11 @@ class JFusionAdmin_mediawiki extends JFusionAdmin{
     	}
     	return $return;
     }
-    
+
+    /**
+     * @param $getVar
+     * @return mixed
+     */
     function getConfig( $getVar ) {
     	static $config = array();
 
@@ -116,6 +124,9 @@ class JFusionAdmin_mediawiki extends JFusionAdmin{
 		return $config[$getVar];
     }
 
+    /**
+     * @return array
+     */
     function getUserList()
     {
         // initialise some objects
@@ -127,6 +138,9 @@ class JFusionAdmin_mediawiki extends JFusionAdmin{
         return $userlist;
     }
 
+    /**
+     * @return int
+     */
     function getUserCount()
     {
         //getting the connection to the db
@@ -138,6 +152,9 @@ class JFusionAdmin_mediawiki extends JFusionAdmin{
         return $db->loadResult();
     }
 
+    /**
+     * @return array
+     */
     function getUsergroupList()
     {
         $wgGroupPermissions = $this->getConfig('wgGroupPermissions');
@@ -154,6 +171,9 @@ class JFusionAdmin_mediawiki extends JFusionAdmin{
         return $usergrouplist;
     }
 
+    /**
+     * @return string
+     */
     function getDefaultUsergroup()
     {
         $params = JFusionFactory::getParams($this->getJname());
@@ -161,6 +181,9 @@ class JFusionAdmin_mediawiki extends JFusionAdmin{
         return $usergroup_id;
     }
 
+    /**
+     * @return bool
+     */
     function allowRegistration()
     {
 		$wgGroupPermissions = $this->getConfig('wgGroupPermissions');
@@ -178,7 +201,10 @@ class JFusionAdmin_mediawiki extends JFusionAdmin{
 	 * return JYES for YES
 	 * return ... ??
 	 */
-	function requireFileAccess()
+    /**
+     * @return string
+     */
+    function requireFileAccess()
 	{
 		return 'JYES';
 	} 

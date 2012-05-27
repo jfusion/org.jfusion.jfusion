@@ -46,9 +46,17 @@ class JFusionPublic_phpbb3 extends JFusionPublic
     function getRegistrationURL() {
         return 'ucp.php?mode=register';
     }
+
+    /**
+     * @return string
+     */
     function getLostPasswordURL() {
         return 'ucp.php?mode=sendpassword';
     }
+
+    /**
+     * @return string
+     */
     function getLostUsernameURL() {
         return 'ucp.php?mode=sendpassword';
     }
@@ -125,9 +133,8 @@ class JFusionPublic_phpbb3 extends JFusionPublic
         return $status;
     }
 
-    /*
-     * getOnlineUserQuery
-     *
+    /**
+     * @param int $limit
      * @return string
      */
     function getOnlineUserQuery($limit) {
@@ -138,6 +145,10 @@ class JFusionPublic_phpbb3 extends JFusionPublic
         $query = "SELECT DISTINCT u.user_id AS userid, u.username_clean AS username, u.username AS name, u.user_email as email FROM #__users AS u INNER JOIN #__sessions AS s ON u.user_id = s.session_user_id WHERE s.session_viewonline =1 AND  s.session_user_id != 1 AND s.session_time > $active $limiter";
         return $query;
     }
+
+    /**
+     * @return int
+     */
     function getNumberOnlineGuests() {
         //get a unix time from 5 mintues ago
         date_default_timezone_set('UTC');
@@ -148,6 +159,10 @@ class JFusionPublic_phpbb3 extends JFusionPublic
         $result = $db->loadResult();
         return $result;
     }
+
+    /**
+     * @return int
+     */
     function getNumberOnlineMembers() {
         //get a unix time from 5 mintues ago
         date_default_timezone_set('UTC');
@@ -159,6 +174,10 @@ class JFusionPublic_phpbb3 extends JFusionPublic
         return $result;
     }
 
+    /**
+     * @param object $jfdata
+     * @return bool
+     */
     function getBuffer(&$jfdata) {
     	$this->data = $jfdata;
     	$session = JFactory::getSession();
@@ -280,6 +299,10 @@ class JFusionPublic_phpbb3 extends JFusionPublic
         }
         return true;
     }
+
+    /**
+     * @param object $data
+     */
     function parseBody(&$data) {
 
         static $regex_body, $replace_body, $callback_function;
@@ -341,7 +364,10 @@ class JFusionPublic_phpbb3 extends JFusionPublic
         	}
         }    
     }
-    
+
+    /**
+     * @param array $vars
+     */
     function parseRoute(&$vars) {
         foreach ($vars as $k => $v) {
             //must undo Joomla's parsing that changes dashes to colons so that PM browsing works correctly
@@ -352,6 +378,10 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             }
         }
     }
+
+    /**
+     * @param array $segments
+     */
     function buildRoute(&$segments) {
         if (is_array($segments)) {
             foreach($segments as $k => $v) {
@@ -363,6 +393,11 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             }
         }
     }
+
+    /**
+     * @param $matches
+     * @return string
+     */
     function fixUrl($matches) {
 		$q = $matches[1];
 		
@@ -437,6 +472,11 @@ class JFusionPublic_phpbb3 extends JFusionPublic
         }
         return 'href="' . $url . '"';
     }
+
+    /**
+     * @param $matches
+     * @return string
+     */
     function fixRedirect($matches) {
 		$url = $matches[1];
 		$baseURL = $this->data->baseURL;
@@ -482,6 +522,11 @@ class JFusionPublic_phpbb3 extends JFusionPublic
         //JError::raiseWarning(500, htmlentities($return));
         return $return;
     }
+
+    /**
+     * @param $matches
+     * @return string
+     */
     function fixAction($matches) {
 		$url = $matches[1];
 		$extra = $matches[2];
@@ -581,7 +626,10 @@ class JFusionPublic_phpbb3 extends JFusionPublic
         	}
         }               
     }
-    
+
+    /**
+     * @return array
+     */
     function getPathway() {
         $mainframe = &JFactory::getApplication('site');
         $db =& JFusionFactory::getDatabase($this->getJname());
@@ -629,12 +677,20 @@ class JFusionPublic_phpbb3 extends JFusionPublic
         return $pathway;
     }
 
+    /**
+     * @return \stdClass
+     */
     function getSearchQueryColumns() {
         $columns = new stdClass();
         $columns->title = "p.post_subject";
         $columns->text = "p.post_text";
         return $columns;
     }
+
+    /**
+     * @param object $pluginParam
+     * @return string
+     */
     function getSearchQuery(&$pluginParam) {
         //need to return threadid, postid, title, text, created, section
         $query = 'SELECT p.topic_id, p.post_id, p.forum_id, CASE WHEN p.post_subject = "" THEN CONCAT("Re: ",t.topic_title) ELSE p.post_subject END AS title, p.post_text AS text,
@@ -646,6 +702,12 @@ class JFusionPublic_phpbb3 extends JFusionPublic
                     INNER JOIN #__forums AS f on f.forum_id = p.forum_id';
         return $query;
     }
+
+    /**
+     * @param string $where
+     * @param object $pluginParam
+     * @param string $ordering
+     */
     function getSearchCriteria(&$where, &$pluginParam, $ordering) {
         $where.= " AND p.post_approved = 1";
         $forum = & JFusionFactory::getForum($this->getJname());
@@ -685,6 +747,10 @@ class JFusionPublic_phpbb3 extends JFusionPublic
         $where.= " AND p.forum_id IN (" . implode(',', $forumids) . ") ORDER BY $sort";
     }
 
+    /**
+     * @param mixed $post
+     * @return string
+     */
     function getSearchResultLink($post) {
         $forum = JFusionFactory::getForum($this->getJname());
         return $forum->getPostURL($post->topic_id, $post->post_id);

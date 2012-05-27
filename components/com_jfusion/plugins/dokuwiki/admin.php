@@ -137,6 +137,9 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
     /**
      * Get a list of users
      *
+     * @param null $limitstart
+     * @param null $limit
+     *
      * @return object with list of users
      */
     function getUserList($limitstart = null, $limit = null)
@@ -539,6 +542,9 @@ CODE;
     /*
      * uninstall function is to disable verious mods
      */
+    /**
+     * @return array
+     */
     function uninstall()
     {
         $return = true;
@@ -558,15 +564,13 @@ CODE;
 
         return array($return, $reasons);
     }
-    
-	/*
-	 * do plugin support multi usergroups
-	 * return UNKNOWN for unknown
-	 * return JNO for NO
-	 * return JYES for YES
-	 * return ... ??
-	 */
-	function requireFileAccess()
+
+    /**
+     * do plugin support multi usergroups
+     *
+     * @return string UNKNOWN or JNO or JYES or ??
+     */
+    function requireFileAccess()
 	{
 		return 'DEPENDS';
 	}

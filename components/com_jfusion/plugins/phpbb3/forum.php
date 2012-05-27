@@ -46,18 +46,42 @@ class JFusionForum_phpbb3 extends JFusionForum {
     function getThreadURL($threadid) {
         return 'viewtopic.php?t=' . $threadid;
     }
+
+    /**
+     * @param int $threadid
+     * @param int $postid
+     * @return string
+     */
     function getPostURL($threadid, $postid) {
         return 'viewtopic.php?p=' . $postid . '#p' . $postid;
     }
+
+    /**
+     * @param int $uid
+     * @return string
+     */
     function getProfileURL($uid) {
         return 'memberlist.php?mode=viewprofile&u=' . $uid;
     }
+
+    /**
+     * @return string
+     */
     function getPrivateMessageURL() {
         return 'ucp.php?i=pm&folder=inbox';
     }
+
+    /**
+     * @return string
+     */
     function getViewNewMessagesURL() {
         return 'search.php?search_id=newposts';
     }
+
+    /**
+     * @param int $puser_id
+     * @return int|string
+     */
     function getAvatar($puser_id) {
         if ($puser_id) {
             $dbparams = JFusionFactory::getParams($this->getJname());
@@ -90,6 +114,11 @@ class JFusionForum_phpbb3 extends JFusionForum {
         }
         return 0;
     }
+
+    /**
+     * @param int $puser_id
+     * @return array
+     */
     function getPrivateMessageCounts($puser_id) {
         if ($puser_id) {
             // read pm counts
@@ -111,6 +140,13 @@ class JFusionForum_phpbb3 extends JFusionForum {
         }
         return array('unread' => 0, 'total' => 0);
     }
+
+    /**
+     * @param array $usedforums
+     * @param string $result_order
+     * @param int $result_limit
+     * @return array
+     */
     function getActivityQuery($usedforums, $result_order, $result_limit) {
         //filter forums based on user permissions
         $forumids = $this->filterForumList($usedforums);
@@ -144,6 +180,11 @@ class JFusionForum_phpbb3 extends JFusionForum {
 
         return $query;
     }
+
+    /**
+     * @param object $post
+     * @return int
+     */
     function checkReadStatus(&$post)
     {
         $JUser = JFactory::getUser();
@@ -184,6 +225,10 @@ class JFusionForum_phpbb3 extends JFusionForum {
         }
         return $newstatus;
     }
+
+    /**
+     * @return array
+     */
     function getForumList() {
         //get the connection to the db
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -834,7 +879,11 @@ class JFusionForum_phpbb3 extends JFusionForum {
 		return $posts;
 	}
 
-	function getReplyCount(&$existingthread)
+    /**
+     * @param object $existingthread
+     * @return int
+     */
+    function getReplyCount(&$existingthread)
 	{
 		$db =& JFusionFactory::getDatabase($this->getJname());
 		$query = "SELECT count(*) FROM #__posts WHERE topic_id = {$existingthread->threadid} AND post_approved = 1 AND post_id != {$existingthread->postid}";

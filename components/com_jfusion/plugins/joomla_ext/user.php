@@ -52,6 +52,11 @@ class JFusionUser_joomla_ext extends JFusionUser {
         $status = JFusionJplugin::updateUser($userinfo, $overwrite, $this->getJname());
         return $status;
     }
+
+    /**
+     * @param object $userinfo
+     * @return array
+     */
     function deleteUser($userinfo) {
         //get the database ready
         $db = & JFusionFactory::getDatabase($this->getJname());
@@ -95,51 +100,132 @@ class JFusionUser_joomla_ext extends JFusionUser {
         $status['debug'][] = JText::_('USER_DELETION') . ' ' . $username;
         return $status;
     }
+
+    /**
+     * @param object $userinfo
+     * @return object
+     */
     function &getUser($userinfo) {
         $userinfo = JFusionJplugin::getUser($userinfo, $this->getJname());
         return $userinfo;
     }
+
+    /**
+     * @param string $username
+     */
     function filterUsername($username) {
         $username = JFusionJplugin::filterUsername($username, $this->getJname());
     }
+
+    /**
+     * @param object $userinfo
+     * @param array $options
+     * @return array
+     */
     function destroySession($userinfo, $options) {
     	$params = & JFusionFactory::getParams($this->getJname());
         $status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname(),$params->get('logout_type'));
         return $status;
     }
+
+    /**
+     * @param object $userinfo
+     * @param array $options
+     * @return array|string
+     */
     function createSession($userinfo, $options) {
     	$params = & JFusionFactory::getParams($this->getJname());
     	$status = JFusionJplugin::createSession($userinfo, $options, $this->getJname(),$params->get('brute_force'));
         return $status;
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function updateUsergroup($userinfo, $existinguser, &$status) {
         JFusionJplugin::updateUsergroup($userinfo, $existinguser, $status, $this->getJname());
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function updatePassword($userinfo, &$existinguser, &$status) {
         JFusionJplugin::updatePassword($userinfo, $existinguser, $status, $this->getJname());
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function updateUsername($userinfo, &$existinguser, &$status) {
         JFusionJplugin::updateUsername($userinfo, $existinguser, $status, $this->getJname());
     }
-    // @todo - To implement after the RC 1.1.2
+
+    /**
+     * @todo - To implement after the RC 1.1.2
+     *
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function updateUserLanguage($userinfo, &$existinguser, &$status) {
         JFusionJplugin::updateUserLanguage($userinfo, $existinguser, $status, $this->getJname());
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function updateEmail($userinfo, &$existinguser, &$status) {
         JFusionJplugin::updateEmail($userinfo, $existinguser, $status, $this->getJname());
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function blockUser($userinfo, &$existinguser, &$status) {
         JFusionJplugin::blockUser($userinfo, $existinguser, $status, $this->getJname());
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function unblockUser($userinfo, &$existinguser, &$status) {
         JFusionJplugin::unblockUser($userinfo, $existinguser, $status, $this->getJname());
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function activateUser($userinfo, &$existinguser, &$status) {
         JFusionJplugin::activateUser($userinfo, $existinguser, $status, $this->getJname());
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function inactivateUser($userinfo, &$existinguser, &$status) {
         JFusionJplugin::inactivateUser($userinfo, $existinguser, $status, $this->getJname());
     }
+
+    /**
+     * @param object $userinfo
+     * @param array $status
+     */
     function createUser($userinfo, &$status) {
         JFusionJplugin::createUser($userinfo, $status, $this->getJname());
     }

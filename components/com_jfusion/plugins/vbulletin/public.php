@@ -48,19 +48,38 @@ class JFusionPublic_vbulletin extends JFusionPublic
     {
         return 'vbulletin';
     }
+
+    /**
+     * @return string
+     */
     function getRegistrationURL()
     {
         return 'register.php';
     }
+
+    /**
+     * @return string
+     */
     function getLostPasswordURL()
     {
         return 'login.php?do=lostpw';
     }
+
+    /**
+     * @return string
+     */
     function getLostUsernameURL()
     {
         return 'login.php?do=lostpw';
     }
 
+    /**
+     * @param string $text
+     * @param string $for
+     * @param string $params
+     * @param string $object
+     * @return array
+     */
     function prepareText(&$text, $for = 'forum', $params = '', $object = '')
     {
         $status = array();
@@ -330,6 +349,10 @@ class JFusionPublic_vbulletin extends JFusionPublic
         //change the current directory back to Joomla.
         chdir(JPATH_SITE);
     }
+
+    /**
+     * @param object $data
+     */
     function parseBody(&$data)
     {
         global $name, $baseURL, $fullURL, $integratedURL, $vbsefmode, $vbsefenabled;
@@ -376,6 +399,10 @@ class JFusionPublic_vbulletin extends JFusionPublic
             $data->body.= "<pre><code>" . htmlentities(print_r($GLOBALS['vbulletin'], true)) . "</code></pre>";
         }
     }
+
+    /**
+     * @param object $data
+     */
     function parseHeader(&$data)
     {
         global $name, $baseURL, $fullURL, $integratedURL, $vbsefmode, $vbsefenabled;
@@ -402,6 +429,10 @@ class JFusionPublic_vbulletin extends JFusionPublic
             $data->header = preg_replace_callback($css_search, 'fixCSS', $data->header);
         }
     }
+
+    /**
+     * @return array
+     */
     function getPathWay()
     {
         $mainframe = JFactory::getApplication();
@@ -569,6 +600,11 @@ class JFusionPublic_vbulletin extends JFusionPublic
         }
         return $pathway;
     }
+
+    /**
+     * @param $vb_url
+     * @return string
+     */
     function getAlternateProfileURL($vb_url)
     {
         $params = & JFusionFactory::getParams($this->getJname());
@@ -604,6 +640,11 @@ class JFusionPublic_vbulletin extends JFusionPublic
         $columns->text = "p.pagetext";
         return $columns;
     }
+
+    /**
+     * @param object $pluginParam
+     * @return string
+     */
     function getSearchQuery(&$pluginParam)
     {
         //need to return threadid, postid, title, text, created, section
@@ -616,6 +657,12 @@ class JFusionPublic_vbulletin extends JFusionPublic
                     INNER JOIN #__forum AS f on f.forumid = t.forumid';
         return $query;
     }
+
+    /**
+     * @param string $where
+     * @param object $pluginParam
+     * @param string $ordering
+     */
     function getSearchCriteria(&$where, &$pluginParam, $ordering)
     {
         $where.= " AND p.visible = 1 AND f.password = ''";
@@ -649,17 +696,32 @@ class JFusionPublic_vbulletin extends JFusionPublic
         }
         $where .= " ORDER BY $sort";
     }
+
+    /**
+     * @param string $results
+     * @param object $pluginParam
+     */
     function filterSearchResults(&$results, &$pluginParam)
     {
         $plugin = & JFusionFactory::getForum($this->getJname());
         $plugin->filterActivityResults($results, 0, 'forumid', true);
     }
+
+    /**
+     * @param mixed $post
+     * @return string
+     */
     function getSearchResultLink($post)
     {
         $forum = & JFusionFactory::getForum($this->getJname());
         return $forum->getPostURL($post->threadid, $post->postid);
     }
 }
+
+/**
+ * @param $matches
+ * @return string
+ */
 function fixAction($matches)
 {
     global $name, $baseURL, $integratedURL, $vbsefmode, $vbsefenabled;
@@ -710,6 +772,11 @@ function fixAction($matches)
     }
     return $replacement;
 }
+
+/**
+ * @param $matches
+ * @return string
+ */
 function fixURL($matches)
 {
     global $name, $baseURL, $integratedURL, $vbsefmode, $vbsefenabled;
@@ -803,6 +870,11 @@ function fixURL($matches)
     }
     return $replacement;
 }
+
+/**
+ * @param $matches
+ * @return string
+ */
 function fixJS($matches)
 {
     global $name, $baseURL, $integratedURL, $vbsefmode, $vbsefenabled;
@@ -842,6 +914,11 @@ function fixJS($matches)
     }
     return "window.location='$url'";
 }
+
+/**
+ * @param $matches
+ * @return string
+ */
 function fixInclude($matches)
 {
     global $integratedURL;
@@ -861,6 +938,11 @@ function fixInclude($matches)
     }
     return $replacement;
 }
+
+/**
+ * @param $matches
+ * @return mixed|string
+ */
 function fixCSS($matches)
 {
     if (defined('_JFUSION_DEBUG')) {

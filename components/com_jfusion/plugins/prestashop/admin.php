@@ -50,6 +50,11 @@ class JFusionAdmin_prestashop extends JFusionAdmin
     function getTablename() {
         return 'customer';
     }
+
+    /**
+     * @param $storePath
+     * @return array|bool
+     */
     function loadSetup($storePath) {
         //check for trailing slash and generate file path
         if (substr($storePath, -1) == DS) {
@@ -90,8 +95,12 @@ class JFusionAdmin_prestashop extends JFusionAdmin
 	    }
         return $config;
 	}
-	
-	function setupFromPath($storePath) {
+
+    /**
+     * @param string $storePath
+     * @return array|bool
+     */
+    function setupFromPath($storePath) {
 	    $config = JFusionAdmin_prestashop::loadSetup($storePath);
         if (!empty($config)) {
             //save the parameters into array
@@ -110,6 +119,10 @@ class JFusionAdmin_prestashop extends JFusionAdmin
         }
         return false;
     }
+
+    /**
+     * @return array
+     */
     function getUserList() {
         //getting the connection to the db
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -119,6 +132,10 @@ class JFusionAdmin_prestashop extends JFusionAdmin
         $userlist = $db->loadObjectList();
         return $userlist;
     }
+
+    /**
+     * @return int
+     */
     function getUserCount() {
         //getting the connection to the db
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -128,6 +145,10 @@ class JFusionAdmin_prestashop extends JFusionAdmin
         $no_users = $db->loadResult();
         return $no_users;
     }
+
+    /**
+     * @return array
+     */
     function getUsergroupList() {
         //get the connection to the db
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -145,6 +166,10 @@ class JFusionAdmin_prestashop extends JFusionAdmin
 		$result = $db->loadObjectList();
         return $result;
     }
+
+    /**
+     * @return string
+     */
     function getDefaultUsergroup() {
 	    $db = JFusionFactory::getDatabase($this->getJname());
         //we want to output the usergroup name
@@ -156,25 +181,36 @@ class JFusionAdmin_prestashop extends JFusionAdmin
         $db->setQuery($query);
 		return $db->loadResult();
     }
+
+    /**
+     * @return bool
+     */
     function allowRegistration() {
         //you cannot disable registration
             $result = true;
             return $result;
     }
-	function allowEmptyCookiePath(){
+
+    /**
+     * @return bool
+     */
+    function allowEmptyCookiePath(){
 		return true;
 	}
-	function allowEmptyCookieDomain(){
+
+    /**
+     * @return bool
+     */
+    function allowEmptyCookieDomain(){
 		return true;
 	}
-	/*
-	 * do plugin support multi usergroups
-	 * return UNKNOWN for unknown
-	 * return JNO for NO
-	 * return JYES for YES
-	 * return ... ??
-	 */
-	function requireFileAccess()
+
+    /**
+     * do plugin support multi usergroups
+     *
+     * @return string UNKNOWN or JNO or JYES or ??
+     */
+    function requireFileAccess()
 	{
 		return 'JNO';
 	}	

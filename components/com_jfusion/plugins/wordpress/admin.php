@@ -50,8 +50,12 @@ class JFusionAdmin_wordpress extends JFusionAdmin
     function getTablename() {
 		return 'users';
 	}
-	
-	function getUsergroupListWPA($db) {
+
+    /**
+     * @param $db
+     * @return array
+     */
+    function getUsergroupListWPA($db) {
 		$query = "SELECT option_value FROM #__options WHERE option_name = 'wp_user_roles'";
 		$db->setQuery($query);
 		$roles_ser = $db->loadResult();
@@ -67,10 +71,12 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 		}
 		return $usergroups;
 	}
-	
-	
 
-	function setupFromPath($forumPath) {
+    /**
+     * @param string $forumPath
+     * @return array|bool
+     */
+    function setupFromPath($forumPath) {
 		//check for trailing slash and generate file path
 		if (substr($forumPath, -1) == DS) {
 			$myfile = $forumPath . 'wp-config.php';
@@ -140,7 +146,12 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 
 	}
 
-	function getUserList($start = 0, $count = '')
+	/**
+     * @param int $start
+     * @param string $count
+     * @return array
+     */
+    function getUserList($start = 0, $count = '')
 	{
 		//getting the connection to the db
 		$db = JFusionFactory::getDatabase($this->getJname());
@@ -168,18 +179,27 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 		return $no_users;
 	}
 
-	function getUsergroupList() {
+	/**
+     * @return array
+     */
+    function getUsergroupList() {
 		$usergroups = JFusionWordpressHelper::getUsergroupListWP();
 		return $usergroups;
 	}
 
-	function getDefaultUsergroup() {
+	/**
+     * @return string
+     */
+    function getDefaultUsergroup() {
 		$params = JFusionFactory::getParams($this->getJname());
 		$usergroup_id = $params->get('usergroup');
 		return JFusionWordpressHelper::getUsergroupNameWP($usergroup_id);
 	}
 
-	function allowRegistration() {
+	/**
+     * @return bool
+     */
+    function allowRegistration() {
 		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = "SELECT option_value FROM #__options WHERE option_name = 'users_can_register'";
 		$db->setQuery($query);

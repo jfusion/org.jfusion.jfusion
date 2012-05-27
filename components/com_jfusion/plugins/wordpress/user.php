@@ -49,7 +49,11 @@ class JFusionUser_wordpress extends JFusionUser {
 		return 'wordpress';
 	}
 
-	function &getUser($userinfo) {
+    /**
+     * @param object $userinfo
+     * @return object|stdClass
+     */
+    function &getUser($userinfo) {
 		//get the identifier
 		list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'user_login', 'user_email');
 		// Get a database object
@@ -86,12 +90,13 @@ class JFusionUser_wordpress extends JFusionUser {
 		}
 	}
 
-
-	/*
-	 * Routine to convert userobject to standardized JFusion version
-	*/
-
-	function convertUserobjectToJFusion($user) {
+    /**
+     * Routine to convert userobject to standardized JFusion version
+     *
+     * @param $user
+     * @return \stdClass
+     */
+    function convertUserobjectToJFusion($user) {
 		$result = new stdClass;
 
 		$result->userid       = $user->ID;
@@ -137,8 +142,12 @@ class JFusionUser_wordpress extends JFusionUser {
 		return $result;
 	}
 
-
-	function destroySession($userinfo, $options) {
+    /**
+     * @param object $userinfo
+     * @param array $options
+     * @return array|bool|string
+     */
+    function destroySession($userinfo, $options) {
 
 		$status = array();
 		$status['error'] = array();
@@ -281,12 +290,22 @@ class JFusionUser_wordpress extends JFusionUser {
 		}
 	}
 
-	function blockUser($userinfo, &$existinguser, &$status) {
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
+    function blockUser($userinfo, &$existinguser, &$status) {
 		// not supported for Wordpress
 		$status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ': Blocking not supported by Wordpress';
 	}
 
-	function unblockUser($userinfo, &$existinguser, &$status) {
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
+    function unblockUser($userinfo, &$existinguser, &$status) {
 	}
 
     /**
@@ -306,7 +325,12 @@ class JFusionUser_wordpress extends JFusionUser {
 		}
 	}
 
-	function inactivateUser($userinfo, &$existinguser, &$status) {
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
+    function inactivateUser($userinfo, &$existinguser, &$status) {
 		//set activation key
 		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = 'UPDATE #__users SET user_activation_key =' . $db->Quote($userinfo->activation) . ' WHERE ID =' . (int)$existinguser->userid;
@@ -425,7 +449,11 @@ class JFusionUser_wordpress extends JFusionUser {
 		$status['debug'][] = JText::_('USER_CREATION');
 	}
 
-	function deleteUser($userinfo) {
+    /**
+     * @param object $userinfo
+     * @return array
+     */
+    function deleteUser($userinfo) {
 		//setup status array to hold debug info and errors
 		$status = array();
 		$status['debug'] = array();
@@ -520,7 +548,13 @@ class JFusionUser_wordpress extends JFusionUser {
 		return $status;
 	}
 
-	function updateUsergroup($userinfo, &$existinguser, &$status) {
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     * @return null
+     */
+    function updateUsergroup($userinfo, &$existinguser, &$status) {
 		//check to see if we have a group_id in the $userinfo, if not return
 		if (!isset($userinfo->group_id)) {
 			$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');

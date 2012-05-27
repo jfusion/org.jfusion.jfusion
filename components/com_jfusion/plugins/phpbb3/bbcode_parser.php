@@ -108,6 +108,10 @@ class phpbb_bbcode_parser {
         }
         $this->bbcode_bitfield = base64_encode($this->bbcode_bitfield);
     }
+
+    /**
+     * @param $id
+     */
     function set_bbcode_bitfield($id) {
         $byte = $id >> 3;
         $bit = 7 - ($id & 7);

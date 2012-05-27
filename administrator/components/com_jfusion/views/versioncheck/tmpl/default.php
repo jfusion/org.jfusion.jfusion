@@ -256,24 +256,25 @@ if ($this->up2date) {
 			<!--
 			function confirmSubmit(action)
 			{
-				var install_url,confirm_text;
+				var installurl,confirmtext;
 				if (action == 'build') {
-				    confirm_text = '<?php echo JText::_('UPGRADE_CONFIRM_BUILD'); ?>';
-				    install_url = 'https://github.com/jfusion/org.jfusion.jfusion/blob/develop/jfusion_package.zip?raw=true';
+                    confirmtext = '<?php echo JText::_('UPGRADE_CONFIRM_BUILD'); ?>';
+                    installurl = 'https://github.com/jfusion/org.jfusion.jfusion/blob/develop/jfusion_package.zip?raw=true';
 				} else if (action == 'git') {
-				    confirm_text = '<?php echo JText::_('UPGRADE_CONFIRM_SVN'); ?> ' + document.adminForm2.git_tree.value;
-				    install_url = 'https://github.com/joomla/joomla-cms/raw/' + document.adminForm2.git_tree.value + '/jfusion_package.zip';
+                    confirmtext = '<?php echo JText::_('UPGRADE_CONFIRM_SVN'); ?> ' + document.adminForm2.git_tree.value;
+                    installurl = 'https://github.com/joomla/joomla-cms/raw/' + document.adminForm2.git_tree.value + '/jfusion_package.zip';
 				} else {
-				    confirm_text = '<?php echo JText::_('UPGRADE_CONFIRM_RELEASE') . ' ' . $this->JFusion->version; ?>';
-				    install_url = 'https://github.com/jfusion/org.jfusion.jfusion/blob/develop/jfusion_package.zip?raw=true';
+                    confirmtext = '<?php echo JText::_('UPGRADE_CONFIRM_RELEASE') . ' ' . $this->JFusion->version; ?>';
+                    installurl = 'https://github.com/jfusion/org.jfusion.jfusion/blob/develop/jfusion_package.zip?raw=true';
 				}
 				
-				var agree = confirm(confirm_text);
+				var agree = confirm(confirmtext);
 				if (agree) {
-				    document.adminForm2.install_url.value = install_url;
+				    document.adminForm2.install_url.value = installurl;
 				    $('install').submit();
 				    return true ;
 				}
+                return false;
 			}
 
 			

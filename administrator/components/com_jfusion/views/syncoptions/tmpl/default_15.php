@@ -28,10 +28,10 @@ JFusionFunctionAdmin::displayDonate();
             var url = '<?php echo JURI::current(); ?>';
             // refresh every 15 seconds
             var timer = 1;
-            var time_update = 10;
+            var timeupdate = 10;
             var counter = 10;
             // periodical and dummy variables for later use
-            var periodical, dummy, sub_vars;
+            var periodical, dummy, subvars;
             var start = $('start'), stop = $('stop'), log = $('log_res');
             //test
             /* our ajax istance for starting the sync */
@@ -66,23 +66,23 @@ JFusionFunctionAdmin::displayDonate();
                         $clear(periodical);
                         document.getElementById("counter").innerHTML = '<b><?php echo JText::_('FINISHED'); ?></b>';
                     } else {
-                        counter = time_update;
+                        counter = timeupdate;
                         // dummy to prevent caching of php
                         dummy = $time() + $random(0, 100);
                         //generate the get variable for submission
 
-                        sub_vars = 'option=com_jfusion&task=syncresume&tmpl=component&dummy=' + dummy + '&syncid=' + '<?php echo $this->syncid; ?>';
+                        subvars = 'option=com_jfusion&task=syncresume&tmpl=component&dummy=' + dummy + '&syncid=' + '<?php echo $this->syncid; ?>';
                         for(i=0; i<document.adminForm.elements.length; i++)
                         {
                             if (document.adminForm.elements[i].name=='userbatch')
                             {
-                                sub_vars = sub_vars + '&' + document.adminForm.elements[i].name + '=' + document.adminForm.elements[i].value;
+                                subvars = subvars + '&' + document.adminForm.elements[i].name + '=' + document.adminForm.elements[i].value;
                             }
                         }
                         //document.getElementById("log_res").innerHTML = '<img src="<?php echo 'components/com_jfusion/images/ajax_loader.gif'; ?>"> Loading ....';
                         progress_vars = 'option=com_jfusion&tmpl=component&task=syncprogress&syncid=' + '<?php echo $this->syncid; ?>';
                         ajax.request(progress_vars);
-                        ajaxsync.request(sub_vars);
+                        ajaxsync.request(subvars);
 
                     }
                 } else {

@@ -96,6 +96,10 @@ class JFusionForum_efront extends JFusionForum {
         return 'search.php?action=getnew';
     }
 */
+    /**
+     * @param int $userid
+     * @return string
+     */
     function getAvatar($userid) {
         //get the connection to the db
         $db = JFusionFactory::getDatabase($this->getJname());

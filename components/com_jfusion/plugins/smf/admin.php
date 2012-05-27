@@ -367,8 +367,10 @@ if (!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') ===
         }
     }
 
-    /*
+    /**
      * uninstall function is to disable verious mods
+     *
+     * @return array
      */
     function uninstall()
     {
@@ -380,22 +382,23 @@ if (!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') ===
 
     	return array(true, '');
     }
-    
-	/*
-	 * do plugin support multi usergroups
-	 */
-	function isMultiGroup()
+
+    /**
+     * do plugin support multi usergroups
+     *
+     * @return bool
+     */
+    function isMultiGroup()
 	{
 		return false;
 	}
-	/*
-	 * do plugin support multi usergroups
-	 * return UNKNOWN for unknown
-	 * return JNO for NO
-	 * return JYES for YES
-	 * return ... ??
-	 */
-	function requireFileAccess()
+
+    /**
+     * do plugin support multi usergroups
+     *
+     * @return string UNKNOWN or JNO or JYES or ??
+     */
+    function requireFileAccess()
 	{
 		return 'JNO';
 	}

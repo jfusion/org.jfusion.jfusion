@@ -117,11 +117,18 @@ class JFusionUser_vbulletin extends JFusionUser
         return 'vbulletin';
     }
 
+    /**
+     * @return string
+     */
     function getTablename()
     {
         return 'user';
     }
 
+    /**
+     * @param object $userinfo
+     * @return array
+     */
     function deleteUser($userinfo)
     {
         //setup status array to hold debug info and errors
@@ -148,6 +155,11 @@ class JFusionUser_vbulletin extends JFusionUser
         return $status;
     }
 
+    /**
+     * @param string $userinfo
+     * @param string $options
+     * @return array
+     */
     function destroySession($userinfo = '', $options = '')
     {
         $status = array();
@@ -317,6 +329,11 @@ class JFusionUser_vbulletin extends JFusionUser
         return strtolower($username);
     }
 
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function updatePassword($userinfo, &$existinguser, &$status)
     {
         jimport('joomla.user.helper');
@@ -335,6 +352,11 @@ class JFusionUser_vbulletin extends JFusionUser
         }
     }
 
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function updateEmail($userinfo, &$existinguser, &$status)
     {
         $apidata = array("userinfo" => $userinfo, "existinguser" => $existinguser);
@@ -353,6 +375,11 @@ class JFusionUser_vbulletin extends JFusionUser
 		}
     }
 
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function blockUser (&$userinfo, &$existinguser, &$status)
     {
         $db =& JFusionFactory::getDatabase($this->getJname());
@@ -398,6 +425,11 @@ class JFusionUser_vbulletin extends JFusionUser
         }
     }
 
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function unblockUser($userinfo, &$existinguser, &$status)
     {
         //found out what usergroup should be used
@@ -455,6 +487,11 @@ class JFusionUser_vbulletin extends JFusionUser
 		}
     }
 
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function activateUser($userinfo, &$existinguser, &$status)
     {
         //found out what usergroup should be used
@@ -481,6 +518,11 @@ class JFusionUser_vbulletin extends JFusionUser
         }
     }
 
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function inactivateUser($userinfo, &$existinguser, &$status)
     {
         //found out what usergroup should be used
@@ -534,6 +576,11 @@ class JFusionUser_vbulletin extends JFusionUser
 		}
     }
 
+    /**
+     * @param object $userinfo
+     * @param array $status
+     * @return null
+     */
     function createUser($userinfo, &$status)
     {
         //get the default user group and determine if we are using simple or advanced
@@ -697,7 +744,13 @@ class JFusionUser_vbulletin extends JFusionUser
 		}
     }
 
-    //returns the user's title based on number of posts
+    /**
+     * the user's title based on number of posts
+     *
+     * @param $groupid
+     * @param int $posts
+     * @return mixed
+     */
     function getDefaultUserTitle($groupid, $posts = 0)
     {
         $db =& JFusionFactory::getDatabase($this->getJname());
@@ -714,6 +767,10 @@ class JFusionUser_vbulletin extends JFusionUser
         return $title;
     }
 
+    /**
+     * @param bool $keepalive
+     * @return int
+     */
     function syncSessions($keepalive = false)
     {
         $debug = (defined('DEBUG_SYSTEM_PLUGIN') ? true : false);
@@ -893,6 +950,11 @@ class JFusionUser_vbulletin extends JFusionUser
         return $settings;
     }
 
+    /**
+     * @param $settings
+     * @param $request
+     * @param $userinfo
+     */
     function AEC_expiration_action(&$settings, &$request, $userinfo)
     {
         $status = array();
@@ -933,6 +995,11 @@ class JFusionUser_vbulletin extends JFusionUser
         }
     }
 
+    /**
+     * @param $settings
+     * @param $request
+     * @param $userinfo
+     */
     function AEC_action(&$settings, &$request, $userinfo)
     {
         $status = array();
@@ -980,6 +1047,11 @@ class JFusionUser_vbulletin extends JFusionUser
         }
     }
 
+    /**
+     * @param $settings
+     * @param $request
+     * @param $userinfo
+     */
     function AEC_on_userchange_action(&$settings, &$request, $userinfo)
     {
         //Only do something on registration

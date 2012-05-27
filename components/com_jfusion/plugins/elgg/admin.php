@@ -80,6 +80,11 @@ class JFusionAdmin_elgg extends JFusionAdmin
         }
         return $config;
     }
+
+    /**
+     * @param string $path
+     * @return array|bool
+     */
     function setupFromPath($path) {
         $config = JFusionAdmin_elgg::loadSetup($path);
         if (!empty($config)) {
@@ -96,6 +101,12 @@ class JFusionAdmin_elgg extends JFusionAdmin
         }
         return false;
     }
+
+    /**
+     * @param int $start
+     * @param string $count
+     * @return array
+     */
     function getUserList($start = 0, $count = '') {
         //getting the connection to the db
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -108,6 +119,10 @@ class JFusionAdmin_elgg extends JFusionAdmin
         $userlist = $db->loadObjectList();
         return $userlist;
     }
+
+    /**
+     * @return int
+     */
     function getUserCount() {
         //getting the connection to the db
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -116,6 +131,10 @@ class JFusionAdmin_elgg extends JFusionAdmin
         //getting the results
         return $db->loadResult();
     }
+
+    /**
+     * @return array
+     */
     function getUsergroupList() {
         //NOT IMPLEMENTED YET!
         $default_group = new stdClass;
@@ -124,10 +143,18 @@ class JFusionAdmin_elgg extends JFusionAdmin
         $UsergroupList[] = $default_group;
         return $UsergroupList;
     }
+
+    /**
+     * @return string
+     */
     function getDefaultUsergroup() {
         //Only seems to be 2 usergroups in elgg (without any acl setup): Administrator, and user.  So just return 'user'
         return 'user';
     }
+
+    /**
+     * @return bool
+     */
     function allowRegistration() {
         $params = JFusionFactory::getParams($this->getJname());
         include_once $params->get('source_path') . DS . "engine" . DS . "start.php";
@@ -141,14 +168,13 @@ class JFusionAdmin_elgg extends JFusionAdmin
             return $result;
         }
     }
-	/*
-	 * do plugin support multi usergroups
-	 * return UNKNOWN for unknown
-	 * return JNO for NO
-	 * return JYES for YES
-	 * return ... ??
-	 */
-	function requireFileAccess()
+
+    /**
+     * do plugin support multi usergroups
+     *
+     * @return string UNKNOWN or JNO or JYES or ??
+     */
+    function requireFileAccess()
 	{
 		return 'JYES';
 	}    

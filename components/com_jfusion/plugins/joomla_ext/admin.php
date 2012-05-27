@@ -62,30 +62,63 @@ class JFusionAdmin_joomla_ext extends JFusionAdmin
 		}
 		return '1.6';
 	}
-	function getJname()
+
+    /**
+     * @return string
+     */
+    function getJname()
 	{
 		return 'joomla_ext';
 	}
-	function getTablename() {
+
+    /**
+     * @return string
+     */
+    function getTablename() {
 		return JFusionJplugin::getTablename();
 	}
-	function getUserList() {
+
+    /**
+     * @return array
+     */
+    function getUserList() {
 		return JFusionJplugin::getUserList($this->getJname());
 	}
-	function getUserCount() {
+
+    /**
+     * @return int
+     */
+    function getUserCount() {
 		return JFusionJplugin::getUserCount($this->getJname());
 	}
-	function getUsergroupList() {
+
+    /**
+     * @return array
+     */
+    function getUsergroupList() {
 		return JFusionJplugin::getUsergroupList($this->getJname());
 	}
-	function getDefaultUsergroup() {
+
+    /**
+     * @return string
+     */
+    function getDefaultUsergroup() {
 		$params = & JFusionFactory::getParams($this->getJname());
 		return JFusionJplugin::getDefaultUsergroup($this->getJname());
 	}
-	function setupFromPath($path) {
+
+    /**
+     * @param string $path
+     * @return object
+     */
+    function setupFromPath($path) {
 		return JFusionJplugin::setupFromPath($path);
 	}
-	function allowRegistration() {
+
+    /**
+     * @return bool
+     */
+    function allowRegistration() {
 		return JFusionJplugin::allowRegistration($this->getJname());
 	}
 	function debugConfig() {
@@ -111,14 +144,13 @@ class JFusionAdmin_joomla_ext extends JFusionAdmin
 			JError::raiseWarning(0, $jname . ': ' . JText::_('ADVANCED_GROUPMODE_ONLY_SUPPORTED_FORSLAVES'));
 		}
 	}
-	/*
-	 * do plugin support multi usergroups
-	 * return UNKNOWN for unknown
-	 * return JNO for NO
-	 * return JYES for YES
-	 * return ... ??
-	 */
-	function requireFileAccess()
+
+    /**
+     * do plugin support multi usergroups
+     *
+     * @return string UNKNOWN or JNO or JYES or ??
+     */
+    function requireFileAccess()
 	{
 		return 'JNO';
 	}	

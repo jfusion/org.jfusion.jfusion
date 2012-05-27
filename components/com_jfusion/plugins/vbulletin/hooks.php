@@ -156,6 +156,11 @@ class executeJFusionHook
             }
         }
     }
+
+    /**
+     * @param $plugin
+     * @return array
+     */
     function getHooks($plugin)
     {
         global $hookFile;
@@ -377,6 +382,10 @@ class executeJFusionHook
         }
         return true;
     }
+
+    /**
+     * @return bool
+     */
     function login_verify_success()
     {
         $this->backup_restore_globals('backup');
@@ -411,6 +420,10 @@ class executeJFusionHook
         $this->backup_restore_globals('restore');
         return true;
     }
+
+    /**
+     * @return bool
+     */
     function logout_process()
     {
         $this->backup_restore_globals('backup');
@@ -441,6 +454,10 @@ class executeJFusionHook
         $this->backup_restore_globals('restore');
         return true;
     }
+
+    /**
+     * @param $action
+     */
     function backup_restore_globals($action)
     {
         static $vb_globals;
@@ -525,6 +542,9 @@ class executeJFusionHook
         $public->parseBody($jdata);
     }
 
+    /**
+     * @return JApplication
+     */
     function startJoomla()
     {
         define('_VBULLETIN_JFUSION_HOOK', true);
@@ -568,12 +588,19 @@ class executeJFusionHook
     }
 }
 
+/**
+ *
+ */
 class JFvBulletinTask {
     private $key;
     private $data;
     protected $vbulletin;
     protected $xml;
 
+    /**
+     * @param $vbulletin
+     * @param $key
+     */
     function __construct(&$vbulletin, $key) {
         if (empty($key)) {
             $this->outputResponse(array("error" => "Missing key!"));
@@ -582,6 +609,9 @@ class JFvBulletinTask {
         $this->vbulletin =& $vbulletin;
     }
 
+    /**
+     * @param $task
+     */
     function performTask($task) {
         if (isset($_POST['jfvbdata'])) {
             $this->data = $this->decryptApiData($_POST['jfvbdata']);
@@ -598,6 +628,10 @@ class JFvBulletinTask {
         }
     }
 
+    /**
+     * @param $data
+     * @return array|mixed
+     */
     function decryptApiData($data) {
         $decrypted_data = array();
     	if (function_exists('mcrypt_decrypt')) {
@@ -614,6 +648,9 @@ class JFvBulletinTask {
         return $decrypted_data;
     }
 
+    /**
+     * @param array $data
+     */
     function outputResponse($data = array("error" => "Access Denied!")) {
         if (!empty($data['errors'])) {
             $data['success'] = 0;
@@ -629,6 +666,10 @@ class JFvBulletinTask {
         die($xml_string);
     }
 
+    /**
+     * @param $val
+     * @param $key
+     */
     function addDataToXML ($val, $key) {
         if ($key == 'errors') {
             if (count($val) === 1) {
@@ -643,6 +684,10 @@ class JFvBulletinTask {
         }
     }
 
+    /**
+     * @param $existinguser
+     * @return array
+     */
     function convertUserData($existinguser)
     {
         $userinfo = array('userid' => $existinguser->userid, 'username' => $existinguser->username, 'email' => $existinguser->email, 'password' => $existinguser->password);

@@ -52,10 +52,18 @@ class JFusionPublic_magento extends JFusionPublic {
     function getLostPasswordURL() {
         return 'index.php/customer/account/forgotpassword/';
     }
+
+    /**
+     * @return string
+     */
     function getLostUsernameURL() {
         return 'index.php/customer/account/forgotpassword/'; // not available in Magento, map to lostpassword
 	}
-        
+
+    /**
+     * @param null $userinfo
+     * @return array|string
+     */
     function setLanguageFrontEnd($userinfo = null) {
         $status = array('error' => '', 'debug' => '');
         // The language is selected by the library magelib when the magento framework is started

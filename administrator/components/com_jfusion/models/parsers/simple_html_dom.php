@@ -81,7 +81,7 @@ function dump_html_tree($node, $show_attr=true, $deep=0) {
         dump_html_tree($c, $show_attr, $deep+1);
 }
 
-/*
+/**
  * get dom form file (deprecated)
  *
  * @return \simple_html_dom
@@ -93,11 +93,12 @@ function file_get_dom() {
     return $dom;
 }
 
-/*
+/**
  * get dom form string (deprecated)
  *
  * @param $str
  * @param bool $lowercase
+ *
  * @return \simple_html_dom
  */
 function str_get_dom($str, $lowercase=true) {
@@ -346,12 +347,13 @@ class simple_html_dom_node {
         return $ret . $this->_[HDOM_INFO_ENDSPACE] . '>';
     }
 
-    // find elements by css selector
-    /*
-     * find
+    /**
+     * find elements by css selector
      *
      * @param string $selector
-     * @param string $idx
+     * @param null|string $idx
+     *
+     * @return array|null
      */
     function find($selector, $idx=null) {
         $selectors = $this->parse_selector($selector);
@@ -775,7 +777,7 @@ class simple_html_dom {
         $this->callback = null;
     }
 
-    /*
+    /**
      * save dom as string
      *
      * @param string $filepath
@@ -814,7 +816,7 @@ class simple_html_dom {
         $this->root->dump($show_attr);
     }
 
-    /*
+    /**
      * prepare HTML data and init everything
      *
      * @param $str
@@ -838,9 +840,7 @@ class simple_html_dom {
         if ($this->size>0) $this->char = $this->doc[0];
     }
 
-    /*
-     * parse html content
-     *
+    /**
      * @return bool
      */
     protected function parse() {
@@ -1085,10 +1085,10 @@ class simple_html_dom {
         }
     }
 
-    /*
+    /**
      * link node's parent
      *
-     * @param $node
+     * @param &$node
      * @param $is_child
      */
     protected function link_nodes(&$node, $is_child) {
@@ -1219,10 +1219,11 @@ class simple_html_dom {
         if ($this->size>0) $this->char = $this->doc[0];
     }
 
-    /*
+    /**
      * restore noise to html content
      *
      * @param $text
+     *
      * @return string
      */
     function restore_noise($text) {
@@ -1234,6 +1235,9 @@ class simple_html_dom {
         return $text;
     }
 
+    /**
+     * @return string
+     */
     function __toString() {
         return $this->root->innertext();
     }

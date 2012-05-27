@@ -65,6 +65,11 @@ class JFusionForum_smf extends JFusionForum
         return 'index.php?topic=' . $threadid . '.msg' . $postid . '#msg' . $postid;
     }
 
+    /**
+     * @param int $forumid
+     * @param int $threadid
+     * @return string
+     */
     function getReplyURL($forumid, $threadid)
     {
         return "index.php?action=post;topic=$threadid";
@@ -765,6 +770,10 @@ class JFusionForum_smf extends JFusionForum
         return $results;
     }
 
+    /**
+     * @param int $threadid
+     * @return bool
+     */
     function getThreadLockedStatus($threadid) {
         $db = & JFusionFactory::getDatabase($this->getJname());
         $query = "SELECT locked FROM #__topics WHERE ID_TOPIC = $threadid";

@@ -135,6 +135,10 @@ function login_jfusion(&$username, &$password) {
 
     return $result;
 }
+
+/**
+ * @param $data
+ */
 function logout_jfusion(&$data) {
     //check to see if JFusion is not active
     global $JFusionActive, $db, $user, $phpbb_root_path, $phpEx;

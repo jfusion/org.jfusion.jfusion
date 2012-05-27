@@ -383,6 +383,13 @@ function ft_queryParser($query) {
     }
     return $q;
 }
+
+/**
+ * @param $string
+ * @param $stopwords
+ * @param bool $wc
+ * @return array
+ */
 function idx_tokenizer($string, &$stopwords, $wc = false) {
     $words = array();
     $wc = ($wc) ? '' : $wc = '\*';
@@ -406,6 +413,11 @@ function idx_tokenizer($string, &$stopwords, $wc = false) {
     }
     return $words;
 }
+
+/**
+ * @param $words
+ * @return array
+ */
 function idx_lookup($words) {
     global $conf;
     $result = array();
@@ -438,6 +450,12 @@ function idx_lookup($words) {
     }
     return $final;
 }
+
+/**
+ * @param $words
+ * @param $result
+ * @return array
+ */
 function idx_getIndexWordsSorted($words, &$result) {
     // parse and sort tokens
     $tokens = array();
@@ -506,6 +524,11 @@ function idx_getIndexWordsSorted($words, &$result) {
     }
     return $wids;
 }
+
+/**
+ * @param $w
+ * @return int
+ */
 function wordlen($w) {
     defined('IDX_ASIAN2') OR define('IDX_ASIAN2','['.
        '\x{2E80}-\x{3040}'.  // CJK -> Hangul
@@ -521,6 +544,11 @@ function wordlen($w) {
     if (preg_match('/' . IDX_ASIAN2 . '/u', $w)) $l+= ord($w) - 0xE1; // Lead bytes from 0xE2-0xEF
     return $l;
 }
+
+/**
+ * @param $filter
+ * @return array
+ */
 function idx_indexLengths(&$filter) {
     global $conf, $rootFolder;
     $dir = @opendir($rootFolder . '/data/index');
@@ -563,12 +591,24 @@ function utf8_stripspecials($string, $repl = '', $additional = '') {
     }
     return preg_replace('/[' . $additional . '\x00-\x19' . $specials . ']/u', $repl, $string);
 }
+
+/**
+ * @param $pre
+ * @param $wlen
+ * @return array
+ */
 function idx_getIndex($pre, $wlen) {
     global $conf, $rootFolder;
     $fn = $rootFolder . '/data/index' . '/' . $pre . $wlen . '.idx';
     if (!@file_exists($fn)) return array();
     return file($fn);
 }
+
+/**
+ * @param $page_idx
+ * @param $line
+ * @return array
+ */
 function idx_parseIndexLine(&$page_idx, $line) {
     $result = array();
     $line = trim($line);
@@ -586,9 +626,23 @@ function idx_parseIndexLine(&$page_idx, $line) {
     }
     return $result;
 }
+
+/**
+ * @param $id
+ * @param string $rev
+ * @param bool $clean
+ * @return bool
+ */
 function page_exists($id, $rev = '', $clean = true) {
     return @file_exists(wikiFN($id, $rev, $clean));
 }
+
+/**
+ * @param $raw_id
+ * @param string $rev
+ * @param bool $clean
+ * @return string
+ */
 function wikiFN($raw_id, $rev = '', $clean = true) {
     global $conf, $rootFolder;
     global $cache_wikifn;
@@ -621,6 +675,12 @@ function wikiFN($raw_id, $rev = '', $clean = true) {
     $cache[$raw_id][$rev] = $fn;
     return $fn;
 }
+
+/**
+ * @param $file
+ * @param bool $safe
+ * @return mixed|string
+ */
 function utf8_encodeFN($file, $safe = true) {
     if ($safe && preg_match('#^[a-zA-Z0-9/_\-.%]+$#', $file)) {
         return $file;
@@ -629,6 +689,11 @@ function utf8_encodeFN($file, $safe = true) {
     $file = str_replace('%2F', '/', $file);
     return $file;
 }
+
+/**
+ * @param $id
+ * @return bool
+ */
 function isHiddenPage($id) {
     global $conf;
     if (empty($conf['hidepages'])) return false;

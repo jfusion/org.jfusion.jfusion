@@ -60,6 +60,11 @@ class JFusionUser_prestashop extends JFusionUser {
     {
         return 'prestashop';
     }
+
+    /**
+     * @param object $userinfo
+     * @return array
+     */
     function deleteUser($userinfo) {
         /* Warning: this function mimics the original prestashop function which is a suggestive deletion, 
 		all user information remains in the table for past reference purposes. To delete everything associated
@@ -75,6 +80,12 @@ class JFusionUser_prestashop extends JFusionUser {
 		$status["debug"][] = "Deleted user";
 		return $status;
     }
+
+    /**
+     * @param string $userinfo
+     * @param string $option
+     * @return array
+     */
     function destroySession($userinfo = "", $option = "") {
 	    $status = array();
         $status['error'] = array();
@@ -186,9 +197,20 @@ class JFusionUser_prestashop extends JFusionUser {
 		}
         return false;
 	}
+
+    /**
+     * @param string $username
+     * @return string
+     */
     function filterUsername($username) {
         return $username;
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function updatePassword($userinfo, &$existinguser, &$status) {
         jimport('joomla.user.helper');
         $existinguser->password_salt = JUserHelper::genRandomPassword(8);
@@ -576,6 +598,12 @@ class JFusionUser_prestashop extends JFusionUser {
 	        }
 	    }
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function updateEmail($userinfo, &$existinguser, &$status) {
         //we need to update the email
 		$params = JFusionFactory::getParams($this->getJname());
@@ -588,12 +616,24 @@ class JFusionUser_prestashop extends JFusionUser {
             $status['debug'][] = JText::_('PASSWORD_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
         }
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function activateUser($userinfo, &$existinguser, &$status) {
         /* change the �active� field of the customer in the ps_customer table to 1 */
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = "UPDATE #__customer SET active ='1' WHERE id_customer ='" . (int)$existinguser->userid . "'";
         $db->setQuery($query);
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function inactivateUser($userinfo, &$existinguser, &$status) {
         /* change the �active� field of the customer in the ps_customer table to 0 */
         $db = JFusionFactory::getDatabase($this->getJname());
