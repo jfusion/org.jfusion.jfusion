@@ -347,10 +347,10 @@ class JFusionForum_smf2 extends JFusionForum
 
 	 /**
      * Updates information in a specific thread/post
-     * @param object with discussion bot parameters
-     * @param object with existing thread info
-     * @param object $contentitem object containing content information
-     * @param array $status contains errors and status of actions
+     * @param JParameter &$dbparams with discussion bot parameters
+     * @param object &$existingthread with existing thread info
+     * @param object &$contentitem object containing content information
+     * @param array &$status contains errors and status of actions
      */
 	function updateThread(&$dbparams, &$existingthread, &$contentitem, &$status)
 	{
@@ -409,8 +409,8 @@ class JFusionForum_smf2 extends JFusionForum
 
 	/**
 	 * Creates a post from the quick reply
-	 * @param object with discussion bot parameters
-	 * @param $ids stdClass with thread id ($ids->threadid) and first post id ($ids->postid)
+	 * @param JParameter &$dbparams with discussion bot parameters
+	 * @param object &$ids stdClass with thread id ($ids->threadid) and first post id ($ids->postid)
 	 * @param $contentitem object of content item
 	 * @param $userinfo object info of the forum user
 	 * @return array with status
@@ -564,7 +564,7 @@ class JFusionForum_smf2 extends JFusionForum
 	/**
      * Retrieves the posts to be displayed in the content item if enabled
      *
-     * @param object &$dbparams with discussion bot parameters
+     * @param JParameter &$dbparams with discussion bot parameters
      * @param object &$existingthread
      *
      * @return array or object Returns retrieved posts

@@ -81,7 +81,7 @@ class Dokuwiki
      *
      * @param string $jname
      *
-     * @return object instance
+     * @return Dokuwiki object instance
      * @since 1.5
      * @access public
      */

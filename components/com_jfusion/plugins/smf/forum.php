@@ -364,7 +364,7 @@ class JFusionForum_smf extends JFusionForum
     /**
      * Creates new thread and posts first post
      *
-     * @param object &$dbparams    with discussion bot parameters
+     * @param JParameter &$dbparams    with discussion bot parameters
      * @param object &$contentitem object containing content information
      * @param int    $forumid      Id of forum to create thread
      * @param array  &$status      contains errors and status of actions
@@ -675,7 +675,7 @@ class JFusionForum_smf extends JFusionForum
     /**
      * Retrieves the posts to be displayed in the content item if enabled
      *
-     * @param object &$dbparams       with discussion bot parameters
+     * @param JParameter &$dbparams       with discussion bot parameters
      * @param object &$existingthread info about thread
      *
      * @return array or object Returns retrieved posts

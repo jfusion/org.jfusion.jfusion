@@ -1203,10 +1203,10 @@ class arrayfunc {
      *    Parses a filter given to the tableFilter function into an 2-dimensional array that represents
      *    the filter-format 2c described in tableFilter
      *
-     *    @param mixed $filter: the filter given to the tableFilter funciton (cam be any Variant, from 1a to 2c)
+     *    @param mixed $filter the filter given to the tableFilter funciton (cam be any Variant, from 1a to 2c)
      *    @param array $operators the known operators
      *
-     *    @return the 2c-like fomratted filter array
+     *    @return mixed the 2c-like fomratted filter array
      *
      *    @see arrayfunc::tableFilter
      */

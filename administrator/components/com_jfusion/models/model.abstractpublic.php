@@ -264,15 +264,15 @@ class JFusionPublic
     /**
      * Prepares text for various areas
      *
-     * @param string  &$text             Text to be modified
-     * @param string  $for              (optional) Determines how the text should be prepared.
+     * @param string &$text             Text to be modified
+     * @param string $for              (optional) Determines how the text should be prepared.
      *                                  Options for $for as passed in by JFusion's plugins and modules are:
      *                                  joomla (to be displayed in an article; used by discussion bot)
      *                                  forum (to be published in a thread or post; used by discussion bot)
      *                                  activity (displayed in activity module; used by the activity module)
      *                                  search (displayed as search results; used by search plugin)
-     * @param mixed  $params           (optional) Joomla parameter object passed in by JFusion's module/plugin
-     * @param mixed  $object           (optional) Object with information for the specific element the text is from
+     * @param JParameter $params           (optional) Joomla parameter object passed in by JFusion's module/plugin
+     * @param mixed $object           (optional) Object with information for the specific element the text is from
      *
      * @return array  $status           Information passed back to calling script such as limit_applied
      */
@@ -457,7 +457,7 @@ class JFusionPublic
      *
      * @param string &$text        string text to be searched
      * @param string &$phrase      string how the search should be performed exact, all, or any
-     * @param object &$pluginParam custom plugin parameters in search.xml
+     * @param JParameter &$pluginParam custom plugin parameters in search.xml
      * @param int    $itemid       what menu item to use when creating the URL
      * @param string $ordering     ordering sent by Joomla: null, oldest, popular, category, alpha, or newest
      *

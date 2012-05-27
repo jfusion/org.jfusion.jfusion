@@ -103,7 +103,7 @@ class jfusionViewadvancedparam extends JView
     /**
      * Loads a single element
      *
-     * @param object $params parameters
+     * @param JParameter $params parameters
      * @param object $config configuration
      *
      * @return string html

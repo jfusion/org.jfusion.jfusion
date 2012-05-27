@@ -226,7 +226,7 @@ class JFusionFactory
      *
      * @param string $jname name of the JFusion plugin used
      *
-     * @return object JFusionHelper JFusion Helper class for the JFusion plugin
+     * @return JFusionHelper JFusion Helper class for the JFusion plugin
      */
     public static function &getHelper($jname)
     {
@@ -257,7 +257,7 @@ class JFusionFactory
      *
      * @param string $jname name of the JFusion plugin used
      *
-     * @return object JDatabase Database connection for the JFusion plugin
+     * @return JDatabase Database connection for the JFusion plugin
      */
     public static function &getDatabase($jname)
     {

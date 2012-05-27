@@ -170,8 +170,9 @@ if (!class_exists('jFusion_g2BridgeCore')) {
          * @static
          * @param $jname
          * @param $key
-         * @param null $default
-         * @return null
+         * @param mixed $default
+         *
+         * @return mixed
          */
         static function getVar($jname,$key, $default = null) {
 	        if (isset(self::$registry[$jname][$key])) {

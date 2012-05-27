@@ -76,11 +76,11 @@ class JFusionPublic_vbulletin extends JFusionPublic
     /**
      * @param string $text
      * @param string $for
-     * @param string $params
+     * @param JParameter $params
      * @param string $object
      * @return array
      */
-    function prepareText(&$text, $for = 'forum', $params = '', $object = '')
+    function prepareText(&$text, $for = 'forum', $params = null, $object = null)
     {
         $status = array();
         if ($for == 'forum') {
@@ -660,7 +660,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
 
     /**
      * @param string $where
-     * @param object $pluginParam
+     * @param JParameter $pluginParam
      * @param string $ordering
      */
     function getSearchCriteria(&$where, &$pluginParam, $ordering)

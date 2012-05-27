@@ -60,7 +60,7 @@ class JFusionForum_gallery2 extends JFusionForum {
     /**
      * @param $config
      * @param $view
-     * @param $pluginParam
+     * @param JParameter $pluginParam
      * @return mixed|string
      */
     function renderImageBlock($config, $view, $pluginParam) {

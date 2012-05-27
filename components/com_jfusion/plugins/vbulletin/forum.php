@@ -88,7 +88,7 @@ class JFusionForum_vbulletin extends JFusionForum
     }
 
     /**
-     * @param object $dbparams
+     * @param JParameter $dbparams
      * @param object $contentitem
      * @param int $forumid
      * @param object $status
@@ -343,7 +343,7 @@ class JFusionForum_vbulletin extends JFusionForum
 	}
 
     /**
-     * @param object $dbparams
+     * @param JParameter $dbparams
      * @param object $existingthread
      * @return array
      */

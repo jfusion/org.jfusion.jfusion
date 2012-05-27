@@ -181,9 +181,10 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
     }
 
     /**
-     * @param $jFusionParam
-     * @param $jPluginParam
+     * @param JParameter $jFusionParam
+     * @param JParameter $jPluginParam
      * @param $itemId
+     *
      * @return array|null
      */
     function getSitemapTree($jFusionParam, $jPluginParam, $itemId) {

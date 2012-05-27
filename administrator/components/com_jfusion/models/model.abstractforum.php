@@ -243,7 +243,7 @@ class JFusionForum
     /**
      * Retrieves the default forum based on section/category stipulations or default set in the plugins config
      *
-     * @param object &$dbparams    discussion bot parameters
+     * @param JParameter &$dbparams    discussion bot parameters
      * @param object &$contentitem object containing content information
      *
      * @return int Returns id number of the forum
@@ -363,7 +363,7 @@ class JFusionForum
      * Function that determines the author of an article or returns the default user if one is not found
      * For the discussion bot
      *
-     * @param object &$dbparams    object with discussion bot parameters
+     * @param JParameter &$dbparams    object with discussion bot parameters
      * @param object &$contentitem contentitem
      *
      * @return int forum's userid
@@ -439,7 +439,7 @@ class JFusionForum
 	/**
 	 * Prepares the body for the first post in a thread
 	 *
-	 * @param object	&$dbparams 		object with discussion bot parameters
+	 * @param oJParameter &$dbparams 		object with discussion bot parameters
 	 * @param object	$contentitem 	object containing content information
 	 *
 	 * @return string
@@ -642,7 +642,7 @@ class JFusionForum
     /**
      * Verifies captcha of a guest post submitted by the discussion bot
      *
-     * @param object &$dbparams object with discussion bot parameters
+     * @param JParameter &$dbparams object with discussion bot parameters
      *
      * @return boolean
      */

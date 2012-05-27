@@ -1084,4 +1084,13 @@ class JFusionAdmin
 	
 		return $output;
 	}
+
+    /**
+     * Get Version
+     *
+     * @return string
+     */
+    function getVersion() {
+        return '';
+    }
 }

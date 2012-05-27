@@ -70,7 +70,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
      * forum (to be published in a thread or post; used by discussion bot)
      * activity (displayed in activity module; used by the activity module)
      * search (displayed as search results; used by search plugin)
-     * @param object  $params           (optional) Joomla parameter object passed in by JFusion's module/plugin
+     * @param JParameter $params           (optional) Joomla parameter object passed in by JFusion's module/plugin
      * @param object  $object           (optional) Object with information for the specific element the text is from
      *
      * @return array  $status           Information passed back to calling script such as limit_applied
@@ -705,7 +705,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 
     /**
      * @param string $where
-     * @param object $pluginParam
+     * @param JParameter $pluginParam
      * @param string $ordering
      */
     function getSearchCriteria(&$where, &$pluginParam, $ordering) {

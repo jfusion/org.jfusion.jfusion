@@ -83,8 +83,8 @@ class JFusionHelper_dokuwiki
             $params = JFusionFactory::getParams($this->getJname());
             $source_path = $params->get('source_path');
 
-            $share =& Dokuwiki::getInstance($this->getJname());
-            $conf =& $share->getConf();
+            $share = Dokuwiki::getInstance($this->getJname());
+            $conf = $share->getConf();
             $data_dir = (isset($conf['savedir'])) ? $source_path . DS . $conf['savedir'] : $source_path . DS . 'data';
 
             //get the cookie salt file

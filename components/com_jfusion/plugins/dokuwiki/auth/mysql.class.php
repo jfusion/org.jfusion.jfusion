@@ -51,7 +51,7 @@ class doku_auth_mysql extends doku_auth_basic {
 		$this->cnf = $conf['auth']['mysql'];
 
 		if (method_exists($this, 'auth_basic')) {
-			parent::auth_basic();
+			parent::doku_auth_basic();
 		}
 
 		if(!function_exists('mysql_connect')) {

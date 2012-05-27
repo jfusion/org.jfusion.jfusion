@@ -439,14 +439,15 @@ class JFusionForum_phpbb3 extends JFusionForum {
     }
 
      /**
-     * Creates new thread and posts first post
-     * @param object with discussion bot parameters
-     * @param object $contentitem object containing content information
-     * @param int Id of forum to create thread
-     * @param array $status contains errors and status of actions
+      * Creates new thread and posts first post
+      *
+      * @param JParameter &$dbparams with discussion bot parameters
+      * @param object &$contentitemm object containing content information
+      * @param int $forumid Id of forum to create thread
+      * @param array &$status contains errors and status of actions
       *
       * @return void
-     */
+      */
 	function createThread(&$dbparams, &$contentitem, $forumid, &$status)
 	{
 		//setup some variables
@@ -600,10 +601,10 @@ class JFusionForum_phpbb3 extends JFusionForum {
 
 	 /**
      * Updates information in a specific thread/post
-     * @param object with discussion bot parameters
-     * @param object with existing thread info
-     * @param object $contentitem object containing content information
-     * @param array $status contains errors and status of actions
+     * @param JParameter &$dbparams with discussion bot parameters
+     * @param object &$existingthread with existing thread info
+     * @param object &$contentitem object containing content information
+     * @param array &$status contains errors and status of actions
      */
 	function updateThread(&$dbparams, &$existingthread, &$contentitem, &$status)
 	{
@@ -649,10 +650,12 @@ class JFusionForum_phpbb3 extends JFusionForum {
 
 	/**
 	 * Creates a post from the quick reply
-	 * @param object with discussion bot parameters
-	 * @param object $ids array with thread id ($ids["threadid"]) and first post id ($ids["postid"])
-	 * @param $contentitem object of content item
-	 * @param $userinfo object info of the forum user
+     *
+	 * @param JParameter &$dbparams with discussion bot parameters
+	 * @param object &$ids array with thread id ($ids["threadid"]) and first post id ($ids["postid"])
+	 * @param &$contentitem object of content item
+	 * @param &$userinfo object info of the forum user
+     *
 	 * @return array with status
 	 */
 	function createPost(&$dbparams, &$ids, &$contentitem, &$userinfo)
@@ -846,7 +849,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 	/**
      * Retrieves the posts to be displayed in the content item if enabled
      *
-     * @param object &$dbparams with discussion bot parameters
+     * @param JParameter &$dbparams with discussion bot parameters
      * @param object &$existingthread
      *
      * @return array or object Returns retrieved posts
