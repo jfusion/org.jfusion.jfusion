@@ -76,7 +76,7 @@ class plgContentJfusion extends JPlugin
         //retrieve plugin software for discussion bot
         if ($this->params===false) {
             if (is_array($params)) {
-                $this->params = new JParameter( $params['params']);
+                $this->params = new JParameter( $params[params]);
             } else {
                 $this->params = new JParameter( $params->params);
             }

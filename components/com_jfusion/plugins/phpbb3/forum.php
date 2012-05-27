@@ -650,7 +650,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 	/**
 	 * Creates a post from the quick reply
 	 * @param object with discussion bot parameters
-	 * @param array $ids array with thread id ($ids["threadid"]) and first post id ($ids["postid"])
+	 * @param object $ids array with thread id ($ids["threadid"]) and first post id ($ids["postid"])
 	 * @param $contentitem object of content item
 	 * @param $userinfo object info of the forum user
 	 * @return array with status
@@ -700,7 +700,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 			$parser = new phpbb_bbcode_parser($text, $this->getJname());
 
 			//get some topic information
-			$query = "SELECT topic_title, topic_replies, topic_replies_real FROM #__topics WHERE topic_id = {$ids['threadid']}";
+			$query = "SELECT topic_title, topic_replies, topic_replies_real FROM #__topics WHERE topic_id = {$ids->threadid}";
 			$jdb->setQuery($query);
 			$topic = $jdb->loadObject();
 			//the user information
@@ -717,8 +717,8 @@ class JFusionForum_phpbb3 extends JFusionForum {
 			$post_approved = ($userinfo->guest && $dbparams->get('moderate_guests',1)) ? 0 : 1;
 
 			$post_row = new stdClass();
-			$post_row->forum_id			= $ids['forumid'];
-			$post_row->topic_id 		= $ids['threadid'];
+			$post_row->forum_id			= $ids->forumid;
+			$post_row->topic_id 		= $ids->threadid;
 			$post_row->poster_id		= $userid;
 			$post_row->icon_id			= 0;
 			$post_row->poster_ip		= $_SERVER["REMOTE_ADDR"];
@@ -757,12 +757,12 @@ class JFusionForum_phpbb3 extends JFusionForum {
                 $topic_row->topic_last_post_subject = "Re: {$topic->topic_title}";
 				$topic_row->topic_replies				= $topic->topic_replies + 1;
 				$topic_row->topic_replies_real 			= $topic->topic_replies_real + 1;
-				$topic_row->topic_id					= $ids['threadid'];
+				$topic_row->topic_id					= $ids->threadid;
 				if(!$jdb->updateObject('#__topics', $topic_row, 'topic_id' )) {
 					$status['error'] = $jdb->stderr();
 				}
 
-				$query = "SELECT forum_posts FROM #__forums WHERE forum_id = {$ids['forumid']}";
+				$query = "SELECT forum_posts FROM #__forums WHERE forum_id = {$ids->forumid}";
 				$jdb->setQuery($query);
 				$num = $jdb->loadObject();
 
@@ -774,8 +774,8 @@ class JFusionForum_phpbb3 extends JFusionForum {
 				$forum_stats->forum_last_poster_name 	= $phpbbUser->username;
 				$forum_stats->forum_last_poster_colour 	= $phpbbUser->user_colour;
 				$forum_stats->forum_posts				= $num->forum_posts + 1;
-				$forum_stats->forum_id 					= $ids['forumid'];
-				$query = "SELECT forum_topics, forum_topics_real, forum_posts FROM #__forums WHERE forum_id = {$ids['forumid']}";
+				$forum_stats->forum_id 					= $ids->forumid;
+				$query = "SELECT forum_topics, forum_topics_real, forum_posts FROM #__forums WHERE forum_id = {$ids->forumid}";
 				$jdb->setQuery($query);
 				$num = $jdb->loadObject();
 				$forum_stats->forum_topics = $num->forum_topics + 1;
@@ -801,7 +801,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 				//update the for real count so that phpbb notes there are unapproved messages here
 				$topic_row = new stdClass();
 				$topic_row->topic_replies_real 			= $topic->topic_replies_real + 1;
-				$topic_row->topic_id					= $ids['threadid'];
+				$topic_row->topic_id					= $ids->threadid;
 				if(!$jdb->updateObject('#__topics', $topic_row, 'topic_id' )) {
 					$status['error'] = $jdb->stderr();
 				}

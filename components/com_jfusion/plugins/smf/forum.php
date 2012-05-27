@@ -550,7 +550,7 @@ class JFusionForum_smf extends JFusionForum
      * Creates a post from the quick reply
      *
      * @param object &$dbparams    with discussion bot parameters
-     * @param array &$ids         stdClass with thread id ($ids->threadid) and first post id ($ids->postid)
+     * @param object &$ids         stdClass with thread id ($ids->threadid) and first post id ($ids->postid)
      * @param object &$contentitem object of content item
      * @param object &$userinfo    object info of the forum user
      *
@@ -596,7 +596,7 @@ class JFusionForum_smf extends JFusionForum
         if (!empty($text)) {
             $public->prepareText($text);
             //get some topic information
-            $where = "WHERE t.ID_TOPIC = {$ids['threadid']} AND m.ID_MSG = t.ID_FIRST_MSG";
+            $where = "WHERE t.ID_TOPIC = {$ids->threadid} AND m.ID_MSG = t.ID_FIRST_MSG";
             $query = "SELECT t.ID_FIRST_MSG , t.numReplies, m.subject FROM `#__messages` as m INNER JOIN `#__topics` as t ON t.ID_TOPIC = m.ID_TOPIC $where";
             $jdb->setQuery($query);
             $topic = $jdb->loadObject();
@@ -612,8 +612,8 @@ class JFusionForum_smf extends JFusionForum
             }
             $timestamp = time();
             $post_row = new stdClass();
-            $post_row->ID_BOARD = $ids['forumid'];
-            $post_row->ID_TOPIC = $ids['threadid'];
+            $post_row->ID_BOARD = $ids->forumid;
+            $post_row->ID_TOPIC = $ids->threadid;
             $post_row->posterTime = $timestamp;
             $post_row->ID_MEMBER = $userid;
             $post_row->subject = 'Re: ' . $topic->subject;
@@ -642,28 +642,28 @@ class JFusionForum_smf extends JFusionForum
             $topic_row->ID_LAST_MSG = $postid;
             $topic_row->ID_MEMBER_UPDATED = (int)$userid;
             $topic_row->numReplies = $topic->numReplies + 1;
-            $topic_row->ID_TOPIC = $ids['threadid'];
+            $topic_row->ID_TOPIC = $ids->threadid;
             if (!$jdb->updateObject('#__topics', $topic_row, 'ID_TOPIC')) {
                 $status['error'] = $jdb->stderr();
             }
             $forum_stats = new stdClass();
             $forum_stats->ID_LAST_MSG = $postid;
             $forum_stats->ID_MSG_UPDATED = $postid;
-            $query = "SELECT numPosts FROM #__boards WHERE ID_BOARD = {$ids['forumid']}";
+            $query = "SELECT numPosts FROM #__boards WHERE ID_BOARD = {$ids->forumid}";
             $jdb->setQuery($query);
             $num = $jdb->loadObject();
             $forum_stats->numPosts = $num->numPosts + 1;
-            $forum_stats->ID_BOARD = $ids['forumid'];
+            $forum_stats->ID_BOARD = $ids->forumid;
             if (!$jdb->updateObject('#__boards', $forum_stats, 'ID_BOARD')) {
                 $status['error'] = $jdb->stderr();
             }
             //update stats for threadmarking purposes
-            $query = "REPLACE INTO #__log_topics SET ID_MEMBER = $userid, ID_TOPIC = {$ids['threadid']}, ID_MSG = " . ($postid + 1);
+            $query = "REPLACE INTO #__log_topics SET ID_MEMBER = $userid, ID_TOPIC = {$ids->threadid}, ID_MSG = " . ($postid + 1);
             $jdb->setQuery($query);
             if (!$jdb->query()) {
                 $status['error'] = $jdb->stderr();
             }
-            $query = "REPLACE INTO #__log_boards SET ID_MEMBER = $userid, ID_BOARD = {$ids['forumid']}, ID_MSG = $postid";
+            $query = "REPLACE INTO #__log_boards SET ID_MEMBER = $userid, ID_BOARD = {$ids->forumid}, ID_MSG = $postid";
             $jdb->setQuery($query);
             if (!$jdb->query()) {
                 $status['error'] = $jdb->stderr();

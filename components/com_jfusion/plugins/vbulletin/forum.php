@@ -217,8 +217,8 @@ class JFusionForum_vbulletin extends JFusionForum
 		$text = strip_tags($text);
 
         if (!empty($text)) {
-			$foruminfo = $this->getForumInfo($ids['forumid']);
-			$threadinfo = $this->getThreadInfo($ids['threadid'], $dbparams);
+			$foruminfo = $this->getForumInfo($ids->forumid);
+			$threadinfo = $this->getThreadInfo($ids->threadid, $dbparams);
 			$post_approved = ($userinfo->guest && ($foruminfo['moderatenewposts'] || $dbparams->get('moderate_guests',1))) ? 0 : 1;
             $title = "Re: " . $threadinfo['title'];
             $public =& JFusionFactory::getPublic($this->getJname());

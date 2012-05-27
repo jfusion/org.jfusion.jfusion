@@ -688,7 +688,7 @@ class JFusionAPI_User extends JFusionAPIBase {
 					$user = &JFactory::getUser($this->payload['username']);					
 				}
 			}
-			if ($user) {
+			if (empty($user)) {
 				$mainframe->logout($user->userid);
 			} else {
 				$mainframe->logout();
