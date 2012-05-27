@@ -46,29 +46,26 @@ class JFusionMySQLi extends JDatabaseMySQLi
     /**
      * begin transaction function
      * 
-     * @return string nothing
-     */    
+     */
     function BeginTrans()
     {
-        return mysqli_autocommit($this->_resource, false);
+        mysqli_autocommit($this->_resource, false);
     }
     /**
      * commit transaction
      * 
-     * @return string nothing
-     */    
+     */
     function CommitTrans()
     {
-        return mysqli_commit($this->_resource);
+        mysqli_commit($this->_resource);
     }
     /**
      * rollback trasnaction
      * 
-     * @return string nothing
-     */    
+     */
     function RollbackTrans()
     {
-        return mysqli_rollback($this->_resource);
+        mysqli_rollback($this->_resource);
     }
     
     /**
@@ -76,8 +73,7 @@ class JFusionMySQLi extends JDatabaseMySQLi
      *
      * @param string $query
      *
-     * @return string nothing
-     */        
+     */
     function Execute($query)
     {
     	$this->setQuery($query);

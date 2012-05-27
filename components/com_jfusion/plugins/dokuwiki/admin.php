@@ -137,6 +137,9 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
     /**
      * Get a list of users
      *
+     * @param string $limitstart position start to return users from
+     * @param string $limit number of users to return
+     *
      * @return object with list of users
      */
     function getUserList($limitstart = null, $limit = null)
@@ -349,7 +352,6 @@ function update_mod(action) {
     form.customcommand.value = action;
     form.action.value = 'apply';
     submitform('saveconfig');
-    return;
 }
 JS;
             $document = JFactory::getDocument();

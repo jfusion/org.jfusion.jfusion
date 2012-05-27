@@ -577,7 +577,10 @@ class PEAR
      * message, code and userinfo are enough.
      *
      * @param string $message
+     * @param string $code
+     * @param string $userinfo
      *
+     * @return bolean
      */
     function &throwError($message = null,
                          $code = null,
@@ -599,7 +602,7 @@ class PEAR
      * @param    string  $mode  Mode
      * @param    callable $options
      *
-     * @access boolean
+     * @return boolean
      */
     function staticPushErrorHandling($mode, $options = null)
     {

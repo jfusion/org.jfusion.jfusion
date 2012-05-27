@@ -185,7 +185,7 @@ class JFusionAdmin_magento extends JFusionAdmin
      * outputJavascript
      * Put specific javascript script
      *
-     * @return void
+     * @return string
      */
 	public function outputJavascript(){
 $js = <<< EOD
