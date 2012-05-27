@@ -735,4 +735,14 @@ class JFusionForum
 		$status["error"] = false;
 		return $status;
 	}
+
+    /**
+     * @param $forumids
+     *
+     * @return array
+     */
+    function filterForumList($forumids)
+    {
+        return $forumids;
+    }
 }

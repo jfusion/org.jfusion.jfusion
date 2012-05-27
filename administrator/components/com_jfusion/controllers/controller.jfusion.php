@@ -522,10 +522,10 @@ class JFusionController extends JController
 			}
         } else {
             $result['status'] = false;
-            $result['message'] =  JText::_('NONE_SELECTED');        	
+            $result['message'] =  JText::_('NONE_SELECTED');
         }
 		//output results
-		die(json_encode($result));        
+		die(json_encode($result));
     }
 
     /**

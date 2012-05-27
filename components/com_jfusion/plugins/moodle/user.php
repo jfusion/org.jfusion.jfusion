@@ -48,7 +48,7 @@ class JFusionUser_moodle extends JFusionUser {
      */
     function rc4encrypt($data) {
 		$password = 'nfgjeingjk';
-		return endecrypt($password, $data, '');
+		return $this->endecrypt($password, $data, '');
 	}
 
 	/**

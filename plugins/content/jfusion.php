@@ -1105,6 +1105,7 @@ class plgContentJfusion extends JPlugin
 
     /**
      * @param bool $innerhtml
+     *
      * @return bool|string
      */
     public function _render_buttons($innerhtml = false)

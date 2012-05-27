@@ -64,6 +64,7 @@ class jfusionViewcpanel extends JView
             //check curl and file_get_content is often blocked by hosts, return an error message
             $JFusionCpanelRaw = $curl_disabled;
         }
+        $JFusionCpanel = null;
         $parser = JFactory::getXMLParser('Simple');
         if ($parser->loadString($JFusionCpanelRaw)) {
             if (isset($parser->document)) {

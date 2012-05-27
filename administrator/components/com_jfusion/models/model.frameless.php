@@ -19,7 +19,7 @@ require_once (JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS 
  * @package JFusion
  */
 
-class JFusionFrameless{
+class JFusionFrameless {
     /**
      * @static
      * @param $jname

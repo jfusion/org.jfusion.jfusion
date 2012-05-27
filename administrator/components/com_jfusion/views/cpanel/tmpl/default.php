@@ -145,13 +145,15 @@ JFusionFunctionAdmin::displayDonate();
             <?php
 			}
 			jimport('joomla.html.pane');
-			$pane = & JPane::getInstance('tabs');
-			echo $pane->startPane('pane');
-			foreach ($this->JFusionCpanel->item as $item) {
-			    echo $pane->startPanel($item->title[0]->data(), $item->title[0]->data());
-			    echo $item->body[0]->data();
-			    echo $pane->endPanel();
-			}
+            if ($this->JFusionCpanel) {
+                $pane = & JPane::getInstance('tabs');
+                echo $pane->startPane('pane');
+                foreach ($this->JFusionCpanel->item as $item) {
+                    echo $pane->startPanel($item->title[0]->data(), $item->title[0]->data());
+                    echo $item->body[0]->data();
+                    echo $pane->endPanel();
+                }
+            }
 			?>
 		</td>
 	</tr>

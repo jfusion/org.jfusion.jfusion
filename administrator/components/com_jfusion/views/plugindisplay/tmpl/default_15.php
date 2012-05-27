@@ -330,7 +330,7 @@ window.addEvent('domready',function() {
 
 <?php echo JText::_('PLUGIN_INSTALL_INSTR'); ?><br/>
 
-<?php if(!empty($this->VersionData)) {
+<?php if($this->VersionData) {
 //display installer data
 $jfusion_plugins = $this->VersionData->plugins[0]->children(); ?>
 

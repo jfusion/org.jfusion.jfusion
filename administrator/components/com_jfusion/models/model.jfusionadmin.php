@@ -277,4 +277,23 @@ class JFusionFunctionAdmin
             return $FileData;
         }
     }
+
+    function currentVersion($includeRev = false)
+    {
+        //get the current JFusion version number
+        $filename = JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'jfusion.xml';
+        if (file_exists($filename) && is_readable($filename)) {
+            //get the version number
+            $parser = JFactory::getXMLParser('Simple');
+            $parser->loadFile($filename);
+            $VersionCurrent = $parser->document->version[0]->data();
+
+            if($includeRev) {
+                $RevisionCurrent = $parser->document->revision[0]->data();
+                return array($VersionCurrent, $RevisionCurrent);
+            } else {
+                return $VersionCurrent;
+            }
+        }
+    }
 }

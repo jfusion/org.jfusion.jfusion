@@ -49,7 +49,7 @@ class JFusionAdmin_universal extends JFusionAdmin{
         $params = JFusionFactory::getParams($this->getJname());
 		$usergroupmap = $params->get('usergroupmap');
 
-        $usergrouplist = arrat();
+        $usergrouplist = array();
 		if ( is_array($usergroupmap) ) {
 			foreach ($usergroupmap['value'] as $key => $value) {
 	         	//append the default usergroup

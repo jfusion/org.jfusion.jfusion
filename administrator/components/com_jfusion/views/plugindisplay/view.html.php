@@ -104,18 +104,15 @@ class jfusionViewplugindisplay extends JView {
                     $row_count = 1;
                 }
             }
-            //get the current JFusion version
-            //$VersionCurrent = JFusionFunctionAdmin::currentVersion();
-            //get the XML installer data to install new plugins
-            //$VersionData = JFusionFunctionAdmin::getInstallXML($VersionCurrent);
-                //get the install xml
+            //get the install xml
 	        $url = 'http://jfusion.googlecode.com/svn/branches/jfusion_versions.xml';
-	        $VersionData = JFusionFunctionAdmin::getFileData($url);
-	        if (!empty($VersionData)) {
+	        $VersionDataRaw = JFusionFunctionAdmin::getFileData($url);
+            $VersionData = null;
+	        if (!empty($VersionDataRaw)) {
 	            $parser = JFactory::getXMLParser('Simple');
-	            if ($parser->loadString($VersionData)) {
+	            if ($parser->loadString($VersionDataRaw)) {
 	                if (isset($parser->document)) {
-	                    $VersionParsed = $parser->document;
+                        $VersionData = $parser->document;
 	                    unset($parser);
 	                }
 	            }
@@ -128,7 +125,7 @@ class jfusionViewplugindisplay extends JView {
 
             //pass the data onto the view
             $this->assignRef('plugins', $plugins);
-            $this->assignRef('VersionData', $VersionParsed);
+            $this->assignRef('VersionData', $VersionData);
             if(JFusionFunction::isJoomlaVersion('1.6')){
             	parent::display('25'); 
             } else {
