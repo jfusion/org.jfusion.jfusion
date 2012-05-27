@@ -18,7 +18,17 @@ defined('_JEXEC' ) or die('Restricted access' );
 //require_once(JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.jfusion.php');
 //require_once(JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.abstractuser.php');
 require_once(JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.jplugin.php');
-
+/**
+ * JFusionUser_mediawiki class
+ *
+ * @category   JFusion
+ * @package    Plugin
+ * @subpackage JFusionUser_mediawiki
+ * @author     JFusion Team <webmaster@jfusion.org>
+ * @copyright  2008 JFusion. All rights reserved.
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @link       http://www.jfusion.org
+ */
 class JFusionUser_mediawiki extends JFusionUser {
 
     function &getUser($userinfo)

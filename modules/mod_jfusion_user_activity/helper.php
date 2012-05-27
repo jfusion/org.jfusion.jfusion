@@ -26,14 +26,14 @@
 */
 class modjfusionUserActivityHelper {
     /*
-    * prepareAutoOutput
-    *
-    * @param string $jname
-    * @param array $config
-    * @param object $params
-    *
-    * @return object
-    */
+     * prepareAutoOutput
+     *
+     * @param string $jname
+     * @param array $config
+     * @param object $params
+     *
+     * @return object
+     */
     public static function prepareAutoOutput($jname, $config, $params) {
 		$output = new stdClass();
 

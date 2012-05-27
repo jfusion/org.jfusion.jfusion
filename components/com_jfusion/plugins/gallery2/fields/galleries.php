@@ -15,7 +15,17 @@
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
-
+/**
+ * JFormFieldGalleries class
+ *
+ * @category   JFusion
+ * @package    Model
+ * @subpackage JFormFieldGalleries
+ * @author     JFusion Team <webmaster@jfusion.org>
+ * @copyright  2008 JFusion. All rights reserved.
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @link       http://www.jfusion.org
+ */
 class JFormFieldGalleries extends JFormField {
 	public $type = "galleries";
 

@@ -13,18 +13,18 @@
  * @link       http://www.jfusion.org
  */
 
-/**
- * Class that handles password encryption for phpBB3
- * 
- * @category   JFusion
- * @package    JFusionPlugins
- * @subpackage phpBB3
- * @author     JFusion Team <webmaster@jfusion.org>
- * @copyright  2008 JFusion. All rights reserved.
- * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
- * @link       http://www.jfusion.org
- */
 if (!class_exists('PasswordHash')) {
+    /**
+     * Class that handles password encryption for phpBB3
+     *
+     * @category   JFusion
+     * @package    JFusionPlugins
+     * @subpackage phpBB3
+     * @author     JFusion Team <webmaster@jfusion.org>
+     * @copyright  2008 JFusion. All rights reserved.
+     * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
+     * @link       http://www.jfusion.org
+     */
     class PasswordHash 
     {
         var $itoa64;

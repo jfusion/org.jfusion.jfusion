@@ -7,6 +7,17 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
  */
 if ( !class_exists('JFusionMap') ) {
+    /**
+     * JFusionMap class
+     *
+     * @category   JFusion
+     * @package    Model
+     * @subpackage JFusionMap
+     * @author     JFusion Team <webmaster@jfusion.org>
+     * @copyright  2008 JFusion. All rights reserved.
+     * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
+     * @link       http://www.jfusion.org
+     */
 	class JFusionMap {
 		var $_jname = null;
 		var $_map = array();

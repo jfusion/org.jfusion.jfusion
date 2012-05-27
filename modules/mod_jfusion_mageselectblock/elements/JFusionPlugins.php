@@ -3,7 +3,17 @@
 defined('_JEXEC') or die('Restricted access');
 
 require_once JPATH_ADMINISTRATOR . DS .'components'.DS.'com_jfusion'.DS.'elements'.DS.'JFusionPlugins.php';
-
+/**
+ * Field class
+ *
+ * @category   JFusion
+ * @package    Field
+ * @subpackage JElementJFusionMagentoPlugins
+ * @author     JFusion Team <webmaster@jfusion.org>
+ * @copyright  2008 JFusion. All rights reserved.
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @link       http://www.jfusion.org
+ */
 class JElementJFusionMagentoPlugins extends JElementJFusionPlugins{
 
     /**

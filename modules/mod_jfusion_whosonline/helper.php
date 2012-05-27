@@ -27,13 +27,15 @@
 class modjfusionWhosOnlineHelper {
 
     /*
-    * appendAutoOutput
-    *
-    * @param string $jname
-    * @param array $config
-    * @param object $params
-    * @param object $output
-    */
+     * appendAutoOutput
+     *
+     * @param string $jname
+     * @param array $config
+     * @param object $params
+     * @param object $output
+     *
+     * @return void
+     */
     public static function appendAutoOutput($jname, $config, $params, $output) {
 		//get the itemid and jname to get any missing urls
 		$link_itemid = $config['itemid'];

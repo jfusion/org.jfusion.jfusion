@@ -11,7 +11,17 @@ function initJFusionAPI() {
 }
 // add everything inside a function to prevent 'sniffing';
 initJFusionAPI();
-
+/**
+ * JFusionAPI class
+ *
+ * @category   JFusion
+ * @package    API
+ * @subpackage JFusionAPI
+ * @author     JFusion Team <webmaster@jfusion.org>
+ * @copyright  2008 JFusion. All rights reserved.
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @link       http://www.jfusion.org
+ */
 class JFusionAPI {
 	public $url;
 	public $sid = null;

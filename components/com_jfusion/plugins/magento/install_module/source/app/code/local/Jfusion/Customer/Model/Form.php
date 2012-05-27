@@ -1,5 +1,15 @@
 <?php
-
+/**
+ * Jfusion_Customer_Model_Form class
+ *
+ * @category   JFusion
+ * @package    Model
+ * @subpackage Jfusion_Customer_Model_Form
+ * @author     JFusion Team <webmaster@jfusion.org>
+ * @copyright  2008 JFusion. All rights reserved.
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @link       http://www.jfusion.org
+ */
 class Jfusion_Customer_Model_Form extends Mage_Customer_Model_Form
 {
     public function validateData(array $data) {

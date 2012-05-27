@@ -1,4 +1,15 @@
 <?php
+/**
+ * cssparser class
+ *
+ * @category   JFusion
+ * @package    Parser
+ * @subpackage cssparser
+ * @author     JFusion Team <webmaster@jfusion.org>
+ * @copyright  2008 JFusion. All rights reserved.
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @link       http://www.jfusion.org
+ */
 class cssparser {
 	var $css = array();
 	var $media = array();

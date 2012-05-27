@@ -9,7 +9,14 @@
 */
 
 require_once 'basic.class.php';
-
+/**
+ * doku_auth_mysql class
+ *
+ * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
+ * @author     Andreas Gohr <andi@splitbrain.org>
+ * @author     Chris Smith <chris@jalakai.co.uk>
+ * @author     Matthias Grimm <matthias.grimmm@sourceforge.net>
+ */
 class doku_auth_mysql extends doku_auth_basic {
 
     var $dbcon        = 0;

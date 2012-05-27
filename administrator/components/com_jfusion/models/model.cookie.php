@@ -1,7 +1,17 @@
 <?php
 // Check to ensure this file is within the rest of the framework
 defined('JPATH_BASE') or die();
-
+/**
+ * JFusionCookies class
+ *
+ * @category   JFusion
+ * @package    Model
+ * @subpackage JFusionCookies
+ * @author     JFusion Team <webmaster@jfusion.org>
+ * @copyright  2008 JFusion. All rights reserved.
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @link       http://www.jfusion.org
+ */
 class JFusionCookies {
 	/**
      * Variable to store cookie data

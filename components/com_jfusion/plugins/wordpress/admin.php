@@ -17,6 +17,10 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
+if (!class_exists('JFusionWordpressHelper')) {
+	require_once 'wordpresshelper.php';
+}
+
 /**
  * JFusion Admin Class for Moodle 1.8+
  * For detailed descriptions on these functions please check the model.abstractadmin.php
@@ -29,10 +33,6 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-
-if (!class_exists('JFusionWordpressHelper')) {
-	require_once 'wordpresshelper.php';
-}
 class JFusionAdmin_wordpress extends JFusionAdmin
 {
 	/**

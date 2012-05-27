@@ -16,18 +16,18 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
-/**
- * JFusion plugin class for Gallery2
- *
- * @category   JFusion
- * @package    JFusionPlugins
- * @subpackage Gallery2
- * @author     JFusion Team <webmaster@jfusion.org>
- * @copyright  2008 JFusion. All rights reserved.
- * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
- * @link       http://www.jfusion.org
- */
 if (!class_exists('jFusion_g2BridgeCore')) {
+    /**
+     * JFusion plugin class for Gallery2
+     *
+     * @category   JFusion
+     * @package    JFusionPlugins
+     * @subpackage Gallery2
+     * @author     JFusion Team <webmaster@jfusion.org>
+     * @copyright  2008 JFusion. All rights reserved.
+     * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
+     * @link       http://www.jfusion.org
+     */
 	class jFusion_g2BridgeCore {
 	    static $loadedGallery = null;
 	    static $registry = array();
