@@ -21,18 +21,27 @@ require_once(JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.D
  * For detailed descriptions on these functions please check the model.abstractadmin.php
  * @package JFusion_SMF
  */
-class JFusionAdmin_smf2 extends JFusionAdmin{
-
+class JFusionAdmin_smf2 extends JFusionAdmin {
+    /**
+     * @return string
+     */
     function getJname()
     {
         return 'smf2';
     }
 
+    /**
+     * @return string
+     */
     function getTablename()
     {
         return 'members';
     }
 
+    /**
+     * @param string $forumPath
+     * @return array|object
+     */
     function setupFromPath($forumPath)
     {
         //check for trailing slash and generate file path
@@ -93,6 +102,9 @@ class JFusionAdmin_smf2 extends JFusionAdmin{
         return $userlist;
     }
 
+    /**
+     * @return int
+     */
     function getUserCount()
     {
         //getting the connection to the db

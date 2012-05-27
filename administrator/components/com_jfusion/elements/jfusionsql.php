@@ -103,7 +103,16 @@ class JElementjfusionsql extends JElement
         }
 	}
 
-	public static function buildRecursiveTree($id, $indent, $list, &$children, $level = 0)
+    /**
+     * @static
+     * @param $id
+     * @param $indent
+     * @param $list
+     * @param $children
+     * @param int $level
+     * @return mixed
+     */
+    public static function buildRecursiveTree($id, $indent, $list, &$children, $level = 0)
 	{
 	    if (@$children[$id]) {
     		foreach ($children[$id] as $v)

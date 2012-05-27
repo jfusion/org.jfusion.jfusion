@@ -19,12 +19,18 @@ class JFusionPublic_smf2 extends JFusionPublic {
 	var $callbackdata = null;
 	var $callbackbypass = null;
 
-	function getJname()
+    /**
+     * @return string
+     */
+    function getJname()
 	{
 		return 'smf2';
 	}
 
-	function getRegistrationURL()
+    /**
+     * @return string
+     */
+    function getRegistrationURL()
 	{
 		return 'index.php?action=register';
 	}

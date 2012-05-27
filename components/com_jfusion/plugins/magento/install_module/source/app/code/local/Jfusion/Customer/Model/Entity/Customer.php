@@ -7,8 +7,11 @@
 */
 
 class Jfusion_Customer_Model_Entity_Customer extends Mage_Customer_Model_Entity_Customer{
-	
-	protected function _getDefaultAttributes(){
+
+    /**
+     * @return array
+     */
+    protected function _getDefaultAttributes(){
 		$attributes = parent::_getDefaultAttributes();
 		array_push($attributes, 'is_active');
 		return $attributes;

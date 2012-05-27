@@ -41,10 +41,8 @@ class JFusionDiscussBotHelper {
     var $option;
     var $isJ16;
 
-    /*
-     * constructor
-     *
-     * @param &$params
+    /**
+     * @param $params
      * @param $jname
      * @param $mode
      * @param $debug_mode
@@ -61,11 +59,10 @@ class JFusionDiscussBotHelper {
         }
     }
 
-    /*
-     * _get_thread_info
-     *
-     * @param $update
-     * @param $threadinfo
+    /**
+     * @param bool $update
+     * @param bool $threadinfo
+     * @return mixed
      */
     public function &_get_thread_info($update = false, $threadinfo = false)
     {
@@ -89,10 +86,9 @@ class JFusionDiscussBotHelper {
         return $thread_instance[$contentid];
     }
 
-    /*
-     * _check_thread_exists
-     *
-     * @param $force_new
+    /**
+     * @param int $force_new
+     * @return array
      */
     public function _check_thread_exists($force_new = 0)
     {
@@ -144,12 +140,12 @@ class JFusionDiscussBotHelper {
         return $status;
     }
 
-    /*
-     * _get_article_url
-     *
-     * @param $jumpto
-     * @param $query
-     * @param $xhtml
+
+    /**
+     * @param string $jumpto
+     * @param string $query
+     * @param bool $xhtml
+     * @return string|The
      */
     public function _get_article_url($jumpto = '', $query = '', $xhtml = true)
     {
@@ -193,8 +189,8 @@ class JFusionDiscussBotHelper {
         return $url;
     }
 
-    /*
-     * _get_thread_status
+    /**
+     * @return bool
      */
     public function _get_thread_status()
     {
@@ -229,10 +225,9 @@ class JFusionDiscussBotHelper {
         return $active;
     }
 
-    /*
-     * _get_lists
-     *
+    /**
      * @param $type
+     * @return mixed
      */
     public function &_get_lists($type)
     {
@@ -253,11 +248,10 @@ class JFusionDiscussBotHelper {
         return $lists_instance[$type];
     }
 
-    /*
-     * _validate
-     *
-     * @param $skip_new_check
-     * @param $skip_k2_check
+    /**
+     * @param bool $skip_new_check
+     * @param bool $skip_k2_check
+     * @return array
      */
     public function _validate($skip_new_check = false, $skip_k2_check = false)
     {
@@ -686,11 +680,10 @@ class JFusionDiscussBotHelper {
         }
     }
 
-    /*
-     * _render_file
-     *
+    /**
      * @param $file
-     * @param $mode
+     * @param string $mode
+     * @return bool|string
      */
     public function _render_file($file, $mode = 'require')
     {
@@ -713,11 +706,9 @@ class JFusionDiscussBotHelper {
         return false;
     }
 
-    /*
-     * _debug
-     *
+    /**
      * @param $text
-     * @param $save
+     * @param bool $save
      */
     public function _debug($text, $save = false)
     {
@@ -732,16 +723,17 @@ class JFusionDiscussBotHelper {
     }
 }
 
+/**
+ *
+ */
 class JFusionPagination extends JPagination {
     var $identifier = '';
 
-    /*
-     * constructor
-     *
-     * @param $total
-     * @param $limitstart
-     * @param $limit
-     * @param $identifier
+    /**
+     * @param int $total
+     * @param int $limitstart
+     * @param int $limit
+     * @param string $identifier
      */
     public function __construct($total, $limitstart, $limit, $identifier = '')
     {
@@ -749,10 +741,10 @@ class JFusionPagination extends JPagination {
         parent::__construct($total, $limitstart, $limit);
     }
 
-    /*
-     * getPagesLinks
+    /**
+     * @return string
      */
-	public function getPagesLinks()
+    public function getPagesLinks()
 	{
 		// Build the page navigation list
 		$data = $this->_buildDataObject();
@@ -818,10 +810,10 @@ class JFusionPagination extends JPagination {
 		}
 	}
 
-    /*
-     * getListFooter
+    /**
+     * @return string
      */
-	public function getListFooter()
+    public function getListFooter()
 	{
 		$list = array();
 		$list['limit']			= $this->limit;
@@ -834,10 +826,10 @@ class JFusionPagination extends JPagination {
 		return $this->jfusion_list_footer($list);
 	}
 
-    /*
-     * getLimitBox
+    /**
+     * @return mixed|string
      */
-	public function getLimitBox()
+    public function getLimitBox()
 	{
 		$mainframe = JFactory::getApplication();
 
@@ -863,12 +855,11 @@ class JFusionPagination extends JPagination {
 		return $html;
 	}
 
-    /*
-     * jfusion_list_render
-     *
+    /**
      * @param $list
+     * @return null|string
      */
-	public function jfusion_list_render($list)
+    public function jfusion_list_render($list)
 	{
 		// Initialize variables
 		$html = null;
@@ -889,12 +880,12 @@ class JFusionPagination extends JPagination {
 		return $html;
 	}
 
-    /*
-    * jfusion_list_footer
-    *
-    * @param $list
-    */
-	public function jfusion_list_footer($list)
+
+    /**
+     * @param $list
+     * @return string
+     */
+    public function jfusion_list_footer($list)
 	{
 		// Initialize variables
 		$html = "<div class=\"list-footer\">\n";
@@ -908,11 +899,10 @@ class JFusionPagination extends JPagination {
 		return $html;
 	}
 
-    /*
-    * jfusion_item_active
-    *
-    * @param &$item
-    */
+    /**
+     * @param $item
+     * @return string
+     */
     public function jfusion_item_active(&$item)
     {
     	if($item->base>0)
@@ -921,10 +911,10 @@ class JFusionPagination extends JPagination {
     		return "<a href=\"#\" title=\"".$item->text."\" onclick=\"javascript: document.jfusionPaginationForm.limitstart".$this->identifier.".value=0; document.jfusionPaginationForm.submit(); return false;\">".$item->text."</a>";
     }
 
-    /*
-     * jfusion_item_inactive
-     *
-     * @param &$item
+
+    /**
+     * @param $item
+     * @return string
      */
     public function jfusion_item_inactive(&$item)
     {

@@ -148,6 +148,14 @@ class JFusionForum_vbulletin extends JFusionForum
 		    $status['debug']['api_call'] = $response['debug'];
 		}
     }
+
+    /**
+     * @param object $dbparams
+     * @param array $ids
+     * @param object $contentitem
+     * @param object $userinfo
+     * @return array
+     */
     function createPost(&$dbparams, &$ids, &$contentitem, &$userinfo)
     {
         $status = array();
@@ -247,6 +255,12 @@ class JFusionForum_vbulletin extends JFusionForum
 		    $status['debug']['api_call'] = $response['debug'];
 		}
     }
+
+    /**
+     * @param $id
+     * @param $dbparams
+     * @return mixed
+     */
     function getThreadInfo($id, &$dbparams)
     {
         $threadid = intval($id);
@@ -296,6 +310,11 @@ class JFusionForum_vbulletin extends JFusionForum
 		return $foruminfo;
 	}
 
+    /**
+     * @param object $dbparams
+     * @param object $existingthread
+     * @return array
+     */
     function getPosts(&$dbparams, &$existingthread)
     {
         $threadid = & $existingthread->threadid;
@@ -486,6 +505,11 @@ class JFusionForum_vbulletin extends JFusionForum
         }
         return $query;
     }
+
+    /**
+     * @param object $post
+     * @return int
+     */
     function checkReadStatus(&$post)
     {
 		$JUser = JFactory::getUser();

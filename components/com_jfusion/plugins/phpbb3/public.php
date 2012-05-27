@@ -39,6 +39,10 @@ class JFusionPublic_phpbb3 extends JFusionPublic
     {	
         return 'phpbb3';
     }
+
+    /**
+     * @return string
+     */
     function getRegistrationURL() {
         return 'ucp.php?mode=register';
     }
@@ -538,6 +542,10 @@ class JFusionPublic_phpbb3 extends JFusionPublic
         }
         return $replacement;
     }
+
+    /**
+     * @param object $data
+     */
     function parseHeader(&$data) {
         static $regex_header, $replace_header;
         if (!$regex_header || !$replace_header) {

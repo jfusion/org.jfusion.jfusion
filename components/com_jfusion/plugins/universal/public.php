@@ -19,18 +19,27 @@ require_once (JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS 
  */
 class JFusionPublic_universal extends JFusionPublic{
 
-	function getJname()
+    /**
+     * @return string
+     */
+    function getJname()
 	{
 		return 'universal';
 	}
 
-	function getRegistrationURL()
+    /**
+     * @return string
+     */
+    function getRegistrationURL()
 	{
         $params = JFusionFactory::getParams($this->getJname());
 		return $params->get('registerurl');
 	}
 
-	function getLostPasswordURL()
+    /**
+     * @return string
+     */
+    function getLostPasswordURL()
 	{
         $params = JFusionFactory::getParams($this->getJname());
 		return $params->get('lostpasswordurl');

@@ -40,9 +40,17 @@ class JFusionPublic_joomla_ext extends JFusionPublic {
     function getJname() {
         return 'joomla_ext';
     }
+
+    /**
+     * @return string
+     */
     function getRegistrationURL() {
         return JFusionJplugin::getRegistrationURL($this->getJname());
     }
+
+    /**
+     * @return string
+     */
     function getLostPasswordURL() {
         return JFusionJplugin::getLostPasswordURL($this->getJname());
     }

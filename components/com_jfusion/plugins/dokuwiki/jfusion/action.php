@@ -31,12 +31,19 @@ require_once DOKU_PLUGIN.'action.php';
 class action_plugin_jfusion extends DokuWiki_Action_Plugin {
 
 	var $session_save_handler = '';
-	
+
+    /**
+     * @param $controller
+     */
     function register(&$controller) {
        $controller->register_hook('AUTH_LOGIN_CHECK', 'BEFORE', $this, 'jfusion_login');
        $controller->register_hook('ACTION_ACT_PREPROCESS', 'BEFORE', $this, 'jfusion_logout');
     }
 
+    /**
+     * @param $event
+     * @param $param
+     */
     function jfusion_login(&$event, $param) {
         //do not use Dokuwiki's standard login method
         $event->preventDefault();

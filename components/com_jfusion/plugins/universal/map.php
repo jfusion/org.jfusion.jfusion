@@ -23,12 +23,19 @@ if ( !class_exists('JFusionMap') ) {
 		var $_map = array();
 		var $_mapraw = null;
 
-		function JFusionMap($jname)
+        /**
+         * @param $jname
+         */
+        function JFusionMap($jname)
 		{
 		    $this->_jname = $jname;
 		}
 
-	    function getTablename($type='user')
+        /**
+         * @param string $type
+         * @return mixed
+         */
+        function getTablename($type='user')
 	    {
 			$map = JFusionMap::getInstance($this->getJname());
 
@@ -37,7 +44,10 @@ if ( !class_exists('JFusionMap') ) {
 			return $maped['table'];
 	    }
 
-	    function getJname()
+        /**
+         * @return null
+         */
+        function getJname()
 	    {
 	        return $this->_jname;
 	    }
@@ -215,7 +225,11 @@ if ( !class_exists('JFusionMap') ) {
 			return null;
 		}
 
-	    function getType($t=null) {
+        /**
+         * @param null $t
+         * @return array
+         */
+        function getType($t=null) {
 	    	static $types = null;
 
 	    	if ( !is_array($types) ) {
@@ -260,7 +274,11 @@ if ( !class_exists('JFusionMap') ) {
 			return $types;
 	    }
 
-	    function getField($field=null) {
+        /**
+         * @param null $field
+         * @return array
+         */
+        function getField($field=null) {
 	    	static $fields;
 
 	    	if ( !is_array($fields) ) {

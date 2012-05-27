@@ -40,6 +40,10 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
     {
         return 'vbulletin';
     }
+
+    /**
+     * @return string
+     */
     function getTablename()
     {
         return 'user';
@@ -198,6 +202,12 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
             return $result;
         }
     }
+
+    /**
+     * @param $ignore
+     * @param $hook
+     * @return mixed|string
+     */
     function showHook($ignore, $hook)
     {
         static $jsSet;

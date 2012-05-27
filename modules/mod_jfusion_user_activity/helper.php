@@ -9,7 +9,7 @@
  * @subpackage Useractivity
  * @author     JFusion Team <webmaster@jfusion.org>
  * @copyright  2008 JFusion. All rights reserved.
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
 */
 
@@ -25,14 +25,13 @@
  * @link       http://www.jfusion.org
 */
 class modjfusionUserActivityHelper {
-    /*
-     * prepareAutoOutput
-     *
-     * @param string $jname
-     * @param array $config
-     * @param object $params
-     *
-     * @return object
+
+    /**
+     * @static
+     * @param $jname
+     * @param $config
+     * @param $params
+     * @return \stdClass
      */
     public static function prepareAutoOutput($jname, $config, $params) {
 		$output = new stdClass();

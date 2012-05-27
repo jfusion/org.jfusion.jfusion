@@ -24,7 +24,12 @@ class JFusionForum_mediawiki extends JFusionForum
         return 'mediawiki';
     }
 
-	function renderActivityModule($config, $view, $pluginParam) {
+    /**
+     * @param $config
+     * @param $view
+     * @param $pluginParam
+     */
+    function renderActivityModule($config, $view, $pluginParam) {
 		$db =& JFusionFactory::getDatabase($this->getJname());
 		$params = JFusionFactory::getParams($this->getJname());
 		defined('_DATE_FORMAT_LC2') or define('_DATE_FORMAT_LC2','%A, %d %B %Y %H:%M');

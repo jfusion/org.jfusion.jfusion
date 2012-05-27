@@ -33,6 +33,10 @@ defined('_JEXEC') or die('Restricted access');
  * @link       http://www.jfusion.org
  */
 class JFusionUser_prestashop extends JFusionUser {
+    /**
+     * @param object $userinfo
+     * @return object
+     */
     function &getUser($userinfo) {
 	    //get the identifier
         $identifier = $userinfo;
@@ -96,6 +100,13 @@ class JFusionUser_prestashop extends JFusionUser {
 		}
 		return $status;
     }
+
+    /**
+     * @param object $userinfo
+     * @param array $options
+     * @param bool $framework
+     * @return bool
+     */
     function createSession($userinfo, $options, $framework = true) {
 	    $params = JFusionFactory::getParams($this->getJname());
 	    $status = array();

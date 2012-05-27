@@ -28,10 +28,18 @@ require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS .
  * @link      http://www.jfusion.org 
  */
 class JFusionAuth_gallery2 extends JFusionAuth {
-    function getJname() 
+    /**
+     * @return string
+     */
+    function getJname()
     {
         return 'gallery2';
-    }	
+    }
+
+    /**
+     * @param array|object $userinfo
+     * @return string
+     */
     function generateEncryptedPassword($userinfo) {
         require JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'gallery2.php';
         jFusion_g2BridgeCore::loadGallery2Api($this->getJname(),false);

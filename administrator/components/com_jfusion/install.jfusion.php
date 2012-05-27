@@ -17,6 +17,9 @@
 defined('_JEXEC') or die('Restricted access');
 
 require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'defines.php';
+/**
+ * @return bool
+ */
 function com_install() {
 	$return = true;
 

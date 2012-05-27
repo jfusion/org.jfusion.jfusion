@@ -29,10 +29,16 @@ defined('_JEXEC') or die('Restricted access');
  */
 class JFusionWordpressHelper {
 
-	function getJname()	{
+    /**
+     * @return string
+     */
+    function getJname()	{
 		return 'wordpress';
 	}
 
+    /**
+     * @return array
+     */
     function getUsergroupListWP() {
 		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = "SELECT option_value FROM #__options WHERE option_name = 'wp_user_roles'";

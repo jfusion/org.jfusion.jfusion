@@ -1386,6 +1386,14 @@ class JFusionFunction
 		return false;
     }
 
+    /**
+     * @static
+     * @param $extension
+     * @param $type
+     * @param $name
+     * @param null $basePath
+     * @return bool
+     */
     public static function loadLanguage($extension,$type,$name, $basePath = null){
 		$extension = $extension.'_'.$type.'_'.$name;
     	if(JFusionFunction::isJoomlaVersion('1.6')) {
@@ -1408,15 +1416,15 @@ class JFusionFunction
         return false;
     }
 
-    /*
+    /**
      * Convert a utf-8 joomla string in to a valid encoding matching the table/filed it will be sent to
      *
-     * @param string $string string to convert
-     * @param string $jname used to get the database object, and point to the static stored data
-     * @param string $table table that we will be looking at
-     * @param string $field field that we will be looking at
-     *
-     * @return string converted string
+     * @static
+     * @param $string string to convert
+     * @param $jname used to get the database object, and point to the static stored data
+     * @param $table table that we will be looking at
+     * @param $field field that we will be looking at
+     * @return bool|string
      */
     public static function encodeDBString($string, $jname, $table, $field) {
         static $data;
@@ -1464,33 +1472,63 @@ class JFusionFunction
             }
         }
         return $string;
-    }  
+    }
 
+    /**
+     * @static
+     * @param $matches
+     * @return string
+     */
     public static function _callback_htmlspecialchars($matches)
     {
         return htmlspecialchars($matches[1], ENT_QUOTES, 'UTF-8');
     }
 
+    /**
+     * @static
+     * @param $matches
+     * @return string
+     */
     public static function _callback_code($matches)
     {
         return '[code]'.htmlspecialchars($matches[2], ENT_QUOTES, 'UTF-8').'[/code]';
     }
 
+    /**
+     * @static
+     * @param $matches
+     * @return string
+     */
     public static function _callback_code_decode($matches)
     {
         return '[code]'.htmlspecialchars_decode($matches[1], ENT_QUOTES).'[/code]';
     }
 
+    /**
+     * @static
+     * @param $matches
+     * @return string
+     */
     public static function _callback_parseTag_img($matches)
     {
         return '[img]'.JFusionFunction::parseTag($matches[1],'img').'[/img]';
     }
 
+    /**
+     * @static
+     * @param $matches
+     * @return string
+     */
     public static function _callback_parseTag_p($matches)
     {
         return JFusionFunction::parseTag($matches[1], 'p');
     }
 
+    /**
+     * @static
+     * @param $matches
+     * @return string
+     */
     public static function _callback_url($matches)
     {
     	return '[url='.JRoute::_(JFusionFunction::getJoomlaURL().$matches[1]).']'.$matches[2].'[/url]';

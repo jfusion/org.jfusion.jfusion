@@ -28,6 +28,10 @@ defined('_JEXEC') or die('Restricted access');
  * @link       http://www.jfusion.org
  */
 class JFusionAuth_mybb extends JFusionAuth {
+    /**
+     * @param array|object $userinfo
+     * @return string
+     */
     function generateEncryptedPassword($userinfo) {
         //Apply myBB encryption
         $testcrypt = md5(md5($userinfo->password_salt) . md5($userinfo->password_clear));

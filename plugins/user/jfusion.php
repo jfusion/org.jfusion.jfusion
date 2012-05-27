@@ -757,20 +757,59 @@ class plgUserJfusion extends JPlugin
         return true;
     }
 
-    //joomla 1.6 compatibility code
- 	public function onUserLogin($user, $options = array()){
+    /*
+     * joomla 1.6 compatibility code
+     *
+     * @param $user
+     * @param array $options
+     * @return bool
+     */
+    /**
+     * @param $user
+     * @param array $options
+     * @return bool
+     */
+    public function onUserLogin($user, $options = array()){
  	    return $this->onLoginUser($user, $options);
  	}
-	public function onUserLogout($user, $options = array())	{
+
+    /**
+     * @param $user
+     * @param array $options
+     * @return object
+     */
+    public function onUserLogout($user, $options = array())	{
  	    return $this->onLogoutUser($user, $options);
 	}
-	public function onUserAfterDelete($user, $succes, $msg)	{
+
+    /**
+     * @param $user
+     * @param $succes
+     * @param $msg
+     * @return bool
+     */
+    public function onUserAfterDelete($user, $succes, $msg)	{
  	    return $this->onAfterDeleteUser($user, $succes, $msg);
 	}
-	public function onUserBeforeSave($user, $isnew, $new){
+
+    /**
+     * @param $user
+     * @param $isnew
+     * @param $new
+     * @return bool
+     */
+    public function onUserBeforeSave($user, $isnew, $new){
  	    return $this->onBeforeStoreUser($user, $isnew, $new);
 	}
-	public function onUserAfterSave($user, $isnew, $success, $msg) {
+
+    /**
+     * @param $user
+     * @param $isnew
+     * @param $success
+     * @param $msg
+     * @return bool
+     */
+    public function onUserAfterSave($user, $isnew, $success, $msg) {
         if (!JPluginHelper::isEnabled('user','joomla')) {
             $userInfo = JFactory::getUser();
             $levels = implode(',', $userInfo->getAuthorisedViewLevels());

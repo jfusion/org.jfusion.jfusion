@@ -21,6 +21,9 @@ class jfusionViewconfigdump extends JView
 {
     public $checkvalue = array();
 
+    /**
+     * @param null $tpl
+     */
     function display($tpl = null)
     {
     	$db = JFactory::getDBO();
@@ -145,23 +148,49 @@ class jfusionViewconfigdump extends JView
     	
         parent::display($tpl);
     }
-    
+
+    /**
+     * @param $key
+     * @param $value
+     * @return array
+     */
     function jfusion_plugin($key,$value) {
     	return $this->check('jfusion_plugin',$key,$value);
     }
-    
+
+    /**
+     * @param $key
+     * @param $value
+     * @return array
+     */
     function menu_item($key,$value) {
     	return $this->check('menu_item',$key,$value);
     }
-    
+
+    /**
+     * @param $key
+     * @param $value
+     * @param $name
+     * @return array
+     */
     function joomla_plugin($key,$value,$name) {
     	return $this->check('joomla_plugin',$key,$value,$name);
     }
-    
+
+    /**
+     * @param $key
+     * @param $value
+     * @param $name
+     * @return array
+     */
     function jfusion_module($key,$value,$name) {
     	return $this->check('jfusion_module',$key,$value,$name);
     }
-    
+
+    /**
+     * @param $new
+     * @param $row
+     */
     function loadParams(&$new,$row) {
     	$JParameter = new JParameter('');
 
@@ -199,7 +228,12 @@ class jfusionViewconfigdump extends JView
 			}
 		}
     }
-    
+
+    /**
+     * @param $new
+     * @param $name
+     * @param null $type
+     */
     function clearParameters(&$new,$name,$type=null) {
 // TODO: disabled for now, i want to at some point make this an option
     	/*
@@ -217,8 +251,13 @@ class jfusionViewconfigdump extends JView
     		}
     	}
     	*/
-    }    
-    
+    }
+
+    /**
+     * @param $new
+     * @param $name
+     * @param $type
+     */
     function addMissingParameters(&$new,$name,$type) {
     	if (isset($this->checkvalue[$name]['*'])) {
 	    	foreach($this->checkvalue[$name]['*'] as $key => $value) {
@@ -246,7 +285,14 @@ class jfusionViewconfigdump extends JView
     		}
     	}
     }
-    
+
+    /**
+     * @param $type
+     * @param $key
+     * @param $value
+     * @param null $name
+     * @return array
+     */
     function check($type,$key,$value,$name=null) {
     	$newStatus = new stdClass;
     	$check = null;

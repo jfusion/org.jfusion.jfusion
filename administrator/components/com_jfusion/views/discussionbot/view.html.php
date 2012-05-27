@@ -17,6 +17,10 @@ jimport('joomla.application.component.view');
 */
 class jfusionViewdiscussionbot extends JView
 {
+    /**
+     * @param null $tpl
+     * @return mixed
+     */
     function display($tpl = null)
     {
     	//load language file
@@ -184,7 +188,16 @@ class jfusionViewdiscussionbot extends JView
 		parent::display($tpl);
 	}
 
-	public static function buildRecursiveTree($id, $indent, $list, &$children, $level = 0)
+    /**
+     * @static
+     * @param $id
+     * @param $indent
+     * @param $list
+     * @param $children
+     * @param int $level
+     * @return mixed
+     */
+    public static function buildRecursiveTree($id, $indent, $list, &$children, $level = 0)
 	{
 	    if (@$children[$id]) {
     		foreach ($children[$id] as $v)

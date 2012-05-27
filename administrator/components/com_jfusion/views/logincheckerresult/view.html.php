@@ -140,7 +140,11 @@ class jfusionViewLoginCheckerResult extends JView
         }
         $this->assignRef('plugins', $plugins);
     }
-    
+
+    /**
+     * @param $credentials
+     * @param $options
+     */
     function getAuth($credentials, $options)
     {
     	global $jfusionDebug;

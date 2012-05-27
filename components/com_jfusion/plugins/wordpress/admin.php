@@ -44,7 +44,10 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 		return 'wordpress';
 	}
 
-	function getTablename() {
+    /**
+     * @return string
+     */
+    function getTablename() {
 		return 'users';
 	}
 	
@@ -152,7 +155,10 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 		return $userlist;
 	}
 
-	function getUserCount() {
+    /**
+     * @return int
+     */
+    function getUserCount() {
 		//getting the connection to the db
 		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = 'SELECT count(*) from #__users';

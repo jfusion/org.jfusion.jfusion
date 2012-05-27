@@ -40,6 +40,10 @@ class JFusionAdmin_mybb extends JFusionAdmin
     {
         return 'mybb';
     }
+
+    /**
+     * @return string
+     */
     function getTablename() {
         return 'users';
     }
@@ -93,6 +97,10 @@ class JFusionAdmin_mybb extends JFusionAdmin
         $userlist = $db->loadObjectList();
         return $userlist;
     }
+
+    /**
+     * @return int
+     */
     function getUserCount() {
         //getting the connection to the db
         $db = JFusionFactory::getDatabase($this->getJname());

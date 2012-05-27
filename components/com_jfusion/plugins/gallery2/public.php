@@ -41,9 +41,17 @@ class JFusionPublic_gallery2 extends JFusionPublic {
     {
         return 'gallery2';
     }
+
+    /**
+     * @return string
+     */
     function getRegistrationURL() {
         return '?g2_view=core.UserAdmin&g2_subView=register.UserSelfRegistration';
     }
+
+    /**
+     * @return string
+     */
     function getLostPasswordURL() {
         return '?g2_view=core.UserAdmin&g2_subView=core.UserRecoverPassword';
     }

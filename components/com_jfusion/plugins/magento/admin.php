@@ -40,6 +40,10 @@ class JFusionAdmin_magento extends JFusionAdmin
     {
         return 'magento';
     }
+
+    /**
+     * @return string
+     */
     function getTablename() {
         return 'admin_user';
     }
@@ -95,6 +99,10 @@ class JFusionAdmin_magento extends JFusionAdmin
         $no_users = $db->loadResult();
         return $no_users;
     }
+
+    /**
+     * @return array
+     */
     function getUsergroupList() {
         //get the connection to the db
         $db = JFusionFactory::getDataBase($this->getJname());

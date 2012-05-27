@@ -20,13 +20,11 @@ require_once (JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS 
  */
 
 class JFusionFrameless{
-    /*
-     * initData
-     *
-     * @param string $jname
+    /**
+     * @static
+     * @param $jname
      * @param bool $isPlugin
-     *
-     * @return object
+     * @return \stdClass
      */
     public static function initData($jname,$isPlugin=true)
 	{
@@ -112,11 +110,10 @@ class JFusionFrameless{
 		return $data;
 	}
 
-    /*
-     * displayContent
-     *
-     * @param object $data
-     *
+
+    /**
+     * @static
+     * @param $data
      * @return bool
      */
     public static function displayContent($data)
@@ -303,12 +300,11 @@ class JFusionFrameless{
 		return true;
 	}
 
-    /*
-     * parseEncoding
-     *
-     * @param string $buffer
+    /**
+     * @param $buffer
+     * @return string
      */
-	function parseEncoding($buffer) {
+    function parseEncoding($buffer) {
 		if ( preg_match  ( '#<meta.*?content="(.*?); charset=(.*?)".*?/>#isS'  , $buffer , $matches)) {
 			if ( stripos  ( $matches[1] , 'text/html' ) !== false && stripos( $matches[2] , 'utf-8' ) === false ) {
 				$buffer = mb_convert_encoding( $buffer , 'UTF-8', $matches[2] );

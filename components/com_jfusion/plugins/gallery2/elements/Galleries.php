@@ -29,6 +29,14 @@ defined('_JEXEC') or die();
  */
 class JElementGalleries extends JElement {
     var $_name = "Galleries";
+
+    /**
+     * @param string $name
+     * @param string $value
+     * @param \JXMLElement $node
+     * @param string $control_name
+     * @return mixed|string|void
+     */
     function fetchElement($name, $value, &$node, $control_name) {
     	global $jname;
         require JFUSION_PLUGIN_PATH . DS . $jname . DS . 'gallery2.php';

@@ -368,6 +368,12 @@ class JFusionUser_magento extends JFusionUser {
             }
         }
     }
+
+    /**
+     * @param object $userinfo
+     * @param array $status
+     * @return null
+     */
     function createUser($userinfo, &$status) {
         $params = JFusionFactory::getParams($this->getJname());
         //get the default user group and determine if we are using simple or advanced
@@ -540,6 +546,13 @@ class JFusionUser_magento extends JFusionUser {
             $status['error'][] = "Magento API: Could not end this session, message: " . $fault->faultstring;
         }
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     * @return null
+     */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
         $params = JFusionFactory::getParams($this->getJname());
         //get the usergroup and determine if working in advanced or simple mode

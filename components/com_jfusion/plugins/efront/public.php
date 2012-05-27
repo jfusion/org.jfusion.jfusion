@@ -35,12 +35,19 @@ class JFusionPublic_efront extends JFusionPublic
     {
         return 'efront';
     }
-    function getRegistrationURL() 
+
+    /**
+     * @return string
+     */
+    function getRegistrationURL()
     {
         return 'index.php?ctg=signup';
     }
 
-    function getLostPasswordURL() 
+    /**
+     * @return string
+     */
+    function getLostPasswordURL()
     {
         return 'index.php?ctg=reset_pwd';
     }

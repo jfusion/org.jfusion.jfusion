@@ -152,6 +152,13 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
         }
         return false;
     }
+
+    /**
+     * @param $jFusionParam
+     * @param $jPluginParam
+     * @param $itemId
+     * @return array|null
+     */
     function getSitemapTree($jFusionParam, $jPluginParam, $itemId) {
         require JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'gallery2.php';
         jFusion_g2BridgeCore::loadGallery2Api($this->getJname(),true);

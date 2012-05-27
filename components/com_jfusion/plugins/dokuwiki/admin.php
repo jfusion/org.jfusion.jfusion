@@ -539,8 +539,10 @@ CODE;
         return true;
     }
 
-    /*
+    /**
      * uninstall function is to disable verious mods
+     *
+     * @return array
      */
     function uninstall()
     {

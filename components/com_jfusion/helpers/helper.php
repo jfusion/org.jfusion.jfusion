@@ -15,7 +15,12 @@ defined('_JEXEC') or die('Restricted access');
  * @package JFusion
  */
 class JFusionHelper {
-	function getReturnURL($params, $type) {
+    /**
+     * @param $params
+     * @param $type
+     * @return string
+     */
+    function getReturnURL($params, $type) {
         $itemid = $params->get($type);
 		if( preg_match('(login_custom_redirect|logout_custom_redirect)', $type) && strlen($params->get($type)) > 0 ) {
 			$url = $params->get($type);
@@ -31,15 +36,28 @@ class JFusionHelper {
 		return base64_encode($url);
 	}
 
-	function getType() {
+    /**
+     * @return string
+     */
+    function getType() {
 		$user = JFactory::getUser();
 	    return (!$user->get('guest')) ? 'logout' : 'login';
 	}
 
+    /**
+     * @static
+     * @param null $id
+     * @return bool
+     */
     public static function getModuleById($id = null) {
 		return self::getModuleQuery('id', $id);
 	}
 
+    /**
+     * @static
+     * @param null $title
+     * @return bool
+     */
     public static function getModuleByTitle($title = null) {
 		return self::getModuleQuery('title', $title);
 	}

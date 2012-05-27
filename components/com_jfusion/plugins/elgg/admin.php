@@ -43,6 +43,11 @@ class JFusionAdmin_elgg extends JFusionAdmin
     function getTablename() {
         return 'users_entity';
     }
+
+    /**
+     * @param $path
+     * @return array|bool
+     */
     function loadSetup($path) {
         //generate the destination file
         if (substr($path, -1) != DS) {

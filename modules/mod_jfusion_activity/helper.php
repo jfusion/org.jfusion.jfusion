@@ -184,14 +184,11 @@ class modjfusionActivityHelper
 		}
 	}
 
-    /*
-     * timeSince
-     *
-     * @param int $original
-     *
+    /**
+     * @param $original
      * @return array
      */
-	function timeSince($original) {
+    function timeSince($original) {
 		// array of time period chunks
 		$chunks = array(
 			array(60 * 60 * 24 * 365 , 'YEAR'),

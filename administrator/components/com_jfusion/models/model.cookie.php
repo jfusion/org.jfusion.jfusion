@@ -17,10 +17,11 @@ class JFusionCookies {
      * Variable to store cookie data
      */
 	var $_cookies = array ();
-    /*
-    * constructor
-    */
-	public function __construct($secret = null)
+
+    /**
+     * @param null $secret
+     */
+    public function __construct($secret = null)
 	{
 		$this->secret = $secret;
 	}
@@ -115,7 +116,11 @@ class JFusionCookies {
 	    	}
     	}
     }
-    
+
+    /**
+     * @param $cookiedomain
+     * @return array
+     */
     public function getApiUrl($cookiedomain) {
     	$url = null;
 		if (strpos($cookiedomain,'http://') === 0) {

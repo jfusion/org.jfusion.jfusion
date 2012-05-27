@@ -37,6 +37,13 @@ class JFusionForum_gallery2 extends JFusionForum {
     {
         return 'gallery2';
     }
+
+    /**
+     * @param $config
+     * @param $view
+     * @param $pluginParam
+     * @return string
+     */
     function renderActivityModule($config, $view, $pluginParam) {
         switch ($view) {
             case 'image_block':

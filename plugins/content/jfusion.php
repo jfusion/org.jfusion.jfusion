@@ -125,11 +125,11 @@ class plgContentJfusion extends JPlugin
         $this->helper->option = JRequest::getCmd('option');
     }
 
-    /*
-     * _check_thread_exists
-     *
-     * @param &$subject
+
+    /**
+     * @param $subject
      * @param $isNew
+     * @return bool
      */
     public function onAfterContentSave(&$subject, $isNew) {
         //check to see if a valid $content object was passed on
@@ -265,11 +265,10 @@ class plgContentJfusion extends JPlugin
         return true;
     }
 
-    /*
-     * onPrepareContent
-     *
-     * @param &$subject
+    /**
+     * @param $subject
      * @param $params
+     * @return bool
      */
     public function onPrepareContent(&$subject, $params)
     {
@@ -430,35 +429,37 @@ class plgContentJfusion extends JPlugin
         return true;
     }
 
-    //joomla 1.6 compatibility layer
+    /**
+     * joomla 1.6 compatibility layer
+     *
+     * @param $context
+     * @param $article
+     * @param $isNew
+     */
     public function onContentAfterSave($context, &$article, $isNew)
 	{
  	    $this->onAfterContentSave($article, $isNew);
 	}
 
-    /*
-     * onContentPrepare
-     *
+    /**
      * @param $context
-     * @param &$article
-     * @param &$params
-     * @param $limitstart
+     * @param $article
+     * @param $params
+     * @param int $limitstart
      */
-	public function onContentPrepare($context, &$article, &$params, $limitstart=0)
+    public function onContentPrepare($context, &$article, &$params, $limitstart=0)
 	{
  		//seems syntax has completely changed :(
 		$this->onPrepareContent($article, $params);
 	}
 
-    /*
-     * onContentAfterDisplay
-     *
+    /**
      * @param $context
-     * @param &$article
-     * @param &$params
-     * @param $limitstart
+     * @param $article
+     * @param $params
+     * @param int $limitstart
      */
-	public function onContentAfterDisplay($context, &$article, &$params, $limitstart=0)
+    public function onContentAfterDisplay($context, &$article, &$params, $limitstart=0)
 	{
 	    $view = JRequest::getVar('view');
 	    $layout = JRequest::getVar('layout');
@@ -932,10 +933,9 @@ class plgContentJfusion extends JPlugin
         }
     }
 
-    /*
-     * _render
-     *
-     * @param &$threadinfo
+    /**
+     * @param $threadinfo
+     * @return bool|string
      */
     public function _render(&$threadinfo)
     {
@@ -983,10 +983,10 @@ class plgContentJfusion extends JPlugin
         return $content;
     }
 
-    /*
-     * _render_discussion_content
-     *
-     * @param &$threadinfo
+
+    /**
+     * @param $threadinfo
+     * @return bool|string
      */
     public function _render_discussion_content(&$threadinfo)
     {
@@ -1097,10 +1097,9 @@ class plgContentJfusion extends JPlugin
         return $content;
     }
 
-    /*
-     * _render_buttons
-     *
-     * @param $innerhtml
+    /**
+     * @param bool $innerhtml
+     * @return bool|string
      */
     public function _render_buttons($innerhtml = false)
     {
@@ -1335,10 +1334,9 @@ class plgContentJfusion extends JPlugin
         return $button_output;
     }
 
-    /*
-     * _prepare_posts_output
-     *
-     * @param &$posts
+    /**
+     * @param $posts
+     * @return array|string
      */
     public function _prepare_posts_output(&$posts)
     {

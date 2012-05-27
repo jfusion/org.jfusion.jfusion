@@ -28,6 +28,10 @@ defined('_JEXEC') or die('Restricted access');
  */
 class JFusionAuth_vbulletin extends JFusionAuth
 {
+    /**
+     * @param array|object $userinfo
+     * @return string
+     */
     function generateEncryptedPassword(&$userinfo)
     {
         //are we logging in with the dual login plugin?

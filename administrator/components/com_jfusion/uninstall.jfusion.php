@@ -30,6 +30,12 @@ defined('_JEXEC') or die('Restricted access');
 
 require_once(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.factory.php');
 
+/**
+ * @param $type
+ * @param $id
+ * @param $group
+ * @param $description
+ */
 function _uninstallPlugin($type, $id, $group, $description)
 {
     $db = JFactory::getDBO();
@@ -76,6 +82,9 @@ function _uninstallPlugin($type, $id, $group, $description)
     }
 }
 
+/**
+ * @return bool
+ */
 function com_uninstall() {
     $return = true;
     echo '<h2>JFusion ' . JText::_('UNINSTALL') . '</h2><br/>';

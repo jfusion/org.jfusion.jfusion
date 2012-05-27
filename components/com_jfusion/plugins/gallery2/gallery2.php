@@ -31,6 +31,14 @@ if (!class_exists('jFusion_g2BridgeCore')) {
 	class jFusion_g2BridgeCore {
 	    static $loadedGallery = null;
 	    static $registry = array();
+
+        /**
+         * @static
+         * @param $jname
+         * @param $fullInit
+         * @param null $itemId
+         * @return bool
+         */
         public static function loadGallery2Api($jname,$fullInit, $itemId = null) {
 	        if (self::$loadedGallery == $jname) {
 	            return true;

@@ -36,6 +36,9 @@ if (!class_exists('JFusionWordpressHelper')) {
 }
 
 
+/**
+ *
+ */
 class JFusionUser_wordpress extends JFusionUser {
 
 	/**
@@ -262,7 +265,12 @@ class JFusionUser_wordpress extends JFusionUser {
 	function unblockUser($userinfo, &$existinguser, &$status) {
 	}
 
-	function activateUser($userinfo, &$existinguser, &$status) {
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
+    function activateUser($userinfo, &$existinguser, &$status) {
 		//activate the user
 		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = 'UPDATE #__users SET user_activation_key = \'\'  WHERE ID =' . (int)$existinguser->userid;

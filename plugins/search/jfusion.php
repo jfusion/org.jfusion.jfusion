@@ -40,7 +40,11 @@ if(JFusionFunction::isJoomlaVersion('1.6')) {
          * @param &$subject
          * @param $config
          */
-	    function plgSearchJfusion(&$subject, $config)
+        /**
+         * @param $subject
+         * @param $config
+         */
+        function plgSearchJfusion(&$subject, $config)
 	    {
 	        parent::__construct($subject, $config);
 	        //load the language

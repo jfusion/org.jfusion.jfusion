@@ -18,27 +18,47 @@ defined('_JEXEC' ) or die('Restricted access' );
 
 class JFusionForum_smf2 extends JFusionForum
 {
-
+    /**
+     * @return string
+     */
     function getJname()
     {
         return 'smf2';
     }
 
+    /**
+     * @param int $threadid
+     * @return string
+     */
     function getThreadURL($threadid)
     {
         return  'index.php?topic=' . $threadid;
     }
 
+    /**
+     * @param int $threadid
+     * @param int $postid
+     * @return string
+     */
     function getPostURL($threadid, $postid)
     {
         return  'index.php?topic=' . $threadid . '.msg'.$postid.'#msg' . $postid;
     }
 
+    /**
+     * @param int $forumid
+     * @param int $threadid
+     * @return string
+     */
     function getReplyURL($forumid, $threadid)
     {
         return "index.php?action=post;topic=$threadid";
     }
 
+    /**
+     * @param int $uid
+     * @return string
+     */
     function getProfileURL($uid)
     {
         return  'index.php?action=profile&u='.$uid;
@@ -596,6 +616,10 @@ class JFusionForum_smf2 extends JFusionForum
 		return $columns;
 	}
 
+    /**
+     * @param int $threadid
+     * @return object
+     */
     function getThread($threadid)
     {
 		$db =& JFusionFactory::getDatabase($this->getJname());

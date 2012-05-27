@@ -29,6 +29,9 @@ class JFusionHelper_mediawiki
         return 'mediawiki';
     }
 
+    /**
+     * @return string
+     */
     function getCookieName() {
         static $mediawiki_cookieName;
         if (!empty($mediawiki_cookieName)) {

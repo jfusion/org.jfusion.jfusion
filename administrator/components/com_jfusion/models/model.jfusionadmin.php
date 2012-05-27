@@ -185,15 +185,16 @@ class JFusionFunctionAdmin
         </td></tr></table>
         <?php
     }
-    
-	/*
- 	 * Function to check if a method has been defined inside a plugin like: setupFromPath
-	 * @param class $class		class or string to search
-	 * @param string $method	method to search for
-	 * 
-	 * @return boolean			return if plugin has function
-	 */
-	public static function methodDefined($class,$method) {
+
+    /**
+     * Function to check if a method has been defined inside a plugin like: setupFromPath
+     *
+     * @static
+     * @param object|string $class
+     * @param $method
+     * @return bool
+     */
+    public static function methodDefined($class,$method) {
         if ( is_object($class) ) {
             $name = get_class  ( $class );
         } else {
@@ -218,8 +219,15 @@ class JFusionFunctionAdmin
         }
 
         return $return;
-    }    
+    }
 
+    /**
+     * @static
+     * @param $url
+     * @param int $save
+     * @param int $unpack
+     * @return array|bool|mixed|string
+     */
     public static function getFileData($url,$save = 0, $unpack = 0)
     {
         ob_start();

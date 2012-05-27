@@ -16,6 +16,10 @@ defined('_JEXEC' ) or die('Restricted access' );
  * @package JFusion_SMF
  */
 class JFusionAuth_smf2 extends JFusionAuth {
+    /**
+     * @param array|object $userinfo
+     * @return string
+     */
     function generateEncryptedPassword($userinfo)
     {
         $testcrypt = sha1(strtolower($userinfo->username) . $userinfo->password_clear) ;

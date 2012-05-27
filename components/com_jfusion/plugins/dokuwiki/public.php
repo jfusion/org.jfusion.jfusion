@@ -48,6 +48,10 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
     function getRegistrationURL() {
         return 'doku.php?do=login';
     }
+
+    /**
+     * @return string
+     */
     function getLostPasswordURL() {
         return 'doku.php?do=resendpwd';
     }
@@ -151,6 +155,10 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
             JError::raiseWarning(500, 'Could not find DokuWiki in the specified directory');
         }
     }
+
+    /**
+     * @param object $data
+     */
     function parseBody(&$data) {
         $regex_body = array();
         $replace_body = array();

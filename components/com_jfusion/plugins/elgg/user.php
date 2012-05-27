@@ -166,6 +166,12 @@ class JFusionUser_elgg extends JFusionUser {
     function filterUsername($username) {
         return $username;
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function updatePassword($userinfo, &$existinguser, &$status) {
         jimport('joomla.user.helper');
         $existinguser->password_salt = JUserHelper::genRandomPassword(8);

@@ -37,9 +37,17 @@ class JFusionPublic_moodle extends JFusionPublic {
     {
         return 'moodle';
     }
+
+    /**
+     * @return string
+     */
     function getRegistrationURL() {
         return 'login/signup.php';
     }
+
+    /**
+     * @return string
+     */
     function getLostPasswordURL() {
         return 'login/forgot_password.php';
     }

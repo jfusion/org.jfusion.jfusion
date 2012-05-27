@@ -7,7 +7,11 @@
  */
 
 class Jfusion_Customer_Model_Observer extends Mage_Customer_Model_Observer {
-	
+
+    /**
+     * @param $observer
+     * @throws Mage_Core_Exception
+     */
     public function isActive($observer)
     {   
     	$customer = $observer->getEvent()->getModel();

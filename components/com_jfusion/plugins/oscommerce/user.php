@@ -32,6 +32,10 @@ require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS .
  */
 class JFusionUser_oscommerce extends JFusionUser 
 {
+    /**
+     * @param object $userinfo
+     * @return bool|object
+     */
     function &getUser($userinfo) {
         $identifier = $userinfo;
         if (is_object($userinfo)) {

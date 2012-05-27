@@ -29,7 +29,10 @@ defined('_JEXEC') or die('Restricted access');
  */
 class JFusionDokuwiki_Io {
     var $jname = null;
-    
+
+    /**
+     * @param $jname
+     */
     function JFusionDokuwiki_Io($jname) {
 		$this->jname = $jname;
     } 		

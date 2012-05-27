@@ -40,7 +40,10 @@ class doku_auth_mysql extends doku_auth_basic {
     function doku_auth_mysql($jname) {
 		$this->jname = $jname;
     }
-    
+
+    /**
+     * @return mixed
+     */
     function init() {
         $share = Dokuwiki::getInstance($this->jname);
         $conf = $share->getConf();

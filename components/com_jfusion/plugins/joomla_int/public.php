@@ -40,9 +40,17 @@ class JFusionPublic_joomla_int extends JFusionPublic {
     {
         return 'joomla_int';
     }
+
+    /**
+     * @return string
+     */
     function getRegistrationURL() {
         return JFusionJplugin::getRegistrationURL();
     }
+
+    /**
+     * @return string
+     */
     function getLostPasswordURL() {
         return JFusionJplugin::getLostPasswordURL();
     }

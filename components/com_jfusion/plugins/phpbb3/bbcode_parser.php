@@ -33,7 +33,13 @@ class phpbb_bbcode_parser {
     var $jname = '';
     var $db = '';
     var $source_url = '';
-    //needed to parse the bbcode for phpbb
+
+    /**
+     * needed to parse the bbcode for phpbb
+     *
+     * @param $text
+     * @param $jname
+     */
     function phpbb_bbcode_parser(&$text, $jname) {
         $this->text = $text;
         $this->jname = $jname;

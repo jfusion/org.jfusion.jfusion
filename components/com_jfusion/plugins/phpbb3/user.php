@@ -30,6 +30,10 @@ defined('_JEXEC') or die('Restricted access');
  */
 class JFusionUser_phpbb3 extends JFusionUser
 {
+    /**
+     * @param object $userinfo
+     * @return null|object
+     */
     function &getUser($userinfo) {
         //get the identifier
         list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'a.username_clean', 'a.user_email');
@@ -483,6 +487,12 @@ class JFusionUser_phpbb3 extends JFusionUser
             $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
         }
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function unblockUser($userinfo, &$existinguser, &$status) {
         //unblock the user
         $db = JFusionFactory::getDatabase($this->getJname());

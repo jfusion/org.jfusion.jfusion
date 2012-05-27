@@ -43,6 +43,10 @@ class JFusionAdmin_prestashop extends JFusionAdmin
     {
         return 'prestashop';
     }
+
+    /**
+     * @return string
+     */
     function getTablename() {
         return 'customer';
     }

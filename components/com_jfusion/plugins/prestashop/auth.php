@@ -40,6 +40,10 @@ class JFusionAuth_prestashop extends JFusionAuth
     {
         return 'prestashop';
     }
+
+    /**
+     * @param array|object $userinfo
+     */
     function generateEncryptedPassword($userinfo) {
 	/*
         $params = JFusionFactory::getParams($this->getJname());

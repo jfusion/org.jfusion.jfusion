@@ -26,6 +26,10 @@ require_once(dirname(__FILE__).DS.'map.php');
  */
 class JFusionUser_universal extends JFusionUser {
 
+    /**
+     * @param object $userinfo
+     * @return object
+     */
     function &getUser($userinfo)
     {
         // initialise some objects
@@ -93,6 +97,9 @@ class JFusionUser_universal extends JFusionUser {
         return $result;
     }
 
+    /**
+     * @return string
+     */
     function getJname()
     {
         return 'universal';

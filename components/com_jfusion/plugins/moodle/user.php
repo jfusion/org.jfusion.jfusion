@@ -42,7 +42,11 @@ require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS .
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org */
 class JFusionUser_moodle extends JFusionUser {
-	function rc4encrypt($data) {
+    /**
+     * @param $data
+     * @return mixed
+     */
+    function rc4encrypt($data) {
 		$password = 'nfgjeingjk';
 		return endecrypt($password, $data, '');
 	}
@@ -370,7 +374,13 @@ class JFusionUser_moodle extends JFusionUser {
 			$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 		}
 	}
-	function inactivateUser($userinfo, &$existinguser, &$status) {
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
+    function inactivateUser($userinfo, &$existinguser, &$status) {
 		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = 'UPDATE #__user SET confirmed = false WHERE id =' . (int)$existinguser->userid;
 		$db->setQuery($query);

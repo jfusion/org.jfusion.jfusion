@@ -140,9 +140,7 @@ class jfusionViewplugindisplay extends JView {
         }
     }
 
-    /*
-     * generateErrorHTML
-     *
+    /**
      * @return string
      */
     function generateErrorHTML() {
@@ -164,13 +162,10 @@ class jfusionViewplugindisplay extends JView {
         return $result;	
     }
 
-    /*
-     * initRecord
-     *
-     * @param string $jname
-     * @param object $record
-     *
-     * @return string
+    /**
+     * @param $jname
+     * @param null $record
+     * @return null|\stdClass
      */
     function initRecord($jname,$record=null) {
     	if (!$record) {
@@ -364,11 +359,8 @@ class jfusionViewplugindisplay extends JView {
 		return  $record;
     }
 
-    /*
-     * generateRowHTML
-     *
-     * @param object $record
-     *
+    /**
+     * @param $record
      * @return string
      */
     function generateRowHTML($record) {

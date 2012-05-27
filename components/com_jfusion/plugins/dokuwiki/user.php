@@ -36,6 +36,11 @@ if (!class_exists('Dokuwiki')) {
  * @link       http://www.jfusion.org
  */
 class JFusionUser_dokuwiki extends JFusionUser {
+    /**
+     * @param object $userinfo
+     * @param int $overwrite
+     * @return array
+     */
     function updateUser($userinfo, $overwrite) {
         // Initialise some variables
         $params = JFusionFactory::getParams($this->getJname());
@@ -164,6 +169,11 @@ class JFusionUser_dokuwiki extends JFusionUser {
     {
         return 'dokuwiki';
     }
+
+    /**
+     * @param object $userinfo
+     * @return array
+     */
     function deleteUser($userinfo) {
         //setup status array to hold debug info and errors
         $status = array();

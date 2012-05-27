@@ -41,6 +41,12 @@ class JFusionUser_vbulletin extends JFusionUser
         $this->helper = & JFusionFactory::getHelper($this->getJname());
     }
 
+    /**
+     * @param object $userinfo
+     * @param string $identifier_type
+     * @param int $ignore_id
+     * @return object
+     */
     function &getUser($userinfo, $identifier_type = 'auto', $ignore_id = 0)
     {
     	if($identifier_type == 'auto') {
@@ -595,6 +601,13 @@ class JFusionUser_vbulletin extends JFusionUser
 		}
     }
 
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param object $usergroups
+     * @param array $status
+     * @return bool
+     */
     function executeUpdateUsergroup(&$userinfo, &$existinguser, &$usergroups, &$status)
     {
         $update_groups = false;
@@ -630,6 +643,12 @@ class JFusionUser_vbulletin extends JFusionUser
         return $update_groups;
     }
 
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     * @return null
+     */
     function updateUsergroup($userinfo, &$existinguser, &$status)
     {
         //check to see if we have a group_id in the $userinfo, if not return

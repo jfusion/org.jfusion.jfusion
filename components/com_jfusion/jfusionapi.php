@@ -35,7 +35,11 @@ class JFusionAPI {
 	private $error = null;
 	private $debug = null;
 
-	public function __construct($url = '', $secretkey = '')
+    /**
+     * @param string $url
+     * @param string $secretkey
+     */
+    public function __construct($url = '', $secretkey = '')
 	{
 		if ($url == '' ) {
 			if (session_id()) {
@@ -93,8 +97,11 @@ class JFusionAPI {
     {
 		$this->payload = $payload;
     }
-    
-	private function retrieveKey()
+
+    /**
+     * @return bool
+     */
+    private function retrieveKey()
 	{
 		if ($this->hash && $this->sid) return true;
 		$FileData = $this->_raw('get','status', 'key', null, false);
@@ -258,7 +265,11 @@ class JFusionAPI {
     	}
 		return $decrypted;
     }
-    
+
+    /**
+     * @param array $post
+     * @return array|bool
+     */
     private function post($post=array())
     {
     	$this->error = null;
@@ -443,8 +454,11 @@ class JFusionAPI_Status extends JFusionAPIBase {
 		$return['hash'] = $iv;
 		return $return;
 	}
-	
-	public function getPing()
+
+    /**
+     * @return array
+     */
+    public function getPing()
 	{
 		$return['payload'] = 'pong';
 		return $return;

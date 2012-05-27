@@ -31,6 +31,10 @@ require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS .
  * @link       http://www.jfusion.org
  */
 class JFusionAuth_magento extends JFusionAuth {
+    /**
+     * @param array|object $userinfo
+     * @return string
+     */
     function generateEncryptedPassword($userinfo) {
         if ($userinfo->password_salt) {
             return md5($userinfo->password_salt . $userinfo->password_clear);

@@ -546,6 +546,13 @@ function idx_indexLengths(&$filter) {
     closedir($dir);
     return $idx;
 }
+
+/**
+ * @param $string
+ * @param string $repl
+ * @param string $additional
+ * @return mixed
+ */
 function utf8_stripspecials($string, $repl = '', $additional = '') {
     global $UTF8_SPECIAL_CHARS;
     global $UTF8_SPECIAL_CHARS2;

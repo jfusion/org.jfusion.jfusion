@@ -24,17 +24,26 @@ require_once(dirname(__FILE__).DS.'map.php');
  * @package JFusion_universal
  */
 class JFusionAdmin_universal extends JFusionAdmin{
+    /**
+     * @return string
+     */
     function getJname()
     {
         return 'universal';
     }
 
+    /**
+     * @return string
+     */
     function getTablename()
     {
         $map = JFusionMap::getInstance($this->getJname());
         return $map->getTablename('user');
     }
 
+    /**
+     * @return array
+     */
     function getUsergroupList()
     {
         $params = JFusionFactory::getParams($this->getJname());
@@ -248,6 +257,13 @@ class JFusionAdmin_universal extends JFusionAdmin{
         return $output;
     }
 
+    /**
+     * @param $name
+     * @param $value
+     * @param $node
+     * @param $control_name
+     * @return string
+     */
     function usergroupmap($name, $value, $node, $control_name)
     {
 		if (!is_array($value)) $value = null;

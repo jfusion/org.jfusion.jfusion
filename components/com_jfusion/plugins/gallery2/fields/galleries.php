@@ -29,7 +29,10 @@ defined('_JEXEC') or die();
 class JFormFieldGalleries extends JFormField {
 	public $type = "galleries";
 
-	function getInput()
+    /**
+     * @return mixed|string
+     */
+    function getInput()
 	{
     	global $jname;
 		$fieldName = $this->formControl.'[' . $this->fieldname . ']';

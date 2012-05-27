@@ -34,6 +34,10 @@ require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS .
  * @link       http://www.jfusion.org
  */
 class JFusionUser_gallery2 extends JFusionUser {
+    /**
+     * @param object $userinfo
+     * @return bool|\stdClass
+     */
     function &getUser($userinfo) {
         // get the username
         if (is_object($userinfo)) {

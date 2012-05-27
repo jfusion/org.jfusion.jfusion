@@ -38,6 +38,11 @@ class JFusionAuth_phpbb3 extends JFusionAuth
     {
         return 'phpbb3';
     }
+
+    /**
+     * @param array|object $userinfo
+     * @return string
+     */
     function generateEncryptedPassword($userinfo) {
         // get the encryption PHP file
         if (!class_exists('PasswordHash')) {

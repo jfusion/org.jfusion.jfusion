@@ -12,6 +12,9 @@
  */
 class Jfusion_Customer_Model_Entity_Setup extends Mage_Customer_Model_Entity_Setup{
 
+    /**
+     * @return mixed
+     */
     public function getDefaultEntities(){
         $entities = parent::getDefaultEntities();
         

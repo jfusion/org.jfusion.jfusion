@@ -40,6 +40,10 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
     {
         return 'phpbb3';
     }
+
+    /**
+     * @return string
+     */
     function getTablename() {
         return 'users';
     }
@@ -144,6 +148,10 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
         //getting the results
         return $db->loadObjectList();
     }
+
+    /**
+     * @return string
+     */
     function getDefaultUsergroup() {
         $params = JFusionFactory::getParams($this->getJname());
         $usergroup_id = $params->get('usergroup');
@@ -258,6 +266,10 @@ if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\'
             JFile::write($mod_file, $file_data);
         }
     }
+
+    /**
+     * @return int
+     */
     function disableRedirectMod() {
         $error = 0;
         $reason = '';
@@ -504,6 +516,10 @@ JS;
         }
         return $error;
     }
+
+    /**
+     * @return bool
+     */
     function clearConfigCache() {
         $params = & JFusionFactory::getParams($this->getJname());
         $source_path = $params->get('source_path');
@@ -535,15 +551,13 @@ JS;
         }
         return array($return, $reasons);
     }
-    
-	/*
-	 * do plugin support multi usergroups
-	 * return UNKNOWN for unknown
-	 * return JNO for NO
-	 * return JYES for YES
-	 * return ... ??
-	 */
-	function requireFileAccess()
+
+    /**
+     * do plugin support multi usergroups
+     *
+     * @return string
+     */
+    function requireFileAccess()
 	{
 		return 'DEPENDS';
 	}    

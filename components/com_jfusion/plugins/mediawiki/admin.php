@@ -18,16 +18,26 @@ defined('_JEXEC' ) or die('Restricted access' );
 
 class JFusionAdmin_mediawiki extends JFusionAdmin{
 
+    /**
+     * @return string
+     */
     function getJname()
     {
         return 'mediawiki';
     }
 
+    /**
+     * @return string
+     */
     function getTablename()
     {
         return 'user';
     }
 
+    /**
+     * @param string $source_path
+     * @return array|bool
+     */
     function setupFromPath($source_path)
     {
         //check for trailing slash and generate file path

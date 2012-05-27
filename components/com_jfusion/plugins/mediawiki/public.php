@@ -17,14 +17,19 @@ defined('_JEXEC' ) or die('Restricted access' );
  * For detailed descriptions on these functions please check the model.abstractpublic.php
  * @package JFusion_mediawiki
  */
-class JFusionPublic_mediawiki extends JFusionPublic{
-
-	function getJname()
+class JFusionPublic_mediawiki extends JFusionPublic {
+    /**
+     * @return string
+     */
+    function getJname()
 	{
 		return 'mediawiki';
 	}
 
-	function _parseBody(&$data)
+    /**
+     * @param $data
+     */
+    function _parseBody(&$data)
 	{
 	    $regex_body		= array();
 	    $replace_body	= array();
@@ -75,7 +80,11 @@ class JFusionPublic_mediawiki extends JFusionPublic{
 	{
 	}
 
-	function getSearchResultLink($post)
+    /**
+     * @param mixed $post
+     * @return string
+     */
+    function getSearchResultLink($post)
 	{
 		return 'index.php?title='.$post->title;
 	}

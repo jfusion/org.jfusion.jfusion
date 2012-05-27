@@ -40,10 +40,17 @@ class JFusionPublic_elgg extends JFusionPublic {
     {
         return 'elgg';
     }
-    
+
+    /**
+     * @return string
+     */
     function getRegistrationURL() {
         return 'account/register.php';
     }
+
+    /**
+     * @return string
+     */
     function getLostPasswordURL() {
         return 'account/forgotten_password.php';
     }

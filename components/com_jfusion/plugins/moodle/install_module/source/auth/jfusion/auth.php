@@ -33,9 +33,18 @@ if (!defined('MOODLE_INTERNAL')) {
 require_once($CFG->libdir.'/authlib.php');
 
 
+/**
+ *
+ */
 class JText {
 
-	static public function _($string, $jsSafe = false)
+    /**
+     * @static
+     * @param $string
+     * @param bool $jsSafe
+     * @return mixed
+     */
+    static public function _($string, $jsSafe = false)
 	{
 		return ($string);
 	}
@@ -53,7 +62,11 @@ class DualLogin {
 
 	}
 
-	function logout($curl_options){
+    /**
+     * @param $curl_options
+     * @return array|string
+     */
+    function logout($curl_options){
 		$status = array();
 		$helper = new JFusionCurl;
 		// @todo: to fix: For info, with J! 1.6 there is problem with a form token and it's not provided to the post data

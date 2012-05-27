@@ -30,6 +30,10 @@ defined('_JEXEC') or die('Restricted access');
  * @link       http://www.jfusion.org
  */
 class JFusionAuth_elgg extends JFusionAuth {
+    /**
+     * @param array|object $userinfo
+     * @return string
+     */
     function generateEncryptedPassword($userinfo) {
         $testcrypt = md5($userinfo->password_clear . $userinfo->password_salt);
         return $testcrypt;

@@ -35,6 +35,12 @@ if (!isset($GLOBALS['db']) && !empty($db)) {
 class executeJFusionHook
 {
     var $vars;
+
+    /**
+     * @param $hook
+     * @param $vars
+     * @param string $key
+     */
     function executeJFusionHook($hook, &$vars, $key = '')
     {
         if ($hook != 'init_startup' && !defined('_VBJNAME') && empty($_POST['logintype'])) {
@@ -455,6 +461,10 @@ class executeJFusionHook
             $profileurlSet = true;
         }
     }
+
+    /**
+     * @return bool
+     */
     function redirect_generic()
     {
         global $baseURL;

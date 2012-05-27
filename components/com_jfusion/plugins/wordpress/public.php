@@ -38,9 +38,17 @@ class JFusionPublic_wordpress extends JFusionPublic
     {
         return 'wordpress';
     }
+
+    /**
+     * @return string
+     */
     function getRegistrationURL() {
         return 'wp-login.php?action=register';
     }
+
+    /**
+     * @return string
+     */
     function getLostPasswordURL() {
         return 'wp-login.php?action=lostpassword';
     }

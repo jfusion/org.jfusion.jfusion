@@ -12,6 +12,10 @@
  */
 class Jfusion_Customer_Model_Form extends Mage_Customer_Model_Form
 {
+    /**
+     * @param array $data
+     * @return array|bool
+     */
     public function validateData(array $data) {
         $errors = parent::validateData($data);
        

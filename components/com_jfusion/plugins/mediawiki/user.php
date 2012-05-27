@@ -31,6 +31,10 @@ require_once(JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.D
  */
 class JFusionUser_mediawiki extends JFusionUser {
 
+    /**
+     * @param object $userinfo
+     * @return object
+     */
     function &getUser($userinfo)
     {
 		// get the username
@@ -145,6 +149,11 @@ class JFusionUser_mediawiki extends JFusionUser {
 		return $status;
      }
 
+    /**
+     * @param object $userinfo
+     * @param array $options
+     * @return array
+     */
     function createSession($userinfo, $options){
         $status = array();
 	    $status['error'] = array();
@@ -196,6 +205,11 @@ class JFusionUser_mediawiki extends JFusionUser {
         return $username;
     }
 
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function updatePassword($userinfo, &$existinguser, &$status)
     {
         $existinguser->password = ':A:' . md5( $userinfo->password_clear);
@@ -214,6 +228,11 @@ class JFusionUser_mediawiki extends JFusionUser {
 
     }
 
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function updateEmail($userinfo, &$existinguser, &$status)
     {
         //we need to update the email

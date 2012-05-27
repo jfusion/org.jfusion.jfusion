@@ -39,11 +39,18 @@ class JFusionAdmin_moodle extends JFusionAdmin
     function getJname(){
         return 'moodle';
     }
-    
+
+    /**
+     * @return string
+     */
     function getTablename() {
         return 'user';
     }
-    
+
+    /**
+     * @param string $forumPath
+     * @return array|bool
+     */
     function setupFromPath($forumPath) {
         //check for trailing slash and generate file path
         if (substr($forumPath, -1) == DS) {
@@ -95,6 +102,12 @@ class JFusionAdmin_moodle extends JFusionAdmin
             return $params;
         }
     }
+
+    /**
+     * @param int $start
+     * @param string $count
+     * @return array
+     */
     function getUserList($start = 0, $count = '')
     {
         //getting the connection to the db
@@ -135,6 +148,10 @@ class JFusionAdmin_moodle extends JFusionAdmin
         $db->setQuery($query);
         return $db->loadResult();
     }
+
+    /**
+     * @return bool
+     */
     function allowRegistration() {
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = "SELECT value FROM #__config WHERE name = 'auth' and value != 'jfusion'";

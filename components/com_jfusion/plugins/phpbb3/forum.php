@@ -38,6 +38,11 @@ class JFusionForum_phpbb3 extends JFusionForum {
     {
         return 'phpbb3';
     }
+
+    /**
+     * @param int $threadid
+     * @return string
+     */
     function getThreadURL($threadid) {
         return 'viewtopic.php?t=' . $threadid;
     }
@@ -188,6 +193,11 @@ class JFusionForum_phpbb3 extends JFusionForum {
         //getting the results
         return $db->loadObjectList('id');
     }
+
+    /**
+     * @param $forumids
+     * @return array
+     */
     function filterForumList($forumids)
     {
         if (empty($forumids)) {
@@ -529,6 +539,11 @@ class JFusionForum_phpbb3 extends JFusionForum {
 		}
 	}
 
+    /**
+     * @param int $forumid
+     * @param int $threadid
+     * @return string
+     */
     function getReplyURL($forumid, $threadid)
     {
         return "posting.php?mode=reply&f=$forumid&t=$threadid";

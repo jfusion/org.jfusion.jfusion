@@ -34,8 +34,11 @@ if (!class_exists('JFusionEfrontHelper')) {
  */
 class JFusionUser_efront extends JFusionUser
 {
-	
-	function &getUser($userinfo) {
+    /**
+     * @param object $userinfo
+     * @return object
+     */
+    function &getUser($userinfo) {
         $db = JFusionFactory::getDatabase($this->getJname());
         //get the identifier
         list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'login', 'email');

@@ -590,6 +590,9 @@ class JFusionPublic_vbulletin extends JFusionPublic
         return $url;
     }
 
+    /**
+     * @return \stdClass
+     */
     function getSearchQueryColumns()
     {
         $columns = new stdClass();
