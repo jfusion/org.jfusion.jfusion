@@ -361,6 +361,10 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
             return JText::_('VB_CONFIG_FIRST');
         }
     }
+
+    /**
+     * @return mixed
+     */
     function toggleHook()
     {
         $params = JRequest::getVar('params');

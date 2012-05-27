@@ -591,8 +591,11 @@ class JFusionAPI_Status extends JFusionAPIBase {
  */
 class JFusionAPI_User extends JFusionAPIBase {
 	public $encrypt = true;
-	
-	public function getUser()
+
+    /**
+     * @return mixed
+     */
+    public function getUser()
 	{
         $mainframe = $this->startJoomla();
         $plugin = isset($this->payload['plugin']) ? $this->payload['plugin'] : 'joomla_int';

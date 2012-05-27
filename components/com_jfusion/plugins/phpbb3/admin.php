@@ -267,6 +267,10 @@ if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\'
 ';
         return $redirect_code;
     }
+
+    /**
+     * @return mixed
+     */
     function enableRedirectMod() {
         $error = 0;
         $error = 0;
