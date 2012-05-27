@@ -27,7 +27,10 @@ class plgSystemMagelib {
 	public $params;
 	public $mage_path;
 	public $mage_url;
-	
+
+    /*
+     * constructor
+     */
 	function __construct() {
 		$plugin = & JPluginHelper::getPlugin ( 'system', 'magelib' );
 		$this->params = new JParameter ( $plugin->params );
@@ -210,11 +213,17 @@ class plgSystemMagelib {
 		$_SESSION = $this->_OldSessionData;
 		return;
 	}
-	
+
+    /*
+     * getMagePath
+     */
 	function getMagePath(){
 		return $this->mage_path;
 	}
-	
+
+    /*
+     * getMageUrl
+     */
 	function getMageUrl(){
 		return $this->mage_url;
 	}

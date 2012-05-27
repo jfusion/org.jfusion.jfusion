@@ -34,6 +34,12 @@ if(JFusionFunction::isJoomlaVersion('1.6')) {
 	 */
 	class plgSearchJfusion extends JPlugin
 	{
+        /*
+         * constructor
+         *
+         * @param &$subject
+         * @param $config
+         */
 	    function plgSearchJfusion(&$subject, $config)
 	    {
 	        parent::__construct($subject, $config);

@@ -29,6 +29,8 @@ class modjfusionUserActivityHelper {
     * prepareAutoOutput
     *
     * @param string $jname
+    * @param array $config
+    * @param object $params
     *
     * @return object
     */

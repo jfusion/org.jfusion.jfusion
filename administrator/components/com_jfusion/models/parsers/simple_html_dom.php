@@ -89,21 +89,34 @@ class simple_html_dom_node {
     public $parent = null;
     public $_ = array();
     private $dom = null;
-
+    /*
+    * constructor
+    *
+    * @params object $dom
+    */
     function __construct($dom) {
         $this->dom = $dom;
         $dom->nodes[] = $this;
     }
-
+    /*
+    * destruct
+    */
     function __destruct() {
         $this->clear();
     }
 
+    /*
+    * constructor
+    *
+    * @return string
+    */
     function __toString() {
         return $this->outertext();
     }
 
-    // clean up memory due to php5 circular references memory leak...
+    /*
+    * clean up memory due to php5 circular references memory leak...
+    */
     function clear() {
         $this->dom = null;
         $this->nodes = null;
@@ -258,6 +271,12 @@ class simple_html_dom_node {
     }
 
     // find elements by css selector
+    /*
+     * find
+     *
+     * @param string $selector
+     * @param string $idx
+     */
     function find($selector, $idx=null) {
         $selectors = $this->parse_selector($selector);
         if (($count=count($selectors))===0) return array();
@@ -300,6 +319,12 @@ class simple_html_dom_node {
     }
 
     // seek for given conditions
+    /*
+     * seek
+     *
+     * @param array $selector
+     * @param array &$ret
+     */
     protected function seek($selector, &$ret) {
         list($tag, $key, $val, $exp, $no_key) = $selector;
 
@@ -363,6 +388,15 @@ class simple_html_dom_node {
         }
     }
 
+    /*
+     * match
+     *
+     * @param string $exp
+     * @param string $pattern
+     * @param string $value
+     *
+     * @return bool
+     */
     protected function match($exp, $pattern, $value) {
         switch ($exp) {
             case '=':
@@ -418,6 +452,13 @@ class simple_html_dom_node {
         return $selectors;
     }
 
+    /*
+     * get
+     *
+     * @param string $name
+     *
+     * @return string
+     */
     function __get($name) {
         if (isset($this->attr[$name])) return $this->attr[$name];
         switch($name) {

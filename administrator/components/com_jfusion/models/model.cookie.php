@@ -7,7 +7,9 @@ class JFusionCookies {
      * Variable to store cookie data
      */
 	var $_cookies = array ();
-
+    /*
+    * constructor
+    */
 	public function __construct($secret = null)
 	{
 		$this->secret = $secret;

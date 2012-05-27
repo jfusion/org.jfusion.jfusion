@@ -9,7 +9,9 @@ class cssparser {
 
 	var $regex = array();
 	var $replace = array();
-
+    /*
+    * constructor
+    */
 	function cssparser($prefix = null) {
 		$this->prefix = $prefix;
 	    $this->Clear();

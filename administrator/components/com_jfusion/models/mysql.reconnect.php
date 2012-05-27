@@ -35,6 +35,11 @@ require_once JPATH_LIBRARIES . DS . 'joomla' . DS . 'database' . DS . 'database'
  */
 class JFusionReconnectMySQL extends JDatabaseMySQL
 {
+    /*
+     * constructor
+     *
+     * @params array $options
+     */
     public function __construct($options)
     {
         if (JFusionFunction::isJoomlaVersion('1.7')) {

@@ -35,7 +35,11 @@ require_once JPATH_LIBRARIES . DS . 'joomla' . DS . 'database' . DS . 'database'
  */
 class JFusionMySQLi extends JDatabaseMySQLi
 {
-
+    /*
+     * constructor
+     *
+     * @params array $options
+     */
     public function __construct($options){
         parent::__construct($options);
     }

@@ -20,6 +20,14 @@ require_once (JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS 
  */
 
 class JFusionFrameless{
+    /*
+     * initData
+     *
+     * @param string $jname
+     * @param bool $isPlugin
+     *
+     * @return object
+     */
     public static function initData($jname,$isPlugin=true)
 	{
 		$uri = JURI::getInstance ();
@@ -104,6 +112,13 @@ class JFusionFrameless{
 		return $data;
 	}
 
+    /*
+     * displayContent
+     *
+     * @param object $data
+     *
+     * @return bool
+     */
     public static function displayContent($data)
 	{
 		$mainframe = JFactory::getApplication();
@@ -288,6 +303,11 @@ class JFusionFrameless{
 		return true;
 	}
 
+    /*
+     * parseEncoding
+     *
+     * @param string $buffer
+     */
 	function parseEncoding($buffer) {
 		if ( preg_match  ( '#<meta.*?content="(.*?); charset=(.*?)".*?/>#isS'  , $buffer , $matches)) {
 			if ( stripos  ( $matches[1] , 'text/html' ) !== false && stripos( $matches[2] , 'utf-8' ) === false ) {
@@ -297,6 +317,11 @@ class JFusionFrameless{
 		return $buffer;
 	}
 
+    /*
+     * parseEncoding
+     *
+     * @param object &$data
+     */
 	function parseBody(&$data) {
 		if ( !empty($data->bodyextract) || !empty($data->bodyremove) ) {
 			require_once (JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'parsers' . DS . 'simple_html_dom.php');

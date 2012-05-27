@@ -125,7 +125,12 @@ class plgContentJfusion extends JPlugin
         $this->helper->option = JRequest::getCmd('option');
     }
 
-
+    /*
+     * _check_thread_exists
+     *
+     * @param &$subject
+     * @param $isNew
+     */
     public function onAfterContentSave(&$subject, $isNew) {
         //check to see if a valid $content object was passed on
         if (!is_object($subject)){
@@ -260,7 +265,12 @@ class plgContentJfusion extends JPlugin
         return true;
     }
 
-
+    /*
+     * onPrepareContent
+     *
+     * @param &$subject
+     * @param $params
+     */
     public function onPrepareContent(&$subject, $params)
     {
         $this->article =& $subject;
@@ -426,12 +436,28 @@ class plgContentJfusion extends JPlugin
  	    $this->onAfterContentSave($article, $isNew);
 	}
 
+    /*
+     * onContentPrepare
+     *
+     * @param $context
+     * @param &$article
+     * @param &$params
+     * @param $limitstart
+     */
 	public function onContentPrepare($context, &$article, &$params, $limitstart=0)
 	{
  		//seems syntax has completely changed :(
 		$this->onPrepareContent($article, $params);
 	}
 
+    /*
+     * onContentAfterDisplay
+     *
+     * @param $context
+     * @param &$article
+     * @param &$params
+     * @param $limitstart
+     */
 	public function onContentAfterDisplay($context, &$article, &$params, $limitstart=0)
 	{
 	    $view = JRequest::getVar('view');
@@ -446,6 +472,9 @@ class plgContentJfusion extends JPlugin
         }
 	}
 
+    /*
+     * _prepare_content
+     */
     public function _prepare_content()
     {
         JHTML::_( 'behavior.mootools' );
@@ -627,7 +656,9 @@ class plgContentJfusion extends JPlugin
         $this->_render_debug_output();
     }
 
-
+    /*
+     * _render_debug_output
+     */
     public function _render_debug_output()
     {
         if ($this->debug_mode) {
@@ -648,6 +679,9 @@ class plgContentJfusion extends JPlugin
         }
     }
 
+    /*
+     * _create_thread
+     */
     public function _create_thread()
     {
         $JoomlaUser = JFactory::getUser();
@@ -692,7 +726,9 @@ class plgContentJfusion extends JPlugin
         }
     }
 
-
+    /*
+     * _create_post
+     */
     public function _create_post()
     {
         $JoomlaUser = JFactory::getUser();
@@ -828,7 +864,9 @@ class plgContentJfusion extends JPlugin
         if ($ajaxEnabled) die(JText::_('DISCUSSBOT_ERROR'));
     }
 
-
+    /*
+     * _unpublish_discussion
+     */
     public function _unpublish_discussion()
     {
         $JoomlaUser = JFactory::getUser();
@@ -871,7 +909,9 @@ class plgContentJfusion extends JPlugin
         }
     }
 
-
+    /*
+     * _publish_discussion
+     */
     public function _publish_discussion()
     {
         $JoomlaUser = JFactory::getUser();
@@ -892,7 +932,11 @@ class plgContentJfusion extends JPlugin
         }
     }
 
-
+    /*
+     * _render
+     *
+     * @param &$threadinfo
+     */
     public function _render(&$threadinfo)
     {
         $this->helper->_debug('Beginning rendering content');
@@ -939,7 +983,11 @@ class plgContentJfusion extends JPlugin
         return $content;
     }
 
-
+    /*
+     * _render_discussion_content
+     *
+     * @param &$threadinfo
+     */
     public function _render_discussion_content(&$threadinfo)
     {
         $this->helper->_debug('Rendering discussion content');
@@ -1049,7 +1097,11 @@ class plgContentJfusion extends JPlugin
         return $content;
     }
 
-
+    /*
+     * _render_buttons
+     *
+     * @param $innerhtml
+     */
     public function _render_buttons($innerhtml = false)
     {
         $this->helper->_debug('Rendering buttons');
@@ -1283,7 +1335,11 @@ class plgContentJfusion extends JPlugin
         return $button_output;
     }
 
-
+    /*
+     * _prepare_posts_output
+     *
+     * @param &$posts
+     */
     public function _prepare_posts_output(&$posts)
     {
         $this->helper->_debug('Preparing posts output');
@@ -1432,7 +1488,9 @@ class plgContentJfusion extends JPlugin
         return $post_output;
     }
 
-
+    /*
+     * _update_pagination
+     */
     public function _update_pagination()
     {
         $this->helper->reply_count = JRequest::getVar('reply_count','');
@@ -1492,6 +1550,9 @@ class plgContentJfusion extends JPlugin
         die($pagination);
     }
 
+    /*
+     * _update_posts
+     */
     public function _update_posts()
     {
         if ($this->helper->thread_status) {
@@ -1505,7 +1566,9 @@ class plgContentJfusion extends JPlugin
         }
     }
 
-
+    /*
+     * _update_buttons
+     */
     public function _update_buttons()
     {
         die($this->_render_buttons(true));

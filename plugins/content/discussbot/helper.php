@@ -41,6 +41,14 @@ class JFusionDiscussBotHelper {
     var $option;
     var $isJ16;
 
+    /*
+     * constructor
+     *
+     * @param &$params
+     * @param $jname
+     * @param $mode
+     * @param $debug_mode
+     */
     public function __construct(&$params, $jname, $mode, $debug_mode) {
         $this->params = $params;
         $this->jname = $jname;
@@ -53,6 +61,12 @@ class JFusionDiscussBotHelper {
         }
     }
 
+    /*
+     * _get_thread_info
+     *
+     * @param $update
+     * @param $threadinfo
+     */
     public function &_get_thread_info($update = false, $threadinfo = false)
     {
         static $thread_instance;
@@ -75,7 +89,11 @@ class JFusionDiscussBotHelper {
         return $thread_instance[$contentid];
     }
 
-
+    /*
+     * _check_thread_exists
+     *
+     * @param $force_new
+     */
     public function _check_thread_exists($force_new = 0)
     {
         $this->_debug('Checking if thread exists');
@@ -126,7 +144,13 @@ class JFusionDiscussBotHelper {
         return $status;
     }
 
-
+    /*
+     * _get_article_url
+     *
+     * @param $jumpto
+     * @param $query
+     * @param $xhtml
+     */
     public function _get_article_url($jumpto = '', $query = '', $xhtml = true)
     {
         //make sure Joomla's content helper is loaded
@@ -169,6 +193,9 @@ class JFusionDiscussBotHelper {
         return $url;
     }
 
+    /*
+     * _get_thread_status
+     */
     public function _get_thread_status()
     {
         $threadinfo =& $this->_get_thread_info(true);
@@ -202,7 +229,11 @@ class JFusionDiscussBotHelper {
         return $active;
     }
 
-
+    /*
+     * _get_lists
+     *
+     * @param $type
+     */
     public function &_get_lists($type)
     {
         static $lists_instance;
@@ -222,6 +253,12 @@ class JFusionDiscussBotHelper {
         return $lists_instance[$type];
     }
 
+    /*
+     * _validate
+     *
+     * @param $skip_new_check
+     * @param $skip_k2_check
+     */
     public function _validate($skip_new_check = false, $skip_k2_check = false)
     {
         $this->_debug('Validating article');
@@ -649,7 +686,12 @@ class JFusionDiscussBotHelper {
         }
     }
 
-
+    /*
+     * _render_file
+     *
+     * @param $file
+     * @param $mode
+     */
     public function _render_file($file, $mode = 'require')
     {
         $this->_debug('Rendering file ' . $file . ' in ' . $mode . ' mode');
@@ -671,6 +713,12 @@ class JFusionDiscussBotHelper {
         return false;
     }
 
+    /*
+     * _debug
+     *
+     * @param $text
+     * @param $save
+     */
     public function _debug($text, $save = false)
     {
         if ($this->debug_mode) {
@@ -687,12 +735,23 @@ class JFusionDiscussBotHelper {
 class JFusionPagination extends JPagination {
     var $identifier = '';
 
+    /*
+     * constructor
+     *
+     * @param $total
+     * @param $limitstart
+     * @param $limit
+     * @param $identifier
+     */
     public function __construct($total, $limitstart, $limit, $identifier = '')
     {
         $this->identifier = $identifier;
         parent::__construct($total, $limitstart, $limit);
     }
 
+    /*
+     * getPagesLinks
+     */
 	public function getPagesLinks()
 	{
 		// Build the page navigation list
@@ -759,6 +818,9 @@ class JFusionPagination extends JPagination {
 		}
 	}
 
+    /*
+     * getListFooter
+     */
 	public function getListFooter()
 	{
 		$list = array();
@@ -772,6 +834,9 @@ class JFusionPagination extends JPagination {
 		return $this->jfusion_list_footer($list);
 	}
 
+    /*
+     * getLimitBox
+     */
 	public function getLimitBox()
 	{
 		$mainframe = JFactory::getApplication();
@@ -798,6 +863,11 @@ class JFusionPagination extends JPagination {
 		return $html;
 	}
 
+    /*
+     * jfusion_list_render
+     *
+     * @param $list
+     */
 	public function jfusion_list_render($list)
 	{
 		// Initialize variables
@@ -819,6 +889,11 @@ class JFusionPagination extends JPagination {
 		return $html;
 	}
 
+    /*
+    * jfusion_list_footer
+    *
+    * @param $list
+    */
 	public function jfusion_list_footer($list)
 	{
 		// Initialize variables
@@ -833,6 +908,11 @@ class JFusionPagination extends JPagination {
 		return $html;
 	}
 
+    /*
+    * jfusion_item_active
+    *
+    * @param &$item
+    */
     public function jfusion_item_active(&$item)
     {
     	if($item->base>0)
@@ -841,6 +921,11 @@ class JFusionPagination extends JPagination {
     		return "<a href=\"#\" title=\"".$item->text."\" onclick=\"javascript: document.jfusionPaginationForm.limitstart".$this->identifier.".value=0; document.jfusionPaginationForm.submit(); return false;\">".$item->text."</a>";
     }
 
+    /*
+     * jfusion_item_inactive
+     *
+     * @param &$item
+     */
     public function jfusion_item_inactive(&$item)
     {
         return "<span class=\"pagenav\">".$item->text."</span>";
