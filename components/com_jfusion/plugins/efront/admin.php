@@ -17,9 +17,6 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.abstractuser.php';
-if (!class_exists('JFusionEfrontHelper')) {
-   require_once 'efronthelper.php';
-}
 
 /**
  * JFusion Admin Class for eFront 3.5+
@@ -166,7 +163,8 @@ class JFusionAdmin_efront extends JFusionAdmin
      * @return array
      */
     function getUsergroupList() {
-         return JFusionEfrontHelper::getUsergroupList();
+        $helper = JFusionFactory::getHelper($this->getJname());
+         return $helper->getUsergroupList();
     }
 
     /**
@@ -175,7 +173,8 @@ class JFusionAdmin_efront extends JFusionAdmin
     function getDefaultUsergroup() {
         $params = JFusionFactory::getParams($this->getJname());
         $usergroup_id = $params->get('usergroup');
-        return JFusionEfrontHelper::groupIdToName($usergroup_id);
+        $helper = JFusionFactory::getHelper($this->getJname());
+        return $helper->groupIdToName($usergroup_id);
     }
 
     /**

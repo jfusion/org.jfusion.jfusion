@@ -68,7 +68,7 @@ class JFusionHook {
      * @static
      * @param $hook
      * @param $url
-     * @param bool $params
+     * @param bool|array $params
      * @param bool $is_amp
      * @param bool $session_id
      * @return string

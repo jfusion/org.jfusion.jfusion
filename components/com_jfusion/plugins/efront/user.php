@@ -20,9 +20,7 @@ defined('_JEXEC') or die('Restricted access');
  * load the jplugin model
  */
 require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.jplugin.php';
-if (!class_exists('JFusionEfrontHelper')) {
-   require_once 'efronthelper.php';
-}
+
 /**
  * @category   JFusion
  * @package    JFusionPlugins
@@ -51,12 +49,13 @@ class JFusionUser_efront extends JFusionUser
         $db->setQuery($query);
         $result = $db->loadObject();
         if ($result)
-        {      
+        {
+            $helper = JFusionFactory::getHelper($this->getJname());
             // change/add fields used by jFusion
             $result->userid = $result->id;
             $result->username = $result->login;
-            $result->group_id = JFusionEfrontHelper::groupNameToID($result->user_type,$result->user_types_ID);
-            $result->group_name = JFusionEfrontHelper::groupIdToName($result->group_id);
+            $result->group_id = $helper->groupNameToID($result->user_type,$result->user_types_ID);
+            $result->group_name = $helper->groupIdToName($result->group_id);
             $result->name = trim($result->name . ' ' . $result->surname);
             $result->registerDate = date('d-m-Y H:i:s', $result->timestamp);
             $result->activation = ($result->pending == 1) ? "1" : "";
@@ -420,8 +419,9 @@ class JFusionUser_efront extends JFusionUser
         // we need to create the user directories. Can't use Joomla's API because it uses the Joomla Root Path
         $uploadpath = $params->get('uploadpath');        
         $user_dir = $uploadpath.$user->login.'/';
-        if (is_dir($user_dir)) {                                                
-            JFusionEfrontHelper::delete_directory($user_dir); //If the folder already exists, delete it first, including files
+        if (is_dir($user_dir)) {
+            $helper = JFusionFactory::getHelper($this->getJname());
+            $helper->delete_directory($user_dir); //If the folder already exists, delete it first, including files
         }	
         // we are not interested in the result of the deletion, just continue
         if (mkdir($user_dir, 0755) || is_dir($user_dir)) 
@@ -481,6 +481,7 @@ class JFusionUser_efront extends JFusionUser
         $existinguser = $this->getUser($userinfo);
         if (!empty($existinguser)) {
             $params = JFusionFactory::getParams($this->getJname());
+            $helper = JFusionFactory::getHelper($this->getJname());
         	$apiuser = $params->get('apiuser');
             $apikey = $params->get('apikey');
             $login = $existinguser->username;
@@ -492,7 +493,7 @@ class JFusionUser_efront extends JFusionUser
             }
             // get token
             $curl_options['action'] ='token';
-            $status = JFusionEfrontHelper::send_to_api($curl_options,$status);
+            $status = $helper->send_to_api($curl_options,$status);
             if ($status['error']){
                 return $status;
             }    
@@ -501,7 +502,7 @@ class JFusionUser_efront extends JFusionUser
     	    // login
             $curl_options['action']='login';
             $curl_options['parms'] = "&token=$token&username=$apiuser&password=$apikey";
-            $status = JFusionEfrontHelper::send_to_api($curl_options,$status);
+            $status = $helper->send_to_api($curl_options,$status);
             if ($status['error']){
                 return $status;
             }    
@@ -511,7 +512,7 @@ class JFusionUser_efront extends JFusionUser
                 // delete user
                 $curl_options['action']='remove_user';
                 $curl_options['parms'] = "&token=$token&login=$login";
-                $status = JFusionEfrontHelper::send_to_api($curl_options,$status);
+                $status = $helper->send_to_api($curl_options,$status);
                 $errorstatus = $status;
                 if ($status['error']){
                     $status['debug'][] = $status['error'][0];
@@ -524,7 +525,7 @@ class JFusionUser_efront extends JFusionUser
                 // logout
                 $curl_options['action']='logout';
                 $curl_options['parms'] = "&token=$token";
-                $status = JFusionEfrontHelper::send_to_api($curl_options,$status);
+                $status = $helper->send_to_api($curl_options,$status);
                 $result = $status['result'][0];
                 if($result->status != 'ok'){
                     $errorstatus['error'][]=$jname.' eFront API--'.$result->message;

@@ -400,8 +400,9 @@ $output .= <<<JS
                 oldvalue = old.value;
                 old.remove();
             }
+            var value;
             if(ref.value == 'CUSTOM') {
-                var value = document.createElement("textarea");
+                value = document.createElement("textarea");
                 value.setAttribute("id", "paramsmap"+parmtype+"value"+name);
                 value.setAttribute("name", "params[map]["+parmtype+"][value]["+name+"]");
                 value.setAttribute("rows", 20);
@@ -409,7 +410,7 @@ $output .= <<<JS
 
                 id.appendChild(value);
             } else if(ref.value == 'DATE' || ref.value == 'VALUE') {
-                var value = document.createElement("input");
+                value = document.createElement("input");
                 value.setAttribute("type", "text");
                 value.setAttribute("id", "paramsmap"+parmtype+"value"+name);
                 value.setAttribute("name", "params[map]["+parmtype+"][value]["+name+"]");
@@ -421,20 +422,20 @@ $output .= <<<JS
                 }
                 id.appendChild(value);
             } else if ( ref.value == 'ONOFF') {
-                var valueON = document.createElement("input");
-                valueON.setAttribute("type", "text");
-                valueON.setAttribute("id", "paramsmap"+parmtype+"value"+name+"on");
-                valueON.setAttribute("name", "params[map]["+parmtype+"][value]["+name+"][on]");
-                valueON.setAttribute("size", "40");
+                value = document.createElement("input");
+                value.setAttribute("type", "text");
+                value.setAttribute("id", "paramsmap"+parmtype+"value"+name+"on");
+                value.setAttribute("name", "params[map]["+parmtype+"][value]["+name+"][on]");
+                value.setAttribute("size", "40");
 
-                var valueOFF = document.createElement("input");
-                valueOFF.setAttribute("type", "text");
-                valueOFF.setAttribute("id", "paramsmap"+parmtype+"value"+name+"off");
-                valueOFF.setAttribute("name", "params[map]["+parmtype+"][value]["+name+"][off]");
-                valueOFF.setAttribute("size", "40");
+                var value2 = document.createElement("input");
+                value2.setAttribute("type", "text");
+                value2.setAttribute("id", "paramsmap"+parmtype+"value"+name+"off");
+                value2.setAttribute("name", "params[map]["+parmtype+"][value]["+name+"][off]");
+                value2.setAttribute("size", "40");
 
-                id.appendChild(valueON);
-                id.appendChild(valueOFF);
+                id.appendChild(value);
+                id.appendChild(value2);
             }
         }
 JS;
