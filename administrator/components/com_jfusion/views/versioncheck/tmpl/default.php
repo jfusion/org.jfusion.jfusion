@@ -256,6 +256,7 @@ if ($this->up2date) {
 			<!--
 			function confirmSubmit(action)
 			{
+                var r = false;
 				var installurl,confirmtext;
 				if (action == 'build') {
                     confirmtext = '<?php echo JText::_('UPGRADE_CONFIRM_BUILD'); ?>';
@@ -272,10 +273,9 @@ if ($this->up2date) {
 				if (agree) {
 				    document.adminForm2.install_url.value = installurl;
 				    $('install').submit();
-				    return true ;
-				} else {
-                    return false;
-                }
+                    r = true;
+				}
+                return r;
 			}
 
 			
