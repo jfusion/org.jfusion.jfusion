@@ -349,7 +349,7 @@ function update_mod(action) {
     form.customcommand.value = action;
     form.action.value = 'apply';
     submitform('saveconfig');
-    return;
+
 }
 JS;
             $document = JFactory::getDocument();

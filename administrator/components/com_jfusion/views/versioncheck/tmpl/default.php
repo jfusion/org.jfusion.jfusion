@@ -274,6 +274,7 @@ if ($this->up2date) {
 				    $('install').submit();
 				    return true ;
 				}
+                return false;
 			}
 
 			

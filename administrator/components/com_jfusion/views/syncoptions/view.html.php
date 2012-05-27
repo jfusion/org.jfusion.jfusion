@@ -95,7 +95,11 @@ class jfusionViewsyncoptions extends JView
             $this->assignRef('slave_data', $slave_data);
             $this->assignRef('syncid', $syncid);
             $this->assignRef('sync_active', $sync_active);
-            parent::display($tpl);
+            if(JFusionFunction::isJoomlaVersion('1.6')){
+                parent::display('25');
+            } else {
+                parent::display('15');
+            }
         } else {
         	JFusionFunctionAdmin::displayDonate();
             JError::raiseWarning(500, JText::_('SYNC_NOCONFIG'));
