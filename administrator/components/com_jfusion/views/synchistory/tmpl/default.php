@@ -24,7 +24,11 @@ JHTML::_('behavior.modal', 'a.modal');
 <!--
 checked=false;
 function applyAll() {
-    checked = checked == false;
+    if (checked == false) {
+        checked = true;
+    } else {
+        checked = false;
+    }
     for(var i=0; i<document.adminForm.elements.length; i++)
     {
         if (document.adminForm.elements[i].type=="checkbox")

@@ -16,7 +16,10 @@ class Jfusion_Joomla_Helper_Adapter_Curl extends Varien_Http_Adapter_Curl {
 
     private $_resource;
 
-	function __construct() {
+    /**
+     *
+     */
+    function __construct() {
 		// check if curl extension is loaded
 		if (! extension_loaded ( 'curl' )) {
 			return Mage::helper('jfusion')->__( 'CURL_LIBRARY_NOT_INSTALLED' );
@@ -24,12 +27,19 @@ class Jfusion_Joomla_Helper_Adapter_Curl extends Varien_Http_Adapter_Curl {
         return true;
 	}
 
-	function init($url = '') {
+    /**
+     * @param string $url
+     * @return mixed
+     */
+    function init($url = '') {
 		$this->_resource = curl_init ( $url );
 		return $this->_resource;
 	}
 
-	function setOptions($array) {
+    /**
+     * @param $array
+     */
+    function setOptions($array) {
 		foreach ( $array as $value ) {
 			$curlopt = $value ['key'];
 			$curlval = $value ['value'];
@@ -37,7 +47,12 @@ class Jfusion_Joomla_Helper_Adapter_Curl extends Varien_Http_Adapter_Curl {
 		}
 	}
 
-	function setOption($key, $value) {
+    /**
+     * @param $key
+     * @param $value
+     * @return bool
+     */
+    function setOption($key, $value) {
 		return curl_setopt ( $this->_resource, $key, $value );
 	}
 	

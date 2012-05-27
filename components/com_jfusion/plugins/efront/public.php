@@ -35,12 +35,19 @@ class JFusionPublic_efront extends JFusionPublic
     {
         return 'efront';
     }
-    function getRegistrationURL() 
+
+    /**
+     * @return string
+     */
+    function getRegistrationURL()
     {
         return 'index.php?ctg=signup';
     }
 
-    function getLostPasswordURL() 
+    /**
+     * @return string
+     */
+    function getLostPasswordURL()
     {
         return 'index.php?ctg=reset_pwd';
     }
@@ -49,9 +56,14 @@ class JFusionPublic_efront extends JFusionPublic
     {
         return 'index.php?ctg=reset_pwd';
     }
-    /************************************************
-    * Functions For JFusion Who's Online Module
-    ***********************************************/
+
+    /*
+     * getOnlineUserQuery
+     *
+     * @param int $limit
+     *
+     * @return string
+     */
     function getOnlineUserQuery($limit) {
         $limiter = (!empty($limit)) ? "LIMIT 0,$limit" : '';
         //get a unix time from 5 mintues ago

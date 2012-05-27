@@ -24,22 +24,32 @@ require_once(dirname(__FILE__).DS.'map.php');
  * @package JFusion_universal
  */
 class JFusionAdmin_universal extends JFusionAdmin{
+    /**
+     * @return string
+     */
     function getJname()
     {
         return 'universal';
     }
 
+    /**
+     * @return string
+     */
     function getTablename()
     {
         $map = JFusionMap::getInstance($this->getJname());
         return $map->getTablename('user');
     }
 
+    /**
+     * @return array
+     */
     function getUsergroupList()
     {
         $params = JFusionFactory::getParams($this->getJname());
 		$usergroupmap = $params->get('usergroupmap');
 
+        $usergrouplist = arrat();
 		if ( is_array($usergroupmap) ) {
 			foreach ($usergroupmap['value'] as $key => $value) {
 	         	//append the default usergroup
@@ -49,9 +59,8 @@ class JFusionAdmin_universal extends JFusionAdmin{
 	            $default_group->name = $usergroupmap['name'][$key];
 	            $usergrouplist[] = $default_group;
       		}
-        	return $usergrouplist;
     	}
-     	return null;
+     	return $usergrouplist;
 	}
 
     function getDefaultUsergroup()
@@ -166,6 +175,7 @@ class JFusionAdmin_universal extends JFusionAdmin{
                     }
                 }
 
+                $mapuser = array();
                 if ( $value['table'] ) {
                     $mapuser = $fl[$value['table']];
                 } else {
@@ -247,6 +257,13 @@ class JFusionAdmin_universal extends JFusionAdmin{
         return $output;
     }
 
+    /**
+     * @param $name
+     * @param $value
+     * @param $node
+     * @param $control_name
+     * @return string
+     */
     function usergroupmap($name, $value, $node, $control_name)
     {
 		if (!is_array($value)) $value = null;
@@ -302,7 +319,7 @@ $output .= <<<JS
         function changefield(ref,name,parmtype) {
             var id = document.getElementById(name);
             id.innerHTML = '';
-            if ( TypeAry[ref.value] != undefined ) {
+            if ( TypeAry[ref.value] !== undefined ) {
                 var type = document.createElement("select");
                 type.setAttribute("type", "option");
                 type.setAttribute("id", "paramsmap"+parmtype+"type"+name);
@@ -323,8 +340,12 @@ $output .= <<<JS
             var oldON = document.getElementById("paramsmap"+parmtype+"value"+name+"on");
             var oldOFF = document.getElementById("paramsmap"+parmtype+"value"+name+"off");
 
-            if (oldON) oldON.remove();
-            if (oldOFF) oldOFF.remove();
+            if (oldON) {
+                oldON.remove();
+            }
+            if (oldOFF) {
+                oldOFF.remove();
+            }
 
             var oldvalue = '';
             if ( old ) {
@@ -345,9 +366,11 @@ $output .= <<<JS
                 value.setAttribute("id", "paramsmap"+parmtype+"value"+name);
                 value.setAttribute("name", "params[map]["+parmtype+"][value]["+name+"]");
                 value.setAttribute("size", "100");
-                if ( oldvalue ) value.setAttribute("value", oldvalue);
-                else if (ref.value == 'DATE') value.setAttribute("value", 'Y-m-d H:i:s');
-
+                if ( oldvalue ) {
+                    value.setAttribute("value", oldvalue);
+                } else if (ref.value == 'DATE') {
+                    value.setAttribute("value", 'Y-m-d H:i:s');
+                }
                 id.appendChild(value);
             } else if ( ref.value == 'ONOFF') {
                 var valueON = document.createElement("input");

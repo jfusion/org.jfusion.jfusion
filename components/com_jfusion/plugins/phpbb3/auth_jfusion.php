@@ -28,6 +28,11 @@ define('FORCE_REDIRECT_AFTER_LOGOUT', 0);  //set this to one if you are getting 
 
 /**
  * Login function
+ *
+ * @param string &$username
+ * @param string &$password
+ *
+ * @return array
  */
 function login_jfusion(&$username, &$password) {
     require_once 'auth_db.php';
@@ -104,6 +109,7 @@ function login_jfusion(&$username, &$password) {
             }
 
             //recreate phpBB's database connection
+            $dbhost = $dbuser = $dbpasswd = $dbname = $dbport = null;
             include $phpbb_root_path . 'config.' . $phpEx;
             $db->sql_connect($dbhost, $dbuser, $dbpasswd, $dbname, $dbport, false, false);
             unset($dbpasswd);
@@ -117,6 +123,7 @@ function login_jfusion(&$username, &$password) {
             exit();
         } else {
             //recreate phpBB's database connection
+            $dbhost = $dbuser = $dbpasswd = $dbname = $dbport = null;
             include $phpbb_root_path . 'config.' . $phpEx;
             $db->sql_connect($dbhost, $dbuser, $dbpasswd, $dbname, $dbport, false, false);
             unset($dbpasswd);
@@ -146,6 +153,7 @@ function logout_jfusion(&$data) {
         $session = JFactory::getSession();
         $session->close();
 
+        $link = null;
         if (FORCE_REDIRECT_AFTER_LOGOUT) {
             //redirect to prevent fatal errors on some servers
             $uri = & JURI::getInstance();
@@ -160,6 +168,7 @@ function logout_jfusion(&$data) {
         }
 
         //recreate phpBB's database connection
+        $dbhost = $dbuser = $dbpasswd = $dbname = $dbport = null;
         include $phpbb_root_path . 'config.' . $phpEx;
         $db->sql_connect($dbhost, $dbuser, $dbpasswd, $dbname, $dbport, false, false);
         unset($dbpasswd);

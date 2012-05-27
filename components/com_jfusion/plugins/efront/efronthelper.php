@@ -29,8 +29,12 @@ defined('_JEXEC') or die('Restricted access');
  */
 class JFusionEfrontHelper {
 
-    function delete_directory($dir){
-        if ($handle = opendir($dir)) {
+    /**
+     * @param $dir
+     */
+    function delete_directory($dir) {
+        $handle = opendir($dir);
+        if ($handle) {
             while (false !== ($file = readdir($handle))){
                 if ($file != "." && $file != ".."){
                     if(is_dir($dir.$file)){
@@ -127,9 +131,12 @@ class JFusionEfrontHelper {
 /**
  * connects to api, using userbame and password
  * returns token, or empty string when not successful
+ *
+ * @param array $curl_options
+ * @param array $status
+ *
+ * @return array
  */
-
-
     function send_to_api($curl_options,$status) {
         $status = array();
         $status['debug'] = array();

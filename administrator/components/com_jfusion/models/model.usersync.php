@@ -44,6 +44,11 @@ class JFusionUsersync
      * Retrieve log data
      *
      * @param string $syncid the usersync id
+     * @param string $type
+     * @param int $limitstart
+     * @param int $limit
+     * @param string $sort
+     * @param string $dir
      *
      * @return string nothing
      */
@@ -77,6 +82,7 @@ class JFusionUsersync
      * Count log data
      *
      * @param string $syncid the usersync id
+     * @param string $type
      *
      * @return int count results
      */
@@ -427,6 +433,11 @@ class JFusionUsersync
         }
     }
 
+    /**
+     * @static
+     * @param $syncid
+     * @param $status
+     */
     public static function changeSyncStatus($syncid, $status) {
         $db = JFactory::getDBO();
         $query = "UPDATE #__jfusion_sync SET active = " . (int) $status . " WHERE syncid = " . $db->Quote($syncid);
@@ -434,6 +445,11 @@ class JFusionUsersync
         $db->query();
     }
 
+    /**
+     * @static
+     * @param string $syncid
+     * @return int|mixed
+     */
     public static function getSyncStatus($syncid = '') {
         if (!empty($syncid)) {
             $db = JFactory::getDBO();

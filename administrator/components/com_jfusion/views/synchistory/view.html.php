@@ -51,8 +51,8 @@ class jfusionViewsynchistory extends JView
     /**
      * displays the time nicely
      *
-     * @param string $then something
-     * @param string $now  something
+     * @param int $then something
+     * @param mixed $now  something
      *
      * @return string sorted log
      */

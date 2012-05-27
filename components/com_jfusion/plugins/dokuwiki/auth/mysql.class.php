@@ -9,7 +9,14 @@
 */
 
 require_once 'basic.class.php';
-
+/**
+ * doku_auth_mysql class
+ *
+ * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
+ * @author     Andreas Gohr <andi@splitbrain.org>
+ * @author     Chris Smith <chris@jalakai.co.uk>
+ * @author     Matthias Grimm <matthias.grimmm@sourceforge.net>
+ */
 class doku_auth_mysql extends doku_auth_basic {
 
     var $dbcon        = 0;
@@ -26,12 +33,17 @@ class doku_auth_mysql extends doku_auth_basic {
      * checks if the mysql interface is available, otherwise it will
      * set the variable $success of the basis class to false
      *
+     * @param string $jname
+     *
      * @author Matthias Grimm <matthiasgrimm@users.sourceforge.net>
      */
     function doku_auth_mysql($jname) {
 		$this->jname = $jname;
     }
-    
+
+    /**
+     * @return mixed
+     */
     function init() {
         $share = Dokuwiki::getInstance($this->jname);
         $conf = $share->getConf();
@@ -105,7 +117,11 @@ class doku_auth_mysql extends doku_auth_basic {
     /**
      * Check if the given config strings are set
      *
+     * @param array $keys
+     * @param bool $wop
+     *
      * @author  Matthias Grimm <matthiasgrimm@users.sourceforge.net>
+     *
      * @return  bool
      */
     function _chkcnf($keys, $wop=false) {
@@ -170,6 +186,8 @@ class doku_auth_mysql extends doku_auth_basic {
      *
      * @author  Andreas Gohr <andi@splitbrain.org>
      * @author  Matthias Grimm <matthiasgrimm@users.sourceforge.net>
+     *
+     * @return mixed
      */
     function getUserData($user){
       if($this->_openDB()) {
@@ -191,15 +209,17 @@ class doku_auth_mysql extends doku_auth_basic {
      * The new user will be added to the default group by this
      * function if grps are not specified (default behaviour).
      *
-     * @param $user  nick of the user
-     * @param $pwd   clear text password
-     * @param $name  full name of the user
-     * @param $mail  email address
-     * @param $grps  array of groups the user should become member of
+     * @param string $user  nick of the user
+     * @param string $pwd   clear text password
+     * @param string $name  full name of the user
+     * @param string $mail  email address
+     * @param array $grps  array of groups the user should become member of
      *
      * @author  Andreas Gohr <andi@splitbrain.org>
      * @author  Chris Smith <chris@jalakai.co.uk>
      * @author  Matthias Grimm <matthiasgrimm@users.sourceforge.net>
+     *
+     * @return mixed
      */
     function createUser($user,$pwd,$name,$mail,$grps=null) {
       if($this->_openDB()) {
@@ -242,8 +262,8 @@ class doku_auth_mysql extends doku_auth_basic {
      * should be modified). In this case we asure that we don't touch groups
      * even $changes['grps'] is set by mistake.
      *
-     * @param   $user     nick of the user to be changed
-     * @param   $changes  array of field/value pairs to be changed (password
+     * @param string $user     nick of the user to be changed
+     * @param string $changes  array of field/value pairs to be changed (password
      *                    will be clear text)
      * @return  bool      true on success, false on error
      *
@@ -343,9 +363,10 @@ class doku_auth_mysql extends doku_auth_basic {
     /**
      * Bulk retrieval of user data. [public function]
      *
-     * @param   first     index of first user to be returned
-     * @param   limit     max number of users to be returned
-     * @param   filter    array of field/pattern pairs
+     * @param int $first     index of first user to be returned
+     * @param int $limit     max number of users to be returned
+     * @param array $filter    array of field/pattern pairs
+     *
      * @return  array of userinfo (refer getUserData for internal userinfo details)
      *
      * @author  Matthias Grimm <matthiasgrimm@users.sourceforge.net>
@@ -416,6 +437,8 @@ class doku_auth_mysql extends doku_auth_basic {
 
     /**
      * MySQL is case-insensitive
+     *
+     * @return bool
      */
     function isCaseSensitive(){
         return false;
@@ -431,9 +454,9 @@ class doku_auth_mysql extends doku_auth_basic {
      * recommended to call this function only after all participating
      * tables (group and usergroup) have been locked.
      *
-     * @param   $user    user to add to a group
-     * @param   $group   name of the group
-     * @param   $force   '1' create missing groups
+     * @param string $user    user to add to a group
+     * @param string $group   name of the group
+     * @param int $force   '1' create missing groups
      * @return  bool     'true' on success, 'false' on error
      *
      * @author Matthias Grimm <matthiasgrimm@users.sourceforge.net>
@@ -474,8 +497,8 @@ class doku_auth_mysql extends doku_auth_basic {
     /**
      * Remove user from a group
      *
-     * @param   $user    user that leaves a group
-     * @param   $group   group to leave
+     * @param string $user    user that leaves a group
+     * @param string $group   group to leave
      * @return  bool     true on success, false on error
      *
      * @author  Matthias Grimm <matthiasgrimm@users.sourceforge.net>
@@ -508,26 +531,25 @@ class doku_auth_mysql extends doku_auth_basic {
      * for this function to work. Otherwise it will return
      * 'false'.
      *
-     * @param  $user  user whose groups should be listed
-     * @return bool   false on error
-     * @return array  array containing all groups on success
+     * @param string $user  user whose groups should be listed
+     * @return array    array containing all groups on success
      *
      * @author Matthias Grimm <matthiasgrimm@users.sourceforge.net>
      */
     function _getGroups($user) {
-      $groups = array();
+        $groups = array();
 
-      if($this->dbcon) {
-        $sql = str_replace('%{user}',$this->_escape($user),$this->cnf['getGroups']);
-        $result = $this->_queryDB($sql);
+        if($this->dbcon) {
+            $sql = str_replace('%{user}',$this->_escape($user),$this->cnf['getGroups']);
+            $result = $this->_queryDB($sql);
 
-        if($result !== false && count($result)) {
-          foreach($result as $row)
-            $groups[] = $row['group'];
+            if($result !== false && count($result)) {
+                foreach($result as $row) {
+                    $groups[] = $row['group'];
+                }
+            }
         }
         return $groups;
-      }
-      return false;
     }
 
     /**
@@ -537,7 +559,7 @@ class doku_auth_mysql extends doku_auth_basic {
      * for this function to work. Otherwise it will return
      * 'false'.
      *
-     * @param  $user   user whose id is desired
+     * @param string $user   user whose id is desired
      * @return user id
      *
      * @author Matthias Grimm <matthiasgrimm@users.sourceforge.net>
@@ -558,45 +580,47 @@ class doku_auth_mysql extends doku_auth_basic {
      * for this function to work. Otherwise it will return
      * 'false'.
      *
-     * @param  $user  login of the user
-     * @param  $pwd   encrypted password
-     * @param  $name  full name of the user
-     * @param  $mail  email address
-     * @param  $grps  array of groups the user should become member of
+     * @param string $user  login of the user
+     * @param string $pwd   encrypted password
+     * @param string $name  full name of the user
+     * @param string $mail  email address
+     * @param array $grps  array of groups the user should become member of
      * @return bool
      *
      * @author  Andreas Gohr <andi@splitbrain.org>
      * @author  Chris Smith <chris@jalakai.co.uk>
      * @author  Matthias Grimm <matthiasgrimm@users.sourceforge.net>
      */
-    function _addUser($user,$pwd,$name,$mail,$grps){
-      if($this->dbcon && is_array($grps)) {
-        $sql = str_replace('%{user}', $this->_escape($user),$this->cnf['addUser']);
-        $sql = str_replace('%{pass}', $this->_escape($pwd),$sql);
-        $sql = str_replace('%{name}', $this->_escape($name),$sql);
-        $sql = str_replace('%{email}',$this->_escape($mail),$sql);
-        $uid = $this->_modifyDB($sql);
+    function _addUser($user,$pwd,$name,$mail,$grps) {
+        if($this->dbcon && is_array($grps)) {
+            $sql = str_replace('%{user}', $this->_escape($user),$this->cnf['addUser']);
+            $sql = str_replace('%{pass}', $this->_escape($pwd),$sql);
+            $sql = str_replace('%{name}', $this->_escape($name),$sql);
+            $sql = str_replace('%{email}',$this->_escape($mail),$sql);
+            $uid = $this->_modifyDB($sql);
 
-        if ($uid) {
-          foreach($grps as $group) {
-            $gid = $this->_addUserToGroup($user, $group, 1);
-            if ($gid === false) break;
-          }
+            if ($uid) {
+                $group = '';
+                $gid = false;
+                foreach($grps as $group) {
+                    $gid = $this->_addUserToGroup($user, $group, 1);
+                    if ($gid === false) break;
+                }
 
-          if ($gid) return true;
-          else {
-            /* remove the new user and all group relations if a group can't
-             * be assigned. Newly created groups will remain in the database
-             * and won't be removed. This might create orphaned groups but
-             * is not a big issue so we ignore this problem here.
-             */
-            $this->_delUser($user);
-            if ($this->cnf['debug'])
-              JError::raiseWarning(500,"MySQL err: Adding user '$user' to group '$group' failed.");
-          }
+                if ($gid) {
+                    return true;
+                } else {
+                    /* remove the new user and all group relations if a group can't
+                    * be assigned. Newly created groups will remain in the database
+                    * and won't be removed. This might create orphaned groups but
+                    * is not a big issue so we ignore this problem here.
+                    */
+                    $this->_delUser($user);
+                    if ($this->cnf['debug']) JError::raiseWarning(500,"MySQL err: Adding user '$user' to group '$group' failed.");
+                }
+            }
         }
-      }
-      return false;
+        return false;
     }
 
     /**
@@ -606,7 +630,7 @@ class doku_auth_mysql extends doku_auth_basic {
      * for this function to work. Otherwise it will return
      * 'false'.
      *
-     * @param  $user   user whose id is desired
+     * @param string $user   user whose id is desired
      * @return bool
      *
      * @author Matthias Grimm <matthiasgrimm@users.sourceforge.net>
@@ -633,7 +657,7 @@ class doku_auth_mysql extends doku_auth_basic {
      * must already be established for this function to work.
      * Otherwise it will return 'false'.
      *
-     * @param  $user  user's nick to get data for
+     * @param string $user  user's nick to get data for
      * @return bool   false on error
      * @return array  user info on success
      *
@@ -716,7 +740,7 @@ class doku_auth_mysql extends doku_auth_basic {
      * for this function to work. Otherwise it will return
      * 'false'.
      *
-     * @param  $group   group name which id is desired
+     * @param string $group   group name which id is desired
      * @return group id
      *
      * @author Matthias Grimm <matthiasgrimm@users.sourceforge.net>
@@ -765,7 +789,7 @@ class doku_auth_mysql extends doku_auth_basic {
      * This function is only able to handle queries that returns a
      * table such as SELECT.
      *
-     * @param $query  SQL string that contains the query
+     * @param string $query  SQL string that contains the query
      * @return array with the result table
      *
      * @author Matthias Grimm <matthiasgrimm@users.sourceforge.net>
@@ -797,7 +821,7 @@ class doku_auth_mysql extends doku_auth_basic {
      * This function is only able to handle queries that returns
      * either nothing or an id value such as INPUT, DELETE, UPDATE, etc.
      *
-     * @param $query  SQL string that contains the query
+     * @param string $query  SQL string that contains the query
      * @return insert id or 0, false on error
      *
      * @author Matthias Grimm <matthiasgrimm@users.sourceforge.net>
@@ -833,9 +857,11 @@ class doku_auth_mysql extends doku_auth_basic {
      * so that this functionality is simulated by this function. Nevertheless
      * it is not as powerful as transactions, it is a good compromise in safty.
      *
-     * @param $mode  could be 'READ' or 'WRITE'
+     * @param string $mode  could be 'READ' or 'WRITE'
      *
      * @author Matthias Grimm <matthiasgrimm@users.sourceforge.net>
+     *
+     * @return bool
      */
     function _lockTables($mode) {
       if ($this->dbcon) {
@@ -860,6 +886,8 @@ class doku_auth_mysql extends doku_auth_basic {
      * abrogated.
      *
      * @author Matthias Grimm <matthiasgrimm@users.sourceforge.net>
+     *
+     * @return bool
      */
     function _unlockTables() {
       if ($this->dbcon) {
@@ -922,17 +950,19 @@ class doku_auth_mysql extends doku_auth_basic {
      * @author Andreas Gohr <andi@splitbrain.org>
      * @param  string  $string The string to escape
      * @param  boolean $like   Escape wildcard chars as well?
+     *
+     * @return string
      */
-    function _escape($string,$like=false){
-      if($this->dbcon && false){
-      	$string = $this->dbcon->Quote($string);
-      }else{
-        $string = addslashes($string);
-      }
-      if($like){
-        $string = addcslashes($string,'%_');
-      }
-      return $string;
+    function _escape($string,$like=false) {
+        if($this->dbcon && false) {
+            $string = $this->dbcon->Quote($string);
+        } else {
+            $string = addslashes($string);
+        }
+        if($like) {
+            $string = addcslashes($string,'%_');
+        }
+        return $string;
     }
 }
 

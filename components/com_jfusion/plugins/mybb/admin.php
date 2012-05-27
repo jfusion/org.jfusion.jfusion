@@ -40,6 +40,10 @@ class JFusionAdmin_mybb extends JFusionAdmin
     {
         return 'mybb';
     }
+
+    /**
+     * @return string
+     */
     function getTablename() {
         return 'users';
     }
@@ -50,6 +54,7 @@ class JFusionAdmin_mybb extends JFusionAdmin
         }
         $myfile = $forumPath . 'inc' . DS . 'config.php';
         //include config file
+        $config = array();
         require_once $myfile;
         //Save the parameters into the standard JFusion params format
         $params = array();
@@ -92,6 +97,10 @@ class JFusionAdmin_mybb extends JFusionAdmin
         $userlist = $db->loadObjectList();
         return $userlist;
     }
+
+    /**
+     * @return int
+     */
     function getUserCount() {
         //getting the connection to the db
         $db = JFusionFactory::getDatabase($this->getJname());

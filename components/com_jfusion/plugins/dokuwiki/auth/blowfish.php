@@ -356,8 +356,8 @@ class JFusion_Horde_Cipher_blowfish
     /**
      * Encrypt a block on data.
      *
-     * @param String $block         The data to encrypt
-     * @param optional String $key  The key to use
+     * @param string $block         The data to encrypt
+     * @param string $key  The key to use
      *
      * @return String the encrypted output
      */
@@ -407,8 +407,8 @@ class JFusion_Horde_Cipher_blowfish
     /**
      * Decrypt a block on data.
      *
-     * @param String $block         The data to decrypt
-     * @param optional String $key  The key to use
+     * @param string $block         The data to decrypt
+     * @param string $key  The key to use
      *
      * @return String the decrypted output
      */
@@ -455,6 +455,8 @@ class JFusion_Horde_Cipher_blowfish
 
     /**
      * Converts a text key into an array.
+     *
+     * @param string $key
      *
      * @return array  The key.
      */

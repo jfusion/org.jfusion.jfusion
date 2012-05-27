@@ -13,7 +13,17 @@ defined ( '_JEXEC' ) or die ( 'Restricted access' );
 jimport ( 'joomla.application.component.controller' );
 jimport ( 'joomla.application.module.helper' );
 require_once (JPATH_SITE . DS . 'components' . DS . 'com_jfusion' . DS . 'helpers' . DS . 'helper.php');
-		
+/**
+ * JFusionControllerConnect class
+ *
+ * @category   JFusion
+ * @package    Model
+ * @subpackage JFusionControllerConnect
+ * @author     JFusion Team <webmaster@jfusion.org>
+ * @copyright  2008 JFusion. All rights reserved.
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @link       http://www.jfusion.org
+ */
 class JFusionControllerConnect extends JController {
 	
 	public function module() {

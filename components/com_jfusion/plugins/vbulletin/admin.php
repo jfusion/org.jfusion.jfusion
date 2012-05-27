@@ -40,6 +40,10 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
     {
         return 'vbulletin';
     }
+
+    /**
+     * @return string
+     */
     function getTablename()
     {
         return 'user';
@@ -62,6 +66,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
         } else {
             //parse the file line by line to get only the config variables
             $file_handle = fopen($configfile, 'r');
+            $config = array();
             while (!feof($file_handle)) {
                 $line = fgets($file_handle);
                 if (strpos($line, '$config') === 0) {
@@ -109,6 +114,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
             if (($file_handle = @fopen($funcfile, 'r')) !== false) {
                 //parse the functions file line by line to get the cookie salt
                 $file_handle = fopen($funcfile, 'r');
+                $cookie_salt = '';
                 while (!feof($file_handle)) {
                     $line = fgets($file_handle);
                     if (strpos($line, 'COOKIE_SALT') !== false) {
@@ -196,6 +202,12 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
             return $result;
         }
     }
+
+    /**
+     * @param $ignore
+     * @param $hook
+     * @return mixed|string
+     */
     function showHook($ignore, $hook)
     {
         static $jsSet;
@@ -236,6 +248,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
         $db = & JFusionFactory::getDatabase($this->getJname());
         if (!JError::isError($db) && !empty($db)) {
             if ($hook != "framelessoptimization") {
+                $hookName = null;
                 switch ($hook) {
                     case 'globalfix':
                         $hookName = 'JFusion Global Fix Plugin';
@@ -253,9 +266,13 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
                         $hookName = 'JFusion API Plugin - REQUIRED';
                     break;
                 }
-                $query = "SELECT COUNT(*) FROM #__plugin WHERE hookname = 'init_startup' AND title = '$hookName' AND active = 1";
-                $db->setQuery($query);
-                $check = ($db->loadResult() > 0) ? true : false;
+                if ($hookName) {
+                    $query = "SELECT COUNT(*) FROM #__plugin WHERE hookname = 'init_startup' AND title = '$hookName' AND active = 1";
+                    $db->setQuery($query);
+                    $check = ($db->loadResult() > 0) ? true : false;
+                } else {
+                    $check = false;
+                }
                 if ($check) {
                     //return success
                     $output = '<img style="float: left;" src="components/com_jfusion/images/check_good.png" height="20px" width="20px"><span style="float: left; margin-left: 5px;">' . JText::_('ENABLED') . '</span>';
@@ -280,7 +297,8 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
                     foreach ($tables as $tbl => $col) {
                         $q = "SELECT $col FROM #__$tbl";
                         $db->setQuery($q);
-                        if ($images = $db->loadRowList()) {
+                        $images = $db->loadRowList();
+                        if ($images) {
                             foreach ($images as $image) {
                                 $check = (strpos($image[0], 'http') !== false) ? true : false;
                                 if (!$check) break;
@@ -312,6 +330,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
         $action = $params['hook_action'];
         $db = & JFusionFactory::getDatabase($this->getJname());
         if ($hook != 'framelessoptimization') {
+            $hookName = null;
             switch ($hook) {
                 case 'globalfix':
                     $hookName = 'JFusion Global Fix Plugin';
@@ -329,30 +348,32 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
                     $hookName = 'JFusion API Plugin - REQUIRED';
                 break;
             }
-            //all three cases, we want to remove the old hook
-            $query = "DELETE FROM #__plugin WHERE hookname = 'init_startup' AND title = " . $db->Quote($hookName);
-            $db->setQuery($query);
-            if (!$db->query()) {
-                JError::raiseWarning(500, $db->stderr());
-            }
-            //enable or renable the plugin
-            if ($action != "disable") {
-                if (($hook == "redirect" || $hook == "frameless") && empty($itemid) && !is_numeric($itemid)) {
-                    JError::raiseWarning(500, JText::_('VB_REDIRECT_HOOK_ITEMID_EMPTY'));
-                    return;
+            if ($hookName) {
+                //all three cases, we want to remove the old hook
+                $query = "DELETE FROM #__plugin WHERE hookname = 'init_startup' AND title = " . $db->Quote($hookName);
+                $db->setQuery($query);
+                if (!$db->query()) {
+                    JError::raiseWarning(500, $db->stderr());
                 }
-                //install the hook
-                $php = $this->getHookPHP($hook, $itemid);
-                $query = "INSERT INTO #__plugin SET
+                //enable or renable the plugin
+                if ($action != "disable") {
+                    if (($hook == "redirect" || $hook == "frameless") && empty($itemid) && !is_numeric($itemid)) {
+                        JError::raiseWarning(500, JText::_('VB_REDIRECT_HOOK_ITEMID_EMPTY'));
+                        return;
+                    }
+                    //install the hook
+                    $php = $this->getHookPHP($hook, $itemid);
+                    $query = "INSERT INTO #__plugin SET
                     title = " . $db->Quote($hookName) . ",
                     hookname = 'init_startup',
                     phpcode = " . $db->Quote($php) . ",
                     product = 'vbulletin',
                     active = 1,
                     executionorder = 1";
-                $db->setQuery($query);
-                if (!$db->query()) {
-                    JError::raiseWarning(500, $db->stderr());
+                    $db->setQuery($query);
+                    if (!$db->query()) {
+                        JError::raiseWarning(500, $db->stderr());
+                    }
                 }
             }
         } else {
@@ -494,12 +515,12 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
                             $membergroups = $usergroups[$group->id]['membergroups'];
                             $defaultgroup = $usergroups[$group->id]['defaultgroup'];
                             if ((is_array($membergroups) && in_array($defaultgroup, $membergroups)) || $defaultgroup == $membergroups) {
-                                JError::raiseWarning(0, $jname . ': ' . JText::sprintf('VB_GROUP_MISMATCH', $group->name));
+                                JError::raiseWarning(0, $this->getJname() . ': ' . JText::sprintf('VB_GROUP_MISMATCH', $group->name));
                             }
                         }
                     }
                 } else {
-                    JError::raiseWarning(0, $jname . ': ' . JText::_('ADVANCED_GROUPMODE_ONLY_SUPPORTED_FORSLAVES'));
+                    JError::raiseWarning(0, $this->getJname() . ': ' . JText::_('ADVANCED_GROUPMODE_ONLY_SUPPORTED_FORSLAVES'));
                 }
             }
         }
@@ -664,6 +685,9 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
 
     function uninstall()
     {
+        $return = true;
+        $reasons = array();
+
         $db =& JFusionFactory::getDatabase($this->getJname());
         $hookNames = array();
         $hookNames[] = 'JFusion Global Fix Plugin';
@@ -675,10 +699,10 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
         $query = "DELETE FROM #__plugin WHERE hookname = 'init_startup' AND title IN ('" . implode("', '", $hookNames) . "')";
         $db->setQuery($query);
         if (!$db->query()) {
-            $reason = $db->stderr();
-            return array(false, $reason);
+            $reasons[] = $db->stderr();
+            $return = false;
         }
-        return array(true, '');
+        return array($return, $reasons);
     }
     
 	/*

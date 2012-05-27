@@ -25,6 +25,14 @@
  * @link       http://www.jfusion.org
 */
 class modjfusionWhosOnlineHelper {
+    /**
+     * @static
+     * @param $jname
+     * @param $config
+     * @param $params
+     * @param $output
+     * @return mixed
+     */
     public static function appendAutoOutput($jname, $config, $params, $output) {
 		//get the itemid and jname to get any missing urls
 		$link_itemid = $config['itemid'];

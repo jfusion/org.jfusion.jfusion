@@ -17,6 +17,10 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
+if (!class_exists('JFusionWordpressHelper')) {
+	require_once 'wordpresshelper.php';
+}
+
 /**
  * JFusion Admin Class for Moodle 1.8+
  * For detailed descriptions on these functions please check the model.abstractadmin.php
@@ -29,10 +33,6 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-
-if (!class_exists('JFusionWordpressHelper')) {
-	require_once 'wordpresshelper.php';
-}
 class JFusionAdmin_wordpress extends JFusionAdmin
 {
 	/**
@@ -44,7 +44,10 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 		return 'wordpress';
 	}
 
-	function getTablename() {
+    /**
+     * @return string
+     */
+    function getTablename() {
 		return 'users';
 	}
 	
@@ -82,6 +85,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 		} else {
 			//parse the file line by line to get only the config variables
 			//			$file_handle = fopen($myfile, 'r');
+            $table_prefix = '';
 			while (!feof($file_handle)) {
 				$line = fgets($file_handle);
 				if (strpos(trim($line), 'define') === 0) {
@@ -151,7 +155,10 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 		return $userlist;
 	}
 
-	function getUserCount() {
+    /**
+     * @return int
+     */
+    function getUserCount() {
 		//getting the connection to the db
 		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = 'SELECT count(*) from #__users';

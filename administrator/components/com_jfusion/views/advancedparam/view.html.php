@@ -186,7 +186,8 @@ class jfusionViewadvancedparam extends JView
                 $xml = JFactory::getXMLParser('Simple');
                 $form = false;
                 if ($xml->loadFile($xml_path)) {
-                    if ($fields = $xml->document->getElementByPath('fields')) {
+                    $fields = $xml->document->getElementByPath('fields');
+                    if ($fields) {
                         $data = $xml->document->fields[0]->toString();
                         //make sure it is surround by <form>
                         if (substr($data, 0, 5) != "<form>") {
@@ -329,7 +330,8 @@ class jfusionViewadvancedparam extends JView
                     $xml_path = (file_exists($path)) ? $path : $defaultPath;
                     $xml = JFactory::getXMLParser('Simple');
                     if ($xml->loadFile($xml_path)) {
-                        if ($fields = $xml->document->getElementByPath('fields')) {
+                        $fields = $xml->document->getElementByPath('fields');
+                        if ($fields) {
                             $data = $xml->document->fields[0]->toString();
                             //make sure it is surround by <form>
                             if (substr($data, 0, 5) != "<form>") {
@@ -381,13 +383,12 @@ class jfusionViewadvancedparam extends JView
                 $lang = $xml->document->language[0]->attributes();
                 if (!empty($lang)) {
                     if (!empty($lang['filename'])) {
+                        $location = null;
                         if (!empty($lang['location'])) {
                             if ($lang['location'] == 'site' || $lang['location'] == 'frontend') {
                                 $location = JPATH_SITE;
                             } elseif ($lang['location'] == 'admin' || $lang['location'] == 'administrator') {
                                 $location = JPATH_ADMINISTRATOR;
-                            } else {
-                                $location = null;
                             }
                         }
                         jimport('joomla.plugin.plugin');

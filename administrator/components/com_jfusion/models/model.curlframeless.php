@@ -28,7 +28,7 @@ class JFusionCurlFrameless{
 
     /**
     * Gets an Fusion front object
-    * @param string $jname name of the JFusion plugin used
+    *
     * @return object JFusionCurlFrameless JFusionCurlFrameless object for the JFusionCurlFrameless
     */
     function &getInstance()
@@ -48,7 +48,12 @@ class JFusionCurlFrameless{
 	 * The code is free to use and similar code can be found on other places on the net.
 	 */
 
-	function read_header($ch, $string) {
+    /**
+     * @param $ch
+     * @param $string
+     * @return int
+     */
+    function read_header($ch, $string) {
 		$curlframeless = JFusionCurlFrameless::getInstance();
 		$curlframeless->cookiearr;
 		$curlframeless->cookies_to_set;
@@ -79,7 +84,11 @@ class JFusionCurlFrameless{
 		return $length;
 	}
 
-	function display(&$data) {
+    /**
+     * @param $data
+     * @return array
+     */
+    function display(&$data) {
 		$status = array();
 		$curlframeless = JFusionCurlFrameless::getInstance();
 
@@ -236,7 +245,11 @@ class JFusionCurlFrameless{
 		return $status;
 	}
 
-	function buildUrl($type='GET') {
+    /**
+     * @param string $type
+     * @return mixed|string
+     */
+    function buildUrl($type='GET') {
 		$var = JRequest::get($type);
 		unset($var['Itemid'],$var['option'],$var['view'],$var['jFusion_Route'],$var['jfile']);
 		if ($type=='POST') return $var;

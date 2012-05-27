@@ -39,6 +39,10 @@ class JFusionPublic_phpbb3 extends JFusionPublic
     {	
         return 'phpbb3';
     }
+
+    /**
+     * @return string
+     */
     function getRegistrationURL() {
         return 'ucp.php?mode=register';
     }
@@ -63,7 +67,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
      *
      * @return array  $status           Information passed back to calling script such as limit_applied
      */
-    function prepareText(&$text, $for = 'forum', $params = '', $object = '')
+    function prepareText(&$text, $for = 'forum', $params = null, $object = null)
     {
         $status = array();
         if ($for == 'forum') {
@@ -120,9 +124,12 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 
         return $status;
     }
-    /************************************************
-    * Functions For JFusion Who's Online Module
-    ***********************************************/
+
+    /*
+     * getOnlineUserQuery
+     *
+     * @return string
+     */
     function getOnlineUserQuery($limit) {
         $limiter = (!empty($limit)) ? "LIMIT 0,$limit" : '';
         //get a unix time from 5 mintues ago
@@ -151,9 +158,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
         $result = $db->loadResult();
         return $result;
     }
-    /************************************************
-    * Functions For Frameless Integration
-    ***********************************************/
+
     function getBuffer(&$jfdata) {
     	$this->data = $jfdata;
     	$session = JFactory::getSession();
@@ -537,6 +542,10 @@ class JFusionPublic_phpbb3 extends JFusionPublic
         }
         return $replacement;
     }
+
+    /**
+     * @param object $data
+     */
     function parseHeader(&$data) {
         static $regex_header, $replace_header;
         if (!$regex_header || !$replace_header) {
@@ -619,9 +628,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 
         return $pathway;
     }
-    /************************************************
-    * For JFusion Search Plugin
-    ***********************************************/
+
     function getSearchQueryColumns() {
         $columns = new stdClass();
         $columns->title = "p.post_subject";

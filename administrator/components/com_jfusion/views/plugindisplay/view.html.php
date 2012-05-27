@@ -139,6 +139,10 @@ class jfusionViewplugindisplay extends JView {
             JError::raiseWarning(500, JText::_('NO_JFUSION_TABLE'));
         }
     }
+
+    /**
+     * @return string
+     */
     function generateErrorHTML() {
         $errors = JError::getErrors(); 
     	$result = '';
@@ -156,8 +160,13 @@ class jfusionViewplugindisplay extends JView {
             $result .= '</dd></dl>';
         } 	
         return $result;	
-    } 
-    
+    }
+
+    /**
+     * @param $jname
+     * @param null $record
+     * @return null|\stdClass
+     */
     function initRecord($jname,$record=null) {
     	if (!$record) {
     		$record = new stdClass;
@@ -348,8 +357,12 @@ class jfusionViewplugindisplay extends JView {
 			}
 		}
 		return  $record;
-    }    
-    
+    }
+
+    /**
+     * @param $record
+     * @return string
+     */
     function generateRowHTML($record) {
     	$row = '<td width="20px;"><div class="dragHandles" id="dragHandles"><img src="components/com_jfusion/images/draggable.png" name="handle"></div></td>';
         $row .= '<td>'.$record->name.'</td>';

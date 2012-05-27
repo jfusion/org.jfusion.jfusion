@@ -22,7 +22,11 @@ require_once (JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS 
  */
 class jfusionViewWeb extends JView {
 
-	function display($tpl = null) {
+    /**
+     * @param null $tpl
+     * @return bool
+     */
+    function display($tpl = null) {
 		$jname = JRequest::getVar ( 'Itemid' );
 		$data = JFusionFrameless::initData($jname,false);
 

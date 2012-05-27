@@ -35,11 +35,6 @@ class JFormFieldForumListSearchPlugin extends JFormField
     /**
      * Get an element
      *
-     * @param string $name         name of element
-     * @param string $value        value of element
-     * @param string &$node        node of element
-     * @param string $control_name name of controler
-     *
      * @return string html
      */
     protected function getInput()

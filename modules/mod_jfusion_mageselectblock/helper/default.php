@@ -1,4 +1,15 @@
 <?php
+/**
+ * Helper class
+ *
+ * @category   JFusion
+ * @package    Modules
+ * @subpackage JFusion_Helper_Mageselectblock
+ * @author     JFusion Team <webmaster@jfusion.org>
+ * @copyright  2008 JFusion. All rights reserved.
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @link       http://www.jfusion.org
+ */
 class JFusion_Helper_Mageselectblock {
 	/**
 	 * MUST be in a function otherwise a double display is done. One with interpreted code, the other with brute code
@@ -8,11 +19,10 @@ class JFusion_Helper_Mageselectblock {
 	 * @return string
 	 */
 	public static function callblock($blockId = null) {
+        $html = '';
 		if ($blockId) {
 			$block = Mage::getModel ( 'cms/block' )->setStoreId ( Mage::app ()->getStore ()->getId () )->load ( $blockId );
-			if (! $block->getIsActive ()) {
-				$html = '';
-			} else {
+			if ($block->getIsActive()) {
 				$content = $block->getContent ();
 				
 				$processor = Mage::getModel ( 'core/email_template_filter' );

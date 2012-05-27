@@ -34,6 +34,10 @@ require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS .
  * @link       http://www.jfusion.org
  */
 class JFusionAuth_joomla_ext extends JFusionAuth {
+    /**
+     * @param array|object $userinfo
+     * @return string
+     */
     function generateEncryptedPassword($userinfo) {
         return JFusionJplugin::generateEncryptedPassword($userinfo);
     }

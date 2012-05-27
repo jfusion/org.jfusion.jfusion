@@ -40,15 +40,19 @@ class JFusionAdmin_magento extends JFusionAdmin
     {
         return 'magento';
     }
+
+    /**
+     * @return string
+     */
     function getTablename() {
         return 'admin_user';
     }
     function setupFromPath($forumPath) {
         //check for trailing slash and generate file path
         if (substr($forumPath, -1) != DS) {
-            $forumpath = $forumPath . DS;
+            $forumPath = $forumPath . DS;
         }
-        $xmlfile = $forumpath . 'app' . DS . 'etc' . DS . 'local.xml';
+        $xmlfile = $forumPath . 'app' . DS . 'etc' . DS . 'local.xml';
         if (file_exists($xmlfile)) {
             $xml = JFactory::getXMLParser('Simple');
             if (!$xml->loadFile($xmlfile)) {
@@ -65,7 +69,7 @@ class JFusionAdmin_magento extends JFusionAdmin
             $params['database_password'] = (string)$xml->document->global[0]->resources[0]->default_setup[0]->connection[0]->password[0]->data();
             $params['database_prefix'] = (string)$xml->document->global[0]->resources[0]->db[0]->table_prefix[0]->data();
             $params['database_type'] = "mysql";
-            $params['source_path'] = $forumpath;
+            $params['source_path'] = $forumPath;
             unset($xml);
             return $params;
         } else {
@@ -95,6 +99,10 @@ class JFusionAdmin_magento extends JFusionAdmin
         $no_users = $db->loadResult();
         return $no_users;
     }
+
+    /**
+     * @return array
+     */
     function getUsergroupList() {
         //get the connection to the db
         $db = JFusionFactory::getDataBase($this->getJname());
@@ -173,9 +181,12 @@ class JFusionAdmin_magento extends JFusionAdmin
 		if ($registration_disabled){$result = false;}
 		return $result;
 	}
-	/**
-	 * Put specific javascript script 
-	 */
+    /**
+     * outputJavascript
+     * Put specific javascript script
+     *
+     * @return void
+     */
 	public function outputJavascript(){
 $js = <<< EOD
 <script language="javascript" type="text/javascript">

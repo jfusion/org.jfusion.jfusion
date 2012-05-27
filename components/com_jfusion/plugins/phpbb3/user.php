@@ -30,6 +30,10 @@ defined('_JEXEC') or die('Restricted access');
  */
 class JFusionUser_phpbb3 extends JFusionUser
 {
+    /**
+     * @param object $userinfo
+     * @return null|object
+     */
     function &getUser($userinfo) {
         //get the identifier
         list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'a.username_clean', 'a.user_email');
@@ -226,8 +230,8 @@ class JFusionUser_phpbb3 extends JFusionUser
                     $jautologin = $options['remember'] ? 1 : 0;
                 }
 
+                $create_persistant_cookie = false;
                 if (!empty($phpbb_allow_autologin)) {
-                    $create_persistant_cookie = true;
                     //check for a valid persistant cookie
                     $persistant_cookie = ($phpbb_allow_autologin) ? JRequest::getVar($phpbb_cookie_name . '_k', '', 'cookie') : '';
                     if (!empty($persistant_cookie)) {
@@ -241,6 +245,8 @@ class JFusionUser_phpbb3 extends JFusionUser
                             //$options['remember'] does not get set if Joomla's remember me plugin reinitiates the login
                             $jautologin = 1;
                         }
+                    } else {
+                        $create_persistant_cookie = true;
                     }
                 }
 
@@ -481,6 +487,12 @@ class JFusionUser_phpbb3 extends JFusionUser
             $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
         }
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function unblockUser($userinfo, &$existinguser, &$status) {
         //unblock the user
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -600,6 +612,7 @@ class JFusionUser_phpbb3 extends JFusionUser
         $query = "SELECT config_name, config_value FROM #__config WHERE config_name IN('board_timezone', 'default_dateformat', 'default_lang', 'default_style', 'board_dst', 'rand_seed');";
         $db->setQuery($query);
         $rows = $db->loadObjectList();
+        $config = array();
         foreach ($rows as $row) {
             $config[$row->config_name] = $row->config_value;
         }
@@ -721,7 +734,8 @@ class JFusionUser_phpbb3 extends JFusionUser
         $db->setQuery($query);
         $report_posts = $report_topics = array();
         if ($db->query()) {
-            if ($results = $db->loadObjectList()) {
+            $results = $db->loadObjectList();
+            if ($results) {
                 foreach ($results as $row) {
                     $report_posts[] = $row->post_id;
                     $report_topics[] = $row->topic_id;
@@ -744,7 +758,8 @@ class JFusionUser_phpbb3 extends JFusionUser
             $db->setQuery($query);
             $keep_report_topics = array();
             if ($db->query()) {
-                if ($results = $db->loadObjectList()) {
+                $results = $db->loadObjectList();
+                if ($results) {
                     foreach ($results as $row) {
                         $keep_report_topics[] = $row->topic_id;
                     }
@@ -869,7 +884,8 @@ class JFusionUser_phpbb3 extends JFusionUser
         $db->setQuery($query);
         $undelivered_msg = $undelivered_user = array();
         if ($db->query()) {
-            if ($results = $db->loadObjectList()) {
+            $results = $db->loadObjectList();
+            if ($results) {
                 foreach ($results as $row) {
                     $undelivered_msg[] = $row->msg_id;
                     $undelivered_user[$row->user_id][] = true;
@@ -956,7 +972,8 @@ class JFusionUser_phpbb3 extends JFusionUser
             //retrieve the new newest user
             $query = "SELECT user_id, username, user_colour FROM #__users WHERE user_regdate = (SELECT MAX(user_regdate) FROM #__users)";
             $db->setQuery($query);
-            if ($newest_user = $db->loadObject()) {
+            $newest_user = $db->loadObject();
+            if ($newest_user) {
                 //update the newest username
                 $query = 'UPDATE #__config SET config_value = ' . $db->Quote($newest_user->username) . ' WHERE config_name = \'newest_username\'';
                 $db->setQuery($query);

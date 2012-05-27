@@ -10,8 +10,16 @@ class Jfusion_Joomla_Helper_Module extends Mage_Core_Helper_Abstract {
 	
 	const CACHE_TAG = 'joomla_module';
 	const CACHE_LIFETIME = false;
-	
-	function getJoomlaModule($type = '', $title = '', $id = null, $style = 'none', $debug = false) {
+
+    /**
+     * @param string $type
+     * @param string $title
+     * @param null $id
+     * @param string $style
+     * @param bool $debug
+     * @return bool|mixed
+     */
+    function getJoomlaModule($type = '', $title = '', $id = null, $style = 'none', $debug = false) {
 		
 		$storeCacheData = false;
 		if (Mage::helper ( 'joomla/data' )->isCacheActivated ()) {
@@ -91,8 +99,12 @@ class Jfusion_Joomla_Helper_Module extends Mage_Core_Helper_Abstract {
 		
 		return $this->_prepareUrlRewrite($data);
 	}
-	
-	protected function _prepareUrlRewrite($data){
+
+    /**
+     * @param $data
+     * @return bool|mixed
+     */
+    protected function _prepareUrlRewrite($data){
 		if($data){
     	    $configData = Mage::helper ( 'joomla/data' );
     		// Base Url from Config - $configData->getJSecureBaseUrl() = Base url from config + secure or not (depending on current statement)

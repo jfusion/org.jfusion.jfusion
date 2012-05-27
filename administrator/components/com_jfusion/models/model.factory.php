@@ -29,8 +29,17 @@ require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS .
  * @link      http://www.jfusion.org
  */
 jimport('joomla.html.parameter');
+/**
+ *
+ */
 class JfusionParam extends JParameter
 {
+    /**
+     * @param string $key
+     * @param string $value
+     * @param string $group
+     * @return mixed
+     */
     function set($key, $value = '', $group = '_default')
     {
         return $this->setValue($group . '.' . $key, $value);
@@ -418,7 +427,8 @@ class JFusionFactory
     }
     /**
      * Gets the plugin name for a JFusion Plugin given the jnodeid
-     * @param string $jnodeid jnodeid to use
+     * @param string $jnode_id jnodeid to use
+     *
      * @return string jname name for the JFusion Plugin, empty if no plugin found
      */
     public static function getPluginNameFromNodeId($jnode_id) {

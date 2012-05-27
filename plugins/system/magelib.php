@@ -16,7 +16,10 @@ if(file_exists ( $jfusion_component )):
 else:
 	JError::raiseWarning(0, 'MageLib: The file '.$jfusion_component.' doesn\'t exists. Please install JFusion component or update it.');
 endif;
-		
+
+/**
+ *
+ */
 class plgSystemMagelib {
 	
 	private $_OldSessionId;
@@ -27,8 +30,11 @@ class plgSystemMagelib {
 	public $params;
 	public $mage_path;
 	public $mage_url;
-	
-	function __construct() {
+
+    /**
+     *
+     */
+    function __construct() {
 		$plugin = & JPluginHelper::getPlugin ( 'system', 'magelib' );
 		$this->params = new JParameter ( $plugin->params );
 		
@@ -103,7 +109,7 @@ class plgSystemMagelib {
 				$error_message = JText::sprintf ( 'The file %s doesn\'t exists', $bootstrap );
 				$error = JError::raiseWarning ( 0, $error_message );
 				$error->message = get_class ( $this ) . '::loadAndStartMagentoBootstrap - ' . $error_message;
-				JError::handleLog ( $error, null );
+				JError::handleLog ( $error, array() );
 				return false;
 			}
 			
@@ -210,12 +216,18 @@ class plgSystemMagelib {
 		$_SESSION = $this->_OldSessionData;
 		return;
 	}
-	
-	function getMagePath(){
+
+    /**
+     * @return mixed
+     */
+    function getMagePath(){
 		return $this->mage_path;
 	}
-	
-	function getMageUrl(){
+
+    /**
+     * @return mixed
+     */
+    function getMageUrl(){
 		return $this->mage_url;
 	}
 }	

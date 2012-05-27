@@ -9,7 +9,9 @@ provides: [File.Upload, Request.File]
 credits: Based off of MooTools-Form-Upload (https://github.com/arian/mootools-form-upload/) by Arian Stolwijk
 
 */
-if (!window.File) window.File = {};
+if (!window.File) {
+    window.File = {};
+}
 
 File.Upload = new Class({
 
@@ -30,15 +32,23 @@ File.Upload = new Class({
 				this.reset();
 			}
 		});
-		if(this.options.data) this.data(this.options.data);
-		if(this.options.images) this.addMultiple(this.options.images);
+		if(this.options.data) {
+            this.data(this.options.data);
+        }
+		if(this.options.images) {
+            this.addMultiple(this.options.images);
+        }
 	},
 
 	data: function(data){
 		var self = this;
-		if(this.options.url.indexOf('?') < 0) this.options.url += '?';
+		if(this.options.url.indexOf('?') < 0) {
+            this.options.url += '?';
+        }
 		Object.each(data, function(value, key){
-			if(self.options.url.charAt(self.options.url.length - 1) != '?') self.options.url += '&';
+			if(self.options.url.charAt(self.options.url.length - 1) != '?') {
+                self.options.url += '&';
+            }
 			self.options.url += encodeURIComponent(key) + '=' + encodeURIComponent(value);
 		});
 	},
@@ -58,7 +68,9 @@ File.Upload = new Class({
 	},
 
 	send: function(input){
-		if(input) this.add(input);
+		if(input) {
+            this.add(input);
+        }
 		this.uploadReq.send({
 			url: this.options.url
 		});
@@ -104,7 +116,7 @@ Request.File = new Class({
 		Object.each(this.headers, function(value, key){
 			try{
 				xhr.setRequestHeader(key, value);
-			}catch(e){
+			} catch(e) {
 				this.fireEvent('exception', [key, value]);
 			}
 		}, this);
@@ -112,8 +124,12 @@ Request.File = new Class({
 		this.fireEvent('request');
 		xhr.send(this.formData);
 
-		if(!this.options.async) this.onStateChange();
-		if(this.options.timeout) this.timer = this.timeout.delay(this.options.timeout, this);
+		if(!this.options.async) {
+            this.onStateChange();
+        }
+		if(this.options.timeout) {
+            this.timer = this.timeout.delay(this.options.timeout, this);
+        }
 		return this;
 		
 	}

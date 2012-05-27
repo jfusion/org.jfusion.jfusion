@@ -439,7 +439,8 @@ class JFusionAdmin
         
 		$params = JFusionFactory::getParams($jname);
 		$multiusergroupdefault = $params->get('multiusergroupdefault');
-        
+
+        $master_usergroups = array();
 		if ( !empty($master) ) {
 			$JFusionMaster = JFusionFactory::getAdmin($master->name);
 			$master_usergroups = $JFusionMaster->getUsergroupList();
@@ -533,7 +534,8 @@ class JFusionAdmin
             $advanced_usergroup = '';
         }
         $list_box.= '</select>';
-        
+
+        $plugin = array();
         if (!empty($master)) {
 	        $new = new stdClass;
 	        if ($master_usergroups) {
@@ -702,13 +704,15 @@ class JFusionAdmin
      */
     function uninstall()
     {
-        return array(true, '');
+        return array(true, array());
     }
-    
-	/*
-	 * do plugin support multi usergroups
-	 */
-	function isMultiGroup()
+
+    /**
+     * do plugin support multi usergroups
+     *
+     * @return bool
+     */
+    function isMultiGroup()
 	{
 		static $muiltisupport;
 		if (!isset($muiltisupport)) {
@@ -723,22 +727,26 @@ class JFusionAdmin
 		return $muiltisupport;
 	}
 
-	/*
-	 * do plugin support multi usergroups
-	 * return UNKNOWN for unknown
-	 * return JNO for NO
-	 * return JYES for YES
-	 * return other ??
-	 */
-	function requireFileAccess()
+    /*
+     * do plugin support multi usergroups
+     *
+     * @return string
+     */
+    function requireFileAccess()
 	{
 		return 'UNKNOWN';
 	}
-	
-	/*
-	 * import function for importing config in to a plugin
-	*/
-	function import($name, $value, $node, $control_name)
+
+    /*
+     * import function for importing config in to a plugin
+     *
+     * @param $name
+     * @param $value
+     * @param $node
+     * @param $control_name
+     * @return string
+     */
+    function import($name, $value, $node, $control_name)
 	{
 		$jname = $this->getJname();
 		$action = JRequest::getVar('action');
@@ -907,11 +915,17 @@ class JFusionAdmin
 	
 		return $output;
 	}
-	
-	/*
-	 * export function for importing config in to a plugin
-	*/
-	function export($name, $value, $node, $control_name)
+
+    /*
+     * export function for importing config in to a plugin
+     *
+     * @param $name
+     * @param $value
+     * @param $node
+     * @param $control_name
+     * @return string
+     */
+    function export($name, $value, $node, $control_name)
 	{
 		$jname = $this->getJname();
 		$params = JFusionFactory::getParams($jname);
@@ -990,31 +1004,50 @@ class JFusionAdmin
 		$output .= '<div style="text-align: right;"><input type="Button" onclick="javascript: doExport();" value="'.JText::_('EXPORT').'" /></div>';
 		return $output;
 	}
-	
-	/*
-	 * mapping out extra header parsers
-	*/
-	function headermap($name, $value, $node, $control_name)
+
+    /**
+     * mapping out extra header parsers
+     *
+     * @param $name
+     * @param $value
+     * @param $node
+     * @param $control_name
+     * @return string
+     */
+    function headermap($name, $value, $node, $control_name)
 	{
 		$params = JFusionFactory::getParams($this->getJname());
 		$value = $params->get('headermap');
 		return $this->pair('map', $value, $node, $control_name,'header');
 	}
-	
-	/*
-	 * mapping out extra body parsers
-	*/
-	function bodymap($name, $value, $node, $control_name)
+
+    /**
+     * mapping out extra body parsers
+     *
+     * @param $name
+     * @param $value
+     * @param $node
+     * @param $control_name
+     * @return string
+     */
+    function bodymap($name, $value, $node, $control_name)
 	{
 		$params = JFusionFactory::getParams($this->getJname());
 		$value = $params->get('bodymap');
 		return $this->pair('map', $value, $node, $control_name,'body');
 	}
-	
-	/*
-	 * shared code for headermap and bodymap to display pairs.
-	*/
-	function pair($name, $value, $node, $control_name,$type)
+
+    /**
+     * shared code for headermap and bodymap to display pairs.
+     *
+     * @param $name
+     * @param $value
+     * @param $node
+     * @param $control_name
+     * @param $type
+     * @return string
+     */
+    function pair($name, $value, $node, $control_name,$type)
 	{
 		if (is_string($value)) $value = unserialize($value);
 	

@@ -62,7 +62,7 @@ class plgContentJfusion extends JPlugin
     * observer design pattern.
      *
      * @param object &$subject The object to observe
-     * @param array  $config   An array that holds the plugin configuration
+     * @param array  $params   An array that holds the plugin configuration
      *
      * @since 1.5
      * @return void
@@ -126,6 +126,11 @@ class plgContentJfusion extends JPlugin
     }
 
 
+    /**
+     * @param $subject
+     * @param $isNew
+     * @return bool
+     */
     public function onAfterContentSave(&$subject, $isNew) {
         //check to see if a valid $content object was passed on
         if (!is_object($subject)){
@@ -260,7 +265,11 @@ class plgContentJfusion extends JPlugin
         return true;
     }
 
-
+    /**
+     * @param $subject
+     * @param $params
+     * @return bool
+     */
     public function onPrepareContent(&$subject, $params)
     {
         $this->article =& $subject;
@@ -420,19 +429,37 @@ class plgContentJfusion extends JPlugin
         return true;
     }
 
-    //joomla 1.6 compatibility layer
+    /**
+     * joomla 1.6 compatibility layer
+     *
+     * @param $context
+     * @param $article
+     * @param $isNew
+     */
     public function onContentAfterSave($context, &$article, $isNew)
 	{
  	    $this->onAfterContentSave($article, $isNew);
 	}
 
-	public function onContentPrepare($context, &$article, &$params, $limitstart=0)
+    /**
+     * @param $context
+     * @param $article
+     * @param $params
+     * @param int $limitstart
+     */
+    public function onContentPrepare($context, &$article, &$params, $limitstart=0)
 	{
  		//seems syntax has completely changed :(
 		$this->onPrepareContent($article, $params);
 	}
 
-	public function onContentAfterDisplay($context, &$article, &$params, $limitstart=0)
+    /**
+     * @param $context
+     * @param $article
+     * @param $params
+     * @param int $limitstart
+     */
+    public function onContentAfterDisplay($context, &$article, &$params, $limitstart=0)
 	{
 	    $view = JRequest::getVar('view');
 	    $layout = JRequest::getVar('layout');
@@ -446,6 +473,9 @@ class plgContentJfusion extends JPlugin
         }
 	}
 
+    /*
+     * _prepare_content
+     */
     public function _prepare_content()
     {
         JHTML::_( 'behavior.mootools' );
@@ -627,7 +657,9 @@ class plgContentJfusion extends JPlugin
         $this->_render_debug_output();
     }
 
-
+    /*
+     * _render_debug_output
+     */
     public function _render_debug_output()
     {
         if ($this->debug_mode) {
@@ -648,12 +680,15 @@ class plgContentJfusion extends JPlugin
         }
     }
 
+    /*
+     * _create_thread
+     */
     public function _create_thread()
     {
         $JoomlaUser = JFactory::getUser();
         $mainframe = JFactory::getApplication();
-
-        if ($return = JRequest::getVar('return')) {
+        $return = JRequest::getVar('return');
+        if ($return) {
             $url = base64_decode($return);
         } else {
             $uri = JFactory::getURI();
@@ -692,7 +727,9 @@ class plgContentJfusion extends JPlugin
         }
     }
 
-
+    /*
+     * _create_post
+     */
     public function _create_post()
     {
         $JoomlaUser = JFactory::getUser();
@@ -828,7 +865,9 @@ class plgContentJfusion extends JPlugin
         if ($ajaxEnabled) die(JText::_('DISCUSSBOT_ERROR'));
     }
 
-
+    /*
+     * _unpublish_discussion
+     */
     public function _unpublish_discussion()
     {
         $JoomlaUser = JFactory::getUser();
@@ -871,7 +910,9 @@ class plgContentJfusion extends JPlugin
         }
     }
 
-
+    /*
+     * _publish_discussion
+     */
     public function _publish_discussion()
     {
         $JoomlaUser = JFactory::getUser();
@@ -892,7 +933,10 @@ class plgContentJfusion extends JPlugin
         }
     }
 
-
+    /**
+     * @param $threadinfo
+     * @return bool|string
+     */
     public function _render(&$threadinfo)
     {
         $this->helper->_debug('Beginning rendering content');
@@ -940,6 +984,10 @@ class plgContentJfusion extends JPlugin
     }
 
 
+    /**
+     * @param $threadinfo
+     * @return bool|string
+     */
     public function _render_discussion_content(&$threadinfo)
     {
         $this->helper->_debug('Rendering discussion content');
@@ -1049,7 +1097,10 @@ class plgContentJfusion extends JPlugin
         return $content;
     }
 
-
+    /**
+     * @param bool $innerhtml
+     * @return bool|string
+     */
     public function _render_buttons($innerhtml = false)
     {
         $this->helper->_debug('Rendering buttons');
@@ -1283,7 +1334,10 @@ class plgContentJfusion extends JPlugin
         return $button_output;
     }
 
-
+    /**
+     * @param $posts
+     * @return array|string
+     */
     public function _prepare_posts_output(&$posts)
     {
         $this->helper->_debug('Preparing posts output');
@@ -1396,7 +1450,7 @@ class plgContentJfusion extends JPlugin
                 jimport('joomla.utilities.date');
                 $tz_offset =& JFusionFunction::getJoomlaTimezone();
                 $dateline += ($tz_offset * 3600);
-                $date = gmstrftime($date_format, $dateline);
+                $date = gmstrftime($date_format, (int) $dateline);
                 $post_output[$i]->date = $date;
             } else {
                 $post_output[$i]->date = '';
@@ -1432,7 +1486,9 @@ class plgContentJfusion extends JPlugin
         return $post_output;
     }
 
-
+    /*
+     * _update_pagination
+     */
     public function _update_pagination()
     {
         $this->helper->reply_count = JRequest::getVar('reply_count','');
@@ -1492,6 +1548,9 @@ class plgContentJfusion extends JPlugin
         die($pagination);
     }
 
+    /*
+     * _update_posts
+     */
     public function _update_posts()
     {
         if ($this->helper->thread_status) {
@@ -1505,7 +1564,9 @@ class plgContentJfusion extends JPlugin
         }
     }
 
-
+    /*
+     * _update_buttons
+     */
     public function _update_buttons()
     {
         die($this->_render_buttons(true));

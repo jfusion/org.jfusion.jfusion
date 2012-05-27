@@ -29,7 +29,11 @@ class JFormFieldDiscussionbotparam extends JFormField
 	 * @var		string
 	 */
 	public $type = "Discussionbotparam";
-
+    /**
+     * Get an element
+     *
+     * @return string html
+     */
 	function getInput()
 	{
 		$mainframe = JFactory::getApplication();

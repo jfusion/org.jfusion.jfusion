@@ -1,20 +1,41 @@
 <?php
 // Check to ensure this file is within the rest of the framework
 defined('JPATH_BASE') or die();
-
+/**
+ * JFusionCookies class
+ *
+ * @category   JFusion
+ * @package    Model
+ * @subpackage JFusionCookies
+ * @author     JFusion Team <webmaster@jfusion.org>
+ * @copyright  2008 JFusion. All rights reserved.
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @link       http://www.jfusion.org
+ */
 class JFusionCookies {
 	/**
      * Variable to store cookie data
      */
 	var $_cookies = array ();
 
-	public function __construct($secret = null)
+    /**
+     * @param null $secret
+     */
+    public function __construct($secret = null)
 	{
 		$this->secret = $secret;
 	}
 	
 	/**
-     * Set a value
+     * addCookie
+     *
+     * @param string $cookie_name
+     * @param string $cookie_value
+     * @param int $cookie_expires_time
+     * @param string $cookiepath
+     * @param string $cookiedomain
+     * @param int $cookie_secure
+     * @param int $cookie_httponly
      */
     function addCookie($cookie_name, $cookie_value='', $cookie_expires_time=0, $cookiepath='', $cookiedomain='', $cookie_secure=0, $cookie_httponly=0) {
     	if ($cookie_expires_time != 0) {
@@ -56,13 +77,17 @@ class JFusionCookies {
 
     /**
      * Execute the cross domain login redirects
+     *
+     * @param string $source_url
+     * @param string $return
      */
     function executeRedirect($source_url=null,$return=null) {
     	$mainframe = & JFactory::getApplication();
     	if (!$mainframe->isAdmin() || !$this->secret) {
 	    	if(!count($this->_cookies)) {
 	    		if (empty($return)) {
-	    			if ($return = JRequest::getVar ( 'return', '', 'method', 'base64' )) {
+                    $return = JRequest::getVar ( 'return', '', 'method', 'base64' );
+	    			if ($return) {
 	    				$return = base64_decode ( $return );
 	    				if( stripos($return,'http://') === false && stripos($return,'https://') === false ) {
 	    					$return = ltrim($return,'/');
@@ -73,22 +98,29 @@ class JFusionCookies {
 		
 				require_once(JPATH_SITE.DS.'components'.DS.'com_jfusion'.DS.'jfusionapi.php');
 
+                $api = null;
+                $data = array();
 		    	foreach( $this->_cookies as $key => $cookies ) {
 		    		$api = new JFusionAPI($key,$this->secret);
 		    		if ($api->set('Cookie','Cookies',$cookies)) {
 		    			$data['url'][$api->url] = $api->sid;
 		    		}
 				}
-				
-				unset($data['url'][$api->url]);
-				$api->execute('cookie','cookies',$data,$return);
+                if ($api) {
+                    unset($data['url'][$api->url]);
+                    $api->execute('cookie','cookies',$data,$return);
+                }
 	    	}
 	    	if (!empty($return)) {
 	    		$mainframe->redirect($return);
 	    	}
     	}
     }
-    
+
+    /**
+     * @param $cookiedomain
+     * @return array
+     */
     public function getApiUrl($cookiedomain) {
     	$url = null;
 		if (strpos($cookiedomain,'http://') === 0) {
@@ -132,6 +164,12 @@ class JFusionCookies {
 	 *        4. 4 Delimeters in between key-value pairs
 	 *
 	 * @see model.curl.php and model.curlframeless.php
+     *
+     * @param array $array
+     * @param string $delimeter
+     * @param string $keyssofar
+     *
+     * @return string
 	 */
 	public static function implodeCookies($array, $delimeter, $keyssofar = '') {
 		$output = '';

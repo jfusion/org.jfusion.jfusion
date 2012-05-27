@@ -1,7 +1,17 @@
 <?php
 // no direct access
 defined('_JEXEC') or die('Restricted access');
-
+/**
+ * JFusionHelper_mediawiki class
+ *
+ * @category   JFusion
+ * @package    Model
+ * @subpackage JFusionHelper_mediawiki
+ * @author     JFusion Team <webmaster@jfusion.org>
+ * @copyright  2008 JFusion. All rights reserved.
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @link       http://www.jfusion.org
+ */
 class JFusionHelper_mediawiki
 {
     var $joomlaSessionName = '';
@@ -19,6 +29,9 @@ class JFusionHelper_mediawiki
         return 'mediawiki';
     }
 
+    /**
+     * @return string
+     */
     function getCookieName() {
         static $mediawiki_cookieName;
         if (!empty($mediawiki_cookieName)) {
@@ -37,9 +50,10 @@ class JFusionHelper_mediawiki
 
     /**
      * Backup Joomla session info and start one for the software
-     * @param $options array login options
+     *
+     * @param array $options login options
      */
-    function startSession($options = '') {
+    function startSession($options = array()) {
         $params =& JFusionFactory::getParams($this->getJname());
 		$this->joomlaSessionName = session_name();
 		$this->joomlaSessionId = session_id();

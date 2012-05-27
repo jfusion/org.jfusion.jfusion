@@ -84,8 +84,8 @@ function showSpinner(jname,fieldname) {
 }
 
 function copyplugin(jname) {
-	var new_jname = prompt('Please type in the name to use for the copied plugin. This name must not already be in use.', '');
-    if(new_jname) {
+	var newjname = prompt('Please type in the name to use for the copied plugin. This name must not already be in use.', '');
+    if(newjname) {
         var url = '<?php echo JURI::root() . 'administrator/index.php'; ?>';
 
      // this code will send a data object via a GET request and alert the retrieved data.
@@ -93,20 +93,20 @@ function copyplugin(jname) {
             onComplete: function(JSONobject) {
 		        var results = Json.evaluate(JSONobject);
 		
-		        if(results.status ==  true) {
+		        if(results.status === true) {
 		            //add new row
-		            addRow(results.new_jname, results.rowhtml);
+		            addRow(results.newjname, results.rowhtml);
 		        }
 		        alert(results.message);
           	} 
         });
-        jsonRequest.request('option=com_jfusion&task=plugincopy&jname=' + jname + '&new_jname=' + new_jname); 
+        jsonRequest.request('option=com_jfusion&task=plugincopy&jname=' + jname + '&new_jname=' + newjname);
     }
 }
 
-function addRow(new_jname, rowhtml) {
+function addRow(newjname, rowhtml) {
     var div = new Element('div');
-    div.setHTML('<table>' + '<tr id="'+new_jname+'">'+rowhtml+'</tr>' + '</table>');
+    div.setHTML('<table>' + '<tr id="'+newjname+'">'+rowhtml+'</tr>' + '</table>');
     div.getElement('tr').inject($("sort_table"),'top');
     initSortables();
 }
@@ -142,7 +142,7 @@ function initSortables() {
 
 		onComplete: function(el) {
 			//build a string of the order
-			var sort_order = '';
+			var sortorder = '';
 			var rowcount = '0';
 			$$('#sort_table tr').each(function(tr) {
 				document.getElementById(tr.id).setAttribute('class', 'row' + rowcount);
@@ -151,11 +151,11 @@ function initSortables() {
 				} else {
 					rowcount = '0';
 				}
-			    sort_order = sort_order +  tr.id  + '|';
+                sortorder = sortorder +  tr.id  + '|';
 		    });
 
 			//update the database
-			sync_vars = 'option=com_jfusion&task=saveorder&tmpl=component&sort_order='+sort_order;
+			sync_vars = 'option=com_jfusion&task=saveorder&tmpl=component&sort_order='+sortorder;
             ajaxsync.request(sync_vars);
 
 	   }
@@ -173,7 +173,7 @@ function deleteplugin(jname) {
             onComplete: function(JSONobject) {
         		var results = Json.evaluate(JSONobject);
 
-            	if(results.status ==  true) {
+            	if(results.status === true) {
 	            	var el = document.getElementById(results.jname);
 	               	el.parentNode.removeChild(el);
             	}
@@ -193,7 +193,7 @@ window.addEvent('domready',function() {
 			onComplete: function(JSONobject) {
 			var response = Json.evaluate(JSONobject);                              
 			    
-		    if (response.overwrite != 1 && response.status == true) {
+		    if (response.overwrite != 1 && response.status === true) {
 		    	addRow(response.jname, response.rowhtml);
 		    }
 		    var spinner = document.getElementById('spinnerSVN');
@@ -211,7 +211,7 @@ window.addEvent('domready',function() {
                 onComplete: function(JSONobject) {
 	            var response = Json.evaluate(JSONobject);                              
 	
-				if (response.overwrite != 1 && response.status == true) {
+				if (response.overwrite != 1 && response.status === true) {
 				   	addRow(response.jname, response.rowhtml);
 				}
 				var spinner = document.getElementById('spinnerURL');
@@ -229,7 +229,7 @@ window.addEvent('domready',function() {
                 onComplete: function(JSONobject) {
 	            var response = Json.evaluate(JSONobject);
 	
-			    if (response.overwrite != 1 && response.status == true) {
+			    if (response.overwrite != 1 && response.status === true) {
 			    	addRow(response.jname, response.rowhtml);
 			    }
 			    var spinner = document.getElementById('spinnerDIR');

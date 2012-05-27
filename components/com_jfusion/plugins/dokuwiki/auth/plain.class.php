@@ -76,7 +76,11 @@ class doku_auth_plain extends doku_auth_basic {
      * Checks if the given user exists and the given
      * plaintext password is correct
      *
+     * @param string $user
+     * @param string $pass
+     *
      * @author  Andreas Gohr <andi@splitbrain.org>
+     *
      * @return  bool
      */
     function checkPass($user, $pass) {
@@ -94,7 +98,11 @@ class doku_auth_plain extends doku_auth_basic {
      * mail string  email addres of the user
      * grps array   list of groups the user is in
      *
+     * @param string $user
+     *
      * @author  Andreas Gohr <andi@splitbrain.org>
+     *
+     * @return array
      */
     function getUserData($user = null) {
         $this->_loadUserData();
@@ -110,8 +118,16 @@ class doku_auth_plain extends doku_auth_basic {
      * The new user will be added to the default group by this
      * function if grps are not specified (default behaviour).
      *
+     * @param string $user
+     * @param string $pwd
+     * @param string $name
+     * @param string $mail
+     * @param array $grps
+     *
      * @author  Andreas Gohr <andi@splitbrain.org>
      * @author  Chris Smith <chris@jalakai.co.uk>
+     *
+     * @return mixed
      */
     function createUser($user,$pwd,$name,$mail,$grps=null)
     {
@@ -217,7 +233,11 @@ class doku_auth_plain extends doku_auth_basic {
     /**
      * Return a count of the number of user which meet $filter criteria
      *
-     * @author  Chris Smith <chris@jalakai.co.uk>
+     * @author Chris Smith <chris@jalakai.co.uk>
+     *
+     * @param array $filter
+     *
+     * @return int
      */
     function getUserCount($filter = array()) {
         $this->_loadUserData();
@@ -233,9 +253,10 @@ class doku_auth_plain extends doku_auth_basic {
      * Bulk retrieval of user data
      *
      * @author  Chris Smith <chris@jalakai.co.uk>
-     * @param   start     index of first user to be returned
-     * @param   limit     max number of users to be returned
-     * @param   filter    array of field/pattern pairs
+     * @param int $start     index of first user to be returned
+     * @param int $limit     max number of users to be returned
+     * @param array $filter    array of field/pattern pairs
+     *
      * @return  array of userinfo (refer getUserData for internal userinfo details)
      */
     function retrieveUsers($start = 0, $limit = 0, $filter = array()) {
@@ -263,6 +284,8 @@ class doku_auth_plain extends doku_auth_basic {
      * loads the user file into a datastructure
      *
      * @author  Andreas Gohr <andi@splitbrain.org>
+     *
+     * @return mixed
      */
     function _loadUserData() {
         if (is_array($this->users)) return $this->users;
@@ -291,6 +314,11 @@ class doku_auth_plain extends doku_auth_basic {
      * return 1 if $user + $info match $filter criteria, 0 otherwise
      *
      * @author   Chris Smith <chris@jalakai.co.uk>
+     *
+     * @param string $user
+     * @param array $info
+     *
+     * @return int
      */
     function _filter($user, $info) {
         // FIXME

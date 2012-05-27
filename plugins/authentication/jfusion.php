@@ -243,6 +243,11 @@ class plgAuthenticationjfusion extends JPlugin
         return false;
     }
 
+    /**
+     * @param $credentials
+     * @param $options
+     * @param $response
+     */
     function onUserAuthenticate($credentials, $options, &$response){
         $this->onAuthenticate($credentials, $options, $response);
     }

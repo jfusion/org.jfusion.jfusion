@@ -18,27 +18,47 @@ defined('_JEXEC' ) or die('Restricted access' );
 
 class JFusionForum_smf2 extends JFusionForum
 {
-
+    /**
+     * @return string
+     */
     function getJname()
     {
         return 'smf2';
     }
 
+    /**
+     * @param int $threadid
+     * @return string
+     */
     function getThreadURL($threadid)
     {
         return  'index.php?topic=' . $threadid;
     }
 
+    /**
+     * @param int $threadid
+     * @param int $postid
+     * @return string
+     */
     function getPostURL($threadid, $postid)
     {
         return  'index.php?topic=' . $threadid . '.msg'.$postid.'#msg' . $postid;
     }
 
+    /**
+     * @param int $forumid
+     * @param int $threadid
+     * @return string
+     */
     function getReplyURL($forumid, $threadid)
     {
         return "index.php?action=post;topic=$threadid";
     }
 
+    /**
+     * @param int $uid
+     * @return string
+     */
     function getProfileURL($uid)
     {
         return  'index.php?action=profile&u='.$uid;
@@ -169,11 +189,14 @@ class JFusionForum_smf2 extends JFusionForum
 	}
 
      /**
-     * Creates new thread and posts first post
-     * @param object with discussion bot parameters
-     * @param object $contentitem object containing content information
-     * @param int Id of forum to create thread
-     * @param array $status contains errors and status of actions
+      * Creates new thread and posts first post
+      *
+      * @param object &$dbparams with discussion bot parameters
+      * @param object &$contentitem object containing content information
+      * @param int $forumid Id of forum to create thread
+      * @param array &$status contains errors and status of actions
+      *
+      * @return void
      */
 	function createThread(&$dbparams, &$contentitem, $forumid, &$status)
 	{
@@ -519,9 +542,10 @@ class JFusionForum_smf2 extends JFusionForum
 
 	/**
      * Retrieves the posts to be displayed in the content item if enabled
-     * @param object with discussion bot parameters
-     * @param int Id of thread
-     * @param int Id of first post which is useful if you do not want the first post to be included in results
+     *
+     * @param object &$dbparams with discussion bot parameters
+     * @param object &$existingthread
+     *
      * @return array or object Returns retrieved posts
      */
 	function getPosts(&$dbparams, &$existingthread)
@@ -592,6 +616,10 @@ class JFusionForum_smf2 extends JFusionForum
 		return $columns;
 	}
 
+    /**
+     * @param int $threadid
+     * @return object
+     */
     function getThread($threadid)
     {
 		$db =& JFusionFactory::getDatabase($this->getJname());

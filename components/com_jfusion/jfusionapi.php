@@ -11,7 +11,17 @@ function initJFusionAPI() {
 }
 // add everything inside a function to prevent 'sniffing';
 initJFusionAPI();
-
+/**
+ * JFusionAPI class
+ *
+ * @category   JFusion
+ * @package    API
+ * @subpackage JFusionAPI
+ * @author     JFusion Team <webmaster@jfusion.org>
+ * @copyright  2008 JFusion. All rights reserved.
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @link       http://www.jfusion.org
+ */
 class JFusionAPI {
 	public $url;
 	public $sid = null;
@@ -25,7 +35,11 @@ class JFusionAPI {
 	private $error = null;
 	private $debug = null;
 
-	public function __construct($url = '', $secretkey = '')
+    /**
+     * @param string $url
+     * @param string $secretkey
+     */
+    public function __construct($url = '', $secretkey = '')
 	{
 		if ($url == '' ) {
 			if (session_id()) {
@@ -83,8 +97,11 @@ class JFusionAPI {
     {
 		$this->payload = $payload;
     }
-    
-	private function retrieveKey()
+
+    /**
+     * @return bool
+     */
+    private function retrieveKey()
 	{
 		if ($this->hash && $this->sid) return true;
 		$FileData = $this->_raw('get','status', 'key', null, false);
@@ -248,7 +265,11 @@ class JFusionAPI {
     	}
 		return $decrypted;
     }
-    
+
+    /**
+     * @param array $post
+     * @return array|bool
+     */
     private function post($post=array())
     {
     	$this->error = null;
@@ -433,8 +454,11 @@ class JFusionAPI_Status extends JFusionAPIBase {
 		$return['hash'] = $iv;
 		return $return;
 	}
-	
-	public function getPing()
+
+    /**
+     * @return array
+     */
+    public function getPing()
 	{
 		$return['payload'] = 'pong';
 		return $return;
@@ -601,7 +625,6 @@ class JFusionAPI_User extends JFusionAPIBase {
 		} else {
 			$this->error[] = 'invalid payload';
 		}
-		return $return;
 	}
 	
 	public function executeUpdate()
@@ -655,7 +678,6 @@ class JFusionAPI_User extends JFusionAPIBase {
 		} else {
 			$this->error[] = 'invalid payload';
 		}
-		return $return;
 	}
 }
 

@@ -27,6 +27,7 @@ class JFormFieldJFusionUsergroupList extends JFormField
 
     /**
      * Get an element
+     *
      * @return string html
      */
     protected function getInput()

@@ -18,9 +18,23 @@ defined('_JEXEC' ) or die('Restricted access' );
 //require_once(JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.jfusion.php');
 //require_once(JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.abstractuser.php');
 require_once(JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.jplugin.php');
-
+/**
+ * JFusionUser_mediawiki class
+ *
+ * @category   JFusion
+ * @package    Plugin
+ * @subpackage JFusionUser_mediawiki
+ * @author     JFusion Team <webmaster@jfusion.org>
+ * @copyright  2008 JFusion. All rights reserved.
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @link       http://www.jfusion.org
+ */
 class JFusionUser_mediawiki extends JFusionUser {
 
+    /**
+     * @param object $userinfo
+     * @return object
+     */
     function &getUser($userinfo)
     {
 		// get the username
@@ -126,14 +140,20 @@ class JFusionUser_mediawiki extends JFusionUser {
    		setcookie($cookie_name  . 'UserID', '', $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
    		setcookie($cookie_name  . 'Token', '', $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
    		$now = time();
-   		setcookie('LoggedOut', $now, time() + 86400, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly );
+        $expiration = time() + 86400;
+   		setcookie('LoggedOut', $now, $expiration, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly );
         $status['debug'][] = "{$cookie_name}UserName " . JText::_('DELETED');
         $status['debug'][] = "{$cookie_name}UserID " . JText::_('DELETED');
         $status['debug'][] = "{$cookie_name}Token " . JText::_('DELETED');
-        $status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => 'LoggedOut', JText::_('VALUE') => $now, JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
+        $status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => 'LoggedOut', JText::_('VALUE') => $now, JText::_('EXPIRES') => $expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
 		return $status;
      }
 
+    /**
+     * @param object $userinfo
+     * @param array $options
+     * @return array
+     */
     function createSession($userinfo, $options){
         $status = array();
 	    $status['error'] = array();
@@ -185,6 +205,11 @@ class JFusionUser_mediawiki extends JFusionUser {
         return $username;
     }
 
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function updatePassword($userinfo, &$existinguser, &$status)
     {
         $existinguser->password = ':A:' . md5( $userinfo->password_clear);
@@ -203,6 +228,11 @@ class JFusionUser_mediawiki extends JFusionUser {
 
     }
 
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function updateEmail($userinfo, &$existinguser, &$status)
     {
         //we need to update the email

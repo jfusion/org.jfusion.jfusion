@@ -35,7 +35,11 @@ class JFusionPublic_oscommerce extends JFusionPublic
 	{
 		return 'oscommerce';
 	}
-	function getRegistrationURL() {
+
+    /**
+     * @return string
+     */
+    function getRegistrationURL() {
 		$params = JFusionFactory::getParams($this->getJname());
 		$osCversion = $params->get('osCversion');
 		switch ($osCversion) {

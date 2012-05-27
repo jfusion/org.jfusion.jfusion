@@ -42,7 +42,11 @@ require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS .
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org */
 class JFusionUser_moodle extends JFusionUser {
-	function rc4encrypt($data) {
+    /**
+     * @param $data
+     * @return mixed
+     */
+    function rc4encrypt($data) {
 		$password = 'nfgjeingjk';
 		return endecrypt($password, $data, '');
 	}
@@ -370,7 +374,13 @@ class JFusionUser_moodle extends JFusionUser {
 			$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 		}
 	}
-	function inactivateUser($userinfo, &$existinguser, &$status) {
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
+    function inactivateUser($userinfo, &$existinguser, &$status) {
 		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = 'UPDATE #__user SET confirmed = false WHERE id =' . (int)$existinguser->userid;
 		$db->setQuery($query);
@@ -428,7 +438,7 @@ class JFusionUser_moodle extends JFusionUser {
 
 		//prepare the variables
 		$user = new stdClass;
-		$user->id = $record_id;
+		$user->id = null;
 		$user->auth = 'manual';
 		if ($userinfo->activation) {
 			$user->confirmed = 0;
@@ -456,6 +466,7 @@ class JFusionUser_moodle extends JFusionUser {
 		// $user->idnumber= ??
 		$parts = explode(' ', $userinfo->name);
 		$user->firstname = trim($parts[0]);
+        $lastname = '';
 		if ($parts[(count($parts) - 1) ]) {
 			for ($i = 1;$i < (count($parts));$i++) {
 				$lastname = $lastname . ' ' . $parts[$i];
@@ -465,9 +476,7 @@ class JFusionUser_moodle extends JFusionUser {
 		$user->email = strtolower($userinfo->email);
 		$user->country = $country;
 		$user->lang = $lang;
-		if ($record_id==null) {
-			$user->firstaccess = time();
-		}
+        $user->firstaccess = time();
 		$user->timemodified = time();
 		//now append the new user data
 		if (!$db->insertObject('#__user', $user, 'id')) {

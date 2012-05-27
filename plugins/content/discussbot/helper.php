@@ -41,6 +41,12 @@ class JFusionDiscussBotHelper {
     var $option;
     var $isJ16;
 
+    /**
+     * @param $params
+     * @param $jname
+     * @param $mode
+     * @param $debug_mode
+     */
     public function __construct(&$params, $jname, $mode, $debug_mode) {
         $this->params = $params;
         $this->jname = $jname;
@@ -53,6 +59,11 @@ class JFusionDiscussBotHelper {
         }
     }
 
+    /**
+     * @param bool $update
+     * @param bool $threadinfo
+     * @return mixed
+     */
     public function &_get_thread_info($update = false, $threadinfo = false)
     {
         static $thread_instance;
@@ -75,7 +86,10 @@ class JFusionDiscussBotHelper {
         return $thread_instance[$contentid];
     }
 
-
+    /**
+     * @param int $force_new
+     * @return array
+     */
     public function _check_thread_exists($force_new = 0)
     {
         $this->_debug('Checking if thread exists');
@@ -127,6 +141,12 @@ class JFusionDiscussBotHelper {
     }
 
 
+    /**
+     * @param string $jumpto
+     * @param string $query
+     * @param bool $xhtml
+     * @return string|The
+     */
     public function _get_article_url($jumpto = '', $query = '', $xhtml = true)
     {
         //make sure Joomla's content helper is loaded
@@ -146,10 +166,12 @@ class JFusionDiscussBotHelper {
             } else {
                 $url = ContentHelperRoute::getArticleRoute($this->article->slug, $this->article->catslug, $this->article->sectionid);
             }
-            if ($start = JRequest::getInt('start',0)) {
+            $start = JRequest::getInt('start',0);
+            if ($start) {
                 $url .= "&start=$start";
             }
-            if ($limitstart = JRequest::getInt('limitstart',0)) {
+            $limitstart = JRequest::getInt('limitstart',0);
+            if ($limitstart) {
                 $url .= "&limitstart=$limitstart";
             }
             $url .= $query;
@@ -167,6 +189,9 @@ class JFusionDiscussBotHelper {
         return $url;
     }
 
+    /**
+     * @return bool
+     */
     public function _get_thread_status()
     {
         $threadinfo =& $this->_get_thread_info(true);
@@ -200,7 +225,10 @@ class JFusionDiscussBotHelper {
         return $active;
     }
 
-
+    /**
+     * @param $type
+     * @return mixed
+     */
     public function &_get_lists($type)
     {
         static $lists_instance;
@@ -220,369 +248,361 @@ class JFusionDiscussBotHelper {
         return $lists_instance[$type];
     }
 
+    /**
+     * @param bool $skip_new_check
+     * @param bool $skip_k2_check
+     * @return array
+     */
     public function _validate($skip_new_check = false, $skip_k2_check = false)
     {
         $this->_debug('Validating article');
 
         //allowed components
         $components = array('com_content', 'com_k2');
-
+        $valid = 0;
+        $validity_reason = '';
         //make sure we have an article
         if (!$this->article->id || !in_array($this->option, $components)) {
-            return array(0, JText::sprintf('REASON_NOT_AN_ARTICLE', $this->option));
-        }
-
-        //if in K2, make sure we are after the article itself and not video or gallery
-        $view = JRequest::getVar('view');
-        if ($this->option == "com_k2" && $view == 'item' && !$skip_k2_check && is_object($this->article->params)) {
-            static $k2_tracker;
-            if ($this->article->params->get('itemImageGallery') && empty($k2_tracker)) {
-                $k2_tracker = 'gallery';
-            } elseif ($this->article->params->get('itemVideo') && (empty($k2_tracker) || $k2_tracker == 'gallery')) {
-                $k2_tracker = 'video';
-            } else {
-                $k2_tracker = 'item';
-            }
-
-            if ($k2_tracker != 'item') {
-                return array(0, JTEXT::_('REASON_NOT_IN_K2_ARTICLE_TEXT'));
-            }
-        }
-
-        //make sure there is a default user set
-        if ($this->params->get("default_userid",false)===false) {
-            return array(0, JText::_('REASON_NO_DEFAULT_USER'));
-        }
-
-        $JFusionForum =& JFusionFactory::getForum($this->jname);
-        $forumid = $JFusionForum->getDefaultForum($this->params, $this->article);
-        if (empty($forumid)) {
-            return array(0, JText::_('REASON_NO_FORUM_FOUND'));
-        }
-
-        $dbtask = JRequest::getVar('dbtask', 'render_content', 'post');
-        $bypass_tasks = array('create_thread', 'render_content', 'publish_discussion', 'unpublish_discussion');
-        if (!empty($dbtask) && !in_array($dbtask, $bypass_tasks)) {
-            return array(0, JText::_('REASON_DISCUSSION_MANUALLY_INITIALISED'));
+            $validity_reason = JText::sprintf('REASON_NOT_AN_ARTICLE', $this->option);
         } else {
-            //make sure article is published
-            $state = ($this->option == 'com_k2') ? $this->article->published : $this->article->state;
-            if (!$state) {
-                return array(0, JText::_('REASON_ARTICLE_NOT_PUBLISHED'));
-            }
-
-            //make sure the article is set to be published
-            $mainframe = JFactory::getApplication();
-            $publish_up = JFactory::getDate($this->article->publish_up)->toUnix();
-            $now = JFactory::getDate('now', $mainframe->getCfg('offset'))->toUnix();
-
-            if ($now < $publish_up) {
-                return array(0, JText::_('REASON_PUBLISHED_IN_FUTURE'));
-            }
-
-            $creationMode =& $this->params->get('create_thread','load');
-            //make sure create_thread is appropriate
-            if ($creationMode == 'reply' && $dbtask != 'create_thread') {
-                return array(0, JText::_('REASON_CREATED_ON_FIRST_REPLY'));
-            } elseif ($creationMode == 'view') {
-                //only create the article if we are in the article view
-                $test_view = ($this->option == 'com_k2') ? 'item' : 'article';
-                if (JRequest::getVar('view') != $test_view) {
-                    return array(0, JText::_('REASON_CREATED_ON_VIEW'));
+            //if in K2, make sure we are after the article itself and not video or gallery
+            $view = JRequest::getVar('view');
+            if ($this->option == "com_k2" && $view == 'item' && !$skip_k2_check && is_object($this->article->params)) {
+                static $k2_tracker;
+                if ($this->article->params->get('itemImageGallery') && empty($k2_tracker)) {
+                    $k2_tracker = 'gallery';
+                } elseif ($this->article->params->get('itemVideo') && (empty($k2_tracker) || $k2_tracker == 'gallery')) {
+                    $k2_tracker = 'video';
+                } else {
+                    $k2_tracker = 'item';
                 }
-            } elseif ($creationMode == 'new' && !$skip_new_check) {
-                //if set to create a thread for new articles only, make sure the thread was created with onAfterContentSave
-                if (!$this->thread_status) {
-                    return array(0, JText::_('REASON_ARTICLE_NOT_NEW'));
+
+                if ($k2_tracker != 'item') {
+                    return array($valid, JTEXT::_('REASON_NOT_IN_K2_ARTICLE_TEXT'));
                 }
             }
 
-            if ($this->option == 'com_content') {
-                if ($this->isJ16) {
-                    //Joomla 1.6 has a different model for sections/category so need to handle it separately from J1.5
-                    $catid =& $this->article->catid;
-            		$JCat =& JCategories::getInstance('Content');
-            		$cat = $JCat->get($catid);
+            //make sure there is a default user set
+            if ($this->params->get("default_userid",false)===false) {
+                $validity_reason = JText::_('REASON_NO_DEFAULT_USER');
+            } else {
+                $JFusionForum =& JFusionFactory::getForum($this->jname);
+                $forumid = $JFusionForum->getDefaultForum($this->params, $this->article);
+                if (empty($forumid)) {
+                    $validity_reason = JText::_('REASON_NO_FORUM_FOUND');
+                } else {
+                    $dbtask = JRequest::getVar('dbtask', 'render_content', 'post');
+                    $bypass_tasks = array('create_thread', 'render_content', 'publish_discussion', 'unpublish_discussion');
+                    if (!empty($dbtask) && !in_array($dbtask, $bypass_tasks)) {
+                        $validity_reason = JText::_('REASON_DISCUSSION_MANUALLY_INITIALISED');
+                    } else {
+                        //make sure article is published
+                        $state = ($this->option == 'com_k2') ? $this->article->published : $this->article->state;
+                        if (!$state) {
+                            $validity_reason = JText::_('REASON_ARTICLE_NOT_PUBLISHED');
+                        } else {
+                            //make sure the article is set to be published
+                            $mainframe = JFactory::getApplication();
+                            $publish_up = JFactory::getDate($this->article->publish_up)->toUnix();
+                            $now = JFactory::getDate('now', $mainframe->getCfg('offset'))->toUnix();
 
-                    $includedCategories = $this->params->get("include_categories");
-                    if (!is_array($includedCategories)) {
-                        $includedCategories = (empty($includedCategories)) ? array() : array($includedCategories);
-                    }
-
-                    $excludedCategories = $this->params->get("exclude_categories");
-                    if (!is_array($excludedCategories)) {
-                        $excludedCategories = (empty($excludedCategories)) ? array() : array($excludedCategories);
-                    }
-
-            		if (!empty($includedCategories)) {
-                        //there are category stipulations on what articles to include
-                        //check to see if this article is not in the selected categories
-                        $valid = (!in_array($catid,$includedCategories)) ? 0 : 1;
-                        if (!$valid) {
-                            //check to see if this article is in any included parents
-                            $parent_id = $cat->getParent()->id;
-                            if ($parent_id !== 'root') {
-                                $stop = false;
-                                while (!$stop) {
-                                    $valid = (!in_array($parent_id,$includedCategories)) ? 0 : 1;
-                                    //keep going up
-                                    if (!$valid) {
-                                        //get the parent's parent id
-                                        $parent = $JCat->get($parent_id);
-                                        $parent_id = $parent->getParent()->id;
-                                        if ($parent_id == 'root') {
-                                            $stop = true;
-                                            $validity_reason = JText::_('REASON_NOT_IN_INCLUDED_CATEGORY_OR_PARENTS');
-                                        }
-                                    } else {
-                                        $stop = true;
-                                        $validity_reason = JText::_('REASON_IN_INCLUDED_CATEGORY_PARENT');
+                            if ($now < $publish_up) {
+                                $validity_reason = JText::_('REASON_PUBLISHED_IN_FUTURE');
+                            } else {
+                                $creationMode =& $this->params->get('create_thread','load');
+                                //make sure create_thread is appropriate
+                                if ($creationMode == 'reply' && $dbtask != 'create_thread') {
+                                    return array($valid, JText::_('REASON_CREATED_ON_FIRST_REPLY'));
+                                } elseif ($creationMode == 'view') {
+                                    //only create the article if we are in the article view
+                                    $test_view = ($this->option == 'com_k2') ? 'item' : 'article';
+                                    if (JRequest::getVar('view') != $test_view) {
+                                        return array($valid, JText::_('REASON_CREATED_ON_VIEW'));
+                                    }
+                                } elseif ($creationMode == 'new' && !$skip_new_check) {
+                                    //if set to create a thread for new articles only, make sure the thread was created with onAfterContentSave
+                                    if (!$this->thread_status) {
+                                        return array($valid, JText::_('REASON_ARTICLE_NOT_NEW'));
                                     }
                                 }
-                            } else {
-                                $validity_reason = JText::_('REASON_NOT_IN_INCLUDED_CATEGORY_OR_PARENTS');
-                            }
-                        } else {
-                            $validity_reason = JText::_('REASON_IN_INCLUDED_CATEGORY');
-                        }
 
-                        //make sure the category is not in an excluded category
-                        if ($valid && !empty($excludedCategories)) {
-                            if (in_array($catid, $excludedCategories)) {
-                                $valid = 0;
-                                $validity_reason = JText::_('REASON_IN_EXCLUDED_CATEGORY');
-                            }
-                        }
-            		} elseif (!empty($excludedCategories)) {
-                        $valid = (!in_array($catid, $excludedCategories)) ? 1 : 0;
-            		    if ($valid) {
-                            $validity_reason = JText::_('REASON_NOT_IN_EXCLUDED_CATEGORY');
+                                if ($this->option == 'com_content') {
+                                    if ($this->isJ16) {
+                                        //Joomla 1.6 has a different model for sections/category so need to handle it separately from J1.5
+                                        $catid =& $this->article->catid;
+                                        $JCat =& JCategories::getInstance('Content');
+                                        $cat = $JCat->get($catid);
 
-                            //now to see if the category is an excluded cat or parent cat
-                            $parent_id = $cat->getParent()->id;
-                            if ($parent_id !== 'root') {
-                                $stop = false;
-                                while (!$stop) {
-                                    //keep going up
-                                    if (!in_array($parent_id,$excludedCategories)) {
-                                        //get the parent's parent id
-                                        $parent = $JCat->get($parent_id);
-                                        $parent_id = $parent->getParent()->id;
-                                        if ($parent_id == 'root') {
-                                            $stop = true;
+                                        $includedCategories = $this->params->get("include_categories");
+                                        if (!is_array($includedCategories)) {
+                                            $includedCategories = (empty($includedCategories)) ? array() : array($includedCategories);
+                                        }
+
+                                        $excludedCategories = $this->params->get("exclude_categories");
+                                        if (!is_array($excludedCategories)) {
+                                            $excludedCategories = (empty($excludedCategories)) ? array() : array($excludedCategories);
+                                        }
+
+                                        if (!empty($includedCategories)) {
+                                            //there are category stipulations on what articles to include
+                                            //check to see if this article is not in the selected categories
+                                            $valid = (!in_array($catid,$includedCategories)) ? 0 : 1;
+                                            if (!$valid) {
+                                                //check to see if this article is in any included parents
+                                                $parent_id = $cat->getParent()->id;
+                                                if ($parent_id !== 'root') {
+                                                    while (true) {
+                                                        $valid = (!in_array($parent_id,$includedCategories)) ? 0 : 1;
+                                                        //keep going up
+                                                        if (!$valid) {
+                                                            //get the parent's parent id
+                                                            $parent = $JCat->get($parent_id);
+                                                            $parent_id = $parent->getParent()->id;
+                                                            if ($parent_id == 'root') {
+                                                                $validity_reason = JText::_('REASON_NOT_IN_INCLUDED_CATEGORY_OR_PARENTS');
+                                                                break;
+                                                            }
+                                                        } else {
+                                                            $validity_reason = JText::_('REASON_IN_INCLUDED_CATEGORY_PARENT');
+                                                            break;
+                                                        }
+                                                    }
+                                                } else {
+                                                    $validity_reason = JText::_('REASON_NOT_IN_INCLUDED_CATEGORY_OR_PARENTS');
+                                                }
+                                            } else {
+                                                $validity_reason = JText::_('REASON_IN_INCLUDED_CATEGORY');
+                                            }
+
+                                            //make sure the category is not in an excluded category
+                                            if ($valid && !empty($excludedCategories)) {
+                                                if (in_array($catid, $excludedCategories)) {
+                                                    $validity_reason = JText::_('REASON_IN_EXCLUDED_CATEGORY');
+                                                }
+                                            }
+                                        } elseif (!empty($excludedCategories)) {
+                                            $valid = (!in_array($catid, $excludedCategories)) ? 1 : 0;
+                                            if ($valid) {
+                                                $validity_reason = JText::_('REASON_NOT_IN_EXCLUDED_CATEGORY');
+
+                                                //now to see if the category is an excluded cat or parent cat
+                                                $parent_id = $cat->getParent()->id;
+                                                if ($parent_id !== 'root') {
+                                                    while (true) {
+                                                        //keep going up
+                                                        if (!in_array($parent_id,$excludedCategories)) {
+                                                            //get the parent's parent id
+                                                            $parent = $JCat->get($parent_id);
+                                                            $parent_id = $parent->getParent()->id;
+                                                            if ($parent_id == 'root') {
+                                                                break;
+                                                            }
+                                                        } else {
+                                                            $validity_reason = JText::_('REASON_IN_EXCLUDED_CATEGORY_PARENT');
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                            } else {
+                                                $validity_reason = JText::_('REASON_IN_EXCLUDED_CATEGORY');
+                                            }
+                                        } else {
+                                            $validity_reason = JText::_('REASON_NO_STIPULATIONS');
+                                            $valid = 1;
                                         }
                                     } else {
-                                        $stop = true;
-                                        $valid = 0;
-                                        $validity_reason = JText::_('REASON_IN_EXCLUDED_CATEGORY_PARENT');
+                                        //section and category id of content
+                                        $secid =& $this->article->sectionid;
+                                        $catid =& $this->article->catid;
+
+                                        //check to see if we have an uncategorized article
+                                        if (empty($secid) && empty($catid)) {
+                                            //does the admin want a thread generated?
+                                            if ($this->params->get('include_static',false)) {
+                                                return array(1, JText::_('REASON_INCLUDE_UNCATEGORIZED'));
+                                            } else {
+                                                return array($valid, JText::_('REASON_DISCLUDE_UNCATEGORIZED'));
+                                            }
+                                        }
+
+                                        //check to see if there are sections/categories that are specifically included/excluded
+                                        $includedSections = $this->params->get("include_sections");
+                                        if (!is_array($includedSections)) {
+                                            $includedSections = (empty($includedSections)) ? array() : array($includedSections);
+                                        }
+
+                                        $includedCategories = $this->params->get("include_categories");
+                                        if (!is_array($includedCategories)) {
+                                            $includedCategories = (empty($includedCategories)) ? array() : array($includedCategories);
+                                        }
+
+                                        $excludedSections = $this->params->get("exclude_sections");
+                                        if (!is_array($excludedSections)) {
+                                            $excludedSections = (empty($excludedSections)) ? array() : array($excludedSections);
+                                        }
+
+                                        $excludedCategories = $this->params->get("exclude_categories");
+                                        if (!is_array($excludedCategories)) {
+                                            $excludedCategories = (empty($excludedCategories)) ? array() : array($excludedCategories);
+                                        }
+
+                                        //there are section stipulations on what articles to include
+                                        if (!empty($includedSections)) {
+                                            if (!in_array($secid,$includedSections)) {
+                                                //this article is not in one of the sections to include
+                                                $validity_reason = 'REASON_NOT_IN_INCLUDE_SECTION';
+                                            } elseif (!empty($includedCategories)) {
+                                                //there are both specific sections and categories to include
+                                                //check to see if this article is not in the selected categories within the included sections
+
+                                                if (!in_array($catid,$includedCategories)) {
+                                                    $validity_reason = JText::_('REASON_IN_INCLUDED_SECTION_NOT_IN_INCLUDED_CATEGORY');
+                                                } else {
+                                                    $validity_reason = JText::_('REASON_IN_INCLUDED_SECTION_AND_CATEGORY');
+                                                    $valid = 1;
+                                                }
+                                            } elseif (!empty($excludedCategories)) {
+                                                //exclude this article if it is in one of the excluded categories
+                                                if (in_array($catid,$excludedCategories)) {
+                                                    $validity_reason = JText::_('REASON_IN_INCLUDED_SECTION_BUT_IN_EXCLUDED_CATEGORY');
+                                                } else {
+                                                    $validity_reason = JText::_('REASON_IN_INCLUDED_SECTION_NOT_IN_EXCLUDED_CATEGORY');
+                                                    $valid = 1;
+                                                }
+                                            } else {
+                                                //there are only specific sections to include with no applicable category stipulations
+                                                $validity_reason = JText::_('REASON_IN_INCLUDED_SECTION');
+                                                $valid = 1;
+                                            }
+                                        } elseif (!empty($excludedSections)) {
+                                            //there are section stipulations on what articles to exclude
+                                            //check to see if this article is in the excluded sections
+                                            $valid = (in_array($secid,$excludedSections)) ? 0 : 1;
+                                            if (!$valid) {
+                                                $validity_reason = JText::_('REASON_IN_EXCLUDED_SECTION');
+                                            } else {
+                                                $validity_reason = JText::_('REASON_NOT_IN_EXCLUDED_SECTION');
+                                            }
+
+                                            if ($excludedCategories) {
+                                                //exclude this article if it is in one of the excluded categories
+                                                $valid = (in_array($catid, $excludedCategories)) ? 0 : $valid;
+                                                if (!$valid) {
+                                                    $validity_reason = JText::_('REASON_IN_EXCLUDED_CATEGORY');
+                                                }
+                                            }
+                                        } elseif (!empty($includedCategories)) {
+                                            //there are category stipulations on what articles to include but no section stipulations
+                                            //check to see if this article is not in the selected categories
+                                            $valid = (!in_array($catid,$includedCategories)) ? 0 : 1;
+                                            if (!$valid) {
+                                                $validity_reason = JText::_('REASON_NOT_IN_INCLUDED_CATEGORY');
+                                            } else {
+                                                $validity_reason = JText::_('REASON_IN_INCLUDED_CATEGORY');
+                                            }
+                                        } elseif (!empty($excludedCategories)) {
+                                            //there are category stipulations on what articles to exclude but no exclude stipulations on section
+                                            //check to see if this article is in the excluded categories
+                                            $valid = (in_array($catid,$excludedCategories)) ? 0 : 1;
+                                            if (!$valid) {
+                                                $validity_reason = JText::_('REASON_IN_EXCLUDED_CATEGORY');
+                                            } else {
+                                                $validity_reason = JText::_('REASON_NOT_IN_EXCLUDED_CATEGORY');
+                                            }
+                                        } else {
+                                            $validity_reason = JText::_('REASON_NO_STIPULATIONS');
+                                            $valid = 1;
+                                        }
+                                    }
+                                } elseif ($this->option == 'com_k2') {
+                                    $includedCategories = $this->params->get("include_k2_categories");
+                                    if (!is_array($includedCategories)) {
+                                        $includedCategories = (empty($includedCategories)) ? array() : array($includedCategories);
+                                    }
+
+                                    $excludedCategories = $this->params->get("exclude_k2_categories");
+                                    if (!is_array($excludedCategories)) {
+                                        $excludedCategories = (empty($excludedCategories)) ? array() : array($excludedCategories);
+                                    }
+
+                                    $catid = $this->article->catid;
+                                    $cat_parentid = (!empty($this->article->category->parent)) ? $this->article->category->parent : 0;
+                                    $db = JFactory::getDBO();
+                                    static $k2_parent_cats;
+                                    if (!is_array($k2_parent_cats)) {
+                                        $k2_parent_cats = array();
+                                    }
+
+                                    if (!empty($includedCategories)) {
+                                        //check to see if the article's category is included
+                                        $valid = (in_array($catid, $includedCategories)) ? 1 : 0;
+                                        if ($valid) {
+                                            //its included
+                                            $validity_reason = JText::_('REASON_IN_INCLUDED_CATEGORY');
+                                        } elseif (!empty($cat_parentid)) {
+                                            $validity_reason = JText::_('REASON_IN_EXCLUDED_CATEGORY');
+
+                                            //see if a parent category is included
+                                            $parent_id = $cat_parentid;
+                                            while (true) {
+                                                if (!empty($parent_id)) {
+                                                    if (in_array($parent_id, $includedCategories)) {
+                                                        $valid = 1;
+                                                        $validity_reason = JText::_('REASON_IN_INCLUDED_CATEGORY_PARENT');
+                                                        break;
+                                                    } else {
+                                                        //get the parent's parent
+                                                        $query = "SELECT parent FROM #__k2_categories WHERE id = $parent_id";
+                                                        $db->setQuery($query);
+                                                        //keep going up
+                                                        $parent_id = $db->loadResult();
+                                                    }
+                                                } else {
+                                                    break;
+                                                }
+                                            }
+
+                                            //if valid, make sure the category is not in an exluded cat
+                                            if ($valid && !empty($excludedCategories)) {
+                                                if (in_array($catid, $excludedCategories)) {
+                                                    $validity_reason = JText::_('REASON_IN_EXCLUDED_CATEGORY');
+                                                }
+                                            }
+                                        }
+                                    } elseif (!empty($excludedCategories)) {
+                                        $valid = (!in_array($catid, $excludedCategories)) ? 1 : 0;
+                                        if ($valid) {
+                                            $validity_reason = JText::_('REASON_NOT_IN_EXCLUDED_CATEGORY');
+                                            $parent_id = $cat_parentid;
+                                            while (true) {
+                                                if (!empty($parent_id)) {
+                                                    if (in_array($parent_id, $excludedCategories)) {
+                                                        $validity_reason = JText::_('REASON_IN_EXCLUDED_CATEGORY_PARENT');
+                                                        break;
+                                                    } else {
+                                                        //get the parent's parent
+                                                        $query = "SELECT parent FROM #__k2_categories WHERE id = $parent_id";
+                                                        $parent_id = $db->setQuery($query);
+                                                    }
+                                                } else {
+                                                    break;
+                                                }
+                                            }
+                                        } else {
+                                            $validity_reason = JText::_('REASON_IN_EXCLUDED_CATEGORY');
+                                        }
+                                    } else {
+                                        $valid = 1;
+                                        $validity_reason = JText::_('REASON_NO_STIPULATIONS');
                                     }
                                 }
                             }
-                        } else {
-                            $validity_reason = JText::_('REASON_IN_EXCLUDED_CATEGORY');
-                        }
-            		} else {
-                        $validity_reason = JText::_('REASON_NO_STIPULATIONS');
-                        $valid = 1;
-            		}
-                } else {
-                    //section and category id of content
-                    $secid =& $this->article->sectionid;
-                    $catid =& $this->article->catid;
-
-                    //check to see if we have an uncategorized article
-                    if (empty($secid) && empty($catid)) {
-                        //does the admin want a thread generated?
-                        if ($this->params->get('include_static',false)) {
-                            return array(1, JText::_('REASON_INCLUDE_UNCATEGORIZED'));
-                        } else {
-                            return array(0, JText::_('REASON_DISCLUDE_UNCATEGORIZED'));
                         }
                     }
-
-                    //check to see if there are sections/categories that are specifically included/excluded
-                    $includedSections = $this->params->get("include_sections");
-                    if (!is_array($includedSections)) {
-                        $includedSections = (empty($includedSections)) ? array() : array($includedSections);
-                    }
-
-                    $includedCategories = $this->params->get("include_categories");
-                     if (!is_array($includedCategories)) {
-                        $includedCategories = (empty($includedCategories)) ? array() : array($includedCategories);
-                    }
-
-                    $excludedSections = $this->params->get("exclude_sections");
-                    if (!is_array($excludedSections)) {
-                        $excludedSections = (empty($excludedSections)) ? array() : array($excludedSections);
-                    }
-
-                    $excludedCategories = $this->params->get("exclude_categories");
-                    if (!is_array($excludedCategories)) {
-                        $excludedCategories = (empty($excludedCategories)) ? array() : array($excludedCategories);
-                    }
-
-                    //there are section stipulations on what articles to include
-                    if (!empty($includedSections)) {
-                        if (!in_array($secid,$includedSections)) {
-                            //this article is not in one of the sections to include
-                            $validity_reason = 'REASON_NOT_IN_INCLUDE_SECTION';
-                            $valid = 0;
-                        } elseif (!empty($includedCategories)) {
-                            //there are both specific sections and categories to include
-                            //check to see if this article is not in the selected categories within the included sections
-
-                            if (!in_array($catid,$includedCategories)) {
-                                $validity_reason = JText::_('REASON_IN_INCLUDED_SECTION_NOT_IN_INCLUDED_CATEGORY');
-                                $valid = 0;
-                            } else {
-                                $validity_reason = JText::_('REASON_IN_INCLUDED_SECTION_AND_CATEGORY');
-                                $valid = 1;
-                            }
-                        } elseif (!empty($excludedCategories)) {
-                            //exclude this article if it is in one of the excluded categories
-                            if (in_array($catid,$excludedCategories)) {
-                                $validity_reason = JText::_('REASON_IN_INCLUDED_SECTION_BUT_IN_EXCLUDED_CATEGORY');
-                                $valid = 0;
-                            } else {
-                                $validity_reason = JText::_('REASON_IN_INCLUDED_SECTION_NOT_IN_EXCLUDED_CATEGORY');
-                                $valid = 1;
-                            }
-                        } else {
-                            //there are only specific sections to include with no applicable category stipulations
-                            $validity_reason = JText::_('REASON_IN_INCLUDED_SECTION');
-                            $valid = 1;
-                        }
-                    } elseif (!empty($excludedSections)) {
-                        //there are section stipulations on what articles to exclude
-                        //check to see if this article is in the excluded sections
-                        $valid = (in_array($secid,$excludedSections)) ? 0 : 1;
-                        if (!$valid) {
-                            $validity_reason = JText::_('REASON_IN_EXCLUDED_SECTION');
-                        } else {
-                            $validity_reason = JText::_('REASON_NOT_IN_EXCLUDED_SECTION');
-                        }
-
-                        if ($excludedCategories) {
-                            //exclude this article if it is in one of the excluded categories
-                            $valid = (in_array($catid, $excludedCategories)) ? 0 : $valid;
-                            if (!$valid) {
-                                $validity_reason = JText::_('REASON_IN_EXCLUDED_CATEGORY');
-                            }
-                        }
-                    } elseif (!empty($includedCategories)) {
-                        //there are category stipulations on what articles to include but no section stipulations
-                        //check to see if this article is not in the selected categories
-                        $valid = (!in_array($catid,$includedCategories)) ? 0 : 1;
-                        if (!$valid) {
-                            $validity_reason = JText::_('REASON_NOT_IN_INCLUDED_CATEGORY');
-                        } else {
-                            $validity_reason = JText::_('REASON_IN_INCLUDED_CATEGORY');
-                        }
-                    } elseif (!empty($excludedCategories)) {
-                        //there are category stipulations on what articles to exclude but no exclude stipulations on section
-                        //check to see if this article is in the excluded categories
-                        $valid = (in_array($catid,$excludedCategories)) ? 0 : 1;
-                        if (!$valid) {
-                            $validity_reason = JText::_('REASON_IN_EXCLUDED_CATEGORY');
-                        } else {
-                            $validity_reason = JText::_('REASON_NOT_IN_EXCLUDED_CATEGORY');
-                        }
-                    } else {
-                        $validity_reason = JText::_('REASON_NO_STIPULATIONS');
-                        $valid = 1;
-                    }
-                }
-            } elseif ($this->option == 'com_k2') {
-                $includedCategories = $this->params->get("include_k2_categories");
-                if (!is_array($includedCategories)) {
-                    $includedCategories = (empty($includedCategories)) ? array() : array($includedCategories);
-                }
-
-                $excludedCategories = $this->params->get("exclude_k2_categories");
-                if (!is_array($excludedCategories)) {
-                    $excludedCategories = (empty($excludedCategories)) ? array() : array($excludedCategories);
-                }
-
-                $catid = $this->article->catid;
-                $cat_parentid = (!empty($this->article->category->parent)) ? $this->article->category->parent : 0;
-                $db = JFactory::getDBO();
-                static $k2_parent_cats;
-                if (!is_array($k2_parent_cats)) {
-                    $k2_parent_cats = array();
-                }
-
-                if (!empty($includedCategories)) {
-                    //check to see if the article's category is included
-                    $valid = (in_array($catid, $includedCategories)) ? 1 : 0;
-                    if ($valid) {
-                        //its included
-                        $validity_reason = JText::_('REASON_IN_INCLUDED_CATEGORY');
-                    } elseif (!empty($cat_parentid)) {
-                        $validity_reason = JText::_('REASON_IN_EXCLUDED_CATEGORY');
-
-                        //see if a parent category is included
-                        $stop = false;
-                        $parent_id = $cat_parentid;
-                        while (!$stop) {
-                            if (!empty($parent_id)) {
-                                if (in_array($parent_id, $includedCategories)) {
-                                    $stop = true;
-                                    $valid = 1;
-                                    $validity_reason = JText::_('REASON_IN_INCLUDED_CATEGORY_PARENT');
-                                } else {
-                                    //get the parent's parent
-                                    $query = "SELECT parent FROM #__k2_categories WHERE id = $parent_id";
-                                    $db->setQuery($query);
-                                    //keep going up
-                                    $parent_id = $db->loadResult();
-                                }
-                            } else {
-                                //at the top
-                                $stop = true;
-                            }
-                        }
-
-                        //if valid, make sure the category is not in an exluded cat
-                        if ($valid && !empty($excludedCategories)) {
-                            if (in_array($catid, $excludedCategories)) {
-                                $valid = 0;
-                                $validity_reason = JText::_('REASON_IN_EXCLUDED_CATEGORY');
-                            }
-                        }
-                    }
-                } elseif (!empty($excludedCategories)) {
-                    $valid = (!in_array($catid, $excludedCategories)) ? 1 : 0;
-                    if ($valid) {
-                        $validity_reason = JText::_('REASON_NOT_IN_EXCLUDED_CATEGORY');
-                        $stop = false;
-                        $parent_id = $cat_parentid;
-                        while (!$stop) {
-                            if (!empty($parent_id)) {
-                                if (in_array($parent_id, $excludedCategories)) {
-                                    $stop = true;
-                                    $valid = 0;
-                                    $validity_reason = JText::_('REASON_IN_EXCLUDED_CATEGORY_PARENT');
-                                } else {
-                                    //get the parent's parent
-                                    $query = "SELECT parent FROM #__k2_categories WHERE id = $parent_id";
-                                    $parent_id = $db->setQuery($query);
-                                }
-                            } else {
-                                //at the top
-                                $stop = true;
-                            }
-                        }
-                    } else {
-                        $validity_reason = JText::_('REASON_IN_EXCLUDED_CATEGORY');
-                    }
-                } else {
-                    $valid = 1;
-                    $validity_reason = JText::_('REASON_NO_STIPULATIONS');
                 }
             }
-
-            return array($valid, $validity_reason);
         }
+        return array($valid, $validity_reason);
     }
 
     public function _load_scripts()
@@ -660,7 +680,11 @@ class JFusionDiscussBotHelper {
         }
     }
 
-
+    /**
+     * @param $file
+     * @param string $mode
+     * @return bool|string
+     */
     public function _render_file($file, $mode = 'require')
     {
         $this->_debug('Rendering file ' . $file . ' in ' . $mode . ' mode');
@@ -682,6 +706,10 @@ class JFusionDiscussBotHelper {
         return false;
     }
 
+    /**
+     * @param $text
+     * @param bool $save
+     */
     public function _debug($text, $save = false)
     {
         if ($this->debug_mode) {
@@ -695,16 +723,28 @@ class JFusionDiscussBotHelper {
     }
 }
 
+/**
+ *
+ */
 class JFusionPagination extends JPagination {
     var $identifier = '';
 
+    /**
+     * @param int $total
+     * @param int $limitstart
+     * @param int $limit
+     * @param string $identifier
+     */
     public function __construct($total, $limitstart, $limit, $identifier = '')
     {
         $this->identifier = $identifier;
         parent::__construct($total, $limitstart, $limit);
     }
 
-	public function getPagesLinks()
+    /**
+     * @return string
+     */
+    public function getPagesLinks()
 	{
 		// Build the page navigation list
 		$data = $this->_buildDataObject();
@@ -770,7 +810,10 @@ class JFusionPagination extends JPagination {
 		}
 	}
 
-	public function getListFooter()
+    /**
+     * @return string
+     */
+    public function getListFooter()
 	{
 		$list = array();
 		$list['limit']			= $this->limit;
@@ -783,7 +826,10 @@ class JFusionPagination extends JPagination {
 		return $this->jfusion_list_footer($list);
 	}
 
-	public function getLimitBox()
+    /**
+     * @return mixed|string
+     */
+    public function getLimitBox()
 	{
 		$mainframe = JFactory::getApplication();
 
@@ -809,7 +855,11 @@ class JFusionPagination extends JPagination {
 		return $html;
 	}
 
-	public function jfusion_list_render($list)
+    /**
+     * @param $list
+     * @return null|string
+     */
+    public function jfusion_list_render($list)
 	{
 		// Initialize variables
 		$html = null;
@@ -830,7 +880,12 @@ class JFusionPagination extends JPagination {
 		return $html;
 	}
 
-	public function jfusion_list_footer($list)
+
+    /**
+     * @param $list
+     * @return string
+     */
+    public function jfusion_list_footer($list)
 	{
 		// Initialize variables
 		$html = "<div class=\"list-footer\">\n";
@@ -844,6 +899,10 @@ class JFusionPagination extends JPagination {
 		return $html;
 	}
 
+    /**
+     * @param $item
+     * @return string
+     */
     public function jfusion_item_active(&$item)
     {
     	if($item->base>0)
@@ -852,6 +911,11 @@ class JFusionPagination extends JPagination {
     		return "<a href=\"#\" title=\"".$item->text."\" onclick=\"javascript: document.jfusionPaginationForm.limitstart".$this->identifier.".value=0; document.jfusionPaginationForm.submit(); return false;\">".$item->text."</a>";
     }
 
+
+    /**
+     * @param $item
+     * @return string
+     */
     public function jfusion_item_inactive(&$item)
     {
         return "<span class=\"pagenav\">".$item->text."</span>";

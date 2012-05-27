@@ -604,8 +604,8 @@ class JFusionCurl
 	 * @param int    $expires         cookie expiry time
 	 * @param string $cookiepath      cookie path
 	 * @param string $cookiedomain    cookie domain
-	 * @param string $secure          secure
-	 * @param string $httponly        is the cookie http only
+	 * @param int $secure          secure
+	 * @param int $httponly        is the cookie http only
 	 * @param string $crossdomain_url cross domain url
 	 *
 	 * @return string nothing
@@ -634,9 +634,9 @@ class JFusionCurl
 	 * @param string $mycookies_to_set cookie value
 	 * @param string $cookiedomain     cookie domain
 	 * @param string $cookiepath       cookie path
-	 * @param string $expires          expires
-	 * @param string $secure           secure
-	 * @param string $httponly         is the cookie http only
+	 * @param int $expires          expires
+	 * @param int $secure           secure
+	 * @param int $httponly         is the cookie http only
 	 * @param string $crossdomain_url  cross domain url
 	 *
 	 * @return string nothing
@@ -695,8 +695,8 @@ class JFusionCurl
 	 * @param string $cookiedomain     cookie domain
 	 * @param string $cookiepath       cookie path
 	 * @param string $leavealone       leavealone
-	 * @param string $secure           secure
-	 * @param string $httponly         is the cookie http only
+	 * @param int $secure           secure
+	 * @param int $httponly         is the cookie http only
 	 * @param string $crossdomain_url  cross domain url
 	 *
 	 * @return string nothing
@@ -718,8 +718,8 @@ class JFusionCurl
 		// 0=> will keep all cookies that are not sessioncookies
 		// 0=0 will keep all cookies
 
+        $leavealonearr = array();
 		if (trim($leavealone)) {
-			$leavealonearr = array();
 			$lines = array();
 			$line=array();
 			$lines = explode(',', $leavealone);
@@ -756,7 +756,9 @@ class JFusionCurl
 			}
 			if (isset($cookie['expires'])) {
 				$expires_time=$cookie['expires'];
-			}
+			} else {
+                $expires_time = 0;
+            }
 			if (!$cookiepath) {
 				if (isset($cookie['path'])) {
 					$cookiepath=$cookie['path'];
@@ -770,6 +772,7 @@ class JFusionCurl
 			if ($name=='MOODLEID_') {
 				$status['cURL']['moodle'] = urldecode($cookie['value']['value']);
 			}
+
 			if (!$leaveit) {
 				$expires_time=time()-30*60;
 				$value = '';
@@ -797,7 +800,10 @@ class JFusionCurl
 	 * function ReadPage
 	 * This function will read a page of an integration
 	 * Caller should make sure that the Curl extension is loaded
+     *
 	 * @param array $curl_options curl options
+     * @param array &$status
+     * @param bool $curlinit
 	 *
 	 * @return string page read
 	 */
@@ -1137,8 +1143,9 @@ class JFusionCurl
 				break;
 		}
 
+        $input_username_name="";
+        $input_password_name = "";
 		if (empty($curl_options['logout'])){
-			$input_username_name="";
 			for ($i = 0; $i <= $elements_count-1; $i++) {
 				if ($curl_options['input_username_id']) {
 					if (strtolower($elements_keys[$i]) == strtolower($curl_options['input_username_id'])) {
@@ -1162,7 +1169,6 @@ class JFusionCurl
 				return $status;
 			}
 
-			$input_password_name = "";
 			for ($i = 0; $i <= $elements_count-1; $i++) {
 				if ($curl_options['input_password_id']) {
 					if (strtolower($elements_keys[$i]) == strtolower($curl_options['input_password_id'])) {

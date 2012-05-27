@@ -13,24 +13,29 @@
  * @link       http://www.jfusion.org
  */
 
-/**
- * Class that handles password encryption for phpBB3
- * 
- * @category   JFusion
- * @package    JFusionPlugins
- * @subpackage phpBB3
- * @author     JFusion Team <webmaster@jfusion.org>
- * @copyright  2008 JFusion. All rights reserved.
- * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
- * @link       http://www.jfusion.org
- */
 if (!class_exists('PasswordHash')) {
+    /**
+     * Class that handles password encryption for phpBB3
+     *
+     * @category   JFusion
+     * @package    JFusionPlugins
+     * @subpackage phpBB3
+     * @author     JFusion Team <webmaster@jfusion.org>
+     * @copyright  2008 JFusion. All rights reserved.
+     * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
+     * @link       http://www.jfusion.org
+     */
     class PasswordHash 
     {
         var $itoa64;
         var $iteration_count_log2;
         var $portable_hashes;
         var $random_state;
+
+        /**
+         * @param $iteration_count_log2
+         * @param $portable_hashes
+         */
         function PasswordHash($iteration_count_log2, $portable_hashes) {
             $this->itoa64 = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
             if ($iteration_count_log2 < 4 || $iteration_count_log2 > 31) $iteration_count_log2 = 8;
@@ -38,6 +43,11 @@ if (!class_exists('PasswordHash')) {
             $this->portable_hashes = $portable_hashes;
             $this->random_state = microtime() . getmypid();
         }
+
+        /**
+         * @param $count
+         * @return string
+         */
         function get_random_bytes($count) {
             $output = '';
             if (($fh = @fopen('/dev/urandom', 'rb'))) {
@@ -157,6 +167,11 @@ if (!class_exists('PasswordHash')) {
             while (1);
             return $output;
         }
+
+        /**
+         * @param $password
+         * @return string
+         */
         function HashPassword($password) {
             $random = '';
             if (CRYPT_BLOWFISH == 1 && !$this->portable_hashes) {

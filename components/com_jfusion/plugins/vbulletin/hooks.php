@@ -35,6 +35,12 @@ if (!isset($GLOBALS['db']) && !empty($db)) {
 class executeJFusionHook
 {
     var $vars;
+
+    /**
+     * @param $hook
+     * @param $vars
+     * @param string $key
+     */
     function executeJFusionHook($hook, &$vars, $key = '')
     {
         if ($hook != 'init_startup' && !defined('_VBJNAME') && empty($_POST['logintype'])) {
@@ -193,6 +199,8 @@ class executeJFusionHook
     }
     /**
      * HOOK FUNCTIONS
+     *
+     * @return bool
      */
     function album_picture_complete()
     {
@@ -202,6 +210,14 @@ class executeJFusionHook
         $this->vars['pictureurl'] = $tempURL;
         return true;
     }
+    /**
+     * global_complete
+     *
+     * @throws Exception
+     *
+     * @return void
+     */
+
     function global_complete()
     {
         if (!defined('_JEXEC')) {
@@ -257,8 +273,7 @@ class executeJFusionHook
             //run the api task
             global $vbulletin;
             $jfaction = new JFvBulletinTask($vbulletin, $this->key);
-            $response = $jfaction->performTask($_POST['jfvbtask']);
-            $jfaction->outputResponse($response);
+            $jfaction->performTask($_POST['jfvbtask']);
         } elseif (defined('_JEXEC')) {
             //If Joomla SEF is enabled, the dash in the logout hash gets converted to a colon which must be corrected
             global $vbulletin, $show, $vbsefenabled, $vbsefmode;
@@ -446,6 +461,10 @@ class executeJFusionHook
             $profileurlSet = true;
         }
     }
+
+    /**
+     * @return bool
+     */
     function redirect_generic()
     {
         global $baseURL;
@@ -568,6 +587,7 @@ class JFvBulletinTask {
     }
 
     function decryptApiData($data) {
+        $decrypted_data = array();
     	if (function_exists('mcrypt_decrypt')) {
 	        $decrypted_data = @unserialize(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $this->key, base64_decode($data), MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND)));
 	        if (!is_array($decrypted_data)) {

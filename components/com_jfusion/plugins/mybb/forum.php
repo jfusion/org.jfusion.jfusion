@@ -37,12 +37,28 @@ class JFusionForum_mybb extends JFusionForum {
     {
         return 'mybb';
     }
+
+    /**
+     * @param int $threadid
+     * @return string
+     */
     function getThreadURL($threadid) {
         return 'showthread.php?tid=' . $threadid;
     }
+
+    /**
+     * @param int $threadid
+     * @param int $postid
+     * @return string
+     */
     function getPostURL($threadid, $postid) {
         return 'showthread.php?tid=' . $threadid . '&amp;pid=' . $postid . '#pid' . $postid;
     }
+
+    /**
+     * @param int $uid
+     * @return string
+     */
     function getProfileURL($uid) {
         return 'member.php?action=profile&uid=' . $uid;
     }
@@ -91,6 +107,10 @@ class JFusionForum_mybb extends JFusionForum {
         }
         return array('unread' => 0, 'total' => 0);
     }
+
+    /**
+     * @return string
+     */
     function getPrivateMessageURL() {
         return 'private.php';
     }

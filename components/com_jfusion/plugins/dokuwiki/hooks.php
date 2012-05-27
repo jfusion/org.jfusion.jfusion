@@ -46,12 +46,21 @@ if (substr($source_path, -1) == DS) {
 class JFusionDokuWikiHook {
     /**
      * Register its handlers with the DokuWiki's event controller
+     *
+     * @param object &$controller
      */
     function register(&$controller) {
         $controller->register_hook('ACTION_SHOW_REDIRECT', 'BEFORE', $this, '_ACTION_SHOW_REDIRECT');
         $controller->register_hook('ACTION_ACT_PREPROCESS', 'BEFORE', $this, '_ACTION_ACT_PREPROCESS');
         $controller->register_hook('DOKUWIKI_STARTED', 'BEFORE', $this, '_DOKUWIKI_STARTED');
     }
+
+    /**
+     * Register its handlers with the DokuWiki's event controller
+     *
+     * @param object &$event
+     * @param object $param
+     */
     function _ACTION_SHOW_REDIRECT(&$event, $param) {
         /*
         $mainframe = JFactory::getApplication('site');

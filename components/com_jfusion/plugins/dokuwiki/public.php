@@ -48,6 +48,10 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
     function getRegistrationURL() {
         return 'doku.php?do=login';
     }
+
+    /**
+     * @return string
+     */
     function getLostPasswordURL() {
         return 'doku.php?do=resendpwd';
     }
@@ -151,6 +155,10 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
             JError::raiseWarning(500, 'Could not find DokuWiki in the specified directory');
         }
     }
+
+    /**
+     * @param object $data
+     */
     function parseBody(&$data) {
         $regex_body = array();
         $replace_body = array();
@@ -324,12 +332,13 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
     ***********************************************/
     /**
      * Retrieves the search results to be displayed.  Placed here so that plugins that do not use the database can retrieve and return results
-     * @param $text string text to be searched
-     * @param $phrase string how the search should be performed exact, all, or any
-     * @param $pluginParam custom plugin parameters in search.xml
-     * @param $linkMode what mode to use when creating the URL
+     * @param &$text string text to be searched
+     * @param &$phrase string how the search should be performed exact, all, or any
+     * @param &$pluginParam custom plugin parameters in search.xml
      * @param $itemid what menu item to use when creating the URL
+     *
      * @return array of results as objects
+     *
      * Each result should include:
      * $result->title = title of the post/article
      * $result->section = (optional) section of  the post/article (shows underneath the title; example is Forum Name / Thread Name)

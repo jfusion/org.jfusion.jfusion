@@ -57,7 +57,8 @@ if (JFusionFunction::isJoomlaVersion('1.7')) {
 }
 $document->addScript('components/com_jfusion/js/jfusion.js');
 // Require specific controller if requested
-if ($controller = JRequest::getWord('controller')) {
+$controller = JRequest::getWord('controller');
+if ($controller) {
     $path = JPATH_COMPONENT_ADMINISTRATOR . DS . 'controllers' . DS . $controller . '.php';
     if (file_exists($path)) {
         include_once $path;

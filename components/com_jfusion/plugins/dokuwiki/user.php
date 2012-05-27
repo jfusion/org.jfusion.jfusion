@@ -36,6 +36,11 @@ if (!class_exists('Dokuwiki')) {
  * @link       http://www.jfusion.org
  */
 class JFusionUser_dokuwiki extends JFusionUser {
+    /**
+     * @param object $userinfo
+     * @param int $overwrite
+     * @return array
+     */
     function updateUser($userinfo, $overwrite) {
         // Initialise some variables
         $params = JFusionFactory::getParams($this->getJname());
@@ -164,6 +169,11 @@ class JFusionUser_dokuwiki extends JFusionUser {
     {
         return 'dokuwiki';
     }
+
+    /**
+     * @param object $userinfo
+     * @return array
+     */
     function deleteUser($userinfo) {
         //setup status array to hold debug info and errors
         $status = array();
@@ -234,7 +244,7 @@ class JFusionUser_dokuwiki extends JFusionUser {
 			if ( version_compare($version, '2009-12-02 "Mulled Wine"') >= 0) {
 				$cookie_value = base64_encode($userinfo->username).'|'. $sticky . '|'.base64_encode($pass);
 			} else {
-				$cookie = base64_encode($userinfo->username.'|'.$sticky.'|'.$pass);
+                $cookie_value = base64_encode($userinfo->username.'|'.$sticky.'|'.$pass);
 			}
             $time = 60*60*24*365;
             $debug_expiration = date("Y-m-d H:i:s", time()+$time);

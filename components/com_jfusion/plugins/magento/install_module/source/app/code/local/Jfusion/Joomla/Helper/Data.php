@@ -10,15 +10,24 @@ class Jfusion_Joomla_Helper_Data extends Mage_Core_Helper_Data {
 
 	protected $_data;
 
-	function __construct() {
+    /**
+     *
+     */
+    function __construct() {
 		$this->_data = Mage::getStoreConfig ( 'joomla/joomlaconfig' );
 	}
 
-	function getBaseUrl(){
+    /**
+     * @return string
+     */
+    function getBaseUrl(){
 		return self::getJSecureBaseUrl();
 	}
-	
-	function getJSecureBaseUrl() {
+
+    /**
+     * @return string
+     */
+    function getJSecureBaseUrl() {
 	    if(!isset($this->_data["baseurl"])){
             Mage::throwException(Mage::helper('joomla')->__('The Joomla configuration has not been correctly defined.'));
         }
@@ -28,15 +37,21 @@ class Jfusion_Joomla_Helper_Data extends Mage_Core_Helper_Data {
     	}
     	return rtrim($this->_data ['baseurl'], '/') . '/';
 	}
-	
-	function getSecretKey(){
+
+    /**
+     * @return mixed
+     */
+    function getSecretKey(){
 	    if(!isset($this->_data['secret_key'])){
             Mage::throwException(Mage::helper('joomla')->__('The Joomla secret Key has not been defined in the configuration.'));
         }
         return $this->_data['secret_key'];
 	}
-	
-	function isCacheActivated(){
+
+    /**
+     * @return string
+     */
+    function isCacheActivated(){
 		return ($this->_data['cache'])?$this->_data['cache']:'';
 	}
 	

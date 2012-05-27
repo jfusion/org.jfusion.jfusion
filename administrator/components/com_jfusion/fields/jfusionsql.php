@@ -35,6 +35,7 @@ class JFormFieldjfusionsql extends JFormField
     public $type = "jfusionsql";
     /**
      * Get an element
+     *
      * @return string html
      */
     protected function getInput()
@@ -46,7 +47,7 @@ class JFormFieldjfusionsql extends JFormField
 		$multiple = ($this->element["multiple"]) ? " MULTIPLE " : "";
 		$add_default = $this->element['add_default'];
 		$key = ($this->element['key_field']) ? (string) $this->element['key_field'] : 'value';
-		$val = ($this->element['value_field']) ? (string) $this->element['value_field'] : $name;
+		$val = ($this->element['value_field']) ? (string) $this->element['value_field'] : '';
         $param_name = ($multiple) ? $this->formControl.'['.$this->group.']['.$this->fieldname.'][]' : $this->formControl.'['.$this->group.']['.$this->fieldname.']';
 
 		if(!empty($jname)) {
@@ -97,11 +98,11 @@ class JFormFieldjfusionsql extends JFormField
             		return JHTML::_('select.genericlist',  $results, $param_name, 'class="inputbox" '.$multiple, $key, $val, $this->value, $this->formControl.'_'.$this->group.'_'.$this->fieldname);
 		    	} else {
     				$db->setQuery($this->element['query']);
-    				if($results = $db->loadObjectList()) {
+                    $results = $db->loadObjectList();
+    				if($results) {
     					if(!empty($add_default)) {
     						array_unshift($results, JHTML::_('select.option', '', '- '.JText::_('SELECT_ONE').' -', $key, $val));
     					}
-
     					return JHTML::_('select.genericlist',  $results, $param_name, 'class="inputbox" '.$multiple, $key, $val, $this->value, $this->formControl.'_'.$this->group.'_'.$this->fieldname);
     				} else {
     					return "<span style='float:left; margin: 5px 0; font-weight: bold;'>" . $db->stderr() . "</span>";
@@ -115,7 +116,16 @@ class JFormFieldjfusionsql extends JFormField
         }
 	}
 
-	public static function buildRecursiveTree($id, $indent, $list, &$children, $level = 0)
+    /**
+     * @static
+     * @param $id
+     * @param $indent
+     * @param $list
+     * @param $children
+     * @param int $level
+     * @return mixed
+     */
+    public static function buildRecursiveTree($id, $indent, $list, &$children, $level = 0)
 	{
 	    if (@$children[$id]) {
     		foreach ($children[$id] as $v)

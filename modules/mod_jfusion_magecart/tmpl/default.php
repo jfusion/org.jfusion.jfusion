@@ -26,7 +26,7 @@ defined('_JEXEC') or die('Restricted access'); ?>
 
 <?php if($_cartQty && Mage::helper('checkout')->canOnepageCheckout()): ?>
 <div class="actions">
-	<button class="form-button" type="button" onclick="window.location.href='<?php echo Mage::helper('checkout/url')->getCheckoutUrl(); ?>';">
+	<button class="form-button" type="button" onclick="javascript:window.location.href='<?php echo Mage::helper('checkout/url')->getCheckoutUrl(); ?>';">
 	<span><?php echo JText::_('CHECKOUT') ?></span></button>
 </div>
 <?php endif ?>

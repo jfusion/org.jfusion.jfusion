@@ -27,6 +27,10 @@ defined('_JEXEC') or die('Restricted access');
  */
 class JFusionAuth_oscommerce extends JFusionAuth 
 {
+    /**
+     * @param array|object $userinfo
+     * @return string
+     */
     function generateEncryptedPassword($userinfo) {
         $params = JFusionFactory::getParams($this->getJname());
         $osCversion = $params->get('osCversion');

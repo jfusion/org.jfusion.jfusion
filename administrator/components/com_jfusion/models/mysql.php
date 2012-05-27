@@ -35,13 +35,19 @@ require_once JPATH_LIBRARIES . DS . 'joomla' . DS . 'database' . DS . 'database'
  */
 class JFusionMySQL extends JDatabaseMySQL
 {
+
+    /**
+     * @param array $options
+     */
     public function __construct($options){
         parent::__construct($options);
     }
     
     /**
      * added execute query as Joomla 1.6 has removed functions
-     * 
+     *
+     * @param string $query
+     *
      * @return string nothing
      */        
     function Execute($query)

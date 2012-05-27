@@ -27,6 +27,10 @@ defined('_JEXEC') or die('Restricted access');
  * @link       http://www.jfusion.org
  */
 class JFusionUser_mybb extends JFusionUser {
+    /**
+     * @param object $userinfo
+     * @return object
+     */
     function &getUser($userinfo) {
         //get the identifier
         list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'a.username', 'a.email');

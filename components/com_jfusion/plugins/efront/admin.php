@@ -109,6 +109,10 @@ class JFusionAdmin_efront extends JFusionAdmin
             return $params;
         }
     }
+
+    /**
+     * @return array
+     */
     function getUserList() {
         //getting the connection to the db
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -144,6 +148,10 @@ class JFusionAdmin_efront extends JFusionAdmin
         $no_users = $db->loadResult();
         return $no_users;
     }
+
+    /**
+     * @return array
+     */
     function getUsergroupList() {
          return JFusionEfrontHelper::getUsergroupList();
     }
@@ -165,6 +173,10 @@ class JFusionAdmin_efront extends JFusionAdmin
             return $result;
         }
     }
+
+    /**
+     * @return bool
+     */
     function allowEmptyCookiePath() {
         return true;
     }

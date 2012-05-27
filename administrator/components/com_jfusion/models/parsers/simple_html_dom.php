@@ -32,22 +32,40 @@ define('HDOM_INFO_ENDSPACE',7);
 
 // helper functions
 // -----------------------------------------------------------------------------
-// get html dom form file
+//
+/*
+ * get html dom form file
+ *
+ * @return \simple_html_dom
+ */
+/**
+ * @return \simple_html_dom
+ */
 function file_get_html() {
     $dom = new simple_html_dom;
     $args = func_get_args();
     $dom->load(call_user_func_array('file_get_contents', $args), true);
     return $dom;
 }
-
-// get html dom form string
+/**
+ * get html dom form string
+ *
+ * @param $str
+ * @param bool $lowercase
+ * @return \simple_html_dom
+ */
 function str_get_html($str, $lowercase=true) {
     $dom = new simple_html_dom;
     $dom->load($str, $lowercase);
     return $dom;
 }
-
-// dump html dom tree
+/**
+ * dump html dom tree
+ *
+ * @param $node
+ * @param bool $show_attr
+ * @param int $deep
+ */
 function dump_html_tree($node, $show_attr=true, $deep=0) {
     $lead = str_repeat('    ', $deep);
     echo $lead.$node->tag;
@@ -63,7 +81,11 @@ function dump_html_tree($node, $show_attr=true, $deep=0) {
         dump_html_tree($c, $show_attr, $deep+1);
 }
 
-// get dom form file (deprecated)
+/*
+ * get dom form file (deprecated)
+ *
+ * @return \simple_html_dom
+ */
 function file_get_dom() {
     $dom = new simple_html_dom;
     $args = func_get_args();
@@ -71,15 +93,23 @@ function file_get_dom() {
     return $dom;
 }
 
-// get dom form string (deprecated)
+/*
+ * get dom form string (deprecated)
+ *
+ * @param $str
+ * @param bool $lowercase
+ * @return \simple_html_dom
+ */
 function str_get_dom($str, $lowercase=true) {
     $dom = new simple_html_dom;
     $dom->load($str, $lowercase);
     return $dom;
 }
 
-// simple html dom node
-// -----------------------------------------------------------------------------
+
+/**
+ * simple html dom node
+ */
 class simple_html_dom_node {
     public $nodetype = HDOM_TYPE_TEXT;
     public $tag = 'text';
@@ -90,20 +120,31 @@ class simple_html_dom_node {
     public $_ = array();
     private $dom = null;
 
+    /**
+     * @param $dom
+     */
     function __construct($dom) {
         $this->dom = $dom;
         $dom->nodes[] = $this;
     }
-
+    /*
+    * destruct
+    */
     function __destruct() {
         $this->clear();
     }
 
+
+    /**
+     * @return string
+     */
     function __toString() {
         return $this->outertext();
     }
 
-    // clean up memory due to php5 circular references memory leak...
+    /*
+    * clean up memory due to php5 circular references memory leak...
+    */
     function clear() {
         $this->dom = null;
         $this->nodes = null;
@@ -111,36 +152,61 @@ class simple_html_dom_node {
         $this->children = null;
     }
 
-    // dump node's tree
+    /**
+     * dump node's tree
+     *
+     * @param bool $show_attr
+     */
     function dump($show_attr=true) {
         dump_html_tree($this, $show_attr);
     }
 
-    // returns the parent of node
+    /**
+     * returns the parent of node
+     *
+     * @return null
+     */
     function parent() {
         return $this->parent;
     }
 
-    // returns children of node
+    /**
+     * returns children of node
+     *
+     * @param $idx
+     * @return array|null
+     */
     function children($idx=-1) {
         if ($idx===-1) return $this->children;
         if (isset($this->children[$idx])) return $this->children[$idx];
         return null;
     }
 
-    // returns the first child of node
+    /**
+     * returns the first child of node
+     *
+     * @return null
+     */
     function first_child() {
         if (count($this->children)>0) return $this->children[0];
         return null;
     }
 
-    // returns the last child of node
+    /**
+     * returns the last child of node
+     *
+     * @return null
+     */
     function last_child() {
         if (($count=count($this->children))>0) return $this->children[$count-1];
         return null;
     }
 
-    // returns the next sibling of node
+    /**
+     * returns the next sibling of node
+     *
+     * @return null
+     */
     function next_sibling() {
         if ($this->parent===null) return null;
         $idx = 0;
@@ -151,7 +217,11 @@ class simple_html_dom_node {
         return $this->parent->children[$idx];
     }
 
-    // returns the previous sibling of node
+    /**
+     * returns the previous sibling of node
+     *
+     * @return null
+     */
     function prev_sibling() {
         if ($this->parent===null) return null;
         $idx = 0;
@@ -162,7 +232,11 @@ class simple_html_dom_node {
         return $this->parent->children[$idx];
     }
 
-    // get dom node's inner html
+    /**
+     * get dom node's inner html
+     *
+     * @return string
+     */
     function innertext() {
         if (isset($this->_[HDOM_INFO_INNER])) return $this->_[HDOM_INFO_INNER];
         if (isset($this->_[HDOM_INFO_TEXT])) return $this->dom->restore_noise($this->_[HDOM_INFO_TEXT]);
@@ -173,7 +247,11 @@ class simple_html_dom_node {
         return $ret;
     }
 
-    // get dom node's outer text (with tag)
+    /**
+     * get dom node's outer text (with tag)
+     *
+     * @return string
+     */
     function outertext() {
         if ($this->tag==='root') return $this->innertext();
 
@@ -201,7 +279,11 @@ class simple_html_dom_node {
         return $ret;
     }
 
-    // get dom node's plain text
+    /**
+     * get dom node's plain text
+     *
+     * @return string
+     */
     function text() {
         if (isset($this->_[HDOM_INFO_INNER])) return $this->_[HDOM_INFO_INNER];
         switch ($this->nodetype) {
@@ -218,6 +300,9 @@ class simple_html_dom_node {
         return $ret;
     }
 
+    /**
+     * @return mixed|string
+     */
     function xmltext() {
         $ret = $this->innertext();
         $ret = str_ireplace('<![CDATA[', '', $ret);
@@ -225,7 +310,11 @@ class simple_html_dom_node {
         return $ret;
     }
 
-    // build node's text with tag
+    /**
+     * build node's text with tag
+     *
+     * @return string
+     */
     function makeup() {
         // text, comment, unknown
         if (isset($this->_[HDOM_INFO_TEXT])) return $this->dom->restore_noise($this->_[HDOM_INFO_TEXT]);
@@ -258,6 +347,12 @@ class simple_html_dom_node {
     }
 
     // find elements by css selector
+    /*
+     * find
+     *
+     * @param string $selector
+     * @param string $idx
+     */
     function find($selector, $idx=null) {
         $selectors = $this->parse_selector($selector);
         if (($count=count($selectors))===0) return array();
@@ -299,7 +394,13 @@ class simple_html_dom_node {
         return (isset($found[$idx])) ? $found[$idx] : null;
     }
 
-    // seek for given conditions
+    /**
+     * seek for given conditions
+     *
+     * @param $selector
+     * @param $ret
+     * @return mixed
+     */
     protected function seek($selector, &$ret) {
         list($tag, $key, $val, $exp, $no_key) = $selector;
 
@@ -363,6 +464,12 @@ class simple_html_dom_node {
         }
     }
 
+    /**
+     * @param $exp
+     * @param $pattern
+     * @param $value
+     * @return bool|int
+     */
     protected function match($exp, $pattern, $value) {
         switch ($exp) {
             case '=':
@@ -381,6 +488,10 @@ class simple_html_dom_node {
         return false;
     }
 
+    /**
+     * @param $selector_string
+     * @return array
+     */
     protected function parse_selector($selector_string) {
         // pattern of CSS selectors, modified from mootools
         $pattern = "/([\w-:\*]*)(?:\#([\w-]+)|\.([\w-]+))?(?:\[@?(!?[\w-]+)(?:([!*^$]?=)[\"']?(.*?)[\"']?)?\])?([\/, ]+)/is";
@@ -418,6 +529,10 @@ class simple_html_dom_node {
         return $selectors;
     }
 
+    /**
+     * @param $name
+     * @return bool|mixed|string
+     */
     function __get($name) {
         if (isset($this->attr[$name])) return $this->attr[$name];
         switch($name) {
@@ -429,6 +544,11 @@ class simple_html_dom_node {
         }
     }
 
+    /**
+     * @param $name
+     * @param $value
+     * @return array
+     */
     function __set($name, $value) {
         switch($name) {
             case 'outertext': return $this->_[HDOM_INFO_OUTER] = $value;
@@ -443,6 +563,10 @@ class simple_html_dom_node {
         return $this->attr[$name] = $value;
     }
 
+    /**
+     * @param $name
+     * @return bool
+     */
     function __isset($name) {
         switch($name) {
             case 'outertext': return true;
@@ -453,31 +577,105 @@ class simple_html_dom_node {
         return (array_key_exists($name, $this->attr)) ? true : isset($this->attr[$name]);
     }
 
+    /**
+     * @param $name
+     */
     function __unset($name) {
         if (isset($this->attr[$name]))
             unset($this->attr[$name]);
     }
 
-    // camel naming conventions
+    /**
+     * camel naming conventions
+     *
+     * @return array
+     */
     function getAllAttributes() {return $this->attr;}
+
+    /**
+     * @param $name
+     * @return bool|mixed|string
+     */
     function getAttribute($name) {return $this->__get($name);}
+
+    /**
+     * @param $name
+     * @param $value
+     */
     function setAttribute($name, $value) {$this->__set($name, $value);}
+
+    /**
+     * @param $name
+     * @return bool
+     */
     function hasAttribute($name) {return $this->__isset($name);}
+
+    /**
+     * @param $name
+     */
     function removeAttribute($name) {$this->__set($name, null);}
+
+    /**
+     * @param $id
+     * @return array|null
+     */
     function getElementById($id) {return $this->find("#$id", 0);}
+
+    /**
+     * @param $id
+     * @param null $idx
+     * @return array|null
+     */
     function getElementsById($id, $idx=null) {return $this->find("#$id", $idx);}
+
+    /**
+     * @param $name
+     * @return array|null
+     */
     function getElementByTagName($name) {return $this->find($name, 0);}
+
+    /**
+     * @param $name
+     * @param null $idx
+     * @return array|null
+     */
     function getElementsByTagName($name, $idx=null) {return $this->find($name, $idx);}
+
+    /**
+     * @return null
+     */
     function parentNode() {return $this->parent();}
+
+    /**
+     * @param $idx
+     * @return array|null
+     */
     function childNodes($idx=-1) {return $this->children($idx);}
+
+    /**
+     * @return null
+     */
     function firstChild() {return $this->first_child();}
+
+    /**
+     * @return null
+     */
     function lastChild() {return $this->last_child();}
+
+    /**
+     * @return null
+     */
     function nextSibling() {return $this->next_sibling();}
+
+    /**
+     * @return null
+     */
     function previousSibling() {return $this->prev_sibling();}
 }
 
-// simple html dom parser
-// -----------------------------------------------------------------------------
+/**
+ * simple html dom parser
+ */
 class simple_html_dom {
     public $root = null;
     public $nodes = array();
@@ -509,6 +707,9 @@ class simple_html_dom {
         'nobr'=>array('nobr'=>1),
     );
 
+    /**
+     * @param null $str
+     */
     function __construct($str=null) {
         if ($str) {
             if (preg_match("/^http:\/\//i",$str) || is_file($str))
@@ -522,7 +723,12 @@ class simple_html_dom {
         $this->clear();
     }
 
-    // load html from string
+    /**
+     * load html from string
+     *
+     * @param $str
+     * @param bool $lowercase
+     */
     function load($str, $lowercase=true) {
         // prepare
         $this->prepare($str, $lowercase);
@@ -555,7 +761,11 @@ class simple_html_dom {
         $this->load(call_user_func_array('file_get_contents', $args), true);
     }
 
-    // set callback function
+    /**
+     * set callback function
+     *
+     * @param $function_name
+     */
     function set_callback($function_name) {
         $this->callback = $function_name;
     }
@@ -565,14 +775,25 @@ class simple_html_dom {
         $this->callback = null;
     }
 
-    // save dom as string
+    /*
+     * save dom as string
+     *
+     * @param string $filepath
+     * @return mixed
+     */
     function save($filepath='') {
         $ret = $this->root->innertext();
         if ($filepath!=='') file_put_contents($filepath, $ret);
         return $ret;
     }
 
-    // find dom node by css selector
+    /**
+     * find dom node by css selector
+     *
+     * @param $selector
+     * @param null $idx
+     * @return mixed
+     */
     function find($selector, $idx=null) {
         return $this->root->find($selector, $idx);
     }
@@ -586,11 +807,19 @@ class simple_html_dom {
         unset($this->noise);
     }
 
+    /**
+     * @param bool $show_attr
+     */
     function dump($show_attr=true) {
         $this->root->dump($show_attr);
     }
 
-    // prepare HTML data and init everything
+    /*
+     * prepare HTML data and init everything
+     *
+     * @param $str
+     * @param bool $lowercase
+     */
     protected function prepare($str, $lowercase=true) {
         $this->clear();
         $this->doc = $str;
@@ -609,7 +838,11 @@ class simple_html_dom {
         if ($this->size>0) $this->char = $this->doc[0];
     }
 
-    // parse html content
+    /*
+     * parse html content
+     *
+     * @return bool
+     */
     protected function parse() {
         if (($s = $this->copy_until_char('<'))==='')
             return $this->read_tag();
@@ -622,7 +855,11 @@ class simple_html_dom {
         return true;
     }
 
-    // read tag info
+    /**
+     * read tag info
+     *
+     * @return bool
+     */
     protected function read_tag() {
         if ($this->char!=='<') {
             $this->root->_[HDOM_INFO_END] = $this->cursor;
@@ -711,7 +948,8 @@ class simple_html_dom {
         }
 
         // text
-        if ($pos=strpos($tag, '<')!==false) {
+        $pos=strpos($tag, '<');
+        if ($pos!==false) {
             $tag = '<' . substr($tag, 0, -1);
             $node->_[HDOM_INFO_TEXT] = $tag;
             $this->link_nodes($node, false);
@@ -819,7 +1057,13 @@ class simple_html_dom {
         return true;
     }
 
-    // parse attributes
+    /**
+     * parse attributes
+     *
+     * @param $node
+     * @param $name
+     * @param $space
+     */
     protected function parse_attr($node, $name, &$space) {
         $space[2] = $this->copy_skip($this->token_blank);
         switch($this->char) {
@@ -841,7 +1085,12 @@ class simple_html_dom {
         }
     }
 
-    // link node's parent
+    /*
+     * link node's parent
+     *
+     * @param $node
+     * @param $is_child
+     */
     protected function link_nodes(&$node, $is_child) {
         $node->parent = $this->parent;
         $this->parent->nodes[] = $node;
@@ -849,7 +1098,12 @@ class simple_html_dom {
             $this->parent->children[] = $node;
     }
 
-    // as a text node
+    /**
+     * as a text node
+     *
+     * @param $tag
+     * @return bool
+     */
     protected function as_text_node($tag) {
         $node = new simple_html_dom_node($this);
         ++$this->cursor;
@@ -859,11 +1113,18 @@ class simple_html_dom {
         return true;
     }
 
+    /**
+     * @param $chars
+     */
     protected function skip($chars) {
         $this->pos += strspn($this->doc, $chars, $this->pos);
         $this->char = ($this->pos<$this->size) ? $this->doc[$this->pos] : null; // next
     }
 
+    /**
+     * @param $chars
+     * @return string
+     */
     protected function copy_skip($chars) {
         $pos = $this->pos;
         $len = strspn($this->doc, $chars, $pos);
@@ -873,6 +1134,10 @@ class simple_html_dom {
         return substr($this->doc, $pos, $len);
     }
 
+    /**
+     * @param $chars
+     * @return string
+     */
     protected function copy_until($chars) {
         $pos = $this->pos;
         $len = strcspn($this->doc, $chars, $pos);
@@ -881,6 +1146,10 @@ class simple_html_dom {
         return substr($this->doc, $pos, $len);
     }
 
+    /**
+     * @param $char
+     * @return string
+     */
     protected function copy_until_char($char) {
         if ($this->char===null) return '';
 
@@ -898,6 +1167,10 @@ class simple_html_dom {
         return substr($this->doc, $pos_old, $pos-$pos_old);
     }
 
+    /**
+     * @param $char
+     * @return string
+     */
     protected function copy_until_char_escape($char) {
         if ($this->char===null) return '';
 
@@ -925,7 +1198,12 @@ class simple_html_dom {
         return '';
     }
 
-    // remove noise from html content
+    /**
+     * remove noise from html content
+     *
+     * @param $pattern
+     * @param bool $remove_tag
+     */
     protected function remove_noise($pattern, $remove_tag=false) {
         $count = preg_match_all($pattern, $this->doc, $matches, PREG_SET_ORDER|PREG_OFFSET_CAPTURE);
 
@@ -941,7 +1219,12 @@ class simple_html_dom {
         if ($this->size>0) $this->char = $this->doc[0];
     }
 
-    // restore noise to html content
+    /*
+     * restore noise to html content
+     *
+     * @param $text
+     * @return string
+     */
     function restore_noise($text) {
         while(($pos=strpos($text, '___noise___'))!==false) {
             $key = '___noise___'.$text[$pos+11].$text[$pos+12].$text[$pos+13];
@@ -955,6 +1238,10 @@ class simple_html_dom {
         return $this->root->innertext();
     }
 
+    /**
+     * @param $name
+     * @return string
+     */
     function __get($name) {
         switch($name) {
             case 'outertext': return $this->root->innertext();
@@ -964,13 +1251,48 @@ class simple_html_dom {
         return '';
     }
 
-    // camel naming conventions
+    /**
+     * camel naming conventions
+     *
+     * @param $idx
+     * @return mixed
+     */
     function childNodes($idx=-1) {return $this->root->childNodes($idx);}
+
+    /**
+     * @return mixed
+     */
     function firstChild() {return $this->root->first_child();}
+
+    /**
+     * @return mixed
+     */
     function lastChild() {return $this->root->last_child();}
+
+    /**
+     * @param $id
+     * @return mixed
+     */
     function getElementById($id) {return $this->find("#$id", 0);}
+
+    /**
+     * @param $id
+     * @param null $idx
+     * @return mixed
+     */
     function getElementsById($id, $idx=null) {return $this->find("#$id", $idx);}
+
+    /**
+     * @param $name
+     * @return mixed
+     */
     function getElementByTagName($name) {return $this->find($name, 0);}
+
+    /**
+     * @param $name
+     * @param $idx
+     * @return mixed
+     */
     function getElementsByTagName($name, $idx=-1) {return $this->find($name, $idx);}
     function loadFile() {$args = func_get_args();$this->load(call_user_func_array('file_get_contents', $args), true);}
 }

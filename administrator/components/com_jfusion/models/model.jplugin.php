@@ -60,6 +60,8 @@ class JFusionJplugin
     /**
      * Returns the registration URL for the integrated software
      *
+     * @param string $jname
+     *
      * @return string registration URL
      */
     public static function getRegistrationURL($jname='joomla_int')
@@ -74,6 +76,8 @@ class JFusionJplugin
     /**
      * Returns the lost password URL for the integrated software
      *
+     * @param string $jname
+     *
      * @return string lost password URL
      */
     public static function getLostPasswordURL($jname='joomla_int')
@@ -87,6 +91,8 @@ class JFusionJplugin
 
     /**
      * Returns the lost username URL for the integrated software
+     *
+     * @param string $jname
      *
      * @return string lost username URL
      */
@@ -292,11 +298,13 @@ class JFusionJplugin
      *
      * @param object $userinfo userinfo
      * @param object $options  options
-     * @param object $jname    jname
+     * @param string $jname    jname
+     * @param string $type    jname
+     * @param array $curl_options_merge
      *
      * @return string nothing
      */
-    public static function createSession($userinfo, $options, $jname, $type = "brute_force",$curl_options_merge=null)
+    public static function createSession($userinfo, $options, $jname, $type = "brute_force",$curl_options_merge=array())
     {
         global $ch;
         global $cookiearr;
@@ -449,10 +457,11 @@ class JFusionJplugin
      * @param array  $options  contains Array with the login options, such as remember_me
      * @param string $jname    jname
      * @param string $type     method of destruction
+     * @param array $curl_options_merge
      *
      * @return array result Array containing the result of the session destroy
      */
-    public static function destroySession($userinfo, $options, $jname, $type = "brute_force",$curl_options_merge=null)
+    public static function destroySession($userinfo, $options, $jname, $type = "brute_force",$curl_options_merge=array())
     {
         global $ch;
         global $cookiearr;
@@ -1295,7 +1304,7 @@ class JFusionJplugin
      * @param object &$existinguser     Object containg the old userinfo
      * @param array  &$status           Array containing the errors and result of the function
      * @param string $jname             jname
-     * @param int    $fire_user_plugins needs more detail
+     * @param bool $fire_user_plugins needs more detail
      *
      * @return string updates are passed on into the $status array
      */
@@ -1308,6 +1317,7 @@ class JFusionJplugin
         }
         $db = & JFusionFactory::getDatabase($jname);
         $params = & JFusionFactory::getParams($jname);
+        $dispatcher = & JDispatcher::getInstance();
 
 		$groups = JFusionFunction::getCorrectUserGroups($jname,$userinfo);
         //make sure the group exists
@@ -1318,7 +1328,6 @@ class JFusionJplugin
 				$old = new JUser($existinguser->userid);
 				//Fire the onBeforeStoreUser event.
 				JPluginHelper::importPlugin('user');
-				$dispatcher = & JDispatcher::getInstance();
 				$dispatcher->trigger('onBeforeStoreUser', array($old->getProperties(), false));
 			}
 

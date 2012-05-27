@@ -1,4 +1,15 @@
 <?php
+/**
+ * cssparser class
+ *
+ * @category   JFusion
+ * @package    Parser
+ * @subpackage cssparser
+ * @author     JFusion Team <webmaster@jfusion.org>
+ * @copyright  2008 JFusion. All rights reserved.
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @link       http://www.jfusion.org
+ */
 class cssparser {
 	var $css = array();
 	var $media = array();
@@ -10,7 +21,10 @@ class cssparser {
 	var $regex = array();
 	var $replace = array();
 
-	function cssparser($prefix = null) {
+    /**
+     * @param null $prefix
+     */
+    function cssparser($prefix = null) {
 		$this->prefix = $prefix;
 	    $this->Clear();
 	}
@@ -22,11 +36,19 @@ class cssparser {
     	$this->media = array();
 	}
 
-	function SetUrl($url) {
+    /**
+     * @param $url
+     */
+    function SetUrl($url) {
 		$this->url = $url;
 	}
 
-	function Add($key, $codestr) {
+    /**
+     * @param $key
+     * @param $codestr
+     * @return mixed
+     */
+    function Add($key, $codestr) {
 		if(!isset($this->css[$key])) {
 			$this->css[$key] = array();
 		}
@@ -52,7 +74,12 @@ class cssparser {
 		}
 	}
 
-	function Get($key, $property) {
+    /**
+     * @param $key
+     * @param $property
+     * @return string
+     */
+    function Get($key, $property) {
 		$key = strtolower($key);
 		$property = strtolower($property);
 
@@ -90,7 +117,11 @@ class cssparser {
 		return $result;
 	}
 
-	function GetSection($key) {
+    /**
+     * @param $key
+     * @return array
+     */
+    function GetSection($key) {
     	$key = strtolower($key);
 
 		list($tag, $subtag) = explode(":",$key);
@@ -127,7 +158,11 @@ class cssparser {
 		return $result;
 	}
 
-	function ParseStr($str) {
+    /**
+     * @param $str
+     * @return bool
+     */
+    function ParseStr($str) {
 		$this->Clear();
 
 		$this->modifyContent($str);
@@ -191,7 +226,11 @@ class cssparser {
 		return (count($this->css) > 0);
 	}
 
-	function Parse($filename) {
+    /**
+     * @param $filename
+     * @return bool
+     */
+    function Parse($filename) {
     	$this->Clear();
 		if(file_exists($filename)) {
 			return $this->ParseStr(file_get_contents($filename));
@@ -200,7 +239,11 @@ class cssparser {
 		}
 	}
 
-	function ParseUrl($url) {
+    /**
+     * @param $url
+     * @return bool
+     */
+    function ParseUrl($url) {
     	$this->Clear();
 
 		$this->url = htmlspecialchars_decode($url);
@@ -217,7 +260,10 @@ class cssparser {
 		}
 	}
 
-	function GetCSS() {
+    /**
+     * @return string
+     */
+    function GetCSS() {
 		$result = "";
 		foreach($this->css as $key => $values) {
 			if (strpos($key, '@') === false ) {
@@ -252,7 +298,11 @@ class cssparser {
 		return $result;
 	}
 
-	function modifyContent(&$content) {
+    /**
+     * @param $content
+     * @return mixed|string
+     */
+    function modifyContent(&$content) {
     	//Remove comments
 		$content = preg_replace("#\/\*(?!\*\/)(.*?)\*\/#si", "", $content);
 		$content = str_replace('<!--', '', $content);

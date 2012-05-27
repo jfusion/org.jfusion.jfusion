@@ -17,11 +17,18 @@ defined('_JEXEC' ) or die('Restricted access' );
  */
 class JFusionAuth_universal extends JFusionAuth {
 
+    /**
+     * @return string
+     */
     function getJname()
     {
         return 'universal';
     }
 
+    /**
+     * @param array|object $userinfo
+     * @return string
+     */
     function generateEncryptedPassword($userinfo)
     {
         $params = JFusionFactory::getParams($this->getJname());

@@ -38,9 +38,17 @@ class JFusionPublic_magento extends JFusionPublic {
     {
         return 'magento';
     }
+
+    /**
+     * @return string
+     */
     function getRegistrationURL() {
         return 'index.php/customer/account/create/';
     }
+
+    /**
+     * @return string
+     */
     function getLostPasswordURL() {
         return 'index.php/customer/account/forgotpassword/';
     }

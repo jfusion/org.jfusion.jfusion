@@ -174,8 +174,8 @@ class plgSystemJfusion extends JPlugin
 		$JLang = JFactory::getLanguage ();
 		$session = JFactory::getSession ();
 		$oldlang = $session->get ( 'oldlang' );
-		if (! isset ( $oldlang ) || $oldlang != $JLang->_lang) {
-			$session->set ( 'oldlang', $JLang->_lang );
+		if (! isset ( $oldlang ) || $oldlang != $JLang->getTag()) {
+			$session->set ( 'oldlang', $JLang->getTag() );
 			// The instance of the user is not obligatory. Without to be logged, the user can change the language of the integrated softwares
 			// if those implement it.
 			$userinfo = JFactory::getUser ();

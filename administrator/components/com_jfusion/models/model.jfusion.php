@@ -70,7 +70,7 @@ class JFusionFunction
 	 * By default, returns the JFusion plugin of the software that is currently the slave of user management, minus the joomla_int plugin.
 	 * If activity, search, or discussion is passed in, returns the plugins with that feature enabled
 	 *
-	 * @param array $criteria the type of plugins to retrieve
+	 * @param string $criteria the type of plugins to retrieve
 	 *
 	 * @return object plugin details
 	 */
@@ -92,19 +92,21 @@ class JFusionFunction
 			default:
 				return false;
 		}
-		$plugins =& ${
-			$criteria . "_plugins"};
-			if (empty($plugins)) {
-				$query = "SELECT * FROM #__jfusion WHERE ($criteria = 1 AND status = 1 AND name NOT LIKE 'joomla_int')";
-				$db = JFactory::getDBO();
-				$db->setQuery($query);
-				$plugins = $db->loadObjectList();
-			}
-			return $plugins;
+		$plugins =& ${$criteria."_plugins"};
+        if (empty($plugins)) {
+            $query = "SELECT * FROM #__jfusion WHERE ($criteria = 1 AND status = 1 AND name NOT LIKE 'joomla_int')";
+            $db = JFactory::getDBO();
+            $db->setQuery($query);
+            $plugins = $db->loadObjectList();
+        }
+        return $plugins;
 	}
 	
     /**
      * Changes plugin status in both Joomla 1.5 and Joomla 1.6
+     *
+     * @param string $element
+     * @param string $folder
      *
      * @return object master details
      */
@@ -457,8 +459,8 @@ class JFusionFunction
      * @param int    $expires_time cookie expiry time
      * @param string $cookiepath   cookie path
      * @param string $cookiedomain cookie domain
-     * @param string $secure       is the secute
-     * @param string $httponly     is the cookie http only
+     * @param bool $secure       is the secute
+     * @param bool $httponly     is the cookie http only
      *
      * @return string nothing
      */
@@ -547,10 +549,13 @@ class JFusionFunction
 
 	/**
 	 * Updates the discussion bot lookup table
-	 * @param $contentid
-	 * @param $threadinfo object with postid, threadid, and forumid
-	 * @param $jname
-	 * @param $published
+	 * @param int $contentid
+	 * @param mixed &$threadinfo object with postid, threadid, and forumid
+     * @param string $jname
+	 * @param int $published
+	 * @param int $manual
+     *
+     * @return void
 	 */
 	public static function updateDiscussionBotLookup($contentid, &$threadinfo, $jname, $published = 1, $manual = 0)
 	{
@@ -679,9 +684,10 @@ class JFusionFunction
      * character_limit - if $to==html OR $to==plaintext, limits the number of visible characters to the user
      * plaintext_line_breaks - if $to=='plaintext', should line breaks when converting to plaintext be replaced with <br /> (br) (default), converted to spaces (space), or left as \n (n)
      * plain_tags - if $to=='plaintext', array of custom bbcode tags (without brackets) that should be stripped
+     *
      * @param string $text    the actual text
      * @param string $to      what to convert the text to; bbcode, html, or plaintext
-     * @param array  $options array with parser options
+     * @param mixed  $options array with parser options
      *
      * @return string with converted text
      */
@@ -865,7 +871,10 @@ class JFusionFunction
      * Used by the JFusionFunction::parseCode function to parse various tags when parsing to bbcode.
      * For example, some Joomla editors like to use an empty paragraph tag for line breaks which gets
      * parsed into a lot of unnecesary line breaks
-     * @param $matches mixed values from preg functions
+     *
+     * @param mixed $matches mixed values from preg functions
+     * @param string $tag
+     *
      * @return string to replace search subject with
      */
     public static function parseTag($matches, $tag = 'p')
@@ -895,6 +904,8 @@ class JFusionFunction
 
     /**
      * Reconnects Joomla DB if it gets disconnected
+     *
+     * @param bool $forceReload
      *
      * @return string nothing
      */
@@ -1375,6 +1386,14 @@ class JFusionFunction
 		return false;
     }
 
+    /**
+     * @static
+     * @param $extension
+     * @param $type
+     * @param $name
+     * @param null $basePath
+     * @return bool
+     */
     public static function loadLanguage($extension,$type,$name, $basePath = null){
 		$extension = $extension.'_'.$type.'_'.$name;
     	if(JFusionFunction::isJoomlaVersion('1.6')) {
@@ -1397,15 +1416,15 @@ class JFusionFunction
         return false;
     }
 
-    /*
+    /**
      * Convert a utf-8 joomla string in to a valid encoding matching the table/filed it will be sent to
      *
-     * @param string $string string to convert
-     * @param string $jname used to get the database object, and point to the static stored data
-     * @param string $table table that we will be looking at
-     * @param string $field field that we will be looking at
-     *
-     * @return string converted string
+     * @static
+     * @param $string string to convert
+     * @param $jname used to get the database object, and point to the static stored data
+     * @param $table table that we will be looking at
+     * @param $field field that we will be looking at
+     * @return bool|string
      */
     public static function encodeDBString($string, $jname, $table, $field) {
         static $data;
@@ -1453,33 +1472,63 @@ class JFusionFunction
             }
         }
         return $string;
-    }  
+    }
 
+    /**
+     * @static
+     * @param $matches
+     * @return string
+     */
     public static function _callback_htmlspecialchars($matches)
     {
         return htmlspecialchars($matches[1], ENT_QUOTES, 'UTF-8');
     }
 
+    /**
+     * @static
+     * @param $matches
+     * @return string
+     */
     public static function _callback_code($matches)
     {
         return '[code]'.htmlspecialchars($matches[2], ENT_QUOTES, 'UTF-8').'[/code]';
     }
 
+    /**
+     * @static
+     * @param $matches
+     * @return string
+     */
     public static function _callback_code_decode($matches)
     {
         return '[code]'.htmlspecialchars_decode($matches[1], ENT_QUOTES).'[/code]';
     }
 
+    /**
+     * @static
+     * @param $matches
+     * @return string
+     */
     public static function _callback_parseTag_img($matches)
     {
         return '[img]'.JFusionFunction::parseTag($matches[1],'img').'[/img]';
     }
 
+    /**
+     * @static
+     * @param $matches
+     * @return string
+     */
     public static function _callback_parseTag_p($matches)
     {
         return JFusionFunction::parseTag($matches[1], 'p');
     }
 
+    /**
+     * @static
+     * @param $matches
+     * @return string
+     */
     public static function _callback_url($matches)
     {
     	return '[url='.JRoute::_(JFusionFunction::getJoomlaURL().$matches[1]).']'.$matches[2].'[/url]';

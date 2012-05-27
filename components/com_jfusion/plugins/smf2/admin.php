@@ -262,7 +262,7 @@ var form = document.adminForm;
 form.customcommand.value = action;
 form.action.value = 'apply';
 submitform('saveconfig');
-
+return;
 }
 
 //-->

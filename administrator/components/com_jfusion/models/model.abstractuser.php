@@ -56,7 +56,7 @@ class JFusionUser
      * @param object &$userinfo    object with user identifing information
      * @param string $username_col Database column for username
      * @param string $email_col    Database column for email
-     * @param string $lowerEmail   Boolean to lowercase emails for comparison
+     * @param bool $lowerEmail   Boolean to lowercase emails for comparison
      *
      * @return array($identifier, $identifier_type)
      */
@@ -73,40 +73,41 @@ class JFusionUser
         }
         $identifier = $userinfo; // saves some codelines, only change if userinfo is an object
         switch ($login_identifier) {
-        case 1:
-            // username
-            if (is_object($userinfo)) {
-                $identifier = $userinfo->username;
-            }
-            $identifier_type = $username_col;
-            break;
-        case 2:
-            // email
-            if (is_object($userinfo)) {
-                $identifier = $userinfo->email;
-            }
-            $identifier_type = $email_col;
-            break;
-        case 3:
-            // username or email
-            if (!is_object($userinfo)) {
-                $pattern = "/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/i";
-                if (preg_match($pattern, $identifier)) {
-                    $identifier_type = $email_col;
-                } else {
-                    $identifier_type = $username_col;
-                }
-            } else {
-                $pattern = "/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/i";
-                if (preg_match($pattern, $userinfo->username)) {
-                    $identifier_type = $email_col;
-                    $identifier = $userinfo->email;
-                } else {
-                    $identifier_type = $username_col;
+            default:
+            case 1:
+                // username
+                if (is_object($userinfo)) {
                     $identifier = $userinfo->username;
                 }
-            }
-            break;
+                $identifier_type = $username_col;
+                break;
+            case 2:
+                // email
+                if (is_object($userinfo)) {
+                    $identifier = $userinfo->email;
+                }
+                $identifier_type = $email_col;
+                break;
+            case 3:
+                // username or email
+                if (!is_object($userinfo)) {
+                    $pattern = "/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/i";
+                    if (preg_match($pattern, $identifier)) {
+                        $identifier_type = $email_col;
+                    } else {
+                        $identifier_type = $username_col;
+                    }
+                } else {
+                    $pattern = "/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/i";
+                    if (preg_match($pattern, $userinfo->username)) {
+                        $identifier_type = $email_col;
+                        $identifier = $userinfo->email;
+                    } else {
+                        $identifier_type = $username_col;
+                        $identifier = $userinfo->username;
+                    }
+                }
+                break;
         }
         if ($lowerEmail && $identifier_type == $email_col) {
             $identifier_type = "LOWER($identifier_type)";

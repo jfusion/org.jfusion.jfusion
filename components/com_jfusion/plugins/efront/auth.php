@@ -27,6 +27,10 @@ defined('_JEXEC') or die('Restricted access');
  */
 class JFusionAuth_efront extends JFusionAuth
 {
+    /**
+     * @param array|object $userinfo
+     * @return string
+     */
     function generateEncryptedPassword($userinfo) {
         $params = JFusionFactory::getParams($this->getJname());
         $md5_key = $params->get('md5_key');

@@ -30,6 +30,16 @@ class JElementDiscussionBotParam extends JElement
 	 */
 	var	$_name = 'DiscussionBotParam';
 
+    /**
+     * Get an element
+     *
+     * @param string $name         name of element
+     * @param string $value        value of element
+     * @param string &$node        node of element
+     * @param string $control_name name of controler
+     *
+     * @return string html
+     */
 	function fetchElement($name, $value, &$node, $control_name)
 	{
 		$mainframe = JFactory::getApplication();
@@ -41,10 +51,11 @@ class JElementDiscussionBotParam extends JElement
 	    $query = "SELECT params FROM #__plugins WHERE element = 'jfusion' AND folder = 'content'";
         $db->setQuery($query);
         $results = $db->loadResult();
+        $pluginParams = new JParameter();
         if($results) {
-            $pluginParams = new JParameter( $results );
-            $jname = $pluginParams->get('jname');
+            $pluginParams->loadString($results);
         }
+        $jname = $pluginParams->get('jname');
 
 	 	if(empty($jname)) {
 	 		return JText::_('NO_PLUGIN_SELECT');

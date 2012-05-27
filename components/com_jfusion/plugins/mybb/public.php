@@ -37,9 +37,17 @@ class JFusionPublic_mybb extends JFusionPublic {
     {
         return 'mybb';
     }
+
+    /**
+     * @return string
+     */
     function getRegistrationURL() {
         return 'member.php?action=register';
     }
+
+    /**
+     * @return string
+     */
     function getLostPasswordURL() {
         return 'member.php?action=lostpw';
     }

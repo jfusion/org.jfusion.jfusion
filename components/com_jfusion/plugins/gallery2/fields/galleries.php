@@ -15,11 +15,24 @@
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
-
+/**
+ * JFormFieldGalleries class
+ *
+ * @category   JFusion
+ * @package    Model
+ * @subpackage JFormFieldGalleries
+ * @author     JFusion Team <webmaster@jfusion.org>
+ * @copyright  2008 JFusion. All rights reserved.
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @link       http://www.jfusion.org
+ */
 class JFormFieldGalleries extends JFormField {
 	public $type = "galleries";
 
-	function getInput()
+    /**
+     * @return mixed|string
+     */
+    function getInput()
 	{
     	global $jname;
 		$fieldName = $this->formControl.'[' . $this->fieldname . ']';
@@ -33,16 +46,18 @@ class JFormFieldGalleries extends JFormField {
             return "<div>Couldn't query Gallery-Tree</div>";
         } else {
             if (!empty($tree)) {
+                $titles = array();
                 list($ret, $items) = GalleryCoreApi::loadEntitiesById(GalleryUtilities::arrayKeysRecursive($tree));
-                foreach ($items as $item) {
-                    $title = $item->getTitle() ? $item->getTitle() : $item->getPathComponent();
-                    $title = preg_replace('/\r\n/', ' ', $title);
-                    $titles[$item->getId() ] = $title;
-                }
-
                 if ($ret) {
                     return "<div>Couldn't query Gallery-Tree</div>";
+                } else {
+                    foreach ($items as $item) {
+                        $title = $item->getTitle() ? $item->getTitle() : $item->getPathComponent();
+                        $title = preg_replace('/\r\n/', ' ', $title);
+                        $titles[$item->getId() ] = $title;
+                    }
                 }
+
                 $output[] = JHTML::_('select.option',  - 1, "Default Album" );
                 $this->buildTree($tree, $titles, $output, "----| ", true);
             }

@@ -104,6 +104,8 @@ class JFusionModelInstaller extends InstallerModelInstall
     /**
      * Replaces original Install() method.
      *
+     * @param string $filename
+     *
      * @return true|false Result of the JFusion plugin install
      */
     function installZIP($filename)
@@ -160,7 +162,7 @@ class JFusionModelInstaller extends InstallerModelInstall
      *
      * @param string $jname     name of the JFusion plugin used
      * @param string $new_jname name of the new plugin
-     * @param string $update    update existing plugin
+     * @param bool $update    update existing plugin
      *
      * @return true|false Result of the JFusion plugin uninstall
      */
@@ -218,7 +220,8 @@ class JFusionPluginInstaller extends JObject
     /**
      * handles JFusion plugin installation
      *
-     * @param string $dir install path
+     * @param mixed $dir install path
+     * @param array &$result
      *
      * @return boolean
      */
@@ -322,6 +325,7 @@ class JFusionPluginInstaller extends JObject
          * ---------------------------------------------------------------------------------------------
          */
         //determine the features of the plugin
+        $dual_login = $slave = $activity = $search = $discussion = null;
         $features = array('master', 'slave', 'dual_login', 'check_encryption', 'activity', 'search', 'discussion');
         foreach ($features as $f) {
         	if(JFusionFunction::isJoomlaVersion('1.6')) {
@@ -437,7 +441,7 @@ class JFusionPluginInstaller extends JObject
                 $success = $jname . ': ' . $result;
             }
             if (!$success) {
-                $msg = JText::_('PLUGIN') . ' ' .$plugin->name .' ' . JText::_('UNINSTALL') . ' ' . JText::_('FAILED') . ': ' . $reason;
+                $msg = JText::_('PLUGIN') . ' ' .$jname .' ' . JText::_('UNINSTALL') . ' ' . JText::_('FAILED') . ': ' . $reason;
                 $this->parent->abort($msg);
                 $result['message'] = $msg;
                 return $result;

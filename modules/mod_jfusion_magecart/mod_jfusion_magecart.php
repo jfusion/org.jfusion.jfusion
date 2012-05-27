@@ -57,5 +57,5 @@ if (JPluginHelper::importPlugin ( 'system', 'magelib' )) {
 	$plgMageLib->restartJoomlaSession ();
 } else {
 	$error = JError::raiseWarning ( 0, JText::_ ( 'Plugin system magelib not installed or activated!' ) );
-	JError::handleLog ( $error, null );
+	JError::handleLog ( $error, array() );
 }

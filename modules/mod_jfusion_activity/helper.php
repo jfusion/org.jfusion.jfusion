@@ -183,8 +183,12 @@ class modjfusionActivityHelper
 			$results = array();
 		}
 	}
-	
-	function timeSince($original) {
+
+    /**
+     * @param $original
+     * @return array
+     */
+    function timeSince($original) {
 		// array of time period chunks
 		$chunks = array(
 			array(60 * 60 * 24 * 365 , 'YEAR'),
@@ -198,13 +202,17 @@ class modjfusionActivityHelper
 		$today = time(); /* Current unix time */
 
 		$since = $today - $original;
+
+        $count = 0;
+        $name = '';
 	
 		// $j saves performing the count function each time around the loop
 		for ($i = 0, $j = count($chunks); $i < $j; $i++) {
 			$seconds = $chunks[$i][0];
 			$name = $chunks[$i][1];
 			//finding the biggest chunk (if the chunk fits, break)
-	        if (($count = floor($since / $seconds)) != 0) {
+            $count = floor($since / $seconds);
+	        if ($count != 0) {
 	            break;
 	        }
 		}

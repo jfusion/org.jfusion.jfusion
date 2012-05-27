@@ -86,8 +86,8 @@ class JFusionUser_elgg extends JFusionUser {
         require_once $params->get('source_path') . DS . "engine" . DS . "start.php";
         // Get variables
         global $CONFIG;
-        
-        if($user = get_user_by_username($userinfo->username)) {
+        $user = get_user_by_username($userinfo->username);
+        if($user) {
         	if ($user->delete()) {
             	$status['error'] = false;
             	$status['debug'][] = JText::_('USER_DELETION') . ' ' . $userinfo->username;
@@ -131,7 +131,8 @@ class JFusionUser_elgg extends JFusionUser {
         // If all is present and correct, try to log in
         $result = false;
         if (!empty($username) && !empty($password)) {
-            if ($user = authenticate($username, $password)) {
+            $user = authenticate($username, $password);
+            if ($user) {
                 //if ($user->isBanned()) return false; // User is banned, return false.
                 $_SESSION['user'] = $user;
                 $_SESSION['guid'] = $user->getGUID();
@@ -165,6 +166,12 @@ class JFusionUser_elgg extends JFusionUser {
     function filterUsername($username) {
         return $username;
     }
+
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function updatePassword($userinfo, &$existinguser, &$status) {
         jimport('joomla.user.helper');
         $existinguser->password_salt = JUserHelper::genRandomPassword(8);
@@ -277,8 +284,8 @@ class JFusionUser_elgg extends JFusionUser {
         require_once $params->get('source_path') . DS . "engine" . DS . "start.php";
         // Get variables
         global $CONFIG;
-        
-        if($user = get_user_by_username($existinguser->username)) {
+        $user = get_user_by_username($existinguser->username);
+        if($user) {
         	if ($user->ban()) {
 				$status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
         	} else {
@@ -309,8 +316,8 @@ class JFusionUser_elgg extends JFusionUser {
         require_once $params->get('source_path') . DS . "engine" . DS . "start.php";
         // Get variables
         global $CONFIG;
-        
-        if($user = get_user_by_username($existinguser->username)) {
+        $user = get_user_by_username($existinguser->username);
+        if($user) {
         	if ($user->unban()) {
 				$status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
         	} else {
@@ -330,8 +337,8 @@ class JFusionUser_elgg extends JFusionUser {
         require_once $params->get('source_path') . DS . "engine" . DS . "start.php";
         // Get variables
         global $CONFIG;
-        
-        if($user = get_user_by_username($existinguser->username)) {
+        $user = get_user_by_username($existinguser->username);
+        if($user) {
         	if (set_user_validation_status($user->guid,1,'validated:jfusion')) {
 				$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
         	} else {
@@ -350,8 +357,8 @@ class JFusionUser_elgg extends JFusionUser {
         require_once $params->get('source_path') . DS . "engine" . DS . "start.php";
         // Get variables
         global $CONFIG;
-        
-        if($user = get_user_by_username($existinguser->username)) {
+        $user = get_user_by_username($existinguser->username);
+        if($user) {
         	if (set_user_validation_status($user->guid,0)) {
 				$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
         	} else {

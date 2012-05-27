@@ -319,7 +319,7 @@ if (!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') ===
         form.customcommand.value = action;
         form.action.value = 'apply';
         submitform('saveconfig');
-
+        return;
         }
         //-->
         </script>

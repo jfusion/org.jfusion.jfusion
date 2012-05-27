@@ -36,9 +36,18 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
     {
         return 'oscommerce';
     }
+
+    /**
+     * @return string
+     */
     function getTablename() {
         return 'customers';
     }
+
+    /**
+     * @param string $forumPath
+     * @return array|bool
+     */
     function setupFromPath($forumPath) {
         //check for trailing slash and generate file path
         if (substr($forumPath, -1) == DS) {

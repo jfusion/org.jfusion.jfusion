@@ -24,6 +24,10 @@ require_once(JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.D
  */
 class JFusionUser_smf2 extends JFusionUser {
 
+    /**
+     * @param object $userinfo
+     * @return object
+     */
     function &getUser($userinfo)
     {
 		//get the identifier
@@ -286,6 +290,11 @@ class JFusionUser_smf2 extends JFusionUser {
 
     }
 
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
     function activateUser($userinfo, &$existinguser, &$status)
     {
         $db = JFusionFactory::getDatabase($this->getJname());

@@ -29,7 +29,10 @@ defined('_JEXEC') or die('Restricted access');
  */
 class JFusionDokuwiki_Io {
     var $jname = null;
-    
+
+    /**
+     * @param $jname
+     */
     function JFusionDokuwiki_Io($jname) {
 		$this->jname = $jname;
     } 		
@@ -41,6 +44,10 @@ class JFusionDokuwiki_Io {
      *
      * Uses gzip if extension is .gz
      * and bz2 if extension is .bz2
+     *
+     * @param string $file
+     * @param string $content
+     * @param bool $append
      *
      * @author  Andreas Gohr <andi@splitbrain.org>
      * @return bool true on success
@@ -92,6 +99,10 @@ class JFusionDokuwiki_Io {
      * Uses gzip if extension is .gz
      *
      * 2005-10-14 : added regex option -- Christopher Smith <chris@jalakai.co.uk>
+     *
+     * @param string $file
+     * @param string $badline
+     * @param bool $regex
      *
      * @author Steven Danz <steven-danz@kc.rr.com>
      * @return bool true on success
@@ -152,6 +163,8 @@ class JFusionDokuwiki_Io {
      * the lock is assumed to be stale and the function goes on
      *
      * @author Andreas Gohr <andi@splitbrain.org>
+     *
+     * @param string $file
      */
     function lock($file) {
         $share = Dokuwiki::getInstance($this->jname);
@@ -176,6 +189,8 @@ class JFusionDokuwiki_Io {
     /**
      * JFusionDokuwiki_Io::unlocks a file
      *
+     * @param string $file
+     *
      * @author Andreas Gohr <andi@splitbrain.org>
      */
     function unlock($file) {
@@ -191,6 +206,8 @@ class JFusionDokuwiki_Io {
      * Create the directory needed for the given file
      *
      * @author  Andreas Gohr <andi@splitbrain.org>
+     *
+     * @param string $file
      */
     function makeFileDir($file) {
         $dir = dirname($file);
@@ -204,6 +221,10 @@ class JFusionDokuwiki_Io {
      * @link    http://www.php.net/manual/en/function.mkdir.php
      * @author  <saint@corenova.com>
      * @author  Andreas Gohr <andi@splitbrain.org>
+     *
+     * @param string $target
+     *
+     * @return int
      */
     function mkdir_p($target) {
         $share = Dokuwiki::getInstance($this->jname);
@@ -229,6 +250,10 @@ class JFusionDokuwiki_Io {
      * This is used when the safemode workaround is enabled
      *
      * @author <andi@splitbrain.org>
+     *
+     * @param string $dir
+     *
+     * @return bool
      */
     function mkdir_ftp($dir) {
         $share = Dokuwiki::getInstance($this->jname);
@@ -261,6 +286,10 @@ class JFusionDokuwiki_Io {
      *
      * @author <richpageau at yahoo dot co dot uk>
      * @link   http://de3.php.net/manual/en/function.realpath.php#75992
+     *
+     * @param string $path
+     *
+     * @return bool
      */
     function fullpath($path) {
         $iswin = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN');

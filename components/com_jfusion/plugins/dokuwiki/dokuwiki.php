@@ -75,6 +75,8 @@ class Dokuwiki
     /**
      * This method should handle any login logic and report back to the subject
      *
+     * @param string $jname
+     *
      * @return object instance
      * @since 1.5
      * @access public
@@ -92,7 +94,7 @@ class Dokuwiki
     /**
      * This method should handle any login logic and report back to the subject
      *
-     * @param string $path path to config file
+     * @param string|bool $path path to config file
      *
      * @return array on success, false on falior
      * @since 1.5

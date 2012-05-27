@@ -36,6 +36,9 @@ if (!class_exists('JFusionWordpressHelper')) {
 }
 
 
+/**
+ *
+ */
 class JFusionUser_wordpress extends JFusionUser {
 
 	/**
@@ -262,7 +265,12 @@ class JFusionUser_wordpress extends JFusionUser {
 	function unblockUser($userinfo, &$existinguser, &$status) {
 	}
 
-	function activateUser($userinfo, &$existinguser, &$status) {
+    /**
+     * @param object $userinfo
+     * @param object $existinguser
+     * @param array $status
+     */
+    function activateUser($userinfo, &$existinguser, &$status) {
 		//activate the user
 		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = 'UPDATE #__users SET user_activation_key = \'\'  WHERE ID =' . (int)$existinguser->userid;
@@ -423,7 +431,8 @@ class JFusionUser_wordpress extends JFusionUser {
 			$query = "SELECT ID FROM #__posts WHERE post_author = ".$user_id;
 			$db->setQuery($query);
 			if ($db->query()) {
-				if ($results = $db->loadObjectList()) {
+                $results = $db->loadObjectList();
+				if ($results) {
 					foreach ($results as $row) {
 						$query = "UPDATE #__posts SET post_author = ".$reassign. " WHERE ID = ". $row->ID;
 						$db->setQuery($query);
@@ -439,7 +448,8 @@ class JFusionUser_wordpress extends JFusionUser {
 				$query = "SELECT link_id FROM #__links WHERE link_owner = ".$user_id;
 				$db->setQuery($query);
 				if ($db->query()) {
-					if ($results = $db->loadObjectList()) {
+                    $results = $db->loadObjectList();
+					if ($results) {
 						foreach ($results as $row) {
 							$query = "UPDATE #__links SET link_owner = ".$reassign. " WHERE link_id = ". $row->link_id;
 							$db->setQuery($query);

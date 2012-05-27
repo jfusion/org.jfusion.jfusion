@@ -42,6 +42,12 @@ class JFusionUser_joomla_ext extends JFusionUser {
     function getJname() {
         return 'joomla_ext';
     }
+
+    /**
+     * @param object $userinfo
+     * @param int $overwrite
+     * @return array
+     */
     function updateUser($userinfo, $overwrite) {
         $status = JFusionJplugin::updateUser($userinfo, $overwrite, $this->getJname());
         return $status;

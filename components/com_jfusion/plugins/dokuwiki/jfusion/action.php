@@ -17,16 +17,33 @@ if (!defined('DOKU_TAB')) define('DOKU_TAB', "\t");
 if (!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
 
 require_once DOKU_PLUGIN.'action.php';
-
+/**
+ * action_plugin_jfusion class
+ *
+ * @category   JFusion
+ * @package    Model
+ * @subpackage action_plugin_jfusion
+ * @author     JFusion Team <webmaster@jfusion.org>
+ * @copyright  2008 JFusion. All rights reserved.
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @link       http://www.jfusion.org
+ */
 class action_plugin_jfusion extends DokuWiki_Action_Plugin {
 
 	var $session_save_handler = '';
-	
+
+    /**
+     * @param $controller
+     */
     function register(&$controller) {
        $controller->register_hook('AUTH_LOGIN_CHECK', 'BEFORE', $this, 'jfusion_login');
        $controller->register_hook('ACTION_ACT_PREPROCESS', 'BEFORE', $this, 'jfusion_logout');
     }
 
+    /**
+     * @param $event
+     * @param $param
+     */
     function jfusion_login(&$event, $param) {
         //do not use Dokuwiki's standard login method
         $event->preventDefault();

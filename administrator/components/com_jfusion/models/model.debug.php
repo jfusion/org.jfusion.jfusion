@@ -34,18 +34,17 @@ class std {
         return ($usec + $sec);
     }
     /**
-     *    getRequest
+     * getRequest
+     * merges HTTP_GET, HTTP_POST and HTPP-FILE requests togehter so that you have
+     * afterwards an all in one array
      *
-     *    merges HTTP_GET, HTTP_POST and HTPP-FILE requests togehter so that you have
-     *    afterwards an all in one array
+     * @param array $post The HTTP_POST request ($_POST)
+     * @param array $get The HTTP-GET request ($_GET)
+     * @param array $files The HTTP-FILE request, if a form uploaded Files ($_FILES)
      *
-     *    @param array $post: The HTTP_POST request ($_POST)
-     *    @param array $get: The HTTP-GET request ($_GET)
-     *    @param array $files : The HTTP-FILE request, if a form uploaded Files ($_FILES)
+     * @uses arrayfunc::recursiveMerge
      *
-     *    @uses arrayfunc::recursiveMerge
-     *
-     *    @returns array, a recursively merged Array
+     * @return array a recursively merged Array
      */
     public static function getRequest($post, $get, $files) {
         // Setzt verschiedene $_REQUEST-Daten sinnvoll zusammen
@@ -59,14 +58,13 @@ class std {
         return $request;
     }
     /**
-     *    rearrangeFiles - PRIVATE
+     * rearrangeFiles - PRIVATE
+     * re-arrranges the HTTP-FILE-REQUEST array so that its
+     * organized like the POST and GET array afterwards
      *
-     *    re-arrranges the HTTP-FILE-REQUEST array so that its
-     *    organized like the POST and GET array afterwards
+     * @param array $files the raw FILE-Array
      *
-     *    @param the raw FILE-Array
-     *
-     *    @returns a POST/GET-Like structured Array
+     * @return array a POST/GET-Like structured Array
      */
     private static function rearrangeFiles($files) {
         // Hilfsfunktion f�r std::getRequest() (rekursiv)
@@ -87,14 +85,14 @@ class std {
         return $retArr;
     }
     /**
-     *    removeEmptyLines
+     * removeEmptyLines
      *
-     *    removes Empty Lines from a Text
+     * removes Empty Lines from a Text
      *
-     *    @param string $text, the Text to remove the empty Lines From
-     *    @param string $newLineChar - OPTIONAL - the New-Line indicator, default is "\n"
+     * @param string $text the Text to remove the empty Lines From
+     * @param string $newLineChar - OPTIONAL - the New-Line indicator, default is "\n"
      *
-     *    @returns the text without blank lines
+     * @return string the text without blank lines
      */
     public static function removeEmptyLines($text, $newLineChar = "\n") {
         $lines = explode($newLineChar, $text);
@@ -150,8 +148,10 @@ class debug {
         debug::$colorScheme[] = array('vc' => "#f96", 'akc' => "#c66", 'okc' => "#966", 'tc' => '#CCCCCC', 'gc' => '#AAAAFF');
     }
     /**
-     *    Creates and returns the JavaScript-Snippet used to toggle values by klicking on the keys
-     *    returns the code only once, i.e. the first time, print it to the standard output if you get the snippet
+     * Creates and returns the JavaScript-Snippet used to toggle values by klicking on the keys
+     * returns the code only once, i.e. the first time, print it to the standard output if you get the snippet
+     *
+     * @return string
      */
     private static function getToggleScript() {
         $script = "";
@@ -196,16 +196,16 @@ class debug {
         return $style;
     }
     /** *************************
-     *    Craetes and returns a HTML-Code that shows nicely
-     *    the Structure and Value(s) of any PHP-Varible, the given Value can be from a simple Integer
-     *    to a complex object-structure. This function works recursively.
+     * Craetes and returns a HTML-Code that shows nicely
+     * the Structure and Value(s) of any PHP-Varible, the given Value can be from a simple Integer
+     * to a complex object-structure. This function works recursively.
      *
-     *    @param mixed $arr : the PHP-Varible to look in
-     *    @param string $start: a title for the created structure-table, if numeric passed as $height
-     *    @param int $height optional height of scrollzone div,     will be interpreted as the color schema if $start is interpreted as height
-     *     @param int $schema optional 0 - 9 colorscheme,         will be ignored if $start is interpreted as height
+     * @param mixed $arr the PHP-Varible to look in
+     * @param mixed $start a title for the created structure-table, if numeric passed as $height
+     * @param mixed $height optional height of scrollzone div,     will be interpreted as the color schema if $start is interpreted as height
+     * @param int $schema optional 0 - 9 colorscheme,         will be ignored if $start is interpreted as height
      *
-     *    @return a HTML-Code Snippet (e.g. to be Viewed in a Browser)
+     * @return string a HTML-Code Snippet (e.g. to be Viewed in a Browser)
      ** *************************
      */
     public static function get($arr, $start = true, $height = false, $schema = 0) {
@@ -283,7 +283,7 @@ class debug {
      *    Craetes and returns a String in html code. that shows nicely in copy paste
      *
      *    @param mixed $arr : the PHP-Varible to look in
-     *    @param string $start: a title for the created structure-table
+     *    @param mixed $start : a title for the created structure-table
      *
      *    @return a html string with no tags    
      ** *************************
@@ -356,11 +356,13 @@ class debug {
         return $result;
     }
     /**
-     *    Same as debug::get, but prints the created HTML-Code directly to the Standard Output.
-     *    NOTE: This is the one and only debuging Tool!!
+     * Same as debug::get, but prints the created HTML-Code directly to the Standard Output.
+     * NOTE: This is the one and only debuging Tool!!
      *
-     *    @param mixed $arr : the PHP-Varible to look in
-     *    @param string $start: a title for the created structure-table
+     * @param mixed $arr the PHP-Varible to look in
+     * @param mixed $title a title for the created structure-table
+     *
+     * @return void
      */
     public static function show($arr, $title = false) {
         print (debug::get($arr, $title));
@@ -398,7 +400,8 @@ class debug {
      *    Returns the results of the measurements, HTML-Encoded
      *
      *    @uses debug::get()
-     *    @returns the HTML-Code
+     *
+     *    @return string the HTML-Code
      */
     function getTime() {
         return debug::get(debug::$messungen, "Zeitmessungen");
@@ -479,12 +482,12 @@ class debug {
      *
      *    Rearaanges the results from all Measurements so that they will get human-understandable
      *
-     *    @param array $laufzeit, the raw-array produced by calling start- and stopMessung
+     *    @param array $laufzeit the raw-array produced by calling start- and stopMessung
      *
-     *    @returns a humen-understandable Version
+     *    @return array a humen-understandable Version
      */
     private static function createLaufzeitResult($laufzeit) {
-        $result = "";
+        $result = array();
         if (isset($laufzeit['childs'])) {
             $childTime = 0;
             if (isset($laufzeit['time'])) $result['Calls'] = $laufzeit['count'];
@@ -533,8 +536,9 @@ class debug {
      *    - booleans and all numbers will be bold.
      *    - the null-Value will be bold and italic
      *
-     *    @param mixed $value: the Value to HMTL-Encode
-     *    @returns the HTML-Encoded Value
+     *    @param mixed $value the Value to HMTL-Encode
+     *
+     *    @return string the HTML-Encoded Value
      */
     private static function decorateValue($value) {
         if (is_string($value)) {
@@ -1041,10 +1045,9 @@ class arrayfunc {
      *    => so not an Array of rows will be contained in each section of the grouped array but only
      *    that single row where the grouping-Column has this value!
      *
-     *    @param array $data, the data to Group
-     *    @param mixed $criteria, the Column to use for the seperation, can also be a comma-seperated string or
-     *                an array
-     *    $param string $field - OPTIONAL -  if you are not intrested in the whole Row in each section but only one
+     *    @param array $data the data to Group
+     *    @param mixed $criteria the Column to use for the seperation, can also be a comma-seperated string or an array
+     *    @param mixed $field - OPTIONAL -  if you are not intrested in the whole Row in each section but only one
      *                "cell-Value" u can specify from which column this value should be taken.
      *
      *    @return array the grouped data
@@ -1342,8 +1345,8 @@ class arrayfunc {
     /**
      *    Generates a list of all values of a given "column" in a array of Hashtables
      *
-     *    @param array $data, the array of ahstables to use
-     *    @param string $fileName, the hashkey of the value to be taken into the list
+     *    @param array $data the array of ahstables to use
+     *    @param string $fieldName the hashkey of the value to be taken into the list
      *    @param boolean $holdIndizes - OPTIONAL - if the indizes in the list should be tahe same as in the dataset
      *            default: false => the list will be a numeric array from 0 to length-1
      *                 true => use this option if the indizes of the array represtent e.g. database Primary keys

@@ -33,9 +33,18 @@ if (!defined('MOODLE_INTERNAL')) {
 require_once($CFG->libdir.'/authlib.php');
 
 
+/**
+ *
+ */
 class JText {
 
-	static public function _($string, $jsSafe = false)
+    /**
+     * @static
+     * @param $string
+     * @param bool $jsSafe
+     * @return mixed
+     */
+    static public function _($string, $jsSafe = false)
 	{
 		return ($string);
 	}
@@ -53,7 +62,11 @@ class DualLogin {
 
 	}
 
-	function logout($curl_options){
+    /**
+     * @param $curl_options
+     * @return array|string
+     */
+    function logout($curl_options){
 		$status = array();
 		$helper = new JFusionCurl;
 		// @todo: to fix: For info, with J! 1.6 there is problem with a form token and it's not provided to the post data
@@ -114,7 +127,8 @@ class auth_plugin_jfusion extends auth_plugin_base {
 		// So Moodle is slave and we have a local login, just call Joomla, with nodeid NOT set
 		$this->LoginJoomla($username, $password, false);
 		// now test if we have a valid user, the host should have created one
-		if ($user = get_record('user', 'username', $username, 'mnethostid', $CFG->mnet_localhost_id)) {
+        $user = get_record('user', 'username', $username, 'mnethostid', $CFG->mnet_localhost_id);
+		if ($user) {
 			$valid = validate_internal_user_password($user, $password);
 			if ($valid){
 				redirect($CFG->wwwroot);
@@ -126,6 +140,11 @@ class auth_plugin_jfusion extends auth_plugin_base {
 
 	/**
 	 * No password updates.
+     *
+     * @param string $user
+     * @param string $newpassword
+     *
+     * @return bool
 	 */
 	function user_update_password($user, $newpassword) {
 		return false;
@@ -152,6 +171,8 @@ class auth_plugin_jfusion extends auth_plugin_base {
 
 	/**
 	 * No password resetting.
+     *
+     * @return bool
 	 */
 	function can_reset_password() {
 		return false;
@@ -160,6 +181,12 @@ class auth_plugin_jfusion extends auth_plugin_base {
 	/**
 	 * This function is called when a user is authenticated by another plugin
 	 * We use it to start a login procedure in case we have a non JFusion login on Moodle
+     *
+     * @param string $user
+     * @param string $username
+     * @param string $password
+     *
+     * @return bool
 	 */
 
 	function user_authenticated_hook($user, $username, $password){
@@ -179,6 +206,8 @@ class auth_plugin_jfusion extends auth_plugin_base {
 	/**
 	 * This function is called when a user logs out
 	 * We use it to start a logout procedure in case we have a non JFusion logout on Moodle
+     *
+     * @return bool
 	 */
 	function prelogout_hook(){
 		global $CFG;
@@ -234,7 +263,7 @@ class auth_plugin_jfusion extends auth_plugin_base {
 		define("_JEXEC","Yeah_I_know");
 		require_once($params_joomlafullpath.'administrator/components/com_jfusion/models/model.curl.php');
 		$LoginLogout = new DualLogin();
-		$curl_options['post_url']          = $params_joomlabaseurl.$params_loginpath;
+		$curl_options['post_url']          = $params_joomlabaseurl.$params_logoutpath;
 		$curl_options['postfields']        = $params_postfields;
 		$curl_options['formid']            = $params_formid;
 		$curl_options['integrationtype']   = 0;
@@ -281,14 +310,19 @@ class auth_plugin_jfusion extends auth_plugin_base {
 	 * This function is called from admin/auth.php, and outputs a full page with
 	 * a form for configuring this plugin.
 	 *
-	 * @param array $page An object containing all the data for this page.
+	 * @param array $config An object containing all the data for this page.
+     * @param string $err
+     * @param string $user_fields
 	 */
 	function config_form($config, $err, $user_fields) {
+
 		include "config.phtml";
 	}
 
 	/**
 	 * Processes and stores configuration data for this authentication plugin.
+     *
+     * @param object $config
 	 */
 	function process_config($config) {
 		set_config('jf_enabled',          $config->jf_enabled,            'auth/jfusion');
@@ -314,6 +348,10 @@ class auth_plugin_jfusion extends auth_plugin_base {
 
 	/***
 	 * Logs into Joomla using Curl
+     *
+     * @param string $username
+     * @param string $password
+     * @param string $jnodeid
 	 */
 	function LoginJoomla($username, $password, $jnodeid){
 		global $CFG;

@@ -17,6 +17,10 @@ defined('_JEXEC' ) or die('Restricted access' );
  */
 class JFusionAuth_mediawiki extends JFusionAuth{
 
+    /**
+     * @param array|object $userinfo
+     * @return string
+     */
     function generateEncryptedPassword($userinfo)
     {
         return ':A:' . md5( $userinfo->password_clear);

@@ -55,6 +55,7 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
         } else {
             $myfile = $forumPath . DS . 'config.php';
         }
+        $config = array();
         //try to open the file
         if (($file_handle = @fopen($myfile, 'r')) === false) {
             JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));
@@ -141,7 +142,8 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
         $query = "SELECT g_active FROM #__PluginMap
                   WHERE g_pluginType = 'module' and g_pluginId = 'register';";
         $db->setQuery($query);
-        if ($new_registration = $db->loadResult()) {
+        $new_registration = $db->loadResult();
+        if ($new_registration) {
             if ($new_registration == 0) {
                 return false;
             } else {
@@ -150,6 +152,13 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
         }
         return false;
     }
+
+    /**
+     * @param $jFusionParam
+     * @param $jPluginParam
+     * @param $itemId
+     * @return array|null
+     */
     function getSitemapTree($jFusionParam, $jPluginParam, $itemId) {
         require JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'gallery2.php';
         jFusion_g2BridgeCore::loadGallery2Api($this->getJname(),true);

@@ -82,6 +82,7 @@ class doku_auth_basic
         if (empty($method)) $method = $conf['passcrypt'];
         //prepare a salt
         if (empty($salt)) $salt = md5(uniqid(rand(), true));
+        $magic = null;
         switch (strtolower($method)) {
 	        case 'smd5':
 	            if(defined('CRYPT_MD5') && CRYPT_MD5) return crypt($clear,'$1$'.substr($salt,0,8).'$');
@@ -321,6 +322,8 @@ class doku_auth_basic
      * @param string $grps groups
      *
      * @author Andreas Gohr <andi@splitbrain.org>
+     *
+     * @return null
      */
     function createUser($user, $pass, $name, $mail, $grps = null)
     {
@@ -370,6 +373,8 @@ class doku_auth_basic
      * @param array $filter
      *
      * @author Chris Smith <chris@jalakai.co.uk>
+     *
+     * @return int
      */
     function getUserCount($filter = array())
     {
@@ -382,8 +387,8 @@ class doku_auth_basic
      *
      * Set getUsers capability when implemented
      *
-     * @param string $start  index of first user to be returned
-     * @param string $limit  max number of users to be returned
+     * @param int $start  index of first user to be returned
+     * @param int $limit  max number of users to be returned
      * @param string $filter array of field/pattern pairs, null for no filter
      *
      * @author Chris Smith <chris@jalakai.co.uk>
@@ -416,8 +421,8 @@ class doku_auth_basic
      *
      * Set getGroups capability when implemented
      *
-     * @param string $start index of first user to be returned
-     * @param string $limit max number of users to be returned
+     * @param int $start index of first user to be returned
+     * @param int $limit max number of users to be returned
      *
      * @author Chris Smith <chris@jalakai.co.uk>
      * @return array

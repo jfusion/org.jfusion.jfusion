@@ -40,18 +40,29 @@ class JFusionPublic_joomla_ext extends JFusionPublic {
     function getJname() {
         return 'joomla_ext';
     }
+
+    /**
+     * @return string
+     */
     function getRegistrationURL() {
         return JFusionJplugin::getRegistrationURL($this->getJname());
     }
+
+    /**
+     * @return string
+     */
     function getLostPasswordURL() {
         return JFusionJplugin::getLostPasswordURL($this->getJname());
     }
     function getLostUsernameURL() {
         return JFusionJplugin::getLostUsernameURL($this->getJname());
     }
-    /************************************************
-    * Functions For JFusion Who's Online Module
-    ***********************************************/
+
+    /*
+    * getOnlineUserQuery
+    *
+    * @return string
+    */
     function getOnlineUserQuery($limit) {
         return JFusionJplugin::getOnlineUserQuery($limit);
     }

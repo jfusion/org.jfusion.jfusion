@@ -24,12 +24,12 @@ class JFusionForum_mediawiki extends JFusionForum
         return 'mediawiki';
     }
 
-
-	/************************************************
-	 * Functions For JFusion Activity Module
-	 ***********************************************/
-
-	function renderActivityModule($config, $view, $pluginParam) {
+    /**
+     * @param $config
+     * @param $view
+     * @param $pluginParam
+     */
+    function renderActivityModule($config, $view, $pluginParam) {
 		$db =& JFusionFactory::getDatabase($this->getJname());
 		$params = JFusionFactory::getParams($this->getJname());
 		defined('_DATE_FORMAT_LC2') or define('_DATE_FORMAT_LC2','%A, %d %B %Y %H:%M');
@@ -77,6 +77,7 @@ class JFusionForum_mediawiki extends JFusionForum
 			foreach($results as $value ) {
 				if (strlen($value->text)) {
 					//get the avatar of the logged in user
+                    $o_avatar_height = $o_avatar_width = '';
 					if ($avatar) {
 						// retrieve avatar
 						$avatarSrc =& $avatar_software;

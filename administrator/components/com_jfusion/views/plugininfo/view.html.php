@@ -95,7 +95,11 @@ class jfusionViewplugininfo extends JView
             JError::raiseWarning(500, JText::_('NONE_SELECTED'));
         }
     }
-    
+
+    /**
+     * @param $feature
+     * @return string
+     */
     function outputFeature($feature)
     {
     	if ($feature===true) {
