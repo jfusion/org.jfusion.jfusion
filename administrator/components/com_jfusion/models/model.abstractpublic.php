@@ -271,12 +271,12 @@ class JFusionPublic
      *                                  forum (to be published in a thread or post; used by discussion bot)
      *                                  activity (displayed in activity module; used by the activity module)
      *                                  search (displayed as search results; used by search plugin)
-     * @param JParameter $params           (optional) Joomla parameter object passed in by JFusion's module/plugin
-     * @param mixed $object           (optional) Object with information for the specific element the text is from
+     * @param JParameter $params        (optional) Joomla parameter object passed in by JFusion's module/plugin
+     * @param mixed $object             (optional) Object with information for the specific element the text is from
      *
      * @return array  $status           Information passed back to calling script such as limit_applied
      */
-    function prepareText(&$text, $for = '', $params = '', $object = '')
+    function prepareText(&$text, $for = '', $params = null, $object = '')
     {
         $status = array();
         if ($for == 'forum') {

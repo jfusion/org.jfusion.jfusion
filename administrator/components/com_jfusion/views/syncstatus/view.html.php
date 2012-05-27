@@ -32,6 +32,7 @@ class jfusionViewsyncstatus extends JView
 {
     var $syncid;
     var $syncdata;
+    var $sync_completed;
      /**
      * displays the view
      *

@@ -155,8 +155,7 @@ function initSortables() {
 		    });
 
 			//update the database
-			sync_vars = 'option=com_jfusion&task=saveorder&tmpl=component&sort_order='+sortorder;
-            ajaxsync.request(sync_vars);
+            ajaxsync.request('option=com_jfusion&task=saveorder&tmpl=component&sort_order='+sortorder);
 
 	   }
     });

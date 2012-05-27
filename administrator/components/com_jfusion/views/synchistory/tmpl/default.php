@@ -22,7 +22,7 @@ JHTML::_('behavior.modal', 'a.modal');
 ?>
 <script type="text/javascript">
 <!--
-checked=false;
+var checked = false;
 function applyAll() {
     checked = (checked === false);
     for(var i=0; i<document.adminForm.elements.length; i++)

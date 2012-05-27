@@ -128,8 +128,8 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
     }
 
     /**
-     * @param null $limitstart
-     * @param null $limit
+     * @param int $limitstart
+     * @param int $limit
      * @return array
      */
     function getUserList($limitstart = null, $limit = null) {

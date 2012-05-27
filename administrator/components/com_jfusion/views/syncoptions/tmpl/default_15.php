@@ -23,8 +23,6 @@ JFusionFunctionAdmin::displayDonate();
     <!--
 
     window.addEvent('domready', function() {
-
-
             var url = '<?php echo JURI::current(); ?>';
             // refresh every 15 seconds
             var timer = 1;
@@ -41,8 +39,8 @@ JFusionFunctionAdmin::displayDonate();
 
                 onComplete: function() {
                     // when complete, check to see if we should stop the countdown
-                    div_content = document.getElementById('log_res').innerHTML;
-                    if (div_content.search(/finished/) != -1) {
+                    var divcontent = document.getElementById('log_res').innerHTML;
+                    if (divcontent.search(/finished/) != -1) {
                         // let's stop our timed ajax
                         $clear(periodical);
                         document.getElementById("counter").innerHTML = '<b><?php echo JText::_('FINISHED'); ?></b>';
@@ -60,22 +58,20 @@ JFusionFunctionAdmin::displayDonate();
                 //add another second to the counter
                 counter -= 1;
                 if (counter < 1) {
-                    div_content = document.getElementById('log_res').innerHTML;
-                    if (div_content.search(/finished/) == -1) {
+                    var divcontent = document.getElementById('log_res').innerHTML;
+                    if (divcontent.search(/finished/) == -1) {
                         counter = timeupdate;
                         // dummy to prevent caching of php
                         dummy = $time() + $random(0, 100);
                         //generate the get variable for submission
 
                         subvars = 'option=com_jfusion&task=syncresume&tmpl=component&dummy=' + dummy + '&syncid=' + '<?php echo $this->syncid; ?>';
-                        for (i = 0; i < document.adminForm.elements.length; i++) {
+                        for (var i = 0; i < document.adminForm.elements.length; i++) {
                             if (document.adminForm.elements[i].name == 'userbatch') {
                                 subvars = subvars + '&' + document.adminForm.elements[i].name + '=' + document.adminForm.elements[i].value;
                             }
                         }
-                            //document.getElementById("log_res").innerHTML = '<img src="<?php echo 'components/com_jfusion/images/ajax_loader.gif'; ?>"> Loading ....';
-                        progress_vars = 'option=com_jfusion&tmpl=component&task=syncprogress&syncid=' + '<?php echo $this->syncid; ?>';
-                        ajax.request(progress_vars);
+                        ajax.request('option=com_jfusion&tmpl=component&task=syncprogress&syncid=' + '<?php echo $this->syncid; ?>');
                         ajaxsync.request(subvars);
 
                     } else {
@@ -106,7 +102,7 @@ JFusionFunctionAdmin::displayDonate();
                     var answer = confirm("<?php echo JText::_('SYNC_CONFIRM_START'); ?>");
                     if (answer) {
                         var paramString = 'option=com_jfusion&task=syncinitiate&tmpl=component&syncid=<?php echo $this->syncid; ?>';
-                        for(i=0; i<document.adminForm.elements.length; i++){
+                        for(var i=0; i<document.adminForm.elements.length; i++){
                             if (document.adminForm.elements[i].type=="select-one")
                             {
                                 if (document.adminForm.elements[i].options[document.adminForm.elements[i].selectedIndex].value)
@@ -122,7 +118,6 @@ JFusionFunctionAdmin::displayDonate();
 
                         new Ajax(url, {method: 'get'}).request(paramString);
                         periodical = refresh.periodical(timer * 1000, this);
-
                     }
                 }
             );

@@ -4,10 +4,9 @@ function submitbutton(pressbutton) {
     if (pressbutton == 'applyconfig') {
         form.action.value = 'apply';
         submitform('saveconfig');
-        return;
+    } else {
+        submitform(pressbutton);
     }
-
-    submitform(pressbutton);
 }
 
 function submitbutton3(pressbutton)
@@ -42,10 +41,10 @@ function setCheckedValue(radioObj, newValue) {
         var radioLength = radioObj.length;
         if(radioLength === undefined) {
             radioObj.checked = (radioObj.value == newValue.toString());
-            return;
-        }
-        for(var i = 0; i < radioLength; i++) {
-            radioObj[i].checked = radioObj[i].value == newValue.toString();
+        } else {
+            for(var i = 0; i < radioLength; i++) {
+                radioObj[i].checked = radioObj[i].value == newValue.toString();
+            }
         }
     }
 }
@@ -68,21 +67,22 @@ function setSort(col){
 }
 
 function getCheckedValue(radioObj) {
+    var r = "";
 	if(radioObj) {
         var radioLength = radioObj.length;
         if(radioLength === undefined) {
             if(radioObj.checked) {
-                return radioObj.value;
+                r = radioObj.value;
             }
         } else {
             for(var i = 0; i < radioLength; i++) {
                 if(radioObj[i].checked) {
-                    return radioObj[i].value;
+                    r = radioObj[i].value;
                 }
             }
         }
     }
-	return "";
+	return r;
 }
 
 

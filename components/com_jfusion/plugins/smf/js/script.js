@@ -20,9 +20,9 @@ function jfusion_doQuote(messageid, cursessionid) {
 
 function jfusion_modify_msg(msgid, cursessionid) {
 	if (window.XMLHttpRequest) {
-        if (typeof(window.opera) != "undefined") {
+        if (typeof (window.opera) != "undefined") {
             var test = new XMLHttpRequest();
-            if (typeof(test.setRequestHeader) != "function") {
+            if (typeof (test.setRequestHeader) != "function") {
                 return;
             }
         }

@@ -375,7 +375,7 @@ $output .= <<<JS
                 type.setAttribute("onchange", "javascript: changevalue(this,'"+name+"','"+parmtype+"')");
 
                 type.options.length = 0;
-                for (i=0;i<TypeAry[ref.value].length;i++) {
+                for (var i=0;i<TypeAry[ref.value].length;i++) {
                      type.options[type.options.length] = new Option(TypeAry[ref.value][i][1],TypeAry[ref.value][i][0]);
                 }
                 id.appendChild(type);

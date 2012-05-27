@@ -137,8 +137,8 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
     /**
      * Get a list of users
      *
-     * @param null $limitstart
-     * @param null $limit
+     * @param int $limitstart
+     * @param int $limit
      *
      * @return object with list of users
      */

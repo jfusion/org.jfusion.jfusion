@@ -439,7 +439,7 @@ class JFusionForum
 	/**
 	 * Prepares the body for the first post in a thread
 	 *
-	 * @param oJParameter &$dbparams 		object with discussion bot parameters
+	 * @param JParameter &$dbparams 		object with discussion bot parameters
 	 * @param object	$contentitem 	object containing content information
 	 *
 	 * @return string

@@ -163,8 +163,8 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
     }
 
     /**
-     * @param null $limitstart
-     * @param null $limit
+     * @param int $limitstart
+     * @param int $limit
      * @return array
      */
     function getUserList($limitstart = null, $limit = null)

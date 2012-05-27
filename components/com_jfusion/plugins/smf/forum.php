@@ -696,7 +696,7 @@ class JFusionForum_smf extends JFusionForum
 		if($dbparams->get('enable_pagination',true)) {
 			$application = JFactory::getApplication() ;
 			$limitstart = JRequest::getInt( 'limitstart_discuss', 0 );
-			$limit = $application->getUserStateFromRequest( 'global.list.limit', 'limit_discuss', 5, 'int' );
+			$limit = (int) $application->getUserStateFromRequest( 'global.list.limit', 'limit_discuss', 5, 'int' );
             $jdb->setQuery($query, $limitstart, $limit);
 		} else {
 			$limit_posts = $dbparams->get('limit_posts');

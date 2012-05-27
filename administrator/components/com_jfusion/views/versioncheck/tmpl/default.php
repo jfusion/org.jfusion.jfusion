@@ -273,8 +273,9 @@ if ($this->up2date) {
 				    document.adminForm2.install_url.value = installurl;
 				    $('install').submit();
 				    return true ;
-				}
-                return false;
+				} else {
+                    return false;
+                }
 			}
 
 			

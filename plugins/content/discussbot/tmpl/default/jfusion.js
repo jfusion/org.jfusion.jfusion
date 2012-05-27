@@ -1,4 +1,5 @@
-var ajaxMessageSlide, ajaxErrorSlide, confirmationBoxSlides, updatepostarea, threadid;
+var ajaxMessageSlide, ajaxErrorSlide, confirmationBoxSlides, updatepostarea, threadid, updatebuttons, postarea, ajaxstatusholder;
+var updatepagination = null;
 
 function initializeDiscussbot() {
     if (jfdb_jumpto_discussion) {
@@ -6,14 +7,14 @@ function initializeDiscussbot() {
     }
 
     //only initiate if the div container exists and if the var has not been declared Fx.Slide
-    if ($('jfusionMessageArea') && typeof(ajaxMessageSlide) != 'object') {
+    if ($('jfusionMessageArea') && typeof (ajaxMessageSlide) != 'object') {
         ajaxMessageSlide = new Fx.Slide('jfusionMessageArea');
         ajaxMessageSlide.hide();
     }
 
-    if ($('jfusionErrorArea') && typeof(ajaxErrorSlide) != 'object') {
+    if ($('jfusionErrorArea') && typeof (ajaxErrorSlide) != 'object') {
         ajaxErrorSlide = new Fx.Slide('jfusionErrorArea', {
-            onComplete: function() {
+            onComplete: function () {
                 ajaxMessageSlide.slideOut();
             }
         });
@@ -21,191 +22,166 @@ function initializeDiscussbot() {
     }
 
     //only initiate if the div container exists and if the var has not been declared Fx.Slide
-	var isArray = (confirmationBoxSlides instanceof Array);
-	if (!isArray) {
-		confirmationBoxSlides = new Array();
+	if (!(confirmationBoxSlides instanceof Array)) {
+		confirmationBoxSlides = [];
 	}
 
-    if ($('jfusionButtonConfirmationBox' + jfdb_article_id) && typeof(confirmationBoxSlides['jfusionButtonConfirmationBox' + jfdb_article_id]) != 'object') {
+    if ($('jfusionButtonConfirmationBox' + jfdb_article_id) && typeof (confirmationBoxSlides['jfusionButtonConfirmationBox' + jfdb_article_id]) != 'object') {
         confirmationBoxSlides['jfusionButtonConfirmationBox' + jfdb_article_id] = new Fx.Slide('jfusionButtonConfirmationBox' + jfdb_article_id);
         confirmationBoxSlides['jfusionButtonConfirmationBox' + jfdb_article_id].hide();
     }
 
     var url = jfdb_article_url;
-    var ajaxstatusholder = $('jfusionAjaxStatus'), postarea = $('jfusionPostArea');
+    ajaxstatusholder = $('jfusionAjaxStatus');
+    postarea = $('jfusionPostArea');
 
-    var updatepagination = null;
 	if (jfdb_enable_pagination) {
-        var paginationform = $('jfusionPostPagination');
-        if (jfdb_isJ16) {
-            updatepagination = new Request.HTML({
-                url: url,
-                update: paginationform,
-                method: 'post'
-            });
-        } else {
-            updatepagination = new Ajax(url, {
-                update: paginationform,
-                method: 'post'
-            });
-        }
-    }
-
-    var buttonarea = $('jfusionButtonArea' + jfdb_article_id);
-    var updatebuttons = null;
-    if (jfdb_isJ16) {
-        updatebuttons = new Request.HTML({
+        updatepagination = jfdb_isJ16 ? new Request.HTML({
             url: url,
-            update: buttonarea,
+            update: $('jfusionPostPagination'),
             method: 'post'
-        });
-    } else {
-        updatebuttons = new Ajax(url, {
-            update: buttonarea,
+        }) : new Ajax(url, {
+            update: $('jfusionPostPagination'),
             method: 'post'
         });
     }
 
-    if (jfdb_isJ16) {
-        updatepostarea = new Request.HTML({
-            url: url,
-            update: ajaxstatusholder,
-            method: 'post',
+    updatebuttons = jfdb_isJ16 ? new Request.HTML({
+        url: url,
+        update: $('jfusionButtonArea' + jfdb_article_id),
+        method: 'post'
+    }) : new Ajax(url, {
+        update: $('jfusionButtonArea' + jfdb_article_id),
+        method: 'post'
+    });
 
-            onComplete: function() {
-                var ajaxstatus = ajaxstatusholder.innerHTML;
-                var rg = new RegExp(JFDB_DISCUSSBOT_ERROR);
-                if (ajaxstatus.search(rg) == -1) {
+    updatepostarea = jfdb_isJ16 ? new Request.HTML({
+        url: url,
+        update: ajaxstatusholder,
+        method: 'post',
 
-                    //update the post area with the updated content
-                    postarea.innerHTML = ajaxstatus;
+        onComplete: function () {
+            var ajaxstatus = ajaxstatusholder.innerHTML, rg = new RegExp(JFDB_DISCUSSBOT_ERROR);
+            if (ajaxstatus.search(rg) == -1) {
 
-                    //reset the status area
-                    ajaxstatusholder.innerHTML = '';
+                //update the post area with the updated content
+                postarea.innerHTML = ajaxstatus;
 
-                    if($('submittedPostId')) {
-                        var postid = $('submittedPostId').innerHTML;
-                        postid = 'post' + postid;
-                        highlightPost(postid);
+                //reset the status area
+                ajaxstatusholder.innerHTML = '';
 
-                        //empty the quick reply form
-                        $('quickReply').value = '';
+                if ($('submittedPostId')) {
+                    highlightPost('post' + $('submittedPostId').innerHTML);
 
-                        //remove the preview iframe if exists
-                        if($('markItUpQuickReply')) {
-                            jQuery.markItUp({ call: 'previewClose' });
-                        }
+                    //empty the quick reply form
+                    $('quickReply').value = '';
 
-                        showMessage(JFDB_SUCCESSFUL_POST,'Success');
-                        hideMessage();
-                    } else if ($('moderatedPostId')){
-                        //empty the quick reply form
-                        $('quickReply').value = '';
-
-                        showMessage(JFDB_SUCCESSFUL_POST_MODERATED,'Success');
-                        hideMessage();
+                    //remove the preview iframe if exists
+                    if ($('markItUpQuickReply')) {
+                        jQuery.markItUp({ call: 'previewClose' });
                     }
 
-                    //update buttons
-                	updatebuttons.post('tmpl=component&dbtask=update_buttons&ajax_request=1&threadid=' + threadid);
+                    showMessage(JFDB_SUCCESSFUL_POST, 'Success');
+                    hideMessage();
+                } else if ($('moderatedPostId')) {
+                    //empty the quick reply form
+                    $('quickReply').value = '';
 
-                    if (jfdb_enable_ajax) {
-	                    //update pagination
-	                    $('jfusionPostPagination');
-
-	                    var frm = document.jfusionPaginationForm;
-	                    var paramString = 'tmpl=component&dbtask=update_pagination&ajax_request=1&threadid=' + threadid;
-	                    if(frm) {
-	                        for(var i=0; i<frm.elements.length; i++){
-	                            if(frm.elements[i].type=="select-one"){
-	                                if(frm.elements[i].options[frm.elements[i].selectedIndex].value) {
-	                                    paramString = paramString + '&' + frm.elements[i].name + '=' + frm.elements[i].options[frm.elements[i].selectedIndex].value;
-	                                }
-	                            } else {
-	                                paramString = paramString + '&' + frm.elements[i].name + '=' + frm.elements[i].value;
-	                            }
-	                        }
-	                    }
-	                    if(jfdb_enable_pagination) {
-	                    	updatepagination.post(paramString);
-	                    }
-                    }
-                } else {
-                    showMessage(ajaxstatus,'Error');
-                    window.location='#jfusionMessageArea';
+                    showMessage(JFDB_SUCCESSFUL_POST_MODERATED, 'Success');
+                    hideMessage();
                 }
-            }
-        });
-    } else {
-        updatepostarea = new Ajax(url, {
-            update: ajaxstatusholder,
-            method: 'post',
 
-            onComplete: function() {
-                var ajaxstatus = ajaxstatusholder.innerHTML;
-                var rg = new RegExp(JFDB_DISCUSSBOT_ERROR);
-                if (ajaxstatus.search(rg) == -1) {
+                //update buttons
+                updatebuttons.post('tmpl=component&dbtask=update_buttons&ajax_request=1&threadid=' + threadid);
 
-                    //update the post area with the updated content
-                    postarea.innerHTML = ajaxstatus;
-
-                    //reset the status area
-                    ajaxstatusholder.innerHTML = '';
-
-                    if($('submittedPostId')) {
-                        var postid = $('submittedPostId').innerHTML;
-                        postid = 'post' + postid;
-                        highlightPost(postid);
-
-                        //empty the quick reply form
-                        $('quickReply').value = '';
-
-                        //remove the preview iframe if exists
-                        if($('markItUpQuickReply')) {
-                            jQuery.markItUp({ call: 'previewClose' });
-                        }
-
-                        showMessage(JFDB_SUCCESSFUL_POST,'Success');
-                        hideMessage();
-                    } else if ($('moderatedPostId')){
-                        //empty the quick reply form
-                        $('quickReply').value = '';
-
-                        showMessage(JFDB_SUCCESSFUL_POST_MODERATED,'Success');
-                        hideMessage();
-                    }
-
-                    //update buttons
-                	updatebuttons.request('tmpl=component&dbtask=update_buttons&ajax_request=1&threadid=' + threadid);
-
-                    if (jfdb_enable_ajax) {
-                        //update pagination
-                        $('jfusionPostPagination');
-
-                        var frm = document.jfusionPaginationForm;
-                        var paramString = 'tmpl=component&dbtask=update_pagination&ajax_request=1&threadid=' + threadid;
-                        if(frm) {
-                            for(var i=0; i<frm.elements.length; i++){
-                                if(frm.elements[i].type=="select-one"){
-                                    if(frm.elements[i].options[frm.elements[i].selectedIndex].value) {
-                                        paramString = paramString + '&' + frm.elements[i].name + '=' + frm.elements[i].options[frm.elements[i].selectedIndex].value;
-                                    }
-                                } else {
-                                    paramString = paramString + '&' + frm.elements[i].name + '=' + frm.elements[i].value;
+                if (jfdb_enable_ajax) {
+                    //update pagination
+                    var frm = document.jfusionPaginationForm;
+                    var paramString = 'tmpl=component&dbtask=update_pagination&ajax_request=1&threadid=' + threadid;
+                    if (frm) {
+                        for (var i=0; i<frm.elements.length; i++) {
+                            if(frm.elements[i].type=="select-one") {
+                                if(frm.elements[i].options[frm.elements[i].selectedIndex].value) {
+                                    paramString = paramString + '&' + frm.elements[i].name + '=' + frm.elements[i].options[frm.elements[i].selectedIndex].value;
                                 }
+                            } else {
+                                paramString = paramString + '&' + frm.elements[i].name + '=' + frm.elements[i].value;
                             }
                         }
-                        if(jfdb_enable_pagination) {
-                            updatepagination.request(paramString);
+                    }
+                    if (jfdb_enable_pagination) {
+                        updatepagination.post(paramString);
+                    }
+                }
+            } else {
+                showMessage(ajaxstatus,'Error');
+                window.location='#jfusionMessageArea';
+            }
+        }
+    }) : new Ajax(url, {
+        update: ajaxstatusholder,
+        method: 'post',
+
+        onComplete: function() {
+            var ajaxstatus = ajaxstatusholder.innerHTML;
+            var rg = new RegExp(JFDB_DISCUSSBOT_ERROR);
+            if (ajaxstatus.search(rg) == -1) {
+
+                //update the post area with the updated content
+                postarea.innerHTML = ajaxstatus;
+
+                //reset the status area
+                ajaxstatusholder.innerHTML = '';
+
+                if($('submittedPostId')) {
+                    highlightPost('post' + $('submittedPostId').innerHTML);
+
+                    //empty the quick reply form
+                    $('quickReply').value = '';
+
+                    //remove the preview iframe if exists
+                    if($('markItUpQuickReply')) {
+                        jQuery.markItUp({ call: 'previewClose' });
+                    }
+
+                    showMessage(JFDB_SUCCESSFUL_POST,'Success');
+                    hideMessage();
+                } else if ($('moderatedPostId')){
+                    //empty the quick reply form
+                    $('quickReply').value = '';
+
+                    showMessage(JFDB_SUCCESSFUL_POST_MODERATED,'Success');
+                    hideMessage();
+                }
+
+                //update buttons
+                updatebuttons.request('tmpl=component&dbtask=update_buttons&ajax_request=1&threadid=' + threadid);
+
+                if (jfdb_enable_ajax) {
+                    //update pagination
+                    var frm = document.jfusionPaginationForm;
+                    var paramString = 'tmpl=component&dbtask=update_pagination&ajax_request=1&threadid=' + threadid;
+                    if(frm) {
+                        for(var i=0; i<frm.elements.length; i++){
+                            if(frm.elements[i].type=="select-one"){
+                                if(frm.elements[i].options[frm.elements[i].selectedIndex].value) {
+                                    paramString = paramString + '&' + frm.elements[i].name + '=' + frm.elements[i].options[frm.elements[i].selectedIndex].value;
+                                }
+                            } else {
+                                paramString = paramString + '&' + frm.elements[i].name + '=' + frm.elements[i].value;
+                            }
                         }
                     }
-                } else {
-                    showMessage(ajaxstatus,'Error');
-                    window.location='#jfusionMessageArea';
+                    if(jfdb_enable_pagination) {
+                        updatepagination.request(paramString);
+                    }
                 }
+            } else {
+                showMessage(ajaxstatus,'Error');
+                window.location='#jfusionMessageArea';
             }
-        });
-    }
+        }
+    });
 
     //load markItUp
     if (typeof jfdb_load_markitup != 'undefined') {
@@ -220,19 +196,82 @@ function initializeDiscussbot() {
     }
 }
 
+function updateAjax() {
+    var ajaxstatus = ajaxstatusholder.innerHTML;
+    var rg = new RegExp(JFDB_DISCUSSBOT_ERROR);
+    if (ajaxstatus.search(rg) == -1) {
+
+        //update the post area with the updated content
+        postarea.innerHTML = ajaxstatus;
+
+        //reset the status area
+        ajaxstatusholder.innerHTML = '';
+
+        if($('submittedPostId')) {
+            var postid = $('submittedPostId').innerHTML;
+            postid = 'post' + postid;
+            highlightPost(postid);
+
+            //empty the quick reply form
+            $('quickReply').value = '';
+
+            //remove the preview iframe if exists
+            if($('markItUpQuickReply')) {
+                jQuery.markItUp({ call: 'previewClose' });
+            }
+
+            showMessage(JFDB_SUCCESSFUL_POST,'Success');
+            hideMessage();
+        } else if ($('moderatedPostId')){
+            //empty the quick reply form
+            $('quickReply').value = '';
+
+            showMessage(JFDB_SUCCESSFUL_POST_MODERATED,'Success');
+            hideMessage();
+        }
+
+        //update buttons
+        updatebuttons.request('tmpl=component&dbtask=update_buttons&ajax_request=1&threadid=' + threadid);
+
+        if (jfdb_enable_ajax) {
+            //update pagination
+            $('jfusionPostPagination');
+
+            var frm = document.jfusionPaginationForm;
+            var paramString = 'tmpl=component&dbtask=update_pagination&ajax_request=1&threadid=' + threadid;
+            if(frm) {
+                for(var i=0; i<frm.elements.length; i++){
+                    if(frm.elements[i].type=="select-one"){
+                        if(frm.elements[i].options[frm.elements[i].selectedIndex].value) {
+                            paramString = paramString + '&' + frm.elements[i].name + '=' + frm.elements[i].options[frm.elements[i].selectedIndex].value;
+                        }
+                    } else {
+                        paramString = paramString + '&' + frm.elements[i].name + '=' + frm.elements[i].value;
+                    }
+                }
+            }
+            if(jfdb_enable_pagination) {
+                updatepagination.request(paramString);
+            }
+        }
+    } else {
+        showMessage(ajaxstatus,'Error');
+        window.location='#jfusionMessageArea';
+    }
+}
+
 function initializeConfirmationBoxes() {
-	var isArray = (confirmationBoxSlides instanceof Array);
-	if (!isArray) {
-		confirmationBoxSlides = new Array();
+	if (!(confirmationBoxSlides instanceof Array)) {
+		confirmationBoxSlides = [];
 	}
 	var containers = $$('div.jfusionButtonConfirmationBox');
 	if (containers) {
 		for(var i=0; i < containers.length; i++){
 			var divId = containers[i].id;
-		    if (typeof(confirmationBoxSlides[divId]) != 'object') {
-		    	confirmationBoxSlides[divId] = new Fx.Slide(divId);
-		    	confirmationBoxSlides[divId].hide();    	
-		    }
+            if (typeof (confirmationBoxSlides[divId]) != 'object') {
+                confirmationBoxSlides[divId] = new Fx.Slide(divId);
+                confirmationBoxSlides[divId].hide();
+            }
 		}
 	}
 }
@@ -290,7 +329,7 @@ function showMessage(msg, type)
     ajaxErrorSlide.hide();
     
     msgDiv.innerHTML = msg;
-    msgArea.setAttribute('class','jfusion'+type+'Message');    	
+    msgArea.setAttribute('class','jfusion'+type+'Message');
 
     if (type == 'Error') {
         ajaxErrorSlide.slideIn();
@@ -363,12 +402,12 @@ function confirmThreadAction(id,task,vars,url) {
 	
     //create a div for the buttons
     var divBtnContainer = new Element('div', {
-    	styles: {
-    		display: 'block',
-    		textAlign: 'right',
-    		marginTop: '5px',
-    		marginBottom: '5px'
-    	}
+        styles: {
+            display: 'block',
+            textAlign: 'right',
+            marginTop: '5px',
+            marginBottom: '5px'
+        }
     });
     
     //create standard cancel button
@@ -394,9 +433,9 @@ function confirmThreadAction(id,task,vars,url) {
 			},
 			events: {
 				click: function() {
-			        $('JFusionTaskForm').articleId.value = id;
-			        $('JFusionTaskForm').dbtask.value = task;
-			        $('JFusionTaskForm').submit();
+                    $('JFusionTaskForm').articleId.value = id;
+                    $('JFusionTaskForm').dbtask.value = task;
+                    $('JFusionTaskForm').submit();
 				}
 			}
 		}).inject(divBtnContainer);
@@ -424,9 +463,9 @@ function confirmThreadAction(id,task,vars,url) {
 			},	
 			events: {
 				click: function() {
-	                $('JFusionTaskForm').articleId.value = id;
-	                $('JFusionTaskForm').dbtask.value = 'create_thread';
-	                $('JFusionTaskForm').submit();
+                    $('JFusionTaskForm').articleId.value = id;
+                    $('JFusionTaskForm').dbtask.value = 'create_thread';
+                    $('JFusionTaskForm').submit();
 				}
 			}
 		}).inject(divBtnContainer);
@@ -463,9 +502,11 @@ function clearConfirmationBox(id) {
 
 function submitAjaxRequest(id, task, vars, url) {
 	clearConfirmationBox(id);
-	
+
+    var performTask;
+
     if (jfdb_isJ16) {
-        var performTask = new Request.HTML({
+        performTask = new Request.HTML({
             url: url,
             method: 'post',
             update: $('jfusionButtonArea'+id),
@@ -473,7 +514,7 @@ function submitAjaxRequest(id, task, vars, url) {
                 if ($('discussion')) {
                     updateMainContent.post('tmpl=component&ajax_request=1&dbtask=update_content&threadid=' + threadid);
                 } else if (typeof jfdb_debug != 'undefined') {
-                	updateDebugInfo.post('tmpl=component&ajax_request=1&dbtask=update_debug_info&articleId='+id+vars);
+                    updateDebugInfo.post('tmpl=component&ajax_request=1&dbtask=update_debug_info&articleId='+id+vars);
                 }
             }
         });
@@ -481,35 +522,30 @@ function submitAjaxRequest(id, task, vars, url) {
         performTask.post('tmpl=component&ajax_request=1&dbtask='+task+'&threadid=' + threadid + '&articleId='+id+vars);
 
     } else {
-        var performTask = new Ajax(url, {
+        performTask = new Ajax(url, {
             method: 'post',
             update: $('jfusionButtonArea'+id),
             onComplete: function() {
                 if ($('discussion')) {
                     updateMainContent.request('tmpl=component&ajax_request=1&dbtask=update_content&threadid=' + threadid);
                 } else if (typeof jfdb_debug != 'undefined') {
-                	updateDebugInfo.request('tmpl=component&ajax_request=1&dbtask=update_debug_info&threadid=' + threadid + '&articleId='+id+vars);
+                    updateDebugInfo.request('tmpl=component&ajax_request=1&dbtask=update_debug_info&threadid=' + threadid + '&articleId='+id+vars);
                 }
             }
         });
         performTask.request('tmpl=component&ajax_request=1&dbtask='+task+'&threadid=' + threadid + '&articleId='+id+vars);
     }
-    var updateDebugInfo;
-    if (jfdb_isJ16) {
-        updateDebugInfo = new Request.HTML({
-            url: url,
-            method: 'post',
-            update: $('jfusionDebugContainer' + id)
-        });
-    } else {
-        updateDebugInfo = new Ajax(url, {
-            method: 'post',
-            update: $('jfusionDebugContainer' + id)
-        });
-    }            
+    var updateDebugInfo = jfdb_isJ16 ? new Request.HTML({
+        url: url,
+        method: 'post',
+        update: $('jfusionDebugContainer' + id)
+    }) : new Ajax(url, {
+        method: 'post',
+        update: $('jfusionDebugContainer' + id)
+    });
     
     if (jfdb_isJ16) {
-        new Request.HTML({
+        Request.HTML({
             url: url,
             method: 'post',
             update: $('discussion'),
@@ -517,29 +553,29 @@ function submitAjaxRequest(id, task, vars, url) {
                 if (task=='unpublish_discussion') {
                     $('discussion').setStyle('display','none');
                 } else if (task=='publish_discussion') {
-                	initializeDiscussbot();
-                	toggleDiscussionVisibility('1');
+                    initializeDiscussbot();
+                    toggleDiscussionVisibility('1');
                 }
                 
                 if (typeof jfdb_debug != 'undefined') {
-                	updateDebugInfo.post('tmpl=component&ajax_request=1&dbtask=update_debug_info&threadid=' + threadid + '&articleId='+id+vars);
+                    updateDebugInfo.post('tmpl=component&ajax_request=1&dbtask=update_debug_info&threadid=' + threadid + '&articleId='+id+vars);
                 }
             }
         });
     } else {
-        new Ajax(url, {
+        Ajax(url, {
             method: 'post',
             update: $('discussion'),
             onComplete: function() {
                 if (task=='unpublish_discussion') {
                     $('discussion').setStyle('display','none');
                 } else if (task=='publish_discussion') {
-                	initializeDiscussbot();
-                	toggleDiscussionVisibility('1');
+                    initializeDiscussbot();
+                    toggleDiscussionVisibility('1');
                 }
                 
                 if (typeof jfdb_debug != 'undefined') {
-                	updateDebugInfo.request('tmpl=component&ajax_request=1&dbtask=update_debug_info&threadid=' + threadid + '&articleId='+id+vars);
+                    updateDebugInfo.request('tmpl=component&ajax_request=1&dbtask=update_debug_info&threadid=' + threadid + '&articleId='+id+vars);
                 }                        
             }
         });
@@ -566,9 +602,9 @@ function toggleDiscussionVisibility() {
     if (override!==null) {
         showdiscussion = override;
     }
-
+    var setdiscussionvisibility;
     if (jfdb_isJ16) {
-        var setdiscussionvisibility = new Request.HTML({
+        setdiscussionvisibility = new Request.HTML({
             url: jfdb_article_url,
             method: 'get',
             onComplete: function() {
@@ -579,7 +615,7 @@ function toggleDiscussionVisibility() {
         });
         setdiscussionvisibility.post('tmpl=component&ajax_request=1&show_discussion='+showdiscussion);
     } else {
-        var setdiscussionvisibility = new Ajax(jfdb_article_url, {
+        setdiscussionvisibility = new Ajax(jfdb_article_url, {
             method: 'get',
             onComplete: function() {
                 if (discusslink!==null) {

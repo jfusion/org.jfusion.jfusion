@@ -438,16 +438,16 @@ class JFusionForum_phpbb3 extends JFusionForum {
 		return $results;
     }
 
-     /**
-      * Creates new thread and posts first post
-      *
-      * @param JParameter &$dbparams with discussion bot parameters
-      * @param object &$contentitemm object containing content information
-      * @param int $forumid Id of forum to create thread
-      * @param array &$status contains errors and status of actions
-      *
-      * @return void
-      */
+    /**
+     * Creates new thread and posts first post
+     *
+     * @param JParameter &$dbparams with discussion bot parameters
+     * @param object &$contentitem
+     * @param int $forumid Id of forum to create thread
+     * @param array &$status contains errors and status of actions
+     *
+     * @return void
+     */
 	function createThread(&$dbparams, &$contentitem, $forumid, &$status)
 	{
 		//setup some variables
@@ -869,7 +869,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 		if($dbparams->get('enable_pagination',true)) {
 			$application = JFactory::getApplication() ;
 			$limitstart = JRequest::getInt( 'limitstart_discuss', 0 );
-			$limit = $application->getUserStateFromRequest( 'global.list.limit', 'limit_discuss', 5, 'int' );
+			$limit = (int) $application->getUserStateFromRequest( 'global.list.limit', 'limit_discuss', 5, 'int' );
 			$jdb->setQuery($query,$limitstart,$limit);
 		} else {
 			$limit_posts = $dbparams->get('limit_posts');
