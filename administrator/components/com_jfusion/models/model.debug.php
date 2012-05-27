@@ -245,34 +245,34 @@ class debug {
                     	list($target,$function,$args) = debug::$callback;
 						list($style,$value) = $target->$function($key,$value,$args);
                     }
-                    $str.= '<span class="$keyClass" style="'.$style.'">' . debug::decorateValue($key) . '</span>'."\n";
-                    $str.= '<span class="value" style="'.$style.'" >' . debug::decorateValue($value) . '</span><br/>'."\n";
+                    $str.= '<span class="$keyClass" style="'.$style.'">' . debug::decorateValue($key) . '</span>';
+                    $str.= '<span class="value" style="'.$style.'" >' . debug::decorateValue($value) . '</span><br/>';
                 }
             } else {
-                $onClick = "";
-                if (debug::$toggleFunctionName != "") $onClick = "onclick='" . debug::$toggleFunctionName . "(event)'";
-                $str.= "<table class='grid' width='100%'>\n";
-                if ($name != "") {
-                    $str.= "<thead $onClick><tr><th colspan='2' class='title'>$name</th></tr></thead>\n";
+                $onClick = '';
+                if (debug::$toggleFunctionName != '') $onClick = "onclick='" . debug::$toggleFunctionName . "(event)'";
+                $str.= '<table class="grid" width="100%">';
+                if ($name != '') {
+                    $str.= '<thead '.$onClick.'><tr><th colspan="2" class="title">'.$name.'</th></tr></thead>';
                 }
-                $str.= "<tbody>\n";
+                $str.= '<tbody>';
                 if (count($arr) == 0) {
-                    $str.= "   <tr><td colspan='2' class='$keyClass'>$emptyWhat</td></tr>\n";
+                    $str.= '<tr><td colspan="2" class="'.$keyClass.'">$emptyWhat</td></tr>';
                 }
                 foreach ($arr as $key => $value) {
-                    $str.= "   <tr>\n";
-                    $str.= "      <td class='$keyClass' $onClick>" . debug::decorateValue($key) . "</td>\n";
-                    $str.= "      <td class='value'>" . debug::get($value, false) . "</td>\n";
-                    $str.= "   </tr>\n";
+                    $str.= '<tr>';
+                    $str.= '<td class="'.$keyClass.'" $onClick>'.debug::decorateValue($key).'</td>';
+                    $str.= '<td class="value">'.debug::get($value, false).'</td>';
+                    $str.= '</tr>';
                 }
-                $str.= "</tbody></table>\n";
+                $str.= '</tbody></table>';
             }
             if ($start == true) { // the top-Level run
-                $str.= "</div>\n";
+                $str.= '</div>';
             }
         } else { // the "leave"-run
             $str = debug::decorateValue($arr);
-            if ($name != "") $str = "<div class='debug_0'><table class='grid' width='100%'><thead onclick='tns(event)'><tr><th class='title'>$name </th></tr></thead><tbody><tr><td class='a_key' onclick='tns(event)'> $str </td></tr></tbody></table></div>\n";
+            if ($name != '') $str = '<div class="debug_0"><table class="grid" width="100%"><thead onclick="tns(event)"><tr><th class="title">'.$name.'</th></tr></thead><tbody><tr><td class="a_key" onclick="tns(event)">'.$str.'</td></tr></tbody></table></div>';
             //flush();
 
         }
