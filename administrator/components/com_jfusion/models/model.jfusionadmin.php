@@ -278,10 +278,16 @@ class JFusionFunctionAdmin
         }
     }
 
+    /**
+     * @param bool $includeRev
+     *
+     * @return array
+     */
     function currentVersion($includeRev = false)
     {
         //get the current JFusion version number
         $filename = JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'jfusion.xml';
+        $VersionCurrent = $RevisionCurrent = 0;
         if (file_exists($filename) && is_readable($filename)) {
             //get the version number
             $parser = JFactory::getXMLParser('Simple');
@@ -290,10 +296,8 @@ class JFusionFunctionAdmin
 
             if($includeRev) {
                 $RevisionCurrent = $parser->document->revision[0]->data();
-                return array($VersionCurrent, $RevisionCurrent);
-            } else {
-                return $VersionCurrent;
             }
         }
+        return array($VersionCurrent, $RevisionCurrent);
     }
 }

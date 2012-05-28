@@ -737,7 +737,7 @@ class JFusionAdmin
 	{
 		$jname = $this->getJname();
 		$action = JRequest::getVar('action');
-		$VersionCurrent = JFusionFunctionAdmin::currentVersion();
+		list($VersionCurrent) = JFusionFunctionAdmin::currentVersion();
 	
 		$output = '<input name="file" size="60" type="file"><br/>
 		<table style="border: 0px;"><tr style="padding: 0px;"><td style="padding: 0px; width: 150px;">'.JText::_('DATABASE_TYPE').'</td><td style="padding: 0px;"><input name="database_type" id="database_type" value="" class="text_area" size="20" type="text"></td></tr>
@@ -921,7 +921,8 @@ class JFusionAdmin
 			$xml->loadString('<jfusionconfig></jfusionconfig>');
 	
 			$info = $xml->document->addChild('info');
-			$info->addAttribute  ('jfusionversion',  JFusionFunctionAdmin::currentVersion());
+            list($VersionCurrent) = JFusionFunctionAdmin::currentVersion();
+			$info->addAttribute  ('jfusionversion', $VersionCurrent);
 	
 			//get the current JFusion version number
 			$filename = JFUSION_PLUGIN_PATH .DS.$jname.DS.'jfusion.xml';
