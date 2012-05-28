@@ -981,8 +981,6 @@ JS;
             exit();
         }
 
-        $document =& JFactory::getDocument();
-
         $js = <<<JS
         function doExport() {
             document.adminForm.action.value='export';
@@ -990,7 +988,7 @@ JS;
             submitbutton('plugineditor');
         }
 JS;
-
+        $document =& JFactory::getDocument();
         $document->addScriptDeclaration($js);
 
         $output = JText::_('EXPORT_DATABASE_INFO').' <input name="dbinfo" type="checkbox"><br/>';

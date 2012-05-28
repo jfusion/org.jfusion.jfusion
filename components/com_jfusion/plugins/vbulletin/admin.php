@@ -251,37 +251,39 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
     {
         static $jsSet;
         if (empty($jsSet)) {
-            $js = "<script language=\"javascript\" type=\"text/javascript\">\n";
-            $js.= "<!--\n";
-            $js.= "function toggleHook(hook, action) {\n";
-            $js.= "var form = $('adminForm');\n";
-			if (JFusionFunction::isJoomlaVersion('1.6')) {
-            	$js.= "var itemid=document.getElementById('params[plugin_itemid]_id0');";				
-			} else {
-				$js.= "var itemid=document.getElementById('plugin_itemid_id0');";
-			}
-	        $js.= "if ((action=='enable' || action=='reenable') && (hook=='frameless' || hook=='redirect') && (itemid.value=='' || itemid.value=='0')) {\n";
-            $js.= "alert('" . JText::_('VB_REDIRECT_ITEMID_EMPTY') . "');\n";
-            $js.= "return false;\n";
-            $js.= "}\n";
-            $js.= "form.customcommand.value = 'toggleHook';\n";
-			if (JFusionFunction::isJoomlaVersion('1.6')) {
-            	$js.= "var fieldname=document.getElementById('params_hook_name');";
-				$js.= "var fieldaction=document.getElementById('params_hook_action');";
-			} else {
-            	$js.= "var fieldname=document.getElementById('paramshook_name');";
-				$js.= "var fieldaction=document.getElementById('paramshook_action');";
-			}
-            $js.= "fieldname.value = hook;\n";
-            $js.= "fieldaction.value = action;\n";
-            $js.= "form.action.value = 'apply';\n";
-            $js.= "submitform('saveconfig')\n";
-            $js.= "return;\n";
-            $js.= "}\n";
-            $js.= "//-->\n";
-            $js.= "</script>\n";
+            if (JFusionFunction::isJoomlaVersion('1.6')) {
+                $itemid = 'params[plugin_itemid]_id0';
+                $fieldname = 'params_hook_name';
+                $fieldaction = 'params_hook_action';
+            } else {
+                $itemid = 'plugin_itemid_id0';
+                $fieldname = 'paramshook_name';
+                $fieldaction = 'paramshook_action';
+            }
+
+            $empty = JText::_('VB_REDIRECT_ITEMID_EMPTY');
+
+            $js = <<<JS
+            function toggleHook(hook, action) {
+                var form = $('adminForm');
+                var itemid=document.getElementById('${itemid}');
+                if ((action=='enable' || action=='reenable') && (hook=='frameless' || hook=='redirect') && (itemid.value=='' || itemid.value=='0')) {
+                    alert('${empty}');
+                } else {
+                    form.customcommand.value = 'toggleHook';
+                    var fieldname=document.getElementById('${fieldname}');
+                    var fieldaction=document.getElementById('${fieldaction}');
+                    fieldname.value = hook;
+                    fieldaction.value = action;
+                    form.action.value = 'apply';
+                    submitform('saveconfig');
+                }
+                return false;
+            }
+JS;
             $document = JFactory::getDocument();
-            $document->addCustomTag($js);
+            $document->addScriptDeclaration($js);
+
             $jsSet = true;
         }
         $db = & JFusionFactory::getDatabase($this->getJname());
