@@ -1447,16 +1447,16 @@ class JFusionJplugin
      * Update the language front end param in the account of the user if this one changes it
      * NORMALLY THE LANGUAGE SELECTION AND CHANGEMENT FOR JOOMLA IS PROVIDED BY THIRD PARTY LIKE JOOMFISH
      *
+     * @param string $jname jname
      * @param object $userinfo userinfo
      *
      * @return array status
      */
-    function setLanguageFrontEnd($userinfo)
+    public static function setLanguageFrontEnd($jname, $userinfo)
     {
         $status = array();
         $status['error'] = '';
         $status['debug'] = '';
-        $jname = $this->getJname();
         $existinguser = (isset($userinfo)) ? JFusionJplugin::getUser($userinfo, $jname) : null;
         // If the user is connected we change his account parameter in function of the language front end
         if ($existinguser) {
