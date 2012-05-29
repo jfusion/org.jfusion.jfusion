@@ -56,7 +56,7 @@ class JFormFieldDiscussionbotparam extends JFormField
         }
 
 	 	if(empty($jname)) {
-	 		return "<span style='float:left; margin: 5px 0; font-weight: bold;'>".JText::_('NO_PLUGIN_SELECT')."</span>";
+	 		return '<span style="float:left; margin: 5px 0; font-weight: bold;">'.JText::_('NO_PLUGIN_SELECT').'</span>';
 	 	} else {
 	 		static $db_js_loaded;
 	 		if(empty($db_js_loaded)) {
@@ -77,13 +77,13 @@ JS;
 			$link = 'index.php?option=com_jfusion&amp;task=discussionbot&amp;tmpl=component&amp;jname='.$jname.'&amp;ename='.$name.'&amp;'.$name.'='.$value;
 
 			JHTML::_('behavior.modal', 'a.modal');
-			$html  = '<div class="button2-left"><div class="blank"><a class="modal" id="'.$name.'_link" title="'.JText::_('ASSIGN_PAIRS').'"  href="'.$link.'" rel="{handler: \'iframe\', size: {x: 650, y: 375}}">'.JText::_('ASSIGN_PAIRS').'</a></div></div>'."\n";
+			$html  = '<div class="button2-left"><div class="blank"><a class="modal" id="'.$name.'_link" title="'.JText::_('ASSIGN_PAIRS').'"  href="'.$link.'" rel="{handler: \'iframe\', size: {x: 650, y: 375}}">'.JText::_('ASSIGN_PAIRS').'</a></div></div>';
 			if(!empty($params[$name])) {
 				$src = "components/com_jfusion/images/tick.png";
 			} else {
 				$src = "components/com_jfusion/images/clear.png";
 			}
-			$html .= '<img id="'.$name.'_img" src="'.$src.'"><input type="hidden" id="'.$name.'_id" name="'.$fieldName.'" value="'.$value.'" />'."\n";
+			$html .= '<img id="'.$name.'_img" src="'.$src.'"><input type="hidden" id="'.$name.'_id" name="'.$fieldName.'" value="'.$value.'" />';
 
 			return $html;
 	 	}
