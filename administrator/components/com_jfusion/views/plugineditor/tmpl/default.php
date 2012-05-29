@@ -351,9 +351,11 @@ class JFusionAdmin_universal extends JFusionAdmin{
         $map = JFusionMap::getInstance($this->getJname());
         $list = $map->getField();
 
-        $output = 'var TypeAry = '.json_encode($list).';';
+        $list = json_encode($list);
 
-        $output .= <<<JS
+        $output = <<<JS
+        var TypeAry = '${list}';
+
         function changefield(ref,name,parmtype) {
             var id = $(name);
             id.innerHTML = '';
