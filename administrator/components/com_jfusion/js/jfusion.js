@@ -33,19 +33,20 @@ function submitbutton4(pressbutton) {
 
 
 function setCheckedValue(radioObj, newValue) {
+    var i;
 	if (radioObj) {
         var radioLength = radioObj.length;
         if (radioLength === undefined) {
             radioObj.checked = (radioObj.value == newValue.toString());
         } else {
-            for (var i= 0; i < radioLength; i++) {
+            for (i = 0; i < radioLength; i++) {
                 radioObj[i].checked = radioObj[i].value == newValue.toString();
             }
         }
     }
 }
 
-function setSort(col){
+function setSort(col) {
 	var form = $('adminForm');
 	var prevCol = form.log_sort.value;
 	if (prevCol == col) {
@@ -58,21 +59,21 @@ function setSort(col){
     } else {
         form.log_dir.value = '1';
     }
-	form.log_sort.value=col;
+	form.log_sort.value = col;
 	form.submit();
 }
 
 function getCheckedValue(radioObj) {
-    var r = "";
-	if(radioObj) {
+    var r = "", i;
+	if (radioObj) {
         var radioLength = radioObj.length;
-        if(radioLength === undefined) {
-            if(radioObj.checked) {
+        if (radioLength === undefined) {
+            if (radioObj.checked) {
                 r = radioObj.value;
             }
         } else {
-            for(var i = 0; i < radioLength; i++) {
-                if(radioObj[i].checked) {
+            for (i = 0; i < radioLength; i++) {
+                if (radioObj[i].checked) {
                     r = radioObj[i].value;
                 }
             }
@@ -83,16 +84,16 @@ function getCheckedValue(radioObj) {
 
 function doImport(jname) {
     var form = $('adminForm');
-    form.action.value='import';
-    form.jname.value=jname;
-    form.encoding='multipart/form-data';
+    form.action.value = 'import';
+    form.jname.value = jname;
+    form.encoding = 'multipart/form-data';
     submitbutton('plugineditor');
 }
 
 function doExport(jname) {
     var form = $('adminForm');
-    form.action.value='export';
-    form.jname.value=jname;
+    form.action.value = 'export';
+    form.jname.value = jname;
     submitbutton('plugineditor');
 }
 
@@ -103,17 +104,15 @@ function module(action) {
     submitform('saveconfig');
 }
 
-function usergroupSelect(option)
-{
-    document.getElementById("JFusionUsergroup").innerHTML = myArray[option];
+function usergroupSelect(option) {
+    $('JFusionUsergroup').innerHTML = myArray[option];
 }
 
-function multiUsergroupSelect(option)
-{
+function multiUsergroupSelect(option) {
     usergroupSelect(option);
 
-    var addgroupset = document.getElementById('addgroupset');
-    if (option== 1) {
+    var addgroupset = $('addgroupset');
+    if (option == 1) {
         addgroupset.style.display = 'block';
     } else {
         addgroupset.style.display = 'none';
@@ -121,7 +120,7 @@ function multiUsergroupSelect(option)
 }
 
 if (typeof Joomla != 'undefined') {
-	Joomla.submitbutton = function(pressbutton) {
+	Joomla.submitbutton = function (pressbutton) {
         if (pressbutton == 'applyconfig') {
             $('adminForm').action.value = 'apply';
             submitform('saveconfig');
@@ -129,26 +128,24 @@ if (typeof Joomla != 'undefined') {
             submitform(pressbutton);
         }
 	};
-	
-	Joomla.getCheckedValue = function(radioObj) {
+
+	Joomla.getCheckedValue = function (radioObj) {
 		return getCheckedValue(radioObj);
 	};
-	
-	
-	Joomla.submitbutton3 = function(pressbutton){
+
+	Joomla.submitbutton3 = function (pressbutton) {
         return submitbutton3(pressbutton);
 	};
-	
-	Joomla.submitbutton4 = function(pressbutton)
-	{
+
+	Joomla.submitbutton4 = function (pressbutton) {
         return submitbutton4(pressbutton);
 	};
-	
-	Joomla.setCheckedValue= function(radioObj, newValue) {
+
+	Joomla.setCheckedValue = function (radioObj, newValue) {
 		return setCheckedValue(radioObj, newValue);
 	};
-	
-	Joomla.setSort = function(col){
+
+	Joomla.setSort = function (col) {
 		return setSort(col);
 	};
 }

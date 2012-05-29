@@ -724,7 +724,7 @@ echo '<br/>' . JText::_('POST_INSTALL_PLUGIN_OPTIONS') . '<br/><br/>';
 
             //prepare toolbar
             $bar = new JToolBar('toolbar');
-            $bar->appendButton('Link', 'apply', JText::_('INSTALL'), 'javascript:document.getElementById(\'pluginForm\').submit();');
+            $bar->appendButton('Link', 'apply', JText::_('INSTALL'), 'javascript: $(\'pluginForm\').submit();');
             $bar->appendButton( 'Link', 'options', 'CPanel', 'index.php?option=com_jfusion&task=plugindisplay' );
             echo $bar->render();?>
 <br/><br/><br/>            

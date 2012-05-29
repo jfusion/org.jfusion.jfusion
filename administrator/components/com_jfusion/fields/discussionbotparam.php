@@ -60,15 +60,16 @@ class JFormFieldDiscussionbotparam extends JFormField
 	 	} else {
 	 		static $db_js_loaded;
 	 		if(empty($db_js_loaded)) {
-				$js = "
-				function jDiscussionParamSet(name, base64) {
-					var link = 'index.php?option=com_jfusion&task=discussionbot&tmpl=component&jname={$jname}&ename='+name+'&'+name+'=';
+                $js = <<<JS
+                function jDiscussionParamSet(name, base64) {
+					var link = 'index.php?option=com_jfusion&task=discussionbot&tmpl=component&jname=${jname}&ename='+name+'&'+name+'=';
 					link += base64;
-					document.getElementById(name + '_id').value = base64;
-					document.getElementById(name + '_link').href = link;
-					document.getElementById(name + '_img').src = 'components/com_jfusion/images/filesave.png';
+					$(name + '_id').value = base64;
+					$(name + '_link').href = link;
+					$(name + '_img').src = 'components/com_jfusion/images/filesave.png';
 					SqueezeBox.close();
-				}";
+				}
+JS;
 				$doc->addScriptDeclaration($js);
 				$db_js_loaded = 1;
 	 		}

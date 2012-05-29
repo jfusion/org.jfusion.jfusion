@@ -355,7 +355,7 @@ class JFusionAdmin_universal extends JFusionAdmin{
 
         $output .= <<<JS
         function changefield(ref,name,parmtype) {
-            var id = document.getElementById(name);
+            var id = $(name);
             id.innerHTML = '';
 
             if ( TypeAry[ref.value].types !== undefined ) {

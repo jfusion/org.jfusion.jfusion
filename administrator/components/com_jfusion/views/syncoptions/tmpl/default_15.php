@@ -39,11 +39,12 @@ JFusionFunctionAdmin::displayDonate();
 
                 onComplete: function() {
                     // when complete, check to see if we should stop the countdown
-                    var divcontent = document.getElementById('log_res').innerHTML;
+                    var divcontent = $('log_res').innerHTML;
                     if (divcontent.search(/finished/) != -1) {
                         // let's stop our timed ajax
                         $clear(periodical);
-                        document.getElementById("counter").innerHTML = '<b><?php echo JText::_('FINISHED'); ?></b>';
+                        $('counter').innerHTML = '<b><?php echo JText::_('FINISHED'); ?></b>';
+
                     }
 
                 }
@@ -57,7 +58,7 @@ JFusionFunctionAdmin::displayDonate();
                 //add another second to the counter
                 counter -= 1;
                 if (counter < 1) {
-                    var divcontent = document.getElementById('log_res').innerHTML;
+                    var divcontent = $('log_res').innerHTML;
                     if (divcontent.search(/finished/) == -1) {
                         counter = timeupdate;
                         // dummy to prevent caching of php
@@ -77,11 +78,11 @@ JFusionFunctionAdmin::displayDonate();
                     } else {
                         // let's stop our timed ajax
                         $clear(periodical);
-                        document.getElementById("counter").innerHTML = '<?php echo JText::_('FINISHED'); ?>';
+                        $("counter").innerHTML = '<?php echo JText::_('FINISHED'); ?>';
                     }
                 } else {
                     //update the counter
-                    document.getElementById("counter").innerHTML = '<b><?php echo JText::_('UPDATE_IN'); ?> ' + counter + ' <?php echo JText::_('SECONDS'); ?></b>';
+                    $("counter").innerHTML = '<b><?php echo JText::_('UPDATE_IN'); ?> ' + counter + ' <?php echo JText::_('SECONDS'); ?></b>';
                 }
             });
 

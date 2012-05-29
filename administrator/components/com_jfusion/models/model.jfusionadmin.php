@@ -178,10 +178,9 @@ class JFusionFunctionAdmin
         <input type="hidden" name="tax" value="0" /> 
         <input type="hidden" name="lc" value="AU" /> 
         <input type="hidden" name="bn" value="PP-DonationsBF" /> 
-        <a class="navButton" href="#" onclick="document.getElementById('ppform').submit();return false"></a>
+        <a class="navButton" href="#" onclick="$('ppform').submit();return false"></a>
         </form>
-        </div>  
-        
+        </div>
         </td></tr></table>
         <?php
     }

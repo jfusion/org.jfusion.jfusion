@@ -1,11 +1,11 @@
 <?php
 
 /**
-* @package JFusion_universal
-* @author JFusion development team
-* @copyright Copyright (C) 2008 JFusion. All rights reserved.
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
-*/
+ * @package JFusion_universal
+ * @author JFusion development team
+ * @copyright Copyright (C) 2008 JFusion. All rights reserved.
+ * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ */
 
 // no direct access
 defined('_JEXEC' ) or die('Restricted access' );
@@ -47,21 +47,21 @@ class JFusionAdmin_universal extends JFusionAdmin{
     function getUsergroupList()
     {
         $params = JFusionFactory::getParams($this->getJname());
-		$usergroupmap = $params->get('usergroupmap');
+        $usergroupmap = $params->get('usergroupmap');
 
         $usergrouplist = array();
-		if ( is_array($usergroupmap) ) {
-			foreach ($usergroupmap['value'] as $key => $value) {
-	         	//append the default usergroup
-	         	$default_group = new stdClass;
-	         	$value = html_entity_decode($value);
-	            $default_group->id = base64_encode($value);
-	            $default_group->name = $usergroupmap['name'][$key];
-	            $usergrouplist[] = $default_group;
-      		}
-    	}
-     	return $usergrouplist;
-	}
+        if ( is_array($usergroupmap) ) {
+            foreach ($usergroupmap['value'] as $key => $value) {
+                //append the default usergroup
+                $default_group = new stdClass;
+                $value = html_entity_decode($value);
+                $default_group->id = base64_encode($value);
+                $default_group->name = $usergroupmap['name'][$key];
+                $usergrouplist[] = $default_group;
+            }
+        }
+        return $usergrouplist;
+    }
 
     /**
      * @return null|string
@@ -85,9 +85,9 @@ class JFusionAdmin_universal extends JFusionAdmin{
      */
     function getUserList()
     {
-    	$map = JFusionMap::getInstance($this->getJname());
-    	$f = array('USERNAME', 'EMAIL', 'USERNAMEEMAIL');
-    	$field = $map->getQuery($f);
+        $map = JFusionMap::getInstance($this->getJname());
+        $f = array('USERNAME', 'EMAIL', 'USERNAMEEMAIL');
+        $field = $map->getQuery($f);
 
         // initialise some objects
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -130,8 +130,8 @@ class JFusionAdmin_universal extends JFusionAdmin{
     function mapuser($name, $value, $node, $control_name)
     {
         $map = JFusionMap::getInstance($this->getJname());
-        $value = $map->getMapRaw('user');
 
+        $value = $map->getMapRaw('user');
 
         return $this->map('map', $value, $node, $control_name,'user');
     }
@@ -144,9 +144,9 @@ class JFusionAdmin_universal extends JFusionAdmin{
      * @return string
      */
     function user_auth($name, $value, $node, $control_name)
-    {    	
-    	$output = '<textarea name="'.$control_name.'['.$name.']" rows="20" cols="55">'.$value.'</textarea>';
-    	return $output;
+    {
+        $output = '<textarea name="'.$control_name.'['.$name.']" rows="20" cols="55">'.$value.'</textarea>';
+        return $output;
     }
 
     /**
@@ -227,9 +227,15 @@ class JFusionAdmin_universal extends JFusionAdmin{
 
                 $output .= JHTML::_('select.genericlist', $tl, $control_name.'['.$name.']['.$type.'][table]', 'onchange="javascript: submitbutton(\'applyconfig\')"',	'id', 'name', $value['table']);
                 if ( !empty($value['table']) ) {
-                    $output .= '<br>';
+                    $output .= '<table>';
                     foreach ($mapuser as $val) {
-                        $output .= 'Name: '.$val->Field.' ';
+                        $output .= '<tr><td>';
+                        //object(stdClass)#245 (6) { ["Field"]=>  string(2) "id" ["Type"]=>  string(6) "int(5)" ["Null"]=>  string(0) "" ["Key"]=>  string(0) "" ["Default"]=>  string(1) "0" ["Extra"]=>  string(0) "" }
+                        $output .= '<div>Name: '.$val->Field.'</div>';
+                        $output .= '<div>Type: '.$val->Type.'</div>';
+                        $output .= '<div>Default: "'.$val->Default.'"</div>';
+                        $null = $val->Null?JText::_('YES'):JText::_('NO');
+                        $output .= '<div>Null: '.$null.'</div></td><td>';
                         if ( isset($value['field'][$val->Field]) ) {
                             $mapuserfield = $value['field'][$val->Field];
                         } else {
@@ -280,14 +286,9 @@ class JFusionAdmin_universal extends JFusionAdmin{
                                 break;
                         }
                         $output .= '</div>';
-                        //object(stdClass)#245 (6) { ["Field"]=>  string(2) "id" ["Type"]=>  string(6) "int(5)" ["Null"]=>  string(0) "" ["Key"]=>  string(0) "" ["Default"]=>  string(1) "0" ["Extra"]=>  string(0) "" }
-                        $output .= ' Type: '.$val->Type;
-                        $output .= ' Default: "'.$val->Default.'"';
-                        $output .= ' Null: ';
-                        $output .= $val->Null?JText::_('YES'):JText::_('NO');
-
-                        $output .= '<br><br>';
+                        $output .= '</td></tr>';
                     }
+                    $output .= '</table>';
                 }
             } else {
                 $output .= JText::_('SAVE_CONFIG_FIRST');
@@ -307,34 +308,34 @@ class JFusionAdmin_universal extends JFusionAdmin{
      */
     function usergroupmap($name, $value, $node, $control_name)
     {
-		if (!is_array($value)) $value = null;
+        if (!is_array($value)) $value = null;
 
-		$output = '';
+        $output = '';
 
-		if (!is_array($value)) {
-    		$output .= '<input type="text" name="params[usergroupmap][value][0]" id="paramsusergroupmapvalue0" size="50"/>';
-    		$output .= '<input type="text" name="params[usergroupmap][name][0]" id="paramsusergroupmapname0" size="50"/>';
-			$output .= '<div id="paramsusergroupmap"></div>';
-		} else {
-  			$i = 0;
-  			foreach ($value['value'] as $key => $val) {
-	         	$val = htmlentities($val);
-				if ( $i ) $output .= '<div id="paramsusergroupmap'.$i.'">';
-    			$output .= '<input value="'.$val.'" type="text" name="params[usergroupmap][value]['.$i.']" id="paramsusergroupmapvalue'.$i.'" size="50"/>';
-    			$output .= '<input value="'.$value['name'][$key].'" type="text" name="params[usergroupmap][name]['.$i.']" id="paramsusergroupmapname'.$i.'" size="50"/>';
-  				if ( $i ) {
-					$output .= '<a href="javascript:removePair(\'usergroupmap\', \'usergroupmap'.$i.'\');">Delete</a></div>';
-  				} else {
-					$output .= '<div id="paramsusergroupmap">';
-  				}
-    			$i++;
-  			}
-			$output .= '</div>';
-		}
+        if (!is_array($value)) {
+            $output .= '<input type="text" name="params[usergroupmap][value][0]" id="paramsusergroupmapvalue0" size="50"/>';
+            $output .= '<input type="text" name="params[usergroupmap][name][0]" id="paramsusergroupmapname0" size="50"/>';
+            $output .= '<div id="paramsusergroupmap"></div>';
+        } else {
+            $i = 0;
+            foreach ($value['value'] as $key => $val) {
+                $val = htmlentities($val);
+                if ( $i ) $output .= '<div id="paramsusergroupmap'.$i.'">';
+                $output .= '<input value="'.$val.'" type="text" name="params[usergroupmap][value]['.$i.']" id="paramsusergroupmapvalue'.$i.'" size="50"/>';
+                $output .= '<input value="'.$value['name'][$key].'" type="text" name="params[usergroupmap][name]['.$i.']" id="paramsusergroupmapname'.$i.'" size="50"/>';
+                if ( $i ) {
+                    $output .= '<a href="javascript:removePair(\'usergroupmap\', \'usergroupmap'.$i.'\');">Delete</a></div>';
+                } else {
+                    $output .= '<div id="paramsusergroupmap">';
+                }
+                $i++;
+            }
+            $output .= '</div>';
+        }
 
-		$output .= '<div id="addGroupPair" style="display:block;"><a href="javascript:addPair(\'usergroupmap\',50);">Add Another Pair</a></div>';
+        $output .= '<div id="addGroupPair" style="display:block;"><a href="javascript:addPair(\'usergroupmap\',50);">Add Another Pair</a></div>';
 
-		return $output;
+        return $output;
     }
 
     /**
@@ -344,32 +345,22 @@ class JFusionAdmin_universal extends JFusionAdmin{
      * @param $control_name
      * @return string
      */
-    function js($name, $value, $node, $control_name)
-    {
+    function js($name, $value, $node, $control_name) {
         $document =& JFactory::getDocument();
 
-		$map = JFusionMap::getInstance($this->getJname());
+        $map = JFusionMap::getInstance($this->getJname());
         $list = $map->getField();
 
-		$output = $primlist = '';
-        $primlist .= 'var TypeAry = new Array(); ';
-		foreach ($list as $key => $val) {
-			if(isset($val->types) ) {
-				$primlist .= 'TypeAry[\''.$val->id.'\'] = new Array(); ';
-				foreach ($val->types as $k => $v) {
-					$primlist .= 'TypeAry[\''.$val->id.'\']['.$k.'] = [\''.$v->id.'\',\''.$v->name.'\']; ';
-				}
-			}
-		}
+        $list = json_encode($list);
 
-        $output .= 'var jfPlugin = '.json_encode($list).';';
+        $output = <<<JS
+        var TypeAry = '${list}';
 
-//		$output .= $primlist;
-$output .= <<<JS
         function changefield(ref,name,parmtype) {
-            var id = document.getElementById(name);
+            var id = $(name);
             id.innerHTML = '';
-            if ( TypeAry[ref.value] !== undefined ) {
+
+            if ( TypeAry[ref.value].types !== undefined ) {
                 var type = document.createElement("select");
                 type.setAttribute("type", "option");
                 type.setAttribute("id", "paramsmap"+parmtype+"type"+name);
@@ -377,31 +368,25 @@ $output .= <<<JS
                 type.setAttribute("onchange", "javascript: changevalue(this,'"+name+"','"+parmtype+"')");
 
                 type.options.length = 0;
-                for (var i=0;i<TypeAry[ref.value].length;i++) {
-                     type.options[type.options.length] = new Option(TypeAry[ref.value][i][1],TypeAry[ref.value][i][0]);
+                for (var i=0; i<TypeAry[ref.value].types.length; i++) {
+                    type.options[type.options.length] = new Option(TypeAry[ref.value].types[i].name,TypeAry[ref.value].types[i].id);
                 }
                 id.appendChild(type);
             }
         }
         function changevalue(ref,name,parmtype) {
-            var id = document.getElementById(name);
-            var old = document.getElementById("paramsmap"+parmtype+"value"+name);
+            var id = $(name);
 
-            var oldON = document.getElementById("paramsmap"+parmtype+"value"+name+"on");
-            var oldOFF = document.getElementById("paramsmap"+parmtype+"value"+name+"off");
+            if ( $("paramsmap"+parmtype+"value"+name) ) {
+                $("paramsmap"+parmtype+"value"+name).dispose();
+            }
+            if ($("paramsmap"+parmtype+"value"+name+"on")) {
+                $("paramsmap"+parmtype+"value"+name+"on").dispose();
+            }
+            if ($("paramsmap"+parmtype+"value"+name+"off")) {
+                $("paramsmap"+parmtype+"value"+name+"off").dispose();
+            }
 
-            if (oldON) {
-                oldON.remove();
-            }
-            if (oldOFF) {
-                oldOFF.remove();
-            }
-
-            var oldvalue = '';
-            if ( old ) {
-                oldvalue = old.value;
-                old.remove();
-            }
             var value;
             if(ref.value == 'CUSTOM') {
                 value = document.createElement("textarea");
@@ -417,9 +402,7 @@ $output .= <<<JS
                 value.setAttribute("id", "paramsmap"+parmtype+"value"+name);
                 value.setAttribute("name", "params[map]["+parmtype+"][value]["+name+"]");
                 value.setAttribute("size", "100");
-                if ( oldvalue ) {
-                    value.setAttribute("value", oldvalue);
-                } else if (ref.value == 'DATE') {
+                if (ref.value == 'DATE') {
                     value.setAttribute("value", 'Y-m-d H:i:s');
                 }
                 id.appendChild(value);
@@ -429,27 +412,27 @@ $output .= <<<JS
                 value.setAttribute("id", "paramsmap"+parmtype+"value"+name+"on");
                 value.setAttribute("name", "params[map]["+parmtype+"][value]["+name+"][on]");
                 value.setAttribute("size", "40");
+                id.appendChild(value);
 
-                var valueoff = document.createElement("input");
-                valueoff.setAttribute("type", "text");
-                valueoff.setAttribute("id", "paramsmap"+parmtype+"value"+name+"off");
-                valueoff.setAttribute("name", "params[map]["+parmtype+"][value]["+name+"][off]");
-                valueoff.setAttribute("size", "40");
+                value = document.createElement("input");
+                value.setAttribute("type", "text");
+                value.setAttribute("id", "paramsmap"+parmtype+"value"+name+"off");
+                value.setAttribute("name", "params[map]["+parmtype+"][value]["+name+"][off]");
+                value.setAttribute("size", "40");
 
                 id.appendChild(value);
-                id.appendChild(valueoff);
             }
         }
 JS;
         $document->addScriptDeclaration($output);
-		return '';
+        return '';
     }
 
     /**
      * @return string
      */
     function generateRedirectCode()
-	{
+    {
         $params = JFusionFactory::getParams($this->getJname());
         $joomla_params = JFusionFactory::getParams('joomla_int');
         $joomla_url = $joomla_params->get('source_url');
@@ -478,8 +461,8 @@ if(!isset($_COOKIE[\'jfusionframeless\']))';
 }
 //JFUSION REDIRECT END
 ';
-	    return $redirect_code;
-	}
+        return $redirect_code;
+    }
 
     /**
      * @param $name
@@ -490,18 +473,18 @@ if(!isset($_COOKIE[\'jfusionframeless\']))';
      */
     function show_redirect_mod($name, $value, $node, $control_name)
     {
-		$action = JRequest::getVar('action');
-		if ($action == 'redirectcode') {
- 			header('Content-disposition: attachment; filename=jfusion_'.$this->getJname().'_redirectcode.txt');
- 			header('Pragma: no-cache');
-			header('Expires: 0');
-			header ("content-type: text/html");
+        $action = JRequest::getVar('action');
+        if ($action == 'redirectcode') {
+            header('Content-disposition: attachment; filename=jfusion_'.$this->getJname().'_redirectcode.txt');
+            header('Pragma: no-cache');
+            header('Expires: 0');
+            header ("content-type: text/html");
 
-			echo $this->generateRedirectCode();
-			exit();
-		}
+            echo $this->generateRedirectCode();
+            exit();
+        }
 
-		$output = ' <a href="index.php?option=com_jfusion&amp;task=plugineditor&amp;jname='.$this->getJname().'&amp;action=redirectcode">' . JText::_('MOD_ENABLE_MANUALLY') . '</a>';
-		return $output;
-    }    
+        $output = ' <a href="index.php?option=com_jfusion&amp;task=plugineditor&amp;jname='.$this->getJname().'&amp;action=redirectcode">' . JText::_('MOD_ENABLE_MANUALLY') . '</a>';
+        return $output;
+    }
 }

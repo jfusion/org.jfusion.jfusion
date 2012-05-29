@@ -266,13 +266,13 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
             $js = <<<JS
             function toggleHook(hook, action) {
                 var form = $('adminForm');
-                var itemid=document.getElementById('${itemid}');
+                var itemid=$('${itemid}');
                 if ((action=='enable' || action=='reenable') && (hook=='frameless' || hook=='redirect') && (itemid.value=='' || itemid.value=='0')) {
                     alert('${empty}');
                 } else {
                     form.customcommand.value = 'toggleHook';
-                    var fieldname=document.getElementById('${fieldname}');
-                    var fieldaction=document.getElementById('${fieldaction}');
+                    var fieldname=$('${fieldname}');
+                    var fieldaction=$('${fieldaction}');
                     fieldname.value = hook;
                     fieldaction.value = action;
                     form.action.value = 'apply';
@@ -695,7 +695,7 @@ JS;
         $js.= "function toggleSecondaryGroups(vbid,masterid){\n";
         $js.= "var groups = new Array(" . implode(',', $jsGroups) . ");\n";
         $js.= "for(i=0; i<groups.length; i++){\n";
-        $js.= "var element = document.getElementById('vbgroup'+masterid+'-'+groups[i]);\n";
+        $js.= "var element = $('vbgroup'+masterid+'-'+groups[i]);\n";
         $js.= "if (element.value==vbid){\n";
         $js.= "element.disabled = true;\n";
         $js.= "element.checked = false;\n";

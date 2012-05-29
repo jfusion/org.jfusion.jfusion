@@ -381,7 +381,8 @@ class JFusionAdmin
             var myArray = [];
             myArray[0] = '${simple_usergroup}';
             myArray[1] = '${advanced_usergroup}';
-            document.getElementById("JFusionUsergroup").innerHTML = myArray[option];
+
+            $('JFusionUsergroup').innerHTML = myArray[option];
         }
 JS;
         $document->addScriptDeclaration($js);
@@ -575,9 +576,9 @@ JS;
 	            var myArray = new Array();
 	            myArray[0] = '<?php echo $simple_usergroup; ?>';
 	            myArray[1] = '<?php echo $advanced_usergroup; ?>';
-	            document.getElementById("JFusionUsergroup").innerHTML = myArray[option];
+	            $('JFusionUsergroup').innerHTML = myArray[option];
 
-	            var addgroupset = document.getElementById('addgroupset');
+	            var addgroupset = $('addgroupset');
 	            if (option== 1) {
 	            	addgroupset.style.display = 'block';
 	            } else {
@@ -620,12 +621,13 @@ JS;
 	        	elTrNew.appendChild(elTdjname);
 	        	elTrNew.appendChild(elTddefault);
 	        	elTrNew.appendChild(elTdremove);
-	        	var divEls = document.getElementById("usergroups");
+
+	        	var divEls = $('usergroups');
 	        	divEls.appendChild(elTrNew);
 	        }
 
 	        function removeRow(row) {
-	        	var trEl = document.getElementById("usergroups_row"+row);
+	        	var trEl = $("usergroups_row"+row);
 	        	trEl.style.display = 'none';
 	        	trEl.innerHTML = '';
 	        }
@@ -748,16 +750,28 @@ JS;
     {
         $jname = $this->getJname();
         $action = JRequest::getVar('action');
-        $VersionCurrent = JFusionFunctionAdmin::currentVersion();
+        list($VersionCurrent) = JFusionFunctionAdmin::currentVersion();
 
         $document =& JFactory::getDocument();
 
         $js = <<<JS
         function doImport() {
-            document.adminForm.action.value='import';
-            document.adminForm.jname.value='${jname}';
-            document.adminForm.encoding='multipart/form-data';
+            var form = $('adminForm');
+            form.action.value='import';
+            form.jname.value='${jname}';
+            form.encoding='multipart/form-data';
             submitbutton('plugineditor');
+        }
+        function doShowHide(item) {
+            var obj=$(item);
+            var col=$("x"+item);
+            if (obj.style.display=="none") {
+                obj.style.display="block";
+                col.innerHTML="[-]";
+            } else {
+                obj.style.display="none";
+                col.innerHTML="[+]";
+            }
         }
 JS;
 
@@ -983,8 +997,9 @@ JS;
 
         $js = <<<JS
         function doExport() {
-            document.adminForm.action.value='export';
-            document.adminForm.jname.value='${jname}';
+            var form = $('adminForm');
+            form.action.value='export';
+            form.jname.value='${jname}';
             submitbutton('plugineditor');
         }
 JS;

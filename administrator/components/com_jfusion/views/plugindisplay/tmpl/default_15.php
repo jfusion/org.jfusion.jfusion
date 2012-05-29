@@ -31,14 +31,15 @@ function changesetting(fieldname, fieldvalue, jname){
         },
         onComplete: function(JSONobject) { 
         	var response = Json.evaluate(JSONobject);
-            
-        	document.getElementById('errormessages').innerHTML = response.errormessage;
+
+            $('errormessages').innerHTML = response.errormessage;
 
         	//also update the check_encryption and dual_login fields if needed
         	if (fieldname == 'master' || fieldname == 'slave') {
            		if (fieldvalue == 1 && fieldname == 'master') {
                     //also untick other masters
-           			var mtable=document.getElementById("sortables");
+
+           			var mtable=$('sortables');
            			var tablelength = mtable.rows.length - 1;
             		for (var i=1; i<=tablelength; i++) {
             			updateJavaScript(mtable.rows[i].id,"master",0);
@@ -66,7 +67,7 @@ function changesetting(fieldname, fieldvalue, jname){
 }
 
 function updateJavaScript(plugin,field, value) {
-	var tdElem = document.getElementById ( plugin + '_' + field);
+	var tdElem = $(plugin + '_' + field);
 	var newValue = 0;
 	if (value == 1) {
 		tdElem.firstChild.firstChild.src = "components/com_jfusion/images/tick.png";
@@ -79,7 +80,7 @@ function updateJavaScript(plugin,field, value) {
 }
 
 function showSpinner(jname,fieldname) {
-	var tdElem = document.getElementById ( jname + '_' + fieldname );
+	var tdElem = $(jname + '_' + fieldname);
 	tdElem.firstChild.firstChild.src = "components/com_jfusion/images/spinner.gif";
 }
 
@@ -145,7 +146,7 @@ function initSortables() {
 			var sortorder = '';
 			var rowcount = '0';
 			$$('#sort_table tr').each(function(tr) {
-				document.getElementById(tr.id).setAttribute('class', 'row' + rowcount);
+                $(tr.id).setAttribute('class', 'row' + rowcount);
 				if (rowcount == '0') {
 					rowcount = '1';
 				} else {
@@ -173,7 +174,7 @@ function deleteplugin(jname) {
         		var results = Json.evaluate(JSONobject);
 
             	if(results.status === true) {
-	            	var el = document.getElementById(results.jname);
+	            	var el = $(results.jname);
 	               	el.parentNode.removeChild(el);
             	}
             	alert(results.message);
@@ -186,7 +187,8 @@ function deleteplugin(jname) {
 window.addEvent('domready',function() {
 	$('installSVN').addEvent('submit', function(e) {
 		new Event(e).stop();
-		var spinner = document.getElementById('spinnerSVN');
+
+		var spinner = $('spinnerSVN');
 	    spinner.innerHTML = '<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">';
 		this.send({ method: 'post',
 			onComplete: function(JSONobject) {
@@ -195,7 +197,7 @@ window.addEvent('domready',function() {
 		    if (response.overwrite != 1 && response.status === true) {
 		    	addRow(response.jname, response.rowhtml);
 		    }
-		    var spinner = document.getElementById('spinnerSVN');
+		    var spinner = $('spinnerSVN');
 		    spinner.innerHTML = '';
 		    alert(response.message);
             }, data: this.toQueryString()+'&ajax=true'
@@ -204,7 +206,7 @@ window.addEvent('domready',function() {
 
 	$('installURL').addEvent('submit', function(e) {
 		new Event(e).stop();
-		var spinner = document.getElementById('spinnerURL');
+		var spinner = $('spinnerURL');
 	    spinner.innerHTML = '<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">';			
             this.send({method : 'post',
                 onComplete: function(JSONobject) {
@@ -213,7 +215,7 @@ window.addEvent('domready',function() {
 				if (response.overwrite != 1 && response.status === true) {
 				   	addRow(response.jname, response.rowhtml);
 				}
-				var spinner = document.getElementById('spinnerURL');
+				var spinner = $('spinnerURL');
 				spinner.innerHTML = '';
 				alert(response.message);
 			}, data: this.toQueryString()+'&ajax=true'
@@ -222,7 +224,7 @@ window.addEvent('domready',function() {
 
 	$('installDIR').addEvent('submit', function(e) {
 		new Event(e).stop();
-		var spinner = document.getElementById('spinnerDIR');
+		var spinner = $('spinnerDIR');
 	    spinner.innerHTML = '<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">';
             this.send({method : 'post',
                 onComplete: function(JSONobject) {
@@ -231,7 +233,7 @@ window.addEvent('domready',function() {
 			    if (response.overwrite != 1 && response.status === true) {
 			    	addRow(response.jname, response.rowhtml);
 			    }
-			    var spinner = document.getElementById('spinnerDIR');
+			    var spinner = $('spinnerDIR');
 			    spinner.innerHTML = '';
 			    alert(response.message);
             }, data: this.toQueryString()+'&ajax=true'
@@ -240,7 +242,7 @@ window.addEvent('domready',function() {
 
 	$('installZIP').addEvent('submit', function(e) {
 		new Event(e).stop();
-		var spinner = document.getElementById('spinnerDIR');
+		var spinner = $('installZIP');
 	    spinner.innerHTML = '<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">';			
 
 		this.submit();

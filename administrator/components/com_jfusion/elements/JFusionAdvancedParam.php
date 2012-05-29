@@ -55,24 +55,31 @@ class JElementJFusionAdvancedParam extends JElement
 
         if (!defined('JFUSION_ADVANCEDPARAM_JS_LOADED')) {
             define('JFUSION_ADVANCEDPARAM_JS_LOADED', 1);
-            $js = "
-            function jAdvancedParamSet(title, base64, elNum) {
-                var link = 'index.php?option=com_jfusion&task=advancedparam&tmpl=component&params=';
-                link += base64;";
+
             if (!is_null($configfile)) {
-                $js.= "
-                link += '&configfile=" . $configfile . "';";
+                $cfile = '&configfile='.$configfile;
+            } else {
+                $cfile = '';
             }
             if (!is_null($multiselect)) {
-                $js.= "
-                link += '&multiselect=1';";
+                $mselect = '&multiselect=1';
+            } else {
+                $mselect = '';
             }
-            $js.= "
-                document.getElementById('plugin_id' + elNum).value = base64;
-                document.getElementById('plugin_name' + elNum).value = title;
-                document.getElementById('plugin_link' + elNum).href = link;
+
+            $js = <<<JS
+            function jAdvancedParamSet(title, base64, elNum) {
+                var link = 'index.php?option=com_jfusion&task=advancedparam&tmpl=component&params=';
+                link += base64;
+                link += '${cfile}';
+                link += '${mselect}';
+
+                $('plugin_id' + elNum).value = base64;
+                $('plugin_name' + elNum).value = title;
+                $('plugin_link' + elNum).href = link;
                 SqueezeBox.close();
-            }";
+            }
+JS;
             $doc->addScriptDeclaration($js);
         }
         //Create Link

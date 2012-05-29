@@ -46,12 +46,13 @@ class JFormFieldJFusionItemid extends JFormField
         }
         if (!$js) {
         	$doc = JFactory::getDocument();
-	        $js = "
-	        function jSelectItemid(name,id,num) {
-				document.getElementById(name+'_id'+num).value = id;
-				document.getElementById(name+'_name'+num).value = id;
-				SqueezeBox.close();
-	        }";
+            $js = <<<JS
+            function jSelectItemid(name,id,num) {
+	            $(name+'_id'+num).value = id;
+	            $(name+'_name'+num).value = id;
+	            SqueezeBox.close();
+	        }
+JS;
 	        $doc->addScriptDeclaration($js);
         }
         $link = 'index.php?option=com_jfusion&amp;task=itemidselect&amp;tmpl=component&amp;ename=' . $name . '&amp;elId=' . $elId;
