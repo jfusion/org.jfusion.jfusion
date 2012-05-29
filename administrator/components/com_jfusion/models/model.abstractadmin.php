@@ -632,7 +632,7 @@ JS;
 	        	trEl.innerHTML = '';
 	        }
 
-	        function createSelect(name,target) {
+	        function createSelect(name) {
 	        	var count = jfPlugin['count'];
 	        	var type = jfPlugin[name]['type'];
 	        	var groups = jfPlugin[name]['groups'];
