@@ -569,7 +569,7 @@ JS;
         $document =& JFactory::getDocument();
         $plugin = json_encode($plugin);
         $js = <<<JS
-			var jfPlugin = ${plugin}
+			var jfPlugin = ${plugin};
 
 	        function usergroupSelect(option)
 	        {
@@ -643,6 +643,7 @@ JS;
 					elSelNew.multiple='multiple';
 				}
 				elSelNew.name='params[multiusergroup]['+name+']['+count+'][]';
+				var x;
 				for (x in groups) {
 					var elOptNew = document.createElement('option');
 					elOptNew.text = groups[x];
@@ -713,9 +714,11 @@ JS;
         return array(true, '');
     }
 
-    /*
-      * do plugin support multi usergroups
-      */
+    /**
+     * do plugin support multi usergroups
+     *
+     * @return bool
+     */
     function isMultiGroup()
     {
         static $muiltisupport;
@@ -731,20 +734,22 @@ JS;
         return $muiltisupport;
     }
 
-    /*
-      * do plugin support multi usergroups
-      * return UNKNOWN for unknown
-      * return JNO for NO
-      * return JYES for YES
-      * return other ??
-      */
+    /**
+     * @return string UNKNOWN or JNO or JYES or ??
+     */
     function requireFileAccess()
     {
         return 'UNKNOWN';
     }
 
-    /*
-      * import function for importing config in to a plugin
+    /**
+     * import function for importing config in to a plugin
+     *
+     * @param $name
+     * @param $value
+     * @param $node
+     * @param $control_name
+     * @return string
      */
     function import($name, $value, $node, $control_name)
     {
@@ -926,8 +931,14 @@ JS;
         return $output;
     }
 
-    /*
-      * export function for importing config in to a plugin
+    /**
+     * export function for importing config in to a plugin
+     *
+     * @param $name
+     * @param $value
+     * @param $node
+     * @param $control_name
+     * @return string
      */
     function export($name, $value, $node, $control_name)
     {
@@ -1011,8 +1022,14 @@ JS;
         return $output;
     }
 
-    /*
-      * mapping out extra header parsers
+    /**
+     * mapping out extra header parsers
+     *
+     * @param $name
+     * @param $value
+     * @param $node
+     * @param $control_name
+     * @return string
      */
     function headermap($name, $value, $node, $control_name)
     {
@@ -1021,8 +1038,14 @@ JS;
         return $this->pair('map', $value, $node, $control_name,'header');
     }
 
-    /*
-      * mapping out extra body parsers
+    /**
+     * mapping out extra body parsers
+     *
+     * @param $name
+     * @param $value
+     * @param $node
+     * @param $control_name
+     * @return string
      */
     function bodymap($name, $value, $node, $control_name)
     {
@@ -1031,8 +1054,15 @@ JS;
         return $this->pair('map', $value, $node, $control_name,'body');
     }
 
-    /*
-      * shared code for headermap and bodymap to display pairs.
+    /**
+     * shared code for headermap and bodymap to display pairs.
+     *
+     * @param $name
+     * @param $value
+     * @param $node
+     * @param $control_name
+     * @param $type
+     * @return string
      */
     function pair($name, $value, $node, $control_name,$type)
     {
