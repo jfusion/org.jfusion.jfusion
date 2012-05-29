@@ -560,7 +560,7 @@ class JFusionForum
     /**
      * Creates the html for the selected captcha for the discussion bot
      *
-     * @param object $dbparams object with discussion bot parameters
+     * @param JParameter $dbparams object with discussion bot parameters
      *
      * @return unknown_type
      */
