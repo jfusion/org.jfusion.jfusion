@@ -487,7 +487,7 @@ function submitAjaxRequest(id, task, vars, url) {
             update: $('discussion'),
             onComplete: function () {
                 if (task == 'unpublish_discussion') {
-                    $('discussion').setStyle('display','none');
+                    $('discussion').setStyle('display', 'none');
                 } else if (task == 'publish_discussion') {
                     initializeDiscussbot();
                     toggleDiscussionVisibility(1);
