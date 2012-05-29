@@ -61,6 +61,7 @@ function initializeDiscussbot() {
         method: 'post',
 
         onComplete: function () {
+            var i;
             var ajaxstatus = ajaxstatusholder.innerHTML, rg = new RegExp(JFDB_DISCUSSBOT_ERROR);
             if (ajaxstatus.search(rg) == -1) {
 
@@ -99,9 +100,9 @@ function initializeDiscussbot() {
                     var frm = $('jfusionPaginationForm');
                     var paramString = 'tmpl=component&dbtask=update_pagination&ajax_request=1&threadid=' + threadid;
                     if (frm) {
-                        for (var i=0; i<frm.elements.length; i++) {
-                            if(frm.elements[i].type=="select-one") {
-                                if(frm.elements[i].options[frm.elements[i].selectedIndex].value) {
+                        for (i = 0; i < frm.elements.length; i++) {
+                            if (frm.elements[i].type == "select-one") {
+                                if (frm.elements[i].options[frm.elements[i].selectedIndex].value) {
                                     paramString = paramString + '&' + frm.elements[i].name + '=' + frm.elements[i].options[frm.elements[i].selectedIndex].value;
                                 }
                             } else {
@@ -114,15 +115,16 @@ function initializeDiscussbot() {
                     }
                 }
             } else {
-                showMessage(ajaxstatus,'Error');
-                window.location='#jfusionMessageArea';
+                showMessage(ajaxstatus, 'Error');
+                window.location = '#jfusionMessageArea';
             }
         }
     }) : new Ajax(url, {
         update: ajaxstatusholder,
         method: 'post',
 
-        onComplete: function() {
+        onComplete: function () {
+            var i;
             var ajaxstatus = ajaxstatusholder.innerHTML;
             var rg = new RegExp(JFDB_DISCUSSBOT_ERROR);
             if (ajaxstatus.search(rg) == -1) {
@@ -133,24 +135,24 @@ function initializeDiscussbot() {
                 //reset the status area
                 ajaxstatusholder.innerHTML = '';
 
-                if($('submittedPostId')) {
+                if ($('submittedPostId')) {
                     highlightPost('post' + $('submittedPostId').innerHTML);
 
                     //empty the quick reply form
                     $('quickReply').value = '';
 
                     //remove the preview iframe if exists
-                    if($('markItUpQuickReply')) {
+                    if ($('markItUpQuickReply')) {
                         jQuery.markItUp({ call: 'previewClose' });
                     }
 
-                    showMessage(JFDB_SUCCESSFUL_POST,'Success');
+                    showMessage(JFDB_SUCCESSFUL_POST, 'Success');
                     hideMessage();
-                } else if ($('moderatedPostId')){
+                } else if ($('moderatedPostId')) {
                     //empty the quick reply form
                     $('quickReply').value = '';
 
-                    showMessage(JFDB_SUCCESSFUL_POST_MODERATED,'Success');
+                    showMessage(JFDB_SUCCESSFUL_POST_MODERATED, 'Success');
                     hideMessage();
                 }
 
@@ -161,10 +163,10 @@ function initializeDiscussbot() {
                     //update pagination
                     var frm = $('jfusionPaginationForm');
                     var paramString = 'tmpl=component&dbtask=update_pagination&ajax_request=1&threadid=' + threadid;
-                    if(frm) {
-                        for(var i=0; i<frm.elements.length; i++){
-                            if(frm.elements[i].type=="select-one"){
-                                if(frm.elements[i].options[frm.elements[i].selectedIndex].value) {
+                    if (frm) {
+                        for (i = 0; i < frm.elements.length; i++) {
+                            if (frm.elements[i].type == "select-one") {
+                                if (frm.elements[i].options[frm.elements[i].selectedIndex].value) {
                                     paramString = paramString + '&' + frm.elements[i].name + '=' + frm.elements[i].options[frm.elements[i].selectedIndex].value;
                                 }
                             } else {
@@ -172,99 +174,38 @@ function initializeDiscussbot() {
                             }
                         }
                     }
-                    if(jfdb_enable_pagination) {
+                    if (jfdb_enable_pagination) {
                         updatepagination.request(paramString);
                     }
                 }
             } else {
-                showMessage(ajaxstatus,'Error');
-                window.location='#jfusionMessageArea';
+                showMessage(ajaxstatus, 'Error');
+                window.location = '#jfusionMessageArea';
             }
         }
     });
 
     //load markItUp
     if (typeof jfdb_load_markitup != 'undefined') {
-        if(jQuery('#quickReply')) {
+        if (jQuery('#quickReply')) {
             jQuery('#quickReply').markItUp(mySettings);
         }
     }
 
     //get ajax ready for submission
-    if( jfdb_enable_ajax && $('jfusionMessageArea')) {
+    if (jfdb_enable_ajax && $('jfusionMessageArea')) {
 		prepareAjax();
     }
 }
 
-function updateAjax() {
-    var ajaxstatus = ajaxstatusholder.innerHTML;
-    var rg = new RegExp(JFDB_DISCUSSBOT_ERROR);
-    if (ajaxstatus.search(rg) == -1) {
-
-        //update the post area with the updated content
-        postarea.innerHTML = ajaxstatus;
-
-        //reset the status area
-        ajaxstatusholder.innerHTML = '';
-
-        if($('submittedPostId')) {
-            var postid = $('submittedPostId').innerHTML;
-            postid = 'post' + postid;
-            highlightPost(postid);
-
-            //empty the quick reply form
-            $('quickReply').value = '';
-
-            //remove the preview iframe if exists
-            if($('markItUpQuickReply')) {
-                jQuery.markItUp({ call: 'previewClose' });
-            }
-
-            showMessage(JFDB_SUCCESSFUL_POST,'Success');
-            hideMessage();
-        } else if ($('moderatedPostId')){
-            //empty the quick reply form
-            $('quickReply').value = '';
-
-            showMessage(JFDB_SUCCESSFUL_POST_MODERATED,'Success');
-            hideMessage();
-        }
-
-        //update buttons
-        updatebuttons.request('tmpl=component&dbtask=update_buttons&ajax_request=1&threadid=' + threadid);
-
-        if (jfdb_enable_ajax) {
-            //update pagination
-            var frm = $('jfusionPaginationForm');
-            var paramString = 'tmpl=component&dbtask=update_pagination&ajax_request=1&threadid=' + threadid;
-            if(frm) {
-                for(var i=0; i<frm.elements.length; i++){
-                    if(frm.elements[i].type=="select-one"){
-                        if(frm.elements[i].options[frm.elements[i].selectedIndex].value) {
-                            paramString = paramString + '&' + frm.elements[i].name + '=' + frm.elements[i].options[frm.elements[i].selectedIndex].value;
-                        }
-                    } else {
-                        paramString = paramString + '&' + frm.elements[i].name + '=' + frm.elements[i].value;
-                    }
-                }
-            }
-            if(jfdb_enable_pagination) {
-                updatepagination.request(paramString);
-            }
-        }
-    } else {
-        showMessage(ajaxstatus,'Error');
-        window.location='#jfusionMessageArea';
-    }
-}
-
 function initializeConfirmationBoxes() {
+    var i;
 	if (!(confirmationBoxSlides instanceof Array)) {
 		confirmationBoxSlides = [];
 	}
 	var containers = $$('div.jfusionButtonConfirmationBox');
 	if (containers) {
-		for(var i=0; i < containers.length; i++){
+		for (i = 0; i < containers.length; i++) {
 			var divId = containers[i].id;
             if (typeof (confirmationBoxSlides[divId]) != 'object') {
                 confirmationBoxSlides[divId] = new Fx.Slide(divId);
@@ -274,26 +215,25 @@ function initializeConfirmationBoxes() {
 	}
 }
 
-function prepareAjax()
-{
+function prepareAjax() {
+    var i;
     var submitpost = $('submitpost');
 
     //add the submitpost function
-    submitpost.addEvent('click', function(e) {
+    submitpost.addEvent('click', function (e) {
         //show a loading
-        showMessage(JFDB_SUBMITTING_QUICK_REPLY,'Loading');
+        showMessage(JFDB_SUBMITTING_QUICK_REPLY, 'Loading');
 
         //update the post area content
         var paramString = 'tmpl=component&ajax_request=1';
-        var frm =$('jfusionQuickReply' + jfdb_article_id);
-        for(var i=0; i<frm.elements.length; i++){
-            if(frm.elements[i].type == "select-one"){
-                if(frm.elements[i].options[frm.elements[i].selectedIndex].value) {
+        var frm = $('jfusionQuickReply' + jfdb_article_id);
+        for (i = 0; i < frm.elements.length; i++) {
+            if (frm.elements[i].type == "select-one") {
+                if (frm.elements[i].options[frm.elements[i].selectedIndex].value) {
                     paramString = paramString + '&' + frm.elements[i].name + '=' + frm.elements[i].options[frm.elements[i].selectedIndex].value;
                 }
             } else {
                 paramString = paramString + '&' + frm.elements[i].name + '=' + frm.elements[i].value;
-                
                 if (frm.elements[i].id == 'threadid') {
                     threadid = frm.elements[i].value;
                 }
@@ -309,13 +249,12 @@ function prepareAjax()
 }
 
 var delayHiding;
-function showMessage(msg, type)
-{
+function showMessage(msg, type) {
     //stop a slideOut if pending
-    if(delayHiding) {
+    if (delayHiding) {
         clearTimeout(delayHiding);
     }
-    var msgDiv,msgArea;
+    var msgDiv, msgArea;
     if (type == 'Error') {
         msgDiv = $('jfusionErrorMessage');
         msgArea = $('jfusionErrorArea');
@@ -323,11 +262,11 @@ function showMessage(msg, type)
         msgDiv = $('jfusionMessage');
         msgArea = $('jfusionMessageArea');
     }
-    
+
     ajaxErrorSlide.hide();
-    
+
     msgDiv.innerHTML = msg;
-    msgArea.setAttribute('class','jfusion'+type+'Message');
+    msgArea.setAttribute('class', 'jfusion' + type + 'Message');
 
     if (type == 'Error') {
         ajaxErrorSlide.slideIn();
@@ -338,23 +277,20 @@ function showMessage(msg, type)
     }
 }
 
-function hideMessage()
-{
-	delayHiding = setTimeout('ajaxMessageSlide.slideOut()',5000);
+function hideMessage() {
+	delayHiding = setTimeout('ajaxMessageSlide.slideOut()', 5000);
 }
 
-function highlightPost(postid)
-{
-    $(postid).setStyle('border','2px solid #FCFC33');
-    (function() { $(postid).setStyle('border','2px solid #afafaf'); } ).delay(5000);
+function highlightPost(postid) {
+    $(postid).setStyle('border', '2px solid #FCFC33');
+    (function () { $(postid).setStyle('border', '2px solid #afafaf'); }).delay(5000);
 
     if (jfdb_enable_jumpto) {
-        window.location='#' + postid;
+        window.location = '#' + postid;
     }
 }
 
-function refreshPosts(id)
-{
+function refreshPosts(id) {
 	threadid = id;
     if (jfdb_isJ16) {
         updatepostarea.post('tmpl=component&ajax_request=1&dbtask=update_posts&threadid=' + threadid);
@@ -363,41 +299,41 @@ function refreshPosts(id)
     }
 }
 
-function confirmThreadAction(id,task,vars,url) {
+function confirmThreadAction(id, task, vars, url) {
 	var container = $('jfusionButtonConfirmationBox' + id);
 	//clear anything already there
 	container.innerHTML = '';
 	var msg = '';
-    if (task=='create_thread') {
+    if (task == 'create_thread') {
         msg = JFDB_CONFIRM_THREAD_CREATION;
-    } else if (task=='unpublish_discussion') {
+    } else if (task == 'unpublish_discussion') {
         msg = JFDB_CONFIRM_UNPUBLISH_DISCUSSION;
-    } else if (task=='publish_discussion') {
+    } else if (task == 'publish_discussion') {
         msg = JFDB_CONFIRM_PUBLISH_DISCUSSION;
     }
-    
+
     //set the confirmation text
     if (jfdb_isJ16) {
 		new Element('span', {
 			text: msg,
 			styles: {
-					fontWeight: "bold",
-					display: "block",
-					fontSize: "13px",
-					padding: "5px"
+                fontWeight: "bold",
+                display: "block",
+                fontSize: "13px",
+                padding: "5px"
 			}
 		}).inject(container);
     } else {
 		new Element('span', {
 			styles: {
-					fontWeight: "bold",
-					display: "block",
-					fontSize: "13px",
-					padding: "5px"
+                fontWeight: "bold",
+                display: "block",
+                fontSize: "13px",
+                padding: "5px"
 			}
 		}).setHTML(msg).inject(container);
     }
-	
+
     //create a div for the buttons
     var divBtnContainer = new Element('div', {
         styles: {
@@ -407,19 +343,19 @@ function confirmThreadAction(id,task,vars,url) {
             marginBottom: '5px'
         }
     });
-    
+
     //create standard cancel button
 	new Element('input', {
 		type: 'button',
 		'class': 'button',
 		value: JFDB_BUTTON_CANCEL,
 		events: {
-			click: function() {
+			click: function () {
 				clearConfirmationBox(id);
 			}
 		}
 	}).inject(divBtnContainer);
-	
+
     //create the buttons
 	if (task == 'create_thread') {
 		new Element('input', {
@@ -430,7 +366,7 @@ function confirmThreadAction(id,task,vars,url) {
 				marginLeft: '3px'
 			},
 			events: {
-				click: function() {
+				click: function () {
                     var form = $('JFusionTaskForm');
                     form.articleId.value = id;
                     form.dbtask.value = task;
@@ -438,7 +374,7 @@ function confirmThreadAction(id,task,vars,url) {
 				}
 			}
 		}).inject(divBtnContainer);
-    } else if (task=='publish_discussion') {
+    } else if (task == 'publish_discussion') {
 		new Element('input', {
 			type: 'button',
 			'class': 'button',
@@ -447,21 +383,21 @@ function confirmThreadAction(id,task,vars,url) {
 				marginLeft: '3px'
 			},
 			events: {
-				click: function() {
-					submitAjaxRequest(id,task,vars,url);
+				click: function () {
+					submitAjaxRequest(id, task, vars, url);
 				}
 			}
 		}).inject(divBtnContainer);
-		
+
 		new Element('input', {
 			type: 'button',
 			'class': 'button',
 			value: JFDB_BUTTON_PUBLISH_NEW_DISCUSSION,
 			styles: {
 				marginLeft: '3px'
-			},	
+			},
 			events: {
-				click: function() {
+				click: function () {
                     var form = $('JFusionTaskForm');
                     form.articleId.value = id;
                     form.dbtask.value = 'create_thread';
@@ -478,16 +414,16 @@ function confirmThreadAction(id,task,vars,url) {
 				marginLeft: '3px'
 			},
 			events: {
-				click: function() {
-					submitAjaxRequest(id,task,vars,url);
+				click: function () {
+					submitAjaxRequest(id, task, vars, url);
 				}
 			}
 		}).inject(divBtnContainer);
     }
-	
+
     //attach the buttons
     divBtnContainer.inject(container);
-	
+
     //show the message
     confirmationBoxSlides['jfusionButtonConfirmationBox' + id].slideIn();
 }
@@ -509,31 +445,31 @@ function submitAjaxRequest(id, task, vars, url) {
         performTask = new Request.HTML({
             url: url,
             method: 'post',
-            update: $('jfusionButtonArea'+id),
-            onComplete: function() {
+            update: $('jfusionButtonArea' + id),
+            onComplete: function () {
                 if ($('discussion')) {
                     updateMainContent.post('tmpl=component&ajax_request=1&dbtask=update_content&threadid=' + threadid);
                 } else if (typeof jfdb_debug != 'undefined') {
-                    updateDebugInfo.post('tmpl=component&ajax_request=1&dbtask=update_debug_info&articleId='+id+vars);
+                    updateDebugInfo.post('tmpl=component&ajax_request=1&dbtask=update_debug_info&articleId=' + id + vars);
                 }
             }
         });
 
-        performTask.post('tmpl=component&ajax_request=1&dbtask='+task+'&threadid=' + threadid + '&articleId='+id+vars);
+        performTask.post('tmpl=component&ajax_request=1&dbtask=' + task + '&threadid=' + threadid + '&articleId=' + id + vars);
 
     } else {
         performTask = new Ajax(url, {
             method: 'post',
-            update: $('jfusionButtonArea'+id),
-            onComplete: function() {
+            update: $('jfusionButtonArea' + id),
+            onComplete: function () {
                 if ($('discussion')) {
                     updateMainContent.request('tmpl=component&ajax_request=1&dbtask=update_content&threadid=' + threadid);
                 } else if (typeof jfdb_debug != 'undefined') {
-                    updateDebugInfo.request('tmpl=component&ajax_request=1&dbtask=update_debug_info&threadid=' + threadid + '&articleId='+id+vars);
+                    updateDebugInfo.request('tmpl=component&ajax_request=1&dbtask=update_debug_info&threadid=' + threadid + '&articleId=' + id + vars);
                 }
             }
         });
-        performTask.request('tmpl=component&ajax_request=1&dbtask='+task+'&threadid=' + threadid + '&articleId='+id+vars);
+        performTask.request('tmpl=component&ajax_request=1&dbtask=' + task + '&threadid=' + threadid + '&articleId=' + id + vars);
     }
     var updateDebugInfo = jfdb_isJ16 ? new Request.HTML({
         url: url,
@@ -543,40 +479,38 @@ function submitAjaxRequest(id, task, vars, url) {
         method: 'post',
         update: $('jfusionDebugContainer' + id)
     });
-    
+
     if (jfdb_isJ16) {
-        Request.HTML({
+        new Request.HTML({
             url: url,
             method: 'post',
             update: $('discussion'),
-            onComplete: function() {
-                if (task=='unpublish_discussion') {
+            onComplete: function () {
+                if (task == 'unpublish_discussion') {
                     $('discussion').setStyle('display','none');
-                } else if (task=='publish_discussion') {
+                } else if (task == 'publish_discussion') {
                     initializeDiscussbot();
                     toggleDiscussionVisibility(1);
                 }
-                
                 if (typeof jfdb_debug != 'undefined') {
-                    updateDebugInfo.post('tmpl=component&ajax_request=1&dbtask=update_debug_info&threadid=' + threadid + '&articleId='+id+vars);
+                    updateDebugInfo.post('tmpl=component&ajax_request=1&dbtask=update_debug_info&threadid=' + threadid + '&articleId=' + id + vars);
                 }
             }
         });
     } else {
-        Ajax(url, {
+        new Ajax(url, {
             method: 'post',
             update: $('discussion'),
-            onComplete: function() {
-                if (task=='unpublish_discussion') {
-                    $('discussion').setStyle('display','none');
-                } else if (task=='publish_discussion') {
+            onComplete: function () {
+                if (task == 'unpublish_discussion') {
+                    $('discussion').setStyle('display', 'none');
+                } else if (task == 'publish_discussion') {
                     initializeDiscussbot();
                     toggleDiscussionVisibility(1);
                 }
-                
                 if (typeof jfdb_debug != 'undefined') {
-                    updateDebugInfo.request('tmpl=component&ajax_request=1&dbtask=update_debug_info&threadid=' + threadid + '&articleId='+id+vars);
-                }                        
+                    updateDebugInfo.request('tmpl=component&ajax_request=1&dbtask=update_debug_info&threadid=' + threadid + '&articleId=' + id + vars);
+                }
             }
         });
     }
@@ -588,7 +522,7 @@ function toggleDiscussionVisibility() {
     var showdiscussion = '';
     if ($('discussion')) {
         var state = $('discussion').style.display;
-        if (state=='none') {
+        if (state == 'none') {
             $('discussion').style.display = 'block';
             $('jfusionBtnShowreplies' + jfdb_article_id).innerHTML = JFDB_HIDE_REPLIES;
             showdiscussion = 1;
@@ -599,7 +533,7 @@ function toggleDiscussionVisibility() {
         }
     }
 
-    if (override!==null) {
+    if (override !== null) {
         showdiscussion = override;
     }
     var setdiscussionvisibility;
@@ -607,28 +541,28 @@ function toggleDiscussionVisibility() {
         setdiscussionvisibility = new Request.HTML({
             url: jfdb_article_url,
             method: 'get',
-            onComplete: function() {
-                if (discusslink!==null) {
-                    window.location=discusslink;
+            onComplete: function () {
+                if (discusslink !== null) {
+                    window.location = discusslink;
                 }
             }
         });
-        setdiscussionvisibility.post('tmpl=component&ajax_request=1&show_discussion='+showdiscussion);
+        setdiscussionvisibility.post('tmpl=component&ajax_request=1&show_discussion=' + showdiscussion);
     } else {
         setdiscussionvisibility = new Ajax(jfdb_article_url, {
             method: 'get',
-            onComplete: function() {
-                if (discusslink!==null) {
-                    window.location=discusslink;
+            onComplete: function () {
+                if (discusslink !== null) {
+                    window.location = discusslink;
                 }
             }
         });
-        setdiscussionvisibility.request('tmpl=component&ajax_request=1&show_discussion='+showdiscussion);
+        setdiscussionvisibility.request('tmpl=component&ajax_request=1&show_discussion=' + showdiscussion);
     }
 }
 
 function jfusionQuote(pid) {
-    $('quickReply').value = $('originalText'+pid).innerHTML;
-    window.location='#jfusionQuickReply';
+    $('quickReply').value = $('originalText' + pid).innerHTML;
+    window.location = '#jfusionQuickReply';
     $('quickReply').focus();
 }
