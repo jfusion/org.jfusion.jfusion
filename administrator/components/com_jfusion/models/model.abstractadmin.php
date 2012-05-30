@@ -48,7 +48,7 @@ class JFusionAdmin
      */
     function getUserList($limitstart = null, $limit = null)
     {
-        return 0;
+        return array();
     }
 
     /**
@@ -68,7 +68,7 @@ class JFusionAdmin
      */
     function getUsergroupList()
     {
-        return 0;
+        return array();
     }
 
     /**
@@ -88,8 +88,7 @@ class JFusionAdmin
      */
     function allowRegistration()
     {
-        $result = true;
-        return $result;
+        return true;
     }
 
     /**
@@ -130,75 +129,69 @@ class JFusionAdmin
             if (!empty($source_url)) {
                 $status['config'] = 1;
                 $status['message'] = JText::_('GOOD_CONFIG');
-                return $status;
             } else {
                 $status['config'] = 0;
                 $status['message'] = JText::_('NOT_CONFIGURED');
-                return $status;
             }
-        }
-        $db = JFusionFactory::getDatabase($jname);
-        $jdb = JFactory::getDBO();
-        if (JError::isError($db) || !$db || !method_exists($jdb, 'setQuery')) {
-            $status['config'] = 0;
-            $status['message'] = JText::_('NO_DATABASE');
-            return $status;
-        } elseif (!$db->connected()) {
-            $status['config'] = 0;
-            $status['message'] = JText::_('NO_DATABASE');
-            return $status;
         } else {
-            //added check for missing files of copied plugins after upgrade
-            $admin_file = JFUSION_PLUGIN_PATH . DS . $jname . DS . 'admin.php';
-            if (!file_exists($admin_file)) {
+            $db = JFusionFactory::getDatabase($jname);
+            $jdb = JFactory::getDBO();
+            if (JError::isError($db) || !$db || !method_exists($jdb, 'setQuery')) {
                 $status['config'] = 0;
-                $status['message'] = JText::_('NO_FILES');
-                return $status;
-            }
-
-            $cookie_domain = $params->get('cookie_domain');
-            $jfc = JFusionFactory::getCookies();
-            list($url) = $jfc->getApiUrl($cookie_domain);
-            if ($url) {
-                require_once(JPATH_SITE.DS.'components'.DS.'com_jfusion'.DS.'jfusionapi.php');
-
-                $joomla_int = JFusionFactory::getParams('joomla_int');
-                $api = new JFusionAPI($url,$joomla_int->get('secret'));
-                if (!$api->ping()) {
-                    list ($message) = $api->getError();
-                    $status['config'] = 0;
-                    $status['message'] = $api->url. ' ' .$message;
-                    return $status;
-                }
-            }
-
-            //get the user table name
-            $tablename = $this->getTablename();
-            // lets check if the table exists, now using the Joomla API
-            $table_list = $db->getTableList();
-            $table_prefix = $db->getPrefix();
-            if (!is_array($table_list)) {
+                $status['message'] = JText::_('NO_DATABASE');
+            } elseif (!$db->connected()) {
                 $status['config'] = 0;
-                $status['message'] = $table_prefix . $tablename . ': ' . JText::_('NO_TABLE');
-                return $status;
-            }
-            if (array_search($table_prefix . $tablename, $table_list) === false) {
-                //do a final check for case insensitive windows servers
-                if (array_search(strtolower($table_prefix . $tablename), $table_list) === false) {
-                    $status['config'] = 0;
-                    $status['message'] = $table_prefix . $tablename . ': ' . JText::_('NO_TABLE');
-                    return $status;
-                } else {
-                    $status['config'] = 1;
-                    $status['message'] = JText::_('GOOD_CONFIG');
-                    return $status;
-                }
+                $status['message'] = JText::_('NO_DATABASE');
             } else {
-                $status['config'] = 1;
-                $status['message'] = JText::_('GOOD_CONFIG');
-                return $status;
+                //added check for missing files of copied plugins after upgrade
+                $admin_file = JFUSION_PLUGIN_PATH . DS . $jname . DS . 'admin.php';
+                if (!file_exists($admin_file)) {
+                    $status['config'] = 0;
+                    $status['message'] = JText::_('NO_FILES');
+                } else {
+                    $cookie_domain = $params->get('cookie_domain');
+                    $jfc = JFusionFactory::getCookies();
+                    list($url) = $jfc->getApiUrl($cookie_domain);
+                    if ($url) {
+                        require_once(JPATH_SITE.DS.'components'.DS.'com_jfusion'.DS.'jfusionapi.php');
+
+                        $joomla_int = JFusionFactory::getParams('joomla_int');
+                        $api = new JFusionAPI($url,$joomla_int->get('secret'));
+                        if (!$api->ping()) {
+                            list ($message) = $api->getError();
+                            $status['config'] = 0;
+                            $status['message'] = $api->url. ' ' .$message;
+                            return $status;
+                        }
+                    }
+
+                    //get the user table name
+                    $tablename = $this->getTablename();
+                    // lets check if the table exists, now using the Joomla API
+                    $table_list = $db->getTableList();
+                    $table_prefix = $db->getPrefix();
+                    if (!is_array($table_list)) {
+                        $status['config'] = 0;
+                        $status['message'] = $table_prefix . $tablename . ': ' . JText::_('NO_TABLE');
+                    } else {
+                        if (array_search($table_prefix . $tablename, $table_list) === false) {
+                            //do a final check for case insensitive windows servers
+                            if (array_search(strtolower($table_prefix . $tablename), $table_list) === false) {
+                                $status['config'] = 0;
+                                $status['message'] = $table_prefix . $tablename . ': ' . JText::_('NO_TABLE');
+                            } else {
+                                $status['config'] = 1;
+                                $status['message'] = JText::_('GOOD_CONFIG');
+                            }
+                        } else {
+                            $status['config'] = 1;
+                            $status['message'] = JText::_('GOOD_CONFIG');
+                        }
+                    }
+                }
             }
         }
+        return $status;
     }
 
     /**
@@ -747,10 +740,10 @@ JS;
     /**
      * import function for importing config in to a plugin
      *
-     * @param $name
-     * @param $value
-     * @param $node
-     * @param $control_name
+     * @param string $name
+     * @param string $value
+     * @param JSimpleXMLElement $node
+     * @param string $control_name
      * @return string
      */
     function import($name, $value, $node, $control_name)
@@ -936,10 +929,10 @@ JS;
     /**
      * export function for importing config in to a plugin
      *
-     * @param $name
-     * @param $value
-     * @param $node
-     * @param $control_name
+     * @param string $name
+     * @param string $value
+     * @param JSimpleXMLElement $node
+     * @param string $control_name
      * @return string
      */
     function export($name, $value, $node, $control_name)
@@ -1027,10 +1020,10 @@ JS;
     /**
      * mapping out extra header parsers
      *
-     * @param $name
-     * @param $value
-     * @param $node
-     * @param $control_name
+     * @param string $name
+     * @param string $value
+     * @param JSimpleXMLElement $node
+     * @param string $control_name
      * @return string
      */
     function headermap($name, $value, $node, $control_name)
@@ -1043,10 +1036,10 @@ JS;
     /**
      * mapping out extra body parsers
      *
-     * @param $name
-     * @param $value
-     * @param $node
-     * @param $control_name
+     * @param string $name
+     * @param string $value
+     * @param JSimpleXMLElement $node
+     * @param string $control_name
      * @return string
      */
     function bodymap($name, $value, $node, $control_name)
@@ -1059,11 +1052,11 @@ JS;
     /**
      * shared code for headermap and bodymap to display pairs.
      *
-     * @param $name
-     * @param $value
-     * @param $node
-     * @param $control_name
-     * @param $type
+     * @param string $name
+     * @param string $value
+     * @param JSimpleXMLElement $node
+     * @param string $control_name
+     * @param string $type
      * @return string
      */
     function pair($name, $value, $node, $control_name,$type)

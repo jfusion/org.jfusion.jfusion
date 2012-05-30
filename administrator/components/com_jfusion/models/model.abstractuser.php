@@ -47,7 +47,7 @@ class JFusionUser
      */
     function getUser($userinfo)
     {
-        return false;
+        return null;
     }
 
     /**
@@ -58,7 +58,7 @@ class JFusionUser
      * @param string $email_col    Database column for email
      * @param bool $lowerEmail   Boolean to lowercase emails for comparison
      *
-     * @return array($identifier, $identifier_type)
+     * @return array array($identifier, $identifier_type)
      */
     function getUserIdentifier(&$userinfo, $username_col, $email_col, $lowerEmail = true)
     {
@@ -156,6 +156,7 @@ class JFusionUser
      */
     function createSession($userinfo, $options)
     {
+        return array();
     }
 
     /**
@@ -197,148 +198,147 @@ class JFusionUser
         //check to see if a valid $userinfo object was passed on
         if (!is_object($userinfo)) {
             $status['error'][] = JText::_('NO_USER_DATA_FOUND');
-            return $status;
-        }
-        //get the user
-        $existinguser = $this->getUser($userinfo);
-        if (!empty($existinguser)) {
-            $changed = false;
-            //a matching user has been found
-            $status['debug'][] = JText::_('USER_DATA_FOUND');
-            if (strtolower($existinguser->email) != strtolower($userinfo->email)) {
-                $status['debug'][] = JText::_('EMAIL_CONFLICT');
-                if ($update_email || $overwrite) {
-                    $status['debug'][] = JText::_('EMAIL_CONFLICT_OVERWITE_ENABLED');
-                    $this->updateEmail($userinfo, $existinguser, $status);
-                    $changed = true;
-                } else {
-                    //return a email conflict
-                    $status['debug'][] = JText::_('EMAIL_CONFLICT_OVERWITE_DISABLED');
-                    $status['error'][] = JText::_('EMAIL') . ' ' . JText::_('CONFLICT') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
-                    $status['userinfo'] = $existinguser;
-                    return $status;
-                }
-            }
-            if (!empty($userinfo->password_clear) && strlen($userinfo->password_clear) != 32) {
-                // add password_clear to existinguser for the Joomla helper routines
-                $existinguser->password_clear = $userinfo->password_clear;
-                //check if the password needs to be updated
-                $model = & JFusionFactory::getAuth($this->getJname());
-                $testcrypt = $model->generateEncryptedPassword($existinguser);
-                if ($testcrypt != $existinguser->password) {
-                    $this->updatePassword($userinfo, $existinguser, $status);
-                    $changed = true;
-                } else {
-                    $status['debug'][] = JText::_('SKIPPED_PASSWORD_UPDATE') . ':' . JText::_('PASSWORD_VALID');
-                }
-            } else {
-                $status['debug'][] = JText::_('SKIPPED_PASSWORD_UPDATE') . ': ' . JText::_('PASSWORD_UNAVAILABLE');
-            }
-            //check the blocked status
-            if ($existinguser->block != $userinfo->block) {
-                if ($update_block || $overwrite) {
-                    if ($userinfo->block) {
-                        //block the user
-                        $this->blockUser($userinfo, $existinguser, $status);
+        } else {
+            //get the user
+            $existinguser = $this->getUser($userinfo);
+            if (!empty($existinguser)) {
+                $changed = false;
+                //a matching user has been found
+                $status['debug'][] = JText::_('USER_DATA_FOUND');
+                if (strtolower($existinguser->email) != strtolower($userinfo->email)) {
+                    $status['debug'][] = JText::_('EMAIL_CONFLICT');
+                    if ($update_email || $overwrite) {
+                        $status['debug'][] = JText::_('EMAIL_CONFLICT_OVERWITE_ENABLED');
+                        $this->updateEmail($userinfo, $existinguser, $status);
                         $changed = true;
                     } else {
-                        //unblock the user
-                        $this->unblockUser($userinfo, $existinguser, $status);
+                        //return a email conflict
+                        $status['debug'][] = JText::_('EMAIL_CONFLICT_OVERWITE_DISABLED');
+                        $status['error'][] = JText::_('EMAIL') . ' ' . JText::_('CONFLICT') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+                        $status['userinfo'] = $existinguser;
+                        return $status;
+                    }
+                }
+                if (!empty($userinfo->password_clear) && strlen($userinfo->password_clear) != 32) {
+                    // add password_clear to existinguser for the Joomla helper routines
+                    $existinguser->password_clear = $userinfo->password_clear;
+                    //check if the password needs to be updated
+                    $model = & JFusionFactory::getAuth($this->getJname());
+                    $testcrypt = $model->generateEncryptedPassword($existinguser);
+                    if ($testcrypt != $existinguser->password) {
+                        $this->updatePassword($userinfo, $existinguser, $status);
                         $changed = true;
+                    } else {
+                        $status['debug'][] = JText::_('SKIPPED_PASSWORD_UPDATE') . ':' . JText::_('PASSWORD_VALID');
                     }
                 } else {
-                    //return a debug to inform we skiped this step
-                    $status['debug'][] = JText::_('SKIPPED_BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+                    $status['debug'][] = JText::_('SKIPPED_PASSWORD_UPDATE') . ': ' . JText::_('PASSWORD_UNAVAILABLE');
                 }
-            } 
-            //check the activation status
-            if (isset($existinguser->activation)) {
-                if ($existinguser->activation != $userinfo->activation) {
-                    if ($update_activation || $overwrite) {
-                        if ($userinfo->activation) {
-                            //inactiva the user
-                            $this->inactivateUser($userinfo, $existinguser, $status);
+                //check the blocked status
+                if ($existinguser->block != $userinfo->block) {
+                    if ($update_block || $overwrite) {
+                        if ($userinfo->block) {
+                            //block the user
+                            $this->blockUser($userinfo, $existinguser, $status);
                             $changed = true;
                         } else {
-                            //activate the user
-                            $this->activateUser($userinfo, $existinguser, $status);
+                            //unblock the user
+                            $this->unblockUser($userinfo, $existinguser, $status);
                             $changed = true;
                         }
                     } else {
                         //return a debug to inform we skiped this step
-                        $status['debug'][] = JText::_('SKIPPED_ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+                        $status['debug'][] = JText::_('SKIPPED_BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+                    }
+                }
+                //check the activation status
+                if (isset($existinguser->activation)) {
+                    if ($existinguser->activation != $userinfo->activation) {
+                        if ($update_activation || $overwrite) {
+                            if ($userinfo->activation) {
+                                //inactiva the user
+                                $this->inactivateUser($userinfo, $existinguser, $status);
+                                $changed = true;
+                            } else {
+                                //activate the user
+                                $this->activateUser($userinfo, $existinguser, $status);
+                                $changed = true;
+                            }
+                        } else {
+                            //return a debug to inform we skiped this step
+                            $status['debug'][] = JText::_('SKIPPED_ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+                        }
+                    }
+                }
+                //check for advanced usergroup sync
+                $master = JFusionFunction::getMaster();
+                if (!$userinfo->block && empty($userinfo->activation) && $master->name != $this->getJname()) {
+                    $usergroup = $params->get('usergroup');
+                    $multiusergroup = $params->get('multiusergroup');
+                    if (substr($usergroup, 0, 2) == 'a:' || substr($multiusergroup, 0, 2) == 'a:') {
+                        if (substr($usergroup, 0, 2) == 'a:') {
+                            $groups = unserialize($usergroup);
+                        } else {
+                            $groups = unserialize($multiusergroup);
+                        }
+                        //find what the usergroup should be
+                        $usergroup_updated = $this->executeUpdateUsergroup($userinfo, $existinguser, $groups, $status);
+                        if ($usergroup_updated) {
+                            $changed = true;
+                        } else {
+                            $status['debug'][] = JText::_('SKIPPED_GROUP_UPDATE') . ':' . JText::_('GROUP_VALID');
+                        }
+                    }
+                }
+
+                //Update the user language with the current used in Joomla or the one existing from an other plugin
+                if (empty($userinfo->language)) {
+                    $user_lang = (!empty($user_params)) ? $user_params->get('language') : '';
+                    $userinfo->language = ($user_lang) ? $user_lang : JFactory::getLanguage()->getTag();
+                }
+                if (!empty($userinfo->language) && isset($existinguser->language) && !empty($existinguser->language) && $userinfo->language != $existinguser->language) {
+                    $this->updateUserLanguage($userinfo, $existinguser, $status);
+                    $existinguser->language = $userinfo->language;
+                    $status['debug'][] = JText::_('LANGUAGE_UPDATED') . ' : ' . $existinguser->language . ' -> ' . $userinfo->language;
+                    $changed = true;
+                } else {
+                    //return a debug to inform we skiped this step
+                    $status['debug'][] = JText::_('LANGUAGE_NOT_UPDATED');
+                }
+
+                if (empty($status['error'])) {
+                    if ($changed == true) {
+                        $status['action'] = 'updated';
+                        //let's get updated information
+                        $status['userinfo'] = $this->getUser($userinfo);
+                    } else {
+                        $status['action'] = 'unchanged';
+                        $status['userinfo'] = $existinguser;
+                    }
+                } else {
+                    $status['action'] = 'error';
+                }
+            } else {
+                $status['debug'][] = JText::_('NO_USER_FOUND_CREATING_ONE');
+                //check activation and block status
+                $create_inactive = $params->get('create_inactive', 1);
+                $create_blocked = $params->get('create_blocked', 1);
+                if ((empty($create_inactive) && !empty($userinfo->activation)) || (empty($create_blocked) && !empty($userinfo->block))) {
+                    //block user creation
+                    $status['debug'][] = JText::_('SKIPPED_USER_CREATION');
+                    $status['action'] = 'unchanged';
+                    $status['userinfo'] = $existinguser;
+                } else {
+                    $this->createUser($userinfo, $status);
+                    if (empty($status['error'])) {
+                        $status['action'] = 'created';
+                    } else {
+                        $status['action'] = 'error';
                     }
                 }
             }
-            //check for advanced usergroup sync
-            $master = JFusionFunction::getMaster();
-            if (!$userinfo->block && empty($userinfo->activation) && $master->name != $this->getJname()) {
-        		$usergroup = $params->get('usergroup');
-        		$multiusergroup = $params->get('multiusergroup');
-            	if (substr($usergroup, 0, 2) == 'a:' || substr($multiusergroup, 0, 2) == 'a:') {
-            		if (substr($usergroup, 0, 2) == 'a:') {
-						$groups = unserialize($usergroup);
-            		} else {
-						$groups = unserialize($multiusergroup);            			
-            		}
-	                //find what the usergroup should be
-	                $usergroup_updated = $this->executeUpdateUsergroup($userinfo, $existinguser, $groups, $status);
-	                if ($usergroup_updated) {
-	                    $changed = true;
-	                } else {
-	                    $status['debug'][] = JText::_('SKIPPED_GROUP_UPDATE') . ':' . JText::_('GROUP_VALID');
-	                }
-            	}
-            }
-
-            //Update the user language with the current used in Joomla or the one existing from an other plugin
-       		if (empty($userinfo->language)) {
-            	$user_lang = (!empty($user_params)) ? $user_params->get('language') : '';
-            	$userinfo->language = ($user_lang) ? $user_lang : JFactory::getLanguage()->getTag();
-            }
-            if (!empty($userinfo->language) && isset($existinguser->language) && !empty($existinguser->language) && $userinfo->language != $existinguser->language) {
-            	$this->updateUserLanguage($userinfo, $existinguser, $status);
-            	$existinguser->language = $userinfo->language;
-            	$status['debug'][] = JText::_('LANGUAGE_UPDATED') . ' : ' . $existinguser->language . ' -> ' . $userinfo->language;
-            	$changed = true;
-            } else {
-                //return a debug to inform we skiped this step
-                $status['debug'][] = JText::_('LANGUAGE_NOT_UPDATED');
-            }
-
-            if (empty($status['error'])) {
-                if ($changed == true) {
-                    $status['action'] = 'updated';
-                    //let's get updated information
-                    $status['userinfo'] = $this->getUser($userinfo);
-                } else {
-                    $status['action'] = 'unchanged';
-                    $status['userinfo'] = $existinguser;
-                }
-            } else {
-                $status['action'] = 'error';
-            }
-            return $status;
-        } else {
-            $status['debug'][] = JText::_('NO_USER_FOUND_CREATING_ONE');
-            //check activation and block status
-            $create_inactive = $params->get('create_inactive', 1);
-            $create_blocked = $params->get('create_blocked', 1);
-            if ((empty($create_inactive) && !empty($userinfo->activation)) || (empty($create_blocked) && !empty($userinfo->block))) {
-                //block user creation
-                $status['debug'][] = JText::_('SKIPPED_USER_CREATION');
-            	$status['action'] = 'unchanged';
-                $status['userinfo'] = $existinguser;
-                return $status;
-            }
-            $this->createUser($userinfo, $status);
-            if (empty($status['error'])) {
-                $status['action'] = 'created';
-            } else {
-                $status['action'] = 'error';
-            }
-            return $status;
         }
+        return $status;
     }
 
     /**

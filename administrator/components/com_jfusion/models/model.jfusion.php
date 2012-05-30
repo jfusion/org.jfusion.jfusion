@@ -691,7 +691,7 @@ class JFusionFunction
      *
      * @return string with converted text
      */
-    public static function parseCode($text, $to, $options = '')
+    public static function parseCode($text, $to, $options = array())
     {
         $options = !is_array($options) ? array() : $options;
 

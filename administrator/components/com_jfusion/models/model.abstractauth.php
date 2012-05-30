@@ -37,5 +37,6 @@ class JFusionAuth
      */
     function generateEncryptedPassword($userinfo) 
     {
+        return '';
     }
 }

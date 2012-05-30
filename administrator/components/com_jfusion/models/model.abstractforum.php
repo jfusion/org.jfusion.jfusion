@@ -84,7 +84,7 @@ class JFusionForum
      */
     function getAvatar($uid)
     {
-        return 0;
+        return '';
     }
 
     /**
@@ -235,7 +235,7 @@ class JFusionForum
      */
     function getThreadLockedStatus($threadid) {
         //assume false
-        return 0;
+        return false;
     }
 
     /**
@@ -354,7 +354,7 @@ class JFusionForum
      */
     function getThread($threadid)
     {
-        return '';
+        return null;
     }
 
     /**
@@ -380,7 +380,6 @@ class JFusionForum
 		} else {
 			$id = $dbparams->get('default_userid');
 		}
-
 		return $id;
 	}
 
@@ -427,7 +426,7 @@ class JFusionForum
      */
     function getDiscussionColumns()
     {
-        return;
+        return null;
     }
 
 	/**
@@ -556,7 +555,7 @@ class JFusionForum
      *
      * @param JParameter $dbparams object with discussion bot parameters
      *
-     * @return unknown_type
+     * @return string
      */
 	function createCaptcha($dbparams)
 	{
@@ -731,7 +730,7 @@ class JFusionForum
 	}
 
     /**
-     * @param $forumids
+     * @param array $forumids
      *
      * @return array
      */
