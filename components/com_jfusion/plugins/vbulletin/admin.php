@@ -267,7 +267,11 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
             function toggleHook(hook, action) {
                 var form = $('adminForm');
                 var itemid = $('${itemid}');
-                if ((action == 'enable' || action == 'reenable') && (hook == 'frameless' || hook == 'redirect') && (itemid.value === '' || itemid.value == '0')) {
+
+                var a = (action == 'enable' || action == 'reenable');
+                var h = (hook == 'frameless' || hook == 'redirect');
+                var i = (itemid.value === '' || itemid.value == '0');
+                if (a && h && i) {
                     alert('${empty}');
                 } else {
                     form.customcommand.value = 'toggleHook';

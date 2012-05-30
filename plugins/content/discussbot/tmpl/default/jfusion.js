@@ -479,9 +479,9 @@ function submitAjaxRequest(id, task, vars, url) {
         method: 'post',
         update: $('jfusionDebugContainer' + id)
     });
-
+    var debug;
     if (jfdb_isJ16) {
-        new Request.HTML({
+        debug = new Request.HTML({
             url: url,
             method: 'post',
             update: $('discussion'),
@@ -498,7 +498,7 @@ function submitAjaxRequest(id, task, vars, url) {
             }
         });
     } else {
-        new Ajax(url, {
+        debug = new Ajax(url, {
             method: 'post',
             update: $('discussion'),
             onComplete: function () {
