@@ -336,27 +336,26 @@ class doku_auth_mysql extends doku_auth_basic {
      *
      * Counts users which meet certain $filter criteria.
      *
-     * @param  array  $filter  filter criteria in item/pattern pairs
-     * @return count of found users.
+     * @param array $filter  filter criteria in item/pattern pairs
+     * @return int count of found users.
      *
      * @author  Matthias Grimm <matthiasgrimm@users.sourceforge.net>
      */
     function getUserCount($filter=array()) {
-      $rc = 0;
+        $rc = 0;
 
-      if($this->_openDB()) {
-        $sql = $this->_createSQLFilter($this->cnf['getUsers'], $filter);
-
-        if ($this->dbver >= 4) {
-          $sql = substr($sql, 6);  /* remove 'SELECT' or 'select' */
-          $sql = "SELECT SQL_CALC_FOUND_ROWS".$sql." LIMIT 1";
-          $this->_queryDB($sql);
-          $result = $this->_queryDB("SELECT FOUND_ROWS()");
-          $rc = $result[0]['FOUND_ROWS()'];
-        } else if (($result = $this->_queryDB($sql)))
-          $rc = count($result);
-        $this->_closeDB();
-      }
+        if($this->_openDB()) {
+            $sql = $this->_createSQLFilter($this->cnf['getUsers'], $filter);
+            if ($this->dbver >= 4) {
+                $sql = substr($sql, 6);  /* remove 'SELECT' or 'select' */
+                $sql = "SELECT SQL_CALC_FOUND_ROWS".$sql." LIMIT 1";
+                $this->_queryDB($sql);
+                $result = $this->_queryDB("SELECT FOUND_ROWS()");
+                $rc = $result[0]['FOUND_ROWS()'];
+            } else if (($result = $this->_queryDB($sql)))
+            $rc = count($result);
+            $this->_closeDB();
+        }
       return $rc;
     }
 

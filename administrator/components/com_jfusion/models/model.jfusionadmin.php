@@ -278,11 +278,12 @@ class JFusionFunctionAdmin
     }
 
     /**
+     * @static
      * @param bool $includeRev
      *
      * @return array
      */
-    function currentVersion($includeRev = false)
+    public static function currentVersion($includeRev = false)
     {
         //get the current JFusion version number
         $filename = JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'jfusion.xml';

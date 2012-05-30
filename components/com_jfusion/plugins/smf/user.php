@@ -43,9 +43,9 @@ class JFusionUser_smf extends JFusionUser
      * @param object $userinfo holds the new user data
      *
      * @access public
-     * @return object
+     * @return null|object
      */
-    function &getUser($userinfo)
+    function getUser($userinfo)
     {
         //get the identifier
         list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'a.memberName', 'a.emailAddress');
@@ -312,8 +312,7 @@ class JFusionUser_smf extends JFusionUser
      * @param object &$existinguser holds the exsisting user data
      * @param array  &$status       Status array
      *
-     * @access public
-     * @return void
+     * @access publics
      */
     function blockUser($userinfo, &$existinguser, &$status)
     {

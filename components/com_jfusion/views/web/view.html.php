@@ -24,7 +24,8 @@ class jfusionViewWeb extends JView {
 
     /**
      * @param null $tpl
-     * @return bool
+     *
+     * @return mixed
      */
     function display($tpl = null) {
 		$jname = JRequest::getVar ( 'Itemid' );

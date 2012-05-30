@@ -62,7 +62,6 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
 
     /**
      * @param object $data
-     * @return null
      */
     function getBuffer(&$data) {
 
@@ -129,35 +128,35 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
         require_once JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'hooks.php';
         if (!is_file($index_file)) {
             JError::raiseWarning(500, 'The path to the DokuWiki index file set in the component preferences does not exist');
-            return null;
-        }
-        //set the current directory to dokuwiki
-        chdir($source_path);
-        // Get the output
-
-        ob_start();        
-        $rs = include_once ($index_file);
-        $data->buffer = ob_get_contents();
-        ob_end_clean();
-        
-		if (ob_get_contents() !== false) {
-			$data->buffer = ob_get_contents().$data->buffer;
-			ob_end_clean();
-			ob_start();
-		}
-
-        //restore the __autoload handeler
-    	if(JFusionFunction::isJoomlaVersion('1.6')) {
-			spl_autoload_register(array('JLoader','load'));
         } else {
-        	spl_autoload_register('__autoload');
-        }
-        
-        //change the current directory back to Joomla. 5*60
-        chdir(JPATH_SITE);
-        // Log an error if we could not include the file
-        if (!$rs) {
-            JError::raiseWarning(500, 'Could not find DokuWiki in the specified directory');
+            //set the current directory to dokuwiki
+            chdir($source_path);
+            // Get the output
+
+            ob_start();
+            $rs = include_once ($index_file);
+            $data->buffer = ob_get_contents();
+            ob_end_clean();
+
+            if (ob_get_contents() !== false) {
+                $data->buffer = ob_get_contents().$data->buffer;
+                ob_end_clean();
+                ob_start();
+            }
+
+            //restore the __autoload handeler
+            if(JFusionFunction::isJoomlaVersion('1.6')) {
+                spl_autoload_register(array('JLoader','load'));
+            } else {
+                spl_autoload_register('__autoload');
+            }
+
+            //change the current directory back to Joomla. 5*60
+            chdir(JPATH_SITE);
+            // Log an error if we could not include the file
+            if (!$rs) {
+                JError::raiseWarning(500, 'Could not find DokuWiki in the specified directory');
+            }
         }
     }
 
@@ -379,7 +378,7 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
             define('DOKU_INC', $rootFolder . '/');
         }
         require_once 'doku_search.php';
-        $highlights = null;
+        $highlights = array();
         $results = ft_pageSearch($text, $highlights);
         //pass results back to the plugin in case they need to be filtered
         $this->filterSearchResults($results);
@@ -432,7 +431,7 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
     }
 
     /**
-     * @param string $results
+     * @param string &$results
      */
     function filterSearchResults(&$results) {
     }
@@ -446,13 +445,13 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
     }
 
     /**
-     * @return array|bool
+     * @return array
      */
     function getPathWay() {
+        $pathway = array();
         if (JRequest::getVar('id')) {
             $bread = explode(';', JRequest::getVar('id'));
             $url = '';
-            $pathway = array();
             $i = 0;
             foreach ($bread as $key) {
                 if ($url) $url.= ';' . $key;
@@ -467,8 +466,7 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
                 else $add = JRequest::getVar('do');
                 $pathway[count($pathway) - 1]->title = $pathway[count($pathway) - 1]->title . ' ( ' . $add . ' )';
             }
-            return $pathway;
         }
-        return false;
+        return $pathway;
     }
 }

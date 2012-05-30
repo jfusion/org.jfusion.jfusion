@@ -75,7 +75,7 @@ class JFusionForum_vbulletin extends JFusionForum
 
     /**
      * @param int $threadid
-     * @return int
+     * @return bool
      */
     function getThreadLockedStatus($threadid)
     {
@@ -83,15 +83,15 @@ class JFusionForum_vbulletin extends JFusionForum
         $query = "SELECT open FROM #__thread WHERE threadid = $threadid";
         $db->setQuery($query);
         $open = $db->loadResult();
-        $locked = ($open) ? 0 : 1;
+        $locked = ($open) ? false : true;
         return $locked;
     }
 
     /**
-     * @param JParameter $dbparams
-     * @param object $contentitem
+     * @param JParameter &$dbparams
+     * @param object &$contentitem
      * @param int $forumid
-     * @param object $status
+     * @param array &$status
      */
     function createThread(&$dbparams, &$contentitem, $forumid, &$status)
     {
@@ -256,10 +256,10 @@ class JFusionForum_vbulletin extends JFusionForum
     }
 
     /**
-     * @param object $dbparams
-     * @param object $existingthread
-     * @param object $contentitem
-     * @param object $status
+     * @param JParameter &$dbparams
+     * @param object &$existingthread
+     * @param object &$contentitem
+     * @param array &$status
      */
     function updateThread(&$dbparams, &$existingthread, &$contentitem, &$status)
     {
@@ -394,7 +394,7 @@ class JFusionForum_vbulletin extends JFusionForum
     }
 
     /**
-     * @return \stdClass
+     * @return object
      */
     function getDiscussionColumns()
     {
@@ -523,7 +523,7 @@ class JFusionForum_vbulletin extends JFusionForum
      * @param array $usedforums
      * @param string $result_order
      * @param int $result_limit
-     * @return array|string
+     * @return array
      */
     function getActivityQuery($usedforums, $result_order, $result_limit)
     {

@@ -42,12 +42,16 @@ class JFusionAuth_prestashop extends JFusionAuth
     }
 
     /**
-     * @param array|object $userinfo
+     * @param object $userinfo
+     *
+     * @return string
      */
     function generateEncryptedPassword($userinfo) {
 	/*
         $params = JFusionFactory::getParams($this->getJname());
         $the_crypt = md5($params->get('cookie_key') . $userinfo->password_clear);
-        return $the_crypt;*/
+        return $the_crypt;
+	*/
+        return null;
     }
 }

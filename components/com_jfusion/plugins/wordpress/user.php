@@ -51,9 +51,9 @@ class JFusionUser_wordpress extends JFusionUser {
 
     /**
      * @param object $userinfo
-     * @return object|stdClass
+     * @return null|object
      */
-    function &getUser($userinfo) {
+    function getUser($userinfo) {
 		//get the identifier
 		list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'user_login', 'user_email');
 		// Get a database object
@@ -345,7 +345,6 @@ class JFusionUser_wordpress extends JFusionUser {
     /**
      * @param object $userinfo
      * @param array $status
-     * @return null
      */
     function createUser($userinfo, &$status) {
 		//find out what usergroup should be used
@@ -355,98 +354,95 @@ class JFusionUser_wordpress extends JFusionUser {
 		//check to make sure that if using the advanced group mode, $userinfo->group_id exists
 		if (is_array($usergroups) && !isset($userinfo->group_id)) {
 			$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
-			return null;
-		}
-		$update_activation = $params->get('update_activation');
-		$default_role_id = (is_array($usergroups)) ? $usergroups[$userinfo->group_id] : $usergroups;
-		$default_role_name = strtolower(JFusionWordpressHelper::getUsergroupNameWP($default_role_id));
-		$default_role = array();
-		$default_role[$default_role_name]=1;
-		$default_userlevel = JFusionWordpressHelper::WP_userlevel_from_role(0,$default_role_name);
-		$username_clean = $this->filterUsername($userinfo->username);
-		if (isset($userinfo->password_clear)) {
-			//we can update the password
-			if (!class_exists('PasswordHashOrg')) {
-				require_once JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'PasswordHashOrg.php';
-			}
-			$t_hasher = new PasswordHashOrg(8, true);
-			$user_password = $t_hasher->HashPassword($userinfo->password_clear);
-			unset($t_hasher);
 		} else {
-			$user_password = $userinfo->password;
-		}
-		if (!empty($userinfo->activation) && $update_activation) {
-			$user_activation_key = $userinfo->activation;
-		} else {
-			$user_activation_key = '';
-		}
+            $update_activation = $params->get('update_activation');
+            $default_role_id = (is_array($usergroups)) ? $usergroups[$userinfo->group_id] : $usergroups;
+            $default_role_name = strtolower(JFusionWordpressHelper::getUsergroupNameWP($default_role_id));
+            $default_role = array();
+            $default_role[$default_role_name]=1;
+            $default_userlevel = JFusionWordpressHelper::WP_userlevel_from_role(0,$default_role_name);
+            $username_clean = $this->filterUsername($userinfo->username);
+            if (isset($userinfo->password_clear)) {
+                //we can update the password
+                if (!class_exists('PasswordHashOrg')) {
+                    require_once JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'PasswordHashOrg.php';
+                }
+                $t_hasher = new PasswordHashOrg(8, true);
+                $user_password = $t_hasher->HashPassword($userinfo->password_clear);
+                unset($t_hasher);
+            } else {
+                $user_password = $userinfo->password;
+            }
+            if (!empty($userinfo->activation) && $update_activation) {
+                $user_activation_key = $userinfo->activation;
+            } else {
+                $user_activation_key = '';
+            }
 
+            //prepare the variables
+            $user = new stdClass;
+            $user->ID                 = null;
+            $user->user_login         = $userinfo->username;
+            $user->user_pass          = $user_password;
+            $user->user_nicename      = strtolower($userinfo->username);
+            $user->user_email         = strtolower($userinfo->email);
+            $user->user_url           = '';
+            $user->user_registered    = date('Y-m-d H:i:s', time()); // seems WP has a switch to use GMT. Could not find that
+            $user->user_activation_key= $user_activation_key;
+            $user->user_status        = 0;
+            $user->display_name       = $userinfo->username;
+            //now append the new user data
+            if (!$db->insertObject('#__users', $user, 'ID')) {
+                //return the error
+                $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
+            } else {
+                // get new ID
+                $user_id = $db->insertid();
 
-		//prepare the variables
-		$user = new stdClass;
-		$user->ID                 = null;
-		$user->user_login         = $userinfo->username;
-		$user->user_pass          = $user_password;
-		$user->user_nicename      = strtolower($userinfo->username);
-		$user->user_email         = strtolower($userinfo->email);
-		$user->user_url           = '';
-		$user->user_registered    = date('Y-m-d H:i:s', time()); // seems WP has a switch to use GMT. Could not find that
-		$user->user_activation_key= $user_activation_key;
-		$user->user_status        = 0;
-		$user->display_name       = $userinfo->username;
-		//now append the new user data
-		if (!$db->insertObject('#__users', $user, 'ID')) {
-			//return the error
-			$status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-			return;
-		}
-		// get new ID
-		$user_id = $db->insertid();
+                // have to set user metadata
+                $metadata=array();
 
+                $parts = explode(' ', $userinfo->name);
+                $metadata['first_name'] = trim($parts[0]);
+                if ($parts[(count($parts) - 1) ]) {
+                    for ($i = 1;$i < (count($parts));$i++) {
+                        $metadata['last_name'] = trim($metadata['last_name'] . ' ' . $parts[$i]);
+                    }
+                }
 
-		// have to set user metadata
-		$metadata=array();
+                $metadata['nickname']         = $userinfo->username;
+                $metadata['description']      = '';
+                $metadata['rich_editing']     = 'true';
+                $metadata['comment_shortcuts']= 'false';
+                $metadata['admin_color']      = 'fresh';
+                $metadata['use_ssl']          = '0';
+                $metadata['aim']              = '';
+                $metadata['yim']              = '';
+                $metadata['jabber']           = '';
+                $metadata['wp_capabilities']  = serialize($default_role);
+                $metadata['wp_user_level']    = sprintf('%u',$default_userlevel);
+                //		$metadata['default_password_nag'] = '0'; //no nag! can be ommitted
 
-		$parts = explode(' ', $userinfo->name);
-		$metadata['first_name'] = trim($parts[0]);
-		if ($parts[(count($parts) - 1) ]) {
-			for ($i = 1;$i < (count($parts));$i++) {
-				$metadata['last_name'] = trim($metadata['last_name'] . ' ' . $parts[$i]);
-			}
-		}
+                $meta = new stdClass;
+                $meta->umeta_id = null;
+                $meta->user_id = $user_id;
 
-
-		$metadata['nickname']         = $userinfo->username;
-		$metadata['description']      = '';
-		$metadata['rich_editing']     = 'true';
-		$metadata['comment_shortcuts']= 'false';
-		$metadata['admin_color']      = 'fresh';
-		$metadata['use_ssl']          = '0';
-		$metadata['aim']              = '';
-		$metadata['yim']              = '';
-		$metadata['jabber']           = '';
-		$metadata['wp_capabilities']  = serialize($default_role);
-		$metadata['wp_user_level']    = sprintf('%u',$default_userlevel);
-		//		$metadata['default_password_nag'] = '0'; //no nag! can be ommitted
-
-		$meta = new stdClass;
-		$meta->umeta_id = null;
-		$meta->user_id = $user_id;
-
-		$keys=array_keys($metadata);
-		foreach($keys as $key){
-			$meta->meta_key = $key;
-			$meta->meta_value = $metadata[$key];
-			$meta->umeta_id = null;
-			if (!$db->insertObject('#__usermeta', $meta, 'umeta_id')) {
-				//return the error
-				$status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-				return;
-			}
-		}
-		//return the good news
-		$status['userinfo'] = $this->getUser($userinfo);
-		$status['debug'][] = JText::_('USER_CREATION');
+                $keys=array_keys($metadata);
+                foreach($keys as $key){
+                    $meta->meta_key = $key;
+                    $meta->meta_value = $metadata[$key];
+                    $meta->umeta_id = null;
+                    if (!$db->insertObject('#__usermeta', $meta, 'umeta_id')) {
+                        //return the error
+                        $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
+                        return;
+                    }
+                }
+                //return the good news
+                $status['userinfo'] = $this->getUser($userinfo);
+                $status['debug'][] = JText::_('USER_CREATION');
+            }
+        }
 	}
 
     /**
@@ -552,50 +548,49 @@ class JFusionUser_wordpress extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
-     * @return null
      */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
 		//check to see if we have a group_id in the $userinfo, if not return
 		if (!isset($userinfo->group_id)) {
 			$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
-			return null;
-		}
-		$params = & JFusionFactory::getParams($this->getJname());
-		$paramUsergroups = unserialize($params->get('usergroup'));
-		if (isset($paramUsergroups[$userinfo->group_id])) {
-			$db = JFusionFactory::getDatabase($this->getJname());
-			$newgroup = $paramUsergroups[$userinfo->group_id];
-			$newgroupname = strtolower(JFusionWordpressHelper::getUsergroupNameWP($newgroup));
-			$oldgroupname = strtolower(JFusionWordpressHelper::getUsergroupNameWP($existinguser->group_id));
-
-			// get the user capabilities
-			$db = JFusionFactory::getDatabase($this->getJname());
-			$query = "SELECT meta_value FROM #__usermeta WHERE meta_key = 'wp_capabilities' AND user_id = " . (int)($existinguser->userid);
-			$db->setQuery($query);
-			$capsfield = $db->loadResult();
-			$caps = array();
-			if ($capsfield) {
-				$caps = unserialize($capsfield);
-				// make it all lowercase keys
-				$caps = array_change_key_case($caps,CASE_LOWER);
-				// now delete the old group
-				if (array_key_exists($oldgroupname,$caps)){
-					unset($caps[$oldgroupname]);
-				}
-			}
-			// ad the new group
-			$caps[$newgroupname]="1";
-			$capsfield = serialize($caps);
-			$query = "UPDATE #__usermeta SET meta_value =" . $db->Quote($capsfield) . " WHERE meta_key = 'wp_capabilities' AND user_id =" . (int)$existinguser->userid;
-			$db->setQuery($query);
-			if (!$db->query()) {
-				$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-			} else {
-				$status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . $existinguser->group_id . ' -> ' . $paramUsergroups[$userinfo->group_id];
-			}
 		} else {
-			$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST');
-		}
+            $params = & JFusionFactory::getParams($this->getJname());
+            $paramUsergroups = unserialize($params->get('usergroup'));
+            if (isset($paramUsergroups[$userinfo->group_id])) {
+                $db = JFusionFactory::getDatabase($this->getJname());
+                $newgroup = $paramUsergroups[$userinfo->group_id];
+                $newgroupname = strtolower(JFusionWordpressHelper::getUsergroupNameWP($newgroup));
+                $oldgroupname = strtolower(JFusionWordpressHelper::getUsergroupNameWP($existinguser->group_id));
+
+                // get the user capabilities
+                $db = JFusionFactory::getDatabase($this->getJname());
+                $query = "SELECT meta_value FROM #__usermeta WHERE meta_key = 'wp_capabilities' AND user_id = " . (int)($existinguser->userid);
+                $db->setQuery($query);
+                $capsfield = $db->loadResult();
+                $caps = array();
+                if ($capsfield) {
+                    $caps = unserialize($capsfield);
+                    // make it all lowercase keys
+                    $caps = array_change_key_case($caps,CASE_LOWER);
+                    // now delete the old group
+                    if (array_key_exists($oldgroupname,$caps)){
+                        unset($caps[$oldgroupname]);
+                    }
+                }
+                // ad the new group
+                $caps[$newgroupname]="1";
+                $capsfield = serialize($caps);
+                $query = "UPDATE #__usermeta SET meta_value =" . $db->Quote($capsfield) . " WHERE meta_key = 'wp_capabilities' AND user_id =" . (int)$existinguser->userid;
+                $db->setQuery($query);
+                if (!$db->query()) {
+                    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
+                } else {
+                    $status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . $existinguser->group_id . ' -> ' . $paramUsergroups[$userinfo->group_id];
+                }
+            } else {
+                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST');
+            }
+        }
 	}
 
 }

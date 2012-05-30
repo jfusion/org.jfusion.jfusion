@@ -57,9 +57,9 @@ class JFusionPublic_gallery2 extends JFusionPublic {
     }
 
     /**
-     * @param object $data
+     * @param object &$data
      */
-    function getBuffer($data) {
+    function getBuffer(&$data) {
     	$this->data = $data;
         $jPluginParam = &$data->jPluginParam;
         //Handle PHP based Gallery Rewrite
@@ -121,6 +121,7 @@ class JFusionPublic_gallery2 extends JFusionPublic {
 
     /**
      * @param object $data
+     * @return string|void
      */
     function parseBody(&$data) {
         //fix for form actions    	

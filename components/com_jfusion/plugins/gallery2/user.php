@@ -36,9 +36,9 @@ require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS .
 class JFusionUser_gallery2 extends JFusionUser {
     /**
      * @param object $userinfo
-     * @return bool|\stdClass
+     * @return null|object
      */
-    function &getUser($userinfo) {
+    function getUser($userinfo) {
         // get the username
         if (is_object($userinfo)) {
             $username = $userinfo->username;
@@ -49,7 +49,7 @@ class JFusionUser_gallery2 extends JFusionUser {
         jFusion_g2BridgeCore::loadGallery2Api($this->getJname(),false);
         list($ret, $g2_user) = GalleryCoreApi::fetchUserByUserName($username);
         if ($ret) {
-            return false;
+            return null;
         } else {
             return $this->_getUser($g2_user);
         }
@@ -243,8 +243,7 @@ class JFusionUser_gallery2 extends JFusionUser {
 
     /**
      * @param object $userinfo
-     * @param array $status
-     * @return array|string
+     * @param array &$status
      */
     function createUser($userinfo, &$status) {
         require JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'gallery2.php';
@@ -289,14 +288,12 @@ class JFusionUser_gallery2 extends JFusionUser {
             }
         }
         GalleryEmbed::done();
-        return $status;
     }
 
     /**
      * @param object $userinfo
-     * @param object $existinguser
-     * @param array $status
-     * @return null
+     * @param object &$existinguser
+     * @param array &$status
      */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
         require JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'gallery2.php';
@@ -304,26 +301,27 @@ class JFusionUser_gallery2 extends JFusionUser {
         //check to see if we have a group_id in the $userinfo, if not return
         if (!isset($userinfo->group_id)) {
             $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
-            return null;
-        }
-        $params = JFusionFactory::getParams($this->getJname());
-        $usergroups = unserialize($params->get('usergroup'));
-        if (isset($usergroups[$userinfo->group_id])) {
-            if ($existinguser->group_id != 2 && $existinguser->group_id != 4) {
-                $ret = GalleryCoreApi::removeUserFromGroup($existinguser->userid, $existinguser->group_id);
+            return;
+        } else {
+            $params = JFusionFactory::getParams($this->getJname());
+            $usergroups = unserialize($params->get('usergroup'));
+            if (isset($usergroups[$userinfo->group_id])) {
+                if ($existinguser->group_id != 2 && $existinguser->group_id != 4) {
+                    $ret = GalleryCoreApi::removeUserFromGroup($existinguser->userid, $existinguser->group_id);
+                    if ($ret) {
+                        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $existinguser->group_id . ' -> ' . $usergroups[$userinfo->group_id];
+                        return;
+                    }
+                }
+                $ret = GalleryCoreApi::addUserToGroup($existinguser->userid, (int)($usergroups[$userinfo->group_id]));
                 if ($ret) {
                     $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $existinguser->group_id . ' -> ' . $usergroups[$userinfo->group_id];
-                    return;
                 }
+            } else {
+                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST');
             }
-            $ret = GalleryCoreApi::addUserToGroup($existinguser->userid, (int)($usergroups[$userinfo->group_id]));
-            if ($ret) {
-                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $existinguser->group_id . ' -> ' . $usergroups[$userinfo->group_id];
-                return;
-            }
-        } else {
-            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST');
         }
+
         GalleryEmbed::done();
     }
 
@@ -368,8 +366,8 @@ class JFusionUser_gallery2 extends JFusionUser {
 
     /**
      * @param object $userinfo
-     * @param object $existinguser
-     * @param array $status
+     * @param object &$existinguser
+     * @param array &$status
      */
     function updateEmail($userinfo, &$existinguser, &$status) {
         require JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'gallery2.php';
@@ -404,24 +402,24 @@ class JFusionUser_gallery2 extends JFusionUser {
 
     /**
      * @param object $userinfo
-     * @param object $existinguser
-     * @param array $status
+     * @param object &$existinguser
+     * @param array &$status
      */
     function unblockUser($userinfo, &$existinguser, &$status) {
     }
 
     /**
      * @param $userinfo
-     * @param $existinguser
-     * @param $status
+     * @param &$existinguser
+     * @param &$status
      */
     function activeUser($userinfo, &$existinguser, &$status) {
     }
 
     /**
      * @param $userinfo
-     * @param $existinguser
-     * @param $status
+     * @param &$existinguser
+     * @param &$status
      */
     function inactiveUser($userinfo, &$existinguser, &$status) {
     }

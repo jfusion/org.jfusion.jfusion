@@ -43,11 +43,11 @@ class JFusionUser
      *
      * @param object $userinfo contains the object of the user
      *
-     * @return object userinfo Object containing the user information
+     * @return null|object userinfo Object containing the user information
      */
     function getUser($userinfo)
     {
-        return 0;
+        return false;
     }
 
     /**
@@ -138,6 +138,10 @@ class JFusionUser
      */
     function destroySession($userinfo, $options)
     {
+        $result = array();
+        $result['error'] = array();
+        $result['debug'] = array();
+        return $result;
     }
 
     /**
@@ -368,8 +372,6 @@ class JFusionUser
      * @param object $userinfo      Object containing the new userinfo
      * @param object &$existinguser Object containg the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
-     *
-     * @return string updates are passed on into the $status array
      */
     function updatePassword($userinfo, &$existinguser, &$status)
     {
@@ -384,8 +386,6 @@ class JFusionUser
      * @param object $userinfo      Object containing the new userinfo
      * @param object &$existinguser Object containg the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
-     *
-     * @return string updates are passed on into the $status array
      */
     function updateUsername($userinfo, &$existinguser, &$status)
     {
@@ -400,8 +400,6 @@ class JFusionUser
      * @param object $userinfo      Object containing the new userinfo
      * @param object &$existinguser Object containg the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
-     *
-     * @return string updates are passed on into the $status array
      */
     function updateEmail($userinfo, &$existinguser, &$status)
     {
@@ -416,8 +414,6 @@ class JFusionUser
      * @param object $userinfo      Object containing the new userinfo
      * @param object &$existinguser Object containg the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
-     *
-     * @return string updates are passed on into the $status array
      */
     function updateUsergroup($userinfo, &$existinguser, &$status)
     {
@@ -432,8 +428,6 @@ class JFusionUser
      * @param object $userinfo      Object containing the new userinfo
      * @param object &$existinguser Object containg the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
-     *
-     * @return string updates are passed on into the $status array
      */
     function blockUser($userinfo, &$existinguser, &$status)
     {
@@ -448,8 +442,6 @@ class JFusionUser
      * @param object $userinfo      Object containing the new userinfo
      * @param object &$existinguser Object containg the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
-     *
-     * @return string updates are passed on into the $status array
      */
     function unblockUser($userinfo, &$existinguser, &$status)
     {
@@ -464,8 +456,6 @@ class JFusionUser
      * @param object $userinfo      Object containing the new userinfo
      * @param object &$existinguser Object containg the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
-     *
-     * @return string updates are passed on into the $status array
      */
     function activateUser($userinfo, &$existinguser, &$status)
     {
@@ -480,8 +470,6 @@ class JFusionUser
      * @param object $userinfo      Object containing the new userinfo
      * @param object &$existinguser Object containg the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
-     *
-     * @return string updates are passed on into the $status array
      */
     function inactivateUser($userinfo, &$existinguser, &$status)
     {
@@ -495,8 +483,6 @@ class JFusionUser
      *
      * @param object $userinfo Object containing the new userinfo
      * @param array  &$status  Array containing the errors and result of the function
-     *
-     * @return string updates are passed on into the $status array
      */
     function createUser($userinfo, &$status)
     {
@@ -527,8 +513,6 @@ class JFusionUser
      * @param object $existinguser Object containing the existing userinfo
      * @param object $lang         Object JLanguage containing the current language of Joomla
      * @param array  &$status      Array containing the errors and result of the function
-     *
-     * @return string updates are passed on into the $status array
      */
     function updateUserLanguage($existinguser, $lang, &$status)
     {
@@ -544,5 +528,6 @@ class JFusionUser
      */
     function syncSessions($keepalive = false)
     {
+        return -1;
     }
 }

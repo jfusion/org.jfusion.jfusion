@@ -29,7 +29,13 @@ defined('_JEXEC') or die('Restricted access');
  */
 class JFusionPublic_smf extends JFusionPublic
 {
-	var $callbackdata = null;
+    /**
+     * @var $callbackdata object
+     */
+    var $callbackdata = null;
+    /**
+     * @var bool $callbackbypass
+     */
 	var $callbackbypass = null;
 
     /**
@@ -45,7 +51,7 @@ class JFusionPublic_smf extends JFusionPublic
     /**
      * Get registration url
      *
-     * @return strung url
+     * @return string url
      */
     function getRegistrationURL()
     {
@@ -175,7 +181,7 @@ class JFusionPublic_smf extends JFusionPublic
     /**
      * Get lost password url
      *
-     * @return strung url
+     * @return string url
      */
     function getLostPasswordURL()
     {
@@ -185,7 +191,7 @@ class JFusionPublic_smf extends JFusionPublic
     /**
      * Get url for lost user name
      *
-     * @return strung url
+     * @return string url
      */
     function getLostUsernameURL()
     {
@@ -235,7 +241,7 @@ class JFusionPublic_smf extends JFusionPublic
         if ($action == 'logout') {
             //destroy the SMF session first
             $JFusionUser = & JFusionFactory::getUser($this->getJname());
-            $JFusionUser->destroySession('', '');
+            $JFusionUser->destroySession(null, null);
             //destroy the Joomla session
             $mainframe = JFactory::getApplication();
             $mainframe->logout();
@@ -614,150 +620,154 @@ class JFusionPublic_smf extends JFusionPublic
         //JError::raiseWarning(500, htmlentities($return));
         return $return;
     }
-    /*function getPathWay()
+
+    /**
+     * @return array
+     */
+    function getPathWay()
     {
-    $db = JFusionFactory::getDatabase($this->getJname());
-    $pathway = array();
+        $db = JFusionFactory::getDatabase($this->getJname());
+        $pathway = array();
 
-    list ($board_id ) = split  ( '.'  , JRequest::getVar('board'),1 );
-    list ($topic_id ) = split  ( '.'  , JRequest::getVar('topic'),1 );
-    list ($action ) = split  ( ';'  , JRequest::getVar('action'),1 );
+        list ($board_id ) = split  ( '.'  , JRequest::getVar('board'),1 );
+        list ($topic_id ) = split  ( '.'  , JRequest::getVar('topic'),1 );
+        list ($action ) = split  ( ';'  , JRequest::getVar('action'),1 );
 
-    $msg = JRequest::getVar('msg');
+        $msg = JRequest::getVar('msg');
 
-    $query = 'SELECT ID_TOPIC,ID_BOARD, subject '.
-    'FROM #__messages '.
-    'WHERE ID_TOPIC = ' . $db->Quote($topic_id);
-    $db->setQuery($query );
-    $topic = $db->loadObject();
+        $query = 'SELECT ID_TOPIC,ID_BOARD, subject '.
+        'FROM #__messages '.
+        'WHERE ID_TOPIC = ' . $db->Quote($topic_id);
+        $db->setQuery($query );
+        $topic = $db->loadObject();
 
-    if ($topic) {
-    $board_id = $topic->ID_BOARD;
-    }
+        if ($topic) {
+            $board_id = $topic->ID_BOARD;
+        }
 
-    if ($board_id) {
-    $boards = array();
-    // Loop while the parent is non-zero.
-    while ($board_id != 0)
-    {
-    $query = 'SELECT b.ID_PARENT , b.ID_BOARD, b.ID_CAT, b.name , c.name as catname '.
-    'FROM #__boards AS b INNER JOIN #__categories AS c ON b.ID_CAT = c.ID_CAT '.
-    'WHERE ID_BOARD = ' . $db->Quote($board_id);
-    $db->setQuery($query );
-    $result = $db->loadObject();
+        if ($board_id) {
+            $boards = array();
+            // Loop while the parent is non-zero.
+            while ($board_id != 0)
+            {
+                $query = 'SELECT b.ID_PARENT , b.ID_BOARD, b.ID_CAT, b.name , c.name as catname '.
+                'FROM #__boards AS b INNER JOIN #__categories AS c ON b.ID_CAT = c.ID_CAT '.
+                'WHERE ID_BOARD = ' . $db->Quote($board_id);
+                $db->setQuery($query );
+                $result = $db->loadObject();
 
-    $board_id = 0;
-    if ($result) {
-    $board_id = $result->ID_PARENT;
-    $boards[] = $result;
-    }
-    }
-    $boards = array_reverse($boards);
-    $cat_id = 0;
-    foreach ($boards as $board) {
-    $path = new stdClass();
-    if ( $board->ID_CAT != $cat_id ) {
-    $cat_id = $board->ID_CAT;
-    $path->title = $board->catname;
-    $path->url = 'index.php#'.$board->ID_CAT;
-    $pathway[] = $path;
+                $board_id = 0;
+                if ($result) {
+                    $board_id = $result->ID_PARENT;
+                    $boards[] = $result;
+                }
+            }
+            $boards = array_reverse($boards);
+            $cat_id = 0;
+            foreach ($boards as $board) {
+                $path = new stdClass();
+                if ( $board->ID_CAT != $cat_id ) {
+                    $cat_id = $board->ID_CAT;
+                    $path->title = $board->catname;
+                    $path->url = 'index.php#'.$board->ID_CAT;
+                    $pathway[] = $path;
 
-    $path = new stdClass();
-    $path->title = $board->name;
-    $path->url = 'index.php?board='.$board->ID_BOARD.'.0';
-    } else {
-    $path->title = $board->name;
-    $path->url = 'index.php?board='.$board->ID_BOARD.'.0';
-    }
-    $pathway[] = $path;
-    }
-    }
-    switch ($action) {
-    case 'post':
-    $path = new stdClass();
-    if ( JRequest::getVar('board')) {
-    $path->title = 'Modify Toppic ( Start new topic )';
-    $path->url = 'index.php?action=post&board='.$board_id.'.0';;
-    } else if ( $msg ) {
-    $path->title = 'Modify Toppic ( '.$topic->subject.' )';
-    $path->url = 'index.php?action=post&topic='.$topic_id.'.msg'.$msg.'#msg'.$msg;
-    } else {
-    $path->title = 'Post reply ( Re: '.$topic->subject.' )';
-    $path->url = 'index.php?action=post&topic='.$topic_id;
-    }
-    $pathway[] = $path;
-    break;
-    case 'pm':
-    $path = new stdClass();
-    $path->title = 'Personal Messages';
-    $path->url = 'index.php?action=pm';
-    $pathway[] = $path;
+                    $path = new stdClass();
+                    $path->title = $board->name;
+                    $path->url = 'index.php?board='.$board->ID_BOARD.'.0';
+                } else {
+                    $path->title = $board->name;
+                    $path->url = 'index.php?board='.$board->ID_BOARD.'.0';
+                }
+                $pathway[] = $path;
+            }
+        }
+        switch ($action) {
+            case 'post':
+                $path = new stdClass();
+                if ( JRequest::getVar('board')) {
+                    $path->title = 'Modify Toppic ( Start new topic )';
+                    $path->url = 'index.php?action=post&board='.$board_id.'.0';;
+                } else if ( $msg ) {
+                    $path->title = 'Modify Toppic ( '.$topic->subject.' )';
+                    $path->url = 'index.php?action=post&topic='.$topic_id.'.msg'.$msg.'#msg'.$msg;
+                } else {
+                    $path->title = 'Post reply ( Re: '.$topic->subject.' )';
+                    $path->url = 'index.php?action=post&topic='.$topic_id;
+                }
+                $pathway[] = $path;
+                break;
+            case 'pm':
+                $path = new stdClass();
+                $path->title = 'Personal Messages';
+                $path->url = 'index.php?action=pm';
+                $pathway[] = $path;
 
-    $path = new stdClass();
-    if ( JRequest::getVar('sa')=='send' ) {
-    $path->title = 'New Message';
-    $path->url = 'index.php?action=pm&sa=send';
-    $pathway[] = $path;
-    } elseif ( JRequest::getVar('sa')=='search' ) {
-    $path->title = 'Search Messages';
-    $path->url = 'index.php?action=pm&sa=search';
-    $pathway[] = $path;
-    } elseif ( JRequest::getVar('sa')=='prune' ) {
-    $path->title = 'Prune Messages';
-    $path->url = 'index.php?action=pm&sa=prune';
-    $pathway[] = $path;
-    } elseif ( JRequest::getVar('sa')=='manlabels' ) {
-    $path->title = 'Manage Labels';
-    $path->url = 'index.php?action=pm&sa=manlabels';
-    $pathway[] = $path;
-    } elseif ( JRequest::getVar('f')=='outbox' ) {
-    $path->title = 'Outbox';
-    $path->url = 'index.php?action=pm&f=outbox';
-    $pathway[] = $path;
-    } else {
-    $path->title = 'Inbox';
-    $path->url = 'index.php?action=pm';
-    $pathway[] = $path;
+                $path = new stdClass();
+                if ( JRequest::getVar('sa')=='send' ) {
+                    $path->title = 'New Message';
+                    $path->url = 'index.php?action=pm&sa=send';
+                    $pathway[] = $path;
+                } elseif ( JRequest::getVar('sa')=='search' ) {
+                    $path->title = 'Search Messages';
+                    $path->url = 'index.php?action=pm&sa=search';
+                    $pathway[] = $path;
+                } elseif ( JRequest::getVar('sa')=='prune' ) {
+                    $path->title = 'Prune Messages';
+                    $path->url = 'index.php?action=pm&sa=prune';
+                    $pathway[] = $path;
+                } elseif ( JRequest::getVar('sa')=='manlabels' ) {
+                    $path->title = 'Manage Labels';
+                    $path->url = 'index.php?action=pm&sa=manlabels';
+                    $pathway[] = $path;
+                } elseif ( JRequest::getVar('f')=='outbox' ) {
+                    $path->title = 'Outbox';
+                    $path->url = 'index.php?action=pm&f=outbox';
+                    $pathway[] = $path;
+                } else {
+                    $path->title = 'Inbox';
+                    $path->url = 'index.php?action=pm';
+                    $pathway[] = $path;
+                }
+                break;
+            case 'search2':
+                $path = new stdClass();
+                $path->title = 'Search';
+                $path->url = 'index.php?action=search';
+                $pathway[] = $path;
+                $path = new stdClass();
+                $path->title = 'Search Results';
+                $path->url = 'index.php?action=search';
+                $pathway[] = $path;
+                break;
+            case 'search':
+                $path = new stdClass();
+                $path->title = 'Search';
+                $path->url = 'index.php?action=search';
+                $pathway[] = $path;
+                break;
+            case 'unread':
+                $path = new stdClass();
+                $path->title = 'Recent Unread Topics';
+                $path->url = 'index.php?action=unread';
+                $pathway[] = $path;
+                break;
+            case 'unreadreplies':
+                $path = new stdClass();
+                $path->title = 'Updated Topics';
+                $path->url = 'index.php?action=unreadreplies';
+                $pathway[] = $path;
+                break;
+            default:
+                if ( $topic_id ) {
+                    $path = new stdClass();
+                    $path->title = $topic->subject;
+                    $path->url = 'index.php?topic='.$topic_id;
+                    $pathway[] = $path;
+                }
+        }
+        return $pathway;
     }
-    break;
-    case 'search2':
-    $path = new stdClass();
-    $path->title = 'Search';
-    $path->url = 'index.php?action=search';
-    $pathway[] = $path;
-    $path = new stdClass();
-    $path->title = 'Search Results';
-    $path->url = 'index.php?action=search';
-    $pathway[] = $path;
-    break;
-    case 'search':
-    $path = new stdClass();
-    $path->title = 'Search';
-    $path->url = 'index.php?action=search';
-    $pathway[] = $path;
-    break;
-    case 'unread':
-    $path = new stdClass();
-    $path->title = 'Recent Unread Topics';
-    $path->url = 'index.php?action=unread';
-    $pathway[] = $path;
-    break;
-    case 'unreadreplies':
-    $path = new stdClass();
-    $path->title = 'Updated Topics';
-    $path->url = 'index.php?action=unreadreplies';
-    $pathway[] = $path;
-    break;
-    default:
-    if ( $topic_id ) {
-    $path = new stdClass();
-    $path->title = $topic->subject;
-    $path->url = 'index.php?topic='.$topic_id;
-    $pathway[] = $path;
-    }
-    }
-    return $pathway;
-    }*/
 
     /************************************************
     * For JFusion Search Plugin
@@ -803,8 +813,6 @@ class JFusionPublic_smf extends JFusionPublic
      * @param string &$where reference to where clause already generated by search bot; add on plugin specific criteria
      * @param JParameter &$pluginParam custom plugin parameters in search.xml
      * @param string $ordering
-     *
-     * @return string Returns search criteria
      */
     function getSearchCriteria(&$where, &$pluginParam, $ordering)
     {
@@ -840,8 +848,6 @@ class JFusionPublic_smf extends JFusionPublic
      *
      * @param array &$results array with search results
      * @param object &$pluginParam custom plugin parameters in search.xml
-     *
-     * @return void
      */
     function filterSearchResults(&$results, &$pluginParam)
     {

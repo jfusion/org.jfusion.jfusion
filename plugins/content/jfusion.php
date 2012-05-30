@@ -42,7 +42,10 @@ class plgContentJfusion extends JPlugin
     var $jname = '';
     var $creationMode = '';
     var $template = 'default';
-    var $article = '';
+    /**
+     * @var $article object
+     */
+    var $article = null;
     var $output = array();
     var $dbtask = '';
     var $ajax_request = 0;
@@ -1056,7 +1059,7 @@ class plgContentJfusion extends JPlugin
                 if ($this->params->get("enable_pagination",1)) {
                     $application = JFactory::getApplication() ;
                     $limitstart = JRequest::getInt( 'limitstart_discuss', 0 );
-                    $limit = $application->getUserStateFromRequest( 'global.list.limit', 'limit_discuss', 5, 'int' );
+                    $limit = (int) $application->getUserStateFromRequest( 'global.list.limit', 'limit_discuss', 5, 'int' );
                     $this->helper->output['post_pagination']  = '<div id="jfusionPostPagination" class="pagination">';
                     if (!empty($this->helper->reply_count) && $this->helper->reply_count > 5) {
                         $pageNav = new JFusionPagination($this->helper->reply_count, $limitstart, $limit, '_discuss' );
@@ -1515,7 +1518,7 @@ class plgContentJfusion extends JPlugin
         $action_url = $this->helper->_get_article_url('','',false);
         $application = JFactory::getApplication() ;
 
-        $limit = $application->getUserStateFromRequest( 'global.list.limit', 'limit_discuss', 5, 'int' );
+        $limit = (int) $application->getUserStateFromRequest( 'global.list.limit', 'limit_discuss', 5, 'int' );
 
         //set $limitstart so that the created post is shown
         if ($this->params->get("sort_posts",'ASC')=='ASC') {

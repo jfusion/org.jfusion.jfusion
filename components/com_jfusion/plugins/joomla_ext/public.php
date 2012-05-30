@@ -84,6 +84,7 @@ class JFusionPublic_joomla_ext extends JFusionPublic {
     function getNumberOnlineMembers() {
         return JFusionJplugin::getNumberOnlineMembers();
     }
+
     /**
      * Update the language front end param in the account of the user if this one changes it
      * NORMALLY THE LANGUAGE SELECTION AND CHANGEMENT FOR JOOMLA IS PROVIDED BY THIRD PARTY LIKE JOOMFISH

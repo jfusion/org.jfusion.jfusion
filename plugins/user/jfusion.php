@@ -131,7 +131,7 @@ class plgUserJfusion extends JPlugin
     /**
      * This method should handle any login logic and report back to the subject
      *
-     * @param array $user     holds the user data
+     * @param object $user     holds the user data
      * @param array &$options holding options (remember, autoregister, group)
      *
      * @return boolean True on success
@@ -453,8 +453,6 @@ class plgUserJfusion extends JPlugin
             } else {
                 $jfc->executeRedirect($source_url);
             }
-
-            
             $result = true;
             return $result;
         } else {
@@ -466,7 +464,7 @@ class plgUserJfusion extends JPlugin
     /**
      * This method should handle any logout logic and report back to the subject
      *
-     * @param array $user     holds the user data
+     * @param array|object $user     holds the user data
      * @param array &$options array holding options (client, ...)
      *
      * @return object True on success

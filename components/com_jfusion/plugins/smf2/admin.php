@@ -122,7 +122,7 @@ class JFusionAdmin_smf2 extends JFusionAdmin{
     /**
      * get default user group list
      *
-     * @return object with default user group list
+     * @return array array with object with default user group list
      */
     function getUsergroupList()
     {

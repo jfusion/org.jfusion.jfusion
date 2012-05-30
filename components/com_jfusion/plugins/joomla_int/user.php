@@ -104,9 +104,9 @@ class JFusionUser_joomla_int extends JFusionUser {
 
     /**
      * @param object $userinfo
-     * @return object
+     * @return null|object
      */
-    function &getUser($userinfo) {
+    function getUser($userinfo) {
         $userinfo = JFusionJplugin::getUser($userinfo, $this->getJname());
         return $userinfo;
     }
@@ -263,6 +263,7 @@ class JFusionUser_joomla_int extends JFusionUser {
     /**
      * @param object $user
      * @param array $options
+     * @return array
      */
     function destroySession($user, $options) {
 	    if (!isset($options['clientid'])) {
@@ -292,6 +293,7 @@ class JFusionUser_joomla_int extends JFusionUser {
             $table = & JTable::getInstance('session');
             $table->destroy($user['id'], $options['clientid']);
         }
+        return array();
     }
 
     /**

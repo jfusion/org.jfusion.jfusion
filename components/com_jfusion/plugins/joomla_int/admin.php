@@ -86,6 +86,7 @@ class JFusionAdmin_joomla_int extends JFusionAdmin {
     function allowRegistration() {
         return JFusionJplugin::allowRegistration($this->getJname());
     }
+
     function debugConfig() {
         $jname = $this->getJname();
         //get registration status

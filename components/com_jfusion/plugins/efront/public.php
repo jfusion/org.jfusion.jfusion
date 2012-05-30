@@ -77,11 +77,10 @@ class JFusionPublic_efront extends JFusionPublic
     }
 
     /**
-     * @return \stdClass
+     * @return int
      */
     function getNumberOnlineGuests() {
-        $result = new stdClass;
-      return $result;
+        return 0;
     }
 
     /**

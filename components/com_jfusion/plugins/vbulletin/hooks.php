@@ -348,6 +348,7 @@ class executeJFusionHook
             }
             if (!empty($vbsefenabled)) {
                 if ($vbsefmode == 1) {
+                    $pos = '';
                     if (strpos($this->vars, $admincp) !== false) {
                         $pos = $admincp;
                     } elseif (strpos($this->vars, $modcp) !== false) {

@@ -23,6 +23,7 @@ class jfusionViewconfigdump extends JView
 
     /**
      * @param null $tpl
+     * @return mixed|void
      */
     function display($tpl = null)
     {

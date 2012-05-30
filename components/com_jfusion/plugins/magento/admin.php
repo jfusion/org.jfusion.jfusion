@@ -151,6 +151,7 @@ class JFusionAdmin_magento extends JFusionAdmin
     function allowEmptyCookieDomain() {
         return true;
     }
+
     function debugConfigExtra() {
         // see if we have an api user in Magento
         $jname = $this->getJname();

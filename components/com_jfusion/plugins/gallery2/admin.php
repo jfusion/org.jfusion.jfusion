@@ -113,9 +113,11 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
     }
 
     /**
+     * @param int $limitstart
+     * @param int $limit
      * @return array
      */
-    function getUserList() {
+    function getUserList($limitstart = null, $limit = null) {
         // initialise some objects
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'SELECT g_userName as username, g_email as email, g_id as userid from #__User where g_id != 5';

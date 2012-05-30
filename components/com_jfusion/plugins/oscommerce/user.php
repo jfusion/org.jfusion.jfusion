@@ -34,9 +34,9 @@ class JFusionUser_oscommerce extends JFusionUser
 {
     /**
      * @param object $userinfo
-     * @return bool|object
+     * @return null|object
      */
-    function &getUser($userinfo) {
+    function getUser($userinfo) {
         $identifier = $userinfo;
         if (is_object($userinfo)) {
             $identifier = $userinfo->email;
@@ -101,7 +101,7 @@ class JFusionUser_oscommerce extends JFusionUser
                 return $result;
             }
         }
-        return false;
+        return null;
     }
     /**
      * returns the name of this JFusion plugin
@@ -170,11 +170,10 @@ class JFusionUser_oscommerce extends JFusionUser
 
     /**
      * @param object $userinfo
-     * @param object $existinguser
-     * @param array $status
-     * @return string
+     * @param object &$existinguser
+     * @param array &$status
      */
-    function updatePassword($userinfo, $existinguser, &$status) {
+    function updatePassword($userinfo, &$existinguser, &$status) {
         $params = JFusionFactory::getParams($this->getJname());
         $osCversion = $params->get('osCversion');
         $existinguser->password = '';
@@ -222,7 +221,6 @@ class JFusionUser_oscommerce extends JFusionUser
         } else {
             $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR');
         }
-
     }
 
     /**
@@ -237,9 +235,8 @@ class JFusionUser_oscommerce extends JFusionUser
 
     /**
      * @param object $userinfo
-     * @param object $existinguser
-     * @param array $status
-     * @return string
+     * @param object &$existinguser
+     * @param array &$status
      */
     function updateEmail($userinfo, &$existinguser, &$status) {
         $params = JFusionFactory::getParams($this->getJname());
@@ -307,7 +304,6 @@ class JFusionUser_oscommerce extends JFusionUser
     /**
      * @param object $userinfo
      * @param array $status
-     * @return null
      */
     function createUser($userinfo, &$status) {
         $params = JFusionFactory::getParams($this->getJname());
@@ -369,7 +365,7 @@ class JFusionUser_oscommerce extends JFusionUser
                 //check to make sure that if using the advanced group mode, $userinfo->group_id exists
                 if (is_array($usergroups) && !isset($userinfo->group_id)) {
                     $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
-                    return null;
+                    return;
                 }
                 $default_group_id = (is_array($usergroups)) ? $usergroups[$userinfo->group_id] : $usergroups;
                 $user->customers_group_pricing = $default_group_id;
@@ -383,7 +379,7 @@ class JFusionUser_oscommerce extends JFusionUser
                 //check to make sure that if using the advanced group mode, $userinfo->group_id exists
                 if (is_array($usergroups) && !isset($userinfo->group_id)) {
                     $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
-                    return null;
+                    return;
                 }
                 $default_group_id = (is_array($usergroups)) ? $usergroups[$userinfo->group_id] : $usergroups;
                 $user->customers_status = $default_group_id;
@@ -396,7 +392,7 @@ class JFusionUser_oscommerce extends JFusionUser
                 //check to make sure that if using the advanced group mode, $userinfo->group_id exists
                 if (is_array($usergroups) && !isset($userinfo->group_id)) {
                     $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
-                    return null;
+                    return;
                 }
                 $default_group_id = (is_array($usergroups)) ? $usergroups[$userinfo->group_id] : $usergroups;
                 $user->customers_group_id = $default_group_id;
@@ -631,7 +627,6 @@ class JFusionUser_oscommerce extends JFusionUser
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
-     * @return null
      */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
         $params = JFusionFactory::getParams($this->getJname());
@@ -641,57 +636,57 @@ class JFusionUser_oscommerce extends JFusionUser
             //check to see if we have a group_id in the $userinfo, if not return
             if (!isset($userinfo->group_id)) {
                 $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
-                return null;
-            }
-            $usergroups = unserialize($params->get('usergroup'));
-            if (isset($usergroups[$userinfo->group_id])) {
-                $db = JFusionFactory::getDataBase($this->getJname());
-                switch ($osCversion) {
-                    case 'osczen':
-                        //set the usergroup in the user table
-                        $query = 'UPDATE #__customers SET customers_group_pricing = ' . $usergroups[$userinfo->group_id] . ' WHERE entity_id =' . $existinguser->userid;
-                        $db->setQuery($query);
-                        if (!$db->query()) {
-                            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-                        } else {
-                            $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $usergroups[$userinfo->group_id];
-                        }
-                    break;
-                    case 'oscmax':
-                        //set the usergroup in the user table
-                        $query = 'UPDATE #__customers SET customers_group_id = ' . $usergroups[$userinfo->group_id] . ' WHERE entity_id =' . $existinguser->userid;
-                        $db->setQuery($query);
-                        if (!$db->query()) {
-                            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-                        } else {
-                            $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $usergroups[$userinfo->group_id];
-                        }
-                        //set the usergroup name  in the user table
-                        $db1 = JFusionFactory::getDatabase($this->getJname());
-                        $query = 'SELECT customers_group_name from #__customers_groups WHERE customers_group_id = ' . $existinguser->group_id . " AND language_id = " . $default_language;
-                        $db1->setQuery($query);
-                        $customers_group_name = $db1->loadResult();
-                        $query = 'UPDATE #__customers SET customers_group_iname = ' . $customers_group_name . ' WHERE entity_id =' . $existinguser->userid;
-                        $db->setQuery($query);
-                        if (!$db->query()) {
-                            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-                        } else {
-                            $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $usergroups[$userinfo->group_id];
-                        }
-                    break;
-                    case 'oscxt':
-                    case 'oscseo':
-                        $query = 'UPDATE #__customers SET customers_status = ' . $usergroups[$userinfo->group_id] . ' WHERE entity_id =' . $existinguser->userid;
-                        $db->setQuery($query);
-                        if (!$db->query()) {
-                            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-                        } else {
-                            $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $usergroups[$userinfo->group_id];
-                        }
-                    break;
-                }
             } else {
-                $status['error'][] = JText::_('GROUP_UPDATE_ERROR');
+                $usergroups = unserialize($params->get('usergroup'));
+                if (isset($usergroups[$userinfo->group_id])) {
+                    $db = JFusionFactory::getDataBase($this->getJname());
+                    switch ($osCversion) {
+                        case 'osczen':
+                            //set the usergroup in the user table
+                            $query = 'UPDATE #__customers SET customers_group_pricing = ' . $usergroups[$userinfo->group_id] . ' WHERE entity_id =' . $existinguser->userid;
+                            $db->setQuery($query);
+                            if (!$db->query()) {
+                                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
+                            } else {
+                                $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $usergroups[$userinfo->group_id];
+                            }
+                            break;
+                        case 'oscmax':
+                            //set the usergroup in the user table
+                            $query = 'UPDATE #__customers SET customers_group_id = ' . $usergroups[$userinfo->group_id] . ' WHERE entity_id =' . $existinguser->userid;
+                            $db->setQuery($query);
+                            if (!$db->query()) {
+                                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
+                            } else {
+                                $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $usergroups[$userinfo->group_id];
+                            }
+                            //set the usergroup name  in the user table
+                            $db1 = JFusionFactory::getDatabase($this->getJname());
+                            $query = 'SELECT customers_group_name from #__customers_groups WHERE customers_group_id = ' . $existinguser->group_id . " AND language_id = " . $default_language;
+                            $db1->setQuery($query);
+                            $customers_group_name = $db1->loadResult();
+                            $query = 'UPDATE #__customers SET customers_group_iname = ' . $customers_group_name . ' WHERE entity_id =' . $existinguser->userid;
+                            $db->setQuery($query);
+                            if (!$db->query()) {
+                                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
+                            } else {
+                                $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $usergroups[$userinfo->group_id];
+                            }
+                            break;
+                        case 'oscxt':
+                        case 'oscseo':
+                            $query = 'UPDATE #__customers SET customers_status = ' . $usergroups[$userinfo->group_id] . ' WHERE entity_id =' . $existinguser->userid;
+                            $db->setQuery($query);
+                            if (!$db->query()) {
+                                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
+                            } else {
+                                $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $usergroups[$userinfo->group_id];
+                            }
+                            break;
+                    }
+                } else {
+                    $status['error'][] = JText::_('GROUP_UPDATE_ERROR');
+                }
             }
         }
     }

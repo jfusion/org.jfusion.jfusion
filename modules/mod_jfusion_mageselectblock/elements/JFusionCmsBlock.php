@@ -26,7 +26,7 @@ class JElementJFusionCmsBlock extends JElement {
      * @param string &$node        node of element
      * @param string $control_name name of controler
      *
-     * @return string html
+     * @return string|void html
      */
 	function fetchElement($name, $value, &$node, $control_name) {
 		

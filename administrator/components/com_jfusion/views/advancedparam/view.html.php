@@ -31,12 +31,13 @@ class jfusionViewadvancedparam extends JView
 {
     var $configArray = array(1 => array(1 => "config.xml", 2 => " WHERE status = 1"), 2 => array(1 => "activity.xml", 2 => "WHERE activity = 1 and status = 1"), 3 => array(1 => "search.xml", 2 => " WHERE search = 1 and status =1"), 4 => array(1 => "whosonline.xml", 2 => "WHERE status = 1"), 5 => array(1 => "useractivity.xml", 2 => "WHERE status = 1"));
     var $isJ16;
+
     /**
      * displays the view
      *
      * @param string $tpl template name
      *
-     * @return string html output of view
+     * @return mixed html output of view
      */
     function display($tpl = null)
     {
@@ -104,7 +105,7 @@ class jfusionViewadvancedparam extends JView
      * Loads a single element
      *
      * @param JParameter $params parameters
-     * @param object $config configuration
+     * @param string $config configuration
      *
      * @return string html
      */
@@ -157,9 +158,9 @@ class jfusionViewadvancedparam extends JView
     /**
      * Loads a single xml param
      *
-     * @param object $config configuration
+     * @param string $config configuration
      *
-     * @return string html
+     * @return array|JParameter html
      */
     function loadXMLParamSingle($config)
     {
@@ -231,8 +232,8 @@ class jfusionViewadvancedparam extends JView
     /**
      * Loads a multi element
      *
-     * @param object $params parameters
-     * @param object $config configuration
+     * @param array $params parameters
+     * @param string $config configuration
      *
      * @return string html
      */
@@ -280,9 +281,9 @@ class jfusionViewadvancedparam extends JView
     /**
      * Loads a multi XML param
      *
-     * @param object $config configuration
+     * @param string $config configuration
      *
-     * @return string html
+     * @return array html
      */
     function loadXMLParamMulti($config)
     {

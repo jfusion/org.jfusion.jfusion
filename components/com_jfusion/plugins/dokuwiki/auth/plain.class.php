@@ -39,9 +39,18 @@ require_once 'io.class.php';
  * @link       http://www.jfusion.org
  */
 class doku_auth_plain extends doku_auth_basic {
+    /**
+     * @var $users array
+     */
     var $users = null;
     var $io = null;
+    /**
+     * @var $_pattern array
+     */
     var $_pattern = array();
+    /**
+     * @var $jname string
+     */
     var $jname = null;
 
     /**

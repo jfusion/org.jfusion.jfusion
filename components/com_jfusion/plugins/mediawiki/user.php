@@ -33,9 +33,9 @@ class JFusionUser_mediawiki extends JFusionUser {
 
     /**
      * @param object $userinfo
-     * @return object
+     * @return null|object
      */
-    function &getUser($userinfo)
+    function getUser($userinfo)
     {
 		// get the username
 		if (is_object($userinfo)){
@@ -271,7 +271,6 @@ class JFusionUser_mediawiki extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
-     * @return string
      */
     function updateUsergroup($userinfo, &$existinguser, &$status)
 	{
@@ -281,30 +280,30 @@ class JFusionUser_mediawiki extends JFusionUser {
         //check to make sure that if using the advanced group mode, $userinfo->group_id exists
         if (is_array($usergroups) && !isset($userinfo->group_id)) {
             $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
-            return;
+        } else {
+            $usergroup = (is_array($usergroups)) ? $usergroups[$userinfo->group_id] : $usergroups;
+
+            if(isset($usergroups[$userinfo->group_id]))
+            {
+                $db = JFusionFactory::getDatabase($this->getJname());
+                $query = 'DELETE FROM #__user_groups WHERE ug_user = '.$db->quote($existinguser->userid);
+                $db->setQuery($query);
+                $db->query();
+
+                //prepare the user variables
+                $usergroup = new stdClass;
+                $usergroup->ug_user = $existinguser->userid;
+                $usergroup->ug_group = is_array($usergroups) ? $usergroups[$userinfo->group_id] : $usergroups;
+
+                if (!$db->insertObject('#__user_groups', $usergroup, 'ug_user' )) {
+                    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
+                } else {
+                    $status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . $existinguser->group_id . ' -> ' . $usergroups[$userinfo->group_id];
+                }
+            } else {
+                $status['error'][] = JText::_('GROUP_UPDATE_ERROR');
+            }
         }
-        $usergroup = (is_array($usergroups)) ? $usergroups[$userinfo->group_id] : $usergroups;
-		
-		if(isset($usergroups[$userinfo->group_id]))
-		{
-        	$db = JFusionFactory::getDatabase($this->getJname());
-			$query = 'DELETE FROM #__user_groups WHERE ug_user = '.$db->quote($existinguser->userid);
-			$db->setQuery($query);
-			$db->query();
-
-		    //prepare the user variables
-	       	$usergroup = new stdClass;
-	       	$usergroup->ug_user = $existinguser->userid;
-	       	$usergroup->ug_group = is_array($usergroups) ? $usergroups[$userinfo->group_id] : $usergroups;
-
-			if (!$db->insertObject('#__user_groups', $usergroup, 'ug_user' )) {
-		    	$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-        	} else {
-				$status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . $existinguser->group_id . ' -> ' . $usergroups[$userinfo->group_id];
-			}
-		} else {
-			$status['error'][] = JText::_('GROUP_UPDATE_ERROR');
-		}
 	}
 
     /**
@@ -389,7 +388,6 @@ class JFusionUser_mediawiki extends JFusionUser {
     /**
      * @param object $userinfo
      * @param array $status
-     * @return array|bool|string
      */
     function createUser($userinfo, &$status)
     {
@@ -402,93 +400,89 @@ class JFusionUser_mediawiki extends JFusionUser {
         //check to make sure that if using the advanced group mode, $userinfo->group_id exists
         if (is_array($usergroups) && !isset($userinfo->group_id)) {
             $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
-            return false;
-        }
-        $usergroup = (is_array($usergroups)) ? $usergroups[$userinfo->group_id] : $usergroups;
-        
-        //prepare the user variables
-        $user = new stdClass;
-        $user->user_id = NULL;
-        $user->user_name = ucfirst($userinfo->username);
-        $user->user_real_name = $userinfo->name;
-        $user->user_email = $userinfo->email;
-        $user->user_email_token_expires = null;
-        $user->user_email_token = '';
-
-        if (isset($userinfo->password_clear)) {
-            $user->user_password = ':A:' . md5( $userinfo->password_clear);
         } else {
-            $user->user_password = ':A:' . $userinfo->password;
-        }
-        $user->user_newpass_time = $user->user_newpassword = null;
+            $usergroup = (is_array($usergroups)) ? $usergroups[$userinfo->group_id] : $usergroups;
 
-        $db->setQuery("SHOW COLUMNS FROM #__user LIKE 'user_options'");
-        if ($db->query() && $db->getNumRows() ) {
-        	$user->user_options = ' ';
-        }
+            //prepare the user variables
+            $user = new stdClass;
+            $user->user_id = NULL;
+            $user->user_name = ucfirst($userinfo->username);
+            $user->user_real_name = $userinfo->name;
+            $user->user_email = $userinfo->email;
+            $user->user_email_token_expires = null;
+            $user->user_email_token = '';
 
-        $user->user_email_authenticated = $user->user_registration = $user->user_touched = gmdate( 'YmdHis', time() );
-        $user->user_editcount = 0;
-/*
-        if ($userinfo->activation){
-        	$user->is_activated = 0;
-        	$user->validation_code = $userinfo->activation;
-        } else {
-        	$user->is_activated = 1;
-        	$user->validation_code = '';
-        }
-*/
-        //now append the new user data
-        if (!$db->insertObject('#__user', $user, 'user_id' )) {
-            //return the error
-            $status['error'] = JText::_('USER_CREATION_ERROR'). ': ' . $db->stderr();
-            return $status;
-        } else {
-            $wgDBprefix = $params->get('database_prefix');
-            $wgDBname = $params->get('database_name');
+            if (isset($userinfo->password_clear)) {
+                $user->user_password = ':A:' . md5( $userinfo->password_clear);
+            } else {
+                $user->user_password = ':A:' . $userinfo->password;
+            }
+            $user->user_newpass_time = $user->user_newpassword = null;
 
-			if ( $wgDBprefix ) {
-				$wfWikiID = "$wgDBname-$wgDBprefix";
-			} else {
-				$wfWikiID = $wgDBname;
-			}
+            $db->setQuery("SHOW COLUMNS FROM #__user LIKE 'user_options'");
+            if ($db->query() && $db->getNumRows() ) {
+                $user->user_options = ' ';
+            }
 
-            $JFusionPlugin = JFusionFactory::getAdmin($this->getJname());
-            $wgSecretKey = $JFusionPlugin->getConfig('wgSecretKey');
-            $wgProxyKey = $JFusionPlugin->getConfig('wgProxyKey');
+            $user->user_email_authenticated = $user->user_registration = $user->user_touched = gmdate( 'YmdHis', time() );
+            $user->user_editcount = 0;
+            /*
+                    if ($userinfo->activation){
+                        $user->is_activated = 0;
+                        $user->validation_code = $userinfo->activation;
+                    } else {
+                        $user->is_activated = 1;
+                        $user->validation_code = '';
+                    }
+            */
+            //now append the new user data
+            if (!$db->insertObject('#__user', $user, 'user_id' )) {
+                //return the error
+                $status['error'] = JText::_('USER_CREATION_ERROR'). ': ' . $db->stderr();
+            } else {
+                $wgDBprefix = $params->get('database_prefix');
+                $wgDBname = $params->get('database_name');
 
-			if ( $wgSecretKey ) {
-				$key = $wgSecretKey;
-			} elseif ( $wgProxyKey ) {
-				$key = $wgProxyKey;
-			} else {
-				$key = microtime();
-			}
-	        //update the stats
-	        $mToken = md5( $key . mt_rand( 0, 0x7fffffff ) . $wfWikiID . $user->user_id );
+                if ( $wgDBprefix ) {
+                    $wfWikiID = "$wgDBname-$wgDBprefix";
+                } else {
+                    $wfWikiID = $wgDBname;
+                }
 
-        	$query = 'UPDATE #__user SET user_token = '.$db->Quote($mToken).' WHERE user_id = '.$db->Quote($user->user_id);
-        	$db->setQuery($query);
-        	if (!$db->query()) {
-	            //return the error
-            	$status['error'][] = JText::_('USER_CREATION_ERROR')  . ' ' .  $db->stderr();
-                return $status;
-        	}
+                $JFusionPlugin = JFusionFactory::getAdmin($this->getJname());
+                $wgSecretKey = $JFusionPlugin->getConfig('wgSecretKey');
+                $wgProxyKey = $JFusionPlugin->getConfig('wgProxyKey');
 
-	        //prepare the user variables
-	        $user = new stdClass;
-	        $user->ug_user = $userinfo->user_id;
-			$user->ug_group = $usergroup;
-			if (!$db->insertObject('#__user_groups', $user, 'user_id' )) {
-	            //return the error
-            	$status['error'] = JText::_('USER_CREATION_ERROR'). ': ' . $db->stderr();
-	            return $status;
-        	}
+                if ( $wgSecretKey ) {
+                    $key = $wgSecretKey;
+                } elseif ( $wgProxyKey ) {
+                    $key = $wgProxyKey;
+                } else {
+                    $key = microtime();
+                }
+                //update the stats
+                $mToken = md5( $key . mt_rand( 0, 0x7fffffff ) . $wfWikiID . $user->user_id );
 
-            //return the good news
-            $status['debug'][] = JText::_('USER_CREATION');
-            $status['userinfo'] = $this->getUser($userinfo);
-            return $status;
+                $query = 'UPDATE #__user SET user_token = '.$db->Quote($mToken).' WHERE user_id = '.$db->Quote($user->user_id);
+                $db->setQuery($query);
+                if (!$db->query()) {
+                    //return the error
+                    $status['error'][] = JText::_('USER_CREATION_ERROR')  . ' ' .  $db->stderr();
+                } else {
+                    //prepare the user variables
+                    $user = new stdClass;
+                    $user->ug_user = $userinfo->user_id;
+                    $user->ug_group = $usergroup;
+                    if (!$db->insertObject('#__user_groups', $user, 'user_id' )) {
+                        //return the error
+                        $status['error'] = JText::_('USER_CREATION_ERROR'). ': ' . $db->stderr();
+                    } else {
+                        //return the good news
+                        $status['debug'][] = JText::_('USER_CREATION');
+                        $status['userinfo'] = $this->getUser($userinfo);
+                    }
+                }
+            }
         }
     }
 }

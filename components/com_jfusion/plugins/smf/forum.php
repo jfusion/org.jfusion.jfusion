@@ -114,7 +114,7 @@ class JFusionForum_smf extends JFusionForum
      * @param string $result_order how to order
      * @param string $result_limit limit
      *
-     * @return object
+     * @return array
      */
     function getActivityQuery($usedforums, $result_order, $result_limit)
     {
@@ -200,8 +200,8 @@ class JFusionForum_smf extends JFusionForum
     /**
      * Filter forums from a set of results sent in / useful if the plugin needs to restrict the forums visible to a user
      *
-     * @param array $results set of results from query
-     * @param int   $limit   limit results parameter as set in the module's params; used for plugins that cannot limit using a query limiter
+     * @param array &$results set of results from query
+     * @param int $limit   limit results parameter as set in the module's params; used for plugins that cannot limit using a query limiter
      */
     function filterActivityResults(&$results, $limit=0)
     {
@@ -277,7 +277,7 @@ class JFusionForum_smf extends JFusionForum
     /**
      * Get gorum list
      *
-     * @return object
+     * @return array
      */
     function getForumList()
     {
@@ -486,7 +486,7 @@ class JFusionForum_smf extends JFusionForum
     /**
      * Updates information in a specific thread/post
      *
-     * @param object &$dbparams       with discussion bot parameters
+     * @param JParameter &$dbparams       with discussion bot parameters
      * @param object &$existingthread with existing thread info
      * @param object &$contentitem    object containing content information
      * @param array  &$status         contains errors and status of actions
@@ -525,7 +525,7 @@ class JFusionForum_smf extends JFusionForum
     /**
      * Returns HTML of a quick reply
      *
-     * @param object  &$dbparams       with discussion bot parameters
+     * @param JParameter  &$dbparams       with discussion bot parameters
      * @param boolean $showGuestInputs toggles whether to show guest inputs or not
      *
      * @return string of html
@@ -713,7 +713,7 @@ class JFusionForum_smf extends JFusionForum
      *
      * @param object &$existingthread info about exsisting thread
      *
-     * @return object
+     * @return int
      */
     function getReplyCount(&$existingthread)
     {

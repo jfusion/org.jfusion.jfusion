@@ -45,9 +45,9 @@ class JFusionUser_vbulletin extends JFusionUser
      * @param object $userinfo
      * @param string $identifier_type
      * @param int $ignore_id
-     * @return object
+     * @return null|object
      */
-    function &getUser($userinfo, $identifier_type = 'auto', $ignore_id = 0)
+    function getUser($userinfo, $identifier_type = 'auto', $ignore_id = 0)
     {
     	if($identifier_type == 'auto') {
         	//get the identifier
@@ -579,7 +579,6 @@ class JFusionUser_vbulletin extends JFusionUser
     /**
      * @param object $userinfo
      * @param array $status
-     * @return null
      */
     function createUser($userinfo, &$status)
     {
@@ -589,72 +588,71 @@ class JFusionUser_vbulletin extends JFusionUser
         //return if we are in advanced user group mode but the master did not pass in a group_id
         if (is_array($usergroups) && !isset($userinfo->group_id)) {
             $status['error'][] = JText::_('GROUP_UPDATE_ERROR'). ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
-            return null;
-        }
-
-        if (empty($userinfo->activation)) {
-            $defaultgroup = (is_array($usergroups)) ? $usergroups[$userinfo->group_id]['defaultgroup'] : $usergroups;
-            $setAsNeedsActivation = false;
         } else {
-            $defaultgroup = $this->params->get('activationgroup');
-            $setAsNeedsActivation = true;
-        }
+            if (empty($userinfo->activation)) {
+                $defaultgroup = (is_array($usergroups)) ? $usergroups[$userinfo->group_id]['defaultgroup'] : $usergroups;
+                $setAsNeedsActivation = false;
+            } else {
+                $defaultgroup = $this->params->get('activationgroup');
+                $setAsNeedsActivation = true;
+            }
 
-        $apidata = array();
-        $apidata['usergroups'] = $usergroups;
-        $apidata['defaultgroup'] = $defaultgroup;
+            $apidata = array();
+            $apidata['usergroups'] = $usergroups;
+            $apidata['defaultgroup'] = $defaultgroup;
 
-        $usertitle = $this->getDefaultUserTitle($defaultgroup);
-        $userinfo->usertitle = $usertitle;
+            $usertitle = $this->getDefaultUserTitle($defaultgroup);
+            $userinfo->usertitle = $usertitle;
 
-        if (!isset($userinfo->password_clear)) {
-            //clear password is not available, set a random password for now
-            jimport('joomla.user.helper');
-            $random_password = JUtility::getHash(JUserHelper::genRandomPassword(10));
-            $userinfo->password_clear = $random_password;
-        }
-
-        //set the timezone
-        if (!isset($userinfo->timezone)) {
-            $config = JFactory::getConfig();
-            $userinfo->timezone = $config->getValue('config.offset',0);
-        }
-
-        $apidata['userinfo'] = $userinfo;
-
-        //performs some final VB checks before saving
-        $response = $this->helper->apiCall('createUser', $apidata);
-        if (empty($response['errors'])) {
-            $userdmid = $response['new_id'];
-            //if we set a temp password, we need to move the hashed password over
             if (!isset($userinfo->password_clear)) {
-                $db =& JFusionFactory::getDatabase($this->getJname());
-                $query = 'UPDATE #__user SET password = ' . $db->Quote($userinfo->password). ' WHERE userid  = ' . $userdmid;
-                if (!$db->query()) {
-                    $status['debug'][] = JText::_('USER_CREATION_ERROR') .'. '. JText::_('USERID') . ' ' . $userdmid . ': '.JText::_('MASTER_PASSWORD_NOT_COPIED');
+                //clear password is not available, set a random password for now
+                jimport('joomla.user.helper');
+                $random_password = JUtility::getHash(JUserHelper::genRandomPassword(10));
+                $userinfo->password_clear = $random_password;
+            }
+
+            //set the timezone
+            if (!isset($userinfo->timezone)) {
+                $config = JFactory::getConfig();
+                $userinfo->timezone = $config->getValue('config.offset',0);
+            }
+
+            $apidata['userinfo'] = $userinfo;
+
+            //performs some final VB checks before saving
+            $response = $this->helper->apiCall('createUser', $apidata);
+            if (empty($response['errors'])) {
+                $userdmid = $response['new_id'];
+                //if we set a temp password, we need to move the hashed password over
+                if (!isset($userinfo->password_clear)) {
+                    $db =& JFusionFactory::getDatabase($this->getJname());
+                    $query = 'UPDATE #__user SET password = ' . $db->Quote($userinfo->password). ' WHERE userid  = ' . $userdmid;
+                    if (!$db->query()) {
+                        $status['debug'][] = JText::_('USER_CREATION_ERROR') .'. '. JText::_('USERID') . ' ' . $userdmid . ': '.JText::_('MASTER_PASSWORD_NOT_COPIED');
+                    }
+                }
+
+                //save the new user
+                $status['userinfo'] = $this->getUser($userinfo);
+
+                //does the user still need to be activated?
+                if ($setAsNeedsActivation) {
+                    $this->inactivateUser($userinfo, $status['userinfo'], $status);
+                }
+
+                //return the good news
+                $status['debug'][] = JText::_('USER_CREATION') .'. '. JText::_('USERID') . ' ' . $userdmid;
+            } else {
+                foreach ($response['errors'] as $error)
+                {
+                    $status['error'][] = JText::_('USER_CREATION_ERROR') . ' ' . $error;
                 }
             }
 
-            //save the new user
-            $status['userinfo'] = $this->getUser($userinfo);
-
-            //does the user still need to be activated?
-            if ($setAsNeedsActivation) {
-                $this->inactivateUser($userinfo, $status['userinfo'], $status);
-            }
-
-            //return the good news
-            $status['debug'][] = JText::_('USER_CREATION') .'. '. JText::_('USERID') . ' ' . $userdmid;
-        } else {
-            foreach ($response['errors'] as $error)
-            {
-                $status['error'][] = JText::_('USER_CREATION_ERROR') . ' ' . $error;
+            if (!empty($response['debug'])) {
+                $status['debug']['api_call'] = $response['debug'];
             }
         }
-
-        if (!empty($response['debug'])) {
-		    $status['debug']['api_call'] = $response['debug'];
-		}
     }
 
     /**
@@ -703,45 +701,43 @@ class JFusionUser_vbulletin extends JFusionUser
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
-     * @return null
      */
     function updateUsergroup($userinfo, &$existinguser, &$status)
     {
         //check to see if we have a group_id in the $userinfo, if not return
         if (!isset($userinfo->group_id)) {
             $status['error'][] = JText::_('GROUP_UPDATE_ERROR'). ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
-            return null;
-        }
-
-        $usergroups = unserialize($this->params->get('usergroup'));
-        if (isset($usergroups[$userinfo->group_id])) {
-            $defaultgroup =& $usergroups[$userinfo->group_id]['defaultgroup'];
-            $displaygroup =& $usergroups[$userinfo->group_id]['displaygroup'];
-            $titlegroupid = (!empty($displaygroup)) ? $displaygroup : $defaultgroup;
-            $usertitle = $this->getDefaultUserTitle($titlegroupid);
-
-	        $apidata = array(
-	            "existinguser" => $existinguser,
-            	"userinfo" => $userinfo,
-                "usergroups" => $usergroups,
-            	"usertitle" => $usertitle
-            );
-            $response = $this->helper->apiCall('updateUsergroup', $apidata);
-
-            if (empty($response['errors'])) {
-                $status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . $existinguser->group_id . ' -> ' . $usergroups[$userinfo->group_id]['defaultgroup'];
-            } else {
-                foreach ($response['errors'] AS $index => $error) {
-                    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . $error;
-                }
-            }
         } else {
-            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST');
-        }
+            $usergroups = unserialize($this->params->get('usergroup'));
+            if (isset($usergroups[$userinfo->group_id])) {
+                $defaultgroup =& $usergroups[$userinfo->group_id]['defaultgroup'];
+                $displaygroup =& $usergroups[$userinfo->group_id]['displaygroup'];
+                $titlegroupid = (!empty($displaygroup)) ? $displaygroup : $defaultgroup;
+                $usertitle = $this->getDefaultUserTitle($titlegroupid);
 
-        if (!empty($response['debug'])) {
-		    $status['debug']['api_call'] = $response['debug'];
-		}
+                $apidata = array(
+                    "existinguser" => $existinguser,
+                    "userinfo" => $userinfo,
+                    "usergroups" => $usergroups,
+                    "usertitle" => $usertitle
+                );
+                $response = $this->helper->apiCall('updateUsergroup', $apidata);
+
+                if (empty($response['errors'])) {
+                    $status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . $existinguser->group_id . ' -> ' . $usergroups[$userinfo->group_id]['defaultgroup'];
+                } else {
+                    foreach ($response['errors'] AS $index => $error) {
+                        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . $error;
+                    }
+                }
+            } else {
+                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST');
+            }
+
+            if (!empty($response['debug'])) {
+                $status['debug']['api_call'] = $response['debug'];
+            }
+        }
     }
 
     /**

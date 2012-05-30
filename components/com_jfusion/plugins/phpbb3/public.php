@@ -176,7 +176,6 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 
     /**
      * @param object $jfdata
-     * @return bool
      */
     function getBuffer(&$jfdata) {
     	$this->data = $jfdata;
@@ -236,68 +235,66 @@ class JFusionPublic_phpbb3 extends JFusionPublic
         }
         if (!is_file($index_file)) {
             JError::raiseWarning(500, 'The path to the requested does not exist');
-            $result = false;
-            return $result;
-        }
-        //set the current directory to phpBB3
-        chdir($source_path);
-        /* set scope for variables required later */
-        global $phpbb_root_path, $phpEx, $db, $config, $user, $auth, $cache, $template, $phpbb_hook, $module, $mode;
-        if ($jfile == 'mcp.php') {
-            //must globalize these to make sure urls are generated correctly via extra_url() in mcp.php
-            global $forum_id, $topic_id, $post_id, $report_id, $user_id;
-        }
-
-        //see if we need to force the database to use a new connection
-        if ($params->get('database_new_link', 0) && !defined('PHPBB_DB_NEW_LINK')) {
-            define('PHPBB_DB_NEW_LINK', 1);
-        }
-
-        //define the phpBB3 hooks
-        require_once JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'hooks.php';
-        // Get the output
-        ob_start();
-
-        //we need to hijack $_SERVER['PHP_SELF'] so that phpBB correctly utilizes it such as correctly noted the page a user is browsing
-        $php_self = $_SERVER['PHP_SELF'];
-        $juri = new JURI($source_url);
-        $_SERVER['PHP_SELF'] = $juri->getPath() . $jfile;
-
-        try {
-            if (!defined('UTF8_STRLEN')) {
-               define('UTF8_STRLEN', true);
+        } else {
+            //set the current directory to phpBB3
+            chdir($source_path);
+            /* set scope for variables required later */
+            global $phpbb_root_path, $phpEx, $db, $config, $user, $auth, $cache, $template, $phpbb_hook, $module, $mode;
+            if ($jfile == 'mcp.php') {
+                //must globalize these to make sure urls are generated correctly via extra_url() in mcp.php
+                global $forum_id, $topic_id, $post_id, $report_id, $user_id;
             }
-			if (!defined('UTF8_CORE')) {
-             	define('UTF8_CORE', true);
-            }
-			if (!defined('UTF8_CASE')) {
-                define('UTF8_CASE', true);
-            }
-            include_once ($index_file);
-        }
-        catch(Exception $e) {
-            $jfdata->buffer = ob_get_contents();
-            ob_end_clean();
-        }
 
-        //restore $_SERVER['PHP_SELF']
-        $_SERVER['PHP_SELF'] = $php_self;
+            //see if we need to force the database to use a new connection
+            if ($params->get('database_new_link', 0) && !defined('PHPBB_DB_NEW_LINK')) {
+                define('PHPBB_DB_NEW_LINK', 1);
+            }
 
-        //change the current directory back to Joomla.
-        chdir(JPATH_SITE);
-        //show more smileys without the Joomla frame
-        $jfmode = JRequest::getVar('mode');
-        $jfform = JRequest::getVar('form');
-        if ($jfmode == 'smilies' || ($jfmode == 'searchuser' && !empty($jfform) || $jfmode == 'contact')) {
-            $pattern = '#<head[^>]*>(.*?)<\/head>.*?<body[^>]*>(.*)<\/body>#si';
-            preg_match($pattern, $jfdata->buffer, $temp);
-            $jfdata->header = $temp[1];
-            $jfdata->body = $temp[2];
-            $this->parseHeader($jfdata);
-            $this->parseBody($jfdata);
-            die('<html><head>' . $jfdata->header . '</head><body>' . $jfdata->body . '</body></html>');
+            //define the phpBB3 hooks
+            require_once JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'hooks.php';
+            // Get the output
+            ob_start();
+
+            //we need to hijack $_SERVER['PHP_SELF'] so that phpBB correctly utilizes it such as correctly noted the page a user is browsing
+            $php_self = $_SERVER['PHP_SELF'];
+            $juri = new JURI($source_url);
+            $_SERVER['PHP_SELF'] = $juri->getPath() . $jfile;
+
+            try {
+                if (!defined('UTF8_STRLEN')) {
+                    define('UTF8_STRLEN', true);
+                }
+                if (!defined('UTF8_CORE')) {
+                    define('UTF8_CORE', true);
+                }
+                if (!defined('UTF8_CASE')) {
+                    define('UTF8_CASE', true);
+                }
+                include_once ($index_file);
+            }
+            catch(Exception $e) {
+                $jfdata->buffer = ob_get_contents();
+                ob_end_clean();
+            }
+
+            //restore $_SERVER['PHP_SELF']
+            $_SERVER['PHP_SELF'] = $php_self;
+
+            //change the current directory back to Joomla.
+            chdir(JPATH_SITE);
+            //show more smileys without the Joomla frame
+            $jfmode = JRequest::getVar('mode');
+            $jfform = JRequest::getVar('form');
+            if ($jfmode == 'smilies' || ($jfmode == 'searchuser' && !empty($jfform) || $jfmode == 'contact')) {
+                $pattern = '#<head[^>]*>(.*?)<\/head>.*?<body[^>]*>(.*)<\/body>#si';
+                preg_match($pattern, $jfdata->buffer, $temp);
+                $jfdata->header = $temp[1];
+                $jfdata->body = $temp[2];
+                $this->parseHeader($jfdata);
+                $this->parseBody($jfdata);
+                die('<html><head>' . $jfdata->header . '</head><body>' . $jfdata->body . '</body></html>');
+            }
         }
-        return true;
     }
 
     /**
@@ -678,7 +675,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
     }
 
     /**
-     * @return \stdClass
+     * @return object
      */
     function getSearchQueryColumns() {
         $columns = new stdClass();

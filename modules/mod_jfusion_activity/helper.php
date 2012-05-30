@@ -36,7 +36,7 @@ class modjfusionActivityHelper
 	 * @param array  $results array of activity results
      * @param string $jname  name of element
      * @param string $config value of element
-     * @param string $params node of element
+     * @param JParameter $params node of element
      *
      * @return string html
      */

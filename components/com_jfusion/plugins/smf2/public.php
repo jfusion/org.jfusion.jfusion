@@ -16,8 +16,15 @@ defined('_JEXEC' ) or die('Restricted access' );
  * @package JFusion_SMF
  */
 class JFusionPublic_smf2 extends JFusionPublic {
-	var $callbackdata = null;
-	var $callbackbypass = null;
+    /**
+     * @var $callbackdata object
+     */
+    var $callbackdata = null;
+    /**
+     * @var bool $callbackbypass
+     */
+    var $callbackbypass = null;
+
 
     /**
      * @return string
@@ -173,7 +180,6 @@ class JFusionPublic_smf2 extends JFusionPublic {
 
     /**
      * @param object $data
-     * @return null
      */
     function getBuffer(&$data)
 	{
@@ -211,7 +217,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
         if ($action == 'logout') {
             //destroy the SMF session first
             $JFusionUser = & JFusionFactory::getUser($this->getJname());
-            $JFusionUser->destroySession('', '');
+            $JFusionUser->destroySession(null, null);
             //destroy the Joomla session
             $mainframe = JFactory::getApplication();
             $mainframe->logout();
@@ -268,49 +274,48 @@ class JFusionPublic_smf2 extends JFusionPublic {
 
 		if ( ! is_file($index_file) ) {
 			JError::raiseWarning(500, 'The path to the SMF index file set in the component preferences does not exist');
-			return null;
-		}
-
-		//add handeler to undo changes that plgSystemSef create
-		$dispatcher = JDispatcher::getInstance();
-		if (JFusionFunction::isJoomlaVersion('1.6')) {
-			$method = array('event' => 'onAfterRender', 'handler' => array($this, 'onAfterRender'));
-			$dispatcher->attach($method);
 		} else {
-			$dispatcher->attach($this);
-		}
-		
-		//set the current directory to SMF
-		chdir($source_path);
-		$this->callbackdata = $data;
-		$this->callbackbypass = false;
+            //add handeler to undo changes that plgSystemSef create
+            $dispatcher = JDispatcher::getInstance();
+            if (JFusionFunction::isJoomlaVersion('1.6')) {
+                $method = array('event' => 'onAfterRender', 'handler' => array($this, 'onAfterRender'));
+                $dispatcher->attach($method);
+            } else {
+                $dispatcher->attach($this);
+            }
 
-		// Get the output
-		ob_start(array($this, 'callback'));
-		$h = ob_list_handlers();
-		$rs = include_once($index_file);
-		// die if popup
-		if ( $action == 'findmember' || $action == 'helpadmin' || $action == 'spellcheck' || $action == 'requestmembers' || strpos($action ,'xml') !== false ) {
-			exit();
-		} else {
-			$this->callbackbypass = true;
-		}
-		while( in_array( get_class($this).'::callback' , $h) ) {
-			$data->buffer .= ob_get_contents();
-			ob_end_clean();
-			$h = ob_list_handlers();
-		}
-		
-		// needed to ensure option is defined after using smf frameless. bug/conflict with System - Highlight plugin
-		JRequest::setVar('option','com_jfusion');	
-			
-		//change the current directory back to Joomla.
-		chdir(JPATH_SITE);
+            //set the current directory to SMF
+            chdir($source_path);
+            $this->callbackdata = $data;
+            $this->callbackbypass = false;
 
-		// Log an error if we could not include the file
-		if (!$rs) {
-			JError::raiseWarning(500, 'Could not find SMF in the specified directory');
-		}
+            // Get the output
+            ob_start(array($this, 'callback'));
+            $h = ob_list_handlers();
+            $rs = include_once($index_file);
+            // die if popup
+            if ( $action == 'findmember' || $action == 'helpadmin' || $action == 'spellcheck' || $action == 'requestmembers' || strpos($action ,'xml') !== false ) {
+                exit();
+            } else {
+                $this->callbackbypass = true;
+            }
+            while( in_array( get_class($this).'::callback' , $h) ) {
+                $data->buffer .= ob_get_contents();
+                ob_end_clean();
+                $h = ob_list_handlers();
+            }
+
+            // needed to ensure option is defined after using smf frameless. bug/conflict with System - Highlight plugin
+            JRequest::setVar('option','com_jfusion');
+
+            //change the current directory back to Joomla.
+            chdir(JPATH_SITE);
+
+            // Log an error if we could not include the file
+            if (!$rs) {
+                JError::raiseWarning(500, 'Could not find SMF in the specified directory');
+            }
+        }
 	}
 
     /**
@@ -743,7 +748,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 	}
 
     /**
-     * @return \stdClass
+     * @return object
      */
     function getSearchQueryColumns()
 	{
@@ -836,8 +841,8 @@ class JFusionPublic_smf2 extends JFusionPublic {
 	}
 
     /**
-     * @param array $results
-     * @param object $pluginParam
+     * @param array &$results
+     * @param object &$pluginParam
      */
     function filterSearchResults(&$results = array(), &$pluginParam)
 	{
@@ -970,6 +975,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 
     /**
      * @param $buffer
+     *
      * @return mixed|string
      */
     function callback($buffer) {

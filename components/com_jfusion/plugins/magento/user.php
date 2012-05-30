@@ -199,9 +199,9 @@ class JFusionUser_magento extends JFusionUser {
     }
     /**
      * @param object $userinfo
-     * @return array|object
+     * @return null|object
      */
-     function &getUser($userinfo) {
+     function getUser($userinfo) {
         $identifier = $userinfo;
         if (is_object($userinfo)) {
             $identifier = $userinfo->email;
@@ -435,7 +435,6 @@ class JFusionUser_magento extends JFusionUser {
     /**
      * @param object $userinfo
      * @param array $status
-     * @return null
      */
     function createUser($userinfo, &$status) {
         $params = JFusionFactory::getParams($this->getJname());
@@ -444,67 +443,67 @@ class JFusionUser_magento extends JFusionUser {
         //check to make sure that if using the advanced group mode, $userinfo->group_id exists
         if (is_array($usergroups) && !isset($userinfo->group_id)) {
             $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
-            return null;
-        }
-        $default_group_id = (is_array($usergroups)) ? $usergroups[$userinfo->group_id] : $usergroups;
-        $db = JFusionFactory::getDataBase($this->getJname());
-        //prepare the variables
-        // first get some default stuff from Magento
-        //        $db->setQuery("SELECT default_group_id FROM #__core_website WHERE is_default = 1");
-        //        $default_group_id = (int) $db->loadResult();
-        $db->setQuery("SELECT default_store_id FROM #__core_store_group WHERE group_id =" . (int)$default_group_id);
-        $default_store_id = (int)$db->loadResult();
-        $db->setQuery('SELECT name, website_id FROM #__core_store WHERE store_id =' . (int)$default_store_id);
-        $result = $db->loadObject();
-        $default_website_id = (int)$result->website_id;
-        $default_created_in_store = $result->name;
-        $magento_user = $this->getMagentoDataObjectRaw('customer');
-        if ($userinfo->activation) {
-            $this->fillMagentouser($magento_user, 'confirmation', $userinfo->activation);
-        }
-        $this->fillMagentouser($magento_user, 'created_in', $default_created_in_store);
-        $this->fillMagentouser($magento_user, 'email', $userinfo->email);
-        $parts = explode(' ', $userinfo->name);
-        $this->fillMagentouser($magento_user, 'firstname', $parts[0]);
-        if (count($parts) > 1) {
-            $this->fillMagentouser($magento_user, 'lastname', $parts[(count($parts) - 1) ]);
         } else {
-            // Magento needs Firstname AND Lastname, so add a dot when lastname is empty
-            $this->fillMagentouser($magento_user, 'lastname', '.');
-        }
-        $middlename = '';
-        for ($i = 1;$i < (count($parts) - 1);$i++) {
-            $middlename = $middlename . ' ' . $parts[$i];
-        }
-        if ($middlename) {
-            $this->fillMagentouser($magento_user, 'middlename', $middlename);
-        }
-        if (isset($userinfo->password_clear) && strlen($userinfo->password_clear) != 32) {
-            $password_salt = $this->getRandomString(2);
-            $this->fillMagentouser($magento_user, 'password_hash', md5($password_salt . $userinfo->password_clear) . ':' . $password_salt);
-        } else {
-            if (!empty($userinfo->password_salt)) {
-                $this->fillMagentouser($magento_user, 'password_hash', $userinfo->password . ':' . $userinfo->password_salt);
+            $default_group_id = (is_array($usergroups)) ? $usergroups[$userinfo->group_id] : $usergroups;
+            $db = JFusionFactory::getDataBase($this->getJname());
+            //prepare the variables
+            // first get some default stuff from Magento
+            //        $db->setQuery("SELECT default_group_id FROM #__core_website WHERE is_default = 1");
+            //        $default_group_id = (int) $db->loadResult();
+            $db->setQuery("SELECT default_store_id FROM #__core_store_group WHERE group_id =" . (int)$default_group_id);
+            $default_store_id = (int)$db->loadResult();
+            $db->setQuery('SELECT name, website_id FROM #__core_store WHERE store_id =' . (int)$default_store_id);
+            $result = $db->loadObject();
+            $default_website_id = (int)$result->website_id;
+            $default_created_in_store = $result->name;
+            $magento_user = $this->getMagentoDataObjectRaw('customer');
+            if ($userinfo->activation) {
+                $this->fillMagentouser($magento_user, 'confirmation', $userinfo->activation);
+            }
+            $this->fillMagentouser($magento_user, 'created_in', $default_created_in_store);
+            $this->fillMagentouser($magento_user, 'email', $userinfo->email);
+            $parts = explode(' ', $userinfo->name);
+            $this->fillMagentouser($magento_user, 'firstname', $parts[0]);
+            if (count($parts) > 1) {
+                $this->fillMagentouser($magento_user, 'lastname', $parts[(count($parts) - 1) ]);
             } else {
-                $this->fillMagentouser($magento_user, 'password_hash', $userinfo->password);
+                // Magento needs Firstname AND Lastname, so add a dot when lastname is empty
+                $this->fillMagentouser($magento_user, 'lastname', '.');
+            }
+            $middlename = '';
+            for ($i = 1;$i < (count($parts) - 1);$i++) {
+                $middlename = $middlename . ' ' . $parts[$i];
+            }
+            if ($middlename) {
+                $this->fillMagentouser($magento_user, 'middlename', $middlename);
+            }
+            if (isset($userinfo->password_clear) && strlen($userinfo->password_clear) != 32) {
+                $password_salt = $this->getRandomString(2);
+                $this->fillMagentouser($magento_user, 'password_hash', md5($password_salt . $userinfo->password_clear) . ':' . $password_salt);
+            } else {
+                if (!empty($userinfo->password_salt)) {
+                    $this->fillMagentouser($magento_user, 'password_hash', $userinfo->password . ':' . $userinfo->password_salt);
+                } else {
+                    $this->fillMagentouser($magento_user, 'password_hash', $userinfo->password);
+                }
+            }
+            /*     $this->fillMagentouser($magento_user,'prefix','');
+            $this->fillMagentouser($magento_user,'suffix','');
+            $this->fillMagentouser($magento_user,'taxvat','');
+            */
+            $this->fillMagentouser($magento_user, 'group_id', $default_group_id);
+            $this->fillMagentouser($magento_user, 'store_id', $default_store_id);
+            $this->fillMagentouser($magento_user, 'website_id', $default_website_id);
+            //now append the new user data
+            $errors = $this->update_create_Magentouser($magento_user, 0);
+            if ($errors) {
+                $status['error'][] = JText::_('USER_CREATION_ERROR') . $errors;
+            } else {
+                //return the good news
+                $status['debug'][] = JText::_('USER_CREATION');
+                $status['userinfo'] = $this->getUser($userinfo);
             }
         }
-        /*     $this->fillMagentouser($magento_user,'prefix','');
-        $this->fillMagentouser($magento_user,'suffix','');
-        $this->fillMagentouser($magento_user,'taxvat','');
-        */
-        $this->fillMagentouser($magento_user, 'group_id', $default_group_id);
-        $this->fillMagentouser($magento_user, 'store_id', $default_store_id);
-        $this->fillMagentouser($magento_user, 'website_id', $default_website_id);
-        //now append the new user data
-        $errors = $this->update_create_Magentouser($magento_user, 0);
-        if ($errors) {
-            $status['error'][] = JText::_('USER_CREATION_ERROR') . $errors;
-            return;
-        }
-        //return the good news
-        $status['debug'][] = JText::_('USER_CREATION');
-        $status['userinfo'] = $this->getUser($userinfo);
     }
 
     /**
@@ -617,7 +616,6 @@ class JFusionUser_magento extends JFusionUser {
      * @param object $existinguser
      * @param array $status
      * @param $jname
-     * @return string
      */
     function updateEmail($userinfo, &$existinguser, &$status, $jname) {
         //set the userid
@@ -630,20 +628,19 @@ class JFusionUser_magento extends JFusionUser {
         $sessionId = '';
         $proxi = '';
         $status = $this->connect_to_api($proxi, $sessionId);
-        if ($status['error']) {
-            return;
-        }
-        try {
-            $result = $proxi->call($sessionId, "customer.update", array($user_id, $update));
-        }
-        catch(Soapfault $fault) {
-            $status['error'][] = "Magento API: Could not update email of user with id $user_id , message: " . $fault->faultstring;
-        }
-        try {
-            $proxi->endSession($sessionId);
-        }
-        catch(Soapfault $fault) {
-            $status['error'][] = "Magento API: Could not end this session, message: " . $fault->faultstring;
+        if (empty($status['error'])) {
+            try {
+                $result = $proxi->call($sessionId, "customer.update", array($user_id, $update));
+            }
+            catch(Soapfault $fault) {
+                $status['error'][] = "Magento API: Could not update email of user with id $user_id , message: " . $fault->faultstring;
+            }
+            try {
+                $proxi->endSession($sessionId);
+            }
+            catch(Soapfault $fault) {
+                $status['error'][] = "Magento API: Could not end this session, message: " . $fault->faultstring;
+            }
         }
     }
 
@@ -651,7 +648,6 @@ class JFusionUser_magento extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
-     * @return null
      */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
         $params = JFusionFactory::getParams($this->getJname());
@@ -660,18 +656,18 @@ class JFusionUser_magento extends JFusionUser {
             //check to see if we have a group_id in the $userinfo, if not return
             if (!isset($userinfo->group_id)) {
                 $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
-                return null;
-            }
-            $usergroups = unserialize($params->get('usergroup'));
-            if (isset($usergroups[$userinfo->group_id])) {
-                //set the usergroup in the user table
-                $db = JFusionFactory::getDataBase($this->getJname());
-                $query = 'UPDATE #__customer_entity SET group_id = ' . (int)$usergroups[$userinfo->group_id] . ' WHERE entity_id =' . (int)$existinguser->userid;
-                $db->setQuery($query);
-                if (!$db->query()) {
-                    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-                } else {
-                    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $usergroups[$userinfo->group_id];
+            } else {
+                $usergroups = unserialize($params->get('usergroup'));
+                if (isset($usergroups[$userinfo->group_id])) {
+                    //set the usergroup in the user table
+                    $db = JFusionFactory::getDataBase($this->getJname());
+                    $query = 'UPDATE #__customer_entity SET group_id = ' . (int)$usergroups[$userinfo->group_id] . ' WHERE entity_id =' . (int)$existinguser->userid;
+                    $db->setQuery($query);
+                    if (!$db->query()) {
+                        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
+                    } else {
+                        $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $usergroups[$userinfo->group_id];
+                    }
                 }
             }
         } else {

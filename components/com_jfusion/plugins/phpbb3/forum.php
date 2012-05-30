@@ -120,6 +120,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
      * @return array
      */
     function getPrivateMessageCounts($puser_id) {
+        $unreadCount = $totalCount = 0;
         if ($puser_id) {
             // read pm counts
             $db = JFusionFactory::getDatabase($this->getJname());
@@ -136,9 +137,8 @@ class JFusionForum_phpbb3 extends JFusionForum {
             WHERE folder_id NOT IN (-1, -2)
             AND user_id = ' . (int)$puser_id);
             $totalCount = $db->loadResult();
-            return array('unread' => $unreadCount, 'total' => $totalCount);
         }
-        return array('unread' => 0, 'total' => 0);
+        return array('unread' => $unreadCount, 'total' => $totalCount);
     }
 
     /**

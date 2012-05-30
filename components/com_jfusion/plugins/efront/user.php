@@ -34,9 +34,9 @@ class JFusionUser_efront extends JFusionUser
 {
     /**
      * @param object $userinfo
-     * @return object
+     * @return null|object
      */
-    function &getUser($userinfo) {
+    function getUser($userinfo) {
         $db = JFusionFactory::getDatabase($this->getJname());
         //get the identifier
         list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'login', 'email');
@@ -224,9 +224,9 @@ class JFusionUser_efront extends JFusionUser
     /**
      * @param object $userinfo
      * @param object $existinguser
-     * @param array $status
+     * @param array &$status
      */
-    function updatePassword($userinfo, $existinguser, &$status) {
+    function updatePassword($userinfo, &$existinguser, &$status) {
         $params = JFusionFactory::getParams($this->getJname());
         $md5_key = $params->get('md5_key');
         $existinguser->password = md5($userinfo->password_clear.$md5_key);
@@ -242,8 +242,8 @@ class JFusionUser_efront extends JFusionUser
 
     /**
      * @param object $userinfo
-     * @param object $existinguser
-     * @param array $status
+     * @param object &$existinguser
+     * @param array &$status
      */
     function updateUsername($userinfo, &$existinguser, &$status) {
         // not implemented in jFusion 1.x
@@ -252,7 +252,7 @@ class JFusionUser_efront extends JFusionUser
     /**
      * @param object $userinfo
      * @param object $existinguser
-     * @param array $status
+     * @param array &$status
      */
     function updateEmail($userinfo, &$existinguser, &$status) {
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -268,7 +268,7 @@ class JFusionUser_efront extends JFusionUser
     /**
      * @param object $userinfo
      * @param object $existinguser
-     * @param array $status
+     * @param array &$status
      */
     function blockUser($userinfo, &$existinguser, &$status) {
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -284,7 +284,7 @@ class JFusionUser_efront extends JFusionUser
     /**
      * @param object $userinfo
      * @param object $existinguser
-     * @param array $status
+     * @param array &$status
      */
     function unblockUser($userinfo, &$existinguser, &$status) {
         //unblock the user
@@ -301,7 +301,7 @@ class JFusionUser_efront extends JFusionUser
     /**
      * @param object $userinfo
      * @param object $existinguser
-     * @param array $status
+     * @param array &$status
      */
     function activateUser($userinfo, &$existinguser, &$status) {
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -316,8 +316,8 @@ class JFusionUser_efront extends JFusionUser
 
     /**
      * @param object $userinfo
-     * @param object $existinguser
-     * @param array $status
+     * @param object &$existinguser
+     * @param array &$status
      */
     function inactivateUser($userinfo, &$existinguser, &$status) {
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -332,8 +332,7 @@ class JFusionUser_efront extends JFusionUser
 
     /**
      * @param object $userinfo
-     * @param array $status
-     * @return null
+     * @param array &$status
      */
     function createUser($userinfo, &$status) {
        /**
@@ -367,95 +366,94 @@ class JFusionUser_efront extends JFusionUser
         //check to make sure that if using the advanced group mode, $userinfo->group_id exists
         if (is_array($usergroups) && !isset($userinfo->group_id)) {
             $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
-            return null;
-        }
-        $default_group_id = (is_array($usergroups)) ? $usergroups[$userinfo->group_id] : $usergroups;
-        $user_type = "";
-        $user_types_ID = 0;
-        switch ($default_group_id){
-            case 0: 
-                $user_type = 'student';
-           	    break;
-            case 1: 
-            	$user_type = 'professor';
-            	break;
-            case 2: 
-            	$user_type = 'administrator';
-            	break;
-            default: 
-                // correct id
-                $user_types_ID = $default_group_id - 2;
-                $query = 'SELECT basic_user_type from #__user_types WHERE id = '.$user_types_ID;
-                $db->setQuery($query);
-                $user_type = $db->loadResult();
-        }
-        $user->user_type = $user_type;
-        $user->user_types_ID = $user_types_ID;
-        if (isset($userinfo->password_clear) && strlen($userinfo->password_clear) != 32) {
-            $md5_key = $params->get('md5_key');
-         	$user->password = md5($userinfo->password_clear.$md5_key);
         } else {
-        	$user->password = $userinfo->password;
-        }
-        // note that we will plan to propagate the language setting for a user from version 2.0
-        // for now we just use the default defined in eFront	
-        $query = "SELECT value from #__configuration WHERE name = 'default_language'";
-        $db->setQuery($query);
-        $default_language = $db->loadResult();
-        $user->languages_NAME = $default_language;
-        $user->active = 1;
-        $user->comments = null;
-        $user->timestamp = time();
-        $user->pending = 0;
-        $user->avatar = null;
-        $user->additional_accounts = null;
-        $user->viewed_license =0;
-        $user->need_mod_init =1;
-        if (!$db->insertObject('#__users', $user, 'id')) {
-            //return the error
-            $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-            return;
-        }
-        // we need to create the user directories. Can't use Joomla's API because it uses the Joomla Root Path
-        $uploadpath = $params->get('uploadpath');        
-        $user_dir = $uploadpath.$user->login.'/';
-        if (is_dir($user_dir)) {
-            $helper = JFusionFactory::getHelper($this->getJname());
-            $helper->delete_directory($user_dir); //If the folder already exists, delete it first, including files
-        }	
-        // we are not interested in the result of the deletion, just continue
-        if (mkdir($user_dir, 0755) || is_dir($user_dir)) 
-        { 
-            //Now, the directory either gets created, or already exists (in case errors happened above). In both cases, we continue
-            //Create personal messages attachments folders
-            mkdir($user_dir.'message_attachments/', 0755);
-            mkdir($user_dir.'message_attachments/Incoming/', 0755);
-            mkdir($user_dir.'message_attachments/Sent/', 0755);
-            mkdir($user_dir.'message_attachments/Drafts/', 0755);
-            mkdir($user_dir.'avatars/', 0755);
+            $default_group_id = (is_array($usergroups)) ? $usergroups[$userinfo->group_id] : $usergroups;
+            $user_type = "";
+            $user_types_ID = 0;
+            switch ($default_group_id){
+                case 0:
+                    $user_type = 'student';
+                    break;
+                case 1:
+                    $user_type = 'professor';
+                    break;
+                case 2:
+                    $user_type = 'administrator';
+                    break;
+                default:
+                    // correct id
+                    $user_types_ID = $default_group_id - 2;
+                    $query = 'SELECT basic_user_type from #__user_types WHERE id = '.$user_types_ID;
+                    $db->setQuery($query);
+                    $user_type = $db->loadResult();
+            }
+            $user->user_type = $user_type;
+            $user->user_types_ID = $user_types_ID;
+            if (isset($userinfo->password_clear) && strlen($userinfo->password_clear) != 32) {
+                $md5_key = $params->get('md5_key');
+                $user->password = md5($userinfo->password_clear.$md5_key);
+            } else {
+                $user->password = $userinfo->password;
+            }
+            // note that we will plan to propagate the language setting for a user from version 2.0
+            // for now we just use the default defined in eFront
+            $query = "SELECT value from #__configuration WHERE name = 'default_language'";
+            $db->setQuery($query);
+            $default_language = $db->loadResult();
+            $user->languages_NAME = $default_language;
+            $user->active = 1;
+            $user->comments = null;
+            $user->timestamp = time();
+            $user->pending = 0;
+            $user->avatar = null;
+            $user->additional_accounts = null;
+            $user->viewed_license =0;
+            $user->need_mod_init =1;
+            if (!$db->insertObject('#__users', $user, 'id')) {
+                //return the error
+                $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
+            } else {
+                // we need to create the user directories. Can't use Joomla's API because it uses the Joomla Root Path
+                $uploadpath = $params->get('uploadpath');
+                $user_dir = $uploadpath.$user->login.'/';
+                if (is_dir($user_dir)) {
+                    $helper = JFusionFactory::getHelper($this->getJname());
+                    $helper->delete_directory($user_dir); //If the folder already exists, delete it first, including files
+                }
+                // we are not interested in the result of the deletion, just continue
+                if (mkdir($user_dir, 0755) || is_dir($user_dir))
+                {
+                    //Now, the directory either gets created, or already exists (in case errors happened above). In both cases, we continue
+                    //Create personal messages attachments folders
+                    mkdir($user_dir.'message_attachments/', 0755);
+                    mkdir($user_dir.'message_attachments/Incoming/', 0755);
+                    mkdir($user_dir.'message_attachments/Sent/', 0755);
+                    mkdir($user_dir.'message_attachments/Drafts/', 0755);
+                    mkdir($user_dir.'avatars/', 0755);
 
-            //Create database representations for personal messages folders (it has nothing to do with filesystem database representation)
-            $f_folder = new stdClass;
-            $f_folder->id = null;
-            $f_folder->name = 'Incoming';
-            $f_folder->users_LOGIN = $user->login;           
-            $errors = $db->insertObject('#__f_folders', $f_folder, 'id');
-            $f_folder->id = null;
-            $f_folder->name = 'Sent';
-            $f_folder->users_LOGIN = $user->login;           
-            $errors = $db->insertObject('#__f_folders', $f_folder, 'id');
-            $f_folder->id = null;
-            $f_folder->name = 'Drafts';
-            $f_folder->users_LOGIN = $user->login;           
-            $errors = $db->insertObject('#__f_folders', $f_folder, 'id');
+                    //Create database representations for personal messages folders (it has nothing to do with filesystem database representation)
+                    $f_folder = new stdClass;
+                    $f_folder->id = null;
+                    $f_folder->name = 'Incoming';
+                    $f_folder->users_LOGIN = $user->login;
+                    $errors = $db->insertObject('#__f_folders', $f_folder, 'id');
+                    $f_folder->id = null;
+                    $f_folder->name = 'Sent';
+                    $f_folder->users_LOGIN = $user->login;
+                    $errors = $db->insertObject('#__f_folders', $f_folder, 'id');
+                    $f_folder->id = null;
+                    $f_folder->name = 'Drafts';
+                    $f_folder->users_LOGIN = $user->login;
+                    $errors = $db->insertObject('#__f_folders', $f_folder, 'id');
 
-            // for eFront Educational and enterprise versions we now should assign skillgap tests
-            // not sure I should implemented it, anyway I have only the community version to work on             
+                    // for eFront Educational and enterprise versions we now should assign skillgap tests
+                    // not sure I should implemented it, anyway I have only the community version to work on
+                }
+                //return the good news
+                $status['debug'][] = JText::_('USER_CREATION');
+                $status['userinfo'] = $this->getUser($userinfo);
+            }
         }
-        //return the good news
-        $status['debug'][] = JText::_('USER_CREATION');
-        $status['userinfo'] = $this->getUser($userinfo);
-        return;
     }
 
     /**
@@ -541,9 +539,8 @@ class JFusionUser_efront extends JFusionUser
 
     /**
      * @param object $userinfo
-     * @param object $existinguser
-     * @param array $status
-     * @return null
+     * @param object &$existinguser
+     * @param array &$status
      */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
         $params = & JFusionFactory::getParams($this->getJname());
@@ -552,28 +549,28 @@ class JFusionUser_efront extends JFusionUser
             //check to see if we have a group_id in the $userinfo, if not return
             if (!isset($userinfo->group_id)) {
                 $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
-                return null;
-            }
-            $usergroups = unserialize($params->get('usergroup'));
-            if (isset($usergroups[$userinfo->group_id])) {
-                $db = JFusionFactory::getDataBase($this->getJname());
-                if ($usergroups[$userinfo->group_id]< 3){
-                	$user_type = $this->groupIDToName($usergroups[$userinfo->group_id]);
-                	$user_types_ID = 0;
-                } else {
-                	$user_types_ID = $usergroups[$userinfo->group_id]-2;
-                    $query = 'SELECT basic_user_type from #__user_types WHERE id = '.$user_types_ID;
+            } else {
+                $usergroups = unserialize($params->get('usergroup'));
+                if (isset($usergroups[$userinfo->group_id])) {
+                    $db = JFusionFactory::getDataBase($this->getJname());
+                    if ($usergroups[$userinfo->group_id]< 3){
+                        $user_type = $this->groupIDToName($usergroups[$userinfo->group_id]);
+                        $user_types_ID = 0;
+                    } else {
+                        $user_types_ID = $usergroups[$userinfo->group_id]-2;
+                        $query = 'SELECT basic_user_type from #__user_types WHERE id = '.$user_types_ID;
+                        $db->setQuery($query);
+                        $user_type = $db->loadResult();
+                    }
+                    $query = "UPDATE #__users SET user_type = ".$db->Quote($user_type).", user_types_ID = $user_types_ID WHERE id =" . $existinguser->userid;
                     $db->setQuery($query);
-                    $user_type = $db->loadResult();
+                    if (!$db->query()) {
+                        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
+                    } else {
+                        $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $usergroups[$userinfo->group_id];
+                    }
                 }
-                $query = "UPDATE #__users SET user_type = ".$db->Quote($user_type).", user_types_ID = $user_types_ID WHERE id =" . $existinguser->userid;
-                $db->setQuery($query);
-                if (!$db->query()) {
-                    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-                } else {
-                    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $usergroups[$userinfo->group_id];
-                }
-           }
+            }
         } else {
             $status['error'][] = JText::_('GROUP_UPDATE_ERROR');
         }

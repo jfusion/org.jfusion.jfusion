@@ -142,9 +142,9 @@ class JFusionUser_dokuwiki extends JFusionUser {
 
     /**
      * @param object $userinfo
-     * @return bool|\stdClass
+     * @return null|object
      */
-    function &getUser($userinfo) {
+    function getUser($userinfo) {
         $share = Dokuwiki::getInstance($this->getJname());
     	if (is_object($userinfo)) {
     		$username = $this->filterUsername($userinfo->username);
@@ -162,8 +162,7 @@ class JFusionUser_dokuwiki extends JFusionUser {
             $user->group_id = $raw_user['grps'];
             return $user;
         }
-        $return = false;
-        return $return;
+        return null;
     }
 
     /**
@@ -285,8 +284,7 @@ class JFusionUser_dokuwiki extends JFusionUser {
 
     /**
      * @param object $userinfo
-     * @param array $status
-     * @return array|string
+     * @param array &$status
      */
     function createUser($userinfo, &$status) {
         $share = Dokuwiki::getInstance($this->getJname());
@@ -319,12 +317,10 @@ class JFusionUser_dokuwiki extends JFusionUser {
         if (!$share->auth->createUser($userinfo->username, $pass, $userinfo->name, $userinfo->email,$correct_usergroup)) {
             //return the error
             $status['error'] = JText::_('USER_CREATION_ERROR');
-            return $status;
         } else {
             //return the good news
             $status['debug'][] = JText::_('USER_CREATION');
             $status['userinfo'] = $this->getUser($userinfo);
-            return $status;
         }
     }
 

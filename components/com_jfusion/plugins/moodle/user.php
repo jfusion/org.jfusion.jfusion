@@ -124,7 +124,7 @@ class JFusionUser_moodle extends JFusionUser {
      * @param object $userinfo
      * @return null|object
      */
-    function &getUser($userinfo) {
+    function getUser($userinfo) {
 		$db = JFusionFactory::getDatabase($this->getJname());
 		//get the identifier
 		list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'username', 'email');
@@ -136,8 +136,7 @@ class JFusionUser_moodle extends JFusionUser {
 		{
 			// check the deleted flag
 			if ($result->deleted){
-				$result = null;
-				return $result;
+				return null;
 			}
 			// change/add fields used by jFusion
 			$result->userid = $result->id;
@@ -451,7 +450,6 @@ class JFusionUser_moodle extends JFusionUser {
     /**
      * @param object $userinfo
      * @param array $status
-     * @return null
      */
     function createUser($userinfo, &$status) {
 		// first find out if the user already exists, but with deleted flag set
@@ -470,117 +468,116 @@ class JFusionUser_moodle extends JFusionUser {
 			if (!$db->query()) {
 				//return the error
 				$status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-				return;
-			}
-			//return the good news
-			$status['userinfo'] = $this->getUser($userinfo);
-			$status['debug'][] = JText::_('USER_CREATION');
-			return;
-		}
-
-		//find out what usergroup should be used
-		$db = JFusionFactory::getDatabase($this->getJname());
-		$params = JFusionFactory::getParams($this->getJname());
-		$usergroups = (substr($params->get('usergroup'), 0, 2) == 'a:') ? unserialize($params->get('usergroup')) : $params->get('usergroup', 18);
-		//check to make sure that if using the advanced group mode, $userinfo->group_id exists
-		if (is_array($usergroups) && !isset($userinfo->group_id)) {
-			$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
-			return null;
-		}
-		$default_group_id = (is_array($usergroups)) ? $usergroups[$userinfo->group_id] : $usergroups;
-		// get some config items
-		$query = 'SELECT value FROM #__config WHERE  name = \'mnet_localhost_id\'';
-		$db->setQuery($query);
-		$mnet_localhost_id = $db->loadResult();
-		$query = 'SELECT value FROM #__config WHERE  name = \'lang\'';
-		$db->setQuery($query);
-		$lang = $db->loadResult();
-		$query = 'SELECT value FROM #__config WHERE  name = \'country\'';
-		$db->setQuery($query);
-		$country = $db->loadResult();
-
-		//prepare the variables
-		$user = new stdClass;
-		$user->id = null;
-		$user->auth = 'manual';
-		if ($userinfo->activation) {
-			$user->confirmed = 0;
-		} else {
-			$user->confirmed = 1;
-		}
-		$user->policyagreed = !$userinfo->block; // just write, true doesn't harm
-		$user->deleted = 0;
-		$user->mnethostid = $mnet_localhost_id;
-		$user->username = $userinfo->username;
-		if (isset($userinfo->password_clear) && strlen($userinfo->password_clear) != 32) {
-			$params = JFusionFactory::getParams('moodle');
-			if ($params->get('passwordsaltmain')) {
-				$user->password = md5($userinfo->password_clear . $params->get('passwordsaltmain'));
 			} else {
-				$user->password = md5($userinfo->password_clear);
-			}
+                //return the good news
+                $status['userinfo'] = $this->getUser($userinfo);
+                $status['debug'][] = JText::_('USER_CREATION');
+            }
 		} else {
-			if (!empty($userinfo->password_salt)) {
-				$user->password = $userinfo->password . ':' . $userinfo->password_salt;
-			} else {
-				$user->password = $userinfo->password;
-			}
-		}
-		// $user->idnumber= ??
-		$parts = explode(' ', $userinfo->name);
-		$user->firstname = trim($parts[0]);
-        $lastname = '';
-		if ($parts[(count($parts) - 1) ]) {
-			for ($i = 1;$i < (count($parts));$i++) {
-				$lastname = $lastname . ' ' . $parts[$i];
-			}
-		}
-		$user->lastname = trim($lastname);
-		$user->email = strtolower($userinfo->email);
-		$user->country = $country;
-		$user->lang = $lang;
-        $user->firstaccess = time();
-		$user->timemodified = time();
-		//now append the new user data
-		if (!$db->insertObject('#__user', $user, 'id')) {
-			//return the error
-			$status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-			return;
-		}
-		// get new ID
-		$userid = $db->insertid();
-		// have to set user preferences
-		$user_1 = new stdClass;
-		$user_1->id = null;
-		$user_1->userid = $userid;
-		$user_1->name = 'auth_forcepasswordchange';
-		$user_1->value = 0;
-		if (!$db->insertObject('#__user_preferences', $user_1, 'id')) {
-			//return the error
-			$status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-			return;
-		}
-		$user_1->id = null;
-		$user_1->userid = $userid;
-		$user_1->name = 'email_bounce_count';
-		$user_1->value = 1;
-		if (!$db->insertObject('#__user_preferences', $user_1, 'id')) {
-			//return the error
-			$status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-			return;
-		}
-		$user_1->id = null;
-		$user_1->userid = $userid;
-		$user_1->name = 'email_send_count';
-		$user_1->value = 1;
-		if (!$db->insertObject('#__user_preferences', $user_1, 'id')) {
-			//return the error
-			$status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-			return;
-		}
-		//return the good news
-		$status['userinfo'] = $this->getUser($userinfo);
-		$status['debug'][] = JText::_('USER_CREATION');
+            //find out what usergroup should be used
+            $db = JFusionFactory::getDatabase($this->getJname());
+            $params = JFusionFactory::getParams($this->getJname());
+            $usergroups = (substr($params->get('usergroup'), 0, 2) == 'a:') ? unserialize($params->get('usergroup')) : $params->get('usergroup', 18);
+            //check to make sure that if using the advanced group mode, $userinfo->group_id exists
+            if (is_array($usergroups) && !isset($userinfo->group_id)) {
+                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+            } else {
+                $default_group_id = (is_array($usergroups)) ? $usergroups[$userinfo->group_id] : $usergroups;
+                // get some config items
+                $query = 'SELECT value FROM #__config WHERE  name = \'mnet_localhost_id\'';
+                $db->setQuery($query);
+                $mnet_localhost_id = $db->loadResult();
+                $query = 'SELECT value FROM #__config WHERE  name = \'lang\'';
+                $db->setQuery($query);
+                $lang = $db->loadResult();
+                $query = 'SELECT value FROM #__config WHERE  name = \'country\'';
+                $db->setQuery($query);
+                $country = $db->loadResult();
+
+                //prepare the variables
+                $user = new stdClass;
+                $user->id = null;
+                $user->auth = 'manual';
+                if ($userinfo->activation) {
+                    $user->confirmed = 0;
+                } else {
+                    $user->confirmed = 1;
+                }
+                $user->policyagreed = !$userinfo->block; // just write, true doesn't harm
+                $user->deleted = 0;
+                $user->mnethostid = $mnet_localhost_id;
+                $user->username = $userinfo->username;
+                if (isset($userinfo->password_clear) && strlen($userinfo->password_clear) != 32) {
+                    $params = JFusionFactory::getParams('moodle');
+                    if ($params->get('passwordsaltmain')) {
+                        $user->password = md5($userinfo->password_clear . $params->get('passwordsaltmain'));
+                    } else {
+                        $user->password = md5($userinfo->password_clear);
+                    }
+                } else {
+                    if (!empty($userinfo->password_salt)) {
+                        $user->password = $userinfo->password . ':' . $userinfo->password_salt;
+                    } else {
+                        $user->password = $userinfo->password;
+                    }
+                }
+                // $user->idnumber= ??
+                $parts = explode(' ', $userinfo->name);
+                $user->firstname = trim($parts[0]);
+                $lastname = '';
+                if ($parts[(count($parts) - 1) ]) {
+                    for ($i = 1;$i < (count($parts));$i++) {
+                        $lastname = $lastname . ' ' . $parts[$i];
+                    }
+                }
+                $user->lastname = trim($lastname);
+                $user->email = strtolower($userinfo->email);
+                $user->country = $country;
+                $user->lang = $lang;
+                $user->firstaccess = time();
+                $user->timemodified = time();
+                //now append the new user data
+                if (!$db->insertObject('#__user', $user, 'id')) {
+                    //return the error
+                    $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
+                } else {
+                    // get new ID
+                    $userid = $db->insertid();
+                    // have to set user preferences
+                    $user_1 = new stdClass;
+                    $user_1->id = null;
+                    $user_1->userid = $userid;
+                    $user_1->name = 'auth_forcepasswordchange';
+                    $user_1->value = 0;
+                    if (!$db->insertObject('#__user_preferences', $user_1, 'id')) {
+                        //return the error
+                        $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
+                    } else {
+                        $user_1->id = null;
+                        $user_1->userid = $userid;
+                        $user_1->name = 'email_bounce_count';
+                        $user_1->value = 1;
+                        if (!$db->insertObject('#__user_preferences', $user_1, 'id')) {
+                            //return the error
+                            $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
+                        } else {
+                            $user_1->id = null;
+                            $user_1->userid = $userid;
+                            $user_1->name = 'email_send_count';
+                            $user_1->value = 1;
+                            if (!$db->insertObject('#__user_preferences', $user_1, 'id')) {
+                                //return the error
+                                $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
+                            } else {
+                                //return the good news
+                                $status['userinfo'] = $this->getUser($userinfo);
+                                $status['debug'][] = JText::_('USER_CREATION');
+                            }
+                        }
+                    }
+                }
+            }
+        }
 	}
 
     /**

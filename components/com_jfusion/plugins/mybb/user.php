@@ -29,9 +29,9 @@ defined('_JEXEC') or die('Restricted access');
 class JFusionUser_mybb extends JFusionUser {
     /**
      * @param object $userinfo
-     * @return object
+     * @return null|object
      */
-    function &getUser($userinfo) {
+    function getUser($userinfo) {
         //get the identifier
         list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'a.username', 'a.email');
         // Get user info from database
@@ -57,14 +57,6 @@ class JFusionUser_mybb extends JFusionUser {
     function getJname() 
     {
         return 'mybb';
-    }
-
-    /**
-     * @param object $userinfo
-     */
-    function deleteUser($userinfo) {
-        //TODO: create a function that deletes a user
-        
     }
 
     /**
@@ -155,9 +147,8 @@ class JFusionUser_mybb extends JFusionUser {
 
     /**
      * @param object $userinfo
-     * @param object $existinguser
-     * @param array $status
-     * @return string
+     * @param object &$existinguser
+     * @param array &$status
      */
     function blockUser($userinfo, &$existinguser, &$status) {
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -174,24 +165,23 @@ class JFusionUser_mybb extends JFusionUser {
         if (!$db->insertObject('#__banned', $user, 'uid')) {
             //return the error
             $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $db->stderr();
-            return;
+        } else {
+            //change its usergroup
+            $query = 'UPDATE #__users SET usergroup = 7 WHERE uid = ' . (int)$existinguser->userid;
+            $db->setQuery($query);
+            if (!$db->query()) {
+                //return the error
+                $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $db->stderr();
+            } else {
+                $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+            }
         }
-        //change its usergroup
-        $query = 'UPDATE #__users SET usergroup = 7 WHERE uid = ' . (int)$existinguser->userid;
-        $db->setQuery($query);
-        if (!$db->query()) {
-            //return the error
-            $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $db->stderr();
-            return;
-        }
-        $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
     }
 
     /**
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
-     * @return string
      */
     function unblockUser($userinfo, &$existinguser, &$status) {
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -205,22 +195,22 @@ class JFusionUser_mybb extends JFusionUser {
         if (!$db->query()) {
             //return the error
             $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $db->stderr();
-            return;
+        } else {
+            //check the oldgroup
+            if (empty($oldgroup)) {
+                $params = JFusionFactory::getParams($this->getJname());
+                $oldgroup = $params->get('usergroup');
+            }
+            //restore the usergroup
+            $query = 'UPDATE #__users SET usergroup = ' . (int)$oldgroup . ' WHERE uid = ' . (int)$existinguser->userid;
+            $db->setQuery($query);
+            if (!$db->query()) {
+                //return the error
+                $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $db->stderr();
+            } else {
+                $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+            }
         }
-        //check the oldgroup
-        if (empty($oldgroup)) {
-            $params = JFusionFactory::getParams($this->getJname());
-            $oldgroup = $params->get('usergroup');
-        }
-        //restore the usergroup
-        $query = 'UPDATE #__users SET usergroup = ' . (int)$oldgroup . ' WHERE uid = ' . (int)$existinguser->userid;
-        $db->setQuery($query);
-        if (!$db->query()) {
-            //return the error
-            $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $db->stderr();
-            return;
-        }
-        $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
     }
 
     /**
@@ -245,7 +235,6 @@ class JFusionUser_mybb extends JFusionUser {
     /**
      * @param object $userinfo
      * @param array $status
-     * @return string
      */
     function createUser($userinfo, &$status) {
         //found out what usergroup should be used
@@ -284,12 +273,10 @@ class JFusionUser_mybb extends JFusionUser {
         if (!$db->insertObject('#__users', $user, 'uid')) {
             //return the error
             $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-            return;
         } else {
             //return the good news
             $status['debug'][] = JText::_('USER_CREATION');
             $status['userinfo'] = $this->getUser($userinfo);
-            return;
         }
     }
 

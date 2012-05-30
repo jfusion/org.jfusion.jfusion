@@ -16,7 +16,7 @@ defined('_JEXEC' ) or die('Restricted access' );
  * @package JFusion_mediawiki
  */
 
-class JFusionAdmin_mediawiki extends JFusionAdmin{
+class JFusionAdmin_mediawiki extends JFusionAdmin {
 
     /**
      * @return string
@@ -36,7 +36,8 @@ class JFusionAdmin_mediawiki extends JFusionAdmin{
 
     /**
      * @param string $source_path
-     * @return array|bool
+     *
+     * @return array
      */
     function setupFromPath($source_path)
     {
@@ -46,10 +47,10 @@ class JFusionAdmin_mediawiki extends JFusionAdmin{
             $source_path = substr($source_path, 0, -1);
         }
         $myfile = $source_path . DS. 'LocalSettings.php';
+        $params = array();
          //try to open the file
          if ( !file_exists($myfile) ) {
             JError::raiseWarning(500,JText::_('WIZARD_FAILURE'). ": ".$myfile." " . JText::_('WIZARD_MANUAL'));
-            return false;
          } else {
 			$wgDBserver = $wgDBtype = $wgDBname = $wgDBuser = $wgDBpassword = $wgDBprefix = '';
     		
@@ -70,9 +71,8 @@ class JFusionAdmin_mediawiki extends JFusionAdmin{
             if (!empty($wgCookiePrefix)) {
                 $params['cookie_name'] = $wgCookiePrefix;
             }
-
-            return $params;
         }
+        return $params;
     }
 
     /**

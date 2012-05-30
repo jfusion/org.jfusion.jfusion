@@ -35,9 +35,9 @@ defined('_JEXEC') or die('Restricted access');
 class JFusionUser_prestashop extends JFusionUser {
     /**
      * @param object $userinfo
-     * @return object
+     * @return null|object
      */
-    function &getUser($userinfo) {
+    function getUser($userinfo) {
 	    //get the identifier
         $identifier = $userinfo;
         if (is_object($userinfo)) {
@@ -116,7 +116,7 @@ class JFusionUser_prestashop extends JFusionUser {
      * @param object $userinfo
      * @param array $options
      * @param bool $framework
-     * @return bool
+     * @return array
      */
     function createSession($userinfo, $options, $framework = true) {
 	    $params = JFusionFactory::getParams($this->getJname());
@@ -138,64 +138,39 @@ class JFusionUser_prestashop extends JFusionUser {
 	    $email = $userinfo->email;
 		$passwd = trim($passwd);
 		$email = trim($email);
-		if (empty($email))
-		{
-		    JText::_('EMAIL_UPDATE_ERROR');
-		    echo('e-mail address is required');
-		}
-		elseif (!Validate::isEmail($email))
-		{
-		    JText::_('EMAIL_UPDATE_ERROR');
-		    echo('invalid e-mail address');
-		}
-		elseif (empty($passwd))
-		{
-		    JText::_('EMAIL_UPDATE_ERROR');
-		    echo('password is required');
-		}
-		elseif (Tools::strlen($passwd) > 32)
-		{
-		    JText::_('EMAIL_UPDATE_ERROR');
-		    echo('password is too long');
-		}
-		elseif (!Validate::isPasswd($passwd))
-		{
-		    JText::_('EMAIL_UPDATE_ERROR');
-		    echo('invalid password');
-		}
-		else
-	    { 
+		if (empty($email)) {
+		    $status['error'][] = 'invalid e-mail address';
+		} elseif (!Validate::isEmail($email)) {
+            $status['error'][] = 'invalid e-mail address';
+		} elseif (empty($passwd)) {
+            $status['error'][] = 'password is required';
+		} elseif (Tools::strlen($passwd) > 32) {
+            $status['error'][] = 'password is too long';
+		} elseif (!Validate::isPasswd($passwd)) {
+            $status['error'][] = 'invalid password';
+		} else {
 		    /* Handle brute force attacks */
 		    sleep(1);
 			// check if password matches
 			$query = "SELECT passwd FROM #__customer WHERE email =" . $db-Quote($email);
             $db->setQuery($query);
             $result = $db->loadResult();
-		    if (!$result)
-			{
-			    JText::_('EMAIL_UPDATE_ERROR');
-			    echo('authentication failed');
-			}
-		    else
-		    {
-				if(md5($params->get('cookie_key') . $passwd) === $result)
-				{
-				$cookie->__set("id_customer", $userinfo->userid);
-				$cookie->__set("customer_lastname", $userinfo->lastname);
-				$cookie->__set("customer_firstname", $userinfo->firstname);
-				$cookie->__set("logged", 1);
-				$cookie->__set("passwd", md5($params->get('cookie_key') . $passwd));
-				$cookie->__set("email", $email);
-				return true;
-				}
-				else
-				{
-					JText::_('EMAIL_UPDATE_ERROR');
-					echo('wrong password');
-				}
-			}
-		}
-        return false;
+		    if (!$result) {
+                $status['error'][] = 'authentication failed';
+			} else {
+				if(md5($params->get('cookie_key') . $passwd) === $result) {
+                    $cookie->__set("id_customer", $userinfo->userid);
+                    $cookie->__set("customer_lastname", $userinfo->lastname);
+                    $cookie->__set("customer_firstname", $userinfo->firstname);
+                    $cookie->__set("logged", 1);
+                    $cookie->__set("passwd", md5($params->get('cookie_key') . $passwd));
+                    $cookie->__set("email", $email);
+				} else {
+                    $status['error'][] = 'wrong password';
+                }
+            }
+        }
+        return $status;
 	}
 
     /**
@@ -228,7 +203,6 @@ class JFusionUser_prestashop extends JFusionUser {
     /**
      * @param object $userinfo
      * @param array $status
-     * @return string
      */
     function createUser($userinfo, &$status) {
 		$db = JFusionFactory::getDatabase($this->getJname());

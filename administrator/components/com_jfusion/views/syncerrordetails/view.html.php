@@ -30,12 +30,12 @@ defined('_JEXEC') or die('Restricted access');
  */
 class jfusionViewsyncerrordetails extends JView
 {
-     /**
+    /**
      * displays the view
      *
      * @param string $tpl template name
      *
-     * @return string html output of view
+     * @return mixed|string html output of view
      */
     function display($tpl = null)
     {

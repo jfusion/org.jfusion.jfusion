@@ -109,7 +109,7 @@ class JFusionAdmin_joomla_ext extends JFusionAdmin
 
     /**
      * @param string $path
-     * @return object
+     * @return array
      */
     function setupFromPath($path) {
 		return JFusionJplugin::setupFromPath($path);
@@ -121,7 +121,8 @@ class JFusionAdmin_joomla_ext extends JFusionAdmin
     function allowRegistration() {
 		return JFusionJplugin::allowRegistration($this->getJname());
 	}
-	function debugConfig() {
+
+    function debugConfig() {
 		$jname = $this->getJname();
 		//get registration status
 		$new_registration = $this->allowRegistration();

@@ -548,6 +548,7 @@ JS;
         }
         return $php;
     }
+
     function debugConfigExtra()
     {
         //check for usergroups to make sure membergroups do not include default or display group

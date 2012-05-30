@@ -298,7 +298,7 @@ class JFusionJplugin
      * Common code for user.php
      *
      * @param object $userinfo userinfo
-     * @param object $options  options
+     * @param array $options  options
      * @param string $jname    jname
      * @param string $type    jname
      * @param array $curl_options_merge
@@ -604,7 +604,7 @@ class JFusionJplugin
      * @param object $userinfo contains the object of the user
      * @param string $jname    jname
      *
-     * @return object userinfo Object containing the user information
+     * @return null|object userinfo Object containing the user information
      */
     public static function getUser($userinfo, $jname)
     {

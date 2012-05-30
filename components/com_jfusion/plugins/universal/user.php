@@ -28,9 +28,9 @@ class JFusionUser_universal extends JFusionUser {
 
     /**
      * @param object $userinfo
-     * @return object
+     * @return null|object
      */
-    function &getUser($userinfo)
+    function getUser($userinfo)
     {
         // initialise some objects
 		$map = JFusionMap::getInstance($this->getJname());
@@ -291,7 +291,6 @@ class JFusionUser_universal extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
-     * @return null
      */
     function updateUsergroup($userinfo, &$existinguser, &$status)
   	{
@@ -302,50 +301,49 @@ class JFusionUser_universal extends JFusionUser {
       		//check to see if we have a group_id in the $userinfo, if not return
 			if(!isset($userinfo->group_id)) {
 				$status['error'][] = JText::_('GROUP_UPDATE_ERROR'). ": " . JText::_('ADVANCED_GROUPMODE_SOURCE_NOT_HAVE_GROUPID');
-				return null;
-			}
+			} else {
+                if(isset($usergroups[$userinfo->group_id])) {
+                    $db = JFusionFactory::getDatabase($this->getJname());
+                    $map = JFusionMap::getInstance($this->getJname());
+                    $params = JFusionFactory::getParams($this->getJname());
 
-			if(isset($usergroups[$userinfo->group_id])) {
-    			$db = JFusionFactory::getDatabase($this->getJname());
-				$map = JFusionMap::getInstance($this->getJname());
-        		$params = JFusionFactory::getParams($this->getJname());
+                    $userid = $map->getFieldUserID();
+                    $group = $map->getFieldType('GROUP');
 
-				$userid = $map->getFieldUserID();
-				$group = $map->getFieldType('GROUP');
+                    if ( isset($group) ) {
+                        $table = $map->getTablename();
+                    } else {
+                        $table = $map->getTablename('group');
+                        $userid = $map->getFieldType('USERID','group');
+                        $group = $map->getFieldType('GROUP','group');
+                    }
 
-				if ( isset($group) ) {
-					$table = $map->getTablename();
-				} else {
-					$table = $map->getTablename('group');
-					$userid = $map->getFieldType('USERID','group');
-					$group = $map->getFieldType('GROUP','group');
-				}
+                    $maped = $map->getMap('group');
+                    $andwhere = '';
+                    if (count($maped) ) {
+                        foreach ($maped as $key => $value) {
+                            $field = $value->field;
+                            switch ($value->type) {
+                                case 'DEFAULT':
+                                    if ( $value->fieldtype == 'VALUE' ) {
+                                        $andwhere .= ' AND '.$field.' = '.$db->Quote($value->value);
+                                    }
+                                    break;
+                            }
+                        }
+                    }
 
-				$maped = $map->getMap('group');
-				$andwhere = '';
-				if (count($maped) ) {
-					foreach ($maped as $key => $value) {
-				    	$field = $value->field;
-						switch ($value->type) {
-				          	case 'DEFAULT':
-				          		if ( $value->fieldtype == 'VALUE' ) {
-									$andwhere .= ' AND '.$field.' = '.$db->Quote($value->value);
-				          		}
-								break;
-						}
-					}
-				}
-
-    			$query = 'UPDATE #__'.$table.' '.
-						'SET '.$group->field.' = '.$db->quote(base64_decode($usergroups[$userinfo->group_id])) .' '.
-						'WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid).$andwhere;
-				$db->setQuery($query );
-				if (!$db->query()) {
-					$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-				} else {
-					$status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . base64_decode($existinguser->group_id) . ' -> ' . base64_decode($usergroups[$userinfo->group_id]);
-				}
-			}
+                    $query = 'UPDATE #__'.$table.' '.
+                        'SET '.$group->field.' = '.$db->quote(base64_decode($usergroups[$userinfo->group_id])) .' '.
+                        'WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid).$andwhere;
+                    $db->setQuery($query );
+                    if (!$db->query()) {
+                        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
+                    } else {
+                        $status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . base64_decode($existinguser->group_id) . ' -> ' . base64_decode($usergroups[$userinfo->group_id]);
+                    }
+                }
+            }
 		} else {
 			$status['error'][] = JText::_('GROUP_UPDATE_ERROR');
 		}
@@ -478,7 +476,6 @@ class JFusionUser_universal extends JFusionUser {
     /**
      * @param object $userinfo
      * @param array $status
-     * @return array|null|string
      */
     function createUser($userinfo, &$status)
     {
@@ -488,139 +485,134 @@ class JFusionUser_universal extends JFusionUser {
 	    //check to make sure that if using the advanced group mode, $userinfo->group_id exists
 		if(is_array($usergroups) && !isset($userinfo->group_id)) {
 			$status['error'][] = JText::_('GROUP_UPDATE_ERROR'). ": " . JText::_('ADVANCED_GROUPMODE_SOURCE_NOT_HAVE_GROUPID');
-			return null;
-		}
-		
-	    $map = JFusionMap::getInstance($this->getJname());
+		} else {
+            $map = JFusionMap::getInstance($this->getJname());
 
-		$userid = $map->getFieldUserID();
-	    if(empty($userid)) {
-			$status['error'][] = JText::_('USER_CREATION_ERROR'). ': ' . JText::_('UNIVERSAL_NO_USERID_SET'). ': ' . $this->getJname();
-			return null;
-		}
-	    $password = $map->getFieldType('PASSWORD');
-	    if(empty($password)) {
-			$status['error'][] = JText::_('USER_CREATION_ERROR'). ': ' . JText::_('UNIVERSAL_NO_PASSWORD_SET'). ': ' . $this->getJname();
-			return null;
-		}
+            $userid = $map->getFieldUserID();
+            if(empty($userid)) {
+                $status['error'][] = JText::_('USER_CREATION_ERROR'). ': ' . JText::_('UNIVERSAL_NO_USERID_SET'). ': ' . $this->getJname();
+            } else {
+                $password = $map->getFieldType('PASSWORD');
+                if(empty($password)) {
+                    $status['error'][] = JText::_('USER_CREATION_ERROR'). ': ' . JText::_('UNIVERSAL_NO_PASSWORD_SET'). ': ' . $this->getJname();
+                } else {
+                    $email = $map->getFieldEmail();
+                    if(empty($email)) {
+                        $status['error'][] = JText::_('USER_CREATION_ERROR'). ': ' . $this->getJname() . ': ' . JText::_('UNIVERSAL_NO_EMAIL_SET');
+                    } else {
+                        $user = new stdClass;
+                        $maped = $map->getMap();
+                        foreach ($maped as $key => $value) {
+                            $field = $value->field;
+                            switch ($value->type) {
+                                case 'IGNORE':
+                                    break;
+                                case 'USERID':
+                                    $user->$field = NULL;
+                                    break;
+                                case 'REALNAME':
+                                    $user->$field = $userinfo->name;
+                                    break;
+                                case 'FIRSTNAME':
+                                    list($firstname,$lastname) = explode(' ',$userinfo->name ,2);
+                                    $user->$field = $firstname;
+                                    break;
+                                case 'LASTNAME':
+                                    list($firstname,$lastname) = explode(' ',$userinfo->name ,2);
+                                    $user->$field = $lastname;
+                                    break;
+                                case 'GROUP':
+                                    $user->$field = (is_array($usergroups)) ? base64_decode($usergroups[$userinfo->group_id]) : $usergroups;;
+                                    break;
+                                case 'USERNAME':
+                                case 'USERNAMEID':
+                                case 'USERNAMEREALNAME':
+                                case 'USERNAMEIDREALNAME':
+                                    $user->$field = $userinfo->username;
+                                    break;
+                                case 'EMAIL':
+                                case 'USERNAMEEMAIL':
+                                case 'USERNAMEEMAILREALNAME':
+                                    $user->$field = $userinfo->email;
+                                    break;
+                                case 'ACTIVE':
+                                    if ($userinfo->block){
+                                        $user->$field = $value->value['off'];
+                                    } else {
+                                        $user->$field = $value->value['on'];
+                                    }
+                                    break;
+                                case 'INACTIVE':
+                                    if ($userinfo->block){
+                                        $user->$field = $value->value['on'];
+                                    } else {
+                                        $user->$field = $value->value['off'];
+                                    }
+                                    break;
+                                case 'PASSWORD':
+                                    if ( isset($userinfo->password_clear) ) {
+                                        $user->$field = $map->getValue($value->fieldtype,$userinfo->password_clear,$userinfo);
+                                    } else {
+                                        $user->$field = $userinfo->password;
+                                    }
+                                    break;
+                                case 'SALT':
+                                    if (!isset($userinfo->password_salt)) {
+                                        $user->$field = $map->getValue($value->fieldtype,$value->value,$userinfo);
+                                    } else {
+                                        $user->$field = $userinfo->password_salt;
+                                    }
+                                    break;
+                                case 'DEFAULT':
+                                    $val = isset($value->value) ? $value->value : null;
+                                    $user->$field = $map->getValue($value->fieldtype,$val,$userinfo);
+                                    break;
+                            }
+                        }
 
-		$email = $map->getFieldEmail();
-	    if(empty($email)) {
-			$status['error'][] = JText::_('USER_CREATION_ERROR'). ': ' . $this->getJname() . ': ' . JText::_('UNIVERSAL_NO_EMAIL_SET');
-			return null;
-		}
-	    $user = new stdClass;
-	    $maped = $map->getMap();
-	    foreach ($maped as $key => $value) {
-	    	$field = $value->field;
-			switch ($value->type) {
-	          	case 'IGNORE':
-	            	break;
-	          	case 'USERID':
-	    			$user->$field = NULL;
-	    			break;
-	          	case 'REALNAME':
-	    			$user->$field = $userinfo->name;
-	    			break;
-	          	case 'FIRSTNAME':
-					list($firstname,$lastname) = explode(' ',$userinfo->name ,2);
-	    			$user->$field = $firstname;
-	    			break;
-	          	case 'LASTNAME':
-					list($firstname,$lastname) = explode(' ',$userinfo->name ,2);
-	    			$user->$field = $lastname;
-	    			break;
-	          	case 'GROUP':
-	    			$user->$field = (is_array($usergroups)) ? base64_decode($usergroups[$userinfo->group_id]) : $usergroups;;
-	    			break;
-	          	case 'USERNAME':
-	          	case 'USERNAMEID':
-	          	case 'USERNAMEREALNAME':
-	          	case 'USERNAMEIDREALNAME':
-					$user->$field = $userinfo->username;
-					break;
-	          	case 'EMAIL':
-	          	case 'USERNAMEEMAIL':
-	          	case 'USERNAMEEMAILREALNAME':
-					$user->$field = $userinfo->email;
-					break;
-	          	case 'ACTIVE':
-        			if ($userinfo->block){    				
-						$user->$field = $value->value['off'];
-        			} else {
-        				$user->$field = $value->value['on'];
-        			}
-	            	break;
-	          	case 'INACTIVE':
-        			if ($userinfo->block){
-						$user->$field = $value->value['on'];        				
-        			} else {
-        				$user->$field = $value->value['off'];
-        			}
-	            	break;
-	          	case 'PASSWORD':
-	            	if ( isset($userinfo->password_clear) ) {
-	            		$user->$field = $map->getValue($value->fieldtype,$userinfo->password_clear,$userinfo);
-	            	} else {
-	            		$user->$field = $userinfo->password;
-	            	}
-	            	break;
-	          	case 'SALT':
-	                if (!isset($userinfo->password_salt)) {
-	                    $user->$field = $map->getValue($value->fieldtype,$value->value,$userinfo);
-	                } else {
-	                    $user->$field = $userinfo->password_salt;
-					}
-					break;
-	          	case 'DEFAULT':
-					$val = isset($value->value) ? $value->value : null;
-					$user->$field = $map->getValue($value->fieldtype,$val,$userinfo);
-				break;
-			}
-	    }
+                        $db = JFusionFactory::getDatabase($this->getJname());
+                        //now append the new user data
+                        if (!$db->insertObject('#__'.$map->getTablename(), $user, $userid->field )) {
+                            //return the error
+                            $status['error'] = JText::_('USER_CREATION_ERROR'). ': ' . $db->stderr();
+                        } else {
+                            $group = $map->getFieldType('GROUP');
 
-	    $db = JFusionFactory::getDatabase($this->getJname());
-		//now append the new user data
-	    if (!$db->insertObject('#__'.$map->getTablename(), $user, $userid->field )) {
-	        //return the error
-	        $status['error'] = JText::_('USER_CREATION_ERROR'). ': ' . $db->stderr();
-	        return $status;
-	    } else {
-	    	$group = $map->getFieldType('GROUP');
-	    	
-			if ( !isset($group) ) {
-				$groupuserid = $map->getFieldType('USERID','group');
-				if( isset($groupuserid) ) {
-	    			$addgroup = new stdClass;
+                            if ( !isset($group) ) {
+                                $groupuserid = $map->getFieldType('USERID','group');
+                                if( isset($groupuserid) ) {
+                                    $addgroup = new stdClass;
 
-				    $maped = $map->getMap('group');
-				    foreach ($maped as $key => $value) {
-				    	$field = $value->field;
-						switch ($value->type) {
-				          	case 'USERID':
-				          		$field2 = $userid->field;
-				    			$addgroup->$field = $user->$field2;
-	    						break;
-				          	case 'GROUP':
-				    			$addgroup->$field = (is_array($usergroups)) ? base64_decode($usergroups[$userinfo->group_id]) : $usergroups;
-				    			break;
-				          	case 'DEFAULT':
-								$addgroup->$field = $map->getValue($value->fieldtype,$value->value,$userinfo);
-								break;
-						}
-				    }
-					if (!$db->insertObject('#__'.$map->getTablename('group'), $addgroup, $groupuserid->field )) {
-					    //return the error
-					    $status['error'] = JText::_('USER_CREATION_ERROR'). ': ' . $db->stderr();
-					    return $status;
-					}
-//					die();
-				}
-			}
-	    }
-	    //return the good news
-	    $status['debug'][] = JText::_('USER_CREATION');
-	    $status['userinfo'] = $this->getUser($userinfo);
-	    return $status;
+                                    $maped = $map->getMap('group');
+                                    foreach ($maped as $key => $value) {
+                                        $field = $value->field;
+                                        switch ($value->type) {
+                                            case 'USERID':
+                                                $field2 = $userid->field;
+                                                $addgroup->$field = $user->$field2;
+                                                break;
+                                            case 'GROUP':
+                                                $addgroup->$field = (is_array($usergroups)) ? base64_decode($usergroups[$userinfo->group_id]) : $usergroups;
+                                                break;
+                                            case 'DEFAULT':
+                                                $addgroup->$field = $map->getValue($value->fieldtype,$value->value,$userinfo);
+                                                break;
+                                        }
+                                    }
+                                    if (!$db->insertObject('#__'.$map->getTablename('group'), $addgroup, $groupuserid->field )) {
+                                        //return the error
+                                        $status['error'] = JText::_('USER_CREATION_ERROR'). ': ' . $db->stderr();
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+                        //return the good news
+                        $status['debug'][] = JText::_('USER_CREATION');
+                        $status['userinfo'] = $this->getUser($userinfo);
+                    }
+                }
+            }
+        }
     }
 }

@@ -33,6 +33,7 @@ require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS .
 class JElementjfusionsql extends JElement
 {
     var $_name = "jfusionsql";
+
     /**
      * Get an element
      *
@@ -41,7 +42,7 @@ class JElementjfusionsql extends JElement
      * @param JSimpleXMLElement &$node        node of element
      * @param string $control_name name of controler
      *
-     * @return string html
+     * @return string|void html
      */
     function fetchElement($name, $value, &$node, $control_name)
     {

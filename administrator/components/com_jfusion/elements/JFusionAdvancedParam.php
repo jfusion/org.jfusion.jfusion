@@ -27,6 +27,7 @@ defined('_JEXEC') or die();
 class JElementJFusionAdvancedParam extends JElement
 {
     var $_name = 'JFusionAdvancedParam';
+
     /**
      * Get an element
      *
@@ -35,7 +36,7 @@ class JElementJFusionAdvancedParam extends JElement
      * @param JSimpleXMLElement &$node        node of element
      * @param string $control_name name of controler
      *
-     * @return string html
+     * @return string|void html
      */
     function fetchElement($name, $value, &$node, $control_name)
     {

@@ -120,38 +120,39 @@ if (file_exists($model_file) && file_exists($factory_file)) {
 
             //define some other JFusion specific parameters
             $query = $forum->getActivityQuery($selectedforumssql, $config['result_order'], $config['result_limit']);
+            if (!empty($query)) {
+                // load
+                if($config['mode']==LAT) {
+                    $db->setQuery($query[$config['mode'].$config['lat_mode']]);
+                } else {
+                    $db->setQuery($query[$config['mode']]);
+                }
 
-            // load
-            if($config['mode']==LAT) {
-            	$db->setQuery($query[$config['mode'].$config['lat_mode']]);
-            } else {
-            	$db->setQuery($query[$config['mode']]);
+                $results = $db->loadObjectList();
+                if($config['debug']) {
+                    $resultBeforeFiltering = $results;
+                }
+                if (!empty($results)) {
+                    $forum->filterActivityResults($results, $config['result_limit']);
+                }
+                //reorder the keys for the for loop
+                if(is_array($results)) {
+                    $results = array_values($results);
+                }
+                if ($config['debug']) {
+                    $queryMode = ($config['mode']==LAT) ? $config['mode'].$config['lat_mode'] : $config['mode'];
+                    $debug  = 'Query mode: ' . $queryMode . '<br><br>';
+                    $sqlQuery = ($config['mode']==LAT) ? $query[$config['mode'].$config['lat_mode']] : $query[$config['mode']];
+                    $debug .= 'SQL Query: ' . $sqlQuery .'<br><br>';
+                    $debug .= 'Error: ' . $db->stderr() . '<br><br>';
+                    $debug .= "Results Before Filtering:<br><pre>".print_r($resultBeforeFiltering,true).'</pre><br><br>';
+                    $debug .= "Results After Filtering:<br><pre>".print_r($results,true).'</pre><br><br>';
+                    die($debug);
+                } else {
+                    modjfusionActivityHelper::appendAutoOutput($results, $jname, $config, $params);
+                    require(JModuleHelper::getLayoutPath('mod_jfusion_activity'));
+                }
             }
-
-            $results = $db->loadObjectList();
-            if($config['debug']) {
-            	$resultBeforeFiltering = $results;
-            }
-            if (!empty($results)) {
-			    $forum->filterActivityResults($results, $config['result_limit']);
-            }
-            //reorder the keys for the for loop
-            if(is_array($results)) {
-            	$results = array_values($results);
-            }
-            if ($config['debug']) {
-            	$queryMode = ($config['mode']==LAT) ? $config['mode'].$config['lat_mode'] : $config['mode'];
-                $debug  = 'Query mode: ' . $queryMode . '<br><br>';
-				$sqlQuery = ($config['mode']==LAT) ? $query[$config['mode'].$config['lat_mode']] : $query[$config['mode']];
-				$debug .= 'SQL Query: ' . $sqlQuery .'<br><br>';
-                $debug .= 'Error: ' . $db->stderr() . '<br><br>';
-                $debug .= "Results Before Filtering:<br><pre>".print_r($resultBeforeFiltering,true).'</pre><br><br>';
-                $debug .= "Results After Filtering:<br><pre>".print_r($results,true).'</pre><br><br>';
-                die($debug);
-            } else {
-            	modjfusionActivityHelper::appendAutoOutput($results, $jname, $config, $params);
-            	require(JModuleHelper::getLayoutPath('mod_jfusion_activity'));
-			}
 		} else {
 			if(method_exists($forum, "renderActivityModule")) {		
 				$output = $forum->renderActivityModule($config,$view, $pluginParam);

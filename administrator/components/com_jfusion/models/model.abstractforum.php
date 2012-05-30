@@ -112,11 +112,11 @@ class JFusionForum
      *
      * @param int $puser_id userid
      *
-     * @return string URL
+     * @return array
      */
     function getPrivateMessageCounts($puser_id)
     {
-        return 0;
+        return array('unread' => 0, 'total' => 0);
     }
 
     /**
@@ -130,14 +130,14 @@ class JFusionForum
      */
     function getActivityQuery($usedforums, $result_order, $result_limit)
     {
-        return 0;
+        return array();
     }
 
     /**
      * Returns the read status of a post based on the currently logged in user
      *
      * @param $post object with post data from the results returned from getActivityQuery
-     * @return boolean
+     * @return int
      */
     function checkReadStatus(&$post)
     {
@@ -159,8 +159,6 @@ class JFusionForum
      *
      * @param object &$results set of results from query
      * @param int    $limit    limit results parameter as set in the module's params; used for plugins that cannot limit using a query limiter
-     *
-     * @return array List of result
      */
     function filterActivityResults(&$results, $limit = 0)
     {
@@ -183,10 +181,10 @@ class JFusionForum
     /**
      * Checks to see if a thread already exists for the content item and calls the appropriate function
      *
-     * @param object 	&$dbparams		object with discussion bot parameters
+     * @param JParameter 	&$dbparams		object with discussion bot parameters
      * @param object 	&$contentitem 	object containing content information
      * @param object 	&$threadinfo 	object with threadinfo from lookup table
-     * @param array 	&$status		object with debug, error, and action stati
+     * @param array 	&$status        object with debug, error, and action stati
      */
 	function checkThreadExists(&$dbparams, &$contentitem, &$threadinfo, &$status)
 	{
@@ -392,9 +390,7 @@ class JFusionForum
      * @param object &$params      discussion bot parameters
      * @param object &$contentitem containing content information
      * @param int    $forumid      forum to create thread
-     * @param object &$status      status object for feedback of function
-     *
-     * @return array $status contains errors and status of actions
+     * @param array &$status      status object for feedback of function
      */
     function createThread(&$params, &$contentitem, $forumid, &$status)
     {
@@ -406,9 +402,7 @@ class JFusionForum
      * @param object &$params         discussion bot parameters
      * @param object &$existingthread existing thread info
      * @param object &$contentitem    content item
-     * @param object &$status         status object for feedback of function
-     *
-     * @return array $status contains errors and status of actions
+     * @param array &$status         status object for feedback of function
      */
     function updateThread(&$params, &$existingthread, &$contentitem, &$status)
     {
@@ -538,7 +532,7 @@ class JFusionForum
     /**
      * Returns HTML of a quick reply
      *
-     * @param object  &$dbparams       object with discussion bot parameters
+     * @param JParameter &$dbparams       object with discussion bot parameters
      * @param boolean $showGuestInputs toggles whether to show guest inputs or not
      *
      * @return string of html

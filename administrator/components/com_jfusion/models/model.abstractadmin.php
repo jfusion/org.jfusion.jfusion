@@ -107,11 +107,11 @@ class JFusionAdmin
      *
      * @param string $softwarePath path to root of integrated software
      *
-     * @return object JParam JParam objects with ne newly found configuration
+     * @return array array with ne newly found configuration
      */
     function setupFromPath($softwarePath)
     {
-        return 0;
+        return array();
     }
 
     /**
@@ -203,8 +203,9 @@ class JFusionAdmin
 
     /**
      * Function that checks if the plugin has a valid config
+     * jerror is used for output
      *
-     * @return array nothing as jerror is used for output
+     * @return void
      */
     function debugConfig()
     {
@@ -282,7 +283,7 @@ class JFusionAdmin
     /**
      * Function to implement any extra debug checks for plugins
      *
-     * @return bool
+     * @return void
      */
     function debugConfigExtra()
     {
@@ -443,7 +444,7 @@ JS;
 
         $params = JFusionFactory::getParams($jname);
         $multiusergroupdefault = $params->get('multiusergroupdefault');
-
+        $master_usergroups = array();
         if ( !empty($master) ) {
             $JFusionMaster = JFusionFactory::getAdmin($master->name);
             $master_usergroups = $JFusionMaster->getUsergroupList();

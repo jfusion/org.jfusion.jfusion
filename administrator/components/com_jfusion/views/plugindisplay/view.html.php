@@ -33,12 +33,12 @@ jimport('joomla.application.component.view');
  */
 
 class jfusionViewplugindisplay extends JView {
-     /**
+    /**
      * displays the view
      *
      * @param string $tpl template name
      *
-     * @return string html output of view
+     * @return mixed
      */
     function display($tpl = null)
     {

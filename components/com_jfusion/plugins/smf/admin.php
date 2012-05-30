@@ -113,7 +113,7 @@ class JFusionAdmin_smf extends JFusionAdmin
     /**
      * Get a list of users
      *
-     * @return object with list of users
+     * @return array with object list of users
      */
     function getUserList()
     {
@@ -143,7 +143,7 @@ class JFusionAdmin_smf extends JFusionAdmin
     /**
      * get default user group list
      *
-     * @return object with default user group list
+     * @return array array with object with default user group list
      */
     function getUsergroupList()
     {
@@ -163,7 +163,7 @@ class JFusionAdmin_smf extends JFusionAdmin
     /**
      * get default user group
      *
-     * @return object with default user group
+     * @return string object with default user group
      */
     function getDefaultUsergroup()
     {

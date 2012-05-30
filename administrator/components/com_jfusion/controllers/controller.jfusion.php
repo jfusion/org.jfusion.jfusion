@@ -37,6 +37,9 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'defines.php';
  */
 class JFusionController extends JController
 {
+    /**
+     * @return JController|void
+     */
     function display() {
         parent::display();
     }
@@ -58,7 +61,7 @@ class JFusionController extends JController
             //Initialize the forum
             $JFusionPlugin = & JFusionFactory::getAdmin($jname);
             $params = $JFusionPlugin->setupFromPath($post['source_path']);
-            if ($params) {
+            if (!empty($params)) {
                 //save the params first in order for elements to utilize data
                 JFusionFunctionAdmin::saveParameters($jname, $params, true);
 

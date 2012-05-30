@@ -212,7 +212,7 @@ class JFusionForum_smf2 extends JFusionForum
      /**
       * Creates new thread and posts first post
       *
-      * @param object &$dbparams with discussion bot parameters
+      * @param JParameter &$dbparams with discussion bot parameters
       * @param object &$contentitem object containing content information
       * @param int $forumid Id of forum to create thread
       * @param array &$status contains errors and status of actions
@@ -386,7 +386,7 @@ class JFusionForum_smf2 extends JFusionForum
 
 	/**
 	 * Returns HTML of a quick reply
-	 * @param $dbparams object with discussion bot parameters
+	 * @param JParameter $dbparams object with discussion bot parameters
 	 * @param boolean $showGuestInputs toggles whether to show guest inputs or not
 	 * @return string of html
 	 */

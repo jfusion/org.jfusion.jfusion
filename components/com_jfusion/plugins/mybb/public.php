@@ -62,6 +62,7 @@ class JFusionPublic_mybb extends JFusionPublic {
     /**
      * @return null|string
      */
+/*
     function &getBuffer() {
         // Get the path
         $params = JFusionFactory::getParams($this->getJname());
@@ -84,7 +85,7 @@ class JFusionPublic_mybb extends JFusionPublic {
         }
         //set the current directory to MyBB
         chdir($source_path);
-        /* set scope for variables required later */
+        // set scope for variables required later
         define('IN_PHPBB', true);
         global $phpbb_root_path, $phpEx, $db, $config, $user, $auth, $cache, $template;
         // Get the output
@@ -96,13 +97,14 @@ class JFusionPublic_mybb extends JFusionPublic {
         chdir(JPATH_SITE);
         return $buffer;
     }
-
+*/
     /**
      * @param object $buffer
      * @param $baseURL
      * @param $fullURL
      * @param $integratedURL
      */
+/*
     function parseBody(&$buffer, $baseURL, $fullURL, $integratedURL) {
         static $regex_body, $replace_body;
         if (!$regex_body || !$replace_body) {
@@ -131,13 +133,14 @@ class JFusionPublic_mybb extends JFusionPublic {
         }
         $buffer = preg_replace($regex_body, $replace_body, $buffer);
     }
-
+*/
     /**
      * @param object $buffer
      * @param $baseURL
      * @param $fullURL
      * @param $integratedURL
      */
+/*
     function parseHeader(&$buffer, $baseURL, $fullURL, $integratedURL) {
         static $regex_header, $replace_header;
         if (!$regex_header || !$replace_header) {
@@ -153,4 +156,5 @@ class JFusionPublic_mybb extends JFusionPublic {
         }
         $buffer = preg_replace($regex_header, $replace_header, $buffer);
     }
+*/
 }

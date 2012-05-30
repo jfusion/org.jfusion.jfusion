@@ -52,10 +52,11 @@ class JFusionModelInstaller extends InstallerModelInstall
         $lang->load('com_installer');
         parent::__construct();
     }
+
     /**
      * Replaces original Install() method.
      *
-     * @return true|false Result of the JFusion plugin install
+     * @return array|bool Result of the JFusion plugin install
      */
     function install()
     {
@@ -82,21 +83,20 @@ class JFusionModelInstaller extends InstallerModelInstall
         if (!$package) {
             $this->setState('message', JText::_('NO_PACKAGE_FOUND'));
             $result['message'] = JText::_('NO_PACKAGE_FOUND');
-            return $result;
+        } else {
+            // custom installer
+            $installer = new JfusionPluginInstaller($this);
+
+            // Install the package
+            $installer->install($package['dir'], $result);
+
+            // Cleanup the install files
+            if (!is_file($package['packagefile'])) {
+                $config = JFactory::getConfig();
+                $package['packagefile'] = $config->getValue('config.tmp_path') . DS . $package['packagefile'];
+            }
+            JInstallerHelper::cleanupInstall($package['packagefile'], $package['extractdir']);
         }
-        // custom installer
-        $installer = new JfusionPluginInstaller($this);
-
-        // Install the package
-        $installer->install($package['dir'], $result);
-
-        // Cleanup the install files
-        if (!is_file($package['packagefile'])) {
-            $config = JFactory::getConfig();
-            $package['packagefile'] = $config->getValue('config.tmp_path') . DS . $package['packagefile'];
-        }
-        JInstallerHelper::cleanupInstall($package['packagefile'], $package['extractdir']);
-
         //return the results array
         return $result;
     }

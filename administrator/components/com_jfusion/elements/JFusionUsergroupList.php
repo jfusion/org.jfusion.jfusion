@@ -24,6 +24,7 @@ require_once JPATH_ADMINISTRATOR.DS.'components'.DS.'com_jfusion'.DS.'models'.DS
 class JElementJFusionUsergroupList extends JElement
 {
     var $_name = 'JFusionUsergroupList';
+
     /**
      * Get an element
      *
@@ -32,7 +33,7 @@ class JElementJFusionUsergroupList extends JElement
      * @param JSimpleXMLElement &$node        node of element
      * @param string $control_name name of controler
      *
-     * @return string html
+     * @return string|void html
      */
     function fetchElement($name, $value, &$node, $control_name)
     {

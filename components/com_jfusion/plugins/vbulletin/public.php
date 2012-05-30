@@ -224,7 +224,6 @@ class JFusionPublic_vbulletin extends JFusionPublic
 
     /**
      * @param object $jfdata
-     * @return null
      */
     function getBuffer(&$jfdata)
     {
@@ -241,113 +240,112 @@ class JFusionPublic_vbulletin extends JFusionPublic
         $version = & $helper->getVersion();
         if ((int) substr($version, 0, 1) > 3) {
             JError::raiseWarning(500, JText::sprintf('VB_FRAMELESS_NOT_SUPPORTED',$version));
-            return null;
-        }
-
-        //check to make sure the frameless hook is installed
-        $db = & JFusionFactory::getDatabase($this->getJname());
-        $q = "SELECT active FROM #__plugin WHERE hookname = 'init_startup' AND title = 'JFusion Frameless Integration Plugin'";
-        $db->setQuery($q);
-        $active = $db->loadResult();
-        if ($active != '1') {
-            JError::raiseWarning(500, JText::_('VB_FRAMELESS_HOOK_NOT_INSTALLED'));
-            return null;
-        }
-        //have to clear this as it shows up in some text boxes
-        unset($q);
-        // Get some params
-        $params = & JFusionFactory::getParams($this->getJname());
-        $vbsefmode = $params->get('sefmode', 0);
-        $source_path = $params->get('source_path');
-        $source_url = $params->get('source_url');
-        $baseURL = $jfdata->baseURL;
-        $integratedURL = $jfdata->integratedURL;
-        $config = JFactory::getConfig();
-        $vbsefenabled = $config->getValue('config.sef');
-        $hookFile = JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'hooks.php';
-        if ($vbsefmode) {
-            //need to set the base tag as vB JS/ajax requires it to function
-            $document = JFactory::getDocument();
-            $document->setBase($jfdata->baseURL);
-        }
-        //get the jname to be used in the hook file
-        $vbJname = $this->getJname();
-        //fix for some instances of vB redirecting
-        $redirects = array('ajax.php', 'attachment.php', 'clientscript', 'member.php', 'misc.php', 'picture.php', 'sendmessage.php');
-        $custom_files = explode(',', $params->get('redirect_ignore'));
-        if (is_array($custom_files)) {
-            foreach ($custom_files as $file) {
-                //add file to the array of files to be redirected to forum
-                if (!empty($file) && strpos($file, '.php') !== false) {
-                    $redirects[] = trim($file);
+        } else {
+            //check to make sure the frameless hook is installed
+            $db = & JFusionFactory::getDatabase($this->getJname());
+            $q = "SELECT active FROM #__plugin WHERE hookname = 'init_startup' AND title = 'JFusion Frameless Integration Plugin'";
+            $db->setQuery($q);
+            $active = $db->loadResult();
+            if ($active != '1') {
+                JError::raiseWarning(500, JText::_('VB_FRAMELESS_HOOK_NOT_INSTALLED'));
+            } else {
+                //have to clear this as it shows up in some text boxes
+                unset($q);
+                // Get some params
+                $params = & JFusionFactory::getParams($this->getJname());
+                $vbsefmode = $params->get('sefmode', 0);
+                $source_path = $params->get('source_path');
+                $source_url = $params->get('source_url');
+                $baseURL = $jfdata->baseURL;
+                $integratedURL = $jfdata->integratedURL;
+                $config = JFactory::getConfig();
+                $vbsefenabled = $config->getValue('config.sef');
+                $hookFile = JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'hooks.php';
+                if ($vbsefmode) {
+                    //need to set the base tag as vB JS/ajax requires it to function
+                    $document = JFactory::getDocument();
+                    $document->setBase($jfdata->baseURL);
                 }
-            }
-        }
-        $uri = & JURI::getInstance();
-        $url = $uri->toString();
-        foreach ($redirects as $r) {
-            if (strpos($url, $r) !== false) {
-                if ($r == 'member.php') {
-                    //only redirect if using another profile
-                    $profile_url = $this->getAlternateProfileURL($url);
-                    if (!empty($profile_url)) {
-                        $url = $profile_url;
-                    } else {
-                        continue;
-                    }
-                } else {
-                    if ($r == 'sendmessage.php') {
-                        //only redirect if sending an IM
-                        $do = JRequest::getVar('do');
-                        if ($do != 'im') {
-                            continue;
+                //get the jname to be used in the hook file
+                $vbJname = $this->getJname();
+                //fix for some instances of vB redirecting
+                $redirects = array('ajax.php', 'attachment.php', 'clientscript', 'member.php', 'misc.php', 'picture.php', 'sendmessage.php');
+                $custom_files = explode(',', $params->get('redirect_ignore'));
+                if (is_array($custom_files)) {
+                    foreach ($custom_files as $file) {
+                        //add file to the array of files to be redirected to forum
+                        if (!empty($file) && strpos($file, '.php') !== false) {
+                            $redirects[] = trim($file);
                         }
                     }
-                    $url = $integratedURL . substr($url, strpos($url, $r));
                 }
-                $mainframe = JFactory::getApplication();
-                $mainframe->redirect($url);
+                $uri = & JURI::getInstance();
+                $url = $uri->toString();
+                foreach ($redirects as $r) {
+                    if (strpos($url, $r) !== false) {
+                        if ($r == 'member.php') {
+                            //only redirect if using another profile
+                            $profile_url = $this->getAlternateProfileURL($url);
+                            if (!empty($profile_url)) {
+                                $url = $profile_url;
+                            } else {
+                                continue;
+                            }
+                        } else {
+                            if ($r == 'sendmessage.php') {
+                                //only redirect if sending an IM
+                                $do = JRequest::getVar('do');
+                                if ($do != 'im') {
+                                    continue;
+                                }
+                            }
+                            $url = $integratedURL . substr($url, strpos($url, $r));
+                        }
+                        $mainframe = JFactory::getApplication();
+                        $mainframe->redirect($url);
+                    }
+                }
+                //get the filename
+                $jfile = JRequest::getVar('jfile');
+                if (!$jfile) {
+                    //use the default index.php
+                    $jfile = 'index.php';
+                }
+                //combine the path and filename
+                if (substr($source_path, -1) == DS) {
+                    $index_file = $source_path . $jfile;
+                } else {
+                    $index_file = $source_path . DS . $jfile;
+                }
+                if (!is_file($index_file)) {
+                    JError::raiseWarning(500, 'The path to the requested does not exist');
+                } else {
+                    //set the current directory to vBulletin
+                    chdir($source_path);
+                    // Get the output
+                    ob_start();
+                    //aaaahhh; basically everything global in vbulletin must be declared here for it to work  ;-{
+                    //did not include specific globals in admincp
+                    $vbGlobals = array('_CALENDARHOLIDAYS', '_CALENDAROPTIONS', '_TEMPLATEQUERIES', 'ad_location', 'albumids', 'allday', 'altbgclass', 'attachementids', 'badwords', 'bb_view_cache', 'bgclass', 'birthdaycache', 'cache_postids', 'calendarcache', 'calendarids', 'calendarinfo', 'calmod', 'checked', 'checked', 'cmodcache', 'colspan', 'copyrightyear', 'count', 'counters', 'cpnav', 'curforumid', 'curpostid', 'curpostidkey', 'currentdepth', 'customfields', 'datastore_fetch', 'date1', 'date2', 'datenow', 'day', 'days', 'daysprune', 'db', 'defaultselected', 'DEVDEBUG', 'disablesmiliesoption', 'display', 'dotthreads', 'doublemonth', 'doublemonth1', 'doublemonth2', 'eastercache', 'editor_css', 'eventcache', 'eventdate', 'eventids', 'faqbits', 'faqcache', 'faqjumpbits', 'faqlinks', 'faqparent', 'firstnew', 'folder', 'folderid', 'foldernames', 'folderselect', 'footer', 'foruminfo', 'forumjump', 'forumpermissioncache', 'forumperms', 'forumrules', 'forumshown', 'frmjmpsel', 'gobutton', 'goodwords', 'header', 'headinclude', 'holiday', 'html_allowed', 'hybridposts', 'ifaqcache', 'ignore', 'imodcache', 'imodecache', 'inforum', 'infractionids', 'ipclass', 'ipostarray', 'istyles', 'jumpforumbits', 'jumpforumtitle', 'langaugecount', 'laspostinfo', 'lastpostarray', 'limitlower', 'limitupper', 'links', 'message', 'messagearea', 'messagecounters', 'messageid', 'mod', 'month', 'months', 'monthselected', 'morereplies', 'navclass', 'newpm', 'newthreads', 'notifications_menubits', 'notifications_total', 'onload', 'optionselected', 'p', 'p_two_linebreak', 'pagestarttime', 'pagetitle', 'parent_postids', 'parentassoc', 'parentoptions', 'parents', 'pda', 'period', 'permissions', 'permscache', 'perpage', 'phrasegroups', 'phrasequery', 'pictureids', 'pmbox', 'pmids', 'pmpopupurl', 'post', 'postarray', 'postattache', 'postids', 'postinfo', 'postorder', 'postparent', 'postusername', 'previewpost', 'project_forums', 'project_types', 'querystring', 'querytime', 'rate', 'ratescore', 'recurcriteria', 'reminder', 'replyscore', 'searchforumids', 'searchids', 'searchthread', 'searchthreadid', 'searchtype', 'selectedicon', 'selectedone', 'serveroffset', 'show', 'smilebox', 'socialgroups', 'spacer_close', 'spacer_open', 'strikes', 'style', 'stylecount', 'stylevar', 'subscribecounters', 'subscriptioncache', 'template_hook', 'templateassoc', 'tempusagecache', 'threadedmode', 'threadids', 'threadinfo', 'time1', 'time2', 'timediff', 'timenow', 'timerange', 'timezone', 'titlecolor', 'titleonly', 'today', 'usecategories', 'usercache', 'userids', 'vbcollapse', 'vBeditTemplate', 'vboptions', 'vbphrase', 'vbulletin', 'viewscore', 'wol_album', 'wol_attachement', 'wol_calendar', 'wol_event', 'wol_inf', 'wol_pm', 'wol_post', 'wol_search', 'wol_socialgroup', 'wol_thread', 'wol_user', 'year');
+                    foreach ($vbGlobals as $g) {
+                        //global the variable
+                        global $$g;
+                    }
+                    if (defined('_JFUSION_DEBUG')) {
+                        $_SESSION["jfvbdebug"] = array();
+                    }
+                    try {
+                        include_once ($index_file);
+                    }
+                    catch(Exception $e) {
+                        $jfdata->buffer = ob_get_contents();
+                        ob_end_clean();
+                    }
+                    //change the current directory back to Joomla.
+                    chdir(JPATH_SITE);
+                }
             }
         }
-        //get the filename
-        $jfile = JRequest::getVar('jfile');
-        if (!$jfile) {
-            //use the default index.php
-            $jfile = 'index.php';
-        }
-        //combine the path and filename
-        if (substr($source_path, -1) == DS) {
-            $index_file = $source_path . $jfile;
-        } else {
-            $index_file = $source_path . DS . $jfile;
-        }
-        if (!is_file($index_file)) {
-            JError::raiseWarning(500, 'The path to the requested does not exist');
-            return null;
-        }
-        //set the current directory to vBulletin
-        chdir($source_path);
-        // Get the output
-        ob_start();
-        //aaaahhh; basically everything global in vbulletin must be declared here for it to work  ;-{
-        //did not include specific globals in admincp
-        $vbGlobals = array('_CALENDARHOLIDAYS', '_CALENDAROPTIONS', '_TEMPLATEQUERIES', 'ad_location', 'albumids', 'allday', 'altbgclass', 'attachementids', 'badwords', 'bb_view_cache', 'bgclass', 'birthdaycache', 'cache_postids', 'calendarcache', 'calendarids', 'calendarinfo', 'calmod', 'checked', 'checked', 'cmodcache', 'colspan', 'copyrightyear', 'count', 'counters', 'cpnav', 'curforumid', 'curpostid', 'curpostidkey', 'currentdepth', 'customfields', 'datastore_fetch', 'date1', 'date2', 'datenow', 'day', 'days', 'daysprune', 'db', 'defaultselected', 'DEVDEBUG', 'disablesmiliesoption', 'display', 'dotthreads', 'doublemonth', 'doublemonth1', 'doublemonth2', 'eastercache', 'editor_css', 'eventcache', 'eventdate', 'eventids', 'faqbits', 'faqcache', 'faqjumpbits', 'faqlinks', 'faqparent', 'firstnew', 'folder', 'folderid', 'foldernames', 'folderselect', 'footer', 'foruminfo', 'forumjump', 'forumpermissioncache', 'forumperms', 'forumrules', 'forumshown', 'frmjmpsel', 'gobutton', 'goodwords', 'header', 'headinclude', 'holiday', 'html_allowed', 'hybridposts', 'ifaqcache', 'ignore', 'imodcache', 'imodecache', 'inforum', 'infractionids', 'ipclass', 'ipostarray', 'istyles', 'jumpforumbits', 'jumpforumtitle', 'langaugecount', 'laspostinfo', 'lastpostarray', 'limitlower', 'limitupper', 'links', 'message', 'messagearea', 'messagecounters', 'messageid', 'mod', 'month', 'months', 'monthselected', 'morereplies', 'navclass', 'newpm', 'newthreads', 'notifications_menubits', 'notifications_total', 'onload', 'optionselected', 'p', 'p_two_linebreak', 'pagestarttime', 'pagetitle', 'parent_postids', 'parentassoc', 'parentoptions', 'parents', 'pda', 'period', 'permissions', 'permscache', 'perpage', 'phrasegroups', 'phrasequery', 'pictureids', 'pmbox', 'pmids', 'pmpopupurl', 'post', 'postarray', 'postattache', 'postids', 'postinfo', 'postorder', 'postparent', 'postusername', 'previewpost', 'project_forums', 'project_types', 'querystring', 'querytime', 'rate', 'ratescore', 'recurcriteria', 'reminder', 'replyscore', 'searchforumids', 'searchids', 'searchthread', 'searchthreadid', 'searchtype', 'selectedicon', 'selectedone', 'serveroffset', 'show', 'smilebox', 'socialgroups', 'spacer_close', 'spacer_open', 'strikes', 'style', 'stylecount', 'stylevar', 'subscribecounters', 'subscriptioncache', 'template_hook', 'templateassoc', 'tempusagecache', 'threadedmode', 'threadids', 'threadinfo', 'time1', 'time2', 'timediff', 'timenow', 'timerange', 'timezone', 'titlecolor', 'titleonly', 'today', 'usecategories', 'usercache', 'userids', 'vbcollapse', 'vBeditTemplate', 'vboptions', 'vbphrase', 'vbulletin', 'viewscore', 'wol_album', 'wol_attachement', 'wol_calendar', 'wol_event', 'wol_inf', 'wol_pm', 'wol_post', 'wol_search', 'wol_socialgroup', 'wol_thread', 'wol_user', 'year');
-        foreach ($vbGlobals as $g) {
-            //global the variable
-            global $$g;
-        }
-        if (defined('_JFUSION_DEBUG')) {
-            $_SESSION["jfvbdebug"] = array();
-        }
-        try {
-            include_once ($index_file);
-        }
-        catch(Exception $e) {
-            $jfdata->buffer = ob_get_contents();
-            ob_end_clean();
-        }
-        //change the current directory back to Joomla.
-        chdir(JPATH_SITE);
     }
 
     /**
@@ -631,7 +629,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
     }
 
     /**
-     * @return \stdClass
+     * @return object
      */
     function getSearchQueryColumns()
     {
@@ -659,8 +657,8 @@ class JFusionPublic_vbulletin extends JFusionPublic
     }
 
     /**
-     * @param string $where
-     * @param JParameter $pluginParam
+     * @param string &$where
+     * @param JParameter &$pluginParam
      * @param string $ordering
      */
     function getSearchCriteria(&$where, &$pluginParam, $ordering)
@@ -698,8 +696,8 @@ class JFusionPublic_vbulletin extends JFusionPublic
     }
 
     /**
-     * @param string $results
-     * @param object $pluginParam
+     * @param array &$results
+     * @param object &$pluginParam
      */
     function filterSearchResults(&$results, &$pluginParam)
     {

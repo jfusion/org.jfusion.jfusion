@@ -140,17 +140,20 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
      * @param int $limitstart
      * @param int $limit
      *
-     * @return object with list of users
+     * @return array array with object with list of users
      */
     function getUserList($limitstart = null, $limit = null)
     {	
         $share = Dokuwiki::getInstance($this->getJname());
         $list = $share->auth->retrieveUsers($limitstart,$limit);
-		foreach ($list as $key => &$value) {
-        	$value['userid'] = $key;
-        	$value['username'] = $key;
+        $userlist = array();
+		foreach ($list as $value) {
+            $user = new stdClass;
+            $user->email = $value['email'];
+            $user->username = $value['username'];
+            $userlist[]= $user;
         }
-        return $list;
+        return $userlist;
     }
 
     /**
@@ -221,6 +224,7 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
 
     /**
      * debug configure
+     * asdasd asdas
      *
      * @return void
      */

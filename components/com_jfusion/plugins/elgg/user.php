@@ -32,9 +32,9 @@ defined('_JEXEC') or die('Restricted access');
 class JFusionUser_elgg extends JFusionUser {
     /**
      * @param object $userinfo
-     * @return object
+     * @return null|object
      */
-    function &getUser($userinfo) {
+    function getUser($userinfo) {
         //get the identifier
         $identifier = $userinfo;
         if (is_object($userinfo)) {
@@ -109,10 +109,11 @@ class JFusionUser_elgg extends JFusionUser {
     }
 
     /**
-     * @param string $userinfo
-     * @param string $option
+     * @param object $userinfo
+     * @param array $option
+     * @return array
      */
-    function destroySession($userinfo = "", $option = "") {
+    function destroySession($userinfo, $option) {
         /*
         NOTE:
         !Cannont include elgg engine and use core elgg logout functions since it conflicts with Community Builder Logout function!
@@ -121,17 +122,18 @@ class JFusionUser_elgg extends JFusionUser {
         $params = JFusionFactory::getParams($this->getJname());
         setcookie('Elgg', '', time() + 60 * 60 * 24 * 365, $params->get('cookie_path'), $params->get('cookie_domain'));
         setcookie('elggperm', '', time() + 60 * 60 * 24 * 365, '/');
+        return array();
     }
 
     /**
      * @param object $userinfo
      * @param array $options
      * @param bool $framework
-     * @return bool
+     * @return array
      */
     function createSession($userinfo, $options, $framework = true) {
         //destroy a cookie if it exists already, this will prevent the person logging in from having to refresh twice to appear as logged in
-        $this->destroySession();
+        $this->destroySession(null,null);
         $status = array();
         $params = JFusionFactory::getParams($this->getJname());
 
@@ -180,7 +182,7 @@ class JFusionUser_elgg extends JFusionUser {
                 
             }
         }
-        return true;
+        return array();
     }
 
     /**
@@ -193,8 +195,8 @@ class JFusionUser_elgg extends JFusionUser {
 
     /**
      * @param object $userinfo
-     * @param object $existinguser
-     * @param array $status
+     * @param object &$existinguser
+     * @param array &$status
      */
     function updatePassword($userinfo, &$existinguser, &$status) {
         jimport('joomla.user.helper');
@@ -212,8 +214,7 @@ class JFusionUser_elgg extends JFusionUser {
 
     /**
      * @param object $userinfo
-     * @param array $status
-     * @return string
+     * @param array &$status
      */
     function createUser($userinfo, &$status) {
         //found out what usergroup should be used
@@ -336,8 +337,8 @@ class JFusionUser_elgg extends JFusionUser {
      * unblock user
      *
      * @param object $userinfo      holds the new user data
-     * @param object &$existinguser holds the exsisting user data
-     * @param array  &$status       Status array
+     * @param object &&$existinguser holds the exsisting user data
+     * @param array  &&$status       Status array
      *
      * @access public
      * @return void
@@ -366,8 +367,8 @@ class JFusionUser_elgg extends JFusionUser {
 
     /**
      * @param object $userinfo
-     * @param object $existinguser
-     * @param array $status
+     * @param object &$existinguser
+     * @param array &$status
      */
     function activateUser($userinfo, &$existinguser, &$status) {
         $params = JFusionFactory::getParams($this->getJname());
@@ -392,8 +393,8 @@ class JFusionUser_elgg extends JFusionUser {
 
     /**
      * @param object $userinfo
-     * @param object $existinguser
-     * @param array $status
+     * @param object &$existinguser
+     * @param array &$status
      */
     function inactivateUser($userinfo, &$existinguser, &$status) {
         $params = JFusionFactory::getParams($this->getJname());
