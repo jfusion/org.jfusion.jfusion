@@ -109,8 +109,8 @@ class JFusionUser_elgg extends JFusionUser {
     }
 
     /**
-     * @param object $userinfo
-     * @param array $option
+     * @param object|null $userinfo
+     * @param array|null $option
      * @return array
      */
     function destroySession($userinfo, $option) {

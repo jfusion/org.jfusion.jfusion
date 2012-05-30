@@ -445,6 +445,7 @@ JS;
         $params = JFusionFactory::getParams($jname);
         $multiusergroupdefault = $params->get('multiusergroupdefault');
         $master_usergroups = array();
+        $JFusionMaster = null;
         if ( !empty($master) ) {
             $JFusionMaster = JFusionFactory::getAdmin($master->name);
             $master_usergroups = $JFusionMaster->getUsergroupList();
@@ -462,7 +463,7 @@ JS;
             $list_box.= '<option value="0" selected="selected">Simple</option>';
         }
         $jfGroupCount = 0;
-        if ($slave == 1 && !empty($master)) {
+        if ($slave == 1 && $JFusionMaster) {
             //allow usergroup sync
             if ($advanced == 1) {
                 $list_box.= '<option selected="selected" value="1">Advanced</option>';
@@ -538,8 +539,8 @@ JS;
             $advanced_usergroup = '';
         }
         $list_box.= '</select>';
-
-        if (!empty($master)) {
+        $plugin = array();
+        if ($JFusionMaster) {
             $new = new stdClass;
             if ($master_usergroups) {
                 foreach ($master_usergroups as $master_usergroup) {
@@ -659,12 +660,12 @@ JS;
         $addbutton='';
         $return = '<table><tr><td>'.JText::_('USERGROUP'). ' '. JText::_('MODE').'</td><td>'.$list_box.'</td></tr><tr><td colspan="2"><div id="JFusionUsergroup">';
         if ($advanced == 1) {
-            if ((!empty($master) && $JFusionMaster->isMultiGroup())||$this->isMultiGroup()) {
+            if (($JFusionMaster && $JFusionMaster->isMultiGroup())||$this->isMultiGroup()) {
                 $addbutton = '<a id="addgroupset" href="javascript:addRow()">Add Group Pair</a>';
             }
             $return .= $advanced_usergroup;
         } else {
-            if ((!empty($master) && $JFusionMaster->isMultiGroup())||$this->isMultiGroup()) {
+            if (($JFusionMaster && $JFusionMaster->isMultiGroup())||$this->isMultiGroup()) {
                 $addbutton = '<a id="addgroupset" style="display: none;" href="javascript:addRow()">Add Group Pair</a>';
             }
             $return .= $simple_usergroup;
