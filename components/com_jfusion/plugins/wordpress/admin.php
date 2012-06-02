@@ -17,9 +17,6 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
-if (!class_exists('JFusionWordpressHelper')) {
-	require_once 'wordpresshelper.php';
-}
 
 /**
  * JFusion Admin Class for Moodle 1.8+
@@ -183,7 +180,8 @@ class JFusionAdmin_wordpress extends JFusionAdmin
      * @return array
      */
     function getUsergroupList() {
-		$usergroups = JFusionWordpressHelper::getUsergroupListWP();
+        $helper = JFusionFactory::getHelper($this->getJname());
+		$usergroups = $helper->getUsergroupListWP();
 		return $usergroups;
 	}
 
@@ -192,8 +190,9 @@ class JFusionAdmin_wordpress extends JFusionAdmin
      */
     function getDefaultUsergroup() {
 		$params = JFusionFactory::getParams($this->getJname());
+        $helper = JFusionFactory::getHelper($this->getJname());
 		$usergroup_id = $params->get('usergroup');
-		return JFusionWordpressHelper::getUsergroupNameWP($usergroup_id);
+		return $helper->getUsergroupNameWP($usergroup_id);
 	}
 
 	/**

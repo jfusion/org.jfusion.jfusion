@@ -21,7 +21,7 @@
 		<filename>public.php</filename>
 		<filename>user.php</filename>
 		<filename>PasswordHashOrg.php</filename>
-		<filename>wordpresshelper.php</filename>
+		<filename>helper.php</filename>
 	</files>
 
 	<administration>

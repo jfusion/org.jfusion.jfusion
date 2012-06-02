@@ -31,11 +31,6 @@ require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS .
  * @link       http://www.jfusion.org */
 
 
-if (!class_exists('JFusionWordpressHelper')) {
-	require_once 'wordpresshelper.php';
-}
-
-
 /**
  *
  */
@@ -119,7 +114,8 @@ class JFusionUser_wordpress extends JFusionUser {
 		// now find out what we have
 		$groupid=4; // default to subscriber
 		$groupname='subscriber';
-		$groups = JFusionWordpressHelper::getUsergroupListWP();
+        $helper = JFusionFactory::getHelper($this->getJname());
+		$groups = $helper->getUsergroupListWP();
 		// find the most capable one
 		foreach ($y as $cap){
 			foreach ($groups as $group) {
@@ -226,7 +222,8 @@ class JFusionUser_wordpress extends JFusionUser {
 		$username = preg_replace('/[\r\n\t ]+/', ' ', $username);
 		$username = trim($username);
 		// remove accents
-		$username = JFusionWordpressHelper::remove_accentsWP( $username );
+        $helper = JFusionFactory::getHelper($this->getJname());
+		$username = $helper->remove_accentsWP( $username );
 		// Kill octets
 		$username = preg_replace( '|%([a-fA-F0-9][a-fA-F0-9])|', '', $username );
 		$username = preg_replace( '/&.+?;/', '', $username ); // Kill entities
@@ -355,12 +352,15 @@ class JFusionUser_wordpress extends JFusionUser {
 		if (is_array($usergroups) && !isset($userinfo->group_id)) {
 			$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
 		} else {
+            $helper = JFusionFactory::getHelper($this->getJname());
+
             $update_activation = $params->get('update_activation');
             $default_role_id = (is_array($usergroups)) ? $usergroups[$userinfo->group_id] : $usergroups;
-            $default_role_name = strtolower(JFusionWordpressHelper::getUsergroupNameWP($default_role_id));
+            $default_role_name = strtolower($helper->getUsergroupNameWP($default_role_id));
             $default_role = array();
             $default_role[$default_role_name]=1;
-            $default_userlevel = JFusionWordpressHelper::WP_userlevel_from_role(0,$default_role_name);
+
+            $default_userlevel = $helper->WP_userlevel_from_role(0,$default_role_name);
             $username_clean = $this->filterUsername($userinfo->username);
             if (isset($userinfo->password_clear)) {
                 //we can update the password
@@ -558,9 +558,10 @@ class JFusionUser_wordpress extends JFusionUser {
             $paramUsergroups = unserialize($params->get('usergroup'));
             if (isset($paramUsergroups[$userinfo->group_id])) {
                 $db = JFusionFactory::getDatabase($this->getJname());
+                $helper = JFusionFactory::getHelper($this->getJname());
                 $newgroup = $paramUsergroups[$userinfo->group_id];
-                $newgroupname = strtolower(JFusionWordpressHelper::getUsergroupNameWP($newgroup));
-                $oldgroupname = strtolower(JFusionWordpressHelper::getUsergroupNameWP($existinguser->group_id));
+                $newgroupname = strtolower($helper->getUsergroupNameWP($newgroup));
+                $oldgroupname = strtolower($helper->getUsergroupNameWP($existinguser->group_id));
 
                 // get the user capabilities
                 $db = JFusionFactory::getDatabase($this->getJname());
