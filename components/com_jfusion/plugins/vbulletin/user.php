@@ -140,12 +140,10 @@ class JFusionUser_vbulletin extends JFusionUser
         $response = $this->helper->apiCall('deleteUser', $apidata);
 
         if (!empty($response['errors'])) {
-            foreach ($response['errors'] as $error)
-            {
+            foreach ($response['errors'] as $error) {
                 $status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . $error;
             }
         } else {
-            $status['error'] = false;
             $status['debug'][] = JText::_('USER_DELETION'). ' ' . $userinfo->userid;
         }
 

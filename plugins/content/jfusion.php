@@ -718,7 +718,7 @@ class plgContentJfusion extends JPlugin
         if ($editAccess && $this->valid && $submittedArticleId == $this->article->id) {
             $status = $this->helper->_check_thread_exists(1);
 
-            if ($status['error']) {
+            if (!empty($status['error'])) {
                 if (is_array($status['error'])) {
                     foreach($status['error'] as $err) {
                         $mainframe->enqueueMessage('error',JText::_('DISCUSSBOT_ERROR'). ': ' . $err);

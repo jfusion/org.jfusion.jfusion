@@ -113,8 +113,6 @@ class JFusionUser_mediawiki extends JFusionUser {
 			$query = 'DELETE FROM #__user_groups WHERE ug_user = '.$db->quote($userinfo->userid);
 			$db->setQuery($query);
 			$db->query();
-
-			$status['error'] = false;
 			$status['debug'][] = JText::_('USER_DELETION'). ' ' . $userinfo->username;
 		}
 

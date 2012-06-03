@@ -84,7 +84,6 @@ class JFusionUser_mybb extends JFusionUser {
                 @setcookie($name, '', $expires, $cookiepath);
             }
         }
-        $status['error'] = false;
         return $status;
     }
 

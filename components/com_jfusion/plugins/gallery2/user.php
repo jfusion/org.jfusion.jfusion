@@ -229,7 +229,6 @@ class JFusionUser_gallery2 extends JFusionUser {
                     if ($ret) {
                         $status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . $userinfo->username;
                     } else {
-                        $status['error'] = false;
                         $status['debug'][] = JText::_('USER_DELETION') . ' ' . $userinfo->username;
                     }
                 }

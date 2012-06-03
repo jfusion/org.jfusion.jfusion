@@ -97,7 +97,6 @@ class JFusionUser_elgg extends JFusionUser {
         $user = get_user_by_username($userinfo->username);
         if($user) {
         	if ($user->delete()) {
-            	$status['error'] = false;
             	$status['debug'][] = JText::_('USER_DELETION') . ' ' . $userinfo->username;
         	} else {
         		$status['error'][] = JText::_('USER_DELETION_ERROR');

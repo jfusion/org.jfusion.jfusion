@@ -111,7 +111,7 @@ class JFusionUser_universal extends JFusionUser {
      */
     function deleteUser($userinfo)
     {
-      //setup status array to hold debug info and errors
+        //setup status array to hold debug info and errors
         $status = array('error' => array(),'debug' => array());
 
 		$map = JFusionMap::getInstance($this->getJname());
@@ -124,38 +124,35 @@ class JFusionUser_universal extends JFusionUser {
 		$db->setQuery($query);
         if (!$db->query()) {
 			$status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' .  $db->stderr();
-			return $status;
+        } else {
+            $group = $map->getFieldType('GROUP','group');
+            if ( isset($group) ) {
+                $userid = $map->getFieldType('USERID','group');
+
+                $maped = $map->getMap('group');
+                $andwhere = '';
+                foreach ($maped as $value) {
+                    $field = $value->field;
+                    switch ($value->type) {
+                        case 'DEFAULT':
+                            if ( $value->fieldtype == 'VALUE' ) {
+                                $andwhere .= ' AND '.$field.' = '.$db->Quote($value->value);
+                            }
+                            break;
+                    }
+                }
+
+                $db = JFusionFactory::getDatabase($this->getJname());
+                $query = 'DELETE FROM #__'.$map->getTablename('group').' '.
+                    'WHERE '.$userid->field.'=' . $db->Quote($userinfo->userid).$andwhere;
+                $db->setQuery($query );
+                if (!$db->query()) {
+                    $status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' .  $db->stderr();
+                } else {
+                    $status['debug'][] = JText::_('USER_DELETION'). ' ' . $userinfo->username;
+                }
+            }
         }
-
-		$group = $map->getFieldType('GROUP','group');
-		if ( isset($group) ) {
-			$userid = $map->getFieldType('USERID','group');
-
-			$maped = $map->getMap('group');
-			$andwhere = '';
-			foreach ($maped as $value) {
-		    	$field = $value->field;
-				switch ($value->type) {
-		          	case 'DEFAULT':
-		          		if ( $value->fieldtype == 'VALUE' ) {
-							$andwhere .= ' AND '.$field.' = '.$db->Quote($value->value);
-		          		}
-						break;
-				}
-			}
-
-			$db = JFusionFactory::getDatabase($this->getJname());
-        	$query = 'DELETE FROM #__'.$map->getTablename('group').' '.
-            	'WHERE '.$userid->field.'=' . $db->Quote($userinfo->userid).$andwhere;
-			$db->setQuery($query );
-			if (!$db->query()) {
-				$status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' .  $db->stderr();
-				return $status;
-			}
-			
-			$status['error'] = false;
-			$status['debug'][] = JText::_('USER_DELETION'). ' ' . $userinfo->username;			
-		}
 		return $status;
     }
 

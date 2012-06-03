@@ -185,7 +185,6 @@ class JFusionUser_dokuwiki extends JFusionUser {
         if (!$share->auth->deleteUsers($user)) {
             $status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . 'No User Deleted';
         } else {
-            $status['error'] = false;
             $status['debug'][] = JText::_('USER_DELETION') . ' ' . $username;
         }
         return $status;

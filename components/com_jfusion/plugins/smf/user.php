@@ -109,7 +109,6 @@ class JFusionUser_smf extends JFusionUser
         $db->setQuery($query);
         if (!$db->query()) {
             $status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . $db->stderr();
-            return $status;
         } else {
             //update the stats
             $query = 'UPDATE #__settings SET value = value - 1     WHERE variable = \'totalMembers\' ';
@@ -117,33 +116,32 @@ class JFusionUser_smf extends JFusionUser
             if (!$db->query()) {
                 //return the error
                 $status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . $db->stderr();
-                return $status;
+            } else {
+                $query = 'SELECT MAX(ID_MEMBER) as ID_MEMBER FROM #__members WHERE is_activated = 1';
+                $db->setQuery($query);
+                $resultID = $db->loadObject();
+                if (!$resultID) {
+                    //return the error
+                    $status['error'][] = JText::_('USER_DELETION_ERROR') . $db->stderr();
+                } else {
+                    $query = 'SELECT realName as name FROM #__members WHERE ID_MEMBER = ' . $db->quote($resultID->ID_MEMBER) . ' LIMIT 1';
+                    $db->setQuery($query);
+                    $resultName = $db->loadObject();
+                    if (!$resultName) {
+                        //return the error
+                        $status['error'][] = JText::_('USER_DELETION_ERROR') . $db->stderr();
+                    } else {
+                        $query = 'REPLACE INTO #__settings (variable, value) VALUES (\'latestMember\', ' . $resultID->ID_MEMBER . '), (\'latestRealName\', ' . $db->quote($resultName->name) . ')';
+                        $db->setQuery($query);
+                        if (!$db->query()) {
+                            //return the error
+                            $status['error'][] = JText::_('USER_DELETION_ERROR') . $db->stderr();
+                        } else {
+                            $status['debug'][] = JText::_('USER_DELETION') . ' ' . $userinfo->username;
+                        }
+                    }
+                }
             }
-            $query = 'SELECT MAX(ID_MEMBER) as ID_MEMBER FROM #__members WHERE is_activated = 1';
-            $db->setQuery($query);
-            $resultID = $db->loadObject();
-            if (!$resultID) {
-                //return the error
-                $status['error'][] = JText::_('USER_DELETION_ERROR') . $db->stderr();
-                return $status;
-            }
-            $query = 'SELECT realName as name FROM #__members WHERE ID_MEMBER = ' . $db->quote($resultID->ID_MEMBER) . ' LIMIT 1';
-            $db->setQuery($query);
-            $resultName = $db->loadObject();
-            if (!$resultName) {
-                //return the error
-                $status['error'][] = JText::_('USER_DELETION_ERROR') . $db->stderr();
-                return $status;
-            }
-            $query = 'REPLACE INTO #__settings (variable, value) VALUES (\'latestMember\', ' . $resultID->ID_MEMBER . '), (\'latestRealName\', ' . $db->quote($resultName->name) . ')';
-            $db->setQuery($query);
-            if (!$db->query()) {
-                //return the error
-                $status['error'][] = JText::_('USER_DELETION_ERROR') . $db->stderr();
-                return $status;
-            }
-            $status['error'] = false;
-            $status['debug'][] = JText::_('USER_DELETION') . ' ' . $userinfo->username;
         }
         return $status;
     }

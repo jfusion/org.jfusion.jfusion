@@ -75,7 +75,6 @@ class JFusionUser_joomla_int extends JFusionUser {
             $db->query();
             $db->setQuery('DELETE FROM #__jfusion_users WHERE id=' . (int)$userid);
             $db->query();
-            $status['error'] = false;
             $status['debug'][] = JText::_('USER_DELETION') . ' ' . $username;
         } else {
             //this user was NOT create by JFusion. Therefore we need to delete it in the Joomla user table only
@@ -89,7 +88,6 @@ class JFusionUser_joomla_int extends JFusionUser {
                 //delete it from the Joomla usertable
                 $user = & JUser::getInstance($userid);
                 $user->delete();
-                $status['error'] = false;
                 $status['debug'][] = JText::_('USER_DELETION') . ' ' . $username;
             } else {
                 //could not find user and return an error
@@ -167,7 +165,6 @@ class JFusionUser_joomla_int extends JFusionUser {
 
                     // Hit the user last visit field
                     if ($instance->setLastVisit()) {
-                        $status['error'] = false;
                         $status['debug'] = 'Joomla session created';
                     } else {
                         $status['error'] = $instance->getError();
@@ -239,7 +236,6 @@ class JFusionUser_joomla_int extends JFusionUser {
                     $table->update();
                     // Hit the user last visit field
                     if ($instance->setLastVisit()) {
-                        $status['error'] = false;
                         $status['debug'] = 'Joomla session created';
                     } else {
                         $status['error'] = $instance->getError();

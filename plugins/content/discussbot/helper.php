@@ -112,7 +112,7 @@ class JFusionDiscussBotHelper {
         $status['threadinfo'] = new stdClass();
 
         $JFusionForum->checkThreadExists($this->params, $this->article, $threadinfo, $status);
-        if ($status['error']) {
+        if (!empty($status['error'])) {
             JFusionFunction::raiseWarning($this->jname . ' ' .JText::_('FORUM') . ' ' .JText::_('UPDATE'), $status['error'],1);
         } else {
             if ($status['action']!='unchanged') {

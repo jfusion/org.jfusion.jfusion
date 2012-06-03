@@ -98,29 +98,27 @@ class JFusionHelper_mediawiki
     function getConfig( $getVar ) {
     	static $config = array();
 
-    	if (isset($config[$getVar])) {
-    	    return $config[$getVar];
-    	}
+    	if (!isset($config[$getVar])) {
+            $params = JFusionFactory::getParams($this->getJname());
+            $source_path = $params->get('source_path');
 
-    	$params = JFusionFactory::getParams($this->getJname());
-    	$source_path = $params->get('source_path');
+            //check for trailing slash and generate file path
+            if (substr($source_path, -1) == DS) {
+                //remove it so that we can make it compatible with mediawiki's MW_INSTALL_PATH
+                $source_path = substr($source_path, 0, -1);
+            }
 
-        //check for trailing slash and generate file path
-        if (substr($source_path, -1) == DS) {
-            //remove it so that we can make it compatible with mediawiki's MW_INSTALL_PATH
-            $source_path = substr($source_path, 0, -1);
+            $myfile = $source_path . DS. 'LocalSettings.php';
+            $defaults = $source_path . DS. 'includes'. DS. 'DefaultSettings.php';
+            $defines = $source_path . DS. 'includes'. DS. 'Defines.php';
+            defined ('MEDIAWIKI') or define( 'MEDIAWIKI',TRUE );
+            defined ('MW_INSTALL_PATH') or define('MW_INSTALL_PATH', $source_path);
+            include_once($defines );
+            $IP = $source_path;
+            include($defaults);
+            include($myfile);
+            $config[$getVar] = (isset($$getVar)) ? $$getVar : '';
         }
-
-        $myfile = $source_path . DS. 'LocalSettings.php';
-        $defaults = $source_path . DS. 'includes'. DS. 'DefaultSettings.php';
-        $defines = $source_path . DS. 'includes'. DS. 'Defines.php';
-		defined ('MEDIAWIKI') or define( 'MEDIAWIKI',TRUE );
-		defined ('MW_INSTALL_PATH') or define('MW_INSTALL_PATH', $source_path);
-		include_once($defines );
-		$IP = $source_path;
-		include($defaults);
-		include($myfile);
-       	$config[$getVar] = (isset($$getVar)) ? $$getVar : '';
 		return $config[$getVar];
     }
 }

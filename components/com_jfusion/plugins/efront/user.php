@@ -80,7 +80,6 @@ class JFusionUser_efront extends JFusionUser
         $status = array('error' => array(),'debug' => array());
         if (isset($options['remember'])) {
             if ($options['remember']) {
-                 $status['error'] = false;
                  return $status;
             }
         }
@@ -153,7 +152,6 @@ class JFusionUser_efront extends JFusionUser
                 $status["debug"][] = "Logged the logout action for user $userinfo->username";
             }
         }
-        $status['error'] = false;
         return $status;
     }
 
