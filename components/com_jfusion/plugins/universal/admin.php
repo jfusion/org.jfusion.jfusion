@@ -37,8 +37,8 @@ class JFusionAdmin_universal extends JFusionAdmin{
      */
     function getTablename()
     {
-        $map = JFusionMap::getInstance($this->getJname());
-        return $map->getTablename('user');
+        $helper = JFusionFactory::getHelper($this->getJname());
+        return $helper->getTablename('user');
     }
 
     /**
@@ -85,9 +85,9 @@ class JFusionAdmin_universal extends JFusionAdmin{
      */
     function getUserList()
     {
-        $map = JFusionMap::getInstance($this->getJname());
+        $helper = JFusionFactory::getHelper($this->getJname());
         $f = array('USERNAME', 'EMAIL', 'USERNAMEEMAIL');
-        $field = $map->getQuery($f);
+        $field = $helper->getQuery($f);
 
         // initialise some objects
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -129,9 +129,8 @@ class JFusionAdmin_universal extends JFusionAdmin{
      */
     function mapuser($name, $value, $node, $control_name)
     {
-        $map = JFusionMap::getInstance($this->getJname());
-
-        $value = $map->getMapRaw('user');
+        $helper = JFusionFactory::getHelper($this->getJname());
+        $value = $helper->getMapRaw('user');
 
         return $this->map('map', $value, $node, $control_name,'user');
     }
@@ -158,8 +157,8 @@ class JFusionAdmin_universal extends JFusionAdmin{
      */
     function mapgroup($name, $value, $node, $control_name)
     {
-        $map = JFusionMap::getInstance($this->getJname());
-        $value = $map->getMapRaw('group');
+        $helper = JFusionFactory::getHelper($this->getJname());
+        $value = $helper->getMapRaw('group');
         return $this->map('map', $value, $node, $control_name,'group');
     }
 
@@ -189,9 +188,9 @@ class JFusionAdmin_universal extends JFusionAdmin{
                 $tl = array();
                 $fl = array();
 
-                $map = JFusionMap::getInstance($this->getJname());
+                $helper = JFusionFactory::getHelper($this->getJname());
 
-                $fieldtypes = $map->getField();
+                $fieldtypes = $helper->getField();
 
                 $table = new stdClass;
                 $table->id = null;
@@ -348,8 +347,8 @@ class JFusionAdmin_universal extends JFusionAdmin{
     function js($name, $value, $node, $control_name) {
         $document =& JFactory::getDocument();
 
-        $map = JFusionMap::getInstance($this->getJname());
-        $list = $map->getField();
+        $helper = JFusionFactory::getHelper($this->getJname());
+        $list = $helper->getField();
 
         $list = json_encode($list);
 

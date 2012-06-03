@@ -33,10 +33,10 @@ class JFusionUser_universal extends JFusionUser {
     function getUser($userinfo)
     {
         // initialise some objects
-		$map = JFusionMap::getInstance($this->getJname());
+        $helper = JFusionFactory::getHelper($this->getJname());
 
-		$email = $map->getFieldEmail();
-		$username = $map->getFieldUsername();
+		$email = $helper->getFieldEmail();
+		$username = $helper->getFieldUsername();
 
 		//get the identifier
 		list($identifier_type,$identifier) = $this->getUserIdentifier($userinfo,$username->field,$email->field);
@@ -44,10 +44,10 @@ class JFusionUser_universal extends JFusionUser {
         $db = JFusionFactory::getDatabase($this->getJname());
 
 		$f = array('USERID','USERNAMEID','USERNAME', 'EMAIL', 'USERNAMEEMAIL', 'REALNAME', 'USERNAMEREALNAME', 'USERNAMEIDREALNAME', 'USERNAMEEMAILREALNAME', 'PASSWORD', 'SALT', 'GROUP', 'ACTIVE', 'INACTIVE','ACTIVECODE','FIRSTNAME','LASTNAME');
-		$field = $map->getQuery($f);
+		$field = $helper->getQuery($f);
 //        $query = 'SELECT '.$field.' NULL as reason, a.lastLogin as lastvisit'.
         $query = 'SELECT '.$field.' '.
-            'FROM #__'.$map->getTablename().' '.
+            'FROM #__'.$helper->getTablename().' '.
             'WHERE '.$identifier_type.'=' . $db->Quote($identifier);
 
         $db->setQuery($query );
@@ -63,25 +63,25 @@ class JFusionUser_universal extends JFusionUser {
 			$result->block = 0;
 
 			if ( isset($result->inactive) ) {
-				$inactive = $map->getFieldType('INACTIVE');
+				$inactive = $helper->getFieldType('INACTIVE');
 				if ($inactive->value['on'] == $result->inactive ) {
 					$result->block = 1;
 				}
 			}
 			if ( isset($result->active) ) {
-				$active= $map->getFieldType('ACTIVE');
+				$active= $helper->getFieldType('ACTIVE');
 				if ($active->value['on'] != $result->active ) {
 					$result->block = 1;
 				}
 			}
 			unset($result->inactive,$result->active);
 
-			$group = $map->getFieldType('GROUP','group');
-			$userid = $map->getFieldType('USERID','group');
-			$groupt = $map->getTablename('group');
+			$group = $helper->getFieldType('GROUP','group');
+			$userid = $helper->getFieldType('USERID','group');
+			$groupt = $helper->getTablename('group');
 			if ( !isset($result->group_id) && $group && $userid && $groupt ) {
 				$f = array('GROUP');
-				$field = $map->getQuery($f,'group');
+				$field = $helper->getQuery($f,'group');
 
 				$query = 'SELECT '.$field.' '.
 						'FROM #__'.$groupt.' '.
@@ -114,22 +114,22 @@ class JFusionUser_universal extends JFusionUser {
         //setup status array to hold debug info and errors
         $status = array('error' => array(),'debug' => array());
 
-		$map = JFusionMap::getInstance($this->getJname());
-		$userid = $map->getFieldUserID();
+        $helper = JFusionFactory::getHelper($this->getJname());
+		$userid = $helper->getFieldUserID();
 
         $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'DELETE FROM #__'.$map->getTablename().' '.
+        $query = 'DELETE FROM #__'.$helper->getTablename().' '.
             'WHERE '.$userid->field.'=' . $db->Quote($userinfo->userid);
 
 		$db->setQuery($query);
         if (!$db->query()) {
 			$status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' .  $db->stderr();
         } else {
-            $group = $map->getFieldType('GROUP','group');
+            $group = $helper->getFieldType('GROUP','group');
             if ( isset($group) ) {
-                $userid = $map->getFieldType('USERID','group');
+                $userid = $helper->getFieldType('USERID','group');
 
-                $maped = $map->getMap('group');
+                $maped = $helper->getMap('group');
                 $andwhere = '';
                 foreach ($maped as $value) {
                     $field = $value->field;
@@ -143,7 +143,7 @@ class JFusionUser_universal extends JFusionUser {
                 }
 
                 $db = JFusionFactory::getDatabase($this->getJname());
-                $query = 'DELETE FROM #__'.$map->getTablename('group').' '.
+                $query = 'DELETE FROM #__'.$helper->getTablename('group').' '.
                     'WHERE '.$userid->field.'=' . $db->Quote($userinfo->userid).$andwhere;
                 $db->setQuery($query );
                 if (!$db->query()) {
@@ -206,26 +206,26 @@ class JFusionUser_universal extends JFusionUser {
      */
     function updatePassword($userinfo, &$existinguser, &$status)
     {
-		$map = JFusionMap::getInstance($this->getJname());
+        $helper = JFusionFactory::getHelper($this->getJname());
 		$db = JFusionFactory::getDatabase($this->getJname());
-		$maped = $map->getMap();
+		$maped = $helper->getMap();
 		$params = JFusionFactory::getParams($this->getJname());
 
-		$userid = $map->getFieldUserID();
+		$userid = $helper->getFieldUserID();
 		$qset = array();
 
 		foreach ($maped as $value) {
 			switch ($value->type) {
 				case 'PASSWORD':
 					if ( isset($userinfo->password_clear) ) {
-						$qset[] = $value->field.' = '.$db->quote($map->getValue($value->fieldtype,$userinfo->password_clear,$userinfo));
+						$qset[] = $value->field.' = '.$db->quote($helper->getValue($value->fieldtype,$userinfo->password_clear,$userinfo));
 					} else {
 						$qset[] = $value->field.' = '.$db->quote($userinfo->password);
 					}
 					break;
 				case 'SALT':
 					if (!isset($userinfo->password_salt)) {
-						$qset[] = $value->field.' = '.$db->quote($map->getValue($value->fieldtype,$value->value,$userinfo));
+						$qset[] = $value->field.' = '.$db->quote($helper->getValue($value->fieldtype,$value->value,$userinfo));
 					} else {
 						$qset[] = $value->field.' = '.$db->quote($existinguser->password_salt);
 		            }
@@ -233,7 +233,7 @@ class JFusionUser_universal extends JFusionUser {
 			}
 		}
 
-        $query = 'UPDATE #__'.$map->getTablename().' '.
+        $query = 'UPDATE #__'.$helper->getTablename().' '.
             'SET '.implode  ( ', '  , $qset  ).' '.
             'WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid);
 
@@ -262,14 +262,14 @@ class JFusionUser_universal extends JFusionUser {
      */
     function updateEmail($userinfo, &$existinguser, &$status)
     {
-    	$map = JFusionMap::getInstance($this->getJname());
+        $helper = JFusionFactory::getHelper($this->getJname());
         $params = JFusionFactory::getParams($this->getJname());
 
-		$userid = $map->getFieldUserID();
-		$email = $map->getFieldEmail();
+		$userid = $helper->getFieldUserID();
+		$email = $helper->getFieldEmail();
 
         $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'UPDATE #__'.$map->getTablename().' '.
+        $query = 'UPDATE #__'.$helper->getTablename().' '.
             'SET '.$email->field.' = '.$db->quote($userinfo->email) .' '.
             'WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid);
         $db->setQuery($query );
@@ -297,21 +297,21 @@ class JFusionUser_universal extends JFusionUser {
 			} else {
                 if(isset($usergroups[$userinfo->group_id])) {
                     $db = JFusionFactory::getDatabase($this->getJname());
-                    $map = JFusionMap::getInstance($this->getJname());
+                    $helper = JFusionFactory::getHelper($this->getJname());
                     $params = JFusionFactory::getParams($this->getJname());
 
-                    $userid = $map->getFieldUserID();
-                    $group = $map->getFieldType('GROUP');
+                    $userid = $helper->getFieldUserID();
+                    $group = $helper->getFieldType('GROUP');
 
                     if ( isset($group) ) {
-                        $table = $map->getTablename();
+                        $table = $helper->getTablename();
                     } else {
-                        $table = $map->getTablename('group');
-                        $userid = $map->getFieldType('USERID','group');
-                        $group = $map->getFieldType('GROUP','group');
+                        $table = $helper->getTablename('group');
+                        $userid = $helper->getFieldType('USERID','group');
+                        $group = $helper->getFieldType('GROUP','group');
                     }
 
-                    $maped = $map->getMap('group');
+                    $maped = $helper->getMap('group');
                     $andwhere = '';
                     if (count($maped) ) {
                         foreach ($maped as $key => $value) {
@@ -349,10 +349,10 @@ class JFusionUser_universal extends JFusionUser {
      */
     function blockUser($userinfo, &$existinguser, &$status)
     {
-		$map = JFusionMap::getInstance($this->getJname());
-		$userid = $map->getFieldUserID();
-		$active = $map->getFieldType('ACTIVE');
-		$inactive = $map->getFieldType('INACTIVE');
+        $helper = JFusionFactory::getHelper($this->getJname());
+		$userid = $helper->getFieldUserID();
+		$active = $helper->getFieldType('ACTIVE');
+		$inactive = $helper->getFieldType('INACTIVE');
 
 		if ( $userid && ( isset($active) || isset($inactive) ) ) {
             $userStatus = null;
@@ -373,7 +373,7 @@ class JFusionUser_universal extends JFusionUser {
 			}
             if ($userStatus != null) {
                 $db = JFusionFactory::getDatabase($this->getJname());
-                $query = 'UPDATE #__'.$map->getTablename().' '.
+                $query = 'UPDATE #__'.$helper->getTablename().' '.
                     'SET '.$active->field.' = '. $db->Quote($userStatus) .' '.
                     'WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid);
                 $db->setQuery($query );
@@ -393,10 +393,10 @@ class JFusionUser_universal extends JFusionUser {
      */
     function unblockUser($userinfo, &$existinguser, &$status)
     {
-		$map = JFusionMap::getInstance($this->getJname());
-		$userid = $map->getFieldUserID();
-		$active = $map->getFieldType('ACTIVE');
-		$inactive = $map->getFieldType('INACTIVE');
+        $helper = JFusionFactory::getHelper($this->getJname());
+		$userid = $helper->getFieldUserID();
+		$active = $helper->getFieldType('ACTIVE');
+		$inactive = $helper->getFieldType('INACTIVE');
 
 		if ( $userid && ( $active || $inactive ) ) {
             $userStatus = null;
@@ -404,7 +404,7 @@ class JFusionUser_universal extends JFusionUser {
 			if ( isset($active) ) $userStatus = $active->value['on'];
 
 			$db = JFusionFactory::getDatabase($this->getJname());
-			$query = 'UPDATE #__'.$map->getTablename().' '.
+			$query = 'UPDATE #__'.$helper->getTablename().' '.
 					'SET '.$active->field.' = '. $db->Quote($userStatus) .' '.
 					'WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid);
 			$db->setQuery($query );
@@ -423,13 +423,13 @@ class JFusionUser_universal extends JFusionUser {
      */
     function activateUser($userinfo, &$existinguser, &$status)
     {
-		$map = JFusionMap::getInstance($this->getJname());
-		$userid = $map->getFieldUserID();
-		$activecode = $map->getFieldType('ACTIVECODE');
+        $helper = JFusionFactory::getHelper($this->getJname());
+		$userid = $helper->getFieldUserID();
+		$activecode = $helper->getFieldType('ACTIVECODE');
 
 		if ( $userid && $activecode ) {
 			$db = JFusionFactory::getDatabase($this->getJname());
-			$query = 'UPDATE #__'.$map->getTablename().' '.
+			$query = 'UPDATE #__'.$helper->getTablename().' '.
 					'SET '.$activecode->field.' = '. $db->Quote($userinfo->activation) .' '.
 					'WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid);
 			$db->setQuery($query );
@@ -448,13 +448,13 @@ class JFusionUser_universal extends JFusionUser {
      */
     function inactivateUser($userinfo, &$existinguser, &$status)
     {
-		$map = JFusionMap::getInstance($this->getJname());
-		$userid = $map->getFieldUserID();
-		$activecode = $map->getFieldType('ACTIVECODE');
+        $helper = JFusionFactory::getHelper($this->getJname());
+		$userid = $helper->getFieldUserID();
+		$activecode = $helper->getFieldType('ACTIVECODE');
 
 		if ( $userid && $activecode ) {
 			$db = JFusionFactory::getDatabase($this->getJname());
-			$query = 'UPDATE #__'.$map->getTablename().' '.
+			$query = 'UPDATE #__'.$helper->getTablename().' '.
 					'SET '.$activecode->field.' = '. $db->Quote($userinfo->activation) .' '.
 					'WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid);
 			$db->setQuery($query );
@@ -479,22 +479,22 @@ class JFusionUser_universal extends JFusionUser {
 		if(is_array($usergroups) && !isset($userinfo->group_id)) {
 			$status['error'][] = JText::_('GROUP_UPDATE_ERROR'). ": " . JText::_('ADVANCED_GROUPMODE_SOURCE_NOT_HAVE_GROUPID');
 		} else {
-            $map = JFusionMap::getInstance($this->getJname());
+            $helper = JFusionFactory::getHelper($this->getJname());
 
-            $userid = $map->getFieldUserID();
+            $userid = $helper->getFieldUserID();
             if(empty($userid)) {
                 $status['error'][] = JText::_('USER_CREATION_ERROR'). ': ' . JText::_('UNIVERSAL_NO_USERID_SET'). ': ' . $this->getJname();
             } else {
-                $password = $map->getFieldType('PASSWORD');
+                $password = $helper->getFieldType('PASSWORD');
                 if(empty($password)) {
                     $status['error'][] = JText::_('USER_CREATION_ERROR'). ': ' . JText::_('UNIVERSAL_NO_PASSWORD_SET'). ': ' . $this->getJname();
                 } else {
-                    $email = $map->getFieldEmail();
+                    $email = $helper->getFieldEmail();
                     if(empty($email)) {
                         $status['error'][] = JText::_('USER_CREATION_ERROR'). ': ' . $this->getJname() . ': ' . JText::_('UNIVERSAL_NO_EMAIL_SET');
                     } else {
                         $user = new stdClass;
-                        $maped = $map->getMap();
+                        $maped = $helper->getMap();
                         foreach ($maped as $key => $value) {
                             $field = $value->field;
                             switch ($value->type) {
@@ -544,39 +544,39 @@ class JFusionUser_universal extends JFusionUser {
                                     break;
                                 case 'PASSWORD':
                                     if ( isset($userinfo->password_clear) ) {
-                                        $user->$field = $map->getValue($value->fieldtype,$userinfo->password_clear,$userinfo);
+                                        $user->$field = $helper->getValue($value->fieldtype,$userinfo->password_clear,$userinfo);
                                     } else {
                                         $user->$field = $userinfo->password;
                                     }
                                     break;
                                 case 'SALT':
                                     if (!isset($userinfo->password_salt)) {
-                                        $user->$field = $map->getValue($value->fieldtype,$value->value,$userinfo);
+                                        $user->$field = $helper->getValue($value->fieldtype,$value->value,$userinfo);
                                     } else {
                                         $user->$field = $userinfo->password_salt;
                                     }
                                     break;
                                 case 'DEFAULT':
                                     $val = isset($value->value) ? $value->value : null;
-                                    $user->$field = $map->getValue($value->fieldtype,$val,$userinfo);
+                                    $user->$field = $helper->getValue($value->fieldtype,$val,$userinfo);
                                     break;
                             }
                         }
 
                         $db = JFusionFactory::getDatabase($this->getJname());
                         //now append the new user data
-                        if (!$db->insertObject('#__'.$map->getTablename(), $user, $userid->field )) {
+                        if (!$db->insertObject('#__'.$helper->getTablename(), $user, $userid->field )) {
                             //return the error
                             $status['error'] = JText::_('USER_CREATION_ERROR'). ': ' . $db->stderr();
                         } else {
-                            $group = $map->getFieldType('GROUP');
+                            $group = $helper->getFieldType('GROUP');
 
                             if ( !isset($group) ) {
-                                $groupuserid = $map->getFieldType('USERID','group');
+                                $groupuserid = $helper->getFieldType('USERID','group');
                                 if( isset($groupuserid) ) {
                                     $addgroup = new stdClass;
 
-                                    $maped = $map->getMap('group');
+                                    $maped = $helper->getMap('group');
                                     foreach ($maped as $key => $value) {
                                         $field = $value->field;
                                         switch ($value->type) {
@@ -588,11 +588,11 @@ class JFusionUser_universal extends JFusionUser {
                                                 $addgroup->$field = (is_array($usergroups)) ? base64_decode($usergroups[$userinfo->group_id]) : $usergroups;
                                                 break;
                                             case 'DEFAULT':
-                                                $addgroup->$field = $map->getValue($value->fieldtype,$value->value,$userinfo);
+                                                $addgroup->$field = $helper->getValue($value->fieldtype,$value->value,$userinfo);
                                                 break;
                                         }
                                     }
-                                    if (!$db->insertObject('#__'.$map->getTablename('group'), $addgroup, $groupuserid->field )) {
+                                    if (!$db->insertObject('#__'.$helper->getTablename('group'), $addgroup, $groupuserid->field )) {
                                         //return the error
                                         $status['error'] = JText::_('USER_CREATION_ERROR'). ': ' . $db->stderr();
                                         return;
