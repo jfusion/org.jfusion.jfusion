@@ -442,9 +442,9 @@ class JFusionUser_mediawiki extends JFusionUser {
                     $wfWikiID = $wgDBname;
                 }
 
-                $JFusionPlugin = JFusionFactory::getAdmin($this->getJname());
-                $wgSecretKey = $JFusionPlugin->getConfig('wgSecretKey');
-                $wgProxyKey = $JFusionPlugin->getConfig('wgProxyKey');
+                $helper = JFusionFactory::getHelper($this->getJname());
+                $wgSecretKey = $helper->getConfig('wgSecretKey');
+                $wgProxyKey = $helper->getConfig('wgProxyKey');
 
                 if ( $wgSecretKey ) {
                     $key = $wgSecretKey;
