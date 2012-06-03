@@ -145,9 +145,7 @@ class JFusionUser_wordpress extends JFusionUser {
      */
     function destroySession($userinfo, $options) {
 
-		$status = array();
-		$status['error'] = array();
-		$status['debug'] =array();
+        $status = array('error' => array(),'debug' => array());
 		$params = & JFusionFactory::getParams($this->getJname());
 		$cookie_domain = $params->get('cookie_domain');
 		$cookie_path = $params->get('cookie_path');
@@ -451,9 +449,7 @@ class JFusionUser_wordpress extends JFusionUser {
      */
     function deleteUser($userinfo) {
 		//setup status array to hold debug info and errors
-		$status = array();
-		$status['debug'] = array();
-		$status['error'] = array();
+        $status = array('error' => array(),'debug' => array());
 		if (!is_object($userinfo)) {
 			$status['error'][] = JText::_('NO_USER_DATA_FOUND');
 			return $status;

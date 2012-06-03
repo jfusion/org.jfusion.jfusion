@@ -48,9 +48,7 @@ class JFusionUser_dokuwiki extends JFusionUser {
         $userinfo->username = $this->filterUsername($userinfo->username);
         $update_email = $params->get('update_email');
         $usergroup = $params->get('usergroup');
-        $status = array();
-        $status['debug'] = array();
-        $status['error'] = array();
+        $status = array('error' => array(),'debug' => array());
         //check to see if a valid $userinfo object was passed on
         if (!is_object($userinfo)) {
             $status['error'][] = JText::_('NO_USER_DATA_FOUND');
@@ -180,9 +178,7 @@ class JFusionUser_dokuwiki extends JFusionUser {
      */
     function deleteUser($userinfo) {
         //setup status array to hold debug info and errors
-        $status = array();
-        $status['debug'] = array();
-        $status['error'] = array();
+        $status = array('error' => array(),'debug' => array());
         $username = $this->filterUsername($userinfo->username);
         $user[$username] = $username;
         $share = Dokuwiki::getInstance($this->getJname());
@@ -201,9 +197,7 @@ class JFusionUser_dokuwiki extends JFusionUser {
      * @return array
      */
     function destroySession($userinfo, $options) {
-        $status = array();
-        $status['debug'] = array();
-        $status['error'] = array();
+        $status = array('error' => array(),'debug' => array());
 
         $params = & JFusionFactory::getParams($this->getJname());
 
@@ -234,9 +228,7 @@ class JFusionUser_dokuwiki extends JFusionUser {
      * @return array
      */
     function createSession($userinfo, $options) {
-        $status = array();
-        $status['debug'] = array();
-        $status['error'] = array();
+        $status = array('error' => array(),'debug' => array());
 
         if(!empty($userinfo->password_clear)){
             $params = JFusionFactory::getParams($this->getJname());

@@ -134,7 +134,7 @@ class JFusionUser_elgg extends JFusionUser {
     function createSession($userinfo, $options, $framework = true) {
         //destroy a cookie if it exists already, this will prevent the person logging in from having to refresh twice to appear as logged in
         $this->destroySession(null,null);
-        $status = array();
+        $status = array('error' => array(),'debug' => array());
         $params = JFusionFactory::getParams($this->getJname());
 
     	if (defined('externalpage')) {
@@ -181,7 +181,7 @@ class JFusionUser_elgg extends JFusionUser {
                 }
             }
         }
-        return array();
+        return $status;
     }
 
     /**

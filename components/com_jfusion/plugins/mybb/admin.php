@@ -160,11 +160,10 @@ class JFusionAdmin_mybb extends JFusionAdmin
         $disableregs = $db->loadResult();
         if ($disableregs == '0') {
             $result = true;
-            return $result;
         } else {
             $result = false;
-            return $result;
         }
+        return $result;
     }
 
     /**

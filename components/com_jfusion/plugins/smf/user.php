@@ -103,9 +103,7 @@ class JFusionUser_smf extends JFusionUser
     function deleteUser($userinfo)
     {
         //setup status array to hold debug info and errors
-        $status = array();
-        $status['debug'] = array();
-        $status['error'] = array();
+        $status = array('error' => array(),'debug' => array());
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'DELETE FROM #__members WHERE memberName = ' . $db->quote($userinfo->username);
         $db->setQuery($query);
@@ -164,7 +162,7 @@ class JFusionUser_smf extends JFusionUser
         //        $status = JFusionJplugin::destroySession($userinfo, $options,$this->getJname());
         $params = JFusionFactory::getParams($this->getJname());
         JFusionFunction::addCookie($params->get('cookie_name'), '', 0, $params->get('cookie_path'), $params->get('cookie_domain'), $params->get('secure'), $params->get('httponly'));
-        $status = array();
+        $status = array('error' => array(),'debug' => array());
         return $status;
     }
 
@@ -181,9 +179,7 @@ class JFusionUser_smf extends JFusionUser
     {
         //do not create sessions for blocked users
         if (!empty($userinfo->block) || !empty($userinfo->activation)) {
-            $status = array();
-            $status['error'] = array();
-            $status['debug'] = array();
+            $status = array('error' => array(),'debug' => array());
             $status['error'][] = JText::_('FUSION_BLOCKED_USER');
             return $status;
         }

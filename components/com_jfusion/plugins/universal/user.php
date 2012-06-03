@@ -112,9 +112,7 @@ class JFusionUser_universal extends JFusionUser {
     function deleteUser($userinfo)
     {
       //setup status array to hold debug info and errors
-        $status = array();
-        $status['debug'] = array();
-        $status['error'] = array();
+        $status = array('error' => array(),'debug' => array());
 
 		$map = JFusionMap::getInstance($this->getJname());
 		$userid = $map->getFieldUserID();
@@ -185,9 +183,7 @@ class JFusionUser_universal extends JFusionUser {
     function createSession($userinfo, $options) {
 		//do not create sessions for blocked users
 		if (!empty($userinfo->block) || !empty($userinfo->activation)) {
-			$status = array();
-			$status['error'] = array();
-			$status['debug'] = array();
+            $status = array('error' => array(),'debug' => array());
             $status['error'][] = JText::_('FUSION_BLOCKED_USER');
             return $status;
 		}

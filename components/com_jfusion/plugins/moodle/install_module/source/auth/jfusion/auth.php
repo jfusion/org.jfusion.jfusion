@@ -66,7 +66,6 @@ class DualLogin {
 		$status = $helper->RemoteLogin($curl_options);
 		unset($helper);
 		return $status;
-
 	}
 
     /**

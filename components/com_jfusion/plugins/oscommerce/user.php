@@ -118,9 +118,7 @@ class JFusionUser_oscommerce extends JFusionUser
      * @return array
      */
     function destroySession($userinfo, $options) {
-        $status = array();
-        $status['error'] = '';
-        $status['debug'] = '';
+        $status = array('error' => array(),'debug' => array());
         $userinfo->username = $userinfo->email;
         $params = JFusionFactory::getParams($this->getJname());
         $osCversion = $params->get('osCversion');
@@ -464,9 +462,7 @@ class JFusionUser_oscommerce extends JFusionUser
         $osCversion = $params->get('osCversion');
         $db = JFusionFactory::getDatabase($this->getJname());
         //setup status array to hold debug info and errors
-        $status = array();
-        $status['debug'] = array();
-        $status['error'] = array();
+        $status = array('error' => array(),'debug' => array());
         //set the userid
         //check to see if a valid $userinfo object was passed on
         if (!is_object($userinfo)) {

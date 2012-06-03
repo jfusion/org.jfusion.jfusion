@@ -89,7 +89,7 @@ class JFusionCurlFrameless{
      * @return array
      */
     function display(&$data) {
-		$status = array();
+        $status = array('error' => array(),'debug' => array());
 		$curlframeless = JFusionCurlFrameless::getInstance();
 
 		$url = $data->source_url;

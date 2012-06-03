@@ -417,8 +417,7 @@ class JFusionForum_smf2 extends JFusionForum
 	 */
 	function createPost(&$dbparams, &$ids, &$contentitem, &$userinfo)
 	{
-		$status = array();
-		$status["error"] = false;
+        $status = array('error' => array(),'debug' => array());
 
 		if($userinfo->guest) {
 			$userinfo->username = JRequest::getVar('guest_username', '', 'POST');

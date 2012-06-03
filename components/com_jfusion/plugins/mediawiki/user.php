@@ -101,9 +101,7 @@ class JFusionUser_mediawiki extends JFusionUser {
     function deleteUser($userinfo)
     {
     	//setup status array to hold debug info and errors
-        $status = array();
-        $status['debug'] = array();
-        $status['error'] = array();
+        $status = array('error' => array(),'debug' => array());
 
         $db = JFusionFactory::getDatabase($this->getJname());
 
@@ -167,46 +165,43 @@ class JFusionUser_mediawiki extends JFusionUser {
      * @return array
      */
     function createSession($userinfo, $options){
-        $status = array();
-	    $status['error'] = array();
-    	$status['debug'] = array();
+        $status = array('error' => array(),'debug' => array());
 
 		//do not create sessions for blocked users
 		if (!empty($userinfo->block) || !empty($userinfo->activation)) {
             $status['error'][] = JText::_('FUSION_BLOCKED_USER');
-            return $status;
-		}
+		} else {
+            //$status = JFusionJplugin::createSession($userinfo, $options,$this->getJname());
 
-		//$status = JFusionJplugin::createSession($userinfo, $options,$this->getJname());
+            $params =& JFusionFactory::getParams($this->getJname());
+            $helper =& JFusionFactory::getHelper($this->getJname());
 
-        $params =& JFusionFactory::getParams($this->getJname());
-        $helper =& JFusionFactory::getHelper($this->getJname());
+            $cookie_path = $params->get('cookie_path');
+            $cookie_domain = $params->get('cookie_domain');
+            $cookie_secure = $params->get('secure');
+            $cookie_httponly = $params->get('httponly');
+            $cookie_expiry = $params->get('cookie_expires', 3100);
+            $cookie_name = $helper->getCookieName();
+            $expires = time() + $cookie_expiry;
+            $debug_expiration = date("Y-m-d H:i:s", $expires);
+            $helper->startSession($options);
 
-        $cookie_path = $params->get('cookie_path');
-        $cookie_domain = $params->get('cookie_domain');
-        $cookie_secure = $params->get('secure');
-        $cookie_httponly = $params->get('httponly');
-        $cookie_expiry = $params->get('cookie_expires', 3100);
-        $cookie_name = $helper->getCookieName();
-        $expires = time() + $cookie_expiry;
-        $debug_expiration = date("Y-m-d H:i:s", $expires);
-        $helper->startSession($options);
+            setcookie($cookie_name  . 'UserName', $userinfo->username, $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
+            $status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => $cookie_name.'UserName', JText::_('VALUE') => $userinfo->username, JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
+            $_SESSION['wsUserName'] = $userinfo->username;
 
-        setcookie($cookie_name  . 'UserName', $userinfo->username, $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
-        $status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => $cookie_name.'UserName', JText::_('VALUE') => $userinfo->username, JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
-        $_SESSION['wsUserName'] = $userinfo->username;
+            setcookie($cookie_name  . 'UserID', $userinfo->userid, $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
+            $status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => $cookie_name.'UserID', JText::_('VALUE') => $userinfo->userid, JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
+            $_SESSION['wsUserID'] = $userinfo->userid;
 
-        setcookie($cookie_name  . 'UserID', $userinfo->userid, $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
-        $status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => $cookie_name.'UserID', JText::_('VALUE') => $userinfo->userid, JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
-        $_SESSION['wsUserID'] = $userinfo->userid;
+            $_SESSION[ 'wsToken'] = $userinfo->user_token;
+            if (!empty($options['remember'])) {
+                setcookie($cookie_name  . 'Token', $userinfo->user_token, $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
+                $status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => $cookie_name.'Token', JText::_('VALUE') => substr($userinfo->user_token, 0, 6) . '********, ', JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
+            }
 
-        $_SESSION[ 'wsToken'] = $userinfo->user_token;
-        if (!empty($options['remember'])) {
-            setcookie($cookie_name  . 'Token', $userinfo->user_token, $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
-            $status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => $cookie_name.'Token', JText::_('VALUE') => substr($userinfo->user_token, 0, 6) . '********, ', JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
+            $helper->closeSession();
         }
-
-        $helper->closeSession();
 		return $status;
 	}
 

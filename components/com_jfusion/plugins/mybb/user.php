@@ -94,44 +94,41 @@ class JFusionUser_mybb extends JFusionUser {
      * @return array
      */
     function createSession($userinfo, $options) {
-        $status = array();
-        $status['error'] = array();
-        $status['debug'] = array();
+        $status = array('error' => array(),'debug' => array());
         //do not create sessions for blocked users
         if (!empty($userinfo->block) || !empty($userinfo->activation)) {
             $status['error'][] = JText::_('FUSION_BLOCKED_USER');
-            return $status;
-        }
-        //get cookiedomain, cookiepath (theIggs solution)
-        $params = JFusionFactory::getParams($this->getJname());
-        $cookiedomain = $params->get('cookie_domain', '');
-        $cookiepath = $params->get('cookie_path', '/');
-        //get myBB uid, loginkey
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT uid, loginkey FROM #__users WHERE username=' . $db->Quote($userinfo->username);
-        $db->setQuery($query);
-        $user = $db->loadObject();
-        // Set cookie values
-        $name = 'mybbuser';
-        $value = $user->uid . '_' . $user->loginkey;
-        $httponly = true;
-        if (isset($options['remember'])) {
-            if ($options['remember']) {
-                // Make the cookie expire in a years time
-                $expires = 60 * 60 * 24 * 365;
+        } else {
+            //get cookiedomain, cookiepath (theIggs solution)
+            $params = JFusionFactory::getParams($this->getJname());
+            $cookiedomain = $params->get('cookie_domain', '');
+            $cookiepath = $params->get('cookie_path', '/');
+            //get myBB uid, loginkey
+            $db = JFusionFactory::getDatabase($this->getJname());
+            $query = 'SELECT uid, loginkey FROM #__users WHERE username=' . $db->Quote($userinfo->username);
+            $db->setQuery($query);
+            $user = $db->loadObject();
+            // Set cookie values
+            $name = 'mybbuser';
+            $value = $user->uid . '_' . $user->loginkey;
+            $httponly = true;
+            if (isset($options['remember'])) {
+                if ($options['remember']) {
+                    // Make the cookie expire in a years time
+                    $expires = 60 * 60 * 24 * 365;
+                } else {
+                    // Make the cookie expire in 30 minutes
+                    $expires = 60 * 30;
+                }
             } else {
-                // Make the cookie expire in 30 minutes
+                //Make the cookie expire in 30 minutes
                 $expires = 60 * 30;
             }
-        } else {
-            //Make the cookie expire in 30 minutes
-            $expires = 60 * 30;
+            $cookiepath = str_replace(array("\n", "\r"), "", $cookiepath);
+            $cookiedomain = str_replace(array("\n", "\r"), "", $cookiedomain);
+            JFusionFunction::addCookie($name, $value, $expires, $cookiepath, $cookiedomain, false, $httponly);
+            $status['debug'][] = JText::_('NAME') . '=' . $name . ', ' . JText::_('VALUE') . '=' . substr($value, 0, 6) . '********, ' . JText::_('COOKIE_PATH') . '=' . $cookiepath . ', ' . JText::_('COOKIE_DOMAIN') . '=' . $cookiedomain;
         }
-        $cookiepath = str_replace(array("\n", "\r"), "", $cookiepath);
-        $cookiedomain = str_replace(array("\n", "\r"), "", $cookiedomain);
-        JFusionFunction::addCookie($name, $value, $expires, $cookiepath, $cookiedomain, false, $httponly);
-        $status = array();
-        $status['debug'][] = JText::_('NAME') . '=' . $name . ', ' . JText::_('VALUE') . '=' . substr($value, 0, 6) . '********, ' . JText::_('COOKIE_PATH') . '=' . $cookiepath . ', ' . JText::_('COOKIE_DOMAIN') . '=' . $cookiedomain;
         return $status;
     }
 

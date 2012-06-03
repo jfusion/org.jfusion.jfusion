@@ -724,8 +724,8 @@ class JFusionForum
      */
 	function createPost(&$params, &$ids, &$contentitem, &$userinfo)
 	{
-		$status = array();
-		$status["error"] = false;
+        $status = array('error' => array(),'debug' => array());
+        $status['debug'] = JText::_('METHOD_NOT_IMPLEMENTED');
 		return $status;
 	}
 

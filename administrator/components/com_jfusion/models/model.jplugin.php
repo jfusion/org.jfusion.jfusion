@@ -313,9 +313,7 @@ class JFusionJplugin
         $cookies = array();
         $cookie = array();
         $curl_options = array();
-        $status = array();
-        $status['error'] = '';
-        $status['debug'] = '';
+        $status = array('error' => array(),'debug' => array());
         $cookies_to_set_index = 0;
         $params = & JFusionFactory::getParams($jname);
         $source_url = $params->get('source_url');
@@ -470,9 +468,7 @@ class JFusionJplugin
         $cookies = array();
         $cookie = array();
         $curl_options = array();
-        $status = array();
-        $status['error'] = '';
-        $status['debug'] = '';
+        $status = array('error' => array(),'debug' => array());
         $cookies_to_set_index = 0;
 
         $params = & JFusionFactory::getParams($jname);
@@ -1041,7 +1037,6 @@ class JFusionJplugin
                 // save the user
                 if (!$instance->save(false)) {
                     //report the error
-                    $status = array();
                     $status['error'] = $instance->getError();
                     return $status;
                 } else {
@@ -1148,9 +1143,7 @@ class JFusionJplugin
         $update_block = $params->get('update_block');
         $update_activation = $params->get('update_activation');
         $update_email = $params->get('update_email');
-        $status = array();
-        $status['debug'] = array();
-        $status['error'] = array();
+        $status = array('error' => array(),'debug' => array());
         //check to see if a valid $userinfo object was passed on
         if (!is_object($userinfo)) {
             $status['error'][] = JText::_('NO_USER_DATA_FOUND');
@@ -1451,9 +1444,7 @@ class JFusionJplugin
      */
     public static function setLanguageFrontEnd($jname, $userinfo)
     {
-        $status = array();
-        $status['error'] = '';
-        $status['debug'] = '';
+        $status = array('error' => array(),'debug' => array());
         $existinguser = (isset($userinfo)) ? JFusionJplugin::getUser($userinfo, $jname) : null;
         // If the user is connected we change his account parameter in function of the language front end
         if ($existinguser) {

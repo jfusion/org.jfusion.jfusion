@@ -609,8 +609,7 @@ class JFusionPublic
      */
     function setLanguageFrontEnd($userinfo = null)
     {
-        $status = array();
-        $status['error'] = '';
+        $status = array('error' => array(),'debug' => array());
         $status['debug'] = JText::_('METHOD_NOT_IMPLEMENTED');
         return $status;
     }

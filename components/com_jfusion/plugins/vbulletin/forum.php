@@ -179,8 +179,7 @@ class JFusionForum_vbulletin extends JFusionForum
      */
     function createPost(&$dbparams, &$ids, &$contentitem, &$userinfo)
     {
-        $status = array();
-        $status["error"] = array();
+        $status = array('error' => array(),'debug' => array());
         if ($userinfo->guest) {
             $userinfo->username = JRequest::getVar('guest_username', '', 'POST');
             $userinfo->userid = 0;

@@ -46,21 +46,22 @@ class JFusionAdmin_joomla_ext extends JFusionAdmin
 		// find out what Joomla version we have
 		$params = & JFusionFactory::getParams($this->getJname());
 		$joomlaversion = $params->get('joomlaversion','');
-		if (!empty($joomlaversion)) {
-			return $params->get('joomlaversion');
+		if (empty($joomlaversion)) {
+            $db = & JFusionFactory::getDatabase($this->getJname());
+            if (!$db) {
+                $joomlaversion = '1.6';
+            } else {
+                $query = 'SELECT id, name FROM #__core_acl_aro_groups WHERE name != "ROOT" AND name != "USERS"';
+                $db->setQuery($query);
+                $result = $db->loadObjectList();
+                if ($result) {
+                    $joomlaversion = '1.5';
+                } else {
+                    $joomlaversion = '1.6';
+                }
+            }
 		}
-
-		$db = & JFusionFactory::getDatabase($this->getJname());
-		if (!$db) {
-			return '1.6';
-		}
-		$query = 'SELECT id, name FROM #__core_acl_aro_groups WHERE name != "ROOT" AND name != "USERS"';
-		$db->setQuery($query);
-		$result = $db->loadObjectList();
-		if ($result) {
-			return '1.5';
-		}
-		return '1.6';
+		return $joomlaversion;
 	}
 
     /**

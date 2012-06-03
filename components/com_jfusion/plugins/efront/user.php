@@ -77,9 +77,7 @@ class JFusionUser_efront extends JFusionUser
      * @return array
      */
     function destroySession($userinfo, $options) {
-        $status = array();
-        $status['error'] = array();
-        $status['debug'] = array();
+        $status = array('error' => array(),'debug' => array());
         if (isset($options['remember'])) {
             if ($options['remember']) {
                  $status['error'] = false;
@@ -165,9 +163,7 @@ class JFusionUser_efront extends JFusionUser
      * @return array
      */
     function createSession($userinfo, $options) {
-        $status = array();
-        $status['error'] = array();
-        $status['debug'] = array();
+        $status = array('error' => array(),'debug' => array());
         //do not create sessions for blocked users
         if (!empty($userinfo->block) || !empty($userinfo->activation)) {
             $status['error'][] = JText::_('FUSION_BLOCKED_USER');
@@ -339,10 +335,8 @@ class JFusionUser_efront extends JFusionUser
     function createUser($userinfo, &$status) {
        /**
         * NOTE: eFront does a charactercheck on the user credentials. I think we are ok (HW): if (preg_match("/^.*[$\/\'\"]+.*$/", $parameter))
-        */	
-        $status = array();
-        $status['debug'] = array();
-        $status['error'] = array();
+        */
+        $status = array('error' => array(),'debug' => array());
     	$params = JFusionFactory::getParams($this->getJname());
         $db = JFusionFactory::getDatabase($this->getJname());
         //prepare the variables
@@ -470,10 +464,7 @@ class JFusionUser_efront extends JFusionUser
         // modules without loading the complete website. 
         
     	// check apiuser existance
-        $status = array();
-        $status['debug'] = array();
-        $status['error'] = array();
-        $status['debug'] = null;
+        $status = array('error' => array(),'debug' => array());
         if (!is_object($userinfo)) {
             $status['error'][] = JText::_('NO_USER_DATA_FOUND');
         } else {

@@ -65,7 +65,6 @@ class JFusionAdmin_magento extends JFusionAdmin
                 JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . " $xmlfile " . JText::_('WIZARD_MANUAL'));
             } else {
                 //save the parameters into array
-                $params = array();
                 $params['database_host'] = (string)$xml->document->global[0]->resources[0]->default_setup[0]->connection[0]->host[0]->data();
                 $params['database_name'] = (string)$xml->document->global[0]->resources[0]->default_setup[0]->connection[0]->dbname[0]->data();
                 $params['database_user'] = (string)$xml->document->global[0]->resources[0]->default_setup[0]->connection[0]->username[0]->data();
@@ -210,37 +209,36 @@ class JFusionAdmin_magento extends JFusionAdmin
 	}
 
     /**
-     * @return mixed|string
+     * @return string
      */
     public function moduleInstallation() {
-			$jname = $this->getJname ();
-			$params = & JFusionFactory::getParams ( $jname );
-			
-			$db = & JFusionFactory::getDatabase ( $jname );
-			if (! JError::isError ( $db ) && ! empty ( $db )) {
-				
-				$source_path = $params->get ( 'source_path', '' );
-				if (! file_exists ( $source_path . DS . 'app' . DS . 'Mage.php' )) {
-					return JText::_ ( 'MAGE_CONFIG_SOURCE_PATH' );
-				}
-				
-				$mod_exists = false;
-				if (file_exists ( $source_path . DS . 'app' . DS . 'etc' . DS . 'modules' . DS . 'Jfusion_All.xml' )) {
-					$mod_exists = true;
-				}
-				
-				$html = '<div class="button2-left"><div class="blank"><a href="javascript:void(0);" onclick="return module(\'' . (($mod_exists) ? 'uninstallModule' : 'installModule') . '\');">' . ((! $mod_exists) ? JText::_ ( 'MODULE_UNINSTALL_BUTTON' ) : JText::_ ( 'MODULE_INSTALL_BUTTON' )) . '</a></div></div>' . "\n";
-				
-				if ($mod_exists) {
-					$src = "components/com_jfusion/images/tick.png";
-				} else {
-					$src = "components/com_jfusion/images/cross.png";
-				}
-				$html .= "<img src='$src' style='margin-left:10px;' id='usergroups_img'/>";
-				return $html;
-			} else {
-				return JText::_ ( 'MAGE_CONFIG_FIRST' );
+        $jname = $this->getJname ();
+        $params = & JFusionFactory::getParams ( $jname );
+
+        $db = & JFusionFactory::getDatabase ( $jname );
+        if (! JError::isError ( $db ) && ! empty ( $db )) {
+            $source_path = $params->get ( 'source_path', '' );
+            if (! file_exists ( $source_path . DS . 'app' . DS . 'Mage.php' )) {
+                $html = JText::_ ( 'MAGE_CONFIG_SOURCE_PATH' );
+            } else {
+                $mod_exists = false;
+                if (file_exists ( $source_path . DS . 'app' . DS . 'etc' . DS . 'modules' . DS . 'Jfusion_All.xml' )) {
+                    $mod_exists = true;
+                }
+
+                $html = '<div class="button2-left"><div class="blank"><a href="javascript:void(0);" onclick="return module(\'' . (($mod_exists) ? 'uninstallModule' : 'installModule') . '\');">' . ((! $mod_exists) ? JText::_ ( 'MODULE_UNINSTALL_BUTTON' ) : JText::_ ( 'MODULE_INSTALL_BUTTON' )) . '</a></div></div>' . "\n";
+
+                if ($mod_exists) {
+                    $src = "components/com_jfusion/images/tick.png";
+                } else {
+                    $src = "components/com_jfusion/images/cross.png";
+                }
+                $html .= "<img src='$src' style='margin-left:10px;' id='usergroups_img'/>";
+            }
+        } else {
+            $html = JText::_ ( 'MAGE_CONFIG_FIRST' );
 		}
+        return $html;
 	}
 
     /**
@@ -258,8 +256,8 @@ class JFusionAdmin_magento extends JFusionAdmin
         require_once $pear_path.DS.'PEAR.php';
         $pear_archive_path = $pear_path.DS.archive_tar.DS.'Archive_Tar.php';
         require_once $pear_archive_path;
- 
-        $status = array();
+
+        $status = array('error' => array(),'debug' => array());
 		$archive_filename = 'magento_module_jfusion.tar.gz';
 		$old_chdir = getcwd();
 		$src_archive =  $src_path = realpath ( dirname ( __FILE__ ) ) . DS . 'install_module';
@@ -287,34 +285,29 @@ class JFusionAdmin_magento extends JFusionAdmin
 		if ($db->getErrorNum() != 0) {
 			$db->RollbackTrans();
 			$status['error'] = $db->stderr ();
-			return $status;
-		}
-		
-		$query = "REPLACE INTO #__core_config_data SET path = 'joomla/joomlaconfig/installationpath', value = '".JPATH_SITE."';";
-		$db->BeginTrans();
-		$db->Execute($query);
-		if ($db->getErrorNum() != 0) {
-			$db->RollbackTrans();
-			$status['error'] = $db->stderr ();
-			return $status;
-		}
-		
-		$query = "REPLACE INTO #__core_config_data SET path = 'joomla/joomlaconfig/secret_key', value = '".$joomla_secret."';";
-		$db->BeginTrans();
-		$db->Execute($query);
-		if ($db->getErrorNum() != 0) {
-			$db->RollbackTrans();
-			$status['error'] = $db->stderr ();
-			return $status;
-		}
-		
-		$status = array();
-		if ($ret !== true) {
-			$status['error'] = $jname . ': ' . JText::sprintf('INSTALL_MODULE_ERROR', $src_archive, $dest);
-		}else{
-			$status['message'] = $jname .': ' . JText::_('INSTALL_MODULE_SUCCESS');
-		}
-		
+		} else {
+            $query = "REPLACE INTO #__core_config_data SET path = 'joomla/joomlaconfig/installationpath', value = '".JPATH_SITE."';";
+            $db->BeginTrans();
+            $db->Execute($query);
+            if ($db->getErrorNum() != 0) {
+                $db->RollbackTrans();
+                $status['error'] = $db->stderr ();
+            } else {
+                $query = "REPLACE INTO #__core_config_data SET path = 'joomla/joomlaconfig/secret_key', value = '".$joomla_secret."';";
+                $db->BeginTrans();
+                $db->Execute($query);
+                if ($db->getErrorNum() != 0) {
+                    $db->RollbackTrans();
+                    $status['error'] = $db->stderr ();
+                } else {
+                    if ($ret !== true) {
+                        $status['error'] = $jname . ': ' . JText::sprintf('INSTALL_MODULE_ERROR', $src_archive, $dest);
+                    } else {
+                        $status['message'] = $jname .': ' . JText::_('INSTALL_MODULE_SUCCESS');
+                    }
+                }
+            }
+        }
 		return $status;
 	}
 
@@ -381,8 +374,8 @@ class JFusionAdmin_magento extends JFusionAdmin
 			$status['error'] = $db->stderr ();
 			return $status;
 		}*/
-		
-		$status = array();
+
+        $status = array('error' => array(),'debug' => array());
 		if ($ret !== true) {
 			$status['error'] = $jname . ': ' . JText::sprintf('UNINSTALL_MODULE_ERROR', $src_archive, $dest);
 		}else{
@@ -401,15 +394,15 @@ class JFusionAdmin_magento extends JFusionAdmin
 		
 		$jfusion_mod_xml = $source_path . DS .'app'. DS .'etc'. DS .'modules'. DS .'Jfusion_All.xml';
 		
-		if(file_exists($jfusion_mod_xml)){
+		if(file_exists($jfusion_mod_xml)) {
 			$xml = JFactory::getXMLParser ( 'simple' );
 			$xml->loadfile ( $jfusion_mod_xml );
 			$modules = $xml->document->getElementByPath ( 'modules/jfusion_joomla' );
 			$activated = $modules->active [0]->data ();
 			
-			if($activated == 'false'){
+			if($activated == 'false') {
 				$activated = 0;
-			}else{
+			} else {
 				$activated = 1;
 			}
 			
@@ -422,11 +415,10 @@ class JFusionAdmin_magento extends JFusionAdmin
 				$src = "components/com_jfusion/images/cross.png";
 			}
 			$html .= "<img src='$src' style='margin-left:10px;'/>";
-
-			return $html;
 		} else {
-			return JText::_ ( 'MAGE_CONFIG_FIRST' );
+			$html =  JText::_ ( 'MAGE_CONFIG_FIRST' );
 		}
+        return $html;
 	}
 	
 	public function activateModule(){

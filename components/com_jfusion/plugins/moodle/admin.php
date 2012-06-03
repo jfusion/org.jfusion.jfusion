@@ -237,8 +237,8 @@ class JFusionAdmin_moodle extends JFusionAdmin
         require_once $pear_path.DS.'PEAR.php';
         $pear_archive_path = $pear_path.DS.archive_tar.DS.'Archive_Tar.php';
         require_once $pear_archive_path;
- 
-        $status = array();
+
+        $status = array('error' => array(),'debug' => array());
         $archive_filename = 'moodle_module_jfusion.tar.gz';
         $old_chdir = getcwd();
         $src_archive =  $src_path = realpath ( dirname ( __FILE__ ) ) . DS . 'install_module';
@@ -383,7 +383,7 @@ class JFusionAdmin_moodle extends JFusionAdmin
      */
     public function uninstallModule() {
 
-        $status = array();
+        $status = array('error' => array(),'debug' => array());
         jimport ( 'joomla.filesystem.file' );
         jimport ( 'joomla.filesystem.folder' );
 
@@ -517,7 +517,6 @@ class JFusionAdmin_moodle extends JFusionAdmin
             return $status;
         }
 
-        $status = array();
         if ($ret !== true) {
             $status['error'] = $jname . ': ' . JText::sprintf('UNINSTALL_MODULE_ERROR', "Moodle DSSO support", '');
         }else{

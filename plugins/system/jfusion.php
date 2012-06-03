@@ -75,10 +75,8 @@ class plgSystemJfusion extends JPlugin
         //initialise some vars
         ob_start();
         $refresh = false;
-        $status = array();
+        $status = array('error' => array(),'debug' => array());
         $task = JRequest::getVar('task');
-        $status['debug'] = array();
-        $status['error'] = array();
         $debug = $this->params->get('debug', 0);
         if ($debug) {
             define('DEBUG_SYSTEM_PLUGIN', 1);

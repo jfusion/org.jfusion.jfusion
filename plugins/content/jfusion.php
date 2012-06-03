@@ -780,7 +780,7 @@ class plgContentJfusion extends JPlugin
                     if (!empty($threadinfo) && !empty($threadinfo->threadid) && !empty($threadinfo->forumid)) {
                         $status = $JFusionForum->createPost($this->params, $threadinfo, $this->article, $userinfo);
 
-                        if ($status['error']){
+                        if (!empty($status['error'])){
                             if ($ajaxEnabled) {
                                 //output the error
                                 if (is_array($status['error'])) {

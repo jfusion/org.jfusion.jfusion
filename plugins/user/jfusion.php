@@ -228,9 +228,7 @@ class plgUserJfusion extends JPlugin
                         $autoregister = $params->get('autoregister', 0);
                         if ($autoregister == 1) {
                             $jfusionDebug['init'][] = JText::_('CREATING_MASTER_USER');
-                            $status = array();
-                            $status['debug'] = array();
-                            $status['error'] = array();
+                            $status = array('error' => array(),'debug' => array());
                             //try to create a Master user
                             $JFusionMaster->createUser($auth_userinfo, $status);
                             if (empty($status['error'])) {

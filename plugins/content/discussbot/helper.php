@@ -107,9 +107,7 @@ class JFusionDiscussBotHelper {
             $manually_created = (empty($threadinfo->manual)) ? 0 : 1;
         }
 
-        $status = array();
-        $status['error'] = array();
-        $status['debug'] = array();
+        $status = array('error' => array(),'debug' => array());
         $status['action'] = 'unchanged';
         $status['threadinfo'] = new stdClass();
 

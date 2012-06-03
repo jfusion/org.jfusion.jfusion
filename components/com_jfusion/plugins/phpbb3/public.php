@@ -77,7 +77,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
      */
     function prepareText(&$text, $for = 'forum', $params = null, $object = null)
     {
-        $status = array();
+        $status = array('error' => array(),'debug' => array());
         if ($for == 'forum') {
             //first thing is to remove all joomla plugins
             preg_match_all('/\{(.*)\}/U', $text, $matches);

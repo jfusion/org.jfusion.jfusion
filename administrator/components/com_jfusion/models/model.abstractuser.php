@@ -192,9 +192,7 @@ class JFusionUser
         $update_block = $params->get('update_block');
         $update_activation = $params->get('update_activation');
         $update_email = $params->get('update_email');
-        $status = array();
-        $status['debug'] = array();
-        $status['error'] = array();
+        $status = array('error' => array(),'debug' => array());
         //check to see if a valid $userinfo object was passed on
         if (!is_object($userinfo)) {
             $status['error'][] = JText::_('NO_USER_DATA_FOUND');
@@ -500,9 +498,7 @@ class JFusionUser
     function deleteUser($userinfo)
     {
         //setup status array to hold debug info and errors
-        $status = array();
-        $status['debug'] = array();
-        $status['error'] = array();
+        $status = array('error' => array(),'debug' => array());
         $status['error'][] = JText::_('DELETE_FUNCTION_MISSING');
         return $status;
     }

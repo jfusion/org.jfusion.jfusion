@@ -63,12 +63,11 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
         if (is_array($config)) {
             $status['config'] = 1;
             $status['message'] = JText::_('GOOD_CONFIG');
-            return $status;
         } else {
             $status['config'] = 0;
             $status['message'] = JText::_('WIZARD_FAILURE');
-            return $status;
         }
+        return $status;
     }
 
     /**

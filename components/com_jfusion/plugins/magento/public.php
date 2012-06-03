@@ -65,7 +65,7 @@ class JFusionPublic_magento extends JFusionPublic {
      * @return array|string
      */
     function setLanguageFrontEnd($userinfo = null) {
-        $status = array('error' => '', 'debug' => '');
+        $status = array('error' => array(),'debug' => array());
         // The language is selected by the library magelib when the magento framework is started
         /*if (JPluginHelper::isEnabled('system', 'magelib')) {
             $status['debug'] = JText::_('STEP_SKIPPED_MAGELIB_INSTALLED');
@@ -87,25 +87,25 @@ class JFusionPublic_magento extends JFusionPublic {
         $language_store_view = $params->get('language_store_view', '');
         if (strlen($language_store_view) <= 0) {
             $status['debug'] = JText::_('NO_STORE_LANGUAGE_LIST');
-            return $status;
-        }
-        // we define and set the cookie 'store'
-        $langs = explode(";", $language_store_view);
-        foreach ($langs as $lang) {
-            $codes = explode("=", $lang);
-            $joomla_code = $codes[0];
-            $store_code = $codes[1];
-            if ($joomla_code == $JLang->getTag()) {
-                $cookies_to_set[0] = array("store=$store_code");
-                break;
+        } else {
+            // we define and set the cookie 'store'
+            $langs = explode(";", $language_store_view);
+            foreach ($langs as $lang) {
+                $codes = explode("=", $lang);
+                $joomla_code = $codes[0];
+                $store_code = $codes[1];
+                if ($joomla_code == $JLang->getTag()) {
+                    $cookies_to_set[0] = array("store=$store_code");
+                    break;
+                }
             }
+            $curl_options['cookiedomain'] = $params->get('cookie_domain');
+            $curl_options['cookiepath'] = $params->get('cookie_path');
+            $curl_options['expires'] = $params->get('cookie_expires');
+            $curl_options['secure'] = $params->get('secure');
+            $curl_options['httponly'] = $params->get('httponly');
+            $status = JFusionCurl::setmycookies($status, $cookies_to_set, $curl_options['cookiedomain'], $curl_options['cookiepath'], $curl_options['expires'], $curl_options['secure'], $curl_options['httponly']);
         }
-        $curl_options['cookiedomain'] = $params->get('cookie_domain');
-        $curl_options['cookiepath'] = $params->get('cookie_path');
-        $curl_options['expires'] = $params->get('cookie_expires');
-        $curl_options['secure'] = $params->get('secure');
-        $curl_options['httponly'] = $params->get('httponly');
-        $status = JFusionCurl::setmycookies($status, $cookies_to_set, $curl_options['cookiedomain'], $curl_options['cookiepath'], $curl_options['expires'], $curl_options['secure'], $curl_options['httponly']);
         return $status;
     }
 }

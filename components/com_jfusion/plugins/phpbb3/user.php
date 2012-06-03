@@ -90,9 +90,7 @@ class JFusionUser_phpbb3 extends JFusionUser
      * @return array
      */
     function destroySession($userinfo, $options) {
-        $status = array();
-        $status['error'] = array();
-        $status['debug'] = array();
+        $status = array('error' => array(),'debug' => array());
         $db = JFusionFactory::getDatabase($this->getJname());
         //get the cookie parameters
         $params = JFusionFactory::getParams($this->getJname());
@@ -141,9 +139,7 @@ class JFusionUser_phpbb3 extends JFusionUser
      * @return array
      */
     function createSession($userinfo, $options) {
-        $status = array();
-        $status['error'] = array();
-        $status['debug'] = array();
+        $status = array('error' => array(),'debug' => array());
         $db = JFusionFactory::getDatabase($this->getJname());
         //do not create sessions for blocked users
         if (!empty($userinfo->block) || !empty($userinfo->activation)) {
@@ -782,9 +778,7 @@ class JFusionUser_phpbb3 extends JFusionUser
      */
     function deleteUser($userinfo) {
         //setup status array to hold debug info and errors
-        $status = array();
-        $status['debug'] = array();
-        $status['error'] = array();
+        $status = array('error' => array(),'debug' => array());
         //retreive the database object
         $db = & JFusionFactory::getDatabase($this->getJname());
         //set the userid

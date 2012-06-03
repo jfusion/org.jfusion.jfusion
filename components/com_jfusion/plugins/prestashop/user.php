@@ -87,9 +87,7 @@ class JFusionUser_prestashop extends JFusionUser {
      * @return array
      */
     function destroySession($userinfo = "", $option = "") {
-	    $status = array();
-        $status['error'] = array();
-        $status['debug'] = array();
+        $status = array('error' => array(),'debug' => array());
 	    // use prestashop cookie class and functions to delete cookie
 		$params = JFusionFactory::getParams($this->getJname());
 		require_once $params->get('source_path') . DS . "config" . DS . "settings.inc.php";
@@ -120,9 +118,7 @@ class JFusionUser_prestashop extends JFusionUser {
      */
     function createSession($userinfo, $options, $framework = true) {
 	    $params = JFusionFactory::getParams($this->getJname());
-	    $status = array();
-        $status['error'] = array();
-        $status['debug'] = array();
+        $status = array('error' => array(),'debug' => array());
         // this uses a code extract from authentication.php that deals with logging in completely
 		$db = JFusionFactory::getDatabase($this->getJname());
 		require_once $params->get('source_path') . DS . "config" . DS . "settings.inc.php";

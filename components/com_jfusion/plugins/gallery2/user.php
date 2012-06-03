@@ -113,7 +113,7 @@ class JFusionUser_gallery2 extends JFusionUser {
         GalleryInitSecondPass();
         GalleryEmbed::logout();
         GalleryEmbed::done();
-        $status = array();
+        $status = array('error' => array(),'debug' => array());
         return $status;        
     }
 
@@ -124,9 +124,7 @@ class JFusionUser_gallery2 extends JFusionUser {
      * @return array
      */
     function createSession($userinfo, $options, $framework = true) {
-        $status = array();
-        $status['debug'] = array();
-        $status['error'] = array();
+        $status = array('error' => array(),'debug' => array());
         
         if ($framework) {
             $helper = JFusionFactory::getHelper($this->getJname());
@@ -207,9 +205,7 @@ class JFusionUser_gallery2 extends JFusionUser {
      */
     function deleteUser($userinfo) {
         //setup status array to hold debug info and errors
-        $status = array();
-        $status['debug'] = array();
-        $status['error'] = array();
+        $status = array('error' => array(),'debug' => array());
         $username = $userinfo->username;
         $helper = JFusionFactory::getHelper($this->getJname());
         $helper->loadGallery2Api(false);
