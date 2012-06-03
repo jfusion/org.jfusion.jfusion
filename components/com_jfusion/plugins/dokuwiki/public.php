@@ -384,7 +384,7 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
         }
         require_once 'doku_search.php';
         $highlights = array();
-        $results = ft_pageSearch($text, $highlights);
+        $results = DokuWikiSearch::ft_pageSearch($text, $highlights);
         //pass results back to the plugin in case they need to be filtered
         $this->filterSearchResults($results);
         $rows = array();
