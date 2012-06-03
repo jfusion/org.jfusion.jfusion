@@ -142,11 +142,13 @@ class JFusionAdmin_efront extends JFusionAdmin
         $tableFields = $db->getTableFields('users',false);
         if (!array_key_exists('id',$tableFields['users'])) {
             $query = "ALTER TABLE users ADD id int(11) NOT null AUTO_INCREMENT FIRST, ADD UNIQUE (id)";
-            $db->Execute($query);
+            $db->setQuery($query);
+            $db->query();
         }
         if (!array_key_exists('need_mod_init',$tableFields['users'])) {
             $query = "ALTER TABLE users ADD need_mod_init int(11) NOT null DEFAULT 0";
-            $db->Execute($query);
+            $db->setQuery($query);
+            $db->query();
         }
         $query = 'SELECT count(*) from #__users';
         $db->setQuery($query);

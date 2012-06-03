@@ -393,7 +393,8 @@ class JFusionFactory
         		return $result;
         	}        	
             //add support for UTF8
-            $jfusionDatabase->Execute('SET names ' . $jfusionDatabase->quote($charset));
+            $jfusionDatabase->setQuery('SET names ' . $jfusionDatabase->quote($charset));
+            $jfusionDatabase->query();
             //support debugging
             $jfusionDatabase->debug($debug);
             return $jfusionDatabase;
@@ -444,8 +445,9 @@ class JFusionFactory
     }
     /**
      * Returns an object of the specified parser class
-     * @param $type
-     * @return BBCode_Parser|bool of parser class
+     * @param string $type
+     *
+     * @return BBCode_Parser of parser class
      */
     public static function &getCodeParser($type = 'bbcode') {
         static $jfusion_code_parsers;

@@ -281,21 +281,24 @@ class JFusionAdmin_magento extends JFusionAdmin
 		
 		$query = "REPLACE INTO #__core_config_data SET path = 'joomla/joomlaconfig/baseurl', value = '".$joomla_baseurl."';";
 		$db->BeginTrans();
-		$db->Execute($query);
+        $db->setQuery($query);
+        $db->query();
 		if ($db->getErrorNum() != 0) {
 			$db->RollbackTrans();
 			$status['error'] = $db->stderr ();
 		} else {
             $query = "REPLACE INTO #__core_config_data SET path = 'joomla/joomlaconfig/installationpath', value = '".JPATH_SITE."';";
             $db->BeginTrans();
-            $db->Execute($query);
+            $db->setQuery($query);
+            $db->query();
             if ($db->getErrorNum() != 0) {
                 $db->RollbackTrans();
                 $status['error'] = $db->stderr ();
             } else {
                 $query = "REPLACE INTO #__core_config_data SET path = 'joomla/joomlaconfig/secret_key', value = '".$joomla_secret."';";
                 $db->BeginTrans();
-                $db->Execute($query);
+                $db->setQuery($query);
+                $db->query();
                 if ($db->getErrorNum() != 0) {
                     $db->RollbackTrans();
                     $status['error'] = $db->stderr ();
@@ -357,9 +360,11 @@ class JFusionAdmin_magento extends JFusionAdmin
 			}
 		}
 		
-		/*$query = "DELETE FROM #__core_config_data WHERE path = 'joomla/joomlaconfig/installationpath'";
+		/*
+		$query = "DELETE FROM #__core_config_data WHERE path = 'joomla/joomlaconfig/installationpath'";
 		$db->BeginTrans();
-		$db->Execute($query);
+		$db->setQuery($query);
+        $db->query();
 		if ($db->getErrorNum() != 0) {
 			$db->RollbackTrans();
 			$status['error'] = $db->stderr ();
@@ -368,12 +373,14 @@ class JFusionAdmin_magento extends JFusionAdmin
 		
 		$query = "DELETE FROM #__core_config_data WHERE path = 'joomla/joomlaconfig/secret_key'";
 		$db->BeginTrans();
-		$db->Execute($query);
+		$db->setQuery($query);
+        $db->query();
 		if ($db->getErrorNum() != 0) {
 			$db->RollbackTrans();
 			$status['error'] = $db->stderr ();
 			return $status;
-		}*/
+		}
+		*/
 
         $status = array('error' => array(),'debug' => array());
 		if ($ret !== true) {

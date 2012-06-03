@@ -256,122 +256,41 @@ class JFusionAdmin_moodle extends JFusionAdmin
         JFile::delete($src_code . DS . $archive_filename);
 
         if ($ret) {
-
             $joomla = JFusionFactory::getParams('joomla_int');
             $joomla_baseurl = $joomla->get('source_url');
             $joomla_source_path = JPATH_ROOT.DS;
 
-
-
             // now set all relevant parameters in Moodles database
             // do not yet activate!
 
-
-            $query = "REPLACE INTO #__config_plugins SET plugin = 'auth/jfusion' , name = 'jf_enabled', value = '0';";
-            $db->Execute($query);
-            if ($db->getErrorNum() != 0) {
-                $status['error'] = $db->stderr ();
-                return $status;
+            $querys = array();
+            $querys[] = "REPLACE INTO #__config_plugins SET plugin = 'auth/jfusion' , name = 'jf_enabled', value = '0';";
+            $querys[] = "REPLACE INTO #__config_plugins SET plugin = 'auth/jfusion' , name = 'jf_ismaster', value = '0';";
+            $querys[] = "REPLACE INTO #__config_plugins SET plugin = 'auth/jfusion' , name = 'jf_fullpath', value = '".$joomla_source_path."';";
+            $querys[] = "REPLACE INTO #__config_plugins SET plugin = 'auth/jfusion' , name = 'jf_baseurl', value = '".$joomla_baseurl."';";
+            $querys[] = "REPLACE INTO #__config_plugins SET plugin = 'auth/jfusion' , name = 'jf_loginpath', value = '';";
+            $querys[] = "REPLACE INTO #__config_plugins SET plugin = 'auth/jfusion' , name = 'jf_logoutpath', value = '';";
+            $querys[] = "REPLACE INTO #__config_plugins SET plugin = 'auth/jfusion' , name = 'jf_formid', value = 'login';";
+            $querys[] = "REPLACE INTO #__config_plugins SET plugin = 'auth/jfusion' , name = 'jf_relpath', value = '0';";
+            $querys[] = "REPLACE INTO #__config_plugins SET plugin = 'auth/jfusion' , name = 'jf_cookiedomain', value = '';";
+            $querys[] = "REPLACE INTO #__config_plugins SET plugin = 'auth/jfusion' , name = 'jf_cookiepath', value = '';";
+            $querys[] = "REPLACE INTO #__config_plugins SET plugin = 'auth/jfusion' , name = 'jf_username_id', value = '';";
+            $querys[] = "REPLACE INTO #__config_plugins SET plugin = 'auth/jfusion' , name = 'jf_password_id', value = '';";
+            $querys[] = "REPLACE INTO #__config_plugins SET plugin = 'auth/jfusion' , name = 'jf_cookie_secure', value = '0';";
+            $querys[] = "REPLACE INTO #__config_plugins SET plugin = 'auth/jfusion' , name = 'jf_cookie_httponly', value = '0';";
+            $querys[] = "REPLACE INTO #__config_plugins SET plugin = 'auth/jfusion' , name = 'jf_verifyhost', value = '0';";
+            $querys[] = "REPLACE INTO #__config_plugins SET plugin = 'auth/jfusion' , name = 'jf_leavealone', value = '';";
+            $querys[] = "REPLACE INTO #__config_plugins SET plugin = 'auth/jfusion' , name = 'jf_expires', value = '1800';";
+            foreach($querys as $query){
+                $db->setQuery($query);
+                $db->query();
+                if ($db->getErrorNum() != 0) {
+                    $status['error'] = $db->stderr ();
+                    return $status;
+                }
             }
-            $query = "REPLACE INTO #__config_plugins SET plugin = 'auth/jfusion' , name = 'jf_ismaster', value = '0';";
-            $db->Execute($query);
-            if ($db->getErrorNum() != 0) {
-                $status['error'] = $db->stderr ();
-                return $status;
-            }
-            $query = "REPLACE INTO #__config_plugins SET plugin = 'auth/jfusion' , name = 'jf_fullpath', value = '".$joomla_source_path."';";
-            $db->Execute($query);
-            if ($db->getErrorNum() != 0) {
-                $status['error'] = $db->stderr ();
-                return $status;
-            }
-            $query = "REPLACE INTO #__config_plugins SET plugin = 'auth/jfusion' , name = 'jf_baseurl', value = '".$joomla_baseurl."';";
-            $db->Execute($query);
-            if ($db->getErrorNum() != 0) {
-                $status['error'] = $db->stderr ();
-                return $status;
-            }
-            $query = "REPLACE INTO #__config_plugins SET plugin = 'auth/jfusion' , name = 'jf_loginpath', value = '';";
-            $db->Execute($query);
-            if ($db->getErrorNum() != 0) {
-                $status['error'] = $db->stderr ();
-                return $status;
-            }
-            $query = "REPLACE INTO #__config_plugins SET plugin = 'auth/jfusion' , name = 'jf_logoutpath', value = '';";
-            $db->Execute($query);
-            if ($db->getErrorNum() != 0) {
-                $status['error'] = $db->stderr ();
-                return $status;
-            }
-            $query = "REPLACE INTO #__config_plugins SET plugin = 'auth/jfusion' , name = 'jf_formid', value = 'login';";
-            $db->Execute($query);
-            if ($db->getErrorNum() != 0) {
-                $status['error'] = $db->stderr ();
-                return $status;
-            }
-            $query = "REPLACE INTO #__config_plugins SET plugin = 'auth/jfusion' , name = 'jf_relpath', value = '0';";
-            $db->Execute($query);
-            if ($db->getErrorNum() != 0) {
-                $status['error'] = $db->stderr ();
-                return $status;
-            }
-            $query = "REPLACE INTO #__config_plugins SET plugin = 'auth/jfusion' , name = 'jf_cookiedomain', value = '';";
-            $db->Execute($query);
-            if ($db->getErrorNum() != 0) {
-                $status['error'] = $db->stderr ();
-                return $status;
-            }
-            $query = "REPLACE INTO #__config_plugins SET plugin = 'auth/jfusion' , name = 'jf_cookiepath', value = '';";
-            $db->Execute($query);
-            if ($db->getErrorNum() != 0) {
-                $status['error'] = $db->stderr ();
-                return $status;
-            }
-            $query = "REPLACE INTO #__config_plugins SET plugin = 'auth/jfusion' , name = 'jf_username_id', value = '';";
-            $db->Execute($query);
-            if ($db->getErrorNum() != 0) {
-                $status['error'] = $db->stderr ();
-                return $status;
-            }
-            $query = "REPLACE INTO #__config_plugins SET plugin = 'auth/jfusion' , name = 'jf_password_id', value = '';";
-            $db->Execute($query);
-            if ($db->getErrorNum() != 0) {
-                $status['error'] = $db->stderr ();
-                return $status;
-            }
-            $query = "REPLACE INTO #__config_plugins SET plugin = 'auth/jfusion' , name = 'jf_cookie_secure', value = '0';";
-            $db->Execute($query);
-            if ($db->getErrorNum() != 0) {
-                $status['error'] = $db->stderr ();
-                return $status;
-            }
-            $query = "REPLACE INTO #__config_plugins SET plugin = 'auth/jfusion' , name = 'jf_cookie_httponly', value = '0';";
-            $db->Execute($query);
-            if ($db->getErrorNum() != 0) {
-                $status['error'] = $db->stderr ();
-                return $status;
-            }
-            $query = "REPLACE INTO #__config_plugins SET plugin = 'auth/jfusion' , name = 'jf_verifyhost', value = '0';";
-            $db->Execute($query);
-            if ($db->getErrorNum() != 0) {
-                $status['error'] = $db->stderr ();
-                return $status;
-            }
-            $query = "REPLACE INTO #__config_plugins SET plugin = 'auth/jfusion' , name = 'jf_leavealone', value = '';";
-            $db->Execute($query);
-            if ($db->getErrorNum() != 0) {
-                $status['error'] = $db->stderr ();
-                return $status;
-            }
-            $query = "REPLACE INTO #__config_plugins SET plugin = 'auth/jfusion' , name = 'jf_expires', value = '1800';";
-            $db->Execute($query);
-            if ($db->getErrorNum() != 0) {
-                $status['error'] = $db->stderr ();
-                return $status;
-            }
-
             $status['error'] = $jname . ': ' . JText::sprintf('INSTALL_MODULE_ERROR', $src_archive, $dest);
-        }else{
+        } else {
             $status['message'] = $jname .': ' . JText::_('INSTALL_MODULE_SUCCESS');
         }
 
@@ -407,124 +326,39 @@ class JFusionAdmin_moodle extends JFusionAdmin
                 JFolder::delete($source_path . DS . $file);
             }
         }
-
-        $query = "DELETE FROM #__config_plugins WHERE plugin = 'auth/jfusion' AND name = 'jf_enabled';";
-        $db->Execute($query);
-        if ($db->getErrorNum() != 0) {
-            $status['error'] = $db->stderr ();
-            return $status;
-        }
-        $query = "DELETE FROM #__config_plugins WHERE plugin = 'auth/jfusion' AND name = 'jf_ismaster';";
-        $db->Execute($query);
-        if ($db->getErrorNum() != 0) {
-            $status['error'] = $db->stderr ();
-            return $status;
-        }
-        $query = "DELETE FROM #__config_plugins WHERE plugin = 'auth/jfusion' AND name = 'jf_fullpath';";
-        $db->Execute($query);
-        if ($db->getErrorNum() != 0) {
-            $status['error'] = $db->stderr ();
-            return $status;
-        }
-        $query = "DELETE FROM #__config_plugins WHERE plugin = 'auth/jfusion' AND name = 'jf_baseurl';";
-        $db->Execute($query);
-        if ($db->getErrorNum() != 0) {
-            $status['error'] = $db->stderr ();
-            return $status;
-        }
-        $query = "DELETE FROM #__config_plugins WHERE plugin = 'auth/jfusion' AND name = 'jf_loginpath';";
-        $db->Execute($query);
-        if ($db->getErrorNum() != 0) {
-            $status['error'] = $db->stderr ();
-            return $status;
-        }
-        $query = "DELETE FROM #__config_plugins WHERE plugin = 'auth/jfusion' AND name = 'jf_logoutpath';";
-        $db->Execute($query);
-        if ($db->getErrorNum() != 0) {
-            $status['error'] = $db->stderr ();
-            return $status;
-        }
-        $query = "DELETE FROM #__config_plugins WHERE plugin = 'auth/jfusion' AND name = 'jf_formid';";
-        $db->Execute($query);
-        if ($db->getErrorNum() != 0) {
-            $status['error'] = $db->stderr ();
-            return $status;
-        }
-        $query = "DELETE FROM #__config_plugins WHERE plugin = 'auth/jfusion' AND name = 'jf_relpath';";
-        $db->Execute($query);
-        if ($db->getErrorNum() != 0) {
-            $status['error'] = $db->stderr ();
-            return $status;
-        }
-        $query = "DELETE FROM #__config_plugins WHERE plugin = 'auth/jfusion' AND name = 'jf_cookiedomain';";
-        $db->Execute($query);
-        if ($db->getErrorNum() != 0) {
-            $status['error'] = $db->stderr ();
-            return $status;
-        }
-        $query = "DELETE FROM #__config_plugins WHERE plugin = 'auth/jfusion' AND name = 'jf_cookiepath';";
-        $db->Execute($query);
-        if ($db->getErrorNum() != 0) {
-            $status['error'] = $db->stderr ();
-            return $status;
-        }
-        $query = "DELETE FROM #__config_plugins WHERE plugin = 'auth/jfusion' AND name = 'jf_username_id';";
-        $db->Execute($query);
-        if ($db->getErrorNum() != 0) {
-            $status['error'] = $db->stderr ();
-            return $status;
-        }
-        $query = "DELETE FROM #__config_plugins WHERE plugin = 'auth/jfusion' AND name = 'jf_password_id';";
-        $db->Execute($query);
-        if ($db->getErrorNum() != 0) {
-            $status['error'] = $db->stderr ();
-            return $status;
-        }
-        $query = "DELETE FROM #__config_plugins WHERE plugin = 'auth/jfusion' AND name = 'jf_cookie_secure';";
-        $db->Execute($query);
-        if ($db->getErrorNum() != 0) {
-            $status['error'] = $db->stderr ();
-            return $status;
-        }
-        $query = "DELETE FROM #__config_plugins WHERE plugin = 'auth/jfusion' AND name = 'jf_cookie_httponly';";
-        $db->Execute($query);
-        if ($db->getErrorNum() != 0) {
-            $status['error'] = $db->stderr ();
-            return $status;
-        }
-        $query = "DELETE FROM #__config_plugins WHERE plugin = 'auth/jfusion' AND name = 'jf_verifyhost';";
-        $db->Execute($query);
-        if ($db->getErrorNum() != 0) {
-            $status['error'] = $db->stderr ();
-            return $status;
-        }
-        $query = "DELETE FROM #__config_plugins WHERE plugin = 'auth/jfusion' AND name = 'jf_leavealone';";
-        $db->Execute($query);
-        if ($db->getErrorNum() != 0) {
-            $status['error'] = $db->stderr ();
-            return $status;
-        }
-        $query = "DELETE FROM #__config_plugins WHERE plugin = 'auth/jfusion' AND name = 'jf_expires';";
-        $db->Execute($query);
-        if ($db->getErrorNum() != 0) {
-            $status['error'] = $db->stderr ();
-            return $status;
-        }
-        $query = "DELETE FROM #__config_plugins WHERE plugin = 'auth/jfusion' AND name = 'jf_expires';";
-        $db->Execute($query);
-        if ($db->getErrorNum() != 0) {
-            $status['error'] = $db->stderr ();
-            return $status;
+        $querys = array();
+        $querys[] = "DELETE FROM #__config_plugins WHERE plugin = 'auth/jfusion' AND name = 'jf_enabled';";
+        $querys[] = "DELETE FROM #__config_plugins WHERE plugin = 'auth/jfusion' AND name = 'jf_ismaster';";
+        $querys[] = "DELETE FROM #__config_plugins WHERE plugin = 'auth/jfusion' AND name = 'jf_fullpath';";
+        $querys[] = "DELETE FROM #__config_plugins WHERE plugin = 'auth/jfusion' AND name = 'jf_baseurl';";
+        $querys[] = "DELETE FROM #__config_plugins WHERE plugin = 'auth/jfusion' AND name = 'jf_loginpath';";
+        $querys[] = "DELETE FROM #__config_plugins WHERE plugin = 'auth/jfusion' AND name = 'jf_logoutpath';";
+        $querys[] = "DELETE FROM #__config_plugins WHERE plugin = 'auth/jfusion' AND name = 'jf_formid';";
+        $querys[] = "DELETE FROM #__config_plugins WHERE plugin = 'auth/jfusion' AND name = 'jf_relpath';";
+        $querys[] = "DELETE FROM #__config_plugins WHERE plugin = 'auth/jfusion' AND name = 'jf_cookiedomain';";
+        $querys[] = "DELETE FROM #__config_plugins WHERE plugin = 'auth/jfusion' AND name = 'jf_cookiepath';";
+        $querys[] = "DELETE FROM #__config_plugins WHERE plugin = 'auth/jfusion' AND name = 'jf_username_id';";
+        $querys[] = "DELETE FROM #__config_plugins WHERE plugin = 'auth/jfusion' AND name = 'jf_password_id';";
+        $querys[] = "DELETE FROM #__config_plugins WHERE plugin = 'auth/jfusion' AND name = 'jf_cookie_secure';";
+        $querys[] = "DELETE FROM #__config_plugins WHERE plugin = 'auth/jfusion' AND name = 'jf_cookie_httponly';";
+        $querys[] = "DELETE FROM #__config_plugins WHERE plugin = 'auth/jfusion' AND name = 'jf_verifyhost';";
+        $querys[] = "DELETE FROM #__config_plugins WHERE plugin = 'auth/jfusion' AND name = 'jf_leavealone';";
+        $querys[] = "DELETE FROM #__config_plugins WHERE plugin = 'auth/jfusion' AND name = 'jf_expires';";
+        $querys[] = "DELETE FROM #__config_plugins WHERE plugin = 'auth/jfusion' AND name = 'jf_expires';";
+        foreach($querys as $query){
+            $db->setQuery($query);
+            $db->query();
+            if ($db->getErrorNum() != 0) {
+                $status['error'] = $db->stderr ();
+                return $status;
+            }
         }
 
-        if ($ret !== true) {
-            $status['error'] = $jname . ': ' . JText::sprintf('UNINSTALL_MODULE_ERROR', "Moodle DSSO support", '');
-        }else{
-            $status['message'] = $jname .': ' . JText::_('UNINSTALL_MODULE_SUCCESS');
-        }
+        $status['message'] = $jname .': ' . JText::_('UNINSTALL_MODULE_SUCCESS');
+
         // remove jfusion as active plugin
         $query = "SELECT value from #__config WHERE name = 'auth'";
-        $db->Execute($query);
+        $db->setQuery($query);
         $value = $db->loadResult();
         $auths = explode(',',$value);
         $key = array_search('jfusion',$auths);
@@ -553,12 +387,12 @@ class JFusionAdmin_moodle extends JFusionAdmin
         if(file_exists($jfusion_auth)){
             // find out if jfusion is listed in the active auth plugins
             $query = "SELECT value from #__config WHERE name = 'auth'";
-            $db->Execute($query);
+            $db->setQuery($query);
             $value = $db->loadResult();
             if (stripos($value,'jfusion')!== false ){
                 // now find out if we have enabled the plugin
                 $query = "SELECT value from #__config_plugins WHERE plugin = 'auth/jfusion' AND name = 'jf_enabled';";
-                $db->Execute($query);
+                $db->setQuery($query);
                 $value = $db->loadResult();
                 if  ($value == '1'){
                     $activated = 1;
@@ -596,14 +430,15 @@ class JFusionAdmin_moodle extends JFusionAdmin
         $activation = ((JRequest::getVar('activation', 1))?'true':'false');
         if ($activation == 'true') {
             $query = "UPDATE #__config_plugins SET value = '1' WHERE plugin = 'auth/jfusion' AND name = 'jf_enabled' ;";
-            $db->Execute($query);
+            $db->setQuery($query);
+            $db->query();
             if ($db->getErrorNum() != 0) {
                 $status['error'] = $db->stderr ();
                 return $status;
             }
             // add jfusion plugin jfusion as active plugin
             $query = "SELECT value from #__config WHERE name = 'auth';";
-            $db->Execute($query);
+            $db->setQuery($query);
 
             $value = $db->loadResult();
             $auths = explode(',',$value);
@@ -616,22 +451,23 @@ class JFusionAdmin_moodle extends JFusionAdmin
             }
             $value .= ',jfusion';
             $query = "UPDATE #__config SET value = '".$value."' WHERE name = 'auth' ;";
-            $db->Execute($query);
+            $db->setQuery($query);
+            $db->query();
             if ($db->getErrorNum() != 0) {
                 $status['error'] = $db->stderr ();
                 return $status;
             }
         } else {
-
             $query = "UPDATE #__config_plugins SET value = '0' WHERE plugin = 'auth/jfusion' AND name = 'jf_enabled' ;";
-            $db->Execute($query);
+            $db->setQuery($query);
+            $db->query();
             if ($db->getErrorNum() != 0) {
                 $status['error'] = $db->stderr ();
                 return $status;
             }
             // remove jfusion as active plugin
             $query = "SELECT value from #__config WHERE name = 'auth'";
-            $db->Execute($query);
+            $db->setQuery($query);
             $value = $db->loadResult();
             $auths = explode(',',$value);
             $key = array_search('jfusion',$auths);
@@ -643,7 +479,8 @@ class JFusionAdmin_moodle extends JFusionAdmin
                     }
                 }
                 $query = "UPDATE #__config SET value = '".$authstr."' WHERE name = 'auth' ;";
-                $db->Execute($query);
+                $db->setQuery($query);
+                $db->query();
                 if ($db->getErrorNum() != 0) {
                     $status['error'] = $db->stderr ();
                     return $status;

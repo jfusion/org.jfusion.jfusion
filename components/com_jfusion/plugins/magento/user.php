@@ -335,7 +335,8 @@ class JFusionUser_magento extends JFusionUser {
             // So, we need to implement it for our purpose that's why there is a new factory for magento
             $db->BeginTrans();
             $query = 'SELECT increment_last_id FROM #__eav_entity_store WHERE entity_type_id = ' . (int)$this->getMagentoEntityTypeID('customer') . ' AND store_id = 0';
-            $db->Execute($query);
+            $db->setQuery($query);
+            $db->query();
             if ($db->getErrorNum() != 0) {
                 //$db->Execute ( 'ROLLBACK' );//ROLLBACK TRANSACTION
                 $db->RollbackTrans();
@@ -344,7 +345,8 @@ class JFusionUser_magento extends JFusionUser {
             $increment_last_id_int = ( int )$db->loadresult();
             $increment_last_id = sprintf("%'09u", ($increment_last_id_int + 1));
             $query = 'UPDATE #__eav_entity_store SET increment_last_id = ' . $db->Quote($increment_last_id) . ' WHERE entity_type_id = ' . (int)$this->getMagentoEntityTypeID('customer') . ' AND store_id = 0';
-            $db->Execute($query);
+            $db->setQuery($query);
+            $db->query();
             if ($db->getErrorNum() != 0) {
                 //$db->Execute ( 'ROLLBACK' );
                 $db->RollbackTrans();
@@ -352,7 +354,8 @@ class JFusionUser_magento extends JFusionUser {
             }
             // so far so good, now create an empty user, to be updates later
             $query = 'INSERT INTO #__customer_entity   (entity_type_id, increment_id, is_active, created_at, updated_at) VALUES ' . '(' . (int)$this->getMagentoEntityTypeID('customer') . ',' . $db->Quote($increment_last_id) . ',1,' . $db->Quote($sqlDateTime) . ', ' . $db->Quote($sqlDateTime) . ')';
-            $db->Execute($query);
+            $db->setQuery($query);
+            $db->query();
             if ($db->getErrorNum() != 0) {
                 //$db->Execute ( 'ROLLBACK' );
                 $db->RollbackTrans();
@@ -361,7 +364,8 @@ class JFusionUser_magento extends JFusionUser {
             $entity_id = $db->insertid();
         } else { // we are updating
             $query = 'UPDATE #__customer_entity' . ' SET updated_at = ' . $db->Quote($sqlDateTime) . ' WHERE entity_id = ' . (int)$entity_id;
-            $db->Execute($query);
+            $db->setQuery($query);
+            $db->query();
             if ($db->getErrorNum() != 0) {
                 //$db->Execute ( 'ROLLBACK' );
                 $db->RollbackTrans();
@@ -373,7 +377,8 @@ class JFusionUser_magento extends JFusionUser {
             if ($user[$i]['backend_type'] == 'static') {
                 if (isset($user[$i]['value'])) {
                     $query = 'UPDATE #__customer_entity' . ' SET ' . $user[$i]['attribute_code'] . '= ' . $db->Quote($user[$i]['value']) . ' WHERE entity_id = ' . $entity_id;
-                    $db->Execute($query);
+                    $db->setQuery($query);
+                    $db->query();
                     if ($db->getErrorNum() != 0) {
                         //$db->Execute ( 'ROLLBACK' );
                         $db->RollbackTrans();
@@ -383,7 +388,8 @@ class JFusionUser_magento extends JFusionUser {
             } else {
                 if (isset($user[$i]['value'])) {
                     $query = 'SELECT value FROM #__customer_entity' . '_' . $user[$i]['backend_type'] . ' WHERE entity_id = ' . (int)$entity_id . ' AND entity_type_id = ' . (int)$this->getMagentoEntityTypeID('customer') . ' AND attribute_id = ' . (int)$user[$i]['attribute_id'];
-                    $db->Execute($query);
+                    $db->setQuery($query);
+                    $db->query();
                     $result = $db->loadresult();
                     if ($result) {
                         // we do not update an empty value, but remove the record instead
@@ -395,7 +401,8 @@ class JFusionUser_magento extends JFusionUser {
                     } else { // must create
                         $query = 'INSERT INTO #__customer_entity' . '_' . $user[$i]['backend_type'] . ' (value, attribute_id, entity_id, entity_type_id) VALUES (' . $db->Quote($user[$i]['value']) . ', ' . $user[$i]['attribute_id'] . ', ' . $entity_id . ', ' . (int)$this->getMagentoEntityTypeID('customer') . ')';
                     }
-                    $db->Execute($query);
+                    $db->setQuery($query);
+                    $db->query();
                     if ($db->getErrorNum() != 0) {
                         //$db->Execute ( 'ROLLBACK' );
                         $db->RollbackTrans();

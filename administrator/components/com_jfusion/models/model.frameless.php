@@ -24,7 +24,9 @@ class JFusionFrameless {
      * @static
      * @param $jname
      * @param bool $isPlugin
+     *
      * @return \stdClass
+     *
      */
     public static function initData($jname,$isPlugin=true)
 	{
@@ -51,7 +53,7 @@ class JFusionFrameless {
 		$data->fullURL = $query ? $url . '?' . $query : $url;
         $data->fullURL = str_replace('&', '&amp;', $data->fullURL);
 
-        $menu = JSite::getMenu ();
+        $menu = JSite::getMenu();
     	if(!$isPlugin) {
             $item = $menu->getItem($jname);
 
@@ -155,7 +157,8 @@ class JFusionFrameless {
             if (!empty($db_name)) {
             	$db =& JFusionFactory::getDatabase($this->jname);
                 $query = "USE $db_name";
-                $db->Execute($query);
+                $db->setQuery($query);
+                $db->query();
             }
             */
 		}

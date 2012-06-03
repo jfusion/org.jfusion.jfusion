@@ -465,42 +465,41 @@ class JFusionPluginInstaller extends JObject
         if (!$jname || !JFolder::exists($dir)) {
             $this->parent->abort(JText::_('UNINSTALL_ERROR_PATH'));
             $result['message'] = JText::_('UNINSTALL_ERROR_PATH');
-            return $result;
-        }
-        /**
-         * ---------------------------------------------------------------------------------------------
-         * Remove Language files Processing Section
-         * ---------------------------------------------------------------------------------------------
-         */
-        // Get the extension manifest object
-        $manifest = $this->_getManifest($dir);
-        if (is_null($manifest)) {
-            $this->parent->abort(JText::_('INSTALL_NOT_VALID_PLUGIN'));
-            $result['message'] = JText::_('INSTALL_NOT_VALID_PLUGIN');
-            return $result;
-        }
-        $this->manifest = & $manifest;
-
-    	if(JFusionFunction::isJoomlaVersion('1.6')) {
-        	$this->parent->parseLanguages($this->manifest->languages);
-        	$this->parent->parseLanguages($this->manifest->administration->languages, 1);
         } else {
-        	$this->parent->removeFiles($this->manifest->getElementByPath('languages'));
-        	$this->parent->removeFiles($this->manifest->getElementByPath('administration/languages'), 1);
-		}
+            /**
+             * ---------------------------------------------------------------------------------------------
+             * Remove Language files Processing Section
+             * ---------------------------------------------------------------------------------------------
+             */
+            // Get the extension manifest object
+            $manifest = $this->_getManifest($dir);
+            if (is_null($manifest)) {
+                $this->parent->abort(JText::_('INSTALL_NOT_VALID_PLUGIN'));
+                $result['message'] = JText::_('INSTALL_NOT_VALID_PLUGIN');
+            } else {
+                $this->manifest = & $manifest;
 
-        // remove files
-        if (!JFolder::delete($dir)) {
-            $this->parent->abort(JText::_('UNINSTALL_ERROR_DELETE'));
-            $result['message'] = JText::_('UNINSTALL_ERROR_DELETE');
-            return $result;
+                if(JFusionFunction::isJoomlaVersion('1.6')) {
+                    $this->parent->parseLanguages($this->manifest->languages);
+                    $this->parent->parseLanguages($this->manifest->administration->languages, 1);
+                } else {
+                    $this->parent->removeFiles($this->manifest->getElementByPath('languages'));
+                    $this->parent->removeFiles($this->manifest->getElementByPath('administration/languages'), 1);
+                }
+
+                // remove files
+                if (!JFolder::delete($dir)) {
+                    $this->parent->abort(JText::_('UNINSTALL_ERROR_DELETE'));
+                    $result['message'] = JText::_('UNINSTALL_ERROR_DELETE');
+                } else {
+                    //return success
+                    $msg = JText::_('PLUGIN') . ' ' .$jname .' ' . JText::_('UNINSTALL') . ': ' . JText::_('SUCCESS');
+                    $result['message'] = $msg;
+                    $result['status'] = true;
+                    $result['jname'] = $jname;
+                }
+            }
         }
-
-        //return success
-        $msg = JText::_('PLUGIN') . ' ' .$jname .' ' . JText::_('UNINSTALL') . ': ' . JText::_('SUCCESS');
-        $result['message'] = $msg;
-        $result['status'] = true;
-        $result['jname'] = $jname;
         return $result;
     }
     /**

@@ -18,13 +18,6 @@
 defined('_JEXEC') or die('Restricted access');
 
 /**
- * load the DokuWiki framework
- */
-if (!class_exists('Dokuwiki')) {
-	require_once dirname(__FILE__) . DS . 'dokuwiki.php';
-}
-
-/**
  * JFusion user class for DokuWiki
  *
  * @category   JFusion
@@ -44,7 +37,7 @@ class JFusionUser_dokuwiki extends JFusionUser {
     function updateUser($userinfo, $overwrite) {
         // Initialise some variables
         $params = JFusionFactory::getParams($this->getJname());
-        $share = Dokuwiki::getInstance($this->getJname());
+        $helper = JFusionFactory::getHelper($this->getJname());
         $userinfo->username = $this->filterUsername($userinfo->username);
         $update_email = $params->get('update_email');
         $usergroup = $params->get('usergroup');
@@ -79,7 +72,7 @@ class JFusionUser_dokuwiki extends JFusionUser {
                     $status['debug'][] = JText::_('SKIPPED_NAME_UPDATE');
                 }
                 if (isset($userinfo->password_clear) && strlen($userinfo->password_clear)) {
-                    if (!$share->auth->verifyPassword($userinfo->password_clear, $existinguser->password)) {
+                    if (!$helper->auth->verifyPassword($userinfo->password_clear, $existinguser->password)) {
                         // add password_clear to existinguser for the Joomla helper routines
                         $existinguser->password_clear = $userinfo->password_clear;
                         $changes['pass'] = $userinfo->password_clear;
@@ -118,7 +111,7 @@ class JFusionUser_dokuwiki extends JFusionUser {
                     }
                 }
                 if (count($changes)) {
-                    if (!$share->auth->modifyUser($userinfo->username, $changes)) {
+                    if (!$helper->auth->modifyUser($userinfo->username, $changes)) {
                         $status['error'][] = 'ERROR: Updating ' . $userinfo->username;
                     }
                 }
@@ -142,13 +135,13 @@ class JFusionUser_dokuwiki extends JFusionUser {
      * @return null|object
      */
     function getUser($userinfo) {
-        $share = Dokuwiki::getInstance($this->getJname());
+        $helper = JFusionFactory::getHelper($this->getJname());
     	if (is_object($userinfo)) {
     		$username = $this->filterUsername($userinfo->username);
 		} else {
 			$username = $this->filterUsername($userinfo);
 		}
-		$raw_user = $share->auth->getUserData($username);
+		$raw_user = $helper->auth->getUserData($username);
         if (is_array($raw_user)) {
             $user = new stdClass;
             $user->userid = $username;
@@ -181,8 +174,8 @@ class JFusionUser_dokuwiki extends JFusionUser {
         $status = array('error' => array(),'debug' => array());
         $username = $this->filterUsername($userinfo->username);
         $user[$username] = $username;
-        $share = Dokuwiki::getInstance($this->getJname());
-        if (!$share->auth->deleteUsers($user)) {
+        $helper = JFusionFactory::getHelper($this->getJname());
+        if (!$helper->auth->deleteUsers($user)) {
             $status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . 'No User Deleted';
         } else {
             $status['debug'][] = JText::_('USER_DELETION') . ' ' . $username;
@@ -277,7 +270,7 @@ class JFusionUser_dokuwiki extends JFusionUser {
      * @param array &$status
      */
     function createUser($userinfo, &$status) {
-        $share = Dokuwiki::getInstance($this->getJname());
+        $helper = JFusionFactory::getHelper($this->getJname());
         if (isset($userinfo->password_clear)) {
             $pass = $userinfo->password_clear;
         } else {
@@ -304,7 +297,7 @@ class JFusionUser_dokuwiki extends JFusionUser {
 		if (!count($correct_usergroup)) $correct_usergroup = null;
 
         //now append the new user data
-        if (!$share->auth->createUser($userinfo->username, $pass, $userinfo->name, $userinfo->email,$correct_usergroup)) {
+        if (!$helper->auth->createUser($userinfo->username, $pass, $userinfo->name, $userinfo->email,$correct_usergroup)) {
             //return the error
             $status['error'] = JText::_('USER_CREATION_ERROR');
         } else {

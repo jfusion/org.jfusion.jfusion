@@ -18,13 +18,6 @@
 defined('_JEXEC') or die('Restricted access');
 
 /**
- * load the DokuWiki framework
- */
-if (!class_exists('Dokuwiki')) {
-	require_once dirname(__FILE__) . DS . 'dokuwiki.php';
-}
-
-/**
  * JFusion public class for DokuWiki
  *
  * @category   JFusion
@@ -77,8 +70,12 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
         $params = JFusionFactory::getParams($this->getJname());
         $source_path = $params->get('source_path');
 
+        if (substr($source_path, -1) != DS) {
+            $source_path .= DS;
+        }
+
         //setup constants needed by Dokuwiki
-        $helper = & JFusionFactory::getHelper($this->getJname());
+        $helper = JFusionFactory::getHelper($this->getJname());
         $helper->defineConstants();
 
         $do = JRequest::getVar('do');
@@ -104,19 +101,9 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
                 $mainframe->login($credentials, $options);
             }
         }
-        if (substr($source_path, -1) == DS) {
-            $index_file = $source_path . 'doku.php';
-            if (JRequest::getVar('jfile') == 'detail.php') $index_file = $source_path . 'lib' . DS . 'exe' . DS . 'detail.php';
-            //            if ( JRequest::getVar('jfile') == 'fetch.php' ) $index_file = $source_path.'lib'.DS.'exe'.DS.'fetch.php';
-            //            if ( JRequest::getVar('jfile') == 'feed.php' ) $index_file = $source_path .'feed.php';
+        $index_file = $source_path . 'doku.php';
+        if (JRequest::getVar('jfile') == 'detail.php') $index_file = $source_path . 'lib' . DS . 'exe' . DS . 'detail.php';
 
-        } else {
-            $index_file = $source_path . DS . 'doku.php';
-            if (JRequest::getVar('jfile') == 'detail.php') $index_file = $source_path . DS . 'lib' . DS . 'exe' . DS . 'detail.php';
-            //            if ( JRequest::getVar('jfile') == 'fetch.php' ) $index_file = $source_path.DS.'lib'.DS.'exe'.DS.'fetch.php';
-            //            if ( JRequest::getVar('jfile') == 'feed.php' ) $index_file = $source_path .DS.'feed.php';
-
-        }
         if (JRequest::getVar('media')) JRequest::setVar('media', str_replace(':', '-', JRequest::getVar('media')));
         //loading the JString, to prevent error!
         require_once JPATH_LIBRARIES . DS . 'joomla' . DS . 'utilities' . DS . 'string.php';
@@ -125,6 +112,11 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
         	require_once JPATH_LIBRARIES . DS . 'phputf8' . DS . 'mbstring' . DS . 'case.php';
         }
         require_once JPATH_LIBRARIES . DS . 'phputf8' . DS . 'mbstring' . DS . 'core.php';
+
+        define('DOKU_INC', $source_path);
+        require_once $source_path . 'inc' . DS . 'events.php';
+        require_once $source_path . 'inc' . DS . 'init.php';
+
         require_once JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'hooks.php';
         if (!is_file($index_file)) {
             JError::raiseWarning(500, 'The path to the DokuWiki index file set in the component preferences does not exist');
@@ -384,7 +376,8 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
         }
         require_once 'doku_search.php';
         $highlights = array();
-        $results = DokuWikiSearch::ft_pageSearch($text, $highlights);
+        $search = new DokuWikiSearch($this->getJname());
+        $results = $search->ft_pageSearch($text, $highlights);
         //pass results back to the plugin in case they need to be filtered
         $this->filterSearchResults($results);
         $rows = array();

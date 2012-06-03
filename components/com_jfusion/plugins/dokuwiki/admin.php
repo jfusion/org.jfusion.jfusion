@@ -17,12 +17,6 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
-/**
- * load the DokuWiki framework
- */
-if (!class_exists('Dokuwiki')) {
-	require_once dirname(__FILE__) . DS . 'dokuwiki.php';
-}
 
 /**
  * JFusion admin class for DokuWiki
@@ -57,9 +51,9 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
     {
         $status = array();
         $params = JFusionFactory::getParams($this->getJname());
-        $share = Dokuwiki::getInstance($this->getJname());
+        $helper = JFusionFactory::getHelper($this->getJname());
         $source_path = $params->get('source_path');
-        $config = $share->getConf($source_path);
+        $config = $helper->getConf($source_path);
         if (is_array($config)) {
             $status['config'] = 1;
             $status['message'] = JText::_('GOOD_CONFIG');
@@ -79,9 +73,9 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
      */
     function setupFromPath($Path)
     {
-        $share = Dokuwiki::getInstance($this->getJname());
+        $helper = JFusionFactory::getHelper($this->getJname());
         //try to open the file
-        $config = $share->getConf($Path);
+        $config = $helper->getConf($Path);
         $params = array();
         if ($config === false) {
             JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $Path " . JText::_('WIZARD_MANUAL'));
@@ -141,9 +135,9 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
      * @return array array with object with list of users
      */
     function getUserList($limitstart = null, $limit = null)
-    {	
-        $share = Dokuwiki::getInstance($this->getJname());
-        $list = $share->auth->retrieveUsers($limitstart,$limit);
+    {
+        $helper = JFusionFactory::getHelper($this->getJname());
+        $list = $helper->auth->retrieveUsers($limitstart,$limit);
         $userlist = array();
 		foreach ($list as $value) {
             $user = new stdClass;
@@ -161,8 +155,8 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
      */
     function getUserCount()
     {
-        $share = Dokuwiki::getInstance($this->getJname());
-        return $share->auth->getUserCount();
+        $helper = JFusionFactory::getHelper($this->getJname());
+        return $helper->auth->getUserCount();
     }
 
     /**
@@ -200,8 +194,8 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
      */
     function getDefaultUsergroup()
     {
-        $share = Dokuwiki::getInstance($this->getJname());
-        return $share->getDefaultUsergroup();
+        $helper = JFusionFactory::getHelper($this->getJname());
+        return $helper->getDefaultUsergroup();
     }
 
     /**
@@ -211,8 +205,8 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
      */
     function allowRegistration()
     {
-        $share = Dokuwiki::getInstance($this->getJname());
-        $conf = $share->getConf();
+        $helper = JFusionFactory::getHelper($this->getJname());
+        $conf = $helper->getConf();
         if (strpos($conf['disableactions'], 'register') !== false) {
             return false;
         } else {
@@ -394,8 +388,8 @@ if (!defined(\'_JEXEC\'))';
         $error = 0;
         $reason = '';
 
-        $share =& Dokuwiki::getInstance($this->getJname());
-        $conf =& $share->getConf();
+        $helper = JFusionFactory::getHelper($this->getJname());
+        $conf = $helper->getConf();
         $params =& JFusionFactory::getParams($this->getJname());
         $source_path = $params->get('source_path');
         $plugindir = $source_path . DS . 'lib' . DS . 'plugins';

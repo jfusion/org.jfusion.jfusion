@@ -17,21 +17,6 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
-if (substr($source_path, -1) == DS) {
-    /**
-     * define the paths
-     */
-    define('DOKU_INC', $source_path);
-	require_once $source_path . 'inc' . DS . 'events.php';    
-    require_once $source_path . 'inc' . DS . 'init.php';        
-} else {
-    /**
-     * define the paths
-     */
-    define('DOKU_INC', $source_path . DS);
-    require_once $source_path . DS . 'inc' . DS . 'events.php';    
-    require_once $source_path . DS . 'inc' . DS . 'init.php';
-}
 /**
  * JFusion Hooks for dokuwiki
  *

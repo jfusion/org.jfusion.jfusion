@@ -18,13 +18,6 @@
 defined('_JEXEC') or die('Restricted access');
 
 /**
- * load the DokuWiki framework
- */
-if (!class_exists('Dokuwiki')) {
-	require_once dirname(__FILE__) . DS . 'dokuwiki.php';
-}
-
-/**
  * JFusion auth plugin class
  *
  * @category   JFusion
@@ -55,8 +48,8 @@ class JFusionAuth_dokuwiki extends JFusionAuth
      * @return string
      */
     function generateEncryptedPassword($userinfo)
-    {	
-        $share = Dokuwiki::getInstance($this->getJname());
-        return $share->auth->cryptPassword($userinfo->password_clear);
+    {
+        $helper = JFusionFactory::getHelper($this->getJname());
+        return $helper->auth->cryptPassword($userinfo->password_clear);
     }
 }

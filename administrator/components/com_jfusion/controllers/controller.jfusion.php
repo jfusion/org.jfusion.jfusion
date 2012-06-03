@@ -72,7 +72,6 @@ class JFusionController extends JController
                 $db->setQuery($query);
                 $db->query();
 
-
                 $parameters = & JFusionFactory::getParams($jname);
                 $param2_output = $parameters->render();
                 JError::raiseNotice(0, JText::_('WIZARD_SUCCESS'));
@@ -99,10 +98,10 @@ class JFusionController extends JController
     }
     
    /**
-     * Function to change the master/slave/encryption settings in the jos_jfusion table
-     *
-     * @return void
-     */
+    * Function to change the master/slave/encryption settings in the jos_jfusion table
+    *
+    * @return void
+    */
     function changesettings()
     {
         //find out the posted ID of the JFusion module to publish
@@ -295,6 +294,9 @@ class JFusionController extends JController
         $syncdata = JFusionUsersync::getSyncdata($syncid);
         if (empty($syncdata['completed'])) {
             JRequest::setVar('view', 'syncprogress');
+            /*
+            * @var $view JView
+            */
             $view = & $this->getView('syncprogress', 'html');
             //append log data now
             $view->assignRef('syncdata', $syncdata);
@@ -306,6 +308,9 @@ class JFusionController extends JController
             //needed in case the language does not have "finished" in it for ajax to know to stop the timer
             echo '<div style="display:none;">finished</div>';
             JRequest::setVar('view', 'syncstatus');
+            /*
+            * @var $view JView
+            */
             $view = & $this->getView('syncstatus', 'html');
             //append log
             $syncdata['log'] = JFusionUsersync::getLogData($syncid);

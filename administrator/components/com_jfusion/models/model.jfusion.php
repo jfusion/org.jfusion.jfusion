@@ -735,7 +735,7 @@ class JFusionFunction
             //Encode html entities added by the plugin's prepareText function
             $text = htmlentities($text);
 
-            $bbcode =& JFusionFactory::getCodeParser();
+            $bbcode = JFusionFactory::getCodeParser();
 
             //do not parse & into &amp;
             $bbcode->SetAllowAmpersand(true);

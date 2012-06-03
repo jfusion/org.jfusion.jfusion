@@ -55,7 +55,8 @@ class jfusionViewplugindisplay extends JView {
             $rows = $db->loadObjectList();
             $ordering = 1;
             foreach ($rows as $row){
-                $db->Execute('UPDATE #__jfusion SET ordering = '.$ordering.' WHERE name = '. $db->Quote($row->name));
+                $db->setQuery('UPDATE #__jfusion SET ordering = '.$ordering.' WHERE name = '. $db->Quote($row->name));
+                $db->query();
                 $ordering++;
             }
         }
@@ -188,8 +189,9 @@ class jfusionViewplugindisplay extends JView {
                    	$active = '';
                	}
 
-              	$db->Execute('UPDATE #__jfusion SET '.$active.'status = '.$db->Quote($record->config_status['config']).' WHERE name =' . $db->Quote($record->name));
-               	//update the record status for the rest of the code
+              	$db->setQuery('UPDATE #__jfusion SET '.$active.'status = '.$db->Quote($record->config_status['config']).' WHERE name =' . $db->Quote($record->name));
+                $db->query();
+               	//update the record status for the resExecute of the code
             	$record->status = $record->config_status['config'];
          	}
       	}

@@ -117,8 +117,14 @@ class simple_html_dom_node {
     public $attr = array();
     public $children = array();
     public $nodes = array();
+    /**
+     * @var simple_html_dom $parent
+     */
     public $parent = null;
     public $_ = array();
+    /**
+     * @var $dom simple_html_dom
+     */
     private $dom = null;
 
     /**
@@ -679,6 +685,9 @@ class simple_html_dom_node {
  * simple html dom parser
  */
 class simple_html_dom {
+    /**
+     * @var $root simple_html_dom_node
+     */
     public $root = null;
     public $nodes = array();
     public $callback = null;
@@ -688,7 +697,10 @@ class simple_html_dom {
     protected $char;
     protected $size;
     protected $cursor;
-    protected $parent;
+    /**
+     * @var $parent simple_html_dom_node
+     */
+    public $parent;
     protected $noise = array();
     protected $token_blank = " \t\r\n";
     protected $token_equal = ' =/>';

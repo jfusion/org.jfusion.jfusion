@@ -644,7 +644,8 @@ class JFusionForum_phpbb3 extends JFusionForum {
 		} else {
 			//update the thread title
 			$query = "UPDATE #__topics SET topic_title = " . $jdb->Quote($subject) . " WHERE topic_id = " . (int) $threadid;
-			$jdb->Execute($query);
+            $jdb->setQuery($query);
+            $jdb->query();
 		}
 	}
 
