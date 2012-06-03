@@ -53,7 +53,7 @@ class JFusionAdmin_prestashop extends JFusionAdmin
 
     /**
      * @param $storePath
-     * @return array|bool
+     * @return array
      */
     function loadSetup($storePath) {
         //check for trailing slash and generate file path
@@ -62,13 +62,11 @@ class JFusionAdmin_prestashop extends JFusionAdmin
         } else {
             $myfile = $storePath . DS . 'config/settings.inc.php';
         }
+        $config = array();
         if (($file_handle = @fopen($myfile, 'r')) === false) {
             JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));
-            $result = false;
-            return $result;
         } else {
             //parse the file line by line to get only the config variables
-			$config = array();
             $file_handle = fopen($myfile, 'r');
             while (!feof($file_handle)) {
                 $line = fgets($file_handle);
@@ -88,7 +86,6 @@ class JFusionAdmin_prestashop extends JFusionAdmin
                      $value = strtolower($value);
                     }    
                     $config[$name] = $value;
-
                 }
             }
 	        fclose($file_handle);
@@ -98,13 +95,13 @@ class JFusionAdmin_prestashop extends JFusionAdmin
 
     /**
      * @param string $storePath
-     * @return array|bool
+     * @return array
      */
     function setupFromPath($storePath) {
 	    $config = JFusionAdmin_prestashop::loadSetup($storePath);
+        $params = array();
         if (!empty($config)) {
             //save the parameters into array
-            $params = array();
             $params['database_host'] = $config['_DB_SERVER_'];
             $params['database_name'] = $config['_DB_NAME_'];
             $params['database_user'] = $config['_DB_USER_'];
@@ -115,9 +112,9 @@ class JFusionAdmin_prestashop extends JFusionAdmin
             $params['cookie_key'] = $config['_COOKIE_KEY_'];
 			$params['usergroup'] = 1;
 			//return the parameters so it can be saved permanently
-            return $params;
+
         }
-        return false;
+        return $params;
     }
 
     /**

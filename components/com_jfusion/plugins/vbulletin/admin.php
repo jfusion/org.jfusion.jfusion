@@ -51,7 +51,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
 
     /**
      * @param string $forumPath
-     * @return array|bool
+     * @return array
      */
     function setupFromPath($forumPath)
     {
@@ -64,10 +64,9 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
             $funcfile = $forumPath . DS . 'includes' . DS . 'functions.php';
         }
         //try to open the file
+        $params = array();
         if (($file_handle = @fopen($configfile, 'r')) === false) {
             JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $configfile " . JText::_('WIZARD_MANUAL'));
-            $result = false;
-            return $result;
         } else {
             //parse the file line by line to get only the config variables
             $file_handle = fopen($configfile, 'r');
@@ -133,9 +132,8 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
                 fclose($file_handle);
                 $params['cookie_salt'] = $cookie_salt;
             }
-
-            return $params;
         }
+        return $params;
     }
 
     /**

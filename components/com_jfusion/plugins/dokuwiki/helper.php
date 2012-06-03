@@ -96,7 +96,6 @@ class JFusionHelper_dokuwiki
                 JFile::write($saltfile,$dokuwiki_cookie_salt);
             }
         }
-
         return $dokuwiki_cookie_salt;
     }
     

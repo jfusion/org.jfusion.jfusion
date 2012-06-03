@@ -54,90 +54,89 @@ class JFusionUser_dokuwiki extends JFusionUser {
         //check to see if a valid $userinfo object was passed on
         if (!is_object($userinfo)) {
             $status['error'][] = JText::_('NO_USER_DATA_FOUND');
-            return $status;
-        }
-        //find out if the user already exists
-        $existinguser = $this->getUser($userinfo);
-        if (!empty($existinguser)) {
-            $changes = array();
-            //a matching user has been found
-            $status['debug'][] = JText::_('USER_DATA_FOUND');
-            if ($existinguser->email != $userinfo->email) {
-                $status['debug'][] = JText::_('EMAIL_CONFLICT');
-                if ($update_email || $overwrite) {
-                    $status['debug'][] = JText::_('EMAIL_CONFLICT_OVERWITE_ENABLED');
-                    $changes['mail'] = $userinfo->email;
-                    $status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
-                } else {
-                    //return a email conflict
-                    $status['debug'][] = JText::_('EMAIL_CONFLICT_OVERWITE_DISABLED');
-                    $status['error'][] = JText::_('EMAIL') . ' ' . JText::_('CONFLICT') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
-                    $status['userinfo'] = $existinguser;
-                    return $status;
-                }
-            }
-            if ($existinguser->name != $userinfo->name) {
-				$changes['name'] = $userinfo->name;
-            } else {
-				$status['debug'][] = JText::_('SKIPPED_NAME_UPDATE');
-            }
-            if (isset($userinfo->password_clear) && strlen($userinfo->password_clear)) {
-                if (!$share->auth->verifyPassword($userinfo->password_clear, $existinguser->password)) {
-                    // add password_clear to existinguser for the Joomla helper routines
-                    $existinguser->password_clear = $userinfo->password_clear;
-                    $changes['pass'] = $userinfo->password_clear;
-                } else {
-                    $status['debug'][] = JText::_('SKIPPED_PASSWORD_UPDATE') . ':' . JText::_('PASSWORD_VALID');
-                }
-            } else {
-                $status['debug'][] = JText::_('SKIPPED_PASSWORD_UPDATE') . ': ' . JText::_('PASSWORD_UNAVAILABLE');
-            }
-            //check for advanced usergroup sync
-            $master = JFusionFunction::getMaster();
-            if (substr($usergroup, 0, 2) == 'a:' && $master->name != $this->getJname()) {
-                $usergroup = unserialize($usergroup);
-                //find what the usergroup should be
-                $correct_usergroup = $usergroup[$userinfo->group_id];
-                //Is there other information stored in the usergroup?
-                if (is_array($correct_usergroup)) {
-                    //use the first var in the array
-                    $keys = array_keys($correct_usergroup);
-                    $correct_usergroup = $correct_usergroup[$keys[0]];
-                }
-                $correct_usergroup = explode(',', $correct_usergroup);
-                $update_group = 0;
-                foreach ($correct_usergroup as $value) {
-                    foreach ($existinguser->group_id as $value2) {
-                        if (trim($value) == trim($value2)) {
-                            $update_group++;
-                            break;
-                        }
+        } else {
+            //find out if the user already exists
+            $existinguser = $this->getUser($userinfo);
+            if (!empty($existinguser)) {
+                $changes = array();
+                //a matching user has been found
+                $status['debug'][] = JText::_('USER_DATA_FOUND');
+                if ($existinguser->email != $userinfo->email) {
+                    $status['debug'][] = JText::_('EMAIL_CONFLICT');
+                    if ($update_email || $overwrite) {
+                        $status['debug'][] = JText::_('EMAIL_CONFLICT_OVERWITE_ENABLED');
+                        $changes['mail'] = $userinfo->email;
+                        $status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+                    } else {
+                        //return a email conflict
+                        $status['debug'][] = JText::_('EMAIL_CONFLICT_OVERWITE_DISABLED');
+                        $status['error'][] = JText::_('EMAIL') . ' ' . JText::_('CONFLICT') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+                        $status['userinfo'] = $existinguser;
+                        return $status;
                     }
                 }
-                if (count($existinguser->group_id) != $update_group) {
-                    $changes['grps'] = $correct_usergroup;
+                if ($existinguser->name != $userinfo->name) {
+                    $changes['name'] = $userinfo->name;
                 } else {
-                    $status['debug'][] = JText::_('SKIPPED_GROUP_UPDATE') . ':' . JText::_('GROUP_VALID');
+                    $status['debug'][] = JText::_('SKIPPED_NAME_UPDATE');
+                }
+                if (isset($userinfo->password_clear) && strlen($userinfo->password_clear)) {
+                    if (!$share->auth->verifyPassword($userinfo->password_clear, $existinguser->password)) {
+                        // add password_clear to existinguser for the Joomla helper routines
+                        $existinguser->password_clear = $userinfo->password_clear;
+                        $changes['pass'] = $userinfo->password_clear;
+                    } else {
+                        $status['debug'][] = JText::_('SKIPPED_PASSWORD_UPDATE') . ':' . JText::_('PASSWORD_VALID');
+                    }
+                } else {
+                    $status['debug'][] = JText::_('SKIPPED_PASSWORD_UPDATE') . ': ' . JText::_('PASSWORD_UNAVAILABLE');
+                }
+                //check for advanced usergroup sync
+                $master = JFusionFunction::getMaster();
+                if (substr($usergroup, 0, 2) == 'a:' && $master->name != $this->getJname()) {
+                    $usergroup = unserialize($usergroup);
+                    //find what the usergroup should be
+                    $correct_usergroup = $usergroup[$userinfo->group_id];
+                    //Is there other information stored in the usergroup?
+                    if (is_array($correct_usergroup)) {
+                        //use the first var in the array
+                        $keys = array_keys($correct_usergroup);
+                        $correct_usergroup = $correct_usergroup[$keys[0]];
+                    }
+                    $correct_usergroup = explode(',', $correct_usergroup);
+                    $update_group = 0;
+                    foreach ($correct_usergroup as $value) {
+                        foreach ($existinguser->group_id as $value2) {
+                            if (trim($value) == trim($value2)) {
+                                $update_group++;
+                                break;
+                            }
+                        }
+                    }
+                    if (count($existinguser->group_id) != $update_group) {
+                        $changes['grps'] = $correct_usergroup;
+                    } else {
+                        $status['debug'][] = JText::_('SKIPPED_GROUP_UPDATE') . ':' . JText::_('GROUP_VALID');
+                    }
+                }
+                if (count($changes)) {
+                    if (!$share->auth->modifyUser($userinfo->username, $changes)) {
+                        $status['error'][] = 'ERROR: Updating ' . $userinfo->username;
+                    }
+                }
+                $status['userinfo'] = $existinguser;
+                if (empty($status['error'])) {
+                    $status['action'] = 'updated';
+                }
+            } else {
+                $status['debug'][] = JText::_('NO_USER_FOUND_CREATING_ONE');
+                $this->createUser($userinfo, $status);
+                if (empty($status['error'])) {
+                    $status['action'] = 'created';
                 }
             }
-            if (count($changes)) {
-                if (!$share->auth->modifyUser($userinfo->username, $changes)) {
-                    $status['error'][] = 'ERROR: Updating ' . $userinfo->username;
-                }
-            }
-            $status['userinfo'] = $existinguser;
-            if (empty($status['error'])) {
-                $status['action'] = 'updated';
-            }
-            return $status;
-        } else {
-            $status['debug'][] = JText::_('NO_USER_FOUND_CREATING_ONE');
-            $this->createUser($userinfo, $status);
-            if (empty($status['error'])) {
-                $status['action'] = 'created';
-            }
-            return $status;
         }
+        return $status;
     }
 
     /**
@@ -160,9 +159,10 @@ class JFusionUser_dokuwiki extends JFusionUser {
             $user->password = $raw_user['pass'];
             $user->email = $raw_user['mail'];
             $user->group_id = $raw_user['grps'];
-            return $user;
+        } else {
+            $user = null;
         }
-        return null;
+        return $user;
     }
 
     /**
@@ -213,7 +213,7 @@ class JFusionUser_dokuwiki extends JFusionUser {
         $httponly = $params->get('httponly', true);
 
         //setup Dokuwiki's constants
-        $helper = & JFusionFactory::getHelper($this->getJname());
+        $helper = JFusionFactory::getHelper($this->getJname());
         $helper->defineConstants();
 
         $time = time()-3600;
@@ -225,7 +225,6 @@ class JFusionUser_dokuwiki extends JFusionUser {
         JFusionFunction::addCookie(DOKU_COOKIE, '', $time, $cookie_path, '', $cookie_secure, $httponly);
         
         $status['debug'][] = DOKU_COOKIE . " " . JText::_('DELETED');
-
         return $status;
     }
 

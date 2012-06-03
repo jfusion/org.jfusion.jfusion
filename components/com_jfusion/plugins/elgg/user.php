@@ -172,14 +172,13 @@ class JFusionUser_elgg extends JFusionUser {
                     unset($_SESSION['id']);
                     unset($_SESSION['user']);
                     setcookie("elggperm", "", (time() - (86400 * 30)), "/");
-                    return false;
+                } else {
+                    // Users privilege has been elevated, so change the session id (help prevent session hijacking)
+                    //session_regenerate_id();
+                    // Update statistics
+                    set_last_login($_SESSION['guid']);
+                    reset_login_failure_count($user->guid); // Reset any previous failed login attempts
                 }
-                // Users privilege has been elevated, so change the session id (help prevent session hijacking)
-                //session_regenerate_id();
-                // Update statistics
-                set_last_login($_SESSION['guid']);
-                reset_login_failure_count($user->guid); // Reset any previous failed login attempts
-                
             }
         }
         return array();
@@ -277,8 +276,7 @@ class JFusionUser_elgg extends JFusionUser {
             } else {
                 //register_error(elgg_echo("adduser:bad"));
             }
-        }
-        catch(RegistrationException $r) {
+        } catch(RegistrationException $r) {
             //register_error($r->getMessage());
             $status['error'][] = JText::_('USER_CREATION_ERROR').' '.$r->getMessage();
         }

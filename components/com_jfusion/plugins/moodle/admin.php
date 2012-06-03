@@ -49,7 +49,7 @@ class JFusionAdmin_moodle extends JFusionAdmin
 
     /**
      * @param string $forumPath
-     * @return array|bool
+     * @return array
      */
     function setupFromPath($forumPath) {
         //check for trailing slash and generate file path
@@ -58,10 +58,9 @@ class JFusionAdmin_moodle extends JFusionAdmin
         } else {
             $myfile = $forumPath . DS . 'config.php';
         }
+        $params = array();
         if (($file_handle = @fopen($myfile, 'r')) === false) {
             JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));
-            $result = false;
-            return $result;
         } else {
             //parse the file line by line to get only the config variables
         	$CFG = new stdClass();
@@ -73,8 +72,7 @@ class JFusionAdmin_moodle extends JFusionAdmin
                 }
             }
             fclose($file_handle);
-        	            //save the parameters into array
-            $params = array();
+            //save the parameters into array
             $params['database_host'] = $CFG->dbhost;
             $params['database_name'] = $CFG->dbname;
             $params['database_user'] = $CFG->dbuser;
@@ -99,8 +97,8 @@ class JFusionAdmin_moodle extends JFusionAdmin
             }
             $params['usergroup'] = '7'; #make sure we do not assign roles with more capabilities automatically
             //return the parameters so it can be saved permanently
-            return $params;
         }
+        return $params;
     }
 
     /**

@@ -76,18 +76,17 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
      *
      * @param string $Path Source path user to find config files
      *
-     * @return mixed return false on failor and array if sucess
+     * @return array return array
      */
     function setupFromPath($Path)
     {
         $share = Dokuwiki::getInstance($this->getJname());
         //try to open the file
         $config = $share->getConf($Path);
+        $params = array();
         if ($config === false) {
             JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $Path " . JText::_('WIZARD_MANUAL'));
-            return false;
         } else {
-            $params = array();
             if (isset($config['auth']['mysql']) && isset($config['authtype']) && $config['authtype'] == 'mysql') {
 	            $params['database_type'] = 'mysql';
 	            $params['database_host'] = $config['auth']['mysql']['server'];
@@ -118,8 +117,8 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
             	$params['cookie_secure'] = $config['cookie_secure'];
             }
             $params['source_path'] = $Path;
-            return $params;
         }
+        return $params;
     }
 
     /**

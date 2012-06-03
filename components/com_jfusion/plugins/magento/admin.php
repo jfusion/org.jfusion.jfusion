@@ -50,7 +50,7 @@ class JFusionAdmin_magento extends JFusionAdmin
 
     /**
      * @param string $forumPath
-     * @return array|bool
+     * @return array
      */
     function setupFromPath($forumPath) {
         //check for trailing slash and generate file path
@@ -58,30 +58,27 @@ class JFusionAdmin_magento extends JFusionAdmin
             $forumPath = $forumPath . DS;
         }
         $xmlfile = $forumPath . 'app' . DS . 'etc' . DS . 'local.xml';
+        $params = array();
         if (file_exists($xmlfile)) {
             $xml = JFactory::getXMLParser('Simple');
             if (!$xml->loadFile($xmlfile)) {
-                unset($xml);
                 JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . " $xmlfile " . JText::_('WIZARD_MANUAL'));
-                $result = false;
-                return $result;
+            } else {
+                //save the parameters into array
+                $params = array();
+                $params['database_host'] = (string)$xml->document->global[0]->resources[0]->default_setup[0]->connection[0]->host[0]->data();
+                $params['database_name'] = (string)$xml->document->global[0]->resources[0]->default_setup[0]->connection[0]->dbname[0]->data();
+                $params['database_user'] = (string)$xml->document->global[0]->resources[0]->default_setup[0]->connection[0]->username[0]->data();
+                $params['database_password'] = (string)$xml->document->global[0]->resources[0]->default_setup[0]->connection[0]->password[0]->data();
+                $params['database_prefix'] = (string)$xml->document->global[0]->resources[0]->db[0]->table_prefix[0]->data();
+                $params['database_type'] = "mysql";
+                $params['source_path'] = $forumPath;
             }
-            //save the parameters into array
-            $params = array();
-            $params['database_host'] = (string)$xml->document->global[0]->resources[0]->default_setup[0]->connection[0]->host[0]->data();
-            $params['database_name'] = (string)$xml->document->global[0]->resources[0]->default_setup[0]->connection[0]->dbname[0]->data();
-            $params['database_user'] = (string)$xml->document->global[0]->resources[0]->default_setup[0]->connection[0]->username[0]->data();
-            $params['database_password'] = (string)$xml->document->global[0]->resources[0]->default_setup[0]->connection[0]->password[0]->data();
-            $params['database_prefix'] = (string)$xml->document->global[0]->resources[0]->db[0]->table_prefix[0]->data();
-            $params['database_type'] = "mysql";
-            $params['source_path'] = $forumPath;
             unset($xml);
-            return $params;
         } else {
             JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . " $xmlfile " . JText::_('WIZARD_MANUAL'));
-            $result = false;
-            return $result;
         }
+        return $params;
     }
 
     /**

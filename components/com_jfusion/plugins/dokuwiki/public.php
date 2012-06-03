@@ -258,60 +258,63 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
         $q = urldecode($q);
         $q = str_replace(':', ';', $q);
         if (strpos($q, '#') === 0) {
-            return $fullURL . $q;
+            $url = $fullURL . $q;
         } else {
             $q = ltrim($q, '/');
-        }
-        if (strpos($q, '_detail/') === 0 || strpos($q, 'lib/exe/detail.php') === 0) {
-            if (strpos($q, '_detail/') === 0) {
-                $q = substr($q, strlen('_detail/'));
-            } else {
-                $q = substr($q, strlen('lib/exe/detail.php'));
-            }
-            if (strpos($q, '?') === 0) {
-                $url = 'detail.php' . $q;
+            if (strpos($q, '_detail/') === 0 || strpos($q, 'lib/exe/detail.php') === 0) {
+                if (strpos($q, '_detail/') === 0) {
+                    $q = substr($q, strlen('_detail/'));
+                } else {
+                    $q = substr($q, strlen('lib/exe/detail.php'));
+                }
+                if (strpos($q, '?') === 0) {
+                    $url = 'detail.php' . $q;
+                } else {
+                    $this->trimUrl($q);
+                    $url = 'detail.php?media=' . $q;
+                }
+            } else if ((strpos($q, '_media/') === 0 || strpos($q, 'lib/exe/fetch.php') === 0)) {
+                if (strpos($q, '_media/') === 0) {
+                    $q = substr($q, strlen('_media/'));
+                } else {
+                    $q = substr($q, strlen('lib/exe/fetch.php'));
+                }
+                if (strpos($q, '?') === 0) {
+                    $url = 'fetch.php' . $q;
+                } else {
+                    $this->trimUrl($q);
+                    $url = 'fetch.php?media=' . $q;
+                }
+            } else if (strpos($q, 'doku.php') === 0) {
+                $q = substr($q, strlen('doku.php'));
+                if (strpos($q, '?') === 0) {
+                    $url = 'doku.php' . $q;
+                } else {
+                    $this->trimUrl($q);
+                    if (strlen($q)) $url = 'doku.php?id=' . $q;
+                    else $url = 'doku.php';
+                }
             } else {
                 $this->trimUrl($q);
-                $url = 'detail.php?media=' . $q;
+                if (strlen($q)) {
+                    $url = 'doku.php?id=' . $q;
+                } else  {
+                    $url = 'doku.php';
+                }
             }
-        } else if ((strpos($q, '_media/') === 0 || strpos($q, 'lib/exe/fetch.php') === 0)) {
-            if (strpos($q, '_media/') === 0) {
-                $q = substr($q, strlen('_media/'));
+            if (substr($baseURL, -1) != '/') {
+                //non sef URls
+                $url = str_replace('?', '&amp;', $url);
+                $url = $baseURL . '&amp;jfile=' . $url;
             } else {
-                $q = substr($q, strlen('lib/exe/fetch.php'));
-            }
-            if (strpos($q, '?') === 0) {
-                $url = 'fetch.php' . $q;
-            } else {
-                $this->trimUrl($q);
-                $url = 'fetch.php?media=' . $q;
-            }
-        } else if (strpos($q, 'doku.php') === 0) {
-            $q = substr($q, strlen('doku.php'));
-            if (strpos($q, '?') === 0) {
-                $url = 'doku.php' . $q;
-            } else {
-                $this->trimUrl($q);
-                if (strlen($q)) $url = 'doku.php?id=' . $q;
-                else $url = 'doku.php';
-            }
-        } else {
-            $this->trimUrl($q);
-            if (strlen($q)) $url = 'doku.php?id=' . $q;
-            else $url = 'doku.php';
-        }
-        if (substr($baseURL, -1) != '/') {
-            //non sef URls
-            $url = str_replace('?', '&amp;', $url);
-            $url = $baseURL . '&amp;jfile=' . $url;
-        } else {
-            $params = JFusionFactory::getParams($this->getJname());
-            $sefmode = $params->get('sefmode');
-            if ($sefmode == 1) {
-                $url = JFusionFunction::routeURL($url, JRequest::getInt('Itemid'));
-            } else {
-                //we can just append both variables
-                $url = $baseURL . $url;
+                $params = JFusionFactory::getParams($this->getJname());
+                $sefmode = $params->get('sefmode');
+                if ($sefmode == 1) {
+                    $url = JFusionFunction::routeURL($url, JRequest::getInt('Itemid'));
+                } else {
+                    //we can just append both variables
+                    $url = $baseURL . $url;
+                }
             }
         }
         return $url;
@@ -341,7 +344,9 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
         foreach ($links[2] as $key => $value) {
             $method = '#method=["|\']post["|\']#mS';
             $is_get = true;
-            if (preg_match($method, $links[1][$key]) || preg_match($method, $links[3][$key])) $is_get = false;
+            if (preg_match($method, $links[1][$key]) || preg_match($method, $links[3][$key])) {
+                $is_get = false;
+            }
             $matches[1] = $links[2][$key];
             $value = $this->fixUrl($matches);
             if ($is_get && substr($value, -1) != DS) $links[4][$key] = $getData . $links[4][$key];
@@ -454,16 +459,22 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
             $url = '';
             $i = 0;
             foreach ($bread as $key) {
-                if ($url) $url.= ';' . $key;
-                else $url = $key;
+                if ($url) {
+                    $url.= ';' . $key;
+                } else {
+                    $url = $key;
+                }
                 $path = new stdClass();
                 $path->title = $key;
                 $path->url = 'doku.php?id=' . $url;
                 $pathway[] = $path;
             }
             if (JRequest::getVar('media') || JRequest::getVar('do')) {
-                if (JRequest::getVar('media')) $add = JRequest::getVar('media');
-                else $add = JRequest::getVar('do');
+                if (JRequest::getVar('media')) {
+                    $add = JRequest::getVar('media');
+                } else {
+                    $add = JRequest::getVar('do');
+                }
                 $pathway[count($pathway) - 1]->title = $pathway[count($pathway) - 1]->title . ' ( ' . $add . ' )';
             }
         }

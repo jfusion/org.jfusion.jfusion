@@ -45,8 +45,8 @@ class JFusionUser_gallery2 extends JFusionUser {
         } else {
             $username = $userinfo;
         }
-        require JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'gallery2.php';
-        jFusion_g2BridgeCore::loadGallery2Api($this->getJname(),false);
+        $helper = JFusionFactory::getHelper($this->getJname());
+        $helper->loadGallery2Api(false);
         list($ret, $g2_user) = GalleryCoreApi::fetchUserByUserName($username);
         if ($ret) {
             return null;
@@ -57,7 +57,7 @@ class JFusionUser_gallery2 extends JFusionUser {
 
     /**
      * @param $g2_user
-     * @return \stdClass
+     * @return object
      */
     function &_getUser($g2_user) {
         $userinfo = new stdClass;
@@ -108,8 +108,8 @@ class JFusionUser_gallery2 extends JFusionUser {
      * @return array
      */
     function destroySession($userinfo, $options) {
-        require JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'gallery2.php';
-        jFusion_g2BridgeCore::loadGallery2Api($this->getJname(),true);
+        $helper = JFusionFactory::getHelper($this->getJname());
+        $helper->loadGallery2Api(false);
         GalleryInitSecondPass();
         GalleryEmbed::logout();
         GalleryEmbed::done();
@@ -129,73 +129,74 @@ class JFusionUser_gallery2 extends JFusionUser {
         $status['error'] = array();
         
         if ($framework) {
-            require JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'gallery2.php';
-            jFusion_g2BridgeCore::loadGallery2Api($this->getJname(),true);
+            $helper = JFusionFactory::getHelper($this->getJname());
+            $helper->loadGallery2Api(false);
         }
         global $gallery;
         //Code is taken from GalleryEmbed::checkActiveUser function
         $session = & $gallery->getSession();
         $activeUserId = $session->getUserId();
-        if ($activeUserId === $userinfo->userid) {
-            return $status;
-        }
-        /* Logout the existing user from Gallery */
-        if (!empty($activeUserId)) {
-            list($ret, $anonymousUserId) = GalleryCoreApi::getAnonymousUserId();
-            if ($ret) {
-                $status['error'][] = $ret->getErrorMessage();
-                return $status;
-            }
-            /* Can't use getActiveUser() since it might not be set at this point */
-            $activeGalleryUserId = $gallery->getActiveUserId();
-            if ($anonymousUserId != $activeGalleryUserId) {
-                list($ret, $activeUser) = GalleryCoreApi::loadEntitiesById($activeGalleryUserId, 'GalleryUser');
+        if ($activeUserId !== $userinfo->userid) {
+            /* Logout the existing user from Gallery */
+            if (!empty($activeUserId)) {
+                list($ret, $anonymousUserId) = GalleryCoreApi::getAnonymousUserId();
                 if ($ret) {
                     $status['error'][] = $ret->getErrorMessage();
                     return $status;
-                }
-                $event = GalleryCoreApi::newEvent('Gallery::Logout');
-                $event->setEntity($activeUser);
-                list($ret, $ignored) = GalleryCoreApi::postEvent($event);
-                if ($ret) {
-                    $status['error'][] = $ret->getErrorMessage();
-                    return $status;
+                } else {
+                    /* Can't use getActiveUser() since it might not be set at this point */
+                    $activeGalleryUserId = $gallery->getActiveUserId();
+                    if ($anonymousUserId != $activeGalleryUserId) {
+                        list($ret, $activeUser) = GalleryCoreApi::loadEntitiesById($activeGalleryUserId, 'GalleryUser');
+                        if ($ret) {
+                            $status['error'][] = $ret->getErrorMessage();
+                            return $status;
+                        } else {
+                            $event = GalleryCoreApi::newEvent('Gallery::Logout');
+                            $event->setEntity($activeUser);
+                            list($ret, $ignored) = GalleryCoreApi::postEvent($event);
+                            if ($ret) {
+                                $status['error'][] = $ret->getErrorMessage();
+                                return $status;
+                            }
+                        }
+                    }
+                    $ret = $session->reset();
+                    if ($ret) {
+                        $status['error'][] = $ret->getErrorMessage();
+                        return $status;
+                    }
                 }
             }
-            $ret = $session->reset();
+            //Code is paticulary taken from the GalleryEmbed::login function
+            list($ret, $user) = GalleryCoreApi::fetchUserByUserName($userinfo->username);
             if ($ret) {
                 $status['error'][] = $ret->getErrorMessage();
-                return $status;
+            } else {
+                //Login the Current User
+                $gallery->setActiveUser($user);
+                //Save the Session
+                $session = & $gallery->getSession();
+                $phpVm = $gallery->getPhpVm();
+                //Set Siteadmin if necessarey
+                list($ret, $isSiteAdmin) = GalleryCoreApi::isUserInSiteAdminGroup($user->id);
+                if ($ret) {
+                    $status['error'][] = $ret->getErrorMessage();
+                } else {
+                    if ($isSiteAdmin) {
+                        $session->put('session.siteAdminActivityTimestamp', $phpVm->time());
+                    }
+                    $ret = $session->regenerate();
+                    $session = & $gallery->getSession();
+                    /* Touch this session - Done for WhoIsOnline*/
+                    $session->put('touch', time());
+                    $ret = $session->save();
+                    //Close GalleryApi
+                    if ($framework) {
+                        GalleryEmbed::done();
+                    }
+                }
             }
-        }
-        //Code is paticulary taken from the GalleryEmbed::login function
-        list($ret, $user) = GalleryCoreApi::fetchUserByUserName($userinfo->username);
-        if ($ret) {
-            $status['error'][] = $ret->getErrorMessage();
-            return $status;
-        }
-        //Login the Current User
-        $gallery->setActiveUser($user);
-        //Save the Session
-        $session = & $gallery->getSession();
-        $phpVm = $gallery->getPhpVm();
-        //Set Siteadmin if necessarey
-        list($ret, $isSiteAdmin) = GalleryCoreApi::isUserInSiteAdminGroup($user->id);
-        if ($ret) {
-            $status['error'][] = $ret->getErrorMessage();
-            return $status;
-        }
-        if ($isSiteAdmin) {
-            $session->put('session.siteAdminActivityTimestamp', $phpVm->time());
-        }
-        $ret = $session->regenerate();
-        $session = & $gallery->getSession();
-        /* Touch this session - Done for WhoIsOnline*/
-        $session->put('touch', time());
-        $ret = $session->save();
-        //Close GalleryApi
-        if ($framework) {
-            GalleryEmbed::done();
         }
         return $status;
     }
@@ -210,8 +211,8 @@ class JFusionUser_gallery2 extends JFusionUser {
         $status['debug'] = array();
         $status['error'] = array();
         $username = $userinfo->username;
-        require JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'gallery2.php';
-        jFusion_g2BridgeCore::loadGallery2Api($this->getJname(),true);
+        $helper = JFusionFactory::getHelper($this->getJname());
+        $helper->loadGallery2Api(false);
         //Fetch GalleryUser
         list($ret, $user) = GalleryCoreApi::fetchUserByUserName($username);
         if ($ret) {
@@ -246,8 +247,8 @@ class JFusionUser_gallery2 extends JFusionUser {
      * @param array &$status
      */
     function createUser($userinfo, &$status) {
-        require JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'gallery2.php';
-        jFusion_g2BridgeCore::loadGallery2Api($this->getJname(),false);
+        $helper = JFusionFactory::getHelper($this->getJname());
+        $helper->loadGallery2Api(false);
         $params = JFusionFactory::getParams($this->getJname());
         $usergroup = $params->get('usergroup');
         list($ret, $g2_user) = GalleryCoreApi::newFactoryInstance('GalleryEntity', 'GalleryUser');
@@ -296,8 +297,8 @@ class JFusionUser_gallery2 extends JFusionUser {
      * @param array &$status
      */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
-        require JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'gallery2.php';
-        jFusion_g2BridgeCore::loadGallery2Api($this->getJname(),false);
+        $helper = JFusionFactory::getHelper($this->getJname());
+        $helper->loadGallery2Api(false);
         //check to see if we have a group_id in the $userinfo, if not return
         if (!isset($userinfo->group_id)) {
             $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
@@ -321,7 +322,6 @@ class JFusionUser_gallery2 extends JFusionUser {
                 $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST');
             }
         }
-
         GalleryEmbed::done();
     }
 
@@ -331,8 +331,8 @@ class JFusionUser_gallery2 extends JFusionUser {
      * @param array $status
      */
     function updatePassword($userinfo, &$existinguser, &$status) {
-        require JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'gallery2.php';
-        jFusion_g2BridgeCore::loadGallery2Api($this->getJname(),false);
+        $helper = JFusionFactory::getHelper($this->getJname());
+        $helper->loadGallery2Api(false);
         //find out if the user already exists
         list($ret, $g2_existinguser) = GalleryCoreApi::fetchUserByUserName($userinfo->username);
         // Initialise some variables
@@ -370,8 +370,8 @@ class JFusionUser_gallery2 extends JFusionUser {
      * @param array &$status
      */
     function updateEmail($userinfo, &$existinguser, &$status) {
-        require JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'gallery2.php';
-        jFusion_g2BridgeCore::loadGallery2Api($this->getJname(),false);
+        $helper = JFusionFactory::getHelper($this->getJname());
+        $helper->loadGallery2Api(false);
         //find out if the user already exists
         list($ret, $g2_existinguser) = GalleryCoreApi::fetchUserByUserName($userinfo->username);
         // Initialise some variables

@@ -63,7 +63,7 @@ class JFusionAdmin_smf extends JFusionAdmin
      *
      * @param string $forumPath Source path user to find config files
      *
-     * @return mixed return false on failor and array if sucess
+     * @return array
      */
     function setupFromPath($forumPath)
     {
@@ -73,12 +73,10 @@ class JFusionAdmin_smf extends JFusionAdmin
         } else {
             $myfile = $forumPath . DS . 'Settings.php';
         }
+        $params = array();
         //try to open the file
         if (($file_handle = @fopen($myfile, 'r')) === false) {
             JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));
-            //get the default parameters object
-            $params = JFusionFactory::getParams($this->getJname());
-            return $params;
         } else {
             //parse the file line by line to get only the config variables
             $file_handle = fopen($myfile, 'r');
@@ -95,8 +93,6 @@ class JFusionAdmin_smf extends JFusionAdmin
                 }
             }
             fclose($file_handle);
-            //Save the parameters into the standard JFusion params format
-            $params = array();
             $params['database_host'] = isset($config['db_server']) ? $config['db_server'] : '';
             $params['database_type'] = 'mysql';
             $params['database_name'] = isset($config['db_name']) ? $config['db_name'] : '';
@@ -106,8 +102,8 @@ class JFusionAdmin_smf extends JFusionAdmin
             $params['source_url'] = isset($config['boardurl']) ? $config['boardurl'] : '';
             $params['cookie_name'] = isset($config['cookiename']) ? $config['cookiename'] : '';
             $params['source_path'] = $forumPath;
-            return $params;
         }
+        return $params;
     }
 
     /**

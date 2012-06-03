@@ -65,8 +65,8 @@ class JFusionForum_gallery2 extends JFusionForum {
      */
     function renderImageBlock($config, $view, $pluginParam) {
 		//Initialize the Framework
-        require JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'gallery2.php';    	
-    	if (!jFusion_g2BridgeCore::loadGallery2Api($this->getJname(),true)) {
+        $helper = JFusionFactory::getHelper($this->getJname());
+    	if (!$helper->loadGallery2Api(true)) {
 			return '<div><strong>Error</strong><br />Can\'t initialise G2Bridge.</div>';
         }
         //Load Parameters
@@ -146,7 +146,7 @@ class JFusionForum_gallery2 extends JFusionForum {
                 $params = JFusionFactory::getParams($this->getJname());
                 $source_url = $params->get('source_url');
                 $urlGenerator = new GalleryUrlGenerator();
-                $urlGenerator->init(jFusion_g2BridgeCore::getEmbedUri($this->getJname(),$config['itemid']), $source_url, null);
+                $urlGenerator->init($helper->getEmbedUri($this->getJname(),$config['itemid']), $source_url, null);
                 $gallery->setUrlGenerator($urlGenerator);
             }
             list($ret, $imageBlockHtml, $headContent) = GalleryEmbed::getImageBlock($array);
@@ -174,8 +174,8 @@ class JFusionForum_gallery2 extends JFusionForum {
      * @return string
      */
     function renderSideBar($config, $view, $pluginParam) {
-        require JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'gallery2.php';
-        $g2sidebar = jFusion_g2BridgeCore::getVar($this->getJname(),"sidebar", -1);
+        $helper = JFusionFactory::getHelper($this->getJname());
+        $g2sidebar = $helper->getVar("sidebar", -1);
         if ($g2sidebar != - 1) {
             return '<div id="gsSidebar" class="gcBorder1"> ' . implode('', $g2sidebar) . '</div>';
         } else {

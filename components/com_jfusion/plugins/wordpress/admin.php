@@ -80,11 +80,9 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 		} else {
 			$myfile = $forumPath . DS . 'wp-config.php';
 		}
-
-		if (($file_handle = @fopen($myfile, 'r')) === false) {
+        $params = array();
+        if (($file_handle = @fopen($myfile, 'r')) === false) {
 			JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));
-			$result = false;
-			return $result;
 		} else {
 			//parse the file line by line to get only the config variables
 			//			$file_handle = fopen($myfile, 'r');
@@ -100,7 +98,6 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 			}
 			fclose($file_handle);
 			//save the parameters into array
-			$params = array();
 			$params['database_host'] = DB_HOST;
 			$params['database_name'] = DB_NAME;
 			$params['database_user'] = DB_USER;
@@ -138,9 +135,8 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 					break;
 				}
 			}
-			return $params;
 		}
-
+        return $params;
 	}
 
 	/**

@@ -55,7 +55,7 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
 
     /**
      * @param string $forumPath
-     * @return array|object
+     * @return array
      */
     function setupFromPath($forumPath) {
         //check for trailing slash and generate file path
@@ -64,13 +64,12 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
         } else {
             $myfile = $forumPath . DS . 'config.php';
         }
+        $params = array();
         $config = array();
         //try to open the file
         if (($file_handle = @fopen($myfile, 'r')) === false) {
             JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));
             //get the default parameters object
-            $params = JFusionFactory::getParams($this->getJname());
-            return $params;
         } else {
             //parse the file line by line to get only the config variables
             $file_handle = fopen($myfile, 'r');
@@ -89,26 +88,25 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
                     $config[$name] = $value;
                 }
             }
+            $params['database_host'] = $config['hostname'];
+            $params['database_type'] = $config['type'];
+            $params['database_name'] = $config['database'];
+            $params['database_user'] = $config['username'];
+            $params['database_password'] = $config['password'];
+            $params['database_prefix'] = $config['tablePrefix'];
+            $params['source_url'] = str_replace("main.php", "", $config['baseUri']);
+            $params['cookie_name'] = '';
+            $params['source_path'] = $forumPath;
+            if (!in_array($params['database_type'], array("mysql", "mysqli"))) {
+                if (!function_exists('mysqli_init') && !extension_loaded('mysqli')) {
+                    $params['database_type'] = "mysql";
+                } else {
+                    $params['database_type'] = "mysqli";
+                }
+            }
         }
         fclose($file_handle);
         //Save the parameters into the standard JFusion params format
-        $params = array();
-        $params['database_host'] = $config['hostname'];
-        $params['database_type'] = $config['type'];
-        $params['database_name'] = $config['database'];
-        $params['database_user'] = $config['username'];
-        $params['database_password'] = $config['password'];
-        $params['database_prefix'] = $config['tablePrefix'];
-        $params['source_url'] = str_replace("main.php", "", $config['baseUri']);
-        $params['cookie_name'] = '';
-        $params['source_path'] = $forumPath;
-        if (!in_array($params['database_type'], array("mysql", "mysqli"))) {
-            if (!function_exists('mysqli_init') && !extension_loaded('mysqli')) {
-                $params['database_type'] = "mysql";
-            } else {
-                $params['database_type'] = "mysqli";
-            }
-        }
         return $params;
     }
 
@@ -190,13 +188,13 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
      * @return array|null
      */
     function getSitemapTree($jFusionParam, $jPluginParam, $itemId) {
-        require JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'gallery2.php';
-        jFusion_g2BridgeCore::loadGallery2Api($this->getJname(),true);
+        $helper = JFusionFactory::getHelper($this->getJname());
+        $helper->loadGallery2Api(true);
         global $gallery;
         $params = JFusionFactory::getParams($this->getJname());
         $source_url = $params->get('source_url');
         $urlGenerator = new GalleryUrlGenerator();
-        $urlGenerator->init(jFusion_g2BridgeCore::getEmbedUri($this->getJname(),$itemId), $source_url, null);
+        $urlGenerator->init($helper->getEmbedUri($itemId), $source_url, null);
         $album = $jPluginParam->get('album');
         if ($album == - 1) {
             $album = 7;
@@ -262,8 +260,8 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
      * @return array|string
      */
     function show_templateList($name, $value, $node, $control_name) {
-        require JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'gallery2.php';
-        jFusion_g2BridgeCore::loadGallery2Api($this->getJname(),false);
+        $helper = JFusionFactory::getHelper($this->getJname());
+        $helper->loadGallery2Api(false);
         list($ret, $themes) = GalleryCoreApi::fetchPluginStatus('theme', true);
         if ($ret) {
             return array($ret, null);

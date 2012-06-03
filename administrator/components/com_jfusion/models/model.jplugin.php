@@ -251,10 +251,9 @@ class JFusionJplugin
             $configfile = $path . DS . 'configuration.php';
             $test_version_file = $path . DS . 'includes' . DS . 'version.php';
         }
+        $params = array();
         if (($file_handle = @fopen($configfile, 'r')) === false) {
             JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $configfile " . JText::_('WIZARD_MANUAL'));
-            $result = false;
-            return $result;
         } else {
             //parse the file line by line to get only the config variables
             //we can not directly include the config file as JConfig is already defined
@@ -279,7 +278,6 @@ class JFusionJplugin
             fclose($file_handle);
 
             //Save the parameters into the standard JFusion params format
-            $params = array();
             $params['database_host'] = isset($config['host']) ? $config['host'] : '';
             $params['database_name'] = isset($config['db']) ? $config['db'] : '';
             $params['database_user'] = isset($config['user']) ? $config['user'] : '';
@@ -290,9 +288,8 @@ class JFusionJplugin
 
             //determine if this is 1.5 or 1.6+
             $params['joomlaversion'] = (file_exists($test_version_file)) ? '1.6' : '1.5';
-
-            return $params;
         }
+        return $params;
     }
     /**
      * Common code for user.php

@@ -41,8 +41,8 @@ class JFusionAuth_gallery2 extends JFusionAuth {
      * @return string
      */
     function generateEncryptedPassword($userinfo) {
-        require JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'gallery2.php';
-        jFusion_g2BridgeCore::loadGallery2Api($this->getJname(),false);
+        $helper = JFusionFactory::getHelper($this->getJname());
+        $helper->loadGallery2Api(false);
         $testcrypt = GalleryUtilities::md5Salt($userinfo->password_clear, $userinfo->password_salt);
         return $testcrypt;
     }
