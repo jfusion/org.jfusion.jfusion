@@ -33,7 +33,7 @@ class JFusionUser_vbulletin extends JFusionUser
     var $params;
     var $helper;
 
-    function JFusionUser_vbulletin()
+    function __construct()
     {
         //get the params object
         $this->params =& JFusionFactory::getParams($this->getJname());
@@ -654,31 +654,28 @@ class JFusionUser_vbulletin extends JFusionUser
     }
 
     /**
-     * @param object $userinfo
-     * @param object $existinguser
-     * @param object $usergroups
-     * @param array $status
+     * @param object &$userinfo
+     * @param object &$existinguser
+     * @param array &$status
      * @return bool
      */
-    function executeUpdateUsergroup(&$userinfo, &$existinguser, &$usergroups, &$status)
+    function executeUpdateUsergroup(&$userinfo, &$existinguser, &$status)
     {
         $update_groups = false;
-        $usergroupid =& $usergroups[$userinfo->group_id]['defaultgroup'];
-        $displaygroupid =& $usergroups[$userinfo->group_id]['displaygroup'];
+        $usergroups = unserialize($this->params->get('usergroup'));
+
+        $usergroupid = $usergroups[$userinfo->group_id]['defaultgroup'];
+        $displaygroupid = $usergroups[$userinfo->group_id]['displaygroup'];
         $membergroupids = (isset($usergroups[$userinfo->group_id]['membergroups'])) ? $usergroups[$userinfo->group_id]['membergroups'] : array();
 
         //check to see if the default groups are different
         if ($usergroupid != $existinguser->group_id ) {
             $update_groups = true;
-        }
-
-        //check to see if the display groups are different
-        if (!empty($usergroups['options']['compare_displaygroups']) && $displaygroupid != $existinguser->displaygroupid ) {
+        } elseif (!empty($usergroups['options']['compare_displaygroups']) && $displaygroupid != $existinguser->displaygroupid ) {
+            //check to see if the display groups are different
             $update_groups = true;
-        }
-
-        //check to see if member groups are different
-        if (!empty($usergroups['options']['compare_membergroups'])) {
+        } elseif (!empty($usergroups['options']['compare_membergroups'])) {
+            //check to see if member groups are different
             $current_membergroups = explode(',', $existinguser->membergroupids);
             foreach ($membergroupids as $gid) {
                 if (!in_array($gid, $current_membergroups)) {

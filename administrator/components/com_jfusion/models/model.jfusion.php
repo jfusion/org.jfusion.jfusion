@@ -1300,22 +1300,20 @@ class JFusionFunction
         $group = array();
         if ($usergroups !== null) {
             if ($userinfo === null) {
-                $group = array($usergroups);
+                if (substr($usergroups, 0, 2) != 'a:') {
+                    $group = array($usergroups);
+                }
             } else {
                 $usergroups = (substr($usergroups, 0, 2) == 'a:') ? unserialize($usergroups) : $usergroups;
-                //check to make sure that if using the advanced group mode, $userinfo->group_id exists
-                if (is_array($usergroups) && !isset($userinfo->group_id)) {
-                    $group = array();
-                } else {
-                    $usergroup = (is_array($usergroups)) ? $usergroups[$userinfo->group_id] : $usergroups;
-
-                    //Is there other information stored in the usergroup?
-                    if (is_array($usergroup)) {
+                if (is_array($usergroups) ) {
+                    if (isset($userinfo->group_id) && isset($usergroups[$userinfo->group_id])) {
+                        $usergroup = $usergroups[$userinfo->group_id];
                         //use the first var in the array
                         $keys = array_keys($usergroup);
-                        $usergroup = $usergroup[$keys[0]];
+                        $group = array($usergroup[$keys[0]]);
                     }
-                    $group = array($usergroup);
+                } else {
+                    $group = array($usergroups);
                 }
             }
         } else if ($multiusergroup !== null) {

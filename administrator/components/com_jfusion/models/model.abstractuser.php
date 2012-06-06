@@ -272,9 +272,7 @@ class JFusionUser
                 $master = JFusionFunction::getMaster();
                 if (!$userinfo->block && empty($userinfo->activation) && $master->name != $this->getJname()) {
                     if (JFusionFunction::isAdvancedUsergroupMode($this->getJname())) {
-                        $groups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
-                        //find what the usergroup should be
-                        $usergroup_updated = $this->executeUpdateUsergroup($userinfo, $existinguser, $groups, $status);
+                        $usergroup_updated = $this->executeUpdateUsergroup($userinfo, $existinguser, $status);
                         if ($usergroup_updated) {
                             $changed = true;
                         } else {
@@ -340,16 +338,15 @@ class JFusionUser
      *
      * @param object $userinfo      Object containing the new userinfo
      * @param object &$existinguser Object containg the old userinfo
-     * @param array &$usergroups   Array/object containing the a plugin's advanced usergroup parameter
      * @param array  &$status       Array containing the errors and result of the function
      *
      * @return boolean Whether updateUsergroup was executed or not
      */
-    function executeUpdateUsergroup(&$userinfo, &$existinguser, &$usergroups, &$status)
+    function executeUpdateUsergroup(&$userinfo, &$existinguser, &$status)
     {
         $changed = false;
-    	$groups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
-		if (!JFusionFunction::compareUserGroups($existinguser,$groups)) {
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+		if (!JFusionFunction::compareUserGroups($existinguser,$usergroups)) {
             $this->updateUsergroup($userinfo, $existinguser, $status);
             $changed = true;
         }
