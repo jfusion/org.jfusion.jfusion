@@ -142,7 +142,8 @@ class JFusionAdmin_mybb extends JFusionAdmin
      */
     function getDefaultUsergroup() {
         $params = JFusionFactory::getParams($this->getJname());
-        $usergroup_id = $params->get('usergroup');
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
+        $usergroup_id = $usergroups[0];
         //we want to output the usergroup name
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'SELECT title from #__usergroups WHERE gid = ' . (int)$usergroup_id;

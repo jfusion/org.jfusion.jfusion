@@ -187,7 +187,8 @@ class JFusionAdmin_wordpress extends JFusionAdmin
     function getDefaultUsergroup() {
 		$params = JFusionFactory::getParams($this->getJname());
         $helper = JFusionFactory::getHelper($this->getJname());
-		$usergroup_id = $params->get('usergroup');
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
+        $usergroup_id = $usergroups[0];
 		return $helper->getUsergroupNameWP($usergroup_id);
 	}
 

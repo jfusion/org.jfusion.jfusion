@@ -245,7 +245,6 @@ class JFusionUser_gallery2 extends JFusionUser {
         $helper = JFusionFactory::getHelper($this->getJname());
         $helper->loadGallery2Api(false);
         $params = JFusionFactory::getParams($this->getJname());
-        $usergroup = $params->get('usergroup');
         list($ret, $g2_user) = GalleryCoreApi::newFactoryInstance('GalleryEntity', 'GalleryUser');
         if ($ret) {
             $status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . $userinfo->username;
@@ -300,18 +299,19 @@ class JFusionUser_gallery2 extends JFusionUser {
             return;
         } else {
             $params = JFusionFactory::getParams($this->getJname());
-            $usergroups = unserialize($params->get('usergroup'));
-            if (isset($usergroups[$userinfo->group_id])) {
+            $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+            if (!empty($usergroups)) {
+                $usergroup = $usergroups[0];
                 if ($existinguser->group_id != 2 && $existinguser->group_id != 4) {
                     $ret = GalleryCoreApi::removeUserFromGroup($existinguser->userid, $existinguser->group_id);
                     if ($ret) {
-                        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $existinguser->group_id . ' -> ' . $usergroups[$userinfo->group_id];
+                        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $existinguser->group_id . ' -> ' . $usergroup;
                         return;
                     }
                 }
-                $ret = GalleryCoreApi::addUserToGroup($existinguser->userid, (int)($usergroups[$userinfo->group_id]));
+                $ret = GalleryCoreApi::addUserToGroup($existinguser->userid, (int)($usergroup));
                 if ($ret) {
-                    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $existinguser->group_id . ' -> ' . $usergroups[$userinfo->group_id];
+                    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $existinguser->group_id . ' -> ' . $usergroup;
                 }
             } else {
                 $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST');

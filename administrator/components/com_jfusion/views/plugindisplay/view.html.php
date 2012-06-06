@@ -316,11 +316,9 @@ class jfusionViewplugindisplay extends JView {
            	}
      	}
 
-		if($record->status == 1){
+		if($record->status == 1) {
             //display the default usergroup
-            $usergroups = $JFusionParam->get('usergroup');
-            $multiusergroups = $JFusionParam->get('multiusergroup');
-            if (substr($usergroups, 0, 2) == 'a:' || substr($multiusergroups, 0, 2) == 'a:') {
+            if (JFusionFunction::isAdvancedUsergroupMode($record->name)) {
                 $usergroup = JText::_('ADVANCED_GROUP_MODE');
             } else {
                 $usergroup = $JFusionPlugin->getDefaultUsergroup();

@@ -277,11 +277,12 @@ class JFusionUser_prestashop extends JFusionUser {
 	    'date_add' => date("Y-m-d h:m:s"), // column 17 (date_add)
 	    'date_upd' => date("Y-m-d h:m:s") // column 18 (date_upd)
 		);
-		
+
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 		/* array to go into table ps_customer_group */
 	    $ps_customer_group = array(
 	    'id_customer' => "NULL", // column 0 (id_customer)
-	    'id_group' => $params->get('usergroup') // column 1 (id_group)
+	    'id_group' => $usergroups[0] // column 1 (id_group)
 	    );
 		
 		/* array to go into table ps_address */

@@ -154,7 +154,8 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
      */
     function getDefaultUsergroup() {
         $params = JFusionFactory::getParams($this->getJname());
-        $usergroup_id = $params->get('usergroup');
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
+        $usergroup_id = $usergroups[0];
         //we want to output the usergroup name
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'SELECT g_groupName FROM #__Group WHERE g_id = ' . (int)$usergroup_id;

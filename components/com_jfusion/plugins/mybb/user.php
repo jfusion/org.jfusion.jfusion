@@ -65,6 +65,7 @@ class JFusionUser_mybb extends JFusionUser {
      * @return array
      */
     function destroySession($userinfo, $options) {
+        $status = array('error' => array(),'debug' => array());
         $params = JFusionFactory::getParams($this->getJname());
         $cookiedomain = $params->get('cookie_domain');
         $cookiepath = $params->get('cookie_path', '/');
@@ -195,7 +196,8 @@ class JFusionUser_mybb extends JFusionUser {
             //check the oldgroup
             if (empty($oldgroup)) {
                 $params = JFusionFactory::getParams($this->getJname());
-                $oldgroup = $params->get('usergroup');
+                $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+                $oldgroup = $usergroups[0];
             }
             //restore the usergroup
             $query = 'UPDATE #__users SET usergroup = ' . (int)$oldgroup . ' WHERE uid = ' . (int)$existinguser->userid;
@@ -236,7 +238,8 @@ class JFusionUser_mybb extends JFusionUser {
         //found out what usergroup should be used
         $db = JFusionFactory::getDatabase($this->getJname());
         $params = JFusionFactory::getParams($this->getJname());
-        $usergroup = $params->get('usergroup');
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+        $usergroup = $usergroups[0];
         $username_clean = $this->filterUsername($userinfo->username);
         //prepare the variables
         $user = new stdClass;
@@ -301,7 +304,8 @@ class JFusionUser_mybb extends JFusionUser {
     function activateUser($userinfo, &$existinguser, &$status) {
         //found out what usergroup should be used
         $params = JFusionFactory::getParams($this->getJname());
-        $usergroup = $params->get('usergroup');
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+        $usergroup = $usergroups[0];
         //update the usergroup
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'UPDATE #__users SET usergroup = ' . $usergroup . ' WHERE uid  = ' . (int)$existinguser->userid;

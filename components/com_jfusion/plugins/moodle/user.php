@@ -474,12 +474,13 @@ class JFusionUser_moodle extends JFusionUser {
             //find out what usergroup should be used
             $db = JFusionFactory::getDatabase($this->getJname());
             $params = JFusionFactory::getParams($this->getJname());
-            $usergroups = (substr($params->get('usergroup'), 0, 2) == 'a:') ? unserialize($params->get('usergroup')) : $params->get('usergroup', 18);
+            $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+            //get the default user group and determine if we are using simple or advanced
             //check to make sure that if using the advanced group mode, $userinfo->group_id exists
-            if (is_array($usergroups) && !isset($userinfo->group_id)) {
+            if (JFusionFunction::isAdvancedUsergroupMode($this->getJname()) && empty($usergroups)) {
                 $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
             } else {
-                $default_group_id = (is_array($usergroups)) ? $usergroups[$userinfo->group_id] : $usergroups;
+                $default_group_id = $usergroups[0];
                 // get some config items
                 $query = 'SELECT value FROM #__config WHERE  name = \'mnet_localhost_id\'';
                 $db->setQuery($query);

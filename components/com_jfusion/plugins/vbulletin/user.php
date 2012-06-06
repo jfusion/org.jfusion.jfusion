@@ -431,7 +431,7 @@ class JFusionUser_vbulletin extends JFusionUser
     function unblockUser($userinfo, &$existinguser, &$status)
     {
         //found out what usergroup should be used
-        $usergroups = (substr($this->params->get('usergroup'), 0, 2) == 'a:') ? unserialize($this->params->get('usergroup')) : $this->params->get('usergroup');
+        $usergroups = JFusionFunction::isAdvancedUsergroupMode($this->getJname()) ? unserialize($this->params->get('usergroup')) : $this->params->get('usergroup');
         $bannedgroup = $this->params->get('bannedgroup');
 
         //first check to see if user is banned and if so, retrieve the prebanned fields
@@ -493,7 +493,7 @@ class JFusionUser_vbulletin extends JFusionUser
     function activateUser($userinfo, &$existinguser, &$status)
     {
         //found out what usergroup should be used
-        $usergroups = (substr($this->params->get('usergroup'), 0, 2) == 'a:') ? unserialize($this->params->get('usergroup')) : $this->params->get('usergroup');
+        $usergroups = JFusionFunction::isAdvancedUsergroupMode($this->getJname()) ? unserialize($this->params->get('usergroup')) : $this->params->get('usergroup');
         $usergroup = (is_array($usergroups)) ? $usergroups[$userinfo->group_id]['defaultgroup'] : $usergroups;
 
         //update the usergroup to default group
@@ -545,7 +545,7 @@ class JFusionUser_vbulletin extends JFusionUser
                 jimport('joomla.user.helper');
                 $useractivation->activationid = JUserHelper::genRandomPassword(40);
 
-                $usergroups = (substr($this->params->get('usergroup'), 0, 2) == 'a:') ? unserialize($this->params->get('usergroup')) : $this->params->get('usergroup');
+                $usergroups = JFusionFunction::isAdvancedUsergroupMode($this->getJname()) ? unserialize($this->params->get('usergroup')) : $this->params->get('usergroup');
                 $usergroup = (is_array($usergroups)) ? $usergroups[$userinfo->group_id]['defaultgroup'] : $usergroups;
                 $useractivation->usergroupid = $usergroup;
 
@@ -581,7 +581,7 @@ class JFusionUser_vbulletin extends JFusionUser
     function createUser($userinfo, &$status)
     {
         //get the default user group and determine if we are using simple or advanced
-        $usergroups = (substr($this->params->get('usergroup'), 0, 2) == 'a:') ? unserialize($this->params->get('usergroup')) : $this->params->get('usergroup');
+        $usergroups = JFusionFunction::isAdvancedUsergroupMode($this->getJname()) ? unserialize($this->params->get('usergroup')) : $this->params->get('usergroup');
 
         //return if we are in advanced user group mode but the master did not pass in a group_id
         if (is_array($usergroups) && !isset($userinfo->group_id)) {

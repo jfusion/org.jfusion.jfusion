@@ -69,7 +69,8 @@ class JFusionAdmin_universal extends JFusionAdmin{
     function getDefaultUsergroup()
     {
         $params = JFusionFactory::getParams($this->getJname());
-        $usergroup_id = $params->get('usergroup');
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
+        $usergroup_id = $usergroups[0];
 
         $usergrouplist = $this->getUsergroupList();
         foreach ($usergrouplist as $value) {

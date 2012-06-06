@@ -394,12 +394,13 @@ class JFusionUser_phpbb3 extends JFusionUser
             $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
         } else {
             $params = & JFusionFactory::getParams($this->getJname());
-            $usergroups = unserialize($params->get('usergroup'));
-            if (isset($usergroups[$userinfo->group_id])) {
+            $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+            if (!empty($usergroups)) {
+                $usergroup = $usergroups[0];
                 $db = JFusionFactory::getDatabase($this->getJname());
                 $user = new stdClass;
                 $user->user_id = $existinguser->userid;
-                $user->group_id = $usergroups[$userinfo->group_id];
+                $user->group_id = $usergroup;
                 $user->user_colour = '';
                 //clear out cached permissions so that those of the new group are generated
                 $user->user_permissions = '';
@@ -444,12 +445,12 @@ class JFusionUser_phpbb3 extends JFusionUser
                     }
 
                     //add the user in the groups table
-                    $query = 'INSERT INTO #__user_group (group_id, user_id ,group_leader, user_pending) VALUES (' . (int)$usergroups[$userinfo->group_id] . ', ' . (int)$existinguser->userid . ',0,0)';
+                    $query = 'INSERT INTO #__user_group (group_id, user_id ,group_leader, user_pending) VALUES (' . (int)$usergroup . ', ' . (int)$existinguser->userid . ',0,0)';
                     $db->setQuery($query);
                     if (!$db->query()) {
                         $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
                     } else {
-                        if ($usergroups[$userinfo->group_id] == $groups['NEWLY_REGISTERED']->group_id) {
+                        if ($usergroup == $groups['NEWLY_REGISTERED']->group_id) {
                             //we need to also add the user to the regular registered group or they may find themselves groupless
                             $query = 'INSERT INTO #__user_group (group_id, user_id, group_leader, user_pending) VALUES (' . $groups['REGISTERED']->group_id . ',' . (int)$existinguser->userid . ', 0,0 )';
                             $db->setQuery($query);
@@ -494,7 +495,7 @@ class JFusionUser_phpbb3 extends JFusionUser
                         }
 
                         //log the group change success
-                        $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $usergroups[$userinfo->group_id];
+                        $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $usergroup;
                     }
                 }
             } else {
@@ -581,13 +582,13 @@ class JFusionUser_phpbb3 extends JFusionUser
         $params = JFusionFactory::getParams($this->getJname());
         $update_block = $params->get('update_block');
         $update_activation = $params->get('update_activation');
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
         //get the default user group and determine if we are using simple or advanced
-        $usergroups = (substr($params->get('usergroup'), 0, 2) == 'a:') ? unserialize($params->get('usergroup')) : $params->get('usergroup');
         //check to make sure that if using the advanced group mode, $userinfo->group_id exists
-        if (is_array($usergroups) && !isset($userinfo->group_id)) {
+        if (JFusionFunction::isAdvancedUsergroupMode($this->getJname()) && empty($usergroups)) {
             $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
         } else {
-            $usergroup = (is_array($usergroups)) ? $usergroups[$userinfo->group_id] : $usergroups;
+            $usergroup = $usergroups[0];
             $username_clean = $this->filterUsername($userinfo->username);
 
             //prevent anonymous user being created

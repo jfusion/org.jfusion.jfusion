@@ -142,7 +142,7 @@ class JFusionAdmin_joomla_ext extends JFusionAdmin
 		//check that master plugin does not have advanced group mode data stored
 		$master = JFusionFunction::getMaster();
 		$params = & JFusionFactory::getParams($jname);
-		if (!empty($master) && $master->name == $jname && substr($params->get('usergroup'), 0, 2) == 'a:') {
+		if (!empty($master) && $master->name == $jname && JFusionFunction::isAdvancedUsergroupMode($this->getJname())) {
 			JError::raiseWarning(0, $jname . ': ' . JText::_('ADVANCED_GROUPMODE_ONLY_SUPPORTED_FORSLAVES'));
 		}
 	}

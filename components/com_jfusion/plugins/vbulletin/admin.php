@@ -213,7 +213,8 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
     function getDefaultUsergroup()
     {
         $params = & JFusionFactory::getParams($this->getJname());
-        $usergroup = $params->get('usergroup');
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
+        $usergroup = $usergroups[0];
         //we want to output the usergroup name
         $db = & JFusionFactory::getDatabase($this->getJname());
         $query = 'SELECT title from #__usergroup WHERE usergroupid = ' . $usergroup;
@@ -555,7 +556,7 @@ JS;
     {
         //check for usergroups to make sure membergroups do not include default or display group
         $params = & JFusionFactory::getParams($this->getJname());
-        if (substr($params->get('usergroup'), 0, 2) == 'a:') {
+        if (JFusionFunction::isAdvancedUsergroupMode($this->getJname())) {
             $usergroups = unserialize($params->get('usergroup'));
             $master = JFusionFunction::getMaster();
             if (!empty($master)) {

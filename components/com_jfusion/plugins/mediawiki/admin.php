@@ -130,8 +130,8 @@ class JFusionAdmin_mediawiki extends JFusionAdmin {
     function getDefaultUsergroup()
     {
         $params = JFusionFactory::getParams($this->getJname());
-        $usergroup_id = $params->get('usergroup');
-        return $usergroup_id;
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
+        return $usergroups[0];
     }
 
     /**

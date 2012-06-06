@@ -217,7 +217,8 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
     function getDefaultUsergroup() {
         $params = JFusionFactory::getParams($this->getJname());
         $osCversion = $params->get('osCversion');
-        $usergroup_id = $params->get('usergroup');
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
+        $usergroup_id = $usergroups[0];
         switch ($osCversion) {
             case 'osc2':
             case 'osc3':

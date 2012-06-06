@@ -40,7 +40,6 @@ class JFusionUser_dokuwiki extends JFusionUser {
         $helper = JFusionFactory::getHelper($this->getJname());
         $userinfo->username = $this->filterUsername($userinfo->username);
         $update_email = $params->get('update_email');
-        $usergroup = $params->get('usergroup');
         $status = array('error' => array(),'debug' => array());
         //check to see if a valid $userinfo object was passed on
         if (!is_object($userinfo)) {
@@ -84,30 +83,26 @@ class JFusionUser_dokuwiki extends JFusionUser {
                 }
                 //check for advanced usergroup sync
                 $master = JFusionFunction::getMaster();
-                if (substr($usergroup, 0, 2) == 'a:' && $master->name != $this->getJname()) {
-                    $usergroup = unserialize($usergroup);
-                    //find what the usergroup should be
-                    $correct_usergroup = $usergroup[$userinfo->group_id];
-                    //Is there other information stored in the usergroup?
-                    if (is_array($correct_usergroup)) {
-                        //use the first var in the array
-                        $keys = array_keys($correct_usergroup);
-                        $correct_usergroup = $correct_usergroup[$keys[0]];
-                    }
-                    $correct_usergroup = explode(',', $correct_usergroup);
-                    $update_group = 0;
-                    foreach ($correct_usergroup as $value) {
-                        foreach ($existinguser->group_id as $value2) {
-                            if (trim($value) == trim($value2)) {
-                                $update_group++;
-                                break;
+                if (JFusionFunction::isAdvancedUsergroupMode($this->getJname()) && $master->name != $this->getJname()) {
+                    $correct_usergroup = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+                    if (!empty($correct_usergroup)) {
+                        $correct_usergroup = explode(',', $correct_usergroup);
+                        $update_group = 0;
+                        foreach ($correct_usergroup as $value) {
+                            foreach ($existinguser->group_id as $value2) {
+                                if (trim($value) == trim($value2)) {
+                                    $update_group++;
+                                    break;
+                                }
                             }
                         }
-                    }
-                    if (count($existinguser->group_id) != $update_group) {
-                        $changes['grps'] = $correct_usergroup;
+                        if (count($existinguser->group_id) != $update_group) {
+                            $changes['grps'] = $correct_usergroup;
+                        } else {
+                            $status['debug'][] = JText::_('SKIPPED_GROUP_UPDATE') . ':' . JText::_('GROUP_VALID');
+                        }
                     } else {
-                        $status['debug'][] = JText::_('SKIPPED_GROUP_UPDATE') . ':' . JText::_('GROUP_VALID');
+                        $status['error'][] = JText::_('GROUP_UPDATE_ERROR');
                     }
                 }
                 if (count($changes)) {
@@ -279,19 +274,10 @@ class JFusionUser_dokuwiki extends JFusionUser {
         $userinfo->username = $this->filterUsername($userinfo->username);
 
         $params = JFusionFactory::getParams($this->getJname());
-        $usergroup = $params->get('usergroup');
         $master = JFusionFunction::getMaster();
 		$correct_usergroup = null;
         if ($master->name != $this->getJname()) {
-            if (substr($usergroup, 0, 2) == 'a:') {
-                $usergroup = unserialize($usergroup);
-                //find what the usergroup should be
-                if (isset($usergroup[$userinfo->group_id])) {
-                	$correct_usergroup = $usergroup[$userinfo->group_id];	
-                }
-            } else {
-                $correct_usergroup = $usergroup;
-            }
+            $correct_usergroup = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 			$correct_usergroup = explode(',', $correct_usergroup);
 		}
 		if (!count($correct_usergroup)) $correct_usergroup = null;

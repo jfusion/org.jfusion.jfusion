@@ -271,14 +271,8 @@ class JFusionUser
                 //check for advanced usergroup sync
                 $master = JFusionFunction::getMaster();
                 if (!$userinfo->block && empty($userinfo->activation) && $master->name != $this->getJname()) {
-                    $usergroup = $params->get('usergroup');
-                    $multiusergroup = $params->get('multiusergroup');
-                    if (substr($usergroup, 0, 2) == 'a:' || substr($multiusergroup, 0, 2) == 'a:') {
-                        if (substr($usergroup, 0, 2) == 'a:') {
-                            $groups = unserialize($usergroup);
-                        } else {
-                            $groups = unserialize($multiusergroup);
-                        }
+                    if (JFusionFunction::isAdvancedUsergroupMode($this->getJname())) {
+                        $groups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
                         //find what the usergroup should be
                         $usergroup_updated = $this->executeUpdateUsergroup($userinfo, $existinguser, $groups, $status);
                         if ($usergroup_updated) {
