@@ -41,9 +41,6 @@ class JFusionFunction
 			$query = 'SELECT * from #__jfusion WHERE master = 1 and status = 1';
 			$db->setQuery($query);
 			$jfusion_master = $db->loadObject();
-			if ($jfusion_master) {
-				return $jfusion_master;
-			}
 		}
 		return $jfusion_master;
 
@@ -140,9 +137,7 @@ class JFusionFunction
             if ($itemid == 'joomla_int') {
                 //special handling for internal URLs
                 if ($route) {
-                    return JRoute::_($url, $xhtml);
-                } else {
-                    return $url;
+                    $url = JRoute::_($url, $xhtml);
                 }
             } else {
                 //we need to create direct link to the plugin
@@ -151,7 +146,6 @@ class JFusionFunction
                 if ($xhtml) {
                     $url = str_replace('&', '&amp;', $url);
                 }
-                return $url;
             }
         } else {
             //we need to create link to a joomla itemid
@@ -204,9 +198,8 @@ class JFusionFunction
                     $url = 'index.php?' . $query;
                 }
             }
-
-            return $url;
         }
+        return $url;
     }
 
     /**
@@ -277,56 +270,56 @@ class JFusionFunction
                     JError::raiseWarning(0, $db->stderr());
                 }
             }
-            return;
-        }
-        //check to see if we have been given a joomla id
-        if (empty($joomla_id)) {
-            $query = "SELECT id FROM #__users WHERE username = " . $db->Quote($userinfo->username);
-            $db->setQuery($query);
-            $joomla_id = $db->loadResult();
+        } else {
+            //check to see if we have been given a joomla id
             if (empty($joomla_id)) {
-                return;
-            }
-        }
-        if (empty($jname)) {
-            $queries = array();
-            //we need to update each master/slave
-            $query = "SELECT name FROM #__jfusion WHERE master = 1 OR slave = 1";
-            $db->setQuery($query);
-            $jnames = $db->loadObjectList();
-            foreach ($jnames as $jname) {
-                if ($jname != "joomla_int") {
-                    $user = & JFusionFactory::getUser($jname->name);
-                    $puserinfo = $user->getUser($userinfo);
-                    if ($delete) {
-                        $queries[] = "(id = $joomla_id AND jname = " . $db->Quote($jname->name) . ")";
-                    } else {
-                        $queries[] = "(" . $db->Quote($puserinfo->userid) . "," . $db->Quote($puserinfo->username) . ", $joomla_id, " . $db->Quote($jname->name) . ")";
-                    }
-                    unset($user);
-                    unset($puserinfo);
+                $query = "SELECT id FROM #__users WHERE username = " . $db->Quote($userinfo->username);
+                $db->setQuery($query);
+                $joomla_id = $db->loadResult();
+                if (empty($joomla_id)) {
+                    return;
                 }
             }
-            if (!empty($queries)) {
+            if (empty($jname)) {
+                $queries = array();
+                //we need to update each master/slave
+                $query = "SELECT name FROM #__jfusion WHERE master = 1 OR slave = 1";
+                $db->setQuery($query);
+                $jnames = $db->loadObjectList();
+                foreach ($jnames as $jname) {
+                    if ($jname != "joomla_int") {
+                        $user = & JFusionFactory::getUser($jname->name);
+                        $puserinfo = $user->getUser($userinfo);
+                        if ($delete) {
+                            $queries[] = "(id = $joomla_id AND jname = " . $db->Quote($jname->name) . ")";
+                        } else {
+                            $queries[] = "(" . $db->Quote($puserinfo->userid) . "," . $db->Quote($puserinfo->username) . ", $joomla_id, " . $db->Quote($jname->name) . ")";
+                        }
+                        unset($user);
+                        unset($puserinfo);
+                    }
+                }
+                if (!empty($queries)) {
+                    if ($delete) {
+                        $query = "DELETE FROM #__jfusion_users_plugin WHERE " . implode(' OR ', $queries);
+                    } else {
+                        $query = "REPLACE INTO #__jfusion_users_plugin (userid,username,id,jname) VALUES (" . implode(',', $queries) . ")";
+                    }
+                    $db->setQuery($query);
+                    if (!$db->query()) {
+                        JError::raiseWarning(0, $db->stderr());
+                    }
+                }
+            } else {
                 if ($delete) {
-                    $query = "DELETE FROM #__jfusion_users_plugin WHERE " . implode(' OR ', $queries);
+                    $query = "DELETE FROM #__jfusion_users_plugin WHERE id = $joomla_id AND jname = '$jname'";
                 } else {
-                    $query = "REPLACE INTO #__jfusion_users_plugin (userid,username,id,jname) VALUES (" . implode(',', $queries) . ")";
+                    $query = "REPLACE INTO #__jfusion_users_plugin (userid,username,id,jname) VALUES ({$db->Quote($userinfo->userid) },{$db->Quote($userinfo->username) },$joomla_id,{$db->Quote($jname) })";
                 }
                 $db->setQuery($query);
                 if (!$db->query()) {
                     JError::raiseWarning(0, $db->stderr());
                 }
-            }
-        } else {
-            if ($delete) {
-                $query = "DELETE FROM #__jfusion_users_plugin WHERE id = $joomla_id AND jname = '$jname'";
-            } else {
-                $query = "REPLACE INTO #__jfusion_users_plugin (userid,username,id,jname) VALUES ({$db->Quote($userinfo->userid) },{$db->Quote($userinfo->username) },$joomla_id,{$db->Quote($jname) })";
-            }
-            $db->setQuery($query);
-            if (!$db->query()) {
-                JError::raiseWarning(0, $db->stderr());
             }
         }
     }
@@ -421,11 +414,10 @@ class JFusionFunction
         $result = $db->loadResult();
         if ($result == '1') {
             $result = true;
-            return $result;
         } else {
             $result = false;
-            return $result;
         }
+        return $result;
     }
 
     /**

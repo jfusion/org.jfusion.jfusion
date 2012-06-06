@@ -33,6 +33,9 @@ class JFusionUser_vbulletin extends JFusionUser
     var $params;
     var $helper;
 
+    /**
+     *
+     */
     function __construct()
     {
         //get the params object

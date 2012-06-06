@@ -690,6 +690,10 @@ class simple_html_dom {
      */
     public $root = null;
     public $nodes = array();
+
+    /**
+     * @var $callback string
+     */
     public $callback = null;
     public $lowercase = false;
     protected $pos;
@@ -778,7 +782,7 @@ class simple_html_dom {
     /**
      * set callback function
      *
-     * @param $function_name
+     * @param string $function_name
      */
     function set_callback($function_name) {
         $this->callback = $function_name;

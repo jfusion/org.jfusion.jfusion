@@ -252,7 +252,6 @@ class cssparser {
 
 		if(strlen($content)) {
 			$this->modifyContent($content);
-
 			$this->ParseStr($content);
 			return true;
 		} else {
