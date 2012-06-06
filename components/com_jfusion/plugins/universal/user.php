@@ -288,57 +288,50 @@ class JFusionUser_universal extends JFusionUser {
     function updateUsergroup($userinfo, &$existinguser, &$status)
   	{
     	//get the usergroup and determine if working in advanced or simple mode
-    	$usergroups =& $userinfo->reference->usergroup;
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+        if (empty($usergroups)) {
+          $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST');
+        } else {
+            $usergroup = $usergroups[0];
+            $db = JFusionFactory::getDatabase($this->getJname());
+            $helper = JFusionFactory::getHelper($this->getJname());
+            $params = JFusionFactory::getParams($this->getJname());
 
-    	if(is_array($usergroups)) {
-      		//check to see if we have a group_id in the $userinfo, if not return
-			if(!isset($userinfo->group_id)) {
-				$status['error'][] = JText::_('GROUP_UPDATE_ERROR'). ": " . JText::_('ADVANCED_GROUPMODE_SOURCE_NOT_HAVE_GROUPID');
-			} else {
-                if(isset($usergroups[$userinfo->group_id])) {
-                    $db = JFusionFactory::getDatabase($this->getJname());
-                    $helper = JFusionFactory::getHelper($this->getJname());
-                    $params = JFusionFactory::getParams($this->getJname());
+            $userid = $helper->getFieldUserID();
+            $group = $helper->getFieldType('GROUP');
 
-                    $userid = $helper->getFieldUserID();
-                    $group = $helper->getFieldType('GROUP');
+            if ( isset($group) ) {
+                $table = $helper->getTablename();
+            } else {
+                $table = $helper->getTablename('group');
+                $userid = $helper->getFieldType('USERID','group');
+                $group = $helper->getFieldType('GROUP','group');
+            }
 
-                    if ( isset($group) ) {
-                        $table = $helper->getTablename();
-                    } else {
-                        $table = $helper->getTablename('group');
-                        $userid = $helper->getFieldType('USERID','group');
-                        $group = $helper->getFieldType('GROUP','group');
-                    }
-
-                    $maped = $helper->getMap('group');
-                    $andwhere = '';
-                    if (count($maped) ) {
-                        foreach ($maped as $key => $value) {
-                            $field = $value->field;
-                            switch ($value->type) {
-                                case 'DEFAULT':
-                                    if ( $value->fieldtype == 'VALUE' ) {
-                                        $andwhere .= ' AND '.$field.' = '.$db->Quote($value->value);
-                                    }
-                                    break;
+            $maped = $helper->getMap('group');
+            $andwhere = '';
+            if (count($maped) ) {
+                foreach ($maped as $key => $value) {
+                    $field = $value->field;
+                    switch ($value->type) {
+                        case 'DEFAULT':
+                            if ( $value->fieldtype == 'VALUE' ) {
+                                $andwhere .= ' AND '.$field.' = '.$db->Quote($value->value);
                             }
-                        }
-                    }
-
-                    $query = 'UPDATE #__'.$table.' '.
-                        'SET '.$group->field.' = '.$db->quote(base64_decode($usergroups[$userinfo->group_id])) .' '.
-                        'WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid).$andwhere;
-                    $db->setQuery($query );
-                    if (!$db->query()) {
-                        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-                    } else {
-                        $status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . base64_decode($existinguser->group_id) . ' -> ' . base64_decode($usergroups[$userinfo->group_id]);
+                            break;
                     }
                 }
             }
-		} else {
-			$status['error'][] = JText::_('GROUP_UPDATE_ERROR');
+
+            $query = 'UPDATE #__'.$table.' '.
+                'SET '.$group->field.' = '.$db->quote(base64_decode($usergroup)) .' '.
+                'WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid).$andwhere;
+            $db->setQuery($query );
+            if (!$db->query()) {
+                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
+            } else {
+                $status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . base64_decode($existinguser->group_id) . ' -> ' . base64_decode($usergroup);
+            }
 		}
 	}
 
@@ -473,12 +466,12 @@ class JFusionUser_universal extends JFusionUser {
     function createUser($userinfo, &$status)
     {
 	    $params = JFusionFactory::getParams($this->getJname());
-		//get the default user group and determine if we are using simple or advanced
-		$usergroups =& $userinfo->reference->usergroup;
-	    //check to make sure that if using the advanced group mode, $userinfo->group_id exists
-		if(is_array($usergroups) && !isset($userinfo->group_id)) {
-			$status['error'][] = JText::_('GROUP_UPDATE_ERROR'). ": " . JText::_('ADVANCED_GROUPMODE_SOURCE_NOT_HAVE_GROUPID');
+
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+		if(empty($usergroups)) {
+			$status['error'][] = JText::_('ERROR_CREATING_USER'). ": " . JText::_('ADVANCED_GROUPMODE_SOURCE_NOT_HAVE_GROUPID');
 		} else {
+            $usergroup = $usergroups[0];
             $helper = JFusionFactory::getHelper($this->getJname());
 
             $userid = $helper->getFieldUserID();
@@ -515,7 +508,7 @@ class JFusionUser_universal extends JFusionUser {
                                     $user->$field = $lastname;
                                     break;
                                 case 'GROUP':
-                                    $user->$field = (is_array($usergroups)) ? base64_decode($usergroups[$userinfo->group_id]) : $usergroups;;
+                                    $user->$field = base64_decode($usergroup);
                                     break;
                                 case 'USERNAME':
                                 case 'USERNAMEID':
@@ -585,7 +578,7 @@ class JFusionUser_universal extends JFusionUser {
                                                 $addgroup->$field = $user->$field2;
                                                 break;
                                             case 'GROUP':
-                                                $addgroup->$field = (is_array($usergroups)) ? base64_decode($usergroups[$userinfo->group_id]) : $usergroups;
+                                                $addgroup->$field = base64_decode($usergroup);
                                                 break;
                                             case 'DEFAULT':
                                                 $addgroup->$field = $helper->getValue($value->fieldtype,$value->value,$userinfo);

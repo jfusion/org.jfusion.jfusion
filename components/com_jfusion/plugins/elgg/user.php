@@ -218,67 +218,71 @@ class JFusionUser_elgg extends JFusionUser {
         //found out what usergroup should be used
         $params = JFusionFactory::getParams($this->getJname());
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
-        $usergroup = $usergroups[0];
-        $username_clean = $this->filterUsername($userinfo->username);
-        //prepare the variables
-        $user = new stdClass;
-        $user->uid = null;
-        $user->username = $username_clean;
-        $user->email = $userinfo->email;
-        jimport('joomla.user.helper');
-        if (isset($userinfo->password_clear)) {
-            $user->password = $userinfo->password_clear;
+        if (empty($usergroups)) {
+            $status['error'][] = JText::_('ERROR_CREATE_USER') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
         } else {
-            //generate a random one for now
+            $usergroup = $usergroups[0];
+            $username_clean = $this->filterUsername($userinfo->username);
+            //prepare the variables
+            $user = new stdClass;
+            $user->uid = null;
+            $user->username = $username_clean;
+            $user->email = $userinfo->email;
             jimport('joomla.user.helper');
-            $user->password = JUserHelper::genRandomPassword(12);
-        }
-        //TODO: add usergroup functionality
-        if (!empty($userinfo->activation)) {
-            $user->usergroup = 2;
-        } elseif (!empty($userinfo->block)) {
-            $user->usergroup = 7;
-        } else {
-            $user->usergroup = $usergroup;
-        }
-    	if (defined('externalpage')) {
-        	define('externalpage', true);	
-        }
-        require_once $params->get('source_path') . DS . "engine" . DS . "start.php";
-        // Get variables
-        global $CONFIG;
-        $username = $user->username;
-        $password = $user->password;
-        $password2 = $user->password;
-        $email = $user->email;
-        $name = $userinfo->name;
-        // For now, just try and register the user
-        
-        try {
-            if (((trim($password) != "") && (strcmp($password, $password2) == 0)) && ($guid = register_user($username, $password, $name, $email, true))) {
-// comented out, if user is created by admin validated emails or not user can still login.., dont think this is what we want as i added update validation functions.
-//                $new_user = get_entity($guid);
-//                $new_user->admin_created = true;
-                if (empty($userinfo->password_clear)) {
-                    //we need to update the password
-                    $db = JFusionFactory::getDatabase($this->getJname());
-                    $query = 'UPDATE #__users_entity SET password =' . $db->Quote($userinfo->password) . ', salt = ' . $db->Quote($userinfo->password_salt) . ' WHERE username = ' . $db->Quote($username);
-                    $db->setQuery($query);
-                    $db->query();
-                }
-                //return the good news
-                $status['debug'][] = JText::_('USER_CREATION');
-                $status['userinfo'] = $this->getUser($userinfo);
-                return;
-                //notify_user($new_user->guid, $CONFIG->site->guid, elgg_echo('useradd:subject'), sprintf(elgg_echo('useradd:body'), $name, $CONFIG->site->name, $CONFIG->site->url, $username, $password));
-                //system_message(sprintf(elgg_echo("adduser:ok"),$CONFIG->sitename));
-                
+            if (isset($userinfo->password_clear)) {
+                $user->password = $userinfo->password_clear;
             } else {
-                //register_error(elgg_echo("adduser:bad"));
+                //generate a random one for now
+                jimport('joomla.user.helper');
+                $user->password = JUserHelper::genRandomPassword(12);
             }
-        } catch(RegistrationException $r) {
-            //register_error($r->getMessage());
-            $status['error'][] = JText::_('USER_CREATION_ERROR').' '.$r->getMessage();
+            //TODO: add usergroup functionality
+            if (!empty($userinfo->activation)) {
+                $user->usergroup = 2;
+            } elseif (!empty($userinfo->block)) {
+                $user->usergroup = 7;
+            } else {
+                $user->usergroup = $usergroup;
+            }
+            if (defined('externalpage')) {
+                define('externalpage', true);
+            }
+            require_once $params->get('source_path') . DS . "engine" . DS . "start.php";
+            // Get variables
+            global $CONFIG;
+            $username = $user->username;
+            $password = $user->password;
+            $password2 = $user->password;
+            $email = $user->email;
+            $name = $userinfo->name;
+            // For now, just try and register the user
+
+            try {
+                if (((trim($password) != "") && (strcmp($password, $password2) == 0)) && ($guid = register_user($username, $password, $name, $email, true))) {
+    // comented out, if user is created by admin validated emails or not user can still login.., dont think this is what we want as i added update validation functions.
+    //                $new_user = get_entity($guid);
+    //                $new_user->admin_created = true;
+                    if (empty($userinfo->password_clear)) {
+                        //we need to update the password
+                        $db = JFusionFactory::getDatabase($this->getJname());
+                        $query = 'UPDATE #__users_entity SET password =' . $db->Quote($userinfo->password) . ', salt = ' . $db->Quote($userinfo->password_salt) . ' WHERE username = ' . $db->Quote($username);
+                        $db->setQuery($query);
+                        $db->query();
+                    }
+                    //return the good news
+                    $status['debug'][] = JText::_('USER_CREATION');
+                    $status['userinfo'] = $this->getUser($userinfo);
+                    return;
+                    //notify_user($new_user->guid, $CONFIG->site->guid, elgg_echo('useradd:subject'), sprintf(elgg_echo('useradd:body'), $name, $CONFIG->site->name, $CONFIG->site->url, $username, $password));
+                    //system_message(sprintf(elgg_echo("adduser:ok"),$CONFIG->sitename));
+
+                } else {
+                    //register_error(elgg_echo("adduser:bad"));
+                }
+            } catch(RegistrationException $r) {
+                //register_error($r->getMessage());
+                $status['error'][] = JText::_('USER_CREATION_ERROR').' '.$r->getMessage();
+            }
         }
     }
 

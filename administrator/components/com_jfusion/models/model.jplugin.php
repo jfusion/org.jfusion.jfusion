@@ -950,12 +950,11 @@ class JFusionJplugin
      */
     public static function createUser($userinfo, &$status, $jname)
     {
-        $params = & JFusionFactory::getParams($jname);
         $usergroups = JFusionFunction::getCorrectUserGroups($jname,$userinfo);
         //get the default user group and determine if we are using simple or advanced
         //check to make sure that if using the advanced group mode, $userinfo->group_id exists
-        if (JFusionFunction::isAdvancedUsergroupMode($jname) && empty($usergroups)) {
-            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+        if (empty($usergroups)) {
+            $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
         } else {
             //load the database
             $db = & JFusionFactory::getDatabase($jname);
@@ -996,38 +995,37 @@ class JFusionJplugin
                 $instance->set('sendEmail', 0);
                 //find out what usergroup the new user should have
                 //the $userinfo object was probably reconstructed in the user plugin and autregister = 1
-                if(JFusionFunction::isJoomlaVersion('1.6',$jname)) {
-                    $groups = array(2);
-                } else {
-                    $groups = array(18);
-                }
                 $isadmin = false;
-                if (isset($userinfo->group_id) || isset($userinfo->groups)) {
-                    $groups = JFusionFunction::getCorrectUserGroups($jname,$userinfo);
-
+                if (isset($usergroups[0])) {
                     if(JFusionFunction::isJoomlaVersion('1.6',$jname)) {
-                        $isadmin = (in_array ( 7 , $groups,true ) || in_array ( 8 , $groups,true )) ? true : false;
+                        $isadmin = (in_array ( 7 , $usergroups,true ) || in_array ( 8 , $usergroups,true )) ? true : false;
                     } else {
-                        $isadmin = ($groups[0] == 24 || $groups[0] == 25) ? true : false;
+                        $isadmin = ($usergroups[0] == 24 || $usergroups[0] == 25) ? true : false;
+                    }
+                } else {
+                    if(JFusionFunction::isJoomlaVersion('1.6',$jname)) {
+                        $usergroups = array(2);
+                    } else {
+                        $usergroups = array(18);
                     }
                 }
 
                 //work around the issue where joomla will not allow the creation of an admin or super admin if the logged in user is not a super admin
                 if ($isadmin && $jname == 'joomla_int') {
                     if(JFusionFunction::isJoomlaVersion('1.6',$jname)) {
-                        $groups = array(2);
+                        $usergroups = array(2);
                     } else {
-                        $groups = array(18);
+                        $usergroups = array(18);
                     }
                 }
 
                 if(JFusionFunction::isJoomlaVersion('1.6',$jname)) {
                     $instance->set('usertype', 'deprecated');
-                    $instance->set('groups', $groups);
+                    $instance->set('groups', $usergroups);
                 } else {
-                    $usergroup = JFusionJplugin::getUsergroupName($jname,$groups[0]);
+                    $usergroup = JFusionJplugin::getUsergroupName($jname,$usergroups[0]);
                     $instance->set('usertype', $usergroup);
-                    $instance->set('gid', $groups[0]);
+                    $instance->set('gid', $usergroups[0]);
                 }
                 if ($jname == 'joomla_int') {
                     //store the username passed into this to prevent the user plugin from attempting to recreate users
@@ -1073,7 +1071,7 @@ class JFusionJplugin
                     }
 
                     if(JFusionFunction::isJoomlaVersion('1.6',$jname)) {
-                        foreach ($groups as $group) {
+                        foreach ($usergroups as $group) {
                             $query = 'INSERT INTO #__user_usergroup_map (group_id,user_id) VALUES (' . $group . ',' . $user->id . ')';
                             $db->setQuery($query);
                             if (!$db->query()) {
@@ -1096,7 +1094,7 @@ class JFusionJplugin
                             return $status;
                         }
                         // and finally add the user to the core_acl_groups_aro_map
-                        $query = 'INSERT INTO #__core_acl_groups_aro_map (group_id, aro_id) VALUES (' . $groups[0] . ',' . $acl->id . ')';
+                        $query = 'INSERT INTO #__core_acl_groups_aro_map (group_id, aro_id) VALUES (' . $usergroups[0] . ',' . $acl->id . ')';
                         $db->setQuery($query);
                         if (!$db->query()) {
                             $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
@@ -1221,17 +1219,17 @@ class JFusionJplugin
                 $master = JFusionFunction::getMaster();
                 if (!$userinfo->block && empty($userinfo->activation) && $master->name != $jname) {
                     if (JFusionFunction::isAdvancedUsergroupMode($jname)) {
-                        $groups = JFusionFunction::getCorrectUserGroups($jname,$userinfo);
+                        $usergroups = JFusionFunction::getCorrectUserGroups($jname,$userinfo);
 
                         if(JFusionFunction::isJoomlaVersion('1.6',$jname)) {
-                            if (!JFusionFunction::compareUserGroups($existinguser,$groups)) {
+                            if (!JFusionFunction::compareUserGroups($existinguser,$usergroups)) {
                                 JFusionJplugin::updateUsergroup($userinfo, $existinguser, $status, $jname);
                                 $changed = true;
                             } else {
                                 $status['debug'][] = JText::_('SKIPPED_GROUP_UPDATE') . ':' . JText::_('GROUP_VALID');
                             }
-                        } else if (isset($groups[0])) {
-                            $correct_usergroup = $groups[0];
+                        } else if (isset($usergroups[0])) {
+                            $correct_usergroup = $usergroups[0];
                             //make sure that ACL has not been corrupted
                             $correct_groupname = JFusionJplugin::getUsergroupName($jname,$correct_usergroup);
                             $query = "SELECT group_id FROM #__core_acl_aro as a INNER JOIN #__core_acl_groupsaro__map as b ON a.id = b.aro_id WHERE a.value = " . $existinguser->userid;
@@ -1291,94 +1289,89 @@ class JFusionJplugin
      */
     public static function updateUsergroup($userinfo, &$existinguser, &$status, $jname, $fire_user_plugins = true)
     {
-        //check to see if we have a group_id in the $userinfo, if not return
-        if (!isset($userinfo->group_id) && !isset($userinfo->groups)) {
-            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
-        } else {
+        $usergroups = JFusionFunction::getCorrectUserGroups($jname,$userinfo);
+        //make sure the group exists
+        if (empty($usergroups)) {
             $db = & JFusionFactory::getDatabase($jname);
             $params = & JFusionFactory::getParams($jname);
             $dispatcher = & JDispatcher::getInstance();
 
-            $groups = JFusionFunction::getCorrectUserGroups($jname,$userinfo);
-            //make sure the group exists
-            if (count($groups)) {
-                //Fire the user plugin functions for joomla_int
-                if ($jname == "joomla_int" && $fire_user_plugins) {
-                    // Get the old user
-                    $old = new JUser($existinguser->userid);
-                    //Fire the onBeforeStoreUser event.
-                    JPluginHelper::importPlugin('user');
-                    $dispatcher->trigger('onBeforeStoreUser', array($old->getProperties(), false));
-                }
+            //Fire the user plugin functions for joomla_int
+            if ($jname == "joomla_int" && $fire_user_plugins) {
+                // Get the old user
+                $old = new JUser($existinguser->userid);
+                //Fire the onBeforeStoreUser event.
+                JPluginHelper::importPlugin('user');
+                $dispatcher->trigger('onBeforeStoreUser', array($old->getProperties(), false));
+            }
 
-                if(JFusionFunction::isJoomlaVersion('1.6',$jname)) {
-                    jimport('joomla.user.helper');
-                    $query = "DELETE FROM #__user_usergroup_map WHERE user_id = " . $db->Quote($existinguser->userid);
+            if(JFusionFunction::isJoomlaVersion('1.6',$jname)) {
+                jimport('joomla.user.helper');
+                $query = "DELETE FROM #__user_usergroup_map WHERE user_id = " . $db->Quote($existinguser->userid);
+                $db->setQuery($query);
+                if (!$db->query()) {
+                    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $db->stderr();
+                } else {
+                    foreach ($usergroups as $key => $group) {
+                        $temp = new stdClass;
+                        $temp->user_id = $existinguser->userid;
+                        $temp->group_id = $group;
+                        if (!$db->insertObject('#__user_usergroup_map', $temp)) {
+                            //return the error
+                            $status['error'] = JText::_('USER_CREATION_ERROR') . ': ' . $db->stderr();
+                            return $status;
+                        }
+                    }
+                    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(",", $existinguser->groups) . ' -> ' .implode(",", $usergroups);
+                    //Fire the user plugin functions for joomla_int
+                    if ($jname == 'joomla_int' && $fire_user_plugins) {
+                        //Fire the onAftereStoreUser event
+                        $updated = new JUser($existinguser->userid);
+                        $dispatcher->trigger('onAfterStoreUser', array($updated->getProperties(), false, true, ''));
+                    }
+                }
+            } else {
+                $gid = $usergroups[0];
+                $usertype = JFusionJplugin::getUsergroupName($jname,$gid);
+                if (!empty($gid) && !empty($usertype ) ) {
+                    //update the user table
+                    $query = "UPDATE #__users SET usertype = {$db->Quote($usertype) }, gid = {$gid}  WHERE id = {$existinguser->userid}";
                     $db->setQuery($query);
                     if (!$db->query()) {
                         $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $db->stderr();
                     } else {
-                        foreach ($groups as $key => $group) {
-                            $temp = new stdClass;
-                            $temp->user_id = $existinguser->userid;
-                            $temp->group_id = $group;
-                            if (!$db->insertObject('#__user_usergroup_map', $temp)) {
-                                //return the error
-                                $status['error'] = JText::_('USER_CREATION_ERROR') . ': ' . $db->stderr();
-                                return $status;
-                            }
-                        }
-                        $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(",", $existinguser->groups) . ' -> ' .implode(",", $groups);
-                        //Fire the user plugin functions for joomla_int
-                        if ($jname == 'joomla_int' && $fire_user_plugins) {
-                            //Fire the onAftereStoreUser event
-                            $updated = new JUser($existinguser->userid);
-                            $dispatcher->trigger('onAfterStoreUser', array($updated->getProperties(), false, true, ''));
-                        }
-                    }
-                } else {
-                    $gid = $groups[0];
-                    $usertype = JFusionJplugin::getUsergroupName($jname,$gid);
-                    if (!empty($gid) && !empty($usertype ) ) {
-                        //update the user table
-                        $query = "UPDATE #__users SET usertype = {$db->Quote($usertype) }, gid = {$gid}  WHERE id = {$existinguser->userid}";
+                        //we have to update the acl table
+                        $query = "SELECT id FROM #__core_acl_aro WHERE value = " . $existinguser->userid;
                         $db->setQuery($query);
-                        if (!$db->query()) {
-                            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $db->stderr();
-                        } else {
-                            //we have to update the acl table
-                            $query = "SELECT id FROM #__core_acl_aro WHERE value = " . $existinguser->userid;
+                        $aro_id = $db->loadResult();
+                        if (!empty($aro_id)) {
+                            $query = "UPDATE #__core_acl_groups_aro_map SET group_id = {$gid} WHERE aro_id = {$aro_id}";
                             $db->setQuery($query);
-                            $aro_id = $db->loadResult();
-                            if (!empty($aro_id)) {
-                                $query = "UPDATE #__core_acl_groups_aro_map SET group_id = {$gid} WHERE aro_id = {$aro_id}";
+                            if (!$db->query()) {
+                                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $db->stderr();
+                                //update to acl table failed, attempt to revert changes to user table
+                                $query = "UPDATE #__users SET usertype = {$db->Quote($existinguser->group_name) }, gid = {$existinguser->group_id} WHERE id = {$existinguser->userid}";
                                 $db->setQuery($query);
                                 if (!$db->query()) {
                                     $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $db->stderr();
-                                    //update to acl table failed, attempt to revert changes to user table
-                                    $query = "UPDATE #__users SET usertype = {$db->Quote($existinguser->group_name) }, gid = {$existinguser->group_id} WHERE id = {$existinguser->userid}";
-                                    $db->setQuery($query);
-                                    if (!$db->query()) {
-                                        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $db->stderr();
-                                    }
-                                } else {
-                                    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $gid;
-                                    //Fire the user plugin functions for joomla_int
-                                    if ($jname == 'joomla_int' && $fire_user_plugins) {
-                                        // Fire the onAftereStoreUser event
-                                        $updated = new JUser($existinguser->userid);
-                                        $dispatcher->trigger('onAfterStoreUser', array($updated->getProperties(), false, true, ''));
-                                    }
                                 }
                             } else {
-                                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $db->stderr();
+                                $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $gid;
+                                //Fire the user plugin functions for joomla_int
+                                if ($jname == 'joomla_int' && $fire_user_plugins) {
+                                    // Fire the onAftereStoreUser event
+                                    $updated = new JUser($existinguser->userid);
+                                    $dispatcher->trigger('onAfterStoreUser', array($updated->getProperties(), false, true, ''));
+                                }
                             }
+                        } else {
+                            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $db->stderr();
                         }
                     }
                 }
-            } else {
-                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST');
             }
+        } else {
+            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST');
         }
         return $status;
     }

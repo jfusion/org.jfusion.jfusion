@@ -269,32 +269,25 @@ class JFusionUser_mediawiki extends JFusionUser {
 	{
         $params = JFusionFactory::getParams($this->getJname());
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
-        //get the default user group and determine if we are using simple or advanced
-        //check to make sure that if using the advanced group mode, $userinfo->group_id exists
-        if (JFusionFunction::isAdvancedUsergroupMode($this->getJname()) && empty($usergroups)) {
+        if (empty($usergroups)) {
             $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
         } else {
-            if(!empty($usergroups))
-            {
-                $group = $usergroups[0];
+            $group = $usergroups[0];
 
-                $db = JFusionFactory::getDatabase($this->getJname());
-                $query = 'DELETE FROM #__user_groups WHERE ug_user = '.$db->quote($existinguser->userid);
-                $db->setQuery($query);
-                $db->query();
+            $db = JFusionFactory::getDatabase($this->getJname());
+            $query = 'DELETE FROM #__user_groups WHERE ug_user = '.$db->quote($existinguser->userid);
+            $db->setQuery($query);
+            $db->query();
 
-                //prepare the user variables
-                $usergroup = new stdClass;
-                $usergroup->ug_user = $existinguser->userid;
-                $usergroup->ug_group = $group;
+            //prepare the user variables
+            $usergroup = new stdClass;
+            $usergroup->ug_user = $existinguser->userid;
+            $usergroup->ug_group = $group;
 
-                if (!$db->insertObject('#__user_groups', $usergroup, 'ug_user' )) {
-                    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-                } else {
-                    $status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . $existinguser->group_id . ' -> ' . $group;
-                }
+            if (!$db->insertObject('#__user_groups', $usergroup, 'ug_user' )) {
+                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
             } else {
-                $status['error'][] = JText::_('GROUP_UPDATE_ERROR');
+                $status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . $existinguser->group_id . ' -> ' . $group;
             }
         }
 	}
@@ -391,8 +384,8 @@ class JFusionUser_mediawiki extends JFusionUser {
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
         //get the default user group and determine if we are using simple or advanced
         //check to make sure that if using the advanced group mode, $userinfo->group_id exists
-        if (JFusionFunction::isAdvancedUsergroupMode($this->getJname()) && empty($usergroups)) {
-            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+        if (empty($usergroups)) {
+            $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
         } else {
             $usergroup = $usergroups[0];
 

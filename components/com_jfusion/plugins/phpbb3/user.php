@@ -389,53 +389,67 @@ class JFusionUser_phpbb3 extends JFusionUser
      * @param array $status
      */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
-        //check to see if we have a group_id in the $userinfo, if not return
-        if (!isset($userinfo->group_id)) {
-            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+        if (empty($usergroups)) {
+            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST');
         } else {
-            $params = & JFusionFactory::getParams($this->getJname());
-            $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
-            if (!empty($usergroups)) {
-                $usergroup = $usergroups[0];
-                $db = JFusionFactory::getDatabase($this->getJname());
-                $user = new stdClass;
-                $user->user_id = $existinguser->userid;
-                $user->group_id = $usergroup;
-                $user->user_colour = '';
-                //clear out cached permissions so that those of the new group are generated
-                $user->user_permissions = '';
-                //update the user colour, avatar, etc to the groups if applicable
-                $query = "SELECT group_colour, group_rank, group_avatar, group_avatar_type, group_avatar_width, group_avatar_height FROM #__groups WHERE group_id = {$user->group_id}";
+            $usergroup = $usergroups[0];
+            $db = JFusionFactory::getDatabase($this->getJname());
+            $user = new stdClass;
+            $user->user_id = $existinguser->userid;
+            $user->group_id = $usergroup;
+            $user->user_colour = '';
+            //clear out cached permissions so that those of the new group are generated
+            $user->user_permissions = '';
+            //update the user colour, avatar, etc to the groups if applicable
+            $query = "SELECT group_colour, group_rank, group_avatar, group_avatar_type, group_avatar_width, group_avatar_height FROM #__groups WHERE group_id = {$user->group_id}";
+            $db->setQuery($query);
+            $group_attribs = $db->loadAssoc();
+            if (!empty($group_attribs)) {
+                foreach($group_attribs AS $k => $v) {
+                    // If we are about to set an avatar or rank, we will not overwrite with empty, unless we are not actually changing the default group
+                    if ((strpos($k, 'group_avatar') === 0 || strpos($k, 'group_rank') === 0) && !$group_attribs[$k])
+                    {
+                        continue;
+                    }
+                    $user->{str_replace('group_', 'user_', $k)} = $v;
+                }
+            }
+
+            //set the usergroup in the user table
+            if (!$db->updateObject('#__users', $user, 'user_id')) {
+                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
+            } else {
+                //remove the old usergroup for the user in the groups table
+                $query = 'DELETE FROM #__user_group WHERE group_id = ' . (int)$existinguser->group_id . ' AND user_id = ' . (int)$existinguser->userid;
                 $db->setQuery($query);
-                $group_attribs = $db->loadAssoc();
-                if (!empty($group_attribs)) {
-                    foreach($group_attribs AS $k => $v) {
-                        // If we are about to set an avatar or rank, we will not overwrite with empty, unless we are not actually changing the default group
-                        if ((strpos($k, 'group_avatar') === 0 || strpos($k, 'group_rank') === 0) && !$group_attribs[$k])
-                        {
-                            continue;
-                        }
-                        $user->{str_replace('group_', 'user_', $k)} = $v;
+                if (!$db->query()) {
+                    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
+                }
+
+                //if the user was in the newly registered group, remove the registered group as well
+                $query = "SELECT group_id, group_name FROM #__groups WHERE group_name IN ('NEWLY_REGISTERED','REGISTERED') AND group_type = 3";
+                $db->setQuery($query);
+                $groups = $db->loadObjectList('group_name');
+                if ($existinguser->group_id == $groups['NEWLY_REGISTERED']->group_id) {
+                    $query = 'DELETE FROM #__user_group WHERE group_id = ' . (int)$groups['REGISTERED']->group_id . ' AND user_id = ' . (int)$existinguser->userid;
+                    $db->setQuery($query);
+                    if (!$db->query()) {
+                        //return the error
+                        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
+                        return;
                     }
                 }
 
-                //set the usergroup in the user table
-                if (!$db->updateObject('#__users', $user, 'user_id')) {
+                //add the user in the groups table
+                $query = 'INSERT INTO #__user_group (group_id, user_id ,group_leader, user_pending) VALUES (' . (int)$usergroup . ', ' . (int)$existinguser->userid . ',0,0)';
+                $db->setQuery($query);
+                if (!$db->query()) {
                     $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
                 } else {
-                    //remove the old usergroup for the user in the groups table
-                    $query = 'DELETE FROM #__user_group WHERE group_id = ' . (int)$existinguser->group_id . ' AND user_id = ' . (int)$existinguser->userid;
-                    $db->setQuery($query);
-                    if (!$db->query()) {
-                        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-                    }
-
-                    //if the user was in the newly registered group, remove the registered group as well
-                    $query = "SELECT group_id, group_name FROM #__groups WHERE group_name IN ('NEWLY_REGISTERED','REGISTERED') AND group_type = 3";
-                    $db->setQuery($query);
-                    $groups = $db->loadObjectList('group_name');
-                    if ($existinguser->group_id == $groups['NEWLY_REGISTERED']->group_id) {
-                        $query = 'DELETE FROM #__user_group WHERE group_id = ' . (int)$groups['REGISTERED']->group_id . ' AND user_id = ' . (int)$existinguser->userid;
+                    if ($usergroup == $groups['NEWLY_REGISTERED']->group_id) {
+                        //we need to also add the user to the regular registered group or they may find themselves groupless
+                        $query = 'INSERT INTO #__user_group (group_id, user_id, group_leader, user_pending) VALUES (' . $groups['REGISTERED']->group_id . ',' . (int)$existinguser->userid . ', 0,0 )';
                         $db->setQuery($query);
                         if (!$db->query()) {
                             //return the error
@@ -444,62 +458,42 @@ class JFusionUser_phpbb3 extends JFusionUser
                         }
                     }
 
-                    //add the user in the groups table
-                    $query = 'INSERT INTO #__user_group (group_id, user_id ,group_leader, user_pending) VALUES (' . (int)$usergroup . ', ' . (int)$existinguser->userid . ',0,0)';
+                    //update correct group colors where applicable
+                    $query = "UPDATE #__forums SET forum_last_poster_colour = " . $db->Quote($user->user_colour) . " WHERE forum_last_poster_id = " . (int)$existinguser->userid;
                     $db->setQuery($query);
                     if (!$db->query()) {
+                        //return the error
                         $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-                    } else {
-                        if ($usergroup == $groups['NEWLY_REGISTERED']->group_id) {
-                            //we need to also add the user to the regular registered group or they may find themselves groupless
-                            $query = 'INSERT INTO #__user_group (group_id, user_id, group_leader, user_pending) VALUES (' . $groups['REGISTERED']->group_id . ',' . (int)$existinguser->userid . ', 0,0 )';
-                            $db->setQuery($query);
-                            if (!$db->query()) {
-                                //return the error
-                                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-                                return;
-                            }
-                        }
-
-                        //update correct group colors where applicable
-                        $query = "UPDATE #__forums SET forum_last_poster_colour = " . $db->Quote($user->user_colour) . " WHERE forum_last_poster_id = " . (int)$existinguser->userid;
-                        $db->setQuery($query);
-                        if (!$db->query()) {
-                            //return the error
-                            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-                        }
-
-                        $query = "UPDATE #__topics SET topic_first_poster_colour = " . $db->Quote($user->user_colour) . " WHERE topic_poster = " . (int)$existinguser->userid;
-                        $db->setQuery($query);
-                        if (!$db->query()) {
-                            //return the error
-                            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-                        }
-
-                        $query = "UPDATE #__topics SET topic_last_poster_colour = " . $db->Quote($user->user_colour) . " WHERE topic_last_poster_id = " . (int)$existinguser->userid;
-                        $db->setQuery($query);
-                        if (!$db->query()) {
-                            //return the error
-                            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-                        }
-
-                        $query = "SELECT config_value FROM #__config WHERE config_name = 'newest_user_id'";
-                        $db->setQuery($query);
-                        $newest_user_id = $db->loadResult();
-                        if ($newest_user_id == $existinguser->userid) {
-                            $query = "UPDATE #__config SET config_value = " . $db->Quote($user->user_colour) . " WHERE config_name = 'newest_user_id'";
-                            if (!$db->query()) {
-                                //return the error
-                                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-                            }
-                        }
-
-                        //log the group change success
-                        $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $usergroup;
                     }
+
+                    $query = "UPDATE #__topics SET topic_first_poster_colour = " . $db->Quote($user->user_colour) . " WHERE topic_poster = " . (int)$existinguser->userid;
+                    $db->setQuery($query);
+                    if (!$db->query()) {
+                        //return the error
+                        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
+                    }
+
+                    $query = "UPDATE #__topics SET topic_last_poster_colour = " . $db->Quote($user->user_colour) . " WHERE topic_last_poster_id = " . (int)$existinguser->userid;
+                    $db->setQuery($query);
+                    if (!$db->query()) {
+                        //return the error
+                        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
+                    }
+
+                    $query = "SELECT config_value FROM #__config WHERE config_name = 'newest_user_id'";
+                    $db->setQuery($query);
+                    $newest_user_id = $db->loadResult();
+                    if ($newest_user_id == $existinguser->userid) {
+                        $query = "UPDATE #__config SET config_value = " . $db->Quote($user->user_colour) . " WHERE config_name = 'newest_user_id'";
+                        if (!$db->query()) {
+                            //return the error
+                            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
+                        }
+                    }
+
+                    //log the group change success
+                    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $usergroup;
                 }
-            } else {
-                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST');
             }
         }
     }
@@ -583,10 +577,8 @@ class JFusionUser_phpbb3 extends JFusionUser
         $update_block = $params->get('update_block');
         $update_activation = $params->get('update_activation');
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
-        //get the default user group and determine if we are using simple or advanced
-        //check to make sure that if using the advanced group mode, $userinfo->group_id exists
-        if (JFusionFunction::isAdvancedUsergroupMode($this->getJname()) && empty($usergroups)) {
-            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+        if (empty($usergroups)) {
+            $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
         } else {
             $usergroup = $usergroups[0];
             $username_clean = $this->filterUsername($userinfo->username);

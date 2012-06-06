@@ -245,39 +245,44 @@ class JFusionUser_gallery2 extends JFusionUser {
         $helper = JFusionFactory::getHelper($this->getJname());
         $helper->loadGallery2Api(false);
         $params = JFusionFactory::getParams($this->getJname());
-        list($ret, $g2_user) = GalleryCoreApi::newFactoryInstance('GalleryEntity', 'GalleryUser');
-        if ($ret) {
-            $status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . $userinfo->username;
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+        if (empty($usergroups)) {
+            $status['error'][] = JText::_('ERROR_CREATE_USER') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
         } else {
-            if (!isset($g2_user)) {
-                $status['error'][] = JText::_('ERROR_CREATING_USER') . ": ".$this->getJname()." : " . $userinfo->username;
-            }
-            $ret = $g2_user->create($userinfo->username);
+            list($ret, $g2_user) = GalleryCoreApi::newFactoryInstance('GalleryEntity', 'GalleryUser');
             if ($ret) {
-                $status['error'][] = JText::_('ERROR_CREATING_USER') . ": ".$this->getJname()." : " . $userinfo->username;
+                $status['error'][] = JText::_('ERROR_CREATING_USER') . ' ' . $userinfo->username;
             } else {
-                $testcrypt = $userinfo->password;
-                if (isset($userinfo->password_clear)) {
-                    $testcrypt = GalleryUtilities::md5Salt($userinfo->password_clear);
+                if (!isset($g2_user)) {
+                    $status['error'][] = JText::_('ERROR_CREATING_USER') . ": ".$this->getJname()." : " . $userinfo->username;
                 }
-                $g2_user->setHashedPassword($testcrypt);
-                $g2_user->setUserName($userinfo->username);
-                $g2_user->setEmail($userinfo->email);
-                $g2_user->setFullName($userinfo->name);
-                $ret = $g2_user->save();
+                $ret = $g2_user->create($userinfo->username);
                 if ($ret) {
                     $status['error'][] = JText::_('ERROR_CREATING_USER') . ": ".$this->getJname()." : " . $userinfo->username;
                 } else {
-                    $groups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
-                    foreach ($groups as $group) {
-                        $ret = GalleryCoreApi::addUserToGroup($g2_user->id, (int)$group);
-                        if ($ret) {
-                            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $group;
-                        }
+                    $testcrypt = $userinfo->password;
+                    if (isset($userinfo->password_clear)) {
+                        $testcrypt = GalleryUtilities::md5Salt($userinfo->password_clear);
                     }
-                    $status['userinfo'] = $this->_getUser($g2_user);
-                    if (empty($status['error'])) {
-                        $status['action'] = 'created';
+                    $g2_user->setHashedPassword($testcrypt);
+                    $g2_user->setUserName($userinfo->username);
+                    $g2_user->setEmail($userinfo->email);
+                    $g2_user->setFullName($userinfo->name);
+                    $ret = $g2_user->save();
+                    if ($ret) {
+                        $status['error'][] = JText::_('ERROR_CREATING_USER') . ": ".$this->getJname()." : " . $userinfo->username;
+                    } else {
+                        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+                        foreach ($usergroups as $group) {
+                            $ret = GalleryCoreApi::addUserToGroup($g2_user->id, (int)$group);
+                            if ($ret) {
+                                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $group;
+                            }
+                        }
+                        $status['userinfo'] = $this->_getUser($g2_user);
+                        if (empty($status['error'])) {
+                            $status['action'] = 'created';
+                        }
                     }
                 }
             }
@@ -293,28 +298,22 @@ class JFusionUser_gallery2 extends JFusionUser {
     function updateUsergroup($userinfo, &$existinguser, &$status) {
         $helper = JFusionFactory::getHelper($this->getJname());
         $helper->loadGallery2Api(false);
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
         //check to see if we have a group_id in the $userinfo, if not return
-        if (!isset($userinfo->group_id)) {
+        if (empty($usergroups)) {
             $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
-            return;
         } else {
-            $params = JFusionFactory::getParams($this->getJname());
-            $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
-            if (!empty($usergroups)) {
-                $usergroup = $usergroups[0];
-                if ($existinguser->group_id != 2 && $existinguser->group_id != 4) {
-                    $ret = GalleryCoreApi::removeUserFromGroup($existinguser->userid, $existinguser->group_id);
-                    if ($ret) {
-                        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $existinguser->group_id . ' -> ' . $usergroup;
-                        return;
-                    }
-                }
-                $ret = GalleryCoreApi::addUserToGroup($existinguser->userid, (int)($usergroup));
+            $usergroup = $usergroups[0];
+            if ($existinguser->group_id != 2 && $existinguser->group_id != 4) {
+                $ret = GalleryCoreApi::removeUserFromGroup($existinguser->userid, $existinguser->group_id);
                 if ($ret) {
                     $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $existinguser->group_id . ' -> ' . $usergroup;
+                    return;
                 }
-            } else {
-                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST');
+            }
+            $ret = GalleryCoreApi::addUserToGroup($existinguser->userid, (int)($usergroup));
+            if ($ret) {
+                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $existinguser->group_id . ' -> ' . $usergroup;
             }
         }
         GalleryEmbed::done();

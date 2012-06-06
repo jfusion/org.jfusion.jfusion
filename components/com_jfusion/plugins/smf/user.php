@@ -274,28 +274,20 @@ class JFusionUser_smf extends JFusionUser
      */
     function updateUsergroup($userinfo, &$existinguser, &$status)
     {
-        $params = JFusionFactory::getParams($this->getJname());
-        //get the usergroup and determine if working in advanced or simple mode
-        
-		$groups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
-        if (count($groups)) {
-            //check to see if we have a group_id in the $userinfo, if not return
-            if (!isset($groups[0])) {
-                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
-                return null;
-            }
-            $group = $groups[0];
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+        if (empty($usergroups)) {
+            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST');
+        } else {
+            $usergroup = $usergroups[0];
             
 			$db = JFusionFactory::getDatabase($this->getJname());
-			$query = 'UPDATE #__members SET ID_GROUP =' . $db->quote($group) . ' WHERE ID_MEMBER =' . (int)$existinguser->userid;
+			$query = 'UPDATE #__members SET ID_GROUP =' . $db->quote($usergroup) . ' WHERE ID_MEMBER =' . (int)$existinguser->userid;
 			$db->setQuery($query);
 			if (!$db->query()) {
 				$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
 			} else {
-				$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $group;
+				$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $usergroup;
 			}
-        } else {
-            $status['error'][] = JText::_('GROUP_UPDATE_ERROR');
         }
     }
 
@@ -422,79 +414,75 @@ class JFusionUser_smf extends JFusionUser
         $params = JFusionFactory::getParams($this->getJname());
         $source_path = $params->get('source_path');
 
-		$groups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
-        if (!isset($groups[0])) {
-			//TODO: change error message
-            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
-            return null;
-        }
-        //prepare the user variables
-        $user = new stdClass;
-        $user->ID_MEMBER = null;
-        $user->memberName = $userinfo->username;
-        $user->realName = $userinfo->name;
-        $user->emailAddress = $userinfo->email;
-        if (isset($userinfo->password_clear)) {
-            $user->passwd = sha1(strtolower($userinfo->username) . $userinfo->password_clear);
-            $user->passwordSalt = substr(md5(rand()), 0, 4);
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+        if (empty($usergroups)) {
+            $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
         } else {
-            $user->passwd = $userinfo->password;
-            if (!isset($userinfo->password_salt)) {
+            //prepare the user variables
+            $user = new stdClass;
+            $user->ID_MEMBER = null;
+            $user->memberName = $userinfo->username;
+            $user->realName = $userinfo->name;
+            $user->emailAddress = $userinfo->email;
+            if (isset($userinfo->password_clear)) {
+                $user->passwd = sha1(strtolower($userinfo->username) . $userinfo->password_clear);
                 $user->passwordSalt = substr(md5(rand()), 0, 4);
             } else {
-                $user->passwordSalt = $userinfo->password_salt;
+                $user->passwd = $userinfo->password;
+                if (!isset($userinfo->password_salt)) {
+                    $user->passwordSalt = substr(md5(rand()), 0, 4);
+                } else {
+                    $user->passwordSalt = $userinfo->password_salt;
+                }
             }
-        }
-        $user->posts = 0;
-        $user->dateRegistered = time();
-        if ($userinfo->activation) {
-            $user->is_activated = 0;
-            $user->validation_code = $userinfo->activation;
-        } else {
-            $user->is_activated = 1;
-            $user->validation_code = '';
-        }
-        $user->personalText = '';
-        $user->pm_email_notify = 1;
-        $user->hideEmail = 1;
-        $user->ID_THEME = 0;
-        
-		$groups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
-        $user->ID_GROUP = $groups[0];
-        $user->ID_POST_GROUP = $params->get('userpostgroup', 4);
-        //now append the new user data
-        if (!$db->insertObject('#__members', $user, 'ID_MEMBER')) {
-            //return the error
-            $status['error'] = JText::_('USER_CREATION_ERROR') . ': ' . $db->stderr();
-            return $status;
-        } else {
-            //update the stats
-            $query = 'UPDATE #__settings SET value = value + 1     WHERE variable = \'totalMembers\' ';
-            $db->setQuery($query);
-            if (!$db->query()) {
+            $user->posts = 0;
+            $user->dateRegistered = time();
+            if ($userinfo->activation) {
+                $user->is_activated = 0;
+                $user->validation_code = $userinfo->activation;
+            } else {
+                $user->is_activated = 1;
+                $user->validation_code = '';
+            }
+            $user->personalText = '';
+            $user->pm_email_notify = 1;
+            $user->hideEmail = 1;
+            $user->ID_THEME = 0;
+
+            $user->ID_GROUP = $usergroups[0];
+            $user->ID_POST_GROUP = $params->get('userpostgroup', 4);
+            //now append the new user data
+            if (!$db->insertObject('#__members', $user, 'ID_MEMBER')) {
                 //return the error
-                $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-                return $status;
+                $status['error'] = JText::_('USER_CREATION_ERROR') . ': ' . $db->stderr();
+            } else {
+                //update the stats
+                $query = 'UPDATE #__settings SET value = value + 1     WHERE variable = \'totalMembers\' ';
+                $db->setQuery($query);
+                if (!$db->query()) {
+                    //return the error
+                    $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
+                } else {
+                    $date = strftime('%Y-%m-%d');
+                    $query = 'UPDATE #__log_activity SET registers = registers + 1 WHERE date = \'' . $date . '\'';
+                    $db->setQuery($query);
+                    if (!$db->query()) {
+                        //return the error
+                        $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
+                    } else {
+                        $query = 'REPLACE INTO #__settings (variable, value) VALUES (\'latestMember\', ' . $user->ID_MEMBER . '), (\'latestRealName\', ' . $db->quote($userinfo->name) . ')';
+                        $db->setQuery($query);
+                        if (!$db->query()) {
+                            //return the error
+                            $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
+                        } else {
+                            //return the good news
+                            $status['debug'][] = JText::_('USER_CREATION');
+                            $status['userinfo'] = $this->getUser($userinfo);
+                        }
+                    }
+                }
             }
-            $date = strftime('%Y-%m-%d');
-            $query = 'UPDATE #__log_activity SET registers = registers + 1 WHERE date = \'' . $date . '\'';
-            $db->setQuery($query);
-            if (!$db->query()) {
-                //return the error
-                $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-                return $status;
-            }
-            $query = 'REPLACE INTO #__settings (variable, value) VALUES (\'latestMember\', ' . $user->ID_MEMBER . '), (\'latestRealName\', ' . $db->quote($userinfo->name) . ')';
-            $db->setQuery($query);
-            if (!$db->query()) {
-                //return the error
-                $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-                return $status;
-            }
-            //return the good news
-            $status['debug'][] = JText::_('USER_CREATION');
-            $status['userinfo'] = $this->getUser($userinfo);
-            return $status;
         }
     }
 

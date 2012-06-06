@@ -340,7 +340,7 @@ class JFusionUser
      *
      * @param object $userinfo      Object containing the new userinfo
      * @param object &$existinguser Object containg the old userinfo
-     * @param object &$usergroups   Array/object containing the a plugin's advanced usergroup parameter
+     * @param array &$usergroups   Array/object containing the a plugin's advanced usergroup parameter
      * @param array  &$status       Array containing the errors and result of the function
      *
      * @return boolean Whether updateUsergroup was executed or not

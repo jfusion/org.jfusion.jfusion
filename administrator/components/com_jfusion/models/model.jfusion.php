@@ -1330,7 +1330,7 @@ class JFusionFunction
                 if ($userinfo) {
                     if (isset($userinfo->groups)) {
                         $groups = $userinfo->groups;
-                    } else {
+                    } elseif (isset($userinfo->group_id)) {
                         $groups[] = $userinfo->group_id;
                     }
                 }
