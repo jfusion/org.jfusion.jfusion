@@ -31,8 +31,14 @@ defined('_JEXEC') or die('Restricted access');
 class JFusionForum_vbulletin extends JFusionForum
 {
     var $params;
+    /**
+     * @var $helper JFusionHelper_vbulletin
+     */
     var $helper;
 
+    /**
+     *
+     */
     function __construct()
     {
         //get the params object

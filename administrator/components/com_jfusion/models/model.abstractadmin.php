@@ -909,8 +909,9 @@ JS;
              * @var $val SimpleXMLElement
              */
             foreach ($config as $key => $val) {
-                $conf[$val->attributes('name')] = htmlspecialchars_decode($val->data());
-                if ( strpos($conf[$val->attributes('name')], 'a:') === 0 ) $conf[$val->attributes('name')] = unserialize($conf[$val->attributes('name')]);
+                $attName = (string)$val->attributes('name');
+                $conf[$attName] = htmlspecialchars_decode($val->data());
+                if ( strpos($conf[$attName], 'a:') === 0 ) $conf[$attName] = unserialize($conf[$attName]);
             }
 
             $database_type = JRequest::getVar('database_type');

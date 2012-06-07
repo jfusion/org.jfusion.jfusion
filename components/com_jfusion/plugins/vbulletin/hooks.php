@@ -596,6 +596,9 @@ class JFvBulletinTask {
     private $key;
     private $data;
     protected $vbulletin;
+    /**
+     * @var $xml SimpleXMLElement
+     */
     protected $xml;
 
     /**

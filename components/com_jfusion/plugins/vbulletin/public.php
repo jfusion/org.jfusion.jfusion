@@ -32,6 +32,9 @@ class JFusionPublic_vbulletin extends JFusionPublic
     var $params;
     var $helper;
 
+    /**
+     *
+     */
     function __construct()
     {
         //get the params object
@@ -624,8 +627,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
                 if (!empty($vb_userlookup)) {
                     $profile_userlookup = JFusionFunction::lookupUser($profile_plugin, $vb_userlookup->id);
                     //get the profile link
-                    $profilePublic = & JFusionFactory::getPublic($profile_plugin);
-                    $url = $profilePublic->getProfileURL($profile_userlookup->userid);
+                    $url = $this->getProfileURL($profile_userlookup->userid);
                 }
             }
         }
@@ -853,11 +855,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
             }
         }
         if (strpos($url, 'member.php') !== false) {
-            /**
-             * @var $vbPublic JFusionPublic_vbulletin
-             */
-            $vbPublic = & JFusionFactory::getPublic($this->getJname());
-            $profile_url = $vbPublic->getAlternateProfileURL($url);
+            $profile_url = $this->getAlternateProfileURL($url);
             if (!empty($profile_url)) {
                 $replacement = 'href="' . $profile_url . '"' . $extra . '>';
                 if (defined('_JFUSION_DEBUG')) {
