@@ -68,64 +68,64 @@ class plgUserJfusion extends JPlugin
      */
     function onAfterDeleteUser($user, $succes, $msg)
     {
+        $result = true;
         if (!$succes) {
             $result = false;
-            return $result;
-        }
-        //create an array to store the debug info
-        $debug_info = array();
-        //convert the user array into a user object
-        $userinfo = (object)$user;
-        //delete the master user if it is not Joomla
-        $master = JFusionFunction::getMaster();
-        if ($master->name != 'joomla_int') {
-            $params = & JFusionFactory::getParams($master->name);
-            $deleteEnabled = $params->get('allow_delete_users', 0);
-            $JFusionMaster = & JFusionFactory::getUser($master->name);
-            $MasterUser = $JFusionMaster->getUser($userinfo);
-            if (!empty($MasterUser) && $deleteEnabled) {
-                $status = $JFusionMaster->deleteUser($MasterUser);
-                if (!empty($status['error'])) {
-                    $debug_info[$master->name . ' ' . JText::_('ERROR') ] = $status['error'];
+        } else {
+            //create an array to store the debug info
+            $debug_info = array();
+            //convert the user array into a user object
+            $userinfo = (object)$user;
+            //delete the master user if it is not Joomla
+            $master = JFusionFunction::getMaster();
+            if ($master->name != 'joomla_int') {
+                $params = & JFusionFactory::getParams($master->name);
+                $deleteEnabled = $params->get('allow_delete_users', 0);
+                $JFusionMaster = & JFusionFactory::getUser($master->name);
+                $MasterUser = $JFusionMaster->getUser($userinfo);
+                if (!empty($MasterUser) && $deleteEnabled) {
+                    $status = $JFusionMaster->deleteUser($MasterUser);
+                    if (!empty($status['error'])) {
+                        $debug_info[$master->name . ' ' . JText::_('ERROR') ] = $status['error'];
+                    }
+                    $debug_info[$master->name] = $status['debug'];
+                } elseif ($deleteEnabled) {
+                    $debug_info[$master->name] = JText::_('NO_USER_DATA_FOUND');
+                } else {
+                    $debug_info[$master->name] = JText::_('DELETE_DISABLED');
                 }
-                $debug_info[$master->name] = $status['debug'];
-            } elseif ($deleteEnabled) {
-                $debug_info[$master->name] = JText::_('NO_USER_DATA_FOUND');
-            } else {
-                $debug_info[$master->name] = JText::_('DELETE_DISABLED');
+            }
+            //delete the user in the slave plugins
+            $slaves = JFusionFunction::getPlugins();
+            foreach ($slaves as $slave) {
+                $params = & JFusionFactory::getParams($slave->name);
+                $deleteEnabled = $params->get('allow_delete_users', 0);
+                $JFusionSlave = & JFusionFactory::getUser($slave->name);
+                $SlaveUser = $JFusionSlave->getUser($userinfo);
+                if (!empty($SlaveUser) && $deleteEnabled) {
+                    $status = $JFusionSlave->deleteUser($SlaveUser);
+                    if (!empty($status['error'])) {
+                        $debug_info[$slave->name . ' ' . JText::_('ERROR') ] = $status['error'];
+                    }
+                    $debug_info[$slave->name] = $status['debug'];
+                } elseif ($deleteEnabled) {
+                    $debug_info[$slave->name] = JText::_('NO_USER_DATA_FOUND');
+                } else {
+                    $debug_info[$slave->name] = JText::_('DELETE') . ' ' . JText::_('DISABLED');
+                }
+            }
+            //remove userlookup data
+            JFusionFunction::removeUser($userinfo);
+            //delete any sessions that the user could have active
+            $db = JFactory::getDBO();
+            $db->setQuery('DELETE FROM #__session WHERE userid = ' . $db->Quote($user['id']));
+            $db->Query();
+            //return output if allowed
+            $isAdministrator = JFusionFunction::isAdministrator();
+            if ($isAdministrator === true) {
+                JFusionFunction::raiseWarning('', $debug_info, 1);
             }
         }
-        //delete the user in the slave plugins
-        $slaves = JFusionFunction::getPlugins();
-        foreach ($slaves as $slave) {
-            $params = & JFusionFactory::getParams($slave->name);
-            $deleteEnabled = $params->get('allow_delete_users', 0);
-            $JFusionSlave = & JFusionFactory::getUser($slave->name);
-            $SlaveUser = $JFusionSlave->getUser($userinfo);
-            if (!empty($SlaveUser) && $deleteEnabled) {
-                $status = $JFusionSlave->deleteUser($SlaveUser);
-                if (!empty($status['error'])) {
-                    $debug_info[$slave->name . ' ' . JText::_('ERROR') ] = $status['error'];
-                }
-                $debug_info[$slave->name] = $status['debug'];
-            } elseif ($deleteEnabled) {
-                $debug_info[$slave->name] = JText::_('NO_USER_DATA_FOUND');
-            } else {
-                $debug_info[$slave->name] = JText::_('DELETE') . ' ' . JText::_('DISABLED');
-            }
-        }
-        //remove userlookup data
-        JFusionFunction::removeUser($userinfo);
-        //delete any sessions that the user could have active
-        $db = JFactory::getDBO();
-        $db->setQuery('DELETE FROM #__session WHERE userid = ' . $db->Quote($user['id']));
-        $db->Query();
-        //return output if allowed
-        $isAdministrator = JFusionFunction::isAdministrator();
-        if ($isAdministrator === true) {
-            JFusionFunction::raiseWarning('', $debug_info, 1);
-        }
-        $result = true;
         return $result;
     }
     /**

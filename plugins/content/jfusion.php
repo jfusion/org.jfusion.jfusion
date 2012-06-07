@@ -141,136 +141,136 @@ class plgContentJfusion extends JPlugin
      */
     public function onAfterContentSave(&$subject, $isNew) {
         //check to see if a valid $content object was passed on
+        $result = true;
         if (!is_object($subject)){
             JFusionFunction::raiseWarning(JText::_('DISCUSSBOT_ERROR'), JText::_('NO_CONTENT_DATA_FOUND'), 1);
-            return false;
-        }
-
-        $this->article =& $subject;
-        $this->helper->article =& $this->article;
-
-        if ($this->debug_mode) {
-            $session = JFactory::getSession();
-            $this->helper->debug_output = $session->get('jfusion.discussion.debug.' . $this->article->id,false);
-            if ($this->helper->debug_output!==false) {
-                $this->clear_debug_output = false;
-            }
-            $session->clear('jfusion.discussion.debug.' . $this->article->id);
-            if (!is_array($this->helper->debug_output)) {
-                $this->helper->debug_output = array();
-            }
-        }
-
-        //make sure there is a plugin
-        if (empty($this->jname)) {
-            return false;
-        }
-
-        $this->helper->_debug('onAfterContentSave called');
-
-        //validate the article
-        $this->helper->thread_status = $this->helper->_get_thread_status();
-        // changed _validate to pass the $isNew flag, so that it will only check will happen depending on this flag
-        list($this->valid, $this->validity_reason) = $this->helper->_validate($isNew);
-        $this->helper->_debug('Validity: ' . $this->valid . "; " . $this->validity_reason);
-
-        //ignore auto mode if the article has been manually plugged
-        $manually_plugged = preg_match('/\{jfusion_discuss (.*)\}/U', $this->article->introtext . $this->article->fulltext);
-
-        $this->helper->_debug('Checking mode...');
-        if ($this->mode=='auto' && empty($manually_plugged)) {
-            $this->helper->_debug('In auto mode');
-
-            if ($this->valid) {
-                $threadinfo =& $this->helper->_get_thread_info();
-                $JFusionForum =& JFusionFactory::getForum($this->jname);
-                $forumid = $JFusionForum->getDefaultForum($this->params, $this->article);
-
-                if (($this->creationMode=='load') ||
-                    ($this->creationMode=='new' && ($isNew || (!$isNew && $this->helper->thread_status))) ||
-                    ($this->creationMode=='reply' && $this->helper->thread_status)) {
-
-                    //update/create thread
-                    $this->helper->_check_thread_exists();
-
-                } else {
-                    $this->helper->_debug('Article did not meet requirements to update/create thread');
-                }
-            } elseif ($this->creationMode=='new' && $isNew) {
-                $this->helper->_debug('Failed validity test but creationMode is set to new and this is a new article');
-
-                $mainframe = JFactory::getApplication();
-                $publish_up = JFactory::getDate($this->article->publish_up)->toUnix();
-                $now = JFactory::getDate('now', $mainframe->getCfg('offset'))->toUnix();
-                if ($now < $publish_up || !$this->article->state) {
-                    $this->helper->_debug('Article set to be published in the future or is unpublished thus creating an entry in the database so that the thread is created when appropriate.');
-
-                    //the publish date is set for the future so create an entry in the
-                    //database so that the thread is created when the publish date arrives
-                    $placeholder = new stdClass();
-                    $placeholder->threadid = 0;
-                    $placeholder->forumid = 0;
-                    $placeholder->postid = 0;
-                    JFusionFunction::updateDiscussionBotLookup($this->article->id, $placeholder, $this->jname);
-                }
-            }
-        } elseif ($this->mode=='test' && empty($manually_plugged)) {
-            //recheck validity without stipulation
-            $this->helper->_debug('In test mode thus not creating the article');
-            $threadinfo =& $this->helper->_get_thread_info();
-            $JFusionForum =& JFusionFactory::getForum($this->jname);
-            $content = "<u>" . $this->article->title . "</u><br />";
-            if (!empty($threadinfo)) {
-                $content .= JText::_('DISCUSSBOT_TEST_MODE') . "<img src='".JFusionFunction::getJoomlaURL().DISCUSSBOT_URL_PATH."images/check.png' style='margin-left:5px;'><br/>";
-                if ($threadinfo->published) {
-                    $content .= JText::_('STATUS') . ": " . JText::_('INITIALIZED_AND_PUBLISHED') . "<br />";
-                } else {
-                    $content .= JText::_('STATUS') . ": " . JText::_('INITIALIZED_AND_UNPUBLISHED') . "<br />";
-                }
-                $content .= JText::_('THREADID') . ": " . $threadinfo->threadid . "<br />";
-                $content .= JText::_('FORUMID') . ": " . $threadinfo->forumid . "<br />";
-                $content .= JText::_('FIRST_POSTID') . ": " . $threadinfo->postid. "<br />";
-
-                $forumlist =& $this->helper->_get_lists('forum');
-                if (!in_array($threadinfo->forumid, $forumlist)) {
-                    $content .= "<span style='color:red; font-weight:bold;'>" . JText::_('WARNING') . "</span>: " . JText::_('FORUM_NOT_EXIST') . "<br />";
-                }
-
-                $forumthread = $JFusionForum->getThread($threadinfo->threadid);
-                if (empty($forumthread)) {
-                    $content .= "<span style='color:red; font-weight:bold;'>" . JText::_('WARNING') . "</span>: " . JText::_('THREAD_NOT_EXIST') . "<br />";
-                }
-            } else {
-                $valid = ($this->valid) ? JText::_('JYES') : JText::_('JNO');
-                if (!$this->valid) {
-                    $content .= JText::_('DISCUSSBOT_TEST_MODE') . "<img src='".JFusionFunction::getJoomlaURL().DISCUSSBOT_URL_PATH."images/x.png' style='margin-left:5px;'><br/>";
-                    $content .= JText::_('VALID') . ": " . $valid . "<br />";
-                    $content .= JText::_('INVALID_REASON') . ": " . $this->validity_reason . "<br />";
-                } else {
-                    $content .= "<b>" . JText::_('DISCUSSBOT_TEST_MODE') . "</b><img src='".JFusionFunction::getJoomlaURL().DISCUSSBOT_URL_PATH."images/check.png' style='margin-left:5px;'><br/>";
-                    $content .= JText::_('VALID_REASON') . ": " . $this->validity_reason . "<br />";
-                    $content .= JText::_('STATUS') . ": " . JText::_('UNINITIALIZED_THREAD_WILL_BE_CREATED') . "<br />";
-                    $forumid = $JFusionForum->getDefaultForum($this->params, $this->article);
-                    $content .= JText::_('FORUMID') . ": " . $forumid . "<br />";
-                    $author = $JFusionForum->getThreadAuthor($this->params, $this->article);
-                    $content .= JText::_('AUTHORID') . ": " . $author . "<br />";
-                }
-            }
-            JError::raiseNotice('500', $content);
+            $result = false;
         } else {
-            $this->helper->_debug('In manual mode...checking to see if article has been initialized');
-            $threadinfo =& $this->helper->_get_thread_info();
-            if (!empty($threadinfo) && $threadinfo->published == 1 && $threadinfo->manual == 1) {
-                $this->helper->_debug('Article has been initialized...updating thread');
-                //update thread
-                $this->helper->_check_thread_exists();
+            $this->article =& $subject;
+            $this->helper->article =& $this->article;
+
+            if ($this->debug_mode) {
+                $session = JFactory::getSession();
+                $this->helper->debug_output = $session->get('jfusion.discussion.debug.' . $this->article->id,false);
+                if ($this->helper->debug_output!==false) {
+                    $this->clear_debug_output = false;
+                }
+                $session->clear('jfusion.discussion.debug.' . $this->article->id);
+                if (!is_array($this->helper->debug_output)) {
+                    $this->helper->debug_output = array();
+                }
+            }
+
+            //make sure there is a plugin
+            if (empty($this->jname)) {
+                $result = false;
             } else {
-                $this->helper->_debug('Article has not been initialized');
+                $this->helper->_debug('onAfterContentSave called');
+
+                //validate the article
+                $this->helper->thread_status = $this->helper->_get_thread_status();
+                // changed _validate to pass the $isNew flag, so that it will only check will happen depending on this flag
+                list($this->valid, $this->validity_reason) = $this->helper->_validate($isNew);
+                $this->helper->_debug('Validity: ' . $this->valid . "; " . $this->validity_reason);
+
+                //ignore auto mode if the article has been manually plugged
+                $manually_plugged = preg_match('/\{jfusion_discuss (.*)\}/U', $this->article->introtext . $this->article->fulltext);
+
+                $this->helper->_debug('Checking mode...');
+                if ($this->mode=='auto' && empty($manually_plugged)) {
+                    $this->helper->_debug('In auto mode');
+
+                    if ($this->valid) {
+                        $threadinfo =& $this->helper->_get_thread_info();
+                        $JFusionForum =& JFusionFactory::getForum($this->jname);
+                        $forumid = $JFusionForum->getDefaultForum($this->params, $this->article);
+
+                        if (($this->creationMode=='load') ||
+                            ($this->creationMode=='new' && ($isNew || (!$isNew && $this->helper->thread_status))) ||
+                            ($this->creationMode=='reply' && $this->helper->thread_status)) {
+
+                            //update/create thread
+                            $this->helper->_check_thread_exists();
+
+                        } else {
+                            $this->helper->_debug('Article did not meet requirements to update/create thread');
+                        }
+                    } elseif ($this->creationMode=='new' && $isNew) {
+                        $this->helper->_debug('Failed validity test but creationMode is set to new and this is a new article');
+
+                        $mainframe = JFactory::getApplication();
+                        $publish_up = JFactory::getDate($this->article->publish_up)->toUnix();
+                        $now = JFactory::getDate('now', $mainframe->getCfg('offset'))->toUnix();
+                        if ($now < $publish_up || !$this->article->state) {
+                            $this->helper->_debug('Article set to be published in the future or is unpublished thus creating an entry in the database so that the thread is created when appropriate.');
+
+                            //the publish date is set for the future so create an entry in the
+                            //database so that the thread is created when the publish date arrives
+                            $placeholder = new stdClass();
+                            $placeholder->threadid = 0;
+                            $placeholder->forumid = 0;
+                            $placeholder->postid = 0;
+                            JFusionFunction::updateDiscussionBotLookup($this->article->id, $placeholder, $this->jname);
+                        }
+                    }
+                } elseif ($this->mode=='test' && empty($manually_plugged)) {
+                    //recheck validity without stipulation
+                    $this->helper->_debug('In test mode thus not creating the article');
+                    $threadinfo =& $this->helper->_get_thread_info();
+                    $JFusionForum =& JFusionFactory::getForum($this->jname);
+                    $content = "<u>" . $this->article->title . "</u><br />";
+                    if (!empty($threadinfo)) {
+                        $content .= JText::_('DISCUSSBOT_TEST_MODE') . "<img src='".JFusionFunction::getJoomlaURL().DISCUSSBOT_URL_PATH."images/check.png' style='margin-left:5px;'><br/>";
+                        if ($threadinfo->published) {
+                            $content .= JText::_('STATUS') . ": " . JText::_('INITIALIZED_AND_PUBLISHED') . "<br />";
+                        } else {
+                            $content .= JText::_('STATUS') . ": " . JText::_('INITIALIZED_AND_UNPUBLISHED') . "<br />";
+                        }
+                        $content .= JText::_('THREADID') . ": " . $threadinfo->threadid . "<br />";
+                        $content .= JText::_('FORUMID') . ": " . $threadinfo->forumid . "<br />";
+                        $content .= JText::_('FIRST_POSTID') . ": " . $threadinfo->postid. "<br />";
+
+                        $forumlist =& $this->helper->_get_lists('forum');
+                        if (!in_array($threadinfo->forumid, $forumlist)) {
+                            $content .= "<span style='color:red; font-weight:bold;'>" . JText::_('WARNING') . "</span>: " . JText::_('FORUM_NOT_EXIST') . "<br />";
+                        }
+
+                        $forumthread = $JFusionForum->getThread($threadinfo->threadid);
+                        if (empty($forumthread)) {
+                            $content .= "<span style='color:red; font-weight:bold;'>" . JText::_('WARNING') . "</span>: " . JText::_('THREAD_NOT_EXIST') . "<br />";
+                        }
+                    } else {
+                        $valid = ($this->valid) ? JText::_('JYES') : JText::_('JNO');
+                        if (!$this->valid) {
+                            $content .= JText::_('DISCUSSBOT_TEST_MODE') . "<img src='".JFusionFunction::getJoomlaURL().DISCUSSBOT_URL_PATH."images/x.png' style='margin-left:5px;'><br/>";
+                            $content .= JText::_('VALID') . ": " . $valid . "<br />";
+                            $content .= JText::_('INVALID_REASON') . ": " . $this->validity_reason . "<br />";
+                        } else {
+                            $content .= "<b>" . JText::_('DISCUSSBOT_TEST_MODE') . "</b><img src='".JFusionFunction::getJoomlaURL().DISCUSSBOT_URL_PATH."images/check.png' style='margin-left:5px;'><br/>";
+                            $content .= JText::_('VALID_REASON') . ": " . $this->validity_reason . "<br />";
+                            $content .= JText::_('STATUS') . ": " . JText::_('UNINITIALIZED_THREAD_WILL_BE_CREATED') . "<br />";
+                            $forumid = $JFusionForum->getDefaultForum($this->params, $this->article);
+                            $content .= JText::_('FORUMID') . ": " . $forumid . "<br />";
+                            $author = $JFusionForum->getThreadAuthor($this->params, $this->article);
+                            $content .= JText::_('AUTHORID') . ": " . $author . "<br />";
+                        }
+                    }
+                    JError::raiseNotice('500', $content);
+                } else {
+                    $this->helper->_debug('In manual mode...checking to see if article has been initialized');
+                    $threadinfo =& $this->helper->_get_thread_info();
+                    if (!empty($threadinfo) && $threadinfo->published == 1 && $threadinfo->manual == 1) {
+                        $this->helper->_debug('Article has been initialized...updating thread');
+                        //update thread
+                        $this->helper->_check_thread_exists();
+                    } else {
+                        $this->helper->_debug('Article has not been initialized');
+                    }
+                }
+                $this->helper->_debug('onAfterContentSave complete', true);
             }
         }
-
-        $this->helper->_debug('onAfterContentSave complete', true);
-        return true;
+        return $result;
     }
 
     /**
@@ -280,6 +280,7 @@ class plgContentJfusion extends JPlugin
      */
     public function onPrepareContent(&$subject, $params)
     {
+        $result = true;
         $this->article =& $subject;
         $this->helper->article =& $this->article;
         if ($this->debug_mode) {
@@ -308,133 +309,132 @@ class plgContentJfusion extends JPlugin
         //check to see if a valid $content object was passed on
         if (!is_object($subject)){
             JFusionFunction::raiseWarning(JText::_('DISCUSSBOT_ERROR'), JText::_('NO_CONTENT_DATA_FOUND'), 1);
-            return false;
-        }
+            $result = false;
+        } else {
+            //make sure there is a plugin
+            if (empty($this->jname)) {
+                $result = false;
+            } else {
+                //do nothing if this is a K2 category object
+                if ($this->helper->option == 'com_k2' && get_class($this->article) == 'TableK2Category') {
+                    $result = false;
+                } else {
+                    //set some variables needed throughout
+                    $this->template = $this->params->get("template","default");
 
-        //make sure there is a plugin
-        if (empty($this->jname)) {
-            return false;
-        }
+                    //make sure we have an actual article
+                    if (!empty($this->article->id)) {
+                        $this->dbtask = JRequest::getVar('dbtask', 'render_content', 'post');
+                        $skip_new_check = ($this->dbtask=='create_thread') ? true : false;
+                        $skip_k2_check = ($this->helper->option == 'com_k2' && in_array($this->dbtask, array("unpublish_discussion", "publish_discussion"))) ? true : false;
+                        $this->helper->thread_status = $this->helper->_get_thread_status();
+                        list($this->valid, $this->validity_reason) = $this->helper->_validate($skip_new_check, $skip_k2_check);
+                        $this->helper->_debug('Validity: ' . $this->valid . "; " . $this->validity_reason);
+                        $this->ajax_request = JRequest::getInt('ajax_request',0);
 
-        //do nothing if this is a K2 category object
-        if ($this->helper->option == 'com_k2' && get_class($this->article) == 'TableK2Category') {
-            return false;
-        }
+                        if ($this->ajax_request) {
+                            //get and set the threadinfo
+                            $threadid = JRequest::getInt('threadid', 0, 'post');
+                            $threadinfo = $this->helper->_get_thread_info();
+                            if (empty($threadinfo))  {
+                                //could be a manual plug so let's get the thread info directly
+                                $JFusionForum =& JFusionFactory::getForum($this->jname);
+                                $threadinfo = $JFusionForum->getThread($threadid);
+                                if (!empty($threadinfo)) {
+                                    //let's set threadinfo
+                                    $threadinfo->published = 1;
+                                    $this->helper->_get_thread_info(false, $threadinfo);
+                                    //override thread status
+                                    $this->helper->thread_status = true;
+                                    //set manual plug
+                                    $this->manual_plug = true;
+                                } elseif ($this->dbtask != 'create_thread' && $this->dbtask != 'create_threadpost') {
+                                    die('Thread not found!');
+                                }
+                            }
+                        }
 
-        //set some variables needed throughout
-        $this->template = $this->params->get("template","default");
+                        if ($this->dbtask == 'create_thread') {
+                            //this article has been manually initiated for discussion
+                            $this->_create_thread();
+                        } elseif (($this->dbtask == 'create_post' || $this->dbtask == 'create_threadpost') && $this->params->get("enable_quickreply",false)) {
+                            //a quick reply has been submitted so let's create the post
+                            $this->_create_post();
+                        } elseif ($this->dbtask == 'unpublish_discussion') {
+                            //an article has been "uninitiated"
+                            $this->_unpublish_discussion();
+                        } elseif ($this->dbtask == 'publish_discussion') {
+                            //an article has been "reinitiated"
+                            $this->_publish_discussion();
+                        }
 
-        //make sure we have an actual article
-        if (!empty($this->article->id)) {
-            $this->dbtask = JRequest::getVar('dbtask', 'render_content', 'post');
-            $skip_new_check = ($this->dbtask=='create_thread') ? true : false;
-            $skip_k2_check = ($this->helper->option == 'com_k2' && in_array($this->dbtask, array("unpublish_discussion", "publish_discussion"))) ? true : false;
-            $this->helper->thread_status = $this->helper->_get_thread_status();
-            list($this->valid, $this->validity_reason) = $this->helper->_validate($skip_new_check, $skip_k2_check);
-            $this->helper->_debug('Validity: ' . $this->valid . "; " . $this->validity_reason);
-            $this->ajax_request = JRequest::getInt('ajax_request',0);
+                        //save the visibility of the posts if applicable
+                        $show_discussion = JRequest::getVar('show_discussion','');
+                        if ($show_discussion!=='') {
+                            $JSession = JFactory::getSession();
+                            $JSession->set('jfusion.discussion.visibility',(int) $show_discussion);
+                        }
 
-            if ($this->ajax_request) {
-                //get and set the threadinfo
-                $threadid = JRequest::getInt('threadid', 0, 'post');
-                $threadinfo = $this->helper->_get_thread_info();
-                if (empty($threadinfo))  {
-                    //could be a manual plug so let's get the thread info directly
-                    $JFusionForum =& JFusionFactory::getForum($this->jname);
-                    $threadinfo = $JFusionForum->getThread($threadid);
-                    if (!empty($threadinfo)) {
-                        //let's set threadinfo
-                        $threadinfo->published = 1;
-                        $this->helper->_get_thread_info(false, $threadinfo);
-                        //override thread status
-                        $this->helper->thread_status = true;
-                        //set manual plug
-                        $this->manual_plug = true;
-                    } elseif ($this->dbtask != 'create_thread' && $this->dbtask != 'create_threadpost') {
-                        die('Thread not found!');
+                        //check for some specific ajax requests
+                        if ($this->ajax_request) {
+                            //check to see if this is an ajax call to update the pagination
+                            if ($this->params->get('enable_pagination',1) && $this->dbtask == 'update_pagination') {
+                                $this->_update_pagination();
+                                die('Something else was suppose to happen');
+                            }
+
+                            if ($this->params->get('show_posts',1) && $this->dbtask == 'update_posts') {
+                                $this->_update_posts();
+                                die('Something else was suppose to happen');
+                            }
+
+                            if ($this->dbtask=='update_content') {
+                                $threadinfo =& $this->helper->_get_thread_info();
+                                if (!empty($threadinfo->published)) {
+                                    //content is now published so display it
+                                    die($this->_render_discussion_content($threadinfo));
+                                } else {
+                                    //content is now not published so remove it
+                                    die();
+                                }
+                            }
+
+                            if ($this->dbtask == 'update_buttons') {
+                                $this->_update_buttons();
+                                die('Something else was suppose to happen');
+                            }
+
+                            if ($this->dbtask == 'update_debug_info') {
+                                $this->_render_debug_output();
+                                die('Something else was suppose to happen');
+                            }
+
+                            if ($show_discussion!=='') {
+                                die('jfusion.discussion.visibility set to '.$show_discussion);
+                            }
+
+                            die("Discussion bot ajax request made but it doesn't seem to have been picked up");
+                        }
+
+                        //add scripts to header
+                        static $scriptsLoaded;
+                        if (empty($scriptsLoaded)) {
+                            $this->helper->_load_scripts();
+                            $scriptsLoaded = 1;
+                        }
+
+                        if (empty($this->article->params) && !empty($this->article->parameters)) {
+                            $this->article->params =& $this->article->parameters;
+                        }
+
+                        if (!empty($this->article->params)) {
+                            $this->_prepare_content();
+                        }
                     }
                 }
             }
-
-            if ($this->dbtask == 'create_thread') {
-                //this article has been manually initiated for discussion
-                $this->_create_thread();
-            } elseif (($this->dbtask == 'create_post' || $this->dbtask == 'create_threadpost') && $this->params->get("enable_quickreply",false)) {
-                //a quick reply has been submitted so let's create the post
-                $this->_create_post();
-            } elseif ($this->dbtask == 'unpublish_discussion') {
-                //an article has been "uninitiated"
-                $this->_unpublish_discussion();
-            } elseif ($this->dbtask == 'publish_discussion') {
-                //an article has been "reinitiated"
-                $this->_publish_discussion();
-            }
-
-            //save the visibility of the posts if applicable
-            $show_discussion = JRequest::getVar('show_discussion','');
-            if ($show_discussion!=='') {
-                $JSession = JFactory::getSession();
-                $JSession->set('jfusion.discussion.visibility',(int) $show_discussion);
-            }
-
-            //check for some specific ajax requests
-            if ($this->ajax_request) {
-                //check to see if this is an ajax call to update the pagination
-                if ($this->params->get('enable_pagination',1) && $this->dbtask == 'update_pagination') {
-                    $this->_update_pagination();
-                    die('Something else was suppose to happen');
-                }
-
-                if ($this->params->get('show_posts',1) && $this->dbtask == 'update_posts') {
-                    $this->_update_posts();
-                    die('Something else was suppose to happen');
-                }
-
-                if ($this->dbtask=='update_content') {
-                    $threadinfo =& $this->helper->_get_thread_info();
-                    if (!empty($threadinfo->published)) {
-                        //content is now published so display it
-                        die($this->_render_discussion_content($threadinfo));
-                    } else {
-                        //content is now not published so remove it
-                        die();
-                    }
-                }
-
-                if ($this->dbtask == 'update_buttons') {
-                    $this->_update_buttons();
-                    die('Something else was suppose to happen');
-                }
-
-                if ($this->dbtask == 'update_debug_info') {
-                    $this->_render_debug_output();
-                    die('Something else was suppose to happen');
-                }
-
-                if ($show_discussion!=='') {
-                    die('jfusion.discussion.visibility set to '.$show_discussion);
-                }
-
-                die("Discussion bot ajax request made but it doesn't seem to have been picked up");
-            }
-
-            //add scripts to header
-            static $scriptsLoaded;
-            if (empty($scriptsLoaded)) {
-                $this->helper->_load_scripts();
-                $scriptsLoaded = 1;
-            }
-
-            if (empty($this->article->params) && !empty($this->article->parameters)) {
-                $this->article->params =& $this->article->parameters;
-            }
-
-            if (!empty($this->article->params)) {
-                $this->_prepare_content();
-            }
         }
-
-        return true;
+        return $result;
     }
 
     /**
