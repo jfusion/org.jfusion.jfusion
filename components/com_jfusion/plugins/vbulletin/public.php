@@ -419,9 +419,12 @@ class JFusionPublic_vbulletin extends JFusionPublic
         $vbsefmode = $params->get('sefmode', 0);
         $config = JFactory::getConfig();
         $vbsefenabled = $config->getValue('config.sef');
-        $js = "<script type=\"text/javascript\">\n";
-        $js.= "var vbSourceURL = '$integratedURL';\n";
-        $js.= "</script>\n";
+        $js = '<script type="text/javascript">';
+        $js .= <<<JS
+            var vbSourceURL = '{$integratedURL}';
+JS;
+        $js .= '</script>';
+
         //we need to find and change the call to vb's yahoo connection file to our own customized one
         //that adds the source url to the ajax calls
         $yuiURL = JFusionFunction::getJoomlaURL() . JFUSION_PLUGIN_DIR_URL . $this->getJname();

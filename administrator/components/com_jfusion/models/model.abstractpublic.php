@@ -80,14 +80,20 @@ class JFusionPublic
     
     	$pattern = '#onload=["]([^"]*)#si';
     	if(!empty($temp[2])){
-    		if(preg_match($pattern, $temp[2], $temp)){
-    			$js = '<script language="JavaScript" type="text/javascript">
-    			if(window.addEventListener) { // Standard
-    			window.addEventListener(\'load\', function(){'.$temp[1].'}, false);
-    		} else if(window.attachEvent) { // IE
-    		window.attachEvent(\'onload\', function(){'.$temp[1].'});
-    		}
-    		</script>';
+    		if(preg_match($pattern, $temp[2], $temp)) {
+                $js ='<script language="JavaScript" type="text/javascript">';
+                $js .= <<<JS
+                if(window.addEventListener) { // Standard
+                    window.addEventListener(\'load\', function(){
+                        {$temp[1]}
+                    }, false);
+                } else if(window.attachEvent) { // IE
+                    window.attachEvent(\'onload\', function(){
+                        {$temp[1]}
+                    });
+                }
+JS;
+                $js .='</script>';
     			$data->header .= $js;
     		}
     	}

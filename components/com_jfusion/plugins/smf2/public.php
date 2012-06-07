@@ -1015,13 +1015,19 @@ class JFusionPublic_smf2 extends JFusionPublic {
             $data->body = $temp[3];
             $pattern = '#onload=["]([^"]*)#si';
             if (preg_match($pattern, $temp[2], $temp)) {
-                $js = '<script language="JavaScript" type="text/javascript">
-                            if (window.addEventListener) { // Standard
-                                  window.addEventListener(\'load\', function(){' . $temp[1] . '}, false);
-                            } else if (window.attachEvent) { // IE
-                                  window.attachEvent(\'onload\', function(){' . $temp[1] . '});
-                                }
-                        </script>';
+                $js ='<script language="JavaScript" type="text/javascript">';
+                $js .= <<<JS
+                if(window.addEventListener) { // Standard
+                    window.addEventListener(\'load\', function(){
+                        {$temp[1]}
+                    }, false);
+                } else if(window.attachEvent) { // IE
+                    window.attachEvent(\'onload\', function(){
+                        {$temp[1]}
+                    });
+                }
+JS;
+                $js .='</script>';
                 $data->header.= $js;
             }
             unset($temp);

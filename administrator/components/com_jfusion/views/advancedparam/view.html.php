@@ -125,18 +125,18 @@ class jfusionViewadvancedparam extends JView
         $rows = array_merge(array($noSelected), $db->loadObjectList());
         $attributes = array("size" => "1", "class" => "inputbox", "onchange" => "jPluginChange(this);");
         $output = JHTML::_('select.genericlist', $rows, 'params[jfusionplugin]', $attributes, 'id', 'name', $JPlugin);
-        $configLink = "";
+        $configLink = '';
         if (isset($this->configArray[$config])) {
-            $configLink = "&configfile=" . $config;
+            $configLink = '&configfile=' . $config;
         }
         $elNum = JRequest::getInt('elNum');
-        $js = "
+        $js = <<<JS
         function jPluginChange(select) {
             plugin = select.options[select.selectedIndex].value;
             plugin = 'a:1:{s:13:\"jfusionplugin\";s:'+plugin.length+':\"'+plugin+'\";}';
             value = encode64(plugin);
             window.location.href = 'index.php?option=com_jfusion&task=advancedparam' +
-                                   '&tmpl=component&elNum=$elNum" . $configLink . "&params='+value;
+                                   '&tmpl=component&elNum={$elNum}{$configLink} . "&params='+value;
         }
 
         function encode64(inp){
@@ -151,7 +151,9 @@ class jfusionViewadvancedparam extends JView
                 out+=key.charAt((chr1>>2)&63)+key.charAt(((chr1<<4)|(chr2>>4))&63)+key.charAt(enc3)+key.charAt(enc4);
             }
             return encodeURIComponent(out);
-        }";
+        }
+JS;
+
         return array($output, $js);
     }
 
@@ -262,25 +264,27 @@ class jfusionViewadvancedparam extends JView
         $attributes = array("size" => "1", "class" => "inputbox");
         $output = JHTML::_('select.genericlist', $rows, 'jfusionplugin', $attributes, 'id', 'name');
         $output.= '&nbsp;<input type="button" value="add" name="add" onclick="jPluginAdd(this);" />';
-        $configLink = "";
+        $configLink = '';
         if (isset($this->configArray[$config])) {
-            $configLink = "&configfile=" . $config;
+            $configLink = '&configfile=' . $config;
         }
         $elNum = JRequest::getInt('elNum');
-        $js = "
+        $js = <<<JS
         function jPluginAdd(button) {
             button.form.jfusion_task.value = 'add';
             button.form.action = 'index.php?option=com_jfusion&task=advancedparam' +
-                                   '&tmpl=component&elNum=$elNum" . $configLink . "&multiselect=1';
+                                   '&tmpl=component&elNum={$elNum}{$configLink}&multiselect=1';
             button.form.submit();
         }
         function jPluginRemove(button, value) {
             button.form.jfusion_task.value = 'remove';
             button.form.jfusion_value.value = value;
             button.form.action = 'index.php?option=com_jfusion&task=advancedparam' +
-                                   '&tmpl=component&elNum=$elNum" . $configLink . "&multiselect=1';
+                                   '&tmpl=component&elNum={$elNum}{$configLink}&multiselect=1';
             button.form.submit();
-        }";
+        }
+JS;
+
         return array($output, $js);
     }
 
