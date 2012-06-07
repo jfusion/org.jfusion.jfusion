@@ -223,6 +223,9 @@ class JFusionUser_wordpress extends JFusionUser {
 		$username = preg_replace('/[\r\n\t ]+/', ' ', $username);
 		$username = trim($username);
 		// remove accents
+        /**
+         * @var $helper JFusionHelper_wordpress
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
 		$username = $helper->remove_accentsWP( $username );
 		// Kill octets
@@ -352,6 +355,9 @@ class JFusionUser_wordpress extends JFusionUser {
         if (empty($usergroups)) {
 			$status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
 		} else {
+            /**
+             * @var $helper JFusionHelper_wordpress
+             */
             $helper = JFusionFactory::getHelper($this->getJname());
 
             $update_activation = $params->get('update_activation');
@@ -554,6 +560,9 @@ class JFusionUser_wordpress extends JFusionUser {
 		} else {
             $usergroup = $usergroups[0];
             $db = JFusionFactory::getDatabase($this->getJname());
+            /**
+             * @var $helper JFusionHelper_wordpress
+             */
             $helper = JFusionFactory::getHelper($this->getJname());
             $newgroupname = strtolower($helper->getUsergroupNameWP($usergroup));
             $oldgroupname = strtolower($helper->getUsergroupNameWP($existinguser->group_id));

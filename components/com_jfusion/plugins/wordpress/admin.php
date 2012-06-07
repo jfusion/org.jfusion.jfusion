@@ -49,7 +49,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 	}
 
     /**
-     * @param $db
+     * @param JDatabase $db
      * @return array
      */
     function getUsergroupListWPA($db) {
@@ -176,6 +176,9 @@ class JFusionAdmin_wordpress extends JFusionAdmin
      * @return array
      */
     function getUsergroupList() {
+        /**
+         * @var $helper JFusionHelper_wordpress
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
 		$usergroups = $helper->getUsergroupListWP();
 		return $usergroups;
@@ -186,6 +189,9 @@ class JFusionAdmin_wordpress extends JFusionAdmin
      */
     function getDefaultUsergroup() {
 		$params = JFusionFactory::getParams($this->getJname());
+        /**
+         * @var $helper JFusionHelper_wordpress
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
         $usergroup_id = $usergroups[0];

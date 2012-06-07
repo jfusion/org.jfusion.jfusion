@@ -130,7 +130,10 @@ class JFusionUser_mediawiki extends JFusionUser {
 		//setcookie($params->get('cookie_name'), '',0,$params->get('cookie_path'),$params->get('cookie_domain'),$params->get('secure'),$params->get('httponly'));
 
         $params =& JFusionFactory::getParams($this->getJname());
-        $helper =& JFusionFactory::getHelper($this->getJname());
+        /**
+         * @var $helper JFusionHelper_mediawiki
+         */
+        $helper = JFusionFactory::getHelper($this->getJname());
         $cookie_path = $params->get('cookie_path');
         $cookie_domain = $params->get('cookie_domain');
         $cookie_secure = $params->get('secure');
@@ -171,8 +174,11 @@ class JFusionUser_mediawiki extends JFusionUser {
 		} else {
             //$status = JFusionJplugin::createSession($userinfo, $options,$this->getJname());
 
-            $params =& JFusionFactory::getParams($this->getJname());
-            $helper =& JFusionFactory::getHelper($this->getJname());
+            $params = JFusionFactory::getParams($this->getJname());
+            /**
+             * @var $helper JFusionHelper_mediawiki
+             */
+            $helper = JFusionFactory::getHelper($this->getJname());
 
             $cookie_path = $params->get('cookie_path');
             $cookie_domain = $params->get('cookie_domain');
@@ -434,7 +440,9 @@ class JFusionUser_mediawiki extends JFusionUser {
                 } else {
                     $wfWikiID = $wgDBname;
                 }
-
+                /**
+                 * @var $helper JFusionHelper_mediawiki
+                 */
                 $helper = JFusionFactory::getHelper($this->getJname());
                 $wgSecretKey = $helper->getConfig('wgSecretKey');
                 $wgProxyKey = $helper->getConfig('wgProxyKey');

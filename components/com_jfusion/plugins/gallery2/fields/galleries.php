@@ -38,6 +38,9 @@ class JFormFieldGalleries extends JFormField {
 		$fieldName = $this->formControl.'[' . $this->fieldname . ']';
         $name = (string) $this->fieldname;
         $value = $this->value;
+        /**
+         * @var $helper JFusionHelper_gallery2
+         */
         $helper = JFusionFactory::getHelper($jname);
         $helper->loadGallery2Api(true);
         list($ret, $tree) = GalleryCoreApi::fetchAlbumTree();

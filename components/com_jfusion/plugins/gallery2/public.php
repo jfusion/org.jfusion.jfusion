@@ -61,6 +61,10 @@ class JFusionPublic_gallery2 extends JFusionPublic {
      */
     function getBuffer(&$data) {
     	$this->data = $data;
+
+        /**
+         * @var $jPluginParam JParameter
+         */
         $jPluginParam = &$data->jPluginParam;
         //Handle PHP based Gallery Rewrite
         $segments = JRequest::getVar('jFusion_Route');
@@ -200,6 +204,9 @@ class JFusionPublic_gallery2 extends JFusionPublic {
      * @return array
      */
     function getSearchResults(&$text, &$phrase, &$pluginParam, $itemid) {
+        /**
+         * @var $helper JFusionHelper_gallery2
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
         $helper->loadGallery2Api(true, $itemid);
         global $gallery;

@@ -177,6 +177,9 @@ class JFusionForum_gallery2 extends JFusionForum {
      * @return string
      */
     function renderSideBar($config, $view, $pluginParam) {
+        /**
+         * @var $helper JFusionHelper_gallery2
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
         $g2sidebar = $helper->getVar("sidebar", -1);
         if ($g2sidebar != - 1) {

@@ -51,6 +51,9 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
     {
         $status = array();
         $params = JFusionFactory::getParams($this->getJname());
+        /**
+         * @var $helper JFusionHelper_dokuwiki
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
         $source_path = $params->get('source_path');
         $config = $helper->getConf($source_path);
@@ -73,6 +76,9 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
      */
     function setupFromPath($Path)
     {
+        /**
+         * @var $helper JFusionHelper_dokuwiki
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
         //try to open the file
         $config = $helper->getConf($Path);
@@ -200,6 +206,9 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
      */
     function getDefaultUsergroup()
     {
+        /**
+         * @var $helper JFusionHelper_dokuwiki
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
         return $helper->getDefaultUsergroup();
     }
@@ -211,6 +220,9 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
      */
     function allowRegistration()
     {
+        /**
+         * @var $helper JFusionHelper_dokuwiki
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
         $conf = $helper->getConf();
         if (strpos($conf['disableactions'], 'register') !== false) {
@@ -393,7 +405,9 @@ if (!defined(\'_JEXEC\'))';
     {
         $error = 0;
         $reason = '';
-
+        /**
+         * @var $helper JFusionHelper_dokuwiki
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
         $conf = $helper->getConf();
         $params =& JFusionFactory::getParams($this->getJname());
@@ -441,7 +455,10 @@ if (!defined(\'_JEXEC\'))';
             //update the config file
             $cookie_domain = $params->get('cookie_domain');
             $cookie_path = $params->get('cookie_path');
-            $helper =& JFusionFactory::getHelper($this->getJname());
+            /**
+             * @var $helper JFusionHelper_dokuwiki
+             */
+            $helper = JFusionFactory::getHelper($this->getJname());
             $config_path = $helper->getConfigPath();
 
             if (JFolder::exists($config_path)) {
@@ -496,7 +513,10 @@ CODE;
         }
 
         //update the config file
-        $helper =& JFusionFactory::getHelper($this->getJname());
+        /**
+         * @var $helper JFusionHelper_dokuwiki
+         */
+        $helper = JFusionFactory::getHelper($this->getJname());
         $config_path = $helper->getConfigPath();
 
         if (JFolder::exists($config_path)) {

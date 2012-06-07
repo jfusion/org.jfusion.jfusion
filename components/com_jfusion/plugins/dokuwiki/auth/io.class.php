@@ -29,12 +29,12 @@ defined('_JEXEC') or die('Restricted access');
  */
 class JFusionDokuwiki_Io {
     /**
-     * @var $helper object
+     * @var $helper JFusionHelper_dokuwiki
      */
     var $helper = null;
 
     /**
-     * @param object $helper
+     * @param JFusionHelper_dokuwiki $helper
      */
     function JFusionDokuwiki_Io($helper) {
 		$this->helper = $helper;

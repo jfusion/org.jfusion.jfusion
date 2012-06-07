@@ -49,17 +49,17 @@ class doku_auth_plain extends doku_auth_basic {
      */
     var $_pattern = array();
     /**
-     * @var $helper object
+     * @var $helper JFusionHelper_dokuwiki
      */
     var $helper = null;
 
     /**
-     * @param $helper
+     * @param JFusionHelper_dokuwiki $helper
      */
     function doku_auth_plain($helper) {
 		$this->helper = $helper;
-    }    
-    
+    }
+
     /**
      * Constructor
      *

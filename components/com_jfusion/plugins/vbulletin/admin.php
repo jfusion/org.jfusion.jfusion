@@ -540,7 +540,10 @@ JS;
         $php.= "\$val = '$plugin';\n";
         $secret = $params->get('vb_secret', JFactory::getConfig()->getValue('config.secret'));
         $php.= "\$JFusionHook = new executeJFusionHook('init_startup', \$val, '$secret');\n";
-        $helper = & JFusionFactory::getHelper($this->getJname());
+        /**
+         * @var $helper JFusionHelper_vbulletin
+         */
+        $helper = JFusionFactory::getHelper($this->getJname());
         $version = $helper->getVersion();
         if (substr($version, 0, 1) > 3) {
             $php.= "vBulletinHook::set_pluginlist(\$vbulletin->pluginlist);\n";

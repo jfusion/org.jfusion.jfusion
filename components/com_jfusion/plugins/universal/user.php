@@ -33,6 +33,9 @@ class JFusionUser_universal extends JFusionUser {
     function getUser($userinfo)
     {
         // initialise some objects
+        /**
+         * @var $helper JFusionHelper_universal
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
 
 		$email = $helper->getFieldEmail();
@@ -209,6 +212,9 @@ class JFusionUser_universal extends JFusionUser {
      */
     function updatePassword($userinfo, &$existinguser, &$status)
     {
+        /**
+         * @var $helper JFusionHelper_universal
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
 		$db = JFusionFactory::getDatabase($this->getJname());
 		$maped = $helper->getMap();
@@ -265,6 +271,9 @@ class JFusionUser_universal extends JFusionUser {
      */
     function updateEmail($userinfo, &$existinguser, &$status)
     {
+        /**
+         * @var $helper JFusionHelper_universal
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
         $params = JFusionFactory::getParams($this->getJname());
 
@@ -297,6 +306,9 @@ class JFusionUser_universal extends JFusionUser {
         } else {
             $usergroup = $usergroups[0];
             $db = JFusionFactory::getDatabase($this->getJname());
+            /**
+             * @var $helper JFusionHelper_universal
+             */
             $helper = JFusionFactory::getHelper($this->getJname());
             $params = JFusionFactory::getParams($this->getJname());
 
@@ -345,6 +357,9 @@ class JFusionUser_universal extends JFusionUser {
      */
     function blockUser($userinfo, &$existinguser, &$status)
     {
+        /**
+         * @var $helper JFusionHelper_universal
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
 		$userid = $helper->getFieldUserID();
 		$active = $helper->getFieldType('ACTIVE');
@@ -389,6 +404,9 @@ class JFusionUser_universal extends JFusionUser {
      */
     function unblockUser($userinfo, &$existinguser, &$status)
     {
+        /**
+         * @var $helper JFusionHelper_universal
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
 		$userid = $helper->getFieldUserID();
 		$active = $helper->getFieldType('ACTIVE');
@@ -419,6 +437,9 @@ class JFusionUser_universal extends JFusionUser {
      */
     function activateUser($userinfo, &$existinguser, &$status)
     {
+        /**
+         * @var $helper JFusionHelper_universal
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
 		$userid = $helper->getFieldUserID();
 		$activecode = $helper->getFieldType('ACTIVECODE');
@@ -444,6 +465,9 @@ class JFusionUser_universal extends JFusionUser {
      */
     function inactivateUser($userinfo, &$existinguser, &$status)
     {
+        /**
+         * @var $helper JFusionHelper_universal
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
 		$userid = $helper->getFieldUserID();
 		$activecode = $helper->getFieldType('ACTIVECODE');
@@ -475,6 +499,9 @@ class JFusionUser_universal extends JFusionUser {
 			$status['error'][] = JText::_('ERROR_CREATING_USER'). ": " . JText::_('ADVANCED_GROUPMODE_SOURCE_NOT_HAVE_GROUPID');
 		} else {
             $usergroup = $usergroups[0];
+            /**
+             * @var $helper JFusionHelper_universal
+             */
             $helper = JFusionFactory::getHelper($this->getJname());
 
             $userid = $helper->getFieldUserID();

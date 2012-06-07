@@ -41,6 +41,9 @@ class JFusionAuth_gallery2 extends JFusionAuth {
      * @return string
      */
     function generateEncryptedPassword($userinfo) {
+        /**
+         * @var $helper JFusionHelper_gallery2
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
         $helper->loadGallery2Api(false);
         $testcrypt = GalleryUtilities::md5Salt($userinfo->password_clear, $userinfo->password_salt);

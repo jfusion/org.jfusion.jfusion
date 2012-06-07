@@ -331,11 +331,16 @@ class JFusionAdmin_magento extends JFusionAdmin
 		$params = JFusionFactory::getParams ( $jname );
 		$source_path = $params->get ( 'source_path' );
 		$xmlfile = realpath ( dirname ( __FILE__ ) ) . DS . 'install_module' . DS . 'source' . DS . 'listfiles.xml';
-		
-		$listfiles = JFactory::getXMLParser('simple');
+
+        /**
+         * @var $listfiles JSimpleXML
+         */
+        $listfiles = JFactory::getXMLParser('simple');
 		$listfiles->loadFile($xmlfile);
 		$files = $listfiles->document->file;
-		
+        /**
+         * @var $file JSimpleXMLElement
+         */
 		foreach($files as $file){
 			$file = $file->data();
 			$file = preg_replace('#/#', DS, $file);
@@ -406,7 +411,10 @@ class JFusionAdmin_magento extends JFusionAdmin
 		$jfusion_mod_xml = $source_path . DS .'app'. DS .'etc'. DS .'modules'. DS .'Jfusion_All.xml';
 		
 		if(file_exists($jfusion_mod_xml)) {
-			$xml = JFactory::getXMLParser ( 'simple' );
+            /**
+             * @var $xml JSimpleXML
+             */
+            $xml = JFactory::getXMLParser ( 'simple' );
 			$xml->loadfile ( $jfusion_mod_xml );
 			$modules = $xml->document->getElementByPath ( 'modules/jfusion_joomla' );
 			$activated = $modules->active [0]->data ();
@@ -441,7 +449,9 @@ class JFusionAdmin_magento extends JFusionAdmin
 		$params = JFusionFactory::getParams ( $jname );
 		$source_path = $params->get ( 'source_path' );
 		$jfusion_mod_xml = $source_path . DS .'app'. DS .'etc'. DS .'modules'. DS .'Jfusion_All.xml';
-		
+        /**
+         * @var $xml JSimpleXML
+         */
 		$xml = JFactory::getXMLParser ( 'simple' );
 		$xml->loadfile ( $jfusion_mod_xml );
 		$module = $xml->document->getElementByPath ( 'modules/jfusion_joomla' );

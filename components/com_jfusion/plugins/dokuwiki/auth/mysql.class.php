@@ -19,7 +19,10 @@ require_once 'basic.class.php';
  */
 class doku_auth_mysql extends doku_auth_basic {
 
-    var $dbcon        = 0;
+    /**
+     * @var $dbcon JFusionMySQL|JFusionMySQLi|JDatabase
+     */
+    var $dbcon        = null;
     var $dbver        = 0;    // database version
     var $dbrev        = 0;    // database revision
     var $dbsub        = 0;    // database subrevision
@@ -27,7 +30,7 @@ class doku_auth_mysql extends doku_auth_basic {
     var $defaultgroup = "";
 
     /**
-     * @var $helper object
+     * @var $helper JFusionHelper_dokuwiki
      */
     var $helper = null;
 
@@ -37,7 +40,7 @@ class doku_auth_mysql extends doku_auth_basic {
      * checks if the mysql interface is available, otherwise it will
      * set the variable $success of the basis class to false
      *
-     * @param object $helper
+     * @param JFusionHelper_dokuwiki $helper
      *
      * @author Matthias Grimm <matthiasgrimm@users.sourceforge.net>
      */
@@ -748,12 +751,12 @@ class doku_auth_mysql extends doku_auth_basic {
      * @author Matthias Grimm <matthiasgrimm@users.sourceforge.net>
      */
     function _getGroupID($group) {
-      if($this->dbcon) {
-        $sql = str_replace('%{group}',$this->_escape($group),$this->cnf['getGroupID']);
-        $result = $this->_queryDB($sql);
-        return $result === false ? false : $result[0]['id'];
-      }
-      return false;
+        if($this->dbcon) {
+            $sql = str_replace('%{group}',$this->_escape($group),$this->cnf['getGroupID']);
+            $result = $this->_queryDB($sql);
+            return $result === false ? false : $result[0]['id'];
+        }
+        return false;
     }
 
     /**
@@ -778,10 +781,10 @@ class doku_auth_mysql extends doku_auth_basic {
      * @author Matthias Grimm <matthiasgrimm@users.sourceforge.net>
      */
     function _closeDB() {
-      if ($this->dbcon) {
-//        mysql_close ($this->dbcon);
-//        $this->dbcon = 0;
-      }      
+        if ($this->dbcon) {
+        //        mysql_close ($this->dbcon);
+        //        $this->dbcon = 0;
+        }
     }
 
     /**

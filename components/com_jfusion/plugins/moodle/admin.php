@@ -313,10 +313,16 @@ class JFusionAdmin_moodle extends JFusionAdmin
         $source_path = $params->get ( 'source_path' );
         $xmlfile = realpath ( dirname ( __FILE__ ) ) . DS . 'install_module' . DS . 'source' . DS . 'listfiles.xml';
 
+        /**
+         * @var $listfiles JSimpleXML
+         */
         $listfiles = JFactory::getXMLParser('simple');
         $listfiles->loadFile($xmlfile);
         $files = $listfiles->document->file;
 
+        /**
+         * @var $file JSimpleXMLElement
+         */
         foreach($files as $file){
             $file = $file->data();
             $file = preg_replace('#/#', DS, $file);

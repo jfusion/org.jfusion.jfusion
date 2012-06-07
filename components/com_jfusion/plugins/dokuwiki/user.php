@@ -203,6 +203,9 @@ class JFusionUser_dokuwiki extends JFusionUser {
         $httponly = $params->get('httponly', true);
 
         //setup Dokuwiki's constants
+        /**
+         * @var $helper JFusionHelper_dokuwiki
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
         $helper->defineConstants();
 
@@ -237,7 +240,10 @@ class JFusionUser_dokuwiki extends JFusionUser {
             $httponly = $params->get('httponly', true);
 
             //setup Dokuwiki's constants
-            $helper = & JFusionFactory::getHelper($this->getJname());
+            /**
+             * @var $helper JFusionHelper_dokuwiki
+             */
+            $helper = JFusionFactory::getHelper($this->getJname());
             $helper->defineConstants();
             $salt = $helper->getCookieSalt();
             $pass = JFusion_PMA_blowfish_encrypt($userinfo->password_clear,$salt);

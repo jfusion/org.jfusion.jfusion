@@ -37,6 +37,9 @@ class JFusionAdmin_universal extends JFusionAdmin{
      */
     function getTablename()
     {
+        /**
+         * @var $helper JFusionHelper_universal
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
         return $helper->getTablename('user');
     }
@@ -86,6 +89,9 @@ class JFusionAdmin_universal extends JFusionAdmin{
      */
     function getUserList()
     {
+        /**
+         * @var $helper JFusionHelper_universal
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
         $f = array('USERNAME', 'EMAIL', 'USERNAMEEMAIL');
         $field = $helper->getQuery($f);
@@ -355,7 +361,9 @@ class JFusionAdmin_universal extends JFusionAdmin{
      */
     function js($name, $value, $node, $control_name) {
         $document =& JFactory::getDocument();
-
+        /**
+         * @var $helper JFusionHelper_universal
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
         $list = $helper->getField();
 

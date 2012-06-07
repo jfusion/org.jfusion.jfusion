@@ -31,7 +31,7 @@ defined('_JEXEC') or die('Restricted access');
 class doku_auth_basic
 {
     /**
-     * @var $helper object
+     * @var $helper JFusionHelper_dokuwiki
      */
 	var $helper = null;
 

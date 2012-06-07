@@ -189,6 +189,9 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
      * @return array|null
      */
     function getSitemapTree($jFusionParam, $jPluginParam, $itemId) {
+        /**
+         * @var $helper JFusionHelper_gallery2
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
         $helper->loadGallery2Api(true);
         global $gallery;
@@ -261,6 +264,9 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
      * @return array|string
      */
     function show_templateList($name, $value, $node, $control_name) {
+        /**
+         * @var $helper JFusionHelper_gallery2
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
         $helper->loadGallery2Api(false);
         list($ret, $themes) = GalleryCoreApi::fetchPluginStatus('theme', true);

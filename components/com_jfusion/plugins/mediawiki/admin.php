@@ -49,17 +49,19 @@ class JFusionAdmin_mediawiki extends JFusionAdmin {
         $myfile = $source_path . DS. 'LocalSettings.php';
         $params = array();
          //try to open the file
-         if ( !file_exists($myfile) ) {
+        if ( !file_exists($myfile) ) {
             JError::raiseWarning(500,JText::_('WIZARD_FAILURE'). ": ".$myfile." " . JText::_('WIZARD_MANUAL'));
-         } else {
-			$wgDBserver = $wgDBtype = $wgDBname = $wgDBuser = $wgDBpassword = $wgDBprefix = '';
-
+        } else {
+            $wgDBserver = $wgDBtype = $wgDBname = $wgDBuser = $wgDBpassword = $wgDBprefix = '';
+            /**
+             * @var $helper JFusionHelper_mediawiki
+             */
             $helper = JFusionFactory::getHelper($this->getJname());
-    		$paths = $helper->includeFramework($source_path);
-    		$IP = $source_path;
-    		foreach($paths as $path) {
-    			include($path);
-    		}
+            $paths = $helper->includeFramework($source_path);
+            $IP = $source_path;
+            foreach($paths as $path) {
+                include($path);
+            }
 
             $params['database_host'] = $wgDBserver;
             $params['database_type'] = $wgDBtype;
@@ -109,6 +111,9 @@ class JFusionAdmin_mediawiki extends JFusionAdmin {
      */
     function getUsergroupList()
     {
+        /**
+         * @var $helper JFusionHelper_mediawiki
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
         $wgGroupPermissions = $helper->getConfig('wgGroupPermissions');
 

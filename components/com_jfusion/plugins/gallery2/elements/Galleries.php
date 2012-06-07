@@ -39,6 +39,9 @@ class JElementGalleries extends JElement {
      */
     function fetchElement($name, $value, &$node, $control_name) {
     	global $jname;
+        /**
+         * @var $helper JFusionHelper_gallery2
+         */
         $helper = JFusionFactory::getHelper($jname);
         $helper->loadGallery2Api(true);
         list($ret, $tree) = GalleryCoreApi::fetchAlbumTree();

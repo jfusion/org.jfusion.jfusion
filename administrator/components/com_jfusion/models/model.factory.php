@@ -257,7 +257,7 @@ class JFusionFactory
      *
      * @param string $jname name of the JFusion plugin used
      *
-     * @return JDatabase Database connection for the JFusion plugin
+     * @return JFusionMySQL|JFusionMySQLi|JDatabase JDatabase Database connection for the JFusion plugin
      */
     public static function &getDatabase($jname)
     {
@@ -267,7 +267,7 @@ class JFusionFactory
         }
         //only create a new database instance if it has not been created before
         if (!isset($database_instances[$jname])) {
-            $database_instances[$jname] = & JFusionFactory::createDatabase($jname);
+            $database_instances[$jname] = JFusionFactory::createDatabase($jname);
             return $database_instances[$jname];
         } else {
             return $database_instances[$jname];
@@ -339,66 +339,65 @@ class JFusionFactory
      *
      * @param string $jname name of the JFusion plugin used
      *
-     * @return object JDatabase
+     * @return JFusionMySQL|JFusionMySQLi|JDatabase database object
      */
     public static function &createDatabase($jname)
     {
         //check to see if joomla DB is requested
         if ($jname == 'joomla_int') {
             $db = JFactory::getDBO();
-            return $db;
-        }
-        //get the debug configuration setting
-        $conf = JFactory::getConfig();
-        $debug = $conf->getValue('config.debug');
-        //get config values
-        $conf = JFactory::getConfig();
-        $params = & JFusionFactory::getParams($jname);
-        //prepare the data for creating a database connection
-        $host = $params->get('database_host');
-        $user = $params->get('database_user');
-        $password = $params->get('database_password');
-        $database = $params->get('database_name');
-        $prefix = $params->get('database_prefix','');
-        $driver = $params->get('database_type');
-        $debug = $conf->getValue('config.debug');
-        $charset = $params->get('database_charset', 'utf8');
-        //added extra code to prevent error when $driver is incorrect
-        if ($driver != 'mysql' && $driver != 'mysqli') {
-            //invalid driver
-            JError::raiseWarning(0, JText::_('INVALID_DRIVER'));
-            $result = false;
-            return $result;
-        }
-        //create an options variable that contains all database connection variables
-        $options = array('driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database, 'prefix' => $prefix);
-        //make sure the database model is loaded
-        jimport('joomla.database.database');
-        jimport('joomla.database.table');
-        //create the actual connection
-        include_once dirname(__FILE__) . DS . $driver . '.php';
-        if ($driver == 'mysql') {
-            $jfusionDatabase = new JFusionMySQL($options);
         } else {
-            $jfusionDatabase = new JFusionMySQLi($options);
+            //get the debug configuration setting
+            $conf = JFactory::getConfig();
+            $debug = $conf->getValue('config.debug');
+            //get config values
+            $conf = JFactory::getConfig();
+            $params = & JFusionFactory::getParams($jname);
+            //prepare the data for creating a database connection
+            $host = $params->get('database_host');
+            $user = $params->get('database_user');
+            $password = $params->get('database_password');
+            $database = $params->get('database_name');
+            $prefix = $params->get('database_prefix','');
+            $driver = $params->get('database_type');
+            $debug = $conf->getValue('config.debug');
+            $charset = $params->get('database_charset', 'utf8');
+            //added extra code to prevent error when $driver is incorrect
+            if ($driver != 'mysql' && $driver != 'mysqli') {
+                //invalid driver
+                JError::raiseWarning(0, JText::_('INVALID_DRIVER'));
+                $db = false;
+            } else {
+                //create an options variable that contains all database connection variables
+                $options = array('driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database, 'prefix' => $prefix);
+                //make sure the database model is loaded
+                jimport('joomla.database.database');
+                jimport('joomla.database.table');
+                //create the actual connection
+                include_once dirname(__FILE__) . DS . $driver . '.php';
+                if ($driver == 'mysql') {
+                    $db = new JFusionMySQL($options);
+                } else {
+                    $db = new JFusionMySQLi($options);
+                }
+                if (!method_exists($db, 'Query')) {
+                    JError::raiseWarning(0, JText::_('NO_DATABASE'));
+                    $db = false;
+                } else {
+                    if($db->getErrorNum()) {
+                        JError::raiseWarning(0, JText::_('DATABASE_ERROR') . ': ' . $db->getErrorMsg());
+                        $db = false;
+                    } else {
+                        //add support for UTF8
+                        $db->setQuery('SET names ' . $db->quote($charset));
+                        $db->query();
+                        //support debugging
+                        $db->debug($debug);
+                    }
+                }
+            }
         }
-        if (!method_exists($jfusionDatabase, 'Query')) {
-            JError::raiseWarning(0, JText::_('NO_DATABASE'));
-            $result = false;
-            return $result;
-        } else {
-        	if($jfusionDatabase->getErrorNum()) {
-        		JError::raiseWarning(0, JText::_('DATABASE_ERROR') . ': ' . $jfusionDatabase->getErrorMsg());
-        		$result = false;
-        		return $result;
-        	}        	
-            //add support for UTF8
-            $jfusionDatabase->setQuery('SET names ' . $jfusionDatabase->quote($charset));
-            $jfusionDatabase->query();
-            //support debugging
-            $jfusionDatabase->debug($debug);
-            return $jfusionDatabase;
-        }
+        return $db;
     }
         /**
      * Returns a an object array with all active plugins

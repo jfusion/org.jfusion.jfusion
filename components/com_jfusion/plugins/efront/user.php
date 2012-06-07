@@ -49,6 +49,9 @@ class JFusionUser_efront extends JFusionUser
         $db->setQuery($query);
         $result = $db->loadObject();
         if ($result) {
+            /**
+             * @var $helper JFusionHelper_efront
+             */
             $helper = JFusionFactory::getHelper($this->getJname());
             // change/add fields used by jFusion
             $result->userid = $result->id;
@@ -412,6 +415,9 @@ class JFusionUser_efront extends JFusionUser
                 $uploadpath = $params->get('uploadpath');
                 $user_dir = $uploadpath.$user->login.'/';
                 if (is_dir($user_dir)) {
+                    /**
+                     * @var $helper JFusionHelper_efront
+                     */
                     $helper = JFusionFactory::getHelper($this->getJname());
                     $helper->delete_directory($user_dir); //If the folder already exists, delete it first, including files
                 }
@@ -470,6 +476,9 @@ class JFusionUser_efront extends JFusionUser
             $existinguser = $this->getUser($userinfo);
             if (!empty($existinguser)) {
                 $params = JFusionFactory::getParams($this->getJname());
+                /**
+                 * @var $helper JFusionHelper_efront
+                 */
                 $helper = JFusionFactory::getHelper($this->getJname());
                 $apiuser = $params->get('apiuser');
                 $apikey = $params->get('apikey');
@@ -541,6 +550,9 @@ class JFusionUser_efront extends JFusionUser
             $usergroup = $usergroups[0];
             $db = JFusionFactory::getDataBase($this->getJname());
             if ($usergroup< 3){
+                /**
+                 * TODO: Undefined function
+                 */
                 $user_type = $this->groupIDToName($usergroup);
                 $user_types_ID = 0;
             } else {
