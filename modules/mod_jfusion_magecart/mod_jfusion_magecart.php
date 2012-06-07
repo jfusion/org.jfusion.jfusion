@@ -11,12 +11,16 @@
 defined ( '_JEXEC' ) or trigger_error ( 'Restricted access' );
 
 if (JPluginHelper::importPlugin ( 'system', 'magelib' )) {
-	
+    /**
+     * @var $params JParameter
+     */
 	$template_selection = $params->get ( 'template_selection', 1 ); // Use the Magento template by default
 	$moduleclass_sfx = $params->get('moduleclass_sfx');
 	if ($template_selection) {
 		$mage_template_path = $params->get ( 'mage_template_path', 'checkout/cart/sidebar.phtml' );
-	}
+	} else {
+        $mage_template_path = '';
+    }
 	
 	$plgMageLib = new plgSystemMagelib ( );
 	

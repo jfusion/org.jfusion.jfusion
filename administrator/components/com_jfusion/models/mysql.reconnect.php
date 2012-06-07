@@ -59,9 +59,8 @@ class JFusionReconnectMySQL extends JDatabaseMySQL
 	                $this->errorNum = 1;
 	                $this->errorMsg = JText::_('JLIB_DATABASE_ERROR_ADAPTER_MYSQL');
 	                return;
-	            }
-	            else {
-	                throw new DatabaseException(JText::_('JLIB_DATABASE_ERROR_ADAPTER_MYSQL'));
+	            } else {
+	                throw new JDatabaseException(JText::_('JLIB_DATABASE_ERROR_ADAPTER_MYSQL'));
 	            }
 	        }
 	
@@ -76,7 +75,7 @@ class JFusionReconnectMySQL extends JDatabaseMySQL
 	                return;
 	            }
 	            else {
-	                throw new DatabaseException(JText::_('JLIB_DATABASE_ERROR_CONNECT_MYSQL'));
+	                throw new JDatabaseException(JText::_('JLIB_DATABASE_ERROR_CONNECT_MYSQL'));
 	            }
 	        }
 	

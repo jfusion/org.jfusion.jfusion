@@ -169,9 +169,12 @@ class plgSystemMagelib {
 		return;
 	}
 
+    /**
+     * @return string
+     */
     function createId()
     {
-        $id = 0;
+        $id = '';
         while (strlen($id) < 32)
         {
             $id .= mt_rand(0, mt_getrandmax());

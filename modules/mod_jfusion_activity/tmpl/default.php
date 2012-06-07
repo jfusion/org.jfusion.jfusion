@@ -12,6 +12,9 @@ defined('_JEXEC') or die('Restricted access');
 ?>
 <div>
 <?php
+/**
+ * @var $config array
+ */
 if (empty($results)) :
     echo JText::_('NO_POSTS');
 else :

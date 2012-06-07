@@ -28,12 +28,15 @@ class JFusionForum_mediawiki extends JFusionForum
      * @param $config
      * @param $view
      * @param JParameter $pluginParam
+     *
+     * @return string
      */
     function renderActivityModule($config, $view, $pluginParam) {
 		$db =& JFusionFactory::getDatabase($this->getJname());
 		$params = JFusionFactory::getParams($this->getJname());
 		defined('_DATE_FORMAT_LC2') or define('_DATE_FORMAT_LC2','%A, %d %B %Y %H:%M');
 
+        $output = '';
 		// configuration
 		$display_limit_subject = $pluginParam->get('character_limit_subject');
 		$display_limit = $pluginParam->get('character_limit');
@@ -73,7 +76,7 @@ class JFusionForum_mediawiki extends JFusionForum
 			if ($result_order) {
 				$results = array_reverse($results);
 			}
-			echo '<ul>';
+			$output .= '<ul>';
 			foreach($results as $value ) {
 				if (strlen($value->text)) {
 					//get the avatar of the logged in user
@@ -113,19 +116,19 @@ class JFusionForum_mediawiki extends JFusionForum
 						$o_avatar = '';
 					}
 					if ( !empty( $o_avatar_source ) ) {
-						echo '<li style="clear:left;">';
-						echo '<img style="vertical-align:middle; float:left; margin:3px;" src="'.$o_avatar_source.'" height="'.$o_avatar_height.'" width="'.$o_avatar_width.'" alt="avatar" />';
+                        $output .= '<li style="clear:left;">';
+                        $output .= '<img style="vertical-align:middle; float:left; margin:3px;" src="'.$o_avatar_source.'" height="'.$o_avatar_height.'" width="'.$o_avatar_width.'" alt="avatar" />';
 					} else {
-						echo '<li>';
+                        $output .= '<li>';
 					}
 					$url = JFusionFunction::routeURL('index.php?title='.$value->title, $itemid, $this->getJname());
 					if (JString::strlen($value->title) > $display_limit_subject) {
 						//we need to shorten the subject
 						$value->pagename = JString::substr($value->title,0,$display_limit_subject) . '...';
 					}
-					echo '<a href="'.$url.'" target="'.$new_window.'">'.$value->title.'</a> - ';
+                    $output .= '<a href="'.$url.'" target="'.$new_window.'">'.$value->title.'</a> - ';
 					if ($showuser) {
-						echo $value->user;
+                        $output .= $value->user;
 					}
 					//process date info
 					if($showdate) {
@@ -133,18 +136,19 @@ class JFusionForum_mediawiki extends JFusionForum
 						$JDate =  new JDate($value->created);
 						$JDate->setOffset($tz_offset);
 						if (empty($custom_date)) {
-							echo ' '.$JDate->toFormat(_DATE_FORMAT_LC2,true);
+                            $output .= ' '.$JDate->toFormat(_DATE_FORMAT_LC2,true);
 						} else {
-							echo ' '.$JDate->toFormat($custom_date,true);
+                            $output .= ' '.$JDate->toFormat($custom_date,true);
 						}
 					}
 					if($display_body) {
-						echo " - " .$value->text;
+                        $output .= ' - ' .$value->text;
 					}
-					echo "</li>";
+                    $output .= '</li>';
 				}
 			}
-			echo '</ul>';
+            $output .= '</ul>';
 		}
+        return $output;
 	}
 }

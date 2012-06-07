@@ -75,7 +75,10 @@ class jfusionViewplugineditor extends JView
 					$element = $fields[$key];
 					$name = $element->getAttribute('name');
 					if ($name!='jfusionbox') {
-						$field = JFormHelper::loadFieldType($element->getAttribute('type'), true);
+                        /**
+                         * @var $field JFormField
+                         */
+                        $field = JFormHelper::loadFieldType($element->getAttribute('type'), true);
 						if ($field) {
 							$value = $parametersInstance->get($name, $element->getAttribute('default'));
 							$field->setForm($form);

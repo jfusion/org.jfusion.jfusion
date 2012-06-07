@@ -29,7 +29,9 @@
 if (!defined('MOODLE_INTERNAL')) {
 	die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
 }
-
+/**
+ * @var $CFG object
+ */
 require_once($CFG->libdir.'/authlib.php');
 
 

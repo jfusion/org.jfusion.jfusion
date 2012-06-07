@@ -8,9 +8,12 @@
 */
 
 // no direct access
-defined('_JEXEC') or die('Restricted access'); ?>
-
-<?php $_cartQty = $cart->getSummaryQty() ?>
+defined('_JEXEC') or die('Restricted access');
+/**
+ * @var $cart object
+ * @var $sidebar object
+ */
+$_cartQty = $cart->getSummaryQty() ?>
 <?php if ($_cartQty>0): ?>
 	<?php if ($_cartQty==1): ?>
 		<?php echo JText::sprintf('There is <a href="%s"><strong>1 item</strong></a> in your cart.', Mage::getUrl('checkout/cart')) ?>

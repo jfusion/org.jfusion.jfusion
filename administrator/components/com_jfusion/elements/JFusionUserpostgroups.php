@@ -49,8 +49,11 @@ class JElementJFusionUserpostgroups extends JElement
         global $jname;
         if ($jname) {
             if (JFusionFunction::validPlugin($jname)) {
-                $JFusionPlugin = & JFusionFactory::getAdmin($jname);
-                $usergroups = $JFusionPlugin->getUserpostgroupList();
+                /**
+                 * @var $JFusionAdmin JFusionAdmin_smf
+                 */
+                $JFusionAdmin = & JFusionFactory::getAdmin($jname);
+                $usergroups = $JFusionAdmin->getUserpostgroupList();
                 if (!empty($usergroups)) {
                     return JHTML::_('select.genericlist', $usergroups, $control_name . '[' . $name . ']', '', 'id', 'name', $value);
                 } else {

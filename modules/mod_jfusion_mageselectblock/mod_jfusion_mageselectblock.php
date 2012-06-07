@@ -13,7 +13,9 @@ defined ( '_JEXEC' ) or trigger_error ( 'Restricted access' );
 require_once 'helper/default.php';
 
 if (JPluginHelper::importPlugin ( 'system', 'magelib' )) {
-	
+    /**
+     * @var $params JParameter
+     */
 	$plgMageLib = new plgSystemMagelib ( );
 	$plgMageLib->destroyTemporaryJoomlaSession ();
 	if ($plgMageLib->loadAndStartMagentoBootstrap ()) :

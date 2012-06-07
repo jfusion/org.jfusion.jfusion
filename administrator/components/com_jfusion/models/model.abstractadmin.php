@@ -374,8 +374,8 @@ class JFusionAdmin
         function usergroupSelect(option)
         {
             var myArray = [];
-            myArray[0] = '${simple_usergroup}';
-            myArray[1] = '${advanced_usergroup}';
+            myArray[0] = '{$simple_usergroup}';
+            myArray[1] = '{$advanced_usergroup}';
 
             $('JFusionUsergroup').innerHTML = myArray[option];
         }
@@ -565,13 +565,13 @@ JS;
         $document =& JFactory::getDocument();
         $plugin = json_encode($plugin);
         $js = <<<JS
-			var jfPlugin = ${plugin};
+			var jfPlugin = {$plugin};
 
 	        function usergroupSelect(option)
 	        {
 	            var myArray = new Array();
-	            myArray[0] = '<?php echo $simple_usergroup; ?>';
-	            myArray[1] = '<?php echo $advanced_usergroup; ?>';
+	            myArray[0] = '{$simple_usergroup}';
+	            myArray[1] = '{$advanced_usergroup}';
 	            $('JFusionUsergroup').innerHTML = myArray[option];
 
 	            var addgroupset = $('addgroupset');
@@ -806,7 +806,7 @@ JS;
             $output .= JText::_('IMPORT_FROM_SERVER').'<br/>';
             $output .= '<input type=radio name="xmlname" value="" checked> None<br/>';
             /**
-             * @var $val SimpleXMLElement
+             * @var $val JSimpleXMLElement
              */
             foreach ($xmlList->document->children() as $key => $val) {
                 $pluginName = $val->attributes('name');
@@ -906,7 +906,7 @@ JS;
 
             $conf = array();
             /**
-             * @var $val SimpleXMLElement
+             * @var $val JSimpleXMLElement
              */
             foreach ($config as $key => $val) {
                 $attName = (string)$val->attributes('name');
@@ -1028,7 +1028,7 @@ JS;
         function doExport() {
             var form = $('adminForm');
             form.action.value='export';
-            form.jname.value='${jname}';
+            form.jname.value='{$jname}';
             submitbutton('plugineditor');
         }
 JS;

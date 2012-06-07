@@ -43,6 +43,9 @@ class doku_auth_plain extends doku_auth_basic {
      * @var $users array
      */
     var $users = null;
+    /**
+     * @var $io JFusionDokuwiki_Io
+     */
     var $io = null;
     /**
      * @var $_pattern array

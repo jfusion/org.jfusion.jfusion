@@ -10,6 +10,11 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
+/**
+ * @var $joomlaUser object
+ * @var $output object
+ * @var $config array
+ */
 if(!$joomlaUser->guest) :
 	if(!empty($output->avatar_source) && $config["avatar_location"]=='left') :
 		echo "<div style='height:{$config["avatar_height"]}px; text-align:{$config['alignment']};'>";

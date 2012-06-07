@@ -613,4 +613,28 @@ class JFusionPublic
         $status['debug'] = JText::_('METHOD_NOT_IMPLEMENTED');
         return $status;
     }
+
+    /**
+     * @param array $config
+     * @param $view
+     * @param JParameter $params
+     *
+     * @return string
+     */
+    function renderUserActivityModule($config, $view, $params)
+    {
+        return JText::_('METHOD_NOT_IMPLEMENTED');
+    }
+
+    /**
+     * @param array $config
+     * @param $view
+     * @param JParameter $params
+     *
+     * @return string
+     */
+    function renderWhosOnlineModule($config, $view, $params)
+    {
+        return JText::_('METHOD_NOT_IMPLEMENTED');
+    }
 }

@@ -329,6 +329,9 @@ class JFusionDiscussBotHelper {
                                         //Joomla 1.6 has a different model for sections/category so need to handle it separately from J1.5
                                         $catid =& $this->article->catid;
                                         $JCat =& JCategories::getInstance('Content');
+                                        /**
+                                         * @var $cat JCategoryNode
+                                         */
                                         $cat = $JCat->get($catid);
 
                                         $includedCategories = $this->params->get("include_categories");
@@ -354,6 +357,9 @@ class JFusionDiscussBotHelper {
                                                         //keep going up
                                                         if (!$valid) {
                                                             //get the parent's parent id
+                                                            /**
+                                                             * @var $parent JCategoryNode
+                                                             */
                                                             $parent = $JCat->get($parent_id);
                                                             $parent_id = $parent->getParent()->id;
                                                             if ($parent_id == 'root') {
@@ -628,20 +634,28 @@ class JFusionDiscussBotHelper {
         	'SUCCESSFUL_POST_MODERATED'
         );
 
-        $js = "\n\n";
-        $js .= "var jfdb_isJ16 = " . $this->isJ16 . ";\n";
-        $js .= "var jfdb_view = '$view'\n";
-        $js .= "var jfdb_jumpto_discussion = " . JRequest::getInt('jumpto_discussion', '0', 'post') . ";\n";
-        $js .= "var jfdb_enable_pagination = " . $this->params->get('enable_pagination',1) . ";\n";
-        $js .= "var jfdb_enable_ajax = " . $this->params->get('enable_ajax',1) . ";\n";
-        $js .= "var jfdb_enable_jumpto = " . $this->params->get('jumpto_new_post',0) . ";\n";
+        $jumpto_discussion = JRequest::getInt('jumpto_discussion', '0', 'post');
+
+        $js = <<<JS
+        var jfdb_isJ16 = {$this->isJ16};
+        var jfdb_view = '{$view}';
+        var jfdb_jumpto_discussion = {$jumpto_discussion};
+        var jfdb_enable_pagination = {$this->params->get('enable_pagination',1)};
+        var jfdb_enable_ajax = {$this->params->get('enable_ajax',1)};
+        var jfdb_enable_jumpto = {$this->params->get('jumpto_new_post',0)};
+JS;
 
         if ($this->debug_mode) {
-            $js .= "var jfdb_debug = '1';\n";
+            $js .= <<<JS
+            var jfdb_debug = '1';
+JS;
         }
 
         foreach ($lang_strings as $str) {
-            $js .= "var JFDB_$str = \"" . JText::_($str) . "\";\n";
+            $jstr = JText::_($str);
+            $js .= <<<JS
+            var JFDB_{$str} = "{$jstr}";
+JS;
         }
 
         //Load quick reply includes if enabled
@@ -652,15 +666,20 @@ class JFusionDiscussBotHelper {
         }
 
         if ($view == $test_view) {
-            $js .= "var jfdb_article_url = '" . $this->_get_article_url() . "';\n";
-            $js .= "var jfdb_article_id = '" . $this->article->id . "';\n";
-            $js .= "window.addEvent(window.webkit ? 'load' : 'domready', function () {\n";
-            $js .= "	initializeDiscussbot();\n";
-            $js .= "});\n";
+            $joomla_basepath = JPATH_SITE;
+            $js .= <<<JS
+            var jfdb_article_url = '{$this->_get_article_url()}';
+            var jfdb_article_id = '{$this->article->id}';
+            window.addEvent(window.webkit ? 'load' : 'domready', function () {
+                initializeDiscussbot();
+            });
+JS;
         } else {
-            $js .= "window.addEvent(window.webkit ? 'load' : 'domready', function () {\n";
-            $js .= "	initializeConfirmationBoxes();\n";
-            $js .= "});\n";
+            $js .= <<<JS
+            window.addEvent(window.webkit ? 'load' : 'domready', function () {
+                initializeConfirmationBoxes();
+            });
+JS;
         }
 
         $document = JFactory::getDocument();

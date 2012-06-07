@@ -702,8 +702,14 @@ class JFusionPluginInstaller extends JObject
         // If we cannot load the xml file return null
 
 		if(JFusionFunction::isJoomlaVersion('1.6')) {
+            /**
+             *  @var $xml JXMLElement
+             */
 			$xml = JFactory::getXML($file);
 		} else {
+            /**
+             *  @var $xml JSimpleXML
+             */
         	$xml = JFactory::getXMLParser('Simple');
 			if (!$xml->loadFile($file)) {
             	// Free up xml parser memory and return null

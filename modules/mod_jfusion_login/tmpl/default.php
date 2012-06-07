@@ -17,6 +17,17 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
+/**
+ * @var $params JParameter
+ * @var $type string
+ * @var $display_name string
+ * @var $maxheight int
+ * @var $url_pm string
+ * @var $return string
+ * @var $lostpassword_url string
+ * @var $lostusername_url string
+ * @var $register_url string
+ */
 //define output var for nicer code
 $output = '';
 $form_id = (JFusionFunction::isJoomlaVersion('1.6')) ? 'login-form' : 'form-login';

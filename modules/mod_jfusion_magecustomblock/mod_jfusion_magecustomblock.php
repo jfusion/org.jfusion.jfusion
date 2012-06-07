@@ -9,7 +9,10 @@
 
 // no direct access
 defined ( '_JEXEC' ) or trigger_error ( 'Restricted access' );
-
+/**
+ * @var $params JParameter
+ * @var $module object
+ */
 if (JPluginHelper::importPlugin ( 'system', 'magelib' )) {
 	
 	$plgMageLib = new plgSystemMagelib ( );

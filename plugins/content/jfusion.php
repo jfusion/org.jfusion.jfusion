@@ -1146,10 +1146,14 @@ class plgContentJfusion extends JPlugin
         //prevent notices and warnings in default_buttons.php if there are no buttons to display
         $this->helper->output = array();
         $this->helper->output['buttons'] = array();
+        /**
+         * @var $article_params JParameter
+         */
         $attribs = $readmore_param = $article_params = null;
         $show_readmore = $readmore_catch = 0;
         if ($this->helper->option == 'com_content') {
             $attribs = new JParameter($this->article->attribs);
+
             if (isset($this->article->params)) {
                 //blog view
                 $article_params =& $this->article->params;

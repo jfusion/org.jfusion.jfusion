@@ -8,6 +8,9 @@
 */
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
+/**
+ * @var $task string
+ */
 switch($task)
 {
 	case 'plugineditor':

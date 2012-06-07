@@ -271,7 +271,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
                 var h = (hook == 'frameless' || hook == 'redirect');
                 var i = (itemid.value === '' || itemid.value == '0');
                 if (a && h && i) {
-                    alert('${empty}');
+                    alert('{$empty}');
                 } else {
                     form.customcommand.value = 'toggleHook';
                     $('${fieldname}').value = hook;

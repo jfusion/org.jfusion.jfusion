@@ -374,7 +374,11 @@ $jfusion_plugins = $this->VersionData->plugins[0]->children(); ?>
 					    </td>
 					    <td>
 							<select name="install_url2" id="install_url2">
-							<?php foreach ($jfusion_plugins as $plugin): ?>
+							<?php
+                                /**
+                                 *  @var $plugin JSimpleXMLElement
+                                 */
+                                foreach ($jfusion_plugins as $plugin): ?>
 								<option value="<?php echo $plugin->remotefile[0]->data() ?>"><?php echo $plugin->name() . ' - ' . $plugin->description[0]->data(); ?></option>
 							<?php endforeach; ?>
 							</select>

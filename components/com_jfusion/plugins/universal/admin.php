@@ -370,7 +370,7 @@ class JFusionAdmin_universal extends JFusionAdmin{
         $list = json_encode($list);
 
         $output = <<<JS
-        var TypeAry = '${list}';
+        var TypeAry = '{$list}';
 
         function changefield(ref,name,parmtype) {
             var id = $(name);

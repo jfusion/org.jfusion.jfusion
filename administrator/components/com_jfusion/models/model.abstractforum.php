@@ -315,7 +315,10 @@ class JFusionForum
                     }
     		    } else {
     		        $JCat =& JCategories::getInstance('Content');
-            		$cat = $JCat->get($catid);
+                    /**
+                     * @var $cat JCategoryNode
+                     */
+                    $cat = $JCat->get($catid);
             		if ($cat) {
 	    		        $parent_id = $cat->getParent()->id;
 	                    if ($parent_id !== 'root') {
@@ -326,6 +329,9 @@ class JFusionForum
 	                                $stop = true;
 	                            } else {
 	                                //keep going up so get the parent's parent id
+                                    /**
+                                     * @var $parent JCategoryNode
+                                     */
 	                                $parent = $JCat->get($parent_id);
 	                                $parent_id = $parent->getParent()->id;
 	                                if ($parent_id == 'root') {
@@ -523,8 +529,10 @@ class JFusionForum
 		$document->addStylesheet(JFusionFunction::getJoomlaURL().'plugins/content/'.$path.'/markitup/skins/simple/style.css');
 		$document->addStylesheet(JFusionFunction::getJoomlaURL().'plugins/content/'.$path.'/markitup/sets/bbcode/style.css');
 
-		$js  = "var jfdb_load_markitup = 1;\n";
-		$js .= "jQuery.noConflict();\n";
+        $js = <<<JS
+		var jfdb_load_markitup = 1;
+		jQuery.noConflict();
+JS;
 		return $js;
     }
 
@@ -737,5 +745,17 @@ class JFusionForum
     function filterForumList($forumids)
     {
         return $forumids;
+    }
+
+    /**
+     * @param array $config
+     * @param $view
+     * @param JParameter $params
+     *
+     * @return string
+     */
+    function renderActivityModule($config, $view, $params)
+    {
+        return JText::_('METHOD_NOT_IMPLEMENTED');
     }
 }

@@ -21,7 +21,7 @@ class JFusion_Helper_Mageselectblock {
 	public static function callblock($blockId = null) {
         $html = '';
 		if ($blockId) {
-			$block = Mage::getModel ( 'cms/block' )->setStoreId ( Mage::app ()->getStore ()->getId () )->load ( $blockId );
+            $block = Mage::getModel ( 'cms/block' )->setStoreId ( Mage::app ()->getStore ()->getId () )->load ( $blockId );
 			if ($block->getIsActive()) {
 				$content = $block->getContent ();
 				
