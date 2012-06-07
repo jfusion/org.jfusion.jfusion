@@ -692,7 +692,10 @@ class JFusionFunction
                 $options['plaintext_line_breaks'] = 'br';
             }
 
-            $bbcode =& JFusionFactory::getCodeParser();
+            /**
+             * @var $bbcode BBCode_Parser
+             */
+            $bbcode = JFusionFactory::getCodeParser();
             $bbcode->SetPlainMode(true);
             if (isset($options['plain_tags']) && is_array($options['plain_tags'])) {
                 foreach ($options['plain_tags'] as $tag) {
@@ -1264,8 +1267,10 @@ class JFusionFunction
 		        	$versions[$jname][$v] = false;
 		    	}
 	        } else {
-				// must be joomla_ext
-        		$admin = JFusionFactory::getAdmin($jname);
+                /**
+                 * @var $admin JFusionAdmin_joomla_ext
+                 */
+                $admin = JFusionFactory::getAdmin($jname);
         		$version = $admin->getVersion();
 		    	if (version_compare($version, $v) >= 0) {
 		        	$versions[$jname][$v] = true;

@@ -542,6 +542,9 @@ class JFusionPluginInstaller extends JObject
             $childrens = $languages->children();
         }
         if (count($childrens) > 0) {
+            /**
+             * @var $children JSimpleXMLElement
+             */
             foreach ($childrens as $children) {
                 $tag = $this->getAttribute($children,'tag');
                 $filepath = $children->data();
@@ -574,6 +577,9 @@ class JFusionPluginInstaller extends JObject
             $childrens = $adminLanguages->children();
         }
         if (count($childrens) > 0) {
+            /**
+             * @var $children JSimpleXMLElement
+             */
             foreach ($childrens as $children) {
                 $tag = $this->getAttribute($children,'tag');
                 $filepath = $children->data();
@@ -754,6 +760,9 @@ class JFusionPluginInstaller extends JObject
         $filesArray = $this->getFiles($pluginPath, $jname);
         if (extension_loaded('zlib')) {
             //use Joomla's zip class to create the zip
+            /**
+             * @var $zip JArchiveZip
+             */
             $zip = & JArchive::getAdapter('zip');
             if ($zip->create($filename, $filesArray)) {
                 $zipSuccess = true;

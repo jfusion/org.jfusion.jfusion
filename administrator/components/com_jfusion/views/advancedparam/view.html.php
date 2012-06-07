@@ -198,6 +198,9 @@ class jfusionViewadvancedparam extends JView
                         if (substr($data, 0, 5) != "<form>") {
                             $data = "<form>" . $data . "</form>";
                         }
+                        /**
+                         * @var $form JForm
+                         */
                         $form = &JForm::getInstance($jname, $data, array('control' => "params[$jname]"));
                         //add JFusion's fields
                         $form->addFieldPath(JPATH_COMPONENT.DS.'fields');
@@ -345,6 +348,9 @@ class jfusionViewadvancedparam extends JView
                             if (substr($data, 0, 5) != "<form>") {
                                 $data = "<form>" . $data . "</form>";
                             }
+                            /**
+                             * @var $form JForm
+                             */
                             $form = &JForm::getInstance($jname, $data, array('control' => "params[$jname]"));
                             //add JFusion's fields
                             $form->addFieldPath(JPATH_COMPONENT.DS.'fields');

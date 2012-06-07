@@ -905,6 +905,9 @@ JS;
             }
 
             $conf = array();
+            /**
+             * @var $val SimpleXMLElement
+             */
             foreach ($config as $key => $val) {
                 $conf[$val->attributes('name')] = htmlspecialchars_decode($val->data());
                 if ( strpos($conf[$val->attributes('name')], 'a:') === 0 ) $conf[$val->attributes('name')] = unserialize($conf[$val->attributes('name')]);
@@ -968,7 +971,7 @@ JS;
             $xml->loadString('<jfusionconfig></jfusionconfig>');
 
             /**
-             *
+             * @var $info JSimpleXMLElement
              */
             $info = $xml->document->addChild('info');
             $info->addAttribute  ('jfusionversion',  JFusionFunctionAdmin::currentVersion());
@@ -998,8 +1001,10 @@ JS;
 
             $info->addAttribute  ('original_name', $result);
 
+            /**
+             * @var $info JSimpleXMLElement
+             */
             $config = $xml->document->addChild('config');
-
             foreach ($arr as $key => $val) {
                 $attrs = array();
                 $attrs['name'] = $key;

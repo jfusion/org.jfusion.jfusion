@@ -827,6 +827,9 @@ class simple_html_dom {
 
     // clean up memory due to php5 circular references memory leak...
     function clear() {
+        /**
+         * @var $n simple_html_dom_node
+         */
         foreach($this->nodes as $n) {$n->clear(); $n = null;}
         if (isset($this->parent)) {$this->parent->clear(); unset($this->parent);}
         if (isset($this->root)) {$this->root->clear(); unset($this->root);}

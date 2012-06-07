@@ -327,7 +327,7 @@ class JFusionFrameless {
 		if ( !empty($data->bodyextract) || !empty($data->bodyremove) ) {
 			require_once (JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'parsers' . DS . 'simple_html_dom.php');
             /**
-             * @var $html simple_html_dom
+             * @var $html simple_html_dom_node
              */
 			$html = str_get_html($data->body);
 

@@ -289,6 +289,9 @@ class JFusionFunctionAdmin
         $VersionCurrent = $RevisionCurrent = 0;
         if (file_exists($filename) && is_readable($filename)) {
             //get the version number
+            /**
+             * @var $parser JSimpleXML
+             */
             $parser = JFactory::getXMLParser('Simple');
             $parser->loadFile($filename);
             $VersionCurrent = $parser->document->version[0]->data();
