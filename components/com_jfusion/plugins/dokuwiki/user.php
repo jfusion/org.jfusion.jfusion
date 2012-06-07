@@ -37,6 +37,9 @@ class JFusionUser_dokuwiki extends JFusionUser {
     function updateUser($userinfo, $overwrite) {
         // Initialise some variables
         $params = JFusionFactory::getParams($this->getJname());
+        /**
+         * @var $helper JFusionHelper_dokuwiki
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
         $userinfo->username = $this->filterUsername($userinfo->username);
         $update_email = $params->get('update_email');
@@ -130,6 +133,9 @@ class JFusionUser_dokuwiki extends JFusionUser {
      * @return null|object
      */
     function getUser($userinfo) {
+        /**
+         * @var $helper JFusionHelper_dokuwiki
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
     	if (is_object($userinfo)) {
     		$username = $this->filterUsername($userinfo->username);
@@ -169,6 +175,9 @@ class JFusionUser_dokuwiki extends JFusionUser {
         $status = array('error' => array(),'debug' => array());
         $username = $this->filterUsername($userinfo->username);
         $user[$username] = $username;
+        /**
+         * @var $helper JFusionHelper_dokuwiki
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
         if (!$helper->auth->deleteUsers($user)) {
             $status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . 'No User Deleted';
@@ -274,6 +283,9 @@ class JFusionUser_dokuwiki extends JFusionUser {
             if (empty($usergroups)) {
                 $status['error'][] = JText::_('ERROR_CREATE_USER') . ": " . JText::_('USERGROUP_MISSING');
             } else {
+                /**
+                 * @var $helper JFusionHelper_dokuwiki
+                 */
                 $helper = JFusionFactory::getHelper($this->getJname());
                 if (isset($userinfo->password_clear)) {
                     $pass = $userinfo->password_clear;

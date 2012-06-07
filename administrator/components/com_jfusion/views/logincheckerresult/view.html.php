@@ -288,6 +288,9 @@ class jfusionViewLoginCheckerResult extends JView
 	{
 	    if (file_exists($filename)) {
 	        //get the version number
+            /**
+             * @var $parser JSimpleXML
+             */
 	        $parser = JFactory::getXMLParser('Simple');
 	        $parser->loadFile($filename);
 	        $jfusion_version[JText::_('JFUSION') . ' ' . $name . ' ' . JText::_('VERSION') ] = ' ' . $parser->document->version[0]->data() . ' ';

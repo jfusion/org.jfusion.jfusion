@@ -114,6 +114,9 @@ class JFusionUser_wordpress extends JFusionUser {
 		// now find out what we have
 		$groupid=4; // default to subscriber
 		$groupname='subscriber';
+        /**
+         * @var $helper JFusionHelper_wordpress
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
 		$groups = $helper->getUsergroupListWP();
 		// find the most capable one

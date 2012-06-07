@@ -65,6 +65,9 @@ class jfusionViewcpanel extends JView
             $JFusionCpanelRaw = $curl_disabled;
         }
         $JFusionCpanel = null;
+        /**
+         * @var $parser JSimpleXML
+         */
         $parser = JFactory::getXMLParser('Simple');
         if ($parser->loadString($JFusionCpanelRaw)) {
             if (isset($parser->document)) {

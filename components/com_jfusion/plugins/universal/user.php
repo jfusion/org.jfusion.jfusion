@@ -114,6 +114,9 @@ class JFusionUser_universal extends JFusionUser {
         //setup status array to hold debug info and errors
         $status = array('error' => array(),'debug' => array());
 
+        /**
+         * @var $helper JFusionHelper_universal
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
 		$userid = $helper->getFieldUserID();
 

@@ -29,6 +29,9 @@ defined('_JEXEC') or die('Restricted access');
  */
 class JFusionHelper_dokuwiki
 {
+    /**
+     * @var doku_auth_mysql|doku_auth_plain
+     */
     var $auth = null;
 
     /**

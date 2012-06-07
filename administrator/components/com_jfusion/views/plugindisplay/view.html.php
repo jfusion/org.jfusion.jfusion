@@ -110,6 +110,9 @@ class jfusionViewplugindisplay extends JView {
 	        $VersionDataRaw = JFusionFunctionAdmin::getFileData($url);
             $VersionData = null;
 	        if (!empty($VersionDataRaw)) {
+                /**
+                 * @var $parser JSimpleXML
+                 */
 	            $parser = JFactory::getXMLParser('Simple');
 	            if ($parser->loadString($VersionDataRaw)) {
 	                if (isset($parser->document)) {
@@ -345,6 +348,9 @@ class jfusionViewplugindisplay extends JView {
 			//get the default description
 			$plugin_xml = JFUSION_PLUGIN_PATH .DS. $record->name .DS. 'jfusion.xml';
 			if(file_exists($plugin_xml) && is_readable($plugin_xml)) {
+                /**
+                 * @var $parser JSimpleXML
+                 */
 				$parser = JFactory::getXMLParser('Simple');
 				$xml    = $parser->loadFile($plugin_xml);
 				$xml    = $parser->document;

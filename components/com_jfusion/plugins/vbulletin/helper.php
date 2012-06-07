@@ -361,38 +361,30 @@ class JFusionHelper_vbulletin
                     break;
                 case 'forums':
                 default:
-                    //bad type so return url unaltered
-                    return $url;
+                    $vburi = null;
                     break;
             }
+            if ($vburi) {
+                $query = $uri->getQuery();
+                $fragment = $uri->getFragment();
+                if ($fragment) {
+                    $fragment = '#' . $fragment;
+                }
 
-            $query = $uri->getQuery();
-            $fragment = $uri->getFragment();
-            if ($fragment) {
-                $fragment = '#' . $fragment;
+                switch (JFVB_FRIENDLYURL) {
+                    case 1:
+                        $url = $uri->getPath() . '?' . $vburi . ($query ? '&' . $query : '') . $fragment;
+                        break;
+                    case 2:
+                        $url = $uri->getPath() . '/' . $vburi . ($query ? '?' . $query : '') . $fragment;
+                        break;
+                    case 3:
+                        $url = $type . '/' . $vburi . ($query ? '?' . $query : '') . $fragment;
+                        break;
+                }
             }
-
-            switch (JFVB_FRIENDLYURL) {
-                case 1:
-                    $sef_url = $uri->getPath() . '?' . $vburi . ($query ? '&' . $query : '') . $fragment;
-                    break;
-                case 2:
-                    $sef_url = $uri->getPath() . '/' . $vburi . ($query ? '?' . $query : '') . $fragment;
-                    break;
-                case 3:
-                    $sef_url = $type . '/' . $vburi . ($query ? '?' . $query : '') . $fragment;
-                    break;
-                case 0:
-                default:
-                    $sef_url = $url;
-                    break;
-            }
-
-            return $sef_url;
-
-        } else {
-            return $url;
         }
+        return $url;
     }
 
     /**

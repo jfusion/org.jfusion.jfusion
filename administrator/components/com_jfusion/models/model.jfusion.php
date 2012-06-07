@@ -1317,6 +1317,7 @@ class JFusionFunction
 			if (!is_array($multiusergroup)) {
 				$group = array($multiusergroup);
 	        } else {
+                $groups = array();
                 if ($userinfo) {
                     if (isset($userinfo->groups)) {
                         $groups = $userinfo->groups;

@@ -136,6 +136,9 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
      */
     function getUserList($limitstart = null, $limit = null)
     {
+        /**
+         * @var $helper JFusionHelper_dokuwiki
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
         $list = $helper->auth->retrieveUsers($limitstart,$limit);
         $userlist = array();
@@ -155,6 +158,9 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
      */
     function getUserCount()
     {
+        /**
+         * @var $helper JFusionHelper_dokuwiki
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
         return $helper->auth->getUserCount();
     }

@@ -69,6 +69,9 @@ class JFusionPublic_gallery2 extends JFusionPublic {
             $path_info = str_replace(':', '-', $path_info);
             $_SERVER['PATH_INFO'] = $path_info;
         }
+        /**
+         * @var $helper JFusionHelper_gallery2
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
         $helper->loadGallery2Api(true);
         global $gallery, $user;

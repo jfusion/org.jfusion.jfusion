@@ -108,6 +108,9 @@ class JFusionUser_gallery2 extends JFusionUser {
      * @return array
      */
     function destroySession($userinfo, $options) {
+        /**
+         * @var $helper JFusionHelper_gallery2
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
         $helper->loadGallery2Api(false);
         GalleryInitSecondPass();

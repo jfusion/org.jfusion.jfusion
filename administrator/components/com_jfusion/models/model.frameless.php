@@ -53,6 +53,9 @@ class JFusionFrameless {
 		$data->fullURL = $query ? $url . '?' . $query : $url;
         $data->fullURL = str_replace('&', '&amp;', $data->fullURL);
 
+        /**
+         * @var $menu JMenu
+         */
         $menu = JSite::getMenu();
     	if(!$isPlugin) {
             $item = $menu->getItem($jname);
@@ -323,6 +326,9 @@ class JFusionFrameless {
     function parseBody(&$data) {
 		if ( !empty($data->bodyextract) || !empty($data->bodyremove) ) {
 			require_once (JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'parsers' . DS . 'simple_html_dom.php');
+            /**
+             * @var $html simple_html_dom
+             */
 			$html = str_get_html($data->body);
 
 			if ( !empty($data->bodyremove) ) {
@@ -342,6 +348,9 @@ class JFusionFrameless {
 				foreach ( $extract as $value ) {
 					$elements = $html->find(trim($value));
 					if ( $elements ) {
+                        /**
+                         * @var $element simple_html_dom_node
+                         */
 						foreach( $elements as $element ) {
 							$data->body = $element->outertext();
 							return;

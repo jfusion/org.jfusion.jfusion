@@ -52,7 +52,7 @@ function file_get_html() {
  *
  * @param $str
  * @param bool $lowercase
- * @return \simple_html_dom
+ * @return simple_html_dom
  */
 function str_get_html($str, $lowercase=true) {
     $dom = new simple_html_dom;
@@ -249,6 +249,9 @@ class simple_html_dom_node {
         if (isset($this->_[HDOM_INFO_TEXT])) return $this->dom->restore_noise($this->_[HDOM_INFO_TEXT]);
 
         $ret = '';
+        /**
+         * @var $n simple_html_dom_node
+         */
         foreach($this->nodes as $n)
             $ret .= $n->outertext();
         return $ret;
@@ -276,6 +279,9 @@ class simple_html_dom_node {
         if (isset($this->_[HDOM_INFO_INNER]))
             $ret .= $this->_[HDOM_INFO_INNER];
         else {
+            /**
+             * @var $n simple_html_dom_node
+             */
             foreach($this->nodes as $n)
                 $ret .= $n->outertext();
         }
@@ -302,6 +308,9 @@ class simple_html_dom_node {
         if (strcasecmp($this->tag, 'style')===0) return '';
 
         $ret = '';
+        /**
+         * @var $n simple_html_dom_node
+         */
         foreach($this->nodes as $n)
             $ret .= $n->text();
         return $ret;

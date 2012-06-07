@@ -130,6 +130,9 @@ class JFusionAdmin_universal extends JFusionAdmin{
      */
     function mapuser($name, $value, $node, $control_name)
     {
+        /**
+         * @var $helper JFusionHelper_universal
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
         $value = $helper->getMapRaw('user');
 
@@ -158,6 +161,9 @@ class JFusionAdmin_universal extends JFusionAdmin{
      */
     function mapgroup($name, $value, $node, $control_name)
     {
+        /**
+         * @var $helper JFusionHelper_universal
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
         $value = $helper->getMapRaw('group');
         return $this->map('map', $value, $node, $control_name,'group');
@@ -188,7 +194,9 @@ class JFusionAdmin_universal extends JFusionAdmin{
             if ($tabelslist) {
                 $tl = array();
                 $fl = array();
-
+                /**
+                 * @var $helper JFusionHelper_universal
+                 */
                 $helper = JFusionFactory::getHelper($this->getJname());
 
                 $fieldtypes = $helper->getField();

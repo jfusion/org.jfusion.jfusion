@@ -134,7 +134,7 @@ class JFusionUser_efront extends JFusionUser
         }
         $query = "SELECT action FROM #__logs WHERE users_LOGIN = " . $db->Quote($userinfo->username)." timestamp desc limit 1";
         $db->setQuery($query);
-        $action = $db->loadResult;
+        $action = $db->loadResult();
         if ($action != 'logout') {
             $log = new stdClass;
             $log->id = null;

@@ -175,6 +175,9 @@ class JFusionController extends JController
             }
         }
         $debug = array();
+        /**
+         * @var $view jfusionViewplugindisplay
+         */
         $view = $this->getView('plugindisplay','html');
         $debug['errormessage'] = $view->generateErrorHTML();
         die(json_encode($debug));
@@ -451,7 +454,10 @@ class JFusionController extends JController
 		$ajax = JRequest::getVar('ajax');
 		if ($ajax == true) {
 	        if(!empty($result['jname'])){
-	            $view = $this->getView('plugindisplay','html');
+                /**
+                 * @var $view jfusionViewplugindisplay
+                 */
+                $view = $this->getView('plugindisplay','html');
 	            $result['rowhtml'] = $view->generateRowHTML($view->initRecord($result['jname']));            
 	        }
 	        die(json_encode($result));
@@ -476,6 +482,9 @@ class JFusionController extends JController
         $model = new JFusionModelInstaller();
         $result = $model->install();
         if(!empty($result['jname'])){
+            /**
+             * @var $view jfusionViewplugindisplay
+             */
             $view = $this->getView('plugindisplay','html');
             $result['rowhtml'] = $view->generateRowHTML($view->initRecord($result['jname']));            
         }
@@ -516,6 +525,9 @@ class JFusionController extends JController
             //get description
             $plugin_xml = JFUSION_PLUGIN_PATH .DS. $jname .DS. 'jfusion.xml';
              if(file_exists($plugin_xml) && is_readable($plugin_xml)) {
+                 /**
+                  * @var $parser JSimpleXML
+                  */
                  $parser = JFactory::getXMLParser('Simple');
                  $xml    = $parser->loadFile($plugin_xml);
                  $xml    = $parser->document;
@@ -525,7 +537,10 @@ class JFusionController extends JController
             }
 			if ($result['status']) {
             	$result['new_jname'] =  $new_jname;
-            	$view = $this->getView('plugindisplay','html');
+                /**
+                 * @var $view jfusionViewplugindisplay
+                 */
+                $view = $this->getView('plugindisplay','html');
             	$result['rowhtml'] = $view->generateRowHTML($view->initRecord($new_jname));
 			}
         } else {

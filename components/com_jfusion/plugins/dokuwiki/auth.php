@@ -49,6 +49,9 @@ class JFusionAuth_dokuwiki extends JFusionAuth
      */
     function generateEncryptedPassword($userinfo)
     {
+        /**
+         * @var $helper JFusionHelper_dokuwiki
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
         return $helper->auth->cryptPassword($userinfo->password_clear);
     }

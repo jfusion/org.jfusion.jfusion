@@ -177,6 +177,11 @@ class jfusionViewadvancedparam extends JView
             }
         }
 
+        /**
+         * @var $xml JSimpleXML
+         */
+        $xml = JFactory::getXMLParser('Simple');
+
         if ($this->isJ16) {
             global $jname;
             $jname = (!empty($value['jfusionplugin'])) ? $value['jfusionplugin'] : '';
@@ -184,7 +189,6 @@ class jfusionViewadvancedparam extends JView
                 $path = JFUSION_PLUGIN_PATH . DS . $jname . DS . $this->configArray[$config][1];
                 $defaultPath = JPATH_ADMINISTRATOR . DS . 'components' . DS . $option . DS . 'views' . DS . 'advancedparam' . DS . 'paramfiles' . DS . $this->configArray[$config][1];
                 $xml_path = (file_exists($path)) ? $path : $defaultPath;
-                $xml = JFactory::getXMLParser('Simple');
                 $form = false;
                 if ($xml->loadFile($xml_path)) {
                     $fields = $xml->document->getElementByPath('fields');
@@ -206,7 +210,6 @@ class jfusionViewadvancedparam extends JView
                 }
                 $value['params'] = $form;
             }
-            return $value;
         } else {
             //Load Plugin XML Parameter
             $params = new JParameter('');
@@ -219,14 +222,14 @@ class jfusionViewadvancedparam extends JView
                 $path = JFUSION_PLUGIN_PATH . DS . $JPlugin . DS . $this->configArray[$config][1];
                 $defaultPath = JPATH_ADMINISTRATOR . DS . 'components' . DS . $option . DS . 'views' . DS . 'advancedparam' . DS . 'paramfiles' . DS . $this->configArray[$config][1];
                 $xml_path = (file_exists($path)) ? $path : $defaultPath;
-                $xml = JFactory::getXMLParser('Simple');
                 if ($xml->loadFile($xml_path)) {
                     $params->setXML($xml->document->params[0]);
                     $this->loadLanguage($xml);
                 }
             }
-            return $params;
+            $value = $params;
         }
+        return $value;
     }
 
     /**
@@ -321,6 +324,10 @@ class jfusionViewadvancedparam extends JView
             }
         }
 
+        /**
+         * @var $xml JSimpleXML
+         */
+        $xml = JFactory::getXMLParser('Simple');
         foreach (array_keys($value) as $key) {
             if ($this->isJ16) {
                 $jname = $value[$key]['jfusionplugin'];
@@ -329,7 +336,7 @@ class jfusionViewadvancedparam extends JView
                     $path = JFUSION_PLUGIN_PATH . DS . $jname . DS . $this->configArray[$config][1];
                     $defaultPath = JPATH_ADMINISTRATOR . DS . 'components' . DS . $option . DS . 'views' . DS . 'advancedparam' . DS . 'paramfiles' . DS . $this->configArray[$config][1];
                     $xml_path = (file_exists($path)) ? $path : $defaultPath;
-                    $xml = JFactory::getXMLParser('Simple');
+
                     if ($xml->loadFile($xml_path)) {
                         $fields = $xml->document->getElementByPath('fields');
                         if ($fields) {
@@ -357,7 +364,6 @@ class jfusionViewadvancedparam extends JView
                     $path = JFUSION_PLUGIN_PATH . DS . $jname . DS . $this->configArray[$config][1];
                     $defaultPath = JPATH_ADMINISTRATOR . DS . 'components' . DS . $option . DS . 'views' . DS . 'advancedparam' . DS . 'paramfiles' . DS . $this->configArray[$config][1];
                     $xml_path = (file_exists($path)) ? $path : $defaultPath;
-                    $xml = JFactory::getXMLParser('Simple');
                     if ($xml->loadFile($xml_path)) {
                         $params->setXML($xml->document->params[0]);
                         $this->loadLanguage($xml);

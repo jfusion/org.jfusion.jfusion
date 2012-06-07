@@ -60,6 +60,9 @@ class JFusionAdmin_magento extends JFusionAdmin
         $xmlfile = $forumPath . 'app' . DS . 'etc' . DS . 'local.xml';
         $params = array();
         if (file_exists($xmlfile)) {
+            /**
+             * @var $xml JSimpleXML
+             */
             $xml = JFactory::getXMLParser('Simple');
             if (!$xml->loadFile($xmlfile)) {
                 JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . " $xmlfile " . JText::_('WIZARD_MANUAL'));

@@ -35,7 +35,8 @@ require_once JPATH_LIBRARIES . DS . 'joomla' . DS . 'database' . DS . 'database'
  */
 class JFusionMySQLi extends JDatabaseMySQLi
 {
-
+    var $_resource=null;
+    protected $connection=null;
     /**
      * @param array $options
      */
@@ -49,7 +50,11 @@ class JFusionMySQLi extends JDatabaseMySQLi
      */
     function BeginTrans()
     {
-        mysqli_autocommit($this->_resource, false);
+        if ($this->_resource) {
+            mysqli_autocommit($this->_resource, false);
+        } elseif ($this->connection) {
+            mysqli_autocommit($this->connection, false);
+        }
     }
     /**
      * commit transaction
@@ -57,7 +62,11 @@ class JFusionMySQLi extends JDatabaseMySQLi
      */
     function CommitTrans()
     {
-        mysqli_commit($this->_resource);
+        if ($this->_resource) {
+            mysqli_commit($this->_resource);
+        } elseif ($this->connection) {
+            mysqli_commit($this->connection);
+        }
     }
     /**
      * rollback trasnaction
@@ -65,7 +74,11 @@ class JFusionMySQLi extends JDatabaseMySQLi
      */
     function RollbackTrans()
     {
-        mysqli_rollback($this->_resource);
+        if ($this->_resource) {
+            mysqli_rollback($this->_resource);
+        } elseif ($this->connection) {
+            mysqli_rollback($this->connection);
+        }
     }
     
     /**

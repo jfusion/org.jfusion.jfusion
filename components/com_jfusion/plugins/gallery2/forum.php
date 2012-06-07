@@ -65,6 +65,9 @@ class JFusionForum_gallery2 extends JFusionForum {
      */
     function renderImageBlock($config, $view, $pluginParam) {
 		//Initialize the Framework
+        /**
+         * @var $helper JFusionHelper_gallery2
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
     	if (!$helper->loadGallery2Api(true)) {
 			return '<div><strong>Error</strong><br />Can\'t initialise G2Bridge.</div>';

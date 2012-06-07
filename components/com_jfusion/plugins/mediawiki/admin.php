@@ -139,6 +139,9 @@ class JFusionAdmin_mediawiki extends JFusionAdmin {
      */
     function allowRegistration()
     {
+        /**
+         * @var $helper JFusionHelper_mediawiki
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
 		$wgGroupPermissions = $helper->getConfig('wgGroupPermissions');
         if (is_array($wgGroupPermissions) && $wgGroupPermissions['*']['createaccount'] == true) {

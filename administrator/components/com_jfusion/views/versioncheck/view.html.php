@@ -64,6 +64,9 @@ class jfusionViewversioncheck extends JView
         $system = $jfusion_plugins = $components = array();
         $up2date = $server_compatible = false;
 
+        /**
+         * @var $parser JSimpleXML
+         */
         $parser = JFactory::getXMLParser('Simple');
         if ($parser->loadString($JFusionVersionRaw)) {
             if (isset($parser->document)) {
@@ -195,6 +198,9 @@ class jfusionViewversioncheck extends JView
     	
     	if (file_exists($filename) && is_readable($filename)) {
     		//get the version number
+            /**
+             * @var $parser JSimpleXML
+             */
     		$parser = JFactory::getXMLParser('Simple');
     		$parser->loadFile($filename);
     		if (version_compare($parser->document->version[0]->data(), $version) == - 1) {

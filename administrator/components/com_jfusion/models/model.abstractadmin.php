@@ -796,13 +796,18 @@ JS;
             $ConfigList = JFusionFunctionAdmin::getFileData($url);
         }
 
+        /**
+         * @var $xmlList JSimpleXML
+         */
         $xmlList = JFactory::getXMLParser('Simple');
         $xmlList->loadString($ConfigList);
 
         if ( isset($xmlList->document) ) {
             $output .= JText::_('IMPORT_FROM_SERVER').'<br/>';
             $output .= '<input type=radio name="xmlname" value="" checked> None<br/>';
-
+            /**
+             * @var $val SimpleXMLElement
+             */
             foreach ($xmlList->document->children() as $key => $val) {
                 $pluginName = $val->attributes('name');
                 if ($pluginName) {
@@ -825,7 +830,9 @@ JS;
             $file = JRequest::getVar( 'file', '', 'FILES','ARRAY');
 
             $xmlname = JRequest::getVar('xmlname');
-
+            /**
+             * @var $xmlFile JSimpleXML
+             */
             $xmlFile = JFactory::getXMLParser('Simple');
             if( !empty($xmlname) ) {
                 //custom for development purposes / local use only; note do not commit your URL to SVN!!!
@@ -954,9 +961,15 @@ JS;
                 $arr[$key] = $val;
             }
 
+            /**
+             * @var $xml JSimpleXML
+             */
             $xml = JFactory::getXMLParser('Simple');
             $xml->loadString('<jfusionconfig></jfusionconfig>');
 
+            /**
+             *
+             */
             $info = $xml->document->addChild('info');
             $info->addAttribute  ('jfusionversion',  JFusionFunctionAdmin::currentVersion());
 
@@ -964,6 +977,9 @@ JS;
             $filename = JFUSION_PLUGIN_PATH .DS.$jname.DS.'jfusion.xml';
             if (file_exists($filename) && is_readable($filename)) {
                 //get the version number
+                /**
+                 * @var $parser JSimpleXML
+                 */
                 $parser = JFactory::getXMLParser('Simple');
                 $parser->loadFile($filename);
                 $info->addAttribute('pluginversion', $parser->document->version[0]->data());

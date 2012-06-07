@@ -584,7 +584,10 @@ function com_install() {
 	}
 
 	//output some info to the user
-	
+
+    /**
+     * @var $parser JSimpleXML
+     */
 	$parser = JFactory::getXMLParser('Simple');
 	$parser->loadFile($basedir . DS. 'jfusion.xml');
 	?>

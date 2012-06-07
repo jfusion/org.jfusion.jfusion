@@ -246,7 +246,6 @@ class JFusionPluginInstaller extends JObject
             return $result;
         }
         $this->manifest = & $manifest;
-        //var_dump($this->manifest);
 
         /**
          * ---------------------------------------------------------------------------------------------
@@ -257,23 +256,16 @@ class JFusionPluginInstaller extends JObject
         /**
          * Check that the plugin is an actual JFusion plugin
          */
-		if(JFusionFunction::isJoomlaVersion('1.6')) {
-        	$name = $this->filterInput->clean($this->manifest->name->data(), 'string');
-		} else {
-        	$name = & $this->manifest->getElementByPath('name');
-        	$name = $this->filterInput->clean($name->data(), 'string');
-		}
+        $name = $this->getElementByPath($this->manifest,'name');
+        $name = $this->filterInput->clean($name->data(), 'string');
+
 		$result['jname'] = $name;
         $this->set('name', $name);
 
         // installation path
         $this->parent->setPath('extension_root', JFUSION_PLUGIN_PATH . DS . $name);
         // get files to copy
-		if(JFusionFunction::isJoomlaVersion('1.6')) {
-        	$element = & $this->manifest->files;
-        } else {
-        	$element = & $this->manifest->getElementByPath('files');
-		}
+        $element = $this->getElementByPath($this->manifest,'files');
 
         /**
          * ---------------------------------------------------------------------------------------------
@@ -311,13 +303,9 @@ class JFusionPluginInstaller extends JObject
          * Language files Processing Section
          * ---------------------------------------------------------------------------------------------
          */
-		if(JFusionFunction::isJoomlaVersion('1.6')) {
-        	$this->parent->parseLanguages($this->manifest->languages);
-        	$this->parent->parseLanguages($this->manifest->administration->languages, 1);
-        } else {
-        	$this->parent->parseLanguages($this->manifest->getElementByPath('languages'));
-        	$this->parent->parseLanguages($this->manifest->getElementByPath('administration/languages'), 1);
-		}
+        $this->parent->parseLanguages($this->getElementByPath($this->manifest,'languages'));
+        $this->parent->parseLanguages($this->getElementByPath($this->manifest,'administration/languages'), 1);
+
 
         /**
          * ---------------------------------------------------------------------------------------------
@@ -328,11 +316,7 @@ class JFusionPluginInstaller extends JObject
         $dual_login = $slave = $activity = $search = $discussion = null;
         $features = array('master', 'slave', 'dual_login', 'check_encryption', 'activity', 'search', 'discussion');
         foreach ($features as $f) {
-        	if(JFusionFunction::isJoomlaVersion('1.6')) {
-	        	$xml = $this->manifest->$f;
-	        } else {
-            	$xml = $this->manifest->getElementByPath($f);
-			}
+            $xml = $this->getElementByPath($this->manifest,$f);
             if (is_a($xml, 'JSimpleXMLElement') || is_a($xml, 'JXMLElement')) {
                 $$f = $this->filterInput->clean($xml->data(), 'integer');
             } elseif ($f == 'master' || $f == 'check_encryption') {
@@ -479,13 +463,8 @@ class JFusionPluginInstaller extends JObject
             } else {
                 $this->manifest = & $manifest;
 
-                if(JFusionFunction::isJoomlaVersion('1.6')) {
-                    $this->parent->parseLanguages($this->manifest->languages);
-                    $this->parent->parseLanguages($this->manifest->administration->languages, 1);
-                } else {
-                    $this->parent->removeFiles($this->manifest->getElementByPath('languages'));
-                    $this->parent->removeFiles($this->manifest->getElementByPath('administration/languages'), 1);
-                }
+                $this->parent->removeFiles($this->getElementByPath($this->manifest,'languages'));
+                $this->parent->removeFiles($this->getElementByPath($this->manifest,'administration/languages'), 1);
 
                 // remove files
                 if (!JFolder::delete($dir)) {
@@ -555,13 +534,8 @@ class JFusionPluginInstaller extends JObject
         $childrens = array();
         $path = "";
 
-        if(JFusionFunction::isJoomlaVersion('1.6')) {
-        	$languages = & $this->manifest->languages;
-        	$adminLanguages = & $this->manifest->languages;
-        } else {
-        	$languages = & $this->manifest->getElementByPath('languages');
-        	$adminLanguages = & $this->manifest->getElementByPath('administration/languages');
-		}
+        $languages = $this->getElementByPath($this->manifest,'languages');
+        $adminLanguages = $this->getElementByPath($this->manifest,'administration/languages');
 
         // Copy of site languages files
         if (is_a($languages, 'JSimpleXMLElement') || is_a($languages, 'JXMLElement')) {
@@ -569,13 +543,8 @@ class JFusionPluginInstaller extends JObject
         }
         if (count($childrens) > 0) {
             foreach ($childrens as $children) {
-            	if(JFusionFunction::isJoomlaVersion('1.6')) {
-            		$attributes['tag'] = $children->getAttribute('tag');
-            		$filepath = $children->data();
-            	} else {
-                	$attributes = $children->_attributes;
-                	$filepath = $children->_data;
-            	}
+                $tag = $this->getAttribute($children,'tag');
+                $filepath = $children->data();
                 // If the language file as a path in the content of the element language
                 if (strpos($filepath, DS)) {
                     $folders = explode(DS, $filepath);
@@ -583,19 +552,19 @@ class JFusionPluginInstaller extends JObject
                     $path = implode(DS, $folders) . DS;
                 }
                 // @todo - take in consideration if the filename doesn't respect xx-XX.com_jfusion.plg_pluginname.ini
-                $prefix = $attributes['tag'] . '.com_jfusion.plg_';
+                $prefix = $tag . '.com_jfusion.plg_';
                 $languageFile = $prefix . $jname . '.ini';
                 $newLanguageFile = $prefix . $new_jname . '.ini';
-                if (file_exists(JPATH_SITE . DS . "language" . DS . $attributes['tag'] . DS . $languageFile)) {
-                    if (!JFile::copy(JPATH_SITE . DS . "language" . DS . $attributes['tag'] . DS . $languageFile, JPATH_SITE . DS . "language" . DS . $attributes['tag'] . DS . $newLanguageFile)) {
+                if (file_exists(JPATH_SITE . DS . "language" . DS . $tag . DS . $languageFile)) {
+                    if (!JFile::copy(JPATH_SITE . DS . "language" . DS . $tag . DS . $languageFile, JPATH_SITE . DS . "language" . DS . $tag . DS . $newLanguageFile)) {
                         $this->parent->abort(JText::_('COPY_ERROR'));
                         $result['message'] = JText::_('COPY_ERROR');
                         return $result;
                     }
                 }
                 // @todo - Need to be improved because it includes admin and site languages files. But at the end it's supposed to be the same name normally!
-                $regex[] = '#<language tag="' . $attributes['tag'] . '">' . $path . $languageFile . '</language>#ms';
-                $replace[] = '<language tag="' . $attributes['tag'] . '">' . $path . $newLanguageFile . '</language>';
+                $regex[] = '#<language tag="' . $tag . '">' . $path . $languageFile . '</language>#ms';
+                $replace[] = '<language tag="' . $tag . '">' . $path . $newLanguageFile . '</language>';
             }
         }
         //reset $childrens to ensure we wont insert front end language in to admin panel as well..
@@ -606,13 +575,8 @@ class JFusionPluginInstaller extends JObject
         }
         if (count($childrens) > 0) {
             foreach ($childrens as $children) {
-				if(JFusionFunction::isJoomlaVersion('1.6')) {
-            		$attributes['tag'] = $children->getAttribute('tag');
-            		$filepath = $children->data();
-            	} else {
-                	$attributes = $children->_attributes;
-                	$filepath = $children->_data;
-            	}
+                $tag = $this->getAttribute($children,'tag');
+                $filepath = $children->data();
                 // If the language file as a path in the content of the element language
                 if (strpos($filepath, DS)) {
                     $folders = explode(DS, $filepath);
@@ -620,19 +584,19 @@ class JFusionPluginInstaller extends JObject
                     $path = implode(DS, $folders) . DS;
                 }
                 // @todo - take in consideration if the filename doesn't respect xx-XX.com_jfusion.plg_pluginname.ini
-                $prefix = $attributes['tag'] . '.com_jfusion.plg_';
+                $prefix = $tag . '.com_jfusion.plg_';
                 $languageFile = $prefix . $jname . '.ini';
                 $newLanguageFile = $prefix . $new_jname . '.ini';
-                if (file_exists(JPATH_ADMINISTRATOR . DS . "language" . DS . $attributes['tag'] . DS . $languageFile)) {
-                    if (!JFile::copy(JPATH_ADMINISTRATOR . DS . "language" . DS . $attributes['tag'] . DS . $languageFile, JPATH_ADMINISTRATOR . DS . "language" . DS . $attributes['tag'] . DS . $newLanguageFile)) {
+                if (file_exists(JPATH_ADMINISTRATOR . DS . "language" . DS . $tag . DS . $languageFile)) {
+                    if (!JFile::copy(JPATH_ADMINISTRATOR . DS . "language" . DS . $tag . DS . $languageFile, JPATH_ADMINISTRATOR . DS . "language" . DS . $tag . DS . $newLanguageFile)) {
                         $this->parent->abort(JText::_('COPY_ERROR'));
                         $result['message'] = JText::_('COPY_ERROR');
                         return $result;
                     }
                 }
                 // @todo - Need to be improved because it includes admin and site languages files. But at the end it's supposed to be the same name normally!
-                $regex[] = '#<language tag="' . $attributes['tag'] . '">' . $path . $languageFile . '</language>#ms';
-                $replace[] = '<language tag="' . $attributes['tag'] . '">' . $path . $newLanguageFile . '</language>';
+                $regex[] = '#<language tag="' . $tag . '">' . $path . $languageFile . '</language>#ms';
+                $replace[] = '<language tag="' . $tag . '">' . $path . $newLanguageFile . '</language>';
             }
         }
         /**
@@ -660,11 +624,7 @@ class JFusionPluginInstaller extends JObject
                 //copy() was called directly because we are upgrading the component
                 $features = array('master', 'slave', 'dual_login', 'check_encryption', 'activity', 'search', 'discussion');
                 foreach ($features as $f) {
-					if(JFusionFunction::isJoomlaVersion('1.6')) {
-	            		$xml = $this->manifest->$f;
-	            	} else {
-                    	$xml = $this->manifest->getElementByPath($f);
-	            	}
+                    $xml = $this->getElementByPath($this->manifest,$f);
                     if (is_a($xml, 'JSimpleXMLElement') || is_a($xml, 'JXMLElement')) {
                         $$f = $this->filterInput->clean($xml->data(), 'integer');
                     } elseif ($f == 'master' || $f == 'check_encryption') {
@@ -760,11 +720,7 @@ class JFusionPluginInstaller extends JObject
         /**
          * Check that the plugin is an actual JFusion plugin
          */
-		if(JFusionFunction::isJoomlaVersion('1.6')) {
-        	$type = $xml->getAttribute('type');
-		} else {
-        	$type = $xml->attributes('type');
-		}
+        $type = $this->getAttribute($xml,'type');
 
         if ($type!=='jfusion') {
             //Free up xml parser memory and return null
@@ -842,5 +798,49 @@ class JFusionPluginInstaller extends JObject
             }
         }
         return $filesArray;
+    }
+
+    /**
+     * getElementByPath
+     *
+     *  @param JXMLElement|JSimpleXMLElement $xml xml object
+     *  @param string $element element path
+     *
+     *  @return JXMLElement|JSimpleXMLElement elements
+     */
+    function getElementByPath($xml, $element)
+    {
+        $elements = explode('/',$element);
+        foreach ($elements as $element) {
+            if(is_a($xml, 'JXMLElement')) {
+                $xml = $xml->$element;
+            } elseif(is_a($xml, 'JSimpleXMLElement')) {
+                $xml = $xml->getElementByPath($element);
+            } else {
+                $xml = null;
+                break;
+            }
+        }
+        return $xml;
+    }
+
+    /**
+     * getAttribute
+     *
+     *  @param JXMLElement|JSimpleXMLElement $xml xml object
+     *  @param string $attribute attribute name
+     *
+     *  @return string result
+     */
+    function getAttribute($xml, $attribute)
+    {
+        if(is_a($xml, 'JXMLElement')) {
+            $xml = $xml->getAttribute($attribute);
+        } elseif(is_a($xml, 'JSimpleXMLElement')) {
+            $xml = $xml->attributes($attribute);
+        } else {
+            $xml = null;
+        }
+        return $xml;
     }
 }
