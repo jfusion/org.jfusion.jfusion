@@ -569,7 +569,7 @@ if ( !class_exists('DokuWikiSearch') ) {
 
             //alternative namespace seperator
             $id = strtr($id,';',':');
-            if($conf['useslash']){
+            if($conf['useslash']) {
                 $id = strtr($id,'/',':');
             } else {
                 $id = strtr($id,'/',$sepchar);
