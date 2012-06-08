@@ -22,6 +22,8 @@ if ( !class_exists('DokuWikiSearch') ) {
      */
     class DokuWikiSearch {
         var $path;
+        var $conf;
+        var $rootFolder;
 
         /**
          * @param string $jname
@@ -29,6 +31,13 @@ if ( !class_exists('DokuWikiSearch') ) {
         function __construct($jname)
         {
             $params = JFusionFactory::getParams($jname);
+
+            /**
+             * @var $helper JFusionHelper_dokuwiki
+             */
+            $helper = JFusionFactory::getHelper($jname);
+            $this->rootFolder = $params->get('source_path');
+            $this->conf = $helper->getConf($this->rootFolder);
 
             $this->path = $params->get('source_path');
             if (substr($this->path, -1) != DS) {
@@ -164,7 +173,7 @@ if ( !class_exists('DokuWikiSearch') ) {
          * @return array
          */
         function ft_queryParser($query) {
-            global $conf;
+            $conf = $this->conf;
             $swfile = $this->path . 'inc/lang/' . $conf['lang'] . '/stopwords.txt';
             if (@file_exists($swfile)) {
                 $stopwords = file($swfile);
@@ -244,7 +253,7 @@ if ( !class_exists('DokuWikiSearch') ) {
          * @return array
          */
         function idx_lookup($words) {
-            global $conf;
+            $conf = $this->conf;
             $result = array();
             $wids = $this->idx_getIndexWordsSorted($words, $result);
             if (empty($wids)) return array();
@@ -375,7 +384,8 @@ if ( !class_exists('DokuWikiSearch') ) {
          * @return array
          */
         function idx_indexLengths(&$filter) {
-            global $conf, $rootFolder;
+            $conf = $this->conf;
+            $rootFolder = $this->rootFolder;
             $dir = @opendir($rootFolder . '/data/index');
             if ($dir === false) return array();
             $idx = array();
@@ -423,7 +433,8 @@ if ( !class_exists('DokuWikiSearch') ) {
          * @return array
          */
         function idx_getIndex($pre, $wlen) {
-            global $conf, $rootFolder;
+            $conf = $this->conf;
+            $rootFolder = $this->rootFolder;
             $fn = $rootFolder . '/data/index' . '/' . $pre . $wlen . '.idx';
             if (!@file_exists($fn)) return array();
             return file($fn);
@@ -469,14 +480,15 @@ if ( !class_exists('DokuWikiSearch') ) {
          * @return string
          */
         function wikiFN($raw_id, $rev = '', $clean = true) {
-            global $conf, $rootFolder;
+            $conf = $this->conf;
+            $rootFolder = $this->rootFolder;
             global $cache_wikifn;
             $cache = & $cache_wikifn;
             if (isset($cache[$raw_id]) && isset($cache[$raw_id][$rev])) {
                 return $cache[$raw_id][$rev];
             }
             $id = $raw_id;
-            if ($clean) $id = cleanID($id);
+            if ($clean) $id = $this->cleanID($id);
             $id = str_replace(':', '/', $id);
             if (empty($rev)) {
                 $fn = $rootFolder . '/data/pages' . '/' . $this->utf8_encodeFN($id) . '.txt';
@@ -520,12 +532,71 @@ if ( !class_exists('DokuWikiSearch') ) {
          * @return bool
          */
         function isHiddenPage($id) {
-            global $conf;
+            $conf = $this->conf;
             if (empty($conf['hidepages'])) return false;
             if (preg_match('/' . $conf['hidepages'] . '/ui', ':' . $id)) {
                 return true;
             }
             return false;
+        }
+
+        /**
+         * Remove unwanted chars from ID
+         *
+         * Cleans a given ID to only use allowed characters. Accented characters are
+         * converted to unaccented ones
+         *
+         * @author Andreas Gohr <andi@splitbrain.org>
+         * @param  string  $raw_id    The pageid to clean
+         * @param  boolean $ascii     Force ASCII
+         * @param  boolean $media     Allow leading or trailing _ for media files
+         *
+         * @return string
+         */
+        function cleanID($raw_id,$ascii=false,$media=false) {
+            $conf = $this->conf;
+            static $sepcharpat = null;
+
+            global $cache_cleanid;
+            $cache = & $cache_cleanid;
+
+            // check if it's already in the memory cache
+            if (isset($cache[(string)$raw_id])) {
+                return $cache[(string)$raw_id];
+            }
+
+            $sepchar = $conf['sepchar'];
+            if($sepcharpat == null) // build string only once to save clock cycles
+                $sepcharpat = '#\\'.$sepchar.'+#';
+
+            $id = trim((string)$raw_id);
+            $id = utf8_strtolower($id);
+
+            //alternative namespace seperator
+            $id = strtr($id,';',':');
+            if($conf['useslash']){
+                $id = strtr($id,'/',':');
+            }else{
+                $id = strtr($id,'/',$sepchar);
+            }
+
+            if($conf['deaccent'] == 2 || $ascii) $id = utf8_romanize($id);
+            if($conf['deaccent'] || $ascii) $id = utf8_deaccent($id,-1);
+
+            //remove specials
+            $id = utf8_stripspecials($id,$sepchar,'\*');
+
+            if($ascii) $id = utf8_strip($id);
+
+            //clean up
+            $id = preg_replace($sepcharpat,$sepchar,$id);
+            $id = preg_replace('#:+#',':',$id);
+            $id = ($media ? trim($id,':.-') : trim($id,':._-'));
+            $id = preg_replace('#:[:\._\-]+#',':',$id);
+            $id = preg_replace('#[:\._\-]+:#',':',$id);
+
+            $cache[(string)$raw_id] = $id;
+            return ($id);
         }
     }
 }

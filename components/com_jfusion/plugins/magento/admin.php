@@ -68,11 +68,11 @@ class JFusionAdmin_magento extends JFusionAdmin
                 JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . " $xmlfile " . JText::_('WIZARD_MANUAL'));
             } else {
                 //save the parameters into array
-                $params['database_host'] = (string)$xml->document->global[0]->resources[0]->default_setup[0]->connection[0]->host[0]->data();
-                $params['database_name'] = (string)$xml->document->global[0]->resources[0]->default_setup[0]->connection[0]->dbname[0]->data();
-                $params['database_user'] = (string)$xml->document->global[0]->resources[0]->default_setup[0]->connection[0]->username[0]->data();
-                $params['database_password'] = (string)$xml->document->global[0]->resources[0]->default_setup[0]->connection[0]->password[0]->data();
-                $params['database_prefix'] = (string)$xml->document->global[0]->resources[0]->db[0]->table_prefix[0]->data();
+                $params['database_host'] = (string)$xml->document->getElementByPath('global/resources/default_setup/connection/host')->data();
+                $params['database_name'] = (string)$xml->document->getElementByPath('global/resources/default_setup/connection/dbname')->data();
+                $params['database_user'] = (string)$xml->document->getElementByPath('global/resources/default_setup/connection/username')->data();
+                $params['database_password'] = (string)$xml->document->getElementByPath('global/resources/default_setup/connection/password')->data();
+                $params['database_prefix'] = (string)$xml->document->getElementByPath('global/resources/db/table_prefix')->data();
                 $params['database_type'] = "mysql";
                 $params['source_path'] = $forumPath;
             }
@@ -337,7 +337,7 @@ class JFusionAdmin_magento extends JFusionAdmin
          */
         $listfiles = JFactory::getXMLParser('simple');
 		$listfiles->loadFile($xmlfile);
-		$files = $listfiles->document->file;
+		$files = $listfiles->document->getElementByPath('file');
         /**
          * @var $file JSimpleXMLElement
          */
@@ -416,8 +416,8 @@ class JFusionAdmin_magento extends JFusionAdmin
              */
             $xml = JFactory::getXMLParser ( 'simple' );
 			$xml->loadfile ( $jfusion_mod_xml );
-			$modules = $xml->document->getElementByPath ( 'modules/jfusion_joomla' );
-			$activated = $modules->active [0]->data ();
+			$modules = $xml->document->getElementByPath ( 'modules/jfusion_joomla/active' );
+			$activated = $modules->data();
 			
 			if($activated == 'false') {
 				$activated = 0;
@@ -454,10 +454,10 @@ class JFusionAdmin_magento extends JFusionAdmin
          */
 		$xml = JFactory::getXMLParser ( 'simple' );
 		$xml->loadfile ( $jfusion_mod_xml );
-		$module = $xml->document->getElementByPath ( 'modules/jfusion_joomla' );
+		$module = $xml->document->getElementByPath('modules/jfusion_joomla/active');
 			
 		//$xml->document->modules->jfusion_joomla->active[0]->setData('false');
-		$module->active[0]->setData($activation);
+		$module->setData($activation);
 
 		$buffer = '<?xml version="1.0"?'.'>';
 		$buffer .= $xml->document->toString();

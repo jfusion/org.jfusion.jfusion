@@ -318,7 +318,7 @@ class JFusionAdmin_moodle extends JFusionAdmin
          */
         $listfiles = JFactory::getXMLParser('simple');
         $listfiles->loadFile($xmlfile);
-        $files = $listfiles->document->file;
+        $files = $listfiles->document->getElementByPath('file');
 
         /**
          * @var $file JSimpleXMLElement

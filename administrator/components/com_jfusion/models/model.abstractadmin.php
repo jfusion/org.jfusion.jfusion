@@ -986,7 +986,7 @@ JS;
                  */
                 $parser = JFactory::getXMLParser('Simple');
                 $parser->loadFile($filename);
-                $info->addAttribute('pluginversion', $parser->document->version[0]->data());
+                $info->addAttribute('pluginversion', $parser->document->getElementByPath('version')->data());
             } else {
                 $info->addAttribute('pluginversion', 'UNKNOWN');
             }

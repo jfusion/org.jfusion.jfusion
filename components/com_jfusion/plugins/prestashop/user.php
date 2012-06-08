@@ -148,7 +148,7 @@ class JFusionUser_prestashop extends JFusionUser {
 		    /* Handle brute force attacks */
 		    sleep(1);
 			// check if password matches
-			$query = "SELECT passwd FROM #__customer WHERE email =" . $db-Quote($email);
+			$query = "SELECT passwd FROM #__customer WHERE email =" . $db->Quote($email);
             $db->setQuery($query);
             $result = $db->loadResult();
 		    if (!$result) {
@@ -505,7 +505,7 @@ class JFusionUser_prestashop extends JFusionUser {
 			$result = $db->query();
 	
 	        // enter customer group into database 
-	        $query="SELECT id_customer FROM #__customer WHERE email = " . $db-Quote($ps_customer['email']);
+	        $query="SELECT id_customer FROM #__customer WHERE email = " . $db->Quote($ps_customer['email']);
             $db->setQuery($query);
 			$result = $db->loadResult();
 		    if (!$result) {
@@ -550,7 +550,7 @@ class JFusionUser_prestashop extends JFusionUser {
 	            }
 	            else{
 	                $insert_sql_columns .= ", " . $key;
-                    $insert_sql_values .= ", " . $db-Quote($value);
+                    $insert_sql_values .= ", " . $db->Quote($value);
 	            }
 	        }
 			

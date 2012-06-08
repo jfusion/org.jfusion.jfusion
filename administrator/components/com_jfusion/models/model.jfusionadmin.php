@@ -294,10 +294,10 @@ class JFusionFunctionAdmin
              */
             $parser = JFactory::getXMLParser('Simple');
             $parser->loadFile($filename);
-            $VersionCurrent = $parser->document->version[0]->data();
+            $VersionCurrent = $parser->document->getElementByPath('version')->data();
 
             if($includeRev) {
-                $RevisionCurrent = $parser->document->revision[0]->data();
+                $RevisionCurrent = $parser->document->getElementByPath('revision')->data();
             }
         }
         return array($VersionCurrent, $RevisionCurrent);

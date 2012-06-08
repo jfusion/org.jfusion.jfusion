@@ -529,10 +529,10 @@ class JFusionController extends JController
                   * @var $parser JSimpleXML
                   */
                  $parser = JFactory::getXMLParser('Simple');
-                 $xml    = $parser->loadFile($plugin_xml);
-                 $xml    = $parser->document;
-                 if(!empty($xml->description)) {
-                     $description = $xml->description[0]->data();
+                 $parser->loadFile($plugin_xml);
+                 $description = $parser->document->getElementByPath('description');
+                 if(!empty($description)) {
+                     $description = $description->data();
                  }
             }
 			if ($result['status']) {

@@ -38,7 +38,7 @@ class JFusionReconnectMySQL extends JDatabaseMySQL
 
     /**
      * @param array $options
-     * @throws DatabaseException
+     * @throws JDatabaseException
      */
     public function __construct($options)
     {

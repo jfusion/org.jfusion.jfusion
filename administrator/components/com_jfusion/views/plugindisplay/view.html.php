@@ -352,10 +352,10 @@ class jfusionViewplugindisplay extends JView {
                  * @var $parser JSimpleXML
                  */
 				$parser = JFactory::getXMLParser('Simple');
-				$xml    = $parser->loadFile($plugin_xml);
-				$xml    = $parser->document;
-				if(!empty($xml->description)) {
-					$record->description= $xml->description[0]->data();
+				$parser->loadFile($plugin_xml);
+                $description = $parser->document->getElementByPath('description');
+				if(!empty($description)) {
+					$record->description = $description->data();
 				}
 			}
 		}

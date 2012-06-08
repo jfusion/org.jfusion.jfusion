@@ -132,9 +132,9 @@ class jfusionViewadvancedparam extends JView
         $elNum = JRequest::getInt('elNum');
         $js = <<<JS
         function jPluginChange(select) {
-            plugin = select.options[select.selectedIndex].value;
+            var plugin = select.options[select.selectedIndex].value;
             plugin = 'a:1:{s:13:\"jfusionplugin\";s:'+plugin.length+':\"'+plugin+'\";}';
-            value = encode64(plugin);
+            var value = encode64(plugin);
             window.location.href = 'index.php?option=com_jfusion&task=advancedparam' +
                                    '&tmpl=component&elNum={$elNum}{$configLink} . "&params='+value;
         }
@@ -143,11 +143,29 @@ class jfusionViewadvancedparam extends JView
             var key='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
             var chr1,chr2,chr3,enc3,enc4,i=0,out='';
             while(i<inp.length){
-                chr1=inp.charCodeAt(i++);if (chr1>127) chr1=88;
-                chr2=inp.charCodeAt(i++);if (chr2>127) chr2=88;
-                chr3=inp.charCodeAt(i++);if (chr3>127) chr3=88;
-                if (isNaN(chr3)) {enc4=64;chr3=0;} else enc4=chr3&63
-                if (isNaN(chr2)) {enc3=64;chr2=0;} else enc3=((chr2<<2)|(chr3>>6))&63
+                chr1=inp.charCodeAt(i++);
+                if (chr1>127) {
+                    chr1=88;
+                }
+                chr2=inp.charCodeAt(i++);
+                if (chr2>127) {
+                    chr2=88;
+                }
+                chr3=inp.charCodeAt(i++);
+                if (chr3>127) {
+                    chr3=88;
+                }
+                if (isNaN(chr3)) {
+                    enc4=64;chr3=0;
+                } else {
+                    enc4=chr3&63;
+                }
+                if (isNaN(chr2)) {
+                    enc3=64;
+                    chr2=0;
+                } else {
+                    enc3=((chr2<<2)|(chr3>>6))&63;
+                }
                 out+=key.charAt((chr1>>2)&63)+key.charAt(((chr1<<4)|(chr2>>4))&63)+key.charAt(enc3)+key.charAt(enc4);
             }
             return encodeURIComponent(out);
@@ -195,7 +213,7 @@ JS;
                 if ($xml->loadFile($xml_path)) {
                     $fields = $xml->document->getElementByPath('fields');
                     if ($fields) {
-                        $data = $xml->document->fields[0]->toString();
+                        $data = $fields->toString();
                         //make sure it is surround by <form>
                         if (substr($data, 0, 5) != "<form>") {
                             $data = "<form>" . $data . "</form>";
@@ -228,7 +246,11 @@ JS;
                 $defaultPath = JPATH_ADMINISTRATOR . DS . 'components' . DS . $option . DS . 'views' . DS . 'advancedparam' . DS . 'paramfiles' . DS . $this->configArray[$config][1];
                 $xml_path = (file_exists($path)) ? $path : $defaultPath;
                 if ($xml->loadFile($xml_path)) {
-                    $params->setXML($xml->document->params[0]);
+                    /**
+                     * @var $xmlparams JSimpleXMLElement
+                     */
+                    $xmlparams = $xml->document->getElementByPath('params');
+                    $params->setXML($xmlparams);
                     $this->loadLanguage($xml);
                 }
             }
@@ -347,7 +369,7 @@ JS;
                     if ($xml->loadFile($xml_path)) {
                         $fields = $xml->document->getElementByPath('fields');
                         if ($fields) {
-                            $data = $xml->document->fields[0]->toString();
+                            $data = $fields->toString();
                             //make sure it is surround by <form>
                             if (substr($data, 0, 5) != "<form>") {
                                 $data = "<form>" . $data . "</form>";
@@ -375,7 +397,11 @@ JS;
                     $defaultPath = JPATH_ADMINISTRATOR . DS . 'components' . DS . $option . DS . 'views' . DS . 'advancedparam' . DS . 'paramfiles' . DS . $this->configArray[$config][1];
                     $xml_path = (file_exists($path)) ? $path : $defaultPath;
                     if ($xml->loadFile($xml_path)) {
-                        $params->setXML($xml->document->params[0]);
+                        /**
+                         * @var $xmlparams JSimpleXMLElement
+                         */
+                        $xmlparams = $xml->document->getElementByPath('params');
+                        $params->setXML($xmlparams);
                         $this->loadLanguage($xml);
                     }
                 }

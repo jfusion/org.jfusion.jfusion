@@ -188,7 +188,7 @@ class JFusionForum
      */
 	function checkThreadExists(&$dbparams, &$contentitem, &$threadinfo, &$status)
 	{
-		$threadid = (is_object($threadinfo)) ? $threadinfo->threadid : $threadinfo;
+		$threadid = (int) (is_object($threadinfo)) ? $threadinfo->threadid : $threadinfo;
 		$forumid = $this->getDefaultForum($dbparams, $contentitem);
 		$existingthread = (empty($threadid)) ? false : $this->getThread($threadid);
 

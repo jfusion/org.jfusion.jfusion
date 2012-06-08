@@ -19,23 +19,27 @@ jimport('joomla.application.component.controller');
 
 class JFusionControllerWeb extends JController
 {
-
-	/**
-	 * Displays the integrated software inside Joomla without a frame
-	 */
-        function display()
-
-        {
-                // Select which layout to use in the view
-                JRequest::setVar ( 'layout', 'default' );
-                $menu = & JSite::getMenu ();
-                $item = $menu->getActive ();
-                if ($item) $params = & $menu->getParams ( $item->id );
-                else $params = & $menu->getParams ( null );
-
-                // Set the default view name from the Request
-                $view = &$this->getView ( 'web', 'html' );
-                $view->assignRef('params',$params);
-                $view->display ();
+    /**
+     * Displays the integrated software inside Joomla without a frame
+     */
+    function display()
+    {
+        // Select which layout to use in the view
+        JRequest::setVar ( 'layout', 'default' );
+        /**
+        * @var $menu JMenu
+        */
+        $menu = & JSite::getMenu ();
+        $item = $menu->getActive ();
+        if ($item) {
+            $params = & $menu->getParams ( $item->id );
+        } else {
+            $params = & $menu->getParams ( null );
         }
+
+        // Set the default view name from the Request
+        $view = &$this->getView ( 'web', 'html' );
+        $view->assignRef('params',$params);
+        $view->display ();
+    }
 }
