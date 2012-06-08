@@ -71,6 +71,7 @@ require_once(JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.D
 </form>
 
 <?php
+$textOutput = array();
 debug::$callback = array($this,'jfusion_plugin',null);
 foreach($this->jfusion_plugin as $key => $value) {
     $title = JText::_('JFUSION') . ' ' . $key . ' ' . JText::_('PLUGIN');
