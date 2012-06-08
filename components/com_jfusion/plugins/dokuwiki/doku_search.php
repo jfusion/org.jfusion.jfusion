@@ -571,10 +571,10 @@ if ( !class_exists('DokuWikiSearch') ) {
             $id = strtr($id,';',':');
             if($conf['useslash']){
                 $id = strtr($id,'/',':');
-            }else{
+            } else {
                 $id = strtr($id,'/',$sepchar);
             }
-
+/* commented becuase it is unused
             if($conf['deaccent'] == 2 || $ascii) $id = utf8_romanize($id);
             if($conf['deaccent'] || $ascii) $id = utf8_deaccent($id,-1);
 
@@ -582,7 +582,7 @@ if ( !class_exists('DokuWikiSearch') ) {
             $id = utf8_stripspecials($id,$sepchar,'\*');
 
             if($ascii) $id = utf8_strip($id);
-
+*/
             //clean up
             $id = preg_replace($sepcharpat,$sepchar,$id);
             $id = preg_replace('#:+#',':',$id);
