@@ -122,7 +122,7 @@ class debug {
     static $colorScheme = array();
     static $colorSchemeInited = array();
     static $toggleScriptInited = false;
-    
+
     static $callback = null;
     /**
      *    initializes the colorScheme
@@ -238,15 +238,15 @@ class debug {
                 if (count($arr) == 0) {
                     $str.= "<span class='$keyClass'>$emptyWhat</span><br>\n";
                 }
-                
+
                 foreach ($arr as $key => $value) {
-					$style = '';
+                    $style = '';
                     if (debug::$callback) {
-                    	list($target,$function,$args) = debug::$callback;
-						list($style,$value) = $target->$function($key,$value,$args);
+                        list($target,$function,$args) = debug::$callback;
+                        list($style,$value) = $target->$function($key,$value,$args);
                     }
-                    $str.= '<span class="$keyClass" style="'.$style.'">' . debug::decorateValue($key) . '</span>';
-                    $str.= '<span class="value" style="'.$style.'" >' . debug::decorateValue($value) . '</span><br/>';
+                    $str.= '<span class="$keyClass" style="'.$style.'"> ' . debug::decorateValue($key) . '</span> ';
+                    $str.= '<span class="value" style="'.$style.'" > ' . debug::decorateValue($value) . '</span><br/>';
                 }
             } else {
                 $onClick = '';
@@ -260,9 +260,14 @@ class debug {
                     $str.= '<tr><td colspan="2" class="'.$keyClass.'">$emptyWhat</td></tr>';
                 }
                 foreach ($arr as $key => $value) {
+                    $style = '';
+                    if (debug::$callback) {
+                        list($target,$function,$args) = debug::$callback;
+                        list($style,$value) = $target->$function($key,$value,$args);
+                    }
                     $str.= '<tr>';
-                    $str.= '<td class="'.$keyClass.'" $onClick>'.debug::decorateValue($key).'</td>';
-                    $str.= '<td class="value">'.debug::get($value, false).'</td>';
+                    $str.= '<td class="'.$keyClass.'" $onClick style="'.$style.'">'.debug::decorateValue($key).'</td>';
+                    $str.= '<td class="value" style="'.$style.'">'.debug::get($value, false).'</td>';
                     $str.= '</tr>';
                 }
                 $str.= '</tbody></table>';
@@ -278,20 +283,20 @@ class debug {
         }
         return $str;
     }
-    
+
     /** *************************
      *    Craetes and returns a String in html code. that shows nicely in copy paste
      *
      *    @param mixed $arr : the PHP-Varible to look in
      *    @param mixed $start : a title for the created structure-table
      *
-     *    @return a html string with no tags    
+     *    @return a html string with no tags
      ** *************************
      */
     public static function getText($arr, $start = true) {
         $str = "";
         if (is_string($start)) {
-        	$str.= $start." - &darr;\n";            
+            $str.= $start." - &darr;\n";
         }
         if (is_array($arr) || is_object($arr)) {
             $emptyWhat = "empty-array";
@@ -302,36 +307,36 @@ class debug {
                 if (count($arr) == 0) {
                     $str.= $emptyWhat."\n";
                 } else {
-	                foreach ($arr as $key => $value) {
-	                    $str.= $key." &rarr; ".$value."\n";
-	                }
+                    foreach ($arr as $key => $value) {
+                        $str.= $key." &rarr; ".$value."\n";
+                    }
                 }
             } else {
                 if (count($arr) == 0) {
                     $str.= $emptyWhat."\n";
                 } else {
-	                foreach ($arr as $key => $value) {
-	                    $emptyWhat = "empty-array";
-            			if (is_object($value)) {
-                			$emptyWhat = "empty-object";
-            			}
-	                	if ( is_array($value) || is_object($value) ) {
-	                		if (count($value) == 0) {
-                 		   		$str.= $emptyWhat."\n";
-                			}
-							$str.= $key." - &darr; \n".debug::getText($value, false);
-	                	} else {
-							$str.= $key." &rarr; ".$value."\n";
-	                	}
-	                }
+                    foreach ($arr as $key => $value) {
+                        $emptyWhat = "empty-array";
+                        if (is_object($value)) {
+                            $emptyWhat = "empty-object";
+                        }
+                        if ( is_array($value) || is_object($value) ) {
+                            if (count($value) == 0) {
+                                $str.= $emptyWhat."\n";
+                            }
+                            $str.= $key." - &darr; \n".debug::getText($value, false);
+                        } else {
+                            $str.= $key." &rarr; ".$value."\n";
+                        }
+                    }
                 }
             }
         } else {
-        	$str = $arr."\n";
+            $str = $arr."\n";
         }
         return $str;
     }
-    
+
     /**
      *    Checks if an array is one-dimensional, i.e. if no one of the values is an array or abject again
      *    The public version of this function is in arrayfunc, this here is just to use by debug::get
@@ -900,14 +905,14 @@ class trans {
                         $node = array('tag' => $value['tag'], 'attributes' => $value['attributes'], 'value' => $value['value'], 'childs' => array());
                         $parent['childs'][] = $node;
                         $parentList[count($parentList) ] = & $parent['childs'][count($parent['childs']) - 1];
-                    break;
+                        break;
                     case 'complete':
                         $node = array('tag' => $value['tag'], 'attributes' => $value['attributes'], 'value' => $value['value'], 'childs' => array());
                         $parent['childs'][] = $node;
-                    break;
+                        break;
                     case 'close':
                         unset($parentList[count($parentList) - 1]);
-                    break;
+                        break;
                 }
             }
             $result = $data['childs'][0];
