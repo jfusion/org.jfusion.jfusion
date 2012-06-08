@@ -23,7 +23,6 @@ if ( !class_exists('DokuWikiSearch') ) {
     class DokuWikiSearch {
         var $path;
         var $conf;
-        var $rootFolder;
 
         /**
          * @param string $jname
@@ -36,13 +35,12 @@ if ( !class_exists('DokuWikiSearch') ) {
              * @var $helper JFusionHelper_dokuwiki
              */
             $helper = JFusionFactory::getHelper($jname);
-            $this->rootFolder = $params->get('source_path');
-            $this->conf = $helper->getConf($this->rootFolder);
-
             $this->path = $params->get('source_path');
             if (substr($this->path, -1) != DS) {
                 $this->path .= DS;
             }
+
+            $this->conf = $helper->getConf($this->path);
         }
         /**
          * ft_pageSearch
@@ -82,7 +80,7 @@ if ( !class_exists('DokuWikiSearch') ) {
             if (!count($docs)) return array();
             // create a list of hidden pages in the result
             $hidden = array();
-            $hidden = array_filter(array_keys($docs), 'DokuWikiSearch::isHiddenPage');
+            $hidden = array_filter(array_keys($docs), array($this,'isHiddenPage'));
             $not = array_merge($not, $hidden);
             // filter unmatched namespaces
             if (!empty($q['ns'])) {
@@ -106,7 +104,7 @@ if ( !class_exists('DokuWikiSearch') ) {
                 $q['phrases'] = array_map('preg_quote_cb', $q['phrases']);
                 // check the source of all documents for the exact phrases
                 foreach (array_keys($docs) as $id) {
-                    $text = utf8_strtolower(rawWiki($id));
+                    $text = utf8_strtolower($this->getPage($id));
                     foreach ($q['phrases'] as $phrase) {
                         if (!preg_match('/' . $phrase . '/usi', $text)) {
                             unset($docs[$id]); // no hit - remove
@@ -385,8 +383,7 @@ if ( !class_exists('DokuWikiSearch') ) {
          */
         function idx_indexLengths(&$filter) {
             $conf = $this->conf;
-            $rootFolder = $this->rootFolder;
-            $dir = @opendir($rootFolder . '/data/index');
+            $dir = @opendir($this->path . 'data/index');
             if ($dir === false) return array();
             $idx = array();
             if (is_array($filter)) {
@@ -398,7 +395,7 @@ if ( !class_exists('DokuWikiSearch') ) {
                 }
             } else {
                 // Exact match first.
-                if (@file_exists($rootFolder . '/data/index' . "/i$filter.idx")) $idx[] = $filter;
+                if (@file_exists($this->path . 'data/index' . "/i$filter.idx")) $idx[] = $filter;
                 while (($f = readdir($dir)) !== false) {
                     if (substr($f, 0, 1) == 'i' && substr($f, -4) == '.idx') {
                         $i = substr($f, 1, -4);
@@ -434,8 +431,7 @@ if ( !class_exists('DokuWikiSearch') ) {
          */
         function idx_getIndex($pre, $wlen) {
             $conf = $this->conf;
-            $rootFolder = $this->rootFolder;
-            $fn = $rootFolder . '/data/index' . '/' . $pre . $wlen . '.idx';
+            $fn = $this->path . 'data/index' . '/' . $pre . $wlen . '.idx';
             if (!@file_exists($fn)) return array();
             return file($fn);
         }
@@ -481,7 +477,6 @@ if ( !class_exists('DokuWikiSearch') ) {
          */
         function wikiFN($raw_id, $rev = '', $clean = true) {
             $conf = $this->conf;
-            $rootFolder = $this->rootFolder;
             global $cache_wikifn;
             $cache = & $cache_wikifn;
             if (isset($cache[$raw_id]) && isset($cache[$raw_id][$rev])) {
@@ -491,7 +486,7 @@ if ( !class_exists('DokuWikiSearch') ) {
             if ($clean) $id = $this->cleanID($id);
             $id = str_replace(':', '/', $id);
             if (empty($rev)) {
-                $fn = $rootFolder . '/data/pages' . '/' . $this->utf8_encodeFN($id) . '.txt';
+                $fn = $this->path . 'data/pages' . '/' . $this->utf8_encodeFN($id) . '.txt';
             } else {
                 $fn = $conf['olddir'] . '/' . $this->utf8_encodeFN($id) . '.' . $rev . '.txt';
                 if ($conf['compression']) {
@@ -597,6 +592,36 @@ if ( !class_exists('DokuWikiSearch') ) {
 
             $cache[(string)$raw_id] = $id;
             return ($id);
+        }
+
+        /**
+         * @param $page
+         * @return string
+         */
+        function getPage($page) {
+            $file = $this->path . 'data' . DS . 'pages' . DS . str_replace(":", DS, $page) . '.txt';
+            $text = '';
+            if (file_exists($file)) {
+                $handle = fopen($file, "r");
+                while (!feof($handle)) {
+                    $text.= fgets($handle, 4096);
+                }
+                fclose($handle);
+            }
+            return $text ? $text : "Please, follow the given link to get the DokuWiki article where we found one or more keyword(s).";
+        }
+
+        /**
+         * @param $page
+         * @return string
+         */
+        function getPageModifiedDateTime($page) {
+            $datetime = '';
+            $file = $this->path . 'data' . DS . 'pages' . DS . str_replace(":", DS, $page) . '.txt';
+            if (file_exists($file)) {
+                $datetime = date ("Y-m-d h:i:s", filemtime($file));
+            }
+            return $datetime;
         }
     }
 }

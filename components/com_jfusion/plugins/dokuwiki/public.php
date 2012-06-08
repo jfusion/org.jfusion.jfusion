@@ -369,14 +369,8 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
      * $result->created = (optional) date when the content was created
      */
     function getSearchResults(&$text, &$phrase, &$pluginParam, $itemid) {
-        global $rootFolder;
         $params = JFusionFactory::getParams($this->getJname());
-        $rootFolder = $params->get('source_path');
-        if (substr($rootFolder, -1) == DS) {
-            define('DOKU_INC', $rootFolder);
-        } else {
-            define('DOKU_INC', $rootFolder . '/');
-        }
+
         require_once 'doku_search.php';
         $highlights = array();
         $search = new DokuWikiSearch($this->getJname());
@@ -388,8 +382,8 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
 
         foreach ($results as $key => $index) {
             $rows[$pos]->title = JText::_($key);
-            $rows[$pos]->text = $this->getPage($rootFolder, $key);
-            $rows[$pos]->created = $this->getPageModifiedDateTime($rootFolder, $key);
+            $rows[$pos]->text = $search->getPage($key);
+            $rows[$pos]->created = $search->getPageModifiedDateTime($key);
             //dokuwiki doesn't track hits
             $rows[$pos]->hits = 0;
             $rows[$pos]->href = JFusionFunction::routeURL(str_replace(':', ';', $this->getSearchResultLink($key)), $itemid);
@@ -397,38 +391,6 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
             $pos++;
         }
         return $rows;
-    }
-
-    /**
-     * @param $path
-     * @param $page
-     * @return string
-     */
-    function getPage($path, $page) {
-        $file = $path . DS . 'data' . DS . 'pages' . DS . str_replace(":", DS, $page) . '.txt';
-        $text = '';
-        if (file_exists($file)) {
-            $handle = fopen($file, "r");
-            while (!feof($handle)) {
-                $text.= fgets($handle, 4096);
-            }
-            fclose($handle);
-        }
-        return $text ? $text : "Please, follow the given link to get the DokuWiki article where we found one or more keyword(s).";
-    }
-
-    /**
-     * @param $path
-     * @param $page
-     * @return string
-     */
-    function getPageModifiedDateTime($path, $page) {
-        $datetime = '';
-        $file = $path . DS . 'data' . DS . 'pages' . DS . str_replace(":", DS, $page) . '.txt';
-        if (file_exists($file)) {
-            $datetime = date ("Y-m-d h:i:s", filemtime($file));
-        }
-        return $datetime;
     }
 
     /**
