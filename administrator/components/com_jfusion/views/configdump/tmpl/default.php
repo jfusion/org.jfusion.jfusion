@@ -59,6 +59,14 @@ require_once(JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.D
                 <input type="checkbox" name="filter" value="true" />
             </td>
         </tr>
+        <tr>
+            <td>
+                <?php echo JText::_('CONFIGDUMP_MASK');?>
+            </td>
+            <td>
+                <input type="checkbox" checked="yes" name="mask" value="true" />
+            </td>
+        </tr>
     </table>
 </form>
 

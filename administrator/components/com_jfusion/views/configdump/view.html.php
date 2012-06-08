@@ -18,12 +18,19 @@ jimport('joomla.application.component.view');
  */
 
 class jfusionViewconfigdump extends JView {
+    /**
+     * @var array
+     */
+    var $checkvalue =array();
 
+    /**
+     * @param null $tpl
+     * @return mixed|void
+     */
     function display($tpl = null)
     {
         $db = JFactory::getDBO();
 
-        $this->checkvalue=array();
         // menuitem Checks
         $this->checkvalue['menu_item']['*']['jfusionplugin'] = 'is_string|not_empty';
         $this->checkvalue['menu_item']['*']['source_url'] = 'is_url';
@@ -71,14 +78,11 @@ class jfusionViewconfigdump extends JView {
 
         if(count($rows) ) {
             foreach($rows as $row) {
-                $jPluginParam = new JParameter('');
-
-                $new = new stdClass;
-                $new->dual_login = $row->dual_login;
-                $new->params = array();
-
+                $jPluginParam = new JParameter();
                 if ( $row->params ) $jPluginParam->loadArray(unserialize(base64_decode($row->params)));
-                $new->params = $jPluginParam->toObject();
+                $row->params = $jPluginParam->toString();
+
+                $new = $this->loadParams($row);
 
                 $this->clearParameters($new,'jfusion_plugin');
 
@@ -91,8 +95,7 @@ class jfusionViewconfigdump extends JView {
         if ( JPluginHelper::isEnabled('content','jfusion') ) $rows[] = JPluginHelper::getPlugin('content','jfusion');
 
         foreach($rows as $row) {
-            $new = new stdClass;
-            $this->loadParams($new,$row);
+            $new = $this->loadParams($row);
 
             $this->clearParameters($new,'joomla_plugin',$row->type);
             $this->addMissingParameters($new,'joomla_plugin',$row->type);
@@ -106,15 +109,11 @@ class jfusionViewconfigdump extends JView {
     	if ( JModuleHelper::isEnabled('mod_jfusion_activity') ) $rows[] = JModuleHelper::getModule('mod_jfusion_activity');
     	if ( JModuleHelper::isEnabled('mod_jfusion_whosonline') ) $rows[] = JModuleHelper::getModule('mod_jfusion_whosonline');
     	*/
-
-//		$query = "SELECT id,published,params,module from #__modules WHERE published = 1 AND module IN ('mod_jfusion_activity', 'mod_jfusion_whosonline', 'mod_jfusion_user_activity');";
-        $query = "SELECT id,published,params,module from #__modules WHERE published = 1 AND module IN ('mod_jfusion_user_activity');";
+        $query = "SELECT id,published,params,module from #__modules WHERE published = 1 AND module IN ('mod_jfusion_activity', 'mod_jfusion_whosonline', 'mod_jfusion_user_activity');";
         $db->setQuery($query);
         $rows = $db->loadObjectList();
-
         foreach($rows as $row) {
-            $new = new stdClass;
-            $this->loadParams($new,$row);
+            $new = $this->loadParams($row);
 
             $this->clearParameters($new,'jfusion_module',$row->module);
             $this->addMissingParameters($new,'jfusion_module',$row->module);
@@ -132,11 +131,8 @@ class jfusionViewconfigdump extends JView {
             unset($row->note,$row->route,$row->level,$row->language,$row->browserNav,$row->access,$row->home,$row->img);
             unset($row->type,$row->template_style_id,$row->component_id,$row->parent_id,$row->component,$row->tree);
 
-            $new = new stdClass;
-            $this->loadParams($new , $row);
-
+            $new = $this->loadParams($row);
             $this->clearParameters($new,'menu_item');
-//            $this->addMissingParameters($new,'menu_item');
 
             $menu_item[$new->id] = $new;
         }
@@ -149,59 +145,90 @@ class jfusionViewconfigdump extends JView {
         parent::display($tpl);
     }
 
+    /**
+     * @param $key
+     * @param $value
+     * @return array
+     */
     function jfusion_plugin($key,$value) {
         return $this->check('jfusion_plugin',$key,$value);
     }
 
+    /**
+     * @param $key
+     * @param $value
+     * @return array
+     */
     function menu_item($key,$value) {
         return $this->check('menu_item',$key,$value);
     }
 
+    /**
+     * @param $key
+     * @param $value
+     * @param $name
+     * @return array
+     */
     function joomla_plugin($key,$value,$name) {
         return $this->check('joomla_plugin',$key,$value,$name);
     }
 
+    /**
+     * @param $key
+     * @param $value
+     * @param $name
+     * @return array
+     */
     function jfusion_module($key,$value,$name) {
         return $this->check('jfusion_module',$key,$value,$name);
     }
 
-    function loadParams(&$new,$row) {
-        $JParameter = new JParameter('');
-
+    /**
+     * @param $row
+     * @return stdClass
+     */
+    function loadParams($row) {
+        $JParameter = new JParameter();
+        $new = new stdClass;
         $new->params = new stdClass;
         foreach($row as $key => $value) {
             if ($key == 'params') {
-                $params = new JParameter($value, '');
+                $params = new JParameter($value);
                 $params = $params->toObject();
 
                 if (isset($params->JFusionPluginParam)) {
                     $JParameter->loadArray(unserialize(base64_decode($params->JFusionPluginParam)));
                     $JParameters = $JParameter->toObject();
-                    foreach($JParameters as $key2 => $value) {
-                        $new->params->$key2 = $value;
+                    foreach($JParameters as $key2 => $value2) {
+                        $new->params->$key2 = $value2;
                     }
                     unset($params->JFusionPluginParam);
                 }
                 if (isset($params->JFusionPlugin)) {
                     $JParameter->loadArray(unserialize(base64_decode($params->JFusionPlugin)));
                     $JParameters = $JParameter->toObject();
-                    foreach($JParameters as $key2 => $value) {
-                        $new->params->$key2 = $value;
+                    foreach($JParameters as $key2 => $value2) {
+                        $new->params->$key2 = $value2;
                     }
                     unset($params->JFusionPlugin);
                 }
-
                 if (is_object($params)) {
-                    foreach($params as $key2 => $value) {
-                        $new->params->$key2 = $value;
+                    foreach($params as $key2 => $value2) {
+                        $new->params->$key2 = $value2;
                     }
                 }
             } else {
                 $new->$key = $value;
             }
         }
+        return $new;
     }
 
+    /**
+     * @param $new
+     * @param $name
+     * @param null $type
+     */
     function clearParameters(&$new,$name,$type=null) {
         if (JRequest::getVar('filter')) {
             foreach($new->params as $key => $value) {
@@ -220,6 +247,11 @@ class jfusionViewconfigdump extends JView {
         }
     }
 
+    /**
+     * @param $new
+     * @param $name
+     * @param null $type
+     */
     function addMissingParameters(&$new,$name,$type=null) {
         if (isset($this->checkvalue[$name]['*'])) {
             foreach($this->checkvalue[$name]['*'] as $key => $value) {
@@ -248,6 +280,13 @@ class jfusionViewconfigdump extends JView {
         }
     }
 
+    /**
+     * @param $type
+     * @param $key
+     * @param $value
+     * @param null $name
+     * @return array
+     */
     function check($type,$key,$value,$name=null) {
         $newStatus = new stdClass;
         $check = null;
@@ -263,7 +302,7 @@ class jfusionViewconfigdump extends JView {
         }
 
         if( $check ) {
-            $checks = split ( '\|' , $check );
+            $checks = explode( '\|' , $check );
 
             $valid = 0;
             foreach($checks as $check) {
@@ -275,7 +314,9 @@ class jfusionViewconfigdump extends JView {
                         break;
                     case 'mask':
                         $valid = 1;
-                        $value = '************';
+                        if (!JRequest::getVar('mask',true)) {
+                            $value = '************';
+                        }
                         break;
                     case 'empty':
                         if ( empty($value) ) $valid = 2;
