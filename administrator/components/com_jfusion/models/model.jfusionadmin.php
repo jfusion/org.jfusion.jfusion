@@ -297,7 +297,7 @@ class JFusionFunctionAdmin
             $VersionCurrent = $parser->document->getElementByPath('version')->data();
 
             if($includeRev) {
-                $RevisionCurrent = $parser->document->getElementByPath('revision')->data();
+                $RevisionCurrent = trim($parser->document->getElementByPath('revision')->data());
             }
         }
         return array($VersionCurrent, $RevisionCurrent);

@@ -950,15 +950,17 @@ JS;
     function export($name, $value, $node, $control_name)
     {
         $jname = $this->getJname();
-        $params = JFusionFactory::getParams($jname);
         $action = JRequest::getVar('action');
-        $dbinfo = JRequest::getVar('dbinfo');
 
         if( $action == 'export' ) {
+            $dbinfo = JRequest::getVar('dbinfo');
+
+            $params = JFusionFactory::getParams($jname);
+            $params = $params->toObject();
             jimport('joomla.utilities.simplexml');
 
             $arr = array();
-            foreach ($params->_registry["_default"]["data"] as $key => $val) {
+            foreach ($params as $key => $val) {
                 if( !$dbinfo && substr($key,0,8) == 'database' && substr($key,0,13) != 'database_type' ) {
                     continue;
                 }
@@ -975,7 +977,11 @@ JS;
              * @var $info JSimpleXMLElement
              */
             $info = $xml->document->addChild('info');
-            $info->addAttribute  ('jfusionversion',  JFusionFunctionAdmin::currentVersion());
+
+            list($VersionCurrent,$RevisionCurrent) = JFusionFunctionAdmin::currentVersion(true);
+
+            $info->addAttribute  ('jfusionversion',  $VersionCurrent);
+            $info->addAttribute  ('jfusionrevision',  $RevisionCurrent);
 
             //get the current JFusion version number
             $filename = JFUSION_PLUGIN_PATH .DS.$jname.DS.'jfusion.xml';
