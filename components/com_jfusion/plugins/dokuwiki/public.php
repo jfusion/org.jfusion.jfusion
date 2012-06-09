@@ -76,6 +76,7 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
 
         //setup constants needed by Dokuwiki
         /**
+         * @ignore
          * @var $helper JFusionHelper_dokuwiki
          */
         $helper = JFusionFactory::getHelper($this->getJname());

@@ -131,6 +131,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 
         $params =& JFusionFactory::getParams($this->getJname());
         /**
+         * @ignore
          * @var $helper JFusionHelper_mediawiki
          */
         $helper = JFusionFactory::getHelper($this->getJname());
@@ -176,6 +177,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 
             $params = JFusionFactory::getParams($this->getJname());
             /**
+             * @ignore
              * @var $helper JFusionHelper_mediawiki
              */
             $helper = JFusionFactory::getHelper($this->getJname());
@@ -441,6 +443,7 @@ class JFusionUser_mediawiki extends JFusionUser {
                     $wfWikiID = $wgDBname;
                 }
                 /**
+                 * @ignore
                  * @var $helper JFusionHelper_mediawiki
                  */
                 $helper = JFusionFactory::getHelper($this->getJname());

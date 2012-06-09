@@ -176,6 +176,7 @@ class JFusionController extends JController
         }
         $debug = array();
         /**
+         * @ignore
          * @var $view jfusionViewplugindisplay
          */
         $view = $this->getView('plugindisplay','html');
@@ -295,11 +296,12 @@ class JFusionController extends JController
         $syncid = JRequest::getVar('syncid', '', 'GET');
         include_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.usersync.php';
         $syncdata = JFusionUsersync::getSyncdata($syncid);
+        /*
+         * @ignore
+         * @var $view JView
+         */
         if (empty($syncdata['completed'])) {
             JRequest::setVar('view', 'syncprogress');
-            /*
-            * @var $view JView
-            */
             $view = & $this->getView('syncprogress', 'html');
             //append log data now
             $view->assignRef('syncdata', $syncdata);
@@ -311,9 +313,6 @@ class JFusionController extends JController
             //needed in case the language does not have "finished" in it for ajax to know to stop the timer
             echo '<div style="display:none;">finished</div>';
             JRequest::setVar('view', 'syncstatus');
-            /*
-            * @var $view JView
-            */
             $view = & $this->getView('syncstatus', 'html');
             //append log
             $syncdata['log'] = JFusionUsersync::getLogData($syncid);
@@ -455,6 +454,7 @@ class JFusionController extends JController
 		if ($ajax == true) {
 	        if(!empty($result['jname'])){
                 /**
+                 * @ignore
                  * @var $view jfusionViewplugindisplay
                  */
                 $view = $this->getView('plugindisplay','html');
@@ -483,6 +483,7 @@ class JFusionController extends JController
         $result = $model->install();
         if(!empty($result['jname'])){
             /**
+             * @ignore
              * @var $view jfusionViewplugindisplay
              */
             $view = $this->getView('plugindisplay','html');
@@ -526,6 +527,7 @@ class JFusionController extends JController
             $plugin_xml = JFUSION_PLUGIN_PATH .DS. $jname .DS. 'jfusion.xml';
              if(file_exists($plugin_xml) && is_readable($plugin_xml)) {
                  /**
+                  * @ignore
                   * @var $parser JSimpleXML
                   */
                  $parser = JFactory::getXMLParser('Simple');
@@ -538,6 +540,7 @@ class JFusionController extends JController
 			if ($result['status']) {
             	$result['new_jname'] =  $new_jname;
                 /**
+                 * @ignore
                  * @var $view jfusionViewplugindisplay
                  */
                 $view = $this->getView('plugindisplay','html');

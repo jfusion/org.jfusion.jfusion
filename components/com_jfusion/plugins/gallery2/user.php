@@ -46,6 +46,7 @@ class JFusionUser_gallery2 extends JFusionUser {
             $username = $userinfo;
         }
         /**
+         * @ignore
          * @var $helper JFusionHelper_gallery2
          */
         $helper = JFusionFactory::getHelper($this->getJname());
@@ -112,6 +113,7 @@ class JFusionUser_gallery2 extends JFusionUser {
      */
     function destroySession($userinfo, $options) {
         /**
+         * @ignore
          * @var $helper JFusionHelper_gallery2
          */
         $helper = JFusionFactory::getHelper($this->getJname());
@@ -134,6 +136,7 @@ class JFusionUser_gallery2 extends JFusionUser {
         
         if ($framework) {
             /**
+             * @ignore
              * @var $helper JFusionHelper_gallery2
              */
             $helper = JFusionFactory::getHelper($this->getJname());
@@ -217,6 +220,7 @@ class JFusionUser_gallery2 extends JFusionUser {
         $status = array('error' => array(),'debug' => array());
         $username = $userinfo->username;
         /**
+         * @ignore
          * @var $helper JFusionHelper_gallery2
          */
         $helper = JFusionFactory::getHelper($this->getJname());
@@ -255,6 +259,7 @@ class JFusionUser_gallery2 extends JFusionUser {
      */
     function createUser($userinfo, &$status) {
         /**
+         * @ignore
          * @var $helper JFusionHelper_gallery2
          */
         $helper = JFusionFactory::getHelper($this->getJname());
@@ -312,6 +317,7 @@ class JFusionUser_gallery2 extends JFusionUser {
      */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
         /**
+         * @ignore
          * @var $helper JFusionHelper_gallery2
          */
         $helper = JFusionFactory::getHelper($this->getJname());
@@ -344,6 +350,7 @@ class JFusionUser_gallery2 extends JFusionUser {
      */
     function updatePassword($userinfo, &$existinguser, &$status) {
         /**
+         * @ignore
          * @var $helper JFusionHelper_gallery2
          */
         $helper = JFusionFactory::getHelper($this->getJname());
@@ -386,6 +393,7 @@ class JFusionUser_gallery2 extends JFusionUser {
      */
     function updateEmail($userinfo, &$existinguser, &$status) {
         /**
+         * @ignore
          * @var $helper JFusionHelper_gallery2
          */
         $helper = JFusionFactory::getHelper($this->getJname());

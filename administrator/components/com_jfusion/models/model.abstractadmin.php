@@ -797,6 +797,7 @@ JS;
         }
 
         /**
+         * @ignore
          * @var $xmlList JSimpleXML
          */
         $xmlList = JFactory::getXMLParser('Simple');
@@ -806,6 +807,7 @@ JS;
             $output .= JText::_('IMPORT_FROM_SERVER').'<br/>';
             $output .= '<input type=radio name="xmlname" value="" checked> None<br/>';
             /**
+             * @ignore
              * @var $val JSimpleXMLElement
              */
             foreach ($xmlList->document->children() as $key => $val) {
@@ -831,6 +833,7 @@ JS;
 
             $xmlname = JRequest::getVar('xmlname');
             /**
+             * @ignore
              * @var $xmlFile JSimpleXML
              */
             $xmlFile = JFactory::getXMLParser('Simple');
@@ -906,6 +909,7 @@ JS;
 
             $conf = array();
             /**
+             * @ignore
              * @var $val JSimpleXMLElement
              */
             foreach ($config as $key => $val) {
@@ -968,12 +972,14 @@ JS;
             }
 
             /**
+             * @ignore
              * @var $xml JSimpleXML
              */
             $xml = JFactory::getXMLParser('Simple');
             $xml->loadString('<jfusionconfig></jfusionconfig>');
 
             /**
+             * @ignore
              * @var $info JSimpleXMLElement
              */
             $info = $xml->document->addChild('info');
@@ -988,6 +994,7 @@ JS;
             if (file_exists($filename) && is_readable($filename)) {
                 //get the version number
                 /**
+                 * @ignore
                  * @var $parser JSimpleXML
                  */
                 $parser = JFactory::getXMLParser('Simple');
@@ -1009,6 +1016,7 @@ JS;
             $info->addAttribute  ('original_name', $result);
 
             /**
+             * @ignore
              * @var $info JSimpleXMLElement
              */
             $config = $xml->document->addChild('config');

@@ -54,6 +54,7 @@ class JFusionAdmin_mediawiki extends JFusionAdmin {
         } else {
             $wgDBserver = $wgDBtype = $wgDBname = $wgDBuser = $wgDBpassword = $wgDBprefix = '';
             /**
+             * @ignore
              * @var $helper JFusionHelper_mediawiki
              */
             $helper = JFusionFactory::getHelper($this->getJname());
@@ -112,6 +113,7 @@ class JFusionAdmin_mediawiki extends JFusionAdmin {
     function getUsergroupList()
     {
         /**
+         * @ignore
          * @var $helper JFusionHelper_mediawiki
          */
         $helper = JFusionFactory::getHelper($this->getJname());
@@ -145,6 +147,7 @@ class JFusionAdmin_mediawiki extends JFusionAdmin {
     function allowRegistration()
     {
         /**
+         * @ignore
          * @var $helper JFusionHelper_mediawiki
          */
         $helper = JFusionFactory::getHelper($this->getJname());

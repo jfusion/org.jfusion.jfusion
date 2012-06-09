@@ -240,6 +240,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
 
         //frameless integration is only supported for 3.x
         /**
+         * @ignore
          * @var $helper JFusionHelper_vbulletin
          */
         $helper = JFusionFactory::getHelper($this->getJname());

@@ -198,6 +198,7 @@ JS;
         }
 
         /**
+         * @ignore
          * @var $xml JSimpleXML
          */
         $xml = JFactory::getXMLParser('Simple');
@@ -219,6 +220,7 @@ JS;
                             $data = "<form>" . $data . "</form>";
                         }
                         /**
+                         * @ignore
                          * @var $form JForm
                          */
                         $form = &JForm::getInstance($jname, $data, array('control' => "params[$jname]"));
@@ -247,6 +249,7 @@ JS;
                 $xml_path = (file_exists($path)) ? $path : $defaultPath;
                 if ($xml->loadFile($xml_path)) {
                     /**
+                     * @ignore
                      * @var $xmlparams JSimpleXMLElement
                      */
                     $xmlparams = $xml->document->getElementByPath('params');
@@ -354,6 +357,7 @@ JS;
         }
 
         /**
+         * @ignore
          * @var $xml JSimpleXML
          */
         $xml = JFactory::getXMLParser('Simple');
@@ -375,6 +379,7 @@ JS;
                                 $data = "<form>" . $data . "</form>";
                             }
                             /**
+                             * @ignore
                              * @var $form JForm
                              */
                             $form = &JForm::getInstance($jname, $data, array('control' => "params[$jname]"));
@@ -398,6 +403,7 @@ JS;
                     $xml_path = (file_exists($path)) ? $path : $defaultPath;
                     if ($xml->loadFile($xml_path)) {
                         /**
+                         * @ignore
                          * @var $xmlparams JSimpleXMLElement
                          */
                         $xmlparams = $xml->document->getElementByPath('params');

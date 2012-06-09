@@ -54,6 +54,7 @@ class JFusionFrameless {
         $data->fullURL = str_replace('&', '&amp;', $data->fullURL);
 
         /**
+         * @ignore
          * @var $menu JMenu
          */
         $menu = JSite::getMenu();

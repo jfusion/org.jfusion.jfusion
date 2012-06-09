@@ -39,6 +39,7 @@ class JFormFieldGalleries extends JFormField {
         $name = (string) $this->fieldname;
         $value = $this->value;
         /**
+         * @ignore
          * @var $helper JFusionHelper_gallery2
          */
         $helper = JFusionFactory::getHelper($jname);

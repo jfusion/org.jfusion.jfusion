@@ -66,6 +66,7 @@ class jfusionViewcpanel extends JView
         }
         $JFusionCpanel = null;
         /**
+         * @ignore
          * @var $parser JSimpleXML
          */
         $parser = JFactory::getXMLParser('Simple');

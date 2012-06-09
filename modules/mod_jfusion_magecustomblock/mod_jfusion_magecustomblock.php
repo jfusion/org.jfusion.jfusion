@@ -10,6 +10,7 @@
 // no direct access
 defined ( '_JEXEC' ) or trigger_error ( 'Restricted access' );
 /**
+ * @ignore
  * @var $params JParameter
  * @var $module object
  */

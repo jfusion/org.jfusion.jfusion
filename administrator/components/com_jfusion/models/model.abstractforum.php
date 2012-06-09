@@ -316,6 +316,7 @@ class JFusionForum
     		    } else {
     		        $JCat =& JCategories::getInstance('Content');
                     /**
+                     * @ignore
                      * @var $cat JCategoryNode
                      */
                     $cat = $JCat->get($catid);
@@ -330,6 +331,7 @@ class JFusionForum
 	                            } else {
 	                                //keep going up so get the parent's parent id
                                     /**
+                                     * @ignore
                                      * @var $parent JCategoryNode
                                      */
 	                                $parent = $JCat->get($parent_id);

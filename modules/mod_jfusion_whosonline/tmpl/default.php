@@ -13,6 +13,7 @@ defined('_JEXEC') or die('Restricted access');
 <div>
 <?php
 /**
+ * @ignore
  * @var $outputs array
  * @var $output object
  * @var $config array

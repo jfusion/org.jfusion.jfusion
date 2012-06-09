@@ -38,6 +38,7 @@ class JFusionAdmin_universal extends JFusionAdmin{
     function getTablename()
     {
         /**
+         * @ignore
          * @var $helper JFusionHelper_universal
          */
         $helper = JFusionFactory::getHelper($this->getJname());
@@ -90,6 +91,7 @@ class JFusionAdmin_universal extends JFusionAdmin{
     function getUserList()
     {
         /**
+         * @ignore
          * @var $helper JFusionHelper_universal
          */
         $helper = JFusionFactory::getHelper($this->getJname());
@@ -137,6 +139,7 @@ class JFusionAdmin_universal extends JFusionAdmin{
     function mapuser($name, $value, $node, $control_name)
     {
         /**
+         * @ignore
          * @var $helper JFusionHelper_universal
          */
         $helper = JFusionFactory::getHelper($this->getJname());
@@ -168,6 +171,7 @@ class JFusionAdmin_universal extends JFusionAdmin{
     function mapgroup($name, $value, $node, $control_name)
     {
         /**
+         * @ignore
          * @var $helper JFusionHelper_universal
          */
         $helper = JFusionFactory::getHelper($this->getJname());
@@ -201,6 +205,7 @@ class JFusionAdmin_universal extends JFusionAdmin{
                 $tl = array();
                 $fl = array();
                 /**
+                 * @ignore
                  * @var $helper JFusionHelper_universal
                  */
                 $helper = JFusionFactory::getHelper($this->getJname());
@@ -362,6 +367,7 @@ class JFusionAdmin_universal extends JFusionAdmin{
     function js($name, $value, $node, $control_name) {
         $document =& JFactory::getDocument();
         /**
+         * @ignore
          * @var $helper JFusionHelper_universal
          */
         $helper = JFusionFactory::getHelper($this->getJname());

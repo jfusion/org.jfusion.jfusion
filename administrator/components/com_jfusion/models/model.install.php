@@ -543,6 +543,7 @@ class JFusionPluginInstaller extends JObject
         }
         if (count($childrens) > 0) {
             /**
+             * @ignore
              * @var $children JSimpleXMLElement
              */
             foreach ($childrens as $children) {
@@ -578,6 +579,7 @@ class JFusionPluginInstaller extends JObject
         }
         if (count($childrens) > 0) {
             /**
+             * @ignore
              * @var $children JSimpleXMLElement
              */
             foreach ($childrens as $children) {
@@ -703,12 +705,14 @@ class JFusionPluginInstaller extends JObject
 
 		if(JFusionFunction::isJoomlaVersion('1.6')) {
             /**
-             *  @var $xml JXMLElement
+             *  @ignore
+             * @var $xml JXMLElement
              */
 			$xml = JFactory::getXML($file);
 		} else {
             /**
-             *  @var $xml JSimpleXML
+             * @ignore
+             * @var $xml JSimpleXML
              */
         	$xml = JFactory::getXMLParser('Simple');
 			if (!$xml->loadFile($file)) {
@@ -767,6 +771,7 @@ class JFusionPluginInstaller extends JObject
         if (extension_loaded('zlib')) {
             //use Joomla's zip class to create the zip
             /**
+             * @ignore
              * @var $zip JArchiveZip
              */
             $zip = & JArchive::getAdapter('zip');

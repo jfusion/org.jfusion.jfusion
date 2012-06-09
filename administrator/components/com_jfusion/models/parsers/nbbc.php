@@ -365,6 +365,10 @@ class BBCodeLexer {
             $result['_default'] = $value;
             $params[] = Array('key' => '', 'value' => $value);
         }
+        /**
+         * @ignore
+         * @var $key string
+         */
         while (($type = $this->Internal_ClassifyPiece($ptr, $pieces)) != - 1) {
             while ($type == ' ') {
                 $ptr++;
@@ -608,6 +612,11 @@ class BBCodeLibrary {
             else if (isset($ci_list_styles[strtolower($default) ])) return true;
             else return false;
         }
+        $type = '';
+        /**
+         * @ignore
+         * @var $elem string
+         */
         if (!is_string($default) || strlen($default) == "") {
             $elem = 'ul';
             $type = '';
@@ -2014,6 +2023,10 @@ $/Dx", $string)) return true;
         $end_tag = $this->lexer->tagmarker . "/" . $tag_name . $this->lexer->end_tagmarker;
         $start = count($this->stack);
         $this->lexer->verbatim = true;
+        /**
+         * @ignore
+         * @var $end_tag_params array
+         */
         while (($token_type = $this->lexer->NextToken()) != BBCODE_EOI) {
             if ($this->lexer->text == $end_tag) {
                 $end_tag_params = $this->lexer->tag;

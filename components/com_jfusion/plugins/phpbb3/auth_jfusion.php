@@ -71,6 +71,7 @@ function login_jfusion(&$username, &$password) {
         //by php's session_write_close and thus the user is not logged into Joomla.  php bug?
         if (!defined('IN_JOOMLA')) {
             /**
+             * @ignore
              * @var $session_table JTableSession
              */
             $session_table = & JTable::getInstance('session');

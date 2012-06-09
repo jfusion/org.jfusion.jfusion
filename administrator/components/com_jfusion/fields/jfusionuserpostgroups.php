@@ -44,6 +44,7 @@ class JFormFieldJFusionUserpostgroups extends JFormField
         if ($jname) {
             if (JFusionFunction::validPlugin($jname)) {
                 /**
+                 * @ignore
                  * @var $JFusionAdmin JFusionAdmin_smf
                  */
                 $JFusionAdmin = JFusionFactory::getAdmin($jname);

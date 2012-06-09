@@ -40,6 +40,7 @@ class JElementGalleries extends JElement {
     function fetchElement($name, $value, &$node, $control_name) {
     	global $jname;
         /**
+         * @ignore
          * @var $helper JFusionHelper_gallery2
          */
         $helper = JFusionFactory::getHelper($jname);

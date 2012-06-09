@@ -541,6 +541,7 @@ JS;
         $secret = $params->get('vb_secret', JFactory::getConfig()->getValue('config.secret'));
         $php.= "\$JFusionHook = new executeJFusionHook('init_startup', \$val, '$secret');\n";
         /**
+         * @ignore
          * @var $helper JFusionHelper_vbulletin
          */
         $helper = JFusionFactory::getHelper($this->getJname());

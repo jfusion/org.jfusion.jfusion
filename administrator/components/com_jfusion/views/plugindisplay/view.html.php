@@ -111,6 +111,7 @@ class jfusionViewplugindisplay extends JView {
             $VersionData = null;
 	        if (!empty($VersionDataRaw)) {
                 /**
+                 * @ignore
                  * @var $parser JSimpleXML
                  */
 	            $parser = JFactory::getXMLParser('Simple');
@@ -349,6 +350,7 @@ class jfusionViewplugindisplay extends JView {
 			$plugin_xml = JFUSION_PLUGIN_PATH .DS. $record->name .DS. 'jfusion.xml';
 			if(file_exists($plugin_xml) && is_readable($plugin_xml)) {
                 /**
+                 * @ignore
                  * @var $parser JSimpleXML
                  */
 				$parser = JFactory::getXMLParser('Simple');

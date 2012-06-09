@@ -693,6 +693,7 @@ class JFusionFunction
             }
 
             /**
+             * @ignore
              * @var $bbcode BBCode_Parser
              */
             $bbcode = JFusionFactory::getCodeParser();
@@ -1268,6 +1269,7 @@ class JFusionFunction
 		    	}
 	        } else {
                 /**
+                 * @ignore
                  * @var $admin JFusionAdmin_joomla_ext
                  */
                 $admin = JFusionFactory::getAdmin($jname);

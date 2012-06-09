@@ -50,6 +50,7 @@ class JFusionUser_efront extends JFusionUser
         $result = $db->loadObject();
         if ($result) {
             /**
+             * @ignore
              * @var $helper JFusionHelper_efront
              */
             $helper = JFusionFactory::getHelper($this->getJname());
@@ -416,6 +417,7 @@ class JFusionUser_efront extends JFusionUser
                 $user_dir = $uploadpath.$user->login.'/';
                 if (is_dir($user_dir)) {
                     /**
+                     * @ignore
                      * @var $helper JFusionHelper_efront
                      */
                     $helper = JFusionFactory::getHelper($this->getJname());
@@ -477,6 +479,7 @@ class JFusionUser_efront extends JFusionUser
             if (!empty($existinguser)) {
                 $params = JFusionFactory::getParams($this->getJname());
                 /**
+                 * @ignore
                  * @var $helper JFusionHelper_efront
                  */
                 $helper = JFusionFactory::getHelper($this->getJname());

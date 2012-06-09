@@ -27,7 +27,8 @@ class JFusionControllerWeb extends JController
         // Select which layout to use in the view
         JRequest::setVar ( 'layout', 'default' );
         /**
-        * @var $menu JMenu
+        * @ignore
+         * @var $menu JMenu
         */
         $menu = & JSite::getMenu ();
         $item = $menu->getActive ();

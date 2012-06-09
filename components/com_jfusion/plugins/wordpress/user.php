@@ -115,6 +115,7 @@ class JFusionUser_wordpress extends JFusionUser {
 		$groupid=4; // default to subscriber
 		$groupname='subscriber';
         /**
+         * @ignore
          * @var $helper JFusionHelper_wordpress
          */
         $helper = JFusionFactory::getHelper($this->getJname());
@@ -224,6 +225,7 @@ class JFusionUser_wordpress extends JFusionUser {
 		$username = trim($username);
 		// remove accents
         /**
+         * @ignore
          * @var $helper JFusionHelper_wordpress
          */
         $helper = JFusionFactory::getHelper($this->getJname());
@@ -356,6 +358,7 @@ class JFusionUser_wordpress extends JFusionUser {
 			$status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
 		} else {
             /**
+             * @ignore
              * @var $helper JFusionHelper_wordpress
              */
             $helper = JFusionFactory::getHelper($this->getJname());
@@ -561,6 +564,7 @@ class JFusionUser_wordpress extends JFusionUser {
             $usergroup = $usergroups[0];
             $db = JFusionFactory::getDatabase($this->getJname());
             /**
+             * @ignore
              * @var $helper JFusionHelper_wordpress
              */
             $helper = JFusionFactory::getHelper($this->getJname());

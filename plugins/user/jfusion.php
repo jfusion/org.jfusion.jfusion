@@ -436,6 +436,7 @@ class plgUserJfusion extends JPlugin
             $conf = JFactory::getConfig();
             $expire = ($conf->getValue('config.lifetime')) ? $conf->getValue('config.lifetime') * 60 : 900;
             /**
+             * @ignore
              * @var $session JTableSession
              */
             $session = & JTable::getInstance('session');

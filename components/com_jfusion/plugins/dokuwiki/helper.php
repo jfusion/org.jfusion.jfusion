@@ -222,6 +222,7 @@ class JFusionHelper_dokuwiki
                 $path = $params->get('source_path');
             }
             /**
+             * @ignore
              * @var $helper JFusionHelper_dokuwiki
              */
             $helper = & JFusionFactory::getHelper($this->getJname());

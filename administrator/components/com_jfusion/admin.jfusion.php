@@ -69,6 +69,7 @@ if ($controller) {
 // Create the controller
 $classname = 'JFusionController' . $controller;
 /**
+ * @ignore
  * @var $controller JController
  */
 $controller = new $classname();

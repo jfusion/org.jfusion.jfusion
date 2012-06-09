@@ -65,6 +65,7 @@ class jfusionViewversioncheck extends JView
         $up2date = $server_compatible = false;
 
         /**
+         * @ignore
          * @var $parser JSimpleXML
          */
         $parser = JFactory::getXMLParser('Simple');
@@ -199,6 +200,7 @@ class jfusionViewversioncheck extends JView
     	if (file_exists($filename) && is_readable($filename)) {
     		//get the version number
             /**
+             * @ignore
              * @var $parser JSimpleXML
              */
     		$parser = JFactory::getXMLParser('Simple');

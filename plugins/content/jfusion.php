@@ -1147,6 +1147,7 @@ class plgContentJfusion extends JPlugin
         $this->helper->output = array();
         $this->helper->output['buttons'] = array();
         /**
+         * @ignore
          * @var $article_params JParameter
          */
         $attribs = $readmore_param = $article_params = null;

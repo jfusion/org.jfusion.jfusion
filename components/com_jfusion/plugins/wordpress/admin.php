@@ -177,6 +177,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
      */
     function getUsergroupList() {
         /**
+         * @ignore
          * @var $helper JFusionHelper_wordpress
          */
         $helper = JFusionFactory::getHelper($this->getJname());
@@ -190,6 +191,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
     function getDefaultUsergroup() {
 		$params = JFusionFactory::getParams($this->getJname());
         /**
+         * @ignore
          * @var $helper JFusionHelper_wordpress
          */
         $helper = JFusionFactory::getHelper($this->getJname());

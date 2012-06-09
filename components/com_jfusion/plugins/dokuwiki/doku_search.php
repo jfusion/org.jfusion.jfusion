@@ -32,6 +32,7 @@ if ( !class_exists('DokuWikiSearch') ) {
             $params = JFusionFactory::getParams($jname);
 
             /**
+             * @ignore
              * @var $helper JFusionHelper_dokuwiki
              */
             $helper = JFusionFactory::getHelper($jname);

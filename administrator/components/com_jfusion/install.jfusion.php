@@ -586,6 +586,7 @@ function com_install() {
 	//output some info to the user
 
     /**
+     * @ignore
      * @var $parser JSimpleXML
      */
 	$parser = JFactory::getXMLParser('Simple');

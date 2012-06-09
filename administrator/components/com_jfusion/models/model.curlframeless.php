@@ -101,6 +101,7 @@ class JFusionCurlFrameless{
 			$current = $uri->toString( array( 'path', 'query'));
 
             /**
+             * @ignore
              * @var $menus JMenu
              */
             $menus = & JSite::getMenu();

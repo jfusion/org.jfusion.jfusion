@@ -61,6 +61,7 @@ class JFusionAdmin_magento extends JFusionAdmin
         $params = array();
         if (file_exists($xmlfile)) {
             /**
+             * @ignore
              * @var $xml JSimpleXML
              */
             $xml = JFactory::getXMLParser('Simple');
@@ -321,8 +322,8 @@ class JFusionAdmin_magento extends JFusionAdmin
     /**
      * @return array
      */
-    public function uninstallModule(){
-		
+    public function uninstallModule() {
+        $status = array('error' => array(),'debug' => array());
 		jimport ( 'joomla.filesystem.file' );
 		jimport ( 'joomla.filesystem.folder' );
 		
@@ -333,21 +334,23 @@ class JFusionAdmin_magento extends JFusionAdmin
 		$xmlfile = realpath ( dirname ( __FILE__ ) ) . DS . 'install_module' . DS . 'source' . DS . 'listfiles.xml';
 
         /**
+         * @ignore
          * @var $listfiles JSimpleXML
          */
         $listfiles = JFactory::getXMLParser('simple');
 		$listfiles->loadFile($xmlfile);
 		$files = $listfiles->document->getElementByPath('file');
         /**
+         * @ignore
          * @var $file JSimpleXMLElement
          */
-		foreach($files as $file){
+		foreach($files as $file) {
 			$file = $file->data();
 			$file = preg_replace('#/#', DS, $file);
 			@chmod($source_path . DS . $file, 0777);
-			if(!is_dir($source_path . DS . $file)){
+			if (!is_dir($source_path . DS . $file)) {
 				JFile::delete($source_path . DS . $file);
-			}else{
+			} else {
 				JFolder::delete($source_path . DS . $file);
 			}
 		}
@@ -357,15 +360,14 @@ class JFusionAdmin_magento extends JFusionAdmin
 		$paths[] = 'joomla/joomlaconfig/installationpath';
 		$paths[] = 'joomla/joomlaconfig/secret_key';
 		
-		foreach($paths as $path)
-		{
+		foreach($paths as $path) {
 			$query = "DELETE FROM #__core_config_data WHERE path = " . $db->Quote($path);
 			$db->BeginTrans ();
 			$db->Execute ( $query );
 			if ($db->getErrorNum() != 0) {
 				$db->RollbackTrans ();
-				$status ['error'] = $db->stderr ();
-				return $status;
+				$status['error'] = $db->stderr();
+                break;
 			}
 		}
 		
@@ -391,12 +393,9 @@ class JFusionAdmin_magento extends JFusionAdmin
 		}
 		*/
 
-        $status = array('error' => array(),'debug' => array());
-		if ($ret !== true) {
-			$status['error'] = $jname . ': ' . JText::sprintf('UNINSTALL_MODULE_ERROR', $src_archive, $dest);
-		}else{
-			$status['message'] = $jname .': ' . JText::_('UNINSTALL_MODULE_SUCCESS');
-		}
+        if (empty($status['error'])) {
+            $status['message'] = $jname .': ' . JText::_('UNINSTALL_MODULE_SUCCESS');
+        }
         return $status;
 	}
 
@@ -412,6 +411,7 @@ class JFusionAdmin_magento extends JFusionAdmin
 		
 		if(file_exists($jfusion_mod_xml)) {
             /**
+             * @ignore
              * @var $xml JSimpleXML
              */
             $xml = JFactory::getXMLParser ( 'simple' );
@@ -450,6 +450,7 @@ class JFusionAdmin_magento extends JFusionAdmin
 		$source_path = $params->get ( 'source_path' );
 		$jfusion_mod_xml = $source_path . DS .'app'. DS .'etc'. DS .'modules'. DS .'Jfusion_All.xml';
         /**
+         * @ignore
          * @var $xml JSimpleXML
          */
 		$xml = JFactory::getXMLParser ( 'simple' );

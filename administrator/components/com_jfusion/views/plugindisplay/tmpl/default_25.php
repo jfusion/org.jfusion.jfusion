@@ -376,7 +376,8 @@ $jfusion_plugins = $this->VersionData->getElementByPath('plugins')->children(); 
 							<select name="install_url2" id="install_url2">
 							<?php
                                 /**
-                                 *  @var $plugin JSimpleXMLElement
+                                 * @ignore
+                                 * @var $plugin JSimpleXMLElement
                                  */
                                 foreach ($jfusion_plugins as $plugin): ?>
 								<option value="<?php echo $plugin->getElementByPath('remotefile')->data() ?>"><?php echo $plugin->name() . ' - ' . $plugin->getElementByPath('description')->data(); ?></option>

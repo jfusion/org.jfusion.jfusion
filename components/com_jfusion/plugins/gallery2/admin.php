@@ -190,6 +190,7 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
      */
     function getSitemapTree($jFusionParam, $jPluginParam, $itemId) {
         /**
+         * @ignore
          * @var $helper JFusionHelper_gallery2
          */
         $helper = JFusionFactory::getHelper($this->getJname());
@@ -265,6 +266,7 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
      */
     function show_templateList($name, $value, $node, $control_name) {
         /**
+         * @ignore
          * @var $helper JFusionHelper_gallery2
          */
         $helper = JFusionFactory::getHelper($this->getJname());

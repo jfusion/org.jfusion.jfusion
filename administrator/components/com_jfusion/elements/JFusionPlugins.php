@@ -41,6 +41,7 @@ class JElementJFusionPlugins extends JElement
     function fetchElement($name, $value, &$node, $control_name)
     {
         /**
+         * @ignore
          * @var $db JDatabase
          */
         $db = JFactory::getDBO();

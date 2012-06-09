@@ -34,6 +34,7 @@ class JFusionUser_universal extends JFusionUser {
     {
         // initialise some objects
         /**
+         * @ignore
          * @var $helper JFusionHelper_universal
          */
         $helper = JFusionFactory::getHelper($this->getJname());
@@ -118,6 +119,7 @@ class JFusionUser_universal extends JFusionUser {
         $status = array('error' => array(),'debug' => array());
 
         /**
+         * @ignore
          * @var $helper JFusionHelper_universal
          */
         $helper = JFusionFactory::getHelper($this->getJname());
@@ -213,6 +215,7 @@ class JFusionUser_universal extends JFusionUser {
     function updatePassword($userinfo, &$existinguser, &$status)
     {
         /**
+         * @ignore
          * @var $helper JFusionHelper_universal
          */
         $helper = JFusionFactory::getHelper($this->getJname());
@@ -272,6 +275,7 @@ class JFusionUser_universal extends JFusionUser {
     function updateEmail($userinfo, &$existinguser, &$status)
     {
         /**
+         * @ignore
          * @var $helper JFusionHelper_universal
          */
         $helper = JFusionFactory::getHelper($this->getJname());
@@ -307,6 +311,7 @@ class JFusionUser_universal extends JFusionUser {
             $usergroup = $usergroups[0];
             $db = JFusionFactory::getDatabase($this->getJname());
             /**
+             * @ignore
              * @var $helper JFusionHelper_universal
              */
             $helper = JFusionFactory::getHelper($this->getJname());
@@ -358,6 +363,7 @@ class JFusionUser_universal extends JFusionUser {
     function blockUser($userinfo, &$existinguser, &$status)
     {
         /**
+         * @ignore
          * @var $helper JFusionHelper_universal
          */
         $helper = JFusionFactory::getHelper($this->getJname());
@@ -405,6 +411,7 @@ class JFusionUser_universal extends JFusionUser {
     function unblockUser($userinfo, &$existinguser, &$status)
     {
         /**
+         * @ignore
          * @var $helper JFusionHelper_universal
          */
         $helper = JFusionFactory::getHelper($this->getJname());
@@ -438,6 +445,7 @@ class JFusionUser_universal extends JFusionUser {
     function activateUser($userinfo, &$existinguser, &$status)
     {
         /**
+         * @ignore
          * @var $helper JFusionHelper_universal
          */
         $helper = JFusionFactory::getHelper($this->getJname());
@@ -466,6 +474,7 @@ class JFusionUser_universal extends JFusionUser {
     function inactivateUser($userinfo, &$existinguser, &$status)
     {
         /**
+         * @ignore
          * @var $helper JFusionHelper_universal
          */
         $helper = JFusionFactory::getHelper($this->getJname());
@@ -500,6 +509,7 @@ class JFusionUser_universal extends JFusionUser {
 		} else {
             $usergroup = $usergroups[0];
             /**
+             * @ignore
              * @var $helper JFusionHelper_universal
              */
             $helper = JFusionFactory::getHelper($this->getJname());

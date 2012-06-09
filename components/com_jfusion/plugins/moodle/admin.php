@@ -314,6 +314,7 @@ class JFusionAdmin_moodle extends JFusionAdmin
         $xmlfile = realpath ( dirname ( __FILE__ ) ) . DS . 'install_module' . DS . 'source' . DS . 'listfiles.xml';
 
         /**
+         * @ignore
          * @var $listfiles JSimpleXML
          */
         $listfiles = JFactory::getXMLParser('simple');
@@ -321,6 +322,7 @@ class JFusionAdmin_moodle extends JFusionAdmin
         $files = $listfiles->document->getElementByPath('file');
 
         /**
+         * @ignore
          * @var $file JSimpleXMLElement
          */
         foreach($files as $file){

@@ -250,6 +250,7 @@ class simple_html_dom_node {
 
         $ret = '';
         /**
+         * @ignore
          * @var $n simple_html_dom_node
          */
         foreach($this->nodes as $n)
@@ -280,6 +281,7 @@ class simple_html_dom_node {
             $ret .= $this->_[HDOM_INFO_INNER];
         else {
             /**
+             * @ignore
              * @var $n simple_html_dom_node
              */
             foreach($this->nodes as $n)
@@ -309,6 +311,7 @@ class simple_html_dom_node {
 
         $ret = '';
         /**
+         * @ignore
          * @var $n simple_html_dom_node
          */
         foreach($this->nodes as $n)
@@ -828,6 +831,7 @@ class simple_html_dom {
     // clean up memory due to php5 circular references memory leak...
     function clear() {
         /**
+         * @ignore
          * @var $n simple_html_dom_node
          */
         foreach($this->nodes as $n) {$n->clear(); $n = null;}

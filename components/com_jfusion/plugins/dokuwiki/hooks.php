@@ -32,6 +32,8 @@ class JFusionDokuWikiHook {
     /**
      * Register its handlers with the DokuWiki's event controller
      *
+     * show off @method
+     *
      * @param object &$controller
      */
     function register(&$controller) {

@@ -38,6 +38,7 @@ class JFusionUser_dokuwiki extends JFusionUser {
         // Initialise some variables
         $params = JFusionFactory::getParams($this->getJname());
         /**
+         * @ignore
          * @var $helper JFusionHelper_dokuwiki
          */
         $helper = JFusionFactory::getHelper($this->getJname());
@@ -134,6 +135,7 @@ class JFusionUser_dokuwiki extends JFusionUser {
      */
     function getUser($userinfo) {
         /**
+         * @ignore
          * @var $helper JFusionHelper_dokuwiki
          */
         $helper = JFusionFactory::getHelper($this->getJname());
@@ -176,6 +178,7 @@ class JFusionUser_dokuwiki extends JFusionUser {
         $username = $this->filterUsername($userinfo->username);
         $user[$username] = $username;
         /**
+         * @ignore
          * @var $helper JFusionHelper_dokuwiki
          */
         $helper = JFusionFactory::getHelper($this->getJname());
@@ -204,6 +207,7 @@ class JFusionUser_dokuwiki extends JFusionUser {
 
         //setup Dokuwiki's constants
         /**
+         * @ignore
          * @var $helper JFusionHelper_dokuwiki
          */
         $helper = JFusionFactory::getHelper($this->getJname());
@@ -241,6 +245,7 @@ class JFusionUser_dokuwiki extends JFusionUser {
 
             //setup Dokuwiki's constants
             /**
+             * @ignore
              * @var $helper JFusionHelper_dokuwiki
              */
             $helper = JFusionFactory::getHelper($this->getJname());
@@ -290,6 +295,7 @@ class JFusionUser_dokuwiki extends JFusionUser {
                 $status['error'][] = JText::_('ERROR_CREATE_USER') . ": " . JText::_('USERGROUP_MISSING');
             } else {
                 /**
+                 * @ignore
                  * @var $helper JFusionHelper_dokuwiki
                  */
                 $helper = JFusionFactory::getHelper($this->getJname());

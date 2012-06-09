@@ -330,6 +330,7 @@ class JFusionDiscussBotHelper {
                                         $catid =& $this->article->catid;
                                         $JCat =& JCategories::getInstance('Content');
                                         /**
+                                         * @ignore
                                          * @var $cat JCategoryNode
                                          */
                                         $cat = $JCat->get($catid);
@@ -358,6 +359,7 @@ class JFusionDiscussBotHelper {
                                                         if (!$valid) {
                                                             //get the parent's parent id
                                                             /**
+                                                             * @ignore
                                                              * @var $parent JCategoryNode
                                                              */
                                                             $parent = $JCat->get($parent_id);

@@ -42,6 +42,7 @@ class JFusionAuth_gallery2 extends JFusionAuth {
      */
     function generateEncryptedPassword($userinfo) {
         /**
+         * @ignore
          * @var $helper JFusionHelper_gallery2
          */
         $helper = JFusionFactory::getHelper($this->getJname());

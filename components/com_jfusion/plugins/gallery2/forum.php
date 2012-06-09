@@ -66,6 +66,7 @@ class JFusionForum_gallery2 extends JFusionForum {
     function renderImageBlock($config, $view, $pluginParam) {
 		//Initialize the Framework
         /**
+         * @ignore
          * @var $helper JFusionHelper_gallery2
          */
         $helper = JFusionFactory::getHelper($this->getJname());
@@ -178,6 +179,7 @@ class JFusionForum_gallery2 extends JFusionForum {
      */
     function renderSideBar($config, $view, $pluginParam) {
         /**
+         * @ignore
          * @var $helper JFusionHelper_gallery2
          */
         $helper = JFusionFactory::getHelper($this->getJname());

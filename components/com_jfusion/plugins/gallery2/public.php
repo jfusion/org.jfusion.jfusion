@@ -63,6 +63,7 @@ class JFusionPublic_gallery2 extends JFusionPublic {
     	$this->data = $data;
 
         /**
+         * @ignore
          * @var $jPluginParam JParameter
          */
         $jPluginParam = &$data->jPluginParam;
@@ -74,6 +75,7 @@ class JFusionPublic_gallery2 extends JFusionPublic {
             $_SERVER['PATH_INFO'] = $path_info;
         }
         /**
+         * @ignore
          * @var $helper JFusionHelper_gallery2
          */
         $helper = JFusionFactory::getHelper($this->getJname());
@@ -205,6 +207,7 @@ class JFusionPublic_gallery2 extends JFusionPublic {
      */
     function getSearchResults(&$text, &$phrase, &$pluginParam, $itemid) {
         /**
+         * @ignore
          * @var $helper JFusionHelper_gallery2
          */
         $helper = JFusionFactory::getHelper($this->getJname());

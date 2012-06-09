@@ -11,6 +11,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 /**
+ * @ignore
  * @var $joomlaUser object
  * @var $output object
  * @var $config array

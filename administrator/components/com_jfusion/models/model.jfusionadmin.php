@@ -290,6 +290,7 @@ class JFusionFunctionAdmin
         if (file_exists($filename) && is_readable($filename)) {
             //get the version number
             /**
+             * @ignore
              * @var $parser JSimpleXML
              */
             $parser = JFactory::getXMLParser('Simple');

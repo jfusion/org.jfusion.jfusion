@@ -52,6 +52,7 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
         $status = array();
         $params = JFusionFactory::getParams($this->getJname());
         /**
+         * @ignore
          * @var $helper JFusionHelper_dokuwiki
          */
         $helper = JFusionFactory::getHelper($this->getJname());
@@ -77,6 +78,7 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
     function setupFromPath($Path)
     {
         /**
+         * @ignore
          * @var $helper JFusionHelper_dokuwiki
          */
         $helper = JFusionFactory::getHelper($this->getJname());
@@ -143,6 +145,7 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
     function getUserList($limitstart = null, $limit = null)
     {
         /**
+         * @ignore
          * @var $helper JFusionHelper_dokuwiki
          */
         $helper = JFusionFactory::getHelper($this->getJname());
@@ -165,6 +168,7 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
     function getUserCount()
     {
         /**
+         * @ignore
          * @var $helper JFusionHelper_dokuwiki
          */
         $helper = JFusionFactory::getHelper($this->getJname());
@@ -207,6 +211,7 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
     function getDefaultUsergroup()
     {
         /**
+         * @ignore
          * @var $helper JFusionHelper_dokuwiki
          */
         $helper = JFusionFactory::getHelper($this->getJname());
@@ -221,6 +226,7 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
     function allowRegistration()
     {
         /**
+         * @ignore
          * @var $helper JFusionHelper_dokuwiki
          */
         $helper = JFusionFactory::getHelper($this->getJname());
@@ -406,6 +412,7 @@ if (!defined(\'_JEXEC\'))';
         $error = 0;
         $reason = '';
         /**
+         * @ignore
          * @var $helper JFusionHelper_dokuwiki
          */
         $helper = JFusionFactory::getHelper($this->getJname());
@@ -456,6 +463,7 @@ if (!defined(\'_JEXEC\'))';
             $cookie_domain = $params->get('cookie_domain');
             $cookie_path = $params->get('cookie_path');
             /**
+             * @ignore
              * @var $helper JFusionHelper_dokuwiki
              */
             $helper = JFusionFactory::getHelper($this->getJname());
@@ -514,6 +522,7 @@ PHP;
 
         //update the config file
         /**
+         * @ignore
          * @var $helper JFusionHelper_dokuwiki
          */
         $helper = JFusionFactory::getHelper($this->getJname());

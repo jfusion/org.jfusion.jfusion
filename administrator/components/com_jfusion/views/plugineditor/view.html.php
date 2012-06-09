@@ -60,6 +60,7 @@ class jfusionViewplugineditor extends JView
 	            $content = str_replace(array('<param','</param'),array('<field','</field'),$content);
 
                 /**
+                 * @ignore
                  * @var $xml JXMLElement|SimpleXMLElement
                  */
 				$xml = JFactory::getXML($content, false);
@@ -70,12 +71,14 @@ class jfusionViewplugineditor extends JView
 				JFormHelper::addFieldPath(JPATH_COMPONENT_ADMINISTRATOR.'/fields');
 				foreach ($params as $key => $param) {
                     /**
+                     * @ignore
                      * @var $element JXMLElement|SimpleXMLElement
                      */
 					$element = $fields[$key];
 					$name = $element->getAttribute('name');
 					if ($name!='jfusionbox') {
                         /**
+                         * @ignore
                          * @var $field JFormField
                          */
                         $field = JFormHelper::loadFieldType($element->getAttribute('type'), true);

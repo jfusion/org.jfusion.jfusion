@@ -34,6 +34,7 @@ if (file_exists($model_file) && file_exists($factory_file) && file_exists($facto
 	require_once $factory_file;
     require_once $factory_admin_file;
     /**
+     * @ignore
      * @var $params JParameter
      */
     $pluginParamValue = $params->get('JFusionPluginParam');

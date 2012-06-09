@@ -50,6 +50,7 @@ class JElementJFusionUserpostgroups extends JElement
         if ($jname) {
             if (JFusionFunction::validPlugin($jname)) {
                 /**
+                 * @ignore
                  * @var $JFusionAdmin JFusionAdmin_smf
                  */
                 $JFusionAdmin = & JFusionFactory::getAdmin($jname);

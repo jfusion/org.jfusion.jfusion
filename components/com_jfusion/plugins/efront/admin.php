@@ -162,6 +162,7 @@ class JFusionAdmin_efront extends JFusionAdmin
      */
     function getUsergroupList() {
         /**
+         * @ignore
          * @var $helper JFusionHelper_efront
          */
         $helper = JFusionFactory::getHelper($this->getJname());
@@ -176,6 +177,7 @@ class JFusionAdmin_efront extends JFusionAdmin
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
         $usergroup_id = $usergroups[0];
         /**
+         * @ignore
          * @var $helper JFusionHelper_efront
          */
         $helper = JFusionFactory::getHelper($this->getJname());

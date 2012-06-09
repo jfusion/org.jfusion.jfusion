@@ -18,6 +18,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 /**
+ * @ignore
  * @var $params JParameter
  * @var $type string
  * @var $display_name string
