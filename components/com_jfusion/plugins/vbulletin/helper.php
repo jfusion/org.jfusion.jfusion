@@ -78,10 +78,10 @@ class JFusionHelper_vbulletin
             if (substr($version, 0, 1) > 3) {
                 $url .= $this->params->get('vb4_base_file', 'forum.php');
             } else {
-                $url .= "index.php";
+                $url .= 'index.php';
             }
-            $post_data = "jfvbtask=$task";
-            $post_data.= "&jfvbdata=" . urlencode(stripslashes($this->encryptApiData($data)));
+            $post_data = 'jfvbtask='.$task;
+            $post_data.= '&jfvbdata=' . urlencode(stripslashes($this->encryptApiData($data)));
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
