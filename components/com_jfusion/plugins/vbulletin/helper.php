@@ -158,6 +158,7 @@ class JFusionHelper_vbulletin
      */
     function vBulletinInit()
     {
+        $return = true;
         //only initialize the vb framework if it has not already been done
         if (!defined('VB_AREA')) {
             //load the vbulletin framework
@@ -200,7 +201,7 @@ class JFusionHelper_vbulletin
                 $GLOBALS["db"] = $vbulletin->db;
             } else {
                 JError::raiseWarning(500, JText::_('SOURCE_PATH_NOT_FOUND'));
-                return false;
+                $return = false;
             }
         } elseif (defined('VB_AREA') && VB_AREA == 'JFusion') {
         	if (!$this->vb_data) {
@@ -208,18 +209,19 @@ class JFusionHelper_vbulletin
 				 * TODO: using defined('VB_AREA') is not safe we we using multi instance VB?
 				 * we need to change something to support that. ? or it just failed t o fine CWD
 				 */
-        		return false;
-        	}
-            $this->vb_data->db->query_first("USE `" . $this->params->get('database_name') . "`");
-            //fixed do not remove ascii blankspace because we are in joomla everything is utf8
-            $this->vb_data->db->options['blankasciistrip'] = 'u8205 u8204 u8237 u8238';
-            // set conection to use utf8
-            $this->vb_data->db->query_first("SET names '".$this->params->get('database_charset', 'utf8')."'");
-            if (empty($GLOBALS['vbulletin'])) {
-                $GLOBALS['vbulletin'] = $this->vb_data;
-            }
-            if (empty($GLOBALS['db'])) {
-                $GLOBALS['db'] = $this->vb_data->db;
+                $return = false;
+        	} else {
+                $this->vb_data->db->query_first("USE `" . $this->params->get('database_name') . "`");
+                //fixed do not remove ascii blankspace because we are in joomla everything is utf8
+                $this->vb_data->db->options['blankasciistrip'] = 'u8205 u8204 u8237 u8238';
+                // set conection to use utf8
+                $this->vb_data->db->query_first("SET names '".$this->params->get('database_charset', 'utf8')."'");
+                if (empty($GLOBALS['vbulletin'])) {
+                    $GLOBALS['vbulletin'] = $this->vb_data;
+                }
+                if (empty($GLOBALS['db'])) {
+                    $GLOBALS['db'] = $this->vb_data->db;
+                }
             }
         } elseif (defined('VB_AREA')) {
            //vb is calling up JFusion so load the $vbulletin global
@@ -231,9 +233,9 @@ class JFusionHelper_vbulletin
                die('vB JFusion Integration Fatal Error - Please contact the site administrator!');
            }
         } else {
-            return false;
+            $return = false;
         }
-        return true;
+        return $return;
     }
 
     /**
