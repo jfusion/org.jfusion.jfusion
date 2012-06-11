@@ -23,6 +23,10 @@ defined('_JEXEC') or die('Restricted access');
 require_once dirname(__FILE__) . DS . 'helper.php';
 require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.jplugin.php';
 $user = JFactory::getUser();
+/**
+ * @ignore
+ * @var $params JParameter
+ */
 $params->def('greeting', 1);
 $type = modjfusionLoginHelper::getType();
 $return = modjfusionLoginHelper::getReturnURL($params, $type);

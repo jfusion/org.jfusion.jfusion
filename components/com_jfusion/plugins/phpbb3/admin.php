@@ -50,7 +50,7 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
 
     /**
      * @param string $forumPath
-     * @return array|bool
+     * @return array
      */
     function setupFromPath($forumPath) {
         //check for trailing slash and generate file path
@@ -59,10 +59,9 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
         } else {
             $myfile = $forumPath . DS . 'config.php';
         }
+        $params = array();
         if (($file_handle = @fopen($myfile, 'r')) === false) {
             JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));
-            $result = false;
-            return $result;
         } else {
             //parse the file line by line to get only the config variables
             $file_handle = fopen($myfile, 'r');
@@ -79,7 +78,6 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
             }
             fclose($file_handle);
             //save the parameters into array
-            $params = array();
             $params['database_host'] = isset($config['dbhost']) ? $config['dbhost'] : '';
             $params['database_name'] = isset($config['dbname']) ? $config['dbname'] : '';
             $params['database_user'] = isset($config['dbuser']) ? $config['dbuser'] : '';
@@ -122,9 +120,9 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
                     $params['source_url'] = $config['server_name'] . '/' . $config['script_path'];
                 }
             }
-            //return the parameters so it can be saved permanently
-            return $params;
         }
+        //return the parameters so it can be saved permanently
+        return $params;
     }
 
     /**
@@ -176,7 +174,8 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
      */
     function getDefaultUsergroup() {
         $params = JFusionFactory::getParams($this->getJname());
-        $usergroup_id = $params->get('usergroup');
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
+        $usergroup_id = $usergroups[0];
         //we want to output the usergroup name
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'SELECT group_name from #__groups WHERE group_id = ' . (int)$usergroup_id;

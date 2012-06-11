@@ -52,7 +52,7 @@ function file_get_html() {
  *
  * @param $str
  * @param bool $lowercase
- * @return \simple_html_dom
+ * @return simple_html_dom
  */
 function str_get_html($str, $lowercase=true) {
     $dom = new simple_html_dom;
@@ -117,8 +117,14 @@ class simple_html_dom_node {
     public $attr = array();
     public $children = array();
     public $nodes = array();
+    /**
+     * @var simple_html_dom $parent
+     */
     public $parent = null;
     public $_ = array();
+    /**
+     * @var $dom simple_html_dom
+     */
     private $dom = null;
 
     /**
@@ -243,6 +249,10 @@ class simple_html_dom_node {
         if (isset($this->_[HDOM_INFO_TEXT])) return $this->dom->restore_noise($this->_[HDOM_INFO_TEXT]);
 
         $ret = '';
+        /**
+         * @ignore
+         * @var $n simple_html_dom_node
+         */
         foreach($this->nodes as $n)
             $ret .= $n->outertext();
         return $ret;
@@ -270,6 +280,10 @@ class simple_html_dom_node {
         if (isset($this->_[HDOM_INFO_INNER]))
             $ret .= $this->_[HDOM_INFO_INNER];
         else {
+            /**
+             * @ignore
+             * @var $n simple_html_dom_node
+             */
             foreach($this->nodes as $n)
                 $ret .= $n->outertext();
         }
@@ -296,6 +310,10 @@ class simple_html_dom_node {
         if (strcasecmp($this->tag, 'style')===0) return '';
 
         $ret = '';
+        /**
+         * @ignore
+         * @var $n simple_html_dom_node
+         */
         foreach($this->nodes as $n)
             $ret .= $n->text();
         return $ret;
@@ -679,8 +697,15 @@ class simple_html_dom_node {
  * simple html dom parser
  */
 class simple_html_dom {
+    /**
+     * @var $root simple_html_dom_node
+     */
     public $root = null;
     public $nodes = array();
+
+    /**
+     * @var $callback string
+     */
     public $callback = null;
     public $lowercase = false;
     protected $pos;
@@ -688,7 +713,10 @@ class simple_html_dom {
     protected $char;
     protected $size;
     protected $cursor;
-    protected $parent;
+    /**
+     * @var $parent simple_html_dom_node
+     */
+    public $parent;
     protected $noise = array();
     protected $token_blank = " \t\r\n";
     protected $token_equal = ' =/>';
@@ -766,7 +794,7 @@ class simple_html_dom {
     /**
      * set callback function
      *
-     * @param $function_name
+     * @param string $function_name
      */
     function set_callback($function_name) {
         $this->callback = $function_name;
@@ -802,6 +830,10 @@ class simple_html_dom {
 
     // clean up memory due to php5 circular references memory leak...
     function clear() {
+        /**
+         * @ignore
+         * @var $n simple_html_dom_node
+         */
         foreach($this->nodes as $n) {$n->clear(); $n = null;}
         if (isset($this->parent)) {$this->parent->clear(); unset($this->parent);}
         if (isset($this->root)) {$this->root->clear(); unset($this->root);}

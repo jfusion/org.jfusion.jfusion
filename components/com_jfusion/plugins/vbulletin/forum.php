@@ -31,14 +31,20 @@ defined('_JEXEC') or die('Restricted access');
 class JFusionForum_vbulletin extends JFusionForum
 {
     var $params;
+    /**
+     * @var $helper JFusionHelper_vbulletin
+     */
     var $helper;
 
-    function JFusionForum_vbulletin()
+    /**
+     *
+     */
+    function __construct()
     {
         //get the params object
-        $this->params = & JFusionFactory::getParams($this->getJname());
+        $this->params = JFusionFactory::getParams($this->getJname());
         //get the helper object
-        $this->helper = & JFusionFactory::getHelper($this->getJname());
+        $this->helper = JFusionFactory::getHelper($this->getJname());
     }
 
     /**
@@ -171,7 +177,7 @@ class JFusionForum_vbulletin extends JFusionForum
     }
 
     /**
-     * @param object $dbparams
+     * @param JParameter $dbparams
      * @param object $ids
      * @param object $contentitem
      * @param object $userinfo
@@ -179,8 +185,7 @@ class JFusionForum_vbulletin extends JFusionForum
      */
     function createPost(&$dbparams, &$ids, &$contentitem, &$userinfo)
     {
-        $status = array();
-        $status["error"] = array();
+        $status = array('error' => array(),'debug' => array());
         if ($userinfo->guest) {
             $userinfo->username = JRequest::getVar('guest_username', '', 'POST');
             $userinfo->userid = 0;

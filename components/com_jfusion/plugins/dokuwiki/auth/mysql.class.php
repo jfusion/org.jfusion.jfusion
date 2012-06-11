@@ -19,34 +19,40 @@ require_once 'basic.class.php';
  */
 class doku_auth_mysql extends doku_auth_basic {
 
-    var $dbcon        = 0;
+    /**
+     * @var $dbcon JFusionMySQL|JFusionMySQLi|JDatabase
+     */
+    var $dbcon        = null;
     var $dbver        = 0;    // database version
     var $dbrev        = 0;    // database revision
     var $dbsub        = 0;    // database subrevision
     var $cnf          = null;
     var $defaultgroup = "";
 
-	
+    /**
+     * @var $helper JFusionHelper_dokuwiki
+     */
+    var $helper = null;
+
     /**
      * Constructor
      *
      * checks if the mysql interface is available, otherwise it will
      * set the variable $success of the basis class to false
      *
-     * @param string $jname
+     * @param JFusionHelper_dokuwiki $helper
      *
      * @author Matthias Grimm <matthiasgrimm@users.sourceforge.net>
      */
-    function doku_auth_mysql($jname) {
-		$this->jname = $jname;
+    function doku_auth_mysql($helper) {
+        $this->helper = $helper;
     }
 
     /**
      * @return mixed
      */
     function init() {
-        $share = Dokuwiki::getInstance($this->jname);
-        $conf = $share->getConf();
+        $conf = $this->helper->getConf();
 
 		$this->cnf = $conf['auth']['mysql'];
 
@@ -745,12 +751,12 @@ class doku_auth_mysql extends doku_auth_basic {
      * @author Matthias Grimm <matthiasgrimm@users.sourceforge.net>
      */
     function _getGroupID($group) {
-      if($this->dbcon) {
-        $sql = str_replace('%{group}',$this->_escape($group),$this->cnf['getGroupID']);
-        $result = $this->_queryDB($sql);
-        return $result === false ? false : $result[0]['id'];
-      }
-      return false;
+        if($this->dbcon) {
+            $sql = str_replace('%{group}',$this->_escape($group),$this->cnf['getGroupID']);
+            $result = $this->_queryDB($sql);
+            return $result === false ? false : $result[0]['id'];
+        }
+        return false;
     }
 
     /**
@@ -764,7 +770,7 @@ class doku_auth_mysql extends doku_auth_basic {
      */
     function _openDB() {
 		$this->init();
-		$db = JFusionFactory::getDatabase($this->jname);
+		$db = JFusionFactory::getDatabase($this->helper->getJname());
 		$this->dbcon = $db;
 		return $db->connected();
     }
@@ -775,10 +781,10 @@ class doku_auth_mysql extends doku_auth_basic {
      * @author Matthias Grimm <matthiasgrimm@users.sourceforge.net>
      */
     function _closeDB() {
-      if ($this->dbcon) {
-//        mysql_close ($this->dbcon);
-//        $this->dbcon = 0;
-      }      
+        if ($this->dbcon) {
+        //        mysql_close ($this->dbcon);
+        //        $this->dbcon = 0;
+        }
     }
 
     /**

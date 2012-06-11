@@ -584,7 +584,11 @@ function com_install() {
 	}
 
 	//output some info to the user
-	
+
+    /**
+     * @ignore
+     * @var $parser JSimpleXML
+     */
 	$parser = JFactory::getXMLParser('Simple');
 	$parser->loadFile($basedir . DS. 'jfusion.xml');
 	?>
@@ -599,7 +603,7 @@ function com_install() {
 		</td>
 		<td>
 			<h2>
-			<?php echo JText::_('JFUSION') . ' '.$parser->document->version[0]->data().' ' . JText::_('INSTALLATION'); ?>
+			<?php echo JText::_('JFUSION') . ' '.$parser->document->getElementByPath('version')->data().' ' . JText::_('INSTALLATION'); ?>
 			</h2>
 		</td>
 	</tr>

@@ -40,6 +40,10 @@ class JElementJFusionPlugins extends JElement
      */
     function fetchElement($name, $value, &$node, $control_name)
     {
+        /**
+         * @ignore
+         * @var $db JDatabase
+         */
         $db = JFactory::getDBO();
         $query = 'SELECT name as id, name as name from #__jfusion';
         $db->setQuery($query);

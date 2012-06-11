@@ -101,9 +101,7 @@ class JFusionUser_mediawiki extends JFusionUser {
     function deleteUser($userinfo)
     {
     	//setup status array to hold debug info and errors
-        $status = array();
-        $status['debug'] = array();
-        $status['error'] = array();
+        $status = array('error' => array(),'debug' => array());
 
         $db = JFusionFactory::getDatabase($this->getJname());
 
@@ -115,8 +113,6 @@ class JFusionUser_mediawiki extends JFusionUser {
 			$query = 'DELETE FROM #__user_groups WHERE ug_user = '.$db->quote($userinfo->userid);
 			$db->setQuery($query);
 			$db->query();
-
-			$status['error'] = false;
 			$status['debug'][] = JText::_('USER_DELETION'). ' ' . $userinfo->username;
 		}
 
@@ -134,7 +130,11 @@ class JFusionUser_mediawiki extends JFusionUser {
 		//setcookie($params->get('cookie_name'), '',0,$params->get('cookie_path'),$params->get('cookie_domain'),$params->get('secure'),$params->get('httponly'));
 
         $params =& JFusionFactory::getParams($this->getJname());
-        $helper =& JFusionFactory::getHelper($this->getJname());
+        /**
+         * @ignore
+         * @var $helper JFusionHelper_mediawiki
+         */
+        $helper = JFusionFactory::getHelper($this->getJname());
         $cookie_path = $params->get('cookie_path');
         $cookie_domain = $params->get('cookie_domain');
         $cookie_secure = $params->get('secure');
@@ -167,46 +167,47 @@ class JFusionUser_mediawiki extends JFusionUser {
      * @return array
      */
     function createSession($userinfo, $options){
-        $status = array();
-	    $status['error'] = array();
-    	$status['debug'] = array();
+        $status = array('error' => array(),'debug' => array());
 
 		//do not create sessions for blocked users
 		if (!empty($userinfo->block) || !empty($userinfo->activation)) {
             $status['error'][] = JText::_('FUSION_BLOCKED_USER');
-            return $status;
-		}
+		} else {
+            //$status = JFusionJplugin::createSession($userinfo, $options,$this->getJname());
 
-		//$status = JFusionJplugin::createSession($userinfo, $options,$this->getJname());
+            $params = JFusionFactory::getParams($this->getJname());
+            /**
+             * @ignore
+             * @var $helper JFusionHelper_mediawiki
+             */
+            $helper = JFusionFactory::getHelper($this->getJname());
 
-        $params =& JFusionFactory::getParams($this->getJname());
-        $helper =& JFusionFactory::getHelper($this->getJname());
+            $cookie_path = $params->get('cookie_path');
+            $cookie_domain = $params->get('cookie_domain');
+            $cookie_secure = $params->get('secure');
+            $cookie_httponly = $params->get('httponly');
+            $cookie_expiry = $params->get('cookie_expires', 3100);
+            $cookie_name = $helper->getCookieName();
+            $expires = time() + $cookie_expiry;
+            $debug_expiration = date("Y-m-d H:i:s", $expires);
+            $helper->startSession($options);
 
-        $cookie_path = $params->get('cookie_path');
-        $cookie_domain = $params->get('cookie_domain');
-        $cookie_secure = $params->get('secure');
-        $cookie_httponly = $params->get('httponly');
-        $cookie_expiry = $params->get('cookie_expires', 3100);
-        $cookie_name = $helper->getCookieName();
-        $expires = time() + $cookie_expiry;
-        $debug_expiration = date("Y-m-d H:i:s", $expires);
-        $helper->startSession($options);
+            setcookie($cookie_name  . 'UserName', $userinfo->username, $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
+            $status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => $cookie_name.'UserName', JText::_('VALUE') => $userinfo->username, JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
+            $_SESSION['wsUserName'] = $userinfo->username;
 
-        setcookie($cookie_name  . 'UserName', $userinfo->username, $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
-        $status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => $cookie_name.'UserName', JText::_('VALUE') => $userinfo->username, JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
-        $_SESSION['wsUserName'] = $userinfo->username;
+            setcookie($cookie_name  . 'UserID', $userinfo->userid, $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
+            $status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => $cookie_name.'UserID', JText::_('VALUE') => $userinfo->userid, JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
+            $_SESSION['wsUserID'] = $userinfo->userid;
 
-        setcookie($cookie_name  . 'UserID', $userinfo->userid, $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
-        $status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => $cookie_name.'UserID', JText::_('VALUE') => $userinfo->userid, JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
-        $_SESSION['wsUserID'] = $userinfo->userid;
+            $_SESSION[ 'wsToken'] = $userinfo->user_token;
+            if (!empty($options['remember'])) {
+                setcookie($cookie_name  . 'Token', $userinfo->user_token, $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
+                $status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => $cookie_name.'Token', JText::_('VALUE') => substr($userinfo->user_token, 0, 6) . '********, ', JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
+            }
 
-        $_SESSION[ 'wsToken'] = $userinfo->user_token;
-        if (!empty($options['remember'])) {
-            setcookie($cookie_name  . 'Token', $userinfo->user_token, $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
-            $status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => $cookie_name.'Token', JText::_('VALUE') => substr($userinfo->user_token, 0, 6) . '********, ', JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
+            $helper->closeSession();
         }
-
-        $helper->closeSession();
 		return $status;
 	}
 
@@ -275,33 +276,26 @@ class JFusionUser_mediawiki extends JFusionUser {
     function updateUsergroup($userinfo, &$existinguser, &$status)
 	{
         $params = JFusionFactory::getParams($this->getJname());
-        //get the default user group and determine if we are using simple or advanced
-        $usergroups = (substr($params->get('usergroup'), 0, 2) == 'a:') ? unserialize($params->get('usergroup')) : $params->get('usergroup');
-        //check to make sure that if using the advanced group mode, $userinfo->group_id exists
-        if (is_array($usergroups) && !isset($userinfo->group_id)) {
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+        if (empty($usergroups)) {
             $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
         } else {
-            $usergroup = (is_array($usergroups)) ? $usergroups[$userinfo->group_id] : $usergroups;
+            $group = $usergroups[0];
 
-            if(isset($usergroups[$userinfo->group_id]))
-            {
-                $db = JFusionFactory::getDatabase($this->getJname());
-                $query = 'DELETE FROM #__user_groups WHERE ug_user = '.$db->quote($existinguser->userid);
-                $db->setQuery($query);
-                $db->query();
+            $db = JFusionFactory::getDatabase($this->getJname());
+            $query = 'DELETE FROM #__user_groups WHERE ug_user = '.$db->quote($existinguser->userid);
+            $db->setQuery($query);
+            $db->query();
 
-                //prepare the user variables
-                $usergroup = new stdClass;
-                $usergroup->ug_user = $existinguser->userid;
-                $usergroup->ug_group = is_array($usergroups) ? $usergroups[$userinfo->group_id] : $usergroups;
+            //prepare the user variables
+            $usergroup = new stdClass;
+            $usergroup->ug_user = $existinguser->userid;
+            $usergroup->ug_group = $group;
 
-                if (!$db->insertObject('#__user_groups', $usergroup, 'ug_user' )) {
-                    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-                } else {
-                    $status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . $existinguser->group_id . ' -> ' . $usergroups[$userinfo->group_id];
-                }
+            if (!$db->insertObject('#__user_groups', $usergroup, 'ug_user' )) {
+                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
             } else {
-                $status['error'][] = JText::_('GROUP_UPDATE_ERROR');
+                $status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . $existinguser->group_id . ' -> ' . $group;
             }
         }
 	}
@@ -395,13 +389,13 @@ class JFusionUser_mediawiki extends JFusionUser {
         $db = JFusionFactory::getDatabase($this->getJname());
         $params = JFusionFactory::getParams($this->getJname());
         $source_path = $params->get('source_path');
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
         //get the default user group and determine if we are using simple or advanced
-        $usergroups = (substr($params->get('usergroup'), 0, 2) == 'a:') ? unserialize($params->get('usergroup')) : $params->get('usergroup');
         //check to make sure that if using the advanced group mode, $userinfo->group_id exists
-        if (is_array($usergroups) && !isset($userinfo->group_id)) {
-            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+        if (empty($usergroups)) {
+            $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
         } else {
-            $usergroup = (is_array($usergroups)) ? $usergroups[$userinfo->group_id] : $usergroups;
+            $usergroup = $usergroups[0];
 
             //prepare the user variables
             $user = new stdClass;
@@ -448,10 +442,13 @@ class JFusionUser_mediawiki extends JFusionUser {
                 } else {
                     $wfWikiID = $wgDBname;
                 }
-
-                $JFusionPlugin = JFusionFactory::getAdmin($this->getJname());
-                $wgSecretKey = $JFusionPlugin->getConfig('wgSecretKey');
-                $wgProxyKey = $JFusionPlugin->getConfig('wgProxyKey');
+                /**
+                 * @ignore
+                 * @var $helper JFusionHelper_mediawiki
+                 */
+                $helper = JFusionFactory::getHelper($this->getJname());
+                $wgSecretKey = $helper->getConfig('wgSecretKey');
+                $wgProxyKey = $helper->getConfig('wgProxyKey');
 
                 if ( $wgSecretKey ) {
                     $key = $wgSecretKey;

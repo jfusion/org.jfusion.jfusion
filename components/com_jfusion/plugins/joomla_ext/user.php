@@ -61,43 +61,40 @@ class JFusionUser_joomla_ext extends JFusionUser {
         //get the database ready
         $db = & JFusionFactory::getDatabase($this->getJname());
         //setup status array to hold debug info and errors
-        $status = array();
-        $status['debug'] = array();
-        $status['error'] = array();
+        $status = array('error' => array(),'debug' => array());
         $username = $userinfo->username;
         $userid = $userinfo->userid;
         $query = 'DELETE FROM #__users WHERE id = ' . (int)$userid;
         $db->setQuery($query);
         if (!$db->query()) {
             $status["error"][] = JText::_('ERROR_DELETE') . ' ' . $username . ' ' . $db->stderr();
-            return $status;
-        }
-
-        if (JFusionFunction::isJoomlaVersion('1.6',$this->getJname())) {
-			$query = 'DELETE FROM #__user_profiles WHERE user_id = ' . (int)$userid;
-	        $db->setQuery($query);
-			$db->query();
-			$query = 'DELETE FROM #__user_usergroup_map WHERE user_id = ' . (int)$userid;
-	        $db->setQuery($query);
-			$db->query();
         } else {
-			$query = 'SELECT id FROM #__core_acl_aro WHERE value = ' . (int)$userid;
-	        $db->setQuery($query);
-	        $aroid = $db->loadResult();
-	        if ($aroid != '') {
-	            $query = 'DELETE FROM #__core_acl_aro WHERE value = ' . (int)$userid;
-	            $db->setQuery($query);
-	            if (!$db->query()) {
-	                $status["error"][] = JText::_('ERROR_DELETE') . ' ' . $username . ' ' . $db->stderr();
-	            }
-	            $query = 'DELETE FROM #__core_acl_groups_aro_map WHERE aro_id = ' . (int)$aroid;
-	            $db->setQuery($query);
-	            if (!$db->query()) {
-	                $status["error"][] = JText::_('ERROR_DELETE') . ' ' . $username . ' ' . $db->stderr();
-	            }
-	        }
+            if (JFusionFunction::isJoomlaVersion('1.6',$this->getJname())) {
+                $query = 'DELETE FROM #__user_profiles WHERE user_id = ' . (int)$userid;
+                $db->setQuery($query);
+                $db->query();
+                $query = 'DELETE FROM #__user_usergroup_map WHERE user_id = ' . (int)$userid;
+                $db->setQuery($query);
+                $db->query();
+            } else {
+                $query = 'SELECT id FROM #__core_acl_aro WHERE value = ' . (int)$userid;
+                $db->setQuery($query);
+                $aroid = $db->loadResult();
+                if ($aroid != '') {
+                    $query = 'DELETE FROM #__core_acl_aro WHERE value = ' . (int)$userid;
+                    $db->setQuery($query);
+                    if (!$db->query()) {
+                        $status["error"][] = JText::_('ERROR_DELETE') . ' ' . $username . ' ' . $db->stderr();
+                    }
+                    $query = 'DELETE FROM #__core_acl_groups_aro_map WHERE aro_id = ' . (int)$aroid;
+                    $db->setQuery($query);
+                    if (!$db->query()) {
+                        $status["error"][] = JText::_('ERROR_DELETE') . ' ' . $username . ' ' . $db->stderr();
+                    }
+                }
+            }
+            $status['debug'][] = JText::_('USER_DELETION') . ' ' . $username;
         }
-        $status['debug'][] = JText::_('USER_DELETION') . ' ' . $username;
         return $status;
     }
 

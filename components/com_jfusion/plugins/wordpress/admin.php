@@ -17,9 +17,6 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
-if (!class_exists('JFusionWordpressHelper')) {
-	require_once 'wordpresshelper.php';
-}
 
 /**
  * JFusion Admin Class for Moodle 1.8+
@@ -52,7 +49,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 	}
 
     /**
-     * @param $db
+     * @param JDatabase $db
      * @return array
      */
     function getUsergroupListWPA($db) {
@@ -83,11 +80,9 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 		} else {
 			$myfile = $forumPath . DS . 'wp-config.php';
 		}
-
-		if (($file_handle = @fopen($myfile, 'r')) === false) {
+        $params = array();
+        if (($file_handle = @fopen($myfile, 'r')) === false) {
 			JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));
-			$result = false;
-			return $result;
 		} else {
 			//parse the file line by line to get only the config variables
 			//			$file_handle = fopen($myfile, 'r');
@@ -103,7 +98,6 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 			}
 			fclose($file_handle);
 			//save the parameters into array
-			$params = array();
 			$params['database_host'] = DB_HOST;
 			$params['database_name'] = DB_NAME;
 			$params['database_user'] = DB_USER;
@@ -141,9 +135,8 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 					break;
 				}
 			}
-			return $params;
 		}
-
+        return $params;
 	}
 
 	/**
@@ -183,7 +176,12 @@ class JFusionAdmin_wordpress extends JFusionAdmin
      * @return array
      */
     function getUsergroupList() {
-		$usergroups = JFusionWordpressHelper::getUsergroupListWP();
+        /**
+         * @ignore
+         * @var $helper JFusionHelper_wordpress
+         */
+        $helper = JFusionFactory::getHelper($this->getJname());
+		$usergroups = $helper->getUsergroupListWP();
 		return $usergroups;
 	}
 
@@ -192,8 +190,14 @@ class JFusionAdmin_wordpress extends JFusionAdmin
      */
     function getDefaultUsergroup() {
 		$params = JFusionFactory::getParams($this->getJname());
-		$usergroup_id = $params->get('usergroup');
-		return JFusionWordpressHelper::getUsergroupNameWP($usergroup_id);
+        /**
+         * @ignore
+         * @var $helper JFusionHelper_wordpress
+         */
+        $helper = JFusionFactory::getHelper($this->getJname());
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
+        $usergroup_id = $usergroups[0];
+		return $helper->getUsergroupNameWP($usergroup_id);
 	}
 
 	/**

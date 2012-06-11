@@ -27,8 +27,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionWordpressHelper {
-
+class JFusionHelper_wordpress {
     /**
      * @return string
      */
@@ -62,9 +61,9 @@ class JFusionWordpressHelper {
      * @param $usergroup_id
      * @return string
      */
-    public static function getUsergroupNameWP($usergroup_id){
+    function getUsergroupNameWP($usergroup_id){
 		$userGroupName = '';
-		$userGroupList = JFusionWordpressHelper::getUsergroupListWP();
+		$userGroupList = $this->getUsergroupListWP();
 		foreach ($userGroupList as $usergroup) {
 			if($usergroup->id == $usergroup_id){
 				$userGroupName = $usergroup->name;
@@ -79,7 +78,7 @@ class JFusionWordpressHelper {
      * @return int
      */
     function getUsergroupIdWP($usergroup_name){
-		$userGroupList = JFusionWordpressHelper::getUsergroupListWP();
+		$userGroupList = $this->getUsergroupListWP();
 		$groupid = -1;
 		foreach ($userGroupList as $usergroup) {
 			if(strtolower($usergroup->name)== strtolower($usergroup_name)){
@@ -120,7 +119,7 @@ class JFusionWordpressHelper {
      * @return mixed
      */
     function WP_user_level_from_roles($userroles) {
-		return array_reduce(  $userroles , 'JFusionWordpressHelper::WP_userlevel_from_role' , 0 );
+		return array_reduce(  $userroles , array($this, 'WP_userlevel_from_role') , 0 );
 	}
 
     /**
@@ -128,11 +127,11 @@ class JFusionWordpressHelper {
      * @param $string
      * @return mixed|string
      */
-    public static function remove_accentsWP($string) {
+    function remove_accentsWP($string) {
 		if ( !preg_match('/[\x80-\xff]/', $string) )
 		return $string;
 
-		if (JFusionWordpressHelper::seems_utf8($string)) {
+		if ($this->seems_utf8($string)) {
 			$chars = array(
 			// Decompositions for Latin-1 Supplement
 			chr(195).chr(128) => 'A', chr(195).chr(129) => 'A',
@@ -288,6 +287,5 @@ class JFusionWordpressHelper {
 			}
 		}
 		return true;
-	}	
-
+	}
 }

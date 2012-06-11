@@ -30,8 +30,11 @@ defined('_JEXEC') or die('Restricted access');
  */
 class doku_auth_basic
 {
-	var $jname = null;	
-	
+    /**
+     * @var $helper JFusionHelper_dokuwiki
+     */
+	var $helper = null;
+
     var $success = true;
     /**
      * Posible things an auth backend module may be able to
@@ -77,8 +80,7 @@ class doku_auth_basic
      */
     function cryptPassword($clear, $method = '', $salt = '')
     {
-        $share = Dokuwiki::getInstance($this->jname);
-        $conf = $share->getConf();
+        $conf = $this->helper->getConf();
         if (empty($method)) $method = $conf['passcrypt'];
         //prepare a salt
         if (empty($salt)) $salt = md5(uniqid(rand(), true));

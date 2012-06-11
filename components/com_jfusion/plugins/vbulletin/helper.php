@@ -67,86 +67,88 @@ class JFusionHelper_vbulletin
      * @return array|mixed
      */
     function apiCall($task, $data) {
-    	if (!function_exists('mcrypt_encrypt')) {
-    		$response['errors'][] = 'mcrypt_encrypt Missing';
-    		return $response;
-    	}
-    	$response = array();
-        $url = $this->params->get('source_url');
-        $version = $this->getVersion();
-        if (substr($version, 0, 1) > 3) {
-            $url .= $this->params->get('vb4_base_file', 'forum.php');
+        $status = array('error' => array(),'debug' => array());
+        if (!function_exists('mcrypt_encrypt')) {
+            $status['errors'][] = 'mcrypt_encrypt Missing';
+        } elseif (!function_exists('curl_init')) {
+            $status['errors'][] = 'curl_init Missing';
         } else {
-            $url .= "index.php";
-        }
-        $post_data = "jfvbtask=$task";
-        $post_data.= "&jfvbdata=" . urlencode(stripslashes($this->encryptApiData($data)));
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/x-www-form-urlencoded", "Content-Length: " . strlen($post_data)));
-        curl_setopt($ch, CURLOPT_HEADER , 0);
-        curl_setopt($ch, CURLOPT_VERBOSE, 1);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);        
-        
-        $curl_response = @curl_exec($ch);
-        //detect errors
-        if (curl_errno($ch)) {
-            $response['errors'][] = curl_errno($ch) . " " . curl_error($ch);
-        }
-        //detect redirects as the post data gets lots
-        $curlinfo = curl_getinfo( $ch );
-        if ($curlinfo['url'] != $url) {
-            $response['errors'][] = JText::_('VB_API_REDIRECT'). ': ' . $url . '->' . $curlinfo['url'];	
-        }
-        curl_close($ch);
-
-        $curl_response = trim($curl_response);
-        if (strpos($curl_response, '<?xml') !== 0) {
-            if (strpos($curl_response, '<!DOCTYPE') !== false) {
-                //the page was rendered rather than the hook catching
-                $response['errors'][] = JText::_('VB_API_HOOK_NOT_INSTALLED');
+            $url = $this->params->get('source_url');
+            $version = $this->getVersion();
+            if (substr($version, 0, 1) > 3) {
+                $url .= $this->params->get('vb4_base_file', 'forum.php');
             } else {
-                //there is probably a php error or warning
-                if (($pos = strpos($curl_response, '<?xml')) !== false) {
-                    $extra_string = strip_tags(substr($curl_response, 0, $pos));
-                    $xml_string = substr($curl_response, $pos);
+                $url .= "index.php";
+            }
+            $post_data = "jfvbtask=$task";
+            $post_data.= "&jfvbdata=" . urlencode(stripslashes($this->encryptApiData($data)));
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/x-www-form-urlencoded", "Content-Length: " . strlen($post_data)));
+            curl_setopt($ch, CURLOPT_HEADER , 0);
+            curl_setopt($ch, CURLOPT_VERBOSE, 1);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
 
-                    $xml = simplexml_load_string($xml_string);
-                    $json = json_encode($xml);
-                    $response = json_decode($json,true);
-                    if (!is_array($response)) {
-                        $response['errors'][] = 'Data corrupted!';
-                    }
-
-                    $response['debug'][] = $extra_string;
+            $curl_response = @curl_exec($ch);
+            //detect errors
+            if (curl_errno($ch)) {
+                $status['errors'][] = curl_errno($ch) . " " . curl_error($ch);
+            } else {
+                //detect redirects as the post data gets lots
+                $curlinfo = curl_getinfo( $ch );
+                if ($curlinfo['url'] != $url) {
+                    $status['errors'][] = JText::_('VB_API_REDIRECT'). ': ' . $url . '->' . $curlinfo['url'];
                 } else {
-                    if (empty($curl_response)) {
-                        $curl_response = JText::_('VB_API_HOOK_NOT_INSTALLED');
+                    $curl_response = trim($curl_response);
+                    if (strpos($curl_response, '<?xml') !== 0) {
+                        if (strpos($curl_response, '<!DOCTYPE') !== false) {
+                            //the page was rendered rather than the hook catching
+                            $status['errors'][] = JText::_('VB_API_HOOK_NOT_INSTALLED');
+                        } else {
+                            //there is probably a php error or warning
+                            if (($pos = strpos($curl_response, '<?xml')) !== false) {
+                                $extra_string = strip_tags(substr($curl_response, 0, $pos));
+                                $xml_string = substr($curl_response, $pos);
+
+                                $xml = simplexml_load_string($xml_string);
+                                $json = json_encode($xml);
+                                $status = json_decode($json,true);
+                                if (!is_array($status)) {
+                                    $status['errors'][] = 'Data corrupted!';
+                                }
+
+                                $status['debug'][] = $extra_string;
+                            } else {
+                                if (empty($curl_response)) {
+                                    $curl_response = JText::_('VB_API_HOOK_NOT_INSTALLED');
+                                }
+
+                                $status['errors'][] = $curl_response;
+                            }
+                        }
+                    } else {
+                        $xml = simplexml_load_string($curl_response);
+                        $json = json_encode($xml);
+                        $status = json_decode($json,true);
+                        if (!is_array($status)) {
+                            $status['errors'][] = 'Data corrupted!';
+                        } else {
+                            if (!empty($status['errors']) && $status['errors'][0] == 'API Errors') {
+                                //just get rid of this - it was needed to make the array function correctly
+                                unset($status['errors'][0]);
+                            }
+                        }
                     }
-
-                    $response['errors'][] = $curl_response;
                 }
             }
-        } else {
-            $xml = simplexml_load_string($curl_response);
-            $json = json_encode($xml);
-            $response = json_decode($json,true);
-            if (!is_array($response)) {
-                $response['errors'][] = 'Data corrupted!';
-            } else {
-                if (!empty($response['errors']) && $response['errors'][0] == 'API Errors') {
-                    //just get rid of this - it was needed to make the array function correctly
-                    unset($response['errors'][0]);
-                }
-            }
+            curl_close($ch);
         }
-
-        return $response;
+        return $status;
     }
 
     /**
@@ -361,38 +363,30 @@ class JFusionHelper_vbulletin
                     break;
                 case 'forums':
                 default:
-                    //bad type so return url unaltered
-                    return $url;
+                    $vburi = null;
                     break;
             }
+            if ($vburi) {
+                $query = $uri->getQuery();
+                $fragment = $uri->getFragment();
+                if ($fragment) {
+                    $fragment = '#' . $fragment;
+                }
 
-            $query = $uri->getQuery();
-            $fragment = $uri->getFragment();
-            if ($fragment) {
-                $fragment = '#' . $fragment;
+                switch (JFVB_FRIENDLYURL) {
+                    case 1:
+                        $url = $uri->getPath() . '?' . $vburi . ($query ? '&' . $query : '') . $fragment;
+                        break;
+                    case 2:
+                        $url = $uri->getPath() . '/' . $vburi . ($query ? '?' . $query : '') . $fragment;
+                        break;
+                    case 3:
+                        $url = $type . '/' . $vburi . ($query ? '?' . $query : '') . $fragment;
+                        break;
+                }
             }
-
-            switch (JFVB_FRIENDLYURL) {
-                case 1:
-                    $sef_url = $uri->getPath() . '?' . $vburi . ($query ? '&' . $query : '') . $fragment;
-                    break;
-                case 2:
-                    $sef_url = $uri->getPath() . '/' . $vburi . ($query ? '?' . $query : '') . $fragment;
-                    break;
-                case 3:
-                    $sef_url = $type . '/' . $vburi . ($query ? '?' . $query : '') . $fragment;
-                    break;
-                case 0:
-                default:
-                    $sef_url = $url;
-                    break;
-            }
-
-            return $sef_url;
-
-        } else {
-            return $url;
         }
+        return $url;
     }
 
     /**

@@ -43,23 +43,26 @@ class doku_auth_plain extends doku_auth_basic {
      * @var $users array
      */
     var $users = null;
+    /**
+     * @var $io JFusionDokuwiki_Io
+     */
     var $io = null;
     /**
      * @var $_pattern array
      */
     var $_pattern = array();
     /**
-     * @var $jname string
+     * @var $helper JFusionHelper_dokuwiki
      */
-    var $jname = null;
+    var $helper = null;
 
     /**
-     * @param $jname
+     * @param JFusionHelper_dokuwiki $helper
      */
-    function doku_auth_plain($jname) {
-		$this->jname = $jname;
-    }    
-    
+    function doku_auth_plain($helper) {
+		$this->helper = $helper;
+    }
+
     /**
      * Constructor
      *
@@ -69,15 +72,14 @@ class doku_auth_plain extends doku_auth_basic {
      * @author  Christopher Smith <chris@jalakai.co.uk>
      */
     function auth_plain() {
-        $this->io = new JFusionDokuwiki_Io($this->jname);
+        $this->io = new JFusionDokuwiki_Io($this->helper);
     }
 
     /**
      * @return string
      */
     function auth_file() {
-        $share = Dokuwiki::getInstance($this->jname);
-        $params = JFusionFactory::getParams($share->getJname());
+        $params = JFusionFactory::getParams($this->helper->getJname());
         $sorce_path = $params->get('source_path');
         if (substr($sorce_path, -1) == DS) {
             $sorce_path = $sorce_path . 'conf/users.auth.php';
@@ -148,13 +150,12 @@ class doku_auth_plain extends doku_auth_basic {
     function createUser($user,$pwd,$name,$mail,$grps=null)
     {
     	$username = $user;
-      	$share = Dokuwiki::getInstance($this->jname);
 		$this->_loadUserData();
 		if (isset($this->users[$user])) return false;
       	$authfile = $this->auth_file();
       	$pass = $this->cryptPassword($pwd);
       	//set default group if no groups specified
-		if (!is_array($grps)) $grps = explode(',',$share->getDefaultUsergroup());
+		if (!is_array($grps)) $grps = explode(',',$this->helper->getDefaultUsergroup());
       	// prepare user line
       	$groups = join(',',$grps);
       	if (empty($groups)) {
@@ -163,7 +164,7 @@ class doku_auth_plain extends doku_auth_basic {
       	}
       	$name = str_replace("\n", '', $name);
       	$userline = join(':',array($user,$pass,$name,$mail,$groups))."\n";
-      	if (!$this->io ) $this->io = new JFusionDokuwiki_Io($this->jname);
+      	if (!$this->io ) $this->io = new JFusionDokuwiki_Io($this->helper);
       	if ($this->io->saveFile($authfile,$userline,true)) {
         	$this->users[$user] = compact('username','pass','name','mail','grps');
         	return $pwd;
@@ -198,13 +199,13 @@ class doku_auth_plain extends doku_auth_basic {
         $groups = join(',', $userinfo['grps']);
         $userinfo['name'] = str_replace("\n", '', $userinfo['name']);
       	$userline = join(':',array($newuser, $userinfo['pass'], $userinfo['name'], $userinfo['mail'], $groups))."\n";
-        if (!$this->io) $this->io = new JFusionDokuwiki_Io($this->jname);
+        if (!$this->io) $this->io = new JFusionDokuwiki_Io($this->helper);
         if (!$this->deleteUsers(array($user))) {
             JError::raiseWarning(500, 'Unable to modify user data. Please inform the Wiki-Admin');
             return false;
         }
         $file = $this->auth_file();
-        if (!$this->io) $this->io = new JFusionDokuwiki_Io($this->jname);
+        if (!$this->io) $this->io = new JFusionDokuwiki_Io($this->helper);
         if (!$this->io->saveFile($file, $userline, true)) {
             JError::raiseWarning(500, 'There was an error modifying your user data. You should register again.');
             return false;
@@ -232,7 +233,7 @@ class doku_auth_plain extends doku_auth_basic {
         if (empty($deleted)) return 0;
         $pattern = '/^(' . join('|', $deleted) . '):/';
         $file = $this->auth_file();
-        if (!$this->io) $this->io = new JFusionDokuwiki_Io($this->jname);
+        if (!$this->io) $this->io = new JFusionDokuwiki_Io($this->helper);
         if ($this->io->deleteFromFile($file, $pattern, true)) {
             foreach ($deleted as $user) {
                 unset($the_users[$user]);

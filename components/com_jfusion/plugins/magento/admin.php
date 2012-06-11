@@ -50,7 +50,7 @@ class JFusionAdmin_magento extends JFusionAdmin
 
     /**
      * @param string $forumPath
-     * @return array|bool
+     * @return array
      */
     function setupFromPath($forumPath) {
         //check for trailing slash and generate file path
@@ -58,30 +58,30 @@ class JFusionAdmin_magento extends JFusionAdmin
             $forumPath = $forumPath . DS;
         }
         $xmlfile = $forumPath . 'app' . DS . 'etc' . DS . 'local.xml';
+        $params = array();
         if (file_exists($xmlfile)) {
+            /**
+             * @ignore
+             * @var $xml JSimpleXML
+             */
             $xml = JFactory::getXMLParser('Simple');
             if (!$xml->loadFile($xmlfile)) {
-                unset($xml);
                 JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . " $xmlfile " . JText::_('WIZARD_MANUAL'));
-                $result = false;
-                return $result;
+            } else {
+                //save the parameters into array
+                $params['database_host'] = (string)$xml->document->getElementByPath('global/resources/default_setup/connection/host')->data();
+                $params['database_name'] = (string)$xml->document->getElementByPath('global/resources/default_setup/connection/dbname')->data();
+                $params['database_user'] = (string)$xml->document->getElementByPath('global/resources/default_setup/connection/username')->data();
+                $params['database_password'] = (string)$xml->document->getElementByPath('global/resources/default_setup/connection/password')->data();
+                $params['database_prefix'] = (string)$xml->document->getElementByPath('global/resources/db/table_prefix')->data();
+                $params['database_type'] = "mysql";
+                $params['source_path'] = $forumPath;
             }
-            //save the parameters into array
-            $params = array();
-            $params['database_host'] = (string)$xml->document->global[0]->resources[0]->default_setup[0]->connection[0]->host[0]->data();
-            $params['database_name'] = (string)$xml->document->global[0]->resources[0]->default_setup[0]->connection[0]->dbname[0]->data();
-            $params['database_user'] = (string)$xml->document->global[0]->resources[0]->default_setup[0]->connection[0]->username[0]->data();
-            $params['database_password'] = (string)$xml->document->global[0]->resources[0]->default_setup[0]->connection[0]->password[0]->data();
-            $params['database_prefix'] = (string)$xml->document->global[0]->resources[0]->db[0]->table_prefix[0]->data();
-            $params['database_type'] = "mysql";
-            $params['source_path'] = $forumPath;
             unset($xml);
-            return $params;
         } else {
             JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . " $xmlfile " . JText::_('WIZARD_MANUAL'));
-            $result = false;
-            return $result;
         }
+        return $params;
     }
 
     /**
@@ -130,7 +130,8 @@ class JFusionAdmin_magento extends JFusionAdmin
      */
     function getDefaultUsergroup() {
         $params = JFusionFactory::getParams($this->getJname());
-        $usergroup_id = $params->get('usergroup');
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
+        $usergroup_id = $usergroups[0];
         //we want to output the usergroup name
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'SELECT customer_group_code from #__customer_group WHERE customer_group_id = ' . (int)$usergroup_id;
@@ -213,37 +214,36 @@ class JFusionAdmin_magento extends JFusionAdmin
 	}
 
     /**
-     * @return mixed|string
+     * @return string
      */
     public function moduleInstallation() {
-			$jname = $this->getJname ();
-			$params = & JFusionFactory::getParams ( $jname );
-			
-			$db = & JFusionFactory::getDatabase ( $jname );
-			if (! JError::isError ( $db ) && ! empty ( $db )) {
-				
-				$source_path = $params->get ( 'source_path', '' );
-				if (! file_exists ( $source_path . DS . 'app' . DS . 'Mage.php' )) {
-					return JText::_ ( 'MAGE_CONFIG_SOURCE_PATH' );
-				}
-				
-				$mod_exists = false;
-				if (file_exists ( $source_path . DS . 'app' . DS . 'etc' . DS . 'modules' . DS . 'Jfusion_All.xml' )) {
-					$mod_exists = true;
-				}
-				
-				$html = '<div class="button2-left"><div class="blank"><a href="javascript:void(0);" onclick="return module(\'' . (($mod_exists) ? 'uninstallModule' : 'installModule') . '\');">' . ((! $mod_exists) ? JText::_ ( 'MODULE_UNINSTALL_BUTTON' ) : JText::_ ( 'MODULE_INSTALL_BUTTON' )) . '</a></div></div>' . "\n";
-				
-				if ($mod_exists) {
-					$src = "components/com_jfusion/images/tick.png";
-				} else {
-					$src = "components/com_jfusion/images/cross.png";
-				}
-				$html .= "<img src='$src' style='margin-left:10px;' id='usergroups_img'/>";
-				return $html;
-			} else {
-				return JText::_ ( 'MAGE_CONFIG_FIRST' );
+        $jname = $this->getJname ();
+        $params = & JFusionFactory::getParams ( $jname );
+
+        $db = & JFusionFactory::getDatabase ( $jname );
+        if (! JError::isError ( $db ) && ! empty ( $db )) {
+            $source_path = $params->get ( 'source_path', '' );
+            if (! file_exists ( $source_path . DS . 'app' . DS . 'Mage.php' )) {
+                $html = JText::_ ( 'MAGE_CONFIG_SOURCE_PATH' );
+            } else {
+                $mod_exists = false;
+                if (file_exists ( $source_path . DS . 'app' . DS . 'etc' . DS . 'modules' . DS . 'Jfusion_All.xml' )) {
+                    $mod_exists = true;
+                }
+
+                $html = '<div class="button2-left"><div class="blank"><a href="javascript:void(0);" onclick="return module(\'' . (($mod_exists) ? 'uninstallModule' : 'installModule') . '\');">' . ((! $mod_exists) ? JText::_ ( 'MODULE_UNINSTALL_BUTTON' ) : JText::_ ( 'MODULE_INSTALL_BUTTON' )) . '</a></div></div>' . "\n";
+
+                if ($mod_exists) {
+                    $src = "components/com_jfusion/images/tick.png";
+                } else {
+                    $src = "components/com_jfusion/images/cross.png";
+                }
+                $html .= "<img src='$src' style='margin-left:10px;' id='usergroups_img'/>";
+            }
+        } else {
+            $html = JText::_ ( 'MAGE_CONFIG_FIRST' );
 		}
+        return $html;
 	}
 
     /**
@@ -261,8 +261,8 @@ class JFusionAdmin_magento extends JFusionAdmin
         require_once $pear_path.DS.'PEAR.php';
         $pear_archive_path = $pear_path.DS.archive_tar.DS.'Archive_Tar.php';
         require_once $pear_archive_path;
- 
-        $status = array();
+
+        $status = array('error' => array(),'debug' => array());
 		$archive_filename = 'magento_module_jfusion.tar.gz';
 		$old_chdir = getcwd();
 		$src_archive =  $src_path = realpath ( dirname ( __FILE__ ) ) . DS . 'install_module';
@@ -286,46 +286,44 @@ class JFusionAdmin_magento extends JFusionAdmin
 		
 		$query = "REPLACE INTO #__core_config_data SET path = 'joomla/joomlaconfig/baseurl', value = '".$joomla_baseurl."';";
 		$db->BeginTrans();
-		$db->Execute($query);
+        $db->setQuery($query);
+        $db->query();
 		if ($db->getErrorNum() != 0) {
 			$db->RollbackTrans();
 			$status['error'] = $db->stderr ();
-			return $status;
-		}
-		
-		$query = "REPLACE INTO #__core_config_data SET path = 'joomla/joomlaconfig/installationpath', value = '".JPATH_SITE."';";
-		$db->BeginTrans();
-		$db->Execute($query);
-		if ($db->getErrorNum() != 0) {
-			$db->RollbackTrans();
-			$status['error'] = $db->stderr ();
-			return $status;
-		}
-		
-		$query = "REPLACE INTO #__core_config_data SET path = 'joomla/joomlaconfig/secret_key', value = '".$joomla_secret."';";
-		$db->BeginTrans();
-		$db->Execute($query);
-		if ($db->getErrorNum() != 0) {
-			$db->RollbackTrans();
-			$status['error'] = $db->stderr ();
-			return $status;
-		}
-		
-		$status = array();
-		if ($ret !== true) {
-			$status['error'] = $jname . ': ' . JText::sprintf('INSTALL_MODULE_ERROR', $src_archive, $dest);
-		}else{
-			$status['message'] = $jname .': ' . JText::_('INSTALL_MODULE_SUCCESS');
-		}
-		
+		} else {
+            $query = "REPLACE INTO #__core_config_data SET path = 'joomla/joomlaconfig/installationpath', value = '".JPATH_SITE."';";
+            $db->BeginTrans();
+            $db->setQuery($query);
+            $db->query();
+            if ($db->getErrorNum() != 0) {
+                $db->RollbackTrans();
+                $status['error'] = $db->stderr ();
+            } else {
+                $query = "REPLACE INTO #__core_config_data SET path = 'joomla/joomlaconfig/secret_key', value = '".$joomla_secret."';";
+                $db->BeginTrans();
+                $db->setQuery($query);
+                $db->query();
+                if ($db->getErrorNum() != 0) {
+                    $db->RollbackTrans();
+                    $status['error'] = $db->stderr ();
+                } else {
+                    if ($ret !== true) {
+                        $status['error'] = $jname . ': ' . JText::sprintf('INSTALL_MODULE_ERROR', $src_archive, $dest);
+                    } else {
+                        $status['message'] = $jname .': ' . JText::_('INSTALL_MODULE_SUCCESS');
+                    }
+                }
+            }
+        }
 		return $status;
 	}
 
     /**
      * @return array
      */
-    public function uninstallModule(){
-		
+    public function uninstallModule() {
+        $status = array('error' => array(),'debug' => array());
 		jimport ( 'joomla.filesystem.file' );
 		jimport ( 'joomla.filesystem.folder' );
 		
@@ -334,18 +332,25 @@ class JFusionAdmin_magento extends JFusionAdmin
 		$params = JFusionFactory::getParams ( $jname );
 		$source_path = $params->get ( 'source_path' );
 		$xmlfile = realpath ( dirname ( __FILE__ ) ) . DS . 'install_module' . DS . 'source' . DS . 'listfiles.xml';
-		
-		$listfiles = JFactory::getXMLParser('simple');
+
+        /**
+         * @ignore
+         * @var $listfiles JSimpleXML
+         */
+        $listfiles = JFactory::getXMLParser('simple');
 		$listfiles->loadFile($xmlfile);
-		$files = $listfiles->document->file;
-		
-		foreach($files as $file){
+		$files = $listfiles->document->getElementByPath('file');
+        /**
+         * @ignore
+         * @var $file JSimpleXMLElement
+         */
+		foreach($files as $file) {
 			$file = $file->data();
 			$file = preg_replace('#/#', DS, $file);
 			@chmod($source_path . DS . $file, 0777);
-			if(!is_dir($source_path . DS . $file)){
+			if (!is_dir($source_path . DS . $file)) {
 				JFile::delete($source_path . DS . $file);
-			}else{
+			} else {
 				JFolder::delete($source_path . DS . $file);
 			}
 		}
@@ -355,21 +360,22 @@ class JFusionAdmin_magento extends JFusionAdmin
 		$paths[] = 'joomla/joomlaconfig/installationpath';
 		$paths[] = 'joomla/joomlaconfig/secret_key';
 		
-		foreach($paths as $path)
-		{
+		foreach($paths as $path) {
 			$query = "DELETE FROM #__core_config_data WHERE path = " . $db->Quote($path);
 			$db->BeginTrans ();
 			$db->Execute ( $query );
 			if ($db->getErrorNum() != 0) {
 				$db->RollbackTrans ();
-				$status ['error'] = $db->stderr ();
-				return $status;
+				$status['error'] = $db->stderr();
+                break;
 			}
 		}
 		
-		/*$query = "DELETE FROM #__core_config_data WHERE path = 'joomla/joomlaconfig/installationpath'";
+		/*
+		$query = "DELETE FROM #__core_config_data WHERE path = 'joomla/joomlaconfig/installationpath'";
 		$db->BeginTrans();
-		$db->Execute($query);
+		$db->setQuery($query);
+        $db->query();
 		if ($db->getErrorNum() != 0) {
 			$db->RollbackTrans();
 			$status['error'] = $db->stderr ();
@@ -378,19 +384,18 @@ class JFusionAdmin_magento extends JFusionAdmin
 		
 		$query = "DELETE FROM #__core_config_data WHERE path = 'joomla/joomlaconfig/secret_key'";
 		$db->BeginTrans();
-		$db->Execute($query);
+		$db->setQuery($query);
+        $db->query();
 		if ($db->getErrorNum() != 0) {
 			$db->RollbackTrans();
 			$status['error'] = $db->stderr ();
 			return $status;
-		}*/
-		
-		$status = array();
-		if ($ret !== true) {
-			$status['error'] = $jname . ': ' . JText::sprintf('UNINSTALL_MODULE_ERROR', $src_archive, $dest);
-		}else{
-			$status['message'] = $jname .': ' . JText::_('UNINSTALL_MODULE_SUCCESS');
 		}
+		*/
+
+        if (empty($status['error'])) {
+            $status['message'] = $jname .': ' . JText::_('UNINSTALL_MODULE_SUCCESS');
+        }
         return $status;
 	}
 
@@ -404,15 +409,19 @@ class JFusionAdmin_magento extends JFusionAdmin
 		
 		$jfusion_mod_xml = $source_path . DS .'app'. DS .'etc'. DS .'modules'. DS .'Jfusion_All.xml';
 		
-		if(file_exists($jfusion_mod_xml)){
-			$xml = JFactory::getXMLParser ( 'simple' );
+		if(file_exists($jfusion_mod_xml)) {
+            /**
+             * @ignore
+             * @var $xml JSimpleXML
+             */
+            $xml = JFactory::getXMLParser ( 'simple' );
 			$xml->loadfile ( $jfusion_mod_xml );
-			$modules = $xml->document->getElementByPath ( 'modules/jfusion_joomla' );
-			$activated = $modules->active [0]->data ();
+			$modules = $xml->document->getElementByPath ( 'modules/jfusion_joomla/active' );
+			$activated = $modules->data();
 			
-			if($activated == 'false'){
+			if($activated == 'false') {
 				$activated = 0;
-			}else{
+			} else {
 				$activated = 1;
 			}
 			
@@ -425,11 +434,10 @@ class JFusionAdmin_magento extends JFusionAdmin
 				$src = "components/com_jfusion/images/cross.png";
 			}
 			$html .= "<img src='$src' style='margin-left:10px;'/>";
-
-			return $html;
 		} else {
-			return JText::_ ( 'MAGE_CONFIG_FIRST' );
+			$html =  JText::_ ( 'MAGE_CONFIG_FIRST' );
 		}
+        return $html;
 	}
 	
 	public function activateModule(){
@@ -441,13 +449,16 @@ class JFusionAdmin_magento extends JFusionAdmin
 		$params = JFusionFactory::getParams ( $jname );
 		$source_path = $params->get ( 'source_path' );
 		$jfusion_mod_xml = $source_path . DS .'app'. DS .'etc'. DS .'modules'. DS .'Jfusion_All.xml';
-		
+        /**
+         * @ignore
+         * @var $xml JSimpleXML
+         */
 		$xml = JFactory::getXMLParser ( 'simple' );
 		$xml->loadfile ( $jfusion_mod_xml );
-		$module = $xml->document->getElementByPath ( 'modules/jfusion_joomla' );
+		$module = $xml->document->getElementByPath('modules/jfusion_joomla/active');
 			
 		//$xml->document->modules->jfusion_joomla->active[0]->setData('false');
-		$module->active[0]->setData($activation);
+		$module->setData($activation);
 
 		$buffer = '<?xml version="1.0"?'.'>';
 		$buffer .= $xml->document->toString();

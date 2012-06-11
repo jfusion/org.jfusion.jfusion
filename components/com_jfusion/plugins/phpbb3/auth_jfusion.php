@@ -70,6 +70,10 @@ function login_jfusion(&$username, &$password) {
         //if we are not frameless, then we need to manually update the session data as on some servers, this data is getting corrupted
         //by php's session_write_close and thus the user is not logged into Joomla.  php bug?
         if (!defined('IN_JOOMLA')) {
+            /**
+             * @ignore
+             * @var $session_table JTableSession
+             */
             $session_table = & JTable::getInstance('session');
             if ($session_table->load($id)) {
                 $session_table->data = $session_data;

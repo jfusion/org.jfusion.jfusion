@@ -177,7 +177,7 @@ class JFusionUsersync
 	                $JFusionPlugin = & JFusionFactory::getUser($data['user']['jname']);
 	                debug::show($data['conflict']['userinfo'], $data['conflict']['jname'] . ' ' . JText::_('USER') . ' ' . JText::_('INFORMATION'), 1);
 	                $status = $JFusionPlugin->updateUser($data['conflict']['userinfo'], 1);
-	                if ($status['error']) {
+	                if (!empty($status['error'])) {
 	                    debug::show($status['error'], $data['user']['jname'] . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE') . ' ' . JText::_('ERROR'), 0);
 	                    debug::show($status['debug'], $data['user']['jname'] . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE') . ' ' . JText::_('DEBUG'), 0);
 	                } else {
@@ -191,7 +191,7 @@ class JFusionUsersync
 	                $JFusionPlugin = & JFusionFactory::getUser($data['conflict']['jname']);
 	                debug::show($data['user']['userinfo'], $data['user']['jname'] . ' ' . JText::_('USER') . ' ' . JText::_('INFORMATION'), 1);
 	                $status = $JFusionPlugin->updateUser($data['user']['userinfo'], 1);
-	                if ($status['error']) {
+	                if (!empty($status['error'])) {
 	                    debug::show($status['error'], $data['conflict']['jname'] . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE') . ' ' . JText::_('ERROR'), 0);
 	                    debug::show($status['debug'], $data['conflict']['jname'] . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE') . ' ' . JText::_('DEBUG'), 0);
 	                } else {
@@ -206,7 +206,7 @@ class JFusionUsersync
 	                $JFusionActive = 1;
 	                $JFusionPlugin = & JFusionFactory::getUser($error['user_jname']);
 	                $status = $JFusionPlugin->deleteUser($data['user']['userinfo']);
-	                if ($status['error']) {
+	                if (!empty($status['error'])) {
 	                    //delete error
 	                    echo '<img src="components/com_jfusion/images/error.png" width="32" height="32">' . JText::_('ERROR') . ' ' . JText::_('DELETING') . ' ' . $error['user_jname'] . ' ' . JText::_('USER') . ' ' . $error['user_username'] . '<br/>';
 	                } else {
@@ -222,7 +222,7 @@ class JFusionUsersync
 	                $JFusionActive = 1;
 	                $JFusionPlugin = & JFusionFactory::getUser($error['conflict_jname']);
 	                $status = $JFusionPlugin->deleteUser($data['conflict']['userinfo']);
-	                if ($status['error']) {
+	                if (!empty($status['error'])) {
 	                    //delete error
 	                    echo '<img src="components/com_jfusion/images/error.png" width="32" height="32">' . JText::_('ERROR') . ' ' . JText::_('DELETING') . ' ' . $error['conflict_jname'] . ' ' . JText::_('USER') . ' ' . $error['conflict_username'] . '<br/>';
 	                } else {

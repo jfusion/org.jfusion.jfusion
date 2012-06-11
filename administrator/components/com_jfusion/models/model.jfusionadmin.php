@@ -84,11 +84,11 @@ class JFusionFunctionAdmin
             //there was an error saving the parameters
             JError::raiseWarning(0, $db->stderr());
             $result = false;
-            return $result;
+        } else {
+            //reset the params instance for this plugin
+            JFusionFactory::getParams($jname, true);
+            $result = true;
         }
-        //reset the params instance for this plugin
-        JFusionFactory::getParams($jname, true);
-        $result = true;
         return $result;
     }
 
@@ -143,15 +143,14 @@ class JFusionFunctionAdmin
         $result = $db->loadResult();
         if ($result) {
             if ($testPublished) {
-                return ($result == 1);
+                $result = ($result == 1);
             } else {
                 $result = true;
-                return $result;
             }
         } else {
             $result = false;
-            return $result;
         }
+        return $result;
     }
 
     /**
@@ -216,7 +215,6 @@ class JFusionFunctionAdmin
 				$return = false;
 			}
         }
-
         return $return;
     }
 
@@ -225,11 +223,12 @@ class JFusionFunctionAdmin
      * @param $url
      * @param int $save
      * @param int $unpack
-     * @return array|bool|mixed|string
+     * @return bool|string|array
      */
     public static function getFileData($url,$save = 0, $unpack = 0)
     {
         ob_start();
+        $FileData = false;
         if (function_exists('curl_init')) {
             //curl is the preferred function
             $crl = curl_init();
@@ -243,7 +242,7 @@ class JFusionFunctionAdmin
             if ($FileInfo['http_code'] != 200) {
                 //there was an error
                 JError::raiseWarning(0,$FileInfo['http_code'] . ' error for file:' . $url);
-                return false;
+                $FileData = false;
             }
         } else {
             //see if we can use fopen to get file
@@ -252,11 +251,11 @@ class JFusionFunctionAdmin
                 $FileData = file_get_contents($url);
             } else {
                 JError::raiseWarning(0,JText::_('CURL_DISABLED'));
-                return false;
+                $FileData = false;
             }
         }
 
-        if ($save) {
+        if ($save && $FileData !== false) {
             jimport('joomla.installer.helper');
             $filename = JInstallerHelper::getFilenameFromURL($url);
             $config = JFactory::getConfig();
@@ -266,15 +265,15 @@ class JFusionFunctionAdmin
             if ($unpack) {
                 $package = JInstallerHelper::unpack($target);
                 ob_end_clean();
-                return $package;
+                $FileData = $package;
             } else {
                 ob_end_clean();
-                return $target;
+                $FileData = $target;
             }
         } else {
             ob_end_clean();
-            return $FileData;
         }
+        return $FileData;
     }
 
     /**
@@ -290,12 +289,16 @@ class JFusionFunctionAdmin
         $VersionCurrent = $RevisionCurrent = 0;
         if (file_exists($filename) && is_readable($filename)) {
             //get the version number
+            /**
+             * @ignore
+             * @var $parser JSimpleXML
+             */
             $parser = JFactory::getXMLParser('Simple');
             $parser->loadFile($filename);
-            $VersionCurrent = $parser->document->version[0]->data();
+            $VersionCurrent = $parser->document->getElementByPath('version')->data();
 
             if($includeRev) {
-                $RevisionCurrent = $parser->document->revision[0]->data();
+                $RevisionCurrent = trim($parser->document->getElementByPath('revision')->data());
             }
         }
         return array($VersionCurrent, $RevisionCurrent);

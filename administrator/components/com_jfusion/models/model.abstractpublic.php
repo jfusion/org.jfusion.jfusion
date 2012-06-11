@@ -80,14 +80,20 @@ class JFusionPublic
     
     	$pattern = '#onload=["]([^"]*)#si';
     	if(!empty($temp[2])){
-    		if(preg_match($pattern, $temp[2], $temp)){
-    			$js = '<script language="JavaScript" type="text/javascript">
-    			if(window.addEventListener) { // Standard
-    			window.addEventListener(\'load\', function(){'.$temp[1].'}, false);
-    		} else if(window.attachEvent) { // IE
-    		window.attachEvent(\'onload\', function(){'.$temp[1].'});
-    		}
-    		</script>';
+    		if(preg_match($pattern, $temp[2], $temp)) {
+                $js ='<script language="JavaScript" type="text/javascript">';
+                $js .= <<<JS
+                if(window.addEventListener) { // Standard
+                    window.addEventListener(\'load\', function(){
+                        {$temp[1]}
+                    }, false);
+                } else if(window.attachEvent) { // IE
+                    window.attachEvent(\'onload\', function(){
+                        {$temp[1]}
+                    });
+                }
+JS;
+                $js .='</script>';
     			$data->header .= $js;
     		}
     	}
@@ -609,9 +615,32 @@ class JFusionPublic
      */
     function setLanguageFrontEnd($userinfo = null)
     {
-        $status = array();
-        $status['error'] = '';
+        $status = array('error' => array(),'debug' => array());
         $status['debug'] = JText::_('METHOD_NOT_IMPLEMENTED');
         return $status;
+    }
+
+    /**
+     * @param array $config
+     * @param $view
+     * @param JParameter $params
+     *
+     * @return string
+     */
+    function renderUserActivityModule($config, $view, $params)
+    {
+        return JText::_('METHOD_NOT_IMPLEMENTED');
+    }
+
+    /**
+     * @param array $config
+     * @param $view
+     * @param JParameter $params
+     *
+     * @return string
+     */
+    function renderWhosOnlineModule($config, $view, $params)
+    {
+        return JText::_('METHOD_NOT_IMPLEMENTED');
     }
 }

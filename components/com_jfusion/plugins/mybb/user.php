@@ -65,6 +65,7 @@ class JFusionUser_mybb extends JFusionUser {
      * @return array
      */
     function destroySession($userinfo, $options) {
+        $status = array('error' => array(),'debug' => array());
         $params = JFusionFactory::getParams($this->getJname());
         $cookiedomain = $params->get('cookie_domain');
         $cookiepath = $params->get('cookie_path', '/');
@@ -84,7 +85,6 @@ class JFusionUser_mybb extends JFusionUser {
                 @setcookie($name, '', $expires, $cookiepath);
             }
         }
-        $status['error'] = false;
         return $status;
     }
 
@@ -94,44 +94,41 @@ class JFusionUser_mybb extends JFusionUser {
      * @return array
      */
     function createSession($userinfo, $options) {
-        $status = array();
-        $status['error'] = array();
-        $status['debug'] = array();
+        $status = array('error' => array(),'debug' => array());
         //do not create sessions for blocked users
         if (!empty($userinfo->block) || !empty($userinfo->activation)) {
             $status['error'][] = JText::_('FUSION_BLOCKED_USER');
-            return $status;
-        }
-        //get cookiedomain, cookiepath (theIggs solution)
-        $params = JFusionFactory::getParams($this->getJname());
-        $cookiedomain = $params->get('cookie_domain', '');
-        $cookiepath = $params->get('cookie_path', '/');
-        //get myBB uid, loginkey
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT uid, loginkey FROM #__users WHERE username=' . $db->Quote($userinfo->username);
-        $db->setQuery($query);
-        $user = $db->loadObject();
-        // Set cookie values
-        $name = 'mybbuser';
-        $value = $user->uid . '_' . $user->loginkey;
-        $httponly = true;
-        if (isset($options['remember'])) {
-            if ($options['remember']) {
-                // Make the cookie expire in a years time
-                $expires = 60 * 60 * 24 * 365;
+        } else {
+            //get cookiedomain, cookiepath (theIggs solution)
+            $params = JFusionFactory::getParams($this->getJname());
+            $cookiedomain = $params->get('cookie_domain', '');
+            $cookiepath = $params->get('cookie_path', '/');
+            //get myBB uid, loginkey
+            $db = JFusionFactory::getDatabase($this->getJname());
+            $query = 'SELECT uid, loginkey FROM #__users WHERE username=' . $db->Quote($userinfo->username);
+            $db->setQuery($query);
+            $user = $db->loadObject();
+            // Set cookie values
+            $name = 'mybbuser';
+            $value = $user->uid . '_' . $user->loginkey;
+            $httponly = true;
+            if (isset($options['remember'])) {
+                if ($options['remember']) {
+                    // Make the cookie expire in a years time
+                    $expires = 60 * 60 * 24 * 365;
+                } else {
+                    // Make the cookie expire in 30 minutes
+                    $expires = 60 * 30;
+                }
             } else {
-                // Make the cookie expire in 30 minutes
+                //Make the cookie expire in 30 minutes
                 $expires = 60 * 30;
             }
-        } else {
-            //Make the cookie expire in 30 minutes
-            $expires = 60 * 30;
+            $cookiepath = str_replace(array("\n", "\r"), "", $cookiepath);
+            $cookiedomain = str_replace(array("\n", "\r"), "", $cookiedomain);
+            JFusionFunction::addCookie($name, $value, $expires, $cookiepath, $cookiedomain, false, $httponly);
+            $status['debug'][] = JText::_('NAME') . '=' . $name . ', ' . JText::_('VALUE') . '=' . substr($value, 0, 6) . '********, ' . JText::_('COOKIE_PATH') . '=' . $cookiepath . ', ' . JText::_('COOKIE_DOMAIN') . '=' . $cookiedomain;
         }
-        $cookiepath = str_replace(array("\n", "\r"), "", $cookiepath);
-        $cookiedomain = str_replace(array("\n", "\r"), "", $cookiedomain);
-        JFusionFunction::addCookie($name, $value, $expires, $cookiepath, $cookiedomain, false, $httponly);
-        $status = array();
-        $status['debug'][] = JText::_('NAME') . '=' . $name . ', ' . JText::_('VALUE') . '=' . substr($value, 0, 6) . '********, ' . JText::_('COOKIE_PATH') . '=' . $cookiepath . ', ' . JText::_('COOKIE_DOMAIN') . '=' . $cookiedomain;
         return $status;
     }
 
@@ -199,16 +196,23 @@ class JFusionUser_mybb extends JFusionUser {
             //check the oldgroup
             if (empty($oldgroup)) {
                 $params = JFusionFactory::getParams($this->getJname());
-                $oldgroup = $params->get('usergroup');
+                $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+                if (!empty($usergroups)) {
+                    $oldgroup = $usergroups[0];
+                }
             }
-            //restore the usergroup
-            $query = 'UPDATE #__users SET usergroup = ' . (int)$oldgroup . ' WHERE uid = ' . (int)$existinguser->userid;
-            $db->setQuery($query);
-            if (!$db->query()) {
-                //return the error
-                $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $db->stderr();
+            if (empty($oldgroup)) {
+                $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
             } else {
-                $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+                //restore the usergroup
+                $query = 'UPDATE #__users SET usergroup = ' . (int)$oldgroup . ' WHERE uid = ' . (int)$existinguser->userid;
+                $db->setQuery($query);
+                if (!$db->query()) {
+                    //return the error
+                    $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $db->stderr();
+                } else {
+                    $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+                }
             }
         }
     }
@@ -240,43 +244,48 @@ class JFusionUser_mybb extends JFusionUser {
         //found out what usergroup should be used
         $db = JFusionFactory::getDatabase($this->getJname());
         $params = JFusionFactory::getParams($this->getJname());
-        $usergroup = $params->get('usergroup');
-        $username_clean = $this->filterUsername($userinfo->username);
-        //prepare the variables
-        $user = new stdClass;
-        $user->uid = null;
-        $user->username = $username_clean;
-        $user->email = $userinfo->email;
-        jimport('joomla.user.helper');
-        if (isset($userinfo->password_clear)) {
-            //we can update the password
-            $user->salt = JUserHelper::genRandomPassword(6);
-            $user->password = md5(md5($user->salt) . md5($userinfo->password_clear));
-            $user->loginkey = JUserHelper::genRandomPassword(50);
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+        if (empty($usergroups)) {
+            $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
         } else {
-            $user->password = $userinfo->password;
-            if (!isset($userinfo->password_salt)) {
+            $usergroup = $usergroups[0];
+            $username_clean = $this->filterUsername($userinfo->username);
+            //prepare the variables
+            $user = new stdClass;
+            $user->uid = null;
+            $user->username = $username_clean;
+            $user->email = $userinfo->email;
+            jimport('joomla.user.helper');
+            if (isset($userinfo->password_clear)) {
+                //we can update the password
                 $user->salt = JUserHelper::genRandomPassword(6);
+                $user->password = md5(md5($user->salt) . md5($userinfo->password_clear));
+                $user->loginkey = JUserHelper::genRandomPassword(50);
             } else {
-                $user->salt = $userinfo->password_salt;
+                $user->password = $userinfo->password;
+                if (!isset($userinfo->password_salt)) {
+                    $user->salt = JUserHelper::genRandomPassword(6);
+                } else {
+                    $user->salt = $userinfo->password_salt;
+                }
+                $user->loginkey = JUserHelper::genRandomPassword(50);
             }
-            $user->loginkey = JUserHelper::genRandomPassword(50);
-        }
-        if (!empty($userinfo->activation)) {
-            $user->usergroup = 2;
-        } elseif (!empty($userinfo->block)) {
-            $user->usergroup = 7;
-        } else {
-            $user->usergroup = $usergroup;
-        }
-        //now append the new user data
-        if (!$db->insertObject('#__users', $user, 'uid')) {
-            //return the error
-            $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-        } else {
-            //return the good news
-            $status['debug'][] = JText::_('USER_CREATION');
-            $status['userinfo'] = $this->getUser($userinfo);
+            if (!empty($userinfo->activation)) {
+                $user->usergroup = 2;
+            } elseif (!empty($userinfo->block)) {
+                $user->usergroup = 7;
+            } else {
+                $user->usergroup = $usergroup;
+            }
+            //now append the new user data
+            if (!$db->insertObject('#__users', $user, 'uid')) {
+                //return the error
+                $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
+            } else {
+                //return the good news
+                $status['debug'][] = JText::_('USER_CREATION');
+                $status['userinfo'] = $this->getUser($userinfo);
+            }
         }
     }
 
@@ -305,15 +314,20 @@ class JFusionUser_mybb extends JFusionUser {
     function activateUser($userinfo, &$existinguser, &$status) {
         //found out what usergroup should be used
         $params = JFusionFactory::getParams($this->getJname());
-        $usergroup = $params->get('usergroup');
-        //update the usergroup
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'UPDATE #__users SET usergroup = ' . $usergroup . ' WHERE uid  = ' . (int)$existinguser->userid;
-        $db->setQuery($query);
-        if (!$db->Query()) {
-            $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $db->stderr();
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+        if (empty($usergroups)) {
+            $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
         } else {
-            $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+            $usergroup = $usergroups[0];
+            //update the usergroup
+            $db = JFusionFactory::getDatabase($this->getJname());
+            $query = 'UPDATE #__users SET usergroup = ' . $usergroup . ' WHERE uid  = ' . (int)$existinguser->userid;
+            $db->setQuery($query);
+            if (!$db->Query()) {
+                $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $db->stderr();
+            } else {
+                $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+            }
         }
     }
 

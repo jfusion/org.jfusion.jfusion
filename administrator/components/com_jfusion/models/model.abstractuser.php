@@ -192,9 +192,7 @@ class JFusionUser
         $update_block = $params->get('update_block');
         $update_activation = $params->get('update_activation');
         $update_email = $params->get('update_email');
-        $status = array();
-        $status['debug'] = array();
-        $status['error'] = array();
+        $status = array('error' => array(),'debug' => array());
         //check to see if a valid $userinfo object was passed on
         if (!is_object($userinfo)) {
             $status['error'][] = JText::_('NO_USER_DATA_FOUND');
@@ -273,16 +271,8 @@ class JFusionUser
                 //check for advanced usergroup sync
                 $master = JFusionFunction::getMaster();
                 if (!$userinfo->block && empty($userinfo->activation) && $master->name != $this->getJname()) {
-                    $usergroup = $params->get('usergroup');
-                    $multiusergroup = $params->get('multiusergroup');
-                    if (substr($usergroup, 0, 2) == 'a:' || substr($multiusergroup, 0, 2) == 'a:') {
-                        if (substr($usergroup, 0, 2) == 'a:') {
-                            $groups = unserialize($usergroup);
-                        } else {
-                            $groups = unserialize($multiusergroup);
-                        }
-                        //find what the usergroup should be
-                        $usergroup_updated = $this->executeUpdateUsergroup($userinfo, $existinguser, $groups, $status);
+                    if (JFusionFunction::isAdvancedUsergroupMode($this->getJname())) {
+                        $usergroup_updated = $this->executeUpdateUsergroup($userinfo, $existinguser, $status);
                         if ($usergroup_updated) {
                             $changed = true;
                         } else {
@@ -348,16 +338,15 @@ class JFusionUser
      *
      * @param object $userinfo      Object containing the new userinfo
      * @param object &$existinguser Object containg the old userinfo
-     * @param object &$usergroups   Array/object containing the a plugin's advanced usergroup parameter
      * @param array  &$status       Array containing the errors and result of the function
      *
      * @return boolean Whether updateUsergroup was executed or not
      */
-    function executeUpdateUsergroup(&$userinfo, &$existinguser, &$usergroups, &$status)
+    function executeUpdateUsergroup(&$userinfo, &$existinguser, &$status)
     {
         $changed = false;
-    	$groups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
-		if (!JFusionFunction::compareUserGroups($existinguser,$groups)) {
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+		if (!JFusionFunction::compareUserGroups($existinguser,$usergroups)) {
             $this->updateUsergroup($userinfo, $existinguser, $status);
             $changed = true;
         }
@@ -500,9 +489,7 @@ class JFusionUser
     function deleteUser($userinfo)
     {
         //setup status array to hold debug info and errors
-        $status = array();
-        $status['debug'] = array();
-        $status['error'] = array();
+        $status = array('error' => array(),'debug' => array());
         $status['error'][] = JText::_('DELETE_FUNCTION_MISSING');
         return $status;
     }

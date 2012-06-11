@@ -102,18 +102,15 @@ class modjfusionWhosOnlineHelper {
 				}
 
 				$u->output->display_name = ($config["name"]==1) ? $u->name : $u->username;
-
+                $user_url = '';
 				if ($config['userlink']) {
 					if ($config['userlink_software']=='custom' && !empty($config['userlink_custom'])  && !empty($joomla_userid)) {
 						$user_url = $config['userlink_custom'].$joomla_userid;
 					} else if ($jfusion_userid) {
 	  					$user_url = JFusionFunction::routeURL($forum_links->getProfileURL($jfusion_userid, $u->username), $config['itemid'], $link_jname);
 					}
-
-	  				$u->output->user_url = $user_url;
-				} else {
-					$u->output->user_url = '';
 				}
+                $u->output->user_url = $user_url;
 
 	            if ($config['avatar']) {
 	                // retrieve avatar

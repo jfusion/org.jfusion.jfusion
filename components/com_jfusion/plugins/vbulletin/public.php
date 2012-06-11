@@ -14,7 +14,7 @@
  */
 // no direct access
 defined('_JEXEC') or die('Restricted access');
-global $name, $baseURL, $fullURL, $integratedURL, $vbsefmode;
+global $baseURL, $fullURL, $integratedURL, $vbsefmode;
 /**
  * JFusion Public Class for vBulletin
  * For detailed descriptions on these functions please check the model.abstractpublic.php
@@ -32,12 +32,15 @@ class JFusionPublic_vbulletin extends JFusionPublic
     var $params;
     var $helper;
 
-    function JFusionPublic_vbulletin()
+    /**
+     *
+     */
+    function __construct()
     {
         //get the params object
-        $this->params = & JFusionFactory::getParams($this->getJname());
+        $this->params = JFusionFactory::getParams($this->getJname());
         //get the helper object
-        $this->helper = & JFusionFactory::getHelper($this->getJname());
+        $this->helper = JFusionFactory::getHelper($this->getJname());
     }
 
     /**
@@ -236,7 +239,11 @@ class JFusionPublic_vbulletin extends JFusionPublic
         define('_VBFRAMELESS', 1);
 
         //frameless integration is only supported for 3.x
-        $helper = & JFusionFactory::getHelper($this->getJname());
+        /**
+         * @ignore
+         * @var $helper JFusionHelper_vbulletin
+         */
+        $helper = JFusionFactory::getHelper($this->getJname());
         $version = & $helper->getVersion();
         if ((int) substr($version, 0, 1) > 3) {
             JError::raiseWarning(500, JText::sprintf('VB_FRAMELESS_NOT_SUPPORTED',$version));
@@ -353,30 +360,32 @@ class JFusionPublic_vbulletin extends JFusionPublic
      */
     function parseBody(&$data)
     {
-        global $name, $baseURL, $fullURL, $integratedURL, $vbsefmode, $vbsefenabled;
-        $name = $this->getJname();
+        global $baseURL, $fullURL, $integratedURL, $vbsefmode, $vbsefenabled;
         $baseURL = $data->baseURL;
         $fullURL = $data->fullURL;
         $integratedURL = $data->integratedURL;
-        $params = & JFusionFactory::getParams($name);
+        $params = & JFusionFactory::getParams($this->getJname());
         $vbsefmode = $params->get('sefmode', 0);
         $config = JFactory::getConfig();
         $vbsefenabled = $config->getValue('config.sef');
         //fix for form actions
         //cannot use preg_replace here because it adds unneeded slashes which messes up JS
         $action_search = '#action="(?!http)(.*?)"(.*?)>#mS';
-        $data->body = preg_replace_callback($action_search, 'fixAction', $data->body);
+
+        $data->body = preg_replace_callback($action_search, array(&$this,'fixAction'), $data->body);
         //fix for the rest of the urls
         $url_search = '#href="(?!http)(.*?)"(.*?)>#mSs';
-        $data->body = preg_replace_callback($url_search, 'fixURL', $data->body);
+        $data->body = preg_replace_callback($url_search, array(&$this,'fixURL'), $data->body);
         //$url_search = '#<link="(?!http)(.*?)"(.*?)>#mS';
-        //$data->body = preg_replace_callback($url_search,'fixURL',$data->body);
+        //$data->body = preg_replace_callback($url_search, array(&$this,'fixURL'),$data->body);
         //convert relative urls in JS links
         $url_search = '#window.location=\'(?!http)(.*?)\'#mS';
-        $data->body = preg_replace_callback($url_search, 'fixJS', $data->body);
+
+        $data->body = preg_replace_callback($url_search, array(&$this,'fixJS'), $data->body);
         //convert relative links from images and js files into absolute links
         $include_search = "#(src=\"|background=\"|url\('|open_window\(\\\\'|window.open\('|window.open\(\"?)(?!http)(.*?)(\\\\',|',|\"|'\)|')#mS";
-        $data->body = preg_replace_callback($include_search, 'fixInclude', $data->body);
+
+        $data->body = preg_replace_callback($include_search, array(&$this,'fixInclude'), $data->body);
         //we need to fix the cron.php file
         $data->body = preg_replace('#src="(.*)cron.php(.*)>#mS', 'src="' . $integratedURL . 'cron.php$2>', $data->body);
         //if we have custom register and lost password urls and vBulletin uses an absolute URL, fixURL will not catch it
@@ -403,28 +412,30 @@ class JFusionPublic_vbulletin extends JFusionPublic
      */
     function parseHeader(&$data)
     {
-        global $name, $baseURL, $fullURL, $integratedURL, $vbsefmode, $vbsefenabled;
-        $name = $this->getJname();
+        global $baseURL, $fullURL, $integratedURL, $vbsefmode, $vbsefenabled;
         $baseURL = $data->baseURL;
         $fullURL = $data->fullURL;
         $integratedURL = $data->integratedURL;
-        $params = & JFusionFactory::getParams($name);
+        $params = & JFusionFactory::getParams($this->getJname());
         $vbsefmode = $params->get('sefmode', 0);
         $config = JFactory::getConfig();
         $vbsefenabled = $config->getValue('config.sef');
-        $js = "<script type=\"text/javascript\">\n";
-        $js.= "var vbSourceURL = '$integratedURL';\n";
-        $js.= "</script>\n";
+        $js = '<script type="text/javascript">';
+        $js .= <<<JS
+            var vbSourceURL = '{$integratedURL}';
+JS;
+        $js .= '</script>';
+
         //we need to find and change the call to vb's yahoo connection file to our own customized one
         //that adds the source url to the ajax calls
         $yuiURL = JFusionFunction::getJoomlaURL() . JFUSION_PLUGIN_DIR_URL . $this->getJname();
         $data->header = preg_replace('#\<script type="text\/javascript" src="(.*?)(connection-min.js|connection.js)\?v=(.*?)"\>#mS', "$js <script type=\"text/javascript\" src=\"$yuiURL/yui/connection/connection.js?v=$3\">", $data->header);
         //convert relative links into absolute links
         $url_search = '#(src="|background="|href="|url\("|url\(\'?)(?!http)(.*?)("\)|\'\)|"?)#mS';
-        $data->header = preg_replace_callback($url_search, 'fixInclude', $data->header);
+        $data->header = preg_replace_callback($url_search, array(&$this,'fixInclude'), $data->header);
         if ($params->get('parseCSS', false)) {
             $css_search = '#<style type="text/css" id="vbulletin(.*?)">(.*?)</style>#ms';
-            $data->header = preg_replace_callback($css_search, 'fixCSS', $data->header);
+            $data->header = preg_replace_callback($css_search, array(&$this,'fixCSS'), $data->header);
         }
     }
 
@@ -620,8 +631,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
                 if (!empty($vb_userlookup)) {
                     $profile_userlookup = JFusionFunction::lookupUser($profile_plugin, $vb_userlookup->id);
                     //get the profile link
-                    $profilePublic = & JFusionFactory::getPublic($profile_plugin);
-                    $url = $profilePublic->getProfileURL($profile_userlookup->userid);
+                    $url = $this->getProfileURL($profile_userlookup->userid);
                 }
             }
         }
@@ -714,288 +724,299 @@ class JFusionPublic_vbulletin extends JFusionPublic
         $forum = & JFusionFactory::getForum($this->getJname());
         return $forum->getPostURL($post->threadid, $post->postid);
     }
-}
-
-/**
- * @param $matches
- * @return string
- */
-function fixAction($matches)
-{
-    global $name, $baseURL, $integratedURL, $vbsefmode, $vbsefenabled;
-
-    $url = $matches[1];
-    $extra = $matches[2];
-    if (defined('_JFUSION_DEBUG')) {
-        $debug = array();
-        $debug['original'] = $matches[0];
-        $debug['url'] = $url;
-        $debug['extra'] = $extra;
-        $debug['function'] = 'fixAction';
-    }
-
-    $url = htmlspecialchars_decode($url);
-    $url_details = parse_url($url);
-    $url_variables = array();
-    parse_str($url_details['query'], $url_variables);
-    if (defined('_JFUSION_DEBUG')) {
-        $debug['url_variables'] = $url_variables;
-    }
 
 
-    //add which file is being referred to
-    if ($url_variables['jfile']) {
-        //use the action file that was in jfile variable
-        $jfile = $url_variables['jfile'];
-        unset($url_variables['jfile']);
-    } else {
-        //use the action file from the action URL itself
-        $jfile = basename($url_details['path']);
-    }
 
-    $actionURL = JFusionFunction::routeURL($jfile, JRequest::getInt('Itemid'));
-    $replacement = 'action=\'' . $actionURL . '\'' . $extra . '>';
 
-    unset($url_variables['option']);
-    unset($url_variables['Itemid']);
 
-    //add any other variables
-    foreach ($url_variables as $key => $value) {
-        $replacement.= '<input type="hidden" name="' . $key . '" value="' . $value . '"/>';
-    }
 
-    if (defined('_JFUSION_DEBUG')) {
-        $debug['parsed'] = $replacement;
-        $_SESSION['jfvbdebug'][] = $debug;
-    }
-    return $replacement;
-}
 
-/**
- * @param $matches
- * @return string
- */
-function fixURL($matches)
-{
-    global $name, $baseURL, $integratedURL, $vbsefmode, $vbsefenabled;
-    $params = & JFusionFactory::getParams($name);
-    $plugin_itemid = $params->get('plugin_itemid');
 
-    $url = $matches[1];
-    $extra = $matches[2];
-    if (defined('_JFUSION_DEBUG')) {
-        $debug = array();
-        $debug['original'] = $matches[0];
-        $debug['url'] = $url;
-        $debug['extra'] = $extra;
-        $debug['function'] = 'fixURL';
-    }
-    $uri = & JURI::getInstance();
-    $currentURL = $uri->toString();
-    if ((string)strpos($url, '#') === (string)0 && strlen($url) != 1) {
-        $url = (str_replace('&', '&amp;', $currentURL)) . $url;
-    }
-    //we need to make some exceptions
-    //absolute url, already parsed URL, JS function, or jumpto
-    if (strpos($url, 'http') !== false || strpos($url, $currentURL) !== false || strpos($url, 'com_jfusion') !== false || ((string)strpos($url, '#') === (string)0 && strlen($url) == 1)) {
-        $replacement = "href=\"$url\" $extra>";
+
+
+
+
+
+    /**
+     * @param $matches
+     * @return string
+     */
+    function fixAction($matches)
+    {
+        global $baseURL, $integratedURL, $vbsefmode, $vbsefenabled;
+
+        $url = $matches[1];
+        $extra = $matches[2];
+        if (defined('_JFUSION_DEBUG')) {
+            $debug = array();
+            $debug['original'] = $matches[0];
+            $debug['url'] = $url;
+            $debug['extra'] = $extra;
+            $debug['function'] = 'fixAction';
+        }
+
+        $url = htmlspecialchars_decode($url);
+        $url_details = parse_url($url);
+        $url_variables = array();
+        parse_str($url_details['query'], $url_variables);
+        if (defined('_JFUSION_DEBUG')) {
+            $debug['url_variables'] = $url_variables;
+        }
+
+
+        //add which file is being referred to
+        if ($url_variables['jfile']) {
+            //use the action file that was in jfile variable
+            $jfile = $url_variables['jfile'];
+            unset($url_variables['jfile']);
+        } else {
+            //use the action file from the action URL itself
+            $jfile = basename($url_details['path']);
+        }
+
+        $actionURL = JFusionFunction::routeURL($jfile, JRequest::getInt('Itemid'));
+        $replacement = 'action=\'' . $actionURL . '\'' . $extra . '>';
+
+        unset($url_variables['option']);
+        unset($url_variables['Itemid']);
+
+        //add any other variables
+        foreach ($url_variables as $key => $value) {
+            $replacement.= '<input type="hidden" name="' . $key . '" value="' . $value . '"/>';
+        }
+
         if (defined('_JFUSION_DEBUG')) {
             $debug['parsed'] = $replacement;
+            $_SESSION['jfvbdebug'][] = $debug;
         }
         return $replacement;
     }
-    //admincp, mocp, archive, printthread.php or attachment.php
-    if (strpos($url, $params->get('admincp', 'admincp')) !== false || strpos($url, $params->get('modcp', 'modcp')) !== false || strpos($url, 'archive') !== false || strpos($url, 'printthread.php') !== false || strpos($url, 'attachment.php') !== false) {
-        $replacement = 'href="' . $integratedURL . $url . "\" $extra>";
+
+    /**
+     * @param $matches
+     * @return string
+     */
+    function fixURL($matches)
+    {
+        global $baseURL, $integratedURL, $vbsefmode, $vbsefenabled;
+        $params = & JFusionFactory::getParams($this->getJname());
+        $plugin_itemid = $params->get('plugin_itemid');
+
+        $url = $matches[1];
+        $extra = $matches[2];
         if (defined('_JFUSION_DEBUG')) {
-            $debug['parsed'] = $replacement;
+            $debug = array();
+            $debug['original'] = $matches[0];
+            $debug['url'] = $url;
+            $debug['extra'] = $extra;
+            $debug['function'] = 'fixURL';
         }
-        return $replacement;
-    }
-    //if the plugin is set as a slave, find the master and replace register/lost password urls
-    if (strpos($url, 'register.php') !== false) {
-        if (!empty($params)) {
-            $register_url = $params->get('register_url');
-            if (!empty($register_url)) {
-                $replacement = 'href="' . $register_url . '"' . $extra . '>';
-                if (defined('_JFUSION_DEBUG')) {
-                    $debug['parsed'] = $replacement;
-                }
-                return $replacement;
-            }
+        $uri = & JURI::getInstance();
+        $currentURL = $uri->toString();
+        if ((string)strpos($url, '#') === (string)0 && strlen($url) != 1) {
+            $url = (str_replace('&', '&amp;', $currentURL)) . $url;
         }
-    }
-    if (strpos($url, 'login.php?do=lostpw') !== false) {
-        if (!empty($params)) {
-            $lostpassword_url = $params->get('lostpassword_url');
-            if (!empty($lostpassword_url)) {
-                $replacement = 'href="' . $lostpassword_url . '"' . $extra . '>';
-                if (defined('_JFUSION_DEBUG')) {
-                    $debug['parsed'] = $replacement;
-                }
-                return $replacement;
-            }
-        }
-    }
-    if (strpos($url, 'member.php') !== false) {
-        $vbPublic = & JFusionFactory::getPublic($name);
-        $profile_url = $vbPublic->getAlternateProfileURL($url);
-        if (!empty($profile_url)) {
-            $replacement = 'href="' . $profile_url . '"' . $extra . '>';
+        //we need to make some exceptions
+        //absolute url, already parsed URL, JS function, or jumpto
+        if (strpos($url, 'http') !== false || strpos($url, $currentURL) !== false || strpos($url, 'com_jfusion') !== false || ((string)strpos($url, '#') === (string)0 && strlen($url) == 1)) {
+            $replacement = "href=\"$url\" $extra>";
             if (defined('_JFUSION_DEBUG')) {
                 $debug['parsed'] = $replacement;
             }
             return $replacement;
         }
-    }
-    if (empty($vbsefenabled)) {
-        //non sef URls
-        $url = str_replace('?', '&amp;', $url);
-        $url = $baseURL . '&amp;jfile=' . $url;
-    } else {
-        if ($vbsefmode) {
-            $url = JFusionFunction::routeURL($url, $plugin_itemid);
-        } else {
-            //we can just append both variables
-            $url = $baseURL . $url;
+        //admincp, mocp, archive, printthread.php or attachment.php
+        if (strpos($url, $params->get('admincp', 'admincp')) !== false || strpos($url, $params->get('modcp', 'modcp')) !== false || strpos($url, 'archive') !== false || strpos($url, 'printthread.php') !== false || strpos($url, 'attachment.php') !== false) {
+            $replacement = 'href="' . $integratedURL . $url . "\" $extra>";
+            if (defined('_JFUSION_DEBUG')) {
+                $debug['parsed'] = $replacement;
+            }
+            return $replacement;
         }
+        //if the plugin is set as a slave, find the master and replace register/lost password urls
+        if (strpos($url, 'register.php') !== false) {
+            if (!empty($params)) {
+                $register_url = $params->get('register_url');
+                if (!empty($register_url)) {
+                    $replacement = 'href="' . $register_url . '"' . $extra . '>';
+                    if (defined('_JFUSION_DEBUG')) {
+                        $debug['parsed'] = $replacement;
+                    }
+                    return $replacement;
+                }
+            }
+        }
+        if (strpos($url, 'login.php?do=lostpw') !== false) {
+            if (!empty($params)) {
+                $lostpassword_url = $params->get('lostpassword_url');
+                if (!empty($lostpassword_url)) {
+                    $replacement = 'href="' . $lostpassword_url . '"' . $extra . '>';
+                    if (defined('_JFUSION_DEBUG')) {
+                        $debug['parsed'] = $replacement;
+                    }
+                    return $replacement;
+                }
+            }
+        }
+        if (strpos($url, 'member.php') !== false) {
+            $profile_url = $this->getAlternateProfileURL($url);
+            if (!empty($profile_url)) {
+                $replacement = 'href="' . $profile_url . '"' . $extra . '>';
+                if (defined('_JFUSION_DEBUG')) {
+                    $debug['parsed'] = $replacement;
+                }
+                return $replacement;
+            }
+        }
+        if (empty($vbsefenabled)) {
+            //non sef URls
+            $url = str_replace('?', '&amp;', $url);
+            $url = $baseURL . '&amp;jfile=' . $url;
+        } else {
+            if ($vbsefmode) {
+                $url = JFusionFunction::routeURL($url, $plugin_itemid);
+            } else {
+                //we can just append both variables
+                $url = $baseURL . $url;
+            }
+        }
+        //set the correct url and close the a tag
+        $replacement = 'href="' . $url . '"' . $extra . '>';
+        if (defined('_JFUSION_DEBUG')) {
+            $debug['parsed'] = $replacement;
+            $_SESSION["jfvbdebug"][] = $debug;
+        }
+        return $replacement;
     }
-    //set the correct url and close the a tag
-    $replacement = 'href="' . $url . '"' . $extra . '>';
-    if (defined('_JFUSION_DEBUG')) {
-        $debug['parsed'] = $replacement;
-        $_SESSION["jfvbdebug"][] = $debug;
-    }
-    return $replacement;
-}
 
-/**
- * @param $matches
- * @return string
- */
-function fixJS($matches)
-{
-    global $name, $baseURL, $integratedURL, $vbsefmode, $vbsefenabled;
-    $params = & JFusionFactory::getParams($name);
-    $plugin_itemid = $params->get('plugin_itemid');
+    /**
+     * @param $matches
+     * @return string
+     */
+    function fixJS($matches)
+    {
+        global $baseURL, $integratedURL, $vbsefmode, $vbsefenabled;
+        $params = & JFusionFactory::getParams($this->getJname());
+        $plugin_itemid = $params->get('plugin_itemid');
 
-    $url = $matches[1];
-    if (defined('_JFUSION_DEBUG')) {
-        $debug = array();
-        $debug['original'] = $matches[0];
-        $debug['url'] = $url;
-        $debug['function'] = 'fixJS';
-    }
-    if (strpos($url, 'http') !== false) {
+        $url = $matches[1];
+        if (defined('_JFUSION_DEBUG')) {
+            $debug = array();
+            $debug['original'] = $matches[0];
+            $debug['url'] = $url;
+            $debug['function'] = 'fixJS';
+        }
+        if (strpos($url, 'http') !== false) {
+            if (defined('_JFUSION_DEBUG')) {
+                $debug['parsed'] = "window.location='$url'";;
+            }
+            return "window.location='$url'";
+        }
+
+        if (empty($vbsefenabled)) {
+            //non sef URls
+            $url = str_replace('?', '&', $url);
+            $url = $baseURL . '&jfile=' . $url;
+        } else {
+            if ($vbsefmode) {
+                $url = JFusionFunction::routeURL($url, $plugin_itemid);
+            } else {
+                //we can just append both variables
+                $url = $baseURL . $url;
+            }
+        }
+        $url = str_replace('&amp;', '&', $url);
         if (defined('_JFUSION_DEBUG')) {
             $debug['parsed'] = "window.location='$url'";;
+            $_SESSION["jfvbdebug"][] = $debug;
         }
         return "window.location='$url'";
     }
 
-    if (empty($vbsefenabled)) {
-        //non sef URls
-        $url = str_replace('?', '&', $url);
-        $url = $baseURL . '&jfile=' . $url;
-    } else {
-        if ($vbsefmode) {
-            $url = JFusionFunction::routeURL($url, $plugin_itemid);
-        } else {
-            //we can just append both variables
-            $url = $baseURL . $url;
+    /**
+     * @param $matches
+     * @return string
+     */
+    function fixInclude($matches)
+    {
+        global $integratedURL;
+        $pre = $matches[1];
+        $url = $matches[2];
+        $post = $matches[3];
+        $replacement = $pre . $integratedURL . $url . $post;
+        if (defined('_JFUSION_DEBUG')) {
+            $debug = array();
+            $debug['original'] = $matches[0];
+            $debug['pre'] = $pre;
+            $debug['url'] = $url;
+            $debug['post'] = $post;
+            $debug['function'] = 'fixInclude';
+            $debug['replacement'] = $replacement;
+            $_SESSION['jfvbdebug'][] = $debug;
         }
+        return $replacement;
     }
-    $url = str_replace('&amp;', '&', $url);
-    if (defined('_JFUSION_DEBUG')) {
-        $debug['parsed'] = "window.location='$url'";;
-        $_SESSION["jfvbdebug"][] = $debug;
-    }
-    return "window.location='$url'";
-}
 
-/**
- * @param $matches
- * @return string
- */
-function fixInclude($matches)
-{
-    global $integratedURL;
-    $pre = $matches[1];
-    $url = $matches[2];
-    $post = $matches[3];
-    $replacement = $pre . $integratedURL . $url . $post;
-    if (defined('_JFUSION_DEBUG')) {
-        $debug = array();
-        $debug['original'] = $matches[0];
-        $debug['pre'] = $pre;
-        $debug['url'] = $url;
-        $debug['post'] = $post;
-        $debug['function'] = 'fixInclude';
-        $debug['replacement'] = $replacement;
-        $_SESSION['jfvbdebug'][] = $debug;
-    }
-    return $replacement;
-}
-
-/**
- * @param $matches
- * @return mixed|string
- */
-function fixCSS($matches)
-{
-    if (defined('_JFUSION_DEBUG')) {
-        $debug = array();
-        $debug['function'] = 'fixCSS';
-        $debug['original'] = $matches[0];
-    }
-    $css = $matches[2];
-    //remove html comments
-    $css = str_replace(array('<!--', '-->'), '', $css);
-    //remove PHP comments
-    $css = preg_replace('#\/\*(.*?)\*\/#mSs', '', $css);
-    //strip newlines
-    $css = str_replace("\r\n", "", $css);
-    //break up the CSS into styles
-    $elements = explode('}', $css);
-    //unset the last one as it is empty
-    unset($elements[count($elements) - 1]);
-    $imports = array();
-    //rewrite css
-    foreach ($elements as $k => $v) {
-        //breakup each element into selectors and properties
-        $element = explode("{", $v);
-        //breakup the selectors
-        $selectors = explode(",", $element[0]);
-        foreach ($selectors as $sk => $sv) {
-            //add vb framless container
-            if (strpos($sv, '<!--') !== false) {
-                var_dump($sv);
-                die();
-            }
-            if ($sv == 'body' || $sv == 'html' || $sv == '*') {
-                $selectors[$sk] = "$sv #framelessVb";
-            } elseif (strpos($sv, '@') === 0) {
-                $import = explode(';', $sv);
-                $import = $import[0] . ';';
-                $sv = substr($sv, strlen($import));
+    /**
+     * @param $matches
+     * @return mixed|string
+     */
+    function fixCSS($matches)
+    {
+        if (defined('_JFUSION_DEBUG')) {
+            $debug = array();
+            $debug['function'] = 'fixCSS';
+            $debug['original'] = $matches[0];
+        }
+        $css = $matches[2];
+        //remove html comments
+        $css = str_replace(array('<!--', '-->'), '', $css);
+        //remove PHP comments
+        $css = preg_replace('#\/\*(.*?)\*\/#mSs', '', $css);
+        //strip newlines
+        $css = str_replace("\r\n", "", $css);
+        //break up the CSS into styles
+        $elements = explode('}', $css);
+        //unset the last one as it is empty
+        unset($elements[count($elements) - 1]);
+        $imports = array();
+        //rewrite css
+        foreach ($elements as $k => $v) {
+            //breakup each element into selectors and properties
+            $element = explode("{", $v);
+            //breakup the selectors
+            $selectors = explode(",", $element[0]);
+            foreach ($selectors as $sk => $sv) {
+                //add vb framless container
+                if (strpos($sv, '<!--') !== false) {
+                    var_dump($sv);
+                    die();
+                }
                 if ($sv == 'body' || $sv == 'html' || $sv == '*') {
                     $selectors[$sk] = "$sv #framelessVb";
-                } else {
+                } elseif (strpos($sv, '@') === 0) {
+                    $import = explode(';', $sv);
+                    $import = $import[0] . ';';
+                    $sv = substr($sv, strlen($import));
+                    if ($sv == 'body' || $sv == 'html' || $sv == '*') {
+                        $selectors[$sk] = "$sv #framelessVb";
+                    } else {
+                        $selectors[$sk] = "#framelessVb $sv";
+                    }
+                    $imports[] = $import;
+                } elseif (strpos($sv, 'wysiwyg') === false) {
                     $selectors[$sk] = "#framelessVb $sv";
                 }
-                $imports[] = $import;
-            } elseif (strpos($sv, 'wysiwyg') === false) {
-                $selectors[$sk] = "#framelessVb $sv";
             }
+            //reconstruct the element
+            $elements[$k] = implode(', ', $selectors) . ' {' . $element[1] . '}';
         }
-        //reconstruct the element
-        $elements[$k] = implode(', ', $selectors) . ' {' . $element[1] . '}';
+        //reconstruct the css
+        $css = "<style type=\"text/css\" id=\"vbulletin{$matches[1]}\">\n" . implode("\n", $imports) . "\n" . implode("\n", $elements) . "\n</style>";
+        if (defined('_JFUSION_DEBUG')) {
+            $debug['parsed'] = $css;
+            $_SESSION["jfvbdebug"] = $debug;
+        }
+        return $css;
     }
-    //reconstruct the css
-    $css = "<style type=\"text/css\" id=\"vbulletin{$matches[1]}\">\n" . implode("\n", $imports) . "\n" . implode("\n", $elements) . "\n</style>";
-    if (defined('_JFUSION_DEBUG')) {
-        $debug['parsed'] = $css;
-        $_SESSION["jfvbdebug"] = $debug;
-    }
-    return $css;
 }

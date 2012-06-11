@@ -39,8 +39,6 @@ class JFusionAdmin_efront extends JFusionAdmin
      * returns the name of this JFusion plugin
      * @return string name of current JFusion plugin
      */
-//remember        fb($params,__FILE__.'-'.__LINE__.":".'params');
-
     function getJname()
     {
         return 'efront';
@@ -55,7 +53,7 @@ class JFusionAdmin_efront extends JFusionAdmin
 
     /**
      * @param string $forumPath
-     * @return array|bool
+     * @return array
      */
     function setupFromPath($forumPath) {
         //check for trailing slash and generate file path
@@ -64,9 +62,9 @@ class JFusionAdmin_efront extends JFusionAdmin
         } else {
             $myfile = $forumPath . DS .'libraries'. DS .'configuration.php';
         }
+        $params = array();
         if (($file_handle = @fopen($myfile, 'r')) === false) {
             JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));
-            return false;
         } else {
             //parse the file line by line to get only the config variables
             $file_handle = fopen($myfile, 'r');
@@ -87,7 +85,6 @@ class JFusionAdmin_efront extends JFusionAdmin
             }
             if (($file_handle = @fopen($myfile, 'r')) === false) {
                 JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));
-                return false;
             } else {
                 //parse the file line by line to get only the config variables
                 $file_handle = fopen($myfile, 'r');
@@ -99,21 +96,22 @@ class JFusionAdmin_efront extends JFusionAdmin
                     	}    
                     }
                 }
-            }    
-            fclose($file_handle);
-            //save the parameters into array
-            $params = array();
-            $params['database_host'] = G_DBHOST;
-            $params['database_name'] = G_DBNAME;
-            $params['database_user'] = G_DBUSER;
-            $params['database_password'] = G_DBPASSWD;
-            $params['database_type'] = G_DBTYPE;
-            $params['source_path'] = $forumPath;
-            $params['usergroup'] = '0'; #make sure we do not assign roles with more capabilities automatically
-            $params['md5_key'] = G_MD5KEY;
-            $params['uploadpath'] = G_UPLOADPATH;
-            return $params;
+
+                fclose($file_handle);
+                //save the parameters into array
+
+                $params['database_host'] = G_DBHOST;
+                $params['database_name'] = G_DBNAME;
+                $params['database_user'] = G_DBUSER;
+                $params['database_password'] = G_DBPASSWD;
+                $params['database_type'] = G_DBTYPE;
+                $params['source_path'] = $forumPath;
+                $params['usergroup'] = '0'; #make sure we do not assign roles with more capabilities automatically
+                $params['md5_key'] = G_MD5KEY;
+                $params['uploadpath'] = G_UPLOADPATH;
+            }
         }
+        return $params;
     }
 
     /**
@@ -142,15 +140,15 @@ class JFusionAdmin_efront extends JFusionAdmin
         // Also we need an indication that the module initialisation neds to be performed for this user
         // because we cannot run this from outside eFront (unless we load the whole framework on top of Joomla)
         $tableFields = $db->getTableFields('users',false);
-        if (!array_key_exists('id',$tableFields['users']))
-        {
+        if (!array_key_exists('id',$tableFields['users'])) {
             $query = "ALTER TABLE users ADD id int(11) NOT null AUTO_INCREMENT FIRST, ADD UNIQUE (id)";
-            $db->Execute($query);
+            $db->setQuery($query);
+            $db->query();
         }
-        if (!array_key_exists('need_mod_init',$tableFields['users']))
-        {
+        if (!array_key_exists('need_mod_init',$tableFields['users'])) {
             $query = "ALTER TABLE users ADD need_mod_init int(11) NOT null DEFAULT 0";
-            $db->Execute($query);
+            $db->setQuery($query);
+            $db->query();
         }
         $query = 'SELECT count(*) from #__users';
         $db->setQuery($query);
@@ -163,6 +161,10 @@ class JFusionAdmin_efront extends JFusionAdmin
      * @return array
      */
     function getUsergroupList() {
+        /**
+         * @ignore
+         * @var $helper JFusionHelper_efront
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
          return $helper->getUsergroupList();
     }
@@ -172,7 +174,12 @@ class JFusionAdmin_efront extends JFusionAdmin
      */
     function getDefaultUsergroup() {
         $params = JFusionFactory::getParams($this->getJname());
-        $usergroup_id = $params->get('usergroup');
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
+        $usergroup_id = $usergroups[0];
+        /**
+         * @ignore
+         * @var $helper JFusionHelper_efront
+         */
         $helper = JFusionFactory::getHelper($this->getJname());
         return $helper->groupIdToName($usergroup_id);
     }
@@ -185,7 +192,7 @@ class JFusionAdmin_efront extends JFusionAdmin
         $query = "SELECT value FROM #__configuration WHERE name = 'signup'";
         $db->setQuery($query);
         $signup = $db->loadResult();
-        if ($signup == 0){
+        if ($signup == 0) {
                     $result = false;
             return $result;
         } else {

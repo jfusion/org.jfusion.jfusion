@@ -29,7 +29,6 @@
 		<param name="jfusionbox" type="text" default="" label="PLUGIN_GENERAL_DETAILS" description="" />
 		<param name="description" type="text" size="60" default="put a description" description="DESCRIPTION" label=""/>
 		<param name="source_url" type="text" size="60" default="http://site.com/" description="SOURCE_URL" label=""/>
-		<param name="source_path" type="text" size="60" default="" description="SOURCE_PATH" label=""/>		
 		<param name="cookie_domain" type="text" size="60" default="" description="COOKIE_DOMAIN" label=""/>
 		<param name="cookie_path" type="text" size="20" default="/" description="COOKIE_PATH" label=""/>
 		<param name="cookie_name" type="text" size="20" default="" description="COOKIE_NAME" label=""/>

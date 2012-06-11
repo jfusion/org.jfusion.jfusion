@@ -29,8 +29,7 @@ $path = JPATH_COMPONENT . DS . 'controllers' . DS . $controller . '.php';
 if (JFile::exists ( $path )) {
 	// The requested controller exists and there you load it...
 	require_once ($path);
-}
-else {
+} else {
 	// Hmm... an invalid controller was passed
 	JError::raiseError ( '500', JText::_ ( 'Unknown controller' ) );
 }
@@ -38,9 +37,13 @@ else {
 // Instanciate and execute the controller
 // Note we cannot use JString here as it causes function name conflicts with phpBB
 $classname = 'JFusionController' . ucfirst ( $controller );
+/**
+ * @ignore
+ * @var $controller JController
+ */
 $controller = new $classname ( );
 
-$controller->execute ( JRequest::getCmd ( 'task' ) );
+$controller->execute( JRequest::getCmd ( 'task' ) );
 
 // Redirect
-$controller->redirect ();
+$controller->redirect();

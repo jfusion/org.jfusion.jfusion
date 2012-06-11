@@ -18,13 +18,6 @@
 defined('_JEXEC') or die('Restricted access');
 
 /**
- * load the DokuWiki framework
- */
-if (!class_exists('Dokuwiki')) {
-	require_once dirname(__FILE__) . DS . 'dokuwiki.php';
-}
-
-/**
  * JFusion public class for DokuWiki
  *
  * @category   JFusion
@@ -77,8 +70,16 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
         $params = JFusionFactory::getParams($this->getJname());
         $source_path = $params->get('source_path');
 
+        if (substr($source_path, -1) != DS) {
+            $source_path .= DS;
+        }
+
         //setup constants needed by Dokuwiki
-        $helper = & JFusionFactory::getHelper($this->getJname());
+        /**
+         * @ignore
+         * @var $helper JFusionHelper_dokuwiki
+         */
+        $helper = JFusionFactory::getHelper($this->getJname());
         $helper->defineConstants();
 
         $do = JRequest::getVar('do');
@@ -104,19 +105,9 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
                 $mainframe->login($credentials, $options);
             }
         }
-        if (substr($source_path, -1) == DS) {
-            $index_file = $source_path . 'doku.php';
-            if (JRequest::getVar('jfile') == 'detail.php') $index_file = $source_path . 'lib' . DS . 'exe' . DS . 'detail.php';
-            //            if ( JRequest::getVar('jfile') == 'fetch.php' ) $index_file = $source_path.'lib'.DS.'exe'.DS.'fetch.php';
-            //            if ( JRequest::getVar('jfile') == 'feed.php' ) $index_file = $source_path .'feed.php';
+        $index_file = $source_path . 'doku.php';
+        if (JRequest::getVar('jfile') == 'detail.php') $index_file = $source_path . 'lib' . DS . 'exe' . DS . 'detail.php';
 
-        } else {
-            $index_file = $source_path . DS . 'doku.php';
-            if (JRequest::getVar('jfile') == 'detail.php') $index_file = $source_path . DS . 'lib' . DS . 'exe' . DS . 'detail.php';
-            //            if ( JRequest::getVar('jfile') == 'fetch.php' ) $index_file = $source_path.DS.'lib'.DS.'exe'.DS.'fetch.php';
-            //            if ( JRequest::getVar('jfile') == 'feed.php' ) $index_file = $source_path .DS.'feed.php';
-
-        }
         if (JRequest::getVar('media')) JRequest::setVar('media', str_replace(':', '-', JRequest::getVar('media')));
         //loading the JString, to prevent error!
         require_once JPATH_LIBRARIES . DS . 'joomla' . DS . 'utilities' . DS . 'string.php';
@@ -125,6 +116,11 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
         	require_once JPATH_LIBRARIES . DS . 'phputf8' . DS . 'mbstring' . DS . 'case.php';
         }
         require_once JPATH_LIBRARIES . DS . 'phputf8' . DS . 'mbstring' . DS . 'core.php';
+
+        define('DOKU_INC', $source_path);
+        require_once $source_path . 'inc' . DS . 'events.php';
+        require_once $source_path . 'inc' . DS . 'init.php';
+
         require_once JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'hooks.php';
         if (!is_file($index_file)) {
             JError::raiseWarning(500, 'The path to the DokuWiki index file set in the component preferences does not exist');
@@ -258,60 +254,63 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
         $q = urldecode($q);
         $q = str_replace(':', ';', $q);
         if (strpos($q, '#') === 0) {
-            return $fullURL . $q;
+            $url = $fullURL . $q;
         } else {
             $q = ltrim($q, '/');
-        }
-        if (strpos($q, '_detail/') === 0 || strpos($q, 'lib/exe/detail.php') === 0) {
-            if (strpos($q, '_detail/') === 0) {
-                $q = substr($q, strlen('_detail/'));
-            } else {
-                $q = substr($q, strlen('lib/exe/detail.php'));
-            }
-            if (strpos($q, '?') === 0) {
-                $url = 'detail.php' . $q;
+            if (strpos($q, '_detail/') === 0 || strpos($q, 'lib/exe/detail.php') === 0) {
+                if (strpos($q, '_detail/') === 0) {
+                    $q = substr($q, strlen('_detail/'));
+                } else {
+                    $q = substr($q, strlen('lib/exe/detail.php'));
+                }
+                if (strpos($q, '?') === 0) {
+                    $url = 'detail.php' . $q;
+                } else {
+                    $this->trimUrl($q);
+                    $url = 'detail.php?media=' . $q;
+                }
+            } else if ((strpos($q, '_media/') === 0 || strpos($q, 'lib/exe/fetch.php') === 0)) {
+                if (strpos($q, '_media/') === 0) {
+                    $q = substr($q, strlen('_media/'));
+                } else {
+                    $q = substr($q, strlen('lib/exe/fetch.php'));
+                }
+                if (strpos($q, '?') === 0) {
+                    $url = 'fetch.php' . $q;
+                } else {
+                    $this->trimUrl($q);
+                    $url = 'fetch.php?media=' . $q;
+                }
+            } else if (strpos($q, 'doku.php') === 0) {
+                $q = substr($q, strlen('doku.php'));
+                if (strpos($q, '?') === 0) {
+                    $url = 'doku.php' . $q;
+                } else {
+                    $this->trimUrl($q);
+                    if (strlen($q)) $url = 'doku.php?id=' . $q;
+                    else $url = 'doku.php';
+                }
             } else {
                 $this->trimUrl($q);
-                $url = 'detail.php?media=' . $q;
+                if (strlen($q)) {
+                    $url = 'doku.php?id=' . $q;
+                } else  {
+                    $url = 'doku.php';
+                }
             }
-        } else if ((strpos($q, '_media/') === 0 || strpos($q, 'lib/exe/fetch.php') === 0)) {
-            if (strpos($q, '_media/') === 0) {
-                $q = substr($q, strlen('_media/'));
+            if (substr($baseURL, -1) != '/') {
+                //non sef URls
+                $url = str_replace('?', '&amp;', $url);
+                $url = $baseURL . '&amp;jfile=' . $url;
             } else {
-                $q = substr($q, strlen('lib/exe/fetch.php'));
-            }
-            if (strpos($q, '?') === 0) {
-                $url = 'fetch.php' . $q;
-            } else {
-                $this->trimUrl($q);
-                $url = 'fetch.php?media=' . $q;
-            }
-        } else if (strpos($q, 'doku.php') === 0) {
-            $q = substr($q, strlen('doku.php'));
-            if (strpos($q, '?') === 0) {
-                $url = 'doku.php' . $q;
-            } else {
-                $this->trimUrl($q);
-                if (strlen($q)) $url = 'doku.php?id=' . $q;
-                else $url = 'doku.php';
-            }
-        } else {
-            $this->trimUrl($q);
-            if (strlen($q)) $url = 'doku.php?id=' . $q;
-            else $url = 'doku.php';
-        }
-        if (substr($baseURL, -1) != '/') {
-            //non sef URls
-            $url = str_replace('?', '&amp;', $url);
-            $url = $baseURL . '&amp;jfile=' . $url;
-        } else {
-            $params = JFusionFactory::getParams($this->getJname());
-            $sefmode = $params->get('sefmode');
-            if ($sefmode == 1) {
-                $url = JFusionFunction::routeURL($url, JRequest::getInt('Itemid'));
-            } else {
-                //we can just append both variables
-                $url = $baseURL . $url;
+                $params = JFusionFactory::getParams($this->getJname());
+                $sefmode = $params->get('sefmode');
+                if ($sefmode == 1) {
+                    $url = JFusionFunction::routeURL($url, JRequest::getInt('Itemid'));
+                } else {
+                    //we can just append both variables
+                    $url = $baseURL . $url;
+                }
             }
         }
         return $url;
@@ -341,7 +340,9 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
         foreach ($links[2] as $key => $value) {
             $method = '#method=["|\']post["|\']#mS';
             $is_get = true;
-            if (preg_match($method, $links[1][$key]) || preg_match($method, $links[3][$key])) $is_get = false;
+            if (preg_match($method, $links[1][$key]) || preg_match($method, $links[3][$key])) {
+                $is_get = false;
+            }
             $matches[1] = $links[2][$key];
             $value = $this->fixUrl($matches);
             if ($is_get && substr($value, -1) != DS) $links[4][$key] = $getData . $links[4][$key];
@@ -369,17 +370,12 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
      * $result->created = (optional) date when the content was created
      */
     function getSearchResults(&$text, &$phrase, &$pluginParam, $itemid) {
-        global $rootFolder;
         $params = JFusionFactory::getParams($this->getJname());
-        $rootFolder = $params->get('source_path');
-        if (substr($rootFolder, -1) == DS) {
-            define('DOKU_INC', $rootFolder);
-        } else {
-            define('DOKU_INC', $rootFolder . '/');
-        }
+
         require_once 'doku_search.php';
         $highlights = array();
-        $results = ft_pageSearch($text, $highlights);
+        $search = new DokuWikiSearch($this->getJname());
+        $results = $search->ft_pageSearch($text, $highlights);
         //pass results back to the plugin in case they need to be filtered
         $this->filterSearchResults($results);
         $rows = array();
@@ -387,8 +383,8 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
 
         foreach ($results as $key => $index) {
             $rows[$pos]->title = JText::_($key);
-            $rows[$pos]->text = $this->getPage($rootFolder, $key);
-            $rows[$pos]->created = $this->getPageModifiedDateTime($rootFolder, $key);
+            $rows[$pos]->text = $search->getPage($key);
+            $rows[$pos]->created = $search->getPageModifiedDateTime($key);
             //dokuwiki doesn't track hits
             $rows[$pos]->hits = 0;
             $rows[$pos]->href = JFusionFunction::routeURL(str_replace(':', ';', $this->getSearchResultLink($key)), $itemid);
@@ -396,38 +392,6 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
             $pos++;
         }
         return $rows;
-    }
-
-    /**
-     * @param $path
-     * @param $page
-     * @return string
-     */
-    function getPage($path, $page) {
-        $file = $path . DS . 'data' . DS . 'pages' . DS . str_replace(":", DS, $page) . '.txt';
-        $text = '';
-        if (file_exists($file)) {
-            $handle = fopen($file, "r");
-            while (!feof($handle)) {
-                $text.= fgets($handle, 4096);
-            }
-            fclose($handle);
-        }
-        return $text ? $text : "Please, follow the given link to get the DokuWiki article where we found one or more keyword(s).";
-    }
-
-    /**
-     * @param $path
-     * @param $page
-     * @return string
-     */
-    function getPageModifiedDateTime($path, $page) {
-        $datetime = '';
-        $file = $path . DS . 'data' . DS . 'pages' . DS . str_replace(":", DS, $page) . '.txt';
-        if (file_exists($file)) {
-            $datetime = date ("Y-m-d h:i:s", filemtime($file));
-        }
-        return $datetime;
     }
 
     /**
@@ -454,16 +418,22 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
             $url = '';
             $i = 0;
             foreach ($bread as $key) {
-                if ($url) $url.= ';' . $key;
-                else $url = $key;
+                if ($url) {
+                    $url.= ';' . $key;
+                } else {
+                    $url = $key;
+                }
                 $path = new stdClass();
                 $path->title = $key;
                 $path->url = 'doku.php?id=' . $url;
                 $pathway[] = $path;
             }
             if (JRequest::getVar('media') || JRequest::getVar('do')) {
-                if (JRequest::getVar('media')) $add = JRequest::getVar('media');
-                else $add = JRequest::getVar('do');
+                if (JRequest::getVar('media')) {
+                    $add = JRequest::getVar('media');
+                } else {
+                    $add = JRequest::getVar('do');
+                }
                 $pathway[count($pathway) - 1]->title = $pathway[count($pathway) - 1]->title . ' ( ' . $add . ' )';
             }
         }

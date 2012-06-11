@@ -44,7 +44,7 @@ class plgSystemMagelib {
 		
 		if (! $mage_path) {
 			$this->mage_path = $this->params->get ( 'mage_path' );
-		}else{
+		} else {
 			$this->mage_path = $mage_path;
 		}		
 	}
@@ -68,7 +68,6 @@ class plgSystemMagelib {
 		// $_SESSION must be restored after the Magento process
 		// @see plgSystemMagelib::restartJoomlaSession();
 		unset ( $_SESSION );
-		return;
 	}
 	
 	/**
@@ -87,21 +86,21 @@ class plgSystemMagelib {
 			
 			$defaultStore = null;
 			
-				$mage_plugin = $this->params->get ( 'mage_plugin', 'magento' );
-				$language_store_view = JFusionFactory::getParams ( $mage_plugin )->get ( 'language_store_view', '' );
-				
-				if (strlen ( $language_store_view ) > 0) {
-					// we define and set the default store (and language if set correctly by the administrator)
-					$JLang = &JFactory::getLanguage ();
-					$langs = explode ( ";", $language_store_view );
-					foreach ( $langs as $lang ) {
-						$codes = explode ( "=", $lang );
-						if ($codes [0] == $JLang->getTag()) {
-							$defaultStore = $codes [1];
-							break;
-						}
-					}
-				}
+            $mage_plugin = $this->params->get ( 'mage_plugin', 'magento' );
+            $language_store_view = JFusionFactory::getParams ( $mage_plugin )->get ( 'language_store_view', '' );
+
+            if (strlen ( $language_store_view ) > 0) {
+                // we define and set the default store (and language if set correctly by the administrator)
+                $JLang = &JFactory::getLanguage ();
+                $langs = explode ( ";", $language_store_view );
+                foreach ( $langs as $lang ) {
+                    $codes = explode ( "=", $lang );
+                    if ($codes [0] == $JLang->getTag()) {
+                        $defaultStore = $codes [1];
+                        break;
+                    }
+                }
+            }
 			
 			$bootstrap = $this->mage_path . 'app/Mage.php';
 			
@@ -158,7 +157,7 @@ class plgSystemMagelib {
 		if (array_key_exists ( 'frontend', $_COOKIE )) {
 			session_id ( $_COOKIE ['frontend'] );
 		} else {
-			$id = JSession::_createId ();
+			$id = $this->createId();
 			$_COOKIE ['frontend'] = $id;
 			session_id ( $id );
 		}
@@ -169,6 +168,21 @@ class plgSystemMagelib {
 		ob_end_clean ();
 		return;
 	}
+
+    /**
+     * @return string
+     */
+    function createId()
+    {
+        $id = '';
+        while (strlen($id) < 32)
+        {
+            $id .= mt_rand(0, mt_getrandmax());
+        }
+
+        $id = md5(uniqid($id, true));
+        return $id;
+    }
 	
 	/**
 	 * Before to go on to use the framework of Joomla,
@@ -201,7 +215,6 @@ class plgSystemMagelib {
 	 * Restart the Joomla session with current values
 	 *
 	 * @param none
-	 * @return void
 	 */
 	function restartJoomlaSession() {
 		// Restart Joomla session
@@ -214,7 +227,6 @@ class plgSystemMagelib {
 		session_start ();
 		// reload the data created before the destruction of the session
 		$_SESSION = $this->_OldSessionData;
-		return;
 	}
 
     /**

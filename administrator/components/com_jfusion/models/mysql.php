@@ -47,8 +47,6 @@ class JFusionMySQL extends JDatabaseMySQL
      * added execute query as Joomla 1.6 has removed functions
      *
      * @param string $query
-     *
-     * @return string nothing
      */        
     function Execute($query)
     {
@@ -58,8 +56,6 @@ class JFusionMySQL extends JDatabaseMySQL
     
     /**
      * begin transaction
-     * 
-     * @return string nothing
      */        
     function BeginTrans()
     {
@@ -67,8 +63,6 @@ class JFusionMySQL extends JDatabaseMySQL
     }
     /**
      * commit transaction
-     * 
-     * @return string nothing
      */        
     function CommitTrans()
     {
@@ -76,8 +70,6 @@ class JFusionMySQL extends JDatabaseMySQL
     }
     /**
      * rollback transaction
-     * 
-     * @return string nothing
      */        
     function RollbackTrans()
     {

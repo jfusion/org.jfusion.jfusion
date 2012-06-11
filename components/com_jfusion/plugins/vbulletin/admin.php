@@ -51,7 +51,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
 
     /**
      * @param string $forumPath
-     * @return array|bool
+     * @return array
      */
     function setupFromPath($forumPath)
     {
@@ -64,10 +64,9 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
             $funcfile = $forumPath . DS . 'includes' . DS . 'functions.php';
         }
         //try to open the file
+        $params = array();
         if (($file_handle = @fopen($configfile, 'r')) === false) {
             JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $configfile " . JText::_('WIZARD_MANUAL'));
-            $result = false;
-            return $result;
         } else {
             //parse the file line by line to get only the config variables
             $file_handle = fopen($configfile, 'r');
@@ -133,9 +132,8 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
                 fclose($file_handle);
                 $params['cookie_salt'] = $cookie_salt;
             }
-
-            return $params;
         }
+        return $params;
     }
 
     /**
@@ -215,7 +213,8 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
     function getDefaultUsergroup()
     {
         $params = & JFusionFactory::getParams($this->getJname());
-        $usergroup = $params->get('usergroup');
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
+        $usergroup = $usergroups[0];
         //we want to output the usergroup name
         $db = & JFusionFactory::getDatabase($this->getJname());
         $query = 'SELECT title from #__usergroup WHERE usergroupid = ' . $usergroup;
@@ -272,7 +271,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
                 var h = (hook == 'frameless' || hook == 'redirect');
                 var i = (itemid.value === '' || itemid.value == '0');
                 if (a && h && i) {
-                    alert('${empty}');
+                    alert('{$empty}');
                 } else {
                     form.customcommand.value = 'toggleHook';
                     $('${fieldname}').value = hook;
@@ -541,7 +540,11 @@ JS;
         $php.= "\$val = '$plugin';\n";
         $secret = $params->get('vb_secret', JFactory::getConfig()->getValue('config.secret'));
         $php.= "\$JFusionHook = new executeJFusionHook('init_startup', \$val, '$secret');\n";
-        $helper = & JFusionFactory::getHelper($this->getJname());
+        /**
+         * @ignore
+         * @var $helper JFusionHelper_vbulletin
+         */
+        $helper = JFusionFactory::getHelper($this->getJname());
         $version = $helper->getVersion();
         if (substr($version, 0, 1) > 3) {
             $php.= "vBulletinHook::set_pluginlist(\$vbulletin->pluginlist);\n";
@@ -557,7 +560,7 @@ JS;
     {
         //check for usergroups to make sure membergroups do not include default or display group
         $params = & JFusionFactory::getParams($this->getJname());
-        if (substr($params->get('usergroup'), 0, 2) == 'a:') {
+        if (JFusionFunction::isAdvancedUsergroupMode($this->getJname())) {
             $usergroups = unserialize($params->get('usergroup'));
             $master = JFusionFunction::getMaster();
             if (!empty($master)) {

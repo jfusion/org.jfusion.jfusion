@@ -87,9 +87,7 @@ class JFusionUser_prestashop extends JFusionUser {
      * @return array
      */
     function destroySession($userinfo = "", $option = "") {
-	    $status = array();
-        $status['error'] = array();
-        $status['debug'] = array();
+        $status = array('error' => array(),'debug' => array());
 	    // use prestashop cookie class and functions to delete cookie
 		$params = JFusionFactory::getParams($this->getJname());
 		require_once $params->get('source_path') . DS . "config" . DS . "settings.inc.php";
@@ -120,9 +118,7 @@ class JFusionUser_prestashop extends JFusionUser {
      */
     function createSession($userinfo, $options, $framework = true) {
 	    $params = JFusionFactory::getParams($this->getJname());
-	    $status = array();
-        $status['error'] = array();
-        $status['debug'] = array();
+        $status = array('error' => array(),'debug' => array());
         // this uses a code extract from authentication.php that deals with logging in completely
 		$db = JFusionFactory::getDatabase($this->getJname());
 		require_once $params->get('source_path') . DS . "config" . DS . "settings.inc.php";
@@ -152,7 +148,7 @@ class JFusionUser_prestashop extends JFusionUser {
 		    /* Handle brute force attacks */
 		    sleep(1);
 			// check if password matches
-			$query = "SELECT passwd FROM #__customer WHERE email =" . $db-Quote($email);
+			$query = "SELECT passwd FROM #__customer WHERE email =" . $db->Quote($email);
             $db->setQuery($query);
             $result = $db->loadResult();
 		    if (!$result) {
@@ -281,11 +277,12 @@ class JFusionUser_prestashop extends JFusionUser {
 	    'date_add' => date("Y-m-d h:m:s"), // column 17 (date_add)
 	    'date_upd' => date("Y-m-d h:m:s") // column 18 (date_upd)
 		);
-		
+
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 		/* array to go into table ps_customer_group */
 	    $ps_customer_group = array(
 	    'id_customer' => "NULL", // column 0 (id_customer)
-	    'id_group' => $params->get('usergroup') // column 1 (id_group)
+	    'id_group' => $usergroups[0] // column 1 (id_group)
 	    );
 		
 		/* array to go into table ps_address */
@@ -508,7 +505,7 @@ class JFusionUser_prestashop extends JFusionUser {
 			$result = $db->query();
 	
 	        // enter customer group into database 
-	        $query="SELECT id_customer FROM #__customer WHERE email = " . $db-Quote($ps_customer['email']);
+	        $query="SELECT id_customer FROM #__customer WHERE email = " . $db->Quote($ps_customer['email']);
             $db->setQuery($query);
 			$result = $db->loadResult();
 		    if (!$result) {
@@ -553,7 +550,7 @@ class JFusionUser_prestashop extends JFusionUser {
 	            }
 	            else{
 	                $insert_sql_columns .= ", " . $key;
-                    $insert_sql_values .= ", " . $db-Quote($value);
+                    $insert_sql_values .= ", " . $db->Quote($value);
 	            }
 	        }
 			

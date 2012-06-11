@@ -41,9 +41,6 @@ class JFusionFunction
 			$query = 'SELECT * from #__jfusion WHERE master = 1 and status = 1';
 			$db->setQuery($query);
 			$jfusion_master = $db->loadObject();
-			if ($jfusion_master) {
-				return $jfusion_master;
-			}
 		}
 		return $jfusion_master;
 
@@ -140,9 +137,7 @@ class JFusionFunction
             if ($itemid == 'joomla_int') {
                 //special handling for internal URLs
                 if ($route) {
-                    return JRoute::_($url, $xhtml);
-                } else {
-                    return $url;
+                    $url = JRoute::_($url, $xhtml);
                 }
             } else {
                 //we need to create direct link to the plugin
@@ -151,7 +146,6 @@ class JFusionFunction
                 if ($xhtml) {
                     $url = str_replace('&', '&amp;', $url);
                 }
-                return $url;
             }
         } else {
             //we need to create link to a joomla itemid
@@ -204,9 +198,8 @@ class JFusionFunction
                     $url = 'index.php?' . $query;
                 }
             }
-
-            return $url;
         }
+        return $url;
     }
 
     /**
@@ -277,56 +270,56 @@ class JFusionFunction
                     JError::raiseWarning(0, $db->stderr());
                 }
             }
-            return;
-        }
-        //check to see if we have been given a joomla id
-        if (empty($joomla_id)) {
-            $query = "SELECT id FROM #__users WHERE username = " . $db->Quote($userinfo->username);
-            $db->setQuery($query);
-            $joomla_id = $db->loadResult();
+        } else {
+            //check to see if we have been given a joomla id
             if (empty($joomla_id)) {
-                return;
-            }
-        }
-        if (empty($jname)) {
-            $queries = array();
-            //we need to update each master/slave
-            $query = "SELECT name FROM #__jfusion WHERE master = 1 OR slave = 1";
-            $db->setQuery($query);
-            $jnames = $db->loadObjectList();
-            foreach ($jnames as $jname) {
-                if ($jname != "joomla_int") {
-                    $user = & JFusionFactory::getUser($jname->name);
-                    $puserinfo = $user->getUser($userinfo);
-                    if ($delete) {
-                        $queries[] = "(id = $joomla_id AND jname = " . $db->Quote($jname->name) . ")";
-                    } else {
-                        $queries[] = "(" . $db->Quote($puserinfo->userid) . "," . $db->Quote($puserinfo->username) . ", $joomla_id, " . $db->Quote($jname->name) . ")";
-                    }
-                    unset($user);
-                    unset($puserinfo);
+                $query = "SELECT id FROM #__users WHERE username = " . $db->Quote($userinfo->username);
+                $db->setQuery($query);
+                $joomla_id = $db->loadResult();
+                if (empty($joomla_id)) {
+                    return;
                 }
             }
-            if (!empty($queries)) {
+            if (empty($jname)) {
+                $queries = array();
+                //we need to update each master/slave
+                $query = "SELECT name FROM #__jfusion WHERE master = 1 OR slave = 1";
+                $db->setQuery($query);
+                $jnames = $db->loadObjectList();
+                foreach ($jnames as $jname) {
+                    if ($jname != "joomla_int") {
+                        $user = & JFusionFactory::getUser($jname->name);
+                        $puserinfo = $user->getUser($userinfo);
+                        if ($delete) {
+                            $queries[] = "(id = $joomla_id AND jname = " . $db->Quote($jname->name) . ")";
+                        } else {
+                            $queries[] = "(" . $db->Quote($puserinfo->userid) . "," . $db->Quote($puserinfo->username) . ", $joomla_id, " . $db->Quote($jname->name) . ")";
+                        }
+                        unset($user);
+                        unset($puserinfo);
+                    }
+                }
+                if (!empty($queries)) {
+                    if ($delete) {
+                        $query = "DELETE FROM #__jfusion_users_plugin WHERE " . implode(' OR ', $queries);
+                    } else {
+                        $query = "REPLACE INTO #__jfusion_users_plugin (userid,username,id,jname) VALUES (" . implode(',', $queries) . ")";
+                    }
+                    $db->setQuery($query);
+                    if (!$db->query()) {
+                        JError::raiseWarning(0, $db->stderr());
+                    }
+                }
+            } else {
                 if ($delete) {
-                    $query = "DELETE FROM #__jfusion_users_plugin WHERE " . implode(' OR ', $queries);
+                    $query = "DELETE FROM #__jfusion_users_plugin WHERE id = $joomla_id AND jname = '$jname'";
                 } else {
-                    $query = "REPLACE INTO #__jfusion_users_plugin (userid,username,id,jname) VALUES (" . implode(',', $queries) . ")";
+                    $query = "REPLACE INTO #__jfusion_users_plugin (userid,username,id,jname) VALUES ({$db->Quote($userinfo->userid) },{$db->Quote($userinfo->username) },$joomla_id,{$db->Quote($jname) })";
                 }
                 $db->setQuery($query);
                 if (!$db->query()) {
                     JError::raiseWarning(0, $db->stderr());
                 }
-            }
-        } else {
-            if ($delete) {
-                $query = "DELETE FROM #__jfusion_users_plugin WHERE id = $joomla_id AND jname = '$jname'";
-            } else {
-                $query = "REPLACE INTO #__jfusion_users_plugin (userid,username,id,jname) VALUES ({$db->Quote($userinfo->userid) },{$db->Quote($userinfo->username) },$joomla_id,{$db->Quote($jname) })";
-            }
-            $db->setQuery($query);
-            if (!$db->query()) {
-                JError::raiseWarning(0, $db->stderr());
             }
         }
     }
@@ -421,11 +414,10 @@ class JFusionFunction
         $result = $db->loadResult();
         if ($result == '1') {
             $result = true;
-            return $result;
         } else {
             $result = false;
-            return $result;
         }
+        return $result;
     }
 
     /**
@@ -700,7 +692,11 @@ class JFusionFunction
                 $options['plaintext_line_breaks'] = 'br';
             }
 
-            $bbcode =& JFusionFactory::getCodeParser();
+            /**
+             * @ignore
+             * @var $bbcode BBCode_Parser
+             */
+            $bbcode = JFusionFactory::getCodeParser();
             $bbcode->SetPlainMode(true);
             if (isset($options['plain_tags']) && is_array($options['plain_tags'])) {
                 foreach ($options['plain_tags'] as $tag) {
@@ -735,7 +731,7 @@ class JFusionFunction
             //Encode html entities added by the plugin's prepareText function
             $text = htmlentities($text);
 
-            $bbcode =& JFusionFactory::getCodeParser();
+            $bbcode = JFusionFactory::getCodeParser();
 
             //do not parse & into &amp;
             $bbcode->SetAllowAmpersand(true);
@@ -1272,8 +1268,11 @@ class JFusionFunction
 		        	$versions[$jname][$v] = false;
 		    	}
 	        } else {
-				// must be joomla_ext
-        		$admin = JFusionFactory::getAdmin($jname);
+                /**
+                 * @ignore
+                 * @var $admin JFusionAdmin_joomla_ext
+                 */
+                $admin = JFusionFactory::getAdmin($jname);
         		$version = $admin->getVersion();
 		    	if (version_compare($version, $v) >= 0) {
 		        	$versions[$jname][$v] = true;
@@ -1289,7 +1288,7 @@ class JFusionFunction
      * return the correct usergroups for a given user
      *
      * @param string $jname plugin name
-     * @param object $userinfo user with correct usergroups
+     * @param object|null $userinfo user with correct usergroups, if null it will return the usergroup for new users
      *
      * @return array
      */
@@ -1297,22 +1296,25 @@ class JFusionFunction
         $params = & JFusionFactory::getParams($jname);
         $usergroups = $params->get('usergroup',null);
 		$multiusergroup = $params->get('multiusergroup',null);
+        $group = array();
         if ($usergroups !== null) {
-	        $usergroups = (substr($usergroups, 0, 2) == 'a:') ? unserialize($usergroups) : $usergroups;
-	        //check to make sure that if using the advanced group mode, $userinfo->group_id exists
-	        if (is_array($usergroups) && !isset($userinfo->group_id)) {
-	            return array();
-	        }
-
-	        $usergroup = (is_array($usergroups)) ? $usergroups[$userinfo->group_id] : $usergroups;
-
-			//Is there other information stored in the usergroup?
-	        if (is_array($usergroup)) {
-	            //use the first var in the array
-	            $keys = array_keys($usergroup);
-	            $usergroup = $usergroup[$keys[0]];
-	        }
-	        return array($usergroup);
+            if ($userinfo === null) {
+                if (substr($usergroups, 0, 2) != 'a:') {
+                    $group = array($usergroups);
+                }
+            } else {
+                $usergroups = (substr($usergroups, 0, 2) == 'a:') ? unserialize($usergroups) : $usergroups;
+                if (is_array($usergroups) ) {
+                    if (isset($userinfo->group_id) && isset($usergroups[$userinfo->group_id])) {
+                        $usergroup = $usergroups[$userinfo->group_id];
+                        //use the first var in the array
+                        $keys = array_keys($usergroup);
+                        $group = array($usergroup[$keys[0]]);
+                    }
+                } else {
+                    $group = array($usergroups);
+                }
+            }
         } else if ($multiusergroup !== null) {
         	$master = JFusionFunction::getMaster();
 
@@ -1320,36 +1322,40 @@ class JFusionFunction
 	        $multiusergroup = (substr($multiusergroup, 0, 2) == 'a:') ? unserialize($multiusergroup) : $multiusergroup;
 
 			if (!is_array($multiusergroup)) {
-				return array($multiusergroup);
-	        }
-
-	        if (isset($userinfo->groups)) {
-	        	$groups = $userinfo->groups;
+				$group = array($multiusergroup);
 	        } else {
-	        	$groups[] = $userinfo->group_id;
-	        }
+                $groups = array();
+                if ($userinfo) {
+                    if (isset($userinfo->groups)) {
+                        $groups = $userinfo->groups;
+                    } elseif (isset($userinfo->group_id)) {
+                        $groups[] = $userinfo->group_id;
+                    }
+                }
 
-        	$mastergroups = isset($multiusergroup[$master->name]) ? $multiusergroup[$master->name] : array();
-        	$slavegroups = isset($multiusergroup[$jname]) ? $multiusergroup[$jname] : array();
+                $mastergroups = isset($multiusergroup[$master->name]) ? $multiusergroup[$master->name] : array();
+                $slavegroups = isset($multiusergroup[$jname]) ? $multiusergroup[$jname] : array();
 
-	        foreach ($mastergroups as $key => $mastergroup) {
-	        	if ( count($mastergroup) == count($groups) ) {
-					$count = 0;
-	        		foreach ($mastergroup as $value) {
-	    	    		if (in_array($value, $groups, true)) {
-	    					$count++;
-						}
-	        		}
-	        		if (count($groups) == $count ) {
-	        			return $slavegroups[$key];
-	        		}
-	        	}
-	        }
-			if (isset($slavegroups[$multiusergroupdefault])) {
-				return $slavegroups[$multiusergroupdefault];
-			}
+                foreach ($mastergroups as $key => $mastergroup) {
+                    if ( count($mastergroup) == count($groups) ) {
+                        $count = 0;
+                        foreach ($mastergroup as $value) {
+                            if (in_array($value, $groups, true)) {
+                                $count++;
+                            }
+                        }
+                        if (count($groups) == $count ) {
+                            $group =  $slavegroups[$key];
+                            break;
+                        }
+                    }
+                }
+                if (!count($group) && isset($slavegroups[$multiusergroupdefault])) {
+                    $group =  $slavegroups[$multiusergroupdefault];
+                }
+            }
         }
-		return array();
+		return $group;
     }
 
     /**
@@ -1364,6 +1370,7 @@ class JFusionFunction
     	if (!is_array($usergroups)) {
     		$usergroups = array($usergroups);
     	}
+        $correct = false;
     	if (isset($userinfo->groups)) {
 			$count = 0;
 			if ( count($usergroups) == count($userinfo->groups) ) {
@@ -1373,17 +1380,40 @@ class JFusionFunction
 					}
 	        	}
 				if (count($userinfo->groups) == $count) {
-					return true;
+                    $correct = true;
 				}
 			}
     	} else {
     		foreach ($usergroups as $key => $group) {
     			if ($group == $userinfo->group_id) {
-    				return true;
+                    $correct = true;
+                    break;
     			}
         	}
     	}
-		return false;
+		return $correct;
+    }
+
+    /**
+     * returns true / false if the plugin is in advanced usergroup mode or not...
+     *
+     * @param string $jname plugin name
+     *
+     * @return true/false
+     */
+    public static function isAdvancedUsergroupMode($jname) {
+        static $advanced = array();
+        if (!isset($advanced[$jname])) {
+            $params = & JFusionFactory::getParams($jname);
+            $usergroup = $params->get('usergroup');
+            $multiusergroup = $params->get('multiusergroup');
+            if (substr($usergroup, 0, 2) == 'a:' || substr($multiusergroup, 0, 2) == 'a:') {
+                $advanced[$jname] = true;
+            } else {
+                $advanced[$jname] = false;
+            }
+        }
+        return $advanced[$jname];
     }
 
     /**
@@ -1401,11 +1431,10 @@ class JFusionFunction
 				$basePath = JPATH_ADMINISTRATOR;
 			}
 			$lang = JFactory::getLanguage();
-			return
-				$lang->load(strtolower($extension), $basePath, null, false, false)
-			||	$lang->load(strtolower($extension), JPATH_PLUGINS .DS.$type.DS.$name, null, false, false)
-			||	$lang->load(strtolower($extension), $basePath, $lang->getDefault(), false, false)
-			||	$lang->load(strtolower($extension), JPATH_PLUGINS .DS.$type.DS.$name, $lang->getDefault(), false, false);
+			return $lang->load(strtolower($extension), $basePath, null, false, false)
+                ||	$lang->load(strtolower($extension), JPATH_PLUGINS .DS.$type.DS.$name, null, false, false)
+		    	||	$lang->load(strtolower($extension), $basePath, $lang->getDefault(), false, false)
+		    	||	$lang->load(strtolower($extension), JPATH_PLUGINS .DS.$type.DS.$name, $lang->getDefault(), false, false);
     	} else {
 			if ($basePath == null) {
 				$basePath = JPATH_BASE;

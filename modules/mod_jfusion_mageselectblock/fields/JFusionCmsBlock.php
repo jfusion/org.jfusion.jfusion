@@ -51,7 +51,7 @@ class JFormFieldJFusionCmsBlock extends JFormField {
 				$dbplugin->setQuery ( $query );
 				$rows = $dbplugin->loadObjectList ();
 				if (! empty ( $rows )) {
-					$output .= JHTML::_ ( 'select.genericlist', $rows, $this->getFieldName() . '[' .  $this->getName() . ']', 'size="1" class="inputbox"', 'value', 'name', $this->getValue() );
+					$output .= JHTML::_ ( 'select.genericlist', $rows, $this->getFieldName(null) . '[' .  $this->getName(null) . ']', 'size="1" class="inputbox"', 'value', 'name', $this->getValue() );
 				} else {
 					$output .= $jname . ': ' . JText::_('No list');
 				}

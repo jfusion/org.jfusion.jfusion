@@ -246,9 +246,10 @@ class JFusionAdmin
         //check that master plugin does not have advanced group mode data stored
         $master = JFusionFunction::getMaster();
         $params = JFusionFactory::getParams($jname);
-        if (!empty($master) && $master->name == $jname && substr($params->get('usergroup'), 0, 2) == 'a:') {
+        if (!empty($master) && $master->name == $jname && JFusionFunction::isAdvancedUsergroupMode($jname)) {
             JError::raiseWarning(0, $jname . ': ' . JText::_('ADVANCED_GROUPMODE_ONLY_SUPPORTED_FORSLAVES'));
         }
+
         // allow additional checking of the configuration
         $this->debugConfigExtra();
     }
@@ -373,8 +374,8 @@ class JFusionAdmin
         function usergroupSelect(option)
         {
             var myArray = [];
-            myArray[0] = '${simple_usergroup}';
-            myArray[1] = '${advanced_usergroup}';
+            myArray[0] = '{$simple_usergroup}';
+            myArray[1] = '{$advanced_usergroup}';
 
             $('JFusionUsergroup').innerHTML = myArray[option];
         }
@@ -564,13 +565,13 @@ JS;
         $document =& JFactory::getDocument();
         $plugin = json_encode($plugin);
         $js = <<<JS
-			var jfPlugin = ${plugin};
+			var jfPlugin = {$plugin};
 
 	        function usergroupSelect(option)
 	        {
 	            var myArray = new Array();
-	            myArray[0] = '<?php echo $simple_usergroup; ?>';
-	            myArray[1] = '<?php echo $advanced_usergroup; ?>';
+	            myArray[0] = '{$simple_usergroup}';
+	            myArray[1] = '{$advanced_usergroup}';
 	            $('JFusionUsergroup').innerHTML = myArray[option];
 
 	            var addgroupset = $('addgroupset');
@@ -795,13 +796,20 @@ JS;
             $ConfigList = JFusionFunctionAdmin::getFileData($url);
         }
 
+        /**
+         * @ignore
+         * @var $xmlList JSimpleXML
+         */
         $xmlList = JFactory::getXMLParser('Simple');
         $xmlList->loadString($ConfigList);
 
         if ( isset($xmlList->document) ) {
             $output .= JText::_('IMPORT_FROM_SERVER').'<br/>';
             $output .= '<input type=radio name="xmlname" value="" checked> None<br/>';
-
+            /**
+             * @ignore
+             * @var $val JSimpleXMLElement
+             */
             foreach ($xmlList->document->children() as $key => $val) {
                 $pluginName = $val->attributes('name');
                 if ($pluginName) {
@@ -824,7 +832,10 @@ JS;
             $file = JRequest::getVar( 'file', '', 'FILES','ARRAY');
 
             $xmlname = JRequest::getVar('xmlname');
-
+            /**
+             * @ignore
+             * @var $xmlFile JSimpleXML
+             */
             $xmlFile = JFactory::getXMLParser('Simple');
             if( !empty($xmlname) ) {
                 //custom for development purposes / local use only; note do not commit your URL to SVN!!!
@@ -897,9 +908,14 @@ JS;
             }
 
             $conf = array();
+            /**
+             * @ignore
+             * @var $val JSimpleXMLElement
+             */
             foreach ($config as $key => $val) {
-                $conf[$val->attributes('name')] = htmlspecialchars_decode($val->data());
-                if ( strpos($conf[$val->attributes('name')], 'a:') === 0 ) $conf[$val->attributes('name')] = unserialize($conf[$val->attributes('name')]);
+                $attName = (string)$val->attributes('name');
+                $conf[$attName] = htmlspecialchars_decode($val->data());
+                if ( strpos($conf[$attName], 'a:') === 0 ) $conf[$attName] = unserialize($conf[$attName]);
             }
 
             $database_type = JRequest::getVar('database_type');
@@ -938,34 +954,52 @@ JS;
     function export($name, $value, $node, $control_name)
     {
         $jname = $this->getJname();
-        $params = JFusionFactory::getParams($jname);
         $action = JRequest::getVar('action');
-        $dbinfo = JRequest::getVar('dbinfo');
 
         if( $action == 'export' ) {
+            $dbinfo = JRequest::getVar('dbinfo');
+
+            $params = JFusionFactory::getParams($jname);
+            $params = $params->toObject();
             jimport('joomla.utilities.simplexml');
 
             $arr = array();
-            foreach ($params->_registry["_default"]["data"] as $key => $val) {
+            foreach ($params as $key => $val) {
                 if( !$dbinfo && substr($key,0,8) == 'database' && substr($key,0,13) != 'database_type' ) {
                     continue;
                 }
                 $arr[$key] = $val;
             }
 
+            /**
+             * @ignore
+             * @var $xml JSimpleXML
+             */
             $xml = JFactory::getXMLParser('Simple');
             $xml->loadString('<jfusionconfig></jfusionconfig>');
 
+            /**
+             * @ignore
+             * @var $info JSimpleXMLElement
+             */
             $info = $xml->document->addChild('info');
-            $info->addAttribute  ('jfusionversion',  JFusionFunctionAdmin::currentVersion());
+
+            list($VersionCurrent,$RevisionCurrent) = JFusionFunctionAdmin::currentVersion(true);
+
+            $info->addAttribute  ('jfusionversion',  $VersionCurrent);
+            $info->addAttribute  ('jfusionrevision',  $RevisionCurrent);
 
             //get the current JFusion version number
             $filename = JFUSION_PLUGIN_PATH .DS.$jname.DS.'jfusion.xml';
             if (file_exists($filename) && is_readable($filename)) {
                 //get the version number
+                /**
+                 * @ignore
+                 * @var $parser JSimpleXML
+                 */
                 $parser = JFactory::getXMLParser('Simple');
                 $parser->loadFile($filename);
-                $info->addAttribute('pluginversion', $parser->document->version[0]->data());
+                $info->addAttribute('pluginversion', $parser->document->getElementByPath('version')->data());
             } else {
                 $info->addAttribute('pluginversion', 'UNKNOWN');
             }
@@ -981,8 +1015,11 @@ JS;
 
             $info->addAttribute  ('original_name', $result);
 
+            /**
+             * @ignore
+             * @var $info JSimpleXMLElement
+             */
             $config = $xml->document->addChild('config');
-
             foreach ($arr as $key => $val) {
                 $attrs = array();
                 $attrs['name'] = $key;
@@ -1005,7 +1042,7 @@ JS;
         function doExport() {
             var form = $('adminForm');
             form.action.value='export';
-            form.jname.value='${jname}';
+            form.jname.value='{$jname}';
             submitbutton('plugineditor');
         }
 JS;

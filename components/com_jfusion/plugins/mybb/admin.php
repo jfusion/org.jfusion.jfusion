@@ -58,40 +58,46 @@ class JFusionAdmin_mybb extends JFusionAdmin
             $forumPath.= DS;
         }
         $myfile = $forumPath . 'inc' . DS . 'config.php';
-        //include config file
-        $config = array();
-        require_once $myfile;
-        //Save the parameters into the standard JFusion params format
+
         $params = array();
-        $params['database_type'] = $config['database']['type'];
-        $params['database_host'] = $config['database']['hostname'];
-        $params['database_user'] = $config['database']['username'];
-        $params['database_password'] = $config['database']['password'];
-        $params['database_name'] = $config['database']['database'];
-        $params['database_prefix'] = $config['database']['table_prefix'];
-        $params['source_path'] = $forumPath;
-        //find the source url to mybb
-        $driver = $params['database_type'];
-        $host = $params['database_host'];
-        $user = $params['database_user'];
-        $password = $params['database_password'];
-        $database = $params['database_name'];
-        $prefix = $params['database_prefix'];
-        $options = array('driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database, 'prefix' => $prefix);
-        $bb = & JDatabase::getInstance($options);
-        $query = "SELECT value FROM #__settings WHERE name = 'bburl'";
-        $bb->setQuery($query);
-        $bb_url = $bb->loadResult();
-        if (substr($bb_url, -1) != DS) $bb_url.= DS;
-        $params['source_url'] = $bb_url;
-        $query = "SELECT value FROM #__settings WHERE name='cookiedomain'";
-        $bb->setQuery($query);
-        $cookiedomain = $bb->loadResult();
-        $params['cookie_domain'] = $cookiedomain;
-        $query = "SELECT value FROM #__settings WHERE name='cookiepath'";
-        $bb->setQuery($query);
-        $cookiepath = $bb->loadResult();
-        $params['cookie_path'] = $cookiepath;
+        //include config file
+        if (($file_handle = @fopen($myfile, 'r')) === false) {
+            JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));
+        } else {
+            include_once($myfile);
+            $config = array();
+            $params['database_type'] = $config['database']['type'];
+            $params['database_host'] = $config['database']['hostname'];
+            $params['database_user'] = $config['database']['username'];
+            $params['database_password'] = $config['database']['password'];
+            $params['database_name'] = $config['database']['database'];
+            $params['database_prefix'] = $config['database']['table_prefix'];
+            $params['source_path'] = $forumPath;
+            //find the source url to mybb
+            $driver = $params['database_type'];
+            $host = $params['database_host'];
+            $user = $params['database_user'];
+            $password = $params['database_password'];
+            $database = $params['database_name'];
+            $prefix = $params['database_prefix'];
+            $options = array('driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database, 'prefix' => $prefix);
+            $bb = & JDatabase::getInstance($options);
+            $query = "SELECT value FROM #__settings WHERE name = 'bburl'";
+            $bb->setQuery($query);
+            $bb_url = $bb->loadResult();
+            if (substr($bb_url, -1) != DS) {
+                $bb_url.= DS;
+            }
+            $params['source_url'] = $bb_url;
+            $query = "SELECT value FROM #__settings WHERE name='cookiedomain'";
+            $bb->setQuery($query);
+            $cookiedomain = $bb->loadResult();
+            $params['cookie_domain'] = $cookiedomain;
+            $query = "SELECT value FROM #__settings WHERE name='cookiepath'";
+            $bb->setQuery($query);
+            $cookiepath = $bb->loadResult();
+            $params['cookie_path'] = $cookiepath;
+        }
         return $params;
     }
 
@@ -136,7 +142,8 @@ class JFusionAdmin_mybb extends JFusionAdmin
      */
     function getDefaultUsergroup() {
         $params = JFusionFactory::getParams($this->getJname());
-        $usergroup_id = $params->get('usergroup');
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
+        $usergroup_id = $usergroups[0];
         //we want to output the usergroup name
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'SELECT title from #__usergroups WHERE gid = ' . (int)$usergroup_id;
@@ -154,11 +161,10 @@ class JFusionAdmin_mybb extends JFusionAdmin
         $disableregs = $db->loadResult();
         if ($disableregs == '0') {
             $result = true;
-            return $result;
         } else {
             $result = false;
-            return $result;
         }
+        return $result;
     }
 
     /**

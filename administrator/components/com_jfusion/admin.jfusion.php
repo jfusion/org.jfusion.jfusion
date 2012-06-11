@@ -68,6 +68,10 @@ if ($controller) {
 }
 // Create the controller
 $classname = 'JFusionController' . $controller;
+/**
+ * @ignore
+ * @var $controller JController
+ */
 $controller = new $classname();
 // Perform the Request task
 $task = JRequest::getVar('task');

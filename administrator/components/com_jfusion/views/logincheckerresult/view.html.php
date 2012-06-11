@@ -288,12 +288,16 @@ class jfusionViewLoginCheckerResult extends JView
 	{
 	    if (file_exists($filename)) {
 	        //get the version number
+            /**
+             * @ignore
+             * @var $parser JSimpleXML
+             */
 	        $parser = JFactory::getXMLParser('Simple');
 	        $parser->loadFile($filename);
-	        $jfusion_version[JText::_('JFUSION') . ' ' . $name . ' ' . JText::_('VERSION') ] = ' ' . $parser->document->version[0]->data() . ' ';
-	        if ($name == JText::_('COMPONENT') && !empty($parser->document->revision[0])) {
-	            $rev = $parser->document->revision[0]->data();
-	            $jfusion_version[JText::_('JFUSION') . ' ' . $name . ' ' . JText::_('VERSION') ].= "(Rev $rev) ";
+	        $jfusion_version[JText::_('JFUSION') . ' ' . $name . ' ' . JText::_('VERSION') ] = ' ' . $parser->document->getElementByPath('version')->data() . ' ';
+            $revision = $parser->document->getElementByPath('revision');
+	        if ($name == JText::_('COMPONENT') && !empty($revision)) {
+	            $jfusion_version[JText::_('JFUSION') . ' ' . $name . ' ' . JText::_('VERSION') ].= '(Rev '.$revision->data().') ';
 	        }
 	        unset($parser);
 	    }

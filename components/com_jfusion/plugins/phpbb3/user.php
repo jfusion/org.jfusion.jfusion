@@ -90,9 +90,7 @@ class JFusionUser_phpbb3 extends JFusionUser
      * @return array
      */
     function destroySession($userinfo, $options) {
-        $status = array();
-        $status['error'] = array();
-        $status['debug'] = array();
+        $status = array('error' => array(),'debug' => array());
         $db = JFusionFactory::getDatabase($this->getJname());
         //get the cookie parameters
         $params = JFusionFactory::getParams($this->getJname());
@@ -141,196 +139,186 @@ class JFusionUser_phpbb3 extends JFusionUser
      * @return array
      */
     function createSession($userinfo, $options) {
-        $status = array();
-        $status['error'] = array();
-        $status['debug'] = array();
+        $status = array('error' => array(),'debug' => array());
         $db = JFusionFactory::getDatabase($this->getJname());
         //do not create sessions for blocked users
         if (!empty($userinfo->block) || !empty($userinfo->activation)) {
             $status['error'][] = JText::_('FUSION_BLOCKED_USER');
-            return $status;
-        }
+        } else {
+            $userid = $userinfo->userid;
+            if ($userid && !empty($userid) && ($userid > 0)) {
+                $params = JFusionFactory::getParams($this->getJname());
+                //check if we need to let phpbb3 handle the login
+                $login_type = $params->get('login_type');
+                if ($login_type != 1 && !function_exists('deregister_globals')) {
+                    //let phpbb3 handle login
+                    $source_path = $params->get('source_path');
+                    //combine the path and filename
+                    if (substr($source_path, -1) != DS) {
+                        $source_path .= DS;
+                    }
 
-        $userid = $userinfo->userid;
-        if ($userid && !empty($userid) && ($userid > 0)) {
-            $params = JFusionFactory::getParams($this->getJname());
-        	//check if we need to let phpbb3 handle the login
-			$login_type = $params->get('login_type');
-			if ($login_type != 1 && !function_exists('deregister_globals')) {
-				//let phpbb3 handle login
-                $source_path = $params->get('source_path');
-                //combine the path and filename
-                if (substr($source_path, -1) != DS) {
-                   $source_path .= DS;
-                }
-
-                //set the current directory to phpBB3
-                chdir($source_path);
-                /* set scope for variables required later */
-                global $phpbb_root_path, $phpEx, $db, $config, $user, $auth, $cache, $template, $phpbb_hook, $module, $mode;
-                if (!defined('UTF8_STRLEN')) {
-                    define('UTF8_STRLEN', true);
-                }
-			    if (!defined('UTF8_CORE')) {
-                	define('UTF8_CORE', true);
-                }
-			    if (!defined('UTF8_CASE')) {
-                	define('UTF8_CASE', true);
-                }
-			    if (!defined('IN_PHPBB')) {
-                	define('IN_PHPBB', true);
-                }
-			    if (!defined('ROOT_PATH')) {
-                	define('', $source_path);
-                }
+                    //set the current directory to phpBB3
+                    chdir($source_path);
+                    /* set scope for variables required later */
+                    global $phpbb_root_path, $phpEx, $db, $config, $user, $auth, $cache, $template, $phpbb_hook, $module, $mode;
+                    if (!defined('UTF8_STRLEN')) {
+                        define('UTF8_STRLEN', true);
+                    }
+                    if (!defined('UTF8_CORE')) {
+                        define('UTF8_CORE', true);
+                    }
+                    if (!defined('UTF8_CASE')) {
+                        define('UTF8_CASE', true);
+                    }
+                    if (!defined('IN_PHPBB')) {
+                        define('IN_PHPBB', true);
+                    }
+                    if (!defined('ROOT_PATH')) {
+                        define('', $source_path);
+                    }
 
 
-                $phpbb_root_path = $source_path;
-                $phpEx = "php";
+                    $phpbb_root_path = $source_path;
+                    $phpEx = "php";
 
-                include_once $source_path . 'common.php';
+                    include_once $source_path . 'common.php';
 
-                //get phpbb3 session object
-                $user->session_begin();
-                $auth->acl($user->data);
+                    //get phpbb3 session object
+                    $user->session_begin();
+                    $auth->acl($user->data);
 
-                //perform the login
-                if ($options['remember']) {
-                    $remember = true;
+                    //perform the login
+                    if ($options['remember']) {
+                        $remember = true;
+                    } else {
+                        $remember = false;
+                    }
+                    $result = $auth->login($userinfo->username, $userinfo->password_clear, $remember, 1, 0);
+                    if ($result['status'] == LOGIN_SUCCESS) {
+                        $status['debug'][] = JText::_('CREATED') . ' ' . JText::_('PHPBB') . ' ' . JText::_('SESSION');
+                    } else {
+                        $status['debug'][] = JText::_('ERROR') . ' ' . JText::_('PHPBB') . ' ' . JText::_('SESSION');
+                    }
+                    //change the current directory back to Joomla.
+                    chdir(JPATH_SITE);
                 } else {
-                	$remember = false;
-                }
-                $result = $auth->login($userinfo->username, $userinfo->password_clear, $remember, 1, 0);
-		        if ($result['status'] == LOGIN_SUCCESS) {
-                    $status['debug'][] = JText::_('CREATED') . ' ' . JText::_('PHPBB') . ' ' . JText::_('SESSION');
-	            } else {
-                    $status['debug'][] = JText::_('ERROR') . ' ' . JText::_('PHPBB') . ' ' . JText::_('SESSION');
-	            }
+                    jimport('joomla.user.helper');
+                    $session_key = JUtility::getHash(JUserHelper::genRandomPassword(32));
+                    //Check for admin access
+                    $query = 'SELECT b.group_name FROM #__user_group as a INNER JOIN #__groups as b ON a.group_id = b.group_id WHERE b.group_name = \'ADMINISTRATORS\' and a.user_id = ' . (int)$userinfo->userid;
+                    $db->setQuery($query);
+                    $usergroup = $db->loadResult();
+                    if ($usergroup == 'ADMINISTRATORS') {
+                        $admin_access = 1;
+                    } else {
+                        $admin_access = 0;
+                    }
+                    $phpbb_cookie_name = $params->get('cookie_prefix');
+                    if ($phpbb_cookie_name) {
+                        //get cookie domain from config table
+                        $phpbb_cookie_domain = $params->get('cookie_domain');
+                        if ($phpbb_cookie_domain == 'localhost' || $phpbb_cookie_domain == '127.0.0.1') {
+                            $phpbb_cookie_domain = '';
+                        }
+                        //get cookie path from config table
+                        $phpbb_cookie_path = $params->get('cookie_path');
+                        //get autologin perm
+                        $phpbb_allow_autologin = $params->get('allow_autologin');
+                        $jautologin = 0;
+                        //set the remember me option if set in Joomla and is allowed per config
+                        if (isset($options['remember']) && !empty($phpbb_allow_autologin)) {
+                            $jautologin = $options['remember'] ? 1 : 0;
+                        }
 
-                //change the current directory back to Joomla.
-                chdir(JPATH_SITE);
+                        $create_persistant_cookie = false;
+                        if (!empty($phpbb_allow_autologin)) {
+                            //check for a valid persistant cookie
+                            $persistant_cookie = ($phpbb_allow_autologin) ? JRequest::getVar($phpbb_cookie_name . '_k', '', 'cookie') : '';
+                            if (!empty($persistant_cookie)) {
+                                $query = 'SELECT user_id FROM #__sessions_keys WHERE key_id = ' . $db->Quote(md5($persistant_cookie));
+                                $db->setQuery($query);
+                                $persistant_cookie_userid = $db->loadResult();
+                                if ($persistant_cookie_userid == $userinfo->userid) {
+                                    $status['debug'][] = JText::_('SKIPPED_CREATING_PERSISTANT_COOKIE');
+                                    $create_persistant_cookie = false;
+                                    //going to assume that since a persistant cookie exists, $options['remember'] was originally set
+                                    //$options['remember'] does not get set if Joomla's remember me plugin reinitiates the login
+                                    $jautologin = 1;
+                                }
+                            } else {
+                                $create_persistant_cookie = true;
+                            }
+                        }
 
-                return $status;
-			}
+                        if ($jautologin) {
+                            $query = "SELECT config_value FROM #__config WHERE config_name = 'max_autologin_time'";
+                            $db->setQuery($query);
+                            $max_autologin_time = $db->loadResult();
+                            $expires = ($max_autologin_time) ? 86400 * (int) $max_autologin_time : 31536000;
+                        } else {
+                            $expires = 31536000;
+                        }
+                        $secure = $params->get('secure',false);
+                        $httponly = $params->get('httponly',true);
+                        $session_start = time();
+                        //Insert the session into sessions table
+                        $session_obj = new stdClass;
+                        $session_obj->session_id = substr($session_key, 0, 32);
+                        $session_obj->session_user_id = $userid;
+                        $session_obj->session_last_visit = $userinfo->lastvisit;
+                        $session_obj->session_start = $session_start;
+                        $session_obj->session_time = $session_start;
+                        $session_obj->session_ip = $_SERVER['REMOTE_ADDR'];
+                        $session_obj->session_browser = $_SERVER['HTTP_USER_AGENT'];
+                        $session_obj->session_page = 0;
+                        $session_obj->session_autologin = $jautologin;
+                        $session_obj->session_admin = $admin_access;
+                        if (!$db->insertObject('#__sessions', $session_obj)) {
+                            //could not save the user
+                            $status['error'][] = JText::_('ERROR_CREATE_SESSION') . $db->stderr();
+                        } else {
+                            //Set cookies
+                            JFusionFunction::addCookie($phpbb_cookie_name . '_u', $userid, $expires, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly);
+                            $status['debug'][] = JText::_('CREATED') . ' ' . JText::_('COOKIE') . ': ' . JText::_('NAME') . '=' . $phpbb_cookie_name . '_u' . ', ' . JText::_('VALUE') . '=' . $userid . ', ' . JText::_('EXPIRES') . '=' . $expires . ', ' . JText::_('COOKIE_PATH') . '=' . $phpbb_cookie_path . ', ' . JText::_('COOKIE_DOMAIN') . '=' . $phpbb_cookie_domain;
+                            JFusionFunction::addCookie($phpbb_cookie_name . '_sid', $session_key, $expires, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly);
+                            $status['debug'][] = JText::_('CREATED') . ' ' . JText::_('COOKIE') . ': ' . JText::_('NAME') . '=' . $phpbb_cookie_name . '_sid' . ', ' . JText::_('VALUE') . '=' . substr($session_key, 0, 6) . '********, ' . JText::_('EXPIRES') . '=' . $expires . ', ' . JText::_('COOKIE_PATH') . '=' . $phpbb_cookie_path . ', ' . JText::_('COOKIE_DOMAIN') . '=' . $phpbb_cookie_domain;
 
-            jimport('joomla.user.helper');
-            $session_key = JUtility::getHash(JUserHelper::genRandomPassword(32));
-            //Check for admin access
-            $query = 'SELECT b.group_name FROM #__user_group as a INNER JOIN #__groups as b ON a.group_id = b.group_id WHERE b.group_name = \'ADMINISTRATORS\' and a.user_id = ' . (int)$userinfo->userid;
-            $db->setQuery($query);
-            $usergroup = $db->loadResult();
-            if ($usergroup == 'ADMINISTRATORS') {
-                $admin_access = 1;
-            } else {
-                $admin_access = 0;
-            }
-            $phpbb_cookie_name = $params->get('cookie_prefix');
-            if ($phpbb_cookie_name) {
-                //get cookie domain from config table
-                $phpbb_cookie_domain = $params->get('cookie_domain');
-                if ($phpbb_cookie_domain == 'localhost' || $phpbb_cookie_domain == '127.0.0.1') {
-                    $phpbb_cookie_domain = '';
-                }
-                //get cookie path from config table
-                $phpbb_cookie_path = $params->get('cookie_path');
-                //get autologin perm
-                $phpbb_allow_autologin = $params->get('allow_autologin');
-                $jautologin = 0;
-                //set the remember me option if set in Joomla and is allowed per config
-                if (isset($options['remember']) && !empty($phpbb_allow_autologin)) {
-                    $jautologin = $options['remember'] ? 1 : 0;
-                }
+                            //Force the values into the $_COOKIE variable just in case Joomla's remember me plugin fired this in which the cookie will not be available until after the browser refreshes.  This will hopefully trick phpBB into thinking the cookie is present now and thus handle sessions correctly when in frameless mode
+                            $_COOKIE[$phpbb_cookie_name . '_u'] = $userid;
+                            $_COOKIE[$phpbb_cookie_name . '_sid'] = $session_key;
 
-                $create_persistant_cookie = false;
-                if (!empty($phpbb_allow_autologin)) {
-                    //check for a valid persistant cookie
-                    $persistant_cookie = ($phpbb_allow_autologin) ? JRequest::getVar($phpbb_cookie_name . '_k', '', 'cookie') : '';
-                    if (!empty($persistant_cookie)) {
-                        $query = 'SELECT user_id FROM #__sessions_keys WHERE key_id = ' . $db->Quote(md5($persistant_cookie));
-                        $db->setQuery($query);
-                        $persistant_cookie_userid = $db->loadResult();
-                        if ($persistant_cookie_userid == $userinfo->userid) {
-                            $status['debug'][] = JText::_('SKIPPED_CREATING_PERSISTANT_COOKIE');
-                            $create_persistant_cookie = false;
-                            //going to assume that since a persistant cookie exists, $options['remember'] was originally set
-                            //$options['remember'] does not get set if Joomla's remember me plugin reinitiates the login
-                            $jautologin = 1;
+                            // Remember me option?
+                            if ($jautologin > 0 && $create_persistant_cookie) {
+                                $key_id = substr(md5($session_key . microtime()),4,16);
+                                //Insert the session key into sessions_key table
+                                $session_key_ins = new stdClass;
+                                $session_key_ins->key_id = md5($key_id);
+                                $session_key_ins->user_id = $userid;
+                                $session_key_ins->last_ip = $_SERVER['REMOTE_ADDR'];
+                                $session_key_ins->last_login = $session_start;
+                                if (!$db->insertObject('#__sessions_keys', $session_key_ins)) {
+                                    //could not save the session_key
+                                    $status['error'][] = JText::_('ERROR_CREATE_USER') . $db->stderr();
+                                } else {
+                                    JFusionFunction::addCookie($phpbb_cookie_name . '_k', $key_id, $expires, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly);
+                                    $_COOKIE[$phpbb_cookie_name . '_k'] = $key_id;
+                                    $status['debug'][] = JText::_('CREATED') . ' ' . JText::_('COOKIE') . ': ' . JText::_('NAME') . '=' . $phpbb_cookie_name . '_k' . ', ' . JText::_('VALUE') . '=' . substr($session_key, 0, 6) . '********, ' . JText::_('EXPIRES') . '=' . $expires . ', ' . JText::_('COOKIE_PATH') . '=' . $phpbb_cookie_path . ', ' . JText::_('COOKIE_DOMAIN') . '=' . $phpbb_cookie_domain;
+                                }
+                            }
                         }
                     } else {
-                        $create_persistant_cookie = true;
+                        //could not find a valid userid
+                        $status['error'][] = JText::_('INVALID_COOKIENAME');
                     }
-                }
-
-                if ($jautologin) {
-                    $query = "SELECT config_value FROM #__config WHERE config_name = 'max_autologin_time'";
-                    $db->setQuery($query);
-                    $max_autologin_time = $db->loadResult();
-                    $expires = ($max_autologin_time) ? 86400 * (int) $max_autologin_time : 31536000;
-                } else {
-                    $expires = 31536000;
-                }
-                $secure = $params->get('secure',false);
-                $httponly = $params->get('httponly',true);
-                $session_start = time();
-                //Insert the session into sessions table
-                $session_obj = new stdClass;
-                $session_obj->session_id = substr($session_key, 0, 32);
-                $session_obj->session_user_id = $userid;
-                $session_obj->session_last_visit = $userinfo->lastvisit;
-                $session_obj->session_start = $session_start;
-                $session_obj->session_time = $session_start;
-                $session_obj->session_ip = $_SERVER['REMOTE_ADDR'];
-                $session_obj->session_browser = $_SERVER['HTTP_USER_AGENT'];
-                $session_obj->session_page = 0;
-                $session_obj->session_autologin = $jautologin;
-                $session_obj->session_admin = $admin_access;
-                if (!$db->insertObject('#__sessions', $session_obj)) {
-                    //could not save the user
-                    $status['error'][] = JText::_('ERROR_CREATE_SESSION') . $db->stderr();
-                    return $status;
-                } else {
-                    //Set cookies
-                    JFusionFunction::addCookie($phpbb_cookie_name . '_u', $userid, $expires, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly);
-                    $status['debug'][] = JText::_('CREATED') . ' ' . JText::_('COOKIE') . ': ' . JText::_('NAME') . '=' . $phpbb_cookie_name . '_u' . ', ' . JText::_('VALUE') . '=' . $userid . ', ' . JText::_('EXPIRES') . '=' . $expires . ', ' . JText::_('COOKIE_PATH') . '=' . $phpbb_cookie_path . ', ' . JText::_('COOKIE_DOMAIN') . '=' . $phpbb_cookie_domain;
-                    JFusionFunction::addCookie($phpbb_cookie_name . '_sid', $session_key, $expires, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly);
-                    $status['debug'][] = JText::_('CREATED') . ' ' . JText::_('COOKIE') . ': ' . JText::_('NAME') . '=' . $phpbb_cookie_name . '_sid' . ', ' . JText::_('VALUE') . '=' . substr($session_key, 0, 6) . '********, ' . JText::_('EXPIRES') . '=' . $expires . ', ' . JText::_('COOKIE_PATH') . '=' . $phpbb_cookie_path . ', ' . JText::_('COOKIE_DOMAIN') . '=' . $phpbb_cookie_domain;
-
-                    //Force the values into the $_COOKIE variable just in case Joomla's remember me plugin fired this in which the cookie will not be available until after the browser refreshes.  This will hopefully trick phpBB into thinking the cookie is present now and thus handle sessions correctly when in frameless mode
-                    $_COOKIE[$phpbb_cookie_name . '_u'] = $userid;
-                    $_COOKIE[$phpbb_cookie_name . '_sid'] = $session_key;
-
-                    // Remember me option?
-                    if ($jautologin > 0 && $create_persistant_cookie) {
-                    	$key_id = substr(md5($session_key . microtime()),4,16);
-                        //Insert the session key into sessions_key table
-                        $session_key_ins = new stdClass;
-                        $session_key_ins->key_id = md5($key_id);
-                        $session_key_ins->user_id = $userid;
-                        $session_key_ins->last_ip = $_SERVER['REMOTE_ADDR'];
-                        $session_key_ins->last_login = $session_start;
-                        if (!$db->insertObject('#__sessions_keys', $session_key_ins)) {
-                            //could not save the session_key
-                            $status['error'][] = JText::_('ERROR_CREATE_USER') . $db->stderr();
-                            return $status;
-                        } else {
-                            JFusionFunction::addCookie($phpbb_cookie_name . '_k', $key_id, $expires, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly);
-                            $_COOKIE[$phpbb_cookie_name . '_k'] = $key_id;
-                            $status['debug'][] = JText::_('CREATED') . ' ' . JText::_('COOKIE') . ': ' . JText::_('NAME') . '=' . $phpbb_cookie_name . '_k' . ', ' . JText::_('VALUE') . '=' . substr($session_key, 0, 6) . '********, ' . JText::_('EXPIRES') . '=' . $expires . ', ' . JText::_('COOKIE_PATH') . '=' . $phpbb_cookie_path . ', ' . JText::_('COOKIE_DOMAIN') . '=' . $phpbb_cookie_domain;
-                        }
-                    }
-                    $status['error'] = false;
-                    return $status;
                 }
             } else {
                 //could not find a valid userid
-                $status['error'][] = JText::_('INVALID_COOKIENAME');
-                return $status;
+                $status['error'][] = JText::_('INVALID_USERID');
+
             }
-        } else {
-            //could not find a valid userid
-            $status['error'][] = JText::_('INVALID_USERID');
-            return $status;
         }
+        return $status;
     }
 
     /**
@@ -401,52 +389,67 @@ class JFusionUser_phpbb3 extends JFusionUser
      * @param array $status
      */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
-        //check to see if we have a group_id in the $userinfo, if not return
-        if (!isset($userinfo->group_id)) {
-            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+        if (empty($usergroups)) {
+            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST');
         } else {
-            $params = & JFusionFactory::getParams($this->getJname());
-            $usergroups = unserialize($params->get('usergroup'));
-            if (isset($usergroups[$userinfo->group_id])) {
-                $db = JFusionFactory::getDatabase($this->getJname());
-                $user = new stdClass;
-                $user->user_id = $existinguser->userid;
-                $user->group_id = $usergroups[$userinfo->group_id];
-                $user->user_colour = '';
-                //clear out cached permissions so that those of the new group are generated
-                $user->user_permissions = '';
-                //update the user colour, avatar, etc to the groups if applicable
-                $query = "SELECT group_colour, group_rank, group_avatar, group_avatar_type, group_avatar_width, group_avatar_height FROM #__groups WHERE group_id = {$user->group_id}";
+            $usergroup = $usergroups[0];
+            $db = JFusionFactory::getDatabase($this->getJname());
+            $user = new stdClass;
+            $user->user_id = $existinguser->userid;
+            $user->group_id = $usergroup;
+            $user->user_colour = '';
+            //clear out cached permissions so that those of the new group are generated
+            $user->user_permissions = '';
+            //update the user colour, avatar, etc to the groups if applicable
+            $query = "SELECT group_colour, group_rank, group_avatar, group_avatar_type, group_avatar_width, group_avatar_height FROM #__groups WHERE group_id = {$user->group_id}";
+            $db->setQuery($query);
+            $group_attribs = $db->loadAssoc();
+            if (!empty($group_attribs)) {
+                foreach($group_attribs AS $k => $v) {
+                    // If we are about to set an avatar or rank, we will not overwrite with empty, unless we are not actually changing the default group
+                    if ((strpos($k, 'group_avatar') === 0 || strpos($k, 'group_rank') === 0) && !$group_attribs[$k])
+                    {
+                        continue;
+                    }
+                    $user->{str_replace('group_', 'user_', $k)} = $v;
+                }
+            }
+
+            //set the usergroup in the user table
+            if (!$db->updateObject('#__users', $user, 'user_id')) {
+                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
+            } else {
+                //remove the old usergroup for the user in the groups table
+                $query = 'DELETE FROM #__user_group WHERE group_id = ' . (int)$existinguser->group_id . ' AND user_id = ' . (int)$existinguser->userid;
                 $db->setQuery($query);
-                $group_attribs = $db->loadAssoc();
-                if (!empty($group_attribs)) {
-                    foreach($group_attribs AS $k => $v) {
-                        // If we are about to set an avatar or rank, we will not overwrite with empty, unless we are not actually changing the default group
-                        if ((strpos($k, 'group_avatar') === 0 || strpos($k, 'group_rank') === 0) && !$group_attribs[$k])
-                        {
-                            continue;
-                        }
-                        $user->{str_replace('group_', 'user_', $k)} = $v;
+                if (!$db->query()) {
+                    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
+                }
+
+                //if the user was in the newly registered group, remove the registered group as well
+                $query = "SELECT group_id, group_name FROM #__groups WHERE group_name IN ('NEWLY_REGISTERED','REGISTERED') AND group_type = 3";
+                $db->setQuery($query);
+                $groups = $db->loadObjectList('group_name');
+                if ($existinguser->group_id == $groups['NEWLY_REGISTERED']->group_id) {
+                    $query = 'DELETE FROM #__user_group WHERE group_id = ' . (int)$groups['REGISTERED']->group_id . ' AND user_id = ' . (int)$existinguser->userid;
+                    $db->setQuery($query);
+                    if (!$db->query()) {
+                        //return the error
+                        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
+                        return;
                     }
                 }
 
-                //set the usergroup in the user table
-                if (!$db->updateObject('#__users', $user, 'user_id')) {
+                //add the user in the groups table
+                $query = 'INSERT INTO #__user_group (group_id, user_id ,group_leader, user_pending) VALUES (' . (int)$usergroup . ', ' . (int)$existinguser->userid . ',0,0)';
+                $db->setQuery($query);
+                if (!$db->query()) {
                     $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
                 } else {
-                    //remove the old usergroup for the user in the groups table
-                    $query = 'DELETE FROM #__user_group WHERE group_id = ' . (int)$existinguser->group_id . ' AND user_id = ' . (int)$existinguser->userid;
-                    $db->setQuery($query);
-                    if (!$db->query()) {
-                        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-                    }
-
-                    //if the user was in the newly registered group, remove the registered group as well
-                    $query = "SELECT group_id, group_name FROM #__groups WHERE group_name IN ('NEWLY_REGISTERED','REGISTERED') AND group_type = 3";
-                    $db->setQuery($query);
-                    $groups = $db->loadObjectList('group_name');
-                    if ($existinguser->group_id == $groups['NEWLY_REGISTERED']->group_id) {
-                        $query = 'DELETE FROM #__user_group WHERE group_id = ' . (int)$groups['REGISTERED']->group_id . ' AND user_id = ' . (int)$existinguser->userid;
+                    if ($usergroup == $groups['NEWLY_REGISTERED']->group_id) {
+                        //we need to also add the user to the regular registered group or they may find themselves groupless
+                        $query = 'INSERT INTO #__user_group (group_id, user_id, group_leader, user_pending) VALUES (' . $groups['REGISTERED']->group_id . ',' . (int)$existinguser->userid . ', 0,0 )';
                         $db->setQuery($query);
                         if (!$db->query()) {
                             //return the error
@@ -455,62 +458,42 @@ class JFusionUser_phpbb3 extends JFusionUser
                         }
                     }
 
-                    //add the user in the groups table
-                    $query = 'INSERT INTO #__user_group (group_id, user_id ,group_leader, user_pending) VALUES (' . (int)$usergroups[$userinfo->group_id] . ', ' . (int)$existinguser->userid . ',0,0)';
+                    //update correct group colors where applicable
+                    $query = "UPDATE #__forums SET forum_last_poster_colour = " . $db->Quote($user->user_colour) . " WHERE forum_last_poster_id = " . (int)$existinguser->userid;
                     $db->setQuery($query);
                     if (!$db->query()) {
+                        //return the error
                         $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-                    } else {
-                        if ($usergroups[$userinfo->group_id] == $groups['NEWLY_REGISTERED']->group_id) {
-                            //we need to also add the user to the regular registered group or they may find themselves groupless
-                            $query = 'INSERT INTO #__user_group (group_id, user_id, group_leader, user_pending) VALUES (' . $groups['REGISTERED']->group_id . ',' . (int)$existinguser->userid . ', 0,0 )';
-                            $db->setQuery($query);
-                            if (!$db->query()) {
-                                //return the error
-                                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-                                return;
-                            }
-                        }
-
-                        //update correct group colors where applicable
-                        $query = "UPDATE #__forums SET forum_last_poster_colour = " . $db->Quote($user->user_colour) . " WHERE forum_last_poster_id = " . (int)$existinguser->userid;
-                        $db->setQuery($query);
-                        if (!$db->query()) {
-                            //return the error
-                            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-                        }
-
-                        $query = "UPDATE #__topics SET topic_first_poster_colour = " . $db->Quote($user->user_colour) . " WHERE topic_poster = " . (int)$existinguser->userid;
-                        $db->setQuery($query);
-                        if (!$db->query()) {
-                            //return the error
-                            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-                        }
-
-                        $query = "UPDATE #__topics SET topic_last_poster_colour = " . $db->Quote($user->user_colour) . " WHERE topic_last_poster_id = " . (int)$existinguser->userid;
-                        $db->setQuery($query);
-                        if (!$db->query()) {
-                            //return the error
-                            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-                        }
-
-                        $query = "SELECT config_value FROM #__config WHERE config_name = 'newest_user_id'";
-                        $db->setQuery($query);
-                        $newest_user_id = $db->loadResult();
-                        if ($newest_user_id == $existinguser->userid) {
-                            $query = "UPDATE #__config SET config_value = " . $db->Quote($user->user_colour) . " WHERE config_name = 'newest_user_id'";
-                            if (!$db->query()) {
-                                //return the error
-                                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-                            }
-                        }
-
-                        //log the group change success
-                        $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $usergroups[$userinfo->group_id];
                     }
+
+                    $query = "UPDATE #__topics SET topic_first_poster_colour = " . $db->Quote($user->user_colour) . " WHERE topic_poster = " . (int)$existinguser->userid;
+                    $db->setQuery($query);
+                    if (!$db->query()) {
+                        //return the error
+                        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
+                    }
+
+                    $query = "UPDATE #__topics SET topic_last_poster_colour = " . $db->Quote($user->user_colour) . " WHERE topic_last_poster_id = " . (int)$existinguser->userid;
+                    $db->setQuery($query);
+                    if (!$db->query()) {
+                        //return the error
+                        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
+                    }
+
+                    $query = "SELECT config_value FROM #__config WHERE config_name = 'newest_user_id'";
+                    $db->setQuery($query);
+                    $newest_user_id = $db->loadResult();
+                    if ($newest_user_id == $existinguser->userid) {
+                        $query = "UPDATE #__config SET config_value = " . $db->Quote($user->user_colour) . " WHERE config_name = 'newest_user_id'";
+                        if (!$db->query()) {
+                            //return the error
+                            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
+                        }
+                    }
+
+                    //log the group change success
+                    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $usergroup;
                 }
-            } else {
-                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST');
             }
         }
     }
@@ -593,13 +576,11 @@ class JFusionUser_phpbb3 extends JFusionUser
         $params = JFusionFactory::getParams($this->getJname());
         $update_block = $params->get('update_block');
         $update_activation = $params->get('update_activation');
-        //get the default user group and determine if we are using simple or advanced
-        $usergroups = (substr($params->get('usergroup'), 0, 2) == 'a:') ? unserialize($params->get('usergroup')) : $params->get('usergroup');
-        //check to make sure that if using the advanced group mode, $userinfo->group_id exists
-        if (is_array($usergroups) && !isset($userinfo->group_id)) {
-            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+        if (empty($usergroups)) {
+            $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
         } else {
-            $usergroup = (is_array($usergroups)) ? $usergroups[$userinfo->group_id] : $usergroups;
+            $usergroup = $usergroups[0];
             $username_clean = $this->filterUsername($userinfo->username);
 
             //prevent anonymous user being created
@@ -782,9 +763,7 @@ class JFusionUser_phpbb3 extends JFusionUser
      */
     function deleteUser($userinfo) {
         //setup status array to hold debug info and errors
-        $status = array();
-        $status['debug'] = array();
-        $status['error'] = array();
+        $status = array('error' => array(),'debug' => array());
         //retreive the database object
         $db = & JFusionFactory::getDatabase($this->getJname());
         //set the userid

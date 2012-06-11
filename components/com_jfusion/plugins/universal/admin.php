@@ -37,8 +37,12 @@ class JFusionAdmin_universal extends JFusionAdmin{
      */
     function getTablename()
     {
-        $map = JFusionMap::getInstance($this->getJname());
-        return $map->getTablename('user');
+        /**
+         * @ignore
+         * @var $helper JFusionHelper_universal
+         */
+        $helper = JFusionFactory::getHelper($this->getJname());
+        return $helper->getTablename('user');
     }
 
     /**
@@ -69,7 +73,8 @@ class JFusionAdmin_universal extends JFusionAdmin{
     function getDefaultUsergroup()
     {
         $params = JFusionFactory::getParams($this->getJname());
-        $usergroup_id = $params->get('usergroup');
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
+        $usergroup_id = $usergroups[0];
 
         $usergrouplist = $this->getUsergroupList();
         foreach ($usergrouplist as $value) {
@@ -85,9 +90,13 @@ class JFusionAdmin_universal extends JFusionAdmin{
      */
     function getUserList()
     {
-        $map = JFusionMap::getInstance($this->getJname());
+        /**
+         * @ignore
+         * @var $helper JFusionHelper_universal
+         */
+        $helper = JFusionFactory::getHelper($this->getJname());
         $f = array('USERNAME', 'EMAIL', 'USERNAMEEMAIL');
-        $field = $map->getQuery($f);
+        $field = $helper->getQuery($f);
 
         // initialise some objects
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -129,9 +138,12 @@ class JFusionAdmin_universal extends JFusionAdmin{
      */
     function mapuser($name, $value, $node, $control_name)
     {
-        $map = JFusionMap::getInstance($this->getJname());
-
-        $value = $map->getMapRaw('user');
+        /**
+         * @ignore
+         * @var $helper JFusionHelper_universal
+         */
+        $helper = JFusionFactory::getHelper($this->getJname());
+        $value = $helper->getMapRaw('user');
 
         return $this->map('map', $value, $node, $control_name,'user');
     }
@@ -158,8 +170,12 @@ class JFusionAdmin_universal extends JFusionAdmin{
      */
     function mapgroup($name, $value, $node, $control_name)
     {
-        $map = JFusionMap::getInstance($this->getJname());
-        $value = $map->getMapRaw('group');
+        /**
+         * @ignore
+         * @var $helper JFusionHelper_universal
+         */
+        $helper = JFusionFactory::getHelper($this->getJname());
+        $value = $helper->getMapRaw('group');
         return $this->map('map', $value, $node, $control_name,'group');
     }
 
@@ -188,10 +204,13 @@ class JFusionAdmin_universal extends JFusionAdmin{
             if ($tabelslist) {
                 $tl = array();
                 $fl = array();
+                /**
+                 * @ignore
+                 * @var $helper JFusionHelper_universal
+                 */
+                $helper = JFusionFactory::getHelper($this->getJname());
 
-                $map = JFusionMap::getInstance($this->getJname());
-
-                $fieldtypes = $map->getField();
+                $fieldtypes = $helper->getField();
 
                 $table = new stdClass;
                 $table->id = null;
@@ -347,14 +366,17 @@ class JFusionAdmin_universal extends JFusionAdmin{
      */
     function js($name, $value, $node, $control_name) {
         $document =& JFactory::getDocument();
-
-        $map = JFusionMap::getInstance($this->getJname());
-        $list = $map->getField();
+        /**
+         * @ignore
+         * @var $helper JFusionHelper_universal
+         */
+        $helper = JFusionFactory::getHelper($this->getJname());
+        $list = $helper->getField();
 
         $list = json_encode($list);
 
         $output = <<<JS
-        var TypeAry = '${list}';
+        var TypeAry = '{$list}';
 
         function changefield(ref,name,parmtype) {
             var id = $(name);

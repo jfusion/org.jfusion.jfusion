@@ -176,14 +176,12 @@ class JFusionUser_moodle extends JFusionUser {
 		global $cookiearr;
 		global $cookies_to_set;
 		global $cookies_to_set_index;
-		$status = array();
+        $status = array('error' => array(),'debug' => array());
 		$tmpurl = array();
 		$overridearr = array();
 		$newhidden = array();
 		$lines = array();
 		$line=array();
-		$status['debug']=array();
-		$status['error']=array();
 		$status['cURL']=array();
 		$status['cURL']['moodle']='';
 		$status['cURL']['data']= array();
@@ -191,86 +189,85 @@ class JFusionUser_moodle extends JFusionUser {
 		// check if curl extension is loaded
 		if (!extension_loaded('curl')) {
 			$status['error'][] = JFusionCurl::_('CURL_NOTINSTALLED');
-			return $status;
-		}
-
-		$jname = $this->getJname();
-		$params = & JFusionFactory::getParams($jname);
-		$logout_url = $params->get('logout_url');
-
-		$curl_options['post_url'] = $params->get('source_url') . $logout_url;
-		$curl_options['cookiedomain'] = $params->get('cookie_domain');
-		$curl_options['cookiepath'] = $params->get('cookie_path');
-		$curl_options['leavealone'] = $params->get('leavealone');
-		$curl_options['secure'] = $params->get('secure');
-		$curl_options['httponly'] = $params->get('httponly');
-		$curl_options['verifyhost'] = 0; //$params->get('ssl_verifyhost');
-		$curl_options['httpauth'] = $params->get('httpauth');
-		$curl_options['httpauth_username'] = $params->get('curl_username');
-		$curl_options['httpauth_password'] = $params->get('curl_password');
-		$curl_options['integrationtype']=0;
-		$curl_options['debug'] =0;
-
-		// to prevent endless loops on systems where there are multiple places where a user can login
-		// we post an unique ID for the initiating software so we can make a difference between
-		// a user logging out or another jFusion installation, or even another system with reverse dual login code.
-		// We always use the source url of the initializing system, here the source_url as defined in the joomla_int
-		// plugin. This is totally transparent for the the webmaster. No additional setup is needed
-
-
-		$my_ID = rtrim(parse_url(JURI::root(), PHP_URL_HOST).parse_url(JURI::root(), PHP_URL_PATH), '/');
-		$curl_options['jnodeid'] = $my_ID;
-
-		$remotedata =JFusionCurl::ReadPage($curl_options, $status, true);
-		if (!empty($status['error'])) {
-			$status['debug'][]= JText::_('CURL_COULD_NOT_READ_PAGE: '). $curl_options['post_url'];
 		} else {
-			// get the form with no name and id!
-			$parser = new JFusionCurlHtmlFormParser($remotedata);
-			$result = $parser->parseForms();
-			$frmcount = count($result);
-			$myfrm = -1;
-			$i = 0;
-			do {
-				$form_action = htmlspecialchars_decode($result[$i]['form_data']['action']);
-				if (strpos($curl_options['post_url'],$form_action) !==false){
-					$myfrm = $i;
-					break;
-				}
-				$i +=1;
-			} while ($i<$frmcount);
+            $jname = $this->getJname();
+            $params = & JFusionFactory::getParams($jname);
+            $logout_url = $params->get('logout_url');
 
-			if ($myfrm == -1) {
-				// did not find a session key, so perform a brute force logout
-				$status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname());
-			} else {
-				$elements_keys = array_keys($result[$myfrm]['form_elements']);
-				$elements_values = array_values($result[$myfrm]['form_elements']);
-				$elements_count  = count($result[$myfrm]['form_elements']);
-				$sessionkey = '';
-				for ($i = 0; $i <= $elements_count-1; $i++) {
-					if (strtolower($elements_keys[$i]) == 'sesskey') {
-						$sessionkey=$elements_values[$i]['value'];
-						break;
-					}
-				}
-				if ($sessionkey == '') {
-					// did not find a session key, so perform a brute force logout
-					$status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname());
-				} else {
-					$curl_options['post_url'] = $curl_options['post_url']."?sesskey=$sessionkey";
-					$status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname(),$params->get('logout_type'),$curl_options);
-				}
-			}
-		}
-		// check if the logout was successfull
-		if (!empty($status['cURL']['moodle'])) {
-			$loggedin_user = $this->rc4decrypt($status['cURL']['moodle']);
-			$status['debug'][] = JText::_('CURL_MOODLE_USER') . " " . $loggedin_user;
-			if ($loggedin_user != 'nobody') {
-				$status['debug'][] = JText::_('CURL_LOGOUT_FAILURE');
-			}
-		}
+            $curl_options['post_url'] = $params->get('source_url') . $logout_url;
+            $curl_options['cookiedomain'] = $params->get('cookie_domain');
+            $curl_options['cookiepath'] = $params->get('cookie_path');
+            $curl_options['leavealone'] = $params->get('leavealone');
+            $curl_options['secure'] = $params->get('secure');
+            $curl_options['httponly'] = $params->get('httponly');
+            $curl_options['verifyhost'] = 0; //$params->get('ssl_verifyhost');
+            $curl_options['httpauth'] = $params->get('httpauth');
+            $curl_options['httpauth_username'] = $params->get('curl_username');
+            $curl_options['httpauth_password'] = $params->get('curl_password');
+            $curl_options['integrationtype']=0;
+            $curl_options['debug'] =0;
+
+            // to prevent endless loops on systems where there are multiple places where a user can login
+            // we post an unique ID for the initiating software so we can make a difference between
+            // a user logging out or another jFusion installation, or even another system with reverse dual login code.
+            // We always use the source url of the initializing system, here the source_url as defined in the joomla_int
+            // plugin. This is totally transparent for the the webmaster. No additional setup is needed
+
+
+            $my_ID = rtrim(parse_url(JURI::root(), PHP_URL_HOST).parse_url(JURI::root(), PHP_URL_PATH), '/');
+            $curl_options['jnodeid'] = $my_ID;
+
+            $remotedata =JFusionCurl::ReadPage($curl_options, $status, true);
+            if (!empty($status['error'])) {
+                $status['debug'][]= JText::_('CURL_COULD_NOT_READ_PAGE: '). $curl_options['post_url'];
+            } else {
+                // get the form with no name and id!
+                $parser = new JFusionCurlHtmlFormParser($remotedata);
+                $result = $parser->parseForms();
+                $frmcount = count($result);
+                $myfrm = -1;
+                $i = 0;
+                do {
+                    $form_action = htmlspecialchars_decode($result[$i]['form_data']['action']);
+                    if (strpos($curl_options['post_url'],$form_action) !==false){
+                        $myfrm = $i;
+                        break;
+                    }
+                    $i +=1;
+                } while ($i<$frmcount);
+
+                if ($myfrm == -1) {
+                    // did not find a session key, so perform a brute force logout
+                    $status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname());
+                } else {
+                    $elements_keys = array_keys($result[$myfrm]['form_elements']);
+                    $elements_values = array_values($result[$myfrm]['form_elements']);
+                    $elements_count  = count($result[$myfrm]['form_elements']);
+                    $sessionkey = '';
+                    for ($i = 0; $i <= $elements_count-1; $i++) {
+                        if (strtolower($elements_keys[$i]) == 'sesskey') {
+                            $sessionkey=$elements_values[$i]['value'];
+                            break;
+                        }
+                    }
+                    if ($sessionkey == '') {
+                        // did not find a session key, so perform a brute force logout
+                        $status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname());
+                    } else {
+                        $curl_options['post_url'] = $curl_options['post_url']."?sesskey=$sessionkey";
+                        $status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname(),$params->get('logout_type'),$curl_options);
+                    }
+                }
+            }
+            // check if the logout was successfull
+            if (!empty($status['cURL']['moodle'])) {
+                $loggedin_user = $this->rc4decrypt($status['cURL']['moodle']);
+                $status['debug'][] = JText::_('CURL_MOODLE_USER') . " " . $loggedin_user;
+                if ($loggedin_user != 'nobody') {
+                    $status['debug'][] = JText::_('CURL_LOGOUT_FAILURE');
+                }
+            }
+        }
 		return $status;
 	}
 
@@ -280,7 +277,7 @@ class JFusionUser_moodle extends JFusionUser {
      * @return array|string
      */
     function createSession($userinfo, $options) {
-		$status = array();
+        $status = array('error' => array(),'debug' => array());
 
 		// If a session expired by not accessing Moodle for a long time we cannot login normally.
 		// Also we want to disable the remember me effects, we are going to login anyway
@@ -477,12 +474,13 @@ class JFusionUser_moodle extends JFusionUser {
             //find out what usergroup should be used
             $db = JFusionFactory::getDatabase($this->getJname());
             $params = JFusionFactory::getParams($this->getJname());
-            $usergroups = (substr($params->get('usergroup'), 0, 2) == 'a:') ? unserialize($params->get('usergroup')) : $params->get('usergroup', 18);
+            $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+            //get the default user group and determine if we are using simple or advanced
             //check to make sure that if using the advanced group mode, $userinfo->group_id exists
-            if (is_array($usergroups) && !isset($userinfo->group_id)) {
-                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+            if (empty($usergroups)) {
+                $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
             } else {
-                $default_group_id = (is_array($usergroups)) ? $usergroups[$userinfo->group_id] : $usergroups;
+                $default_group_id = $usergroups[0];
                 // get some config items
                 $query = 'SELECT value FROM #__config WHERE  name = \'mnet_localhost_id\'';
                 $db->setQuery($query);
@@ -586,21 +584,19 @@ class JFusionUser_moodle extends JFusionUser {
      */
     function deleteUser($userinfo) {
 		//setup status array to hold debug info and errors
-		$status = array();
-		$status['debug'] = array();
-		$status['error'] = array();
+        $status = array('error' => array(),'debug' => array());
 		if (!is_object($userinfo)) {
 			$status['error'][] = JText::_('NO_USER_DATA_FOUND');
-			return $status;
-		}
-		$db = JFusionFactory::getDatabase($this->getJname());
-		$query = "UPDATE #__user SET deleted = '1' WHERE id =" . (int)$userinfo->userid;
-		$db->setQuery($query);
-		if (!$db->query()) {
-			$status['error'][] = JText::_('USER_DELETION_ERROR') . $db->stderr();
 		} else {
-			$status['debug'][] = JText::_('USER_DELETION') . ': ' . $userinfo->userid . ' -> ' . $userinfo->username;
-		}
+            $db = JFusionFactory::getDatabase($this->getJname());
+            $query = "UPDATE #__user SET deleted = '1' WHERE id =" . (int)$userinfo->userid;
+            $db->setQuery($query);
+            if (!$db->query()) {
+                $status['error'][] = JText::_('USER_DELETION_ERROR') . $db->stderr();
+            } else {
+                $status['debug'][] = JText::_('USER_DELETION') . ': ' . $userinfo->userid . ' -> ' . $userinfo->username;
+            }
+        }
 		return $status;
 	}
 	/*       function updateUsergroup($userinfo, &$existinguser, &$status, $jname) {

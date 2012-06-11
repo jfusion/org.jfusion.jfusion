@@ -8,6 +8,10 @@
 */
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
+/**
+ * @ignore
+ * @var $task string
+ */
 switch($task)
 {
 	case 'plugineditor':
@@ -67,8 +71,9 @@ switch($task)
 		JToolBarHelper::cancel('loginchecker');
 		break;
 	case 'configdump':
-		JToolBarHelper::title( JText::_('CP_CONFIG_DUMP'), 'print.png' );
-		JToolBarHelper::cancel('cpanel');
+        JToolBarHelper::title( JText::_('CP_CONFIG_DUMP'), 'print.png' );
+        JToolBarHelper::custom( 'configdump', 'forward.png', 'forward.png', JText::_('UPDATE'), false, false);
+        JToolBarHelper::cancel('cpanel');
 		break;
 	default:
 		JToolBarHelper::title( 'JFusion - The Universal Bridge', 'jfusion_logo.png' );

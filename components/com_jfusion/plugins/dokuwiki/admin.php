@@ -17,12 +17,6 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
-/**
- * load the DokuWiki framework
- */
-if (!class_exists('Dokuwiki')) {
-	require_once dirname(__FILE__) . DS . 'dokuwiki.php';
-}
 
 /**
  * JFusion admin class for DokuWiki
@@ -57,18 +51,21 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
     {
         $status = array();
         $params = JFusionFactory::getParams($this->getJname());
-        $share = Dokuwiki::getInstance($this->getJname());
+        /**
+         * @ignore
+         * @var $helper JFusionHelper_dokuwiki
+         */
+        $helper = JFusionFactory::getHelper($this->getJname());
         $source_path = $params->get('source_path');
-        $config = $share->getConf($source_path);
+        $config = $helper->getConf($source_path);
         if (is_array($config)) {
             $status['config'] = 1;
             $status['message'] = JText::_('GOOD_CONFIG');
-            return $status;
         } else {
             $status['config'] = 0;
             $status['message'] = JText::_('WIZARD_FAILURE');
-            return $status;
         }
+        return $status;
     }
 
     /**
@@ -76,18 +73,21 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
      *
      * @param string $Path Source path user to find config files
      *
-     * @return mixed return false on failor and array if sucess
+     * @return array return array
      */
     function setupFromPath($Path)
     {
-        $share = Dokuwiki::getInstance($this->getJname());
+        /**
+         * @ignore
+         * @var $helper JFusionHelper_dokuwiki
+         */
+        $helper = JFusionFactory::getHelper($this->getJname());
         //try to open the file
-        $config = $share->getConf($Path);
+        $config = $helper->getConf($Path);
+        $params = array();
         if ($config === false) {
             JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $Path " . JText::_('WIZARD_MANUAL'));
-            return false;
         } else {
-            $params = array();
             if (isset($config['auth']['mysql']) && isset($config['authtype']) && $config['authtype'] == 'mysql') {
 	            $params['database_type'] = 'mysql';
 	            $params['database_host'] = $config['auth']['mysql']['server'];
@@ -118,8 +118,8 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
             	$params['cookie_secure'] = $config['cookie_secure'];
             }
             $params['source_path'] = $Path;
-            return $params;
         }
+        return $params;
     }
 
     /**
@@ -143,9 +143,13 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
      * @return array array with object with list of users
      */
     function getUserList($limitstart = null, $limit = null)
-    {	
-        $share = Dokuwiki::getInstance($this->getJname());
-        $list = $share->auth->retrieveUsers($limitstart,$limit);
+    {
+        /**
+         * @ignore
+         * @var $helper JFusionHelper_dokuwiki
+         */
+        $helper = JFusionFactory::getHelper($this->getJname());
+        $list = $helper->auth->retrieveUsers($limitstart,$limit);
         $userlist = array();
 		foreach ($list as $value) {
             $user = new stdClass;
@@ -163,8 +167,12 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
      */
     function getUserCount()
     {
-        $share = Dokuwiki::getInstance($this->getJname());
-        return $share->auth->getUserCount();
+        /**
+         * @ignore
+         * @var $helper JFusionHelper_dokuwiki
+         */
+        $helper = JFusionFactory::getHelper($this->getJname());
+        return $helper->auth->getUserCount();
     }
 
     /**
@@ -202,8 +210,12 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
      */
     function getDefaultUsergroup()
     {
-        $share = Dokuwiki::getInstance($this->getJname());
-        return $share->getDefaultUsergroup();
+        /**
+         * @ignore
+         * @var $helper JFusionHelper_dokuwiki
+         */
+        $helper = JFusionFactory::getHelper($this->getJname());
+        return $helper->getDefaultUsergroup();
     }
 
     /**
@@ -213,8 +225,12 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
      */
     function allowRegistration()
     {
-        $share = Dokuwiki::getInstance($this->getJname());
-        $conf = $share->getConf();
+        /**
+         * @ignore
+         * @var $helper JFusionHelper_dokuwiki
+         */
+        $helper = JFusionFactory::getHelper($this->getJname());
+        $conf = $helper->getConf();
         if (strpos($conf['disableactions'], 'register') !== false) {
             return false;
         } else {
@@ -395,9 +411,12 @@ if (!defined(\'_JEXEC\'))';
     {
         $error = 0;
         $reason = '';
-
-        $share =& Dokuwiki::getInstance($this->getJname());
-        $conf =& $share->getConf();
+        /**
+         * @ignore
+         * @var $helper JFusionHelper_dokuwiki
+         */
+        $helper = JFusionFactory::getHelper($this->getJname());
+        $conf = $helper->getConf();
         $params =& JFusionFactory::getParams($this->getJname());
         $source_path = $params->get('source_path');
         $plugindir = $source_path . DS . 'lib' . DS . 'plugins';
@@ -443,7 +462,11 @@ if (!defined(\'_JEXEC\'))';
             //update the config file
             $cookie_domain = $params->get('cookie_domain');
             $cookie_path = $params->get('cookie_path');
-            $helper =& JFusionFactory::getHelper($this->getJname());
+            /**
+             * @ignore
+             * @var $helper JFusionHelper_dokuwiki
+             */
+            $helper = JFusionFactory::getHelper($this->getJname());
             $config_path = $helper->getConfigPath();
 
             if (JFolder::exists($config_path)) {
@@ -463,15 +486,15 @@ if (!defined(\'_JEXEC\'))';
                     $file_data = preg_replace($search, '', $file_data);
                 }
                 $joomla_basepath = JPATH_SITE;
-                $config_code = <<<CODE
+                $config_code = <<<PHP
 //JFUSION AUTOGENERATED CONFIG START
-\$conf['jfusion']['cookie_path'] = '$cookie_path';
-\$conf['jfusion']['cookie_domain'] = '$cookie_domain';
+\$conf['jfusion']['cookie_path'] = '{$cookie_path}';
+\$conf['jfusion']['cookie_domain'] = '{$cookie_domain}';
 \$conf['jfusion']['joomla'] = 1;
-\$conf['jfusion']['joomla_basepath'] = '$joomla_basepath';
+\$conf['jfusion']['joomla_basepath'] = '{$joomla_basepath}';
 \$conf['jfusion']['jfusion_plugin_name'] = '{$this->getJname()}';
 //JFUSION AUTOGENERATED CONFIG END
-CODE;
+PHP;
                 $file_data .= $config_code;
                 JFile::write($config_file, $file_data);
             }
@@ -498,7 +521,11 @@ CODE;
         }
 
         //update the config file
-        $helper =& JFusionFactory::getHelper($this->getJname());
+        /**
+         * @ignore
+         * @var $helper JFusionHelper_dokuwiki
+         */
+        $helper = JFusionFactory::getHelper($this->getJname());
         $config_path = $helper->getConfigPath();
 
         if (JFolder::exists($config_path)) {

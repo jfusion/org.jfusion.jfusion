@@ -59,27 +59,23 @@ class JFusionUser_magento extends JFusionUser {
      * @return array
      */
     function connect_to_api(&$proxi, &$sessionId) {
-        $status = array();
-        $status['debug'] = array();
-        $status['error'] = array();
+        $status = array('error' => array(),'debug' => array());
         $params = JFusionFactory::getParams($this->getJname());
         $apipath = $params->get('source_url') . 'index.php/api/?wsdl';
         $apiuser = $params->get('apiuser','');
         $apikey = $params->get('apikey','');
         if (!$apiuser || !$apikey) {
             $status['error'][] = 'Could not login to Magento API (empty apiuser and/or apikey)';
-            return $status;
+        } else {
+            try {
+                $proxi = new SoapClient($apipath);
+                $sessionId = $proxi->login($apiuser, $apikey);
+                $status['debug'][] = 'Logged into Magento API as ' . $apiuser . ' using key, message:' . $apikey;
+            } catch(Soapfault $fault) {
+                $status['error'][] = 'Could not login to Magento API as ' . $apiuser . ' using key ' . $apikey . ',message:' . $fault->faultstring;
+            }
         }
-        try {
-            $proxi = new SoapClient($apipath);
-            $sessionId = $proxi->login($apiuser, $apikey);
-            $status['debug'][] = 'Logged into Magento API as ' . $apiuser . ' using key, message:' . $apikey;
-            return $status;
-        }
-        catch(Soapfault $fault) {
-            $status['error'][] = 'Could not login to Magento API as ' . $apiuser . ' using key ' . $apikey . ',message:' . $fault->faultstring;
-            return $status;
-        }
+        return $status;
     }
 
     /**
@@ -213,63 +209,61 @@ class JFusionUser_magento extends JFusionUser {
         $db->setQuery($query);
         $entity = (int)$db->loadResult();
         // check if we have found the user, if not return failure
-        if (!$entity) {
-            return null;
+        $instance1 = null;
+        if ($entity) {
+            // Return a Magento customer array
+            $magento_user = $this->fillMagentoDataObject("customer", $entity, 1);
+            if ($magento_user) {
+                $instance = array();
+                // get the static data also
+                $query = 'SELECT email, group_id, created_at, updated_at, is_active FROM #__customer_entity ' . 'WHERE entity_id = ' . $db->Quote($entity);
+                $db->setQuery($query);
+                $result = $db->loadObject();
+                if ($result) {
+                    $instance['group_id'] = $result->group_id;
+                    if ($result->group_id == 0) {
+                        $instance['group_name'] = "Default Usergroup";
+                    } else {
+                        $query = 'SELECT customer_group_code from #__customer_group WHERE customer_group_id = ' . $result->group_id;
+                        $db->setQuery($query);
+                        $instance['group_name'] = $db->loadResult();
+                    }
+                    $magento_user['email']['value'] = $result->email;
+                    $magento_user['created_at']['value'] = $result->created_at;
+                    $magento_user['updated_at']['value'] = $result->updated_at;
+                    $is_active = $result->is_active; //TO DO: have to figure out what theis means
+                    $instance['userid'] = $entity;
+                    $instance['username'] = $magento_user['email']['value'];
+                    $name = $magento_user['firstname']['value'];
+                    if ($magento_user['middlename']['value']) {
+                        $name = $name . ' ' . $magento_user['middlename']['value'];
+                    }
+                    if ($magento_user['lastname']['value']) {
+                        $name = $name . ' ' . $magento_user['lastname']['value'];
+                    }
+                    $instance['name'] = $name;
+                    $instance['email'] = $magento_user['email']['value'];
+                    $password = $magento_user['password_hash']['value'];
+                    $hashArr = explode(':', $password);
+                    $instance['password'] = $hashArr[0];
+                    if (!empty($hashArr[1])) {
+                        $instance['password_salt'] = $hashArr[1];
+                    }
+                    $instance['activation'] = '';
+                    if ($magento_user['confirmation']['value']) {
+                        $instance['activation'] = $magento_user['confirmation']['value'];
+                    }
+                    $instance['registerDate'] = $magento_user['created_at']['value'];
+                    $instance['lastvisitDate'] = $magento_user['updated_at']['value'];
+                    if ($instance['activation']) {
+                        $instance['block'] = 1;
+                    } else {
+                        $instance['block'] = 0;
+                    }
+                    $instance1 = (object)$instance;
+                }
+            }
         }
-        // Return a Magento customer array
-        $magento_user = $this->fillMagentoDataObject("customer", $entity, 1);
-        if (!$magento_user) {
-            return null;
-        }
-        $instance = array();
-        // get the static data also
-        $query = 'SELECT email, group_id, created_at, updated_at, is_active FROM #__customer_entity ' . 'WHERE entity_id = ' . $db->Quote($entity);
-        $db->setQuery($query);
-        $result = $db->loadObject();
-        if (!$result) {
-            return $result;
-        }
-        $instance['group_id'] = $result->group_id;
-        if ($result->group_id == 0) {
-            $instance['group_name'] = "Default Usergroup";
-        } else {
-            $query = 'SELECT customer_group_code from #__customer_group WHERE customer_group_id = ' . $result->group_id;
-            $db->setQuery($query);
-            $instance['group_name'] = $db->loadResult();
-        }
-        $magento_user['email']['value'] = $result->email;
-        $magento_user['created_at']['value'] = $result->created_at;
-        $magento_user['updated_at']['value'] = $result->updated_at;
-        $is_active = $result->is_active; //TO DO: have to figure out what theis means
-        $instance['userid'] = $entity;
-        $instance['username'] = $magento_user['email']['value'];
-        $name = $magento_user['firstname']['value'];
-        if ($magento_user['middlename']['value']) {
-            $name = $name . ' ' . $magento_user['middlename']['value'];
-        }
-        if ($magento_user['lastname']['value']) {
-            $name = $name . ' ' . $magento_user['lastname']['value'];
-        }
-        $instance['name'] = $name;
-        $instance['email'] = $magento_user['email']['value'];
-        $password = $magento_user['password_hash']['value'];
-        $hashArr = explode(':', $password);
-        $instance['password'] = $hashArr[0];
-        if (!empty($hashArr[1])) {
-            $instance['password_salt'] = $hashArr[1];
-        }
-        $instance['activation'] = '';
-        if ($magento_user['confirmation']['value']) {
-            $instance['activation'] = $magento_user['confirmation']['value'];
-        }
-        $instance['registerDate'] = $magento_user['created_at']['value'];
-        $instance['lastvisitDate'] = $magento_user['updated_at']['value'];
-        if ($instance['activation']) {
-            $instance['block'] = 1;
-        } else {
-            $instance['block'] = 0;
-        }
-        $instance1 = (object)$instance;
         return $instance1;
     }
     /**
@@ -341,7 +335,8 @@ class JFusionUser_magento extends JFusionUser {
             // So, we need to implement it for our purpose that's why there is a new factory for magento
             $db->BeginTrans();
             $query = 'SELECT increment_last_id FROM #__eav_entity_store WHERE entity_type_id = ' . (int)$this->getMagentoEntityTypeID('customer') . ' AND store_id = 0';
-            $db->Execute($query);
+            $db->setQuery($query);
+            $db->query();
             if ($db->getErrorNum() != 0) {
                 //$db->Execute ( 'ROLLBACK' );//ROLLBACK TRANSACTION
                 $db->RollbackTrans();
@@ -350,7 +345,8 @@ class JFusionUser_magento extends JFusionUser {
             $increment_last_id_int = ( int )$db->loadresult();
             $increment_last_id = sprintf("%'09u", ($increment_last_id_int + 1));
             $query = 'UPDATE #__eav_entity_store SET increment_last_id = ' . $db->Quote($increment_last_id) . ' WHERE entity_type_id = ' . (int)$this->getMagentoEntityTypeID('customer') . ' AND store_id = 0';
-            $db->Execute($query);
+            $db->setQuery($query);
+            $db->query();
             if ($db->getErrorNum() != 0) {
                 //$db->Execute ( 'ROLLBACK' );
                 $db->RollbackTrans();
@@ -358,7 +354,8 @@ class JFusionUser_magento extends JFusionUser {
             }
             // so far so good, now create an empty user, to be updates later
             $query = 'INSERT INTO #__customer_entity   (entity_type_id, increment_id, is_active, created_at, updated_at) VALUES ' . '(' . (int)$this->getMagentoEntityTypeID('customer') . ',' . $db->Quote($increment_last_id) . ',1,' . $db->Quote($sqlDateTime) . ', ' . $db->Quote($sqlDateTime) . ')';
-            $db->Execute($query);
+            $db->setQuery($query);
+            $db->query();
             if ($db->getErrorNum() != 0) {
                 //$db->Execute ( 'ROLLBACK' );
                 $db->RollbackTrans();
@@ -367,7 +364,8 @@ class JFusionUser_magento extends JFusionUser {
             $entity_id = $db->insertid();
         } else { // we are updating
             $query = 'UPDATE #__customer_entity' . ' SET updated_at = ' . $db->Quote($sqlDateTime) . ' WHERE entity_id = ' . (int)$entity_id;
-            $db->Execute($query);
+            $db->setQuery($query);
+            $db->query();
             if ($db->getErrorNum() != 0) {
                 //$db->Execute ( 'ROLLBACK' );
                 $db->RollbackTrans();
@@ -379,7 +377,8 @@ class JFusionUser_magento extends JFusionUser {
             if ($user[$i]['backend_type'] == 'static') {
                 if (isset($user[$i]['value'])) {
                     $query = 'UPDATE #__customer_entity' . ' SET ' . $user[$i]['attribute_code'] . '= ' . $db->Quote($user[$i]['value']) . ' WHERE entity_id = ' . $entity_id;
-                    $db->Execute($query);
+                    $db->setQuery($query);
+                    $db->query();
                     if ($db->getErrorNum() != 0) {
                         //$db->Execute ( 'ROLLBACK' );
                         $db->RollbackTrans();
@@ -389,7 +388,8 @@ class JFusionUser_magento extends JFusionUser {
             } else {
                 if (isset($user[$i]['value'])) {
                     $query = 'SELECT value FROM #__customer_entity' . '_' . $user[$i]['backend_type'] . ' WHERE entity_id = ' . (int)$entity_id . ' AND entity_type_id = ' . (int)$this->getMagentoEntityTypeID('customer') . ' AND attribute_id = ' . (int)$user[$i]['attribute_id'];
-                    $db->Execute($query);
+                    $db->setQuery($query);
+                    $db->query();
                     $result = $db->loadresult();
                     if ($result) {
                         // we do not update an empty value, but remove the record instead
@@ -401,7 +401,8 @@ class JFusionUser_magento extends JFusionUser {
                     } else { // must create
                         $query = 'INSERT INTO #__customer_entity' . '_' . $user[$i]['backend_type'] . ' (value, attribute_id, entity_id, entity_type_id) VALUES (' . $db->Quote($user[$i]['value']) . ', ' . $user[$i]['attribute_id'] . ', ' . $entity_id . ', ' . (int)$this->getMagentoEntityTypeID('customer') . ')';
                     }
-                    $db->Execute($query);
+                    $db->setQuery($query);
+                    $db->query();
                     if ($db->getErrorNum() != 0) {
                         //$db->Execute ( 'ROLLBACK' );
                         $db->RollbackTrans();
@@ -438,13 +439,13 @@ class JFusionUser_magento extends JFusionUser {
      */
     function createUser($userinfo, &$status) {
         $params = JFusionFactory::getParams($this->getJname());
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
         //get the default user group and determine if we are using simple or advanced
-        $usergroups = (substr($params->get('usergroup'), 0, 2) == 'a:') ? unserialize($params->get('usergroup')) : $params->get('usergroup', 18);
         //check to make sure that if using the advanced group mode, $userinfo->group_id exists
-        if (is_array($usergroups) && !isset($userinfo->group_id)) {
-            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+        if (empty($usergroups)) {
+            $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
         } else {
-            $default_group_id = (is_array($usergroups)) ? $usergroups[$userinfo->group_id] : $usergroups;
+            $default_group_id = $usergroups[0];
             $db = JFusionFactory::getDataBase($this->getJname());
             //prepare the variables
             // first get some default stuff from Magento
@@ -570,9 +571,7 @@ class JFusionUser_magento extends JFusionUser {
      */
     function deleteUser($userinfo) {
         //setup status array to hold debug info and errors
-        $status = array();
-        $status['debug'] = array();
-        $status['error'] = array();
+        $status = array('error' => array(),'debug' => array());
         //set the userid
         //check to see if a valid $userinfo object was passed on
         if (!is_object($userinfo)) {
@@ -593,8 +592,7 @@ class JFusionUser_magento extends JFusionUser {
             }
             try {
                 $result = $proxi->call($sessionId, "customer.delete", $user_id);
-            }
-            catch(Soapfault $fault) {
+            } catch(Soapfault $fault) {
                 $status['error'][] = "Magento API: Could not delete user with id $user_id , message: " . $fault->faultstring;
             }
             if (!$status['error']) {
@@ -603,8 +601,7 @@ class JFusionUser_magento extends JFusionUser {
             
             try {
                 $proxi->endSession($sessionId);
-            }
-            catch(Soapfault $fault) {
+            } catch(Soapfault $fault) {
                 $status['error'][] = "Magento API: Could not end this session, message: " . $fault->faultstring;
             }
         }
@@ -631,14 +628,12 @@ class JFusionUser_magento extends JFusionUser {
         if (empty($status['error'])) {
             try {
                 $result = $proxi->call($sessionId, "customer.update", array($user_id, $update));
-            }
-            catch(Soapfault $fault) {
+            } catch(Soapfault $fault) {
                 $status['error'][] = "Magento API: Could not update email of user with id $user_id , message: " . $fault->faultstring;
             }
             try {
                 $proxi->endSession($sessionId);
-            }
-            catch(Soapfault $fault) {
+            } catch(Soapfault $fault) {
                 $status['error'][] = "Magento API: Could not end this session, message: " . $fault->faultstring;
             }
         }
@@ -650,28 +645,21 @@ class JFusionUser_magento extends JFusionUser {
      * @param array $status
      */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
-        $params = JFusionFactory::getParams($this->getJname());
-        //get the usergroup and determine if working in advanced or simple mode
-        if (substr($params->get('usergroup'), 0, 2) == 'a:') {
-            //check to see if we have a group_id in the $userinfo, if not return
-            if (!isset($userinfo->group_id)) {
-                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
-            } else {
-                $usergroups = unserialize($params->get('usergroup'));
-                if (isset($usergroups[$userinfo->group_id])) {
-                    //set the usergroup in the user table
-                    $db = JFusionFactory::getDataBase($this->getJname());
-                    $query = 'UPDATE #__customer_entity SET group_id = ' . (int)$usergroups[$userinfo->group_id] . ' WHERE entity_id =' . (int)$existinguser->userid;
-                    $db->setQuery($query);
-                    if (!$db->query()) {
-                        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-                    } else {
-                        $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $usergroups[$userinfo->group_id];
-                    }
-                }
-            }
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+        //check to see if we have a group_id in the $userinfo, if not return
+        if (empty($usergroups)) {
+            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
         } else {
-            $status['error'][] = JText::_('GROUP_UPDATE_ERROR');
+            $usergroup = $usergroups[0];
+            //set the usergroup in the user table
+            $db = JFusionFactory::getDataBase($this->getJname());
+            $query = 'UPDATE #__customer_entity SET group_id = ' . (int)$usergroup . ' WHERE entity_id =' . (int)$existinguser->userid;
+            $db->setQuery($query);
+            if (!$db->query()) {
+                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
+            } else {
+                $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $usergroup;
+            }
         }
     }
 }

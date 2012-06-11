@@ -16,10 +16,6 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
-if (!class_exists('Dokuwiki')) {
-	require_once dirname(__FILE__) . DS . 'dokuwiki.php';
-}
-
 /**
  * JFusion Helper Class for Dokuwiki
  *
@@ -33,6 +29,26 @@ if (!class_exists('Dokuwiki')) {
  */
 class JFusionHelper_dokuwiki
 {
+    /**
+     * @var doku_auth_mysql|doku_auth_plain
+     */
+    var $auth = null;
+
+    /**
+     *
+     */
+    function __construct()
+    {
+        $params = JFusionFactory::getParams($this->getJname());
+        $database_type = $params->get('database_type');
+        $database_host = $params->get('database_host');
+        if ($database_host && $database_type == 'mysql') {
+            $this->auth = new doku_auth_mysql($this);
+        } else {
+            $this->auth = new doku_auth_plain($this);
+        }
+    }
+
     /**
      * Returns the name for this plugin
      *
@@ -48,8 +64,7 @@ class JFusionHelper_dokuwiki
      * @param $nosession    boolean to set the NOSESSION constant; false by default
      */
     function defineConstants($nosession = false) {
-        $share =& Dokuwiki::getInstance($this->getJname());
-        $conf =& $share->getConf();
+        $conf = $this->getConf();
         $params = JFusionFactory::getParams($this->getJname());
         $source_url = $params->get('source_url');
         $doku_rel = preg_replace('#(\w{0,10}://)(.*?)/(.*?)#is', '$3', $source_url);
@@ -83,8 +98,7 @@ class JFusionHelper_dokuwiki
             $params = JFusionFactory::getParams($this->getJname());
             $source_path = $params->get('source_path');
 
-            $share = Dokuwiki::getInstance($this->getJname());
-            $conf = $share->getConf();
+            $conf = $this->getConf();
             $data_dir = (isset($conf['savedir'])) ? $source_path . DS . $conf['savedir'] : $source_path . DS . 'data';
 
             //get the cookie salt file
@@ -96,7 +110,6 @@ class JFusionHelper_dokuwiki
                 JFile::write($saltfile,$dokuwiki_cookie_salt);
             }
         }
-
         return $dokuwiki_cookie_salt;
     }
     
@@ -164,5 +177,90 @@ class JFusionHelper_dokuwiki
         }
 
         return $config_path;
+    }
+
+
+
+
+
+
+
+    /**
+     * This method should handle any login logic and report back to the subject
+     *
+     * @param string $jname
+     *
+     * @return Dokuwiki object instance
+     * @since 1.5
+     * @access public
+     */
+    public static function &getInstance($jname)
+    {
+        static $instances;
+        if (!isset($instances[$jname])) {
+            $instance = new Dokuwiki($jname);
+            $instances[$jname] = & $instance;
+        }
+        return $instances[$jname];
+    }
+
+    /**
+     * This method should handle any login logic and report back to the subject
+     *
+     * @param string|bool $path path to config file
+     *
+     * @return array on success, false on falior
+     * @since 1.5
+     * @access public
+     */
+    function getConf($path = false)
+    {
+        static $config;
+        if (!is_array($config)) {
+            if (!$path) {
+                $params = JFusionFactory::getParams($this->getJname());
+                $path = $params->get('source_path');
+            }
+            /**
+             * @ignore
+             * @var $helper JFusionHelper_dokuwiki
+             */
+            $helper = & JFusionFactory::getHelper($this->getJname());
+            $path = $helper->getConfigPath($path);
+
+            $myfile = array();
+            $myfile[] = $path . 'dokuwiki.php';
+            $myfile[] = $path . 'local.php';
+            $myfile[] = $path . 'local.protected.php';
+
+            $conf = array();
+            foreach ($myfile as $file) {
+                if (file_exists($file)) {
+                    require($file);
+                }
+            }
+            $config = $conf;
+            if (!count($config)) {
+                $config = false;
+            }
+        }
+        return $config;
+    }
+
+    /**
+     * This method should handle any login logic and report back to the subject
+     *
+     * @return string True on success
+     * @since 1.5
+     * @access public
+     */
+    function getDefaultUsergroup()
+    {
+        $conf = $this->getConf();
+        $usergroup = 'user';
+        if (!empty($conf['defaultgroup'])) {
+            $usergroup = $conf['defaultgroup'];
+        }
+        return $usergroup;
     }
 }

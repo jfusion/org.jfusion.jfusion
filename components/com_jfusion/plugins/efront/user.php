@@ -48,8 +48,11 @@ class JFusionUser_efront extends JFusionUser
         $query = 'SELECT * FROM #__users WHERE ' . $identifier_type . ' = ' . $db->Quote($identifier);
         $db->setQuery($query);
         $result = $db->loadObject();
-        if ($result)
-        {
+        if ($result) {
+            /**
+             * @ignore
+             * @var $helper JFusionHelper_efront
+             */
             $helper = JFusionFactory::getHelper($this->getJname());
             // change/add fields used by jFusion
             $result->userid = $result->id;
@@ -78,12 +81,9 @@ class JFusionUser_efront extends JFusionUser
      * @return array
      */
     function destroySession($userinfo, $options) {
-        $status = array();
-        $status['error'] = array();
-        $status['debug'] = array();
+        $status = array('error' => array(),'debug' => array());
         if (isset($options['remember'])) {
             if ($options['remember']) {
-                 $status['error'] = false;
                  return $status;
             }
         }
@@ -138,7 +138,7 @@ class JFusionUser_efront extends JFusionUser
         }
         $query = "SELECT action FROM #__logs WHERE users_LOGIN = " . $db->Quote($userinfo->username)." timestamp desc limit 1";
         $db->setQuery($query);
-        $action = $db->loadResult;
+        $action = $db->loadResult();
         if ($action != 'logout') {
             $log = new stdClass;
             $log->id = null;
@@ -150,13 +150,12 @@ class JFusionUser_efront extends JFusionUser
         	$ip = explode('.',$_SERVER['REMOTE_ADDR']);
         	$log->session_ip = sprintf('%02x%02x%02x%02x',  $ip[0],  $ip[1],  $ip[2],  $ip[3]);
             $ok = $db->insertObject('#__logs', $log, 'id');
-        if (!$ok) {
-            $status["debug"][] = "Error Could not log the logout action for user $userinfo->username: {$db->stderr() }";
-        } else {
-            $status["debug"][] = "Logged the logout action for user $userinfo->username";
+            if (!$ok) {
+                $status["debug"][] = "Error Could not log the logout action for user $userinfo->username: {$db->stderr() }";
+            } else {
+                $status["debug"][] = "Logged the logout action for user $userinfo->username";
+            }
         }
-    }
-        $status['error'] = false;
         return $status;
     }
 
@@ -166,9 +165,7 @@ class JFusionUser_efront extends JFusionUser
      * @return array
      */
     function createSession($userinfo, $options) {
-        $status = array();
-        $status['error'] = array();
-        $status['debug'] = array();
+        $status = array('error' => array(),'debug' => array());
         //do not create sessions for blocked users
         if (!empty($userinfo->block) || !empty($userinfo->activation)) {
             $status['error'][] = JText::_('FUSION_BLOCKED_USER');
@@ -199,8 +196,11 @@ class JFusionUser_efront extends JFusionUser
         $name = 'cookie_login';
         $value = $userinfo->username;
         JFusionFunction::addCookie($name, $value, $expires, $cookiepath, $cookiedomain, false, $httponly);
-        if ( ($expires) == 0) {$expires_time='Session_cookie';}
-        else {$expires_time=date('d-m-Y H:i:s',time()+$expires);}
+        if ( ($expires) == 0) {
+            $expires_time='Session_cookie';
+        } else {
+            $expires_time=date('d-m-Y H:i:s',time()+$expires);
+        }
         $status['debug'][] = JText::_('CREATED') . ' ' . JText::_('COOKIE') . ': ' . JText::_('NAME') . '=' . $name . ', ' . JText::_('VALUE') . '=' . urldecode($value) .', ' .JText::_('EXPIRES') . '=' .$expires_time .', ' . JText::_('COOKIE_PATH') . '=' . $cookiepath . ', ' . JText::_('COOKIE_DOMAIN') . '=' . $cookiedomain. ', '.JText::_('COOKIE_SECURE') . '=' .$secure. ', '.JText::_('COOKIE_HTTPONLY') . '=' .$httponly;
         $name = 'cookie_password';
         $value = $user->password;
@@ -337,10 +337,8 @@ class JFusionUser_efront extends JFusionUser
     function createUser($userinfo, &$status) {
        /**
         * NOTE: eFront does a charactercheck on the user credentials. I think we are ok (HW): if (preg_match("/^.*[$\/\'\"]+.*$/", $parameter))
-        */	
-        $status = array();
-        $status['debug'] = array();
-        $status['error'] = array();
+        */
+        $status = array('error' => array(),'debug' => array());
     	$params = JFusionFactory::getParams($this->getJname());
         $db = JFusionFactory::getDatabase($this->getJname());
         //prepare the variables
@@ -361,13 +359,14 @@ class JFusionUser_efront extends JFusionUser
             $user->surname = '.';
         }
         $user->email = $userinfo->email;
+
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
         //get the default user group and determine if we are using simple or advanced
-        $usergroups = (substr($params->get('usergroup'), 0, 2) == 'a:') ? unserialize($params->get('usergroup')) : $params->get('usergroup', 18);
         //check to make sure that if using the advanced group mode, $userinfo->group_id exists
-        if (is_array($usergroups) && !isset($userinfo->group_id)) {
-            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+        if (empty($usergroups)) {
+            $status['error'][] = JText::_('ERROR_CREATE_USER') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
         } else {
-            $default_group_id = (is_array($usergroups)) ? $usergroups[$userinfo->group_id] : $usergroups;
+            $default_group_id = $usergroups[0];
             $user_type = "";
             $user_types_ID = 0;
             switch ($default_group_id){
@@ -417,6 +416,10 @@ class JFusionUser_efront extends JFusionUser
                 $uploadpath = $params->get('uploadpath');
                 $user_dir = $uploadpath.$user->login.'/';
                 if (is_dir($user_dir)) {
+                    /**
+                     * @ignore
+                     * @var $helper JFusionHelper_efront
+                     */
                     $helper = JFusionFactory::getHelper($this->getJname());
                     $helper->delete_directory($user_dir); //If the folder already exists, delete it first, including files
                 }
@@ -468,73 +471,71 @@ class JFusionUser_efront extends JFusionUser
         // modules without loading the complete website. 
         
     	// check apiuser existance
-        $status = array();
-        $status['debug'] = array();
-        $status['error'] = array();
-        $status['debug'] = null;
+        $status = array('error' => array(),'debug' => array());
         if (!is_object($userinfo)) {
             $status['error'][] = JText::_('NO_USER_DATA_FOUND');
-            return $status;
-        }
-        $existinguser = $this->getUser($userinfo);
-        if (!empty($existinguser)) {
-            $params = JFusionFactory::getParams($this->getJname());
-            $helper = JFusionFactory::getHelper($this->getJname());
-        	$apiuser = $params->get('apiuser');
-            $apikey = $params->get('apikey');
-            $login = $existinguser->username;
-            $jname = $this->getJname();
-            if (!$apiuser || !$apikey) {
-                JError::raiseWarning(0, $jname . '-plugin: ' . JText::_('EFRONT_WRONG_APIUSER_APIKEY_COMBINATION'));
-                $status['error'][] = '';
-                return $status;
+        } else {
+            $existinguser = $this->getUser($userinfo);
+            if (!empty($existinguser)) {
+                $params = JFusionFactory::getParams($this->getJname());
+                /**
+                 * @ignore
+                 * @var $helper JFusionHelper_efront
+                 */
+                $helper = JFusionFactory::getHelper($this->getJname());
+                $apiuser = $params->get('apiuser');
+                $apikey = $params->get('apikey');
+                $login = $existinguser->username;
+                $jname = $this->getJname();
+                if (!$apiuser || !$apikey) {
+                    JError::raiseWarning(0, $jname . '-plugin: ' . JText::_('EFRONT_WRONG_APIUSER_APIKEY_COMBINATION'));
+                    $status['error'][] = '';
+                } else {
+                    // get token
+                    $curl_options['action'] ='token';
+                    $status = $helper->send_to_api($curl_options,$status);
+                    if (!$status['error']) {
+                        $result = $status['result'][0];
+                        $token = $result->token;
+                        // login
+                        $curl_options['action']='login';
+                        $curl_options['parms'] = "&token=$token&username=$apiuser&password=$apikey";
+                        $status = $helper->send_to_api($curl_options,$status);
+                        if (!$status['error']){
+                            $result = $status['result'][0];
+                            if($result->status == 'ok'){
+                                // logged in (must logout later)
+                                // delete user
+                                $curl_options['action']='remove_user';
+                                $curl_options['parms'] = "&token=$token&login=$login";
+                                $status = $helper->send_to_api($curl_options,$status);
+                                $errorstatus = $status;
+                                if ($status['error']){
+                                    $status['debug'][] = $status['error'][0];
+                                    $status['error']=array();
+                                }
+                                $result = $status['result'][0];
+                                if($result->status != 'ok'){
+                                    $errorstatus['debug'][]=$jname.' eFront API--'.$result->message;
+                                }
+                                // logout
+                                $curl_options['action']='logout';
+                                $curl_options['parms'] = "&token=$token";
+                                $status = $helper->send_to_api($curl_options,$status);
+                                $result = $status['result'][0];
+                                if($result->status != 'ok'){
+                                    $errorstatus['error'][]=$jname.' eFront API--'.$result->message;
+                                    return $errorstatus;
+                                }
+                            }
+                            $status['error']= null;
+                            $status['debug'][] = JText::_('DELETED').JTEXT::_(' USER: ' ).$login;
+                        }
+                    }
+                }
             }
-            // get token
-            $curl_options['action'] ='token';
-            $status = $helper->send_to_api($curl_options,$status);
-            if ($status['error']){
-                return $status;
-            }    
-            $result = $status['result'][0];
-            $token = $result->token;
-    	    // login
-            $curl_options['action']='login';
-            $curl_options['parms'] = "&token=$token&username=$apiuser&password=$apikey";
-            $status = $helper->send_to_api($curl_options,$status);
-            if ($status['error']){
-                return $status;
-            }    
-            $result = $status['result'][0];
-            if($result->status == 'ok'){
-                // logged in (must logout later)
-                // delete user
-                $curl_options['action']='remove_user';
-                $curl_options['parms'] = "&token=$token&login=$login";
-                $status = $helper->send_to_api($curl_options,$status);
-                $errorstatus = $status;
-                if ($status['error']){
-                    $status['debug'][] = $status['error'][0];
-                    $status['error']=array();
-                }
-                $result = $status['result'][0];
-                if($result->status != 'ok'){
-                    $errorstatus['debug'][]=$jname.' eFront API--'.$result->message;
-                }
-                // logout
-                $curl_options['action']='logout';
-                $curl_options['parms'] = "&token=$token";
-                $status = $helper->send_to_api($curl_options,$status);
-                $result = $status['result'][0];
-                if($result->status != 'ok'){
-                    $errorstatus['error'][]=$jname.' eFront API--'.$result->message;
-                    return $errorstatus;
-                }
-            }  
-            $status['error']= null;
-            $status['debug'][] = JText::_('DELETED').JTEXT::_(' USER: ' ).$login;
-            return $status;
         }
-        return false;
+        return $status;
     }
 
     /**
@@ -544,36 +545,32 @@ class JFusionUser_efront extends JFusionUser
      */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
         $params = & JFusionFactory::getParams($this->getJname());
-    	//get the usergroup and determine if working in advanced or simple mode
-        if (substr($params->get('usergroup'), 0, 2) == 'a:'){
-            //check to see if we have a group_id in the $userinfo, if not return
-            if (!isset($userinfo->group_id)) {
-                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
-            } else {
-                $usergroups = unserialize($params->get('usergroup'));
-                if (isset($usergroups[$userinfo->group_id])) {
-                    $db = JFusionFactory::getDataBase($this->getJname());
-                    if ($usergroups[$userinfo->group_id]< 3){
-                        $user_type = $this->groupIDToName($usergroups[$userinfo->group_id]);
-                        $user_types_ID = 0;
-                    } else {
-                        $user_types_ID = $usergroups[$userinfo->group_id]-2;
-                        $query = 'SELECT basic_user_type from #__user_types WHERE id = '.$user_types_ID;
-                        $db->setQuery($query);
-                        $user_type = $db->loadResult();
-                    }
-                    $query = "UPDATE #__users SET user_type = ".$db->Quote($user_type).", user_types_ID = $user_types_ID WHERE id =" . $existinguser->userid;
-                    $db->setQuery($query);
-                    if (!$db->query()) {
-                        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-                    } else {
-                        $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $usergroups[$userinfo->group_id];
-                    }
-                }
-            }
+        //check to see if we have a group_id in the $userinfo, if not return
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+        if (empty($usergroups)) {
+            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
         } else {
-            $status['error'][] = JText::_('GROUP_UPDATE_ERROR');
+            $usergroup = $usergroups[0];
+            $db = JFusionFactory::getDataBase($this->getJname());
+            if ($usergroup< 3){
+                /**
+                 * TODO: Undefined function
+                 */
+                $user_type = $this->groupIDToName($usergroup);
+                $user_types_ID = 0;
+            } else {
+                $user_types_ID = $usergroup-2;
+                $query = 'SELECT basic_user_type from #__user_types WHERE id = '.$user_types_ID;
+                $db->setQuery($query);
+                $user_type = $db->loadResult();
+            }
+            $query = "UPDATE #__users SET user_type = ".$db->Quote($user_type).", user_types_ID = $user_types_ID WHERE id =" . $existinguser->userid;
+            $db->setQuery($query);
+            if (!$db->query()) {
+                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
+            } else {
+                $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $usergroup;
+            }
         }
     }
-    
 }

@@ -24,7 +24,9 @@ class JFusionFrameless {
      * @static
      * @param $jname
      * @param bool $isPlugin
+     *
      * @return \stdClass
+     *
      */
     public static function initData($jname,$isPlugin=true)
 	{
@@ -51,7 +53,11 @@ class JFusionFrameless {
 		$data->fullURL = $query ? $url . '?' . $query : $url;
         $data->fullURL = str_replace('&', '&amp;', $data->fullURL);
 
-        $menu = JSite::getMenu ();
+        /**
+         * @ignore
+         * @var $menu JMenu
+         */
+        $menu = JSite::getMenu();
     	if(!$isPlugin) {
             $item = $menu->getItem($jname);
 
@@ -155,7 +161,8 @@ class JFusionFrameless {
             if (!empty($db_name)) {
             	$db =& JFusionFactory::getDatabase($this->jname);
                 $query = "USE $db_name";
-                $db->Execute($query);
+                $db->setQuery($query);
+                $db->query();
             }
             */
 		}
@@ -319,6 +326,7 @@ class JFusionFrameless {
      */
     function parseBody(&$data) {
 		if ( !empty($data->bodyextract) || !empty($data->bodyremove) ) {
+            /*
 			require_once (JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'parsers' . DS . 'simple_html_dom.php');
 			$html = str_get_html($data->body);
 
@@ -347,6 +355,7 @@ class JFusionFrameless {
 				}
 			}
 			$data->body = $html->outertext();
+            */
 		}
 	}
 }

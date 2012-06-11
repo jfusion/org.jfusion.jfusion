@@ -163,9 +163,8 @@ class JFusionHelper_efront {
      * @return array
      */
     function send_to_api($curl_options,$status) {
-        $status = array();
-        $status['debug'] = array();
-        $status['error'] = array();
+        $status = array('error' => array(),'debug' => array());
+
     	$params = JFusionFactory::getParams($this->getJname());
         $source_url = $params->get('source_url');
         // prevent usererror by not supplying trailing backslash. 

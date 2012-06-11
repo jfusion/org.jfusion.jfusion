@@ -188,7 +188,7 @@ class JFusionForum
      */
 	function checkThreadExists(&$dbparams, &$contentitem, &$threadinfo, &$status)
 	{
-		$threadid = (is_object($threadinfo)) ? $threadinfo->threadid : $threadinfo;
+		$threadid = (int) (is_object($threadinfo)) ? $threadinfo->threadid : $threadinfo;
 		$forumid = $this->getDefaultForum($dbparams, $contentitem);
 		$existingthread = (empty($threadid)) ? false : $this->getThread($threadid);
 
@@ -315,7 +315,11 @@ class JFusionForum
                     }
     		    } else {
     		        $JCat =& JCategories::getInstance('Content');
-            		$cat = $JCat->get($catid);
+                    /**
+                     * @ignore
+                     * @var $cat JCategoryNode
+                     */
+                    $cat = $JCat->get($catid);
             		if ($cat) {
 	    		        $parent_id = $cat->getParent()->id;
 	                    if ($parent_id !== 'root') {
@@ -326,6 +330,10 @@ class JFusionForum
 	                                $stop = true;
 	                            } else {
 	                                //keep going up so get the parent's parent id
+                                    /**
+                                     * @ignore
+                                     * @var $parent JCategoryNode
+                                     */
 	                                $parent = $JCat->get($parent_id);
 	                                $parent_id = $parent->getParent()->id;
 	                                if ($parent_id == 'root') {
@@ -523,8 +531,10 @@ class JFusionForum
 		$document->addStylesheet(JFusionFunction::getJoomlaURL().'plugins/content/'.$path.'/markitup/skins/simple/style.css');
 		$document->addStylesheet(JFusionFunction::getJoomlaURL().'plugins/content/'.$path.'/markitup/sets/bbcode/style.css');
 
-		$js  = "var jfdb_load_markitup = 1;\n";
-		$js .= "jQuery.noConflict();\n";
+        $js = <<<JS
+		var jfdb_load_markitup = 1;
+		jQuery.noConflict();
+JS;
 		return $js;
     }
 
@@ -724,8 +734,8 @@ class JFusionForum
      */
 	function createPost(&$params, &$ids, &$contentitem, &$userinfo)
 	{
-		$status = array();
-		$status["error"] = false;
+        $status = array('error' => array(),'debug' => array());
+        $status['debug'] = JText::_('METHOD_NOT_IMPLEMENTED');
 		return $status;
 	}
 
@@ -737,5 +747,17 @@ class JFusionForum
     function filterForumList($forumids)
     {
         return $forumids;
+    }
+
+    /**
+     * @param array $config
+     * @param $view
+     * @param JParameter $params
+     *
+     * @return string
+     */
+    function renderActivityModule($config, $view, $params)
+    {
+        return JText::_('METHOD_NOT_IMPLEMENTED');
     }
 }

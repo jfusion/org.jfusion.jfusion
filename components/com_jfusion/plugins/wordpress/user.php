@@ -31,11 +31,6 @@ require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS .
  * @link       http://www.jfusion.org */
 
 
-if (!class_exists('JFusionWordpressHelper')) {
-	require_once 'wordpresshelper.php';
-}
-
-
 /**
  *
  */
@@ -119,7 +114,12 @@ class JFusionUser_wordpress extends JFusionUser {
 		// now find out what we have
 		$groupid=4; // default to subscriber
 		$groupname='subscriber';
-		$groups = JFusionWordpressHelper::getUsergroupListWP();
+        /**
+         * @ignore
+         * @var $helper JFusionHelper_wordpress
+         */
+        $helper = JFusionFactory::getHelper($this->getJname());
+		$groups = $helper->getUsergroupListWP();
 		// find the most capable one
 		foreach ($y as $cap){
 			foreach ($groups as $group) {
@@ -149,9 +149,7 @@ class JFusionUser_wordpress extends JFusionUser {
      */
     function destroySession($userinfo, $options) {
 
-		$status = array();
-		$status['error'] = array();
-		$status['debug'] =array();
+        $status = array('error' => array(),'debug' => array());
 		$params = & JFusionFactory::getParams($this->getJname());
 		$cookie_domain = $params->get('cookie_domain');
 		$cookie_path = $params->get('cookie_path');
@@ -226,7 +224,12 @@ class JFusionUser_wordpress extends JFusionUser {
 		$username = preg_replace('/[\r\n\t ]+/', ' ', $username);
 		$username = trim($username);
 		// remove accents
-		$username = JFusionWordpressHelper::remove_accentsWP( $username );
+        /**
+         * @ignore
+         * @var $helper JFusionHelper_wordpress
+         */
+        $helper = JFusionFactory::getHelper($this->getJname());
+		$username = $helper->remove_accentsWP( $username );
 		// Kill octets
 		$username = preg_replace( '|%([a-fA-F0-9][a-fA-F0-9])|', '', $username );
 		$username = preg_replace( '/&.+?;/', '', $username ); // Kill entities
@@ -350,17 +353,23 @@ class JFusionUser_wordpress extends JFusionUser {
 		//find out what usergroup should be used
 		$db = JFusionFactory::getDatabase($this->getJname());
 		$params = JFusionFactory::getParams($this->getJname());
-		$usergroups = (substr($params->get('usergroup'), 0, 2) == 'a:') ? unserialize($params->get('usergroup')) : $params->get('usergroup', 18);
-		//check to make sure that if using the advanced group mode, $userinfo->group_id exists
-		if (is_array($usergroups) && !isset($userinfo->group_id)) {
-			$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+        if (empty($usergroups)) {
+			$status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
 		} else {
+            /**
+             * @ignore
+             * @var $helper JFusionHelper_wordpress
+             */
+            $helper = JFusionFactory::getHelper($this->getJname());
+
             $update_activation = $params->get('update_activation');
-            $default_role_id = (is_array($usergroups)) ? $usergroups[$userinfo->group_id] : $usergroups;
-            $default_role_name = strtolower(JFusionWordpressHelper::getUsergroupNameWP($default_role_id));
+            $default_role_id = $usergroups[0];
+            $default_role_name = strtolower($helper->getUsergroupNameWP($default_role_id));
             $default_role = array();
             $default_role[$default_role_name]=1;
-            $default_userlevel = JFusionWordpressHelper::WP_userlevel_from_role(0,$default_role_name);
+
+            $default_userlevel = $helper->WP_userlevel_from_role(0,$default_role_name);
             $username_clean = $this->filterUsername($userinfo->username);
             if (isset($userinfo->password_clear)) {
                 //we can update the password
@@ -451,9 +460,7 @@ class JFusionUser_wordpress extends JFusionUser {
      */
     function deleteUser($userinfo) {
 		//setup status array to hold debug info and errors
-		$status = array();
-		$status['debug'] = array();
-		$status['error'] = array();
+        $status = array('error' => array(),'debug' => array());
 		if (!is_object($userinfo)) {
 			$status['error'][] = JText::_('NO_USER_DATA_FOUND');
 			return $status;
@@ -550,45 +557,44 @@ class JFusionUser_wordpress extends JFusionUser {
      * @param array $status
      */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
-		//check to see if we have a group_id in the $userinfo, if not return
-		if (!isset($userinfo->group_id)) {
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+		if (empty($usergroups)) {
 			$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
 		} else {
-            $params = & JFusionFactory::getParams($this->getJname());
-            $paramUsergroups = unserialize($params->get('usergroup'));
-            if (isset($paramUsergroups[$userinfo->group_id])) {
-                $db = JFusionFactory::getDatabase($this->getJname());
-                $newgroup = $paramUsergroups[$userinfo->group_id];
-                $newgroupname = strtolower(JFusionWordpressHelper::getUsergroupNameWP($newgroup));
-                $oldgroupname = strtolower(JFusionWordpressHelper::getUsergroupNameWP($existinguser->group_id));
+            $usergroup = $usergroups[0];
+            $db = JFusionFactory::getDatabase($this->getJname());
+            /**
+             * @ignore
+             * @var $helper JFusionHelper_wordpress
+             */
+            $helper = JFusionFactory::getHelper($this->getJname());
+            $newgroupname = strtolower($helper->getUsergroupNameWP($usergroup));
+            $oldgroupname = strtolower($helper->getUsergroupNameWP($existinguser->group_id));
 
-                // get the user capabilities
-                $db = JFusionFactory::getDatabase($this->getJname());
-                $query = "SELECT meta_value FROM #__usermeta WHERE meta_key = 'wp_capabilities' AND user_id = " . (int)($existinguser->userid);
-                $db->setQuery($query);
-                $capsfield = $db->loadResult();
-                $caps = array();
-                if ($capsfield) {
-                    $caps = unserialize($capsfield);
-                    // make it all lowercase keys
-                    $caps = array_change_key_case($caps,CASE_LOWER);
-                    // now delete the old group
-                    if (array_key_exists($oldgroupname,$caps)){
-                        unset($caps[$oldgroupname]);
-                    }
+            // get the user capabilities
+            $db = JFusionFactory::getDatabase($this->getJname());
+            $query = "SELECT meta_value FROM #__usermeta WHERE meta_key = 'wp_capabilities' AND user_id = " . (int)($existinguser->userid);
+            $db->setQuery($query);
+            $capsfield = $db->loadResult();
+            $caps = array();
+            if ($capsfield) {
+                $caps = unserialize($capsfield);
+                // make it all lowercase keys
+                $caps = array_change_key_case($caps,CASE_LOWER);
+                // now delete the old group
+                if (array_key_exists($oldgroupname,$caps)){
+                    unset($caps[$oldgroupname]);
                 }
-                // ad the new group
-                $caps[$newgroupname]="1";
-                $capsfield = serialize($caps);
-                $query = "UPDATE #__usermeta SET meta_value =" . $db->Quote($capsfield) . " WHERE meta_key = 'wp_capabilities' AND user_id =" . (int)$existinguser->userid;
-                $db->setQuery($query);
-                if (!$db->query()) {
-                    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-                } else {
-                    $status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . $existinguser->group_id . ' -> ' . $paramUsergroups[$userinfo->group_id];
-                }
+            }
+            // ad the new group
+            $caps[$newgroupname]="1";
+            $capsfield = serialize($caps);
+            $query = "UPDATE #__usermeta SET meta_value =" . $db->Quote($capsfield) . " WHERE meta_key = 'wp_capabilities' AND user_id =" . (int)$existinguser->userid;
+            $db->setQuery($query);
+            if (!$db->query()) {
+                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
             } else {
-                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST');
+                $status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . $existinguser->group_id . ' -> ' . $usergroup;
             }
         }
 	}

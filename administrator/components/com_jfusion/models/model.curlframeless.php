@@ -89,7 +89,7 @@ class JFusionCurlFrameless{
      * @return array
      */
     function display(&$data) {
-		$status = array();
+        $status = array('error' => array(),'debug' => array());
 		$curlframeless = JFusionCurlFrameless::getInstance();
 
 		$url = $data->source_url;
@@ -98,9 +98,13 @@ class JFusionCurlFrameless{
         $sefenabled = $config->getValue('config.sef');
         if(!empty($sefenabled)) {
 			$uri     = & JURI::getInstance();
-			$current = $uri->toString( array( 'path', 'query'));			
+			$current = $uri->toString( array( 'path', 'query'));
 
-        	$menus = & JSite::getMenu();
+            /**
+             * @ignore
+             * @var $menus JMenu
+             */
+            $menus = & JSite::getMenu();
         	$menu = $menus->getActive();
 			$index = '/'.$menu->route;
 			$pos = strpos($current, $index);

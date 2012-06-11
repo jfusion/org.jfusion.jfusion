@@ -37,9 +37,10 @@ class JFusionAuth_magento extends JFusionAuth {
      */
     function generateEncryptedPassword($userinfo) {
         if ($userinfo->password_salt) {
-            return md5($userinfo->password_salt . $userinfo->password_clear);
+            $hash = md5($userinfo->password_salt . $userinfo->password_clear);
         } else {
-            return md5($userinfo->password_clear);
+            $hash = md5($userinfo->password_clear);
         }
+        return $hash;
     }
 }

@@ -55,7 +55,8 @@ class jfusionViewplugindisplay extends JView {
             $rows = $db->loadObjectList();
             $ordering = 1;
             foreach ($rows as $row){
-                $db->Execute('UPDATE #__jfusion SET ordering = '.$ordering.' WHERE name = '. $db->Quote($row->name));
+                $db->setQuery('UPDATE #__jfusion SET ordering = '.$ordering.' WHERE name = '. $db->Quote($row->name));
+                $db->query();
                 $ordering++;
             }
         }
@@ -109,6 +110,10 @@ class jfusionViewplugindisplay extends JView {
 	        $VersionDataRaw = JFusionFunctionAdmin::getFileData($url);
             $VersionData = null;
 	        if (!empty($VersionDataRaw)) {
+                /**
+                 * @ignore
+                 * @var $parser JSimpleXML
+                 */
 	            $parser = JFactory::getXMLParser('Simple');
 	            if ($parser->loadString($VersionDataRaw)) {
 	                if (isset($parser->document)) {
@@ -188,8 +193,9 @@ class jfusionViewplugindisplay extends JView {
                    	$active = '';
                	}
 
-              	$db->Execute('UPDATE #__jfusion SET '.$active.'status = '.$db->Quote($record->config_status['config']).' WHERE name =' . $db->Quote($record->name));
-               	//update the record status for the rest of the code
+              	$db->setQuery('UPDATE #__jfusion SET '.$active.'status = '.$db->Quote($record->config_status['config']).' WHERE name =' . $db->Quote($record->name));
+                $db->query();
+               	//update the record status for the resExecute of the code
             	$record->status = $record->config_status['config'];
          	}
       	}
@@ -314,11 +320,9 @@ class jfusionViewplugindisplay extends JView {
            	}
      	}
 
-		if($record->status == 1){
+		if($record->status == 1) {
             //display the default usergroup
-            $usergroups = $JFusionParam->get('usergroup');
-            $multiusergroups = $JFusionParam->get('multiusergroup');
-            if (substr($usergroups, 0, 2) == 'a:' || substr($multiusergroups, 0, 2) == 'a:') {
+            if (JFusionFunction::isAdvancedUsergroupMode($record->name)) {
                 $usergroup = JText::_('ADVANCED_GROUP_MODE');
             } else {
                 $usergroup = $JFusionPlugin->getDefaultUsergroup();
@@ -345,11 +349,15 @@ class jfusionViewplugindisplay extends JView {
 			//get the default description
 			$plugin_xml = JFUSION_PLUGIN_PATH .DS. $record->name .DS. 'jfusion.xml';
 			if(file_exists($plugin_xml) && is_readable($plugin_xml)) {
+                /**
+                 * @ignore
+                 * @var $parser JSimpleXML
+                 */
 				$parser = JFactory::getXMLParser('Simple');
-				$xml    = $parser->loadFile($plugin_xml);
-				$xml    = $parser->document;
-				if(!empty($xml->description)) {
-					$record->description= $xml->description[0]->data();
+				$parser->loadFile($plugin_xml);
+                $description = $parser->document->getElementByPath('description');
+				if(!empty($description)) {
+					$record->description = $description->data();
 				}
 			}
 		}

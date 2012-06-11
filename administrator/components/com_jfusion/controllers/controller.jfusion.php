@@ -72,7 +72,6 @@ class JFusionController extends JController
                 $db->setQuery($query);
                 $db->query();
 
-
                 $parameters = & JFusionFactory::getParams($jname);
                 $param2_output = $parameters->render();
                 JError::raiseNotice(0, JText::_('WIZARD_SUCCESS'));
@@ -99,10 +98,10 @@ class JFusionController extends JController
     }
     
    /**
-     * Function to change the master/slave/encryption settings in the jos_jfusion table
-     *
-     * @return void
-     */
+    * Function to change the master/slave/encryption settings in the jos_jfusion table
+    *
+    * @return void
+    */
     function changesettings()
     {
         //find out the posted ID of the JFusion module to publish
@@ -176,6 +175,10 @@ class JFusionController extends JController
             }
         }
         $debug = array();
+        /**
+         * @ignore
+         * @var $view jfusionViewplugindisplay
+         */
         $view = $this->getView('plugindisplay','html');
         $debug['errormessage'] = $view->generateErrorHTML();
         die(json_encode($debug));
@@ -293,6 +296,10 @@ class JFusionController extends JController
         $syncid = JRequest::getVar('syncid', '', 'GET');
         include_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.usersync.php';
         $syncdata = JFusionUsersync::getSyncdata($syncid);
+        /*
+         * @ignore
+         * @var $view JView
+         */
         if (empty($syncdata['completed'])) {
             JRequest::setVar('view', 'syncprogress');
             $view = & $this->getView('syncprogress', 'html');
@@ -446,7 +453,11 @@ class JFusionController extends JController
 		$ajax = JRequest::getVar('ajax');
 		if ($ajax == true) {
 	        if(!empty($result['jname'])){
-	            $view = $this->getView('plugindisplay','html');
+                /**
+                 * @ignore
+                 * @var $view jfusionViewplugindisplay
+                 */
+                $view = $this->getView('plugindisplay','html');
 	            $result['rowhtml'] = $view->generateRowHTML($view->initRecord($result['jname']));            
 	        }
 	        die(json_encode($result));
@@ -471,6 +482,10 @@ class JFusionController extends JController
         $model = new JFusionModelInstaller();
         $result = $model->install();
         if(!empty($result['jname'])){
+            /**
+             * @ignore
+             * @var $view jfusionViewplugindisplay
+             */
             $view = $this->getView('plugindisplay','html');
             $result['rowhtml'] = $view->generateRowHTML($view->initRecord($result['jname']));            
         }
@@ -511,16 +526,24 @@ class JFusionController extends JController
             //get description
             $plugin_xml = JFUSION_PLUGIN_PATH .DS. $jname .DS. 'jfusion.xml';
              if(file_exists($plugin_xml) && is_readable($plugin_xml)) {
+                 /**
+                  * @ignore
+                  * @var $parser JSimpleXML
+                  */
                  $parser = JFactory::getXMLParser('Simple');
-                 $xml    = $parser->loadFile($plugin_xml);
-                 $xml    = $parser->document;
-                 if(!empty($xml->description)) {
-                     $description = $xml->description[0]->data();
+                 $parser->loadFile($plugin_xml);
+                 $description = $parser->document->getElementByPath('description');
+                 if(!empty($description)) {
+                     $description = $description->data();
                  }
             }
 			if ($result['status']) {
             	$result['new_jname'] =  $new_jname;
-            	$view = $this->getView('plugindisplay','html');
+                /**
+                 * @ignore
+                 * @var $view jfusionViewplugindisplay
+                 */
+                $view = $this->getView('plugindisplay','html');
             	$result['rowhtml'] = $view->generateRowHTML($view->initRecord($new_jname));
 			}
         } else {

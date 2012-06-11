@@ -2,8 +2,8 @@
  //entities must be decoded to prevent encoding already encoded entities
 $text = $_POST['text'];
 if(!class_exists('BBCode_Parser')) {
-    $joomla_15 = "../../../../../../administrator/components/com_jfusion/models/parsers/nbbc.php";
-    $joomla_16 = "../../../../../../../administrator/components/com_jfusion/models/parsers/nbbc.php";
+    $joomla_15 = '../../../../../../administrator/components/com_jfusion/models/parsers/nbbc.php';
+    $joomla_16 = '../../../../../../../administrator/components/com_jfusion/models/parsers/nbbc.php';
 
 	if (file_exists($joomla_15)) {
 	    require_once $joomla_15;
@@ -14,7 +14,7 @@ if(!class_exists('BBCode_Parser')) {
 	}
 }
 
-$bbcode = new BBCode_Parser;
+$bbcode = new BBCode_Parser();
 define('_JEXEC',1);
 
 $url = (!empty($_SERVER['HTTPS'])) ? "https://".$_SERVER['SERVER_NAME'] : "http://".$_SERVER['SERVER_NAME'];

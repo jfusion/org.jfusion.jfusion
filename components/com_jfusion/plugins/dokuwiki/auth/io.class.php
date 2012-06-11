@@ -28,13 +28,16 @@ defined('_JEXEC') or die('Restricted access');
  * @link       http://www.jfusion.org
  */
 class JFusionDokuwiki_Io {
-    var $jname = null;
+    /**
+     * @var $helper JFusionHelper_dokuwiki
+     */
+    var $helper = null;
 
     /**
-     * @param $jname
+     * @param JFusionHelper_dokuwiki $helper
      */
-    function JFusionDokuwiki_Io($jname) {
-		$this->jname = $jname;
+    function JFusionDokuwiki_Io($helper) {
+		$this->helper = $helper;
     } 		
     /**
      * Saves $content to $file.
@@ -53,8 +56,7 @@ class JFusionDokuwiki_Io {
      * @return bool true on success
      */
     function saveFile($file, $content, $append = false) {
-        $share = Dokuwiki::getInstance($this->jname);
-        $conf = $share->getConf();
+        $conf = $this->helper->getConf();
         $mode = ($append) ? 'ab' : 'wb';
         $fileexists = @file_exists($file);
         $this->makefiledir($file);
@@ -167,8 +169,7 @@ class JFusionDokuwiki_Io {
      * @param string $file
      */
     function lock($file) {
-        $share = Dokuwiki::getInstance($this->jname);
-        $conf = $share->getConf();
+        $conf = $this->helper->getConf();
         // no locking if safemode hack
         if (@$conf['safemodehack']) return;
         $lockDir = @$conf['lockdir'] . '/' . md5($file);
@@ -194,8 +195,7 @@ class JFusionDokuwiki_Io {
      * @author Andreas Gohr <andi@splitbrain.org>
      */
     function unlock($file) {
-        $share = Dokuwiki::getInstance($this->jname);
-        $conf = $share->getConf();;
+        $conf = $this->helper->getConf();;
         // no locking if safemode hack
         if (@$conf['safemodehack']) return;
         $lockDir = @$conf['lockdir'] . '/' . md5($file);
@@ -227,8 +227,7 @@ class JFusionDokuwiki_Io {
      * @return int
      */
     function mkdir_p($target) {
-        $share = Dokuwiki::getInstance($this->jname);
-        $conf = $share->getConf();
+        $conf = $this->helper->getConf();
         if (@is_dir($target) || empty($target)) return 1; // best case check first
         if (@file_exists($target) && !is_dir($target)) return 0;
         //recursion
@@ -256,8 +255,7 @@ class JFusionDokuwiki_Io {
      * @return bool
      */
     function mkdir_ftp($dir) {
-        $share = Dokuwiki::getInstance($this->jname);
-        $conf = $share->getConf();
+        $conf = $this->helper->getConf();
         if (!function_exists('ftp_connect')) {
             JError::raiseWarning(500, "FTP support not found - safemode workaround not usable");
             return false;

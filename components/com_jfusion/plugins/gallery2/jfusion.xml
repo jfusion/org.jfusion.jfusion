@@ -24,7 +24,7 @@
 		<filename>config.xml</filename>
 		<filename>admin.php</filename>
 		<filename>auth.php</filename>
-		<filename>gallery2.php</filename>
+		<filename>helper.php</filename>
 		<filename>public.php</filename>
 		<filename>user.php</filename>
 		<filename>forum.php</filename>

@@ -924,15 +924,13 @@ class JFusionCurl
 			$GLOBALS[$var]=&$_SESSION[$var];
 		}
 		// end extra lines
-		$status = array();
+        $status = array('error' => array(),'debug' => array());
 		$tmpurl = array();
 		$overridearr = array();
 		$newhidden = array();
 		$lines = array();
 		$line=array();
 		$cookies_to_set=array();
-		$status['debug']=array();
-		$status['error']=array();
 		$status['cURL']=array();
 		$status['cURL']['moodle']='';
 		$status['cURL']['data']= array();

@@ -62,8 +62,6 @@ class JFusionAdmin_elgg extends JFusionAdmin
         //check if the file exists
         if (($file_handle = @fopen($myfile, 'r')) === false) {
             JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));
-            $result = false;
-            return $result;
         } else {
             //parse the file line by line to get only the config variables
             $file_handle = fopen($myfile, 'r');
@@ -83,10 +81,11 @@ class JFusionAdmin_elgg extends JFusionAdmin
 
     /**
      * @param string $path
-     * @return array|bool
+     * @return array
      */
     function setupFromPath($path) {
         $config = JFusionAdmin_elgg::loadSetup($path);
+        $params = array();
         if (!empty($config)) {
             //save the parameters into array
             $params = array();
@@ -97,9 +96,8 @@ class JFusionAdmin_elgg extends JFusionAdmin
             $params['database_prefix'] = $config['dbprefix'];
             $params['database_type'] = "mysql";
             $params['source_path'] = $path;
-            return $params;
         }
-        return false;
+        return $params;
     }
 
     /**
@@ -160,13 +158,11 @@ class JFusionAdmin_elgg extends JFusionAdmin
         include_once $params->get('source_path') . DS . "engine" . DS . "start.php";
         // Get variables
         global $CONFIG;
+        $result = true;
         if (isset($CONFIG->disable_registration) && $CONFIG->disable_registration == 'true') {
 			$result = false;
-            return $result;
-        } else {
-            $result = true;
-            return $result;
         }
+        return $result;
     }
 
     /**

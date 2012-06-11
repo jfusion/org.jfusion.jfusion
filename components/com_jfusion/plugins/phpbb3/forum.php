@@ -644,7 +644,8 @@ class JFusionForum_phpbb3 extends JFusionForum {
 		} else {
 			//update the thread title
 			$query = "UPDATE #__topics SET topic_title = " . $jdb->Quote($subject) . " WHERE topic_id = " . (int) $threadid;
-			$jdb->Execute($query);
+            $jdb->setQuery($query);
+            $jdb->query();
 		}
 	}
 
@@ -660,8 +661,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 	 */
 	function createPost(&$dbparams, &$ids, &$contentitem, &$userinfo)
 	{
-		$status = array();
-		$status["error"] = false;
+        $status = array('error' => array(),'debug' => array());
 
 		if($userinfo->guest) {
 			$userinfo->username = JRequest::getVar('guest_username', '', 'POST');

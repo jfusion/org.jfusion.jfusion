@@ -58,7 +58,11 @@ class jfusionViewplugineditor extends JView
 	            jimport('joomla.filesystem.file');
 	            $content = JFile::read($file);
 	            $content = str_replace(array('<param','</param'),array('<field','</field'),$content);
-	
+
+                /**
+                 * @ignore
+                 * @var $xml JXMLElement|SimpleXMLElement
+                 */
 				$xml = JFactory::getXML($content, false);
 	            $fields = $xml->xpath('//field');
 	            jimport('joomla.form.form');
@@ -66,10 +70,18 @@ class jfusionViewplugineditor extends JView
 	            $form = new JForm($jname,array('control'=>'params'));
 				JFormHelper::addFieldPath(JPATH_COMPONENT_ADMINISTRATOR.'/fields');
 				foreach ($params as $key => $param) {
+                    /**
+                     * @ignore
+                     * @var $element JXMLElement|SimpleXMLElement
+                     */
 					$element = $fields[$key];
 					$name = $element->getAttribute('name');
 					if ($name!='jfusionbox') {
-						$field = JFormHelper::loadFieldType($element->getAttribute('type'), true);
+                        /**
+                         * @ignore
+                         * @var $field JFormField
+                         */
+                        $field = JFormHelper::loadFieldType($element->getAttribute('type'), true);
 						if ($field) {
 							$value = $parametersInstance->get($name, $element->getAttribute('default'));
 							$field->setForm($form);

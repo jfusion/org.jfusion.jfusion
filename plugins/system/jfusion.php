@@ -75,10 +75,8 @@ class plgSystemJfusion extends JPlugin
         //initialise some vars
         ob_start();
         $refresh = false;
-        $status = array();
+        $status = array('error' => array(),'debug' => array());
         $task = JRequest::getVar('task');
-        $status['debug'] = array();
-        $status['error'] = array();
         $debug = $this->params->get('debug', 0);
         if ($debug) {
             define('DEBUG_SYSTEM_PLUGIN', 1);
@@ -98,72 +96,71 @@ class plgSystemJfusion extends JPlugin
                     JError::raiseNotice('500', 'Form variables restored.');
                 }
             }
-            return;
-        }
-
-        //only call keepAlive if in the frontend
-        $syncsessions = $this->params->get('syncsessions');
-        $keepalive = $this->params->get('keepalive');
-        $mainframe = JFactory::getApplication();
-        if ($mainframe->isSite() && !empty($syncsessions) && $task != 'logout') {
-            //for master if not joomla_int
-            $master = JFusionFunction::getMaster();
-            if (!empty($master) && $master->name != 'joomla_int') {
-                $JFusionUser = & JFusionFactory::getUser($master->name);
-                $changed = $JFusionUser->syncSessions($keepalive);
-                if (!empty($changed)) {
-                    if ($debug) {
-                        JError::raiseNotice('500',"$master->name session changed");
-                    }
-                    $refresh = true;
-                }
-            }
-            //slave plugins
-            $plugins = JFusionFunction::getPlugins();
-            foreach ($plugins as $plugin) {
-                //only call keepAlive if the plugin is activated for dual login
-                if ($plugin->dual_login) {
-                    $JFusionUser = & JFusionFactory::getUser($plugin->name);
+        } else {
+            //only call keepAlive if in the frontend
+            $syncsessions = $this->params->get('syncsessions');
+            $keepalive = $this->params->get('keepalive');
+            $mainframe = JFactory::getApplication();
+            if ($mainframe->isSite() && !empty($syncsessions) && $task != 'logout') {
+                //for master if not joomla_int
+                $master = JFusionFunction::getMaster();
+                if (!empty($master) && $master->name != 'joomla_int') {
+                    $JFusionUser = & JFusionFactory::getUser($master->name);
                     $changed = $JFusionUser->syncSessions($keepalive);
                     if (!empty($changed)) {
                         if ($debug) {
-                            JError::raiseNotice('500',"$plugin->name session changed");
+                            JError::raiseNotice('500',"$master->name session changed");
                         }
                         $refresh = true;
                     }
                 }
+                //slave plugins
+                $plugins = JFusionFunction::getPlugins();
+                foreach ($plugins as $plugin) {
+                    //only call keepAlive if the plugin is activated for dual login
+                    if ($plugin->dual_login) {
+                        $JFusionUser = & JFusionFactory::getUser($plugin->name);
+                        $changed = $JFusionUser->syncSessions($keepalive);
+                        if (!empty($changed)) {
+                            if ($debug) {
+                                JError::raiseNotice('500',"$plugin->name session changed");
+                            }
+                            $refresh = true;
+                        }
+                    }
+                }
             }
-        }
-        /**
-         * Joomla Object language with the current information about the language loaded
-         * In the purpose to reduce the load charge of Joomla and the communication with the others
-         * integrated software the script is realized once the language is changed
-         *
-         */
-        $synclanguage = $this->params->get('synclanguage');
-        if (!empty($synclanguage)) {
-			$this->setLanguagePluginsFrontend();
-        }
-
-        //stop output buffer
-        ob_end_clean();
-
-        //check if page refresh is needed
-        if ($refresh == true) {
-            $backup = array();
-            $backup['post'] = $_POST;
-            $backup['request'] = $_REQUEST;
-            $backup['files'] = $_FILES;
-            $session->set('JFusionVarBackup',$backup);
-            if ($debug) {
-                JError::raiseNotice('500','Refresh is true');
+            /**
+             * Joomla Object language with the current information about the language loaded
+             * In the purpose to reduce the load charge of Joomla and the communication with the others
+             * integrated software the script is realized once the language is changed
+             *
+             */
+            $synclanguage = $this->params->get('synclanguage');
+            if (!empty($synclanguage)) {
+                $this->setLanguagePluginsFrontend();
             }
-            $uri = & JURI::getInstance();
-            //add a variable to ensure refresh
-            $uri->setVar('time', time());
-            $link = $uri->toString();
-            $mainframe = JFactory::getApplication();
-            $mainframe->redirect($link);
+
+            //stop output buffer
+            ob_end_clean();
+
+            //check if page refresh is needed
+            if ($refresh == true) {
+                $backup = array();
+                $backup['post'] = $_POST;
+                $backup['request'] = $_REQUEST;
+                $backup['files'] = $_FILES;
+                $session->set('JFusionVarBackup',$backup);
+                if ($debug) {
+                    JError::raiseNotice('500','Refresh is true');
+                }
+                $uri = & JURI::getInstance();
+                //add a variable to ensure refresh
+                $uri->setVar('time', time());
+                $link = $uri->toString();
+                $mainframe = JFactory::getApplication();
+                $mainframe->redirect($link);
+            }
         }
     }
     

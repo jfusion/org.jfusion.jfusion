@@ -61,9 +61,7 @@ class JFusionUser_joomla_int extends JFusionUser {
         //get the database ready
         $db = JFactory::getDBO();
         //setup status array to hold debug info and errors
-        $status = array();
-        $status['debug'] = array();
-        $status['error'] = array();
+        $status = array('error' => array(),'debug' => array());
         $username = $userinfo->username;
         //since the jfusion_user table will be updated to the user's email if they use it as an identifier, we must check for both the username and email
         $query = 'SELECT id FROM #__jfusion_users WHERE username=' . $db->Quote($username) . ' OR LOWER(username)=' . strtolower($db->Quote($userinfo->email));
@@ -77,7 +75,6 @@ class JFusionUser_joomla_int extends JFusionUser {
             $db->query();
             $db->setQuery('DELETE FROM #__jfusion_users WHERE id=' . (int)$userid);
             $db->query();
-            $status['error'] = false;
             $status['debug'][] = JText::_('USER_DELETION') . ' ' . $username;
         } else {
             //this user was NOT create by JFusion. Therefore we need to delete it in the Joomla user table only
@@ -91,7 +88,6 @@ class JFusionUser_joomla_int extends JFusionUser {
                 //delete it from the Joomla usertable
                 $user = & JUser::getInstance($userid);
                 $user->delete();
-                $status['error'] = false;
                 $status['debug'][] = JText::_('USER_DELETION') . ' ' . $username;
             } else {
                 //could not find user and return an error
@@ -134,55 +130,49 @@ class JFusionUser_joomla_int extends JFusionUser {
 		// If _getUser returned an error, then pass it back.
 		if (JError::isError($instance)) {
             $status['error'] = $instance;
-            return $status;
-		}
+		} else {
+            // If the user is blocked, redirect with an error
+            if ($instance->get('block') == 1) {
+                $status['error'] = JText::_('JERROR_NOLOGIN_BLOCKED');
+            } else {
+                // Authorise the user based on the group information
+                if (!isset($options['group'])) {
+                    $options['group'] = 'USERS';
+                }
 
-		// If the user is blocked, redirect with an error
-		if ($instance->get('block') == 1) {
-            $status['error'] = JText::_('JERROR_NOLOGIN_BLOCKED');
-            return $status;
-		}
+                // Chek the user can login.
+                $result	= $instance->authorise($options['action']);
+                if (!$result) {
+                    $status['error'] = JText::_('JERROR_LOGIN_DENIED');
+                } else {
+                    // Mark the user as logged in
+                    $instance->set('guest', 0);
 
-		// Authorise the user based on the group information
-		if (!isset($options['group'])) {
-			$options['group'] = 'USERS';
-		}
+                    // Register the needed session variables
+                    $session = JFactory::getSession();
+                    $session->set('user', $instance);
 
-		// Chek the user can login.
-		$result	= $instance->authorise($options['action']);
-		if (!$result) {
-			$status['error'] = JText::_('JERROR_LOGIN_DENIED');
-            return $status;
-		}
+                    // Update the user related fields for the Joomla sessions table.
+                    $db = JFactory::getDBO();
+                    $db->setQuery(
+                        'UPDATE `#__session`' .
+                            ' SET `guest` = '.$db->quote($instance->get('guest')).',' .
+                            '	`username` = '.$db->quote($instance->get('username')).',' .
+                            '	`userid` = '.(int) $instance->get('id') .
+                            ' WHERE `session_id` = '.$db->quote($session->getId())
+                    );
+                    $db->query();
 
-		// Mark the user as logged in
-		$instance->set('guest', 0);
-
-		// Register the needed session variables
-		$session = JFactory::getSession();
-		$session->set('user', $instance);
-
-		// Update the user related fields for the Joomla sessions table.
-		$db = JFactory::getDBO();
-		$db->setQuery(
-			'UPDATE `#__session`' .
-			' SET `guest` = '.$db->quote($instance->get('guest')).',' .
-			'	`username` = '.$db->quote($instance->get('username')).',' .
-			'	`userid` = '.(int) $instance->get('id') .
-			' WHERE `session_id` = '.$db->quote($session->getId())
-		);
-		$db->query();
-
-		// Hit the user last visit field
-            if ($instance->setLastVisit()) {
-            $status['error'] = false;
-            $status['debug'] = 'Joomla session created';
-            return $status;
-        } else {
-            $status['error'] = $instance->getError();
-            return $status;
+                    // Hit the user last visit field
+                    if ($instance->setLastVisit()) {
+                        $status['debug'] = 'Joomla session created';
+                    } else {
+                        $status['error'] = $instance->getError();
+                    }
+                }
+            }
         }
-
+        return $status;
     }
 
     /**
@@ -194,70 +184,66 @@ class JFusionUser_joomla_int extends JFusionUser {
         if(JFusionFunction::isJoomlaVersion('1.6')){
             //joomla 1.6 detected
             //use new create session function
-            return $this->createSession16($userinfo, $options);
-        }
-
-        //initalise some objects
-        $acl = JFactory::getACL();
-        $instance = & JUser::getInstance($userinfo->userid);
-        $grp = $acl->getAroGroup($userinfo->userid);
-
-        //Authorise the user based on the group information
-        if (!isset($options['group'])) {
-            $options['group'] = 'USERS';
-        }
-
-        //reject the session if the user is in a public group
-        if ($grp->id == 29 || $grp->id == 30) {
-            //report back error
-            $status['error'] = JText::sprintf('JOOMLA_INT_ACCESS_DENIED', $grp->name, $options['group']);
-            return $status;
-        }
-
-        if (!$acl->is_group_child_of($grp->name, $options['group'])) {
-            //report back error
-            $status['error'] = JText::sprintf('JOOMLA_INT_ACCESS_DENIED', $grp->name, $options['group']);
-            return $status;
-        }
-
-        //Mark the user as logged in
-        $instance->set('guest', 0);
-        $instance->set('aid', 1);
-        // Fudge Authors, Editors, Publishers and Super Administrators into the special access group
-        if ($acl->is_group_child_of($grp->name, 'Registered') || $acl->is_group_child_of($grp->name, 'Public Backend')) {
-            $instance->set('aid', 2);
-        }
-        //Set the usertype based on the ACL group name
-        $instance->set('usertype', $grp->name);
-        // Register the needed session variables
-        $session = JFactory::getSession();
-        $session->set('user', $instance);
-        //$session->set('referer', $_SERVER['HTTP_REFERER']);
-        //$session->set('ip_address', $_SERVER['REMOTE_ADDR']);
-        //$session->set('time', time());
-        //$session->set('query', $_SERVER['QUERY_STRING']);
-        //$session->set('filename', $_SERVER['SCRIPT_FILENAME']);
-
-		//JError::raiseNotice('500',$session->getId());
-
-        // Get the session object
-        $table = & JTable::getInstance('session');
-        $table->load($session->getId());
-        $table->guest = $instance->get('guest');
-        $table->username = $instance->get('username');
-        $table->userid = intval($instance->get('id'));
-        $table->usertype = $instance->get('usertype');
-        $table->gid = intval($instance->get('gid'));
-        $table->update();
-        // Hit the user last visit field
-        if ($instance->setLastVisit()) {
-            $status['error'] = false;
-            $status['debug'] = 'Joomla session created';
-            return $status;
+            $status = $this->createSession16($userinfo, $options);
         } else {
-            $status['error'] = $instance->getError();
-            return $status;
+            //initalise some objects
+            $acl = JFactory::getACL();
+            $instance = & JUser::getInstance($userinfo->userid);
+            $grp = $acl->getAroGroup($userinfo->userid);
+
+            //Authorise the user based on the group information
+            if (!isset($options['group'])) {
+                $options['group'] = 'USERS';
+            }
+
+            //reject the session if the user is in a public group
+            if ($grp->id == 29 || $grp->id == 30) {
+                //report back error
+                $status['error'] = JText::sprintf('JOOMLA_INT_ACCESS_DENIED', $grp->name, $options['group']);
+            } else {
+                if (!$acl->is_group_child_of($grp->name, $options['group'])) {
+                    //report back error
+                    $status['error'] = JText::sprintf('JOOMLA_INT_ACCESS_DENIED', $grp->name, $options['group']);
+                } else {
+                    //Mark the user as logged in
+                    $instance->set('guest', 0);
+                    $instance->set('aid', 1);
+                    // Fudge Authors, Editors, Publishers and Super Administrators into the special access group
+                    if ($acl->is_group_child_of($grp->name, 'Registered') || $acl->is_group_child_of($grp->name, 'Public Backend')) {
+                        $instance->set('aid', 2);
+                    }
+                    //Set the usertype based on the ACL group name
+                    $instance->set('usertype', $grp->name);
+                    // Register the needed session variables
+                    $session = JFactory::getSession();
+                    $session->set('user', $instance);
+                    //$session->set('referer', $_SERVER['HTTP_REFERER']);
+                    //$session->set('ip_address', $_SERVER['REMOTE_ADDR']);
+                    //$session->set('time', time());
+                    //$session->set('query', $_SERVER['QUERY_STRING']);
+                    //$session->set('filename', $_SERVER['SCRIPT_FILENAME']);
+
+                    //JError::raiseNotice('500',$session->getId());
+
+                    // Get the session object
+                    $table = & JTable::getInstance('session');
+                    $table->load($session->getId());
+                    $table->guest = $instance->get('guest');
+                    $table->username = $instance->get('username');
+                    $table->userid = intval($instance->get('id'));
+                    $table->usertype = $instance->get('usertype');
+                    $table->gid = intval($instance->get('gid'));
+                    $table->update();
+                    // Hit the user last visit field
+                    if ($instance->setLastVisit()) {
+                        $status['debug'] = 'Joomla session created';
+                    } else {
+                        $status['error'] = $instance->getError();
+                    }
+                }
+            }
         }
+        return $status;
     }
 
     /**

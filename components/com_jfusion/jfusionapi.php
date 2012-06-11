@@ -677,7 +677,7 @@ class JFusionAPI_User extends JFusionAPIBase {
 			}
 			
 	        $mainframe = $this->startJoomla();
-	        $user = null;
+	        $user = new stdClass;
 			if (isset($this->payload['username'])) {
 				if (isset($this->payload['plugin'])) {
 					$lookupUser = JFusionFunction::lookupUser($this->payload['plugin'],null,false,$this->payload['username']);
@@ -688,7 +688,7 @@ class JFusionAPI_User extends JFusionAPIBase {
 					$user = &JFactory::getUser($this->payload['username']);					
 				}
 			}
-			if (empty($user)) {
+			if (isset($user->userid) && $user->userid) {
 				$mainframe->logout($user->userid);
 			} else {
 				$mainframe->logout();

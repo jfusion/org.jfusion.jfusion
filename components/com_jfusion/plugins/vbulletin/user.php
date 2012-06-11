@@ -30,15 +30,25 @@ defined('_JEXEC' ) or die('Restricted access' );
  */
 class JFusionUser_vbulletin extends JFusionUser
 {
+    /**
+     * @var $params JParameter
+     */
     var $params;
+    /**
+     * @var $helper JFusionHelper_vbulletin
+     */
     var $helper;
 
-    function JFusionUser_vbulletin()
+    /**
+     *
+     */
+    function __construct()
     {
         //get the params object
-        $this->params =& JFusionFactory::getParams($this->getJname());
+        $this->params = JFusionFactory::getParams($this->getJname());
         //get the helper object
-        $this->helper = & JFusionFactory::getHelper($this->getJname());
+
+        $this->helper = JFusionFactory::getHelper($this->getJname());
     }
 
     /**
@@ -140,12 +150,10 @@ class JFusionUser_vbulletin extends JFusionUser
         $response = $this->helper->apiCall('deleteUser', $apidata);
 
         if (!empty($response['errors'])) {
-            foreach ($response['errors'] as $error)
-            {
+            foreach ($response['errors'] as $error) {
                 $status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . $error;
             }
         } else {
-            $status['error'] = false;
             $status['debug'][] = JText::_('USER_DELETION'). ' ' . $userinfo->userid;
         }
 
@@ -433,7 +441,7 @@ class JFusionUser_vbulletin extends JFusionUser
     function unblockUser($userinfo, &$existinguser, &$status)
     {
         //found out what usergroup should be used
-        $usergroups = (substr($this->params->get('usergroup'), 0, 2) == 'a:') ? unserialize($this->params->get('usergroup')) : $this->params->get('usergroup');
+        $usergroups = JFusionFunction::isAdvancedUsergroupMode($this->getJname()) ? unserialize($this->params->get('usergroup')) : $this->params->get('usergroup');
         $bannedgroup = $this->params->get('bannedgroup');
 
         //first check to see if user is banned and if so, retrieve the prebanned fields
@@ -495,7 +503,7 @@ class JFusionUser_vbulletin extends JFusionUser
     function activateUser($userinfo, &$existinguser, &$status)
     {
         //found out what usergroup should be used
-        $usergroups = (substr($this->params->get('usergroup'), 0, 2) == 'a:') ? unserialize($this->params->get('usergroup')) : $this->params->get('usergroup');
+        $usergroups = JFusionFunction::isAdvancedUsergroupMode($this->getJname()) ? unserialize($this->params->get('usergroup')) : $this->params->get('usergroup');
         $usergroup = (is_array($usergroups)) ? $usergroups[$userinfo->group_id]['defaultgroup'] : $usergroups;
 
         //update the usergroup to default group
@@ -547,7 +555,7 @@ class JFusionUser_vbulletin extends JFusionUser
                 jimport('joomla.user.helper');
                 $useractivation->activationid = JUserHelper::genRandomPassword(40);
 
-                $usergroups = (substr($this->params->get('usergroup'), 0, 2) == 'a:') ? unserialize($this->params->get('usergroup')) : $this->params->get('usergroup');
+                $usergroups = JFusionFunction::isAdvancedUsergroupMode($this->getJname()) ? unserialize($this->params->get('usergroup')) : $this->params->get('usergroup');
                 $usergroup = (is_array($usergroups)) ? $usergroups[$userinfo->group_id]['defaultgroup'] : $usergroups;
                 $useractivation->usergroupid = $usergroup;
 
@@ -583,11 +591,11 @@ class JFusionUser_vbulletin extends JFusionUser
     function createUser($userinfo, &$status)
     {
         //get the default user group and determine if we are using simple or advanced
-        $usergroups = (substr($this->params->get('usergroup'), 0, 2) == 'a:') ? unserialize($this->params->get('usergroup')) : $this->params->get('usergroup');
+        $usergroups = JFusionFunction::isAdvancedUsergroupMode($this->getJname()) ? unserialize($this->params->get('usergroup')) : $this->params->get('usergroup');
 
         //return if we are in advanced user group mode but the master did not pass in a group_id
         if (is_array($usergroups) && !isset($userinfo->group_id)) {
-            $status['error'][] = JText::_('GROUP_UPDATE_ERROR'). ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+            $status['error'][] = JText::_('ERROR_CREATING_USER'). ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
         } else {
             if (empty($userinfo->activation)) {
                 $defaultgroup = (is_array($usergroups)) ? $usergroups[$userinfo->group_id]['defaultgroup'] : $usergroups;
@@ -656,31 +664,28 @@ class JFusionUser_vbulletin extends JFusionUser
     }
 
     /**
-     * @param object $userinfo
-     * @param object $existinguser
-     * @param object $usergroups
-     * @param array $status
+     * @param object &$userinfo
+     * @param object &$existinguser
+     * @param array &$status
      * @return bool
      */
-    function executeUpdateUsergroup(&$userinfo, &$existinguser, &$usergroups, &$status)
+    function executeUpdateUsergroup(&$userinfo, &$existinguser, &$status)
     {
         $update_groups = false;
-        $usergroupid =& $usergroups[$userinfo->group_id]['defaultgroup'];
-        $displaygroupid =& $usergroups[$userinfo->group_id]['displaygroup'];
+        $usergroups = unserialize($this->params->get('usergroup'));
+
+        $usergroupid = $usergroups[$userinfo->group_id]['defaultgroup'];
+        $displaygroupid = $usergroups[$userinfo->group_id]['displaygroup'];
         $membergroupids = (isset($usergroups[$userinfo->group_id]['membergroups'])) ? $usergroups[$userinfo->group_id]['membergroups'] : array();
 
         //check to see if the default groups are different
         if ($usergroupid != $existinguser->group_id ) {
             $update_groups = true;
-        }
-
-        //check to see if the display groups are different
-        if (!empty($usergroups['options']['compare_displaygroups']) && $displaygroupid != $existinguser->displaygroupid ) {
+        } elseif (!empty($usergroups['options']['compare_displaygroups']) && $displaygroupid != $existinguser->displaygroupid ) {
+            //check to see if the display groups are different
             $update_groups = true;
-        }
-
-        //check to see if member groups are different
-        if (!empty($usergroups['options']['compare_membergroups'])) {
+        } elseif (!empty($usergroups['options']['compare_membergroups'])) {
+            //check to see if member groups are different
             $current_membergroups = explode(',', $existinguser->membergroupids);
             foreach ($membergroupids as $gid) {
                 if (!in_array($gid, $current_membergroups)) {

@@ -125,33 +125,53 @@ class jfusionViewadvancedparam extends JView
         $rows = array_merge(array($noSelected), $db->loadObjectList());
         $attributes = array("size" => "1", "class" => "inputbox", "onchange" => "jPluginChange(this);");
         $output = JHTML::_('select.genericlist', $rows, 'params[jfusionplugin]', $attributes, 'id', 'name', $JPlugin);
-        $configLink = "";
+        $configLink = '';
         if (isset($this->configArray[$config])) {
-            $configLink = "&configfile=" . $config;
+            $configLink = '&configfile=' . $config;
         }
         $elNum = JRequest::getInt('elNum');
-        $js = "
+        $js = <<<JS
         function jPluginChange(select) {
-            plugin = select.options[select.selectedIndex].value;
+            var plugin = select.options[select.selectedIndex].value;
             plugin = 'a:1:{s:13:\"jfusionplugin\";s:'+plugin.length+':\"'+plugin+'\";}';
-            value = encode64(plugin);
+            var value = encode64(plugin);
             window.location.href = 'index.php?option=com_jfusion&task=advancedparam' +
-                                   '&tmpl=component&elNum=$elNum" . $configLink . "&params='+value;
+                                   '&tmpl=component&elNum={$elNum}{$configLink} . "&params='+value;
         }
 
         function encode64(inp){
             var key='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
             var chr1,chr2,chr3,enc3,enc4,i=0,out='';
             while(i<inp.length){
-                chr1=inp.charCodeAt(i++);if (chr1>127) chr1=88;
-                chr2=inp.charCodeAt(i++);if (chr2>127) chr2=88;
-                chr3=inp.charCodeAt(i++);if (chr3>127) chr3=88;
-                if (isNaN(chr3)) {enc4=64;chr3=0;} else enc4=chr3&63
-                if (isNaN(chr2)) {enc3=64;chr2=0;} else enc3=((chr2<<2)|(chr3>>6))&63
+                chr1=inp.charCodeAt(i++);
+                if (chr1>127) {
+                    chr1=88;
+                }
+                chr2=inp.charCodeAt(i++);
+                if (chr2>127) {
+                    chr2=88;
+                }
+                chr3=inp.charCodeAt(i++);
+                if (chr3>127) {
+                    chr3=88;
+                }
+                if (isNaN(chr3)) {
+                    enc4=64;chr3=0;
+                } else {
+                    enc4=chr3&63;
+                }
+                if (isNaN(chr2)) {
+                    enc3=64;
+                    chr2=0;
+                } else {
+                    enc3=((chr2<<2)|(chr3>>6))&63;
+                }
                 out+=key.charAt((chr1>>2)&63)+key.charAt(((chr1<<4)|(chr2>>4))&63)+key.charAt(enc3)+key.charAt(enc4);
             }
             return encodeURIComponent(out);
-        }";
+        }
+JS;
+
         return array($output, $js);
     }
 
@@ -177,6 +197,12 @@ class jfusionViewadvancedparam extends JView
             }
         }
 
+        /**
+         * @ignore
+         * @var $xml JSimpleXML
+         */
+        $xml = JFactory::getXMLParser('Simple');
+
         if ($this->isJ16) {
             global $jname;
             $jname = (!empty($value['jfusionplugin'])) ? $value['jfusionplugin'] : '';
@@ -184,16 +210,19 @@ class jfusionViewadvancedparam extends JView
                 $path = JFUSION_PLUGIN_PATH . DS . $jname . DS . $this->configArray[$config][1];
                 $defaultPath = JPATH_ADMINISTRATOR . DS . 'components' . DS . $option . DS . 'views' . DS . 'advancedparam' . DS . 'paramfiles' . DS . $this->configArray[$config][1];
                 $xml_path = (file_exists($path)) ? $path : $defaultPath;
-                $xml = JFactory::getXMLParser('Simple');
                 $form = false;
                 if ($xml->loadFile($xml_path)) {
                     $fields = $xml->document->getElementByPath('fields');
                     if ($fields) {
-                        $data = $xml->document->fields[0]->toString();
+                        $data = $fields->toString();
                         //make sure it is surround by <form>
                         if (substr($data, 0, 5) != "<form>") {
                             $data = "<form>" . $data . "</form>";
                         }
+                        /**
+                         * @ignore
+                         * @var $form JForm
+                         */
                         $form = &JForm::getInstance($jname, $data, array('control' => "params[$jname]"));
                         //add JFusion's fields
                         $form->addFieldPath(JPATH_COMPONENT.DS.'fields');
@@ -206,7 +235,6 @@ class jfusionViewadvancedparam extends JView
                 }
                 $value['params'] = $form;
             }
-            return $value;
         } else {
             //Load Plugin XML Parameter
             $params = new JParameter('');
@@ -219,14 +247,19 @@ class jfusionViewadvancedparam extends JView
                 $path = JFUSION_PLUGIN_PATH . DS . $JPlugin . DS . $this->configArray[$config][1];
                 $defaultPath = JPATH_ADMINISTRATOR . DS . 'components' . DS . $option . DS . 'views' . DS . 'advancedparam' . DS . 'paramfiles' . DS . $this->configArray[$config][1];
                 $xml_path = (file_exists($path)) ? $path : $defaultPath;
-                $xml = JFactory::getXMLParser('Simple');
                 if ($xml->loadFile($xml_path)) {
-                    $params->setXML($xml->document->params[0]);
+                    /**
+                     * @ignore
+                     * @var $xmlparams JSimpleXMLElement
+                     */
+                    $xmlparams = $xml->document->getElementByPath('params');
+                    $params->setXML($xmlparams);
                     $this->loadLanguage($xml);
                 }
             }
-            return $params;
+            $value = $params;
         }
+        return $value;
     }
 
     /**
@@ -256,25 +289,27 @@ class jfusionViewadvancedparam extends JView
         $attributes = array("size" => "1", "class" => "inputbox");
         $output = JHTML::_('select.genericlist', $rows, 'jfusionplugin', $attributes, 'id', 'name');
         $output.= '&nbsp;<input type="button" value="add" name="add" onclick="jPluginAdd(this);" />';
-        $configLink = "";
+        $configLink = '';
         if (isset($this->configArray[$config])) {
-            $configLink = "&configfile=" . $config;
+            $configLink = '&configfile=' . $config;
         }
         $elNum = JRequest::getInt('elNum');
-        $js = "
+        $js = <<<JS
         function jPluginAdd(button) {
             button.form.jfusion_task.value = 'add';
             button.form.action = 'index.php?option=com_jfusion&task=advancedparam' +
-                                   '&tmpl=component&elNum=$elNum" . $configLink . "&multiselect=1';
+                                   '&tmpl=component&elNum={$elNum}{$configLink}&multiselect=1';
             button.form.submit();
         }
         function jPluginRemove(button, value) {
             button.form.jfusion_task.value = 'remove';
             button.form.jfusion_value.value = value;
             button.form.action = 'index.php?option=com_jfusion&task=advancedparam' +
-                                   '&tmpl=component&elNum=$elNum" . $configLink . "&multiselect=1';
+                                   '&tmpl=component&elNum={$elNum}{$configLink}&multiselect=1';
             button.form.submit();
-        }";
+        }
+JS;
+
         return array($output, $js);
     }
 
@@ -321,6 +356,11 @@ class jfusionViewadvancedparam extends JView
             }
         }
 
+        /**
+         * @ignore
+         * @var $xml JSimpleXML
+         */
+        $xml = JFactory::getXMLParser('Simple');
         foreach (array_keys($value) as $key) {
             if ($this->isJ16) {
                 $jname = $value[$key]['jfusionplugin'];
@@ -329,15 +369,19 @@ class jfusionViewadvancedparam extends JView
                     $path = JFUSION_PLUGIN_PATH . DS . $jname . DS . $this->configArray[$config][1];
                     $defaultPath = JPATH_ADMINISTRATOR . DS . 'components' . DS . $option . DS . 'views' . DS . 'advancedparam' . DS . 'paramfiles' . DS . $this->configArray[$config][1];
                     $xml_path = (file_exists($path)) ? $path : $defaultPath;
-                    $xml = JFactory::getXMLParser('Simple');
+
                     if ($xml->loadFile($xml_path)) {
                         $fields = $xml->document->getElementByPath('fields');
                         if ($fields) {
-                            $data = $xml->document->fields[0]->toString();
+                            $data = $fields->toString();
                             //make sure it is surround by <form>
                             if (substr($data, 0, 5) != "<form>") {
                                 $data = "<form>" . $data . "</form>";
                             }
+                            /**
+                             * @ignore
+                             * @var $form JForm
+                             */
                             $form = &JForm::getInstance($jname, $data, array('control' => "params[$jname]"));
                             //add JFusion's fields
                             $form->addFieldPath(JPATH_COMPONENT.DS.'fields');
@@ -357,9 +401,13 @@ class jfusionViewadvancedparam extends JView
                     $path = JFUSION_PLUGIN_PATH . DS . $jname . DS . $this->configArray[$config][1];
                     $defaultPath = JPATH_ADMINISTRATOR . DS . 'components' . DS . $option . DS . 'views' . DS . 'advancedparam' . DS . 'paramfiles' . DS . $this->configArray[$config][1];
                     $xml_path = (file_exists($path)) ? $path : $defaultPath;
-                    $xml = JFactory::getXMLParser('Simple');
                     if ($xml->loadFile($xml_path)) {
-                        $params->setXML($xml->document->params[0]);
+                        /**
+                         * @ignore
+                         * @var $xmlparams JSimpleXMLElement
+                         */
+                        $xmlparams = $xml->document->getElementByPath('params');
+                        $params->setXML($xmlparams);
                         $this->loadLanguage($xml);
                     }
                 }

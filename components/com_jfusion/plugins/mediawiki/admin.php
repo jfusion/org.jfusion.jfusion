@@ -49,16 +49,20 @@ class JFusionAdmin_mediawiki extends JFusionAdmin {
         $myfile = $source_path . DS. 'LocalSettings.php';
         $params = array();
          //try to open the file
-         if ( !file_exists($myfile) ) {
+        if ( !file_exists($myfile) ) {
             JError::raiseWarning(500,JText::_('WIZARD_FAILURE'). ": ".$myfile." " . JText::_('WIZARD_MANUAL'));
-         } else {
-			$wgDBserver = $wgDBtype = $wgDBname = $wgDBuser = $wgDBpassword = $wgDBprefix = '';
-    		
-    		$paths = $this->includeFramework($source_path);
-    		$IP = $source_path;
-    		foreach($paths as $path) {
-    			include($path);
-    		}
+        } else {
+            $wgDBserver = $wgDBtype = $wgDBname = $wgDBuser = $wgDBpassword = $wgDBprefix = '';
+            /**
+             * @ignore
+             * @var $helper JFusionHelper_mediawiki
+             */
+            $helper = JFusionFactory::getHelper($this->getJname());
+            $paths = $helper->includeFramework($source_path);
+            $IP = $source_path;
+            foreach($paths as $path) {
+                include($path);
+            }
 
             $params['database_host'] = $wgDBserver;
             $params['database_type'] = $wgDBtype;
@@ -73,55 +77,6 @@ class JFusionAdmin_mediawiki extends JFusionAdmin {
             }
         }
         return $params;
-    }
-
-    /**
-     * @param $source_path
-     * @return array
-     */
-    function includeFramework( & $source_path ) {
-    	//check for trailing slash and generate file path
-    	if (substr($source_path, -1) == DS) {
-    		//remove it so that we can make it compatible with mediawiki's MW_INSTALL_PATH
-    		$source_path = substr($source_path, 0, -1);
-    	}
-
-    	$return[] = $source_path . DS. 'includes'. DS. 'DefaultSettings.php';
-    	$return[] = $source_path . DS. 'LocalSettings.php';
-    	
-    	$paths[] = $source_path . DS. 'includes'. DS. 'Defines.php';
-    	$paths[] = $source_path . DS. 'includes'. DS. 'IP.php';
-    	$paths[] = $source_path . DS. 'includes'. DS. 'WebRequest.php';
-    	$paths[] = $source_path . DS. 'includes'. DS. 'SiteConfiguration.php';
-    	defined ('MEDIAWIKI') or define( 'MEDIAWIKI',TRUE );
-    	defined ('MW_INSTALL_PATH') or define('MW_INSTALL_PATH', $source_path);
-    	foreach($paths as $path) {
-    		include_once($path);
-    	}
-    	return $return;
-    }
-
-    /**
-     * @param $getVar
-     * @return mixed
-     */
-    function getConfig( $getVar ) {
-    	static $config = array();
-
-    	if (isset($config[$getVar])) {
-    	    return $config[$getVar];
-    	}
-
-    	$params = JFusionFactory::getParams($this->getJname());
-    	$source_path = $params->get('source_path');
-
-		$paths = $this->includeFramework($source_path);
-		$IP = $source_path;
-		foreach($paths as $path) {
-			include($path);
-		}
-       	$config[$getVar] = (isset($$getVar)) ? $$getVar : '';
-		return $config[$getVar];
     }
 
     /**
@@ -157,7 +112,12 @@ class JFusionAdmin_mediawiki extends JFusionAdmin {
      */
     function getUsergroupList()
     {
-        $wgGroupPermissions = $this->getConfig('wgGroupPermissions');
+        /**
+         * @ignore
+         * @var $helper JFusionHelper_mediawiki
+         */
+        $helper = JFusionFactory::getHelper($this->getJname());
+        $wgGroupPermissions = $helper->getConfig('wgGroupPermissions');
 
         $usergrouplist = array();
         foreach($wgGroupPermissions as $key => $value) {
@@ -177,8 +137,8 @@ class JFusionAdmin_mediawiki extends JFusionAdmin {
     function getDefaultUsergroup()
     {
         $params = JFusionFactory::getParams($this->getJname());
-        $usergroup_id = $params->get('usergroup');
-        return $usergroup_id;
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
+        return $usergroups[0];
     }
 
     /**
@@ -186,7 +146,12 @@ class JFusionAdmin_mediawiki extends JFusionAdmin {
      */
     function allowRegistration()
     {
-		$wgGroupPermissions = $this->getConfig('wgGroupPermissions');
+        /**
+         * @ignore
+         * @var $helper JFusionHelper_mediawiki
+         */
+        $helper = JFusionFactory::getHelper($this->getJname());
+		$wgGroupPermissions = $helper->getConfig('wgGroupPermissions');
         if (is_array($wgGroupPermissions) && $wgGroupPermissions['*']['createaccount'] == true) {
             return true;
         } else {
