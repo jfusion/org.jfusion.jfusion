@@ -658,12 +658,9 @@ class JFusionJplugin
 						$result->groups[] = $group->group_id;
 						$result->groupnames[] = $group->name;
 
-                        //TODO: pwhaps try and find another way to to set the $result->group_id....
 						if ( !isset($result->group_id) || $group->group_id > $result->group_id) {
-							if ($group->group_id <=8) {
-                                $result->group_id = $group->group_id;
-                                $result->group_name =  $group->name;
-							}
+                            $result->group_id = $group->group_id;
+                            $result->group_name =  $group->name;
 						}
 					}
 				} else {
