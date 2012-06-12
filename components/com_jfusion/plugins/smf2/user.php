@@ -365,7 +365,7 @@ class JFusionUser_smf2 extends JFusionUser {
 
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
         if (empty($usergroups)) {
-            $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+            $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('USERGROUP_MISSING');
         } else {
             //prepare the user variables
             $user = new stdClass;

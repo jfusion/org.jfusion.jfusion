@@ -355,7 +355,7 @@ class JFusionUser_wordpress extends JFusionUser {
 		$params = JFusionFactory::getParams($this->getJname());
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
         if (empty($usergroups)) {
-			$status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+			$status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('USERGROUP_MISSING');
 		} else {
             /**
              * @ignore
@@ -559,7 +559,7 @@ class JFusionUser_wordpress extends JFusionUser {
     function updateUsergroup($userinfo, &$existinguser, &$status) {
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 		if (empty($usergroups)) {
-			$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+			$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('USERGROUP_MISSING');
 		} else {
             $usergroup = $usergroups[0];
             $db = JFusionFactory::getDatabase($this->getJname());

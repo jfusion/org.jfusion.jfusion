@@ -362,7 +362,7 @@ class JFusionUser_oscommerce extends JFusionUser
                 //get the default user group and determine if we are using simple or advanced
                 //check to make sure that if using the advanced group mode, $userinfo->group_id exists
                 if (empty($usergroups)) {
-                    $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+                    $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('USERGROUP_MISSING');
                     return;
                 }
                 $default_group_id = $usergroups[0];
@@ -376,7 +376,7 @@ class JFusionUser_oscommerce extends JFusionUser
             //get the default user group and determine if we are using simple or advanced
             //check to make sure that if using the advanced group mode, $userinfo->group_id exists
             if (empty($usergroups)) {
-                    $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+                    $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('USERGROUP_MISSING');
                     return;
                 }
                 $default_group_id = $usergroups[0];
@@ -388,8 +388,8 @@ class JFusionUser_oscommerce extends JFusionUser
                 $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
                 //get the default user group and determine if we are using simple or advanced
                 //check to make sure that if using the advanced group mode, $userinfo->group_id exists
-                if (Jempty($usergroups)) {
-                    $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+                if (empty($usergroups)) {
+                    $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('USERGROUP_MISSING');
                     return;
                 }
                 $default_group_id = $usergroups[0];
@@ -502,14 +502,10 @@ class JFusionUser_oscommerce extends JFusionUser
             // delete review items osc2 & osc3 &  osczen & oscxt
             $delete_reviews = $params->get('delete_reviews');
             if ($delete_reviews == '1') {
-                $reviews_query = $db->query("select reviews_id from #__reviews where customers_id = '" . (int)$user_id . "'");
-                while (true) {
-                    $reviews = $db->fetch_array($reviews_query);
-                    if ($reviews) {
-                        $db->query("delete from #__reviews_description where reviews_id = '" . (int)$reviews['reviews_id'] . "'");
-                    } else {
-                        break;
-                    }
+                $db->query("select reviews_id from #__reviews where customers_id = '" . (int)$user_id . "'");
+                $reviews = $db->loadObjectList();
+                foreach ($reviews as $review) {
+                    $db->query("delete from #__reviews_description where reviews_id = '" . (int)$review->reviews_id . "'");
                 }
                 $db->query("DELETE FROM #__reviews WHERE customers_id = '" . (int)$user_id . "'");
             } else {
@@ -621,15 +617,15 @@ class JFusionUser_oscommerce extends JFusionUser
 
     /**
      * @param object $userinfo
-     * @param object $existinguser
-     * @param array $status
+     * @param object &$existinguser
+     * @param array &$status
      */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
         $params = JFusionFactory::getParams($this->getJname());
         $osCversion = $params->get('osCversion');
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
         if (empty($usergroups)) {
-            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('USERGROUP_MISSING');
         } else {
             $usergroup = $usergroups[0];
             $db = JFusionFactory::getDataBase($this->getJname());

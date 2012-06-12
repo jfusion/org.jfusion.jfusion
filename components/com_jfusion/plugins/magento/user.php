@@ -443,7 +443,7 @@ class JFusionUser_magento extends JFusionUser {
         //get the default user group and determine if we are using simple or advanced
         //check to make sure that if using the advanced group mode, $userinfo->group_id exists
         if (empty($usergroups)) {
-            $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+            $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('USERGROUP_MISSING');
         } else {
             $default_group_id = $usergroups[0];
             $db = JFusionFactory::getDataBase($this->getJname());
@@ -648,7 +648,7 @@ class JFusionUser_magento extends JFusionUser {
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
         //check to see if we have a group_id in the $userinfo, if not return
         if (empty($usergroups)) {
-            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('USERGROUP_MISSING');
         } else {
             $usergroup = $usergroups[0];
             //set the usergroup in the user table

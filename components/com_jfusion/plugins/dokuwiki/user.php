@@ -106,7 +106,7 @@ class JFusionUser_dokuwiki extends JFusionUser {
                             $status['debug'][] = JText::_('SKIPPED_GROUP_UPDATE') . ':' . JText::_('GROUP_VALID');
                         }
                     } else {
-                        $status['error'][] = JText::_('ERROR_CREATE_USER') . ": " . JText::_('USERGROUP_MISSING');
+                        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('USERGROUP_MISSING');
                     }
                 }
                 if (count($changes)) {
@@ -288,36 +288,32 @@ class JFusionUser_dokuwiki extends JFusionUser {
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
         //get the default user group and determine if we are using simple or advanced
         //check to make sure that if using the advanced group mode, $userinfo->group_id exists
-        if (JFusionFunction::isAdvancedUsergroupMode($this->getJname()) && empty($usergroups)) {
-            $status['error'][] = JText::_('ERROR_CREATE_USER') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+        if (empty($usergroups)) {
+            $status['error'][] = JText::_('ERROR_CREATE_USER') . ": " . JText::_('USERGROUP_MISSING');
         } else {
-            if (empty($usergroups)) {
-                $status['error'][] = JText::_('ERROR_CREATE_USER') . ": " . JText::_('USERGROUP_MISSING');
+            /**
+             * @ignore
+             * @var $helper JFusionHelper_dokuwiki
+             */
+            $helper = JFusionFactory::getHelper($this->getJname());
+            if (isset($userinfo->password_clear)) {
+                $pass = $userinfo->password_clear;
             } else {
-                /**
-                 * @ignore
-                 * @var $helper JFusionHelper_dokuwiki
-                 */
-                $helper = JFusionFactory::getHelper($this->getJname());
-                if (isset($userinfo->password_clear)) {
-                    $pass = $userinfo->password_clear;
-                } else {
-                    $pass = $userinfo->password;
-                }
-                $userinfo->username = $this->filterUsername($userinfo->username);
+                $pass = $userinfo->password;
+            }
+            $userinfo->username = $this->filterUsername($userinfo->username);
 
-                $usergroup = explode(',', $usergroups[0]);
-                if (!count($usergroup)) $usergroup = null;
+            $usergroup = explode(',', $usergroups[0]);
+            if (!count($usergroup)) $usergroup = null;
 
-                //now append the new user data
-                if (!$helper->auth->createUser($userinfo->username, $pass, $userinfo->name, $userinfo->email,$usergroup)) {
-                    //return the error
-                    $status['error'] = JText::_('USER_CREATION_ERROR');
-                } else {
-                    //return the good news
-                    $status['debug'][] = JText::_('USER_CREATION');
-                    $status['userinfo'] = $this->getUser($userinfo);
-                }
+            //now append the new user data
+            if (!$helper->auth->createUser($userinfo->username, $pass, $userinfo->name, $userinfo->email,$usergroup)) {
+                //return the error
+                $status['error'] = JText::_('USER_CREATION_ERROR');
+            } else {
+                //return the good news
+                $status['debug'][] = JText::_('USER_CREATION');
+                $status['userinfo'] = $this->getUser($userinfo);
             }
         }
     }

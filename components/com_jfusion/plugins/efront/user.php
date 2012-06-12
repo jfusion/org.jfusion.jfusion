@@ -364,7 +364,7 @@ class JFusionUser_efront extends JFusionUser
         //get the default user group and determine if we are using simple or advanced
         //check to make sure that if using the advanced group mode, $userinfo->group_id exists
         if (empty($usergroups)) {
-            $status['error'][] = JText::_('ERROR_CREATE_USER') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+            $status['error'][] = JText::_('ERROR_CREATE_USER') . ": " . JText::_('USERGROUP_MISSING');
         } else {
             $default_group_id = $usergroups[0];
             $user_type = "";
@@ -548,7 +548,7 @@ class JFusionUser_efront extends JFusionUser
         //check to see if we have a group_id in the $userinfo, if not return
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
         if (empty($usergroups)) {
-            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('USERGROUP_MISSING');
         } else {
             $usergroup = $usergroups[0];
             $db = JFusionFactory::getDataBase($this->getJname());

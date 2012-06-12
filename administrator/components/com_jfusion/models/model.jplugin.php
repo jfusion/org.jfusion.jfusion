@@ -951,7 +951,7 @@ class JFusionJplugin
         //get the default user group and determine if we are using simple or advanced
         //check to make sure that if using the advanced group mode, $userinfo->group_id exists
         if (empty($usergroups)) {
-            $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+            $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('USERGROUP_MISSING');
         } else {
             //load the database
             $db = & JFusionFactory::getDatabase($jname);

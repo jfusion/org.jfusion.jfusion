@@ -267,7 +267,7 @@ class JFusionUser_gallery2 extends JFusionUser {
         $params = JFusionFactory::getParams($this->getJname());
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
         if (empty($usergroups)) {
-            $status['error'][] = JText::_('ERROR_CREATE_USER') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+            $status['error'][] = JText::_('ERROR_CREATE_USER') . ": " . JText::_('USERGROUP_MISSING');
         } else {
             list($ret, $g2_user) = GalleryCoreApi::newFactoryInstance('GalleryEntity', 'GalleryUser');
             if ($ret) {
@@ -325,7 +325,7 @@ class JFusionUser_gallery2 extends JFusionUser {
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
         //check to see if we have a group_id in the $userinfo, if not return
         if (empty($usergroups)) {
-            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('USERGROUP_MISSING');
         } else {
             $usergroup = $usergroups[0];
             if ($existinguser->group_id != 2 && $existinguser->group_id != 4) {
