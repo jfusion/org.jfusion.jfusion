@@ -613,6 +613,15 @@ if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\'
     }
 
     /**
+     * @return bool true if plugin support usergroup update, (this is default)
+     */
+    function supportUsergroupUpdate()
+    {
+
+        return false;
+    }
+
+    /**
      * do plugin support multi usergroups
      *
      * @return string UNKNOWN or JNO or JYES or ??

@@ -174,12 +174,4 @@ class JFusionAdmin_elgg extends JFusionAdmin
 	{
 		return 'JYES';
 	}
-
-    /**
-     * @return bool true if plugin can be master, (this is default)
-     */
-    function canBeMaster()
-    {
-        return false;
-    }
 }

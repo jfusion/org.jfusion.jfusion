@@ -634,7 +634,7 @@ JS;
         }
         $advanced_usergroup = '';
         $jsGroups = array();
-        if ($slave == 1 && !empty($master)) {
+        if ($slave == 1 && !empty($master) && $this->supportUsergroupUpdate()) {
             //allow usergroup sync
             if ($advanced == 1) {
                 $list_box.= '<option selected="selected" value="1">Avanced</option>';

@@ -468,6 +468,16 @@ class JFusionAdmin_magento extends JFusionAdmin
     /**
      * do plugin support multi usergroups
      *
+     * @return bool
+     */
+    function isMultiGroup()
+    {
+        return false;
+    }
+
+    /**
+     * do plugin support multi usergroups
+     *
      * @return string UNKNOWN or JNO or JYES or ??
      */
     function requireFileAccess()

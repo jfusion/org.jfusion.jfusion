@@ -475,12 +475,10 @@ class JFusionUser_moodle extends JFusionUser {
             $db = JFusionFactory::getDatabase($this->getJname());
             $params = JFusionFactory::getParams($this->getJname());
             $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
-            //get the default user group and determine if we are using simple or advanced
-            //check to make sure that if using the advanced group mode, $userinfo->group_id exists
             if (empty($usergroups)) {
                 $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('USERGROUP_MISSING');
             } else {
-                $default_group_id = $usergroups[0];
+                $usergroup = $usergroups[0];
                 // get some config items
                 $query = 'SELECT value FROM #__config WHERE  name = \'mnet_localhost_id\'';
                 $db->setQuery($query);
