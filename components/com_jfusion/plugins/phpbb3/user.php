@@ -48,29 +48,32 @@ class JFusionUser_phpbb3 extends JFusionUser
         $result = $db->loadObject();
         if ($result) {
             //prevent anonymous user accessed
-            if ($result->username == 'anonymous'){
-                return null;
-            }
+            if ($result->username == 'anonymous') {
+                $result = null;
+            } else {
+                $result->groups = array($result->group_id);
+                $result->groupnames = array($result->group_name);
 
-            //Check to see if they are banned
-            $query = 'SELECT ban_userid FROM #__banlist WHERE ban_userid =' . (int)$result->userid;
-            $db->setQuery($query);
-            if ($db->loadObject()) {
-                $result->block = 1;
-            } else {
-                $result->block = 0;
-            }
-            //if no inactive reason is set clear the activation code
-            if ($result->user_type == 1) {
-                //user is inactive
-                if (empty($result->activation)) {
-                    //user not active generate a random code
-                    jimport('joomla.user.helper');
-                    $result->activation = JUserHelper::genRandomPassword(13);
+                //Check to see if they are banned
+                $query = 'SELECT ban_userid FROM #__banlist WHERE ban_userid =' . (int)$result->userid;
+                $db->setQuery($query);
+                if ($db->loadObject()) {
+                    $result->block = 1;
+                } else {
+                    $result->block = 0;
                 }
-            } else {
-                //active user, make sure no activation code is set
-                $result->activation = '';
+                //if no inactive reason is set clear the activation code
+                if ($result->user_type == 1) {
+                    //user is inactive
+                    if (empty($result->activation)) {
+                        //user not active generate a random code
+                        jimport('joomla.user.helper');
+                        $result->activation = JUserHelper::genRandomPassword(13);
+                    }
+                } else {
+                    //active user, make sure no activation code is set
+                    $result->activation = '';
+                }
             }
         }
         return $result;
@@ -492,7 +495,7 @@ class JFusionUser_phpbb3 extends JFusionUser
                     }
 
                     //log the group change success
-                    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $usergroup;
+                    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode (' , ', $existinguser->groups) . ' -> ' . $usergroup;
                 }
             }
         }

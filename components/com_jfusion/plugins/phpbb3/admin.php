@@ -605,6 +605,16 @@ if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\'
     /**
      * do plugin support multi usergroups
      *
+     * @return bool
+     */
+    function isMultiGroup()
+    {
+        return false;
+    }
+
+    /**
+     * do plugin support multi usergroups
+     *
      * @return string UNKNOWN or JNO or JYES or ??
      */
     function requireFileAccess()

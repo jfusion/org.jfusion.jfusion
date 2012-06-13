@@ -173,5 +173,13 @@ class JFusionAdmin_elgg extends JFusionAdmin
     function requireFileAccess()
 	{
 		return 'JYES';
-	}    
+	}
+
+    /**
+     * @return bool true if plugin can be master, (this is default)
+     */
+    function canBeMaster()
+    {
+        return false;
+    }
 }

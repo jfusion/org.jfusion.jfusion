@@ -739,6 +739,14 @@ JS;
     }
 
     /**
+     * @return bool true if plugin can be master, (this is default)
+     */
+    function canBeMaster()
+    {
+        return true;
+    }
+
+    /**
      * import function for importing config in to a plugin
      *
      * @param string $name

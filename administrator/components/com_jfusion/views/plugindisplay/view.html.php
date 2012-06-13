@@ -231,7 +231,7 @@ class jfusionViewplugindisplay extends JView {
         }
 
        	//set master options
-      	if($record->status != 1){
+      	if($record->status != 1 || !$JFusionPlugin->canBeMaster()){
           	$record->masterimage = 'components/com_jfusion/images/cross_dim.png';
         	$record->masterscript =  'javascript:void(0)';
            	$record->masteralt =  'unavailable';
@@ -239,7 +239,7 @@ class jfusionViewplugindisplay extends JView {
          	$record->masterimage = 'components/com_jfusion/images/tick.png';
          	$record->masterscript =  "javascript: changesetting('master','0','" .$record->name."');";
            	$record->masteralt =  'enabled';
-      	} else {
+      	} else if ($JFusionPlugin->canBeMaster()) {
           	$record->masterimage = 'components/com_jfusion/images/cross.png';
            	$record->masterscript =  "javascript: changesetting('master','1','" .$record->name."');";
           	$record->masteralt =  'disabled';

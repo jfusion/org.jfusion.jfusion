@@ -64,6 +64,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 				$groups[] = $group->ug_group;
 			}
 			$result->group_id = implode( ',' , $groups );
+            $result->groups = $groups;
 
         	$query = 'SELECT ipb_user, ipb_expiry '.
         			'FROM #__user '.
@@ -280,22 +281,21 @@ class JFusionUser_mediawiki extends JFusionUser {
         if (empty($usergroups)) {
             $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('USERGROUP_MISSING');
         } else {
-            $group = $usergroups[0];
-
             $db = JFusionFactory::getDatabase($this->getJname());
             $query = 'DELETE FROM #__user_groups WHERE ug_user = '.$db->quote($existinguser->userid);
             $db->setQuery($query);
             $db->query();
+            foreach($usergroups as $usergroup) {
+                //prepare the user variables
+                $usergroup = new stdClass;
+                $usergroup->ug_user = $existinguser->userid;
+                $usergroup->ug_group = $usergroup;
 
-            //prepare the user variables
-            $usergroup = new stdClass;
-            $usergroup->ug_user = $existinguser->userid;
-            $usergroup->ug_group = $group;
-
-            if (!$db->insertObject('#__user_groups', $usergroup, 'ug_user' )) {
-                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-            } else {
-                $status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . $existinguser->group_id . ' -> ' . $group;
+                if (!$db->insertObject('#__user_groups', $usergroup, 'ug_user' )) {
+                    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
+                } else {
+                    $status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . implode (' , ', $existinguser->groups) . ' -> ' . $usergroup;
+                }
             }
         }
 	}
@@ -390,8 +390,6 @@ class JFusionUser_mediawiki extends JFusionUser {
         $params = JFusionFactory::getParams($this->getJname());
         $source_path = $params->get('source_path');
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
-        //get the default user group and determine if we are using simple or advanced
-        //check to make sure that if using the advanced group mode, $userinfo->group_id exists
         if (empty($usergroups)) {
             $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('USERGROUP_MISSING');
         } else {
