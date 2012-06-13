@@ -67,7 +67,7 @@
 
         <param name="jfusionbox" type="text" default="" label="USER_OPTIONS"
             description="" />
-        <param name="usergroup" default="" type="JFusionCustomParam"
+        <param name="multiusergroup" default="" type="JFusionCustomParam"
             label="USERGROUP_MANAGEMENT" description="ADVANCED_USERGROUP" />
         <param name="@spacer" type="spacer" default="" label=""
             description="" />

@@ -59,7 +59,7 @@
 
 		<param name="jfusionbox" type="text" default="" label="USER_OPTIONS"
 			description="" />
-		<param name="usergroup" type="JFusionUsergroups" description="DEFAULT_USERGROUP_DESCR"
+		<param name="multiusergroup" type="JFusionUsergroups" description="DEFAULT_USERGROUP_DESCR"
 			label="DEFAULT_USERGROUP" />
 		<param name="activationgroup" type="JFusionUsergroups"
 			description="DEFAULT_ACTIVATIONGROUP" label="DEFAULT_ACTIVATIONGROUP" />

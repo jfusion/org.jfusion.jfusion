@@ -57,6 +57,8 @@ class JFusionController extends JController
         $jname = JRequest::getVar('jname');
         $post = JRequest::getVar('params', array(), 'post', 'array');
         //check to see data was posted
+        $msg = JText::_('WIZARD_FAILURE');
+        $msgType = 'warning';
         if ($jname && $post) {
             //Initialize the forum
             $JFusionPlugin = & JFusionFactory::getAdmin($jname);
@@ -72,28 +74,12 @@ class JFusionController extends JController
                 $db->setQuery($query);
                 $db->query();
 
-                $parameters = & JFusionFactory::getParams($jname);
-                $param2_output = $parameters->render();
-                JError::raiseNotice(0, JText::_('WIZARD_SUCCESS'));
-                $view = & $this->getView('plugineditor', 'html');
-                $view->assignRef('parameters', $param2_output);
-                $view->assignRef('jname', $jname);
-                $view->setLayout('default');
-                $view->display();
-            } else {
-                //load the default XML parameters
-                $parameters = & JFusionFactory::getParams($jname);
-                $param_output = $parameters->render();
-                JError::raiseWarning(500, JText::_('WIZARD_FAILURE'));
-                $view = & $this->getView('plugineditor', 'html');
-                $view->assignRef('parameters', $param_output);
-                $view->setLayout('default');
-                $view->display();
+                $msg = JText::_('WIZARD_SUCCESS');
+                $msgType = 'notice';
             }
+            $this->setRedirect('index.php?option=com_jfusion&task=plugineditor&jname=' . $jname, $msg, $msgType);
         } else {
-            JError::raiseWarning(500, JText::_('WIZARD_FAILURE'));
-            JRequest::setVar('view', 'plugineditor');
-            $this->display();
+            $this->setRedirect('index.php?option=com_jfusion&task=plugindisplay', $msg, $msgType);
         }
     }
     

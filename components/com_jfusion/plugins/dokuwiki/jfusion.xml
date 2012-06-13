@@ -79,7 +79,7 @@
             description="" />
 		<param name="usergroupmap" type="text" size="100" label="USERGROUP_MAP"
             default="user,admin" description="USERGROUP_MAP_DESC" />
-        <param name="usergroup" default="" type="JFusionCustomParam"
+        <param name="multiusergroup" default="" type="JFusionCustomParam"
             label="USERGROUP_MANAGEMENT" description="ADVANCED_USERGROUP" />
         <param name="@spacer" type="spacer" default="" label=""
             description="" />

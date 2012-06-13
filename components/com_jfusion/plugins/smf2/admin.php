@@ -335,11 +335,10 @@ if(!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') === 
 
         return array(true, '');
     }
-    
-	/*
-	 * do plugin support multi usergroups
-	 */
+
     /**
+     * do plugin support multi usergroups
+     *
      * @return bool
      */
     function isMultiGroup()

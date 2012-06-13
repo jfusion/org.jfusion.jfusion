@@ -90,18 +90,8 @@ class JFusionUser_dokuwiki extends JFusionUser {
                 if (JFusionFunction::isAdvancedUsergroupMode($this->getJname()) && $master->name != $this->getJname()) {
                     $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
                     if (!empty($usergroups)) {
-                        $correct_usergroup = explode(',', $usergroups[0]);
-                        $update_group = 0;
-                        foreach ($correct_usergroup as $value) {
-                            foreach ($existinguser->group_id as $value2) {
-                                if (trim($value) == trim($value2)) {
-                                    $update_group++;
-                                    break;
-                                }
-                            }
-                        }
-                        if (count($existinguser->group_id) != $update_group) {
-                            $changes['grps'] = $correct_usergroup;
+                        if (!JFusionFunction::compareUserGroups($existinguser,$usergroups)) {
+                            $changes['grps'] = $usergroups;
                         } else {
                             $status['debug'][] = JText::_('SKIPPED_GROUP_UPDATE') . ':' . JText::_('GROUP_VALID');
                         }
@@ -152,7 +142,21 @@ class JFusionUser_dokuwiki extends JFusionUser {
             $user->username = $username;
             $user->password = $raw_user['pass'];
             $user->email = $raw_user['mail'];
-            $user->group_id = $raw_user['grps'];
+
+            $groups = $raw_user['grps'];
+
+            if (!empty($groups)) {
+                $user->groups = $groups;
+                $user->groupnames = $groups;
+                // Support as master if using old jfusion plugins.
+                $user->group_id = $groups[0];
+                $user->group_name = $groups[0];
+            } else {
+                $user->groups = array();
+                $user->groupnames = array();
+                $user->group_id = null;
+                $user->group_name = null;
+            }
         } else {
             $user = null;
         }
@@ -286,8 +290,6 @@ class JFusionUser_dokuwiki extends JFusionUser {
      */
     function createUser($userinfo, &$status) {
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
-        //get the default user group and determine if we are using simple or advanced
-        //check to make sure that if using the advanced group mode, $userinfo->group_id exists
         if (empty($usergroups)) {
             $status['error'][] = JText::_('ERROR_CREATE_USER') . ": " . JText::_('USERGROUP_MISSING');
         } else {

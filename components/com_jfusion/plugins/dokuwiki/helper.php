@@ -43,8 +43,14 @@ class JFusionHelper_dokuwiki
         $database_type = $params->get('database_type');
         $database_host = $params->get('database_host');
         if ($database_host && $database_type == 'mysql') {
+            if (!class_exists('doku_auth_mysql')) {
+                require_once('auth'.DS.'mysql.class.php');
+            }
             $this->auth = new doku_auth_mysql($this);
         } else {
+            if (!class_exists('doku_auth_plain')) {
+                require_once('auth'.DS.'plain.class.php');
+            }
             $this->auth = new doku_auth_plain($this);
         }
     }
