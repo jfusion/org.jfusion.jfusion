@@ -48,6 +48,20 @@ class JFusionUser_prestashop extends JFusionUser {
         $query = "SELECT id_customer as userid, email, passwd as password, firstname, lastname FROM #__customer WHERE email =" . $db->Quote($identifier) ;
         $db->setQuery($query);
         $result = $db->loadObject();
+
+        if ($result) {
+            $query = "SELECT id_customer as userid, email, passwd as password, firstname, lastname FROM #__customer_group WHERE id_customer =" . $db->Quote($result->userid);
+            $db->setQuery($query);
+            $groups = $db->loadObjectList();
+
+            if ($groups) {
+                foreach($groups as $group) {
+                    $result->group_id = $group->id_group;
+                    $result->groups[] = $result->group_id;
+                }
+            }
+        }
+
         // read through params for cookie key (the salt used)
         return $result;
     }
@@ -474,10 +488,10 @@ class JFusionUser_prestashop extends JFusionUser {
                 $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
             } else {
                 foreach($usergroups as $value) {
-                    $ps_customer_group = new stdClass;
-                    $ps_customer_group->id_customer = $ps_customer->id_customer;
-                    $ps_customer_group->id_group = $value;
-                    if (!$db->insertObject('#__customer_group', $ps_customer_group)) {
+                    $group = new stdClass;
+                    $group->id_customer = $existinguser->userid;
+                    $group->id_group = $value;
+                    if (!$db->insertObject('#__customer_group', $group)) {
                         $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
                     } else {
                         $status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . implode (' , ', $existinguser->groups) . ' -> ' . implode (' , ', $usergroups);

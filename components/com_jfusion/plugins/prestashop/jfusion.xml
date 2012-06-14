@@ -58,7 +58,7 @@
             description="" />
         <param name="username_filter" type="JFusionPlugins" label="USERNAME_FILTER"
             default="" description="USERNAME_FILTER_DESCR" />
-        <param name="usergroup" default="" type="JFusionCustomParam"
+        <param name="multiusergroup" default="" type="JFusionCustomParam"
             label="USERGROUP_MANAGEMENT" description="ADVANCED_USERGROUP" />
         <param name="@spacer" type="spacer" default="" label=""
             description="" />
