@@ -553,7 +553,7 @@ class JFusionUser_wordpress extends JFusionUser {
 		// now delete the user
 		$query = 'DELETE FROM #__users WHERE ID = ' . $user_id;
 		$db->setQuery($query);
-		if(!$db->query()){
+		if (!$db->query()) {
 			$status['error'][] = "Error Could not delete userrecord with userid $user_id: {$db->stderr()}";
 		} else {
 			$status["debug"][] = "Deleted userrecord of user with userid $user_id.";
@@ -595,5 +595,4 @@ class JFusionUser_wordpress extends JFusionUser {
             }
         }
 	}
-
 }
