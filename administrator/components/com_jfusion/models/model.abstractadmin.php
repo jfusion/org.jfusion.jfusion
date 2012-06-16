@@ -538,8 +538,7 @@ JS;
             $new = new stdClass;
             if ($master_usergroups) {
                 foreach ($master_usergroups as $master_usergroup) {
-                    $key = $master_usergroup->id;
-                    $new->$key = $master_usergroup->name;
+                    $new->{$master_usergroup->id} = $master_usergroup->name;
                 }
             }
             $master_usergroups = $new;
@@ -547,8 +546,7 @@ JS;
             $new = new stdClass;
             if ($master_usergroups) {
                 foreach ($usergroups as $usergroup) {
-                    $key = $usergroup->id;
-                    $new->$key = $usergroup->name;
+                    $new->{$usergroup->id} = $usergroup->name;
                 }
             }
             $usergroups = $new;
@@ -575,7 +573,7 @@ JS;
 	            $('JFusionUsergroup').innerHTML = myArray[option];
 
 	            var addgroupset = $('addgroupset');
-	            if (option== 1) {
+	            if (option == 1) {
 	            	addgroupset.style.display = 'block';
 	            } else {
 	            	addgroupset.style.display = 'none';
@@ -634,7 +632,7 @@ JS;
 	        	var groups = jfPlugin[name]['groups'];
 
 				var elSelNew = document.createElement('select');
-				if (type=='multi') {
+				if (type == 'multi') {
 					elSelNew.size=10;
 					elSelNew.multiple='multiple';
 				}

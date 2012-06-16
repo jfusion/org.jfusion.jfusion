@@ -80,16 +80,17 @@ class JFusionMySQLi extends JDatabaseMySQLi
             mysqli_rollback($this->connection);
         }
     }
-    
+
     /**
      * added execute query as Joomla 1.6 has removed this function
      *
      * @param string $query
      *
+     * @return object|void
      */
     function Execute($query)
     {
     	$this->setQuery($query);
         $this->query();
-    }    
+    }
 }

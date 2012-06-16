@@ -42,12 +42,13 @@ class JFusionMySQL extends JDatabaseMySQL
     public function __construct($options){
         parent::__construct($options);
     }
-    
+
     /**
      * added execute query as Joomla 1.6 has removed functions
      *
      * @param string $query
-     */        
+     * @return object|void
+     */
     function Execute($query)
     {
     	$this->setQuery($query);

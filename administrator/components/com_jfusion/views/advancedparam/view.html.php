@@ -288,7 +288,7 @@ JS;
         $rows = array_merge(array($noSelected), $rows);
         $attributes = array("size" => "1", "class" => "inputbox");
         $output = JHTML::_('select.genericlist', $rows, 'jfusionplugin', $attributes, 'id', 'name');
-        $output.= '&nbsp;<input type="button" value="add" name="add" onclick="jPluginAdd(this);" />';
+        $output.= ' <input type="button" value="add" name="add" onclick="jPluginAdd(this);" />';
         $configLink = '';
         if (isset($this->configArray[$config])) {
             $configLink = '&configfile=' . $config;
