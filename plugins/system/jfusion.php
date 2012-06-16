@@ -138,7 +138,7 @@ class plgSystemJfusion extends JPlugin
              */
             $synclanguage = $this->params->get('synclanguage');
             if (!empty($synclanguage)) {
-                $this->setLanguagePluginsFrontend();
+                self::setLanguagePluginsFrontend();
             }
 
             //stop output buffer
@@ -167,7 +167,7 @@ class plgSystemJfusion extends JPlugin
     /**
      * Can be invoked from components, modules or else
      */
-    function setLanguagePluginsFrontend() {
+    public static function setLanguagePluginsFrontend() {
 		$JLang = JFactory::getLanguage ();
 		$session = JFactory::getSession ();
 		$oldlang = $session->get ( 'oldlang' );
@@ -190,7 +190,7 @@ class plgSystemJfusion extends JPlugin
 			$slaves = JFusionFunction::getSlaves ();
 			foreach ( $slaves as $slave ) {
 				$JFusionSlavePublic = & JFusionFactory::getPublic ( $slave->name );
-				if (method_exists ( $JFusionSlavePublic, 'setLanguageFrontEnd' )) {
+				if (method_exists( $JFusionSlavePublic, 'setLanguageFrontEnd' )) {
 					$status = $JFusionSlavePublic->setLanguageFrontEnd ( $userinfo );
 					if (! empty ( $status ['error'] )) {
 						//could not set the language

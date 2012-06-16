@@ -265,17 +265,18 @@ class JFusionAdmin_universal extends JFusionAdmin{
                         } else {
                             $fieldstype = '';
                         }
+                        $fieldsvaluearray = array();
+                        $fieldsvalue = '';
                         if ( isset($value['value'][$val->Field]) ) {
                             $fieldsvalue = $value['value'][$val->Field];
                             if (is_array($fieldsvalue)) {
-                                foreach ($fieldsvalue as $key2 => $val2) {
-                                    $fieldsvalue[$key2] = htmlentities($val2);
+                                $fieldsvaluearray = (array)$fieldsvalue;
+                                foreach ($fieldsvaluearray as &$val2) {
+                                    $val2 = htmlentities($val2);
                                 }
                             } else {
                                 $fieldsvalue = htmlentities($fieldsvalue);
                             }
-                        } else {
-                            $fieldsvalue = '';
                         }
 
                         $onchange = 'onchange="javascript: changefield(this,\''.$val->Field.'\',\''.$type.'\')"';
@@ -299,7 +300,7 @@ class JFusionAdmin_universal extends JFusionAdmin{
                                 $output .= '<input type="text" id="'.$control_name.$name.$type.'value'.$val->Field.'" name="'.$control_name.'['.$name.']['.$type.'][value]['.$val->Field.']" value="'.$fieldsvalue.'" size="100" class="inputbox" />';
                                 break;
                             case 'ONOFF':
-                                foreach ($fieldsvalue as $key2 => $val2) {
+                                foreach ($fieldsvaluearray as $key2 => $val2) {
                                     $output .= '<input type="text" id="'.$control_name.$name.$type.'value'.$val->Field.$key2.'" name="'.$control_name.'['.$name.']['.$type.'][value]['.$val->Field.']['.$key2.']" value="'.$val2.'" size="40" class="inputbox" />';
                                 }
                                 break;

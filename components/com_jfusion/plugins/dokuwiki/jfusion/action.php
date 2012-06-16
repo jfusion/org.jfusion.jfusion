@@ -33,7 +33,7 @@ class action_plugin_jfusion extends DokuWiki_Action_Plugin {
 	var $session_save_handler = '';
 
     /**
-     * @param $controller
+     * @param Doku_Event_Handler $controller
      */
     function register(&$controller) {
        $controller->register_hook('AUTH_LOGIN_CHECK', 'BEFORE', $this, 'jfusion_login');

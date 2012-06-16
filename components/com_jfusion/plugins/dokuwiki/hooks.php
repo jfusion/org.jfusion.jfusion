@@ -34,7 +34,7 @@ class JFusionDokuWikiHook {
      *
      * show off @method
      *
-     * @param object &$controller
+     * @param Doku_Event_Handler &$controller
      */
     function register(&$controller) {
         $controller->register_hook('ACTION_SHOW_REDIRECT', 'BEFORE', $this, '_ACTION_SHOW_REDIRECT');

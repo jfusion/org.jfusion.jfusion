@@ -144,6 +144,7 @@ class JFusionHelper_phpbb3
      * needed to parse the bbcode for phpbb
      *
      * @param string &$text
+     * @return stdClass
      */
     function bbcode_parser(&$text) {
         $this->warn_msg = array();
@@ -188,6 +189,10 @@ class JFusionHelper_phpbb3
         $bbcode->bbcodes = $this->bbcodes;
         return $bbcode;
     }
+
+    /**
+     * @param string &$text
+     */
     function parse_smilies(&$text) {
         static $smilie_match, $smilie_replace;
         if (!is_array($smilie_match)) {
@@ -202,6 +207,10 @@ class JFusionHelper_phpbb3
         }
         $text = trim(preg_replace(explode(chr(0), '#' . implode('#' . chr(0) . '#', $smilie_match) . '#'), $smilie_replace, $text));
     }
+
+    /**
+     * @param string &$text
+     */
     function parse_bbcode(&$text) {
         if (!is_array($this->bbcodes)) {
             $this->bbcodes = array('code' => array('bbcode_id' => 8, 'regexp' => array('#\[code(?:=([a-z]+))?\](.+\[/code\])#ise' => "\$this->bbcode_code('\$1', '\$2')")), 'quote' => array('bbcode_id' => 0, 'regexp' => array('#\[quote(?:=&quot;(.*?)&quot;)?\](.+)\[/quote\]#ise' => "\$this->bbcode_quote('\$0')")), 'attachment' => array('bbcode_id' => 12, 'regexp' => array('#\[attachment=([0-9]+)\](.*?)\[/attachment\]#ise' => "\$this->bbcode_attachment('\$1', '\$2')")), 'b' => array('bbcode_id' => 1, 'regexp' => array('#\[b\](.*?)\[/b\]#ise' => "\$this->bbcode_strong('\$1')")), 'i' => array('bbcode_id' => 2, 'regexp' => array('#\[i\](.*?)\[/i\]#ise' => "\$this->bbcode_italic('\$1')")), 'url' => array('bbcode_id' => 3, 'regexp' => array('#\[url(=(.*))?\](.*)\[/url\]#iUe' => "\$this->validate_url('\$2', '\$3')")), 'img' => array('bbcode_id' => 4, 'regexp' => array('#\[img\](.*)\[/img\]#iUe' => "\$this->bbcode_img('\$1')")), 'size' => array('bbcode_id' => 5, 'regexp' => array('#\[size=([\-\+]?\d+)\](.*?)\[/size\]#ise' => "\$this->bbcode_size('\$1', '\$2')")), 'color' => array('bbcode_id' => 6, 'regexp' => array('!\[color=(#[0-9a-f]{6}|[a-z\-]+)\](.*?)\[/color\]!ise' => "\$this->bbcode_color('\$1', '\$2')")), 'u' => array('bbcode_id' => 7, 'regexp' => array('#\[u\](.*?)\[/u\]#ise' => "\$this->bbcode_underline('\$1')")), 'list' => array('bbcode_id' => 9, 'regexp' => array('#\[list(?:=(?:[a-z0-9]|disc|circle|square))?].*\[/list]#ise' => "\$this->bbcode_parse_list('\$0')")), 'email' => array('bbcode_id' => 10, 'regexp' => array('#\[email=?(.*?)?\](.*?)\[/email\]#ise' => "\$this->validate_email('\$1', '\$2')")), 'flash' => array('bbcode_id' => 11, 'regexp' => array('#\[flash=([0-9]+),([0-9]+)\](.*?)\[/flash\]#ie' => "\$this->bbcode_flash('\$1', '\$2', '\$3')")));
