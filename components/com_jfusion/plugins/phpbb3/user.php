@@ -329,11 +329,12 @@ class JFusionUser_phpbb3 extends JFusionUser
      * @return string
      */
     function filterUsername($username) {
-        if (!function_exists('utf8_clean_string_phpbb')) {
-            //load the filtering functions for phpBB3
-            require_once JFUSION_PLUGIN_PATH . DS . $this->GetJname() . DS . 'username_clean.php';
-        }
-        $username_clean = utf8_clean_string_phpbb($username);
+        /**
+         * @ignore
+         * @var $helper JFusionHelper_phpbb3
+         */
+        $helper = JFusionFactory::getHelper($this->getJname());
+        $username_clean = $helper->utf8_clean_string($username);
         //die($username . ':' . $username_clean);
         return $username_clean;
     }
@@ -344,13 +345,13 @@ class JFusionUser_phpbb3 extends JFusionUser
      * @param array $status
      */
     function updatePassword($userinfo, &$existinguser, &$status) {
-        // get the encryption PHP file
-        if (!class_exists('PasswordHash')) {
-            require_once JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'PasswordHash.php';
-        }
-        $t_hasher = new PasswordHash(8, true);
-        $existinguser->password = $t_hasher->HashPassword($userinfo->password_clear);
-        unset($t_hasher);
+        /**
+         * @ignore
+         * @var $auth JFusionAuth_phpbb3
+         */
+        $auth = JFusionFactory::getAuth($this->getJname());
+        $existinguser->password = $auth->HashPassword($userinfo->password_clear);
+
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'UPDATE #__users SET user_password =' . $db->Quote($existinguser->password) . ', user_pass_convert = 0 WHERE user_id =' . (int)$existinguser->userid;
         $db->setQuery($query);
@@ -596,11 +597,12 @@ class JFusionUser_phpbb3 extends JFusionUser
                 $user->username = $userinfo->username;
                 $user->username_clean = $username_clean;
                 if (isset($userinfo->password_clear)) {
-                    //we can update the password
-                    require_once JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'PasswordHash.php';
-                    $t_hasher = new PasswordHash(8, true);
-                    $user->user_password = $t_hasher->HashPassword($userinfo->password_clear);
-                    unset($t_hasher);
+                    /**
+                     * @ignore
+                     * @var $auth JFusionAuth_phpbb3
+                     */
+                    $auth = JFusionFactory::getAuth($this->getJname());
+                    $user->user_password = $auth->HashPassword($userinfo->password_clear);
                 } else {
                     $user->user_password = $userinfo->password;
                 }

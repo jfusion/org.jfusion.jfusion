@@ -196,6 +196,5 @@
 		<param name="input_username_id" type="text" size="60" label="" default="user" description="CURL_INPUT_USERNAME_ID" />
 		<param name="input_password_id" type="text" size="60" label="" default="passwrd" description="CURL_INPUT_PASSWORD_ID" />
 		<param name="logout_url" type="text" size="60" label="" default="index.php?action=logout" description="CURL_LOGOUT_URL" />
-
 	</params>
 </install>

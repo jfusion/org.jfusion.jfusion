@@ -10,6 +10,7 @@
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<version>1.8.0-000</version>
 	<description>PrestaShop plugin for JFusion</description>
+    <master>0</master>
 	<slave>0</slave>
 	<dual_login>0</dual_login>
 	<search>1</search>
@@ -26,76 +27,49 @@
 	</files>
 	
 	<params addpath="/administrator/components/com_jfusion/elements">
-		<param name="jfusionbox" type="text" default=""
-			label="PLUGIN_GENERAL_DETAILS" description="" />
-        <param name="description" type="text" size="60" label="DESCRIPTION"
-            default="Presta Shop" description="DESCRIPTION_DESC" />
-        <param name="source_url" type="text" size="60" label="SOURCE_URL"
-            default="http://www.yourdomain.com/prestashop/" description="SOURCE_URL_DESC" />
-        <param name="source_path" type="text" size="60" label="SOURCE_PATH"
-            default="" description="SOURCE_PATH_DESC" />
-		<param name="    " type="helptext"
-			default="In order to disable registration in PrestaShop you must modify a core file currently to add a piece of code to disable it. The code extract and instructions can be found on the JFusion website" label=""/>
+		<param name="jfusionbox" type="text" default="" label="PLUGIN_GENERAL_DETAILS" description="" />
+        <param name="description" type="text" size="60" label="DESCRIPTION" default="Presta Shop" description="DESCRIPTION_DESC" />
+        <param name="source_url" type="text" size="60" label="SOURCE_URL" default="http://www.yourdomain.com/prestashop/" description="SOURCE_URL_DESC" />
+        <param name="source_path" type="text" size="60" label="SOURCE_PATH" default="" description="SOURCE_PATH_DESC" />
+		<param name="    " type="helptext" default="In order to disable registration in PrestaShop you must modify a core file currently to add a piece of code to disable it. The code extract and instructions can be found on the JFusion website" label=""/>
 
-        <param name="jfusionbox" type="text" default="" label="DATABASE_OPTIONS"
-            description="" />
-        <param name="database_type" type="text" size="20" label="DATABASE_TYPE"
-            default="mysql" description="DATABASE_TYPE_DESC" />
-        <param name="database_host" type="text" size="20" label="DATABASE_HOST"
-            default="" description="DATABASE_HOST_DESC" />
-        <param name="database_name" type="text" size="20" label="DATABASE_NAME"
-            default="" description="DATABASE_NAME_DESC" />
-        <param name="database_user" type="text" size="20" label="DATABASE_USER"
-            default="" description="DATABASE_USER_DESC" />
-        <param name="database_password" type="password" size="20"
-            label="DATABASE_PASSWORD" default="" description="DATABASE_PASSWORD_DESC" />
-        <param name="database_prefix" type="text" size="20" label="DATABASE_PREFIX"
-            default="" description="DATABASE_PREFIX_DESC" />
-        <param name="database_charset" type="text" size="20"
-            label="DATABASE_CHARSET" default="utf8" description="DATABASE_CHARSET_DESC" />
+        <param name="jfusionbox" type="text" default="" label="DATABASE_OPTIONS" description="" />
+        <param name="database_type" type="text" size="20" label="DATABASE_TYPE" default="mysql" description="DATABASE_TYPE_DESC" />
+        <param name="database_host" type="text" size="20" label="DATABASE_HOST" default="" description="DATABASE_HOST_DESC" />
+        <param name="database_name" type="text" size="20" label="DATABASE_NAME" default="" description="DATABASE_NAME_DESC" />
+        <param name="database_user" type="text" size="20" label="DATABASE_USER" default="" description="DATABASE_USER_DESC" />
+        <param name="database_password" type="password" size="20" label="DATABASE_PASSWORD" default="" description="DATABASE_PASSWORD_DESC" />
+        <param name="database_prefix" type="text" size="20" label="DATABASE_PREFIX" default="" description="DATABASE_PREFIX_DESC" />
+        <param name="database_charset" type="text" size="20" label="DATABASE_CHARSET" default="utf8" description="DATABASE_CHARSET_DESC" />
 
-        <param name="jfusionbox" type="text" default="" label="USER_OPTIONS"
-            description="" />
-        <param name="username_filter" type="JFusionPlugins" label="USERNAME_FILTER"
-            default="" description="USERNAME_FILTER_DESCR" />
-        <param name="multiusergroup" default="" type="JFusionCustomParam"
-            label="USERGROUP_MANAGEMENT" description="ADVANCED_USERGROUP" />
-        <param name="@spacer" type="spacer" default="" label=""
-            description="" />
-        <param name="update_activation" type="list" default="1"
-            label="UPDATE_ACTIVATION" description="UPDATE_ACTIVATION_DESC">
+        <param name="jfusionbox" type="text" default="" label="USER_OPTIONS" description="" />
+        <param name="username_filter" type="JFusionPlugins" label="USERNAME_FILTER" default="" description="USERNAME_FILTER_DESCR" />
+        <param name="multiusergroup" default="" type="JFusionCustomParam" label="USERGROUP_MANAGEMENT" description="ADVANCED_USERGROUP" />
+        <param name="@spacer" type="spacer" default="" label="" description="" />
+        <param name="update_activation" type="list" default="1" label="UPDATE_ACTIVATION" description="UPDATE_ACTIVATION_DESC">
             <option value="1">JYES</option>
             <option value="0">JNO</option>
         </param>
-        <param name="update_email" type="list" default="1" label="UPDATE_EMAIL"
-            description="UPDATE_EMAIL_DESC">
+        <param name="update_email" type="list" default="1" label="UPDATE_EMAIL" description="UPDATE_EMAIL_DESC">
             <option value="1">JYES</option>
             <option value="0">JNO</option>
         </param>
-        <param name="update_block" type="list" default="1" label="UPDATE_BLOCK"
-            description="UPDATE_BLOCK_DESC">
+        <param name="update_block" type="list" default="1" label="UPDATE_BLOCK" description="UPDATE_BLOCK_DESC">
             <option value="1">JYES</option>
             <option value="0">JNO</option>
         </param>
-        <param name="create_inactive" type="list" default="1"
-            label="CREATE_INACTIVE" description="CREATE_INACTIVE_DESC">
+        <param name="create_inactive" type="list" default="1" label="CREATE_INACTIVE" description="CREATE_INACTIVE_DESC">
             <option value="1">JYES</option>
             <option value="0">JNO</option>
         </param>
-        <param name="create_blocked" type="list" default="1"
-            label="CREATE_BLOCKED" description="CREATE_BLOCKED_DESC">
+        <param name="create_blocked" type="list" default="1" label="CREATE_BLOCKED" description="CREATE_BLOCKED_DESC">
             <option value="1">JYES</option>
             <option value="0">JNO</option>
         </param>
-        <param name="@spacer" type="spacer" default="" label=""
-            description="" />
-        <param name="jfusionbox" type="text" default=""
-            label="CURL_OPTIONS_COOKIE" description="" />
-        <param name="cookie_domain" type="text" size="60"
-            label="CURL_COOKIE_DOMAIN" default="" description="CURL_COOKIE_DOMAIN_DESC" />
-        <param name="cookie_path" type="text" size="60" label="CURL_COOKIE_PATH"
-            default="" description="CURL_COOKIE_PATH_DESC" />
-		<param name="cookie_key" type="text" size="20"
-			default="Needed or login will not work" description="COOKIE_KEY" label=""/>
+        <param name="@spacer" type="spacer" default="" label="" description="" />
+        <param name="jfusionbox" type="text" default="" label="CURL_OPTIONS_COOKIE" description="" />
+        <param name="cookie_domain" type="text" size="60" label="CURL_COOKIE_DOMAIN" default="" description="CURL_COOKIE_DOMAIN_DESC" />
+        <param name="cookie_path" type="text" size="60" label="CURL_COOKIE_PATH" default="" description="CURL_COOKIE_PATH_DESC" />
+		<param name="cookie_key" type="text" size="20" default="Needed or login will not work" description="COOKIE_KEY" label=""/>
 	</params>
 </install>
