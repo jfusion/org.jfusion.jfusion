@@ -124,7 +124,7 @@ class JFusionHelper_phpbb3
         $utf8_advanced = $params->get('utf8_advanced');
         if ($utf8_advanced == 'enabled') {
             if (!class_exists('utf_normalizer_phpbb')) {
-                require_once JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'utf_normalizer.php';
+                require_once JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'utf' . DS . 'utf_normalizer.php';
             }
             utf_normalizer_phpbb::nfkc($text);
         }

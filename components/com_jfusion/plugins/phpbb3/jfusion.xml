@@ -29,7 +29,6 @@
 		<filename>search.xml</filename>
 		<filename>user.php</filename>
 		<filename>helper.php</filename>
-		<filename>utf_normalizer.php</filename>
 		<folder>utf</folder>
 	</files>
 	
