@@ -181,7 +181,6 @@ class JFusionUser_phpbb3 extends JFusionUser
                         define('', $source_path);
                     }
 
-
                     $phpbb_root_path = $source_path;
                     $phpEx = "php";
 

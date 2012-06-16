@@ -62,6 +62,13 @@ class JFusionAuth_phpbb3 extends JFusionAuth
      * @return string
      */
     function generateEncryptedPassword($userinfo) {
+        /**
+         * @ignore
+         * @var $helper JFusionHelper_phpbb3
+         */
+        $helper = JFusionFactory::getHelper($this->getJname());
+        $userinfo->password_clear = $helper->clean_string($userinfo->password_clear);
+
         $check = $this->CheckPassword($userinfo->password_clear, $userinfo->password);
 
         if ($check) {
@@ -379,6 +386,13 @@ class JFusionAuth_phpbb3 extends JFusionAuth
      * @return string
      */
     function HashPassword($password) {
+        /**
+         * @ignore
+         * @var $helper JFusionHelper_phpbb3
+         */
+        $helper = JFusionFactory::getHelper($this->getJname());
+        $password = $helper->clean_string($password);
+
         $random = '';
         if (CRYPT_BLOWFISH == 1 && !$this->portable_hashes) {
             $random = $this->get_random_bytes(16);

@@ -51,7 +51,33 @@ class JFusionHelper_phpbb3
         return 'phpbb3';
     }
 
+    /**
+     * This function is to emulate phpbb set_var used needed to propear encode "clean" password, and other variables.
+     *
+     * @param $var
+     * @return string
+     */
+    function clean_string($var)
+    {
+        $var = trim(htmlspecialchars(str_replace(array("\r\n", "\r", "\0"), array("\n", "\n", ''), $var), ENT_COMPAT, 'UTF-8'));
 
+        if (!empty($var)) {
+            // Make sure multibyte characters are wellformed
+            if (!preg_match('/^./u', $var)) {
+                $var = '';
+            }
+        }
+
+        // Register globals and magic quotes have been dropped in PHP 5.4
+        if (version_compare(PHP_VERSION, '5.4.0-dev', '>=')) {
+            $strip = false;
+        } else {
+            @set_magic_quotes_runtime(0);
+            $strip = (get_magic_quotes_gpc()) ? true : false;
+        }
+        $var = ($strip) ? stripslashes($var) : $var;
+        return $var;
+    }
     /**
      * This function is used to generate a "clean" version of a string.
      * Clean means that it is a case insensitive form (case folding) and that it is normalized (NFC).
