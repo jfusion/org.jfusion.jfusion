@@ -10,8 +10,9 @@
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<version>1.8.0-000</version>
 	<description>myBB 1.4.0</description>
-	<slave>3</slave>
-	<dual_login>3</dual_login>
+    <master>0</master>
+	<slave>0</slave>
+	<dual_login>0</dual_login>
 
 	<files>
 		<filename>admin.php</filename>
