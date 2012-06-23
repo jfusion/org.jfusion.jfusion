@@ -70,7 +70,7 @@
 			<menu img="components/com_jfusion/images/user.png" link="option=com_jfusion&amp;task=syncoptions">NEW_USERSYNC</menu>
 			<menu img="components/com_jfusion/images/user.png" link="option=com_jfusion&amp;task=synchistory">USERSYNC_HISTORY</menu>
 			<menu img="components/com_jfusion/images/disconnect.png" link="option=com_jfusion&amp;task=loginchecker">LOGIN_CHECKER</menu>
-			<menu img="components/com_jfusion/images/configdump.png" link="option=com_jfusion&amp;task=configdump">CP_CONFIG_DUMP</menu>
+			<menu img="components/com_jfusion/images/configdump.png" link="option=com_jfusion&amp;task=configdump">CONFIG_DUMP</menu>
 			<menu img="components/com_jfusion/images/version.png" link="option=com_jfusion&amp;task=versioncheck">VERSIONS</menu>
 		</submenu>
 

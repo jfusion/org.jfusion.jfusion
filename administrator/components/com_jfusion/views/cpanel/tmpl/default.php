@@ -65,20 +65,20 @@ JFusionFunctionAdmin::displayDonate();
 			    </div>
 			    <div style="float:left;">
 			            <div class="icon">
-			                <a href="index.php?option=com_jfusion&task=versioncheck" >
-			                <img src="components/com_jfusion/images/versioncheck.png" height="50px" width="50px">
-			                <span><?php echo JText::_('VERSION_CHECK'); ?></span>
+			                <a href="index.php?option=com_jfusion&task=configdump" >
+			                <img src="components/com_jfusion/images/configdump_big.png" height="50px" width="50px">
+			                <span><?php echo JText::_('CONFIG_DUMP'); ?></span>
 			                </a>
 			            </div>
 			    </div>
-			    <div style="float:left;">
-			            <div class="icon">
-			                <a href="index.php?option=com_jfusion&task=configdump" >
-			                <img src="components/com_jfusion/images/configdump_big.png" height="50px" width="50px">
-			                <span><?php echo JText::_('CP_CONFIG_DUMP'); ?></span>
-			                </a>
-			            </div>
-			    </div>    
+                <div style="float:left;">
+                    <div class="icon">
+                        <a href="index.php?option=com_jfusion&task=versioncheck" >
+                            <img src="components/com_jfusion/images/versioncheck.png" height="50px" width="50px">
+                            <span><?php echo JText::_('VERSION_CHECK'); ?></span>
+                        </a>
+                    </div>
+                </div>
 			    <div style="float:left;">
 			            <div class="icon">
 			                <a href="http://support.jfusion.org" >

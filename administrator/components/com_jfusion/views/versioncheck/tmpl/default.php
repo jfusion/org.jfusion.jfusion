@@ -140,7 +140,7 @@ if ($this->server_compatible) {
 				</td>
 				<td>
 					<?php echo $component->oldversion;
-					if ($component->rev) echo ' Rev(' . $component->rev.')';
+					if ($component->rev) echo ' Rev( ' . $component->rev.' )';
 					?>
 				</td>
 				<td>

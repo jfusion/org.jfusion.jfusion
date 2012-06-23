@@ -214,7 +214,7 @@ class jfusionViewversioncheck extends JView
     		}
             $revision = $parser->document->getElementByPath('revision');
     		if ($name == JText::_('COMPONENT') && !empty($revision)) {
-    			$output->rev = $revision->data();
+    			$output->rev = trim($revision->data());
     		}
 			$output->version = $version; 
     	} else {

@@ -73,7 +73,7 @@ class JFusionHelper
 		);
 		
 		JSubMenuHelper::addEntry(
-				JText::_('CP_CONFIG_DUMP'),
+				JText::_('CONFIG_DUMP'),
 				'index.php?option=com_jfusion&task=configdump',
 				$vName == 'configdump'
 		);
