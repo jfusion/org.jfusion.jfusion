@@ -712,46 +712,51 @@ class JFusionAPI_User extends JFusionAPIBase {
 	public function executeRegister()
 	{
 		if ( $this->payload ) {
-			$mainframe = $this->startJoomla();
+            if ( isset($this->payload['userinfo']) && get_class($this->payload['userinfo']) == 'stdClass') {
+                $mainframe = $this->startJoomla();
 
-			$acl = JFactory::getACL();
-			jimport('joomla.application.component.helper'); // include libraries/application/component/helper.php
-			$usersParams = &JComponentHelper::getParams( 'com_users' ); // load the Params			
-			
-			// get the default usertype
-			$usertype = $usersParams->get( 'new_usertype' );
-			if (!$usertype) {
-			    $usertype = 'Registered';
-			}
-			
-			$user = JFactory::getUser(0);
+                $updateinfo = $this->payload['userinfo'];
 
-			$data = $this->payload;
-			
-			$data['gid'] = $acl->get_group_id( '', $usertype, 'ARO' );			
-			
-//			$data['password'] = $password; // set the password
-			$data['password2'] = $data['password']; // confirm the password
-			$data['sendEmail'] = 1; // should the user receive system mails?
-			 
-			/* Now we can decide, if the user will need an activation */
-			 
-			$useractivation = $usersParams->get( 'useractivation' ); // in this example, we load the config-setting
-			if ($useractivation == 1) { // yeah we want an activation
-			    jimport('joomla.user.helper'); // include libraries/user/helper.php
-			    $data['block'] = 1; // block the User
-			    $data['activation'] = JUtility::getHash( JUserHelper::genRandomPassword()); // set activation hash (don't forget to send an activation email)
-			}
-			else { // no we need no activation
-			    $data['block'] = 0; // don't block the user
-			}
-			
-			if (!$user->bind($data)) { // now bind the data to the JUser Object, if it not works....
-				$this->error[] = JText::_($user->getError());
-			}
-			if (!$user->save()) { // if the user is NOT saved...
-				$this->error[] = JText::_($user->getError());			 
-			}
+                if (isset($this->payload['overwrite']) && $this->payload['overwrite']) {
+                    $overwrite = 1;
+                } else {
+                    $overwrite = 0;
+                }
+
+                $plugins = JFusionFunction::getSlaves();
+                $plugins[] = JFusionFunction::getMaster();
+
+                // TODO: Determin if this can be removed ?
+                if ( isset($this->payload['plugin']) ) {
+                    foreach ($plugins as $key => $plugin) {
+                        if ($plugin->name == $this->payload['plugin']) {
+                            unset($plugins[$key]);
+                        }
+                    }
+                }
+
+                foreach ($plugins as $plugin) {
+                    $PluginUserUpdate = &JFusionFactory::getUser($plugin->name);
+
+                    $existinguser = $PluginUserUpdate->getUser($updateinfo);
+
+                    if(!$existinguser) {
+                        $status = array('error' => array(),'debug' => array());
+                        $PluginUserUpdate->createUser($updateinfo,$status);
+
+                        foreach ($status['error'] as $error) {
+                            $this->error[][$plugin->name] = $error;
+                        }
+                        foreach ($status['debug'] as $debug) {
+                            $this->debug[][$plugin->name] = $debug;
+                        }
+                    } else {
+                        $this->error[][$plugin->name] = 'user already exsists';
+                    }
+                }
+            } else {
+                $this->error[] = 'invalid payload';
+            }
 		} else {
 			$this->error[] = 'invalid payload';
 		}
