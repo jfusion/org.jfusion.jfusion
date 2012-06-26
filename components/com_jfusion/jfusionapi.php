@@ -544,6 +544,19 @@ class JFusionAPIBase {
 		error_reporting($old);
 	    return $mainframe;
 	}
+
+    protected function doExit($url = null) {
+        if ($url && isset($_GET['jfreturn'])) {
+            $url .= '&jfreturn='.$_GET['jfreturn'];
+        } else if (isset($_GET['jfreturn'])) {
+            $url = base64_decode($_GET['jfreturn']);
+        }
+
+        if ( $url ) {
+            header('Location: '.$url);
+        }
+        exit();
+    }
 }
 
 /**
@@ -662,10 +675,7 @@ class JFusionAPI_User extends JFusionAPIBase {
 		        }
 	        }
 		}
-		if (isset($_GET['jfreturn'])) {
-            header('Location: '.base64_decode($_GET['jfreturn']));
-		}
-		exit();
+        $this->doExit();
 	}
 	
 	public function executeLogout()
@@ -703,10 +713,7 @@ class JFusionAPI_User extends JFusionAPIBase {
 	        //add a variable to ensure refresh
 	        $link = $uri->toString();
 		}
-		if (isset($_GET['jfreturn'])) {
-            header('Location: '.base64_decode($_GET['jfreturn']));
-		}
-		exit();
+        $this->doExit();
 	}
 	
 	public function executeRegister()
@@ -878,12 +885,10 @@ class JFusionAPI_Cookie extends JFusionAPIBase {
 	
 					$this->payload = $this->buildPayload($this->payload);
 	
-					header('Location: '.$key.'?jfpayload='.$this->payload.'&PHPSESSID='.$value.'&jftype=execute&jfclass=cookie&jftask=cookies&jfreturn='.$_GET['jfreturn']);				
-					exit;
+                    $this->doExit($key.'?jfpayload='.$this->payload.'&PHPSESSID='.$value.'&jftype=execute&jfclass=cookie&jftask=cookies');
 				}
 			} else {
-				header('Location: '.base64_decode($_GET['jfreturn']));
-				exit;
+                $this->doExit();
 			}
 		}
 		exit;
