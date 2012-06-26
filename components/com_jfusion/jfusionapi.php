@@ -545,6 +545,9 @@ class JFusionAPIBase {
 	    return $mainframe;
 	}
 
+    /**
+     * @param string|null $url Url of where to redirect to
+     */
     protected function doExit($url = null) {
         if ($url && isset($_GET['jfreturn'])) {
             $url .= '&jfreturn='.$_GET['jfreturn'];
@@ -660,7 +663,11 @@ class JFusionAPI_User extends JFusionAPIBase {
 		        //if we are not frameless, then we need to manually update the session data as on some servers, this data is getting corrupted
 		        //by php's session_write_close and thus the user is not logged into Joomla.  php bug?
 		        if (!defined('IN_JOOMLA')) {
-		            $session_table = & JTable::getInstance('session');
+                    /**
+                     * @ignore
+                     * @var $session_table JTableSession
+                     */
+                    $session_table = & JTable::getInstance('session');
 		            if ($session_table->load($id)) {
 		                $session_table->data = $session_data;
 		                $session_table->store();
@@ -831,7 +838,11 @@ class JFusionAPI_User extends JFusionAPIBase {
             if ( isset($this->payload['userid']) ) {
                 $mainframe = $this->startJoomla();
 
-                $user = JUser.getInstance($this->payload['userid']);
+                /**
+                 * @ignore
+                 * @var $user JUser
+                 */
+                $user = JUser::getInstance($this->payload['userid']);
 
                 if ($user) {
                     $user->delete();
