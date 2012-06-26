@@ -529,7 +529,7 @@ class JFusionAPIBase {
 	        jimport('joomla.environment.request');
 	        jimport('joomla.user.user');
 	        jimport('joomla.html.parameter');
-            jimport('joomla.version');	        
+            jimport('joomla.version');
 	        // JText cannot be loaded with jimport since it's not in a file called text.php but in methods
 	        JLoader::register('JText', JPATH_BASE . DS . 'libraries' . DS . 'joomla' . DS . 'methods.php');
 	        JLoader::register('JRoute', JPATH_BASE . DS . 'libraries' . DS . 'joomla' . DS . 'methods.php');
@@ -740,7 +740,7 @@ class JFusionAPI_User extends JFusionAPIBase {
 			if ($useractivation == 1) { // yeah we want an activation
 			    jimport('joomla.user.helper'); // include libraries/user/helper.php
 			    $data['block'] = 1; // block the User
-			    $data['activation'] =JUtility::getHash( JUserHelper::genRandomPassword()); // set activation hash (don't forget to send an activation email)
+			    $data['activation'] = JUtility::getHash( JUserHelper::genRandomPassword()); // set activation hash (don't forget to send an activation email)
 			}
 			else { // no we need no activation
 			    $data['block'] = 0; // don't block the user
@@ -809,6 +809,31 @@ class JFusionAPI_User extends JFusionAPIBase {
 			$this->error[] = 'invalid payload';
 		}
 	}
+
+    public function executeDelete()
+    {
+        /**
+         * TODO: THINK THIS IS INCORRECT.
+         */
+        if ( $this->payload ) {
+            if ( isset($this->payload['userid']) ) {
+                $mainframe = $this->startJoomla();
+
+                $user = JUser.getInstance($this->payload['userid']);
+
+                if ($user) {
+                    $user->delete();
+                    $this->debug[] = 'user deleted: '.$this->payload['userid'];
+                } else {
+                    $this->error[] = 'invalid user';
+                }
+            } else {
+                $this->error[] = 'invalid payload';
+            }
+        } else {
+            $this->error[] = 'invalid payload';
+        }
+    }
 }
 
 /**
