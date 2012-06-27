@@ -30,7 +30,7 @@ class JElementJFusionCmsBlock extends JElement {
      */
 	function fetchElement($name, $value, &$node, $control_name) {
 		
-		$output = "";
+		$output = '';
 		
 		//Query current selected Module Id
 		$id = JRequest::getVar ( 'id', 0, 'method', 'int' );
@@ -60,7 +60,7 @@ class JElementJFusionCmsBlock extends JElement {
 				}
 			
 			} else {
-				$output .= $jname . ": " . JText::_ ( 'No valid plugin' ) . "<br />";
+				$output .= $jname . ': ' . JText::_ ( 'No valid plugin' ) . '<br />';
 			}
 		} else {
 			$output .= JText::_ ( 'No plugin selected' );

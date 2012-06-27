@@ -125,7 +125,11 @@ class JFusionFrameless {
     public static function displayContent($data)
 	{
 		$mainframe = JFactory::getApplication();
-		$document = JFactory::getDocument();
+        /**
+         * @ignore
+         * @var $document JDocumentHTML
+         */
+        $document = JFactory::getDocument();
 		
 		if (!$data->isPlugin) {
 			require_once(JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.abstractpublic.php');

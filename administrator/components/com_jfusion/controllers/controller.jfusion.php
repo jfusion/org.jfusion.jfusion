@@ -257,6 +257,11 @@ class JFusionController extends JController
             }
             JFusionUsersync::syncExecute($syncdata, $syncdata['action'], $plugin_offset, $user_offset);
             JRequest::setVar('view', 'syncstatus');
+
+            /**
+             * @ignore
+             * @var $view JView
+             */
             $view = & $this->getView('syncstatus', 'html');
             //append log data now
             $syncdata['log'] = JFusionUsersync::getLogData($syncid);
@@ -288,6 +293,10 @@ class JFusionController extends JController
          */
         if (empty($syncdata['completed'])) {
             JRequest::setVar('view', 'syncprogress');
+            /**
+             * @ignore
+             * @var $view JView
+             */
             $view = & $this->getView('syncprogress', 'html');
             //append log data now
             $view->assignRef('syncdata', $syncdata);
@@ -299,6 +308,10 @@ class JFusionController extends JController
             //needed in case the language does not have "finished" in it for ajax to know to stop the timer
             echo '<div style="display:none;">finished</div>';
             JRequest::setVar('view', 'syncstatus');
+            /**
+             * @ignore
+             * @var $view JView
+             */
             $view = & $this->getView('syncstatus', 'html');
             //append log
             $syncdata['log'] = JFusionUsersync::getLogData($syncid);
@@ -341,6 +354,10 @@ class JFusionController extends JController
     {
         //Load usersync library
         include_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.usersync.php';
+        /**
+         * @ignore
+         * @var $view JView
+         */
         $view = & $this->getView('syncerrordetails', 'html');
         $view->setLayout('default');
         //$result = $view->loadTemplate();
@@ -676,16 +693,16 @@ class JFusionController extends JController
         }
         $elNum = JRequest::getInt('elNum');
         $serParam = base64_encode(serialize($param));
-        $title = "";
-        if (isset($param["jfusionplugin"])) {
-            $title = $param["jfusionplugin"];
+        $title = '';
+        if (isset($param['jfusionplugin'])) {
+            $title = $param['jfusionplugin'];
         } else if ($multiselect) {
             $del = "";
             if (is_array($param)) {
                foreach ($param as $key => $value) {
-                    if (isset($value["jfusionplugin"])) {
-                        $title.= $del . $value["jfusionplugin"];
-	                    $del = "; ";
+                    if (isset($value['jfusionplugin'])) {
+                        $title.= $del . $value['jfusionplugin'];
+	                    $del = '; ';
                     }
                 }
             }
@@ -693,7 +710,12 @@ class JFusionController extends JController
         if (empty($title)) {
             $title = JText::_('NO_PLUGIN_SELECTED');
         }
-        echo '<script type="text/javascript">' . 'window.parent.jAdvancedParamSet("' . $title . '", "' . $serParam . '","' . $elNum . '");' . '</script>';
+        $js = '<script type="text/javascript">';
+        $js .= <<<JS
+            window.parent.jAdvancedParamSet('{$title}', '{$serParam}','{$elNum}');
+JS;
+        $js = '</script>';
+        echo $js;
         return;
     }
     

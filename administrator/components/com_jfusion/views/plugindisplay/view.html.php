@@ -150,6 +150,10 @@ class jfusionViewplugindisplay extends JView {
     	$result = '';
     	if(!empty($errors)){
             $result .= '<dl id="system-message"><dt class="notice">Notice</dt><dd class="notice message fade">';
+            /**
+             * @ignore
+             * @var $message JException
+             */
             if(JFusionFunction::isJoomlaVersion('1.6')){
                 foreach ($errors as $message) {
 	                $result .= '<ul><li>' . $message->__toString() . '</li></ul>';

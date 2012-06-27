@@ -91,51 +91,51 @@ foreach ($this->syncdata['slave_data'] as $slave) {
 echo "<br/><h2>" . JText::_('SYNC_LOG') . "</h2><br/>";?>
 
 <form action="index.php" method="post" name="adminForm" id="adminForm">
-<table class="adminlist">
-    <thead>
-        <tr>
-            <th width="20"><?php echo '#';?></th>
-            <th><?php echo JHTML::_('grid.sort',   JText::_('PLUGIN') , 'jname', $this->filter['dir'], $this->filter['order'] );?></th>
-            <th><?php echo JHTML::_('grid.sort',   JText::_('USERNAME') , 'username', $this->filter['dir'], $this->filter['order'] );?></th>
-            <th><?php echo JHTML::_('grid.sort',   JText::_('EMAIL') , 'email', $this->filter['dir'], $this->filter['order'] );?></th>
-            <th><?php echo JHTML::_('grid.sort',   JText::_('ACTION') , 'action', $this->filter['dir'], $this->filter['order'] );?></th>
-            <th><?php echo JText::_('MESSAGE');?></th>
-            <th><?php echo JHTML::_('grid.sort',   'ID' , 'id', $this->filter['dir'], $this->filter['order'] );?></th>            </tr>
-    </thead>
-    <tbody>
-    <?php
-    if (!empty($this->syncdata['log'])) {
-        $k =0;
-        $i = 0;
-        foreach ($this->syncdata['log'] as $id => $details) {
-            ?><tr class="<?php echo "row$k"; ?>">
-            <td><?php echo $this->pageNav->getRowOffset($i);?></td>
-            <td><?php echo $details->jname;?></td>
-            <td><?php echo $details->username;?></td>
-            <td><?php echo $details->email;?></td>
-            <td><img width="16px" height="16px" src="components/com_jfusion/images/<?php echo $details->action; ?>.png" style="margin-right:5px;"><?php echo JText::_($details->action);?></td>
-            <td><?php echo $details->message;?></td>
-            <td><?php echo $details->id;?></td>
-            </tr>
-            <?php
-            $k = 1 - $k;
-            $i++;
+    <table class="adminlist">
+        <thead>
+            <tr>
+                <th width="20"><?php echo '#';?></th>
+                <th><?php echo JHTML::_('grid.sort',   JText::_('PLUGIN') , 'jname', $this->filter['dir'], $this->filter['order'] );?></th>
+                <th><?php echo JHTML::_('grid.sort',   JText::_('USERNAME') , 'username', $this->filter['dir'], $this->filter['order'] );?></th>
+                <th><?php echo JHTML::_('grid.sort',   JText::_('EMAIL') , 'email', $this->filter['dir'], $this->filter['order'] );?></th>
+                <th><?php echo JHTML::_('grid.sort',   JText::_('ACTION') , 'action', $this->filter['dir'], $this->filter['order'] );?></th>
+                <th><?php echo JText::_('MESSAGE');?></th>
+                <th><?php echo JHTML::_('grid.sort',   'ID' , 'id', $this->filter['dir'], $this->filter['order'] );?></th>            </tr>
+        </thead>
+        <tbody>
+        <?php
+        if (!empty($this->syncdata['log'])) {
+            $k =0;
+            $i = 0;
+            foreach ($this->syncdata['log'] as $id => $details) {
+                ?><tr class="<?php echo "row$k"; ?>">
+                <td><?php echo $this->pageNav->getRowOffset($i);?></td>
+                <td><?php echo $details->jname;?></td>
+                <td><?php echo $details->username;?></td>
+                <td><?php echo $details->email;?></td>
+                <td><img width="16" height="16" src="components/com_jfusion/images/<?php echo $details->action; ?>.png" style="margin-right:5px;"><?php echo JText::_($details->action);?></td>
+                <td><?php echo $details->message;?></td>
+                <td><?php echo $details->id;?></td>
+                </tr>
+                <?php
+                $k = 1 - $k;
+                $i++;
+            }
         }
-    }
-    ?>
-    </tbody>
-    <tfoot>
-    <td colspan="7"><?php echo $this->pageNav->getListFooter(); ?></td>
-    </tfoot>
-</table>
-<input type="hidden" name="option" value="com_jfusion" />
-<input type="hidden" name="task" value="syncstatus" />
-<input type="hidden" name="syncid" value="<?php echo $this->syncid; ?>" />
-<?php
-if (!$inline) {
-    echo '<input type="hidden" name="tmpl" value="component" />' . "\n";
-} ?>
-<input type="hidden" name="filter_order" value="<?php echo $this->filter['order']; ?>" />
-<input type="hidden" name="filter_order_Dir" value="<?php echo $this->filter['dir']; ?>" />
-<input type="hidden" name="filter_client" value="<?php echo $this->filter['client'];?>" />
+        ?>
+        </tbody>
+        <tfoot>
+        <td colspan="7"><?php echo $this->pageNav->getListFooter(); ?></td>
+        </tfoot>
+    </table>
+    <input type="hidden" name="option" value="com_jfusion" />
+    <input type="hidden" name="task" value="syncstatus" />
+    <input type="hidden" name="syncid" value="<?php echo $this->syncid; ?>" />
+    <?php
+    if (!$inline) {
+        echo '<input type="hidden" name="tmpl" value="component" />' . "\n";
+    } ?>
+    <input type="hidden" name="filter_order" value="<?php echo $this->filter['order']; ?>" />
+    <input type="hidden" name="filter_order_Dir" value="<?php echo $this->filter['dir']; ?>" />
+    <input type="hidden" name="filter_client" value="<?php echo $this->filter['client'];?>" />
 </form>

@@ -128,14 +128,14 @@ function com_uninstall() {
     	$JFusionPlugin =& JFusionFactory::getAdmin($plugin->name);
         list ($success,$reasons) = $JFusionPlugin->uninstall();
     	if (!$success) {
-            echo '<table style="background-color:#f9ded9;" width ="100%"><tr style="height:30px">' . "\n";
-            echo '<td><font size="2"><b>'.JText::_('UNINSTALL') . ' ' . $plugin->name . ' ' . JText::_('FAILED') . ': </b></font></td></tr>' . "\n";
+            echo '<table style="background-color:#f9ded9;" width ="100%"><tr style="height:30px">';
+            echo '<td><font size="2"><b>'.JText::_('UNINSTALL') . ' ' . $plugin->name . ' ' . JText::_('FAILED') . ': </b></font></td></tr>';
             if (is_array($reasons)) {
                 foreach ($reasons as $r) {
-                    echo '<td style="padding-left: 15px;">'.$r.'</td></tr>' . "\n";
+                    echo '<td style="padding-left: 15px;">'.$r.'</td></tr>';
                 }
             }
-            echo "</table>\n";
+            echo '</table>';
     	    $return = false;
     	}
     }
@@ -145,42 +145,42 @@ function com_uninstall() {
     $query = "DROP TABLE #__jfusion";
     $db->setQuery($query);
     if (!$db->Query()){
-        echo $db->stderr() . "<br />";
+        echo $db->stderr() . '<br />';
         $return = false;
     }
 
     $query = "DROP TABLE #__jfusion_sync";
     $db->setQuery($query);
     if (!$db->Query()){
-        echo $db->stderr() . "<br />";
+        echo $db->stderr() . '<br />';
         $return = false;
     }
 
     $query = "DROP TABLE #__jfusion_sync_details";
     $db->setQuery($query);
     if (!$db->Query()){
-        echo $db->stderr() . "<br />";
+        echo $db->stderr() . '<br />';
         $return = false;
     }
 
     $query = "DROP TABLE #__jfusion_users";
     $db->setQuery($query);
     if (!$db->Query()){
-        echo $db->stderr() . "<br />";
+        echo $db->stderr() . '<br />';
         $return = false;
     }
 
     $query = "DROP TABLE #__jfusion_users_plugin";
     $db->setQuery($query);
     if (!$db->Query()){
-        echo $db->stderr() . "<br />";
+        echo $db->stderr() . '<br />';
         $return = false;
     }
 
     $query = "DROP TABLE #__jfusion_discussion_bot";
     $db->setQuery($query);
     if (!$db->queryBatch()){
-    	echo $db->stderr() . "<br />";
+    	echo $db->stderr() . '<br />';
     	$return = false;
     }
 

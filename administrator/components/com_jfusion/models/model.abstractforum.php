@@ -469,7 +469,7 @@ class JFusionForum
 				$link_text = JText::_('DEFAULT_ARTICLE_LINK_TEXT');
 			} else {
 				if($dbparams->get("first_post_link_type") == 'image') {
-					$link_text = "<img src='$link_text'>";
+					$link_text = '<img src="'.$link_text.'">';
 				}
 			}
 
@@ -597,14 +597,20 @@ JS;
 					$theme = $dbparams->get('recaptcha_theme','red');
 					$lang = $dbparams->get('recaptcha_lang','en');
 
+                    /**
+                     * @ignore
+                     * @var $document JDocumentHTML
+                     */
 					$document = JFactory::getDocument();
-					$script = "<script>\n";
-					$script .= "var RecaptchaOptions = {\n";
-   					$script .= "theme : '$theme',\n";
-   					$script .= "lang: '$lang'\n";
-					$script .= "};\n";
-					$script .= "</script>\n";
-					$document->addCustomTag($script);
+
+                    $js = <<<JS
+					var RecaptchaOptions = {
+   					    theme : '{$theme}',
+   					    lang: '{$lang}'
+					}
+JS;
+
+					$document->addScriptDeclaration($js);
 
 					$html .= "<tr><td colspan=2>";
 					if (!function_exists('recaptcha_get_html')) {

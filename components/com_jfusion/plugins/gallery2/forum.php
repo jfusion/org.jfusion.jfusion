@@ -158,7 +158,7 @@ class JFusionForum_gallery2 extends JFusionForum {
                 if ($ret->getErrorCode() == 4194305 || $ret->getErrorCode() == 17) {
                     $content.= '<strong>Error</strong><br />You need to install the Gallery2 Plugin "imageblock".';
                 } else {
-                    $content.= "<h2>Fatal G2 error</h2> Here's the error from G2:<br />" . $ret->getAsHtml();
+                    $content.= '<h2>Fatal G2 error</h2> Here is the error from G2:<br />' . $ret->getAsHtml();
                 }
             }
             $content.= ($strip_anchor == 1) ? strip_tags($imageBlockHtml, '<img><table><tr><td><div><h3>') : $imageBlockHtml;

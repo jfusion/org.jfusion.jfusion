@@ -61,7 +61,7 @@ class JElementForumlist extends JElement
         $jname = $jPluginParamRaw['jfusionplugin'];
         if (!empty($jname)) {
             if (JFusionFunction::validPlugin($jname)) {
-                $output.= "<b>" . $jname . "</b><br />\n";
+                $output.= '<b>' . $jname . '</b><br />';
                 $JFusionPlugin = & JFusionFactory::getForum($jname);
                 if (method_exists($JFusionPlugin, 'getForumList')) {
                     $forumlist = $JFusionPlugin->getForumList();
@@ -74,9 +74,9 @@ class JElementForumlist extends JElement
                 } else {
                     $output.= $jname . ': ' . JText::_('NO_LIST');
                 }
-                $output.= "<br />\n";
+                $output.= '<br />';
             } else {
-                $output.= $jname . ": " . JText::_('NO_VALID_PLUGINS') . "<br />";
+                $output.= $jname . ': ' . JText::_('NO_VALID_PLUGINS') . '<br />';
             }
         } else {
             $output.= JText::_('NO_PLUGIN_SELECT');

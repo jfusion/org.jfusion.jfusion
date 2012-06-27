@@ -766,7 +766,7 @@ JS;
         function doImport() {
             var form = $('adminForm');
             form.action.value='import';
-            form.jname.value='${jname}';
+            form.jname.value='{$jname}';
             form.encoding='multipart/form-data';
             submitbutton('plugineditor');
         }

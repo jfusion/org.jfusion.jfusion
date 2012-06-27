@@ -345,13 +345,22 @@ if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\'
         //add the javascript to enable buttons
         if ($error == 0) {
             //return success
-            $output = '<img src="components/com_jfusion/images/check_good.png" height="20px" width="20px">' . JText::_('REDIRECTION_MOD') . ' ' . JText::_('ENABLED');
-            $output.= ' <a href="javascript:void(0);" onclick="return module(\'disableRedirectMod\')">' . JText::_('MOD_DISABLE') . '</a>';
-            $output.= ' <a href="javascript:void(0);" onclick="return module(\'enableRedirectMod\')">' . JText::_('MOD_UPDATE') . '</a>';
+            $text = JText::_('REDIRECTION_MOD') . ' ' . JText::_('ENABLED');
+            $disable = JText::_('MOD_DISABLE');
+            $update = JText::_('MOD_UPDATE');
+            $output = <<<HTML
+            <img src="components/com_jfusion/images/check_good.png" height="20" width="20">{$text}
+            <a href="javascript:void(0);" onclick="return module('disableRedirectMod')">{$disable}</a>
+            <a href="javascript:void(0);" onclick="return module('enableRedirectMod')">{$update}</a>
+HTML;
             return $output;
         } else {
-            $output = '<img src="components/com_jfusion/images/check_bad.png" height="20px" width="20px">' . JText::_('REDIRECTION_MOD') . ' ' . JText::_('DISABLED') . ': ' . $reason;
-            $output.= ' <a href="javascript:void(0);" onclick="return module(\'enableRedirectMod\')">' . JText::_('MOD_ENABLE') . '</a>';
+            $text = JText::_('REDIRECTION_MOD') . ' ' . JText::_('DISABLED') . ': ' . $reason;
+            $enable = JText::_('MOD_ENABLE');
+            $output = <<<HTML
+            <img src="components/com_jfusion/images/check_bad.png" height="20" width="20">{$text}
+            <a href="javascript:void(0);" onclick="return module('enableRedirectMod')">{$enable}</a>
+HTML;
             return $output;
         }
     }
@@ -397,12 +406,20 @@ if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\'
         //add the javascript to enable buttons
         if ($error == 0) {
             //return success
-            $output = '<img src="components/com_jfusion/images/check_good.png" height="20px" width="20px">' . JText::_('AUTHENTICATION_MOD') . ' ' . JText::_('ENABLED');
-            $output.= ' <a href="javascript:void(0);" onclick="return module(\'disable_auth_mod\')">' . JText::_('MOD_DISABLE') . '</a>';
+            $text = JText::_('AUTHENTICATION_MOD') . ' ' . JText::_('ENABLED');
+            $disable = JText::_('MOD_DISABLE');
+            $output = <<<HTML
+            <img src="components/com_jfusion/images/check_good.png" height="20" width="20">{$text}
+            <a href="javascript:void(0);" onclick="return module('disable_auth_mod')">{$disable}</a>
+HTML;
             return $output;
         } else {
-            $output = '<img src="components/com_jfusion/images/check_bad.png" height="20px" width="20px">' . JText::_('AUTHENTICATION_MOD') . ' ' . JText::_('DISABLED') . ': ' . $reason;
-            $output.= ' <a href="javascript:void(0);" onclick="return module(\'enable_auth_mod\')">' . JText::_('MOD_ENABLE') . '</a>';
+            $text = JText::_('AUTHENTICATION_MOD') . ' ' . JText::_('DISABLED') . ': ' . $reason;
+            $enable = JText::_('MOD_ENABLE');
+            $output = <<<HTML
+            <img src="components/com_jfusion/images/check_bad.png" height="20" width="20">{$text}
+            <a href="javascript:void(0);" onclick="return module('enable_auth_mod')">{$enable}</a>
+HTML;
             return $output;
         }
     }
@@ -519,12 +536,20 @@ if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\'
         //add the javascript to enable buttons
         if ($error == 0) {
             //return success
-            $output = '<img src="components/com_jfusion/images/check_good.png" height="20px" width="20px">' . JText::_('QUICKTOOLS') . ' ' . JText::_('ENABLED');
-            $output.= ' <a href="javascript:void(0);" onclick="return module(\'disable_quick_mod\')">' . JText::_('MOD_DISABLE') . '</a>';
+            $text = JText::_('QUICKTOOLS') . ' ' . JText::_('ENABLED');
+            $disable = JText::_('MOD_DISABLE');
+            $output = <<<HTML
+            <img src="components/com_jfusion/images/check_good.png" height="20" width="20">{$text}
+            <a href="javascript:void(0);" onclick="return module('disable_quick_mod')">{$disable}</a>
+HTML;
             return $output;
         } else {
-            $output = '<img src="components/com_jfusion/images/check_bad.png" height="20px" width="20px">' . JText::_('QUICKTOOLS') . ' ' . JText::_('DISABLED') . ': ' . $reason;
-            $output.= ' <a href="javascript:void(0);" onclick="return module(\'enable_quick_mod\')">' . JText::_('MOD_ENABLE') . '</a>';
+            $text = JText::_('QUICKTOOLS') . ' ' . JText::_('DISABLED') . ': ' . $reason;
+            $enable = JText::_('MOD_ENABLE');
+            $output = <<<HTML
+            <img src="components/com_jfusion/images/check_bad.png" height="20" width="20">{$text}
+            <a href="javascript:void(0);" onclick="return module('enable_quick_mod')">{$enable}</a>
+HTML;
             return $output;
         }
     }

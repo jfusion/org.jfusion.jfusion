@@ -627,6 +627,10 @@ class JFusionFunction
             //setup JRoute to use the frontend router
             $app    = JApplication::getInstance('site');
             $router = &$app->getRouter();
+            /**
+             * @ignore
+             * @var $uri JURI
+             */
             $uri = $router->build($article_url);
             $article_url = $uri->toString();
             //remove /administrator from path

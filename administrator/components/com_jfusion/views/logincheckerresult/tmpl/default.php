@@ -31,10 +31,10 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.debug.p
 <table>
     <tr>
         <td width="100px">
-            <img src="components/com_jfusion/images/jfusion_large.png" height="75px" width="75px">
+            <img src="components/com_jfusion/images/jfusion_large.png" height="75" width="75">
         </td>
         <td width="100px">
-            <img src="components/com_jfusion/images/login_checker2.png" height="75px" width="75px">
+            <img src="components/com_jfusion/images/login_checker2.png" height="75" width="75">
         </td>
         <td>
             <h2>
@@ -83,7 +83,7 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.debug.p
 	        <table style="background-color:#d9f9e2;width:100%;">
 	            <tr style="height:30px">
 	                <td width="50px">
-		               <img src="components/com_jfusion/images/check_good.png" height="20px" width="20px">
+		               <img src="components/com_jfusion/images/check_good.png" height="30" width="20">
 	                </td>
 		           <td>
 			           <font size="2">
@@ -117,7 +117,7 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.debug.p
 		            if ($auth_result->result == true) { ?>
 		                <tr style="height:30px">
 	                        <td width="50px" style="background-color:#d9f9e2;">
-	                            <img src="components/com_jfusion/images/check_good.png" height="20px" width="20px">
+	                            <img src="components/com_jfusion/images/check_good.png" height="20" width="20">
 	                        </td>
 		                   <td style="background-color:#d9f9e2;">
 		                       <font size="2">
@@ -132,7 +132,7 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.debug.p
 		            } else { ?>
 		                <tr style="height:30px">
 		                   <td width="50px" style="background-color:#f9ded9;">
-		                       <img src="components/com_jfusion/images/check_bad.png" height="20px" width="20px">
+		                       <img src="components/com_jfusion/images/check_bad.png" height="20" width="20">
 	                       </td>
 		                   <td style="background-color:#f9ded9;">
 			                   <font size="2">
@@ -157,7 +157,7 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.debug.p
 		    <table style="background-color:#f9ded9;width:100%;">
 		       <tr style="height:30px">
 		           <td width="50px">
-		               <img src="components/com_jfusion/images/check_bad.png" height="20px" width="20px">
+		               <img src="components/com_jfusion/images/check_bad.png" height="20" width="20">
 	                </td>
 			       <td>
 			           <font size="2">

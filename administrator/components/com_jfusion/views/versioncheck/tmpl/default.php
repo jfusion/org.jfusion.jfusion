@@ -22,10 +22,10 @@ JFusionFunctionAdmin::displayDonate();
 <table>
 	<tr>
 		<td width="100px">
-			<img src="components/com_jfusion/images/jfusion_large.png" height="75px" width="75px">
+			<img src="components/com_jfusion/images/jfusion_large.png" height="75" width="75">
 		</td>
 		<td width="100px">
-			<img src="components/com_jfusion/images/versioncheck.png" height="75px" width="75px">
+			<img src="components/com_jfusion/images/versioncheck.png" height="75" width="75">
 		</td>
 		<td>
 		<h2>
@@ -82,10 +82,10 @@ JFusionFunctionAdmin::displayDonate();
 if ($this->server_compatible) {
 //output the good news
 ?>
-    <table style="background-color:#d9f9e2;width:100%;">
+    <table style="background-color: #d9f9e2; width: 100%;">
 	    <tr>
 		    <td>
-		    	<img src="components/com_jfusion/images/check_good.png" height="30px" width="30px">
+		    	<img src="components/com_jfusion/images/check_good.png" height="30" width="30">
 		    </td>
 		    <td>
 				<h2>
@@ -102,7 +102,7 @@ if ($this->server_compatible) {
     <table style="background-color:#f9ded9;">
 	    <tr>
 		    <td width="50px">
-		    	<img src="components/com_jfusion/images/check_bad.png" height="30px" width="30px">
+		    	<img src="components/com_jfusion/images/check_bad.png" height="30" width="30">
 		    </td>
 		    <td>
 		    	<h2>
@@ -198,7 +198,7 @@ if ($this->up2date) {
     <table style="background-color:#d9f9e2;width:100%;">
 	    <tr>
 		    <td>
-			    <img src="components/com_jfusion/images/check_good.png" height="30px" width="30px">
+			    <img src="components/com_jfusion/images/check_good.png" height="30" width="30">
 		    <td>
 			    <h2>
 			    	<?php echo JText::_('JFUSION_UP2DATE'); ?>
@@ -213,7 +213,7 @@ if ($this->up2date) {
     <table style="background-color:#f9ded9;">
 	    <tr>
 		    <td width="50px">
-		    	<img src="components/com_jfusion/images/check_bad.png" height="30px" width="30px">
+		    	<img src="components/com_jfusion/images/check_bad.png" height="30" width="30">
 			</td>
 			<td>
 				<h2>
@@ -246,7 +246,7 @@ if ($this->up2date) {
 <table style="background-color:#ffffce;width:100%;">
 	<tr>
 		<td width="50px">
-			<img src="components/com_jfusion/images/advanced.png" height="75px" width="75px">
+			<img src="components/com_jfusion/images/advanced.png" height="75" width="75">
 		</td>
 		<td>
 			<h3>
