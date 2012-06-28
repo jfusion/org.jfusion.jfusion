@@ -336,7 +336,7 @@ if (!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') ===
             $disable = JText::_('MOD_DISABLE');
             $update = JText::_('MOD_UPDATE');
             $output = <<<HTML
-            <img src="components/com_jfusion/images/check_good.png" height="20" width="20">{$text}
+            <img src="components/com_jfusion/images/check_good_small.png">{$text}
             <a href="javascript:void(0);" onclick="return module('disableRedirectMod')">{$disable}</a>
             <a href="javascript:void(0);" onclick="return module('enableRedirectMod')">{$update}</a>
 HTML;
@@ -345,7 +345,7 @@ HTML;
             $text = JText::_('REDIRECTION_MOD') . ' ' . JText::_('DISABLED') . ': ' . $reason;
             $enable = JText::_('MOD_ENABLE');
             $output = <<<HTML
-            <img src="components/com_jfusion/images/check_bad.png" height="20" width="20">{$text}
+            <img src="components/com_jfusion/images/check_bad_small.png">{$text}
             <a href="javascript:void(0);" onclick="return module('enableRedirectMod')">{$enable}</a>
 HTML;
             return $output;

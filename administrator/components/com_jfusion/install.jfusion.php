@@ -559,7 +559,7 @@ function com_install() {
             <table style="background-color: {$color};" width="100%">
                 <tr style="height:30px">
                     <td width="50px">
-			            <img src="components/com_jfusion/images/check_bad.png" height="20" width="20">
+			            <img src="components/com_jfusion/images/check_bad_small.png">
                     </td>
 			        <td>
 			            <font size="2">
@@ -656,7 +656,7 @@ HTML;
     <table style="background-color:#f9ded9;width:100%;">
         <tr style="height: 30px">
             <td width="50px">
-                <img src="components/com_jfusion/images/check_bad.png" height="20" width="20">
+                <img src="components/com_jfusion/images/check_bad_small.png">
             </td>
             <td>
                 <font size="2">
@@ -675,7 +675,7 @@ HTML;
     <table style="background-color:#d9f9e2;width:100%;">
         <tr>
             <td width="50px">
-                <img src="components/com_jfusion/images/check_good.png" height="20" width="20">
+                <img src="components/com_jfusion/images/check_good_small.png">
             </td>
             <td>
                 <font size="2">
@@ -732,7 +732,7 @@ HTML;
             <table style="background-color:#d9f9e2;width:100%;">
                 <tr>
                     <td width="50px">
-                        <img src="components/com_jfusion/images/check_good.png" height="20" width="20">
+                        <img src="components/com_jfusion/images/check_good_small.png">
                     </td>
                     <td>
                         <font size="2">

@@ -85,7 +85,7 @@ if ($this->server_compatible) {
     <table style="background-color: #d9f9e2; width: 100%;">
 	    <tr>
 		    <td>
-		    	<img src="components/com_jfusion/images/check_good.png" height="30" width="30">
+		    	<img src="components/com_jfusion/images/check_good.png">
 		    </td>
 		    <td>
 				<h2>
@@ -102,7 +102,7 @@ if ($this->server_compatible) {
     <table style="background-color:#f9ded9;">
 	    <tr>
 		    <td width="50px">
-		    	<img src="components/com_jfusion/images/check_bad.png" height="30" width="30">
+		    	<img src="components/com_jfusion/images/check_bad.png">
 		    </td>
 		    <td>
 		    	<h2>
@@ -198,7 +198,7 @@ if ($this->up2date) {
     <table style="background-color:#d9f9e2;width:100%;">
 	    <tr>
 		    <td>
-			    <img src="components/com_jfusion/images/check_good.png" height="30" width="30">
+			    <img src="components/com_jfusion/images/check_good.png">
 		    <td>
 			    <h2>
 			    	<?php echo JText::_('JFUSION_UP2DATE'); ?>
@@ -213,7 +213,7 @@ if ($this->up2date) {
     <table style="background-color:#f9ded9;">
 	    <tr>
 		    <td width="50px">
-		    	<img src="components/com_jfusion/images/check_bad.png" height="30" width="30">
+		    	<img src="components/com_jfusion/images/check_bad.png">
 			</td>
 			<td>
 				<h2>

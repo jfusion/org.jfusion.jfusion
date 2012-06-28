@@ -321,7 +321,7 @@ JS;
                     $disable = JText::_('DISABLE_THIS_PLUGIN');
                     $reenable = JText::_('REENABLE_THIS_PLUGIN');
                     $output = <<<HTML
-                    <img style="float: left;" src="components/com_jfusion/images/check_good.png" height="20" width="20">
+                    <img style="float: left;" src="components/com_jfusion/images/check_good_small.png">
                     <span style="float: left; margin-left: 5px;">{$enabled}</span>
                     <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return toggleHook('{$hook}','disable')">{$disable}</a>
                     <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return toggleHook('{$hook}','reenable')">{$reenable}</a>
@@ -331,7 +331,7 @@ HTML;
                     $disabled = JText::_('DISABLED');
                     $enable = JText::_('ENABLE_THIS_PLUGIN');
                     $output = <<<HTML
-                    <img style="float: left;" src="components/com_jfusion/images/check_bad.png" height="20" width="20">
+                    <img style="float: left;" src="components/com_jfusion/images/check_bad_small.png">
                     <span style="float: left; margin-left: 5px;">{$disabled}</span>
                     <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return toggleHook('{$hook}','enable')">{$enable}</a>
 HTML;
@@ -366,7 +366,7 @@ HTML;
                     $complete = JText::_('COMPLETE');
                     $undo = JText::_('VB_UNDO_OPTIMIZATION');
                     $output = <<<HTML
-                    <img style="float: left;" src="components/com_jfusion/images/check_good.png" height="20" width="20">
+                    <img style="float: left;" src="components/com_jfusion/images/check_good_small.png">
                     <span style="float: left; margin-left: 5px;">{$complete}</span>
                     <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return toggleHook('{$hook}','disable')">{$undo}</a>
 HTML;
@@ -375,7 +375,7 @@ HTML;
                     $incomplete = JText::_('INCOMPLETE');
                     $do = JText::_('VB_DO_OPTIMIZATION');
                     $output = <<<HTML
-                    <img style="float: left;" src="components/com_jfusion/images/check_bad.png" height="20" width="20">
+                    <img style="float: left;" src="components/com_jfusion/images/check_bad_small.png">
                     <span style="float: left; margin-left: 5px;">{$incomplete}</span>
                     <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return toggleHook('{$hook}','enable')">{$do}</a>
 HTML;

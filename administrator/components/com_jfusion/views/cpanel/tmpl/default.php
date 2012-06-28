@@ -125,7 +125,7 @@ JFusionFunctionAdmin::displayDonate();
 			    <table style="background-color:#d9f9e2;width:100%;">
                     <tr>
                         <td width="50px">
-                            <img src="components/com_jfusion/images/check_good.png" height="30" width="30">
+                            <img src="components/com_jfusion/images/check_good.png">
                         </td>
 			             
                         <td>
@@ -146,7 +146,7 @@ JFusionFunctionAdmin::displayDonate();
 			    <table style="background-color:#f9ded9;width:100%;">
                     <tr>
                         <td width="50px">
-                            <img src="components/com_jfusion/images/check_bad.png" height="30" width="30">
+                            <img src="components/com_jfusion/images/check_bad.png">
                         </td>
                         <td>
                             <h2>
