@@ -662,7 +662,7 @@ class JFusionFunction
             }
         }
 
-        $link = "<a href='".$article_url."'>$text</a>";
+        $link = '<a href="'.$article_url.'">'.$text.'</a>';
 
         return $link;
     }
@@ -832,7 +832,7 @@ class JFusionFunction
                 $searchNS = array_merge($searchNS, $morePatterns[2]);
                 $replaceNS = array_merge($replaceNS, $morePatterns[3]);
             }
-            $text = str_ireplace(array("<br />", "<br>", "<br/>"), "\n", $text);
+            $text = str_ireplace(array('<br />', '<br>', '<br/>'), "\n", $text);
 
 			foreach ($searchNS as $k => $v) {
 	            //check if we need to use callback

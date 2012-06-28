@@ -464,7 +464,7 @@ class JFusionForum
 		$show_link = $dbparams->get('first_post_link',1);
 		//add a link to the article; force a link if text body is set to none so something is returned
 		if($show_link || $post_body=='none') {
-			$link_text = $dbparams->get("first_post_link_text");
+			$link_text = $dbparams->get('first_post_link_text');
 			if(empty($link_text)) {
 				$link_text = JText::_('DEFAULT_ARTICLE_LINK_TEXT');
 			} else {
@@ -473,7 +473,7 @@ class JFusionForum
 				}
 			}
 
-			$text .= (!empty($text)) ? "<br /><br />" : "";
+			$text .= (!empty($text)) ? '<br /><br />' : '';
 			$text .= JFusionFunction::createJoomlaArticleURL($contentitem,$link_text);
 		}
 
@@ -551,12 +551,25 @@ JS;
 		$html = '';
 		if($showGuestInputs) {
 			$username = JRequest::getVar('guest_username','','post');
-			$html .= "<table><tr><td>".JText::_('USERNAME') .":</td><td><input name='guest_username' value='$username' class='inputbox'/></td></tr>";
-			$html .= $this->createCaptcha($dbparams);
-			$html .= "</table><br />";
+            $jusername = JText::_('USERNAME');
+            $html = <<<HTML
+            <table>
+                <tr>
+                    <td>
+                        {$jusername}:
+                    </td>
+                    <td>
+                        <input name='guest_username' value='{$username}' class='inputbox'/>
+                    </td>
+                </tr>";
+                {$this->createCaptcha($dbparams)}
+            </table>
+            <br />
+HTML;
+
 		}
 		$quickReply = JRequest::getVar('quickReply','','post');
-	   	$html .= "<textarea id='quickReply' name='quickReply' class='inputbox' rows='15' cols='100'>$quickReply</textarea><br />";
+	   	$html .= '<textarea id="quickReply" name="quickReply" class="inputbox" rows="15" cols="100">'.$quickReply.'</textarea><br />';
 	   	return $html;
 	}
 
@@ -577,7 +590,7 @@ JS;
 				//answer/question method
 				$question = $dbparams->get('captcha_question');
 				if(!empty($question)) {
-					$html .= "<tr><td>$question:</td><td><input name='captcha_answer' value='' class='inputbox'/></td></tr>";
+					$html .= '<tr><td>'.$question.':</td><td><input name="captcha_answer" value="" class="inputbox"/></td></tr>';
 				}
 				break;
 			case 'joomla15captcha':
@@ -612,7 +625,7 @@ JS;
 
 					$document->addScriptDeclaration($js);
 
-					$html .= "<tr><td colspan=2>";
+					$html .= '<tr><td colspan="2">';
 					if (!function_exists('recaptcha_get_html')) {
 	                	include_once $recaptchalib;
 	                }
@@ -622,7 +635,7 @@ JS;
 					if(!empty($error)) {
 						$html .= $error;
 					}
-					$html .= "</td></tr>";
+					$html .= '</td></tr>';
 				}
 				break;
 			case 'custom':

@@ -88,6 +88,6 @@ foreach ($this->syncdata['slave_data'] as $slave) {
 </table>
 
 <?php
-echo "<br/><h2>" . JText::_('SYNC_LOG') . "</h2><br/>";?>
+echo '<br/><h2>' . JText::_('SYNC_LOG') . '</h2><br/>';?>
 
 <a href="index.php?option=com_jfusion&amp;task=syncstatus&amp;syncid=<?php echo $this->syncdata['syncid']; ?>"><?php echo JText::_('CLICK_FOR_MORE_DETAILS'); ?></a>

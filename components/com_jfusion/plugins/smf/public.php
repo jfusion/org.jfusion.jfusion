@@ -135,7 +135,7 @@ class JFusionPublic_smf extends JFusionPublic
 
             //add smf bbcode rules
             $options['html_patterns'] = array();
-            $options['html_patterns']['li'] = array('simple_start' => "<li>", 'simple_end' => "</li>\n", 'class' => 'listitem', 'allow_in' => array('list'), 'end_tag' => 0, 'before_tag' => "s", 'after_tag' => "s", 'before_endtag' => "sns", 'after_endtag' => "sns", 'plain_start' => "\n * ", 'plain_end' => "\n");
+            $options['html_patterns']['li'] = array('simple_start' => '<li>', 'simple_end' => "</li>\n", 'class' => 'listitem', 'allow_in' => array('list'), 'end_tag' => 0, 'before_tag' => 's', 'after_tag' => 's', 'before_endtag' => 'sns', 'after_endtag' => 'sns', 'plain_start' => "\n * ", 'plain_end' => "\n");
 
             $bbcodes = array('size', 'glow', 'shadow', 'move', 'pre', 'hr', 'flash', 'ftp', 'table', 'tr', 'td', 'tt', 'abbr', 'anchor', 'black', 'blue', 'green', 'iurl', 'html', 'ltr', 'me', 'nobbc', 'php', 'red', 'rtl', 'time', 'white', 'o', 'O', '0', '@', '*', '=', '@', '+', 'x', '#');
 

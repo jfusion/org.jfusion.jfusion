@@ -456,7 +456,7 @@ class JFusionHelper_phpbb3
                 $code = str_replace($str_from, $str_to, $code);
                 if (!preg_match('/\<\?.*?\?\>/is', $code)) {
                     $remove_tags = true;
-                    $code = "<?php $code ?>";
+                    $code = '<?php '.$code.' ?>';
                 }
                 $conf = array('highlight.bg', 'highlight.comment', 'highlight.default', 'highlight.html', 'highlight.keyword', 'highlight.string');
                 foreach ($conf as $ini_var) {

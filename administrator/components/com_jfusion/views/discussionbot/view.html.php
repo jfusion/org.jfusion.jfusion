@@ -138,40 +138,45 @@ class jfusionViewdiscussionbot extends JView
 		$document->addStyleDeclaration($css);
 
 		//prepare a toolbar
-
+        $apply = JText::_('APPLY');
+        $close = JText::_('CLOSE');
         if (JFusionFunction::isJoomlaVersion('1.6')) {
-            $toolbar = "<div class='m'>\n";
-            $toolbar.= "<div class='toolbar-list' id='toolbar'>\n";
-            $toolbar.= "<ul>\n";
-            $toolbar.= "<li class='button' id='toolbar-apply'>\n";
-			$toolbar.= "<a href='javascript:void(0);' onclick=\"window.parent.jDiscussionParamSet('{$dbtask}', '{$encoded_pairs}');\" class='toolbar'><span class='icon-32-apply'></span>".JText::_('APPLY')."</a>\n";
-            $toolbar.= "</li>\n";
-            $toolbar.= "<li class='button' id='toolbar-cancel'>\n";
-            $toolbar.= "<a href='javascript:void(0);' onclick='window.parent.SqueezeBox.close();' class='toolbar'><span class='icon-32-cancel'></span>".JText::_('CLOSE')."</a>\n";
-            $toolbar.= "</li>\n";
-            $toolbar.= "</ul>\n";
-            $toolbar.= "<div class='clr'></div>\n";
-            $toolbar.= "</div>\n";
-            $toolbar.= "</div>\n";
+            $toolbar = <<<HTML
+                <div class="m">
+                    <div class="toolbar-list" id="toolbar">
+                        <ul>
+                            <li class="button" id="toolbar-apply">
+                                <a href="javascript:void(0);" onclick="window.parent.jDiscussionParamSet('{$dbtask}', '{$encoded_pairs}');" class="toolbar"><span class="icon-32-apply"></span>{$apply}</a>
+                            </li>
+                            <li class="button" id="toolbar-cancel">
+                                <a href="javascript:void(0);" onclick="window.parent.SqueezeBox.close();" class="toolbar"><span class="icon-32-cancel"></span>{$close}</a>
+                            </li>
+                        </ul>
+                        <div class="clr"></div>
+                    </div>
+                </div>
+HTML;
         } else {
-    		$toolbar  = "<div id='My Toolbar' class='toolbar'>\n";
-    		$toolbar .= "<table class='toolbar'>\n";
-    		$toolbar .= "<tbody>\n";
-    		$toolbar .= "<tr>\n";
-    		$toolbar .= "<td id='My Toolbar-apply' class='button'>\n";
-    		$toolbar .= "<a class='toolbar' onclick=\"window.parent.jDiscussionParamSet('{$dbtask}', '{$encoded_pairs}');\" href='javascript: void(0);'>\n";
-    		$toolbar .= "<span title='".JText::_('APPLY')."' class='icon-32-apply'></span>".JText::_('APPLY')."\n";
-    		$toolbar .= "</a>\n";
-    		$toolbar .= "</td>\n";
-    		$toolbar .= "<td id='My Toolbar-cancel' class='button'>\n";
-    		$toolbar .= "<a class='toolbar' onclick=\"window.parent.SqueezeBox.close();\" href='javascript:void(0);'>\n";
-    		$toolbar .= "<span title='".JText::_('CANCEL')."' class='icon-32-cancel'></span>".JText::_('CANCEL')."\n";
-    		$toolbar .= "</a>\n";
-    		$toolbar .= "</td>\n";
-    		$toolbar .= "</tr>\n";
-    		$toolbar .= "</tbody>\n";
-    		$toolbar .= "</table>\n";
-    		$toolbar .= "</div>\n";
+            $toolbar = <<<HTML
+    		    <div id='My Toolbar' class='toolbar'>\
+                    <table class='toolbar'>
+                        <tbody>
+                            <tr>
+                                <td id='My Toolbar-apply' class='button'>
+                                    <a class='toolbar' onclick=\"window.parent.jDiscussionParamSet('{$dbtask}', '{$encoded_pairs}');\" href='javascript: void(0);'>
+                                        <span title='".JText::_('APPLY')."' class='icon-32-apply'></span>".JText::_('APPLY')."
+                                    </a>
+                                </td>
+                                <td id='My Toolbar-cancel' class='button'>
+                                    <a class='toolbar' onclick=\"window.parent.SqueezeBox.close();\" href='javascript:void(0);'>
+                                        <span title='".JText::_('CANCEL')."' class='icon-32-cancel'></span>".JText::_('CANCEL')."
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+HTML;
         }
 
 	    //assign references

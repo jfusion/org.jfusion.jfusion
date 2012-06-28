@@ -252,7 +252,7 @@ class JFusionAdmin_universal extends JFusionAdmin{
                         //object(stdClass)#245 (6) { ["Field"]=>  string(2) "id" ["Type"]=>  string(6) "int(5)" ["Null"]=>  string(0) "" ["Key"]=>  string(0) "" ["Default"]=>  string(1) "0" ["Extra"]=>  string(0) "" }
                         $output .= '<div>Name: '.$val->Field.'</div>';
                         $output .= '<div>Type: '.$val->Type.'</div>';
-                        $output .= '<div>Default: "'.$val->Default.'"</div>';
+                        $output .= '<div>Default: "'.$val->Default.'" </div>';
                         $null = $val->Null?JText::_('YES'):JText::_('NO');
                         $output .= '<div>Null: '.$null.'</div></td><td>';
                         if ( isset($value['field'][$val->Field]) ) {

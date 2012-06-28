@@ -209,14 +209,25 @@ class JFusionAdmin_moodle extends JFusionAdmin
                 $mod_exists = true;
             }
 
-            $html = '<div class="button2-left"><div class="blank"><a href="javascript:void(0);" onclick="return module(\'' . (($mod_exists) ? 'uninstallModule' : 'installModule') . '\');">' . ((! $mod_exists) ? JText::_ ( 'MODULE_UNINSTALL_BUTTON' ) : JText::_ ( 'MODULE_INSTALL_BUTTON' )) . '</a></div></div>' . "\n";
-
             if ($mod_exists) {
-                $src = "components/com_jfusion/images/tick.png";
+                $src = 'components/com_jfusion/images/tick.png';
+                $mod = 'uninstallModule';
+                $text = JText::_ ( 'MODULE_UNINSTALL_BUTTON' );
             } else {
-                $src = "components/com_jfusion/images/cross.png";
+                $src = 'components/com_jfusion/images/cross.png';
+                $mod = 'installModule';
+                $text = JText::_ ( 'MODULE_INSTALL_BUTTON' );
             }
-            $html .= "<img src='$src' style='margin-left:10px;' id='usergroups_img'/>";
+
+            $html = <<<HTML
+                <div class="button2-left">
+                    <div class="blank">
+                        <a href="javascript:void(0);" onclick="return module('{$mod}');">{$text}</a>
+                    </div>
+                </div>
+
+                <img src="{$src}" style="margin-left:10px;" id="usergroups_img"/>
+HTML;
             return $html;
         } else {
             return JText::_ ( 'MOODLE_CONFIG_FIRST' );
@@ -412,20 +423,28 @@ class JFusionAdmin_moodle extends JFusionAdmin
                 $activated = 0;
             }
 
-            $html = '<div class="button2-left"><div class="blank"><a href="javascript:void(0);"  onclick="return module(\'activateModule\');">' . ((!$activated)?JText::_ ( 'MODULE_DEACTIVATION_BUTTON' ):JText::_ ( 'MODULE_ACTIVATION_BUTTON' )) . '</a></div></div>' . "\n";
-            $html .= '<input type="hidden" name="activation" id="activation" value="'.(($activated)?0:1).'"/>';
-
-            if ($activated ) {
-                $src = "components/com_jfusion/images/tick.png";
+            if ($activated) {
+                $src = 'components/com_jfusion/images/tick.png';
+                $text = JText::_ ( 'MODULE_DEACTIVATION_BUTTON' );
             } else {
-                $src = "components/com_jfusion/images/cross.png";
+                $src = 'components/com_jfusion/images/cross.png';
+                $text = JText::_ ( 'MODULE_ACTIVATION_BUTTON' );
             }
-            $html .= "<img src='$src' style='margin-left:10px;'/>";
 
-            return $html;
+            $html = <<<HTML
+			    <div class="button2-left">
+			        <div class="blank">
+			            <a href="javascript:void(0);"  onclick="return module('activateModule');">{$text}</a>
+			        </div>
+			    </div>
+			    <input type="hidden" name="activation" id="activation" value="{$activated}"/>
+
+			    <img src="{$src}" style="margin-left:10px;"/>
+HTML;
         } else {
-            return JText::_ ( 'MOODLE_CONFIG_FIRST' );
+            $html = JText::_ ( 'MOODLE_CONFIG_FIRST' );
         }
+        return $html;
     }
 
     /**

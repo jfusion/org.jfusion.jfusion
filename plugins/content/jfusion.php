@@ -218,41 +218,41 @@ class plgContentJfusion extends JPlugin
                     $this->helper->_debug('In test mode thus not creating the article');
                     $threadinfo =& $this->helper->_get_thread_info();
                     $JFusionForum =& JFusionFactory::getForum($this->jname);
-                    $content = "<u>" . $this->article->title . "</u><br />";
+                    $content = '<u>' . $this->article->title . '</u><br />';
                     if (!empty($threadinfo)) {
-                        $content .= JText::_('DISCUSSBOT_TEST_MODE') . "<img src='".JFusionFunction::getJoomlaURL().DISCUSSBOT_URL_PATH."images/check.png' style='margin-left:5px;'><br/>";
+                        $content .= JText::_('DISCUSSBOT_TEST_MODE') . '<img src="'.JFusionFunction::getJoomlaURL().DISCUSSBOT_URL_PATH.'images/check.png" style="margin-left:5px;"><br/>';
                         if ($threadinfo->published) {
-                            $content .= JText::_('STATUS') . ": " . JText::_('INITIALIZED_AND_PUBLISHED') . "<br />";
+                            $content .= JText::_('STATUS') . ': ' . JText::_('INITIALIZED_AND_PUBLISHED') . '<br />';
                         } else {
-                            $content .= JText::_('STATUS') . ": " . JText::_('INITIALIZED_AND_UNPUBLISHED') . "<br />";
+                            $content .= JText::_('STATUS') . ': ' . JText::_('INITIALIZED_AND_UNPUBLISHED') . '<br />';
                         }
-                        $content .= JText::_('THREADID') . ": " . $threadinfo->threadid . "<br />";
-                        $content .= JText::_('FORUMID') . ": " . $threadinfo->forumid . "<br />";
-                        $content .= JText::_('FIRST_POSTID') . ": " . $threadinfo->postid. "<br />";
+                        $content .= JText::_('THREADID') . ': ' . $threadinfo->threadid . '<br />';
+                        $content .= JText::_('FORUMID') . ': ' . $threadinfo->forumid . '<br />';
+                        $content .= JText::_('FIRST_POSTID') . ': ' . $threadinfo->postid. '<br />';
 
                         $forumlist =& $this->helper->_get_lists('forum');
                         if (!in_array($threadinfo->forumid, $forumlist)) {
-                            $content .= "<span style='color:red; font-weight:bold;'>" . JText::_('WARNING') . "</span>: " . JText::_('FORUM_NOT_EXIST') . "<br />";
+                            $content .= '<span style="color:red; font-weight:bold;">' . JText::_('WARNING') . '</span>: ' . JText::_('FORUM_NOT_EXIST') . '<br />';
                         }
 
                         $forumthread = $JFusionForum->getThread($threadinfo->threadid);
                         if (empty($forumthread)) {
-                            $content .= "<span style='color:red; font-weight:bold;'>" . JText::_('WARNING') . "</span>: " . JText::_('THREAD_NOT_EXIST') . "<br />";
+                            $content .= '<span style="color:red; font-weight:bold;">' . JText::_('WARNING') . '</span>: ' . JText::_('THREAD_NOT_EXIST') . '<br />';
                         }
                     } else {
                         $valid = ($this->valid) ? JText::_('JYES') : JText::_('JNO');
                         if (!$this->valid) {
-                            $content .= JText::_('DISCUSSBOT_TEST_MODE') . "<img src='".JFusionFunction::getJoomlaURL().DISCUSSBOT_URL_PATH."images/x.png' style='margin-left:5px;'><br/>";
-                            $content .= JText::_('VALID') . ": " . $valid . "<br />";
-                            $content .= JText::_('INVALID_REASON') . ": " . $this->validity_reason . "<br />";
+                            $content .= JText::_('DISCUSSBOT_TEST_MODE') . '<img src="'.JFusionFunction::getJoomlaURL().DISCUSSBOT_URL_PATH.'images/x.png" style="margin-left:5px;"><br/>';
+                            $content .= JText::_('VALID') . ': ' . $valid . '<br />';
+                            $content .= JText::_('INVALID_REASON') . ': ' . $this->validity_reason . '<br />';
                         } else {
-                            $content .= "<b>" . JText::_('DISCUSSBOT_TEST_MODE') . "</b><img src='".JFusionFunction::getJoomlaURL().DISCUSSBOT_URL_PATH."images/check.png' style='margin-left:5px;'><br/>";
-                            $content .= JText::_('VALID_REASON') . ": " . $this->validity_reason . "<br />";
-                            $content .= JText::_('STATUS') . ": " . JText::_('UNINITIALIZED_THREAD_WILL_BE_CREATED') . "<br />";
+                            $content .= '<b>' . JText::_('DISCUSSBOT_TEST_MODE') . '</b><img src="'.JFusionFunction::getJoomlaURL().DISCUSSBOT_URL_PATH.'images/check.png" style="margin-left:5px;2><br/>';
+                            $content .= JText::_('VALID_REASON') . ': ' . $this->validity_reason . '<br />';
+                            $content .= JText::_('STATUS') . ': ' . JText::_('UNINITIALIZED_THREAD_WILL_BE_CREATED') . '<br />';
                             $forumid = $JFusionForum->getDefaultForum($this->params, $this->article);
-                            $content .= JText::_('FORUMID') . ": " . $forumid . "<br />";
+                            $content .= JText::_('FORUMID') . ': ' . $forumid . '<br />';
                             $author = $JFusionForum->getThreadAuthor($this->params, $this->article);
-                            $content .= JText::_('AUTHORID') . ": " . $author . "<br />";
+                            $content .= JText::_('AUTHORID') . ': ' . $author . '<br />';
                         }
                     }
                     JError::raiseNotice('500', $content);
@@ -585,45 +585,45 @@ class plgContentJfusion extends JPlugin
             } elseif ($this->mode=='test') {
                 $this->helper->_debug('In test mode');
                 //get the existing thread information
-                $content  = "<div class='jfusionclearfix' style='border:1px solid #ECF8FD; background-color:#ECF8FD; margin-top:10px; margin-bottom:10px;'>\n";
+                $content  = '<div class="jfusionclearfix" style="border:1px solid #ECF8FD; background-color:#ECF8FD; margin-top:10px; margin-bottom:10px;">';
 
                 if (!empty($threadinfo)) {
-                    $content .= "<b>" . JText::_('DISCUSSBOT_TEST_MODE') . "</b><img src='".JFusionFunction::getJoomlaURL().DISCUSSBOT_URL_PATH."images/check.png' style='margin-left:5px;'><br/>";
+                    $content .= '<b>' . JText::_('DISCUSSBOT_TEST_MODE') . '</b><img src="'.JFusionFunction::getJoomlaURL().DISCUSSBOT_URL_PATH.'images/check.png" style="margin-left:5px;"><br/>';
                     if ($threadinfo->published) {
-                        $content .= JText::_('STATUS') . ": " . JText::_('INITIALIZED_AND_PUBLISHED') . "<br />";
+                        $content .= JText::_('STATUS') . ': ' . JText::_('INITIALIZED_AND_PUBLISHED') . '<br />';
                     } else {
-                        $content .= JText::_('STATUS') . ": " . JText::_('INITIALIZED_AND_UNPUBLISHED') . "<br />";
+                        $content .= JText::_('STATUS') . ': ' . JText::_('INITIALIZED_AND_UNPUBLISHED') . '<br />';
                     }
-                    $content .= JText::_('THREADID') . ": " . $threadinfo->threadid . "<br />";
-                    $content .= JText::_('FORUMID') . ": " . $threadinfo->forumid . "<br />";
-                    $content .= JText::_('FIRST_POSTID') . ": " . $threadinfo->postid. "<br />";
+                    $content .= JText::_('THREADID') . ': ' . $threadinfo->threadid . '<br />';
+                    $content .= JText::_('FORUMID') . ': ' . $threadinfo->forumid . '<br />';
+                    $content .= JText::_('FIRST_POSTID') . ': ' . $threadinfo->postid. '<br />';
 
                     $forumlist =& $this->helper->_get_lists('forum');
                     if (!in_array($threadinfo->forumid, $forumlist)) {
-                        $content .= "<span style='color:red; font-weight:bold;'>" . JText::_('WARNING') . "</span>: " . JText::_('FORUM_NOT_EXIST') . "<br />";
+                        $content .= '<span style="color:red; font-weight:bold;">' . JText::_('WARNING') . '</span>: ' . JText::_('FORUM_NOT_EXIST') . '<br />';
                     }
 
                     $forumthread = $JFusionForum->getThread($threadinfo->threadid);
                     if (empty($forumthread)) {
-                        $content .= "<span style='color:red; font-weight:bold;'>" . JText::_('WARNING') . "</span>: " . JText::_('THREAD_NOT_EXIST') . "<br />";
+                        $content .= '<span style="color:red; font-weight:bold;">' . JText::_('WARNING') . '</span>: ' . JText::_('THREAD_NOT_EXIST') . '<br />';
                     }
                 } else {
                     $valid = ($this->valid) ? JText::_('JYES') : JText::_('JNO');
                     if (!$this->valid) {
-                        $content .= "<b>" . JText::_('DISCUSSBOT_TEST_MODE') . "</b><img src='".JFusionFunction::getJoomlaURL().DISCUSSBOT_URL_PATH."images/x.png' style='margin-left:5px;'><br/>";
-                        $content .= JText::_('VALID') . ": " . $valid . "<br />";
-                        $content .= JText::_('INVALID_REASON') . ": " . $this->validity_reason . "<br />";
+                        $content .= '<b>' . JText::_('DISCUSSBOT_TEST_MODE') . '</b><img src="'.JFusionFunction::getJoomlaURL().DISCUSSBOT_URL_PATH.'images/x.png" style="margin-left:5px;"><br/>';
+                        $content .= JText::_('VALID') . ': ' . $valid . '<br />';
+                        $content .= JText::_('INVALID_REASON') . ': ' . $this->validity_reason . '<br />';
                     } else {
-                        $content .= "<b>" . JText::_('DISCUSSBOT_TEST_MODE') . "</b><img src='".JFusionFunction::getJoomlaURL().DISCUSSBOT_URL_PATH."images/check.png' style='margin-left:5px;'><br/>";
-                        $content .= JText::_('VALID_REASON') . ": " . $this->validity_reason . "<br />";
-                        $content .= JText::_('STATUS') . ": " . JText::_('UNINITIALIZED_THREAD_WILL_BE_CREATED') . "<br />";
+                        $content .= '<b>' . JText::_('DISCUSSBOT_TEST_MODE') . '</b><img src="'.JFusionFunction::getJoomlaURL().DISCUSSBOT_URL_PATH.'images/check.png" style="margin-left:5px;"><br/>';
+                        $content .= JText::_('VALID_REASON') . ': ' . $this->validity_reason . '<br />';
+                        $content .= JText::_('STATUS') . ': ' . JText::_('UNINITIALIZED_THREAD_WILL_BE_CREATED') . '<br />';
                         $forumid = $JFusionForum->getDefaultForum($this->params, $this->article);
-                        $content .= JText::_('FORUMID') . ": " . $forumid . "<br />";
+                        $content .= JText::_('FORUMID') . ': ' . $forumid . '<br />';
                         $author = $JFusionForum->getThreadAuthor($this->params, $this->article);
-                        $content .= JText::_('AUTHORID') . ": " . $author . "<br />";
+                        $content .= JText::_('AUTHORID') . ': ' . $author . '<br />';
                     }
                 }
-                $content .= "</div>\n";
+                $content .= '</div>';
             } elseif (!empty($threadinfo->manual)) {
                 if (!empty($threadinfo->published)) {
                     $this->helper->_debug('In manual mode but article has been initialized');
@@ -652,11 +652,13 @@ class plgContentJfusion extends JPlugin
             $uri = JFactory::getURI();
             $url = $uri->toString(array('path', 'query', 'fragment'));
             $url = str_replace('&', '&amp;', $url);
-            $content  = "<form style='display:none;' id='JFusionTaskForm' name='JFusionTaskForm' method='post' action='".$url."'>\n";
-            $content .= "<input type='hidden' name='articleId' value='' />\n";
-            $content .= "<input type='hidden' name='dbtask' value='' />\n";
-            $content .= "</form>\n";
 
+            $content = <<<HTML
+                <form style="display:none;" id="JFusionTaskForm" name="JFusionTaskForm" method="post" action="{$url}">
+                    <input type="hidden" name="articleId" value="" />
+                    <input type="hidden" name="dbtask" value="" />
+                </form>
+HTML;
             $this->article->text .= $content;
 
             $taskFormLoaded = 1;
@@ -681,9 +683,11 @@ class plgContentJfusion extends JPlugin
             if ($this->ajax_request) {
                 die($debug_contents);
             } else {
-                $this->article->text .= "<div id='jfusionDebugContainer{$this->article->id}'>\n";
-                $this->article->text .= $debug_contents;
-                $this->article->text .= "\n</div>\n";
+                $this->article->text = <<<HTML
+                    <div id="jfusionDebugContainer{$this->article->id}">
+                        {$debug_contents}
+                    </div>
+HTML;
             }
         }
     }
@@ -789,7 +793,7 @@ class plgContentJfusion extends JPlugin
                                     } else {
                                         $error = "";
                                         foreach($status['error'] as $err) {
-                                           $error .= "<br /> - " . $err;
+                                           $error .= '<br /> - ' . $err;
                                         }
                                     }
                                 } else {
@@ -974,13 +978,13 @@ class plgContentJfusion extends JPlugin
                 $generate_guts = true;
             }
 
-            $content = "<div style='float:none; display:{$display};' id='discussion'>\n";
+            $content = '<div style="float:none; display:'.$display.';" id="discussion">';
 
             if ($generate_guts) {
                 $content .= $this->_render_discussion_content($threadinfo);
             }
 
-            $content .= "</div>";
+            $content .= '</div>';
 
             //now generate the buttons in case the thread was just created
             $button_content  = $this->_render_buttons();
@@ -1019,36 +1023,36 @@ class plgContentJfusion extends JPlugin
                 $this->helper->reply_count = $JFusionForum->getReplyCount($threadinfo);
             }
             //prepare quick reply box if enabled
-            if ($this->params->get("enable_quickreply")){
+            if ($this->params->get('enable_quickreply')){
                 $threadLocked = $JFusionForum->getThreadLockedStatus($threadinfo->threadid);
                 if ($threadLocked) {
-                    $this->helper->output['reply_form_error'] = $this->params->get("locked_msg");
+                    $this->helper->output['reply_form_error'] = $this->params->get('locked_msg');
                     $this->helper->output['show_reply_form'] = false;
                 } elseif ($show_form) {
                     if (!$JoomlaUser->guest && empty($JFusionUserinfo)) {
-                        $this->helper->output['reply_form_error'] =  $this->jname . ': ' . JText::_('USER_NOT_EXIST')."\n";
+                        $this->helper->output['reply_form_error'] =  $this->jname . ': ' . JText::_('USER_NOT_EXIST');
                         $this->helper->output['show_reply_form'] = false;
                     } else {
                         $showGuestInputs = ($allowGuests && $JoomlaUser->guest) ? true : false;
-                        $this->helper->output['reply_form']  = "<form id='jfusionQuickReply{$this->article->id}' name='jfusionQuickReply{$this->article->id}' method='post' action='".$action_url."'>\n";
-                        $this->helper->output['reply_form'] .= "<input type='hidden' name='dbtask' value='create_post' />\n";
-                        $this->helper->output['reply_form'] .= "<input type=hidden name='threadid' id='threadid' value='{$threadinfo->threadid}'/>\n";
+                        $this->helper->output['reply_form']  = '<form id="jfusionQuickReply'.$this->article->id.'" name="jfusionQuickReply'.$this->article->id.'" method="post" action="'.$action_url.'">';
+                        $this->helper->output['reply_form'] .= '<input type="hidden" name="dbtask" value="create_post" />';
+                        $this->helper->output['reply_form'] .= '<input type="hidden" name="threadid" id="threadid" value="'.$threadinfo->threadid.'"/>';
                         $page_limitstart = JRequest::getInt('limitstart', 0);
                         if ($page_limitstart) {
-                            $this->helper->output['reply_form'] .= "<input type='hidden' name='limitstart' value='$page_limitstart' />\n";
+                            $this->helper->output['reply_form'] .= '<input type="hidden" name="limitstart" value="'.$page_limitstart.'" />';
                         }
                         $this->helper->output['reply_form'] .= $JFusionForum->createQuickReply($this->params,$showGuestInputs);
-                        $this->helper->output['reply_form'] .= "</form>";
+                        $this->helper->output['reply_form'] .= '</form>';
                         $this->helper->output['show_reply_form'] = true;
                     }
                 } else {
-                    $this->helper->output['reply_form_error'] = $this->params->get("must_login_msg");
+                    $this->helper->output['reply_form_error'] = $this->params->get('must_login_msg');
                     $this->helper->output['show_reply_form'] = false;
                 }
             }
 
             //add posts to content if enabled
-            if ($this->params->get("show_posts")) {
+            if ($this->params->get('show_posts')) {
                 //get the posts
                 $posts = $JFusionForum->getPosts($this->params, $threadinfo);
 
@@ -1056,7 +1060,7 @@ class plgContentJfusion extends JPlugin
                     $this->helper->output['posts'] = $this->_prepare_posts_output($posts);
                 }
 
-                if ($this->params->get("enable_pagination",1)) {
+                if ($this->params->get('enable_pagination',1)) {
                     $application = JFactory::getApplication() ;
                     $limitstart = JRequest::getInt( 'limitstart_discuss', 0 );
                     $limit = (int) $application->getUserStateFromRequest( 'global.list.limit', 'limit_discuss', 5, 'int' );
@@ -1080,22 +1084,22 @@ class plgContentJfusion extends JPlugin
             //prepare quick reply box if enabled
             if ($show_form) {
                 if (!$JoomlaUser->guest && empty($JFusionUserinfo)) {
-                    $this->helper->output['reply_form_error'] =  $this->jname . ': ' . JText::_('USER_NOT_EXIST')."\n";
+                    $this->helper->output['reply_form_error'] =  $this->jname . ': ' . JText::_('USER_NOT_EXIST');
                     $this->helper->output['show_reply_form'] = false;
                 } else {
                     $showGuestInputs = ($allowGuests && $JoomlaUser->guest) ? true : false;
-                    $this->helper->output['reply_form']  = "<form id='jfusionQuickReply{$this->article->id}' name='jfusionQuickReply{$this->article->id}' method=post action='".$action_url."'>\n";
-                    $this->helper->output['reply_form'] .= "<input type=hidden name='dbtask' value='create_threadpost'/>\n";
+                    $this->helper->output['reply_form']  = '<form id="jfusionQuickReply'.$this->article->id.'" name="jfusionQuickReply'.$this->article->id.'" method="post" action="'.$action_url.'">';
+                    $this->helper->output['reply_form'] .= '<input type="hidden" name="dbtask" value="create_threadpost"/>';
                     $page_limitstart = JRequest::getInt('limitstart', 0);
                     if ($page_limitstart) {
-                        $this->helper->output['reply_form'] .= "<input type='hidden' name='limitstart' value='$page_limitstart' />\n";
+                        $this->helper->output['reply_form'] .= '<input type="hidden" name="limitstart" value="'.$page_limitstart.'" />';
                     }
                     $this->helper->output['reply_form'] .= $JFusionForum->createQuickReply($this->params,$showGuestInputs);
-                    $this->helper->output['reply_form'] .= "</form>";
+                    $this->helper->output['reply_form'] .= '</form>';
                     $this->helper->output['show_reply_form'] = true;
                 }
             } else {
-                $this->helper->output['reply_form_error'] = $this->params->get("must_login_msg");
+                $this->helper->output['reply_form_error'] = $this->params->get('must_login_msg');
                 $this->helper->output['show_reply_form'] = false;
             }
         }
@@ -1124,7 +1128,7 @@ class plgContentJfusion extends JPlugin
         $link_type=& $this->params->get("link_type",'text');
         $link_mode=& $this->params->get("link_mode",'always');
         $blog_link_mode=& $this->params->get("blog_link_mode",'forum');
-        $linkHTML = ($link_type=='image') ? "<img style='border:0;' src='$link_text'>" : $link_text;
+        $linkHTML = ($link_type=='image') ? '<img style="border:0;" src="'.$link_text.'">' : $link_text;
         $linkTarget =& $this->params->get('link_target','_parent');
         if ($this->helper->isJ16) {
             if ($this->helper->option == 'com_content') {
@@ -1286,7 +1290,7 @@ class plgContentJfusion extends JPlugin
 
                         if ($this->params->get('enable_comment_in_forum_button',0)) {
                             $commentLinkText = $this->params->get('comment_in_forum_link_text', JText::_('ADD_COMMENT'));
-                            $commentLinkHTML = ($this->params->get('comment_in_forum_link_type')=='image') ? "<img style='border:0;' src='$commentLinkText'>" : $commentLinkText;
+                            $commentLinkHTML = ($this->params->get('comment_in_forum_link_type')=='image') ? '<img style="border:0;" src="'.$commentLinkText.'">' : $commentLinkText;
                             $this->helper->output['buttons']['comment_in_forum']['href'] = JFusionFunction::routeURL($JFusionForum->getReplyURL($threadinfo->forumid, $threadinfo->threadid), $itemid, $this->jname);
                             $this->helper->output['buttons']['comment_in_forum']['text'] = $commentLinkHTML;
                             $this->helper->output['buttons']['comment_in_forum']['target'] = $linkTarget;
@@ -1317,7 +1321,7 @@ class plgContentJfusion extends JPlugin
 
                     if ($this->params->get('enable_comment_in_forum_button',0)) {
                         $commentLinkText = $this->params->get('comment_in_forum_link_text', JText::_('ADD_COMMENT'));
-                        $commentLinkHTML = ($this->params->get('comment_in_forum_link_type')=='image') ? "<img style='border:0;' src='$commentLinkText'>" : $commentLinkText;
+                        $commentLinkHTML = ($this->params->get('comment_in_forum_link_type')=='image') ? '<img style="border:0;" src="'.$commentLinkText.'">' : $commentLinkText;
                         $this->helper->output['buttons']['comment_in_forum']['href'] = JFusionFunction::routeURL($JFusionForum->getReplyURL($threadinfo->forumid, $threadinfo->threadid), $itemid, $this->jname);
                         $this->helper->output['buttons']['comment_in_forum']['text'] = $commentLinkHTML;
                         $this->helper->output['buttons']['comment_in_forum']['target'] = $linkTarget;
@@ -1343,10 +1347,14 @@ class plgContentJfusion extends JPlugin
         if ($innerhtml) {
             $button_output = $this->helper->_render_file('default_buttons.php','capture');
         } else {
-            $button_output  = "<div class='jfusionclearfix' id='jfusionButtonArea{$this->article->id}'>\n";
-            $button_output .= $this->helper->_render_file('default_buttons.php','capture');
-            $button_output .= "</div>\n";
-            $button_output .= "<div class='jfusionclearfix jfusionButtonConfirmationBox' id='jfusionButtonConfirmationBox{$this->article->id}'></div>\n";
+            $button_output = <<<HTML
+                <div class="jfusionclearfix" id="jfusionButtonArea{$this->article->id}">
+                    {$this->helper->_render_file('default_buttons.php','capture')}
+                </div>
+                <div class="jfusionclearfix jfusionButtonConfirmationBox" id="jfusionButtonConfirmationBox{$this->article->id}">
+                </div>
+HTML;
+
         }
 
         return $button_output;
@@ -1490,7 +1498,7 @@ class plgContentJfusion extends JPlugin
             if ($this->params->get("enable_quickreply")){
                 $JoomlaUser = JFactory::getUser();
                 if ($this->params->get("quickreply_allow_guests",0) || !$JoomlaUser->guest) {
-                    $toolbar[] = "<a href='javascript:void(0);' onclick='jfusionQuote($postid);'>".JText::_('QUOTE')."</a>";
+                    $toolbar[] = '<a href="javascript:void(0);" onclick="jfusionQuote('.$postid.');">'.JText::_('QUOTE').'</a>';
                 }
             }
 

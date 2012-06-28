@@ -216,8 +216,8 @@ JS;
                     if ($fields) {
                         $data = $fields->toString();
                         //make sure it is surround by <form>
-                        if (substr($data, 0, 5) != "<form>") {
-                            $data = "<form>" . $data . "</form>";
+                        if (substr($data, 0, 5) != '<form>') {
+                            $data = '<form>' . $data . '</form>';
                         }
                         /**
                          * @ignore
@@ -375,8 +375,8 @@ JS;
                         if ($fields) {
                             $data = $fields->toString();
                             //make sure it is surround by <form>
-                            if (substr($data, 0, 5) != "<form>") {
-                                $data = "<form>" . $data . "</form>";
+                            if (substr($data, 0, 5) != '<form>') {
+                                $data = '<form>' . $data . '</form>';
                             }
                             /**
                              * @ignore
@@ -387,7 +387,7 @@ JS;
                             $form->addFieldPath(JPATH_COMPONENT.DS.'fields');
                             //bind values
                             $form->bind($value[$key]);
-                            $value[$key]["params"] = $form;
+                            $value[$key]['params'] = $form;
                         }
                         $this->loadLanguage($xml);
                     }
@@ -411,7 +411,7 @@ JS;
                         $this->loadLanguage($xml);
                     }
                 }
-                $value[$key]["params"] = $params;
+                $value[$key]['params'] = $params;
             }
         }
         return $value;

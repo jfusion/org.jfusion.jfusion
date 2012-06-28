@@ -325,25 +325,25 @@ JS;
             $return = $content;
             switch ($name) {
                 case 'size':
-                    $return = "<span style=\"font-size:$default\">$content</span>";
+                    $return = '<span style="font-size:'.$default.'">'.$content.'</span>';
                     break;
                 case 'glow':
                     $temp = explode(',', $default);
                     $color = (!empty($temp[0])) ? $temp[0] : 'red';
-                    $return = "<span style=\"background-color:$color\">$content</span>";
+                    $return = '<span style="background-color:'.$color.'">'.$content.'</span>';
                     break;
                 case 'shadow':
                     $temp = explode(',', $default);
                     $color = (!empty($temp[0])) ? $temp[0] : '#6374AB';
                     $dir = (!empty($temp[1])) ? $temp[1] : 'left';
                     $x = ($dir == 'left') ? '-0.2em' : '0.2em';
-                    $return = "<span style=\"text-shadow: $color $x 0.1em 0.2em;\">$content</span>";
+                    $return = '<span style="text-shadow: '.$color.' $x 0.1em 0.2em;">'.$content.'</span>';
                     break;
                 case 'move':
-                    $return = "<marquee>$content</marquee>";
+                    $return = '<marquee>'.$content.'</marquee>';
                     break;
                 case 'pre':
-                    $return = "<pre>$content</pre>";
+                    $return = '<pre>'.$content.'</pre>';
                     break;
                 case 'hr':
                     return '<hr>';
@@ -352,49 +352,60 @@ JS;
                     $temp = explode(',', $default);
                     $width = (!empty($temp[0])) ? $temp[0] : '200';
                     $height = (!empty($temp[1])) ? $temp[1] : '200';
-                    $return = "<object classid='clsid:D27CDB6E-AE6D-11CF-96B8-444553540000' codebase='http://active.macromedia.com/flash2/cabs/swflash.cab#version=5,0,0,0' width='$width' height='$height'><param name='movie' value='$content' /><param name='play' value='false' /><param name='loop' value='false' /><param name='quality' value='high' /><param name='allowScriptAccess' value='never' /><param name='allowNetworking' value='internal' /><embed src='$content' type='application/x-shockwave-flash' pluginspage='http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash' width='$width' height='$height' play='false' loop='false' quality='high' allowscriptaccess='never' allownetworking='internal'></embed></object>";
+                    $return = <<<HTML
+                        <object classid="clsid:D27CDB6E-AE6D-11CF-96B8-444553540000" codebase="http://active.macromedia.com/flash2/cabs/swflash.cab#version=5,0,0,0" width="{$width}" height="{$height}">
+                            <param name="movie" value="{$content}" />
+                            <param name="play" value="false" />
+                            <param name="loop" value="false" />
+                            <param name="quality" value="high" />
+                            <param name="allowScriptAccess" value="never" />
+                            <param name="allowNetworking" value="internal" />
+                            <embed src="{$content}" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash" width="{$width}" height="{$height}" play="false" loop="false" quality="high" allowscriptaccess="never" allownetworking="internal">
+                            </embed>
+                        </object>";
+HTML;
                     break;
                 case 'ftp':
                     if (empty($default)) {
                         $default = $content;
                     }
-                    $return = "<a href='$content'>$default</a>";
+                    $return = '<a href="'.$content.'">'.$default.'</a>';
                     break;
                 case 'table':
-                    $return = "<table>$content</table>";
+                    $return = '<table>'.$content.'</table>';
                     break;
                 case 'tr':
-                    $return = "<tr>$content</tr>";
+                    $return = '<tr>'.$content.'</tr>';
                     break;
                 case 'td':
-                    $return = "<td>$content</td>";
+                    $return = '<td>'.$content.'</td>';
                     break;
                 case 'tt';
-                    $return = "<tt>$content</tt>";
+                    $return = '<tt>'.$content.'</tt>';
                     break;
                 case 'o':
                 case 'O':
                 case '0':
-                    $return = "<li type='circle'>$content</li>";
+                    $return = '<li type="circle">'.$content.'</li>';
                     break;
                 case '*':
                 case '@':
-                    $return = "<li type='disc'>$content</li>";
+                    $return = '<li type="disc">'.$content.'</li>';
                     break;
                 case '+':
                 case 'x':
                 case '#':
-                    $return = "<li type='square'>$content</li>";
+                    $return = '<li type="square">'.$content.'</li>';
                     break;
                 case 'abbr':
                     if (empty($default)) {
                         $default = $content;
                     }
-                    $return = "<abbr title='$default'>$content</abbr>";
+                    $return = '<abbr title="'.$default.'">'.$content.'</abbr>';
                     break;
                 case 'anchor':
                     if (!empty($default)) {
-                        $return = "<span id='$default'>$content</span>";
+                        $return = '<span id="'.$default.'">'.$content.'</span>';
                     } else {
                         $return = $content;
                     }
@@ -404,13 +415,13 @@ JS;
                 case 'green':
                 case 'red':
                 case 'white':
-                    $return = "<span style='color: $name;'>$content</span>";
+                    $return = '<span style="color: '.$name.';">'.$content.'</span>';
                     break;
                 case 'iurl':
                     if (empty($default)) {
                         $default = $content;
                     }
-                    $return = "<a href='" . htmlspecialchars($default) . "' class='bbcode_url' target='_self'>$content</a>";
+                    $return = '<a href="' . htmlspecialchars($default) . '" class="bbcode_url" target="_self">'.$content.'</a>';
                     break;
                 case 'html':
                 case 'nobbc':
@@ -418,13 +429,13 @@ JS;
                     $return = $content;
                     break;
                 case 'ltr':
-                    $return = "<div style='text-align: left;' dir='$name'>$content</div>";
+                    $return = '<div style="text-align: left;" dir="$name">'.$content.'</div>';
                     break;
                 case 'rtl':
-                    $return = "<div style='text-align: right;' dir='$name'>$content</div>";
+                    $return = '<div style="text-align: right;" dir="$name">'.$content.'</div>';
                     break;
                 case 'me':
-                    $return = "<div style='color: red;'>* $default $content</div>";
+                    $return = '<div style="color: red;">* '.$default.' '.$content.'</div>';
                     break;
                 case 'time':
                     $return = date("Y-m-d H:i", $content);

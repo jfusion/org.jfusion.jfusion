@@ -235,7 +235,7 @@ class JFusionUsersync
         	}
         }
         ?></div><?php
-        echo "<h2>" . JText::_('CONFLICT_RESOLUTION_COMPLETE') . "</h2>";
+        echo '<h2>' . JText::_('CONFLICT_RESOLUTION_COMPLETE') . '</h2>';
     }
 
     /**

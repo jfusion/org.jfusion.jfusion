@@ -315,9 +315,9 @@ class JFusionAdmin
         if (JFusionFunction::validPlugin($this->getJname())) {
             $usergroups = $this->getUsergroupList();
             if (!empty($usergroups)) {
-                $simple_usergroup = "<table style=\"width:100%; border:0\">";
-                $simple_usergroup.= "<tr><td>" . JText::_('DEFAULT_USERGROUP') . "</td><td>" . JHTML::_('select.genericlist', $usergroups, $control_name . '[' . $name . ']', '', 'id', 'name', $value) . "</td></tr>";
-                $simple_usergroup.= "</table>";
+                $simple_usergroup = '<table style="width:100%; border:0">';
+                $simple_usergroup.= '<tr><td>' . JText::_('DEFAULT_USERGROUP') . '</td><td>' . JHTML::_('select.genericlist', $usergroups, $control_name . '[' . $name . ']', '', 'id', 'name', $value) . '</td></tr>';
+                $simple_usergroup.= '</table>';
                 //escape single quotes to prevent JS errors
                 $simple_usergroup = str_replace("'", "\'", $simple_usergroup);
             } else {
@@ -351,16 +351,16 @@ class JFusionAdmin
             if ($advanced == 1) {
                 foreach ($master_usergroups as $master_usergroup) {
                     $select_value = (!isset($value[$master_usergroup->id])) ? '' : $value[$master_usergroup->id];
-                    $advanced_usergroup.= "<tr><td>" . $master_usergroup->name . '</td>';
+                    $advanced_usergroup.= '<tr><td>' . $master_usergroup->name . '</td>';
                     $advanced_usergroup.= '<td>' . JHTML::_('select.genericlist', $usergroups, $control_name . '[' . $name . '][' . $master_usergroup->id . ']', '', 'id', 'name', $select_value) . '</td></tr>';
                 }
             } else {
                 foreach ($master_usergroups as $master_usergroup) {
-                    $advanced_usergroup.= "<tr><td>" . $master_usergroup->name . '</td>';
+                    $advanced_usergroup.= '<tr><td>' . $master_usergroup->name . '</td>';
                     $advanced_usergroup.= '<td>' . JHTML::_('select.genericlist', $usergroups, $control_name . '[' . $name . '][' . $master_usergroup->id . ']', '', 'id', 'name', '') . '</td></tr>';
                 }
             }
-            $advanced_usergroup.= "</table>";
+            $advanced_usergroup.= '</table>';
             //escape single quotes to prevent JS errors
             $advanced_usergroup = str_replace("'", "\'", $advanced_usergroup);
         } else {

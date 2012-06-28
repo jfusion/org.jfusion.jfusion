@@ -39,7 +39,7 @@ if(!empty($this->forumSelectOptions)) {
 }
 
 if(!empty($this->joomlaSelectOptions) && !empty($this->forumSelectOptions)) {
-	echo "<input id='add_plugin' type=button class='button' style='margin-left:5px;' value=".JText::_('ADD')." onclick=\"if(this.value!='') { $('adminForm').submit(); }\" /><br /><br />";
+	echo '<input id="add_plugin" type=button class="button" style="margin-left:5px;" value="'.JText::_('ADD').'" onclick="if(this.value!=\'\') { $(\'adminForm\').submit(); }" /><br /><br />';
 }
 ?>
 <table class="adminlist" style="border-spacing:1px;">
@@ -67,7 +67,7 @@ foreach($this->pairs as $joomlaid => $forumid) {
 		elseif($this->dbtask=='pair_sections') echo JText::_('SECTION_NOT_EXIST');
 		elseif($this->dbtask=='pair_categories') echo JText::_('CATEGORY_NOT_EXIST');
 		?>
-		<img src='components/com_jfusion/images/delete_icon.png' onclick="$('adminForm').remove.value = '<?php echo $joomlaid; ?>'; $('adminForm').submit();"/></td>
+		<img src="components/com_jfusion/images/delete_icon.png" onclick="$('adminForm').remove.value = '<?php echo $joomlaid; ?>'; $('adminForm').submit();"/></td>
 	<td>
 		<?php
 		if(isset($this->forumSelectOptions[$forumid])) echo $this->forumSelectOptions[$forumid]->name;

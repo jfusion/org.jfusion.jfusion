@@ -62,7 +62,7 @@ JFusionFunctionAdmin::displayDonate();
         <?php
         foreach ($this->system as $software) {
         ?>
-            <tr class = "<?php echo $software->class ;?>">
+            <tr class="<?php echo $software->class ;?>">
                 <td>
                     <?php echo $software->name; ?>
                 </td>
