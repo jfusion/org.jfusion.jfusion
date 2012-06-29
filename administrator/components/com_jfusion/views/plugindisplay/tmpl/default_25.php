@@ -358,7 +358,7 @@ window.addEvent('domready',function() {
     <table class="adminform">
         <tr>
             <td>
-                <img src="components/com_jfusion/images/folder_url.png" height="60" width="60">
+                <img src="components/com_jfusion/images/folder_url.png">
             </td>
             <td>
                 <table>
@@ -402,7 +402,7 @@ window.addEvent('domready',function() {
     <table class="adminform">
         <tr>
             <td>
-                <img src="components/com_jfusion/images/folder_zip.png" height="60" width="60">
+                <img src="components/com_jfusion/images/folder_zip.png">
             </td>
             <td>
                 <table>
@@ -437,7 +437,7 @@ window.addEvent('domready',function() {
     <table class="adminform">
         <tr>
             <td>
-                <img src="components/com_jfusion/images/folder_dir.png" height="60" width="60">
+                <img src="components/com_jfusion/images/folder_dir.png">
             </td>
             <td>
                 <table>
@@ -471,7 +471,7 @@ window.addEvent('domready',function() {
     <table class="adminform">
         <tr>
             <td>
-                <img src="components/com_jfusion/images/folder_url.png" height="60" width="60">
+                <img src="components/com_jfusion/images/folder_url.png">
             </td>
             <td>
                 <table>
