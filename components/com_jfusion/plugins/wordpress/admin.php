@@ -196,7 +196,10 @@ class JFusionAdmin_wordpress extends JFusionAdmin
          */
         $helper = JFusionFactory::getHelper($this->getJname());
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
-        $usergroup_id = $usergroups[0];
+        $usergroup_id = null;
+        if(!empty($usergroups)) {
+            $usergroup_id = $usergroups[0];
+        }
 		return $helper->getUsergroupNameWP($usergroup_id);
 	}
 

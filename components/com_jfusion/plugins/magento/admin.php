@@ -131,7 +131,10 @@ class JFusionAdmin_magento extends JFusionAdmin
     function getDefaultUsergroup() {
         $params = JFusionFactory::getParams($this->getJname());
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
-        $usergroup_id = $usergroups[0];
+        $usergroup_id = null;
+        if(!empty($usergroups)) {
+            $usergroup_id = $usergroups[0];
+        }
         //we want to output the usergroup name
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'SELECT customer_group_code from #__customer_group WHERE customer_group_id = ' . (int)$usergroup_id;

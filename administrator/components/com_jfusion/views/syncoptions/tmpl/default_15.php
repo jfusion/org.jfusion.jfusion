@@ -103,7 +103,7 @@ JFusionFunctionAdmin::displayDonate();
                         var selected = false;
                         for(var i=0; i<form.elements.length; i++) {
                             if (form.elements[i].type=="select-one") {
-                                if (form.elements[i].options[form.elements[i].selectedIndex].value) {
+                                if (form.elements[i].options[form.elements[i].selectedIndex].value == 1) {
                                     selected = true;
                                     break;
                                 }

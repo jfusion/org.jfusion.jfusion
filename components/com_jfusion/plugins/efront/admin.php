@@ -175,7 +175,10 @@ class JFusionAdmin_efront extends JFusionAdmin
     function getDefaultUsergroup() {
         $params = JFusionFactory::getParams($this->getJname());
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
-        $usergroup_id = $usergroups[0];
+        $usergroup_id = null;
+        if(!empty($usergroups)) {
+            $usergroup_id = $usergroups[0];
+        }
         /**
          * @ignore
          * @var $helper JFusionHelper_efront

@@ -165,9 +165,12 @@ class JFusionAdmin_smf extends JFusionAdmin
     {
         $params = JFusionFactory::getParams($this->getJname());
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
-        $usergroup_id = $usergroups[0];
-        if ($usergroup_id == 0) {
-            return "Default Usergroup";
+        $usergroup_id = 0;
+        if(!empty($usergroups)) {
+            $usergroup_id = $usergroups[0];
+        }
+        if ($usergroup_id==0) {
+            return 'Default Usergroup';
         }
         //we want to output the usergroup name
         $db = JFusionFactory::getDatabase($this->getJname());
