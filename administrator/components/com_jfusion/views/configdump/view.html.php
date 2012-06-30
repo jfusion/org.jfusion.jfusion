@@ -314,7 +314,7 @@ class jfusionViewconfigdump extends JView {
                         break;
                     case 'mask':
                         $valid = 1;
-                        if (JRequest::getVar('mask',true)) {
+                        if (!JRequest::getVar('mask',true)) {
                             $value = '************';
                         }
                         break;
