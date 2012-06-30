@@ -61,24 +61,24 @@ class jfusionViewsynchistory extends JView
     	/**
     	 * Define some standards
     	 */
-    	define('INT_SECOND', 1);
-    	define('INT_MINUTE', 60);
-    	define('INT_HOUR', 3600);
-    	define('INT_DAY', 86400);
-    	define('INT_WEEK', 604800);
+        $INT_SECOND = 1;
+        $INT_MINUTE = 60;
+        $INT_HOUR = 3600;
+        $INT_DAY = 86400;
+        $INT_WEEK = 604800;
     	
     	$now = (!$now) ? time() : $now;
     	$timediff = ($now - $then);
-    	$weeks = (int)intval($timediff / INT_WEEK);
-    	$timediff = (int)intval($timediff - (INT_WEEK * $weeks));
-    	$days = (int)intval($timediff / INT_DAY);
-    	$timediff = (int)intval($timediff - (INT_DAY * $days));
-    	$hours = (int)intval($timediff / INT_HOUR);
-    	$timediff = (int)intval($timediff - (INT_HOUR * $hours));
-    	$mins = (int)intval($timediff / INT_MINUTE);
-    	$timediff = (int)intval($timediff - (INT_MINUTE * $mins));
-    	$sec = (int)intval($timediff / INT_SECOND);
-    	$timediff = (int)intval($timediff - ($sec * INT_SECOND));
+    	$weeks = (int)intval($timediff / $INT_WEEK);
+    	$timediff = (int)intval($timediff - ($INT_WEEK * $weeks));
+    	$days = (int)intval($timediff / $INT_DAY);
+    	$timediff = (int)intval($timediff - ($INT_DAY * $days));
+    	$hours = (int)intval($timediff / $INT_HOUR);
+    	$timediff = (int)intval($timediff - ($INT_HOUR * $hours));
+    	$mins = (int)intval($timediff / $INT_MINUTE);
+    	$timediff = (int)intval($timediff - ($INT_MINUTE * $mins));
+    	$sec = (int)intval($timediff / $INT_SECOND);
+    	$timediff = (int)intval($timediff - ($sec * $INT_SECOND));
     	$str = '';
     	if ($weeks) {
     		$str.= intval($weeks);

@@ -56,7 +56,7 @@ class jfusionViewsyncstatus extends JView
         include_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.usersync.php';
         if (!isset($this->syncid)) {
             $syncid = JRequest::getVar('syncid');
-            $this->assignRef('syncid', $this->syncid);
+            $this->assignRef('syncid', $syncid);
         }
 
         if (!isset($this->syncdata)) {

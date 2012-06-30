@@ -17,7 +17,7 @@
 defined('_JEXEC') or die('Restricted access');
 $inline = (!empty($this->sync_completed) || JRequest::getVar('tmpl') != 'component') ? true : false;
 //check to see if there is anything to output
-if (!$this->syncdata['slave_data']) {
+if (!isset($this->syncdata['slave_data']) || !$this->syncdata['slave_data']) {
     ?>
     <b style="color:red;">
         <?php echo JText::_('SYNC_NODATA') ?>

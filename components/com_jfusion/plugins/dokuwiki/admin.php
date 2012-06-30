@@ -151,11 +151,11 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
         $helper = JFusionFactory::getHelper($this->getJname());
         $list = $helper->auth->retrieveUsers($limitstart,$limit);
         $userlist = array();
-		foreach ($list as $value) {
+        foreach ($list as $value) {
             $user = new stdClass;
-            $user->email = $value['email'];
-            $user->username = $value['username'];
-            $userlist[]= $user;
+            $user->email = isset($value['mail']) ? $value['mail'] : null;
+            $user->username = isset($value['username']) ? $value['username'] : null;
+            $userlist[] = $user;
         }
         return $userlist;
     }
