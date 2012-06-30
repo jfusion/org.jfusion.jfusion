@@ -24,10 +24,10 @@ JHTML::_('behavior.modal', 'a.modal');
 <table>
 	<tr>
 		<td width="100px">
-			<img src="components/com_jfusion/images/jfusion_large.png" height="75" width="75">
+			<img src="components/com_jfusion/images/jfusion_large.png">
 		</td>
 		<td width="100px">
-			<img src="components/com_jfusion/images/usersync.png" height="75" width="75">
+			<img src="components/com_jfusion/images/usersync.png">
 		</td>
 		<td>
 			<h2>

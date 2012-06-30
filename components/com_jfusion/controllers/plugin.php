@@ -73,6 +73,10 @@ class JFusionControllerPlugin extends JController
             }
 
             //load the view
+            /**
+             * @ignore
+             * @var $view JView
+             */
             $view = &$this->getView('plugin', 'html');
             //render the view
             $view->assignRef('jname', $jname);

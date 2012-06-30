@@ -55,7 +55,7 @@ JFusionFunctionAdmin::displayDonate();
 			    <div style="float:left;">
 			            <div class="icon">
 			                <a href="index.php?option=com_jfusion&task=synchistory" >
-                                <img src="components/com_jfusion/images/synchistory.png" height="50" width="50">
+                                <img src="components/com_jfusion/images/synchistory_small.png">
                                 <span>
                                     <?php echo JText::_('USER_SYNC_HISTORY'); ?>
                                 </span>
@@ -66,7 +66,7 @@ JFusionFunctionAdmin::displayDonate();
 			    <div style="float:left;">
 			            <div class="icon">
 			                <a href="index.php?option=com_jfusion&task=loginchecker" >
-                                <img src="components/com_jfusion/images/login_checker.png" height="50" width="50">
+                                <img src="components/com_jfusion/images/login_checker_small.png">
                                 <span>
                                     <?php echo JText::_('CP_LOGIN_CHECKER'); ?>
                                 </span>
@@ -86,7 +86,7 @@ JFusionFunctionAdmin::displayDonate();
                 <div style="float:left;">
                     <div class="icon">
                         <a href="index.php?option=com_jfusion&task=versioncheck" >
-                            <img src="components/com_jfusion/images/versioncheck.png" height="50" width="50">
+                            <img src="components/com_jfusion/images/versioncheck_small.png">
                             <span
                                 ><?php echo JText::_('VERSION_CHECK'); ?>
                             </span>
@@ -96,7 +96,7 @@ JFusionFunctionAdmin::displayDonate();
 			    <div style="float:left;">
 			            <div class="icon">
 			                <a href="http://support.jfusion.org" >
-                                <img src="components/com_jfusion/images/help.png" height="50" width="50">
+                                <img src="components/com_jfusion/images/help.png">
                                 <span>
                                     <?php echo JText::_('CP_HELP'); ?>
                                 </span>

@@ -28,10 +28,10 @@ JFusionFunctionAdmin::displayDonate();
     <table>
         <tr>
             <td width="100px">
-                <img src="components/com_jfusion/images/jfusion_large.png" height="75" width="75">
+                <img src="components/com_jfusion/images/jfusion_large.png">
             </td>
             <td width="100px">
-                <img src="components/com_jfusion/images/editor.png" height="75" width="75">
+                <img src="components/com_jfusion/images/editor.png">
             </td>
             <td>
                 <h2>

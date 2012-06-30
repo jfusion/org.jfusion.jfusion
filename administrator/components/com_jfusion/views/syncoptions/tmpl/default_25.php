@@ -154,8 +154,8 @@ JFusionFunctionAdmin::displayDonate();
 </script>
 
 <table><tr>
-    <td width="100px"><img src="components/com_jfusion/images/jfusion_large.png" height="75" width="75"></td>
-    <td width="100px"><img src="components/com_jfusion/images/usersync.png" height="75" width="75"></td>
+    <td width="100px"><img src="components/com_jfusion/images/jfusion_large.png"></td>
+    <td width="100px"><img src="components/com_jfusion/images/usersync.png"></td>
     <td><h2><?php echo JText::_('USERSYNC'); ?></h2></td>
 </tr></table><br/>
 
