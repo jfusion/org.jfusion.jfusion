@@ -21,16 +21,16 @@ JFusionFunctionAdmin::displayDonate();
 
 <script type="text/javascript">
     <!--
-
     window.addEvent('domready', function() {
             var url = '<?php echo JURI::current(); ?>';
-            // refresh every 15 seconds
-            var timer = 1;
+            // refresh every 10 seconds
+            var syncRunning = false;
             var timeupdate = 10;
             var counter = 10;
             // periodical and dummy variables for later use
             var periodical, dummy, subvars;
             var start = $('start'), stop = $('stop'), log = $('log_res');
+            stop.setStyle('font-weight', 'bold');
             //test
             /* our ajax istance for starting the sync */
             var ajax = new Ajax(url, {
@@ -90,35 +90,48 @@ JFusionFunctionAdmin::displayDonate();
             start.addEvent('click', function(e) {
                     // prevent default
                     new Event(e).stop();
-                    // prevent insane clicks to start numerous requests
-                    $clear(periodical);
+                    if (!syncRunning) {
+                        // prevent insane clicks to start numerous requests
+                        $clear(periodical);
 
-                    /* a bit of fancy styles */
-                    stop.setStyle('font-weight', 'normal');
-                    start.setStyle('font-weight', 'bold');
-                    /* ********************* */
+                        /* a bit of fancy styles */
+                        stop.setStyle('font-weight', 'normal');
+                        start.setStyle('font-weight', 'bold');
+                        /* ********************* */
 
-                    //give the user a last chance to opt-out
-                    var answer = confirm("<?php echo JText::_('SYNC_CONFIRM_START'); ?>");
-                    if (answer) {
-                        var paramString = 'option=com_jfusion&task=syncinitiate&tmpl=component&syncid=<?php echo $this->syncid; ?>';
                         var form = $('adminForm');
-                        for(var i=0; i<form.elements.length; i++){
-                            if (form.elements[i].type=="select-one")
-                            {
-                                if (form.elements[i].options[form.elements[i].selectedIndex].value)
-                                {
-                                    paramString = paramString + '&' + form.elements[i].name + '=' + form.elements[i].options[form.elements[i].selectedIndex].value;
+                        var selected = false;
+                        for(var i=0; i<form.elements.length; i++) {
+                            if (form.elements[i].type=="select-one") {
+                                if (form.elements[i].options[form.elements[i].selectedIndex].value) {
+                                    selected = true;
+                                    break;
                                 }
                             }
-                            if (form.elements[i].name=='userbatch')
-                            {
-                                paramString = paramString + '&' + form.elements[i].name + '=' + form.elements[i].value;
-                            }
                         }
+                        if (selected) {
+                            //give the user a last chance to opt-out
+                            var answer = confirm("<?php echo JText::_('SYNC_CONFIRM_START'); ?>");
+                            if (answer) {
+                                var paramString = 'option=com_jfusion&task=syncinitiate&tmpl=component&syncid=<?php echo $this->syncid; ?>';
+                                for(var i=0; i<form.elements.length; i++){
+                                    if (form.elements[i].type=="select-one") {
+                                        if (form.elements[i].options[form.elements[i].selectedIndex].value) {
+                                            paramString = paramString + '&' + form.elements[i].name + '=' + form.elements[i].options[form.elements[i].selectedIndex].value;
+                                        }
+                                    }
+                                    if (form.elements[i].name=='userbatch') {
+                                        paramString = paramString + '&' + form.elements[i].name + '=' + form.elements[i].value;
+                                    }
+                                }
 
-                        new Ajax(url, {method: 'get'}).request(paramString);
-                        periodical = refresh.periodical(timer * 1000, this);
+                                new Ajax(url, {method: 'get'}).request(paramString);
+                                periodical = refresh.periodical(1000, this);
+                                syncRunning = true;
+                            }
+                        } else {
+                            alert("<?php echo JText::_('SYNC_NODATA'); ?>")
+                        }
                     }
                 }
             );
@@ -126,16 +139,18 @@ JFusionFunctionAdmin::displayDonate();
             stop.addEvent('click', function(e) {
                     new Event(e).stop();
                     // prevent default;
+                    if (syncRunning) {
+                        // a bit of fancy styles
+                        start.setStyle('font-weight', 'normal');
+                        stop.setStyle('font-weight', 'bold');
+                        /* ********************* */
 
-                    // a bit of fancy styles
-                    start.setStyle('font-weight', 'normal');
-                    stop.setStyle('font-weight', 'bold');
-                    /* ********************* */
-
-                    // let's stop our timed ajax
-                    $clear(periodical);
-                    // and let's stop our request in case it was waiting for a response
-                    ajax.cancel();
+                        // let's stop our timed ajax
+                        $clear(periodical);
+                        // and let's stop our request in case it was waiting for a response
+                        ajax.cancel();
+                    }
+                    syncRunning = false;
                 }
             );
         }

@@ -63,39 +63,41 @@ class JFusionModelInstaller extends InstallerModelInstall
     	$result = array();
     	$result['status'] = false;
         $this->setState('action', 'install');
+        $package = null;
         switch (JRequest::getWord('installtype')) {
-        case 'folder':
-            $package = $this->_getPackageFromFolder();
-            break;
-        case 'upload':
-            $package = $this->_getPackageFromUpload();
-            break;
-        case 'url':
-            $package = $this->_getPackageFromUrl();
-            break;
-        default:
-            $this->setState('message', JText::_('NO_INSTALL_TYPE'));
-            $result['message'] = JText::_('NO_INSTALL_TYPE');
-            return $result;
-            break;
+            case 'folder':
+                $package = $this->_getPackageFromFolder();
+                break;
+            case 'upload':
+                $package = $this->_getPackageFromUpload();
+                break;
+            case 'url':
+                $package = $this->_getPackageFromUrl();
+                break;
+            default:
+                $this->setState('message', JText::_('NO_INSTALL_TYPE'));
+                $result['message'] = JText::_('NO_INSTALL_TYPE');
+                break;
         }
-        // Was the package unpacked?
-        if (!$package) {
-            $this->setState('message', JText::_('NO_PACKAGE_FOUND'));
-            $result['message'] = JText::_('NO_PACKAGE_FOUND');
-        } else {
-            // custom installer
-            $installer = new JfusionPluginInstaller($this);
+        if (!isset($result['message'])) {
+            // Was the package unpacked?
+            if (!$package) {
+                $this->setState('message', JText::_('NO_PACKAGE_FOUND'));
+                $result['message'] = JText::_('NO_PACKAGE_FOUND');
+            } else {
+                // custom installer
+                $installer = new JfusionPluginInstaller($this);
 
-            // Install the package
-            $installer->install($package['dir'], $result);
+                // Install the package
+                $installer->install($package['dir'], $result);
 
-            // Cleanup the install files
-            if (!is_file($package['packagefile'])) {
-                $config = JFactory::getConfig();
-                $package['packagefile'] = $config->getValue('config.tmp_path') . DS . $package['packagefile'];
+                // Cleanup the install files
+                if (!is_file($package['packagefile'])) {
+                    $config = JFactory::getConfig();
+                    $package['packagefile'] = $config->getValue('config.tmp_path') . DS . $package['packagefile'];
+                }
+                JInstallerHelper::cleanupInstall($package['packagefile'], $package['extractdir']);
             }
-            JInstallerHelper::cleanupInstall($package['packagefile'], $package['extractdir']);
         }
         //return the results array
         return $result;
