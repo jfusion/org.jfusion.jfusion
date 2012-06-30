@@ -225,9 +225,24 @@ class JFusionJplugin
      */
     public static function allowRegistration($jname)
     {
-		// Get the component parameters object for the users component.
-		$params = JComponentHelper::getParams('com_users');
+        if ($jname == 'joomla_int') {
+            $params = JComponentHelper::getParams('com_users');
+        } else {
+            $db = & JFusionFactory::getDatabase($jname);
 
+            if(JFusionFunction::isJoomlaVersion('1.6',$jname)) {
+                //we want to output the usergroup name
+                $query = 'SELECT params from #__extensions WHERE element = \'com_users\'';
+                $db->setQuery($query);
+                $params = $db->loadResult();
+            } else {
+                //we want to output the usergroup name
+                $query = 'SELECT params from #__components WHERE option = \'com_users\'';
+                $db->setQuery($query);
+                $params = $db->loadResult();
+            }
+            $params = new JParameter($params);
+        }
 		// Return true if the 'allowUserRegistration' switch is enabled in the component parameters.
 		return ($params->get('allowUserRegistration') ? true : false);
     }
