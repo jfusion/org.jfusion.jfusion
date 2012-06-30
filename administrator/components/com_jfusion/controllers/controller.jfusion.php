@@ -396,7 +396,7 @@ class JFusionController extends JController
             $slave_data = array();
             if (empty($slaves)) {
                 //nothing was selected in the usersync
-                die(JText::_('SYNC_NODATA'));
+                die('<b style="color:red;">'.JText::_('SYNC_NODATA').'</b>');
             }
             $syncdata = array();
             $syncdata['sync_errors'] = 0;

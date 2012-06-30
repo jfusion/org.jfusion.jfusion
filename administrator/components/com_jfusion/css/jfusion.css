@@ -49,54 +49,6 @@ h2 { font-size:15px; }
 #cpanel img  { padding: 10px 0; margin: 0 auto; }
 #cpanel span { display: block; text-align: center; }
 
-/** plugineditor **/
-.contentbox {
-	width: 700px;
-	background: url(../images/table1.png) no-repeat left bottom;
-	padding-bottom: 17px;
-	margin: 0 auto;
-}
-.contentbox h2 {
-	height: 24px;
-	width: 670px;
-	background: url(../images/table1.png) no-repeat left top;
-	padding: 5px 15px;
-	font-size: 16px;
-	color: #fff;
-}
-.contentbox table {
-	width: 100%;
-	background: #eeeff1;				
-	border-left: 2px solid #4e607e;
-	border-right: 2px solid #4e607e;				
-}
-
-.contentbox tr {
-	width: 100%;
-	padding: 0 16px 0 16px;
-}
-
-.contentbox tr td {
-	padding: 3px;
-	vertical-align:top;
-}
-
-.contentbox tr td.contentbox_label {
-	width:180px;
-}
-
-.contentbox tr td.contentbox_param {
-	width:480px;
-}
-
-table.usergroups {
-	width:100%; border:0;
-}
-
-table.usergroups tr:hover {
-	 background-color: #ffd ;
-}
-
 /** sync **/
 #ajax_bar {
     background-color: #e4ecf2;
@@ -122,10 +74,6 @@ table.usergroups tr:hover {
 
 #log_res {
     overflow: auto;
-}
-
-#aspin.ajax-loading {
-    background: url(../images/ajax_loader.gif) no-repeat center;
 }
 
 div.edit{

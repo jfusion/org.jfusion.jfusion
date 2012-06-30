@@ -69,16 +69,24 @@ function _uninstallPlugin($type, $id, $group, $description)
         $tmpinstaller = new JInstaller();
         $uninstall_result = $tmpinstaller->uninstall($type, $result, 0);
         if (!$uninstall_result) {
-            ?>
-            <table style="background-color:#f9ded9;width:100%;"><tr style="height:30px">
-            <td><font size="2"><b><?php echo JText::_('UNINSTALL') . ' ' . $description . ' ' . JText::_('FAILED'); ?></b></font></td></tr></table>
-            <?php
+            $color = '#f9ded9';
+            $description = Text::_('UNINSTALL') . ' ' . $description . ' ' . JText::_('FAILED');
         } else {
-            ?>
-            <table style="background-color:#d9f9e2;width:100%;"><tr style="height:30px">
-            <td><font size="2"><b><?php echo JText::_('UNINSTALL') . ' ' . $description . ' ' . JText::_('SUCCESS'); ?></b></font></td></tr></table>
-            <?php
+            $color = '#d9f9e2';
+            $description = Text::_('UNINSTALL') . ' ' . $description . ' ' . JText::_('SUCCESS');
         }
+        $html = <<<HTML
+        <table style="background-color:{$color}; width:100%;">
+            <tr style="height:30px">
+                <td>
+                    <font size="2">
+                        <b>{$description}</b>
+                    </font>
+                </td>
+             </tr>
+        </table>
+HTML;
+        echo $html;
     }
 }
 

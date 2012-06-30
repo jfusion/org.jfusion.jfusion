@@ -127,11 +127,7 @@ JFusionFunctionAdmin::displayDonate();
                     new Event(e).stop();
                     // prevent default;
 
-                    /* a bit of fancy styles
-                    note: we do not remove 'ajax-loading' class
-                    because it is already done by 'onCancel'
-                    since we later do 'ajax.cancel()'
-                    */
+                    // a bit of fancy styles
                     start.setStyle('font-weight', 'normal');
                     stop.setStyle('font-weight', 'bold');
                     /* ********************* */

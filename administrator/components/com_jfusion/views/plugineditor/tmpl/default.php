@@ -59,7 +59,7 @@ JFusionFunctionAdmin::displayDonate();
                 echo $paneTabs->startPanel( JText::_($param[3]), $param[3] );
                 echo '<table>';
             } else if (!empty($param[0]) && $param[3] != ' ' && $param[3][0] != '@') {
-                echo '<tr><td class="contentbox_label" width="250px">' . $param[0] . '</td><td class="contentbox_param">' . $param[1] . '</td></tr>';
+                echo '<tr><td width="250px">' . $param[0] . '</td><td>' . $param[1] . '</td></tr>';
             } else {
                 echo '<tr><td colspan=2>' . $param[1] . '</td></tr>';
             }

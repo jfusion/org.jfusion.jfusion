@@ -17,7 +17,7 @@
 defined('_JEXEC') or die('Restricted access');
 if (!$this->syncdata['total_to_sync'] > 0) {
 	?>
-    <b>
+    <b style="color:red;">
     	<?php echo JText::_('SYNC_NODATA') ?>
     </b>
     <?php
