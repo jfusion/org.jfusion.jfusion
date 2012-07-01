@@ -305,7 +305,7 @@ if ($this->sync_active) {
         <input type="hidden" name="option" value="com_jfusion" />
         <input type="hidden" name="task" value="syncstatus" />
         <input type="hidden" name="syncid" value="<?php echo $this->syncid; ?>" />
-        <div id="ajax_bar">
+        <div class="ajax_bar">
             <?php echo JText::_('SYNC_DIRECTION_SELECT'); ?>
             <select name="action" style="margin-right:10px; margin-left:5px;">
                 <option value="master"><?php echo JText::_('SYNC_MASTER'); ?></option>
@@ -368,7 +368,7 @@ if ($this->sync_active) {
 <br/>
 <div id="counter"></div>
 <br/>
-<div id="ajax_bar">
+<div class="ajax_bar">
     <b><?php echo JText::_('SYNC_CONTROLLER'); ?></b>&nbsp;&nbsp;&nbsp;
     <a id="start" href="#"><?php echo JText::_('START'); ?></a>
 </div>
