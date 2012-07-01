@@ -106,9 +106,6 @@ function update() {
 
         this.innerHTML = '<?php echo JText::_('START',true); ?>';
 
-        // and let's stop our request in case it was waiting for a response
-        ajax.cancel();
-
         text = '<?php echo JText::_('PAUSED',true); ?>';
     } else if (response.completed) {
         // let's stop our timed ajax

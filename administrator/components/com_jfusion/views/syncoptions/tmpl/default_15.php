@@ -79,7 +79,7 @@ function renderSyncBody(data) {
         var tr = new Element('tr');
 
         //NAME
-        var td = new Element('td',{ 'width': 200})
+        var td = new Element('td',{ 'width': 200});
         td.innerHTML = info.jname;
         td.inject(tr);
 
@@ -99,7 +99,7 @@ function renderSyncBody(data) {
         progress.inject(tr);
 
         //SYNC_USERS_TODO
-        td = new Element('td')
+        td = new Element('td');
         td.innerHTML = info.total_to_sync-(info.total_to_sync-info.total);
         td.inject(tr);
         //CREATED
@@ -144,9 +144,6 @@ function update() {
         $clear(periodical);
 
         this.innerHTML = '<?php echo JText::_('START',true); ?>';
-
-        // and let's stop our request in case it was waiting for a response
-        ajax.cancel();
 
         text = '<?php echo JText::_('PAUSED',true); ?>';
     } else if (response.completed) {
