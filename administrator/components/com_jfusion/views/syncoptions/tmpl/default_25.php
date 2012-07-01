@@ -36,15 +36,14 @@ function renderSyncHead() {
     var root = new Element('thead');
     var tr = new Element('tr');
 
-    new Element('th',{'text': '<?php echo JText::_('PLUGIN',true) . ' ' . JText::_('NAME',true); ?>'}).inject(tr);
-    new Element('th',{'text': '<?php echo JText::_('SYNC_PROGRESS',true); ?>', 'width': 200}).inject(tr);
-    new Element('th',{'text': '<?php echo JText::_('SYNC_USERS_TODO',true); ?>'}).inject(tr);
-
-    new Element('th',{'text': '<?php echo JText::_('USERS',true) . ' ' . JText::_('CREATED',true); ?>'}).inject(tr);
-    new Element('th',{'text': '<?php echo JText::_('USERS',true) . ' ' . JText::_('DELETED',true); ?>'}).inject(tr);
-    new Element('th',{'text': '<?php echo JText::_('USERS',true) . ' ' . JText::_('UPDATED',true); ?>'}).inject(tr);
-    new Element('th',{'text': '<?php echo JText::_('USER',true) . ' ' . JText::_('CONFLICTS',true); ?>'}).inject(tr);
-    new Element('th',{'text': '<?php echo JText::_('USERS',true) . ' ' . JText::_('UNCHANGED',true); ?>'}).inject(tr);
+    new Element('th',{'html': '<?php echo JText::_('PLUGIN',true) . ' ' . JText::_('NAME',true); ?>'}).inject(tr);
+    new Element('th',{'html': '<?php echo JText::_('SYNC_PROGRESS',true); ?>', 'width': 200}).inject(tr);
+    new Element('th',{'html': '<?php echo JText::_('SYNC_USERS_TODO',true); ?>'}).inject(tr);
+    new Element('th',{'html': '<?php echo JText::_('USERS',true) . ' ' . JText::_('CREATED',true); ?>'}).inject(tr);
+    new Element('th',{'html': '<?php echo JText::_('USERS',true) . ' ' . JText::_('DELETED',true); ?>'}).inject(tr);
+    new Element('th',{'html': '<?php echo JText::_('USERS',true) . ' ' . JText::_('UPDATED',true); ?>'}).inject(tr);
+    new Element('th',{'html': '<?php echo JText::_('USER',true) . ' ' . JText::_('CONFLICTS',true); ?>'}).inject(tr);
+    new Element('th',{'html': '<?php echo JText::_('USERS',true) . ' ' . JText::_('UNCHANGED',true); ?>'}).inject(tr);
 
     tr.inject(root);
     return root;
@@ -57,7 +56,7 @@ function renderSyncBody(data) {
         var tr = new Element('tr');
 
         //NAME
-        new Element('td',{'text': info.jname , 'width': 200}).inject(tr);
+        new Element('td',{'html': info.jname , 'width': 200}).inject(tr);
 
         // SYNC_PROGRESS
         var outer = new Element('div').inject(tr);
@@ -73,17 +72,17 @@ function renderSyncBody(data) {
         progress.inject(tr);
 
         //SYNC_USERS_TODO
-        new Element('td',{'text': info.total_to_sync-(info.total_to_sync-info.total)}).inject(tr);
+        new Element('td',{'html': info.total_to_sync-(info.total_to_sync-info.total)}).inject(tr);
         //CREATED
-        new Element('td',{'text': info.created}).inject(tr);
+        new Element('td',{'html': info.created}).inject(tr);
         //DELETED
-        new Element('td',{'text': info.deleted}).inject(tr);
+        new Element('td',{'html': info.deleted}).inject(tr);
         //UPDATED
-        new Element('td',{'text': info.updated}).inject(tr);
+        new Element('td',{'html': info.updated}).inject(tr);
         //CONFLICTS
-        new Element('td',{'text': info.error}).inject(tr);
+        new Element('td',{'html': info.error}).inject(tr);
         //UNCHANGED
-        new Element('td',{'text': info.unchanged}).inject(tr);
+        new Element('td',{'html': info.unchanged}).inject(tr);
 
         tr.inject(root);
     }
