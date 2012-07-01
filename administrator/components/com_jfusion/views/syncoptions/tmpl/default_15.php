@@ -24,6 +24,7 @@ JFusionFunctionAdmin::displayDonate();
 var slave_data = <?php echo json_encode($this->slave_data);?>;
 var response = { 'completed' : false , 'slave_data' : [] , 'errors' : [] };
 var sync_mode = '<?php echo $this->sync_mode;?>';
+var syncid = '<?php echo $this->syncid; ?>';
 
 var periodical;
 
@@ -153,7 +154,7 @@ function update() {
         text = '<?php echo JText::_('FINISHED',true); ?>';
 
         $('start').innerHTML = '<b><?php echo JText::_('CLICK_FOR_MORE_DETAILS',true); ?></b>';
-        $('start').href = 'index.php?option=com_jfusion&task=syncstatus&syncid=<?php echo $this->syncid; ?>';
+        $('start').href = 'index.php?option=com_jfusion&task=syncstatus&syncid=' + syncid;
         $('start').removeEvents('click');
     } else {
         text = '<?php echo JText::_('UPDATE_IN'); ?> ' + counter + ' <?php echo JText::_('SECONDS',true); ?>';
@@ -164,6 +165,7 @@ function update() {
 }
 
 function render(html) {
+    html = html.trim();
     if (validateJSON(html)) {
         response = Json.evaluate(html,true);
         if (response.errors.length) {
@@ -187,7 +189,12 @@ function validateJSON(html) {
     } else {
         $clear(periodical);
         if (html.length) {
-            document.body.innerHTML = html;
+            if (html.indexOf('<') === 0) {
+                //session time out
+                window.location.href='index.php?option=com_jfusion&task=syncoptions&syncid='+syncid;
+            } else {
+                document.body.innerHTML = html;
+            }
         } else {
             document.body.innerHTML = '<?php echo JText::_('EMPTY_RESPONCE',true); ?>';
         }
@@ -222,7 +229,7 @@ window.addEvent('domready', function() {
                     var dummy = $time() + $random(0, 100);
                     //generate the get variable for submission
 
-                    var subvars = 'option=com_jfusion&task=syncresume&tmpl=component&dummy=' + dummy + '&syncid=' + '<?php echo $this->syncid; ?>';
+                    var subvars = 'option=com_jfusion&task=syncresume&tmpl=component&dummy=' + dummy + '&syncid=' + syncid;
                     var form = $('adminForm');
                     if (form) {
                         for (var i = 0; i < form.elements.length; i++) {
@@ -231,7 +238,7 @@ window.addEvent('domready', function() {
                             }
                         }
                     }
-                    ajax.request('option=com_jfusion&tmpl=component&task=syncprogress&syncid=' + '<?php echo $this->syncid; ?>');
+                    ajax.request('option=com_jfusion&tmpl=component&task=syncprogress&syncid=' + syncid);
                     ajaxsync.request(subvars);
                 }
             } else {
@@ -272,7 +279,7 @@ window.addEvent('domready', function() {
                         if (answer) {
                             //do start
                             syncRunning = true;
-                            var paramString = 'option=com_jfusion&task=syncinitiate&tmpl=component&syncid=<?php echo $this->syncid; ?>';
+                            var paramString = 'option=com_jfusion&task=syncinitiate&tmpl=component&syncid=' + syncid;
                             for(i=0; i<form.elements.length; i++) {
                                 if (form.elements[i].type=="select-one") {
                                     if (form.elements[i].options[form.elements[i].selectedIndex].value) {
