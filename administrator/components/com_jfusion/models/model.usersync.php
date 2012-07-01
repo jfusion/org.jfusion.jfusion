@@ -77,7 +77,7 @@ class JFusionUsersync
 
         return $results;
     }
-    
+
     /**
      * Count log data
      *
@@ -96,7 +96,7 @@ class JFusionUsersync
         $query = "SELECT COUNT(*) FROM #__jfusion_sync_details $whereStatement";
         $db->setQuery($query);
         return $db->loadResult();
-    }    
+    }
 
     /**
      * Save sync data
@@ -169,70 +169,70 @@ class JFusionUsersync
         <?php
         $synclog = JFusionUsersync::getLogData($syncid,'error');
         foreach ($syncError as $id => $error) {
-        	if (isset($error['action'])) {
-	            $data = unserialize($synclog[$id]->data);
-	            if ($error['action'] == '1') {
-	                //update the first entity
-	                echo '<h2>' . $data['user']['jname'] . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE') . '</h2>';
-	                $JFusionPlugin = & JFusionFactory::getUser($data['user']['jname']);
-	                debug::show($data['conflict']['userinfo'], $data['conflict']['jname'] . ' ' . JText::_('USER') . ' ' . JText::_('INFORMATION'), 1);
-	                $status = $JFusionPlugin->updateUser($data['conflict']['userinfo'], 1);
-	                if (!empty($status['error'])) {
-	                    debug::show($status['error'], $data['user']['jname'] . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE') . ' ' . JText::_('ERROR'), 0);
-	                    debug::show($status['debug'], $data['user']['jname'] . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE') . ' ' . JText::_('DEBUG'), 0);
-	                } else {
-	                    JFusionUsersync::markResolved($id);
-	                    debug::show($status['debug'], $data['user']['jname'] . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE') . ' ' . JText::_('DEBUG'), 0);
-	                    JFusionFunction::updateLookup($data['user']['userinfo'], 0, $data['user']['jname']);
-	                }
-	            } elseif ($error['action'] == '2') {
-	                //update the second entity (conflicting plugin)
-	                echo '<h2>' . $data['conflict']['jname'] . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE') . '</h2>';
-	                $JFusionPlugin = & JFusionFactory::getUser($data['conflict']['jname']);
-	                debug::show($data['user']['userinfo'], $data['user']['jname'] . ' ' . JText::_('USER') . ' ' . JText::_('INFORMATION'), 1);
-	                $status = $JFusionPlugin->updateUser($data['user']['userinfo'], 1);
-	                if (!empty($status['error'])) {
-	                    debug::show($status['error'], $data['conflict']['jname'] . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE') . ' ' . JText::_('ERROR'), 0);
-	                    debug::show($status['debug'], $data['conflict']['jname'] . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE') . ' ' . JText::_('DEBUG'), 0);
-	                } else {
-	                    JFusionUsersync::markResolved($id);
-	                    debug::show($status['debug'], $data['conflict']['jname'] . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE') . ' ' . JText::_('DEBUG'), 0);
-	                    JFusionFunction::updateLookup($data['user']['userinfo'], 0, $data['user']['jname']);
-	                }
-	            } elseif ($error['action'] == '3') {
-	                //delete the first entity
-	                //prevent Joomla from deleting all the slaves via the user plugin if it is set as master
-	                global $JFusionActive;
-	                $JFusionActive = 1;
-	                $JFusionPlugin = & JFusionFactory::getUser($error['user_jname']);
-	                $status = $JFusionPlugin->deleteUser($data['user']['userinfo']);
-	                if (!empty($status['error'])) {
-	                    //delete error
-	                    echo '<img src="components/com_jfusion/images/error.png" width="32" height="32">' . JText::_('ERROR') . ' ' . JText::_('DELETING') . ' ' . $error['user_jname'] . ' ' . JText::_('USER') . ' ' . $error['user_username'] . '<br/>';
-	                } else {
-	                    JFusionUsersync::markResolved($id);
-	                    //delete success
-	                    echo '<img src="components/com_jfusion/images/updated.png" width="32" height="32">' . JText::_('SUCCESS') . ' ' . JText::_('DELETING') . ' ' . $error['user_jname'] . ' ' . JText::_('USER') . ' ' . $error['user_username'] . '<br/>';
-	                    JFusionFunction::updateLookup($data['user']['userinfo'], 0, $error['conflict_jname'], true);
-	                }
-	            } elseif ($error['action'] == '4') {
-	                //delete the second entity (conflicting plugin)
-	                //prevent Joomla from deleting all the slaves via the user plugin if it is set as master
-	                global $JFusionActive;
-	                $JFusionActive = 1;
-	                $JFusionPlugin = & JFusionFactory::getUser($error['conflict_jname']);
-	                $status = $JFusionPlugin->deleteUser($data['conflict']['userinfo']);
-	                if (!empty($status['error'])) {
-	                    //delete error
-	                    echo '<img src="components/com_jfusion/images/error.png" width="32" height="32">' . JText::_('ERROR') . ' ' . JText::_('DELETING') . ' ' . $error['conflict_jname'] . ' ' . JText::_('USER') . ' ' . $error['conflict_username'] . '<br/>';
-	                } else {
-	                    JFusionUsersync::markResolved($id);
-	                    //delete success
-	                    echo '<img src="components/com_jfusion/images/updated.png" width="32" height="32">' . JText::_('SUCCESS') . ' ' . JText::_('DELETING') . ' ' . $error['conflict_jname'] . ' ' . JText::_('USER') . ' ' . $error['conflict_username'] . '<br/>';
-	                    JFusionFunction::updateLookup($data['conflict']['userinfo'], 0, $error['conflict_jname'], true);
-	                }
-	            }
-        	}
+            if (isset($error['action'])) {
+                $data = unserialize($synclog[$id]->data);
+                if ($error['action'] == '1') {
+                    //update the first entity
+                    echo '<h2>' . $data['user']['jname'] . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE') . '</h2>';
+                    $JFusionPlugin = & JFusionFactory::getUser($data['user']['jname']);
+                    debug::show($data['conflict']['userinfo'], $data['conflict']['jname'] . ' ' . JText::_('USER') . ' ' . JText::_('INFORMATION'), 1);
+                    $status = $JFusionPlugin->updateUser($data['conflict']['userinfo'], 1);
+                    if (!empty($status['error'])) {
+                        debug::show($status['error'], $data['user']['jname'] . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE') . ' ' . JText::_('ERROR'), 0);
+                        debug::show($status['debug'], $data['user']['jname'] . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE') . ' ' . JText::_('DEBUG'), 0);
+                    } else {
+                        JFusionUsersync::markResolved($id);
+                        debug::show($status['debug'], $data['user']['jname'] . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE') . ' ' . JText::_('DEBUG'), 0);
+                        JFusionFunction::updateLookup($data['user']['userinfo'], 0, $data['user']['jname']);
+                    }
+                } elseif ($error['action'] == '2') {
+                    //update the second entity (conflicting plugin)
+                    echo '<h2>' . $data['conflict']['jname'] . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE') . '</h2>';
+                    $JFusionPlugin = & JFusionFactory::getUser($data['conflict']['jname']);
+                    debug::show($data['user']['userinfo'], $data['user']['jname'] . ' ' . JText::_('USER') . ' ' . JText::_('INFORMATION'), 1);
+                    $status = $JFusionPlugin->updateUser($data['user']['userinfo'], 1);
+                    if (!empty($status['error'])) {
+                        debug::show($status['error'], $data['conflict']['jname'] . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE') . ' ' . JText::_('ERROR'), 0);
+                        debug::show($status['debug'], $data['conflict']['jname'] . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE') . ' ' . JText::_('DEBUG'), 0);
+                    } else {
+                        JFusionUsersync::markResolved($id);
+                        debug::show($status['debug'], $data['conflict']['jname'] . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE') . ' ' . JText::_('DEBUG'), 0);
+                        JFusionFunction::updateLookup($data['user']['userinfo'], 0, $data['user']['jname']);
+                    }
+                } elseif ($error['action'] == '3') {
+                    //delete the first entity
+                    //prevent Joomla from deleting all the slaves via the user plugin if it is set as master
+                    global $JFusionActive;
+                    $JFusionActive = 1;
+                    $JFusionPlugin = & JFusionFactory::getUser($error['user_jname']);
+                    $status = $JFusionPlugin->deleteUser($data['user']['userinfo']);
+                    if (!empty($status['error'])) {
+                        //delete error
+                        echo '<img src="components/com_jfusion/images/error.png" width="32" height="32">' . JText::_('ERROR') . ' ' . JText::_('DELETING') . ' ' . $error['user_jname'] . ' ' . JText::_('USER') . ' ' . $error['user_username'] . '<br/>';
+                    } else {
+                        JFusionUsersync::markResolved($id);
+                        //delete success
+                        echo '<img src="components/com_jfusion/images/updated.png" width="32" height="32">' . JText::_('SUCCESS') . ' ' . JText::_('DELETING') . ' ' . $error['user_jname'] . ' ' . JText::_('USER') . ' ' . $error['user_username'] . '<br/>';
+                        JFusionFunction::updateLookup($data['user']['userinfo'], 0, $error['conflict_jname'], true);
+                    }
+                } elseif ($error['action'] == '4') {
+                    //delete the second entity (conflicting plugin)
+                    //prevent Joomla from deleting all the slaves via the user plugin if it is set as master
+                    global $JFusionActive;
+                    $JFusionActive = 1;
+                    $JFusionPlugin = & JFusionFactory::getUser($error['conflict_jname']);
+                    $status = $JFusionPlugin->deleteUser($data['conflict']['userinfo']);
+                    if (!empty($status['error'])) {
+                        //delete error
+                        echo '<img src="components/com_jfusion/images/error.png" width="32" height="32">' . JText::_('ERROR') . ' ' . JText::_('DELETING') . ' ' . $error['conflict_jname'] . ' ' . JText::_('USER') . ' ' . $error['conflict_username'] . '<br/>';
+                    } else {
+                        JFusionUsersync::markResolved($id);
+                        //delete success
+                        echo '<img src="components/com_jfusion/images/updated.png" width="32" height="32">' . JText::_('SUCCESS') . ' ' . JText::_('DELETING') . ' ' . $error['conflict_jname'] . ' ' . JText::_('USER') . ' ' . $error['conflict_username'] . '<br/>';
+                        JFusionFunction::updateLookup($data['conflict']['userinfo'], 0, $error['conflict_jname'], true);
+                    }
+                }
+            }
         }
         ?></div><?php
         echo '<h2>' . JText::_('CONFLICT_RESOLUTION_COMPLETE') . '</h2>';
@@ -277,7 +277,7 @@ class JFusionUsersync
                 $user_count = 1;
                 //going to die every x users so that apache doesn't time out
                 if (!isset($syncdata['userbatch'])) {
-                     $syncdata['userbatch'] = 500;
+                    $syncdata['userbatch'] = 500;
                 }
                 $user_batch = $syncdata['userbatch'];
                 //we should start with the import of slave users into the master
@@ -343,7 +343,7 @@ class JFusionUsersync
                                     $sync_error['user']['userinfo'] = $userinfo;
                                     $sync_error['user']['userlist'] = $userlist[$j];
                                     $sync_log->data = serialize($sync_error);
-                                    $syncdata['sync_errors'] = 1;
+                                    $syncdata['sync_errors']++;
                                 } else {
                                     //usersync loggin enabled
                                     $sync_log->syncid = $syncdata['syncid'];
@@ -401,14 +401,14 @@ class JFusionUsersync
                                     JFusionUsersync::updateSyncdata($syncdata);
                                     //tell Joomla the batch has completed
                                     JFusionUsersync::changeSyncStatus($syncid, 0);
-                                    jexit();
+                                    return;
                                 }
                             }
                         }
                     }
 
                     //end of sync, save the final data
-                    $syncdata['completed'] = 'true';
+                    $syncdata['completed'] = true;
                     JFusionUsersync::updateSyncdata($syncdata);
                     JFusionUsersync::changeSyncStatus($syncid, 0);
                     //update the finish time
@@ -418,8 +418,8 @@ class JFusionUsersync
                     $db->query();
                 }
             } elseif ((($syncdata['synced_users'] / $syncdata['total_to_sync']) * 100) == 100) {
-                 //end of sync, save the final data
-                $syncdata['completed'] = 'true';
+                //end of sync, save the final data
+                $syncdata['completed'] = true;
                 JFusionUsersync::updateSyncdata($syncdata);
                 JFusionUsersync::changeSyncStatus($syncid, 0);
                 //update the finish time
@@ -427,8 +427,6 @@ class JFusionUsersync
                 $query = 'UPDATE #__jfusion_sync SET time_end = ' . $db->Quote(time()) . ' WHERE syncid =' . $db->Quote($syncdata['syncid']);
                 $db->setQuery($query);
                 $db->query();
-            } else {
-                jexit();
             }
         }
     }
