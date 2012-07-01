@@ -56,7 +56,8 @@ class JFusionUser_universal extends JFusionUser {
 
         $db->setQuery($query );
         $result = $db->loadObject();
-
+        $result->block = 0;
+        $result->activation = '';
 		if ( $result ) {
 			if (isset($result->firstname)) {
 				$result->name = $result->firstname;

@@ -137,6 +137,8 @@ class JFusionUser_dokuwiki extends JFusionUser {
 		$raw_user = $helper->auth->getUserData($username);
         if (is_array($raw_user)) {
             $user = new stdClass;
+            $user->block = 0;
+            $user->activation = '';
             $user->userid = $username;
             $user->name = $raw_user['name'];
             $user->username = $username;

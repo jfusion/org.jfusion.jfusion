@@ -101,7 +101,8 @@ JFusionFunctionAdmin::displayDonate();
 
                         var form = $('adminForm');
                         var selected = false;
-                        for(var i=0; i<form.elements.length; i++) {
+                        var i=0;
+                        for(i=0; i<form.elements.length; i++) {
                             if (form.elements[i].type=="select-one") {
                                 if (form.elements[i].options[form.elements[i].selectedIndex].value == 1) {
                                     selected = true;
@@ -114,7 +115,7 @@ JFusionFunctionAdmin::displayDonate();
                             var answer = confirm("<?php echo JText::_('SYNC_CONFIRM_START'); ?>");
                             if (answer) {
                                 var paramString = 'option=com_jfusion&task=syncinitiate&tmpl=component&syncid=<?php echo $this->syncid; ?>';
-                                for(var i=0; i<form.elements.length; i++){
+                                for(i=0; i<form.elements.length; i++){
                                     if (form.elements[i].type=="select-one") {
                                         if (form.elements[i].options[form.elements[i].selectedIndex].value) {
                                             paramString = paramString + '&' + form.elements[i].name + '=' + form.elements[i].options[form.elements[i].selectedIndex].value;

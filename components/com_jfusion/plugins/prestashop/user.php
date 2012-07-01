@@ -48,7 +48,8 @@ class JFusionUser_prestashop extends JFusionUser {
         $query = "SELECT id_customer as userid, email, passwd as password, firstname, lastname FROM #__customer WHERE email =" . $db->Quote($identifier) ;
         $db->setQuery($query);
         $result = $db->loadObject();
-
+        $result->block = 0;
+        $result->activation = '';
         if ($result) {
             $query = "SELECT id_customer as userid, email, passwd as password, firstname, lastname FROM #__customer_group WHERE id_customer =" . $db->Quote($result->userid);
             $db->setQuery($query);
