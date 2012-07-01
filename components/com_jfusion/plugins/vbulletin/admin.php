@@ -220,7 +220,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
         }
         //we want to output the usergroup name
         $db = & JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT title from #__usergroup WHERE usergroupid = ' . $usergroup;
+        $query = 'SELECT title from #__usergroup WHERE usergroupid = ' . $usergroup_id;
         $db->setQuery($query);
         return $db->loadResult();
     }
