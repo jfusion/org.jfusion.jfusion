@@ -25,10 +25,6 @@ var slave_data = <?php echo json_encode($this->slave_data);?>;
 var response = { 'completed' : false , 'slave_data' : [] , 'errors' : [] };
 var sync_mode = '<?php echo $this->sync_mode;?>';
 
-var jstart = '<?php echo JText::_('START'); ?>';
-var jstop = '<?php echo JText::_('STOP'); ?>';
-var jmore_info = '<?php echo JText::_('CLICK_FOR_MORE_DETAILS'); ?>';
-
 var periodical;
 
 var url = '<?php echo JURI::current(); ?>';
@@ -40,15 +36,15 @@ function renderSyncHead() {
     var root = new Element('thead');
     var tr = new Element('tr');
 
-    new Element('th',{'text': '<?php echo JText::_('PLUGIN') . ' ' . JText::_('NAME'); ?>'}).inject(tr);
-    new Element('th',{'text': '<?php echo JText::_('SYNC_PROGRESS'); ?>', 'width': 200}).inject(tr);
-    new Element('th',{'text': '<?php echo JText::_('SYNC_USERS_TODO'); ?>'}).inject(tr);
+    new Element('th',{'text': '<?php echo JText::_('PLUGIN',true) . ' ' . JText::_('NAME',true); ?>'}).inject(tr);
+    new Element('th',{'text': '<?php echo JText::_('SYNC_PROGRESS',true); ?>', 'width': 200}).inject(tr);
+    new Element('th',{'text': '<?php echo JText::_('SYNC_USERS_TODO',true); ?>'}).inject(tr);
 
-    new Element('th',{'text': '<?php echo JText::_('USERS') . ' ' . JText::_('CREATED'); ?>'}).inject(tr);
-    new Element('th',{'text': '<?php echo JText::_('USERS') . ' ' . JText::_('DELETED'); ?>'}).inject(tr);
-    new Element('th',{'text': '<?php echo JText::_('USERS') . ' ' . JText::_('UPDATED'); ?>'}).inject(tr);
-    new Element('th',{'text': '<?php echo JText::_('USER') . ' ' . JText::_('CONFLICTS'); ?>'}).inject(tr);
-    new Element('th',{'text': '<?php echo JText::_('USERS') . ' ' . JText::_('UNCHANGED'); ?>'}).inject(tr);
+    new Element('th',{'text': '<?php echo JText::_('USERS',true) . ' ' . JText::_('CREATED',true); ?>'}).inject(tr);
+    new Element('th',{'text': '<?php echo JText::_('USERS',true) . ' ' . JText::_('DELETED',true); ?>'}).inject(tr);
+    new Element('th',{'text': '<?php echo JText::_('USERS',true) . ' ' . JText::_('UPDATED',true); ?>'}).inject(tr);
+    new Element('th',{'text': '<?php echo JText::_('USER',true) . ' ' . JText::_('CONFLICTS',true); ?>'}).inject(tr);
+    new Element('th',{'text': '<?php echo JText::_('USERS',true) . ' ' . JText::_('UNCHANGED',true); ?>'}).inject(tr);
 
     tr.inject(root);
     return root;
@@ -109,27 +105,27 @@ function update() {
     if (!syncRunning) {
         $clear(periodical);
 
-        this.innerHTML = jstart;
+        this.innerHTML = '<?php echo JText::_('START',true); ?>';
 
         // and let's stop our request in case it was waiting for a response
         ajax.cancel();
 
-        text = '<b><?php echo JText::_('PAUSED'); ?></b>';
+        text = '<?php echo JText::_('PAUSED',true); ?>';
     } else if (response.completed) {
         // let's stop our timed ajax
         $clear(periodical);
 
-        text = '<b><?php echo JText::_('FINISHED'); ?></b>';
+        text = '<?php echo JText::_('FINISHED',true); ?>';
 
-        $('start').innerHTML = jmore_info;
+        $('start').innerHTML = '<b><?php echo JText::_('CLICK_FOR_MORE_DETAILS',true); ?></b>';
         $('start').href = 'index.php?option=com_jfusion&task=syncstatus&syncid=<?php echo $this->syncid; ?>';
         $('start').removeEvents('click');
     } else {
-        text = '<b><?php echo JText::_('UPDATE_IN'); ?> ' + counter + ' <?php echo JText::_('SECONDS'); ?></b>';
+        text = '<?php echo JText::_('UPDATE_IN'); ?> ' + counter + ' <?php echo JText::_('SECONDS',true); ?>';
 
-        this.innerHTML = jstop;
+        this.innerHTML = '<?php echo JText::_('STOP',true); ?>';
     }
-    $("counter").innerHTML = text;
+    $("counter").innerHTML = '<b>'+text+'</b>';
 }
 
 function render(html) {
@@ -159,7 +155,7 @@ function validateJSON(html) {
         if (html.length) {
             document.body.innerHTML = html;
         } else {
-            document.body.innerHTML = '<?php echo JText::_('EMPTY_RESPONCE'); ?>';
+            document.body.innerHTML = '<?php echo JText::_('EMPTY_RESPONCE',true); ?>';
         }
     }
     return false;
@@ -240,7 +236,7 @@ window.addEvent('domready', function() {
                     }
                     if (response.slave_data.length) {
                         //give the user a last chance to opt-out
-                        var answer = confirm("<?php echo JText::_('SYNC_CONFIRM_START'); ?>");
+                        var answer = confirm("<?php echo JText::_('SYNC_CONFIRM_START',true); ?>");
                         if (answer) {
                             //do start
                             syncRunning = true;
@@ -261,7 +257,7 @@ window.addEvent('domready', function() {
                                 }}).send(paramString);
                         }
                     } else {
-                        alert("<?php echo JText::_('SYNC_NODATA'); ?>")
+                        alert("<?php echo JText::_('SYNC_NODATA',true); ?>")
                     }
                 } else {
                     syncRunning = true;

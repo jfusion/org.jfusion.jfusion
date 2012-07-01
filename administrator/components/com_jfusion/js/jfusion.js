@@ -8,30 +8,6 @@ function submitbutton(pressbutton) {
     }
 }
 
-function submitbutton3(pressbutton) {
-    var form = $('adminForm');
-    // do field validation
-    if (form.install_directory.value === "") {
-        alert("<?php echo JText::_( 'NO_DIRECTORY'); ?>");
-    } else {
-        form.installtype.value = 'folder';
-        form.submit();
-    }
-}
-
-function submitbutton4(pressbutton) {
-    var form = $('adminForm');
-
-    // do field validation
-    if (form.install_url.value === "" || form.install_url.value == "http://") {
-        alert("<?php echo JText::_( 'NO_URL'); ?>");
-    } else {
-        form.installtype.value = 'url';
-        form.submit();
-    }
-}
-
-
 function setCheckedValue(radioObj, newValue) {
     var i;
 	if (radioObj) {
@@ -131,14 +107,6 @@ if (typeof Joomla != 'undefined') {
 
 	Joomla.getCheckedValue = function (radioObj) {
 		return getCheckedValue(radioObj);
-	};
-
-	Joomla.submitbutton3 = function (pressbutton) {
-        return submitbutton3(pressbutton);
-	};
-
-	Joomla.submitbutton4 = function (pressbutton) {
-        return submitbutton4(pressbutton);
 	};
 
 	Joomla.setCheckedValue = function (radioObj, newValue) {
