@@ -50,7 +50,7 @@ h2 { font-size:15px; }
 #cpanel span { display: block; text-align: center; }
 
 /** sync **/
-#ajax_bar {
+div.ajax_bar {
     background-color: #e4ecf2;
     border: 1px solid #d6d6d6;
     border-left-color: #e4e4e4;

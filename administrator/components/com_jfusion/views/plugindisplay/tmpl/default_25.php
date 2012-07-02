@@ -151,7 +151,7 @@ function initSortables() {
 }
 
 function deleteplugin(jname) {
-    var confirmdelete = confirm('<?php echo JText::_('DELETE') . ' ' . JText::_('PLUGIN') . ' ' ;?>' + jname + "?");
+    var confirmdelete = confirm('<?php echo JText::_('DELETE',true) . ' ' . JText::_('PLUGIN',true) . ' ' ;?>' + jname + "?");
     if(confirmdelete) {
         //update the database
         var url = '<?php echo JURI::root() . 'administrator/index.php'; ?>';
