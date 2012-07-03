@@ -1,5 +1,5 @@
 <?php
-  
+
 /**
  * Abstract public class for JFusion
  *
@@ -46,24 +46,238 @@ class JFusionPublic
      */
     function getBuffer(&$data)
     {
+        require_once(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.curlframeless.php');
+
+        $status = JFusionCurlFrameless::display($data);
+        if ( isset($data->location) ) {
+            $location = str_replace($data->integratedURL,'',$data->location);
+            $location = $this->fixUrl($location,$data->baseURL,$data->fullURL,$data->integratedURL,$data->jroute);
+            $mainframe = & JFactory::getApplication();
+            $mainframe->redirect($location);
+        }
+        if ( isset($status['error']) ) {
+            foreach ( $status['error'] as $key => $value ) {
+                JError::raiseWarning(500, $value);
+            }
+        }
     }
 
     /**
      * function that parses the HTML body and fixes up URLs and form actions
-     *
-     * @param object &$data object containing all frameless data
+     * @param &$data
      */
     function parseBody(&$data)
     {
+        $regex_body		= array();
+        $replace_body	= array();
+        $params = JFusionFactory::getParams($this->getJname());
+
+
+//        $regex_body[]       = '#(href|action)=["|\']'.$data->integratedURL.'(.*?)["|\']#mS';
+//        $replace_body[]     = '$1="/$2"';
+
+//        $regex_body[]       = '#(href|action)=["|\'](?!\w{0,10}://|\w{0,10}:)(.\S*?)["|\']#mSie';
+//        $replace_body[]     = '\'$1="\'.$this->fixUrl("$2","'.$data->baseURL.'","'.$data->fullURL.'","'.$data->integratedURL.'").\'"\'';
+
+
+        if (substr($data->baseURL, -1) != '/'){
+            $urlMode = 1;
+        } else if ($data->jroute==1) {
+            $urlMode = 2;
+        } else {
+            $urlMode = 3;
+        }
+
+        //parse anchors
+        if(!empty($data->parse_anchors)) {
+            $regex_body[]	= '#href="\#(.*?)"#mS';
+            $replace_body[]	= 'href="'.$data->fullURL.'#$1"';
+        }
+
+        //parse absolute URLS
+        if(!empty($data->parse_abs_path)) {
+            $path = preg_replace( '#(\w{0,10}://)(.*?)/(.*?)#is'  , '$3' , $data->integratedURL );
+            $path = preg_replace('#//+#','/',"/$path/");
+
+            $regex_body[]	= '#(action="|href="|src="|background="|url\(\'?)'.$path.'(.*?)("|\'?\))#mS';
+            $replace_body[]	= '$1'.$data->integratedURL.'$2$3';
+
+            switch ($urlMode) {
+                case 1:
+                case 2:
+                    $regex_body[]	= '#href="'.$path.'(.*?)"#me';
+                    $replace_body[] = '\'href="\'.$this->fixUrl("$1","'.$data->baseURL.'","'.$data->fullURL.'","'.$data->integratedURL.'","'.$data->jroute.'").\'"\'';
+                    break;
+                case 3:
+                    $regex_body[]	= '#href="'.$path.'(.*?)"#mS';
+                    $replace_body[]	= 'href="'.$data->baseURL.'$1"';
+                    break;
+            }
+        }
+
+        //parse relative URLS
+        if(!empty($data->parse_rel_url)) {
+            switch ($urlMode) {
+                case 1:
+                case 2:
+                    $regex_body[]	= '#href="[./|/](.*?)"#me';
+                    $replace_body[] = '\'href="\'.$this->fixUrl("$1","'.$data->baseURL.'","'.$data->fullURL.'","'.$data->integratedURL.'","'.$data->jroute.'").\'"\'';
+                    $regex_body[]	= '#href="(?!\w{0,10}://|\w{0,10}:)(.*?)"#me';
+                    $replace_body[] = '\'href="\'.$this->fixUrl("$1","'.$data->baseURL.'","'.$data->fullURL.'","'.$data->integratedURL.'","'.$data->jroute.'").\'"\'';
+                    break;
+                case 3:
+                    $regex_body[]	= '#href="[./|	/](.*?)"#mS';
+                    $replace_body[]	= 'href="'.$data->baseURL.'$1"';
+                    $regex_body[]	= '#href="(?!\w{0,10}://|\w{0,10}:)(.*?)"#mS';
+                    $replace_body[]	= 'href="'.$data->baseURL.'$1"';
+                    break;
+            }
+        }
+
+        //parse absolute URLS
+        if(!empty($data->parse_abs_url)) {
+            switch ($urlMode) {
+                case 1:
+                case 2:
+                    $regex_body[]	= '#href="'.$data->integratedURL.'(.*?)"#me';
+                    $replace_body[] = '\'href="\'.$this->fixUrl("$1","'.$data->baseURL.'","'.$data->fullURL.'","'.$data->integratedURL.'","'.$data->jroute.'").\'"\'';
+                    break;
+                case 3:
+                    $regex_body[]	= '#href="'.$data->integratedURL.'(.*?)"#mS';
+                    $replace_body[]	= 'href="'.$data->baseURL.'$1"';
+                    break;
+            }
+        }
+
+        //convert relative links from images into absolute links
+        if(!empty($data->parse_rel_img)) {
+            $regex_body[]	= '#(src="|background="|url\()[./|/](.*?)("|\))#mS';
+            $replace_body[]	= '$1'.$data->integratedURL.'$2$3';
+            $regex_body[]	= '#(src="|background="|url\()(?!\w{0,10}://|\w{0,10}:)(.*?)("|\))#mS';
+            $replace_body[]	= '$1'.$data->integratedURL.'$2$3';
+        }
+
+        //parse form actions
+        if(!empty($data->parse_action)) {
+            switch ($urlMode) {
+                case 1:
+                case 2:
+                    if (!empty($data->parse_abs_path)) {
+                        $regex_body[]	= '#action="'.$path.'(.*?)"(.*?)>#me';
+                        $replace_body[]	= '$this->fixAction("$1","$2","' . $data->baseURL .'","'.$data->jroute.'")';
+                    }
+                    if (!empty($data->parse_abs_url)) {
+                        $regex_body[]	= '#action="'.$data->integratedURL.'(.*?)"(.*?)>#me';
+                        $replace_body[]	= '$this->fixAction("$1","$2","' . $data->baseURL .'","'.$data->jroute.'")';
+                    }
+                    if (!empty($data->parse_rel_url)) {
+                        $regex_body[]	= '#action="[./|/](.*?)"(.*?)>#me';
+                        $replace_body[]	= '$this->fixAction("$1","$2","' . $data->baseURL .'","'.$data->jroute.'")';
+                    }
+                    break;
+                case 3:
+                    if (!empty($data->parse_abs_path)) {
+                        $regex_body[]	= '#action="'.$path.'(.*?)"#mS';
+                        $replace_body[]	= 'action="'.$data->baseURL.'$1"';
+                    }
+                    if (!empty($data->parse_abs_url)) {
+                        $regex_body[]	= '#action="'.$data->integratedURL.'(.*?)"#mS';
+                        $replace_body[]	= 'action="'.$data->baseURL.'$1"';
+                    }
+                    if (!empty($data->parse_rel_url)) {
+                        $regex_body[]	= '#action="[./|/](.*?)"#mS';
+                        $replace_body[]	= 'action="'.$data->baseURL.'$1"';
+                    }
+                    break;
+            }
+        }
+
+        //parse relative popup links to full url links
+        if(!empty($data->parse_popup)) {
+            $regex_body[]	= "#window\.open\('(?!\w{0,10}://)(.*?)'\)#mS";
+            $replace_body[]	= 'window.open(\''.$data->integratedURL.'$1\'';
+        }
+
+        $value = $data->bodymap;
+        if(is_array($value)) {
+            foreach ($value['value'] as $key => $val) {
+                $regex = html_entity_decode($value['value'][$key]);
+                $regex = rtrim($regex,';');
+                $regex = eval("return '$regex';");
+
+                $replace = html_entity_decode($value['name'][$key]);
+                $replace = rtrim($replace,';');
+                $replace = eval("return '$replace';");
+
+                if ($regex && $replace) {
+                    $regex_body[]	= $regex;
+                    $replace_body[]	= $replace;
+                }
+            }
+        }
+        $data->body = preg_replace($regex_body, $replace_body, $data->body);
+
+        if ( method_exists($this , '_parseBody') ) {
+            $this->_parseBody($data);
+        }
     }
 
     /**
      * function that parses the HTML header and fixes up URLs
-     *
-     * @param object &$data object containing all frameless data
+     * @param &$data
      */
     function parseHeader(&$data)
     {
+        // Define our preg arrays
+        $regex_header = array();
+        $replace_header	= array();
+        $params = JFusionFactory::getParams($this->getJname());
+
+        //convert relative links into absolute links
+        $path = preg_replace( '#(\w{0,10}://)(.*?)/(.*?)#is'  , '$3' , $data->integratedURL );
+        $path = preg_replace('#//+#','/',"/$path/");
+
+        $regex_header[]	= '#(href|src)=[\'|"]'.$path.'(.*?)[\'|"]#Si';
+        $replace_header[] = '$1="'.$data->integratedURL.'$2"';
+        $regex_header[]		= '#(href|src)=[\'|"](./|/)(.*?)[\'|"]#iS';
+        $replace_header[]	= '$1="'.$data->integratedURL.'$3"';
+        $regex_header[] 	= '#(href|src)=["|\'](?!\w{0,10}://)(.*?)["|\']#mSi';
+        $replace_header[]	= '$1="'.$data->integratedURL.'$2"';
+        $regex_header[]		= '#@import(.*?)[\'"]'.$path.'(.*?)[\'"]#Sis';
+        $replace_header[]	= '@import$1"'.$data->integratedURL.'$2"';
+        $regex_header[]		= '#@import(.*?)[\'"]/(.*?)[\'"]#Sis';
+        $replace_header[]	= '@import$1"'.$data->integratedURL.'$2"';
+
+        //fix for URL redirects
+        $parse_redirect = $params->get('parse_redirect');
+        if(!empty($parse_redirect)) {
+            $regex_header[]		= '#<meta http-equiv=[\'|"]refresh[\'|"] content=[\'|"](.*?)[\'|"](.*?)>#meis';
+            $replace_header[]	= '$this->fixRedirect("$1","'.$data->baseURL.'","'.$data->integratedURL.'","'.$data->jroute.'")';
+        }
+
+        $value = $data->headermap;
+
+        if(is_array($value)) {
+            foreach ($value['value'] as $key => $val) {
+                $regex = html_entity_decode($value['value'][$key]);
+                $regex = rtrim($regex,';');
+                $regex = eval("return '$regex';");
+
+                $replace = html_entity_decode($value['name'][$key]);
+                $replace = rtrim($replace,';');
+                $replace = eval("return '$replace';");
+
+                if ($regex && $replace) {
+                    $regex_header[]		= $regex;
+                    $replace_header[]	= $replace;
+                }
+            }
+        }
+        $data->header = preg_replace($regex_header, $replace_header, $data->header);
+
+        if ( method_exists($this , '_parseHeader') ) {
+            $this->_parseHeader($data);
+        }
     }
 
     /**
@@ -71,16 +285,16 @@ class JFusionPublic
      * @param &$data
      */
     function parseBuffer(&$data) {
-    	$pattern = '#<head[^>]*>(.*?)<\/head>.*?<body([^>]*)>(.*)<\/body>#si';
-    	$temp = array();
-    
-    	preg_match($pattern, $data->buffer, $temp);
-    	if(!empty($temp[1])) $data->header = $temp[1];
-    	if(!empty($temp[3])) $data->body = $temp[3];
-    
-    	$pattern = '#onload=["]([^"]*)#si';
-    	if(!empty($temp[2])){
-    		if(preg_match($pattern, $temp[2], $temp)) {
+        $pattern = '#<head[^>]*>(.*?)<\/head>.*?<body([^>]*)>(.*)<\/body>#si';
+        $temp = array();
+
+        preg_match($pattern, $data->buffer, $temp);
+        if(!empty($temp[1])) $data->header = $temp[1];
+        if(!empty($temp[3])) $data->body = $temp[3];
+
+        $pattern = '#onload=["]([^"]*)#si';
+        if(!empty($temp[2])){
+            if(preg_match($pattern, $temp[2], $temp)) {
                 $js ='<script language="JavaScript" type="text/javascript">';
                 $js .= <<<JS
                 if(window.addEventListener) { // Standard
@@ -94,12 +308,12 @@ class JFusionPublic
                 }
 JS;
                 $js .='</script>';
-    			$data->header .= $js;
-    		}
-    	}
-    	unset($temp);
-    }    
-    
+                $data->header .= $js;
+            }
+        }
+        unset($temp);
+    }
+
     /**
      * function that parses the HTML and fix the css
      *
@@ -109,93 +323,101 @@ JS;
      */
     function parseCSS(&$data,&$html,$infile_only=false)
     {
-    	$jname = $this->getJname();
-    	$param =& JFusionFactory::getParams ( $this->getJname() );
-    
-    	if (empty($jname)) {
-    		$jname = JRequest::getVar ( 'Itemid' );
-    	}
-    
-    	$document = JFactory::getDocument();
-    
-    	$sourcepath = JPATH_SITE . DS . 'components' . DS . 'com_jfusion' . DS . 'css' . DS .$jname . DS;
-    	$urlpath = 'components/com_jfusion/css/'.$jname.'/';
-    
-    	jimport('joomla.filesystem.file');
-    	jimport('joomla.filesystem.folder');
-    
-    	JFolder::create($sourcepath.'infile');
-    	if (!$infile_only) {
-    		//Outputs: apearpearle pear
-    		$urlPattern = array('http://', 'https://', '.css', '\\', '/', '|', '*', ':', ';', '?', '"', '<', '>', '=', '&');
-    		$urlReplace = array('', '', '', '', '-', '', '', '', '', '', '', '', '', ',', '_');
-    		if ($data->parse_css) {
-    			if (preg_match_all( '#<link(.*?type=[\'|"]text\/css[\'|"][^>]*)>#Si', $html, $css )) {
-    
-    				$regex_header = array ();
-    				$replace_header = array ();
-    				require_once (JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'parsers' . DS . 'css.php');
-    
-    				jimport('joomla.filesystem.file');
-    				foreach ($css[1] as $key => $values) {
-    					if( preg_match( '#href=[\'|"](.*?)[\'|"]#Si', $values, $cssUrl )) {
-    						$cssUrlRaw = $cssUrl[1];
-    						$cssUrl = urldecode(htmlspecialchars_decode($cssUrl[1]));
-    
-    						if ( preg_match( '#media=[\'|"](.*?)[\'|"]#Si', $values, $cssMedia ) ) {
-    							$cssMedia = $cssMedia[1];
-    						} else {
-    							$cssMedia = '';
-    						}
-    						$filename = str_replace($urlPattern, $urlReplace, $cssUrl).'.css';
-    						$filenamesource = $sourcepath.$filename;
-    
-    						if ( !JFile::exists($filenamesource) ) {
-    							$cssparser = new cssparser('#jfusionframeless');
-    							$result = $cssparser->ParseUrl($cssUrlRaw);
-    							if ($result !== false ) {
-    								$content = $cssparser->GetCSS();
-    								JFile::write($filenamesource, $content);
-    							}
-    						}
-    
-    						if ( JFile::exists($filenamesource) ) {
-    							$html = str_replace($cssUrlRaw  , $urlpath.$filename  , $html );
-    						}
-    					}
-    				}
-    			}
-    		}
-    	}
-    	if ($data->parse_infile_css) {
-    		if (preg_match_all( '#<style.*?type=[\'|"]text/css[\'|"].*?>(.*?)</style>#Sims', $html, $css )) {
-    			require_once (JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'parsers' . DS . 'css.php');
-    			foreach ($css[1] as $key => $values) {
-    				$filename = md5($values).'.css';
-    				$filenamesource = $sourcepath.'infile'.DS.$filename;
-    
-    				if ( preg_match( '#media=[\'|"](.*?)[\'|"]#Si', $css[0][$key], $cssMedia ) ) {
-    					$cssMedia = $cssMedia[1];
-    				} else {
-    					$cssMedia = '';
-    				}
-    
-    				if ( !JFile::exists($filenamesource) ) {
-    					$cssparser = new cssparser('#jfusionframeless');
-    					$cssparser->setUrl($data->integratedURL);
-    					$cssparser->ParseStr($values);
-    					$content = $cssparser->GetCSS();
-    					JFile::write($filenamesource, $content);
-    				}
-    				if ( JFile::exists($filenamesource) ) {
-    					$document->addStyleSheet($urlpath.'infile/'.$filename,'text/css',$cssMedia);
-    				}
-    			}
-    			$html = preg_replace ( '#<style.*?type=[\'|"]text/css[\'|"].*?>(.*?)</style>#Sims', '', $html );
-    		}
-    	}
+        $jname = $this->getJname();
+        $param =& JFusionFactory::getParams ( $this->getJname() );
+
+        if (empty($jname)) {
+            $jname = JRequest::getVar ( 'Itemid' );
+        }
+
+        $document = JFactory::getDocument();
+
+        $sourcepath = JPATH_SITE . DS . 'components' . DS . 'com_jfusion' . DS . 'css' . DS .$jname . DS;
+        $urlpath = 'components/com_jfusion/css/'.$jname.'/';
+
+        jimport('joomla.filesystem.file');
+        jimport('joomla.filesystem.folder');
+
+        JFolder::create($sourcepath.'infile');
+        if (!$infile_only) {
+            //Outputs: apearpearle pear
+            $urlPattern = array('http://', 'https://', '.css', '\\', '/', '|', '*', ':', ';', '?', '"', '<', '>', '=', '&');
+            $urlReplace = array('', '', '', '', '-', '', '', '', '', '', '', '', '', ',', '_');
+            if ($data->parse_css) {
+                if (preg_match_all( '#<link(.*?type=[\'|"]text\/css[\'|"][^>]*)>#Si', $html, $css )) {
+
+                    $regex_header = array ();
+                    $replace_header = array ();
+                    require_once (JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'parsers' . DS . 'css.php');
+
+                    jimport('joomla.filesystem.file');
+                    foreach ($css[1] as $key => $values) {
+                        if( preg_match( '#href=[\'|"](.*?)[\'|"]#Si', $values, $cssUrl )) {
+                            $cssUrlRaw = $cssUrl[1];
+
+                            if (strpos($cssUrlRaw,'/') === 0) {
+                                $uri = JURI::getInstance($data->integratedURL);
+                                $uri = new JURI ($data->integratedURL);
+
+                                $cssUrlRaw = $uri->toString(array('scheme', 'user', 'pass', 'host', 'port')).$cssUrlRaw;
+                            }
+
+                            $cssUrl = urldecode(htmlspecialchars_decode($cssUrl[1]));
+
+                            if ( preg_match( '#media=[\'|"](.*?)[\'|"]#Si', $values, $cssMedia ) ) {
+                                $cssMedia = $cssMedia[1];
+                            } else {
+                                $cssMedia = '';
+                            }
+                            $filename = str_replace($urlPattern, $urlReplace, $cssUrl).'.css';
+                            $filenamesource = $sourcepath.$filename;
+
+                            if ( !JFile::exists($filenamesource) ) {
+                                $cssparser = new cssparser('#jfusionframeless');
+                                $result = $cssparser->ParseUrl($cssUrlRaw);
+                                if ($result !== false ) {
+                                    $content = $cssparser->GetCSS();
+                                    JFile::write($filenamesource, $content);
+                                }
+                            }
+
+                            if ( JFile::exists($filenamesource) ) {
+                                $html = str_replace($cssUrlRaw  , $urlpath.$filename  , $html );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if ($data->parse_infile_css) {
+            if (preg_match_all( '#<style.*?type=[\'|"]text/css[\'|"].*?>(.*?)</style>#Sims', $html, $css )) {
+                require_once (JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'parsers' . DS . 'css.php');
+                foreach ($css[1] as $key => $values) {
+                    $filename = md5($values).'.css';
+                    $filenamesource = $sourcepath.'infile'.DS.$filename;
+
+                    if ( preg_match( '#media=[\'|"](.*?)[\'|"]#Si', $css[0][$key], $cssMedia ) ) {
+                        $cssMedia = $cssMedia[1];
+                    } else {
+                        $cssMedia = '';
+                    }
+
+                    if ( !JFile::exists($filenamesource) ) {
+                        $cssparser = new cssparser('#jfusionframeless');
+                        $cssparser->setUrl($data->integratedURL);
+                        $cssparser->ParseStr($values);
+                        $content = $cssparser->GetCSS();
+                        JFile::write($filenamesource, $content);
+                    }
+                    if ( JFile::exists($filenamesource) ) {
+                        $document->addStyleSheet($urlpath.'infile/'.$filename,'text/css',$cssMedia);
+                    }
+                }
+                $html = preg_replace ( '#<style.*?type=[\'|"]text/css[\'|"].*?>(.*?)</style>#Sims', '', $html );
+            }
+        }
     }
-    
+
     /**
      * extends JFusion's parseRoute function to reconstruct the SEF URL
      *
@@ -447,9 +669,93 @@ HTML;
         return $return;
     }
 
+    function fixUrl($q='',$baseURL,$fullURL,$integratedURL,$jRoute)
+    {
+        if (substr($baseURL, -1) != '/') {
+            //non sef URls
+            $q = str_replace('?', 	'&amp;', $q);
+            $url = $baseURL . '&amp;jfile=' .$q;
+        } else if ($jRoute==1) {
+            $url =  JFusionFunction::routeURL($q, JRequest::getInt('Itemid'));
+        } else {
+            //we can just append both variables
+            $url = $baseURL . $q;
+        }
+
+        return $url;
+    }
+
+    function fixAction($url, $extra, $baseURL,$jRoute)
+    {
+        $url = htmlspecialchars_decode($url);
+        $Itemid = JRequest::getInt('Itemid');
+
+        //strip any leading dots
+        if(substr($url,0,2)== './'){
+            $url = substr($url,2);
+        }
+
+        if (substr($baseURL, -1) != '/'){
+            //non-SEF mode
+            $url_details = parse_url($url);
+            $url_variables = array();
+            if (isset($url_details['query'])) parse_str($url_details['query'], $url_variables);
+            $jfile = basename($url_details['path']);
+            //set the correct action and close the form tag
+            $replacement = 'action="'.$baseURL . '"' . $extra . '>';
+            $replacement .= '<input type="hidden" name="jfile" value="'. $jfile . '"/>';
+            $replacement .= '<input type="hidden" name="Itemid" value="'.$Itemid . '"/>';
+            $replacement .= '<input type="hidden" name="option" value="com_jfusion"/>';
+        } else if ($jRoute==1) {
+            //extensive SEF parsing was selected
+            $url =  JFusionFunction::routeURL($url, $Itemid);
+            $replacement = 'action="'.$url . '"' . $extra . '>';
+            return $replacement;
+        } else {
+            //simple SEF mode
+            $url_details = parse_url($url);
+            $url_variables = array();
+            if (isset($url_details['query'])) parse_str($url_details['query'], $url_variables);
+            $jfile = basename($url_details['path']);
+            $replacement = 'action="'.$baseURL . $jfile.'"' . $extra . '>';
+        }
+        unset($url_variables['option'],$url_variables['jfile'],$url_variables['Itemid']);
+
+        //add any other variables
+        if(is_array($url_variables)){
+            foreach ($url_variables as $key => $value){
+                $replacement .=  '<input type="hidden" name="'. $key .'" value="'.$value . '"/>';
+            }
+        }
+        return $replacement;
+    }
+
+    function fixRedirect($url, $baseURL, $integratedURL,$jRoute)
+    {
+        //split up the timeout from url
+        preg_match(  '#(.*?)url=(.*?)\z#i'  ,  $url  ,$parts );
+        $timeout = $parts[1];
+        $url = $parts[2];
+
+        $path = preg_replace( '#(\w{0,10}://)(.*?)/(.*?)#is'  , '$3' , $integratedURL );
+        $path = preg_replace('#//+#','/',"/$path/");
+
+        $regex_url[]	= '#'.$integratedURL.'(.*?)#mS';
+        $replace_url[]	= '$1';
+        $regex_url[]	= '#'.$path.'(.*?)#mS';
+        $replace_url[]	= '$1';
+
+        $url = preg_replace($regex_url, $replace_url, $url);
+
+        $url = $this->fixUrl($url,$baseURL,$baseURL,$integratedURL,$jRoute);
+
+        $return = '<meta http-equiv="refresh" content="'.$timeout.'url=' . $url .'">';
+        return $return;
+    }
+
     /************************************************
-    * Functions For JFusion Search Plugin
-    ***********************************************/
+     * Functions For JFusion Search Plugin
+     ***********************************************/
 
     /**
      * Retrieves the search results to be displayed.  Placed here so that plugins that do not use the database can retrieve and return results
@@ -581,8 +887,8 @@ HTML;
     }
 
     /************************************************
-    * Functions For JFusion Who's Online Module
-    ***********************************************/
+     * Functions For JFusion Who's Online Module
+     ***********************************************/
 
     /**
      * Returns a query to find online users
