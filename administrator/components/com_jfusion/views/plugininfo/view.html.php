@@ -54,8 +54,12 @@ class jfusionViewplugininfo extends JView
 			$features['ADMIN']['FEATURE_WIZARD'] = $this->outputFeature(JFusionFunctionAdmin::methodDefined($admin,'setupFromPath'));
 			$features['ADMIN']['FEATURE_REQUIRE_FILE_ACCESS'] = $this->outputFeature($admin->requireFileAccess());
 			$features['ADMIN']['FEATURE_MULTI_USERGROUP'] = $this->outputFeature($admin->isMultiGroup());
-			
-			$features['PUBLIC']['FEATURE_FRAMELESS'] = $this->outputFeature(JFusionFunctionAdmin::methodDefined($public,'getBuffer'));			
+
+            $frameless = JFusionFunctionAdmin::methodDefined($public,'getBuffer');
+            if (!$frameless) {
+                $frameless = 'CURL_FRAMELESS';
+            }
+			$features['PUBLIC']['FEATURE_FRAMELESS'] = $this->outputFeature($frameless);
 			$features['PUBLIC']['FEATURE_BREADCRUMB'] = $this->outputFeature(JFusionFunctionAdmin::methodDefined($public,'getPathWay'));
 			$features['PUBLIC']['FEATURE_SEARCH'] = $this->outputFeature((JFusionFunctionAdmin::methodDefined($public,'getSearchQuery')
 												||JFusionFunctionAdmin::methodDefined($public,'getSearchResults')));
