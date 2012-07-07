@@ -596,7 +596,7 @@ PHP;
      */
     function requireFileAccess()
 	{
-		return 'DEPENDS';
+		return 'JYES';
 	}
 
     /**
