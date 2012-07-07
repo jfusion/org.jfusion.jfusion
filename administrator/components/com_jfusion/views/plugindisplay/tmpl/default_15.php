@@ -360,7 +360,7 @@ $jfusion_plugins = $this->VersionData->getElementByPath('plugins')->children(); 
 			    			</label>
 			    		</td>
 			    		<td>
-			        		<select name="install_url2" id="install_url2">
+			        		<select name="install_url" id="install_url2">
 			    				<?php
                                 /**
                                  * @ignore
