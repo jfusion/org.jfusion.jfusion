@@ -70,10 +70,10 @@ function _uninstallPlugin($type, $id, $group, $description)
         $uninstall_result = $tmpinstaller->uninstall($type, $result, 0);
         if (!$uninstall_result) {
             $color = '#f9ded9';
-            $description = Text::_('UNINSTALL') . ' ' . $description . ' ' . JText::_('FAILED');
+            $description = JText::_('UNINSTALL') . ' ' . $description . ' ' . JText::_('FAILED');
         } else {
             $color = '#d9f9e2';
-            $description = Text::_('UNINSTALL') . ' ' . $description . ' ' . JText::_('SUCCESS');
+            $description = JText::_('UNINSTALL') . ' ' . $description . ' ' . JText::_('SUCCESS');
         }
         $html = <<<HTML
         <table style="background-color:{$color}; width:100%;">

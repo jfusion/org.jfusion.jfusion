@@ -607,7 +607,17 @@ HTML;
      * @var $parser JSimpleXML
      */
 	$parser = JFactory::getXMLParser('Simple');
-	$parser->loadFile($basedir . DS. 'jfusion.xml');
+
+    $installer = JInstaller::getInstance();
+    $manifest = $installer->getPath('manifest');
+
+    $parser->loadFile($manifest);
+
+    if ($parser->document) {
+        $version = $parser->document->getElementByPath('version')->data();
+    } else {
+        $version = JText::_('UNKNOWN');
+    }
 	?>
     <table>
         <tr>
@@ -619,7 +629,7 @@ HTML;
             </td>
             <td>
                 <h2>
-                    <?php echo JText::_('JFUSION') . ' '.$parser->document->getElementByPath('version')->data().' ' . JText::_('INSTALLATION'); ?>
+                    <?php echo JText::_('JFUSION') . ' '.$version.' ' . JText::_('INSTALLATION'); ?>
                 </h2>
             </td>
         </tr>
