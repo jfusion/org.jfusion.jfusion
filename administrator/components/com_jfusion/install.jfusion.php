@@ -605,6 +605,7 @@ HTML;
     /**
      * @ignore
      * @var $parser JSimpleXML
+     * @var $installer JInstaller
      */
 	$parser = JFactory::getXMLParser('Simple');
 
