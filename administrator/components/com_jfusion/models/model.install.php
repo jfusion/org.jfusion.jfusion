@@ -225,7 +225,7 @@ class JFusionPluginInstaller extends JObject
      * @param mixed $dir install path
      * @param array &$result
      *
-     * @return boolean
+     * @return array
      */
     function install($dir = null, &$result)
     {
@@ -541,8 +541,11 @@ class JFusionPluginInstaller extends JObject
 
         // Copy of site languages files
         if (is_a($languages, 'JSimpleXMLElement') || is_a($languages, 'JXMLElement')) {
-            $childrens = $languages->children();
+            if ( $languages->count() ) {
+                $childrens = $languages->children();
+            }
         }
+
         if (count($childrens) > 0) {
             /**
              * @ignore

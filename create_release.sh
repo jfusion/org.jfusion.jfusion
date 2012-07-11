@@ -89,6 +89,8 @@ case $1 in
             $ZIPCMD -r "$FULLPATH/pluginpackages/jfusion_gallery2.zip" -x *.svn* > /dev/null
             cd $FULLPATH/components/com_jfusion/plugins/joomla_ext
             $ZIPCMD -r "$FULLPATH/pluginpackages/jfusion_joomla_ext.zip" -x *.svn* > /dev/null
+            cd $FULLPATH/components/com_jfusion/plugins/joomla_int
+            $ZIPCMD -r "$FULLPATH/pluginpackages/jfusion_joomla_int.zip" -x *.svn* > /dev/null
             cd $FULLPATH/components/com_jfusion/plugins/magento
             $ZIPCMD -r "$FULLPATH/pluginpackages/jfusion_magento.zip" -x *.svn* > /dev/null
             cd $FULLPATH/components/com_jfusion/plugins/mediawiki
@@ -143,6 +145,7 @@ case $1 in
             $ZIPCMD a "$FULLPATH/pluginpackages/jfusion_elgg.zip" ./elgg/* -xr!*.svn* > /dev/null
             $ZIPCMD a "$FULLPATH/pluginpackages/jfusion_gallery2.zip" ./gallery2/* -xr!*.svn* > /dev/null
             $ZIPCMD a "$FULLPATH/pluginpackages/jfusion_joomla_ext.zip" ./joomla_ext/* -xr!*.svn* > /dev/null
+            $ZIPCMD a "$FULLPATH/pluginpackages/jfusion_joomla_int.zip" ./joomla_int/* -xr!*.svn* > /dev/null
             $ZIPCMD a "$FULLPATH/pluginpackages/jfusion_magento.zip" ./magento/* -xr!*.svn* > /dev/null
             $ZIPCMD a "$FULLPATH/pluginpackages/jfusion_mediawiki.zip" ./mediawiki/* -xr!*.svn* > /dev/null
             $ZIPCMD a "$FULLPATH/pluginpackages/jfusion_moodle.zip" ./moodle/* -xr!*.svn* > /dev/null
@@ -175,10 +178,6 @@ case $1 in
 
 		mkdir tmp/front
 		rsync -r  --exclude=".*/" --exclude="plugins" components/com_jfusion/* tmp/front
-		
-        mkdir tmp/front/plugins
-        mkdir tmp/front/plugins/joomla_int
-		rsync -r --exclude=".*/" components/com_jfusion/plugins/joomla_int/* tmp/front/plugins/joomla_int		
 
 		mkdir tmp/front/languages
 		rsync -r  --exclude=".*/" language/* tmp/front/languages/

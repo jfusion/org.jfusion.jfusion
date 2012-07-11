@@ -129,7 +129,8 @@ function com_install() {
 	//create the jfusion table if it does not exist already
 	if (array_search($table_prefix . 'jfusion', $table_list) == false) {
         $jfusionupgrade = 0;
-		$batch_query = "CREATE TABLE #__jfusion (
+
+        $batch_query = "CREATE TABLE #__jfusion (
         id int(11) NOT null auto_increment,
         name varchar(50) NOT null,
         params text,
@@ -146,34 +147,20 @@ function com_install() {
         ordering tinyint(4),
         PRIMARY KEY  (id)
       );
-
-      INSERT INTO #__jfusion  (name , params,  slave, dual_login, status, check_encryption, activity, search, discussion) VALUES
-      ('joomla_int', 0, 0, 0, 0, 0, 0, 0, 0);
       ";
+
 		$db->setQuery($batch_query);
 		if (!$db->queryBatch()) {
 			echo $db->stderr() . '<br />';
 			$return = false;
 			return $return;
 		}
+
+        JFolder::create(JFUSION_PLUGIN_PATH);
 	} else {
 		//this is an upgrade
 		$jfusionupgrade = 1;
 
-		//list of default plugins
-		$defaultPlugins = array('joomla_int');
-		//make sure default plugins are installed
-		$query = "SELECT name FROM #__jfusion";
-		$db->setQuery($query);
-		$installedPlugins = $db->loadResultArray();
-		$pluginSql = array();
-		foreach ($defaultPlugins as $plugin) {
-			if (!in_array($plugin, $installedPlugins)) {
-				if ($plugin == 'joomla_int') {
-					$pluginSql[] = "('joomla_int', 0, 0,  0, 0,  0, 0, 0, 0)";
-				}
-			}
-		}
 		/***
 		 * UPGRADES FOR 1.1.0 Patch 2
 		 ***/
@@ -360,7 +347,7 @@ function com_install() {
 			$folders = JFolder::folders($dir);
 			$results = true;
 			foreach ($folders as $folder) {
-				if ($folder != 'joomla_int' && !JFolder::exists(JFUSION_PLUGIN_PATH .DS. $folder) ) {
+				if (!JFolder::exists(JFUSION_PLUGIN_PATH .DS. $folder) ) {
 					$r = JFolder::copy($dir .DS. $folder, JFUSION_PLUGIN_PATH .DS. $folder);
 					if ($results===true) {
 						$results = $r;
@@ -448,26 +435,17 @@ function com_install() {
 		/****
 		 * General for all upgrades
 		 ***/
-		//insert of missing plugins
-		//#chris: moved after table modification to prevent errors
-		if (count($pluginSql) > 0) {
-			$query = "INSERT INTO #__jfusion  (name, params,  slave, dual_login, status,  check_encryption, activity, search, discussion) VALUES " . implode(', ', $pluginSql);
-			$db->setQuery($query);
-			if (!$db->query()) {
-				echo $db->stderr() . '<br />';
-				$return = false;
-				return $return;
-			}
-		}
+
 		//update plugins with search and discuss bot capabilities
-		$query = "UPDATE #__jfusion SET search = 1, discussion = 1 WHERE name IN ('vbulletin','phpbb3','smf')";
+		$query = "UPDATE #__jfusion SET search = 1, discussion = 1 WHERE name IN ('vbulletin','phpbb3','smf') OR original_name IN ('vbulletin','phpbb3','smf')";
 		$db->setQuery($query);
 		if (!$db->query()) {
 			echo $db->stderr() . '<br />';
 			$return = false;
 			return $return;
 		}
-
+/*
+ * todo: Determin if we really need this in the installer ???? also remove unneeded plugin_files field from database ??? if this is NOT needed
 		//restore deleted plugins if possible and applicable
 		//get a list of installed plugins
 		$query = "SELECT name, original_name, plugin_files FROM #__jfusion";
@@ -571,14 +549,16 @@ function com_install() {
                 </tr>
             </table>
 HTML;
-
 		}
+*/
 
 	    //cleanup unused plugins
+        /*
+         * todo: do not delete the "original plugin" if there is a configured copy, since they get reinstalled automatic. maybe include only clean up official jfusion plugins?
+         */
 	    $query = 'SELECT name from #__jfusion WHERE (params IS NULL OR params = \'\' OR params = \'0\') AND (master = 0 and slave = 0) AND (name NOT LIKE "joomla_int")';
         $db->setQuery($query );
         $rows = $db->loadObjectList();
-        $ordering = 1;
         if(!empty($rows)) {
             foreach ($rows as $row) {
                 $db->setQuery('DELETE FROM #__jfusion WHERE name = ' . $db->Quote($row->name));
@@ -706,6 +686,7 @@ HTML;
 
     <?php
     $jfusion_plugins = array();
+    $jfusion_plugins['joomla_int'] = 'jomla_int';
     $jfusion_plugins['dokuwiki'] = 'A standards compliant, simple to use Wiki.';
     $jfusion_plugins['efront'] = 'A modern learning system, bundled with key enterprise functionality.';
     $jfusion_plugins['elgg'] = 'A leading open source social networking engine.';
@@ -726,24 +707,37 @@ HTML;
     //see if any plugins need upgrading
 
     //make sure default plugins are installed
-    $query = "SELECT name FROM #__jfusion WHERE name != 'joomla_int'";
+    $query = "SELECT original_name , name FROM #__jfusion";
     $db->setQuery($query);
-    $installedPlugins = $db->loadResultArray();
-    $pluginSql = array();
+    $Plugins = $db->loadObjectList();
+
+    $installedPlugins = array();
+    foreach ($Plugins as $plugin) {
+        if ($plugin->original_name) {
+            $installedPlugins[$plugin->original_name] = $plugin->original_name;
+        } else {
+            $installedPlugins[$plugin->name] = $plugin->name;
+        }
+    }
+    $installedPlugins['joomla_int'] = 'joomla_int';
+
     include_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.install.php';
-    foreach ($installedPlugins as $plugin) :
-        if (array_key_exists ($plugin, $jfusion_plugins)) :
+    foreach ($installedPlugins as $plugin) {
+        if (array_key_exists ($plugin, $jfusion_plugins)) {
             //install updates
-            $packagename = $basedir . DS . 'packages' . DS . 'jfusion_' . $plugin . '.zip';
             $model = new JFusionModelInstaller();
-            $result = $model->installZIP($packagename);
+            $result = $model->installZIP($basedir . DS . 'packages' . DS . 'jfusion_' . $plugin . '.zip');
             //remove plugin from install list
             unset($jfusion_plugins[$plugin]);
             ?>
             <table style="background-color:#d9f9e2;width:100%;">
                 <tr>
                     <td width="50px">
-                        <img src="components/com_jfusion/images/check_good_small.png">
+                        <?php if ($result['status']) { ?>
+                            <img src="components/com_jfusion/images/check_good_small.png">
+                        <?php  } else { ?>
+                            <img src="components/com_jfusion/images/check_bad_small.png">
+                        <?php } ?>
                     </td>
                     <td>
                         <font size="2">
@@ -755,8 +749,8 @@ HTML;
                 </tr>
             </table>
         <?php
-        endif;
-    endforeach;
+        }
+    }
     ?>
     <br/>
     <?php echo JText::_('POST_INSTALL_PLUGIN_OPTIONS'); ?>

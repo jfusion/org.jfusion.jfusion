@@ -26,7 +26,6 @@
 		<folder>helpers</folder>
 		<folder>views</folder>
 		<folder>images</folder>
-		<folder>plugins/joomla_int</folder>
 	</files>
 
 	<languages folder="front/languages">

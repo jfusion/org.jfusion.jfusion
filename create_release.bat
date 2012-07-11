@@ -90,6 +90,7 @@ chdir %FULLPATH%\components\com_jfusion\plugins
 7za a "%FULLPATH%\pluginpackages\jfusion_elgg.zip" .\elgg\* -xr!*.svn* > NUL
 7za a "%FULLPATH%\pluginpackages\jfusion_gallery2.zip" .\gallery2\* -xr!*.svn* > NUL
 7za a "%FULLPATH%\pluginpackages\jfusion_joomla_ext.zip" .\joomla_ext\* -xr!*.svn* > NUL
+7za a "%FULLPATH%\pluginpackages\jfusion_joomla_int.zip" .\joomla_int\* -xr!*.svn* > NUL
 7za a "%FULLPATH%\pluginpackages\jfusion_magento.zip" .\magento\* -xr!*.svn* > NUL
 7za a "%FULLPATH%\pluginpackages\jfusion_mediawiki.zip" .\mediawiki\* -xr!*.svn* > NUL
 7za a "%FULLPATH%\pluginpackages\jfusion_moodle.zip" .\moodle\* -xr!*.svn* > NUL
@@ -132,9 +133,6 @@ c:\windows\system32\xcopy /E /C /V /Y "%FULLPATH%\administrator\language\*.*" "%
 
 md tmp\front
 c:\windows\system32\xcopy /E /C /V /Y /EXCLUDE:%FULLPATH%\exclude.txt "%FULLPATH%\components\com_jfusion\*.*" "%FULLPATH%\tmp\front" > NUL
-md tmp\front\plugins
-md tmp\front\plugins\joomla_int
-c:\windows\system32\xcopy /E /C /V /Y "%FULLPATH%\components\com_jfusion\plugins\joomla_int\*.*" "%FULLPATH%\tmp\front\plugins\joomla_int" > NUL
 
 md tmp\front\languages
 c:\windows\system32\xcopy /E /C /V /Y "%FULLPATH%\language\*.*" "%FULLPATH%\tmp\front\languages" > NUL

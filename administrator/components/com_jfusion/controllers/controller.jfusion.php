@@ -430,27 +430,6 @@ class JFusionController extends JController
         }
     }
 
-    /**
-     * Function to upload, parse & install JFusion plugins
-     *
-     * @return void
-     */
-    function installplugin2()
-    {
-        include_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.install.php';
-        $model = new JFusionModelInstaller();
-        $result = $model->install();
-        if(!empty($result['jname'])){
-            /**
-             * @ignore
-             * @var $view jfusionViewplugindisplay
-             */
-            $view = $this->getView('plugindisplay','html');
-            $result['rowhtml'] = $view->generateRowHTML($view->initRecord($result['jname']));
-        }
-        die(json_encode($result));
-    }
-
     function installplugins()
     {
         $jfusionplugins = JRequest::getVar('jfusionplugins', array(), 'post', 'array');
@@ -477,7 +456,11 @@ class JFusionController extends JController
         $result = array();
 
         //check to see if an integration was selected
-        if ($jname && $new_jname) {
+        $db = JFactory::getDBO();
+        $query = 'SELECT * from #__jfusion WHERE name LIKE '.$db->quote($jname);
+        $db->setQuery($query);
+        $record = $db->loadObject();
+        if ($jname && $new_jname && $record) {
             include_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.install.php';
             $model = new JFusionModelInstaller();
             $result = $model->copy($jname, $new_jname);
