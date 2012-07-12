@@ -99,7 +99,20 @@ class jfusionViewLoginCheckerResult extends JView
         $db = JFactory::getDBO();
         $mysql_version = $db->getVersion();
         $server_info['MySQL Version'] = $mysql_version;
-        $server_info['System Information'] = php_uname();
+
+        $disabled = ini_get('disable_functions');
+        if ($disabled) {
+            $disabled = explode(',', $disabled);
+            $disabled = array_map('trim', $disabled);
+        } else {
+            $disabled = array();
+        }
+        if (!in_array('php_uname', $disabled)) {
+            $server_info['System Information'] = php_uname();
+        } else {
+            $server_info['System Information'] = JText::_('UNKNOWN');
+        }
+
         $server_info['Browser Information'] = $_SERVER['HTTP_USER_AGENT'];
         //display active plugins
         if(JFusionFunction::isJoomlaVersion('1.6')){
