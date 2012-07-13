@@ -62,7 +62,7 @@ JFusionFunctionAdmin::displayDonate();
                 }
                 echo $paneTabs->startPanel( JText::_($titel), $titel );
                 echo '<table>';
-            } else if (!empty($label) && $titel != ' ' && strpos ( $titel , '@' ) === 0) {
+            } else if (!empty($label) && $titel != ' ' && strpos($titel , '@') !== 0) {
                 echo '<tr><td width="250px">' . $label . '</td><td>' . $content . '</td></tr>';
             } else {
                 echo '<tr><td colspan=2>' . $content . '</td></tr>';
