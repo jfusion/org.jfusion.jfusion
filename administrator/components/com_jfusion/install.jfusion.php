@@ -553,31 +553,37 @@ HTML;
 */
 
 	    //cleanup unused plugins
-        /*
-         * todo: do not delete the "original plugin" if there is a configured copy, since they get reinstalled automatic. maybe include only clean up official jfusion plugins?
-         */
 	    $query = 'SELECT name from #__jfusion WHERE (params IS NULL OR params = \'\' OR params = \'0\') AND (master = 0 and slave = 0) AND (name NOT LIKE "joomla_int")';
-        $db->setQuery($query );
+        $db->setQuery($query);
         $rows = $db->loadObjectList();
         if(!empty($rows)) {
             foreach ($rows as $row) {
-                $db->setQuery('DELETE FROM #__jfusion WHERE name = ' . $db->Quote($row->name));
-                 if (!$db->query()) {
-                     JError::raiseWarning(500,$db->stderr());
-                 }
-                 $db->setQuery('DELETE FROM #__jfusion_discussion_bot WHERE jname = ' . $db->Quote($row->name));
-                 if (!$db->query()) {
-                     JError::raiseWarning(500,$db->stderr());
-                 }
-                 $db->setQuery('DELETE FROM #__jfusion_users_plugin WHERE jname = ' . $db->Quote($row->name));
-                 if (!$db->query()) {
-                     JError::raiseWarning(500,$db->stderr());
-                 }
-                 if (JFolder::exists(JFUSION_PLUGIN_PATH . DS . $row->name)) {
-                     JFolder::delete(JFUSION_PLUGIN_PATH . DS . $row->name);
-                 }
+                $query = 'SELECT name from #__jfusion WHERE (params IS NOT NULL OR params != \'\' OR params != \'0\' OR master = 1 OR slave = 1) AND original_name LIKE '. $db->Quote($row->name);
+                $db->setQuery($query);
+                $copys = $db->loadObjectList();
+                if (empty($copys)) {
+                    //only delete if there are no copys
+                    $db->setQuery('DELETE FROM #__jfusion WHERE name = ' . $db->Quote($row->name));
+                    if (!$db->query()) {
+                        JError::raiseWarning(500,$db->stderr());
+                    }
+                    $db->setQuery('DELETE FROM #__jfusion_discussion_bot WHERE jname = ' . $db->Quote($row->name));
+                    if (!$db->query()) {
+                        JError::raiseWarning(500,$db->stderr());
+                    }
+                    $db->setQuery('DELETE FROM #__jfusion_users_plugin WHERE jname = ' . $db->Quote($row->name));
+                    if (!$db->query()) {
+                        JError::raiseWarning(500,$db->stderr());
+                    }
+                    if (JFolder::exists(JFUSION_PLUGIN_PATH . DS . $row->name)) {
+                        JFolder::delete(JFUSION_PLUGIN_PATH . DS . $row->name);
+                    }
+                }
             }
         }
+
+
+
 	}
 
 	//output some info to the user
