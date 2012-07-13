@@ -96,6 +96,14 @@ class JFusionModelInstaller extends InstallerModelInstall
                     $config = JFactory::getConfig();
                     $package['packagefile'] = $config->getValue('config.tmp_path') . DS . $package['packagefile'];
                 }
+                if ( $result['status'] && is_file($package['packagefile']) ) {
+                    //save a copy of the plugin for safe keeping
+                    $dest = JPATH_COMPONENT_ADMINISTRATOR . DS . 'packages' . DS . JFile::getName($package['packagefile']);
+                    if ( $package['packagefile'] != $dest) {
+                        JFile::copy($package['packagefile'],$dest);
+                    }
+                }
+
                 JInstallerHelper::cleanupInstall($package['packagefile'], $package['extractdir']);
             }
         }
@@ -233,172 +241,172 @@ class JFusionPluginInstaller extends JObject
         $db = JFactory::getDBO();
         $result['status'] = false;
         $result['jname'] = null;
-        if ($dir && JFolder::exists($dir)) {
-            $this->parent->setPath('source', $dir);
-        } else { 
-        	$this->parent->abort(JText::_('INSTALL_INVALID_PATH'));
+        if (!$dir && !JFolder::exists($dir)) {
+            $this->parent->abort(JText::_('INSTALL_INVALID_PATH'));
             $result['message'] = JText::_('INSTALL_INVALID_PATH');
-            return $result;
-        }
-        // Get the extension manifest object
-        $manifest = $this->_getManifest($dir);
-        if (is_null($manifest)) {
-            $this->parent->abort(JText::_('INSTALL_NOT_VALID_PLUGIN'));
-            $result['message'] = JText::_('INSTALL_NOT_VALID_PLUGIN');
-            return $result;
-        }
-        $this->manifest = & $manifest;
+        } else {
+            $this->parent->setPath('source', $dir);
 
-        /**
-         * ---------------------------------------------------------------------------------------------
-         * Manifest Document Setup Section
-         * ---------------------------------------------------------------------------------------------
-         */
-        // Set the extensions name
-        /**
-         * Check that the plugin is an actual JFusion plugin
-         */
-        $name = $this->getElementByPath($this->manifest,'name');
-        $name = $this->filterInput->clean($name->data(), 'string');
-
-		$result['jname'] = $name;
-        $this->set('name', $name);
-
-        // installation path
-        $this->parent->setPath('extension_root', JFUSION_PLUGIN_PATH . DS . $name);
-        // get files to copy
-        $element = $this->getElementByPath($this->manifest,'files');
-
-        /**
-         * ---------------------------------------------------------------------------------------------
-         * Filesystem Processing Section
-         * ---------------------------------------------------------------------------------------------
-         */
-
-        // If the plugin directory does not exist, lets create it
-        $created = false;
-        if (!file_exists($this->parent->getPath('extension_root'))) {
-            if (!$created = JFolder::create($this->parent->getPath('extension_root'))) {
-                $msg = JText::_('PLUGIN') . ' ' . JText::_('INSTALL') . ': ' . JText::_('INSTALL_FAILED_DIRECTORY') . ': "' . $this->parent->getPath('extension_root') . '"';
-            	$this->parent->abort($msg);
-                $result['message'] = $msg;
-                return $result;
-            }
-        }
-        /*
-        * If we created the plugin directory and will want to remove it if we
-        * have to roll back the installation, lets add it to the installation
-        * step stack
-        */
-        if ($created) {
-            $this->parent->pushStep(array('type' => 'folder', 'path' => $this->parent->getPath('extension_root')));
-        }
-        // Copy all necessary files
-        if ($this->parent->parseFiles($element, -1) === false) {
-            // Install failed, roll back changes
-            $this->parent->abort(); 
-			$result['message'] = JText::_('PLUGIN') . ' ' . $name . ' ' . JText::_('INSTALL') . ': ' . JText::_('FAILED');;
-            return $result;
-        }
-        /**
-         * ---------------------------------------------------------------------------------------------
-         * Language files Processing Section
-         * ---------------------------------------------------------------------------------------------
-         */
-        $this->parent->parseLanguages($this->getElementByPath($this->manifest,'languages'));
-        $this->parent->parseLanguages($this->getElementByPath($this->manifest,'administration/languages'), 1);
-
-
-        /**
-         * ---------------------------------------------------------------------------------------------
-         * Database Processing Section
-         * ---------------------------------------------------------------------------------------------
-         */
-        //determine the features of the plugin
-        $dual_login = $slave = $activity = $search = $discussion = null;
-        $features = array('master', 'slave', 'dual_login', 'check_encryption', 'activity', 'search', 'discussion');
-        foreach ($features as $f) {
-            $xml = $this->getElementByPath($this->manifest,$f);
-            if (is_a($xml, 'JSimpleXMLElement') || is_a($xml, 'JXMLElement')) {
-                $$f = $this->filterInput->clean($xml->data(), 'integer');
-            } elseif ($f == 'master' || $f == 'check_encryption') {
-                $$f = 0;
+            // Get the extension manifest object
+            $manifest = $this->_getManifest($dir);
+            if (is_null($manifest)) {
+                $this->parent->abort(JText::_('INSTALL_NOT_VALID_PLUGIN'));
+                $result['message'] = JText::_('INSTALL_NOT_VALID_PLUGIN');
             } else {
-                $$f = 3;
-            }
-        }
-        //let's check to see if a plugin with the same name is already installed
-        $db->setQuery('SELECT id, ' . implode(', ', $features) . ' FROM #__jfusion WHERE name = ' . $db->Quote($name));
-        $plugin = $db->loadObject();
-        if (!empty($plugin)) {
-            if (!$this->parent->getOverwrite()) {
-                // Install failed, roll back changes
-                $msg = JText::_('PLUGIN') . ' ' . JText::_('INSTALL') . ': ' . JText::_('PLUGIN') . ' "' . $name . '" ' . JText::_('ALREADY_EXISTS');
-            	$this->parent->abort($msg);
-                $result['message'] = $msg;
-                return $result;
-            } else {
-                //enable/disable features and update the plugin files
-                //store enabled/disabled features to update copies
-                global $plugin_features;
-                $plugin_features = array();
-                $plugin_files = $this->backup($name);
-                $query = 'UPDATE #__jfusion SET plugin_files = ' . $db->Quote($plugin_files);
-                foreach ($features as $f) {
-                    if (($$f == 3 && $plugin->$f != 3) || ($$f != 3 && $plugin->$f == 3)) {
-                        $query.= ', ' . $f . '=' . $$f;
-                        $plugin_features[$f] = $$f;
+                $this->manifest = & $manifest;
+
+                /**
+                 * ---------------------------------------------------------------------------------------------
+                 * Manifest Document Setup Section
+                 * ---------------------------------------------------------------------------------------------
+                 */
+                // Set the extensions name
+                /**
+                 * Check that the plugin is an actual JFusion plugin
+                 */
+                $name = $this->getElementByPath($this->manifest,'name');
+                $name = $this->filterInput->clean($name->data(), 'string');
+
+                $result['jname'] = $name;
+                $this->set('name', $name);
+
+                // installation path
+                $this->parent->setPath('extension_root', JFUSION_PLUGIN_PATH . DS . $name);
+                // get files to copy
+                $element = $this->getElementByPath($this->manifest,'files');
+
+                /**
+                 * ---------------------------------------------------------------------------------------------
+                 * Filesystem Processing Section
+                 * ---------------------------------------------------------------------------------------------
+                 */
+
+                // If the plugin directory does not exist, lets create it
+                $created = false;
+                if (!file_exists($this->parent->getPath('extension_root'))) {
+                    if (!$created = JFolder::create($this->parent->getPath('extension_root'))) {
+                        $msg = JText::_('PLUGIN') . ' ' . JText::_('INSTALL') . ': ' . JText::_('INSTALL_FAILED_DIRECTORY') . ': "' . $this->parent->getPath('extension_root') . '"';
+                        $this->parent->abort($msg);
+                        $result['message'] = $msg;
+                        return $result;
                     }
                 }
-                $query.= " WHERE id = " . $plugin->id;
-                $db->setQuery($query);
-                $db->query();
+                /*
+                * If we created the plugin directory and will want to remove it if we
+                * have to roll back the installation, lets add it to the installation
+                * step stack
+                */
+                if ($created) {
+                    $this->parent->pushStep(array('type' => 'folder', 'path' => $this->parent->getPath('extension_root')));
+                }
+                // Copy all necessary files
+                if ($this->parent->parseFiles($element, -1) === false) {
+                    // Install failed, roll back changes
+                    $this->parent->abort();
+                    $result['message'] = JText::_('PLUGIN') . ' ' . $name . ' ' . JText::_('INSTALL') . ': ' . JText::_('FAILED');;
+                } else {
+                    /**
+                     * ---------------------------------------------------------------------------------------------
+                     * Language files Processing Section
+                     * ---------------------------------------------------------------------------------------------
+                     */
+                    $this->parent->parseLanguages($this->getElementByPath($this->manifest,'languages'));
+                    $this->parent->parseLanguages($this->getElementByPath($this->manifest,'administration/languages'), 1);
 
-                //set the overwrite tag
-                $result['overwrite'] = 1;
-            }
-        } else {
-            //prepare the variables
-            $result['overwrite'] = 0;
-            $plugin_entry = new stdClass;
-            $plugin_entry->id = null;
-            $plugin_entry->name = $name;
-            $plugin_entry->dual_login = $dual_login;
-            $plugin_entry->slave = $slave;
-            $plugin_entry->activity = $activity;
-            $plugin_entry->search = $search;
-            $plugin_entry->discussion = $discussion;
-            $plugin_entry->plugin_files = $this->backup($name);
-            //now append the new plugin data
-            if (!$db->insertObject('#__jfusion', $plugin_entry, 'id')) {
-                // Install failed, roll back changes
-                $msg = JText::_('PLUGIN') . ' ' . JText::_('INSTALL') . ' ' . JText::_('ERROR') . ': ' . $db->stderr();
-            	$this->parent->abort($msg);
-                $result['message'] = $msg;
-                return $result;
-            }
-            $this->parent->pushStep(array('type' => 'plugin', 'id' => $plugin_entry->id));
-        }
-        /**
-         * ---------------------------------------------------------------------------------------------
-         * Finalization and Cleanup Section
-         * ---------------------------------------------------------------------------------------------
-         */
 
-        //check to see if this is updating a plugin that has been copied
-        $query = "SELECT name FROM #__jfusion WHERE original_name = {$db->Quote($name) }";
-        $db->setQuery($query);
-        $copiedPlugins = $db->loadObjectList();
-        foreach ($copiedPlugins as $plugin) {
-            //update the copied version with the new files
-            $this->copy($name, $plugin->name, true);
+                    /**
+                     * ---------------------------------------------------------------------------------------------
+                     * Database Processing Section
+                     * ---------------------------------------------------------------------------------------------
+                     */
+                    //determine the features of the plugin
+                    $dual_login = $slave = $activity = $search = $discussion = null;
+                    $features = array('master', 'slave', 'dual_login', 'check_encryption', 'activity', 'search', 'discussion');
+                    foreach ($features as $f) {
+                        $xml = $this->getElementByPath($this->manifest,$f);
+                        if (is_a($xml, 'JSimpleXMLElement') || is_a($xml, 'JXMLElement')) {
+                            $$f = $this->filterInput->clean($xml->data(), 'integer');
+                        } elseif ($f == 'master' || $f == 'check_encryption') {
+                            $$f = 0;
+                        } else {
+                            $$f = 3;
+                        }
+                    }
+                    //let's check to see if a plugin with the same name is already installed
+                    $db->setQuery('SELECT id, ' . implode(', ', $features) . ' FROM #__jfusion WHERE name = ' . $db->Quote($name));
+                    $plugin = $db->loadObject();
+                    if (!empty($plugin)) {
+                        if (!$this->parent->getOverwrite()) {
+                            // Install failed, roll back changes
+                            $msg = JText::_('PLUGIN') . ' ' . JText::_('INSTALL') . ': ' . JText::_('PLUGIN') . ' "' . $name . '" ' . JText::_('ALREADY_EXISTS');
+                            $this->parent->abort($msg);
+                            $result['message'] = $msg;
+                            return $result;
+                        } else {
+                            //enable/disable features and update the plugin files
+                            //store enabled/disabled features to update copies
+                            global $plugin_features;
+                            $plugin_features = array();
+                            $plugin_files = $this->backup($name);
+                            $query = 'UPDATE #__jfusion SET plugin_files = ' . $db->Quote($plugin_files);
+                            foreach ($features as $f) {
+                                if (($$f == 3 && $plugin->$f != 3) || ($$f != 3 && $plugin->$f == 3)) {
+                                    $query.= ', ' . $f . '=' . $$f;
+                                    $plugin_features[$f] = $$f;
+                                }
+                            }
+                            $query.= " WHERE id = " . $plugin->id;
+                            $db->setQuery($query);
+                            $db->query();
+
+                            //set the overwrite tag
+                            $result['overwrite'] = 1;
+                        }
+                    } else {
+                        //prepare the variables
+                        $result['overwrite'] = 0;
+                        $plugin_entry = new stdClass;
+                        $plugin_entry->id = null;
+                        $plugin_entry->name = $name;
+                        $plugin_entry->dual_login = $dual_login;
+                        $plugin_entry->slave = $slave;
+                        $plugin_entry->activity = $activity;
+                        $plugin_entry->search = $search;
+                        $plugin_entry->discussion = $discussion;
+                        $plugin_entry->plugin_files = $this->backup($name);
+                        //now append the new plugin data
+                        if (!$db->insertObject('#__jfusion', $plugin_entry, 'id')) {
+                            // Install failed, roll back changes
+                            $msg = JText::_('PLUGIN') . ' ' . JText::_('INSTALL') . ' ' . JText::_('ERROR') . ': ' . $db->stderr();
+                            $this->parent->abort($msg);
+                            $result['message'] = $msg;
+                            return $result;
+                        }
+                        $this->parent->pushStep(array('type' => 'plugin', 'id' => $plugin_entry->id));
+                    }
+                    /**
+                     * ---------------------------------------------------------------------------------------------
+                     * Finalization and Cleanup Section
+                     * ---------------------------------------------------------------------------------------------
+                     */
+
+                    //check to see if this is updating a plugin that has been copied
+                    $query = "SELECT name FROM #__jfusion WHERE original_name = {$db->Quote($name) }";
+                    $db->setQuery($query);
+                    $copiedPlugins = $db->loadObjectList();
+                    foreach ($copiedPlugins as $plugin) {
+                        //update the copied version with the new files
+                        $this->copy($name, $plugin->name, true);
+                    }
+                    if ($result['overwrite'] == 1) {
+                        $result['message'] = JText::_('PLUGIN') . ' ' .$name .' ' . JText::_('UPDATE') . ': ' . JText::_('SUCCESS');
+                    } else {
+                        $result['message'] = JText::_('PLUGIN') . ' ' .$name .' ' . JText::_('INSTALL') . ': ' . JText::_('SUCCESS');
+                    }
+                    $result['status'] = true;
+                }
+            }
         }
-        if ($result['overwrite'] == 1) {
-            $result['message'] = JText::_('PLUGIN') . ' ' .$name .' ' . JText::_('UPDATE') . ': ' . JText::_('SUCCESS');
-        } else {
-            $result['message'] = JText::_('PLUGIN') . ' ' .$name .' ' . JText::_('INSTALL') . ': ' . JText::_('SUCCESS');
-        }
-        $result['status'] = true;
         return $result;
     }
     /**
@@ -500,195 +508,193 @@ class JFusionPluginInstaller extends JObject
         if (!$jname || !JFolder::exists($dir)) {
             $this->parent->abort(JText::_('COPY_ERROR_PATH'));
             $result['message'] = JText::_('COPY_ERROR_PATH');
-            return $result;
-        }
-        //copy the files
-        if (!JFolder::copy($dir, $new_dir, null, $update)) {
+        } else if (!JFolder::copy($dir, $new_dir, null, $update)) {
+            //copy the files
             $this->parent->abort(JText::_('COPY_ERROR'));
             $result['message'] = JText::_('COPY_ERROR');
-            return $result;
-        }
-        // Define our preg arrays
-        $regex = array();
-        $replace = array();
-        //change the classname
-        $regex[] = '#JFusion(Auth|User|Forum|Public|Admin|Helper)_' . $jname . '#ms';
-        $replace[] = 'JFusion$1_' . $new_jname;
-        //change the jname function
-        $regex[] = '#return \'' . $jname . '\';#ms';
-        $replace[] = 'return \'' . $new_jname . '\';';
-        //update the XML name tag
-        $regex[] = '#<name>' . $jname . '</name>#ms';
-        $replace[] = '<name>' . $new_jname . '</name>';
-        /**
-         * ---------------------------------------------------------------------------------------------
-         * Copy Language files Processing Section
-         * @todo - This section may be improved but works actually
-         * ---------------------------------------------------------------------------------------------
-         */
-        $manifest = $this->_getManifest($dir);
-        if (is_null($manifest)) {
-            $this->parent->abort(JText::_('INSTALL_NOT_VALID_PLUGIN'));
-            $result['message'] = JText::_('INSTALL_NOT_VALID_PLUGIN');
-            return $result;
-        }
-        $this->manifest = & $manifest;
-        $childrens = array();
-        $path = "";
-
-        $languages = $this->getElementByPath($this->manifest,'languages');
-        $adminLanguages = $this->getElementByPath($this->manifest,'administration/languages');
-
-        // Copy of site languages files
-        if (is_a($languages, 'JSimpleXMLElement') || is_a($languages, 'JXMLElement')) {
-            if ( $languages->count() ) {
-                $childrens = $languages->children();
-            }
-        }
-
-        if (count($childrens) > 0) {
+        } else {
+            // Define our preg arrays
+            $regex = array();
+            $replace = array();
+            //change the classname
+            $regex[] = '#JFusion(Auth|User|Forum|Public|Admin|Helper)_' . $jname . '#ms';
+            $replace[] = 'JFusion$1_' . $new_jname;
+            //change the jname function
+            $regex[] = '#return \'' . $jname . '\';#ms';
+            $replace[] = 'return \'' . $new_jname . '\';';
+            //update the XML name tag
+            $regex[] = '#<name>' . $jname . '</name>#ms';
+            $replace[] = '<name>' . $new_jname . '</name>';
             /**
-             * @ignore
-             * @var $children JSimpleXMLElement
+             * ---------------------------------------------------------------------------------------------
+             * Copy Language files Processing Section
+             * @todo - This section may be improved but works actually
+             * ---------------------------------------------------------------------------------------------
              */
-            foreach ($childrens as $children) {
-                $tag = $this->getAttribute($children,'tag');
-                $filepath = $children->data();
-                // If the language file as a path in the content of the element language
-                if (strpos($filepath, DS)) {
-                    $folders = explode(DS, $filepath);
-                    array_pop($folders); // remove the file name of the path
-                    $path = implode(DS, $folders) . DS;
-                }
-                // @todo - take in consideration if the filename doesn't respect xx-XX.com_jfusion.plg_pluginname.ini
-                $prefix = $tag . '.com_jfusion.plg_';
-                $languageFile = $prefix . $jname . '.ini';
-                $newLanguageFile = $prefix . $new_jname . '.ini';
-                if (file_exists(JPATH_SITE . DS . "language" . DS . $tag . DS . $languageFile)) {
-                    if (!JFile::copy(JPATH_SITE . DS . "language" . DS . $tag . DS . $languageFile, JPATH_SITE . DS . "language" . DS . $tag . DS . $newLanguageFile)) {
-                        $this->parent->abort(JText::_('COPY_ERROR'));
-                        $result['message'] = JText::_('COPY_ERROR');
-                        return $result;
+            $manifest = $this->_getManifest($dir);
+            if (is_null($manifest)) {
+                $this->parent->abort(JText::_('INSTALL_NOT_VALID_PLUGIN'));
+                $result['message'] = JText::_('INSTALL_NOT_VALID_PLUGIN');
+            } else {
+                $this->manifest = & $manifest;
+                $childrens = array();
+                $path = "";
+
+                $languages = $this->getElementByPath($this->manifest,'languages');
+                $adminLanguages = $this->getElementByPath($this->manifest,'administration/languages');
+
+                // Copy of site languages files
+                if (is_a($languages, 'JSimpleXMLElement') || is_a($languages, 'JXMLElement')) {
+                    if ( $languages->count() ) {
+                        $childrens = $languages->children();
                     }
                 }
-                // @todo - Need to be improved because it includes admin and site languages files. But at the end it's supposed to be the same name normally!
-                $regex[] = '#<language tag="' . $tag . '">' . $path . $languageFile . '</language>#ms';
-                $replace[] = '<language tag="' . $tag . '">' . $path . $newLanguageFile . '</language>';
-            }
-        }
-        //reset $childrens to ensure we wont insert front end language in to admin panel as well..
-        $childrens = array();
-        // Copy of admin languages files
-        if (is_a($adminLanguages, 'JSimpleXMLElement') || is_a($adminLanguages, 'JXMLElement')) {
-            $childrens = $adminLanguages->children();
-        }
-        if (count($childrens) > 0) {
-            /**
-             * @ignore
-             * @var $children JSimpleXMLElement
-             */
-            foreach ($childrens as $children) {
-                $tag = $this->getAttribute($children,'tag');
-                $filepath = $children->data();
-                // If the language file as a path in the content of the element language
-                if (strpos($filepath, DS)) {
-                    $folders = explode(DS, $filepath);
-                    array_pop($folders); // remove the file name of the path
-                    $path = implode(DS, $folders) . DS;
-                }
-                // @todo - take in consideration if the filename doesn't respect xx-XX.com_jfusion.plg_pluginname.ini
-                $prefix = $tag . '.com_jfusion.plg_';
-                $languageFile = $prefix . $jname . '.ini';
-                $newLanguageFile = $prefix . $new_jname . '.ini';
-                if (file_exists(JPATH_ADMINISTRATOR . DS . "language" . DS . $tag . DS . $languageFile)) {
-                    if (!JFile::copy(JPATH_ADMINISTRATOR . DS . "language" . DS . $tag . DS . $languageFile, JPATH_ADMINISTRATOR . DS . "language" . DS . $tag . DS . $newLanguageFile)) {
-                        $this->parent->abort(JText::_('COPY_ERROR'));
-                        $result['message'] = JText::_('COPY_ERROR');
-                        return $result;
+
+                if (count($childrens) > 0) {
+                    /**
+                     * @ignore
+                     * @var $children JSimpleXMLElement
+                     */
+                    foreach ($childrens as $children) {
+                        $tag = $this->getAttribute($children,'tag');
+                        $filepath = $children->data();
+                        // If the language file as a path in the content of the element language
+                        if (strpos($filepath, DS)) {
+                            $folders = explode(DS, $filepath);
+                            array_pop($folders); // remove the file name of the path
+                            $path = implode(DS, $folders) . DS;
+                        }
+                        // @todo - take in consideration if the filename doesn't respect xx-XX.com_jfusion.plg_pluginname.ini
+                        $prefix = $tag . '.com_jfusion.plg_';
+                        $languageFile = $prefix . $jname . '.ini';
+                        $newLanguageFile = $prefix . $new_jname . '.ini';
+                        if (file_exists(JPATH_SITE . DS . "language" . DS . $tag . DS . $languageFile)) {
+                            if (!JFile::copy(JPATH_SITE . DS . "language" . DS . $tag . DS . $languageFile, JPATH_SITE . DS . "language" . DS . $tag . DS . $newLanguageFile)) {
+                                $this->parent->abort(JText::_('COPY_ERROR'));
+                                $result['message'] = JText::_('COPY_ERROR');
+                                return $result;
+                            }
+                        }
+                        // @todo - Need to be improved because it includes admin and site languages files. But at the end it's supposed to be the same name normally!
+                        $regex[] = '#<language tag="' . $tag . '">' . $path . $languageFile . '</language>#ms';
+                        $replace[] = '<language tag="' . $tag . '">' . $path . $newLanguageFile . '</language>';
                     }
                 }
-                // @todo - Need to be improved because it includes admin and site languages files. But at the end it's supposed to be the same name normally!
-                $regex[] = '#<language tag="' . $tag . '">' . $path . $languageFile . '</language>#ms';
-                $replace[] = '<language tag="' . $tag . '">' . $path . $newLanguageFile . '</language>';
-            }
-        }
-        /**
-         * ---------------------------------------------------------------------------------------------
-         * Rename class files and xml file of the new plugin create
-         * ---------------------------------------------------------------------------------------------
-         */
-        //define which files need parsing
-        $parse_files = array($new_dir . DS . 'auth.php', $new_dir . DS . 'admin.php', $new_dir . DS . 'user.php', $new_dir . DS . 'jfusion.xml', $new_dir . DS . 'forum.php', $new_dir . DS . 'public.php', $new_dir . DS . 'helper.php');
-        foreach ($parse_files as $parse_file) {
-            if (file_exists($parse_file)) {
-                $file_data = JFile::read($parse_file);
-                $file_data = preg_replace($regex, $replace, $file_data);
-                JFile::write($parse_file, $file_data);
-            }
-        }
-        $db = JFactory::getDBO();
-        if ($update) {
-            //update the copied plugin files
-            $plugin_files = $this->backup($new_jname);
-            $query = "UPDATE #__jfusion SET plugin_files = " . $db->Quote($plugin_files);
-            //get the features of the updated plugin
-            global $plugin_features;
-            if (empty($plugin_features)) {
-                //copy() was called directly because we are upgrading the component
-                $features = array('master', 'slave', 'dual_login', 'check_encryption', 'activity', 'search', 'discussion');
-                foreach ($features as $f) {
-                    $xml = $this->getElementByPath($this->manifest,$f);
-                    if (is_a($xml, 'JSimpleXMLElement') || is_a($xml, 'JXMLElement')) {
-                        $$f = $this->filterInput->clean($xml->data(), 'integer');
-                    } elseif ($f == 'master' || $f == 'check_encryption') {
-                        $$f = 0;
-                    } else {
-                        $$f = 3;
+                //reset $childrens to ensure we wont insert front end language in to admin panel as well..
+                $childrens = array();
+                // Copy of admin languages files
+                if (is_a($adminLanguages, 'JSimpleXMLElement') || is_a($adminLanguages, 'JXMLElement')) {
+                    $childrens = $adminLanguages->children();
+                }
+                if (count($childrens) > 0) {
+                    /**
+                     * @ignore
+                     * @var $children JSimpleXMLElement
+                     */
+                    foreach ($childrens as $children) {
+                        $tag = $this->getAttribute($children,'tag');
+                        $filepath = $children->data();
+                        // If the language file as a path in the content of the element language
+                        if (strpos($filepath, DS)) {
+                            $folders = explode(DS, $filepath);
+                            array_pop($folders); // remove the file name of the path
+                            $path = implode(DS, $folders) . DS;
+                        }
+                        // @todo - take in consideration if the filename doesn't respect xx-XX.com_jfusion.plg_pluginname.ini
+                        $prefix = $tag . '.com_jfusion.plg_';
+                        $languageFile = $prefix . $jname . '.ini';
+                        $newLanguageFile = $prefix . $new_jname . '.ini';
+                        if (file_exists(JPATH_ADMINISTRATOR . DS . "language" . DS . $tag . DS . $languageFile)) {
+                            if (!JFile::copy(JPATH_ADMINISTRATOR . DS . "language" . DS . $tag . DS . $languageFile, JPATH_ADMINISTRATOR . DS . "language" . DS . $tag . DS . $newLanguageFile)) {
+                                $this->parent->abort(JText::_('COPY_ERROR'));
+                                $result['message'] = JText::_('COPY_ERROR');
+                                return $result;
+                            }
+                        }
+                        // @todo - Need to be improved because it includes admin and site languages files. But at the end it's supposed to be the same name normally!
+                        $regex[] = '#<language tag="' . $tag . '">' . $path . $languageFile . '</language>#ms';
+                        $replace[] = '<language tag="' . $tag . '">' . $path . $newLanguageFile . '</language>';
                     }
                 }
-                $db->setQuery('SELECT id ' . implode(', ', $features) . ' FROM #__jfusion WHERE name = ' . $db->Quote($new_jname));
-                $plugin = $db->loadObject();
-                if (!empty($plugin)) {
-                    //enable/disable features and update the plugin files
-                    $plugin_features = array();
-                    foreach ($features as $f) {
-                        if (($$f == 3 && $plugin->$f != 3) || ($$f != 3 && $plugin->$f == 3)) {
-                            $plugin_features[$f] = $$f;
+                /**
+                 * ---------------------------------------------------------------------------------------------
+                 * Rename class files and xml file of the new plugin create
+                 * ---------------------------------------------------------------------------------------------
+                 */
+                //define which files need parsing
+                $parse_files = array($new_dir . DS . 'auth.php', $new_dir . DS . 'admin.php', $new_dir . DS . 'user.php', $new_dir . DS . 'jfusion.xml', $new_dir . DS . 'forum.php', $new_dir . DS . 'public.php', $new_dir . DS . 'helper.php');
+                foreach ($parse_files as $parse_file) {
+                    if (file_exists($parse_file)) {
+                        $file_data = JFile::read($parse_file);
+                        $file_data = preg_replace($regex, $replace, $file_data);
+                        JFile::write($parse_file, $file_data);
+                    }
+                }
+                $db = JFactory::getDBO();
+                if ($update) {
+                    //update the copied plugin files
+                    $plugin_files = $this->backup($new_jname);
+                    $query = "UPDATE #__jfusion SET plugin_files = " . $db->Quote($plugin_files);
+                    //get the features of the updated plugin
+                    global $plugin_features;
+                    if (empty($plugin_features)) {
+                        //copy() was called directly because we are upgrading the component
+                        $features = array('master', 'slave', 'dual_login', 'check_encryption', 'activity', 'search', 'discussion');
+                        foreach ($features as $f) {
+                            $xml = $this->getElementByPath($this->manifest,$f);
+                            if (is_a($xml, 'JSimpleXMLElement') || is_a($xml, 'JXMLElement')) {
+                                $$f = $this->filterInput->clean($xml->data(), 'integer');
+                            } elseif ($f == 'master' || $f == 'check_encryption') {
+                                $$f = 0;
+                            } else {
+                                $$f = 3;
+                            }
+                        }
+                        $db->setQuery('SELECT id ' . implode(', ', $features) . ' FROM #__jfusion WHERE name = ' . $db->Quote($new_jname));
+                        $plugin = $db->loadObject();
+                        if (!empty($plugin)) {
+                            //enable/disable features and update the plugin files
+                            $plugin_features = array();
+                            foreach ($features as $f) {
+                                if (($$f == 3 && $plugin->$f != 3) || ($$f != 3 && $plugin->$f == 3)) {
+                                    $plugin_features[$f] = $$f;
+                                }
+                            }
+                        } else {
+                            $plugin_features = array();
                         }
                     }
+                    foreach ($plugin_features as $key => $val) {
+                        $query.= ", $key = $val";
+                    }
+                    $query.= " WHERE name = '$new_jname'";
+                    $db->setQuery($query);
+                    $db->query();
                 } else {
-                    $plugin_features = array();
+                    //add the new entry in the JFusion plugin table
+                    $db->setQuery('SELECT * FROM #__jfusion WHERE name = ' . $db->Quote($jname));
+                    $plugin_entry = $db->loadObject();
+                    $plugin_entry->name = $new_jname;
+                    $plugin_entry->id = null;
+                    $plugin_entry->master = ($plugin_entry->master == 3) ? 3 : 0;
+                    $plugin_entry->slave = ($plugin_entry->slave == 3) ? 3 : 0;
+                    $plugin_entry->plugin_files = $this->backup($new_jname);
+                    //only change the original name if this is not a copy itself
+                    if (empty($plugin_entry->original_name)) {
+                        $plugin_entry->original_name = $jname;
+                    }
+                    if (!$db->insertObject('#__jfusion', $plugin_entry, 'id')) {
+                        //return the error
+                        $msg = 'Error while creating the plugin: ' . $db->stderr();
+                        $this->parent->abort($msg);
+                        $result['message'] = $msg;
+                        return $result;
+                    }
                 }
-            }
-            foreach ($plugin_features as $key => $val) {
-                $query.= ", $key = $val";
-            }
-            $query.= " WHERE name = '$new_jname'";
-            $db->setQuery($query);
-            $db->query();
-        } else {
-            //add the new entry in the JFusion plugin table
-            $db->setQuery('SELECT * FROM #__jfusion WHERE name = ' . $db->Quote($jname));
-            $plugin_entry = $db->loadObject();
-            $plugin_entry->name = $new_jname;
-            $plugin_entry->id = null;
-            $plugin_entry->master = ($plugin_entry->master == 3) ? 3 : 0;
-            $plugin_entry->slave = ($plugin_entry->slave == 3) ? 3 : 0;
-            $plugin_entry->plugin_files = $this->backup($new_jname);
-            //only change the original name if this is not a copy itself
-            if (empty($plugin_entry->original_name)) {
-                $plugin_entry->original_name = $jname;
-            }
-            if (!$db->insertObject('#__jfusion', $plugin_entry, 'id')) {
-                //return the error
-                $msg = 'Error while creating the plugin: ' . $db->stderr();
-                $this->parent->abort($msg);
-                $result['message'] = $msg;
-                return $result;
+                $result['message'] = JText::_('PLUGIN') . ' ' .$jname .' ' . JText::_('COPY') . ': ' . JText::_('SUCCESS');
+                $result['status'] = true;
             }
         }
-        $result['message'] = JText::_('PLUGIN') . ' ' .$jname .' ' . JText::_('COPY') . ': ' . JText::_('SUCCESS');
-        $result['status'] = true;
         return $result;
     }
     /**
