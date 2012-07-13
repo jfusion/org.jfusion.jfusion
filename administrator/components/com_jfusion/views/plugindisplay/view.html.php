@@ -216,7 +216,10 @@ class jfusionViewplugindisplay extends JView {
      	}
 
        	//set uninstall options
-       	if ($record->name == 'joomla_int') {
+        $query = 'SELECT count(*) from #__jfusion WHERE original_name LIKE '. $db->Quote($record->name);
+        $db->setQuery($query);
+        $copys = $db->loadResult();
+       	if ($record->name == 'joomla_int' || $copys) {
           	//cannot uninstall joomla_int
           	$record->deleteimage = 'components/com_jfusion/images/delete_icon_dim.png';
           	$record->deletescript =  'javascript:void(0)';

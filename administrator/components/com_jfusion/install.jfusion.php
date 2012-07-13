@@ -558,10 +558,10 @@ HTML;
         $rows = $db->loadObjectList();
         if(!empty($rows)) {
             foreach ($rows as $row) {
-                $query = 'SELECT name from #__jfusion WHERE (params IS NOT NULL OR params != \'\' OR params != \'0\' OR master = 1 OR slave = 1) AND original_name LIKE '. $db->Quote($row->name);
+                $query = 'SELECT count(*) from #__jfusion WHERE (params IS NOT NULL OR params != \'\' OR params != \'0\' OR master = 1 OR slave = 1) AND original_name LIKE '. $db->Quote($row->name);
                 $db->setQuery($query);
-                $copys = $db->loadObjectList();
-                if (empty($copys)) {
+                $copys = $db->loadResult();
+                if (!$copys) {
                     //only delete if there are no copys
                     $db->setQuery('DELETE FROM #__jfusion WHERE name = ' . $db->Quote($row->name));
                     if (!$db->query()) {
