@@ -120,7 +120,13 @@ function initSortables() {
 	var dragHandles = document.getElementsByName('handle');
 
     var ajaxsync = new Ajax(url, {
-	    method: 'get'
+	    method: 'get',
+        onComplete: function(JSONobject) {
+            var response = Json.evaluate(JSONobject);
+            if (response.status === false) {
+                alert(response.message);
+            }
+        }
 	});
 	
     new Sortables('sort_table',{
@@ -192,7 +198,7 @@ window.addEvent('domready',function() {
 	    spinner.innerHTML = '<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">';
 		this.send({ method: 'post',
 			onComplete: function(JSONobject) {
-			var response = Json.evaluate(JSONobject);                              
+			var response = Json.evaluate(JSONobject);
 			    
 		    if (response.overwrite != 1 && response.status === true) {
 		    	addRow(response.jname, response.rowhtml);

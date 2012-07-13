@@ -110,7 +110,13 @@ function initSortables() {
 
     /* allow for updates of row order */
     var ajaxsync = new Request.HTML({ url: url,
-        method: 'get'
+        method: 'get',
+        onComplete: function(JSONobject) {
+            var response = JSON.decode(JSONobject);
+            if (response.status === false) {
+                alert(response.message);
+            }
+        }
     });
 
     new Sortables('sort_table',{

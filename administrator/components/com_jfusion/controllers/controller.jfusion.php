@@ -673,6 +673,7 @@ JS;
         $query ='';
         $db = JFactory::getDBO();
 
+        $result = array('status' => true, 'message' => '');
         /* run the update query for each id */
         foreach($ids as $index=>$id)
         {
@@ -682,7 +683,9 @@ JS;
         }
         $db->setQuery($query);
         if (!$db->queryBatch()) {
-            echo $db->stderr() . '<br/>';
+            $result['message'] = $db->stderr();
+            $result['status'] = false;
         }
+        die(json_encode($result));
     }
 }
