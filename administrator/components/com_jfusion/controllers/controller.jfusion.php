@@ -457,9 +457,9 @@ class JFusionController extends JController
 
         //check to see if an integration was selected
         $db = JFactory::getDBO();
-        $query = 'SELECT * from #__jfusion WHERE name LIKE '.$db->quote($jname);
+        $query = 'SELECT count(*) from #__jfusion WHERE original_name IS NULL && name LIKE '.$db->quote($jname);
         $db->setQuery($query);
-        $record = $db->loadObject();
+        $record = $db->loadResult();
         if ($jname && $new_jname && $record) {
             include_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.install.php';
             $model = new JFusionModelInstaller();
@@ -504,8 +504,15 @@ class JFusionController extends JController
     function uninstallplugin()
     {
         $jname = JRequest::getVar('jname');
+
+        //set uninstall options
+        $db = JFactory::getDBO();
+        $query = 'SELECT count(*) from #__jfusion WHERE original_name LIKE '. $db->Quote($jname);
+        $db->setQuery($query);
+        $copys = $db->loadResult();
+
         //check to see if an integration was selected
-        if ($jname && $jname != 'joomla_int') {
+        if ($jname && $jname != 'joomla_int' || $copys) {
             include_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.install.php';
             $model = new JFusionModelInstaller();
             $result = $model->uninstall($jname);
