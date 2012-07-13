@@ -581,9 +581,6 @@ HTML;
                 }
             }
         }
-
-
-
 	}
 
 	//output some info to the user
