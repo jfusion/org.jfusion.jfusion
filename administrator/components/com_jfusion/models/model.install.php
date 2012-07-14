@@ -158,12 +158,11 @@ class JFusionModelInstaller extends InstallerModelInstall
         $result['status'] = false;
         if (!$myId) { 
             $result['message'] = 'JFusion ' . JText::_('PLUGIN') . ' ' . JText::_('UNINSTALL') . ' ' . JText::_('FAILED');
-            return $result;
+        } else {
+            $installer = new JfusionPluginInstaller($this);
+            // Install the package
+            $result = $installer->uninstall($jname);
         }
-
-        $installer = new JfusionPluginInstaller($this);
-        // Install the package
-        $result = $installer->uninstall($jname);
         return $result;
     }
 
@@ -184,17 +183,17 @@ class JFusionModelInstaller extends InstallerModelInstall
         $result['status'] = false;
         if (!$myId) {
             $result['message'] = 'JFusion ' . JText::_('PLUGIN') . ' ' . JText::_('COPY') . ' ' . JText::_('FAILED');
-            return $result;
-        }
-        $installer = new JfusionPluginInstaller($this);
-        // Install the package
-        if (!$installer->copy($jname, $new_jname, $update)) {
-            // There was an error installing the package
-            $result['message'] = 'JFusion ' . JText::_('PLUGIN') . ' ' . JText::_('COPY') . ' ' . JText::_('FAILED');
         } else {
-            // Package installed sucessfully 
-            $result['message'] = 'JFusion ' . JText::_('PLUGIN') . ' ' . JText::_('COPY') . ' ' . JText::_('SUCCESS');
-            $result['status'] = true;
+            $installer = new JfusionPluginInstaller($this);
+            // Install the package
+            if (!$installer->copy($jname, $new_jname, $update)) {
+                // There was an error installing the package
+                $result['message'] = 'JFusion ' . JText::_('PLUGIN') . ' ' . JText::_('COPY') . ' ' . JText::_('FAILED');
+            } else {
+                // Package installed sucessfully
+                $result['message'] = 'JFusion ' . JText::_('PLUGIN') . ' ' . JText::_('COPY') . ' ' . JText::_('SUCCESS');
+                $result['status'] = true;
+            }
         }
         return $result;
     }
@@ -707,7 +706,6 @@ class JFusionPluginInstaller extends JObject
     function _getManifest($dir)
     {
         // Initialize variables
-        $null = null;
 
         // TODO: DISCUSS if we should allow flexible naming for installation file
         $file = $dir . DS . 'jfusion.xml';
@@ -729,9 +727,10 @@ class JFusionPluginInstaller extends JObject
 			if (!$xml->loadFile($file)) {
             	// Free up xml parser memory and return null
             	unset($xml);
-            	return $null;
-        	}
-			$xml = & $xml->document;
+                $xml = null;
+        	} else {
+                $xml = & $xml->document;
+            }
 		}
     	/*
         * Check for a valid XML root tag.
@@ -741,19 +740,20 @@ class JFusionPluginInstaller extends JObject
 		if (!is_object($xml) || ($xml->name() != 'install' && $xml->name() != 'mosinstall')) {
             // Free up xml parser memory and return null
             unset($xml);
-            return $null;
+            $xml = null;
+        } else {
+            /**
+             * Check that the plugin is an actual JFusion plugin
+             */
+            $type = $this->getAttribute($xml,'type');
+
+            if ($type!=='jfusion') {
+                //Free up xml parser memory and return null
+                unset ($xml);
+                $xml = null;
+            }
         }
 
-        /**
-         * Check that the plugin is an actual JFusion plugin
-         */
-        $type = $this->getAttribute($xml,'type');
-
-        if ($type!=='jfusion') {
-            //Free up xml parser memory and return null
-            unset ($xml);
-            return $null;
-        }
         // Valid manifest file return the object
         return $xml;
     }
