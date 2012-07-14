@@ -106,7 +106,7 @@ class jfusionViewplugindisplay extends JView {
                 }
             }
             //get the install xml
-	        $url = 'http://jfusion.googlecode.com/svn/branches/jfusion_versions.xml';
+	        $url = 'http://www.jfusion.org/xml/jfusion_versions.xml';
 	        $VersionDataRaw = JFusionFunctionAdmin::getFileData($url);
             $VersionData = null;
 	        if (!empty($VersionDataRaw)) {

@@ -794,14 +794,8 @@ JS;
 		<tr style="padding: 0px;"><td style="padding: 0px; width: 150px;">'.JText::_('DATABASE_PREFIX').'</td><td style="padding: 0px;"><input name="database_prefix" id="database_prefix" value="" class="text_area" size="20" type="text"></td></tr></table>';
 
         //custom for development purposes / local use only; note do not commit your URL to SVN!!!
-        $developmentURL = '';
-        $url = (empty($developmentURL)) ? ($VersionCurrent=='SVN') ? 'http://jfusion.googlecode.com/svn/trunk/jfusion_universal.xml' : 'http://www.jfusion.org/jfusion_universal.xml' : $developmentURL;
+        $url = 'http://www.jfusion.org/xml/jfusion_universal.xml';
         $ConfigList = JFusionFunctionAdmin::getFileData($url);
-        if(empty($ConfigList)){
-            //try a mirror
-            $url = (empty($developmentURL)) ? 'http://jfusion.googlecode.com/svn/branches/jfusion_universal.xml' : 'http://jfusion.googlecode.com/svn/trunk/jfusion_universal.xml';
-            $ConfigList = JFusionFunctionAdmin::getFileData($url);
-        }
 
         /**
          * @ignore
@@ -846,14 +840,8 @@ JS;
             $xmlFile = JFactory::getXMLParser('Simple');
             if( !empty($xmlname) ) {
                 //custom for development purposes / local use only; note do not commit your URL to SVN!!!
-                $developmentURL = '';
-                $url = (empty($developmentURL)) ? ($VersionCurrent=='SVN') ? 'http://jfusion.googlecode.com/svn/trunk/configs/jfusion_'.$xmlname.'_config.xml' : 'http://www.jfusion.org/configs/jfusion_'.$xmlname.'_config.xml' : $developmentURL;
+                $url = 'http://www.jfusion.org/xml/configs/jfusion_'.$xmlname.'_config.xml';
                 $ConfigFile = JFusionFunctionAdmin::getFileData($url);
-                if(empty($ConfigFile)){
-                    //try a mirror
-                    $url = (empty($developmentURL)) ? 'http://jfusion.googlecode.com/svn/branches/configs/jfusion_'.$xmlname.'_config.xml' : 'http://jfusion.googlecode.com/svn/trunk/configs/jfusion_'.$xmlname.'_config.xml';
-                    $ConfigFile = JFusionFunctionAdmin::getFileData($url);
-                }
                 if ( !empty($ConfigFile) ) {
                     $xmlFile->loadString($ConfigFile);
                 } else {
