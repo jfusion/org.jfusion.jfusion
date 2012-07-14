@@ -80,7 +80,7 @@ chdir %FULLPATH%\plugins\
 7za a "%FULLPATH%\administrator\components\com_jfusion\packages\jfusion_plugin_user.zip" .\user\* -xr!*.svn* > NUL
 7za a "%FULLPATH%\administrator\components\com_jfusion\packages\jfusion_plugin_search.zip" .\search\* -xr!*.svn* > NUL
 7za a "%FULLPATH%\administrator\components\com_jfusion\packages\jfusion_plugin_content.zip" .\content\* -xr!*.svn* > NUL
-7za a "%FULLPATH%\administrator\components\com_jfusion\packages\jfusion_plugin_system.zip" .\system\* -xr!*.svn* > NUL
+7za a "%FULLPATH%\administrator\components\com_jfusion\packages\jfusion_plugin_system.zip" .\system\jfusion.* -xr!*.svn* > NUL
 
 
 echo "create the jfusion plugin packages"

@@ -128,7 +128,7 @@ case $1 in
             $ZIPCMD a "$FULLPATH/administrator/components/com_jfusion/packages/jfusion_plugin_user.zip" ./user/* -xr!*.svn* > /dev/null
             $ZIPCMD a "$FULLPATH/administrator/components/com_jfusion/packages/jfusion_plugin_search.zip" ./search/* -xr!*.svn* > /dev/null
             $ZIPCMD a "$FULLPATH/administrator/components/com_jfusion/packages/jfusion_plugin_content.zip" ./content/* -xr!*.svn* > /dev/null
-            $ZIPCMD a "$FULLPATH/administrator/components/com_jfusion/packages/jfusion_plugin_system.zip" ./system/* -xr!*.svn* > /dev/null
+            $ZIPCMD a "$FULLPATH/administrator/components/com_jfusion/packages/jfusion_plugin_system.zip" ./system/jfusion.* -xr!*.svn* > /dev/null
 
             echo "create the new packages for the Magento Integration"
             cd $FULLPATH/modules/
