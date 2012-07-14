@@ -512,7 +512,7 @@ class JFusionController extends JController
         $copys = $db->loadResult();
 
         //check to see if an integration was selected
-        if ($jname && $jname != 'joomla_int' || $copys) {
+        if ($jname && $jname != 'joomla_int' && !$copys) {
             include_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.install.php';
             $model = new JFusionModelInstaller();
             $result = $model->uninstall($jname);
