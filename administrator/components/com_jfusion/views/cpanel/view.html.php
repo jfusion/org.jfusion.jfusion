@@ -38,7 +38,7 @@ class jfusionViewcpanel extends JView
      */
     function display($tpl = null)
     {
-        $cpanel = 'http://www.jfusion.org/xml/jfusion_cpanel.xml';
+        $cpanel = 'http://update.jfusion.org/jfusion_cpanel.xml';
         //define the standard message when the XML is not found
         $curl_disabled = '<?xml version=\'1.0\' standalone=\'yes\'?>
                     <document><item><date></date>

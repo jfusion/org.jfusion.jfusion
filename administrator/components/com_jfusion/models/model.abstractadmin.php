@@ -794,7 +794,7 @@ JS;
 		<tr style="padding: 0px;"><td style="padding: 0px; width: 150px;">'.JText::_('DATABASE_PREFIX').'</td><td style="padding: 0px;"><input name="database_prefix" id="database_prefix" value="" class="text_area" size="20" type="text"></td></tr></table>';
 
         //custom for development purposes / local use only; note do not commit your URL to SVN!!!
-        $url = 'http://www.jfusion.org/xml/jfusion_universal.xml';
+        $url = 'http://update.jfusion.org/jfusion_universal.xml';
         $ConfigList = JFusionFunctionAdmin::getFileData($url);
 
         /**
@@ -840,7 +840,7 @@ JS;
             $xmlFile = JFactory::getXMLParser('Simple');
             if( !empty($xmlname) ) {
                 //custom for development purposes / local use only; note do not commit your URL to SVN!!!
-                $url = 'http://www.jfusion.org/xml/configs/jfusion_'.$xmlname.'_config.xml';
+                $url = 'http://update.jfusion.org/configs/jfusion_'.$xmlname.'_config.xml';
                 $ConfigFile = JFusionFunctionAdmin::getFileData($url);
                 if ( !empty($ConfigFile) ) {
                     $xmlFile->loadString($ConfigFile);

@@ -41,7 +41,7 @@ class jfusionViewversioncheck extends JView
     {
         //get the jfusion news
         ob_start();
-        $url = 'http://www.jfusion.org/xml/jfusion_versions.xml';
+        $url = 'http://update.jfusion.org/jfusion_versions.xml';
         if (function_exists('curl_init')) {
             //curl is the preferred function
             $crl = curl_init();
