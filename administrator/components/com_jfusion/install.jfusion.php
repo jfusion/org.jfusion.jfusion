@@ -128,7 +128,7 @@ function com_install() {
 	}
 	//create the jfusion table if it does not exist already
 	if (array_search($table_prefix . 'jfusion', $table_list) == false) {
-        $jfusionupgrade = 0;
+        $jfusionupgrade = JText::_('JFUSION') . ' ' . JText::_('INSTALL') . ' ' .JText::_('SUCCESS');
 
         $batch_query = "CREATE TABLE #__jfusion (
         id int(11) NOT null auto_increment,
@@ -159,7 +159,7 @@ function com_install() {
         JFolder::create(JFUSION_PLUGIN_PATH);
 	} else {
 		//this is an upgrade
-		$jfusionupgrade = 1;
+		$jfusionupgrade = JText::_('JFUSION') . ' ' . JText::_('UPDATE') . ' ' .JText::_('SUCCESS');
 
 		/***
 		 * UPGRADES FOR 1.1.0 Patch 2
@@ -622,72 +622,77 @@ HTML;
         <?php echo JText::_('STARTING') . ' ' . JText::_('INSTALLATION') . ' ...' ?>
     </h3>
 
-    <?php
+<?php
+
+    $html = <<<HTML
+        <table style="background-color:#d9f9e2;width:100%;">
+            <tr>
+                <td width="50px">
+                    <img src="components/com_jfusion/images/check_good_small.png">
+                </td>
+                <td>
+                    <font size="2">
+                        <b>
+                            {$jfusionupgrade}
+                        </b>
+                    </font>
+                </td>
+            </tr>
+        </table>
+HTML;
+    echo $html;
+
     if(!empty($restorePluginOutput)) {
         echo $restorePluginOutput;
     }
-    ?>
 
-    <?php
     //install the JFusion packages
     jimport('joomla.installer.helper');
     $packages['Login Module'] = $basedir . DS . 'packages' . DS . 'jfusion_mod_login.zip';
     $packages['Activity Module'] = $basedir . DS . 'packages' . DS . 'jfusion_mod_activity.zip';
     $packages['User Activity Module'] = $basedir . DS . 'packages' . DS . 'jfusion_mod_user_activity.zip';
     $packages['Whos Online Module'] = $basedir . DS . 'packages' . DS . 'jfusion_mod_whosonline.zip';
+
     $packages['User Plugin'] = $basedir . DS . 'packages' . DS . 'jfusion_plugin_user.zip';
     $packages['Authentication Plugin'] = $basedir . DS . 'packages' . DS . 'jfusion_plugin_auth.zip';
     $packages['Search Plugin'] = $basedir . DS . 'packages' . DS . 'jfusion_plugin_search.zip';
     $packages['System Plugin'] = $basedir . DS . 'packages' . DS . 'jfusion_plugin_system.zip';
     $packages['Discussion Bot'] = $basedir . DS . 'packages' . DS . 'jfusion_plugin_content.zip';
 
-
     foreach ($packages as $name => $filename) {
         $package = JInstallerHelper::unpack($filename);
         $tmpInstaller = new JInstaller();
-        if (!$tmpInstaller->install($package['dir'])) { ?>
-
-    <table style="background-color:#f9ded9;width:100%;">
-        <tr style="height: 30px">
-            <td width="50px">
-                <img src="components/com_jfusion/images/check_bad_small.png">
-            </td>
-            <td>
-                <font size="2">
-                    <b>
-                        <?php echo JText::_('ERROR') . ' ' . JText::_('INSTALLING') . ' ' . JText::_('JFUSION') . ' ' . $name; ?>
-                    </b>
-                </font>
-            </td>
-        </tr>
-    </table>
-        <?php
+        if (!$tmpInstaller->install($package['dir'])) {
+            $color = '#f9ded9';
+            $message = JText::_('ERROR') . ' ' . JText::_('INSTALLING') . ' ' . JText::_('JFUSION') . ' ' . $name;
+            $image = '<img src="components/com_jfusion/images/check_bad_small.png">';
+        } else {
+            $color = '#d9f9e2';
+            $message = JText::_('SUCCESS') . ' ' . JText::_('INSTALLING') . ' ' . JText::_('JFUSION') . ' ' . $name;
+            $image = '<img src="components/com_jfusion/images/check_good_small.png">';
         }
+
+        $html = <<<HTML
+            <table style="background-color:{$color};width:100%;">
+                <tr style="height: 30px">
+                    <td width="50px">
+                        {$image}
+                    </td>
+                    <td>
+                        <font size="2">
+                            <b>
+                                {$message}
+                            </b>
+                        </font>
+                    </td>
+                </tr>
+            </table>
+HTML;
+        echo $html;
+
         unset($package, $tmpInstaller);
     }
-    ?>
-    <table style="background-color:#d9f9e2;width:100%;">
-        <tr>
-            <td width="50px">
-                <img src="components/com_jfusion/images/check_good_small.png">
-            </td>
-            <td>
-                <font size="2">
-                    <b>
-                        <?php
-                        if ($jfusionupgrade == 1) {
-                            echo JText::_('JFUSION') . ' ' . JText::_('UPDATE') . ' ' .JText::_('SUCCESS');
-                        } else {
-                            echo JText::_('JFUSION') . ' ' . JText::_('INSTALL') . ' ' .JText::_('SUCCESS');
-                        }
-                        ?>
-                    </b>
-                </font>
-            </td>
-        </tr>
-    </table>
 
-    <?php
     $jfusion_plugins = array();
     $jfusion_plugins['joomla_int'] = 'jomla_int';
     $jfusion_plugins['dokuwiki'] = 'A standards compliant, simple to use Wiki.';
@@ -732,82 +737,99 @@ HTML;
             $result = $model->installZIP($basedir . DS . 'packages' . DS . 'jfusion_' . $plugin . '.zip');
             //remove plugin from install list
             unset($jfusion_plugins[$plugin]);
-            ?>
-            <table style="background-color:#d9f9e2;width:100%;">
+
+            $message = $result['message'];
+            if ($result['status']) {
+                $color = '#d9f9e2';
+                $image = '<img src="components/com_jfusion/images/check_good_small.png">';
+            } else {
+                $color = '#f9ded9';
+                $image = '<img src="components/com_jfusion/images/check_bad_small.png">';
+            }
+
+            $html = <<<HTML
+            <table style="background-color:{$color}; width:100%;">
                 <tr>
                     <td width="50px">
-                        <?php if ($result['status']) { ?>
-                            <img src="components/com_jfusion/images/check_good_small.png">
-                        <?php  } else { ?>
-                            <img src="components/com_jfusion/images/check_bad_small.png">
-                        <?php } ?>
+                        {$image}
                     </td>
                     <td>
                         <font size="2">
                             <b>
-                                <?php echo $result['message']; ?>
+                                {$message}
                             </b>
                         </font>
                     </td>
                 </tr>
             </table>
-        <?php
+HTML;
+            echo $html;
         }
     }
     ?>
     <br/>
     <?php echo JText::_('POST_INSTALL_PLUGIN_OPTIONS'); ?>
     <br/><br/>
-    <?php
+<?php
     //prepare toolbar
     $bar = new JToolBar('toolbar');
     $bar->appendButton('Link', 'apply', JText::_('INSTALL'), 'javascript: $(\'pluginForm\').submit();');
-    $bar->appendButton( 'Link', 'options', 'CPanel', 'index.php?option=com_jfusion&task=plugindisplay' );
-    echo $bar->render();?>
-    <br/><br/><br/>
-    <form method="post" action="index.php" name="pluginForm" id="pluginForm">
-        <input type="hidden" name="option" value="com_jfusion" />
-        <input type="hidden" name="task" value="installplugins" />
-        <table class="adminlist" style="border-spacing:1px;" id="sortables">
-            <thead>
-                <tr>
-                    <th class="title" width="20px;">
-                    </th>
-                    <th class="title" align="left">
-                        <?php echo JText::_('NAME');?></th>
-                    <th class="title" align="left">
-                        <?php echo JText::_('DESCRIPTION');?>
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-            <?php
-            //loop through the JFusion plugins
-            $rowcount = 0;
-            foreach($jfusion_plugins as $name => $description) { ?>
-                <tr id="<?php echo $name; ?>" class="row<? echo $rowcount; ?>">
-                    <td width="20px;">
-                        <input type="checkbox" name="jfusionplugins[]" value="<?php echo $name; ?>" />
-                    </td>
-                    <td>
-                        <?php echo $name; ?>
-                    </td>
-                    <td>
-                        <?php echo $description; ?>
-                    </td>
-                </tr>
+    $bar->appendButton( 'Link', 'forward', JText::_('CPANEL'), 'index.php?option=com_jfusion&task=cpanel' );
+    echo $bar->render();
 
-                <?php
-                if ($rowcount == 0) {
-                    $rowcount = 1;
-                } else {
-                    $rowcount = 0;
-                }
-            } ?>
-            </tbody>
-        </table>
-    </form>
-    <?php
+    $plugin_content = '';
+    //loop through the JFusion plugins
+    $rowcount = 0;
+    foreach($jfusion_plugins as $name => $description) {
+        $plugin_content .= <<<HTML
+            <tr id="{$name}" class="row{$rowcount}">
+                <td width="20px;">
+                    <input type="checkbox" name="jfusionplugins[]" value="{$name}" />
+                </td>
+                <td>
+                    {$name}
+                </td>
+                <td>
+                    {$description}
+                </td>
+            </tr>
+HTML;
+
+        if ($rowcount == 0) {
+            $rowcount = 1;
+        } else {
+            $rowcount = 0;
+        }
+    }
+
+    $name = JText::_('NAME');
+    $description = JText::_('DESCRIPTION');
+    $html = <<<HTML
+        <br/><br/><br/>
+        <form method="post" action="index.php" name="pluginForm" id="pluginForm">
+            <input type="hidden" name="option" value="com_jfusion" />
+            <input type="hidden" name="task" value="installplugins" />
+            <table class="adminlist" style="border-spacing:1px;" id="sortables">
+                <thead>
+                    <tr>
+                        <th class="title" width="20px;">
+                        </th>
+                        <th class="title" align="left">
+                            {$name}
+                        </th>
+                        <th class="title" align="left">
+                            {$description}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {$plugin_content}
+                </tbody>
+            </table>
+        </form>
+HTML;
+    echo $html;
+
     //cleanup the packages directory
     $package_dir = $basedir . DS . 'packages';
     $folders = JFolder::folders($package_dir);
