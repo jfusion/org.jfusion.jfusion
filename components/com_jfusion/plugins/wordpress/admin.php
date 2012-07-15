@@ -17,6 +17,7 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
+
 /**
  * JFusion Admin Class for Moodle 1.8+
  * For detailed descriptions on these functions please check the model.abstractadmin.php
@@ -29,10 +30,6 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-
-if (!class_exists('JFusionWordpressHelper')) {
-	require_once 'wordpresshelper.php';
-}
 class JFusionAdmin_wordpress extends JFusionAdmin
 {
 	/**
@@ -44,12 +41,19 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 		return 'wordpress';
 	}
 
-	function getTablename() {
+    /**
+     * @return string
+     */
+    function getTablename() {
 		return 'users';
 	}
-	
-	function getUsergroupListWPA($db,$database_prefix) {
-		$query = "SELECT option_value FROM #__options WHERE option_name = '".$database_prefix."user_roles'";
+
+    /**
+     * @param JDatabase $db
+     * @return array
+     */
+    function getUsergroupListWPA($db) {
+		$query = "SELECT option_value FROM #__options WHERE option_name = 'wp_user_roles'";
 		$db->setQuery($query);
 		$roles_ser = $db->loadResult();
 		$roles = unserialize($roles_ser);
@@ -64,24 +68,25 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 		}
 		return $usergroups;
 	}
-	
-	
 
-	function setupFromPath($forumPath) {
+    /**
+     * @param string $forumPath
+     * @return array|bool
+     */
+    function setupFromPath($forumPath) {
 		//check for trailing slash and generate file path
 		if (substr($forumPath, -1) == DS) {
 			$myfile = $forumPath . 'wp-config.php';
 		} else {
 			$myfile = $forumPath . DS . 'wp-config.php';
 		}
-
-		if (($file_handle = @fopen($myfile, 'r')) === false) {
+        $params = array();
+        if (($file_handle = @fopen($myfile, 'r')) === false) {
 			JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));
-			$result = false;
-			return $result;
 		} else {
 			//parse the file line by line to get only the config variables
 			//			$file_handle = fopen($myfile, 'r');
+            $table_prefix = '';
 			while (!feof($file_handle)) {
 				$line = fgets($file_handle);
 				if (strpos(trim($line), 'define') === 0) {
@@ -93,7 +98,6 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 			}
 			fclose($file_handle);
 			//save the parameters into array
-			$params = array();
 			$params['database_host'] = DB_HOST;
 			$params['database_name'] = DB_NAME;
 			$params['database_user'] = DB_USER;
@@ -112,11 +116,9 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 			$query = "SELECT option_value FROM #__options WHERE option_name = 'siteurl'";
 			$db->setQuery($query);
 			$params['source_url'] = $db-> loadResult();
-			if (substr($params['source_url'], -1) == '/') {
-				$params['source_url'] = $params['source_url'];
-			} else {
-				//no slashes found, we need to add one
-				$params['source_url'] = $params['source_url'] . '/' ;
+			if (substr($params['source_url'], -1) != '/') {
+                //no slashes found, we need to add one
+                $params['source_url'] = $params['source_url'] . '/' ;
 			}
 
 			// now get the default usergroup
@@ -125,7 +127,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 			$db->setQuery($query);
 			$default_role=$db->loadResult();
 			
-			$userGroupList = $this->getUsergroupListWPA($db,$table_prefix);
+			$userGroupList = $this->getUsergroupListWPA($db);
 			$params['usergroup']='0';
 			foreach ($userGroupList as $usergroup) {
 				if($usergroup->name == $default_role){
@@ -133,12 +135,16 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 					break;
 				}
 			}
-			return $params;
 		}
-
+        return $params;
 	}
 
-	function getUserList($start = 0, $count = '')
+	/**
+     * @param int $start
+     * @param string $count
+     * @return array
+     */
+    function getUserList($start = 0, $count = '')
 	{
 		//getting the connection to the db
 		$db = JFusionFactory::getDatabase($this->getJname());
@@ -153,7 +159,10 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 		return $userlist;
 	}
 
-	function getUserCount() {
+    /**
+     * @return int
+     */
+    function getUserCount() {
 		//getting the connection to the db
 		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = 'SELECT count(*) from #__users';
@@ -163,18 +172,41 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 		return $no_users;
 	}
 
-	function getUsergroupList() {
-		$usergroups = JFusionWordpressHelper::getUsergroupListWP();
+	/**
+     * @return array
+     */
+    function getUsergroupList() {
+        /**
+         * @ignore
+         * @var $helper JFusionHelper_wordpress
+         */
+        $helper = JFusionFactory::getHelper($this->getJname());
+		$usergroups = $helper->getUsergroupListWP();
 		return $usergroups;
 	}
 
-	function getDefaultUsergroup() {
+	/**
+     * @return string
+     */
+    function getDefaultUsergroup() {
 		$params = JFusionFactory::getParams($this->getJname());
-		$usergroup_id = $params->get('usergroup');
-		return JFusionWordpressHelper::getUsergroupNameWP($usergroup_id);
+        /**
+         * @ignore
+         * @var $helper JFusionHelper_wordpress
+         */
+        $helper = JFusionFactory::getHelper($this->getJname());
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
+        $usergroup_id = null;
+        if(!empty($usergroups)) {
+            $usergroup_id = $usergroups[0];
+        }
+		return $helper->getUsergroupNameWP($usergroup_id);
 	}
 
-	function allowRegistration() {
+	/**
+     * @return bool
+     */
+    function allowRegistration() {
 		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = "SELECT option_value FROM #__options WHERE option_name = 'users_can_register'";
 		$db->setQuery($query);
@@ -188,20 +220,26 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 	}
 
 
-	function allowEmptyCookiePath() {
+    /**
+     * @return bool
+     */
+    function allowEmptyCookiePath() {
 		return true;
 	}
-	function allowEmptyCookieDomain() {
+
+    /**
+     * @return bool
+     */
+    function allowEmptyCookieDomain() {
 		return true;
 	}
-	/*
-	 * do plugin support multi usergroups
-	 * return UNKNOWN for unknown
-	 * return JNO for NO
-	 * return JYES for YES
-	 * return ... ??
-	 */
-	function requireFileAccess()
+
+    /**
+     * do plugin support multi usergroups
+     *
+     * @return string UNKNOWN or JNO or JYES or ???
+     */
+    function requireFileAccess()
 	{
 		return 'JNO';
 	}

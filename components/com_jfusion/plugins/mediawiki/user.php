@@ -466,7 +466,7 @@ class JFusionUser_mediawiki extends JFusionUser {
                 } else {
                     //prepare the user variables
                     $user = new stdClass;
-                    $user->ug_user = $userinfo->user_id;
+                    $user->ug_user = $user->user_id;
                     $user->ug_group = $usergroup;
                     if (!$db->insertObject('#__user_groups', $user, 'user_id' )) {
                         //return the error
