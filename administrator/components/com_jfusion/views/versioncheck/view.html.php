@@ -146,13 +146,9 @@ class jfusionViewversioncheck extends JView
                 $db->setQuery($query);
                 $plugins = $db->loadObjectList();
                 foreach ($plugins as $plugin) {
-                    if (isset($JFusionVersionInfo->{$plugin->name})) {
-                        $plugin_version = $JFusionVersionInfo->{$plugin->name};
-                        if ($plugin_version[0]->data()) {
-                            $version = $plugin_version[0]->data();
-                        } else {
-                            $version = JText::_('UNKNOWN');
-                        }
+                    $p = $JFusionVersionInfo->getElementByPath('plugins/'.$plugin->name.'/version');
+                    if ($p) {
+                        $version = $p->data();
                     } else {
                         $version = JText::_('UNKNOWN');
                     }

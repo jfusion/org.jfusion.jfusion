@@ -458,7 +458,7 @@ window.addEvent('domready',function() {
                         </label>
                         </td>
                         <td>
-                            <input type="text" id="install_directory" name="install_directory" class="input_box" size="120" value="<?php echo JPATH_COMPONENT_ADMINISTRATOR.DS.'packages'.DS.'jfusion_xxxxxxx.zip'; ?>" />
+                            <input type="text" id="install_directory" name="install_directory" class="input_box" size="150" value="<?php echo JPATH_COMPONENT_ADMINISTRATOR.DS.'packages'.DS.'jfusion_xxxxxxx.zip'; ?>" />
                             <input type="submit" value="<?php echo JText::_('INSTALL'); ?>"/>
                             <div id="spinnerDIR">
                             </div>
@@ -493,7 +493,7 @@ window.addEvent('domready',function() {
                             </label>
                         </td>
                         <td>
-                            <input type="text" id="install_url" name="install_url" class="input_box" size="120" value="http://" />
+                            <input type="text" id="install_url" name="install_url" class="input_box" size="150" value="http://" />
                             <input type="submit" value="<?php echo JText::_('INSTALL'); ?>"/>
                             <div id="spinnerURL">
                             </div>
