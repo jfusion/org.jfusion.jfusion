@@ -266,7 +266,7 @@ if ($this->up2date) {
                     installurl = 'https://github.com/joomla/joomla-cms/raw/' + $('adminForm2').git_tree.value + '/jfusion_package.zip';
 				} else {
                     confirmtext = '<?php echo JText::_('UPGRADE_CONFIRM_RELEASE') . ' ' . $this->JFusion->version; ?>';
-                    installurl = 'https://github.com/jfusion/org.jfusion.jfusion/blob/develop/jfusion_package.zip?raw=true';
+                    installurl = 'https://github.com/jfusion/org.jfusion.jfusion/blob/release/jfusion_package.zip?raw=true';
 				}
 				
 				var agree = confirm(confirmtext);
@@ -277,7 +277,6 @@ if ($this->up2date) {
 				}
                 return r;
 			}
-
 			
 			window.addEvent('domready',function() {
 			    $('release').addEvent('click', function(e) {
