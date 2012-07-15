@@ -48,9 +48,9 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 		return 'users';
 	}
 	
-	function getUsergroupListWPA($db) {
-		$query = "SELECT option_value FROM #__options WHERE option_name = 'wp_user_roles'";
-		$db->setQuery($query);
+	function getUsergroupListWPA($db,$database_prefix) {
+		$query = "SELECT option_value FROM #__options WHERE option_name = '".$database_prefix."user_roles'";
+				$db->setQuery($query);
 		$roles_ser = $db->loadResult();
 		$roles = unserialize($roles_ser);
 		$keys = array_keys($roles);
@@ -125,7 +125,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 			$db->setQuery($query);
 			$default_role=$db->loadResult();
 			
-			$userGroupList = $this->getUsergroupListWPA($db);
+			$userGroupList = $this->getUsergroupListWPA($db,$table_prefix);
 			$params['usergroup']='0';
 			foreach ($userGroupList as $usergroup) {
 				if($usergroup->name == $default_role){
