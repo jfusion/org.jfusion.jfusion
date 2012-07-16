@@ -646,53 +646,6 @@ HTML;
         echo $restorePluginOutput;
     }
 
-    //install the JFusion packages
-    jimport('joomla.installer.helper');
-    $packages['Login Module'] = $basedir . DS . 'packages' . DS . 'jfusion_mod_login.zip';
-    $packages['Activity Module'] = $basedir . DS . 'packages' . DS . 'jfusion_mod_activity.zip';
-    $packages['User Activity Module'] = $basedir . DS . 'packages' . DS . 'jfusion_mod_user_activity.zip';
-    $packages['Whos Online Module'] = $basedir . DS . 'packages' . DS . 'jfusion_mod_whosonline.zip';
-
-    $packages['User Plugin'] = $basedir . DS . 'packages' . DS . 'jfusion_plugin_user.zip';
-    $packages['Authentication Plugin'] = $basedir . DS . 'packages' . DS . 'jfusion_plugin_auth.zip';
-    $packages['Search Plugin'] = $basedir . DS . 'packages' . DS . 'jfusion_plugin_search.zip';
-    $packages['System Plugin'] = $basedir . DS . 'packages' . DS . 'jfusion_plugin_system.zip';
-    $packages['Discussion Bot'] = $basedir . DS . 'packages' . DS . 'jfusion_plugin_content.zip';
-
-    foreach ($packages as $name => $filename) {
-        $package = JInstallerHelper::unpack($filename);
-        $tmpInstaller = new JInstaller();
-        if (!$tmpInstaller->install($package['dir'])) {
-            $color = '#f9ded9';
-            $message = JText::_('ERROR') . ' ' . JText::_('INSTALLING') . ' ' . JText::_('JFUSION') . ' ' . $name;
-            $image = '<img src="components/com_jfusion/images/check_bad_small.png">';
-        } else {
-            $color = '#d9f9e2';
-            $message = JText::_('SUCCESS') . ' ' . JText::_('INSTALLING') . ' ' . JText::_('JFUSION') . ' ' . $name;
-            $image = '<img src="components/com_jfusion/images/check_good_small.png">';
-        }
-
-        $html = <<<HTML
-            <table style="background-color:{$color};width:100%;">
-                <tr style="height: 30px">
-                    <td width="50px">
-                        {$image}
-                    </td>
-                    <td>
-                        <font size="2">
-                            <b>
-                                {$message}
-                            </b>
-                        </font>
-                    </td>
-                </tr>
-            </table>
-HTML;
-        echo $html;
-
-        unset($package, $tmpInstaller);
-    }
-
     $jfusion_plugins = array();
     $jfusion_plugins['joomla_int'] = 'jomla_int';
     $jfusion_plugins['dokuwiki'] = 'A standards compliant, simple to use Wiki.';
@@ -829,6 +782,53 @@ HTML;
         </form>
 HTML;
     echo $html;
+
+    //install the JFusion packages
+    jimport('joomla.installer.helper');
+    $packages['Login Module'] = $basedir . DS . 'packages' . DS . 'jfusion_mod_login.zip';
+    $packages['Activity Module'] = $basedir . DS . 'packages' . DS . 'jfusion_mod_activity.zip';
+    $packages['User Activity Module'] = $basedir . DS . 'packages' . DS . 'jfusion_mod_user_activity.zip';
+    $packages['Whos Online Module'] = $basedir . DS . 'packages' . DS . 'jfusion_mod_whosonline.zip';
+
+    $packages['User Plugin'] = $basedir . DS . 'packages' . DS . 'jfusion_plugin_user.zip';
+    $packages['Authentication Plugin'] = $basedir . DS . 'packages' . DS . 'jfusion_plugin_auth.zip';
+    $packages['Search Plugin'] = $basedir . DS . 'packages' . DS . 'jfusion_plugin_search.zip';
+    $packages['System Plugin'] = $basedir . DS . 'packages' . DS . 'jfusion_plugin_system.zip';
+    $packages['Discussion Bot'] = $basedir . DS . 'packages' . DS . 'jfusion_plugin_content.zip';
+
+    foreach ($packages as $name => $filename) {
+        $package = JInstallerHelper::unpack($filename);
+        $tmpInstaller = new JInstaller();
+        if (!$tmpInstaller->install($package['dir'])) {
+            $color = '#f9ded9';
+            $message = JText::_('ERROR') . ' ' . JText::_('INSTALLING') . ' ' . JText::_('JFUSION') . ' ' . $name;
+            $image = '<img src="components/com_jfusion/images/check_bad_small.png">';
+        } else {
+            $color = '#d9f9e2';
+            $message = JText::_('SUCCESS') . ' ' . JText::_('INSTALLING') . ' ' . JText::_('JFUSION') . ' ' . $name;
+            $image = '<img src="components/com_jfusion/images/check_good_small.png">';
+        }
+
+        $html = <<<HTML
+            <table style="background-color:{$color};width:100%;">
+                <tr style="height: 30px">
+                    <td width="50px">
+                        {$image}
+                    </td>
+                    <td>
+                        <font size="2">
+                            <b>
+                                {$message}
+                            </b>
+                        </font>
+                    </td>
+                </tr>
+            </table>
+HTML;
+        echo $html;
+
+        unset($package, $tmpInstaller);
+    }
 
     //cleanup the packages directory
     $package_dir = $basedir . DS . 'packages';
