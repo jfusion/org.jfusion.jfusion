@@ -10,6 +10,7 @@
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<version>1.8.0-000</version>
 	<description>phpBB3 plugin for JFusion</description>
+    <update>http://update.jfusion.org/jfusion_versions.xml</update>
     <master>0</master>
 	<slave>0</slave>
 	<dual_login>0</dual_login>
