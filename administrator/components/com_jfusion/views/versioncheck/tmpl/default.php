@@ -370,7 +370,6 @@ if ($this->up2date) {
                 <input type="hidden" name="task" value="installplugin" />
                 <input type="hidden" name="installtype" value="url" />
                 <input type="hidden" id="installPLUGIN_url" name="install_url" class="input_box" size="150" value="" />
-                <input type="submit" value="<?php echo JText::_('INSTALL'); ?>"/>
             </form>
         </td>
     </tr>
