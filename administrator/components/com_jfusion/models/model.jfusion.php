@@ -1257,14 +1257,17 @@ class JFusionFunction
         static $versions;
 		if (!isset($versions[$jname][$v])) {
 	        if ($jname=='joomla_int') {
-	        	jimport('joomla.version');
 	        	//file has now moved in Joomla 2.5
 	        	//manual include added as JImport has strange behaviours when called from outside core
-	        	if (file_exists(JPATH_ROOT.DS.'libraries'.DS.'cms'.DS.'version'.DS.'version.php')) {
-	        		include_once(JPATH_ROOT.DS.'libraries'.DS.'cms'.DS.'version'.DS.'version.php');
-	        	} elseif (file_exists(JPATH_ROOT.DS.'includes'.DS.'version.php')) {
-	        		include_once(JPATH_ROOT.DS.'includes'.DS.'version.php');
-	        	}
+                if (!class_exists('JVersion')) {
+                    if (file_exists(JPATH_LIBRARIES.DS.'cms'.DS.'version'.DS.'version.php')) {
+                        include_once(JPATH_LIBRARIES.DS.'cms'.DS.'version'.DS.'version.php');
+                    } elseif (file_exists(JPATH_LIBRARIES.DS.'joomla'.DS.'version.php')) {
+                        include_once(JPATH_LIBRARIES.DS.'joomla'.DS.'version.php');
+                    } elseif (file_exists(JPATH_ROOT.DS.'includes'.DS.'version.php')) {
+                        include_once(JPATH_ROOT.DS.'includes'.DS.'version.php');
+                    }
+                }
 				$version = new JVersion;
 		    	if (version_compare($version->getShortVersion(), $v) >= 0) {
 		        	$versions[$jname][$v] = true;
