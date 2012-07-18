@@ -837,6 +837,9 @@ class JFusionAPIInternal extends JFusionAPIBase {
     {
         $old = error_reporting(0);
         if (!defined('_JEXEC')) {
+            /**
+             * todo: determin if we really need session_write_close or if it need to be selectable
+             */
             session_write_close();
             // trick joomla into thinking we're running through joomla
             define('_JEXEC', true);
