@@ -887,6 +887,9 @@ class JFusionAPIInternal extends JFusionAPIBase {
             //load JFusion's libraries
             require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS  . 'models' . DS . 'model.factory.php';
             require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS  . 'models' . DS . 'model.jfusion.php';
+        } elseif (!defined('IN_JOOMLA')) {
+            define('IN_JOOMLA', 1);
+            JFusionFunction::reconnectJoomlaDb();
         }
 
         $mainframe = JFactory::getApplication('site');

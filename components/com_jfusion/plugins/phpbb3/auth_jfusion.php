@@ -233,45 +233,10 @@ function logout_jfusion(&$data) {
  * @return JApplication
  */
 function startJoomla() {
-    if (!defined('_JEXEC')) {
-        global $phpbb_root_path;
-        // trick joomla into thinking we're running through joomla
-        define('_JEXEC', true);
-        define('DS', DIRECTORY_SEPARATOR);
-        define('JPATH_BASE', $phpbb_root_path . DS . '..');
-        // load joomla libraries
-        require_once JPATH_BASE . DS . 'includes' . DS . 'defines.php';
-		define('_JREQUEST_NO_CLEAN', true); // we dont want to clean variables as it can "commupt" them for some applications, it also clear any globals used...
-        require_once JPATH_BASE . DS . 'includes' . DS . 'framework.php';
-//		include_once JPATH_LIBRARIES . DS . 'import.php'; //include not require, so we only get it if its there ...
-//      require_once JPATH_LIBRARIES . DS . 'loader.php';
-        jimport('joomla.base.object');
-        jimport('joomla.factory');
-        jimport('joomla.filter.filterinput');
-        jimport('joomla.error.error');
-        jimport('joomla.event.dispatcher');
-        jimport('joomla.event.plugin');
-        jimport('joomla.plugin.helper');
-        jimport('joomla.utilities.arrayhelper');
-        jimport('joomla.environment.uri');
-        jimport('joomla.environment.request');
-        jimport('joomla.user.user');
-        jimport('joomla.html.parameter');
-        jimport('joomla.version');
-        // JText cannot be loaded with jimport since it's not in a file called text.php but in methods
-        JLoader::register('JText', JPATH_BASE . DS . 'libraries' . DS . 'joomla' . DS . 'methods.php');
-        JLoader::register('JRoute', JPATH_BASE . DS . 'libraries' . DS . 'joomla' . DS . 'methods.php');
-        //load JFusion's libraries
-        require_once JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_jfusion' . DS  . 'models' . DS . 'model.factory.php';
-        require_once JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_jfusion' . DS  . 'models' . DS . 'model.jfusion.php';
-    } else {
-        define('IN_JOOMLA', 1);
-        //make sure that Joomla's database is the current connection if we are in Joomla to prevent problems
-        JFusionFunction::reconnectJoomlaDb();
-    }
-
-    $mainframe = JFactory::getApplication('site');
-    $GLOBALS['mainframe'] = & $mainframe;
+    global $phpbb_root_path;
+    define('_JFUSIONAPI_INTERNAL', true);
+    require_once $phpbb_root_path . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR  . 'jfusionapi.php';
+    $mainframe = JFusionAPIInternal::startJoomla();
     return $mainframe;
 }
 
