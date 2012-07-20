@@ -625,7 +625,7 @@ class JFusionAPI_User extends JFusionAPIBase {
 	public function executeLogout()
 	{
 		if ($this->readPayload(false)) {
-            $joomla = new JFusionAPI_Joomla();
+            $joomla = new JFusionAPIInternal();
 
             if (isset($userinfo['plugin'])) {
                 $joomla->setActivePlugin($userinfo['plugin']);
@@ -641,9 +641,12 @@ class JFusionAPI_User extends JFusionAPIBase {
 	{
 		if ( $this->payload ) {
             if ( isset($this->payload['userinfo']) && get_class($this->payload['userinfo']) == 'stdClass') {
-                $mainframe = JFusionAPIInternal::startJoomla();
 
-                $updateinfo = $this->payload['userinfo'];
+                $joomla = new JFusionAPIInternal();
+
+                if (isset($userinfo['plugin'])) {
+                    $joomla->setActivePlugin($userinfo['plugin']);
+                }
 
                 if (isset($this->payload['overwrite']) && $this->payload['overwrite']) {
                     $overwrite = 1;
@@ -651,37 +654,10 @@ class JFusionAPI_User extends JFusionAPIBase {
                     $overwrite = 0;
                 }
 
-                $plugins = JFusionFunction::getSlaves();
-                $plugins[] = JFusionFunction::getMaster();
+                $joomla->register($this->payload['userinfo'],$overwrite);
 
-                // TODO: Determin if this can be removed ?
-                if ( isset($this->payload['plugin']) ) {
-                    foreach ($plugins as $key => $plugin) {
-                        if ($plugin->name == $this->payload['plugin']) {
-                            unset($plugins[$key]);
-                        }
-                    }
-                }
-
-                foreach ($plugins as $plugin) {
-                    $PluginUserUpdate = &JFusionFactory::getUser($plugin->name);
-
-                    $existinguser = $PluginUserUpdate->getUser($updateinfo);
-
-                    if(!$existinguser) {
-                        $status = array('error' => array(),'debug' => array());
-                        $PluginUserUpdate->createUser($updateinfo,$status);
-
-                        foreach ($status['error'] as $error) {
-                            $this->error[][$plugin->name] = $error;
-                        }
-                        foreach ($status['debug'] as $debug) {
-                            $this->debug[][$plugin->name] = $debug;
-                        }
-                    } else {
-                        $this->error[][$plugin->name] = 'user already exsists';
-                    }
-                }
+                $this->error = $joomla->error;
+                $this->debug = $joomla->debug;
             } else {
                 $this->error[] = 'invalid payload';
             }
@@ -694,47 +670,18 @@ class JFusionAPI_User extends JFusionAPIBase {
 	{
 		if ( $this->payload ) {
 			if ( isset($this->payload['userinfo']) && is_array($this->payload['userinfo'])) {
-				$mainframe = JFusionAPIInternal::startJoomla();
-				if (isset($this->payload['overwrite']) && $this->payload['overwrite']) {
-					$overwrite = 1;
-				} else {
-					$overwrite = 0;
-				}
-				
- 				$plugins = JFusionFunction::getSlaves();
- 				$plugins[] = JFusionFunction::getMaster();
+                $joomla = new JFusionAPIInternal();
 
-				foreach ($plugins as $key => $plugin) {
-					if (!array_key_exists($plugin->name,$this->payload['userinfo'])) {
-						unset($plugins[$key]);
-					}
-				}
-				foreach ($plugins as $plugin) {
-					$PluginUserUpdate = &JFusionFactory::getUser($plugin->name);
-					$updateinfo = $this->payload['userinfo'][$plugin->name];
-					
-					if (get_class($updateinfo) == 'stdClass') {
-						$lookupUser = JFusionFunction::lookupUser($plugin->name,'',false,$updateinfo->username);
-	
-						if($lookupUser) {
-							$existinguser = $PluginUserUpdate->getUser($updateinfo->username);
-							
-							foreach ($updateinfo as $key => $value) {
-								if ($key != 'userid' && isset($existinguser->$key)) {
-									if ( $existinguser->$key != $updateinfo->$key ) {
-										$existinguser->$key = $updateinfo->$key;
-									}
-								}
-							}
-							
-							$this->debug[][$plugin->name] = $PluginUserUpdate->updateUser($existinguser, $overwrite);
-						} else {
-							$this->error[][$plugin->name] = 'invalid user';
-						}
-					} else {
-						$this->error[][$plugin->name] = 'invalid update user';
-					}
-				}
+                if (isset($this->payload['overwrite']) && $this->payload['overwrite']) {
+                    $overwrite = 1;
+                } else {
+                    $overwrite = 0;
+                }
+
+                $joomla->update($this->payload['userinfo'],$overwrite);
+
+                $this->error = $joomla->error;
+                $this->debug = $joomla->debug;
 			} else {
 				$this->error[] = 'invalid payload';
 			}
@@ -745,25 +692,14 @@ class JFusionAPI_User extends JFusionAPIBase {
 
     public function executeDelete()
     {
-        /**
-         * TODO: THINK THIS IS INCORRECT.
-         */
         if ( $this->payload ) {
             if ( isset($this->payload['userid']) ) {
-                $mainframe = JFusionAPIInternal::startJoomla();
+                $joomla = new JFusionAPIInternal();
 
-                /**
-                 * @ignore
-                 * @var $user JUser
-                 */
-                $user = JUser::getInstance($this->payload['userid']);
+                $joomla->delete($this->payload['userid']);
 
-                if ($user) {
-                    $user->delete();
-                    $this->debug[] = 'user deleted: '.$this->payload['userid'];
-                } else {
-                    $this->error[] = 'invalid user';
-                }
+                $this->error = $joomla->error;
+                $this->debug = $joomla->debug;
             } else {
                 $this->error[] = 'invalid payload';
             }
@@ -860,14 +796,13 @@ class JFusionAPIInternal extends JFusionAPIBase {
                 }
             }
 
-            include_once(JPATH_LIBRARIES . DS . 'loader.php');
+            require_once(JPATH_LIBRARIES . DS . 'loader.php');
             $autoloaders = spl_autoload_functions();
             if ($autoloaders && in_array('__autoload', $autoloaders)) {
                 spl_autoload_register('__autoload');
             }
 
             require_once JPATH_ROOT . DS . 'includes' . DS . 'framework.php';
-//			include_once JPATH_LIBRARIES . DS . 'import.php'; //include not require, so we only get it if its there ...
             jimport('joomla.base.object');
             jimport('joomla.factory');
             jimport('joomla.filter.filterinput');
@@ -982,5 +917,102 @@ class JFusionAPIInternal extends JFusionAPIBase {
         $uri = & JURI::getInstance();
         //add a variable to ensure refresh
         $link = $uri->toString();
+    }
+
+    public function register($userinfo,$overwrite)
+    {
+        $mainframe = self::startJoomla();
+
+        $plugins = JFusionFunction::getSlaves();
+        $plugins[] = JFusionFunction::getMaster();
+
+        if ( $this->activePlugin ) {
+            foreach ($plugins as $key => $plugin) {
+                if ($plugin->name == $this->activePlugin) {
+                    unset($plugins[$key]);
+                }
+            }
+        }
+
+        foreach ($plugins as $plugin) {
+            $PluginUserUpdate = &JFusionFactory::getUser($plugin->name);
+
+            $existinguser = $PluginUserUpdate->getUser($userinfo);
+
+            if(!$existinguser) {
+                $status = array('error' => array(),'debug' => array());
+                $PluginUserUpdate->createUser($userinfo,$status);
+
+                foreach ($status['error'] as $error) {
+                    $this->error[][$plugin->name] = $error;
+                }
+                foreach ($status['debug'] as $debug) {
+                    $this->debug[][$plugin->name] = $debug;
+                }
+            } else {
+                $this->error[][$plugin->name] = 'user already exsists';
+            }
+        }
+    }
+
+    public function update($userinfo,$overwrite)
+    {
+        $mainframe = self::startJoomla();
+
+        $plugins = JFusionFunction::getSlaves();
+        $plugins[] = JFusionFunction::getMaster();
+
+        foreach ($plugins as $key => $plugin) {
+            if (!array_key_exists($plugin->name,$userinfo)) {
+                unset($plugins[$key]);
+            }
+        }
+        foreach ($plugins as $plugin) {
+            $PluginUserUpdate = &JFusionFactory::getUser($plugin->name);
+            $updateinfo = $userinfo[$plugin->name];
+
+            if (get_class($updateinfo) == 'stdClass') {
+                $lookupUser = JFusionFunction::lookupUser($plugin->name,'',false,$updateinfo->username);
+
+                if($lookupUser) {
+                    $existinguser = $PluginUserUpdate->getUser($updateinfo->username);
+
+                    foreach ($updateinfo as $key => $value) {
+                        if ($key != 'userid' && isset($existinguser->$key)) {
+                            if ( $existinguser->$key != $updateinfo->$key ) {
+                                $existinguser->$key = $updateinfo->$key;
+                            }
+                        }
+                    }
+
+                    $this->debug[][$plugin->name] = $PluginUserUpdate->updateUser($existinguser, $overwrite);
+                } else {
+                    $this->error[][$plugin->name] = 'invalid user';
+                }
+            } else {
+                $this->error[][$plugin->name] = 'invalid update user';
+            }
+        }
+    }
+
+    public function delete($userid)
+    {
+        /**
+         * TODO: THINK THIS IS INCORRECT.
+         */
+        $mainframe = self::startJoomla();
+
+        /**
+         * @ignore
+         * @var $user JUser
+         */
+        $user = JUser::getInstance($userid);
+
+        if ($user) {
+            $user->delete();
+            $this->debug[] = 'user deleted: '.$userid;
+        } else {
+            $this->error[] = 'invalid user';
+        }
     }
 }
