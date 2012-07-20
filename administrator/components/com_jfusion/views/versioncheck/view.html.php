@@ -208,11 +208,10 @@ class jfusionViewversioncheck extends JView
         $output->version = JText::_('UNKNOWN');
         $output->oldversion = JText::_('UNKNOWN');
 
-        $version = JText::_('UNKNOWN');
         if ($path && $xml) {
             $p = $xml->getElementByPath($path.'/version');
             if ($p) {
-                $version = $p->data();
+                $output->version = $p->data();
             }
             $p = $xml->getElementByPath($path.'/remotefile');
             if ($p) {
@@ -233,18 +232,19 @@ class jfusionViewversioncheck extends JView
             $parser = JFactory::getXMLParser('Simple');
             $parser->loadFile($filename);
             $output->oldversion = $parser->document->getElementByPath('version')->data();
-            if (version_compare($output->oldversion, $version) == - 1) {
+            $revision = $parser->document->getElementByPath('revision');
+            if ($revision) {
+                $output->oldrev = trim($revision->data());
+            }
+
+            if (version_compare($output->oldversion, $output->version) == - 1 || ($output->oldrev && $output->rev && $output->oldrev != $output->rev )) {
                 $output->class = 'bad'.$this->row_count;
                 $this->up2date = false;
             } else {
                 $output->updateurl = null;
                 $output->class = 'good'.$this->row_count;
             }
-            $revision = $parser->document->getElementByPath('revision');
-            if ($revision) {
-                $output->oldrev = trim($revision->data());
-            }
-            $output->version = $version;
+
             //cleanup for the next function call
             unset($parser);
         } else {
