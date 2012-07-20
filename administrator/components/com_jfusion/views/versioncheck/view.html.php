@@ -54,7 +54,7 @@ class jfusionViewversioncheck extends JView
          * @var $parser JSimpleXML
          */
         $jfusionurl = new stdClass;
-        $jfusionurl->url = 'http://update.jfusion.org/jfusion_versions.xml';
+        $jfusionurl->url = 'http://update.jfusion.org/';
         $jfusionurl->jnames = array();
         $urls[md5($jfusionurl->url)] = $jfusionurl;
         foreach ($plugins as $plugin) {

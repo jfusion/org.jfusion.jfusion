@@ -10,7 +10,7 @@
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<version>1.8.0-000</version>
 	<description>JFusion plugin for second (and more) Joomla 1.5+</description>
-    <update>http://update.jfusion.org/jfusion_versions.xml</update>
+    <update>http://update.jfusion.org/</update>
     <master>0</master>
 	<slave>0</slave>
 	<dual_login>0</dual_login>
