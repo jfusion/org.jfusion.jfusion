@@ -201,6 +201,7 @@ class jfusionViewversioncheck extends JView
         $output = new stdClass;
         $output->class = '';
         $output->rev = '';
+        $output->oldrev = '';
         $output->name = $name;
         $output->updateurl = null;
 
@@ -214,10 +215,12 @@ class jfusionViewversioncheck extends JView
                 $version = $p->data();
             }
             $p = $xml->getElementByPath($path.'/remotefile');
-
             if ($p) {
-                echo $p->data();
                 $output->updateurl = $p->data();
+            }
+            $p = $xml->getElementByPath($path.'/revision');
+            if ($p) {
+                $output->rev = trim($p->data());
             }
         }
 
@@ -239,7 +242,7 @@ class jfusionViewversioncheck extends JView
             }
             $revision = $parser->document->getElementByPath('revision');
             if ($revision) {
-                $output->rev = trim($revision->data());
+                $output->oldrev = trim($revision->data());
             }
             $output->version = $version;
             //cleanup for the next function call

@@ -139,12 +139,20 @@ if ($this->server_compatible) {
             <?php echo JText::_('JFUSION') . ' ' . $component->name . ' ' . JText::_('VERSION') ;?>
         </td>
         <td>
-            <?php echo $component->oldversion;
-            if ($component->rev) echo ' Rev( ' . $component->rev.' )';
+            <?php
+            echo $component->oldversion;
+            if ($component->oldrev) {
+                echo ' Rev ( ' . $component->oldrev.' )';
+            }
             ?>
         </td>
         <td>
-            <?php echo $component->version ;?>
+            <?php
+            echo $component->version;
+            if ($component->rev) {
+                echo ' Rev ( ' . $component->rev.' )';
+            }
+            ?>
 
             <?php
             if ($component->updateurl) {
@@ -198,12 +206,20 @@ if ($this->server_compatible) {
             <?php echo $jfusion_plugin->name;?>
         </td>
         <td>
-            <?php echo $jfusion_plugin->oldversion;
-            if ($jfusion_plugin->rev) echo ' Rev(' . $jfusion_plugin->rev.')';
+            <?php
+            echo $jfusion_plugin->oldversion;
+            if ($jfusion_plugin->oldrev) {
+                echo ' Rev (' . $jfusion_plugin->oldrev.')';
+            }
             ?>
         </td>
         <td>
-            <?php echo $jfusion_plugin->version; ?>
+            <?php
+            echo $jfusion_plugin->version;
+            if ($jfusion_plugin->rev) {
+                echo ' Rev ( ' . $jfusion_plugin->rev.' )';
+            }
+            ?>
             <?php
             if ($jfusion_plugin->updateurl) {
                 ?>
