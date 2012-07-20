@@ -1193,10 +1193,10 @@ class JFusionUser_phpbb3 extends JFusionUser
                     JError::raiseNotice('500','Found a phpBB user so attempting to renew Joomla\'s session.');
                 }
                 //get the user's info
-                $db = JFactory::getDBO();
+                $jdb = JFactory::getDBO();
                 $query = "SELECT username, email FROM #__users WHERE id = {$userlookup->id}";
-                $db->setQuery($query);
-                $user_identifiers = $db->loadObject();
+                $jdb->setQuery($query);
+                $user_identifiers = $jdb->loadObject();
                 $JoomlaUser = JFusionFactory::getUser('joomla_int');
                 $userinfo = $JoomlaUser->getUser($user_identifiers);
                 if (!empty($userinfo)) {
