@@ -428,22 +428,22 @@ HTML;
                 }
                 //enable or renable the plugin
                 if ($action != "disable") {
-                    if (($hook == "redirect" || $hook == "frameless") && empty($itemid) && !is_numeric($itemid)) {
+                    if (($hook == "redirect" || $hook == "frameless") && (empty($itemid) || !is_numeric($itemid))) {
                         JError::raiseWarning(500, JText::_('VB_REDIRECT_HOOK_ITEMID_EMPTY'));
-                        return;
-                    }
-                    //install the hook
-                    $php = $this->getHookPHP($hook, $itemid);
-                    $query = "INSERT INTO #__plugin SET
-                    title = " . $db->Quote($hookName) . ",
-                    hookname = 'init_startup',
-                    phpcode = " . $db->Quote($php) . ",
-                    product = 'vbulletin',
-                    active = 1,
-                    executionorder = 1";
-                    $db->setQuery($query);
-                    if (!$db->query()) {
-                        JError::raiseWarning(500, $db->stderr());
+                    } else {
+                        //install the hook
+                        $php = $this->getHookPHP($hook, $itemid);
+                        $query = "INSERT INTO #__plugin SET
+                        title = " . $db->Quote($hookName) . ",
+                        hookname = 'init_startup',
+                        phpcode = " . $db->Quote($php) . ",
+                        product = 'vbulletin',
+                        active = 1,
+                        executionorder = 1";
+                        $db->setQuery($query);
+                        if (!$db->query()) {
+                            JError::raiseWarning(500, $db->stderr());
+                        }
                     }
                 }
             }

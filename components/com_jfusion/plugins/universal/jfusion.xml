@@ -91,7 +91,7 @@
 		<param name="jfusionbox" type="text" default="" label="MOD_OPTIONS" description="" />
 		<param name=" " type="helptext" default="REDIRECT_MOD_DESCR" label=""/>
 		<param name="redirect_itemid" type="JFusionItemid" size="10" default="" description="REDIRECT_ITEMID" label=""/>
-		<param name="show_redirect_mod" default="" type="JFusionCustomParam" description="AUTHENTICATION_MOD" label=""/>
+		<param name="showRedirectMod" default="" type="JFusionCustomParam" description="AUTHENTICATION_MOD" label=""/>
 
 
 		<param name="jfusionbox" type="text" default="" label="FRAMELESS_OPTIONS" description="" />

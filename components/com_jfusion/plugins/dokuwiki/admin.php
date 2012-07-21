@@ -268,18 +268,14 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
      *
      * @return string output php redirect code
      */
-    function generateRedirectCode()
+    function generateRedirectCode($url, $itemid)
     {
-        $params = JFusionFactory::getParams($this->getJname());
-        $joomla_params = JFusionFactory::getParams('joomla_int');
-        $joomla_url = $joomla_params->get('source_url');
-        $joomla_itemid = $params->get('redirect_itemid');
         //create the new redirection code
         $redirect_code = '
 //JFUSION REDIRECT START
 //SET SOME VARS
-$joomla_url = \'' . $joomla_url . '\';
-$joomla_itemid = ' . $joomla_itemid . ';
+$joomla_url = \'' . $url . '\';
+$joomla_itemid = ' . $itemid . ';
     ';
         $redirect_code.= '
 if (!defined(\'_JEXEC\'))';
@@ -310,27 +306,38 @@ if (!defined(\'_JEXEC\'))';
      *
      * @return void
      */
-    function enableRedirectMod()
-    {
-        $error = 0;
-        $error = 0;
-        $reason = '';
-        $mod_file = $this->getModFile('doku.php', $error, $reason);
-        if ($error == 0) {
-            //get the joomla path from the file
-            jimport('joomla.filesystem.file');
-            $file_data = JFile::read($mod_file);
-            preg_match_all('/\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END/ms', $file_data, $matches);
-            //remove any old code
-            if (!empty($matches[1][0])) {
-                $search = '/\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END/ms';
-                $file_data = preg_replace($search, '', $file_data);
+    function enableRedirectMod() {
+        $params = JFusionFactory::getParams($this->getJname());
+        $joomla_params = JFusionFactory::getParams('joomla_int');
+        $joomla_url = $joomla_params->get('source_url');
+        $joomla_itemid = $params->get('redirect_itemid');
+
+        //check to see if all vars are set
+        if (empty($joomla_url)) {
+            JError::raiseWarning(0, JText::_('MISSING') . ' Joomla URL');
+        } else if (empty($joomla_itemid) || !is_numeric($joomla_itemid)) {
+            JError::raiseWarning(0, JText::_('MISSING') . ' ItemID');
+        } else {
+            $error = 0;
+            $error = 0;
+            $reason = '';
+            $mod_file = $this->getModFile('doku.php', $error, $reason);
+            if ($error == 0) {
+                //get the joomla path from the file
+                jimport('joomla.filesystem.file');
+                $file_data = JFile::read($mod_file);
+                preg_match_all('/\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END/ms', $file_data, $matches);
+                //remove any old code
+                if (!empty($matches[1][0])) {
+                    $search = '/\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END/ms';
+                    $file_data = preg_replace($search, '', $file_data);
+                }
+                $redirect_code = $this->generateRedirectCode();
+                $search = '/getID\(\)\;/si';
+                $replace = 'getID();' . $redirect_code;
+                $file_data = preg_replace($search, $replace, $file_data);
+                JFile::write($mod_file, $file_data);
             }
-            $redirect_code = $this->generateRedirectCode();
-            $search = '/getID\(\)\;/si';
-            $replace = 'getID();' . $redirect_code;
-            $file_data = preg_replace($search, $replace, $file_data);
-            JFile::write($mod_file, $file_data);
         }
     }
 

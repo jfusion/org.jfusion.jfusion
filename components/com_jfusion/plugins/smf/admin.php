@@ -218,12 +218,8 @@ class JFusionAdmin_smf extends JFusionAdmin
      *
      * @return string output php redirect code
      */
-    function generateRedirectCode()
+    function generateRedirectCode($url, $itemid)
     {
-        $params = JFusionFactory::getParams($this->getJname());
-        $joomla_params = JFusionFactory::getParams('joomla_int');
-        $joomla_url = $joomla_params->get('source_url');
-        $joomla_itemid = $params->get('redirect_itemid');
         //create the new redirection code
         /*
         $pattern = \'#action=(login|admin|profile|featuresettings|news|packages|detailedversion|serversettings|theme|manageboards|postsettings|managecalendar|managesearch|smileys|manageattachments|viewmembers|membergroups|permissions|regcenter|ban|maintain|reports|viewErrorLog|optimizetables|detailedversion|repairboards|boardrecount|convertutf8|helpadmin|packageget)#\';
@@ -260,25 +256,37 @@ if (!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') ===
      */
     function enableRedirectMod()
     {
-        $error = 0;
-        $error = 0;
-        $reason = '';
-        $mod_file = $this->getModFile('index.php', $error, $reason);
-        if ($error == 0) {
-            //get the joomla path from the file
-            jimport('joomla.filesystem.file');
-            $file_data = JFile::read($mod_file);
-            preg_match_all('/\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END/ms', $file_data, $matches);
-            //remove any old code
-            if (!empty($matches[1][0])) {
-                $search = '/\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END/ms';
-                $file_data = preg_replace($search, '', $file_data);
+        $params = JFusionFactory::getParams($this->getJname());
+        $joomla_params = JFusionFactory::getParams('joomla_int');
+        $joomla_url = $joomla_params->get('source_url');
+        $joomla_itemid = $params->get('redirect_itemid');
+
+        //check to see if all vars are set
+        if (empty($joomla_url)) {
+            JError::raiseWarning(0, JText::_('MISSING') . ' Joomla URL');
+        } else if (empty($joomla_itemid) || !is_numeric($joomla_itemid)) {
+            JError::raiseWarning(0, JText::_('MISSING') . ' ItemID');
+        } else {
+            $error = 0;
+            $error = 0;
+            $reason = '';
+            $mod_file = $this->getModFile('index.php', $error, $reason);
+            if ($error == 0) {
+                //get the joomla path from the file
+                jimport('joomla.filesystem.file');
+                $file_data = JFile::read($mod_file);
+                preg_match_all('/\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END/ms', $file_data, $matches);
+                //remove any old code
+                if (!empty($matches[1][0])) {
+                    $search = '/\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END/ms';
+                    $file_data = preg_replace($search, '', $file_data);
+                }
+                $redirect_code = $this->generateRedirectCode($joomla_url, $joomla_itemid);
+                $search = '/\<\?php/si';
+                $replace = '<?php' . $redirect_code;
+                $file_data = preg_replace($search, $replace, $file_data);
+                JFile::write($mod_file, $file_data);
             }
-            $redirect_code = $this->generateRedirectCode();
-            $search = '/\<\?php/si';
-            $replace = '<?php' . $redirect_code;
-            $file_data = preg_replace($search, $replace, $file_data);
-            JFile::write($mod_file, $file_data);
         }
     }
 

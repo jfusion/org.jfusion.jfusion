@@ -457,22 +457,19 @@ JS;
     /**
      * @return string
      */
-    function generateRedirectCode()
+    function generateRedirectCode($url, $itemid)
     {
         $params = JFusionFactory::getParams($this->getJname());
-        $joomla_params = JFusionFactory::getParams('joomla_int');
-        $joomla_url = $joomla_params->get('source_url');
         $universal_url = $params->get('source_url');
-        $joomla_itemid = $params->get('redirect_itemid', 0); // Set to '0' to prevent error by activating the mod redirection and none itemid provided
 
         //create the new redirection code
 
         $redirect_code = '
 //JFUSION REDIRECT START
 //SET SOME VARS
-$joomla_url = \''. $joomla_url . '\';
+$joomla_url = \''. $url . '\';
 $universal_url \''. $universal_url . '\';
-$joomla_itemid = ' . $joomla_itemid .';
+$joomla_itemid = ' . $itemid .';
 	';
         $redirect_code .= '
 if(!isset($_COOKIE[\'jfusionframeless\']))';
@@ -497,17 +494,29 @@ if(!isset($_COOKIE[\'jfusionframeless\']))';
      * @param $control_name
      * @return string
      */
-    function show_redirect_mod($name, $value, $node, $control_name)
+    function showRedirectMod($name, $value, $node, $control_name)
     {
         $action = JRequest::getVar('action');
         if ($action == 'redirectcode') {
-            header('Content-disposition: attachment; filename=jfusion_'.$this->getJname().'_redirectcode.txt');
-            header('Pragma: no-cache');
-            header('Expires: 0');
-            header ("content-type: text/html");
+            $params = JFusionFactory::getParams($this->getJname());
+            $joomla_params = JFusionFactory::getParams('joomla_int');
+            $joomla_url = $joomla_params->get('source_url');
+            $joomla_itemid = $params->get('redirect_itemid');
 
-            echo $this->generateRedirectCode();
-            exit();
+            //check to see if all vars are set
+            if (empty($joomla_url)) {
+                JError::raiseWarning(0, JText::_('MISSING') . ' Joomla URL');
+            } else if (empty($joomla_itemid) || !is_numeric($joomla_itemid)) {
+                JError::raiseWarning(0, JText::_('MISSING') . ' ItemID');
+            } else {
+                header('Content-disposition: attachment; filename=jfusion_'.$this->getJname().'_redirectcode.txt');
+                header('Pragma: no-cache');
+                header('Expires: 0');
+                header ("content-type: text/html");
+
+                echo $this->generateRedirectCode($joomla_url, $joomla_itemid);
+                exit();
+            }
         }
 
         $output = ' <a href="index.php?option=com_jfusion&amp;task=plugineditor&amp;jname='.$this->getJname().'&amp;action=redirectcode">' . JText::_('MOD_ENABLE_MANUALLY') . '</a>';
