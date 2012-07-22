@@ -43,7 +43,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 define("BBCODE_VERSION", "1.4.5");
 define("BBCODE_RELEASE", "2010-09-17");
-define("BBCODE_VERBATIM", 2); 
+define("BBCODE_VERBATIM", 2);
 define("BBCODE_REQUIRED", 1);
 define("BBCODE_OPTIONAL", 0);
 define("BBCODE_PROHIBIT", -1);
@@ -1721,7 +1721,7 @@ $/Dx", $string)) return true;
      * @return string
      */
     function Internal_DumpStack($array = false, $raw = false) {
-        if (!$raw) $string = "<span style='color: #00C;'>";
+        if (!$raw) $string = '<span style="color: #0000CC;">';
         else $string = "";
         if ($array === false) $array = $this->stack;
         foreach($array as $item) {

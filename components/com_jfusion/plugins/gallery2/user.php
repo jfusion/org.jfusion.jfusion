@@ -72,11 +72,15 @@ class JFusionUser_gallery2 extends JFusionUser {
         $userinfo->password = $g2_user->hashedPassword;
         $userinfo->password_salt = substr($g2_user->hashedPassword, 0, 4);
         list($ret, $groups) = GalleryCoreApi::fetchGroupsForUser($g2_user->id); //,1, 2);
-        //var_dump($groups);
+        $userinfo->groups = array();
+        $userinfo->groupnames = array();
         if (!$ret) {
-            foreach ($groups as $group_id => $group_name) {
-                $userinfo->group_id = $group_id;
-                $userinfo->group_name = $group_name;
+            foreach ($groups as $id => $name) {
+                $userinfo->groups[] = $id;
+                $userinfo->group_id = $id;
+
+                $userinfo->groupnames[] = $name;
+                $userinfo->group_name = $name;
             }
         }
         //TODO: Research if and in how to detect blocked Users
@@ -267,7 +271,7 @@ class JFusionUser_gallery2 extends JFusionUser {
         $params = JFusionFactory::getParams($this->getJname());
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
         if (empty($usergroups)) {
-            $status['error'][] = JText::_('ERROR_CREATE_USER') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+            $status['error'][] = JText::_('ERROR_CREATE_USER') . ": " . JText::_('USERGROUP_MISSING');
         } else {
             list($ret, $g2_user) = GalleryCoreApi::newFactoryInstance('GalleryEntity', 'GalleryUser');
             if ($ret) {
@@ -323,22 +327,28 @@ class JFusionUser_gallery2 extends JFusionUser {
         $helper = JFusionFactory::getHelper($this->getJname());
         $helper->loadGallery2Api(false);
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
-        //check to see if we have a group_id in the $userinfo, if not return
         if (empty($usergroups)) {
-            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('USERGROUP_MISSING');
         } else {
-            $usergroup = $usergroups[0];
-            if ($existinguser->group_id != 2 && $existinguser->group_id != 4) {
-                $ret = GalleryCoreApi::removeUserFromGroup($existinguser->userid, $existinguser->group_id);
-                if ($ret) {
-                    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $existinguser->group_id . ' -> ' . $usergroup;
-                    return;
+            foreach($existinguser->groups as $group) {
+                if (!in_array($group, $usergroups, true)) {
+                    $ret = GalleryCoreApi::removeUserFromGroup($existinguser->userid, (int)$group);
+                    if ($ret) {
+                        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . implode (' , ', $existinguser->groups) . ' -> ' . implode (' , ', $usergroups);
+                        return;
+                    }
                 }
             }
-            $ret = GalleryCoreApi::addUserToGroup($existinguser->userid, (int)($usergroup));
-            if ($ret) {
-                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $existinguser->group_id . ' -> ' . $usergroup;
+            foreach($usergroups as $group) {
+                if (!in_array($group, $existinguser->groups, true)) {
+                    $ret = GalleryCoreApi::addUserToGroup($existinguser->userid, (int)($group));
+                    if ($ret) {
+                        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . implode (' , ', $existinguser->groups) . ' -> ' . implode (' , ', $usergroups);
+                        return;
+                    }
+                }
             }
+            $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode (' , ', $existinguser->groups) . ' -> ' . implode (' , ', $usergroups);
         }
         GalleryEmbed::done();
     }

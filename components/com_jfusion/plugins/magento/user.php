@@ -209,31 +209,34 @@ class JFusionUser_magento extends JFusionUser {
         $db->setQuery($query);
         $entity = (int)$db->loadResult();
         // check if we have found the user, if not return failure
-        $instance1 = null;
+        $instance = null;
         if ($entity) {
             // Return a Magento customer array
             $magento_user = $this->fillMagentoDataObject("customer", $entity, 1);
             if ($magento_user) {
-                $instance = array();
                 // get the static data also
                 $query = 'SELECT email, group_id, created_at, updated_at, is_active FROM #__customer_entity ' . 'WHERE entity_id = ' . $db->Quote($entity);
                 $db->setQuery($query);
                 $result = $db->loadObject();
                 if ($result) {
-                    $instance['group_id'] = $result->group_id;
-                    if ($result->group_id == 0) {
-                        $instance['group_name'] = "Default Usergroup";
+                    $instance = new stdClass;
+                    $instance->group_id = $result->group_id;
+                    if ($instance->group_id == 0) {
+                        $instance->group_name = "Default Usergroup";
                     } else {
                         $query = 'SELECT customer_group_code from #__customer_group WHERE customer_group_id = ' . $result->group_id;
                         $db->setQuery($query);
-                        $instance['group_name'] = $db->loadResult();
+                        $instance->group_name = $db->loadResult();
                     }
+                    $instance->groups = array($instance->group_id);
+                    $instance->groupnames = array($instance->group_name);
+
                     $magento_user['email']['value'] = $result->email;
                     $magento_user['created_at']['value'] = $result->created_at;
                     $magento_user['updated_at']['value'] = $result->updated_at;
                     $is_active = $result->is_active; //TO DO: have to figure out what theis means
-                    $instance['userid'] = $entity;
-                    $instance['username'] = $magento_user['email']['value'];
+                    $instance->userid = $entity;
+                    $instance->username = $magento_user['email']['value'];
                     $name = $magento_user['firstname']['value'];
                     if ($magento_user['middlename']['value']) {
                         $name = $name . ' ' . $magento_user['middlename']['value'];
@@ -241,30 +244,29 @@ class JFusionUser_magento extends JFusionUser {
                     if ($magento_user['lastname']['value']) {
                         $name = $name . ' ' . $magento_user['lastname']['value'];
                     }
-                    $instance['name'] = $name;
-                    $instance['email'] = $magento_user['email']['value'];
+                    $instance->name = $name;
+                    $instance->email = $magento_user['email']['value'];
                     $password = $magento_user['password_hash']['value'];
                     $hashArr = explode(':', $password);
-                    $instance['password'] = $hashArr[0];
+                    $instance->password = $hashArr[0];
                     if (!empty($hashArr[1])) {
-                        $instance['password_salt'] = $hashArr[1];
+                        $instance->password_salt = $hashArr[1];
                     }
-                    $instance['activation'] = '';
+                    $instance->activation = '';
                     if ($magento_user['confirmation']['value']) {
-                        $instance['activation'] = $magento_user['confirmation']['value'];
+                        $instance->activation = $magento_user['confirmation']['value'];
                     }
-                    $instance['registerDate'] = $magento_user['created_at']['value'];
-                    $instance['lastvisitDate'] = $magento_user['updated_at']['value'];
-                    if ($instance['activation']) {
-                        $instance['block'] = 1;
+                    $instance->registerDate = $magento_user['created_at']['value'];
+                    $instance->lastvisitDate = $magento_user['updated_at']['value'];
+                    if ($instance->activation) {
+                        $instance->block = 1;
                     } else {
-                        $instance['block'] = 0;
+                        $instance->block = 0;
                     }
-                    $instance1 = (object)$instance;
                 }
             }
         }
-        return $instance1;
+        return $instance;
     }
     /**
      * returns the name of this JFusion plugin
@@ -440,18 +442,16 @@ class JFusionUser_magento extends JFusionUser {
     function createUser($userinfo, &$status) {
         $params = JFusionFactory::getParams($this->getJname());
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
-        //get the default user group and determine if we are using simple or advanced
-        //check to make sure that if using the advanced group mode, $userinfo->group_id exists
         if (empty($usergroups)) {
-            $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+            $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('USERGROUP_MISSING');
         } else {
-            $default_group_id = $usergroups[0];
+            $usergroup = $usergroups[0];
             $db = JFusionFactory::getDataBase($this->getJname());
             //prepare the variables
             // first get some default stuff from Magento
             //        $db->setQuery("SELECT default_group_id FROM #__core_website WHERE is_default = 1");
             //        $default_group_id = (int) $db->loadResult();
-            $db->setQuery("SELECT default_store_id FROM #__core_store_group WHERE group_id =" . (int)$default_group_id);
+            $db->setQuery("SELECT default_store_id FROM #__core_store_group WHERE group_id =" . (int)$usergroup);
             $default_store_id = (int)$db->loadResult();
             $db->setQuery('SELECT name, website_id FROM #__core_store WHERE store_id =' . (int)$default_store_id);
             $result = $db->loadObject();
@@ -492,7 +492,7 @@ class JFusionUser_magento extends JFusionUser {
             $this->fillMagentouser($magento_user,'suffix','');
             $this->fillMagentouser($magento_user,'taxvat','');
             */
-            $this->fillMagentouser($magento_user, 'group_id', $default_group_id);
+            $this->fillMagentouser($magento_user, 'group_id', $usergroup);
             $this->fillMagentouser($magento_user, 'store_id', $default_store_id);
             $this->fillMagentouser($magento_user, 'website_id', $default_website_id);
             //now append the new user data
@@ -646,9 +646,8 @@ class JFusionUser_magento extends JFusionUser {
      */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
-        //check to see if we have a group_id in the $userinfo, if not return
         if (empty($usergroups)) {
-            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('USERGROUP_MISSING');
         } else {
             $usergroup = $usergroups[0];
             //set the usergroup in the user table
@@ -658,7 +657,7 @@ class JFusionUser_magento extends JFusionUser {
             if (!$db->query()) {
                 $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
             } else {
-                $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $usergroup;
+                $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode (' , ', $existinguser->groups) . ' -> ' . $usergroup;
             }
         }
     }

@@ -549,42 +549,14 @@ class executeJFusionHook
     function startJoomla()
     {
         define('_VBULLETIN_JFUSION_HOOK', true);
-        define('_JEXEC', true);
-        define('DS', DIRECTORY_SEPARATOR);
-        // load joomla libraries
-        require_once JPATH_BASE . DS . 'includes' . DS . 'defines.php';
-		define('_JREQUEST_NO_CLEAN', true); // we dont want to clean variables as it can "commupt" them for some applications, it also clear any globals used...
-       	require_once JPATH_BASE . DS . 'includes' . DS . 'framework.php';
-//		include_once JPATH_LIBRARIES . DS . 'import.php'; //include not require, so we only get it if its there ...
-//      require_once JPATH_LIBRARIES . DS . 'loader.php';
-        jimport('joomla.base.object');
-        jimport('joomla.factory');
-        jimport('joomla.filter.filterinput');
-        jimport('joomla.error.error');
-        jimport('joomla.event.dispatcher');
-        jimport('joomla.event.plugin');
-        jimport('joomla.plugin.helper');
-        jimport('joomla.utilities.arrayhelper');
-        jimport('joomla.environment.uri');
-        jimport('joomla.environment.request');
-        jimport('joomla.user.user');
-        jimport('joomla.html.parameter');
-        jimport('joomla.version');
-        // JText cannot be loaded with jimport since it's not in a file called text.php but in methods
-        JLoader::register('JText', JPATH_BASE . DS . 'libraries' . DS . 'joomla' . DS . 'methods.php');
-        JLoader::register('JRoute', JPATH_BASE . DS . 'libraries' . DS . 'joomla' . DS . 'methods.php');
+        define('_JFUSIONAPI_INTERNAL', true);
+        require_once JPATH_BASE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR  . 'jfusionapi.php';
+        $mainframe = JFusionAPIInternal::startJoomla();
 
-        //include the JFusion factory and function file
-        $functionFile = JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.jfusion.php';
-        $factoryFile = JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.factory.php';
         $curlFile = JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.curl.php';
-        if (file_exists($functionFile) && file_exists($factoryFile) && file_exists($curlFile)) {
-            require_once $factoryFile;
-            require_once $functionFile;
+        if (file_exists($curlFile)) {
             require_once $curlFile;
         }
-        $mainframe = JFactory::getApplication('site');
-        $GLOBALS['mainframe'] = & $mainframe;
         return $mainframe;
     }
 }

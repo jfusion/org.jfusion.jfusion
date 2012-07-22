@@ -225,7 +225,10 @@ class JFusionUser_joomla_int extends JFusionUser {
 
                     //JError::raiseNotice('500',$session->getId());
 
-                    // Get the session object
+                    /**
+                     * @ignore
+                     * @var $table JTableSession
+                     */
                     $table = & JTable::getInstance('session');
                     $table->load($session->getId());
                     $table->guest = $instance->get('guest');

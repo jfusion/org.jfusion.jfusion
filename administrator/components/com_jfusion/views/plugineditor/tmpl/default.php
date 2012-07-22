@@ -28,10 +28,10 @@ JFusionFunctionAdmin::displayDonate();
     <table>
         <tr>
             <td width="100px">
-                <img src="components/com_jfusion/images/jfusion_large.png" height="75px" width="75px">
+                <img src="components/com_jfusion/images/jfusion_large.png">
             </td>
             <td width="100px">
-                <img src="components/com_jfusion/images/editor.png" height="75px" width="75px">
+                <img src="components/com_jfusion/images/editor.png">
             </td>
             <td>
                 <h2>
@@ -49,19 +49,23 @@ JFusionFunctionAdmin::displayDonate();
         echo $paneTabs->startPane('jfusion_plugin_editor');
         $inbox = 0;
         foreach ($this->params as $param) {
-            if ($param[5] == 'jfusionbox') {
+            $label = isset($param[0]) ? $param[0] : '';
+            $content = isset($param[1]) ? $param[1] : '';
+            $titel = isset($param[3]) ? $param[3] : '';
+            $name = isset($param[5]) ? $param[5] : '';
+            if ($name == 'jfusionbox') {
                 if (!empty($inbox)) {
                     echo '</table>';
                     echo $paneTabs->endPanel();
                 } else {
                     $inbox = 1;
                 }
-                echo $paneTabs->startPanel( JText::_($param[3]), $param[3] );
+                echo $paneTabs->startPanel( JText::_($titel), $titel );
                 echo '<table>';
-            } else if (!empty($param[0]) && $param[3] != ' ' && $param[3][0] != '@') {
-                echo '<tr><td class="contentbox_label" width="250px">' . $param[0] . '</td><td class="contentbox_param">' . $param[1] . '</td></tr>';
+            } else if (!empty($label) && $titel != ' ' && strpos($titel , '@') !== 0) {
+                echo '<tr><td width="250px">' . $label . '</td><td>' . $content . '</td></tr>';
             } else {
-                echo '<tr><td colspan=2>' . $param[1] . '</td></tr>';
+                echo '<tr><td colspan=2>' . $content . '</td></tr>';
             }
         }
         echo '</table>';

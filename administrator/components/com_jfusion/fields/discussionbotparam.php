@@ -62,7 +62,7 @@ class JFormFieldDiscussionbotparam extends JFormField
 	 		if(empty($db_js_loaded)) {
                 $js = <<<JS
                 function jDiscussionParamSet(name, base64) {
-					var link = 'index.php?option=com_jfusion&task=discussionbot&tmpl=component&jname=${jname}&ename='+name+'&'+name+'=';
+					var link = 'index.php?option=com_jfusion&task=discussionbot&tmpl=component&jname={$jname}&ename='+name+'&'+name+'=';
 					link += base64;
 					$(name + '_id').value = base64;
 					$(name + '_link').href = link;

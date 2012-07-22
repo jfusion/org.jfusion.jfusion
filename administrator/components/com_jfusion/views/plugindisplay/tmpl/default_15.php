@@ -120,7 +120,13 @@ function initSortables() {
 	var dragHandles = document.getElementsByName('handle');
 
     var ajaxsync = new Ajax(url, {
-	    method: 'get'
+	    method: 'get',
+        onComplete: function(JSONobject) {
+            var response = Json.evaluate(JSONobject);
+            if (response.status === false) {
+                alert(response.message);
+            }
+        }
 	});
 	
     new Sortables('sort_table',{
@@ -163,7 +169,7 @@ function initSortables() {
 }
   
 function deleteplugin(jname) {
-	var confirmdelete = confirm('<?php echo JText::_('DELETE') . ' ' . JText::_('PLUGIN') . ' ' ;?>' + jname + "?");
+	var confirmdelete = confirm('<?php echo JText::_('DELETE',true) . ' ' . JText::_('PLUGIN',true) . ' ' ;?>' + jname + "?");
     if(confirmdelete) {
     	//update the database
         var url = '<?php echo JURI::root() . 'administrator/index.php'; ?>';
@@ -192,7 +198,7 @@ window.addEvent('domready',function() {
 	    spinner.innerHTML = '<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">';
 		this.send({ method: 'post',
 			onComplete: function(JSONobject) {
-			var response = Json.evaluate(JSONobject);                              
+			var response = Json.evaluate(JSONobject);
 			    
 		    if (response.overwrite != 1 && response.status === true) {
 		    	addRow(response.jname, response.rowhtml);
@@ -344,7 +350,7 @@ $jfusion_plugins = $this->VersionData->getElementByPath('plugins')->children(); 
 	<table class="adminform">
 		<tr>
 			<td>
-	    		<img src="components/com_jfusion/images/folder_url.png" height="60px" width="60px">
+	    		<img src="components/com_jfusion/images/folder_url.png">
 			</td>
 			<td>
 			    <table>
@@ -360,7 +366,7 @@ $jfusion_plugins = $this->VersionData->getElementByPath('plugins')->children(); 
 			    			</label>
 			    		</td>
 			    		<td>
-			        		<select name="install_url2" id="install_url2">
+			        		<select name="install_url" id="install_url2">
 			    				<?php
                                 /**
                                  * @ignore
@@ -386,7 +392,7 @@ $jfusion_plugins = $this->VersionData->getElementByPath('plugins')->children(); 
 		<table class="adminform">
 			<tr>
 				<td>
-		    		<img src="components/com_jfusion/images/folder_zip.png" height="60px" width="60px">
+		    		<img src="components/com_jfusion/images/folder_zip.png">
 				</td>
 				<td>
 		    		<table>
@@ -420,7 +426,7 @@ $jfusion_plugins = $this->VersionData->getElementByPath('plugins')->children(); 
 	<table class="adminform">
 		<tr>
 			<td>
-		    	<img src="components/com_jfusion/images/folder_dir.png" height="60px" width="60px">
+		    	<img src="components/com_jfusion/images/folder_dir.png">
 			</td>
 			<td>
 		    	<table>
@@ -436,7 +442,7 @@ $jfusion_plugins = $this->VersionData->getElementByPath('plugins')->children(); 
 			    			</label>
 		    			</td>
 		    			<td>
-						    <input type="text" id="install_directory" name="install_directory" class="input_box" size="70" value="" />
+                            <input type="text" id="install_directory" name="install_directory" class="input_box" size="150" value="<?php echo JPATH_COMPONENT_ADMINISTRATOR.DS.'packages'.DS.'jfusion_xxxxxxx.zip'; ?>" />
 						    <input type="submit"  value="<?php echo JText::_('INSTALL'); ?>"/>
 						    <div id="spinnerDIR">
 						    </div>
@@ -455,7 +461,7 @@ $jfusion_plugins = $this->VersionData->getElementByPath('plugins')->children(); 
 	<table class="adminform">
 		<tr>
 		<td>
-		    <img src="components/com_jfusion/images/folder_url.png" height="60px" width="60px">
+		    <img src="components/com_jfusion/images/folder_url.png">
 		</td>
 		<td>
 		    <table>
@@ -471,7 +477,7 @@ $jfusion_plugins = $this->VersionData->getElementByPath('plugins')->children(); 
 					    </label>
 				    </td>
 				    <td>
-					    <input type="text" id="install_url" name="install_url" class="input_box" size="70" value="http://" />
+					    <input type="text" id="install_url" name="install_url" class="input_box" size="150" value="http://" />
 					    <input type="submit"   value="<?php echo JText::_('INSTALL'); ?>"/>
 					    <div id="spinnerURL">
 					    </div>

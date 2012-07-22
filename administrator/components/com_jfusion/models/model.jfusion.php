@@ -627,6 +627,10 @@ class JFusionFunction
             //setup JRoute to use the frontend router
             $app    = JApplication::getInstance('site');
             $router = &$app->getRouter();
+            /**
+             * @ignore
+             * @var $uri JURI
+             */
             $uri = $router->build($article_url);
             $article_url = $uri->toString();
             //remove /administrator from path
@@ -658,7 +662,7 @@ class JFusionFunction
             }
         }
 
-        $link = "<a href='".$article_url."'>$text</a>";
+        $link = '<a href="'.$article_url.'">'.$text.'</a>';
 
         return $link;
     }
@@ -828,7 +832,7 @@ class JFusionFunction
                 $searchNS = array_merge($searchNS, $morePatterns[2]);
                 $replaceNS = array_merge($replaceNS, $morePatterns[3]);
             }
-            $text = str_ireplace(array("<br />", "<br>", "<br/>"), "\n", $text);
+            $text = str_ireplace(array('<br />', '<br>', '<br/>'), "\n", $text);
 
 			foreach ($searchNS as $k => $v) {
 	            //check if we need to use callback
@@ -1253,14 +1257,17 @@ class JFusionFunction
         static $versions;
 		if (!isset($versions[$jname][$v])) {
 	        if ($jname=='joomla_int') {
-	        	jimport('joomla.version');
 	        	//file has now moved in Joomla 2.5
 	        	//manual include added as JImport has strange behaviours when called from outside core
-	        	if (file_exists(JPATH_ROOT.DS.'libraries'.DS.'cms'.DS.'version'.DS.'version.php')) {
-	        		include_once(JPATH_ROOT.DS.'libraries'.DS.'cms'.DS.'version'.DS.'version.php');
-	        	} elseif (file_exists(JPATH_ROOT.DS.'includes'.DS.'version.php')) {
-	        		include_once(JPATH_ROOT.DS.'includes'.DS.'version.php');
-	        	}
+                if (!class_exists('JVersion')) {
+                    if (file_exists(JPATH_LIBRARIES.DS.'cms'.DS.'version'.DS.'version.php')) {
+                        include_once(JPATH_LIBRARIES.DS.'cms'.DS.'version'.DS.'version.php');
+                    } elseif (file_exists(JPATH_LIBRARIES.DS.'joomla'.DS.'version.php')) {
+                        include_once(JPATH_LIBRARIES.DS.'joomla'.DS.'version.php');
+                    } elseif (file_exists(JPATH_ROOT.DS.'includes'.DS.'version.php')) {
+                        include_once(JPATH_ROOT.DS.'includes'.DS.'version.php');
+                    }
+                }
 				$version = new JVersion;
 		    	if (version_compare($version->getShortVersion(), $v) >= 0) {
 		        	$versions[$jname][$v] = true;

@@ -173,5 +173,5 @@ class JFusionAdmin_elgg extends JFusionAdmin
     function requireFileAccess()
 	{
 		return 'JYES';
-	}    
+	}
 }

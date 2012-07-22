@@ -246,7 +246,7 @@ class JFusionFunctionAdmin
             }
         } else {
             //see if we can use fopen to get file
-            $fopen_check = ini_get('allow_url_fopen') ;
+            $fopen_check = ini_get('allow_url_fopen');
             if (!empty($fopen_check)) {
                 $FileData = file_get_contents($url);
             } else {

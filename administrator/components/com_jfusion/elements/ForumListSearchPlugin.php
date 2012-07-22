@@ -79,9 +79,9 @@ class JElementForumListSearchPlugin extends JElement
                 } else {
                     $output.= $jname . ': ' . JText::_('NO_LIST');
                 }
-                $output.= "<br />\n";
+                $output.= '<br />';
             } else {
-                $output.= $jname . ": " . JText::_('NO_VALID_PLUGINS') . "<br />";
+                $output.= $jname . ': ' . JText::_('NO_VALID_PLUGINS') . '<br />';
             }
         } else {
             $output.= JText::_('NO_PLUGIN_SELECT');

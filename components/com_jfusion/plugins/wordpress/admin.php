@@ -50,10 +50,11 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 
     /**
      * @param JDatabase $db
+     * @param string $database_prefix
      * @return array
      */
-    function getUsergroupListWPA($db) {
-		$query = "SELECT option_value FROM #__options WHERE option_name = 'wp_user_roles'";
+    function getUsergroupListWPA($db,$database_prefix) {
+		$query = 'SELECT option_value FROM #__options WHERE option_name = '.$db->quote($database_prefix.'user_roles');
 		$db->setQuery($query);
 		$roles_ser = $db->loadResult();
 		$roles = unserialize($roles_ser);
@@ -127,7 +128,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 			$db->setQuery($query);
 			$default_role=$db->loadResult();
 			
-			$userGroupList = $this->getUsergroupListWPA($db);
+			$userGroupList = $this->getUsergroupListWPA($db,$table_prefix);
 			$params['usergroup']='0';
 			foreach ($userGroupList as $usergroup) {
 				if($usergroup->name == $default_role){
@@ -196,7 +197,10 @@ class JFusionAdmin_wordpress extends JFusionAdmin
          */
         $helper = JFusionFactory::getHelper($this->getJname());
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
-        $usergroup_id = $usergroups[0];
+        $usergroup_id = null;
+        if(!empty($usergroups)) {
+            $usergroup_id = $usergroups[0];
+        }
 		return $helper->getUsergroupNameWP($usergroup_id);
 	}
 

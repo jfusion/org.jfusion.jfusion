@@ -106,7 +106,7 @@ class jfusionViewplugindisplay extends JView {
                 }
             }
             //get the install xml
-	        $url = 'http://jfusion.googlecode.com/svn/branches/jfusion_versions.xml';
+	        $url = 'http://update.jfusion.org/';
 	        $VersionDataRaw = JFusionFunctionAdmin::getFileData($url);
             $VersionData = null;
 	        if (!empty($VersionDataRaw)) {
@@ -150,6 +150,10 @@ class jfusionViewplugindisplay extends JView {
     	$result = '';
     	if(!empty($errors)){
             $result .= '<dl id="system-message"><dt class="notice">Notice</dt><dd class="notice message fade">';
+            /**
+             * @ignore
+             * @var $message JException
+             */
             if(JFusionFunction::isJoomlaVersion('1.6')){
                 foreach ($errors as $message) {
 	                $result .= '<ul><li>' . $message->__toString() . '</li></ul>';
@@ -170,14 +174,15 @@ class jfusionViewplugindisplay extends JView {
      * @return null|\stdClass
      */
     function initRecord($jname,$record=null) {
+        $db = & JFactory::getDBO();
     	if (!$record) {
-    		$record = new stdClass;
-        	$record->name = $jname;
-        	$record->status = 0;
+            $query = 'SELECT * from #__jfusion WHERE name LIKE '.$db->quote($jname);
+            $db->setQuery($query);
+            $record = $db->loadObject();
     	}
     	$JFusionPlugin =& JFusionFactory::getAdmin($record->name);
     	$JFusionParam =& JFusionFactory::getParams($record->name);
-    	$db = & JFactory::getDBO();
+
 
      	if($record->status==1) {
          	//added check for database configuration to prevent error after moving sites
@@ -201,7 +206,7 @@ class jfusionViewplugindisplay extends JView {
       	}
 
      	//set copy options
-      	if ($record->name == 'joomla_int') {
+      	if ($record->name == 'joomla_int' || $record->original_name) {
           	//cannot copy joomla_int
           	$record->copyimage = 'components/com_jfusion/images/copy_icon_dim.png';
           	$record->copyscript =  'javascript:void(0)';
@@ -211,7 +216,10 @@ class jfusionViewplugindisplay extends JView {
      	}
 
        	//set uninstall options
-       	if ($record->name == 'joomla_int') {
+        $query = 'SELECT count(*) from #__jfusion WHERE original_name LIKE '. $db->Quote($record->name);
+        $db->setQuery($query);
+        $copys = $db->loadResult();
+       	if ($record->name == 'joomla_int' || $copys) {
           	//cannot uninstall joomla_int
           	$record->deleteimage = 'components/com_jfusion/images/delete_icon_dim.png';
           	$record->deletescript =  'javascript:void(0)';

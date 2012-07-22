@@ -44,7 +44,7 @@ function com_install() {
     ) DEFAULT CHARACTER SET utf8;';
 		$db->setQuery($query);
 		if (!$db->query()) {
-			echo $db->stderr() . "<br />";
+			echo $db->stderr() . '<br />';
 			$return = false;
 			return $return;
 		}
@@ -62,7 +62,7 @@ function com_install() {
     ) DEFAULT CHARACTER SET utf8;';
 		$db->setQuery($query);
 		if (!$db->query()) {
-			echo $db->stderr() . "<br />";
+			echo $db->stderr() . '<br />';
 			$return = false;
 			return $return;
 		}
@@ -101,7 +101,7 @@ function com_install() {
     );';
 		$db->setQuery($query);
 		if (!$db->query()) {
-			echo $db->stderr() . "<br />";
+			echo $db->stderr() . '<br />';
 			$return = false;
 			return $return;
 		}
@@ -128,8 +128,9 @@ function com_install() {
 	}
 	//create the jfusion table if it does not exist already
 	if (array_search($table_prefix . 'jfusion', $table_list) == false) {
-        $jfusionupgrade = 0;
-		$batch_query = "CREATE TABLE #__jfusion (
+        $jfusionupgrade = JText::_('JFUSION') . ' ' . JText::_('INSTALL') . ' ' .JText::_('SUCCESS');
+
+        $batch_query = "CREATE TABLE #__jfusion (
         id int(11) NOT null auto_increment,
         name varchar(50) NOT null,
         params text,
@@ -146,34 +147,20 @@ function com_install() {
         ordering tinyint(4),
         PRIMARY KEY  (id)
       );
-
-      INSERT INTO #__jfusion  (name , params,  slave, dual_login, status, check_encryption, activity, search, discussion) VALUES
-      ('joomla_int', 0, 0, 0, 0, 0, 0, 0, 0);
       ";
+
 		$db->setQuery($batch_query);
 		if (!$db->queryBatch()) {
-			echo $db->stderr() . "<br />";
+			echo $db->stderr() . '<br />';
 			$return = false;
 			return $return;
 		}
+
+        JFolder::create(JFUSION_PLUGIN_PATH);
 	} else {
 		//this is an upgrade
-		$jfusionupgrade = 1;
+		$jfusionupgrade = JText::_('JFUSION') . ' ' . JText::_('UPDATE') . ' ' .JText::_('SUCCESS');
 
-		//list of default plugins
-		$defaultPlugins = array('joomla_int');
-		//make sure default plugins are installed
-		$query = "SELECT name FROM #__jfusion";
-		$db->setQuery($query);
-		$installedPlugins = $db->loadResultArray();
-		$pluginSql = array();
-		foreach ($defaultPlugins as $plugin) {
-			if (!in_array($plugin, $installedPlugins)) {
-				if ($plugin == 'joomla_int') {
-					$pluginSql[] = "('joomla_int', 0, 0,  0, 0,  0, 0, 0, 0)";
-				}
-			}
-		}
 		/***
 		 * UPGRADES FOR 1.1.0 Patch 2
 		 ***/
@@ -186,7 +173,7 @@ function com_install() {
 			$query = "ALTER TABLE #__jfusion DROP COLUMN version, DROP COLUMN description, DROP COLUMN date, DROP COLUMN author, DROP COLUMN support";
 			$db->setQuery($query);
 			if (!$db->query()) {
-				echo $db->stderr() . "<br />";
+				echo $db->stderr() . '<br />';
 				$return = false;
 				return $return;
 			}
@@ -201,7 +188,7 @@ function com_install() {
               ADD COLUMN plugin_files LONGBLOB ";
 			$db->setQuery($query);
 			if (!$db->query()) {
-				echo $db->stderr() . "<br />";
+				echo $db->stderr() . '<br />';
 				$return = false;
 				return $return;
 			}
@@ -211,7 +198,7 @@ function com_install() {
 			$query = "ALTER TABLE #__jfusion ADD COLUMN original_name varchar(50) null";
 			$db->setQuery($query);
 			if (!$db->query()) {
-				echo $db->stderr() . "<br />";
+				echo $db->stderr() . '<br />';
 				$return = false;
 				return $return;
 			}
@@ -227,7 +214,7 @@ function com_install() {
                 ADD COLUMN discussion tinyint(4) NOT null DEFAULT 0";
 			$db->setQuery($query);
 			if (!$db->query()) {
-				echo $db->stderr() . "<br />";
+				echo $db->stderr() . '<br />';
 				$return = false;
 				return $return;
 			}
@@ -249,17 +236,17 @@ function com_install() {
 					$query = "RENAME TABLE #__jfusion_users_plugin_backup TO #__jfusion_users_plugin";
 					$db->setQuery($query);
 					if (!$db->query()) {
-						echo $db->stderr() . "<br />";
+						echo $db->stderr() . '<br />';
 						$return = false;
 						return $return;
 					}
 				} else {
-					echo $db->stderr() . "<br />";
+					echo $db->stderr() . '<br />';
 					$return = false;
 					return $return;
 				}
 			} else {
-				echo $db->stderr() . "<br />";
+				echo $db->stderr() . '<br />';
 				$return = false;
 				return $return;
 			}
@@ -272,7 +259,7 @@ function com_install() {
               CHANGE `userid` `userid` VARCHAR(50) NOT null";
 			$db->setQuery($query);
 			if (!$db->query()) {
-				echo $db->stderr() . "<br />";
+				echo $db->stderr() . '<br />';
 				$return = false;
 				return $return;
 			}
@@ -299,7 +286,7 @@ function com_install() {
 		$query = "ALTER TABLE `#__jfusion_sync` CHANGE `syncdata` `syncdata` LONGBLOB null DEFAULT null ";
 		$db->setQuery($query);
 		if (!$db->query()) {
-			echo $db->stderr() . "<br />";
+			echo $db->stderr() . '<br />';
 			$return = false;
 			return $return;
 		}
@@ -310,7 +297,7 @@ function com_install() {
 		$query = "ALTER TABLE `#__jfusion_users` DROP PRIMARY KEY, ADD PRIMARY KEY ( `id` )";
 		$db->setQuery($query);
 		if (!$db->query()) {
-			echo $db->stderr() . "<br />";
+			echo $db->stderr() . '<br />';
 			$return = false;
 			return $return;
 		}
@@ -327,7 +314,7 @@ function com_install() {
               ADD COLUMN active int(1) NOT null DEFAULT 0";
 			$db->setQuery($query);
 			if (!$db->query()) {
-				echo $db->stderr() . "<br />";
+				echo $db->stderr() . '<br />';
 				$return = false;
 				return $return;
 			}
@@ -346,7 +333,7 @@ function com_install() {
               ADD COLUMN ordering int(4)";
 			$db->setQuery($query);
 			if (!$db->query()) {
-				echo $db->stderr() . "<br />";
+				echo $db->stderr() . '<br />';
 				$return = false;
 				return $return;
 			}
@@ -360,7 +347,7 @@ function com_install() {
 			$folders = JFolder::folders($dir);
 			$results = true;
 			foreach ($folders as $folder) {
-				if ($folder != 'joomla_int' && !JFolder::exists(JFUSION_PLUGIN_PATH .DS. $folder) ) {
+				if (!JFolder::exists(JFUSION_PLUGIN_PATH .DS. $folder) ) {
 					$r = JFolder::copy($dir .DS. $folder, JFUSION_PLUGIN_PATH .DS. $folder);
 					if ($results===true) {
 						$results = $r;
@@ -396,7 +383,7 @@ function com_install() {
 				$query = "REPLACE INTO #__jfusion_discussion_bot (" . implode(", ", $columns) . ") VALUES " . implode(", ", $row_inserts);
 				$db->setQuery($query);
 				if(!$db->query()) {
-					echo $db->stderr() . "<br />";
+					echo $db->stderr() . '<br />';
 					$migrate_success = false;
 				} else {
 					$migrate_success = true;
@@ -410,13 +397,13 @@ function com_install() {
 				$query = "UPDATE #__jfusion_discussion_bot SET component = 'com_content'";
 				$db->setQuery($query);
 				if(!$db->query()) {
-					echo $db->stderr() . "<br />";
+					echo $db->stderr() . '<br />';
 				}
 
 				$query = "DROP TABLE #__jfusion_forum_plugin";
 				$db->setQuery($query);
 				if(!$db->query()) {
-					echo $db->stderr() . "<br />";
+					echo $db->stderr() . '<br />';
 					$return = false;
 					return $return;
 				}
@@ -434,12 +421,12 @@ function com_install() {
 				$query = " ALTER TABLE #__jfusion_discussion_bot ADD COLUMN component varchar(255) NOT NULL";
 				$db->setQuery($query);
 				if (!$db->query()) {
-					echo $db->stderr() . "<br />";
+					echo $db->stderr() . '<br />';
 				} else {
 					$query = "UPDATE #__jfusion_discussion_bot SET component = 'com_content'";
 					$db->setQuery($query);
 					if(!$db->query()) {
-						echo $db->stderr() . "<br />";
+						echo $db->stderr() . '<br />';
 					}
 				}
 			}
@@ -448,26 +435,17 @@ function com_install() {
 		/****
 		 * General for all upgrades
 		 ***/
-		//insert of missing plugins
-		//#chris: moved after table modification to prevent errors
-		if (count($pluginSql) > 0) {
-			$query = "INSERT INTO #__jfusion  (name, params,  slave, dual_login, status,  check_encryption, activity, search, discussion) VALUES " . implode(', ', $pluginSql);
-			$db->setQuery($query);
-			if (!$db->query()) {
-				echo $db->stderr() . "<br />";
-				$return = false;
-				return $return;
-			}
-		}
+
 		//update plugins with search and discuss bot capabilities
-		$query = "UPDATE #__jfusion SET search = 1, discussion = 1 WHERE name IN ('vbulletin','phpbb3','smf')";
+		$query = "UPDATE #__jfusion SET search = 1, discussion = 1 WHERE name IN ('vbulletin','phpbb3','smf') OR original_name IN ('vbulletin','phpbb3','smf')";
 		$db->setQuery($query);
 		if (!$db->query()) {
-			echo $db->stderr() . "<br />";
+			echo $db->stderr() . '<br />';
 			$return = false;
 			return $return;
 		}
-
+/*
+ * todo: Determin if we really need this in the installer ???? also remove unneeded plugin_files field from database ??? if this is NOT needed
 		//restore deleted plugins if possible and applicable
 		//get a list of installed plugins
 		$query = "SELECT name, original_name, plugin_files FROM #__jfusion";
@@ -542,43 +520,65 @@ function com_install() {
 			$query = "DELETE FROM #__jfusion WHERE name IN ('" . implode("', '", $uninstallPlugin) . "')";
 			$db->setQuery($query);
 			if (!$db->query()) {
-				echo $db->stderr() . "<br />";
+				echo $db->stderr() . '<br />';
 			}
 		}
+        $restorePluginOutput = '';
 		foreach ($restorePlugins as $plugin) {
 			if (!in_array($plugin, $uninstallPlugin)) {
-				$restorePluginOutput = '<table style="background-color:#d9f9e2;" width ="100%"><tr style="height:30px"><td width="50px">' . "\n";
-				$restorePluginOutput.= '<img src="components/com_jfusion/images/check_good.png" height="20px" width="20px"></td>' . "\n";
-				$restorePluginOutput.= '<td><font size="2"><b>' . JText::_('RESTORED') . ' ' . $plugin . ' ' . JText::_('SUCCESS') . '</b></font></td></tr></table>' . "\n";
+                $color = '#d9f9e2';
+                $text = JText::_('RESTORED') . ' ' . $plugin . ' ' . JText::_('SUCCESS');
 			} else {
-				$restorePluginOutput = '<table style="background-color:#f9ded9;" width ="100%"><tr style="height:30px"><td width="50px">' . "\n";
-				$restorePluginOutput.= '<img src="components/com_jfusion/images/check_bad.png" height="20px" width="20px"></td>' . "\n";
-				$restorePluginOutput.= '<td><font size="2"><b>' . JText::_('ERROR') . ' ' . JText::_('RESTORING') . ' ' . $plugin . '. ' . JText::_('UPGRADE_CUSTOM_PLUGIN_FAILED') . ': ' . $uninstallReason[$plugin] . '</b></font></td></tr></table>' . "\n";
+                $color = '#f9ded9';
+                $text = JText::_('ERROR') . ' ' . JText::_('RESTORING') . ' ' . $plugin . '. ' . JText::_('UPGRADE_CUSTOM_PLUGIN_FAILED') . ': ' . $uninstallReason[$plugin];
 			}
+
+            $restorePluginOutput .= <<<HTML
+            <table style="background-color: {$color};" width="100%">
+                <tr style="height:30px">
+                    <td width="50px">
+			            <img src="components/com_jfusion/images/check_bad_small.png">
+                    </td>
+			        <td>
+			            <font size="2">
+			                <b>
+			                    {$text}
+			                </b>
+                        </font>
+                    </td>
+                </tr>
+            </table>
+HTML;
 		}
+*/
 
 	    //cleanup unused plugins
 	    $query = 'SELECT name from #__jfusion WHERE (params IS NULL OR params = \'\' OR params = \'0\') AND (master = 0 and slave = 0) AND (name NOT LIKE "joomla_int")';
-        $db->setQuery($query );
+        $db->setQuery($query);
         $rows = $db->loadObjectList();
-        $ordering = 1;
-        if(!empty($rows)){
-            foreach ($rows as $row){
-                $db->setQuery('DELETE FROM #__jfusion WHERE name = ' . $db->Quote($row->name));
-                 if (!$db->query()) {
-                     JError::raiseWarning(500,$db->stderr());
-                 }
-                 $db->setQuery('DELETE FROM #__jfusion_discussion_bot WHERE jname = ' . $db->Quote($row->name));
-                 if (!$db->query()) {
-                     JError::raiseWarning(500,$db->stderr());
-                 }
-                 $db->setQuery('DELETE FROM #__jfusion_users_plugin WHERE jname = ' . $db->Quote($row->name));
-                 if (!$db->query()) {
-                     JError::raiseWarning(500,$db->stderr());
-                 }
-                 if (JFolder::exists(JFUSION_PLUGIN_PATH . DS . $row->name)) {
-                     JFolder::delete(JFUSION_PLUGIN_PATH . DS . $row->name);
-                 }
+        if(!empty($rows)) {
+            foreach ($rows as $row) {
+                $query = 'SELECT count(*) from #__jfusion WHERE (params IS NOT NULL OR params != \'\' OR params != \'0\' OR master = 1 OR slave = 1) AND original_name LIKE '. $db->Quote($row->name);
+                $db->setQuery($query);
+                $copys = $db->loadResult();
+                if (!$copys) {
+                    //only delete if there are no copys
+                    $db->setQuery('DELETE FROM #__jfusion WHERE name = ' . $db->Quote($row->name));
+                    if (!$db->query()) {
+                        JError::raiseWarning(500,$db->stderr());
+                    }
+                    $db->setQuery('DELETE FROM #__jfusion_discussion_bot WHERE jname = ' . $db->Quote($row->name));
+                    if (!$db->query()) {
+                        JError::raiseWarning(500,$db->stderr());
+                    }
+                    $db->setQuery('DELETE FROM #__jfusion_users_plugin WHERE jname = ' . $db->Quote($row->name));
+                    if (!$db->query()) {
+                        JError::raiseWarning(500,$db->stderr());
+                    }
+                    if (JFolder::exists(JFUSION_PLUGIN_PATH . DS . $row->name)) {
+                        JFolder::delete(JFUSION_PLUGIN_PATH . DS . $row->name);
+                    }
+                }
             }
         }
 	}
@@ -588,201 +588,266 @@ function com_install() {
     /**
      * @ignore
      * @var $parser JSimpleXML
+     * @var $installer JInstaller
      */
 	$parser = JFactory::getXMLParser('Simple');
-	$parser->loadFile($basedir . DS. 'jfusion.xml');
+
+    $installer = JInstaller::getInstance();
+    $manifest = $installer->getPath('manifest');
+
+    $parser->loadFile($manifest);
+
+    if ($parser->document) {
+        $version = $parser->document->getElementByPath('version')->data();
+    } else {
+        $version = JText::_('UNKNOWN');
+    }
 	?>
-<table>
-	<tr>
-		<td width="100px"><img
-			src="components/com_jfusion/images/jfusion_large.png" height="75px"
-			width="75px">
-		</td>
-		<td width="100px"><img src="components/com_jfusion/images/manager.png"
-			height="75px" width="75px">
-		</td>
-		<td>
-			<h2>
-			<?php echo JText::_('JFUSION') . ' '.$parser->document->getElementByPath('version')->data().' ' . JText::_('INSTALLATION'); ?>
-			</h2>
-		</td>
-	</tr>
-</table>
-<h3>
-<?php echo JText::_('STARTING') . ' ' . JText::_('INSTALLATION') . ' ...' ?>
-</h3>
+    <table>
+        <tr>
+            <td width="100px">
+                <img src="components/com_jfusion/images/jfusion_large.png">
+            </td>
+            <td width="100px">
+                <img src="components/com_jfusion/images/manager.png" height="75" width="75">
+            </td>
+            <td>
+                <h2>
+                    <?php echo JText::_('JFUSION') . ' '.$version.' ' . JText::_('INSTALLATION'); ?>
+                </h2>
+            </td>
+        </tr>
+    </table>
+    <h3>
+        <?php echo JText::_('STARTING') . ' ' . JText::_('INSTALLATION') . ' ...' ?>
+    </h3>
 
 <?php
-if(!empty($restorePluginOutput)) {
-	echo $restorePluginOutput;
-}
-?>
 
+    $html = <<<HTML
+        <table style="background-color:#d9f9e2;width:100%;">
+            <tr>
+                <td width="50px">
+                    <img src="components/com_jfusion/images/check_good_small.png">
+                </td>
+                <td>
+                    <font size="2">
+                        <b>
+                            {$jfusionupgrade}
+                        </b>
+                    </font>
+                </td>
+            </tr>
+        </table>
+HTML;
+    echo $html;
 
+    if(!empty($restorePluginOutput)) {
+        echo $restorePluginOutput;
+    }
 
-<?php
-//install the JFusion packages
-jimport('joomla.installer.helper');
-$packages['Login Module'] = $basedir . DS . 'packages' . DS . 'jfusion_mod_login.zip';
-$packages['Activity Module'] = $basedir . DS . 'packages' . DS . 'jfusion_mod_activity.zip';
-$packages['User Activity Module'] = $basedir . DS . 'packages' . DS . 'jfusion_mod_user_activity.zip';
-$packages['Whos Online Module'] = $basedir . DS . 'packages' . DS . 'jfusion_mod_whosonline.zip';
-$packages['User Plugin'] = $basedir . DS . 'packages' . DS . 'jfusion_plugin_user.zip';
-$packages['Authentication Plugin'] = $basedir . DS . 'packages' . DS . 'jfusion_plugin_auth.zip';
-$packages['Search Plugin'] = $basedir . DS . 'packages' . DS . 'jfusion_plugin_search.zip';
-$packages['System Plugin'] = $basedir . DS . 'packages' . DS . 'jfusion_plugin_system.zip';
-$packages['Discussion Bot'] = $basedir . DS . 'packages' . DS . 'jfusion_plugin_content.zip';
+    $jfusion_plugins = array();
+    $jfusion_plugins['joomla_int'] = 'jomla_int';
+    $jfusion_plugins['dokuwiki'] = 'A standards compliant, simple to use Wiki.';
+    $jfusion_plugins['efront'] = 'A modern learning system, bundled with key enterprise functionality.';
+    $jfusion_plugins['elgg'] = 'A leading open source social networking engine.';
+    $jfusion_plugins['gallery2'] = 'An open source web based photo album organizer.';
+    $jfusion_plugins['joomla_ext'] = 'Plugin to connect multiple Joomla sites.';
+    $jfusion_plugins['magento'] = 'A open source based ecommerce web application.';
+    $jfusion_plugins['mediawiki'] = 'Popular wiki that also powers wikipedia.';
+    $jfusion_plugins['moodle'] = 'Open-source community-based tools for learning.';
+    $jfusion_plugins['mybb'] = 'A free PHP and MySQL based discussion system.';
+    $jfusion_plugins['oscommerce'] = 'Open source online shop e-commerce solution.';
+    $jfusion_plugins['phpbb3'] = 'A free and open source forum software.';
+    $jfusion_plugins['prestashop'] = 'A free open-source e-commerce software.';
+    $jfusion_plugins['smf'] = 'All in one package, giving you an easy to use forum.';
+    $jfusion_plugins['smf2'] = 'All in one package, giving you an easy to use forum.';
+    $jfusion_plugins['vbulletin'] = 'The most powerful forum software.';
+    $jfusion_plugins['wordpress'] = 'A semantic personal publishing platform.';
 
+    //see if any plugins need upgrading
 
-foreach ($packages as $name => $filename) {
-	$package = JInstallerHelper::unpack($filename);
-	$tmpInstaller = new JInstaller();
-	if (!$tmpInstaller->install($package['dir'])) { ?>
+    //make sure default plugins are installed
+    $query = "SELECT original_name , name FROM #__jfusion";
+    $db->setQuery($query);
+    $Plugins = $db->loadObjectList();
 
-<table style="background-color:#f9ded9;width:100%;">
-	<tr style="height: 30px">
-		<td width="50px"><img
-			src="components/com_jfusion/images/check_bad.png" height="20px"
-			width="20px">
-		</td>
-		<td><font size="2"> <b> <?php echo JText::_('ERROR') . ' ' . JText::_('INSTALLING') . ' ' . JText::_('JFUSION') . ' ' . $name; ?>
-			</b> </font>
-		</td>
-	</tr>
-</table>
-	<?php
-	}
-	unset($package, $tmpInstaller);
-}
-?>
-<table style="background-color:#d9f9e2;width:100%;">
-	<tr>
-		<td width="50px"><img
-			src="components/com_jfusion/images/check_good.png" height="20px"
-			width="20px">
-		</td>
-		<td><font size="2"> <b> <?php
-		if ($jfusionupgrade == 1) {
-			echo JText::_('JFUSION') . ' ' . JText::_('UPDATE') . ' ' .JText::_('SUCCESS');
+    $installedPlugins = array();
+    foreach ($Plugins as $plugin) {
+        if ($plugin->original_name) {
+            $installedPlugins[$plugin->original_name] = $plugin->original_name;
         } else {
-			echo JText::_('JFUSION') . ' ' . JText::_('INSTALL') . ' ' .JText::_('SUCCESS');
+            $installedPlugins[$plugin->name] = $plugin->name;
+        }
+    }
+    $installedPlugins['joomla_int'] = 'joomla_int';
+
+    include_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.install.php';
+    foreach ($installedPlugins as $plugin) {
+        if (array_key_exists ($plugin, $jfusion_plugins)) {
+            //install updates
+            $model = new JFusionModelInstaller();
+            $result = $model->installZIP($basedir . DS . 'packages' . DS . 'jfusion_' . $plugin . '.zip');
+            //remove plugin from install list
+            unset($jfusion_plugins[$plugin]);
+
+            $message = $result['message'];
+            if ($result['status']) {
+                $color = '#d9f9e2';
+                $image = '<img src="components/com_jfusion/images/check_good_small.png">';
+            } else {
+                $color = '#f9ded9';
+                $image = '<img src="components/com_jfusion/images/check_bad_small.png">';
+            }
+
+            $html = <<<HTML
+            <table style="background-color:{$color}; width:100%;">
+                <tr>
+                    <td width="50px">
+                        {$image}
+                    </td>
+                    <td>
+                        <font size="2">
+                            <b>
+                                {$message}
+                            </b>
+                        </font>
+                    </td>
+                </tr>
+            </table>
+HTML;
+            echo $html;
+        }
+    }
+    ?>
+    <br/>
+    <?php echo JText::_('POST_INSTALL_PLUGIN_OPTIONS'); ?>
+    <br/><br/>
+<?php
+    //prepare toolbar
+    $bar = new JToolBar('toolbar');
+    $bar->appendButton('Link', 'apply', JText::_('INSTALL'), 'javascript: $(\'pluginForm\').submit();');
+    $bar->appendButton( 'Link', 'forward', JText::_('CPANEL'), 'index.php?option=com_jfusion&task=cpanel' );
+    echo $bar->render();
+
+    $plugin_content = '';
+    //loop through the JFusion plugins
+    $rowcount = 0;
+    foreach($jfusion_plugins as $name => $description) {
+        $plugin_content .= <<<HTML
+            <tr id="{$name}" class="row{$rowcount}">
+                <td width="20px;">
+                    <input type="checkbox" name="jfusionplugins[]" value="{$name}" />
+                </td>
+                <td>
+                    {$name}
+                </td>
+                <td>
+                    {$description}
+                </td>
+            </tr>
+HTML;
+
+        if ($rowcount == 0) {
+            $rowcount = 1;
+        } else {
+            $rowcount = 0;
+        }
+    }
+
+    $name = JText::_('NAME');
+    $description = JText::_('DESCRIPTION');
+    $html = <<<HTML
+        <br/><br/><br/>
+        <form method="post" action="index.php" name="pluginForm" id="pluginForm">
+            <input type="hidden" name="option" value="com_jfusion" />
+            <input type="hidden" name="task" value="installplugins" />
+            <table class="adminlist" style="border-spacing:1px;" id="sortables">
+                <thead>
+                    <tr>
+                        <th class="title" width="20px;">
+                        </th>
+                        <th class="title" align="left">
+                            {$name}
+                        </th>
+                        <th class="title" align="left">
+                            {$description}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {$plugin_content}
+                </tbody>
+            </table>
+        </form>
+HTML;
+    echo $html;
+
+    //install the JFusion packages
+    jimport('joomla.installer.helper');
+    $packages['Login Module'] = $basedir . DS . 'packages' . DS . 'jfusion_mod_login.zip';
+    $packages['Activity Module'] = $basedir . DS . 'packages' . DS . 'jfusion_mod_activity.zip';
+    $packages['User Activity Module'] = $basedir . DS . 'packages' . DS . 'jfusion_mod_user_activity.zip';
+    $packages['Whos Online Module'] = $basedir . DS . 'packages' . DS . 'jfusion_mod_whosonline.zip';
+
+    $packages['User Plugin'] = $basedir . DS . 'packages' . DS . 'jfusion_plugin_user.zip';
+    $packages['Authentication Plugin'] = $basedir . DS . 'packages' . DS . 'jfusion_plugin_auth.zip';
+    $packages['Search Plugin'] = $basedir . DS . 'packages' . DS . 'jfusion_plugin_search.zip';
+    $packages['System Plugin'] = $basedir . DS . 'packages' . DS . 'jfusion_plugin_system.zip';
+    $packages['Discussion Bot'] = $basedir . DS . 'packages' . DS . 'jfusion_plugin_content.zip';
+
+    foreach ($packages as $name => $filename) {
+        $package = JInstallerHelper::unpack($filename);
+        $tmpInstaller = new JInstaller();
+        if (!$tmpInstaller->install($package['dir'])) {
+            $color = '#f9ded9';
+            $message = JText::_('ERROR') . ' ' . JText::_('INSTALLING') . ' ' . JText::_('JFUSION') . ' ' . $name;
+            $image = '<img src="components/com_jfusion/images/check_bad_small.png">';
+        } else {
+            $color = '#d9f9e2';
+            $message = JText::_('SUCCESS') . ' ' . JText::_('INSTALLING') . ' ' . JText::_('JFUSION') . ' ' . $name;
+            $image = '<img src="components/com_jfusion/images/check_good_small.png">';
         }
 
-?>		</b> </font>
-		</td>
-	</tr>
-</table>
+        $html = <<<HTML
+            <table style="background-color:{$color};width:100%;">
+                <tr style="height: 30px">
+                    <td width="50px">
+                        {$image}
+                    </td>
+                    <td>
+                        <font size="2">
+                            <b>
+                                {$message}
+                            </b>
+                        </font>
+                    </td>
+                </tr>
+            </table>
+HTML;
+        echo $html;
 
-<?php
-$jfusion_plugins = array();
-$jfusion_plugins['dokuwiki'] = 'A standards compliant, simple to use Wiki.';
-$jfusion_plugins['efront'] = 'A modern learning system, bundled with key enterprise functionality.';
-$jfusion_plugins['elgg'] = 'A leading open source social networking engine.';
-$jfusion_plugins['gallery2'] = 'An open source web based photo album organizer.';
-$jfusion_plugins['joomla_ext'] = 'Plugin to connect multiple Joomla sites.';
-$jfusion_plugins['magento'] = 'A open source based ecommerce web application.';
-$jfusion_plugins['mediawiki'] = 'Popular wiki that also powers wikipedia.';
-$jfusion_plugins['moodle'] = 'Open-source community-based tools for learning.';
-$jfusion_plugins['mybb'] = 'A free PHP and MySQL based discussion system.';
-$jfusion_plugins['oscommerce'] = 'Open source online shop e-commerce solution.';
-$jfusion_plugins['phpbb3'] = 'A free and open source forum software.';
-$jfusion_plugins['prestashop'] = 'A free open-source e-commerce software.';
-$jfusion_plugins['smf'] = 'All in one package, giving you an easy to use forum.';
-$jfusion_plugins['smf2'] = 'All in one package, giving you an easy to use forum.';
-$jfusion_plugins['vbulletin'] = 'The most powerful forum software.';
-$jfusion_plugins['wordpress'] = 'A semantic personal publishing platform.';
-
-//see if any plugins need upgrading
-
-//make sure default plugins are installed
-$query = "SELECT name FROM #__jfusion WHERE name != 'joomla_int'";
-$db->setQuery($query);
-$installedPlugins = $db->loadResultArray();
-$pluginSql = array();
-include_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.install.php';
-foreach ($installedPlugins as $plugin) :
-
-if (array_key_exists ($plugin, $jfusion_plugins)) :
-//install updates
-$packagename = $basedir . DS . 'packages' . DS . 'jfusion_' . $plugin . '.zip';
-$model = new JFusionModelInstaller();
-$result = $model->installZIP($packagename);
-//remove plugin from install list
-unset($jfusion_plugins[$plugin]);
-?>
-<table style="background-color:#d9f9e2;width:100%;">
-	<tr>
-		<td width="50px"><img
-			src="components/com_jfusion/images/check_good.png" height="20px"
-			width="20px">
-		</td>
-		<td><font size="2"><b><?php echo $result['message']; ?></b></font></td>
-	</tr>
-</table>
-<?php
-endif;
-
-endforeach;
-
-echo '<br/>' . JText::_('POST_INSTALL_PLUGIN_OPTIONS') . '<br/><br/>';
-
-            //prepare toolbar
-            $bar = new JToolBar('toolbar');
-            $bar->appendButton('Link', 'apply', JText::_('INSTALL'), 'javascript: $(\'pluginForm\').submit();');
-            $bar->appendButton( 'Link', 'options', 'CPanel', 'index.php?option=com_jfusion&task=plugindisplay' );
-            echo $bar->render();?>
-<br/><br/><br/>            
-<form method="post" action="index.php" name="pluginForm" id="pluginForm">
-<input type="hidden" name="option" value="com_jfusion" />
-<input type="hidden" name="task" value="installplugins" />
-<table class="adminlist" style="border-spacing:1px;" id="sortables">
-    <thead>
-        <tr>
-            <th class="title" width="20px;"></th>
-            <th class="title" align="left"><?php echo JText::_('NAME');?></th>
-            <th class="title" align="left"><?php echo JText::_('DESCRIPTION');?></th>
-        </tr>
-    </thead>
-    <tbody>
-<?php
-
-//loop through the JFusion plugins
-$rowcount = 0;
-foreach($jfusion_plugins as $name => $description) { ?>
-    <tr id="<?php echo $name; ?>" class="row<? echo $rowcount; ?>">
-    	<td width="20px;"><input type="checkbox" name="jfusionplugins[]" value="<?php echo $name; ?>" /></td>
-        <td><?php echo $name; ?></td>
-        <td><?php echo $description; ?></td>
-    </tr>
-
-    <?php
-    if ($rowcount == 0) {
-	    $rowcount = 1;
-    } else {
-        $rowcount = 0;
+        unset($package, $tmpInstaller);
     }
-} ?>
-</tbody></table><br />
-</form>
-<?php
-//cleanup the packages directory
-$package_dir = $basedir . DS . 'packages';
-$folders = JFolder::folders($package_dir);
-foreach ($folders as $folder) {
-	JFolder::delete($package_dir.DS.$folder);
-}
 
-//Make sure the status field in jos_jfusion has got either 0 or 1
-$query = 'SELECT status FROM #__jfusion WHERE status = 3';
-$db->setQuery($query);
-if ($db->loadResult()) {
-	$query = 'UPDATE #__jfusion SET status = 0 WHERE status <> 3';
-	$db->setQuery($query);
-	$db->query();
-	$query = 'UPDATE #__jfusion SET status = 1 WHERE status = 3';
-	$db->setQuery($query);
-	$db->query();
-}
+    //cleanup the packages directory
+    $package_dir = $basedir . DS . 'packages';
+    $folders = JFolder::folders($package_dir);
+    foreach ($folders as $folder) {
+        JFolder::delete($package_dir.DS.$folder);
+    }
 
-return $return;
+    //Make sure the status field in jos_jfusion has got either 0 or 1
+    $query = 'SELECT status FROM #__jfusion WHERE status = 3';
+    $db->setQuery($query);
+    if ($db->loadResult()) {
+        $query = 'UPDATE #__jfusion SET status = 0 WHERE status <> 3';
+        $db->setQuery($query);
+        $db->query();
+        $query = 'UPDATE #__jfusion SET status = 1 WHERE status = 3';
+        $db->setQuery($query);
+        $db->query();
+    }
+
+    return $return;
 }

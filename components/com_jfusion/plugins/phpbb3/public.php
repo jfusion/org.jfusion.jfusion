@@ -639,24 +639,26 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             $db->setQuery($query);
             $forum_info = $db->loadObject();
 
-            //get forum parents
-            $query = "SELECT forum_id, forum_name FROM #__forums WHERE left_id < {$forum_info->left_id} AND right_id > {$forum_info->right_id} ORDER BY left_id ASC";
-            $db->setQuery($query);
-            $forum_parents = $db->loadObjectList();
+            if (!empty($forum_info)) {
+                //get forum parents
+                $query = "SELECT forum_id, forum_name FROM #__forums WHERE left_id < {$forum_info->left_id} AND right_id > {$forum_info->right_id} ORDER BY left_id ASC";
+                $db->setQuery($query);
+                $forum_parents = $db->loadObjectList();
 
-            if (!empty($forum_parents)) {
-                foreach ($forum_parents as $k => $data) {
-                    $crumb = new stdClass();
-                    $crumb->title = $data->forum_name;
-                    $crumb->url = "viewforum.php?f={$data->forum_id}";
-                    $pathway[] = $crumb;
+                if (!empty($forum_parents)) {
+                    foreach ($forum_parents as $k => $data) {
+                        $crumb = new stdClass();
+                        $crumb->title = $data->forum_name;
+                        $crumb->url = "viewforum.php?f={$data->forum_id}";
+                        $pathway[] = $crumb;
+                    }
                 }
-            }
 
-            $crumb = new stdClass();
-            $crumb->title = $forum_info->forum_name;
-            $crumb->url = "viewforum.php?f=" . $forum_id;
-            $pathway[] = $crumb;
+                $crumb = new stdClass();
+                $crumb->title = $forum_info->forum_name;
+                $crumb->url = "viewforum.php?f=" . $forum_id;
+                $pathway[] = $crumb;
+            }
         }
 
         $topic_id = JRequest::getInt('t');
@@ -665,12 +667,13 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             $db->setQuery($query);
             $topic_title = $db->loadObject();
 
-            $crumb = new stdClass();
-            $crumb->title = $topic_title->topic_title;
-            $crumb->url = "viewtopic.php?f=$forum_id&amp;t=$topic_id";
-            $pathway[] = $crumb;
+            if (!empty($topic_title)) {
+                $crumb = new stdClass();
+                $crumb->title = $topic_title->topic_title;
+                $crumb->url = "viewtopic.php?f=$forum_id&amp;t=$topic_id";
+                $pathway[] = $crumb;
+            }
         }
-
         return $pathway;
     }
 

@@ -30,6 +30,8 @@ defined('_JEXEC') or die('Restricted access');
  */
 class jfusionViewversioncheck extends JView
 {
+    var $up2date = true;
+    var $row_count = 0;
     /**
      * displays the view
      *
@@ -41,132 +43,140 @@ class jfusionViewversioncheck extends JView
     {
         //get the jfusion news
         ob_start();
-        $url = 'http://jfusion.googlecode.com/svn/branches/jfusion_version.xml';
-        if (function_exists('curl_init')) {
-            //curl is the preferred function
-            $crl = curl_init();
-            $timeout = 5;
-            curl_setopt($crl, CURLOPT_URL, $url);
-            curl_setopt($crl, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($crl, CURLOPT_CONNECTTIMEOUT, $timeout);
-            $JFusionVersionRaw = curl_exec($crl);
-            curl_close($crl);
-        } else {
-            //get the file directly if curl is disabled
-            $JFusionVersionRaw = file_get_contents($url);
-            if (!strpos($JFusionVersionRaw, '<document>')) {
-                //file_get_content is often blocked by hosts, return an error message
-                echo JText::_('CURL_DISABLED');
-                return;
-            }
-        }
-        $JFusionVersion = JText::_('UNKNOWN');
-        $system = $jfusion_plugins = $components = array();
-        $up2date = $server_compatible = false;
+
+        $db = JFactory::getDBO();
+        $query = 'SELECT name from #__jfusion';
+        $db->setQuery($query);
+        $plugins = $db->loadObjectList();
 
         /**
          * @ignore
          * @var $parser JSimpleXML
          */
-        $parser = JFactory::getXMLParser('Simple');
-        if ($parser->loadString($JFusionVersionRaw)) {
-            if (isset($parser->document)) {
-                $JFusionVersionInfo = $parser->document;
-                $up2date = true;
-                $server_compatible = true;
-
-                $php = new stdClass;
-                $php->oldversion = phpversion();
-                $php->version = $JFusionVersionInfo->getElementByPath('php')->data();
-                $php->name = 'PHP';
-
-                if (version_compare(phpversion(), $php->version) == - 1) {
-                    $php->class = 'bad0';
-                    $server_compatible = false;
-                } else {
-                    $php->class = 'good0';
-                }
-                $system[] = $php;
-
-                $joomla = new stdClass;
-                $version = new JVersion;
-                $joomla_version = $version->getShortVersion();
-                $joomla->oldversion = $joomla_version;
-                $joomla->version = $JFusionVersionInfo->getElementByPath('joomla')->data();
-                $joomla->name = 'Joomla';
-
-                //remove any letters from the version
-                $joomla_versionclean = preg_replace("[A-Za-z !]", "", $joomla_version);
-                if (version_compare($joomla_versionclean, $joomla->version) == - 1) {
-                    $joomla->class = 'bad1';
-                    $server_compatible = false;
-                } else {
-                    $joomla->class = 'good1';
-                }
-                $system[] = $joomla;
-
-                $mysql = new stdClass;
-                $db = JFactory::getDBO();
-                $mysql_version = $db->getVersion();
-
-                $mysql->oldversion = $mysql_version;
-                $mysql->version = $JFusionVersionInfo->getElementByPath('mysql')->data();
-                $mysql->name = 'MySQL';
-
-                if (version_compare($mysql_version, $mysql->version) == - 1) {
-                    $class_name = 'bad0';
-                    $server_compatible = false;
-                } else {
-                    $class_name = 'good0';
-                }
-                $system[] = $mysql;
-
-                $row_count = 0;
-                //check the JFusion component,plugins and modules versions
-                $JFusion = $this->getVersionNumber(JPATH_COMPONENT_ADMINISTRATOR . DS . 'jfusion.xml', JText::_('COMPONENT'), $JFusionVersionInfo->getElementByPath('component')->data(), $row_count, $up2date);
-                $components[] = $JFusion;
-                $components[] = $this->getVersionNumber(JPATH_SITE . DS . 'modules' . DS . 'mod_jfusion_activity' . DS . 'mod_jfusion_activity.xml', JText::_('ACTIVITY') . ' ' . JText::_('MODULE'), $JFusionVersionInfo->getElementByPath('activity')->data(), $row_count, $up2date);
-                $components[] = $this->getVersionNumber(JPATH_SITE . DS . 'modules' . DS . 'mod_jfusion_user_activity' . DS . 'mod_jfusion_user_activity.xml', JText::_('USER') . ' ' . JText::_('ACTIVITY') . ' ' . JText::_('MODULE'), $JFusionVersionInfo->getElementByPath('useractivity')->data(), $row_count, $up2date);
-                $components[] = $this->getVersionNumber(JPATH_SITE . DS . 'modules' . DS . 'mod_jfusion_whosonline' . DS . 'mod_jfusion_whosonline.xml', JText::_('WHOSONLINE') . ' ' . JText::_('MODULE'), $JFusionVersionInfo->getElementByPath('whosonline')->data(), $row_count, $up2date);
-                $components[] = $this->getVersionNumber(JPATH_SITE . DS . 'modules' . DS . 'mod_jfusion_login' . DS . 'mod_jfusion_login.xml', JText::_('LOGIN') . ' ' . JText::_('MODULE'), $JFusionVersionInfo->getElementByPath('login')->data(), $row_count, $up2date);
-                if(JFusionFunction::isJoomlaVersion('1.6')){
-                    $components[] = $this->getVersionNumber(JPATH_SITE . DS . 'plugins' . DS . 'authentication' . DS . 'jfusion'. DS . 'jfusion.xml', JText::_('AUTHENTICATION') . ' ' . JText::_('PLUGIN'), $JFusionVersionInfo->getElementByPath('auth')->data(), $row_count, $up2date);
-                    $components[] = $this->getVersionNumber(JPATH_SITE . DS . 'plugins' . DS . 'user' . DS .  'jfusion'. DS . 'jfusion.xml', JText::_('USER') . ' ' . JText::_('PLUGIN'), $JFusionVersionInfo->getElementByPath('user')->data(), $row_count, $up2date);
-                    $components[] = $this->getVersionNumber(JPATH_SITE . DS . 'plugins' . DS . 'search' . DS .  'jfusion'. DS . 'jfusion.xml', JText::_('SEARCH') . ' ' . JText::_('PLUGIN'), $JFusionVersionInfo->getElementByPath('search')->data(), $row_count, $up2date);
-                    $components[] = $this->getVersionNumber(JPATH_SITE . DS . 'plugins' . DS . 'content' . DS .  'jfusion'. DS . 'jfusion.xml', JText::_('DISCUSSION') . ' ' . JText::_('PLUGIN'), $JFusionVersionInfo->getElementByPath('discussion')->data(), $row_count, $up2date);
-                } else {
-                    $components[] = $this->getVersionNumber(JPATH_SITE . DS . 'plugins' . DS . 'authentication' . DS . 'jfusion.xml', JText::_('AUTHENTICATION') . ' ' . JText::_('PLUGIN'), $JFusionVersionInfo->getElementByPath('auth')->data(), $row_count, $up2date);
-                    $components[] = $this->getVersionNumber(JPATH_SITE . DS . 'plugins' . DS . 'user' . DS . 'jfusion.xml', JText::_('USER') . ' ' . JText::_('PLUGIN'), $JFusionVersionInfo->getElementByPath('user')->data(), $row_count, $up2date);
-                    $components[] = $this->getVersionNumber(JPATH_SITE . DS . 'plugins' . DS . 'search' . DS . 'jfusion.xml', JText::_('SEARCH') . ' ' . JText::_('PLUGIN'), $JFusionVersionInfo->getElementByPath('search')->data(), $row_count, $up2date);
-                    $components[] = $this->getVersionNumber(JPATH_SITE . DS . 'plugins' . DS . 'content' . DS . 'jfusion.xml', JText::_('DISCUSSION') . ' ' . JText::_('PLUGIN'), $JFusionVersionInfo->getElementByPath('discussion')->data(), $row_count, $up2date);
-                }
-
-                $db = JFactory::getDBO();
-                $query = 'SELECT * from #__jfusion';
-                $db->setQuery($query);
-                $plugins = $db->loadObjectList();
-                foreach ($plugins as $plugin) {
-                    if (isset($JFusionVersionInfo->{$plugin->name})) {
-                        $plugin_version = $JFusionVersionInfo->{$plugin->name};
-                        if ($plugin_version[0]->data()) {
-                            $version = $plugin_version[0]->data();
+        $jfusionurl = new stdClass;
+        $jfusionurl->url = 'http://update.jfusion.org/';
+        $jfusionurl->jnames = array();
+        $urls[md5($jfusionurl->url)] = $jfusionurl;
+        foreach ($plugins as $plugin) {
+            $parser = JFactory::getXMLParser('Simple');
+            if($parser->loadFile(JFUSION_PLUGIN_PATH.DS.$plugin->name.DS.'jfusion.xml')) {
+                if (isset($parser->document)) {
+                    $update = $parser->document->getElementByPath('update');
+                    if ($update) {
+                        $url = new stdClass;
+                        $url->url = $update->data();
+                        $url->jnames = array($plugin->name);
+                        if (!isset($urls[md5($url->url)])) {
+                            $urls[md5($url->url)] = $url;
                         } else {
-                            $version = JText::_('UNKNOWN');
+                            $urls[md5($url->url)]->jnames[] = $plugin->name;
                         }
-                    } else {
-                        $version = JText::_('UNKNOWN');
                     }
-                    $jfusion_plugins[] =$this->getVersionNumber(JFUSION_PLUGIN_PATH . DS . $plugin->name . DS . 'jfusion.xml', $plugin->name . ' ' . JText::_('PLUGIN'), $version, $row_count, $up2date);
                 }
-            } else {
-                echo JText::_('CURL_DISABLED');
-                return;
             }
+        }
+
+        foreach ($urls as &$url) {
+            $url->data = JFusionFunctionAdmin::getFileData($url->url);
+        }
+
+        $JFusionVersion = JText::_('UNKNOWN');
+        $system = $jfusion_plugins = $components = array();
+        $server_compatible = true;
+        foreach ($urls as $url) {
+            $parser = JFactory::getXMLParser('Simple');
+            if ($parser->loadString($url->data)) {
+                if (isset($parser->document)) {
+                    $JFusionVersionInfo = $parser->document;
+                    if ( $url->url == $jfusionurl->url) {
+                        $php = new stdClass;
+                        $php->oldversion = phpversion();
+                        $php->version = $JFusionVersionInfo->getElementByPath('system/php')->data();
+                        $php->name = 'PHP';
+
+                        if (version_compare(phpversion(), $php->version) == - 1) {
+                            $php->class = 'bad0';
+                            $server_compatible = false;
+                        } else {
+                            $php->class = 'good0';
+                        }
+                        $system[] = $php;
+
+                        $joomla = new stdClass;
+                        $version = new JVersion;
+                        $joomla_version = $version->getShortVersion();
+                        $joomla->oldversion = $joomla_version;
+                        $joomla->version = $JFusionVersionInfo->getElementByPath('system/joomla')->data();
+                        $joomla->name = 'Joomla';
+
+                        //remove any letters from the version
+                        $joomla_versionclean = preg_replace("[A-Za-z !]", "", $joomla_version);
+                        if (version_compare($joomla_versionclean, $joomla->version) == - 1) {
+                            $joomla->class = 'bad1';
+                            $server_compatible = false;
+                        } else {
+                            $joomla->class = 'good1';
+                        }
+                        $system[] = $joomla;
+
+                        $mysql = new stdClass;
+                        $db = JFactory::getDBO();
+                        $mysql_version = $db->getVersion();
+
+                        $mysql->oldversion = $mysql_version;
+                        $mysql->version = $JFusionVersionInfo->getElementByPath('system/mysql')->data();
+                        $mysql->name = 'MySQL';
+
+                        if (version_compare($mysql_version, $mysql->version) == - 1) {
+                            $mysql->class = 'bad0';
+                            $server_compatible = false;
+                        } else {
+                            $mysql->class = 'good0';
+                        }
+                        $system[] = $mysql;
+
+                        //check the JFusion component,plugins and modules versions
+                        $JFusion = $this->getVersionNumber(JPATH_COMPONENT_ADMINISTRATOR . DS . 'jfusion.xml', JText::_('COMPONENT'), 'component', $JFusionVersionInfo);
+                        $p = $JFusionVersionInfo->getElementByPath('component/version');
+                        if ($p) {
+                            $JFusionVersion = $p->data();
+                        }
+                        $components[] = $JFusion;
+                        $components[] = $this->getVersionNumber(JPATH_SITE . DS . 'modules' . DS . 'mod_jfusion_activity' . DS . 'mod_jfusion_activity.xml', JText::_('ACTIVITY') . ' ' . JText::_('MODULE'), 'module/activity', $JFusionVersionInfo);
+                        $components[] = $this->getVersionNumber(JPATH_SITE . DS . 'modules' . DS . 'mod_jfusion_user_activity' . DS . 'mod_jfusion_user_activity.xml', JText::_('USER') . ' ' . JText::_('ACTIVITY') . ' ' . JText::_('MODULE'), 'module/useractivity', $JFusionVersionInfo);
+                        $components[] = $this->getVersionNumber(JPATH_SITE . DS . 'modules' . DS . 'mod_jfusion_whosonline' . DS . 'mod_jfusion_whosonline.xml', JText::_('WHOSONLINE') . ' ' . JText::_('MODULE'), 'module/whosonline', $JFusionVersionInfo);
+                        $components[] = $this->getVersionNumber(JPATH_SITE . DS . 'modules' . DS . 'mod_jfusion_login' . DS . 'mod_jfusion_login.xml', JText::_('LOGIN') . ' ' . JText::_('MODULE'), 'module/login', $JFusionVersionInfo);
+                        if(JFusionFunction::isJoomlaVersion('1.6')){
+                            $components[] = $this->getVersionNumber(JPATH_SITE . DS . 'plugins' . DS . 'authentication' . DS . 'jfusion'. DS . 'jfusion.xml', JText::_('AUTHENTICATION') . ' ' . JText::_('PLUGIN'), 'plugin/auth', $JFusionVersionInfo);
+                            $components[] = $this->getVersionNumber(JPATH_SITE . DS . 'plugins' . DS . 'user' . DS .  'jfusion'. DS . 'jfusion.xml', JText::_('USER') . ' ' . JText::_('PLUGIN'), 'plugin/user', $JFusionVersionInfo);
+                            $components[] = $this->getVersionNumber(JPATH_SITE . DS . 'plugins' . DS . 'search' . DS .  'jfusion'. DS . 'jfusion.xml', JText::_('SEARCH') . ' ' . JText::_('PLUGIN'), 'plugin/search', $JFusionVersionInfo);
+                            $components[] = $this->getVersionNumber(JPATH_SITE . DS . 'plugins' . DS . 'content' . DS .  'jfusion'. DS . 'jfusion.xml', JText::_('DISCUSSION') . ' ' . JText::_('PLUGIN'), 'plugin/discussion', $JFusionVersionInfo);
+                            $components[] = $this->getVersionNumber(JPATH_SITE . DS . 'plugins' . DS . 'system' . DS .  'jfusion'. DS . 'jfusion.xml', JText::_('SYSTEM') . ' ' . JText::_('PLUGIN'), 'plugin/system', $JFusionVersionInfo);
+                        } else {
+                            $components[] = $this->getVersionNumber(JPATH_SITE . DS . 'plugins' . DS . 'authentication' . DS . 'jfusion.xml', JText::_('AUTHENTICATION') . ' ' . JText::_('PLUGIN'), 'plugin/auth', $JFusionVersionInfo);
+                            $components[] = $this->getVersionNumber(JPATH_SITE . DS . 'plugins' . DS . 'user' . DS . 'jfusion.xml', JText::_('USER') . ' ' . JText::_('PLUGIN'), 'plugin/user', $JFusionVersionInfo);
+                            $components[] = $this->getVersionNumber(JPATH_SITE . DS . 'plugins' . DS . 'search' . DS . 'jfusion.xml', JText::_('SEARCH') . ' ' . JText::_('PLUGIN'), 'plugin/search', $JFusionVersionInfo);
+                            $components[] = $this->getVersionNumber(JPATH_SITE . DS . 'plugins' . DS . 'content' . DS . 'jfusion.xml', JText::_('DISCUSSION') . ' ' . JText::_('PLUGIN'), 'plugin/discussion', $JFusionVersionInfo);
+                            $components[] = $this->getVersionNumber(JPATH_SITE . DS . 'plugins' . DS . 'system' . DS . 'jfusion.xml', JText::_('SYSTEM') . ' ' . JText::_('PLUGIN'), 'plugin/system', $JFusionVersionInfo);
+                        }
+                    }
+
+                    foreach ($plugins as $key => $plugin) {
+                        if (in_array($plugin->name,$url->jnames)) {
+                            $jfusion_plugins[] = $this->getVersionNumber(JFUSION_PLUGIN_PATH . DS . $plugin->name . DS . 'jfusion.xml', $plugin->name, 'plugins/'.$plugin->name, $JFusionVersionInfo);
+                            unset($plugins[$key]);
+                        }
+                    }
+                }
+            }
+        }
+        foreach ($plugins as $key => $plugin) {
+            $jfusion_plugins[] = $this->getVersionNumber(JFUSION_PLUGIN_PATH . DS . $plugin->name . DS . 'jfusion.xml', $plugin->name);
         }
         unset($parser);
         ob_end_clean();
-        
-        $this->assignRef('up2date', $up2date);
+
+        $this->assignRef('up2date', $this->up2date);
         $this->assignRef('server_compatible', $server_compatible);
         $this->assignRef('system', $system);
         $this->assignRef('jfusion_plugins', $jfusion_plugins);
@@ -174,59 +184,77 @@ class jfusionViewversioncheck extends JView
         $this->assignRef('JFusionVersion', $JFusionVersion);
         parent::display($tpl);
     }
-    
+
     /**
      * This function allows the version number to be retrieved for JFusion plugins
      *
      * @param string $filename   filename
      * @param string $name       name
-     * @param string $version    version
-     * @param string &$row_count rowcount
-     * @param string &$up2date   up2date
+     * @param string $path    version
+     * @param string $xml    version
      *
      * @return string nothing
      *
      */
-    function getVersionNumber($filename, $name, $version, &$row_count, &$up2date)
+    function getVersionNumber($filename, $name, $path=null, $xml=null)
     {
-    	$output = new stdClass;
-    	$output->class = '';
-    	$output->rev = '';
-    	$output->name = $name;
+        $output = new stdClass;
+        $output->class = '';
+        $output->rev = '';
+        $output->oldrev = '';
+        $output->name = $name;
+        $output->updateurl = null;
 
-    	$output->version = JText::_('UNKNOWN');
-    	$output->oldversion = JText::_('UNKNOWN');
-    	
-    	if (file_exists($filename) && is_readable($filename)) {
-    		//get the version number
+        $output->version = JText::_('UNKNOWN');
+        $output->oldversion = JText::_('UNKNOWN');
+
+        if ($path && $xml) {
+            $p = $xml->getElementByPath($path.'/version');
+            if ($p) {
+                $output->version = $p->data();
+            }
+            $p = $xml->getElementByPath($path.'/remotefile');
+            if ($p) {
+                $output->updateurl = $p->data();
+            }
+            $p = $xml->getElementByPath($path.'/revision');
+            if ($p) {
+                $output->rev = trim($p->data());
+            }
+        }
+
+        if (file_exists($filename) && is_readable($filename)) {
+            //get the version number
             /**
              * @ignore
              * @var $parser JSimpleXML
              */
-    		$parser = JFactory::getXMLParser('Simple');
-    		$parser->loadFile($filename);
+            $parser = JFactory::getXMLParser('Simple');
+            $parser->loadFile($filename);
             $output->oldversion = $parser->document->getElementByPath('version')->data();
-    		if (version_compare($output->oldversion, $version) == - 1) {
-    			$output->class = 'bad'.$row_count;
-    			$up2date = false;
-    		} else {
-    			$output->class = 'good'.$row_count;
-    		}
             $revision = $parser->document->getElementByPath('revision');
-    		if ($name == JText::_('COMPONENT') && !empty($revision)) {
-    			$output->rev = $revision->data();
-    		}
-			$output->version = $version; 
-    	} else {
-	    	JFusionFunction::raiseWarning(JText::_('ERROR'), JText::_('XML_FILE_MISSING') . ' '. JText::_('JFUSION') . ' ' . $name . ' ' . JText::_('PLUGIN'), 1);
-		}
-		//cleanup for the next function call
-		unset($parser);
-		if ($row_count == 1) {
-			$row_count = 0;
-		} else {
-			$row_count = 1;
-		}
-		return $output;
-    }    
+            if ($revision) {
+                $output->oldrev = trim($revision->data());
+            }
+
+            if (version_compare($output->oldversion, $output->version) == - 1 || ($output->oldrev && $output->rev && $output->oldrev != $output->rev )) {
+                $output->class = 'bad'.$this->row_count;
+                $this->up2date = false;
+            } else {
+                $output->updateurl = null;
+                $output->class = 'good'.$this->row_count;
+            }
+
+            //cleanup for the next function call
+            unset($parser);
+        } else {
+            JFusionFunction::raiseWarning(JText::_('ERROR'), JText::_('XML_FILE_MISSING') . ' '. JText::_('JFUSION') . ' ' . $name . ' ' . JText::_('PLUGIN'), 1);
+        }
+        if ($this->row_count == 1) {
+            $this->row_count = 0;
+        } else {
+            $this->row_count = 1;
+        }
+        return $output;
+    }
 }

@@ -25,32 +25,40 @@ JFusionFunctionAdmin::displayDonate();
 			    <div style="float:left;">
 			            <div class="icon">
 			                <a href="index.php?option=com_jfusion&task=plugineditor&jname=joomla_int" >
-			                <img src="components/com_jfusion/images/joomla.png" height="50px" width="50px">
-			                <span><?php echo JText::_('JOOMLA_OPTIONS'); ?></span>
+                                <img src="components/com_jfusion/images/joomla.png">
+                                <span>
+                                    <?php echo JText::_('JOOMLA_OPTIONS'); ?>
+                                </span>
 			                </a>
 			            </div>
 			    </div>
 			    <div style="float:left;">
 			            <div class="icon">
 			                <a href="index.php?option=com_jfusion&task=plugindisplay" >
-			                <img src="components/com_jfusion/images/controlpanel.png" height="50px" width="50px">
-			                <span><?php echo JText::_('CONFIGURE_PLUGINS'); ?></span>
+                                <img src="components/com_jfusion/images/controlpanel.png">
+                                <span>
+                                    <?php echo JText::_('CONFIGURE_PLUGINS'); ?>
+                                </span>
 			                </a>
 			            </div>
 			    </div>
 			    <div style="float:left;">
 			            <div class="icon">
 			                <a href="index.php?option=com_jfusion&task=syncoptions" >
-			                <img src="components/com_jfusion/images/syncmaster.png" height="50px" width="50px">
-			                <span><?php echo JText::_('NEW_USER_SYNC'); ?></span>
+                                <img src="components/com_jfusion/images/syncmaster.png">
+                                <span>
+                                    <?php echo JText::_('NEW_USER_SYNC'); ?>
+                                </span>
 			                </a>
 			            </div>
 			    </div>
 			    <div style="float:left;">
 			            <div class="icon">
 			                <a href="index.php?option=com_jfusion&task=synchistory" >
-			                <img src="components/com_jfusion/images/synchistory.png" height="50px" width="50px">
-			                <span><?php echo JText::_('USER_SYNC_HISTORY'); ?></span>
+                                <img src="components/com_jfusion/images/synchistory_small.png">
+                                <span>
+                                    <?php echo JText::_('USER_SYNC_HISTORY'); ?>
+                                </span>
 			                </a>
 			            </div>
 			    </div>
@@ -58,40 +66,50 @@ JFusionFunctionAdmin::displayDonate();
 			    <div style="float:left;">
 			            <div class="icon">
 			                <a href="index.php?option=com_jfusion&task=loginchecker" >
-			                <img src="components/com_jfusion/images/login_checker.png" height="50px" width="50px">
-			                <span><?php echo JText::_('CP_LOGIN_CHECKER'); ?></span>
-			                </a>
-			            </div>
-			    </div>
-			    <div style="float:left;">
-			            <div class="icon">
-			                <a href="index.php?option=com_jfusion&task=versioncheck" >
-			                <img src="components/com_jfusion/images/versioncheck.png" height="50px" width="50px">
-			                <span><?php echo JText::_('VERSION_CHECK'); ?></span>
+                                <img src="components/com_jfusion/images/login_checker_small.png">
+                                <span>
+                                    <?php echo JText::_('CP_LOGIN_CHECKER'); ?>
+                                </span>
 			                </a>
 			            </div>
 			    </div>
 			    <div style="float:left;">
 			            <div class="icon">
 			                <a href="index.php?option=com_jfusion&task=configdump" >
-			                <img src="components/com_jfusion/images/configdump_big.png" height="50px" width="50px">
-			                <span><?php echo JText::_('CP_CONFIG_DUMP'); ?></span>
+                                <img src="components/com_jfusion/images/configdump.png">
+                                <span>
+                                    <?php echo JText::_('CONFIG_DUMP'); ?>
+                                </span>
 			                </a>
 			            </div>
-			    </div>    
+			    </div>
+                <div style="float:left;">
+                    <div class="icon">
+                        <a href="index.php?option=com_jfusion&task=versioncheck" >
+                            <img src="components/com_jfusion/images/versioncheck_small.png">
+                            <span
+                                ><?php echo JText::_('VERSION_CHECK'); ?>
+                            </span>
+                        </a>
+                    </div>
+                </div>
 			    <div style="float:left;">
 			            <div class="icon">
 			                <a href="http://support.jfusion.org" >
-			                <img src="components/com_jfusion/images/help.png" height="50px" width="50px">
-			                <span><?php echo JText::_('CP_HELP'); ?></span>
+                                <img src="components/com_jfusion/images/help.png">
+                                <span>
+                                    <?php echo JText::_('CP_HELP'); ?>
+                                </span>
 			                </a>
 			            </div>
 			    </div>
 			    <div style="float:left;">
 			            <div class="icon">
 			                <a href="http://www.jfusion.org/docs" >
-			                <img src="components/com_jfusion/images/documentation.png" height="50px" width="50px">
-			                <span><?php echo JText::_('DOCUMENTATION'); ?></span>
+                                <img src="components/com_jfusion/images/documentation.png">
+                                <span>
+                                    <?php echo JText::_('DOCUMENTATION'); ?>
+                                </span>
 			                </a>
 			            </div>
 			    </div>    
@@ -107,7 +125,7 @@ JFusionFunctionAdmin::displayDonate();
 			    <table style="background-color:#d9f9e2;width:100%;">
                     <tr>
                         <td width="50px">
-                            <img src="components/com_jfusion/images/check_good.png" height="30px" width="30px">
+                            <img src="components/com_jfusion/images/check_good.png">
                         </td>
 			             
                         <td>
@@ -128,7 +146,7 @@ JFusionFunctionAdmin::displayDonate();
 			    <table style="background-color:#f9ded9;width:100%;">
                     <tr>
                         <td width="50px">
-                            <img src="components/com_jfusion/images/check_bad.png" height="30px" width="30px">
+                            <img src="components/com_jfusion/images/check_bad.png">
                         </td>
                         <td>
                             <h2>

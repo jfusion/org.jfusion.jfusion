@@ -295,7 +295,16 @@ class JFusionDiscussBotHelper {
                         $validity_reason = JText::_('REASON_DISCUSSION_MANUALLY_INITIALISED');
                     } else {
                         //make sure article is published
-                        $state = ($this->option == 'com_k2') ? $this->article->published : $this->article->state;
+                        $state = false;
+                        if ($this->option == 'com_k2') {
+                            if (isset($this->article->published)) {
+                                $state = $this->article->published;
+                            }
+                        } else {
+                            if (isset($this->article->state)) {
+                                $state = $this->article->state;
+                            }
+                        }
                         if (!$state) {
                             $validity_reason = JText::_('REASON_ARTICLE_NOT_PUBLISHED');
                         } else {

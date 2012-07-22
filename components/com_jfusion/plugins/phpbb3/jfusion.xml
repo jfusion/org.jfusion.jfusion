@@ -10,6 +10,8 @@
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<version>1.8.0-000</version>
 	<description>phpBB3 plugin for JFusion</description>
+    <update>http://update.jfusion.org/</update>
+    <master>0</master>
 	<slave>0</slave>
 	<dual_login>0</dual_login>
 	<search>1</search>
@@ -20,7 +22,6 @@
 		<filename>admin.php</filename>
 		<filename>auth.php</filename>
 		<filename>auth_jfusion.php</filename>
-		<filename>bbcode_parser.php</filename>
 		<filename>forum.php</filename>
 		<filename>hooks.php</filename>
 		<filename>index.html</filename>
@@ -28,170 +29,117 @@
 		<filename>public.php</filename>
 		<filename>search.xml</filename>
 		<filename>user.php</filename>
-		<filename>username_clean.php</filename>
-		<filename>utf_normalizer.php</filename>
-		<filename>PasswordHash.php</filename>
+		<filename>helper.php</filename>
 		<folder>utf</folder>
 	</files>
 	
 	<params addpath="/administrator/components/com_jfusion/elements">
-		<param name="jfusionbox" type="text" default=""
-			label="PLUGIN_GENERAL_DETAILS" description="" />
-        <param name="description" type="text" size="60" label="DESCRIPTION"
-            default="phpBB3" description="DESCRIPTION_DESC" />
-        <param name="source_url" type="text" size="60" label="SOURCE_URL"
-            default="http://www.yourdomain.com/phpbb3/" description="SOURCE_URL_DESC" />
-        <param name="source_path" type="text" size="60" label="SOURCE_PATH"
-            default="" description="SOURCE_PATH_DESC" />
-        <param name="@spacer" type="spacer" default="" label=""
-            description="" />
-        <param name="login_identifier" type="list" label="LOGIN_IDENTIFIER"
-            default="1" description="LOGIN_IDENTIFIER_DESC">
+		<param name="jfusionbox" type="text" default="" label="PLUGIN_GENERAL_DETAILS" description="" />
+        <param name="description" type="text" size="60" label="DESCRIPTION" default="phpBB3" description="DESCRIPTION_DESC" />
+        <param name="source_url" type="text" size="60" label="SOURCE_URL" default="http://www.yourdomain.com/phpbb3/" description="SOURCE_URL_DESC" />
+        <param name="source_path" type="text" size="60" label="SOURCE_PATH" default="" description="SOURCE_PATH_DESC" />
+        <param name="@spacer" type="spacer" default="" label="" description="" />
+        <param name="login_identifier" type="list" label="LOGIN_IDENTIFIER" default="1" description="LOGIN_IDENTIFIER_DESC">
             <option value="1">USERNAME</option>
             <option value="2">EMAIL</option>
             <option value="3">USERNAME_OR_EMAIL</option>
         </param>
-        <param name="login_type" type="list" default="1" label="PHPBB_LOGIN_TYPE"
-            description="PHPBB_LOGIN_TYPE">
+        <param name="login_type" type="list" default="1" label="PHPBB_LOGIN_TYPE" description="PHPBB_LOGIN_TYPE">
             <option value="0">PHPBB_LOGIN_DIRECT</option>
             <option value="1">PHPBB_LOGIN_INDIRECT</option>
         </param>
 
-        <param name="jfusionbox" type="text" default="" label="DATABASE_OPTIONS"
-            description="" />
-        <param name="database_type" type="text" size="20" label="DATABASE_TYPE"
-            default="mysql" description="DATABASE_TYPE_DESC" />
-        <param name="database_host" type="text" size="20" label="DATABASE_HOST"
-            default="" description="DATABASE_HOST_DESC" />
-        <param name="database_name" type="text" size="20" label="DATABASE_NAME"
-            default="" description="DATABASE_NAME_DESC" />
-        <param name="database_user" type="text" size="20" label="DATABASE_USER"
-            default="" description="DATABASE_USER_DESC" />
-        <param name="database_password" type="password" size="20"
-            label="DATABASE_PASSWORD" default="" description="DATABASE_PASSWORD_DESC" />
-        <param name="database_prefix" type="text" size="20" label="DATABASE_PREFIX"
-            default="" description="DATABASE_PREFIX_DESC" />
-        <param name="database_charset" type="text" size="20"
-            label="DATABASE_CHARSET" default="utf8" description="DATABASE_CHARSET_DESC" />
-        <param name="database_new_link" type="list" default="0"
-            label="DATABASE_NEW_LINK" description="DATABASE_NEW_LINK_DESCR">
+        <param name="jfusionbox" type="text" default="" label="DATABASE_OPTIONS" description="" />
+        <param name="database_type" type="text" size="20" label="DATABASE_TYPE" default="mysql" description="DATABASE_TYPE_DESC" />
+        <param name="database_host" type="text" size="20" label="DATABASE_HOST" default="" description="DATABASE_HOST_DESC" />
+        <param name="database_name" type="text" size="20" label="DATABASE_NAME" default="" description="DATABASE_NAME_DESC" />
+        <param name="database_user" type="text" size="20" label="DATABASE_USER" default="" description="DATABASE_USER_DESC" />
+        <param name="database_password" type="password" size="20" label="DATABASE_PASSWORD" default="" description="DATABASE_PASSWORD_DESC" />
+        <param name="database_prefix" type="text" size="20" label="DATABASE_PREFIX" default="" description="DATABASE_PREFIX_DESC" />
+        <param name="database_charset" type="text" size="20" label="DATABASE_CHARSET" default="utf8" description="DATABASE_CHARSET_DESC" />
+        <param name="database_new_link" type="list" default="0" label="DATABASE_NEW_LINK" description="DATABASE_NEW_LINK_DESCR">
             <option value="1">JYES</option>
             <option value="0">JNO</option>
         </param>
 
-        <param name="jfusionbox" type="text" default="" label="USER_OPTIONS"
-            description="" />
-        <param name="usergroup" default="" type="JFusionCustomParam"
-            label="USERGROUP_MANAGEMENT" description="ADVANCED_USERGROUP" />
-        <param name="@spacer" type="spacer" default="" label=""
-            description="" />
-        <param name="update_activation" type="list" default="1"
-            label="UPDATE_ACTIVATION" description="UPDATE_ACTIVATION_DESC">
+        <param name="jfusionbox" type="text" default="" label="USER_OPTIONS" description="" />
+        <param name="multiusergroup" default="" type="JFusionCustomParam" label="USERGROUP_MANAGEMENT" description="ADVANCED_USERGROUP" />
+        <param name="@spacer" type="spacer" default="" label="" description="" />
+        <param name="update_activation" type="list" default="1" label="UPDATE_ACTIVATION" description="UPDATE_ACTIVATION_DESC">
             <option value="1">JYES</option>
             <option value="0">JNO</option>
         </param>
-        <param name="update_email" type="list" default="1" label="UPDATE_EMAIL"
-            description="UPDATE_EMAIL_DESC">
+        <param name="update_email" type="list" default="1" label="UPDATE_EMAIL" description="UPDATE_EMAIL_DESC">
             <option value="1">JYES</option>
             <option value="0">JNO</option>
         </param>
-        <param name="update_block" type="list" default="1" label="UPDATE_BLOCK"
-            description="UPDATE_BLOCK_DESC">
+        <param name="update_block" type="list" default="1" label="UPDATE_BLOCK" description="UPDATE_BLOCK_DESC">
             <option value="1">JYES</option>
             <option value="0">JNO</option>
         </param>
-        <param name="create_inactive" type="list" default="1"
-            label="CREATE_INACTIVE" description="CREATE_INACTIVE_DESC">
+        <param name="create_inactive" type="list" default="1" label="CREATE_INACTIVE" description="CREATE_INACTIVE_DESC">
             <option value="1">JYES</option>
             <option value="0">JNO</option>
         </param>
-        <param name="create_blocked" type="list" default="1"
-            label="CREATE_BLOCKED" description="CREATE_BLOCKED_DESC">
+        <param name="create_blocked" type="list" default="1" label="CREATE_BLOCKED" description="CREATE_BLOCKED_DESC">
             <option value="1">JYES</option>
             <option value="0">JNO</option>
         </param>
-        <param name="@spacer" type="spacer" default="" label=""
-            description="" />
-        <param name="allow_delete_users" type="list" default="0"
-            label="ALLOW_DELETE_USERS" description="ALLOW_DELETE_USERS_DESCR">
+        <param name="@spacer" type="spacer" default="" label="" description="" />
+        <param name="allow_delete_users" type="list" default="0" label="ALLOW_DELETE_USERS" description="ALLOW_DELETE_USERS_DESCR">
             <option value="1">JYES</option>
             <option value="0">JNO</option>
         </param>
-         <param name="@spacer" type="spacer" default="" label=""
-            description="" />
+        <param name="@spacer" type="spacer" default="" label="" description="" />
         <param name=" " type="helptext" default="UTF8_ADVANCED_DESCR" label=""/>
-        <param name="utf8_advanced" type="list" default="disabled"
-            label="UTF8_ADVANCED" description="UTF8_ADVANCED">
+        <param name="utf8_advanced" type="list" default="disabled" label="UTF8_ADVANCED" description="UTF8_ADVANCED">
             <option value="disabled">STANDARD</option>
             <option value="enabled">ADVANCED</option>
         </param>
  
-        <param name="jfusionbox" type="text" default=""
-            label="GENERAL_OPTIONS_COOKIE" description="" />
-        <param name="cookie_domain" type="text" size="60"
-            label="CURL_COOKIE_DOMAIN" default="" description="CURL_COOKIE_DOMAIN_DESC" />
-        <param name="cookie_path" type="text" size="60" label="CURL_COOKIE_PATH"
-            default="" description="CURL_COOKIE_PATH_DESC" />
-		<param name="cookie_prefix" type="text" size="20" label="COOKIE_PREFIX"
-			default="bb" description="COOKIE_PREFIX" />
-        <param name="secure" type="list" default="0" label="COOKIE_SECURE"
-            description="COOKIE_SECURE_DESC">
+        <param name="jfusionbox" type="text" default="" label="GENERAL_OPTIONS_COOKIE" description="" />
+        <param name="cookie_domain" type="text" size="60" label="CURL_COOKIE_DOMAIN" default="" description="CURL_COOKIE_DOMAIN_DESC" />
+        <param name="cookie_path" type="text" size="60" label="CURL_COOKIE_PATH" default="" description="CURL_COOKIE_PATH_DESC" />
+		<param name="cookie_prefix" type="text" size="20" label="COOKIE_PREFIX" default="bb" description="COOKIE_PREFIX" />
+        <param name="secure" type="list" default="0" label="COOKIE_SECURE" description="COOKIE_SECURE_DESC">
             <option value="1">JYES</option>
             <option value="0">JNO</option>
         </param>
-        <param name="httponly" type="list" default="0" label="COOKIE_HTTPONLY"
-            description="COOKIE_HTTPONLY_DESC">
+        <param name="httponly" type="list" default="0" label="COOKIE_HTTPONLY" description="COOKIE_HTTPONLY_DESC">
             <option value="1">JYES</option>
             <option value="0">JNO</option>
         </param>
-		<param name="allow_autologin" type="list" default="1" label="ALLOW_AUTOLOGIN"
-			description="ALLOW_AUTOLOGIN">
+		<param name="allow_autologin" type="list" default="1" label="ALLOW_AUTOLOGIN" description="ALLOW_AUTOLOGIN">
 			<option value="0">DISABLED</option>
 			<option value="1">ENABLED</option>
 		</param>
 
-		<param name="jfusionbox" type="text" default="" label="SEF_OPTIONS"
-			description="" />
-		<param name="sefmode" type="list" default="0" label="SEFMODE"
-			description="SEFMODE_DESCR">
+		<param name="jfusionbox" type="text" default="" label="SEF_OPTIONS" description="" />
+		<param name="sefmode" type="list" default="0" label="SEFMODE" description="SEFMODE_DESCR">
 			<option value="1"><![CDATA[yourdomain.com/index.php/menu_name/filename.php/option1,value1/option2,value2]]></option>
 			<option value="0"><![CDATA[yourdomain.com/index.php/menu_name/filename.php?option1=value1&option2=value2]]></option>
 		</param>
 
-		<param name="jfusionbox" type="text" default="" label="MOD_OPTIONS"
-			description="" />
+		<param name="jfusionbox" type="text" default="" label="MOD_OPTIONS" description="" />
 		<param name=" " type="helptext" default="AUTHENTICATION_MOD_DESCR" label=""/>
-		<param name="show_auth_mod" default="" type="JFusionCustomParam"
-			description="AUTHENTICATION_MOD" label=""/>
-		<param name="@spacer" type="spacer" default="" label=""
-			description="" />
+		<param name="show_auth_mod" default="" type="JFusionCustomParam" description="AUTHENTICATION_MOD" label=""/>
+		<param name="@spacer" type="spacer" default="" label="" description="" />
 		<param name=" " type="helptext" default="REDIRECT_MOD_DESCR" label=""/>
-		<param name="redirect_itemid" type="JFusionItemid" size="10"
-			default="" description="REDIRECT_ITEMID" label=""/>
-		<param name="mod_ids" type="list" default="0" label="MOD_IDS"
-			description="MOD_IDS_DESCR">
+		<param name="redirect_itemid" type="JFusionItemid" size="10" default="" description="REDIRECT_ITEMID" label=""/>
+		<param name="mod_ids" type="list" default="0" label="MOD_IDS" description="MOD_IDS_DESCR">
 			<option value="1">JYES</option>
 			<option value="0">JNO</option>
 		</param>
-		<param name="showRedirectMod" default="" type="JFusionCustomParam"
-			description="REDIRECTION_MOD" label=""/>
-		<param name="@spacer" type="spacer" default="" label=""
-			description="" />
+		<param name="showRedirectMod" default="" type="JFusionCustomParam" description="REDIRECTION_MOD" label=""/>
+		<param name="@spacer" type="spacer" default="" label="" description="" />
 		<param name=" " type="helptext" default="QUICK_MOD" label=""/>
-		<param name="show_quick_mod" default="" type="JFusionCustomParam"
-			description="QUICK_MOD" label=""/>
-		<param name="jfusionbox" type="text" default="" label="URL_OPTIONS"
-			description="" />
+		<param name="show_quick_mod" default="" type="JFusionCustomParam" description="QUICK_MOD" label=""/>
+		<param name="jfusionbox" type="text" default="" label="URL_OPTIONS" description="" />
 		<param name=" " type="helptext" default="URL_OPTIONS_DESCR" label=""/>
-		<param name="lostpassword_url" label="LOST_PASSWORD_URL" type="text"
-			size="50" default="" description="LOST_PASSWORD_URL" />
-		<param name="register_url" label="REGISTER_URL" type="text"
-			size="50" default="" description="REGISTER_URL" />
-		<param name="edit_account_url" label="EDIT_ACCOUNTS_URL" type="text"
-			size="50" default="" description="EDIT_ACCOUNTS_URL" />
-		<param name="edit_profile_url" label="EDIT_PROFILE_URL" type="text"
-			size="50" default="" description="EDIT_PROFILE_URL" />
-		<param name="edit_avatar_url" label="EDIT_AVATAR_URL" type="text"
-			size="50" default="" description="EDIT_AVATAR_URL" />
+		<param name="lostpassword_url" label="LOST_PASSWORD_URL" type="text" size="50" default="" description="LOST_PASSWORD_URL" />
+		<param name="register_url" label="REGISTER_URL" type="text" size="50" default="" description="REGISTER_URL" />
+		<param name="edit_account_url" label="EDIT_ACCOUNTS_URL" type="text" size="50" default="" description="EDIT_ACCOUNTS_URL" />
+		<param name="edit_profile_url" label="EDIT_PROFILE_URL" type="text" size="50" default="" description="EDIT_PROFILE_URL" />
+		<param name="edit_avatar_url" label="EDIT_AVATAR_URL" type="text" size="50" default="" description="EDIT_AVATAR_URL" />
 	</params>
 </install>

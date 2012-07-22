@@ -214,10 +214,13 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
     {
         $params = & JFusionFactory::getParams($this->getJname());
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
-        $usergroup = $usergroups[0];
+        $usergroup_id = null;
+        if(!empty($usergroups)) {
+            $usergroup_id = $usergroups[0];
+        }
         //we want to output the usergroup name
         $db = & JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT title from #__usergroup WHERE usergroupid = ' . $usergroup;
+        $query = 'SELECT title from #__usergroup WHERE usergroupid = ' . $usergroup_id;
         $db->setQuery($query);
         return $db->loadResult();
     }
@@ -265,7 +268,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
             $js = <<<JS
             function toggleHook(hook, action) {
                 var form = $('adminForm');
-                var itemid = $('${itemid}');
+                var itemid = $('{$itemid}');
 
                 var a = (action == 'enable' || action == 'reenable');
                 var h = (hook == 'frameless' || hook == 'redirect');
@@ -274,8 +277,8 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
                     alert('{$empty}');
                 } else {
                     form.customcommand.value = 'toggleHook';
-                    $('${fieldname}').value = hook;
-                    $('${fieldaction}').value = action;
+                    $('{$fieldname}').value = hook;
+                    $('{$fieldaction}').value = action;
                     form.action.value = 'apply';
                     submitform('saveconfig');
                 }
@@ -317,15 +320,27 @@ JS;
                 }
                 if ($check) {
                     //return success
-                    $output = '<img style="float: left;" src="components/com_jfusion/images/check_good.png" height="20px" width="20px"><span style="float: left; margin-left: 5px;">' . JText::_('ENABLED') . '</span>';
-                    $output.= ' <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return toggleHook(\'' . $hook . '\',\'disable\')">' . JText::_('DISABLE_THIS_PLUGIN') . '</a>';
-                    $output.= ' <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return toggleHook(\'' . $hook . '\',\'reenable\')">' . JText::_('REENABLE_THIS_PLUGIN') . '</a>';
+                    $enabled = JText::_('ENABLED');
+                    $disable = JText::_('DISABLE_THIS_PLUGIN');
+                    $reenable = JText::_('REENABLE_THIS_PLUGIN');
+                    $output = <<<HTML
+                    <img style="float: left;" src="components/com_jfusion/images/check_good_small.png">
+                    <span style="float: left; margin-left: 5px;">{$enabled}</span>
+                    <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return toggleHook('{$hook}','disable')">{$disable}</a>
+                    <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return toggleHook('{$hook}','reenable')">{$reenable}</a>
+HTML;
                     return $output;
                 } else {
-                    $output = '<img style="float: left;" src="components/com_jfusion/images/check_bad.png" height="20px" width="20px"><span style="float: left; margin-left: 5px;">' . JText::_('DISABLED') . '</span>';
-                    $output.= ' <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return toggleHook(\'' . $hook . '\',\'enable\')">' . JText::_('ENABLE_THIS_PLUGIN') . '</a>';
+                    $disabled = JText::_('DISABLED');
+                    $enable = JText::_('ENABLE_THIS_PLUGIN');
+                    $output = <<<HTML
+                    <img style="float: left;" src="components/com_jfusion/images/check_bad_small.png">
+                    <span style="float: left; margin-left: 5px;">{$disabled}</span>
+                    <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return toggleHook('{$hook}','enable')">{$enable}</a>
+HTML;
                     return $output;
                 }
+
             } else {
                 //let's first check the default icon
                 $check = true;
@@ -351,12 +366,22 @@ JS;
                 }
                 if ($check) {
                     //return success
-                    $output = '<img style="float: left;" src="components/com_jfusion/images/check_good.png" height="20px" width="20px"><span style="float: left; margin-left: 5px;">' . JText::_('COMPLETE') . '</span>';
-                    $output.= ' <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return toggleHook(\'' . $hook . '\',\'disable\')">' . JText::_('VB_UNDO_OPTIMIZATION') . '</a>';
+                    $complete = JText::_('COMPLETE');
+                    $undo = JText::_('VB_UNDO_OPTIMIZATION');
+                    $output = <<<HTML
+                    <img style="float: left;" src="components/com_jfusion/images/check_good_small.png">
+                    <span style="float: left; margin-left: 5px;">{$complete}</span>
+                    <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return toggleHook('{$hook}','disable')">{$undo}</a>
+HTML;
                     return $output;
                 } else {
-                    $output = '<img style="float: left;" src="components/com_jfusion/images/check_bad.png" height="20px" width="20px"><span style="float: left; margin-left: 5px;">' . JText::_('INCOMPLETE') . '</span>';
-                    $output.= ' <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return toggleHook(\'' . $hook . '\',\'enable\')">' . JText::_('VB_DO_OPTIMIZATION') . '</a>';
+                    $incomplete = JText::_('INCOMPLETE');
+                    $do = JText::_('VB_DO_OPTIMIZATION');
+                    $output = <<<HTML
+                    <img style="float: left;" src="components/com_jfusion/images/check_bad_small.png">
+                    <span style="float: left; margin-left: 5px;">{$incomplete}</span>
+                    <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return toggleHook('{$hook}','enable')">{$do}</a>
+HTML;
                     return $output;
                 }
             }
@@ -403,22 +428,22 @@ JS;
                 }
                 //enable or renable the plugin
                 if ($action != "disable") {
-                    if (($hook == "redirect" || $hook == "frameless") && empty($itemid) && !is_numeric($itemid)) {
+                    if (($hook == "redirect" || $hook == "frameless") && (empty($itemid) || !is_numeric($itemid))) {
                         JError::raiseWarning(500, JText::_('VB_REDIRECT_HOOK_ITEMID_EMPTY'));
-                        return;
-                    }
-                    //install the hook
-                    $php = $this->getHookPHP($hook, $itemid);
-                    $query = "INSERT INTO #__plugin SET
-                    title = " . $db->Quote($hookName) . ",
-                    hookname = 'init_startup',
-                    phpcode = " . $db->Quote($php) . ",
-                    product = 'vbulletin',
-                    active = 1,
-                    executionorder = 1";
-                    $db->setQuery($query);
-                    if (!$db->query()) {
-                        JError::raiseWarning(500, $db->stderr());
+                    } else {
+                        //install the hook
+                        $php = $this->getHookPHP($hook, $itemid);
+                        $query = "INSERT INTO #__plugin SET
+                        title = " . $db->Quote($hookName) . ",
+                        hookname = 'init_startup',
+                        phpcode = " . $db->Quote($php) . ",
+                        product = 'vbulletin',
+                        active = 1,
+                        executionorder = 1";
+                        $db->setQuery($query);
+                        if (!$db->query()) {
+                            JError::raiseWarning(500, $db->stderr());
+                        }
                     }
                 }
             }
@@ -634,7 +659,7 @@ JS;
         }
         $advanced_usergroup = '';
         $jsGroups = array();
-        if ($slave == 1 && !empty($master)) {
+        if ($slave == 1 && !empty($master) && $this->supportUsergroupUpdate()) {
             //allow usergroup sync
             if ($advanced == 1) {
                 $list_box.= '<option selected="selected" value="1">Avanced</option>';

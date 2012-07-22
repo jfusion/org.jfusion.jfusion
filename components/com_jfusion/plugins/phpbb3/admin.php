@@ -175,7 +175,10 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
     function getDefaultUsergroup() {
         $params = JFusionFactory::getParams($this->getJname());
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
-        $usergroup_id = $usergroups[0];
+        $usergroup_id = null;
+        if(!empty($usergroups)) {
+            $usergroup_id = $usergroups[0];
+        }
         //we want to output the usergroup name
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'SELECT group_name from #__groups WHERE group_id = ' . (int)$usergroup_id;
@@ -204,21 +207,9 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
     /**
      * @return string
      */
-    function generateRedirectCode() {
+    function generateRedirectCode($url, $itemid) {
         $params = JFusionFactory::getParams($this->getJname());
-        $joomla_params = JFusionFactory::getParams('joomla_int');
         $cookie_name = $params->get('cookie_prefix') . '_u';
-        $joomla_url = $joomla_params->get('source_url');
-        $joomla_itemid = $params->get('redirect_itemid');
-        //check to see if all vars are set
-        if (empty($joomla_url)) {
-            JError::raiseWarning(0, JText::_('MISSING') . ' Joomla URL');
-            return '';
-        }
-        if (empty($joomla_itemid)) {
-            JError::raiseWarning(0, JText::_('MISSING') . ' ItemID');
-            return '';
-        }
         //create the new redirection code
         $redirect_code = '
 //JFUSION REDIRECT START
@@ -229,8 +220,8 @@ if (!empty($_COOKIE[\'' . $cookie_name . '\']))
 } else {
     $current_userid = \'\';
 }
-$joomla_url = \'' . $joomla_url . '\';
-$joomla_itemid = ' . $joomla_itemid . ';
+$joomla_url = \'' . $url . '\';
+$joomla_itemid = ' . $itemid . ';
 $file = $_SERVER[\'SCRIPT_NAME\'];
 $break = Explode(\'/\', $file);
 $pfile = $break[count($break) - 1];
@@ -275,28 +266,40 @@ if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\'
      * @return mixed
      */
     function enableRedirectMod() {
-        $error = 0;
-        $error = 0;
-        $reason = '';
-        $mod_file = $this->getModFile('common.php', $error, $reason);
-        if ($error == 0) {
-            //get the joomla path from the file
-            jimport('joomla.filesystem.file');
-            $file_data = JFile::read($mod_file);
-            preg_match_all('/\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END/ms', $file_data, $matches);
-            //remove any old code
-            if (!empty($matches[1][0])) {
-                $search = '/\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END/ms';
-                $file_data = preg_replace($search, '', $file_data);
+        $params = JFusionFactory::getParams($this->getJname());
+        $joomla_params = JFusionFactory::getParams('joomla_int');
+        $joomla_url = $joomla_params->get('source_url');
+        $joomla_itemid = $params->get('redirect_itemid');
+
+        //check to see if all vars are set
+        if (empty($joomla_url)) {
+            JError::raiseWarning(0, JText::_('MISSING') . ' Joomla URL');
+        } else if (empty($joomla_itemid) || !is_numeric($joomla_itemid)) {
+            JError::raiseWarning(0, JText::_('MISSING') . ' ItemID');
+        } else {
+            $error = 0;
+            $error = 0;
+            $reason = '';
+            $mod_file = $this->getModFile('common.php', $error, $reason);
+            if ($error == 0) {
+                //get the joomla path from the file
+                jimport('joomla.filesystem.file');
+                $file_data = JFile::read($mod_file);
+                preg_match_all('/\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END/ms', $file_data, $matches);
+                //remove any old code
+                if (!empty($matches[1][0])) {
+                    $search = '/\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END/ms';
+                    $file_data = preg_replace($search, '', $file_data);
+                }
+                $redirect_code = $this->generateRedirectCode($joomla_url, $joomla_itemid);
+                if (empty($redirect_code)) {
+                    return;
+                }
+                $search = '/\<\?php/si';
+                $replace = '<?php' . $redirect_code;
+                $file_data = preg_replace($search, $replace, $file_data);
+                JFile::write($mod_file, $file_data);
             }
-            $redirect_code = $this->generateRedirectCode();
-            if (empty($redirect_code)) {
-                return;
-            }
-            $search = '/\<\?php/si';
-            $replace = '<?php' . $redirect_code;
-            $file_data = preg_replace($search, $replace, $file_data);
-            JFile::write($mod_file, $file_data);
         }
     }
 
@@ -345,13 +348,22 @@ if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\'
         //add the javascript to enable buttons
         if ($error == 0) {
             //return success
-            $output = '<img src="components/com_jfusion/images/check_good.png" height="20px" width="20px">' . JText::_('REDIRECTION_MOD') . ' ' . JText::_('ENABLED');
-            $output.= ' <a href="javascript:void(0);" onclick="return module(\'disableRedirectMod\')">' . JText::_('MOD_DISABLE') . '</a>';
-            $output.= ' <a href="javascript:void(0);" onclick="return module(\'enableRedirectMod\')">' . JText::_('MOD_UPDATE') . '</a>';
+            $text = JText::_('REDIRECTION_MOD') . ' ' . JText::_('ENABLED');
+            $disable = JText::_('MOD_DISABLE');
+            $update = JText::_('MOD_UPDATE');
+            $output = <<<HTML
+            <img src="components/com_jfusion/images/check_good_small.png">{$text}
+            <a href="javascript:void(0);" onclick="return module('disableRedirectMod')">{$disable}</a>
+            <a href="javascript:void(0);" onclick="return module('enableRedirectMod')">{$update}</a>
+HTML;
             return $output;
         } else {
-            $output = '<img src="components/com_jfusion/images/check_bad.png" height="20px" width="20px">' . JText::_('REDIRECTION_MOD') . ' ' . JText::_('DISABLED') . ': ' . $reason;
-            $output.= ' <a href="javascript:void(0);" onclick="return module(\'enableRedirectMod\')">' . JText::_('MOD_ENABLE') . '</a>';
+            $text = JText::_('REDIRECTION_MOD') . ' ' . JText::_('DISABLED') . ': ' . $reason;
+            $enable = JText::_('MOD_ENABLE');
+            $output = <<<HTML
+            <img src="components/com_jfusion/images/check_bad_small.png">{$text}
+            <a href="javascript:void(0);" onclick="return module('enableRedirectMod')">{$enable}</a>
+HTML;
             return $output;
         }
     }
@@ -397,12 +409,20 @@ if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\'
         //add the javascript to enable buttons
         if ($error == 0) {
             //return success
-            $output = '<img src="components/com_jfusion/images/check_good.png" height="20px" width="20px">' . JText::_('AUTHENTICATION_MOD') . ' ' . JText::_('ENABLED');
-            $output.= ' <a href="javascript:void(0);" onclick="return module(\'disable_auth_mod\')">' . JText::_('MOD_DISABLE') . '</a>';
+            $text = JText::_('AUTHENTICATION_MOD') . ' ' . JText::_('ENABLED');
+            $disable = JText::_('MOD_DISABLE');
+            $output = <<<HTML
+            <img src="components/com_jfusion/images/check_good_small.png">{$text}
+            <a href="javascript:void(0);" onclick="return module('disable_auth_mod')">{$disable}</a>
+HTML;
             return $output;
         } else {
-            $output = '<img src="components/com_jfusion/images/check_bad.png" height="20px" width="20px">' . JText::_('AUTHENTICATION_MOD') . ' ' . JText::_('DISABLED') . ': ' . $reason;
-            $output.= ' <a href="javascript:void(0);" onclick="return module(\'enable_auth_mod\')">' . JText::_('MOD_ENABLE') . '</a>';
+            $text = JText::_('AUTHENTICATION_MOD') . ' ' . JText::_('DISABLED') . ': ' . $reason;
+            $enable = JText::_('MOD_ENABLE');
+            $output = <<<HTML
+            <img src="components/com_jfusion/images/check_bad_small.png">{$text}
+            <a href="javascript:void(0);" onclick="return module('enable_auth_mod')">{$enable}</a>
+HTML;
             return $output;
         }
     }
@@ -519,12 +539,20 @@ if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\'
         //add the javascript to enable buttons
         if ($error == 0) {
             //return success
-            $output = '<img src="components/com_jfusion/images/check_good.png" height="20px" width="20px">' . JText::_('QUICKTOOLS') . ' ' . JText::_('ENABLED');
-            $output.= ' <a href="javascript:void(0);" onclick="return module(\'disable_quick_mod\')">' . JText::_('MOD_DISABLE') . '</a>';
+            $text = JText::_('QUICKTOOLS') . ' ' . JText::_('ENABLED');
+            $disable = JText::_('MOD_DISABLE');
+            $output = <<<HTML
+            <img src="components/com_jfusion/images/check_good_small.png">{$text}
+            <a href="javascript:void(0);" onclick="return module('disable_quick_mod')">{$disable}</a>
+HTML;
             return $output;
         } else {
-            $output = '<img src="components/com_jfusion/images/check_bad.png" height="20px" width="20px">' . JText::_('QUICKTOOLS') . ' ' . JText::_('DISABLED') . ': ' . $reason;
-            $output.= ' <a href="javascript:void(0);" onclick="return module(\'enable_quick_mod\')">' . JText::_('MOD_ENABLE') . '</a>';
+            $text = JText::_('QUICKTOOLS') . ' ' . JText::_('DISABLED') . ': ' . $reason;
+            $enable = JText::_('MOD_ENABLE');
+            $output = <<<HTML
+            <img src="components/com_jfusion/images/check_bad_small.png">{$text}
+            <a href="javascript:void(0);" onclick="return module('enable_quick_mod')">{$enable}</a>
+HTML;
             return $output;
         }
     }
@@ -600,6 +628,25 @@ if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\'
         }
 
         return array($return, $reasons);
+    }
+
+    /**
+     * do plugin support multi usergroups
+     *
+     * @return bool
+     */
+    function isMultiGroup()
+    {
+        return false;
+    }
+
+    /**
+     * @return bool true if plugin support usergroup update, (this is default)
+     */
+    function supportUsergroupUpdate()
+    {
+
+        return false;
     }
 
     /**

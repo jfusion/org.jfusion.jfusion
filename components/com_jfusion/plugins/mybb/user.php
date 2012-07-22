@@ -36,17 +36,18 @@ class JFusionUser_mybb extends JFusionUser {
         list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'a.username', 'a.email');
         // Get user info from database
         $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT a.uid as userid, a.username, a.usergroup, a.username as name, a.email, a.password, a.salt as password_salt, a.usergroup as activation, b.isbannedgroup as block FROM #__users as a INNER JOIN #__usergroups as b ON a.usergroup = b.gid WHERE ' . $identifier_type . ' = ' . $db->Quote($identifier);
+        $query = 'SELECT a.uid as userid, a.username, a.usergroup as group_id, a.username as name, a.email, a.password, a.salt as password_salt, a.usergroup as activation, b.isbannedgroup as block FROM #__users as a INNER JOIN #__usergroups as b ON a.usergroup = b.gid WHERE ' . $identifier_type . ' = ' . $db->Quote($identifier);
         $db->setQuery($query);
         $result = $db->loadObject();
         if ($result) {
             //Check to see if user needs to be activated
-            if ($result->usergroup == 5) {
+            if ($result->group_id == 5) {
                 jimport('joomla.user.helper');
                 $result->activation = JUserHelper::genRandomPassword(32);
             } else {
                 $result->activation = null;
             }
+            $result->groups = array($result->group_id);
         }
         return $result;
     }
@@ -152,7 +153,7 @@ class JFusionUser_mybb extends JFusionUser {
         $user = new stdClass;
         $user->uid = $existinguser->userid;
         $user->gid = 7;
-        $user->oldgroup = $existinguser->usergroup;
+        $user->oldgroup = $existinguser->groups[0];
         $user->admin = 1;
         $user->dateline = time();
         $user->bantime = '---';
@@ -202,7 +203,7 @@ class JFusionUser_mybb extends JFusionUser {
                 }
             }
             if (empty($oldgroup)) {
-                $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+                $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ": " . JText::_('USERGROUP_MISSING');
             } else {
                 //restore the usergroup
                 $query = 'UPDATE #__users SET usergroup = ' . (int)$oldgroup . ' WHERE uid = ' . (int)$existinguser->userid;
@@ -238,6 +239,31 @@ class JFusionUser_mybb extends JFusionUser {
 
     /**
      * @param object $userinfo
+     * @param object &$existinguser
+     * @param array &$status
+     */
+    function updateUsergroup($userinfo, &$existinguser, &$status) {
+
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+        if (empty($usergroups)) {
+            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('USERGROUP_MISSING');
+        } else {
+            foreach($usergroups as $usergroup) {
+                //update the usergroup
+                $db = JFusionFactory::getDatabase($this->getJname());
+                $query = 'UPDATE #__users SET usergroup = ' . $usergroup . ' WHERE uid  = ' . (int)$existinguser->userid;
+                $db->setQuery($query);
+                if (!$db->Query()) {
+                    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
+                } else {
+                    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode (' , ', $existinguser->groups) . ' -> ' . $usergroup;
+                }
+            }
+        }
+    }
+
+    /**
+     * @param object $userinfo
      * @param array $status
      */
     function createUser($userinfo, &$status) {
@@ -246,7 +272,7 @@ class JFusionUser_mybb extends JFusionUser {
         $params = JFusionFactory::getParams($this->getJname());
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
         if (empty($usergroups)) {
-            $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+            $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('USERGROUP_MISSING');
         } else {
             $usergroup = $usergroups[0];
             $username_clean = $this->filterUsername($userinfo->username);
@@ -316,7 +342,7 @@ class JFusionUser_mybb extends JFusionUser {
         $params = JFusionFactory::getParams($this->getJname());
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
         if (empty($usergroups)) {
-            $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+            $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ": " . JText::_('USERGROUP_MISSING');
         } else {
             $usergroup = $usergroups[0];
             //update the usergroup

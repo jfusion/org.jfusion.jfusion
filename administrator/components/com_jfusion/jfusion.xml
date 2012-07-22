@@ -26,7 +26,6 @@
 		<folder>helpers</folder>
 		<folder>views</folder>
 		<folder>images</folder>
-		<folder>plugins/joomla_int</folder>
 	</files>
 
 	<languages folder="front/languages">
@@ -70,7 +69,7 @@
 			<menu img="components/com_jfusion/images/user.png" link="option=com_jfusion&amp;task=syncoptions">NEW_USERSYNC</menu>
 			<menu img="components/com_jfusion/images/user.png" link="option=com_jfusion&amp;task=synchistory">USERSYNC_HISTORY</menu>
 			<menu img="components/com_jfusion/images/disconnect.png" link="option=com_jfusion&amp;task=loginchecker">LOGIN_CHECKER</menu>
-			<menu img="components/com_jfusion/images/configdump.png" link="option=com_jfusion&amp;task=configdump">CP_CONFIG_DUMP</menu>
+			<menu img="components/com_jfusion/images/configdump_small.png" link="option=com_jfusion&amp;task=configdump">CONFIG_DUMP</menu>
 			<menu img="components/com_jfusion/images/version.png" link="option=com_jfusion&amp;task=versioncheck">VERSIONS</menu>
 		</submenu>
 
@@ -100,17 +99,11 @@
             <language tag="en-GB">en-GB/en-GB.plg_content_jfusion.ini</language>
             <language tag="en-GB">en-GB/en-GB.plg_search_jfusion.ini</language>
             <language tag="en-GB">en-GB/en-GB.plg_system_jfusion.ini</language>
-            <language tag="en-GB">en-GB/en-GB.com_jfusion.plg_magento.ini</language>
-            <language tag="en-GB">en-GB/en-GB.com_jfusion.plg_efront.ini</language>
-            <language tag="en-GB">en-GB/en-GB.com_jfusion.plg_dokuwiki.ini</language>
-            <language tag="en-GB">en-GB/en-GB.com_jfusion.plg_moodle.ini</language>
-            <language tag="en-GB">en-GB/en-GB.com_jfusion.plg_wordpress.ini</language>
             <language tag="en-GB">en-GB/en-GB.com_jfusion.plg_joomla_int.ini</language>
-            		
+
 			<language tag="de-DE">de-DE/de-DE.com_jfusion.ini</language>
             <language tag="de-DE">de-DE/de-DE.com_jfusion.menu.ini</language>
             <language tag="de-DE">de-DE/de-DE.com_jfusion.sys.ini</language>
-			<language tag="de-DE">de-DE/de-DE.com_jfusion.plg_magento.ini</language>
 			<language tag="de-DE">de-DE/de-DE.plg_content_jfusion.ini</language>
 			<language tag="de-DE">de-DE/de-DE.plg_search_jfusion.ini</language>
 			<language tag="de-DE">de-DE/de-DE.plg_system_jfusion.ini</language>
@@ -118,7 +111,6 @@
 			<language tag="fr-FR">fr-FR/fr-FR.com_jfusion.ini</language>
             <language tag="fr-FR">fr-FR/fr-FR.com_jfusion.menu.ini</language>
             <language tag="fr-FR">fr-FR/fr-FR.com_jfusion.sys.ini</language>
-			<language tag="fr-FR">fr-FR/fr-FR.com_jfusion.plg_magento.ini</language>
 			<language tag="fr-FR">fr-FR/fr-FR.plg_content_jfusion.ini</language>
 			<language tag="fr-FR">fr-FR/fr-FR.plg_search_jfusion.ini</language>
 			<language tag="fr-FR">fr-FR/fr-FR.plg_system_jfusion.ini</language>
@@ -126,7 +118,6 @@
 			<language tag="nl-NL">nl-NL/nl-NL.com_jfusion.ini</language>
             <language tag="nl-NL">nl-NL/nl-NL.com_jfusion.menu.ini</language>
             <language tag="nl-NL">nl-NL/nl-NL.com_jfusion.sys.ini</language>
-			<language tag="nl-NL">nl-NL/nl-NL.com_jfusion.plg_magento.ini</language>
 			<language tag="nl-NL">nl-NL/nl-NL.plg_content_jfusion.ini</language>
 			<language tag="nl-NL">nl-NL/nl-NL.plg_search_jfusion.ini</language>
 			<language tag="nl-NL">nl-NL/nl-NL.plg_system_jfusion.ini</language>
@@ -134,7 +125,6 @@
 			<language tag="zh-CN">zh-CN/zh-CN.com_jfusion.ini</language>
             <language tag="zh-CN">zh-CN/zh-CN.com_jfusion.menu.ini</language>
             <language tag="zh-CN">zh-CN/zh-CN.com_jfusion.sys.ini</language>
-			<language tag="zh-CN">zh-CN/zh-CN.com_jfusion.plg_magento.ini</language>
 			<language tag="zh-CN">zh-CN/zh-CN.plg_content_jfusion.ini</language>
 			<language tag="zh-CN">zh-CN/zh-CN.plg_search_jfusion.ini</language>
 			<language tag="zh-CN">zh-CN/zh-CN.plg_system_jfusion.ini</language>

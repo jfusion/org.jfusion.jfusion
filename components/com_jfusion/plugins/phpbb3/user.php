@@ -48,29 +48,32 @@ class JFusionUser_phpbb3 extends JFusionUser
         $result = $db->loadObject();
         if ($result) {
             //prevent anonymous user accessed
-            if ($result->username == 'anonymous'){
-                return null;
-            }
+            if ($result->username == 'anonymous') {
+                $result = null;
+            } else {
+                $result->groups = array($result->group_id);
+                $result->groupnames = array($result->group_name);
 
-            //Check to see if they are banned
-            $query = 'SELECT ban_userid FROM #__banlist WHERE ban_userid =' . (int)$result->userid;
-            $db->setQuery($query);
-            if ($db->loadObject()) {
-                $result->block = 1;
-            } else {
-                $result->block = 0;
-            }
-            //if no inactive reason is set clear the activation code
-            if ($result->user_type == 1) {
-                //user is inactive
-                if (empty($result->activation)) {
-                    //user not active generate a random code
-                    jimport('joomla.user.helper');
-                    $result->activation = JUserHelper::genRandomPassword(13);
+                //Check to see if they are banned
+                $query = 'SELECT ban_userid FROM #__banlist WHERE ban_userid =' . (int)$result->userid;
+                $db->setQuery($query);
+                if ($db->loadObject()) {
+                    $result->block = 1;
+                } else {
+                    $result->block = 0;
                 }
-            } else {
-                //active user, make sure no activation code is set
-                $result->activation = '';
+                //if no inactive reason is set clear the activation code
+                if ($result->user_type == 1) {
+                    //user is inactive
+                    if (empty($result->activation)) {
+                        //user not active generate a random code
+                        jimport('joomla.user.helper');
+                        $result->activation = JUserHelper::genRandomPassword(13);
+                    }
+                } else {
+                    //active user, make sure no activation code is set
+                    $result->activation = '';
+                }
             }
         }
         return $result;
@@ -177,7 +180,6 @@ class JFusionUser_phpbb3 extends JFusionUser
                     if (!defined('ROOT_PATH')) {
                         define('', $source_path);
                     }
-
 
                     $phpbb_root_path = $source_path;
                     $phpEx = "php";
@@ -326,11 +328,12 @@ class JFusionUser_phpbb3 extends JFusionUser
      * @return string
      */
     function filterUsername($username) {
-        if (!function_exists('utf8_clean_string_phpbb')) {
-            //load the filtering functions for phpBB3
-            require_once JFUSION_PLUGIN_PATH . DS . $this->GetJname() . DS . 'username_clean.php';
-        }
-        $username_clean = utf8_clean_string_phpbb($username);
+        /**
+         * @ignore
+         * @var $helper JFusionHelper_phpbb3
+         */
+        $helper = JFusionFactory::getHelper($this->getJname());
+        $username_clean = $helper->utf8_clean_string($username);
         //die($username . ':' . $username_clean);
         return $username_clean;
     }
@@ -341,13 +344,13 @@ class JFusionUser_phpbb3 extends JFusionUser
      * @param array $status
      */
     function updatePassword($userinfo, &$existinguser, &$status) {
-        // get the encryption PHP file
-        if (!class_exists('PasswordHash')) {
-            require_once JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'PasswordHash.php';
-        }
-        $t_hasher = new PasswordHash(8, true);
-        $existinguser->password = $t_hasher->HashPassword($userinfo->password_clear);
-        unset($t_hasher);
+        /**
+         * @ignore
+         * @var $auth JFusionAuth_phpbb3
+         */
+        $auth = JFusionFactory::getAuth($this->getJname());
+        $existinguser->password = $auth->HashPassword($userinfo->password_clear);
+
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'UPDATE #__users SET user_password =' . $db->Quote($existinguser->password) . ', user_pass_convert = 0 WHERE user_id =' . (int)$existinguser->userid;
         $db->setQuery($query);
@@ -492,7 +495,7 @@ class JFusionUser_phpbb3 extends JFusionUser
                     }
 
                     //log the group change success
-                    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $usergroup;
+                    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode (' , ', $existinguser->groups) . ' -> ' . $usergroup;
                 }
             }
         }
@@ -578,7 +581,7 @@ class JFusionUser_phpbb3 extends JFusionUser
         $update_activation = $params->get('update_activation');
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
         if (empty($usergroups)) {
-            $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+            $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('USERGROUP_MISSING');
         } else {
             $usergroup = $usergroups[0];
             $username_clean = $this->filterUsername($userinfo->username);
@@ -593,11 +596,12 @@ class JFusionUser_phpbb3 extends JFusionUser
                 $user->username = $userinfo->username;
                 $user->username_clean = $username_clean;
                 if (isset($userinfo->password_clear)) {
-                    //we can update the password
-                    require_once JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'PasswordHash.php';
-                    $t_hasher = new PasswordHash(8, true);
-                    $user->user_password = $t_hasher->HashPassword($userinfo->password_clear);
-                    unset($t_hasher);
+                    /**
+                     * @ignore
+                     * @var $auth JFusionAuth_phpbb3
+                     */
+                    $auth = JFusionFactory::getAuth($this->getJname());
+                    $user->user_password = $auth->HashPassword($userinfo->password_clear);
                 } else {
                     $user->user_password = $userinfo->password;
                 }
@@ -1189,10 +1193,10 @@ class JFusionUser_phpbb3 extends JFusionUser
                     JError::raiseNotice('500','Found a phpBB user so attempting to renew Joomla\'s session.');
                 }
                 //get the user's info
-                $db = JFactory::getDBO();
+                $jdb = JFactory::getDBO();
                 $query = "SELECT username, email FROM #__users WHERE id = {$userlookup->id}";
-                $db->setQuery($query);
-                $user_identifiers = $db->loadObject();
+                $jdb->setQuery($query);
+                $user_identifiers = $jdb->loadObject();
                 $JoomlaUser = JFusionFactory::getUser('joomla_int');
                 $userinfo = $JoomlaUser->getUser($user_identifiers);
                 if (!empty($userinfo)) {

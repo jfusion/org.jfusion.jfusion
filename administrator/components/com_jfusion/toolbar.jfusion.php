@@ -71,7 +71,7 @@ switch($task)
 		JToolBarHelper::cancel('loginchecker');
 		break;
 	case 'configdump':
-        JToolBarHelper::title( JText::_('CP_CONFIG_DUMP'), 'print.png' );
+        JToolBarHelper::title( JText::_('ONFIG_DUMP'), 'print.png' );
         JToolBarHelper::custom( 'configdump', 'forward.png', 'forward.png', JText::_('UPDATE'), false, false);
         JToolBarHelper::cancel('cpanel');
 		break;

@@ -55,9 +55,8 @@ class JFormFieldJFusionCmsBlock extends JFormField {
 				} else {
 					$output .= $jname . ': ' . JText::_('No list');
 				}
-			
 			} else {
-				$output .= $jname . ": " . JText::_ ( 'No valid plugin' ) . "<br />";
+				$output .= $jname . ': ' . JText::_ ( 'No valid plugin' ) . '<br />';
 			}
 		} else {
 			$output .= JText::_ ( 'No plugin selected' );

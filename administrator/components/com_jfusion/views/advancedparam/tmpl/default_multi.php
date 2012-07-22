@@ -81,7 +81,7 @@ if (isset($this->error)) {
                     }
                 endif;
                 echo '<input type="hidden" name="params[' . $key . '][jfusionplugin]" value="' . $value["jfusionplugin"] . '" />';
-                echo "</fieldset>";
+                echo '</fieldset>';
             }
             ?>
             </td>

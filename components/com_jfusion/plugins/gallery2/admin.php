@@ -155,7 +155,10 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
     function getDefaultUsergroup() {
         $params = JFusionFactory::getParams($this->getJname());
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
-        $usergroup_id = $usergroups[0];
+        $usergroup_id = null;
+        if(!empty($usergroups)) {
+            $usergroup_id = $usergroups[0];
+        }
         //we want to output the usergroup name
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'SELECT g_groupName FROM #__Group WHERE g_id = ' . (int)$usergroup_id;
@@ -276,21 +279,24 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
             return array($ret, null);
         }
         if (JFusionFunction::isJoomlaVersion('1.6')) {
-        	$output = "<select name=\"" . $control_name . "[params][" . $name . "]\" id=\"" . $name . "\" >";
+            $cname = $control_name . '[params][' . $name . ']';
         } else {
-        	$output = "<select name=\"" . $control_name . "[" . $name . "]\" id=\"" . $name . "\" >";
-        }        
-        $output.= "<option value=\"\" ></option>";
+            $cname = $control_name . '[' . $name . ']';
+        }
+
+        $output = '<select name="' . $cname.'" id="'.$name.'">';
+
+        $output.= '<option value="" ></option>';
         foreach ($themes as $id => $status) {
             if (!empty($status['active'])) {
-                $selected = "";
+                $selected = '';
                 if ($id == $value) {
-                    $selected = "selected";
+                    $selected = 'selected';
                 }
-                $output.= "<option value=\"" . $id . "\" " . $selected . ">" . $id . "</option>";
+                $output.= '<option value="'.$id.'" '.$selected.'>'.$id.'</option>';
             }
         }
-        $output.= "</select>";
+        $output.= '</select>';
         return $output;
     }
 

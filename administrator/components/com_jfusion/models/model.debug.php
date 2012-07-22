@@ -27,7 +27,7 @@ class std {
     /**
      *    getMicroTime
      *
-     *    @returns the actual tim in seconds
+     *    @returns array the actual tim in seconds
      */
     public static function getMicroTime() {
         list($usec, $sec) = explode(" ", microtime());
@@ -48,7 +48,6 @@ class std {
      */
     public static function getRequest($post, $get, $files) {
         // Setzt verschiedene $_REQUEST-Daten sinnvoll zusammen
-        $request = array();
         $files = std::rearrangeFiles($files);
         //debug::show($files);
         $request = arrayfunc::recursiveMerge($files, $get);
@@ -156,17 +155,21 @@ class debug {
     private static function getToggleScript() {
         $script = "";
         if (debug::$toggleScriptInited == false && debug::$toggleFunctionName != "") {
-            $script = "<script>\n";
-            $script.= "    function " . debug::$toggleFunctionName . "(event) {\n";
-            $script.= "        var evtSource;\n";
-            $script.= "        if (window.event) evtSource = window.event.srcElement;\n";
-            $script.= "        else evtSource = event.target;\n";
-            $script.= "        while (evtSource.nextSibling == null) { evtSource = evtSource.parentNode;  }\n";
-            $script.= "        var tNode = evtSource.nextSibling;\n";
-            $script.= "        while (tNode.nodeType != 1) { tNode = tNode.nextSibling; }\n";
-            $script.= '        tNode.style.display = (tNode.style.display != "none") ? "none" : "block";' . "\n";
-            $script.= "    }\n";
-            $script.= "</script>\n";
+            $toggleFunctionName = debug::$toggleFunctionName;
+            $script = '<script type="text/javascript">';
+            $script .= <<<JS
+            function {$toggleFunctionName}(event) {
+                var evtSource;
+                if (window.event) evtSource = window.event.srcElement;
+                else evtSource = event.target;
+                while (evtSource.nextSibling == null) { evtSource = evtSource.parentNode;  }
+                var tNode = evtSource.nextSibling;
+                while (tNode.nodeType != 1) { tNode = tNode.nextSibling; }
+                tNode.style.display = (tNode.style.display != "none") ? 'none' : 'block';
+            }
+JS;
+            $script .= '</script>';
+
             debug::$toggleScriptInited = true;
         }
         return $script;
@@ -176,19 +179,44 @@ class debug {
      *    i.e. this schema is used the first time, print it to the standard output if you need it
      *
      *    @param int $schema the index of the desired color schema
-     *    @return style-code if needed
+     *    @return string style-code if needed
      */
     private static function setStylesForScheme($schema) {
         $style = "";
         if (count(debug::$colorScheme) == 0) debug::initColorScheme();
         if (!isset(debug::$colorSchemeInited[$schema])) {
-            $style = "<style>\n";
-            $style.= "    div.debug_$schema .value { min-width: 100px; background-color:" . debug::$colorScheme[$schema]['vc'] . ";  }\n";
-            $style.= "    div.debug_$schema .a_key { min-width: 100px; background-color:" . debug::$colorScheme[$schema]['akc'] . ";  }\n";
-            $style.= "    div.debug_$schema .o_key { min-width: 100px; background-color:" . debug::$colorScheme[$schema]['okc'] . ";  }\n";
-            $style.= "    div.debug_$schema .title {  background-color:" . debug::$colorScheme[$schema]['tc'] . ";  }\n";
-            $style.= "    div.debug_$schema .grid  {  font-family:arial; background-color:" . debug::$colorScheme[$schema]['gc'] . "; vertical-align:top;  }\n";
-            $style.= "</style>\n";
+
+            $vc = debug::$colorScheme[$schema]['vc'];
+            $akc = debug::$colorScheme[$schema]['akc'];
+            $okc = debug::$colorScheme[$schema]['okc'];
+            $tc = debug::$colorScheme[$schema]['tc'];
+            $gc = debug::$colorScheme[$schema]['gc'];
+
+
+            $style = '<style  type="text/css">';
+            $style .= <<<CSS
+            div.debug_{$schema} .value {
+                min-width: 100px;
+                background-color: {$vc};
+            }
+            div.debug_{$schema} .a_key {
+                min-width: 100px;
+                background-color: {$akc};
+            }
+            div.debug_{$schema} .o_key {
+                min-width: 100px;
+                background-color: {$okc};
+            }
+            div.debug_{$schema} .title {
+                background-color: {$tc};
+            }
+            div.debug_{$schema} .grid {
+                font-family:arial;
+                background-color: {$gc};
+                vertical-align:top;
+            }
+CSS;
+            $style.= '</style>';
             debug::$colorSchemeInited[$schema] = true;
             //print($style);
 
@@ -212,7 +240,6 @@ class debug {
         $str = "";
         $name = "";
         if (is_numeric($start)) { // All Arguments "move" 1 to the left
-            $colorindex = $height;
             $height = $start;
             $start = true;
         }
@@ -524,7 +551,7 @@ class debug {
      *    Returns the mesurements results HTML-Encoded(they from start- and stopMessung).
      *
      *    @uses debug::get()
-     *    @return the HTML-Code
+     *    @return string the HTML-Code
      *
      */
     function getLaufzeit() {
@@ -711,7 +738,7 @@ class trans {
      *    @param string $newLineChar - OPTIONAL - the Character to be used as newline.Char, default: "\n"
      *    @param string $tabChar - OPTIONAL - the Character to be used as tabulator.Char, default: "\t"
      *
-     *    @return the plaintext
+     *    @return string the plaintext
      */
     function html2plaintext($htmlstr, $newLineChar = "\n", $tabChar = "\t") {
         $DEF_TAGLIST_LINEBREAK = array("br", "h1", "h2", "h3", "h4", "h5", "h6", "p", "div", "tr");
@@ -774,7 +801,7 @@ class trans {
      *            delim2: ":"
      *        ==> array('width' => '100px', 'height':'50px');
      *
-     *    @return the created hashtable
+     *    @return array the created hashtable
      */
     function hashExplode($delim1, $delim2, $string) {
         if ($string == "") return array();
@@ -798,7 +825,7 @@ class trans {
      *    @param string $delim2, the delimiter that seperates the key from the Value
      *    @param array $hashy the Hashtable to join
      *
-     *    @return the created string
+     *    @return string the created string
      */
     function hashJoin($delim1, $delim2, $hashy) {
         $arr = array();
@@ -817,7 +844,7 @@ class trans {
      *    @param string $Quote, The Charachter used to Quote the Values, typically '"'
      *    @param string $equiv, the delimiter that seperates the key from the Value, typically '='
      *
-     *    @return the created string
+     *    @return string the created string
      */
     function joinToAttrList($hashy, $delim, $Quote, $equiv) {
         $arr = array();
@@ -834,7 +861,7 @@ class trans {
      *
      *    a shortcut for trans::hashJoin("\r\n", ": ", $header);
      *
-     *    @return the created string
+     *    @return string the created string
      */
     function mailHeaderFromHash($header) {
         $headers = "";
@@ -854,7 +881,7 @@ class trans {
      *    @param mixed $data, the data that should be contained in the Query
      *    @param string $prefix, the name of the Variable in the query, optional if the given Data is an array/object
      *
-     *    @return the URL-Query, values will be URL-Encoded
+     *    @return string the URL-Query, values will be URL-Encoded
      */
     public static function http_build_query($data, $prefix = "") {
         if (!is_array($data) && !is_object($data)) {
@@ -878,7 +905,7 @@ class trans {
      *        This is to simplify debugging, remove this in production releases or use ob_start() and ob_clean()
      *
      *    @param string $xml, the XML-String to interprete
-     *    @return the built up array representing the XML-String, false if it fails
+     *    @return array the built up array representing the XML-String, false if it fails
      */
     function xml2array($xml) {
         $xp = xml_parser_create();
@@ -990,7 +1017,7 @@ class arrayfunc {
         }
         if (strtolower($thisDir) == "desc") krsort($sortArr);
         else ksort($sortArr);
-        foreach ($sortArr as $key => $subArr) {
+        foreach ($sortArr as $subArr) {
             foreach ($subArr as $idx => $row) {
                 if ($holdIndizes) $retArr[$idx] = $row;
                 else $retArr[] = $row;
@@ -1067,7 +1094,7 @@ class arrayfunc {
         $groupedArr = array();
         if (!is_array($criteria)) $criteria = explode(",", $criteria);
         $thisCrit = trim($criteria[0]);
-        foreach ($data as $idx => $row) {
+        foreach ($data as $row) {
             if (count($criteria) == 1) {
                 if ($field == false) $groupedArr[$row[$thisCrit]] = $row;
                 else $groupedArr[$row[$thisCrit]] = $row[$field];
@@ -1094,7 +1121,7 @@ class arrayfunc {
      *    of the "Rows" to use) an operator and a value. More than one filter can be given.
      *
      *    @param array $data, tha data to filter.
-     *    @param mixed filter the Filter tu use.
+     *    @param mixed $filter filter the Filter tu use.
      *
      *    Filterformats:
      *    - 1. as String : 1a [Column] [operator] [value]: "name = Hans", the spaces must be set!
@@ -1105,7 +1132,7 @@ class arrayfunc {
      *            2c: an array of arrays formatted as shown in 2a
      *    Possible operators: "=", "LIKE", "<", ">"
      *
-     *    @return the filtered rows
+     *    @return array the filtered rows
      */
     public static function tableFilter($data, $filter) {
         $operatorOrder = array("=", "LIKE", "<", ">");
@@ -1244,7 +1271,7 @@ class arrayfunc {
     private static function primitiveFilter($data, $field, $operator, $value) {
         // show("PrimitiveFiltering: $field, $operator, $value<br>\n");
         $result = array();
-        foreach ($data as $idx => $row) {
+        foreach ($data as $row) {
             if (arrayfunc::compare($row[$field], $operator, $value)) {
                 // print("Vergleich {$row[$field]}, $operator, $value, OK<br>\n");
                 $result[] = $row;
@@ -1315,7 +1342,7 @@ class arrayfunc {
      */
     function getMax2ndDimLength($arr) {
         $max = 0;
-        foreach ($arr as $key => $value) {
+        foreach ($arr as $value) {
             if (is_array($value)) $max = max($max, count($value));
         }
         return $max;
@@ -1331,7 +1358,6 @@ class arrayfunc {
      *    @return array the merged array
      */
     public static function recursiveMerge($arr1, $arr2) {
-        $result = array();
         if (is_array($arr1) && is_array($arr2)) {
             $result = $arr1;
             foreach ($arr2 as $key => $value) {

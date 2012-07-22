@@ -315,9 +315,9 @@ class JFusionAdmin
         if (JFusionFunction::validPlugin($this->getJname())) {
             $usergroups = $this->getUsergroupList();
             if (!empty($usergroups)) {
-                $simple_usergroup = "<table style=\"width:100%; border:0\">";
-                $simple_usergroup.= "<tr><td>" . JText::_('DEFAULT_USERGROUP') . "</td><td>" . JHTML::_('select.genericlist', $usergroups, $control_name . '[' . $name . ']', '', 'id', 'name', $value) . "</td></tr>";
-                $simple_usergroup.= "</table>";
+                $simple_usergroup = '<table style="width:100%; border:0">';
+                $simple_usergroup.= '<tr><td>' . JText::_('DEFAULT_USERGROUP') . '</td><td>' . JHTML::_('select.genericlist', $usergroups, $control_name . '[' . $name . ']', '', 'id', 'name', $value) . '</td></tr>';
+                $simple_usergroup.= '</table>';
                 //escape single quotes to prevent JS errors
                 $simple_usergroup = str_replace("'", "\'", $simple_usergroup);
             } else {
@@ -337,7 +337,7 @@ class JFusionAdmin
         } else {
             $list_box.= '<option value="0" selected="selected">Simple</option>';
         }
-        if ($slave == 1 && !empty($master)) {
+        if ($slave == 1 && !empty($master) && $this->supportUsergroupUpdate()) {
             //allow usergroup sync
             if ($advanced == 1) {
                 $list_box.= '<option selected="selected" value="1">Advanced</option>';
@@ -351,16 +351,16 @@ class JFusionAdmin
             if ($advanced == 1) {
                 foreach ($master_usergroups as $master_usergroup) {
                     $select_value = (!isset($value[$master_usergroup->id])) ? '' : $value[$master_usergroup->id];
-                    $advanced_usergroup.= "<tr><td>" . $master_usergroup->name . '</td>';
+                    $advanced_usergroup.= '<tr><td>' . $master_usergroup->name . '</td>';
                     $advanced_usergroup.= '<td>' . JHTML::_('select.genericlist', $usergroups, $control_name . '[' . $name . '][' . $master_usergroup->id . ']', '', 'id', 'name', $select_value) . '</td></tr>';
                 }
             } else {
                 foreach ($master_usergroups as $master_usergroup) {
-                    $advanced_usergroup.= "<tr><td>" . $master_usergroup->name . '</td>';
+                    $advanced_usergroup.= '<tr><td>' . $master_usergroup->name . '</td>';
                     $advanced_usergroup.= '<td>' . JHTML::_('select.genericlist', $usergroups, $control_name . '[' . $name . '][' . $master_usergroup->id . ']', '', 'id', 'name', '') . '</td></tr>';
                 }
             }
-            $advanced_usergroup.= "</table>";
+            $advanced_usergroup.= '</table>';
             //escape single quotes to prevent JS errors
             $advanced_usergroup = str_replace("'", "\'", $advanced_usergroup);
         } else {
@@ -457,7 +457,7 @@ JS;
             $list_box.= '<option value="0" selected="selected">Simple</option>';
         }
         $jfGroupCount = 0;
-        if ($slave == 1 && $JFusionMaster) {
+        if ($slave == 1 && $JFusionMaster && $this->supportUsergroupUpdate()) {
             //allow usergroup sync
             if ($advanced == 1) {
                 $list_box.= '<option selected="selected" value="1">Advanced</option>';
@@ -538,8 +538,7 @@ JS;
             $new = new stdClass;
             if ($master_usergroups) {
                 foreach ($master_usergroups as $master_usergroup) {
-                    $key = $master_usergroup->id;
-                    $new->$key = $master_usergroup->name;
+                    $new->{$master_usergroup->id} = $master_usergroup->name;
                 }
             }
             $master_usergroups = $new;
@@ -547,8 +546,7 @@ JS;
             $new = new stdClass;
             if ($master_usergroups) {
                 foreach ($usergroups as $usergroup) {
-                    $key = $usergroup->id;
-                    $new->$key = $usergroup->name;
+                    $new->{$usergroup->id} = $usergroup->name;
                 }
             }
             $usergroups = $new;
@@ -575,7 +573,7 @@ JS;
 	            $('JFusionUsergroup').innerHTML = myArray[option];
 
 	            var addgroupset = $('addgroupset');
-	            if (option== 1) {
+	            if (option == 1) {
 	            	addgroupset.style.display = 'block';
 	            } else {
 	            	addgroupset.style.display = 'none';
@@ -634,7 +632,7 @@ JS;
 	        	var groups = jfPlugin[name]['groups'];
 
 				var elSelNew = document.createElement('select');
-				if (type=='multi') {
+				if (type == 'multi') {
 					elSelNew.size=10;
 					elSelNew.multiple='multiple';
 				}
@@ -739,6 +737,15 @@ JS;
     }
 
     /**
+     * @return bool true if plugin support usergroup update, (this is default)
+     */
+    function supportUsergroupUpdate()
+    {
+        $user = JFusionFactory::getUser($this->getJname());
+        return JFusionFunctionAdmin::methodDefined($user,'updateUsergroup');
+    }
+
+    /**
      * import function for importing config in to a plugin
      *
      * @param string $name
@@ -759,7 +766,7 @@ JS;
         function doImport() {
             var form = $('adminForm');
             form.action.value='import';
-            form.jname.value='${jname}';
+            form.jname.value='{$jname}';
             form.encoding='multipart/form-data';
             submitbutton('plugineditor');
         }
@@ -787,14 +794,8 @@ JS;
 		<tr style="padding: 0px;"><td style="padding: 0px; width: 150px;">'.JText::_('DATABASE_PREFIX').'</td><td style="padding: 0px;"><input name="database_prefix" id="database_prefix" value="" class="text_area" size="20" type="text"></td></tr></table>';
 
         //custom for development purposes / local use only; note do not commit your URL to SVN!!!
-        $developmentURL = '';
-        $url = (empty($developmentURL)) ? ($VersionCurrent=='SVN') ? 'http://jfusion.googlecode.com/svn/trunk/jfusion_universal.xml' : 'http://www.jfusion.org/jfusion_universal.xml' : $developmentURL;
+        $url = 'http://update.jfusion.org/jfusion_universal.xml';
         $ConfigList = JFusionFunctionAdmin::getFileData($url);
-        if(empty($ConfigList)){
-            //try a mirror
-            $url = (empty($developmentURL)) ? 'http://jfusion.googlecode.com/svn/branches/jfusion_universal.xml' : 'http://jfusion.googlecode.com/svn/trunk/jfusion_universal.xml';
-            $ConfigList = JFusionFunctionAdmin::getFileData($url);
-        }
 
         /**
          * @ignore
@@ -839,14 +840,8 @@ JS;
             $xmlFile = JFactory::getXMLParser('Simple');
             if( !empty($xmlname) ) {
                 //custom for development purposes / local use only; note do not commit your URL to SVN!!!
-                $developmentURL = '';
-                $url = (empty($developmentURL)) ? ($VersionCurrent=='SVN') ? 'http://jfusion.googlecode.com/svn/trunk/configs/jfusion_'.$xmlname.'_config.xml' : 'http://www.jfusion.org/configs/jfusion_'.$xmlname.'_config.xml' : $developmentURL;
+                $url = 'http://update.jfusion.org/configs/jfusion_'.$xmlname.'_config.xml';
                 $ConfigFile = JFusionFunctionAdmin::getFileData($url);
-                if(empty($ConfigFile)){
-                    //try a mirror
-                    $url = (empty($developmentURL)) ? 'http://jfusion.googlecode.com/svn/branches/configs/jfusion_'.$xmlname.'_config.xml' : 'http://jfusion.googlecode.com/svn/trunk/configs/jfusion_'.$xmlname.'_config.xml';
-                    $ConfigFile = JFusionFunctionAdmin::getFileData($url);
-                }
                 if ( !empty($ConfigFile) ) {
                     $xmlFile->loadString($ConfigFile);
                 } else {

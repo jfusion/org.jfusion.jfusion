@@ -10,6 +10,7 @@
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<version>1.8.0-000</version>
 	<description>universal plugin for JFusion</description>
+    <update>http://update.jfusion.org/</update>
 
 	<files>
 		<filename>admin.php</filename>
@@ -90,7 +91,7 @@
 		<param name="jfusionbox" type="text" default="" label="MOD_OPTIONS" description="" />
 		<param name=" " type="helptext" default="REDIRECT_MOD_DESCR" label=""/>
 		<param name="redirect_itemid" type="JFusionItemid" size="10" default="" description="REDIRECT_ITEMID" label=""/>
-		<param name="show_redirect_mod" default="" type="JFusionCustomParam" description="AUTHENTICATION_MOD" label=""/>
+		<param name="showRedirectMod" default="" type="JFusionCustomParam" description="AUTHENTICATION_MOD" label=""/>
 
 
 		<param name="jfusionbox" type="text" default="" label="FRAMELESS_OPTIONS" description="" />
@@ -196,6 +197,5 @@
 		<param name="input_username_id" type="text" size="60" label="" default="user" description="CURL_INPUT_USERNAME_ID" />
 		<param name="input_password_id" type="text" size="60" label="" default="passwrd" description="CURL_INPUT_PASSWORD_ID" />
 		<param name="logout_url" type="text" size="60" label="" default="index.php?action=logout" description="CURL_LOGOUT_URL" />
-
 	</params>
 </install>

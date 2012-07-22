@@ -48,13 +48,13 @@ class JElementGalleries extends JElement {
         list($ret, $tree) = GalleryCoreApi::fetchAlbumTree();
         $output = array();
         if ($ret) {
-            return "<div>Couldn't query Gallery-Tree</div>";
+            return '<div>Could not query Gallery-Tree</div>';
         } else {
             if (!empty($tree)) {
                 $titles = array();
                 list($ret, $items) = GalleryCoreApi::loadEntitiesById(GalleryUtilities::arrayKeysRecursive($tree));
                 if ($ret) {
-                    return "<div>Couldn't query Gallery-Tree</div>";
+                    return '<div>Could not query Gallery-Tree</div>';
                 } else {
                     foreach ($items as $item) {
                         $title = $item->getTitle() ? $item->getTitle() : $item->getPathComponent();

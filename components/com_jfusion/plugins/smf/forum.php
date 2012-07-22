@@ -536,13 +536,34 @@ class JFusionForum_smf extends JFusionForum
         if ($showGuestInputs) {
             $username = JRequest::getVar('guest_username', '', 'post');
             $email = JRequest::getVar('guest_email', '', 'post');
-            $html.= "<table><tr><td>" . JText::_('USERNAME') . ":</td><td><input name='guest_username' value='$username' class='inputbox'/></td></tr>";
-            $html.= "<tr><td>" . JText::_('EMAIL') . "</td><td><input name='guest_email' value='$email' class='inputbox'/></td></tr>";
-            $html.= $this->createCaptcha($dbparams);
-            $html.= "</table><br />";
+
+            $j_username = JText::_('USERNAME');
+            $j_email = JText::_('EMAIL');
+            $html = <<<HTML
+                <table>
+                    <tr>
+                        <td>
+                            {$j_username}:
+                        </td>
+                        <td>
+                            <input name='guest_username' value='{$username}' class='inputbox'/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            {$j_email}
+                        </td>
+                        <td>
+                            <input name='guest_email' value='{$email}' class='inputbox'/>
+                        </td>
+                    </tr>
+                    {$this->createCaptcha($dbparams)}
+                </table>
+                <br />
+HTML;
         }
         $quickReply = JRequest::getVar('quickReply', '', 'post');
-		$html .= "<textarea id='quickReply' name='quickReply' class='inputbox' rows='15' cols='100'>$quickReply</textarea><br />";
+		$html .= '<textarea id="quickReply" name="quickReply" class="inputbox" rows="15" cols="100">'.$quickReply.'</textarea><br />';
         return $html;
     }
 

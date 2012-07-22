@@ -74,7 +74,10 @@ class JFusionAdmin_universal extends JFusionAdmin{
     {
         $params = JFusionFactory::getParams($this->getJname());
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
-        $usergroup_id = $usergroups[0];
+        $usergroup_id = null;
+        if(!empty($usergroups)) {
+            $usergroup_id = $usergroups[0];
+        }
 
         $usergrouplist = $this->getUsergroupList();
         foreach ($usergrouplist as $value) {
@@ -252,7 +255,7 @@ class JFusionAdmin_universal extends JFusionAdmin{
                         //object(stdClass)#245 (6) { ["Field"]=>  string(2) "id" ["Type"]=>  string(6) "int(5)" ["Null"]=>  string(0) "" ["Key"]=>  string(0) "" ["Default"]=>  string(1) "0" ["Extra"]=>  string(0) "" }
                         $output .= '<div>Name: '.$val->Field.'</div>';
                         $output .= '<div>Type: '.$val->Type.'</div>';
-                        $output .= '<div>Default: "'.$val->Default.'"</div>';
+                        $output .= '<div>Default: "'.$val->Default.'" </div>';
                         $null = $val->Null?JText::_('YES'):JText::_('NO');
                         $output .= '<div>Null: '.$null.'</div></td><td>';
                         if ( isset($value['field'][$val->Field]) ) {
@@ -265,17 +268,18 @@ class JFusionAdmin_universal extends JFusionAdmin{
                         } else {
                             $fieldstype = '';
                         }
+                        $fieldsvaluearray = array();
+                        $fieldsvalue = '';
                         if ( isset($value['value'][$val->Field]) ) {
                             $fieldsvalue = $value['value'][$val->Field];
                             if (is_array($fieldsvalue)) {
-                                foreach ($fieldsvalue as $key2 => $val2) {
-                                    $fieldsvalue[$key2] = htmlentities($val2);
+                                $fieldsvaluearray = (array)$fieldsvalue;
+                                foreach ($fieldsvaluearray as &$val2) {
+                                    $val2 = htmlentities($val2);
                                 }
                             } else {
                                 $fieldsvalue = htmlentities($fieldsvalue);
                             }
-                        } else {
-                            $fieldsvalue = '';
                         }
 
                         $onchange = 'onchange="javascript: changefield(this,\''.$val->Field.'\',\''.$type.'\')"';
@@ -299,7 +303,7 @@ class JFusionAdmin_universal extends JFusionAdmin{
                                 $output .= '<input type="text" id="'.$control_name.$name.$type.'value'.$val->Field.'" name="'.$control_name.'['.$name.']['.$type.'][value]['.$val->Field.']" value="'.$fieldsvalue.'" size="100" class="inputbox" />';
                                 break;
                             case 'ONOFF':
-                                foreach ($fieldsvalue as $key2 => $val2) {
+                                foreach ($fieldsvaluearray as $key2 => $val2) {
                                     $output .= '<input type="text" id="'.$control_name.$name.$type.'value'.$val->Field.$key2.'" name="'.$control_name.'['.$name.']['.$type.'][value]['.$val->Field.']['.$key2.']" value="'.$val2.'" size="40" class="inputbox" />';
                                 }
                                 break;
@@ -453,22 +457,19 @@ JS;
     /**
      * @return string
      */
-    function generateRedirectCode()
+    function generateRedirectCode($url, $itemid)
     {
         $params = JFusionFactory::getParams($this->getJname());
-        $joomla_params = JFusionFactory::getParams('joomla_int');
-        $joomla_url = $joomla_params->get('source_url');
         $universal_url = $params->get('source_url');
-        $joomla_itemid = $params->get('redirect_itemid', 0); // Set to '0' to prevent error by activating the mod redirection and none itemid provided
 
         //create the new redirection code
 
         $redirect_code = '
 //JFUSION REDIRECT START
 //SET SOME VARS
-$joomla_url = \''. $joomla_url . '\';
+$joomla_url = \''. $url . '\';
 $universal_url \''. $universal_url . '\';
-$joomla_itemid = ' . $joomla_itemid .';
+$joomla_itemid = ' . $itemid .';
 	';
         $redirect_code .= '
 if(!isset($_COOKIE[\'jfusionframeless\']))';
@@ -493,17 +494,29 @@ if(!isset($_COOKIE[\'jfusionframeless\']))';
      * @param $control_name
      * @return string
      */
-    function show_redirect_mod($name, $value, $node, $control_name)
+    function showRedirectMod($name, $value, $node, $control_name)
     {
         $action = JRequest::getVar('action');
         if ($action == 'redirectcode') {
-            header('Content-disposition: attachment; filename=jfusion_'.$this->getJname().'_redirectcode.txt');
-            header('Pragma: no-cache');
-            header('Expires: 0');
-            header ("content-type: text/html");
+            $params = JFusionFactory::getParams($this->getJname());
+            $joomla_params = JFusionFactory::getParams('joomla_int');
+            $joomla_url = $joomla_params->get('source_url');
+            $joomla_itemid = $params->get('redirect_itemid');
 
-            echo $this->generateRedirectCode();
-            exit();
+            //check to see if all vars are set
+            if (empty($joomla_url)) {
+                JError::raiseWarning(0, JText::_('MISSING') . ' Joomla URL');
+            } else if (empty($joomla_itemid) || !is_numeric($joomla_itemid)) {
+                JError::raiseWarning(0, JText::_('MISSING') . ' ItemID');
+            } else {
+                header('Content-disposition: attachment; filename=jfusion_'.$this->getJname().'_redirectcode.txt');
+                header('Pragma: no-cache');
+                header('Expires: 0');
+                header ("content-type: text/html");
+
+                echo $this->generateRedirectCode($joomla_url, $joomla_itemid);
+                exit();
+            }
         }
 
         $output = ' <a href="index.php?option=com_jfusion&amp;task=plugineditor&amp;jname='.$this->getJname().'&amp;action=redirectcode">' . JText::_('MOD_ENABLE_MANUALLY') . '</a>';

@@ -51,7 +51,7 @@ class JElementDiscussionBotParam extends JElement
 	    $query = "SELECT params FROM #__plugins WHERE element = 'jfusion' AND folder = 'content'";
         $db->setQuery($query);
         $results = $db->loadResult();
-        $pluginParams = new JParameter();
+        $pluginParams = new JParameter('');
         if($results) {
             $pluginParams->loadString($results);
         }
@@ -64,7 +64,7 @@ class JElementDiscussionBotParam extends JElement
 	 		if(empty($db_js_loaded)) {
                 $js = <<<JS
                 function jDiscussionParamSet(name, base64) {
-					var link = 'index.php?option=com_jfusion&task=discussionbot&tmpl=component&jname=${jname}&ename='+name+'&'+name+'=';
+					var link = 'index.php?option=com_jfusion&task=discussionbot&tmpl=component&jname={$jname}&ename='+name+'&'+name+'=';
 					link += base64;
 					$(name + '_id').value = base64;
 					$(name + '_link').href = link;
@@ -86,7 +86,7 @@ JS;
 				$src = "components/com_jfusion/images/clear.png";
 			}
 			$html .= '<img id="'.$name.'_img" src="'.$src.'"><input type="hidden" id="'.$name.'_id" name="'.$fieldName.'" value="'.$value.'" />';
-			$html .= "</div>";
+			$html .= '</div>';
 
 			return $html;
 	 	}

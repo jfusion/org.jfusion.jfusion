@@ -10,6 +10,8 @@
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<version>1.8.0-000</version>
 	<description>internal Joomla plugin for JFusion</description>
+    <update>http://update.jfusion.org/</update>
+    <master>0</master>
 	<slave>0</slave>
 	<dual_login>0</dual_login>
 	<activity>0</activity>
@@ -31,99 +33,70 @@
 
 
 	<params addpath="/administrator/components/com_jfusion/elements">
-		<param name="jfusionbox" type="text" default=""
-			label="PLUGIN_GENERAL_DETAILS" description="" />
-		<param name="description" type="text" size="60" default="Current Joomla Site"
-			description="DESCRIPTION_DESC" label="DESCRIPTION"/>
-		<param name="source_url" type="text" size="60" default=""
-			description="JOOMLA_URL" label="JOOMLA_URL"/>
-		<param name="jfusionbox" type="text" default="" label="LOGIN_OPTIONS"
-			description="" />
-		<param name="login_identifier" type="list" default="1"
-			description="LOGIN_IDENTIFIER_DESCR" label="LOGIN_IDENTIFIER">
+		<param name="jfusionbox" type="text" default="" label="PLUGIN_GENERAL_DETAILS" description="" />
+		<param name="description" type="text" size="60" default="Current Joomla Site" description="DESCRIPTION_DESC" label="DESCRIPTION"/>
+		<param name="source_url" type="text" size="60" default="" description="JOOMLA_URL" label="JOOMLA_URL"/>
+		<param name="jfusionbox" type="text" default="" label="LOGIN_OPTIONS" description="" />
+		<param name="login_identifier" type="list" default="1" description="LOGIN_IDENTIFIER_DESCR" label="LOGIN_IDENTIFIER">
 			<option value="1">USERNAME</option>
 			<option value="2">EMAIL_ADDRESS</option>
 			<option value="3">USERNAME_OR_EMAIL</option>
 		</param>
-		<param name="@spacer" type="spacer" default="" label=""
-			description="" />
-		<param name="case_insensitive" type="list" default="0"
-			label="USERNAME_CASE_INSENSITIVE_DESCR">
+		<param name="@spacer" type="spacer" default="" label="" description="" />
+		<param name="case_insensitive" type="list" default="0" label="USERNAME_CASE_INSENSITIVE_DESCR">
 			<option value="1">JYES</option>
 			<option value="0">JNO</option>
 		</param>
-		<param name="jfusionbox" type="text" default="" label="USER_OPTIONS"
-			description="" />
-		<param name="username_filter" type="JFusionPlugins" default=""
-			description="USERNAME_FILTER_DESCR" label="USERNAME_FILTER"/>
-		<param name="@spacer" type="spacer" default="" label=""
-			description="" />
+		<param name="jfusionbox" type="text" default="" label="USER_OPTIONS" description="" />
+		<param name="username_filter" type="JFusionPlugins" default="" description="USERNAME_FILTER_DESCR" label="USERNAME_FILTER"/>
+		<param name="@spacer" type="spacer" default="" label="" description="" />
 
-		<param name="usergroup" default="" type="JFusionCustomParam"
-			label="USERGROUP_MANAGEMENT" description="ADVANCED_USERGROUP" />
-		<param name="@spacer" type="spacer" default="" label=""
-			description="" />
-		<param name="autoregister" type="list" default="0" label="AUTOREGISTER"
-			description="AUTOREGISTER_DESCR">
+		<param name="usergroup" default="" type="JFusionCustomParam" label="USERGROUP_MANAGEMENT" description="ADVANCED_USERGROUP" />
+		<param name="@spacer" type="spacer" default="" label="" description="" />
+		<param name="autoregister" type="list" default="0" label="AUTOREGISTER" description="AUTOREGISTER_DESCR">
 			<option value="1">JYES</option>
 			<option value="0">JNO</option>
 		</param>
-		<param name="@spacer" type="spacer" default="" label=""
-			description="" />
-        <param name="update_activation" type="list" default="1"
-            label="UPDATE_ACTIVATION" description="UPDATE_ACTIVATION_DESC">
+		<param name="@spacer" type="spacer" default="" label="" description="" />
+        <param name="update_activation" type="list" default="1" label="UPDATE_ACTIVATION" description="UPDATE_ACTIVATION_DESC">
             <option value="1">JYES</option>
             <option value="0">JNO</option>
         </param>
-        <param name="update_email" type="list" default="1" label="UPDATE_EMAIL"
-            description="UPDATE_EMAIL_DESC">
+        <param name="update_email" type="list" default="1" label="UPDATE_EMAIL" description="UPDATE_EMAIL_DESC">
             <option value="1">JYES</option>
             <option value="0">JNO</option>
         </param>
-        <param name="update_block" type="list" default="1" label="UPDATE_BLOCK"
-            description="UPDATE_BLOCK_DESC">
+        <param name="update_block" type="list" default="1" label="UPDATE_BLOCK" description="UPDATE_BLOCK_DESC">
             <option value="1">JYES</option>
             <option value="0">JNO</option>
         </param>
-        <param name="create_inactive" type="list" default="1"
-            label="CREATE_INACTIVE" description="CREATE_INACTIVE_DESC">
+        <param name="create_inactive" type="list" default="1" label="CREATE_INACTIVE" description="CREATE_INACTIVE_DESC">
             <option value="1">JYES</option>
             <option value="0">JNO</option>
         </param>
-        <param name="create_blocked" type="list" default="1"
-            label="CREATE_BLOCKED" description="CREATE_BLOCKED_DESC">
+        <param name="create_blocked" type="list" default="1" label="CREATE_BLOCKED" description="CREATE_BLOCKED_DESC">
             <option value="1">JYES</option>
             <option value="0">JNO</option>
         </param>
 
-		<param name="jfusionbox" type="text" default=""
-			label="CONNECTION_OPTIONS" description="" />
-		<param name="allow_connections" type="list" default="0"
-			description="ALLOW_CONNECTIONS_DESCR" label="ALLOW_CONNECTIONS">
+		<param name="jfusionbox" type="text" default="" label="CONNECTION_OPTIONS" description="" />
+		<param name="allow_connections" type="list" default="0" description="ALLOW_CONNECTIONS_DESCR" label="ALLOW_CONNECTIONS">
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>
 		</param>
-		<param name="@spacer" type="spacer" default="" label=""
-			description="" />
+		<param name="@spacer" type="spacer" default="" label="" description="" />
 		<param name="secret" type="Secret" default="" label="Secret" description="SECRET_DESCR" />
 
-		<param name="jfusionbox" type="text" default="" label="REDIRECT_OPTIONS"
-			description="" />
-		<param name="allow_redirect_login" type="list" default="0"
-			description="ALLOW_REDIRECT_DESCR" label="ALLOW_REDIRECT_LOGIN">
+		<param name="jfusionbox" type="text" default="" label="REDIRECT_OPTIONS" description="" />
+		<param name="allow_redirect_login" type="list" default="0" description="ALLOW_REDIRECT_DESCR" label="ALLOW_REDIRECT_LOGIN">
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>
 		</param>
-		<param name="allow_redirect_logout" type="list" default="0"
-			description="ALLOW_REDIRECT_DESCR" label="ALLOW_REDIRECT_LOGOUT">
+		<param name="allow_redirect_logout" type="list" default="0" description="ALLOW_REDIRECT_DESCR" label="ALLOW_REDIRECT_LOGOUT">
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>
 		</param>
-		<param name="redirecturl_login" type="text" size="60" default=""
-			description="ALLOW_REDIRECT_DESCR" label="REDIRECTURL_LOGIN"/>
-		<param name="redirecturl_logout" type="text" size="60" default=""
-			description="ALLOW_REDIRECT_DESCR" label="REDIRECTURL_LOGOUT"/>
-
-
+		<param name="redirecturl_login" type="text" size="60" default="" description="ALLOW_REDIRECT_DESCR" label="REDIRECTURL_LOGIN"/>
+		<param name="redirecturl_logout" type="text" size="60" default="" description="ALLOW_REDIRECT_DESCR" label="REDIRECTURL_LOGOUT"/>
 	</params>
 </install>

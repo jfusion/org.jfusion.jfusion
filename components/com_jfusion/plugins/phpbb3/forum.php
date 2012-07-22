@@ -491,8 +491,13 @@ class JFusionForum_phpbb3 extends JFusionForum {
 			return;
 		}
 		$topicid = $jdb->insertid();
-        require_once JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'bbcode_parser.php';
-		$parser = new phpbb_bbcode_parser($text, $this->getJname());
+
+        /**
+         * @ignore
+         * @var $helper JFusionHelper_phpbb3
+         */
+        $helper = JFusionFactory::getHelper($this->getJname());
+        $bbcode = $helper->bbcode_parser($text);
 
 		$post_row = new stdClass();
 		$post_row->forum_id			= $forumid;
@@ -508,11 +513,11 @@ class JFusionForum_phpbb3 extends JFusionForum {
 		$post_row->enable_sig		= 1;
 		$post_row->post_username	= $phpbbUser->username;
 		$post_row->post_subject		= $subject;
-		$post_row->post_text		= $parser->text;
-		$post_row->post_checksum	= md5($parser->text);
+		$post_row->post_text		= $bbcode->text;
+		$post_row->post_checksum	= md5($bbcode->text);
 		$post_row->post_attachment	= 0;
-		$post_row->bbcode_bitfield	= $parser->bbcode_bitfield;
-		$post_row->bbcode_uid		= $parser->bbcode_uid;
+		$post_row->bbcode_bitfield	= $bbcode->bbcode_bitfield;
+		$post_row->bbcode_uid		= $bbcode->bbcode_uid;
 		$post_row->post_postcount	= 1;
 		$post_row->post_edit_locked	= 0;
 
@@ -619,8 +624,12 @@ class JFusionForum_phpbb3 extends JFusionForum {
 		//prepare the content body
 		$text = $this->prepareFirstPostBody($dbparams, $contentitem);
 
-        require_once JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'bbcode_parser.php';
-		$parser = new phpbb_bbcode_parser($text, $this->getJname());
+        /**
+         * @ignore
+         * @var $helper JFusionHelper_phpbb3
+         */
+        $helper = JFusionFactory::getHelper($this->getJname());
+        $bbcode = $helper->bbcode_parser($text);
 
         $timestamp = $dbparams->get('use_content_created_date', false) ? JFactory::getDate($contentitem->created)->toUnix() : time();
 		$userid = $dbparams->get('default_user');
@@ -631,10 +640,10 @@ class JFusionForum_phpbb3 extends JFusionForum {
 
 		$post_row = new stdClass();
 		$post_row->post_subject		= $subject;
-		$post_row->post_text		= $parser->text;
-		$post_row->post_checksum	= md5($parser->text);
-		$post_row->bbcode_bitfield	= $parser->bbcode_bitfield;
-		$post_row->bbcode_uid		= $parser->bbcode_uid;
+		$post_row->post_text		= $bbcode->text;
+		$post_row->post_checksum	= md5($bbcode->text);
+		$post_row->bbcode_bitfield	= $bbcode->bbcode_bitfield;
+		$post_row->bbcode_uid		= $bbcode->bbcode_uid;
 		$post_row->post_edit_time 	= $timestamp;
 		$post_row->post_edit_user	= $userid;
 		$post_row->post_edit_count	= $count + 1;
@@ -699,8 +708,12 @@ class JFusionForum_phpbb3 extends JFusionForum {
 		if(!empty($text)) {
 			$public->prepareText($text);
 
-            require_once JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'bbcode_parser.php';
-			$parser = new phpbb_bbcode_parser($text, $this->getJname());
+            /**
+             * @ignore
+             * @var $helper JFusionHelper_phpbb3
+             */
+            $helper = JFusionFactory::getHelper($this->getJname());
+            $bbcode = $helper->bbcode_parser($text);
 
 			//get some topic information
 			$query = "SELECT topic_title, topic_replies, topic_replies_real FROM #__topics WHERE topic_id = {$ids->threadid}";
@@ -733,11 +746,11 @@ class JFusionForum_phpbb3 extends JFusionForum {
 			$post_row->enable_sig		= 1;
 			$post_row->post_username	= $phpbbUser->username;
 			$post_row->post_subject		= "Re: {$topic->topic_title}";
-			$post_row->post_text		= $parser->text;
-			$post_row->post_checksum	= md5($parser->text);
+			$post_row->post_text		= $bbcode->text;
+			$post_row->post_checksum	= md5($bbcode->text);
 			$post_row->post_attachment	= 0;
-			$post_row->bbcode_bitfield	= $parser->bbcode_bitfield;
-			$post_row->bbcode_uid		= $parser->bbcode_uid;
+			$post_row->bbcode_bitfield	= $bbcode->bbcode_bitfield;
+			$post_row->bbcode_uid		= $bbcode->bbcode_uid;
 			$post_row->post_postcount	= 1;
 			$post_row->post_edit_locked	= 0;
 

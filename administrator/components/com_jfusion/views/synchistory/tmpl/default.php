@@ -46,10 +46,10 @@ function applyAll() {
 	<table>
 		<tr>
 			<td width="100px">
-				<img src="components/com_jfusion/images/jfusion_large.png" height="75px" width="75px">
+				<img src="components/com_jfusion/images/jfusion_large.png">
 			</td>
 			<td width="100px">
-				<img src="components/com_jfusion/images/synchistory.png" height="75px" width="75px">
+				<img src="components/com_jfusion/images/synchistory.png">
 			<td>
 				<h2>
 					<?php echo JText::_('SYNC_HISTORY'); ?>

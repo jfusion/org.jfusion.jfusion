@@ -399,11 +399,11 @@ class JFusionPublic_vbulletin extends JFusionPublic
         }
         if ($params->get('parseCSS', false)) {
             //we need to wrap the body in a div to prevent some CSS clashes
-            $data->body = "<div id = 'framelessVb'>\n$data->body\n</div>";
+            $data->body = '<div id="framelessVb">'.$data->body.'</div>';
         }
         if (defined('_JFUSION_DEBUG')) {
-            $data->body.= "<pre><code>" . htmlentities(print_r($_SESSION["jfvbdebug"], true)) . "</code></pre>";
-            $data->body.= "<pre><code>" . htmlentities(print_r($GLOBALS['vbulletin'], true)) . "</code></pre>";
+            $data->body.= '<pre><code>' . htmlentities(print_r($_SESSION['jfvbdebug'], true)) . '</code></pre>';
+            $data->body.= '<pre><code>' . htmlentities(print_r($GLOBALS['vbulletin'], true)) . '</code></pre>';
         }
     }
 

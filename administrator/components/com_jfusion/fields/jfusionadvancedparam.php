@@ -66,8 +66,8 @@ class JFormFieldJFusionAdvancedParam extends JFormField
             function jAdvancedParamSet(title, base64, elNum) {
                 var link = 'index.php?option=com_jfusion&task=advancedparam&tmpl=component&params=';
                 link += base64;
-                link += '${cfile}';
-                link += '${mselect}';
+                link += '{$cfile}';
+                link += '{$mselect}';
 
                 $('plugin_id' + elNum).value = base64;
                 $('plugin_name' + elNum).value = title;

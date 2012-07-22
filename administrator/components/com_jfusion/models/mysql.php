@@ -42,37 +42,29 @@ class JFusionMySQL extends JDatabaseMySQL
     public function __construct($options){
         parent::__construct($options);
     }
-    
-    /**
-     * added execute query as Joomla 1.6 has removed functions
-     *
-     * @param string $query
-     */        
-    function Execute($query)
-    {
-    	$this->setQuery($query);
-        $this->query();
-    }
-    
+
     /**
      * begin transaction
      */        
     function BeginTrans()
     {
-        return $this->Execute('START TRANSACTION');
+        $this->setQuery('START TRANSACTION');
+        return $this->query();
     }
     /**
      * commit transaction
      */        
     function CommitTrans()
     {
-        return $this->Execute('COMMIT');
+        $this->setQuery('COMMIT');
+        return $this->query();
     }
     /**
      * rollback transaction
      */        
     function RollbackTrans()
     {
-        return $this->Execute('ROLLBACK');
+        $this->setQuery('ROLLBACK');
+        return $this->query();
     }
 }

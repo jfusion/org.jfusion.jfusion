@@ -16,10 +16,10 @@ require_once(JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.D
 <table>
     <tr>
         <td width="100px">
-            <img src="components/com_jfusion/images/jfusion_large.png" height="75px" width="75px">
+            <img src="components/com_jfusion/images/jfusion_large.png">
         </td>
         <td width="100px">
-            <img src="components/com_jfusion/images/login_checker2.png" height="75px" width="75px">
+            <img src="components/com_jfusion/images/login_checker2.png">
         </td>
         <td>
             <h2>

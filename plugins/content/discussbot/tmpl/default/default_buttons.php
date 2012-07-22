@@ -4,12 +4,12 @@ echo '<a id="jfusionBtn' . ucfirst($name) . $this->article->id .'" class="readon
 
 if(isset($html['js'])) :
 	foreach($html['js'] AS $func => $js) :
-		echo "	$func = \"$js\"\n";
+		echo $func.' = "'.$js.'"';
 	endforeach;
 endif;
 
 //close opening a tag
-echo ">";
+echo '>';
 
 echo $html['text'];
 
@@ -19,6 +19,6 @@ if($this->params->get("show_reply_num") && $name=='discuss') :
 	echo ' ['.$this->reply_count.' '.JText::_($post).']';
 endif;
 
-echo "</a>\n";
+echo '</a>';
 
 endforeach;

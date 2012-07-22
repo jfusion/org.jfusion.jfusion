@@ -78,7 +78,7 @@ class jfusionViewconfigdump extends JView {
 
         if(count($rows) ) {
             foreach($rows as $row) {
-                $jPluginParam = new JParameter();
+                $jPluginParam = new JParameter('');
                 if ( $row->params ) $jPluginParam->loadArray(unserialize(base64_decode($row->params)));
                 $row->params = $jPluginParam->toString();
 
@@ -125,7 +125,12 @@ class jfusionViewconfigdump extends JView {
         $app		= JFactory::getApplication();
         $menus		= $app->getMenu('site');
         $component	= JComponentHelper::getComponent('com_jfusion');
-        $items		= $menus->getItems('component_id', $component->id);
+
+        if ( JFusionFunction::isJoomlaVersion()) {
+            $items		= $menus->getItems('component_id', $component->id);
+        } else {
+            $items		= $menus->getItems('componentid', $component->id);
+        }
 
         foreach($items as $row) {
             unset($row->note,$row->route,$row->level,$row->language,$row->browserNav,$row->access,$row->home,$row->img);
@@ -188,7 +193,7 @@ class jfusionViewconfigdump extends JView {
      * @return stdClass
      */
     function loadParams($row) {
-        $JParameter = new JParameter();
+        $JParameter = new JParameter('');
         $new = new stdClass;
         $new->params = new stdClass;
         foreach($row as $key => $value) {
@@ -268,11 +273,15 @@ class jfusionViewconfigdump extends JView {
             }
         }
         if (isset($this->checkvalue[$name][$type]['*'])) {
-            foreach($new->params as $key => $value) {
+            foreach($new->params as $key => &$value) {
                 if (is_array($value) || is_object($value)) {
                     foreach($this->checkvalue[$name][$type]['*'] as $key2 => $value2) {
-                        if (!isset($new->params->$key->$key2)) {
-                            $new->params->$key->$key2 = null;
+                        if (!isset($value->$key2)) {
+                            if (is_array($value)) {
+                                $value[$key2] = null;
+                            } else {
+                                $value->$key2 = null;
+                            }
                         }
                     }
                 }

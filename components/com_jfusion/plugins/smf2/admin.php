@@ -140,10 +140,12 @@ class JFusionAdmin_smf2 extends JFusionAdmin{
     {
         $params = JFusionFactory::getParams($this->getJname());
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
-        $usergroup_id = $usergroups[0];
-
+        $usergroup_id = 0;
+        if(!empty($usergroups)) {
+            $usergroup_id = $usergroups[0];
+        }
         if ($usergroup_id==0) {
-            return "Default Usergroup";
+            return 'Default Usergroup';
         }
 
         //we want to output the usergroup name
@@ -190,13 +192,8 @@ class JFusionAdmin_smf2 extends JFusionAdmin{
     /**
      * @return string
      */
-    function generateRedirectCode()
+    function generateRedirectCode($url, $itemid)
 	{
-        	$params = JFusionFactory::getParams($this->getJname());
-        	$joomla_params = JFusionFactory::getParams('joomla_int');
-		    $joomla_url = $joomla_params->get('source_url');
-    		$joomla_itemid = $params->get('redirect_itemid');
-
 			//create the new redirection code
 /*
 $pattern = \'#action=(login|admin|profile|featuresettings|news|packages|detailedversion|serversettings|theme|manageboards|postsettings|managecalendar|managesearch|smileys|manageattachments|viewmembers|membergroups|permissions|regcenter|ban|maintain|reports|viewErrorLog|optimizetables|detailedversion|repairboards|boardrecount|convertutf8|helpadmin|packageget)#\';
@@ -204,8 +201,8 @@ $pattern = \'#action=(login|admin|profile|featuresettings|news|packages|detailed
 			$redirect_code = '
 //JFUSION REDIRECT START
 //SET SOME VARS
-$joomla_url = \''. $joomla_url . '\';
-$joomla_itemid = ' . $joomla_itemid .';
+$joomla_url = \''. $url . '\';
+$joomla_itemid = ' . $itemid .';
 	';
 		    $redirect_code .= '
 if(!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') === false && strpos($_SERVER[\'QUERY_STRING\'], \'verificationcode\') === false)';
@@ -229,31 +226,42 @@ if(!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') === 
 
     function enableRedirectMod()
     {
-    	$error = 0;
-    	$error = 0;
-    	$reason = '';
-    	$mod_file = $this->getModFile('index.php',$error,$reason);
+        $params = JFusionFactory::getParams($this->getJname());
+        $joomla_params = JFusionFactory::getParams('joomla_int');
+        $joomla_url = $joomla_params->get('source_url');
+        $joomla_itemid = $params->get('redirect_itemid');
 
-		if($error == 0) {
-			//get the joomla path from the file
-			jimport('joomla.filesystem.file');
-			$file_data = JFile::read($mod_file);
-	      	preg_match_all('/\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END/ms',$file_data,$matches);
+        //check to see if all vars are set
+        if (empty($joomla_url)) {
+            JError::raiseWarning(0, JText::_('MISSING') . ' Joomla URL');
+        } else if (empty($joomla_itemid) || !is_numeric($joomla_itemid)) {
+            JError::raiseWarning(0, JText::_('MISSING') . ' ItemID');
+        } else {
+            $error = 0;
+            $error = 0;
+            $reason = '';
+            $mod_file = $this->getModFile('index.php',$error,$reason);
 
-			//remove any old code
-			if(!empty($matches[1][0])){
-		      	$search = '/\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END/ms';
-		      	$file_data = preg_replace($search,'',$file_data);
+            if($error == 0) {
+                //get the joomla path from the file
+                jimport('joomla.filesystem.file');
+                $file_data = JFile::read($mod_file);
+                preg_match_all('/\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END/ms',$file_data,$matches);
 
-			}
+                //remove any old code
+                if(!empty($matches[1][0])) {
+                    $search = '/\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END/ms';
+                    $file_data = preg_replace($search,'',$file_data);
+                }
 
-			$redirect_code = $this->generateRedirectCode();
+                $redirect_code = $this->generateRedirectCode($joomla_url, $joomla_itemid);
 
-	      	$search = '/\<\?php/si';
-			$replace = '<?php' . $redirect_code;
-	      	$file_data = preg_replace($search,$replace,$file_data);
-			JFile::write($mod_file, $file_data);
-		}
+                $search = '/\<\?php/si';
+                $replace = '<?php' . $redirect_code;
+                $file_data = preg_replace($search,$replace,$file_data);
+                JFile::write($mod_file, $file_data);
+            }
+        }
     }
 
     /**
@@ -305,18 +313,26 @@ if(!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') === 
 		}
 
 		//add the javascript to enable buttons
-		if ($error == 0){
-			//return success
-			$output = '<img src="components/com_jfusion/images/check_good.png" height="20px" width="20px">' . JText::_('REDIRECTION_MOD') . ' ' . JText::_('ENABLED');
-			$output .= ' <a href="javascript:void(0);" onclick="return module(\'disableRedirectMod\')">' . JText::_('MOD_DISABLE') . '</a>';
-			$output .= ' <a href="javascript:void(0);" onclick="return module(\'enableRedirectMod\')">' . JText::_('MOD_UPDATE') . '</a>';
-			return $output;
-		} else {
-       		$output = '<img src="components/com_jfusion/images/check_bad.png" height="20px" width="20px">' . JText::_('REDIRECTION_MOD') . ' ' . JText::_('DISABLED') .': ' . $reason;
-			$output .= ' <a href="javascript:void(0);" onclick="return module(\'enableRedirectMod\')">' . JText::_('MOD_ENABLE') . '</a>';
-			return $output;
-		}
-
+        if ($error == 0) {
+            //return success
+            $text = JText::_('REDIRECTION_MOD') . ' ' . JText::_('ENABLED');
+            $disable = JText::_('MOD_DISABLE');
+            $update = JText::_('MOD_UPDATE');
+            $output = <<<HTML
+            <img src="components/com_jfusion/images/check_good_small.png">{$text}
+            <a href="javascript:void(0);" onclick="return module('disableRedirectMod')">{$disable}</a>
+            <a href="javascript:void(0);" onclick="return module('enableRedirectMod')">{$update}</a>
+HTML;
+            return $output;
+        } else {
+            $text = JText::_('REDIRECTION_MOD') . ' ' . JText::_('DISABLED') . ': ' . $reason;
+            $enable = JText::_('MOD_ENABLE');
+            $output = <<<HTML
+            <img src="components/com_jfusion/images/check_bad_small.png">{$text}
+            <a href="javascript:void(0);" onclick="return module('enableRedirectMod')">{$enable}</a>
+HTML;
+            return $output;
+        }
     }
 
     /**
@@ -335,11 +351,10 @@ if(!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') === 
 
         return array(true, '');
     }
-    
-	/*
-	 * do plugin support multi usergroups
-	 */
+
     /**
+     * do plugin support multi usergroups
+     *
      * @return bool
      */
     function isMultiGroup()
