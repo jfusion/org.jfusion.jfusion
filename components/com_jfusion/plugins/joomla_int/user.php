@@ -140,6 +140,10 @@ class JFusionUser_joomla_int extends JFusionUser {
                     $options['group'] = 'USERS';
                 }
 
+                if (!isset($options['action'])) {
+                    $options['action'] = 'core.login.site';
+                }
+
                 // Chek the user can login.
                 $result	= $instance->authorise($options['action']);
                 if (!$result) {

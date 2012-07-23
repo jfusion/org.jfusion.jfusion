@@ -1061,6 +1061,7 @@ class JFusionUser_phpbb3 extends JFusionUser
         }
         $params = & JFusionFactory::getParams($this->getJname());
         $options = array();
+        $options['action'] = 'core.login.site';
 
         //phpbb variables
         $phpbb_cookie_prefix = $params->get('cookie_prefix');
