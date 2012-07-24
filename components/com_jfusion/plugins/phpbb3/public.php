@@ -635,7 +635,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
         $forum_id = JRequest::getInt('f');
         if (!empty($forum_id)) {
             //get the forum's info
-            $query = "SELECT forum_name, parent_id, left_id, right_id, forum_parents FROM #__forums WHERE forum_id = $forum_id";
+            $query = 'SELECT forum_name, parent_id, left_id, right_id, forum_parents FROM #__forums WHERE forum_id = '.$db->Quote($forum_id);
             $db->setQuery($query);
             $forum_info = $db->loadObject();
 
@@ -663,7 +663,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 
         $topic_id = JRequest::getInt('t');
         if (!empty($topic_id)) {
-            $query = "SELECT topic_title FROM #__topics WHERE topic_id = $topic_id";
+            $query = 'SELECT topic_title FROM #__topics WHERE topic_id = '.$db->Quote($topic_id);
             $db->setQuery($query);
             $topic_title = $db->loadObject();
 
