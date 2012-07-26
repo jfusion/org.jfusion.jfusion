@@ -111,4 +111,8 @@ class JFusionDokuWikiHook {
     }
 }
 $hook = new JFusionDokuWikiHook();
+/**
+ * @ignore
+ * @var $EVENT_HANDLER Doku_Event_Handler
+ */
 $hook->register($EVENT_HANDLER);

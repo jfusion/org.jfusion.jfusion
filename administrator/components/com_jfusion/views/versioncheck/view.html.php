@@ -191,7 +191,7 @@ class jfusionViewversioncheck extends JView
      * @param string $filename   filename
      * @param string $name       name
      * @param string $path    version
-     * @param string $xml    version
+     * @param JSimpleXMLElement $xml    version
      *
      * @return string nothing
      *
@@ -209,17 +209,21 @@ class jfusionViewversioncheck extends JView
         $output->oldversion = JText::_('UNKNOWN');
 
         if ($path && $xml) {
-            $p = $xml->getElementByPath($path.'/version');
-            if ($p) {
-                $output->version = $p->data();
+            /**
+             * @ignore
+             * @var $element JSimpleXMLElement
+             */
+            $element = $xml->getElementByPath($path.'/version');
+            if ($element) {
+                $output->version = $element->data();
             }
-            $p = $xml->getElementByPath($path.'/remotefile');
-            if ($p) {
-                $output->updateurl = $p->data();
+            $element = $xml->getElementByPath($path.'/remotefile');
+            if ($element) {
+                $output->updateurl = $element->data();
             }
-            $p = $xml->getElementByPath($path.'/revision');
-            if ($p) {
-                $output->rev = trim($p->data());
+            $element = $xml->getElementByPath($path.'/revision');
+            if ($element) {
+                $output->rev = trim($element->data());
             }
         }
 

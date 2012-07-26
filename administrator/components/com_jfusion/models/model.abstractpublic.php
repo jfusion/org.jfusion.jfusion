@@ -95,6 +95,7 @@ class JFusionPublic
         }
 
         //parse absolute URLS
+        $path = '';
         if(!empty($data->parse_abs_path)) {
             $path = preg_replace( '#(\w{0,10}://)(.*?)/(.*?)#is'  , '$3' , $data->integratedURL );
             $path = preg_replace('#//+#','/',"/$path/");
@@ -669,6 +670,15 @@ HTML;
         return $return;
     }
 
+    /**
+     * @param string $q
+     * @param string $baseURL
+     * @param string $fullURL
+     * @param string $integratedURL
+     * @param int $jRoute
+     *
+     * @return string
+     */
     function fixUrl($q='',$baseURL,$fullURL,$integratedURL,$jRoute)
     {
         if (substr($baseURL, -1) != '/') {
@@ -685,6 +695,14 @@ HTML;
         return $url;
     }
 
+    /**
+     * @param string $url
+     * @param string $extra
+     * @param string $baseURL
+     * @param int $jRoute
+     *
+     * @return string
+     */
     function fixAction($url, $extra, $baseURL,$jRoute)
     {
         $url = htmlspecialchars_decode($url);
@@ -730,6 +748,13 @@ HTML;
         return $replacement;
     }
 
+    /**
+     * @param string $url
+     * @param string $baseURL
+     * @param string $integratedURL
+     * @param int $jRoute
+     * @return string
+     */
     function fixRedirect($url, $baseURL, $integratedURL,$jRoute)
     {
         //split up the timeout from url

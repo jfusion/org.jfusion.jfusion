@@ -833,11 +833,19 @@ class JFusionAPIInternal extends JFusionAPIBase {
         return $mainframe;
     }
 
+    /**
+     * @param string $plugin
+     */
     public function setActivePlugin($plugin)
     {
         $this->activePlugin = $plugin;
     }
 
+    /**
+     * @param string $username
+     * @param string $password
+     * @param int $remember
+     */
     public function login($username,$password,$remember = 1)
     {
         $mainframe = self::startJoomla();
@@ -883,6 +891,9 @@ class JFusionAPIInternal extends JFusionAPIBase {
         }
     }
 
+    /**
+     * @param null|string $username
+     */
     public function logout($username=null)
     {
         $mainframe = self::startJoomla();
@@ -919,7 +930,10 @@ class JFusionAPIInternal extends JFusionAPIBase {
         $link = $uri->toString();
     }
 
-    public function register($userinfo,$overwrite)
+    /**
+     * @param object $userinfo
+     */
+    public function register($userinfo)
     {
         $mainframe = self::startJoomla();
 
@@ -955,6 +969,10 @@ class JFusionAPIInternal extends JFusionAPIBase {
         }
     }
 
+    /**
+     * @param object $userinfo
+     * @param $overwrite
+     */
     public function update($userinfo,$overwrite)
     {
         $mainframe = self::startJoomla();
@@ -995,6 +1013,9 @@ class JFusionAPIInternal extends JFusionAPIBase {
         }
     }
 
+    /**
+     * @param int $userid
+     */
     public function delete($userid)
     {
         /**
