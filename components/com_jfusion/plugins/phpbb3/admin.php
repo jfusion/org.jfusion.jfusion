@@ -375,7 +375,7 @@ HTML;
      * @param $control_name
      * @return mixed|string
      */
-    function show_auth_mod($name, $value, $node, $control_name) {
+    function showAuthMod($name, $value, $node, $control_name) {
         //do a database check to avoid fatal error with incorrect database settings
         $db = JFusionFactory::getDatabase($this->getJname());
         if (!method_exists($db, 'setQuery')) {
@@ -413,7 +413,7 @@ HTML;
             $disable = JText::_('MOD_DISABLE');
             $output = <<<HTML
             <img src="components/com_jfusion/images/check_good_small.png">{$text}
-            <a href="javascript:void(0);" onclick="return module('disable_auth_mod')">{$disable}</a>
+            <a href="javascript:void(0);" onclick="return module('disableAuthMod')">{$disable}</a>
 HTML;
             return $output;
         } else {
@@ -421,12 +421,12 @@ HTML;
             $enable = JText::_('MOD_ENABLE');
             $output = <<<HTML
             <img src="components/com_jfusion/images/check_bad_small.png">{$text}
-            <a href="javascript:void(0);" onclick="return module('enable_auth_mod')">{$enable}</a>
+            <a href="javascript:void(0);" onclick="return module('enableAuthMod')">{$enable}</a>
 HTML;
             return $output;
         }
     }
-    function enable_auth_mod() {
+    function enableAuthMod() {
         $error = 0;
         $reason = '';
         $auth_file = $this->getModFile('includes' . DS . 'auth' . DS . 'auth_jfusion.php', $error, $reason);
@@ -479,7 +479,7 @@ HTML;
     /**
      * @return bool
      */
-    function disable_auth_mod() {
+    function disableAuthMod() {
         $return = true;
         //check to see if the mod is enabled
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -521,7 +521,7 @@ HTML;
      * @param $control_name
      * @return string
      */
-    function show_quick_mod($name, $value, $node, $control_name) {
+    function showQuickMod($name, $value, $node, $control_name) {
         $error = 0;
         $reason = '';
         $mod_file = $this->getModFile('mcp.php', $error, $reason);
@@ -543,7 +543,7 @@ HTML;
             $disable = JText::_('MOD_DISABLE');
             $output = <<<HTML
             <img src="components/com_jfusion/images/check_good_small.png">{$text}
-            <a href="javascript:void(0);" onclick="return module('disable_quick_mod')">{$disable}</a>
+            <a href="javascript:void(0);" onclick="return module('disableQuickMod')">{$disable}</a>
 HTML;
             return $output;
         } else {
@@ -551,12 +551,12 @@ HTML;
             $enable = JText::_('MOD_ENABLE');
             $output = <<<HTML
             <img src="components/com_jfusion/images/check_bad_small.png">{$text}
-            <a href="javascript:void(0);" onclick="return module('enable_quick_mod')">{$enable}</a>
+            <a href="javascript:void(0);" onclick="return module('enableQuickMod')">{$enable}</a>
 HTML;
             return $output;
         }
     }
-    function enable_quick_mod() {
+    function enableQuickMod() {
         $error = 0;
         $reason = '';
         $mod_file = $this->getModFile('mcp.php', $error, $reason);
@@ -574,7 +574,7 @@ HTML;
     /**
      * @return int
      */
-    function disable_quick_mod() {
+    function disableQuickMod() {
         $error = 0;
         $reason = '';
         $mod_file = $this->getModFile('mcp.php', $error, $reason);
@@ -612,14 +612,14 @@ HTML;
         $return = true;
         $reasons = array();
 
-        $error = $this->disable_auth_mod();
+        $error = $this->disableAuthMod();
         if (!$error) {
             $reasons[] = JText::_('AUTH_MOD_UNINSTALL_FAILED');
             $return = false;
         }
 
         //doesn't really matter if the quick mod is not disabled so don't return an error
-        $error = $this->disable_quick_mod();
+        $error = $this->disableQuickMod();
 
         $error = $this->disableRedirectMod();
         if (!empty($error)) {
