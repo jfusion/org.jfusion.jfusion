@@ -34,7 +34,7 @@ class JFormFieldJFusionCmsBlock extends JFormField {
 		$cid = JRequest::getVar ( 'cid', array ($id ), 'method', 'array' );
 		JArrayHelper::toInteger ( $cid, array (0 ) );
 		
-		$db = &JFactory::getDBO ();
+		$db = JFactory::getDBO ();
 		$query = 'SELECT params FROM #__modules  WHERE module = \'mod_jfusion_mageselectblock\' and id = ' . $db->Quote ( $cid [0] );
 		
 		$db->setQuery ( $query );
@@ -44,7 +44,7 @@ class JFormFieldJFusionCmsBlock extends JFormField {
 		$jname = $parametersInstance->get ( 'magento_plugin', '' );
 		if (! empty ( $jname )) {
 			if (JFusionFunction::validPlugin ( $jname )) {
-				$dbplugin = & JFusionFactory::getDatabase ( $jname );
+				$dbplugin = JFusionFactory::getDatabase ( $jname );
 				
 				//@todo - take in charge the different stores
 				$query = "SELECT block_id as value, title as name FROM #__cms_block WHERE is_active = '1' ORDER BY block_id";

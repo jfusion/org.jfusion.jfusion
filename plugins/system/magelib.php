@@ -35,7 +35,7 @@ class plgSystemMagelib {
      *
      */
     function __construct() {
-		$plugin = & JPluginHelper::getPlugin ( 'system', 'magelib' );
+		$plugin = JPluginHelper::getPlugin ( 'system', 'magelib' );
 		$this->params = new JParameter ( $plugin->params );
 		
 		$mage_plugin = $this->params->get ( 'mage_plugin', 'magento' );
@@ -91,7 +91,7 @@ class plgSystemMagelib {
 
             if (strlen ( $language_store_view ) > 0) {
                 // we define and set the default store (and language if set correctly by the administrator)
-                $JLang = &JFactory::getLanguage ();
+                $JLang = JFactory::getLanguage ();
                 $langs = explode ( ";", $language_store_view );
                 foreach ( $langs as $lang ) {
                     $codes = explode ( "=", $lang );

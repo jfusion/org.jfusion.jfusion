@@ -81,7 +81,7 @@ class JFusionAdmin_mybb extends JFusionAdmin
             $database = $params['database_name'];
             $prefix = $params['database_prefix'];
             $options = array('driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database, 'prefix' => $prefix);
-            $bb = & JDatabase::getInstance($options);
+            $bb = JDatabase::getInstance($options);
             $query = "SELECT value FROM #__settings WHERE name = 'bburl'";
             $bb->setQuery($query);
             $bb_url = $bb->loadResult();

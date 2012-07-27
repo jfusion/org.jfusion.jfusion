@@ -132,7 +132,7 @@ defined('_JEXEC') or die('Restricted access');
             </td>
             <td>
 	            <?php
-	            $JFusionParam = & JFusionFactory::getParams($row->name);
+	            $JFusionParam = JFusionFactory::getParams($row->name);
 	            $description = $JFusionParam->get('description');
 	            echo $description;
 	            ?>

@@ -53,7 +53,7 @@ class JElementJFusionUserpostgroups extends JElement
                  * @ignore
                  * @var $JFusionAdmin JFusionAdmin_smf
                  */
-                $JFusionAdmin = & JFusionFactory::getAdmin($jname);
+                $JFusionAdmin = JFusionFactory::getAdmin($jname);
                 $usergroups = $JFusionAdmin->getUserpostgroupList();
                 if (!empty($usergroups)) {
                     return JHTML::_('select.genericlist', $usergroups, $control_name . '[' . $name . ']', '', 'id', 'name', $value);

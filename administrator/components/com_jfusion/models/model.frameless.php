@@ -111,7 +111,7 @@ class JFusionFrameless {
         $data->parse_popup = $MenuParam->get('parse_popup',1);
         
 		//Load language files
-		$lang = & JFactory::getLanguage ();
+		$lang = JFactory::getLanguage ();
 		$lang->load ( 'com_jfusion.plg_' . $jname );
 		return $data;
 	}
@@ -133,16 +133,16 @@ class JFusionFrameless {
 		
 		if (!$data->isPlugin) {
 			require_once(JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.abstractpublic.php');
-			$JFusionPlugin =& new JFusionPublic();
+			$JFusionPlugin = new JFusionPublic();
 		} else {
-			$JFusionPlugin =& JFusionFactory::getPublic ( $data->jname );
+			$JFusionPlugin = JFusionFactory::getPublic ( $data->jname );
 			
 			$sef_suffix = $mainframe->getCfg('sef_suffix');
 			$sef = $mainframe->getCfg('sef');
 			if($sef_suffix == 1 && $sef == 1 && !count(JRequest::get('POST'))){
 			    //redirect if url non_sef
 			    if (strrpos($data->fullURL, '?') !== false) {
-			        $u =& JFactory::getURI();
+			        $u = JFactory::getURI();
 			        if ($u->getVar('Itemid') && $u->getVar('option')) {
 			            $u->delVar('Itemid');
 			            $u->delVar('option');
@@ -160,10 +160,10 @@ class JFusionFrameless {
             /*
 			 * Caused issues with more people than it helped
             //make sure that the software's database is selected in the case the mysql server and credentials are the same but a different database is used
-            $JFusionParam =& JFusionFactory::getParams($data->jname);
+            $JFusionParam = JFusionFactory::getParams($data->jname);
             $db_name = $JFusionParam->get('database_name');
             if (!empty($db_name)) {
-            	$db =& JFusionFactory::getDatabase($this->jname);
+            	$db = JFusionFactory::getDatabase($this->jname);
                 $query = "USE $db_name";
                 $db->setQuery($query);
                 $db->query();

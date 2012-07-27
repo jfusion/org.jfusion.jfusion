@@ -220,7 +220,7 @@ class JFusionPluginInstaller extends JObject
      */
     function __construct(&$parent)
     {
-//        $this->parent = & JInstaller::getInstance();
+//        $this->parent = JInstaller::getInstance();
         $this->parent = new JInstaller;
         $this->parent->setOverwrite(true);
         $this->filterInput = JFilterInput::getInstance();
@@ -252,7 +252,7 @@ class JFusionPluginInstaller extends JObject
                 $this->parent->abort(JText::_('INSTALL_NOT_VALID_PLUGIN'));
                 $result['message'] = JText::_('INSTALL_NOT_VALID_PLUGIN');
             } else {
-                $this->manifest = & $manifest;
+                $this->manifest = $manifest;
 
                 /**
                  * ---------------------------------------------------------------------------------------------
@@ -420,7 +420,7 @@ class JFusionPluginInstaller extends JObject
     	$result['status'] = false;
         if (JFusionFunction::validPlugin($jname)) {
             //if this plugin had been valid, call its uninstall function if it exists
-            $JFusionAdmin =& JFusionFactory::getAdmin($jname);
+            $JFusionAdmin = JFusionFactory::getAdmin($jname);
             $result = $JFusionAdmin->uninstall();
             $reason = '';
             if (is_array($result)) {
@@ -470,7 +470,7 @@ class JFusionPluginInstaller extends JObject
                 $this->parent->abort(JText::_('INSTALL_NOT_VALID_PLUGIN'));
                 $result['message'] = JText::_('INSTALL_NOT_VALID_PLUGIN');
             } else {
-                $this->manifest = & $manifest;
+                $this->manifest = $manifest;
 
                 $this->parent->removeFiles($this->getElementByPath($this->manifest,'languages'));
                 $this->parent->removeFiles($this->getElementByPath($this->manifest,'administration/languages'), 1);
@@ -535,7 +535,7 @@ class JFusionPluginInstaller extends JObject
                 $this->parent->abort(JText::_('INSTALL_NOT_VALID_PLUGIN'));
                 $result['message'] = JText::_('INSTALL_NOT_VALID_PLUGIN');
             } else {
-                $this->manifest = & $manifest;
+                $this->manifest = $manifest;
                 $childrens = array();
                 $path = "";
 
@@ -729,7 +729,7 @@ class JFusionPluginInstaller extends JObject
             	unset($xml);
                 $xml = null;
         	} else {
-                $xml = & $xml->document;
+                $xml = $xml->document;
             }
 		}
     	/*
@@ -767,7 +767,7 @@ class JFusionPluginInstaller extends JObject
     function backup($jname)
     {
         $config = JFactory::getConfig();
-        $tmpDir = & $config->getValue('config.tmp_path');
+        $tmpDir = $config->getValue('config.tmp_path');
         //compress the files
         $filename = $tmpDir . DS . $jname . '.zip';
         //retrieve a list of files within the plugin directory
@@ -785,7 +785,7 @@ class JFusionPluginInstaller extends JObject
              * @ignore
              * @var $zip JArchiveZip
              */
-            $zip = & JArchive::getAdapter('zip');
+            $zip = JArchive::getAdapter('zip');
             if ($zip->create($filename, $filesArray)) {
                 $zipSuccess = true;
             }

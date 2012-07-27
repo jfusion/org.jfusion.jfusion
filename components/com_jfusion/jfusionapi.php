@@ -828,7 +828,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
         }
 
         $mainframe = JFactory::getApplication('site');
-        $GLOBALS['mainframe'] = & $mainframe;
+        $GLOBALS['mainframe'] = $mainframe;
         error_reporting($old);
         return $mainframe;
     }
@@ -876,7 +876,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
              * @ignore
              * @var $session_table JTableSession
              */
-            $session_table = & JTable::getInstance('session');
+            $session_table = JTable::getInstance('session');
             if ($session_table->load($id)) {
                 $session_table->data = $session_data;
                 $session_table->store();
@@ -884,7 +884,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
                 // if load failed then we assume that it is because
                 // the session doesn't exist in the database
                 // therefore we use insert instead of store
-                $app = &JFactory::getApplication();
+                $app = JFactory::getApplication();
                 $session_table->data = $session_data;
                 $session_table->insert($id, $app->getClientId());
             }
@@ -908,10 +908,10 @@ class JFusionAPIInternal extends JFusionAPIBase {
             if ($this->activePlugin) {
                 $lookupUser = JFusionFunction::lookupUser($this->activePlugin,null,false,$username);
                 if (!empty($lookupUser)) {
-                    $user = &JFactory::getUser($lookupUser->id);
+                    $user = JFactory::getUser($lookupUser->id);
                 }
             } else {
-                $user = &JFactory::getUser($username);
+                $user = JFactory::getUser($username);
             }
         }
         if (isset($user->userid) && $user->userid) {
@@ -925,7 +925,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
         $session->close();
 
         //redirect to prevent fatal errors on some servers
-        $uri = & JURI::getInstance();
+        $uri = JURI::getInstance();
         //add a variable to ensure refresh
         $link = $uri->toString();
     }
@@ -949,7 +949,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
         }
 
         foreach ($plugins as $plugin) {
-            $PluginUserUpdate = &JFusionFactory::getUser($plugin->name);
+            $PluginUserUpdate = JFusionFactory::getUser($plugin->name);
 
             $existinguser = $PluginUserUpdate->getUser($userinfo);
 
@@ -986,7 +986,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
             }
         }
         foreach ($plugins as $plugin) {
-            $PluginUserUpdate = &JFusionFactory::getUser($plugin->name);
+            $PluginUserUpdate = JFusionFactory::getUser($plugin->name);
             $updateinfo = $userinfo[$plugin->name];
 
             if (get_class($updateinfo) == 'stdClass') {

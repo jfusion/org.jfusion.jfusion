@@ -61,7 +61,7 @@ class JFusionController extends JController
         $msgType = 'warning';
         if ($jname && $post) {
             //Initialize the forum
-            $JFusionPlugin = & JFusionFactory::getAdmin($jname);
+            $JFusionPlugin = JFusionFactory::getAdmin($jname);
             $params = $JFusionPlugin->setupFromPath($post['source_path']);
             if (!empty($params)) {
                 //save the params first in order for elements to utilize data
@@ -203,7 +203,7 @@ class JFusionController extends JController
             $msgType = 'error';
         } else {
             //update the status field
-            $JFusionPlugin = & JFusionFactory::getAdmin($jname);
+            $JFusionPlugin = JFusionFactory::getAdmin($jname);
             $config_status = $JFusionPlugin->checkConfig();
             $db = JFactory::getDBO();
             $query = 'UPDATE #__jfusion SET status = ' . $config_status['config'] . ' WHERE name =' . $db->Quote($jname);
@@ -218,7 +218,7 @@ class JFusionController extends JController
                 //check for any custom commands
                 $customcommand = JRequest::getVar('customcommand');
                 if (!empty($customcommand)) {
-                    $JFusionPlugin = & JFusionFactory::getAdmin($jname);
+                    $JFusionPlugin = JFusionFactory::getAdmin($jname);
                     if (method_exists($JFusionPlugin, $customcommand)) {
                         $JFusionPlugin->$customcommand();
                     }
@@ -311,7 +311,7 @@ class JFusionController extends JController
          * @ignore
          * @var $view JView
          */
-        $view = & $this->getView('syncerrordetails', 'html');
+        $view = $this->getView('syncerrordetails', 'html');
         $view->setLayout('default');
         //$result = $view->loadTemplate();
         $result = $view->display();
@@ -353,7 +353,7 @@ class JFusionController extends JController
             $slaves = JRequest::getVar('slave');
             $master_plugin = JFusionFunction::getMaster();
             $master = $master_plugin->name;
-            $JFusionMaster = & JFusionFactory::getAdmin($master);
+            $JFusionMaster = JFusionFactory::getAdmin($master);
             //initialise the slave data array
             $slave_data = array();
             if (empty($slaves)) {
@@ -364,7 +364,7 @@ class JFusionController extends JController
                     if ($slave['perform_sync']) {
                         $temp_data = array();
                         $temp_data['jname'] = $jname;
-                        $JFusionPlugin = & JFusionFactory::getAdmin($jname);
+                        $JFusionPlugin = JFusionFactory::getAdmin($jname);
                         if ($action == 'master') {
                             $temp_data['total'] = $JFusionPlugin->getUserCount();
                         } else {

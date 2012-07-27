@@ -769,7 +769,7 @@ class JFusionUser_phpbb3 extends JFusionUser
         //setup status array to hold debug info and errors
         $status = array('error' => array(),'debug' => array());
         //retreive the database object
-        $db = & JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
         //set the userid
         $user_id = $userinfo->userid;
         // Before we begin, we will remove the reports the user issued.
@@ -1060,7 +1060,7 @@ class JFusionUser_phpbb3 extends JFusionUser
         if ($debug) {
             JError::raiseNotice('500','phpbb3 syncSessions called');
         }
-        $params = & JFusionFactory::getParams($this->getJname());
+        $params = JFusionFactory::getParams($this->getJname());
         $options = array();
         $options['action'] = 'core.login.site';
 
@@ -1103,7 +1103,7 @@ class JFusionUser_phpbb3 extends JFusionUser
                     $userlookup = JFusionFunction::lookupUser($this->getJname(), $joomla_userid);
                     //get the user's info
                     if (!empty($userlookup)) {
-                        $db = & JFusionFactory::getDatabase($this->getJname());
+                        $db = JFusionFactory::getDatabase($this->getJname());
                         $query = "SELECT username_clean AS username, user_email as email FROM #__users WHERE user_id = {$userlookup->userid}";
                         $db->setQuery($query);
                         $user_identifiers = $db->loadObject();
@@ -1173,7 +1173,7 @@ class JFusionUser_phpbb3 extends JFusionUser
             } elseif ($debug) {
                 JError::raiseNotice('500','Keep alive enabled so renew Joomla\'s session');
             } else {
-                $db = & JFusionFactory::getDatabase($this->getJname());
+                $db = JFusionFactory::getDatabase($this->getJname());
                 if (!empty($persistant_cookie)) {
                     $query = 'SELECT user_id FROM #__sessions_keys WHERE key_id = ' . $db->Quote(md5($persistant_cookie));
                     if ($debug) {

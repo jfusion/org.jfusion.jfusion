@@ -40,7 +40,7 @@ class JFusionHelper_wordpress {
      */
     function getUsergroupListWP() {
 		$db = JFusionFactory::getDatabase($this->getJname());
-        $params = & JFusionFactory::getParams($this->getJname());
+        $params = JFusionFactory::getParams($this->getJname());
         $database_prefix = $params->get('database_prefix');
         $query = 'SELECT option_value FROM #__options WHERE option_name = '.$db->quote($database_prefix.'user_roles');
 		$db->setQuery($query);

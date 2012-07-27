@@ -42,7 +42,7 @@ class JElementJFusionCustomParam extends JElement
         global $jname;
         if ($jname) {
             //load the custom param output
-            $JFusionPlugin = & JFusionFactory::getAdmin($jname);
+            $JFusionPlugin = JFusionFactory::getAdmin($jname);
             if (method_exists($JFusionPlugin, $name)) {
                 $output = $JFusionPlugin->{$name}($name, $value, $node, $control_name);
                 return $output;

@@ -59,7 +59,7 @@ class JFusionUser_joomla_ext extends JFusionUser {
      */
     function deleteUser($userinfo) {
         //get the database ready
-        $db = & JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
         //setup status array to hold debug info and errors
         $status = array('error' => array(),'debug' => array());
         $username = $userinfo->username;
@@ -122,7 +122,7 @@ class JFusionUser_joomla_ext extends JFusionUser {
      * @return array
      */
     function destroySession($userinfo, $options) {
-    	$params = & JFusionFactory::getParams($this->getJname());
+    	$params = JFusionFactory::getParams($this->getJname());
         $status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname(),$params->get('logout_type'));
         return $status;
     }
@@ -133,7 +133,7 @@ class JFusionUser_joomla_ext extends JFusionUser {
      * @return array
      */
     function createSession($userinfo, $options) {
-    	$params = & JFusionFactory::getParams($this->getJname());
+    	$params = JFusionFactory::getParams($this->getJname());
     	$status = JFusionJplugin::createSession($userinfo, $options, $this->getJname(),$params->get('brute_force'));
         return $status;
     }

@@ -66,7 +66,7 @@ class JFusionPublic_gallery2 extends JFusionPublic {
          * @ignore
          * @var $jPluginParam JParameter
          */
-        $jPluginParam = &$data->jPluginParam;
+        $jPluginParam = $data->jPluginParam;
         //Handle PHP based Gallery Rewrite
         $segments = JRequest::getVar('jFusion_Route');
         if (!empty($segments)) {
@@ -122,9 +122,9 @@ class JFusionPublic_gallery2 extends JFusionPublic {
         $helper->setPathway();
         if (isset($g2data['bodyHtml']) && isset($g2data['headHtml'])) {
             $buffer = '<html><head>' . $g2data['headHtml'] . '</head><body>' . $g2data['bodyHtml'] . '</body></html>';
-            $data->body = & $g2data['bodyHtml'];
-            $data->header = & $g2data['headHtml'];
-            $data->buffer = & $buffer;
+            $data->body = $g2data['bodyHtml'];
+            $data->header = $g2data['headHtml'];
+            $data->buffer = $buffer;
         }
     }
 
@@ -297,7 +297,7 @@ class JFusionPublic_gallery2 extends JFusionPublic {
         date_default_timezone_set('UTC');
         $now = time();
         $active = strtotime("-5 minutes", $now);
-        $db = & JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
         $query = "SELECT COUNT(*) FROM #__SessionMap s " . "WHERE g_modificationTimestamp > $active AND s.g_userId != 5";
         $db->setQuery($query);
         $result = $db->loadResult();
@@ -312,7 +312,7 @@ class JFusionPublic_gallery2 extends JFusionPublic {
         date_default_timezone_set('UTC');
         $now = time();
         $active = strtotime("-5 minutes", $now);
-        $db = & JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
         $query = "SELECT COUNT(*) FROM #__SessionMap s " . "WHERE g_modificationTimestamp > $active AND s.g_userId = 5";
         $db->setQuery($query);
         $result = $db->loadResult();

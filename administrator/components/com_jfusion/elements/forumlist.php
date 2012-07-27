@@ -62,7 +62,7 @@ class JElementForumlist extends JElement
         if (!empty($jname)) {
             if (JFusionFunction::validPlugin($jname)) {
                 $output.= '<b>' . $jname . '</b><br />';
-                $JFusionPlugin = & JFusionFactory::getForum($jname);
+                $JFusionPlugin = JFusionFactory::getForum($jname);
                 if (method_exists($JFusionPlugin, 'getForumList')) {
                     $forumlist = $JFusionPlugin->getForumList();
                     if (!empty($forumlist)) {

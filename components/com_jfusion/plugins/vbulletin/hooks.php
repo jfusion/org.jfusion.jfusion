@@ -243,7 +243,7 @@ class executeJFusionHook
         }
         */
         //we need to update the session table
-        $vdb = & JFusionFactory::getDatabase(_VBJNAME);
+        $vdb = JFusionFactory::getDatabase(_VBJNAME);
         if (!empty($vdb)) {
             $vars = & $vbulletin->session->vars;
             if ($vbulletin->session->created) {
@@ -290,7 +290,7 @@ class executeJFusionHook
             //if sef is enabled, we need to rewrite the nojs link
             if ($vbsefenabled == 1) {
                 if ($vbsefmode == 1) {
-                    $uri = & JURI::getInstance();
+                    $uri = JURI::getInstance();
                     $url = $uri->toString();
                     $show['nojs_link'] = $url;
                     $show['nojs_link'].= (substr($url, -1) != '/') ? '/nojs,1/' : 'nojs,1/';
@@ -530,8 +530,8 @@ class executeJFusionHook
         }
 
         //parse AJAX output
-        $public = & JFusionFactory::getPublic(_VBJNAME);
-        $params = & JFusionFactory::getParams(_VBJNAME);
+        $public = JFusionFactory::getPublic(_VBJNAME);
+        $params = JFusionFactory::getParams(_VBJNAME);
 
         $jdata = new stdClass();
         $jdata->body = & $this->vars;

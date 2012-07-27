@@ -92,7 +92,7 @@ function &plgSearchjfusionAreas()
     static $areas = array();
     //get the softwares with search enabled
     $plugins = JFusionFunction::getPlugins('search');
-    $searchplugin = & JPluginHelper::getPlugin('search', 'jfusion');
+    $searchplugin = JPluginHelper::getPlugin('search', 'jfusion');
     $params = new JParameter($searchplugin->params);
     $enabledPlugins = unserialize(base64_decode($params->get('JFusionPluginParam')));
     if (is_array($plugins)) {
@@ -136,7 +136,7 @@ function plgSearchjfusion($text, $phrase = '', $ordering = '', $areas = null)
         $searchPlugins = array_keys($searchPlugins);
     }
     //get the search plugin parameters
-    $plugin = & JPluginHelper::getPlugin('search', 'jfusion');
+    $plugin = JPluginHelper::getPlugin('search', 'jfusion');
     $params = new JParameter($plugin->params);
     $pluginParamValue = $params->get('JFusionPluginParam');
     $pluginParamValue = unserialize(base64_decode($pluginParamValue));
@@ -164,14 +164,14 @@ function plgSearchjfusion($text, $phrase = '', $ordering = '', $areas = null)
     }
 
     foreach ($searchPlugins AS $jname) {
-        $searchMe = & JFusionFactory::getPublic($jname);
+        $searchMe = JFusionFactory::getPublic($jname);
         if (is_array($pluginParamValue)) {
             $pluginParam = new JParameter('');
             $pluginParam->loadArray($pluginParamValue[$jname]);
         } else {
             $pluginParam = new JParameter('');
         }
-        $itemid = & $pluginParam->get('itemid');
+        $itemid = $pluginParam->get('itemid');
         $results = $searchMe->getSearchResults($text, $phrase, $pluginParam, $itemid, $ordering);
         if (is_array($results)) {
             //check to see if the results contain the appropriate field

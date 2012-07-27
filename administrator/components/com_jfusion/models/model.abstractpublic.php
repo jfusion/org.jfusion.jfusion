@@ -52,7 +52,7 @@ class JFusionPublic
         if ( isset($data->location) ) {
             $location = str_replace($data->integratedURL,'',$data->location);
             $location = $this->fixUrl($location,$data->baseURL,$data->fullURL,$data->integratedURL,$data->jroute);
-            $mainframe = & JFactory::getApplication();
+            $mainframe = JFactory::getApplication();
             $mainframe->redirect($location);
         }
         if ( isset($status['error']) ) {
@@ -325,7 +325,7 @@ JS;
     function parseCSS(&$data,&$html,$infile_only=false)
     {
         $jname = $this->getJname();
-        $param =& JFusionFactory::getParams ( $this->getJname() );
+        $param = JFusionFactory::getParams ( $this->getJname() );
 
         if (empty($jname)) {
             $jname = JRequest::getVar ( 'Itemid' );
@@ -803,7 +803,7 @@ HTML;
     function getSearchResults(&$text, &$phrase, &$pluginParam, $itemid, $ordering)
     {
         //initialize plugin database
-        $db = & JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
         //get the query used to search
         $query = $this->getSearchQuery($pluginParam);
         //assign specific table colums to title and text

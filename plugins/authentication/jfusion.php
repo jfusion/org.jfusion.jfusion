@@ -78,7 +78,7 @@ class plgAuthenticationjfusion extends JPlugin
         //get the JFusion master
         $master = JFusionFunction::getMaster();
         if (!empty($master)) {
-            $JFusionMaster = & JFusionFactory::getUser($master->name);
+            $JFusionMaster = JFusionFactory::getUser($master->name);
             $userinfo = $JFusionMaster->getUser($credentials['username']);
             //check if a user was found
             if (!empty($userinfo)) {
@@ -106,7 +106,7 @@ class plgAuthenticationjfusion extends JPlugin
                 //apply the cleartext password to the user object
                 $userinfo->password_clear = $credentials['password'];
                 //check the master plugin for a valid password
-                $model = & JFusionFactory::getAuth($master->name);
+                $model = JFusionFactory::getAuth($master->name);
                 $testcrypt = $model->generateEncryptedPassword($userinfo);
                 if (isset($options['show_unsensored'])) {
                     $response->debug[] = $master->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' . $testcrypt . ' vs ' . $userinfo->password;
@@ -133,8 +133,8 @@ class plgAuthenticationjfusion extends JPlugin
                 //loop through the different models
                 foreach ($auth_models as $auth_model) {
                     //Generate an encrypted password for comparison
-                    $model = & JFusionFactory::getAuth($auth_model->name);
-                    $JFusionSlave = & JFusionFactory::getUser($auth_model->name);
+                    $model = JFusionFactory::getAuth($auth_model->name);
+                    $JFusionSlave = JFusionFactory::getUser($auth_model->name);
                     $slaveuserinfo = $JFusionSlave->getUser($userinfo);
                     // add in the clear password to be able to generate the hash
                     if (!empty($slaveuserinfo)) {
@@ -162,7 +162,7 @@ class plgAuthenticationjfusion extends JPlugin
                         $response->userinfo = $userinfo;
                         //update the password format to what the master expects
                         $status = array('error' => array(),'debug' => array());
-                        $JFusionMaster = & JFusionFactory::getUser($master->name);
+                        $JFusionMaster = JFusionFactory::getUser($master->name);
                         //make sure that the password_clear is not already hashed which may be the case for some dual login plugins
                         if (strlen($userinfo->password_clear) != 32) {
                             $JFusionMaster->updatePassword($userinfo, $userinfo, $status);

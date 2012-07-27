@@ -105,7 +105,7 @@ class JFusionForum_smf2 extends JFusionForum
             static $markread;
             if (!is_array($markread)) {
                 $markread = array();
-                $db = & JFusionFactory::getDatabase($this->getJname());
+                $db = JFusionFactory::getDatabase($this->getJname());
                 $userlookup = JFusionFunction::lookupUser($this->getJname(), $JUser->id);
                 if (!empty($userlookup)) {
                     $query = "SELECT id_msg, id_topic FROM #__log_topics WHERE id_member = {$userlookup->userid}";
@@ -600,7 +600,7 @@ HTML;
         $query.= " UNION ";
         $query.= "(SELECT a.id_topic , a.id_msg, a.poster_name, a.poster_name as real_name, a.id_member, 1 AS guest, a.subject, a.poster_time, a.body, a.poster_time AS order_by_date FROM `#__messages` as a $where AND a.id_member = 0)";
         $query.= " ORDER BY order_by_date $sort";
-		$jdb = & JFusionFactory::getDatabase($this->getJname());
+		$jdb = JFusionFactory::getDatabase($this->getJname());
 
 		if($dbparams->get('enable_pagination',true)) {
 			$application = JFactory::getApplication() ;
@@ -678,7 +678,7 @@ HTML;
      * @return bool
      */
     function getThreadLockedStatus($threadid) {
-        $db = & JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
         $query = "SELECT locked FROM #__topics WHERE id_topic = $threadid";
         $db->setQuery($query);
         $locked = $db->loadResult();
@@ -693,9 +693,9 @@ HTML;
      */
     function getActivityQuery($usedforums, $result_order, $result_limit)
     {
-        $db = & JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
 
-		$userPlugin = & JFusionFactory::getUser($this->getJname());
+		$userPlugin = JFusionFactory::getUser($this->getJname());
 
 		$user = JFactory::getUser();
 		$userid = $user->get('id');

@@ -157,7 +157,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 
         $numargs = func_num_args();
         if ($numargs > 3) {
-            $db = & JFusionFactory::getDatabase($this->getJname());
+            $db = JFusionFactory::getDatabase($this->getJname());
             $filters = func_get_args();
             $i = 3;
             for ($i = 3; $i < $numargs; $i++) {
@@ -192,7 +192,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
             static $marktimes;
             if (!is_array($marktimes)) {
                 $marktimes = array();
-                $db = & JFusionFactory::getDatabase($this->getJname());
+                $db = JFusionFactory::getDatabase($this->getJname());
 
                 $userlookup = JFusionFunction::lookupUser($this->getJname(), $JUser->id);
                 if (!empty($userlookup)) {
@@ -246,7 +246,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
     function filterForumList($forumids)
     {
         if (empty($forumids)) {
-            $db = & JFusionFactory::getDatabase($this->getJname());
+            $db = JFusionFactory::getDatabase($this->getJname());
             //no forums were selected so pull them all
             $query = "SELECT forum_id FROM #__forums WHERE forum_type = 1 ORDER BY left_id";
             $db->setQuery($query);
@@ -275,13 +275,13 @@ class JFusionForum_phpbb3 extends JFusionForum {
     function getForumPermissions($userid = 'find') {
         static $phpbb_acl;
         if (!is_array($phpbb_acl)) {
-            $db = & JFusionFactory::getDatabase($this->getJname());
+            $db = JFusionFactory::getDatabase($this->getJname());
             $phpbb_acl = array();
             $user_acl = array();
             $groups_acl = array();
 
             //get permissions for all forums in case more than one module/plugin is present with different settings
-            $db = & JFusionFactory::getDatabase($this->getJname());
+            $db = JFusionFactory::getDatabase($this->getJname());
             $query = "SELECT forum_id FROM #__forums WHERE forum_type = 1 ORDER BY left_id";
             $db->setQuery($query);
             $forumids = $db->loadResultArray();
@@ -877,7 +877,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 		$where = "WHERE p.topic_id = {$threadid} AND p.post_id != {$postid} AND p.post_approved = 1";
         $query = "SELECT p.post_id , CASE WHEN p.poster_id = 1 THEN 1 ELSE 0 END AS guest, CASE WHEN p.poster_id = 1 AND p.post_username != '' THEN p.post_username ELSE u.username END AS name, CASE WHEN p.poster_id = 1 AND p.post_username != '' THEN p.post_username ELSE u.username_clean END AS username, u.user_id, p.post_subject, p.post_time, p.post_text, p.topic_id FROM `#__posts` as p INNER JOIN `#__users` as u ON p.poster_id = u.user_id $where ORDER BY p.post_time $sort";
 
-		$jdb = & JFusionFactory::getDatabase($this->getJname());
+		$jdb = JFusionFactory::getDatabase($this->getJname());
 
 		if($dbparams->get('enable_pagination',true)) {
 			$application = JFactory::getApplication() ;

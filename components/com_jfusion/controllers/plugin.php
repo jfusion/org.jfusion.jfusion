@@ -42,8 +42,8 @@ class JFusionControllerPlugin extends JController
 		$jPluginParam = new JParameter('');
 		//added to prevent a notice of $jview being undefined;
 		if ($menuitemid && $menuitemid!=1) {
-            $menu = & JMenu::getInstance('site');
-            $item = & $menu->getItem($menuitemid);
+            $menu = JMenu::getInstance('site');
+            $item = $menu->getItem($menuitemid);
             $menu_params = new JParameter($item->params, '');
 			$jview = $menu_params->get('visual_integration','wrapper');
 
@@ -77,7 +77,7 @@ class JFusionControllerPlugin extends JController
              * @ignore
              * @var $view JView
              */
-            $view = &$this->getView('plugin', 'html');
+            $view = $this->getView('plugin', 'html');
             //render the view
             $view->assignRef('jname', $jname);
             $view->assignRef('jPluginParam', $jPluginParam);

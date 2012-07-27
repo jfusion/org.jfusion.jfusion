@@ -105,7 +105,7 @@ class plgSystemJfusion extends JPlugin
                 //for master if not joomla_int
                 $master = JFusionFunction::getMaster();
                 if (!empty($master) && $master->name != 'joomla_int') {
-                    $JFusionUser = & JFusionFactory::getUser($master->name);
+                    $JFusionUser = JFusionFactory::getUser($master->name);
                     $changed = $JFusionUser->syncSessions($keepalive);
                     if (!empty($changed)) {
                         if ($debug) {
@@ -119,7 +119,7 @@ class plgSystemJfusion extends JPlugin
                 foreach ($plugins as $plugin) {
                     //only call keepAlive if the plugin is activated for dual login
                     if ($plugin->dual_login) {
-                        $JFusionUser = & JFusionFactory::getUser($plugin->name);
+                        $JFusionUser = JFusionFactory::getUser($plugin->name);
                         $changed = $JFusionUser->syncSessions($keepalive);
                         if (!empty($changed)) {
                             if ($debug) {
@@ -154,7 +154,7 @@ class plgSystemJfusion extends JPlugin
                 if ($debug) {
                     JError::raiseNotice('500','Refresh is true');
                 }
-                $uri = & JURI::getInstance();
+                $uri = JURI::getInstance();
                 //add a variable to ensure refresh
                 $uri->setVar('time', time());
                 $link = $uri->toString();
@@ -177,7 +177,7 @@ class plgSystemJfusion extends JPlugin
 			// if those implement it.
 			$userinfo = JFactory::getUser ();
 			$master = JFusionFunction::getMaster ();
-			$JFusionMasterPublic = & JFusionFactory::getPublic ( $master->name );
+			$JFusionMasterPublic = JFusionFactory::getPublic ( $master->name );
 			if (method_exists ( $JFusionMasterPublic, 'setLanguageFrontEnd' )) {
 				$status = $JFusionMasterPublic->setLanguageFrontEnd ( $userinfo );
 				if (! empty ( $status ['error'] )) {
@@ -189,7 +189,7 @@ class plgSystemJfusion extends JPlugin
 			}
 			$slaves = JFusionFunction::getSlaves ();
 			foreach ( $slaves as $slave ) {
-				$JFusionSlavePublic = & JFusionFactory::getPublic ( $slave->name );
+				$JFusionSlavePublic = JFusionFactory::getPublic ( $slave->name );
 				if (method_exists( $JFusionSlavePublic, 'setLanguageFrontEnd' )) {
 					$status = $JFusionSlavePublic->setLanguageFrontEnd ( $userinfo );
 					if (! empty ( $status ['error'] )) {

@@ -503,7 +503,7 @@ class JFusionUser_smf extends JFusionUser
     	return 0;
         /*
         //retrieve the smf cookie name
-        $params = & JFusionFactory::getParams($this->getJname());
+        $params = JFusionFactory::getParams($this->getJname());
         $cookie_name = $params->get('cookie_name');
         $cookie_value = isset($_COOKIE[$cookie_name]) ? $_COOKE[$cookie_name] : '';
         $JUser = JFactory::getUser();

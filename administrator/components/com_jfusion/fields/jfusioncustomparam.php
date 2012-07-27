@@ -36,7 +36,7 @@ class JFormFieldJFusionCustomParam extends JFormField
         global $jname;
         if ($jname) {
             //load the custom param output
-            $JFusionPlugin = & JFusionFactory::getAdmin($jname);
+            $JFusionPlugin = JFusionFactory::getAdmin($jname);
             if (method_exists($JFusionPlugin, $this->fieldname)) {
             	//TODO NODE should be corrected
             	$node = null;

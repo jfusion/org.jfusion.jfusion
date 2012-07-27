@@ -164,7 +164,7 @@ JFusionFunctionAdmin::displayDonate();
 			}
 			jimport('joomla.html.pane');
             if ($this->JFusionCpanel) {
-                $pane = & JPane::getInstance('tabs');
+                $pane = JPane::getInstance('tabs');
                 echo $pane->startPane('pane');
                 foreach ($this->JFusionCpanel->item as $item) {
                     echo $pane->startPanel($item->title[0]->data(), $item->title[0]->data());

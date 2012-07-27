@@ -79,9 +79,9 @@ class plgUserJfusion extends JPlugin
             //delete the master user if it is not Joomla
             $master = JFusionFunction::getMaster();
             if ($master->name != 'joomla_int') {
-                $params = & JFusionFactory::getParams($master->name);
+                $params = JFusionFactory::getParams($master->name);
                 $deleteEnabled = $params->get('allow_delete_users', 0);
-                $JFusionMaster = & JFusionFactory::getUser($master->name);
+                $JFusionMaster = JFusionFactory::getUser($master->name);
                 $MasterUser = $JFusionMaster->getUser($userinfo);
                 if (!empty($MasterUser) && $deleteEnabled) {
                     $status = $JFusionMaster->deleteUser($MasterUser);
@@ -98,9 +98,9 @@ class plgUserJfusion extends JPlugin
             //delete the user in the slave plugins
             $slaves = JFusionFunction::getPlugins();
             foreach ($slaves as $slave) {
-                $params = & JFusionFactory::getParams($slave->name);
+                $params = JFusionFactory::getParams($slave->name);
                 $deleteEnabled = $params->get('allow_delete_users', 0);
-                $JFusionSlave = & JFusionFactory::getUser($slave->name);
+                $JFusionSlave = JFusionFactory::getUser($slave->name);
                 $SlaveUser = $JFusionSlave->getUser($userinfo);
                 if (!empty($SlaveUser) && $deleteEnabled) {
                     $status = $JFusionSlave->deleteUser($SlaveUser);
@@ -184,9 +184,9 @@ class plgUserJfusion extends JPlugin
             $master->joomlaAuth = true;
         }
         //setup JFusionUser object for Joomla
-        $JFusionJoomla = & JFusionFactory::getUser('joomla_int');
+        $JFusionJoomla = JFusionFactory::getUser('joomla_int');
         if (!empty($master)) {
-            $JFusionMaster = & JFusionFactory::getUser($master->name);
+            $JFusionMaster = JFusionFactory::getUser($master->name);
             //check to see if userinfo is already present
             if (!empty($user['userinfo'])) {
                 //the jfusion auth plugin is enabled
@@ -210,11 +210,11 @@ class plgUserJfusion extends JPlugin
                 if (empty($userinfo)) {
                     //are we in Joomla's backend?  Let's check internal Joomla for the user if joomla_int isn't already the master to prevent lockouts
                     if ($master->name != 'joomla_int' && $mainframe->isAdmin()) {
-                         $JFusionJoomla = & JFusionFactory::getUser('joomla_int');
+                         $JFusionJoomla = JFusionFactory::getUser('joomla_int');
                          $JoomlaUserinfo = $JFusionJoomla->getUser($auth_userinfo);
                          if (!empty($JoomlaUserinfo)) {
                              //user found in Joomla, let them pass just to be able to login to the backend
-                             $userinfo = & $JoomlaUserinfo;
+                             $userinfo = $JoomlaUserinfo;
                          } else {
                              //user not found in Joomla, return an error
                             $jfusionDebug['init'][] = JText::_('COULD_NOT_FIND_USER');
@@ -224,7 +224,7 @@ class plgUserJfusion extends JPlugin
                          }
                     } else {
                         //should be auto-create users?
-                        $params = & JFusionFactory::getParams('joomla_int');
+                        $params = JFusionFactory::getParams('joomla_int');
                         $autoregister = $params->get('autoregister', 0);
                         if ($autoregister == 1) {
                             $jfusionDebug['init'][] = JText::_('CREATING_MASTER_USER');
@@ -293,7 +293,7 @@ class plgUserJfusion extends JPlugin
                 $slaves = JFusionFunction::getSlaves();
                 foreach ($slaves as $slave) {
                     if ($JFusionActivePlugin != $slave->name) {
-                        $JFusionSlave = & JFusionFactory::getUser($slave->name);
+                        $JFusionSlave = JFusionFactory::getUser($slave->name);
                         $SlaveUser = $JFusionSlave->updateUser($userinfo, $overwrite);
                         //make sure the userinfo is available
                         if (empty($SlaveUser['userinfo'])) {
@@ -399,7 +399,7 @@ class plgUserJfusion extends JPlugin
             //setup the other slave JFusion plugins
             $slaves = JFusionFunction::getPlugins();
             foreach ($slaves as $slave) {
-                $JFusionSlave = & JFusionFactory::getUser($slave->name);
+                $JFusionSlave = JFusionFactory::getUser($slave->name);
                 $SlaveUser = $JFusionSlave->updateUser($userinfo, $overwrite);
                 if (!empty($SlaveUser['error'])) {
                     $jfusionDebug[$slave->name . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE') . ' ' . JText::_('DEBUG') ] = $SlaveUser['debug'];
@@ -439,11 +439,11 @@ class plgUserJfusion extends JPlugin
              * @ignore
              * @var $session JTableSession
              */
-            $session = & JTable::getInstance('session');
+            $session = JTable::getInstance('session');
             $session->purge($expire);
 
 
-            $params = & JFusionFactory::getParams('joomla_int');
+            $params = JFusionFactory::getParams('joomla_int');
             $allow_redirect_login = $params->get('allow_redirect_login', 0);
             $redirecturl_login = $params->get('redirecturl_login', '');
             $source_url = $params->get('source_url', '');
@@ -494,7 +494,7 @@ class plgUserJfusion extends JPlugin
             //get the JFusion master
             $master = JFusionFunction::getMaster();
             if ($master->name && $master->name != 'joomla_int' && $JFusionActivePlugin != $master->name) {
-                $JFusionMaster = & JFusionFactory::getUser($master->name);
+                $JFusionMaster = JFusionFactory::getUser($master->name);
                 $userlookup = JFusionFunction::lookupUser($master->name, $my->get('id'));
                 $jfusionDebug['userlookup'] = $userlookup;
                 $MasterUser = $JFusionMaster->getUser($userlookup);
@@ -518,7 +518,7 @@ class plgUserJfusion extends JPlugin
             foreach ($slaves as $slave) {
                 //check if sessions are enabled
                 if ($slave->dual_login == 1 && $JFusionActivePlugin != $slave->name) {
-                    $JFusionSlave = & JFusionFactory::getUser($slave->name);
+                    $JFusionSlave = JFusionFactory::getUser($slave->name);
                     $userlookup = JFusionFunction::lookupUser($slave->name, $my->get('id'));
                     $SlaveUser = $JFusionSlave->getUser($userlookup);
                     if (isset($options['show_unsensored'])) {
@@ -545,11 +545,11 @@ class plgUserJfusion extends JPlugin
         
         //destroy the joomla session itself
         if ($JFusionActivePlugin != 'joomla_int') {
-            $JoomlaUser = & JFusionFactory::getUser('joomla_int');
+            $JoomlaUser = JFusionFactory::getUser('joomla_int');
             $JoomlaUser->destroySession($user, $options);
         }
 
-        $params = & JFusionFactory::getParams('joomla_int');
+        $params = JFusionFactory::getParams('joomla_int');
         $allow_redirect_logout = $params->get('allow_redirect_logout', 0);
         $redirecturl_logout = $params->get('redirecturl_logout', '');
         $source_url = $params->get('source_url', '');
@@ -651,7 +651,7 @@ class plgUserJfusion extends JPlugin
                     $JoomlaUser->username = $storedUsername;
                 }
             }
-            $JFusionMaster = & JFusionFactory::getUser($master->name);
+            $JFusionMaster = JFusionFactory::getUser($master->name);
             //update the master user if not joomla_int
             if ($master->name != 'joomla_int') {                
                 $master_userinfo = $JFusionMaster->getUser($JoomlaUser->olduserinfo);
@@ -683,7 +683,7 @@ class plgUserJfusion extends JPlugin
             } else {
 	            //Joomla is master
 // commented out because we should use the joomla use object (in out plugins)
-//	            $master_userinfo = & $JoomlaUser;
+//	            $master_userinfo = $JoomlaUser;
 	            $master_userinfo = $JFusionMaster->getUser($JoomlaUser);
             	if(!JFusionFunction::isJoomlaVersion('1.6')) {
 	                if ($JoomlaUser->block == 0 && !empty($JoomlaUser->activation)) {
@@ -702,7 +702,7 @@ class plgUserJfusion extends JPlugin
             //update the user details in any JFusion slaves
             $slaves = JFusionFunction::getPlugins();
             foreach ($slaves as $slave) {
-                $JFusionSlave = & JFusionFactory::getUser($slave->name);
+                $JFusionSlave = JFusionFactory::getUser($slave->name);
                 //if the username was updated, call the updateUsername function before calling updateUser
                 if ($updateUsername) {
                     $slave_userinfo = $JFusionSlave->getUser($JoomlaUser->olduserinfo);

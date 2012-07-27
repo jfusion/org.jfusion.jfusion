@@ -87,7 +87,7 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
             //create a connection to the database
             $options = array('driver' => $params['database_type'], 'host' => $params['database_host'], 'user' => $params['database_user'], 'password' => $params['database_password'], 'database' => $params['database_name'], 'prefix' => $params['database_prefix']);
             //Get configuration settings stored in the database
-            $vdb = & JDatabase::getInstance($options);
+            $vdb = JDatabase::getInstance($options);
             $query = "SELECT config_name, config_value FROM #__config WHERE config_name IN ('script_path', 'cookie_path', 'server_name', 'cookie_domain', 'cookie_name', 'allow_autologin');";
             if (JError::isError($vdb) || !$vdb) {
                 JError::raiseWarning(0, JText::_('NO_DATABASE'));
@@ -237,7 +237,7 @@ if (isset($_GET[\'jfile\'])) {
         $allow_mods = $params->get('mod_ids');
         if (!empty($allow_mods)) {
             //get a userlist of mod ids
-            $db = & JFusionFactory::getDatabase($this->getJname());
+            $db = JFusionFactory::getDatabase($this->getJname());
             $query = "SELECT b.user_id, a.group_name FROM #__groups as a INNER JOIN #__user_group as b ON a.group_id = b.group_id WHERE a.group_name = 'GLOBAL_MODERATORS' or a.group_name = 'ADMINISTRATORS'";
             $db->setQuery($query);
             $mod_list = $db->loadObjectList();
@@ -598,7 +598,7 @@ HTML;
      * @return bool
      */
     function clearConfigCache() {
-        $params = & JFusionFactory::getParams($this->getJname());
+        $params = JFusionFactory::getParams($this->getJname());
         $source_path = $params->get('source_path');
         $cache = $source_path . DS . 'cache' . DS . 'data_global.php';
         if (file_exists($cache)) {

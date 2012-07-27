@@ -53,7 +53,7 @@ function jfusionBuildRoute(&$query)
     }
 
     if (defined('ROUTED_JNAME')) {
-        $public = & JFusionFactory::getPublic(ROUTED_JNAME);
+        $public = JFusionFactory::getPublic(ROUTED_JNAME);
         $public->buildRoute($segments);
     }
 
@@ -111,8 +111,8 @@ function jfusionParseRoute($segments)
 
     unset($segments);
     
-    $menu = & JMenu::getInstance('site');
-    $item = & $menu->getActive();
+    $menu = JMenu::getInstance('site');
+    $item = $menu->getActive();
     $vars += $item->query;
 	if ($vars['view'] == 'plugin') {
 	    $menu_params = new JParameter($item->params, '');
@@ -131,7 +131,7 @@ function jfusionParseRoute($segments)
 	        }
 	
 	        if (!empty($jname)) {
-	            $public = & JFusionFactory::getPublic($jname);
+	            $public = JFusionFactory::getPublic($jname);
 	            $public->parseRoute($vars);
 	        }
 	

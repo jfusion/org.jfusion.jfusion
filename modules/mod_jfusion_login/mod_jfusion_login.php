@@ -46,15 +46,15 @@ if (file_exists($model_file) && file_exists($factory_file)) {
     //get the itemid and jname to get any missing urls
     $link_itemid = $params->get('itemid');
     if (is_numeric($link_itemid)) {
-        $menu = & JSite::getMenu();
-        $menu_param = & $menu->getParams($link_itemid);
+        $menu = JSite::getMenu();
+        $menu_param = $menu->getParams($link_itemid);
         $plugin_param = unserialize(base64_decode($menu_param->get('JFusionPluginParam')));
         $link_jname = $plugin_param['jfusionplugin'];
     } else {
         $link_jname = $link_itemid;
     }
     //get the default URLs if no custom URL specified
-    $LinkPlugin = & JFusionFactory::getPublic($link_jname);
+    $LinkPlugin = JFusionFactory::getPublic($link_jname);
     if (empty($lostpassword_url) && method_exists($LinkPlugin, 'getLostPasswordURL')) {
         $lostpassword_url = JFusionFunction::routeURL($LinkPlugin->getLostPasswordURL(), $link_itemid);
     }
@@ -67,8 +67,8 @@ if (file_exists($model_file) && file_exists($factory_file)) {
     //now find out from which plugin the avatars need to be displayed
     $itemid = $params->get('itemidAvatarPMs');
     if (is_numeric($itemid)) {
-        $menu = & JSite::getMenu();
-        $menu_param = & $menu->getParams($itemid);
+        $menu = JSite::getMenu();
+        $menu_param = $menu->getParams($itemid);
         $plugin_param = unserialize(base64_decode($menu_param->get('JFusionPluginParam')));
         $jname = $plugin_param['jfusionplugin'];
     } else {
@@ -78,7 +78,7 @@ if (file_exists($model_file) && file_exists($factory_file)) {
 	if (!$user->get('guest')) {
         $userlookup = JFusionFunction::lookupUser($jname, $user->get('id'));
         if (!empty($userlookup)) {
-            $JFusionUser = & JFusionFactory::getUser($link_jname);
+            $JFusionUser = JFusionFactory::getUser($link_jname);
             $userinfo = $JFusionUser->getUser($userlookup);
             if (!empty($userinfo)) {
                 $display_name = ($params->get('name') && isset($userinfo->name)) ? $userinfo->name : $userinfo->username;
@@ -89,7 +89,7 @@ if (file_exists($model_file) && file_exists($factory_file)) {
 	}
     
     if (!empty($jname) && $jname != 'joomla_int' && !$user->get('guest')) {
-        $JFusionPlugin = & JFusionFactory::getForum($jname);
+        $JFusionPlugin = JFusionFactory::getForum($jname);
         //check to see if we found a user
         if (!empty($userlookup)) {
             if ($params->get('avatar')) {

@@ -90,7 +90,7 @@ class JFusionPublic_efront extends JFusionPublic
         //get a unix time from 5 mintues ago
         date_default_timezone_set('UTC');
         // $active = strtotime("-5 minutes", time());
-        $db = & JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
         $query = "SELECT COUNT(*) FROM #__users_online"; // WHERE  timestamp > $active";
         $db->setQuery($query);
         $result = $db->loadResult();

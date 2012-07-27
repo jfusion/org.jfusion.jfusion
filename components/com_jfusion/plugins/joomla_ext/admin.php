@@ -44,10 +44,10 @@ class JFusionAdmin_joomla_ext extends JFusionAdmin
 
 	function getVersion() {
 		// find out what Joomla version we have
-		$params = & JFusionFactory::getParams($this->getJname());
+		$params = JFusionFactory::getParams($this->getJname());
 		$joomlaversion = $params->get('joomlaversion','');
 		if (empty($joomlaversion)) {
-            $db = & JFusionFactory::getDatabase($this->getJname());
+            $db = JFusionFactory::getDatabase($this->getJname());
             if (!$db) {
                 $joomlaversion = '1.6';
             } else {
@@ -104,7 +104,7 @@ class JFusionAdmin_joomla_ext extends JFusionAdmin
      * @return string
      */
     function getDefaultUsergroup() {
-		$params = & JFusionFactory::getParams($this->getJname());
+		$params = JFusionFactory::getParams($this->getJname());
 		return JFusionJplugin::getDefaultUsergroup($this->getJname());
 	}
 
@@ -141,7 +141,7 @@ class JFusionAdmin_joomla_ext extends JFusionAdmin
 		}
 		//check that master plugin does not have advanced group mode data stored
 		$master = JFusionFunction::getMaster();
-		$params = & JFusionFactory::getParams($jname);
+		$params = JFusionFactory::getParams($jname);
 		if (!empty($master) && $master->name == $jname && JFusionFunction::isAdvancedUsergroupMode($this->getJname())) {
 			JError::raiseWarning(0, $jname . ': ' . JText::_('ADVANCED_GROUPMODE_ONLY_SUPPORTED_FORSLAVES'));
 		}

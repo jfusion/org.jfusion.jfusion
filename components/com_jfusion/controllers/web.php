@@ -30,16 +30,16 @@ class JFusionControllerWeb extends JController
         * @ignore
          * @var $menu JMenu
         */
-        $menu = & JSite::getMenu ();
+        $menu = JSite::getMenu ();
         $item = $menu->getActive ();
         if ($item) {
-            $params = & $menu->getParams ( $item->id );
+            $params = $menu->getParams ( $item->id );
         } else {
-            $params = & $menu->getParams ( null );
+            $params = $menu->getParams ( null );
         }
 
         // Set the default view name from the Request
-        $view = &$this->getView ( 'web', 'html' );
+        $view = $this->getView ( 'web', 'html' );
         $view->assignRef('params',$params);
         $view->display ();
     }

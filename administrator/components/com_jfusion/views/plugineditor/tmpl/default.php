@@ -45,7 +45,7 @@ JFusionFunctionAdmin::displayDonate();
     <?php
     if ($this->params) {
         jimport('joomla.html.pane');
-        $paneTabs = & JPane::getInstance('tabs');
+        $paneTabs = JPane::getInstance('tabs');
         echo $paneTabs->startPane('jfusion_plugin_editor');
         $inbox = 0;
         foreach ($this->params as $param) {

@@ -250,7 +250,7 @@ class JFusionForum
 	{
 		//set some vars
 		$forumid = $dbparams->get("default_forum");
-		$catid =& $contentitem->catid;
+		$catid = $contentitem->catid;
 		$option = JRequest::getCmd('option');
 		$isJ16 = JFusionFunction::isJoomlaVersion('1.6');
 
@@ -258,7 +258,7 @@ class JFusionForum
     		//determine default forum
     		if ($option == 'com_content' && !$isJ16) {
     		    //only J1.5 uses sections
-        		$sectionid =& $contentitem->sectionid;
+        		$sectionid = $contentitem->sectionid;
         		$sections = $dbparams->get("pair_sections");
         		if(!empty($sections)) {
         			$pairs = base64_decode($sections);
@@ -314,7 +314,7 @@ class JFusionForum
                         }
                     }
     		    } else {
-    		        $JCat =& JCategories::getInstance('Content');
+    		        $JCat = JCategories::getInstance('Content');
                     /**
                      * @ignore
                      * @var $cat JCategoryNode
@@ -478,7 +478,7 @@ class JFusionForum
 		}
 
 		//prepare the content
-        $public = & JFusionFactory::getPublic($this->getJname());
+        $public = JFusionFactory::getPublic($this->getJname());
 		$public->prepareText($text, 'forum');
 
 		return $text;
@@ -595,7 +595,7 @@ HTML;
 				break;
 			case 'joomla15captcha':
 				//using joomla15captcha (http://code.google.com/p/joomla15captcha)
-				$dispatcher = &JDispatcher::getInstance();
+				$dispatcher = JDispatcher::getInstance();
 				$results = $dispatcher->trigger( 'onCaptchaRequired', array( 'jfusion.discussion' ) );
 				if ($results[0])
 					ob_start();
@@ -684,7 +684,7 @@ JS;
 				break;
 			case "joomla15captcha":
 				//using joomla15captcha (http://code.google.com/p/joomla15captcha)
-				$dispatcher     = &JDispatcher::getInstance();
+				$dispatcher = JDispatcher::getInstance();
 				$results = $dispatcher->trigger( 'onCaptchaRequired', array( 'jfusion.discussion' ) );
 				if ( $results[0] ) {
 					$captchaparams = array( JRequest::getVar( 'captchacode', '', 'post' )

@@ -89,7 +89,7 @@ class JFusionFunction
 			default:
 				return false;
 		}
-		$plugins =& ${$criteria."_plugins"};
+		$plugins = ${$criteria."_plugins"};
         if (empty($plugins)) {
             $query = "SELECT * FROM #__jfusion WHERE ($criteria = 1 AND status = 1 AND name NOT LIKE 'joomla_int')";
             $db = JFactory::getDBO();
@@ -141,7 +141,7 @@ class JFusionFunction
                 }
             } else {
                 //we need to create direct link to the plugin
-                $params = & JFusionFactory::getParams($itemid);
+                $params = JFusionFactory::getParams($itemid);
                 $url = $params->get('source_url') . $url;
                 if ($xhtml) {
                     $url = str_replace('&', '&amp;', $url);
@@ -156,8 +156,8 @@ class JFusionFunction
                     $routeURL_jname = array();
                 }
                 if (!isset($routeURL_jname[$itemid])) {
-                    $menu = & JSite::getMenu();
-                    $menu_param = & $menu->getParams($itemid);
+                    $menu = JSite::getMenu();
+                    $menu_param = $menu->getParams($itemid);
                     $plugin_param = unserialize(base64_decode($menu_param->get('JFusionPluginParam')));
                     $routeURL_jname[$itemid] = $plugin_param['jfusionplugin'];
                     $jname = $routeURL_jname[$itemid];
@@ -166,13 +166,13 @@ class JFusionFunction
                 }
             }
             //make the URL relative so that external software can use this function
-            $params = & JFusionFactory::getParams($jname);
+            $params = JFusionFactory::getParams($jname);
             $source_url = $params->get('source_url');
             $url = str_replace($source_url, '', $url);
 
             $config = JFactory::getConfig();
             $sefenabled = $config->getValue('config.sef');
-            $params = & JFusionFactory::getParams($jname);
+            $params = JFusionFactory::getParams($jname);
             $sefmode = $params->get('sefmode', 1);
             if ($sefenabled && !$sefmode) {
                 //otherwise just tak on the URL
@@ -183,7 +183,7 @@ class JFusionFunction
                 }
             } else {
                 //fully parse the URL if sefmode = 1
-                $u = & JURI::getInstance($url);
+                $u = JURI::getInstance($url);
                 $u->setVar('jfile', $u->getPath());
                 $u->setVar('option', 'com_jfusion');
                 $u->setVar('Itemid', $itemid);
@@ -221,7 +221,7 @@ class JFusionFunction
             $base_url = 'index.php?option=com_jfusion&amp;Itemid=-1&amp;view=' . $view . '&amp;jname=' . $jname;
         }
         if ($view == 'direct') {
-            $params = & JFusionFactory::getParams($jname);
+            $params = JFusionFactory::getParams($jname);
             $url = $params->get('source_url') . $url;
         } elseif ($view == 'wrapper') {
             //use base64_encode to encode the URL for passing.  But, base64_code uses / which throws off SEF urls.  Thus slashes
@@ -288,7 +288,7 @@ class JFusionFunction
                 $jnames = $db->loadObjectList();
                 foreach ($jnames as $jname) {
                     if ($jname != "joomla_int") {
-                        $user = & JFusionFactory::getUser($jname->name);
+                        $user = JFusionFactory::getUser($jname->name);
                         $puserinfo = $user->getUser($userinfo);
                         if ($delete) {
                             $queries[] = "(id = $joomla_id AND jname = " . $db->Quote($jname->name) . ")";
@@ -374,7 +374,7 @@ class JFusionFunction
             }
             if (!empty($result) && !empty($joomla_id) && !empty($jname)) {
                 //get the plugin's userinfo - specifically we need the userid which it will provide
-                $user = & JFusionFactory::getUser($jname);
+                $user = JFusionFactory::getUser($jname);
                 $existinguser = $user->getUser($result);
                 if (!empty($existinguser)) {
                     //update the lookup table with the new acquired info
@@ -625,8 +625,8 @@ class JFusionFunction
 
         if ($mainframe->isAdmin()) {
             //setup JRoute to use the frontend router
-            $app    = JApplication::getInstance('site');
-            $router = &$app->getRouter();
+            $app = JApplication::getInstance('site');
+            $router = $app->getRouter();
             /**
              * @ignore
              * @var $uri JURI
@@ -821,7 +821,7 @@ class JFusionFunction
             //convert anything between code or pre tags to html entities to prevent conversion
             $searchNS[] = "#<(code|pre)[^>]*>(.*?)<\/\\1>#si";
             $replaceNS[] = array( 'JFusionFunction','_callback_code');
-            $morePatterns = & $options['bbcode_patterns'];
+            $morePatterns = $options['bbcode_patterns'];
             if (is_array($morePatterns) && isset($morePatterns[0]) && isset($morePatterns[1])) {
                 $searchNS = array_merge($searchNS, $morePatterns[0]);
                 $replaceNS = array_merge($replaceNS, $morePatterns[1]);
@@ -981,7 +981,7 @@ class JFusionFunction
             $db->query();
             //legacy $database must be restored
             if (JPluginHelper::getPlugin('system', 'legacy')) {
-                $GLOBALS['database'] = & $db;
+                $GLOBALS['database'] = $db;
             }
         }
     }
@@ -1102,7 +1102,7 @@ class JFusionFunction
     {
         static $joomla_source_url;
         if (empty($joomla_source_url)) {
-            $params = & JFusionFactory::getParams('joomla_int');
+            $params = JFusionFactory::getParams('joomla_int');
             $joomla_source_url = $params->get('source_url');
         }
         return $joomla_source_url;
@@ -1300,7 +1300,7 @@ class JFusionFunction
      * @return array
      */
     public static function getCorrectUserGroups($jname,$userinfo) {
-        $params = & JFusionFactory::getParams($jname);
+        $params = JFusionFactory::getParams($jname);
         $usergroups = $params->get('usergroup',null);
 		$multiusergroup = $params->get('multiusergroup',null);
         $group = array();
@@ -1411,7 +1411,7 @@ class JFusionFunction
     public static function isAdvancedUsergroupMode($jname) {
         static $advanced = array();
         if (!isset($advanced[$jname])) {
-            $params = & JFusionFactory::getParams($jname);
+            $params = JFusionFactory::getParams($jname);
             $usergroup = $params->get('usergroup');
             $multiusergroup = $params->get('multiusergroup');
             if (substr($usergroup, 0, 2) == 'a:' || substr($multiusergroup, 0, 2) == 'a:') {
@@ -1466,7 +1466,7 @@ class JFusionFunction
         static $data;
         $data = array();
         if (!isset($data[$jname][$table])) {
-            $db = & JFusionFactory::getDatabase($jname);
+            $db = JFusionFactory::getDatabase($jname);
             $query = 'SHOW FULL FIELDS FROM '.$table;
             $db->setQuery($query);
             $fields = $db->loadObjectList();
