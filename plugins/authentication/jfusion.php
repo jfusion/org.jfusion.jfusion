@@ -199,7 +199,7 @@ class plgAuthenticationjfusion extends JPlugin
                 if (isset($response->status) && $response->status != JAUTHENTICATE_STATUS_SUCCESS) {
                     //no matching password found
                     $response->status = JAUTHENTICATE_STATUS_FAILURE;
-                    $response->error_message = JText::_('JFUSION_INVALID_PASSWORD');
+                    $response->error_message = JText::_('FUSION_INVALID_PASSWORD');
                 }
             } else {
                 if (empty($JFusionLoginCheckActive) && $mainframe->isAdmin()) {
