@@ -204,7 +204,7 @@ class plgAuthenticationjfusion extends JPlugin
             } else {
                 if (empty($JFusionLoginCheckActive) && $mainframe->isAdmin()) {
                     //Logging in via Joomla admin but JFusion failed so attempt the normal joomla behaviour
-                   if(JFusionFunction::isJoomlaVersion('1.6')){
+                    if(JFusionFunction::isJoomlaVersion('1.6')){
                         $JAuth = JPATH_PLUGINS . DS . 'authentication' . DS . 'joomla' . DS . 'joomla.php';
                         $method = 'onUserAuthenticate';
                     } else {
