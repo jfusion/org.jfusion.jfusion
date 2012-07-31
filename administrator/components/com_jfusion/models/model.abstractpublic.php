@@ -52,7 +52,7 @@ class JFusionPublic
         if ( isset($data->location) ) {
             $location = str_replace($data->integratedURL,'',$data->location);
             $location = $this->fixUrl($location,$data->baseURL,$data->fullURL,$data->integratedURL,$data->jroute);
-            $mainframe = & JFactory::getApplication();
+            $mainframe = JFactory::getApplication();
             $mainframe->redirect($location);
         }
         if ( isset($status['error']) ) {
@@ -95,6 +95,7 @@ class JFusionPublic
         }
 
         //parse absolute URLS
+        $path = '';
         if(!empty($data->parse_abs_path)) {
             $path = preg_replace( '#(\w{0,10}://)(.*?)/(.*?)#is'  , '$3' , $data->integratedURL );
             $path = preg_replace('#//+#','/',"/$path/");
@@ -324,7 +325,7 @@ JS;
     function parseCSS(&$data,&$html,$infile_only=false)
     {
         $jname = $this->getJname();
-        $param =& JFusionFactory::getParams ( $this->getJname() );
+        $param = JFusionFactory::getParams ( $this->getJname() );
 
         if (empty($jname)) {
             $jname = JRequest::getVar ( 'Itemid' );
@@ -669,6 +670,15 @@ HTML;
         return $return;
     }
 
+    /**
+     * @param string $q
+     * @param string $baseURL
+     * @param string $fullURL
+     * @param string $integratedURL
+     * @param int $jRoute
+     *
+     * @return string
+     */
     function fixUrl($q='',$baseURL,$fullURL,$integratedURL,$jRoute)
     {
         if (substr($baseURL, -1) != '/') {
@@ -685,6 +695,14 @@ HTML;
         return $url;
     }
 
+    /**
+     * @param string $url
+     * @param string $extra
+     * @param string $baseURL
+     * @param int $jRoute
+     *
+     * @return string
+     */
     function fixAction($url, $extra, $baseURL,$jRoute)
     {
         $url = htmlspecialchars_decode($url);
@@ -730,6 +748,13 @@ HTML;
         return $replacement;
     }
 
+    /**
+     * @param string $url
+     * @param string $baseURL
+     * @param string $integratedURL
+     * @param int $jRoute
+     * @return string
+     */
     function fixRedirect($url, $baseURL, $integratedURL,$jRoute)
     {
         //split up the timeout from url
@@ -778,7 +803,7 @@ HTML;
     function getSearchResults(&$text, &$phrase, &$pluginParam, $itemid, $ordering)
     {
         //initialize plugin database
-        $db = & JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
         //get the query used to search
         $query = $this->getSearchQuery($pluginParam);
         //assign specific table colums to title and text

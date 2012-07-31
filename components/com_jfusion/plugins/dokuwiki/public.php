@@ -65,6 +65,7 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
         global $auth, $plugin_protected, $plugin_types, $conf, $lang, $argv;
         global $cache_revinfo, $cache_wikifn, $cache_cleanid, $cache_authname, $cache_metadata, $tpl_configloaded;
         global $db_host, $db_name, $db_username, $db_password, $db_prefix, $pun_user, $pun_config;
+        global $updateVersion;
 
         // Get the path
         $params = JFusionFactory::getParams($this->getJname());

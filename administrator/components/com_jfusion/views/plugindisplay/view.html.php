@@ -174,7 +174,7 @@ class jfusionViewplugindisplay extends JView {
      * @return null|\stdClass
      */
     function initRecord($jname,$record=null) {
-        $db = & JFactory::getDBO();
+        $db = JFactory::getDBO();
     	if (!$record) {
             $query = 'SELECT * from #__jfusion WHERE name LIKE '.$db->quote($jname);
             $db->setQuery($query);

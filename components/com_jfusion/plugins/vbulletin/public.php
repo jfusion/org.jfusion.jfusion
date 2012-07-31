@@ -208,7 +208,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
      */
     function getNumberOnlineGuests()
     {
-        $db = & JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
         $query = "SELECT COUNT(DISTINCT(host)) FROM #__session WHERE userid = 0";
         $db->setQuery($query);
         return $db->loadResult();
@@ -219,7 +219,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
      */
     function getNumberOnlineMembers()
     {
-        $db = & JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
         $query = "SELECT COUNT(DISTINCT(userid)) FROM #__session WHERE userid != 0";
         $db->setQuery($query);
         return $db->loadResult();
@@ -244,12 +244,12 @@ class JFusionPublic_vbulletin extends JFusionPublic
          * @var $helper JFusionHelper_vbulletin
          */
         $helper = JFusionFactory::getHelper($this->getJname());
-        $version = & $helper->getVersion();
+        $version = $helper->getVersion();
         if ((int) substr($version, 0, 1) > 3) {
             JError::raiseWarning(500, JText::sprintf('VB_FRAMELESS_NOT_SUPPORTED',$version));
         } else {
             //check to make sure the frameless hook is installed
-            $db = & JFusionFactory::getDatabase($this->getJname());
+            $db = JFusionFactory::getDatabase($this->getJname());
             $q = "SELECT active FROM #__plugin WHERE hookname = 'init_startup' AND title = 'JFusion Frameless Integration Plugin'";
             $db->setQuery($q);
             $active = $db->loadResult();
@@ -259,7 +259,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
                 //have to clear this as it shows up in some text boxes
                 unset($q);
                 // Get some params
-                $params = & JFusionFactory::getParams($this->getJname());
+                $params = JFusionFactory::getParams($this->getJname());
                 $vbsefmode = $params->get('sefmode', 0);
                 $source_path = $params->get('source_path');
                 $source_url = $params->get('source_url');
@@ -286,7 +286,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
                         }
                     }
                 }
-                $uri = & JURI::getInstance();
+                $uri = JURI::getInstance();
                 $url = $uri->toString();
                 foreach ($redirects as $r) {
                     if (strpos($url, $r) !== false) {
@@ -364,7 +364,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
         $baseURL = $data->baseURL;
         $fullURL = $data->fullURL;
         $integratedURL = $data->integratedURL;
-        $params = & JFusionFactory::getParams($this->getJname());
+        $params = JFusionFactory::getParams($this->getJname());
         $vbsefmode = $params->get('sefmode', 0);
         $config = JFactory::getConfig();
         $vbsefenabled = $config->getValue('config.sef');
@@ -416,7 +416,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
         $baseURL = $data->baseURL;
         $fullURL = $data->fullURL;
         $integratedURL = $data->integratedURL;
-        $params = & JFusionFactory::getParams($this->getJname());
+        $params = JFusionFactory::getParams($this->getJname());
         $vbsefmode = $params->get('sefmode', 0);
         $config = JFactory::getConfig();
         $vbsefenabled = $config->getValue('config.sef');
@@ -445,7 +445,7 @@ JS;
     function getPathWay()
     {
         $mainframe = JFactory::getApplication();
-        $db = & JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
         $pathway = array();
         //let's get the jfile
         $jfile = JRequest::getVar('jfile');
@@ -616,7 +616,7 @@ JS;
      */
     function getAlternateProfileURL($vb_url)
     {
-        $params = & JFusionFactory::getParams($this->getJname());
+        $params = JFusionFactory::getParams($this->getJname());
         $profile_plugin = $params->get('profile_plugin');
         $url = '';
         if (!empty($profile_plugin) && JFusionFunction::validPlugin($profile_plugin)) {
@@ -624,7 +624,7 @@ JS;
             $vbUid = $juri->getVar('u');
             if (!empty($vbUid)) {
                 //first get Joomla's id for the vBulletin user
-                $vbUser = & JFusionFactory::getUser($this->getJname());
+                $vbUser = JFusionFactory::getUser($this->getJname());
 				$userinfo = $vbUser->getUser($vbUid, 'userid');
                 $vb_userlookup = JFusionFunction::lookupUser($this->getJname(), $vbUid, false, $userinfo->username);
                 //now get the id of the selected plugin based on Joomla's id
@@ -711,7 +711,7 @@ JS;
      */
     function filterSearchResults(&$results, &$pluginParam)
     {
-        $plugin = & JFusionFactory::getForum($this->getJname());
+        $plugin = JFusionFactory::getForum($this->getJname());
         $plugin->filterActivityResults($results, 0, 'forumid', true);
     }
 
@@ -721,7 +721,7 @@ JS;
      */
     function getSearchResultLink($post)
     {
-        $forum = & JFusionFactory::getForum($this->getJname());
+        $forum = JFusionFactory::getForum($this->getJname());
         return $forum->getPostURL($post->threadid, $post->postid);
     }
 
@@ -799,7 +799,7 @@ JS;
     function fixURL($matches)
     {
         global $baseURL, $integratedURL, $vbsefmode, $vbsefenabled;
-        $params = & JFusionFactory::getParams($this->getJname());
+        $params = JFusionFactory::getParams($this->getJname());
         $plugin_itemid = $params->get('plugin_itemid');
 
         $url = $matches[1];
@@ -811,7 +811,7 @@ JS;
             $debug['extra'] = $extra;
             $debug['function'] = 'fixURL';
         }
-        $uri = & JURI::getInstance();
+        $uri = JURI::getInstance();
         $currentURL = $uri->toString();
         if ((string)strpos($url, '#') === (string)0 && strlen($url) != 1) {
             $url = (str_replace('&', '&amp;', $currentURL)) . $url;
@@ -896,7 +896,7 @@ JS;
     function fixJS($matches)
     {
         global $baseURL, $integratedURL, $vbsefmode, $vbsefenabled;
-        $params = & JFusionFactory::getParams($this->getJname());
+        $params = JFusionFactory::getParams($this->getJname());
         $plugin_itemid = $params->get('plugin_itemid');
 
         $url = $matches[1];

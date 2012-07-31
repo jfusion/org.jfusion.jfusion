@@ -368,7 +368,7 @@ class JFusionAdmin
         }
         $list_box.= '</select>';
 
-        $document =& JFactory::getDocument();
+        $document = JFactory::getDocument();
 
         $js = <<<JS
         function usergroupSelect(option)
@@ -560,7 +560,7 @@ JS;
             $plugin[$JFusionMaster->getJname()]['type'] = $JFusionMaster->isMultiGroup() ? 'multi':'single';
         }
 
-        $document =& JFactory::getDocument();
+        $document = JFactory::getDocument();
         $plugin = json_encode($plugin);
         $js = <<<JS
 			var jfPlugin = {$plugin};
@@ -760,7 +760,7 @@ JS;
         $action = JRequest::getVar('action');
         list($VersionCurrent) = JFusionFunctionAdmin::currentVersion();
 
-        $document =& JFactory::getDocument();
+        $document = JFactory::getDocument();
 
         $js = <<<JS
         function doImport() {
@@ -929,7 +929,7 @@ JS;
 
             JFusionFunctionAdmin::saveParameters($jname, $conf);
 
-            $mainframe = & JFactory::getApplication();
+            $mainframe = JFactory::getApplication();
             $mainframe->redirect('index.php?option=com_jfusion&task=plugineditor&jname='.$jname,JText::_('IMPORT_SUCCESS_MSG_PRESS_SAVE'));
             exit();
         }
@@ -1003,7 +1003,7 @@ JS;
 
             $info->addAttribute  ('jname', $jname);
 
-            $db =& JFactory::getDBO();
+            $db = JFactory::getDBO();
             $query = 'SELECT original_name FROM #__jfusion WHERE name =' . $db->Quote($jname);
             $db->setQuery($query);
             $result = $db->loadResult();
@@ -1041,7 +1041,7 @@ JS;
             submitbutton('plugineditor');
         }
 JS;
-        $document =& JFactory::getDocument();
+        $document = JFactory::getDocument();
         $document->addScriptDeclaration($js);
 
         $output = JText::_('EXPORT_DATABASE_INFO').' <input name="dbinfo" type="checkbox"><br/>';

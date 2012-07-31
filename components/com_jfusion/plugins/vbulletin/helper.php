@@ -38,7 +38,7 @@ class JFusionHelper_vbulletin
      */
     function JFusionHelper_vbulletin()
     {
-        $this->params = & JFusionFactory::getParams($this->getJname());
+        $this->params = JFusionFactory::getParams($this->getJname());
     }
 
     /**
@@ -314,11 +314,11 @@ class JFusionHelper_vbulletin
      */
     function getVbURL($url, $type = false)
     {
-        $params = & JFusionFactory::getParams($this->getJname());
+        $params = JFusionFactory::getParams($this->getJname());
         $allow_sef = $params->get("allow_sef", 1);
-        $vbversion = & $this->getVersion();
+        $vbversion = $this->getVersion();
         if (!empty($allow_sef) && (int) substr($vbversion, 0, 1) > 3) {
-            $db = & JFusionFactory::getDatabase($this->getJname());
+            $db = JFusionFactory::getDatabase($this->getJname());
 
             if (!defined('JFVB_FRIENDLYURL')) {
                 $query = "SELECT value FROM #__setting WHERE varname = 'friendlyurl'";

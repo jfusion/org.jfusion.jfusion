@@ -87,7 +87,7 @@ class JFusionForum_mybb extends JFusionForum {
      * @return object
      */
     function getThread($threadid) {
-        $db = & JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
         $query = "SELECT tid AS threadid, fid AS forumid, firstpost AS postid FROM #__threads WHERE tid = (int)$threadid";
         $db->setQuery($query);
         $results = $db->loadObject();
@@ -99,7 +99,7 @@ class JFusionForum_mybb extends JFusionForum {
      * @return int
      */
     function getReplyCount(&$existingthread) {
-        $db = & JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'SELECT replies FROM #__threads WHERE tid = ' .(int) $existingthread->threadid;
         $db->setQuery($query);
         $result = $db->loadResult();

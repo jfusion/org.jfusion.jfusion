@@ -221,9 +221,9 @@ class JFusionAdmin_magento extends JFusionAdmin
      */
     public function moduleInstallation() {
         $jname = $this->getJname ();
-        $params = & JFusionFactory::getParams ( $jname );
+        $params = JFusionFactory::getParams ( $jname );
 
-        $db = & JFusionFactory::getDatabase ( $jname );
+        $db = JFusionFactory::getDatabase ( $jname );
         if (! JError::isError ( $db ) && ! empty ( $db )) {
             $source_path = $params->get ( 'source_path', '' );
             if (! file_exists ( $source_path . DS . 'app' . DS . 'Mage.php' )) {

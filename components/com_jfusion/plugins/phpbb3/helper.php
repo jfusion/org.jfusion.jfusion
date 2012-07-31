@@ -834,7 +834,7 @@ class JFusionHelper_phpbb3
         $valid = false;
         $url = str_replace(' ', '%20', $url);
         // Checking urls
-        $params = & JFusionFactory::getParams($this->getJname());
+        $params = JFusionFactory::getParams($this->getJname());
         $source_url = $params->get('source_url');
 
         if (preg_match('#^' . $this->get_preg_expression('url') . '$#i', $url) || preg_match('#^' . $this->get_preg_expression('www_url') . '$#i', $url) || preg_match('#^' . preg_quote($source_url, '#') . $this->get_preg_expression('relative_url') . '$#i', $url)) {

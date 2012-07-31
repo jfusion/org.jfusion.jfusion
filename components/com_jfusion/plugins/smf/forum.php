@@ -123,7 +123,7 @@ class JFusionForum_smf extends JFusionForum
 
         $numargs = func_num_args();
         if ($numargs > 3) {
-            $db = & JFusionFactory::getDatabase($this->getJname());
+            $db = JFusionFactory::getDatabase($this->getJname());
             $filters = func_get_args();
             for ($i = 3; $i < $numargs; $i++) {
                 if ($filters[$i][0] == 'userid') {
@@ -241,7 +241,7 @@ class JFusionForum_smf extends JFusionForum
             static $markread;
             if (!is_array($markread)) {
                 $markread = array();
-                $db = & JFusionFactory::getDatabase($this->getJname());
+                $db = JFusionFactory::getDatabase($this->getJname());
                 $userlookup = JFusionFunction::lookupUser($this->getJname(), $JUser->id);
                 if (!empty($userlookup)) {
                     $query = "SELECT ID_MSG, ID_TOPIC FROM #__log_topics WHERE ID_MEMBER = {$userlookup->userid}";
@@ -375,7 +375,7 @@ class JFusionForum_smf extends JFusionForum
     {
         //setup some variables
         $userid = $this->getThreadAuthor($dbparams, $contentitem);
-        $jdb = & JFusionFactory::getDatabase($this->getJname());
+        $jdb = JFusionFactory::getDatabase($this->getJname());
         $subject = trim(strip_tags($contentitem->title));
 
 		//prepare the content body
@@ -495,11 +495,11 @@ class JFusionForum_smf extends JFusionForum
      */
     function updateThread(&$dbparams, &$existingthread, &$contentitem, &$status)
     {
-        $threadid = & $existingthread->threadid;
-        $forumid = & $existingthread->forumid;
-        $postid = & $existingthread->postid;
+        $threadid = $existingthread->threadid;
+        $forumid = $existingthread->forumid;
+        $postid = $existingthread->postid;
         //setup some variables
-        $jdb = & JFusionFactory::getDatabase($this->getJname());
+        $jdb = JFusionFactory::getDatabase($this->getJname());
         $subject = trim(strip_tags($contentitem->title));
 
 		//prepare the content body
@@ -589,7 +589,7 @@ HTML;
                 $status['error'][] = JTEXT::_('GUEST_FIELDS_MISSING');
                 return $status;
             } else {
-                $db = & JFusionFactory::getDatabase($this->getJname());
+                $db = JFusionFactory::getDatabase($this->getJname());
 				$query = "SELECT COUNT(*) FROM #__members "
 						. " WHERE memberName = " . $db->Quote($userinfo->username)
 						. " OR memberName = " . $db->Quote($userinfo->email)
@@ -607,8 +607,8 @@ HTML;
         }
         //setup some variables
         $userid = $userinfo->userid;
-        $jdb = & JFusionFactory::getDatabase($this->getJname());
-        $public = & JFusionFactory::getPublic($this->getJname());
+        $jdb = JFusionFactory::getDatabase($this->getJname());
+        $public = JFusionFactory::getPublic($this->getJname());
         $text = JRequest::getVar('quickReply', false, 'POST');
 		//strip out html from post
 		$text = strip_tags($text);
@@ -702,8 +702,8 @@ HTML;
      */
 	function getPosts(&$dbparams, &$existingthread)
     {
-        $threadid = & $existingthread->threadid;
-        $postid = & $existingthread->postid;
+        $threadid = $existingthread->threadid;
+        $postid = $existingthread->postid;
         //set the query
         $sort = $dbparams->get("sort_posts");
 		$where = "WHERE ID_TOPIC = {$threadid} AND ID_MSG != {$postid}";
@@ -711,7 +711,7 @@ HTML;
         $query.= " UNION ";
         $query.= "(SELECT a.ID_TOPIC , a.ID_MSG, a.posterName, a.posterName as realName, a.ID_MEMBER, 1 AS guest, a.subject, a.posterTime, a.body, a.posterTime AS order_by_date FROM `#__messages` as a $where AND a.ID_MEMBER = 0)";
         $query.= " ORDER BY order_by_date $sort";
-        $jdb = & JFusionFactory::getDatabase($this->getJname());
+        $jdb = JFusionFactory::getDatabase($this->getJname());
 
 		if($dbparams->get('enable_pagination',true)) {
 			$application = JFactory::getApplication() ;
@@ -737,7 +737,7 @@ HTML;
      */
     function getReplyCount(&$existingthread)
     {
-        $db = & JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
         $query = "SELECT numReplies FROM #__topics WHERE ID_TOPIC = {$existingthread->threadid}";
         $db->setQuery($query);
         $result = $db->loadResult();
@@ -783,7 +783,7 @@ HTML;
      */
     function getThread($threadid)
     {
-        $db = & JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
         $query = "SELECT ID_TOPIC AS threadid, ID_BOARD AS forumid, ID_FIRST_MSG AS postid FROM #__topics WHERE ID_TOPIC = $threadid";
         $db->setQuery($query);
         $results = $db->loadObject();
@@ -795,7 +795,7 @@ HTML;
      * @return bool
      */
     function getThreadLockedStatus($threadid) {
-        $db = & JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
         $query = "SELECT locked FROM #__topics WHERE ID_TOPIC = $threadid";
         $db->setQuery($query);
         $locked = $db->loadResult();

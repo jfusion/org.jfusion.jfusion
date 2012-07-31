@@ -223,7 +223,7 @@ JS;
                          * @ignore
                          * @var $form JForm
                          */
-                        $form = &JForm::getInstance($jname, $data, array('control' => "params[$jname]"));
+                        $form = JForm::getInstance($jname, $data, array('control' => "params[$jname]"));
                         //add JFusion's fields
                         $form->addFieldPath(JPATH_COMPONENT.DS.'fields');
 						if (isset($value[$jname])) {
@@ -382,7 +382,7 @@ JS;
                              * @ignore
                              * @var $form JForm
                              */
-                            $form = &JForm::getInstance($jname, $data, array('control' => "params[$jname]"));
+                            $form = JForm::getInstance($jname, $data, array('control' => "params[$jname]"));
                             //add JFusion's fields
                             $form->addFieldPath(JPATH_COMPONENT.DS.'fields');
                             //bind values

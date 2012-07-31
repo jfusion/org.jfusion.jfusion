@@ -191,7 +191,7 @@ class JFusionUser_moodle extends JFusionUser {
 			$status['error'][] = JFusionCurl::_('CURL_NOTINSTALLED');
 		} else {
             $jname = $this->getJname();
-            $params = & JFusionFactory::getParams($jname);
+            $params = JFusionFactory::getParams($jname);
             $logout_url = $params->get('logout_url');
 
             $curl_options['post_url'] = $params->get('source_url') . $logout_url;

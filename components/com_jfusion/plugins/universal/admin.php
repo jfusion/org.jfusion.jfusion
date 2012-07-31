@@ -455,6 +455,9 @@ JS;
     }
 
     /**
+     * @param string $url
+     * @param int $itemid
+     *
      * @return string
      */
     function generateRedirectCode($url, $itemid)

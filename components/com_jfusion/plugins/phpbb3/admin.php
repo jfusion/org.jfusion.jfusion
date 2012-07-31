@@ -87,7 +87,7 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
             //create a connection to the database
             $options = array('driver' => $params['database_type'], 'host' => $params['database_host'], 'user' => $params['database_user'], 'password' => $params['database_password'], 'database' => $params['database_name'], 'prefix' => $params['database_prefix']);
             //Get configuration settings stored in the database
-            $vdb = & JDatabase::getInstance($options);
+            $vdb = JDatabase::getInstance($options);
             $query = "SELECT config_name, config_value FROM #__config WHERE config_name IN ('script_path', 'cookie_path', 'server_name', 'cookie_domain', 'cookie_name', 'allow_autologin');";
             if (JError::isError($vdb) || !$vdb) {
                 JError::raiseWarning(0, JText::_('NO_DATABASE'));
@@ -205,6 +205,9 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
     }
 
     /**
+     * @param string $url
+     * @param int $itemid
+     *
      * @return string
      */
     function generateRedirectCode($url, $itemid) {
@@ -234,7 +237,7 @@ if (isset($_GET[\'jfile\'])) {
         $allow_mods = $params->get('mod_ids');
         if (!empty($allow_mods)) {
             //get a userlist of mod ids
-            $db = & JFusionFactory::getDatabase($this->getJname());
+            $db = JFusionFactory::getDatabase($this->getJname());
             $query = "SELECT b.user_id, a.group_name FROM #__groups as a INNER JOIN #__user_group as b ON a.group_id = b.group_id WHERE a.group_name = 'GLOBAL_MODERATORS' or a.group_name = 'ADMINISTRATORS'";
             $db->setQuery($query);
             $mod_list = $db->loadObjectList();
@@ -375,7 +378,7 @@ HTML;
      * @param $control_name
      * @return mixed|string
      */
-    function show_auth_mod($name, $value, $node, $control_name) {
+    function showAuthMod($name, $value, $node, $control_name) {
         //do a database check to avoid fatal error with incorrect database settings
         $db = JFusionFactory::getDatabase($this->getJname());
         if (!method_exists($db, 'setQuery')) {
@@ -413,7 +416,7 @@ HTML;
             $disable = JText::_('MOD_DISABLE');
             $output = <<<HTML
             <img src="components/com_jfusion/images/check_good_small.png">{$text}
-            <a href="javascript:void(0);" onclick="return module('disable_auth_mod')">{$disable}</a>
+            <a href="javascript:void(0);" onclick="return module('disableAuthMod')">{$disable}</a>
 HTML;
             return $output;
         } else {
@@ -421,12 +424,12 @@ HTML;
             $enable = JText::_('MOD_ENABLE');
             $output = <<<HTML
             <img src="components/com_jfusion/images/check_bad_small.png">{$text}
-            <a href="javascript:void(0);" onclick="return module('enable_auth_mod')">{$enable}</a>
+            <a href="javascript:void(0);" onclick="return module('enableAuthMod')">{$enable}</a>
 HTML;
             return $output;
         }
     }
-    function enable_auth_mod() {
+    function enableAuthMod() {
         $error = 0;
         $reason = '';
         $auth_file = $this->getModFile('includes' . DS . 'auth' . DS . 'auth_jfusion.php', $error, $reason);
@@ -479,7 +482,7 @@ HTML;
     /**
      * @return bool
      */
-    function disable_auth_mod() {
+    function disableAuthMod() {
         $return = true;
         //check to see if the mod is enabled
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -521,7 +524,7 @@ HTML;
      * @param $control_name
      * @return string
      */
-    function show_quick_mod($name, $value, $node, $control_name) {
+    function showQuickMod($name, $value, $node, $control_name) {
         $error = 0;
         $reason = '';
         $mod_file = $this->getModFile('mcp.php', $error, $reason);
@@ -543,7 +546,7 @@ HTML;
             $disable = JText::_('MOD_DISABLE');
             $output = <<<HTML
             <img src="components/com_jfusion/images/check_good_small.png">{$text}
-            <a href="javascript:void(0);" onclick="return module('disable_quick_mod')">{$disable}</a>
+            <a href="javascript:void(0);" onclick="return module('disableQuickMod')">{$disable}</a>
 HTML;
             return $output;
         } else {
@@ -551,12 +554,12 @@ HTML;
             $enable = JText::_('MOD_ENABLE');
             $output = <<<HTML
             <img src="components/com_jfusion/images/check_bad_small.png">{$text}
-            <a href="javascript:void(0);" onclick="return module('enable_quick_mod')">{$enable}</a>
+            <a href="javascript:void(0);" onclick="return module('enableQuickMod')">{$enable}</a>
 HTML;
             return $output;
         }
     }
-    function enable_quick_mod() {
+    function enableQuickMod() {
         $error = 0;
         $reason = '';
         $mod_file = $this->getModFile('mcp.php', $error, $reason);
@@ -574,7 +577,7 @@ HTML;
     /**
      * @return int
      */
-    function disable_quick_mod() {
+    function disableQuickMod() {
         $error = 0;
         $reason = '';
         $mod_file = $this->getModFile('mcp.php', $error, $reason);
@@ -595,7 +598,7 @@ HTML;
      * @return bool
      */
     function clearConfigCache() {
-        $params = & JFusionFactory::getParams($this->getJname());
+        $params = JFusionFactory::getParams($this->getJname());
         $source_path = $params->get('source_path');
         $cache = $source_path . DS . 'cache' . DS . 'data_global.php';
         if (file_exists($cache)) {
@@ -612,14 +615,14 @@ HTML;
         $return = true;
         $reasons = array();
 
-        $error = $this->disable_auth_mod();
+        $error = $this->disableAuthMod();
         if (!$error) {
             $reasons[] = JText::_('AUTH_MOD_UNINSTALL_FAILED');
             $return = false;
         }
 
         //doesn't really matter if the quick mod is not disabled so don't return an error
-        $error = $this->disable_quick_mod();
+        $error = $this->disableQuickMod();
 
         $error = $this->disableRedirectMod();
         if (!empty($error)) {

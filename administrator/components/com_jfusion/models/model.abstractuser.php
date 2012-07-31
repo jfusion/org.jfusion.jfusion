@@ -62,7 +62,7 @@ class JFusionUser
      */
     function getUserIdentifier(&$userinfo, $username_col, $email_col, $lowerEmail = true)
     {
-        $params = & JFusionFactory::getParams($this->getJname());
+        $params = JFusionFactory::getParams($this->getJname());
         //the discussion bot may need to override the identifier_type to prevent user hijacking by guests
         $override = (defined('OVERRIDE_IDENTIFIER')) ? OVERRIDE_IDENTIFIER : 'default';
         $options = array('0', '1', '2');
@@ -184,8 +184,8 @@ class JFusionUser
     function updateUser($userinfo, $overwrite = 0)
     {
         // Initialise some variables
-        //$db = & JFusionFactory::getDatabase($this->getJname());
-        $params = & JFusionFactory::getParams($this->getJname());
+        //$db = JFusionFactory::getDatabase($this->getJname());
+        $params = JFusionFactory::getParams($this->getJname());
         if (!empty($userinfo->params)) {
             $user_params = new JfusionParam($userinfo->params);
         }
@@ -221,7 +221,7 @@ class JFusionUser
                     // add password_clear to existinguser for the Joomla helper routines
                     $existinguser->password_clear = $userinfo->password_clear;
                     //check if the password needs to be updated
-                    $model = & JFusionFactory::getAuth($this->getJname());
+                    $model = JFusionFactory::getAuth($this->getJname());
                     $testcrypt = $model->generateEncryptedPassword($existinguser);
                     if ($testcrypt != $existinguser->password) {
                         $this->updatePassword($userinfo, $existinguser, $status);

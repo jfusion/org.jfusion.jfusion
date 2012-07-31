@@ -160,7 +160,7 @@ class JFusionUser_wordpress extends JFusionUser {
     function destroySession($userinfo, $options) {
 
         $status = array('error' => array(),'debug' => array());
-		$params = & JFusionFactory::getParams($this->getJname());
+		$params = JFusionFactory::getParams($this->getJname());
 		$cookie_domain = $params->get('cookie_domain');
 		$cookie_path = $params->get('cookie_path');
 		$cookie_hash = $params->get('cookie_hash');

@@ -47,7 +47,7 @@ class jfusionViewplugineditor extends JView
             //hides the main menu and disables the Joomla's navigation menu
             //JRequest::setVar('hidemainmenu', 1);
             // Keep the idea of instanciate the parameters only with the parameters of the XML file from the plugin needed but with a centralized method (JFusionFactory::createParams)
-            $parametersInstance = & JFusionFactory::createParams($jname);
+            $parametersInstance = JFusionFactory::createParams($jname);
             $file = JFUSION_PLUGIN_PATH . DS . $jname . DS . 'jfusion.xml';
             if (file_exists($file)) {
                 $parametersInstance->loadSetupFile($file);
@@ -98,7 +98,7 @@ class jfusionViewplugineditor extends JView
             $this->assignRef('jname', $jname);
             //output detailed configuration warnings for the plugin
             if (JFusionFunction::validPlugin($jname)) {
-                $JFusionPlugin = & JFusionFactory::getAdmin($jname);
+                $JFusionPlugin = JFusionFactory::getAdmin($jname);
                 $JFusionPlugin->debugConfig();
             }
             //render view

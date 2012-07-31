@@ -74,7 +74,7 @@ function login_jfusion(&$username, &$password) {
              * @ignore
              * @var $session_table JTableSession
              */
-            $session_table = & JTable::getInstance('session');
+            $session_table = JTable::getInstance('session');
             if ($session_table->load($id)) {
                 $session_table->data = $session_data;
                 $session_table->store();
@@ -82,7 +82,7 @@ function login_jfusion(&$username, &$password) {
                 // if load failed then we assume that it is because
                 // the session doesn't exist in the database
                 // therefore we use insert instead of store
-                $app = &JFactory::getApplication();
+                $app = JFactory::getApplication();
                 $session_table->data = $session_data;
                 $session_table->insert($id, $app->getClientId());
             }
@@ -101,7 +101,7 @@ function login_jfusion(&$username, &$password) {
                 $redirect = $url . "&jfile=" . $redirect;
             } else {
                     //redirect to prevent fatal errors on some servers
-                    $uri = & JURI::getInstance();
+                    $uri = JURI::getInstance();
                     //remove sid from URL
                     $query = $uri->getQuery(true);
                     if (isset($query['sid'])) {
@@ -164,7 +164,7 @@ function logout_jfusion(&$data) {
         $link = null;
         if (FORCE_REDIRECT_AFTER_LOGOUT) {
             //redirect to prevent fatal errors on some servers
-            $uri = & JURI::getInstance();
+            $uri = JURI::getInstance();
             //remove sid from URL
             $query = $uri->getQuery(true);
             if (isset($query['sid'])) {

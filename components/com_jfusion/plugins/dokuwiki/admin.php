@@ -266,6 +266,9 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
     /**
      * renerate redirect code
      *
+     * @param string $url
+     * @param int $itemid
+     *
      * @return string output php redirect code
      */
     function generateRedirectCode($url, $itemid)
@@ -332,7 +335,7 @@ if (!defined(\'_JEXEC\'))';
                     $search = '/\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END/ms';
                     $file_data = preg_replace($search, '', $file_data);
                 }
-                $redirect_code = $this->generateRedirectCode();
+                $redirect_code = $this->generateRedirectCode($joomla_url,$joomla_itemid);
                 $search = '/getID\(\)\;/si';
                 $replace = 'getID();' . $redirect_code;
                 $file_data = preg_replace($search, $replace, $file_data);

@@ -103,7 +103,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
             $prefix = $config['Database']['tableprefix'];
             $driver = 'mysql';
             $options = array('driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database, 'prefix' => $prefix);
-            $vdb = & JDatabase::getInstance($options);
+            $vdb = JDatabase::getInstance($options);
             if (method_exists($vdb, 'setQuery')) {
                 //Find the path to vbulletin
                 $query = "SELECT value, varname FROM #__setting WHERE varname IN ('bburl','cookietimeout','cookiepath','cookiedomain')";
@@ -168,7 +168,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
     function getUserList($limitstart = null, $limit = null)
     {
         // initialise some objects
-        $db = & JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'SELECT username, email from #__user';
         if (!empty($limit)) {
             $db->setQuery($query, $limitstart, $limit);
@@ -186,7 +186,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
     function getUserCount()
     {
         //getting the connection to the db
-        $db = & JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'SELECT count(*) from #__user';
         $db->setQuery($query);
         //getting the results
@@ -200,7 +200,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
     function getUsergroupList()
     {
         //get the connection to the db
-        $db = & JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'SELECT usergroupid as id, title as name from #__usergroup';
         $db->setQuery($query);
         //getting the results
@@ -212,14 +212,14 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
      */
     function getDefaultUsergroup()
     {
-        $params = & JFusionFactory::getParams($this->getJname());
+        $params = JFusionFactory::getParams($this->getJname());
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
         $usergroup_id = null;
         if(!empty($usergroups)) {
             $usergroup_id = $usergroups[0];
         }
         //we want to output the usergroup name
-        $db = & JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'SELECT title from #__usergroup WHERE usergroupid = ' . $usergroup_id;
         $db->setQuery($query);
         return $db->loadResult();
@@ -230,7 +230,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
      */
     function allowRegistration()
     {
-        $db = & JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
         $query = "SELECT value FROM #__setting WHERE varname = 'allowregistration'";
         $db->setQuery($query);
         //getting the results
@@ -290,7 +290,7 @@ JS;
 
             $jsSet = true;
         }
-        $db = & JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
         if (!JError::isError($db) && !empty($db)) {
             if ($hook != "framelessoptimization") {
                 $hookName = null;
@@ -399,7 +399,7 @@ HTML;
         $itemid = $params['plugin_itemid'];
         $hook = $params['hook_name'];
         $action = $params['hook_action'];
-        $db = & JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
         if ($hook != 'framelessoptimization') {
             $hookName = null;
             switch ($hook) {
@@ -449,7 +449,7 @@ HTML;
             }
         } else {
             //this will perform functions like rewriting image paths to include the full URL to images to save processing time
-            $params = & JFusionFactory::getParams($this->getJname());
+            $params = JFusionFactory::getParams($this->getJname());
             $source_url = $params->get('source_url');
             if (substr($source_url, -1) != '/') {
                 $source_url.= "/";
@@ -496,7 +496,7 @@ HTML;
      */
     function getHookPHP($plugin, $itemid)
     {
-        $params = & JFusionFactory::getParams($this->getJname());
+        $params = JFusionFactory::getParams($this->getJname());
         $hookFile = JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'hooks.php';
         $php = "defined('_VBJNAME') or define('_VBJNAME', '{$this->getJname()}');\n";
         $php.= "defined('JPATH_PATH') or define('JPATH_BASE', '" . (str_replace(DS.'administrator', '', JPATH_BASE)) . "');\n";
@@ -517,7 +517,7 @@ HTML;
             $sef = $config->getValue('config.sef');
             //get the baseUR
             $app = JApplication::getInstance('site');
-            $router = & $app->getRouter();
+            $router = $app->getRouter();
             $uri = $router->build('index.php?option=com_jfusion&Itemid=' . $itemid);
             $baseURL = $uri->toString();
             $joomla_url = JFusionFunction::getJoomlaURL();
@@ -584,13 +584,13 @@ HTML;
     function debugConfigExtra()
     {
         //check for usergroups to make sure membergroups do not include default or display group
-        $params = & JFusionFactory::getParams($this->getJname());
+        $params = JFusionFactory::getParams($this->getJname());
         if (JFusionFunction::isAdvancedUsergroupMode($this->getJname())) {
             $usergroups = unserialize($params->get('usergroup'));
             $master = JFusionFunction::getMaster();
             if (!empty($master)) {
                 if ($master->name != $this->getJName()) {
-                    $JFusionMaster = & JFusionFactory::getAdmin($master->name);
+                    $JFusionMaster = JFusionFactory::getAdmin($master->name);
                     $master_usergroups = $JFusionMaster->getUsergroupList();
                     foreach ($master_usergroups as $group) {
                         if (isset($usergroups[$group->id]['membergroups']) && isset($usergroups[$group->id]['defaultgroup'])) {
@@ -667,7 +667,7 @@ HTML;
                 $list_box.= '<option value="1">Avanced</option>';
             }
             //prepare the advanced options
-            $JFusionMaster = & JFusionFactory::getAdmin($master->name);
+            $JFusionMaster = JFusionFactory::getAdmin($master->name);
             $master_usergroups = $JFusionMaster->getUsergroupList();
             $jsGroup = array();
 
@@ -753,7 +753,7 @@ HTML;
     function name_field($name, $value, $node, $control_name)
     {
         if (JFusionFunction::validPlugin($this->getJname())) {
-            $db = & JFusionFactory::getDatabase($this->getJname());
+            $db = JFusionFactory::getDatabase($this->getJname());
 
             //get a list of field names for custom profile fields
             $custom_fields = $db->getTableFields('#__userfield');

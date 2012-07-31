@@ -66,7 +66,7 @@ class JFusionCookies {
 		}
 		
 		if ($url) {
-			$mainframe = & JFactory::getApplication();
+			$mainframe = JFactory::getApplication();
 			if ( !$mainframe->isAdmin()) {
 				$this->_cookies[$url][] = $cookie;
 			}
@@ -82,7 +82,7 @@ class JFusionCookies {
      * @param string $return
      */
     function executeRedirect($source_url=null,$return=null) {
-    	$mainframe = & JFactory::getApplication();
+    	$mainframe = JFactory::getApplication();
     	if (!$mainframe->isAdmin() || !$this->secret) {
 	    	if(!count($this->_cookies)) {
 	    		if (empty($return)) {

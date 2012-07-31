@@ -49,7 +49,7 @@ class JElementJFusionUsergroups extends JElement
         global $jname;
         if ($jname) {
             if (JFusionFunction::validPlugin($jname) || $jname == 'joomla_int') {
-                $JFusionPlugin = & JFusionFactory::getAdmin($jname);
+                $JFusionPlugin = JFusionFactory::getAdmin($jname);
                 $usergroups = $JFusionPlugin->getUsergroupList();
                 $multiple = $node->attributes("multiple");
                 if (!empty($usergroups)) {

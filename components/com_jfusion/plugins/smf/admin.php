@@ -216,6 +216,9 @@ class JFusionAdmin_smf extends JFusionAdmin
     /**
      * renerate redirect code
      *
+     * @param string $url
+     * @param int $itemid
+     *
      * @return string output php redirect code
      */
     function generateRedirectCode($url, $itemid)
@@ -227,8 +230,8 @@ class JFusionAdmin_smf extends JFusionAdmin
         $redirect_code = '
 //JFUSION REDIRECT START
 //SET SOME VARS
-$joomla_url = \'' . $joomla_url . '\';
-$joomla_itemid = ' . $joomla_itemid . ';
+$joomla_url = \'' . $url . '\';
+$joomla_itemid = ' . $itemid . ';
     ';
         $redirect_code.= '
 if (!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') === false && strpos($_SERVER[\'QUERY_STRING\'], \'verificationcode\') === false)';

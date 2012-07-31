@@ -96,11 +96,11 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             $text = html_entity_decode($text);
             if (strpos($text, 'SMILIES_PATH') !== false) {
                 //must convert smilies
-                $db = & JFusionFactory::getDatabase($this->getJname());
+                $db = JFusionFactory::getDatabase($this->getJname());
                 $query = "SELECT config_value FROM #__config WHERE config_name = 'smilies_path'";
                 $db->setQuery($query);
                 $smilie_path = $db->loadResult();
-                $jfparams = & JFusionFactory::getParams($this->getJname());
+                $jfparams = JFusionFactory::getParams($this->getJname());
                 $source_url = $jfparams->get('source_url');
                 $text = preg_replace('#<!-- s(.*?) --><img src="\{SMILIES_PATH\}\/(.*?)" alt="(.*?)" title="(.*?)" \/><!-- s\\1 -->#si', "[img]{$source_url}{$smilie_path}/$2[/img]", $text);
             }
@@ -153,7 +153,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
         //get a unix time from 5 mintues ago
         date_default_timezone_set('UTC');
         $active = strtotime("-5 minutes", time());
-        $db = & JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
         $query = "SELECT COUNT(DISTINCT(session_ip)) FROM #__sessions WHERE session_user_id = 1 AND session_time > $active";
         $db->setQuery($query);
         $result = $db->loadResult();
@@ -167,7 +167,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
         //get a unix time from 5 mintues ago
         date_default_timezone_set('UTC');
         $active = strtotime("-5 minutes", time());
-        $db = & JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
         $query = "SELECT COUNT(DISTINCT(session_user_id)) FROM #__sessions WHERE session_viewonline = 1 AND session_user_id != 1 AND session_time > $active";
         $db->setQuery($query);
         $result = $db->loadResult();
@@ -192,7 +192,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
     		//refresh the page to avoid phpbb3 error
     		//this happens as the phpbb3 config file can not be loaded twice
     		//and phpbb3 always uses include instead of include_once
-            $uri = & JURI::getInstance();
+            $uri = JURI::getInstance();
             //add a variable to ensure refresh
             $uri->setVar('time', time());
             $link = $uri->toString();
@@ -628,14 +628,14 @@ class JFusionPublic_phpbb3 extends JFusionPublic
      * @return array
      */
     function getPathway() {
-        $mainframe = &JFactory::getApplication('site');
+        $mainframe = JFactory::getApplication('site');
         $db =& JFusionFactory::getDatabase($this->getJname());
         $pathway = array();
 
         $forum_id = JRequest::getInt('f');
         if (!empty($forum_id)) {
             //get the forum's info
-            $query = "SELECT forum_name, parent_id, left_id, right_id, forum_parents FROM #__forums WHERE forum_id = $forum_id";
+            $query = 'SELECT forum_name, parent_id, left_id, right_id, forum_parents FROM #__forums WHERE forum_id = '.$db->Quote($forum_id);
             $db->setQuery($query);
             $forum_info = $db->loadObject();
 
@@ -663,7 +663,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 
         $topic_id = JRequest::getInt('t');
         if (!empty($topic_id)) {
-            $query = "SELECT topic_title FROM #__topics WHERE topic_id = $topic_id";
+            $query = 'SELECT topic_title FROM #__topics WHERE topic_id = '.$db->Quote($topic_id);
             $db->setQuery($query);
             $topic_title = $db->loadObject();
 
@@ -710,12 +710,12 @@ class JFusionPublic_phpbb3 extends JFusionPublic
      */
     function getSearchCriteria(&$where, &$pluginParam, $ordering) {
         $where.= " AND p.post_approved = 1";
-        $forum = &JFusionFactory::getForum($this->getJname());
+        $forum = JFusionFactory::getForum($this->getJname());
         if ($pluginParam->get('forum_mode', 0)) {
             $selected_ids = $pluginParam->get('selected_forums', array());
             $forumids = $forum->filterForumList($selected_ids);
         } else {
-            $db = & JFusionFactory::getDatabase($this->getJname());
+            $db = JFusionFactory::getDatabase($this->getJname());
             //no forums were selected so pull them all then filter
             $query = "SELECT forum_id FROM #__forums WHERE forum_type = 1 ORDER BY left_id";
             $db->setQuery($query);

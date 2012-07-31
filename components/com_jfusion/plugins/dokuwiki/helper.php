@@ -205,7 +205,7 @@ class JFusionHelper_dokuwiki
         static $instances;
         if (!isset($instances[$jname])) {
             $instance = new Dokuwiki($jname);
-            $instances[$jname] = & $instance;
+            $instances[$jname] = $instance;
         }
         return $instances[$jname];
     }
@@ -231,7 +231,7 @@ class JFusionHelper_dokuwiki
              * @ignore
              * @var $helper JFusionHelper_dokuwiki
              */
-            $helper = & JFusionFactory::getHelper($this->getJname());
+            $helper = JFusionFactory::getHelper($this->getJname());
             $path = $helper->getConfigPath($path);
 
             $myfile = array();

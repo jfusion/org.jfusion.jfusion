@@ -290,7 +290,7 @@ class JFusionFactory
         }
         //only create a new parameter instance if it has not been created before
         if (!isset($params_instances[$jname]) || $reset) {
-            $params_instances[$jname] = & JFusionFactory::createParams($jname);
+            $params_instances[$jname] = JFusionFactory::createParams($jname);
             return $params_instances[$jname];
         } else {
             return $params_instances[$jname];
@@ -352,7 +352,7 @@ class JFusionFactory
             $debug = $conf->getValue('config.debug');
             //get config values
             $conf = JFactory::getConfig();
-            $params = & JFusionFactory::getParams($jname);
+            $params = JFusionFactory::getParams($jname);
             //prepare the data for creating a database connection
             $host = $params->get('database_host');
             $user = $params->get('database_user');

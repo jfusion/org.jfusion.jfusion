@@ -174,7 +174,7 @@ class JFusionUsersync
                 if ($error['action'] == '1') {
                     //update the first entity
                     echo '<h2>' . $data['user']['jname'] . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE') . '</h2>';
-                    $JFusionPlugin = & JFusionFactory::getUser($data['user']['jname']);
+                    $JFusionPlugin = JFusionFactory::getUser($data['user']['jname']);
                     debug::show($data['conflict']['userinfo'], $data['conflict']['jname'] . ' ' . JText::_('USER') . ' ' . JText::_('INFORMATION'), 1);
                     $status = $JFusionPlugin->updateUser($data['conflict']['userinfo'], 1);
                     if (!empty($status['error'])) {
@@ -188,7 +188,7 @@ class JFusionUsersync
                 } elseif ($error['action'] == '2') {
                     //update the second entity (conflicting plugin)
                     echo '<h2>' . $data['conflict']['jname'] . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE') . '</h2>';
-                    $JFusionPlugin = & JFusionFactory::getUser($data['conflict']['jname']);
+                    $JFusionPlugin = JFusionFactory::getUser($data['conflict']['jname']);
                     debug::show($data['user']['userinfo'], $data['user']['jname'] . ' ' . JText::_('USER') . ' ' . JText::_('INFORMATION'), 1);
                     $status = $JFusionPlugin->updateUser($data['user']['userinfo'], 1);
                     if (!empty($status['error'])) {
@@ -204,7 +204,7 @@ class JFusionUsersync
                     //prevent Joomla from deleting all the slaves via the user plugin if it is set as master
                     global $JFusionActive;
                     $JFusionActive = 1;
-                    $JFusionPlugin = & JFusionFactory::getUser($error['user_jname']);
+                    $JFusionPlugin = JFusionFactory::getUser($error['user_jname']);
                     $status = $JFusionPlugin->deleteUser($data['user']['userinfo']);
                     if (!empty($status['error'])) {
                         //delete error
@@ -220,7 +220,7 @@ class JFusionUsersync
                     //prevent Joomla from deleting all the slaves via the user plugin if it is set as master
                     global $JFusionActive;
                     $JFusionActive = 1;
-                    $JFusionPlugin = & JFusionFactory::getUser($error['conflict_jname']);
+                    $JFusionPlugin = JFusionFactory::getUser($error['conflict_jname']);
                     $status = $JFusionPlugin->deleteUser($data['conflict']['userinfo']);
                     if (!empty($status['error'])) {
                         //delete error
@@ -263,10 +263,10 @@ class JFusionUsersync
     {
         if (empty($syncdata['completed'])) {
             //setup some variables
-            $MasterPlugin = & JFusionFactory::getAdmin($syncdata['master']);
-            $MasterUser = & JFusionFactory::getUser($syncdata['master']);
+            $MasterPlugin = JFusionFactory::getAdmin($syncdata['master']);
+            $MasterUser = JFusionFactory::getUser($syncdata['master']);
             $sync_log = new stdClass;
-            $syncid =& $syncdata['syncid'];
+            $syncid = $syncdata['syncid'];
             $sync_active = JFusionUsersync::getSyncStatus($syncid);
             $db = JFactory::getDBO();
             if (!$sync_active) {
@@ -287,8 +287,8 @@ class JFusionUsersync
                         //get a list of users
                         $jname = $syncdata['slave_data'][$i]['jname'];
                         if ($jname) {
-                            $SlavePlugin = & JFusionFactory::getAdmin($jname);
-                            $SlaveUser = & JFusionFactory::getUser($jname);
+                            $SlavePlugin = JFusionFactory::getAdmin($jname);
+                            $SlaveUser = JFusionFactory::getUser($jname);
                             if ($action == 'master') {
                                 $userlist = $SlavePlugin->getUserList($user_offset, $syncdata['userbatch']);
                                 $action_name = $jname;

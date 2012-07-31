@@ -122,7 +122,7 @@
 
 		<param name="jfusionbox" type="text" default="" label="MOD_OPTIONS" description="" />
 		<param name=" " type="helptext" default="AUTHENTICATION_MOD_DESCR" label=""/>
-		<param name="show_auth_mod" default="" type="JFusionCustomParam" description="AUTHENTICATION_MOD" label=""/>
+		<param name="showAuthMod" default="" type="JFusionCustomParam" description="AUTHENTICATION_MOD" label=""/>
 		<param name="@spacer" type="spacer" default="" label="" description="" />
 		<param name=" " type="helptext" default="REDIRECT_MOD_DESCR" label=""/>
 		<param name="redirect_itemid" type="JFusionItemid" size="10" default="" description="REDIRECT_ITEMID" label=""/>
@@ -133,7 +133,7 @@
 		<param name="showRedirectMod" default="" type="JFusionCustomParam" description="REDIRECTION_MOD" label=""/>
 		<param name="@spacer" type="spacer" default="" label="" description="" />
 		<param name=" " type="helptext" default="QUICK_MOD" label=""/>
-		<param name="show_quick_mod" default="" type="JFusionCustomParam" description="QUICK_MOD" label=""/>
+		<param name="showQuickMod" default="" type="JFusionCustomParam" description="QUICK_MOD" label=""/>
 		<param name="jfusionbox" type="text" default="" label="URL_OPTIONS" description="" />
 		<param name=" " type="helptext" default="URL_OPTIONS_DESCR" label=""/>
 		<param name="lostpassword_url" label="LOST_PASSWORD_URL" type="text" size="50" default="" description="LOST_PASSWORD_URL" />

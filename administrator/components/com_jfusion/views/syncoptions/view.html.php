@@ -75,13 +75,13 @@ class jfusionViewsyncoptions extends JView
                 $sync_active = JFusionUsersync::getSyncStatus($syncid);
             }
             //get the master data
-            $JFusionPlugin = & JFusionFactory::getAdmin($master->name);
+            $JFusionPlugin = JFusionFactory::getAdmin($master->name);
             $master_data = $slave_data = array();
             $master_data['total'] = $JFusionPlugin->getUserCount();
             $master_data['jname'] = $master->name;
             //get the slave data
             foreach ($slaves as $slave) {
-                $JFusionSlave = & JFusionFactory::getAdmin($slave->name);
+                $JFusionSlave = JFusionFactory::getAdmin($slave->name);
                 $slave_data[$slave->name]['total'] = $JFusionSlave->getUserCount();
                 $slave_data[$slave->name]['jname'] = $slave->name;
                 unset($JFusionSlave);

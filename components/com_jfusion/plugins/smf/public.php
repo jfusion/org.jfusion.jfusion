@@ -112,7 +112,7 @@ class JFusionPublic_smf extends JFusionPublic
             static $custom_smileys;
             if (!is_array($custom_smileys)) {
                 $custom_smileys = array();
-                $db = & JFusionFactory::getDatabase($this->getJname());
+                $db = JFusionFactory::getDatabase($this->getJname());
                 $query = "SELECT value, variable FROM #__settings WHERE variable = 'smileys_url' OR variable = 'smiley_sets_default'";
                 $db->setQuery($query);
                 $settings = $db->loadObjectList('variable');
@@ -240,7 +240,7 @@ class JFusionPublic_smf extends JFusionPublic
         $params = JFusionFactory::getParams($this->getJname());
         if ($action == 'logout') {
             //destroy the SMF session first
-            $JFusionUser = & JFusionFactory::getUser($this->getJname());
+            $JFusionUser = JFusionFactory::getUser($this->getJname());
             $JFusionUser->destroySession(null, null);
             //destroy the Joomla session
             $mainframe = JFactory::getApplication();
@@ -910,7 +910,7 @@ class JFusionPublic_smf extends JFusionPublic
      */
     function getNumberOnlineGuests()
     {
-        $db = & JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
         $query = "SELECT COUNT(DISTINCT(ip)) FROM #__log_online WHERE ID_MEMBER = 0";
         $db->setQuery($query);
         return $db->loadResult();
@@ -923,7 +923,7 @@ class JFusionPublic_smf extends JFusionPublic
      */
     function getNumberOnlineMembers()
     {
-        $db = & JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
         $query = "SELECT COUNT(DISTINCT(ip)) FROM #__log_online WHERE ID_MEMBER != 0";
         $db->setQuery($query);
         return $db->loadResult();

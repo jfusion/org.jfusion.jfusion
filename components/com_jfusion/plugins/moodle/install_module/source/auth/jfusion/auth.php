@@ -209,11 +209,10 @@ class auth_plugin_jfusion extends auth_plugin_base {
 		//just testing  config comes later
 
 		$local_login = empty($_REQUEST['jnodeid']);
-		if (!$local_login)
-		{
-			return false;
+		if ($local_login) {
+            $this->LoginJoomla($username, $password, true);
 		}
-		return $this->LoginJoomla($username, $password, true);
+		return false;
 	}
 
 	/**
@@ -365,7 +364,9 @@ class auth_plugin_jfusion extends auth_plugin_base {
      * @param string $username
      * @param string $password
      * @param string $jnodeid
-	 */
+     *
+     * @return bool
+     */
 	function LoginJoomla($username, $password, $jnodeid){
 		global $CFG;
 
@@ -406,53 +407,51 @@ class auth_plugin_jfusion extends auth_plugin_base {
 		// just to prevent programmin errors
 		// This should have been done earlier in the code
 
-		if ($params_joomlaactive == '0')
+		if ($params_joomlaactive != '0')
 		{
-			return;
+            define("_JEXEC","Yeah_I_know");
+            require_once($params_joomlafullpath.'administrator/components/com_jfusion/models/model.curl.php');
+            //    require_once("DualLoginHelper.php");
+            $LoginLogout = new DualLogin();
+            $curl_options['username']          = $username;
+            $curl_options['password']          = $password;
+            $curl_options['post_url']          = $params_joomlabaseurl.$params_loginpath;
+            $curl_options['formid']            = $params_formid;
+            $curl_options['integrationtype']   = 0;
+            $curl_options['relpath']           = $params_relpath;
+            $curl_options['hidden']            = '1';
+            $curl_options['buttons']           = '1';
+            $curl_options['override']          = '';
+            $curl_options['cookiedomain']      = $params_cookiedomain;
+            $curl_options['cookiepath']        = $params_cookiepath;
+            $curl_options['expires']           = $params_expires;
+            $curl_options['input_username_id'] = $params_input_username_id;
+            $curl_options['input_password_id'] = $params_input_password_id;
+            $curl_options['secure']            = $params_cookie_secure;
+            $curl_options['httponly']          = $params_cookie_httponly;
+            $curl_options['httponly']          = $params_cookie_httponly;
+            $curl_options['leavealone']        = $params_leavealone;
+            $curl_options['brute_force']       = 'brute_force'; // needed to avoid the dreadfull Joomla problem -- your session has expired --
+            $curl_options['verifyhost']        = $params_verifyhost;
+            // to prevent endless loops on systems where there are multiple places where a user can login
+            // we post an unique ID for the initiating software so we can make a difference between
+            // a user logging in or another jFusion installation, or even another system with reverse dual login code.
+            // We always use the source url of the initializing system, here the source_url as defined in the joomla_int
+            // plugin. This is totally transparent for the the webmaster. No additional setup is needed
+            if ($jnodeid){
+                $Host_source_url = $CFG->wwwroot;
+                $my_ID = rtrim(parse_url($Host_source_url,PHP_URL_HOST).parse_url($Host_source_url,PHP_URL_PATH),'/');
+                $curl_options['jnodeid'] = $my_ID;
+            }
+            $status = $LoginLogout->login($curl_options);
+            unset($LoginLogout);
+
+            if (!empty($status['error']))
+            {
+                $message= "Fatal JFusion Dual login Error : statusdump: ".print_r($status,true) ;
+                //      $session->addError($message);
+            }
 		}
-		define("_JEXEC","Yeah_I_know");
-		require_once($params_joomlafullpath.'administrator/components/com_jfusion/models/model.curl.php');
-		//    require_once("DualLoginHelper.php");
-		$LoginLogout = new DualLogin();
-		$curl_options['username']          = $username;
-		$curl_options['password']          = $password;
-		$curl_options['post_url']          = $params_joomlabaseurl.$params_loginpath;
-		$curl_options['formid']            = $params_formid;
-		$curl_options['integrationtype']   = 0;
-		$curl_options['relpath']           = $params_relpath;
-		$curl_options['hidden']            = '1';
-		$curl_options['buttons']           = '1';
-		$curl_options['override']          = '';
-		$curl_options['cookiedomain']      = $params_cookiedomain;
-		$curl_options['cookiepath']        = $params_cookiepath;
-		$curl_options['expires']           = $params_expires;
-		$curl_options['input_username_id'] = $params_input_username_id;
-		$curl_options['input_password_id'] = $params_input_password_id;
-		$curl_options['secure']            = $params_cookie_secure;
-		$curl_options['httponly']          = $params_cookie_httponly;
-		$curl_options['httponly']          = $params_cookie_httponly;
-		$curl_options['leavealone']        = $params_leavealone;
-		$curl_options['brute_force']       = 'brute_force'; // needed to avoid the dreadfull Joomla problem -- your session has expired --
-		$curl_options['verifyhost']        = $params_verifyhost;
-		// to prevent endless loops on systems where there are multiple places where a user can login
-		// we post an unique ID for the initiating software so we can make a difference between
-		// a user logging in or another jFusion installation, or even another system with reverse dual login code.
-		// We always use the source url of the initializing system, here the source_url as defined in the joomla_int
-		// plugin. This is totally transparent for the the webmaster. No additional setup is needed
-		if ($jnodeid){
-			$Host_source_url = $CFG->wwwroot;
-			$my_ID = rtrim(parse_url($Host_source_url,PHP_URL_HOST).parse_url($Host_source_url,PHP_URL_PATH),'/');
-			$curl_options['jnodeid'] = $my_ID;
-		}
-		$status = $LoginLogout->login($curl_options);
-		unset($LoginLogout);
-		
-		if (!empty($status['error']))
-		{
-			$message= "Fatal JFusion Dual login Error : statusdump: ".print_r($status,true) ;
-			//      $session->addError($message);
-			return;
-		}
-		return;
+		return false;
 	}
 }

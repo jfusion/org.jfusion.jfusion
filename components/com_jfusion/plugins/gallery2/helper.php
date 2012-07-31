@@ -58,7 +58,7 @@ class JFusionHelper_gallery2
                 $index_file = $source_path . DS . 'embed.php';
             }
             if (substr($source_url, 0, 1) == '/') {
-                $uri = & JURI::getInstance();
+                $uri = JURI::getInstance();
                 $base = $uri->toString(array('scheme', 'host', 'port'));
                 $source_url = $base . $source_url;
             }
@@ -230,7 +230,7 @@ class JFusionHelper_gallery2
                 }
             }
         }
-        $breadcrumbs = & $mainframe->getPathWay();
+        $breadcrumbs = $mainframe->getPathWay();
         $document = JFactory::getDocument();
         /* check permissions and push */
         $i = 1;

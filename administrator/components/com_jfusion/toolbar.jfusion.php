@@ -24,7 +24,7 @@ switch($task)
 	case 'joomlaeditor':
 		$folder = JRequest::getVar('folder');
 		$element = JRequest::getVar('element');
-		$db = & JFactory::getDBO();
+		$db = JFactory::getDBO();
 		$query = 'SELECT name from #__plugins WHERE folder = '.$db->Quote($folder) . ' AND element ='.$db->Quote($element);
 		$db->setQuery($query);
 		$name = $db->loadResult();

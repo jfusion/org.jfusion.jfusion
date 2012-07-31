@@ -175,7 +175,7 @@ class JFusionUser_vbulletin extends JFusionUser
         $status['debug'] = array();
 
         $cookie_prefix = $this->params->get('cookie_prefix');
-        $vbversion = & $this->helper->getVersion();
+        $vbversion = $this->helper->getVersion();
         if ((int) substr($vbversion, 0, 1) > 3) {
            if (substr($cookie_prefix, -1) !== '_') {
                $cookie_prefix .= '_';
@@ -276,7 +276,7 @@ class JFusionUser_vbulletin extends JFusionUser
 
         //make sure a session is not already active for this user
         $cookie_prefix = $this->params->get('cookie_prefix');
-        $vbversion = & $this->helper->getVersion();
+        $vbversion = $this->helper->getVersion();
         if ((int) substr($vbversion, 0, 1) > 3) {
            if (substr($cookie_prefix, -1) !== '_') {
                $cookie_prefix .= '_';
@@ -781,7 +781,7 @@ class JFusionUser_vbulletin extends JFusionUser
         $options = array();
         //retrieve the values for vb's cookies
         $cookie_prefix = $this->params->get('cookie_prefix');
-        $vbversion = & $this->helper->getVersion();
+        $vbversion = $this->helper->getVersion();
         if ((int) substr($vbversion, 0, 1) > 3) {
            if (substr($cookie_prefix, -1) !== '_') {
                $cookie_prefix .= '_';
@@ -941,7 +941,7 @@ class JFusionUser_vbulletin extends JFusionUser
         $settings['vb_block_user_registration'] = array('list_yesno', 'vB - Ban User on Registration', 'Ban the user in vBulletin when a user registers.  This ensures they do not have access to vB until they subscribe to a plan.');
         $settings['vb_block_reason_registration'] = array('inputE', 'vB - Registration Ban Reason', 'Message displayed as the reason the user has been banned.');
 
-        $admin = & JFusionFactory::getAdmin($this->getJname());
+        $admin = JFusionFactory::getAdmin($this->getJname());
         $usergroups = $admin->getUsergroupList();
         array_unshift($usergroups, JHTML::_('select.option', '0', '- Select a Group -', 'id', 'name'));
         $v = (isset($current_settings['vb_expiration_groupid'])) ? $current_settings['vb_expiration_groupid'] : '';

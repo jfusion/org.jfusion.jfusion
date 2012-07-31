@@ -96,7 +96,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
             static $custom_smileys;
             if (!is_array($custom_smileys)) {
                 $custom_smileys = array();
-                $db = & JFusionFactory::getDatabase($this->getJname());
+                $db = JFusionFactory::getDatabase($this->getJname());
                 $query = "SELECT value, variable FROM #__settings WHERE variable = 'smileys_url' OR variable = 'smiley_sets_default'";
                 $db->setQuery($query);
                 $settings = $db->loadObjectList('variable');
@@ -216,7 +216,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
         $params = JFusionFactory::getParams($this->getJname());
         if ($action == 'logout') {
             //destroy the SMF session first
-            $JFusionUser = & JFusionFactory::getUser($this->getJname());
+            $JFusionUser = JFusionFactory::getUser($this->getJname());
             $JFusionUser->destroySession(null, null);
             //destroy the Joomla session
             $mainframe = JFactory::getApplication();

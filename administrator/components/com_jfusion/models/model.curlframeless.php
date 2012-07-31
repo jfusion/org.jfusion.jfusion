@@ -94,17 +94,17 @@ class JFusionCurlFrameless{
 
 		$url = $data->source_url;
 
-        $config =& JFactory::getConfig();
+        $config = JFactory::getConfig();
         $sefenabled = $config->getValue('config.sef');
         if(!empty($sefenabled)) {
-			$uri     = & JURI::getInstance();
+			$uri = JURI::getInstance();
 			$current = $uri->toString( array( 'path', 'query'));
 
             /**
              * @ignore
              * @var $menus JMenu
              */
-            $menus = & JSite::getMenu();
+            $menus = JSite::getMenu();
         	$menu = $menus->getActive();
 			$index = '/'.$menu->route;
 			$pos = strpos($current, $index);
