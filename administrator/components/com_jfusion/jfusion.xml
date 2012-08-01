@@ -34,30 +34,6 @@
         <language tag="en-GB">en-GB/en-GB.mod_jfusion_user_activity.ini</language>
         <language tag="en-GB">en-GB/en-GB.mod_jfusion_login.ini</language>
         <language tag="en-GB">en-GB/en-GB.mod_jfusion_activity.ini</language>
-        	
-		<language tag="de-DE">de-DE/de-DE.com_jfusion.ini</language>
-		<language tag="de-DE">de-DE/de-DE.mod_jfusion_whosonline.ini</language>
-		<language tag="de-DE">de-DE/de-DE.mod_jfusion_user_activity.ini</language>
-		<language tag="de-DE">de-DE/de-DE.mod_jfusion_login.ini</language>
-		<language tag="de-DE">de-DE/de-DE.mod_jfusion_activity.ini</language>
-
-		<language tag="fr-FR">fr-FR/fr-FR.com_jfusion.ini</language>
-		<language tag="fr-FR">fr-FR/fr-FR.mod_jfusion_whosonline.ini</language>
-		<language tag="fr-FR">fr-FR/fr-FR.mod_jfusion_user_activity.ini</language>
-		<language tag="fr-FR">fr-FR/fr-FR.mod_jfusion_login.ini</language>
-		<language tag="fr-FR">fr-FR/fr-FR.mod_jfusion_activity.ini</language>
-
-		<language tag="nl-NL">nl-NL/nl-NL.com_jfusion.ini</language>
-		<language tag="nl-NL">nl-NL/nl-NL.mod_jfusion_whosonline.ini</language>
-		<language tag="nl-NL">nl-NL/nl-NL.mod_jfusion_user_activity.ini</language>
-		<language tag="nl-NL">nl-NL/nl-NL.mod_jfusion_login.ini</language>
-		<language tag="nl-NL">nl-NL/nl-NL.mod_jfusion_activity.ini</language>
-		
-		<language tag="zh-CN">zh-CN/zh-CN.com_jfusion.ini</language>
-		<language tag="zh-CN">zh-CN/zh-CN.mod_jfusion_whosonline.ini</language>
-		<language tag="zh-CN">zh-CN/zh-CN.mod_jfusion_user_activity.ini</language>
-		<language tag="zh-CN">zh-CN/zh-CN.mod_jfusion_login.ini</language>
-		<language tag="zh-CN">zh-CN/zh-CN.mod_jfusion_activity.ini</language>
 	</languages>
 	
 	<administration>
@@ -70,7 +46,8 @@
 			<menu img="components/com_jfusion/images/user.png" link="option=com_jfusion&amp;task=synchistory">USERSYNC_HISTORY</menu>
 			<menu img="components/com_jfusion/images/disconnect.png" link="option=com_jfusion&amp;task=loginchecker">LOGIN_CHECKER</menu>
 			<menu img="components/com_jfusion/images/configdump_small.png" link="option=com_jfusion&amp;task=configdump">CONFIG_DUMP</menu>
-			<menu img="components/com_jfusion/images/version.png" link="option=com_jfusion&amp;task=versioncheck">VERSIONS</menu>
+            <menu img="components/com_jfusion/images/language_icon.png" link="option=com_jfusion&amp;task=languages">LANGUAGE</menu>
+            <menu img="components/com_jfusion/images/version.png" link="option=com_jfusion&amp;task=versioncheck">VERSIONS</menu>
 		</submenu>
 
 		<files folder="admin">
@@ -100,34 +77,6 @@
             <language tag="en-GB">en-GB/en-GB.plg_search_jfusion.ini</language>
             <language tag="en-GB">en-GB/en-GB.plg_system_jfusion.ini</language>
             <language tag="en-GB">en-GB/en-GB.com_jfusion.plg_joomla_int.ini</language>
-
-			<language tag="de-DE">de-DE/de-DE.com_jfusion.ini</language>
-            <language tag="de-DE">de-DE/de-DE.com_jfusion.menu.ini</language>
-            <language tag="de-DE">de-DE/de-DE.com_jfusion.sys.ini</language>
-			<language tag="de-DE">de-DE/de-DE.plg_content_jfusion.ini</language>
-			<language tag="de-DE">de-DE/de-DE.plg_search_jfusion.ini</language>
-			<language tag="de-DE">de-DE/de-DE.plg_system_jfusion.ini</language>
-
-			<language tag="fr-FR">fr-FR/fr-FR.com_jfusion.ini</language>
-            <language tag="fr-FR">fr-FR/fr-FR.com_jfusion.menu.ini</language>
-            <language tag="fr-FR">fr-FR/fr-FR.com_jfusion.sys.ini</language>
-			<language tag="fr-FR">fr-FR/fr-FR.plg_content_jfusion.ini</language>
-			<language tag="fr-FR">fr-FR/fr-FR.plg_search_jfusion.ini</language>
-			<language tag="fr-FR">fr-FR/fr-FR.plg_system_jfusion.ini</language>
-
-			<language tag="nl-NL">nl-NL/nl-NL.com_jfusion.ini</language>
-            <language tag="nl-NL">nl-NL/nl-NL.com_jfusion.menu.ini</language>
-            <language tag="nl-NL">nl-NL/nl-NL.com_jfusion.sys.ini</language>
-			<language tag="nl-NL">nl-NL/nl-NL.plg_content_jfusion.ini</language>
-			<language tag="nl-NL">nl-NL/nl-NL.plg_search_jfusion.ini</language>
-			<language tag="nl-NL">nl-NL/nl-NL.plg_system_jfusion.ini</language>
-			
-			<language tag="zh-CN">zh-CN/zh-CN.com_jfusion.ini</language>
-            <language tag="zh-CN">zh-CN/zh-CN.com_jfusion.menu.ini</language>
-            <language tag="zh-CN">zh-CN/zh-CN.com_jfusion.sys.ini</language>
-			<language tag="zh-CN">zh-CN/zh-CN.plg_content_jfusion.ini</language>
-			<language tag="zh-CN">zh-CN/zh-CN.plg_search_jfusion.ini</language>
-			<language tag="zh-CN">zh-CN/zh-CN.plg_system_jfusion.ini</language>
 		</languages>
 	</administration>
 </install>
