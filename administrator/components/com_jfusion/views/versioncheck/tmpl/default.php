@@ -360,8 +360,8 @@ if ($this->up2date) {
                 <input type="hidden" name="type" value="" />
                 <input type="hidden" name="installtype" value="url" />
                 <?php if(JFusionFunction::isJoomlaVersion('1.6')){ ?>
-                <?php } else { ?>
                 <input type="hidden" name="task" value="install.install" />
+                <?php } else { ?>
                 <input type="hidden" name="task" value="doInstall" />
                 <?php } ?>
                 <input type="hidden" name="option" value="com_installer" />

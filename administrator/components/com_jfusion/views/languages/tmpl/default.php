@@ -57,21 +57,88 @@ JFusionFunctionAdmin::displayDonate();
             <?php echo JText::_('YOUR_VERSION'); ?>
         </th>
         <th class="title" align="center">
-            <?php echo JText::_('LATEST_VERSION'); ?>
+            <?php echo JText::_('CURRENT_VERSION'); ?>
+        </th>
+        <th class="title">
+            <?php echo JText::_('INSTALL_UPGRADE'); ?>
         </th>
     </tr>
     </thead>
     <tbody>
+        <?php $row_count = 0;
+        foreach ($this->lang_repo as $lang => $data) { ?>
+            <tr class="row<? echo $row_count; ?>">
+                <td>
+                    <?php echo $lang; ?>
+                </td>
+                <td>
+                    <?php echo $data['description']; ?>
+                </td>
+                <td>
+                    <?php
+                    if (isset($this->lang_installed[$lang])) {
+                        echo $this->lang_installed[$lang];
+                        $mode = JText::_('UPDATE');
+                    } else {
+                        $mode = JText::_('INSTALL');
+                    }
+                    ?>
+                </td>
+                <td>
+                    <?php echo $data['date']; ?>
+                </td>
+                <td>
+                    <?php
+                    if (!isset($this->lang_installed[$lang]) || ($this->lang_installed[$lang] != $data['date'] ) ) {
+                    ?>
+                        <script type="text/javascript">
+                            <!--
+                            window.addEvent('domready',function() {
+                                $('<?php echo $lang ;?>').addEvent('click', function(e) {
+                                    new Event(e).stop();
 
-     <?php $row_count = 0;
-     foreach ($this->lang_repo as $lang => $data) { ?>
+                                    confirmSubmitLanguage('<?php echo $data['file']; ?>');
+                                });
+                            });
+                            // -->
+                        </script>
+                        <a id="<?php echo $lang ?>" href="<?php echo $data['file']; ?>"><?php echo $mode;?></a> / <a href="<?php echo $data['file']; ?>"><?php echo JText::_('DOWNLOAD') ;?></a>
+                    <?php
+                    }
+                    ?>
+                </td>
+            </tr>
+        <?php } ?>
+    </tbody>
+</table>
+<script type="text/javascript">
+    <!--
+    function confirmSubmitLanguage(action)
+    {
+        var r = false;
+        var confirmtext;
+        confirmtext = '<?php echo JText::_('INSTALL_UPGRADE_LANGUAGE_PACKAGE')?>';
 
-     <tr id="<?php echo $lang; ?>" class="row<? echo $row_count; ?>">
-        <?php echo '<td>'.$lang.'</td><td>'.$data['description'].'</td><td></td><td></td>'?>
-    </tr>
-<?php } ?>
-        </tbody>
-
-
-    </table>
-    <br/><br/>
+        var agree = confirm(confirmtext);
+        if (agree) {
+            $('install').install_url.value = action;
+            $('install').submit();
+            r = true;
+        }
+        return r;
+    }
+    // -->
+</script>
+<form enctype="multipart/form-data" action="index.php" method="post" id="install" name="adminForm2">
+    <input type="hidden" name="install_url" value="" />
+    <input type="hidden" name="type" value="" />
+    <input type="hidden" name="installtype" value="url" />
+    <?php if(JFusionFunction::isJoomlaVersion('1.6')){ ?>
+    <input type="hidden" name="task" value="install.install" />
+    <?php } else { ?>
+    <input type="hidden" name="task" value="doInstall" />
+    <?php } ?>
+    <input type="hidden" name="option" value="com_installer" />
+    <?php echo JHTML::_('form.token'); ?>
+</form>
+<br/><br/>
