@@ -25,7 +25,7 @@ JFusionFunctionAdmin::displayDonate();
             <img src="components/com_jfusion/images/jfusion_large.png">
         </td>
         <td width="100px">
-            <img src="components/com_jfusion/images/language.png">
+            <img src="components/com_jfusion/images/language_icon.png">
         </td>
         <td>
             <h2>

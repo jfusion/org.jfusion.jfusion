@@ -85,6 +85,16 @@ JFusionFunctionAdmin::displayDonate();
 			    </div>
                 <div style="float:left;">
                     <div class="icon">
+                        <a href="index.php?option=com_jfusion&task=languages" >
+                            <img src="components/com_jfusion/images/language_icon.png">
+                            <span>
+                                <?php echo JText::_('LANGUAGE'); ?>
+                            </span>
+                        </a>
+                    </div>
+                </div>
+                <div style="float:left;">
+                    <div class="icon">
                         <a href="index.php?option=com_jfusion&task=versioncheck" >
                             <img src="components/com_jfusion/images/versioncheck_small.png">
                             <span

@@ -78,6 +78,12 @@ class JFusionHelper
 				$vName == 'configdump'
 		);
 
+        JSubMenuHelper::addEntry(
+            JText::_('LANGUAGE'),
+            'index.php?option=com_jfusion&task=languages',
+            $vName == 'languages'
+        );
+
 		JSubMenuHelper::addEntry(
 			JText::_('VERSIONS'),
 			'index.php?option=com_jfusion&task=versioncheck',

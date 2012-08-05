@@ -46,7 +46,7 @@
 			<menu img="components/com_jfusion/images/user.png" link="option=com_jfusion&amp;task=synchistory">USERSYNC_HISTORY</menu>
 			<menu img="components/com_jfusion/images/disconnect.png" link="option=com_jfusion&amp;task=loginchecker">LOGIN_CHECKER</menu>
 			<menu img="components/com_jfusion/images/configdump_small.png" link="option=com_jfusion&amp;task=configdump">CONFIG_DUMP</menu>
-            <menu img="components/com_jfusion/images/language_icon.png" link="option=com_jfusion&amp;task=languages">LANGUAGE</menu>
+            <menu img="components/com_jfusion/images/language_icon_small.png" link="option=com_jfusion&amp;task=languages">LANGUAGE</menu>
             <menu img="components/com_jfusion/images/version.png" link="option=com_jfusion&amp;task=versioncheck">VERSIONS</menu>
 		</submenu>
 
