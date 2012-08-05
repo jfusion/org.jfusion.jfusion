@@ -67,17 +67,17 @@ JFusionFunctionAdmin::displayDonate();
     <tbody>
         <?php $row_count = 0;
         foreach ($this->lang_repo as $lang => $data) { ?>
-            <tr class="row<? echo $row_count; ?>">
+            <tr class="<? echo $data->class.$row_count; ?>">
                 <td>
                     <?php echo $lang; ?>
                 </td>
                 <td>
-                    <?php echo $data['description']; ?>
+                    <?php echo $data->description; ?>
                 </td>
                 <td>
                     <?php
-                    if (isset($this->lang_installed[$lang])) {
-                        echo $this->lang_installed[$lang];
+                    if ($data->currentdate) {
+                        echo $data->currentdate;
                         $mode = JText::_('UPDATE');
                     } else {
                         $mode = JText::_('INSTALL');
@@ -85,11 +85,11 @@ JFusionFunctionAdmin::displayDonate();
                     ?>
                 </td>
                 <td>
-                    <?php echo $data['date']; ?>
+                    <?php echo $data->date; ?>
                 </td>
                 <td>
                     <?php
-                    if (!isset($this->lang_installed[$lang]) || ($this->lang_installed[$lang] != $data['date'] ) ) {
+                    if ($data->currentdate != $data->date) {
                     ?>
                         <script type="text/javascript">
                             <!--
@@ -97,18 +97,24 @@ JFusionFunctionAdmin::displayDonate();
                                 $('<?php echo $lang ;?>').addEvent('click', function(e) {
                                     new Event(e).stop();
 
-                                    confirmSubmitLanguage('<?php echo $data['file']; ?>');
+                                    confirmSubmitLanguage('<?php echo $data->file; ?>');
                                 });
                             });
                             // -->
                         </script>
-                        <a id="<?php echo $lang ?>" href="<?php echo $data['file']; ?>"><?php echo $mode;?></a> / <a href="<?php echo $data['file']; ?>"><?php echo JText::_('DOWNLOAD') ;?></a>
+                        <a id="<?php echo $lang ?>" href="<?php echo $data->file; ?>"><?php echo $mode;?></a> / <a href="<?php echo $data->file; ?>"><?php echo JText::_('DOWNLOAD') ;?></a>
                     <?php
                     }
                     ?>
                 </td>
             </tr>
-        <?php } ?>
+        <?php
+            if ($row_count) {
+                $row_count = 0;
+            } else {
+                $row_count = 1;
+            }
+        } ?>
     </tbody>
 </table>
 <script type="text/javascript">

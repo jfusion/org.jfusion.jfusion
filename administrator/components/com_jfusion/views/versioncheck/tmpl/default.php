@@ -201,7 +201,7 @@ if ($this->server_compatible) {
     <?php
     foreach ($this->jfusion_plugins as $jfusion_plugin) {
         ?>
-    <tr class = "<?php echo $jfusion_plugin->class ;?>">
+    <tr class = "<?php echo $jfusion_plugin->class;?>">
         <td>
             <?php echo $jfusion_plugin->name;?>
         </td>
