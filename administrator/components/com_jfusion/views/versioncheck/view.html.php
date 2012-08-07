@@ -31,7 +31,6 @@ defined('_JEXEC') or die('Restricted access');
 class jfusionViewversioncheck extends JView
 {
     var $up2date = true;
-    var $row_count = 0;
     /**
      * displays the view
      *
@@ -242,22 +241,17 @@ class jfusionViewversioncheck extends JView
             }
 
             if (version_compare($output->oldversion, $output->version) == - 1 || ($output->oldrev && $output->rev && $output->oldrev != $output->rev )) {
-                $output->class = 'bad'.$this->row_count;
+                $output->class = 'bad';
                 $this->up2date = false;
             } else {
                 $output->updateurl = null;
-                $output->class = 'good'.$this->row_count;
+                $output->class = 'good';
             }
 
             //cleanup for the next function call
             unset($parser);
         } else {
             JFusionFunction::raiseWarning(JText::_('ERROR'), JText::_('XML_FILE_MISSING') . ' '. JText::_('JFUSION') . ' ' . $name . ' ' . JText::_('PLUGIN'), 1);
-        }
-        if ($this->row_count == 1) {
-            $this->row_count = 0;
-        } else {
-            $this->row_count = 1;
         }
         return $output;
     }

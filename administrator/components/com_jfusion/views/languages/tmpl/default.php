@@ -67,7 +67,7 @@ JFusionFunctionAdmin::displayDonate();
     <tbody>
         <?php $row_count = 0;
         foreach ($this->lang_repo as $lang => $data) { ?>
-            <tr class="<? echo $data->class.$row_count; ?>">
+            <tr class="<? echo $data->class.($row_count % 2); ?>">
                 <td>
                     <?php echo $lang; ?>
                 </td>
@@ -109,11 +109,7 @@ JFusionFunctionAdmin::displayDonate();
                 </td>
             </tr>
         <?php
-            if ($row_count) {
-                $row_count = 0;
-            } else {
-                $row_count = 1;
-            }
+            $row_count++;
         } ?>
     </tbody>
 </table>

@@ -60,9 +60,10 @@ JFusionFunctionAdmin::displayDonate();
     </thead>
     <tbody>
     <?php
+    $row_count = 0;
     foreach ($this->system as $software) {
         ?>
-    <tr class="<?php echo $software->class ;?>">
+    <tr class="<?php echo $software->class.($row_count % 2);?>">
         <td>
             <?php echo $software->name; ?>
         </td>
@@ -74,6 +75,7 @@ JFusionFunctionAdmin::displayDonate();
         </td>
     </tr>
         <?php
+        $row_count++;
     }
     ?>
     </tbody>
@@ -134,7 +136,7 @@ if ($this->server_compatible) {
     <?php
     foreach ($this->components as $component) {
         ?>
-    <tr class = "<?php echo $component->class ;?>">
+    <tr class = "<?php echo $component->class.($row_count % 2);?>">
         <td>
             <?php echo JText::_('JFUSION') . ' ' . $component->name . ' ' . JText::_('VERSION') ;?>
         </td>
@@ -177,6 +179,7 @@ if ($this->server_compatible) {
         </td>
     </tr>
         <?php
+        $row_count++;
     }
     ?>
     </tbody>
@@ -201,7 +204,7 @@ if ($this->server_compatible) {
     <?php
     foreach ($this->jfusion_plugins as $jfusion_plugin) {
         ?>
-    <tr class = "<?php echo $jfusion_plugin->class;?>">
+    <tr class = "<?php echo $jfusion_plugin->class.($row_count % 2);?>">
         <td>
             <?php echo $jfusion_plugin->name;?>
         </td>
@@ -241,6 +244,7 @@ if ($this->server_compatible) {
             ?>
     </tr>
         <?php
+        $row_count++;
     }
     ?>
     </tbody>
