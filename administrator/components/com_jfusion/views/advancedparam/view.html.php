@@ -136,7 +136,7 @@ class jfusionViewadvancedparam extends JView
             plugin = 'a:1:{s:13:\"jfusionplugin\";s:'+plugin.length+':\"'+plugin+'\";}';
             var value = encode64(plugin);
             window.location.href = 'index.php?option=com_jfusion&task=advancedparam' +
-                                   '&tmpl=component&elNum={$elNum}{$configLink} . "&params='+value;
+                                   '&tmpl=component&elNum={$elNum}{$configLink}&params='+value;
         }
 
         function encode64(inp){
