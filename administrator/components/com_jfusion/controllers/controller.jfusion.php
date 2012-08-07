@@ -660,7 +660,7 @@ class JFusionController extends JController
         $js .= <<<JS
             window.parent.jAdvancedParamSet('{$title}', '{$serParam}','{$elNum}');
 JS;
-        $js = '</script>';
+        $js .= '</script>';
         echo $js;
         return;
     }
