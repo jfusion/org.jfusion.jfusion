@@ -306,12 +306,15 @@ window.addEvent('domready',function() {
 	    <tbody id="sort_table">
 		<?php
 		//loop through the JFusion plugins
+        $row_count = 0;
 		foreach($this->plugins as $record) {
 		?>
-			<tr id="<?php echo $record->name; ?>" class="row<? echo $record->row_count; ?>">
+			<tr id="<?php echo $record->name; ?>" class="row<? echo ($row_count % 2); ?>">
 				<?php echo $this->generateRowHTML($record)?>
 		    </tr>
-		<?php } ?>
+		<?php
+            $row_count++;
+        } ?>
 		</tbody>
 	</table>
 	<br />

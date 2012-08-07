@@ -71,13 +71,9 @@ class jfusionViewplugindisplay extends JView {
             
         if ($rows) {
             //we found plugins now prepare the data
-            $row_count = 0;
             foreach($rows as $record) {
                 $JFusionPlugin =& JFusionFactory::getAdmin($record->name);
                 $JFusionParam =& JFusionFactory::getParams($record->name);
-
-                //to allow for row highlights
-                $record->row_count = $row_count;
 
                 $record = $this->initRecord($record->name,$record);
                 //check to see if the plugin's files exist
@@ -97,13 +93,6 @@ class jfusionViewplugindisplay extends JView {
                 }
                 
                 $plugins[]=$record;
-
-                //update row count for highlighting
-                if ($row_count == 1) {
-                    $row_count = 0;
-                } else {
-                    $row_count = 1;
-                }
             }
             //get the install xml
 	        $url = 'http://update.jfusion.org/';

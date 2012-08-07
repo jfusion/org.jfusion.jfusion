@@ -47,13 +47,9 @@ defined('_JEXEC') or die('Restricted access');
     $row_count = 0;
     foreach ($this->menuitems as $row) {
 		?>
-		<tr class="row<?php echo $row_count; ?>">
+		<tr class="row<?php echo ($row_count % 2); ?>">
 		<?php
-    	if ($row_count == 1) {
-        	$row_count = 0;
-       	} else {
-       		$row_count = 1;
-     	}
+        $row_count++;
 		?>
 			<td>
             	<a style="cursor: pointer;" onclick="window.parent.jSelectItemid('<?php echo $this->ename; ?>','<?php echo $row->id; ?>',<?php echo $this->elId; ?>);">
@@ -118,13 +114,8 @@ defined('_JEXEC') or die('Restricted access');
     <?php
     $row_count = 0;
     foreach ($this->directlinks as $row) {
- 		if ($row_count == 1) {
-      		$row_count = 0;
-		} else {
-			$row_count = 1;
-		}
 	?>
-		<tr class="row<?php echo $row_count; ?>">
+		<tr class="row<?php echo ($row_count % 2); ?>">
             <td>
 	            <a style="cursor: pointer;" onclick="window.parent.jSelectItemid('<?php echo $this->ename; ?>','<?php echo $row->name; ?>',<?php echo $this->elId; ?>);">
 	            	<?php echo htmlspecialchars($row->name, ENT_QUOTES, 'UTF-8'); ?>
@@ -145,6 +136,7 @@ defined('_JEXEC') or die('Restricted access');
             </td>
 		</tr>
 	<?php
+        $row_count++;
 	}
 	?>
 	</tbody>

@@ -139,13 +139,9 @@ JHTML::_('behavior.modal', 'a.modal');
 		    $error = unserialize($details->data);
 		
 		    ?>
-		    <tr class="row<?php echo $row_count; ?>">
+		    <tr class="row<?php echo ($row_count % 2); ?>">
 		    <?php
-			    if ($row_count == 1) {
-			        $row_count = 0;
-			    } else {
-			        $row_count = 1;
-			    }
+                $row_count++;
 			    //just some checks to prevent php notices
 			    if (!is_object($error['conflict']['userinfo'])) {
 			        $error['conflict']['userinfo'] = new stdClass();

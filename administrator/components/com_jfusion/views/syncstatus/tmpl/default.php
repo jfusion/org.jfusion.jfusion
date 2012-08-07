@@ -73,12 +73,8 @@ if (!isset($this->syncdata['slave_data']) || !$this->syncdata['slave_data']) {
     <?php
     $row_count = 0;
     foreach ($this->syncdata['slave_data'] as $slave) {
-        ?><tr class="row<?php echo $row_count;?>"><?php
-        if ($row_count == 1) {
-            $row_count = 0;
-        } else {
-            $row_count = 1;
-        }
+        ?><tr class="row<?php echo ($row_count % 2);?>"><?php
+        $row_count++;
         ?>
         <td><?php echo $slave['jname']; ?></td>
         <td><?php echo $slave['total']; ?></td>

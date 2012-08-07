@@ -60,7 +60,7 @@ if(!empty($this->pairs)) :
 $row_count = 0;
 foreach($this->pairs as $joomlaid => $forumid) {
 ?>
-	<tr class="<?php echo "row$row_count"; ?>" id='joomla<?php echo $joomlaid; ?>'>
+	<tr class="row<?php echo ($row_count % 2); ?>" id='joomla<?php echo $joomlaid; ?>'>
 	<td>
 		<?php
 		if(isset($this->joomlaoptions[$joomlaid])) echo $this->joomlaoptions[$joomlaid]->name;
@@ -76,11 +76,7 @@ foreach($this->pairs as $joomlaid => $forumid) {
 	</td>
 	</tr>
 	<?php
-	if ($row_count == 1) {
-		$row_count = 0;
-	} else {
-		$row_count = 1;
-	}
+    $row_count++;
 }
 endif;
 ?>

@@ -95,12 +95,8 @@ function applyAll() {
 		    JError::raiseWarning(500, JText::_('NO_USERSYNC_DATA'));
 		}
 		foreach ($this->rows as $record) {
-		    ?><tr class="row<?php echo $row_count;?>"><?php
-			    if ($row_count == 1) {
-			        $row_count = 0;
-			    } else {
-			        $row_count = 1;
-			    }
+		    ?><tr class="row<?php echo ($row_count % 2);?>"><?php
+                $row_count++;
 			    $syncdata = unserialize(base64_decode($record->syncdata));
 			
 			    ?>
