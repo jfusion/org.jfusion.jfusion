@@ -59,9 +59,6 @@ JFusionFunctionAdmin::displayDonate();
         <th class="title" align="center">
             <?php echo JText::_('CURRENT_VERSION'); ?>
         </th>
-        <th class="title">
-            <?php echo JText::_('INSTALL_UPGRADE'); ?>
-        </th>
     </tr>
     </thead>
     <tbody>
@@ -84,13 +81,13 @@ JFusionFunctionAdmin::displayDonate();
                     }
                     ?>
                 </td>
-                <td style="width:20%;">
-                    <?php echo $data->date; ?>
-                </td>
-                <td style="width:30%;">
+                <td style="width:45%;">
                     <?php
+                    if ($data->currentdate) {
+                        echo $data->date;
+                    }
                     if ($data->currentdate != $data->date) {
-                    ?>
+                        ?>
                         <script type="text/javascript">
                             <!--
                             window.addEvent('domready',function() {
@@ -103,7 +100,7 @@ JFusionFunctionAdmin::displayDonate();
                             // -->
                         </script>
                         <a id="<?php echo $lang ?>" href="<?php echo $data->file; ?>"><?php echo $mode;?></a> / <a href="<?php echo $data->file; ?>"><?php echo JText::_('DOWNLOAD') ;?></a>
-                    <?php
+                        <?php
                     }
                     ?>
                 </td>
