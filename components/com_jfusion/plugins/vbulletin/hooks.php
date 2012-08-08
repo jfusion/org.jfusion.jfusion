@@ -225,52 +225,50 @@ class executeJFusionHook
 
     function global_complete()
     {
-        if (!defined('_JEXEC')) {
-            return;
-        }
-
-        global $vbulletin;
-        //create cookies to allow direct login into vb frameless
-        /*
-        if ($vbulletin->userinfo['userid'] != 0 && empty($vbulletin->GPC[COOKIE_PREFIX . 'userid'])) {
-            if ($vbulletin->GPC['cookieuser']) {
-                $expire = 60 * 60 * 24 * 365;
-            } else {
-                $expire = 0;
+        if (defined('_JEXEC')) {
+            global $vbulletin;
+            //create cookies to allow direct login into vb frameless
+            /*
+            if ($vbulletin->userinfo['userid'] != 0 && empty($vbulletin->GPC[COOKIE_PREFIX . 'userid'])) {
+                if ($vbulletin->GPC['cookieuser']) {
+                    $expire = 60 * 60 * 24 * 365;
+                } else {
+                    $expire = 0;
+                }
+                JFusionCurl::addCookie(COOKIE_PREFIX . 'userid', $vbulletin->userinfo['userid'], $expire, $vbulletin->options['cookiepath'], $vbulletin->options['cookiedomain'], false, true);
+                JFusionCurl::addCookie(COOKIE_PREFIX . 'password', md5($vbulletin->userinfo['password'] . COOKIE_SALT), $expire, $vbulletin->options['cookiepath'], $vbulletin->options['cookiedomain'], false, true);
             }
-            JFusionCurl::addCookie(COOKIE_PREFIX . 'userid', $vbulletin->userinfo['userid'], $expire, $vbulletin->options['cookiepath'], $vbulletin->options['cookiedomain'], false, true);
-            JFusionCurl::addCookie(COOKIE_PREFIX . 'password', md5($vbulletin->userinfo['password'] . COOKIE_SALT), $expire, $vbulletin->options['cookiepath'], $vbulletin->options['cookiedomain'], false, true);
-        }
-        */
-        //we need to update the session table
-        $vdb = JFusionFactory::getDatabase(_VBJNAME);
-        if (!empty($vdb)) {
-            $vars = & $vbulletin->session->vars;
-            if ($vbulletin->session->created) {
-                $bypass = ($vars[bypass]) ? 1 : 0;
-                $query = "INSERT IGNORE INTO #__session
+            */
+            //we need to update the session table
+            $vdb = JFusionFactory::getDatabase(_VBJNAME);
+            if (!empty($vdb)) {
+                $vars = & $vbulletin->session->vars;
+                if ($vbulletin->session->created) {
+                    $bypass = ($vars[bypass]) ? 1 : 0;
+                    $query = "INSERT IGNORE INTO #__session
                             (sessionhash, userid, host, idhash, lastactivity, location, styleid, languageid, loggedin, inforum, inthread, incalendar, badlocation, useragent, bypass, profileupdate) VALUES
                             ({$vdb->Quote($vars[dbsessionhash]) },$vars[userid],{$vdb->Quote($vars[host]) },{$vdb->Quote($vars[idhash]) },$vars[lastactivity],{$vdb->Quote($vars[location]) },$vars[styleid],$vars[languageid],
                             $vars[loggedin],$vars[inforum],$vars[inthread],$vars[incalendar],$vars[badlocation],{$vdb->Quote($vars[useragent]) },$bypass,$vars[profileupdate])";
-            } else {
-                $query = "UPDATE #__session SET lastactivity = $vars[lastactivity], inforum = $vars[inforum], inthread = $vars[inthread], incalendar = $vars[incalendar], badlocation = $vars[badlocation]
+                } else {
+                    $query = "UPDATE #__session SET lastactivity = $vars[lastactivity], inforum = $vars[inforum], inthread = $vars[inthread], incalendar = $vars[incalendar], badlocation = $vars[badlocation]
                             WHERE sessionhash = {$vdb->Quote($vars[dbsessionhash]) }";
+                }
+                $vdb->setQuery($query);
+                $vdb->query();
             }
-            $vdb->setQuery($query);
-            $vdb->query();
-        }
-        //we need to perform the shutdown queries that mark PMs read, etc
-        if (is_array($vbulletin->db->shutdownqueries)) {
-            foreach ($vbulletin->db->shutdownqueries AS $name => $query) {
-                if (!empty($query) AND ($name !== 'pmpopup' OR !defined('NOPMPOPUP'))) {
-                    $vdb->setQuery($query);
-                    $vdb->query();
+            //we need to perform the shutdown queries that mark PMs read, etc
+            if (is_array($vbulletin->db->shutdownqueries)) {
+                foreach ($vbulletin->db->shutdownqueries AS $name => $query) {
+                    if (!empty($query) AND ($name !== 'pmpopup' OR !defined('NOPMPOPUP'))) {
+                        $vdb->setQuery($query);
+                        $vdb->query();
+                    }
                 }
             }
+            //echo the output and return an exception to allow Joomla to continue
+            echo trim($this->vars, "\n\r\t.");
+            Throw new Exception("vBulletin exited.");
         }
-        //echo the output and return an exception to allow Joomla to continue
-        echo trim($this->vars, "\n\r\t.");
-        Throw new Exception("vBulletin exited.");
     }
 
     /**

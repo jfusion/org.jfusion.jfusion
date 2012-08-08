@@ -448,7 +448,6 @@ class JFusionUser_oscommerce extends JFusionUser
         }
         $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
         $db->RollbackTrans();
-        return;
     }
 
     /**

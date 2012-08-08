@@ -54,24 +54,24 @@ class cssparser {
 		}
 		if( strpos($key,'@') !== false ) {
 			$this->media[$key] = $codestr;
-			return;
-		}
-		$codes = explode(";",$codestr);
-		if(count($codes) > 0) {
-			foreach($codes as $code) {
-				$code = trim($code);
-				if(strlen($code)) {
-					$code = explode(":",$code,2);
-					if (count($code) == 2) {
-						list($codekey, $codevalue) = $code;
-						$codevalue = trim($codevalue);
-						if(strlen($codekey) > 0 && strlen($codevalue) > 0) {
-							$this->css[$key][trim($codekey)] = $codevalue;
-						}
-					}
-				}
-			}
-		}
+		} else {
+            $codes = explode(";",$codestr);
+            if(count($codes) > 0) {
+                foreach($codes as $code) {
+                    $code = trim($code);
+                    if(strlen($code)) {
+                        $code = explode(":",$code,2);
+                        if (count($code) == 2) {
+                            list($codekey, $codevalue) = $code;
+                            $codevalue = trim($codevalue);
+                            if(strlen($codekey) > 0 && strlen($codevalue) > 0) {
+                                $this->css[$key][trim($codekey)] = $codevalue;
+                            }
+                        }
+                    }
+                }
+            }
+        }
 	}
 
     /**

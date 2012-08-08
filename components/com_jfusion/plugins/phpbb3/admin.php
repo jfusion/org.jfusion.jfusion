@@ -295,13 +295,12 @@ if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\'
                     $file_data = preg_replace($search, '', $file_data);
                 }
                 $redirect_code = $this->generateRedirectCode($joomla_url, $joomla_itemid);
-                if (empty($redirect_code)) {
-                    return;
+                if (!empty($redirect_code)) {
+                    $search = '/\<\?php/si';
+                    $replace = '<?php' . $redirect_code;
+                    $file_data = preg_replace($search, $replace, $file_data);
+                    JFile::write($mod_file, $file_data);
                 }
-                $search = '/\<\?php/si';
-                $replace = '<?php' . $redirect_code;
-                $file_data = preg_replace($search, $replace, $file_data);
-                JFile::write($mod_file, $file_data);
             }
         }
     }

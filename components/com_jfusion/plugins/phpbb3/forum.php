@@ -488,110 +488,108 @@ class JFusionForum_phpbb3 extends JFusionForum {
 
 		if(!$jdb->insertObject('#__topics', $topic_row, 'topic_id' )){
 			$status['error'] = $jdb->stderr();
-			return;
-		}
-		$topicid = $jdb->insertid();
-
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_phpbb3
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
-        $bbcode = $helper->bbcode_parser($text);
-
-		$post_row = new stdClass();
-		$post_row->forum_id			= $forumid;
-		$post_row->topic_id 		= $topicid;
-		$post_row->poster_id		= $userid;
-		$post_row->icon_id			= 0;
-		$post_row->poster_ip		= $_SERVER["REMOTE_ADDR"];
-		$post_row->post_time		= $timestamp;
-		$post_row->post_approved	= 1;
-		$post_row->enable_bbcode	= 1;
-		$post_row->enable_smilies	= 1;
-		$post_row->enable_magic_url	= 1;
-		$post_row->enable_sig		= 1;
-		$post_row->post_username	= $phpbbUser->username;
-		$post_row->post_subject		= $subject;
-		$post_row->post_text		= $bbcode->text;
-		$post_row->post_checksum	= md5($bbcode->text);
-		$post_row->post_attachment	= 0;
-		$post_row->bbcode_bitfield	= $bbcode->bbcode_bitfield;
-		$post_row->bbcode_uid		= $bbcode->bbcode_uid;
-		$post_row->post_postcount	= 1;
-		$post_row->post_edit_locked	= 0;
-
-		if(!$jdb->insertObject('#__posts', $post_row, 'post_id')) {
-			$status['error'] = $jdb->stderr();
-			return;
-		}
-		$postid = $jdb->insertid();
-
-		$topic_row = new stdClass();
-		$topic_row->topic_first_post_id			= $postid;
-		$topic_row->topic_last_post_id			= $postid;
-		$topic_row->topic_last_post_time		= $timestamp;
-		$topic_row->topic_last_poster_id		= (int) $userid;
-		$topic_row->topic_last_poster_name		= $phpbbUser->username;
-		$topic_row->topic_last_poster_colour	= $phpbbUser->user_colour;
-		$topic_row->topic_last_post_subject		= (string) $subject;
-		$topic_row->topic_id					= $topicid;
-		if(!$jdb->updateObject('#__topics', $topic_row, 'topic_id' )) {
-			$status['error'] = $jdb->stderr();
-			return;
-		}
-
-		$query = "SELECT forum_last_post_time, forum_topics, forum_topics_real, forum_posts FROM #__forums WHERE forum_id = $forumid";
-		$jdb->setQuery($query);
-		$num = $jdb->loadObject();
-
-		$forum_stats = new stdClass();
-
-		if($dbparams->get('use_content_created_date',false)) {
-			//only update the last post for the topic if it really is newer
-			$updateLastPost = ($timestamp > $num->forum_last_post_time) ? true : false;
 		} else {
-			$updateLastPost = true;
-		}
+            $topicid = $jdb->insertid();
 
-		if($updateLastPost) {
-			$forum_stats->forum_last_post_id 		=  $postid;
-			$forum_stats->forum_last_post_subject	= $jdb->Quote($subject);
-			$forum_stats->forum_last_post_time 		=  $timestamp;
-			$forum_stats->forum_last_poster_id 		=  (int) $userid;
-			$forum_stats->forum_last_poster_name 	=  $phpbbUser->username;
-			$forum_stats->forum_last_poster_colour 	= $phpbbUser->user_colour;
-		}
+            /**
+             * @ignore
+             * @var $helper JFusionHelper_phpbb3
+             */
+            $helper = JFusionFactory::getHelper($this->getJname());
+            $bbcode = $helper->bbcode_parser($text);
 
-		$forum_stats->forum_id 			= $forumid;
-		$forum_stats->forum_topics 		= $num->forum_topics + 1;
-		$forum_stats->forum_topics_real = $num->forum_topics_real + 1;
-		$forum_stats->forum_posts 		= $num->forum_posts + 1;
+            $post_row = new stdClass();
+            $post_row->forum_id			= $forumid;
+            $post_row->topic_id 		= $topicid;
+            $post_row->poster_id		= $userid;
+            $post_row->icon_id			= 0;
+            $post_row->poster_ip		= $_SERVER["REMOTE_ADDR"];
+            $post_row->post_time		= $timestamp;
+            $post_row->post_approved	= 1;
+            $post_row->enable_bbcode	= 1;
+            $post_row->enable_smilies	= 1;
+            $post_row->enable_magic_url	= 1;
+            $post_row->enable_sig		= 1;
+            $post_row->post_username	= $phpbbUser->username;
+            $post_row->post_subject		= $subject;
+            $post_row->post_text		= $bbcode->text;
+            $post_row->post_checksum	= md5($bbcode->text);
+            $post_row->post_attachment	= 0;
+            $post_row->bbcode_bitfield	= $bbcode->bbcode_bitfield;
+            $post_row->bbcode_uid		= $bbcode->bbcode_uid;
+            $post_row->post_postcount	= 1;
+            $post_row->post_edit_locked	= 0;
 
-		if(!$jdb->updateObject('#__forums', $forum_stats, 'forum_id' )) {
-			$status['error'] = $jdb->stderr();
-			return;
-		}
+            if(!$jdb->insertObject('#__posts', $post_row, 'post_id')) {
+                $status['error'] = $jdb->stderr();
+            } else {
+                $postid = $jdb->insertid();
 
-		//update some stats
-		$query = "UPDATE #__users SET user_posts = user_posts + 1 WHERE user_id = {$userid}";
-		$jdb->setQuery($query);
-		if(!$jdb->query()) {
-			$status['error'] = $jdb->stderr();
-		}
+                $topic_row = new stdClass();
+                $topic_row->topic_first_post_id			= $postid;
+                $topic_row->topic_last_post_id			= $postid;
+                $topic_row->topic_last_post_time		= $timestamp;
+                $topic_row->topic_last_poster_id		= (int) $userid;
+                $topic_row->topic_last_poster_name		= $phpbbUser->username;
+                $topic_row->topic_last_poster_colour	= $phpbbUser->user_colour;
+                $topic_row->topic_last_post_subject		= (string) $subject;
+                $topic_row->topic_id					= $topicid;
+                if(!$jdb->updateObject('#__topics', $topic_row, 'topic_id' )) {
+                    $status['error'] = $jdb->stderr();
+                } else {
+                    $query = "SELECT forum_last_post_time, forum_topics, forum_topics_real, forum_posts FROM #__forums WHERE forum_id = $forumid";
+                    $jdb->setQuery($query);
+                    $num = $jdb->loadObject();
 
-		$query = 'UPDATE #__config SET config_value = config_value + 1 WHERE config_name = \'num_topics\'';
-		$jdb->setQuery($query);
-		if(!$jdb->query()) {
-			$status['error'] = $jdb->stderr();
-		}
+                    $forum_stats = new stdClass();
 
-		if(!empty($topicid) && !empty($postid)) {
-			//add information to update forum lookup
-			$status['threadinfo']->forumid = $forumid;
-			$status['threadinfo']->threadid = $topicid;
-			$status['threadinfo']->postid = $postid;
-		}
+                    if($dbparams->get('use_content_created_date',false)) {
+                        //only update the last post for the topic if it really is newer
+                        $updateLastPost = ($timestamp > $num->forum_last_post_time) ? true : false;
+                    } else {
+                        $updateLastPost = true;
+                    }
+
+                    if($updateLastPost) {
+                        $forum_stats->forum_last_post_id 		=  $postid;
+                        $forum_stats->forum_last_post_subject	= $jdb->Quote($subject);
+                        $forum_stats->forum_last_post_time 		=  $timestamp;
+                        $forum_stats->forum_last_poster_id 		=  (int) $userid;
+                        $forum_stats->forum_last_poster_name 	=  $phpbbUser->username;
+                        $forum_stats->forum_last_poster_colour 	= $phpbbUser->user_colour;
+                    }
+
+                    $forum_stats->forum_id 			= $forumid;
+                    $forum_stats->forum_topics 		= $num->forum_topics + 1;
+                    $forum_stats->forum_topics_real = $num->forum_topics_real + 1;
+                    $forum_stats->forum_posts 		= $num->forum_posts + 1;
+
+                    if(!$jdb->updateObject('#__forums', $forum_stats, 'forum_id' )) {
+                        $status['error'] = $jdb->stderr();
+                    } else {
+                        //update some stats
+                        $query = "UPDATE #__users SET user_posts = user_posts + 1 WHERE user_id = {$userid}";
+                        $jdb->setQuery($query);
+                        if(!$jdb->query()) {
+                            $status['error'] = $jdb->stderr();
+                        }
+
+                        $query = 'UPDATE #__config SET config_value = config_value + 1 WHERE config_name = \'num_topics\'';
+                        $jdb->setQuery($query);
+                        if(!$jdb->query()) {
+                            $status['error'] = $jdb->stderr();
+                        }
+
+                        if(!empty($topicid) && !empty($postid)) {
+                            //add information to update forum lookup
+                            $status['threadinfo']->forumid = $forumid;
+                            $status['threadinfo']->threadid = $topicid;
+                            $status['threadinfo']->postid = $postid;
+                        }
+                    }
+                }
+            }
+        }
 	}
 
     /**

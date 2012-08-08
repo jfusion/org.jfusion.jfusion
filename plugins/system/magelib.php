@@ -166,7 +166,6 @@ class plgSystemMagelib {
 		session_name ( 'frontend' );
 		Mage::getSingleton ( 'core/session', array ('name' => 'frontend' ) );
 		ob_end_clean ();
-		return;
 	}
 
     /**
@@ -197,7 +196,6 @@ class plgSystemMagelib {
 		unset ( $_SESSION );
 		self::unregisterMagentoAutoload ();
 		ob_end_clean ();
-		return;
 	}
 	
 	/**

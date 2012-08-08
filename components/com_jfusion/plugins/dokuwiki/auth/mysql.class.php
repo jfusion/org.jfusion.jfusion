@@ -84,40 +84,39 @@ class doku_auth_mysql extends doku_auth_basic {
         	}        
 //          msg("MySQL err: insufficient configuration.",-1,__LINE__,__FILE__);
 			$this->success = false;
-			return;
-		}
-
-		$this->cando['addUser']      = $this->_chkcnf(array('getUserInfo',
-															'getGroups',
-															'addUser',
-															'getUserID',
-															'getGroupID',
-															'addGroup',
-															'addUserGroup'),true);
-		$this->cando['delUser']      = $this->_chkcnf(array('getUserID',
-															'delUser',
-															'delUserRefs'),true);
-		$this->cando['modLogin']     = $this->_chkcnf(array('getUserID',
-															'updateUser',
-															'UpdateTarget'),true);
-		$this->cando['modPass']      = $this->cando['modLogin'];
-		$this->cando['modName']      = $this->cando['modLogin'];
-		$this->cando['modMail']      = $this->cando['modLogin'];
-		$this->cando['modGroups']    = $this->_chkcnf(array('getUserID',
-															'getGroups',
-															'getGroupID',
-															'addGroup',
-															'addUserGroup',
-															'delGroup',
-															'getGroupID',
-															'delUserGroup'),true);
-//	      getGroups is not yet supported
-//	      $this->cando['getGroups']    = $this->_chkcnf(array('getGroups',
+		} else {
+            $this->cando['addUser']      = $this->_chkcnf(array('getUserInfo',
+                'getGroups',
+                'addUser',
+                'getUserID',
+                'getGroupID',
+                'addGroup',
+                'addUserGroup'),true);
+            $this->cando['delUser']      = $this->_chkcnf(array('getUserID',
+                'delUser',
+                'delUserRefs'),true);
+            $this->cando['modLogin']     = $this->_chkcnf(array('getUserID',
+                'updateUser',
+                'UpdateTarget'),true);
+            $this->cando['modPass']      = $this->cando['modLogin'];
+            $this->cando['modName']      = $this->cando['modLogin'];
+            $this->cando['modMail']      = $this->cando['modLogin'];
+            $this->cando['modGroups']    = $this->_chkcnf(array('getUserID',
+                'getGroups',
+                'getGroupID',
+                'addGroup',
+                'addUserGroup',
+                'delGroup',
+                'getGroupID',
+                'delUserGroup'),true);
+//          getGroups is not yet supported
+//          $this->cando['getGroups']    = $this->_chkcnf(array('getGroups',
 //	                                                          'getGroupID'),false);
-		$this->cando['getUsers']     = $this->_chkcnf(array('getUsers',
-															'getUserInfo',
-															'getGroups'),false);
-		$this->cando['getUserCount'] = $this->_chkcnf(array('getUsers'),false);    
+            $this->cando['getUsers']     = $this->_chkcnf(array('getUsers',
+                'getUserInfo',
+                'getGroups'),false);
+            $this->cando['getUserCount'] = $this->_chkcnf(array('getUsers'),false);
+        }
     }
 
     /**

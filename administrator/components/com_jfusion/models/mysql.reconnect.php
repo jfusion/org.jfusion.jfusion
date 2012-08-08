@@ -63,10 +63,10 @@ class JFusionReconnectMySQL extends JDatabaseMySQL
 	                throw new JDatabaseException(JText::_('JLIB_DATABASE_ERROR_ADAPTER_MYSQL'));
 	            }
 	        }
-	
+
 	        // Attempt to connect to the server.
 	        if (!($this->connection = @ mysql_connect($options['host'], $options['user'], $options['password'], false))) {
-	
+
 	            // Legacy error handling switch based on the JError::$legacy switch.
 	            // @deprecated  11.3
 	            if (JError::$legacy) {

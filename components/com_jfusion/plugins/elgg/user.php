@@ -272,7 +272,6 @@ class JFusionUser_elgg extends JFusionUser {
                     //return the good news
                     $status['debug'][] = JText::_('USER_CREATION');
                     $status['userinfo'] = $this->getUser($userinfo);
-                    return;
                     //notify_user($new_user->guid, $CONFIG->site->guid, elgg_echo('useradd:subject'), sprintf(elgg_echo('useradd:body'), $name, $CONFIG->site->name, $CONFIG->site->url, $username, $password));
                     //system_message(sprintf(elgg_echo("adduser:ok"),$CONFIG->sitename));
 
