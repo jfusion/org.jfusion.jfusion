@@ -235,7 +235,7 @@ class jfusionViewconfigdump extends JView {
      * @param null $type
      */
     function clearParameters(&$new,$name,$type=null) {
-        if (JRequest::getVar('filter')) {
+        if (JRequest::getVar('filter',false)) {
             foreach($new->params as $key => $value) {
                 if ( !isset($this->checkvalue[$name]['*'][$key]) && !isset($this->checkvalue[$name][$type][$key]) ) {
                     unset($new->params->$key);
@@ -311,7 +311,7 @@ class jfusionViewconfigdump extends JView {
         }
 
         if( $check ) {
-            $checks = explode( '\|' , $check );
+            $checks = explode( '|' , $check );
 
             $valid = 0;
             foreach($checks as $check) {
@@ -323,7 +323,7 @@ class jfusionViewconfigdump extends JView {
                         break;
                     case 'mask':
                         $valid = 1;
-                        if (!JRequest::getVar('mask',true)) {
+                        if (JRequest::getVar('mask',false)) {
                             $value = '************';
                         }
                         break;

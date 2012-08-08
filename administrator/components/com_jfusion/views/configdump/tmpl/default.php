@@ -12,6 +12,16 @@ defined('_JEXEC') or die('Restricted access');
 
 //load debug library
 require_once(JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.debug.php');
+
+$mask = '';
+if (JRequest::getVar('mask',false)) {
+    $mask = 'checked="yes"';
+}
+
+$filter = '';
+if (JRequest::getVar('filter',false)) {
+    $filter = 'checked="yes"';
+}
 ?>
 <table>
     <tr>
@@ -56,7 +66,7 @@ require_once(JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.D
                 <?php echo JText::_('CONFIGDUMP_FILTER');?>
             </td>
             <td>
-                <input type="checkbox" name="filter" value="true" />
+                <input type="checkbox" <?php echo $filter; ?> name="filter" value="true" />
             </td>
         </tr>
         <tr>
@@ -64,7 +74,7 @@ require_once(JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.D
                 <?php echo JText::_('CONFIGDUMP_MASK');?>
             </td>
             <td>
-                <input type="checkbox" checked="yes" name="mask" value="true" />
+                <input type="checkbox" <?php echo $mask; ?> name="mask" value="true" />
             </td>
         </tr>
     </table>
