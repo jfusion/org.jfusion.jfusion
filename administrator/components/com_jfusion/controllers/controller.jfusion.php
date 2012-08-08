@@ -662,7 +662,6 @@ class JFusionController extends JController
 JS;
         $js .= '</script>';
         echo $js;
-        return;
     }
 
     function saveorder()
