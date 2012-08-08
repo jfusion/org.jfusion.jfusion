@@ -47,7 +47,7 @@ JFusionFunctionAdmin::displayDonate();
 <table class="adminform" style="border-spacing:1px;">
     <thead>
     <tr>
-        <th class="title " align="left" width="20px;">
+        <th class="title " align="left">
             <?php echo JText::_('ID'); ?>
         </th>
         <th class="title " align="left">
@@ -68,13 +68,13 @@ JFusionFunctionAdmin::displayDonate();
         <?php $row_count = 0;
         foreach ($this->lang_repo as $lang => $data) { ?>
             <tr class="<? echo $data->class.($row_count % 2); ?>">
-                <td>
+                <td style="width:5%;">
                     <?php echo $lang; ?>
                 </td>
-                <td>
+                <td style="width:35%;">
                     <?php echo $data->description; ?>
                 </td>
-                <td>
+                <td style="width:10%;">
                     <?php
                     if ($data->currentdate) {
                         echo $data->currentdate;
@@ -84,10 +84,10 @@ JFusionFunctionAdmin::displayDonate();
                     }
                     ?>
                 </td>
-                <td>
+                <td style="width:20%;">
                     <?php echo $data->date; ?>
                 </td>
-                <td>
+                <td style="width:30%;">
                     <?php
                     if ($data->currentdate != $data->date) {
                     ?>
