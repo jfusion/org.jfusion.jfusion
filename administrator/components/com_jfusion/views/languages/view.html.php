@@ -46,14 +46,11 @@ class jfusionViewlanguages extends JView
          * @ignore
          * @var $parser JSimpleXML
          */
-        $jfusionurl = new stdClass;
-        $jfusionurl->url = 'http://update.jfusion.org/';
-        $jfusionurl->data = JFusionFunctionAdmin::getFileData($jfusionurl->url);
+        $data = JFusionFunctionAdmin::getFileData('http://update.jfusion.org/');
         $parser = JFactory::getXMLParser('Simple');
 
         $lang_repo = array();
-        //die(htmlspecialchars($jfusionurl->data));
-        if ($parser->loadString($jfusionurl->data)) {
+        if ($parser->loadString($data)) {
             if (isset($parser->document)) {
                 //$JFusionVersionInfo = $parser->document;
                 //$language_data = $JFusionVersionInfo->getElementByPath('languages');
@@ -67,7 +64,7 @@ class jfusionViewlanguages extends JView
 
                     $lang = new stdClass;
                     $lang->file = $language->getElementByPath('remotefile')->data();
-                    $lang->date = $language->getElementByPath('creationDate')->data();
+                    $lang->date = $language->getElementByPath('creationdate')->data();
                     $lang->description = $language->getElementByPath('description')->data();
                     $lang->currentdate = null;
                     $lang->class = 'bad';
@@ -82,20 +79,16 @@ class jfusionViewlanguages extends JView
         $db->setQuery($query);
         $results = $db->loadObjectList();
 
-        $lang_installed = array();
         if(!empty($results)) {
             foreach ($results as $result) {
                 if (isset($lang_repo[$result->element])) {
                     $cache = json_decode($result->manifest_cache);
                     $lang_repo[$result->element]->currentdate = $cache->creationDate;
 
-                    if ( $lang_repo[$result->element]->currentdate != $lang_repo[$result->element]->date ) {
-                        $lang_repo[$result->element]->class = 'bad';
-                    } else {
+                    if ( $lang_repo[$result->element]->currentdate == $lang_repo[$result->element]->date ) {
                         $lang_repo[$result->element]->class = 'good';
                     }
                 }
-
             }
         }
 
