@@ -58,6 +58,10 @@ class jfusionViewlanguages extends JView
                 //$JFusionVersionInfo = $parser->document;
                 //$language_data = $JFusionVersionInfo->getElementByPath('languages');
                 $languages = $parser->document->getElementByPath('languages')->children();
+                /**
+                 * @ignore
+                 * @var $language JSimpleXMLElement
+                 */
                 foreach ($languages as $language) {
                     $name = $language->attributes('tag');
 
