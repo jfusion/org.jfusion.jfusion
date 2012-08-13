@@ -47,47 +47,43 @@ class jfusionViewplugininfo extends JView
 			$features = array();
 			 
 			$admin = JFusionFactory::getAdmin($jname);
-			$public = JFusionFactory::getPublic($jname);
-			$forum = JFusionFactory::getForum($jname);
-			$user = JFusionFactory::getUser($jname);
-			
-			$features['ADMIN']['FEATURE_WIZARD'] = $this->outputFeature(JFusionFunctionAdmin::methodDefined($admin,'setupFromPath'));
+
+			$features['ADMIN']['FEATURE_WIZARD'] = $this->outputFeature(JFusionFunctionAdmin::hasFeature($jname,'wizard'));
 			$features['ADMIN']['FEATURE_REQUIRE_FILE_ACCESS'] = $this->outputFeature($admin->requireFileAccess());
 			$features['ADMIN']['FEATURE_MULTI_USERGROUP'] = $this->outputFeature($admin->isMultiGroup());
 
-            $frameless = JFusionFunctionAdmin::methodDefined($public,'getBuffer');
+            $frameless = JFusionFunctionAdmin::hasFeature($jname,'frameless');
             if (!$frameless) {
                 $frameless = 'CURL_FRAMELESS';
             }
+
 			$features['PUBLIC']['FEATURE_FRAMELESS'] = $this->outputFeature($frameless);
-			$features['PUBLIC']['FEATURE_BREADCRUMB'] = $this->outputFeature(JFusionFunctionAdmin::methodDefined($public,'getPathWay'));
-			$features['PUBLIC']['FEATURE_SEARCH'] = $this->outputFeature((JFusionFunctionAdmin::methodDefined($public,'getSearchQuery')
-												||JFusionFunctionAdmin::methodDefined($public,'getSearchResults')));
-			$features['PUBLIC']['FEATURE_ONLINE_STATUS'] = $this->outputFeature((JFusionFunctionAdmin::methodDefined($public,'getOnlineUserQuery')));
-			$features['PUBLIC']['FEATURE_FRONT_END_LANGUAGE'] = $this->outputFeature((JFusionFunctionAdmin::methodDefined($public,'setLanguageFrontEnd')));
+			$features['PUBLIC']['FEATURE_BREADCRUMB'] = $this->outputFeature(JFusionFunctionAdmin::hasFeature($jname,'breadcrumb'));
+			$features['PUBLIC']['FEATURE_SEARCH'] = $this->outputFeature(JFusionFunctionAdmin::hasFeature($jname,'search'));
+			$features['PUBLIC']['FEATURE_ONLINE_STATUS'] = $this->outputFeature(JFusionFunctionAdmin::hasFeature($jname,'whoonline'));
+			$features['PUBLIC']['FEATURE_FRONT_END_LANGUAGE'] = $this->outputFeature(JFusionFunctionAdmin::hasFeature($jname,'frontendlanguage'));
 			
-			$features['FORUM']['FEATURE_THREAD_URL'] = $this->outputFeature((JFusionFunctionAdmin::methodDefined($forum,'getThreadURL')));
-			$features['FORUM']['FEATURE_POST_URL'] = $this->outputFeature((JFusionFunctionAdmin::methodDefined($forum,'getPostURL')));
-			$features['FORUM']['FEATURE_PROFILE_URL'] = $this->outputFeature((JFusionFunctionAdmin::methodDefined($forum,'getProfileURL')));			
-			$features['FORUM']['FEATURE_AVATAR_URL'] = $this->outputFeature((JFusionFunctionAdmin::methodDefined($forum,'getAvatar')));
-			$features['FORUM']['FEATURE_PRIVATE_MESSAGE_URL'] = $this->outputFeature((JFusionFunctionAdmin::methodDefined($forum,'getPrivateMessageURL')));
-			$features['FORUM']['FEATURE_VIEW_NEW_MESSAGES_URL'] = $this->outputFeature((JFusionFunctionAdmin::methodDefined($forum,'getViewNewMessagesURL')));
-			$features['FORUM']['FEATURE_PRIVATE_MESSAGE_COUNT'] = $this->outputFeature((JFusionFunctionAdmin::methodDefined($forum,'getPrivateMessageCounts')));
-			$features['FORUM']['FEATURE_ACTIVITY'] = $this->outputFeature((JFusionFunctionAdmin::methodDefined($forum,'getActivityQuery')
-												||JFusionFunctionAdmin::methodDefined($forum,'renderActivityModule')));
-			$features['FORUM']['FEATURE_DISCUSSION_BOT'] = $this->outputFeature((JFusionFunctionAdmin::methodDefined($forum,'createThread')));
+			$features['FORUM']['FEATURE_THREAD_URL'] = $this->outputFeature(JFusionFunctionAdmin::hasFeature($jname,'threadurl'));
+			$features['FORUM']['FEATURE_POST_URL'] = $this->outputFeature(JFusionFunctionAdmin::hasFeature($jname,'posturl'));
+			$features['FORUM']['FEATURE_PROFILE_URL'] = $this->outputFeature(JFusionFunctionAdmin::hasFeature($jname,'profileurl'));
+			$features['FORUM']['FEATURE_AVATAR_URL'] = $this->outputFeature(JFusionFunctionAdmin::hasFeature($jname,'avatarurl'));
+			$features['FORUM']['FEATURE_PRIVATE_MESSAGE_URL'] = $this->outputFeature(JFusionFunctionAdmin::hasFeature($jname,'privatemessageurl'));
+			$features['FORUM']['FEATURE_VIEW_NEW_MESSAGES_URL'] = $this->outputFeature(JFusionFunctionAdmin::hasFeature($jname,'viewnewmessagesurl'));
+			$features['FORUM']['FEATURE_PRIVATE_MESSAGE_COUNT'] = $this->outputFeature(JFusionFunctionAdmin::hasFeature($jname,'privatemessagecounts'));
+			$features['FORUM']['FEATURE_ACTIVITY'] = $this->outputFeature(JFusionFunctionAdmin::hasFeature($jname,'activity'));
+			$features['FORUM']['FEATURE_DISCUSSION_BOT'] = $this->outputFeature(JFusionFunctionAdmin::hasFeature($jname,'discussion'));
 			
-			$features['USER']['FEATURE_DUAL_LOGIN'] = $this->outputFeature((JFusionFunctionAdmin::methodDefined($user,'createSession')));
-			$features['USER']['FEATURE_DUAL_LOGOUT'] = $this->outputFeature((JFusionFunctionAdmin::methodDefined($user,'destroySession')));
-			$features['USER']['FEATURE_UPDATE_PASSWORD'] = $this->outputFeature((JFusionFunctionAdmin::methodDefined($user,'updatePassword')));
-			$features['USER']['FEATURE_UPDATE_USERNAME'] = $this->outputFeature((JFusionFunctionAdmin::methodDefined($user,'updateUsername')));
-			$features['USER']['FEATURE_UPDATE_EMAIL'] = $this->outputFeature((JFusionFunctionAdmin::methodDefined($user,'updateEmail')));
-			$features['USER']['FEATURE_UPDATE_USERGROUP'] = $this->outputFeature((JFusionFunctionAdmin::methodDefined($user,'updateUsergroup')));
-			$features['USER']['FEATURE_UPDATE_LANGUAGE'] = $this->outputFeature((JFusionFunctionAdmin::methodDefined($user,'updateUserLanguage')));
-			$features['USER']['FEATURE_SESSION_SYNC'] = $this->outputFeature((JFusionFunctionAdmin::methodDefined($user,'syncSessions')));
-			$features['USER']['FEATURE_BLOCK_USER'] = $this->outputFeature((JFusionFunctionAdmin::methodDefined($user,'blockUser')));			
-			$features['USER']['FEATURE_ACTIVATE_USER'] = $this->outputFeature((JFusionFunctionAdmin::methodDefined($user,'activateUser')));
-			$features['USER']['FEATURE_DELETE_USER'] = $this->outputFeature((JFusionFunctionAdmin::methodDefined($user,'deleteUser')));
+			$features['USER']['FEATURE_DUAL_LOGIN'] = $this->outputFeature(JFusionFunctionAdmin::hasFeature($jname,'duallogin'));
+			$features['USER']['FEATURE_DUAL_LOGOUT'] = $this->outputFeature(JFusionFunctionAdmin::hasFeature($jname,'duallogout'));
+			$features['USER']['FEATURE_UPDATE_PASSWORD'] = $this->outputFeature(JFusionFunctionAdmin::hasFeature($jname,'updatepassword'));
+			$features['USER']['FEATURE_UPDATE_USERNAME'] = $this->outputFeature(JFusionFunctionAdmin::hasFeature($jname,'updateusername'));
+			$features['USER']['FEATURE_UPDATE_EMAIL'] = $this->outputFeature(JFusionFunctionAdmin::hasFeature($jname,'updateemail'));
+			$features['USER']['FEATURE_UPDATE_USERGROUP'] = $this->outputFeature(JFusionFunctionAdmin::hasFeature($jname,'updateusergroup'));
+			$features['USER']['FEATURE_UPDATE_LANGUAGE'] = $this->outputFeature(JFusionFunctionAdmin::hasFeature($jname,'updateuserlanguage'));
+			$features['USER']['FEATURE_SESSION_SYNC'] = $this->outputFeature(JFusionFunctionAdmin::hasFeature($jname,'syncsessions'));
+			$features['USER']['FEATURE_BLOCK_USER'] = $this->outputFeature(JFusionFunctionAdmin::hasFeature($jname,'blockuser'));
+			$features['USER']['FEATURE_ACTIVATE_USER'] = $this->outputFeature(JFusionFunctionAdmin::hasFeature($jname,'activateuser'));
+			$features['USER']['FEATURE_DELETE_USER'] = $this->outputFeature(JFusionFunctionAdmin::hasFeature($jname,'deleteuser'));
 			
 			
         	$this->assignRef('features', $features);

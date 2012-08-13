@@ -218,13 +218,24 @@ class JFusionFunctionAdmin
         return $return;
     }
 
-    function hasFeature($jname,$feature) {
+    /**
+     * Check if feature exsists
+     *
+     * @static
+     * @param string $jname
+     * @param string $feature feature
+     *
+     * @return bool
+     */
+    public static function hasFeature($jname,$feature) {
         $return = false;
         switch ($feature) {
-            case 'discussion':
-                $forum = JFusionFactory::getForum($jname);
-                $return = JFusionFunctionAdmin::methodDefined($forum,'createThread');
+            //admin
+            case 'wizard':
+                $admin = JFusionFactory::getAdmin($jname);
+                $return = JFusionFunctionAdmin::methodDefined($admin,'setupFromPath');
                 break;
+            //public
             case 'search':
                 $public = JFusionFactory::getPublic($jname);
                 $return = (JFusionFunctionAdmin::methodDefined($public,'getSearchQuery') || JFusionFunctionAdmin::methodDefined($public,'getSearchResults'));
@@ -233,18 +244,106 @@ class JFusionFunctionAdmin
                 $public = JFusionFactory::getPublic($jname);
                 $return = JFusionFunctionAdmin::methodDefined($public,'getOnlineUserQuery');
                 break;
+            case 'breadcrumb':
+                $public = JFusionFactory::getPublic($jname);
+                $return = JFusionFunctionAdmin::methodDefined($public,'getPathWay');
+                break;
+            case 'frontendlanguage':
+                $public = JFusionFactory::getPublic($jname);
+                $return = JFusionFunctionAdmin::methodDefined($public,'setLanguageFrontEnd');
+                break;
+            case 'frameless':
+                $public = JFusionFactory::getPublic($jname);
+                $return = JFusionFunctionAdmin::methodDefined($public,'getBuffer');
+                break;
+            //forum
+            case 'discussion':
+                $forum = JFusionFactory::getForum($jname);
+                $return = JFusionFunctionAdmin::methodDefined($forum,'createThread');
+                break;
             case 'activity':
                 $forum = JFusionFactory::getForum($jname);
                 $return = (JFusionFunctionAdmin::methodDefined($forum,'getActivityQuery') || JFusionFunctionAdmin::methodDefined($forum,'renderActivityModule'));
                 break;
+            case 'threadurl':
+                $forum = JFusionFactory::getForum($jname);
+                $return = JFusionFunctionAdmin::methodDefined($forum,'getThreadURL');
+                break;
+            case 'posturl':
+                $forum = JFusionFactory::getForum($jname);
+                $return = JFusionFunctionAdmin::methodDefined($forum,'getPostURL');
+                break;
+            case 'profileurl':
+                $forum = JFusionFactory::getForum($jname);
+                $return = JFusionFunctionAdmin::methodDefined($forum,'getProfileURL');
+                break;
+            case 'avatarurl':
+                $forum = JFusionFactory::getForum($jname);
+                $return = JFusionFunctionAdmin::methodDefined($forum,'getAvatar');
+                break;
+            case 'privatemessageurl':
+                $forum = JFusionFactory::getForum($jname);
+                $return = JFusionFunctionAdmin::methodDefined($forum,'getPrivateMessageURL');
+                break;
+            case 'viewnewmessagesurl':
+                $forum = JFusionFactory::getForum($jname);
+                $return = JFusionFunctionAdmin::methodDefined($forum,'getViewNewMessagesURL');
+                break;
+            case 'privatemessagecounts':
+                $forum = JFusionFactory::getForum($jname);
+                $return = JFusionFunctionAdmin::methodDefined($forum,'getPrivateMessageCounts');
+                break;
+            //user
             case 'useractivity':
                 $user = JFusionFactory::getUser($jname);
                 $return = JFusionFunctionAdmin::methodDefined($user,'activateUser');
                 break;
+            case 'duallogin':
+                $user = JFusionFactory::getUser($jname);
+                $return = JFusionFunctionAdmin::methodDefined($user,'createSession');
+                break;
+            case 'duallogout':
+                $user = JFusionFactory::getUser($jname);
+                $return = JFusionFunctionAdmin::methodDefined($user,'destroySession');
+                break;
+            case 'updatepassword':
+                $user = JFusionFactory::getUser($jname);
+                $return = JFusionFunctionAdmin::methodDefined($user,'updatePassword');
+                break;
+            case 'updateusername':
+                $user = JFusionFactory::getUser($jname);
+                $return = JFusionFunctionAdmin::methodDefined($user,'updateUsername');
+                break;
+            case 'updateemail':
+                $user = JFusionFactory::getUser($jname);
+                $return = JFusionFunctionAdmin::methodDefined($user,'updateEmail');
+                break;
+            case 'updateusergroup':
+                $user = JFusionFactory::getUser($jname);
+                $return = JFusionFunctionAdmin::methodDefined($user,'updateUsergroup');
+                break;
+            case 'updateuserlanguage':
+                $user = JFusionFactory::getUser($jname);
+                $return = JFusionFunctionAdmin::methodDefined($user,'updateUserLanguage');
+                break;
+            case 'syncsessions':
+                $user = JFusionFactory::getUser($jname);
+                $return = JFusionFunctionAdmin::methodDefined($user,'syncSessions');
+                break;
+            case 'blockuser':
+                $user = JFusionFactory::getUser($jname);
+                $return = JFusionFunctionAdmin::methodDefined($user,'blockUser');
+                break;
+            case 'activateuser':
+                $user = JFusionFactory::getUser($jname);
+                $return = JFusionFunctionAdmin::methodDefined($user,'activateUser');
+                break;
+            case 'deleteuser':
+                $user = JFusionFactory::getUser($jname);
+                $return = JFusionFunctionAdmin::methodDefined($user,'deleteUser');
                 break;
             case 'config':
             case 'any':
-            default:
                 $return = true;
                 break;
         }
