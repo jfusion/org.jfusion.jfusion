@@ -218,6 +218,39 @@ class JFusionFunctionAdmin
         return $return;
     }
 
+    function hasFeature($jname,$feature) {
+        $return = false;
+        switch ($feature) {
+            case 'discussion':
+                $forum = JFusionFactory::getForum($jname);
+                $return = JFusionFunctionAdmin::methodDefined($forum,'createThread');
+                break;
+            case 'search':
+                $public = JFusionFactory::getPublic($jname);
+                $return = (JFusionFunctionAdmin::methodDefined($public,'getSearchQuery') || JFusionFunctionAdmin::methodDefined($public,'getSearchResults'));
+                break;
+            case 'whoonline':
+                $public = JFusionFactory::getPublic($jname);
+                $return = JFusionFunctionAdmin::methodDefined($public,'getOnlineUserQuery');
+                break;
+            case 'activity':
+                $forum = JFusionFactory::getForum($jname);
+                $return = (JFusionFunctionAdmin::methodDefined($forum,'getActivityQuery') || JFusionFunctionAdmin::methodDefined($forum,'renderActivityModule'));
+                break;
+            case 'useractivity':
+                $user = JFusionFactory::getUser($jname);
+                $return = JFusionFunctionAdmin::methodDefined($user,'activateUser');
+                break;
+                break;
+            case 'config':
+            case 'any':
+            default:
+                $return = true;
+                break;
+        }
+        return $return;
+    }
+
     /**
      * @static
      * @param $url

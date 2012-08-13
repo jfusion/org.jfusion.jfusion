@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
-	<language filename='mod_jfusion_activity' location='site' />
+	<language filename="mod_jfusion_activity" location="site" />
 	
     <fields addfieldpath="/administrator/components/com_jfusion/fields">
         <fieldset name="basic">
@@ -87,14 +87,14 @@
 	        </field>
 	        <field name="avatar_height" label="AVATAR_HEIGHT" type="text" size="5" default="53"/>
 	        <field name="avatar_width" label="AVATAR_WIDTH" type="text" size="5" default="40"/>
-	        <field name="avatar_software" type='list' default='jfusion'
+	        <field name="avatar_software" type="list" default="jfusion"
 	            label="AVATAR_SOFTWARE"
 	            description="AVATAR_SOFTWARE_DESC">
-	                <option value='cb'>Community Builder</option>
-	                <option value='gravatar'>Gravatar</option>
-	                <option value='jfusion'>JFusion</option>
-	                <option value='jomsocial'>JomSocial</option>
-	                <option value='joomunity'>Joomunity</option>
+	                <option value="cb">Community Builder</option>
+	                <option value="gravatar">Gravatar</option>
+	                <option value="jfusion">JFusion</option>
+	                <option value="jomsocial">JomSocial</option>
+	                <option value="joomunity">Joomunity</option>
 	        </field>
         </fieldset>
     </fields>
@@ -183,14 +183,14 @@
 		</param>
 		<param name="avatar_height" label="AVATAR_HEIGHT" type="text" size="5" default="53"/>
 		<param name="avatar_width" label="AVATAR_WIDTH" type="text" size="5" default="40"/>
-		<param name="avatar_software" type='list' default='jfusion'
+		<param name="avatar_software" type="list" default="jfusion"
 			label="AVATAR_SOFTWARE"
 			description="AVATAR_SOFTWARE_DESC">
-				<option value='cb'>Community Builder</option>
-				<option value='gravatar'>Gravatar</option>
-				<option value='jfusion'>JFusion</option>
-				<option value='jomsocial'>JomSocial</option>
-				<option value='joomunity'>Joomunity</option>
+				<option value="cb">Community Builder</option>
+				<option value="gravatar">Gravatar</option>
+				<option value="jfusion"">JFusion</option>
+				<option value="jomsocial">JomSocial</option>
+				<option value="joomunity">Joomunity</option>
 		</param>
 	</params>	
 </config>

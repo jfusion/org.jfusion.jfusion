@@ -29,7 +29,7 @@
 			description="" />
 
 		<field name="JFusionPluginParam" type="JFusionAdvancedParam" default=""
-			label="JFUSION_PLUGIN" configfile="2"
+			label="JFUSION_PLUGIN" feature="activity"
 			description="JFUSION_PLUGIN_DESCR"  />
 
 		<field name="@spacer" type="spacer" default="" label=""
@@ -50,12 +50,12 @@
 			<option value="2">MODE_LCP</option>
 		</field>
 
-		<field name="lat_mode" type="list" default='first' label="LAT_MODE" description="LAT_MODE_DESCR">
+		<field name="lat_mode" type="list" default="first" label="LAT_MODE" description="LAT_MODE_DESCR">
 			<option value="0">FIRST_POST</option>
 			<option value="1">LATEST_POST</option>
 		</field>
 
-		<field name="show_reply_num" type="list" default='1' label="SHOW_REPLY_NUM" description="SHOW_REPLY_NUM_DESCR">
+		<field name="show_reply_num" type="list" default="1" label="SHOW_REPLY_NUM" description="SHOW_REPLY_NUM_DESCR">
 			<option value="1">JYES</option>
 			<option value="0">JNO</option>
 		</field>
@@ -165,14 +165,14 @@
 			<option value="1">JYES</option>
 		</field>
 
-		<field name="userlink_software" type='list' default='jfusion'
+		<field name="userlink_software" type="list" default="jfusion"
 			label="USERLINK_SOFTWARE"
 			description="USERLINK_SOFTWARE_DESC">
-				<option value='cb'>Community Builder</option>
-				<option value='custom'>CUSTOM</option>
-				<option value='jfusion'>JFusion</option>
-				<option value='jomsocial'>JomSocial</option>
-				<option value='joomunity'>Joomunity</option>
+				<option value="cb">Community Builder</option>
+				<option value="custom">CUSTOM</option>
+				<option value="jfusion">JFusion</option>
+				<option value="jomsocial">JomSocial</option>
+				<option value="joomunity">Joomunity</option>
 		</field>
 		<field name="userlink_custom" type="text" size="20" default="" label="USERLINK_CUSTOM" description="USERLINK_CUSTOM_DESC" />
 
@@ -183,18 +183,18 @@
 		</field>
 		<field name="avatar_height" label="AVATAR_HEIGHT" type="text" size="5" default="53"/>
 		<field name="avatar_width" label="AVATAR_WIDTH" type="text" size="5" default="40"/>
-	    <field name="avatar_keep_proportional" label='AVATAR_KEEP_PROPORTIONAL' type='radio' default='0' description='AVATAR_KEEP_PROPORTIONAL_DESCR'>>
+	    <field name="avatar_keep_proportional" label="AVATAR_KEEP_PROPORTIONAL" type="radio" default="0" description="AVATAR_KEEP_PROPORTIONAL_DESCR">
             <option value="0">JNO</option>
             <option value="1">JYES</option>         
         </field>        
-		<field name="avatar_software" type='list' default='jfusion'
+		<field name="avatar_software" type="list" default="jfusion"
 			label="AVATAR_SOFTWARE"
 			description="AVATAR_SOFTWARE_DESC">
-				<option value='cb'>Community Builder</option>
-				<option value='gravatar'>Gravatar</option>
-				<option value='jfusion'>JFusion</option>
-				<option value='jomsocial'>JomSocial</option>
-				<option value='joomunity'>Joomunity</option>
+				<option value="cb">Community Builder</option>
+				<option value="gravatar">Gravatar</option>
+				<option value="jfusion">JFusion</option>
+				<option value="jomsocial">JomSocial</option>
+				<option value="joomunity">Joomunity</option>
 		</field>
 		
 		<field name="debug" type="list" default=""
@@ -221,7 +221,7 @@
 			description="" />
 
 		<param name="JFusionPluginParam" type="JFusionAdvancedParam" default=""
-			label="JFUSION_PLUGIN" configfile="2"
+			label="JFUSION_PLUGIN" feature="activity"
 			description="JFUSION_PLUGIN_DESCR" />
 
 		<param name="@spacer" type="spacer" default="" label=""
@@ -242,12 +242,12 @@
 			<option value="2">MODE_LCP</option>
 		</param>
 
-		<param name="lat_mode" type="list" default='first' label="LAT_MODE" description="LAT_MODE_DESCR">
+		<param name="lat_mode" type="list" default="first" label="LAT_MODE" description="LAT_MODE_DESCR">
 			<option value="0">FIRST_POST</option>
 			<option value="1">LATEST_POST</option>
 		</param>
 
-		<param name="show_reply_num" type="list" default='1' label="SHOW_REPLY_NUM" description="SHOW_REPLY_NUM_DESCR">
+		<param name="show_reply_num" type="list" default="1" label="SHOW_REPLY_NUM" description="SHOW_REPLY_NUM_DESCR">
 			<option value="1">JYES</option>
 			<option value="0">JNO</option>
 		</param>
@@ -357,14 +357,14 @@
 			<option value="1">JYES</option>
 		</param>
 
-		<param name="userlink_software" type='list' default='jfusion'
+		<param name="userlink_software" type="list" default="jfusion"
 			label="USERLINK_SOFTWARE"
 			description="USERLINK_SOFTWARE_DESC">
-				<option value='cb'>Community Builder</option>
-				<option value='custom'>CUSTOM</option>
-				<option value='jfusion'>JFusion</option>
-				<option value='jomsocial'>JomSocial</option>
-				<option value='joomunity'>Joomunity</option>
+				<option value="cb">Community Builder</option>
+				<option value="custom">CUSTOM</option>
+				<option value="jfusion">JFusion</option>
+				<option value="jomsocial">JomSocial</option>
+				<option value="joomunity">Joomunity</option>
 		</param>
 		<param name="userlink_custom" type="text" size="20" default="" label="USERLINK_CUSTOM" description="USERLINK_CUSTOM_DESC" />
 
@@ -375,18 +375,18 @@
 		</param>
 		<param name="avatar_height" label="AVATAR_HEIGHT" type="text" size="5" default="53"/>
 		<param name="avatar_width" label="AVATAR_WIDTH" type="text" size="5" default="40"/>
-		<param name="avatar_keep_proportional" label='AVATAR_KEEP_PROPORTIONAL' type='radio' default='0' description='AVATAR_KEEP_PROPORTIONAL_DESCR'>
+		<param name="avatar_keep_proportional" label="AVATAR_KEEP_PROPORTIONAL" type="radio" default="0" description="AVATAR_KEEP_PROPORTIONAL_DESCR">
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>			
 		</param>		
-		<param name="avatar_software" type='list' default='jfusion'
+		<param name="avatar_software" type="list" default="jfusion"
 			label="AVATAR_SOFTWARE"
 			description="AVATAR_SOFTWARE_DESC">
-				<option value='cb'>Community Builder</option>
-				<option value='gravatar'>Gravatar</option>
-				<option value='jfusion'>JFusion</option>
-				<option value='jomsocial'>JomSocial</option>
-				<option value='joomunity'>Joomunity</option>
+				<option value="cb">Community Builder</option>
+				<option value="gravatar">Gravatar</option>
+				<option value="jfusion">JFusion</option>
+				<option value="jomsocial">JomSocial</option>
+				<option value="joomunity">Joomunity</option>
 		</param>
 		
 		<param name="debug" type="list" default=""

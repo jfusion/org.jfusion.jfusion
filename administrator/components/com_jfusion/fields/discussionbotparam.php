@@ -49,8 +49,7 @@ class JFormFieldDiscussionbotparam extends JFormField
         $db->setQuery($query);
         $results = $db->loadResult();
         if($results) {
-			$registry = new JRegistry;
-			$registry->loadString($results);
+			$registry = new JRegistry($results);
 			$params = $registry->toArray();
             $jname = (isset($params['jname'])) ? $params['jname'] : '';
         }

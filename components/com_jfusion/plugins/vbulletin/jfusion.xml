@@ -128,24 +128,24 @@
 		<param name="jfusionbox" type="text" default="" label="MOD_OPTIONS" description="" />
 		<param name=" " type="helptext" default="VB_HOOKS_DESC" label=""/>
 		<param name=" " type="helptext" default="VB_HOOKS_NOTE" label=""/>
-		<param name="vb_secret" default='' type="Secret" label="VB_SECRET" description="VB_SECRET_DESC" />
-		<param name="plugin_itemid" default='' type="JFusionItemid" label="VB_REDIRECT_ITEMID" description='VB_REDIRECT_ITEMID_DESC' />
+		<param name="vb_secret" default="" type="Secret" label="VB_SECRET" description="VB_SECRET_DESC" />
+		<param name="plugin_itemid" default="" type="JFusionItemid" label="VB_REDIRECT_ITEMID" description="VB_REDIRECT_ITEMID_DESC" />
 		<param name="redirect_ignore" default="" type="text" size="60" label="VB_REDIRECT_IGNORE" description="VB_REDIRECT_IGNORE_DESCR" />
 		<param name=" " type="helptext" default="SPECIAL_FOLDERS_DESCR" label=""/>
 		<param name="admincp" type="text" size="20" label="ADMINCP" default="admincp" />
 		<param name="modcp" type="text" size="20" label="MODCP" default="modcp" />
 		<param name="@spacer" type="spacer" default="" label="" description="" />
 		<param name=" " type="helptext" default="VB_HOOKS_DESC" label=""/>
-		<param name="showHook" default="jfvbtask" type="JFusionCustomParam" label='VB_API_HOOK' description="VB_API_HOOK_DESC" />
-		<param name="showHook" default="frameless" type="JFusionCustomParam" label='VB_FRAMELESS_HOOK' description="VB_FRAMELESS_HOOK_DESC" />
-		<param name="showHook" default="redirect" type="JFusionCustomParam" label='VB_REDIRECT_HOOK' description="VB_REDIRECT_HOOK_DESC" />
-		<param name="showHook" default="duallogin" type="JFusionCustomParam" label='VB_DUALLOGIN_HOOK' description="VB_DUALLOGIN_HOOK_DESC" />
+		<param name="showHook" default="jfvbtask" type="JFusionCustomParam" label="VB_API_HOOK" description="VB_API_HOOK_DESC" />
+		<param name="showHook" default="frameless" type="JFusionCustomParam" label="VB_FRAMELESS_HOOK" description="VB_FRAMELESS_HOOK_DESC" />
+		<param name="showHook" default="redirect" type="JFusionCustomParam" label="VB_REDIRECT_HOOK" description="VB_REDIRECT_HOOK_DESC" />
+		<param name="showHook" default="duallogin" type="JFusionCustomParam" label="VB_DUALLOGIN_HOOK" description="VB_DUALLOGIN_HOOK_DESC" />
 		<!--
 		<param name=" " type="helptext" default="VB_GLOBALFIX_HOOK_DESC"/>
 		<param name="showHook" default="globalfix" type="JFusionCustomParam" label="VB_GLOBALFIX_HOOK" description="VB_GLOBALFIX_HOOK"/>
 		-->
-		<param name="hook_name" default="" type="hidden" label='' description='' />
-		<param name="hook_action" default="" type="hidden" label='' description='' />
+		<param name="hook_name" default="" type="hidden" label="" description="" />
+		<param name="hook_action" default="" type="hidden" label="" description="" />
 
 		<param name="jfusionbox" type="text" default="" label="FRAMELESS_INTEGRATION_OPTIONS" description="" />
 		<param name="sefmode" type="list" default="0" label="SEFMODE" description="SEFMODE">
@@ -153,9 +153,9 @@
 			<option value="0"><![CDATA[yourdomain.com/index.php/menu_name/filename.php?option1=value1&option2=value2]]></option>
 		</param>
 		<param name=" " type="helptext" default="VB_FRAMELESS_OPTIMIZATION_DESC" label=""/>
-		<param name="showHook" default="framelessoptimization" type="JFusionCustomParam" label='VB_FRAMELESS_OPTIMIZATION' description="VB_FRAMELESS_OPTIMIZATION" />
+		<param name="showHook" default="framelessoptimization" type="JFusionCustomParam" label="VB_FRAMELESS_OPTIMIZATION" description="VB_FRAMELESS_OPTIMIZATION" />
 		<param name=" " type="helptext" default="VB_FRAMELESS_PARSE_CSS_DESCR" label=""/>
-		<param name="parseCSS" default="0" type="radio" label='VB_FRAMELESS_PARSE_CSS' description="VB_FRAMELESS_PARSE_CSS">
+		<param name="parseCSS" default="0" type="radio" label="VB_FRAMELESS_PARSE_CSS" description="VB_FRAMELESS_PARSE_CSS">
 			<option value="1">JYES</option>
 			<option value="0">JNO</option>
 		</param>

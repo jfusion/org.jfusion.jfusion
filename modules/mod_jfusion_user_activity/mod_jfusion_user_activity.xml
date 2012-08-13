@@ -21,7 +21,7 @@
 		<field name="moduleclass_sfx" type="text" default="" label="Module Class Suffix" description="PARAMMODULECLASSSUFFIX" />
 
 		<field name="JFusionPlugin" type="JFusionAdvancedParam" default=""
-			configfile="5"
+            feature="useractivity"
 			label="JFUSION_PLUGIN"
 			description="JFUSION_PLUGIN_DESCR" />
 
@@ -34,29 +34,29 @@
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 		</field>
-		<field name="alignment" type='list' default='center'
+		<field name="alignment" type="list" default="center"
 			label="TEXT_ALIGNMENT"
 			description="TEXT_ALIGNMENT_DESCR">
-				<option value='left'>LEFT</option>
-				<option value='center'>CENTER</option>
+				<option value="left">LEFT</option>
+				<option value="center">CENTER</option>
 		</field>
 		<field name="avatar" type="radio" default="1"
 			label="AVATAR_IMAGE" description="AVATAR_IMAGE_DESCR">
 			<option value="0">HIDE</option>
 			<option value="1">SHOW</option>
 		</field>
-		<field name="avatar_software" type='list' default='jfusion'
+		<field name="avatar_software" type="list" default="jfusion"
 			label="AVATAR_SOFTWARE"
 			description="AVATAR_SOFTWARE_DESCR">
-				<option value='cb'>Community Builder</option>
-				<option value='gravatar'>Gravatar</option>
-				<option value='jfusion'>JFusion</option>
-				<option value='jomsocial'>JomSocial</option>
-				<option value='joomunity'>Joomunity</option>
+				<option value="cb">Community Builder</option>
+				<option value="gravatar">Gravatar</option>
+				<option value="jfusion">JFusion</option>
+				<option value="jomsocial">JomSocial</option>
+				<option value="joomunity">Joomunity</option>
 		</field>
-		<field name="avatar_height" type="text" default='40' length="5" label="AVATAR_HEIGHT" description="AVATAR_HEIGHT_DESCR" />
-		<field name="avatar_width" type="text" default='30' length="5" label="AVATAR_WIDTH" description="AVATAR_WIDTH_DESCR" />
-        <field name="avatar_keep_proportional" label='AVATAR_KEEP_PROPORTIONAL' type='radio' default='0' description='AVATAR_KEEP_PROPORTIONAL_DESCR'>
+		<field name="avatar_height" type="text" default="40" length="5" label="AVATAR_HEIGHT" description="AVATAR_HEIGHT_DESCR" />
+		<field name="avatar_width" type="text" default="30" length="5" label="AVATAR_WIDTH" description="AVATAR_WIDTH_DESCR" />
+        <field name="avatar_keep_proportional" label="AVATAR_KEEP_PROPORTIONAL" type="radio" default="0" description="AVATAR_KEEP_PROPORTIONAL_DESCR">
             <option value="0">JNO</option>
             <option value="1">JYES</option>          
         </field>    		
@@ -93,7 +93,7 @@
 		<param name="moduleclass_sfx" type="text" default="" label="Module Class Suffix" description="PARAMMODULECLASSSUFFIX" />
 
 		<param name="JFusionPlugin" type="JFusionAdvancedParam" default=""
-			configfile="5"
+            feature="useractivity"
 			label="JFUSION_PLUGIN"
 			description="JFUSION_PLUGIN_DESCR" />
 
@@ -106,29 +106,29 @@
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 		</param>
-		<param name="alignment" type='list' default='center'
+		<param name="alignment" type="list" default="center"
 			label="TEXT_ALIGNMENT"
 			description="TEXT_ALIGNMENT_DESCR">
-				<option value='left'>LEFT</option>
-				<option value='center'>CENTER</option>
+				<option value="left">LEFT</option>
+				<option value="center">CENTER</option>
 		</param>
 		<param name="avatar" type="radio" default="1"
 			label="AVATAR_IMAGE" description="AVATAR_IMAGE_DESCR">
 			<option value="0">HIDE</option>
 			<option value="1">SHOW</option>
 		</param>
-		<param name="avatar_software" type='list' default='jfusion'
+		<param name="avatar_software" type="list" default="jfusion"
 			label="AVATAR_SOFTWARE"
 			description="AVATAR_SOFTWARE_DESCR">
-				<option value='cb'>Community Builder</option>
-				<option value='gravatar'>Gravatar</option>
-				<option value='jfusion'>JFusion</option>
-				<option value='jomsocial'>JomSocial</option>
-				<option value='joomunity'>Joomunity</option>
+				<option value="cb">Community Builder</option>
+				<option value="gravatar">Gravatar</option>
+				<option value="jfusion">JFusion</option>
+				<option value="jomsocial">JomSocial</option>
+				<option value="joomunity">Joomunity</option>
 		</param>
-		<param name="avatar_height" type="text" default='40' length="5" label="AVATAR_HEIGHT" description="AVATAR_HEIGHT_DESCR" />
-		<param name="avatar_width" type="text" default='30' length="5" label="AVATAR_WIDTH" description="AVATAR_WIDTH_DESCR" />
-        <param name="avatar_keep_proportional" label='AVATAR_KEEP_PROPORTIONAL' type='radio' default='0' description='AVATAR_KEEP_PROPORTIONAL_DESCR'>
+		<param name="avatar_height" type="text" default="40" length="5" label="AVATAR_HEIGHT" description="AVATAR_HEIGHT_DESCR" />
+		<param name="avatar_width" type="text" default="30" length="5" label="AVATAR_WIDTH" description="AVATAR_WIDTH_DESCR" />
+        <param name="avatar_keep_proportional" label="AVATAR_KEEP_PROPORTIONAL" type="radio" default="0" description="AVATAR_KEEP_PROPORTIONAL_DESCR">
             <option value="0">JNO</option>
             <option value="1">JYES</option>          
         </param>    

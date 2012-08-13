@@ -29,7 +29,11 @@ jimport('joomla.application.component.view');
  */
 class jfusionViewadvancedparam extends JView
 {
-    var $configArray = array(1 => array(1 => "config.xml", 2 => " WHERE status = 1"), 2 => array(1 => "activity.xml", 2 => "WHERE activity = 1 and status = 1"), 3 => array(1 => "search.xml", 2 => " WHERE search = 1 and status =1"), 4 => array(1 => "whosonline.xml", 2 => "WHERE status = 1"), 5 => array(1 => "useractivity.xml", 2 => "WHERE status = 1"));
+    var $featureArray = array('config' => 'config.xml',
+                                'activity' => 'activity.xml',
+                                'search' => 'search.xml',
+                                'whosonline' => 'whosonline.xml',
+                                'useractivity' => 'useractivity.xml');
     var $isJ16;
 
     /**
@@ -54,25 +58,25 @@ class jfusionViewadvancedparam extends JView
         $lang = JFactory::getLanguage();
         $lang->load('com_jfusion');
 
-        //Load Current Configfile
-        $config = JRequest::getVar('configfile');
-        if (empty($config)) {
-            $config = null;
+        //Load Current feature
+        $feature = JRequest::getVar('feature');
+        if (empty($feature)) {
+            $feature = 'any';
         }
         //Load multiselect
         $multiselect = JRequest::getVar('multiselect');
         if ($multiselect) {
             $multiselect = true;
             //Load Plugin XML Parameter
-            $params = $this->loadXMLParamMulti($config);
+            $params = $this->loadXMLParamMulti($feature);
             //Load enabled Plugin List
-            list($output, $js) = $this->loadElementMulti($params, $config);
+            list($output, $js) = $this->loadElementMulti($params, $feature);
         } else {
             $multiselect = false;
             //Load Plugin XML Parameter
-            $params = $this->loadXMLParamSingle($config);
+            $params = $this->loadXMLParamSingle($feature);
             //Load enabled Plugin List
-            list($output, $js) = $this->loadElementSingle($params, $config);
+            list($output, $js) = $this->loadElementSingle($params, $feature);
         }
         //load the element number for multiple advanceparam elements
         $elNum = JRequest::getInt('elNum');
@@ -105,11 +109,11 @@ class jfusionViewadvancedparam extends JView
      * Loads a single element
      *
      * @param JParameter $params parameters
-     * @param string $config configuration
+     * @param string $feature feature
      *
      * @return string html
      */
-    function loadElementSingle($params, $config)
+    function loadElementSingle($params, $feature)
     {
         if ($this->isJ16) {
             $JPlugin = (!empty($params['jfusionplugin'])) ? $params['jfusionplugin'] : '';
@@ -117,17 +121,25 @@ class jfusionViewadvancedparam extends JView
             $JPlugin = $params->get('jfusionplugin', '');
         }
         $db = JFactory::getDBO();
-        $query = 'SELECT name as id, name as name from #__jfusion ' . $this->configArray[$config][2];
+        $query = 'SELECT name as id, name as name from #__jfusion WHERE status = 1';
         $db->setQuery($query);
+        $rows = $db->loadObjectList();
+
+        foreach ($rows as $key => &$row) {
+            if (!JFusionFunctionAdmin::hasFeature($row->name,$feature)) {
+                unset($rows[$key]);
+            }
+        }
+
         $noSelected = new stdClass();
         $noSelected->id = null;
         $noSelected->name = JText::_("SELECT_ONE");
-        $rows = array_merge(array($noSelected), $db->loadObjectList());
+        $rows = array_merge(array($noSelected), $rows);
         $attributes = array("size" => "1", "class" => "inputbox", "onchange" => "jPluginChange(this);");
         $output = JHTML::_('select.genericlist', $rows, 'params[jfusionplugin]', $attributes, 'id', 'name', $JPlugin);
-        $configLink = '';
-        if (isset($this->configArray[$config])) {
-            $configLink = '&configfile=' . $config;
+        $featureLink = '';
+        if (isset($this->featureArray[$feature])) {
+            $featureLink = '&feature=' . $feature;
         }
         $elNum = JRequest::getInt('elNum');
         $js = <<<JS
@@ -136,7 +148,7 @@ class jfusionViewadvancedparam extends JView
             plugin = 'a:1:{s:13:\"jfusionplugin\";s:'+plugin.length+':\"'+plugin+'\";}';
             var value = encode64(plugin);
             window.location.href = 'index.php?option=com_jfusion&task=advancedparam' +
-                                   '&tmpl=component&elNum={$elNum}{$configLink}&params='+value;
+                                   '&tmpl=component&elNum={$elNum}{$featureLink}&params='+value;
         }
 
         function encode64(inp){
@@ -178,11 +190,11 @@ JS;
     /**
      * Loads a single xml param
      *
-     * @param string $config configuration
+     * @param string $feature feature
      *
      * @return array|JParameter html
      */
-    function loadXMLParamSingle($config)
+    function loadXMLParamSingle($feature)
     {
         $option = JRequest::getCmd('option');
         //Load current Parameter
@@ -206,9 +218,9 @@ JS;
         if ($this->isJ16) {
             global $jname;
             $jname = (!empty($value['jfusionplugin'])) ? $value['jfusionplugin'] : '';
-            if (isset($this->configArray[$config]) && !empty($jname)) {
-                $path = JFUSION_PLUGIN_PATH . DS . $jname . DS . $this->configArray[$config][1];
-                $defaultPath = JPATH_ADMINISTRATOR . DS . 'components' . DS . $option . DS . 'views' . DS . 'advancedparam' . DS . 'paramfiles' . DS . $this->configArray[$config][1];
+            if (isset($this->featureArray[$feature]) && !empty($jname)) {
+                $path = JFUSION_PLUGIN_PATH . DS . $jname . DS . $this->featureArray[$feature];
+                $defaultPath = JPATH_ADMINISTRATOR . DS . 'components' . DS . $option . DS . 'views' . DS . 'advancedparam' . DS . 'paramfiles' . DS . $this->featureArray[$feature];
                 $xml_path = (file_exists($path)) ? $path : $defaultPath;
                 $form = false;
                 if ($xml->loadFile($xml_path)) {
@@ -241,11 +253,11 @@ JS;
             $params->loadArray($value);
             $params->addElementPath(JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'elements');
             $JPlugin = $params->get('jfusionplugin', '');
-            if (isset($this->configArray[$config]) && !empty($JPlugin)) {
+            if (isset($this->featureArray[$feature]) && !empty($JPlugin)) {
                 global $jname;
                 $jname = $JPlugin;
-                $path = JFUSION_PLUGIN_PATH . DS . $JPlugin . DS . $this->configArray[$config][1];
-                $defaultPath = JPATH_ADMINISTRATOR . DS . 'components' . DS . $option . DS . 'views' . DS . 'advancedparam' . DS . 'paramfiles' . DS . $this->configArray[$config][1];
+                $path = JFUSION_PLUGIN_PATH . DS . $JPlugin . DS . $this->featureArray[$feature];
+                $defaultPath = JPATH_ADMINISTRATOR . DS . 'components' . DS . $option . DS . 'views' . DS . 'advancedparam' . DS . 'paramfiles' . DS . $this->featureArray[$feature];
                 $xml_path = (file_exists($path)) ? $path : $defaultPath;
                 if ($xml->loadFile($xml_path)) {
                     /**
@@ -266,16 +278,23 @@ JS;
      * Loads a multi element
      *
      * @param array $params parameters
-     * @param string $config configuration
+     * @param string $feature feature
      *
      * @return string html
      */
-    function loadElementMulti($params, $config)
+    function loadElementMulti($params, $feature)
     {
         $db = JFactory::getDBO();
-        $query = 'SELECT name as id, name as name from #__jfusion ' . $this->configArray[$config][2];
+        $query = 'SELECT name as id, name as name from #__jfusion WHERE status = 1';
         $db->setQuery($query);
         $rows = $db->loadObjectList();
+
+        foreach ($rows as $key => &$row) {
+            if (!JFusionFunctionAdmin::hasFeature($row->name,$feature)) {
+                unset($rows[$key]);
+            }
+        }
+
         //remove plugins that have already been selected
         foreach ($rows AS $k => $v) {
             if (array_key_exists($v->name, $params)) {
@@ -289,23 +308,24 @@ JS;
         $attributes = array("size" => "1", "class" => "inputbox");
         $output = JHTML::_('select.genericlist', $rows, 'jfusionplugin', $attributes, 'id', 'name');
         $output.= ' <input type="button" value="add" name="add" onclick="jPluginAdd(this);" />';
-        $configLink = '';
-        if (isset($this->configArray[$config])) {
-            $configLink = '&configfile=' . $config;
+
+        $featureLink = '';
+        if (isset($this->featureArray[$feature])) {
+            $featureLink = '&feature=' . $feature;
         }
         $elNum = JRequest::getInt('elNum');
         $js = <<<JS
         function jPluginAdd(button) {
             button.form.jfusion_task.value = 'add';
             button.form.action = 'index.php?option=com_jfusion&task=advancedparam' +
-                                   '&tmpl=component&elNum={$elNum}{$configLink}&multiselect=1';
+                                   '&tmpl=component&elNum={$elNum}{$featureLink}&multiselect=1';
             button.form.submit();
         }
         function jPluginRemove(button, value) {
             button.form.jfusion_task.value = 'remove';
             button.form.jfusion_value.value = value;
             button.form.action = 'index.php?option=com_jfusion&task=advancedparam' +
-                                   '&tmpl=component&elNum={$elNum}{$configLink}&multiselect=1';
+                                   '&tmpl=component&elNum={$elNum}{$featureLink}&multiselect=1';
             button.form.submit();
         }
 JS;
@@ -316,11 +336,11 @@ JS;
     /**
      * Loads a multi XML param
      *
-     * @param string $config configuration
+     * @param string $feature feature
      *
      * @return array html
      */
-    function loadXMLParamMulti($config)
+    function loadXMLParamMulti($feature)
     {
         global $jname;
         $option = JRequest::getCmd('option');
@@ -365,9 +385,9 @@ JS;
             if ($this->isJ16) {
                 $jname = $value[$key]['jfusionplugin'];
 
-                if (isset($this->configArray[$config]) && !empty($jname)) {
-                    $path = JFUSION_PLUGIN_PATH . DS . $jname . DS . $this->configArray[$config][1];
-                    $defaultPath = JPATH_ADMINISTRATOR . DS . 'components' . DS . $option . DS . 'views' . DS . 'advancedparam' . DS . 'paramfiles' . DS . $this->configArray[$config][1];
+                if (isset($this->featureArray[$feature]) && !empty($jname)) {
+                    $path = JFUSION_PLUGIN_PATH . DS . $jname . DS . $this->featureArray[$feature];
+                    $defaultPath = JPATH_ADMINISTRATOR . DS . 'components' . DS . $option . DS . 'views' . DS . 'advancedparam' . DS . 'paramfiles' . DS . $this->featureArray[$feature];
                     $xml_path = (file_exists($path)) ? $path : $defaultPath;
 
                     if ($xml->loadFile($xml_path)) {
@@ -397,9 +417,9 @@ JS;
                 $params->loadArray($value[$key]);
                 $params->addElementPath(JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'elements');
                 $jname = $params->get('jfusionplugin', '');
-                if (isset($this->configArray[$config]) && !empty($jname)) {
-                    $path = JFUSION_PLUGIN_PATH . DS . $jname . DS . $this->configArray[$config][1];
-                    $defaultPath = JPATH_ADMINISTRATOR . DS . 'components' . DS . $option . DS . 'views' . DS . 'advancedparam' . DS . 'paramfiles' . DS . $this->configArray[$config][1];
+                if (isset($this->featureArray[$feature]) && !empty($jname)) {
+                    $path = JFUSION_PLUGIN_PATH . DS . $jname . DS . $this->featureArray[$feature];
+                    $defaultPath = JPATH_ADMINISTRATOR . DS . 'components' . DS . $option . DS . 'views' . DS . 'advancedparam' . DS . 'paramfiles' . DS . $this->featureArray[$feature];
                     $xml_path = (file_exists($path)) ? $path : $defaultPath;
                     if ($xml->loadFile($xml_path)) {
                         /**

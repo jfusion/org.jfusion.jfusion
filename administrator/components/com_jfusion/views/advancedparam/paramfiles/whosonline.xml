@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config>
-	<language filename='mod_jfusion_whosonline' location='site' />
+	<language filename="mod_jfusion_whosonline" location="site" />
 
     <fields>
 	    <fieldset name="basic">
@@ -35,14 +35,14 @@
 	            <option value="1">JYES</option>
 	        </field>
 	        
-	        <field name="userlink_software" type='list' default='jfusion'
+	        <field name="userlink_software" type="list" default="jfusion"
 	            label="USERLINK_SOFTWARE"
 	            description="USERLINK_SOFTWARE_DESC">
-	                <option value='cb'>Community Builder</option>
-	                <option value='custom'>CUSTOM</option>
-	                <option value='jfusion'>JFusion</option>                
-	                <option value='jomsocial'>JomSocial</option>
-	                <option value='joomunity'>Joomunity</option>                
+	                <option value="cb">Community Builder</option>
+	                <option value="custom">CUSTOM</option>
+	                <option value="jfusion">JFusion</option>
+	                <option value="jomsocial">JomSocial</option>
+	                <option value="joomunity">Joomunity</option>
 	        </field>
 	        <field name="userlink_custom" type="text" size="20" default="" label="USERLINK_CUSTOM" description="USERLINK_CUSTOM_DESC" />        
 	        <field name="avatar" type="radio" default="1"
@@ -50,18 +50,18 @@
 	            <option value="0">HIDE</option>
 	            <option value="1">SHOW</option>
 	        </field>
-	        <field name="avatar_software" type='list' default='jfusion'
+	        <field name="avatar_software" type="list" default="jfusion"
 	            label="AVATAR_SOFTWARE"
 	            description="AVATAR_SOFTWARE_DESC">
-	                <option value='cb'>Community Builder</option>
-	                <option value='gravatar'>Gravatar</option>
-	                <option value='jfusion'>JFusion</option>                
-	                <option value='jomsocial'>JomSocial</option>
-	                <option value='joomunity'>Joomunity</option>                
+	                <option value="cb">Community Builder</option>
+	                <option value="gravatar">Gravatar</option>
+	                <option value="jfusion">JFusion</option>
+	                <option value="jomsocial">JomSocial</option>
+	                <option value="joomunity">Joomunity</option>
 	        </field>            
 	        <field name="avatar_height" label="AVATAR_HEIGHT" type="text" size="5" default="53"/>
 	        <field name="avatar_width" label="AVATAR_WIDTH" type="text" size="5" default="40"/>     
-	        <field name="avatar_keep_proportional" label='AVATAR_KEEP_PROPORTIONAL' type='radio' default='0' description='AVATAR_KEEP_PROPORTIONAL_DESCR'>
+	        <field name="avatar_keep_proportional" label="AVATAR_KEEP_PROPORTIONAL" type="radio" default="0" description="AVATAR_KEEP_PROPORTIONAL_DESCR">
 	            <option value="0">JNO</option>
 	            <option value="1">JYES</option>          
 	        </field>
@@ -100,14 +100,14 @@
 			<option value="1">JYES</option>
 		</param>
 		
-		<param name="userlink_software" type='list' default='jfusion'
+		<param name="userlink_software" type="list" default="jfusion"
 			label="USERLINK_SOFTWARE"
 			description="USERLINK_SOFTWARE_DESC">
-				<option value='cb'>Community Builder</option>
-				<option value='custom'>CUSTOM</option>
-				<option value='jfusion'>JFusion</option>				
-				<option value='jomsocial'>JomSocial</option>
-				<option value='joomunity'>Joomunity</option>				
+				<option value="cb">Community Builder</option>
+				<option value="custom">CUSTOM</option>
+				<option value="jfusion">JFusion</option>
+				<option value="jomsocial">JomSocial</option>
+				<option value="joomunity">Joomunity</option>
 		</param>
 		<param name="userlink_custom" type="text" size="20" default="" label="USERLINK_CUSTOM" description="USERLINK_CUSTOM_DESC" />		
 		<param name="avatar" type="radio" default="1"
@@ -115,18 +115,18 @@
 			<option value="0">HIDE</option>
 			<option value="1">SHOW</option>
 		</param>
-		<param name="avatar_software" type='list' default='jfusion'
+		<param name="avatar_software" type="list" default="jfusion"
 			label="AVATAR_SOFTWARE"
 			description="AVATAR_SOFTWARE_DESC">
-				<option value='cb'>Community Builder</option>
-				<option value='gravatar'>Gravatar</option>
-				<option value='jfusion'>JFusion</option>				
-				<option value='jomsocial'>JomSocial</option>
-				<option value='joomunity'>Joomunity</option>				
+				<option value="cb">Community Builder</option>
+				<option value="gravatar">Gravatar</option>
+				<option value="jfusion">JFusion</option>
+				<option value="jomsocial">JomSocial</option>
+				<option value="joomunity">Joomunity</option>
 		</param>			
 		<param name="avatar_height" label="AVATAR_HEIGHT" type="text" size="5" default="53"/>
 		<param name="avatar_width" label="AVATAR_WIDTH" type="text" size="5" default="40"/>		
-		<param name="avatar_keep_proportional" label='AVATAR_KEEP_PROPORTIONAL' type='radio' default='0' description='AVATAR_KEEP_PROPORTIONAL_DESCR'>
+		<param name="avatar_keep_proportional" label="AVATAR_KEEP_PROPORTIONAL" type="radio" default="0" description="AVATAR_KEEP_PROPORTIONAL_DESCR">
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>			
 		</param>

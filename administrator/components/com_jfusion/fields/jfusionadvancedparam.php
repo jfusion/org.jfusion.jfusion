@@ -45,14 +45,17 @@ class JFormFieldJFusionAdvancedParam extends JFormField
 
         $doc = JFactory::getDocument();
         $fieldName = $this->name;
-        $configfile = $this->element["configfile"];
+        $feature = $this->element["feature"];
+        if (!$feature) {
+            $feature = 'any';
+        }
         $multiselect = $this->element["multiselect"];
 
         if (!defined('JFUSION_ADVANCEDPARAM_JS_LOADED')) {
             define('JFUSION_ADVANCEDPARAM_JS_LOADED', 1);
 
-            if (!is_null($configfile)) {
-                $cfile = '&configfile='.$configfile;
+            if (!is_null($feature)) {
+                $cfile = '&feature='.$feature;
             } else {
                 $cfile = '';
             }
@@ -77,10 +80,11 @@ class JFormFieldJFusionAdvancedParam extends JFormField
 JS;
             $doc->addScriptDeclaration($js);
         }
+
         //Create Link
         $link = 'index.php?option=com_jfusion&amp;task=advancedparam&amp;tmpl=component&amp;elNum='.$elNum.'&amp;params=' . $this->value;
-        if (!is_null($configfile)) {
-            $link.= "&amp;configfile=" . $configfile;
+        if (!is_null($feature)) {
+            $link.= "&amp;feature=" . $feature;
         }
         if (!is_null($multiselect)) {
             $link.= "&amp;multiselect=1";

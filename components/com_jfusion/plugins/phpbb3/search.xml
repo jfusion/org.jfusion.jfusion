@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
-	<language filename='plg_search_jfusion' location='admin' />
+	<language filename="plg_search_jfusion" location="admin" />
 
     <fields>
         <fieldset name="basic">

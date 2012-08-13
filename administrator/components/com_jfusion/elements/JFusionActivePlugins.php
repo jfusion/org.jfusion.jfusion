@@ -40,10 +40,26 @@ class JElementJFusionActivePlugins extends JElement
      */
     function fetchElement($name, $value, &$node, $control_name)
     {
+        $feature = $node->attributes('feature');
+        if (!$feature) {
+            $feature = 'any';
+        }
+
         $db = JFactory::getDBO();
         $query = 'SELECT name as id, name as name from #__jfusion WHERE status = 1';
         $db->setQuery($query);
         $rows = $db->loadObjectList();
+
+        require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.factory.php';
+        require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.jfusion.php';
+        require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.jfusionadmin.php';
+
+        foreach ($rows as $key => &$row) {
+            if (!JFusionFunctionAdmin::hasFeature($row->name,$feature)) {
+                unset($rows[$key]);
+            }
+        }
+
         if (!empty($rows)) {
             return JHTML::_('select.genericlist', $rows, $control_name . '[' . $name . ']', 'size="1" class="inputbox"', 'id', 'name', $value);
         } else {

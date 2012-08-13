@@ -68,18 +68,10 @@ defined('_JEXEC') or die('Restricted access');
             	<?php echo $row->alias; ?>
             </td>
             <td>
-            	<?php //get the plugin name
-            	$params = new JParameter($row->params);
-            	$jPluginParam = unserialize(base64_decode($params->get('JFusionPluginParam')));
-            	if (is_array($jPluginParam)) {
-                	echo $jPluginParam['jfusionplugin'];
-            	} else {
-                	echo JText::_('NO_PLUGIN_SELECTED');
-            	}
-            	?>
+            	<?php echo $row->jfusionplugin; ?>
             </td>
             <td>
-            	<?php echo $params->get('visual_integration'); ?>
+            	<?php echo $row->params->get('visual_integration'); ?>
             </td>
 		</tr>
         <?php
@@ -122,17 +114,10 @@ defined('_JEXEC') or die('Restricted access');
 	            </a>
             </td>
             <td>
-	            <?php
-	            $JFusionParam = JFusionFactory::getParams($row->name);
-	            $description = $JFusionParam->get('description');
-	            echo $description;
-	            ?>
+	            <?php echo $row->params->get('description'); ?>
             </td>
             <td>
-	            <?php
-	            $source_url = $JFusionParam->get('source_url');
-	            echo $source_url;
-	            ?>
+	            <?php echo $row->params->get('source_url'); ?>
             </td>
 		</tr>
 	<?php

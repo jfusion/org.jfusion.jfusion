@@ -55,11 +55,21 @@ class JFormFieldJFusionItemid extends JFormField
 JS;
 	        $doc->addScriptDeclaration($js);
         }
-        $link = 'index.php?option=com_jfusion&amp;task=itemidselect&amp;tmpl=component&amp;ename=' . $name . '&amp;elId=' . $elId;
-        JHTML::_('behavior.modal', 'a.modal');
-        $html = "\n" . '<div style="float: left;"><input style="background: #ffffff;" type="text" id="' . $name . '_name' . $elId . '" value="' . $value . '" disabled="disabled" /></div>';
-        $html.= '<div class="button2-left"><div class="blank"><a class="modal" title="' . JText::_('SELECT_MENUITEM') . '"  href="' . $link . '" rel="{handler: \'iframe\', size: {x: 650, y: 375}}">' . JText::_('SELECT') . '</a></div></div>' . "\n";
-        $html.= "\n" . '<input type="hidden" id="' . $name . '_id' . $elId . '" name="' . $name . '" value="' . $value . '" />';
+        $feature = $this->element["feature"];
+
+        if (!$feature) {
+            $feature = 'any';
+        }
+
+        $link = 'index.php?option=com_jfusion&amp;task=itemidselect&amp;tmpl=component&amp;ename=' . $name . '&amp;elId=' . $elId . '&amp;feature=' . $feature;
+
+        $select_menuitem = JText::_('SELECT_MENUITEM');
+        $select = JText::_('SELECT');
+        $html = <<<HTML
+            <div style="float: left;"><input style="background: #ffffff;" type="text" id="{$name}_name{$elId}" value="{$value}" disabled="disabled" /></div>
+            <div class="button2-left"><div class="blank"><a class="modal" title="{$select_menuitem}"  href="{$link}" rel="{handler: 'iframe', size: {x: 650, y: 375}}">{$select}</a></div></div>
+            <input type="hidden" id="{$name}_id{$elId}" name="{$name}" value="{$value}" />
+HTML;
         return $html;
     }
 }

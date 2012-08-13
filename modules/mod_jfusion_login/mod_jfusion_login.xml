@@ -97,14 +97,14 @@
 		</field>
 		<field name="avatar_height" label="AVATAR_HEIGHT" type="text" size="5" default="80"/>
 		<field name="avatar_width" label="AVATAR_WIDTH" type="text" size="5" default="60"/>
-		<field name="avatar_software" type='list' default='jfusion'
+		<field name="avatar_software" type="list" default="jfusion"
 			label="AVATAR_SOFTWARE"
 			description="AVATAR_SOFTWARE_DESC">
-				<option value='cb'>Community Builder</option>
-				<option value='gravatar'>Gravatar</option>
-				<option value='jfusion'>JFusion</option>
-				<option value='jomsocial'>JomSocial</option>
-				<option value='joomunity'>Joomunity</option>
+				<option value="cb">Community Builder</option>
+				<option value="gravatar">Gravatar</option>
+				<option value="jfusion">JFusion</option>
+				<option value="jomsocial">JomSocial</option>
+				<option value="joomunity">Joomunity</option>
 		</field>
 		<field name="itemidAvatarPMs" type="JFusionItemid" default=""
 			label="JFUSION_PLUGIN"
@@ -205,14 +205,14 @@
 		</param>
 		<param name="avatar_height" label="AVATAR_HEIGHT" type="text" size="5" default="80"/>
 		<param name="avatar_width" label="AVATAR_WIDTH" type="text" size="5" default="60"/>
-		<param name="avatar_software" type='list' default='jfusion'
+		<param name="avatar_software" type="list" default="jfusion"
 			label="AVATAR_SOFTWARE"
 			description="AVATAR_SOFTWARE_DESC">
-				<option value='cb'>Community Builder</option>
-				<option value='gravatar'>Gravatar</option>
-				<option value='jfusion'>JFusion</option>
-				<option value='jomsocial'>JomSocial</option>
-				<option value='joomunity'>Joomunity</option>
+				<option value="cb">Community Builder</option>
+				<option value="gravatar">Gravatar</option>
+				<option value="jfusion">JFusion</option>
+				<option value="jomsocial">JomSocial</option>
+				<option value="joomunity">Joomunity</option>
 		</param>
 		<param name="itemidAvatarPMs" type="JFusionItemid" default=""
 			label="JFUSION_PLUGIN"

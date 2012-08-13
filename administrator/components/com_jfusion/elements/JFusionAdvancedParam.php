@@ -51,14 +51,17 @@ class JElementJFusionAdvancedParam extends JElement
 
         $doc = JFactory::getDocument();
         $fieldName = $control_name . '[' . $name . ']';
-        $configfile = $node->attributes("configfile");
+        $feature = $node->attributes("feature");
+        if (!$feature) {
+            $feature = 'any';
+        }
         $multiselect = $node->attributes("multiselect");
 
         if (!defined('JFUSION_ADVANCEDPARAM_JS_LOADED')) {
             define('JFUSION_ADVANCEDPARAM_JS_LOADED', 1);
 
-            if (!is_null($configfile)) {
-                $cfile = '&configfile='.$configfile;
+            if (!is_null($feature)) {
+                $cfile = '&feature='.$feature;
             } else {
                 $cfile = '';
             }
@@ -85,8 +88,8 @@ JS;
         }
         //Create Link
         $link = 'index.php?option=com_jfusion&amp;task=advancedparam&amp;tmpl=component&amp;elNum='.$elNum.'&amp;params=' . $value;
-        if (!is_null($configfile)) {
-            $link.= "&amp;configfile=" . $configfile;
+        if (!is_null($feature)) {
+            $link.= "&amp;feature=" . $feature;
         }
         if (!is_null($multiselect)) {
             $link.= "&amp;multiselect=1";
@@ -127,7 +130,7 @@ JS;
         </div>
         <div class="button2-left">
             <div class="blank">
-                <a id="plugin_link{$elNum}" class="modal" title="{$select_plugin}"  href="{$link}" rel="{handler: 'iframe', size: {x: 750, y: 475}}\">{$select}</a>
+                <a id="plugin_link{$elNum}" class="modal" title="{$select_plugin}"  href="{$link}" rel="{handler: 'iframe', size: {x: 750, y: 475}}">{$select}</a>
             </div>
         </div>
         <input type="hidden" id="plugin_id{$elNum}" name="{$fieldName}" value="{$value}" />

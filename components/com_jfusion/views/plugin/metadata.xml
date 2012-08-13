@@ -9,7 +9,7 @@
 	</view>
 	<fields name="params" addfieldpath="/administrator/components/com_jfusion/fields"><fieldset name="basic">
 		<field name="JFusionPluginParam" type="JFusionAdvancedParam" default=""
-			label="JFUSION_PLUGIN" configfile="1"
+			label="JFUSION_PLUGIN" feature="config"
 			description="JFUSION_PLUGIN_DESCR" addfieldpath="/administrator/components/com_jfusion/fields"/>
 		<field name=" " type="helptext" default="frameless_limits" />
 		<field name="visual_integration" type="radio" default="wrapper"
@@ -23,9 +23,9 @@
 			<option value="scroll">JYES</option>
 			<option value="auto">AUTO</option>
 		</field>
-		<field name="wrapper_width" type="text" default='100%' size="10"
+		<field name="wrapper_width" type="text" default="100%" size="10"
 			description="WRAPPER_WIDTH" />
-		<field name="wrapper_height" type="text" default='500' size="10"
+		<field name="wrapper_height" type="text" default="500" size="10"
 			description="WRAPPER_HEIGHT" />
 		<field name="wrapper_autoheight" type="radio" default="1"
 			description="WRAPPER_AUTOHEIGHT">
@@ -45,7 +45,7 @@
 	</fieldset></fields>
 	<params addpath="/administrator/components/com_jfusion/elements">
 		<param name="JFusionPluginParam" type="JFusionAdvancedParam" default=""
-			label="JFUSION_PLUGIN" configfile="1"
+			label="JFUSION_PLUGIN" feature="config"
 			description="JFUSION_PLUGIN_DESCR" />
 		<param name=" " type="helptext" default="frameless_limits" />
 		<param name="visual_integration" type="radio" default="wrapper"
@@ -59,9 +59,9 @@
 			<option value="scroll">JYES</option>
 			<option value="auto">AUTO</option>
 		</param>
-		<param name="wrapper_width" type="text" default='100%' size="10"
+		<param name="wrapper_width" type="text" default="100%" size="10"
 			description="WRAPPER_WIDTH" />
-		<param name="wrapper_height" type="text" default='500' size="10"
+		<param name="wrapper_height" type="text" default="500" size="10"
 			description="WRAPPER_HEIGHT" />
 		<param name="wrapper_autoheight" type="radio" default="1"
 			description="WRAPPER_AUTOHEIGHT">
