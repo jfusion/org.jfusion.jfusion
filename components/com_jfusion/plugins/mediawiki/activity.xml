@@ -188,7 +188,7 @@
 			description="AVATAR_SOFTWARE_DESC">
 				<option value="cb">Community Builder</option>
 				<option value="gravatar">Gravatar</option>
-				<option value="jfusion"">JFusion</option>
+				<option value="jfusion">JFusion</option>
 				<option value="jomsocial">JomSocial</option>
 				<option value="joomunity">Joomunity</option>
 		</param>
