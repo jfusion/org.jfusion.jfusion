@@ -319,8 +319,9 @@ class JFusionPluginInstaller extends JObject
                      * ---------------------------------------------------------------------------------------------
                      */
                     //determine the features of the plugin
-                    $dual_login = $slave = $activity = $search = $discussion = null;
-                    $features = array('master', 'slave', 'dual_login', 'check_encryption', 'activity', 'search', 'discussion');
+                    $dual_login = $slave = null;
+                    //$features = array('master', 'slave', 'dual_login', 'check_encryption', 'activity', 'search', 'discussion');
+                    $features = array('master', 'slave', 'dual_login', 'check_encryption');
                     foreach ($features as $f) {
                         $xml = $this->getElementByPath($this->manifest,$f);
                         if (is_a($xml, 'JSimpleXMLElement') || is_a($xml, 'JXMLElement')) {
@@ -369,9 +370,6 @@ class JFusionPluginInstaller extends JObject
                         $plugin_entry->name = $name;
                         $plugin_entry->dual_login = $dual_login;
                         $plugin_entry->slave = $slave;
-                        $plugin_entry->activity = $activity;
-                        $plugin_entry->search = $search;
-                        $plugin_entry->discussion = $discussion;
                         $plugin_entry->plugin_files = $this->backup($name);
                         //now append the new plugin data
                         if (!$db->insertObject('#__jfusion', $plugin_entry, 'id')) {
@@ -638,7 +636,7 @@ class JFusionPluginInstaller extends JObject
                     global $plugin_features;
                     if (empty($plugin_features)) {
                         //copy() was called directly because we are upgrading the component
-                        $features = array('master', 'slave', 'dual_login', 'check_encryption', 'activity', 'search', 'discussion');
+                        $features = array('master', 'slave', 'dual_login', 'check_encryption');
                         foreach ($features as $f) {
                             $xml = $this->getElementByPath($this->manifest,$f);
                             if (is_a($xml, 'JSimpleXMLElement') || is_a($xml, 'JXMLElement')) {

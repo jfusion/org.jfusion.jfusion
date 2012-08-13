@@ -14,9 +14,6 @@
     <master>0</master>
 	<slave>0</slave>
 	<dual_login>0</dual_login>
-	<search>1</search>
-	<activity>1</activity>
-	<discussion>1</discussion>
 	
 	<files>
 		<filename>admin.php</filename>

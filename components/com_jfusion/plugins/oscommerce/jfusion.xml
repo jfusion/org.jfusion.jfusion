@@ -15,9 +15,6 @@
 	<slave>0</slave>
 	<dual_login>0</dual_login>
 	<check_encryption>0</check_encryption>
-	<search>3</search>
-	<activity>3</activity>
-	<discussion>3</discussion>
 	
 	<files>
 		<filename>admin.php</filename>

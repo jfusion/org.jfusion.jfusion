@@ -359,6 +359,32 @@ function com_install() {
 			}
 		}
 
+        //remove colums
+        $query = 'SHOW COLUMNS FROM #__jfusion';
+        $db->setQuery($query);
+        $columns = $db->loadResultArray();
+        if (in_array('activity', $columns)) {
+            $query = "ALTER TABLE #__jfusion DROP column activity";
+            $db->setQuery($query);
+            if (!$db->query()) {
+                echo $db->stderr() . '<br />';
+            }
+        }
+        if (in_array('search', $columns)) {
+            $query = "ALTER TABLE #__jfusion DROP column search";
+            $db->setQuery($query);
+            if (!$db->query()) {
+                echo $db->stderr() . '<br />';
+            }
+        }
+        if (in_array('discussion', $columns)) {
+            $query = "ALTER TABLE #__jfusion DROP column discussion";
+            $db->setQuery($query);
+            if (!$db->query()) {
+                echo $db->stderr() . '<br />';
+            }
+        }
+
 		//migrate from #__jfusion_forum_plugin to #__jfusion_discussion_bot
 		//check to see if #__jfusion_forum_plugin exists indicating that #__jfusion_discussion_bot has not been populated
 		if(array_search($table_prefix . 'jfusion_forum_plugin',$table_list)) {
@@ -413,7 +439,7 @@ function com_install() {
 			}
 		} else {
 			//check to make sure there is a components column in the discussion_bot table
-			$query = "SHOW COLUMNS FROM #__jfusion_discussion_bot";
+			$query = 'SHOW COLUMNS FROM #__jfusion_discussion_bot';
 			$db->setQuery($query);
 			$columns = $db->loadResultArray();
 
@@ -435,15 +461,6 @@ function com_install() {
 		/****
 		 * General for all upgrades
 		 ***/
-
-		//update plugins with search and discuss bot capabilities
-		$query = "UPDATE #__jfusion SET search = 1, discussion = 1 WHERE name IN ('vbulletin','phpbb3','smf') OR original_name IN ('vbulletin','phpbb3','smf')";
-		$db->setQuery($query);
-		if (!$db->query()) {
-			echo $db->stderr() . '<br />';
-			$return = false;
-			return $return;
-		}
 /*
  * todo: Determin if we really need this in the installer ???? also remove unneeded plugin_files field from database ??? if this is NOT needed
 		//restore deleted plugins if possible and applicable

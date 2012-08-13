@@ -14,7 +14,7 @@
     <master>0</master>
 	<slave>0</slave>
 	<dual_login>0</dual_login>
-	<activity>0</activity>
+
 	<files>
 		<folder>install_module</folder>
 		<filename>admin.php</filename>
