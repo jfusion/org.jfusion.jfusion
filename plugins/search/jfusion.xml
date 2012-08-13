@@ -18,15 +18,11 @@
 	<config>
 		<fields name="params" addfieldpath="/administrator/components/com_jfusion/fields">
 			<fieldset name="basic">
-				<field name="JFusionPluginParam" type="JFusionAdvancedParam" default=""
-					label="JFUSION_PLUGIN" feature="search" multiselect="true"
-					description="JFUSION_PLUGIN_DESCR" />
+				<field name="JFusionPluginParam" type="JFusionAdvancedParam" default="" label="JFUSION_PLUGIN" feature="search" multiselect="true" description="JFUSION_PLUGIN_DESCR" />
 			</fieldset>
 		</fields>
 	</config>
 	<params addpath="/administrator/components/com_jfusion/elements">
-		<param name="JFusionPluginParam" type="JFusionAdvancedParam" default=""
-			label="JFUSION_PLUGIN" feature="search" multiselect="true"
-			description="JFUSION_PLUGIN_DESCR" />
+		<param name="JFusionPluginParam" type="JFusionAdvancedParam" default="" label="JFUSION_PLUGIN" feature="search" multiselect="true" description="JFUSION_PLUGIN_DESCR" />
 	</params>	
 </install>

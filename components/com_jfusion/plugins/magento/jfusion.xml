@@ -86,8 +86,7 @@
 
 		<param name="jfusionbox" type="text" default="" label="CURL_OPTIONS_GENERAL" description="" />
 		<param name="integrationtype" type="text" size="3" label="CURL_INTEGRATIONTYPE" default="1" description="CURL_INTEGRATIONTYPE_DESC" />
-		<param name="httpauth" type="list" default="" label="CURL_HTTPAUTH"
-			description="CURL_HTTPAUTH_DESCR">
+		<param name="httpauth" type="list" default="" label="CURL_HTTPAUTH" description="CURL_HTTPAUTH_DESCR">
 			<option value="">DISABLED</option>
 			<option value="any">ANY</option>
 			<option value="anysafe">ANYSAFE</option>
@@ -127,8 +126,7 @@
 		</param>
 		<param name="input_username_id" type="text" size="60" label="CURL_INPUT_USERNAME_ID" default="" description="CURL_INPUT_USERNAME_ID_DESC" />
 		<param name="input_password_id" type="text" size="60" label="CURL_INPUT_PASSWORD_ID" default="" description="CURL_INPUT_PASSWORD_ID_DESC" />
-		<param name="hidden" type="list" default="1" label="CURL_HIDDEN"
-			description="CURL_HIDDEN_DESC">
+		<param name="hidden" type="list" default="1" label="CURL_HIDDEN" description="CURL_HIDDEN_DESC">
 			<option value="1">JYES</option>
 			<option value="0">JNO</option>
 		</param>

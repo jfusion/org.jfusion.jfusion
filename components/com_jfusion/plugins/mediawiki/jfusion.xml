@@ -50,29 +50,24 @@
             <option value="1">JYES</option>
             <option value="0">JNO</option>
         </param>
-        <param name="update_email" type="list" default="1" label="UPDATE_EMAIL"
-            description="UPDATE_EMAIL_DESC">
+        <param name="update_email" type="list" default="1" label="UPDATE_EMAIL" description="UPDATE_EMAIL_DESC">
             <option value="1">JYES</option>
             <option value="0">JNO</option>
         </param>
-        <param name="update_block" type="list" default="1" label="UPDATE_BLOCK"
-            description="UPDATE_BLOCK_DESC">
+        <param name="update_block" type="list" default="1" label="UPDATE_BLOCK" description="UPDATE_BLOCK_DESC">
             <option value="1">JYES</option>
             <option value="0">JNO</option>
         </param>
-        <param name="create_inactive" type="list" default="1"
-            label="CREATE_INACTIVE" description="CREATE_INACTIVE_DESC">
+        <param name="create_inactive" type="list" default="1" label="CREATE_INACTIVE" description="CREATE_INACTIVE_DESC">
             <option value="1">JYES</option>
             <option value="0">JNO</option>
         </param>
-        <param name="create_blocked" type="list" default="1"
-            label="CREATE_BLOCKED" description="CREATE_BLOCKED_DESC">
+        <param name="create_blocked" type="list" default="1" label="CREATE_BLOCKED" description="CREATE_BLOCKED_DESC">
             <option value="1">JYES</option>
             <option value="0">JNO</option>
         </param>
         <param name="@spacer" type="spacer" default="" label="" description="" />
-        <param name="allow_delete_users" type="list" default="0"
-            label="ALLOW_DELETE_USERS" description="ALLOW_DELETE_USERS_DESCR">
+        <param name="allow_delete_users" type="list" default="0" label="ALLOW_DELETE_USERS" description="ALLOW_DELETE_USERS_DESCR">
             <option value="1">JYES</option>
             <option value="0">JNO</option>
         </param>

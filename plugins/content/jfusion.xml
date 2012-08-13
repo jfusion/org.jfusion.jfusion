@@ -80,20 +80,20 @@
 		        <field name="post_header" type="text" size="20" default="" label="POST_HEADER" description="POST_HEADER_DESC" />
 		        <field name="no_posts_msg" type="text" size="20" default="" label="NO_POSTS_MSG" description="NO_POSTS_MSG_DESC" />
 		        <field name="show_refresh_link" type="radio" default="1" label="SHOW_REFRESH_LINK" description="SHOW_REFRESH_LINK_DESCR">
-		                <option value="1">JYES</option>
-		                <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
 		        </field>    
 		        <field name="show_toggle_posts_link" type="radio" default="1" label="SHOW_TOGGLE_POSTS_LINK" description="SHOW_TOGGLE_POSTS_LINK_DESCR">
-		                <option value="1">JYES</option>
-		                <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
 		        </field>        
 		        <field name="collapse_discussion" type="radio" default="1" label="COLLAPSE_DISCUSSION" description="COLLAPSE_DISCUSSION_DESCR">
-		                <option value="1">JYES</option>
-		                <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
 		        </field>
 		        <field name="enable_pagination" type="radio" default="1" label="ENABLE_PAGINATION" description="ENABLE_PAGINATION_DESCR">
-		                <option value="1">JYES</option>
-		                <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
 		        </field>        
 		        <field name="limit_posts" type="text" size="20" default="" label="LIMIT_POSTS" description="LIMIT_POSTS_DESC" />
 		        <field name="sort_posts" type="list" default="DESC" label="SORT_POSTS" description="SORT_POSTS_DESC">
@@ -112,8 +112,7 @@
 		            <option value="1">JYES</option>
 		            <option value="0">JNO</option>
 		        </field>
-		        <field name="display_name" type="list" default="0"
-		            label="DISPLAY_USERNAME_NAME" description="DISPLAY_USERNAME_NAME_DESCR">
+		        <field name="display_name" type="list" default="0" label="DISPLAY_USERNAME_NAME" description="DISPLAY_USERNAME_NAME_DESCR">
 		            <option value="0">USERNAME</option>
 		            <option value="1">NAME</option>
 		        </field>        
@@ -122,9 +121,7 @@
 		            <option value="0">JNO</option>
 		        </field>
 		
-		        <field name="userlink_software" type="list" default="jfusion"
-		            label="USERLINK_SOFTWARE"
-		            description="USERLINK_SOFTWARE_DESC">
+		        <field name="userlink_software" type="list" default="jfusion" label="USERLINK_SOFTWARE" description="USERLINK_SOFTWARE_DESC">
 		                <option value="custom">CUSTOM</option>
 		                <option value="jfusion">JFusion</option>
 		        </field>
@@ -141,11 +138,9 @@
 		            <option value="0">JNO</option>
 		            <option value="1">JYES</option>          
 		        </field>        
-		        <field name="avatar_software" type="list" default="jfusion"
-		            label="AVATAR_SOFTWARE"
-		            description="AVATAR_SOFTWARE_DESC">
-		                <option value="gravatar">Gravatar</option>
-		                <option value="jfusion">JFusion</option>
+		        <field name="avatar_software" type="list" default="jfusion" label="AVATAR_SOFTWARE" description="AVATAR_SOFTWARE_DESC">
+                    <option value="gravatar">Gravatar</option>
+                    <option value="jfusion">JFusion</option>
 		        </field>
 		
 		        <field name="spacerhr3" type="spacer" hr="true" />       
@@ -221,15 +216,11 @@
 		            <option value="1">JYES</option>
 		            <option value="0">JNO</option>
 		        </field>        
-		        <field name="include_categories" type="jfusionsql" multiple="1" jname="joomla_int" default="" key_field="id" value_field="name" label="INCLUDE_CATEGORIES" description="INCLUDE_CATEGORIES_DESC"
-		            query = 'joomla.categories' />
-		        <field name="exclude_categories" type="jfusionsql" multiple="1" jname="joomla_int" default="" key_field="id" value_field="name" label="EXCLUDE_CATEGORIES" description="EXCLUDE_CATEGORIES_DESC"
-		            query = 'joomla.categories' />
+		        <field name="include_categories" type="jfusionsql" multiple="1" jname="joomla_int" default="" key_field="id" value_field="name" label="INCLUDE_CATEGORIES" description="INCLUDE_CATEGORIES_DESC" query="joomla.categories" />
+		        <field name="exclude_categories" type="jfusionsql" multiple="1" jname="joomla_int" default="" key_field="id" value_field="name" label="EXCLUDE_CATEGORIES" description="EXCLUDE_CATEGORIES_DESC" query="joomla.categories" />
 		        <field name="pair_categories" type="DiscussionBotParam" default="" label="PAIR_CATEGORIES" description="PAIR_CATEGORIES_DESC" />
-                <field name="include_k2_categories" type="jfusionsql" multiple="1" jname="joomla_int" default="" key_field="id" value_field="name" label="INCLUDE_K2_CATEGORIES" description="INCLUDE_K2_CATEGORIES_DESC"
-                    query = 'k2.categories' />
-                <field name="excluded_k2_categories" type="jfusionsql" multiple="1" jname="joomla_int" default="" key_field="id" value_field="name" label="EXCLUDE_K2_CATEGORIES" description="EXCLUDE_k2_CATEGORIES_DESC"
-                    query = 'k2.categories' />
+                <field name="include_k2_categories" type="jfusionsql" multiple="1" jname="joomla_int" default="" key_field="id" value_field="name" label="INCLUDE_K2_CATEGORIES" description="INCLUDE_K2_CATEGORIES_DESC" query="k2.categories" />
+                <field name="excluded_k2_categories" type="jfusionsql" multiple="1" jname="joomla_int" default="" key_field="id" value_field="name" label="EXCLUDE_K2_CATEGORIES" description="EXCLUDE_k2_CATEGORIES_DESC" query="k2.categories" />
                 <field name="pair_k2_categories" type="DiscussionBotParam" default="" label="PAIR_K2_CATEGORIES" description="PAIR_K2_CATEGORIES_DESC" />
                 
 		        <field name="default_forum" type="ForumListDiscussionbot" description="DEFAULT_FORUM" label="DEFAULT_FORUM" />
@@ -317,20 +308,20 @@
 		<param name="post_header" type="text" size="20" default="" label="POST_HEADER" description="POST_HEADER_DESC" />
 		<param name="no_posts_msg" type="text" size="20" default="" label="NO_POSTS_MSG" description="NO_POSTS_MSG_DESC" />
 		<param name="show_refresh_link" type="radio" default="1" label="SHOW_REFRESH_LINK" description="SHOW_REFRESH_LINK_DESCR">
-				<option value="1">JYES</option>
-				<option value="0">JNO</option>
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
 		</param>	
 		<param name="show_toggle_posts_link" type="radio" default="1" label="SHOW_TOGGLE_POSTS_LINK" description="SHOW_TOGGLE_POSTS_LINK_DESCR">
-				<option value="1">JYES</option>
-				<option value="0">JNO</option>
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
 		</param>		
 		<param name="collapse_discussion" type="radio" default="1" label="COLLAPSE_DISCUSSION" description="COLLAPSE_DISCUSSION_DESCR">
-				<option value="1">JYES</option>
-				<option value="0">JNO</option>
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
 		</param>
 		<param name="enable_pagination" type="radio" default="1" label="ENABLE_PAGINATION" description="ENABLE_PAGINATION_DESCR">
-				<option value="1">JYES</option>
-				<option value="0">JNO</option>
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
 		</param>		
 		<param name="limit_posts" type="text" size="20" default="" label="LIMIT_POSTS" description="LIMIT_POSTS_DESC" />
 		<param name="sort_posts" type="list" default="DESC" label="SORT_POSTS" description="SORT_POSTS_DESC">
@@ -360,11 +351,9 @@
 			<option value="0">JNO</option>
 		</param>
 
-		<param name="userlink_software" type="list" default="jfusion"
-			label="USERLINK_SOFTWARE"
-			description="USERLINK_SOFTWARE_DESC">
-				<option value="custom">CUSTOM</option>
-				<option value="jfusion">JFusion</option>
+		<param name="userlink_software" type="list" default="jfusion" label="USERLINK_SOFTWARE" description="USERLINK_SOFTWARE_DESC">
+            <option value="custom">CUSTOM</option>
+            <option value="jfusion">JFusion</option>
 		</param>
 		<param name="userlink_custom" type="text" size="20" default="" label="USERLINK_CUSTOM" description="USERLINK_CUSTOM_DESC" />
 
@@ -380,11 +369,9 @@
             <option value="0">JNO</option>
             <option value="1">JYES</option>          
         </param>        
-		<param name="avatar_software" type="list" default="jfusion"
-			label="AVATAR_SOFTWARE"
-			description="AVATAR_SOFTWARE_DESC">
-				<option value="gravatar">Gravatar</option>
-				<option value="jfusion">JFusion</option>
+		<param name="avatar_software" type="list" default="jfusion" label="AVATAR_SOFTWARE" description="AVATAR_SOFTWARE_DESC">
+            <option value="gravatar">Gravatar</option>
+            <option value="jfusion">JFusion</option>
 		</param>
 
 		<param name="@spacer" type="spacer" default="" label="" description="" />		
@@ -465,20 +452,14 @@
 			<option value="1">JYES</option>
 			<option value="0">JNO</option>
 		</param>
-		<param name="include_sections" type="jfusionsql" multiple="1" jname="joomla_int" default="" key_field="id" value_field="name" label="INCLUDE_SECTIONS" description="INCLUDE_SECTIONS_DESC"
-			query = "SELECT id, title as name FROM #__sections WHERE published = 1 AND scope = 'content' ORDER BY title" />
-		<param name="exclude_sections" type="jfusionsql" multiple="1" jname="joomla_int" default="" key_field="id" value_field="name" label="EXCLUDE_SECTIONS" description="EXCLUDE_SECTIONS_DESC"
-			query = "SELECT id, title as name FROM #__sections WHERE published = 1 AND scope = 'content' ORDER BY title" />
-		<param name="include_categories" type="jfusionsql" multiple="1" jname="joomla_int" default="" key_field="id" value_field="name" label="INCLUDE_CATEGORIES" description="INCLUDE_CATEGORIES_DESC"
-			query = 'SELECT c.id, CONCAT_WS( "/",s.title, c.title ) AS name FROM #__categories AS c LEFT JOIN #__sections AS s ON s.id=c.section WHERE c.published = 1 AND s.scope = "content" ORDER BY s.title, c.title' />
-		<param name="exclude_categories" type="jfusionsql" multiple="1" jname="joomla_int" default="" key_field="id" value_field="name" label="EXCLUDE_CATEGORIES" description="EXCLUDE_CATEGORIES_DESC"
-			query = 'SELECT c.id, CONCAT_WS( "/",s.title, c.title ) AS name FROM #__categories AS c LEFT JOIN #__sections AS s ON s.id=c.section WHERE c.published = 1 AND s.scope = "content" ORDER BY s.title, c.title' />
+		<param name="include_sections" type="jfusionsql" multiple="1" jname="joomla_int" default="" key_field="id" value_field="name" label="INCLUDE_SECTIONS" description="INCLUDE_SECTIONS_DESC" query="SELECT id, title as name FROM #__sections WHERE published = 1 AND scope = 'content' ORDER BY title" />
+		<param name="exclude_sections" type="jfusionsql" multiple="1" jname="joomla_int" default="" key_field="id" value_field="name" label="EXCLUDE_SECTIONS" description="EXCLUDE_SECTIONS_DESC" query="SELECT id, title as name FROM #__sections WHERE published = 1 AND scope = 'content' ORDER BY title" />
+		<param name="include_categories" type="jfusionsql" multiple="1" jname="joomla_int" default="" key_field="id" value_field="name" label="INCLUDE_CATEGORIES" description="INCLUDE_CATEGORIES_DESC" query='SELECT c.id, CONCAT_WS( "/",s.title, c.title ) AS name FROM #__categories AS c LEFT JOIN #__sections AS s ON s.id=c.section WHERE c.published = 1 AND s.scope = "content" ORDER BY s.title, c.title' />
+		<param name="exclude_categories" type="jfusionsql" multiple="1" jname="joomla_int" default="" key_field="id" value_field="name" label="EXCLUDE_CATEGORIES" description="EXCLUDE_CATEGORIES_DESC" query='SELECT c.id, CONCAT_WS( "/",s.title, c.title ) AS name FROM #__categories AS c LEFT JOIN #__sections AS s ON s.id=c.section WHERE c.published = 1 AND s.scope = "content" ORDER BY s.title, c.title' />
 		<param name="pair_sections" type="DiscussionBotParam" default="" label="PAIR_SECTIONS" description="PAIR_SECTIONS_DESC" />
 		<param name="pair_categories" type="DiscussionBotParam" default="" label="PAIR_CATEGORIES" description="PAIR_CATEGORIES_DESC" />
-        <param name="include_k2_categories" type="jfusionsql" multiple="1" jname="joomla_int" default="" key_field="id" value_field="name" label="INCLUDE_K2_CATEGORIES" description="INCLUDE_K2_CATEGORIES_DESC"
-            query = 'k2.categories' />
-        <param name="exclude_k2_categories" type="jfusionsql" multiple="1" jname="joomla_int" default="" key_field="id" value_field="name" label="EXCLUDE_K2_CATEGORIES" description="EXCLUDE_k2_CATEGORIES_DESC"
-            query = 'k2.categories' />
+        <param name="include_k2_categories" type="jfusionsql" multiple="1" jname="joomla_int" default="" key_field="id" value_field="name" label="INCLUDE_K2_CATEGORIES" description="INCLUDE_K2_CATEGORIES_DESC" query="k2.categories" />
+        <param name="exclude_k2_categories" type="jfusionsql" multiple="1" jname="joomla_int" default="" key_field="id" value_field="name" label="EXCLUDE_K2_CATEGORIES" description="EXCLUDE_k2_CATEGORIES_DESC" query="k2.categories" />
         <param name="pair_k2_categories" type="DiscussionBotParam" default="" label="PAIR_K2_CATEGORIES" description="PAIR_K2_CATEGORIES_DESC" />		
 		<param name="default_forum" type="ForumListDiscussionbot" description="DEFAULT_FORUM" label="DEFAULT_FORUM" />
 		<param name="use_article_userid" type="radio" label="USE_ARTICLE_USER" description="USE_ARTICLE_USER_DESCR" default="1">

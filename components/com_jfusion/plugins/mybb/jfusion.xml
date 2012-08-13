@@ -30,8 +30,7 @@
 		<param name="source_url" type="text" size="60" label="SOURCE_URL" default="http://www.yourdomain.com/mybb/" description="SOURCE_URL_DESC" />
 		<param name="source_path" type="text" size="60" label="SOURCE_PATH" default="" description="SOURCE_PATH_DESC" />
 		<param name="@spacer" type="spacer" default="" label="" description="" />
-		<param name="login_identifier" type="list" label="LOGIN_IDENTIFIER"
-			default="1" description="LOGIN_IDENTIFIER_DESC">
+		<param name="login_identifier" type="list" label="LOGIN_IDENTIFIER" default="1" description="LOGIN_IDENTIFIER_DESC">
 			<option value="1">USERNAME</option>
 			<option value="2">EMAIL</option>
 			<option value="3">USERNAME_OR_EMAIL</option>
