@@ -862,6 +862,10 @@ class plgUserJfusion extends JPlugin
                         );
             
                         // Assemble the email data...the sexy way!
+                        /**
+                         * @ignore
+                         * @var $mail JMail
+                         */
                         $mail = JFactory::getMailer()
                         ->setSender(
                                 array(
@@ -872,7 +876,8 @@ class plgUserJfusion extends JPlugin
                         ->addRecipient($user['email'])
                         ->setSubject($emailSubject)
                         ->setBody($emailBody);
-            
+
+
                         if (!$mail->Send()) {
                             // TODO: Probably should raise a plugin error but this event is not error checked.
                             JError::raiseWarning(500, JText::_('ERROR_SENDING_EMAIL'));
