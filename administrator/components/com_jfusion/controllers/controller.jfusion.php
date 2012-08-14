@@ -474,6 +474,10 @@ class JFusionController extends JController
                  */
                 $parser = JFactory::getXMLParser('Simple');
                 $parser->loadFile($plugin_xml);
+                /**
+                 * @ignore
+                 * @var $description JSimpleXMLElement
+                 */
                 $description = $parser->document->getElementByPath('description');
                 if(!empty($description)) {
                     $description = $description->data();
