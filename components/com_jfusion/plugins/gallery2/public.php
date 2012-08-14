@@ -201,11 +201,12 @@ class JFusionPublic_gallery2 extends JFusionPublic {
     /**
      * @param string &$text
      * @param string &$phrase
-     * @param object &$pluginParam
+     * @param JParameter &$pluginParam
      * @param int $itemid
+     * @param string $ordering
      * @return array
      */
-    function getSearchResults(&$text, &$phrase, &$pluginParam, $itemid) {
+    function getSearchResults(&$text, &$phrase, &$pluginParam, $itemid, $ordering) {
         /**
          * @ignore
          * @var $helper JFusionHelper_gallery2

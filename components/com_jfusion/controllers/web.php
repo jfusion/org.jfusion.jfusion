@@ -38,7 +38,12 @@ class JFusionControllerWeb extends JController
             $params = $menu->getParams ( null );
         }
 
+
         // Set the default view name from the Request
+        /**
+         * @ignore
+         * @var $view jfusionViewWeb
+         */
         $view = $this->getView ( 'web', 'html' );
         $view->assignRef('params',$params);
         $view->display ();
