@@ -190,7 +190,7 @@ class JFusionUser_mediawiki extends JFusionUser {
             $cookie_expiry = $params->get('cookie_expires', 3100);
             $cookie_name = $helper->getCookieName();
             $expires = time() + $cookie_expiry;
-            $debug_expiration = date("Y-m-d H:i:s", $expires);
+            $debug_expiration = date('Y-m-d H:i:s', $expires);
             $helper->startSession($options);
 
             setcookie($cookie_name  . 'UserName', $userinfo->username, $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);

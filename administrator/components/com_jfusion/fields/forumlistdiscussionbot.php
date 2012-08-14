@@ -45,7 +45,7 @@ class JFormFieldForumListDiscussionbot extends JFormField
         $params = $db->loadResult();
         $jPluginParam = new JParameter($params);
         $jname = $jPluginParam->get('jname', false);
-        $output = "<span style='float:left; margin: 5px 0; font-weight: bold;'>";
+        $output = '<span style="float:left; margin: 5px 0; font-weight: bold;">';
         if ($jname !== false) {
             if (JFusionFunction::validPlugin($jname)) {
                 $JFusionPlugin = JFusionFactory::getForum($jname);
@@ -61,14 +61,14 @@ class JFormFieldForumListDiscussionbot extends JFormField
                 } else {
                     $output.= $jname . ': ' . JText::_('NO_LIST');
                 }
-                $output.= "<br />\n";
+                $output.= '<br />';
             } else {
-                $output.= $jname . ": " . JText::_('NO_VALID_PLUGINS');
+                $output.= $jname . ': ' . JText::_('NO_VALID_PLUGINS');
             }
         } else {
             $output.= JText::_('NO_PLUGIN_SELECT');
         }
-        $output.= "</span>";
+        $output.= '</span>';
         return $output;
     }
 }

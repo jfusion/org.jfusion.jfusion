@@ -159,7 +159,7 @@ class modjfusionActivityHelper
                         $r->output->reply_count = $count . " " . JText::_($reply);
                     }
 
-                    $r->body = "";
+                    $r->body = '';
                 } else {
                     //gotta make it presentable
                     if ($config['display_body']==1) {
@@ -168,7 +168,7 @@ class modjfusionActivityHelper
                             $r->body = JString::substr($r->body,0,$config['character_limit']) . '...';
                         }
                     } else {
-                        $r->body = "";
+                        $r->body = '';
                     }
                 }
 

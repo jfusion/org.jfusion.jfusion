@@ -96,16 +96,16 @@ class doku_auth_basic
 	            $salt = substr($salt,0,8);
 	            $len = strlen($clear);
 	            $text = $clear.'$'.$magic.'$'.$salt;
-	            $bin = pack("H32", md5($clear.$salt.$clear));
+	            $bin = pack('H32', md5($clear.$salt.$clear));
 	            for($i = $len; $i > 0; $i -= 16) { $text .= substr($bin, 0, min(16, $i)); }
 	            for($i = $len; $i > 0; $i >>= 1) { $text .= ($i & 1) ? chr(0) : $clear{0}; }
-	            $bin = pack("H32", md5($text));
+	            $bin = pack('H32', md5($text));
 	            for($i = 0; $i < 1000; $i++) {
 	                $new = ($i & 1) ? $clear : $bin;
 	                if ($i % 3) $new .= $salt;
 	                if ($i % 7) $new .= $clear;
 	                $new .= ($i & 1) ? $bin : $clear;
-	                $bin = pack("H32", md5($new));
+	                $bin = pack('H32', md5($new));
 	            }
 	            $tmp = '';
 	            for ($i = 0; $i < 5; $i++) {
@@ -125,7 +125,7 @@ class doku_auth_basic
                 return sha1($clear);
             case 'ssha':
                 $salt = substr($salt, 0, 4);
-                return '{SSHA}' . base64_encode(pack("H*", sha1($clear . $salt)) . $salt);
+                return '{SSHA}' . base64_encode(pack('H*', sha1($clear . $salt)) . $salt);
             case 'crypt':
                 return crypt($clear, substr($salt, 0, 2));
             case 'mysql':
@@ -141,9 +141,9 @@ class doku_auth_basic
                     $nr2+= ($nr2 << 8) ^ $nr;
                     $add+= $charVal;
                 }
-                return sprintf("%08x%08x", ($nr & 0x7fffffff), ($nr2 & 0x7fffffff));
+                return sprintf('%08x%08x', ($nr & 0x7fffffff), ($nr2 & 0x7fffffff));
             case 'my411':
-                return '*' . sha1(pack("H*", sha1($clear)));
+                return '*' . sha1(pack('H*', sha1($clear)));
             default:
                 JError::raiseWarning(500, "Unsupported crypt method $method");
             }

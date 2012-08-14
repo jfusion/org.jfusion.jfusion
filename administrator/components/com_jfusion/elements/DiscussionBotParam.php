@@ -77,15 +77,24 @@ JS;
 			$link = 'index.php?option=com_jfusion&amp;task=discussionbot&amp;tmpl=component&amp;jname='.$jname.'&amp;ename='.$name.'&amp;'.$name.'='.$value;
 
 			JHTML::_('behavior.modal', 'a.modal');
-			$html  = '<div class="button2-left"><div class="blank"><a class="modal" id="'.$name.'_link" title="'.JText::_('ASSIGN_PAIRS').'"  href="'.$link.'" rel="{handler: \'iframe\', size: {x: 650, y: 375}}">'.JText::_('ASSIGN_PAIRS').'</a></div></div>';
-			if($pluginParams->get($name)) {
-				$src = "components/com_jfusion/images/tick.png";
-			} else {
-				$src = "components/com_jfusion/images/clear.png";
-			}
-			$html .= '<img id="'.$name.'_img" src="'.$src.'"><input type="hidden" id="'.$name.'_id" name="'.$fieldName.'" value="'.$value.'" />';
-			$html .= '</div>';
 
+            if($pluginParams->get($name)) {
+                $src = "components/com_jfusion/images/tick.png";
+            } else {
+                $src = "components/com_jfusion/images/clear.png";
+            }
+
+            $assign_paits = JText::_('ASSIGN_PAIRS');
+
+            $html =<<<HTML
+            <div class="button2-left">
+                <div class="blank">
+                    <a class="modal" id="{$name}_link" title="{$assign_paits}"  href="{$link}" rel="{handler: \'iframe\', size: {x: 650, y: 375}}">{$assign_paits}</a>
+                </div>
+            </div>
+
+            <img id="{$name}_img" src="{$src}"><input type="hidden" id="{$name}_id" name="{$fieldName}" value="{$value}" />
+HTML;
 			return $html;
 	 	}
 	}

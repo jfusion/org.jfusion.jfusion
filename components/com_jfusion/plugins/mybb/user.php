@@ -125,8 +125,8 @@ class JFusionUser_mybb extends JFusionUser {
                 //Make the cookie expire in 30 minutes
                 $expires = 60 * 30;
             }
-            $cookiepath = str_replace(array("\n", "\r"), "", $cookiepath);
-            $cookiedomain = str_replace(array("\n", "\r"), "", $cookiedomain);
+            $cookiepath = str_replace(array("\n", "\r"), '', $cookiepath);
+            $cookiedomain = str_replace(array("\n", "\r"), '', $cookiedomain);
             JFusionFunction::addCookie($name, $value, $expires, $cookiepath, $cookiedomain, false, $httponly);
             $status['debug'][] = JText::_('NAME') . '=' . $name . ', ' . JText::_('VALUE') . '=' . substr($value, 0, 6) . '********, ' . JText::_('COOKIE_PATH') . '=' . $cookiepath . ', ' . JText::_('COOKIE_DOMAIN') . '=' . $cookiedomain;
         }

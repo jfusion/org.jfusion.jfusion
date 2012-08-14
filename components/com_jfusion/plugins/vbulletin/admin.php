@@ -635,9 +635,9 @@ HTML;
             $usergroups = $this->getUsergroupList();
             if (!empty($usergroups)) {
                 $simple_value = (empty($value) || is_array($value)) ? 2 : $value;
-                $simple_usergroup = "<table style=\"width:100%; border:0;\">";
-                $simple_usergroup.= "<tr><td>" . JText::_('DEFAULT_USERGROUP') . "</td><td>" . JHTML::_('select.genericlist', $usergroups, $control_name . '[' . $name . ']', '', 'id', 'name', $simple_value) . "</td></tr>";
-                $simple_usergroup.= "</table>";
+                $simple_usergroup = '<table style="width:100%; border:0;">';
+                $simple_usergroup.= '<tr><td>' . JText::_('DEFAULT_USERGROUP') . '</td><td>' . JHTML::_('select.genericlist', $usergroups, $control_name . '[' . $name . ']', '', 'id', 'name', $simple_value) . '</td></tr>';
+                $simple_usergroup.= '</table>';
                 //escape single quotes to prevent JS errors
                 $simple_usergroup = str_replace("'", "\'", $simple_usergroup);
             } else {
@@ -682,26 +682,26 @@ HTML;
                 }
             }
             //create advanced usergroup html
-            $advanced_usergroup = "<table style=\"width:100%; border:0\">";
+            $advanced_usergroup = '<table style="width:100%; border:0">';
             //add options to compare display and member groups in addition to default usergroups
-            $advanced_usergroup .= "<tr><td colspan=2><b>".JText::_('OPTIONS')."</b></td></tr>";
+            $advanced_usergroup .= '<tr><td colspan=2><b>'.JText::_('OPTIONS').'</b></td></tr>';
             $options = array();
             $options[] = JHTML::_('select.option', '1', JText::_('JYES'), 'id', 'value');
             $options[] = JHTML::_('select.option', '0', JText::_('JNO'), 'id', 'value');
             //option to compare display groups
             $option_value = ($advanced && is_array($value) && isset($value['options']['compare_displaygroups'])) ? $value['options']['compare_displaygroups'] : '';
             $check = ($advanced && !empty($value['option']['compare_displaygroups'])) ? 'checked' : '';
-            $advanced_usergroup .= "<tr><td>".JText::_('COMPARE_DISPLAYGROUPS')."</td><td>" . JHTML::_('select.genericlist', $options, $control_name . '[' . $name . '][options][compare_displaygroups]', 'class="inputbox"', 'id', 'value', $option_value);
+            $advanced_usergroup .= '<tr><td>'.JText::_('COMPARE_DISPLAYGROUPS').'</td><td>' . JHTML::_('select.genericlist', $options, $control_name . '[' . $name . '][options][compare_displaygroups]', 'class="inputbox"', 'id', 'value', $option_value);
             //option to compare member groups
             $option_value = ($advanced && isset($value['options']['compare_membergroups'])) ? $value['options']['compare_membergroups'] : '';
             $check = ($advanced && !empty($value['option']['compares_membergroups'])) ? 'checked' : '';
-            $advanced_usergroup .= "<tr><td>".JText::_('COMPARE_MEMBERGROUPS')."</td><td>" . JHTML::_('select.genericlist', $options, $control_name . '[' . $name . '][options][compare_membergroups]', 'class="inputbox"', 'id', 'value', $option_value);
+            $advanced_usergroup .= '<tr><td>'.JText::_('COMPARE_MEMBERGROUPS').'</td><td>' . JHTML::_('select.genericlist', $options, $control_name . '[' . $name . '][options][compare_membergroups]', 'class="inputbox"', 'id', 'value', $option_value);
 
             foreach ($master_usergroups as $master_usergroup) {
                 $defaultgroup = ($advanced && isset($value[$master_usergroup->id]['defaultgroup'])) ? $value[$master_usergroup->id]['defaultgroup'] : '';
                 $displaygroup = ($advanced && isset($value[$master_usergroup->id]['displaygroup'])) ? $value[$master_usergroup->id]['displaygroup'] : '';
                 $membergroups = ($advanced && isset($value[$master_usergroup->id]['membergroups'])) ? $value[$master_usergroup->id]['membergroups'] : '';
-                $advanced_usergroup.= "<tr><td colspan=2><b>" . $master_usergroup->name . '</b></td></tr>';
+                $advanced_usergroup.= '<tr><td colspan="2"><b>' . $master_usergroup->name . '</b></td></tr>';
                 $advanced_usergroup.= '<tr><td>' . JText::_('DEFAULT_USERGROUP') . '</td><td>' . JHTML::_('select.genericlist', $usergroups, $control_name . '[' . $name . '][' . $master_usergroup->id . '][defaultgroup]', 'onclick="toggleSecondaryGroups(this.value,' . $master_usergroup->id . ');" class="inputbox"', 'id', 'name', $defaultgroup) . '</td></tr>';
 
                 $advanced_usergroup.= '<tr><td>' . JText::_('DEFAULT_DISPLAYGROUP') . '</td><td>' . JHTML::_('select.genericlist', $displaygroups, $control_name . '[' . $name . '][' . $master_usergroup->id . '][displaygroup]', 'class="inputbox"', 'id', 'name', $displaygroup) . '</td></tr>';
@@ -714,7 +714,7 @@ HTML;
                 }
                 $advanced_usergroup.= '</td></tr>';
             }
-            $advanced_usergroup.= "</table>";
+            $advanced_usergroup.= '</table>';
             //escape single quotes to prevent JS errors
             $advanced_usergroup = str_replace("'", "\'", $advanced_usergroup);
         }

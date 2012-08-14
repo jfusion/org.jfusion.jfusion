@@ -55,12 +55,12 @@ class cssparser {
 		if( strpos($key,'@') !== false ) {
 			$this->media[$key] = $codestr;
 		} else {
-            $codes = explode(";",$codestr);
+            $codes = explode(';',$codestr);
             if(count($codes) > 0) {
                 foreach($codes as $code) {
                     $code = trim($code);
                     if(strlen($code)) {
-                        $code = explode(":",$code,2);
+                        $code = explode(':',$code,2);
                         if (count($code) == 2) {
                             list($codekey, $codevalue) = $code;
                             $codevalue = trim($codevalue);
@@ -83,14 +83,14 @@ class cssparser {
 		$key = strtolower($key);
 		$property = strtolower($property);
 
-		list($tag, $subtag) = explode(":",$key);
-		list($tag, $class) = explode(".",$tag);
-		list($tag, $id) = explode("#",$tag);
-		$result = "";
+		list($tag, $subtag) = explode(':',$key);
+		list($tag, $class) = explode('.',$tag);
+		list($tag, $id) = explode('#',$tag);
+		$result = '';
 		foreach($this->css as $_tag => $value) {
-			list($_tag, $_subtag) = explode(":",$_tag);
-			list($_tag, $_class) = explode(".",$_tag);
-			list($_tag, $_id) = explode("#",$_tag);
+			list($_tag, $_subtag) = explode(':',$_tag);
+			list($_tag, $_class) = explode('.',$_tag);
+			list($_tag, $_id) = explode('#',$_tag);
 
 			$tagmatch = (strcmp($tag, $_tag) == 0) | (strlen($_tag) == 0);
 			$subtagmatch = (strcmp($subtag, $_subtag) == 0) | (strlen($_subtag) == 0);
@@ -124,14 +124,14 @@ class cssparser {
     function GetSection($key) {
     	$key = strtolower($key);
 
-		list($tag, $subtag) = explode(":",$key);
-		list($tag, $class) = explode(".",$tag);
-		list($tag, $id) = explode("#",$tag);
+		list($tag, $subtag) = explode(':',$key);
+		list($tag, $class) = explode('.',$tag);
+		list($tag, $id) = explode('#',$tag);
 		$result = array();
 		foreach($this->css as $_tag => $value) {
-			list($_tag, $_subtag) = explode(":",$_tag);
-			list($_tag, $_class) = explode(".",$_tag);
-			list($_tag, $_id) = explode("#",$_tag);
+			list($_tag, $_subtag) = explode(':',$_tag);
+			list($_tag, $_class) = explode('.',$_tag);
+			list($_tag, $_id) = explode('#',$_tag);
 
 			$tagmatch = (strcmp($tag, $_tag) == 0) | (strlen($_tag) == 0);
 			$subtagmatch = (strcmp($subtag, $_subtag) == 0) | (strlen($_subtag) == 0);
@@ -212,7 +212,7 @@ class cssparser {
 		if (preg_match_all( '#([^}]*){([^}]*)}#Sis', $str, $parts)) {
 			foreach($parts[1] as $key => $keystr) {
 				$codestr = trim($parts[2][$key]);
-				$keys = explode(",",trim($keystr));
+				$keys = explode(',',trim($keystr));
 				if(count($keys)) {
 					foreach($keys as $value) {
 						$value = trim($value);
@@ -263,7 +263,7 @@ class cssparser {
      * @return string
      */
     function GetCSS() {
-		$result = "";
+		$result = '';
 		foreach($this->css as $key => $values) {
 			if (strpos($key, '@') === false ) {
 				if (isset($this->prefix) && strpos($key, $this->prefix) === false ) {
@@ -316,7 +316,7 @@ class cssparser {
 
 		$sorceurl = $pathinfo['scheme'].'://'.$pathinfo['host'].'/';
 
-		$sorcepath = explode("/",$pathinfo['path']);
+		$sorcepath = explode('/',$pathinfo['path']);
 		array_shift($sorcepath);
 		array_pop($sorcepath);
 
@@ -332,17 +332,17 @@ class cssparser {
 
 			$turl = $sorceurl;
 			if (count($temp)) {
-				$turl .= implode("/", $temp).'/';
+				$turl .= implode('/', $temp).'/';
 			}
 			$this->regex[] = '#'.$path.'#iSs';
 			$this->replace[] = $turl;
 			array_pop($sorcepath);
 		}
 
-		$this->thisUrl = $sorceurl.implode("/", $sorcepathoriginal).'/';
+		$this->thisUrl = $sorceurl.implode('/', $sorcepathoriginal).'/';
 
 		$this->regex[] = '#\.\/#is';
-		$this->replace[] = $sorceurl.implode("/", $sorcepathoriginal).'/';
+		$this->replace[] = $sorceurl.implode('/', $sorcepathoriginal).'/';
 
 		$this->regex[] = '#url\(([^"\'\)]*)\)#is';
 		$this->replace[] = 'url("$1")';

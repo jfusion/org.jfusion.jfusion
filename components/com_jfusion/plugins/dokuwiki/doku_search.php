@@ -620,7 +620,7 @@ if ( !class_exists('DokuWikiSearch') ) {
             $datetime = '';
             $file = $this->path . 'data' . DS . 'pages' . DS . str_replace(":", DS, $page) . '.txt';
             if (file_exists($file)) {
-                $datetime = date ("Y-m-d h:i:s", filemtime($file));
+                $datetime = date ('Y-m-d h:i:s', filemtime($file));
             }
             return $datetime;
         }

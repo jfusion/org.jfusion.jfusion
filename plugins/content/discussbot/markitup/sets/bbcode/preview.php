@@ -10,7 +10,7 @@ if(!class_exists('BBCode_Parser')) {
 	} elseif (file_exists($joomla_16)) {
 	    require_once $joomla_16;
 	} else {
-	    die("NBBC parser not found!");
+	    die('NBBC parser not found!');
 	}
 }
 

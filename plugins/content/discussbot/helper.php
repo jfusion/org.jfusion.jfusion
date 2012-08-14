@@ -281,7 +281,7 @@ class JFusionDiscussBotHelper {
             }
 
             //make sure there is a default user set
-            if ($this->params->get("default_userid",false)===false) {
+            if ($this->params->get('default_userid',false)===false) {
                 $validity_reason = JText::_('REASON_NO_DEFAULT_USER');
             } else {
                 $JFusionForum =& JFusionFactory::getForum($this->jname);
@@ -344,12 +344,12 @@ class JFusionDiscussBotHelper {
                                          */
                                         $cat = $JCat->get($catid);
 
-                                        $includedCategories = $this->params->get("include_categories");
+                                        $includedCategories = $this->params->get('include_categories');
                                         if (!is_array($includedCategories)) {
                                             $includedCategories = (empty($includedCategories)) ? array() : array($includedCategories);
                                         }
 
-                                        $excludedCategories = $this->params->get("exclude_categories");
+                                        $excludedCategories = $this->params->get('exclude_categories');
                                         if (!is_array($excludedCategories)) {
                                             $excludedCategories = (empty($excludedCategories)) ? array() : array($excludedCategories);
                                         }
@@ -441,22 +441,22 @@ class JFusionDiscussBotHelper {
                                         }
 
                                         //check to see if there are sections/categories that are specifically included/excluded
-                                        $includedSections = $this->params->get("include_sections");
+                                        $includedSections = $this->params->get('include_sections');
                                         if (!is_array($includedSections)) {
                                             $includedSections = (empty($includedSections)) ? array() : array($includedSections);
                                         }
 
-                                        $includedCategories = $this->params->get("include_categories");
+                                        $includedCategories = $this->params->get('include_categories');
                                         if (!is_array($includedCategories)) {
                                             $includedCategories = (empty($includedCategories)) ? array() : array($includedCategories);
                                         }
 
-                                        $excludedSections = $this->params->get("exclude_sections");
+                                        $excludedSections = $this->params->get('exclude_sections');
                                         if (!is_array($excludedSections)) {
                                             $excludedSections = (empty($excludedSections)) ? array() : array($excludedSections);
                                         }
 
-                                        $excludedCategories = $this->params->get("exclude_categories");
+                                        $excludedCategories = $this->params->get('exclude_categories');
                                         if (!is_array($excludedCategories)) {
                                             $excludedCategories = (empty($excludedCategories)) ? array() : array($excludedCategories);
                                         }
@@ -530,12 +530,12 @@ class JFusionDiscussBotHelper {
                                         }
                                     }
                                 } elseif ($this->option == 'com_k2') {
-                                    $includedCategories = $this->params->get("include_k2_categories");
+                                    $includedCategories = $this->params->get('include_k2_categories');
                                     if (!is_array($includedCategories)) {
                                         $includedCategories = (empty($includedCategories)) ? array() : array($includedCategories);
                                     }
 
-                                    $excludedCategories = $this->params->get("exclude_k2_categories");
+                                    $excludedCategories = $this->params->get('exclude_k2_categories');
                                     if (!is_array($excludedCategories)) {
                                         $excludedCategories = (empty($excludedCategories)) ? array() : array($excludedCategories);
                                     }

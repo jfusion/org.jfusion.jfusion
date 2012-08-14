@@ -162,7 +162,7 @@ class JFusionUser_elgg extends JFusionUser {
                 $code = (md5($user->name . $user->username . time() . rand()));
                 $user->code = md5($code);
                 $_SESSION['code'] = $code;
-                if (($persistent)) setcookie("elggperm", $code, (time() + (86400 * 30)), "/");
+                if (($persistent)) setcookie('elggperm', $code, (time() + (86400 * 30)), '/');
                 if (!$user->save() || !trigger_elgg_event('login', 'user', $user)) {
                     unset($_SESSION['username']);
                     unset($_SESSION['name']);
@@ -170,7 +170,7 @@ class JFusionUser_elgg extends JFusionUser {
                     unset($_SESSION['guid']);
                     unset($_SESSION['id']);
                     unset($_SESSION['user']);
-                    setcookie("elggperm", "", (time() - (86400 * 30)), "/");
+                    setcookie('elggperm', '', (time() - (86400 * 30)), '/');
                 } else {
                     // Users privilege has been elevated, so change the session id (help prevent session hijacking)
                     //session_regenerate_id();
@@ -273,10 +273,10 @@ class JFusionUser_elgg extends JFusionUser {
                     $status['debug'][] = JText::_('USER_CREATION');
                     $status['userinfo'] = $this->getUser($userinfo);
                     //notify_user($new_user->guid, $CONFIG->site->guid, elgg_echo('useradd:subject'), sprintf(elgg_echo('useradd:body'), $name, $CONFIG->site->name, $CONFIG->site->url, $username, $password));
-                    //system_message(sprintf(elgg_echo("adduser:ok"),$CONFIG->sitename));
+                    //system_message(sprintf(elgg_echo('adduser:ok'),$CONFIG->sitename));
 
                 } else {
-                    //register_error(elgg_echo("adduser:bad"));
+                    //register_error(elgg_echo('adduser:bad'));
                 }
             } catch(RegistrationException $r) {
                 //register_error($r->getMessage());

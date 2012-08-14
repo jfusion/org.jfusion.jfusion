@@ -123,7 +123,7 @@ class BBCodeLexer {
         $this->verbatim = false;
         $this->token = BBCODE_EOI;
         $this->tag = false;
-        $this->text = "";
+        $this->text = '';
     }
 
     /**
@@ -171,7 +171,7 @@ class BBCodeLexer {
         }
         while (true) {
             if ($this->ptr >= count($this->input)) {
-                $this->text = "";
+                $this->text = '';
                 $this->tag = false;
                 return $this->token = BBCODE_EOI;
             }
@@ -354,7 +354,7 @@ class BBCodeLexer {
                     while ($ptr > $start && $this->Internal_ClassifyPiece($ptr, $pieces) == ' ') $ptr--;
                     while ($ptr > $start && $this->Internal_ClassifyPiece($ptr, $pieces) != ' ') $ptr--;
                 }
-                $value = "";
+                $value = '';
                 for (;$start <= $ptr;$start++) {
                     if ($this->Internal_ClassifyPiece($start, $pieces) == ' ') $value.= " ";
                     else $value.= $this->Internal_StripQuotes($pieces[$start]);
@@ -389,7 +389,7 @@ class BBCodeLexer {
                 } else if ($type != - 1) {
                     $value = $pieces[$ptr++];
                     while (($type = $this->Internal_ClassifyPiece($ptr, $pieces)) != - 1 && $type != ' ') $value.= $pieces[$ptr++];
-                } else $value = "";
+                } else $value = '';
             }
             if (substr($key, 0, 1) != '_') $result[$key] = $value;
             $params[] = Array('key' => $key, 'value' => $value);
@@ -422,7 +422,7 @@ class BBCodeLibrary {
         if ($bbcode->IsValidURL($url)) {
             if ($bbcode->debug) print "ISVALIDURL<br />";
             if ($bbcode->url_targetable !== false && isset($params['target'])) $target = " target=\"" . $bbcode->nbbchtmlspecialchars($params['target']) . "\"";
-            else $target = "";
+            else $target = '';
             if ($bbcode->url_target !== false) if (!($bbcode->url_targetable == 'override' && isset($params['target']))) $target = " target=\"" . $bbcode->nbbchtmlspecialchars($bbcode->url_target) . "\"";
             return '<a href="' . $bbcode->nbbchtmlspecialchars($url) . '" class="bbcode_url"' . $target . '>' . $content . '</a>';
         } else return $bbcode->nbbchtmlspecialchars($params['_tag']) . $content . $bbcode->nbbchtmlspecialchars($params['_endtag']);
@@ -495,7 +495,7 @@ class BBCodeLibrary {
      */
     function DoFont($bbcode, $action, $name, $default, $params, $content) {
         $fonts = explode(",", $default);
-        $result = "";
+        $result = '';
         $special_fonts = Array('serif' => 'serif', 'sans-serif' => 'sans-serif', 'sans serif' => 'sans-serif', 'sansserif' => 'sans-serif', 'sans' => 'sans-serif', 'cursive' => 'cursive', 'fantasy' => 'fantasy', 'monospace' => 'monospace', 'mono' => 'monospace',);
         foreach($fonts as $font) {
             $font = trim($font);
@@ -789,8 +789,8 @@ class BBCode_Parser {
         $this->local_img_dir = $this->GetDefaultLocalImgDir();
         $this->local_img_url = $this->GetDefaultLocalImgURL();
         $this->rule_html = $this->GetDefaultRuleHTML();
-        $this->pre_trim = "";
-        $this->post_trim = "";
+        $this->pre_trim = '';
+        $this->post_trim = '';
         $this->root_class = 'block';
         $this->lost_start_tags = Array();
         $this->start_tags = Array();
@@ -1437,7 +1437,7 @@ $/Dx", $string)) return true;
             if (count($tokens) <= 1) {
                 $output = $this->HTMLEncode($string);
             } else {
-                $output = "";
+                $output = '';
                 $is_a_smiley = false;
                 foreach($tokens as $token) {
                     if (!$is_a_smiley) {
@@ -1573,7 +1573,7 @@ $/Dx", $string)) return true;
                         else if (is_object($value)) {
                             $value = (array)$value;
                             $value = @$value[$index];
-                        } else $value = "";
+                        } else $value = '';
                     }
                 }
                 switch (gettype($value)) {
@@ -1589,7 +1589,7 @@ $/Dx", $string)) return true;
                     case 'string':
                     break;
                     default:
-                        $value = "";
+                        $value = '';
                     break;
                 }
                 if (strlen(@$matches[3])) $flags = array_flip(str_split($matches[3]));
@@ -1722,7 +1722,7 @@ $/Dx", $string)) return true;
      */
     function Internal_DumpStack($array = false, $raw = false) {
         if (!$raw) $string = '<span style="color: #0000CC;">';
-        else $string = "";
+        else $string = '';
         if ($array === false) $array = $this->stack;
         foreach($array as $item) {
             switch (@$item[BBCODE_STACK_TOKEN]) {
@@ -1834,7 +1834,7 @@ $/Dx", $string)) return true;
      */
     function Internal_LimitText($string, $limit) {
         $chunks = preg_split("/([\\x00-\\x20]+)/", $string, -1, PREG_SPLIT_DELIM_CAPTURE);
-        $output = "";
+        $output = '';
         foreach($chunks as $chunk) {
             if (strlen($output) + strlen($chunk) > $limit) break;
             $output.= $chunk;
@@ -1901,7 +1901,7 @@ $/Dx", $string)) return true;
                 if ($this->plain_mode) {
                     if (!isset($tag_rule['plain_content'])) $plain_content = Array('_content');
                     else $plain_content = $tag_rule['plain_content'];
-                    $result = $possible_content = "";
+                    $result = $possible_content = '';
                     foreach($plain_content as $possible_content) {
                         if ($possible_content == '_content' && strlen($contents) > 0) {
                             $result = $contents;
@@ -1915,7 +1915,7 @@ $/Dx", $string)) return true;
                     $start = @$tag_rule['plain_start'];
                     $end = @$tag_rule['plain_end'];
                     if (isset($tag_rule['plain_link'])) {
-                        $link = $possible_content = "";
+                        $link = $possible_content = '';
                         foreach($tag_rule['plain_link'] as $possible_content) {
                             if ($possible_content == '_content' && strlen($contents) > 0) {
                                 $link = $this->UnHTMLEncode(strip_tags($contents));

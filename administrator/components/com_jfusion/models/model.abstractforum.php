@@ -200,8 +200,8 @@ class JFusionForum
 				$contentModified = JFactory::getDate($contentitem->modified)->toUnix();
 
 				$status['debug'][] = 'Thread exists...comparing dates';
-				$status['debug'][] = "Content Modification Date: $contentModified (" . date("Y-m-d H:i:s", $contentModified). ")";
-				$status['debug'][] = "Thread Modification Date: $postModified  (" . date("Y-m-d H:i:s", $postModified). ")";
+				$status['debug'][] = "Content Modification Date: $contentModified (" . date('Y-m-d H:i:s', $contentModified). ")";
+				$status['debug'][] = "Thread Modification Date: $postModified  (" . date('Y-m-d H:i:s', $postModified). ")";
 				$status['debug'][] = "Is $contentModified > $postModified?";
 				if($contentModified > $postModified) {
 					$status['debug'][] = "Yes...attempting to update thread";
@@ -249,7 +249,7 @@ class JFusionForum
 	function getDefaultForum(&$dbparams, &$contentitem)
 	{
 		//set some vars
-		$forumid = $dbparams->get("default_forum");
+		$forumid = $dbparams->get('default_forum');
 		$catid = $contentitem->catid;
 		$option = JRequest::getCmd('option');
 		$isJ16 = JFusionFunction::isJoomlaVersion('1.6');
@@ -259,7 +259,7 @@ class JFusionForum
     		if ($option == 'com_content' && !$isJ16) {
     		    //only J1.5 uses sections
         		$sectionid = $contentitem->sectionid;
-        		$sections = $dbparams->get("pair_sections");
+        		$sections = $dbparams->get('pair_sections');
         		if(!empty($sections)) {
         			$pairs = base64_decode($sections);
         			$sectionPairs = @unserialize($pairs);
@@ -448,11 +448,11 @@ class JFusionForum
 	function prepareFirstPostBody(&$dbparams, $contentitem)
 	{
 		//set what should be posted as the first post
-		$post_body = $dbparams->get("first_post_text",'intro');
+		$post_body = $dbparams->get('first_post_text','intro');
 
-		$text = "";
+		$text = '';
 
-		if($post_body=="intro") {
+		if($post_body=='intro') {
 			//prepare the text for posting
 			$text .= $contentitem->introtext;
 		} elseif($post_body=='full') {
@@ -468,7 +468,7 @@ class JFusionForum
 			if(empty($link_text)) {
 				$link_text = JText::_('DEFAULT_ARTICLE_LINK_TEXT');
 			} else {
-				if($dbparams->get("first_post_link_type") == 'image') {
+				if($dbparams->get('first_post_link_type') == 'image') {
 					$link_text = '<img src="'.$link_text.'">';
 				}
 			}
@@ -709,7 +709,7 @@ JS;
 					$challenge_field = JRequest::getVar('recaptcha_challenge_field', '', 'post', 'string');
 
 					$resp = recaptcha_check_answer ($privatekey,
-						$_SERVER["REMOTE_ADDR"],
+						$_SERVER['REMOTE_ADDR'],
 						$challenge_field,
 						$response_field);
 					if ($resp->is_valid) {
@@ -745,7 +745,7 @@ JS;
      * Creates a post from the quick reply
      *
      * @param object &$params      object with discussion bot parameters
-     * @param array  &$ids         array with forum id ($ids["forumid"], thread id ($ids["threadid"]) and first post id ($ids["postid"])
+     * @param array  &$ids         array with forum id ($ids['forumid'], thread id ($ids['threadid']) and first post id ($ids['postid'])
      * @param object &$contentitem object of content item
      * @param object &$userinfo    object info of the forum user
      *

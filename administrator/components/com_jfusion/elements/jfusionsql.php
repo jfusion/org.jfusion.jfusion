@@ -48,9 +48,9 @@ class JElementjfusionsql extends JElement
     {
     	global $jname;
 
-    	$override_jname = $node->attributes("jname");
+    	$override_jname = $node->attributes('jname');
     	$jname = (!empty($override_jname)) ? $override_jname : $jname;
-		$multiple = ($node->attributes("multiple")) ? " MULTIPLE " : "";
+		$multiple = ($node->attributes('multiple')) ? ' MULTIPLE ' : '';
 		$add_default = $node->attributes('add_default');
 		$param_name = ($multiple) ? $control_name.'['.$name.'][]' : $control_name.'['.$name.']';
 		$key = ($node->attributes('key_field')) ? $node->attributes('key_field') : 'value';

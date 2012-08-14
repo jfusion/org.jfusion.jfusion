@@ -52,7 +52,7 @@ class modjfusionLoginHelper
             $uri = JFactory::getURI();
             $url = $uri->toString();
         }
-        return base64_encode(str_replace("&amp;", "&", $url));
+        return base64_encode(str_replace('&amp;', '&', $url));
     }
 
     /**

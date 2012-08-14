@@ -67,7 +67,7 @@ class JFusionAdmin_elgg extends JFusionAdmin
             $file_handle = fopen($myfile, 'r');
             while (!feof($file_handle)) {
                 $line = fgets($file_handle);
-                $parts = explode("=", $line);
+                $parts = explode('=', $line);
                 if (isset($parts[0]) && isset($parts[1])) {
                     $key = trim(preg_replace('/[^\n]*\$CONFIG->/ ', "", $parts[0]));
                     $value = trim(str_replace(array('"', "'", ";"), "", $parts[1]));

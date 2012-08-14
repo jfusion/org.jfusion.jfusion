@@ -99,7 +99,7 @@ class JFusionDokuWikiHook {
      * @param $param
      */
     function _ACTION_ACT_PREPROCESS(&$event, $param) {
-        ini_set("session.save_handler", "files");
+        ini_set('session.save_handler', 'files');
     }
 
     /**

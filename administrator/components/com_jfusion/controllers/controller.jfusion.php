@@ -647,7 +647,7 @@ class JFusionController extends JController
         if (isset($param['jfusionplugin'])) {
             $title = $param['jfusionplugin'];
         } else if ($multiselect) {
-            $del = "";
+            $del = '';
             if (is_array($param)) {
                 foreach ($param as $key => $value) {
                     if (isset($value['jfusionplugin'])) {

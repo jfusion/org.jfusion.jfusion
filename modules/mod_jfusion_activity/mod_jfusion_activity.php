@@ -116,9 +116,9 @@ if (file_exists($model_file) && file_exists($factory_file) && file_exists($facto
 			$db =& JFusionFactory::getDatabase($jname);
 			
             if ($config['forum_mode'] == 0 || empty($config['selected_forums'])) {
-                $selectedforumssql = "";
+                $selectedforumssql = '';
             } else if (is_array($config['selected_forums'])) {
-                $selectedforumssql = implode(",", $config['selected_forums']);
+                $selectedforumssql = implode(',', $config['selected_forums']);
             } else {
                 $selectedforumssql = $config['selected_forums'];
             }

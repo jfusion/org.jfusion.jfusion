@@ -41,7 +41,7 @@ class JFormFieldJFusionPlugins extends JFormField
         if (!empty($rows)) {
             return JHTML::_('select.genericlist', $rows, $this->name, 'size="1" class="inputbox"', 'id', 'name', $this->value);
         } else {
-            return "<span style='float:left; margin: 5px 0; font-weight: bold;'>" . JText::_('NO_VALID_PLUGINS') . "</span>";
+            return '<span style="float:left; margin: 5px 0; font-weight: bold;">' . JText::_('NO_VALID_PLUGINS') . '</span>';
         }
     }
 }

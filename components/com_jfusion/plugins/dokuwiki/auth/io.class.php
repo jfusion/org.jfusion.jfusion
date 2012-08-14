@@ -272,7 +272,7 @@ class JFusionDokuwiki_Io {
         //create directory
         $ok = @ftp_mkdir($conn, $dir);
         //set permissions
-        @ftp_site($conn, sprintf("CHMOD %04o %s", $conf['dmode'], $dir));
+        @ftp_site($conn, sprintf('CHMOD %04o %s', $conf['dmode'], $dir));
         @ftp_close($conn);
         return $ok;
     }

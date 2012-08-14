@@ -42,9 +42,9 @@ class JFormFieldjfusionsql extends JFormField
     {
     	global $jname;
 
-    	$override_jname =  (string) $this->element["jname"];
+    	$override_jname =  (string) $this->element['jname'];
     	$jname = (!empty($override_jname)) ? $override_jname : $jname;
-		$multiple = ($this->element["multiple"]) ? " MULTIPLE " : "";
+		$multiple = ($this->element['multiple']) ? ' MULTIPLE ' : '';
 		$add_default = $this->element['add_default'];
 		$key = ($this->element['key_field']) ? (string) $this->element['key_field'] : 'value';
 		$val = ($this->element['value_field']) ? (string) $this->element['value_field'] : '';
@@ -79,7 +79,7 @@ class JFormFieldjfusionsql extends JFormField
                     $db->setQuery( $query );
                     $enabled = $jdb->loadResult();
                     if (empty($enabled)) {
-                        return "<span style='float:left; margin: 5px 0; font-weight: bold;'>" . JText::_('K2_NOT_AVAILABLE') . "</span>";
+                        return '<span style="float:left; margin: 5px 0; font-weight: bold;">' . JText::_('K2_NOT_AVAILABLE') . '</span>';
                     }
                     $query = "SELECT id, name as title, parent FROM #__k2_categories WHERE id > 0 AND trash = 0 AND published = 1";
 		    	    $db->setQuery($query);
@@ -105,14 +105,14 @@ class JFormFieldjfusionsql extends JFormField
     					}
     					return JHTML::_('select.genericlist',  $results, $param_name, 'class="inputbox" '.$multiple, $key, $val, $this->value, $this->formControl.'_'.$this->group.'_'.$this->fieldname);
     				} else {
-    					return "<span style='float:left; margin: 5px 0; font-weight: bold;'>" . $db->stderr() . "</span>";
+    					return '<span style="float:left; margin: 5px 0; font-weight: bold;">' . $db->stderr() . '</span>';
     				}
 		    	}
     		} else {
-                return "<span style='float:left; margin: 5px 0; font-weight: bold;'>" . JText::_('SAVE_CONFIG_FIRST') . "</span>";
+                return '<span style="float:left; margin: 5px 0; font-weight: bold;">' . JText::_('SAVE_CONFIG_FIRST') . '</span>';
         	}
         } else {
-            return "<span style='float:left; margin: 5px 0; font-weight: bold;'>Programming error: You must define global \$jname before the JParam object can be rendered</span>";
+            return '<span style="float:left; margin: 5px 0; font-weight: bold;">Programming error: You must define global \$jname before the JParam object can be rendered</span>';
         }
 	}
 

@@ -52,13 +52,13 @@ class JFormFieldForumlist extends JFormField
         //load custom plugin parameter
         $jPluginParam = new JParameter('');
         $jPluginParamRaw = unserialize(base64_decode($parametersInstance->get('JFusionPluginParam')));
-        $output = "<span style='float:left; margin: 5px 0; font-weight: bold;'>";
+        $output = '<span style="float:left; margin: 5px 0; font-weight: bold;">';
         $jname = $jPluginParamRaw['jfusionplugin'];
 
         $control_name = $this->formControl.'['.$this->group.']';
         if (!empty($jname)) {
             if (JFusionFunction::validPlugin($jname)) {
-                $output.= "<b>" . $jname . "</b><br />\n";
+                $output.= '<b>' . $jname . '</b><br />';
                 $JFusionPlugin = JFusionFactory::getForum($jname);
                 if (method_exists($JFusionPlugin, 'getForumList')) {
                     $forumlist = $JFusionPlugin->getForumList();
@@ -72,14 +72,14 @@ class JFormFieldForumlist extends JFormField
                 } else {
                     $output.= $jname . ': ' . JText::_('NO_LIST');
                 }
-                $output.= "<br />\n";
+                $output.= '<br />';
             } else {
-                $output.= $jname . ": " . JText::_('NO_VALID_PLUGINS') . "<br />";
+                $output.= $jname . ': ' . JText::_('NO_VALID_PLUGINS') . '<br />';
             }
         } else {
             $output.= JText::_('NO_PLUGIN_SELECT');
         }
-        $output.= "</span>";
+        $output.= '</span>';
         return $output;
     }
 }

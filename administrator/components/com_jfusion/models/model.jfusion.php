@@ -226,7 +226,7 @@ class JFusionFunction
         } elseif ($view == 'wrapper') {
             //use base64_encode to encode the URL for passing.  But, base64_code uses / which throws off SEF urls.  Thus slashes
             //must be translated into something base64_encode will not generate and something that will not get changed by Joomla or Apache.
-            $url = $base_url . '&amp;wrap=' . str_replace("/", "_slash_", base64_encode($url));
+            $url = $base_url . '&amp;wrap=' . str_replace('/', '_slash_', base64_encode($url));
             $url = JRoute::_($url);
         } elseif ($view == 'frameless') {
             //split the filename from the query

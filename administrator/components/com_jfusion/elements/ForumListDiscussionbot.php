@@ -50,7 +50,7 @@ class JElementForumListDiscussionbot extends JElement
         $params = $db->loadResult();
         $jPluginParam = new JParameter($params);
         $jname = $jPluginParam->get('jname', false);
-        $output = "";
+        $output = '';
         if ($jname !== false) {
             if (JFusionFunction::validPlugin($jname)) {
                 $JFusionPlugin = JFusionFactory::getForum($jname);

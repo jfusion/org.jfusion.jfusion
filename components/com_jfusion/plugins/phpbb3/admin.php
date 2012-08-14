@@ -247,7 +247,7 @@ if (isset($_GET[\'jfile\'])) {
                     $mod_array[$mod->user_id] = $mod->user_id;
                 }
             }
-            $mod_ids = implode(",", $mod_array);
+            $mod_ids = implode(',', $mod_array);
             $redirect_code.= '
 $mod_ids = array(' . $mod_ids . ');
 if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\') && $pfile != \'file.php\' && $jfile != \'file.php\' && $pfile != \'feed.php\' && $jfile != \'feed.php\' && !in_array($current_userid, $mod_ids))';

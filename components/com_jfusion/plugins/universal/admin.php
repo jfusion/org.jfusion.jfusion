@@ -515,7 +515,7 @@ if(!isset($_COOKIE[\'jfusionframeless\']))';
                 header('Content-disposition: attachment; filename=jfusion_'.$this->getJname().'_redirectcode.txt');
                 header('Pragma: no-cache');
                 header('Expires: 0');
-                header ("content-type: text/html");
+                header ('content-type: text/html');
 
                 echo $this->generateRedirectCode($joomla_url, $joomla_itemid);
                 exit();

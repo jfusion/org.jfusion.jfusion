@@ -54,7 +54,7 @@ class JFormFieldForumListSearchPlugin extends JFormField
             $jname = $matches[1];
         }
 
-        $output = "<span style='float:left; margin: 5px 0; font-weight: bold;'>";
+        $output = '<span style="float:left; margin: 5px 0; font-weight: bold;">';
         if (!empty($jname)) {
             if (JFusionFunction::validPlugin($jname)) {
                 if (!isset($jPluginParamRaw[$jname])) {
@@ -75,14 +75,14 @@ class JFormFieldForumListSearchPlugin extends JFormField
                 } else {
                     $output.= $jname . ': ' . JText::_('NO_LIST');
                 }
-                $output.= "<br />\n";
+                $output.= '<br />';
             } else {
-                $output.= $jname . ": " . JText::_('NO_VALID_PLUGINS') . "<br />";
+                $output.= $jname . ': ' . JText::_('NO_VALID_PLUGINS') . '<br />';
             }
         } else {
             $output.= JText::_('NO_PLUGIN_SELECT');
         }
-        $output.= "</span>";
+        $output.= '</span>';
         return $output;
     }
 }

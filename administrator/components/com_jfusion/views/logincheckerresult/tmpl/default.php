@@ -97,7 +97,7 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.debug.p
 		    <br/>
 	        <br/>
 		    <?php
-			$textOutput[JText::_('AUTHENTICATION') . ' ' . JText::_('PLUGIN') . ' ' . JText::_('SUCCESS')] = "";    
+			$textOutput[JText::_('AUTHENTICATION') . ' ' . JText::_('PLUGIN') . ' ' . JText::_('SUCCESS')] = '';
 		    if (!empty($this->response->debug)) {
 		        debug::show($this->response->debug, JText::_('AUTHENTICATION') . ' ' . JText::_('PLUGIN') . ' ' . JText::_('DEBUG'), 1);
 		        $textOutput[JText::_('AUTHENTICATION') . ' ' . JText::_('PLUGIN') . ' ' . JText::_('DEBUG')] = $this->response->debug; 
@@ -128,7 +128,7 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.debug.p
 	                        </td>
 	                    </tr>
 		                <?php
-		    			$textOutput[JText::_('USER') . ' ' . JText::_('PLUGIN') . ' ' . JText::_('SUCCESS')] = "";            
+		    			$textOutput[JText::_('USER') . ' ' . JText::_('PLUGIN') . ' ' . JText::_('SUCCESS')] = '';
 		            } else { ?>
 		                <tr style="height:30px">
 		                   <td width="50px" style="background-color:#f9ded9;">
@@ -143,7 +143,7 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.debug.p
 		                   </td>
 	                    </tr>
 		                <?php
-		                $textOutput[JText::_('USER') . ' ' . JText::_('PLUGIN') . ' ' . JText::_('ERROR')] = "";
+		                $textOutput[JText::_('USER') . ' ' . JText::_('PLUGIN') . ' ' . JText::_('ERROR')] = '';
 		            }
 		       ?></table><?php
 	            if (!empty($auth_result->debug)) {
@@ -169,7 +169,7 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.debug.p
 	            </tr>
 	        </table>
 		    <?php
-			$textOutput[JText::_('AUTHENTICATION') . ' ' . JText::_('PLUGIN') . ' ' . JText::_('ERROR')] = "";    
+			$textOutput[JText::_('AUTHENTICATION') . ' ' . JText::_('PLUGIN') . ' ' . JText::_('ERROR')] = '';
 		    if (!empty($this->response->debug)) {
 		    	?><br/><br/><?php
 		        debug::show($this->response->debug, JText::_('AUTHENTICATION') . ' ' . JText::_('PLUGIN') . ' ' . JText::_('DEBUG'), 1);

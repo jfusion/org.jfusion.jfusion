@@ -27,7 +27,7 @@ class doku_auth_mysql extends doku_auth_basic {
     var $dbrev        = 0;    // database revision
     var $dbsub        = 0;    // database subrevision
     var $cnf          = null;
-    var $defaultgroup = "";
+    var $defaultgroup = '';
 
     /**
      * @var $helper JFusionHelper_dokuwiki
@@ -196,7 +196,7 @@ class doku_auth_mysql extends doku_auth_basic {
      */
     function getUserData($user){
       if($this->_openDB()) {
-        $this->_lockTables("READ");
+        $this->_lockTables('READ');
         $info = $this->_getUserInfo($user);
         $this->_unlockTables();
         $this->_closeDB();
@@ -236,7 +236,7 @@ class doku_auth_mysql extends doku_auth_basic {
         if ($grps == null)
           $grps = array($this->defaultgroup);
 
-        $this->_lockTables("WRITE");
+        $this->_lockTables('WRITE');
 		$pwd = $this->cnf['forwardClearPass'] ? $pwd : $this->cryptPassword($pwd);
         
         $rc = $this->_addUser($user,$pwd,$name,$mail,$grps);
@@ -282,7 +282,7 @@ class doku_auth_mysql extends doku_auth_basic {
         return true;  // nothing to change
 
       if($this->_openDB()) {
-        $this->_lockTables("WRITE");
+        $this->_lockTables('WRITE');
 
         if (($uid = $this->_getUserID($user))) {
           $rc = $this->_updateUserInfo($changes, $uid);
@@ -324,7 +324,7 @@ class doku_auth_mysql extends doku_auth_basic {
 
       if($this->_openDB()) {
         if (is_array($users) && count($users)) {
-          $this->_lockTables("WRITE");
+          $this->_lockTables('WRITE');
           foreach ($users as $user) {
             if ($this->_delUser($user))
               $count++;
@@ -355,7 +355,7 @@ class doku_auth_mysql extends doku_auth_basic {
                 $sql = substr($sql, 6);  /* remove 'SELECT' or 'select' */
                 $sql = "SELECT SQL_CALC_FOUND_ROWS".$sql." LIMIT 1";
                 $this->_queryDB($sql);
-                $result = $this->_queryDB("SELECT FOUND_ROWS()");
+                $result = $this->_queryDB('SELECT FOUND_ROWS()');
                 $rc = $result[0]['FOUND_ROWS()'];
             } else if (($result = $this->_queryDB($sql)))
             $rc = count($result);
@@ -379,7 +379,7 @@ class doku_auth_mysql extends doku_auth_basic {
       $out   = array();
       
       if($this->_openDB()) {
-        $this->_lockTables("READ");
+        $this->_lockTables('READ');
         $sql  = $this->_createSQLFilter($this->cnf['getUsers'], $filter);
         $sql .= " ".$this->cnf['SortOrder']." LIMIT $first, $limit";
         $result = $this->_queryDB($sql);
@@ -409,7 +409,7 @@ class doku_auth_mysql extends doku_auth_basic {
       $rc = false;
 
       if ($this->_openDB()) {
-        $this->_lockTables("WRITE");
+        $this->_lockTables('WRITE');
         $rc  = $this->_addUserToGroup($user, $group);
         $this->_unlockTables();
         $this->_closeDB();
@@ -430,7 +430,7 @@ class doku_auth_mysql extends doku_auth_basic {
       $rc = false;
 
       if ($this->_openDB()) {
-        $this->_lockTables("WRITE");
+        $this->_lockTables('WRITE');
         $uid = $this->_getUserID($user);
         $rc  = $this->_delUserFromGroup($user, $group);
         $this->_unlockTables();
@@ -895,7 +895,7 @@ class doku_auth_mysql extends doku_auth_basic {
      */
     function _unlockTables() {
       if ($this->dbcon) {
-        $this->_modifyDB("UNLOCK TABLES");
+        $this->_modifyDB('UNLOCK TABLES');
         return true;
       }
       return false;
@@ -914,7 +914,7 @@ class doku_auth_mysql extends doku_auth_basic {
      * @author Matthias Grimm <matthiasgrimm@users.sourceforge.net>
      */
     function _createSQLFilter($sql, $filter) {
-      $SQLfilter = "";
+      $SQLfilter = '';
       $cnt = 0;
 
       if ($this->dbcon) {

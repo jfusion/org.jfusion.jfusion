@@ -57,7 +57,7 @@ define("RECAPTCHA_VERIFY_SERVER", "api-verify.recaptcha.net");
  * @return string - encoded request
  */
 function _recaptcha_qsencode($data) {
-    $req = "";
+    $req = '';
     foreach ($data as $key => $value) $req.= $key . '=' . urlencode(stripslashes($value)) . '&';
     // Cut the last '&'
     $req = substr($req, 0, strlen($req) - 1);
@@ -108,7 +108,7 @@ function recaptcha_get_html($pubkey, $error = null, $use_ssl = false) {
     } else {
         $server = RECAPTCHA_API_SERVER;
     }
-    $errorpart = "";
+    $errorpart = '';
     if ($error) {
         $errorpart = "&amp;error=" . $error;
     }

@@ -89,9 +89,9 @@ class JFusionPublic_magento extends JFusionPublic {
             $status['debug'] = JText::_('NO_STORE_LANGUAGE_LIST');
         } else {
             // we define and set the cookie 'store'
-            $langs = explode(";", $language_store_view);
+            $langs = explode(';', $language_store_view);
             foreach ($langs as $lang) {
-                $codes = explode("=", $lang);
+                $codes = explode('=', $lang);
                 $joomla_code = $codes[0];
                 $store_code = $codes[1];
                 if ($joomla_code == $JLang->getTag()) {

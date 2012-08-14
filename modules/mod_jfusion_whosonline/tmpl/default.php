@@ -26,7 +26,7 @@ foreach($outputs as $output) {
 	} elseif(!empty($output->custom_output)) {
 		echo $output->custom_output;
 	}else {
-		if($config["showmode"] != "1") {
+		if($config['showmode'] != "1") {
 			echo JText::_('WE_HAVE').'&nbsp;';
 			echo ($output->num_guests==0 || $output->num_guests>1) ? JText::sprintf('GUESTS',$output->num_guests) : JText::sprintf('GUEST','1');
 			echo '&nbsp;' . JText::_('AND') . '&nbsp;';
@@ -36,7 +36,7 @@ foreach($outputs as $output) {
 
 		if(!is_array($output->online_users) && $config['showmode'] == "2") {
 			echo JText::_('NO_USERS_ONLINE');
-		} elseif (!empty($config["showmode"])) {
+		} elseif (!empty($config['showmode'])) {
 			 echo "<ul>";
 
 			 foreach($output->online_users as $u) {

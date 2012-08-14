@@ -153,7 +153,7 @@ class debug {
      * @return string
      */
     private static function getToggleScript() {
-        $script = "";
+        $script = '';
         if (debug::$toggleScriptInited == false && debug::$toggleFunctionName != "") {
             $toggleFunctionName = debug::$toggleFunctionName;
             $script = '<script type="text/javascript">';
@@ -182,7 +182,7 @@ JS;
      *    @return string style-code if needed
      */
     private static function setStylesForScheme($schema) {
-        $style = "";
+        $style = '';
         if (count(debug::$colorScheme) == 0) debug::initColorScheme();
         if (!isset(debug::$colorSchemeInited[$schema])) {
 
@@ -237,8 +237,8 @@ CSS;
      ** *************************
      */
     public static function get($arr, $start = true, $height = false, $schema = 0) {
-        $str = "";
-        $name = "";
+        $str = '';
+        $name = '';
         if (is_numeric($start)) { // All Arguments "move" 1 to the left
             $height = $start;
             $start = true;
@@ -251,7 +251,7 @@ CSS;
             if ($start == true) { // the "root" run
                 $neededScriptCode = debug::getToggleScript();
                 $neededStyleCode = debug::setStylesForScheme($schema);
-                $styling = "";
+                $styling = '';
                 if (is_numeric($height)) $styling = "style='max-height:{$height}px; overflow:auto;'";
                 $str = $neededScriptCode . "<div class='debug_$schema' $styling>\n" . $neededStyleCode;
             }
@@ -321,7 +321,7 @@ CSS;
      ** *************************
      */
     public static function getText($arr, $start = true) {
-        $str = "";
+        $str = '';
         if (is_string($start)) {
             $str.= $start." - &darr;\n";
         }
@@ -633,11 +633,11 @@ class trans {
         if (is_double($phpValue)) $jsCode = $phpValue;
         if (!$jsCode && $jsCode !== false) $jsCode = '0';
         if (is_bool($phpValue)) {
-            if ($phpValue) $jsCode = "true";
-            else $jsCode = "false";
+            if ($phpValue) $jsCode = 'true';
+            else $jsCode = 'false';
         }
         if (is_string($phpValue)) $jsCode = '"' . str_replace(trans::$jsSpecialChars, trans::$jsReplaceTo, $phpValue) . '"';
-        if (is_null($phpValue)) $jsCode = "null";
+        if (is_null($phpValue)) $jsCode = 'null';
         if (is_array($phpValue)) {
             $elems = array();
             $numeric = arrayfunc::is_numeric_array($phpValue);
@@ -647,10 +647,10 @@ class trans {
                 $part[] = trans::phpValue2js($seg);
                 $elems[] = join(':', $part);
             }
-            if ($numeric) $jsCode = "[" . join(",", $elems) . "]";
-            else $jsCode = "{" . join(",", $elems) . "}";
+            if ($numeric) $jsCode = '[' . join(',', $elems) . ']';
+            else $jsCode = '{' . join(',', $elems) . '}';
         }
-        if ($jsCode == "") $jsCode = '"Type not supported yet"';
+        if ($jsCode == '') $jsCode = '"Type not supported yet"';
         return $jsCode;
         /*
 
@@ -684,7 +684,7 @@ class trans {
      *    @return string, the PHP-Code
      */
     public static function php2phpCode($phpVarName, $phpvar, $firstDimSpacer = "") {
-        $phpCode = "";
+        $phpCode = '';
         $pre = '$';
         if (is_numeric($phpvar)) $phpCode = "$pre$phpVarName = $phpvar;\n";
         if (is_bool($phpvar)) {
@@ -864,7 +864,7 @@ class trans {
      *    @return string the created string
      */
     function mailHeaderFromHash($header) {
-        $headers = "";
+        $headers = '';
         foreach ($header as $arg => $value) {
             $headers.= "$arg: $value\r\n";
         }
@@ -926,7 +926,7 @@ class trans {
             $parentList = array($data);
             foreach ($vals as $value) {
                 $parent = & $parentList[count($parentList) - 1];
-                if ($value['value'] == null) $value['value'] = "";
+                if ($value['value'] == null) $value['value'] = '';
                 switch ($value['type']) {
                     case 'open':
                         $node = array('tag' => $value['tag'], 'attributes' => $value['attributes'], 'value' => $value['value'], 'childs' => array());

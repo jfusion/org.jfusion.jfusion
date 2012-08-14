@@ -121,12 +121,12 @@ class JFusionForum_vbulletin extends JFusionForum
 		$text = $this->prepareFirstPostBody($dbparams, $contentitem);
 
         $apidata = array(
-        	"userid" => $userid,
-            "forumid" => $forumid,
-            "timestamp" => $timestamp,
-            "ipaddress" => $_SERVER["REMOTE_ADDR"],
-        	"title" => $title,
-            "text" => $text
+            'userid' => $userid,
+            'forumid' => $forumid,
+            'timestamp' => $timestamp,
+            'ipaddress' => $_SERVER['REMOTE_ADDR'],
+        	'title' => $title,
+            'text' => $text
         );
         $response = $this->helper->apiCall('createThread', $apidata);
 
@@ -200,7 +200,7 @@ class JFusionForum_vbulletin extends JFusionForum
                 $db->setQuery($query);
                 $result = $db->loadResult();
                 if (!empty($result)) {
-                    $status["error"][] = JText::_('USERNAME_IN_USE');
+                    $status['error'][] = JText::_('USERNAME_IN_USE');
                     return $status;
                 }
 
@@ -210,7 +210,7 @@ class JFusionForum_vbulletin extends JFusionForum
                     $db->setQuery($query);
                     $result = $db->loadResult();
                     if (!empty($result)) {
-                        $status["error"][] = JText::_('USERNAME_IN_USE');
+                        $status['error'][] = JText::_('USERNAME_IN_USE');
                         return $status;
                     }
                 }
@@ -230,17 +230,17 @@ class JFusionForum_vbulletin extends JFusionForum
             $public->prepareText($title);
 
 	        $apidata = array(
-            	"userinfo" => $this->helper->convertUserData($userinfo),
-                "ids" => $ids,
-	            "ipaddress" => $_SERVER["REMOTE_ADDR"],
-            	"title" => $title,
-                "text" => $text,
-	            "post_approved" => $post_approved
+                'userinfo' => $this->helper->convertUserData($userinfo),
+                'ids' => $ids,
+	            'ipaddress' => $_SERVER['REMOTE_ADDR'],
+            	'title' => $title,
+                'text' => $text,
+	            'post_approved' => $post_approved
             );
             $response = $this->helper->apiCall('createPost', $apidata);
 
             if (!empty($response['errors'])) {
-                $status["error"] = array_merge($status["error"], $response['errors']);
+                $status['error'] = array_merge($status['error'], $response['errors']);
             } else {
                 $id = $response['new_id'];;
 
@@ -281,7 +281,7 @@ class JFusionForum_vbulletin extends JFusionForum
         $response = $this->helper->apiCall('updateThread', $apidata);
 
         if (!empty($response['errors'])) {
-            $status["error"] = array_merge($status["error"], $response['errors']);
+            $status['error'] = array_merge($status['error'], $response['errors']);
         }
 
         if (!empty($response['debug'])) {
@@ -339,7 +339,7 @@ class JFusionForum_vbulletin extends JFusionForum
 		);
 
 		foreach($options as $name => $val) {
-			$foruminfo["$name"] = (($foruminfo['options'] & $val) ? 1 : 0);
+			$foruminfo[$name] = (($foruminfo['options'] & $val) ? 1 : 0);
 		}
 
 		$foruminfo['depth'] = substr_count($foruminfo['parentlist'], ',') - 1;
@@ -357,7 +357,7 @@ class JFusionForum_vbulletin extends JFusionForum
         $threadid = $existingthread->threadid;
         $postid = $existingthread->postid;
         //set the query
-        $sort = $dbparams->get("sort_posts");
+        $sort = $dbparams->get('sort_posts');
         $where = "WHERE a.threadid = {$threadid} AND a.postid != {$postid} AND a.visible = 1";
         $name_field = $this->params->get('name_field');
         if (empty($name_field)) {

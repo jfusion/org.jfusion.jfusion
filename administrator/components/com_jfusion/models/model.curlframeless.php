@@ -74,7 +74,7 @@ class JFusionCurlFrameless{
 			$curlframeless->cookiearr[$cookiename] = trim(implode('=', $cookie));
 		}
 
-		$cookie = "";
+		$cookie = '';
 		if(!empty($curlframeless->cookiearr) && (trim($string) == "")){
 			foreach ($curlframeless->cookiearr as $key=>$value){
 				$cookie .= "$key=$value; ";
@@ -183,7 +183,7 @@ class JFusionCurlFrameless{
 		}
 
 		curl_setopt($curlframeless->ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
-		$ref = isset($_SERVER["HTTP_REFERER"])?$_SERVER["HTTP_REFERER"]:"";
+		$ref = isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:'';
 		curl_setopt($curlframeless->ch, CURLOPT_REFERER, $ref);
 
 		$headers[] = 'X-Forwarded-For: '.$_SERVER['REMOTE_ADDR'];

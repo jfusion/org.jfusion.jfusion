@@ -67,7 +67,7 @@ class JFusionUser_joomla_ext extends JFusionUser {
         $query = 'DELETE FROM #__users WHERE id = ' . (int)$userid;
         $db->setQuery($query);
         if (!$db->query()) {
-            $status["error"][] = JText::_('ERROR_DELETE') . ' ' . $username . ' ' . $db->stderr();
+            $status['error'][] = JText::_('ERROR_DELETE') . ' ' . $username . ' ' . $db->stderr();
         } else {
             if (JFusionFunction::isJoomlaVersion('1.6',$this->getJname())) {
                 $query = 'DELETE FROM #__user_profiles WHERE user_id = ' . (int)$userid;
@@ -84,12 +84,12 @@ class JFusionUser_joomla_ext extends JFusionUser {
                     $query = 'DELETE FROM #__core_acl_aro WHERE value = ' . (int)$userid;
                     $db->setQuery($query);
                     if (!$db->query()) {
-                        $status["error"][] = JText::_('ERROR_DELETE') . ' ' . $username . ' ' . $db->stderr();
+                        $status['error'][] = JText::_('ERROR_DELETE') . ' ' . $username . ' ' . $db->stderr();
                     }
                     $query = 'DELETE FROM #__core_acl_groups_aro_map WHERE aro_id = ' . (int)$aroid;
                     $db->setQuery($query);
                     if (!$db->query()) {
-                        $status["error"][] = JText::_('ERROR_DELETE') . ' ' . $username . ' ' . $db->stderr();
+                        $status['error'][] = JText::_('ERROR_DELETE') . ' ' . $username . ' ' . $db->stderr();
                     }
                 }
             }

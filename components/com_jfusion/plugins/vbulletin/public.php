@@ -339,7 +339,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
                         global $$g;
                     }
                     if (defined('_JFUSION_DEBUG')) {
-                        $_SESSION["jfvbdebug"] = array();
+                        $_SESSION['jfvbdebug'] = array();
                     }
                     try {
                         include_once ($index_file);
@@ -884,7 +884,7 @@ JS;
         $replacement = 'href="' . $url . '"' . $extra . '>';
         if (defined('_JFUSION_DEBUG')) {
             $debug['parsed'] = $replacement;
-            $_SESSION["jfvbdebug"][] = $debug;
+            $_SESSION['jfvbdebug'][] = $debug;
         }
         return $replacement;
     }
@@ -928,7 +928,7 @@ JS;
         $url = str_replace('&amp;', '&', $url);
         if (defined('_JFUSION_DEBUG')) {
             $debug['parsed'] = "window.location='$url'";;
-            $_SESSION["jfvbdebug"][] = $debug;
+            $_SESSION['jfvbdebug'][] = $debug;
         }
         return "window.location='$url'";
     }
@@ -974,7 +974,7 @@ JS;
         //remove PHP comments
         $css = preg_replace('#\/\*(.*?)\*\/#mSs', '', $css);
         //strip newlines
-        $css = str_replace("\r\n", "", $css);
+        $css = str_replace("\r\n", '', $css);
         //break up the CSS into styles
         $elements = explode('}', $css);
         //unset the last one as it is empty
@@ -983,9 +983,9 @@ JS;
         //rewrite css
         foreach ($elements as $k => $v) {
             //breakup each element into selectors and properties
-            $element = explode("{", $v);
+            $element = explode('{', $v);
             //breakup the selectors
-            $selectors = explode(",", $element[0]);
+            $selectors = explode(',', $element[0]);
             foreach ($selectors as $sk => $sv) {
                 //add vb framless container
                 if (strpos($sv, '<!--') !== false) {
@@ -1015,7 +1015,7 @@ JS;
         $css = "<style type=\"text/css\" id=\"vbulletin{$matches[1]}\">\n" . implode("\n", $imports) . "\n" . implode("\n", $elements) . "\n</style>";
         if (defined('_JFUSION_DEBUG')) {
             $debug['parsed'] = $css;
-            $_SESSION["jfvbdebug"] = $debug;
+            $_SESSION['jfvbdebug'] = $debug;
         }
         return $css;
     }

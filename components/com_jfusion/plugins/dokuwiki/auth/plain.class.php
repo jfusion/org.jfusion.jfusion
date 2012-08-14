@@ -314,9 +314,9 @@ class doku_auth_plain extends doku_auth_basic {
             $line = preg_replace('/#.*$/', '', $line); //ignore comments
             $line = trim($line);
             if (empty($line)) continue;
-            $row = explode(":", $line, 5);
+            $row = explode(':', $line, 5);
             if (!empty($row[4])) {
-                $groups = explode(",", $row[4]);
+                $groups = explode(',', $row[4]);
                 $users[$row[0]]['username'] = $row[0];
                 $users[$row[0]]['pass'] = $row[1];
                 $users[$row[0]]['name'] = urldecode($row[2]);

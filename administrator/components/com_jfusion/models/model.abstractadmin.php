@@ -347,7 +347,7 @@ class JFusionAdmin
             //prepare the advanced options
             $JFusionMaster = JFusionFactory::getAdmin($master->name);
             $master_usergroups = $JFusionMaster->getUsergroupList();
-            $advanced_usergroup = "<table class=\"usergroups\">";
+            $advanced_usergroup = '<table class="usergroups">';
             if ($advanced == 1) {
                 foreach ($master_usergroups as $master_usergroup) {
                     $select_value = (!isset($value[$master_usergroup->id])) ? '' : $value[$master_usergroup->id];
@@ -526,7 +526,7 @@ JS;
                 $advanced_usergroup.= '</tr>';
             }
 
-            $advanced_usergroup.= "</table>";
+            $advanced_usergroup.= '</table>';
             //escape single quotes to prevent JS errors
             $advanced_usergroup = str_replace("'", "\'", $advanced_usergroup);
         } else {
@@ -999,7 +999,7 @@ JS;
                 $info->addAttribute('pluginversion', 'UNKNOWN');
             }
 
-            $info->addAttribute('date', date("F j, Y, H:i:s"));
+            $info->addAttribute('date', date('F j, Y, H:i:s'));
 
             $info->addAttribute  ('jname', $jname);
 

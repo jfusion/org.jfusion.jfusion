@@ -110,12 +110,12 @@ function applyAll() {
 			    	<?php echo $record->action; ?>
 			    </td>
 			    <td>
-			    	<?php echo date("d/m/y : H:i:s", $record->time_start); ?>
+			    	<?php echo date('d/m/y : H:i:s', $record->time_start); ?>
 			    </td>
 			    <?php
 			    if ($record->time_end) { ?>
 			        <td>
-			        	<?php echo date("d/m/y : H:i:s", $record->time_end); ?>
+			        	<?php echo date('d/m/y : H:i:s', $record->time_end); ?>
 			        </td>
 			        <td>
 			        	<?php echo $this->getFormattedTimediff($record->time_start, $record->time_end); ?>

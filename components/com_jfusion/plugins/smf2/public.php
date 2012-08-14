@@ -892,7 +892,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 	 **/
 	function getOnlineUserQuery($limit, $usergroups = array())
 	{
-		$usergroup_query = "";
+		$usergroup_query = '';
 		if(!empty($usergroups)) {
 			if(is_array($usergroups)) {
 				$usergroups_string = implode(',',$usergroups);
@@ -933,7 +933,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 	 */
 	function getNumberOnlineMembers($usergroups = array(), $total = 1)
 	{
-		$usergroup_query = "";
+		$usergroup_query = '';
 		if(!empty($usergroups) && empty($total)) {
 			if(is_array($usergroups)) {
                 $usergroups_string = implode(',',$usergroups);

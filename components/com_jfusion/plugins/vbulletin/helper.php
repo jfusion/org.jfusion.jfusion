@@ -87,7 +87,7 @@ class JFusionHelper_vbulletin
             curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/x-www-form-urlencoded", "Content-Length: " . strlen($post_data)));
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded', 'Content-Length: ' . strlen($post_data)));
             curl_setopt($ch, CURLOPT_HEADER , 0);
             curl_setopt($ch, CURLOPT_VERBOSE, 1);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
@@ -192,13 +192,13 @@ class JFusionHelper_vbulletin
                 require_once CWD . '/includes/init.php';
                 $this->vb_data  = $vbulletin;
                 //force into global scope
-                $GLOBALS["vbulletin"] = $vbulletin;
-                $vbulletin->db->query_first("USE `" . $this->params->get('database_name') . "`");
+                $GLOBALS['vbulletin'] = $vbulletin;
+                $vbulletin->db->query_first('USE `' . $this->params->get('database_name') . '`');
                 //fixed do not remove ascii blankspace because we are in joomla everything is utf8
                 $vbulletin->options['blankasciistrip'] = 'u8205 u8204 u8237 u8238';
                 // set conection to use utf8
                 $vbulletin->db->query_first("SET names '".$this->params->get('database_charset', 'utf8')."'");
-                $GLOBALS["db"] = $vbulletin->db;
+                $GLOBALS['db'] = $vbulletin->db;
             } else {
                 JError::raiseWarning(500, JText::_('SOURCE_PATH_NOT_FOUND'));
                 $return = false;
@@ -211,7 +211,7 @@ class JFusionHelper_vbulletin
 				 */
                 $return = false;
         	} else {
-                $this->vb_data->db->query_first("USE `" . $this->params->get('database_name') . "`");
+                $this->vb_data->db->query_first('USE `' . $this->params->get('database_name') . '`');
                 //fixed do not remove ascii blankspace because we are in joomla everything is utf8
                 $this->vb_data->db->options['blankasciistrip'] = 'u8205 u8204 u8237 u8238';
                 // set conection to use utf8
@@ -315,7 +315,7 @@ class JFusionHelper_vbulletin
     function getVbURL($url, $type = false)
     {
         $params = JFusionFactory::getParams($this->getJname());
-        $allow_sef = $params->get("allow_sef", 1);
+        $allow_sef = $params->get('allow_sef', 1);
         $vbversion = $this->getVersion();
         if (!empty($allow_sef) && (int) substr($vbversion, 0, 1) > 3) {
             $db = JFusionFactory::getDatabase($this->getJname());

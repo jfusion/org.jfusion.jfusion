@@ -88,7 +88,7 @@ class JFusionUser_magento extends JFusionUser {
         static $eav_entity_types;
         if (!isset($eav_entity_types)) {
             $db = JFusionFactory::getDataBase($this->getJname());
-            $db->setQuery("SELECT entity_type_id,entity_type_code FROM #__eav_entity_type");
+            $db->setQuery('SELECT entity_type_id,entity_type_code FROM #__eav_entity_type');
             if ($db->getErrorNum() != 0) {
                 $result = false;
                 return $result;
@@ -212,7 +212,7 @@ class JFusionUser_magento extends JFusionUser {
         $instance = null;
         if ($entity) {
             // Return a Magento customer array
-            $magento_user = $this->fillMagentoDataObject("customer", $entity, 1);
+            $magento_user = $this->fillMagentoDataObject('customer', $entity, 1);
             if ($magento_user) {
                 // get the static data also
                 $query = 'SELECT email, group_id, created_at, updated_at, is_active FROM #__customer_entity ' . 'WHERE entity_id = ' . $db->Quote($entity);
@@ -222,7 +222,7 @@ class JFusionUser_magento extends JFusionUser {
                     $instance = new stdClass;
                     $instance->group_id = $result->group_id;
                     if ($instance->group_id == 0) {
-                        $instance->group_name = "Default Usergroup";
+                        $instance->group_name = 'Default Usergroup';
                     } else {
                         $query = 'SELECT customer_group_code from #__customer_group WHERE customer_group_id = ' . $result->group_id;
                         $db->setQuery($query);
@@ -449,9 +449,9 @@ class JFusionUser_magento extends JFusionUser {
             $db = JFusionFactory::getDataBase($this->getJname());
             //prepare the variables
             // first get some default stuff from Magento
-            //        $db->setQuery("SELECT default_group_id FROM #__core_website WHERE is_default = 1");
+            //        $db->setQuery('SELECT default_group_id FROM #__core_website WHERE is_default = 1');
             //        $default_group_id = (int) $db->loadResult();
-            $db->setQuery("SELECT default_store_id FROM #__core_store_group WHERE group_id =" . (int)$usergroup);
+            $db->setQuery('SELECT default_store_id FROM #__core_store_group WHERE group_id =' . (int)$usergroup);
             $default_store_id = (int)$db->loadResult();
             $db->setQuery('SELECT name, website_id FROM #__core_store WHERE store_id =' . (int)$default_store_id);
             $result = $db->loadObject();

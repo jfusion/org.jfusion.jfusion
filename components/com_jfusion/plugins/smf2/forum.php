@@ -268,7 +268,7 @@ class JFusionForum_smf2 extends JFusionForum
             $post_row->subject			= $subject;
             $post_row->poster_name		= $smfUser->member_name;
             $post_row->poster_email		= $smfUser->email_address;
-            $post_row->poster_ip			= $_SERVER["REMOTE_ADDR"];
+            $post_row->poster_ip			= $_SERVER['REMOTE_ADDR'];
             $post_row->smileys_enabled	= 1;
             $post_row->modified_time		= 0;
             $post_row->modified_name		= '';
@@ -454,14 +454,14 @@ HTML;
 				define('OVERRIDE_IDENTIFIER',3);
 				$existinguser = $JFusionUser->getUser($userinfo->username);
 				if(!empty($existinguser)) {
-					$status["error"][] = JText::_('USERNAME_IN_USE');
+					$status['error'][] = JText::_('USERNAME_IN_USE');
 					return $status;
 				}
 
 				//check for email
 				$existinguser = $JFusionUser->getUser($userinfo->email);
 				if(!empty($existinguser)) {
-					$status["error"][] = JText::_('EMAIL_IN_USE');
+					$status['error'][] = JText::_('EMAIL_IN_USE');
 					return $status;
 				}
 			}
@@ -594,7 +594,7 @@ HTML;
 		$postid =& $existingthread->postid;
 
 		//set the query
-		$sort = $dbparams->get("sort_posts");
+		$sort = $dbparams->get('sort_posts');
 		$where = "WHERE id_topic = {$threadid} AND id_msg != {$postid} AND approved = 1";
         $query = "(SELECT a.id_topic , a.id_msg, a.poster_name, b.real_name, a.id_member, 0 AS guest, a.subject, a.poster_time, a.body, a.poster_time AS order_by_date FROM `#__messages` as a INNER JOIN #__members as b ON a.id_member = b.id_member $where AND a.id_member != 0)";
         $query.= " UNION ";

@@ -535,7 +535,7 @@ class JFusionPluginInstaller extends JObject
             } else {
                 $this->manifest = $manifest;
                 $childrens = array();
-                $path = "";
+                $path = '';
 
                 $languages = $this->getElementByPath($this->manifest,'languages');
                 $adminLanguages = $this->getElementByPath($this->manifest,'administration/languages');

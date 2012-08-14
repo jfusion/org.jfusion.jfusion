@@ -109,7 +109,7 @@ class jfusionViewversioncheck extends JView
                         $joomla->name = 'Joomla';
 
                         //remove any letters from the version
-                        $joomla_versionclean = preg_replace("[A-Za-z !]", "", $joomla_version);
+                        $joomla_versionclean = preg_replace('[A-Za-z !]', '', $joomla_version);
                         if (version_compare($joomla_versionclean, $joomla->version) == - 1) {
                             $joomla->class = 'bad1';
                             $server_compatible = false;

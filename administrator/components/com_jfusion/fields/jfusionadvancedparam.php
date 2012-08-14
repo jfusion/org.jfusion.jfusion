@@ -45,11 +45,11 @@ class JFormFieldJFusionAdvancedParam extends JFormField
 
         $doc = JFactory::getDocument();
         $fieldName = $this->name;
-        $feature = $this->element["feature"];
+        $feature = $this->element['feature'];
         if (!$feature) {
             $feature = 'any';
         }
-        $multiselect = $this->element["multiselect"];
+        $multiselect = $this->element['multiselect'];
 
         if (!defined('JFUSION_ADVANCEDPARAM_JS_LOADED')) {
             define('JFUSION_ADVANCEDPARAM_JS_LOADED', 1);
@@ -84,10 +84,10 @@ JS;
         //Create Link
         $link = 'index.php?option=com_jfusion&amp;task=advancedparam&amp;tmpl=component&amp;elNum='.$elNum.'&amp;params=' . $this->value;
         if (!is_null($feature)) {
-            $link.= "&amp;feature=" . $feature;
+            $link.= '&amp;feature=' . $feature;
         }
         if (!is_null($multiselect)) {
-            $link.= "&amp;multiselect=1";
+            $link.= '&amp;multiselect=1';
         }
         //Get JParameter from given string
         if (empty($this->value)) {
@@ -99,14 +99,14 @@ JS;
                 $params = array();
             }
         }
-        $title = "";
-        if (isset($params["jfusionplugin"])) {
-            $title = $params["jfusionplugin"];
+        $title = '';
+        if (isset($params['jfusionplugin'])) {
+            $title = $params['jfusionplugin'];
         } else if ($multiselect) {
-            $del = "";
+            $del = '';
             foreach ($params as $key => $param) {
-                if (isset($param["jfusionplugin"])) {
-                    $title.= $del . $param["jfusionplugin"];
+                if (isset($param['jfusionplugin'])) {
+                    $title.= $del . $param['jfusionplugin'];
                     $del = "; ";
                 }
             }
@@ -114,11 +114,24 @@ JS;
         if (empty($title)) {
 			$title = JText::_('NO_PLUGIN_SELECTED');
         }
+
+        $select_plugin = JText::_('SELECT_PLUGIN');
+        $select = JText::_('SELECT');
+
         //Replace new Lines with the placeholder \n
         JHTML::_('behavior.modal', 'a.modal');
-        $html = "\n<div style=\"float: left;\"><input style=\"background: #ffffff;\" type=\"text\" id=\"plugin_name{$elNum}\" value=\"" . $title . "\" disabled=\"disabled\" /></div>";
-        $html.= "<div class=\"button2-left\"><div class=\"blank\"><a id=\"plugin_link{$elNum}\" class=\"modal\" title=\"" . JText::_('SELECT_PLUGIN') . "\"  href=\"$link\" rel=\"{handler: 'iframe', size: {x: window.getSize().x-80, y: window.getSize().y-80}}\">" . JText::_('SELECT') . "</a></div></div>\n";
-        $html.= "\n<input type=\"hidden\" id=\"plugin_id{$elNum}\" name=\"$fieldName\" value=\"$this->value\" />";
+
+        $html =<<<HTML
+        <div style="float: left;">
+            <input style="background: #ffffff;" type="text" id="plugin_name{$elNum}" value="{$title}" disabled="disabled" />
+        </div>
+        <div class="button2-left">
+            <div class="blank">
+                <a id="plugin_link{$elNum}" class="modal" title="{$select_plugin}"  href="{$link}" rel="{handler: 'iframe', size: {x: window.getSize().x-80, y: window.getSize().y-80}}">{$select}</a>
+            </div>
+        </div>
+        <input type="hidden" id="plugin_id{$elNum}" name="{$fieldName}" value="{$this->value}" />
+HTML;
 
         $elNum++;
         return $html;

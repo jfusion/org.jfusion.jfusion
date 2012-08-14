@@ -57,7 +57,7 @@ class JElementForumlist extends JElement
         //load custom plugin parameter
         $jPluginParam = new JParameter('');
         $jPluginParamRaw = unserialize(base64_decode($parametersInstance->get('JFusionPluginParam')));
-        $output = "";
+        $output = '';
         $jname = $jPluginParamRaw['jfusionplugin'];
         if (!empty($jname)) {
             if (JFusionFunction::validPlugin($jname)) {

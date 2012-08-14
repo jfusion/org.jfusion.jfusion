@@ -272,7 +272,7 @@ class auth_plugin_jfusion extends auth_plugin_base {
 			$params_joomlafullpath = $params_joomlafullpath."/";
 		}
 
-		define("_JEXEC","Yeah_I_know");
+		define('_JEXEC','Yeah_I_know');
 		require_once($params_joomlafullpath.'administrator/components/com_jfusion/models/model.curl.php');
 		$LoginLogout = new DualLogin();
 		$curl_options['post_url']          = $params_joomlabaseurl.$params_logoutpath;
@@ -409,9 +409,9 @@ class auth_plugin_jfusion extends auth_plugin_base {
 
 		if ($params_joomlaactive != '0')
 		{
-            define("_JEXEC","Yeah_I_know");
+            define('_JEXEC','Yeah_I_know');
             require_once($params_joomlafullpath.'administrator/components/com_jfusion/models/model.curl.php');
-            //    require_once("DualLoginHelper.php");
+            //    require_once('DualLoginHelper.php');
             $LoginLogout = new DualLogin();
             $curl_options['username']          = $username;
             $curl_options['password']          = $password;

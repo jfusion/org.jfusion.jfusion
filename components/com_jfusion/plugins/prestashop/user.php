@@ -92,7 +92,7 @@ class JFusionUser_prestashop extends JFusionUser {
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'UPDATE #__customer SET deleted ="1" WHERE id_customer =' . $db->Quote($identifier);
         $db->setQuery($query);
-		$status["debug"][] = "Deleted user";
+		$status['debug'][] = "Deleted user";
 		return $status;
     }
 
@@ -113,11 +113,11 @@ class JFusionUser_prestashop extends JFusionUser {
 		require($params->get('source_path') . DS . "classes" . DS . "Db.php");
 		require($params->get('source_path') . DS . "classes" . DS . "SubDomain.php");
         $cookie = new cookie('ps');
-		$status["error"][] = "Random debugging text";
+		$status['error'][] = "Random debugging text";
 	    if(!$cookie->mylogout()) {
-            $status["error"][] = "Error Could not delete session, doesn't exist";
+            $status['error'][] = "Error Could not delete session, doesn't exist";
 		} else {
-            $status["debug"][] = "Deleted session and session data";
+            $status['debug'][] = "Deleted session and session data";
 		}
 		return $status;
     }
@@ -167,12 +167,12 @@ class JFusionUser_prestashop extends JFusionUser {
                 $status['error'][] = 'authentication failed';
 			} else {
 				if(md5($params->get('cookie_key') . $passwd) === $result) {
-                    $cookie->__set("id_customer", $userinfo->userid);
-                    $cookie->__set("customer_lastname", $userinfo->lastname);
-                    $cookie->__set("customer_firstname", $userinfo->firstname);
-                    $cookie->__set("logged", 1);
-                    $cookie->__set("passwd", md5($params->get('cookie_key') . $passwd));
-                    $cookie->__set("email", $email);
+                    $cookie->__set('id_customer', $userinfo->userid);
+                    $cookie->__set('customer_lastname', $userinfo->lastname);
+                    $cookie->__set('customer_firstname', $userinfo->firstname);
+                    $cookie->__set('logged', 1);
+                    $cookie->__set('passwd', md5($params->get('cookie_key') . $passwd));
+                    $cookie->__set('email', $email);
 				} else {
                     $status['error'][] = 'wrong password';
                 }
@@ -274,18 +274,18 @@ class JFusionUser_prestashop extends JFusionUser {
         $ps_customer->secure_key = md5(uniqid(rand(), true));
         $ps_customer->email = $user_variables['email'];
         $ps_customer->passwd = md5($params->get('cookie_key') . $user_variables['passwd']);
-        $ps_customer->last_passwd_gen = date("Y-m-d h:m:s",strtotime("-6 hours"));
-        $ps_customer->birthday = date("Y-m-d",mktime(0,0,0,$user_variables['months'],$user_variables['days'],$user_variables['years']));
+        $ps_customer->last_passwd_gen = date('Y-m-d h:m:s',strtotime("-6 hours"));
+        $ps_customer->birthday = date('Y-m-d',mktime(0,0,0,$user_variables['months'],$user_variables['days'],$user_variables['years']));
         $ps_customer->lastname = $user_variables['lastname'];
         $ps_customer->newsletter = $_SERVER['REMOTE_ADDR'];
-        $ps_customer->ip_registration_newsletter = date("Y-m-d h:m:s");
+        $ps_customer->ip_registration_newsletter = date('Y-m-d h:m:s');
         $ps_customer->optin = $user_variables['optin'];
         $ps_customer->firstname = $user_variables['firstname'];
         $ps_customer->dni = $user_variables['dni'];
         $ps_customer->active = 1;
         $ps_customer->deleted = 0;
-        $ps_customer->date_add = date("Y-m-d h:m:s");
-        $ps_customer->date_upd = date("Y-m-d h:m:s");
+        $ps_customer->date_add = date('Y-m-d h:m:s');
+        $ps_customer->date_upd = date('Y-m-d h:m:s');
 
 
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
@@ -308,8 +308,8 @@ class JFusionUser_prestashop extends JFusionUser {
         $ps_address->other = $user_variables['other'];
         $ps_address->phone = $user_variables['phone'];
         $ps_address->phone_mobile = $user_variables['phone_mobile'];
-        $ps_address->date_add = date("Y-m-d h:m:s");
-        $ps_address->date_upd = date("Y-m-d h:m:s");
+        $ps_address->date_add = date('Y-m-d h:m:s');
+        $ps_address->date_upd = date('Y-m-d h:m:s');
         $ps_address->active = 1;
         $ps_address->deleted = 0;
 

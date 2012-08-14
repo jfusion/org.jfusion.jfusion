@@ -116,8 +116,8 @@ class JFusionPublic_gallery2 extends JFusionPublic {
             }
         }
         /* Register Sidebare for Module Usage */
-        if (isset($g2data["sidebarBlocksHtml"])) {
-            $helper->setVar('sidebar', $g2data["sidebarBlocksHtml"]);
+        if (isset($g2data['sidebarBlocksHtml'])) {
+            $helper->setVar('sidebar', $g2data['sidebarBlocksHtml']);
         }
         $helper->setPathway();
         if (isset($g2data['bodyHtml']) && isset($g2data['headHtml'])) {
@@ -284,7 +284,7 @@ class JFusionPublic_gallery2 extends JFusionPublic {
         //get a unix time from 5 mintues ago
         date_default_timezone_set('UTC');
         $now = time();
-        $active = strtotime("-5 minutes", $now);
+        $active = strtotime('-5 minutes', $now);
         $query = "SELECT DISTINCT u.g_id AS userid, u.g_userName as username, u.g_fullName AS name  " . "FROM #__User AS u INNER JOIN #__SessionMap AS s ON s.g_userId = u.g_id " . "WHERE s.g_modificationTimestamp > $active $limiter";
         return $query;
     }
@@ -296,7 +296,7 @@ class JFusionPublic_gallery2 extends JFusionPublic {
         //get a unix time from 5 mintues ago
         date_default_timezone_set('UTC');
         $now = time();
-        $active = strtotime("-5 minutes", $now);
+        $active = strtotime('-5 minutes', $now);
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = "SELECT COUNT(*) FROM #__SessionMap s " . "WHERE g_modificationTimestamp > $active AND s.g_userId != 5";
         $db->setQuery($query);
@@ -311,7 +311,7 @@ class JFusionPublic_gallery2 extends JFusionPublic {
         //get a unix time from 5 mintues ago
         date_default_timezone_set('UTC');
         $now = time();
-        $active = strtotime("-5 minutes", $now);
+        $active = strtotime('-5 minutes', $now);
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = "SELECT COUNT(*) FROM #__SessionMap s " . "WHERE g_modificationTimestamp > $active AND s.g_userId = 5";
         $db->setQuery($query);

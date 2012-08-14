@@ -200,7 +200,7 @@ class JFusionFunctionAdmin
         }
 
         //if the class name is the abstract class then return false
-        $abstractClassNames = array("JFusionAdmin", "JFusionAuth", "JFusionForum", "JFusionPublic", "JFusionUser");
+        $abstractClassNames = array('JFusionAdmin', 'JFusionAuth', 'JFusionForum', 'JFusionPublic', 'JFusionUser');
         if (in_array($name, $abstractClassNames)) {
             $return = false;
         } else {

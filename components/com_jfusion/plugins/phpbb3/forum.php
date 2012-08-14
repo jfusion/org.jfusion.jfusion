@@ -503,7 +503,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
             $post_row->topic_id 		= $topicid;
             $post_row->poster_id		= $userid;
             $post_row->icon_id			= 0;
-            $post_row->poster_ip		= $_SERVER["REMOTE_ADDR"];
+            $post_row->poster_ip		= $_SERVER['REMOTE_ADDR'];
             $post_row->post_time		= $timestamp;
             $post_row->post_approved	= 1;
             $post_row->enable_bbcode	= 1;
@@ -660,7 +660,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 	 * Creates a post from the quick reply
      *
 	 * @param JParameter &$dbparams with discussion bot parameters
-	 * @param object &$ids array with thread id ($ids["threadid"]) and first post id ($ids["postid"])
+	 * @param object &$ids array with thread id ($ids['threadid']) and first post id ($ids['postid'])
 	 * @param &$contentitem object of content item
 	 * @param &$userinfo object info of the forum user
      *
@@ -690,7 +690,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 				$db->setQuery($query);
 				$result = $db->loadResult();
 				if(!empty($result)) {
-					$status["error"][] = JText::_('USERNAME_IN_USE');
+					$status['error'][] = JText::_('USERNAME_IN_USE');
 					return $status;
 				}
 			}
@@ -735,7 +735,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 			$post_row->topic_id 		= $ids->threadid;
 			$post_row->poster_id		= $userid;
 			$post_row->icon_id			= 0;
-			$post_row->poster_ip		= $_SERVER["REMOTE_ADDR"];
+			$post_row->poster_ip		= $_SERVER['REMOTE_ADDR'];
 			$post_row->post_time		= $timestamp;
 			$post_row->post_approved	= $post_approved;
 			$post_row->enable_bbcode	= 1;
@@ -871,7 +871,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 		$postid =& $existingthread->postid;
 
 		//set the query
-		$sort = $dbparams->get("sort_posts");
+		$sort = $dbparams->get('sort_posts');
 		$where = "WHERE p.topic_id = {$threadid} AND p.post_id != {$postid} AND p.post_approved = 1";
         $query = "SELECT p.post_id , CASE WHEN p.poster_id = 1 THEN 1 ELSE 0 END AS guest, CASE WHEN p.poster_id = 1 AND p.post_username != '' THEN p.post_username ELSE u.username END AS name, CASE WHEN p.poster_id = 1 AND p.post_username != '' THEN p.post_username ELSE u.username_clean END AS username, u.user_id, p.post_subject, p.post_time, p.post_text, p.topic_id FROM `#__posts` as p INNER JOIN `#__users` as u ON p.poster_id = u.user_id $where ORDER BY p.post_time $sort";
 

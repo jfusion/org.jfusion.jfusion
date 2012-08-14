@@ -55,15 +55,15 @@ class JFormFieldJFusionUserpostgroups extends JFormField
                     return '';
                 }
             } else {
-                $output = "<span style='float:left; margin: 5px 0; font-weight: bold;'>";
+                $output = '<span style="float:left; margin: 5px 0; font-weight: bold;">';
                 $output.= JText::_('SAVE_CONFIG_FIRST');
-                $output.= "</span>";
+                $output.= '</span>';
                 return $output;
             }
         } else {
-            $output = "<span style='float:left; margin: 5px 0; font-weight: bold;'>";
+            $output = '<span style="float:left; margin: 5px 0; font-weight: bold;">';
             $output.= 'Programming error: You must define global $jname before the JParam object can be rendered';
-            $output.= "</span>";
+            $output.= '</span>';
             return $output;
         }
     }

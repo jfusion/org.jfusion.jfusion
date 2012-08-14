@@ -51,11 +51,11 @@ class JElementJFusionAdvancedParam extends JElement
 
         $doc = JFactory::getDocument();
         $fieldName = $control_name . '[' . $name . ']';
-        $feature = $node->attributes("feature");
+        $feature = $node->attributes('feature');
         if (!$feature) {
             $feature = 'any';
         }
-        $multiselect = $node->attributes("multiselect");
+        $multiselect = $node->attributes('multiselect');
 
         if (!defined('JFUSION_ADVANCEDPARAM_JS_LOADED')) {
             define('JFUSION_ADVANCEDPARAM_JS_LOADED', 1);
@@ -89,10 +89,10 @@ JS;
         //Create Link
         $link = 'index.php?option=com_jfusion&amp;task=advancedparam&amp;tmpl=component&amp;elNum='.$elNum.'&amp;params=' . $value;
         if (!is_null($feature)) {
-            $link.= "&amp;feature=" . $feature;
+            $link.= '&amp;feature=' . $feature;
         }
         if (!is_null($multiselect)) {
-            $link.= "&amp;multiselect=1";
+            $link.= '&amp;multiselect=1';
         }
         //Get JParameter from given string
         if (empty($value)) {
@@ -104,15 +104,15 @@ JS;
                 $params = array();
             }
         }
-        $title = "";
-        if (isset($params["jfusionplugin"])) {
-            $title = $params["jfusionplugin"];
+        $title = '';
+        if (isset($params['jfusionplugin'])) {
+            $title = $params['jfusionplugin'];
         } else if ($multiselect) {
-            $del = "";
+            $del = '';
             foreach ($params as $key => $param) {
-                if (isset($param["jfusionplugin"])) {
-                    $title.= $del . $param["jfusionplugin"];
-                    $del = "; ";
+                if (isset($param['jfusionplugin'])) {
+                    $title.= $del . $param['jfusionplugin'];
+                    $del = '; ';
                 }
             }
         }

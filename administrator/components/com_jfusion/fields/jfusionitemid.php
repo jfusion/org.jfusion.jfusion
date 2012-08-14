@@ -55,7 +55,7 @@ class JFormFieldJFusionItemid extends JFormField
 JS;
 	        $doc->addScriptDeclaration($js);
         }
-        $feature = $this->element["feature"];
+        $feature = $this->element['feature'];
 
         if (!$feature) {
             $feature = 'any';
@@ -66,8 +66,14 @@ JS;
         $select_menuitem = JText::_('SELECT_MENUITEM');
         $select = JText::_('SELECT');
         $html = <<<HTML
-            <div style="float: left;"><input style="background: #ffffff;" type="text" id="{$name}_name{$elId}" value="{$value}" disabled="disabled" /></div>
-            <div class="button2-left"><div class="blank"><a class="modal" title="{$select_menuitem}"  href="{$link}" rel="{handler: 'iframe', size: {x: 650, y: 375}}">{$select}</a></div></div>
+            <div style="float: left;">
+                <input style="background: #ffffff;" type="text" id="{$name}_name{$elId}" value="{$value}" disabled="disabled" />
+            </div>
+            <div class="button2-left">
+                <div class="blank">
+                    <a class="modal" title="{$select_menuitem}"  href="{$link}" rel="{handler: 'iframe', size: {x: 650, y: 375}}">{$select}</a>
+                </div>
+            </div>
             <input type="hidden" id="{$name}_id{$elId}" name="{$name}" value="{$value}" />
 HTML;
         return $html;

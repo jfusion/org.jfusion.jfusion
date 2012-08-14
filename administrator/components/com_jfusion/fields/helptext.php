@@ -34,6 +34,6 @@ class JFormFieldhelptext extends JFormField
      */
     protected function getInput()
     {
-        return "<span style='float:left; margin: 5px 0; font-weight: bold;'>".JText::_($this->value)."</span>";
+        return '<span style="float:left; margin: 5px 0; font-weight: bold;">'.JText::_($this->value).'</span>';
     }
 }

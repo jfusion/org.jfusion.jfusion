@@ -93,13 +93,13 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
             $session->close();
             $session->restart();
         } else if ($do == 'login') {
-            $credentials["username"] = JRequest::getVar('u');
+            $credentials['username'] = JRequest::getVar('u');
             $credentials["password"] = JRequest::getVar('p');
-            if ($credentials["username"] && $credentials["password"]) {
+            if ($credentials['username'] && $credentials['password']) {
                 $mainframe = JFactory::getApplication();
-                $credentials["username"] = JRequest::getVar('u');
-                $credentials["password"] = JRequest::getVar('p');
-                $options["remember"] = JRequest::getVar('r');
+                $credentials['username'] = JRequest::getVar('u');
+                $credentials['password'] = JRequest::getVar('p');
+                $options['remember'] = JRequest::getVar('r');
                 //                $options["return"] = 'http://.......';
                 //                $options["entry_url"] = 'http://.......';
                 // logout any joomla users

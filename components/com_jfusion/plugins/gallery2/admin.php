@@ -94,14 +94,14 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
             $params['database_user'] = $config['username'];
             $params['database_password'] = $config['password'];
             $params['database_prefix'] = $config['tablePrefix'];
-            $params['source_url'] = str_replace("main.php", "", $config['baseUri']);
+            $params['source_url'] = str_replace('main.php', '', $config['baseUri']);
             $params['cookie_name'] = '';
             $params['source_path'] = $forumPath;
-            if (!in_array($params['database_type'], array("mysql", "mysqli"))) {
+            if (!in_array($params['database_type'], array('mysql', 'mysqli'))) {
                 if (!function_exists('mysqli_init') && !extension_loaded('mysqli')) {
-                    $params['database_type'] = "mysql";
+                    $params['database_type'] = 'mysql';
                 } else {
-                    $params['database_type'] = "mysqli";
+                    $params['database_type'] = 'mysqli';
                 }
             }
         }

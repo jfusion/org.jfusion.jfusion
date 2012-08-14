@@ -37,7 +37,7 @@ class Jfusion_Customer_Model_Form extends Mage_Customer_Model_Form
            $result = $model->customerUsernameExists($data['username'], $websiteId);
            if($result && $result->getId() != Mage::app()->getFrontController()->getRequest()->getParam('id')
                && $result->getId() != Mage::getSingleton('customer/session')->getCustomerId('id')){
-               $message = Mage::helper('customer')->__("Username already exists");
+               $message = Mage::helper('customer')->__('Username already exists');
                if($errors === true) {
                    $errors = array();
                }

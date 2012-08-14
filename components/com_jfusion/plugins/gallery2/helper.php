@@ -62,10 +62,10 @@ class JFusionHelper_gallery2
                 $base = $uri->toString(array('scheme', 'host', 'port'));
                 $source_url = $base . $source_url;
             }
-            $initParams["g2Uri"] = $source_url;
-            $initParams["embedUri"] = $this->getEmbedUri($this->getJname(),$itemId);
-            $initParams["loginRedirect"] = JRoute::_("index.php?option=com_user&view=login");
-            $initParams["fullInit"] = $fullInit;
+            $initParams['g2Uri'] = $source_url;
+            $initParams['embedUri'] = $this->getEmbedUri($this->getJname(),$itemId);
+            $initParams['loginRedirect'] = JRoute::_('index.php?option=com_user&view=login');
+            $initParams['fullInit'] = $fullInit;
             if (!is_file($index_file)) {
                 JError::raiseWarning(500, 'The path to the Gallery2('.$this->getJname().' path: '.$index_file.') embed file set in the component preferences does not exist');
             } else {
@@ -152,10 +152,10 @@ class JFusionHelper_gallery2
         }
         if ($router->getMode() == JROUTER_MODE_SEF) {
             if ($mainframe->getCfg('sef_suffix')) {
-                $uri = str_replace(".html", "", $uri);
+                $uri = str_replace('.html', '', $uri);
             }
-            if (!strpos($uri, "?")) {
-                $uri.= "/";
+            if (!strpos($uri, '?')) {
+                $uri.= '/';
             }
         }
         return $uri;

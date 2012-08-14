@@ -415,7 +415,7 @@ class JFusionForum_smf extends JFusionForum
             $post_row->subject = $subject;
             $post_row->posterName = $smfUser->memberName;
             $post_row->posterEmail = $smfUser->emailAddress;
-            $post_row->posterIP = $_SERVER["REMOTE_ADDR"];
+            $post_row->posterIP = $_SERVER['REMOTE_ADDR'];
             $post_row->smileysEnabled = 1;
             $post_row->modifiedTime = 0;
             $post_row->modifiedName = '';
@@ -600,7 +600,7 @@ HTML;
                 $db->setQuery($query);
                 $result = $db->loadResult();
                 if (!empty($result)) {
-                    $status["error"][] = JText::_('USERNAME_IN_USE');
+                    $status['error'][] = JText::_('USERNAME_IN_USE');
                     return $status;
                 }
             }
@@ -639,7 +639,7 @@ HTML;
             $post_row->subject = 'Re: ' . $topic->subject;
             $post_row->posterName = $smfUser->memberName;
             $post_row->posterEmail = $smfUser->emailAddress;
-            $post_row->posterIP = $_SERVER["REMOTE_ADDR"];
+            $post_row->posterIP = $_SERVER['REMOTE_ADDR'];
             $post_row->smileysEnabled = 1;
             $post_row->modifiedTime = 0;
             $post_row->modifiedName = '';
@@ -705,7 +705,7 @@ HTML;
         $threadid = $existingthread->threadid;
         $postid = $existingthread->postid;
         //set the query
-        $sort = $dbparams->get("sort_posts");
+        $sort = $dbparams->get('sort_posts');
 		$where = "WHERE ID_TOPIC = {$threadid} AND ID_MSG != {$postid}";
         $query = "(SELECT a.ID_TOPIC , a.ID_MSG, a.posterName, b.realName, a.ID_MEMBER, 0 AS guest, a.subject, a.posterTime, a.body, a.posterTime AS order_by_date FROM `#__messages` as a INNER JOIN #__members as b ON a.ID_MEMBER = b.ID_MEMBER $where AND a.ID_MEMBER != 0)";
         $query.= " UNION ";

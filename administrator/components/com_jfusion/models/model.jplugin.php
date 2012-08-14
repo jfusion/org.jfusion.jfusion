@@ -512,7 +512,7 @@ class JFusionJplugin
         $curl_options['relpath'] = $params->get('relpathl',$params->get('relpath',0));
         $curl_options['hidden'] = '1';
         $curl_options['buttons'] = '1';
-        $curl_options['override'] = "";
+        $curl_options['override'] = '';
         $curl_options['cookiedomain'] = $params->get('cookie_domain');
         $curl_options['cookiepath'] = $params->get('cookie_path');
         $curl_options['expires'] = time() - 30*60*60;
@@ -1334,7 +1334,7 @@ class JFusionJplugin
                             return $status;
                         }
                     }
-                    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(",", $existinguser->groups) . ' -> ' .implode(",", $usergroups);
+                    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(',', $existinguser->groups) . ' -> ' .implode(',', $usergroups);
                     //Fire the user plugin functions for joomla_int
                     if ($jname == 'joomla_int' && $fire_user_plugins) {
                         //Fire the onAftereStoreUser event
@@ -1451,7 +1451,7 @@ class JFusionJplugin
             $userinfo->language = $JLang->getTag();
             JFusionJplugin::updateUserLanguage($userinfo, $existinguser, $status, $jname);
         } else {
-            $status['debug'] = JText::_("NO_USER_DATA_FOUND");
+            $status['debug'] = JText::_('NO_USER_DATA_FOUND');
         }
         return $status;
     }

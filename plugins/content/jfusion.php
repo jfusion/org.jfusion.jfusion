@@ -94,8 +94,8 @@ class plgContentJfusion extends JPlugin
         }
 
         //determine what mode we are to operate in
-        if ($this->params->get("auto_create",0)) {
-            $this->mode = ($this->params->get("test_mode",1)) ? 'test' : 'auto';
+        if ($this->params->get('auto_create',0)) {
+            $this->mode = ($this->params->get('test_mode',1)) ? 'test' : 'auto';
         } else {
             $this->mode = 'manual';
         }
@@ -320,13 +320,13 @@ class plgContentJfusion extends JPlugin
                     $result = false;
                 } else {
                     //set some variables needed throughout
-                    $this->template = $this->params->get("template","default");
+                    $this->template = $this->params->get('template','default');
 
                     //make sure we have an actual article
                     if (!empty($this->article->id)) {
                         $this->dbtask = JRequest::getVar('dbtask', 'render_content', 'post');
                         $skip_new_check = ($this->dbtask=='create_thread') ? true : false;
-                        $skip_k2_check = ($this->helper->option == 'com_k2' && in_array($this->dbtask, array("unpublish_discussion", "publish_discussion"))) ? true : false;
+                        $skip_k2_check = ($this->helper->option == 'com_k2' && in_array($this->dbtask, array('unpublish_discussion', 'publish_discussion'))) ? true : false;
                         $this->helper->thread_status = $this->helper->_get_thread_status();
                         list($this->valid, $this->validity_reason) = $this->helper->_validate($skip_new_check, $skip_k2_check);
                         $this->helper->_debug('Validity: ' . $this->valid . "; " . $this->validity_reason);
@@ -357,7 +357,7 @@ class plgContentJfusion extends JPlugin
                         if ($this->dbtask == 'create_thread') {
                             //this article has been manually initiated for discussion
                             $this->_create_thread();
-                        } elseif (($this->dbtask == 'create_post' || $this->dbtask == 'create_threadpost') && $this->params->get("enable_quickreply",false)) {
+                        } elseif (($this->dbtask == 'create_post' || $this->dbtask == 'create_threadpost') && $this->params->get('enable_quickreply',false)) {
                             //a quick reply has been submitted so let's create the post
                             $this->_create_post();
                         } elseif ($this->dbtask == 'unpublish_discussion') {
@@ -536,7 +536,7 @@ class plgContentJfusion extends JPlugin
             if (!$this->manual_plug && JRequest::getVar('view') != $test_view) {
                 preg_match('/\{jfusion_discuss (.*)\}/U',$this->article->fulltext,$match);
                 if (!empty($match)) {
-                    $this->helper->_debug("No plugs in text but found plugs in fulltext");
+                    $this->helper->_debug('No plugs in text but found plugs in fulltext');
                     $this->manual_plug = true;
                     $this->manual_threadid = $match[1];
 
@@ -556,7 +556,7 @@ class plgContentJfusion extends JPlugin
                         //append the content
                         $this->article->text .= $content;
                     } else {
-                        $this->article->text .= JText::_("THREADID_NOT_FOUND");
+                        $this->article->text .= JText::_('THREADID_NOT_FOUND');
                     }
                 }
             }
@@ -748,8 +748,8 @@ HTML;
         $JFusionForum =& JFusionFactory::getForum($this->jname);
 
         //define some variables
-        $allowGuests =& $this->params->get("quickreply_allow_guests",0);
-        $ajaxEnabled = ($this->params->get("enable_ajax",1) && $this->ajax_request);
+        $allowGuests =& $this->params->get('quickreply_allow_guests',0);
+        $ajaxEnabled = ($this->params->get('enable_ajax',1) && $this->ajax_request);
 
         //process quick replies
         if (($allowGuests || !$JoomlaUser->guest) && !$JoomlaUser->block) {
@@ -791,7 +791,7 @@ HTML;
                                     if (count($status['error']) < 2) {
                                         $error = $status['error'][0];
                                     } else {
-                                        $error = "";
+                                        $error = '';
                                         foreach($status['error'] as $err) {
                                            $error .= '<br /> - ' . $err;
                                         }
@@ -811,7 +811,7 @@ HTML;
                                     $application = JFactory::getApplication();
                                     $limit = $application->getUserStateFromRequest( 'global.list.limit', 'limit_discuss', 5, 'int' );
 
-                                    if ($this->params->get("sort_posts",'ASC')=='ASC') {
+                                    if ($this->params->get('sort_posts','ASC')=='ASC') {
                                         $limitstart = floor(($replyCount-1)/$limit) * $limit;
                                     } else {
                                         $limitstart = 0;
@@ -1007,7 +1007,7 @@ HTML;
 
         //setup parameters
         $JFusionForum =& JFusionFactory::getForum($this->jname);
-        $allowGuests =& $this->params->get("quickreply_allow_guests",0);
+        $allowGuests =& $this->params->get('quickreply_allow_guests',0);
         $JoomlaUser = JFactory::getUser();
         //make sure the user exists in the software before displaying the quick reply
         $JFusionUser =& JFusionFactory::getUser($this->jname);
@@ -1123,11 +1123,11 @@ HTML;
         $threadinfo =& $this->helper->_get_thread_info();
 
         $JUser = JFactory::getUser();
-        $itemid =& $this->params->get("itemid");
-        $link_text =& $this->params->get("link_text");
-        $link_type=& $this->params->get("link_type",'text');
-        $link_mode=& $this->params->get("link_mode",'always');
-        $blog_link_mode=& $this->params->get("blog_link_mode",'forum');
+        $itemid =& $this->params->get('itemid');
+        $link_text =& $this->params->get('link_text');
+        $link_type=& $this->params->get('link_type','text');
+        $link_mode=& $this->params->get('link_mode','always');
+        $blog_link_mode=& $this->params->get('blog_link_mode','forum');
         $linkHTML = ($link_type=='image') ? '<img style="border:0;" src="'.$link_text.'">' : $link_text;
         $linkTarget =& $this->params->get('link_target','_parent');
         if ($this->helper->isJ16) {
@@ -1266,7 +1266,7 @@ HTML;
                 $this->helper->output['buttons']['initiate']['href'] = "javascript: void(0);";
 
                 $vars  = "&view_override=$view";
-                $vars .= ($this->params->get('overwrite_readmore',1)) ? "&readmore={$readmore_catch}&show_readmore={$show_readmore}" : "";
+                $vars .= ($this->params->get('overwrite_readmore',1)) ? "&readmore={$readmore_catch}&show_readmore={$show_readmore}" : '';
 
                 $this->helper->output['buttons']['initiate']['js']['onclick'] = "confirmThreadAction(".$this->article->id.",'$dbtask', '$vars', '{$this->helper->_get_article_url()}');";
                 $this->helper->output['buttons']['initiate']['text'] = JText::_($text);
@@ -1302,7 +1302,7 @@ HTML;
                         //see if there are any page breaks
                         $joomla_text = (isset($this->article->fulltext)) ? $this->article->fulltext : $this->article->text;
                         $pagebreaks = substr_count($joomla_text, 'system-pagebreak');
-                        $query = ($pagebreaks) ? "&limitstart=$pagebreaks" : "";
+                        $query = ($pagebreaks) ? "&limitstart=$pagebreaks" : '';
                         if ($article_access) {
                             $discuss_link = $this->helper->_get_article_url('discussion', $query);
                         } else {
@@ -1373,14 +1373,14 @@ HTML;
         $date_format = $this->params->get('custom_date', _DATE_FORMAT_LC2);
         $showdate = intval($this->params->get('show_date'));
         $showuser = intval($this->params->get('show_user'));
-        $showavatar = $this->params->get("show_avatar");
-        $avatar_software = $this->params->get("avatar_software",false);
-        $resize_avatar = $this->params->get("avatar_keep_proportional", false);
+        $showavatar = $this->params->get('show_avatar');
+        $avatar_software = $this->params->get('avatar_software',false);
+        $resize_avatar = $this->params->get('avatar_keep_proportional', false);
         $userlink = intval($this->params->get('user_link'));
         $link_software = $this->params->get('userlink_software',false);
         $userlink_custom = $this->params->get('userlink_custom',false);
-        $character_limit = (int) $this->params->get("character_limit");
-        $itemid = $this->params->get("itemid");
+        $character_limit = (int) $this->params->get('character_limit');
+        $itemid = $this->params->get('itemid');
         $JFusionPublic =& JFusionFactory::getPublic($this->jname);
 
         $JFusionForum =& JFusionFactory::getForum($this->jname);
@@ -1440,9 +1440,9 @@ HTML;
                     $post_output[$i]->avatar_height = $maxheight;
                 }
             } else {
-                $post_output[$i]->avatar_src = "";
-                $post_output[$i]->avatar_height = "";
-                $post_output[$i]->avatar_width = "";
+                $post_output[$i]->avatar_src = '';
+                $post_output[$i]->avatar_height = '';
+                $post_output[$i]->avatar_width = '';
             }
 
             //post title
@@ -1495,17 +1495,17 @@ HTML;
             }
 
             $toolbar = array();
-            if ($this->params->get("enable_quickreply")){
+            if ($this->params->get('enable_quickreply')){
                 $JoomlaUser = JFactory::getUser();
-                if ($this->params->get("quickreply_allow_guests",0) || !$JoomlaUser->guest) {
+                if ($this->params->get('quickreply_allow_guests',0) || !$JoomlaUser->guest) {
                     $toolbar[] = '<a href="javascript:void(0);" onclick="jfusionQuote('.$postid.');">'.JText::_('QUOTE').'</a>';
                 }
             }
 
             if (!empty($toolbar)) {
-                $post_output[$i]->toolbar = "| " . implode(" | ", $toolbar) . " |";
+                $post_output[$i]->toolbar = '| ' . implode(' | ', $toolbar) . ' |';
             } else {
-                $post_output[$i]->toolbar = "";
+                $post_output[$i]->toolbar = '';
             }
         }
 
@@ -1534,7 +1534,7 @@ HTML;
         $limit = (int) $application->getUserStateFromRequest( 'global.list.limit', 'limit_discuss', 5, 'int' );
 
         //set $limitstart so that the created post is shown
-        if ($this->params->get("sort_posts",'ASC')=='ASC') {
+        if ($this->params->get('sort_posts','ASC')=='ASC') {
             $limitstart = floor(($this->helper->reply_count - 1)/$limit) * $limit;
         } else {
             $limitstart = 0;
@@ -1568,7 +1568,7 @@ HTML;
             $search[] = 'ajax_request=1';
             $pagination = str_replace($search,'',$pagination);
         } else {
-            $pagination = "";
+            $pagination = '';
         }
 
         die($pagination);

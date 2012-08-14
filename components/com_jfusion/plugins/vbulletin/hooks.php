@@ -15,10 +15,10 @@
 
 //force required variables into global scope
 if (!isset($GLOBALS['vbulletin']) && !empty($vbulletin)) {
-    $GLOBALS["vbulletin"] = & $vbulletin;
+    $GLOBALS['vbulletin'] = & $vbulletin;
 }
 if (!isset($GLOBALS['db']) && !empty($db)) {
-    $GLOBALS["db"] = & $db;
+    $GLOBALS['db'] = & $db;
 }
 
 /**
@@ -44,13 +44,13 @@ class executeJFusionHook
     function executeJFusionHook($hook, &$vars, $key = '')
     {
         if ($hook != 'init_startup' && !defined('_VBJNAME') && empty($_POST['logintype'])) {
-            die("JFusion plugins need to be updated.  Reinstall desired plugins in JFusion's config for vBulletin.");
+            die('JFusion plugins need to be updated.  Reinstall desired plugins in JFusions config for vBulletin.');
         }
 
         if (!defined('_JFVB_PLUGIN_VERIFIED') && $hook != 'init_startup' && defined('_VBJNAME') && defined('_JEXEC') && empty($_POST['logintype'])) {
             define('_JFVB_PLUGIN_VERIFIED', 1);
             if (!JFusionFunction::validPlugin(_VBJNAME)) {
-                die("JFusion plugin is invalid.  Reinstall desired plugins in JFusion's config for vBulletin.");
+                die('JFusion plugin is invalid.  Reinstall desired plugins in JFusions config for vBulletin.');
             }
         }
 
@@ -58,13 +58,13 @@ class executeJFusionHook
         $this->vars =& $vars;
         $this->key = $key;
         eval('$success = $this->' . $hook . '();');
-        //if ($success) die('<pre>'.print_r($GLOBALS["vbulletin"]->pluginlist,true)."</pre>");
+        //if ($success) die('<pre>'.print_r($GLOBALS['vbulletin']->pluginlist,true).'</pre>');
 
     }
     function init_startup()
     {
         global $vbulletin;
-        if ($this->vars == "redirect" && !isset($_GET['noredirect']) && !defined('_JEXEC') && !isset($_GET['jfusion'])) {
+        if ($this->vars == 'redirect' && !isset($_GET['noredirect']) && !defined('_JEXEC') && !isset($_GET['jfusion'])) {
             //only redirect if in the main forum
             if (!empty($_SERVER['PHP_SELF'])) {
                 $s = $_SERVER['PHP_SELF'];
@@ -106,7 +106,7 @@ class executeJFusionHook
 
             if ($redirect) {
                 $filename = basename($s);
-                $query = $_SERVER["QUERY_STRING"];
+                $query = $_SERVER['QUERY_STRING'];
                 if (SEFENABLED) {
                     if (SEFMODE == 1) {
                         $url = JOOMLABASEURL . "$filename/";
@@ -173,10 +173,10 @@ class executeJFusionHook
         //we need to set up the hooks
         if ($plugin == "frameless") {
             //retrieve the hooks that jFusion will use to make vB work framelessly
-            $hookNames = array("album_picture_complete", "global_start", "global_complete", "global_setup_complete", "header_redirect", "logout_process", "member_profileblock_fetch_unwrapped", "redirect_generic", "xml_print_output");
+            $hookNames = array('album_picture_complete', 'global_start', 'global_complete', 'global_setup_complete', 'header_redirect', 'logout_process', 'member_profileblock_fetch_unwrapped', 'redirect_generic', 'xml_print_output');
         } elseif ($plugin == "duallogin") {
             //retrieve the hooks that vBulletin will use to login to Joomla
-            $hookNames = array("global_setup_complete", "login_verify_success", "logout_process");
+            $hookNames = array('global_setup_complete', 'login_verify_success', 'logout_process');
             define('DUALLOGIN', 1);
         } elseif ($plugin == 'jfvbtask') {
             $hookNames = array('global_setup_complete');
@@ -267,7 +267,7 @@ class executeJFusionHook
             }
             //echo the output and return an exception to allow Joomla to continue
             echo trim($this->vars, "\n\r\t.");
-            Throw new Exception("vBulletin exited.");
+            Throw new Exception('vBulletin exited.');
         }
     }
 
@@ -342,7 +342,7 @@ class executeJFusionHook
         if (strpos($this->vars, $admincp) !== false || strpos($this->vars, $modcp) !== false || strpos($this->vars, 'archive') !== false) {
             if (defined('_JFUSION_DEBUG')) {
                 $debug['parsed'] = $this->vars;
-                $_SESSION["jfvbdebug"][] = $debug;
+                $_SESSION['jfvbdebug'][] = $debug;
             }
             if (!empty($vbsefenabled)) {
                 if ($vbsefmode == 1) {
@@ -367,7 +367,7 @@ class executeJFusionHook
         }
         //let's make sure the baseURL does not have a / at the end for comparison
         $testURL = (substr($baseURL, -1) == '/') ? substr($baseURL, 0, -1) : $baseURL;
-        if (strpos(strtolower($this->vars["url"]), strtolower($testURL)) === false) {
+        if (strpos(strtolower($this->vars['url']), strtolower($testURL)) === false) {
             $url = basename($this->vars);
             $url = JFusionFunction::routeURL($url, JRequest::getInt('Itemid'));
             $this->vars = $url;
@@ -377,7 +377,7 @@ class executeJFusionHook
 
         if (defined('_JFUSION_DEBUG')) {
             $debug['parsed'] = $this->vars;
-            $_SESSION["jfvbdebug"][] = $debug;
+            $_SESSION['jfvbdebug'][] = $debug;
         }
         return true;
     }
@@ -499,24 +499,24 @@ class executeJFusionHook
         //reworks the URL for generic redirects that use JS or html meta header
         if (defined('_JFUSION_DEBUG')) {
             $debug = array();
-            $debug['url'] = $this->vars["url"];
+            $debug['url'] = $this->vars['url'];
             $debug['function'] = 'redirect_generic';
         }
         //let's make sure the baseURL does not have a / at the end for comparison
         $testURL = (substr($baseURL, -1) == '/') ? substr($baseURL, 0, -1) : $baseURL;
-        if (strpos(strtolower($this->vars["url"]), strtolower($testURL)) === false) {
-            $url = basename($this->vars["url"]);
+        if (strpos(strtolower($this->vars['url']), strtolower($testURL)) === false) {
+            $url = basename($this->vars['url']);
             $url = JFusionFunction::routeURL($url, JRequest::getInt('Itemid'));
 
             //convert &amp; to & so the redirect is correct
             $url = str_replace('&amp;', '&', $url);
-            $this->vars["url"] = $url;
-            $this->vars["js_url"] = addslashes_js($this->vars["url"]);
-            $this->vars["formfile"] = $this->vars["url"];
+            $this->vars['url'] = $url;
+            $this->vars['js_url'] = addslashes_js($this->vars['url']);
+            $this->vars['formfile'] = $this->vars['url'];
         }
         if (defined('_JFUSION_DEBUG')) {
             $debug['parsed'] = $this->vars['url'];
-            $_SESSION["jfvbdebug"][] = $debug;
+            $_SESSION['jfvbdebug'][] = $debug;
         }
         return true;
     }
@@ -533,7 +533,7 @@ class executeJFusionHook
 
         $jdata = new stdClass();
         $jdata->body = & $this->vars;
-        $jdata->Itemid = $params->get("plugin_itemid");
+        $jdata->Itemid = $params->get('plugin_itemid');
         //Get the base URL to the specific JFusion plugin
         $jdata->baseURL = JFusionFunction::getPluginURL($jdata->Itemid);
         //Get the integrated URL
@@ -577,7 +577,7 @@ class JFvBulletinTask {
      */
     function __construct(&$vbulletin, $key) {
         if (empty($key)) {
-            $this->outputResponse(array("error" => "Missing key!"));
+            $this->outputResponse(array('error' => 'Missing key!'));
         }
         $this->key = $key;
         $this->vbulletin =& $vbulletin;
@@ -590,7 +590,7 @@ class JFvBulletinTask {
         if (isset($_POST['jfvbdata'])) {
             $this->data = $this->decryptApiData($_POST['jfvbdata']);
         } else {
-            $this->outputResponse(array("error" => "Missing data!"));
+            $this->outputResponse(array('error' => 'Missing data!'));
         }
 
         if (method_exists($this, "_{$task}")) {
@@ -598,7 +598,7 @@ class JFvBulletinTask {
             $this->{"_{$task}"}();
         } else {
             //respond with error
-            $this->outputResponse(array("error" => "Task does not exist!"));
+            $this->outputResponse(array('error' => 'Task does not exist!'));
         }
     }
 
@@ -611,13 +611,13 @@ class JFvBulletinTask {
     	if (function_exists('mcrypt_decrypt')) {
 	        $decrypted_data = @unserialize(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $this->key, base64_decode($data), MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND)));
 	        if (!is_array($decrypted_data)) {
-	            $this->outputResponse(array("error" => "Data corrupted!"));
+	            $this->outputResponse(array('error' => 'Data corrupted!'));
 	        } elseif ($decrypted_data['jfvbkey'] != $this->key) {
 	            //key doesn't match
-	            $this->outputResponse(array("error" => "Bad key!"));
+	            $this->outputResponse(array('error' => 'Bad key!'));
 	        }
     	} else {
-    		$this->outputResponse(array("error" => "mcrypt_decrypt Missing"));
+    		$this->outputResponse(array('error' => 'mcrypt_decrypt Missing'));
     	}
         return $decrypted_data;
     }
@@ -625,7 +625,7 @@ class JFvBulletinTask {
     /**
      * @param array $data
      */
-    function outputResponse($data = array("error" => "Access Denied!")) {
+    function outputResponse($data = array('error' => 'Access Denied!')) {
         if (!empty($data['errors'])) {
             $data['success'] = 0;
         } elseif (!empty($data['error'])) {
@@ -651,7 +651,7 @@ class JFvBulletinTask {
                 $this->xml->addChild('errors', 'API Errors');
             }
             foreach ($val as $err) {
-                $this->xml->addChild("errors", $err);
+                $this->xml->addChild('errors', $err);
             }
         } else {
             $this->xml->addChild($key, $val);
@@ -716,9 +716,9 @@ class JFvBulletinTask {
         $userdm->set_existing($existinguser);
         $userdm->delete();
 	    if(!empty($userdm->errors)){
-            $this->outputResponse(array("errors" => $userdm->errors));
+            $this->outputResponse(array('errors' => $userdm->errors));
 	    } else {
-            $response = array("success" => 1);
+            $response = array('success' => 1);
             $this->outputResponse($response);
 	    }
     }
@@ -758,14 +758,14 @@ class JFvBulletinTask {
                 $userdm->pre_save();
                 if (empty($userdm->errors)) {
                     $userdm->save();
-                    $response = array("success" => 1);
+                    $response = array('success' => 1);
                     $this->outputResponse($response);
                 } else {
-                    $this->outputResponse(array("errors" => $userdm->errors));
+                    $this->outputResponse(array('errors' => $userdm->errors));
                 }
             }
         } else {
-            $this->outputResponse(array("errors" => $userdm->errors));
+            $this->outputResponse(array('errors' => $userdm->errors));
         }
     }
 
@@ -777,10 +777,10 @@ class JFvBulletinTask {
 		$userdm->pre_save();
 	    if(empty($userdm->errors)){
 			$userdm->save();
-            $response = array("success" => 1);
+            $response = array('success' => 1);
             $this->outputResponse($response);
 	    } else {
-            $this->outputResponse(array("errors" => $userdm->errors));
+            $this->outputResponse(array('errors' => $userdm->errors));
 	    }
     }
 
@@ -832,10 +832,10 @@ class JFvBulletinTask {
         $userdm->pre_save();
 	    if(empty($userdm->errors)){
 			$userdm->save();
-            $response = array("success" => 1);
+            $response = array('success' => 1);
             $this->outputResponse($response);
 	    } else {
-            $this->outputResponse(array("errors" => $userdm->errors));
+            $this->outputResponse(array('errors' => $userdm->errors));
 	    }
     }
 
@@ -849,10 +849,10 @@ class JFvBulletinTask {
         $userdm->pre_save();
 	    if(empty($userdm->errors)){
 			$userdm->save();
-			$response = array("success" => 1);
+			$response = array('success' => 1);
             $this->outputResponse($response);
 	    } else {
-            $this->outputResponse(array("errors" => $userdm->errors));
+            $this->outputResponse(array('errors' => $userdm->errors));
 	    }
     }
 
@@ -874,14 +874,14 @@ class JFvBulletinTask {
         $threaddm->set('dateline', $timestamp);
         $threaddm->pre_save();
         if (!empty($threaddm->errors)) {
-            $this->outputResponse(array("errors" => $threaddm->errors));
+            $this->outputResponse(array('errors' => $threaddm->errors));
         } else {
             $threadid = $threaddm->save();
             $postid = $threaddm->fetch_field('firstpostid');
             $response = array(
-            	"new_id" => $threadid,
-                "firstpostid" => $postid,
-                "success" => 1
+                'new_id' => $threadid,
+                'firstpostid' => $postid,
+                'success' => 1
             );
             $this->outputResponse($response);
         }
@@ -921,12 +921,12 @@ class JFvBulletinTask {
         $postdm->pre_save();
 
         if (!empty($postdm->errors)) {
-            $this->outputResponse(array("errors" => $postdm->errors));
+            $this->outputResponse(array('errors' => $postdm->errors));
         } else {
             $id = $postdm->save();
             $response = array(
-            	"new_id" => $id,
-                "success" => 1
+                'new_id' => $id,
+                'success' => 1
             );
             $this->outputResponse($response);
         }
@@ -955,7 +955,7 @@ class JFvBulletinTask {
         $postdm->set_info('parseurl', $parseurl);
         $postdm->pre_save();
         if (!empty($postdm->errors)) {
-            $this->outputResponse(array("errors" => $postdm->errors));
+            $this->outputResponse(array('errors' => $postdm->errors));
         } else {
             $postdm->save();
             //update the thread's title
@@ -964,7 +964,7 @@ class JFvBulletinTask {
             $threaddm->set('title', $this->data['title']);
             $threaddm->save();
 
-            $response = array("success" => 1);
+            $response = array('success' => 1);
             $this->outputResponse($response);
         }
     }

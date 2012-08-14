@@ -78,7 +78,7 @@ class JFusionUser_vbulletin extends JFusionUser
         $name_field = $this->params->get('name_field');
 
         $query = "SELECT u.userid, u.username, u.email, u.usergroupid AS group_id, u.membergroupids, u.displaygroupid, u.password, u.salt as password_salt, u.usertitle, u.customtitle, u.posts, u.username as name FROM #__user AS u WHERE " . $identifier_type . ' = ' . $db->Quote($identifier);
-        $query.= ($ignore_id) ? " AND u.userid != $ignore_id" : "";
+        $query.= ($ignore_id) ? " AND u.userid != $ignore_id" : '';
 
         $db->setQuery($query );
         $result = $db->loadObject();
@@ -146,7 +146,7 @@ class JFusionUser_vbulletin extends JFusionUser
         $status['debug'] = array();
         $status['error'] = array();
 
-        $apidata = array("userinfo" => $userinfo);
+        $apidata = array('userinfo' => $userinfo);
         $response = $this->helper->apiCall('deleteUser', $apidata);
 
         if (!empty($response['errors'])) {
@@ -262,7 +262,7 @@ class JFusionUser_vbulletin extends JFusionUser
 
         if ($strikeEnabled) {
             $ip = $_SERVER['REMOTE_ADDR'];
-            $time = strtotime("-15 minutes");
+            $time = strtotime('-15 minutes');
             $query = "SELECT COUNT(*) FROM #__strikes WHERE strikeip = '$ip' AND striketime >= $time";
             $db->setQuery($query);
             $strikes = $db->loadResult();
@@ -291,16 +291,16 @@ class JFusionUser_vbulletin extends JFusionUser
         } else {
             $expires_time = time() + ( 60 * $cookie_expires );
         }
-        $debug_expiration = date("Y-m-d H:i:s", $expires_time);
+        $debug_expiration = date('Y-m-d H:i:s', $expires_time);
         $passwordhash = md5($userinfo->password.$cookie_salt);
 
-        $query = "SELECT sessionhash FROM #__session WHERE userid = " . $userinfo->userid;
+        $query = 'SELECT sessionhash FROM #__session WHERE userid = ' . $userinfo->userid;
         $db->setQuery($query);
         $sessionhash = $db->loadResult();
 
-        $cookie_sessionhash = JRequest::getVar($cookie_prefix . "sessionhash", '', 'cookie');
-        $cookie_userid = JRequest::getVar($cookie_prefix . "userid", '', 'cookie');
-        $cookie_password = JRequest::getVar($cookie_prefix . "password", '', 'cookie');
+        $cookie_sessionhash = JRequest::getVar($cookie_prefix . 'sessionhash', '', 'cookie');
+        $cookie_userid = JRequest::getVar($cookie_prefix . 'userid', '', 'cookie');
+        $cookie_password = JRequest::getVar($cookie_prefix . 'password', '', 'cookie');
 
         if (!empty($cookie_userid) && $cookie_userid == $userinfo->userid && !empty($cookie_password) && $cookie_password == $passwordhash) {
             $vbcookieuser = true;
@@ -367,7 +367,7 @@ class JFusionUser_vbulletin extends JFusionUser
      */
     function updateEmail($userinfo, &$existinguser, &$status)
     {
-        $apidata = array("userinfo" => $userinfo, "existinguser" => $existinguser);
+        $apidata = array('userinfo' => $userinfo, 'existinguser' => $existinguser);
         $response = $this->helper->apiCall('updateEmail', $apidata);
 
 	    if(!empty($response['errors'])) {
@@ -560,7 +560,7 @@ class JFusionUser_vbulletin extends JFusionUser
                 $useractivation->usergroupid = $usergroup;
 
                 if ($db->insertObject('#__useractivation', $useractivation, 'useractivationid' )) {
-                    $apidata = array("existinguser" => $existinguser);
+                    $apidata = array('existinguser' => $existinguser);
                     $response = $this->helper->apiCall('inactivateUser', $apidata);
                     if (empty($response['errors'])) {
                         $status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;

@@ -222,7 +222,7 @@ function com_install() {
 
 		$query = "SHOW INDEX FROM #__jfusion_users_plugin";
 		$db->setQuery($query);
-		$indexes = $db->loadObjectList("Key_name");
+		$indexes = $db->loadObjectList('Key_name');
 		if (!array_key_exists('lookup', $indexes)) {
 			//we need to make sure that old jfusion_users_plugin table doesn't have duplicates
 			//in prep of adding an unique index
@@ -402,11 +402,11 @@ function com_install() {
 				foreach($columns as $column) {
 					$col_inserts[] = $db->Quote($result->$column);
 				}
-				$row_inserts[] = "(" . implode(", ", $col_inserts) . ")";
+				$row_inserts[] = '(' . implode(', ', $col_inserts) . ')';
 			}
 
 			if(!empty($row_inserts)) {
-				$query = "REPLACE INTO #__jfusion_discussion_bot (" . implode(", ", $columns) . ") VALUES " . implode(", ", $row_inserts);
+				$query = 'REPLACE INTO #__jfusion_discussion_bot (' . implode(', ', $columns) . ') VALUES ' . implode(', ', $row_inserts);
 				$db->setQuery($query);
 				if(!$db->query()) {
 					echo $db->stderr() . '<br />';

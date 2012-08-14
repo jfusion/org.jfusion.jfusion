@@ -141,7 +141,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
         $limiter = (!empty($limit)) ? "LIMIT 0,$limit" : '';
         //get a unix time from 5 mintues ago
         date_default_timezone_set('UTC');
-        $active = strtotime("-5 minutes", time());
+        $active = strtotime('-5 minutes', time());
         $query = "SELECT DISTINCT u.user_id AS userid, u.username_clean AS username, u.username AS name, u.user_email as email FROM #__users AS u INNER JOIN #__sessions AS s ON u.user_id = s.session_user_id WHERE s.session_viewonline =1 AND  s.session_user_id != 1 AND s.session_time > $active $limiter";
         return $query;
     }
@@ -152,7 +152,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
     function getNumberOnlineGuests() {
         //get a unix time from 5 mintues ago
         date_default_timezone_set('UTC');
-        $active = strtotime("-5 minutes", time());
+        $active = strtotime('-5 minutes', time());
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = "SELECT COUNT(DISTINCT(session_ip)) FROM #__sessions WHERE session_user_id = 1 AND session_time > $active";
         $db->setQuery($query);
@@ -166,7 +166,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
     function getNumberOnlineMembers() {
         //get a unix time from 5 mintues ago
         date_default_timezone_set('UTC');
-        $active = strtotime("-5 minutes", time());
+        $active = strtotime('-5 minutes', time());
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = "SELECT COUNT(DISTINCT(session_user_id)) FROM #__sessions WHERE session_viewonline = 1 AND session_user_id != 1 AND session_time > $active";
         $db->setQuery($query);

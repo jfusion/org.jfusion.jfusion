@@ -41,8 +41,8 @@ if ( $params->get('layout') == 'horizontal' ) {
             $maxwidth = $params->get('avatar_width', 60);
 
             $output .= '<img src="' . $avatar .'" alt="' .$display_name . '" style="';
-            $output .= (!empty($maxheight)) ? " max-height: {$maxheight}px;" : "";
-            $output .= (!empty($maxwidth)) ? " max-width: {$maxwidth}px;" : "";
+            $output .= (!empty($maxheight)) ? " max-height: {$maxheight}px;" : '';
+            $output .= (!empty($maxwidth)) ? " max-width: {$maxwidth}px;" : '';
             $output .= '" />' . "\n";
         }
 
@@ -55,15 +55,15 @@ if ( $params->get('layout') == 'horizontal' ) {
         	
             //if (!empty($pmcount)) {
                 //$output .= '<br/>' . JText::_('PM_START');
-                //$output .= '<a href="'.$url_pm.'">'.JText::sprintf('PM_LINK', $pmcount["total"])."</a>";
-                //$output .= JText::sprintf('PM_END', $pmcount["unread"]);
+                //$output .= '<a href="'.$url_pm.'">'.JText::sprintf('PM_LINK', $pmcount['total']).'</a>';
+                //$output .= JText::sprintf('PM_END', $pmcount['unread']);
             //}
         }
 
         if (!empty($pmcount)) {
             $output .= JText::_('PM_START').' ';
-            $output .= ' <a href="'.$url_pm.'">'.JText::sprintf('PM_LINK', $pmcount["total"]).'</a> ';
-            $output .= JText::sprintf('PM_END', $pmcount["unread"]).' ';
+            $output .= ' <a href="'.$url_pm.'">'.JText::sprintf('PM_LINK', $pmcount['total']).'</a> ';
+            $output .= JText::sprintf('PM_END', $pmcount['unread']).' ';
         }
 
         if (!empty($url_viewnewmessages)) {
@@ -150,8 +150,8 @@ if ( $params->get('layout') == 'horizontal' ) {
             $maxwidth = $params->get('avatar_width', 60);
 
             $output .= '<div align="center"><img src="' . $avatar .'" alt="' .$display_name . '" style="';
-            $output .= (!empty($maxheight)) ? " max-height: {$maxheight}px;" : "";
-            $output .= (!empty($maxwidth)) ? " max-width: {$maxwidth}px;" : "";
+            $output .= (!empty($maxheight)) ? " max-height: {$maxheight}px;" : '';
+            $output .= (!empty($maxwidth)) ? " max-width: {$maxwidth}px;" : '';
             $output .= '" /></div>' . "\n";
         }
 
@@ -163,16 +163,16 @@ if ( $params->get('layout') == 'horizontal' ) {
             $output .= '<div align="center">' . JText::sprintf($custom_greeting, $display_name);
             //if (!empty($pmcount)) {
                 //$output .= '<br/>' . JText::_('PM_START');
-                //$output .= '<a href="'.$url_pm.'">'.JText::sprintf('PM_LINK', $pmcount["total"])."</a>";
-                //$output .= JText::sprintf('PM_END', $pmcount["unread"]);
+                //$output .= '<a href="'.$url_pm.'">'.JText::sprintf('PM_LINK', $pmcount['total']).'</a>';
+                //$output .= JText::sprintf('PM_END', $pmcount['unread']);
             //}
             $output .= '</div>';
         }
 
         if (!empty($pmcount)) {
             $output .= '<div align="center">' . JText::_('PM_START');
-            $output .= ' <a href="'.$url_pm.'">'.JText::sprintf('PM_LINK', $pmcount["total"]).'</a>';
-            $output .= JText::sprintf('PM_END', $pmcount["unread"]);
+            $output .= ' <a href="'.$url_pm.'">'.JText::sprintf('PM_LINK', $pmcount['total']).'</a>';
+            $output .= JText::sprintf('PM_END', $pmcount['unread']);
             $output .= '</div>';
         }
 

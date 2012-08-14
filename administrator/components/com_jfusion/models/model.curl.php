@@ -522,7 +522,7 @@ class JFusionCurl
 			$cookiearr[$cookiename] = trim(implode('=', $cookie));
 		}
 
-		$cookie = "";
+		$cookie = '';
 		if (!empty($cookiearr) && (trim($string) == "")) {
 			foreach ($cookiearr as $key=>$value) {
 				$cookie .= "$key=$value; ";
@@ -647,8 +647,8 @@ class JFusionCurl
 		$cookies=array();
 		$cookies=JFusionCurl::parsecookies($mycookies_to_set);
 		foreach ($cookies as $cookie) {
-			$name="";
-			$value="";
+			$name='';
+			$value='';
 			if ($expires == 0) {
 				$expires_time=0;
 			} else {
@@ -750,8 +750,8 @@ class JFusionCurl
 					}
 				}
 			}
-			$name="";
-			$value="";
+			$name='';
+			$value='';
 			if (isset($cookie['value']['key'])) {
 				$name= $cookie['value']['key'];
 			}
@@ -1142,8 +1142,8 @@ class JFusionCurl
 				break;
 		}
 
-        $input_username_name="";
-        $input_password_name = "";
+        $input_username_name='';
+        $input_password_name = '';
 		if (empty($curl_options['logout'])){
 			for ($i = 0; $i <= $elements_count-1; $i++) {
 				if ($curl_options['input_username_id']) {
@@ -1188,7 +1188,7 @@ class JFusionCurl
 		}
 		// we now set the submit parameters. These are:
 		// all form_elements name=value combinations with value != '' and type hidden
-		$strParameters="";
+		$strParameters='';
 		if ($curl_options['hidden']) {
 			for ($i = 0; $i <= $elements_count-1; $i++) {
 				if (($elements_values[$i] ['value'] != '')&& ($elements_values[$i] ['type'] == 'hidden')) {
@@ -1451,7 +1451,7 @@ class JFusionCurl
 			$curl_options['debug'] = false;
 		}
 		if (!isset($curl_options['postfields'])) {
-			$curl_options['postfields'] = "";
+			$curl_options['postfields'] = '';
 		}
 
 		$ch = curl_init();

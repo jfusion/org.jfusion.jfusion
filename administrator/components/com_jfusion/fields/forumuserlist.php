@@ -49,10 +49,10 @@ class JFormFieldForumUserList extends JFormField
                     return '';
                 }
             } else {
-                return "<span style='float:left; margin: 5px 0; font-weight: bold;'>".JText::_('SAVE_CONFIG_FIRST')."</span>";
+                return '<span style="float:left; margin: 5px 0; font-weight: bold;">'.JText::_('SAVE_CONFIG_FIRST').'</span>';
             }
         } else {
-            return "<span style='float:left; margin: 5px 0; font-weight: bold;'>Programming error: You must define global \$jname before the JParam object can be rendered.</span>";
+            return '<span style="float:left; margin: 5px 0; font-weight: bold;">Programming error: You must define global \$jname before the JParam object can be rendered.</span>';
         }
     }
 }

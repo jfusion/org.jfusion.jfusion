@@ -42,12 +42,12 @@ class JElementJFusionUsergroupList extends JElement
 		    if (JFusionFunction::validPlugin($jname)) {
             	$JFusionPlugin =& JFusionFactory::getAdmin($jname);
 
-            	$grouptype = $node->attributes("grouptype");
+            	$grouptype = $node->attributes('grouptype');
             	$usergroups = $JFusionPlugin->getUsergroupList($grouptype);
 
-            	$multiple = $node->attributes("multiple");
+            	$multiple = $node->attributes('multiple');
             	if (!empty($usergroups)) {
-					$multiple = (!empty($multiple)) ? " MULTIPLE " : "";
+					$multiple = (!empty($multiple)) ? ' MULTIPLE ' : '';
 					$param_name = ($multiple) ? $control_name.'['.$name.'][]' : $control_name.'['.$name.']';
                 	return JHTML::_('select.genericlist', $usergroups, $param_name, $multiple,
                 	'id', 'name', $value);

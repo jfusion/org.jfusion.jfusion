@@ -56,7 +56,7 @@ class modjfusionWhosOnlineHelper {
 
             //show the number of people online if set to do so
             $output->num_guests = $public_users->getNumberOnlineGuests();
-            $output->num_members = $public_users->getNumberOnlineMembers($config['group_limit'], $config["show_total_users"]);
+            $output->num_members = $public_users->getNumberOnlineMembers($config['group_limit'], $config['show_total_users']);
 
             if(is_array($output->online_users)) {
                 // process result
@@ -98,7 +98,7 @@ class modjfusionWhosOnlineHelper {
                         }
                     }
 
-                    $u->output->display_name = ($config["name"]==1) ? $u->name : $u->username;
+                    $u->output->display_name = ($config['name']==1) ? $u->name : $u->username;
                     $user_url = '';
                     if ($config['userlink']) {
                         if ($config['userlink_software']=='custom' && !empty($config['userlink_custom'])  && !empty($joomla_userid)) {

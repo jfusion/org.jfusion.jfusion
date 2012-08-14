@@ -369,7 +369,7 @@ class JFusion_Horde_Cipher_blowfish
 
         list($L, $R) = array_values(unpack('N*', $block));
         $parts = $this->_encryptBlock($L, $R);
-        return pack("NN", $parts['L'], $parts['R']);
+        return pack('NN', $parts['L'], $parts['R']);
     }
 
     /**
@@ -449,7 +449,7 @@ class JFusion_Horde_Cipher_blowfish
         $R ^= ((($this->s1[($L >> 24) & 0xFF] + $this->s2[($L >> 16) & 0x0ff]) ^ $this->s3[($L >> 8) & 0x0ff]) + $this->s4[$L & 0x0ff]) ^ $this->p[2];
         $L ^= ((($this->s1[($R >> 24) & 0xFF] + $this->s2[($R >> 16) & 0x0ff]) ^ $this->s3[($R >> 8) & 0x0ff]) + $this->s4[$R & 0x0ff]) ^ $this->p[1];
 
-        $decrypted = pack("NN", $R ^ $this->p[0], $L);
+        $decrypted = pack('NN', $R ^ $this->p[0], $L);
         return $decrypted;
     }
 

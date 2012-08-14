@@ -65,7 +65,7 @@ class JFusionUser_efront extends JFusionUser
 
             $result->name = trim($result->name . ' ' . $result->surname);
             $result->registerDate = date('d-m-Y H:i:s', $result->timestamp);
-            $result->activation = ($result->pending == 1) ? "1" : "";
+            $result->activation = ($result->pending == 1) ? "1" : '';
             $result->block = !$result->active;
         }    
         return $result;
@@ -121,24 +121,24 @@ class JFusionUser_efront extends JFusionUser
         $query = "DELETE FROM #__users_to_chatrooms WHERE users_LOGIN = " . $db->Quote($userinfo->username);
         $db->setQuery($query);
         if (!$db->query()) {
-            $status["debug"][] = "Error Could not delete users_to_chatroom for user $userinfo->username: {$db->stderr() }";
+            $status['debug'][] = "Error Could not delete users_to_chatroom for user $userinfo->username: {$db->stderr() }";
         } else {
-            $status["debug"][] = "Deleted users_to_chatroom for user $userinfo->username.";
+            $status['debug'][] = "Deleted users_to_chatroom for user $userinfo->username.";
         }
         $db = JFusionFactory::getDatabase($this->getJname());
-        $query = "DELETE FROM #__chatrooms WHERE users_LOGIN = " . $db->Quote($userinfo->username). " AND type = ".$db->Quote("one_to_one");
+        $query = "DELETE FROM #__chatrooms WHERE users_LOGIN = " . $db->Quote($userinfo->username). " AND type = ".$db->Quote('one_to_one');
         $db->setQuery($query);
         if (!$db->query()) {
-            $status["debug"][] = "Error Could not delete chatrooms for user $userinfo->username: {$db->stderr() }";
+            $status['debug'][] = "Error Could not delete chatrooms for user $userinfo->username: {$db->stderr() }";
         } else {
-            $status["debug"][] = "Deleted chatrooms for user $userinfo->username";
+            $status['debug'][] = "Deleted chatrooms for user $userinfo->username";
         }
         $query = "DELETE FROM #__users_online WHERE users_LOGIN = " . $db->Quote($userinfo->username);
         $db->setQuery($query);
         if (!$db->query()) {
-            $status["debug"][] = "Error Could not delete users_on_line for user $userinfo->username: {$db->stderr()}.";
+            $status['debug'][] = "Error Could not delete users_on_line for user $userinfo->username: {$db->stderr()}.";
         } else {
-            $status["debug"][] = "Deleted users_on_line for user $userinfo->username.";
+            $status['debug'][] = "Deleted users_on_line for user $userinfo->username.";
         }
         $query = "SELECT action FROM #__logs WHERE users_LOGIN = " . $db->Quote($userinfo->username)." timestamp desc limit 1";
         $db->setQuery($query);
@@ -155,9 +155,9 @@ class JFusionUser_efront extends JFusionUser
         	$log->session_ip = sprintf('%02x%02x%02x%02x',  $ip[0],  $ip[1],  $ip[2],  $ip[3]);
             $ok = $db->insertObject('#__logs', $log, 'id');
             if (!$ok) {
-                $status["debug"][] = "Error Could not log the logout action for user $userinfo->username: {$db->stderr() }";
+                $status['debug'][] = "Error Could not log the logout action for user $userinfo->username: {$db->stderr() }";
             } else {
-                $status["debug"][] = "Logged the logout action for user $userinfo->username";
+                $status['debug'][] = "Logged the logout action for user $userinfo->username";
             }
         }
         return $status;
@@ -369,7 +369,7 @@ class JFusionUser_efront extends JFusionUser
             $status['error'][] = JText::_('ERROR_CREATE_USER') . ": " . JText::_('USERGROUP_MISSING');
         } else {
             $usergroup = $usergroups[0];
-            $user_type = "";
+            $user_type = '';
             $user_types_ID = 0;
             switch ($usergroup){
                 case 0:

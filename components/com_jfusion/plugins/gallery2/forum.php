@@ -183,7 +183,7 @@ class JFusionForum_gallery2 extends JFusionForum {
          * @var $helper JFusionHelper_gallery2
          */
         $helper = JFusionFactory::getHelper($this->getJname());
-        $g2sidebar = $helper->getVar("sidebar", -1);
+        $g2sidebar = $helper->getVar('sidebar', -1);
         if ($g2sidebar != - 1) {
             return '<div id="gsSidebar" class="gcBorder1"> ' . implode('', $g2sidebar) . '</div>';
         } else {
