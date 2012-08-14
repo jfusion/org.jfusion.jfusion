@@ -136,7 +136,7 @@ class JFusionAdmin
         } else {
             $db = JFusionFactory::getDatabase($jname);
             $jdb = JFactory::getDBO();
-            if (JError::isError($db) || !$db || !method_exists($jdb, 'setQuery')) {
+            if (JError::isError($db) || !$db || !method_exists($db, 'setQuery') || !method_exists($jdb, 'setQuery')) {
                 $status['config'] = 0;
                 $status['message'] = JText::_('NO_DATABASE');
             } elseif (!$db->connected()) {
