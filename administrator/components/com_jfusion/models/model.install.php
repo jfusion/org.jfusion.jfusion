@@ -388,7 +388,7 @@ class JFusionPluginInstaller extends JObject
                      */
 
                     //check to see if this is updating a plugin that has been copied
-                    $query = "SELECT name FROM #__jfusion WHERE original_name = {$db->Quote($name) }";
+                    $query = 'SELECT name FROM #__jfusion WHERE original_name = '.$db->Quote($name);
                     $db->setQuery($query);
                     $copiedPlugins = $db->loadObjectList();
                     foreach ($copiedPlugins as $plugin) {

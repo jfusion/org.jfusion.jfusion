@@ -131,15 +131,15 @@ class JFusionUser_oscommerce extends JFusionUser
             case 'osc3':
                 $session_id=$_COOKIE['osCsid'];
                 if ($session_id == '') {
-                    $status['error'][] = "Error Could find session cookie make sure COOKIE PATH IS SET TO / in both osC and JFusion plugin settings";
+                    $status['error'][] = 'Error Could find session cookie make sure COOKIE PATH IS SET TO / in both osC and JFusion plugin settings';
                 } else {
                     $db = JFusionFactory::getDatabase($this->getJname());
                     $query = "DELETE FROM #__sessions WHERE id = '" . $session_id . "'";
                     $db->setQuery($query);
                     if (!$db->query()) {
-                        $status['error'][] = "Error Could not delete session with sessionID $session_id: {$db->stderr() }";
+                        $status['error'][] = 'Error Could not delete session with sessionID '.$session_id.': '.$db->stderr();
                     } else {
-                        $status['debug'][] = "Deleted sessionrecord with id $session_id.";
+                        $status['debug'][] = 'Deleted sessionrecord with id '.$session_id;
                     }
                 }
                 break;
@@ -387,14 +387,14 @@ class JFusionUser_oscommerce extends JFusionUser
             case 'oscmax':
                 $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
                 if (empty($usergroups)) {
-                    $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('USERGROUP_MISSING');
+                    $status['error'][] = JText::_('ERROR_CREATING_USER') . ': ' . JText::_('USERGROUP_MISSING');
                     return;
                 }
                 $usergroup = $usergroups[0];
                 $user->customers_group_id = $usergroup;
                 // get the groupname
                 $db1 = JFusionFactory::getDatabase($this->getJname());
-                $query = 'SELECT customers_group_name from #__customers_groups WHERE customers_group_id = ' . $usergroup . " AND language_id = " . $userinfo->language;
+                $query = 'SELECT customers_group_name from #__customers_groups WHERE customers_group_id = ' . $usergroup . ' AND language_id = ' . $userinfo->language;
                 $db1->setQuery($query);
                 $user->customers_group_name = $db1->loadResult();
             break;
@@ -473,28 +473,28 @@ class JFusionUser_oscommerce extends JFusionUser
             $query = "DELETE FROM #__customers WHERE customers_id = '" . $user_id . "'";
             $db->setQuery($query);
             if (!$db->query()) {
-                $status['error'][] = "Error Could not delete userrecord with userid $user_id: {$db->stderr() }";
+                $status['error'][] = 'Error Could not delete userrecord with userid '.$user_id.': '.$db->stderr();
                 return $status;
             } else {
-                $status['debug'][] = "Deleted userrecord of user with id $user_id.";
+                $status['debug'][] = 'Deleted userrecord of user with id '.$user_id;
             }
             // delete adressbook items osc2 & osc3 & osczen & oscxt & oscmax
             $query = "DELETE FROM #__address_book WHERE customers_id = '" . $user_id . "'";
             $db->setQuery($query);
             if (!$db->query()) {
-                $status['error'][] = "Error Could not delete addressbookitems with userid $user_id: {$db->stderr() }";
+                $status['error'][] = 'Error Could not delete addressbookitems with userid '.$user_id.': '.$db->stderr();
                 return $status;
             } else {
-                $status['debug'][] = "Deleted addressbook items of user with id $user_id.";
+                $status['debug'][] = 'Deleted addressbook items of user with id '.$user_id;
             }
             // delete customer from who's on line osc2 & osc3 & osczen & oscxt & oscmax
             $query = "DELETE FROM #__whos_online WHERE customer_id = '" . $user_id . "'";
             $db->setQuery($query);
             if (!$db->query()) {
-                $status['error'][] = "Error Could not delete customer on line with userid $user_id: {$db->stderr() }";
+                $status['error'][] = 'Error Could not delete customer on line with userid '.$user_id.': '.$db->stderr();
                 return $status;
             } else {
-                $status['debug'][] = "Deleted customer online entry of user with id $user_id.";
+                $status['debug'][] = 'Deleted customer online entry of user with id '.$user_id;
             }
             // delete review items osc2 & osc3 &  osczen & oscxt
             $delete_reviews = $params->get('delete_reviews');
@@ -509,10 +509,10 @@ class JFusionUser_oscommerce extends JFusionUser
                 $db->query("UPDATE #__reviews set customers_id = null where customers_id = '" . (int)$user_id . "'");
             }
             if (!$db->query()) {
-                $status['error'][] = "Error Could not delete customer reviews with userid $user_id: {$db->stderr() }";
+                $status['error'][] = 'Error Could not delete customer reviews with userid '.$user_id.': '.$db->stderr();
                 return $status;
             } else {
-                $status['debug'][] = "Deleted customer rieviews of user with id $user_id.";
+                $status['debug'][] = 'Deleted customer rieviews of user with id '.$user_id;
             }
             switch ($osCversion) {
                 case 'oscxt':
@@ -520,33 +520,33 @@ class JFusionUser_oscommerce extends JFusionUser
                     $query = "DELETE FROM #__products_notifications WHERE customers_id = '" . $user_id . "'";
                     $db->setQuery($query);
                     if (!$db->query()) {
-                        $status['error'][] = "Error Could not delete product notifications with userid $user_id: {$db->stderr() }";
+                        $status['error'][] = 'Error Could not delete product notifications with userid '.$user_id.': '.$db->stderr();
                         return $status;
                     } else {
-                        $status['debug'][] = "Deleted products notifications of user with id $user_id.";
+                        $status['debug'][] = 'Deleted products notifications of user with id '.$user_id;
                     }
                     $query = "DELETE FROM #__customers_customers_status_history WHERE customers_id = '" . $user_id . "'";
                     $db->setQuery($query);
                     if (!$db->query()) {
-                        $status['error'][] = "Error Could not delete customer history with userid $user_id: {$db->stderr() }";
+                        $status['error'][] = 'Error Could not delete customer history with userid '.$user_id.': '.$db->stderr();
                         return $status;
                     } else {
-                        $status['debug'][] = "Deleted customer history of user with id $user_id.";
+                        $status['debug'][] = 'Deleted customer history of user with id '.$user_id;
                     }
                     $query = "DELETE FROM #__customers_ip WHERE customers_id = '" . $user_id . "'";
                     $db->setQuery($query);
                     if (!$db->query()) {
-                        $status['error'][] = "Error Could not delete customer ip with userid $user_id: {$db->stderr() }";
+                        $status['error'][] = 'Error Could not delete customer ip with userid '.$user_id.': '.$db->stderr();
                         return $status;
                     } else {
-                        $status['debug'][] = "Deleted customer ip of user with id $user_id.";
+                        $status['debug'][] = 'Deleted customer ip of user with id '.$user_id;
                     }
                     $query = "DELETE FROM #__admin_access WHERE customers_id = '" . $user_id . "'";
                     $db->setQuery($query);
                     if (!$db->query()) {
-                        $status['error'][] = "Error Could not delete admin accessid $user_id: {$db->stderr() }";
+                        $status['error'][] = 'Error Could not delete admin accessid '.$user_id.': '.$db->stderr();
                     } else {
-                        $status['debug'][] = "Deleted admin accessith id $user_id.";
+                        $status['debug'][] = 'Deleted admin accessith id '.$user_id;
                     }
                     return $status;
                 case 'osc2':
@@ -556,54 +556,54 @@ class JFusionUser_oscommerce extends JFusionUser
                     $query = "DELETE FROM #__customers_info WHERE customers_info_id = '" . $user_id . "'";
                     $db->setQuery($query);
                     if (!$db->query()) {
-                        $status['error'][] = "Error Could not delete useinfo with userid $user_id: {$db->stderr() }";
+                        $status['error'][] = 'Error Could not delete useinfo with userid '.$user_id.': '.$db->stderr();
                         return $status;
                     } else {
-                        $status['debug'][] = "Deleted userinfo of user with id $user_id.";
+                        $status['debug'][] = 'Deleted userinfo of user with id '.$user_id;
                     }
                     // delete  customer basket osc2 & osczen
                     $query = "DELETE FROM #__customers_basket WHERE customers_id = '" . $user_id . "'";
                     $db->setQuery($query);
                     if (!$db->query()) {
-                        $status['error'][] = "Error Could not delete customer basket with userid $user_id: {$db->stderr() }";
+                        $status['error'][] = 'Error Could not delete customer basket with userid '.$user_id.': '.$db->stderr();
                         return $status;
                     } else {
-                        $status['debug'][] = "Deleted customer basket items of user with id $user_id.";
+                        $status['debug'][] = 'Deleted customer basket items of user with id '.$user_id;
                     }
                     // delete  customer basket attributes osc2 & osczen
                     $query = "DELETE FROM #__customers_basket_attributes WHERE customers_id = '" . $user_id . "'";
                     $db->setQuery($query);
                     if (!$db->query()) {
-                        $status['error'][] = "Error Could not delete customer basket attributes with userid $user_id: {$db->stderr() }";
+                        $status['error'][] = 'Error Could not delete customer basket attributes with userid '.$user_id.': '.$db->stderr();
                         return $status;
                     } else {
-                        $status['debug'][] = "Deleted customer basket attributes items of user with id $user_id.";
+                        $status['debug'][] = 'Deleted customer basket attributes items of user with id '.$user_id;
                     }
                 break;
                 case 'osc3':
                     $query = "DELETE FROM #__shopping_carts WHERE customers_id = '" . $user_id . "'";
                     $db->setQuery($query);
                     if (!$db->query()) {
-                        $status['error'][] = "Error Could not delete customer shopping cart with userid $user_id: {$db->stderr() }";
+                        $status['error'][] = 'Error Could not delete customer shopping cart with userid '.$user_id.': '.$db->stderr();
                         return $status;
                     } else {
-                        $status['debug'][] = "Deleted customer shopping cart of user with id $user_id.";
+                        $status['debug'][] = 'Deleted customer shopping cart of user with id '.$user_id;
                     }
                     $query = "DELETE FROM #__shopping_carts_custom_variants_values WHERE customers_id = '" . $user_id . "'";
                     $db->setQuery($query);
                     if (!$db->query()) {
-                        $status['error'][] = "Error Could not delete customer shopping cart variantswith userid $user_id: {$db->stderr() }";
+                        $status['error'][] = 'Error Could not delete customer shopping cart variantswith userid '.$user_id.': '.$db->stderr();
                         return $status;
                     } else {
-                        $status['debug'][] = "Deleted customer shopping cart variants of user with id $user_id.";
+                        $status['debug'][] = 'Deleted customer shopping cart variants of user with id '.$user_id;
                     }
                     $query = "DELETE FROM #__product_notifications WHERE customers_id = '" . $user_id . "'";
                     $db->setQuery($query);
                     if (!$db->query()) {
-                        $status['error'][] = "Error Could not delete customer product notifications with userid $user_id: {$db->stderr() }";
+                        $status['error'][] = 'Error Could not delete customer product notifications with userid '.$user_id.': '.$db->stderr();
                         return $status;
                     } else {
-                        $status['debug'][] = "Deleted customer product notifications of user with id $user_id.";
+                        $status['debug'][] = 'Deleted customer product notifications of user with id '.$user_id;
                     }
                 break;
             }
@@ -622,7 +622,7 @@ class JFusionUser_oscommerce extends JFusionUser
         $osCversion = $params->get('osCversion');
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
         if (empty($usergroups)) {
-            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('USERGROUP_MISSING');
+            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . JText::_('USERGROUP_MISSING');
         } else {
             $usergroup = $usergroups[0];
             $db = JFusionFactory::getDataBase($this->getJname());

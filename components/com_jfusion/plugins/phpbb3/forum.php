@@ -196,15 +196,15 @@ class JFusionForum_phpbb3 extends JFusionForum {
 
                 $userlookup = JFusionFunction::lookupUser($this->getJname(), $JUser->id);
                 if (!empty($userlookup)) {
-                    $query = "SELECT topic_id, mark_time FROM #__topics_track WHERE user_id = {$userlookup->userid}";
+                    $query = 'SELECT topic_id, mark_time FROM #__topics_track WHERE user_id = '.$userlookup->userid;
                     $db->setQuery($query);
                     $marktimes['thread'] = $db->loadObjectList('topic_id');
 
-                    $query = "SELECT forum_id, mark_time FROM #__forums_track WHERE user_id = {$userlookup->userid}";
+                    $query = 'SELECT forum_id, mark_time FROM #__forums_track WHERE user_id = '.$userlookup->userid;
                     $db->setQuery($query);
                     $marktimes['forum'] = $db->loadObjectList('forum_id');
 
-                    $query = "SELECT user_lastmark FROM #__users WHERE user_id = {$userlookup->userid}";
+                    $query = 'SELECT user_lastmark FROM #__users WHERE user_id = '.$userlookup->userid;
                     $db->setQuery($query);
                     $marktimes['user'] = $db->loadResult();
                 }
@@ -299,11 +299,11 @@ class JFusionForum_phpbb3 extends JFusionForum {
                     $userinfo = JFusionFunction::lookupUser($this->getJname(), $JUser->id);
                     if (!empty($userinfo)) {
                         $userid = $userinfo->userid;
-                        $query = "SELECT group_id FROM #__user_group WHERE user_id = $userid";
+                        $query = 'SELECT group_id FROM #__user_group WHERE user_id = '.$userid;
                         $db->setQuery($query);
                         $groupids = $db->loadResultArray();
 
-                        $query = "SELECT user_type FROM #__users WHERE user_id = $userid";
+                        $query = 'SELECT user_type FROM #__users WHERE user_id = '.$userid;
                         $db->setQuery($query);
                         $usertype = (int) $db->loadResult();
                     } else {
@@ -568,7 +568,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
                         $status['error'] = $jdb->stderr();
                     } else {
                         //update some stats
-                        $query = "UPDATE #__users SET user_posts = user_posts + 1 WHERE user_id = {$userid}";
+                        $query = 'UPDATE #__users SET user_posts = user_posts + 1 WHERE user_id = '.$userid;
                         $jdb->setQuery($query);
                         if(!$jdb->query()) {
                             $status['error'] = $jdb->stderr();
@@ -632,7 +632,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
         $timestamp = $dbparams->get('use_content_created_date', false) ? JFactory::getDate($contentitem->created)->toUnix() : time();
 		$userid = $dbparams->get('default_user');
 
-		$query = "SELECT post_edit_count FROM #__posts WHERE post_id = $postid";
+		$query = 'SELECT post_edit_count FROM #__posts WHERE post_id = '.$postid;
 		$jdb->setQuery($query);
 		$count = $jdb->loadResult();
 
@@ -650,7 +650,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 			$status['error'] = $jdb->stderr();
 		} else {
 			//update the thread title
-			$query = "UPDATE #__topics SET topic_title = " . $jdb->Quote($subject) . " WHERE topic_id = " . (int) $threadid;
+			$query = 'UPDATE #__topics SET topic_title = ' . $jdb->Quote($subject) . ' WHERE topic_id = ' . (int) $threadid;
             $jdb->setQuery($query);
             $jdb->query();
 		}
@@ -681,12 +681,12 @@ class JFusionForum_phpbb3 extends JFusionForum {
 				$db =& JFusionFactory::getDatabase($this->getJname());
 				$user =& JFusionFactory::getUser($this->getJname());
 				$username_clean = $user->filterUsername($userinfo->username);
-				$query = "SELECT COUNT(*) FROM #__users "
-						. " WHERE username = " . $db->Quote($userinfo->username)
-						. " OR username = " . $db->Quote($username_clean)
-						. " OR username_clean = " . $db->Quote($userinfo->username)
-						. " OR username_clean = " . $db->Quote($username_clean)
-						. " OR LOWER(user_email) = " . strtolower($db->Quote($userinfo->username));
+				$query = 'SELECT COUNT(*) FROM #__users '
+						. ' WHERE username = ' . $db->Quote($userinfo->username)
+						. ' OR username = ' . $db->Quote($username_clean)
+						. ' OR username_clean = ' . $db->Quote($userinfo->username)
+						. ' OR username_clean = ' . $db->Quote($username_clean)
+						. ' OR LOWER(user_email) = ' . strtolower($db->Quote($userinfo->username));
 				$db->setQuery($query);
 				$result = $db->loadResult();
 				if(!empty($result)) {
@@ -714,11 +714,11 @@ class JFusionForum_phpbb3 extends JFusionForum {
             $bbcode = $helper->bbcode_parser($text);
 
 			//get some topic information
-			$query = "SELECT topic_title, topic_replies, topic_replies_real FROM #__topics WHERE topic_id = {$ids->threadid}";
+			$query = 'SELECT topic_title, topic_replies, topic_replies_real FROM #__topics WHERE topic_id = '.$ids->threadid;
 			$jdb->setQuery($query);
 			$topic = $jdb->loadObject();
 			//the user information
-			$query = "SELECT username, user_colour, user_permissions FROM #__users WHERE user_id = '$userid'";
+			$query = 'SELECT username, user_colour, user_permissions FROM #__users WHERE user_id = '.$userid;
 			$jdb->setQuery($query);
 			$phpbbUser = $jdb->loadObject();
 
@@ -800,7 +800,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 				}
 
 				//update some stats
-				$query = "UPDATE #__users SET user_posts = user_posts + 1 WHERE user_id = {$userid}";
+				$query = 'UPDATE #__users SET user_posts = user_posts + 1 WHERE user_id = '.$userid;
 				$jdb->setQuery($query);
 				if(!$jdb->query()) {
 					$status['error'] = $jdb->stderr();
@@ -845,15 +845,15 @@ class JFusionForum_phpbb3 extends JFusionForum {
 	function getDiscussionColumns()
 	{
 		$columns = new stdClass();
-		$columns->userid = "user_id";
-		$columns->username = "username";
-		$columns->name = "name";
-		$columns->dateline = "post_time";
-		$columns->posttext = "post_text";
-		$columns->posttitle = "post_subject";
-		$columns->postid = "post_id";
-		$columns->threadid = "topic_id";
-		$columns->guest = "guest";
+		$columns->userid = 'user_id';
+		$columns->username = 'username';
+		$columns->name = 'name';
+		$columns->dateline = 'post_time';
+		$columns->posttext = 'post_text';
+		$columns->posttitle = 'post_subject';
+		$columns->postid = 'post_id';
+		$columns->threadid = 'topic_id';
+		$columns->guest = 'guest';
 		return $columns;
 	}
 

@@ -649,14 +649,14 @@ class JFusionPublic_phpbb3 extends JFusionPublic
                     foreach ($forum_parents as $k => $data) {
                         $crumb = new stdClass();
                         $crumb->title = $data->forum_name;
-                        $crumb->url = "viewforum.php?f={$data->forum_id}";
+                        $crumb->url = 'viewforum.php?f='.$data->forum_id;
                         $pathway[] = $crumb;
                     }
                 }
 
                 $crumb = new stdClass();
                 $crumb->title = $forum_info->forum_name;
-                $crumb->url = "viewforum.php?f=" . $forum_id;
+                $crumb->url = 'viewforum.php?f=' . $forum_id;
                 $pathway[] = $crumb;
             }
         }
@@ -670,7 +670,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             if (!empty($topic_title)) {
                 $crumb = new stdClass();
                 $crumb->title = $topic_title->topic_title;
-                $crumb->url = "viewtopic.php?f=$forum_id&amp;t=$topic_id";
+                $crumb->url = 'viewtopic.php?f='.$forum_id.'&amp;t='.$topic_id;
                 $pathway[] = $crumb;
             }
         }

@@ -294,7 +294,7 @@ class executeJFusionHook
                     $show['nojs_link'].= (substr($url, -1) != '/') ? '/nojs,1/' : 'nojs,1/';
                 } else {
                     $jfile = (JRequest::getVar('jfile', false)) ? JRequest::getVar('jfile') : 'index.php';
-                    $show['nojs_link'] = "$jfile" . "?nojs=1";
+                    $show['nojs_link'] = $jfile . '?nojs=1';
                 }
             }
         }

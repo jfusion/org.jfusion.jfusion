@@ -141,14 +141,14 @@ class cssparser {
 			if($tagmatch & $subtagmatch & $classmatch & $idmatch) {
 				$temp = $_tag;
 				if((strlen($temp) > 0) & (strlen($_class) > 0)) {
-					$temp .= ".".$_class;
+					$temp .= '.'.$_class;
 				} elseif(strlen($temp) == 0) {
-					$temp = ".".$_class;
+					$temp = '.'.$_class;
 				}
 				if((strlen($temp) > 0) & (strlen($_subtag) > 0)) {
-					$temp .= ":".$_subtag;
+					$temp .= ':'.$_subtag;
 				} elseif(strlen($temp) == 0) {
-					$temp = ":".$_subtag;
+					$temp = ':'.$_subtag;
 				}
 				foreach($this->css[$temp] as $property => $property_value) {
 					$result[$property] = $property_value;

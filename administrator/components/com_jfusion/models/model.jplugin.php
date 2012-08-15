@@ -1244,7 +1244,7 @@ class JFusionJplugin
                             $correct_usergroup = $usergroups[0];
                             //make sure that ACL has not been corrupted
                             $correct_groupname = JFusionJplugin::getUsergroupName($jname,$correct_usergroup);
-                            $query = "SELECT group_id FROM #__core_acl_aro as a INNER JOIN #__core_acl_groupsaro__map as b ON a.id = b.aro_id WHERE a.value = " . $existinguser->userid;
+                            $query = 'SELECT group_id FROM #__core_acl_aro as a INNER JOIN #__core_acl_groupsaro__map as b ON a.id = b.aro_id WHERE a.value = ' . $existinguser->userid;
                             $db->setQuery($query);
                             $acl_group_id = $db->loadResult();
 
@@ -1353,7 +1353,7 @@ class JFusionJplugin
                         $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $db->stderr();
                     } else {
                         //we have to update the acl table
-                        $query = "SELECT id FROM #__core_acl_aro WHERE value = " . $existinguser->userid;
+                        $query = 'SELECT id FROM #__core_acl_aro WHERE value = ' . $existinguser->userid;
                         $db->setQuery($query);
                         $aro_id = $db->loadResult();
                         if (!empty($aro_id)) {
@@ -1414,7 +1414,7 @@ class JFusionJplugin
     public static function getNumberOnlineGuests()
     {
         $db = JFactory::getDBO();
-        $query = 'SELECT COUNT(*)' . ' FROM #__session' . ' WHERE guest = 1 AND usertype = "" AND client_id = 0';
+        $query = 'SELECT COUNT(*) FROM #__session WHERE guest = 1 AND usertype = "" AND client_id = 0';
         $db->setQuery($query);
         return $db->loadResult();
     }
@@ -1427,7 +1427,7 @@ class JFusionJplugin
     public static function getNumberOnlineMembers()
     {
         $db = JFactory::getDBO();
-        $query = 'SELECT COUNT(DISTINCT userid) AS c' . ' FROM #__session' . ' WHERE guest = 0 AND client_id = 0';
+        $query = 'SELECT COUNT(DISTINCT userid) AS c FROM #__session WHERE guest = 0 AND client_id = 0';
         $db->setQuery($query);
         return $db->loadResult();
     }

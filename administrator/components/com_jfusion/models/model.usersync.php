@@ -66,12 +66,12 @@ class JFusionUsersync
             $limitstart = 0;
         }
 
-        $sortStatement = (!empty($sort)) ? "ORDER BY $sort $dir" : '';
-        $whereStatement = "WHERE syncid = {$db->Quote($syncid)}";
+        $sortStatement = (!empty($sort)) ? 'ORDER BY '.$sort.' '.$dir : '';
+        $whereStatement = 'WHERE syncid = '.$db->Quote($syncid);
         if ($type != 'all') {
             $whereStatement.= " AND action = '$type'";
         }
-        $query = "SELECT * FROM #__jfusion_sync_details $whereStatement $sortStatement";
+        $query = 'SELECT * FROM #__jfusion_sync_details '.$whereStatement.' '.$sortStatement;
         $db->setQuery($query,$limitstart,$limit);
         $results = $db->loadObjectList('id');
 
@@ -438,7 +438,7 @@ class JFusionUsersync
      */
     public static function changeSyncStatus($syncid, $status) {
         $db = JFactory::getDBO();
-        $query = "UPDATE #__jfusion_sync SET active = " . (int) $status . " WHERE syncid = " . $db->Quote($syncid);
+        $query = 'UPDATE #__jfusion_sync SET active = ' . (int) $status . ' WHERE syncid = ' . $db->Quote($syncid);
         $db->setQuery($query);
         $db->query();
     }

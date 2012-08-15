@@ -593,10 +593,10 @@ class JFusionUser_magento extends JFusionUser {
             try {
                 $result = $proxi->call($sessionId, 'customer.delete', $user_id);
             } catch(Soapfault $fault) {
-                $status['error'][] = "Magento API: Could not delete user with id $user_id , message: " . $fault->faultstring;
+                $status['error'][] = 'Magento API: Could not delete user with id '.$user_id.' , message: ' . $fault->faultstring;
             }
             if (!$status['error']) {
-            	$status['debug'][] = "Magento API: Delete user with id $user_id , email " . $userinfo->email;
+            	$status['debug'][] = 'Magento API: Delete user with id '.$user_id.' , email ' . $userinfo->email;
             }
             
             try {
@@ -629,7 +629,7 @@ class JFusionUser_magento extends JFusionUser {
             try {
                 $result = $proxi->call($sessionId, 'customer.update', array($user_id, $update));
             } catch(Soapfault $fault) {
-                $status['error'][] = "Magento API: Could not update email of user with id $user_id , message: " . $fault->faultstring;
+                $status['error'][] = 'Magento API: Could not update email of user with id '.$user_id.' , message: ' . $fault->faultstring;
             }
             try {
                 $proxi->endSession($sessionId);

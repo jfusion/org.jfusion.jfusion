@@ -283,7 +283,7 @@ class JFusionFunction
             if (empty($jname)) {
                 $queries = array();
                 //we need to update each master/slave
-                $query = "SELECT name FROM #__jfusion WHERE master = 1 OR slave = 1";
+                $query = 'SELECT name FROM #__jfusion WHERE master = 1 OR slave = 1';
                 $db->setQuery($query);
                 $jnames = $db->loadObjectList();
                 foreach ($jnames as $jname) {
@@ -350,7 +350,7 @@ class JFusionFunction
         if (empty($result)) {
             if ($isJoomlaId) {
                 //we have a joomla id so let's setup a temp $userinfo
-                $query = "SELECT username, email FROM #__users WHERE id = $userid";
+                $query = 'SELECT username, email FROM #__users WHERE id = '.$userid;
                 $db->setQuery($query);
                 $result = $db->loadResult();
                 $joomla_id = $userid;
@@ -1059,8 +1059,8 @@ class JFusionFunction
                 return $avatar;
             }
         }
-        if ($software == "cb") {
-            $query = "SELECT avatar FROM #__comprofiler WHERE user_id = '$uid'";
+        if ($software == 'cb') {
+            $query = 'SELECT avatar FROM #__comprofiler WHERE user_id = '.$uid;
             $db->setQuery($query);
             $result = $db->loadResult();
             if (!empty($result)) {
@@ -1068,8 +1068,8 @@ class JFusionFunction
             } else {
                 $avatar = JFusionFunction::getJoomlaURL() . 'components/com_comprofiler/plugin/templates/default/images/avatar/nophoto_n.png';
             }
-        } elseif ($software == "jomsocial") {
-            $query = "SELECT avatar FROM #__community_users WHERE userid = '$uid'";
+        } elseif ($software == 'jomsocial') {
+            $query = 'SELECT avatar FROM #__community_users WHERE userid = '.$uid;
             $db->setQuery($query);
             $result = $db->loadResult();
             if (!empty($result)) {
@@ -1077,16 +1077,16 @@ class JFusionFunction
             } else {
                 $avatar = JFusionFunction::getJoomlaURL() . 'components/com_community/assets/default_thumb.jpg';
             }
-        } elseif ($software == "joomunity") {
-            $query = "SELECT user_picture FROM #__joom_users WHERE user_id = '$uid'";
+        } elseif ($software == 'joomunity') {
+            $query = 'SELECT user_picture FROM #__joom_users WHERE user_id = '.$uid;
             $db->setQuery($query);
             $result = $db->loadResult();
             $avatar = JFusionFunction::getJoomlaURL() . 'components/com_joomunity/files/avatars/' . $result;
-        } elseif ($software == "gravatar") {
-            $query = "SELECT email FROM #__users WHERE id = '$uid'";
+        } elseif ($software == 'gravatar') {
+            $query = 'SELECT email FROM #__users WHERE id = '.$uid;
             $db->setQuery($query);
             $email = $db->loadResult();
-            $avatar = "http://www.gravatar.com/avatar.php?gravatar_id=" . md5(strtolower($email)) . "&size=40";
+            $avatar = 'http://www.gravatar.com/avatar.php?gravatar_id=' . md5(strtolower($email)) . '&size=40';
         } else {
             $avatar = JFusionFunction::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
         }

@@ -140,21 +140,21 @@ class JFusionForum_vbulletin extends JFusionForum
                 $user = JFusionFactory::getUser($this->getJname());
                 $userinfo = $user->getUser($userid, 'userid');
 
-                $query = "UPDATE #__forum SET ";
+                $query = 'UPDATE #__forum SET ';
                 //update counters
                 $query.= 'threadcount = threadcount + 1';
                 $query.= ', replycount = replycount + 1';
                 //is this really the forum's latest thread?
                 // TODO: $foruminfo undefined ... if ($timestamp > $foruminfo['lastpost']) { not sure what to replace it with
                 if ($timestamp > 0) {
-                    $query.= ", lastpost = $timestamp";
-                    $query.= ", lastpostid = $postid";
-                    $query.= ", lastthreadid = $threadid";
-                    $query.= ", lastposter = " . $jdb->Quote($userinfo->username);
-                    $query.= ", lastthread = " . $jdb->Quote($title);
-                    $query.= ", lasticonid = 0";
+                    $query.= ', lastpost = '.$timestamp;
+                    $query.= ', lastpostid = '.$postid;
+                    $query.= ', lastthreadid = '.$threadid;
+                    $query.= ', lastposter = ' . $jdb->Quote($userinfo->username);
+                    $query.= ', lastthread = ' . $jdb->Quote($title);
+                    $query.= ', lasticonid = 0';
                 }
-                $query.= " WHERE forumid = $forumid";
+                $query.= ' WHERE forumid = '.$forumid;
                 $jdb->setQuery($query);
                 if (!$jdb->query()) {
                     $status['error'][] = $jdb->stderr();
@@ -194,9 +194,9 @@ class JFusionForum_vbulletin extends JFusionForum
                 return $status;
             } else {
                 $db = JFusionFactory::getDatabase($this->getJname());
-				$query = "SELECT COUNT(*) FROM #__user "
-						. " WHERE LOWER(username) = " . strtolower($db->Quote($userinfo->username))
-						. " OR LOWER(email) = " . strtolower($db->Quote($userinfo->username));
+				$query = 'SELECT COUNT(*) FROM #__user '
+						. ' WHERE LOWER(username) = ' . strtolower($db->Quote($userinfo->username))
+						. ' OR LOWER(email) = ' . strtolower($db->Quote($userinfo->username));
                 $db->setQuery($query);
                 $result = $db->loadResult();
                 if (!empty($result)) {
@@ -404,16 +404,16 @@ class JFusionForum_vbulletin extends JFusionForum
     function getDiscussionColumns()
     {
         $columns = new stdClass();
-        $columns->userid = "userid";
-        $columns->username = "username";
-        $columns->name = "name";
-        $columns->dateline = "dateline";
-        $columns->posttext = "pagetext";
-        $columns->posttitle = "title";
-        $columns->postid = "postid";
-        $columns->threadid = "threadid";
-        $columns->threadtitle = "threadtitle";
-        $columns->guest = "guest";
+        $columns->userid = 'userid';
+        $columns->username = 'username';
+        $columns->name = 'name';
+        $columns->dateline = 'dateline';
+        $columns->posttext = 'pagetext';
+        $columns->posttitle = 'title';
+        $columns->postid = 'postid';
+        $columns->threadid = 'threadid';
+        $columns->threadtitle = 'threadtitle';
+        $columns->guest = 'guest';
         return $columns;
     }
 
@@ -607,15 +607,15 @@ class JFusionForum_vbulletin extends JFusionForum
                 $db = JFusionFactory::getDatabase($this->getJname());
                 $userlookup = JFusionFunction::lookupUser($this->getJname(), $JUser->id);
                 if (!empty($userlookup)) {
-                    $query = "SELECT threadid, readtime FROM #__threadread WHERE userid = {$userlookup->userid}";
+                    $query = 'SELECT threadid, readtime FROM #__threadread WHERE userid = '.$userlookup->userid;
                     $db->setQuery($query);
                     $marktimes['thread'] = $db->loadObjectList('threadid');
 
-                    $query = "SELECT forumid, readtime FROM #__forumread WHERE userid = {$userlookup->userid}";
+                    $query = 'SELECT forumid, readtime FROM #__forumread WHERE userid = '.$userlookup->userid;
                     $db->setQuery($query);
                     $marktimes['forum'] = $db->loadObjectList('forumid');
 
-                    $query = "SELECT lastvisit FROM #__user WHERE userid = {$userlookup->userid}";
+                    $query = 'SELECT lastvisit FROM #__user WHERE userid = '.$userlookup->userid;
                     $db->setQuery($query);
                     $marktimes['user'] = $db->loadResult();
                 }

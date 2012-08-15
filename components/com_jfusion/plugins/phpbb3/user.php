@@ -786,10 +786,10 @@ class JFusionUser_phpbb3 extends JFusionUser
                     $report_posts[] = $row->post_id;
                     $report_topics[] = $row->topic_id;
                 }
-                //$status['debug'][] = "Retrieved all reported posts/topics by user $user_id.";
+                //$status['debug'][] = 'Retrieved all reported posts/topics by user '.$user_id;
             }
         } elseif ($db->stderr()) {
-            $status['error'][] = "Error Could not retrieve reported posts/topics by user $user_id: {$db->stderr() }";
+            $status['error'][] = 'Error Could not retrieve reported posts/topics by user '.$user_id.': '.$db->stderr();
             return $status;
         }
         if (sizeof($report_posts)) {
@@ -809,10 +809,10 @@ class JFusionUser_phpbb3 extends JFusionUser
                     foreach ($results as $row) {
                         $keep_report_topics[] = $row->topic_id;
                     }
-                    //$status['debug'][] = "Sorted through reported topics by user $user_id to keep.";
+                    //$status['debug'][] = 'Sorted through reported topics by user '.$user_id.' to keep.';
                 }
             } else {
-                $status['error'][] = "Error Could not retrieve a list of topics that still contain reported posts by user $user_id: {$db->stderr() }";
+                $status['error'][] = 'Error Could not retrieve a list of topics that still contain reported posts by user '.$user_id.': '.$db->stderr();
             }
             if (sizeof($keep_report_topics)) {
                 $report_topics = array_diff($report_topics, $keep_report_topics);
@@ -824,9 +824,9 @@ class JFusionUser_phpbb3 extends JFusionUser
                 WHERE post_id IN (' . implode(', ', $report_posts) . ')';
             $db->setQuery($query);
             if (!$db->query()) {
-                $status['error'][] = "Error Could not update post reported flag: {$db->stderr() }";
+                $status['error'][] = 'Error Could not update post reported flag: '.$db->stderr();
             } else {
-                //$status['debug'][] = "Updated reported posts flag.";
+                //$status['debug'][] = 'Updated reported posts flag.';
             }
             if (sizeof($report_topics)) {
                 $query = 'UPDATE #__topics
@@ -834,9 +834,9 @@ class JFusionUser_phpbb3 extends JFusionUser
                     WHERE topic_id IN (' . implode(', ', $report_topics) . ')';
                 $db->setQuery($query);
                 if (!$db->query()) {
-                    $status['error'][] = "Error Could not update topics reported flag: {$db->stderr() }";
+                    $status['error'][] = 'Error Could not update topics reported flag: '.$db->stderr();
                 } else {
-                    //$status['debug'][] = "Updated reported topics flag.";
+                    //$status['debug'][] = 'Updated reported topics flag.';
                 }
             }
         }
@@ -844,9 +844,9 @@ class JFusionUser_phpbb3 extends JFusionUser
         $query = 'DELETE FROM #__reports WHERE user_id = ' . (int)$user_id;
         $db->setQuery($query);
         if (!$db->query()) {
-            $status['error'][] = "Error Could not delete reports by user $user_id: {$db->stderr() }";
+            $status['error'][] = 'Error Could not delete reports by user '.$user_id.': '.$db->stderr();
         } else {
-            //$status['debug'][] = "Deleted reported posts/topics by user $user_id.";
+            //$status['debug'][] = 'Deleted reported posts/topics by user '.$user_id;
         }
         //update all topics started by and posts by the user to anonymous
         $post_username = (!empty($userinfo->name)) ? $userinfo->name : $userinfo->username;
@@ -855,45 +855,45 @@ class JFusionUser_phpbb3 extends JFusionUser
             WHERE forum_last_poster_id = $user_id";
         $db->setQuery($query);
         if (!$db->query()) {
-            $status['error'][] = "Error Could not update forum last poster for user $user_id: {$db->stderr() }";
+            $status['error'][] = 'Error Could not update forum last poster for user '.$user_id.': '.$db->stderr();
         } else {
-            //$status['debug'][] = "Updated last poster to anonymous if last post was by user $user_id.";
+            //$status['debug'][] = 'Updated last poster to anonymous if last post was by user '.$user_id;
         }
-        $query = "UPDATE #__posts
-            SET poster_id = 1, post_username = " . $db->Quote($post_username) . "
-            WHERE poster_id = $user_id";
+        $query = 'UPDATE #__posts
+            SET poster_id = 1, post_username = ' . $db->Quote($post_username) . '
+            WHERE poster_id = '.$user_id;
         $db->setQuery($query);
         if (!$db->query()) {
-            $status['error'][] = "Error Could not update posts by user $user_id: {$db->stderr() }";
+            $status['error'][] = 'Error Could not update posts by user '.$user_id.': '.$db->stderr();
         } else {
-            //$status['debug'][] = "Updated posts to be from anonymous if posted by user $user_id.";
+            //$status['debug'][] = 'Updated posts to be from anonymous if posted by user '.$user_id;
         }
-        $query = "UPDATE #__posts
+        $query = 'UPDATE #__posts
             SET post_edit_user = 1
-            WHERE post_edit_user = $user_id";
+            WHERE post_edit_user = '.$user_id;
         $db->setQuery($query);
         if (!$db->query()) {
-            $status['error'][] = "Error Could not update edited posts by user $user_id: {$db->stderr() }";
+            $status['error'][] = 'Error Could not update edited posts by user '.$user_id.': '.$db->stderr();
         } else {
-            //$status['debug'][] = "Updated edited posts to be from anonymous if edited by user $user_id.";
+            //$status['debug'][] = 'Updated edited posts to be from anonymous if edited by user '.$user_id;
         }
         $query = "UPDATE #__topics
             SET topic_poster = 1, topic_first_poster_name = " . $db->Quote($post_username) . ", topic_first_poster_colour = ''
             WHERE topic_poster = $user_id";
         $db->setQuery($query);
         if (!$db->query()) {
-            $status['error'][] = "Error Could not update topics by user $user_id: {$db->stderr() }";
+            $status['error'][] = 'Error Could not update topics by user '.$user_id.': '.$db->stderr();
         } else {
-            //$status['debug'][] = "Updated topics to be from anonymous if started by user $user_id.";
+            //$status['debug'][] = 'Updated topics to be from anonymous if started by user '.$user_id;
         }
         $query = "UPDATE #__topics
             SET topic_last_poster_id = 1, topic_last_poster_name = " . $db->Quote($post_username) . ", topic_last_poster_colour = ''
             WHERE topic_last_poster_id = $user_id";
         $db->setQuery($query);
         if (!$db->query()) {
-            $status['error'][] = "Error Could not update last topic poster for user $user_id: {$db->stderr() }";
+            $status['error'][] = 'Error Could not update last topic poster for user '.$user_id.': '.$db->stderr();
         } else {
-            //$status['debug'][] = "Updated topic last poster to be anonymous if set as user $user_id.";
+            //$status['debug'][] = 'Updated topic last poster to be anonymous if set as user '.$user_id;
         }
         // Since we change every post by this author, we need to count this amount towards the anonymous user
         $query = "SELECT user_posts FROM #__users WHERE user_id = $user_id";
@@ -936,19 +936,19 @@ class JFusionUser_phpbb3 extends JFusionUser
                     $undelivered_msg[] = $row->msg_id;
                     $undelivered_user[$row->user_id][] = true;
                 }
-                //$status['debug'][] = "Retrieved undelvered private messages from user $user_id.";
+                //$status['debug'][] = 'Retrieved undelvered private messages from user '.$user_id;
             }
         } else {
-            $status['error'][] = "Error Could not retrieve undeliverd messages to user $user_id: {$db->stderr() }";
+            $status['error'][] = 'Error Could not retrieve undeliverd messages to user '.$user_id.': '.$db->stderr();
         }
         if (sizeof($undelivered_msg)) {
             $query = 'DELETE FROM #__privmsgs
                 WHERE msg_id (' . implode(', ', $undelivered_msg) . ')';
             $db->setQuery($query);
             if (!$db->query()) {
-                $status['error'][] = "Error Could not delete private messages for user $user_id: {$db->stderr() }";
+                $status['error'][] = 'Error Could not delete private messages for user '.$user_id.': '.$db->stderr();
             } else {
-                //$status['debug'][] = "Deleted undelivered private messages from user $user_id.";
+                //$status['debug'][] = 'Deleted undelivered private messages from user '.$user_id;
             }
         }
         $query = 'DELETE FROM #__privmsgs_to
@@ -956,18 +956,18 @@ class JFusionUser_phpbb3 extends JFusionUser
                 AND folder_id = -3';
         $db->setQuery($query);
         if (!$db->query()) {
-            $status['error'][] = "Error Could not delete private messages that are in no folder from user $user_id: {$db->stderr() }";
+            $status['error'][] = 'Error Could not delete private messages that are in no folder from user '.$user_id.': '.$db->stderr();
         } else {
-            //$status['debug'][] = "Deleted private messages that are in no folder from user $user_id.";
+            //$status['debug'][] = 'Deleted private messages that are in no folder from user '.$user_id;
         }
         // Delete all to-information
         $query = 'DELETE FROM #__privmsgs_to
             WHERE user_id = ' . $user_id;
         $db->setQuery($query);
         if (!$db->query()) {
-            $status['error'][] = "Error Could not delete private messages to user $user_id: {$db->stderr() }";
+            $status['error'][] = 'Error Could not delete private messages to user '.$user_id.': '.$db->stderr();
         } else {
-            //$status['debug'][] = "Deleted private messages sent to user $user_id.";
+            //$status['debug'][] = 'Deleted private messages sent to user '.$user_id;
         }
         // Set the remaining author id to anonymous - this way users are still able to read messages from users being removed
         $query = 'UPDATE #__privmsgs_to
@@ -986,7 +986,7 @@ class JFusionUser_phpbb3 extends JFusionUser
         if (!$db->query()) {
             $status['error'][] = "Error Could not update rest of private messages for user $user_id to anonymous: {$db->stderr() }";
         } else {
-            //$status['debug'][] = "Updated the author to anonymous for the rest of the PMs in the main PM table if originally sent by user $user_id.";
+            //$status['debug'][] = 'Updated the author to anonymous for the rest of the PMs in the main PM table if originally sent by user '.$user_id;
         }
         foreach ($undelivered_user as $_user_id => $ary) {
             if ($_user_id == $user_id) {
@@ -1104,7 +1104,7 @@ class JFusionUser_phpbb3 extends JFusionUser
                     //get the user's info
                     if (!empty($userlookup)) {
                         $db = JFusionFactory::getDatabase($this->getJname());
-                        $query = "SELECT username_clean AS username, user_email as email FROM #__users WHERE user_id = {$userlookup->userid}";
+                        $query = 'SELECT username_clean AS username, user_email as email FROM #__users WHERE user_id = '.$userlookup->userid;
                         $db->setQuery($query);
                         $user_identifiers = $db->loadObject();
                         $userinfo = $this->getUser($user_identifiers);
@@ -1194,7 +1194,7 @@ class JFusionUser_phpbb3 extends JFusionUser
                     }
                     //get the user's info
                     $jdb = JFactory::getDBO();
-                    $query = "SELECT username, email FROM #__users WHERE id = {$userlookup->id}";
+                    $query = 'SELECT username, email FROM #__users WHERE id = '.$userlookup->id;
                     $jdb->setQuery($query);
                     $user_identifiers = $jdb->loadObject();
                     $JoomlaUser = JFusionFactory::getUser('joomla_int');

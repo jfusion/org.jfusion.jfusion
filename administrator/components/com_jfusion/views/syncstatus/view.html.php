@@ -76,7 +76,7 @@ class jfusionViewsyncstatus extends JView
         $filter = array('order' => $filter_order, 'dir' => $filter_order_Dir, 'limit' => $limit, 'limitstart' => $limitstart, 'client' => $client);
 
         $db = JFactory::getDBO();
-        $query = "SELECT COUNT(*) FROM #__jfusion_sync_details WHERE syncid = {$db->Quote($this->syncid)}";
+        $query = 'SELECT COUNT(*) FROM #__jfusion_sync_details WHERE syncid = '.$db->Quote($this->syncid);
         $db->setQuery($query);
         $total = $db->loadResult();
         jimport('joomla.html.pagination');

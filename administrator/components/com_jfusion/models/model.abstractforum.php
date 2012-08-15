@@ -200,9 +200,9 @@ class JFusionForum
 				$contentModified = JFactory::getDate($contentitem->modified)->toUnix();
 
 				$status['debug'][] = 'Thread exists...comparing dates';
-				$status['debug'][] = "Content Modification Date: $contentModified (" . date('Y-m-d H:i:s', $contentModified). ")";
-				$status['debug'][] = "Thread Modification Date: $postModified  (" . date('Y-m-d H:i:s', $postModified). ")";
-				$status['debug'][] = "Is $contentModified > $postModified?";
+				$status['debug'][] = 'Content Modification Date: '.$contentModified.' (' . date('Y-m-d H:i:s', $contentModified). ')';
+				$status['debug'][] = 'Thread Modification Date: '.$postModified.'  (' . date('Y-m-d H:i:s', $postModified). ')';
+				$status['debug'][] = 'Is '.$contentModified.' > '.$postModified.'?';
 				if($contentModified > $postModified) {
 					$status['debug'][] = 'Yes...attempting to update thread';
 					//update the post if the content has been updated
@@ -303,7 +303,7 @@ class JFusionForum
                                 $forumid = $categoryPairs[$parent_id];
                             } else {
                                 //get the parent's parent
-                                $query = "SELECT parent FROM #__k2_categories WHERE id = $parent_id";
+                                $query = 'SELECT parent FROM #__k2_categories WHERE id = '.$parent_id;
                                 $db->setQuery($query);
                                 //keep going up
                                 $parent_id = $db->loadResult();
@@ -419,16 +419,16 @@ class JFusionForum
      * Returns an object of columns used in createPostTable()
      * Saves from having to repeat the same code over and over for each plugin
      * For example:
-     * $columns->userid = "userid";
-     * $columns->username = "username";
-     * $columns->name = "realName"; //if applicable
-     * $columns->dateline = "dateline";
-     * $columns->posttext = "pagetext";
-     * $columns->posttitle = "title";
-     * $columns->postid = "postid";
-     * $columns->threadid = "threadid";
-     * $columns->threadtitle = "threadtitle"; //optional
-     * $columns->guest = "guest";
+     * $columns->userid = 'userid'
+     * $columns->username = 'username';
+     * $columns->name = 'realName'; //if applicable
+     * $columns->dateline = 'dateline';
+     * $columns->posttext = 'pagetext';
+     * $columns->posttitle = 'title';
+     * $columns->postid = 'postid';
+     * $columns->threadid = 'threadid';
+     * $columns->threadtitle = 'threadtitle'; //optional
+     * $columns->guest = 'guest';
      *
      * @return object with column names
      */

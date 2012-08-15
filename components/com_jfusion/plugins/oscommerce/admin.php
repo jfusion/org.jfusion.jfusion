@@ -242,7 +242,7 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
                 $db->setQuery($query);
                 $default_language_id = $db->loadResult();
                 //we want to output the usergroup name
-                $query = 'SELECT customers_status_name from #__customers_status WHERE customers_status_id = ' . $usergroup_id . " AND language_id = " . $default_language_id;
+                $query = 'SELECT customers_status_name from #__customers_status WHERE customers_status_id = ' . $usergroup_id . ' AND language_id = ' . $default_language_id;
                 $db->setQuery($query);
                 return $db->loadResult();
             case 'oscmax':

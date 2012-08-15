@@ -155,7 +155,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
             //add custom bbcode rules
             if (!is_array($vb_bbcodes_plain)) {
                 $vb_bbcodes_plain = array();
-                $query = "SELECT bbcodetag FROM #__bbcode";
+                $query = 'SELECT bbcodetag FROM #__bbcode';
                 $db->setQuery($query);
                 $vb_bbcodes_plain = $db->loadResultArray();
 
@@ -195,11 +195,11 @@ class JFusionPublic_vbulletin extends JFusionPublic
      */
     function getOnlineUserQuery($limit)
     {
-        $limiter = (!empty($limit)) ? "LIMIT 0,$limit" : '';
+        $limiter = (!empty($limit)) ? 'LIMIT 0,'.$limit : '';
         $name_field = $this->params->get('name_field');
-        $query = "SELECT DISTINCT u.userid, u.username AS username, u.email";
+        $query = 'SELECT DISTINCT u.userid, u.username AS username, u.email';
         $query.= (!empty($name_field)) ? ", CASE WHEN f.$name_field IS NULL OR f.$name_field = '' THEN u.username ELSE f.$name_field END AS name FROM #__userfield as f INNER JOIN #__user AS u ON f.userid = u.userid" : ", u.username as name FROM #__user AS u";
-        $query.= " INNER JOIN #__session AS s ON u.userid = s.userid WHERE s.userid != 0 $limiter";
+        $query.= ' INNER JOIN #__session AS s ON u.userid = s.userid WHERE s.userid != 0 '.$limiter;
         return $query;
     }
     /**
@@ -452,50 +452,50 @@ JS;
         //we are viewing a forum
         if (JRequest::getVar('f', false) !== false) {
             $fid = JRequest::getVar('f');
-            $query = "SELECT title, parentlist, parentid from #__forum WHERE forumid = $fid";
+            $query = 'SELECT title, parentlist, parentid from #__forum WHERE forumid = '.$db->Quote($fid);
             $db->setQuery($query);
             $forum = $db->loadObject();
             if ($forum->parentid != '-1') {
                 $parents = array_reverse(explode(',', $forum->parentlist));
                 foreach ($parents as $p) {
                     if ($p != "-1") {
-                        $query = "SELECT title from #__forum WHERE forumid = $p";
+                        $query = 'SELECT title from #__forum WHERE forumid = '.$p;
                         $db->setQuery($query);
                         $title = $db->loadResult();
                         $crumb = new stdClass();
                         $crumb->title = $title;
-                        $crumb->url = "forumdisplay.php?f=$p";
+                        $crumb->url = 'forumdisplay.php?f='.$p;
                         $pathway[] = $crumb;
                     }
                 }
             } else {
                 $crumb = new stdClass();
                 $crumb->title = $forum->title;
-                $crumb->url = "forumdisplay.php?f=$fid";
+                $crumb->url = 'forumdisplay.php?f='.$fid;
                 $pathway[] = $crumb;
             }
         } elseif (JRequest::getVar('t', false) !== false) {
             $tid = JRequest::getVar('t');
-            $query = "SELECT t.title AS thread, f.title AS forum, f.forumid, f.parentid, f.parentlist FROM #__thread AS t JOIN #__forum AS f ON t.forumid = f.forumid WHERE t.threadid = $tid";
+            $query = 'SELECT t.title AS thread, f.title AS forum, f.forumid, f.parentid, f.parentlist FROM #__thread AS t JOIN #__forum AS f ON t.forumid = f.forumid WHERE t.threadid = '.$db->Quote($tid);
             $db->setQuery($query);
             $result = $db->loadObject();
             if ($result->parentid != '-1') {
                 $parents = array_reverse(explode(',', $result->parentlist));
                 foreach ($parents as $p) {
-                    if ($p != "-1") {
-                        $query = "SELECT title from #__forum WHERE forumid = $p";
+                    if ($p != '-1') {
+                        $query = 'SELECT title from #__forum WHERE forumid = '.$p;
                         $db->setQuery($query);
                         $title = $db->loadResult();
                         $crumb = new stdClass();
                         $crumb->title = $title;
-                        $crumb->url = "forumdisplay.php?f=$p";
+                        $crumb->url = 'forumdisplay.php?f='.$p;
                         $pathway[] = $crumb;
                     }
                 }
             } else {
                 $crumb = new stdClass();
                 $crumb->title = $result->forum;
-                $crumb->url = "forumdisplay.php?f=$result->forumid";
+                $crumb->url = 'forumdisplay.php?f='.$result->forumid;
                 $pathway[] = $crumb;
             }
             $crumb = new stdClass();
@@ -511,42 +511,42 @@ JS;
                 $parents = array_reverse(explode(',', $result->parentlist));
                 foreach ($parents as $p) {
                     if ($p != "-1") {
-                        $query = "SELECT title from #__forum WHERE forumid = $p";
+                        $query = 'SELECT title from #__forum WHERE forumid = '.$p;
                         $db->setQuery($query);
                         $title = $db->loadResult();
                         $crumb = new stdClass();
                         $crumb->title = $title;
-                        $crumb->url = "forumdisplay.php?f=$p";
+                        $crumb->url = 'forumdisplay.php?f='.$p;
                         $pathway[] = $crumb;
                     }
                 }
             } else {
                 $crumb = new stdClass();
                 $crumb->title = $result->forum;
-                $crumb->url = "forumdisplay.php?f=$result->forumid";
+                $crumb->url = 'forumdisplay.php?f='.$result->forumid;
                 $pathway[] = $crumb;
             }
             $crumb = new stdClass();
             $crumb->title = $result->thread;
-            $crumb->url = "showthread.php?t=$result->threadid";
+            $crumb->url = 'showthread.php?t='.$result->threadid;
             $pathway[] = $crumb;
         } elseif (JRequest::getVar('u', false) !== false) {
-            if ($jfile == "member.php") {
+            if ($jfile == 'member.php') {
                 // we are viewing a member's profile
                 $uid = JRequest::getVar('u');
                 $crumb = new stdClass();
                 $crumb->title = 'Members List';
                 $crumb->url = 'memberslist.php';
                 $pathway[] = $crumb;
-                $query = "SELECT username FROM #__user WHERE userid = $uid";
+                $query = 'SELECT username FROM #__user WHERE userid = '.$uid;
                 $db->setQuery($query);
                 $username = $db->loadResult();
                 $crumb = new stdClass();
                 $crumb->title = "$username's Profile";
-                $crumb->url = "member.php?u=$uid";
+                $crumb->url = 'member.php?u='.$uid;
                 $pathway[] = $crumb;
             }
-        } elseif ($jfile == "search.php") {
+        } elseif ($jfile == 'search.php') {
             $crumb = new stdClass();
             $crumb->title = "Search";
             $crumb->url = "search.php";

@@ -507,13 +507,13 @@ class JFusionUser_wordpress extends JFusionUser {
 						$query = 'UPDATE #__posts SET post_author = '.$reassign. ' WHERE ID = '. $row->ID;
 						$db->setQuery($query);
 						if (!$db->query()) {
-							$status['error'][] = "Error Could not reassign posts by user $user_id: {$db->stderr() }";
+							$status['error'][] = 'Error Could not reassign posts by user '.$user_id.': '.$db->stderr();
 							break;
 						}
 					}
 					$status['debug'][] = "Reassigned posts from user with id $user_id to user $reassign.";
 				} elseif ($db->getErrorNum() != 0) {
-					$status['error'][] = "Error Could not retrieve posts by user $user_id: {$db->stderr() }";
+					$status['error'][] = 'Error Could not retrieve posts by user '.$user_id.': '.$db->stderr();
 				}
 				$query = 'SELECT link_id FROM #__links WHERE link_owner = '.$user_id;
 				$db->setQuery($query);
@@ -524,13 +524,13 @@ class JFusionUser_wordpress extends JFusionUser {
 							$query = 'UPDATE #__links SET link_owner = '.$reassign. ' WHERE link_id = '. $row->link_id;
 							$db->setQuery($query);
 							if (!$db->query()) {
-								$status['error'][] = "Error Could not reassign links by user $user_id: {$db->stderr() }";
+								$status['error'][] = 'Error Could not reassign links by user '.$user_id.': '.$db->stderr();
 								break;
 							}
 						}
 						$status['debug'][] = "Reassigned links from user with id $user_id to user $reassign.";
 					} elseif ($db->getErrorNum() != 0) {
-						$status['error'][] = "Error Could not retrieve links by user $user_id: {$db->stderr() }";
+						$status['error'][] = 'Error Could not retrieve links by user '.$user_id.': '.$db->stderr();
 					}
 				}
 			}
@@ -538,14 +538,14 @@ class JFusionUser_wordpress extends JFusionUser {
 			$query = 'DELETE FROM #__posts WHERE post_author = ' . $user_id;
 			$db->setQuery($query);
 			if (!$db->query()) {
-				$status['error'][] = "Error Could not delete posts by user $user_id: {$db->stderr() }";
+				$status['error'][] = 'Error Could not delete posts by user '.$user_id.': '.$db->stderr();
 			} else {
-				$status['debug'][] = "Deleted posts from user with id $user_id.";
+				$status['debug'][] = 'Deleted posts from user with id '.$user_id;
 			}
 			$query = 'DELETE FROM #__links WHERE link_owner = ' . $user_id;
 			$db->setQuery($query);
 			if (!$db->query()) {
-				$status['error'][] = "Error Could not delete links by user $user_id: {$db->stderr() }";
+				$status['error'][] = 'Error Could not delete links by user '.$user_id.': '.$db->stderr();
 			} else {
 				$status['debug'][] = "Deleted links from user $user_id";
 			}
@@ -554,9 +554,9 @@ class JFusionUser_wordpress extends JFusionUser {
 		$query = 'DELETE FROM #__users WHERE ID = ' . $user_id;
 		$db->setQuery($query);
 		if (!$db->query()) {
-			$status['error'][] = "Error Could not delete userrecord with userid $user_id: {$db->stderr()}";
+			$status['error'][] = 'Error Could not delete userrecord with userid '.$user_id.': '.$db->stderr();
 		} else {
-			$status['debug'][] = "Deleted userrecord of user with userid $user_id.";
+			$status['debug'][] = 'Deleted userrecord of user with userid '.$user_id;
 		}
 		return $status;
 	}

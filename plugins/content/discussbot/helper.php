@@ -567,7 +567,7 @@ class JFusionDiscussBotHelper {
                                                         break;
                                                     } else {
                                                         //get the parent's parent
-                                                        $query = "SELECT parent FROM #__k2_categories WHERE id = $parent_id";
+                                                        $query = 'SELECT parent FROM #__k2_categories WHERE id = '.$parent_id;
                                                         $db->setQuery($query);
                                                         //keep going up
                                                         $parent_id = $db->loadResult();
@@ -596,7 +596,7 @@ class JFusionDiscussBotHelper {
                                                         break;
                                                     } else {
                                                         //get the parent's parent
-                                                        $query = "SELECT parent FROM #__k2_categories WHERE id = $parent_id";
+                                                        $query = 'SELECT parent FROM #__k2_categories WHERE id = '.$parent_id;
                                                         $parent_id = $db->setQuery($query);
                                                     }
                                                 } else {

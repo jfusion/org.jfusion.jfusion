@@ -216,7 +216,7 @@ HTML;
     			}
     			$pt = $v->parent;
     			$list[$id] = $v;
-    			$list[$id]->name = "$indent$txt";
+    			$list[$id]->name = $indent.$txt;
     			$list = jfusionViewdiscussionbot::buildRecursiveTree($id, $indent . '- ', $list, $children, $level+1);
     		}
 	    }

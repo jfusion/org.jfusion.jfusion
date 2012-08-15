@@ -88,7 +88,7 @@ class JFusionForum_mybb extends JFusionForum {
      */
     function getThread($threadid) {
         $db = JFusionFactory::getDatabase($this->getJname());
-        $query = "SELECT tid AS threadid, fid AS forumid, firstpost AS postid FROM #__threads WHERE tid = (int)$threadid";
+        $query = 'SELECT tid AS threadid, fid AS forumid, firstpost AS postid FROM #__threads WHERE tid = '. (int)$threadid;
         $db->setQuery($query);
         $results = $db->loadObject();
         return $results;

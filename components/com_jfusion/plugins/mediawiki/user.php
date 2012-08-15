@@ -155,9 +155,9 @@ class JFusionUser_mediawiki extends JFusionUser {
    		$now = time();
         $expiration = time() + 86400;
    		setcookie('LoggedOut', $now, $expiration, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly );
-        $status['debug'][] = "{$cookie_name}UserName " . JText::_('DELETED');
-        $status['debug'][] = "{$cookie_name}UserID " . JText::_('DELETED');
-        $status['debug'][] = "{$cookie_name}Token " . JText::_('DELETED');
+        $status['debug'][] = $cookie_name.'UserName ' . JText::_('DELETED');
+        $status['debug'][] = $cookie_name.'UserID ' . JText::_('DELETED');
+        $status['debug'][] = $cookie_name.'Token ' . JText::_('DELETED');
         $status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => 'LoggedOut', JText::_('VALUE') => $now, JText::_('EXPIRES') => $expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
 		return $status;
      }
@@ -436,7 +436,7 @@ class JFusionUser_mediawiki extends JFusionUser {
                 $wgDBname = $params->get('database_name');
 
                 if ( $wgDBprefix ) {
-                    $wfWikiID = "$wgDBname-$wgDBprefix";
+                    $wfWikiID = $wgDBname.'-'.$wgDBprefix;
                 } else {
                     $wfWikiID = $wgDBname;
                 }
