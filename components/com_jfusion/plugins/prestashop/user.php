@@ -115,7 +115,7 @@ class JFusionUser_prestashop extends JFusionUser {
         $cookie = new cookie('ps');
 		$status['error'][] = 'Random debugging text';
 	    if(!$cookie->mylogout()) {
-            $status['error'][] = "Error Could not delete session, doesn't exist";
+            $status['error'][] = 'Error Could not delete session, doe not exist';
 		} else {
             $status['debug'][] = 'Deleted session and session data';
 		}

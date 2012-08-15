@@ -353,7 +353,7 @@ class doku_auth_mysql extends doku_auth_basic {
             $sql = $this->_createSQLFilter($this->cnf['getUsers'], $filter);
             if ($this->dbver >= 4) {
                 $sql = substr($sql, 6);  /* remove 'SELECT' or 'select' */
-                $sql = "SELECT SQL_CALC_FOUND_ROWS".$sql." LIMIT 1";
+                $sql = 'SELECT SQL_CALC_FOUND_ROWS'.$sql.' LIMIT 1';
                 $this->_queryDB($sql);
                 $result = $this->_queryDB('SELECT FOUND_ROWS()');
                 $rc = $result[0]['FOUND_ROWS()'];
@@ -381,7 +381,7 @@ class doku_auth_mysql extends doku_auth_basic {
       if($this->_openDB()) {
         $this->_lockTables('READ');
         $sql  = $this->_createSQLFilter($this->cnf['getUsers'], $filter);
-        $sql .= " ".$this->cnf['SortOrder']." LIMIT $first, $limit";
+        $sql .= ' '.$this->cnf['SortOrder'].' LIMIT '.$first.', '.$limit;
         $result = $this->_queryDB($sql);
 
         if (!empty($result)) {
@@ -698,7 +698,7 @@ class doku_auth_mysql extends doku_auth_basic {
      * @author Matthias Grimm <matthiasgrimm@users.sourceforge.net>
      */
     function _updateUserInfo($changes, $uid) {
-      $sql  = $this->cnf['updateUser']." ";
+      $sql  = $this->cnf['updateUser'].' ';
       $cnt = 0;
       $err = 0;
 
@@ -709,18 +709,18 @@ class doku_auth_mysql extends doku_auth_basic {
               $err = 1; /* new username already exists */
               break;    /* abort update */
             }
-            if ($cnt++ > 0) $sql .= ", ";
+            if ($cnt++ > 0) $sql .= ', ';
             $sql .= str_replace('%{user}',$value,$this->cnf['UpdateLogin']);
           } else if ($item == 'name') {
-            if ($cnt++ > 0) $sql .= ", ";
+            if ($cnt++ > 0) $sql .= ', ';
             $sql .= str_replace('%{name}',$value,$this->cnf['UpdateName']);
           } else if ($item == 'pass') {
             if (!$this->cnf['forwardClearPass'])
               $value = $this->cryptPassword($value);
-            if ($cnt++ > 0) $sql .= ", ";
+            if ($cnt++ > 0) $sql .= ', ';
             $sql .= str_replace('%{pass}',$value,$this->cnf['UpdatePass']);
           } else if ($item == 'mail') {
-            if ($cnt++ > 0) $sql .= ", ";
+            if ($cnt++ > 0) $sql .= ', ';
             $sql .= str_replace('%{email}',$value,$this->cnf['UpdateEmail']);
           }
         }
@@ -728,7 +728,7 @@ class doku_auth_mysql extends doku_auth_basic {
         if ($err == 0) {
           if ($cnt > 0) {
             $sql .= " ".str_replace('%{uid}', $uid, $this->cnf['UpdateTarget']);
-            if(get_class($this) == 'auth_mysql') $sql .= " LIMIT 1"; //some PgSQL inheritance comp.
+            if(get_class($this) == 'auth_mysql') $sql .= ' LIMIT 1'; //some PgSQL inheritance comp.
             $this->_modifyDB($sql);
           }
           return true;
@@ -870,12 +870,12 @@ class doku_auth_mysql extends doku_auth_basic {
     function _lockTables($mode) {
       if ($this->dbcon) {
         if (is_array($this->cnf['TablesToLock']) && !empty($this->cnf['TablesToLock'])) {
-          if ($mode == "READ" || $mode == "WRITE") {
+          if ($mode == 'READ' || $mode == 'WRITE') {
             $sql = 'LOCK TABLES ';
             $cnt = 0;
             foreach ($this->cnf['TablesToLock'] as $table) {
               if ($cnt++ != 0) $sql .= ', ';
-              $sql .= "$table $mode";
+              $sql .= $table.' '.$mode;
             }
             $this->_modifyDB($sql);
             return true;
@@ -921,16 +921,16 @@ class doku_auth_mysql extends doku_auth_basic {
         foreach ($filter as $item => $pattern) {
           $tmp = '%'.$this->_escape($pattern).'%';
           if ($item == 'user') {
-            if ($cnt++ > 0) $SQLfilter .= " AND ";
+            if ($cnt++ > 0) $SQLfilter .= ' AND ';
             $SQLfilter .= str_replace('%{user}',$tmp,$this->cnf['FilterLogin']);
           } else if ($item == 'name') {
-            if ($cnt++ > 0) $SQLfilter .= " AND ";
+            if ($cnt++ > 0) $SQLfilter .= ' AND ';
             $SQLfilter .= str_replace('%{name}',$tmp,$this->cnf['FilterName']);
           } else if ($item == 'mail') {
-            if ($cnt++ > 0) $SQLfilter .= " AND ";
+            if ($cnt++ > 0) $SQLfilter .= ' AND ';
             $SQLfilter .= str_replace('%{email}',$tmp,$this->cnf['FilterEmail']);
           } else if ($item == 'grps') {
-            if ($cnt++ > 0) $SQLfilter .= " AND ";
+            if ($cnt++ > 0) $SQLfilter .= ' AND ';
             $SQLfilter .= str_replace('%{group}',$tmp,$this->cnf['FilterGroup']);
           }
         }
@@ -940,7 +940,7 @@ class doku_auth_mysql extends doku_auth_basic {
         // would be generated.
 
         if (strlen($SQLfilter)) {
-          $glue = strpos(strtolower($sql),"where") ? " AND " : " WHERE ";
+          $glue = strpos(strtolower($sql),'where') ? ' AND ' : ' WHERE ';
           $sql = $sql.$glue.$SQLfilter;
         }
       }

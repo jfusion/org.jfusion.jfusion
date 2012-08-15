@@ -110,7 +110,7 @@ class JFusionUser
                 break;
         }
         if ($lowerEmail && $identifier_type == $email_col) {
-            $identifier_type = "LOWER($identifier_type)";
+            $identifier_type = 'LOWER('.$identifier_type.')';
             $identifier = strtolower($identifier);
         }
         return array($identifier_type, $identifier);

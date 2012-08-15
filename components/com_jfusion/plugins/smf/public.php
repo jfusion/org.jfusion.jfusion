@@ -818,7 +818,7 @@ class JFusionPublic_smf extends JFusionPublic
     {
         if ($pluginParam->get('forum_mode', 0)) {
             $forumids = $pluginParam->get('selected_forums', array());
-            $where.= " AND p.ID_BOARD IN (" . implode(',', $forumids) . ")";
+            $where.= ' AND p.ID_BOARD IN (' . implode(',', $forumids) . ')';
         }
 
         //determine how to sort the results which is required for accurate results when a limit is placed
@@ -899,8 +899,8 @@ class JFusionPublic_smf extends JFusionPublic
      */
     function getOnlineUserQuery($limit)
     {
-        $limiter = (!empty($limit)) ? "LIMIT 0,$limit" : '';
-        return "SELECT DISTINCT u.ID_MEMBER AS userid, u.memberName AS username, u.realName AS name, u.emailAddress as email FROM #__members AS u INNER JOIN #__log_online AS s ON u.ID_MEMBER = s.ID_MEMBER WHERE s.ID_MEMBER != 0 $limiter";
+        $limiter = (!empty($limit)) ? 'LIMIT 0,'.$limit : '';
+        return 'SELECT DISTINCT u.ID_MEMBER AS userid, u.memberName AS username, u.realName AS name, u.emailAddress as email FROM #__members AS u INNER JOIN #__log_online AS s ON u.ID_MEMBER = s.ID_MEMBER WHERE s.ID_MEMBER != 0 '.$limiter;
     }
 
     /**

@@ -103,7 +103,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
 
             //parse smilies
             if (!is_array($custom_smileys)) {
-                $query = "SELECT title, smilietext, smiliepath FROM #__smilie";
+                $query = 'SELECT title, smilietext, smiliepath FROM #__smilie';
                 $db->setQuery($query);
                 $smilies = $db->loadObjectList();
                 $vburl = $this->params->get('source_url');
@@ -121,7 +121,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
             //add custom bbcode rules
             if (!is_array($vb_bbcodes)) {
                 $vb_bbcodes = array();
-                $query = "SELECT bbcodetag, bbcodereplacement, twoparams FROM #__bbcode";
+                $query = 'SELECT bbcodetag, bbcodereplacement, twoparams FROM #__bbcode';
                 $db->setQuery($query);
                 $bbcodes = $db->loadObjectList();
                 foreach ($bbcodes as $bb) {
@@ -209,7 +209,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
     function getNumberOnlineGuests()
     {
         $db = JFusionFactory::getDatabase($this->getJname());
-        $query = "SELECT COUNT(DISTINCT(host)) FROM #__session WHERE userid = 0";
+        $query = 'SELECT COUNT(DISTINCT(host)) FROM #__session WHERE userid = 0';
         $db->setQuery($query);
         return $db->loadResult();
     }
@@ -220,7 +220,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
     function getNumberOnlineMembers()
     {
         $db = JFusionFactory::getDatabase($this->getJname());
-        $query = "SELECT COUNT(DISTINCT(userid)) FROM #__session WHERE userid != 0";
+        $query = 'SELECT COUNT(DISTINCT(userid)) FROM #__session WHERE userid != 0';
         $db->setQuery($query);
         return $db->loadResult();
     }
@@ -500,7 +500,7 @@ JS;
             }
             $crumb = new stdClass();
             $crumb->title = $result->thread;
-            $crumb->url = "showthread.php?t=$tid";
+            $crumb->url = 'showthread.php?t='.$tid;
             $pathway[] = $crumb;
         } elseif (JRequest::getVar('p', false) !== false) {
             $pid = JRequest::getVar('p');
@@ -644,8 +644,8 @@ JS;
     function getSearchQueryColumns()
     {
         $columns = new stdClass();
-        $columns->title = "p.title";
-        $columns->text = "p.pagetext";
+        $columns->title = 'p.title';
+        $columns->text = 'p.pagetext';
         return $columns;
     }
 
@@ -702,7 +702,7 @@ JS;
                 $sort = 'p.dateline DESC';
                 break;
         }
-        $where .= " ORDER BY $sort";
+        $where .= ' ORDER BY '.$sort;
     }
 
     /**
@@ -819,7 +819,7 @@ JS;
         //we need to make some exceptions
         //absolute url, already parsed URL, JS function, or jumpto
         if (strpos($url, 'http') !== false || strpos($url, $currentURL) !== false || strpos($url, 'com_jfusion') !== false || ((string)strpos($url, '#') === (string)0 && strlen($url) == 1)) {
-            $replacement = "href=\"$url\" $extra>";
+            $replacement = 'href="'.$url.'" '.$extra.'>';
             if (defined('_JFUSION_DEBUG')) {
                 $debug['parsed'] = $replacement;
             }

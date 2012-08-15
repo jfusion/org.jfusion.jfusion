@@ -171,7 +171,7 @@ class plgContentJfusion extends JPlugin
                 $this->helper->thread_status = $this->helper->_get_thread_status();
                 // changed _validate to pass the $isNew flag, so that it will only check will happen depending on this flag
                 list($this->valid, $this->validity_reason) = $this->helper->_validate($isNew);
-                $this->helper->_debug('Validity: ' . $this->valid . "; " . $this->validity_reason);
+                $this->helper->_debug('Validity: ' . $this->valid . '; ' . $this->validity_reason);
 
                 //ignore auto mode if the article has been manually plugged
                 $manually_plugged = preg_match('/\{jfusion_discuss (.*)\}/U', $this->article->introtext . $this->article->fulltext);

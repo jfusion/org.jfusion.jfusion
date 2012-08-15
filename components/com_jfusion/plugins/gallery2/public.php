@@ -286,7 +286,7 @@ class JFusionPublic_gallery2 extends JFusionPublic {
         date_default_timezone_set('UTC');
         $now = time();
         $active = strtotime('-5 minutes', $now);
-        $query = "SELECT DISTINCT u.g_id AS userid, u.g_userName as username, u.g_fullName AS name  " . "FROM #__User AS u INNER JOIN #__SessionMap AS s ON s.g_userId = u.g_id " . "WHERE s.g_modificationTimestamp > $active $limiter";
+        $query = 'SELECT DISTINCT u.g_id AS userid, u.g_userName as username, u.g_fullName AS name FROM #__User AS u INNER JOIN #__SessionMap AS s ON s.g_userId = u.g_id WHERE s.g_modificationTimestamp > '.$active.' '.$limiter;
         return $query;
     }
     /**
@@ -299,7 +299,7 @@ class JFusionPublic_gallery2 extends JFusionPublic {
         $now = time();
         $active = strtotime('-5 minutes', $now);
         $db = JFusionFactory::getDatabase($this->getJname());
-        $query = "SELECT COUNT(*) FROM #__SessionMap s " . "WHERE g_modificationTimestamp > $active AND s.g_userId != 5";
+        $query = "SELECT COUNT(*) FROM #__SessionMap s WHERE g_modificationTimestamp > $active AND s.g_userId != 5";
         $db->setQuery($query);
         $result = $db->loadResult();
         return $result;
@@ -314,7 +314,7 @@ class JFusionPublic_gallery2 extends JFusionPublic {
         $now = time();
         $active = strtotime('-5 minutes', $now);
         $db = JFusionFactory::getDatabase($this->getJname());
-        $query = "SELECT COUNT(*) FROM #__SessionMap s " . "WHERE g_modificationTimestamp > $active AND s.g_userId = 5";
+        $query = "SELECT COUNT(*) FROM #__SessionMap s WHERE g_modificationTimestamp > $active AND s.g_userId = 5";
         $db->setQuery($query);
         $result = $db->loadResult();
         return $result;

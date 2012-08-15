@@ -27,7 +27,7 @@ if(!$joomlaUser->guest) :
 	if(!empty($output->avatar_source)) {
 		echo "<img style='vertical-align:middle; max-width: {$output->avatar_width}px; max-height: {$output->avatar_height}px;' src='{$output->avatar_source}' alt='avatar' />";
 		if($config['avatar_location']=='left')
-			echo "</div>";
+			echo '</div>';
 	}
 
 	if(!empty($output->pm_url)) {
@@ -35,7 +35,7 @@ if(!$joomlaUser->guest) :
 		echo JText::_('PM_START');
 		echo " <a href='{$output->pm_url}'>".JText::sprintf('PM_LINK', $output->pm_count['total']).'</a>';
 		echo JText::sprintf('PM_END', $output->pm_count['unread']);
-		echo '</div>"';
+		echo '</div>';
 	}
 
 	if(!empty($output->newmessages_url)) {

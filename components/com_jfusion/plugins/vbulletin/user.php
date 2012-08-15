@@ -84,12 +84,12 @@ class JFusionUser_vbulletin extends JFusionUser
         $result = $db->loadObject();
 
         if ($result) {
-            $query = "SELECT title FROM #__usergroup WHERE usergroupid = {$result->group_id}";
+            $query = 'SELECT title FROM #__usergroup WHERE usergroupid = '.$result->group_id;
             $db->setQuery($query);
             $result->group_name = $db->loadResult();
 
             if (!empty($name_field)) {
-                $query = "SELECT $name_field FROM #__userfield WHERE userid = {$result->userid}";
+                $query = 'SELECT $name_field FROM #__userfield WHERE userid = '.$result->userid;
                 $db->setQuery($query);
                 $name = $db->loadResult();
                 if (!empty($name)) {
@@ -755,7 +755,7 @@ class JFusionUser_vbulletin extends JFusionUser
     function getDefaultUserTitle($groupid, $posts = 0)
     {
         $db =& JFusionFactory::getDatabase($this->getJname());
-        $query = "SELECT usertitle FROM #__usergroup WHERE usergroupid = $groupid";
+        $query = 'SELECT usertitle FROM #__usergroup WHERE usergroupid = '.$groupid;
         $db->setQuery($query);
         $title = $db->loadResult();
 
@@ -833,7 +833,7 @@ class JFusionUser_vbulletin extends JFusionUser
                     //enable remember me as this is a keep alive function anyway
                     $options['remember'] = 1;
                     //get the user's info
-                    $query = "SELECT username, email FROM #__user WHERE userid = {$userlookup->userid}";
+                    $query = 'SELECT username, email FROM #__user WHERE userid = '.$userlookup->userid;
                     $db->setQuery($query);
                     $user_identifiers = $db->loadObject();
                     $userinfo = $this->getUser($user_identifiers);
@@ -899,7 +899,7 @@ class JFusionUser_vbulletin extends JFusionUser
                 }
                 //get the user's info
                 $db = JFactory::getDBO();
-                $query = "SELECT username, email FROM #__users WHERE id = {$userlookup->id}";
+                $query = 'SELECT username, email FROM #__users WHERE id = '.$userlookup->id;
                 $db->setQuery($query);
                 $user_identifiers = $db->loadObject();
                 $JoomlaUser = JFusionFactory::getUser('joomla_int');

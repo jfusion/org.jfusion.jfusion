@@ -717,7 +717,7 @@ class JFusionJplugin
             $cbenabled = $db->loadResult();
 
             if (!empty($cbenabled)) {
-                $query = "SELECT confirmed, approved, cbactivation FROM #__comprofiler WHERE user_id = {$result->userid}";
+                $query = 'SELECT confirmed, approved, cbactivation FROM #__comprofiler WHERE user_id = '.$result->userid;
                 $db->setQuery($query);
                 $cbresult = $db->loadObject();
 

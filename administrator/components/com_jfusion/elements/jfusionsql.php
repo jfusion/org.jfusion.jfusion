@@ -63,13 +63,13 @@ class JElementjfusionsql extends JElement
 
                 if ($query == 'k2.categories') {
                     $jdb = JFactory::getDBO();
-                    $query = 'SELECT enabled FROM #__components WHERE `option` = ' . $jdb->Quote('com_k2');;
+                    $query = 'SELECT enabled FROM #__components WHERE `option` = ' . $jdb->Quote('com_k2');
                     $db->setQuery( $query );
                     $enabled = $jdb->loadResult();
                     if (empty($enabled)) {
                         return JText::_('K2_NOT_AVAILABLE');
                     }
-                    $query = "SELECT id, name as title, parent FROM #__k2_categories WHERE id > 0 AND trash = 0 AND published = 1";
+                    $query = 'SELECT id, name as title, parent FROM #__k2_categories WHERE id > 0 AND trash = 0 AND published = 1';
 		    	    $db->setQuery($query);
         			$items = $db->loadObjectList();
             		$children = array ();

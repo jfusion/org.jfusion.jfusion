@@ -89,7 +89,7 @@ class JFusionUsersync
     public static function countLogData($syncid, $type = 'all')
     {
         $db = JFactory::getDBO();
-        $whereStatement = "WHERE syncid = {$db->Quote($syncid)}";
+        $whereStatement = 'WHERE syncid = '.$db->Quote($syncid);
         if ($type != 'all') {
             $whereStatement.= " AND action = '$type'";
         }

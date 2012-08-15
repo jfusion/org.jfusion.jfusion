@@ -109,29 +109,29 @@ class executeJFusionHook
                 $query = $_SERVER['QUERY_STRING'];
                 if (SEFENABLED) {
                     if (SEFMODE == 1) {
-                        $url = JOOMLABASEURL . "$filename/";
+                        $url = JOOMLABASEURL . $filename.'/';
                         if (!empty($query)) {
                             $q = explode('&', $query);
                             foreach ($q as $k => $v) {
-                                $url.= "$k,$v/";
+                                $url.= $k.','.$v.'/';
                             }
                         }
                         if (!empty($query)) {
                             $queries = explode('&', $query);
                             foreach ($queries as $q) {
                                 $part = explode('=', $q);
-                                $url.= "$part[0],$part[1]/";
+                                $url.= $part[0].','.$part[1].'/';
                             }
                         }
                     } else {
                         $url = JOOMLABASEURL . $filename;
-                        $url.= (empty($query)) ? '' : "?$query";
+                        $url.= (empty($query)) ? '' : '?'.$query;
                     }
                 } else {
-                    $url = JOOMLABASEURL . "&jfile={$filename}";
-                    $url.= (empty($query)) ? '' : "&{$query}";
+                    $url = JOOMLABASEURL . '&jfile='.$filename;
+                    $url.= (empty($query)) ? '' : '&'.$query;
                 }
-                header("Location: $url");
+                header('Location: '.$url);
                 exit;
             }
         }
@@ -309,7 +309,7 @@ class executeJFusionHook
         //lets rewrite the img urls now while we can
         global $stylevar, $vbulletin;
         //check for trailing slash
-        $DS = (substr($vbulletin->options['bburl'], -1) == '/') ? "" : "/";
+        $DS = (substr($vbulletin->options['bburl'], -1) == '/') ? '' : '/';
         if(!empty($stylevar)) {
             foreach ($stylevar as $k => $v) {
                 if (strstr($k, 'imgdir') && strstr($v, $vbulletin->options['bburl']) === false && strpos($v, 'http') === false) {
@@ -482,9 +482,9 @@ class executeJFusionHook
         if (!empty($this->vars[profileurl]) && $profileurlSet !== true) {
             $uid = JRequest::getVar('u');
             if ($vbsefenabled && $vbsefmode) {
-                $this->vars[profileurl] = str_replace("member.php?u=$uid", '', $this->vars[profileurl]);
+                $this->vars[profileurl] = str_replace('member.php?u='.$uid, '', $this->vars[profileurl]);
             } else {
-                $this->vars[profileurl] = $baseURL . "&jfile=member.php&u=$uid";
+                $this->vars[profileurl] = $baseURL . '&jfile=member.php&u='.$uid;
             }
             $profileurlSet = true;
         }

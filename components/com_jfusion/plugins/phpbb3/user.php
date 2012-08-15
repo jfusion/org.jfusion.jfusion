@@ -896,14 +896,14 @@ class JFusionUser_phpbb3 extends JFusionUser
             //$status['debug'][] = 'Updated topic last poster to be anonymous if set as user '.$user_id;
         }
         // Since we change every post by this author, we need to count this amount towards the anonymous user
-        $query = "SELECT user_posts FROM #__users WHERE user_id = $user_id";
+        $query = 'SELECT user_posts FROM #__users WHERE user_id = '.$user_id;
         $db->setQuery($query);
         $user_posts = $db->loadResult();
         // Update the post count for the anonymous user
         if ($user_posts > 0) {
-            $query = "UPDATE #__users
+            $query = 'UPDATE #__users
                 SET user_posts = user_posts + $user_posts
-                WHERE user_id = 1";
+                WHERE user_id = 1';
             $db->setQuery($query);
             if (!$db->query()) {
                 $status['error'][] = 'Error Could not update the number of posts for anonymous user: '.$db->stderr();
@@ -913,13 +913,13 @@ class JFusionUser_phpbb3 extends JFusionUser
         }
         $table_ary = array('users', 'user_group', 'topics_watch', 'forums_watch', 'acl_users', 'topics_track', 'topics_posted', 'forums_track', 'profile_fields_data', 'moderator_cache', 'drafts', 'bookmarks');
         foreach ($table_ary as $table) {
-            $query = "DELETE FROM #__$table
-                WHERE user_id = $user_id";
+            $query = 'DELETE FROM #__$table
+                WHERE user_id = '.$user_id;
             $db->setQuery($query);
             if (!$db->query()) {
                 $status['error'][] = "Error Could not delete records from $table for user $user_id: {$db->stderr() }";
             } else {
-                //$status['debug'][] = "Deleted records from $table for user $user_id.";
+                //$status['debug'][] = 'Deleted records from '.$table.' for user '.$user_id;
             }
         }
         // Remove any undelivered mails...
@@ -977,7 +977,7 @@ class JFusionUser_phpbb3 extends JFusionUser
         if (!$db->query()) {
             $status['error'][] = "Error Could not update rest of private messages for user $user_id to anonymous: {$db->stderr() }";
         } else {
-            //$status['debug'][] = "Updated the author to anonymous for the rest of the PMs in the 'to' table if originally sent by user $user_id.";
+            //$status['debug'][] = 'Updated the author to anonymous for the rest of the PMs in the "to" table if originally sent by user '.$user_id;
         }
         $query = 'UPDATE #__privmsgs
             SET author_id = 1
@@ -1000,7 +1000,7 @@ class JFusionUser_phpbb3 extends JFusionUser
             if (!$db->query()) {
                 $status['error'][] = "Error Could not update the number of PMs for user $_user_id for user $user_id was deleted: {$db->stderr() }";
             } else {
-                //$status['debug'][] = "Updated the the number of PMs for user $_user_id since user $user_id was deleted.";
+                //$status['debug'][] = 'Updated the the number of PMs for user '.$_user_id.' since user '.$user_id.' was deleted.';
             }
         }
         //update the total user count

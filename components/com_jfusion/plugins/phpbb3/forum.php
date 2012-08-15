@@ -432,7 +432,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
     function getThread($threadid)
     {
 		$db =& JFusionFactory::getDatabase($this->getJname());
-		$query = "SELECT topic_id AS threadid, forum_id AS forumid, topic_first_post_id AS postid FROM #__topics WHERE topic_id = $threadid";
+		$query = 'SELECT topic_id AS threadid, forum_id AS forumid, topic_first_post_id AS postid FROM #__topics WHERE topic_id = '.$threadid;
 		$db->setQuery($query);
 		$results = $db->loadObject();
 		return $results;
@@ -459,7 +459,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 		$text = $this->prepareFirstPostBody($dbparams, $contentitem);
 
 		//the user information
-		$query = "SELECT username, username_clean, user_colour, user_permissions FROM #__users WHERE user_id = '$userid'";
+		$query = 'SELECT username, username_clean, user_colour, user_permissions FROM #__users WHERE user_id = '.$userid;
 		$jdb->setQuery($query);
 		$phpbbUser = $jdb->loadObject();
 
@@ -599,7 +599,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
      */
     function getReplyURL($forumid, $threadid)
     {
-        return "posting.php?mode=reply&f=$forumid&t=$threadid";
+        return 'posting.php?mode=reply&f='.$forumid.'&t='.$threadid;
     }
 
 	 /**
@@ -743,7 +743,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 			$post_row->enable_magic_url	= 1;
 			$post_row->enable_sig		= 1;
 			$post_row->post_username	= $phpbbUser->username;
-			$post_row->post_subject		= "Re: {$topic->topic_title}";
+			$post_row->post_subject		= 'Re: '.$topic->topic_title;
 			$post_row->post_text		= $bbcode->text;
 			$post_row->post_checksum	= md5($bbcode->text);
 			$post_row->post_attachment	= 0;
@@ -768,7 +768,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 				$topic_row->topic_last_poster_id		= (int) $userid;
 				$topic_row->topic_last_poster_name		= $phpbbUser->username;
 				$topic_row->topic_last_poster_colour	= $phpbbUser->user_colour;
-                $topic_row->topic_last_post_subject = "Re: {$topic->topic_title}";
+                $topic_row->topic_last_post_subject     = 'Re: '.$topic->topic_title;
 				$topic_row->topic_replies				= $topic->topic_replies + 1;
 				$topic_row->topic_replies_real 			= $topic->topic_replies_real + 1;
 				$topic_row->topic_id					= $ids->threadid;
@@ -884,7 +884,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 			$jdb->setQuery($query,$limitstart,$limit);
 		} else {
 			$limit_posts = $dbparams->get('limit_posts');
-			$query .= empty($limit_posts) || trim($limit_posts)==0 ? "" :  " LIMIT 0,$limit_posts";
+			$query .= empty($limit_posts) || trim($limit_posts)==0 ? '' :  ' LIMIT 0,'.$limit_posts;
 			$jdb->setQuery($query);
 		}
 

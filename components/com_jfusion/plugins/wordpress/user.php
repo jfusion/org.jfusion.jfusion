@@ -511,7 +511,7 @@ class JFusionUser_wordpress extends JFusionUser {
 							break;
 						}
 					}
-					$status['debug'][] = "Reassigned posts from user with id $user_id to user $reassign.";
+					$status['debug'][] = 'Reassigned posts from user with id '.$user_id.' to user '.$reassign;
 				} elseif ($db->getErrorNum() != 0) {
 					$status['error'][] = 'Error Could not retrieve posts by user '.$user_id.': '.$db->stderr();
 				}
@@ -528,7 +528,7 @@ class JFusionUser_wordpress extends JFusionUser {
 								break;
 							}
 						}
-						$status['debug'][] = "Reassigned links from user with id $user_id to user $reassign.";
+						$status['debug'][] = 'Reassigned links from user with id '.$user_id.' to user '.$reassign;
 					} elseif ($db->getErrorNum() != 0) {
 						$status['error'][] = 'Error Could not retrieve links by user '.$user_id.': '.$db->stderr();
 					}

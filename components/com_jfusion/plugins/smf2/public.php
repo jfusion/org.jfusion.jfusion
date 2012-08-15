@@ -900,13 +900,13 @@ class JFusionPublic_smf2 extends JFusionPublic {
 				foreach($usergroups AS $usergroup) {
 					$usergroup_query .= " OR FIND_IN_SET(" . intval($usergroup) . ", u.additional_groups)";
 				}
-				$usergroup_query .= ")";
+				$usergroup_query .= ')';
 			} else {
 				$usergroup_query .= "AND (u.id_group = $usergroups OR u.id_post_group = $usergroups OR FIND_IN_SET($usergroups, u.additional_groups))";
 			}
 		}
 
-		$limiter = (!empty($limit)) ? "LIMIT 0,$limit" : '';
+		$limiter = (!empty($limit)) ? 'LIMIT 0,'.$limit : '';
 
 		return "SELECT DISTINCT u.id_member AS userid, u.member_name AS username, u.real_name AS name, u.email_address as email FROM #__members AS u INNER JOIN #__log_online AS s ON u.id_member = s.id_member WHERE s.id_member != 0 $usergroup_query $limiter";
 	}
@@ -941,7 +941,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 				foreach($usergroups AS $usergroup) {
 					$usergroup_query .= " OR FIND_IN_SET(" . intval($usergroup) . ", u.additional_groups)";
 				}
-				$usergroup_query .= ")";
+				$usergroup_query .= ')';
 			} else {
 				$usergroup_query .= "AND (u.id_group = $usergroups OR u.id_post_group = $usergroups OR FIND_IN_SET($usergroups, u.additional_groups))";
 			}
@@ -949,7 +949,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 
 		$db =& JFusionFactory::getDatabase($this->getJname());
 
-		$query = "SELECT COUNT(DISTINCT(l.ip)) FROM #__log_online AS l JOIN #__members AS u ON l.id_member = u.id_member WHERE l.id_member != 0 $usergroup_query";
+		$query = 'SELECT COUNT(DISTINCT(l.ip)) FROM #__log_online AS l JOIN #__members AS u ON l.id_member = u.id_member WHERE l.id_member != 0 '.$usergroup_query;
 
 		$db->setQuery($query);
 		return $db->loadResult();

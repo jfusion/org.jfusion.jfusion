@@ -108,15 +108,15 @@ class JFusionForum_smf2 extends JFusionForum
                 $db = JFusionFactory::getDatabase($this->getJname());
                 $userlookup = JFusionFunction::lookupUser($this->getJname(), $JUser->id);
                 if (!empty($userlookup)) {
-                    $query = "SELECT id_msg, id_topic FROM #__log_topics WHERE id_member = {$userlookup->userid}";
+                    $query = 'SELECT id_msg, id_topic FROM #__log_topics WHERE id_member = '.$userlookup->userid;
                     $db->setQuery($query);
                     $markread['topic'] = $db->loadObjectList('id_topic');
 
-                    $query = "SELECT id_msg, id_board FROM #__log_mark_read WHERE id_member = {$userlookup->userid}";
+                    $query = 'SELECT id_msg, id_board FROM #__log_mark_read WHERE id_member = '.$userlookup->userid;
                     $db->setQuery($query);
                     $markread['mark_read'] = $db->loadObjectList('id_board');
 
-                    $query = "SELECT id_msg, id_board FROM #__log_boards WHERE id_member = {$userlookup->userid}";
+                    $query = 'SELECT id_msg, id_board FROM #__log_boards WHERE id_member = '.$userlookup->userid;
                     $db->setQuery($query);
                     $markread['board'] = $db->loadObjectList('id_board');
                 }
@@ -230,7 +230,7 @@ class JFusionForum_smf2 extends JFusionForum
 		$text = $this->prepareFirstPostBody($dbparams, $contentitem);
 
 		//the user information
-		$query = "SELECT member_name, email_address FROM #__members WHERE id_member = '$userid'";
+		$query = 'SELECT member_name, email_address FROM #__members WHERE id_member = '.$userid;
 		$jdb->setQuery($query);
 		$smfUser = $jdb->loadObject();
 
@@ -299,7 +299,7 @@ class JFusionForum_smf2 extends JFusionForum
                 $forum_stats = new stdClass();
                 $forum_stats->id_board =  $forumid;
 
-                $query = "SELECT m.poster_time FROM #__messages AS m INNER JOIN #__boards AS b ON b.id_last_msg = m.id_msg WHERE b.id_board = $forumid";
+                $query = 'SELECT m.poster_time FROM #__messages AS m INNER JOIN #__boards AS b ON b.id_last_msg = m.id_msg WHERE b.id_board = '.$forumid;
                 $jdb->setQuery($query);
                 $lastPostTime = (int) $jdb->loadResult();
                 if($dbparams->get('use_content_created_date',false)) {
@@ -314,7 +314,7 @@ class JFusionForum_smf2 extends JFusionForum
                     $forum_stats->id_msg_updated =  $postid;
                 }
 
-                $query = "SELECT num_topics, num_posts FROM #__boards WHERE id_board = $forumid";
+                $query = 'SELECT num_topics, num_posts FROM #__boards WHERE id_board = '.$forumid;
                 $jdb->setQuery($query);
                 $num = $jdb->loadObject();
                 $forum_stats->num_posts =  $num->num_posts +1;
@@ -324,7 +324,7 @@ class JFusionForum_smf2 extends JFusionForum
                     $status['error'] = $jdb->stderr();
                 }
                 if ($updateLastPost) {
-                    $query = "REPLACE INTO #__log_topics SET id_member = $userid, id_topic = $topicid, id_msg = " . ($postid + 1);
+                    $query = 'REPLACE INTO #__log_topics SET id_member = '.$userid.', id_topic = '.$topicid.', id_msg = ' . ($postid + 1);
                     $jdb->setQuery($query);
                     if (!$jdb->query()) {
                         $status['error'] = $jdb->stderr();
@@ -368,7 +368,7 @@ class JFusionForum_smf2 extends JFusionForum
         $timestamp = time();
 		$userid = $dbparams->get('default_user');
 
-		$query = "SELECT member_name FROM #__members WHERE id_member = '$userid'";
+		$query = 'SELECT member_name FROM #__members WHERE id_member = '.$userid;
 		$jdb->setQuery($query);
 		$smfUser = $jdb->loadObject();
 
@@ -479,8 +479,8 @@ HTML;
 			$public->prepareText($text);
 
 			//get some topic information
-			$where = "WHERE t.id_topic = {$ids->threadid} AND m.id_msg = t.id_first_msg";
-			$query = "SELECT t.id_first_msg , t.num_replies, m.subject FROM `#__messages` as m INNER JOIN `#__topics` as t ON t.id_topic = m.id_topic $where";
+			$where = 'WHERE t.id_topic = '.$ids->threadid.' AND m.id_msg = t.id_first_msg';
+			$query = 'SELECT t.id_first_msg , t.num_replies, m.subject FROM `#__messages` as m INNER JOIN `#__topics` as t ON t.id_topic = m.id_topic '.$where;
 
 			$jdb->setQuery($query);
 			$topic = $jdb->loadObject();
@@ -491,7 +491,7 @@ HTML;
 				$smfUser->member_name = $userinfo->username;
 				$smfUser->email_address = $userinfo->email;
 			} else {
-				$query = "SELECT member_name,email_address FROM #__members WHERE id_member = '$userid'";
+				$query = 'SELECT member_name,email_address FROM #__members WHERE id_member = '.$userid;
 				$jdb->setQuery($query);
 				$smfUser = $jdb->loadObject();
 			}
@@ -546,7 +546,7 @@ HTML;
 				$forum_stats = new stdClass();
 				$forum_stats->id_last_msg 		=  $postid;
 				$forum_stats->id_msg_updated	=  $postid;
-				$query = "SELECT num_posts FROM #__boards WHERE id_board = {$ids->forumid}";
+				$query = 'SELECT num_posts FROM #__boards WHERE id_board = '.$ids->forumid;
 				$jdb->setQuery($query);
 				$num = $jdb->loadObject();
 				$forum_stats->num_posts = $num->num_posts + 1;
@@ -597,9 +597,9 @@ HTML;
 		$sort = $dbparams->get('sort_posts');
 		$where = "WHERE id_topic = {$threadid} AND id_msg != {$postid} AND approved = 1";
         $query = "(SELECT a.id_topic , a.id_msg, a.poster_name, b.real_name, a.id_member, 0 AS guest, a.subject, a.poster_time, a.body, a.poster_time AS order_by_date FROM `#__messages` as a INNER JOIN #__members as b ON a.id_member = b.id_member $where AND a.id_member != 0)";
-        $query.= " UNION ";
+        $query.= ' UNION ';
         $query.= "(SELECT a.id_topic , a.id_msg, a.poster_name, a.poster_name as real_name, a.id_member, 1 AS guest, a.subject, a.poster_time, a.body, a.poster_time AS order_by_date FROM `#__messages` as a $where AND a.id_member = 0)";
-        $query.= " ORDER BY order_by_date $sort";
+        $query.= ' ORDER BY order_by_date '.$sort;
 		$jdb = JFusionFactory::getDatabase($this->getJname());
 
 		if($dbparams->get('enable_pagination',true)) {
@@ -609,7 +609,7 @@ HTML;
 			$jdb->setQuery($query,$limitstart,$limit);
 		} else {
 			$limit_posts = $dbparams->get('limit_posts');
-			$query .= empty($limit_posts) || trim($limit_posts)==0 ? "" :  " LIMIT 0,$limit_posts";
+			$query .= empty($limit_posts) || trim($limit_posts)==0 ? '' :  ' LIMIT 0,'.$limit_posts;
 			$jdb->setQuery($query);
 		}
 
@@ -625,7 +625,7 @@ HTML;
     function getReplyCount(&$existingthread)
 	{
 		$db =& JFusionFactory::getDatabase($this->getJname());
-		$query = "SELECT num_replies FROM #__topics WHERE id_topic = {$existingthread->threadid}";
+		$query = 'SELECT num_replies FROM #__topics WHERE id_topic = '.$existingthread->threadid;
 		$db->setQuery($query);
 		$result = $db->loadResult();
 		return $result;
@@ -667,7 +667,7 @@ HTML;
     function getThread($threadid)
     {
 		$db =& JFusionFactory::getDatabase($this->getJname());
-		$query = "SELECT id_topic AS threadid, id_board AS forumid, id_first_msg AS postid FROM #__topics WHERE id_topic = $threadid";
+		$query = 'SELECT id_topic AS threadid, id_board AS forumid, id_first_msg AS postid FROM #__topics WHERE id_topic = '.$threadid;
 		$db->setQuery($query);
 		$results = $db->loadObject();
 		return $results;

@@ -133,7 +133,7 @@ class JFusionForum_smf extends JFusionForum
         }
 
         //setup the guest where clause to be used in union query
-        $guest_where = (empty($where)) ? " WHERE b.ID_MEMBER = 0" : " AND b.ID_MEMBER = 0";
+        $guest_where = (empty($where)) ? ' WHERE b.ID_MEMBER = 0' : ' AND b.ID_MEMBER = 0';
 
         $query = array(
         //LAT with first post info
@@ -616,8 +616,8 @@ HTML;
         if (!empty($text)) {
             $public->prepareText($text);
             //get some topic information
-            $where = "WHERE t.ID_TOPIC = {$ids->threadid} AND m.ID_MSG = t.ID_FIRST_MSG";
-            $query = "SELECT t.ID_FIRST_MSG , t.numReplies, m.subject FROM `#__messages` as m INNER JOIN `#__topics` as t ON t.ID_TOPIC = m.ID_TOPIC $where";
+            $where = 'WHERE t.ID_TOPIC = '.$ids->threadid.' AND m.ID_MSG = t.ID_FIRST_MSG';
+            $query = 'SELECT t.ID_FIRST_MSG , t.numReplies, m.subject FROM `#__messages` as m INNER JOIN `#__topics` as t ON t.ID_TOPIC = m.ID_TOPIC '.$where;
             $jdb->setQuery($query);
             $topic = $jdb->loadObject();
             //the user information
@@ -720,7 +720,7 @@ HTML;
             $jdb->setQuery($query, $limitstart, $limit);
 		} else {
 			$limit_posts = $dbparams->get('limit_posts');
-			$query .= empty($limit_posts) || trim($limit_posts)==0 ? "" :  " LIMIT 0,$limit_posts";
+			$query .= empty($limit_posts) || trim($limit_posts)==0 ? '' :  ' LIMIT 0,'.$limit_posts;
 			$jdb->setQuery($query);
 		}
 
@@ -748,14 +748,14 @@ HTML;
      * Returns an object of columns used in createPostTable()
      * Saves from having to repeat the same code over and over for each plugin
      * For example:
-     * $columns->userid = "userid";
-     * $columns->username = "username";
-     * $columns->username_clean = "username_clean"; //if applicable for filtered usernames
-     * $columns->dateline = "dateline";
-     * $columns->posttext = "pagetext";
-     * $columns->posttitle = "title";
-     * $columns->postid = "postid";
-     * $columns->threadid = "threadid";
+     * $columns->userid = 'userid';
+     * $columns->username = 'username';
+     * $columns->username_clean = 'username_clean'; //if applicable for filtered usernames
+     * $columns->dateline = 'dateline';
+     * $columns->posttext = 'pagetext';
+     * $columns->posttitle = 'title';
+     * $columns->postid = 'postid';
+     * $columns->threadid = 'threadid';
      *
      * @return object with column names
      */

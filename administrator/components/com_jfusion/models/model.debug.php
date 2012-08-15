@@ -252,8 +252,8 @@ CSS;
                 $neededScriptCode = debug::getToggleScript();
                 $neededStyleCode = debug::setStylesForScheme($schema);
                 $styling = '';
-                if (is_numeric($height)) $styling = "style='max-height:{$height}px; overflow:auto;'";
-                $str = $neededScriptCode . "<div class='debug_$schema' $styling>\n" . $neededStyleCode;
+                if (is_numeric($height)) $styling = 'style="max-height:'.$height.'px; overflow:auto;';
+                $str = $neededScriptCode . '<div class="debug_'.$schema.'" '.$styling.'>'."\n" . $neededStyleCode;
             }
             $emptyWhat = 'empty-array';
             $keyClass = 'a_key';
@@ -263,7 +263,7 @@ CSS;
             }
             if (debug::isOneDimensional($arr) && !$start) {
                 if (count($arr) == 0) {
-                    $str.= "<span class='$keyClass'>$emptyWhat</span><br>\n";
+                    $str.= '<span class="'.$keyClass.'">'.$emptyWhat.'</span><br>'."\n";
                 }
 
                 foreach ($arr as $key => $value) {
@@ -272,7 +272,7 @@ CSS;
                         list($target,$function,$args) = debug::$callback;
                         list($style,$value) = $target->$function($key,$value,$args);
                     }
-                    $str.= '<span class="$keyClass" style="'.$style.'"> ' . debug::decorateValue($key) . '</span> ';
+                    $str.= '<span class="'.$keyClass.'" style="'.$style.'"> ' . debug::decorateValue($key) . '</span> ';
                     $str.= '<span class="value" style="'.$style.'" > ' . debug::decorateValue($value) . '</span><br/>';
                 }
             } else {
@@ -323,7 +323,7 @@ CSS;
     public static function getText($arr, $start = true) {
         $str = '';
         if (is_string($start)) {
-            $str.= $start." - &darr;\n";
+            $str.= $start.' - &darr;'."\n";
         }
         if (is_array($arr) || is_object($arr)) {
             $emptyWhat = 'empty-array';
@@ -503,7 +503,7 @@ CSS;
                 $aktLz['count']++;
             } else {
                 $aktLz['time']+= std::getMicroTime() - $aktLz['start'];
-                $aktLz['count'] = "Error, Measurement " . debug::$stackName[$n] . " not closed";
+                $aktLz['count'] = 'Error, Measurement ' . debug::$stackName[$n] . ' not closed';
             }
             unset(debug::$laufzeitStack[$n]);
             unset(debug::$stackName[$n]);
@@ -579,11 +579,11 @@ CSS;
         } else if (is_bool($value)) {
             if ($value) $decValue = 'true';
             else $decValue = 'false';
-            $decValue = "<b>$decValue</b>";
+            $decValue = '<b>'.$decValue.'</b>';
         } else if (is_null($value)) {
             $decValue = '<b><i>null</i></b>';
         } else {
-            $decValue = "<b>$value</b>";
+            $decValue = '<b>'.$value.'</b>';
         }
         return $decValue;
     }
@@ -688,14 +688,14 @@ class trans {
         $pre = '$';
         if (is_numeric($phpvar)) $phpCode = "$pre$phpVarName = $phpvar;\n";
         if (is_bool($phpvar)) {
-            if ($phpvar) $phpCode = "$pre$phpVarName = true;\n";
-            else $phpCode = "$pre$phpVarName = false;\n";
+            if ($phpvar) $phpCode = $pre.$phpVarName.' = true;'."\n";
+            else $phpCode = $pre.$phpVarName.' = false;'."\n";
         }
         if (is_string($phpvar) && !is_numeric($phpvar)) $phpCode = "$pre$phpVarName = \"" . trans::replaceChars($phpvar) . "\";\n";
-        if (is_null($phpvar)) $phpCode = "$pre$phpVarName = null;\n";
+        if (is_null($phpvar)) $phpCode = $pre.$phpVarName.' = null;'."\n";
         if (is_array($phpvar)) {
             if (arrayfunc::isOneDimensional($phpvar)) {
-                $phpCode = "$pre$phpVarName = array(";
+                $phpCode = $pre.$phpVarName.' = array(';
                 foreach ($phpvar as $key => $value) {
                     if (!is_numeric($value)) $value = trans::replaceChars($value);
                     if (is_int($key) && $key >= 0) $phpCode.= "$key => \"$value\", ";
@@ -706,7 +706,7 @@ class trans {
                 }
                 $phpCode.= ");\n";
             } else {
-                $phpCode = "$pre$phpVarName = array();\n";
+                $phpCode = $pre.$phpVarName.' = array();'."\n";
                 foreach ($phpvar as $key => $value) {
                     if (is_int($key) && $key >= 0) $name = $phpVarName . "[" . $key . "]";
                     else $name = $phpVarName . "['" . $key . "']";

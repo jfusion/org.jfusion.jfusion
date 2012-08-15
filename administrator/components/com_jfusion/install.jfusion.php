@@ -252,11 +252,11 @@ function com_install() {
 			}
 			//in addition the unique indexes we need to change the userid column to accept text as
 			//plugins such as dokuwiki does not use int userids
-			$query = "ALTER TABLE #__jfusion_users_plugin
+			$query = 'ALTER TABLE #__jfusion_users_plugin
               ADD UNIQUE `lookup` (id,jname),
               ADD PRIMARY KEY ( `autoid` ),
               CHANGE `autoid` `autoid` INT( 11 ) NOT null AUTO_INCREMENT,
-              CHANGE `userid` `userid` VARCHAR(50) NOT null";
+              CHANGE `userid` `userid` VARCHAR(50) NOT null';
 			$db->setQuery($query);
 			if (!$db->query()) {
 				echo $db->stderr() . '<br />';
@@ -283,7 +283,7 @@ function com_install() {
 		/***
 		 * UPGRADES FOR 1.1.4/1.2
 		 */
-		$query = "ALTER TABLE `#__jfusion_sync` CHANGE `syncdata` `syncdata` LONGBLOB null DEFAULT null ";
+		$query = 'ALTER TABLE `#__jfusion_sync` CHANGE `syncdata` `syncdata` LONGBLOB null DEFAULT null';
 		$db->setQuery($query);
 		if (!$db->query()) {
 			echo $db->stderr() . '<br />';
