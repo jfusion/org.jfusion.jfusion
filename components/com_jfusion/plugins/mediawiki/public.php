@@ -48,8 +48,8 @@ class JFusionPublic_mediawiki extends JFusionPublic {
     function getSearchQueryColumns()
 	{
 		$columns = new stdClass();
-		$columns->title = "p.page_title";
-		$columns->text = "t.old_text";
+		$columns->title = 'p.page_title';
+		$columns->text = 't.old_text';
 		return $columns;
 	}
 

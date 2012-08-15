@@ -899,7 +899,7 @@ HTML;
                 //manually plugged thus remove any db plugin tags
                 $jdb = JFactory::getDBO();
                 //retrieve the original text
-                $query = "SELECT `introtext`, `fulltext` FROM #__content WHERE id = " . $this->article->id;
+                $query = 'SELECT `introtext`, `fulltext` FROM #__content WHERE id = ' . $this->article->id;
                 $jdb->setQuery($query);
                 $texts = $jdb->loadObject();
 
@@ -908,7 +908,7 @@ HTML;
                 $introtext = preg_replace('/\{jfusion_discuss (.*)\}/U','',$texts->introtext, -1, $introTextCount);
 
                 if (!empty($fullTextCount) || !empty($introTextCount)) {
-                    $query = "UPDATE #__content SET `fulltext` = " . $jdb->Quote($fulltext) . ", `introtext` = " .$jdb->Quote($introtext) . " WHERE id = " . (int) $this->article->id;
+                    $query = 'UPDATE #__content SET `fulltext` = ' . $jdb->Quote($fulltext) . ', `introtext` = ' .$jdb->Quote($introtext) . ' WHERE id = ' . (int) $this->article->id;
                     $jdb->setQuery($query);
                     $jdb->query();
                 }
@@ -1331,8 +1331,8 @@ HTML;
 
             //show comments link
             if ($view==$test_view && $this->params->get('show_toggle_posts_link',1)) {
-                $this->helper->output['buttons']['showreplies']['href'] = "javascript: void(0);";
-                $this->helper->output['buttons']['showreplies']['js']['onclick'] = "toggleDiscussionVisibility();";
+                $this->helper->output['buttons']['showreplies']['href'] = 'javascript: void(0);';
+                $this->helper->output['buttons']['showreplies']['js']['onclick'] = 'toggleDiscussionVisibility();';
 
                 $JSession = JFactory::getSession();
                 $show_replies = $JSession->get('jfusion.discussion.visibility',0);
@@ -1450,7 +1450,7 @@ HTML;
             if (!empty($posttitle)) {
                 $post_output[$i]->subject = $posttitle;
             } elseif (!empty($threadtitle)) {
-                $post_output[$i]->subject = "Re: ".$threadtitle;
+                $post_output[$i]->subject = 'Re: '.$threadtitle;
             } else {
                 $post_output[$i]->subject = JText::_('NO_SUBJECT');
             }

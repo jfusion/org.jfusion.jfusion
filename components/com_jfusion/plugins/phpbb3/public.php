@@ -682,8 +682,8 @@ class JFusionPublic_phpbb3 extends JFusionPublic
      */
     function getSearchQueryColumns() {
         $columns = new stdClass();
-        $columns->title = "p.post_subject";
-        $columns->text = "p.post_text";
+        $columns->title = 'p.post_subject';
+        $columns->text = 'p.post_text';
         return $columns;
     }
 
@@ -717,7 +717,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
         } else {
             $db = JFusionFactory::getDatabase($this->getJname());
             //no forums were selected so pull them all then filter
-            $query = "SELECT forum_id FROM #__forums WHERE forum_type = 1 ORDER BY left_id";
+            $query = 'SELECT forum_id FROM #__forums WHERE forum_type = 1 ORDER BY left_id';
             $db->setQuery($query);
             $forumids = $db->loadResultArray();
             $forumids = $forum->filterForumList($forumids);

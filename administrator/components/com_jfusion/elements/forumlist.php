@@ -31,7 +31,7 @@ require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS .
  */
 class JElementForumlist extends JElement
 {
-    var $_name = "forumlist";
+    var $_name = 'forumlist';
     /**
      * Get an element
      *

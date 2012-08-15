@@ -68,66 +68,66 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
             $params['database_name'] = DB_DATABASE;
             $params['database_user'] = DB_SERVER_USERNAME;
             $params['database_password'] = DB_SERVER_PASSWORD;
-            if (DB_TABLE_PREFIX !== "DB_TABLE_PREFIX") {
+            if (DB_TABLE_PREFIX !== 'DB_TABLE_PREFIX') {
                 $params['database_prefix'] = DB_TABLE_PREFIX;
             }
-            if (DB_PREFIX !== "DB_PREFIX") {
+            if (DB_PREFIX !== 'DB_PREFIX') {
                 $params['database_prefix'] = DB_PREFIX;
             }
-            $params['database_type'] = "mysqli";
-            if (DB_DATABASE_CLASS !== "DB_DATABASE_CLASS") {
+            $params['database_type'] = 'mysqli';
+            if (DB_DATABASE_CLASS !== 'DB_DATABASE_CLASS') {
                 $params['database_type'] = DB_DATABASE_CLASS;
             }
-            if (DB_TYPE !== "DB_TYPE") {
+            if (DB_TYPE !== 'DB_TYPE') {
                 $params['database_type'] = DB_TYPE;
             }
             $params['source_path'] = $forumPath;
             $params['usergroup'] = '0'; #make sure we do not assign roles with more capabilities automatically
             // handle ssl enabling
             $enable_ssl = false;
-            if (ENABLE_SSL !== "ENABLE_SSL") {
+            if (ENABLE_SSL !== 'ENABLE_SSL') {
                 if (ENABLE_SLL !== false) {
                     $enable_ssl = true;
                 }
             }
-            if (ENABLE_SSL_CATALOG !== "ENABLE_SSL_CATALOG") {
+            if (ENABLE_SSL_CATALOG !== 'ENABLE_SSL_CATALOG') {
                 if (ENABLE_SLL_CATALOG !== false) {
                     $enable_ssl = true;
                 }
             }
             if ($enable_ssl) {
-                if (HTTPS_SERVER !== "HTTPS_SERVER") {
+                if (HTTPS_SERVER !== 'HTTPS_SERVER') {
                     $params['source_url'] = $params['source_url'] . HTTPS_SERVER;
                 }
-                if (HTTPS_CATALOG_SERVER !== "HTTPS_CATALOG_SERVER") {
+                if (HTTPS_CATALOG_SERVER !== 'HTTPS_CATALOG_SERVER') {
                     $params['source_url'] = $params['source_url'] . HTTPS_CATALOG_SERVER;
                 }
-                if (DIR_WS_HTTPS_CATALOG !== "DIR_WS_HTTPS_CATALOG") {
+                if (DIR_WS_HTTPS_CATALOG !== 'DIR_WS_HTTPS_CATALOG') {
                     $params['source_url'] = $params['source_url'] . DIR_WS_HTTPS_CATALOG;
                 }
-                if (HTTPS_COOKIE_PATH !== "HTTPS_COOKIE_PATH") {
+                if (HTTPS_COOKIE_PATH !== 'HTTPS_COOKIE_PATH') {
                     $params['cookie_path'] = HTTPS_COOKIE_PATH;
                 }
-                if (HTTPS_COOKIE_DOMAIN !== "HTTPS_COOKIE_DOMAIN") {
+                if (HTTPS_COOKIE_DOMAIN !== 'HTTPS_COOKIE_DOMAIN') {
                     $params['cookie_domain'] = HTTPS_COOKIE_DOMAIN;
                 }
             } else {
-                if (HTTP_SERVER !== "HTTP_SERVER") {
+                if (HTTP_SERVER !== 'HTTP_SERVER') {
                     $params['source_url'] = $params['source_url'] . HTTP_SERVER;
                 }
-                if (HTTP_CATALOG_SERVER !== "HTTP_CATALOG_SERVER") {
+                if (HTTP_CATALOG_SERVER !== 'HTTP_CATALOG_SERVER') {
                     $params['source_url'] = $params['source_url'] . HTTP_CATALOG_SERVER;
                 }
-                if (DIR_WS_HTTP_CATALOG !== "DIR_WS_HTTP_CATALOG") {
+                if (DIR_WS_HTTP_CATALOG !== 'DIR_WS_HTTP_CATALOG') {
                     $params['source_url'] = $params['source_url'] . DIR_WS_HTTP_CATALOG;
                 }
-                if (DIR_WS_CATALOG !== "DIR_WS_CATALOG") {
+                if (DIR_WS_CATALOG !== 'DIR_WS_CATALOG') {
                     $params['source_url'] = $params['source_url'] . DIR_WS_CATALOG;
                 }
-                if (HTTP_COOKIE_PATH !== "HTTP_COOKIE_PATH") {
+                if (HTTP_COOKIE_PATH !== 'HTTP_COOKIE_PATH') {
                     $params['cookie_path'] = HTTP_COOKIE_PATH;
                 }
-                if (HTTP_COOKIE_DOMAIN !== "HTTP_COOKIE_DOMAIN") {
+                if (HTTP_COOKIE_DOMAIN !== 'HTTP_COOKIE_DOMAIN') {
                     $params['cookie_domain'] = HTTP_COOKIE_DOMAIN;
                 }
             }

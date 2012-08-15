@@ -79,9 +79,9 @@ JS;
 			JHTML::_('behavior.modal', 'a.modal');
 
             if($pluginParams->get($name)) {
-                $src = "components/com_jfusion/images/tick.png";
+                $src = 'components/com_jfusion/images/tick.png';
             } else {
-                $src = "components/com_jfusion/images/clear.png";
+                $src = 'components/com_jfusion/images/clear.png';
             }
 
             $assign_paits = JText::_('ASSIGN_PAIRS');

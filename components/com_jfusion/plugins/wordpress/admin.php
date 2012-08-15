@@ -104,7 +104,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 			$params['database_user'] = DB_USER;
 			$params['database_password'] = DB_PASSWORD;
 			$params['database_prefix'] = $table_prefix;
-			$params['database_type'] = "mysql";
+			$params['database_type'] = 'mysql';
 			$params['source_path'] = $forumPath;
 			$params['database_charset'] = DB_CHARSET;
 			$driver = 'mysql';

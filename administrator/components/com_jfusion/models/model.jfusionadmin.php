@@ -64,7 +64,7 @@ class JFusionFunctionAdmin
 
         if ($wizard) {
             //data submitted by the wizard so merge the data with existing params if they do indeed exist
-            $query = "SELECT params FROM #__jfusion WHERE name = " . $db->Quote($jname);
+            $query = 'SELECT params FROM #__jfusion WHERE name = ' . $db->Quote($jname);
             $db->setQuery($query);
             $existing_serialized = $db->loadResult();
             if (!empty($existing_serialized)) {

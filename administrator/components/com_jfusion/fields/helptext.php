@@ -26,7 +26,7 @@ defined('_JEXEC') or die();
  */
 class JFormFieldhelptext extends JFormField
 {
-    public $type = "helptext";
+    public $type = 'helptext';
     /**
      * Get an element
      *

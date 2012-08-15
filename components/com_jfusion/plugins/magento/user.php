@@ -205,7 +205,7 @@ class JFusionUser_magento extends JFusionUser {
 
         // Get the user id
         $db = JFusionFactory::getDataBase($this->getJname());
-        $query = "SELECT entity_id FROM #__customer_entity WHERE email =" . $db->Quote($identifier);
+        $query = 'SELECT entity_id FROM #__customer_entity WHERE email = ' . $db->Quote($identifier);
         $db->setQuery($query);
         $entity = (int)$db->loadResult();
         // check if we have found the user, if not return failure
@@ -303,7 +303,7 @@ class JFusionUser_magento extends JFusionUser {
      */
      function getRandomString($len, $chars = null) {
         if (is_null($chars)) {
-            $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         }
         mt_srand(10000000 * (double)microtime());
         for ($i = 0, $str = '', $lc = strlen($chars) - 1;$i < $len;$i++) {
@@ -591,7 +591,7 @@ class JFusionUser_magento extends JFusionUser {
                 return $status;
             }
             try {
-                $result = $proxi->call($sessionId, "customer.delete", $user_id);
+                $result = $proxi->call($sessionId, 'customer.delete', $user_id);
             } catch(Soapfault $fault) {
                 $status['error'][] = "Magento API: Could not delete user with id $user_id , message: " . $fault->faultstring;
             }
@@ -602,7 +602,7 @@ class JFusionUser_magento extends JFusionUser {
             try {
                 $proxi->endSession($sessionId);
             } catch(Soapfault $fault) {
-                $status['error'][] = "Magento API: Could not end this session, message: " . $fault->faultstring;
+                $status['error'][] = 'Magento API: Could not end this session, message: ' . $fault->faultstring;
             }
         }
         return $status;
@@ -627,14 +627,14 @@ class JFusionUser_magento extends JFusionUser {
         $status = $this->connect_to_api($proxi, $sessionId);
         if (empty($status['error'])) {
             try {
-                $result = $proxi->call($sessionId, "customer.update", array($user_id, $update));
+                $result = $proxi->call($sessionId, 'customer.update', array($user_id, $update));
             } catch(Soapfault $fault) {
                 $status['error'][] = "Magento API: Could not update email of user with id $user_id , message: " . $fault->faultstring;
             }
             try {
                 $proxi->endSession($sessionId);
             } catch(Soapfault $fault) {
-                $status['error'][] = "Magento API: Could not end this session, message: " . $fault->faultstring;
+                $status['error'][] = 'Magento API: Could not end this session, message: ' . $fault->faultstring;
             }
         }
     }
@@ -647,7 +647,7 @@ class JFusionUser_magento extends JFusionUser {
     function updateUsergroup($userinfo, &$existinguser, &$status) {
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
         if (empty($usergroups)) {
-            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('USERGROUP_MISSING');
+            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . JText::_('USERGROUP_MISSING');
         } else {
             $usergroup = $usergroups[0];
             //set the usergroup in the user table

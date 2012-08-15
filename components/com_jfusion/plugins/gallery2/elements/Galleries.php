@@ -28,7 +28,7 @@ defined('_JEXEC') or die();
  * @link       http://www.jfusion.org
  */
 class JElementGalleries extends JElement {
-    var $_name = "Galleries";
+    var $_name = 'Galleries';
 
     /**
      * @param string $name

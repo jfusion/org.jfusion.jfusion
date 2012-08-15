@@ -182,7 +182,7 @@ class JFusionUser_phpbb3 extends JFusionUser
                     }
 
                     $phpbb_root_path = $source_path;
-                    $phpEx = "php";
+                    $phpEx = 'php';
 
                     include_once $source_path . 'common.php';
 

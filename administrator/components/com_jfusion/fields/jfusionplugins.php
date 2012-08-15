@@ -26,7 +26,7 @@ defined('_JEXEC') or die();
  */
 class JFormFieldJFusionPlugins extends JFormField
 {
-    public $type = "JFusionPlugins";
+    public $type = 'JFusionPlugins';
     /**
      * Get an element
      *

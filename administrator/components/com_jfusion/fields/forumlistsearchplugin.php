@@ -31,7 +31,7 @@ require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS .
  */
 class JFormFieldForumListSearchPlugin extends JFormField
 {
-    public $type = "ForumListSearchPlugin";
+    public $type = 'ForumListSearchPlugin';
     /**
      * Get an element
      *

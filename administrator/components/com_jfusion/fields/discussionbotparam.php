@@ -28,7 +28,7 @@ class JFormFieldDiscussionbotparam extends JFormField
 	 * @access	protected
 	 * @var		string
 	 */
-	public $type = "Discussionbotparam";
+	public $type = 'Discussionbotparam';
     /**
      * Get an element
      *
@@ -80,9 +80,9 @@ JS;
             $assign_paits = JText::_('ASSIGN_PAIRS');
 
             if(!empty($params[$name])) {
-                $src = "components/com_jfusion/images/tick.png";
+                $src = 'components/com_jfusion/images/tick.png';
             } else {
-               $src = "components/com_jfusion/images/clear.png";
+                $src = 'components/com_jfusion/images/clear.png';
             }
 
             $html =<<<HTML

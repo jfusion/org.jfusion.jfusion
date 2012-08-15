@@ -781,8 +781,8 @@ class JFusionPublic_smf extends JFusionPublic
     function getSearchQueryColumns()
     {
         $columns = new stdClass();
-        $columns->title = "p.subject";
-        $columns->text = "p.body";
+        $columns->title = 'p.subject';
+        $columns->text = 'p.body';
         return $columns;
     }
 
@@ -911,7 +911,7 @@ class JFusionPublic_smf extends JFusionPublic
     function getNumberOnlineGuests()
     {
         $db = JFusionFactory::getDatabase($this->getJname());
-        $query = "SELECT COUNT(DISTINCT(ip)) FROM #__log_online WHERE ID_MEMBER = 0";
+        $query = 'SELECT COUNT(DISTINCT(ip)) FROM #__log_online WHERE ID_MEMBER = 0';
         $db->setQuery($query);
         return $db->loadResult();
     }
@@ -924,7 +924,7 @@ class JFusionPublic_smf extends JFusionPublic
     function getNumberOnlineMembers()
     {
         $db = JFusionFactory::getDatabase($this->getJname());
-        $query = "SELECT COUNT(DISTINCT(ip)) FROM #__log_online WHERE ID_MEMBER != 0";
+        $query = 'SELECT COUNT(DISTINCT(ip)) FROM #__log_online WHERE ID_MEMBER != 0';
         $db->setQuery($query);
         return $db->loadResult();
     }

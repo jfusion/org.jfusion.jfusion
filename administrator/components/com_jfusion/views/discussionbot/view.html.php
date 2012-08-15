@@ -69,7 +69,7 @@ class jfusionViewdiscussionbot extends JView
         	case 'pair_k2_categories':
         	    $title = JText::_('ASSIGN_K2_CATEGORY_PAIRS');
 
-    	        $query = "SELECT id, name as title, parent FROM #__k2_categories WHERE id > 0 AND trash = 0 AND published = 1";
+    	        $query = 'SELECT id, name as title, parent FROM #__k2_categories WHERE id > 0 AND trash = 0 AND published = 1';
 	    	    $db->setQuery($query);
     			$items = $db->loadObjectList();
         		$children = array ();

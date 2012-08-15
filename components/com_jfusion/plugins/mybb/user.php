@@ -73,7 +73,7 @@ class JFusionUser_mybb extends JFusionUser {
         //Set cookie values
         $expires = mktime(12, 0, 0, 1, 1, 1990);
         if (!$cookiepath) {
-            $cookiepath = "/";
+            $cookiepath = '/';
         }
         // Clearing Forum Cookies
         $remove_cookies = array('mybb', 'mybbuser', 'mybbadmin');

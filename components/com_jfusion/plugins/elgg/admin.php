@@ -94,7 +94,7 @@ class JFusionAdmin_elgg extends JFusionAdmin
             $params['database_user'] = $config['dbuser'];
             $params['database_password'] = $config['dbpass'];
             $params['database_prefix'] = $config['dbprefix'];
-            $params['database_type'] = "mysql";
+            $params['database_type'] = 'mysql';
             $params['source_path'] = $path;
         }
         return $params;
@@ -136,8 +136,8 @@ class JFusionAdmin_elgg extends JFusionAdmin
     function getUsergroupList() {
         //NOT IMPLEMENTED YET!
         $default_group = new stdClass;
-        $default_group->name = "user";
-        $default_group->id = "1";
+        $default_group->name = 'user';
+        $default_group->id = '1';
         $UsergroupList[] = $default_group;
         return $UsergroupList;
     }

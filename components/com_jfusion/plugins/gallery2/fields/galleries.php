@@ -27,7 +27,7 @@ defined('_JEXEC') or die();
  * @link       http://www.jfusion.org
  */
 class JFormFieldGalleries extends JFormField {
-	public $type = "galleries";
+	public $type = 'galleries';
 
     /**
      * @return mixed|string

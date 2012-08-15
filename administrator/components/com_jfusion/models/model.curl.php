@@ -580,10 +580,10 @@ class JFusionCurl
 					$cinfo[1] = strtotime($cinfo[1]);
 				}
 				if (strcasecmp($cinfo[0], 'secure') == 0) {
-					$cinfo[1] = "true";
+					$cinfo[1] = 'true';
 				}
 				if (strcasecmp($cinfo[0], 'httponly') == 0) {
-					$cinfo[1] = "true";
+					$cinfo[1] = 'true';
 				}
 				if (in_array(strtolower($cinfo[0]), array('domain', 'expires', 'path', 'secure', 'comment', 'httponly'))) {
 					$cdata[trim($cinfo[0])] = $cinfo[1];

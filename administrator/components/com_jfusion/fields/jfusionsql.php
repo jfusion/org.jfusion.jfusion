@@ -32,7 +32,7 @@ require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS .
  */
 class JFormFieldjfusionsql extends JFormField
 {
-    public $type = "jfusionsql";
+    public $type = 'jfusionsql';
     /**
      * Get an element
      *

@@ -26,7 +26,7 @@ defined('_JEXEC') or die();
  */
 class JElementhelptext extends JElement
 {
-    var $_name = "helptext";
+    var $_name = 'helptext';
     /**
      * Get an element
      *

@@ -498,13 +498,13 @@ class JFusionUser_wordpress extends JFusionUser {
 			
 		// handle posts and links
 		if ($reassign){
-			$query = "SELECT ID FROM #__posts WHERE post_author = ".$user_id;
+			$query = 'SELECT ID FROM #__posts WHERE post_author = '.$user_id;
 			$db->setQuery($query);
 			if ($db->query()) {
                 $results = $db->loadObjectList();
 				if ($results) {
 					foreach ($results as $row) {
-						$query = "UPDATE #__posts SET post_author = ".$reassign. " WHERE ID = ". $row->ID;
+						$query = 'UPDATE #__posts SET post_author = '.$reassign. ' WHERE ID = '. $row->ID;
 						$db->setQuery($query);
 						if (!$db->query()) {
 							$status['error'][] = "Error Could not reassign posts by user $user_id: {$db->stderr() }";
@@ -515,13 +515,13 @@ class JFusionUser_wordpress extends JFusionUser {
 				} elseif ($db->getErrorNum() != 0) {
 					$status['error'][] = "Error Could not retrieve posts by user $user_id: {$db->stderr() }";
 				}
-				$query = "SELECT link_id FROM #__links WHERE link_owner = ".$user_id;
+				$query = 'SELECT link_id FROM #__links WHERE link_owner = '.$user_id;
 				$db->setQuery($query);
 				if ($db->query()) {
                     $results = $db->loadObjectList();
 					if ($results) {
 						foreach ($results as $row) {
-							$query = "UPDATE #__links SET link_owner = ".$reassign. " WHERE link_id = ". $row->link_id;
+							$query = 'UPDATE #__links SET link_owner = '.$reassign. ' WHERE link_id = '. $row->link_id;
 							$db->setQuery($query);
 							if (!$db->query()) {
 								$status['error'][] = "Error Could not reassign links by user $user_id: {$db->stderr() }";
@@ -569,7 +569,7 @@ class JFusionUser_wordpress extends JFusionUser {
     function updateUsergroup($userinfo, &$existinguser, &$status) {
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 		if (empty($usergroups)) {
-			$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('USERGROUP_MISSING');
+			$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . JText::_('USERGROUP_MISSING');
 		} else {
             $db = JFusionFactory::getDatabase($this->getJname());
 
@@ -586,7 +586,7 @@ class JFusionUser_wordpress extends JFusionUser {
             }
 
             $capsfield = serialize($caps);
-            $query = "UPDATE #__usermeta SET meta_value =" . $db->Quote($capsfield) . " WHERE meta_key = 'wp_capabilities' AND user_id =" . (int)$existinguser->userid;
+            $query = 'UPDATE #__usermeta SET meta_value =' . $db->Quote($capsfield) . " WHERE meta_key = 'wp_capabilities' AND user_id =" . (int)$existinguser->userid;
             $db->setQuery($query);
             if (!$db->query()) {
                 $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();

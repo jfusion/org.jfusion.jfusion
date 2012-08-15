@@ -110,7 +110,7 @@ function recaptcha_get_html($pubkey, $error = null, $use_ssl = false) {
     }
     $errorpart = '';
     if ($error) {
-        $errorpart = "&amp;error=" . $error;
+        $errorpart = '&amp;error=' . $error;
     }
     return '<script type="text/javascript" src="' . $server . '/challenge?k=' . $pubkey . $errorpart . '"></script>
 

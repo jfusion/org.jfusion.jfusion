@@ -107,7 +107,7 @@ JS;
             foreach ($params as $key => $param) {
                 if (isset($param['jfusionplugin'])) {
                     $title.= $del . $param['jfusionplugin'];
-                    $del = "; ";
+                    $del = '; ';
                 }
             }
         }

@@ -590,13 +590,13 @@ HTML;
                 return $status;
             } else {
                 $db = JFusionFactory::getDatabase($this->getJname());
-				$query = "SELECT COUNT(*) FROM #__members "
-						. " WHERE memberName = " . $db->Quote($userinfo->username)
-						. " OR memberName = " . $db->Quote($userinfo->email)
-						. " OR realName = " . $db->Quote($userinfo->username)
-						. " OR realName = " . $db->Quote($userinfo->email)
-						. " OR LOWER(emailAddress) = " . strtolower($db->Quote($userinfo->username))
-						. " OR LOWER(emailAddress) = " . strtolower($db->Quote($userinfo->email));
+				$query = 'SELECT COUNT(*) FROM #__members '
+						. ' WHERE memberName = ' . $db->Quote($userinfo->username)
+						. ' OR memberName = ' . $db->Quote($userinfo->email)
+						. ' OR realName = ' . $db->Quote($userinfo->username)
+						. ' OR realName = ' . $db->Quote($userinfo->email)
+						. ' OR LOWER(emailAddress) = ' . strtolower($db->Quote($userinfo->username))
+						. ' OR LOWER(emailAddress) = ' . strtolower($db->Quote($userinfo->email));
                 $db->setQuery($query);
                 $result = $db->loadResult();
                 if (!empty($result)) {
@@ -762,15 +762,15 @@ HTML;
     function getDiscussionColumns()
     {
         $columns = new stdClass();
-        $columns->userid = "ID_MEMBER";
-        $columns->username = "posterName";
-        $columns->name = "realName";
-        $columns->dateline = "posterTime";
-        $columns->posttext = "body";
-        $columns->posttitle = "subject";
-        $columns->postid = "ID_MSG";
-        $columns->threadid = "ID_TOPIC";
-        $columns->guest = "guest";
+        $columns->userid = 'ID_MEMBER';
+        $columns->username = 'posterName';
+        $columns->name = 'realName';
+        $columns->dateline = 'posterTime';
+        $columns->posttext = 'body';
+        $columns->posttitle = 'subject';
+        $columns->postid = 'ID_MSG';
+        $columns->threadid = 'ID_TOPIC';
+        $columns->guest = 'guest';
         return $columns;
     }
 

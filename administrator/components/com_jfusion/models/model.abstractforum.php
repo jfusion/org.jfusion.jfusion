@@ -204,17 +204,17 @@ class JFusionForum
 				$status['debug'][] = "Thread Modification Date: $postModified  (" . date('Y-m-d H:i:s', $postModified). ")";
 				$status['debug'][] = "Is $contentModified > $postModified?";
 				if($contentModified > $postModified) {
-					$status['debug'][] = "Yes...attempting to update thread";
+					$status['debug'][] = 'Yes...attempting to update thread';
 					//update the post if the content has been updated
 					$this->updateThread($dbparams, $existingthread, $contentitem, $status);
 					if (empty($status['error'])) {
 	                	$status['action'] = 'updated';
 	            	}
 				} else {
-					$status['debug'][] = "No...thread unchanged";
+					$status['debug'][] = 'No...thread unchanged';
 				}
 			} else {
-				$status['debug'][] = "Thread does not exist...attempting to create thread";
+				$status['debug'][] = 'Thread does not exist...attempting to create thread';
 		    	//thread does not exist; create it
 	            $this->createThread($dbparams, $contentitem, $forumid, $status);
 	            if (empty($status['error'])) {

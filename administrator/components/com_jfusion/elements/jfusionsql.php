@@ -32,7 +32,7 @@ require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS .
  */
 class JElementjfusionsql extends JElement
 {
-    var $_name = "jfusionsql";
+    var $_name = 'jfusionsql';
 
     /**
      * Get an element

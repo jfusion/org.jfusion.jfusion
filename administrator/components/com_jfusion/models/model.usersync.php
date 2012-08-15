@@ -451,7 +451,7 @@ class JFusionUsersync
     public static function getSyncStatus($syncid = '') {
         if (!empty($syncid)) {
             $db = JFactory::getDBO();
-            $query = "SELECT active FROM #__jfusion_sync WHERE syncid = " . $db->Quote($syncid);
+            $query = 'SELECT active FROM #__jfusion_sync WHERE syncid = ' . $db->Quote($syncid);
             $db->setQuery($query);
             $status = $db->loadResult();
             return $status;

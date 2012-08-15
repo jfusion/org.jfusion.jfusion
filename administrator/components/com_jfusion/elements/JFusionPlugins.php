@@ -26,7 +26,7 @@ defined('_JEXEC') or die();
  */
 class JElementJFusionPlugins extends JElement
 {
-    var $_name = "JFusionPlugins";
+    var $_name = 'JFusionPlugins';
 
     /**
      * Get an element

@@ -243,7 +243,7 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
             $node->link = $urlGenerator->generateUrl(array('view' => 'core.ShowItem', 'itemId' => $node->id), array('forceSessionId' => false, 'forceFullUrl' => true));
             // Make sure it's an album
             if ($entity->getCanContainChildren()) {
-                $node->element = "group";
+                $node->element = 'group';
                 // Get all child items contained in this album and add them to the tree
                 list($ret, $childIds) = GalleryCoreApi::fetchChildItemIdsWithPermission($node->id, 'core.view');
                 if ($ret) {
@@ -252,7 +252,7 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
                 }
                 $node->tree = $this->_getTree($childIds, $urlGenerator, $node);
             } else {
-                $node->element = "element";
+                $node->element = 'element';
                 $node->uid = $parent->uid . 'p' . $entity->getId();
             }
             $albums[] = $node;

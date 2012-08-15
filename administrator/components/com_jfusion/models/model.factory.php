@@ -80,9 +80,9 @@ class JFusionFactory
             if (file_exists($filename)) {
                 //load the plugin class itself
                 include_once $filename;
-                $class = "JFusionPublic_" . $jname;
+                $class = 'JFusionPublic_' . $jname;
             } else {
-                $class = "JFusionPublic";
+                $class = 'JFusionPublic';
             }
             $public_instances[$jname] = new $class;
             return $public_instances[$jname];
@@ -114,9 +114,9 @@ class JFusionFactory
                 $jn = $jname;
                 include_once $filename;
                 $jname = $jn; // (stop gap bug #: some plugins seems to alter $jname, have to find put why
-                $class = "JFusionAdmin_" . $jname;
+                $class = 'JFusionAdmin_' . $jname;
             } else {
-                $class = "JFusionAdmin";
+                $class = 'JFusionAdmin';
             }
             $admin_instances[$jname] = new $class;
         }
@@ -144,9 +144,9 @@ class JFusionFactory
             if (file_exists($filename)) {
                 //load the plugin class itself
                 include_once $filename;
-                $class = "JFusionAuth_" . $jname;
+                $class = 'JFusionAuth_' . $jname;
             } else {
-                $class = "JFusionAuth";
+                $class = 'JFusionAuth';
             }
             $auth_instances[$jname] = new $class;
             return $auth_instances[$jname];
@@ -177,9 +177,9 @@ class JFusionFactory
             if (file_exists($filename)) {
                 //load the plugin class itself
                 include_once $filename;
-                $class = "JFusionUser_" . $jname;
+                $class = 'JFusionUser_' . $jname;
             } else {
-                $class = "JFusionUser";
+                $class = 'JFusionUser';
             }
             $user_instances[$jname] = new $class;
             return $user_instances[$jname];
@@ -210,9 +210,9 @@ class JFusionFactory
             if (file_exists($filename)) {
                 //load the plugin class itself
                 include_once $filename;
-                $class = "JFusionForum_" . $jname;
+                $class = 'JFusionForum_' . $jname;
             } else {
-                $class = "JFusionForum";
+                $class = 'JFusionForum';
             }
             $forum_instances[$jname] = new $class;
             return $forum_instances[$jname];
@@ -240,7 +240,7 @@ class JFusionFactory
             if (file_exists($filename)) {
                 //load the plugin class itself
                 include_once $filename;
-                $class = "JFusionHelper_" . $jname;
+                $class = 'JFusionHelper_' . $jname;
                 $helper_instances[$jname] = new $class;
                 return $helper_instances[$jname];
             } else {

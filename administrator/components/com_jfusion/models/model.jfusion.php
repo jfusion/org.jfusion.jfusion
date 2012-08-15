@@ -357,12 +357,12 @@ class JFusionFunction
             } else {
                 //we have a plugin's id so we need to find Joomla's id then setup a temp $userinfo
                 //first try JFusion's user table
-                $query = "SELECT a.id, a.email FROM #__users AS a INNER JOIN #__jfusion_users as b ON a.id = b.id WHERE b.username = " . $db->Quote($username);
+                $query = 'SELECT a.id, a.email FROM #__users AS a INNER JOIN #__jfusion_users as b ON a.id = b.id WHERE b.username = ' . $db->Quote($username);
                 $db->setQuery($query);
                 $result = $db->loadObject();
                 //not created by JFusion so let's check the Joomla table directly
                 if (empty($result)) {
-                    $query = "SELECT id, email FROM #__users WHERE username = " . $db->Quote($username);
+                    $query = 'SELECT id, email FROM #__users WHERE username = ' . $db->Quote($username);
                     $db->setQuery($query);
                     $result = $db->loadObject();
                 }

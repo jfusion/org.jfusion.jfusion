@@ -118,7 +118,7 @@ class JFusionUser_efront extends JFusionUser
 
         // do some eFront housekeeping
         $db = JFusionFactory::getDatabase($this->getJname());
-        $query = "DELETE FROM #__users_to_chatrooms WHERE users_LOGIN = " . $db->Quote($userinfo->username);
+        $query = 'DELETE FROM #__users_to_chatrooms WHERE users_LOGIN = ' . $db->Quote($userinfo->username);
         $db->setQuery($query);
         if (!$db->query()) {
             $status['debug'][] = "Error Could not delete users_to_chatroom for user $userinfo->username: {$db->stderr() }";
@@ -126,21 +126,21 @@ class JFusionUser_efront extends JFusionUser
             $status['debug'][] = "Deleted users_to_chatroom for user $userinfo->username.";
         }
         $db = JFusionFactory::getDatabase($this->getJname());
-        $query = "DELETE FROM #__chatrooms WHERE users_LOGIN = " . $db->Quote($userinfo->username). " AND type = ".$db->Quote('one_to_one');
+        $query = 'DELETE FROM #__chatrooms WHERE users_LOGIN = ' . $db->Quote($userinfo->username). ' AND type = '.$db->Quote('one_to_one');
         $db->setQuery($query);
         if (!$db->query()) {
             $status['debug'][] = "Error Could not delete chatrooms for user $userinfo->username: {$db->stderr() }";
         } else {
             $status['debug'][] = "Deleted chatrooms for user $userinfo->username";
         }
-        $query = "DELETE FROM #__users_online WHERE users_LOGIN = " . $db->Quote($userinfo->username);
+        $query = 'DELETE FROM #__users_online WHERE users_LOGIN = ' . $db->Quote($userinfo->username);
         $db->setQuery($query);
         if (!$db->query()) {
             $status['debug'][] = "Error Could not delete users_on_line for user $userinfo->username: {$db->stderr()}.";
         } else {
             $status['debug'][] = "Deleted users_on_line for user $userinfo->username.";
         }
-        $query = "SELECT action FROM #__logs WHERE users_LOGIN = " . $db->Quote($userinfo->username)." timestamp desc limit 1";
+        $query = 'SELECT action FROM #__logs WHERE users_LOGIN = ' . $db->Quote($userinfo->username).' timestamp desc limit 1';
         $db->setQuery($query);
         $action = $db->loadResult();
         if ($action != 'logout') {

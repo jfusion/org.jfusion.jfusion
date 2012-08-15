@@ -45,7 +45,7 @@ class JFusionUser_smf2 extends JFusionUser {
 
         if ($result) {
         	if ($result->group_id==0) {
-        		$result->group_name = "Default Usergroup";
+        		$result->group_name = 'Default Usergroup';
         	} else {
         		$query = 'SELECT group_name FROM #__membergroups WHERE id_group = ' . $result->group_id;
         		$db->setQuery($query );

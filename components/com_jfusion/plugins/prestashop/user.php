@@ -92,7 +92,7 @@ class JFusionUser_prestashop extends JFusionUser {
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'UPDATE #__customer SET deleted ="1" WHERE id_customer =' . $db->Quote($identifier);
         $db->setQuery($query);
-		$status['debug'][] = "Deleted user";
+		$status['debug'][] = 'Deleted user';
 		return $status;
     }
 
@@ -101,7 +101,7 @@ class JFusionUser_prestashop extends JFusionUser {
      * @param string $option
      * @return array
      */
-    function destroySession($userinfo = "", $option = "") {
+    function destroySession($userinfo = '', $option = '') {
         $status = array('error' => array(),'debug' => array());
 	    // use prestashop cookie class and functions to delete cookie
 		$params = JFusionFactory::getParams($this->getJname());
@@ -113,11 +113,11 @@ class JFusionUser_prestashop extends JFusionUser {
 		require($params->get('source_path') . DS . "classes" . DS . "Db.php");
 		require($params->get('source_path') . DS . "classes" . DS . "SubDomain.php");
         $cookie = new cookie('ps');
-		$status['error'][] = "Random debugging text";
+		$status['error'][] = 'Random debugging text';
 	    if(!$cookie->mylogout()) {
             $status['error'][] = "Error Could not delete session, doesn't exist";
 		} else {
-            $status['debug'][] = "Deleted session and session data";
+            $status['debug'][] = 'Deleted session and session data';
 		}
 		return $status;
     }
@@ -133,14 +133,14 @@ class JFusionUser_prestashop extends JFusionUser {
         $status = array('error' => array(),'debug' => array());
         // this uses a code extract from authentication.php that deals with logging in completely
 		$db = JFusionFactory::getDatabase($this->getJname());
-		require_once $params->get('source_path') . DS . "config" . DS . "settings.inc.php";
-	    require($params->get('source_path') . DS . "classes" . DS . "Cookie.php");
-		require($params->get('source_path') . DS . "classes" . DS . "Blowfish.php");
-		require($params->get('source_path') . DS . "classes" . DS . "Tools.php");
-		require($params->get('source_path') . DS . "classes" . DS . "ObjectModel.php");
-		require($params->get('source_path') . DS . "classes" . DS . "Db.php");
-		require($params->get('source_path') . DS . "classes" . DS . "SubDomain.php");
-		require($params->get('source_path') . DS . "classes" . DS . "Validate.php");
+		require_once $params->get('source_path') . DS . 'config' . DS . 'settings.inc.php';
+	    require($params->get('source_path') . DS . 'classes' . DS . 'Cookie.php');
+		require($params->get('source_path') . DS . 'classes' . DS . 'Blowfish.php');
+		require($params->get('source_path') . DS . 'classes' . DS . 'Tools.php');
+		require($params->get('source_path') . DS . 'classes' . DS . 'ObjectModel.php');
+		require($params->get('source_path') . DS . 'classes' . DS . 'Db.php');
+		require($params->get('source_path') . DS . 'classes' . DS . 'SubDomain.php');
+		require($params->get('source_path') . DS . 'classes' . DS . 'Validate.php');
 		$cookie = new cookie('ps');
 		$passwd = $userinfo->password_clear;
 	    $email = $userinfo->email;
@@ -160,7 +160,7 @@ class JFusionUser_prestashop extends JFusionUser {
 		    /* Handle brute force attacks */
 		    sleep(1);
 			// check if password matches
-			$query = "SELECT passwd FROM #__customer WHERE email =" . $db->Quote($email);
+			$query = 'SELECT passwd FROM #__customer WHERE email = ' . $db->Quote($email);
             $db->setQuery($query);
             $result = $db->loadResult();
 		    if (!$result) {

@@ -141,12 +141,12 @@ class JFusionAdmin_efront extends JFusionAdmin
         // because we cannot run this from outside eFront (unless we load the whole framework on top of Joomla)
         $tableFields = $db->getTableFields('users',false);
         if (!array_key_exists('id',$tableFields['users'])) {
-            $query = "ALTER TABLE users ADD id int(11) NOT null AUTO_INCREMENT FIRST, ADD UNIQUE (id)";
+            $query = 'ALTER TABLE users ADD id int(11) NOT null AUTO_INCREMENT FIRST, ADD UNIQUE (id)';
             $db->setQuery($query);
             $db->query();
         }
         if (!array_key_exists('need_mod_init',$tableFields['users'])) {
-            $query = "ALTER TABLE users ADD need_mod_init int(11) NOT null DEFAULT 0";
+            $query = 'ALTER TABLE users ADD need_mod_init int(11) NOT null DEFAULT 0';
             $db->setQuery($query);
             $db->query();
         }

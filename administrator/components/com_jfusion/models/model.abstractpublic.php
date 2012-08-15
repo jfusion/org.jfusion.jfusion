@@ -818,9 +818,9 @@ HTML;
                 $wheres[] = "((LOWER({$columns->title}) LIKE '%$word%') OR (LOWER({$columns->text}) like '%$word%'))";
             }
             if ($phrase == 'all') {
-                $separator = "AND";
+                $separator = 'AND';
             } else {
-                $separator = "OR";
+                $separator = 'OR';
             }
             $where = '(' . implode(") $separator (", $wheres) . ')';
         }

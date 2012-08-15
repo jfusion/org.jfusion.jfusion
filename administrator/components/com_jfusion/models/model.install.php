@@ -355,7 +355,7 @@ class JFusionPluginInstaller extends JObject
                                     $plugin_features[$f] = $$f;
                                 }
                             }
-                            $query.= " WHERE id = " . $plugin->id;
+                            $query.= ' WHERE id = ' . $plugin->id;
                             $db->setQuery($query);
                             $db->query();
 
@@ -631,7 +631,7 @@ class JFusionPluginInstaller extends JObject
                 if ($update) {
                     //update the copied plugin files
                     $plugin_files = $this->backup($new_jname);
-                    $query = "UPDATE #__jfusion SET plugin_files = " . $db->Quote($plugin_files);
+                    $query = 'UPDATE #__jfusion SET plugin_files = ' . $db->Quote($plugin_files);
                     //get the features of the updated plugin
                     global $plugin_features;
                     if (empty($plugin_features)) {

@@ -871,10 +871,10 @@ class doku_auth_mysql extends doku_auth_basic {
       if ($this->dbcon) {
         if (is_array($this->cnf['TablesToLock']) && !empty($this->cnf['TablesToLock'])) {
           if ($mode == "READ" || $mode == "WRITE") {
-            $sql = "LOCK TABLES ";
+            $sql = 'LOCK TABLES ';
             $cnt = 0;
             foreach ($this->cnf['TablesToLock'] as $table) {
-              if ($cnt++ != 0) $sql .= ", ";
+              if ($cnt++ != 0) $sql .= ', ';
               $sql .= "$table $mode";
             }
             $this->_modifyDB($sql);

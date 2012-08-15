@@ -136,7 +136,7 @@ if ($this->server_compatible) {
     <?php
     foreach ($this->components as $component) {
         ?>
-    <tr class = "<?php echo $component->class.($row_count % 2);?>">
+    <tr class="<?php echo $component->class.($row_count % 2);?>">
         <td>
             <?php echo JText::_('JFUSION') . ' ' . $component->name . ' ' . JText::_('VERSION') ;?>
         </td>
@@ -204,7 +204,7 @@ if ($this->server_compatible) {
     <?php
     foreach ($this->jfusion_plugins as $jfusion_plugin) {
         ?>
-    <tr class = "<?php echo $jfusion_plugin->class.($row_count % 2);?>">
+    <tr class="<?php echo $jfusion_plugin->class.($row_count % 2);?>">
         <td>
             <?php echo $jfusion_plugin->name;?>
         </td>

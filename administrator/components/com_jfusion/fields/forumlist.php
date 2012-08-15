@@ -31,7 +31,7 @@ require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS .
  */
 class JFormFieldForumlist extends JFormField
 {
-    public $type = "forumlist";
+    public $type = 'forumlist';
     /**
      * Get an element
      *

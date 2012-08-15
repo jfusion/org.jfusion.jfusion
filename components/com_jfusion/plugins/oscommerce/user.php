@@ -649,7 +649,7 @@ class JFusionUser_oscommerce extends JFusionUser
 
                     //set the usergroup name  in the user table
                     $db1 = JFusionFactory::getDatabase($this->getJname());
-                    $query = 'SELECT customers_group_name from #__customers_groups WHERE customers_group_id = ' . implode (' , ', $existinguser->groups) . " AND language_id = " . $existinguser->language;
+                    $query = 'SELECT customers_group_name from #__customers_groups WHERE customers_group_id = ' . implode (' , ', $existinguser->groups) . ' AND language_id = ' . $existinguser->language;
                     $db1->setQuery($query);
                     $customers_group_name = $db1->loadResult();
                     $query = 'UPDATE #__customers SET customers_group_iname = ' . $customers_group_name . ' WHERE entity_id =' . $existinguser->userid;

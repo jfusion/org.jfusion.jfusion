@@ -648,15 +648,15 @@ HTML;
 	function getDiscussionColumns()
 	{
 		$columns = new stdClass();
-		$columns->userid = "id_member";
-		$columns->username = "poster_name";
-		$columns->name = "real_name";
-		$columns->dateline = "poster_time";
-		$columns->posttext = "body";
-		$columns->posttitle = "subject";
-		$columns->postid = "id_msg";
-		$columns->threadid = "id_topic";
-		$columns->guest = "guest";
+		$columns->userid = 'id_member';
+		$columns->username = 'poster_name';
+		$columns->name = 'real_name';
+		$columns->dateline = 'poster_time';
+		$columns->posttext = 'body';
+		$columns->posttitle = 'subject';
+		$columns->postid = 'id_msg';
+		$columns->threadid = 'id_topic';
+		$columns->guest = 'guest';
 		return $columns;
 	}
 

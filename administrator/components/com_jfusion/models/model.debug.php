@@ -117,7 +117,7 @@ class debug {
      *    -  change the name if it messes up with your own JavaScript functions
      *    -  ..or set it to the empty-String to disable value-toggling
      */
-    static $toggleFunctionName = "tns";
+    static $toggleFunctionName = 'tns';
     static $colorScheme = array();
     static $colorSchemeInited = array();
     static $toggleScriptInited = false;
@@ -255,11 +255,11 @@ CSS;
                 if (is_numeric($height)) $styling = "style='max-height:{$height}px; overflow:auto;'";
                 $str = $neededScriptCode . "<div class='debug_$schema' $styling>\n" . $neededStyleCode;
             }
-            $emptyWhat = "empty-array";
+            $emptyWhat = 'empty-array';
             $keyClass = 'a_key';
             if (is_object($arr)) {
                 $keyClass = 'o_key';
-                $emptyWhat = "empty-object";
+                $emptyWhat = 'empty-object';
             }
             if (debug::isOneDimensional($arr) && !$start) {
                 if (count($arr) == 0) {
@@ -326,16 +326,16 @@ CSS;
             $str.= $start." - &darr;\n";
         }
         if (is_array($arr) || is_object($arr)) {
-            $emptyWhat = "empty-array";
+            $emptyWhat = 'empty-array';
             if (is_object($arr)) {
-                $emptyWhat = "empty-object";
+                $emptyWhat = 'empty-object';
             }
             if (debug::isOneDimensional($arr)) {
                 if (count($arr) == 0) {
                     $str.= $emptyWhat."\n";
                 } else {
                     foreach ($arr as $key => $value) {
-                        $str.= $key." &rarr; ".$value."\n";
+                        $str.= $key.' &rarr; '.$value."\n";
                     }
                 }
             } else {
@@ -343,9 +343,9 @@ CSS;
                     $str.= $emptyWhat."\n";
                 } else {
                     foreach ($arr as $key => $value) {
-                        $emptyWhat = "empty-array";
+                        $emptyWhat = 'empty-array';
                         if (is_object($value)) {
-                            $emptyWhat = "empty-object";
+                            $emptyWhat = 'empty-object';
                         }
                         if ( is_array($value) || is_object($value) ) {
                             if (count($value) == 0) {
@@ -353,7 +353,7 @@ CSS;
                             }
                             $str.= $key." - &darr; \n".debug::getText($value, false);
                         } else {
-                            $str.= $key." &rarr; ".$value."\n";
+                            $str.= $key.' &rarr; '.$value."\n";
                         }
                     }
                 }
@@ -575,13 +575,13 @@ CSS;
     private static function decorateValue($value) {
         if (is_string($value)) {
             if (trim($value) == "") $decValue = "\"$value\"";
-            else $decValue = str_replace(array("<", ">"), array("&lt;", "&gt;"), $value);
+            else $decValue = str_replace(array('<', '>'), array('&lt;', '&gt;'), $value);
         } else if (is_bool($value)) {
-            if ($value) $decValue = "true";
-            else $decValue = "false";
+            if ($value) $decValue = 'true';
+            else $decValue = 'false';
             $decValue = "<b>$decValue</b>";
         } else if (is_null($value)) {
-            $decValue = "<b><i>null</i></b>";
+            $decValue = '<b><i>null</i></b>';
         } else {
             $decValue = "<b>$value</b>";
         }
@@ -970,10 +970,10 @@ class trans {
  * @link      http://www.jfusion.org
  */
 class arrayfunc {
-    var $EQUAL = "=";
-    var $LIKE = "LIKE";
-    var $SMALLER = "<";
-    var $GREATER = ">";
+    var $EQUAL = '=';
+    var $LIKE = 'LIKE';
+    var $SMALLER = '<';
+    var $GREATER = '>';
     /**
      *    Sorts a 2-Dimensional Array, the intention is to sort arrays like Tables in SQL (by "Column")
      *    So the $data should be an array of "rows" (represented as Hashtable where the Key will be the
@@ -996,12 +996,12 @@ class arrayfunc {
      *    NOTE:     - To test what happens with the different options use debug::show() before and after sorting
      *        - Runtime: O(n * ln(n))    if one criteria is given, O(m * (n * ln(n)) if m criterias given (worst case!!)
      */
-    public static function tableSort($data, $criteria, $direction = "ASC", $holdIndizes = false) {
-        debug::startMessung("tableSort");
+    public static function tableSort($data, $criteria, $direction = 'ASC', $holdIndizes = false) {
+        debug::startMessung('tableSort');
         $sortArr = array();
         $retArr = array();
-        if (!is_array($criteria)) $criteria = explode(",", $criteria);
-        if (!is_array($direction)) $direction = explode(",", $direction);
+        if (!is_array($criteria)) $criteria = explode(',', $criteria);
+        if (!is_array($direction)) $direction = explode(',', $direction);
         $thisCrit = $criteria[0];
         $thisDir = $direction[0];
         unset($criteria[0]);
@@ -1012,10 +1012,10 @@ class arrayfunc {
         if (count($criteria) > 0) {
             if (count($direction) == 0) $direction = array();
             foreach ($sortArr as $critValue => $matches) {
-                $sortArr[$critValue] = arrayfunc::tableSort($matches, join(",", $criteria), join(",", $direction), $holdIndizes);
+                $sortArr[$critValue] = arrayfunc::tableSort($matches, join(',', $criteria), join(',', $direction), $holdIndizes);
             }
         }
-        if (strtolower($thisDir) == "desc") krsort($sortArr);
+        if (strtolower($thisDir) == 'desc') krsort($sortArr);
         else ksort($sortArr);
         foreach ($sortArr as $subArr) {
             foreach ($subArr as $idx => $row) {
@@ -1023,7 +1023,7 @@ class arrayfunc {
                 else $retArr[] = $row;
             }
         }
-        debug::stopMessung("tableSort");
+        debug::stopMessung('tableSort');
         return $retArr;
     }
     /*------------     HOWTO  -------------------------
@@ -1055,9 +1055,9 @@ class arrayfunc {
      *        - Runtime: O(n)    if one criteria is given O(m * n) if m criterias given
      */
     public static function tableGroup($data, $criteria, $holdIndizes = false) {
-        debug::startMessung("tableGroup");
+        debug::startMessung('tableGroup');
         $groupedArr = array();
-        if (!is_array($criteria)) $criteria = explode(",", $criteria);
+        if (!is_array($criteria)) $criteria = explode(',', $criteria);
         $thisCrit = trim($criteria[0]);
         unset($criteria[0]);
         foreach ($data as $idx => $row) {
@@ -1066,10 +1066,10 @@ class arrayfunc {
         }
         if (count($criteria) > 0) {
             foreach ($groupedArr as $critValue => $matches) {
-                $groupedArr[$critValue] = arrayfunc::tableGroup($matches, join(",", $criteria));
+                $groupedArr[$critValue] = arrayfunc::tableGroup($matches, join(',', $criteria));
             }
         }
-        debug::stopMessung("tableGroup");
+        debug::stopMessung('tableGroup');
         return $groupedArr;
     }
     /**
@@ -1090,9 +1090,9 @@ class arrayfunc {
      *            !! IF NOT YOU WILL LOOSE DATA WITHOUT WARNING !!
      */
     public static function uniqueTableGroup($data, $criteria, $field = false) {
-        debug::startMessung("uniqueTableGroup");
+        debug::startMessung('uniqueTableGroup');
         $groupedArr = array();
-        if (!is_array($criteria)) $criteria = explode(",", $criteria);
+        if (!is_array($criteria)) $criteria = explode(',', $criteria);
         $thisCrit = trim($criteria[0]);
         foreach ($data as $row) {
             if (count($criteria) == 1) {
@@ -1108,7 +1108,7 @@ class arrayfunc {
                 $groupedArr[$critValue] = arrayfunc::uniqueTableGroup($matches, join(",", $criteria), $field);
             }
         }
-        debug::stopMessung("uniqueTableGroup");
+        debug::stopMessung('uniqueTableGroup');
         return $groupedArr;
     }
     /**
@@ -1135,7 +1135,7 @@ class arrayfunc {
      *    @return array the filtered rows
      */
     public static function tableFilter($data, $filter) {
-        $operatorOrder = array("=", "LIKE", "<", ">");
+        $operatorOrder = array('=', 'LIKE', '<', '>');
         $filter = arrayfunc::parseFilter($filter, $operatorOrder);
         $filters = arrayfunc::tableGroup($filter, 1);
         foreach ($operatorOrder as $operator) {
@@ -1244,14 +1244,14 @@ class arrayfunc {
      */
     private static function parseFilter($filter, $operators) {
         if (is_string($filter)) {
-            $filter = explode(" AND ", $filter);
+            $filter = explode(' AND ', $filter);
         }
         if (count($filter) == 3 && in_array($filter[1], $operators)) {
             $newFilter = array($filter);
             $filter = $newFilter;
         } else {
             foreach ($filter as $idx => $fil) {
-                if (is_string($fil)) $filter[$idx] = explode(" ", $fil);
+                if (is_string($fil)) $filter[$idx] = explode(' ', $fil);
             }
         }
         return $filter;
@@ -1311,12 +1311,12 @@ class arrayfunc {
     private static function likeCompare($value, $pattern) {
         $pattern = strtolower($pattern); // Damit das ganze Case-INsensitive  l�uft
         $value = strtolower($value);
-        $pttrn = explode("%", $pattern);
+        $pttrn = explode('%', $pattern);
         $lastIdx = count($pttrn) - 1;
         if ($lastIdx == 0) return ($pattern == $value);
         $failed = false;
         foreach ($pttrn as $idx => $str) {
-            if ($str != "" && $failed === false) {
+            if ($str != '' && $failed === false) {
                 $pos = strpos($value, $str);
                 if ($pos === false) $failed = true; // str gar nicht vorhanden => RAUS
                 if ($idx == 0 && $pos > 0) $failed = true; // anfang, pos muss = 0 sein sonst => RAUS

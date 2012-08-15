@@ -74,7 +74,7 @@ class JFusionAdmin_magento extends JFusionAdmin
                 $params['database_user'] = (string)$xml->document->getElementByPath('global/resources/default_setup/connection/username')->data();
                 $params['database_password'] = (string)$xml->document->getElementByPath('global/resources/default_setup/connection/password')->data();
                 $params['database_prefix'] = (string)$xml->document->getElementByPath('global/resources/db/table_prefix')->data();
-                $params['database_type'] = "mysql";
+                $params['database_type'] = 'mysql';
                 $params['source_path'] = $forumPath;
             }
             unset($xml);
