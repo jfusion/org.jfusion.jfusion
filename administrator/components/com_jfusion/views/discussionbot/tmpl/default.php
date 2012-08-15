@@ -30,7 +30,7 @@ if(!empty($this->joomlaSelectOptions)) {
 	echo JText::_('NO_CATEGORIES');
 }
 
-echo " => ";
+echo ' => ';
 
 if(!empty($this->forumSelectOptions)) {
 	echo JHTML::_('select.genericlist', $this->forumSelectOptions, 'forumid', 'class="inputbox" style="margin-left:15px;"', 'id', 'name', '');

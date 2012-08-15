@@ -72,7 +72,7 @@ class JFusionForum_smf extends JFusionForum
      */
     function getReplyURL($forumid, $threadid)
     {
-        return "index.php?action=post;topic=$threadid";
+        return 'index.php?action=post;topic='.$threadid;
     }
 
     /**
@@ -708,9 +708,9 @@ HTML;
         $sort = $dbparams->get('sort_posts');
 		$where = "WHERE ID_TOPIC = {$threadid} AND ID_MSG != {$postid}";
         $query = "(SELECT a.ID_TOPIC , a.ID_MSG, a.posterName, b.realName, a.ID_MEMBER, 0 AS guest, a.subject, a.posterTime, a.body, a.posterTime AS order_by_date FROM `#__messages` as a INNER JOIN #__members as b ON a.ID_MEMBER = b.ID_MEMBER $where AND a.ID_MEMBER != 0)";
-        $query.= " UNION ";
+        $query.= ' UNION ';
         $query.= "(SELECT a.ID_TOPIC , a.ID_MSG, a.posterName, a.posterName as realName, a.ID_MEMBER, 1 AS guest, a.subject, a.posterTime, a.body, a.posterTime AS order_by_date FROM `#__messages` as a $where AND a.ID_MEMBER = 0)";
-        $query.= " ORDER BY order_by_date $sort";
+        $query.= ' ORDER BY order_by_date '.$sort;
         $jdb = JFusionFactory::getDatabase($this->getJname());
 
 		if($dbparams->get('enable_pagination',true)) {

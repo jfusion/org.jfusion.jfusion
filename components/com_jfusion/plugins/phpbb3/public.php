@@ -513,7 +513,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             }
         }
         if (!empty($fragment)) {
-            $redirectURL .= "#$fragment";
+            $redirectURL .= '#'.$fragment;
         }
         $return = '<meta http-equiv="refresh" content="' . $timeout . ';url=' . $redirectURL . '">';
         //JError::raiseWarning(500, htmlentities($return));
@@ -709,7 +709,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
      * @param string $ordering
      */
     function getSearchCriteria(&$where, &$pluginParam, $ordering) {
-        $where.= " AND p.post_approved = 1";
+        $where.= ' AND p.post_approved = 1';
         $forum = JFusionFactory::getForum($this->getJname());
         if ($pluginParam->get('forum_mode', 0)) {
             $selected_ids = $pluginParam->get('selected_forums', array());

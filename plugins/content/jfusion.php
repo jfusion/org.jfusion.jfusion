@@ -708,7 +708,7 @@ HTML;
             $url = JRoute::_($url, false);
             if ($uri->getVar('view')=='article') {
                 //tak on the discussion jump to
-                $url .= "#discussion";
+                $url .= '#discussion';
 
                 $JSession = JFactory::getSession();
                 $JSession->set('jfusion.discussion.visibility',1);

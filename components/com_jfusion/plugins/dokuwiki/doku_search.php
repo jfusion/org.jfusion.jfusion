@@ -609,7 +609,7 @@ if ( !class_exists('DokuWikiSearch') ) {
                 }
                 fclose($handle);
             }
-            return $text ? $text : "Please, follow the given link to get the DokuWiki article where we found one or more keyword(s).";
+            return $text ? $text : 'Please, follow the given link to get the DokuWiki article where we found one or more keyword(s).';
         }
 
         /**

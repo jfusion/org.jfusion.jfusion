@@ -75,9 +75,9 @@ class JFusionCurlFrameless{
 		}
 
 		$cookie = '';
-		if(!empty($curlframeless->cookiearr) && (trim($string) == "")){
+		if(!empty($curlframeless->cookiearr) && (trim($string) == '')){
 			foreach ($curlframeless->cookiearr as $key=>$value){
-				$cookie .= "$key=$value; ";
+				$cookie .= $key.'='.$value.'; ';
 			}
 			curl_setopt($ch, CURLOPT_COOKIE, $cookie);
 		}

@@ -164,7 +164,7 @@ class JFusionFrameless {
             $db_name = $JFusionParam->get('database_name');
             if (!empty($db_name)) {
             	$db = JFusionFactory::getDatabase($this->jname);
-                $query = "USE $db_name";
+                $query = 'USE '.$db_name;
                 $db->setQuery($query);
                 $db->query();
             }

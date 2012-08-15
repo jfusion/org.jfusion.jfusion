@@ -561,7 +561,7 @@ JS;
                     <td>
                         <input name='guest_username' value='{$username}' class='inputbox'/>
                     </td>
-                </tr>";
+                </tr>
                 {$this->createCaptcha($dbparams)}
             </table>
             <br />

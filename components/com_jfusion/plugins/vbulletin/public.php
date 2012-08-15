@@ -548,63 +548,63 @@ JS;
             }
         } elseif ($jfile == 'search.php') {
             $crumb = new stdClass();
-            $crumb->title = "Search";
-            $crumb->url = "search.php";
+            $crumb->title = 'Search';
+            $crumb->url = 'search.php';
             $pathway[] = $crumb;
             if (JRequest::getVar('do', false) !== false) {
                 $do = JRequest::getVar('do');
-                if ($do == "getnew") {
+                if ($do == 'getnew') {
                     $crumb = new stdClass();
-                    $crumb->title = "New Posts";
-                    $crumb->url = "search.php?do=getnew";
+                    $crumb->title = 'New Posts';
+                    $crumb->url = 'search.php?do=getnew';
                     $pathway[] = $crumb;
-                } elseif ($do == "getdaily") {
+                } elseif ($do == 'getdaily') {
                     $crumb = new stdClass();
                     $crumb->title = "Today's Posts";
-                    $crumb->url = "search.php?do=getdaily";
+                    $crumb->url = 'search.php?do=getdaily';
                     $pathway[] = $crumb;
                 }
             }
-        } elseif ($jfile == "private.php") {
+        } elseif ($jfile == 'private.php') {
             $crumb = new stdClass();
-            $crumb->title = "User Control Panel";
-            $crumb->url = "usercp.php";
+            $crumb->title = 'User Control Panel';
+            $crumb->url = 'usercp.php';
             $pathway[] = $crumb;
             $crumb = new stdClass();
-            $crumb->title = "Private Messages";
-            $crumb->url = "private.php";
+            $crumb->title = 'Private Messages';
+            $crumb->url = 'private.php';
             $pathway[] = $crumb;
-        } elseif ($jfile == "usercp.php") {
+        } elseif ($jfile == 'usercp.php') {
             $crumb = new stdClass();
-            $crumb->title = "User Control Panel";
-            $crumb->url = "usercp.php";
+            $crumb->title = 'User Control Panel';
+            $crumb->url = 'usercp.php';
             $pathway[] = $crumb;
-        } elseif ($jfile == "profile.php") {
+        } elseif ($jfile == 'profile.php') {
             $crumb = new stdClass();
-            $crumb->title = "User Control Panel";
-            $crumb->url = "usercp.php";
-            $pathway[] = $crumb;
-            if (JRequest::getVar('do', false) !== false) {
-                $crumb = new stdClass();
-                $crumb->title = "Your Profile";
-                $crumb->url = "profile.php?do=editprofile";
-                $pathway[] = $crumb;
-            }
-        } elseif ($jfile == "moderation.php") {
-            $crumb = new stdClass();
-            $crumb->title = "User Control Panel";
-            $crumb->url = "usercp.php";
+            $crumb->title = 'User Control Panel';
+            $crumb->url = 'usercp.php';
             $pathway[] = $crumb;
             if (JRequest::getVar('do', false) !== false) {
                 $crumb = new stdClass();
-                $crumb->title = "Moderator Tasks";
-                $crumb->url = "moderation.php";
+                $crumb->title = 'Your Profile';
+                $crumb->url = 'profile.php?do=editprofile';
                 $pathway[] = $crumb;
             }
-        } elseif ($jfile == "memberlist.php") {
+        } elseif ($jfile == 'moderation.php') {
             $crumb = new stdClass();
-            $crumb->title = "Members List";
-            $crumb->url = "memberslist.php";
+            $crumb->title = 'User Control Panel';
+            $crumb->url = 'usercp.php';
+            $pathway[] = $crumb;
+            if (JRequest::getVar('do', false) !== false) {
+                $crumb = new stdClass();
+                $crumb->title = 'Moderator Tasks';
+                $crumb->url = 'moderation.php';
+                $pathway[] = $crumb;
+            }
+        } elseif ($jfile == 'memberlist.php') {
+            $crumb = new stdClass();
+            $crumb->title = 'Members List';
+            $crumb->url = 'memberslist.php';
             $pathway[] = $crumb;
         }
         return $pathway;

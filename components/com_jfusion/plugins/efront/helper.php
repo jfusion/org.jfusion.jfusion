@@ -168,8 +168,8 @@ class JFusionHelper_efront {
     	$params = JFusionFactory::getParams($this->getJname());
         $source_url = $params->get('source_url');
         // prevent usererror by not supplying trailing backslash. 
-        if (!(substr($source_url, -1) == "/")) {
-            $source_url = $source_url."/";
+        if (!(substr($source_url, -1) == '/')) {
+            $source_url = $source_url.'/';
         }    
         //prevent usererror by preventing a heading forwardslash
         ltrim($source_url);

@@ -906,9 +906,9 @@ class JFusionUser_phpbb3 extends JFusionUser
                 WHERE user_id = 1";
             $db->setQuery($query);
             if (!$db->query()) {
-                $status['error'][] = "Error Could not update the number of posts for anonymous user: {$db->stderr() }";
+                $status['error'][] = 'Error Could not update the number of posts for anonymous user: '.$db->stderr();
             } else {
-                //$status['debug'][] = "Updated post count for anonymous user.";
+                //$status['debug'][] = 'Updated post count for anonymous user.';
             }
         }
         $table_ary = array('users', 'user_group', 'topics_watch', 'forums_watch', 'acl_users', 'topics_track', 'topics_posted', 'forums_track', 'profile_fields_data', 'moderator_cache', 'drafts', 'bookmarks');
@@ -1016,7 +1016,7 @@ class JFusionUser_phpbb3 extends JFusionUser
         $db->setQuery($query);
         if ($db->loadResult()) {
             //retrieve the new newest user
-            $query = "SELECT user_id, username, user_colour FROM #__users WHERE user_regdate = (SELECT MAX(user_regdate) FROM #__users)";
+            $query = 'SELECT user_id, username, user_colour FROM #__users WHERE user_regdate = (SELECT MAX(user_regdate) FROM #__users)';
             $db->setQuery($query);
             $newest_user = $db->loadObject();
             if ($newest_user) {

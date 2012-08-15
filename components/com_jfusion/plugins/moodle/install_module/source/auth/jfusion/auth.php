@@ -260,16 +260,16 @@ class auth_plugin_jfusion extends auth_plugin_base {
 		ltrim($params_logoutpath,'/');
 
 		#prevent usererror by not supplying trailing forwardslash
-		if (substr($params_logoutpath,-1) != "/") {
-			$params_logoutpath = $params_logoutpath."/";
+		if (substr($params_logoutpath,-1) != '/') {
+			$params_logoutpath = $params_logoutpath.'/';
 		}
-		if (substr($params_joomlabaseurl,-1) != "/")
+		if (substr($params_joomlabaseurl,-1) != '/')
 		{
-			$params_joomlabaseurl = $params_joomlabaseurl."/";
+			$params_joomlabaseurl = $params_joomlabaseurl.'/';
 		}
-		if (substr($params_joomlafullpath,-1) != "/")
+		if (substr($params_joomlafullpath,-1) != '/')
 		{
-			$params_joomlafullpath = $params_joomlafullpath."/";
+			$params_joomlafullpath = $params_joomlafullpath.'/';
 		}
 
 		define('_JEXEC','Yeah_I_know');
@@ -328,7 +328,7 @@ class auth_plugin_jfusion extends auth_plugin_base {
 	 */
 	function config_form($config, $err, $user_fields) {
 
-		include "config.phtml";
+		include 'config.phtml';
 	}
 
 	/**
@@ -391,16 +391,16 @@ class auth_plugin_jfusion extends auth_plugin_base {
 		#prevent usererror by preventing a heading forwardslash
 		ltrim($params_loginpath,'/');
 		#prevent usererror by not supplying trailing forwardslash
-		if (substr($params_loginpath,-1) != "/") {
-			$params_loginpath = $params_loginpath."/";
+		if (substr($params_loginpath,-1) != '/') {
+			$params_loginpath = $params_loginpath.'/';
 		}
-		if (substr($params_joomlabaseurl,-1) != "/")
+		if (substr($params_joomlabaseurl,-1) != '/')
 		{
-			$params_joomlabaseurl = $params_joomlabaseurl."/";
+			$params_joomlabaseurl = $params_joomlabaseurl.'/';
 		}
-		if (substr($params_joomlafullpath,-1) != "/")
+		if (substr($params_joomlafullpath,-1) != '/')
 		{
-			$params_joomlafullpath = $params_joomlafullpath."/";
+			$params_joomlafullpath = $params_joomlafullpath.'/';
 		}
 
 		// abort the Joomla login routine if we have switched off the SSO routines

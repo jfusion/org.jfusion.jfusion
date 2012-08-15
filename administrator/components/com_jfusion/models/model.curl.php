@@ -523,9 +523,9 @@ class JFusionCurl
 		}
 
 		$cookie = '';
-		if (!empty($cookiearr) && (trim($string) == "")) {
+		if (!empty($cookiearr) && (trim($string) == '')) {
 			foreach ($cookiearr as $key=>$value) {
-				$cookie .= "$key=$value; ";
+				$cookie .= $key.'='.$value.'; ';
 			}
 			curl_setopt($ch, CURLOPT_COOKIE, $cookie);
 		}
@@ -1221,12 +1221,12 @@ class JFusionCurl
 		}
 
 		if (empty($curl_options['logout'])){
-			$post_params = $input_username_name."=".urlencode($curl_options['username'])."&".$input_password_name."=".urlencode($curl_options['password']);
-			$post_params_debug = $input_username_name."=".urlencode($curl_options['username'])."&".$input_password_name."=xxxxxx";
-			$status['debug'][] = JFusionCurl::_('CURL_STARTING_LOGIN')." ".$form_action." parameters= ".$post_params_debug.$strParameters;
+			$post_params = $input_username_name.'='.urlencode($curl_options['username']).'&'.$input_password_name.'='.urlencode($curl_options['password']);
+			$post_params_debug = $input_username_name.'='.urlencode($curl_options['username']).'&'.$input_password_name.'=xxxxxx';
+			$status['debug'][] = JFusionCurl::_('CURL_STARTING_LOGIN').' '.$form_action.' parameters= '.$post_params_debug.$strParameters;
 		} else {
 			$post_params = '';
-			$status['debug'][] = JFusionCurl::_('CURL_STARTING_LOGOUT')." ".$form_action." parameters= ".$strParameters;
+			$status['debug'][] = JFusionCurl::_('CURL_STARTING_LOGOUT').' '.$form_action.' parameters= '.$strParameters;
 		}
 
 
@@ -1337,7 +1337,7 @@ class JFusionCurl
 		// make sure that when parameters are sent we do not add a backslash
 		if (strpos($curl_options['post_url'], '?') === false) {
 			if (!(substr($curl_options['post_url'], -1) == "/")) {
-				$curl_options['post_url'] = $curl_options['post_url']."/";
+				$curl_options['post_url'] = $curl_options['post_url'].'/';
 			}
 		}
 		$ch = curl_init();

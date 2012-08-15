@@ -166,11 +166,11 @@ class JFusionDiscussBotHelper {
             }
             $start = JRequest::getInt('start',0);
             if ($start) {
-                $url .= "&start=$start";
+                $url .= '&start='.$start;
             }
             $limitstart = JRequest::getInt('limitstart',0);
             if ($limitstart) {
-                $url .= "&limitstart=$limitstart";
+                $url .= '&limitstart='.$limitstart;
             }
             $url .= $query;
         } else {

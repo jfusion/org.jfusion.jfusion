@@ -614,7 +614,7 @@ class JFusionPublic_smf extends JFusionPublic
             }
         }
         if (!empty($fragment)) {
-            $redirectURL .= "#$fragment";
+            $redirectURL .= '#'.$fragment;
         }
         $return = '<meta http-equiv="refresh" content="' . $timeout . ';url=' . $redirectURL . '">';
         //JError::raiseWarning(500, htmlentities($return));
@@ -840,7 +840,7 @@ class JFusionPublic_smf extends JFusionPublic
                 $sort = 'p.posterTime DESC';
                 break;
         }
-        $where .= " ORDER BY $sort";
+        $where .= ' ORDER BY '.$sort;
     }
 
     /**

@@ -248,7 +248,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
         if (empty($forumids)) {
             $db = JFusionFactory::getDatabase($this->getJname());
             //no forums were selected so pull them all
-            $query = "SELECT forum_id FROM #__forums WHERE forum_type = 1 ORDER BY left_id";
+            $query = 'SELECT forum_id FROM #__forums WHERE forum_type = 1 ORDER BY left_id';
             $db->setQuery($query);
             $forumids = $db->loadResultArray();
         } elseif (!is_array($forumids)) {
@@ -282,7 +282,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 
             //get permissions for all forums in case more than one module/plugin is present with different settings
             $db = JFusionFactory::getDatabase($this->getJname());
-            $query = "SELECT forum_id FROM #__forums WHERE forum_type = 1 ORDER BY left_id";
+            $query = 'SELECT forum_id FROM #__forums WHERE forum_type = 1 ORDER BY left_id';
             $db->setQuery($query);
             $forumids = $db->loadResultArray();
 
@@ -537,7 +537,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
                 if(!$jdb->updateObject('#__topics', $topic_row, 'topic_id' )) {
                     $status['error'] = $jdb->stderr();
                 } else {
-                    $query = "SELECT forum_last_post_time, forum_topics, forum_topics_real, forum_posts FROM #__forums WHERE forum_id = $forumid";
+                    $query = 'SELECT forum_last_post_time, forum_topics, forum_topics_real, forum_posts FROM #__forums WHERE forum_id = '.$forumid;
                     $jdb->setQuery($query);
                     $num = $jdb->loadObject();
 
@@ -776,7 +776,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 					$status['error'] = $jdb->stderr();
 				}
 
-				$query = "SELECT forum_posts FROM #__forums WHERE forum_id = {$ids->forumid}";
+				$query = 'SELECT forum_posts FROM #__forums WHERE forum_id = '.$ids->forumid;
 				$jdb->setQuery($query);
 				$num = $jdb->loadObject();
 
@@ -789,7 +789,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 				$forum_stats->forum_last_poster_colour 	= $phpbbUser->user_colour;
 				$forum_stats->forum_posts				= $num->forum_posts + 1;
 				$forum_stats->forum_id 					= $ids->forumid;
-				$query = "SELECT forum_topics, forum_topics_real, forum_posts FROM #__forums WHERE forum_id = {$ids->forumid}";
+				$query = 'SELECT forum_topics, forum_topics_real, forum_posts FROM #__forums WHERE forum_id = '.$ids->forumid;
 				$jdb->setQuery($query);
 				$num = $jdb->loadObject();
 				$forum_stats->forum_topics = $num->forum_topics + 1;
@@ -832,14 +832,14 @@ class JFusionForum_phpbb3 extends JFusionForum {
 	 * Returns an object of columns used in createPostTable()
 	 * Saves from having to repeat the same code over and over for each plugin
 	 * For example:
-	 * $columns->userid = "userid";
-	 * $columns->username = "username";
-	 * $columns->username_clean = "username_clean"; //if applicable for filtered usernames
-	 * $columns->dateline = "dateline";
-	 * $columns->posttext = "pagetext";
-	 * $columns->posttitle = "title";
-	 * $columns->postid = "postid";
-	 * $columns->threadid = "threadid";
+	 * $columns->userid = 'userid';
+	 * $columns->username = 'username';
+	 * $columns->username_clean = 'username_clean'; //if applicable for filtered usernames
+	 * $columns->dateline = 'dateline';
+	 * $columns->posttext = 'pagetext';
+	 * $columns->posttitle = 'title';
+	 * $columns->postid = 'postid';
+	 * $columns->threadid = 'threadid';
 	 * @return object with column names
 	 */
 	function getDiscussionColumns()

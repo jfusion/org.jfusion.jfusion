@@ -150,42 +150,42 @@ function com_uninstall() {
 
     //remove the jfusion tables.
     $db = JFactory::getDBO();
-    $query = "DROP TABLE #__jfusion";
+    $query = 'DROP TABLE #__jfusion';
     $db->setQuery($query);
     if (!$db->Query()){
         echo $db->stderr() . '<br />';
         $return = false;
     }
 
-    $query = "DROP TABLE #__jfusion_sync";
+    $query = 'DROP TABLE #__jfusion_sync';
     $db->setQuery($query);
     if (!$db->Query()){
         echo $db->stderr() . '<br />';
         $return = false;
     }
 
-    $query = "DROP TABLE #__jfusion_sync_details";
+    $query = 'DROP TABLE #__jfusion_sync_details';
     $db->setQuery($query);
     if (!$db->Query()){
         echo $db->stderr() . '<br />';
         $return = false;
     }
 
-    $query = "DROP TABLE #__jfusion_users";
+    $query = 'DROP TABLE #__jfusion_users';
     $db->setQuery($query);
     if (!$db->Query()){
         echo $db->stderr() . '<br />';
         $return = false;
     }
 
-    $query = "DROP TABLE #__jfusion_users_plugin";
+    $query = 'DROP TABLE #__jfusion_users_plugin';
     $db->setQuery($query);
     if (!$db->Query()){
         echo $db->stderr() . '<br />';
         $return = false;
     }
 
-    $query = "DROP TABLE #__jfusion_discussion_bot";
+    $query = 'DROP TABLE #__jfusion_discussion_bot';
     $db->setQuery($query);
     if (!$db->queryBatch()){
     	echo $db->stderr() . '<br />';

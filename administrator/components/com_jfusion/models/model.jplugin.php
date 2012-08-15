@@ -334,8 +334,8 @@ class JFusionJplugin
         $source_url = $params->get('source_url');
         $login_url = $params->get('login_url');
         //prevent usererror by not supplying trailing forwardslash
-        if (substr($source_url, -1) != "/") {
-            $source_url = $source_url . "/";
+        if (substr($source_url, -1) != '/') {
+            $source_url = $source_url . '/';
         }
         //prevent usererror by preventing a heading forwardslash
         ltrim($login_url, '/');
@@ -490,8 +490,8 @@ class JFusionJplugin
         $source_url = $params->get('source_url');
         $logout_url = $params->get('logout_url');
         //prevent usererror by not supplying trailing forwardslash
-        if (substr($source_url, -1) != "/") {
-        	$source_url = $source_url . "/";
+        if (substr($source_url, -1) != '/') {
+        	$source_url = $source_url . '/';
         }
         //prevent usererror by preventing a heading forwardslash
         ltrim($logout_url, '/');

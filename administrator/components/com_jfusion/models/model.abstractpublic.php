@@ -585,7 +585,7 @@ JS;
                             <param name="allowNetworking" value="internal" />
                             <embed src="{$content}" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash" width="{$width}" height="{$height}" play="false" loop="false" quality="high" allowscriptaccess="never" allownetworking="internal">
                             </embed>
-                        </object>";
+                        </object>
 HTML;
                     break;
                 case 'ftp':
@@ -826,7 +826,7 @@ HTML;
         }
         //pass the where clause into the plugin in case it wants to add something
         $this->getSearchCriteria($where, $pluginParam, $ordering);
-        $query.= " WHERE $where";
+        $query.= ' WHERE '.$where;
         //add a limiter if set
         $limit = $pluginParam->get('search_limit', '');
         if (!empty($limit)) {

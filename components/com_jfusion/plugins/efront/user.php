@@ -100,7 +100,7 @@ class JFusionUser_efront extends JFusionUser
         //Set cookie values
         $expires = mktime(12, 0, 0, 1, 1, 1990);
         if (!$cookiepath) {
-            $cookiepath = "/";
+            $cookiepath = '/';
         }
         // Clearing eFront Cookies
         $remove_cookies = array('cookie_login', 'cookie_password');
@@ -501,7 +501,7 @@ class JFusionUser_efront extends JFusionUser
                         $token = $result->token;
                         // login
                         $curl_options['action']='login';
-                        $curl_options['parms'] = "&token=$token&username=$apiuser&password=$apikey";
+                        $curl_options['parms'] = '&token='.$token.'&username='.$apiuser.'&password='.$apikey;
                         $status = $helper->send_to_api($curl_options,$status);
                         if (!$status['error']){
                             $result = $status['result'][0];
@@ -509,7 +509,7 @@ class JFusionUser_efront extends JFusionUser
                                 // logged in (must logout later)
                                 // delete user
                                 $curl_options['action']='remove_user';
-                                $curl_options['parms'] = "&token=$token&login=$login";
+                                $curl_options['parms'] = '&token='.$token.'&login='.$login;
                                 $status = $helper->send_to_api($curl_options,$status);
                                 $errorstatus = $status;
                                 if ($status['error']){
@@ -522,7 +522,7 @@ class JFusionUser_efront extends JFusionUser
                                 }
                                 // logout
                                 $curl_options['action']='logout';
-                                $curl_options['parms'] = "&token=$token";
+                                $curl_options['parms'] = '&token='.$token;
                                 $status = $helper->send_to_api($curl_options,$status);
                                 $result = $status['result'][0];
                                 if($result->status != 'ok'){

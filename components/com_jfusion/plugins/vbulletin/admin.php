@@ -452,7 +452,7 @@ HTML;
             $params = JFusionFactory::getParams($this->getJname());
             $source_url = $params->get('source_url');
             if (substr($source_url, -1) != '/') {
-                $source_url.= "/";
+                $source_url.= '/';
             }
             //let's first update all the image paths for database stored images
             $tables = array('smilie' => 'smiliepath', 'avatar' => 'avatarpath', 'icon' => 'iconpath');

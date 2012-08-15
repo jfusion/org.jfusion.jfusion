@@ -200,6 +200,6 @@ class JFusionForum_gallery2 extends JFusionForum {
      * @see Gallery2:Modules:members
      */
     function getProfileURL($uid) {
-        return "main.php?g2_view=members.MembersProfile&amp;g2_userId=$uid";
+        return 'main.php?g2_view=members.MembersProfile&amp;g2_userId='.$uid;
     }
 }

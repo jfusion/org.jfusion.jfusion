@@ -592,7 +592,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
             }
         }
         if (!empty($fragment)) {
-            $redirectURL .= "#$fragment";
+            $redirectURL .= '#'.$fragment;
         }
         $return = '<meta http-equiv="refresh" content="' . $timeout . ';url=' . $redirectURL . '">';
         //JError::raiseWarning(500, htmlentities($return));
@@ -753,8 +753,8 @@ class JFusionPublic_smf2 extends JFusionPublic {
     function getSearchQueryColumns()
 	{
 		$columns = new stdClass();
-		$columns->title = "p.subject";
-		$columns->text = "p.body";
+		$columns->title = 'p.subject';
+		$columns->text = 'p.body';
 		return $columns;
 	}
 

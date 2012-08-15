@@ -127,7 +127,7 @@ class JElementjfusionsql extends JElement
     			}
     			$pt = $v->parent;
     			$list[$id] = $v;
-    			$list[$id]->name = "$indent$txt";
+    			$list[$id]->name = $indent.$txt;
     			$list = JElementjfusionsql::buildRecursiveTree($id, $indent . '- ', $list, $children, $level+1);
     		}
 	    }

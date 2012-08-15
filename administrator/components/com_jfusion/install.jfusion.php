@@ -130,7 +130,7 @@ function com_install() {
 	if (array_search($table_prefix . 'jfusion', $table_list) == false) {
         $jfusionupgrade = JText::_('JFUSION') . ' ' . JText::_('INSTALL') . ' ' .JText::_('SUCCESS');
 
-        $batch_query = "CREATE TABLE #__jfusion (
+        $batch_query = 'CREATE TABLE #__jfusion (
         id int(11) NOT null auto_increment,
         name varchar(50) NOT null,
         params text,
@@ -147,7 +147,7 @@ function com_install() {
         ordering tinyint(4),
         PRIMARY KEY  (id)
       );
-      ";
+      ';
 
 		$db->setQuery($batch_query);
 		if (!$db->queryBatch()) {
@@ -165,12 +165,12 @@ function com_install() {
 		 * UPGRADES FOR 1.1.0 Patch 2
 		 ***/
 		//see if the columns exists
-		$query = "SHOW COLUMNS FROM #__jfusion";
+		$query = 'SHOW COLUMNS FROM #__jfusion';
 		$db->setQuery($query);
 		$columns = $db->loadResultArray();
 		//check to see if the description column exists, if it does remove all pre 1.1.0 Beta Patch 2 columns
 		if (in_array('description', $columns)) {
-			$query = "ALTER TABLE #__jfusion DROP COLUMN version, DROP COLUMN description, DROP COLUMN date, DROP COLUMN author, DROP COLUMN support";
+			$query = 'ALTER TABLE #__jfusion DROP COLUMN version, DROP COLUMN description, DROP COLUMN date, DROP COLUMN author, DROP COLUMN support';
 			$db->setQuery($query);
 			if (!$db->query()) {
 				echo $db->stderr() . '<br />';
@@ -184,8 +184,8 @@ function com_install() {
 		//add the plugin_files and original columns if it does not exist
 		if (!in_array('plugin_files', $columns)) {
 			//add the column
-			$query = "ALTER TABLE #__jfusion
-              ADD COLUMN plugin_files LONGBLOB ";
+			$query = 'ALTER TABLE #__jfusion
+              ADD COLUMN plugin_files LONGBLOB ';
 			$db->setQuery($query);
 			if (!$db->query()) {
 				echo $db->stderr() . '<br />';
@@ -195,7 +195,7 @@ function com_install() {
 		}
 		if (!in_array('original_name', $columns)) {
 			//add the column
-			$query = "ALTER TABLE #__jfusion ADD COLUMN original_name varchar(50) null";
+			$query = 'ALTER TABLE #__jfusion ADD COLUMN original_name varchar(50) null';
 			$db->setQuery($query);
 			if (!$db->query()) {
 				echo $db->stderr() . '<br />';
@@ -209,9 +209,9 @@ function com_install() {
 		 ***/
 		//add the search and discussion columns
 		if (!in_array('search', $columns)) {
-			$query = "ALTER TABLE #__jfusion
+			$query = 'ALTER TABLE #__jfusion
               ADD COLUMN search tinyint(4) NOT null DEFAULT 0,
-                ADD COLUMN discussion tinyint(4) NOT null DEFAULT 0";
+                ADD COLUMN discussion tinyint(4) NOT null DEFAULT 0';
 			$db->setQuery($query);
 			if (!$db->query()) {
 				echo $db->stderr() . '<br />';
@@ -220,20 +220,20 @@ function com_install() {
 			}
 		}
 
-		$query = "SHOW INDEX FROM #__jfusion_users_plugin";
+		$query = 'SHOW INDEX FROM #__jfusion_users_plugin';
 		$db->setQuery($query);
 		$indexes = $db->loadObjectList('Key_name');
 		if (!array_key_exists('lookup', $indexes)) {
 			//we need to make sure that old jfusion_users_plugin table doesn't have duplicates
 			//in prep of adding an unique index
-			$query = "CREATE TABLE #__jfusion_users_plugin_backup AS
-              SELECT * FROM  #__jfusion_users_plugin WHERE 1 GROUP BY id, jname";
+			$query = 'CREATE TABLE #__jfusion_users_plugin_backup AS
+              SELECT * FROM  #__jfusion_users_plugin WHERE 1 GROUP BY id, jname';
 			$db->setQuery($query);
 			if ($db->query()) {
-				$query = "DROP TABLE #__jfusion_users_plugin";
+				$query = 'DROP TABLE #__jfusion_users_plugin';
 				$db->setQuery($query);
 				if ($db->query()) {
-					$query = "RENAME TABLE #__jfusion_users_plugin_backup TO #__jfusion_users_plugin";
+					$query = 'RENAME TABLE #__jfusion_users_plugin_backup TO #__jfusion_users_plugin';
 					$db->setQuery($query);
 					if (!$db->query()) {
 						echo $db->stderr() . '<br />';
@@ -306,12 +306,12 @@ function com_install() {
 		 * UPGRADES FOR 1.5
 		 */
 		//add a active column for user sync
-		$query = "SHOW COLUMNS FROM #__jfusion_sync";
+		$query = 'SHOW COLUMNS FROM #__jfusion_sync';
 		$db->setQuery($query);
 		$columns = $db->loadResultArray();
 		if (!in_array('active', $columns)) {
-			$query = "ALTER TABLE #__jfusion_sync
-              ADD COLUMN active int(1) NOT null DEFAULT 0";
+			$query = 'ALTER TABLE #__jfusion_sync
+              ADD COLUMN active int(1) NOT null DEFAULT 0';
 			$db->setQuery($query);
 			if (!$db->query()) {
 				echo $db->stderr() . '<br />';
@@ -325,12 +325,12 @@ function com_install() {
 		 */
 
 		//add a active column for user sync
-		$query = "SHOW COLUMNS FROM #__jfusion";
+		$query = 'SHOW COLUMNS FROM #__jfusion';
 		$db->setQuery($query);
 		$columns = $db->loadResultArray();
 		if (!in_array('ordering', $columns)) {
-			$query = "ALTER TABLE #__jfusion
-              ADD COLUMN ordering int(4)";
+			$query = 'ALTER TABLE #__jfusion
+              ADD COLUMN ordering int(4)';
 			$db->setQuery($query);
 			if (!$db->query()) {
 				echo $db->stderr() . '<br />';
@@ -364,21 +364,21 @@ function com_install() {
         $db->setQuery($query);
         $columns = $db->loadResultArray();
         if (in_array('activity', $columns)) {
-            $query = "ALTER TABLE #__jfusion DROP column activity";
+            $query = 'ALTER TABLE #__jfusion DROP column activity';
             $db->setQuery($query);
             if (!$db->query()) {
                 echo $db->stderr() . '<br />';
             }
         }
         if (in_array('search', $columns)) {
-            $query = "ALTER TABLE #__jfusion DROP column search";
+            $query = 'ALTER TABLE #__jfusion DROP column search';
             $db->setQuery($query);
             if (!$db->query()) {
                 echo $db->stderr() . '<br />';
             }
         }
         if (in_array('discussion', $columns)) {
-            $query = "ALTER TABLE #__jfusion DROP column discussion";
+            $query = 'ALTER TABLE #__jfusion DROP column discussion';
             $db->setQuery($query);
             if (!$db->query()) {
                 echo $db->stderr() . '<br />';
@@ -388,11 +388,11 @@ function com_install() {
 		//migrate from #__jfusion_forum_plugin to #__jfusion_discussion_bot
 		//check to see if #__jfusion_forum_plugin exists indicating that #__jfusion_discussion_bot has not been populated
 		if(array_search($table_prefix . 'jfusion_forum_plugin',$table_list)) {
-			$query = "SELECT * FROM #__jfusion_forum_plugin";
+			$query = 'SELECT * FROM #__jfusion_forum_plugin';
 			$db->setQuery($query);
 			$results = $db->loadObjectList();
 
-			$query = "SHOW COLUMNS FROM #__jfusion_forum_plugin";
+			$query = 'SHOW COLUMNS FROM #__jfusion_forum_plugin';
 			$db->setQuery($query);
 			$columns = $db->loadResultArray();
 
@@ -426,7 +426,7 @@ function com_install() {
 					echo $db->stderr() . '<br />';
 				}
 
-				$query = "DROP TABLE #__jfusion_forum_plugin";
+				$query = 'DROP TABLE #__jfusion_forum_plugin';
 				$db->setQuery($query);
 				if(!$db->query()) {
 					echo $db->stderr() . '<br />';
@@ -444,7 +444,7 @@ function com_install() {
 			$columns = $db->loadResultArray();
 
 			if (!in_array('component', $columns)) {
-				$query = " ALTER TABLE #__jfusion_discussion_bot ADD COLUMN component varchar(255) NOT NULL";
+				$query = 'ALTER TABLE #__jfusion_discussion_bot ADD COLUMN component varchar(255) NOT NULL';
 				$db->setQuery($query);
 				if (!$db->query()) {
 					echo $db->stderr() . '<br />';
@@ -465,7 +465,7 @@ function com_install() {
  * todo: Determin if we really need this in the installer ???? also remove unneeded plugin_files field from database ??? if this is NOT needed
 		//restore deleted plugins if possible and applicable
 		//get a list of installed plugins
-		$query = "SELECT name, original_name, plugin_files FROM #__jfusion";
+		$query = 'SELECT name, original_name, plugin_files FROM #__jfusion';
 		$db->setQuery($query);
 		$installedPlugins = $db->loadObjectList();
 		
@@ -685,7 +685,7 @@ HTML;
     //see if any plugins need upgrading
 
     //make sure default plugins are installed
-    $query = "SELECT original_name , name FROM #__jfusion";
+    $query = 'SELECT original_name , name FROM #__jfusion';
     $db->setQuery($query);
     $Plugins = $db->loadObjectList();
 

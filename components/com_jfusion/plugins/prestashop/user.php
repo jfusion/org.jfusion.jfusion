@@ -105,13 +105,13 @@ class JFusionUser_prestashop extends JFusionUser {
         $status = array('error' => array(),'debug' => array());
 	    // use prestashop cookie class and functions to delete cookie
 		$params = JFusionFactory::getParams($this->getJname());
-		require_once $params->get('source_path') . DS . "config" . DS . "settings.inc.php";
-	    require($params->get('source_path') . DS . "classes" . DS . "Cookie.php");
-		require($params->get('source_path') . DS . "classes" . DS . "Blowfish.php");
-		require($params->get('source_path') . DS . "classes" . DS . "Tools.php");
-		require($params->get('source_path') . DS . "classes" . DS . "ObjectModel.php");
-		require($params->get('source_path') . DS . "classes" . DS . "Db.php");
-		require($params->get('source_path') . DS . "classes" . DS . "SubDomain.php");
+		require_once $params->get('source_path') . DS . 'config' . DS . 'settings.inc.php';
+	    require($params->get('source_path') . DS . 'classes' . DS . 'Cookie.php');
+		require($params->get('source_path') . DS . 'classes' . DS . 'Blowfish.php');
+		require($params->get('source_path') . DS . 'classes' . DS . 'Tools.php');
+		require($params->get('source_path') . DS . 'classes' . DS . 'ObjectModel.php');
+		require($params->get('source_path') . DS . 'classes' . DS . 'Db.php');
+		require($params->get('source_path') . DS . 'classes' . DS . 'SubDomain.php');
         $cookie = new cookie('ps');
 		$status['error'][] = 'Random debugging text';
 	    if(!$cookie->mylogout()) {

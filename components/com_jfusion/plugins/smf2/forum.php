@@ -52,7 +52,7 @@ class JFusionForum_smf2 extends JFusionForum
      */
     function getReplyURL($forumid, $threadid)
     {
-        return "index.php?action=post;topic=$threadid";
+        return 'index.php?action=post;topic='.$threadid;
     }
 
     /**
@@ -635,14 +635,14 @@ HTML;
 	 * Returns an object of columns used in createPostTable()
 	 * Saves from having to repeat the same code over and over for each plugin
 	 * For example:
-	 * $columns->userid = "userid";
-	 * $columns->username = "username";
-	 * $columns->username_clean = "username_clean"; //if applicable for filtered usernames
-	 * $columns->dateline = "dateline";
-	 * $columns->posttext = "pagetext";
-	 * $columns->posttitle = "title";
-	 * $columns->postid = "postid";
-	 * $columns->threadid = "threadid";
+	 * $columns->userid = 'userid';
+	 * $columns->username = 'username';
+	 * $columns->username_clean = 'username_clean'; //if applicable for filtered usernames
+	 * $columns->dateline = 'dateline';
+	 * $columns->posttext = 'pagetext';
+	 * $columns->posttitle = 'title';
+	 * $columns->postid = 'postid';
+	 * $columns->threadid = 'threadid';
 	 * @return object with column names
 	 */
 	function getDiscussionColumns()
@@ -679,7 +679,7 @@ HTML;
      */
     function getThreadLockedStatus($threadid) {
         $db = JFusionFactory::getDatabase($this->getJname());
-        $query = "SELECT locked FROM #__topics WHERE id_topic = $threadid";
+        $query = 'SELECT locked FROM #__topics WHERE id_topic = '.$threadid;
         $db->setQuery($query);
         $locked = $db->loadResult();
         return $locked;
@@ -735,7 +735,7 @@ HTML;
         }
 
         //setup the guest where clause to be used in union query
-        $guest_where = (empty($where)) ? " WHERE b.id_member = 0" : " AND b.id_member = 0";
+        $guest_where = (empty($where)) ? ' WHERE b.id_member = 0' : ' AND b.id_member = 0';
 
         $query = array(
         //LAT with first post info

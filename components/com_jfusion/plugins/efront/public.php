@@ -68,7 +68,7 @@ class JFusionPublic_efront extends JFusionPublic
      * @return string
      */
     function getOnlineUserQuery($limit) {
-        $limiter = (!empty($limit)) ? "LIMIT 0,$limit" : '';
+        $limiter = (!empty($limit)) ? 'LIMIT 0,'.$limit : '';
         //get a unix time from 5 mintues ago
         date_default_timezone_set('UTC');
         // $active = strtotime('-5 minutes', time());

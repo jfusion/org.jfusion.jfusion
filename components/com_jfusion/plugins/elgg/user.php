@@ -53,7 +53,7 @@ class JFusionUser_elgg extends JFusionUser {
 	    	if (defined('externalpage')) {
 	        	define('externalpage', true);	
 	        }
-	        require_once $params->get('source_path') . DS . "engine" . DS . "start.php";
+	        require_once $params->get('source_path') . DS . 'engine' . DS . 'start.php';
 	        // Get variables
 	        global $CONFIG;
         
@@ -91,7 +91,7 @@ class JFusionUser_elgg extends JFusionUser {
     	if (defined('externalpage')) {
         	define('externalpage', true);	
         }
-        require_once $params->get('source_path') . DS . "engine" . DS . "start.php";
+        require_once $params->get('source_path') . DS . 'engine' . DS . 'start.php';
         // Get variables
         global $CONFIG;
         $user = get_user_by_username($userinfo->username);
@@ -139,7 +139,7 @@ class JFusionUser_elgg extends JFusionUser {
     	if (defined('externalpage')) {
         	define('externalpage', true);	
         }
-        require_once $params->get('source_path') . DS . "engine" . DS . "start.php";
+        require_once $params->get('source_path') . DS . 'engine' . DS . 'start.php';
         // Get variables
         global $CONFIG;
         // Action Gatekeep not neccessary as person should already be validated by Joomla!
@@ -247,7 +247,7 @@ class JFusionUser_elgg extends JFusionUser {
             if (defined('externalpage')) {
                 define('externalpage', true);
             }
-            require_once $params->get('source_path') . DS . "engine" . DS . "start.php";
+            require_once $params->get('source_path') . DS . 'engine' . DS . 'start.php';
             // Get variables
             global $CONFIG;
             $username = $user->username;
@@ -319,7 +319,7 @@ class JFusionUser_elgg extends JFusionUser {
     	if (defined('externalpage')) {
         	define('externalpage', true);	
         }
-        require_once $params->get('source_path') . DS . "engine" . DS . "start.php";
+        require_once $params->get('source_path') . DS . 'engine' . DS . 'start.php';
         // Get variables
         global $CONFIG;
         $user = get_user_by_username($existinguser->username);
@@ -351,7 +351,7 @@ class JFusionUser_elgg extends JFusionUser {
     	if (defined('externalpage')) {
         	define('externalpage', true);	
         }
-        require_once $params->get('source_path') . DS . "engine" . DS . "start.php";
+        require_once $params->get('source_path') . DS . 'engine' . DS . 'start.php';
         // Get variables
         global $CONFIG;
         $user = get_user_by_username($existinguser->username);
@@ -377,7 +377,7 @@ class JFusionUser_elgg extends JFusionUser {
     	if (defined('externalpage')) {
         	define('externalpage', true);	
         }
-        require_once $params->get('source_path') . DS . "engine" . DS . "start.php";
+        require_once $params->get('source_path') . DS . 'engine' . DS . 'start.php';
         // Get variables
         global $CONFIG;
         $user = get_user_by_username($existinguser->username);
@@ -403,7 +403,7 @@ class JFusionUser_elgg extends JFusionUser {
 		if (defined('externalpage')) {
         	define('externalpage', true);	
         }
-        require_once $params->get('source_path') . DS . "engine" . DS . "start.php";
+        require_once $params->get('source_path') . DS . 'engine' . DS . 'start.php';
         // Get variables
         global $CONFIG;
         $user = get_user_by_username($existinguser->username);

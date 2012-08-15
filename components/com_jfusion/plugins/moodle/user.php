@@ -254,7 +254,7 @@ class JFusionUser_moodle extends JFusionUser {
                         // did not find a session key, so perform a brute force logout
                         $status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname());
                     } else {
-                        $curl_options['post_url'] = $curl_options['post_url']."?sesskey=$sessionkey";
+                        $curl_options['post_url'] = $curl_options['post_url'].'?sesskey='.$sessionkey;
                         $status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname(),$params->get('logout_type'),$curl_options);
                     }
                 }
@@ -262,7 +262,7 @@ class JFusionUser_moodle extends JFusionUser {
             // check if the logout was successfull
             if (!empty($status['cURL']['moodle'])) {
                 $loggedin_user = $this->rc4decrypt($status['cURL']['moodle']);
-                $status['debug'][] = JText::_('CURL_MOODLE_USER') . " " . $loggedin_user;
+                $status['debug'][] = JText::_('CURL_MOODLE_USER') . ' ' . $loggedin_user;
                 if ($loggedin_user != 'nobody') {
                     $status['debug'][] = JText::_('CURL_LOGOUT_FAILURE');
                 }

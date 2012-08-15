@@ -547,7 +547,7 @@ class JFusionUser_wordpress extends JFusionUser {
 			if (!$db->query()) {
 				$status['error'][] = 'Error Could not delete links by user '.$user_id.': '.$db->stderr();
 			} else {
-				$status['debug'][] = "Deleted links from user $user_id";
+				$status['debug'][] = 'Deleted links from user '.$user_id;
 			}
 		}
 		// now delete the user
@@ -582,7 +582,7 @@ class JFusionUser_wordpress extends JFusionUser {
             $caps = array();
             foreach($usergroups as $usergroup) {
                 $newgroupname = strtolower($helper->getUsergroupNameWP($usergroup));
-                $caps[$newgroupname]="1";
+                $caps[$newgroupname]='1';
             }
 
             $capsfield = serialize($caps);

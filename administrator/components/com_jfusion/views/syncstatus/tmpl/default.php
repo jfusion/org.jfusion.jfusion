@@ -110,7 +110,7 @@ if (!isset($this->syncdata['slave_data']) || !$this->syncdata['slave_data']) {
                 $i = 0;
                 foreach ($this->syncdata['log'] as $id => $details) {
                     ?>
-                    <tr class="<?php echo "row$k"; ?>">
+                    <tr class="<?php echo 'row'.$k; ?>">
                         <td><?php echo $this->pageNav->getRowOffset($i);?></td>
                         <td><?php echo $details->jname;?></td>
                         <td><?php echo $details->username;?></td>

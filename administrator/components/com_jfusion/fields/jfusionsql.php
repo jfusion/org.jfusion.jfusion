@@ -81,7 +81,7 @@ class JFormFieldjfusionsql extends JFormField
                     if (empty($enabled)) {
                         return '<span style="float:left; margin: 5px 0; font-weight: bold;">' . JText::_('K2_NOT_AVAILABLE') . '</span>';
                     }
-                    $query = "SELECT id, name as title, parent FROM #__k2_categories WHERE id > 0 AND trash = 0 AND published = 1";
+                    $query = 'SELECT id, name as title, parent FROM #__k2_categories WHERE id > 0 AND trash = 0 AND published = 1';
 		    	    $db->setQuery($query);
         			$items = $db->loadObjectList();
             		$children = array ();
