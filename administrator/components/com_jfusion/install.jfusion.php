@@ -294,7 +294,7 @@ function com_install() {
 		 * UPGRADES FOR 1.1.2 Stable
 		 ***/
 		//make id the primary key so that the username will be updated
-		$query = "ALTER TABLE `#__jfusion_users` DROP PRIMARY KEY, ADD PRIMARY KEY ( `id` )";
+		$query = 'ALTER TABLE `#__jfusion_users` DROP PRIMARY KEY, ADD PRIMARY KEY ( `id` )';
 		$db->setQuery($query);
 		if (!$db->query()) {
 			echo $db->stderr() . '<br />';
