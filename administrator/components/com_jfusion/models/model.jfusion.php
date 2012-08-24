@@ -843,15 +843,16 @@ class JFusionFunction
      */
     public static function parseTag($matches, $tag = 'p')
     {
+        $return = false;
         if ($tag == 'p') {
             $text = trim($matches);
             //remove the slash added to double quotes and slashes added by the e modifier
             $text = str_replace('\"', '"', $text);
             if(empty($text) || ord($text) == 194) {
                 //p tags used simply as a line break
-                return "\n";
+                $return = "\n";
             } else {
-                return $text . "\n\n";
+                $return = $text . "\n\n";
             }
         } elseif ($tag == 'img') {
             $joomla_url = JFusionFunction::getJoomlaURL();
@@ -861,9 +862,9 @@ class JFusionFunction
                 $matches = str_replace($path,'',$matches);
             }
             $url = JRoute::_($joomla_url . $matches);
-            return $url;
+            $return = $url;
         }
-        return false;
+        return $return;
     }
 
     /**

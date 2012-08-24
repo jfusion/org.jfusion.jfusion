@@ -484,7 +484,7 @@ class JFusionHelper_phpbb3
                 if (!empty($code) && substr($code, -1) == "\n") {
                     $code = substr($code, 0, -1);
                 }
-                return "[code=$stx:" . $this->bbcode_uid . ']' . $code . '[/code:' . $this->bbcode_uid . ']';
+                return '[code='.$stx.':' . $this->bbcode_uid . ']' . $code . '[/code:' . $this->bbcode_uid . ']';
                 break;
             default:
                 return '[code:' . $this->bbcode_uid . ']' . $this->bbcode_specialchars($code) . '[/code:' . $this->bbcode_uid . ']';

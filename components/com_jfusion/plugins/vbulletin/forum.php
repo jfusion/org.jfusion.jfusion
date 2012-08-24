@@ -63,7 +63,7 @@ class JFusionForum_vbulletin extends JFusionForum
      */
     function getReplyURL($forumid, $threadid)
     {
-        return "newreply.php?do=newreply&t=$threadid&noquote=1";
+        return 'newreply.php?do=newreply&t='.$threadid.'&noquote=1';
     }
 
     /**

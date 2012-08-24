@@ -407,7 +407,7 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
      * @return string
      */
     function getSearchResultLink($post) {
-        return "doku.php?id=" . $post;
+        return 'doku.php?id=' . $post;
     }
 
     /**
