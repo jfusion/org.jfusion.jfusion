@@ -158,18 +158,19 @@ class jfusionViewdiscussionbot extends JView
 HTML;
         } else {
             $toolbar = <<<HTML
-    		    <div id='My Toolbar' class='toolbar'>\
-                    <table class='toolbar'>
+    		    <div id="My Toolbar" class="toolbar">
+                    <table class="toolbar">
                         <tbody>
                             <tr>
-                                <td id='My Toolbar-apply' class='button'>
-                                    <a class='toolbar' onclick=\"window.parent.jDiscussionParamSet('{$dbtask}', '{$encoded_pairs}');\" href='javascript: void(0);'>
-                                        <span title='".JText::_('APPLY')."' class='icon-32-apply'></span>".JText::_('APPLY')."
+                                <td id="My Toolbar-apply" class="button">
+                                    <a class="toolbar" onclick="window.parent.jDiscussionParamSet('{$dbtask}', '{$encoded_pairs}');" href="javascript: void(0);">
+                                        <span title="{$apply}" class="icon-32-apply"></span>{$apply}
                                     </a>
                                 </td>
-                                <td id='My Toolbar-cancel' class='button'>
-                                    <a class='toolbar' onclick=\"window.parent.SqueezeBox.close();\" href='javascript:void(0);'>
-                                        <span title='".JText::_('CANCEL')."' class='icon-32-cancel'></span>".JText::_('CANCEL')."
+                                <td id="My Toolbar-cancel" class="button">
+                                    <a class="toolbar" onclick="window.parent.SqueezeBox.close();" href="javascript:void(0);">
+                                        <span title="{$close}" class="icon-32-cancel"></span>
+                                        {$close}
                                     </a>
                                 </td>
                             </tr>

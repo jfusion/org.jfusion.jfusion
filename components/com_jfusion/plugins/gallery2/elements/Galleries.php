@@ -79,8 +79,8 @@ class JElementGalleries extends JElement {
     function buildTree($tree, $titles, &$ar, $limiter = '', $sub = false) {
         foreach ($tree as $tItemID => $tItemArray) {
             $name = htmlspecialchars($titles[$tItemID], ENT_QUOTES);
-            $ar[] = JHTML::_('select.option', $tItemID, ($sub ? $limiter : "") . $name);            
-            $this->buildTree($tItemArray, $titles, $ar, "----".$limiter, true);
+            $ar[] = JHTML::_('select.option', $tItemID, ($sub ? $limiter : '') . $name);
+            $this->buildTree($tItemArray, $titles, $ar, '----'.$limiter, true);
         }
     }
 }

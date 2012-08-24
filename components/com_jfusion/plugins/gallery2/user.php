@@ -278,11 +278,11 @@ class JFusionUser_gallery2 extends JFusionUser {
                 $status['error'][] = JText::_('ERROR_CREATING_USER') . ' ' . $userinfo->username;
             } else {
                 if (!isset($g2_user)) {
-                    $status['error'][] = JText::_('ERROR_CREATING_USER') . ": ".$this->getJname()." : " . $userinfo->username;
+                    $status['error'][] = JText::_('ERROR_CREATING_USER') . ': ' . $this->getJname(). ' : ' . $userinfo->username;
                 }
                 $ret = $g2_user->create($userinfo->username);
                 if ($ret) {
-                    $status['error'][] = JText::_('ERROR_CREATING_USER') . ": ".$this->getJname()." : " . $userinfo->username;
+                    $status['error'][] = JText::_('ERROR_CREATING_USER') . ': ' . $this->getJname(). ' : ' . $userinfo->username;
                 } else {
                     $testcrypt = $userinfo->password;
                     if (isset($userinfo->password_clear)) {

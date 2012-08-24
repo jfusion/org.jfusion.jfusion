@@ -351,7 +351,7 @@ CSS;
                             if (count($value) == 0) {
                                 $str.= $emptyWhat."\n";
                             }
-                            $str.= $key." - &darr; \n".debug::getText($value, false);
+                            $str.= $key.' - &darr; '."\n".debug::getText($value, false);
                         } else {
                             $str.= $key.' &rarr; '.$value."\n";
                         }

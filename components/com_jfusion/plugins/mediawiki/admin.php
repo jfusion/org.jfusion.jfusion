@@ -50,7 +50,7 @@ class JFusionAdmin_mediawiki extends JFusionAdmin {
         $params = array();
          //try to open the file
         if ( !file_exists($myfile) ) {
-            JError::raiseWarning(500,JText::_('WIZARD_FAILURE'). ": ".$myfile." " . JText::_('WIZARD_MANUAL'));
+            JError::raiseWarning(500,JText::_('WIZARD_FAILURE'). ': '.$myfile.' ' . JText::_('WIZARD_MANUAL'));
         } else {
             $wgDBserver = $wgDBtype = $wgDBname = $wgDBuser = $wgDBpassword = $wgDBprefix = '';
             /**

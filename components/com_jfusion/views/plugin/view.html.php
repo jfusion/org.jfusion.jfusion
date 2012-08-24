@@ -62,7 +62,7 @@ class jfusionViewPlugin extends JView {
 		$queries = array();
 
 		foreach($query as $key => $var) {
-			$queries[] = $key."=".$var;
+			$queries[] = $key.'='.$var;
 		}
 
 		$wrap = $jfile . '?'. implode($queries,'&');

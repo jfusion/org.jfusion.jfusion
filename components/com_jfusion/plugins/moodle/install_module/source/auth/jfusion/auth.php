@@ -309,7 +309,7 @@ class auth_plugin_jfusion extends auth_plugin_base {
 		unset($LoginLogout);
 		if (!empty($status['error']))
 		{
-			$message= "Fatal JFusion Dual logout Error : statusdump: ".print_r($status,true) ;
+			$message= 'Fatal JFusion Dual logout Error : statusdump: '.print_r($status,true) ;
 			return false;
 		}
         return true;
@@ -448,7 +448,7 @@ class auth_plugin_jfusion extends auth_plugin_base {
 
             if (!empty($status['error']))
             {
-                $message= "Fatal JFusion Dual login Error : statusdump: ".print_r($status,true) ;
+                $message= 'Fatal JFusion Dual login Error : statusdump: '.print_r($status,true) ;
                 //      $session->addError($message);
             }
 		}

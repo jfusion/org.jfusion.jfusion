@@ -564,7 +564,7 @@ class JFusionUser_efront extends JFusionUser
                 $db->setQuery($query);
                 $user_type = $db->loadResult();
             }
-            $query = "UPDATE #__users SET user_type = ".$db->Quote($user_type).", user_types_ID = $user_types_ID WHERE id =" . $existinguser->userid;
+            $query = 'UPDATE #__users SET user_type = '.$db->Quote($user_type).', user_types_ID = '.$user_types_ID.' WHERE id =' . $existinguser->userid;
             $db->setQuery($query);
             if (!$db->query()) {
                 $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();

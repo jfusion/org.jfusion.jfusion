@@ -44,7 +44,7 @@ class JFusionHelper_efront {
         $handle = opendir($dir);
         if ($handle) {
             while (false !== ($file = readdir($handle))){
-                if ($file != "." && $file != ".."){
+                if ($file != '.' && $file != '..'){
                     if(is_dir($dir.$file)){
                         if(!@rmdir($dir.$file)){ // Empty directory? Remove it
                             $this->delete_directory($dir.$file.'/'); // Not empty? Delete the files inside it
@@ -175,7 +175,7 @@ class JFusionHelper_efront {
         ltrim($source_url);
         $apipath = $source_url.'api.php?action=';
         $post_url = $apipath.$curl_options['action'].$curl_options['parms'];
- //       $status['debug'][] = JText::_('EFRONT_API_POST')." post url: ".$post_url;
+ //       $status['debug'][] = JText::_('EFRONT_API_POST').' post url: '.$post_url;
         
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
@@ -214,7 +214,7 @@ class JFusionHelper_efront {
         }
         $remotedata = curl_exec($ch);
         if (curl_error($ch)) {
-            $status['error'][] = 'EFRONT_API_POST'.' '."CURL_ERROR_MSG".": ".curl_error($ch);
+            $status['error'][] = 'EFRONT_API_POST CURL_ERROR_MSG : '.curl_error($ch);
         } else {
             $status['result'][] = simplexml_load_string($remotedata);
         }

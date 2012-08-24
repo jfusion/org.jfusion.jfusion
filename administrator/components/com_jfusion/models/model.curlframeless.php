@@ -234,7 +234,7 @@ class JFusionCurlFrameless{
 		}
 
 		if (curl_error($curlframeless->ch)) {
-			$status['error'][] = JText::_('CURL_ERROR_MSG').": ".curl_error($curlframeless->ch).' URL:'.$url;
+			$status['error'][] = JText::_('CURL_ERROR_MSG').': '.curl_error($curlframeless->ch).' URL:'.$url;
 			curl_close($curlframeless->ch);
 			return $status;
 		}

@@ -199,7 +199,7 @@ class JFusionForum_smf2 extends JFusionForum
 						$url = $avatarurl->value.$result->avatar;
 					// I like redundancy. Recheck to see if there isnt a trailing slash. If there isnt one, add one.
 					} else if(substr($avatarurl->value, -1) !== DS){
-						$url = $avatarurl->value."/".$result->avatar;
+						$url = $avatarurl->value.'/'.$result->avatar;
 					}
 				}
 
@@ -721,7 +721,7 @@ HTML;
 		}
 
         $where = (!empty($usedforums)) ? ' WHERE b.id_board IN (' . $usedforums .') AND a.id_board IN ('.implode(',',$list).')' : ' WHERE a.id_board IN ('.implode(',',$list).')';
-		$end = $result_order." LIMIT 0,".$result_limit;
+		$end = $result_order.' LIMIT 0,'.$result_limit;
 
         $numargs = func_num_args();
         if ($numargs > 3) {

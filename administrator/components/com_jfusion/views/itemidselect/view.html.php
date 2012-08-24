@@ -76,7 +76,7 @@ class jfusionViewitemidselect extends JView
             if (is_array($jPluginParam)) {
                 $row->jfusionplugin = $jPluginParam['jfusionplugin'];
             }
-            if (!JFusionFunction::validPlugin($row->jfusionplugin) || !JFusionFunctionAdmin::hasFeature($feature,$row->jfusionplugin)) {
+            if (!JFusionFunction::validPlugin($row->jfusionplugin) || !JFusionFunctionAdmin::hasFeature($row->name,$feature)) {
                 unset($menuitems[$key]);
             }
         }
@@ -88,7 +88,7 @@ class jfusionViewitemidselect extends JView
         $directlinks = $db->loadObjectList();
 
         foreach ($directlinks as $key => &$row) {
-            if (JFusionFunctionAdmin::hasFeature($feature,$row->name)) {
+            if (JFusionFunctionAdmin::hasFeature($row->name,$feature)) {
                 $row->params = JFusionFactory::getParams($row->name);
             } else {
                 unset($directlinks[$key]);

@@ -152,8 +152,8 @@ if (file_exists($model_file) && file_exists($factory_file) && file_exists($facto
                     $sqlQuery = ($config['mode']==LAT) ? $query[$config['mode'].$config['lat_mode']] : $query[$config['mode']];
                     $debug .= 'SQL Query: ' . $sqlQuery .'<br><br>';
                     $debug .= 'Error: ' . $db->stderr() . '<br><br>';
-                    $debug .= "Results Before Filtering:<br><pre>".print_r($resultBeforeFiltering,true).'</pre><br><br>';
-                    $debug .= "Results After Filtering:<br><pre>".print_r($results,true).'</pre><br><br>';
+                    $debug .= 'Results Before Filtering:<br><pre>'.print_r($resultBeforeFiltering,true).'</pre><br><br>';
+                    $debug .= 'Results After Filtering:<br><pre>'.print_r($results,true).'</pre><br><br>';
                     die($debug);
                 } else {
                     modjfusionActivityHelper::appendAutoOutput($results, $jname, $config, $params);
