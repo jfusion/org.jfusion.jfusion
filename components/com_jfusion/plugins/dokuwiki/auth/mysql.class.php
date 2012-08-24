@@ -62,7 +62,7 @@ class doku_auth_mysql extends doku_auth_basic {
 
 		if(!function_exists('mysql_connect')) {
 			if ($this->cnf['debug']) {
-				JError::raiseWarning(500, "MySQL err: PHP MySQL extension not found.");
+				JError::raiseWarning(500, 'MySQL err: PHP MySQL extension not found.');
 			}
 			$this->success = false;
 		}
@@ -80,9 +80,9 @@ class doku_auth_mysql extends doku_auth_basic {
           	empty($this->cnf['password']) ||
           	empty($this->cnf['database'])) {
         	if ($this->cnf['debug']) {
-				JError::raiseWarning(500, "MySQL err: insufficient configuration.");
+				JError::raiseWarning(500, 'MySQL err: insufficient configuration.');
         	}        
-//          msg("MySQL err: insufficient configuration.",-1,__LINE__,__FILE__);
+//          msg('MySQL err: insufficient configuration.',-1,__LINE__,__FILE__);
 			$this->success = false;
 		} else {
             $this->cando['addUser']      = $this->_chkcnf(array('getUserInfo',

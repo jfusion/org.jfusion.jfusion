@@ -294,7 +294,7 @@ class JFusionUser_gallery2 extends JFusionUser {
                     $g2_user->setFullName($userinfo->name);
                     $ret = $g2_user->save();
                     if ($ret) {
-                        $status['error'][] = JText::_('ERROR_CREATING_USER') . ": ".$this->getJname()." : " . $userinfo->username;
+                        $status['error'][] = JText::_('ERROR_CREATING_USER') . ': '.$this->getJname().' : ' . $userinfo->username;
                     } else {
                         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
                         foreach ($usergroups as $group) {

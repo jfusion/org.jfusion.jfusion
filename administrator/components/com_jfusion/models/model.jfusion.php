@@ -89,7 +89,7 @@ class JFusionFunction
 			default:
 				return false;
 		}
-		$plugins = ${$criteria."_plugins"};
+		$plugins = ${$criteria.'_plugins'};
         if (empty($plugins)) {
             $query = "SELECT * FROM #__jfusion WHERE ($criteria = 1 AND status = 1 AND name NOT LIKE 'joomla_int')";
             $db = JFactory::getDBO();

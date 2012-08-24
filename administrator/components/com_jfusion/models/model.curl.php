@@ -882,7 +882,7 @@ class JFusionCurl
 			$status['debug'][]='CURL_INFO'.': '.print_r(curl_getinfo($ch), true);
 		}
 		if (curl_error($ch)) {
-			$status['error'][] = JFusionCurl::_('CURL_ERROR_MSG').": ".curl_error($ch);
+			$status['error'][] = JFusionCurl::_('CURL_ERROR_MSG').': '.curl_error($ch);
 			curl_close($ch);
 			return null;
 		}
@@ -1001,7 +1001,7 @@ class JFusionCurl
 			$status['error'][] = JFusionCurl::_('CURL_NOTINSTALLED');
 			return $status;
 		}
-		$status['debug'][] = JFusionCurl::_('CURL_POST_URL_1')." ".$curl_options['post_url'];
+		$status['debug'][] = JFusionCurl::_('CURL_POST_URL_1').' '.$curl_options['post_url'];
 		$remotedata = JFusionCurl::ReadPage($curl_options, $status,true);
 		if (!empty($status['error'])) {
 			return $status;
@@ -1049,7 +1049,7 @@ class JFusionCurl
 					$i +=1;
 				} while ($i<$frmcount);
 			}
-			$status['debug'][] = JFusionCurl::_('CURL_NO_LOGINFORM')." ".$helpthem;
+			$status['debug'][] = JFusionCurl::_('CURL_NO_LOGINFORM').' '.$helpthem;
 			return $status;
 		}
 		$status['debug'][] = JFusionCurl::_('CURL_VALID_FORM');
@@ -1261,7 +1261,7 @@ class JFusionCurl
 			$status['debug'][]='CURL_INFO'.': '.print_r(curl_getinfo($ch), true);
 		}
 		if (curl_error($ch)) {
-			$status['error'][] = JFusionCurl::_('CURL_ERROR_MSG').": ".curl_error($ch);
+			$status['error'][] = JFusionCurl::_('CURL_ERROR_MSG').': '.curl_error($ch);
 			curl_close($ch);
 			return $status;
 		}
@@ -1384,7 +1384,7 @@ class JFusionCurl
 			$status['debug'][]='CURL_INFO'.': '.print_r(curl_getinfo($ch), true);
 		}
 		if (curl_error($ch)) {
-			$status['error'][] = JFusionCurl::_('CURL_ERROR_MSG').": ".curl_error($ch);
+			$status['error'][] = JFusionCurl::_('CURL_ERROR_MSG').': '.curl_error($ch);
 			curl_close($ch);
 			return $status;
 		}
@@ -1523,7 +1523,7 @@ class JFusionCurl
 		}
 		$status['debug'][]= JText::_('CURL_LOGOUT_URL').': '.  $curl_options['post_url'];
 		if (curl_error($ch)) {
-			$status['error'][] = JFusionCurl::_('CURL_ERROR_MSG').": ".curl_error($ch);
+			$status['error'][] = JFusionCurl::_('CURL_ERROR_MSG').': '.curl_error($ch);
 			curl_close($ch);
 			return $status;
 		}
