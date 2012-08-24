@@ -73,7 +73,7 @@ class JFusionForum_vbulletin extends JFusionForum
     function getThread($threadid)
     {
         $db = JFusionFactory::getDatabase($this->getJname());
-        $query = "SELECT threadid, forumid, firstpostid AS postid FROM #__thread WHERE threadid = $threadid";
+        $query = 'SELECT threadid, forumid, firstpostid AS postid FROM #__thread WHERE threadid = '.$threadid;
         $db->setQuery($query);
         $results = $db->loadObject();
         return $results;
@@ -86,7 +86,7 @@ class JFusionForum_vbulletin extends JFusionForum
     function getThreadLockedStatus($threadid)
     {
         $db = JFusionFactory::getDatabase($this->getJname());
-        $query = "SELECT open FROM #__thread WHERE threadid = $threadid";
+        $query = 'SELECT open FROM #__thread WHERE threadid = '.$threadid;
         $db->setQuery($query);
         $open = $db->loadResult();
         $locked = ($open) ? false : true;
@@ -206,7 +206,7 @@ class JFusionForum_vbulletin extends JFusionForum
 
                 $name_field = $this->params->get('name_field');
                 if (!empty($name_field)) {
-                    $query = "SELECT COUNT(*) FROM #__userfield WHERE LOWER($name_field) = " . strtolower($db->Quote($userinfo->username)) . " OR LOWER($name_field) = " . strtolower($db->Quote($userinfo->username));
+                    $query = 'SELECT COUNT(*) FROM #__userfield WHERE LOWER('.$name_field.') = ' . strtolower($db->Quote($userinfo->username)) . ' OR LOWER('.$name_field.') = ' . strtolower($db->Quote($userinfo->username));
                     $db->setQuery($query);
                     $result = $db->loadResult();
                     if (!empty($result)) {
@@ -225,7 +225,7 @@ class JFusionForum_vbulletin extends JFusionForum
 			$foruminfo = $this->getForumInfo($ids->forumid);
 			$threadinfo = $this->getThreadInfo($ids->threadid, $dbparams);
 			$post_approved = ($userinfo->guest && ($foruminfo['moderatenewposts'] || $dbparams->get('moderate_guests',1))) ? 0 : 1;
-            $title = "Re: " . $threadinfo['title'];
+            $title = 'Re: ' . $threadinfo['title'];
             $public =& JFusionFactory::getPublic($this->getJname());
             $public->prepareText($title);
 
@@ -298,9 +298,9 @@ class JFusionForum_vbulletin extends JFusionForum
     {
         $threadid = intval($id);
         $db = JFusionFactory::getDatabase($this->getJname());
-        $query = "SELECT if (visible = 2, 1, 0) AS isdeleted,";
-        $query.= " thread.* FROM #__thread AS thread";
-        $query.= " WHERE thread.threadid = $threadid";
+        $query = 'SELECT if (visible = 2, 1, 0) AS isdeleted,';
+        $query.= ' thread.* FROM #__thread AS thread';
+        $query.= ' WHERE thread.threadid = '.$threadid;
         $db->setQuery($query);
         $threadinfo = $db->loadAssoc();
         return $threadinfo;
@@ -312,7 +312,7 @@ class JFusionForum_vbulletin extends JFusionForum
      */
     function getForumInfo($id) {
 		$jdb =& JFusionFactory::getDatabase($this->getJname());
-		$query = "SELECT * FROM #__forum WHERE forumid = " . (int) $id;
+		$query = 'SELECT * FROM #__forum WHERE forumid = ' . (int) $id;
 		$jdb->setQuery($query);
 		$foruminfo = $jdb->loadAssoc();
 
@@ -358,14 +358,14 @@ class JFusionForum_vbulletin extends JFusionForum
         $postid = $existingthread->postid;
         //set the query
         $sort = $dbparams->get('sort_posts');
-        $where = "WHERE a.threadid = {$threadid} AND a.postid != {$postid} AND a.visible = 1";
+        $where = 'WHERE a.threadid = '.$threadid.' AND a.postid != '.$postid.' AND a.visible = 1';
         $name_field = $this->params->get('name_field');
         if (empty($name_field)) {
-            $query = "SELECT a.postid , a.username, a.username as name, a.userid, CASE WHEN a.userid = 0 THEN 1 ELSE 0 END AS guest, a.title, a.dateline, a.pagetext, a.threadid, b.title AS threadtitle FROM `#__post` as a INNER JOIN `#__thread` as b ON a.threadid = b.threadid $where ORDER BY a.dateline $sort";
+            $query = 'SELECT a.postid , a.username, a.username as name, a.userid, CASE WHEN a.userid = 0 THEN 1 ELSE 0 END AS guest, a.title, a.dateline, a.pagetext, a.threadid, b.title AS threadtitle FROM `#__post` as a INNER JOIN `#__thread` as b ON a.threadid = b.threadid '.$where.' ORDER BY a.dateline '.$sort;
         } else {
-            $query = "(SELECT a.postid , a.username, CASE WHEN f.$name_field IS NULL OR f.$name_field = '' THEN a.username ELSE f.$name_field END AS name, a.userid, 0 AS guest, a.title, a.dateline, a.dateline as order_by_date, a.pagetext, a.threadid, b.title AS threadtitle FROM `#__post` as a INNER JOIN `#__thread` as b ON a.threadid = b.threadid INNER JOIN `#__userfield` as f ON f.userid = a.userid $where AND a.userid != 0)";
+            $query = '(SELECT a.postid , a.username, CASE WHEN f.'.$name_field.' IS NULL OR f.'.$name_field.' = \'\' THEN a.username ELSE f.'.$name_field.' END AS name, a.userid, 0 AS guest, a.title, a.dateline, a.dateline as order_by_date, a.pagetext, a.threadid, b.title AS threadtitle FROM `#__post` as a INNER JOIN `#__thread` as b ON a.threadid = b.threadid INNER JOIN `#__userfield` as f ON f.userid = a.userid '.$where.' AND a.userid != 0)';
             $query.= ' UNION ';
-            $query.= "(SELECT a.postid , a.username, a.username as name, a.userid, 1 AS guest, a.title, a.dateline, a.dateline as order_by_date, a.pagetext, a.threadid, b.title AS threadtitle FROM `#__post` as a INNER JOIN `#__thread` as b ON a.threadid = b.threadid $where AND a.userid = 0)";
+            $query.= '(SELECT a.postid , a.username, a.username as name, a.userid, 1 AS guest, a.title, a.dateline, a.dateline as order_by_date, a.pagetext, a.threadid, b.title AS threadtitle FROM `#__post` as a INNER JOIN `#__thread` as b ON a.threadid = b.threadid '.$where.' AND a.userid = 0)';
             $query.= ' ORDER BY order_by_date '.$sort;
         }
         $jdb = JFusionFactory::getDatabase($this->getJname());
@@ -392,7 +392,7 @@ class JFusionForum_vbulletin extends JFusionForum
     function getReplyCount(&$existingthread)
     {
         $db = JFusionFactory::getDatabase($this->getJname());
-        $query = "SELECT replycount FROM #__thread WHERE threadid = {$existingthread->threadid}";
+        $query = 'SELECT replycount FROM #__thread WHERE threadid = '.$existingthread->threadid;
         $db->setQuery($query);
         $result = $db->loadResult();
         return $result;
@@ -487,16 +487,16 @@ class JFusionForum_vbulletin extends JFusionForum
         if ($userid) {
             $db = JFusionFactory::getDatabase($this->getJname());
 
-            $query = "SELECT u.avatarid, u.avatarrevision, avatarpath, NOT ISNULL(c.userid) AS usecustom, c.dateline
+            $query = 'SELECT u.avatarid, u.avatarrevision, avatarpath, NOT ISNULL(c.userid) AS usecustom, c.dateline
                         FROM #__user AS u
                         LEFT JOIN #__avatar AS a ON a.avatarid = u.avatarid
                         LEFT JOIN #__customavatar AS c ON c.userid = u.userid
-                        WHERE u.userid = $userid";
+                        WHERE u.userid = '.$userid;
             $db->setQuery($query);
             $avatar = $db->loadObject();
 
             $usefileavatar = $avatarurl = null;
-            $query = "SELECT varname, value FROM #__setting WHERE varname = 'usefileavatar' OR varname = 'avatarurl'";
+            $query = 'SELECT varname, value FROM #__setting WHERE varname = \'usefileavatar\' OR varname = \'avatarurl\'';
             $db->setQuery($query);
             $settings = $db->loadObjectList();
             foreach ($settings as $s) {
@@ -513,7 +513,7 @@ class JFusionForum_vbulletin extends JFusionForum
                 if ($usefileavatar && $avatarurl) {
                     //avatars are saved to the filesystem
                     $url = (strpos($avatarurl, 'http') === false) ? $this->params->get('source_url') . $avatarurl : $avatarurl;
-                    $url.= "/avatar{$userid}_{$avatar->avatarrevision}.gif";
+                    $url.= '/avatar'.$userid.'_'.$avatar->avatarrevision.'.gif';
                 } else {
                     //avatars are saved in the database
                     $url = $this->params->get('source_url') . 'image.php?u=' . $userid . '&amp;dateline=' . $avatar->dateline;

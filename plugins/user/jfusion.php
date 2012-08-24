@@ -689,7 +689,7 @@ class plgUserJfusion extends JPlugin
 	                if ($JoomlaUser->block == 0 && !empty($JoomlaUser->activation)) {
 	                    //let's clear out Joomla's activation status for sanity's sake
 	                    $db = JFactory::getDBO();
-	                    $query = "UPDATE #__users SET activation = '' WHERE id = " . $JoomlaUser->id;
+	                    $query = 'UPDATE #__users SET activation = \'\' WHERE id = ' . $JoomlaUser->id;
 	                    $db->setQuery($query);
 	                    $db->query();
 	                    $JoomlaUser->activation = '';

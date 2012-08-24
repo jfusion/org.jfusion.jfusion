@@ -114,7 +114,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 			$db =& JDatabase::getInstance($options );
 
 			//Find the url to Wordpress
-			$query = "SELECT option_value FROM #__options WHERE option_name = 'siteurl'";
+			$query = 'SELECT option_value FROM #__options WHERE option_name = \'siteurl\'';
 			$db->setQuery($query);
 			$params['source_url'] = $db-> loadResult();
 			if (substr($params['source_url'], -1) != '/') {
@@ -124,7 +124,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 
 			// now get the default usergroup
 			// Cannot user
-			$query = "SELECT option_value FROM #__options WHERE option_name = 'default_role'";
+			$query = 'SELECT option_value FROM #__options WHERE option_name = \'default_role\'';
 			$db->setQuery($query);
 			$default_role=$db->loadResult();
 			
@@ -209,7 +209,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
      */
     function allowRegistration() {
 		$db = JFusionFactory::getDatabase($this->getJname());
-		$query = "SELECT option_value FROM #__options WHERE option_name = 'users_can_register'";
+		$query = 'SELECT option_value FROM #__options WHERE option_name = \'users_can_register\'';
 		$db->setQuery($query);
 		$auths = $db->loadResult();
 		if (empty($auths)) {

@@ -188,7 +188,7 @@ class JFusionHelper_phpbb3
         include_once ($source_path . '/includes/constants.php');
         //get a bbcode_uid
         if (empty($this->bbcode_uid)) {
-            $query = "SELECT config_value FROM #__config WHERE config_name = 'rand_seed'";
+            $query = 'SELECT config_value FROM #__config WHERE config_name = \'rand_seed\'';
             $this->db->setQuery($query);
             $rand_seed = $this->db->loadResult();
             $val = $rand_seed . microtime();

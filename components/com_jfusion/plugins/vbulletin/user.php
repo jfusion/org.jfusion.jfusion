@@ -77,8 +77,8 @@ class JFusionUser_vbulletin extends JFusionUser
 
         $name_field = $this->params->get('name_field');
 
-        $query = "SELECT u.userid, u.username, u.email, u.usergroupid AS group_id, u.membergroupids, u.displaygroupid, u.password, u.salt as password_salt, u.usertitle, u.customtitle, u.posts, u.username as name FROM #__user AS u WHERE " . $identifier_type . ' = ' . $db->Quote($identifier);
-        $query.= ($ignore_id) ? " AND u.userid != $ignore_id" : '';
+        $query = 'SELECT u.userid, u.username, u.email, u.usergroupid AS group_id, u.membergroupids, u.displaygroupid, u.password, u.salt as password_salt, u.usertitle, u.customtitle, u.posts, u.username as name FROM #__user AS u WHERE ' . $identifier_type . ' = ' . $db->Quote($identifier);
+        $query.= ($ignore_id) ? ' AND u.userid != '.$ignore_id : '';
 
         $db->setQuery($query );
         $result = $db->loadObject();
@@ -208,7 +208,7 @@ class JFusionUser_vbulletin extends JFusionUser
             foreach ($_COOKIE AS $key => $val) {
 		        if (strpos($key, $cookie_prefix) !== false) {
                     JFusionCurl::addCookie($key , 0, $timenow - 3600, $cookie_path, $cookie_domain, $secure, $httponly);
-                    $status['debug'][] = "$key " . JText::_('DELETED');
+                    $status['debug'][] = $key.' '. JText::_('DELETED');
 		        }
             }
 
@@ -216,10 +216,10 @@ class JFusionUser_vbulletin extends JFusionUser
     		$queries = array();
 
     		if ($session_user) {
-    			$queries[] = "UPDATE #__user SET lastvisit = " . $db->Quote($timenow) . ", lastactivity = " . $db->Quote($timenow - $cookie_expires) . " WHERE userid = " . $db->Quote($session_user);
-            	$queries[] = "DELETE FROM #__session WHERE userid = " . $db->Quote($session_user);
+    			$queries[] = 'UPDATE #__user SET lastvisit = ' . $db->Quote($timenow) . ', lastactivity = ' . $db->Quote($timenow - $cookie_expires) . ' WHERE userid = ' . $db->Quote($session_user);
+            	$queries[] = 'DELETE FROM #__session WHERE userid = ' . $db->Quote($session_user);
     		}
-        	$queries[] = "DELETE FROM #__session WHERE sessionhash = " . $db->Quote($session_hash);
+        	$queries[] = 'DELETE FROM #__session WHERE sessionhash = ' . $db->Quote($session_hash);
 
             foreach ($queries as $q) {
                 $db->setQuery($q);
@@ -256,14 +256,14 @@ class JFusionUser_vbulletin extends JFusionUser
 
         //first check to see if striking is enabled to prevent further strikes
         $db =& JFusionFactory::getDatabase($this->getJname());
-        $query = "SELECT value FROM #__setting WHERE varname = 'usestrikesystem'";
+        $query = 'SELECT value FROM #__setting WHERE varname = \'usestrikesystem\'';
         $db->setQuery($query);
         $strikeEnabled = $db->loadResult();
 
         if ($strikeEnabled) {
             $ip = $_SERVER['REMOTE_ADDR'];
             $time = strtotime('-15 minutes');
-            $query = "SELECT COUNT(*) FROM #__strikes WHERE strikeip = '$ip' AND striketime >= $time";
+            $query = 'SELECT COUNT(*) FROM #__strikes WHERE strikeip = '.$db->Quote($ip).' AND striketime >= '.$time;
             $db->setQuery($query);
             $strikes = $db->loadResult();
 
@@ -415,7 +415,7 @@ class JFusionUser_vbulletin extends JFusionUser
             $ban->reason = (!empty($status['aec'])) ? $status['block_message'] : $this->params->get('blockmessage');
 
             //now append or update the new user data
-            $query = "SELECT COUNT(*) FROM #__userban WHERE userid = " . $existinguser->userid;
+            $query = 'SELECT COUNT(*) FROM #__userban WHERE userid = ' . $existinguser->userid;
             $db->setQuery($query);
             $banned = $db->loadResult();
 
@@ -799,7 +799,7 @@ class JFusionUser_vbulletin extends JFusionUser
             $joomla_persistant_cookie = '';
         }
         $db =& JFusionFactory::getDatabase($this->getJname());
-        $query = "SELECT userid FROM #__session WHERE sessionhash = " . $db->Quote($cookie_sessionhash);
+        $query = 'SELECT userid FROM #__session WHERE sessionhash = ' . $db->Quote($cookie_sessionhash);
         $db->setQuery($query);
         $session_userid = $db->loadResult();
 

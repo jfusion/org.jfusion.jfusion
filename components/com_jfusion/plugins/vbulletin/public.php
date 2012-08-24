@@ -458,7 +458,7 @@ JS;
             if ($forum->parentid != '-1') {
                 $parents = array_reverse(explode(',', $forum->parentlist));
                 foreach ($parents as $p) {
-                    if ($p != "-1") {
+                    if ($p != '-1') {
                         $query = 'SELECT title from #__forum WHERE forumid = '.$p;
                         $db->setQuery($query);
                         $title = $db->loadResult();
@@ -510,7 +510,7 @@ JS;
             if ($result->parentid != '-1') {
                 $parents = array_reverse(explode(',', $result->parentlist));
                 foreach ($parents as $p) {
-                    if ($p != "-1") {
+                    if ($p != '-1') {
                         $query = 'SELECT title from #__forum WHERE forumid = '.$p;
                         $db->setQuery($query);
                         $title = $db->loadResult();
@@ -542,7 +542,7 @@ JS;
                 $db->setQuery($query);
                 $username = $db->loadResult();
                 $crumb = new stdClass();
-                $crumb->title = "$username's Profile";
+                $crumb->title = $username.'\'s Profile';
                 $crumb->url = 'member.php?u='.$uid;
                 $pathway[] = $crumb;
             }
@@ -560,7 +560,7 @@ JS;
                     $pathway[] = $crumb;
                 } elseif ($do == 'getdaily') {
                     $crumb = new stdClass();
-                    $crumb->title = "Today's Posts";
+                    $crumb->title = 'Today\'s Posts';
                     $crumb->url = 'search.php?do=getdaily';
                     $pathway[] = $crumb;
                 }
@@ -673,14 +673,14 @@ JS;
      */
     function getSearchCriteria(&$where, &$pluginParam, $ordering)
     {
-        $where.= " AND p.visible = 1 AND f.password = ''";
+        $where.= ' AND p.visible = 1 AND f.password = \'\'';
 
         if ($pluginParam->get('forum_mode', 0)) {
             $forumids = $pluginParam->get('selected_forums', array());
             if (empty($forumids)) {
                 $forumids = array(0);
             }
-            $where.= " AND f.forumid IN (" . implode(',', $forumids) . ")";
+            $where.= ' AND f.forumid IN (' . implode(',', $forumids) . ')';
         }
 
         //determine how to sort the results which is required for accurate results when a limit is placed
@@ -908,7 +908,7 @@ JS;
         }
         if (strpos($url, 'http') !== false) {
             if (defined('_JFUSION_DEBUG')) {
-                $debug['parsed'] = "window.location='$url'";;
+                $debug['parsed'] = "window.location='$url'";
             }
             return "window.location='$url'";
         }

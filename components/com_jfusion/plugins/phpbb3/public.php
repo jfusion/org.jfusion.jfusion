@@ -97,7 +97,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             if (strpos($text, 'SMILIES_PATH') !== false) {
                 //must convert smilies
                 $db = JFusionFactory::getDatabase($this->getJname());
-                $query = "SELECT config_value FROM #__config WHERE config_name = 'smilies_path'";
+                $query = 'SELECT config_value FROM #__config WHERE config_name = \'smilies_path\'';
                 $db->setQuery($query);
                 $smilie_path = $db->loadResult();
                 $jfparams = JFusionFactory::getParams($this->getJname());
@@ -223,7 +223,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
         }
         //redirect for file download requests
         if ($jfile == 'file.php') {
-            $url = "Location: " . $params->get('source_url') . 'download/file.php?' . $_SERVER['QUERY_STRING'];
+            $url = 'Location: ' . $params->get('source_url') . 'download/file.php?' . $_SERVER['QUERY_STRING'];
             header($url);
             exit();
         }
@@ -641,7 +641,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 
             if (!empty($forum_info)) {
                 //get forum parents
-                $query = "SELECT forum_id, forum_name FROM #__forums WHERE left_id < {$forum_info->left_id} AND right_id > {$forum_info->right_id} ORDER BY left_id ASC";
+                $query = 'SELECT forum_id, forum_name FROM #__forums WHERE left_id < '.$forum_info->left_id.' AND right_id > '.$forum_info->right_id.' ORDER BY left_id ASC';
                 $db->setQuery($query);
                 $forum_parents = $db->loadObjectList();
 
@@ -744,7 +744,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
                 $sort = 'p.post_time DESC';
                 break;
         }
-        $where.= " AND p.forum_id IN (" . implode(',', $forumids) . ") ORDER BY $sort";
+        $where.= ' AND p.forum_id IN (' . implode(',', $forumids) . ') ORDER BY '.$sort;
     }
 
     /**

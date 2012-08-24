@@ -78,7 +78,7 @@ class JFusionDiscussBotHelper {
             $thread_instance[$contentid] = $threadinfo;
         } elseif (empty($thread_instance) || !isset($thread_instance[$contentid]) || $update) {
             $db = JFactory::getDBO();
-            $query = "SELECT * FROM #__jfusion_discussion_bot WHERE contentid = '{$contentid}' AND jname = '$this->jname' AND component = {$db->Quote($this->option)}";
+            $query = 'SELECT * FROM #__jfusion_discussion_bot WHERE contentid = \''.$contentid.'\' AND jname = \''.$this->jname.'\' AND component = '.$db->Quote($this->option);
             $db->setQuery($query);
             $thread_instance[$contentid] = $db->loadObject();
         }
@@ -265,7 +265,7 @@ class JFusionDiscussBotHelper {
         } else {
             //if in K2, make sure we are after the article itself and not video or gallery
             $view = JRequest::getVar('view');
-            if ($this->option == "com_k2" && $view == 'item' && !$skip_k2_check && is_object($this->article->params)) {
+            if ($this->option == 'com_k2' && $view == 'item' && !$skip_k2_check && is_object($this->article->params)) {
                 static $k2_tracker;
                 if ($this->article->params->get('itemImageGallery') && empty($k2_tracker)) {
                     $k2_tracker = 'gallery';

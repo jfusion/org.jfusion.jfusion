@@ -802,7 +802,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 
         if ($pluginParam->get('forum_mode', 0)) {
             $forumids = $pluginParam->get('selected_forums', array());
-            $selected_boards = " WHERE id_board IN (" . implode(',', $forumids) . ")";
+            $selected_boards = ' WHERE id_board IN (' . implode(',', $forumids) . ')';
         } else {
             $selected_boards = '';
         }

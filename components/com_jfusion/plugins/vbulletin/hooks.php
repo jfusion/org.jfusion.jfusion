@@ -171,10 +171,10 @@ class executeJFusionHook
         }
 
         //we need to set up the hooks
-        if ($plugin == "frameless") {
+        if ($plugin == 'frameless') {
             //retrieve the hooks that jFusion will use to make vB work framelessly
             $hookNames = array('album_picture_complete', 'global_start', 'global_complete', 'global_setup_complete', 'header_redirect', 'logout_process', 'member_profileblock_fetch_unwrapped', 'redirect_generic', 'xml_print_output');
-        } elseif ($plugin == "duallogin") {
+        } elseif ($plugin == 'duallogin') {
             //retrieve the hooks that vBulletin will use to login to Joomla
             $hookNames = array('global_setup_complete', 'login_verify_success', 'logout_process');
             define('DUALLOGIN', 1);
@@ -187,15 +187,15 @@ class executeJFusionHook
 
         foreach ($hookNames as $h) {
             //certain hooks we want to call directly such as global variables
-            if ($h == "profile_editoptions_start") {
+            if ($h == 'profile_editoptions_start') {
                 $hooks[$h] = 'global $stylecount;';
             } else {
-                if ($h == "album_picture_complete") $toPass = '$vars =& $pictureinfo; ';
-                elseif ($h == "global_complete") $toPass = '$vars =& $output; ';
-                elseif ($h == "header_redirect") $toPass = '$vars =& $url;';
-                elseif ($h == "member_profileblock_fetch_unwrapped") $toPass = '$vars =& $prepared;';
-                elseif ($h == "redirect_generic") $toPass = '$vars = array(); $vars["url"] =& $url; $vars["js_url"] =& $js_url; $vars["formfile"] =& $formfile;';
-                elseif ($h == "xml_print_output") $toPass = '$vars = & $this->doc;';
+                if ($h == 'album_picture_complete') $toPass = '$vars =& $pictureinfo; ';
+                elseif ($h == 'global_complete') $toPass = '$vars =& $output; ';
+                elseif ($h == 'header_redirect') $toPass = '$vars =& $url;';
+                elseif ($h == 'member_profileblock_fetch_unwrapped') $toPass = '$vars =& $prepared;';
+                elseif ($h == 'redirect_generic') $toPass = '$vars = array(); $vars["url"] =& $url; $vars["js_url"] =& $js_url; $vars["formfile"] =& $formfile;';
+                elseif ($h == 'xml_print_output') $toPass = '$vars = & $this->doc;';
                 else $toPass = '$vars = null;';
                 $hooks[$h] = 'include_once \'' . $hookFile . '\'; ' . $toPass . ' $jFusionHook = new executeJFusionHook(\'' . $h . '\', $vars, \''. $this->key . '\');';
             }

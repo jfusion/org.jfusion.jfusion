@@ -296,7 +296,7 @@ class JFusionHelper_vbulletin
         static $jfusion_vb_version;
         if(empty($jfusion_vb_version)) {
             $db =& JFusionFactory::getDatabase($this->getJname());
-            $q = "SELECT value FROM #__setting WHERE varname = 'templateversion'";
+            $q = 'SELECT value FROM #__setting WHERE varname = \'templateversion\'';
             $db->setQuery($q);
             $jfusion_vb_version = $db->loadResult();
         }
@@ -321,7 +321,7 @@ class JFusionHelper_vbulletin
             $db = JFusionFactory::getDatabase($this->getJname());
 
             if (!defined('JFVB_FRIENDLYURL')) {
-                $query = "SELECT value FROM #__setting WHERE varname = 'friendlyurl'";
+                $query = 'SELECT value FROM #__setting WHERE varname = \'friendlyurl\'';
                 $db->setQuery($query);
                 $sefmode = $db->loadResult();
                 define('JFVB_FRIENDLYURL', (int) $sefmode);

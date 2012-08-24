@@ -106,7 +106,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
             $vdb = JDatabase::getInstance($options);
             if (method_exists($vdb, 'setQuery')) {
                 //Find the path to vbulletin
-                $query = "SELECT value, varname FROM #__setting WHERE varname IN ('bburl','cookietimeout','cookiepath','cookiedomain')";
+                $query = 'SELECT value, varname FROM #__setting WHERE varname IN (\'bburl\',\'cookietimeout\',\'cookiepath\',\'cookiedomain\')';
                 $vdb->setQuery($query);
                 $settings = $vdb->loadObjectList('varname');
                 $params['source_url'] = $settings['bburl']->value;
@@ -231,7 +231,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
     function allowRegistration()
     {
         $db = JFusionFactory::getDatabase($this->getJname());
-        $query = "SELECT value FROM #__setting WHERE varname = 'allowregistration'";
+        $query = 'SELECT value FROM #__setting WHERE varname = \'allowregistration\'';
         $db->setQuery($query);
         //getting the results
         $new_registration = $db->loadResult();
@@ -312,7 +312,7 @@ JS;
                     break;
                 }
                 if ($hookName) {
-                    $query = "SELECT COUNT(*) FROM #__plugin WHERE hookname = 'init_startup' AND title = '$hookName' AND active = 1";
+                    $query = 'SELECT COUNT(*) FROM #__plugin WHERE hookname = \'init_startup\' AND title = \''.$hookName.'\' AND active = 1';
                     $db->setQuery($query);
                     $check = ($db->loadResult() > 0) ? true : false;
                 } else {
@@ -344,7 +344,7 @@ HTML;
             } else {
                 //let's first check the default icon
                 $check = true;
-                $q = "SELECT value FROM #__setting WHERE varname = 'showdeficon'";
+                $q = 'SELECT value FROM #__setting WHERE varname = \'showdeficon\'';
                 $db->setQuery($q);
                 $deficon = $db->loadResult();
                 $check = (!empty($deficon) && strpos($deficon, 'http') === false) ? false : true;
@@ -352,7 +352,7 @@ HTML;
                     //this will perform functions like rewriting image paths to include the full URL to images to save processing time
                     $tables = array('smilie' => 'smiliepath', 'avatar' => 'avatarpath', 'icon' => 'iconpath');
                     foreach ($tables as $tbl => $col) {
-                        $q = "SELECT $col FROM #__$tbl";
+                        $q = 'SELECT '.$col.' FROM #__'.$tbl;
                         $db->setQuery($q);
                         $images = $db->loadRowList();
                         if ($images) {
@@ -421,14 +421,14 @@ HTML;
             }
             if ($hookName) {
                 //all three cases, we want to remove the old hook
-                $query = "DELETE FROM #__plugin WHERE hookname = 'init_startup' AND title = " . $db->Quote($hookName);
+                $query = 'DELETE FROM #__plugin WHERE hookname = \'init_startup\' AND title = ' . $db->Quote($hookName);
                 $db->setQuery($query);
                 if (!$db->query()) {
                     JError::raiseWarning(500, $db->stderr());
                 }
                 //enable or renable the plugin
                 if ($action != 'disable') {
-                    if (($hook == "redirect" || $hook == "frameless") && (empty($itemid) || !is_numeric($itemid))) {
+                    if (($hook == 'redirect' || $hook == 'frameless') && (empty($itemid) || !is_numeric($itemid))) {
                         JError::raiseWarning(500, JText::_('VB_REDIRECT_HOOK_ITEMID_EMPTY'));
                     } else {
                         //install the hook
@@ -501,16 +501,16 @@ HTML;
         $php = "defined('_VBJNAME') or define('_VBJNAME', '{$this->getJname()}');\n";
         $php.= "defined('JPATH_PATH') or define('JPATH_BASE', '" . (str_replace(DS.'administrator', '', JPATH_BASE)) . "');\n";
         $php.= "defined('JFUSION_VB_HOOK_FILE') or define('JFUSION_VB_HOOK_FILE', '$hookFile');\n";
-        if ($plugin == "globalfix") {
+        if ($plugin == 'globalfix') {
             $php.= "if (defined('_JEXEC') && empty(\$GLOBALS['vbulletin']) && !empty(\$vbulletin)) {\n";
             $php.= "\$GLOBALS['vbulletin'] = \$vbulletin;\n";
             $php.= "\$GLOBALS['db'] = \$vbulletin->db;\n";
             $php.= "}";
             return $php;
-        } elseif ($plugin == "frameless") {
+        } elseif ($plugin == 'frameless') {
             //we only want to initiate the frameless if we are inside Joomla or using AJAX
             $php.= "if (defined('_JEXEC') || isset(\$_GET['jfusion'])){\n";
-        } elseif ($plugin == "redirect") {
+        } elseif ($plugin == 'redirect') {
             $php.= "if (!defined('_JEXEC')){\n";
             $sefmode = $params->get('sefmode', 0);
             $config = JFactory::getConfig();
@@ -551,7 +551,7 @@ HTML;
             $php.= "define('SEFMODE','$sefmode');\n";
             $php.= "define('JOOMLABASEURL','$baseURL');\n";
             $php.= "define('REDIRECT_IGNORE','" . $params->get('redirect_ignore') . "');\n";
-        } elseif ($plugin == "duallogin") {
+        } elseif ($plugin == 'duallogin') {
             //only login if not logging into the frontend of the forum and if $JFusionActivePlugin is not active for this plugin
             $php.= "global \$JFusionActivePlugin,\$JFusionLoginCheckActive;\n";
             $php.= "if (empty(\$_POST['logintype']) && \$JFusionActivePlugin != '{$this->getJname() }' && empty(\$JFusionLoginCheckActive)) {\n";
@@ -763,7 +763,7 @@ HTML;
             $vb_options = array();
             $vb_options = array(JHTML::_('select.option', '', '', 'id', 'name'));
             foreach($custom_fields['#__userfield'] as $field  => $type) {
-                $query = "SELECT text FROM #__phrase WHERE varname = '{$field}_title' AND fieldname = 'cprofilefield' LIMIT 0,1";
+                $query = 'SELECT text FROM #__phrase WHERE varname = \''.$field.'_title\' AND fieldname = \'cprofilefield\' LIMIT 0,1';
                 $db->setQuery($query);
                 $title = $db->loadResult();
                 $vb_options[] = JHTML::_('select.option', $field, $title, 'id', 'name');
@@ -792,7 +792,7 @@ HTML;
         $hookNames[] = 'JFusion Redirect Plugin';
         $hookNames[] = 'JFusion API Plugin - REQUIRED';
 
-        $query = "DELETE FROM #__plugin WHERE hookname = 'init_startup' AND title IN ('" . implode("', '", $hookNames) . "')";
+        $query = 'DELETE FROM #__plugin WHERE hookname = \'init_startup\' AND title IN (\'' . implode('\', \'', $hookNames) . '\')';
         $db->setQuery($query);
         if (!$db->query()) {
             $reasons[] = $db->stderr();

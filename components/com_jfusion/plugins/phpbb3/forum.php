@@ -309,13 +309,13 @@ class JFusionForum_phpbb3 extends JFusionForum {
                     } else {
                         //oops, something has failed so use the anonymous user
                         $userid = 1;
-                        $query = "SELECT group_id FROM #__groups WHERE group_name = 'GUESTS'";
+                        $query = 'SELECT group_id FROM #__groups WHERE group_name = \'GUESTS\'';
                         $db->setQuery($query);
                         $groupids[] = $db->loadResult();
                     }
                 } else {
                     $userid = 1;
-                    $query = "SELECT group_id FROM #__groups WHERE group_name = 'GUESTS'";
+                    $query = 'SELECT group_id FROM #__groups WHERE group_name = \'GUESTS\'';
                     $db->setQuery($query);
                     $groupids[] = $db->loadResult();
                 }
@@ -329,7 +329,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
             //set the permissions for non-founders
             if ($usertype != 3) {
                 //get the option id for f_read
-                $query = "SELECT auth_option_id, auth_option FROM #__acl_options WHERE auth_option IN ('f_', 'f_read')";
+                $query = 'SELECT auth_option_id, auth_option FROM #__acl_options WHERE auth_option IN (\'f_\', \'f_read\')';
                 $db->setQuery($query);
                 $option_ids = $db->loadObjectList('auth_option');
 
@@ -344,7 +344,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 
                 //get the permissions for the user
                 $auth_option_ids = array(0, $global_id, $read_id);
-                $query = "SELECT * FROM #__acl_users WHERE user_id = $userid AND auth_option_id IN (" . implode(', ', $auth_option_ids) . ") AND forum_id IN (" . implode(', ', $forumids) . ")";
+                $query = 'SELECT * FROM #__acl_users WHERE user_id = '.$userid.' AND auth_option_id IN (' . implode(', ', $auth_option_ids) . ') AND forum_id IN (' . implode(', ', $forumids) . ')';
                 $db->setQuery($query);
                 $results = $db->loadObjectList();
 
@@ -355,7 +355,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 	                        $user_acl[$r->forum_id] = (int) $r->auth_setting;
 	                    } else {
 	                        //there is a role assigned so find out what the role's permission is
-	                        $query = "SELECT auth_option_id, auth_setting FROM #__acl_roles_data WHERE role_id = {$r->auth_role_id} AND auth_option_id IN ('$global_id', '$read_id')";
+	                        $query = 'SELECT auth_option_id, auth_setting FROM #__acl_roles_data WHERE role_id = '.$r->auth_role_id.' AND auth_option_id IN (\''.$global_id.'\', \''.$read_id.'\')';
 	                        $db->setQuery($query);
 	                        $role_permissions = $db->loadObjectList('auth_option_id');
 	                        if (isset($role_permissions[$global_id]) && !$role_permissions[$global_id]) {
@@ -369,7 +369,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 				}
 
                 //get the permissions for groups
-                $query = "SELECT * FROM #__acl_groups WHERE group_id IN (" . implode(", ", $groupids) . ") AND auth_option_id IN (" . implode(', ', $auth_option_ids) . ") AND forum_id IN (" . implode(', ', $forumids) . ")";
+                $query = 'SELECT * FROM #__acl_groups WHERE group_id IN (' . implode(', ', $groupids) . ') AND auth_option_id IN (' . implode(', ', $auth_option_ids) . ') AND forum_id IN (' . implode(', ', $forumids) . ')';
                 $db->setQuery($query);
                 $results = $db->loadObjectList();
 
@@ -381,7 +381,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 	                            $groups_acl[$r->forum_id] = (int) $r->auth_setting;
 	                        } else {
 	                            //there is a role assigned so find out what the role's permission is
-	                            $query = "SELECT auth_option_id, auth_setting FROM #__acl_roles_data WHERE role_id = {$r->auth_role_id} AND auth_option_id IN ('$global_id', '$read_id')";
+	                            $query = 'SELECT auth_option_id, auth_setting FROM #__acl_roles_data WHERE role_id = '.$r->auth_role_id.' AND auth_option_id IN (\''.$global_id.'\', \''.$read_id.'\')';
 	                            $db->setQuery($query);
 	                            $role_permissions = $db->loadObjectList('auth_option_id');
 	                            if (isset($role_permissions[$global_id]) && !$role_permissions[$global_id]) {
@@ -872,8 +872,8 @@ class JFusionForum_phpbb3 extends JFusionForum {
 
 		//set the query
 		$sort = $dbparams->get('sort_posts');
-		$where = "WHERE p.topic_id = {$threadid} AND p.post_id != {$postid} AND p.post_approved = 1";
-        $query = "SELECT p.post_id , CASE WHEN p.poster_id = 1 THEN 1 ELSE 0 END AS guest, CASE WHEN p.poster_id = 1 AND p.post_username != '' THEN p.post_username ELSE u.username END AS name, CASE WHEN p.poster_id = 1 AND p.post_username != '' THEN p.post_username ELSE u.username_clean END AS username, u.user_id, p.post_subject, p.post_time, p.post_text, p.topic_id FROM `#__posts` as p INNER JOIN `#__users` as u ON p.poster_id = u.user_id $where ORDER BY p.post_time $sort";
+		$where = 'WHERE p.topic_id = '.$threadid.' AND p.post_id != '.$postid.' AND p.post_approved = 1';
+        $query = 'SELECT p.post_id , CASE WHEN p.poster_id = 1 THEN 1 ELSE 0 END AS guest, CASE WHEN p.poster_id = 1 AND p.post_username != \'\' THEN p.post_username ELSE u.username END AS name, CASE WHEN p.poster_id = 1 AND p.post_username != \'\' THEN p.post_username ELSE u.username_clean END AS username, u.user_id, p.post_subject, p.post_time, p.post_text, p.topic_id FROM `#__posts` as p INNER JOIN `#__users` as u ON p.poster_id = u.user_id '.$where.' ORDER BY p.post_time '.$sort;
 
 		$jdb = JFusionFactory::getDatabase($this->getJname());
 
@@ -899,7 +899,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
     function getReplyCount(&$existingthread)
 	{
 		$db =& JFusionFactory::getDatabase($this->getJname());
-		$query = "SELECT count(*) FROM #__posts WHERE topic_id = {$existingthread->threadid} AND post_approved = 1 AND post_id != {$existingthread->postid}";
+		$query = 'SELECT count(*) FROM #__posts WHERE topic_id = '.$existingthread->threadid.' AND post_approved = 1 AND post_id != '.$existingthread->postid;
 		$db->setQuery($query);
 		$result = $db->loadResult();
 		return $result;

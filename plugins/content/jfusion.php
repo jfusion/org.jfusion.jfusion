@@ -1196,7 +1196,7 @@ HTML;
             if (!empty($show_readmore) && !empty($readmore_catch)) {
                 if ($article_access) {
                     $readmore_link = $this->helper->_get_article_url();
-                    if ($this->helper->option == "com_content") {
+                    if ($this->helper->option == 'com_content') {
                         if ($this->helper->isJ16) {
                             if (!empty($this->article->alternative_readmore)) {
         						$readmore = $this->article->alternative_readmore;

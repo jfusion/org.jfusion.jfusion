@@ -113,10 +113,10 @@ class JFusionPublic_smf extends JFusionPublic
             if (!is_array($custom_smileys)) {
                 $custom_smileys = array();
                 $db = JFusionFactory::getDatabase($this->getJname());
-                $query = "SELECT value, variable FROM #__settings WHERE variable = 'smileys_url' OR variable = 'smiley_sets_default'";
+                $query = 'SELECT value, variable FROM #__settings WHERE variable = \'smileys_url\' OR variable = \'smiley_sets_default\'';
                 $db->setQuery($query);
                 $settings = $db->loadObjectList('variable');
-                $query = "SELECT code, filename FROM #__smileys ORDER BY smileyOrder";
+                $query = 'SELECT code, filename FROM #__smileys ORDER BY smileyOrder';
                 $db->setQuery($query);
                 $smilies = $db->loadObjectList();
                 if (!empty($smilies)) {
@@ -852,12 +852,12 @@ class JFusionPublic_smf extends JFusionPublic
     function filterSearchResults(&$results, &$pluginParam)
     {
 		$db =& JFusionFactory::getDatabase($this->getJname());
-		$query = "SELECT value FROM #__settings WHERE variable='censor_vulgar'";
+		$query = 'SELECT value FROM #__settings WHERE variable=\'censor_vulgar\'';
 		$db->setQuery($query);
 		$vulgar = $db->loadResult();
 
 		$db =& JFusionFactory::getDatabase($this->getJname());
-		$query = "SELECT value FROM #__settings WHERE variable='censor_proper'";
+		$query = 'SELECT value FROM #__settings WHERE variable=\'censor_proper\'';
 		$db->setQuery($query);
 		$proper = $db->loadResult();
 

@@ -100,7 +100,7 @@ class JFusionHelper_wordpress {
 		static $allroles;
 		if (!isset($allroles)){
 			$db = JFusionFactory::getDatabase($this->getJname());
-			$query = "SELECT option_value FROM #__options WHERE option_name = 'wp_user_roles'";
+			$query = 'SELECT option_value FROM #__options WHERE option_name = \'wp_user_roles\'';
 			$db->setQuery($query);
 			$roles_ser = $db->loadResult();
 			$allroles = unserialize($roles_ser);
