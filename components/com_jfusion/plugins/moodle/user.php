@@ -460,7 +460,7 @@ class JFusionUser_moodle extends JFusionUser {
 		if ($result) {
 			//We have a record, probably with the deleted flag set.
 			// Thus for Moodle internal working we need to use this record and resurrect the user
-			$query = "UPDATE #__user SET deleted = '0' WHERE id = ". $db->Quote($result->id);
+			$query = 'UPDATE #__user SET deleted = \'0\' WHERE id = '. $db->Quote($result->id);
 			$db->setQuery($query);
 			if (!$db->query()) {
 				//return the error
@@ -476,7 +476,7 @@ class JFusionUser_moodle extends JFusionUser {
             $params = JFusionFactory::getParams($this->getJname());
             $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
             if (empty($usergroups)) {
-                $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('USERGROUP_MISSING');
+                $status['error'][] = JText::_('ERROR_CREATING_USER') . ': ' . JText::_('USERGROUP_MISSING');
             } else {
                 $usergroup = $usergroups[0];
                 // get some config items
@@ -587,7 +587,7 @@ class JFusionUser_moodle extends JFusionUser {
 			$status['error'][] = JText::_('NO_USER_DATA_FOUND');
 		} else {
             $db = JFusionFactory::getDatabase($this->getJname());
-            $query = "UPDATE #__user SET deleted = '1' WHERE id =" . (int)$userinfo->userid;
+            $query = 'UPDATE #__user SET deleted = \'1\' WHERE id =' . (int)$userinfo->userid;
             $db->setQuery($query);
             if (!$db->query()) {
                 $status['error'][] = JText::_('USER_DELETION_ERROR') . $db->stderr();

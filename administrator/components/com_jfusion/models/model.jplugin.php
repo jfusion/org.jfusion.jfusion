@@ -152,7 +152,7 @@ class JFusionJplugin
         if(JFusionFunction::isJoomlaVersion('1.6',$jname)){
             $query = 'SELECT id, title as name FROM #__usergroups';
         } else {
-        	$query = 'SELECT id, name FROM #__core_acl_aro_groups WHERE name != "ROOT" AND name != "USERS"';
+        	$query = 'SELECT id, name FROM #__core_acl_aro_groups WHERE name != \'ROOT\' AND name != \'USERS\'';
         }
         $db->setQuery($query);
         //getting the results
@@ -709,9 +709,9 @@ class JFusionJplugin
 
             //check to see if CB is installed and activated and if so update the activation and ban accordingly
             if(JFusionFunction::isJoomlaVersion('1.6',$jname)){
-                $query = "SELECT enabled FROM #__extensions WHERE name LIKE '%com_comprofiler%'";
+                $query = 'SELECT enabled FROM #__extensions WHERE name LIKE \'%com_comprofiler%\'';
             } else {
-                $query = "SELECT enabled FROM #__components WHERE link LIKE '%option=com_comprofiler%'";
+                $query = 'SELECT enabled FROM #__components WHERE link LIKE \'%option=com_comprofiler%\'';
             }
             $db->setQuery($query);
             $cbenabled = $db->loadResult();
@@ -1309,7 +1309,7 @@ class JFusionJplugin
             $dispatcher = JDispatcher::getInstance();
 
             //Fire the user plugin functions for joomla_int
-            if ($jname == "joomla_int" && $fire_user_plugins) {
+            if ($jname == 'joomla_int' && $fire_user_plugins) {
                 // Get the old user
                 $old = new JUser($existinguser->userid);
                 //Fire the onBeforeStoreUser event.
@@ -1319,7 +1319,7 @@ class JFusionJplugin
 
             if(JFusionFunction::isJoomlaVersion('1.6',$jname)) {
                 jimport('joomla.user.helper');
-                $query = "DELETE FROM #__user_usergroup_map WHERE user_id = " . $db->Quote($existinguser->userid);
+                $query = 'DELETE FROM #__user_usergroup_map WHERE user_id = ' . $db->Quote($existinguser->userid);
                 $db->setQuery($query);
                 if (!$db->query()) {
                     $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $db->stderr();
@@ -1414,7 +1414,7 @@ class JFusionJplugin
     public static function getNumberOnlineGuests()
     {
         $db = JFactory::getDBO();
-        $query = 'SELECT COUNT(*) FROM #__session WHERE guest = 1 AND usertype = "" AND client_id = 0';
+        $query = 'SELECT COUNT(*) FROM #__session WHERE guest = 1 AND usertype = \'\' AND client_id = 0';
         $db->setQuery($query);
         return $db->loadResult();
     }

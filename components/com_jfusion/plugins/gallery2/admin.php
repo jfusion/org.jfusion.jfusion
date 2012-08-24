@@ -170,8 +170,7 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
      */
     function allowRegistration() {
         $db = JFusionFactory::getDatabase($this->getJname());
-        $query = "SELECT g_active FROM #__PluginMap
-                  WHERE g_pluginType = 'module' and g_pluginId = 'register';";
+        $query = 'SELECT g_active FROM #__PluginMap WHERE g_pluginType = \'module\' and g_pluginId = \'register\';';
         $db->setQuery($query);
         $new_registration = $db->loadResult();
         if ($new_registration) {

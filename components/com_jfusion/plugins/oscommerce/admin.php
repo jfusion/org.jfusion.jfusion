@@ -189,7 +189,7 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
             case 'oscseo':
                 // get default language
                 $db = JFusionFactory::getDataBase($this->getJname());
-                $query = "SELECT configuration_value from #__configuration WHERE configuration_key = 'DEFAULT_LANGUAGE'";
+                $query = 'SELECT configuration_value from #__configuration WHERE configuration_key = \'DEFAULT_LANGUAGE\'';
                 $db->setQuery($query);
                 $default_language = $db->loadResult();
                 $query = 'SELECT languages_id from #__languages WHERE code =' . $db->Quote($default_language);

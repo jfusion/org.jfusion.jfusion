@@ -69,7 +69,7 @@ class JFusionUsersync
         $sortStatement = (!empty($sort)) ? 'ORDER BY '.$sort.' '.$dir : '';
         $whereStatement = 'WHERE syncid = '.$db->Quote($syncid);
         if ($type != 'all') {
-            $whereStatement.= " AND action = '$type'";
+            $whereStatement.= ' AND action = '.$db->Quote($type);
         }
         $query = 'SELECT * FROM #__jfusion_sync_details '.$whereStatement.' '.$sortStatement;
         $db->setQuery($query,$limitstart,$limit);
@@ -91,9 +91,9 @@ class JFusionUsersync
         $db = JFactory::getDBO();
         $whereStatement = 'WHERE syncid = '.$db->Quote($syncid);
         if ($type != 'all') {
-            $whereStatement.= " AND action = '$type'";
+            $whereStatement.= ' AND action = '.$db->Quote($type);
         }
-        $query = "SELECT COUNT(*) FROM #__jfusion_sync_details $whereStatement";
+        $query = 'SELECT COUNT(*) FROM #__jfusion_sync_details '.$whereStatement;
         $db->setQuery($query);
         return $db->loadResult();
     }
@@ -244,7 +244,7 @@ class JFusionUsersync
      */
     function markResolved($id) {
         $db = JFactory::getDBO();
-        $query = "UPDATE #__jfusion_sync_details SET action = 'resolved' WHERE id = $id";
+        $query = 'UPDATE #__jfusion_sync_details SET action = \'resolved\' WHERE id = '.$id;
         $db->setQuery($query);
         $db->query();
     }
@@ -355,7 +355,7 @@ class JFusionUsersync
                                     $sync_log->data = '';
 
                                     //update the lookup table
-                                    if ($action == "master") {
+                                    if ($action == 'master') {
                                         JFusionFunction::updateLookup($userinfo, 0, $jname);
                                     } else {
                                         JFusionFunction::updateLookup($SlaveUser->getUser($userlist[$j]), 0, $jname);

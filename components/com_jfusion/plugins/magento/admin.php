@@ -191,7 +191,7 @@ class JFusionAdmin_magento extends JFusionAdmin
             }
         }
         // check the user_remote_addr security settings
-        $query = "SELECT  value FROM #__core_config_data WHERE path = 'web/session/use_remote_addr'";
+        $query = 'SELECT  value FROM #__core_config_data WHERE path = \'web/session/use_remote_addr\'';
         $db->setQuery($query);
         if ($db->getErrorNum() == 0) {
             $value = $db->loadResult();
@@ -298,7 +298,7 @@ HTML;
 		$joomla_baseurl = $joomla->get('source_url');
 		$joomla_secret = $joomla->get('secret');
 		
-		$query = "REPLACE INTO #__core_config_data SET path = 'joomla/joomlaconfig/baseurl', value = '".$joomla_baseurl."';";
+		$query = 'REPLACE INTO #__core_config_data SET path = \'joomla/joomlaconfig/baseurl\', value = \''.$joomla_baseurl.'\';';
 		$db->BeginTrans();
         $db->setQuery($query);
         $db->query();
@@ -306,7 +306,7 @@ HTML;
 			$db->RollbackTrans();
 			$status['error'] = $db->stderr ();
 		} else {
-            $query = "REPLACE INTO #__core_config_data SET path = 'joomla/joomlaconfig/installationpath', value = '".JPATH_SITE."';";
+            $query = 'REPLACE INTO #__core_config_data SET path = \'joomla/joomlaconfig/installationpath\', value = \''.JPATH_SITE.'\';';
             $db->BeginTrans();
             $db->setQuery($query);
             $db->query();
@@ -314,7 +314,7 @@ HTML;
                 $db->RollbackTrans();
                 $status['error'] = $db->stderr ();
             } else {
-                $query = "REPLACE INTO #__core_config_data SET path = 'joomla/joomlaconfig/secret_key', value = '".$joomla_secret."';";
+                $query = 'REPLACE INTO #__core_config_data SET path = \'joomla/joomlaconfig/secret_key\', value = \''.$joomla_secret.'\';';
                 $db->BeginTrans();
                 $db->setQuery($query);
                 $db->query();
@@ -386,7 +386,7 @@ HTML;
 		}
 		
 		/*
-		$query = "DELETE FROM #__core_config_data WHERE path = 'joomla/joomlaconfig/installationpath'";
+		$query = 'DELETE FROM #__core_config_data WHERE path = \'joomla/joomlaconfig/installationpath\'';
 		$db->BeginTrans();
 		$db->setQuery($query);
         $db->query();
@@ -396,7 +396,7 @@ HTML;
 			return $status;
 		}
 		
-		$query = "DELETE FROM #__core_config_data WHERE path = 'joomla/joomlaconfig/secret_key'";
+		$query = 'DELETE FROM #__core_config_data WHERE path = \'joomla/joomlaconfig/secret_key\'';
 		$db->BeginTrans();
 		$db->setQuery($query);
         $db->query();

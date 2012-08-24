@@ -186,7 +186,7 @@ class JFusionUser_efront extends JFusionUser
         $db->setQuery($query);
         $user = $db->loadObject();
         // Set cookie values
-        $query = "SELECT value FROM #__configuration WHERE name = 'autologout_time'";
+        $query = 'SELECT value FROM #__configuration WHERE name = \'autologout_time\'';
         $db->setQuery($query);
         $autologout_time = $db->loadResult(); // this is in minutes
         $expires = 60 * $autologout_time; // converted to seconds
@@ -398,7 +398,7 @@ class JFusionUser_efront extends JFusionUser
             }
             // note that we will plan to propagate the language setting for a user from version 2.0
             // for now we just use the default defined in eFront
-            $query = "SELECT value from #__configuration WHERE name = 'default_language'";
+            $query = 'SELECT value from #__configuration WHERE name = \'default_language\'';
             $db->setQuery($query);
             $default_language = $db->loadResult();
             $user->languages_NAME = $default_language;

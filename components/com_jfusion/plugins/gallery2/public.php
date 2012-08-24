@@ -299,7 +299,7 @@ class JFusionPublic_gallery2 extends JFusionPublic {
         $now = time();
         $active = strtotime('-5 minutes', $now);
         $db = JFusionFactory::getDatabase($this->getJname());
-        $query = "SELECT COUNT(*) FROM #__SessionMap s WHERE g_modificationTimestamp > $active AND s.g_userId != 5";
+        $query = 'SELECT COUNT(*) FROM #__SessionMap s WHERE g_modificationTimestamp > '.$active.' AND s.g_userId != 5';
         $db->setQuery($query);
         $result = $db->loadResult();
         return $result;
@@ -314,7 +314,7 @@ class JFusionPublic_gallery2 extends JFusionPublic {
         $now = time();
         $active = strtotime('-5 minutes', $now);
         $db = JFusionFactory::getDatabase($this->getJname());
-        $query = "SELECT COUNT(*) FROM #__SessionMap s WHERE g_modificationTimestamp > $active AND s.g_userId = 5";
+        $query = 'SELECT COUNT(*) FROM #__SessionMap s WHERE g_modificationTimestamp > '.$active.' AND s.g_userId = 5';
         $db->setQuery($query);
         $result = $db->loadResult();
         return $result;

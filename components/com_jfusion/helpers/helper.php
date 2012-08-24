@@ -84,7 +84,7 @@ class JFusionHelper {
 				$where = 'id=' . ( int ) $identifier;
 				break;
 			case 'title' :
-				$where = 'title= "' . $identifier . '"';
+				$where = 'title="' . $identifier . '"';
 				break;
 		}
 		

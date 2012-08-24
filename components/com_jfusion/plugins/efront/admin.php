@@ -192,7 +192,7 @@ class JFusionAdmin_efront extends JFusionAdmin
      */
     function allowRegistration() {
         $db = JFusionFactory::getDatabase($this->getJname());
-        $query = "SELECT value FROM #__configuration WHERE name = 'signup'";
+        $query = 'SELECT value FROM #__configuration WHERE name = \'signup\'';
         $db->setQuery($query);
         $signup = $db->loadResult();
         if ($signup == 0) {

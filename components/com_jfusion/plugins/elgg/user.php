@@ -258,7 +258,7 @@ class JFusionUser_elgg extends JFusionUser {
             // For now, just try and register the user
 
             try {
-                if (((trim($password) != "") && (strcmp($password, $password2) == 0)) && ($guid = register_user($username, $password, $name, $email, true))) {
+                if (((trim($password) != '') && (strcmp($password, $password2) == 0)) && ($guid = register_user($username, $password, $name, $email, true))) {
     // comented out, if user is created by admin validated emails or not user can still login.., dont think this is what we want as i added update validation functions.
     //                $new_user = get_entity($guid);
     //                $new_user->admin_created = true;

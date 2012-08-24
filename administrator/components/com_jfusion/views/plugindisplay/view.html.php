@@ -336,7 +336,7 @@ class jfusionViewplugindisplay extends JView {
         }
                 
 		//see if a plugin has copies
-		$query = "SELECT * FROM #__jfusion WHERE original_name = '{$record->name}'";
+		$query = 'SELECT * FROM #__jfusion WHERE original_name = \''.$record->name.' \'';
 		$db->setQuery($query);
 		$record->copies = $db->loadObjectList('name');
 

@@ -51,7 +51,7 @@ class JFusionAdmin_joomla_ext extends JFusionAdmin
             if (!$db) {
                 $joomlaversion = '1.6';
             } else {
-                $query = 'SELECT id, name FROM #__core_acl_aro_groups WHERE name != "ROOT" AND name != "USERS"';
+                $query = 'SELECT id, name FROM #__core_acl_aro_groups WHERE name != \'ROOT\' AND name != \'USERS\'';
                 $db->setQuery($query);
                 $result = $db->loadObjectList();
                 if ($result) {

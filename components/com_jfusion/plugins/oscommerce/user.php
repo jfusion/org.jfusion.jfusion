@@ -134,7 +134,7 @@ class JFusionUser_oscommerce extends JFusionUser
                     $status['error'][] = 'Error Could find session cookie make sure COOKIE PATH IS SET TO / in both osC and JFusion plugin settings';
                 } else {
                     $db = JFusionFactory::getDatabase($this->getJname());
-                    $query = "DELETE FROM #__sessions WHERE id = '" . $session_id . "'";
+                    $query = 'DELETE FROM #__sessions WHERE id = \'' . $session_id . '\'';
                     $db->setQuery($query);
                     if (!$db->query()) {
                         $status['error'][] = 'Error Could not delete session with sessionID '.$session_id.': '.$db->stderr();
@@ -470,7 +470,7 @@ class JFusionUser_oscommerce extends JFusionUser
         if (!empty($existinguser)) {
             $user_id = $existinguser->userid;
             // Delete userrecordosc2 & osc3 & osczen & oscxt &oscmax
-            $query = "DELETE FROM #__customers WHERE customers_id = '" . $user_id . "'";
+            $query = 'DELETE FROM #__customers WHERE customers_id = \'' . $user_id . '\'';
             $db->setQuery($query);
             if (!$db->query()) {
                 $status['error'][] = 'Error Could not delete userrecord with userid '.$user_id.': '.$db->stderr();
@@ -479,7 +479,7 @@ class JFusionUser_oscommerce extends JFusionUser
                 $status['debug'][] = 'Deleted userrecord of user with id '.$user_id;
             }
             // delete adressbook items osc2 & osc3 & osczen & oscxt & oscmax
-            $query = "DELETE FROM #__address_book WHERE customers_id = '" . $user_id . "'";
+            $query = 'DELETE FROM #__address_book WHERE customers_id = \'' . $user_id . '\'';
             $db->setQuery($query);
             if (!$db->query()) {
                 $status['error'][] = 'Error Could not delete addressbookitems with userid '.$user_id.': '.$db->stderr();
@@ -488,7 +488,7 @@ class JFusionUser_oscommerce extends JFusionUser
                 $status['debug'][] = 'Deleted addressbook items of user with id '.$user_id;
             }
             // delete customer from who's on line osc2 & osc3 & osczen & oscxt & oscmax
-            $query = "DELETE FROM #__whos_online WHERE customer_id = '" . $user_id . "'";
+            $query = 'DELETE FROM #__whos_online WHERE customer_id = \'' . $user_id . '\'';
             $db->setQuery($query);
             if (!$db->query()) {
                 $status['error'][] = 'Error Could not delete customer on line with userid '.$user_id.': '.$db->stderr();
@@ -499,14 +499,14 @@ class JFusionUser_oscommerce extends JFusionUser
             // delete review items osc2 & osc3 &  osczen & oscxt
             $delete_reviews = $params->get('delete_reviews');
             if ($delete_reviews == '1') {
-                $db->query("select reviews_id from #__reviews where customers_id = '" . (int)$user_id . "'");
+                $db->query('select reviews_id from #__reviews where customers_id = \'' . (int)$user_id . '\'');
                 $reviews = $db->loadObjectList();
                 foreach ($reviews as $review) {
-                    $db->query("delete from #__reviews_description where reviews_id = '" . (int)$review->reviews_id . "'");
+                    $db->query('delete from #__reviews_description where reviews_id = \'' . (int)$review->reviews_id . '\'');
                 }
-                $db->query("DELETE FROM #__reviews WHERE customers_id = '" . (int)$user_id . "'");
+                $db->query('DELETE FROM #__reviews WHERE customers_id = \'' . (int)$user_id . '\'');
             } else {
-                $db->query("UPDATE #__reviews set customers_id = null where customers_id = '" . (int)$user_id . "'");
+                $db->query('UPDATE #__reviews set customers_id = null where customers_id = \'' . (int)$user_id . '\'');
             }
             if (!$db->query()) {
                 $status['error'][] = 'Error Could not delete customer reviews with userid '.$user_id.': '.$db->stderr();
@@ -517,7 +517,7 @@ class JFusionUser_oscommerce extends JFusionUser
             switch ($osCversion) {
                 case 'oscxt':
                 case 'oscseo':
-                    $query = "DELETE FROM #__products_notifications WHERE customers_id = '" . $user_id . "'";
+                    $query = 'DELETE FROM #__products_notifications WHERE customers_id = \'' . $user_id . '\'';
                     $db->setQuery($query);
                     if (!$db->query()) {
                         $status['error'][] = 'Error Could not delete product notifications with userid '.$user_id.': '.$db->stderr();
@@ -525,7 +525,7 @@ class JFusionUser_oscommerce extends JFusionUser
                     } else {
                         $status['debug'][] = 'Deleted products notifications of user with id '.$user_id;
                     }
-                    $query = "DELETE FROM #__customers_customers_status_history WHERE customers_id = '" . $user_id . "'";
+                    $query = 'DELETE FROM #__customers_customers_status_history WHERE customers_id = \'' . $user_id . '\'';
                     $db->setQuery($query);
                     if (!$db->query()) {
                         $status['error'][] = 'Error Could not delete customer history with userid '.$user_id.': '.$db->stderr();
@@ -533,7 +533,7 @@ class JFusionUser_oscommerce extends JFusionUser
                     } else {
                         $status['debug'][] = 'Deleted customer history of user with id '.$user_id;
                     }
-                    $query = "DELETE FROM #__customers_ip WHERE customers_id = '" . $user_id . "'";
+                    $query = 'DELETE FROM #__customers_ip WHERE customers_id = \'' . $user_id . '\'';
                     $db->setQuery($query);
                     if (!$db->query()) {
                         $status['error'][] = 'Error Could not delete customer ip with userid '.$user_id.': '.$db->stderr();
@@ -541,7 +541,7 @@ class JFusionUser_oscommerce extends JFusionUser
                     } else {
                         $status['debug'][] = 'Deleted customer ip of user with id '.$user_id;
                     }
-                    $query = "DELETE FROM #__admin_access WHERE customers_id = '" . $user_id . "'";
+                    $query = 'DELETE FROM #__admin_access WHERE customers_id = \'' . $user_id . '\'';
                     $db->setQuery($query);
                     if (!$db->query()) {
                         $status['error'][] = 'Error Could not delete admin accessid '.$user_id.': '.$db->stderr();
@@ -553,7 +553,7 @@ class JFusionUser_oscommerce extends JFusionUser
                 case 'osczen':
                 case 'oscmax':
                     // Delete user info osc2 & osczen & oscxt
-                    $query = "DELETE FROM #__customers_info WHERE customers_info_id = '" . $user_id . "'";
+                    $query = 'DELETE FROM #__customers_info WHERE customers_info_id = \'' . $user_id . '\'';
                     $db->setQuery($query);
                     if (!$db->query()) {
                         $status['error'][] = 'Error Could not delete useinfo with userid '.$user_id.': '.$db->stderr();
@@ -562,7 +562,7 @@ class JFusionUser_oscommerce extends JFusionUser
                         $status['debug'][] = 'Deleted userinfo of user with id '.$user_id;
                     }
                     // delete  customer basket osc2 & osczen
-                    $query = "DELETE FROM #__customers_basket WHERE customers_id = '" . $user_id . "'";
+                    $query = 'DELETE FROM #__customers_basket WHERE customers_id = \'' . $user_id . '\'';
                     $db->setQuery($query);
                     if (!$db->query()) {
                         $status['error'][] = 'Error Could not delete customer basket with userid '.$user_id.': '.$db->stderr();
@@ -571,7 +571,7 @@ class JFusionUser_oscommerce extends JFusionUser
                         $status['debug'][] = 'Deleted customer basket items of user with id '.$user_id;
                     }
                     // delete  customer basket attributes osc2 & osczen
-                    $query = "DELETE FROM #__customers_basket_attributes WHERE customers_id = '" . $user_id . "'";
+                    $query = 'DELETE FROM #__customers_basket_attributes WHERE customers_id = \'' . $user_id . '\'';
                     $db->setQuery($query);
                     if (!$db->query()) {
                         $status['error'][] = 'Error Could not delete customer basket attributes with userid '.$user_id.': '.$db->stderr();
@@ -581,7 +581,7 @@ class JFusionUser_oscommerce extends JFusionUser
                     }
                 break;
                 case 'osc3':
-                    $query = "DELETE FROM #__shopping_carts WHERE customers_id = '" . $user_id . "'";
+                    $query = 'DELETE FROM #__shopping_carts WHERE customers_id = \'' . $user_id . '\'';
                     $db->setQuery($query);
                     if (!$db->query()) {
                         $status['error'][] = 'Error Could not delete customer shopping cart with userid '.$user_id.': '.$db->stderr();
@@ -589,7 +589,7 @@ class JFusionUser_oscommerce extends JFusionUser
                     } else {
                         $status['debug'][] = 'Deleted customer shopping cart of user with id '.$user_id;
                     }
-                    $query = "DELETE FROM #__shopping_carts_custom_variants_values WHERE customers_id = '" . $user_id . "'";
+                    $query = 'DELETE FROM #__shopping_carts_custom_variants_values WHERE customers_id = \'' . $user_id . '\'';
                     $db->setQuery($query);
                     if (!$db->query()) {
                         $status['error'][] = 'Error Could not delete customer shopping cart variantswith userid '.$user_id.': '.$db->stderr();
@@ -597,7 +597,7 @@ class JFusionUser_oscommerce extends JFusionUser
                     } else {
                         $status['debug'][] = 'Deleted customer shopping cart variants of user with id '.$user_id;
                     }
-                    $query = "DELETE FROM #__product_notifications WHERE customers_id = '" . $user_id . "'";
+                    $query = 'DELETE FROM #__product_notifications WHERE customers_id = \'' . $user_id . '\'';
                     $db->setQuery($query);
                     if (!$db->query()) {
                         $status['error'][] = 'Error Could not delete customer product notifications with userid '.$user_id.': '.$db->stderr();

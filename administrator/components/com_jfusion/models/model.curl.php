@@ -1128,7 +1128,7 @@ class JFusionCurl
 				break;
 			case 1:
 				//add a / in front of form_action
-				if (substr($form_action, 0, 1) != "/") {
+				if (substr($form_action, 0, 1) != '/') {
 					$form_action = '/'.$form_action;
 				}
 				$curl_options['post_url']=rtrim($curl_options['post_url'], '/');

@@ -149,7 +149,7 @@ class JFusionForum_gallery2 extends JFusionForum {
             if (!$error) {
                 $array['itemFrame'] = $frame;
 
-                if ($block == "specificItem" && empty($itemId)) {
+                if ($block == 'specificItem' && empty($itemId)) {
                     $content .= '<strong>Error</strong><br />You have selected no "itemid" and this must be done if you select "Specific Picture"';
                 } else {
                     if (isset($config['itemid']) && $config['itemid'] != 150) {

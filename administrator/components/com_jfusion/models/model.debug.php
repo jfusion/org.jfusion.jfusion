@@ -154,7 +154,7 @@ class debug {
      */
     private static function getToggleScript() {
         $script = '';
-        if (debug::$toggleScriptInited == false && debug::$toggleFunctionName != "") {
+        if (debug::$toggleScriptInited == false && debug::$toggleFunctionName != '') {
             $toggleFunctionName = debug::$toggleFunctionName;
             $script = '<script type="text/javascript">';
             $script .= <<<JS
@@ -277,7 +277,7 @@ CSS;
                 }
             } else {
                 $onClick = '';
-                if (debug::$toggleFunctionName != '') $onClick = "onclick='" . debug::$toggleFunctionName . "(event)'";
+                if (debug::$toggleFunctionName != '') $onClick = 'onclick="' . debug::$toggleFunctionName . '(event)"';
                 $str.= '<table class="grid" width="100%">';
                 if ($name != '') {
                     $str.= '<thead '.$onClick.'><tr><th colspan="2" class="title">'.$name.'</th></tr></thead>';
@@ -453,7 +453,7 @@ CSS;
                 $argv[] = var_export($arg, true);
             }
             $arglist = join(', ', $argv);
-            $niceStack[$key] = $stack[$n]['class'] . $stack[$n]['type'] . $stack[$n]['function'] . "(" . $arglist . ")";
+            $niceStack[$key] = $stack[$n]['class'] . $stack[$n]['type'] . $stack[$n]['function'] . '(' . $arglist . ')';
         }
         debug::show($niceStack, "{$stack[0]['file']} ({$stack[0]['line']})");
     }
@@ -683,7 +683,7 @@ class trans {
      *
      *    @return string, the PHP-Code
      */
-    public static function php2phpCode($phpVarName, $phpvar, $firstDimSpacer = "") {
+    public static function php2phpCode($phpVarName, $phpvar, $firstDimSpacer = '') {
         $phpCode = '';
         $pre = '$';
         if (is_numeric($phpvar)) $phpCode = "$pre$phpVarName = $phpvar;\n";
@@ -883,20 +883,20 @@ class trans {
      *
      *    @return string the URL-Query, values will be URL-Encoded
      */
-    public static function http_build_query($data, $prefix = "") {
+    public static function http_build_query($data, $prefix = '') {
         if (!is_array($data) && !is_object($data)) {
-            return $prefix . "=" . urlencode($data);
+            return $prefix . '=' . urlencode($data);
         }
         $cmds = array();
         foreach ($data as $key => $value) {
-            if ($prefix != "") $cmds[] = trans::http_build_query($value, $prefix . "[" . $key . "]");
+            if ($prefix != '') $cmds[] = trans::http_build_query($value, $prefix . '[' . $key . ']');
             else $cmds[] = trans::http_build_query($value, $key);
         }
         foreach ($cmds as $idx => $cmd) {
-            if ($cmd == "") unset($cmds[$idx]); // avoid empty-arrays
+            if ($cmd == '') unset($cmds[$idx]); // avoid empty-arrays
 
         }
-        return join("&", $cmds);
+        return join('&', $cmds);
     }
     /**
      *    Builds up an array from an XML-Encoded String

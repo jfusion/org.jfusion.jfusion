@@ -237,7 +237,7 @@ class JFusionFunction
         } else {
             //check to see if we have been given a joomla id
             if (empty($joomla_id)) {
-                $query = "SELECT id FROM #__users WHERE username = " . $db->Quote($userinfo->username);
+                $query = 'SELECT id FROM #__users WHERE username = ' . $db->Quote($userinfo->username);
                 $db->setQuery($query);
                 $joomla_id = $db->loadResult();
                 if (empty($joomla_id)) {
@@ -251,13 +251,13 @@ class JFusionFunction
                 $db->setQuery($query);
                 $jnames = $db->loadObjectList();
                 foreach ($jnames as $jname) {
-                    if ($jname != "joomla_int") {
+                    if ($jname != 'joomla_int') {
                         $user = JFusionFactory::getUser($jname->name);
                         $puserinfo = $user->getUser($userinfo);
                         if ($delete) {
-                            $queries[] = "(id = $joomla_id AND jname = " . $db->Quote($jname->name) . ")";
+                            $queries[] = '(id = '.$joomla_id.' AND jname = ' . $db->Quote($jname->name) . ')';
                         } else {
-                            $queries[] = "(" . $db->Quote($puserinfo->userid) . "," . $db->Quote($puserinfo->username) . ", $joomla_id, " . $db->Quote($jname->name) . ")";
+                            $queries[] = '(' . $db->Quote($puserinfo->userid) . ',' . $db->Quote($puserinfo->username) . ', '.$joomla_id.', '. $db->Quote($jname->name) . ')';
                         }
                         unset($user);
                         unset($puserinfo);
@@ -265,9 +265,9 @@ class JFusionFunction
                 }
                 if (!empty($queries)) {
                     if ($delete) {
-                        $query = "DELETE FROM #__jfusion_users_plugin WHERE " . implode(' OR ', $queries);
+                        $query = 'DELETE FROM #__jfusion_users_plugin WHERE ' . implode(' OR ', $queries);
                     } else {
-                        $query = "REPLACE INTO #__jfusion_users_plugin (userid,username,id,jname) VALUES (" . implode(',', $queries) . ")";
+                        $query = 'REPLACE INTO #__jfusion_users_plugin (userid,username,id,jname) VALUES (' . implode(',', $queries) . ')';
                     }
                     $db->setQuery($query);
                     if (!$db->query()) {
@@ -276,9 +276,9 @@ class JFusionFunction
                 }
             } else {
                 if ($delete) {
-                    $query = "DELETE FROM #__jfusion_users_plugin WHERE id = $joomla_id AND jname = '$jname'";
+                    $query = 'DELETE FROM #__jfusion_users_plugin WHERE id = '.$joomla_id.' AND jname = '.$db->Quote($jname);
                 } else {
-                    $query = "REPLACE INTO #__jfusion_users_plugin (userid,username,id,jname) VALUES ({$db->Quote($userinfo->userid) },{$db->Quote($userinfo->username) },$joomla_id,{$db->Quote($jname) })";
+                    $query = 'REPLACE INTO #__jfusion_users_plugin (userid,username,id,jname) VALUES ('.$db->Quote($userinfo->userid) .' ,'.$db->Quote($userinfo->username) .' ,'.$joomla_id.' , '.$db->Quote($jname).' )';
                 }
                 $db->setQuery($query);
                 if (!$db->query()) {
@@ -431,21 +431,21 @@ class JFusionFunction
             $expires = 0;
         }
         // Versions of PHP prior to 5.2 do not support HttpOnly cookies and IE is buggy when specifying a blank domain so set the cookie manually
-        $cookie = "Set-Cookie: {$name}=" . urlencode($value);
+        $cookie = 'Set-Cookie: '.$name.'=' . urlencode($value);
         if ($expires > 0) {
-            $cookie.= "; expires=" . gmdate('D, d-M-Y H:i:s \\G\\M\\T', $expires);
+            $cookie.= '; expires=' . gmdate('D, d-M-Y H:i:s \\G\\M\\T', $expires);
         }
         if (!empty($cookiepath)) {
-            $cookie.= "; path={$cookiepath}";
+            $cookie.= '; path='.$cookiepath;
         }
         if (!empty($cookiedomain)) {
-            $cookie.= "; domain={$cookiedomain}";
+            $cookie.= '; domain='.$cookiedomain;
         }
         if ($secure == true) {
-            $cookie.= "; Secure";
+            $cookie.= '; Secure';
         }
         if ($httponly == true) {
-            $cookie.= "; HttpOnly";
+            $cookie.= '; HttpOnly';
         }
         header($cookie, false);
 */

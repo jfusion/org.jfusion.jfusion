@@ -37,7 +37,7 @@ class jfusionViewdiscussionbot extends JView
 		switch ($dbtask) {
         	case 'pair_sections' :
         		$title = JText::_('ASSIGN_SECTION_PAIRS');
-				$query = "SELECT id, title as name FROM #__sections WHERE published = 1 AND scope = 'content' ORDER BY title";
+				$query = 'SELECT id, title as name FROM #__sections WHERE published = 1 AND scope = \'content\' ORDER BY title';
         		$db->setQuery($query);
         		$joomlaoptions = $db->loadObjectList('id');
 				break;
@@ -49,7 +49,7 @@ class jfusionViewdiscussionbot extends JView
         			$query->select('a.id, a.title as name, a.level');
         			$query->from('#__categories AS a');
         			$query->where('a.parent_id > 0');
-        			$query->where('extension = "com_content"');
+        			$query->where('extension = \'com_content\'');
                     $query->where('a.published = 1');
         			$query->order('a.lft');
 

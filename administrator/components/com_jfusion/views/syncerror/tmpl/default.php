@@ -75,7 +75,7 @@ JHTML::_('behavior.modal', 'a.modal');
 		<?php echo JText::_('APPLY_ACTION_ALL_CONFLICTS'); ?>
 		<?php
 		$action = $this->syncdata['action'];
-		if ($action == "slave") {
+		if ($action == 'slave') {
 		    $user = JText::_('MASTER');
 		    $conflict = JText::_('SLAVE');
 		} else {

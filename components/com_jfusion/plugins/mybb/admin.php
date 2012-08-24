@@ -82,18 +82,18 @@ class JFusionAdmin_mybb extends JFusionAdmin
             $prefix = $params['database_prefix'];
             $options = array('driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database, 'prefix' => $prefix);
             $bb = JDatabase::getInstance($options);
-            $query = "SELECT value FROM #__settings WHERE name = 'bburl'";
+            $query = 'SELECT value FROM #__settings WHERE name = \'bburl\'';
             $bb->setQuery($query);
             $bb_url = $bb->loadResult();
             if (substr($bb_url, -1) != DS) {
                 $bb_url.= DS;
             }
             $params['source_url'] = $bb_url;
-            $query = "SELECT value FROM #__settings WHERE name='cookiedomain'";
+            $query = 'SELECT value FROM #__settings WHERE name=\'cookiedomain\'';
             $bb->setQuery($query);
             $cookiedomain = $bb->loadResult();
             $params['cookie_domain'] = $cookiedomain;
-            $query = "SELECT value FROM #__settings WHERE name='cookiepath'";
+            $query = 'SELECT value FROM #__settings WHERE name=\'cookiepath\'';
             $bb->setQuery($query);
             $cookiepath = $bb->loadResult();
             $params['cookie_path'] = $cookiepath;
@@ -159,7 +159,7 @@ class JFusionAdmin_mybb extends JFusionAdmin
      */
     function allowRegistration() {
         $db = JFusionFactory::getDatabase($this->getJname());
-        $query = "SELECT value FROM #__settings  WHERE name ='disableregs'";
+        $query = 'SELECT value FROM #__settings  WHERE name =\'disableregs\'';
         $db->setQuery($query);
         $disableregs = $db->loadResult();
         if ($disableregs == '0') {

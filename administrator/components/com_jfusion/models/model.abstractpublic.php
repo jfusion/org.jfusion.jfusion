@@ -810,19 +810,19 @@ HTML;
         $columns = $this->getSearchQueryColumns();
         //build the query
         if ($phrase == 'exact') {
-            $where = "((LOWER({$columns->title}) LIKE '%$text%') OR (LOWER({$columns->text}) like '%$text%'))";
+            $where = '((LOWER('.$columns->title.') LIKE \'%'.$text.'%\') OR (LOWER('.$columns->text.') like \'%'.$text.'%\'))';
         } else {
             $words = explode(' ', $text);
             $wheres = array();
             foreach ($words as $word) {
-                $wheres[] = "((LOWER({$columns->title}) LIKE '%$word%') OR (LOWER({$columns->text}) like '%$word%'))";
+                $wheres[] = '((LOWER('.$columns->title.') LIKE \'%'.$word.'%\') OR (LOWER('.$columns->text.') like '%$word%'))';
             }
             if ($phrase == 'all') {
                 $separator = 'AND';
             } else {
                 $separator = 'OR';
             }
-            $where = '(' . implode(") $separator (", $wheres) . ')';
+            $where = '(' . implode(') '.$separator.' (', $wheres) . ')';
         }
         //pass the where clause into the plugin in case it wants to add something
         $this->getSearchCriteria($where, $pluginParam, $ordering);
