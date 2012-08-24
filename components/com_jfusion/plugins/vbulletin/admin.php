@@ -463,10 +463,10 @@ HTML;
                 $images = $db->loadRowList();
                 foreach ($images as $i) {
                     if ($action == 'enable') {
-                        $q = "UPDATE #__{$tbl} SET $col = '{$source_url}{$i[1]}' WHERE {$tbl}id = {$i[0]}";
+                        $q = 'UPDATE #__'.$tbl.' SET '.$col.' = \''.$source_url.$i[1].'\' WHERE '.$tbl.'id = '.$i[0];
                     } else {
                         $i[1] = str_replace($source_url, '', $i[1]);
-                        $q = "UPDATE #__{$tbl} SET $col = '{$i[1]}' WHERE {$tbl}id = {$i[0]}";
+                        $q = 'UPDATE #__'.$tbl.' SET '.$col.' = \''.$i[1].'\' WHERE '.$tbl.'id = '.$i[0];
                     }
                     $db->setQuery($q);
                     $db->query();
@@ -505,7 +505,7 @@ HTML;
             $php.= "if (defined('_JEXEC') && empty(\$GLOBALS['vbulletin']) && !empty(\$vbulletin)) {\n";
             $php.= "\$GLOBALS['vbulletin'] = \$vbulletin;\n";
             $php.= "\$GLOBALS['db'] = \$vbulletin->db;\n";
-            $php.= "}";
+            $php.= '}';
             return $php;
         } elseif ($plugin == 'frameless') {
             //we only want to initiate the frameless if we are inside Joomla or using AJAX

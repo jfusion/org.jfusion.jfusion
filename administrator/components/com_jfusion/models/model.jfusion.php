@@ -530,16 +530,16 @@ class JFusionFunction
             $threadinfo->manual = $manual;
         }
 
-		$query = "REPLACE INTO #__jfusion_discussion_bot SET
-					contentid = $contentid,
-					component = {$fdb->Quote($option)},
-					forumid = $threadinfo->forumid,
-					threadid = $threadinfo->threadid,
-					postid = $threadinfo->postid,
-					modified = '$modified',
-					jname = '$jname',
-					published = $published,
-					manual = $manual";
+		$query = 'REPLACE INTO #__jfusion_discussion_bot SET
+					contentid = '.$contentid.',
+					component = '.$fdb->Quote($option).',
+					forumid = '.$threadinfo->forumid.',
+					threadid = '.$threadinfo->threadid.',
+					postid = '.$threadinfo->postid.',
+					modified = '.$fdb->Quote($modified).',
+					jname = '.$fdb->Quote($jname).',
+					published = '.$published.',
+					manual = '.$manual;
 		$fdb->setQuery($query);
 		$fdb->query();
 	}
@@ -975,18 +975,18 @@ class JFusionFunction
             }
         }
         if (!empty($uid)) {
-            if ($software == "cb") {
-                $query = "SELECT id FROM #__menu WHERE type = 'component' AND link LIKE '%com_comprofiler%' LIMIT 1";
+            if ($software == 'cb') {
+                $query = 'SELECT id FROM #__menu WHERE type = \'component\' AND link LIKE \'%com_comprofiler%\' LIMIT 1';
                 $db->setQuery($query);
                 $itemid = $db->loadResult();
                 $url = JRoute::_('index.php?option=com_comprofiler&task=userProfile&Itemid=' . $itemid . '&user=' . $uid);
-            } elseif ($software == "jomsocial") {
-                $query = "SELECT id FROM #__menu WHERE type = 'component' AND link LIKE '%com_community%' LIMIT 1";
+            } elseif ($software == 'jomsocial') {
+                $query = 'SELECT id FROM #__menu WHERE type = \'component\' AND link LIKE \'%com_community%\' LIMIT 1';
                 $db->setQuery($query);
                 $itemid = $db->loadResult();
                 $url = JRoute::_('index.php?option=com_community&view=profile&Itemid=' . $itemid . '&userid=' . $uid);
-            } elseif ($software == "joomunity") {
-                $query = "SELECT id FROM #__menu WHERE type = 'component' AND link LIKE '%com_joomunity%' LIMIT 1";
+            } elseif ($software == 'joomunity') {
+                $query = 'SELECT id FROM #__menu WHERE type = \'component\' AND link LIKE \'%com_joomunity%\' LIMIT 1';
                 $db->setQuery($query);
                 $itemid = $db->loadResult();
                 $url = JRoute::_('index.php?option=com_joomunity&Itemid=' . $itemid . '&cmd=Profile.View.' . $uid);

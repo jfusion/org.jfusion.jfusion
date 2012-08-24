@@ -1310,7 +1310,7 @@ HTML;
                             $discuss_link = JRoute::_('index.php?option=com_user&view=login&return='.$return_url);
                         }
                         $this->helper->output['buttons']['discuss']['href'] = 'javascript: void(0);';
-                        $this->helper->output['buttons']['discuss']['js']['onclick'] = "toggleDiscussionVisibility(1,'$discuss_link');";
+                        $this->helper->output['buttons']['discuss']['js']['onclick'] = 'toggleDiscussionVisibility(1,\''.$discuss_link.'\');';
                         $this->helper->output['buttons']['discuss']['target'] = '_self';
                     } else {
                         $this->helper->output['buttons']['discuss']['href'] = JFusionFunction::routeURL($JFusionForum->getThreadURL($threadinfo->threadid), $itemid, $this->jname);
@@ -1485,7 +1485,7 @@ HTML;
             //post body
             $post_output[$i]->text = $posttext;
             $status = $JFusionPublic->prepareText($post_output[$i]->text,'joomla', $this->params, $p);
-            $original_text = "[quote=\"$username\"]\n".$posttext."\n[/quote]";
+            $original_text = '[quote="'.$username.'"]'."\n".$posttext."\n".'[/quote]';
             $post_output[$i]->original_text = $original_text;
             $JFusionPublic->prepareText($post_output[$i]->original_text, 'discuss', $this->params, $p);
 

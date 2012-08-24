@@ -250,7 +250,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
         } else {
             //check to make sure the frameless hook is installed
             $db = JFusionFactory::getDatabase($this->getJname());
-            $q = "SELECT active FROM #__plugin WHERE hookname = 'init_startup' AND title = 'JFusion Frameless Integration Plugin'";
+            $q = 'SELECT active FROM #__plugin WHERE hookname = \'init_startup\' AND title = \'JFusion Frameless Integration Plugin\'';
             $db->setQuery($q);
             $active = $db->loadResult();
             if ($active != '1') {
@@ -504,7 +504,7 @@ JS;
             $pathway[] = $crumb;
         } elseif (JRequest::getVar('p', false) !== false) {
             $pid = JRequest::getVar('p');
-            $query = "SELECT t.title AS thread, t.threadid, f.title AS forum, f.forumid, f.parentid, f.parentlist FROM #__thread AS t JOIN #__forum AS f JOIN #__post AS p ON t.forumid = f.forumid AND t.threadid = p.threadid WHERE p.postid = $pid";
+            $query = 'SELECT t.title AS thread, t.threadid, f.title AS forum, f.forumid, f.parentid, f.parentlist FROM #__thread AS t JOIN #__forum AS f JOIN #__post AS p ON t.forumid = f.forumid AND t.threadid = p.threadid WHERE p.postid = '.$db->Quote($pid);
             $db->setQuery($query);
             $result = $db->loadObject();
             if ($result->parentid != '-1') {
@@ -538,7 +538,7 @@ JS;
                 $crumb->title = 'Members List';
                 $crumb->url = 'memberslist.php';
                 $pathway[] = $crumb;
-                $query = 'SELECT username FROM #__user WHERE userid = '.$uid;
+                $query = 'SELECT username FROM #__user WHERE userid = '.$db->Quote($uid);
                 $db->setQuery($query);
                 $username = $db->loadResult();
                 $crumb = new stdClass();
@@ -908,9 +908,9 @@ JS;
         }
         if (strpos($url, 'http') !== false) {
             if (defined('_JFUSION_DEBUG')) {
-                $debug['parsed'] = "window.location='$url'";
+                $debug['parsed'] = 'window.location=\''.$url.'\'';
             }
-            return "window.location='$url'";
+            return 'window.location=\''.$url.'\'';
         }
 
         if (empty($vbsefenabled)) {
@@ -927,10 +927,10 @@ JS;
         }
         $url = str_replace('&amp;', '&', $url);
         if (defined('_JFUSION_DEBUG')) {
-            $debug['parsed'] = "window.location='$url'";;
+            $debug['parsed'] = 'window.location=\''.$url.'\'';
             $_SESSION['jfvbdebug'][] = $debug;
         }
-        return "window.location='$url'";
+        return 'window.location=\''.$url.'\'';
     }
 
     /**
@@ -993,26 +993,26 @@ JS;
                     die();
                 }
                 if ($sv == 'body' || $sv == 'html' || $sv == '*') {
-                    $selectors[$sk] = "$sv #framelessVb";
+                    $selectors[$sk] = $sv.' #framelessVb';
                 } elseif (strpos($sv, '@') === 0) {
                     $import = explode(';', $sv);
                     $import = $import[0] . ';';
                     $sv = substr($sv, strlen($import));
                     if ($sv == 'body' || $sv == 'html' || $sv == '*') {
-                        $selectors[$sk] = "$sv #framelessVb";
+                        $selectors[$sk] = $sv.' #framelessVb';
                     } else {
-                        $selectors[$sk] = "#framelessVb $sv";
+                        $selectors[$sk] = '#framelessVb '.$sv;
                     }
                     $imports[] = $import;
                 } elseif (strpos($sv, 'wysiwyg') === false) {
-                    $selectors[$sk] = "#framelessVb $sv";
+                    $selectors[$sk] = '#framelessVb '.$sv;
                 }
             }
             //reconstruct the element
             $elements[$k] = implode(', ', $selectors) . ' {' . $element[1] . '}';
         }
         //reconstruct the css
-        $css = "<style type=\"text/css\" id=\"vbulletin{$matches[1]}\">\n" . implode("\n", $imports) . "\n" . implode("\n", $elements) . "\n</style>";
+        $css = '<style type="text/css" id="vbulletin'.$matches[1].'">'."\n" . implode("\n", $imports) . "\n" . implode("\n", $elements) . "\n".'</style>';
         if (defined('_JFUSION_DEBUG')) {
             $debug['parsed'] = $css;
             $_SESSION['jfvbdebug'] = $debug;
