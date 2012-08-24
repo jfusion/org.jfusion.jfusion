@@ -192,7 +192,7 @@ class JFusionForum_smf2 extends JFusionForum
 					$url = $result->avatar;
 				} else if($result->avatar) {
 					// If the avatar specified in the first query is not a url but is a file name. Make it one
-					$db->setQuery('SELECT * FROM #__settings WHERE variable = "avatar_url"');
+					$db->setQuery('SELECT * FROM #__settings WHERE variable = \'avatar_url\'');
 					$avatarurl = $db->loadObject();
 					// Check for trailing slash. If there is one DONT ADD ONE!
 					if(substr($avatarurl->value, -1) == DS){
@@ -329,7 +329,7 @@ class JFusionForum_smf2 extends JFusionForum
                     if (!$jdb->query()) {
                         $status['error'] = $jdb->stderr();
                     }
-                    $query = "REPLACE INTO #__log_boards SET id_member = $userid, id_board = $forumid, id_msg = $postid";
+                    $query = 'REPLACE INTO #__log_boards SET id_member = '.$userid.', id_board = '.$forumid.', id_msg = '.$postid;
                     $jdb->setQuery($query);
                     if (!$jdb->query()) {
                         $status['error'] = $jdb->stderr();
@@ -556,19 +556,19 @@ HTML;
 				}
 
 	            //update stats for threadmarking purposes
-                $query = "REPLACE INTO #__log_topics SET id_member = $userid, id_topic = {$ids->threadid}, id_msg = " . ($postid + 1);
+                $query = 'REPLACE INTO #__log_topics SET id_member = '.$userid.', id_topic = '.$ids->threadid.', id_msg = ' . ($postid + 1);
                 $jdb->setQuery($query);
                 if (!$jdb->query()) {
                     $status['error'] = $jdb->stderr();
                 }
-                $query = "REPLACE INTO #__log_boards SET id_member = $userid, id_board = {$ids->forumid}, id_msg = $postid";
+                $query = 'REPLACE INTO #__log_boards SET id_member = '.$userid.', id_board = '.$ids->forumid.', id_msg = '.$postid;
                 $jdb->setQuery($query);
                 if (!$jdb->query()) {
                     $status['error'] = $jdb->stderr();
                 }
 			} else {
 				//add the post to the approval queue
-				$query = "INSERT INTO #__approval_queue id_msg VALUES ($postid)";
+				$query = 'INSERT INTO #__approval_queue id_msg VALUES ('.$postid.')';
 				$jdb->setQuery($query);
 				$jdb->query();
 			}
@@ -595,10 +595,10 @@ HTML;
 
 		//set the query
 		$sort = $dbparams->get('sort_posts');
-		$where = "WHERE id_topic = {$threadid} AND id_msg != {$postid} AND approved = 1";
-        $query = "(SELECT a.id_topic , a.id_msg, a.poster_name, b.real_name, a.id_member, 0 AS guest, a.subject, a.poster_time, a.body, a.poster_time AS order_by_date FROM `#__messages` as a INNER JOIN #__members as b ON a.id_member = b.id_member $where AND a.id_member != 0)";
+		$where = 'WHERE id_topic = '.$threadid.' AND id_msg != '.$postid.' AND approved = 1';
+        $query = '(SELECT a.id_topic , a.id_msg, a.poster_name, b.real_name, a.id_member, 0 AS guest, a.subject, a.poster_time, a.body, a.poster_time AS order_by_date FROM `#__messages` as a INNER JOIN #__members as b ON a.id_member = b.id_member '.$where.' AND a.id_member != 0)';
         $query.= ' UNION ';
-        $query.= "(SELECT a.id_topic , a.id_msg, a.poster_name, a.poster_name as real_name, a.id_member, 1 AS guest, a.subject, a.poster_time, a.body, a.poster_time AS order_by_date FROM `#__messages` as a $where AND a.id_member = 0)";
+        $query.= '(SELECT a.id_topic , a.id_msg, a.poster_name, a.poster_name as real_name, a.id_member, 1 AS guest, a.subject, a.poster_time, a.body, a.poster_time AS order_by_date FROM `#__messages` as a '.$where.' AND a.id_member = 0)';
         $query.= ' ORDER BY order_by_date '.$sort;
 		$jdb = JFusionFactory::getDatabase($this->getJname());
 
@@ -808,12 +808,12 @@ HTML;
 	function filterActivityResults(&$results, $limit=0)
 	{
 		$db =& JFusionFactory::getDatabase($this->getJname());
-		$query = "SELECT value FROM #__settings WHERE variable='censor_vulgar'";
+		$query = 'SELECT value FROM #__settings WHERE variable=\'censor_vulgar\'';
 		$db->setQuery($query);
 		$vulgar = $db->loadResult();
 
 		$db =& JFusionFactory::getDatabase($this->getJname());
-		$query = "SELECT value FROM #__settings WHERE variable='censor_proper'";
+		$query = 'SELECT value FROM #__settings WHERE variable=\'censor_proper\'';
 		$db->setQuery($query);
 		$proper = $db->loadResult();
 

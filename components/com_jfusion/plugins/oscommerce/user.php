@@ -416,7 +416,7 @@ class JFusionUser_oscommerce extends JFusionUser
             $ok = $db->insertObject('#__address_book', $user_1, 'address_book_id');
             if ($ok) {
                 $infoid = $db->insertid();
-                $query = "UPDATE #__customers set customers_default_address_id = '" . (int)$infoid . "' where customers_id = '" . (int)$userid . "'";
+                $query = 'UPDATE #__customers set customers_default_address_id = \'' . (int)$infoid . '\' where customers_id = \'' . (int)$userid . '\'';
                 $db->setquery($query);
                 $ok = $db->query();
                 if ($ok) {

@@ -201,7 +201,7 @@ class JFusionAdmin_smf extends JFusionAdmin
     function allowRegistration()
     {
         $db = JFusionFactory::getDatabase($this->getJname());
-        $query = "SELECT value FROM #__settings WHERE variable ='registration_method';";
+        $query = 'SELECT value FROM #__settings WHERE variable =\'registration_method\';';
         $db->setQuery($query);
         $new_registration = $db->loadResult();
         if ($new_registration == 3) {

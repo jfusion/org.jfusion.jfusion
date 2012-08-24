@@ -206,13 +206,13 @@ class JFusionForum_smf extends JFusionForum
     function filterActivityResults(&$results, $limit=0)
     {
         $db =& JFusionFactory::getDatabase($this->getJname());
-        $query = "SELECT value FROM #__settings WHERE variable='censor_vulgar'";
+        $query = 'SELECT value FROM #__settings WHERE variable=\'censor_vulgar\'';
         $db->setQuery($query);
         $vulgar = $db->loadResult();
 
 
         $db =& JFusionFactory::getDatabase($this->getJname());
-        $query = "SELECT value FROM #__settings WHERE variable='censor_proper'";
+        $query = 'SELECT value FROM #__settings WHERE variable=\'censor_proper\'';
         $db->setQuery($query);
         $proper = $db->loadResult();
 
@@ -344,7 +344,7 @@ class JFusionForum_smf extends JFusionForum
                     $url = $result->avatar;
                 } else if ($result->avatar) {
                     // If the avatar specified in the first query is not a url but is a file name. Make it one
-                    $db->setQuery('SELECT * FROM #__settings WHERE variable = "avatar_url"');
+                    $db->setQuery('SELECT * FROM #__settings WHERE variable = \'avatar_url\'');
                     $avatarurl = $db->loadObject();
                     // Check for trailing slash. If there is one DONT ADD ONE!
                     if (substr($avatarurl->value, -1) == DS) {
@@ -352,7 +352,7 @@ class JFusionForum_smf extends JFusionForum
                         // I like redundancy. Recheck to see if there isnt a trailing slash. If there isnt one, add one.
 
                     } else if (substr($avatarurl->value, -1) !== DS) {
-                        $url = $avatarurl->value . "/" . $result->avatar;
+                        $url = $avatarurl->value . '/' . $result->avatar;
                     }
                 }
                 return $url;
@@ -440,7 +440,7 @@ class JFusionForum_smf extends JFusionForum
                 }
                 $forum_stats = new stdClass();
                 $forum_stats->ID_BOARD = $forumid;
-                $query = "SELECT m.posterTime FROM #__messages AS m INNER JOIN #__boards AS b ON b.ID_LAST_MSG = m.ID_MSG WHERE b.ID_BOARD = $forumid";
+                $query = 'SELECT m.posterTime FROM #__messages AS m INNER JOIN #__boards AS b ON b.ID_LAST_MSG = m.ID_MSG WHERE b.ID_BOARD = '.$forumid;
                 $jdb->setQuery($query);
                 $lastPostTime = (int)$jdb->loadResult();
                 if ($dbparams->get('use_content_created_date', false)) {
@@ -462,12 +462,12 @@ class JFusionForum_smf extends JFusionForum
                     $status['error'] = $jdb->stderr();
                 }
                 if ($updateLastPost) {
-                    $query = "REPLACE INTO #__log_topics SET ID_MEMBER = $userid, ID_TOPIC = $topicid, ID_MSG = " . ($postid + 1);
+                    $query = 'REPLACE INTO #__log_topics SET ID_MEMBER = '.$userid.', ID_TOPIC = '.$topicid.', ID_MSG = ' . ($postid + 1);
                     $jdb->setQuery($query);
                     if (!$jdb->query()) {
                         $status['error'] = $jdb->stderr();
                     }
-                    $query = "REPLACE INTO #__log_boards SET ID_MEMBER = $userid, ID_BOARD = $forumid, ID_MSG = $postid";
+                    $query = 'REPLACE INTO #__log_boards SET ID_MEMBER = '.$userid.', ID_BOARD = '.$forumid.', ID_MSG = '.$postid;
                     $jdb->setQuery($query);
                     if (!$jdb->query()) {
                         $status['error'] = $jdb->stderr();
@@ -678,12 +678,12 @@ HTML;
                 $status['error'] = $jdb->stderr();
             }
             //update stats for threadmarking purposes
-            $query = "REPLACE INTO #__log_topics SET ID_MEMBER = $userid, ID_TOPIC = {$ids->threadid}, ID_MSG = " . ($postid + 1);
+            $query = 'REPLACE INTO #__log_topics SET ID_MEMBER = '.$userid.', ID_TOPIC = '.$ids->threadid.', ID_MSG = ' . ($postid + 1);
             $jdb->setQuery($query);
             if (!$jdb->query()) {
                 $status['error'] = $jdb->stderr();
             }
-            $query = "REPLACE INTO #__log_boards SET ID_MEMBER = $userid, ID_BOARD = {$ids->forumid}, ID_MSG = $postid";
+            $query = 'REPLACE INTO #__log_boards SET ID_MEMBER = '.$userid.', ID_BOARD = '.$ids->forumid.', ID_MSG = '.$postid;
             $jdb->setQuery($query);
             if (!$jdb->query()) {
                 $status['error'] = $jdb->stderr();
@@ -706,10 +706,10 @@ HTML;
         $postid = $existingthread->postid;
         //set the query
         $sort = $dbparams->get('sort_posts');
-		$where = "WHERE ID_TOPIC = {$threadid} AND ID_MSG != {$postid}";
-        $query = "(SELECT a.ID_TOPIC , a.ID_MSG, a.posterName, b.realName, a.ID_MEMBER, 0 AS guest, a.subject, a.posterTime, a.body, a.posterTime AS order_by_date FROM `#__messages` as a INNER JOIN #__members as b ON a.ID_MEMBER = b.ID_MEMBER $where AND a.ID_MEMBER != 0)";
+		$where = 'WHERE ID_TOPIC = '.$threadid.' AND ID_MSG != '.$postid;
+        $query = '(SELECT a.ID_TOPIC , a.ID_MSG, a.posterName, b.realName, a.ID_MEMBER, 0 AS guest, a.subject, a.posterTime, a.body, a.posterTime AS order_by_date FROM `#__messages` as a INNER JOIN #__members as b ON a.ID_MEMBER = b.ID_MEMBER '.$where.' AND a.ID_MEMBER != 0)';
         $query.= ' UNION ';
-        $query.= "(SELECT a.ID_TOPIC , a.ID_MSG, a.posterName, a.posterName as realName, a.ID_MEMBER, 1 AS guest, a.subject, a.posterTime, a.body, a.posterTime AS order_by_date FROM `#__messages` as a $where AND a.ID_MEMBER = 0)";
+        $query.= '(SELECT a.ID_TOPIC , a.ID_MSG, a.posterName, a.posterName as realName, a.ID_MEMBER, 1 AS guest, a.subject, a.posterTime, a.body, a.posterTime AS order_by_date FROM `#__messages` as a '.$where.' AND a.ID_MEMBER = 0)';
         $query.= ' ORDER BY order_by_date '.$sort;
         $jdb = JFusionFactory::getDatabase($this->getJname());
 

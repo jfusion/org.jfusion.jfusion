@@ -97,10 +97,10 @@ class JFusionPublic_smf2 extends JFusionPublic {
             if (!is_array($custom_smileys)) {
                 $custom_smileys = array();
                 $db = JFusionFactory::getDatabase($this->getJname());
-                $query = "SELECT value, variable FROM #__settings WHERE variable = 'smileys_url' OR variable = 'smiley_sets_default'";
+                $query = 'SELECT value, variable FROM #__settings WHERE variable = \'smileys_url\' OR variable = \'smiley_sets_default\'';
                 $db->setQuery($query);
                 $settings = $db->loadObjectList('variable');
-                $query = "SELECT code, filename FROM #__smileys ORDER BY smileyOrder";
+                $query = 'SELECT code, filename FROM #__smileys ORDER BY smileyOrder';
                 $db->setQuery($query);
                 $smilies = $db->loadObjectList();
                 if (!empty($smilies)) {
@@ -847,12 +847,12 @@ class JFusionPublic_smf2 extends JFusionPublic {
     function filterSearchResults(&$results = array(), &$pluginParam)
 	{
 		$db =& JFusionFactory::getDatabase($this->getJname());
-		$query = "SELECT value FROM #__settings WHERE variable='censor_vulgar'";
+		$query = 'SELECT value FROM #__settings WHERE variable=\'censor_vulgar\'';
 		$db->setQuery($query);
 		$vulgar = $db->loadResult();
 
 		$db =& JFusionFactory::getDatabase($this->getJname());
-		$query = "SELECT value FROM #__settings WHERE variable='censor_proper'";
+		$query = 'SELECT value FROM #__settings WHERE variable=\'censor_proper\'';
 		$db->setQuery($query);
 		$proper = $db->loadResult();
 
@@ -896,19 +896,19 @@ class JFusionPublic_smf2 extends JFusionPublic {
 		if(!empty($usergroups)) {
 			if(is_array($usergroups)) {
 				$usergroups_string = implode(',',$usergroups);
-				$usergroup_query .= "AND (u.id_group IN ($usergroups_string) OR u.id_post_group IN ($usergroups_string)";
+				$usergroup_query .= 'AND (u.id_group IN ('.$usergroups_string.') OR u.id_post_group IN ('.$usergroups_string.')';
 				foreach($usergroups AS $usergroup) {
-					$usergroup_query .= " OR FIND_IN_SET(" . intval($usergroup) . ", u.additional_groups)";
+					$usergroup_query .= ' OR FIND_IN_SET(' . intval($usergroup) . ', u.additional_groups)';
 				}
 				$usergroup_query .= ')';
 			} else {
-				$usergroup_query .= "AND (u.id_group = $usergroups OR u.id_post_group = $usergroups OR FIND_IN_SET($usergroups, u.additional_groups))";
+				$usergroup_query .= 'AND (u.id_group = '.$usergroups.' OR u.id_post_group = '.$usergroups.' OR FIND_IN_SET('.$usergroups.', u.additional_groups))';
 			}
 		}
 
 		$limiter = (!empty($limit)) ? 'LIMIT 0,'.$limit : '';
 
-		return "SELECT DISTINCT u.id_member AS userid, u.member_name AS username, u.real_name AS name, u.email_address as email FROM #__members AS u INNER JOIN #__log_online AS s ON u.id_member = s.id_member WHERE s.id_member != 0 $usergroup_query $limiter";
+		return 'SELECT DISTINCT u.id_member AS userid, u.member_name AS username, u.real_name AS name, u.email_address as email FROM #__members AS u INNER JOIN #__log_online AS s ON u.id_member = s.id_member WHERE s.id_member != 0 '.$usergroup_query.' '.$limiter;
 	}
 
 	/**
@@ -918,7 +918,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 	function getNumberOnlineGuests()
 	{
 		$db =& JFusionFactory::getDatabase($this->getJname());
-		$query = "SELECT COUNT(DISTINCT(ip)) FROM #__log_online WHERE id_member = 0";
+		$query = 'SELECT COUNT(DISTINCT(ip)) FROM #__log_online WHERE id_member = 0';
 		$db->setQuery($query);
 		return $db->loadResult();
 	}
@@ -937,13 +937,13 @@ class JFusionPublic_smf2 extends JFusionPublic {
 		if(!empty($usergroups) && empty($total)) {
 			if(is_array($usergroups)) {
                 $usergroups_string = implode(',',$usergroups);
-				$usergroup_query .= "AND (u.id_group IN ($usergroups_string) OR u.id_post_group IN ($usergroups_string)";
+				$usergroup_query .= 'AND (u.id_group IN ('.$usergroups_string.') OR u.id_post_group IN ('.$usergroups_string.')';
 				foreach($usergroups AS $usergroup) {
-					$usergroup_query .= " OR FIND_IN_SET(" . intval($usergroup) . ", u.additional_groups)";
+					$usergroup_query .= ' OR FIND_IN_SET(' . intval($usergroup) . ', u.additional_groups)';
 				}
 				$usergroup_query .= ')';
 			} else {
-				$usergroup_query .= "AND (u.id_group = $usergroups OR u.id_post_group = $usergroups OR FIND_IN_SET($usergroups, u.additional_groups))";
+				$usergroup_query .= 'AND (u.id_group = '.$usergroups.' OR u.id_post_group = '.$usergroups.' OR FIND_IN_SET('.$usergroups.', u.additional_groups))';
 			}
 		}
 

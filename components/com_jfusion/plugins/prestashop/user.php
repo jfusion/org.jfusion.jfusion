@@ -369,13 +369,13 @@ class JFusionUser_prestashop extends JFusionUser {
             $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('invalid mobile');
         } elseif (!Validate::isInt($user_variables['id_country'])){
             $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('invalid country');
-        } elseif (Country::getIsoById($user_variables['id_country']) === ""){
+        } elseif (Country::getIsoById($user_variables['id_country']) === ''){
             $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('invalid country');
         } elseif (!Validate::isInt($user_variables['id_state'])){
             $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('invalid state');
         } else {
             if (!State::getNameById($user_variables['id_state'])){
-                if($user_variables['id_state'] === "0"){
+                if($user_variables['id_state'] === '0'){
                     /* state valid to apply for none state */
                 } else {
                     $status['error'][] = JText::_('USER_CREATION_ERROR').' '.Tools::displayError('invalid state');
@@ -454,7 +454,7 @@ class JFusionUser_prestashop extends JFusionUser {
     function activateUser($userinfo, &$existinguser, &$status) {
         /* change the 'active' field of the customer in the ps_customer table to 1 */
         $db = JFusionFactory::getDatabase($this->getJname());
-        $query = "UPDATE #__customer SET active ='1' WHERE id_customer ='" . (int)$existinguser->userid . "'";
+        $query = 'UPDATE #__customer SET active =\'1\' WHERE id_customer =\'' . (int)$existinguser->userid . '\'';
         $db->setQuery($query);
     }
 
@@ -466,7 +466,7 @@ class JFusionUser_prestashop extends JFusionUser {
     function inactivateUser($userinfo, &$existinguser, &$status) {
         /* change the 'active' field of the customer in the ps_customer table to 0 */
         $db = JFusionFactory::getDatabase($this->getJname());
-        $query = "UPDATE #__customer SET active ='0' WHERE id_customer ='" . (int)$existinguser->userid . "'";
+        $query = 'UPDATE #__customer SET active =\'0\' WHERE id_customer =\'' . (int)$existinguser->userid . '\'';
         $db->setQuery($query);
     }
 

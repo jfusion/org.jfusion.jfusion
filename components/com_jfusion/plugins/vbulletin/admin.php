@@ -292,7 +292,7 @@ JS;
         }
         $db = JFusionFactory::getDatabase($this->getJname());
         if (!JError::isError($db) && !empty($db)) {
-            if ($hook != "framelessoptimization") {
+            if ($hook != 'framelessoptimization') {
                 $hookName = null;
                 switch ($hook) {
                     case 'globalfix':
@@ -427,19 +427,19 @@ HTML;
                     JError::raiseWarning(500, $db->stderr());
                 }
                 //enable or renable the plugin
-                if ($action != "disable") {
+                if ($action != 'disable') {
                     if (($hook == "redirect" || $hook == "frameless") && (empty($itemid) || !is_numeric($itemid))) {
                         JError::raiseWarning(500, JText::_('VB_REDIRECT_HOOK_ITEMID_EMPTY'));
                     } else {
                         //install the hook
                         $php = $this->getHookPHP($hook, $itemid);
-                        $query = "INSERT INTO #__plugin SET
-                        title = " . $db->Quote($hookName) . ",
-                        hookname = 'init_startup',
-                        phpcode = " . $db->Quote($php) . ",
-                        product = 'vbulletin',
+                        $query = 'INSERT INTO #__plugin SET
+                        title = ' . $db->Quote($hookName) . ',
+                        hookname = \'init_startup\',
+                        phpcode = ' . $db->Quote($php) . ',
+                        product = \'vbulletin\',
                         active = 1,
-                        executionorder = 1";
+                        executionorder = 1';
                         $db->setQuery($query);
                         if (!$db->query()) {
                             JError::raiseWarning(500, $db->stderr());
@@ -462,7 +462,7 @@ HTML;
                 $db->setQuery($q);
                 $images = $db->loadRowList();
                 foreach ($images as $i) {
-                    if ($action == "enable") {
+                    if ($action == 'enable') {
                         $q = "UPDATE #__{$tbl} SET $col = '{$source_url}{$i[1]}' WHERE {$tbl}id = {$i[0]}";
                     } else {
                         $i[1] = str_replace($source_url, '', $i[1]);
@@ -473,13 +473,13 @@ HTML;
                 }
             }
             //let's update the default icon
-            $q = "SELECT value FROM #__setting WHERE varname = 'showdeficon'";
+            $q = 'SELECT value FROM #__setting WHERE varname = \'showdeficon\'';
             $db->setQuery($q);
             $deficon = $db->loadResult();
             if (!empty($deficon)) {
-                if ($action == "enable" && strpos($deficon, 'http') === false) {
+                if ($action == 'enable' && strpos($deficon, 'http') === false) {
                     $q = "UPDATE #__setting SET value = '{$source_url}{$deficon}' WHERE varname = 'showdeficon'";
-                } elseif ($action == "disable") {
+                } elseif ($action == 'disable') {
                     $deficon = str_replace($source_url, '', $deficon);
                     $q = "UPDATE #__setting SET value = '{$deficon}' WHERE varname = 'showdeficon'";
                 }
