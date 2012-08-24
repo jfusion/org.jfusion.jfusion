@@ -555,16 +555,16 @@ class JFusionForum_vbulletin extends JFusionForum
         $query = array();
         if (empty($name_field)) {
             //Latest active topic with first post info
-            $query[LAT . '0'] = "SELECT a.threadid, a.lastpostid AS postid, b.username, b.username as name, b.userid, CASE WHEN b.userid = 0 THEN 1 ELSE 0 END AS guest, a.title AS subject, b.dateline, a.forumid, a.lastpost FROM `#__thread` as a INNER JOIN `#__post` as b ON a.firstpostid = b.postid INNER JOIN #__forum as c ON a.forumid = c.forumid $where ORDER BY a.lastpost $end";
+            $query[LAT . '0'] = 'SELECT a.threadid, a.lastpostid AS postid, b.username, b.username as name, b.userid, CASE WHEN b.userid = 0 THEN 1 ELSE 0 END AS guest, a.title AS subject, b.dateline, a.forumid, a.lastpost FROM `#__thread` as a INNER JOIN `#__post` as b ON a.firstpostid = b.postid INNER JOIN #__forum as c ON a.forumid = c.forumid '.$where.' ORDER BY a.lastpost '.$end;
 
             //Latest active topic with lastest post info
-            $query[LAT . '1'] = "SELECT a.threadid, a.lastpostid AS postid, b.username, b.username as name, b.userid, CASE WHEN b.userid = 0 THEN 1 ELSE 0 END AS guest, a.title AS subject, b.dateline, a.forumid, a.lastpost FROM `#__thread` as a INNER JOIN `#__post` as b ON a.lastpostid = b.postid INNER JOIN #__forum as c ON a.forumid = c.forumid $where ORDER BY a.lastpost $end";
+            $query[LAT . '1'] = 'SELECT a.threadid, a.lastpostid AS postid, b.username, b.username as name, b.userid, CASE WHEN b.userid = 0 THEN 1 ELSE 0 END AS guest, a.title AS subject, b.dateline, a.forumid, a.lastpost FROM `#__thread` as a INNER JOIN `#__post` as b ON a.lastpostid = b.postid INNER JOIN #__forum as c ON a.forumid = c.forumid '.$where.' ORDER BY a.lastpost '.$end;
 
             //Latest created topic
-            $query[LCT] = "SELECT a.threadid, b.postid, b.username, b.username as name, b.userid, CASE WHEN b.userid = 0 THEN 1 ELSE 0 END AS guest, a.title AS subject, b.dateline, b.pagetext AS body, a.forumid, a.lastpost FROM `#__thread` as a INNER JOIN `#__post` as b ON a.firstpostid = b.postid INNER JOIN #__forum as c ON a.forumid = c.forumid $where ORDER BY a.dateline $end";
+            $query[LCT] = 'SELECT a.threadid, b.postid, b.username, b.username as name, b.userid, CASE WHEN b.userid = 0 THEN 1 ELSE 0 END AS guest, a.title AS subject, b.dateline, b.pagetext AS body, a.forumid, a.lastpost FROM `#__thread` as a INNER JOIN `#__post` as b ON a.firstpostid = b.postid INNER JOIN #__forum as c ON a.forumid = c.forumid '.$where.' ORDER BY a.dateline '.$end;
 
             //Latest created post
-            $query[LCP] = "SELECT b.threadid, b.postid, b.username, b.username as name, b.userid, CASE WHEN b.userid = 0 THEN 1 ELSE 0 END AS guest, CASE WHEN b.title = '' THEN CONCAT(\"Re: \",a.title) ELSE b.title END AS subject, b.dateline, b.pagetext AS body, a.forumid, a.lastpost FROM `#__thread` as a INNER JOIN `#__post` AS b ON a.threadid = b.threadid INNER JOIN #__forum as c ON a.forumid = c.forumid $where ORDER BY b.dateline $end";
+            $query[LCP] = 'SELECT b.threadid, b.postid, b.username, b.username as name, b.userid, CASE WHEN b.userid = 0 THEN 1 ELSE 0 END AS guest, CASE WHEN b.title = \'\' THEN CONCAT("Re: ",a.title) ELSE b.title END AS subject, b.dateline, b.pagetext AS body, a.forumid, a.lastpost FROM `#__thread` as a INNER JOIN `#__post` AS b ON a.threadid = b.threadid INNER JOIN #__forum as c ON a.forumid = c.forumid '.$where.' ORDER BY b.dateline '.$end;
         } else {
             //Latest active topic with first post info
             $query[LAT . '0'] = "(SELECT a.threadid, a.lastpostid AS postid, b.username, b.userid, 0 AS guest, a.title AS subject, b.dateline, a.forumid, a.lastpost, a.lastpost as order_by_date, CASE WHEN f.$name_field IS NULL OR f.$name_field = '' THEN b.username ELSE f.$name_field END AS name FROM `#__thread` as a INNER JOIN `#__post` as b ON a.firstpostid = b.postid INNER JOIN #__forum as c ON a.forumid = c.forumid INNER JOIN `#__userfield` as f ON f.userid = b.userid $where AND b.userid != 0)";
@@ -701,7 +701,7 @@ class JFusionForum_vbulletin extends JFusionForum
             if ($userid != 0) {
                 $query = 'SELECT u.usergroupid AS gid, u.membergroupids, g.forumpermissions AS perms FROM #__user AS u INNER JOIN #__usergroup AS g ON u.usergroupid = g.usergroupid WHERE u.userid = '.$userid;
             } else {
-                $query = "SELECT usergroupid AS gid, forumpermissions AS perms FROM #__usergroup WHERE usergroupid = '1'";
+                $query = 'SELECT usergroupid AS gid, forumpermissions AS perms FROM #__usergroup WHERE usergroupid = \'1\'';
             }
             $db->setQuery($query);
             $usergroup = $db->loadObject();
@@ -709,7 +709,7 @@ class JFusionForum_vbulletin extends JFusionForum
             //merge the permissions of member groups
             if (!empty($usergroup->membergroupids)) {
                 $membergroups = explode(',', $usergroup->membergroupids);
-                $query = "SELECT forumpermissions FROM #__usergroup WHERE usergroupid IN ({$usergroup->membergroupids})";
+                $query = 'SELECT forumpermissions FROM #__usergroup WHERE usergroupid IN ('.$usergroup->membergroupids.')';
                 $db->setQuery($query);
                 $perms = $db->loadObjectList();
                 foreach ($perms as $p) {
@@ -720,7 +720,7 @@ class JFusionForum_vbulletin extends JFusionForum
                 }
             }
             //get custom forum permissions
-            $query = "SELECT p.forumpermissions, p.forumid, p.usergroupid, f.parentlist, f.childlist FROM #__forumpermission AS p INNER JOIN #__forum AS f ON p.forumid = f.forumid WHERE p.usergroupid = {$usergroup->gid} ORDER BY p.forumid";
+            $query = 'SELECT p.forumpermissions, p.forumid, p.usergroupid, f.parentlist, f.childlist FROM #__forumpermission AS p INNER JOIN #__forum AS f ON p.forumid = f.forumid WHERE p.usergroupid = '.$usergroup->gid.' ORDER BY p.forumid';
             $db->setQuery($query);
             $perms = $db->loadObjectList();
             $tempPerms = array();
@@ -733,7 +733,7 @@ class JFusionForum_vbulletin extends JFusionForum
             }
             //get custom forum permissions for member groups
             if (!empty($membergroups)) {
-                $query = "SELECT p.forumpermissions, p.forumid, p.usergroupid, f.parentlist, f.childlist FROM #__forumpermission AS p INNER JOIN #__forum AS f ON p.forumid = f.forumid WHERE p.usergroupid IN ({$usergroup->membergroupids}) ORDER BY p.forumid";
+                $query = 'SELECT p.forumpermissions, p.forumid, p.usergroupid, f.parentlist, f.childlist FROM #__forumpermission AS p INNER JOIN #__forum AS f ON p.forumid = f.forumid WHERE p.usergroupid IN ('.$usergroup->membergroupids.') ORDER BY p.forumid';
                 $db->setQuery($query);
                 $perms = $db->loadObjectList();
                 foreach ($perms as $p) {

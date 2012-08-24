@@ -1266,9 +1266,9 @@ HTML;
                 $this->helper->output['buttons']['initiate']['href'] = 'javascript: void(0);';
 
                 $vars  = '&view_override='.$view;
-                $vars .= ($this->params->get('overwrite_readmore',1)) ? "&readmore={$readmore_catch}&show_readmore={$show_readmore}" : '';
+                $vars .= ($this->params->get('overwrite_readmore',1)) ? '&readmore='.$readmore_catch.'&show_readmore='.$show_readmore : '';
 
-                $this->helper->output['buttons']['initiate']['js']['onclick'] = "confirmThreadAction(".$this->article->id.",'$dbtask', '$vars', '{$this->helper->_get_article_url()}');";
+                $this->helper->output['buttons']['initiate']['js']['onclick'] = 'confirmThreadAction('.$this->article->id.",'$dbtask', '$vars', '{$this->helper->_get_article_url()}');";
                 $this->helper->output['buttons']['initiate']['text'] = JText::_($text);
                 $this->helper->output['buttons']['initiate']['target'] = '_self';
             }
