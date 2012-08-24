@@ -337,7 +337,7 @@ class JFusionAdmin
         } else {
             $list_box.= '<option value="0" selected="selected">Simple</option>';
         }
-        if ($slave == 1 && !empty($master) && $this->supportUsergroupUpdate()) {
+        if ($slave == 1 && !empty($master) && JFusionFunction::hasFeature($jname,'updateusergroup')) {
             //allow usergroup sync
             if ($advanced == 1) {
                 $list_box.= '<option selected="selected" value="1">Advanced</option>';
@@ -456,8 +456,9 @@ JS;
         } else {
             $list_box.= '<option value="0" selected="selected">Simple</option>';
         }
+
         $jfGroupCount = 0;
-        if ($slave == 1 && $JFusionMaster && $this->supportUsergroupUpdate()) {
+        if ($slave == 1 && $JFusionMaster && JFusionFunction::hasFeature($jname,'updateusergroup')) {
             //allow usergroup sync
             if ($advanced == 1) {
                 $list_box.= '<option selected="selected" value="1">Advanced</option>';
@@ -734,15 +735,6 @@ JS;
     function requireFileAccess()
     {
         return 'UNKNOWN';
-    }
-
-    /**
-     * @return bool true if plugin support usergroup update, (this is default)
-     */
-    function supportUsergroupUpdate()
-    {
-        $user = JFusionFactory::getUser($this->getJname());
-        return JFusionFunctionAdmin::methodDefined($user,'updateUsergroup');
     }
 
     /**

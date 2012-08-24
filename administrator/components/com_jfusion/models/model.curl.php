@@ -1101,7 +1101,7 @@ class JFusionCurl
 		switch($rel+$hashttp) {
 			case 0:
 				//add a / in front of form_action
-				if (substr($form_action, 0, 1) != "/") {
+				if (substr($form_action, 0, 1) != '/') {
 					$form_action = '/'.$form_action;
 				}
 				// we need to correct various situations like
@@ -1119,7 +1119,7 @@ class JFusionCurl
 				} //prevent double directory
 
 				// replace windows DS bt unix DS
-				$pathinfo['dirname'] = str_replace("\\", "/", $pathinfo['dirname']);
+				$pathinfo['dirname'] = str_replace("\\", '/', $pathinfo['dirname']);
 				// get rid of the trailing /  in dir
 				rtrim($pathinfo['dirname'], '/');
 				$port = !empty($tmpurl[5]) ? ":".$tmpurl[5] : '';
@@ -1152,7 +1152,7 @@ class JFusionCurl
 						break;
 					}
 				}
-				if ($input_username_name == "") {
+				if ($input_username_name == '') {
 					if (strpos(strtolower($elements_keys[$i]), 'user')!==false) {
 						$input_username_name=$elements_keys[$i];
 					}
@@ -1163,7 +1163,7 @@ class JFusionCurl
 			}
 
 
-			if ($input_username_name == "") {
+			if ($input_username_name == '') {
 				$status['error'][] = JFusionCurl::_('CURL_NO_NAMEFIELD');
 				return $status;
 			}
@@ -1336,7 +1336,7 @@ class JFusionCurl
 		// prevent usererror by not supplying trailing backslash.
 		// make sure that when parameters are sent we do not add a backslash
 		if (strpos($curl_options['post_url'], '?') === false) {
-			if (!(substr($curl_options['post_url'], -1) == "/")) {
+			if (!(substr($curl_options['post_url'], -1) == '/')) {
 				$curl_options['post_url'] = $curl_options['post_url'].'/';
 			}
 		}

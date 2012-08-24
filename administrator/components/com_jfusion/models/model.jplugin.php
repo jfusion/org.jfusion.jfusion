@@ -386,7 +386,7 @@ class JFusionJplugin
         // only perform local joomla login when received this post. We define being a host if we have
         // at least one slave.
 
-        $plugins = JFusionFunction::getPlugins();
+        $plugins = JFusionFactory::getPlugins('slave');
         if (count($plugins) > 2 ) {
             $jhost = true;
         } else {
@@ -542,7 +542,7 @@ class JFusionJplugin
         // at least one slave.
 
         
-        $plugins = JFusionFunction::getPlugins();
+        $plugins = JFusionFactory::getPlugins('slave');
         if (count($plugins) > 2 ) {
             $jhost = true;
         } else {

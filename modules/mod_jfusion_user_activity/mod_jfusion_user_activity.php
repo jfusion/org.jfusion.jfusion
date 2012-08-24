@@ -23,15 +23,13 @@ require_once(dirname(__FILE__).DS.'helper.php');
 //check if the JFusion component is installed
 $model_file = JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.factory.php';
 $factory_file = JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.jfusion.php';
-$factory_admin_file = JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.jfusionadmin.php';
-if (file_exists($model_file) && file_exists($factory_file) && file_exists($factory_admin_file)) {
+if (file_exists($model_file) && file_exists($factory_file)) {
 
 	/**
 	* require the JFusion libraries
 	*/
 	require_once $model_file;
 	require_once $factory_file;
-    require_once $factory_admin_file;
     /**
      * @ignore
      * @var $params JParameter
@@ -73,7 +71,7 @@ if (file_exists($model_file) && file_exists($factory_file) && file_exists($facto
 			require(JModuleHelper::getLayoutPath('mod_jfusion_user_activity'));
 		} else {
 			$public =& JFusionFactory::getPublic($jname);
-			if (JFusionFunctionAdmin::methodDefined($public, 'renderUserActivityModule')) {
+			if (JFusionFunction::methodDefined($public, 'renderUserActivityModule')) {
 				$output = $public->renderUserActivityModule($config, $view, $params);
 				echo $output;
 			} else {

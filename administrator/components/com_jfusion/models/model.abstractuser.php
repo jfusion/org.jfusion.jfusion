@@ -515,6 +515,6 @@ class JFusionUser
      */
     function syncSessions($keepalive = false)
     {
-        return -1;
+        return 0;
     }
 }

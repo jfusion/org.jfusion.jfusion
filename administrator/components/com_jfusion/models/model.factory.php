@@ -399,20 +399,49 @@ class JFusionFactory
         }
         return $db;
     }
-        /**
-     * Returns a an object array with all active plugins
-     * @return array of objects
+
+    /**
+     * returns array of plugins depending on the arguments
+     *
+     * @param string $criteria the type of plugins to retrieve Use: all | master | slave
+     * @param boolean $joomla should we exclude joomla_int
+     * @param boolean $active only active plugins
+     *
+     * @return object plugin details
      */
-    public static function getPlugins() {
-        static $jfusion_plugins;
-        if (!isset($jfusion_plugins)) {
-            $db = JFactory::getDBO();
-            $query = 'SELECT id, name, status, dual_login from #__jfusion WHERE status = 1 AND (master = 1 OR slave = 1)';
-            $db->setQuery($query);
-            $jfusion_plugins = $db->loadObjectList();
+    public static function getPlugins($criteria = 'all' , $joomla = false, $active = true)
+    {
+        static $plugins;
+        $query = 'SELECT id, name, status, dual_login FROM #__jfusion';
+        switch ($criteria) {
+            case 'slave':
+                $query .= ' WHERE slave = 1 AND status = 1';
+                break;
+            case 'master':
+                $query = ' WHERE master = 1 AND status = 1';
+                break;
+            default:
+            case 'all':
+                $query = ' WHERE status = 1';
+                break;
         }
-        return $jfusion_plugins;
+        $key = $criteria.'-'.$joomla.'-'.$active;
+        if (!isset($plugins[$key])) {
+            if (!$joomla) {
+                $query .= ' AND name NOT LIKE \'joomla_int\'';
+            }
+            if ($active) {
+                $query .= ' AND ( slave = 1 || master = 1 )';
+            }
+            if (empty($plugins)) {
+                $db = JFactory::getDBO();
+                $db->setQuery($query);
+                $plugins[$key] = $db->loadObjectList();
+            }
+        }
+        return $plugins[$key];
     }
+
     /**
      * Gets the jnode_id for the JFusion Plugin
      * @param string $jname name of the JFusion plugin used
@@ -432,7 +461,7 @@ class JFusionFactory
     public static function getPluginNameFromNodeId($jnode_id) {
         $result = '';
         //$jid = $jnode_id;
-        $plugins = JFusionFactory::getPlugins();
+        $plugins = JFusionFactory::getPlugins('all',true);
         foreach($plugins as $plugin) {
             $id = rtrim(JFusionFactory::getPluginNodeId($plugin->name), '/');
             if (strcasecmp($jnode_id, $id) == 0) {

@@ -44,7 +44,7 @@ class JFormFieldDiscussionbotparam extends JFormField
         $name = (string) $this->fieldname;
         $value = $this->value;
 
-	    $query = "SELECT params FROM #__extensions WHERE element = 'jfusion' AND folder = 'content'";
+	    $query = 'SELECT params FROM #__extensions WHERE element = \'jfusion\' AND folder = \'content\'';
 
         $db->setQuery($query);
         $results = $db->loadResult();

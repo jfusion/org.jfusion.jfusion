@@ -24,8 +24,7 @@ require_once(dirname(__FILE__).DS.'helper.php');
 //check if the JFusion component is installed
 $model_file = JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.factory.php';
 $factory_file = JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.jfusion.php';
-$factory_admin_file = JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.jfusionadmin.php';
-if (file_exists($model_file) && file_exists($factory_file) && file_exists($factory_admin_file)) {
+if (file_exists($model_file) && file_exists($factory_file)) {
 
 	/**
 	* require the JFusion libraries
@@ -161,7 +160,7 @@ if (file_exists($model_file) && file_exists($factory_file) && file_exists($facto
                 }
             }
 		} else {
-			if (JFusionFunctionAdmin::methodDefined($forum, 'renderActivityModule')) {
+			if (JFusionFunction::methodDefined($forum, 'renderActivityModule')) {
 				$output = $forum->renderActivityModule($config,$view, $pluginParam);
 				echo $output;
 			} else {

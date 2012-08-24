@@ -131,7 +131,7 @@ function com_uninstall() {
     _uninstallPlugin('module', 'mod_jfusion_whosonline', '', 'JFusion Whos Online Module');
 
     //see if any mods from jfusion plugins need to be removed
-    $plugins = JFusionFactory::getPlugins();
+    $plugins = JFusionFactory::getPlugins('all',true);
     foreach($plugins as $plugin) {
     	$JFusionPlugin =& JFusionFactory::getAdmin($plugin->name);
         list ($success,$reasons) = $JFusionPlugin->uninstall();

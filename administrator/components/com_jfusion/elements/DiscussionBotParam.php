@@ -48,7 +48,7 @@ class JElementDiscussionBotParam extends JElement
 		$doc 		= JFactory::getDocument();
 		$fieldName	= $control_name.'['.$name.']';
 
-	    $query = "SELECT params FROM #__plugins WHERE element = 'jfusion' AND folder = 'content'";
+	    $query = 'SELECT params FROM #__plugins WHERE element = \'jfusion\' AND folder = \'content\'';
         $db->setQuery($query);
         $results = $db->loadResult();
         $pluginParams = new JParameter($results);

@@ -216,9 +216,9 @@ class jfusionViewplugindisplay extends JView {
           	$record->deleteimage = 'components/com_jfusion/images/delete_icon.png';
           	$record->deletescript =  'javascript: deleteplugin(\'' . $record->name .'\')"';
       	}
-		
+        ;
 		//set wizard options
-		$record->wizard = JFusionFunctionAdmin::methodDefined($JFusionPlugin,'setupFromPath');
+		$record->wizard = JFusionFunction::hasFeature($record->name,'wizard');
    		if($record->wizard){
     		$record->wizardimage = 'components/com_jfusion/images/wizard_icon.png';
    			$record->wizardscript =  'index.php?option=com_jfusion&task=wizard&jname=' .$record->name;

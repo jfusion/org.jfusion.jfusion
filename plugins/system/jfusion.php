@@ -104,18 +104,18 @@ class plgSystemJfusion extends JPlugin
             if ($mainframe->isSite() && !empty($syncsessions) && $task != 'logout') {
                 //for master if not joomla_int
                 $master = JFusionFunction::getMaster();
-                if (!empty($master) && $master->name != 'joomla_int') {
+                if (!empty($master) && $master->name != 'joomla_int' && $master->dual_login) {
                     $JFusionUser = JFusionFactory::getUser($master->name);
                     $changed = $JFusionUser->syncSessions($keepalive);
                     if (!empty($changed)) {
                         if ($debug) {
-                            JError::raiseNotice('500',"$master->name session changed");
+                            JError::raiseNotice('500',$master->name.' session changed');
                         }
                         $refresh = true;
                     }
                 }
                 //slave plugins
-                $plugins = JFusionFunction::getPlugins();
+                $plugins = JFusionFactory::getPlugins('all');
                 foreach ($plugins as $plugin) {
                     //only call keepAlive if the plugin is activated for dual login
                     if ($plugin->dual_login) {
@@ -123,7 +123,7 @@ class plgSystemJfusion extends JPlugin
                         $changed = $JFusionUser->syncSessions($keepalive);
                         if (!empty($changed)) {
                             if ($debug) {
-                                JError::raiseNotice('500',"$plugin->name session changed");
+                                JError::raiseNotice('500',$plugin->name.' session changed');
                             }
                             $refresh = true;
                         }

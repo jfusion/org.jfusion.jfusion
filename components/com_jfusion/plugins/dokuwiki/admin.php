@@ -608,12 +608,4 @@ PHP;
 	{
 		return 'JYES';
 	}
-
-    /**
-     * @return bool true if plugin support usergroup update, (this is default)
-     */
-    function supportUsergroupUpdate()
-    {
-        return true;
-    }
 }

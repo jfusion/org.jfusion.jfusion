@@ -662,9 +662,9 @@ class JFusionPluginInstaller extends JObject
                         }
                     }
                     foreach ($plugin_features as $key => $val) {
-                        $query.= ", $key = $val";
+                        $query.= ', '.$key.' = '.$val;
                     }
-                    $query.= " WHERE name = '$new_jname'";
+                    $query.= ' WHERE name = ' . $db->Quote($new_jname);
                     $db->setQuery($query);
                     $db->query();
                 } else {

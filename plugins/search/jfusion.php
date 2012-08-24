@@ -91,18 +91,16 @@ function &plgSearchjfusionAreas()
 {
     static $areas = array();
     //get the softwares with search enabled
-    $plugins = JFusionFunction::getPlugins('search');
+    $plugins = JFusionFactory::getPlugins();
     $searchplugin = JPluginHelper::getPlugin('search', 'jfusion');
     $params = new JParameter($searchplugin->params);
     $enabledPlugins = unserialize(base64_decode($params->get('JFusionPluginParam')));
-    if (is_array($plugins)) {
+    if (is_array($plugins) && is_array($enabledPlugins)) {
         foreach ($plugins as $plugin) {
-            if (is_array($enabledPlugins) && array_key_exists($plugin->name, $enabledPlugins)) {
-                if ($plugin->name != "joomla_int") {
-                    //make sure that search is enabled
-                    $title = (!empty($enabledPlugins[$plugin->name]['title'])) ? $enabledPlugins[$plugin->name]['title'] : $plugin->name;
-                    $areas[$plugin->name] = $title;
-                }
+            if (array_key_exists($plugin->name, $enabledPlugins)) {
+                //make sure that search is enabled
+                $title = (!empty($enabledPlugins[$plugin->name]['title'])) ? $enabledPlugins[$plugin->name]['title'] : $plugin->name;
+                $areas[$plugin->name] = $title;
             }
         }
     }

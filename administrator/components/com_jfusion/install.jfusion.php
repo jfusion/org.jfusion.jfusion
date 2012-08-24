@@ -420,7 +420,7 @@ function com_install() {
 
 			if($migrate_success) {
 				//add com_content to components column
-				$query = "UPDATE #__jfusion_discussion_bot SET component = 'com_content'";
+				$query = 'UPDATE #__jfusion_discussion_bot SET component = \'com_content\'';
 				$db->setQuery($query);
 				if(!$db->query()) {
 					echo $db->stderr() . '<br />';
@@ -449,7 +449,7 @@ function com_install() {
 				if (!$db->query()) {
 					echo $db->stderr() . '<br />';
 				} else {
-					$query = "UPDATE #__jfusion_discussion_bot SET component = 'com_content'";
+					$query = 'UPDATE #__jfusion_discussion_bot SET component = \'com_content\'';
 					$db->setQuery($query);
 					if(!$db->query()) {
 						echo $db->stderr() . '<br />';

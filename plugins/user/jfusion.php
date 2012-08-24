@@ -96,7 +96,7 @@ class plgUserJfusion extends JPlugin
                 }
             }
             //delete the user in the slave plugins
-            $slaves = JFusionFunction::getPlugins();
+            $slaves = JFusionFactory::getPlugins('slave');
             foreach ($slaves as $slave) {
                 $params = JFusionFactory::getParams($slave->name);
                 $deleteEnabled = $params->get('allow_delete_users', 0);
@@ -397,7 +397,7 @@ class plgUserJfusion extends JPlugin
                 JFusionFunction::updateLookup($userinfo, $JoomlaUser['userinfo']->userid, $master->name);
             }
             //setup the other slave JFusion plugins
-            $slaves = JFusionFunction::getPlugins();
+            $slaves = JFusionFactory::getPlugins('slave');
             foreach ($slaves as $slave) {
                 $JFusionSlave = JFusionFactory::getUser($slave->name);
                 $SlaveUser = $JFusionSlave->updateUser($userinfo, $overwrite);
@@ -514,7 +514,7 @@ class plgUserJfusion extends JPlugin
                     JFusionFunction::raiseWarning($master->name . ' ' . JText::_('LOGOUT'), JText::_('COULD_NOT_FIND_USER'), 1);
                 }
             }
-            $slaves = JFusionFunction::getPlugins();
+            $slaves = JFusionFactory::getPlugins('slave');
             foreach ($slaves as $slave) {
                 //check if sessions are enabled
                 if ($slave->dual_login == 1 && $JFusionActivePlugin != $slave->name) {
@@ -700,7 +700,7 @@ class plgUserJfusion extends JPlugin
             	$master_userinfo->password_clear = $JoomlaUser->password_clear;
             }
             //update the user details in any JFusion slaves
-            $slaves = JFusionFunction::getPlugins();
+            $slaves = JFusionFactory::getPlugins('slave');
             foreach ($slaves as $slave) {
                 $JFusionSlave = JFusionFactory::getUser($slave->name);
                 //if the username was updated, call the updateUsername function before calling updateUser
