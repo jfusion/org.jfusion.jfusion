@@ -434,7 +434,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             if (empty($profile_mod_id)) {
                 //the first item listed in the profile module is the edit profile link so must rewrite it to go to signature instead
                 $db =& JFusionFactory::getDatabase($this->getJname());
-                $query = "SELECT module_id FROM #__modules WHERE module_langname = 'UCP_PROFILE'";
+                $query = 'SELECT module_id FROM #__modules WHERE module_langname = \'UCP_PROFILE\'';
                 $db->setQuery($query);
                 $profile_mod_id = $db->loadResult();
             }

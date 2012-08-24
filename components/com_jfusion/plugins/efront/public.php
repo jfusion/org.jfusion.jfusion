@@ -71,8 +71,8 @@ class JFusionPublic_efront extends JFusionPublic
         $limiter = (!empty($limit)) ? 'LIMIT 0,'.$limit : '';
         //get a unix time from 5 mintues ago
         date_default_timezone_set('UTC');
-        // $active = strtotime('-5 minutes', time());
-        $query = "SELECT DISTINCT u.id AS userid, u.login as username, u.login as username_clean, concat(u.name,' ', u.surname) AS name, u.email as email FROM #__users AS u INNER JOIN #__users_online AS s ON u.login = s.users_LOGIN $limiter" ; //WHERE  s.timestamp > $active $limiter";
+        //$active = strtotime('-5 minutes', time());
+        $query = 'SELECT DISTINCT u.id AS userid, u.login as username, u.login as username_clean, concat(u.name,\' \', u.surname) AS name, u.email as email FROM #__users AS u INNER JOIN #__users_online AS s ON u.login = s.users_LOGIN '.$limiter; //WHERE  s.timestamp > '.$active.' '.$limiter;
         return $query;
     }
 

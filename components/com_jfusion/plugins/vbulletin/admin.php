@@ -457,8 +457,8 @@ HTML;
             //let's first update all the image paths for database stored images
             $tables = array('smilie' => 'smiliepath', 'avatar' => 'avatarpath', 'icon' => 'iconpath');
             foreach ($tables as $tbl => $col) {
-                $criteria = ($action == 'enable') ? "NOT LIKE 'http%'" : "LIKE '%http%'";
-                $q = "SELECT {$tbl}id, $col FROM #__$tbl WHERE $col $criteria";
+                $criteria = ($action == 'enable') ? 'NOT LIKE \'http%\'' : 'LIKE \'%http%\'';
+                $q = 'SELECT '.$tbl.'id, '.$col.' FROM #__'.$tbl.' WHERE '.$col.' '.$criteria;
                 $db->setQuery($q);
                 $images = $db->loadRowList();
                 foreach ($images as $i) {
@@ -478,10 +478,10 @@ HTML;
             $deficon = $db->loadResult();
             if (!empty($deficon)) {
                 if ($action == 'enable' && strpos($deficon, 'http') === false) {
-                    $q = "UPDATE #__setting SET value = '{$source_url}{$deficon}' WHERE varname = 'showdeficon'";
+                    $q = 'UPDATE #__setting SET value = \''.$source_url.$deficon.'\' WHERE varname = \'showdeficon\'';
                 } elseif ($action == 'disable') {
                     $deficon = str_replace($source_url, '', $deficon);
-                    $q = "UPDATE #__setting SET value = '{$deficon}' WHERE varname = 'showdeficon'";
+                    $q = 'UPDATE #__setting SET value = \''.$deficon.'\' WHERE varname = \'showdeficon\'';
                 }
                 $db->setQuery($q);
                 $db->query();

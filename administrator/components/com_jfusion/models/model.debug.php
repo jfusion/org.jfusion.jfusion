@@ -96,7 +96,7 @@ class std {
     public static function removeEmptyLines($text, $newLineChar = "\n") {
         $lines = explode($newLineChar, $text);
         foreach ($lines as $idx => $line) {
-            if (trim($line) == "") unset($lines[$idx]);
+            if (trim($line) == '') unset($lines[$idx]);
         }
         return join($newLineChar, $lines);
     }
@@ -714,7 +714,7 @@ class trans {
                 }
             }
         }
-        if ($phpCode == "") $phpCode = "$pre$phpVarName = \"Type not supported yet\";\n";
+        if ($phpCode == '') $phpCode = $pre.$phpVarName.' = "Type not supported yet";'."\n";
         return $phpCode;
     }
     /**
@@ -804,7 +804,7 @@ class trans {
      *    @return array the created hashtable
      */
     function hashExplode($delim1, $delim2, $string) {
-        if ($string == "") return array();
+        if ($string == '') return array();
         $arr = explode($delim1, $string);
         $hashy = array();
         foreach ($arr as $zuw) {

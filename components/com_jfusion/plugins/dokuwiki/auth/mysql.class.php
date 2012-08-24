@@ -727,7 +727,7 @@ class doku_auth_mysql extends doku_auth_basic {
 
         if ($err == 0) {
           if ($cnt > 0) {
-            $sql .= " ".str_replace('%{uid}', $uid, $this->cnf['UpdateTarget']);
+            $sql .= ' '.str_replace('%{uid}', $uid, $this->cnf['UpdateTarget']);
             if(get_class($this) == 'auth_mysql') $sql .= ' LIMIT 1'; //some PgSQL inheritance comp.
             $this->_modifyDB($sql);
           }

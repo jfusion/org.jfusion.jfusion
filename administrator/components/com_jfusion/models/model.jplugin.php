@@ -317,7 +317,7 @@ class JFusionJplugin
      *
      * @return string nothing
      */
-    public static function createSession($userinfo, $options, $jname, $type = "brute_force",$curl_options_merge=array())
+    public static function createSession($userinfo, $options, $jname, $type = 'brute_force',$curl_options_merge=array())
     {
         global $ch;
         global $cookiearr;
@@ -472,7 +472,7 @@ class JFusionJplugin
      *
      * @return array result Array containing the result of the session destroy
      */
-    public static function destroySession($userinfo, $options, $jname, $type = "brute_force",$curl_options_merge=array())
+    public static function destroySession($userinfo, $options, $jname, $type = 'brute_force',$curl_options_merge=array())
     {
         global $ch;
         global $cookiearr;
@@ -1347,7 +1347,7 @@ class JFusionJplugin
                 $usertype = JFusionJplugin::getUsergroupName($jname,$gid);
                 if (!empty($gid) && !empty($usertype ) ) {
                     //update the user table
-                    $query = "UPDATE #__users SET usertype = {$db->Quote($usertype) }, gid = {$gid}  WHERE id = {$existinguser->userid}";
+                    $query = 'UPDATE #__users SET usertype = '.$db->Quote($usertype).' , gid = '.$gid.'  WHERE id = '.$existinguser->userid;
                     $db->setQuery($query);
                     if (!$db->query()) {
                         $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $db->stderr();
@@ -1357,12 +1357,12 @@ class JFusionJplugin
                         $db->setQuery($query);
                         $aro_id = $db->loadResult();
                         if (!empty($aro_id)) {
-                            $query = "UPDATE #__core_acl_groups_aro_map SET group_id = {$gid} WHERE aro_id = {$aro_id}";
+                            $query = 'UPDATE #__core_acl_groups_aro_map SET group_id = '.$gid.' WHERE aro_id = '.$aro_id;
                             $db->setQuery($query);
                             if (!$db->query()) {
                                 $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $db->stderr();
                                 //update to acl table failed, attempt to revert changes to user table
-                                $query = "UPDATE #__users SET usertype = {$db->Quote($existinguser->group_name) }, gid = {$existinguser->group_id} WHERE id = {$existinguser->userid}";
+                                $query = 'UPDATE #__users SET usertype = '.$db->Quote($existinguser->group_name).' , gid = '.$existinguser->group_id.' WHERE id = '.$existinguser->userid;
                                 $db->setQuery($query);
                                 if (!$db->query()) {
                                     $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $db->stderr();

@@ -534,7 +534,7 @@ function com_install() {
 		}
 		//remove bad plugin entries from the table
 		if (count($uninstallPlugin) > 0) {
-			$query = "DELETE FROM #__jfusion WHERE name IN ('" . implode("', '", $uninstallPlugin) . "')";
+			$query = 'DELETE FROM #__jfusion WHERE name IN (\'' . implode('\', \'', $uninstallPlugin) . '\')';
 			$db->setQuery($query);
 			if (!$db->query()) {
 				echo $db->stderr() . '<br />';
@@ -568,7 +568,6 @@ function com_install() {
 HTML;
 		}
 */
-
 	    //cleanup unused plugins
 	    $query = 'SELECT name from #__jfusion WHERE (params IS NULL OR params = \'\' OR params = \'0\') AND (master = 0 and slave = 0) AND (name NOT LIKE "joomla_int")';
         $db->setQuery($query);
