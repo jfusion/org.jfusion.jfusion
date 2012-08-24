@@ -574,7 +574,7 @@ CSS;
      */
     private static function decorateValue($value) {
         if (is_string($value)) {
-            if (trim($value) == "") $decValue = "\"$value\"";
+            if (trim($value) == '') $decValue = '"'.$value.'"';
             else $decValue = str_replace(array('<', '>'), array('&lt;', '&gt;'), $value);
         } else if (is_bool($value)) {
             if ($value) $decValue = 'true';
@@ -691,7 +691,7 @@ class trans {
             if ($phpvar) $phpCode = $pre.$phpVarName.' = true;'."\n";
             else $phpCode = $pre.$phpVarName.' = false;'."\n";
         }
-        if (is_string($phpvar) && !is_numeric($phpvar)) $phpCode = "$pre$phpVarName = \"" . trans::replaceChars($phpvar) . "\";\n";
+        if (is_string($phpvar) && !is_numeric($phpvar)) $phpCode = $pre.$phpVarName.' = "' . trans::replaceChars($phpvar) . '";'."\n";
         if (is_null($phpvar)) $phpCode = $pre.$phpVarName.' = null;'."\n";
         if (is_array($phpvar)) {
             if (arrayfunc::isOneDimensional($phpvar)) {

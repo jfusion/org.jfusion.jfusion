@@ -40,7 +40,7 @@ class jfusionViewcpanel extends JView
     {
         $cpanel = 'http://update.jfusion.org/jfusion_cpanel.xml';
         //define the standard message when the XML is not found
-        $curl_disabled = '<?xml version=\'1.0\' standalone=\'yes\'?>
+        $curl_disabled = '<?xml version="1.0" standalone="yes"?>
                     <document><item><date></date>
                     <title>' . JText::_('CURL_DISABLED') . '</title>
                     <link>www.jfusion.org</link><body></body></item></document>';

@@ -44,7 +44,7 @@ class JFusionHelper_mediawiki
             $db_prefix = $params->get('database_prefix');
             $cookie_name = (!empty($db_prefix)) ? $db_name . '_' . $db_prefix : $db_name;
         }
-        $mediawiki_cookieName = strtr($cookie_name, "=,; +.\"'\\[", "__________");
+        $mediawiki_cookieName = strtr($cookie_name, "=,; +.\"'\\[", '__________');
         return $mediawiki_cookieName;
     }
 
