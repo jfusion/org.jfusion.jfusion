@@ -160,28 +160,36 @@ class JFusionFunctionAdmin
      */
     public static function displayDonate()
     {
-        ?>
-        <table class="adminform"><tr>
-        <td> <img src="components/com_jfusion/images/jfusion_logo.png"></td>
-        <td><font size="3"><b><?php echo JText::_('BANNER_MESSAGE'); ?></b></font></td>
-        <td style="width: 15%; text-align: right;">
-        
-        <div id="navButton">
-        <form id="ppform" action="https://www.paypal.com/cgi-bin/webscr" method="post">
-        <input type="hidden" name="cmd" value="_donations" /> 
-        <input type="hidden" name="business" value="webmaster@jfusion.org" />
-        <input type="hidden" name="item_name" value="jfusion.org" /> 
-        <input type="hidden" name="no_shipping" value="0" /> 
-        <input type="hidden" name="no_note" value="1" /> 
-        <input type="hidden" name="currency_code" value="AUD" /> 
-        <input type="hidden" name="tax" value="0" /> 
-        <input type="hidden" name="lc" value="AU" /> 
-        <input type="hidden" name="bn" value="PP-DonationsBF" /> 
-        <a class="navButton" href="#" onclick="$('ppform').submit();return false"></a>
-        </form>
-        </div>
-        </td></tr></table>
-        <?php
+        $msg = JText::_('BANNER_MESSAGE');
+        $html =<<<HTML
+        <table class="adminform">
+            <tr>
+                <td>
+                    <img src="components/com_jfusion/images/jfusion_logo.png">
+                </td>
+                <td>
+                    <font size="3"><b>{$msg}</b></font>
+                </td>
+                <td style="width: 15%; text-align: right;">
+                    <div id="navButton">
+                        <form id="ppform" action="https://www.paypal.com/cgi-bin/webscr" method="post">
+                        <input type="hidden" name="cmd" value="_donations" />
+                        <input type="hidden" name="business" value="webmaster@jfusion.org" />
+                        <input type="hidden" name="item_name" value="jfusion.org" />
+                        <input type="hidden" name="no_shipping" value="0" />
+                        <input type="hidden" name="no_note" value="1" />
+                        <input type="hidden" name="currency_code" value="AUD" />
+                        <input type="hidden" name="tax" value="0" />
+                        <input type="hidden" name="lc" value="AU" />
+                        <input type="hidden" name="bn" value="PP-DonationsBF" />
+                        <a class="navButton" href="#" onclick="$('ppform').submit();return false"></a>
+                    </form>
+                    </div>
+                </td>
+            </tr>
+        </table>
+HTML;
+        echo $html;
     }
 
     /**

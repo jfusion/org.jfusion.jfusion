@@ -69,7 +69,7 @@ class jfusionViewlanguages extends JView
                     $lang->progress = $language->getElementByPath('progress')->data();
                     $lang->translateurl = $language->getElementByPath('translateurl')->data();
                     $lang->currentdate = null;
-                    $lang->class = 'bad';
+                    $lang->class = 'row';
 
                     $lang_repo[$name] = $lang;
                 }
@@ -89,6 +89,8 @@ class jfusionViewlanguages extends JView
 
                     if ( $lang_repo[$result->element]->currentdate == $lang_repo[$result->element]->date ) {
                         $lang_repo[$result->element]->class = 'good';
+                    } else {
+                        $lang_repo[$result->element]->class = 'bad';
                     }
                 }
             }

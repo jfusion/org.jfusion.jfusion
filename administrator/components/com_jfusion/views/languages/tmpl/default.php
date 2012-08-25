@@ -42,72 +42,70 @@ JFusionFunctionAdmin::displayDonate();
     tr.good1 { background-color: #d9f9e2; }
     tr.bad0 { background-color: #f9ded9; }
     tr.bad1 { background-color: #f9e5e2; }
-    table.adminform td {width: 33%;}
     .percentbar { background:#CCCCCC; border:1px solid #666666; height:10px; }
     .percentbar div { background: #28B8C0; height: 10px; }
 </style>
 
 <table class="adminform" style="border-spacing:1px;">
     <thead>
-    <tr>
-        <th class="title " align="left">
-            <?php echo JText::_('ID'); ?>
-        </th>
-        <th class="title " align="left">
-            <?php echo JText::_('LANGUAGE'); ?>
-        </th>
-        <th class="title" align="center">
-            <?php echo JText::_('TRANSLATION_STATUS'); ?>
-        </th>
-        <th class="title" align="center">
-            <?php echo JText::_('YOUR_VERSION'); ?>
-        </th>
-        <th class="title" align="center">
-            <?php echo JText::_('CURRENT_VERSION'); ?>
-        </th>
-        <th class="title" align="center">
-            <?php echo JText::_('OPTIONS'); ?>
-        </th>
+        <tr>
+            <th class="title " align="left">
+                <?php echo JText::_('ID'); ?>
+            </th>
+            <th class="title " align="left">
+                <?php echo JText::_('LANGUAGE'); ?>
+            </th>
+            <th class="title" align="center">
+                <?php echo JText::_('TRANSLATION_STATUS'); ?>
+            </th>
+            <th class="title" align="center">
+                <?php echo JText::_('YOUR_VERSION'); ?>
+            </th>
+            <th class="title" align="center">
+                <?php echo JText::_('CURRENT_VERSION'); ?>
+            </th>
+            <th class="title" align="center">
+                <?php echo JText::_('OPTIONS'); ?>
+            </th>
 
-    </tr>
+        </tr>
     </thead>
     <tbody>
         <?php $row_count = 0;
-        foreach ($this->lang_repo as $lang => $data) { ?>
-            <tr class="<?php echo 'row'.($row_count); ?>">
-                <td style="width:5%;">
+        $scale = 1;
+        foreach ($this->lang_repo as $lang => $data) {
+            $percent = str_replace('%','',$data->progress); ?>
+            <tr class="<?php echo $data->class.($row_count % 2); ?>">
+                <td style="width:50px;">
                     <?php echo $lang; ?>
                 </td>
                 <td style="width:50px;">
                     <?php echo $data->description; ?>
                 </td>
-                <td style="width:80px;">
-                    <div><div class="percentbar" style="width:<?php $percent = str_replace('%','',$data->progress);
-                        $scale = 1;
-                        echo round(100 * $scale); ?>px;">
-                        <div style="width:<?php echo round($percent * $scale); ?>px;"></div>
-                    </div><?php echo $data->progress;?></div>
+                <td style="width:150px;">
+                    <div>
+                        <div class="percentbar" style="width:<?php echo round(100 * $scale); ?>px;">
+                            <div style="width:<?php echo round($percent * $scale); ?>px;"></div>
+                        </div>
+                        <?php echo $data->progress; ?>
+                    </div>
                 </td>
-
-                <td style="width:10%;">
+                <td style="width:20%;">
                     <?php
                     if ($data->currentdate) {
                         echo $data->currentdate;
                         $mode = JText::_('UPDATE');
                     } else {
-                        echo 'Not installed';
+                        echo JText::_('NOT_INSTALLED');
                         $mode = JText::_('INSTALL');
                     }
                     ?>
                 </td>
-                <td style="width:45%;">
-                    <?php
-                echo $data->date;
-                ?>
+                <td style="width:20%;">
+                    <?php echo $data->date; ?>
                 </td>
-                <td style="width:45%;">
+                <td>
                     <?php
-
                     if ($data->currentdate != $data->date) {
                         ?>
                         <script type="text/javascript">
@@ -121,7 +119,7 @@ JFusionFunctionAdmin::displayDonate();
                             });
                             // -->
                         </script>
-                        <a id="<?php echo $lang ?>" href="<?php echo $data->file; ?>"><?php echo $mode;?></a> / <a href="<?php echo $data->file; ?>"><?php echo JText::_('DOWNLOAD') ;?></a>
+                        <a id="<?php echo $lang; ?>" href="<?php echo $data->file; ?>"><?php echo $mode; ?></a> / <a href="<?php echo $data->file; ?>"><?php echo JText::_('DOWNLOAD') ; ?></a>
                         <?php
                     }
                     ?>
@@ -129,9 +127,6 @@ JFusionFunctionAdmin::displayDonate();
             </tr>
         <?php
             $row_count++;
-            if($row_count == 2){
-                $row_count = 0;
-            }
         } ?>
     </tbody>
 </table>
@@ -166,4 +161,6 @@ JFusionFunctionAdmin::displayDonate();
     <input type="hidden" name="option" value="com_installer" />
     <?php echo JHTML::_('form.token'); ?>
 </form>
+<br/><br/>
+<a target="_blank" href="https://www.transifex.com/projects/p/jfusion/"><img border="0" src="https://ds0k0en9abmn1.cloudfront.net/charts/images/tx-logo-micro.646b0065fce6.png"></a>
 <br/><br/>

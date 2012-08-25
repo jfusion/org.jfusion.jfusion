@@ -41,39 +41,38 @@ JFusionFunctionAdmin::displayDonate();
     tr.good1 { background-color: #d9f9e2; }
     tr.bad0 { background-color: #f9ded9; }
     tr.bad1 { background-color: #f9e5e2; }
-    table.adminform td {width: 33%;}
 </style>
 
 <table class="adminform" style="border-spacing:1px;">
     <thead>
-    <tr>
-        <th class="title" align="left">
-            <?php echo JText::_('SERVER_SOFTWARE'); ?>
-        </th>
-        <th class="title" align="center">
-            <?php echo JText::_('YOUR_VERSION'); ?>
-        </th>
-        <th class="title" align="center">
-            <?php echo JText::_('MINIMUM_VERSION'); ?>
-        </th>
-    </tr>
+        <tr>
+            <th class="title" align="left">
+                <?php echo JText::_('SERVER_SOFTWARE'); ?>
+            </th>
+            <th class="title" align="center">
+                <?php echo JText::_('YOUR_VERSION'); ?>
+            </th>
+            <th class="title" align="center">
+                <?php echo JText::_('MINIMUM_VERSION'); ?>
+            </th>
+        </tr>
     </thead>
     <tbody>
     <?php
     $row_count = 0;
     foreach ($this->system as $software) {
         ?>
-    <tr class="<?php echo $software->class.($row_count % 2);?>">
-        <td>
-            <?php echo $software->name; ?>
-        </td>
-        <td>
-            <?php echo $software->oldversion; ?>
-        </td>
-        <td>
-            <?php echo $software->version ;?>
-        </td>
-    </tr>
+        <tr class="<?php echo $software->class.($row_count % 2);?>">
+            <td>
+                <?php echo $software->name; ?>
+            </td>
+            <td>
+                <?php echo $software->oldversion; ?>
+            </td>
+            <td>
+                <?php echo $software->version ;?>
+            </td>
+        </tr>
         <?php
         $row_count++;
     }
