@@ -201,7 +201,7 @@ class jfusionViewplugindisplay extends JView {
           	$record->copyscript =  'javascript:void(0)';
        	} else {
           	$record->copyimage = 'components/com_jfusion/images/copy_icon.png';
-          	$record->copyscript =  "javascript: copyplugin('" . $record->name . "')";
+          	$record->copyscript =  'javascript: copyplugin(\'' . $record->name . '\')';
      	}
 
        	//set uninstall options
@@ -234,11 +234,11 @@ class jfusionViewplugindisplay extends JView {
            	$record->masteralt =  'unavailable';
        	} elseif ($record->master == 1) {
          	$record->masterimage = 'components/com_jfusion/images/tick.png';
-         	$record->masterscript =  "javascript: changesetting('master','0','" .$record->name."');";
+         	$record->masterscript =  'javascript: changesetting(\'master\',\'0\',\'' .$record->name.'\');';
            	$record->masteralt =  'enabled';
       	} else {
           	$record->masterimage = 'components/com_jfusion/images/cross.png';
-           	$record->masterscript =  "javascript: changesetting('master','1','" .$record->name."');";
+           	$record->masterscript =  'javascript: changesetting(\'master\',\'1\',\'' .$record->name.'\');';
           	$record->masteralt =  'disabled';
     	}
 
@@ -249,11 +249,11 @@ class jfusionViewplugindisplay extends JView {
            	$record->slavealt =  'unavailable';
       	} elseif ($record->slave == 1) {
           	$record->slaveimage = 'components/com_jfusion/images/tick.png';
-          	$record->slavescript =  "javascript: changesetting('slave','0','" .$record->name."');";
+          	$record->slavescript =  'javascript: changesetting(\'slave\',\'0\',\'' .$record->name.'\');';
           	$record->slavealt =  'enabled';
        	} else {
          	$record->slaveimage = 'components/com_jfusion/images/cross.png';
-          	$record->slavescript =  "javascript: changesetting('slave','1','" .$record->name."');";
+          	$record->slavescript =  'javascript: changesetting(\'slave\',\'1\',\'' .$record->name.'\');';
          	$record->slavealt =  'disabled';
      	}
 
@@ -264,11 +264,11 @@ class jfusionViewplugindisplay extends JView {
            	$record->encryptalt =  'unavailable';
         } elseif ($record->check_encryption == 1) {
            	$record->encryptimage = 'components/com_jfusion/images/tick.png';
-           	$record->encryptscript =  "javascript: changesetting('check_encryption','0','" .$record->name."');";
+           	$record->encryptscript =  'javascript: changesetting(\'check_encryption\',\'0\',\'' .$record->name.'\');';
            	$record->encryptalt =  'enabled';
        	} else {
            	$record->encryptimage = 'components/com_jfusion/images/cross.png';
-           	$record->encryptscript =  "javascript: changesetting('check_encryption','1','" .$record->name."');";
+           	$record->encryptscript =  'javascript: changesetting(\'check_encryption\',\'1\',\'' .$record->name.'\');';
          	$record->encryptalt =  'disabled';
        	}
 
@@ -279,11 +279,11 @@ class jfusionViewplugindisplay extends JView {
            	$record->dualalt =  'unavailable';
       	} elseif ($record->dual_login == 1) {
             $record->dualimage = 'components/com_jfusion/images/tick.png';
-           	$record->dualscript =  "javascript: changesetting('dual_login','0','" .$record->name."');";
+           	$record->dualscript =  'javascript: changesetting(\'dual_login\',\'0\',\'' .$record->name.'\');';
       		$record->dualalt =  'enabled';
        	} else {
          	$record->dualimage = 'components/com_jfusion/images/cross.png';
-          	$record->dualscript =  "javascript: changesetting('dual_login','1','" .$record->name."');";
+          	$record->dualscript =  'javascript: changesetting(\'dual_login\',\'1\',\'' .$record->name.'\');';
        		$record->dualalt =  'disabled';
   		}
 

@@ -197,7 +197,7 @@ class JFusionHelper_vbulletin
                 //fixed do not remove ascii blankspace because we are in joomla everything is utf8
                 $vbulletin->options['blankasciistrip'] = 'u8205 u8204 u8237 u8238';
                 // set conection to use utf8
-                $vbulletin->db->query_first("SET names '".$this->params->get('database_charset', 'utf8')."'");
+                $vbulletin->db->query_first('SET names \''.$this->params->get('database_charset', 'utf8').'\'');
                 $GLOBALS['db'] = $vbulletin->db;
             } else {
                 JError::raiseWarning(500, JText::_('SOURCE_PATH_NOT_FOUND'));
@@ -215,7 +215,7 @@ class JFusionHelper_vbulletin
                 //fixed do not remove ascii blankspace because we are in joomla everything is utf8
                 $this->vb_data->db->options['blankasciistrip'] = 'u8205 u8204 u8237 u8238';
                 // set conection to use utf8
-                $this->vb_data->db->query_first("SET names '".$this->params->get('database_charset', 'utf8')."'");
+                $this->vb_data->db->query_first('SET names \''.$this->params->get('database_charset', 'utf8').'\'');
                 if (empty($GLOBALS['vbulletin'])) {
                     $GLOBALS['vbulletin'] = $this->vb_data;
                 }

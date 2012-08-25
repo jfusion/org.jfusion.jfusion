@@ -614,7 +614,7 @@ class trans {
      *    @return string, the JavaScriptCode
      */
     function php2js($jsVarName, $phpvar) {
-        $jsCode = "var $jsVarName = " . trans::phpValue2js($phpvar) . ";\n";
+        $jsCode = 'var '.$jsVarName.' = ' . trans::phpValue2js($phpvar) . ";\n";
         return $jsCode;
     }
     /**
@@ -686,7 +686,7 @@ class trans {
     public static function php2phpCode($phpVarName, $phpvar, $firstDimSpacer = '') {
         $phpCode = '';
         $pre = '$';
-        if (is_numeric($phpvar)) $phpCode = "$pre$phpVarName = $phpvar;\n";
+        if (is_numeric($phpvar)) $phpCode = $pre.$phpVarName.' = '.$phpvar.";\n";
         if (is_bool($phpvar)) {
             if ($phpvar) $phpCode = $pre.$phpVarName.' = true;'."\n";
             else $phpCode = $pre.$phpVarName.' = false;'."\n";
@@ -708,8 +708,8 @@ class trans {
             } else {
                 $phpCode = $pre.$phpVarName.' = array();'."\n";
                 foreach ($phpvar as $key => $value) {
-                    if (is_int($key) && $key >= 0) $name = $phpVarName . "[" . $key . "]";
-                    else $name = $phpVarName . "['" . $key . "']";
+                    if (is_int($key) && $key >= 0) $name = $phpVarName . '[' . $key . ']';
+                    else $name = $phpVarName . '[\'' . $key . '\']';
                     $phpCode.= trans::php2phpCode($name, $value) . $firstDimSpacer;
                 }
             }

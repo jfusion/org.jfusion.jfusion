@@ -620,7 +620,7 @@ class doku_auth_mysql extends doku_auth_basic {
                     * is not a big issue so we ignore this problem here.
                     */
                     $this->_delUser($user);
-                    if ($this->cnf['debug']) JError::raiseWarning(500,"MySQL err: Adding user '$user' to group '$group' failed.");
+                    if ($this->cnf['debug']) JError::raiseWarning(500,'MySQL err: Adding user \''.$user.'\' to group \''.$group.'\' failed.');
                 }
             }
         }
