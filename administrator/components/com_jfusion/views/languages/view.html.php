@@ -66,6 +66,8 @@ class jfusionViewlanguages extends JView
                     $lang->file = $language->getElementByPath('remotefile')->data();
                     $lang->date = $language->getElementByPath('creationdate')->data();
                     $lang->description = $language->getElementByPath('description')->data();
+                    $lang->progress = $language->getElementByPath('progress')->data();
+                    $lang->translateurl = $language->getElementByPath('translateurl')->data();
                     $lang->currentdate = null;
                     $lang->class = 'bad';
 
