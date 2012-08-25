@@ -243,6 +243,8 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             if ($jfile == 'mcp.php') {
                 //must globalize these to make sure urls are generated correctly via extra_url() in mcp.php
                 global $forum_id, $topic_id, $post_id, $report_id, $user_id, $action;
+            } else if ($jfile == 'feed.php') {
+                global $board_url;
             }
 
             //see if we need to force the database to use a new connection
