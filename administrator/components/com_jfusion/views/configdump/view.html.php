@@ -132,15 +132,18 @@ class jfusionViewconfigdump extends JView {
             $items		= $menus->getItems('componentid', $component->id);
         }
 
-        foreach($items as $row) {
-            unset($row->note,$row->route,$row->level,$row->language,$row->browserNav,$row->access,$row->home,$row->img);
-            unset($row->type,$row->template_style_id,$row->component_id,$row->parent_id,$row->component,$row->tree);
+        if ($items && is_array($items)) {
+            foreach($items as $row) {
+                unset($row->note,$row->route,$row->level,$row->language,$row->browserNav,$row->access,$row->home,$row->img);
+                unset($row->type,$row->template_style_id,$row->component_id,$row->parent_id,$row->component,$row->tree);
 
-            $new = $this->loadParams($row);
-            $this->clearParameters($new,'menu_item');
+                $new = $this->loadParams($row);
+                $this->clearParameters($new,'menu_item');
 
-            $menu_item[$new->id] = $new;
+                $menu_item[$new->id] = $new;
+            }
         }
+
 
         $this->assignRef('jfusion_plugin', $jfusion_plugin);
         $this->assignRef('jfusion_module', $jfusion_module);

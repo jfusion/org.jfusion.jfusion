@@ -39,42 +39,33 @@ if (JRequest::getVar('filter',false)) {
     </tr>
 </table>
 
-<table>
-    <tr>
-        <td width="100px" style="background-color:#F5A9A9">
-            <?php echo JText::_('CONFIGDUMP_ERROR');?>
-        </td>
-    </tr>
-    <tr>
-        <td width="100px" style="background-color:#088A08">
-            <?php echo JText::_('CONFIGDUMP_SEEMS_OK');?>
-        </td>
-    </tr>
-    <tr>
-        <td width="100px" style="background-color:#FFFF00">
-            <?php echo JText::_('CONFIGDUMP_POSIBLE_ERROR');?>
-        </td>
-    </tr>
-</table>
-
 <form method="post" action="index.php" name="adminForm" id="adminForm">
     <input type="hidden" name="option" value="com_jfusion" />
     <input type="hidden" name="task" value="configdump" />
     <table>
         <tr>
-            <td>
-                <?php echo JText::_('CONFIGDUMP_FILTER');?>
+            <td style="background-color:#F5A9A9">
+                <?php echo JText::_('CONFIGDUMP_ERROR');?>
             </td>
-            <td>
-                <input type="checkbox" <?php echo $filter; ?> name="filter" value="true" />
+        </tr>
+        <tr>
+            <td style="background-color:#088A08">
+                <?php echo JText::_('CONFIGDUMP_SEEMS_OK');?>
+            </td>
+        </tr>
+        <tr>
+            <td style="background-color:#FFFF00">
+                <?php echo JText::_('CONFIGDUMP_POSIBLE_ERROR');?>
             </td>
         </tr>
         <tr>
             <td>
-                <?php echo JText::_('CONFIGDUMP_MASK');?>
+                <input type="checkbox" <?php echo $filter; ?> name="filter" value="true" /> <?php echo JText::_('CONFIGDUMP_FILTER');?>
             </td>
+        </tr>
+        <tr>
             <td>
-                <input type="checkbox" <?php echo $mask; ?> name="mask" value="true" />
+                <input type="checkbox" <?php echo $mask; ?> name="mask" value="true" /> <?php echo JText::_('CONFIGDUMP_MASK');?>
             </td>
         </tr>
     </table>
