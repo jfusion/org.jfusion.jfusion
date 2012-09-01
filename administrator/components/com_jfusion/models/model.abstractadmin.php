@@ -164,28 +164,33 @@ class JFusionAdmin
                             return $status;
                         }
                     }
-
-                    //get the user table name
-                    $tablename = $this->getTablename();
-                    // lets check if the table exists, now using the Joomla API
-                    $table_list = $db->getTableList();
-                    $table_prefix = $db->getPrefix();
-                    if (!is_array($table_list)) {
+                    $source_path = $params->get('source_path');
+                    if ($source_path && (strpos($source_path, 'http://') === 0 || strpos($source_path, 'https://') === 0)) {
                         $status['config'] = 0;
-                        $status['message'] = $table_prefix . $tablename . ': ' . JText::_('NO_TABLE');
+                        $status['message'] = JText::_('ERROR_SOURCE_PATH'). ' : '.$source_path ;
                     } else {
-                        if (array_search($table_prefix . $tablename, $table_list) === false) {
-                            //do a final check for case insensitive windows servers
-                            if (array_search(strtolower($table_prefix . $tablename), $table_list) === false) {
-                                $status['config'] = 0;
-                                $status['message'] = $table_prefix . $tablename . ': ' . JText::_('NO_TABLE');
+                        //get the user table name
+                        $tablename = $this->getTablename();
+                        // lets check if the table exists, now using the Joomla API
+                        $table_list = $db->getTableList();
+                        $table_prefix = $db->getPrefix();
+                        if (!is_array($table_list)) {
+                            $status['config'] = 0;
+                            $status['message'] = $table_prefix . $tablename . ': ' . JText::_('NO_TABLE');
+                        } else {
+                            if (array_search($table_prefix . $tablename, $table_list) === false) {
+                                //do a final check for case insensitive windows servers
+                                if (array_search(strtolower($table_prefix . $tablename), $table_list) === false) {
+                                    $status['config'] = 0;
+                                    $status['message'] = $table_prefix . $tablename . ': ' . JText::_('NO_TABLE');
+                                } else {
+                                    $status['config'] = 1;
+                                    $status['message'] = JText::_('GOOD_CONFIG');
+                                }
                             } else {
                                 $status['config'] = 1;
                                 $status['message'] = JText::_('GOOD_CONFIG');
                             }
-                        } else {
-                            $status['config'] = 1;
-                            $status['message'] = JText::_('GOOD_CONFIG');
                         }
                     }
                 }
