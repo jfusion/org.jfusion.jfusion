@@ -358,11 +358,12 @@ class JFusionForum_phpbb3 extends JFusionForum {
 	                        $query = 'SELECT auth_option_id, auth_setting FROM #__acl_roles_data WHERE role_id = '.$r->auth_role_id.' AND auth_option_id IN (\''.$global_id.'\', \''.$read_id.'\')';
 	                        $db->setQuery($query);
 	                        $role_permissions = $db->loadObjectList('auth_option_id');
-	                        if (isset($role_permissions[$global_id]) && !$role_permissions[$global_id]) {
+	                        if (isset($role_permissions[$global_id])) {
 	                            //no access role is assigned to this user
 	                            $user_acl[$r->forum_id] = (int) $role_permissions[$global_id]->auth_setting;
-	                        } elseif (isset($role_permissions[$read_id]) && $role_permissions[$read_id]) {
-	                            $user_acl[$r->forum_id] = 1;
+	                        }
+                            if (isset($role_permissions[$read_id])) {
+                                $user_acl[$r->forum_id] = (int) $role_permissions[$read_id]->auth_setting;
 	                        }
 	                    }
 	                }
@@ -384,12 +385,13 @@ class JFusionForum_phpbb3 extends JFusionForum {
 	                            $query = 'SELECT auth_option_id, auth_setting FROM #__acl_roles_data WHERE role_id = '.$r->auth_role_id.' AND auth_option_id IN (\''.$global_id.'\', \''.$read_id.'\')';
 	                            $db->setQuery($query);
 	                            $role_permissions = $db->loadObjectList('auth_option_id');
-	                            if (isset($role_permissions[$global_id]) && !$role_permissions[$global_id]) {
+	                            if (isset($role_permissions[$global_id])) {
 	                                //no access role is assigned to this group
 	                                $groups_acl[$r->forum_id] = (int) $role_permissions[$global_id]->auth_setting;
-	                            } elseif (isset($role_permissions[$read_id]) && $role_permissions[$read_id]) {
+	                            }
+                                if (isset($role_permissions[$read_id])) {
 	                                //group has been given access
-	                                $groups_acl[$r->forum_id] = 1;
+                                    $groups_acl[$r->forum_id] = (int) $role_permissions[$read_id]->auth_setting;
 	                            }
 	                        }
 	                    }
