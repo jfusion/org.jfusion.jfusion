@@ -72,8 +72,8 @@ class jfusionViewplugindisplay extends JView {
         if ($rows) {
             //we found plugins now prepare the data
             foreach($rows as $record) {
-                $JFusionPlugin =& JFusionFactory::getAdmin($record->name);
-                $JFusionParam =& JFusionFactory::getParams($record->name);
+                $JFusionPlugin = JFusionFactory::getAdmin($record->name);
+                $JFusionParam = JFusionFactory::getParams($record->name);
 
                 $record = $this->initRecord($record->name,$record);
                 //check to see if the plugin's files exist
@@ -169,8 +169,8 @@ class jfusionViewplugindisplay extends JView {
             $db->setQuery($query);
             $record = $db->loadObject();
     	}
-    	$JFusionPlugin =& JFusionFactory::getAdmin($record->name);
-    	$JFusionParam =& JFusionFactory::getParams($record->name);
+    	$JFusionPlugin = JFusionFactory::getAdmin($record->name);
+    	$JFusionParam = JFusionFactory::getParams($record->name);
 
 
      	if($record->status==1) {

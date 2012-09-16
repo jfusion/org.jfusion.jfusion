@@ -37,7 +37,7 @@ class JFusionHelper_mediawiki
         if (!empty($mediawiki_cookieName)) {
             return $mediawiki_cookieName;
         }
-        $params =& JFusionFactory::getParams($this->getJname());
+        $params = JFusionFactory::getParams($this->getJname());
         $cookie_name = $this->getConfig('wgCookiePrefix');
         if (empty($cookie_name)) {
             $db_name = $params->get('database_name');
@@ -54,7 +54,7 @@ class JFusionHelper_mediawiki
      * @param array $options login options
      */
     function startSession($options = array()) {
-        $params =& JFusionFactory::getParams($this->getJname());
+        $params = JFusionFactory::getParams($this->getJname());
 		$this->joomlaSessionName = session_name();
 		$this->joomlaSessionId = session_id();
 		$this->joomlaSessionCookieParams = session_get_cookie_params();

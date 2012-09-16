@@ -136,7 +136,7 @@ class JFusionForum_vbulletin extends JFusionForum
 
             //if using the content date, manually update the forum's stats
             if ($useContentDate) {
-                $jdb =& JFusionFactory::getDatabase($this->getJname());
+                $jdb = JFusionFactory::getDatabase($this->getJname());
                 $user = JFusionFactory::getUser($this->getJname());
                 $userinfo = $user->getUser($userid, 'userid');
 
@@ -226,7 +226,7 @@ class JFusionForum_vbulletin extends JFusionForum
 			$threadinfo = $this->getThreadInfo($ids->threadid, $dbparams);
 			$post_approved = ($userinfo->guest && ($foruminfo['moderatenewposts'] || $dbparams->get('moderate_guests',1))) ? 0 : 1;
             $title = 'Re: ' . $threadinfo['title'];
-            $public =& JFusionFactory::getPublic($this->getJname());
+            $public = JFusionFactory::getPublic($this->getJname());
             $public->prepareText($title);
 
 	        $apidata = array(
@@ -311,7 +311,7 @@ class JFusionForum_vbulletin extends JFusionForum
      * @return array
      */
     function getForumInfo($id) {
-		$jdb =& JFusionFactory::getDatabase($this->getJname());
+		$jdb = JFusionFactory::getDatabase($this->getJname());
 		$query = 'SELECT * FROM #__forum WHERE forumid = ' . (int) $id;
 		$jdb->setQuery($query);
 		$foruminfo = $jdb->loadAssoc();

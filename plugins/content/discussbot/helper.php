@@ -94,7 +94,7 @@ class JFusionDiscussBotHelper {
     {
         $this->_debug('Checking if thread exists');
 
-        $JFusionForum =& JFusionFactory::getForum($this->jname);
+        $JFusionForum = JFusionFactory::getForum($this->jname);
 
         if ($force_new) {
             $threadinfo = new stdClass();
@@ -202,7 +202,7 @@ class JFusionDiscussBotHelper {
             }
 
             //make sure the forum and thread still exists
-            $JFusionForum =& JFusionFactory::getForum($this->jname);
+            $JFusionForum = JFusionFactory::getForum($this->jname);
 
             $forumlist =& $this->_get_lists('forum');
             if (!in_array($threadinfo->forumid, $forumlist)) {
@@ -233,7 +233,7 @@ class JFusionDiscussBotHelper {
 
         if ($type=='forum') {
             if (!isset($lists_instance[$type])) {
-                $JFusionForum =& JFusionFactory::getForum($this->jname);
+                $JFusionForum = JFusionFactory::getForum($this->jname);
                 $full_list = $JFusionForum->getForumList();
                 $ids = array();
                 foreach ($full_list as $a) {
@@ -284,7 +284,7 @@ class JFusionDiscussBotHelper {
             if ($this->params->get('default_userid',false)===false) {
                 $validity_reason = JText::_('REASON_NO_DEFAULT_USER');
             } else {
-                $JFusionForum =& JFusionFactory::getForum($this->jname);
+                $JFusionForum = JFusionFactory::getForum($this->jname);
                 $forumid = $JFusionForum->getDefaultForum($this->params, $this->article);
                 if (empty($forumid)) {
                     $validity_reason = JText::_('REASON_NO_FORUM_FOUND');
@@ -671,7 +671,7 @@ JS;
 
         //Load quick reply includes if enabled
         if ($this->params->get('enable_quickreply')) {
-            $JFusionForum =& JFusionFactory::getForum($this->jname);
+            $JFusionForum = JFusionFactory::getForum($this->jname);
             $this->_debug('Quick reply is enabled and thus loading any includes (js, css, etc).');
             $js .= $JFusionForum->loadQuickReplyIncludes();
         }

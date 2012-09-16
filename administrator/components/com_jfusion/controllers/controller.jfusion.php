@@ -156,7 +156,7 @@ class JFusionController extends JController
 
         if ($rows) {
             foreach($rows as $record) {
-                $JFusionPlugin =& JFusionFactory::getAdmin($record->name);
+                $JFusionPlugin = JFusionFactory::getAdmin($record->name);
                 $JFusionPlugin->debugConfig();
             }
         }

@@ -418,7 +418,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
         }
 
         //these are custom links that are based on modules and thus no as easy to replace as register and lost password links in the hooks.php file so we'll just parse them
-        $params =& JFusionFactory::getParams($this->getJname());
+        $params = JFusionFactory::getParams($this->getJname());
         $edit_account_url = $params->get('edit_account_url');
         if (strstr($q, 'mode=reg_details') && !empty($edit_account_url)) {
              $url = $edit_account_url;
@@ -435,7 +435,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             static $profile_mod_id;
             if (empty($profile_mod_id)) {
                 //the first item listed in the profile module is the edit profile link so must rewrite it to go to signature instead
-                $db =& JFusionFactory::getDatabase($this->getJname());
+                $db = JFusionFactory::getDatabase($this->getJname());
                 $query = 'SELECT module_id FROM #__modules WHERE module_langname = \'UCP_PROFILE\'';
                 $db->setQuery($query);
                 $profile_mod_id = $db->loadResult();
@@ -631,7 +631,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
      */
     function getPathway() {
         $mainframe = JFactory::getApplication('site');
-        $db =& JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
         $pathway = array();
 
         $forum_id = JRequest::getInt('f');

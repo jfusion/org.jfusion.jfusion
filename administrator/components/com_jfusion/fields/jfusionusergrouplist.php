@@ -35,7 +35,7 @@ class JFormFieldJFusionUsergroupList extends JFormField
         global $jname;
 		if ($jname){
         	if (JFusionFunction::validPlugin($jname)) {
-            	$JFusionPlugin =& JFusionFactory::getAdmin($jname);
+            	$JFusionPlugin = JFusionFactory::getAdmin($jname);
 
             	$grouptype = (string) $this->element['grouptype'];
             	$usergroups = $JFusionPlugin->getUsergroupList($grouptype);

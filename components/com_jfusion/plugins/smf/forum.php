@@ -205,13 +205,13 @@ class JFusionForum_smf extends JFusionForum
      */
     function filterActivityResults(&$results, $limit=0)
     {
-        $db =& JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'SELECT value FROM #__settings WHERE variable=\'censor_vulgar\'';
         $db->setQuery($query);
         $vulgar = $db->loadResult();
 
 
-        $db =& JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'SELECT value FROM #__settings WHERE variable=\'censor_proper\'';
         $db->setQuery($query);
         $proper = $db->loadResult();

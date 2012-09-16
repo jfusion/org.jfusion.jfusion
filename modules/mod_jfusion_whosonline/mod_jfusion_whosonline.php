@@ -46,7 +46,7 @@ if (file_exists($model_file) && file_exists($factory_file)) {
 			$pluginParam->loadArray($value);
 			$view = $pluginParam->get('view', 'auto');
 			if(JFusionFunction::validPlugin($jname)) {
-				$public =& JFusionFactory::getPublic($jname);
+				$public = JFusionFactory::getPublic($jname);
 
 				$output = new stdClass();
 				$title = $pluginParam->get('title', NULL);
@@ -74,7 +74,7 @@ if (file_exists($model_file) && file_exists($factory_file)) {
 					$config['avatar_width'] = $pluginParam->get('avatar_width',40);
 					$config['avatar_software'] = $pluginParam->get('avatar_software','jfusion');
 					$config['avatar_keep_proportional'] = $pluginParam->get('avatar_keep_proportional',false);
-					$db =& JFusionFactory::getDatabase($jname);
+					$db = JFusionFactory::getDatabase($jname);
 					$query = $public->getOnlineUserQuery($config['member_limit'], $config['group_limit']);
 					$db->setQuery($query);
 					$output->online_users = $db->loadObjectList();

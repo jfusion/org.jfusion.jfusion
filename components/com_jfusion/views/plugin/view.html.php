@@ -67,7 +67,7 @@ class jfusionViewPlugin extends JView {
 
 		$wrap = $jfile . '?'. implode($queries,'&');
 
-		$params2 =& JFusionFactory::getParams($this->jname);
+		$params2 = JFusionFactory::getParams($this->jname);
 		$source_url = $params2->get('source_url');
 
 		//check for trailing slash

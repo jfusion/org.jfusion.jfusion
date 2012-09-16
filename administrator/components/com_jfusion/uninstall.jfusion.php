@@ -133,7 +133,7 @@ function com_uninstall() {
     //see if any mods from jfusion plugins need to be removed
     $plugins = JFusionFactory::getPlugins('all',true);
     foreach($plugins as $plugin) {
-    	$JFusionPlugin =& JFusionFactory::getAdmin($plugin->name);
+    	$JFusionPlugin = JFusionFactory::getAdmin($plugin->name);
         list ($success,$reasons) = $JFusionPlugin->uninstall();
     	if (!$success) {
             echo '<table style="background-color:#f9ded9;" width ="100%"><tr style="height:30px">';

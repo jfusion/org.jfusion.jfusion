@@ -114,7 +114,7 @@ class jfusionViewdiscussionbot extends JView
 
 
 		//get the forum listings
-		$JFusionForum =& JFusionFactory::getForum($jname);
+		$JFusionForum = JFusionFactory::getForum($jname);
 		$forumSelectOptions = $JFusionForum->getForumList();
 		//joomla select options
         $joomlaSelectOptions = $joomlaoptions;

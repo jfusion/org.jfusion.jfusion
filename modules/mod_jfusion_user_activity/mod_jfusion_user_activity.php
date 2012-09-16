@@ -70,7 +70,7 @@ if (file_exists($model_file) && file_exists($factory_file)) {
 
 			require(JModuleHelper::getLayoutPath('mod_jfusion_user_activity'));
 		} else {
-			$public =& JFusionFactory::getPublic($jname);
+			$public = JFusionFactory::getPublic($jname);
 			if (JFusionFunction::methodDefined($public, 'renderUserActivityModule')) {
 				$output = $public->renderUserActivityModule($config, $view, $params);
 				echo $output;

@@ -130,7 +130,7 @@ class JFusionUser_mediawiki extends JFusionUser {
         //$params = JFusionFactory::getParams($this->getJname());
 		//setcookie($params->get('cookie_name'), '',0,$params->get('cookie_path'),$params->get('cookie_domain'),$params->get('secure'),$params->get('httponly'));
 
-        $params =& JFusionFactory::getParams($this->getJname());
+        $params = JFusionFactory::getParams($this->getJname());
         /**
          * @ignore
          * @var $helper JFusionHelper_mediawiki

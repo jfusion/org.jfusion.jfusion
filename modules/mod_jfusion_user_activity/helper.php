@@ -36,10 +36,10 @@ class modjfusionUserActivityHelper {
     public static function prepareAutoOutput($jname, $config, $params) {
 		$output = new stdClass();
 
-        $forum =& JFusionFactory::getForum($jname);
+        $forum = JFusionFactory::getForum($jname);
 		$joomlaUser = JFactory::getUser();
 
-		$PluginUser =& JFusionFactory::getUser($jname);
+		$PluginUser = JFusionFactory::getUser($jname);
 		$userinfo = $PluginUser->getUser($joomlaUser);
 
 		//get the avatar of the logged in user

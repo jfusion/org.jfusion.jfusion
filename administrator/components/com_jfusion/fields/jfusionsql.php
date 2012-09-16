@@ -52,7 +52,7 @@ class JFormFieldjfusionsql extends JFormField
 
 		if(!empty($jname)) {
     		if (JFusionFunction::validPlugin($jname)) {
-		    	$db =& JFusionFactory::getDatabase($jname);
+		    	$db = JFusionFactory::getDatabase($jname);
 		    	$query = (string) $this->element['query'];
 
 		    	//some special queries for discussion bot

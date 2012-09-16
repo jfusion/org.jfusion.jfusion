@@ -157,7 +157,7 @@ class JFusionHelper_dokuwiki
         static $config_path;
 
         if (empty($config_path)) {
-            $params =& JFusionFactory::getParams($this->getJname());
+            $params = JFusionFactory::getParams($this->getJname());
             $source_path = $params->get('source_path');
             $config_path = (empty($path)) ? $source_path : $path;
 

@@ -62,7 +62,7 @@ if (file_exists($model_file) && file_exists($factory_file)) {
 		}
 		
 		$view = $pluginParam->get('view', 'auto');
-        $forum =& JFusionFactory::getForum($jname);
+        $forum = JFusionFactory::getForum($jname);
 
 		defined('_DATE_FORMAT_LC2') or define('_DATE_FORMAT_LC2','%A, %d %B %Y %H:%M');
 		defined('LAT') or define('LAT', 0);
@@ -111,7 +111,7 @@ if (file_exists($model_file) && file_exists($factory_file)) {
 		defined('ACTIVITY_MODE') or define('ACTIVITY_MODE', $config['mode']);        
         
 		if($view == 'auto') {
-			$db =& JFusionFactory::getDatabase($jname);
+			$db = JFusionFactory::getDatabase($jname);
 			
             if ($config['forum_mode'] == 0 || empty($config['selected_forums'])) {
                 $selectedforumssql = '';

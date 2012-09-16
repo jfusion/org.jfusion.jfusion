@@ -259,7 +259,7 @@ class JFusionPublic_smf extends JFusionPublic
             //$username = JRequest::getVar('user');
             //$password = JRequest::getVar('hash_passwrd');
             //get the userinfo directly from SMF
-            //$JFusionUser =& JFusionFactory::getUser($this->getJname());
+            //$JFusionUser = JFusionFactory::getUser($this->getJname());
             //$userinfo = $JFusionUser->getUser($username);
             //generate the password hash
             //$test_crypt = sha1($userinfo->password . $smf_session_id);
@@ -851,12 +851,12 @@ class JFusionPublic_smf extends JFusionPublic
      */
     function filterSearchResults(&$results, &$pluginParam)
     {
-		$db =& JFusionFactory::getDatabase($this->getJname());
+		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = 'SELECT value FROM #__settings WHERE variable=\'censor_vulgar\'';
 		$db->setQuery($query);
 		$vulgar = $db->loadResult();
 
-		$db =& JFusionFactory::getDatabase($this->getJname());
+		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = 'SELECT value FROM #__settings WHERE variable=\'censor_proper\'';
 		$db->setQuery($query);
 		$proper = $db->loadResult();

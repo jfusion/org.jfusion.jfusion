@@ -223,7 +223,7 @@ class JFusionForum_smf2 extends JFusionForum
 	{
 		//setup some variables
 		$userid = $this->getThreadAuthor($dbparams,$contentitem);
-		$jdb =& JFusionFactory::getDatabase($this->getJname());
+		$jdb = JFusionFactory::getDatabase($this->getJname());
 		$subject = trim(strip_tags($contentitem->title));
 
 		//prepare the content body
@@ -359,7 +359,7 @@ class JFusionForum_smf2 extends JFusionForum
 		$postid =& $existingthread->postid;
 
 		//setup some variables
-		$jdb =& JFusionFactory::getDatabase($this->getJname());
+		$jdb = JFusionFactory::getDatabase($this->getJname());
 		$subject = trim(strip_tags($contentitem->title));
 
 		//prepare the content body
@@ -469,8 +469,8 @@ HTML;
 
 		//setup some variables
 		$userid = $userinfo->userid;
-		$jdb =& JFusionFactory::getDatabase($this->getJname());
-        $public =& JFusionFactory::getPublic($this->getJname());
+		$jdb = JFusionFactory::getDatabase($this->getJname());
+        $public = JFusionFactory::getPublic($this->getJname());
 		$text = JRequest::getVar('quickReply', false, 'POST');
 		//strip out html from post
 		$text = strip_tags($text);
@@ -624,7 +624,7 @@ HTML;
      */
     function getReplyCount(&$existingthread)
 	{
-		$db =& JFusionFactory::getDatabase($this->getJname());
+		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = 'SELECT num_replies FROM #__topics WHERE id_topic = '.$existingthread->threadid;
 		$db->setQuery($query);
 		$result = $db->loadResult();
@@ -666,7 +666,7 @@ HTML;
      */
     function getThread($threadid)
     {
-		$db =& JFusionFactory::getDatabase($this->getJname());
+		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = 'SELECT id_topic AS threadid, id_board AS forumid, id_first_msg AS postid FROM #__topics WHERE id_topic = '.$threadid;
 		$db->setQuery($query);
 		$results = $db->loadObject();
@@ -807,12 +807,12 @@ HTML;
 	 */
 	function filterActivityResults(&$results, $limit=0)
 	{
-		$db =& JFusionFactory::getDatabase($this->getJname());
+		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = 'SELECT value FROM #__settings WHERE variable=\'censor_vulgar\'';
 		$db->setQuery($query);
 		$vulgar = $db->loadResult();
 
-		$db =& JFusionFactory::getDatabase($this->getJname());
+		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = 'SELECT value FROM #__settings WHERE variable=\'censor_proper\'';
 		$db->setQuery($query);
 		$proper = $db->loadResult();

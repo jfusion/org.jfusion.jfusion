@@ -295,7 +295,7 @@ class JFusionHelper_vbulletin
     {
         static $jfusion_vb_version;
         if(empty($jfusion_vb_version)) {
-            $db =& JFusionFactory::getDatabase($this->getJname());
+            $db = JFusionFactory::getDatabase($this->getJname());
             $q = 'SELECT value FROM #__setting WHERE varname = \'templateversion\'';
             $db->setQuery($q);
             $jfusion_vb_version = $db->loadResult();

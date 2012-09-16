@@ -58,7 +58,7 @@ class JElementjfusionsql extends JElement
 
     	if(!empty($jname)) {
     		if (JFusionFunction::validPlugin($jname)) {
-    		    $db =& JFusionFactory::getDatabase($jname);
+    		    $db = JFusionFactory::getDatabase($jname);
     		    $query = $node->attributes('query');
 
                 if ($query == 'k2.categories') {

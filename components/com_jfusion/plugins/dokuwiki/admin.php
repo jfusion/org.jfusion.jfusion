@@ -436,7 +436,7 @@ HTML;
          */
         $helper = JFusionFactory::getHelper($this->getJname());
         $conf = $helper->getConf();
-        $params =& JFusionFactory::getParams($this->getJname());
+        $params = JFusionFactory::getParams($this->getJname());
         $source_path = $params->get('source_path');
         $plugindir = $source_path . DS . 'lib' . DS . 'plugins';
 
@@ -478,7 +478,7 @@ HTML;
      */
     function enableAuthMod()
     {
-        $params =& JFusionFactory::getParams($this->getJname());
+        $params = JFusionFactory::getParams($this->getJname());
         $source_path = $params->get('source_path');
         $plugindir = $source_path . DS . 'lib' . DS . 'plugins' . DS . 'jfusion';
         $pluginsource = JFUSION_PLUGIN_PATH . DS . 'dokuwiki' . DS . 'jfusion';
@@ -537,7 +537,7 @@ PHP;
      */
     function disableAuthMod()
     {
-        $params =& JFusionFactory::getParams($this->getJname());
+        $params = JFusionFactory::getParams($this->getJname());
         $source_path = $params->get('source_path');
         $plugindir = $source_path . DS . 'lib' . DS . 'plugins' . DS . 'jfusion';
 

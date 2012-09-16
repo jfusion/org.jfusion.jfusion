@@ -97,7 +97,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
             $text = html_entity_decode($text);
             $text = JFusionFunction::parseCode($text, 'bbcode');
         } elseif ($for == 'joomla' || ($for == 'activity' && $params->get('parse_text') == 'html')) {
-            $db =& JFusionFactory::getDatabase($this->getJname());
+            $db = JFusionFactory::getDatabase($this->getJname());
             static $custom_smileys, $vb_bbcodes;
             $options = array();
 
@@ -149,7 +149,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
             $text = preg_replace('#<div class="bbcode_quote_head">(.*?);(.*?) (.*?):</div>#' , '<div class="bbcode_quote_head">$1 $3:</div>', $text);
         } elseif ($for == 'activity' || $for == 'search') {
 
-            $db =& JFusionFactory::getDatabase($this->getJname());
+            $db = JFusionFactory::getDatabase($this->getJname());
             static $vb_bbcodes_plain;
             $options = array();
             //add custom bbcode rules

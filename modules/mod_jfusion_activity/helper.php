@@ -43,8 +43,8 @@ class modjfusionActivityHelper
 
     public static function appendAutoOutput(&$results, $jname, &$config, &$params)
     {
-        $forum =& JFusionFactory::getForum($jname);
-        $public =& JFusionFactory::getPublic($jname);
+        $forum = JFusionFactory::getForum($jname);
+        $public = JFusionFactory::getPublic($jname);
         if (is_array($results)) {
             foreach ($results as $r) {
                 //get the Joomla userid

@@ -784,7 +784,7 @@ HTML;
         $return = true;
         $reasons = array();
 
-        $db =& JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
         $hookNames = array();
         $hookNames[] = 'JFusion Global Fix Plugin';
         $hookNames[] = 'JFusion Frameless Integration Plugin';

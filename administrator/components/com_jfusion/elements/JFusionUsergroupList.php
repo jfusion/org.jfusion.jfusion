@@ -40,7 +40,7 @@ class JElementJFusionUsergroupList extends JElement
         global $jname;
 		if ($jname){
 		    if (JFusionFunction::validPlugin($jname)) {
-            	$JFusionPlugin =& JFusionFactory::getAdmin($jname);
+            	$JFusionPlugin = JFusionFactory::getAdmin($jname);
 
             	$grouptype = $node->attributes('grouptype');
             	$usergroups = $JFusionPlugin->getUsergroupList($grouptype);

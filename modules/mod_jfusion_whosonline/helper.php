@@ -50,8 +50,8 @@ class modjfusionWhosOnlineHelper {
 		} elseif(!JFusionFunction::validPlugin($link_jname)) {
 			$output->error = JText::_('NOT_CONFIGURED');
 		} else {
-            $forum_links =& JFusionFactory::getForum($link_jname);
-            $public_users =& JFusionFactory::getPublic($jname);
+            $forum_links = JFusionFactory::getForum($link_jname);
+            $public_users = JFusionFactory::getPublic($jname);
 
 
             //show the number of people online if set to do so
@@ -80,7 +80,7 @@ class modjfusionWhosOnlineHelper {
                         }
                     } else {
                         //first, the userid of the JFusion plugin for the menu item must be obtained
-                        $JFusionUser =& JFusionFactory::getUser($link_jname);
+                        $JFusionUser = JFusionFactory::getUser($link_jname);
                         $userinfo = $JFusionUser->getUser($u);
 
                         if(!empty($userinfo)) {

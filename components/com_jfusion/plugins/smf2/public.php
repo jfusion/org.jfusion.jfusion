@@ -235,7 +235,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
             //$username = JRequest::getVar('user');
             //$password = JRequest::getVar('hash_passwrd');
             //get the userinfo directly from SMF
-            //$JFusionUser =& JFusionFactory::getUser($this->getJname());
+            //$JFusionUser = JFusionFactory::getUser($this->getJname());
             //$userinfo = $JFusionUser->getUser($username);
             //generate the password hash
             //$test_crypt = sha1($userinfo->password . $smf_session_id);
@@ -846,12 +846,12 @@ class JFusionPublic_smf2 extends JFusionPublic {
      */
     function filterSearchResults(&$results = array(), &$pluginParam)
 	{
-		$db =& JFusionFactory::getDatabase($this->getJname());
+		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = 'SELECT value FROM #__settings WHERE variable=\'censor_vulgar\'';
 		$db->setQuery($query);
 		$vulgar = $db->loadResult();
 
-		$db =& JFusionFactory::getDatabase($this->getJname());
+		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = 'SELECT value FROM #__settings WHERE variable=\'censor_proper\'';
 		$db->setQuery($query);
 		$proper = $db->loadResult();
@@ -917,7 +917,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 	 */
 	function getNumberOnlineGuests()
 	{
-		$db =& JFusionFactory::getDatabase($this->getJname());
+		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = 'SELECT COUNT(DISTINCT(ip)) FROM #__log_online WHERE id_member = 0';
 		$db->setQuery($query);
 		return $db->loadResult();
@@ -947,7 +947,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 			}
 		}
 
-		$db =& JFusionFactory::getDatabase($this->getJname());
+		$db = JFusionFactory::getDatabase($this->getJname());
 
 		$query = 'SELECT COUNT(DISTINCT(l.ip)) FROM #__log_online AS l JOIN #__members AS u ON l.id_member = u.id_member WHERE l.id_member != 0 '.$usergroup_query;
 

@@ -433,7 +433,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
      */
     function getThread($threadid)
     {
-		$db =& JFusionFactory::getDatabase($this->getJname());
+		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = 'SELECT topic_id AS threadid, forum_id AS forumid, topic_first_post_id AS postid FROM #__topics WHERE topic_id = '.$threadid;
 		$db->setQuery($query);
 		$results = $db->loadObject();
@@ -454,7 +454,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 	{
 		//setup some variables
 		$userid = $this->getThreadAuthor($dbparams,$contentitem);
-		$jdb =& JFusionFactory::getDatabase($this->getJname());
+		$jdb = JFusionFactory::getDatabase($this->getJname());
 		$subject = trim(strip_tags($contentitem->title));
 
 		//prepare the content body
@@ -618,7 +618,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 		$postid =& $existingthread->postid;
 
 		//setup some variables
-		$jdb =& JFusionFactory::getDatabase($this->getJname());
+		$jdb = JFusionFactory::getDatabase($this->getJname());
 		$subject = trim(strip_tags($contentitem->title));
 
 		//prepare the content body
@@ -680,8 +680,8 @@ class JFusionForum_phpbb3 extends JFusionForum {
 				$status['error'][] = JTEXT::_('GUEST_FIELDS_MISSING');
 				return $status;
 			} else {
-				$db =& JFusionFactory::getDatabase($this->getJname());
-				$user =& JFusionFactory::getUser($this->getJname());
+				$db = JFusionFactory::getDatabase($this->getJname());
+				$user = JFusionFactory::getUser($this->getJname());
 				$username_clean = $user->filterUsername($userinfo->username);
 				$query = 'SELECT COUNT(*) FROM #__users '
 						. ' WHERE username = ' . $db->Quote($userinfo->username)
@@ -699,8 +699,8 @@ class JFusionForum_phpbb3 extends JFusionForum {
 		}
 		//setup some variables
 		$userid =& $userinfo->userid;
-		$jdb =& JFusionFactory::getDatabase($this->getJname());
-		$public =& JFusionFactory::getPublic($this->getJname());
+		$jdb = JFusionFactory::getDatabase($this->getJname());
+		$public = JFusionFactory::getPublic($this->getJname());
 		$text = JRequest::getVar('quickReply', false, 'POST');
 		//strip out html from post
 		$text = strip_tags($text);
@@ -900,7 +900,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
      */
     function getReplyCount(&$existingthread)
 	{
-		$db =& JFusionFactory::getDatabase($this->getJname());
+		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = 'SELECT count(*) FROM #__posts WHERE topic_id = '.$existingthread->threadid.' AND post_approved = 1 AND post_id != '.$existingthread->postid;
 		$db->setQuery($query);
 		$result = $db->loadResult();

@@ -73,7 +73,7 @@ class JFusionUser_vbulletin extends JFusionUser
     	}
 
         // Get user info from database
-        $db =& JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
 
         $name_field = $this->params->get('name_field');
 
@@ -212,7 +212,7 @@ class JFusionUser_vbulletin extends JFusionUser
 		        }
             }
 
-    		$db =& JFusionFactory::getDatabase($this->getJname());
+    		$db = JFusionFactory::getDatabase($this->getJname());
     		$queries = array();
 
     		if ($session_user) {
@@ -255,7 +255,7 @@ class JFusionUser_vbulletin extends JFusionUser
         }
 
         //first check to see if striking is enabled to prevent further strikes
-        $db =& JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'SELECT value FROM #__setting WHERE varname = \'usestrikesystem\'';
         $db->setQuery($query);
         $strikeEnabled = $db->loadResult();
@@ -350,7 +350,7 @@ class JFusionUser_vbulletin extends JFusionUser
 
         $date = date('Y-m-d');
 
-        $db =& JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'UPDATE #__user SET passworddate = ' . $db->Quote($date) . ', password = ' . $db->Quote($existinguser->password). ', salt = ' . $db->Quote($existinguser->password_salt). ' WHERE userid  = ' . $existinguser->userid;
         $db->setQuery($query );
         if (!$db->query()) {
@@ -390,7 +390,7 @@ class JFusionUser_vbulletin extends JFusionUser
      */
     function blockUser (&$userinfo, &$existinguser, &$status)
     {
-        $db =& JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
 
         //get the id of the banned group
         $bannedgroup = $this->params->get('bannedgroup');
@@ -446,7 +446,7 @@ class JFusionUser_vbulletin extends JFusionUser
 
         //first check to see if user is banned and if so, retrieve the prebanned fields
         //must be something other than $db because it conflicts with vbulletin's global variables
-        $jdb =& JFusionFactory::getDatabase($this->getJname());
+        $jdb = JFusionFactory::getDatabase($this->getJname());
         $query = 'SELECT b.*, g.usertitle AS bantitle FROM #__userban AS b INNER JOIN #__user AS u ON b.userid = u.userid INNER JOIN #__usergroup AS g ON u.usergroupid = g.usergroupid WHERE b.userid = ' . $existinguser->userid;
         $jdb->setQuery($query );
         $result = $jdb->loadObject();
@@ -507,7 +507,7 @@ class JFusionUser_vbulletin extends JFusionUser
         $usergroup = (is_array($usergroups)) ? $usergroups[$userinfo->group_id]['defaultgroup'] : $usergroups;
 
         //update the usergroup to default group
-        $db =& JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'UPDATE #__user SET usergroupid = ' . $usergroup . ' WHERE userid  = ' . $existinguser->userid;
         $db->setQuery($query );
 
@@ -537,7 +537,7 @@ class JFusionUser_vbulletin extends JFusionUser
         $usergroup = $this->params->get('activationgroup');
 
         //update the usergroup to awaiting activation
-        $db =& JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'UPDATE #__user SET usergroupid = ' . $usergroup . ' WHERE userid  = ' . $existinguser->userid;
         $db->setQuery($query );
 
@@ -633,7 +633,7 @@ class JFusionUser_vbulletin extends JFusionUser
                 $userdmid = $response['new_id'];
                 //if we set a temp password, we need to move the hashed password over
                 if (!isset($userinfo->password_clear)) {
-                    $db =& JFusionFactory::getDatabase($this->getJname());
+                    $db = JFusionFactory::getDatabase($this->getJname());
                     $query = 'UPDATE #__user SET password = ' . $db->Quote($userinfo->password). ' WHERE userid  = ' . $userdmid;
                     if (!$db->query()) {
                         $status['debug'][] = JText::_('USER_CREATION_ERROR') .'. '. JText::_('USERID') . ' ' . $userdmid . ': '.JText::_('MASTER_PASSWORD_NOT_COPIED');
@@ -754,7 +754,7 @@ class JFusionUser_vbulletin extends JFusionUser
      */
     function getDefaultUserTitle($groupid, $posts = 0)
     {
-        $db =& JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'SELECT usertitle FROM #__usergroup WHERE usergroupid = '.$groupid;
         $db->setQuery($query);
         $title = $db->loadResult();
@@ -798,7 +798,7 @@ class JFusionUser_vbulletin extends JFusionUser
         } else {
             $joomla_persistant_cookie = '';
         }
-        $db =& JFusionFactory::getDatabase($this->getJname());
+        $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'SELECT userid FROM #__session WHERE sessionhash = ' . $db->Quote($cookie_sessionhash);
         $db->setQuery($query);
         $session_userid = $db->loadResult();

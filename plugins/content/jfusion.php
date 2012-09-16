@@ -182,7 +182,7 @@ class plgContentJfusion extends JPlugin
 
                     if ($this->valid) {
                         $threadinfo =& $this->helper->_get_thread_info();
-                        $JFusionForum =& JFusionFactory::getForum($this->jname);
+                        $JFusionForum = JFusionFactory::getForum($this->jname);
                         $forumid = $JFusionForum->getDefaultForum($this->params, $this->article);
 
                         if (($this->creationMode=='load') ||
@@ -217,7 +217,7 @@ class plgContentJfusion extends JPlugin
                     //recheck validity without stipulation
                     $this->helper->_debug('In test mode thus not creating the article');
                     $threadinfo =& $this->helper->_get_thread_info();
-                    $JFusionForum =& JFusionFactory::getForum($this->jname);
+                    $JFusionForum = JFusionFactory::getForum($this->jname);
                     $content = '<u>' . $this->article->title . '</u><br />';
                     if (!empty($threadinfo)) {
                         $content .= JText::_('DISCUSSBOT_TEST_MODE') . '<img src="'.JFusionFunction::getJoomlaURL().DISCUSSBOT_URL_PATH.'images/check.png" style="margin-left:5px;"><br/>';
@@ -338,7 +338,7 @@ class plgContentJfusion extends JPlugin
                             $threadinfo = $this->helper->_get_thread_info();
                             if (empty($threadinfo))  {
                                 //could be a manual plug so let's get the thread info directly
-                                $JFusionForum =& JFusionFactory::getForum($this->jname);
+                                $JFusionForum = JFusionFactory::getForum($this->jname);
                                 $threadinfo = $JFusionForum->getThread($threadid);
                                 if (!empty($threadinfo)) {
                                     //let's set threadinfo
@@ -491,7 +491,7 @@ class plgContentJfusion extends JPlugin
 
         $content = '';
         //get the jfusion forum object
-        $JFusionForum =& JFusionFactory::getForum($this->jname);
+        $JFusionForum = JFusionFactory::getForum($this->jname);
 
         //find any {jfusion_discuss...} to manually plug
         $this->helper->_debug('Finding all manually added plugs');
@@ -745,7 +745,7 @@ HTML;
     public function _create_post()
     {
         $JoomlaUser = JFactory::getUser();
-        $JFusionForum =& JFusionFactory::getForum($this->jname);
+        $JFusionForum = JFusionFactory::getForum($this->jname);
 
         //define some variables
         $allowGuests =& $this->params->get('quickreply_allow_guests',0);
@@ -764,7 +764,7 @@ HTML;
 
                     $captcha_verification = $JFusionForum->verifyCaptcha($this->params);
                 } else {
-                    $JFusionUser =& JFusionFactory::getUser($this->jname);
+                    $JFusionUser = JFusionFactory::getUser($this->jname);
                     $userinfo = $JFusionUser->getUser($JoomlaUser);
                     $userinfo->guest = 0;
                     //we have a user logged in so ignore captcha
@@ -954,7 +954,7 @@ HTML;
     {
         $this->helper->_debug('Beginning rendering content');
         if (!empty($threadinfo)) {
-            $JFusionForum =& JFusionFactory::getForum($this->jname);
+            $JFusionForum = JFusionFactory::getForum($this->jname);
             $this->helper->reply_count = $JFusionForum->getReplyCount($threadinfo);
         }
         $view = JRequest::getVar('view');
@@ -1006,11 +1006,11 @@ HTML;
         $this->helper->_debug('Rendering discussion content');
 
         //setup parameters
-        $JFusionForum =& JFusionFactory::getForum($this->jname);
+        $JFusionForum = JFusionFactory::getForum($this->jname);
         $allowGuests =& $this->params->get('quickreply_allow_guests',0);
         $JoomlaUser = JFactory::getUser();
         //make sure the user exists in the software before displaying the quick reply
-        $JFusionUser =& JFusionFactory::getUser($this->jname);
+        $JFusionUser = JFusionFactory::getUser($this->jname);
         $JFusionUserinfo = $JFusionUser->getUser($JoomlaUser);
         $action_url = $this->helper->_get_article_url();
         $this->helper->output = array();
@@ -1277,7 +1277,7 @@ HTML;
         //create the discuss this link
         if ($this->helper->thread_status || $this->manual_plug) {
             if ($link_mode!="never") {
-                $JFusionForum =& JFusionFactory::getForum($this->jname);
+                $JFusionForum = JFusionFactory::getForum($this->jname);
                 if ($this->helper->reply_count === false || $this->helper->reply_count === null) {
                     $this->helper->reply_count = $JFusionForum->getReplyCount($threadinfo);
                 }
@@ -1381,9 +1381,9 @@ HTML;
         $userlink_custom = $this->params->get('userlink_custom',false);
         $character_limit = (int) $this->params->get('character_limit');
         $itemid = $this->params->get('itemid');
-        $JFusionPublic =& JFusionFactory::getPublic($this->jname);
+        $JFusionPublic = JFusionFactory::getPublic($this->jname);
 
-        $JFusionForum =& JFusionFactory::getForum($this->jname);
+        $JFusionForum = JFusionFactory::getForum($this->jname);
         $columns = $JFusionForum->getDiscussionColumns();
         if (empty($columns)) return '';
 
@@ -1519,7 +1519,7 @@ HTML;
     {
         $this->helper->reply_count = JRequest::getVar('reply_count','');
         if ($this->helper->reply_count == '') {
-            $JFusionForum =& JFusionFactory::getForum($this->jname);
+            $JFusionForum = JFusionFactory::getForum($this->jname);
             $threadinfo =& $this->helper->_get_thread_info();
             if (!empty($threadinfo)) {
                 $this->helper->reply_count = $JFusionForum->getReplyCount($threadinfo);
@@ -1580,7 +1580,7 @@ HTML;
     public function _update_posts()
     {
         if ($this->helper->thread_status) {
-            $JFusionForum =& JFusionFactory::getForum($this->jname);
+            $JFusionForum = JFusionFactory::getForum($this->jname);
             $threadinfo =& $this->helper->_get_thread_info();
             $posts = $JFusionForum->getPosts($this->params, $threadinfo);
             $this->helper->output = array();
