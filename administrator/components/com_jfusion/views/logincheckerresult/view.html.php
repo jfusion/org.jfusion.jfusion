@@ -144,6 +144,9 @@ class jfusionViewLoginCheckerResult extends JView
         foreach ($plugin_list as $plugin_details) {
             $plugin = new stdClass;
             $plugin->name = $plugin_details->name;
+            if ($plugin_details->original_name) {
+                $plugin->original_name = $plugin_details->original_name;
+            }
             $plugin->configuration = new stdClass;
             $plugin->configuration->master = $plugin_details->master;
             $plugin->configuration->slave = $plugin_details->slave;

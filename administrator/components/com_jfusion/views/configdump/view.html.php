@@ -72,7 +72,7 @@ class jfusionViewconfigdump extends JView {
         $joomla_plugin=array();
         $menu_item=array();
 
-        $query = 'SELECT id,name,params,dual_login from #__jfusion WHERE status = 1';
+        $query = 'SELECT id,name,params,dual_login,original_name from #__jfusion WHERE status = 1';
         $db->setQuery($query);
         $rows = $db->loadObjectList();
 
