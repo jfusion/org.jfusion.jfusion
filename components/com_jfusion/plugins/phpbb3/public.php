@@ -596,7 +596,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             // Define our preg arrays
             $regex_header = array();
             $replace_header = array();
-            $callback_header = array();            
+            $callback_header = array();
             //convert relative links into absolute links
             $regex_header[] = '#(href="|src=")./(.*?")#mS';
             $replace_header[] = '$1' . $data->integratedURL . '$2';
@@ -623,7 +623,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
         	} else {
         		$data->header = preg_replace($regex_header[$k], $replace_header[$k], $data->header);
         	}
-        }               
+        }
     }
 
     /**
