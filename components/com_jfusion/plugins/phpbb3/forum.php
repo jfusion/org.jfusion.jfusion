@@ -277,8 +277,6 @@ class JFusionForum_phpbb3 extends JFusionForum {
         if (!is_array($phpbb_acl)) {
             $db = JFusionFactory::getDatabase($this->getJname());
             $phpbb_acl = array();
-            $user_acl = array();
-            $groups_acl = array();
 
             //get permissions for all forums in case more than one module/plugin is present with different settings
             $db = JFusionFactory::getDatabase($this->getJname());
@@ -344,37 +342,6 @@ class JFusionForum_phpbb3 extends JFusionForum {
 
                 //get the permissions for the user
                 $auth_option_ids = array(0, $global_id, $read_id);
-                $query = 'SELECT * FROM #__acl_users WHERE user_id = '.$userid.' AND auth_option_id IN (' . implode(', ', $auth_option_ids) . ') AND forum_id IN (' . implode(', ', $forumids) . ')';
-                $db->setQuery($query);
-                $results = $db->loadObjectList();
-
-				if ($results) {
-	                foreach ($results as $r) {
-	                    if ($r->auth_option_id) {
-	                        //use the specific setting
-	                        $user_acl[$r->forum_id] = (int) $r->auth_setting;
-	                    } else {
-	                        //there is a role assigned so find out what the role's permission is
-	                        $query = 'SELECT auth_option_id, auth_setting FROM #__acl_roles_data WHERE role_id = '.$r->auth_role_id.' AND auth_option_id IN (\''.$global_id.'\', \''.$read_id.'\')';
-	                        $db->setQuery($query);
-	                        $role_permissions = $db->loadObjectList('auth_option_id');
-	                        if (isset($role_permissions[$global_id])) {
-	                            //no access role is assigned to this user
-	                            $user_acl[$r->forum_id] = (int) $role_permissions[$global_id]->auth_setting;
-	                        }
-                            if (isset($role_permissions[$read_id])) {
-                                //group has been given access
-                                if (isset($user_acl[$r->forum_id])) {
-                                    if ($user_acl[$r->forum_id]) {
-                                        $user_acl[$r->forum_id] = (int) $role_permissions[$read_id]->auth_setting;
-                                    }
-                                } else {
-                                    $user_acl[$r->forum_id] = (int) $role_permissions[$read_id]->auth_setting;
-                                }
-                            }
-	                    }
-	                }
-				}
 
                 //get the permissions for groups
                 $query = 'SELECT * FROM #__acl_groups WHERE group_id IN (' . implode(', ', $groupids) . ') AND auth_option_id IN (' . implode(', ', $auth_option_ids) . ') AND forum_id IN (' . implode(', ', $forumids) . ')';
@@ -382,57 +349,78 @@ class JFusionForum_phpbb3 extends JFusionForum {
                 $results = $db->loadObjectList();
 
                 if ($results) {
-	                foreach ($results as $r) {
-	                    if (empty($groups_acl[$r->forum_id])) {
-	                        if ($r->auth_option_id) {
-	                            //use the specific setting
-	                            $groups_acl[$r->forum_id] = (int) $r->auth_setting;
-	                        } else {
-	                            //there is a role assigned so find out what the role's permission is
-	                            $query = 'SELECT auth_option_id, auth_setting FROM #__acl_roles_data WHERE role_id = '.$r->auth_role_id.' AND auth_option_id IN (\''.$global_id.'\', \''.$read_id.'\')';
-	                            $db->setQuery($query);
-	                            $role_permissions = $db->loadObjectList('auth_option_id');
-	                            if (isset($role_permissions[$global_id])) {
-	                                //no access role is assigned to this group
-	                                $groups_acl[$r->forum_id] = (int) $role_permissions[$global_id]->auth_setting;
-	                            }
+                    foreach ($results as $r) {
+                        if (!isset($phpbb_acl[$r->forum_id])) {
+                            $phpbb_acl[$r->forum_id] = -1;
+                        }
+                        if ($phpbb_acl[$r->forum_id]) {
+                            if ($r->auth_option_id) {
+                                //use the specific setting
+                                $phpbb_acl[$r->forum_id] = (int) $r->auth_setting;
+                            } else {
+                                //there is a role assigned so find out what the role's permission is
+                                $query = 'SELECT auth_option_id, auth_setting FROM #__acl_roles_data WHERE role_id = '.$r->auth_role_id.' AND auth_option_id IN (\''.$global_id.'\', \''.$read_id.'\')';
+                                $db->setQuery($query);
+                                $role_permissions = $db->loadObjectList('auth_option_id');
+                                if (isset($role_permissions[$global_id])) {
+                                    //no access role is assigned to this group
+                                    $phpbb_acl[$r->forum_id] = (int) $role_permissions[$global_id]->auth_setting;
+                                }
                                 if (isset($role_permissions[$read_id])) {
                                     //group has been given access
-                                    if (isset($groups_acl[$r->forum_id])) {
-                                        if ($groups_acl[$r->forum_id]) {
-                                            $groups_acl[$r->forum_id] = (int) $role_permissions[$read_id]->auth_setting;
-                                        }
-                                    } else {
-                                        $groups_acl[$r->forum_id] = (int) $role_permissions[$read_id]->auth_setting;
+                                    if ($phpbb_acl[$r->forum_id]) {
+                                        $phpbb_acl[$r->forum_id] = (int) $role_permissions[$read_id]->auth_setting;
                                     }
                                 }
-	                        }
-	                    }
-	                }
+                            }
+                        }
+                    }
                 }
+
+                $query = 'SELECT * FROM #__acl_users WHERE user_id = '.$userid.' AND auth_option_id IN (' . implode(', ', $auth_option_ids) . ') AND forum_id IN (' . implode(', ', $forumids) . ')';
+                $db->setQuery($query);
+                $results = $db->loadObjectList();
+
+				if ($results) {
+	                foreach ($results as $r) {
+                        if (!isset($phpbb_acl[$r->forum_id])) {
+                            $phpbb_acl[$r->forum_id] = -1;
+                        }
+                        if ($phpbb_acl[$r->forum_id]) {
+                            if ($r->auth_option_id) {
+                                //use the specific setting
+                                $phpbb_acl[$r->forum_id] = (int) $r->auth_setting;
+                            } else {
+                                //there is a role assigned so find out what the role's permission is
+                                $query = 'SELECT auth_option_id, auth_setting FROM #__acl_roles_data WHERE role_id = '.$r->auth_role_id.' AND auth_option_id IN (\''.$global_id.'\', \''.$read_id.'\')';
+                                $db->setQuery($query);
+                                $role_permissions = $db->loadObjectList('auth_option_id');
+                                if (isset($role_permissions[$global_id])) {
+                                    //no access role is assigned to this user
+                                    $phpbb_acl[$r->forum_id] = (int) $role_permissions[$global_id]->auth_setting;
+                                }
+                                if (isset($role_permissions[$read_id])) {
+                                    //group has been given access
+                                    if ($phpbb_acl[$r->forum_id]) {
+                                        $phpbb_acl[$r->forum_id] = (int) $role_permissions[$read_id]->auth_setting;
+                                    }
+                                }
+                            }
+                        }
+	                }
+				}
             }
 
             //compile permissions
             foreach ($forumids as $id) {
-                //assume user does not have permission
-                $phpbb_acl[$id] = -1;
                 if ($usertype == 3) {
                     //founder gets permission to all forums
                     $phpbb_acl[$id] = 1;
                 } else {
-                    if (isset($groups_acl[$id]) ) {
-                        //use group's permission
-                        $phpbb_acl[$id] = $groups_acl[$id];
+                    //assume user does not have permission
+                    if(!isset($phpbb_acl[$id]) || $phpbb_acl[$id] != 1) {
+                        $phpbb_acl[$id] = 0;
                     }
-                    if (isset($user_acl[$id])) {
-                        if ($phpbb_acl[$id]) {
-                            //user permissions have preference over group permissions
-                            $phpbb_acl[$id] = $user_acl[$id];
-                        }
-                    }
-                }
-                if ($phpbb_acl[$id] != 1) {
-                    $phpbb_acl[$id] = 0;
                 }
             }
         }
