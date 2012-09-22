@@ -87,7 +87,7 @@ class JFusionFrameless {
         $data->httpauth_password = $JFusionParam->get('curl_password');
         $data->verifyhost = $JFusionParam->get('verifyhost');
 
-		$data->jroute = $JFusionParam->get('sefmode',0);
+		$data->sefmode = $JFusionParam->get('sefmode',0);
 
         $data->bodymap = $JFusionParam->get('bodymap');
         $data->headermap = $JFusionParam->get('headermap');
@@ -175,6 +175,7 @@ class JFusionFrameless {
         $session = JFactory::getSession();
         $token = $session->getToken();
 
+        $JFusionPlugin->data = $data;
 		$JFusionPlugin->getBuffer ( $data );
 
         //restore session token

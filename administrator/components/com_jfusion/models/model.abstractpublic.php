@@ -46,13 +46,12 @@ class JFusionPublic
      */
     function getBuffer(&$data)
     {
-        $this->data = $data;
         require_once(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.curlframeless.php');
 
         $status = JFusionCurlFrameless::display($data);
         if ( isset($data->location) ) {
             $location = str_replace($data->integratedURL,'',$data->location);
-            $location = $this->fixUrl($location,$data->baseURL,$data->fullURL,$data->integratedURL,$data->jroute);
+            $location = $this->fixUrl($location,$data->baseURL,$data->fullURL,$data->integratedURL,$data->sefmode);
             $mainframe = JFactory::getApplication();
             $mainframe->redirect($location);
         }
@@ -85,7 +84,7 @@ class JFusionPublic
 
         if (substr($data->baseURL, -1) != '/'){
             $urlMode = 1;
-        } else if ($data->jroute==1) {
+        } else if ($data->sefmode==1) {
             $urlMode = 2;
         } else {
             $urlMode = 3;
@@ -735,21 +734,15 @@ HTML;
 
         $integratedURL = $this->data->integratedURL;
         $baseURL = $this->data->baseURL;
-        $fullURL = $this->data->fullURL;
-
         if (substr($baseURL, -1) != '/') {
             //non sef URls
             $q = str_replace('?', '&amp;', $q);
             $url = $baseURL . '&amp;jfile=' . $q;
+        } elseif ($this->data->sefmode == 1) {
+            $url = JFusionFunction::routeURL($q, JRequest::getInt('Itemid'));
         } else {
-            $params = JFusionFactory::getParams($this->getJname());
-            $sefmode = $params->get('sefmode');
-            if ($sefmode == 1) {
-                $url = JFusionFunction::routeURL($q, JRequest::getInt('Itemid'));
-            } else {
-                //we can just append both variables
-                $url = $baseURL . $q;
-            }
+            //we can just append both variables
+            $url = $baseURL . $q;
         }
         return $url;
     }
@@ -783,10 +776,7 @@ HTML;
             $replacement.= '<input type="hidden" name="Itemid" value="' . $Itemid . '"/>';
             $replacement.= '<input type="hidden" name="option" value="com_jfusion"/>';
         } else {
-            //check to see what SEF mode is selected
-            $params = JFusionFactory::getParams($this->getJname());
-            $sefmode = $params->get('sefmode');
-            if ($sefmode == 1) {
+            if ($this->data->sefmode == 1) {
                 //extensive SEF parsing was selected
                 $url = JFusionFunction::routeURL($url, $Itemid);
                 $replacement = 'action="' . $url . '"' . $extra . '>';

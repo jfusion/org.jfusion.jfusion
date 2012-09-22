@@ -60,8 +60,6 @@ class JFusionPublic_gallery2 extends JFusionPublic {
      * @param object &$data
      */
     function getBuffer(&$data) {
-    	$this->data = $data;
-
         /**
          * @ignore
          * @var $jPluginParam JParameter

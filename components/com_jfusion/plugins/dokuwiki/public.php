@@ -57,7 +57,6 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
      * @param object $data
      */
     function getBuffer(&$data) {
-        $this->data = $data;
         // We're going to want a few globals... these are all set later.
         global $INFO, $ACT, $ID, $QUERY, $USERNAME, $CLEAR, $QUIET, $USERINFO, $DOKU_PLUGINS, $PARSER_MODES, $TOC, $EVENT_HANDLER, $AUTH, $IMG, $JUMPTO;
         global $HTTP_RAW_POST_DATA, $RANGE, $HIGH, $MSG, $DATE, $PRE, $TEXT, $SUF, $AUTH_ACL, $QUIET, $SUM, $SRC, $IMG, $NS, $IDX, $REV, $INUSE, $NS, $AUTH_ACL;

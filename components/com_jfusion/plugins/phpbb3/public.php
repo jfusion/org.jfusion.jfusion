@@ -178,7 +178,6 @@ class JFusionPublic_phpbb3 extends JFusionPublic
      * @param object $jfdata
      */
     function getBuffer(&$jfdata) {
-    	$this->data = $jfdata;
     	$session = JFactory::getSession();
     	//detect if phpbb3 is already loaded for dual login
     	if (defined('IN_PHPBB')) {
