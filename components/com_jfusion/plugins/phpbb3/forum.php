@@ -363,8 +363,15 @@ class JFusionForum_phpbb3 extends JFusionForum {
 	                            $user_acl[$r->forum_id] = (int) $role_permissions[$global_id]->auth_setting;
 	                        }
                             if (isset($role_permissions[$read_id])) {
-                                $user_acl[$r->forum_id] = (int) $role_permissions[$read_id]->auth_setting;
-	                        }
+                                //group has been given access
+                                if (isset($user_acl[$r->forum_id])) {
+                                    if ($user_acl[$r->forum_id]) {
+                                        $user_acl[$r->forum_id] = (int) $role_permissions[$read_id]->auth_setting;
+                                    }
+                                } else {
+                                    $user_acl[$r->forum_id] = (int) $role_permissions[$read_id]->auth_setting;
+                                }
+                            }
 	                    }
 	                }
 				}
@@ -390,9 +397,15 @@ class JFusionForum_phpbb3 extends JFusionForum {
 	                                $groups_acl[$r->forum_id] = (int) $role_permissions[$global_id]->auth_setting;
 	                            }
                                 if (isset($role_permissions[$read_id])) {
-	                                //group has been given access
-                                    $groups_acl[$r->forum_id] = (int) $role_permissions[$read_id]->auth_setting;
-	                            }
+                                    //group has been given access
+                                    if (isset($groups_acl[$r->forum_id])) {
+                                        if ($groups_acl[$r->forum_id]) {
+                                            $groups_acl[$r->forum_id] = (int) $role_permissions[$read_id]->auth_setting;
+                                        }
+                                    } else {
+                                        $groups_acl[$r->forum_id] = (int) $role_permissions[$read_id]->auth_setting;
+                                    }
+                                }
 	                        }
 	                    }
 	                }
@@ -401,17 +414,24 @@ class JFusionForum_phpbb3 extends JFusionForum {
 
             //compile permissions
             foreach ($forumids as $id) {
+                //assume user does not have permission
+                $phpbb_acl[$id] = -1;
                 if ($usertype == 3) {
                     //founder gets permission to all forums
                     $phpbb_acl[$id] = 1;
-                } elseif (isset($user_acl[$id])) {
-                    //user permissions have preference over group permissions
-                    $phpbb_acl[$id] = $user_acl[$id];
-                } elseif (isset($groups_acl[$id])) {
-                    //use group's permission
-                    $phpbb_acl[$id] = $groups_acl[$id];
                 } else {
-                    //assume user does not have permission
+                    if (isset($groups_acl[$id]) ) {
+                        //use group's permission
+                        $phpbb_acl[$id] = $groups_acl[$id];
+                    }
+                    if (isset($user_acl[$id])) {
+                        if ($phpbb_acl[$id]) {
+                            //user permissions have preference over group permissions
+                            $phpbb_acl[$id] = $user_acl[$id];
+                        }
+                    }
+                }
+                if ($phpbb_acl[$id] != 1) {
                     $phpbb_acl[$id] = 0;
                 }
             }
