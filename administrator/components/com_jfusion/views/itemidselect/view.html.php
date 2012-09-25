@@ -60,23 +60,31 @@ class jfusionViewitemidselect extends JView
         JHTML::_('behavior.tooltip');
         
         //get a list of jfusion menuitems
-        $db = JFactory::getDBO();
-        if(JFusionFunction::isJoomlaVersion('1.6')) {
-            $query = 'SELECT id, menutype, title as name, alias, params FROM #__menu WHERE link = \'index.php?option=com_jfusion\' AND client_id = 0';
+        $app		= JFactory::getApplication();
+        $menus		= $app->getMenu('site');
+        $component	= JComponentHelper::getComponent('com_jfusion');
+
+        if ( JFusionFunction::isJoomlaVersion()) {
+            $menuitems		= $menus->getItems('component_id', $component->id);
         } else {
-            $query = 'SELECT id, menutype, name, alias, params FROM #__menu WHERE link = \'index.php?option=com_jfusion\'';        	
+            $menuitems		= $menus->getItems('componentid', $component->id);
         }
-        $db->setQuery($query);
-        $menuitems = $db->loadObjectList();
+        foreach ($menuitems as $key => $row) {
+            if ($row->link != 'index.php?option=com_jfusion&view=plugin') {
+                unset($menuitems[$key]);
+            } else {
+                if (JFusionFunction::isJoomlaVersion('1.6')) {
+                    $row->name = $row->title;
+                }
+            }
+        }
 
-        foreach ($menuitems as $key => &$row) {
-            $row->params = new JParameter($row->params);
-
+        foreach ($menuitems as $key => $row) {
             $jPluginParam = unserialize(base64_decode($row->params->get('JFusionPluginParam')));
             if (is_array($jPluginParam)) {
                 $row->jfusionplugin = $jPluginParam['jfusionplugin'];
             }
-            if (!JFusionFunction::validPlugin($row->jfusionplugin) || !JFusionFunctionAdmin::hasFeature($row->name,$feature)) {
+            if (!JFusionFunction::validPlugin($row->jfusionplugin) || !JFusionFunction::hasFeature($row->name,$feature,$row->id)) {
                 unset($menuitems[$key]);
             }
         }
@@ -88,7 +96,7 @@ class jfusionViewitemidselect extends JView
         $directlinks = $db->loadObjectList();
 
         foreach ($directlinks as $key => &$row) {
-            if (JFusionFunctionAdmin::hasFeature($row->name,$feature)) {
+            if (JFusionFunction::hasFeature($row->name,$feature)) {
                 $row->params = JFusionFactory::getParams($row->name);
             } else {
                 unset($directlinks[$key]);
@@ -99,7 +107,7 @@ class jfusionViewitemidselect extends JView
         $this->assignRef('directlinks', $directlinks);
         
         $this->assignRef('ename', $ename);
-        $this->assignRef('elId', $elId);        
+        $this->assignRef('elId', $elId);
         
         parent::display($tpl);
     }

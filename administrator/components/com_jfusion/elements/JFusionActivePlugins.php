@@ -55,7 +55,7 @@ class JElementJFusionActivePlugins extends JElement
         require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.jfusionadmin.php';
 
         foreach ($rows as $key => &$row) {
-            if (!JFusionFunctionAdmin::hasFeature($row->name,$feature)) {
+            if (!JFusionFunction::hasFeature($row->name,$feature)) {
                 unset($rows[$key]);
             }
         }

@@ -126,7 +126,7 @@ class jfusionViewadvancedparam extends JView
         $rows = $db->loadObjectList();
 
         foreach ($rows as $key => &$row) {
-            if (!JFusionFunctionAdmin::hasFeature($row->name,$feature)) {
+            if (!JFusionFunction::hasFeature($row->name,$feature)) {
                 unset($rows[$key]);
             }
         }
@@ -290,7 +290,7 @@ JS;
         $rows = $db->loadObjectList();
 
         foreach ($rows as $key => &$row) {
-            if (!JFusionFunctionAdmin::hasFeature($row->name,$feature)) {
+            if (!JFusionFunction::hasFeature($row->name,$feature)) {
                 unset($rows[$key]);
             }
         }

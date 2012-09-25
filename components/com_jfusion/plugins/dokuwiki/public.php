@@ -168,35 +168,35 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
         $doku_path = preg_replace('#(\w{0,10}://)(.*?)/(.*?)#is', '$3', $source_url);
         $doku_path = preg_replace('#//+#', '/', "/$doku_path/");
         
-        $regex_body[] = '#(href|action|src)=["|\']' . preg_quote($data->integratedURL,'#') . '(.*?)["|\']#mS';
+        $regex_body[] = '#(href|action|src)=["\']' . preg_quote($data->integratedURL,'#') . '(.*?)["\']#mS';
         $replace_body[] = '$1="/$2"';
         $callback_body[] = '';
         
-        $regex_body[] = '#(href|action|src)=["|\']' . preg_quote($doku_path,'#') . '(.*?)["|\']#mS';
+        $regex_body[] = '#(href|action|src)=["\']' . preg_quote($doku_path,'#') . '(.*?)["\']#mS';
         $replace_body[] = '$1="/$2"';
         $callback_body[] = '';
         
-        $regex_body[] = '#(href)=["|\']/feed.php["|\']#mS';
+        $regex_body[] = '#(href)=["\']/feed.php["\']#mS';
         $replace_body[] = '$1="' . $data->integratedURL . 'feed.php"';
         $callback_body[] = '';
         
-        $regex_body[] = '#href=["|\']/(lib/exe/fetch.php)(.*?)["|\']#mS';
+        $regex_body[] = '#href=["\']/(lib/exe/fetch.php)(.*?)["\']#mS';
         $replace_body[] = 'href="' . $data->integratedURL . '$1$2"';
         $callback_body[] = '';
         
-        $regex_body[] = '#href=["|\']/(_media/)(.*?)["|\']#mS';
+        $regex_body[] = '#href=["\']/(_media/)(.*?)["\']#mS';
         $replace_body[] = 'href="' . $data->integratedURL . '$1$2"';
         $callback_body[] = '';
         
-        $regex_body[] = '#href=["|\']/(lib/exe/mediamanager.php)(.*?)["|\']#mS';
+        $regex_body[] = '#href=["\']/(lib/exe/mediamanager.php)(.*?)["\']#mS';
         $replace_body[] = 'href="' . $data->integratedURL . '$1$2"';
         $callback_body[] = '';
         
-		$regex_body[] = '#(?<=href=["|\'])(?!\w{0,10}://|\w{0,10}:)(.*?)(?=["|\'])#mSi';        
+		$regex_body[] = '#(?<=href=["\'])(?!\w{0,10}://|\w{0,10}:)(.*?)(?=["\'])#mSi';
         $replace_body[] = '';//\'href="\'.$this->fixUrl("$1","' . $data->baseURL . '","' . $data->fullURL . '").\'"\'';
         $callback_body[] = 'fixUrl';
         
-        $regex_body[] = '#(src)=["|\'][./|/](.*?)["|\']#mS';
+        $regex_body[] = '#(src)=["\'][./|/](.*?)["\']#mS';
         $replace_body[] = '$1="' . $data->integratedURL . '$2"';
         $callback_body[] = '';
         
@@ -228,13 +228,13 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
             $doku_path = preg_replace( '#(\w{0,10}://)(.*?)/(.*?)#is'  , '$3' , $source_url );
             $doku_path = preg_replace('#//+#','/',"/$doku_path/");
 
-            $regex_header[]    = '#(href|src)=["|\']'.preg_quote($data->integratedURL,'#').'(.*?)["|\']#mS';
+            $regex_header[]    = '#(href|src)=["\']'.preg_quote($data->integratedURL,'#').'(.*?)["\']#mS';
             $replace_header[]    = '$1="/$2"';
-            $regex_header[]    = '#(href|src)=["|\']'.preg_quote($doku_path,'#').'(.*?)["|\']#mS';
+            $regex_header[]    = '#(href|src)=["\']'.preg_quote($doku_path,'#').'(.*?)["\']#mS';
             $replace_header[]    = '$1="/$2"';
 
             //convert relative links into absolute links
-            $regex_header[]    = '#(href|src)=["|\'][./|/](.*?)["|\']#mS';
+            $regex_header[]    = '#(href|src)=["\'][./|/](.*?)["\']#mS';
             $replace_header[] = '$1="'.$data->integratedURL.'$2"';
             */
         }
@@ -330,7 +330,7 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
      * @param $data
      */
     function replaceForm(&$data) {
-        $pattern = '#<form(.*?)action=["|\'](.\S*?)["|\'](.*?)>(.*?)</form>#mSsi';
+        $pattern = '#<form(.*?)action=["\'](.\S*?)["\'](.*?)>(.*?)</form>#mSsi';
         $getData = '';
         if (JRequest::getInt('Itemid')) $getData.= '<input name="Itemid" value="' . JRequest::getInt('Itemid') . '" type="hidden"/>';
         if (JRequest::getVar('option')) $getData.= '<input name="option" value="' . JRequest::getVar('option') . '" type="hidden"/>';
@@ -338,7 +338,7 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
         if (JRequest::getVar('view')) $getData.= '<input name="view" value="' . JRequest::getVar('view') . '" type="hidden"/>';
         preg_match_all($pattern, $data->body, $links);
         foreach ($links[2] as $key => $value) {
-            $method = '#method=["|\']post["|\']#mS';
+            $method = '#method=["\']post["\']#mS';
             $is_get = true;
             if (preg_match($method, $links[1][$key]) || preg_match($method, $links[3][$key])) {
                 $is_get = false;

@@ -33,9 +33,9 @@
 
 	<params addpath="/administrator/components/com_jfusion/elements">
 		<param name="jfusionbox" type="text" default="" label="PLUGIN_GENERAL_DETAILS" description="" />
-		<param name="description" type="text" size="60" default="Moodle Elearning site" description="DESCRIPTION_DESC" label=""/>
-		<param name="source_url" type="text" size="60" default="http://www.yourdomain.com/yourdir/" description="SOURCE_URL" label=""/>
-		<param name="source_path" type="text" size="60" default="" description="SOURCE_PATH" label=""/>
+		<param name="description" type="text" size="60" default="Moodle Elearning site" description="DESCRIPTION_DESC" label="DESCRIPTION_DESC"/>
+		<param name="source_url" type="text" size="60" default="http://www.yourdomain.com/yourdir/" description="SOURCE_URL" label="SOURCE_URL"/>
+		<param name="source_path" type="text" size="60" default="" description="SOURCE_PATH" label="SOURCE_PATH"/>
         <param name="@spacer" type="spacer" default="" label="" description="" />
         <param name="login_identifier" type="list" label="LOGIN_IDENTIFIER" default="1" description="LOGIN_IDENTIFIER_DESC">
             <option value="1">USERNAME</option>

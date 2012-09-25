@@ -68,6 +68,6 @@
         <param name="jfusionbox" type="text" default="" label="CURL_OPTIONS_COOKIE" description="" />
         <param name="cookie_domain" type="text" size="60" label="CURL_COOKIE_DOMAIN" default="" description="CURL_COOKIE_DOMAIN_DESC" />
         <param name="cookie_path" type="text" size="60" label="CURL_COOKIE_PATH" default="" description="CURL_COOKIE_PATH_DESC" />
-		<param name="cookie_key" type="text" size="20" default="Needed or login will not work" description="COOKIE_KEY" label=""/>
+		<param name="cookie_key" type="text" size="20" default="Needed or login will not work" description="COOKIE_KEY" label="COOKIE_KEY"/>
 	</params>
 </install>

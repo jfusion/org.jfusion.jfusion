@@ -40,6 +40,8 @@ class JElementJFusionItemid extends JElement
      */
     function fetchElement($name, $value, &$node, $control_name)
     {
+        JHTML::_('behavior.modal', 'a.modal');
+
         $lang = JFactory::getLanguage();
         $lang->load('com_jfusion');
 
@@ -85,8 +87,6 @@ JS;
             </div>
             <input type="hidden" id="{$name}_id{$elId}" name="{$fieldName}" value="{$value}" />
 HTML;
-
-
         return $html;
     }
 }

@@ -356,20 +356,24 @@ class JFusionForum_phpbb3 extends JFusionForum {
                         if ($phpbb_acl[$r->forum_id]) {
                             if ($r->auth_option_id) {
                                 //use the specific setting
-                                $phpbb_acl[$r->forum_id] = (int) $r->auth_setting;
+                                $this->setPremission($phpbb_acl[$r->forum_id], (int) $r->auth_setting);
+//                                $phpbb_acl[$r->forum_id] = ;
+
                             } else {
                                 //there is a role assigned so find out what the role's permission is
                                 $query = 'SELECT auth_option_id, auth_setting FROM #__acl_roles_data WHERE role_id = '.$r->auth_role_id.' AND auth_option_id IN (\''.$global_id.'\', \''.$read_id.'\')';
                                 $db->setQuery($query);
                                 $role_permissions = $db->loadObjectList('auth_option_id');
                                 if (isset($role_permissions[$global_id])) {
-                                    //no access role is assigned to this group
-                                    $phpbb_acl[$r->forum_id] = (int) $role_permissions[$global_id]->auth_setting;
+                                    //no access role is assigned to this user
+                                    $this->setPremission($phpbb_acl[$r->forum_id], (int) $role_permissions[$global_id]->auth_setting,$r->forum_id);
+//                                    $phpbb_acl[$r->forum_id] = (int) $role_permissions[$global_id]->auth_setting;
                                 }
                                 if (isset($role_permissions[$read_id])) {
+                                    $this->setPremission($phpbb_acl[$r->forum_id],(int) $role_permissions[$read_id]->auth_setting,$r->forum_id);
                                     //group has been given access
                                     if ($phpbb_acl[$r->forum_id]) {
-                                        $phpbb_acl[$r->forum_id] = (int) $role_permissions[$read_id]->auth_setting;
+//                                        $phpbb_acl[$r->forum_id] = (int) $role_permissions[$read_id]->auth_setting;
                                     }
                                 }
                             }
@@ -389,7 +393,8 @@ class JFusionForum_phpbb3 extends JFusionForum {
                         if ($phpbb_acl[$r->forum_id]) {
                             if ($r->auth_option_id) {
                                 //use the specific setting
-                                $phpbb_acl[$r->forum_id] = (int) $r->auth_setting;
+                                $this->setPremission($phpbb_acl[$r->forum_id], (int) $r->auth_setting);
+//                                $phpbb_acl[$r->forum_id] = (int) $r->auth_setting;
                             } else {
                                 //there is a role assigned so find out what the role's permission is
                                 $query = 'SELECT auth_option_id, auth_setting FROM #__acl_roles_data WHERE role_id = '.$r->auth_role_id.' AND auth_option_id IN (\''.$global_id.'\', \''.$read_id.'\')';
@@ -397,12 +402,14 @@ class JFusionForum_phpbb3 extends JFusionForum {
                                 $role_permissions = $db->loadObjectList('auth_option_id');
                                 if (isset($role_permissions[$global_id])) {
                                     //no access role is assigned to this user
-                                    $phpbb_acl[$r->forum_id] = (int) $role_permissions[$global_id]->auth_setting;
+                                    $this->setPremission($phpbb_acl[$r->forum_id],$role_permissions[$global_id]->auth_setting,$r->forum_id);
+//                                    $phpbb_acl[$r->forum_id] = (int) $role_permissions[$global_id]->auth_setting;
                                 }
                                 if (isset($role_permissions[$read_id])) {
+                                    $this->setPremission($phpbb_acl[$r->forum_id],$role_permissions[$read_id]->auth_setting,$r->forum_id);
                                     //group has been given access
                                     if ($phpbb_acl[$r->forum_id]) {
-                                        $phpbb_acl[$r->forum_id] = (int) $role_permissions[$read_id]->auth_setting;
+//                                        $phpbb_acl[$r->forum_id] = (int) $role_permissions[$read_id]->auth_setting;
                                     }
                                 }
                             }
@@ -427,6 +434,25 @@ class JFusionForum_phpbb3 extends JFusionForum {
 
         return $phpbb_acl;
     }
+
+    function setPremission(&$old,$new) {
+        switch ($old) {
+            case 0:
+                break;
+            case 1:
+                if ($new == 0) {
+                    $old = $new;
+                }
+                break;
+            case -1:
+            default:
+                if ($old) {
+                    $old = $new;
+                }
+                break;
+        }
+    }
+
     /************************************************
     * Functions For JFusion Discussion Bot Plugin
     ***********************************************/

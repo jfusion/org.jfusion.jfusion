@@ -35,6 +35,8 @@ class JFormFieldJFusionItemid extends JFormField
      */
     protected function getInput()
     {
+        JHTML::_('behavior.modal', 'a.modal');
+
     	$value = $this->value;
     	$name = $this->name;
         static $elId;

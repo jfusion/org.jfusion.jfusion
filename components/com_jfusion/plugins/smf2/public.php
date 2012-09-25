@@ -362,10 +362,10 @@ class JFusionPublic_smf2 extends JFusionPublic {
         $replace_body[] = '';//$this->fixAction("index.php$1","$2","' . $data->baseURL . '")';
         $callback_body[] = 'fixAction';
 
-        $regex_body[] = '#(?<=href=["|\'])' . $data->integratedURL . '(.*?)(?=["|\'])#mSi';        
+        $regex_body[] = '#(?<=href=["\'])' . $data->integratedURL . '(.*?)(?=["\'])#mSi';
         $replace_body[] = '';//\'href="\'.$this->fixUrl("#$1","' . $data->baseURL . '","' . $data->fullURL . '").\'"\'';
         $callback_body[] = 'fixURL';
-        $regex_body[] = '#(?<=href=["|\'])(\#.*?)(?=["|\'])#mSi';        
+        $regex_body[] = '#(?<=href=["\'])(\#.*?)(?=["\'])#mSi';
         $replace_body[] = '';//\'href="\'.$this->fixUrl("#$1","' . $data->baseURL . '","' . $data->fullURL . '").\'"\'';
         $callback_body[] = 'fixURL';
 		
@@ -426,7 +426,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 			$regex_header[]	= '#(href|src)=("./|"/)(.*?)"#mS';
 			$replace_header[]	= '$1="'.$data->integratedURL.'$3"';
 
-			$regex_header[] = '#var smf_scripturl = ["|\'](.*?)["|\'];#mS';
+			$regex_header[] = '#var smf_scripturl = ["\'](.*?)["\'];#mS';
 			$replace_header[] = 'var smf_scripturl = "'.$baseURLnoSef.'&";';
 
 	        //fix for URL redirects

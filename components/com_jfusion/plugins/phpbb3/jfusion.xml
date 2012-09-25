@@ -119,18 +119,18 @@
 
 		<param name="jfusionbox" type="text" default="" label="MOD_OPTIONS" description="" />
 		<param name=" " type="helptext" default="AUTHENTICATION_MOD_DESCR" label=""/>
-		<param name="showAuthMod" default="" type="JFusionCustomParam" description="AUTHENTICATION_MOD" label=""/>
+		<param name="showAuthMod" default="" type="JFusionCustomParam" description="AUTHENTICATION_MOD" label="AUTHENTICATION_MOD"/>
 		<param name="@spacer" type="spacer" default="" label="" description="" />
 		<param name=" " type="helptext" default="REDIRECT_MOD_DESCR" label=""/>
-		<param name="redirect_itemid" type="JFusionItemid" size="10" default="" description="REDIRECT_ITEMID" label=""/>
+		<param name="redirect_itemid" type="JFusionItemid" size="10" default="" description="REDIRECT_ITEMID" label="REDIRECT_ITEMID" feature="redirect_itemid"/>
 		<param name="mod_ids" type="list" default="0" label="MOD_IDS" description="MOD_IDS_DESCR">
 			<option value="1">JYES</option>
 			<option value="0">JNO</option>
 		</param>
-		<param name="showRedirectMod" default="" type="JFusionCustomParam" description="REDIRECTION_MOD" label=""/>
+		<param name="showRedirectMod" default="" type="JFusionCustomParam" description="REDIRECTION_MOD" label="REDIRECTION_MOD"/>
 		<param name="@spacer" type="spacer" default="" label="" description="" />
 		<param name=" " type="helptext" default="QUICK_MOD" label=""/>
-		<param name="showQuickMod" default="" type="JFusionCustomParam" description="QUICK_MOD" label=""/>
+		<param name="showQuickMod" default="" type="JFusionCustomParam" description="QUICK_MOD" label="QUICK_MOD"/>
 		<param name="jfusionbox" type="text" default="" label="URL_OPTIONS" description="" />
 		<param name=" " type="helptext" default="URL_OPTIONS_DESCR" label=""/>
 		<param name="lostpassword_url" label="LOST_PASSWORD_URL" type="text" size="50" default="" description="LOST_PASSWORD_URL" />

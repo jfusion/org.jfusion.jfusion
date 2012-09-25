@@ -110,7 +110,7 @@
 		<param name="jfusionbox" type="text" default="" label="CURL_OPTIONS_COOKIE" description="" />
 		<param name="cookie_domain" type="text" size="60" label="CURL_COOKIE_DOMAIN" default="" description="CURL_COOKIE_DOMAIN_DESC" />
 		<param name="cookie_path" type="text" size="60" label="CURL_COOKIE_PATH" default="" description="CURL_COOKIE_PATH_DESC" />
-		<param name="cookie_prefix" type="text" size="20" default="bb" description="COOKIE_PREFIX" label=""/>
+		<param name="cookie_prefix" type="text" size="20" default="bb" description="COOKIE_PREFIX" label="COOKIE_PREFIX"/>
 		<param name="cookie_salt" type="text" size="60" default="" label="COOKIE_SALT_STR" description="VB_COOKIE_SALT_DESCR" />
 		<param name="cookie_expires" type="text" size="5" label="COOKIE_EXPIRES" default="240" description="COOKIE_EXPIRES_DESC" />
 		<param name="secure" type="list" default="0" label="COOKIE_SECURE" description="COOKIE_SECURE_DESC">
