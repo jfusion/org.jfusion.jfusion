@@ -60,6 +60,7 @@ class JElementJFusionItemid extends JElement
             function jSelectItemid(name,id,num) {
 	            $(name+'_id'+num).value = id;
 	            $(name+'_name'+num).value = id;
+	            $(name+'_save'+num).src = 'components/com_jfusion/images/filesave.png';
 	            SqueezeBox.close();
 	        }
 JS;
@@ -70,6 +71,12 @@ JS;
 
         if (!$feature) {
             $feature = 'any';
+        }
+
+        if($value) {
+            $src = 'components/com_jfusion/images/tick.png';
+        } else {
+            $src = 'components/com_jfusion/images/clear.png';
         }
 
         $link = 'index.php?option=com_jfusion&amp;task=itemidselect&amp;tmpl=component&amp;ename=' . $name . '&amp;elId=' . $elId . '&amp;feature=' . $feature;
@@ -85,6 +92,7 @@ JS;
                     <a class="modal" title="{$select_menuitem}"  href="{$link}" rel="{handler: 'iframe', size: {x: 650, y: 375}}">{$select}</a>
                 </div>
             </div>
+            <img id="{$name}_save{$elId}" src="{$src}" alt="Save">
             <input type="hidden" id="{$name}_id{$elId}" name="{$fieldName}" value="{$value}" />
 HTML;
         return $html;

@@ -274,22 +274,12 @@ if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\'
         $joomla_url = $joomla_params->get('source_url');
         $joomla_itemid = $params->get('redirect_itemid');
 
-        $app		= JFactory::getApplication();
-        $menus		= $app->getMenu('site');
-        $item = $menus->getItem($joomla_itemid);
-        if ($item) {
-            $jPluginParam = unserialize(base64_decode($item->params->get('JFusionPluginParam')));
-            if (!is_array($jPluginParam) || $jPluginParam['jfusionplugin'] != $this->getJname()) {
-                $item = null;
-            }
-        }
-
         //check to see if all vars are set
         if (empty($joomla_url)) {
             JError::raiseWarning(0, JText::_('MISSING') . ' Joomla URL');
         } else if (empty($joomla_itemid) || !is_numeric($joomla_itemid)) {
             JError::raiseWarning(0, JText::_('MISSING') . ' ItemID');
-        } else if (!$item) {
+        } else if ($this->isValidItemID($joomla_itemid)) {
             JError::raiseWarning(0, JText::_('MISSING') . ' ItemID '. JText::_('MUST BE'). ' ' . $this->getJname());
         } else {
             $error = 0;

@@ -742,6 +742,30 @@ JS;
         return 'UNKNOWN';
     }
 
+
+    /**
+     * Function to check if a given itemid is configured for the plugin in question.
+     *
+     * @param int $itemid
+     * @return bool
+     */
+    function isValidItemID($itemid)
+    {
+        $result = false;
+        if ($itemid) {
+            $app = JFactory::getApplication();
+            $menus = $app->getMenu('site');
+            $item = $menus->getItem($itemid);
+            if ($item) {
+                $jPluginParam = unserialize(base64_decode($item->params->get('JFusionPluginParam')));
+                if (is_array($jPluginParam) && $jPluginParam['jfusionplugin'] == $this->getJname()) {
+                    $result = true;
+                }
+            }
+        }
+        return $result;
+    }
+
     /**
      * import function for importing config in to a plugin
      *
