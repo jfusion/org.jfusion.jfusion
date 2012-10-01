@@ -337,7 +337,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
                 }
             	$global_id = 0;
                 if ( isset($option_ids['f_']->auth_option_id) ) {
-                	$global_id = $option_ids['f_']->auth_option_id;
+                	//$global_id = $option_ids['f_']->auth_option_id;
                 }
 
                 //get the permissions for the user
@@ -351,30 +351,21 @@ class JFusionForum_phpbb3 extends JFusionForum {
                 if ($results) {
                     foreach ($results as $r) {
                         if (!isset($phpbb_acl[$r->forum_id])) {
-                            $phpbb_acl[$r->forum_id] = -1;
+                            $this->setPremission($phpbb_acl[$r->forum_id], -1);
                         }
                         if ($phpbb_acl[$r->forum_id]) {
                             if ($r->auth_option_id) {
-                                //use the specific setting
-                                $this->setPremission($phpbb_acl[$r->forum_id], (int) $r->auth_setting);
-//                                $phpbb_acl[$r->forum_id] = ;
-
+                                $this->setPremission($phpbb_acl[$r->forum_id], $r->auth_setting);
                             } else {
                                 //there is a role assigned so find out what the role's permission is
                                 $query = 'SELECT auth_option_id, auth_setting FROM #__acl_roles_data WHERE role_id = '.$r->auth_role_id.' AND auth_option_id IN (\''.$global_id.'\', \''.$read_id.'\')';
                                 $db->setQuery($query);
                                 $role_permissions = $db->loadObjectList('auth_option_id');
                                 if (isset($role_permissions[$global_id])) {
-                                    //no access role is assigned to this user
-                                    $this->setPremission($phpbb_acl[$r->forum_id], (int) $role_permissions[$global_id]->auth_setting,$r->forum_id);
-//                                    $phpbb_acl[$r->forum_id] = (int) $role_permissions[$global_id]->auth_setting;
+                                    $this->setPremission($phpbb_acl[$r->forum_id], $role_permissions[$global_id]->auth_setting);
                                 }
                                 if (isset($role_permissions[$read_id])) {
-                                    $this->setPremission($phpbb_acl[$r->forum_id],(int) $role_permissions[$read_id]->auth_setting,$r->forum_id);
-                                    //group has been given access
-                                    if ($phpbb_acl[$r->forum_id]) {
-//                                        $phpbb_acl[$r->forum_id] = (int) $role_permissions[$read_id]->auth_setting;
-                                    }
+                                    $this->setPremission($phpbb_acl[$r->forum_id], $role_permissions[$read_id]->auth_setting);
                                 }
                             }
                         }
@@ -388,29 +379,23 @@ class JFusionForum_phpbb3 extends JFusionForum {
 				if ($results) {
 	                foreach ($results as $r) {
                         if (!isset($phpbb_acl[$r->forum_id])) {
-                            $phpbb_acl[$r->forum_id] = -1;
+                            $this->setPremission($phpbb_acl[$r->forum_id], -1);
                         }
                         if ($phpbb_acl[$r->forum_id]) {
                             if ($r->auth_option_id) {
                                 //use the specific setting
-                                $this->setPremission($phpbb_acl[$r->forum_id], (int) $r->auth_setting);
-//                                $phpbb_acl[$r->forum_id] = (int) $r->auth_setting;
+                                $this->setPremission($phpbb_acl[$r->forum_id], $r->auth_setting);
                             } else {
                                 //there is a role assigned so find out what the role's permission is
                                 $query = 'SELECT auth_option_id, auth_setting FROM #__acl_roles_data WHERE role_id = '.$r->auth_role_id.' AND auth_option_id IN (\''.$global_id.'\', \''.$read_id.'\')';
                                 $db->setQuery($query);
                                 $role_permissions = $db->loadObjectList('auth_option_id');
                                 if (isset($role_permissions[$global_id])) {
-                                    //no access role is assigned to this user
-                                    $this->setPremission($phpbb_acl[$r->forum_id],$role_permissions[$global_id]->auth_setting,$r->forum_id);
-//                                    $phpbb_acl[$r->forum_id] = (int) $role_permissions[$global_id]->auth_setting;
+                                    $this->setPremission($phpbb_acl[$r->forum_id], $role_permissions[$global_id]->auth_setting);
                                 }
                                 if (isset($role_permissions[$read_id])) {
-                                    $this->setPremission($phpbb_acl[$r->forum_id],$role_permissions[$read_id]->auth_setting,$r->forum_id);
                                     //group has been given access
-                                    if ($phpbb_acl[$r->forum_id]) {
-//                                        $phpbb_acl[$r->forum_id] = (int) $role_permissions[$read_id]->auth_setting;
-                                    }
+                                    $this->setPremission($phpbb_acl[$r->forum_id], $role_permissions[$read_id]->auth_setting);
                                 }
                             }
                         }
@@ -435,19 +420,25 @@ class JFusionForum_phpbb3 extends JFusionForum {
         return $phpbb_acl;
     }
 
+    /**
+     * Update premissions for phpbb
+     *
+     * @param int $old exsisting premission
+     * @param int $new new premission
+     */
     function setPremission(&$old,$new) {
         switch ($old) {
             case 0:
                 break;
             case 1:
                 if ($new == 0) {
-                    $old = $new;
+                    $old = (int) $new;
                 }
                 break;
             case -1:
             default:
                 if ($old) {
-                    $old = $new;
+                    $old = (int) $new;
                 }
                 break;
         }

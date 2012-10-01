@@ -678,6 +678,7 @@ HTML;
     $jfusion_plugins['prestashop'] = 'A free open-source e-commerce software.';
     $jfusion_plugins['smf'] = 'All in one package, giving you an easy to use forum.';
     $jfusion_plugins['smf2'] = 'All in one package, giving you an easy to use forum.';
+    $jfusion_plugins['universal'] = 'Universal plugin for JFusion';
     $jfusion_plugins['vbulletin'] = 'The most powerful forum software.';
     $jfusion_plugins['wordpress'] = 'A semantic personal publishing platform.';
 

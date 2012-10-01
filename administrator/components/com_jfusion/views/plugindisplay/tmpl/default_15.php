@@ -387,6 +387,34 @@ $jfusion_plugins = $this->VersionData->getElementByPath('plugins')->children(); 
 		</tr>
 	</table>
 </form>
+<?php }  else { ?>
+    <table class="adminform">
+        <tr>
+            <td>
+                <img src="components/com_jfusion/images/folder_url.png">
+            </td>
+            <td>
+                <table>
+                    <tr>
+                        <th colspan="2">
+                            <?php echo JText::_('INSTALL') . ' ' . JText::_('FROM') . ' JFusion ' .JText::_('SERVER'); ?>
+                        </th>
+                    </tr>
+                    <tr>
+                        <td width="120">
+                            <label for="install_url2">
+                                <?php echo JText::_('PLUGIN') . ' ' . JText::_('NAME'); ?> :
+                            </label>
+                        </td>
+                        <td>
+                            <?php echo JText::_('ERROR_LOADING_REMOTE_PLUGIN_DATA_FROM_JFUSION_SERVER'); ?>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+<?php } ?>
 
 <form id="installZIP" method="post" action="index.php" enctype="multipart/form-data">
 	<input type="hidden" name="option" value="com_jfusion" />
@@ -491,4 +519,3 @@ $jfusion_plugins = $this->VersionData->getElementByPath('plugins')->children(); 
 		</tr>
 	</table>
 </form>
-<?php } ?>

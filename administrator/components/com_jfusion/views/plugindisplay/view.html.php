@@ -111,7 +111,7 @@ class jfusionViewplugindisplay extends JView {
 	                }
 	            }
 	        }
-        
+
             //set the error messages
             $errormessage = $this->generateErrorHTML();   
             $this->assignRef('errormessage', $errormessage);      
@@ -120,7 +120,7 @@ class jfusionViewplugindisplay extends JView {
             //pass the data onto the view
             $this->assignRef('plugins', $plugins);
             $this->assignRef('VersionData', $VersionData);
-            if(JFusionFunction::isJoomlaVersion('1.6')){
+            if(JFusionFunction::isJoomlaVersion('1.6')) {
             	parent::display('25'); 
             } else {
             	parent::display('15');
