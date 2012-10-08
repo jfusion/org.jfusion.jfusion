@@ -287,11 +287,11 @@ class JFusionUser_mediawiki extends JFusionUser {
             $db->query();
             foreach($usergroups as $usergroup) {
                 //prepare the user variables
-                $usergroup = new stdClass;
-                $usergroup->ug_user = $existinguser->userid;
-                $usergroup->ug_group = $usergroup;
+                $ug = new stdClass;
+                $ug->ug_user = $existinguser->userid;
+                $ug->ug_group = $usergroup;
 
-                if (!$db->insertObject('#__user_groups', $usergroup, 'ug_user' )) {
+                if (!$db->insertObject('#__user_groups', $ug, 'ug_user' )) {
                     $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
                 } else {
                     $status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . implode (' , ', $existinguser->groups) . ' -> ' . $usergroup;
@@ -393,8 +393,6 @@ class JFusionUser_mediawiki extends JFusionUser {
         if (empty($usergroups)) {
             $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('USERGROUP_MISSING');
         } else {
-            $usergroup = $usergroups[0];
-
             //prepare the user variables
             $user = new stdClass;
             $user->user_id = NULL;
@@ -465,17 +463,19 @@ class JFusionUser_mediawiki extends JFusionUser {
                     $status['error'][] = JText::_('USER_CREATION_ERROR')  . ' ' .  $db->stderr();
                 } else {
                     //prepare the user variables
-                    $ug = new stdClass;
-                    $ug->ug_user = $user->user_id;
-                    $ug->ug_group = $usergroup;
-                    if (!$db->insertObject('#__user_groups', $ug, 'user_id' )) {
-                        //return the error
-                        $status['error'] = JText::_('USER_CREATION_ERROR'). ': ' . $db->stderr();
-                    } else {
-                        //return the good news
-                        $status['debug'][] = JText::_('USER_CREATION');
-                        $status['userinfo'] = $this->getUser($userinfo);
+                    foreach($usergroups as $usergroup) {
+                        //prepare the user variables
+                        $ug = new stdClass;
+                        $ug->ug_user = $user->user_id;
+                        $ug->ug_group = $usergroup;
+
+                        if (!$db->insertObject('#__user_groups', $ug, 'ug_user' )) {
+                            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
+                        }
                     }
+                    //return the good news
+                    $status['debug'][] = JText::_('USER_CREATION');
+                    $status['userinfo'] = $this->getUser($userinfo);
                 }
             }
         }
