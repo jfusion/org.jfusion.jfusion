@@ -465,10 +465,10 @@ class JFusionUser_mediawiki extends JFusionUser {
                     $status['error'][] = JText::_('USER_CREATION_ERROR')  . ' ' .  $db->stderr();
                 } else {
                     //prepare the user variables
-                    $user = new stdClass;
-                    $user->ug_user = $user->user_id;
-                    $user->ug_group = $usergroup;
-                    if (!$db->insertObject('#__user_groups', $user, 'user_id' )) {
+                    $ug = new stdClass;
+                    $ug->ug_user = $user->user_id;
+                    $ug->ug_group = $usergroup;
+                    if (!$db->insertObject('#__user_groups', $ug, 'user_id' )) {
                         //return the error
                         $status['error'] = JText::_('USER_CREATION_ERROR'). ': ' . $db->stderr();
                     } else {

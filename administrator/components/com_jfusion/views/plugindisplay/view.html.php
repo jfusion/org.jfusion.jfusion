@@ -114,8 +114,7 @@ class jfusionViewplugindisplay extends JView {
 
             //set the error messages
             $errormessage = $this->generateErrorHTML();   
-            $this->assignRef('errormessage', $errormessage);      
-                         
+            $this->assignRef('errormessage', $errormessage);
 
             //pass the data onto the view
             $this->assignRef('plugins', $plugins);
