@@ -22,8 +22,8 @@ $output = '';
 $form_id = (JFusionFunction::isJoomlaVersion('1.6')) ? 'login-form' : 'form-login';
 if ( $params->get('layout') == 'horizontal' ) {
     if ($type == 'logout') {
-        $output .= '<form action="index.php" method="post" name="login" id="'.$form_id.'">';
-
+        $output .= '<form action="' . JRoute::_( 'index.php', true, $params->get('usesecure')). '" method="post" name="login" id="'.$form_id.'" >';
+    	
         if (!empty($avatar)) {
             $maxheight = $params->get('avatar_height', 80);
             $maxwidth = $params->get('avatar_width', 60);
@@ -131,8 +131,8 @@ if ( $params->get('layout') == 'horizontal' ) {
     }
 } else {
     if ($type == 'logout') {
-        $output .= '<form action="index.php" method="post" name="login" id="'.$form_id.'">';
-
+        $output .= '<form action="' . JRoute::_( 'index.php', true, $params->get('usesecure')). '" method="post" name="login" id="'.$form_id.'" >';
+    	
         if (!empty($avatar)) {
             $maxheight = $params->get('avatar_height', 80);
             $maxwidth = $params->get('avatar_width', 60);
