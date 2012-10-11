@@ -228,9 +228,9 @@ class JFusionPublic_smf extends JFusionPublic
                 $source_url = $params->get('source_url');
                 $source_url = rtrim($source_url, '/');
                 if ($action == 'register') {
-                    header('Location: ' . $source_url . $JFusionMaster->getRegistrationURL());
+                    header('Location: ' . $source_url . '/' . $JFusionMaster->getRegistrationURL());
                 } else {
-                    header('Location: ' . $source_url . $JFusionMaster->getLostPasswordURL());
+                    header('Location: ' . $source_url . '/' . $JFusionMaster->getLostPasswordURL());
                 }
                 exit();
             }
