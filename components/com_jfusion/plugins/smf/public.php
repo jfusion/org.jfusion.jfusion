@@ -374,9 +374,11 @@ class JFusionPublic_smf extends JFusionPublic
         $regex_body[] = '#(?<=")'.preg_quote($data->integratedURL,'#').'(index.php\?action=verificationcode;rand=.*?)(?=")#si';
         $replace_body[] = '';//\'"\'.$this->fixUrl("index.php?$2$3","' . $data->baseURL . '","' . $data->fullURL . '").\'"\'';
         $callback_body[] = 'fixURL';
+/*
         $regex_body[] = '#new_url[.]indexOf[(]"rand="#si';
-        $replace_body[] = 'new_url.indexOf("rand';    
-
+        $replace_body[] = 'new_url.indexOf("rand';
+        $callback_body[] = '';
+*/
         //Fix auto member search
         $regex_body[] = '#(?<=toComplete\.source = \")'.preg_quote($data->integratedURL,'#'). '(.*?)(?=\")#si';
         $replace_body[] = '';//\'toComplete.source = "\'.$this->fixUrlNoAmp("$1","' . $data->baseURL . '","' . $data->fullURL . '").\'"\'';

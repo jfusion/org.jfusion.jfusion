@@ -23,6 +23,7 @@
 		<filename>public.php</filename>
 		<filename>search.xml</filename>
 		<filename>user.php</filename>
+        <folder>js</folder>
 	</files>
 	
 	<params addpath="/administrator/components/com_jfusion/elements">
