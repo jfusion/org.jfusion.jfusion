@@ -373,7 +373,7 @@ class JFusionPublic_smf extends JFusionPublic
         // Chaptcha fix
         $regex_body[] = '#(?<=")'.preg_quote($data->integratedURL,'#').'(index.php\?action=verificationcode;rand=.*?)(?=")#si';
         $replace_body[] = '';//\'"\'.$this->fixUrl("index.php?$2$3","' . $data->baseURL . '","' . $data->fullURL . '").\'"\'';
-        $callback_body[] = 'fixURL';
+        $callback_body[] = 'fixUrlNoAmp';
 /*
         $regex_body[] = '#new_url[.]indexOf[(]"rand="#si';
         $replace_body[] = 'new_url.indexOf("rand';
