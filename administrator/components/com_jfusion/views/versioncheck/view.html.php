@@ -31,6 +31,7 @@ defined('_JEXEC') or die('Restricted access');
 class jfusionViewversioncheck extends JView
 {
 	var $up2date = true;
+	var $row_count = 0;
 	/**
 	 * displays the view
 	 *
@@ -107,7 +108,7 @@ class jfusionViewversioncheck extends JView
 						$joomla->name = 'Joomla';
 
 						//remove any letters from the version
-						$joomla_versionclean = preg_replace('[A-Za-z !]', '', $joomla_version);
+						$joomla_versionclean = preg_replace("[A-Za-z !]", "", $joomla_version);
 						if (version_compare($joomla_versionclean, $joomla->version) == - 1) {
 							$joomla->class = 'bad1';
 							$server_compatible = false;
@@ -188,7 +189,7 @@ class jfusionViewversioncheck extends JView
 	 * @param string $filename   filename
 	 * @param string $name       name
 	 * @param string $path    version
-	 * @param JSimpleXMLElement $xml    version
+	 * @param string $xml    version
 	 *
 	 * @return string nothing
 	 *
@@ -206,21 +207,17 @@ class jfusionViewversioncheck extends JView
 		$output->oldversion = JText::_('UNKNOWN');
 
 		if ($path && $xml) {
-			/**
-			 * @ignore
-			 * @var $element JSimpleXMLElement
-			 */
-			$element = $xml->getElementByPath($path.'/version');
-			if ($element) {
-				$output->version = $element->data();
+			$p = $xml->getElementByPath($path.'/version');
+			if ($p) {
+				$output->version = $p->data();
 			}
-			$element = $xml->getElementByPath($path.'/remotefile');
-			if ($element) {
-				$output->updateurl = $element->data();
+			$p = $xml->getElementByPath($path.'/remotefile');
+			if ($p) {
+				$output->updateurl = $p->data();
 			}
-			$element = $xml->getElementByPath($path.'/revision');
-			if ($element) {
-				$output->rev = trim($element->data());
+			$p = $xml->getElementByPath($path.'/revision');
+			if ($p) {
+				$output->rev = trim($p->data());
 			}
 		}
 
@@ -239,17 +236,22 @@ class jfusionViewversioncheck extends JView
 			}
 
 			if (version_compare($output->oldversion, $output->version) == - 1 || ($output->oldrev && $output->rev && $output->oldrev != $output->rev )) {
-				$output->class = 'bad';
+				$output->class = 'bad'.$this->row_count;
 				$this->up2date = false;
 			} else {
 				$output->updateurl = null;
-				$output->class = 'good';
+				$output->class = 'good'.$this->row_count;
 			}
 
 			//cleanup for the next function call
 			unset($parser);
 		} else {
 			JFusionFunction::raiseWarning(JText::_('ERROR'), JText::_('XML_FILE_MISSING') . ' '. JText::_('JFUSION') . ' ' . $name . ' ' . JText::_('PLUGIN'), 1);
+		}
+		if ($this->row_count == 1) {
+			$this->row_count = 0;
+		} else {
+			$this->row_count = 1;
 		}
 		return $output;
 	}
