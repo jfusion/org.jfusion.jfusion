@@ -159,32 +159,23 @@ class jfusionViewversioncheck extends JView
 						}
 					}
 
-		$_temp = $this->up2date;
-		$this->up2date = true;
 					foreach ($plugins as $key => $plugin) {
 						if (in_array($plugin->name,$url->jnames)) {
 							$jfusion_plugins[] = $this->getVersionNumber(JFUSION_PLUGIN_PATH . DS . $plugin->name . DS . 'jfusion.xml', $plugin->name, 'plugins/'.$plugin->name, $JFusionVersionInfo);
 							unset($plugins[$key]);
 						}
 					}
-	  $this->pluginsup2date = $this->up2date;
-    if (!$_temp) { $this->up2date = false;}
-
 				}
 			}
 		}
-		$_temp = $this->up2date;
-		$this->up2date = true;
 		foreach ($plugins as $key => $plugin) {
 			$jfusion_plugins[] = $this->getVersionNumber(JFUSION_PLUGIN_PATH . DS . $plugin->name . DS . 'jfusion.xml', $plugin->name);
 		}
-    if (!$_temp) { $this->up2date = false;}
 		unset($parser);
 		ob_end_clean();
     
 
 		$this->assignRef('up2date', $this->up2date);
-		$this->assignRef('pluginsup2date', $this->pluginsup2date);
 		$this->assignRef('server_compatible', $server_compatible);
 		$this->assignRef('system', $system);
 		$this->assignRef('jfusion_plugins', $jfusion_plugins);
