@@ -56,6 +56,11 @@ class jfusionViewLoginCheckerResult extends JView
 	    if (JRequest::getVar('overwrite') == 1) {
 	        $options['overwrite'] = 1;
 	    }
+
+        //prevent current jooomla session from being destroyed
+        global $JFusionActivePlugin, $JFusionLoginCheckActive;
+        $JFusionActivePlugin = 'joomla_int';
+        $JFusionLoginCheckActive = true;
 	    
 		$this->getVersion();
 		$this->getServerInfo();
