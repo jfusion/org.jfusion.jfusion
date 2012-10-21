@@ -36,8 +36,11 @@ class JFusionCookies {
      * @param string $cookiedomain
      * @param int $cookie_secure
      * @param int $cookie_httponly
+     * @param boolean $mask
+     *
+     * @return array Cookie debug info
      */
-    function addCookie($cookie_name, $cookie_value='', $cookie_expires_time=0, $cookiepath='', $cookiedomain='', $cookie_secure=0, $cookie_httponly=0) {
+    function addCookie($cookie_name, $cookie_value='', $cookie_expires_time=0, $cookiepath='', $cookiedomain='', $cookie_secure=0, $cookie_httponly=0, $mask = false) {
     	if ($cookie_expires_time != 0) {
     		$cookie_expires_time = time() + intval($cookie_expires_time);
     	} else {
@@ -73,6 +76,20 @@ class JFusionCookies {
 		} else {
 			header('Set-Cookie: '.$cookie, false);
 		}
+
+        $debug = array();
+        $debug[JText::_('COOKIE')][JText::_('JFUSION_CROSS_DOMAIN_URL')] = $url;
+        $debug[JText::_('COOKIE')][JText::_('NAME')] = $cookie_name;
+        if ($mask) {
+            $debug[JText::_('COOKIE')][JText::_('VALUE')] = substr($cookie_value, 0, 6) . '********';
+        } else {
+            $debug[JText::_('COOKIE')][JText::_('VALUE')] = $cookie_value;
+        }
+        $debug[JText::_('COOKIE')][JText::_('EXPIRES')] = $cookie_expires_time;
+        $debug[JText::_('COOKIE')][JText::_('COOKIE_PATH')] = $cookiepath;
+        $debug[JText::_('COOKIE')][JText::_('COOKIE_SECURE')] = $cookie_secure;
+        $debug[JText::_('COOKIE')][JText::_('COOKIE_HTTPONLY')] = $cookie_httponly;
+        return $debug;
     }
 
     /**

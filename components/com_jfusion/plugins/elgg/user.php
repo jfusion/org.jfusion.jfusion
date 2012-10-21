@@ -113,14 +113,16 @@ class JFusionUser_elgg extends JFusionUser {
      * @return array
      */
     function destroySession($userinfo, $option) {
+        $status = array('error' => array(),'debug' => array());
         /*
         NOTE:
         !Cannont include elgg engine and use core elgg logout functions since it conflicts with Community Builder Logout function!
         unsetting the elgg cookies has been problematic as well.
         */
         $params = JFusionFactory::getParams($this->getJname());
-        setcookie('Elgg', '', time() + 60 * 60 * 24 * 365, $params->get('cookie_path'), $params->get('cookie_domain'));
-        setcookie('elggperm', '', time() + 60 * 60 * 24 * 365, '/');
+        $expire = time() + 60 * 60 * 24 * 365;
+        $status['debug'][] = JFusionFunction::addCookie('Elgg', '', $expire, $params->get('cookie_path'), $params->get('cookie_domain'));
+        $status['debug'][] = JFusionFunction::addCookie('elggperm', '', $expire, '/', $params->get('cookie_domain'));
         return array();
     }
 
@@ -162,7 +164,7 @@ class JFusionUser_elgg extends JFusionUser {
                 $code = (md5($user->name . $user->username . time() . rand()));
                 $user->code = md5($code);
                 $_SESSION['code'] = $code;
-                if (($persistent)) setcookie('elggperm', $code, (time() + (86400 * 30)), '/');
+                if (($persistent)) $status['debug'][] = JFusionFunction::addCookie('elggperm', $code, (time() + (86400 * 30)), '/', $params->get('cookie_domain'));
                 if (!$user->save() || !trigger_elgg_event('login', 'user', $user)) {
                     unset($_SESSION['username']);
                     unset($_SESSION['name']);
@@ -170,7 +172,7 @@ class JFusionUser_elgg extends JFusionUser {
                     unset($_SESSION['guid']);
                     unset($_SESSION['id']);
                     unset($_SESSION['user']);
-                    setcookie('elggperm', '', (time() - (86400 * 30)), '/');
+                    $status['debug'][] = JFusionFunction::addCookie('elggperm', '', (time() - (86400 * 30)), '/', $params->get('cookie_domain'));
                 } else {
                     // Users privilege has been elevated, so change the session id (help prevent session hijacking)
                     //session_regenerate_id();

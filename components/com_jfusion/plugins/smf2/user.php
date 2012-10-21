@@ -140,15 +140,9 @@ class JFusionUser_smf2 extends JFusionUser {
      * @return array
      */
     function destroySession($userinfo, $options){
-        $params = JFusionFactory::getParams($this->getJname());
-        $crossdomain_url = $params->get('crossdomain_url');
-        if ( $crossdomain_url ) {
-		    $jc = JFusionFactory::getCookies();
-            $jc->addCookie($crossdomain_url, $params->get('cookie_name'), '',0,$params->get('cookie_path'),$params->get('cookie_domain'),$params->get('secure'),$params->get('httponly'));           
-        } else {
-		    JFusionFunction::addCookie($params->get('cookie_name'), '',0,$params->get('cookie_path'),$params->get('cookie_domain'),$params->get('secure'),$params->get('httponly'));
-        }
         $status = array('error' => array(),'debug' => array());
+        $params = JFusionFactory::getParams($this->getJname());
+        $status['debug'][] = JFusionFunction::addCookie($params->get('cookie_name'), '',0,$params->get('cookie_path'),$params->get('cookie_domain'),$params->get('secure'),$params->get('httponly'));
 		return $status;
      }
 

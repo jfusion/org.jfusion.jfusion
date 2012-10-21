@@ -79,11 +79,11 @@ class JFusionUser_mybb extends JFusionUser {
         $remove_cookies = array('mybb', 'mybbuser', 'mybbadmin');
         if ($cookiedomain) {
             foreach ($remove_cookies as $name) {
-                @setcookie($name, '', $expires, $cookiepath, $cookiedomain);
+                $status['debug'][] = JFusionFunction::addCookie($name,  '', $expires, $cookiepath, '', $cookiedomain);
             }
         } else {
             foreach ($remove_cookies as $name) {
-                @setcookie($name, '', $expires, $cookiepath);
+                $status['debug'][] = JFusionFunction::addCookie($name,  '', $expires, $cookiepath, '');
             }
         }
         return $status;
@@ -127,8 +127,7 @@ class JFusionUser_mybb extends JFusionUser {
             }
             $cookiepath = str_replace(array("\n", "\r"), '', $cookiepath);
             $cookiedomain = str_replace(array("\n", "\r"), '', $cookiedomain);
-            JFusionFunction::addCookie($name, $value, $expires, $cookiepath, $cookiedomain, false, $httponly);
-            $status['debug'][] = JText::_('NAME') . '=' . $name . ', ' . JText::_('VALUE') . '=' . substr($value, 0, 6) . '********, ' . JText::_('COOKIE_PATH') . '=' . $cookiepath . ', ' . JText::_('COOKIE_DOMAIN') . '=' . $cookiedomain;
+            $status['debug'][] = JFusionFunction::addCookie($name, $value, $expires, $cookiepath, $cookiedomain, false, $httponly ,true);
         }
         return $status;
     }

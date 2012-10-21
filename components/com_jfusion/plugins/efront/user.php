@@ -106,13 +106,11 @@ class JFusionUser_efront extends JFusionUser
         $remove_cookies = array('cookie_login', 'cookie_password');
         if ($cookiedomain) {
             foreach ($remove_cookies as $name) {
-                @setcookie($name, '', $expires, $cookiepath, $cookiedomain);
-                $status['debug'][] = JText::_('DELETED') . ' ' . JText::_('COOKIE') . ': ' . JText::_('NAME') . '=' . $name . ', ' .  JText::_('COOKIE_PATH') . '=' . $cookiepath . ', ' . JText::_('COOKIE_DOMAIN') . '=' . $cookiedomain. ', '.JText::_('COOKIE_SECURE') . '=' .$secure. ', '.JText::_('COOKIE_HTTPONLY') . '=' .$httponly;
+                $status['debug'][] = JFusionFunction::addCookie($name,  '', $expires, $cookiepath, $cookiedomain);
            }
         } else {
             foreach ($remove_cookies as $name) {
-                @setcookie($name, '', $expires, $cookiepath);
-                $status['debug'][] = JText::_('DELETED') . ' ' . JText::_('COOKIE') . ': ' . JText::_('NAME') . '=' . $name . ', ' .  JText::_('COOKIE_PATH') . '=' . $cookiepath . ', ' . JText::_('COOKIE_DOMAIN') . '=' . $cookiedomain. ', '.JText::_('COOKIE_SECURE') . '=' .$secure. ', '.JText::_('COOKIE_HTTPONLY') . '=' .$httponly;
+                $status['debug'][] = JFusionFunction::addCookie($name,  '', $expires, $cookiepath, '');
             }
         }
 
@@ -199,17 +197,15 @@ class JFusionUser_efront extends JFusionUser
         }
         $name = 'cookie_login';
         $value = $userinfo->username;
-        JFusionFunction::addCookie($name, $value, $expires, $cookiepath, $cookiedomain, false, $httponly);
+        $status['debug'][] = JFusionFunction::addCookie($name, $value, $expires, $cookiepath, $cookiedomain, false, $httponly);
         if ( ($expires) == 0) {
             $expires_time='Session_cookie';
         } else {
             $expires_time=date('d-m-Y H:i:s',time()+$expires);
         }
-        $status['debug'][] = JText::_('CREATED') . ' ' . JText::_('COOKIE') . ': ' . JText::_('NAME') . '=' . $name . ', ' . JText::_('VALUE') . '=' . urldecode($value) .', ' .JText::_('EXPIRES') . '=' .$expires_time .', ' . JText::_('COOKIE_PATH') . '=' . $cookiepath . ', ' . JText::_('COOKIE_DOMAIN') . '=' . $cookiedomain. ', '.JText::_('COOKIE_SECURE') . '=' .$secure. ', '.JText::_('COOKIE_HTTPONLY') . '=' .$httponly;
         $name = 'cookie_password';
         $value = $user->password;
-        JFusionFunction::addCookie($name, $value, $expires, $cookiepath, $cookiedomain, false, $httponly);
-        $status['debug'][] = JText::_('CREATED') . ' ' . JText::_('COOKIE') . ': ' . JText::_('NAME') . '=' . $name . ', ' . JText::_('VALUE') . '=' . urldecode($value) .', ' .JText::_('EXPIRES') . '=' .$expires_time .', ' . JText::_('COOKIE_PATH') . '=' . $cookiepath . ', ' . JText::_('COOKIE_DOMAIN') . '=' . $cookiedomain. ', '.JText::_('COOKIE_SECURE') . '=' .$secure. ', '.JText::_('COOKIE_HTTPONLY') . '=' .$httponly;
+        $status['debug'][] = JFusionFunction::addCookie($name, $value, $expires, $cookiepath, $cookiedomain, false, $httponly);
         return $status;
     }
 

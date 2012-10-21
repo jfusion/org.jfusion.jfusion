@@ -410,48 +410,21 @@ class JFusionFunction
     /**
      * Adds a cookie to the php header
      *
-     * @param string $name         cookie name
-     * @param string $value        cookie value
-     * @param int    $expires_time cookie expiry time
-     * @param string $cookiepath   cookie path
-     * @param string $cookiedomain cookie domain
-     * @param bool $secure       is the secute
-     * @param bool $httponly     is the cookie http only
+     * @param string $name      cookie name
+     * @param string $value     cookie value
+     * @param int    $expires   cookie expiry time
+     * @param string $path      cookie path
+     * @param string $domain    cookie domain
+     * @param bool $secure      is the secute
+     * @param bool $httponly    is the cookie http only
+     * @param bool $mask        should debug info be masked ?
      *
-     * @return string nothing
+     * @return array            cookie debug info
      */
-    public static function addCookie($name, $value, $expires_time, $cookiepath, $cookiedomain, $secure=false, $httponly=false)
+    public static function addCookie($name, $value, $expires, $path, $domain, $secure=false, $httponly=false, $mask = false)
     {
     	$cookies = JFusionFactory::getCookies();
-    	$cookies->addCookie($name, $value, $expires_time, $cookiepath, $cookiedomain, $secure, $httponly);
-/*
-        if ($expires_time != 0) {
-            $expires = time() + intval($expires_time);
-        } else {
-            $expires = 0;
-        }
-        // Versions of PHP prior to 5.2 do not support HttpOnly cookies and IE is buggy when specifying a blank domain so set the cookie manually
-        $cookie = 'Set-Cookie: '.$name.'=' . urlencode($value);
-        if ($expires > 0) {
-            $cookie.= '; expires=' . gmdate('D, d-M-Y H:i:s \\G\\M\\T', $expires);
-        }
-        if (!empty($cookiepath)) {
-            $cookie.= '; path='.$cookiepath;
-        }
-        if (!empty($cookiedomain)) {
-            $cookie.= '; domain='.$cookiedomain;
-        }
-        if ($secure == true) {
-            $cookie.= '; Secure';
-        }
-        if ($httponly == true) {
-            $cookie.= '; HttpOnly';
-        }
-        header($cookie, false);
-*/
-        //$document    = JFactory::getDocument();
-        //$document->addCustomTag($cookie);
-
+    	return $cookies->addCookie($name, $value, $expires, $path, $domain, $secure, $httponly, $mask);
     }
 
     /**

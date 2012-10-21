@@ -149,16 +149,14 @@ class JFusionUser_mediawiki extends JFusionUser {
    		$_SESSION['wsToken'] = '';
         $helper->closeSession();
 
-   		setcookie($cookie_name  . 'UserName', '', $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
-   		setcookie($cookie_name  . 'UserID', '', $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
-   		setcookie($cookie_name  . 'Token', '', $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
+        $status['debug'][] = JFusionFunction::addCookie($cookie_name  . 'UserName', '', $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
+        $status['debug'][] = JFusionFunction::addCookie($cookie_name  . 'UserID', '', $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
+        $status['debug'][] = JFusionFunction::addCookie($cookie_name  . 'Token', '', $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
+
    		$now = time();
         $expiration = time() + 86400;
-   		setcookie('LoggedOut', $now, $expiration, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly );
-        $status['debug'][] = $cookie_name.'UserName ' . JText::_('DELETED');
-        $status['debug'][] = $cookie_name.'UserID ' . JText::_('DELETED');
-        $status['debug'][] = $cookie_name.'Token ' . JText::_('DELETED');
-        $status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => 'LoggedOut', JText::_('VALUE') => $now, JText::_('EXPIRES') => $expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
+
+        $status['debug'][] = JFusionFunction::addCookie('LoggedOut', $now, $expiration, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
 		return $status;
      }
 

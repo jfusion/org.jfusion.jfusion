@@ -207,8 +207,7 @@ class JFusionUser_vbulletin extends JFusionUser
             //clear out all of vB's cookies
             foreach ($_COOKIE AS $key => $val) {
 		        if (strpos($key, $cookie_prefix) !== false) {
-                    JFusionCurl::addCookie($key , 0, $timenow - 3600, $cookie_path, $cookie_domain, $secure, $httponly);
-                    $status['debug'][] = $key.' '. JText::_('DELETED');
+                    $status['debug'][] = JFusionCurl::addCookie($key , 0, $timenow - 3600, $cookie_path, $cookie_domain, $secure, $httponly);
 		        }
             }
 
@@ -312,11 +311,8 @@ class JFusionUser_vbulletin extends JFusionUser
             $secure = $this->params->get('secure', false);
             $httponly = $this->params->get('httponly', true);
 
-            JFusionCurl::addCookie($cookie_prefix.'userid' , $userinfo->userid, $expires_time,  $cookie_path, $cookie_domain, $secure, $httponly);
-            JFusionCurl::addCookie($cookie_prefix.'password' , $passwordhash, $expires_time, $cookie_path, $cookie_domain, $secure, $httponly);
-
-            $status['debug'][JText::_('CREATED') . ' ' . JText::_('COOKIES')][] = array(JText::_('NAME') => $cookie_prefix.'userid', JText::_('VALUE') => $userinfo->userid, JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
-            $status['debug'][JText::_('CREATED') . ' ' . JText::_('COOKIES')][] = array(JText::_('NAME') => $cookie_prefix.'password', JText::_('VALUE') => substr($passwordhash, 0, 6) . '********, ', JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
+            $status['debug'][] = JFusionCurl::addCookie($cookie_prefix.'userid' , $userinfo->userid, $expires_time,  $cookie_path, $cookie_domain, $secure, $httponly);
+            $status['debug'][] = JFusionCurl::addCookie($cookie_prefix.'password' , $passwordhash, $expires_time, $cookie_path, $cookie_domain, $secure, $httponly, true);
         } else {
             $status['debug'][] = JText::_('VB_SESSION_ALREADY_ACTIVE');
             $status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => $cookie_prefix.'userid', JText::_('VALUE') => $cookie_userid, JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);

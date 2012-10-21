@@ -220,14 +220,13 @@ class JFusionUser_dokuwiki extends JFusionUser {
         $helper->defineConstants();
 
         $time = time()-3600;
-        JFusionFunction::addCookie(DOKU_COOKIE, '', $time, $cookie_path, $cookie_domain, $cookie_secure, $httponly);
+        $status['debug'][] = JFusionFunction::addCookie(DOKU_COOKIE, '', $time, $cookie_path, $cookie_domain, $cookie_secure, $httponly);
         // remove blank domain name cookie just in case we are using wrapper
         $source_url = $params->get('source_url');
         $cookie_path = preg_replace('#(\w{0,10}://)(.*?)/(.*?)#is', '$3', $source_url);
         $cookie_path = preg_replace('#//+#', '/', "/$cookie_path/");
-        JFusionFunction::addCookie(DOKU_COOKIE, '', $time, $cookie_path, '', $cookie_secure, $httponly);
-        
-        $status['debug'][] = DOKU_COOKIE . " " . JText::_('DELETED');
+        $status['debug'][] = JFusionFunction::addCookie(DOKU_COOKIE, '', $time, $cookie_path, '', $cookie_secure, $httponly);
+
         return $status;
     }
 
@@ -268,9 +267,7 @@ class JFusionUser_dokuwiki extends JFusionUser {
 			}
             $time = 60*60*24*365;
             $debug_expiration = date('Y-m-d H:i:s', time()+$time);
-            JFusionFunction::addCookie(DOKU_COOKIE, $cookie_value, $time, $cookie_path, $cookie_domain, $cookie_secure, $httponly);
-
-            $status['debug'][JText::_('CREATED') . ' ' . JText::_('COOKIES')][] = array(JText::_('NAME') => DOKU_COOKIE, JText::_('VALUE') => $cookie_value, JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
+            $status['debug'][] = JFusionFunction::addCookie(DOKU_COOKIE, $cookie_value, $time, $cookie_path, $cookie_domain, $cookie_secure, $httponly);
         }
 
         return $status;

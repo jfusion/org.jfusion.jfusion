@@ -177,7 +177,7 @@ class JFusionUser_universal extends JFusionUser {
 		$status = JFusionJplugin::destroySession($userinfo, $options,$this->getJname(),'no_brute_force');
 		$_COOKIE = $cookie_backup;
         $params = JFusionFactory::getParams($this->getJname());
-		JFusionFunction::addCookie($params->get('cookie_name'), '',0,$params->get('cookie_path'),$params->get('cookie_domain'),$params->get('secure'),$params->get('httponly'));
+        $status['debug'][] = JFusionFunction::addCookie($params->get('cookie_name'), '',0,$params->get('cookie_path'),$params->get('cookie_domain'),$params->get('secure'),$params->get('httponly'));
 		return $status;
 	}
 
