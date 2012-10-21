@@ -72,8 +72,21 @@ class JFusionFrameless {
     		$MenuParam = $menu->getParams ( $data->Itemid );
             $JFusionParam = JFusionFactory::getParams ( $jname );
         }
-        
+
         $data->jParam = $JFusionParam;
+        $data->mParam = $MenuParam;
+
+        $JFusionPluginParam = $MenuParam->get('JFusionPluginParam');
+        if ($JFusionPluginParam) {
+            $params = unserialize(base64_decode($JFusionPluginParam));
+            if ($params && isset($params['jfusionplugin'])) {
+                if (JFusionFunction::isJoomlaVersion('1.6')) {
+                    $params += $params[$params['jfusionplugin']]['params'];
+                    unset($params[$params['jfusionplugin']]);
+                }
+                $data->mParam->loadArray($params);
+            }
+        }
 
 		//Get the integrated URL
         $data->integratedURL = $JFusionParam->get ( 'source_url' );
