@@ -85,6 +85,11 @@ class JFusionCookies {
         } else {
             $debug[JText::_('COOKIE')][JText::_('VALUE')] = $cookie_value;
         }
+        if (($cookie_expires_time) == 0) {
+            $cookie_expires_time='Session_cookie';
+        } else {
+            $cookie_expires_time=date('d-m-Y H:i:s', $cookie_expires_time);
+        }
         $debug[JText::_('COOKIE')][JText::_('EXPIRES')] = $cookie_expires_time;
         $debug[JText::_('COOKIE')][JText::_('COOKIE_PATH')] = $cookiepath;
         $debug[JText::_('COOKIE')][JText::_('COOKIE_SECURE')] = $cookie_secure;
