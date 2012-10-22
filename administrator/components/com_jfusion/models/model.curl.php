@@ -607,11 +607,10 @@ class JFusionCurl
 	 * @param string $cookiedomain    cookie domain
 	 * @param int $secure          secure
 	 * @param int $httponly        is the cookie http only
-	 * @param string $crossdomain_url cross domain url
 	 *
 	 * @return string nothing
 	 */
-    public static function addCookie($name, $value='', $expires=0, $cookiepath='', $cookiedomain='', $secure=0, $httponly=0, $crossdomain_url='')
+    public static function addCookie($name, $value='', $expires=0, $cookiepath='', $cookiedomain='', $secure=0, $httponly=0)
 	{
 
 		// Versions of PHP prior to 5.2 do not support HttpOnly cookies
@@ -622,10 +621,11 @@ class JFusionCurl
 		} else {
 			setcookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure);
 		}
-		if ($crossdomain_url) {
-			$jc = JFusionFactory::getCookies();
-			$jc->addCookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
-		}
+
+        /*
+        $jc = JFusionFactory::getCookies();
+        $jc->addCookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
+        */
 	}
 
 	/**
@@ -638,11 +638,10 @@ class JFusionCurl
 	 * @param int $expires          expires
 	 * @param int $secure           secure
 	 * @param int $httponly         is the cookie http only
-	 * @param string $crossdomain_url  cross domain url
 	 *
 	 * @return string nothing
 	 */
-    public static function setmycookies($status, $mycookies_to_set, $cookiedomain, $cookiepath, $expires=0, $secure=0, $httponly=1, $crossdomain_url='')
+    public static function setmycookies($status, $mycookies_to_set, $cookiedomain, $cookiepath, $expires=0, $secure=0, $httponly=1)
 	{
 		$cookies=array();
 		$cookies=JFusionCurl::parsecookies($mycookies_to_set);
@@ -673,7 +672,7 @@ class JFusionCurl
 					$cookiedomain=$cookie['domain'];
 				}
 			}
-			JFusionCurl::addCookie($name, urldecode($value), $expires_time, $cookiepath, $cookiedomain, $secure, $httponly, $crossdomain_url);
+			JFusionCurl::addCookie($name, urldecode($value), $expires_time, $cookiepath, $cookiedomain, $secure, $httponly);
 
 			if (($expires_time) == 0) {
 				$expires_time='Session_cookie';
@@ -698,11 +697,10 @@ class JFusionCurl
 	 * @param string $leavealone       leavealone
 	 * @param int $secure           secure
 	 * @param int $httponly         is the cookie http only
-	 * @param string $crossdomain_url  cross domain url
 	 *
 	 * @return string nothing
 	 */
-    public static function deletemycookies($status, $mycookies_to_set, $cookiedomain, $cookiepath, $leavealone, $secure=0, $httponly=1, $crossdomain_url='')
+    public static function deletemycookies($status, $mycookies_to_set, $cookiedomain, $cookiepath, $leavealone, $secure=0, $httponly=1)
 	{
 		$cookies=array();
 		$cookies=JFusionCurl::parsecookies($mycookies_to_set);
@@ -777,7 +775,7 @@ class JFusionCurl
 			if (!$leaveit) {
 				$expires_time=time()-30*60;
 				$value = '';
-				JFusionCurl::addCookie($name, urldecode($value), $expires_time, $cookiepath, $cookiedomain, $secure, $httponly, $crossdomain_url);
+				JFusionCurl::addCookie($name, urldecode($value), $expires_time, $cookiepath, $cookiedomain, $secure, $httponly);
 				if (($expires_time) == 0) {
 					$expires_time='Session_cookie';
 				} else {
@@ -785,7 +783,7 @@ class JFusionCurl
 				}
 				$status['debug'][] = JFusionCurl::_('DELETED') . ' ' . JFusionCurl::_('COOKIE') . ': ' . JFusionCurl::_('NAME') . '=' . $name . ', ' . JFusionCurl::_('VALUE') . '=' . urldecode($value) .', ' .JFusionCurl::_('EXPIRES') . '=' .$expires_time .', ' . JFusionCurl::_('COOKIE_PATH') . '=' . $cookiepath . ', ' . JFusionCurl::_('COOKIE_DOMAIN') . '=' . $cookiedomain. ', '.JFusionCurl::_('COOKIE_SECURE') . '=' .$secure. ', '.JFusionCurl::_('COOKIE_HTTPONLY') . '=' .$httponly;
 			} else {
-				JFusionCurl::addCookie($name, urldecode($cookie['value']['value']), $expires_time, $cookiepath, $cookiedomain, $secure, $httponly, $crossdomain_url);
+				JFusionCurl::addCookie($name, urldecode($cookie['value']['value']), $expires_time, $cookiepath, $cookiedomain, $secure, $httponly);
 				if (($expires_time) == 0) {
 					$expires_time='Session_cookie';
 				} else {
@@ -978,9 +976,6 @@ class JFusionCurl
 		if (!isset($curl_options['verifyhost'])) {
 			$curl_options['verifyhost'] = 1;
 		}
-		if (!isset($curl_options['crossdomain_url'])) {
-			$curl_options['crossdomain_url'] = '';
-		}
 		if (!isset($curl_options['debug'])) {
 			$curl_options['debug'] = false;
 		}
@@ -1007,7 +1002,7 @@ class JFusionCurl
 			return $status;
 		}
 		$status['debug'][] = JFusionCurl::_('CURL_PHASE_1');
-		$status1=JFusionCurl::setmycookies($status, $cookies_to_set, $curl_options['cookiedomain'], $curl_options['cookiepath'], $curl_options['expires'], $curl_options['secure'], $curl_options['httponly'], $curl_options['crossdomain_url']);
+		$status1=JFusionCurl::setmycookies($status, $cookies_to_set, $curl_options['cookiedomain'], $curl_options['cookiepath'], $curl_options['expires'], $curl_options['secure'], $curl_options['httponly']);
 		$status = array_merge($status,$status1);
 		//find out if we have the form with the name/id specified
 		$parser = new JFusionCurlHtmlFormParser($remotedata);
@@ -1271,10 +1266,10 @@ class JFusionCurl
 
 		if (empty($curl_options['logout'])){
 			$status['debug'][] = JFusionCurl::_('CURL_LOGIN_FINISHED');
-			$status=JFusionCurl::setmycookies($status, $cookies_to_set, $curl_options['cookiedomain'], $curl_options['cookiepath'], $curl_options['expires'], $curl_options['secure'], $curl_options['httponly'], $curl_options['crossdomain_url']);
+			$status=JFusionCurl::setmycookies($status, $cookies_to_set, $curl_options['cookiedomain'], $curl_options['cookiepath'], $curl_options['expires'], $curl_options['secure'], $curl_options['httponly']);
 		} else {
 			$status['debug'][] = JFusionCurl::_('CURL_LOGOUT_FINISHED');
-			$status=JFusionCurl::deletemycookies($status, $cookies_to_set, $curl_options['cookiedomain'], $curl_options['cookiepath'], $curl_options['expires'], $curl_options['secure'], $curl_options['httponly'], $curl_options['crossdomain_url']);
+			$status=JFusionCurl::deletemycookies($status, $cookies_to_set, $curl_options['cookiedomain'], $curl_options['cookiepath'], $curl_options['expires'], $curl_options['secure'], $curl_options['httponly']);
 		}
 		$cookies_to_set_index = 0;
 		return $status;
@@ -1325,9 +1320,6 @@ class JFusionCurl
 		}
 		if (!isset($curl_options['verifyhost'])) {
 			$curl_options['verifyhost'] = 1;
-		}
-		if (!isset($curl_options['crossdomain_url'])) {
-			$curl_options['crossdomain_url'] = '';
 		}
 		if (!isset($curl_options['debug'])) {
 			$curl_options['debug'] = false;
@@ -1391,7 +1383,7 @@ class JFusionCurl
 		curl_close($ch);
 
 		//we have to delete the cookies now
-		$status=JFusionCurl::deletemycookies($status, $cookies_to_set, $curl_options['cookiedomain'], $curl_options['cookiepath'], $curl_options['leavealone'], $curl_options['secure'], $curl_options['httponly'], $curl_options['crossdomain_url']);
+		$status=JFusionCurl::deletemycookies($status, $cookies_to_set, $curl_options['cookiedomain'], $curl_options['cookiepath'], $curl_options['leavealone'], $curl_options['secure'], $curl_options['httponly']);
 		$cookies_to_set_index = 0;
 		return $status;
 	}
@@ -1443,9 +1435,6 @@ class JFusionCurl
 		}
 		if (!isset($curl_options['verifyhost'])) {
 			$curl_options['verifyhost'] = 1;
-		}
-		if (!isset($curl_options['crossdomain_url'])) {
-			$curl_options['crossdomain_url'] = '';
 		}
 		if (!isset($curl_options['debug'])) {
 			$curl_options['debug'] = false;
@@ -1528,7 +1517,7 @@ class JFusionCurl
 			return $status;
 		}
 		curl_close($ch);
-		$status=JFusionCurl::setmycookies($status, $cookies_to_set, $curl_options['cookiedomain'], $curl_options['cookiepath'], $curl_options['expires'], $curl_options['secure'], $curl_options['httponly'], $curl_options['crossdomain_url']);
+		$status=JFusionCurl::setmycookies($status, $cookies_to_set, $curl_options['cookiedomain'], $curl_options['cookiepath'], $curl_options['expires'], $curl_options['secure'], $curl_options['httponly']);
 		$cookies_to_set_index = 0;
 		return $status;
 	}
