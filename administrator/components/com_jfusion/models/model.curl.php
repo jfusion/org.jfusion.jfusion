@@ -612,20 +612,19 @@ class JFusionCurl
 	 */
     public static function addCookie($name, $value='', $expires=0, $cookiepath='', $cookiedomain='', $secure=0, $httponly=0)
 	{
-
-		// Versions of PHP prior to 5.2 do not support HttpOnly cookies
-		// IE is buggy when specifying a blank domain so set the cookie manually
-		// solve the empty cookiedomain IE problem by specifying a domain in the plugin's parameters. <------
-		if (version_compare(phpversion(), "5.2.0", ">=")) {
-			setcookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
-		} else {
-			setcookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure);
-		}
-
-        /*
-        $jc = JFusionFactory::getCookies();
-        $jc->addCookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
-        */
+        if (strpos($cookiedomain,'http://') === 0 || strpos($cookiedomain,'https://') === 0) {
+            $jc = JFusionFactory::getCookies();
+            $jc->addCookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
+        } else {
+            // Versions of PHP prior to 5.2 do not support HttpOnly cookies
+            // IE is buggy when specifying a blank domain so set the cookie manually
+            // solve the empty cookiedomain IE problem by specifying a domain in the plugin's parameters. <------
+            if (version_compare(phpversion(), "5.2.0", ">=")) {
+                setcookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
+            } else {
+                setcookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure);
+            }
+        }
 	}
 
 	/**
