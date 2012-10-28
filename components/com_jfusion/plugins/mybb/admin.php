@@ -64,8 +64,8 @@ class JFusionAdmin_mybb extends JFusionAdmin
         if (($file_handle = @fopen($myfile, 'r')) === false) {
             JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));
         } else {
-            include_once($myfile);
             $config = array();
+            include_once($myfile);
             $params['database_type'] = $config['database']['type'];
             $params['database_host'] = $config['database']['hostname'];
             $params['database_user'] = $config['database']['username'];

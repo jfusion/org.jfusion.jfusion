@@ -80,7 +80,7 @@ class JFusionFrameless {
         if ($JFusionPluginParam) {
             $params = unserialize(base64_decode($JFusionPluginParam));
             if ($params && isset($params['jfusionplugin'])) {
-                if (JFusionFunction::isJoomlaVersion('1.6')) {
+                if (JFusionFunction::isJoomlaVersion('1.6') && isset($params[$params['jfusionplugin']]['params'])) {
                     $params += $params[$params['jfusionplugin']]['params'];
                     unset($params[$params['jfusionplugin']]);
                 }

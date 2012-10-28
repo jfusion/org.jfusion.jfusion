@@ -99,6 +99,7 @@ class JFusionPublic
 
         //parse absolute URLS
         $path = '';
+
         if(!empty($data->parse_abs_path)) {
             $path = preg_replace( '#(\w{0,10}://)(.*?)/(.*?)#is'  , '$3' , $data->integratedURL );
             $path = preg_replace('#//+#','/',"/$path/");
@@ -110,7 +111,7 @@ class JFusionPublic
             switch ($urlMode) {
                 case 1:
                 case 2:
-                    $regex_body[] = '#href="'.$path.'(.*?)"#m';
+                    $regex_body[] = '#(?<=href=["\'])'.$path.'(.*?)(?=["\'])#m';
                     $replace_body[] = '';
                     $callback_body[] = 'fixUrl';
                     break;
@@ -127,11 +128,11 @@ class JFusionPublic
             switch ($urlMode) {
                 case 1:
                 case 2:
-                    $regex_body[]	= '#href="[./|/](.*?)"#m';
+                    $regex_body[]	= '#(?<=href=["\'])[./|/](.*?)(?=["\'])#mS';
                     $replace_body[] = '';
                     $callback_body[] = 'fixUrl';
 
-                    $regex_body[]	= '#href="(?!\w{0,10}://|\w{0,10}:)(.*?)"#m';
+                    $regex_body[]	= '#(?<=href=["\'])(?!\w{0,10}://|\w{0,10}:)(.*?)(?=["\'])#mS';
                     $replace_body[] = '';
                     $callback_body[] = 'fixUrl';
                     break;
@@ -152,7 +153,7 @@ class JFusionPublic
             switch ($urlMode) {
                 case 1:
                 case 2:
-                    $regex_body[]	= '#href="'.$data->integratedURL.'(.*?)"#m';
+                    $regex_body[]	= '#(?<=href=["\'])'.$data->integratedURL.'(.*?)(?=["\'])#m';
                     $replace_body[] = '';
                     $callback_body[] = 'fixUrl';
                     break;
@@ -180,6 +181,7 @@ class JFusionPublic
             switch ($urlMode) {
                 case 1:
                 case 2:
+
                     if (!empty($data->parse_abs_path)) {
                         $regex_body[]	= '#action="'.$path.'(.*?)"(.*?)>#m';
                         $replace_body[]	= '';
@@ -192,6 +194,10 @@ class JFusionPublic
                     }
                     if (!empty($data->parse_rel_url)) {
                         $regex_body[]	= '#action="[./|/](.*?)"(.*?)>#m';
+                        $replace_body[]	= '';
+                        $callback_body[] = 'fixAction';
+
+                        $regex_body[]	= '#action="(?!\w{0,10}://|\w{0,10}:)(.*?)"(.*?)>#m';
                         $replace_body[]	= '';
                         $callback_body[] = 'fixAction';
                     }
@@ -222,27 +228,28 @@ class JFusionPublic
             $replace_body[]	= 'window.open(\''.$data->integratedURL.'$1\'';
             $callback_body[] = '';
         }
-/*
-        $value = $data->bodymap;
-        if(is_array($value)) {
-            foreach ($value['value'] as $key => $val) {
-                $regex = html_entity_decode($value['value'][$key]);
-                $regex = rtrim($regex,';');
-                $regex = eval("return '$regex';");
 
-                $replace = html_entity_decode($value['name'][$key]);
-                $replace = rtrim($replace,';');
-                $replace = eval("return '$replace';");
+        /*
+                $value = $data->bodymap;
+                if(is_array($value)) {
+                    foreach ($value['value'] as $key => $val) {
+                        $regex = html_entity_decode($value['value'][$key]);
+                        $regex = rtrim($regex,';');
+                        $regex = eval("return '$regex';");
 
-                if ($regex && $replace) {
-                    $regex_body[]	= $regex;
-                    $replace_body[]	= $replace;
-                    $callback_body[] = '';
+                        $replace = html_entity_decode($value['name'][$key]);
+                        $replace = rtrim($replace,';');
+                        $replace = eval("return '$replace';");
+
+                        if ($regex && $replace) {
+                            $regex_body[]	= $regex;
+                            $replace_body[]	= $replace;
+                            $callback_body[] = '';
+                        }
+                    }
                 }
-            }
-        }
-        $data->body = preg_replace($regex_body, $replace_body, $data->body);
-*/
+                $data->body = preg_replace($regex_body, $replace_body, $data->body);
+        */
         foreach ($regex_body as $k => $v) {
             //check if we need to use callback
             if(!empty($callback_body[$k])){
@@ -296,8 +303,8 @@ class JFusionPublic
         //fix for URL redirects
         $parse_redirect = $params->get('parse_redirect');
         if(!empty($parse_redirect)) {
-            $regex_header[]		= '#<meta http-equiv=[\'|"]refresh[\'|"] content=[\'|"](.*?)[\'|"](.*?)>#mis';
-            $replace_header[]	= '';
+            $regex_header[] = '#(?<=<meta http-equiv="refresh" content=")(.*?)(?=")#mis';
+            $replace_header[] = ''; //$this->fixRedirect("$1","' . $data->baseURL . '")';
             $callback_header[] = 'fixRedirect';
         }
 /*
@@ -810,33 +817,53 @@ HTML;
     }
 
     /**
-     * @param string $url
-     * @param string $baseURL
-     * @param string $integratedURL
-     * @param int $jRoute
+     * @param array $matches
+     *
      * @return string
      */
-    function fixRedirect($url, $baseURL, $integratedURL,$jRoute)
-    {
+    function fixRedirect($matches) {
+        $baseURL = $this->data->baseURL;
+
+        preg_match ( '#(.*?;url=)(.*)#mi' , $matches[1] , $matches2 );
+        list(,$timeout , $url) = $matches2;
+
+        //JError::raiseWarning(500, $url);
         //split up the timeout from url
-        preg_match(  '#(.*?)url=(.*?)\z#i'  ,  $url  ,$parts );
-        $timeout = $parts[1];
-        $url = $parts[2];
-
-        $path = preg_replace( '#(\w{0,10}://)(.*?)/(.*?)#is'  , '$3' , $integratedURL );
-        $path = preg_replace('#//+#','/',"/$path/");
-
-        $regex_url[]	= '#'.$integratedURL.'(.*?)#mS';
-        $replace_url[]	= '$1';
-        $regex_url[]	= '#'.$path.'(.*?)#mS';
-        $replace_url[]	= '$1';
-
-        $url = preg_replace($regex_url, $replace_url, $url);
-
-        $url = $this->fixUrl($url,$baseURL,$baseURL,$integratedURL,$jRoute);
-
-        $return = '<meta http-equiv="refresh" content="'.$timeout.'url=' . $url .'">';
-        return $return;
+        $parts = explode(';URL=', $url);
+        $uri = new JURI($url);
+        $jfile = basename($uri->getPath());
+        $query = $uri->getQuery(false);
+        $fragment = $uri->getFragment();
+        if (substr($baseURL, -1) != '/') {
+            //non-SEF mode
+            $url = $baseURL . '&amp;jfile=' . $jfile;
+            if (!empty($query)) {
+                $url.= '&amp;' . $query;
+            }
+        } else {
+            //check to see what SEF mode is selected
+            $params = JFusionFactory::getParams($this->getJname());
+            $sefmode = $params->get('sefmode');
+            if ($sefmode == 1) {
+                //extensive SEF parsing was selected
+                $url = $jfile;
+                if (!empty($query)) {
+                    $url.= '?' . $query;
+                }
+                $url = JFusionFunction::routeURL($url, JRequest::getInt('Itemid'));
+            } else {
+                //simple SEF mode, we can just combine both variables
+                $url = $baseURL . $jfile;
+                if (!empty($query)) {
+                    $url.= '?' . $query;
+                }
+            }
+        }
+        if (!empty($fragment)) {
+            $url .= '#' . $fragment;
+        }
+        //JError::raiseWarning(500, htmlentities($return));
+        return $timeout . $url;
     }
 
     /************************************************
