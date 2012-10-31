@@ -247,16 +247,15 @@ class JFusionUser_mybb extends JFusionUser {
         if (empty($usergroups)) {
             $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('USERGROUP_MISSING');
         } else {
-            foreach($usergroups as $usergroup) {
-                //update the usergroup
-                $db = JFusionFactory::getDatabase($this->getJname());
-                $query = 'UPDATE #__users SET usergroup = ' . $usergroup . ' WHERE uid  = ' . (int)$existinguser->userid;
-                $db->setQuery($query);
-                if (!$db->Query()) {
-                    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-                } else {
-                    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode (' , ', $existinguser->groups) . ' -> ' . $usergroup;
-                }
+            $usergroup = $usergroups[0];
+            //update the usergroup
+            $db = JFusionFactory::getDatabase($this->getJname());
+            $query = 'UPDATE #__users SET usergroup = ' . $usergroup . ' WHERE uid  = ' . (int)$existinguser->userid;
+            $db->setQuery($query);
+            if (!$db->Query()) {
+                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
+            } else {
+                $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode (' , ', $existinguser->groups) . ' -> ' . $usergroup;
             }
         }
     }
@@ -296,7 +295,7 @@ class JFusionUser_mybb extends JFusionUser {
                 $user->loginkey = JUserHelper::genRandomPassword(50);
             }
             if (!empty($userinfo->activation)) {
-                $user->usergroup = 2;
+                $user->usergroup = $params->get('activationgroup');
             } elseif (!empty($userinfo->block)) {
                 $user->usergroup = 7;
             } else {
