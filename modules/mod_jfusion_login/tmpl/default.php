@@ -18,6 +18,19 @@
 defined('_JEXEC') or die('Restricted access');
 
 //define output var for nicer code
+
+/**
+ * @ignore
+ * @var $params JParameter
+ * @var $type string
+ * @var $display_name string
+ * @var $url_pm string
+ * @var $return string
+ * @var $lostpassword_url string
+ * @var $lostusername_url string
+ * @var $register_url string
+ */
+
 $output = '';
 $form_id = (JFusionFunction::isJoomlaVersion('1.6')) ? 'login-form' : 'form-login';
 if ( $params->get('layout') == 'horizontal' ) {
