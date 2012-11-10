@@ -5,7 +5,7 @@
 	<view title="Integration type">
 		<message>
 			<![CDATA[You can select the type of integration to set for your integrated software ]]>
-		</message>	
+		</message>
 	</view>
 	<fields name="params" addfieldpath="/administrator/components/com_jfusion/fields">
         <fieldset name="basic">
