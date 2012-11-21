@@ -67,7 +67,7 @@ class JFusionUser_mediawiki extends JFusionUser {
             $result->groups = $groups;
 
         	$query = 'SELECT ipb_user, ipb_expiry '.
-        			'FROM #__user '.
+        			'FROM #__ipblocks '.
         			'WHERE ipb_user=' . $db->Quote($result->userid);
         	$db->setQuery( $query );
         	$block = $db->loadObject();
