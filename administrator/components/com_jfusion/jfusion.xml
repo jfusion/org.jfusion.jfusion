@@ -76,7 +76,6 @@
             <language tag="en-GB">en-GB/en-GB.plg_content_jfusion.ini</language>
             <language tag="en-GB">en-GB/en-GB.plg_search_jfusion.ini</language>
             <language tag="en-GB">en-GB/en-GB.plg_system_jfusion.ini</language>
-            <language tag="en-GB">en-GB/en-GB.com_jfusion.plg_joomla_int.ini</language>
 		</languages>
 	</administration>
 </install>
