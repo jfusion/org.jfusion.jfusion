@@ -45,8 +45,6 @@
 		<param name="database_prefix" type="text" size="20" default="" description="DATABASE_PREFIX" label="DATABASE_PREFIX"/>
 		<param name="database_charset" type="text" size="20" default="utf8" description="DATABASE_CHARSET" label="DATABASE_CHARSET"/>
 		<param name="@spacer" type="spacer" default="" label=""	description=""/>
-		<param name=" " type="helptext" default="ENCRYPTION_DESCR" label=""/>
-		<param name="encryption" type="JFusionPluginsOther" default="" description="ENCRYPTION" label="ENCRYPTION"/>
 
 
 		<param name="jfusionbox" type="text" default="" label="USER_OPTIONS" description="" />
