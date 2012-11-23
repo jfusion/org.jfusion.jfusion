@@ -34,7 +34,6 @@ class JFusionHelper_universal {
      */
     function getTablename($type='user') {
         $maped = $this->getMapRaw($type);
-
         return $maped['table'];
     }
 
@@ -46,6 +45,7 @@ class JFusionHelper_universal {
         if( !is_array($this->_mapraw) ) {
             $params = JFusionFactory::getParams($this->getJname());
             $map = $params->get('map');
+            $map = @unserialize($map);
             if(is_array($map)) {
                 $this->_mapraw = $map;
             }
@@ -205,6 +205,9 @@ class JFusionHelper_universal {
                         $query[] = $value->field.' as username';
                         $query[] = $value->field.' as email';
                         break;
+                    case 'IPADRESS':
+                        $query[] = $value->field.' as ipadress';
+                        break;
                 }
             }
         }
@@ -342,9 +345,15 @@ class JFusionHelper_universal {
                 $type->name = 'GROUP';
             $fields[$type->id] = $type;
                 $type = new stdClass;
+                $type->id = 'IPADRESS';
+                $type->name = 'IPADRESS';
+/*
+            $fields[$type->id] = $type;
+                $type = new stdClass;
                 $type->id = 'LASTVISIT';
                 $type->name = 'LASTVISIT';
-//			$fields[$type->id] = $type;
+			$fields[$type->id] = $type;
+*/
                 $type = new stdClass;
                 $type->id = 'ACTIVE';
                 $type->name = 'ACTIVE';
