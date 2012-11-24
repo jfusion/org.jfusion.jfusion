@@ -329,45 +329,6 @@ class JFusionAdmin_universal extends JFusionAdmin{
      * @param $control_name
      * @return string
      */
-    function usergroupmap($name, $value, $node, $control_name)
-    {
-        if (!is_array($value)) $value = null;
-
-        $output = '';
-
-        if (!is_array($value)) {
-            $output .= '<input type="text" name="params[usergroupmap][value][0]" id="paramsusergroupmapvalue0" size="50"/>';
-            $output .= '<input type="text" name="params[usergroupmap][name][0]" id="paramsusergroupmapname0" size="50"/>';
-            $output .= '<div id="paramsusergroupmap"></div>';
-        } else {
-            $i = 0;
-            foreach ($value['value'] as $key => $val) {
-                $val = htmlentities($val);
-                if ( $i ) $output .= '<div id="paramsusergroupmap'.$i.'">';
-                $output .= '<input value="'.$val.'" type="text" name="params[usergroupmap][value]['.$i.']" id="paramsusergroupmapvalue'.$i.'" size="50"/>';
-                $output .= '<input value="'.$value['name'][$key].'" type="text" name="params[usergroupmap][name]['.$i.']" id="paramsusergroupmapname'.$i.'" size="50"/>';
-                if ( $i ) {
-                    $output .= '<a href="javascript:removePair(\'usergroupmap\', \'usergroupmap'.$i.'\');">Delete</a></div>';
-                } else {
-                    $output .= '<div id="paramsusergroupmap">';
-                }
-                $i++;
-            }
-            $output .= '</div>';
-        }
-
-        $output .= '<div id="addGroupPair" style="display:block;"><a href="javascript:addPair(\'usergroupmap\',50);">Add Another Pair</a></div>';
-
-        return $output;
-    }
-
-    /**
-     * @param $name
-     * @param $value
-     * @param $node
-     * @param $control_name
-     * @return string
-     */
     function js($name, $value, $node, $control_name) {
         $document =& JFactory::getDocument();
         /**
