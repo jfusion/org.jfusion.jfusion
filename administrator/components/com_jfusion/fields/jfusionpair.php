@@ -45,7 +45,7 @@ class JFormFieldJFusionPair extends JFormField
         $delete = JText::_('DELETE_PAIR');
 
         if (!$js) {
-            $document =& JFactory::getDocument();
+            $document = JFactory::getDocument();
 
             $output = <<<JS
          function addPair(t,s)	{

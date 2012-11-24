@@ -43,7 +43,7 @@ if (isset($this->error)) {
                 echo '<legend><span>' . $key . '</span><input type="button" name="remove" value="Remove" onclick="jPluginRemove(this, \'' . $key . '\');" style="margin-left: 3px;" /></legend>';
                 if ($isJ16):
                     $fieldsets = $value['params']->getFieldsets();
-                    $pane =& JPane::getInstance('tabs', array('startOffset'=>2));
+                    $pane = JPane::getInstance('tabs', array('startOffset'=>2));
                     echo $pane->startPane('params');
                     foreach ($fieldsets as $fieldset):
                         echo $pane->startPanel(JText::_($fieldset->name.'_jform_fieldset_label'), $fieldsets);

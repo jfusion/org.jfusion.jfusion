@@ -33,7 +33,7 @@ $isJ16 = JFusionFunction::isJoomlaVersion('1.6');
                 <?php
                 if ($isJ16 && !empty($this->comp)):
                     $fieldsets = $this->comp->getFieldsets();
-                    $pane =& JPane::getInstance('tabs', array('startOffset'=>2));
+                    $pane = JPane::getInstance('tabs', array('startOffset'=>2));
                     echo $pane->startPane('params');
                     foreach ($fieldsets as $fieldset):
                         echo $pane->startPanel(JText::_($fieldset->name.'_jform_fieldset_label'), $fieldsets);

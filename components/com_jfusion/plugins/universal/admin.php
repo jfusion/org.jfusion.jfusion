@@ -335,7 +335,7 @@ class JFusionAdmin_universal extends JFusionAdmin{
      * @return string
      */
     function js($name, $value, $node, $control_name) {
-        $document =& JFactory::getDocument();
+        $document = JFactory::getDocument();
         /**
          * @ignore
          * @var $helper JFusionHelper_universal
