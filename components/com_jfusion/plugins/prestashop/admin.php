@@ -118,13 +118,18 @@ class JFusionAdmin_prestashop extends JFusionAdmin
     }
 
     /**
+     * Returns the a list of users of the integrated software
+     *
+     * @param int $limitstart start at
+     * @param int $limit number of results
+     *
      * @return array
      */
-    function getUserList() {
+    function getUserList($limitstart = 0, $limit = 0) {
         //getting the connection to the db
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'SELECT email as email, id_customer as userid from #__customer WHERE email NOT LIKE \'\' and email IS NOT null';
-        $db->setQuery($query);
+        $db->setQuery($query,$limitstart,$limit);
         //getting the results
         $userlist = $db->loadObjectList();
         return $userlist;

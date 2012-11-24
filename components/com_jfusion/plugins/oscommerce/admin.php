@@ -136,13 +136,18 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
     }
 
     /**
+     * Returns the a list of users of the integrated software
+     *
+     * @param int $limitstart start at
+     * @param int $limit number of results
+     *
      * @return array
      */
-    function getUserList() {
+    function getUserList($limitstart = 0, $limit = 0) {
         //getting the connection to the db
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'SELECT customers_email_address as username, customers_email_address as email from #__customers';
-        $db->setQuery($query);
+        $db->setQuery($query,$limitstart,$limit);
         //getting the results
         $userlist = $db->loadObjectList();
         return $userlist;

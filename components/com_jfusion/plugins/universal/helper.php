@@ -63,37 +63,26 @@ class JFusionHelper_universal {
      * @return array
      */
     function getMap($type='user') {
-        if( empty($this->_map) ) {
-            $params = JFusionFactory::getParams($this->getJname());
-            $map = $params->get('map');
+        if( empty($this->_map) && isset($this->_map[$type]) ) {
+            $map = $this->getMapRaw($type);
             if(is_array($map)) {
-                $this->_map = $map;
-                $temp = array();
-                foreach ($this->_map as $keytype => $value) {
-                    $temp[$keytype] = array();
-                    if( isset($value['field']) ) {
-                        foreach ($value['field'] as $key => $val) {
-                            $obj = new stdClass;
-                            $obj->table = $value['table'];
-                            $obj->field = $key;
-                            $obj->type = $val;
-                            if (isset($value['value'][$key])) {
-                                $obj->value = $value['value'][$key];
-                            }
-                            if (isset($value['type'][$key])) {
-                                $obj->fieldtype = $value['type'][$key];
-                            }
-                            $temp[$keytype][$key] = $obj;
-                            $this->_map = $temp;
-                        }
+                foreach ($map['field'] as $key => $value) {
+                    $obj = new stdClass;
+                    $obj->table = $map['table'];
+                    $obj->field = $key;
+                    $obj->type = $value;
+                    if (isset($map['value'][$key])) {
+                        $obj->value = $map['value'][$key];
                     }
+                    if (isset($map['type'][$key])) {
+                        $obj->fieldtype = $map['type'][$key];
+                    }
+                    $this->_map[$type][$key] = $obj;
                 }
             }
         }
-        if( is_array($this->_map) ) {
-            if( isset($this->_map[$type]) && is_array($this->_map[$type]) ) {
-                return $this->_map[$type];
-            }
+        if( is_array($this->_map) && isset($this->_map[$type]) && is_array($this->_map[$type]) ) {
+            return $this->_map[$type];
         }
         return array();
     }

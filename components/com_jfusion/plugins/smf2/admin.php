@@ -86,14 +86,19 @@ class JFusionAdmin_smf2 extends JFusionAdmin{
     }
 
     /**
+     * Returns the a list of users of the integrated software
+     *
+     * @param int $limitstart start at
+     * @param int $limit number of results
+     *
      * @return array
      */
-    function getUserList()
+    function getUserList($limitstart = 0, $limit = 0)
     {
         // initialise some objects
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'SELECT member_name as username, email_address as email from #__members';
-        $db->setQuery($query );
+        $db->setQuery($query,$limitstart,$limit);
         $userlist = $db->loadObjectList();
 
         return $userlist;

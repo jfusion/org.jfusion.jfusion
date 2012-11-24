@@ -112,14 +112,16 @@ class JFusionJplugin
      * Returns the a list of users of the integrated software
      *
      * @param string $jname jfusion plugin name
+     * @param int $limitstart start at
+     * @param int $limit number of results
      *
      * @return array List of usernames/emails
      */
-    public static function getUserList($jname)
+    public static function getUserList($jname,$limitstart = 0, $limit = 0)
     {
         $db = JFusionFactory::getDatabase($jname);
-        $query = 'SELECT username, email from #__users';
-        $db->setQuery($query);
+        $query = 'SELECT username, email from #__users'.$limit;
+        $db->setQuery($query,$limitstart,$limit);
         $userlist = $db->loadObjectList();
         return $userlist;
     }

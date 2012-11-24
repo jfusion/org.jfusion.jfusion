@@ -102,13 +102,18 @@ class JFusionAdmin_mybb extends JFusionAdmin
     }
 
     /**
+     * Returns the a list of users of the integrated software
+     *
+     * @param int $limitstart start at
+     * @param int $limit number of results
+     *
      * @return array
      */
-    function getUserList() {
+    function getUserList($limitstart = 0, $limit = 0) {
         //getting the connection to the db
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'SELECT username, email from #__users';
-        $db->setQuery($query);
+        $db->setQuery($query,$limitstart,$limit);
         $userlist = $db->loadObjectList();
         return $userlist;
     }

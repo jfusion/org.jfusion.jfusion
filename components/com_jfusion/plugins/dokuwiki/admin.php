@@ -142,7 +142,7 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
      *
      * @return array array with object with list of users
      */
-    function getUserList($limitstart = null, $limit = null)
+    function getUserList($limitstart = 0, $limit = 0)
     {
         /**
          * @ignore

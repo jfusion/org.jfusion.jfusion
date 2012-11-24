@@ -53,10 +53,16 @@ class JFusionAdmin_joomla_int extends JFusionAdmin {
     }
 
     /**
+     * Returns the a list of users of the integrated software
+     *
+     * @param int $limitstart start at
+     * @param int $limit number of results
+     *
      * @return array
+     *
      */
-    function getUserList() {
-        return JFusionJplugin::getUserList($this->getJname());
+    function getUserList($limitstart = 0, $limit = 0) {
+        return JFusionJplugin::getUserList($this->getJname(),$limitstart,$limit);
     }
 
     /**

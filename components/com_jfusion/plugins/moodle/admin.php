@@ -102,19 +102,19 @@ class JFusionAdmin_moodle extends JFusionAdmin
     }
 
     /**
-     * @param int $start
-     * @param string $count
+     * Returns the a list of users of the integrated software
+     *
+     * @param int $limitstart start at
+     * @param int $limit number of results
+     *
      * @return array
      */
-    function getUserList($start = 0, $count = '')
+    function getUserList($limitstart = 0, $limit = 0)
     {
         //getting the connection to the db
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'SELECT username, email from #__user';
-        if(!empty($count)){
-            $query .= ' LIMIT ' . $start . ', ' .$count;
-        }
-        $db->setQuery($query );
+        $db->setQuery($query,$limitstart,$limit);
 
         //getting the results
         $userlist = $db->loadObjectList();

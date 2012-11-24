@@ -115,13 +115,18 @@ class JFusionAdmin_efront extends JFusionAdmin
     }
 
     /**
+     * Get a list of users
+     *
+     * @param int $limitstart
+     * @param int $limit
+     *
      * @return array
      */
-    function getUserList() {
+    function getUserList($limitstart = 0, $limit = 0) {
         //getting the connection to the db
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'SELECT login AS username, email from #__users';
-        $db->setQuery($query);
+        $db->setQuery($query,$limitstart,$limit);
         //getting the results
         $userlist = $db->loadObjectList();
         return $userlist;

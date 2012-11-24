@@ -46,7 +46,7 @@ class JFusionAdmin
      * @param int $limit optional
      * @return array List of usernames/emails
      */
-    function getUserList($limitstart = null, $limit = null)
+    function getUserList($limitstart = 0, $limit = 0)
     {
         return array();
     }

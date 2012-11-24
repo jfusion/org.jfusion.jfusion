@@ -101,18 +101,18 @@ class JFusionAdmin_elgg extends JFusionAdmin
     }
 
     /**
-     * @param int $start
-     * @param string $count
+     * Get a list of users
+     *
+     * @param int $limitstart
+     * @param int $limit
+     *
      * @return array
      */
-    function getUserList($start = 0, $count = '') {
+    function getUserList($limitstart = 0, $limit = 0) {
         //getting the connection to the db
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'SELECT username, email from #__users_entity';
-        if (!empty($count)) {
-            $query.= ' LIMIT ' . $start . ', ' . $count;
-        }
-        $db->setQuery($query);
+        $db->setQuery($query,$limitstart,$limit);
         //getting the results
         $userlist = $db->loadObjectList();
         return $userlist;

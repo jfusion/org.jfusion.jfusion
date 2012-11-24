@@ -80,14 +80,19 @@ class JFusionAdmin_mediawiki extends JFusionAdmin {
     }
 
     /**
+     * Returns the a list of users of the integrated software
+     *
+     * @param int $limitstart start at
+     * @param int $limit number of results
+     *
      * @return array
      */
-    function getUserList()
+    function getUserList($limitstart = 0, $limit = 0)
     {
         // initialise some objects
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'SELECT user_name as username, user_email as email from #__user';
-        $db->setQuery($query );
+        $db->setQuery($query,$limitstart,$limit);
         $userlist = $db->loadObjectList();
 
         return $userlist;

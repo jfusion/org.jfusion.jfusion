@@ -161,20 +161,19 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
     }
 
     /**
-     * @param int $limitstart
-     * @param int $limit
+     * Returns the a list of users of the integrated software
+     *
+     * @param int $limitstart start at
+     * @param int $limit number of results
+     *
      * @return array
      */
-    function getUserList($limitstart = null, $limit = null)
+    function getUserList($limitstart = 0, $limit = 0)
     {
         // initialise some objects
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'SELECT username, email from #__user';
-        if (!empty($limit)) {
-            $db->setQuery($query, $limitstart, $limit);
-        } else {
-        $db->setQuery($query);
-        }
+        $db->setQuery($query, $limitstart, $limit);
         //getting the results
         $userlist = $db->loadObjectList();
         return $userlist;
