@@ -17,10 +17,18 @@ switch($task)
 	case 'plugineditor':
         $jname = JRequest::getVar('jname');
 		JToolBarHelper::title( $jname . ' ' . JText::_('PLUGIN_EDITOR'), 'config.png' );
+        JToolBarHelper::custom('importexport', 'forward.png', 'forward.png', JText::_('IMPORTEXPORT'), false, false);
 		JToolBarHelper::save('saveconfig');
 		JToolBarHelper::apply('applyconfig');
 		JToolBarHelper::cancel('plugindisplay');
 		break;
+    case 'importexport':
+        $jname = JRequest::getVar('jname');
+        JToolBarHelper::title( $jname . ' ' . JText::_('PLUGIN_IMPORT_EXPORT'), 'config.png' );
+        JToolBarHelper::custom('import', 'forward.png', 'forward.png', JText::_('import'), false, false);
+        JToolBarHelper::custom('export', 'forward.png', 'forward.png', JText::_('export'), false, false);
+        JToolBarHelper::cancel('plugindisplay');
+        break;
 	case 'joomlaeditor':
 		$folder = JRequest::getVar('folder');
 		$element = JRequest::getVar('element');

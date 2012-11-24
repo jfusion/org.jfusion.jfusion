@@ -58,21 +58,6 @@ function getCheckedValue(radioObj) {
 	return r;
 }
 
-function doImport(jname) {
-    var form = $('adminForm');
-    form.action.value = 'import';
-    form.jname.value = jname;
-    form.encoding = 'multipart/form-data';
-    submitbutton('plugineditor');
-}
-
-function doExport(jname) {
-    var form = $('adminForm');
-    form.action.value = 'export';
-    form.jname.value = jname;
-    submitbutton('plugineditor');
-}
-
 function module(action) {
     var form = $('adminForm');
     form.customcommand.value = action;

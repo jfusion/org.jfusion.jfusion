@@ -23,11 +23,6 @@
 		<filename>user.php</filename>
 	</files>
   	<params addpath="/administrator/components/com_jfusion/elements">
-  		<param name="jfusionbox" type="text" default="hide" label="IMPORTEXPORT_OPTIONS" description="" />
-		<param name="import" default="" type="JFusionCustomParam" label="IMPORT_CONFIG" description=""/>
-		<param name="export" default="" type="JFusionCustomParam" label="EXPORT_CONFIG" description=""/>
-
-
 		<param name="jfusionbox" type="text" default="" label="PLUGIN_GENERAL_DETAILS" description="" />
 		<param name="description" type="text" size="60" default="put a description" description="DESCRIPTION" label="DESCRIPTION"/>
 		<param name="source_url" type="text" size="60" default="http://site.com/" description="SOURCE_URL" label="SOURCE_URL"/>
@@ -147,8 +142,8 @@
 			<option value="inherit">inherit</option>
 		</param>		
 
-		<param name="headermap" default="" type="JFusionCustomParam" label="HEADER_MAP" description="HEADER_MAP"/>
-		<param name="bodymap" default="" type="JFusionCustomParam" label="BODY_MAP" description="BODY_MAP"/>
+		<param name="headermap" default="" type="JFusionPair" label="HEADER_MAP" description="HEADER_MAP"/>
+		<param name="bodymap" default="" type="JFusionPair" label="BODY_MAP" description="BODY_MAP"/>
 
 
 		<param name="jfusionbox" type="text" default="" label="SEF_OPTIONS" description="" />
