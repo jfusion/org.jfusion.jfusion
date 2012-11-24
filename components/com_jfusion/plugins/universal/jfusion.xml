@@ -56,7 +56,7 @@
 		<param name="usergroupmap" default="" type="JFusionPair" label="USERGROUP_MAP" description="USERGROUP_MAP"/>
 
 		<param name=" " type="helptext" default="DEFAULT_USERGROUP_DESCR" label=""/>
-		<param name="usergroups" default="" type="JFusionUsergroupParam" label="USERGROUP_MANAGEMENT" description="ADVANCED_USERGROUP"/>
+		<param name="usergroup" default="" type="JFusionCustomParam" label="USERGROUP_MANAGEMENT" description="ADVANCED_USERGROUP"/>
 
 		<param name="mapgroup" default="" type="JFusionCustomParam" label="GROUP_MAPING" description="GROUP_MAPING_DESCR"/>
 

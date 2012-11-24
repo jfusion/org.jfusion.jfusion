@@ -52,7 +52,7 @@ class JFusionAdmin_universal extends JFusionAdmin{
     {
         $params = JFusionFactory::getParams($this->getJname());
         $usergroupmap = $params->get('usergroupmap');
-
+        $usergroupmap = @unserialize($usergroupmap);
         $usergrouplist = array();
         if ( is_array($usergroupmap) ) {
             foreach ($usergroupmap['value'] as $key => $value) {
