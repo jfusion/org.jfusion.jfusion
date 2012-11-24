@@ -92,9 +92,6 @@ switch($task)
 $bar =& JToolBar::getInstance('toolbar');
 $bar->prependButton('Custom', '<img border="0" alt="Enabled" src="components/com_jfusion/images/jfusion_logo.png"/>');
 
-//include submenu for J1.6+
-if (JFusionFunction::isJoomlaVersion('1.6')) {
-	$task = JRequest::getVar('task');
-	JLoader::register('JFusionHelper', JPATH_COMPONENT_ADMINISTRATOR . DS . 'helpers' . DS . 'jfusion.php');
-	JFusionHelper::addSubmenu($task);
-}
+$task = JRequest::getVar('task');
+JLoader::register('JFusionHelper', JPATH_COMPONENT_ADMINISTRATOR . DS . 'helpers' . DS . 'jfusion.php');
+JFusionHelper::addSubmenu($task);

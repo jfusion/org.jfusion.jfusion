@@ -36,6 +36,7 @@ class JFusionHelper
 	 */
 	public static function addSubmenu($vName)
 	{
+        $jname = JRequest::getVar('jname');
 		JSubMenuHelper::addEntry(
 			JText::_('CPANEL'),
 			'index.php?option=com_jfusion&task=cpanel',
@@ -45,13 +46,13 @@ class JFusionHelper
 		JSubMenuHelper::addEntry(
 			JText::_('JOOMLA_OPTIONS'),
 			'index.php?option=com_jfusion&task=plugineditor&jname=joomla_int',
-			$vName == 'plugineditor'
+			$vName == 'plugineditor' && $jname == 'joomla_int'
 		);
 
 		JSubMenuHelper::addEntry(
 			JText::_('CONFIGURATION'),
 			'index.php?option=com_jfusion&task=plugindisplay',
-			$vName == 'plugindisplay'
+			$vName == 'plugindisplay' || ( $vName == 'plugineditor' && $jname != 'joomla_int' )
 		);
 
 		JSubMenuHelper::addEntry(
