@@ -63,7 +63,7 @@ class JFusionHelper_universal {
      * @return array
      */
     function getMap($type='user') {
-        if( empty($this->_map) && isset($this->_map[$type]) ) {
+        if( empty($this->_map) && !isset($this->_map[$type]) ) {
             $map = $this->getMapRaw($type);
             if(is_array($map)) {
                 foreach ($map['field'] as $key => $value) {

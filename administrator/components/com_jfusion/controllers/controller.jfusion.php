@@ -40,7 +40,7 @@ class JFusionController extends JController
     /**
      * @return JController|void
      */
-    function display() {
+    function display($cachable = false, $urlparams = false) {
         parent::display();
     }
 

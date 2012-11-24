@@ -89,7 +89,7 @@ switch($task)
 }
 
 //add our custom banner
-$bar =& JToolBar::getInstance('toolbar');
+$bar = JToolBar::getInstance('toolbar');
 $bar->prependButton('Custom', '<img border="0" alt="Enabled" src="components/com_jfusion/images/jfusion_logo.png"/>');
 
 $task = JRequest::getVar('task');

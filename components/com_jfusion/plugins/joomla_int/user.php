@@ -46,9 +46,10 @@ class JFusionUser_joomla_int extends JFusionUser {
     /**
      * @param object $userinfo
      * @param int $overwrite
+     *
      * @return array
      */
-    function updateUser($userinfo, $overwrite) {
+    function updateUser($userinfo, $overwrite = 0) {
         $status = JFusionJplugin::updateUser($userinfo, $overwrite, $this->getJname());
         return $status;
     }
@@ -296,10 +297,10 @@ class JFusionUser_joomla_int extends JFusionUser {
 
     /**
      * @param object $userinfo
-     * @param object $existinguser
-     * @param array $status
+     * @param object &$existinguser
+     * @param array &$status
      */
-    function updateUsergroup($userinfo, $existinguser, &$status) {
+    function updateUsergroup($userinfo, &$existinguser, &$status) {
         JFusionJplugin::updateUsergroup($userinfo, $existinguser, $status, $this->getJname());
     }
 
@@ -314,8 +315,8 @@ class JFusionUser_joomla_int extends JFusionUser {
 
     /**
      * @param object $userinfo
-     * @param object $existinguser
-     * @param array $status
+     * @param object &$existinguser
+     * @param array &$status
      */
     function updateUsername($userinfo, &$existinguser, &$status) {
         JFusionJplugin::updateUsername($userinfo, $existinguser, $status, $this->getJname());

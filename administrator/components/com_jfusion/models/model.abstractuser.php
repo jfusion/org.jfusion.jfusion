@@ -497,11 +497,11 @@ class JFusionUser
     /**
      * Function that update the language of a user
      *
-     * @param object $existinguser Object containing the existing userinfo
-     * @param object $lang         Object JLanguage containing the current language of Joomla
+     * @param object $userinfo Object containing the existing userinfo
+     * @param object $existinguser         Object JLanguage containing the current language of Joomla
      * @param array  &$status      Array containing the errors and result of the function
      */
-    function updateUserLanguage($existinguser, $lang, &$status)
+    function updateUserLanguage($userinfo, &$existinguser, &$status)
     {
         $status['debug'][] = 'Update user language method not implemented';
     }
