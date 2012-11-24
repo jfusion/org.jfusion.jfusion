@@ -122,7 +122,7 @@ if ( $params->get('layout') == 'horizontal' ) {
                 $output .= '<li><a href="' .$lostusername_url . '">'. JText::_('FORGOT_YOUR_USERNAME') . '</a></li>';
             }
 
-            $usersConfig = &JComponentHelper::getParams('com_users');
+            $usersConfig = JComponentHelper::getParams('com_users');
             if ($params->get('register_show')) {
                 $output .= '<li><a href="' . $register_url .'">' . JText::_('REGISTER') . '</a> </li>';
             }
@@ -237,7 +237,7 @@ if ( $params->get('layout') == 'horizontal' ) {
                 $output .= '<li><a href="' .$lostusername_url . '">'. JText::_('FORGOT_YOUR_USERNAME') . '</a></li>';
             }
 
-            $usersConfig = &JComponentHelper::getParams('com_users');
+            $usersConfig = JComponentHelper::getParams('com_users');
             if ($params->get('register_show')) {
                 $output .= '<li><a href="' . $register_url .'">' . JText::_('REGISTER') . '</a> </li>';
             }
