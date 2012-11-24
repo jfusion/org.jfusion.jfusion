@@ -493,4 +493,14 @@ if(!isset($_COOKIE[\'jfusionframeless\']))';
         $output = ' <a href="index.php?option=com_jfusion&amp;task=plugineditor&amp;jname='.$this->getJname().'&amp;action=redirectcode">' . JText::_('MOD_ENABLE_MANUALLY') . '</a>';
         return $output;
     }
+
+    /**
+     * do plugin support multi usergroups
+     *
+     * @return bool
+     */
+    function isMultiGroup()
+    {
+        return false;
+    }
 }

@@ -278,7 +278,7 @@ class JFusionHelper_universal {
         if ( !is_array($fields) ) {
             $defaulttype = new stdClass;
             $defaulttype->id = '';
-            $defaulttype->name = 'Change Me';
+            $defaulttype->name = JText::_('CHANGE_ME');
 
             $fields = array();
                 $type = new stdClass;

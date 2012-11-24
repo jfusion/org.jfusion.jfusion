@@ -338,16 +338,16 @@ class JFusionAdmin
         $slave = $db->loadResult();
         $list_box = '<select onchange="usergroupSelect(this.selectedIndex);">';
         if ($advanced == 1) {
-            $list_box.= '<option value="0">Simple</option>';
+            $list_box.= '<option value="0">'.JText::_('SIMPLE').'</option>';
         } else {
-            $list_box.= '<option value="0" selected="selected">Simple</option>';
+            $list_box.= '<option value="0" selected="selected">'.JText::_('SIMPLE').'</option>';
         }
         if ($slave == 1 && !empty($master) && JFusionFunction::hasFeature($jname,'updateusergroup')) {
             //allow usergroup sync
             if ($advanced == 1) {
-                $list_box.= '<option selected="selected" value="1">Advanced</option>';
+                $list_box.= '<option selected="selected" value="1">'.JText::_('ADVANCED').'</option>';
             } else {
-                $list_box.= '<option value="1">Advanced</option>';
+                $list_box.= '<option value="1">'.JText::_('ADVANCED').'</option>';
             }
             //prepare the advanced options
             $JFusionMaster = JFusionFactory::getAdmin($master->name);
@@ -457,18 +457,18 @@ JS;
         $slave = $db->loadResult();
         $list_box = '<select onchange="usergroupSelect(this.selectedIndex);">';
         if ($advanced == 1) {
-            $list_box.= '<option value="0">Simple</option>';
+            $list_box.= '<option value="0">'.JText::_('SIMPLE').'</option>';
         } else {
-            $list_box.= '<option value="0" selected="selected">Simple</option>';
+            $list_box.= '<option value="0" selected="selected">'.JText::_('SIMPLE').'</option>';
         }
 
         $jfGroupCount = 0;
         if ($slave == 1 && $JFusionMaster && JFusionFunction::hasFeature($jname,'updateusergroup')) {
             //allow usergroup sync
             if ($advanced == 1) {
-                $list_box.= '<option selected="selected" value="1">Advanced</option>';
+                $list_box.= '<option selected="selected" value="1">'.JText::_('ADVANCED').'</option>';
             } else {
-                $list_box.= '<option value="1">Advanced</option>';
+                $list_box.= '<option value="1">'.JText::_('ADVANCED').'</option>';
             }
             //prepare the advanced options
             $advanced_usergroup = '<table id="usergroups" class="usergroups">';
@@ -505,7 +505,7 @@ JS;
                         $checked = 'checked';
                     }
                     $advanced_usergroup.= '<td><input type="radio" '.$checked.' name="'.$control_name . '[' . $name . 'default]" value="'.$jfGroupCount.'"></td>';
-                    $advanced_usergroup.= '<td><a href="javascript:removeRow('.$jfGroupCount.')">Remove</a></td>';
+                    $advanced_usergroup.= '<td><a href="javascript:removeRow('.$jfGroupCount.')">'. JText::_('REMOVE').'</a></td>';
 
                     $advanced_usergroup.= '</tr>';
                 }
@@ -527,7 +527,7 @@ JS;
                 }
                 $checked = 'checked';
                 $advanced_usergroup.= '<td><input type="radio" '.$checked.' name="'.$control_name . '[' . $name . 'default]" value="'.$jfGroupCount.'"></td>';
-                $advanced_usergroup.= '<td><a href="javascript:removeRow('.$jfGroupCount.')">Remove</a></td>';
+                $advanced_usergroup.= '<td><a href="javascript:removeRow('.$jfGroupCount.')">'.JText::_('REMOVE').'</a></td>';
 
                 $advanced_usergroup.= '</tr>';
             }
@@ -655,16 +655,16 @@ JS;
 JS;
         $document->addScriptDeclaration($js);
 
-        $addbutton='';
+        $addbutton='<a id="addgroupset"></a>';
         $return = '<table><tr><td>'.JText::_('USERGROUP'). ' '. JText::_('MODE').'</td><td>'.$list_box.'</td></tr><tr><td colspan="2"><div id="JFusionUsergroup">';
         if ($advanced == 1) {
-            if (($JFusionMaster && $JFusionMaster->isMultiGroup())||$this->isMultiGroup()) {
-                $addbutton = '<a id="addgroupset" href="javascript:addRow()">Add Group Pair</a>';
+            if (($JFusionMaster && $JFusionMaster->isMultiGroup()) || $this->isMultiGroup()) {
+                $addbutton = '<a id="addgroupset" href="javascript:addRow()">'. JText::_('ADD_GROUP_PAIR').'</a>';
             }
             $return .= $advanced_usergroup;
         } else {
-            if (($JFusionMaster && $JFusionMaster->isMultiGroup())||$this->isMultiGroup()) {
-                $addbutton = '<a id="addgroupset" style="display: none;" href="javascript:addRow()">Add Group Pair</a>';
+            if (($JFusionMaster && $JFusionMaster->isMultiGroup()) || $this->isMultiGroup()) {
+                $addbutton = '<a id="addgroupset" style="display: none;" href="javascript:addRow()">'. JText::_('ADD_GROUP_PAIR').'</a>';
             }
             $return .= $simple_usergroup;
         }
@@ -764,309 +764,5 @@ JS;
             }
         }
         return $result;
-    }
-
-    /**
-     * import function for importing config in to a plugin
-     *
-     * @param string $name
-     * @param string $value
-     * @param JSimpleXMLElement $node
-     * @param string $control_name
-     * @return string
-     */
-    function import($name, $value, $node, $control_name)
-    {
-        $jname = $this->getJname();
-        $action = JRequest::getVar('action');
-        list($VersionCurrent) = JFusionFunctionAdmin::currentVersion();
-
-        $document = JFactory::getDocument();
-
-        $js = <<<JS
-        function doImport() {
-            var form = $('adminForm');
-            form.action.value='import';
-            form.jname.value='{$jname}';
-            form.encoding='multipart/form-data';
-            submitbutton('plugineditor');
-        }
-        function doShowHide(item) {
-            var obj=$(item);
-            var col=$("x"+item);
-            if (obj.style.display=="none") {
-                obj.style.display="block";
-                col.innerHTML="[-]";
-            } else {
-                obj.style.display="none";
-                col.innerHTML="[+]";
-            }
-        }
-JS;
-
-        $document->addScriptDeclaration($js);
-
-        $output = '<input name="file" size="60" type="file"><br/>
-		<table style="border: 0px;"><tr style="padding: 0px;"><td style="padding: 0px; width: 150px;">'.JText::_('DATABASE_TYPE').'</td><td style="padding: 0px;"><input name="database_type" id="database_type" value="" class="text_area" size="20" type="text"></td></tr>
-		<tr style="padding: 0px;"><td style="padding: 0px; width: 150px;">'.JText::_('DATABASE_HOST').'</td><td style="padding: 0px;"><input name="database_host" id="database_host" value="" class="text_area" size="20" type="text"></td></tr>
-		<tr style="padding: 0px;"><td style="padding: 0px; width: 150px;">'.JText::_('DATABASE_NAME').'</td><td style="padding: 0px;"><input name="database_name" id="database_name" value="" class="text_area" size="20" type="text"></td></tr>
-		<tr style="padding: 0px;"><td style="padding: 0px; width: 150px;">'.JText::_('DATABASE_USER').'</td><td style="padding: 0px;"><input name="database_user" id="database_user" value="" class="text_area" size="20" type="text"></td></tr>
-		<tr style="padding: 0px;"><td style="padding: 0px; width: 150px;">'.JText::_('DATABASE_PASSWORD').'</td><td style="padding: 0px;"><input name="database_password" id="database_password" value="" class="text_area" size="20" type="text"></td></tr>
-		<tr style="padding: 0px;"><td style="padding: 0px; width: 150px;">'.JText::_('DATABASE_PREFIX').'</td><td style="padding: 0px;"><input name="database_prefix" id="database_prefix" value="" class="text_area" size="20" type="text"></td></tr></table>';
-
-        //custom for development purposes / local use only; note do not commit your URL to SVN!!!
-        $url = 'http://update.jfusion.org/jfusion_universal.xml';
-        $ConfigList = JFusionFunctionAdmin::getFileData($url);
-
-        /**
-         * @ignore
-         * @var $xmlList JSimpleXML
-         */
-        $xmlList = JFactory::getXMLParser('Simple');
-        $xmlList->loadString($ConfigList);
-
-        if ( isset($xmlList->document) ) {
-            $output .= JText::_('IMPORT_FROM_SERVER').'<br/>';
-            $output .= '<input type=radio name="xmlname" value="" checked> None<br/>';
-            /**
-             * @ignore
-             * @var $val JSimpleXMLElement
-             */
-            foreach ($xmlList->document->children() as $key => $val) {
-                $pluginName = $val->attributes('name');
-                if ($pluginName) {
-                    $pluginVersion = $val->attributes('version')?$val->attributes('version'):JText::_('UNKNOWN');
-                    $pluginDesc = $val->attributes('desc')?$val->attributes('desc'):JText::_('NONE');
-                    $pluginCreator = $val->attributes('creator')?$val->attributes('creator'):JText::_('UNKNOWN');
-                    $output .= '<input type=radio name="xmlname" value="'.$pluginName.'"> '.ucfirst($pluginName).' <a href="javascript: doShowHide(\'plugin'.$key.'\');" id="xplugin'.$key.'"">[+]</a><div style="display:none;" id="plugin'.$key.'">';
-                    $output .= JText::_('VERSION').': '.$pluginVersion.'<br/>';
-                    $output .= JText::_('DESCRIPTION').': '.ucfirst($pluginDesc).'<br/>';
-                    $output .= JText::_('CREATOR').': '.$pluginCreator.'</div><br/>';
-                }
-            }
-            $output .= '<div style="text-align: right;"><input type="Button" onclick="javascript: doImport();" value="'.JText::_('IMPORT').'" /></div>';
-        } else {
-            $output .= 'No conection to jfusion Server, try import later!!<br/>';
-        }
-
-        if( $action == 'import' && isset($xmlList->document) ) {
-            jimport('joomla.utilities.simplexml');
-            $file = JRequest::getVar( 'file', '', 'FILES','ARRAY');
-
-            $xmlname = JRequest::getVar('xmlname');
-            /**
-             * @ignore
-             * @var $xmlFile JSimpleXML
-             */
-            $xmlFile = JFactory::getXMLParser('Simple');
-            if( !empty($xmlname) ) {
-                //custom for development purposes / local use only; note do not commit your URL to SVN!!!
-                $url = 'http://update.jfusion.org/configs/jfusion_'.$xmlname.'_config.xml';
-                $ConfigFile = JFusionFunctionAdmin::getFileData($url);
-                if ( !empty($ConfigFile) ) {
-                    $xmlFile->loadString($ConfigFile);
-                } else {
-                    JError::raiseWarning(0, $jname . ': ' . JText::_('ERROR_DOWNLOADING_FILE') );
-                    return $output;
-                }
-            } else {
-                if( $file['error'] > 0 ) {
-                    switch ($file['error']) {
-                        case UPLOAD_ERR_INI_SIZE:
-                            $msg = JText::_('UPLOAD_ERR_INI_SIZE');
-                            break;
-                        case UPLOAD_ERR_FORM_SIZE:
-                            $msg = JText::_('UPLOAD_ERR_FORM_SIZE');
-                            break;
-                        case UPLOAD_ERR_PARTIAL:
-                            $msg = JText::_('UPLOAD_ERR_PARTIAL');
-                            break;
-                        case UPLOAD_ERR_NO_FILE:
-                            $msg = JText::_('UPLOAD_ERR_NO_FILE');
-                            break;
-                        case UPLOAD_ERR_NO_TMP_DIR:
-                            $msg = JText::_('UPLOAD_ERR_NO_TMP_DIR');
-                            break;
-                        case UPLOAD_ERR_CANT_WRITE:
-                            $msg = JText::_('UPLOAD_ERR_CANT_WRITE');
-                            break;
-                        case UPLOAD_ERR_EXTENSION:
-                            $msg = JText::_('UPLOAD_ERR_EXTENSION');
-                            break;
-                        default:
-                            $msg = 'Unknown upload error';
-                    }
-                    JError::raiseWarning(0, $jname . ': ' . JText::_('ERROR').': '.$msg );
-                    return $output;
-                } else {
-                    if(!$xmlFile->loadFile($file['tmp_name']) ) {
-                        JError::raiseWarning(0, $jname . ': ' . JText::_('ERROR_LOADING_FILE').': '.$file['tmp_name'] );
-                        return $output;
-                    }
-                }
-            }
-
-            $info = $config = null;
-            foreach ($xmlFile->document->children() as $key => $val) {
-                switch ($val->name()) {
-                    case 'info':
-                        $info = $val;
-                        break;
-                    case 'config':
-                        $config = $val->children();
-                        break;
-                }
-            }
-
-            if (!$info || !$config) {
-                JError::raiseWarning(0, $jname . ': ' . JText::_('ERROR_FILE_SYNTAX').': '.$file['type'] );
-                return $output;
-            }
-
-            $conf = array();
-            /**
-             * @ignore
-             * @var $val JSimpleXMLElement
-             */
-            foreach ($config as $key => $val) {
-                $attName = (string)$val->attributes('name');
-                $conf[$attName] = htmlspecialchars_decode($val->data());
-                if ( strpos($conf[$attName], 'a:') === 0 ) $conf[$attName] = unserialize($conf[$attName]);
-            }
-
-            $database_type = JRequest::getVar('database_type');
-            $database_host = JRequest::getVar('database_host');
-            $database_name = JRequest::getVar('database_name');
-            $database_user = JRequest::getVar('database_user');
-            $database_password = JRequest::getVar('database_password');
-            $database_prefix = JRequest::getVar('database_prefix');
-
-            if( !empty($database_type) ) $conf['database_type'] = $database_type;
-            if( !empty($database_host) ) $conf['database_host'] = $database_host;
-            if( !empty($database_name) ) $conf['database_name'] = $database_name;
-            if( !empty($database_user) ) $conf['database_user'] = $database_user;
-            if( !empty($database_password) ) $conf['database_password'] = $database_password;
-            if( !empty($database_prefix) ) $conf['database_prefix'] = $database_prefix;
-
-            JFusionFunctionAdmin::saveParameters($jname, $conf);
-
-            $mainframe = JFactory::getApplication();
-            $mainframe->redirect('index.php?option=com_jfusion&task=plugineditor&jname='.$jname,JText::_('IMPORT_SUCCESS_MSG_PRESS_SAVE'));
-            exit();
-        }
-
-        return $output;
-    }
-
-    /**
-     * export function for importing config in to a plugin
-     *
-     * @param string $name
-     * @param string $value
-     * @param JSimpleXMLElement $node
-     * @param string $control_name
-     * @return string
-     */
-    function export($name, $value, $node, $control_name)
-    {
-        $jname = $this->getJname();
-        $action = JRequest::getVar('action');
-
-        if( $action == 'export' ) {
-            $dbinfo = JRequest::getVar('dbinfo');
-
-            $params = JFusionFactory::getParams($jname);
-            $params = $params->toObject();
-            jimport('joomla.utilities.simplexml');
-
-            $arr = array();
-            foreach ($params as $key => $val) {
-                if( !$dbinfo && substr($key,0,8) == 'database' && substr($key,0,13) != 'database_type' ) {
-                    continue;
-                }
-                $arr[$key] = $val;
-            }
-
-            /**
-             * @ignore
-             * @var $xml JSimpleXML
-             */
-            $xml = JFactory::getXMLParser('Simple');
-            $xml->loadString('<jfusionconfig></jfusionconfig>');
-
-            /**
-             * @ignore
-             * @var $info JSimpleXMLElement
-             */
-            $info = $xml->document->addChild('info');
-
-            list($VersionCurrent,$RevisionCurrent) = JFusionFunctionAdmin::currentVersion(true);
-
-            $info->addAttribute  ('jfusionversion',  $VersionCurrent);
-            $info->addAttribute  ('jfusionrevision',  $RevisionCurrent);
-
-            //get the current JFusion version number
-            $filename = JFUSION_PLUGIN_PATH .DS.$jname.DS.'jfusion.xml';
-            if (file_exists($filename) && is_readable($filename)) {
-                //get the version number
-                /**
-                 * @ignore
-                 * @var $parser JSimpleXML
-                 */
-                $parser = JFactory::getXMLParser('Simple');
-                $parser->loadFile($filename);
-                $info->addAttribute('pluginversion', $parser->document->getElementByPath('version')->data());
-            } else {
-                $info->addAttribute('pluginversion', 'UNKNOWN');
-            }
-
-            $info->addAttribute('date', date('F j, Y, H:i:s'));
-
-            $info->addAttribute  ('jname', $jname);
-
-            $db = JFactory::getDBO();
-            $query = 'SELECT original_name FROM #__jfusion WHERE name =' . $db->Quote($jname);
-            $db->setQuery($query);
-            $result = $db->loadResult();
-
-            $info->addAttribute  ('original_name', $result);
-
-            /**
-             * @ignore
-             * @var $info JSimpleXMLElement
-             */
-            $config = $xml->document->addChild('config');
-            foreach ($arr as $key => $val) {
-                $attrs = array();
-                $attrs['name'] = $key;
-                $node = $config->addChild('key',$attrs);
-                if (is_array($val)) $val = serialize($val);
-                $node->setData($val);
-            }
-
-            header('Content-disposition: attachment; filename=jfusion_'.$jname.'_config.xml');
-            header('content-type: text/xml');
-            header('Pragma: no-cache');
-            header('Expires: 0');
-
-            echo $xml->document->toString();
-
-            exit();
-        }
-
-        $js = <<<JS
-        function doExport() {
-            var form = $('adminForm');
-            form.action.value='export';
-            form.jname.value='{$jname}';
-            submitbutton('plugineditor');
-        }
-JS;
-        $document = JFactory::getDocument();
-        $document->addScriptDeclaration($js);
-
-        $output = JText::_('EXPORT_DATABASE_INFO').' <input name="dbinfo" type="checkbox"><br/>';
-        $output .= '<div style="text-align: right;"><input type="Button" onclick="javascript: doExport();" value="'.JText::_('EXPORT').'" /></div>';
-        return $output;
     }
 }
