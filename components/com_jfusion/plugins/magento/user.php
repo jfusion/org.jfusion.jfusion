@@ -293,8 +293,14 @@ class JFusionUser_magento extends JFusionUser {
      * @return array|string
      */
     function createSession($userinfo, $options) {
-    	$params = JFusionFactory::getParams($this->getJname());
-        return JFusionJplugin::createSession($userinfo, $options, $this->getJname(),$params->get('brute_force'));
+        $status = array('error' => array(),'debug' => array());
+        if (!empty($userinfo->block) || !empty($userinfo->activation)) {
+            $status['error'][] = JText::_('FUSION_BLOCKED_USER');
+        } else {
+    	    $params = JFusionFactory::getParams($this->getJname());
+            $status = JFusionJplugin::createSession($userinfo, $options, $this->getJname(),$params->get('brute_force'));
+        }
+        return $status;
     }
     /**
      * @param $len

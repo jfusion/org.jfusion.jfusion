@@ -241,85 +241,79 @@ class JFusionUser_vbulletin extends JFusionUser
      */
     function createSession(&$userinfo, $options)
     {
-        require_once JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.curl.php';
-
-         $status = array();
-         $status['error'] = array();
-         $status['debug'] = array();
-
+        $status = array('error' => array(),'debug' => array());
         //do not create sessions for blocked users
         if (!empty($userinfo->block) || !empty($userinfo->activation)) {
             $status['error'][] = JText::_('FUSION_BLOCKED_USER');
-            return $status;
-        }
-
-        //first check to see if striking is enabled to prevent further strikes
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT value FROM #__setting WHERE varname = \'usestrikesystem\'';
-        $db->setQuery($query);
-        $strikeEnabled = $db->loadResult();
-
-        if ($strikeEnabled) {
-            $ip = $_SERVER['REMOTE_ADDR'];
-            $time = strtotime('-15 minutes');
-            $query = 'SELECT COUNT(*) FROM #__strikes WHERE strikeip = '.$db->Quote($ip).' AND striketime >= '.$time;
+        } else {
+            require_once JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.curl.php';
+            //first check to see if striking is enabled to prevent further strikes
+            $db = JFusionFactory::getDatabase($this->getJname());
+            $query = 'SELECT value FROM #__setting WHERE varname = \'usestrikesystem\'';
             $db->setQuery($query);
-            $strikes = $db->loadResult();
+            $strikeEnabled = $db->loadResult();
 
-            if ($strikes >= 5) {
-                $status = array();
-                $status['error'] = JText::_('VB_TOO_MANY_STRIKES');
-                return $status;
+            if ($strikeEnabled) {
+                $ip = $_SERVER['REMOTE_ADDR'];
+                $time = strtotime('-15 minutes');
+                $query = 'SELECT COUNT(*) FROM #__strikes WHERE strikeip = '.$db->Quote($ip).' AND striketime >= '.$time;
+                $db->setQuery($query);
+                $strikes = $db->loadResult();
+
+                if ($strikes >= 5) {
+                    $status = array();
+                    $status['error'] = JText::_('VB_TOO_MANY_STRIKES');
+                    return $status;
+                }
+            }
+
+            //make sure a session is not already active for this user
+            $cookie_prefix = $this->params->get('cookie_prefix');
+            $vbversion = $this->helper->getVersion();
+            if ((int) substr($vbversion, 0, 1) > 3) {
+                if (substr($cookie_prefix, -1) !== '_') {
+                    $cookie_prefix .= '_';
+                }
+            }
+            $cookie_salt = $this->params->get('cookie_salt');
+            $cookie_domain = $this->params->get('cookie_domain');
+            $cookie_path = $this->params->get('cookie_path');
+            $cookie_expires  = (!empty($options['remember'])) ? 0 : $this->params->get('cookie_expires');
+            if ($cookie_expires == 0) {
+                $expires_time = time() + (60 * 60 * 24 * 365);
+            } else {
+                $expires_time = time() + ( 60 * $cookie_expires );
+            }
+            $debug_expiration = date('Y-m-d H:i:s', $expires_time);
+            $passwordhash = md5($userinfo->password.$cookie_salt);
+
+            $query = 'SELECT sessionhash FROM #__session WHERE userid = ' . $userinfo->userid;
+            $db->setQuery($query);
+            $sessionhash = $db->loadResult();
+
+            $cookie_sessionhash = JRequest::getVar($cookie_prefix . 'sessionhash', '', 'cookie');
+            $cookie_userid = JRequest::getVar($cookie_prefix . 'userid', '', 'cookie');
+            $cookie_password = JRequest::getVar($cookie_prefix . 'password', '', 'cookie');
+
+            if (!empty($cookie_userid) && $cookie_userid == $userinfo->userid && !empty($cookie_password) && $cookie_password == $passwordhash) {
+                $vbcookieuser = true;
+            } else {
+                $vbcookieuser = false;
+            }
+
+            if (!$vbcookieuser && (empty($cookie_sessionhash) || $sessionhash != $cookie_sessionhash)) {
+                $secure = $this->params->get('secure', false);
+                $httponly = $this->params->get('httponly', true);
+
+                $status['debug'][] = JFusionCurl::addCookie($cookie_prefix.'userid' , $userinfo->userid, $expires_time,  $cookie_path, $cookie_domain, $secure, $httponly);
+                $status['debug'][] = JFusionCurl::addCookie($cookie_prefix.'password' , $passwordhash, $expires_time, $cookie_path, $cookie_domain, $secure, $httponly, true);
+            } else {
+                $status['debug'][] = JText::_('VB_SESSION_ALREADY_ACTIVE');
+                $status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => $cookie_prefix.'userid', JText::_('VALUE') => $cookie_userid, JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
+                $status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => $cookie_prefix.'password', JText::_('VALUE') => substr($cookie_password, 0, 6) . '********, ', JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
+                $status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => $cookie_prefix.'sessionhash', JText::_('VALUE') => $cookie_sessionhash, JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
             }
         }
-
-        //make sure a session is not already active for this user
-        $cookie_prefix = $this->params->get('cookie_prefix');
-        $vbversion = $this->helper->getVersion();
-        if ((int) substr($vbversion, 0, 1) > 3) {
-           if (substr($cookie_prefix, -1) !== '_') {
-               $cookie_prefix .= '_';
-           }
-        }
-        $cookie_salt = $this->params->get('cookie_salt');
-        $cookie_domain = $this->params->get('cookie_domain');
-        $cookie_path = $this->params->get('cookie_path');
-        $cookie_expires  = (!empty($options['remember'])) ? 0 : $this->params->get('cookie_expires');
-        if ($cookie_expires == 0) {
-            $expires_time = time() + (60 * 60 * 24 * 365);
-        } else {
-            $expires_time = time() + ( 60 * $cookie_expires );
-        }
-        $debug_expiration = date('Y-m-d H:i:s', $expires_time);
-        $passwordhash = md5($userinfo->password.$cookie_salt);
-
-        $query = 'SELECT sessionhash FROM #__session WHERE userid = ' . $userinfo->userid;
-        $db->setQuery($query);
-        $sessionhash = $db->loadResult();
-
-        $cookie_sessionhash = JRequest::getVar($cookie_prefix . 'sessionhash', '', 'cookie');
-        $cookie_userid = JRequest::getVar($cookie_prefix . 'userid', '', 'cookie');
-        $cookie_password = JRequest::getVar($cookie_prefix . 'password', '', 'cookie');
-
-        if (!empty($cookie_userid) && $cookie_userid == $userinfo->userid && !empty($cookie_password) && $cookie_password == $passwordhash) {
-            $vbcookieuser = true;
-        } else {
-            $vbcookieuser = false;
-        }
-
-        if (!$vbcookieuser && (empty($cookie_sessionhash) || $sessionhash != $cookie_sessionhash)) {
-            $secure = $this->params->get('secure', false);
-            $httponly = $this->params->get('httponly', true);
-
-            $status['debug'][] = JFusionCurl::addCookie($cookie_prefix.'userid' , $userinfo->userid, $expires_time,  $cookie_path, $cookie_domain, $secure, $httponly);
-            $status['debug'][] = JFusionCurl::addCookie($cookie_prefix.'password' , $passwordhash, $expires_time, $cookie_path, $cookie_domain, $secure, $httponly, true);
-        } else {
-            $status['debug'][] = JText::_('VB_SESSION_ALREADY_ACTIVE');
-            $status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => $cookie_prefix.'userid', JText::_('VALUE') => $cookie_userid, JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
-            $status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => $cookie_prefix.'password', JText::_('VALUE') => substr($cookie_password, 0, 6) . '********, ', JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
-            $status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => $cookie_prefix.'sessionhash', JText::_('VALUE') => $cookie_sessionhash, JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
-        }
-
         return $status;
     }
 

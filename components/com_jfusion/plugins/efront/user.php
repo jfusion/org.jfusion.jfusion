@@ -171,41 +171,41 @@ class JFusionUser_efront extends JFusionUser
         //do not create sessions for blocked users
         if (!empty($userinfo->block) || !empty($userinfo->activation)) {
             $status['error'][] = JText::_('FUSION_BLOCKED_USER');
-            return $status;
-        }
-        //get cookiedomain, cookiepath
-        $params = JFusionFactory::getParams($this->getJname());
-        $cookiedomain = $params->get('cookie_domain', '');
-        $cookiepath = $params->get('cookie_path', '/');
-        $httponly = $params->get('httponly',0);
-        $secure = $params->get('secure',0);
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT password FROM #__users WHERE login=' . $db->Quote($userinfo->username);
-        $db->setQuery($query);
-        $user = $db->loadObject();
-        // Set cookie values
-        $query = 'SELECT value FROM #__configuration WHERE name = \'autologout_time\'';
-        $db->setQuery($query);
-        $autologout_time = $db->loadResult(); // this is in minutes
-        $expires = 60 * $autologout_time; // converted to seconds
-        // correct for remember me option
-        if (isset($options['remember'])) {
-            if ($options['remember']) {
-                // Make the cookie expire in a years time
-                $expires = 60 * 60 * 24 * 365;
-            }
-        }
-        $name = 'cookie_login';
-        $value = $userinfo->username;
-        $status['debug'][] = JFusionFunction::addCookie($name, $value, $expires, $cookiepath, $cookiedomain, false, $httponly);
-        if ( ($expires) == 0) {
-            $expires_time='Session_cookie';
         } else {
-            $expires_time=date('d-m-Y H:i:s',time()+$expires);
+            //get cookiedomain, cookiepath
+            $params = JFusionFactory::getParams($this->getJname());
+            $cookiedomain = $params->get('cookie_domain', '');
+            $cookiepath = $params->get('cookie_path', '/');
+            $httponly = $params->get('httponly',0);
+            $secure = $params->get('secure',0);
+            $db = JFusionFactory::getDatabase($this->getJname());
+            $query = 'SELECT password FROM #__users WHERE login=' . $db->Quote($userinfo->username);
+            $db->setQuery($query);
+            $user = $db->loadObject();
+            // Set cookie values
+            $query = 'SELECT value FROM #__configuration WHERE name = \'autologout_time\'';
+            $db->setQuery($query);
+            $autologout_time = $db->loadResult(); // this is in minutes
+            $expires = 60 * $autologout_time; // converted to seconds
+            // correct for remember me option
+            if (isset($options['remember'])) {
+                if ($options['remember']) {
+                    // Make the cookie expire in a years time
+                    $expires = 60 * 60 * 24 * 365;
+                }
+            }
+            $name = 'cookie_login';
+            $value = $userinfo->username;
+            $status['debug'][] = JFusionFunction::addCookie($name, $value, $expires, $cookiepath, $cookiedomain, false, $httponly);
+            if ( ($expires) == 0) {
+                $expires_time='Session_cookie';
+            } else {
+                $expires_time=date('d-m-Y H:i:s',time()+$expires);
+            }
+            $name = 'cookie_password';
+            $value = $user->password;
+            $status['debug'][] = JFusionFunction::addCookie($name, $value, $expires, $cookiepath, $cookiedomain, false, $httponly);
         }
-        $name = 'cookie_password';
-        $value = $user->password;
-        $status['debug'][] = JFusionFunction::addCookie($name, $value, $expires, $cookiepath, $cookiedomain, false, $httponly);
         return $status;
     }
 

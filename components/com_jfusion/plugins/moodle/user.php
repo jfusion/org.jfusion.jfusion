@@ -278,30 +278,33 @@ class JFusionUser_moodle extends JFusionUser {
      */
     function createSession($userinfo, $options) {
         $status = array('error' => array(),'debug' => array());
-
-		// If a session expired by not accessing Moodle for a long time we cannot login normally.
-		// Also we want to disable the remember me effects, we are going to login anyway
-		// we find out by reading the MOODLEID_ cookie and brute force login if MOODLE_ID is not nobody
-		$curl_options = array();
-		$curl_options['hidden']='0';
-		$params = JFusionFactory::getParams($this->getJname());
-		$logintype = $params->get('brute_force');
-		if (isset($_COOKIE['MOODLEID_'])){
-			$loggedin_user = $this->rc4decrypt($_COOKIE['MOODLEID_']);
-			if ($loggedin_user == 'nobody') {
-				$logintype = 'standard';
-				$curl_options['hidden']='1' ;
-			}
-		}
-		$status = JFusionJplugin::createSession($userinfo, $options, $this->getJname(),$logintype,$curl_options);
-		// check if the login was successfull
-		if (!empty($status['cURL']['moodle'])) {
-			$loggedin_user = $this->rc4decrypt($status['cURL']['moodle']);
-			$status['debug'][] = JText::_('CURL_MOODLE_USER') . " " . $loggedin_user;
-			if ($loggedin_user != $userinfo->username) {
-				$status['debug'][] = JText::_('CURL_LOGIN_FAILURE');
-			}
-		}
+        if (!empty($userinfo->block) || !empty($userinfo->activation)) {
+            $status['error'][] = JText::_('FUSION_BLOCKED_USER');
+        } else {
+            // If a session expired by not accessing Moodle for a long time we cannot login normally.
+            // Also we want to disable the remember me effects, we are going to login anyway
+            // we find out by reading the MOODLEID_ cookie and brute force login if MOODLE_ID is not nobody
+            $curl_options = array();
+            $curl_options['hidden']='0';
+            $params = JFusionFactory::getParams($this->getJname());
+            $logintype = $params->get('brute_force');
+            if (isset($_COOKIE['MOODLEID_'])){
+                $loggedin_user = $this->rc4decrypt($_COOKIE['MOODLEID_']);
+                if ($loggedin_user == 'nobody') {
+                    $logintype = 'standard';
+                    $curl_options['hidden']='1' ;
+                }
+            }
+            $status = JFusionJplugin::createSession($userinfo, $options, $this->getJname(),$logintype,$curl_options);
+            // check if the login was successfull
+            if (!empty($status['cURL']['moodle'])) {
+                $loggedin_user = $this->rc4decrypt($status['cURL']['moodle']);
+                $status['debug'][] = JText::_('CURL_MOODLE_USER') . " " . $loggedin_user;
+                if ($loggedin_user != $userinfo->username) {
+                    $status['debug'][] = JText::_('CURL_LOGIN_FAILURE');
+                }
+            }
+        }
 		return $status;
 	}
 

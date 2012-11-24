@@ -178,14 +178,14 @@ class JFusionUser_smf extends JFusionUser
      */
     function createSession($userinfo, $options)
     {
+        $status = array('error' => array(),'debug' => array());
         //do not create sessions for blocked users
         if (!empty($userinfo->block) || !empty($userinfo->activation)) {
-            $status = array('error' => array(),'debug' => array());
             $status['error'][] = JText::_('FUSION_BLOCKED_USER');
-            return $status;
+        } else {
+            $params = JFusionFactory::getParams($this->getJname());
+            $status = JFusionJplugin::createSession($userinfo, $options, $this->getJname(),$params->get('brute_force'));
         }
-    	$params = JFusionFactory::getParams($this->getJname());
-        $status = JFusionJplugin::createSession($userinfo, $options, $this->getJname(),$params->get('brute_force'));
         return $status;
     }
 

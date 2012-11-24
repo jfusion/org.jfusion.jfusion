@@ -139,7 +139,8 @@ class JFusionUser_smf2 extends JFusionUser {
      * @param array $options
      * @return array
      */
-    function destroySession($userinfo, $options){
+    function destroySession($userinfo, $options)
+    {
         $status = array('error' => array(),'debug' => array());
         $params = JFusionFactory::getParams($this->getJname());
         $status['debug'][] = JFusionFunction::addCookie($params->get('cookie_name'), '',0,$params->get('cookie_path'),$params->get('cookie_domain'),$params->get('secure'),$params->get('httponly'));
@@ -151,16 +152,16 @@ class JFusionUser_smf2 extends JFusionUser {
      * @param array $options
      * @return array|string
      */
-    function createSession($userinfo, $options){
-
+    function createSession($userinfo, $options)
+    {
+        $status = array('error' => array(),'debug' => array());
 		//do not create sessions for blocked users
 		if (!empty($userinfo->block) || !empty($userinfo->activation)) {
-            $status = array('error' => array(),'debug' => array());
             $status['error'][] = JText::_('FUSION_BLOCKED_USER');
-            return $status;
-		}
-    	$params = JFusionFactory::getParams($this->getJname());
-		$status = JFusionJplugin::createSession($userinfo, $options,$this->getJname(),$params->get('brute_force'));
+		} else {
+            $params = JFusionFactory::getParams($this->getJname());
+            $status = JFusionJplugin::createSession($userinfo, $options,$this->getJname(),$params->get('brute_force'));
+        }
 		return $status;
     }
 

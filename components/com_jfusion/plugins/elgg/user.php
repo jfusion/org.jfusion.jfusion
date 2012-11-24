@@ -136,49 +136,54 @@ class JFusionUser_elgg extends JFusionUser {
         //destroy a cookie if it exists already, this will prevent the person logging in from having to refresh twice to appear as logged in
         $this->destroySession(null,null);
         $status = array('error' => array(),'debug' => array());
-        $params = JFusionFactory::getParams($this->getJname());
 
-    	if (defined('externalpage')) {
-        	define('externalpage', true);	
-        }
-        require_once $params->get('source_path') . DS . 'engine' . DS . 'start.php';
-        // Get variables
-        global $CONFIG;
-        // Action Gatekeep not neccessary as person should already be validated by Joomla!
-        //action_gatekeeper();
-        //Get username and password
-        $username = $userinfo->username;
-        $password = $userinfo->password_clear;
-        $persistent = true;
-        // If all is present and correct, try to log in
-        $result = false;
-        if (!empty($username) && !empty($password)) {
-            $user = authenticate($username, $password);
-            if ($user) {
-                //if ($user->isBanned()) return false; // User is banned, return false.
-                $_SESSION['user'] = $user;
-                $_SESSION['guid'] = $user->getGUID();
-                $_SESSION['id'] = $_SESSION['guid'];
-                $_SESSION['username'] = $user->username;
-                $_SESSION['name'] = $user->name;
-                $code = (md5($user->name . $user->username . time() . rand()));
-                $user->code = md5($code);
-                $_SESSION['code'] = $code;
-                if (($persistent)) $status['debug'][] = JFusionFunction::addCookie('elggperm', $code, (time() + (86400 * 30)), '/', $params->get('cookie_domain'));
-                if (!$user->save() || !trigger_elgg_event('login', 'user', $user)) {
-                    unset($_SESSION['username']);
-                    unset($_SESSION['name']);
-                    unset($_SESSION['code']);
-                    unset($_SESSION['guid']);
-                    unset($_SESSION['id']);
-                    unset($_SESSION['user']);
-                    $status['debug'][] = JFusionFunction::addCookie('elggperm', '', (time() - (86400 * 30)), '/', $params->get('cookie_domain'));
-                } else {
-                    // Users privilege has been elevated, so change the session id (help prevent session hijacking)
-                    //session_regenerate_id();
-                    // Update statistics
-                    set_last_login($_SESSION['guid']);
-                    reset_login_failure_count($user->guid); // Reset any previous failed login attempts
+        if (!empty($userinfo->block) || !empty($userinfo->activation)) {
+            $status['error'][] = JText::_('FUSION_BLOCKED_USER');
+        } else {
+            $params = JFusionFactory::getParams($this->getJname());
+
+            if (defined('externalpage')) {
+                define('externalpage', true);
+            }
+            require_once $params->get('source_path') . DS . 'engine' . DS . 'start.php';
+            // Get variables
+            global $CONFIG;
+            // Action Gatekeep not neccessary as person should already be validated by Joomla!
+            //action_gatekeeper();
+            //Get username and password
+            $username = $userinfo->username;
+            $password = $userinfo->password_clear;
+            $persistent = true;
+            // If all is present and correct, try to log in
+            $result = false;
+            if (!empty($username) && !empty($password)) {
+                $user = authenticate($username, $password);
+                if ($user) {
+                    //if ($user->isBanned()) return false; // User is banned, return false.
+                    $_SESSION['user'] = $user;
+                    $_SESSION['guid'] = $user->getGUID();
+                    $_SESSION['id'] = $_SESSION['guid'];
+                    $_SESSION['username'] = $user->username;
+                    $_SESSION['name'] = $user->name;
+                    $code = (md5($user->name . $user->username . time() . rand()));
+                    $user->code = md5($code);
+                    $_SESSION['code'] = $code;
+                    if (($persistent)) $status['debug'][] = JFusionFunction::addCookie('elggperm', $code, (time() + (86400 * 30)), '/', $params->get('cookie_domain'));
+                    if (!$user->save() || !trigger_elgg_event('login', 'user', $user)) {
+                        unset($_SESSION['username']);
+                        unset($_SESSION['name']);
+                        unset($_SESSION['code']);
+                        unset($_SESSION['guid']);
+                        unset($_SESSION['id']);
+                        unset($_SESSION['user']);
+                        $status['debug'][] = JFusionFunction::addCookie('elggperm', '', (time() - (86400 * 30)), '/', $params->get('cookie_domain'));
+                    } else {
+                        // Users privilege has been elevated, so change the session id (help prevent session hijacking)
+                        //session_regenerate_id();
+                        // Update statistics
+                        set_last_login($_SESSION['guid']);
+                        reset_login_failure_count($user->guid); // Reset any previous failed login attempts
+                    }
                 }
             }
         }

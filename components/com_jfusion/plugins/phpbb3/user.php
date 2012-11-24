@@ -144,11 +144,11 @@ class JFusionUser_phpbb3 extends JFusionUser
      */
     function createSession($userinfo, $options) {
         $status = array('error' => array(),'debug' => array());
-        $db = JFusionFactory::getDatabase($this->getJname());
         //do not create sessions for blocked users
         if (!empty($userinfo->block) || !empty($userinfo->activation)) {
             $status['error'][] = JText::_('FUSION_BLOCKED_USER');
         } else {
+            $db = JFusionFactory::getDatabase($this->getJname());
             $userid = $userinfo->userid;
             if ($userid && !empty($userid) && ($userid > 0)) {
                 $params = JFusionFactory::getParams($this->getJname());
