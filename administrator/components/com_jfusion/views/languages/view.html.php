@@ -78,7 +78,7 @@ class jfusionViewlanguages extends JView
 
         if (JFusionFunction::isJoomlaVersion('1.6')) {
             $db = JFactory::getDBO();
-            $query = 'SELECT element, manifest_cache FROM \'#__extensions\' WHERE \'name\' LIKE \'jfusion\' AND \'type\' LIKE \'language\' AND \'client_id\' =1';
+            $query = 'SELECT element, manifest_cache FROM #__extensions WHERE name LIKE \'jfusion\' AND type LIKE \'language\' AND client_id = 1';
             $db->setQuery($query);
             $results = $db->loadObjectList();
 
