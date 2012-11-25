@@ -76,21 +76,36 @@ class jfusionViewlanguages extends JView
             }
         }
 
-        $db = JFactory::getDBO();
-        $query = 'SELECT element, manifest_cache FROM \'#__extensions\' WHERE \'name\' LIKE \'jfusion\' AND \'type\' LIKE \'language\' AND \'client_id\' =1';
-        $db->setQuery($query);
-        $results = $db->loadObjectList();
+        if (JFusionFunction::isJoomlaVersion('1.6')) {
+            $db = JFactory::getDBO();
+            $query = 'SELECT element, manifest_cache FROM \'#__extensions\' WHERE \'name\' LIKE \'jfusion\' AND \'type\' LIKE \'language\' AND \'client_id\' =1';
+            $db->setQuery($query);
+            $results = $db->loadObjectList();
 
-        if(!empty($results)) {
-            foreach ($results as $result) {
-                if (isset($lang_repo[$result->element])) {
-                    $cache = json_decode($result->manifest_cache);
-                    $lang_repo[$result->element]->currentdate = $cache->creationDate;
+            if(!empty($results)) {
+                foreach ($results as $result) {
+                    if (isset($lang_repo[$result->element])) {
+                        $cache = json_decode($result->manifest_cache);
+                        $lang_repo[$result->element]->currentdate = $cache->creationDate;
 
-                    if ( $lang_repo[$result->element]->currentdate == $lang_repo[$result->element]->date ) {
-                        $lang_repo[$result->element]->class = 'good';
-                    } else {
-                        $lang_repo[$result->element]->class = 'bad';
+                        if ( $lang_repo[$result->element]->currentdate == $lang_repo[$result->element]->date ) {
+                            $lang_repo[$result->element]->class = 'good';
+                        } else {
+                            $lang_repo[$result->element]->class = 'bad';
+                        }
+                    }
+                }
+            }
+        } else {
+            $path = JPATH_ADMINISTRATOR.DS.'language';
+            $paths = JFolder::folders(JPATH_ADMINISTRATOR.DS.'language');
+            foreach ($paths as $tag) {
+                $parser = JFactory::getXMLParser('Simple');
+                $file = $path.DS.$tag.DS.$tag.'.com_jfusion.xml';
+                if ($parser->loadFile($file)) {
+                    $date = $parser->document->getElementByPath('creationdate')->data();
+                    if ( $date) {
+                        $lang_repo[$tag]->currentdate = $date;
                     }
                 }
             }
