@@ -120,7 +120,7 @@ class JFusionJplugin
     public static function getUserList($jname,$limitstart = 0, $limit = 0)
     {
         $db = JFusionFactory::getDatabase($jname);
-        $query = 'SELECT username, email from #__users'.$limit;
+        $query = 'SELECT username, email from #__users';
         $db->setQuery($query,$limitstart,$limit);
         $userlist = $db->loadObjectList();
         return $userlist;

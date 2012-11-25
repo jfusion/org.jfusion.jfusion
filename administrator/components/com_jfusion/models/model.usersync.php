@@ -282,7 +282,7 @@ class JFusionUsersync
                 $user_batch = $syncdata['userbatch'];
                 //we should start with the import of slave users into the master
                 if ($syncdata['slave_data']) {
-                    for ($i = $plugin_offset;$i < count($syncdata['slave_data']);$i++) {
+                    for ($i = $plugin_offset; $i < count($syncdata['slave_data']);$i++) {
                         $syncdata['plugin_offset'] = $i;
                         //get a list of users
                         $jname = $syncdata['slave_data'][$i]['jname'];
@@ -305,7 +305,6 @@ class JFusionUsersync
                                 $user_offset = 0;
                                 $users_limited = true;
                             }
-
                             //perform the actual sync
                             for ($j = $user_offset;$j < count($userlist);$j++) {
                                 $syncdata['user_offset']++;
@@ -386,12 +385,12 @@ class JFusionUsersync
                                     $user_count++;
                                     $user_batch--;
                                 }
+
                                 $percent = ($syncdata['synced_users'] / $syncdata['total_to_sync']) * 100;
                                 if ($percent == '100') {
                                     break;
                                 } elseif ($user_batch == 0 || $syncdata['slave_data'][$i]['total'] == 0) {
                                     //exit the process to prevent an apache timeout; it will resume on the next ajax call
-
                                     //save the syncdata before exiting
                                     if ($syncdata['slave_data'][$i]['total'] == 0) {
                                         //will force  the next plugin and first user of that plugin on resume
@@ -406,27 +405,21 @@ class JFusionUsersync
                             }
                         }
                     }
+                }
 
+                if ((($syncdata['synced_users'] / $syncdata['total_to_sync']) * 100) == 100) {
                     //end of sync, save the final data
                     $syncdata['completed'] = true;
                     JFusionUsersync::updateSyncdata($syncdata);
-                    JFusionUsersync::changeSyncStatus($syncid, 0);
+
                     //update the finish time
                     $db = JFactory::getDBO();
                     $query = 'UPDATE #__jfusion_sync SET time_end = ' . $db->Quote(time()) . ' WHERE syncid =' . $db->Quote($syncdata['syncid']);
                     $db->setQuery($query);
                     $db->query();
                 }
-            } elseif ((($syncdata['synced_users'] / $syncdata['total_to_sync']) * 100) == 100) {
-                //end of sync, save the final data
-                $syncdata['completed'] = true;
                 JFusionUsersync::updateSyncdata($syncdata);
                 JFusionUsersync::changeSyncStatus($syncid, 0);
-                //update the finish time
-                $db = JFactory::getDBO();
-                $query = 'UPDATE #__jfusion_sync SET time_end = ' . $db->Quote(time()) . ' WHERE syncid =' . $db->Quote($syncdata['syncid']);
-                $db->setQuery($query);
-                $db->query();
             }
         }
     }
