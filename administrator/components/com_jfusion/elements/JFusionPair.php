@@ -50,6 +50,7 @@ class JElementJFusionPair extends JElement
             var l = document.createElement("a");
 
             var index = 0;
+            var list;
             while (true) {
                 list = document.getElementById("params"+t+"value"+index);
                 if (!list) break;

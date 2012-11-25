@@ -38,6 +38,9 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'defines.php';
 class JFusionController extends JController
 {
     /**
+     * @param bool $cachable
+     * @param bool $urlparams
+     *
      * @return JController|void
      */
     function display($cachable = false, $urlparams = false) {

@@ -53,52 +53,52 @@ defined('_JEXEC') or die('Restricted access');
 
     <input name="file" size="60" type="file">
     <br/>
-    <table style="border: 0px;">
-        <tr style="padding: 0px;">
-            <td style="padding: 0px; width: 150px;">
+    <table style="border: 0;">
+        <tr style="padding: 0;">
+            <td style="padding: 0; width: 150px;">
                 <?php echo JText::_('DATABASE_TYPE'); ?>
             </td>
-            <td style="padding: 0px;">
+            <td style="padding: 0;">
                 <input name="database_type" id="database_type" value="" class="text_area" size="20" type="text">
             </td>
         </tr>
-        <tr style="padding: 0px;">
-            <td style="padding: 0px; width: 150px;">
+        <tr style="padding: 0;">
+            <td style="padding: 0; width: 150px;">
                 <?php echo JText::_('DATABASE_HOST'); ?>
             </td>
-            <td style="padding: 0px;">
+            <td style="padding: 0;">
                 <input name="database_host" id="database_host" value="" class="text_area" size="20" type="text">
             </td>
         </tr>
-        <tr style="padding: 0px;">
-            <td style="padding: 0px; width: 150px;">
+        <tr style="padding: 0;">
+            <td style="padding: 0; width: 150px;">
                 <?php echo JText::_('DATABASE_NAME'); ?>
             </td>
-            <td style="padding: 0px;">
+            <td style="padding: 0;">
                 <input name="database_name" id="database_name" value="" class="text_area" size="20" type="text">
             </td>
         </tr>
-        <tr style="padding: 0px;">
-            <td style="padding: 0px; width: 150px;">
+        <tr style="padding: 0;">
+            <td style="padding: 0; width: 150px;">
                 <?php echo JText::_('DATABASE_USER'); ?>
             </td>
-            <td style="padding: 0px;">
+            <td style="padding: 0;">
                 <input name="database_user" id="database_user" value="" class="text_area" size="20" type="text">
             </td>
         </tr>
-        <tr style="padding: 0px;">
-            <td style="padding: 0px; width: 150px;">
+        <tr style="padding: 0;">
+            <td style="padding: 0; width: 150px;">
                 <?php echo JText::_('DATABASE_PASSWORD'); ?>
             </td>
-            <td style="padding: 0px;">
+            <td style="padding: 0;">
                 <input name="database_password" id="database_password" value="" class="text_area" size="20" type="text">
             </td>
         </tr>
-        <tr style="padding: 0px;">
-            <td style="padding: 0px; width: 150px;">
+        <tr style="padding: 0;">
+            <td style="padding: 0; width: 150px;">
                 <?php echo JText::_('DATABASE_PREFIX'); ?>
             </td>
-            <td style="padding: 0px;">
+            <td style="padding: 0;">
                 <input name="database_prefix" id="database_prefix" value="" class="text_area" size="20" type="text">
             </td>
         </tr>

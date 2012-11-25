@@ -58,7 +58,11 @@ class JFormFieldjfusionsql extends JFormField
 		    	//some special queries for discussion bot
 		    	if ($query == 'joomla.categories') {
 		    	    //joomla 1.6+
-        			$query	= $db->getQuery(true);
+                    /**
+                     * @ignore
+                     * @var $params JDatabaseInterface
+                     */
+        			$query = $db->getQuery(true);
         			$query->select('a.id, a.title as name, a.level');
         			$query->from('#__categories AS a');
         			$query->where('a.parent_id > 0');

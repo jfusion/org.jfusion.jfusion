@@ -38,6 +38,10 @@ class modjfusionWhosOnlineHelper {
 		$link_itemid = $config['itemid'];
 		if (is_numeric($link_itemid)) {
 			$menu = JSite::getMenu();
+            /**
+             * @ignore
+             * @var $menu_param JParameter
+             */
 			$menu_param = $menu->getParams($link_itemid);
 			$plugin_param = unserialize(base64_decode($menu_param->get('JFusionPluginParam')));
 			$link_jname = $plugin_param['jfusionplugin'];

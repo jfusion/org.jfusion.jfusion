@@ -47,6 +47,10 @@ if (file_exists($model_file) && file_exists($factory_file)) {
     $link_itemid = $params->get('itemid');
     if (is_numeric($link_itemid)) {
         $menu = JSite::getMenu();
+        /**
+         * @ignore
+         * @var $menu_param JParameter
+         */
         $menu_param = $menu->getParams($link_itemid);
         $plugin_param = unserialize(base64_decode($menu_param->get('JFusionPluginParam')));
         $link_jname = $plugin_param['jfusionplugin'];
@@ -68,6 +72,10 @@ if (file_exists($model_file) && file_exists($factory_file)) {
     $itemid = $params->get('itemidAvatarPMs');
     if (is_numeric($itemid)) {
         $menu = JSite::getMenu();
+        /**
+         * @ignore
+         * @var $menu_param JParameter
+         */
         $menu_param = $menu->getParams($itemid);
         $plugin_param = unserialize(base64_decode($menu_param->get('JFusionPluginParam')));
         $jname = $plugin_param['jfusionplugin'];

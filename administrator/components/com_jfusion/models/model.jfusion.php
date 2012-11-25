@@ -121,6 +121,10 @@ class JFusionFunction
                 }
                 if (!isset($routeURL_jname[$itemid])) {
                     $menu = JSite::getMenu();
+                    /**
+                     * @ignore
+                     * @var $menu_param JParameter
+                     */
                     $menu_param = $menu->getParams($itemid);
                     $plugin_param = unserialize(base64_decode($menu_param->get('JFusionPluginParam')));
                     $routeURL_jname[$itemid] = $plugin_param['jfusionplugin'];

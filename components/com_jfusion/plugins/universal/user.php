@@ -553,13 +553,30 @@ class JFusionUser_universal extends JFusionUser {
                     } else {
                         $user = new stdClass;
                         $maped = $helper->getMap();
+                        $db = JFusionFactory::getDatabase($this->getJname());
                         foreach ($maped as $key => $value) {
                             $field = $value->field;
                             switch ($value->type) {
                                 case 'IGNORE':
                                     break;
                                 case 'USERID':
-                                    $user->$field = NULL;
+                                    $query = 'SHOW COLUMNS FROM #__'.$helper->getTablename().' where Field = '.$db->Quote($field).' AND Extra like \'%auto_increment%\'';
+                                    $db->setQuery($query);
+                                    $fieldslist = $db->loadObject();
+                                    if ($fieldslist) {
+                                        $user->$field = NULL;
+                                    } else {
+                                        $f = $helper->getQuery(array('USERID'));
+                                        $query = 'SELECT '.$f.' FROM #__'.$helper->getTablename().' ORDER BY userid DESC LIMIT 1';
+                                        $db->setQuery($query);
+                                        $value = $db->loadResult();
+                                        if (!$value) {
+                                            $value = 1;
+                                        } else {
+                                            $value++;
+                                        }
+                                        $user->$field = $value;
+                                    }
                                     break;
                                 case 'REALNAME':
                                     $user->$field = $userinfo->name;
@@ -623,8 +640,6 @@ class JFusionUser_universal extends JFusionUser {
                                     break;
                             }
                         }
-
-                        $db = JFusionFactory::getDatabase($this->getJname());
                         //now append the new user data
                         if (!$db->insertObject('#__'.$helper->getTablename(), $user, $userid->field )) {
                             //return the error

@@ -262,7 +262,8 @@ class JFusionAdmin_universal extends JFusionAdmin{
                         $output .= '<div>Type: '.$val->Type.'</div>';
                         $output .= '<div>Default: "'.$val->Default.'" </div>';
                         $null = $val->Null?JText::_('YES'):JText::_('NO');
-                        $output .= '<div>Null: '.$null.'</div></td><td>';
+                        $output .= '<div>Null: '.$null.'</div>';
+                        $output .= '<div>Extra: "'.$val->Extra.'" </div></td><td>';
                         if ( isset($value['field'][$val->Field]) ) {
                             $mapuserfield = $value['field'][$val->Field];
                         } else {
