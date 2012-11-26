@@ -755,7 +755,7 @@ JS;
                             $error = JText::_('UPLOAD_ERR_EXTENSION');
                             break;
                         default:
-                            $error = 'Unknown upload error';
+                            $error = JText::_('UNKNOWN_UPLOAD_ERROR');
                     }
                     $error = $jname . ': ' . JText::_('ERROR').': '.$error;
                 } else {
@@ -808,7 +808,7 @@ JS;
                     if( !empty($database_prefix) ) $conf['database_prefix'] = $database_prefix;
 
                     JFusionFunctionAdmin::saveParameters($jname, $conf);
-                    $msg = JText::_('IMPORT_SUCCESS_MSG_PRESS_SAVE');
+                    $msg = JText::_('IMPORT_SUCCESS');
                 }
             }
         }

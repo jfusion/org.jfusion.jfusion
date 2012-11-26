@@ -3,6 +3,9 @@ function submitbutton(pressbutton) {
     if (pressbutton == 'applyconfig') {
         $('adminForm').action.value = 'apply';
         submitform('saveconfig');
+    } else if (pressbutton == 'import') {
+        $('adminForm').encoding = 'multipart/form-data';
+        submitform(pressbutton);
     } else {
         submitform(pressbutton);
     }
@@ -85,6 +88,9 @@ if (typeof Joomla != 'undefined') {
         if (pressbutton == 'applyconfig') {
             $('adminForm').action.value = 'apply';
             submitform('saveconfig');
+        } else if (pressbutton == 'import') {
+            $('adminForm').encoding = 'multipart/form-data';
+            submitform(pressbutton);
         } else {
             submitform(pressbutton);
         }
