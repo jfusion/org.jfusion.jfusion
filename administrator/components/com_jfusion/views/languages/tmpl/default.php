@@ -19,24 +19,6 @@ defined('_JEXEC') or die('Restricted access');
 JFusionFunctionAdmin::displayDonate();
 ?>
 
-
-<table>
-    <tr>
-        <td width="100px">
-            <img src="components/com_jfusion/images/jfusion_large.png">
-        </td>
-        <td width="100px">
-            <img src="components/com_jfusion/images/language_icon.png">
-        </td>
-        <td>
-            <h2>
-                <?php echo JText::_('LANGUAGES'); ?>
-            </h2>
-        </td>
-    </tr>
-</table>
-<br/>
-
 <style type="text/css">
     tr.good0 { background-color: #ecfbf0; }
     tr.good1 { background-color: #d9f9e2; }

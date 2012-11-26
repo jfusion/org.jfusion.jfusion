@@ -9,6 +9,7 @@
 
 // no direct access
 defined('_JEXEC') or die('Restricted access');
+JFusionFunctionAdmin::displayDonate();
 
 //load debug library
 require_once(JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.debug.php');
@@ -23,21 +24,6 @@ if (JRequest::getVar('filter',false)) {
     $filter = 'checked="yes"';
 }
 ?>
-<table>
-    <tr>
-        <td width="100px">
-            <img src="components/com_jfusion/images/jfusion_large.png">
-        </td>
-        <td width="100px">
-            <img src="components/com_jfusion/images/login_checker2.png">
-        </td>
-        <td>
-            <h2>
-                <?php echo JText::_('CONFIGDUMP_RESULT');?>
-            </h2>
-        </td>
-    </tr>
-</table>
 
 <form method="post" action="index.php" name="adminForm" id="adminForm">
     <input type="hidden" name="option" value="com_jfusion" />

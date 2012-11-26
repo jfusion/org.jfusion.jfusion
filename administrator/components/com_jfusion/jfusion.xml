@@ -37,7 +37,7 @@
 	</languages>
 	
 	<administration>
-		<menu img="components/com_jfusion/images/jfusion.png" link="option=com_jfusion">COM_JFUSION</menu>
+		<menu img="components/com_jfusion/images/jfusion_small.png" link="option=com_jfusion">COM_JFUSION</menu>
 		<submenu>
 			<menu img="components/com_jfusion/images/control.png" link="option=com_jfusion&amp;task=cpanel">CPANEL</menu>
 			<menu img="components/com_jfusion/images/joomla_small.png" link="option=com_jfusion&amp;task=plugineditor&amp;jname=joomla_int">JOOMLA_OPTIONS</menu>

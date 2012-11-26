@@ -29,22 +29,6 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.debug.p
 	<input type="hidden" name="option" value="com_jfusion" />
 	<input type="hidden" name="task" value="logoutcheckerresult" />
 </form>
-<table>
-	<tr>
-		<td width="100px">
-			<img src="components/com_jfusion/images/jfusion_large.png"
-		</td>
-		<td width="100px">
-			<img src="components/com_jfusion/images/login_checker2.png">
-		</td>
-		<td>
-			<h2>
-				<?php echo JText::_('LOGOUT_CHECKER_RESULT'); ?>
-			</h2>
-		</td>
-	</tr>
-</table>
-
 <div style="border:0 none ; margin:0; padding:0 5px; width: 800px; float: left;">
 	<?php
     debug::show($this->debug, JText::_('LOGOUT') . ' ' . JText::_('DEBUG'), 1);

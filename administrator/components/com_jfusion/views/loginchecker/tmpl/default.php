@@ -22,23 +22,7 @@ JFusionFunctionAdmin::displayDonate();
 <form method="post" action="index.php" name="adminForm" id="adminForm">
     <input type="hidden" name="option" value="com_jfusion" />
 	<input type="hidden" name="task" value="logincheckerresult" />
-	
-	<table>
-        <tr>
-            <td width="100px">
-	           <img src="components/com_jfusion/images/jfusion_large.png">
-            </td>
-            <td width="100px">
-                <img src="components/com_jfusion/images/login_checker.png">
-            </td>
-            <td>
-                <h2>
-	               <?php echo JText::_('LOGIN_CHECKER'); ?>
-                </h2>
-            </td>
-        </tr>
-    </table>
-    <br/>
+
     <font size="2">
         <?php echo JText::_('LOGIN_CHECKER_TEXT'); ?>
     </font>

@@ -109,7 +109,7 @@ defined('_JEXEC') or die('Restricted access');
         ?>
         <br/>
         <input type=radio name="xmlname" value="" checked>
-        <?php echo JText::_('NONE'); ?>
+        <?php echo JText::_('JNONE'); ?>
         <br/>
         <?php
         /**
@@ -155,7 +155,7 @@ defined('_JEXEC') or die('Restricted access');
     <?php echo JText::_('EXPORT_DATABASE_INFO_DESC'); ?>
     <br>
     <br>
-    <?php echo JText::_('EXPORT_DATABASE_INFO'); ?> <input name="dbinfo" type="checkbox"><br/>
+    <input name="dbinfo" type="checkbox"> <?php echo JText::_('EXPORT_DATABASE_INFO'); ?>
 
     <input type="hidden" name="jname" value="<?php echo $this->jname; ?>"/>
 </form>

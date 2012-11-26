@@ -314,22 +314,6 @@ window.addEvent('domready', function() {
 );
 // -->
 </script>
-
-<table>
-    <tr>
-        <td width="100px">
-            <img src="components/com_jfusion/images/jfusion_large.png">
-        </td>
-        <td width="100px">
-            <img src="components/com_jfusion/images/usersync.png">
-        </td>
-        <td>
-            <h2><?php echo JText::_('USERSYNC'); ?></h2>
-        </td>
-    </tr>
-</table>
-<br/>
-
 <h3><?php echo JText::_('SYNC_WARNING'); ?></h3><br/>
 
 <?php

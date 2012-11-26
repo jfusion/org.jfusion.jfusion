@@ -45,7 +45,7 @@ JFusionFunctionAdmin::displayDonate();
 			    <div style="float:left;">
 			            <div class="icon">
 			                <a href="index.php?option=com_jfusion&task=syncoptions" >
-                                <img src="components/com_jfusion/images/syncmaster.png">
+                                <img src="components/com_jfusion/images/usersync.png">
                                 <span>
                                     <?php echo JText::_('NEW_USER_SYNC'); ?>
                                 </span>
@@ -55,7 +55,7 @@ JFusionFunctionAdmin::displayDonate();
 			    <div style="float:left;">
 			            <div class="icon">
 			                <a href="index.php?option=com_jfusion&task=synchistory" >
-                                <img src="components/com_jfusion/images/synchistory_small.png">
+                                <img src="components/com_jfusion/images/synchistory.png">
                                 <span>
                                     <?php echo JText::_('USER_SYNC_HISTORY'); ?>
                                 </span>
@@ -96,7 +96,7 @@ JFusionFunctionAdmin::displayDonate();
                 <div style="float:left;">
                     <div class="icon">
                         <a href="index.php?option=com_jfusion&task=versioncheck" >
-                            <img src="components/com_jfusion/images/versioncheck_small.png">
+                            <img src="components/com_jfusion/images/versioncheck.png">
                             <span
                                 ><?php echo JText::_('VERSION_CHECK'); ?>
                             </span>

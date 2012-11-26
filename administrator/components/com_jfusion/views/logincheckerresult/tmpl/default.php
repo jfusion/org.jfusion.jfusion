@@ -28,21 +28,6 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.debug.p
  * Output information about the server for future support queries
  */
 ?>
-<table>
-    <tr>
-        <td width="100px">
-            <img src="components/com_jfusion/images/jfusion_large.png">
-        </td>
-        <td width="100px">
-            <img src="components/com_jfusion/images/login_checker2.png">
-        </td>
-        <td>
-            <h2>
-                <?php echo JText::_('LOGIN_CHECKER_RESULT');?>
-            </h2>
-        </td>
-    </tr>
-</table>
 
 <div style="border:0 none ; margin:0; padding:0 5px; width: 800px; float: left;">
 	<form method="post" action="index.php" name="adminForm" id="adminForm">

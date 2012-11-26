@@ -24,24 +24,6 @@ JFusionFunctionAdmin::displayDonate();
     <input type="hidden" name="task" value="" />
     <input type="hidden" name="action" value="" />
     <input type="hidden" name="customcommand" value="" />
-
-    <table>
-        <tr>
-            <td width="100px">
-                <img src="components/com_jfusion/images/jfusion_large.png">
-            </td>
-            <td width="100px">
-                <img src="components/com_jfusion/images/editor.png">
-            </td>
-            <td>
-                <h2>
-                    <?php echo $this->jname . ' ' . JText::_('PLUGIN_EDITOR');?>
-                </h2>
-            </td>
-        </tr>
-    </table>
-    <br/>
-
     <?php
     if ($this->params) {
         jimport('joomla.html.pane');

@@ -42,22 +42,6 @@ function applyAll() {
 	<?php //why is this here?
 	/*<input type="hidden" name="syncid" value="<?php echo $this->syncid;?>" />*/
 	?>
-	
-	<table>
-		<tr>
-			<td width="100px">
-				<img src="components/com_jfusion/images/jfusion_large.png">
-			</td>
-			<td width="100px">
-				<img src="components/com_jfusion/images/synchistory.png">
-			<td>
-				<h2>
-					<?php echo JText::_('SYNC_HISTORY'); ?>
-				</h2>
-			</td>
-		</tr>
-	</table>
-	<br/>
 	<table class="adminlist" style="border-spacing:1px;">
 		<thead>
 			<tr>

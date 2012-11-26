@@ -113,4 +113,60 @@ a.navButton {
 a.navButton:hover {
      background-position: 0 -30px;
      z-index: 2;
-}  
+}
+
+.icon-32-import-icon {
+    background-image: url(../images/import-icon.png);
+}
+
+.icon-32-export-icon {
+    background-image: url(../images/export-icon.png);
+}
+
+.icon-32-importexport-icon {
+    background-image: url(../images/importexport-icon.png);
+}
+
+.icon-48-configdump {
+    background-image: url(../images/configdump.png);
+}
+
+.icon-48-languages {
+    background-image: url(../images/language_icon.png);
+}
+
+.icon-48-login_checker {
+    background-image: url(../images/login_checker.png);
+}
+
+.icon-48-jfusion {
+    background-image: url(../images/jfusion.png);
+}
+
+.icon-48-synchistory {
+    background-image: url(../images/synchistory.png);
+}
+
+.icon-48-usersync {
+    background-image: url(../images/usersync.png);
+}
+
+.icon-48-controlpanel {
+    background-image: url(../images/controlpanel.png);
+}
+
+.icon-48-versioncheck {
+    background-image: url(../images/versioncheck.png);
+}
+
+.icon-48-importexport-icon {
+    background-image: url(../images/importexport-icon.png);
+}
+
+.icon-48-wizard {
+    background-image: url(../images/wizard.png);
+}
+
+.icon-48-importexport {
+    background-image: url(../images/importexport.png);
+}

@@ -18,24 +18,6 @@ defined('_JEXEC') or die('Restricted access');
 //display the paypal donation button
 JFusionFunctionAdmin::displayDonate();
 ?>
-
-<table>
-    <tr>
-        <td width="100px">
-            <img src="components/com_jfusion/images/jfusion_large.png">
-        </td>
-        <td width="100px">
-            <img src="components/com_jfusion/images/versioncheck.png">
-        </td>
-        <td>
-            <h2>
-                <?php echo JText::_('VERSION_CHECKER'); ?>
-            </h2>
-        </td>
-    </tr>
-</table>
-<br/>
-
 <style type="text/css">
     tr.good0 { background-color: #ecfbf0; }
     tr.good1 { background-color: #d9f9e2; }
