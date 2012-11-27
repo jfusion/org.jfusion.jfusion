@@ -53,9 +53,7 @@ class jfusionViewplugininfo extends JView
 			$features['ADMIN']['FEATURE_MULTI_USERGROUP'] = $this->outputFeature($admin->isMultiGroup());
 
             $frameless = JFusionFunction::hasFeature($jname,'frameless');
-            if (!$frameless) {
-                $frameless = 'CURL_FRAMELESS';
-            }
+            $frameless = $frameless ? 'NATIVE_FRAMELESS' : 'CURL_FRAMELESS';
 
 			$features['PUBLIC']['FEATURE_FRAMELESS'] = $this->outputFeature($frameless);
 			$features['PUBLIC']['FEATURE_BREADCRUMB'] = $this->outputFeature(JFusionFunction::hasFeature($jname,'breadcrumb'));
