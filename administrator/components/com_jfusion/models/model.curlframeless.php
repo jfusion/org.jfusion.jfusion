@@ -49,7 +49,6 @@ class JFusionCurlFrameless {
 		if(!strncmp($string, "Location:", 9)) {
             $this->location = trim(substr($string, 9, -1));
 		} else if(!strncmp($string, "Set-Cookie:", 11)) {
-			header($string,false);
             $string = trim(substr($string, 11, -1));
 			$parts = explode(';', $string);
 
