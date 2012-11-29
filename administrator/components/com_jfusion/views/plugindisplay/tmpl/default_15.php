@@ -24,12 +24,11 @@ function changesetting(fieldname, fieldvalue, jname){
 	var url = '<?php echo JURI::root() . 'administrator/index.php'; ?>';
 	var syncdata = 'jname=' + jname + '&field_name=' + fieldname + '&field_value=' + fieldvalue + '&task=changesettings&option=com_jfusion';
 
-	var req = new Ajax(url, { method: 'get',  
-          	
+	var req = new Ajax(url, { method: 'get',
         onRequest: function() { 
-        	showSpinner(jname,fieldname);    
+        	showSpinner(jname,fieldname);
         },
-        onComplete: function(JSONobject) { 
+        onSuccess: function(JSONobject) {
         	var response = Json.evaluate(JSONobject);
 
             $('errormessages').innerHTML = response.errormessage;
@@ -59,11 +58,8 @@ function changesetting(fieldname, fieldvalue, jname){
         	//update the image and link
         	updateJavaScript(jname,fieldname,fieldvalue);
         }
-
-                    }); 
-                    req.request(syncdata);
-        
-
+    });
+    req.request(syncdata);
 }
 
 function updateJavaScript(plugin,field, value) {
@@ -91,7 +87,7 @@ function copyplugin(jname) {
 
      // this code will send a data object via a GET request and alert the retrieved data.
         var jsonRequest = new Ajax(url, { method: 'get',
-            onComplete: function(JSONobject) {
+            onSuccess: function(JSONobject) {
 		        var results = Json.evaluate(JSONobject);
 		
 		        if(results.status === true) {
@@ -121,7 +117,7 @@ function initSortables() {
 
     var ajaxsync = new Ajax(url, {
 	    method: 'get',
-        onComplete: function(JSONobject) {
+        onSuccess: function(JSONobject) {
             var response = Json.evaluate(JSONobject);
             if (response.status === false) {
                 alert(response.message);
@@ -176,7 +172,7 @@ function deleteplugin(jname) {
 	
         // this code will send a data object via a GET request and alert the retrieved data.
         var jsonRequest = new Ajax(url, { method: 'get',
-            onComplete: function(JSONobject) {
+            onSuccess: function(JSONobject) {
         		var results = Json.evaluate(JSONobject);
 
             	if(results.status === true) {
@@ -197,7 +193,7 @@ window.addEvent('domready',function() {
 		var spinner = $('spinnerSVN');
 	    spinner.innerHTML = '<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">';
 		this.send({ method: 'post',
-			onComplete: function(JSONobject) {
+            onSuccess: function(JSONobject) {
 			var response = Json.evaluate(JSONobject);
 			    
 		    if (response.overwrite != 1 && response.status === true) {
@@ -215,7 +211,7 @@ window.addEvent('domready',function() {
 		var spinner = $('spinnerURL');
 	    spinner.innerHTML = '<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">';			
             this.send({method : 'post',
-                onComplete: function(JSONobject) {
+                onSuccess: function(JSONobject) {
 	            var response = Json.evaluate(JSONobject);                              
 	
 				if (response.overwrite != 1 && response.status === true) {
@@ -233,7 +229,7 @@ window.addEvent('domready',function() {
 		var spinner = $('spinnerDIR');
 	    spinner.innerHTML = '<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">';
             this.send({method : 'post',
-                onComplete: function(JSONobject) {
+                onSuccess: function(JSONobject) {
 	            var response = Json.evaluate(JSONobject);
 	
 			    if (response.overwrite != 1 && response.status === true) {

@@ -125,60 +125,40 @@ function update() {
     $("counter").innerHTML = '<b>'+text+'</b>';
 }
 
-function render(html) {
-    html = html.trim();
-    if (validateJSON(html)) {
-        response = JSON.decode(html);
-
-        if (response.errors.length) {
-            $clear(periodical);
-            for(var i=0; i<response.errors.length; i++) {
-                alert(response.errors[i]);
-            }
-        } else {
-            renderSync(response);
-
-            if (response.completed) {
-                update();
-            }
-        }
-    }
-}
-
-function validateJSON(html) {
-    if (JSON.validate(html) && html.length) {
-        return true
-    } else {
+function render(JSONobject) {
+    if (JSONobject.errors.length) {
         $clear(periodical);
-        if (html.length) {
-            if (html.indexOf('<') === 0) {
-                //session time out
-                window.location.href='index.php?option=com_jfusion&task=syncoptions&syncid='+syncid;
-            } else {
-                document.body.innerHTML = html;
-            }
-        } else {
-            document.body.innerHTML = '<?php echo JText::_('EMPTY_RESPONCE',true); ?>';
+        for(var i=0; i<JSONobject.errors.length; i++) {
+            alert(JSONobject.errors[i]);
+        }
+    } else {
+        renderSync(JSONobject);
+
+        if (JSONobject.completed) {
+            update();
         }
     }
-    return false;
 }
 
 window.addEvent('domready', function() {
         /* our ajax istance for starting the sync */
-        var ajax = new Request.HTML({
+        var ajax = new Request.JSON({
             url: url,
             method: 'get',
-            onComplete: function(tree,elements,html,javascript) {
-                render(html);
+            onSuccess: function(JSONobject) {
+                render(JSONobject);
+            }, onError: function(text) {
+                alert(text);
             }
         });
 
-        var ajaxsync = new Request.HTML({
+        var ajaxsync = new Request.JSON({
             url: url,
             method: 'get',
-            onComplete: function(tree,elements,html,javascript) {
-                render(html);
+            onSuccess: function(JSONobject) {
+                render(JSONobject);
+            }, onError: function(text) {
+                alert(text);
             }
         });
 
@@ -254,9 +234,11 @@ window.addEvent('domready', function() {
                                     paramString = paramString + '&' + form.elements[i].name + '=' + form.elements[i].value;
                                 }
                             }
-                            new Request.HTML({url: url,
-                                method: 'get' ,onComplete: function(tree,elements,html,javascript) {
-                                    render(html);
+                            new Request.JSON({url: url,
+                                method: 'get' ,onSuccess: function(JSONobject) {
+                                    render(JSONobject);
+                                }, onError: function(text) {
+                                    alert(text);
                                 }}).send(paramString);
                         }
                     } else {

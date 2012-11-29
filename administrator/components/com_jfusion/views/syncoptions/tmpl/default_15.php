@@ -186,18 +186,6 @@ function render(html) {
 function validateJSON(html) {
     if (Json.evaluate(html,true) != null && html.length) {
         return true
-    } else {
-        $clear(periodical);
-        if (html.length) {
-            if (html.indexOf('<') === 0) {
-                //session time out
-                window.location.href='index.php?option=com_jfusion&task=syncoptions&syncid='+syncid;
-            } else {
-                document.body.innerHTML = html;
-            }
-        } else {
-            document.body.innerHTML = '<?php echo JText::_('EMPTY_RESPONCE',true); ?>';
-        }
     }
     return false;
 }
@@ -206,14 +194,14 @@ window.addEvent('domready', function() {
         /* our ajax istance for starting the sync */
         var ajax = new Ajax(url,{
             method: 'get',
-            onComplete: function(html) {
+            onSuccess: function(html) {
                 render(html);
             }
         });
 
         var ajaxsync = new Ajax(url,{
             method: 'get',
-            onComplete: function(html) {
+            onSuccess: function(html) {
                 render(html);
             }
         });
@@ -290,8 +278,10 @@ window.addEvent('domready', function() {
                                     paramString = paramString + '&' + form.elements[i].name + '=' + form.elements[i].value;
                                 }
                             }
-                            new Ajax(url ,{ method: 'get' ,onComplete: function(html) {
+                            new Ajax(url ,{ method: 'get' ,onSuccess: function(html) {
                                 render(html);
+                            }, onError: function(text) {
+                                alert(text);
                             }}).request(paramString);
                         }
                     } else {

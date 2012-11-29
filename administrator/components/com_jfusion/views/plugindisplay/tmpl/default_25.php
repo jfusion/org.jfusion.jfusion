@@ -23,15 +23,13 @@ function changesetting(fieldname, fieldvalue, jname){
     //change the image
     var url = '<?php echo JURI::root() . 'administrator/index.php'; ?>';
     var syncdata = 'jname=' + jname + '&field_name=' + fieldname + '&field_value=' + fieldvalue + '&task=changesettings&option=com_jfusion';
-    new Request.HTML({ url: url, method: 'get',
+    new Request.JSON({ url: url, method: 'get',
 
         onRequest: function() {
             showSpinner(jname,fieldname);
         },
-        onComplete: function(tree,elements,html,javascript) {
-            var response = JSON.decode(html);
-
-            $('errormessages').innerHTML = response.errormessage;
+        onSuccess: function(JSONobject) {
+            $('errormessages').innerHTML = JSONobject.errormessage;
 
             //also update the check_encryption and dual_login fields if needed
             if (fieldname == 'master' || fieldname == 'slave') {
@@ -56,6 +54,8 @@ function changesetting(fieldname, fieldvalue, jname){
             }
             //update the image and link
             updateJavaScript(jname,fieldname,fieldvalue);
+        }, onError: function(text) {
+            alert(text);
         }
 
     }).send(syncdata);
@@ -86,12 +86,14 @@ function copyplugin(jname) {
 
         // this code will send a data object via a GET request and alert the retrieved data.
         new Request.JSON({url: url ,
-            onSuccess: function(results){
-                if(results.status === true) {
+            onSuccess: function(JSONobject){
+                if(JSONobject.status === true) {
                     //add new row
-                    addRow(results.new_jname, results.rowhtml);
+                    addRow(JSONobject.new_jname, JSONobject.rowhtml);
                 }
-                alert(results.message);
+                alert(JSONobject.message);
+            }, onError: function(text) {
+                alert(text);
             }
         }).get({'option': 'com_jfusion', 'task': 'plugincopy', 'jname': jname, 'new_jname': newjname});
     }
@@ -109,13 +111,14 @@ function initSortables() {
     var url = '<?php echo JURI::root() . 'administrator/index.php'; ?>';
 
     /* allow for updates of row order */
-    var ajaxsync = new Request.HTML({ url: url,
+    var ajaxsync = new Request.JSON({ url: url,
         method: 'get',
-        onComplete: function(JSONobject) {
-            var response = JSON.decode(JSONobject);
-            if (response.status === false) {
-                alert(response.message);
+        onSuccess: function(JSONobject) {
+            if (JSONobject.status === false) {
+                alert(JSONobject.message);
             }
+        }, onError: function(text) {
+            alert(text);
         }
     });
 
@@ -164,13 +167,14 @@ function deleteplugin(jname) {
 
         // this code will send a data object via a GET request and alert the retrieved data.
         new Request.JSON({url: url ,
-            onSuccess: function(results) {
-
-                if(results.status ===  true) {
-                    var el = $(results.jname);
+            onSuccess: function(JSONobject) {
+                if(JSONobject.status ===  true) {
+                    var el = $(JSONobject.jname);
                     el.parentNode.removeChild(el);
                 }
-                alert(results.message);
+                alert(JSONobject.message);
+            }, onError: function(text) {
+                alert(text);
             }}).get({'option': 'com_jfusion',
                 'task': 'uninstallplugin',
                 'jname': jname,
@@ -180,7 +184,7 @@ function deleteplugin(jname) {
 
 window.addEvent('domready',function() {
     $('installSVN').set('send',
-        { onComplete: function(JSONobject) {
+        { onSuccess: function(JSONobject) {
             var response = JSON.decode(JSONobject);
             if (response.overwrite != 1 && response.status === true) {
                 addRow(response.jname, response.rowhtml);
@@ -201,7 +205,7 @@ window.addEvent('domready',function() {
     });
 
     $('installURL').set('send',
-        { onComplete: function(JSONobject) {
+        { onSuccess: function(JSONobject) {
             var response = JSON.decode(JSONobject);
             if (response.overwrite != 1 && response.status === true) {
                 addRow(response.jname, response.rowhtml);
@@ -220,7 +224,7 @@ window.addEvent('domready',function() {
     });
 
     $('installDIR').set('send',
-        { onComplete: function(JSONobject) {
+        { onSuccess: function(JSONobject) {
             var response = JSON.decode(JSONobject);
             if (response.overwrite != 1 && response.status === true) {
                 addRow(response.jname, response.rowhtml);
