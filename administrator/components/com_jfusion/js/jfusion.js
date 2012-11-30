@@ -108,4 +108,17 @@ if (typeof Joomla != 'undefined') {
 		return setSort(col);
 	};
 }
+
+function evaluateJSON (string) {
+    var response;
+    try {
+        response = Json.evaluate(string,true);
+    } catch (error){
+
+    }
+    if ((typeof response ) != 'object') {
+        response = null;
+    }
+    return response;
+}
 //-->

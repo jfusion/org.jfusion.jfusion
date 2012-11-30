@@ -29,34 +29,37 @@ function changesetting(fieldname, fieldvalue, jname){
         	showSpinner(jname,fieldname);
         },
         onSuccess: function(JSONobject) {
-        	var response = Json.evaluate(JSONobject);
+            var response = evaluateJSON(JSONobject);
+            if (response) {
+                $('errormessages').innerHTML = response.errormessage;
 
-            $('errormessages').innerHTML = response.errormessage;
+                //also update the check_encryption and dual_login fields if needed
+                if (fieldname == 'master' || fieldname == 'slave') {
+                    if (fieldvalue == 1 && fieldname == 'master') {
+                        //also untick other masters
 
-        	//also update the check_encryption and dual_login fields if needed
-        	if (fieldname == 'master' || fieldname == 'slave') {
-           		if (fieldvalue == 1 && fieldname == 'master') {
-                    //also untick other masters
-
-           			var mtable=$('sortables');
-           			var tablelength = mtable.rows.length - 1;
-            		for (var i=1; i<=tablelength; i++) {
-            			updateJavaScript(mtable.rows[i].id,"master",0);
-            		}
-            	}
-        		updateJavaScript(jname,"check_encryption",fieldvalue);
-    			updateJavaScript(jname,"dual_login",fieldvalue);
-                //also ensure the opposite value is set for master or slave
-                if (fieldvalue == 1) {
-                	if (fieldname == 'master') {
-                        updateJavaScript(jname,"slave",0);
-                    } else {
-                    	updateJavaScript(jname,"master",0);
+                        var mtable=$('sortables');
+                        var tablelength = mtable.rows.length - 1;
+                        for (var i=1; i<=tablelength; i++) {
+                            updateJavaScript(mtable.rows[i].id,"master",0);
+                        }
+                    }
+                    updateJavaScript(jname,"check_encryption",fieldvalue);
+                    updateJavaScript(jname,"dual_login",fieldvalue);
+                    //also ensure the opposite value is set for master or slave
+                    if (fieldvalue == 1) {
+                        if (fieldname == 'master') {
+                            updateJavaScript(jname,"slave",0);
+                        } else {
+                            updateJavaScript(jname,"master",0);
+                        }
                     }
                 }
-        	}
-        	//update the image and link
-        	updateJavaScript(jname,fieldname,fieldvalue);
+                //update the image and link
+                updateJavaScript(jname,fieldname,fieldvalue);
+            } else {
+                alert(JSONobject);
+            }
         }
     });
     req.request(syncdata);
@@ -85,17 +88,20 @@ function copyplugin(jname) {
     if(newjname) {
         var url = '<?php echo JURI::root() . 'administrator/index.php'; ?>';
 
-     // this code will send a data object via a GET request and alert the retrieved data.
+        // this code will send a data object via a GET request and alert the retrieved data.
         var jsonRequest = new Ajax(url, { method: 'get',
             onSuccess: function(JSONobject) {
-		        var results = Json.evaluate(JSONobject);
-		
-		        if(results.status === true) {
-		            //add new row
-		            addRow(results.newjname, results.rowhtml);
-		        }
-		        alert(results.message);
-          	} 
+                var response = evaluateJSON(JSONobject);
+                if (response) {
+                    if(response.status === true) {
+                        //add new row
+                        addRow(response.newjname, response.rowhtml);
+                    }
+                    alert(response.message);
+                } else {
+                    alert(JSONobject);
+                }
+            }
         });
         jsonRequest.request('option=com_jfusion&task=plugincopy&jname=' + jname + '&new_jname=' + newjname);
     }
@@ -118,9 +124,13 @@ function initSortables() {
     var ajaxsync = new Ajax(url, {
 	    method: 'get',
         onSuccess: function(JSONobject) {
-            var response = Json.evaluate(JSONobject);
-            if (response.status === false) {
-                alert(response.message);
+            var response = evaluateJSON(JSONobject);
+            if (response) {
+                if (response.status === false) {
+                    alert(response.message);
+                }
+            } else {
+                alert(JSONobject);
             }
         }
 	});
@@ -173,13 +183,16 @@ function deleteplugin(jname) {
         // this code will send a data object via a GET request and alert the retrieved data.
         var jsonRequest = new Ajax(url, { method: 'get',
             onSuccess: function(JSONobject) {
-        		var results = Json.evaluate(JSONobject);
-
-            	if(results.status === true) {
-	            	var el = $(results.jname);
-	               	el.parentNode.removeChild(el);
-            	}
-            	alert(results.message);
+                var response = evaluateJSON(JSONobject);
+                if (response) {
+                    if(response.status === true) {
+                        var el = $(response.jname);
+                        el.parentNode.removeChild(el);
+                    }
+                    alert(response.message);
+                } else {
+                    alert(JSONobject);
+                }
 			}
 		});
     	jsonRequest.request('option=com_jfusion&task=uninstallplugin&tmpl=component&jname='+jname);
@@ -194,14 +207,17 @@ window.addEvent('domready',function() {
 	    spinner.innerHTML = '<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">';
 		this.send({ method: 'post',
             onSuccess: function(JSONobject) {
-			var response = Json.evaluate(JSONobject);
-			    
-		    if (response.overwrite != 1 && response.status === true) {
-		    	addRow(response.jname, response.rowhtml);
-		    }
-		    var spinner = $('spinnerSVN');
-		    spinner.innerHTML = '';
-		    alert(response.message);
+                var response = evaluateJSON(JSONobject);
+                if (response) {
+                    if (response.overwrite != 1 && response.status === true) {
+                        addRow(response.jname, response.rowhtml);
+                    }
+                    var spinner = $('spinnerSVN');
+                    spinner.innerHTML = '';
+                    alert(response.message);
+                } else {
+                    alert(JSONobject);
+                }
             }, data: this.toQueryString()+'&ajax=true'
 		});
 	});
@@ -212,14 +228,17 @@ window.addEvent('domready',function() {
 	    spinner.innerHTML = '<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">';			
             this.send({method : 'post',
                 onSuccess: function(JSONobject) {
-	            var response = Json.evaluate(JSONobject);                              
-	
-				if (response.overwrite != 1 && response.status === true) {
-				   	addRow(response.jname, response.rowhtml);
-				}
-				var spinner = $('spinnerURL');
-				spinner.innerHTML = '';
-				alert(response.message);
+                    var response = evaluateJSON(JSONobject);
+                    if (response) {
+                        if (response.overwrite != 1 && response.status === true) {
+                            addRow(response.jname, response.rowhtml);
+                        }
+                        var spinner = $('spinnerURL');
+                        spinner.innerHTML = '';
+                        alert(response.message);
+                    } else {
+                        alert(JSONobject);
+                    }
 			}, data: this.toQueryString()+'&ajax=true'
 		});
 	});
@@ -230,14 +249,17 @@ window.addEvent('domready',function() {
 	    spinner.innerHTML = '<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">';
             this.send({method : 'post',
                 onSuccess: function(JSONobject) {
-	            var response = Json.evaluate(JSONobject);
-	
-			    if (response.overwrite != 1 && response.status === true) {
-			    	addRow(response.jname, response.rowhtml);
-			    }
-			    var spinner = $('spinnerDIR');
-			    spinner.innerHTML = '';
-			    alert(response.message);
+                    var response = evaluateJSON(JSONobject);
+                    if (response) {
+                        if (response.overwrite != 1 && response.status === true) {
+                            addRow(response.jname, response.rowhtml);
+                        }
+                        var spinner = $('spinnerDIR');
+                        spinner.innerHTML = '';
+                        alert(response.message);
+                    } else {
+                        alert(JSONobject);
+                    }
             }, data: this.toQueryString()+'&ajax=true'
 		});
 	});

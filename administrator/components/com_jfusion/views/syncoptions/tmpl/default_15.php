@@ -164,10 +164,10 @@ function update() {
     $("counter").innerHTML = '<b>'+text+'</b>';
 }
 
-function render(html) {
-    html = html.trim();
-    if (validateJSON(html)) {
-        response = Json.evaluate(html,true);
+function render(JSONobject) {
+    var response = evaluateJSON(JSONobject);
+    if (response) {
+        response = Json.evaluate(JSONobject,true);
         if (response.errors.length) {
             $clear(periodical);
             for(var i=0; i<response.errors.length; i++) {
@@ -180,29 +180,24 @@ function render(html) {
                 update();
             }
         }
+    } else {
+        alert(JSONobject);
     }
-}
-
-function validateJSON(html) {
-    if (Json.evaluate(html,true) != null && html.length) {
-        return true
-    }
-    return false;
 }
 
 window.addEvent('domready', function() {
         /* our ajax istance for starting the sync */
         var ajax = new Ajax(url,{
             method: 'get',
-            onSuccess: function(html) {
-                render(html);
+            onSuccess: function(JSONobject) {
+                render(JSONobject);
             }
         });
 
         var ajaxsync = new Ajax(url,{
             method: 'get',
-            onSuccess: function(html) {
-                render(html);
+            onSuccess: function(JSONobject) {
+                render(JSONobject);
             }
         });
 
@@ -278,11 +273,10 @@ window.addEvent('domready', function() {
                                     paramString = paramString + '&' + form.elements[i].name + '=' + form.elements[i].value;
                                 }
                             }
-                            new Ajax(url ,{ method: 'get' ,onSuccess: function(html) {
-                                render(html);
-                            }, onError: function(text) {
-                                alert(text);
-                            }}).request(paramString);
+                            new Ajax(url ,{ method: 'get' ,onSuccess: function(JSONobject) {
+                                    render(JSONobject);
+                                }
+                            }).request(paramString);
                         }
                     } else {
                         alert("<?php echo JText::_('SYNC_NODATA',true); ?>")
