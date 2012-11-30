@@ -149,8 +149,8 @@ window.addEvent('domready', function() {
             method: 'get',
             onSuccess: function(JSONobject) {
                 render(JSONobject);
-            }, onError: function(text) {
-                alert(text);
+            }, onError: function(JSONobject) {
+                jfusionError(JSONobject);
             }
         });
 
@@ -159,8 +159,8 @@ window.addEvent('domready', function() {
             method: 'get',
             onSuccess: function(JSONobject) {
                 render(JSONobject);
-            }, onError: function(text) {
-                alert(text);
+            }, onError: function(JSONobject) {
+                jfusionError(JSONobject);
             }
         });
 
@@ -243,12 +243,12 @@ window.addEvent('domready', function() {
                             new Request.JSON({url: url,
                                 method: 'get' ,onSuccess: function(JSONobject) {
                                     render(JSONobject);
-                                }, onError: function(text) {
-                                    alert(text);
+                                }, onError: function(JSONobject) {
+                                    jfusionError(JSONobject);
                                 }}).send(paramString);
                         }
                     } else {
-                        alert("<?php echo JText::_('SYNC_NODATA',true); ?>")
+                        jfusionError("<?php echo JText::_('SYNC_NODATA',true); ?>",true);
                     }
                 } else {
                     syncRunning = true;
@@ -341,6 +341,7 @@ if ($this->sync_active) {
 <?php
 } ?>
 <br/>
+<div id="jfusionError" style="color:red;"></div>
 <div id="counter"></div>
 <br/>
 <div class="ajax_bar">

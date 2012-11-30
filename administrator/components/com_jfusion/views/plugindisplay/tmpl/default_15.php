@@ -31,7 +31,7 @@ function changesetting(fieldname, fieldvalue, jname){
         onSuccess: function(JSONobject) {
             var response = evaluateJSON(JSONobject);
             if (response) {
-                $('errormessages').innerHTML = response.errormessage;
+                $('jfusionError').innerHTML = response.errormessage;
 
                 //also update the check_encryption and dual_login fields if needed
                 if (fieldname == 'master' || fieldname == 'slave') {
@@ -58,7 +58,7 @@ function changesetting(fieldname, fieldvalue, jname){
                 //update the image and link
                 updateJavaScript(jname,fieldname,fieldvalue);
             } else {
-                alert(JSONobject);
+                jfusionError(JSONobject);
             }
         }
     });
@@ -99,7 +99,7 @@ function copyplugin(jname) {
                     }
                     alert(response.message);
                 } else {
-                    alert(JSONobject);
+                    jfusionError(JSONobject);
                 }
             }
         });
@@ -130,7 +130,7 @@ function initSortables() {
                     alert(response.message);
                 }
             } else {
-                alert(JSONobject);
+                jfusionError(JSONobject);
             }
         }
 	});
@@ -191,7 +191,7 @@ function deleteplugin(jname) {
                     }
                     alert(response.message);
                 } else {
-                    alert(JSONobject);
+                    jfusionError(JSONobject);
                 }
 			}
 		});
@@ -203,20 +203,18 @@ window.addEvent('domready',function() {
 	$('installSVN').addEvent('submit', function(e) {
 		new Event(e).stop();
 
-		var spinner = $('spinnerSVN');
-	    spinner.innerHTML = '<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">';
+		$('spinnerSVN').innerHTML = '<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">';
 		this.send({ method: 'post',
             onSuccess: function(JSONobject) {
+                $('spinnerSVN').innerHTML = '';
                 var response = evaluateJSON(JSONobject);
                 if (response) {
                     if (response.overwrite != 1 && response.status === true) {
                         addRow(response.jname, response.rowhtml);
                     }
-                    var spinner = $('spinnerSVN');
-                    spinner.innerHTML = '';
                     alert(response.message);
                 } else {
-                    alert(JSONobject);
+                    jfusionError(JSONobject);
                 }
             }, data: this.toQueryString()+'&ajax=true'
 		});
@@ -224,20 +222,18 @@ window.addEvent('domready',function() {
 
 	$('installURL').addEvent('submit', function(e) {
 		new Event(e).stop();
-		var spinner = $('spinnerURL');
-	    spinner.innerHTML = '<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">';			
+		$('spinnerURL').innerHTML = '<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">';
             this.send({method : 'post',
                 onSuccess: function(JSONobject) {
+                    $('spinnerURL').innerHTML = '';
                     var response = evaluateJSON(JSONobject);
                     if (response) {
                         if (response.overwrite != 1 && response.status === true) {
                             addRow(response.jname, response.rowhtml);
                         }
-                        var spinner = $('spinnerURL');
-                        spinner.innerHTML = '';
                         alert(response.message);
                     } else {
-                        alert(JSONobject);
+                        jfusionError(JSONobject);
                     }
 			}, data: this.toQueryString()+'&ajax=true'
 		});
@@ -245,20 +241,18 @@ window.addEvent('domready',function() {
 
 	$('installDIR').addEvent('submit', function(e) {
 		new Event(e).stop();
-		var spinner = $('spinnerDIR');
-	    spinner.innerHTML = '<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">';
+		$('spinnerDIR').innerHTML = '<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">';
             this.send({method : 'post',
                 onSuccess: function(JSONobject) {
+                    $('spinnerDIR').innerHTML = '';
                     var response = evaluateJSON(JSONobject);
                     if (response) {
                         if (response.overwrite != 1 && response.status === true) {
                             addRow(response.jname, response.rowhtml);
                         }
-                        var spinner = $('spinnerDIR');
-                        spinner.innerHTML = '';
                         alert(response.message);
                     } else {
-                        alert(JSONobject);
+                        jfusionError(JSONobject);
                     }
             }, data: this.toQueryString()+'&ajax=true'
 		});
@@ -276,7 +270,7 @@ window.addEvent('domready',function() {
 });
 </script>
 
-<div id='errormessages'><?php echo $this->errormessage; ?></div>
+<div id="jfusionError" style="color:red;"><?php echo $this->errormessage; ?></div>
 <form method="post" action="index.php" name="adminForm">
 	<input type="hidden" name="option" value="com_jfusion" />
 	<input type="hidden" name="task" value="saveorder" />

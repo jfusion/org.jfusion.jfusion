@@ -109,7 +109,7 @@ if (typeof Joomla != 'undefined') {
 	};
 }
 
-function evaluateJSON (string) {
+function evaluateJSON(string) {
     var response;
     try {
         response = Json.evaluate(string,true);
@@ -120,5 +120,19 @@ function evaluateJSON (string) {
         response = null;
     }
     return response;
+}
+
+function jfusionError(string, force) {
+    if (string.indexOf('<!') == 0) {
+        string = 'SESSION TIMEOUT';
+    }
+    if ($("jfusionError")) {
+        $("jfusionError").innerHTML = string;
+        if (force) {
+            alert(string);
+        }
+    } else {
+        alert(string);
+    }
 }
 //-->

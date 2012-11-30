@@ -29,7 +29,7 @@ function changesetting(fieldname, fieldvalue, jname){
             showSpinner(jname,fieldname);
         },
         onSuccess: function(JSONobject) {
-            $('errormessages').innerHTML = JSONobject.errormessage;
+            $('jfusionError').innerHTML = JSONobject.errormessage;
 
             //also update the check_encryption and dual_login fields if needed
             if (fieldname == 'master' || fieldname == 'slave') {
@@ -54,8 +54,8 @@ function changesetting(fieldname, fieldvalue, jname){
             }
             //update the image and link
             updateJavaScript(jname,fieldname,fieldvalue);
-        }, onError: function(text) {
-            alert(text);
+        }, onError: function(JSONobject) {
+            jfusionError(JSONobject);
         }
 
     }).send(syncdata);
@@ -92,8 +92,8 @@ function copyplugin(jname) {
                     addRow(JSONobject.new_jname, JSONobject.rowhtml);
                 }
                 alert(JSONobject.message);
-            }, onError: function(text) {
-                alert(text);
+            }, onError: function(JSONobject) {
+                jfusionError(JSONobject);
             }
         }).get({'option': 'com_jfusion', 'task': 'plugincopy', 'jname': jname, 'new_jname': newjname});
     }
@@ -117,8 +117,8 @@ function initSortables() {
             if (JSONobject.status === false) {
                 alert(JSONobject.message);
             }
-        }, onError: function(text) {
-            alert(text);
+        }, onError: function(JSONobject) {
+            jfusionError(JSONobject);
         }
     });
 
@@ -173,8 +173,8 @@ function deleteplugin(jname) {
                     el.parentNode.removeChild(el);
                 }
                 alert(JSONobject.message);
-            }, onError: function(text) {
-                alert(text);
+            }, onError: function(JSONobject) {
+                jfusionError(JSONobject);
             }}).get({'option': 'com_jfusion',
                 'task': 'uninstallplugin',
                 'jname': jname,
@@ -185,66 +185,69 @@ function deleteplugin(jname) {
 window.addEvent('domready',function() {
     $('installSVN').set('send',
         { onSuccess: function(JSONobject) {
-            var response = JSON.decode(JSONobject);
-            if (response.overwrite != 1 && response.status === true) {
-                addRow(response.jname, response.rowhtml);
+            $('spinnerSVN').innerHTML = '';
+            if (JSON.validate(JSONobject)) {
+                var response = JSON.decode(JSONobject);
+                if (response.overwrite != 1 && response.status === true) {
+                    addRow(response.jname, response.rowhtml);
+                }
+                alert(response.message);
+            } else {
+                jfusionError(JSONobject);
             }
-
-            var spinner = $('spinnerSVN');
-            spinner.innerHTML = '';
-            alert(response.message);
         }, data: {
             ajax: true
         }
         });
     $('installSVN').addEvent('submit', function(e) {
         new Event(e).stop();
-        var spinner = $('spinnerSVN');
-        spinner.innerHTML = '<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">';
+        $('spinnerSVN').innerHTML = '<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">';
         this.send('?ajax=true');
     });
 
     $('installURL').set('send',
         { onSuccess: function(JSONobject) {
-            var response = JSON.decode(JSONobject);
-            if (response.overwrite != 1 && response.status === true) {
-                addRow(response.jname, response.rowhtml);
+            $('spinnerURL').innerHTML = '';
+            if (JSON.validate(JSONobject)) {
+                var response = JSON.decode(JSONobject);
+                if (response.overwrite != 1 && response.status === true) {
+                    addRow(response.jname, response.rowhtml);
+                }
+                alert(response.message);
+            } else {
+                jfusionError(JSONobject);
             }
-
-            var spinner = $('spinnerURL');
-            spinner.innerHTML = '';
-            alert(response.message);
         }
         });
     $('installURL').addEvent('submit', function(e) {
         new Event(e).stop();
-        var spinner = $('spinnerURL');
-        spinner.innerHTML = '<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">';
+        $('spinnerURL').innerHTML = '<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">';
         this.send('?ajax=true');
     });
 
     $('installDIR').set('send',
         { onSuccess: function(JSONobject) {
-            var response = JSON.decode(JSONobject);
-            if (response.overwrite != 1 && response.status === true) {
-                addRow(response.jname, response.rowhtml);
+            $('spinnerDIR').innerHTML = '';
+            if (JSON.validate(JSONobject)) {
+                var response = JSON.decode(JSONobject);
+                if (response.overwrite != 1 && response.status === true) {
+                    addRow(response.jname, response.rowhtml);
+                }
+                alert(response.message);
+            } else {
+                jfusionError(JSONobject);
             }
-            var spinner = $('spinnerDIR');
-            spinner.innerHTML = '';
-            alert(response.message);
         }
         });
     $('installDIR').addEvent('submit', function(e) {
         new Event(e).stop();
-        var spinner = $('spinnerDIR');
-        spinner.innerHTML = '<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">';
+        $('spinnerDIR').innerHTML = '<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">';
         this.send('?ajax=true');
     });
 
     $('installZIP').addEvent('submit', function(e) {
         new Event(e).stop();
-        var spinner = $('spinnerZIP');
-        spinner.innerHTML = '<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">';
+        $('spinnerZIP').innerHTML = '<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">';
         if (typeof FormData === "undefined") {
             this.submit();
         } else {
@@ -257,13 +260,16 @@ window.addEvent('domready',function() {
                     ajax : 'true' } ,
                 images: ['install_package'],
                 onComplete : function (JSONobject) {
-                    var response = JSON.decode(JSONobject);
-                    if (response.overwrite != 1 && response.status === true) {
-                        addRow(response.jname, response.rowhtml);
+                    $('spinnerZIP').innerHTML = '';
+                    if (JSON.validate(JSONobject)) {
+                        var response = JSON.decode(JSONobject);
+                        if (response.overwrite != 1 && response.status === true) {
+                            addRow(response.jname, response.rowhtml);
+                        }
+                        alert(response.message);
+                    } else {
+                        jfusionError(JSONobject);
                     }
-                    var spinner = $('spinnerZIP');
-                    spinner.innerHTML = '';
-                    alert(response.message);
                 }
             });
             upload.send();
@@ -273,10 +279,7 @@ window.addEvent('domready',function() {
 });
 //]]>
 </script>
-
-<div id='errormessages'>
-    <?php echo $this->errormessage; ?>
-</div>
+<div id="jfusionError" style="color:red;"><?php echo $this->errormessage; ?></div>
 <form method="post" action="index.php" name="adminForm">
     <input type="hidden" name="option" value="com_jfusion" />
     <input type="hidden" name="task" value="saveorder" />
