@@ -832,7 +832,7 @@ class plgUserJfusion extends JPlugin
             // Initialise variables.
             $app    = JFactory::getApplication();
             $config = JFactory::getConfig();
-            $mail_to_user = $params->get('mail_to_user', 1);
+            $mail_to_user = $params->get('mail_to_user', 0); // change default to 0 to prevent user email spam! while running sync
 
             if ($isnew) {
                 // TODO: Suck in the frontend registration emails here as well. Job for a rainy day.

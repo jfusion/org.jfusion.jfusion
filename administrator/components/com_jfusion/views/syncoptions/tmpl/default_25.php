@@ -102,10 +102,11 @@ function renderSync(data) {
 
 function update() {
     var text;
+    var start = $('start');
     if (!syncRunning) {
         $clear(periodical);
 
-        this.innerHTML = '<?php echo JText::_('START',true); ?>';
+        start.innerHTML = '<?php echo JText::_('RESUME',true); ?>';
 
         text = '<?php echo JText::_('PAUSED',true); ?>';
     } else if (response.completed) {
@@ -114,18 +115,19 @@ function update() {
 
         text = '<?php echo JText::_('FINISHED',true); ?>';
 
-        $('start').innerHTML = '<b><?php echo JText::_('CLICK_FOR_MORE_DETAILS',true); ?></b>';
-        $('start').href = 'index.php?option=com_jfusion&task=syncstatus&syncid='+syncid;
-        $('start').removeEvents('click');
+        start.innerHTML = '<b><?php echo JText::_('CLICK_FOR_MORE_DETAILS',true); ?></b>';
+        start.href = 'index.php?option=com_jfusion&task=syncstatus&syncid='+syncid;
+        start.removeEvents('click');
     } else {
         text = '<?php echo JText::_('UPDATE_IN'); ?> ' + counter + ' <?php echo JText::_('SECONDS',true); ?>';
 
-        this.innerHTML = '<?php echo JText::_('STOP',true); ?>';
+        start.innerHTML = '<?php echo JText::_('PAUSE',true); ?>';
     }
     $("counter").innerHTML = '<b>'+text+'</b>';
 }
 
 function render(JSONobject) {
+    response = JSONobject;
     if (JSONobject.errors.length) {
         $clear(periodical);
         for(var i=0; i<JSONobject.errors.length; i++) {
@@ -202,18 +204,21 @@ window.addEvent('domready', function() {
                     var form = $('adminForm');
                     var count = 0;
                     var i;
-                    for(i=0; i<form.elements.length; i++) {
-                        if (form.elements[i].type=="select-one") {
-                            if (form.elements[i].options[form.elements[i].selectedIndex].value == 1) {
-                                response.slave_data[count] = {"jname":form.elements[i].id,
-                                    "total":slave_data[form.elements[i].id]['total'],
-                                    "total_to_sync":slave_data[form.elements[i].id]['total'],
-                                    "created":0,
-                                    "deleted":0,
-                                    "updated":0,
-                                    "error":0,
-                                    "unchanged":0};
-                                count++;
+
+                    if (form) {
+                        for(i=0; i<form.elements.length; i++) {
+                            if (form.elements[i].type=="select-one") {
+                                if (form.elements[i].options[form.elements[i].selectedIndex].value == 1) {
+                                    response.slave_data[count] = {"jname":form.elements[i].id,
+                                        "total":slave_data[form.elements[i].id]['total'],
+                                        "total_to_sync":slave_data[form.elements[i].id]['total'],
+                                        "created":0,
+                                        "deleted":0,
+                                        "updated":0,
+                                        "error":0,
+                                        "unchanged":0};
+                                    count++;
+                                }
                             }
                         }
                     }
@@ -221,6 +226,7 @@ window.addEvent('domready', function() {
                         //give the user a last chance to opt-out
                         var answer = confirm("<?php echo JText::_('SYNC_CONFIRM_START',true); ?>");
                         if (answer) {
+                            sync_mode = 'resume';
                             //do start
                             syncRunning = true;
                             var paramString = 'option=com_jfusion&task=syncinitiate&tmpl=component&syncid=' + syncid;
