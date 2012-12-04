@@ -796,7 +796,10 @@ class JFusionAPIInternal extends JFusionAPIBase {
                 }
             }
 
-            require_once(JPATH_LIBRARIES . DS . 'loader.php');
+            include_once JPATH_LIBRARIES.'/import.php';
+
+            require_once JPATH_LIBRARIES . DS . 'loader.php';
+
             $autoloaders = spl_autoload_functions();
             if ($autoloaders && in_array('__autoload', $autoloaders)) {
                 spl_autoload_register('__autoload');

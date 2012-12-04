@@ -206,8 +206,7 @@ class JFusionAdmin_smf2 extends JFusionAdmin{
 /*
 $pattern = \'#action=(login|admin|profile|featuresettings|news|packages|detailedversion|serversettings|theme|manageboards|postsettings|managecalendar|managesearch|smileys|manageattachments|viewmembers|membergroups|permissions|regcenter|ban|maintain|reports|viewErrorLog|optimizetables|detailedversion|repairboards|boardrecount|convertutf8|helpadmin|packageget)#\';
  */
-			$redirect_code = '
-//JFUSION REDIRECT START
+			$redirect_code = '//JFUSION REDIRECT START
 //SET SOME VARS
 $joomla_url = \''. $url . '\';
 $joomla_itemid = ' . $itemid .';
@@ -227,8 +226,7 @@ if(!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') === 
 		exit;
 	}
 }
-//JFUSION REDIRECT END
-';
+//JFUSION REDIRECT END';
 	return $redirect_code;
 	}
 
@@ -256,11 +254,10 @@ if(!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') === 
                 //get the joomla path from the file
                 jimport('joomla.filesystem.file');
                 $file_data = JFile::read($mod_file);
-                preg_match_all('/\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END/ms',$file_data,$matches);
-
+                $search = '/\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END/ms';
+                preg_match_all($search,$file_data,$matches);
                 //remove any old code
                 if(!empty($matches[1][0])) {
-                    $search = '/\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END/ms';
                     $file_data = preg_replace($search,'',$file_data);
                 }
 

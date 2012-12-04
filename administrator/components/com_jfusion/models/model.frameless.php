@@ -204,7 +204,7 @@ class JFusionFrameless {
 		}
 
 		//check to see if the Joomla database is still connnected incase the plugin messed it up
-		JFusionFunction::reconnectJoomlaDb ();
+		JFusionFunction::reconnectJoomlaDb();
 
 		if ($data->buffer === 0) {
 			JError::raiseWarning ( 500, JText::_ ( 'NO_FRAMELESS' ) );

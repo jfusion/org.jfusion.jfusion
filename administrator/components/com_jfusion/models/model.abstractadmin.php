@@ -136,18 +136,27 @@ class JFusionAdmin
         } else {
             $db = JFusionFactory::getDatabase($jname);
             $jdb = JFactory::getDBO();
-            if (JError::isError($db) || !$db || !method_exists($db, 'setQuery') || !method_exists($jdb, 'setQuery')) {
+            if (JError::isError($db) || !$db || strpos($db->name, 'mysql') !== FALSE) {
                 $status['config'] = 0;
-                $status['message'] = JText::_('NO_DATABASE');
+                $status['message'] = $jname.' '.JText::_('NO_DATABASE');
+            } elseif (JError::isError($jdb) || !$jdb || strpos($jdb->name, 'mysql') !== FALSE) {
+                $status['config'] = 0;
+                $status['message'] = $jname.' -> joomla_int '.JText::_('NO_DATABASE');
             } elseif (!$db->connected()) {
                 $status['config'] = 0;
-                $status['message'] = JText::_('NO_DATABASE');
+                $status['message'] = $jname.' '.JText::_('NO_DATABASE');
+            } elseif (!$jdb->connected()) {
+                $status['config'] = 0;
+                $status['message'] = $jname.' -> joomla_int '. JText::_('NO_DATABASE');
             } else {
                 //added check for missing files of copied plugins after upgrade
-                $admin_file = JFUSION_PLUGIN_PATH . DS . $jname . DS . 'admin.php';
-                if (!file_exists($admin_file)) {
+                $path = JFUSION_PLUGIN_PATH . DS . $jname . DS;
+                if (!file_exists($path.'admin.php')) {
                     $status['config'] = 0;
-                    $status['message'] = JText::_('NO_FILES');
+                    $status['message'] = JText::_('NO_FILES').' admin.php';
+                } else if (!file_exists($path.'user.php')) {
+                    $status['config'] = 0;
+                    $status['message'] = JText::_('NO_FILES').' user.php';
                 } else {
                     $cookie_domain = $params->get('cookie_domain');
                     $jfc = JFusionFactory::getCookies();

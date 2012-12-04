@@ -213,8 +213,7 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
         $params = JFusionFactory::getParams($this->getJname());
         $cookie_name = $params->get('cookie_prefix') . '_u';
         //create the new redirection code
-        $redirect_code = '
-//JFUSION REDIRECT START
+        $redirect_code = '//JFUSION REDIRECT START
 //SET SOME VARS
 if (!empty($_COOKIE[\'' . $cookie_name . '\']))
 {
@@ -259,8 +258,7 @@ if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\'
     $jfusion_url = $joomla_url . \'index.php?option=com_jfusion&Itemid=\' . $joomla_itemid . \'&jfile=\'.$pfile. \'&\' . $_SERVER[\'QUERY_STRING\'];
     header(\'Location: \' . $jfusion_url);
 }
-//JFUSION REDIRECT END
-';
+//JFUSION REDIRECT END';
         return $redirect_code;
     }
 
@@ -289,10 +287,10 @@ if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\'
                 //get the joomla path from the file
                 jimport('joomla.filesystem.file');
                 $file_data = JFile::read($mod_file);
-                preg_match_all('/\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END/ms', $file_data, $matches);
+                $search = '/\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END/ms';
+                preg_match_all($search, $file_data, $matches);
                 //remove any old code
                 if (!empty($matches[1][0])) {
-                    $search = '/\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END/ms';
                     $file_data = preg_replace($search, '', $file_data);
                 }
                 $redirect_code = $this->generateRedirectCode($joomla_url, $joomla_itemid);

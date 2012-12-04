@@ -434,8 +434,7 @@ JS;
 
         //create the new redirection code
 
-        $redirect_code = '
-//JFUSION REDIRECT START
+        $redirect_code = '//JFUSION REDIRECT START
 //SET SOME VARS
 $joomla_url = \''. $url . '\';
 $universal_url \''. $universal_url . '\';
@@ -452,8 +451,7 @@ if(!isset($_COOKIE[\'jfusionframeless\']))';
 	header(\'Location: \' . $jfusion_url);
 	exit;
 }
-//JFUSION REDIRECT END
-';
+//JFUSION REDIRECT END';
         return $redirect_code;
     }
 
