@@ -825,6 +825,8 @@ class JFusionCurl
 		if ($curlinit) {
 			$ch = curl_init();
 		}
+        $ip = $_SERVER['REMOTE_ADDR'];
+        curl_setopt( $ch, CURLOPT_HTTPHEADER, array('REMOTE_ADDR: '.$ip, 'X_FORWARDED_FOR: '.$ip));
 		curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
 		curl_setopt($ch, CURLOPT_URL, $curl_options['post_url']);
 		curl_setopt($ch, CURLOPT_REFERER, "");
@@ -1228,6 +1230,8 @@ class JFusionCurl
 		// finally submit the login/logout form:
 		if ($curl_options['integrationtype'] == 1) {
 			$ch = curl_init();
+            $ip = $_SERVER['REMOTE_ADDR'];
+            curl_setopt( $ch, CURLOPT_HTTPHEADER, array('REMOTE_ADDR: '.$ip, 'X_FORWARDED_FOR: '.$ip));
 			curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
 			curl_setopt($ch, CURLOPT_REFERER, "");
 			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
@@ -1332,6 +1336,8 @@ class JFusionCurl
 			}
 		}
 		$ch = curl_init();
+        $ip = $_SERVER['REMOTE_ADDR'];
+        curl_setopt( $ch, CURLOPT_HTTPHEADER, array('REMOTE_ADDR: '.$ip, 'X_FORWARDED_FOR: '.$ip));
 		curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
 		curl_setopt($ch, CURLOPT_REFERER, "");
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
@@ -1443,6 +1449,8 @@ class JFusionCurl
 		}
 
 		$ch = curl_init();
+        $ip = $_SERVER['REMOTE_ADDR'];
+        curl_setopt( $ch, CURLOPT_HTTPHEADER, array('REMOTE_ADDR: '.$ip, 'X_FORWARDED_FOR: '.$ip));
 		curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
 		curl_setopt($ch, CURLOPT_REFERER, "");
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
@@ -1509,7 +1517,7 @@ class JFusionCurl
 			$status['cURL']['data'][]= $remotedata;
 			$status['debug'][]='CURL_INFO'.': '.print_r(curl_getinfo($ch), true);
 		}
-		$status['debug'][]= JText::_('CURL_LOGOUT_URL').': '.  $curl_options['post_url'];
+		$status['debug'][]= JFusionCurl::_('CURL_LOGOUT_URL').': '.  $curl_options['post_url'];
 		if (curl_error($ch)) {
 			$status['error'][] = JFusionCurl::_('CURL_ERROR_MSG').': '.curl_error($ch);
 			curl_close($ch);

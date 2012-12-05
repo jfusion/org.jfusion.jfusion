@@ -136,10 +136,10 @@ class JFusionAdmin
         } else {
             $db = JFusionFactory::getDatabase($jname);
             $jdb = JFactory::getDBO();
-            if (JError::isError($db) || !$db || strpos($db->name, 'mysql') !== FALSE) {
+            if (JError::isError($db) || !$db || strpos($db->name, 'mysql') === FALSE) {
                 $status['config'] = 0;
                 $status['message'] = $jname.' '.JText::_('NO_DATABASE');
-            } elseif (JError::isError($jdb) || !$jdb || strpos($jdb->name, 'mysql') !== FALSE) {
+            } elseif (JError::isError($jdb) || !$jdb || strpos($jdb->name, 'mysql') === FALSE) {
                 $status['config'] = 0;
                 $status['message'] = $jname.' -> joomla_int '.JText::_('NO_DATABASE');
             } elseif (!$db->connected()) {
