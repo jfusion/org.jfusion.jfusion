@@ -276,7 +276,7 @@ if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\'
             JError::raiseWarning(0, JText::_('MISSING') . ' Joomla URL');
         } else if (empty($joomla_itemid) || !is_numeric($joomla_itemid)) {
             JError::raiseWarning(0, JText::_('MISSING') . ' ItemID');
-        } else if ($this->isValidItemID($joomla_itemid)) {
+        } else if (!$this->isValidItemID($joomla_itemid)) {
             JError::raiseWarning(0, JText::_('MISSING') . ' ItemID '. JText::_('MUST BE'). ' ' . $this->getJname());
         } else {
             $error = 0;

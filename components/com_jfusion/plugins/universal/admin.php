@@ -476,7 +476,7 @@ if(!isset($_COOKIE[\'jfusionframeless\']))';
                 JError::raiseWarning(0, JText::_('MISSING') . ' Joomla URL');
             } else if (empty($joomla_itemid) || !is_numeric($joomla_itemid)) {
                 JError::raiseWarning(0, JText::_('MISSING') . ' ItemID');
-            } else if ($this->isValidItemID($joomla_itemid)) {
+            } else if (!$this->isValidItemID($joomla_itemid)) {
                 JError::raiseWarning(0, JText::_('MISSING') . ' ItemID '. JText::_('MUST BE'). ' ' . $this->getJname());
             } else {
                 header('Content-disposition: attachment; filename=jfusion_'.$this->getJname().'_redirectcode.txt');

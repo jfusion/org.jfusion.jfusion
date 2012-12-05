@@ -427,7 +427,7 @@ HTML;
                 }
                 //enable or renable the plugin
                 if ($action != 'disable') {
-                    if (($hook == 'redirect' || $hook == 'frameless') && $this->isValidItemID($itemid)) {
+                    if (($hook == 'redirect' || $hook == 'frameless') && !$this->isValidItemID($itemid)) {
                         JError::raiseWarning(500, JText::_('VB_REDIRECT_HOOK_ITEMID_EMPTY'));
                     } else {
                         //install the hook
