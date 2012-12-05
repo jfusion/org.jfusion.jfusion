@@ -216,6 +216,7 @@ class JFusionCurlHtmlFormParser
 				if (preg_match_all("/<select.*>.+<\/select>/isU", $form, $selects)) {
 					foreach ($selects[0] as $select) {
 						if (preg_match_all("/<option.*>.+<\/option>/isU", $select, $all_options)) {
+                            $option_value = '';
 							foreach ($all_options[0] as $option) {
 								if (preg_match("/selected/i", $option)) {
 									if (preg_match("/value=[\"'](.*)[\"']\s/iU", $option, $option_value)) {
@@ -287,6 +288,7 @@ class JFusionCurlHtmlFormParser
 			unset($string);
 			return trim($val_match, '"');
 		}
+        return false;
 	}
 
 	/**
@@ -304,6 +306,7 @@ class JFusionCurlHtmlFormParser
 			unset($string);
 			return $val_match;
 		}
+        return false;
 	}
 
 	/**
@@ -322,6 +325,7 @@ class JFusionCurlHtmlFormParser
 			unset($string);
 			return $val_match;
 		}
+        return false;
 	}
 
 	/**
@@ -339,6 +343,7 @@ class JFusionCurlHtmlFormParser
 			unset($string);
 			return $val_match;
 		}
+        return false;
 	}
 }
 
@@ -372,7 +377,7 @@ class JFusionCurl
 	 *
 	 * @return string The translation of the string
 	 **/
-	public function _($string, $jsSafe = false)
+    public static function _($string, $jsSafe = false)
 	{
 		return JText::_($string, $jsSafe);
 	}
@@ -395,7 +400,6 @@ class JFusionCurl
 				return JFusionCurl::implodeCookies($_COOKIE, ';');
 				break;
 		}
-		return false;
 	}
 
 	/**
@@ -440,7 +444,7 @@ class JFusionCurl
 	/**
 	 * curl redir exec
 	 *
-	 * @param string $ch ch
+	 * @param resource $ch ch
 	 *
 	 * @return string something
 	 */
@@ -490,7 +494,7 @@ class JFusionCurl
 	 * Basic  code was found on Svetlozar Petrovs website http://svetlozar.net/page/free-code.html.
 	 * The code is free to use and similar code can be found on other places on the net.
 	 *
-	 * @param string $ch     ch
+	 * @param resource $ch     ch
 	 * @param string $string string
 	 *
 	 * @return string something
@@ -518,10 +522,10 @@ class JFusionCurl
 			$cookiearr[$cookiename] = trim(implode('=', $cookie));
 		}
 
-		$cookie = "";
-		if (!empty($cookiearr) && (trim($string) == "")) {
+		$cookie = '';
+		if (!empty($cookiearr) && (trim($string) == '')) {
 			foreach ($cookiearr as $key=>$value) {
-				$cookie .= "$key=$value; ";
+				$cookie .= $key.'='.$value.'; ';
 			}
 			curl_setopt($ch, CURLOPT_COOKIE, $cookie);
 		}
@@ -576,10 +580,10 @@ class JFusionCurl
 					$cinfo[1] = strtotime($cinfo[1]);
 				}
 				if (strcasecmp($cinfo[0], 'secure') == 0) {
-					$cinfo[1] = "true";
+					$cinfo[1] = 'true';
 				}
 				if (strcasecmp($cinfo[0], 'httponly') == 0) {
-					$cinfo[1] = "true";
+					$cinfo[1] = 'true';
 				}
 				if (in_array(strtolower($cinfo[0]), array('domain', 'expires', 'path', 'secure', 'comment', 'httponly'))) {
 					$cdata[trim($cinfo[0])] = $cinfo[1];
@@ -601,13 +605,13 @@ class JFusionCurl
 	 * @param int    $expires         cookie expiry time
 	 * @param string $cookiepath      cookie path
 	 * @param string $cookiedomain    cookie domain
-	 * @param string $secure          secure
-	 * @param string $httponly        is the cookie http only
+	 * @param int $secure          secure
+	 * @param int $httponly        is the cookie http only
 	 * @param string $crossdomain_url cross domain url
 	 *
 	 * @return string nothing
 	 */
-	function addCookie($name, $value='', $expires=0, $cookiepath='', $cookiedomain='', $secure=0, $httponly=0, $crossdomain_url='')
+    public static function addCookie($name, $value='', $expires=0, $cookiepath='', $cookiedomain='', $secure=0, $httponly=0, $crossdomain_url='')
 	{
 
 		// Versions of PHP prior to 5.2 do not support HttpOnly cookies
@@ -631,20 +635,20 @@ class JFusionCurl
 	 * @param string $mycookies_to_set cookie value
 	 * @param string $cookiedomain     cookie domain
 	 * @param string $cookiepath       cookie path
-	 * @param string $expires          expires
-	 * @param string $secure           secure
-	 * @param string $httponly         is the cookie http only
+	 * @param int $expires          expires
+	 * @param int $secure           secure
+	 * @param int $httponly         is the cookie http only
 	 * @param string $crossdomain_url  cross domain url
 	 *
 	 * @return string nothing
 	 */
-	function setmycookies($status, $mycookies_to_set, $cookiedomain, $cookiepath, $expires=0, $secure=0, $httponly=1, $crossdomain_url='')
+    public static function setmycookies($status, $mycookies_to_set, $cookiedomain, $cookiepath, $expires=0, $secure=0, $httponly=1, $crossdomain_url='')
 	{
 		$cookies=array();
 		$cookies=JFusionCurl::parsecookies($mycookies_to_set);
 		foreach ($cookies as $cookie) {
-			$name="";
-			$value="";
+			$name='';
+			$value='';
 			if ($expires == 0) {
 				$expires_time=0;
 			} else {
@@ -692,13 +696,13 @@ class JFusionCurl
 	 * @param string $cookiedomain     cookie domain
 	 * @param string $cookiepath       cookie path
 	 * @param string $leavealone       leavealone
-	 * @param string $secure           secure
-	 * @param string $httponly         is the cookie http only
+	 * @param int $secure           secure
+	 * @param int $httponly         is the cookie http only
 	 * @param string $crossdomain_url  cross domain url
 	 *
 	 * @return string nothing
 	 */
-	function deletemycookies($status, $mycookies_to_set, $cookiedomain, $cookiepath, $leavealone, $secure=0, $httponly=1, $crossdomain_url='')
+    public static function deletemycookies($status, $mycookies_to_set, $cookiedomain, $cookiepath, $leavealone, $secure=0, $httponly=1, $crossdomain_url='')
 	{
 		$cookies=array();
 		$cookies=JFusionCurl::parsecookies($mycookies_to_set);
@@ -715,8 +719,8 @@ class JFusionCurl
 		// 0=> will keep all cookies that are not sessioncookies
 		// 0=0 will keep all cookies
 
+        $leavealonearr = array();
 		if (trim($leavealone)) {
-			$leavealonearr = array();
 			$lines = array();
 			$line=array();
 			$lines = explode(',', $leavealone);
@@ -746,14 +750,16 @@ class JFusionCurl
 					}
 				}
 			}
-			$name="";
-			$value="";
+			$name='';
+			$value='';
 			if (isset($cookie['value']['key'])) {
 				$name= $cookie['value']['key'];
 			}
 			if (isset($cookie['expires'])) {
 				$expires_time=$cookie['expires'];
-			}
+			} else {
+                $expires_time = 0;
+            }
 			if (!$cookiepath) {
 				if (isset($cookie['path'])) {
 					$cookiepath=$cookie['path'];
@@ -767,6 +773,7 @@ class JFusionCurl
 			if ($name=='MOODLEID_') {
 				$status['cURL']['moodle'] = urldecode($cookie['value']['value']);
 			}
+
 			if (!$leaveit) {
 				$expires_time=time()-30*60;
 				$value = '';
@@ -794,12 +801,15 @@ class JFusionCurl
 	 * function ReadPage
 	 * This function will read a page of an integration
 	 * Caller should make sure that the Curl extension is loaded
+     *
 	 * @param array $curl_options curl options
+     * @param array &$status
+     * @param bool $curlinit
 	 *
 	 * @return string page read
 	 */
 
-	function ReadPage($curl_options, &$status, $curlinit=true)
+    public static function ReadPage($curl_options, &$status, $curlinit=true)
 	{
 		global $ch;
 		global $cookiearr;
@@ -815,9 +825,11 @@ class JFusionCurl
 
 
 		// read the page
-		if ($curlinit) {
+		if ($curlinit) { 
 			$ch = curl_init();
 		}
+		$ip = $_SERVER["REMOTE_ADDR"];
+		curl_setopt( $ch, CURLOPT_HTTPHEADER, array("REMOTE_ADDR: $ip", "X_FORWARDED_FOR: $ip"));
 		curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
 		curl_setopt($ch, CURLOPT_URL, $curl_options['post_url']);
 		curl_setopt($ch, CURLOPT_REFERER, "");
@@ -872,7 +884,7 @@ class JFusionCurl
 			$status['debug'][]='CURL_INFO'.': '.print_r(curl_getinfo($ch), true);
 		}
 		if (curl_error($ch)) {
-			$status['error'][] = JFusionCurl::_('CURL_ERROR_MSG').": ".curl_error($ch);
+			$status['error'][] = JFusionCurl::_('CURL_ERROR_MSG').': '.curl_error($ch);
 			curl_close($ch);
 			return null;
 		}
@@ -899,7 +911,7 @@ class JFusionCurl
 	 *
 	 * @return string something
 	 */
-	function RemoteLogin($curl_options)
+    public static function RemoteLogin($curl_options)
 	{
 		global $ch;
 		global $cookiearr;
@@ -914,15 +926,13 @@ class JFusionCurl
 			$GLOBALS[$var]=&$_SESSION[$var];
 		}
 		// end extra lines
-		$status = array();
+        $status = array('error' => array(),'debug' => array());
 		$tmpurl = array();
 		$overridearr = array();
 		$newhidden = array();
 		$lines = array();
 		$line=array();
 		$cookies_to_set=array();
-		$status['debug']=array();
-		$status['error']=array();
 		$status['cURL']=array();
 		$status['cURL']['moodle']='';
 		$status['cURL']['data']= array();
@@ -993,7 +1003,7 @@ class JFusionCurl
 			$status['error'][] = JFusionCurl::_('CURL_NOTINSTALLED');
 			return $status;
 		}
-		$status['debug'][] = JFusionCurl::_('CURL_POST_URL_1')." ".$curl_options['post_url'];
+		$status['debug'][] = JFusionCurl::_('CURL_POST_URL_1').' '.$curl_options['post_url'];
 		$remotedata = JFusionCurl::ReadPage($curl_options, $status,true);
 		if (!empty($status['error'])) {
 			return $status;
@@ -1041,7 +1051,7 @@ class JFusionCurl
 					$i +=1;
 				} while ($i<$frmcount);
 			}
-			$status['debug'][] = JFusionCurl::_('CURL_NO_LOGINFORM')." ".$helpthem;
+			$status['debug'][] = JFusionCurl::_('CURL_NO_LOGINFORM').' '.$helpthem;
 			return $status;
 		}
 		$status['debug'][] = JFusionCurl::_('CURL_VALID_FORM');
@@ -1093,7 +1103,7 @@ class JFusionCurl
 		switch($rel+$hashttp) {
 			case 0:
 				//add a / in front of form_action
-				if (substr($form_action, 0, 1) != "/") {
+				if (substr($form_action, 0, 1) != '/') {
 					$form_action = '/'.$form_action;
 				}
 				// we need to correct various situations like
@@ -1111,7 +1121,7 @@ class JFusionCurl
 				} //prevent double directory
 
 				// replace windows DS bt unix DS
-				$pathinfo['dirname'] = str_replace("\\", "/", $pathinfo['dirname']);
+				$pathinfo['dirname'] = str_replace("\\", '/', $pathinfo['dirname']);
 				// get rid of the trailing /  in dir
 				rtrim($pathinfo['dirname'], '/');
 				$port = !empty($tmpurl[5]) ? ":".$tmpurl[5] : '';
@@ -1120,7 +1130,7 @@ class JFusionCurl
 				break;
 			case 1:
 				//add a / in front of form_action
-				if (substr($form_action, 0, 1) != "/") {
+				if (substr($form_action, 0, 1) != '/') {
 					$form_action = '/'.$form_action;
 				}
 				$curl_options['post_url']=rtrim($curl_options['post_url'], '/');
@@ -1134,8 +1144,9 @@ class JFusionCurl
 				break;
 		}
 
+        $input_username_name='';
+        $input_password_name = '';
 		if (empty($curl_options['logout'])){
-			$input_username_name="";
 			for ($i = 0; $i <= $elements_count-1; $i++) {
 				if ($curl_options['input_username_id']) {
 					if (strtolower($elements_keys[$i]) == strtolower($curl_options['input_username_id'])) {
@@ -1143,7 +1154,7 @@ class JFusionCurl
 						break;
 					}
 				}
-				if ($input_username_name == "") {
+				if ($input_username_name == '') {
 					if (strpos(strtolower($elements_keys[$i]), 'user')!==false) {
 						$input_username_name=$elements_keys[$i];
 					}
@@ -1154,12 +1165,11 @@ class JFusionCurl
 			}
 
 
-			if ($input_username_name == "") {
+			if ($input_username_name == '') {
 				$status['error'][] = JFusionCurl::_('CURL_NO_NAMEFIELD');
 				return $status;
 			}
 
-			$input_password_name = "";
 			for ($i = 0; $i <= $elements_count-1; $i++) {
 				if ($curl_options['input_password_id']) {
 					if (strtolower($elements_keys[$i]) == strtolower($curl_options['input_password_id'])) {
@@ -1180,7 +1190,7 @@ class JFusionCurl
 		}
 		// we now set the submit parameters. These are:
 		// all form_elements name=value combinations with value != '' and type hidden
-		$strParameters="";
+		$strParameters='';
 		if ($curl_options['hidden']) {
 			for ($i = 0; $i <= $elements_count-1; $i++) {
 				if (($elements_values[$i] ['value'] != '')&& ($elements_values[$i] ['type'] == 'hidden')) {
@@ -1213,12 +1223,12 @@ class JFusionCurl
 		}
 
 		if (empty($curl_options['logout'])){
-			$post_params = $input_username_name."=".urlencode($curl_options['username'])."&".$input_password_name."=".urlencode($curl_options['password']);
-			$post_params_debug = $input_username_name."=".urlencode($curl_options['username'])."&".$input_password_name."=xxxxxx";
-			$status['debug'][] = JFusionCurl::_('CURL_STARTING_LOGIN')." ".$form_action." parameters= ".$post_params_debug.$strParameters;
+			$post_params = $input_username_name.'='.urlencode($curl_options['username']).'&'.$input_password_name.'='.urlencode($curl_options['password']);
+			$post_params_debug = $input_username_name.'='.urlencode($curl_options['username']).'&'.$input_password_name.'=xxxxxx';
+			$status['debug'][] = JFusionCurl::_('CURL_STARTING_LOGIN').' '.$form_action.' parameters= '.$post_params_debug.$strParameters;
 		} else {
 			$post_params = '';
-			$status['debug'][] = JFusionCurl::_('CURL_STARTING_LOGOUT')." ".$form_action." parameters= ".$strParameters;
+			$status['debug'][] = JFusionCurl::_('CURL_STARTING_LOGOUT').' '.$form_action.' parameters= '.$strParameters;
 		}
 
 
@@ -1226,6 +1236,8 @@ class JFusionCurl
 		// finally submit the login/logout form:
 		if ($curl_options['integrationtype'] == 1) {
 			$ch = curl_init();
+			$ip = $_SERVER["REMOTE_ADDR"];
+			curl_setopt( $ch, CURLOPT_HTTPHEADER, array("REMOTE_ADDR: $ip", "X_FORWARDED_FOR: $ip"));
 			curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
 			curl_setopt($ch, CURLOPT_REFERER, "");
 			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
@@ -1253,7 +1265,7 @@ class JFusionCurl
 			$status['debug'][]='CURL_INFO'.': '.print_r(curl_getinfo($ch), true);
 		}
 		if (curl_error($ch)) {
-			$status['error'][] = JFusionCurl::_('CURL_ERROR_MSG').": ".curl_error($ch);
+			$status['error'][] = JFusionCurl::_('CURL_ERROR_MSG').': '.curl_error($ch);
 			curl_close($ch);
 			return $status;
 		}
@@ -1279,7 +1291,7 @@ class JFusionCurl
 	 *
 	 * @return string something
 	 */
-	function RemoteLogout($curl_options)
+    public static function RemoteLogout($curl_options)
 	{
 		$status=array();
 		global $ch;
@@ -1328,11 +1340,13 @@ class JFusionCurl
 		// prevent usererror by not supplying trailing backslash.
 		// make sure that when parameters are sent we do not add a backslash
 		if (strpos($curl_options['post_url'], '?') === false) {
-			if (!(substr($curl_options['post_url'], -1) == "/")) {
-				$curl_options['post_url'] = $curl_options['post_url']."/";
+			if (!(substr($curl_options['post_url'], -1) == '/')) {
+				$curl_options['post_url'] = $curl_options['post_url'].'/';
 			}
 		}
 		$ch = curl_init();
+		$ip = $_SERVER["REMOTE_ADDR"];
+		curl_setopt( $ch, CURLOPT_HTTPHEADER, array("REMOTE_ADDR: $ip", "X_FORWARDED_FOR: $ip"));
 		curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
 		curl_setopt($ch, CURLOPT_REFERER, "");
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
@@ -1376,7 +1390,7 @@ class JFusionCurl
 			$status['debug'][]='CURL_INFO'.': '.print_r(curl_getinfo($ch), true);
 		}
 		if (curl_error($ch)) {
-			$status['error'][] = JFusionCurl::_('CURL_ERROR_MSG').": ".curl_error($ch);
+			$status['error'][] = JFusionCurl::_('CURL_ERROR_MSG').': '.curl_error($ch);
 			curl_close($ch);
 			return $status;
 		}
@@ -1395,7 +1409,7 @@ class JFusionCurl
 	 *
 	 * @return string something
 	 */
-	function RemoteLogoutUrl($curl_options)
+    public static function RemoteLogoutUrl($curl_options)
 	{
 		$status=array();
 		global $ch;
@@ -1443,10 +1457,12 @@ class JFusionCurl
 			$curl_options['debug'] = false;
 		}
 		if (!isset($curl_options['postfields'])) {
-			$curl_options['postfields'] = "";
+			$curl_options['postfields'] = '';
 		}
 
 		$ch = curl_init();
+		$ip = $_SERVER["REMOTE_ADDR"];
+		curl_setopt( $ch, CURLOPT_HTTPHEADER, array("REMOTE_ADDR: $ip", "X_FORWARDED_FOR: $ip"));
 		curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
 		curl_setopt($ch, CURLOPT_REFERER, "");
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
@@ -1515,7 +1531,7 @@ class JFusionCurl
 		}
 		$status['debug'][]= JText::_('CURL_LOGOUT_URL').': '.  $curl_options['post_url'];
 		if (curl_error($ch)) {
-			$status['error'][] = JFusionCurl::_('CURL_ERROR_MSG').": ".curl_error($ch);
+			$status['error'][] = JFusionCurl::_('CURL_ERROR_MSG').': '.curl_error($ch);
 			curl_close($ch);
 			return $status;
 		}
@@ -1525,5 +1541,3 @@ class JFusionCurl
 		return $status;
 	}
 }
-
-?>
