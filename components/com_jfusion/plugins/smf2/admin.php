@@ -249,7 +249,6 @@ if(!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') === 
             $error = $this->disableRedirectMod();
             $reason = '';
             $mod_file = $this->getModFile('index.php',$error,$reason);
-
             if($error == 0) {
                 //get the joomla path from the file
                 jimport('joomla.filesystem.file');
