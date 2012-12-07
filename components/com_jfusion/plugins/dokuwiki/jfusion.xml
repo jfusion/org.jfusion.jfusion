@@ -112,9 +112,11 @@
         </param>
 
 		<param name="jfusionbox" type="text" default="" label="MOD_OPTIONS" description="" />
-		<param name="redirect_itemid" type="JFusionItemid" size="10" label="redirect_itemid" default="" description="REDIRECT_MOD_DESCR" feature="redirect_itemid"/>
-		<param name="showRedirectMod" default="" type="JFusionCustomParam" label="showRedirectMod" description="REDIRECT_MOD_DESCR" />
-		<param name="showAuthMod" default="" type="JFusionCustomParam" label="showAuthMod" description="AUTHENTICATION_MOD_DESCR" />
+        <param name=" " type="helptext" default="REDIRECT_MOD_DESCR" label=""/>
+		<param name="redirect_itemid" type="JFusionItemid" size="10" label="REDIRECT_ITEMID" default="" description="REDIRECT_ITEMID" feature="redirect_itemid"/>
+		<param name="showRedirectMod" default="" type="JFusionCustomParam" label="REDIRECTION_MOD" description="REDIRECTION_MOD" />
+        <param name=" " type="helptext" default="AUTHENTICATION_MOD_DESCR" label=""/>
+		<param name="showAuthMod" default="" type="JFusionCustomParam" label="AUTHENTICATION_MOD" description="AUTHENTICATION_MOD" />
 	</params>
 </install>
 
