@@ -23,15 +23,16 @@ if (version_compare(PHP_VERSION, '5.0.0', '<')) {
 
 //Load the language files of the plugins
 $db = JFactory::getDBO();
-$query = 'SELECT name from #__jfusion';
+$query = 'SELECT name , original_name from #__jfusion';
 $db->setQuery($query);
 $plugins = $db->loadObjectList();
 $lang = JFactory::getLanguage();
 foreach ($plugins as $plugin) {
+    $name = $plugin->original_name ? $plugin->original_name : $plugin->name;
     // Language file is loaded in function of the context
     // of the selected language in Joomla
     // and of the JPATH_BASE (in admin = JPATH_ADMINISTRATOR, in site = JPATH_SITE)
-    $lang->load('com_jfusion.plg_' . $plugin->name);
+    $lang->load('com_jfusion.plg_' . $name);
 }
 
 //load the JFusion CSS and javascript

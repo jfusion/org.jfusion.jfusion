@@ -30,6 +30,22 @@ class jfusionViewPlugin extends JView {
     function frameless($tpl = null) {
 		$data = JFusionFrameless::initData($this->jname);
 
+        $db = JFactory::getDBO();
+
+        $query = 'SELECT name , original_name from #__jfusion WHERE name = ' . $db->Quote($this->jname);
+        $db->setQuery($query);
+        $plugin = $db->loadObject();
+
+        if ($plugin) {
+            $lang = JFactory::getLanguage();
+            $name = $plugin->original_name ? $plugin->original_name : $plugin->name;
+            // Language file is loaded in function of the context
+            // of the selected language in Joomla
+            // and of the JPATH_BASE (in admin = JPATH_ADMINISTRATOR, in site = JPATH_SITE)
+            $lang->load('com_jfusion.plg_' . $name,JPATH_ADMINISTRATOR);
+            $lang->load('com_jfusion.plg_' . $name,JPATH_SITE);
+        }
+
 		$result = JFusionFrameless::displayContent($data);
 		if (!$result) return false;
 

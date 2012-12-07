@@ -439,6 +439,15 @@ class JFusionPluginInstaller extends JObject
             }
         }
         $db = JFactory::getDBO();
+
+        $query = 'SELECT name , original_name from #__jfusion WHERE name = ' . $db->Quote($jname);
+        $db->setQuery($query);
+        $plugin = $db->loadObject();
+        $removeLanguage = true;
+        if (!$plugin || $plugin->original_name) {
+            $removeLanguage = false;
+        }
+
         // delete raw
         $db->setQuery('DELETE FROM #__jfusion WHERE name = ' . $db->Quote($jname));
         if (!$db->query()) {
@@ -470,8 +479,10 @@ class JFusionPluginInstaller extends JObject
             } else {
                 $this->manifest = $manifest;
 
-                $this->parent->removeFiles($this->getElementByPath($this->manifest,'languages'));
-                $this->parent->removeFiles($this->getElementByPath($this->manifest,'administration/languages'), 1);
+                if ($removeLanguage) {
+                    $this->parent->removeFiles($this->getElementByPath($this->manifest,'languages'));
+                    $this->parent->removeFiles($this->getElementByPath($this->manifest,'administration/languages'), 1);
+                }
 
                 // remove files
                 if (!JFolder::delete($dir)) {
