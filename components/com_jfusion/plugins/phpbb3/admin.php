@@ -308,7 +308,7 @@ if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\'
             //get the joomla path from the file
             jimport('joomla.filesystem.file');
             $file_data = JFile::read($mod_file);
-            $search = '/\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END(\r?\n)/si';
+            $search = '/(\r?\n)\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END/si';
             preg_match_all($search, $file_data, $matches);
             //remove any old code
             if (!empty($matches[1][0])) {
