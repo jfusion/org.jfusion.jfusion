@@ -206,7 +206,8 @@ class JFusionAdmin_smf2 extends JFusionAdmin{
 /*
 $pattern = \'#action=(login|admin|profile|featuresettings|news|packages|detailedversion|serversettings|theme|manageboards|postsettings|managecalendar|managesearch|smileys|manageattachments|viewmembers|membergroups|permissions|regcenter|ban|maintain|reports|viewErrorLog|optimizetables|detailedversion|repairboards|boardrecount|convertutf8|helpadmin|packageget)#\';
  */
-			$redirect_code = '//JFUSION REDIRECT START
+			$redirect_code = '
+//JFUSION REDIRECT START
 //SET SOME VARS
 $joomla_url = \''. $url . '\';
 $joomla_itemid = ' . $itemid .';
@@ -245,8 +246,7 @@ if(!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') === 
         } else if (!$this->isValidItemID($joomla_itemid)) {
             JError::raiseWarning(0, JText::_('MISSING') . ' ItemID '. JText::_('MUST BE'). ' ' . $this->getJname());
         } else {
-            $error = 0;
-            $error = 0;
+            $error = $this->disableRedirectMod();
             $reason = '';
             $mod_file = $this->getModFile('index.php',$error,$reason);
 
@@ -254,18 +254,12 @@ if(!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') === 
                 //get the joomla path from the file
                 jimport('joomla.filesystem.file');
                 $file_data = JFile::read($mod_file);
-                $search = '/\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END/ms';
-                preg_match_all($search,$file_data,$matches);
-                //remove any old code
-                if(!empty($matches[1][0])) {
-                    $file_data = preg_replace($search,'',$file_data);
-                }
-
-                $redirect_code = $this->generateRedirectCode($joomla_url, $joomla_itemid);
+                $redirect_code = $this->generateRedirectCode($joomla_url,$joomla_itemid);
 
                 $search = '/\<\?php/si';
                 $replace = '<?php' . $redirect_code;
-                $file_data = preg_replace($search,$replace,$file_data);
+
+                $file_data = preg_replace($search, $replace, $file_data);
                 JFile::write($mod_file, $file_data);
             }
         }
@@ -279,17 +273,20 @@ if(!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') === 
     	$error = 0;
     	$reason = '';
     	$mod_file = $this->getModFile('index.php',$error,$reason);
-
-		if($error == 0) {
-			//get the joomla path from the file
-			jimport('joomla.filesystem.file');
-			$file_data = JFile::read($mod_file);
-	      	$search = '/\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END/si';
-	      	$file_data = preg_replace($search,'',$file_data);
-            if (!JFile::write($mod_file, $file_data)) {
-                $error = 1;
+        if ($error == 0) {
+            //get the joomla path from the file
+            jimport('joomla.filesystem.file');
+            $file_data = JFile::read($mod_file);
+            $search = '/\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END(\r?\n)/si';
+            preg_match_all($search, $file_data, $matches);
+            //remove any old code
+            if (!empty($matches[1][0])) {
+                $file_data = preg_replace($search, '', $file_data);
+                if (!JFile::write($mod_file, $file_data)) {
+                    $error = 1;
+                }
             }
-		}
+        }
         return $error;
     }
 

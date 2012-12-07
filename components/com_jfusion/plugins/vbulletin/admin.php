@@ -818,6 +818,6 @@ HTML;
      */
     function requireFileAccess()
 	{
-		return 'JNO';
-	}    
+		return 'JYES';
+	}
 }

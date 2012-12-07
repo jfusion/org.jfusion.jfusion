@@ -274,7 +274,8 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
     function generateRedirectCode($url, $itemid)
     {
         //create the new redirection code
-        $redirect_code = '//JFUSION REDIRECT START
+        $redirect_code = '
+//JFUSION REDIRECT START
 //SET SOME VARS
 $joomla_url = \'' . $url . '\';
 $joomla_itemid = ' . $itemid . ';
@@ -321,23 +322,20 @@ if (!defined(\'_JEXEC\'))';
         } else if (!$this->isValidItemID($joomla_itemid)) {
             JError::raiseWarning(0, JText::_('MISSING') . ' ItemID '. JText::_('MUST BE'). ' ' . $this->getJname());
         } else {
-            $error = 0;
-            $error = 0;
+            $error = $this->disableRedirectMod();
             $reason = '';
             $mod_file = $this->getModFile('doku.php', $error, $reason);
             if ($error == 0) {
                 //get the joomla path from the file
                 jimport('joomla.filesystem.file');
                 $file_data = JFile::read($mod_file);
-                $search = '/\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END/ms';
-                preg_match_all($search, $file_data, $matches);
-                //remove any old code
-                if (!empty($matches[1][0])) {
-                    $file_data = preg_replace($search, '', $file_data);
-                }
                 $redirect_code = $this->generateRedirectCode($joomla_url,$joomla_itemid);
-                $search = '/getID\(\)\;/si';
-                $replace = 'getID();' . $redirect_code;
+
+//                $search = '/getID\(\)\;/si';
+//                $replace = 'getID();' . $redirect_code;
+                $search = '/\<\?php/si';
+                $replace = '<?php' . $redirect_code;
+
                 $file_data = preg_replace($search, $replace, $file_data);
                 JFile::write($mod_file, $file_data);
             }
@@ -358,10 +356,14 @@ if (!defined(\'_JEXEC\'))';
             //get the joomla path from the file
             jimport('joomla.filesystem.file');
             $file_data = JFile::read($mod_file);
-            $search = '/\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END/si';
-            $file_data = preg_replace($search, '', $file_data);
-            if (!JFile::write($mod_file, $file_data)) {
-                $error = 1;
+            $search = '/\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END(\r?\n)/si';
+            preg_match_all($search, $file_data, $matches);
+            //remove any old code
+            if (!empty($matches[1][0])) {
+                $file_data = preg_replace($search, '', $file_data);
+                if (!JFile::write($mod_file, $file_data)) {
+                    $error = 1;
+                }
             }
         }
         return $error;
