@@ -191,7 +191,7 @@ case $1 in
     		sed "s/<revision>\$revision\$<\/revision>/<revision>$VERSION<\/revision>/g" tmp/jfusion.tmp > tmp/jfusion.xml
     		rm tmp/jfusion.tmp
 		else
-    		echo "svnversion is not available.  Install subversion command line client."
+    		echo "git is not available.  Install git command line client."
 		fi	
 		echo "Revision set to $VERSION"
 		
