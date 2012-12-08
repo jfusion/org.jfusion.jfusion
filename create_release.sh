@@ -185,11 +185,9 @@ case $1 in
 		rsync administrator/components/com_jfusion/jfusion.xml administrator/components/com_jfusion/install.jfusion.php administrator/components/com_jfusion/uninstall.jfusion.php tmp/ 
 		
 		echo "Update the revision number"
-		if which svnversion &> /dev/null; then
+		if which git &> /dev/null; then
 			mv tmp/jfusion.xml tmp/jfusion.tmp
-    		x=$(svnversion)
-    		VERSION=${x%%M*}
-    		VERSION=${VERSION##*:}
+    		VERSION=$(git rev-parse HEAD)
     		sed "s/<revision>\$revision\$<\/revision>/<revision>$VERSION<\/revision>/g" tmp/jfusion.tmp > tmp/jfusion.xml
     		rm tmp/jfusion.tmp
 		else
