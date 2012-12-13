@@ -98,7 +98,7 @@ class JFusionUser_efront extends JFusionUser
         $httponly = $params->get('httponly',0);
         $secure = $params->get('secure',0);
         //Set cookie values
-        $expires = mktime(12, 0, 0, 1, 1, 1990);
+        $expires = -3600;
         if (!$cookiepath) {
             $cookiepath = '/';
         }

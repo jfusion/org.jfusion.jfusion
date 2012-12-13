@@ -113,9 +113,9 @@ class JFusionUser_phpbb3 extends JFusionUser
             $status['debug'][] = 'Error could not update the last visit field ' . $db->stderr();
         }
         //delete the cookies
-        $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_u', '', time() - 3600, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly);
-        $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_sid', '', time() - 3600, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly);
-        $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_k', '', time() - 3600, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly);
+        $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_u', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly);
+        $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_sid', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly);
+        $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_k', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly);
 
         $_COOKIE[$phpbb_cookie_name . '_u'] = '';
         $_COOKIE[$phpbb_cookie_name . '_sid'] = '';
@@ -1163,9 +1163,9 @@ class JFusionUser_phpbb3 extends JFusionUser
                     $phpbb_cookie_domain = '';
                 }
                 //delete the cookies
-                $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_u', '', time() - 3600, $phpbb_cookie_path, $phpbb_cookie_domain);
-                $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_sid', '', time() - 3600, $phpbb_cookie_path, $phpbb_cookie_domain);
-                $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_k', '', time() - 3600, $phpbb_cookie_path, $phpbb_cookie_domain);
+                $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_u', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain);
+                $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_sid', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain);
+                $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_k', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain);
                 $return = 1;
             } elseif ($debug) {
                 JError::raiseNotice('500','Keep alive enabled so renew Joomla\'s session');

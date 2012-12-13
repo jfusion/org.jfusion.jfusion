@@ -71,7 +71,7 @@ class JFusionUser_mybb extends JFusionUser {
         $cookiedomain = $params->get('cookie_domain');
         $cookiepath = $params->get('cookie_path', '/');
         //Set cookie values
-        $expires = mktime(12, 0, 0, 1, 1, 1990);
+        $expires = -3600;
         if (!$cookiepath) {
             $cookiepath = '/';
         }

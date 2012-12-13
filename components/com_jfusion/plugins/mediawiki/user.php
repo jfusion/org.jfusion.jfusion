@@ -126,10 +126,6 @@ class JFusionUser_mediawiki extends JFusionUser {
      * @return array
      */
     function destroySession($userinfo, $options){
-		//$status = JFusionJplugin::destroySession($userinfo, $options,$this->getJname());
-        //$params = JFusionFactory::getParams($this->getJname());
-		//setcookie($params->get('cookie_name'), '',0,$params->get('cookie_path'),$params->get('cookie_domain'),$params->get('secure'),$params->get('httponly'));
-
         $params = JFusionFactory::getParams($this->getJname());
         /**
          * @ignore
@@ -141,7 +137,7 @@ class JFusionUser_mediawiki extends JFusionUser {
         $cookie_secure = $params->get('secure');
         $cookie_httponly = $params->get('httponly');
         $cookie_name = $helper->getCookieName();
-        $expires = time() - 3600;
+        $expires = -3600;
 
         $helper->startSession($options);
    		$_SESSION['wsUserID'] = 0;
@@ -154,7 +150,7 @@ class JFusionUser_mediawiki extends JFusionUser {
         $status['debug'][] = JFusionFunction::addCookie($cookie_name  . 'Token', '', $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
 
    		$now = time();
-        $expiration = time() + 86400;
+        $expiration = 86400;
 
         $status['debug'][] = JFusionFunction::addCookie('LoggedOut', $now, $expiration, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
 		return $status;
@@ -185,24 +181,19 @@ class JFusionUser_mediawiki extends JFusionUser {
             $cookie_domain = $params->get('cookie_domain');
             $cookie_secure = $params->get('secure');
             $cookie_httponly = $params->get('httponly');
-            $cookie_expiry = $params->get('cookie_expires', 3100);
+			$expires = $params->get('cookie_expires', 3100);
             $cookie_name = $helper->getCookieName();
-            $expires = time() + $cookie_expiry;
-            $debug_expiration = date('Y-m-d H:i:s', $expires);
             $helper->startSession($options);
 
-            setcookie($cookie_name  . 'UserName', $userinfo->username, $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
-            $status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => $cookie_name.'UserName', JText::_('VALUE') => $userinfo->username, JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
+			$status['debug'][] = JFusionFunction::addCookie($cookie_name  . 'UserName', $userinfo->username, $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
             $_SESSION['wsUserName'] = $userinfo->username;
 
-            setcookie($cookie_name  . 'UserID', $userinfo->userid, $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
-            $status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => $cookie_name.'UserID', JText::_('VALUE') => $userinfo->userid, JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
+			$status['debug'][] = JFusionFunction::addCookie($cookie_name  . 'UserName', $userinfo->userid, $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
             $_SESSION['wsUserID'] = $userinfo->userid;
 
             $_SESSION[ 'wsToken'] = $userinfo->user_token;
             if (!empty($options['remember'])) {
-                setcookie($cookie_name  . 'Token', $userinfo->user_token, $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
-                $status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => $cookie_name.'Token', JText::_('VALUE') => substr($userinfo->user_token, 0, 6) . '********, ', JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
+	            $status['debug'][] = JFusionFunction::addCookie($cookie_name  . 'Token', $userinfo->user_token, $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
             }
 
             $helper->closeSession();

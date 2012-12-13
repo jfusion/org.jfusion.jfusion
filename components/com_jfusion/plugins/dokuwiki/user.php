@@ -219,7 +219,7 @@ class JFusionUser_dokuwiki extends JFusionUser {
         $helper = JFusionFactory::getHelper($this->getJname());
         $helper->defineConstants();
 
-        $time = time()-3600;
+        $time = -3600;
         $status['debug'][] = JFusionFunction::addCookie(DOKU_COOKIE, '', $time, $cookie_path, $cookie_domain, $cookie_secure, $httponly);
         // remove blank domain name cookie just in case we are using wrapper
         $source_url = $params->get('source_url');
