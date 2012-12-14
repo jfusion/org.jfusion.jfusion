@@ -35,13 +35,13 @@ if (JRequest::getVar('filter',false)) {
             </td>
         </tr>
         <tr>
-            <td style="background-color:#088A08">
-                <?php echo JText::_('CONFIGDUMP_SEEMS_OK');?>
+            <td style="background-color:#FFFF00">
+                <?php echo JText::_('CONFIGDUMP_POSIBLE_ERROR');?>
             </td>
         </tr>
         <tr>
-            <td style="background-color:#FFFF00">
-                <?php echo JText::_('CONFIGDUMP_POSIBLE_ERROR');?>
+            <td style="background-color:#088A08">
+			    <?php echo JText::_('CONFIGDUMP_SEEMS_OK');?>
             </td>
         </tr>
         <tr>

@@ -142,8 +142,8 @@
 
 		<param name="jfusionbox" type="text" default="" label="SEF_OPTIONS" description="" />
 		<param name="sefmode" type="list" default="0" label="SEFMODE" description="SEFMODE_DESCR">
-			<option value="1"><![CDATA[yourdomain.com/index.php/menu_name/filename.php/option1,value1/option2,value2]]></option>
-			<option value="0"><![CDATA[yourdomain.com/index.php/menu_name/filename.php?option1=value1&option2=value2]]></option>
+            <option value="1"><![CDATA[domain.com/index.php/alias/file.php/foo,foo/]]></option>
+            <option value="0"><![CDATA[domain.com/index.php/alias/file.php?foo=foo]]></option>
 		</param>
 
 		<param name="jfusionbox" type="text" default="" label="MOD_OPTIONS" description="" />

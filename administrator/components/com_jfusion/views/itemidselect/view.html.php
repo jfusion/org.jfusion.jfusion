@@ -80,10 +80,12 @@ class jfusionViewitemidselect extends JView
         }
 
         foreach ($menuitems as $key => $row) {
-            $jPluginParam = unserialize(base64_decode($row->params->get('JFusionPluginParam')));
-            if (is_array($jPluginParam)) {
-                $row->jfusionplugin = $jPluginParam['jfusionplugin'];
-            }
+	        $row->jfusionplugin = null;
+	        $row->params = $menus->getParams($row->id);
+	        $jPluginParam = unserialize(base64_decode($row->params->get('JFusionPluginParam')));
+	        if (is_array($jPluginParam)) {
+		        $row->jfusionplugin = $jPluginParam['jfusionplugin'];
+	        }
             if (!JFusionFunction::validPlugin($row->jfusionplugin) || !JFusionFunction::hasFeature($row->name,$feature,$row->id)) {
                 unset($menuitems[$key]);
             }
