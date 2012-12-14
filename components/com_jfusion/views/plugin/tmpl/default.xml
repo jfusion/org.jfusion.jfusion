@@ -53,41 +53,7 @@
 			<field name="default_css" type="list" default="1" label="DEFAULT_CSS" description="DEFAULT_CSS">
 				<option value="1">YES</option>
 				<option value="0">NO</option>
-			</field>		
-		
-			<field name="parse_anchors" type="list" default="1" label="PARSE_ANCHORS" description="PARSE_ANCHORS">
-				<option value="1">YES</option>
-				<option value="0">NO</option>
 			</field>
-			<field name="parse_rel_url" type="list" default="1" label="PARSE_REL_URL" description="PARSE_REL_URL">
-				<option value="1">YES</option>
-				<option value="0">NO</option>
-			</field>
-			<field name="parse_abs_url" type="list" default="1" label="PARSE_ABS_URL" description="PARSE_ABS_URL">
-				<option value="1">YES</option>
-				<option value="0">NO</option>
-			</field>
-			<field name="parse_abs_path" type="list" default="1" label="PARSE_ABS_PATH" description="PARSE_ABS_PATH">
-				<option value="1">YES</option>
-				<option value="0">NO</option>
-			</field>
-			<field name="parse_rel_img" type="list" default="1" label="PARSE_REL_IMG" description="PARSE_REL_IMG">
-				<option value="1">YES</option>
-				<option value="0">NO</option>
-			</field>
-			<field name="parse_action" type="list" default="1" label="PARSE_ACTION" description="PARSE_ACTION">
-				<option value="1">YES</option>
-				<option value="0">NO</option>
-			</field>
-			<field name="parse_popup" type="list" default="1" label="PARSE_POPUP" description="PARSE_POPUP">
-				<option value="1">YES</option>
-				<option value="0">NO</option>
-			</field>
-			<field name="parse_redirect" type="list" default="1" label="PARSE_REDIRECT" description="PARSE_REDIRECT">
-				<option value="1">YES</option>
-				<option value="0">NO</option>
-			</field>
-	
 			<field name="default_css_overflow" type="list" default="visible" label="DEFAULT_CSS_OVERFLOW" description="DEFAULT_CSS_OVERFLOW">
 				<option value="visible">visible</option>
 				<option value="hidden">hidden</option>
@@ -142,41 +108,7 @@
 		<param name="default_css" type="list" default="1" label="DEFAULT_CSS" description="DEFAULT_CSS">
 			<option value="1">YES</option>
 			<option value="0">NO</option>
-		</param>		
-		
-		<param name="parse_anchors" type="list" default="1" label="PARSE_ANCHORS" description="PARSE_ANCHORS">
-			<option value="1">YES</option>
-			<option value="0">NO</option>
 		</param>
-		<param name="parse_rel_url" type="list" default="1" label="PARSE_REL_URL" description="PARSE_REL_URL">
-			<option value="1">YES</option>
-			<option value="0">NO</option>
-		</param>
-		<param name="parse_abs_url" type="list" default="1" label="PARSE_ABS_URL" description="PARSE_ABS_URL">
-			<option value="1">YES</option>
-			<option value="0">NO</option>
-		</param>
-		<param name="parse_abs_path" type="list" default="1" label="PARSE_ABS_PATH" description="PARSE_ABS_PATH">
-			<option value="1">YES</option>
-			<option value="0">NO</option>
-		</param>
-		<param name="parse_rel_img" type="list" default="1" label="PARSE_REL_IMG" description="PARSE_REL_IMG">
-			<option value="1">YES</option>
-			<option value="0">NO</option>
-		</param>
-		<param name="parse_action" type="list" default="1" label="PARSE_ACTION" description="PARSE_ACTION">
-			<option value="1">YES</option>
-			<option value="0">NO</option>
-		</param>
-		<param name="parse_popup" type="list" default="1" label="PARSE_POPUP" description="PARSE_POPUP">
-			<option value="1">YES</option>
-			<option value="0">NO</option>
-		</param>
-		<param name="parse_redirect" type="list" default="1" label="PARSE_REDIRECT" description="PARSE_REDIRECT">
-			<option value="1">YES</option>
-			<option value="0">NO</option>
-		</param>
-
 		<param name="default_css_overflow" type="list" default="visible" label="DEFAULT_CSS_OVERFLOW" description="DEFAULT_CSS_OVERFLOW">
 			<option value="visible">visible</option>
 			<option value="hidden">hidden</option>

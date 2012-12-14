@@ -11,7 +11,7 @@
 	    <fieldset name="basic">
 			<field name="source_url" type="text" size="60" default="http://www.yourdomain.com/" label="SOURCE_URL" description="SOURCE_URL" />
 			<field name="cookie_domain" type="text" size="60" default="" label="COOKIE_DOMAIN" description="COOKIE_DOMAIN" />
-			<field name="cookie_path" type="text" size="20" default="/" label="COOKIE_PATH" description="COOKIE_PATH" />
+			<field name="cookie_path" type="text" size="20" default="/" description="CURL_COOKIE_PATH_DESC" label="CURL_COOKIE_PATH" />
 			<field name="cookie_name" type="text" size="20" default="" label="COOKIE_NAME" description="COOKIE_NAME" />
 	
 			<field name="@spacer" type="spacer" default="" label="" description="" />
@@ -84,7 +84,7 @@
 	<params addpath="/administrator/components/com_jfusion/elements">
 		<param name="source_url" type="text" size="60" default="http://www.yourdomain.com/" description="SOURCE_URL" />
 		<param name="cookie_domain" type="text" size="60" default="" description="COOKIE_DOMAIN" />
-		<param name="cookie_path" type="text" size="20" default="/" description="COOKIE_PATH" />
+		<param name="cookie_path" type="text" size="20" default="/" description="CURL_COOKIE_PATH"/>
 		<param name="cookie_name" type="text" size="20" default="" description="COOKIE_NAME" />
 
 		<param name="@spacer" type="spacer" default="" label="" description="" />

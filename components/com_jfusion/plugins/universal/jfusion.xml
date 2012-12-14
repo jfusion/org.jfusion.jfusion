@@ -22,12 +22,26 @@
 		<filename>public.php</filename>
 		<filename>user.php</filename>
 	</files>
+
+    <administration>
+        <languages folder="language">
+            <language tag="de-DE">de-DE.com_jfusion.plg_universal.ini</language>
+            <language tag="en-GB">en-GB.com_jfusion.plg_universal.ini</language>
+            <language tag="et-EE">et-EE.com_jfusion.plg_universal.ini</language>
+            <language tag="fr-FR">fr-FR.com_jfusion.plg_universal.ini</language>
+            <language tag="it-IT">it-IT.com_jfusion.plg_universal.ini</language>
+            <language tag="nl-NL">nl-NL.com_jfusion.plg_universal.ini</language>
+            <language tag="ru-RU">ru-RU.com_jfusion.plg_universal.ini</language>
+            <language tag="zh-CN">zh-CN.com_jfusion.plg_universal.ini</language>
+        </languages>
+    </administration>
+
   	<params addpath="/administrator/components/com_jfusion/elements">
 		<param name="jfusionbox" type="text" default="" label="PLUGIN_GENERAL_DETAILS" description="" />
 		<param name="description" type="text" size="60" default="put a description" description="DESCRIPTION" label="DESCRIPTION"/>
 		<param name="source_url" type="text" size="60" default="http://site.com/" description="SOURCE_URL" label="SOURCE_URL"/>
-		<param name="cookie_domain" type="text" size="60" default="" description="COOKIE_DOMAIN" label="COOKIE_DOMAIN"/>
-		<param name="cookie_path" type="text" size="20" default="/" description="COOKIE_PATH" label="COOKIE_PATH"/>
+		<param name="cookie_domain" type="text" size="60" default="" description="CURL_COOKIE_DOMAIN_DESC" label="CURL_COOKIE_DOMAIN"/>
+		<param name="cookie_path" type="text" size="20" default="/" description="CURL_COOKIE_PATH_DESC" label="CURL_COOKIE_PATH"/>
 		<param name="cookie_name" type="text" size="20" default="" description="COOKIE_NAME" label="COOKIE_NAME"/>
 
 
@@ -46,7 +60,7 @@
 		<param name="js" default="" type="JFusionCustomParam" label=" " description=" "/>
 		<param name="mapuser" default="" type="JFusionCustomParam" label="USER_MAPING" description="USER_MAPING_DESCR"/>
 
-		<param name="user_auth" default="md5($userinfo->password_clear)" type="JFusionCustomParam" label="USER_AUTH" description="USER_AUTH"/>
+		<param name="user_auth" default="md5($userinfo->password_clear)" type="JFusionCustomParam" label="USER_AUTH" description="USER_AUTH_DESCR"/>
 
 		<param name="usergroupmap" default="" type="JFusionPair" label="USERGROUP_MAP" description="USERGROUP_MAP"/>
 
@@ -89,8 +103,8 @@
 
 
 		<param name="jfusionbox" type="text" default="" label="FRAMELESS_OPTIONS" description="" />
-		<param name="headermap" default="" type="JFusionPair" label="HEADER_MAP" description="HEADER_MAP"/>
-		<param name="bodymap" default="" type="JFusionPair" label="BODY_MAP" description="BODY_MAP"/>
+		<param name="headermap" default="" type="JFusionPair" label="HEADER_MAP" description="HEADER_MAP_DESCR"/>
+		<param name="bodymap" default="" type="JFusionPair" label="BODY_MAP" description="BODY_MAP_DESCR"/>
 
 
 		<param name="jfusionbox" type="text" default="" label="SEF_OPTIONS" description="" />
