@@ -553,7 +553,9 @@ JS;
             $new = new stdClass;
             if ($master_usergroups) {
                 foreach ($master_usergroups as $master_usergroup) {
-                    $new->{$master_usergroup->id} = $master_usergroup->name;
+	                if (!empty($master_usergroup->id)) {
+                        $new->{$master_usergroup->id} = $master_usergroup->name;
+	                }
                 }
             }
             $master_usergroups = $new;
@@ -561,7 +563,9 @@ JS;
             $new = new stdClass;
             if ($master_usergroups) {
                 foreach ($usergroups as $usergroup) {
-                    $new->{$usergroup->id} = $usergroup->name;
+	                if (!empty($usergroup->id)) {
+		                $new->{$usergroup->id} = $usergroup->name;
+	                }
                 }
             }
             $usergroups = $new;

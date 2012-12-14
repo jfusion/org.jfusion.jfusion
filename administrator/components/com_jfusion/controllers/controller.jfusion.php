@@ -782,33 +782,62 @@ JS;
                     JError::raiseWarning(0, $jname . ': ' . JText::_('ERROR_FILE_SYNTAX').': '.$file['type'] );
                     $error = $jname . ': ' . JText::_('ERROR_FILE_SYNTAX').': '.$file['type'];
                 } else {
-                    $conf = array();
-                    /**
-                     * @ignore
-                     * @var $val JSimpleXMLElement
-                     */
-                    foreach ($config as $key => $val) {
-                        $attName = (string)$val->attributes('name');
-                        $conf[$attName] = htmlspecialchars_decode($val->data());
-                        if ( strpos($conf[$attName], 'a:') === 0 ) $conf[$attName] = unserialize($conf[$attName]);
-                    }
+	                $original_name = (string)$info->attributes('original_name');
+	                $db = JFactory::getDBO();
+	                $query = 'SELECT name , original_name from #__jfusion WHERE name = ' . $db->Quote($jname);
+	                $db->setQuery($query);
+	                $plugin = $db->loadObject();
 
-                    $database_type = JRequest::getVar('database_type');
-                    $database_host = JRequest::getVar('database_host');
-                    $database_name = JRequest::getVar('database_name');
-                    $database_user = JRequest::getVar('database_user');
-                    $database_password = JRequest::getVar('database_password');
-                    $database_prefix = JRequest::getVar('database_prefix');
+	                if ($plugin) {
+		                $pluginname = $plugin->original_name ? $plugin->original_name : $plugin->name;
+		                if ($pluginname == $original_name) {
+			                $conf = array();
+			                /**
+			                 * @ignore
+			                 * @var $val JSimpleXMLElement
+			                 */
+			                foreach ($config as $key => $val) {
+				                $attName = (string)$val->attributes('name');
+				                $conf[$attName] = htmlspecialchars_decode($val->data());
+				                if ( strpos($conf[$attName], 'a:') === 0 ) $conf[$attName] = unserialize($conf[$attName]);
+			                }
 
-                    if( !empty($database_type) ) $conf['database_type'] = $database_type;
-                    if( !empty($database_host) ) $conf['database_host'] = $database_host;
-                    if( !empty($database_name) ) $conf['database_name'] = $database_name;
-                    if( !empty($database_user) ) $conf['database_user'] = $database_user;
-                    if( !empty($database_password) ) $conf['database_password'] = $database_password;
-                    if( !empty($database_prefix) ) $conf['database_prefix'] = $database_prefix;
+			                $database_type = JRequest::getVar('database_type');
+			                $database_host = JRequest::getVar('database_host');
+			                $database_name = JRequest::getVar('database_name');
+			                $database_user = JRequest::getVar('database_user');
+			                $database_password = JRequest::getVar('database_password');
+			                $database_prefix = JRequest::getVar('database_prefix');
 
-                    JFusionFunctionAdmin::saveParameters($jname, $conf);
-                    $msg = JText::_('IMPORT_SUCCESS');
+			                if( !empty($database_type) ) $conf['database_type'] = $database_type;
+			                if( !empty($database_host) ) $conf['database_host'] = $database_host;
+			                if( !empty($database_name) ) $conf['database_name'] = $database_name;
+			                if( !empty($database_user) ) $conf['database_user'] = $database_user;
+			                if( !empty($database_password) ) $conf['database_password'] = $database_password;
+			                if( !empty($database_prefix) ) $conf['database_prefix'] = $database_prefix;
+
+			                if (!JFusionFunctionAdmin::saveParameters($jname, $conf)) {
+				                $error = $jname . ': ' . JText::_('SAVE_FAILURE');
+			                } else {
+				                //update the status field
+				                $JFusionPlugin = JFusionFactory::getAdmin($jname);
+				                $config_status = $JFusionPlugin->checkConfig();
+				                $db = JFactory::getDBO();
+				                $query = 'UPDATE #__jfusion SET status = ' . $config_status['config'] . ' WHERE name =' . $db->Quote($jname);
+				                $db->setQuery($query);
+				                $db->query();
+				                if (empty($config_status['config'])) {
+					                $error = $jname . ': ' . $config_status['message'];
+				                } else {
+					                $msg = $jname . ': ' . JText::_('IMPORT_SUCCESS');
+				                }
+			                }
+		                } else {
+			                $error = $jname.': '.JText::_('PLUGIN_DONT_MATCH_XMLFILE');
+		                }
+	                } else {
+		                $error = $jname.': '.JText::_('PLUGIN_NOT_FOUNED');
+	                }
                 }
             }
         }
@@ -819,8 +848,6 @@ JS;
         } else {
             $mainframe->redirect('index.php?option=com_jfusion&task=plugineditor&jname='.$jname,$msg);
         }
-
-
         exit();
     }
 

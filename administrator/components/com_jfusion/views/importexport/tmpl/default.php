@@ -135,44 +135,52 @@ $paneTabs = JPane::getInstance('tabs');
             <br/>
 
 			<?php
-			/**
-			 * @ignore
-			 * @var $val JSimpleXMLElement
-			 */
-			foreach ($this->xmlList->document->children() as $key => $val) {
-				$pluginName = $val->attributes('name');
-				if ($pluginName) {
-					$pluginVersion = $val->attributes('version')?$val->attributes('version'):JText::_('UNKNOWN');
-					$pluginDesc = $val->attributes('desc')?$val->attributes('desc'):JText::_('JNONE');
-					$pluginCreator = $val->attributes('creator')?$val->attributes('creator'):JText::_('UNKNOWN');
-					?>
+	        $db = JFactory::getDBO();
+	        $query = 'SELECT name , original_name from #__jfusion WHERE name = ' . $db->Quote($this->jname);
+	        $db->setQuery($query);
+	        $plugin = $db->loadObject();
+	        if ($plugin) {
+		        $pluginname = $plugin->original_name ? $plugin->original_name : $plugin->name;
+		        /**
+		         * @ignore
+		         * @var $val JSimpleXMLElement
+		         */
+		        foreach ($this->xmlList->document->children() as $key => $val) {
+			        $original_name = $val->attributes('original_name');
+			        $name = $val->attributes('name');
+			        if ($name && $original_name == $pluginname) {
+				        $pluginVersion = $val->attributes('version')?$val->attributes('version'):JText::_('UNKNOWN');
+				        $pluginDesc = $val->attributes('desc')?$val->attributes('desc'):JText::_('JNONE');
+				        $pluginCreator = $val->attributes('creator')?$val->attributes('creator'):JText::_('UNKNOWN');
+				        ?>
 
-                    <script type="text/javascript">
-                        window.addEvent('domready',function() {
-                            $('plugin<?php echo $key;?>').addEvent('click', function(e) {
-                                doShowHide(this.id);
+                        <script type="text/javascript">
+                            window.addEvent('domready',function() {
+                                $('plugin<?php echo $key;?>').addEvent('click', function(e) {
+                                    doShowHide(this.id);
+                                });
                             });
-                        });
-                    </script>
-                    <tr>
-                        <td style="vertical-align:top">
-                            <input type=radio name="xmlname" value="<?php echo $pluginName; ?>">
-                        </td>
-                        <td>
-							<?php echo ucfirst($pluginName); ?>
-                            <a href="javascript:void(0);" id="plugin<?php echo $key;?>">[+]</a>
-                            <div style="display:none;" id="xplugin<?php echo $key; ?>">
-								<?php echo JText::_('VERSION').': '.$pluginVersion?>
-                                <br/>
-								<?php echo JText::_('DESCRIPTION').': '.ucfirst($pluginDesc)?>
-                                <br/>
-								<?php echo JText::_('CREATOR').': '.$pluginCreator; ?>
-                            </div>
-                        </td>
-                    </tr>
-					<?php
-				}
-			}
+                        </script>
+                        <tr>
+                            <td style="vertical-align:top">
+                                <input type=radio name="xmlname" value="<?php echo $name; ?>">
+                            </td>
+                            <td>
+						        <?php echo ucfirst($name); ?>
+                                <a href="javascript:void(0);" id="plugin<?php echo $key;?>">[+]</a>
+                                <div style="display:none;" id="xplugin<?php echo $key; ?>">
+							        <?php echo JText::_('VERSION').': '.$pluginVersion?>
+                                    <br/>
+							        <?php echo JText::_('DESCRIPTION').': '.ucfirst($pluginDesc)?>
+                                    <br/>
+							        <?php echo JText::_('CREATOR').': '.$pluginCreator; ?>
+                                </div>
+                            </td>
+                        </tr>
+				        <?php
+			        }
+		        }
+	        }
 			?>
         </table>
 		<?php
