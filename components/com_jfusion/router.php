@@ -49,7 +49,11 @@ function jfusionBuildRoute(&$query)
         }
     }
     if (count($segments)) {
-        $segments[count($segments) - 1].= '/';
+	    $config = JFactory::getConfig();
+	    $sef_suffix = $config->getValue('config.sef_suffix');
+	    if (!$sef_suffix) {
+		    $segments[count($segments) - 1].= '/';
+	    }
     }
 
     if (defined('ROUTED_JNAME')) {
