@@ -418,11 +418,11 @@ class JFusionFactory
                 $query .= ' WHERE slave = 1 AND status = 1';
                 break;
             case 'master':
-                $query = ' WHERE master = 1 AND status = 1';
+                $query .= ' WHERE master = 1 AND status = 1';
                 break;
             default:
             case 'all':
-                $query = ' WHERE status = 1';
+                $query .= ' WHERE status = 1';
                 break;
         }
         $key = $criteria.'-'.$joomla.'-'.$active;
