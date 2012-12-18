@@ -66,7 +66,7 @@ JFusionFunctionAdmin::displayDonate();
 			    <div style="float:left;">
 			            <div class="icon">
 			                <a href="index.php?option=com_jfusion&task=loginchecker" >
-                                <img src="components/com_jfusion/images/login_checker_small.png">
+                                <img src="components/com_jfusion/images/login_checker.png">
                                 <span>
                                     <?php echo JText::_('CP_LOGIN_CHECKER'); ?>
                                 </span>
