@@ -321,11 +321,6 @@ if ($this->up2date) {
                         confirmSubmit('release');
                     });
                 });
-                window.addEvent('domready',function() {
-                    $('update_jfusion').addEvent('click', function(e) {
-                        confirmSubmit('release');
-                    });
-                });
 
                 window.addEvent('domready',function() {
                     $('build').addEvent('click', function(e) {
