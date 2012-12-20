@@ -595,25 +595,23 @@ class JFusionDiscussBotHelper {
                                     }
                                 }
 
-	                            if ($valid == 1) {
-		                            $creationMode =& $this->params->get('create_thread','load');
-		                            //make sure create_thread is appropriate
-		                            if ($creationMode == 'reply' && $dbtask != 'create_thread') {
+	                            $creationMode =& $this->params->get('create_thread','load');
+	                            //make sure create_thread is appropriate
+	                            if ($creationMode == 'reply' && $dbtask != 'create_thread') {
+		                            $valid = 0;
+		                            $validity_reason = JText::_('REASON_CREATED_ON_FIRST_REPLY');
+	                            } elseif ($creationMode == 'view') {
+		                            //only create the article if we are in the article view
+		                            $test_view = ($this->option == 'com_k2') ? 'item' : 'article';
+		                            if (JRequest::getVar('view') != $test_view) {
 			                            $valid = 0;
-			                            $validity_reason = JText::_('REASON_CREATED_ON_FIRST_REPLY');
-		                            } elseif ($creationMode == 'view') {
-			                            //only create the article if we are in the article view
-			                            $test_view = ($this->option == 'com_k2') ? 'item' : 'article';
-			                            if (JRequest::getVar('view') != $test_view) {
-				                            $valid = 0;
-				                            $validity_reason = JText::_('REASON_CREATED_ON_VIEW');
-			                            }
-		                            } elseif ($creationMode == 'new' && !$skip_new_check) {
-			                            //if set to create a thread for new articles only, make sure the thread was created with onAfterContentSave
-			                            if (!$this->thread_status) {
-				                            $valid = 0;
-				                            $validity_reason = JText::_('REASON_ARTICLE_NOT_NEW');
-			                            }
+			                            $validity_reason = JText::_('REASON_CREATED_ON_VIEW');
+		                            }
+	                            } elseif ($creationMode == 'new' && !$skip_new_check) {
+		                            //if set to create a thread for new articles only, make sure the thread was created with onAfterContentSave
+		                            if (!$this->thread_status) {
+			                            $valid = 0;
+			                            $validity_reason = JText::_('REASON_ARTICLE_NOT_NEW');
 		                            }
 	                            }
                             }
