@@ -550,26 +550,6 @@ JS;
         $list_box.= '</select>';
         $plugin = array();
         if ($JFusionMaster) {
-            $new = new stdClass;
-            if ($master_usergroups) {
-                foreach ($master_usergroups as $master_usergroup) {
-	                if (!empty($master_usergroup->id)) {
-                        $new->{$master_usergroup->id} = $master_usergroup->name;
-	                }
-                }
-            }
-            $master_usergroups = $new;
-
-            $new = new stdClass;
-            if ($master_usergroups) {
-                foreach ($usergroups as $usergroup) {
-	                if (!empty($usergroup->id)) {
-		                $new->{$usergroup->id} = $usergroup->name;
-	                }
-                }
-            }
-            $usergroups = $new;
-
             $plugin['name'] = $this->getJname();
             $plugin['master'] = $JFusionMaster->getJname();
             $plugin['count'] = $jfGroupCount;
@@ -658,10 +638,12 @@ JS;
 				elSelNew.name='params[multiusergroup]['+name+']['+count+'][]';
 				var x;
 				for (x in groups) {
-					var elOptNew = document.createElement('option');
-					elOptNew.text = groups[x];
-					elOptNew.value = x;
-					elSelNew.appendChild(elOptNew);
+					if (groups.hasOwnProperty(x)) {
+						var elOptNew = document.createElement('option');
+						elOptNew.text = groups[x].name;
+						elOptNew.value = groups[x].id;
+						elSelNew.appendChild(elOptNew);
+					}
 				}
 				return elSelNew;
 	        }
