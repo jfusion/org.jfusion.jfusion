@@ -130,12 +130,17 @@ class JFusionHelper_efront {
         // should make note so duplicate groups in efront is not a jFusion bug.
 
         $user_types = array();
-        $user_types[0]['id']='0';
-        $user_types[0]['name']='student';
-        $user_types[1]['id']='1';
-        $user_types[1]['name']='professor';
-        $user_types[2]['id']='2';
-        $user_types[2]['name']='administrator';
+	    $user_types[0] = new stdClass;
+        $user_types[0]->id ='0';
+        $user_types[0]->name ='student';
+
+	    $user_types[1] = new stdClass;
+	    $user_types[1]->id ='1';
+	    $user_types[1]->name ='professor';
+
+	    $user_types[2] = new stdClass;
+	    $user_types[2]->id ='2';
+	    $user_types[3]->name ='administrator';
 
         //get the connection to the db
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -145,10 +150,10 @@ class JFusionHelper_efront {
         $additional_types = $db->loadObjectList();
         // constrct the array
         $i = 3;
-        foreach ($additional_types as $usertype1){
-            $usertype = (array)$usertype1;
-            $user_types[$i]['id'] = $usertype['id']+2; // correct id
-            $user_types[$i]['name'] = $usertype['name'].' ('.$usertype['basic_user_type'].')';
+        foreach ($additional_types as $usertype){
+	        $user_types[$i] = new stdClass;
+			$user_types[$i]->id = $usertype->id+2;
+	        $user_types[$i]->name = $usertype->name.' ('.$usertype->basic_user_type.')';
             $i++;
         }
         return $user_types;

@@ -176,8 +176,9 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
             case 'osc2':
             case 'osc3':
                 $result = array();
-                $result[0]['id'] = 0;
-                $result[0]['name'] = '-none-';
+		        $result[0] = new stdClass;
+		        $result[0]->id ='0';
+		        $result[0]->name ='-none-';
                 return $result;
             case 'osczen':
                 $db = JFusionFactory::getDataBase($this->getJname());
@@ -186,8 +187,9 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
                 //getting the results
                 $result1 = $db->loadObjectList();
                 $result = array();
-                $result[0]['id'] = 0;
-                $result[0]['name'] = '-none-';
+	            $result[0] = new stdClass;
+	            $result[0]->id ='0';
+	            $result[0]->name ='-none-';
                 $result = array_merge((array)$result, (array)$result1);
                 return $result;
             case 'oscxt':
