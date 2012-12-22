@@ -43,16 +43,16 @@
 			<option value="1">JYES</option>
 		</field>
 			<field name="parse_css" type="list" default="1" label="PARSE_CSS" description="PARSE_CSS">
-				<option value="1">YES</option>
-				<option value="0">NO</option>
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
 			</field>
 			<field name="parse_infile_css" type="list" default="1" label="PARSE_INFILE_CSS" description="PARSE_INFILE_CSS">
-				<option value="1">YES</option>
-				<option value="0">NO</option>
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
 			</field>
 			<field name="default_css" type="list" default="1" label="DEFAULT_CSS" description="DEFAULT_CSS">
-				<option value="1">YES</option>
-				<option value="0">NO</option>
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
 			</field>
 			<field name="default_css_overflow" type="list" default="visible" label="DEFAULT_CSS_OVERFLOW" description="DEFAULT_CSS_OVERFLOW">
 				<option value="visible">visible</option>
@@ -98,16 +98,16 @@
 		</param>
 		
 		<param name="parse_css" type="list" default="1" label="PARSE_CSS" description="PARSE_CSS">
-			<option value="1">YES</option>
-			<option value="0">NO</option>
+			<option value="1">YYES</option>
+			<option value="0">YNO</option>
 		</param>
 		<param name="parse_infile_css" type="list" default="1" label="PARSE_INFILE_CSS" description="PARSE_INFILE_CSS">
-			<option value="1">YES</option>
-			<option value="0">NO</option>
+			<option value="1">YYES</option>
+			<option value="0">YNO</option>
 		</param>
 		<param name="default_css" type="list" default="1" label="DEFAULT_CSS" description="DEFAULT_CSS">
-			<option value="1">YES</option>
-			<option value="0">NO</option>
+			<option value="1">YYES</option>
+			<option value="0">YNO</option>
 		</param>
 		<param name="default_css_overflow" type="list" default="visible" label="DEFAULT_CSS_OVERFLOW" description="DEFAULT_CSS_OVERFLOW">
 			<option value="visible">visible</option>

@@ -77,22 +77,22 @@
 
 		<param name=" " type="helptext" default="AUTO_UPDATE_DESCR" label=""/>
 		<param name="update_activation" type="list" default="1" label="UPDATE_ACTIVATION" description="UPDATE_ACTIVATION">
-			<option value="1">YES</option>
-			<option value="0">NO</option>
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
 		</param>
 		<param name="update_block" type="list" default="1" label="UPDATE_BLOCK" description="UPDATE_BLOCK">
-			<option value="1">YES</option>
-			<option value="0">NO</option>
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
 		</param>
 		<param name="update_email" type="list" default="1" label="UPDATE_EMAIL" description="UPDATE_EMAIL">
-			<option value="1">YES</option>
-			<option value="0">NO</option>
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
 		</param>
 		<param name="@spacer" type="spacer" default="" label="" description="" />
 		<param name=" " type="helptext" default="ALLOW_DELETE_USERS_DESCR" label=""/>
 		<param name="allow_delete_users" type="list" default="0" label="ALLOW_DELETE_USERS" description="ALLOW_DELETE_USERS">
-		    <option value="1">YES</option>
-		    <option value="0">NO</option>
+		    <option value="1">JYES</option>
+		    <option value="0">JNO</option>
 		</param>
 
 
@@ -118,27 +118,27 @@
 		<param name="jfusionbox" type="text" default="hide" label="CURL_OPTIONS" description="CURL_OPTIONS" />
 		<param name="cookie_expires" type="text" size="5" label="COOKIE_TIME" default="1800" description="COOKIE_TIME" />
 		<param name="secure" type="list" default="0" label="COOKIE_SECURE" description="COOKIE_SECURE">
-			<option value="1">YES</option>
-			<option value="0">NO</option>
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
 		</param>
 		<param name="httponly" type="list" default="0" label="COOKIE_HTTPONLY" description="COOKIE_HTTPONLY">
-			<option value="1">YES</option>
-			<option value="0">NO</option>
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
 		</param>
 		<param name="override" type="text" size="60" label="CURL_COOKIE_OVERRIDE" default="cookielength=-1" description="CURL_COOKIE_OVERRIDE" />
 		<param name="leavealone" type="text" size="60" label="CURL_COOKIE_LEAVEALONE" default="" description="CURL_COOKIE_LEAVEALONE" />
 		<param name="integrationtype" type="text" size="3" label="CURL_INTEGRATIONTYPE" default="1" description="CURL_INTEGRATIONTYPE" />
 		<param name="relpath" type="list" default="0" label="CURL_RELPATH" description="CURL_RELPATH">
-			<option value="1">YES</option>
-			<option value="0">NO</option>
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
 		</param>
 		<param name="hidden" type="list" default="1" label="CURL_HIDDEN" description="CURL_HIDDEN">
-			<option value="1">YES</option>
-			<option value="0">NO</option>
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
 		</param>
 		<param name="buttons" type="list" default="1" label="CURL_BUTTONS" description="CURL_BUTTONS">
-			<option value="1">YES</option>
-			<option value="0">NO</option>
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
 		</param>
 		<param name="@spacer" type="spacer" default="" label="" description="" />
 		<param name=" " type="helptext" default="LOGIN_IDENTIFIER_DESCR" label=""/>
