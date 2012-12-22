@@ -53,7 +53,7 @@ function login_jfusion(&$username, &$password) {
             $mainframe = startJoomla();
             //define that the phpBB3 JFusion plugin needs to be excluded
             global $JFusionActivePlugin;
-            $JFusionActivePlugin ='phpbb3';
+            $JFusionActivePlugin ='JFUSION_JNAME';
             // do the login
             $credentials = array('username' => $username, 'password' => $password);
             $options = array('entry_url' => JURI::root() . 'index.php?option=com_user&task=login', 'silent' => true);
@@ -158,7 +158,7 @@ function logout_jfusion(&$data) {
 
         //define that the phpBB3 JFusion plugin needs to be excluded
         global $JFusionActivePlugin;
-        $JFusionActivePlugin ='phpbb3';
+        $JFusionActivePlugin ='JFUSION_JNAME';
         $mainframe = startJoomla();
         // logout any joomla users
         $mainframe->logout();
@@ -239,9 +239,8 @@ function logout_jfusion(&$data) {
  * @return JApplication
  */
 function startJoomla() {
-    global $phpbb_root_path;
     define('_JFUSIONAPI_INTERNAL', true);
-    require_once $phpbb_root_path . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR  . 'jfusionapi.php';
+    require_once 'JFUSION_PATH' . DIRECTORY_SEPARATOR  . 'jfusionapi.php';
     $mainframe = JFusionAPIInternal::startJoomla();
     return $mainframe;
 }

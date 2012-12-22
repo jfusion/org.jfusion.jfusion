@@ -437,11 +437,10 @@ HTML;
         //get the joomla path from the file
         jimport('joomla.filesystem.file');
         $file_data = JFile::read($auth_file);
-        preg_match_all('/define\(\'JPATH_BASE\'\,(.*)\)/', $file_data, $matches);
         //compare it with our joomla path
-        if ($matches[1][0] != '\'' . JPATH_SITE . '\'') {
-            $file_data = preg_replace('/define\(\'JPATH_BASE\'\,(.*)\)/', 'define(\'JPATH_BASE\',\'' . JPATH_SITE . '\')', $file_data);
-            $file_data = preg_replace('/\$JFusionActivePlugin \=(.*?)\;/', '$JFusionActivePlugin =\'' . $this->getJname() . '\';', $file_data);
+        if (preg_match_all('/JFUSION_PATH/', $file_data, $matches)) {
+            $file_data = preg_replace('/JFUSION_JNAME/', $this->getJname(), $file_data);
+	        $file_data = preg_replace('/JFUSION_PATH/', JPATH_SITE . DS . 'components' . DS . 'com_jfusion', $file_data);
             JFile::write($auth_file, $file_data);
         }
 
