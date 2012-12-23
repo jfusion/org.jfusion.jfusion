@@ -330,98 +330,101 @@ class plgContentJfusion extends JPlugin
                         $this->helper->thread_status = $this->helper->_get_thread_status();
                         list($this->valid, $this->validity_reason) = $this->helper->_validate($skip_new_check, $skip_k2_check);
                         $this->helper->_debug('Validity: ' . $this->valid . "; " . $this->validity_reason);
+
+
                         $this->ajax_request = JRequest::getInt('ajax_request',0);
+						if ($this->valid) {
+							if ($this->ajax_request) {
+								//get and set the threadinfo
+								$threadid = JRequest::getInt('threadid', 0, 'post');
+								$threadinfo = $this->helper->_get_thread_info();
+								if (empty($threadinfo))  {
+									//could be a manual plug so let's get the thread info directly
+									$JFusionForum = JFusionFactory::getForum($this->jname);
+									$threadinfo = $JFusionForum->getThread($threadid);
+									if (!empty($threadinfo)) {
+										//let's set threadinfo
+										$threadinfo->published = 1;
+										$this->helper->_get_thread_info(false, $threadinfo);
+										//override thread status
+										$this->helper->thread_status = true;
+										//set manual plug
+										$this->manual_plug = true;
+									} elseif ($this->dbtask != 'create_thread' && $this->dbtask != 'create_threadpost') {
+										die('Thread not found!');
+									}
+								}
+							}
 
-                        if ($this->ajax_request) {
-                            //get and set the threadinfo
-                            $threadid = JRequest::getInt('threadid', 0, 'post');
-                            $threadinfo = $this->helper->_get_thread_info();
-                            if (empty($threadinfo))  {
-                                //could be a manual plug so let's get the thread info directly
-                                $JFusionForum = JFusionFactory::getForum($this->jname);
-                                $threadinfo = $JFusionForum->getThread($threadid);
-                                if (!empty($threadinfo)) {
-                                    //let's set threadinfo
-                                    $threadinfo->published = 1;
-                                    $this->helper->_get_thread_info(false, $threadinfo);
-                                    //override thread status
-                                    $this->helper->thread_status = true;
-                                    //set manual plug
-                                    $this->manual_plug = true;
-                                } elseif ($this->dbtask != 'create_thread' && $this->dbtask != 'create_threadpost') {
-                                    die('Thread not found!');
-                                }
-                            }
-                        }
+							if ($this->dbtask == 'create_thread') {
+								//this article has been manually initiated for discussion
+								$this->_create_thread();
+							} elseif (($this->dbtask == 'create_post' || $this->dbtask == 'create_threadpost') && $this->params->get('enable_quickreply',false)) {
+								//a quick reply has been submitted so let's create the post
+								$this->_create_post();
+							} elseif ($this->dbtask == 'unpublish_discussion') {
+								//an article has been "uninitiated"
+								$this->_unpublish_discussion();
+							} elseif ($this->dbtask == 'publish_discussion') {
+								//an article has been "reinitiated"
+								$this->_publish_discussion();
+							}
 
-                        if ($this->dbtask == 'create_thread') {
-                            //this article has been manually initiated for discussion
-                            $this->_create_thread();
-                        } elseif (($this->dbtask == 'create_post' || $this->dbtask == 'create_threadpost') && $this->params->get('enable_quickreply',false)) {
-                            //a quick reply has been submitted so let's create the post
-                            $this->_create_post();
-                        } elseif ($this->dbtask == 'unpublish_discussion') {
-                            //an article has been "uninitiated"
-                            $this->_unpublish_discussion();
-                        } elseif ($this->dbtask == 'publish_discussion') {
-                            //an article has been "reinitiated"
-                            $this->_publish_discussion();
-                        }
+							//save the visibility of the posts if applicable
+							$show_discussion = JRequest::getVar('show_discussion','');
+							if ($show_discussion!=='') {
+								$JSession = JFactory::getSession();
+								$JSession->set('jfusion.discussion.visibility',(int) $show_discussion);
+							}
 
-                        //save the visibility of the posts if applicable
-                        $show_discussion = JRequest::getVar('show_discussion','');
-                        if ($show_discussion!=='') {
-                            $JSession = JFactory::getSession();
-                            $JSession->set('jfusion.discussion.visibility',(int) $show_discussion);
-                        }
+							//check for some specific ajax requests
+							if ($this->ajax_request) {
+								//check to see if this is an ajax call to update the pagination
+								if ($this->params->get('enable_pagination',1) && $this->dbtask == 'update_pagination') {
+									$this->_update_pagination();
+									die('Something else was suppose to happen');
+								}
 
-                        //check for some specific ajax requests
-                        if ($this->ajax_request) {
-                            //check to see if this is an ajax call to update the pagination
-                            if ($this->params->get('enable_pagination',1) && $this->dbtask == 'update_pagination') {
-                                $this->_update_pagination();
-                                die('Something else was suppose to happen');
-                            }
+								if ($this->params->get('show_posts',1) && $this->dbtask == 'update_posts') {
+									$this->_update_posts();
+									die('Something else was suppose to happen');
+								}
 
-                            if ($this->params->get('show_posts',1) && $this->dbtask == 'update_posts') {
-                                $this->_update_posts();
-                                die('Something else was suppose to happen');
-                            }
+								if ($this->dbtask=='update_content') {
+									$threadinfo =& $this->helper->_get_thread_info();
+									if (!empty($threadinfo->published)) {
+										//content is now published so display it
+										die($this->_render_discussion_content($threadinfo));
+									} else {
+										//content is now not published so remove it
+										die();
+									}
+								}
 
-                            if ($this->dbtask=='update_content') {
-                                $threadinfo =& $this->helper->_get_thread_info();
-                                if (!empty($threadinfo->published)) {
-                                    //content is now published so display it
-                                    die($this->_render_discussion_content($threadinfo));
-                                } else {
-                                    //content is now not published so remove it
-                                    die();
-                                }
-                            }
+								if ($this->dbtask == 'update_buttons') {
+									$this->_update_buttons();
+									die('Something else was suppose to happen');
+								}
 
-                            if ($this->dbtask == 'update_buttons') {
-                                $this->_update_buttons();
-                                die('Something else was suppose to happen');
-                            }
+								if ($this->dbtask == 'update_debug_info') {
+									$this->_render_debug_output();
+									die('Something else was suppose to happen');
+								}
 
-                            if ($this->dbtask == 'update_debug_info') {
-                                $this->_render_debug_output();
-                                die('Something else was suppose to happen');
-                            }
+								if ($show_discussion!=='') {
+									die('jfusion.discussion.visibility set to '.$show_discussion);
+								}
 
-                            if ($show_discussion!=='') {
-                                die('jfusion.discussion.visibility set to '.$show_discussion);
-                            }
+								die("Discussion bot ajax request made but it doesn't seem to have been picked up");
+							}
 
-                            die("Discussion bot ajax request made but it doesn't seem to have been picked up");
-                        }
-
-                        //add scripts to header
-                        static $scriptsLoaded;
-                        if (empty($scriptsLoaded)) {
-                            $this->helper->_load_scripts();
-                            $scriptsLoaded = 1;
-                        }
+							//add scripts to header
+							static $scriptsLoaded;
+							if (empty($scriptsLoaded)) {
+								$this->helper->_load_scripts();
+								$scriptsLoaded = 1;
+							}
+						}
 
                         if (empty($this->article->params) && !empty($this->article->parameters)) {
                             $this->article->params =& $this->article->parameters;
