@@ -188,8 +188,12 @@ class JFusionFrameless {
         $session = JFactory::getSession();
         $token = $session->getToken();
 
-        $JFusionPlugin->data = $data;
+		$REQUEST = $_REQUEST; // backup variables
+
+		$JFusionPlugin->data = $data;
 		$JFusionPlugin->getBuffer ( $data );
+
+		$_REQUEST = $REQUEST; // restore backup
 
         //restore session token
         $session->set('session.token', $token);
