@@ -65,6 +65,7 @@ class modjfusionWhosOnlineHelper {
             if(is_array($output->online_users)) {
                 // process result
                 foreach($output->online_users as $u) {
+	                $u->output = new stdClass();
                     $jfusion_userid = 0;
                     //assign the joomla_userid and jfusion_userid variables
                     if($link_jname==$jname) {

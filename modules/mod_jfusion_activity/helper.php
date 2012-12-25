@@ -47,6 +47,7 @@ class modjfusionActivityHelper
         $public = JFusionFactory::getPublic($jname);
         if (is_array($results)) {
             foreach ($results as $r) {
+	            $r->output = new stdClass();
                 //get the Joomla userid
                 $userlookup = JFusionFunction::lookupUser($jname, $r->userid, false, $r->username);
 
