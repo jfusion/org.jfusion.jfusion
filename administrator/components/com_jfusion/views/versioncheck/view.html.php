@@ -52,7 +52,7 @@ class jfusionViewversioncheck extends JView
 		jimport('joomla.version');
 		$jversion = new JVersion();
 		$jfusionurl = new stdClass;
-		$jfusionurl->url = 'http://update.jfusion.org/jfusion/joomla?version='.$jversion->getShortVersion();
+		$jfusionurl->url = 'http://update.jfusion.org/jfusion/joomla/?version='.$jversion->getShortVersion();
 		$jfusionurl->jnames = array();
 		$urls[md5($jfusionurl->url)] = $jfusionurl;
 		foreach ($plugins as $plugin) {
