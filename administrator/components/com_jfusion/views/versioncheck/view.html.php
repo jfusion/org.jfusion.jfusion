@@ -49,12 +49,9 @@ class jfusionViewversioncheck extends JView
 		$db->setQuery($query);
 		$plugins = $db->loadObjectList();
 
-		/**
-		 * @ignore
-		 * @var $parser JSimpleXML
-		 */
+		jimport('joomla.version');
 		$jfusionurl = new stdClass;
-		$jfusionurl->url = 'http://update.jfusion.org/';
+		$jfusionurl->url = 'http://update.jfusion.org/jfusion/joomla?version='.JVersion::getShortVersion();
 		$jfusionurl->jnames = array();
 		$urls[md5($jfusionurl->url)] = $jfusionurl;
 		foreach ($plugins as $plugin) {
