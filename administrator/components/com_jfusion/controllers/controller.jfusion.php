@@ -698,149 +698,137 @@ JS;
     function import()
     {
         $jname = JRequest::getVar('jname');
-        $url = 'http://update.jfusion.org/jfusion_universal.xml';
-        $ConfigList = JFusionFunctionAdmin::getFileData($url);
-
-        /**
-         * @ignore
-         * @var $xmlList JSimpleXML
-         */
-        $xmlList = JFactory::getXMLParser('Simple');
-        $xmlList->loadString($ConfigList);
 
         $msg = null;
         $error = null;
 
-        if( isset($xmlList->document) ) {
-            jimport('joomla.utilities.simplexml');
-            $file = JRequest::getVar( 'file', '', 'FILES','ARRAY');
+	    jimport('joomla.utilities.simplexml');
+	    $file = JRequest::getVar( 'file', '', 'FILES','ARRAY');
 
-            $xmlname = JRequest::getVar('xmlname');
-            /**
-             * @ignore
-             * @var $xmlFile JSimpleXML
-             */
-            $xmlFile = JFactory::getXMLParser('Simple');
-            if( !empty($xmlname) ) {
-                //custom for development purposes / local use only; note do not commit your URL to SVN!!!
-                $url = 'http://update.jfusion.org/configs/jfusion_'.$xmlname.'_config.xml';
-                $ConfigFile = JFusionFunctionAdmin::getFileData($url);
-                if ( !empty($ConfigFile) ) {
-                    $xmlFile->loadString($ConfigFile);
-                } else {
-                    $error = $jname . ': ' . JText::_('ERROR_LOADING_FILE').': '.$file['tmp_name'];
-                }
-            } else {
-                if( $file['error'] > 0 ) {
-                    switch ($file['error']) {
-                        case UPLOAD_ERR_INI_SIZE:
-                            $error = JText::_('UPLOAD_ERR_INI_SIZE');
-                            break;
-                        case UPLOAD_ERR_FORM_SIZE:
-                            $error = JText::_('UPLOAD_ERR_FORM_SIZE');
-                            break;
-                        case UPLOAD_ERR_PARTIAL:
-                            $error = JText::_('UPLOAD_ERR_PARTIAL');
-                            break;
-                        case UPLOAD_ERR_NO_FILE:
-                            $error = JText::_('UPLOAD_ERR_NO_FILE');
-                            break;
-                        case UPLOAD_ERR_NO_TMP_DIR:
-                            $error = JText::_('UPLOAD_ERR_NO_TMP_DIR');
-                            break;
-                        case UPLOAD_ERR_CANT_WRITE:
-                            $error = JText::_('UPLOAD_ERR_CANT_WRITE');
-                            break;
-                        case UPLOAD_ERR_EXTENSION:
-                            $error = JText::_('UPLOAD_ERR_EXTENSION');
-                            break;
-                        default:
-                            $error = JText::_('UNKNOWN_UPLOAD_ERROR');
-                    }
-                    $error = $jname . ': ' . JText::_('ERROR').': '.$error;
-                } else {
-                    if(!$xmlFile->loadFile($file['tmp_name']) ) {
-                        $error = $jname . ': ' . JText::_('ERROR_LOADING_FILE').': '.$file['tmp_name'];
-                    }
-                }
-            }
+	    $url = JRequest::getVar('url');
+	    /**
+	     * @ignore
+	     * @var $xmlFile JSimpleXML
+	     */
+	    $xmlFile = JFactory::getXMLParser('Simple');
+	    if( !empty($url) ) {
+		    $url = base64_decode($url);
+		    $ConfigFile = JFusionFunctionAdmin::getFileData($url);
+		    if ( !empty($ConfigFile) ) {
+			    $xmlFile->loadString($ConfigFile);
+		    } else {
+			    $error = $jname . ': ' . JText::_('ERROR_LOADING_FILE').': '.$file['tmp_name'];
+		    }
+	    } else {
+		    if( $file['error'] > 0 ) {
+			    switch ($file['error']) {
+				    case UPLOAD_ERR_INI_SIZE:
+					    $error = JText::_('UPLOAD_ERR_INI_SIZE');
+					    break;
+				    case UPLOAD_ERR_FORM_SIZE:
+					    $error = JText::_('UPLOAD_ERR_FORM_SIZE');
+					    break;
+				    case UPLOAD_ERR_PARTIAL:
+					    $error = JText::_('UPLOAD_ERR_PARTIAL');
+					    break;
+				    case UPLOAD_ERR_NO_FILE:
+					    $error = JText::_('UPLOAD_ERR_NO_FILE');
+					    break;
+				    case UPLOAD_ERR_NO_TMP_DIR:
+					    $error = JText::_('UPLOAD_ERR_NO_TMP_DIR');
+					    break;
+				    case UPLOAD_ERR_CANT_WRITE:
+					    $error = JText::_('UPLOAD_ERR_CANT_WRITE');
+					    break;
+				    case UPLOAD_ERR_EXTENSION:
+					    $error = JText::_('UPLOAD_ERR_EXTENSION');
+					    break;
+				    default:
+					    $error = JText::_('UNKNOWN_UPLOAD_ERROR');
+			    }
+			    $error = $jname . ': ' . JText::_('ERROR').': '.$error;
+		    } else {
+			    if(!$xmlFile->loadFile($file['tmp_name']) ) {
+				    $error = $jname . ': ' . JText::_('ERROR_LOADING_FILE').': '.$file['tmp_name'];
+			    }
+		    }
+	    }
 
-            if (!$error) {
-                $info = $config = null;
-                foreach ($xmlFile->document->children() as $key => $val) {
-                    switch ($val->name()) {
-                        case 'info':
-                            $info = $val;
-                            break;
-                        case 'config':
-                            $config = $val->children();
-                            break;
-                    }
-                }
+	    if (!$error) {
+		    $info = $config = null;
+		    foreach ($xmlFile->document->children() as $key => $val) {
+			    switch ($val->name()) {
+				    case 'info':
+					    $info = $val;
+					    break;
+				    case 'config':
+					    $config = $val->children();
+					    break;
+			    }
+		    }
 
-                if (!$info || !$config) {
-                    JError::raiseWarning(0, $jname . ': ' . JText::_('ERROR_FILE_SYNTAX').': '.$file['type'] );
-                    $error = $jname . ': ' . JText::_('ERROR_FILE_SYNTAX').': '.$file['type'];
-                } else {
-	                $original_name = (string)$info->attributes('original_name');
-	                $db = JFactory::getDBO();
-	                $query = 'SELECT name , original_name from #__jfusion WHERE name = ' . $db->Quote($jname);
-	                $db->setQuery($query);
-	                $plugin = $db->loadObject();
+		    if (!$info || !$config) {
+			    JError::raiseWarning(0, $jname . ': ' . JText::_('ERROR_FILE_SYNTAX').': '.$file['type'] );
+			    $error = $jname . ': ' . JText::_('ERROR_FILE_SYNTAX').': '.$file['type'];
+		    } else {
+			    $original_name = (string)$info->attributes('original_name');
+			    $db = JFactory::getDBO();
+			    $query = 'SELECT name , original_name from #__jfusion WHERE name = ' . $db->Quote($jname);
+			    $db->setQuery($query);
+			    $plugin = $db->loadObject();
 
-	                if ($plugin) {
-		                $pluginname = $plugin->original_name ? $plugin->original_name : $plugin->name;
-		                if ($pluginname == $original_name) {
-			                $conf = array();
-			                /**
-			                 * @ignore
-			                 * @var $val JSimpleXMLElement
-			                 */
-			                foreach ($config as $key => $val) {
-				                $attName = (string)$val->attributes('name');
-				                $conf[$attName] = htmlspecialchars_decode($val->data());
-				                if ( strpos($conf[$attName], 'a:') === 0 ) $conf[$attName] = unserialize($conf[$attName]);
-			                }
+			    if ($plugin) {
+				    $pluginname = $plugin->original_name ? $plugin->original_name : $plugin->name;
+				    if ($pluginname == $original_name) {
+					    $conf = array();
+					    /**
+					     * @ignore
+					     * @var $val JSimpleXMLElement
+					     */
+					    foreach ($config as $key => $val) {
+						    $attName = (string)$val->attributes('name');
+						    $conf[$attName] = htmlspecialchars_decode($val->data());
+						    if ( strpos($conf[$attName], 'a:') === 0 ) $conf[$attName] = unserialize($conf[$attName]);
+					    }
 
-			                $database_type = JRequest::getVar('database_type');
-			                $database_host = JRequest::getVar('database_host');
-			                $database_name = JRequest::getVar('database_name');
-			                $database_user = JRequest::getVar('database_user');
-			                $database_password = JRequest::getVar('database_password');
-			                $database_prefix = JRequest::getVar('database_prefix');
+					    $database_type = JRequest::getVar('database_type');
+					    $database_host = JRequest::getVar('database_host');
+					    $database_name = JRequest::getVar('database_name');
+					    $database_user = JRequest::getVar('database_user');
+					    $database_password = JRequest::getVar('database_password');
+					    $database_prefix = JRequest::getVar('database_prefix');
 
-			                if( !empty($database_type) ) $conf['database_type'] = $database_type;
-			                if( !empty($database_host) ) $conf['database_host'] = $database_host;
-			                if( !empty($database_name) ) $conf['database_name'] = $database_name;
-			                if( !empty($database_user) ) $conf['database_user'] = $database_user;
-			                if( !empty($database_password) ) $conf['database_password'] = $database_password;
-			                if( !empty($database_prefix) ) $conf['database_prefix'] = $database_prefix;
+					    if( !empty($database_type) ) $conf['database_type'] = $database_type;
+					    if( !empty($database_host) ) $conf['database_host'] = $database_host;
+					    if( !empty($database_name) ) $conf['database_name'] = $database_name;
+					    if( !empty($database_user) ) $conf['database_user'] = $database_user;
+					    if( !empty($database_password) ) $conf['database_password'] = $database_password;
+					    if( !empty($database_prefix) ) $conf['database_prefix'] = $database_prefix;
 
-			                if (!JFusionFunctionAdmin::saveParameters($jname, $conf)) {
-				                $error = $jname . ': ' . JText::_('SAVE_FAILURE');
-			                } else {
-				                //update the status field
-				                $JFusionPlugin = JFusionFactory::getAdmin($jname);
-				                $config_status = $JFusionPlugin->checkConfig();
-				                $db = JFactory::getDBO();
-				                $query = 'UPDATE #__jfusion SET status = ' . $config_status['config'] . ' WHERE name =' . $db->Quote($jname);
-				                $db->setQuery($query);
-				                $db->query();
-				                if (empty($config_status['config'])) {
-					                $error = $jname . ': ' . $config_status['message'];
-				                } else {
-					                $msg = $jname . ': ' . JText::_('IMPORT_SUCCESS');
-				                }
-			                }
-		                } else {
-			                $error = $jname.': '.JText::_('PLUGIN_DONT_MATCH_XMLFILE');
-		                }
-	                } else {
-		                $error = $jname.': '.JText::_('PLUGIN_NOT_FOUNED');
-	                }
-                }
-            }
-        }
+					    if (!JFusionFunctionAdmin::saveParameters($jname, $conf)) {
+						    $error = $jname . ': ' . JText::_('SAVE_FAILURE');
+					    } else {
+						    //update the status field
+						    $JFusionPlugin = JFusionFactory::getAdmin($jname);
+						    $config_status = $JFusionPlugin->checkConfig();
+						    $db = JFactory::getDBO();
+						    $query = 'UPDATE #__jfusion SET status = ' . $config_status['config'] . ' WHERE name =' . $db->Quote($jname);
+						    $db->setQuery($query);
+						    $db->query();
+						    if (empty($config_status['config'])) {
+							    $error = $jname . ': ' . $config_status['message'];
+						    } else {
+							    $msg = $jname . ': ' . JText::_('IMPORT_SUCCESS');
+						    }
+					    }
+				    } else {
+					    $error = $jname.': '.JText::_('PLUGIN_DONT_MATCH_XMLFILE');
+				    }
+			    } else {
+				    $error = $jname.': '.JText::_('PLUGIN_NOT_FOUNED');
+			    }
+		    }
+	    }
         $mainframe = JFactory::getApplication();
         if ($error) {
             JError::raiseWarning(0, $error );

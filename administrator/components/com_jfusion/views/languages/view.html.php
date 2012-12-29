@@ -46,7 +46,9 @@ class jfusionViewlanguages extends JView
          * @ignore
          * @var $parser JSimpleXML
          */
-        $data = JFusionFunctionAdmin::getFileData('http://update.jfusion.org/');
+	    jimport('joomla.version');
+	    $jversion = new JVersion();
+        $data = JFusionFunctionAdmin::getFileData('http://update.jfusion.org/joomla/joomla/?version='.$jversion->getShortVersion());
         $parser = JFactory::getXMLParser('Simple');
 
         $lang_repo = array();
