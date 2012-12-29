@@ -353,7 +353,7 @@ if ($this->up2date) {
 
                 <input id="release" type="button" value="<?php echo JText::_('INSTALL') . ' ' . JText::_('LATEST') . ' ' . JText::_('RELEASE'); ?>"/>
                 <br/>
-                <input id="build" type="button" value="<?php echo JText::_('INSTALL') . ' ' . JText::_('LATEST') . ' Git Tree'; ?>"/>
+                <input id="build" type="button" value="<?php echo JText::_('INSTALL') . ' ' . JText::_('LATEST') . ' ' . JText::_('DEVELOPMENT') . ' ' . JText::_('RELEASE'); ?>"/>
                 <br/>
                 Git Tree:
                 <input type="text" name="git_tree" size="40"/>
