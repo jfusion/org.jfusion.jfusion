@@ -354,8 +354,7 @@ window.addEvent('domready',function() {
 <?php echo JText::_('PLUGIN_INSTALL_INSTR'); ?><br/>
 
 <?php if($this->VersionData) {
-//display installer data
-$jfusion_plugins = $this->VersionData->getElementByPath('plugins')->children(); ?>
+//display installer data ?>
 
 <form id="installSVN" method="post" action="index.php" enctype="multipart/form-data">
 	<input type="hidden" name="option" value="com_jfusion" />
@@ -387,7 +386,7 @@ $jfusion_plugins = $this->VersionData->getElementByPath('plugins')->children(); 
                                  * @ignore
                                  * @var $plugin JSimpleXMLElement
                                  */
-                                foreach ($jfusion_plugins as $plugin): ?>
+                                foreach ($this->VersionData as $plugin): ?>
 			    				<option value="<?php echo $plugin->getElementByPath('remotefile')->data() ?>"><?php echo $plugin->name() . ' - ' . $plugin->getElementByPath('description')->data(); ?></option>
 			    				<?php endforeach; ?>
 			            	</select>

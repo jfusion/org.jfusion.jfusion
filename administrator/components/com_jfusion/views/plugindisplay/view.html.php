@@ -94,8 +94,11 @@ class jfusionViewplugindisplay extends JView {
                 
                 $plugins[]=$record;
             }
+
+	        jimport('joomla.version');
+	        $jversion = new JVersion();
             //get the install xml
-	        $url = 'http://update.jfusion.org/';
+	        $url = 'http://update.jfusion.org/jfusion/joomla/?version'.$jversion->getShortVersion();
 	        $VersionDataRaw = JFusionFunctionAdmin::getFileData($url);
             $VersionData = null;
 	        if (!empty($VersionDataRaw)) {
@@ -110,6 +113,14 @@ class jfusionViewplugindisplay extends JView {
 	                    unset($parser);
 	                }
 	            }
+	        }
+	        if ($VersionData) {
+		        $VersionData = $VersionData->getElementByPath('plugins');
+		        if ($VersionData) {
+			        $VersionData = $VersionData->children();
+		        } else {
+			        $VersionData = null;
+		        }
 	        }
 
             //set the error messages
