@@ -171,7 +171,7 @@ $paneTabs = JPane::getInstance('tabs');
                         </script>
                         <tr>
                             <td style="vertical-align:top">
-                                <input type=radio name="xmlname" value="<?php echo base64_encode($remotefile); ?>">
+                                <input type=radio name="url" value="<?php echo base64_encode($remotefile); ?>">
                             </td>
                             <td>
 						        <?php echo ucfirst($name); ?>
