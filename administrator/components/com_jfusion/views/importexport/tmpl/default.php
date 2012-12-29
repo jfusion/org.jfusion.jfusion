@@ -146,12 +146,20 @@ $paneTabs = JPane::getInstance('tabs');
 		         * @var $val JSimpleXMLElement
 		         */
 		        foreach ($this->xmlList->document->children() as $key => $val) {
-			        $original_name = $val->attributes('original_name');
-			        $name = $val->attributes('name');
+			        $original_name = $val->getElementByPath('originalname')->data();
+			        $name = $val->getElementByPath('name')->data();
+
 			        if ($name && $original_name == $pluginname) {
-				        $pluginVersion = $val->attributes('version')?$val->attributes('version'):JText::_('UNKNOWN');
-				        $pluginDesc = $val->attributes('desc')?$val->attributes('desc'):JText::_('JNONE');
-				        $pluginCreator = $val->attributes('creator')?$val->attributes('creator'):JText::_('UNKNOWN');
+				        $version = $val->getElementByPath('version')->data();
+				        $description = $val->getElementByPath('description')->data();
+				        $creator = $val->getElementByPath('creator')->data();
+				        $date = $val->getElementByPath('date')->data();
+				        $remotefile = $val->getElementByPath('remotefile')->data();
+
+				        $version = $version?$version:JText::_('UNKNOWN');
+				        $description = $description?$description:JText::_('JNONE');
+				        $creator = $creator?$creator:JText::_('UNKNOWN');
+				        $date = $date?$date:JText::_('UNKNOWN');
 				        ?>
 
                         <script type="text/javascript">
@@ -169,11 +177,15 @@ $paneTabs = JPane::getInstance('tabs');
 						        <?php echo ucfirst($name); ?>
                                 <a href="javascript:void(0);" id="plugin<?php echo $key;?>">[+]</a>
                                 <div style="display:none;" id="xplugin<?php echo $key; ?>">
-							        <?php echo JText::_('VERSION').': '.$pluginVersion?>
+							        <?php echo JText::_('VERSION').': '.$version?>
                                     <br/>
-							        <?php echo JText::_('DESCRIPTION').': '.ucfirst($pluginDesc)?>
+	                                <?php echo JText::_('DATE').': '.$date?>
                                     <br/>
-							        <?php echo JText::_('CREATOR').': '.$pluginCreator; ?>
+							        <?php echo JText::_('DESCRIPTION').': '.ucfirst($description)?>
+                                    <br/>
+							        <?php echo JText::_('CREATOR').': '.$creator; ?>
+                                    <br/>
+	                                <?php echo JText::_('URL').': <a href="'.$remotefile.'">'.$remotefile. '</a>';?>
                                 </div>
                             </td>
                         </tr>
