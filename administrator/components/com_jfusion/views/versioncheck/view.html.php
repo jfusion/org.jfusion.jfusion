@@ -63,6 +63,11 @@ class jfusionViewversioncheck extends JView
 					if ($update) {
 						$url = new stdClass;
 						$url->url = $update->data();
+						if (strpos($url->url,'?') === false) {
+							$url->url .= '?version='.$jversion->getShortVersion();
+						} else {
+							$url->url .= '&version='.$jversion->getShortVersion();
+						}
 						$url->jnames = array($plugin->name);
 						if (!isset($urls[md5($url->url)])) {
 							$urls[md5($url->url)] = $url;
