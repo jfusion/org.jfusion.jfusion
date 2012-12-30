@@ -48,7 +48,7 @@ class jfusionViewlanguages extends JView
          */
 	    jimport('joomla.version');
 	    $jversion = new JVersion();
-        $data = JFusionFunctionAdmin::getFileData('http://update.jfusion.org/joomla/joomla/?version='.$jversion->getShortVersion());
+        $data = JFusionFunctionAdmin::getFileData('http://update.jfusion.org/jfusion/joomla/?version='.$jversion->getShortVersion());
         $parser = JFactory::getXMLParser('Simple');
 
         $lang_repo = array();
