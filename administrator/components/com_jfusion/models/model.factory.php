@@ -365,7 +365,7 @@ class JFusionFactory
             //added extra code to prevent error when $driver is incorrect
             if ($driver != 'mysql' && $driver != 'mysqli') {
                 //invalid driver
-                JError::raiseWarning(0, JText::_('INVALID_DRIVER'));
+                JError::raiseWarning(0, $jname . ' : ' .JText::_('INVALID_DRIVER'));
                 $db = false;
             } else {
                 //create an options variable that contains all database connection variables
@@ -381,11 +381,11 @@ class JFusionFactory
                     $db = new JFusionMySQLi($options);
                 }
                 if (!method_exists($db, 'Query')) {
-                    JError::raiseWarning(0, JText::_('NO_DATABASE'));
+                    JError::raiseWarning(0, $jname . ' : ' .JText::_('NO_DATABASE'));
                     $db = false;
                 } else {
                     if($db->getErrorNum()) {
-                        JError::raiseWarning(0, JText::_('DATABASE_ERROR') . ': ' . $db->getErrorMsg());
+                        JError::raiseWarning(0, $jname . ' : ' .JText::_('DATABASE_ERROR') . ': ' . $db->getErrorMsg());
                         $db = false;
                     } else {
                         //add support for UTF8
