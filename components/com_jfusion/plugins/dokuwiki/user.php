@@ -113,6 +113,8 @@ class JFusionUser_dokuwiki extends JFusionUser {
                 $this->createUser($userinfo, $status);
                 if (empty($status['error'])) {
                     $status['action'] = 'created';
+                } else {
+	                $status['action'] = 'error';
                 }
             }
         }
