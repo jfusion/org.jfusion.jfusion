@@ -66,8 +66,8 @@ class jfusionViewplugindisplay extends JView {
         $db->setQuery($query );
         $rows = $db->loadObjectList();
         $plugins = array();
-            //disable the default error reports
-            JError::setErrorHandling(E_ALL, "ignore");  
+        //disable the default error reports
+        JError::setErrorHandling(E_ALL, "ignore");
             
         if ($rows) {
             //we found plugins now prepare the data
@@ -185,22 +185,14 @@ class jfusionViewplugindisplay extends JView {
 
      	if($record->status==1) {
          	//added check for database configuration to prevent error after moving sites
-          	$record->config_status =  $JFusionPlugin->checkConfig();
+          	$status =  $JFusionPlugin->checkConfig();
            	//do a check to see if the status field is correct
-          	if ($record->config_status['config'] != $record->status) {
+          	if ($status['config'] != $record->status) {
                	//update the status and deactive the plugin
-             	if($record->name!='joomla_int' && !$record->config_status['config']) {
-                  	$active = 'active = 0, ';
-                   	//deactivate the plugin
-                  	$record->active = 0;
-              	} else {
-                   	$active = '';
-               	}
-
-              	$db->setQuery('UPDATE #__jfusion SET '.$active.'status = '.$db->Quote($record->config_status['config']).' WHERE name =' . $db->Quote($record->name));
+              	$db->setQuery('UPDATE #__jfusion SET status = '.$db->Quote($status['config']).' WHERE name =' . $db->Quote($record->name));
                 $db->query();
                	//update the record status for the resExecute of the code
-            	$record->status = $record->config_status['config'];
+            	$record->status = $status['config'];
          	}
       	}
 
