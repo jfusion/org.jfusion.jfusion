@@ -326,7 +326,6 @@ class JFusionUsersync
                                 }
 
 	                            $sync_log->syncid = $syncdata['syncid'];
-	                            $sync_log->action = $status['action'];
 	                            $sync_log->jname = $jname;
 	                            $sync_log->message = '';
 	                            $sync_log->data = '';
@@ -346,6 +345,7 @@ class JFusionUsersync
                                     $sync_log->data = serialize($sync_error);
                                     $syncdata['sync_errors']++;
                                 } else {
+	                                $sync_log->action = $status['action'];
                                     //usersync loggin enabled
 	                                $sync_log->username = isset($status['userinfo']->username)? $status['userinfo']->username : $userinfo->username;
 	                                $sync_log->email = isset($status['userinfo']->email)? $status['userinfo']->email : $userinfo->email;
