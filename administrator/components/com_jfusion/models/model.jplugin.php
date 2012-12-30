@@ -993,7 +993,7 @@ class JFusionJplugin
                     $password = $userinfo->password . ':' . $userinfo->password_salt;
                 } else {
                     //if password_clear is not available, store hashed password as is and also store the salt if present
-                    if ($userinfo->password_salt) {
+                    if (isset($userinfo->password_salt)) {
                         $password = $userinfo->password . ':' . $userinfo->password_salt;
                     } else {
                         $password = $userinfo->password;
