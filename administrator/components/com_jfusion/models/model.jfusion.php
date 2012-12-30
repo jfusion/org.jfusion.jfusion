@@ -221,75 +221,77 @@ class JFusionFunction
      */
     public static function updateLookup($userinfo, $joomla_id, $jname = '', $delete = false)
     {
-        $db = JFactory::getDBO();
-        //we don't need to update the lookup for internal joomla unless deleting a user
-        if ($jname == 'joomla_int') {
-            if ($delete) {
-                //Delete old user data in the lookup table
-                $query = 'DELETE FROM #__jfusion_users WHERE id =' . $joomla_id . ' OR username = ' . $db->Quote($userinfo->username) . ' OR LOWER(username) = ' . strtolower($db->Quote($userinfo->email));
-                $db->setQuery($query);
-                if (!$db->query()) {
-                    JError::raiseWarning(0, $db->stderr());
-                }
-                //Delete old user data in the lookup table
-                $query = 'DELETE FROM #__jfusion_users_plugin WHERE id =' . $joomla_id . ' OR username = ' . $db->Quote($userinfo->username) . ' OR LOWER(username) = ' . strtolower($db->Quote($userinfo->email));
-                $db->setQuery($query);
-                if (!$db->query()) {
-                    JError::raiseWarning(0, $db->stderr());
-                }
-            }
-        } else {
-            //check to see if we have been given a joomla id
-            if (empty($joomla_id)) {
-                $query = 'SELECT id FROM #__users WHERE username = ' . $db->Quote($userinfo->username);
-                $db->setQuery($query);
-                $joomla_id = $db->loadResult();
-                if (empty($joomla_id)) {
-                    return;
-                }
-            }
-            if (empty($jname)) {
-                $queries = array();
-                //we need to update each master/slave
-                $query = 'SELECT name FROM #__jfusion WHERE master = 1 OR slave = 1';
-                $db->setQuery($query);
-                $jnames = $db->loadObjectList();
-                foreach ($jnames as $jname) {
-                    if ($jname != 'joomla_int') {
-                        $user = JFusionFactory::getUser($jname->name);
-                        $puserinfo = $user->getUser($userinfo);
-                        if ($delete) {
-                            $queries[] = '(id = '.$joomla_id.' AND jname = ' . $db->Quote($jname->name) . ')';
-                        } else {
-                            $queries[] = '(' . $db->Quote($puserinfo->userid) . ',' . $db->Quote($puserinfo->username) . ', '.$joomla_id.', '. $db->Quote($jname->name) . ')';
-                        }
-                        unset($user);
-                        unset($puserinfo);
-                    }
-                }
-                if (!empty($queries)) {
-                    if ($delete) {
-                        $query = 'DELETE FROM #__jfusion_users_plugin WHERE ' . implode(' OR ', $queries);
-                    } else {
-                        $query = 'REPLACE INTO #__jfusion_users_plugin (userid,username,id,jname) VALUES (' . implode(',', $queries) . ')';
-                    }
-                    $db->setQuery($query);
-                    if (!$db->query()) {
-                        JError::raiseWarning(0, $db->stderr());
-                    }
-                }
-            } else {
-                if ($delete) {
-                    $query = 'DELETE FROM #__jfusion_users_plugin WHERE id = '.$joomla_id.' AND jname = '.$db->Quote($jname);
-                } else {
-                    $query = 'REPLACE INTO #__jfusion_users_plugin (userid,username,id,jname) VALUES ('.$db->Quote($userinfo->userid) .' ,'.$db->Quote($userinfo->username) .' ,'.$joomla_id.' , '.$db->Quote($jname).' )';
-                }
-                $db->setQuery($query);
-                if (!$db->query()) {
-                    JError::raiseWarning(0, $db->stderr());
-                }
-            }
-        }
+	    if ($userinfo) {
+		    $db = JFactory::getDBO();
+		    //we don't need to update the lookup for internal joomla unless deleting a user
+		    if ($jname == 'joomla_int') {
+			    if ($delete) {
+				    //Delete old user data in the lookup table
+				    $query = 'DELETE FROM #__jfusion_users WHERE id =' . $joomla_id . ' OR username = ' . $db->Quote($userinfo->username) . ' OR LOWER(username) = ' . strtolower($db->Quote($userinfo->email));
+				    $db->setQuery($query);
+				    if (!$db->query()) {
+					    JError::raiseWarning(0, $db->stderr());
+				    }
+				    //Delete old user data in the lookup table
+				    $query = 'DELETE FROM #__jfusion_users_plugin WHERE id =' . $joomla_id . ' OR username = ' . $db->Quote($userinfo->username) . ' OR LOWER(username) = ' . strtolower($db->Quote($userinfo->email));
+				    $db->setQuery($query);
+				    if (!$db->query()) {
+					    JError::raiseWarning(0, $db->stderr());
+				    }
+			    }
+		    } else {
+			    //check to see if we have been given a joomla id
+			    if (empty($joomla_id)) {
+				    $query = 'SELECT id FROM #__users WHERE username = ' . $db->Quote($userinfo->username);
+				    $db->setQuery($query);
+				    $joomla_id = $db->loadResult();
+				    if (empty($joomla_id)) {
+					    return;
+				    }
+			    }
+			    if (empty($jname)) {
+				    $queries = array();
+				    //we need to update each master/slave
+				    $query = 'SELECT name FROM #__jfusion WHERE master = 1 OR slave = 1';
+				    $db->setQuery($query);
+				    $jnames = $db->loadObjectList();
+				    foreach ($jnames as $jname) {
+					    if ($jname != 'joomla_int') {
+						    $user = JFusionFactory::getUser($jname->name);
+						    $puserinfo = $user->getUser($userinfo);
+						    if ($delete) {
+							    $queries[] = '(id = '.$joomla_id.' AND jname = ' . $db->Quote($jname->name) . ')';
+						    } else {
+							    $queries[] = '(' . $db->Quote($puserinfo->userid) . ',' . $db->Quote($puserinfo->username) . ', '.$joomla_id.', '. $db->Quote($jname->name) . ')';
+						    }
+						    unset($user);
+						    unset($puserinfo);
+					    }
+				    }
+				    if (!empty($queries)) {
+					    if ($delete) {
+						    $query = 'DELETE FROM #__jfusion_users_plugin WHERE ' . implode(' OR ', $queries);
+					    } else {
+						    $query = 'REPLACE INTO #__jfusion_users_plugin (userid,username,id,jname) VALUES (' . implode(',', $queries) . ')';
+					    }
+					    $db->setQuery($query);
+					    if (!$db->query()) {
+						    JError::raiseWarning(0, $db->stderr());
+					    }
+				    }
+			    } else {
+				    if ($delete) {
+					    $query = 'DELETE FROM #__jfusion_users_plugin WHERE id = '.$joomla_id.' AND jname = '.$db->Quote($jname);
+				    } else {
+					    $query = 'REPLACE INTO #__jfusion_users_plugin (userid,username,id,jname) VALUES ('.$db->Quote($userinfo->userid) .' ,'.$db->Quote($userinfo->username) .' ,'.$joomla_id.' , '.$db->Quote($jname).' )';
+				    }
+				    $db->setQuery($query);
+				    if (!$db->query()) {
+					    JError::raiseWarning(0, $db->stderr());
+				    }
+			    }
+		    }
+	    }
     }
 
     /**

@@ -325,13 +325,15 @@ class JFusionUsersync
                                     }
                                 }
 
+	                            $sync_log->syncid = $syncdata['syncid'];
+	                            $sync_log->action = $status['action'];
+	                            $sync_log->jname = $jname;
+	                            $sync_log->message = '';
+	                            $sync_log->data = '';
                                 if (!empty($status['error'])) {
                                     $status['action'] = 'error';
-                                    $sync_log->syncid = $syncdata['syncid'];
-                                    $sync_log->action = $status['action'];
                                     $sync_log->username = $userinfo->username;
                                     $sync_log->email = $userinfo->email;
-                                    $sync_log->jname = $jname;
                                     $sync_log->message = (is_array($status['error'])) ? implode('; ',$status['error']) : $status['error'];
                                     $sync_error = array();
                                     $sync_error['conflict']['userinfo'] = $status['userinfo'];
@@ -345,14 +347,8 @@ class JFusionUsersync
                                     $syncdata['sync_errors']++;
                                 } else {
                                     //usersync loggin enabled
-                                    $sync_log->syncid = $syncdata['syncid'];
-                                    $sync_log->action = $status['action'];
-                                    $sync_log->username = $status['userinfo']->username;
-                                    $sync_log->email = $status['userinfo']->email;
-                                    $sync_log->jname = $jname;
-                                    $sync_log->message = '';
-                                    $sync_log->data = '';
-
+	                                $sync_log->username = isset($status['userinfo']->username)? $status['userinfo']->username : $userinfo->username;
+	                                $sync_log->email = isset($status['userinfo']->email)? $status['userinfo']->email : $userinfo->email;
                                     //update the lookup table
                                     if ($action == 'master') {
                                         JFusionFunction::updateLookup($userinfo, 0, $jname);
