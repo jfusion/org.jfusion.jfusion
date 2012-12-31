@@ -339,6 +339,10 @@ CSS;
 					$str.= $levelText.$emptyWhat."\n";
 				} else {
 					foreach ($arr as $key => $value) {
+						if (debug::$callback) {
+							list($target,$function,$args) = debug::$callback;
+							list($style,$value) = $target->$function($key,$value,$args);
+						}
 						$str.= $levelText.$key.' &rarr; '.$value."\n";
 					}
 				}
@@ -350,6 +354,10 @@ CSS;
 						$emptyWhat = 'empty-array';
 						if (is_object($value)) {
 							$emptyWhat = 'empty-object';
+						}
+						if (debug::$callback) {
+							list($target,$function,$args) = debug::$callback;
+							list($style,$value) = $target->$function($key,$value,$args);
 						}
 						if ( is_array($value) || is_object($value) ) {
 							if (count($value) == 0) {
