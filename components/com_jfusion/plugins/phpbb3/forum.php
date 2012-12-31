@@ -351,7 +351,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
                 if ($results) {
                     foreach ($results as $r) {
                         if (!isset($phpbb_acl[$r->forum_id])) {
-                            $this->setPremission($phpbb_acl[$r->forum_id], -1);
+	                        $phpbb_acl[$r->forum_id] = -1;
                         }
                         if ($phpbb_acl[$r->forum_id]) {
                             if ($r->auth_option_id) {
@@ -379,7 +379,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 				if ($results) {
 	                foreach ($results as $r) {
                         if (!isset($phpbb_acl[$r->forum_id])) {
-                            $this->setPremission($phpbb_acl[$r->forum_id], -1);
+	                        $phpbb_acl[$r->forum_id] = -1;
                         }
                         if ($phpbb_acl[$r->forum_id]) {
                             if ($r->auth_option_id) {
