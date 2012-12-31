@@ -116,7 +116,7 @@
 
 
 		<param name="jfusionbox" type="text" default="hide" label="CURL_OPTIONS" description="CURL_OPTIONS" />
-		<param name="cookie_expires" type="text" size="5" label="COOKIE_TIME" default="1800" description="COOKIE_TIME" />
+		<param name="cookie_expires" type="text" size="5" label="COOKIE_EXPIRES" default="1800" description="COOKIE_EXPIRES_DESC" />
 		<param name="secure" type="list" default="0" label="COOKIE_SECURE" description="COOKIE_SECURE">
 			<option value="1">JYES</option>
 			<option value="0">JNO</option>
