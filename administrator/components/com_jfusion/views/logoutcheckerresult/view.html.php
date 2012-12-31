@@ -46,6 +46,8 @@ class jfusionViewLogoutCheckerResult extends JView
 	    $options['group'] = 'USERS';
 	    if (JRequest::getVar('show_unsensored') == 1) {
 	        $options['show_unsensored'] = 1;
+	    } else {
+		    $options['show_unsensored'] = 0;
 	    }
 	    //prevent current jooomla session from being destroyed
 	    global $JFusionActivePlugin, $jfusionDebug;

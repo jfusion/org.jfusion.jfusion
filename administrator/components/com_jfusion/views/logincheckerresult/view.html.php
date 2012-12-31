@@ -45,16 +45,24 @@ class jfusionViewLoginCheckerResult extends JView
 	    //setup the options array
 	    $options = array();
 	    if (JRequest::getVar('remember') == 1) {
-	        $options['remember'] = 1;
+		    $options['remember'] = 1;
+	    } else {
+		    $options['remember'] = 0;
 	    }
 	    if (JRequest::getVar('show_unsensored') == 1) {
-	        $options['show_unsensored'] = 1;
+		    $options['show_unsensored'] = 1;
+	    } else {
+		    $options['show_unsensored'] = 0;
 	    }
 	    if (JRequest::getVar('skip_password_check') == 1) {
-	        $options['skip_password_check'] = 1;
+		    $options['skip_password_check'] = 1;
+	    } else {
+		    $options['skip_password_check'] = 0;
 	    }
 	    if (JRequest::getVar('overwrite') == 1) {
-	        $options['overwrite'] = 1;
+		    $options['overwrite'] = 1;
+	    } else {
+		    $options['overwrite'] = 0;
 	    }
 
         //prevent current jooomla session from being destroyed
