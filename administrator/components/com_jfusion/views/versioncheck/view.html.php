@@ -45,7 +45,7 @@ class jfusionViewversioncheck extends JView
 		ob_start();
 
 		$db = JFactory::getDBO();
-		$query = 'SELECT name from #__jfusion';
+		$query = 'SELECT name from #__jfusion WHERE original_name IS NULL';
 		$db->setQuery($query);
 		$plugins = $db->loadObjectList();
 
@@ -61,18 +61,21 @@ class jfusionViewversioncheck extends JView
 				if (isset($parser->document)) {
 					$update = $parser->document->getElementByPath('update');
 					if ($update) {
-						$url = new stdClass;
-						$url->url = $update->data();
-						if (strpos($url->url,'?') === false) {
-							$url->url .= '?version='.$jversion->getShortVersion();
+						$u = trim($update->data());
+						if (strpos($u,'?') === false) {
+							$u .= '?version='.$jversion->getShortVersion();
 						} else {
-							$url->url .= '&version='.$jversion->getShortVersion();
+							$u .= '&version='.$jversion->getShortVersion();
 						}
-						$url->jnames = array($plugin->name);
-						if (!isset($urls[md5($url->url)])) {
-							$urls[md5($url->url)] = $url;
+						if (!isset($urls[md5($u)])) {
+							$url = new stdClass();
+							$url->url = $u;
+
+							$url->jnames = array($plugin->name);
+
+							$urls[md5($u)] = $url;
 						} else {
-							$urls[md5($url->url)]->jnames[] = $plugin->name;
+							$urls[md5($u)]->jnames[] = $plugin->name;
 						}
 					}
 				}
