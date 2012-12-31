@@ -125,8 +125,8 @@ JS;
 	    $output .= '<div id="target_jform_params_'.$name.'"><div id="params'.$name.'">';
         if (!is_array($value) || !count($value)) {
             $output .= '<p id="params'.$name.'0">';
-            $output .= '<input type="text" name="params['.$name.'][value][0]" id="params'.$name.'value0" size="50"/> ';
-            $output .= '<input type="text" name="params['.$name.'][name][0]" id="params'.$name.'name0" size="50"/> ';
+            $output .= '<input type="text" name="params['.$name.'][value][0]" id="params'.$name.'value0" size="50"/>';
+            $output .= '<input type="text" name="params['.$name.'][name][0]" id="params'.$name.'name0" size="50"/>';
             $output .= '<a href="javascript:removePair(\''.$name.'\', \''.$name.'0\');">'.$delete.'</a>';
             $output .= '</p>';
         } else {
@@ -134,8 +134,8 @@ JS;
             foreach ($value['value'] as $key => $val) {
                 $val = htmlentities($val);
                 $output .= '<p id="params'.$name.$i.'">';
-                $output .= '<input value="'.$val.'" type="text" name="params['.$name.'][value]['.$i.']" id="params'.$name.'value'.$i.'" size="50"/> ';
-                $output .= '<input value="'.$value['name'][$key].'" type="text" name="params['.$name.'][name]['.$i.']" id="params'.$name.'name'.$i.'" size="50"/> ';
+                $output .= '<input value="'.$val.'" type="text" name="params['.$name.'][value]['.$i.']" id="params'.$name.'value'.$i.'" size="50"/>';
+                $output .= '<input value="'.$value['name'][$key].'" type="text" name="params['.$name.'][name]['.$i.']" id="params'.$name.'name'.$i.'" size="50"/>';
                 $output .= '<a href="javascript:removePair(\''.$name.'\', \''.$name.$i.'\');">'.$delete.'</a>';
                 $output .= '</p>';
                 $i++;
