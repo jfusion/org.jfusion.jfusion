@@ -1537,7 +1537,7 @@ class JFusionFunction
                 $public = JFusionFactory::getPublic($jname);
                 $return = (self::methodDefined($public,'getSearchQuery') || self::methodDefined($public,'getSearchResults'));
                 break;
-            case 'whoonline':
+            case 'whosonline':
                 $public = JFusionFactory::getPublic($jname);
                 $return = self::methodDefined($public,'getOnlineUserQuery');
                 break;

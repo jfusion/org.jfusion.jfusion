@@ -21,7 +21,7 @@
 		<field name="moduleclass_sfx" type="text" default="" label="Module Class Suffix" description="PARAMMODULECLASSSUFFIX" />
 
 		<field name="JFusionPluginParam" type="JFusionAdvancedParam" default=""
-			label="JFUSION_PLUGIN" feature="whoonline" multiselect="true"
+			label="JFUSION_PLUGIN" feature="whosonline" multiselect="true"
 			description="JFUSION_PLUGIN_DESCR" />
 	</fieldset></fields></config>
     <config><fields name="params"><fieldset name="advanced">
@@ -35,7 +35,7 @@
 		<param name="moduleclass_sfx" type="text" default="" label="Module Class Suffix" description="PARAMMODULECLASSSUFFIX" />
 
 		<param name="JFusionPluginParam" type="JFusionAdvancedParam" default=""
-			label="JFUSION_PLUGIN" feature="whoonline" multiselect="true"
+			label="JFUSION_PLUGIN" feature="whosonline" multiselect="true"
 			description="JFUSION_PLUGIN_DESCR" />
 	</params>
     <params group="advanced">

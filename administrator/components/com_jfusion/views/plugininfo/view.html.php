@@ -58,7 +58,7 @@ class jfusionViewplugininfo extends JView
 			$features['PUBLIC']['FEATURE_FRAMELESS'] = $this->outputFeature($frameless);
 			$features['PUBLIC']['FEATURE_BREADCRUMB'] = $this->outputFeature(JFusionFunction::hasFeature($jname,'breadcrumb'));
 			$features['PUBLIC']['FEATURE_SEARCH'] = $this->outputFeature(JFusionFunction::hasFeature($jname,'search'));
-			$features['PUBLIC']['FEATURE_ONLINE_STATUS'] = $this->outputFeature(JFusionFunction::hasFeature($jname,'whoonline'));
+			$features['PUBLIC']['FEATURE_ONLINE_STATUS'] = $this->outputFeature(JFusionFunction::hasFeature($jname,'whosonline'));
 			$features['PUBLIC']['FEATURE_FRONT_END_LANGUAGE'] = $this->outputFeature(JFusionFunction::hasFeature($jname,'frontendlanguage'));
 			
 			$features['FORUM']['FEATURE_THREAD_URL'] = $this->outputFeature(JFusionFunction::hasFeature($jname,'threadurl'));
