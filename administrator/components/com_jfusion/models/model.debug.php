@@ -320,49 +320,53 @@ CSS;
      *    @return a html string with no tags
      ** *************************
      */
-    public static function getText($arr, $start = true) {
-        $str = '';
-        if (is_string($start)) {
-            $str.= $start.' - &darr;'."\n";
-        }
-        if (is_array($arr) || is_object($arr)) {
-            $emptyWhat = 'empty-array';
-            if (is_object($arr)) {
-                $emptyWhat = 'empty-object';
-            }
-            if (debug::isOneDimensional($arr)) {
-                if (count($arr) == 0) {
-                    $str.= $emptyWhat."\n";
-                } else {
-                    foreach ($arr as $key => $value) {
-                        $str.= $key.' &rarr; '.$value."\n";
-                    }
-                }
-            } else {
-                if (count($arr) == 0) {
-                    $str.= $emptyWhat."\n";
-                } else {
-                    foreach ($arr as $key => $value) {
-                        $emptyWhat = 'empty-array';
-                        if (is_object($value)) {
-                            $emptyWhat = 'empty-object';
-                        }
-                        if ( is_array($value) || is_object($value) ) {
-                            if (count($value) == 0) {
-                                $str.= $emptyWhat."\n";
-                            }
-                            $str.= $key.' - &darr; '."\n".debug::getText($value, false);
-                        } else {
-                            $str.= $key.' &rarr; '.$value."\n";
-                        }
-                    }
-                }
-            }
-        } else {
-            $str = $arr."\n";
-        }
-        return $str;
-    }
+	public static function getText($arr, $start = true, $level=1) {
+		$levelText = '';
+		for ($i = 0; $i < $level; $i++) {
+			$levelText .= "\t";
+		}
+		$str = '';
+		if (is_string($start)) {
+			$str.= $start.' - &darr;'."\n";
+		}
+		if (is_array($arr) || is_object($arr)) {
+			$emptyWhat = 'empty-array';
+			if (is_object($arr)) {
+				$emptyWhat = 'empty-object';
+			}
+			if (debug::isOneDimensional($arr)) {
+				if (count($arr) == 0) {
+					$str.= $levelText.$emptyWhat."\n";
+				} else {
+					foreach ($arr as $key => $value) {
+						$str.= $levelText.$key.' &rarr; '.$value."\n";
+					}
+				}
+			} else {
+				if (count($arr) == 0) {
+					$str.= $emptyWhat."\n";
+				} else {
+					foreach ($arr as $key => $value) {
+						$emptyWhat = 'empty-array';
+						if (is_object($value)) {
+							$emptyWhat = 'empty-object';
+						}
+						if ( is_array($value) || is_object($value) ) {
+							if (count($value) == 0) {
+								$str.= $emptyWhat."\n";
+							}
+							$str.= $levelText.$key.' - &darr; '."\n".debug::getText($value, false,$level+1);
+						} else {
+							$str.= $levelText.$key.' &rarr; '.$value."\n";
+						}
+					}
+				}
+			}
+		} else {
+			$str = $levelText.$arr."\n";
+		}
+		return $str;
+	}
 
     /**
      *    Checks if an array is one-dimensional, i.e. if no one of the values is an array or abject again

@@ -63,7 +63,7 @@ debug::$callback = array($this,'jfusion_plugin',null);
 foreach($this->jfusion_plugin as $key => $value) {
     $title = JText::_('JFUSION') . ' ' . $key . ' ' . JText::_('PLUGIN');
     debug::show($value, $title);
-    $textOutput[$title] = $value;
+    $textOutput[$title] = debug::getText($value, $key);
     ?><br><?php
 }
 
@@ -71,7 +71,7 @@ foreach($this->jfusion_module as $key => $value) {
     debug::$callback = array($this,'jfusion_module',$key);
     $title = $key . ' ' . JText::_('MODULE');
     debug::show($value, $title);
-    $textOutput[$title] = $value;
+    $textOutput[$title] = debug::getText($value, $key);
     ?><br><?php
 }
 
@@ -79,23 +79,23 @@ foreach($this->joomla_plugin as $key => $value) {
     debug::$callback = array($this,'joomla_plugin',$key);
     $title = $key . ' ' . JText::_('PLUGIN');
     debug::show($value, $title);
-    $textOutput[$title] = $value;
+    $textOutput[$title] = debug::getText($value, $key);
     ?><br><?php
 }
 debug::$callback = array($this,'menu_item',null);
 foreach($this->menu_item as $key => $value) {
     $title = $key . ' ' . JText::_('MENUITEM');
     debug::show($value, $title);
-    $textOutput[$title] = $value;
+    $textOutput[$title] = debug::getText($value, $key);
     ?><br><?php
 }
 $debug=null;
 foreach ($textOutput as $key => $value) {
     if ($debug) {
-        $debug .= "\n\n".debug::getText($value, $key, 1);
+        $debug .= "\n\n".$value;
     } else {
-        $debug = debug::getText($value, $key, 1);
+        $debug = $value;
     }
 }
 ?>
-<textarea rows="10" cols="110"><?php echo $debug ?></textarea>
+<textarea rows="25" cols="110"><?php echo $debug ?></textarea>
