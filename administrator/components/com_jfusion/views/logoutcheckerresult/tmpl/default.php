@@ -31,7 +31,8 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.debug.p
 </form>
 <div style="border:0 none ; margin:0; padding:0 5px; width: 800px; float: left;">
 	<?php
-    debug::show($this->debug, JText::_('LOGOUT') . ' ' . JText::_('DEBUG'), 1);
+	$title = JText::_('LOGOUT') . ' ' . JText::_('DEBUG');
+    debug::show($this->debug, $title);
 	?>
-	<textarea rows="10" cols="110"><?php echo debug::getText($this->debug, JText::_('LOGOUT') . ' ' . JText::_('DEBUG'), 1) ?></textarea>
+	<textarea rows="25" cols="110"><?php echo debug::getText($this->debug, $title) ?></textarea>
 </div>

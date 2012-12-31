@@ -39,32 +39,38 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.debug.p
 		<?php endif; ?>
 		
 		<?php
+		$textOutput = array();
 		//prevent current jooomla session from being destroyed
 		global $JFusionActivePlugin, $JFusionLoginCheckActive;
 		$JFusionActivePlugin = 'joomla_int';
 		$JFusionLoginCheckActive = true;
-		
+		$title = JText::_('SERVER') . ' ' . JText::_('CONFIGURATION');
 		//output the information to the user
-		debug::show($this->server_info, JText::_('SERVER') . ' ' . JText::_('CONFIGURATION'), 1);
-		$textOutput[JText::_('SERVER') . ' ' . JText::_('CONFIGURATION')] = $this->server_info;
+		debug::show($this->server_info, $title);
+		$textOutput[] = debug::getText($this->server_info, $title);
 		?><br/><?php
 		
 		//output the information to the user
-		debug::show($this->jfusion_version, JText::_('JFUSION') . ' ' . JText::_('VERSIONS'), 1);
-		$textOutput[JText::_('JFUSION') . ' ' . JText::_('VERSIONS')] = $this->jfusion_version;
+		$title = JText::_('JFUSION') . ' ' . JText::_('VERSIONS');
+		debug::show($this->jfusion_version, $title);
+		$textOutput[] = debug::getText($this->jfusion_version, $title);
 		?><br/><?php
 		foreach ($this->plugins as $plugin) {
-		    debug::show($plugin, JText::_('JFUSION') . ' ' . $plugin->name . ' ' . JText::_('PLUGIN'), 1);
-		    $textOutput[JText::_('JFUSION') . ' ' . $plugin->name . ' ' . JText::_('PLUGIN')] = $plugin;
+			$title = JText::_('JFUSION') . ' ' . $plugin->name . ' ' . JText::_('PLUGIN');
+		    debug::show($plugin, $title);
+		    $textOutput[] = debug::getText($plugin, $title);
 		}
 		?><br/><br/><?php
-	
+
+		$title = JText::_('AUTHENTICATION') . ' ' . JText::_('PLUGIN');
 		//output from auth plugin results
-		debug::show($this->auth_userinfo, JText::_('AUTHENTICATION') . ' ' . JText::_('PLUGIN'), 1);
-		$textOutput[JText::_('AUTHENTICATION') . ' ' . JText::_('PLUGIN')] = $this->auth_userinfo;
+		debug::show($this->auth_userinfo, $title);
+		$textOutput[] = debug::getText($this->auth_userinfo, $title);
 		
 		//check to see if plugins returned true
-	    if ($this->response->status === JAUTHENTICATE_STATUS_SUCCESS) { ?>
+	    if ($this->response->status === JAUTHENTICATE_STATUS_SUCCESS) {
+		    $title = JText::_('AUTHENTICATION') . ' ' . JText::_('PLUGIN') . ' ' . JText::_('SUCCESS');
+		    ?>
 	        <table style="background-color:#d9f9e2;width:100%;">
 	            <tr style="height:30px">
 	                <td width="50px">
@@ -73,7 +79,7 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.debug.p
 		           <td>
 			           <font size="2">
 			               <b>
-			                   <?php echo JText::_('AUTHENTICATION') . ' ' . JText::_('PLUGIN') . ' ' . JText::_('SUCCESS'); ?>
+			                   <?php echo $title; ?>
 			               </b>
 		                </font>
 	                </td>
@@ -82,19 +88,20 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.debug.p
 		    <br/>
 	        <br/>
 		    <?php
-			$textOutput[JText::_('AUTHENTICATION') . ' ' . JText::_('PLUGIN') . ' ' . JText::_('SUCCESS')] = '';
 		    if (!empty($this->response->debug)) {
-		        debug::show($this->response->debug, JText::_('AUTHENTICATION') . ' ' . JText::_('PLUGIN') . ' ' . JText::_('DEBUG'), 1);
-		        $textOutput[JText::_('AUTHENTICATION') . ' ' . JText::_('PLUGIN') . ' ' . JText::_('DEBUG')] = $this->response->debug; 
+		        debug::show($this->response->debug, $title);
+		        $textOutput[] = debug::getText($this->response->debug, $title);
 		    }
 	
-		    foreach ($this->auth_results as $name => $auth_result) { ?>
+		    foreach ($this->auth_results as $name => $auth_result) {
+			    $title = $name . ' ' . JText::_('USER') . ' ' . JText::_('PLUGIN');
+			    ?>
 	            <br/><br/>
 	            <table style="width:100%">
 	                <tr style="height:30px">
 	                    <td ALIGN="center" colspan="2" bgcolor="#D6F2FF">
 	                        <b>
-	                            <?php echo $name . ' ' . JText::_('USER') . ' ' . JText::_('PLUGIN') ?>
+	                            <?php echo $title; ?>
 	                        </b>
 	                    </td>
 	                </tr>
@@ -107,13 +114,12 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.debug.p
 		                   <td style="background-color:#d9f9e2;">
 		                       <font size="2">
 		                           <b>
-		                               <?php echo JText::_('USER') . ' ' . JText::_('PLUGIN') . ' ' . JText::_('SUCCESS'); ?>
+		                               <?php echo $title . ' ' . JText::_('SUCCESS'); ?>
 		                           </b>
 	                            </font>
 	                        </td>
 	                    </tr>
 		                <?php
-		    			$textOutput[JText::_('USER') . ' ' . JText::_('PLUGIN') . ' ' . JText::_('SUCCESS')] = '';
 		            } else { ?>
 		                <tr style="height:30px">
 		                   <td width="50px" style="background-color:#f9ded9;">
@@ -122,23 +128,26 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.debug.p
 		                   <td style="background-color:#f9ded9;">
 			                   <font size="2">
 				                   <b>
-				                       <?php echo JText::_('USER') . ' ' . JText::_('PLUGIN') . ' ' . JText::_('ERROR'); ?>
+				                       <?php echo $title . ' ' . JText::_('ERROR'); ?>
 				                   </b>
 			                   </font>
 		                   </td>
 	                    </tr>
 		                <?php
-		                $textOutput[JText::_('USER') . ' ' . JText::_('PLUGIN') . ' ' . JText::_('ERROR')] = '';
 		            }
 		       ?></table><?php
 	            if (!empty($auth_result->debug)) {
 	            	?> <br/><br/> <?php
-	                debug::show($auth_result->debug, JText::_('USER') . ' ' . JText::_('PLUGIN') . ' ' . JText::_('DEBUG'), 1);
-	                $textOutput[JText::_('USER') . ' ' . JText::_('PLUGIN') . ' ' . JText::_('DEBUG')] = $auth_result->debug;
+		            $title = JText::_('USER') . ' ' . JText::_('PLUGIN') . ' ' . JText::_('DEBUG');
+
+	                debug::show($auth_result->debug, $title);
+	                $textOutput[] = debug::getText($auth_result->debug, $title);
 	            }
 	        }
 		    JToolBarHelper::custom( 'logoutcheckerresult', 'forward.png', 'forward.png', JText::_('Check Logout'), false, false);
-		} else { ?>
+		} else {
+		    $title = JText::_('AUTHENTICATION') . ' ' . JText::_('PLUGIN') . ' ' . JText::_('ERROR');
+		    ?>
 		    <table style="background-color:#f9ded9;width:100%;">
 		       <tr style="height:30px">
 		           <td width="50px">
@@ -147,18 +156,18 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.debug.p
 			       <td>
 			           <font size="2">
 			               <b>
-			                   <?php echo JText::_('AUTHENTICATION') . ' ' . JText::_('PLUGIN') . ' ' . JText::_('ERROR'); ?>
+			                   <?php echo $title; ?>
 		                   </b>
 		                </font>
 		            </td>
 	            </tr>
 	        </table>
 		    <?php
-			$textOutput[JText::_('AUTHENTICATION') . ' ' . JText::_('PLUGIN') . ' ' . JText::_('ERROR')] = '';
+
 		    if (!empty($this->response->debug)) {
 		    	?><br/><br/><?php
-		        debug::show($this->response->debug, JText::_('AUTHENTICATION') . ' ' . JText::_('PLUGIN') . ' ' . JText::_('DEBUG'), 1);
-				$textOutput[JText::_('AUTHENTICATION') . ' ' . JText::_('PLUGIN') . ' ' . JText::_('DEBUG')] = $this->response->debug;        
+		        debug::show($this->response->debug, $title);
+				$textOutput[] = debug::getText($this->response->debug, $title);
 		    }
 		}
 		
@@ -168,13 +177,13 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.debug.p
 	<br/><br/>
 	<?php
 	$debug=null;
-	foreach ($textOutput as $key => $value) {
+	foreach ($textOutput as $value) {
 		if ($debug) {
-			 $debug .= "\n\n".debug::getText($value, $key, 1);
+			 $debug .= "\n\n".$value;
 		} else {
-			$debug = debug::getText($value, $key, 1);
+			$debug = $value;
 		}
 	}
 	?>
-    <textarea rows="10" cols="110"><?php echo $debug ?></textarea>
+    <textarea rows="25" cols="110"><?php echo $debug ?></textarea>
 </div>
