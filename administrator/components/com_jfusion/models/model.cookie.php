@@ -90,7 +90,7 @@ class JFusionCookies {
         } else {
             $cookie_expires_time=date('d-m-Y H:i:s', $cookie_expires_time);
         }
-        $debug[JText::_('COOKIE')][JText::_('EXPIRES')] = $cookie_expires_time;
+        $debug[JText::_('COOKIE')][JText::_('COOKIE_EXPIRES')] = $cookie_expires_time;
         $debug[JText::_('COOKIE')][JText::_('COOKIE_PATH')] = $cookiepath;
         $debug[JText::_('COOKIE')][JText::_('COOKIE_SECURE')] = $cookie_secure;
         $debug[JText::_('COOKIE')][JText::_('COOKIE_HTTPONLY')] = $cookie_httponly;
