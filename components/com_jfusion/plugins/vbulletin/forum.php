@@ -499,9 +499,11 @@ class JFusionForum_vbulletin extends JFusionForum
             $query = 'SELECT varname, value FROM #__setting WHERE varname = \'usefileavatar\' OR varname = \'avatarurl\'';
             $db->setQuery($query);
             $settings = $db->loadObjectList();
-            foreach ($settings as $s) {
-                ${$s->varname} = $s->value;
-            }
+	        if ($settings) {
+		        foreach ($settings as $s) {
+			        ${$s->varname} = $s->value;
+		        }
+	        }
 
             if (!empty($avatar->avatarpath)) {
                 if (strpos($avatar->avatarpath, 'http') === false) {
@@ -509,7 +511,7 @@ class JFusionForum_vbulletin extends JFusionForum
                 } else {
                     $url = $avatar->avatarpath;
                 }
-            } elseif ($avatar->usecustom) {
+            } elseif (isset($avatar->usecustom)) {
                 if ($usefileavatar && $avatarurl) {
                     //avatars are saved to the filesystem
                     $url = (strpos($avatarurl, 'http') === false) ? $this->params->get('source_url') . $avatarurl : $avatarurl;
