@@ -106,7 +106,9 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.debug.p
 	                    </td>
 	                </tr>
 		            <?php
-		            if ($auth_result->result == true) { ?>
+		            if ($auth_result->result == true) {
+			            $title .= ' ' . JText::_('SUCCESS');
+			            ?>
 		                <tr style="height:30px">
 	                        <td width="50px" style="background-color:#d9f9e2;">
 	                            <img src="components/com_jfusion/images/check_good_small.png">
@@ -114,13 +116,15 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.debug.p
 		                   <td style="background-color:#d9f9e2;">
 		                       <font size="2">
 		                           <b>
-		                               <?php echo $title . ' ' . JText::_('SUCCESS'); ?>
+		                               <?php echo $title; ?>
 		                           </b>
 	                            </font>
 	                        </td>
 	                    </tr>
 		                <?php
-		            } else { ?>
+		            } else {
+			            $title .= ' ' . JText::_('ERROR');
+			            ?>
 		                <tr style="height:30px">
 		                   <td width="50px" style="background-color:#f9ded9;">
 		                       <img src="components/com_jfusion/images/check_bad_small.png">
@@ -128,7 +132,7 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.debug.p
 		                   <td style="background-color:#f9ded9;">
 			                   <font size="2">
 				                   <b>
-				                       <?php echo $title . ' ' . JText::_('ERROR'); ?>
+				                       <?php echo $title; ?>
 				                   </b>
 			                   </font>
 		                   </td>
@@ -138,8 +142,6 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.debug.p
 		       ?></table><?php
 	            if (!empty($auth_result->debug)) {
 	            	?> <br/><br/> <?php
-		            $title = JText::_('USER') . ' ' . JText::_('PLUGIN') . ' ' . JText::_('DEBUG');
-
 	                debug::show($auth_result->debug, $title);
 	                $textOutput[] = debug::getText($auth_result->debug, $title);
 	            }
