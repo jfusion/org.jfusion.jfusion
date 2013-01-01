@@ -159,27 +159,26 @@ class JFusionPublic
             $callback_body[] = '';
         }
 
-        /*
-                $value = $data->bodymap;
-                if(is_array($value)) {
-                    foreach ($value['value'] as $key => $val) {
-                        $regex = html_entity_decode($value['value'][$key]);
-                        $regex = rtrim($regex,';');
-                        $regex = eval("return '$regex';");
+	    $value = $data->bodymap;
+	    $value = @unserialize($value);
+	    if(is_array($value)) {
+		    foreach ($value['value'] as $key => $val) {
+			    $regex = html_entity_decode($value['value'][$key]);
+//			    $regex = rtrim($regex,';');
+//			    $regex = eval("return '$regex';");
 
-                        $replace = html_entity_decode($value['name'][$key]);
-                        $replace = rtrim($replace,';');
-                        $replace = eval("return '$replace';");
+			    $replace = html_entity_decode($value['name'][$key]);
+//			    $replace = rtrim($replace,';');
+//			    $replace = eval("return '$replace';");
 
-                        if ($regex && $replace) {
-                            $regex_body[]	= $regex;
-                            $replace_body[]	= $replace;
-                            $callback_body[] = '';
-                        }
-                    }
-                }
-                $data->body = preg_replace($regex_body, $replace_body, $data->body);
-        */
+			    if ($regex && $replace) {
+				    $regex_body[]	= $regex;
+				    $replace_body[]	= $replace;
+				    $callback_body[] = '';
+			    }
+		    }
+	    }
+	    $data->body = preg_replace($regex_body, $replace_body, $data->body);
         foreach ($regex_body as $k => $v) {
             //check if we need to use callback
             if(!empty($callback_body[$k])){
@@ -237,18 +236,18 @@ class JFusionPublic
             $replace_header[] = '';
             $callback_header[] = 'fixRedirect';
         }
-/*
-        $value = $data->headermap;
 
+        $value = $data->headermap;
+	    $value = @unserialize($value);
         if(is_array($value)) {
             foreach ($value['value'] as $key => $val) {
                 $regex = html_entity_decode($value['value'][$key]);
-                $regex = rtrim($regex,';');
-                $regex = eval("return '$regex';");
+//                $regex = rtrim($regex,';');
+//                $regex = eval("return '$regex';");
 
                 $replace = html_entity_decode($value['name'][$key]);
-                $replace = rtrim($replace,';');
-                $replace = eval("return '$replace';");
+//                $replace = rtrim($replace,';');
+//                $replace = eval("return '$replace';");
 
                 if ($regex && $replace) {
                     $regex_header[]		= $regex;
@@ -257,7 +256,6 @@ class JFusionPublic
                 }
             }
         }
-        */
         foreach ($regex_header as $k => $v) {
             //check if we need to use callback
             if(!empty($callback_header[$k])){
