@@ -209,27 +209,26 @@ class JFusionPublic
         //convert relative links into absolute links
         $path = preg_replace( '#(\w{0,10}://)(.*?)/(.*?)#is'  , '$3' , $data->integratedURL );
         $path = preg_replace('#//+#','/',"/$path/");
-// (?<quote>["\'])
-// \k<quote>
-        $regex_header[]	= '#(href|src)=[\'|"]'.$path.'(.*?)[\'|"]#Si';
-        $replace_header[] = '$1="'.$data->integratedURL.'$2"';
-        $callback_header[] = '';
 
-        $regex_header[]		= '#(href|src)=[\'|"](./|/)(.*?)[\'|"]#iS';
-        $replace_header[]	= '$1="'.$data->integratedURL.'$3"';
-        $callback_header[] = '';
+	    $regex_header[]	= '#(href|src)=(?<quote>["\'])'.$path.'(.*?)(\k<quote>)#Si';
+	    $replace_header[] = '$1=$2'.$data->integratedURL.'$3$4';
+	    $callback_header[] = '';
 
-        $regex_header[] 	= '#(href|src)=["|\'](?!\w{0,10}://)(.*?)["|\']#mSi';
-        $replace_header[]	= '$1="'.$data->integratedURL.'$2"';
-        $callback_header[] = '';
+	    $regex_header[]		= '#(href|src)=(?<quote>["\'])(./|/)(.*?)(\k<quote>)#iS';
+	    $replace_header[]	= '$1=$2'.$data->integratedURL.'$4$5';
+	    $callback_header[] = '';
 
-        $regex_header[]		= '#@import(.*?)[\'"]'.$path.'(.*?)[\'"]#Sis';
-        $replace_header[]	= '@import$1"'.$data->integratedURL.'$2"';
-        $callback_header[] = '';
+	    $regex_header[] 	= '#(href|src)=(?<quote>["\'])(?!\w{0,10}://)(.*?)(\k<quote>)#mSi';
+	    $replace_header[]	= '$1=$2'.$data->integratedURL.'$3$4';
+	    $callback_header[] = '';
 
-        $regex_header[]		= '#@import(.*?)[\'"]/(.*?)[\'"]#Sis';
-        $replace_header[]	= '@import$1"'.$data->integratedURL.'$2"';
-        $callback_header[] = '';
+	    $regex_header[]		= '#@import(.*?)(?<quote>["\'])'.$path.'(.*?)(\k<quote>)#Sis';
+	    $replace_header[]	= '@import$1$2'.$data->integratedURL.'$3$4';
+	    $callback_header[] = '';
+
+	    $regex_header[]		= '#@import(.*?)(?<quote>["\'])/(.*?)(\k<quote>)#Sis';
+	    $replace_header[]	= '@import$1$2'.$data->integratedURL.'$3$4';
+	    $callback_header[] = '';
 
         //fix for URL redirects
         $parse_redirect = $params->get('parse_redirect');
