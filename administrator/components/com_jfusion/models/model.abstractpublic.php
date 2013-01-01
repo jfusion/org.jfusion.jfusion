@@ -53,7 +53,7 @@ class JFusionPublic
         $status = $frameless->display($data);
         if ( isset($data->location) ) {
             $location = str_replace($data->integratedURL,'',$data->location);
-            $location = $this->fixUrl($location,$data->baseURL,$data->fullURL,$data->integratedURL,$data->sefmode);
+	        $location = $this->fixUrl(array(1 => $location));
             $mainframe = JFactory::getApplication();
             $mainframe->redirect($location);
         }
