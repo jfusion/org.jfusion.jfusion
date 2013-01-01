@@ -193,7 +193,7 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
         $callback_body[] = '';
         
 		$regex_body[] = '#(?<=href=["\'])(?!\w{0,10}://|\w{0,10}:)(.*?)(?=["\'])#mSi';
-        $replace_body[] = '';//\'href="\'.$this->fixUrl("$1","' . $data->baseURL . '","' . $data->fullURL . '").\'"\'';
+        $replace_body[] = '';
         $callback_body[] = 'fixUrl';
         
         $regex_body[] = '#(src)=["\'][./|/](.*?)["\']#mS';
@@ -343,8 +343,7 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
             if (preg_match($method, $links[1][$key]) || preg_match($method, $links[3][$key])) {
                 $is_get = false;
             }
-            $matches[1] = $links[2][$key];
-            $value = $this->fixUrl($matches);
+            $value = $this->fixUrl(array(1 => $links[2][$key]));
             if ($is_get && substr($value, -1) != DS) $links[4][$key] = $getData . $links[4][$key];
             $data->body = str_replace($links[0][$key], '<form' . $links[1][$key] . 'action="' . $value . '"' . $links[3][$key] . '>' . $links[4][$key] . '</form>', $data->body);
         }

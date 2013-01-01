@@ -335,19 +335,19 @@ class JFusionPublic_smf extends JFusionPublic
         //fix for form actions
 //        $regex_body[] = '#action="' . $data->integratedURL . 'index.php(.*?)"(.*?)>#m';
         $regex_body[] = '#action="(.*?)"(.*?)>#m';
-        $replace_body[] = '';//$this->fixAction("index.php$1","$2","' . $data->baseURL . '")';
+        $replace_body[] = '';
         $callback_body[] = 'fixAction';
         
         $regex_body[] = '#(?<=href=["\'])'.preg_quote($data->integratedURL,'#').'(.*?)(?=["\'])#mSi';
-        $replace_body[] = '';//\'href="\'.$this->fixUrl("#$1","' . $data->baseURL . '","' . $data->fullURL . '").\'"\'';
+        $replace_body[] = '';
         $callback_body[] = 'fixURL';
         $regex_body[] = '#(?<=href=["\'])(\#.*?)(?=["\'])#mSi';
-        $replace_body[] = '';//\'href="\'.$this->fixUrl("#$1","' . $data->baseURL . '","' . $data->fullURL . '").\'"\'';
+        $replace_body[] = '';
         $callback_body[] = 'fixURL';
 
         //Jump Related fix
         $regex_body[] = '#<select name="jumpto" id="jumpto".*?">(.*?)</select>#mSsi';
-        $replace_body[] = '';//$this->fixJump("$1")';
+        $replace_body[] = '';
         $callback_body[] = 'fixJump';
         
         $regex_body[] = '#<input (.*?) window.location.href = \'(.*?)\' \+ this.form.jumpto.options(.*?)>#mSsi';
@@ -372,7 +372,7 @@ class JFusionPublic_smf extends JFusionPublic
         
         // Chaptcha fix
         $regex_body[] = '#(?<=")'.preg_quote($data->integratedURL,'#').'(index.php\?action=verificationcode;rand=.*?)(?=")#si';
-        $replace_body[] = '';//\'"\'.$this->fixUrl("index.php?$2$3","' . $data->baseURL . '","' . $data->fullURL . '").\'"\'';
+        $replace_body[] = '';
         $callback_body[] = 'fixUrlNoAmp';
 /*
         $regex_body[] = '#new_url[.]indexOf[(]"rand="#si';
@@ -381,11 +381,11 @@ class JFusionPublic_smf extends JFusionPublic
 */
         //Fix auto member search
         $regex_body[] = '#(?<=toComplete\.source = \")'.preg_quote($data->integratedURL,'#'). '(.*?)(?=\")#si';
-        $replace_body[] = '';//\'toComplete.source = "\'.$this->fixUrlNoAmp("$1","' . $data->baseURL . '","' . $data->fullURL . '").\'"\'';
+        $replace_body[] = '';
         $callback_body[] = 'fixUrlNoAmp';
         
         $regex_body[] = '#(?<=bccComplete\.source = \")'.preg_quote($data->integratedURL,'#'). '(.*?)(?=\")#si';
-        $replace_body[] = '';//\'bccComplete.source = "\'.$this->fixUrlNoAmp("$1","' . $data->baseURL . '","' . $data->fullURL . '").\'"\'';
+        $replace_body[] = '';
         $callback_body[] = 'fixUrlNoAmp';
 
         foreach ($regex_body as $k => $v) {

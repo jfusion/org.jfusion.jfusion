@@ -116,7 +116,7 @@ class JFusionPublic_mybb extends JFusionPublic {
         $callback_body[] = 'fixUrl';
 
         $regex_body[] = '#(?<=href=["\'])(?!\w{0,10}://|\w{0,10}:)(.*?)(?=["\'])#mSi';
-        $replace_body[] = '';//\'href="\'.$this->fixUrl("$1","' . $data->baseURL . '","' . $data->fullURL . '").\'"\'';
+        $replace_body[] = '';
         $callback_body[] = 'fixUrl';
 
         $regex_body[]	= '#(?<=href=["\'])'.$data->integratedURL.'(.*?)(?=["\'])#m';

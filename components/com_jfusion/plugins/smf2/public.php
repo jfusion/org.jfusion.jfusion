@@ -359,14 +359,14 @@ class JFusionPublic_smf2 extends JFusionPublic {
 
 		//fix for form actions
         $regex_body[] = '#action="(.*?)"(.*?)>#m';
-        $replace_body[] = '';//$this->fixAction("index.php$1","$2","' . $data->baseURL . '")';
+        $replace_body[] = '';
         $callback_body[] = 'fixAction';
 
         $regex_body[] = '#(?<=href=["\'])' . $data->integratedURL . '(.*?)(?=["\'])#mSi';
-        $replace_body[] = '';//\'href="\'.$this->fixUrl("#$1","' . $data->baseURL . '","' . $data->fullURL . '").\'"\'';
+        $replace_body[] = '';
         $callback_body[] = 'fixURL';
         $regex_body[] = '#(?<=href=["\'])(\#.*?)(?=["\'])#mSi';
-        $replace_body[] = '';//\'href="\'.$this->fixUrl("#$1","' . $data->baseURL . '","' . $data->fullURL . '").\'"\'';
+        $replace_body[] = '';
         $callback_body[] = 'fixURL';
 		
 		$regex_body[]	= '#sScriptUrl: \'http://joomla.fanno.dk/smf2/index.php\'#mSsi';
@@ -374,16 +374,16 @@ class JFusionPublic_smf2 extends JFusionPublic {
 
         // Chaptcha fix
         $regex_body[] = '#(?<=src=")' . $data->integratedURL . '(index.php\?action=verificationcode.*?)(?=")#si';
-        $replace_body[] = '';//\'"\'.$this->fixUrl("index.php?$2$3","' . $data->baseURL . '","' . $data->fullURL . '").\'"\'';
+        $replace_body[] = '';
         $callback_body[] = 'fixURL';
         $regex_body[] = '#(?<=data=")' . $data->integratedURL . '(index.php\?action=verificationcode.*?)(?=")#si';
-        $replace_body[] = '';//\'"\'.$this->fixUrl("index.php?$2$3","' . $data->baseURL . '","' . $data->fullURL . '").\'"\'';
+        $replace_body[] = '';
         $callback_body[] = 'fixURL';
         $regex_body[] = '#(?<=\(")' . $data->integratedURL . '(index.php\?action=verificationcode.*?)(?=")#si';
-        $replace_body[] = '';//\'"\'.$this->fixUrl("index.php?$2$3","' . $data->baseURL . '","' . $data->fullURL . '").\'"\'';
+        $replace_body[] = '';
         $callback_body[] = 'fixUrlNoAmp';
         $regex_body[] = '#(?<=\>)' . $data->integratedURL . '(index.php\?action=verificationcode.*?)(?=</a>)#si';
-        $replace_body[] = '';//\'"\'.$this->fixUrl("index.php?$2$3","' . $data->baseURL . '","' . $data->fullURL . '").\'"\'';
+        $replace_body[] = '';
         $callback_body[] = 'fixUrlNoAmp';
 		
 		foreach ($regex_body as $k => $v) {
