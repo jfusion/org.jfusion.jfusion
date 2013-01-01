@@ -103,6 +103,38 @@
 
 
 		<param name="jfusionbox" type="text" default="" label="FRAMELESS_OPTIONS" description="" />
+        <param name="parse_anchors" type="list" default="1" label="PARSE_ANCHORS" description="PARSE_ANCHORS">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </param>
+        <param name="parse_rel_url" type="list" default="1" label="PARSE_REL_URL" description="PARSE_REL_URL">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </param>
+        <param name="parse_abs_url" type="list" default="1" label="PARSE_ABS_URL" description="PARSE_ABS_URL">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </param>
+        <param name="parse_abs_path" type="list" default="1" label="PARSE_ABS_PATH" description="PARSE_ABS_PATH">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </param>
+        <param name="parse_rel_img" type="list" default="1" label="PARSE_REL_IMG" description="PARSE_REL_IMG">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </param>
+        <param name="parse_action" type="list" default="1" label="PARSE_ACTION" description="PARSE_ACTION">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </param>
+        <param name="parse_popup" type="list" default="1" label="PARSE_POPUP" description="PARSE_POPUP">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </param>
+        <param name="parse_redirect" type="list" default="1" label="PARSE_REDIRECT" description="PARSE_REDIRECT">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </param>
 		<param name="headermap" default="" type="JFusionPair" label="HEADER_MAP" description="HEADER_MAP_DESCR"/>
 		<param name="bodymap" default="" type="JFusionPair" label="BODY_MAP" description="BODY_MAP_DESCR"/>
 
