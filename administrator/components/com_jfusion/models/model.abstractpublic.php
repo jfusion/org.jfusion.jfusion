@@ -75,27 +75,10 @@ class JFusionPublic
         $callback_body = array();
         $params = JFusionFactory::getParams($this->getJname());
 
-
-//        $regex_body[]       = '#(href|action)=["|\']'.$data->integratedURL.'(.*?)["|\']#mS';
-//        $replace_body[]     = '$1="/$2"';
-//        $callback_body[] = '';
-
-//        $regex_body[]       = '#(href|action)=["|\'](?!\w{0,10}://|\w{0,10}:)(.\S*?)["|\']#mSie';
-//        $replace_body[]     = '\'$1="\'.$this->fixUrl("$2","'.$data->baseURL.'","'.$data->fullURL.'","'.$data->integratedURL.'").\'"\'';
-//        $callback_body[] = '';
-
-        if (substr($data->baseURL, -1) != '/'){
-            $urlMode = 1;
-        } else if ($data->sefmode==1) {
-            $urlMode = 2;
-        } else {
-            $urlMode = 3;
-        }
-
         //parse anchors
         if(!empty($data->parse_anchors)) {
-            $regex_body[]	= '#href="\#(.*?)"#mS';
-            $replace_body[]	= 'href="'.$data->fullURL.'#$1"';
+            $regex_body[]	= '#href=(?<quote>["\'])\#(.*?)(\k<quote>)#mS';
+            $replace_body[]	= 'href=$1'.$data->fullURL.'#$2$3';
             $callback_body[] = '';
         }
 
@@ -110,118 +93,63 @@ class JFusionPublic
             $replace_body[]	= '$1'.$data->integratedURL.'$2$3';
             $callback_body[] = '';
 
-            switch ($urlMode) {
-                case 1:
-                case 2:
-                    $regex_body[] = '#(?<=href=["\'])'.$path.'(.*?)(?=["\'])#m';
-                    $replace_body[] = '';
-                    $callback_body[] = 'fixUrl';
-                    break;
-                case 3:
-                    $regex_body[]	= '#href="'.$path.'(.*?)"#mS';
-                    $replace_body[]	= 'href="'.$data->baseURL.'$1"';
-                    $callback_body[] = '';
-                    break;
-            }
+	        $regex_body[] = '#(?<=href=["\'])'.$path.'(.*?)(?=["\'])#m';
+	        $replace_body[] = '';
+	        $callback_body[] = 'fixUrl';
         }
 
         //parse relative URLS
         if(!empty($data->parse_rel_url)) {
-            switch ($urlMode) {
-                case 1:
-                case 2:
-                    $regex_body[]	= '#(?<=href=["\'])[./|/](.*?)(?=["\'])#mS';
-                    $replace_body[] = '';
-                    $callback_body[] = 'fixUrl';
+	        $regex_body[]	= '#(?<=href=["\'])[./|/](.*?)(?=["\'])#mS';
+	        $replace_body[] = '';
+	        $callback_body[] = 'fixUrl';
 
-                    $regex_body[]	= '#(?<=href=["\'])(?!\w{0,10}://|\w{0,10}:)(.*?)(?=["\'])#mS';
-                    $replace_body[] = '';
-                    $callback_body[] = 'fixUrl';
-                    break;
-                case 3:
-                    $regex_body[]	= '#href="[./|	/](.*?)"#mS';
-                    $replace_body[]	= 'href="'.$data->baseURL.'$1"';
-                    $callback_body[] = '';
-
-                    $regex_body[]	= '#href="(?!\w{0,10}://|\w{0,10}:)(.*?)"#mS';
-                    $replace_body[]	= 'href="'.$data->baseURL.'$1"';
-                    $callback_body[] = '';
-                    break;
-            }
+	        $regex_body[]	= '#(?<=href=["\'])(?!\w{0,10}://|\w{0,10}:)(.*?)(?=["\'])#mS';
+	        $replace_body[] = '';
+	        $callback_body[] = 'fixUrl';
         }
 
         //parse absolute URLS
         if(!empty($data->parse_abs_url)) {
-            switch ($urlMode) {
-                case 1:
-                case 2:
-                    $regex_body[]	= '#(?<=href=["\'])'.$data->integratedURL.'(.*?)(?=["\'])#m';
-                    $replace_body[] = '';
-                    $callback_body[] = 'fixUrl';
-                    break;
-                case 3:
-                    $regex_body[]	= '#href="'.$data->integratedURL.'(.*?)"#mS';
-                    $replace_body[]	= 'href="'.$data->baseURL.'$1"';
-                    $callback_body[] = '';
-                    break;
-            }
+	        $regex_body[]	= '#(?<=href=["\'])'.$data->integratedURL.'(.*?)(?=["\'])#m';
+	        $replace_body[] = '';
+	        $callback_body[] = 'fixUrl';
         }
 
         //convert relative links from images into absolute links
         if(!empty($data->parse_rel_img)) {
-            $regex_body[]	= '#(src="|background="|url\()[./|/](.*?)("|\))#mS';
+// (?<quote>["\'])
+// \k<quote>
+            $regex_body[]	= '#(src=["\']|background=["\']|url\()[./|/](.*?)(["\']|\))#mS';
             $replace_body[]	= '$1'.$data->integratedURL.'$2$3';
             $callback_body[] = '';
 
-            $regex_body[]	= '#(src="|background="|url\()(?!\w{0,10}://|\w{0,10}:)(.*?)("|\))#mS';
+            $regex_body[]	= '#(src=["\']|background=["\']|url\()(?!\w{0,10}://|\w{0,10}:)(.*?)(["\']|\))#mS';
             $replace_body[]	= '$1'.$data->integratedURL.'$2$3';
             $callback_body[] = '';
         }
 
         //parse form actions
         if(!empty($data->parse_action)) {
-            switch ($urlMode) {
-                case 1:
-                case 2:
+	        if (!empty($data->parse_abs_path)) {
+		        $regex_body[]	= '#action=[\'"]'.$path.'(.*?)[\'"](.*?)>#m';
+		        $replace_body[]	= '';
+		        $callback_body[] = 'fixAction';
+	        }
+	        if (!empty($data->parse_abs_url)) {
+		        $regex_body[]	= '#action=[\'"]'.$data->integratedURL.'(.*?)[\'"](.*?)>#m';
+		        $replace_body[]	= '';
+		        $callback_body[] = 'fixAction';
+	        }
+	        if (!empty($data->parse_rel_url)) {
+		        $regex_body[]	= '#action=[\'"][./|/](.*?)[\'"](.*?)>#m';
+		        $replace_body[]	= '';
+		        $callback_body[] = 'fixAction';
 
-                    if (!empty($data->parse_abs_path)) {
-                        $regex_body[]	= '#action="'.$path.'(.*?)"(.*?)>#m';
-                        $replace_body[]	= '';
-                        $callback_body[] = 'fixAction';
-                    }
-                    if (!empty($data->parse_abs_url)) {
-                        $regex_body[]	= '#action="'.$data->integratedURL.'(.*?)"(.*?)>#m';
-                        $replace_body[]	= '';
-                        $callback_body[] = 'fixAction';
-                    }
-                    if (!empty($data->parse_rel_url)) {
-                        $regex_body[]	= '#action="[./|/](.*?)"(.*?)>#m';
-                        $replace_body[]	= '';
-                        $callback_body[] = 'fixAction';
-
-                        $regex_body[]	= '#action="(?!\w{0,10}://|\w{0,10}:)(.*?)"(.*?)>#m';
-                        $replace_body[]	= '';
-                        $callback_body[] = 'fixAction';
-                    }
-                    break;
-                case 3:
-                    if (!empty($data->parse_abs_path)) {
-                        $regex_body[]	= '#action="'.$path.'(.*?)"#mS';
-                        $replace_body[]	= 'action="'.$data->baseURL.'$1"';
-                        $callback_body[] = '';
-                    }
-                    if (!empty($data->parse_abs_url)) {
-                        $regex_body[]	= '#action="'.$data->integratedURL.'(.*?)"#mS';
-                        $replace_body[]	= 'action="'.$data->baseURL.'$1"';
-                        $callback_body[] = '';
-                    }
-                    if (!empty($data->parse_rel_url)) {
-                        $regex_body[]	= '#action="[./|/](.*?)"#mS';
-                        $replace_body[]	= 'action="'.$data->baseURL.'$1"';
-                        $callback_body[] = '';
-                    }
-                    break;
-            }
+		        $regex_body[]	= '#action=[\'"](?!\w{0,10}://|\w{0,10}:)(.*?)[\'"](.*?)>#m';
+		        $replace_body[]	= '';
+		        $callback_body[] = 'fixAction';
+	        }
         }
 
         //parse relative popup links to full url links
@@ -281,7 +209,8 @@ class JFusionPublic
         //convert relative links into absolute links
         $path = preg_replace( '#(\w{0,10}://)(.*?)/(.*?)#is'  , '$3' , $data->integratedURL );
         $path = preg_replace('#//+#','/',"/$path/");
-
+// (?<quote>["\'])
+// \k<quote>
         $regex_header[]	= '#(href|src)=[\'|"]'.$path.'(.*?)[\'|"]#Si';
         $replace_header[] = '$1="'.$data->integratedURL.'$2"';
         $callback_header[] = '';
@@ -306,7 +235,7 @@ class JFusionPublic
         $parse_redirect = $params->get('parse_redirect');
         if(!empty($parse_redirect)) {
             $regex_header[] = '#(?<=<meta http-equiv="refresh" content=")(.*?)(?=")#mis';
-            $replace_header[] = ''; //$this->fixRedirect("$1","' . $data->baseURL . '")';
+            $replace_header[] = '';
             $callback_header[] = 'fixRedirect';
         }
 /*
