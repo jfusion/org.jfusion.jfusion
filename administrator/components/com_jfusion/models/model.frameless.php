@@ -100,10 +100,7 @@ class JFusionFrameless {
         $data->httpauth_password = $JFusionParam->get('curl_password');
         $data->verifyhost = $JFusionParam->get('verifyhost');
 
-		$data->sefmode = $JFusionParam->get('sefmode',0);
-
-        $data->bodymap = $JFusionParam->get('bodymap');
-        $data->headermap = $JFusionParam->get('headermap');
+		$data->sefmode = $MenuParam->get('sefmode',$JFusionParam->get('sefmode',0));
 
         $data->bodyextract = $JFusionParam->get('bodyextract');
         $data->bodyremove = $JFusionParam->get('bodyremove');
@@ -115,13 +112,16 @@ class JFusionFrameless {
         $data->parse_infile_css = $MenuParam->get('parse_infile_css',1);
         $data->parse_css = $MenuParam->get('parse_css',1);
         
-        $data->parse_anchors = $MenuParam->get('parse_anchors',1);
-        $data->parse_rel_url = $MenuParam->get('parse_rel_url',1);
-        $data->parse_abs_url = $MenuParam->get('parse_abs_url',1);
-        $data->parse_abs_path = $MenuParam->get('parse_abs_path',1);
-        $data->parse_rel_img = $MenuParam->get('parse_rel_img',1);
-        $data->parse_action = $MenuParam->get('parse_action',1);
-        $data->parse_popup = $MenuParam->get('parse_popup',1);
+        $data->parse_anchors = $MenuParam->get('parse_anchors',$JFusionParam->get('parse_anchors',1));
+        $data->parse_rel_url = $MenuParam->get('parse_rel_url',$JFusionParam->get('parse_rel_url',1));
+        $data->parse_abs_url = $MenuParam->get('parse_abs_url',$JFusionParam->get('parse_abs_url',1));
+        $data->parse_abs_path = $MenuParam->get('parse_abs_path',$JFusionParam->get('parse_abs_path',1));
+        $data->parse_rel_img = $MenuParam->get('parse_rel_img',$JFusionParam->get('parse_rel_img',1));
+        $data->parse_action = $MenuParam->get('parse_action',$JFusionParam->get('parse_action',1));
+        $data->parse_popup = $MenuParam->get('parse_popup',$JFusionParam->get('parse_popup',1));
+
+		$data->bodymap = $JFusionParam->get('bodymap',$JFusionParam->get('bodymap'));
+		$data->headermap = $JFusionParam->get('headermap',$JFusionParam->get('headermap'));
         
 		//Load language files
 		$lang = JFactory::getLanguage ();
