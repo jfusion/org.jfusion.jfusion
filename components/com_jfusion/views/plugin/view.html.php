@@ -49,14 +49,7 @@ class jfusionViewPlugin extends JView {
 		$result = JFusionFrameless::displayContent($data);
 		if (!$result) return false;
 
-		if (isset ( $data->style )) {
-			$this->assignRef ( 'style', $data->style );
-		}
-
-		// Output the body
-		if (isset ( $data->body )) {
-			$this->assignRef ( 'body', $data->body );
-		}
+	    $this->assignRef ( 'data', $data );
 		parent::display ( $tpl );
         return true;
 	}

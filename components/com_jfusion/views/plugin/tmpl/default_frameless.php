@@ -10,8 +10,8 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 ?>
-<div id="jfusionframeless" <?php echo $this->style; ?>>
-    <div<?php echo $this->bodyAtributes; ?>>
-		<?php echo $this->body; ?>
+<div id="jfusionframeless" <?php echo $this->data->style; ?>>
+    <div<?php echo $this->data->bodyAtributes; ?>>
+		<?php echo $this->data->body; ?>
     </div>
 </div>
