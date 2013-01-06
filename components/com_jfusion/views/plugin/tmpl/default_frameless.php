@@ -11,7 +11,7 @@
 defined('_JEXEC') or die('Restricted access');
 ?>
 <div id="jfusionframeless" <?php echo $this->data->style; ?>>
-    <div <?php echo $this->data->bodyAtributes; ?>>
+    <div <?php echo $this->data->bodyAttributes; ?>>
 		<?php echo $this->data->body; ?>
     </div>
 </div>

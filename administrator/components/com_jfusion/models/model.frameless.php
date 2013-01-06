@@ -36,7 +36,7 @@ class JFusionFrameless {
 		$data = new stdClass ( );
 		$data->buffer = null;
 		$data->header = null;
-		$data->bodyAtributes = null;
+		$data->bodyAttributes = null;
 		$data->body = null;
 		$data->baseURL = null;
 		$data->fullURL = null;

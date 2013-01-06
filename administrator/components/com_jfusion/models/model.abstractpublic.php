@@ -284,7 +284,7 @@ class JFusionPublic
 
         $pattern = '#onload=["]([^"]*)#si';
         if(!empty($temp[2])){
-	        $data->bodyAtributes = $temp[2];
+	        $data->bodyAttributes = $temp[2];
             if(preg_match($pattern, $temp[2], $temp)) {
                 $js ='<script language="JavaScript" type="text/javascript">';
                 $js .= <<<JS
