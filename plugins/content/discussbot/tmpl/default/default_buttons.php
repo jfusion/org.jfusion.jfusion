@@ -9,7 +9,7 @@ if(isset($html['js'])) :
 endif;
 
 //close opening a tag
-echo '>';
+echo '><span>';
 
 echo $html['text'];
 
@@ -19,6 +19,6 @@ if($this->params->get('show_reply_num') && $name=='discuss') :
 	echo ' ['.$this->reply_count.' '.JText::_($post).']';
 endif;
 
-echo '</a>';
+echo '</span></a>';
 
 endforeach;
