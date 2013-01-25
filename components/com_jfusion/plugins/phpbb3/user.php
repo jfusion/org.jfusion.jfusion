@@ -911,7 +911,7 @@ class JFusionUser_phpbb3 extends JFusionUser
         $table_ary = array('users', 'user_group', 'topics_watch', 'forums_watch', 'acl_users', 'topics_track', 'topics_posted', 'forums_track', 'profile_fields_data', 'moderator_cache', 'drafts', 'bookmarks');
         foreach ($table_ary as $table) {
             $query = 'DELETE FROM #__'.$table.
-                'WHERE user_id = '.$user_id;
+                ' WHERE user_id = '.$user_id;
             $db->setQuery($query);
             if (!$db->query()) {
                 $status['error'][] = 'Error Could not delete records from '.$table.' for user '.$user_id.': '.$db->stderr();
