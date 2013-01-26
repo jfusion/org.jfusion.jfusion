@@ -138,8 +138,10 @@ function jfusionParseRoute($segments)
 	            $public = JFusionFactory::getPublic($jname);
 	            $public->parseRoute($vars);
 	        }
-	
-	        define('ROUTED_JNAME', $jname);
+
+		    if (!defined('ROUTED_JNAME')) {
+			    define('ROUTED_JNAME', $jname);
+		    }
 	    }
 	}
     return $vars;
