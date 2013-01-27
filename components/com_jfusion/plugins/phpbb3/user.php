@@ -899,8 +899,8 @@ class JFusionUser_phpbb3 extends JFusionUser
         // Update the post count for the anonymous user
         if ($user_posts > 0) {
             $query = 'UPDATE #__users
-                SET user_posts = user_posts + $user_posts
-                WHERE user_id = 1';
+                SET user_posts = user_posts + '.$user_posts.
+                ' WHERE user_id = 1';
             $db->setQuery($query);
             if (!$db->query()) {
                 $status['error'][] = 'Error Could not update the number of posts for anonymous user: '.$db->stderr();
