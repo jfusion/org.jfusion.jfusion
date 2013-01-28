@@ -256,7 +256,7 @@ class JFusionFunction
 				    $db->setQuery($query);
 				    $jnames = $db->loadObjectList();
 				    foreach ($jnames as $jname) {
-					    if ($jname != 'joomla_int') {
+					    if ($jname->name != 'joomla_int') {
 						    $user = JFusionFactory::getUser($jname->name);
 						    $puserinfo = $user->getUser($userinfo);
 						    if ($delete) {
