@@ -178,9 +178,6 @@ class JFusionUser_phpbb3 extends JFusionUser
                     if (!defined('IN_PHPBB')) {
                         define('IN_PHPBB', true);
                     }
-                    if (!defined('ROOT_PATH')) {
-                        define('', $source_path);
-                    }
 
                     $phpbb_root_path = $source_path;
                     $phpEx = 'php';
