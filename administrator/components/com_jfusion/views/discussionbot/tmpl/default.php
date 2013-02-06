@@ -67,7 +67,10 @@ foreach($this->pairs as $joomlaid => $forumid) {
 		elseif($this->dbtask=='pair_sections') echo JText::_('SECTION_NOT_EXIST');
 		elseif($this->dbtask=='pair_categories') echo JText::_('CATEGORY_NOT_EXIST');
 		?>
-		<img src="components/com_jfusion/images/delete_icon.png" onclick="$('adminForm').remove.value = '<?php echo $joomlaid; ?>'; $('adminForm').submit();"/></td>
+        <script type="text/javascript">
+            var adminForm = $('adminForm');
+        </script>
+		<img src="components/com_jfusion/images/delete_icon.png" onclick="adminForm.remove.value = '<?php echo $joomlaid; ?>'; adminForm.submit();"/></td>
 	<td>
 		<?php
 		if(isset($this->forumSelectOptions[$forumid])) echo $this->forumSelectOptions[$forumid]->name;

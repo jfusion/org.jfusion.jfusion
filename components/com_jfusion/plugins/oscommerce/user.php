@@ -174,6 +174,8 @@ class JFusionUser_oscommerce extends JFusionUser
      * @param object $userinfo
      * @param object &$existinguser
      * @param array &$status
+     *
+     * @return void
      */
     function updatePassword($userinfo, &$existinguser, &$status) {
         $params = JFusionFactory::getParams($this->getJname());
@@ -229,6 +231,8 @@ class JFusionUser_oscommerce extends JFusionUser
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function updateUsername($userinfo, &$existinguser, &$status) {
         // no username in oscommerce
@@ -239,6 +243,8 @@ class JFusionUser_oscommerce extends JFusionUser
      * @param object $userinfo
      * @param object &$existinguser
      * @param array &$status
+     *
+     * @return void
      */
     function updateEmail($userinfo, &$existinguser, &$status) {
         $params = JFusionFactory::getParams($this->getJname());
@@ -287,6 +293,8 @@ class JFusionUser_oscommerce extends JFusionUser
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function activateUser($userinfo, &$existinguser, &$status) {
         //activate the user not supported
@@ -297,6 +305,8 @@ class JFusionUser_oscommerce extends JFusionUser
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function inactivateUser($userinfo, &$existinguser, &$status) {
         // inactivate the user is not supported
@@ -306,6 +316,8 @@ class JFusionUser_oscommerce extends JFusionUser
     /**
      * @param object $userinfo
      * @param array $status
+     *
+     * @return void
      */
     function createUser($userinfo, &$status) {
         $params = JFusionFactory::getParams($this->getJname());
@@ -616,6 +628,8 @@ class JFusionUser_oscommerce extends JFusionUser
      * @param object $userinfo
      * @param object &$existinguser
      * @param array &$status
+     *
+     * @return void
      */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
         $params = JFusionFactory::getParams($this->getJname());

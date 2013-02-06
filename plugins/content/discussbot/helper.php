@@ -61,7 +61,7 @@ class JFusionDiscussBotHelper {
 
     /**
      * @param bool $update
-     * @param bool $threadinfo
+     * @param bool|object $threadinfo
      * @return mixed
      */
     public function &_get_thread_info($update = false, $threadinfo = false)

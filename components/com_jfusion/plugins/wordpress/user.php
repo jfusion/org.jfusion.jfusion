@@ -38,6 +38,7 @@ class JFusionUser_wordpress extends JFusionUser {
 
 	/**
 	 * returns the name of this JFusion plugin
+	 *
 	 * @return string name of current JFusion plugin
 	 */
 	function getJname()	{
@@ -46,6 +47,7 @@ class JFusionUser_wordpress extends JFusionUser {
 
     /**
      * @param object $userinfo
+     *
      * @return null|object
      */
     function getUser($userinfo) {
@@ -89,6 +91,7 @@ class JFusionUser_wordpress extends JFusionUser {
      * Routine to convert userobject to standardized JFusion version
      *
      * @param $user
+     *
      * @return \stdClass
      */
     function convertUserobjectToJFusion($user) {
@@ -155,6 +158,7 @@ class JFusionUser_wordpress extends JFusionUser {
     /**
      * @param object $userinfo
      * @param array $options
+     *
      * @return array|bool|string
      */
     function destroySession($userinfo, $options) {
@@ -232,6 +236,7 @@ class JFusionUser_wordpress extends JFusionUser {
 
     /**
      * @param string $username
+     *
      * @return mixed|string
      */
     function filterUsername($username) {
@@ -265,6 +270,8 @@ class JFusionUser_wordpress extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function updatePassword($userinfo, $existinguser, &$status) {
 		// get the encryption PHP file
@@ -288,6 +295,8 @@ class JFusionUser_wordpress extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function updateUsername($userinfo, &$existinguser, &$status) {
 		// not implemented in jFusion 1.x
@@ -297,6 +306,8 @@ class JFusionUser_wordpress extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function updateEmail($userinfo, &$existinguser, &$status) {
 		//we need to update the email
@@ -314,6 +325,8 @@ class JFusionUser_wordpress extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function blockUser($userinfo, &$existinguser, &$status) {
 		// not supported for Wordpress
@@ -324,6 +337,8 @@ class JFusionUser_wordpress extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function unblockUser($userinfo, &$existinguser, &$status) {
 	}
@@ -332,6 +347,8 @@ class JFusionUser_wordpress extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function activateUser($userinfo, &$existinguser, &$status) {
 		//activate the user
@@ -349,6 +366,8 @@ class JFusionUser_wordpress extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function inactivateUser($userinfo, &$existinguser, &$status) {
 		//set activation key
@@ -365,6 +384,8 @@ class JFusionUser_wordpress extends JFusionUser {
     /**
      * @param object $userinfo
      * @param array $status
+     *
+     * @return void
      */
     function createUser($userinfo, &$status) {
 		//find out what usergroup should be used
@@ -572,6 +593,8 @@ class JFusionUser_wordpress extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);

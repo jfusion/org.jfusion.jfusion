@@ -202,6 +202,8 @@ class JFusionForum_smf extends JFusionForum
      *
      * @param array &$results set of results from query
      * @param int $limit   limit results parameter as set in the module's params; used for plugins that cannot limit using a query limiter
+     *
+     * @return void
      */
     function filterActivityResults(&$results, $limit=0)
     {
@@ -232,6 +234,7 @@ class JFusionForum_smf extends JFusionForum
 
     /**
      * @param object $post
+     *
      * @return int
      */
     function checkReadStatus(&$post)

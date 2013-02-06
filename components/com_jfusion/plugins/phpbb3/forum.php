@@ -32,6 +32,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
     var $joomlaGlobals;
     /**
      * returns the name of this JFusion plugin
+     *
      * @return string name of current JFusion plugin
      */
     function getJname()
@@ -41,6 +42,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 
     /**
      * @param int $threadid
+     *
      * @return string
      */
     function getThreadURL($threadid) {
@@ -50,6 +52,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
     /**
      * @param int $threadid
      * @param int $postid
+     *
      * @return string
      */
     function getPostURL($threadid, $postid) {
@@ -58,6 +61,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 
     /**
      * @param int $uid
+     *
      * @return string
      */
     function getProfileURL($uid) {
@@ -80,6 +84,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 
     /**
      * @param int $puser_id
+     *
      * @return int|string
      */
     function getAvatar($puser_id) {
@@ -117,6 +122,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 
     /**
      * @param int $puser_id
+     *
      * @return array
      */
     function getPrivateMessageCounts($puser_id) {
@@ -145,6 +151,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
      * @param array $usedforums
      * @param string $result_order
      * @param int $result_limit
+     *
      * @return array
      */
     function getActivityQuery($usedforums, $result_order, $result_limit) {
@@ -183,6 +190,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 
     /**
      * @param object $post
+     *
      * @return int
      */
     function checkReadStatus(&$post)
@@ -241,6 +249,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 
     /**
      * @param $forumids
+     *
      * @return array
      */
     function filterForumList($forumids)
@@ -270,6 +279,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 
     /**
      * @param string $userid
+     *
      * @return array
      */
     function getForumPermissions($userid = 'find') {
@@ -425,6 +435,8 @@ class JFusionForum_phpbb3 extends JFusionForum {
      *
      * @param int $old exsisting premission
      * @param int $new new premission
+     *
+     * @return void
      */
     function setPremission(&$old,$new) {
         switch ($old) {
@@ -450,7 +462,9 @@ class JFusionForum_phpbb3 extends JFusionForum {
     /**
      * Retrieves thread information
      * @param int Id of specific thread
+     *
      * @return object Returns object with thread information
+     *
      * return the object with these three items
      * $result->forumid
      * $result->threadid (yes add it even though it is passed in as it will be needed in other functions)
@@ -622,6 +636,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
     /**
      * @param int $forumid
      * @param int $threadid
+     *
      * @return string
      */
     function getReplyURL($forumid, $threadid)
@@ -630,12 +645,14 @@ class JFusionForum_phpbb3 extends JFusionForum {
     }
 
 	 /**
-     * Updates information in a specific thread/post
-     * @param JParameter &$dbparams with discussion bot parameters
-     * @param object &$existingthread with existing thread info
-     * @param object &$contentitem object containing content information
-     * @param array &$status contains errors and status of actions
-     */
+      * Updates information in a specific thread/post
+      * @param JParameter &$dbparams with discussion bot parameters
+      * @param object &$existingthread with existing thread info
+      * @param object &$contentitem object containing content information
+      * @param array &$status contains errors and status of actions
+	  *
+	  * @return void
+      */
 	function updateThread(&$dbparams, &$existingthread, &$contentitem, &$status)
 	{
 		$threadid =& $existingthread->threadid;
@@ -867,6 +884,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 	 * $columns->posttitle = 'title';
 	 * $columns->postid = 'postid';
 	 * $columns->threadid = 'threadid';
+	 *
 	 * @return object with column names
 	 */
 	function getDiscussionColumns()
@@ -921,6 +939,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 
     /**
      * @param object $existingthread
+     *
      * @return int
      */
     function getReplyCount(&$existingthread)

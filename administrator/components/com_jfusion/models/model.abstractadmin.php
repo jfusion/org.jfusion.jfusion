@@ -566,7 +566,7 @@ JS;
 
 	        function usergroupSelect(option)
 	        {
-	            var myArray = new Array();
+	            var myArray = [];
 	            myArray[0] = '{$simple_usergroup}';
 	            myArray[1] = '{$advanced_usergroup}';
 	            $('JFusionUsergroup').innerHTML = myArray[option];

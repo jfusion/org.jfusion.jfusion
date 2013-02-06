@@ -58,6 +58,8 @@ class JFusionPublic_gallery2 extends JFusionPublic {
 
     /**
      * @param object &$data
+     *
+     * @return void
      */
     function getBuffer(&$data) {
         /**
@@ -128,6 +130,8 @@ class JFusionPublic_gallery2 extends JFusionPublic {
 
     /**
      * @param object $data
+     *
+     * @return void
      */
     function parseBody(&$data) {
         //fix for form actions    	
@@ -136,6 +140,8 @@ class JFusionPublic_gallery2 extends JFusionPublic {
 
     /**
      * @param object $data
+     *
+     * @return void
      */
     function parseHeader(&$data) {
     }

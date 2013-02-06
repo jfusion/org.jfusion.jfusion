@@ -336,6 +336,8 @@ class JFusionUser_phpbb3 extends JFusionUser
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function updatePassword($userinfo, &$existinguser, &$status) {
         /**
@@ -359,6 +361,8 @@ class JFusionUser_phpbb3 extends JFusionUser
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function updateUsername($userinfo, &$existinguser, &$status) {
     }
@@ -367,6 +371,8 @@ class JFusionUser_phpbb3 extends JFusionUser
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function updateEmail($userinfo, &$existinguser, &$status) {
         //we need to update the email
@@ -384,6 +390,8 @@ class JFusionUser_phpbb3 extends JFusionUser
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
@@ -499,6 +507,8 @@ class JFusionUser_phpbb3 extends JFusionUser
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function blockUser($userinfo, &$existinguser, &$status) {
         //block the user
@@ -516,6 +526,8 @@ class JFusionUser_phpbb3 extends JFusionUser
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function unblockUser($userinfo, &$existinguser, &$status) {
         //unblock the user
@@ -533,6 +545,8 @@ class JFusionUser_phpbb3 extends JFusionUser
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function activateUser($userinfo, &$existinguser, &$status) {
         //activate the user
@@ -550,6 +564,8 @@ class JFusionUser_phpbb3 extends JFusionUser
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function inactivateUser($userinfo, &$existinguser, &$status) {
         //set activation key
@@ -566,6 +582,8 @@ class JFusionUser_phpbb3 extends JFusionUser
     /**
      * @param object $userinfo
      * @param array $status
+     *
+     * @return void
      */
     function createUser($userinfo, &$status) {
     	//found out what usergroup should be used
@@ -1046,6 +1064,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 
     /**
      * @param bool $keepalive
+     *
      * @return int
      */
     function syncSessions($keepalive = false) {
@@ -1124,7 +1143,11 @@ class JFusionUser_phpbb3 extends JFusionUser
                             JError::raiseNotice('500','keep alive disabled or no persistant session found so calling Joomla\'s destorySession');
                         }
                         $JoomlaUser = JFusionFactory::getUser('joomla_int');
-                        $userinfo  = (array) $JUser;
+	                    $arr  = (array) $JUser;
+	                    $userinfo = new stdClass;
+	                    foreach($arr as $key => $value) {
+		                    $userinfo->$key = $value;
+	                    }
                         $options['clientid'][] = '0';
                         $status = $JoomlaUser->destroySession($userinfo, $options);
                         if ($debug) {

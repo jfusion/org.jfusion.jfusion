@@ -49,6 +49,7 @@ class JFusionForum_vbulletin extends JFusionForum
 
     /**
      * returns the name of this JFusion plugin
+     *
      * @return string name of current JFusion plugin
      */
     function getJname()
@@ -59,6 +60,7 @@ class JFusionForum_vbulletin extends JFusionForum
     /**
      * @param int $forumid
      * @param int $threadid
+     *
      * @return string
      */
     function getReplyURL($forumid, $threadid)
@@ -68,6 +70,7 @@ class JFusionForum_vbulletin extends JFusionForum
 
     /**
      * @param int $threadid
+     *
      * @return object
      */
     function getThread($threadid)
@@ -81,6 +84,7 @@ class JFusionForum_vbulletin extends JFusionForum
 
     /**
      * @param int $threadid
+     *
      * @return bool
      */
     function getThreadLockedStatus($threadid)
@@ -98,6 +102,8 @@ class JFusionForum_vbulletin extends JFusionForum
      * @param object &$contentitem
      * @param int $forumid
      * @param array &$status
+     *
+     * @return void
      */
     function createThread(&$dbparams, &$contentitem, $forumid, &$status)
     {
@@ -181,6 +187,7 @@ class JFusionForum_vbulletin extends JFusionForum
      * @param object $ids
      * @param object $contentitem
      * @param object $userinfo
+     *
      * @return array
      */
     function createPost(&$dbparams, &$ids, &$contentitem, &$userinfo)
@@ -265,6 +272,8 @@ class JFusionForum_vbulletin extends JFusionForum
      * @param object &$existingthread
      * @param object &$contentitem
      * @param array &$status
+     *
+     * @return void
      */
     function updateThread(&$dbparams, &$existingthread, &$contentitem, &$status)
     {
@@ -292,6 +301,7 @@ class JFusionForum_vbulletin extends JFusionForum
     /**
      * @param $id
      * @param $dbparams
+     *
      * @return mixed
      */
     function getThreadInfo($id, &$dbparams)
@@ -308,6 +318,7 @@ class JFusionForum_vbulletin extends JFusionForum
 
     /**
      * @param $id
+     *
      * @return array
      */
     function getForumInfo($id) {
@@ -350,6 +361,7 @@ class JFusionForum_vbulletin extends JFusionForum
     /**
      * @param JParameter $dbparams
      * @param object $existingthread
+     *
      * @return array
      */
     function getPosts(&$dbparams, &$existingthread)
@@ -387,6 +399,7 @@ class JFusionForum_vbulletin extends JFusionForum
 
     /**
      * @param object $existingthread
+     *
      * @return int
      */
     function getReplyCount(&$existingthread)
@@ -419,6 +432,7 @@ class JFusionForum_vbulletin extends JFusionForum
 
     /**
      * @param int $threadid
+     *
      * @return string
      */
     function getThreadURL($threadid)
@@ -429,6 +443,7 @@ class JFusionForum_vbulletin extends JFusionForum
     /**
      * @param int $threadid
      * @param int $postid
+     *
      * @return string
      */
     function getPostURL($threadid, $postid)
@@ -438,6 +453,7 @@ class JFusionForum_vbulletin extends JFusionForum
 
     /**
      * @param int $uid
+     *
      * @return string
      */
     function getProfileURL($uid)
@@ -447,6 +463,7 @@ class JFusionForum_vbulletin extends JFusionForum
 
     /**
      * @param int $userid
+     *
      * @return array
      */
     function getPrivateMessageCounts($userid)
@@ -479,6 +496,7 @@ class JFusionForum_vbulletin extends JFusionForum
 
     /**
      * @param int $userid
+     *
      * @return int|null|string
      */
     function getAvatar($userid)
@@ -781,6 +799,8 @@ class JFusionForum_vbulletin extends JFusionForum
      * @param int $limit
      * @param string $idKey
      * @param bool $search
+     *
+     * @return void
      */
     function filterActivityResults(&$results, $limit = 0, $idKey = 'forumid', $search = false)
     {

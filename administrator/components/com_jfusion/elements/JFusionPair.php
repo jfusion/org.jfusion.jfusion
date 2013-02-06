@@ -94,7 +94,7 @@ class JElementJFusionPair extends JElement
 
         SqueezeBox.handlers['jfusion'] = function(el) {
 			return el;
-		}
+		};
 		SqueezeBox.parsers['jfusion'] = SqueezeBox.parsers['adopt'];
 JS;
             $document->addScriptDeclaration($output);

@@ -66,8 +66,8 @@ class JFusionFrameless {
             	$JFusionParam = $menu->getParams ( $item->id );
             	$MenuParam = $menu->getParams ( $item->id );
             } else {
-            	$JFusionParam = $menu->getParams ( null );
-            	$MenuParam = $menu->getParams ( null );
+            	$JFusionParam = $menu->getParams( null );
+            	$MenuParam = $menu->getParams( null );
             }
     	} else {
     		$MenuParam = $menu->getParams ( $data->Itemid );

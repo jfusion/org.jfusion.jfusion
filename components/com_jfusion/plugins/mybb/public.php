@@ -31,6 +31,7 @@ defined('_JEXEC') or die('Restricted access');
 class JFusionPublic_mybb extends JFusionPublic {
     /**
      * returns the name of this JFusion plugin
+     *
      * @return string name of current JFusion plugin
      */
     function getJname()
@@ -100,6 +101,8 @@ class JFusionPublic_mybb extends JFusionPublic {
 
     /**
      * @param object $data
+     *
+     * @return void
      */
     function parseBody(&$data) {
         $regex_body = array();
@@ -147,6 +150,8 @@ class JFusionPublic_mybb extends JFusionPublic {
 
     /**
      * @param object $data
+     *
+     * @return void
      */
     function parseHeader(&$data) {
         static $regex_header, $replace_header;

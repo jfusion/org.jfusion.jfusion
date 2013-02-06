@@ -146,6 +146,8 @@ class JFusionUser_mybb extends JFusionUser {
      * @param object $userinfo
      * @param object &$existinguser
      * @param array &$status
+     *
+     * @return void
      */
     function blockUser($userinfo, &$existinguser, &$status) {
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -179,6 +181,8 @@ class JFusionUser_mybb extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function unblockUser($userinfo, &$existinguser, &$status) {
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -221,6 +225,8 @@ class JFusionUser_mybb extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function updatePassword($userinfo, &$existinguser, &$status) {
         jimport('joomla.user.helper');
@@ -240,6 +246,8 @@ class JFusionUser_mybb extends JFusionUser {
      * @param object $userinfo
      * @param object &$existinguser
      * @param array &$status
+     *
+     * @return void
      */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
 
@@ -263,6 +271,8 @@ class JFusionUser_mybb extends JFusionUser {
     /**
      * @param object $userinfo
      * @param array $status
+     *
+     * @return void
      */
     function createUser($userinfo, &$status) {
         //found out what usergroup should be used
@@ -317,6 +327,8 @@ class JFusionUser_mybb extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function updateEmail($userinfo, &$existinguser, &$status) {
         //we need to update the email
@@ -334,6 +346,8 @@ class JFusionUser_mybb extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function activateUser($userinfo, &$existinguser, &$status) {
         //found out what usergroup should be used
@@ -359,6 +373,8 @@ class JFusionUser_mybb extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function inactivateUser($userinfo, &$existinguser, &$status) {
         //found out what usergroup should be used

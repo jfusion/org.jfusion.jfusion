@@ -44,7 +44,8 @@ require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS .
 class JFusionUser_moodle extends JFusionUser {
     /**
      * @param $data
-     * @return mixed
+     *
+     * @return string
      */
     function rc4encrypt($data) {
 		$password = 'nfgjeingjk';
@@ -55,6 +56,7 @@ class JFusionUser_moodle extends JFusionUser {
 	 * rc4decrypt
 	 *
 	 * @param string $data Data to decrypt
+	 *
 	 * @return string The now decrypted data
 	 */
 	function rc4decrypt($data) {
@@ -68,6 +70,7 @@ class JFusionUser_moodle extends JFusionUser {
 	 * @param string $pwd The password to use when encrypting or decrypting
 	 * @param string $data The data to be decrypted/encrypted
 	 * @param string $case Either 'de' for decrypt or '' for encrypt
+	 *
 	 * @return string
 	 */
 	function endecrypt ($pwd, $data, $case) {
@@ -122,6 +125,7 @@ class JFusionUser_moodle extends JFusionUser {
 
     /**
      * @param object $userinfo
+     *
      * @return null|object
      */
     function getUser($userinfo) {
@@ -158,6 +162,7 @@ class JFusionUser_moodle extends JFusionUser {
 	}
 	/**
 	 * returns the name of this JFusion plugin
+	 *
 	 * @return string name of current JFusion plugin
 	 */
 	function getJname()
@@ -168,6 +173,7 @@ class JFusionUser_moodle extends JFusionUser {
     /**
      * @param object $userinfo
      * @param array $options
+     *
      * @return array
      */
     function destroySession($userinfo, $options) {
@@ -274,6 +280,7 @@ class JFusionUser_moodle extends JFusionUser {
     /**
      * @param object $userinfo
      * @param array $options
+     *
      * @return array|string
      */
     function createSession($userinfo, $options) {
@@ -310,6 +317,7 @@ class JFusionUser_moodle extends JFusionUser {
 
     /**
      * @param string $username
+     *
      * @return string
      */
     function filterUsername($username) {
@@ -323,6 +331,8 @@ class JFusionUser_moodle extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function updatePassword($userinfo, $existinguser, &$status) {
 		$params = JFusionFactory::getParams('moodle');
@@ -345,6 +355,8 @@ class JFusionUser_moodle extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function updateUsername($userinfo, &$existinguser, &$status) {
 		// not implemented in jFusion 1.x
@@ -354,6 +366,8 @@ class JFusionUser_moodle extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function updateEmail($userinfo, &$existinguser, &$status) {
 		//TODO ? check for duplicates, or leave it atdb error
@@ -372,6 +386,8 @@ class JFusionUser_moodle extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function blockUser($userinfo, &$existinguser, &$status) {
 		$db = JFusionFactory::getDatabase($this->getJname());
@@ -395,6 +411,8 @@ class JFusionUser_moodle extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function unblockUser($userinfo, &$existinguser, &$status) {
 		$db = JFusionFactory::getDatabase($this->getJname());
@@ -418,6 +436,8 @@ class JFusionUser_moodle extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function activateUser($userinfo, &$existinguser, &$status) {
 		//activate the user
@@ -435,6 +455,8 @@ class JFusionUser_moodle extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function inactivateUser($userinfo, &$existinguser, &$status) {
 		$db = JFusionFactory::getDatabase($this->getJname());
@@ -450,6 +472,8 @@ class JFusionUser_moodle extends JFusionUser {
     /**
      * @param object $userinfo
      * @param array $status
+     *
+     * @return void
      */
     function createUser($userinfo, &$status) {
 		// first find out if the user already exists, but with deleted flag set

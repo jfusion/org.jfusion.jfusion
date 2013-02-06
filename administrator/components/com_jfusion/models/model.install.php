@@ -710,7 +710,7 @@ class JFusionPluginInstaller extends JObject
      *
      * @param string $dir Directory
      *
-     * @return simpleXML object (or null)
+     * @return simpleXML|JXMLElement object (or null)
      */
     function _getManifest($dir)
     {

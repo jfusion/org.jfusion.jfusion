@@ -55,6 +55,8 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
 
     /**
      * @param object $data
+     * 
+     * @return void
      */
     function getBuffer(&$data) {
         // We're going to want a few globals... these are all set later.
@@ -158,6 +160,8 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
 
     /**
      * @param object $data
+     *
+     * @return void
      */
     function parseBody(&$data) {
         $regex_body = array();
@@ -214,6 +218,8 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
 
     /**
      * @param object $data
+     *
+     * @return void
      */
     function parseHeader(&$data) {
         static $regex_header, $replace_header;
@@ -396,12 +402,15 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
 
     /**
      * @param string &$results
+     *
+     * @return void
      */
     function filterSearchResults(&$results) {
     }
 
     /**
      * @param mixed $post
+     *
      * @return string
      */
     function getSearchResultLink($post) {

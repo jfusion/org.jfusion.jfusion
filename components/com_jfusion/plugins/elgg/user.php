@@ -32,6 +32,7 @@ defined('_JEXEC') or die('Restricted access');
 class JFusionUser_elgg extends JFusionUser {
     /**
      * @param object $userinfo
+     *
      * @return null|object
      */
     function getUser($userinfo) {
@@ -83,6 +84,7 @@ class JFusionUser_elgg extends JFusionUser {
 
     /**
      * @param object $userinfo
+     *
      * @return array
      */
     function deleteUser($userinfo) {
@@ -110,6 +112,7 @@ class JFusionUser_elgg extends JFusionUser {
     /**
      * @param object|null $userinfo
      * @param array|null $option
+     *
      * @return array
      */
     function destroySession($userinfo, $option) {
@@ -130,6 +133,7 @@ class JFusionUser_elgg extends JFusionUser {
      * @param object $userinfo
      * @param array $options
      * @param bool $framework
+     *
      * @return array
      */
     function createSession($userinfo, $options, $framework = true) {
@@ -192,6 +196,7 @@ class JFusionUser_elgg extends JFusionUser {
 
     /**
      * @param string $username
+     *
      * @return string
      */
     function filterUsername($username) {
@@ -202,6 +207,8 @@ class JFusionUser_elgg extends JFusionUser {
      * @param object $userinfo
      * @param object &$existinguser
      * @param array &$status
+     *
+     * @return void
      */
     function updatePassword($userinfo, &$existinguser, &$status) {
         jimport('joomla.user.helper');
@@ -220,6 +227,8 @@ class JFusionUser_elgg extends JFusionUser {
     /**
      * @param object $userinfo
      * @param array &$status
+     *
+     * @return void
      */
     function createUser($userinfo, &$status) {
         //found out what usergroup should be used
@@ -296,6 +305,8 @@ class JFusionUser_elgg extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function updateEmail($userinfo, &$existinguser, &$status) {
         //we need to update the email
@@ -317,6 +328,7 @@ class JFusionUser_elgg extends JFusionUser {
      * @param array  &$status       Status array
      *
      * @access public
+     *
      * @return void
      */
     function blockUser($userinfo, &$existinguser, &$status)
@@ -349,6 +361,7 @@ class JFusionUser_elgg extends JFusionUser {
      * @param array  &&$status       Status array
      *
      * @access public
+     *
      * @return void
      */
     function unblockUser($userinfo, &$existinguser, &$status)
@@ -377,6 +390,8 @@ class JFusionUser_elgg extends JFusionUser {
      * @param object $userinfo
      * @param object &$existinguser
      * @param array &$status
+     *
+     * @return void
      */
     function activateUser($userinfo, &$existinguser, &$status) {
         $params = JFusionFactory::getParams($this->getJname());
@@ -403,6 +418,8 @@ class JFusionUser_elgg extends JFusionUser {
      * @param object $userinfo
      * @param object &$existinguser
      * @param array &$status
+     *
+     * @return void
      */
     function inactivateUser($userinfo, &$existinguser, &$status) {
         $params = JFusionFactory::getParams($this->getJname());

@@ -36,7 +36,7 @@ require_once JPATH_LIBRARIES . DS . 'joomla' . DS . 'database' . DS . 'database'
 class JFusionMySQLi extends JDatabaseMySQLi
 {
     var $_resource=null;
-    protected $connection=null;
+    public $connection=null;
     /**
      * @param array $options
      */

@@ -36,6 +36,7 @@ require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS .
 class JFusionUser_gallery2 extends JFusionUser {
     /**
      * @param object $userinfo
+     *
      * @return null|object
      */
     function getUser($userinfo) {
@@ -61,6 +62,7 @@ class JFusionUser_gallery2 extends JFusionUser {
 
     /**
      * @param $g2_user
+     *
      * @return object
      */
     function &_getUser($g2_user) {
@@ -94,6 +96,7 @@ class JFusionUser_gallery2 extends JFusionUser {
     }
     /**
      * returns the name of this JFusion plugin
+     *
      * @return string name of current JFusion plugin
      */
     function getJname() 
@@ -103,6 +106,7 @@ class JFusionUser_gallery2 extends JFusionUser {
 
     /**
      * @param string $username
+     *
      * @return string
      */
     function filterUsername($username) {
@@ -113,6 +117,7 @@ class JFusionUser_gallery2 extends JFusionUser {
     /**
      * @param object $userinfo
      * @param array $options
+     *
      * @return array
      */
     function destroySession($userinfo, $options) {
@@ -133,6 +138,7 @@ class JFusionUser_gallery2 extends JFusionUser {
      * @param object $userinfo
      * @param array $options
      * @param bool $framework
+     *
      * @return array
      */
     function createSession($userinfo, $options, $framework = true) {
@@ -217,6 +223,7 @@ class JFusionUser_gallery2 extends JFusionUser {
 
     /**
      * @param object $userinfo
+     *
      * @return array
      */
     function deleteUser($userinfo) {
@@ -260,6 +267,8 @@ class JFusionUser_gallery2 extends JFusionUser {
     /**
      * @param object $userinfo
      * @param array &$status
+     *
+     * @return void
      */
     function createUser($userinfo, &$status) {
         /**
@@ -318,6 +327,8 @@ class JFusionUser_gallery2 extends JFusionUser {
      * @param object $userinfo
      * @param object &$existinguser
      * @param array &$status
+     *
+     * @return void
      */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
         /**
@@ -357,6 +368,8 @@ class JFusionUser_gallery2 extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function updatePassword($userinfo, &$existinguser, &$status) {
         /**
@@ -400,6 +413,8 @@ class JFusionUser_gallery2 extends JFusionUser {
      * @param object $userinfo
      * @param object &$existinguser
      * @param array &$status
+     *
+     * @return void
      */
     function updateEmail($userinfo, &$existinguser, &$status) {
         /**
@@ -432,6 +447,8 @@ class JFusionUser_gallery2 extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function blockUser($userinfo, &$existinguser, &$status) {
     }
@@ -440,6 +457,8 @@ class JFusionUser_gallery2 extends JFusionUser {
      * @param object $userinfo
      * @param object &$existinguser
      * @param array &$status
+     *
+     * @return void
      */
     function unblockUser($userinfo, &$existinguser, &$status) {
     }
@@ -448,6 +467,8 @@ class JFusionUser_gallery2 extends JFusionUser {
      * @param $userinfo
      * @param &$existinguser
      * @param &$status
+     *
+     * @return void
      */
     function activeUser($userinfo, &$existinguser, &$status) {
     }
@@ -456,6 +477,8 @@ class JFusionUser_gallery2 extends JFusionUser {
      * @param $userinfo
      * @param &$existinguser
      * @param &$status
+     *
+     * @return void
      */
     function inactiveUser($userinfo, &$existinguser, &$status) {
     }

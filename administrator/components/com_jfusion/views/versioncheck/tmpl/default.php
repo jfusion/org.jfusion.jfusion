@@ -285,8 +285,9 @@ if ($this->up2date) {
 
                     var agree = confirm(confirmtext);
                     if (agree) {
-                        $('installPLUGIN').installPLUGIN_url.value = url;
-                        $('installPLUGIN').submit();
+	                    var installPLUGIN = $('installPLUGIN');
+                        installPLUGIN.installPLUGIN_url.value = url;
+                        installPLUGIN.submit();
                         r = true;
                     }
                     return r;
@@ -296,12 +297,13 @@ if ($this->up2date) {
                 {
                     var r = false;
                     var installurl,confirmtext;
+	                var adminForm2 = $('adminForm2');
                     if (action == 'build') {
                         confirmtext = '<?php echo JText::_('UPGRADE_CONFIRM_BUILD'); ?>';
                         installurl = 'https://github.com/jfusion/org.jfusion.jfusion/raw/develop/jfusion_package.zip';
                     } else if (action == 'git') {
-                        confirmtext = '<?php echo JText::_('UPGRADE_CONFIRM_SVN'); ?> ' + $('adminForm2').git_tree.value;
-                        installurl = 'https://github.com/jfusion/org.jfusion.jfusion/raw/' + $('adminForm2').git_tree.value + '/jfusion_package.zip';
+                        confirmtext = '<?php echo JText::_('UPGRADE_CONFIRM_SVN'); ?> ' + adminForm2.git_tree.value;
+                        installurl = 'https://github.com/jfusion/org.jfusion.jfusion/raw/' + adminForm2.git_tree.value + '/jfusion_package.zip';
                     } else {
                         confirmtext = '<?php echo JText::_('UPGRADE_CONFIRM_RELEASE') . ' ' . $this->JFusionVersion; ?>';
                         installurl = 'https://github.com/jfusion/org.jfusion.jfusion/raw/release/jfusion_package.zip';
@@ -309,7 +311,7 @@ if ($this->up2date) {
 
                     var agree = confirm(confirmtext);
                     if (agree) {
-                        $('adminForm2').install_url.value = installurl;
+                        adminForm2.install_url.value = installurl;
                         $('install').submit();
                         r = true;
                     }

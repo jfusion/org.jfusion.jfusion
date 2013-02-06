@@ -311,15 +311,15 @@ CSS;
         return $str;
     }
 
-    /** *************************
-     *    Craetes and returns a String in html code. that shows nicely in copy paste
-     *
-     *    @param mixed $arr : the PHP-Varible to look in
-     *    @param mixed $start : a title for the created structure-table
-     *
-     *    @return a html string with no tags
-     ** *************************
-     */
+	/**
+	 * Craetes and returns a String in html code. that shows nicely in copy paste
+	 *
+	 * @param mixed $arr   : the PHP-Varible to look in
+	 * @param mixed $start : a title for the created structure-table
+	 * @param int   $level
+	 *
+	 * @return string a html string with no tags
+	 */
 	public static function getText($arr, $start = true, $level=1) {
 		$levelText = '';
 		for ($i = 0; $i < $level; $i++) {
@@ -381,7 +381,7 @@ CSS;
      *    The public version of this function is in arrayfunc, this here is just to use by debug::get
      *    To avoid that the basic methods debug::get and debug::show have dependencies of other classes
      *
-     *    @param array $arr: the array to check
+     *    @param array|object $arr: the array to check
      *
      *    @return boolean if it is one-dimensional
      */

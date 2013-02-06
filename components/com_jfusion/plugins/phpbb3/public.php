@@ -176,6 +176,8 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 
     /**
      * @param object $jfdata
+     *
+     * @return void
      */
     function getBuffer(&$jfdata) {
     	$session = JFactory::getSession();
@@ -300,6 +302,8 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 
     /**
      * @param object $data
+     *
+     * @return void
      */
     function parseBody(&$data) {
 
@@ -588,6 +592,8 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 
     /**
      * @param object $data
+     *
+     * @return void
      */
     function parseHeader(&$data) {
         static $regex_header, $replace_header;
@@ -708,6 +714,8 @@ class JFusionPublic_phpbb3 extends JFusionPublic
      * @param string $where
      * @param JParameter $pluginParam
      * @param string $ordering
+     *
+     * @return void
      */
     function getSearchCriteria(&$where, &$pluginParam, $ordering) {
         $where.= ' AND p.post_approved = 1';

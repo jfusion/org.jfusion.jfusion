@@ -122,8 +122,9 @@ JFusionFunctionAdmin::displayDonate();
 
         var agree = confirm(confirmtext);
         if (agree) {
-            $('install').install_url.value = action;
-            $('install').submit();
+	        var install = $('install');
+            install.install_url.value = action;
+            install.submit();
             r = true;
         }
         return r;

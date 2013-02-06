@@ -32,6 +32,7 @@ class JFusionUser_dokuwiki extends JFusionUser {
     /**
      * @param object $userinfo
      * @param int $overwrite
+     *
      * @return array
      */
     function updateUser($userinfo, $overwrite) {
@@ -123,6 +124,7 @@ class JFusionUser_dokuwiki extends JFusionUser {
 
     /**
      * @param object $userinfo
+     *
      * @return null|object
      */
     function getUser($userinfo) {
@@ -169,6 +171,7 @@ class JFusionUser_dokuwiki extends JFusionUser {
 
     /**
      * returns the name of this JFusion plugin
+     *
      * @return string name of current JFusion plugin
      */
     function getJname()
@@ -178,6 +181,7 @@ class JFusionUser_dokuwiki extends JFusionUser {
 
     /**
      * @param object $userinfo
+     *
      * @return array
      */
     function deleteUser($userinfo) {
@@ -201,6 +205,7 @@ class JFusionUser_dokuwiki extends JFusionUser {
     /**
      * @param object $userinfo
      * @param array $options
+     *
      * @return array
      */
     function destroySession($userinfo, $options) {
@@ -235,6 +240,7 @@ class JFusionUser_dokuwiki extends JFusionUser {
     /**
      * @param object $userinfo
      * @param array $options
+     *
      * @return array
      */
     function createSession($userinfo, $options) {
@@ -288,6 +294,8 @@ class JFusionUser_dokuwiki extends JFusionUser {
     /**
      * @param object $userinfo
      * @param array &$status
+     *
+     * @return void
      */
     function createUser($userinfo, &$status) {
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
@@ -325,6 +333,8 @@ class JFusionUser_dokuwiki extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function updatePassword($userinfo, &$existinguser, &$status)
     {
@@ -334,6 +344,8 @@ class JFusionUser_dokuwiki extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function updateEmail($userinfo, &$existinguser, &$status)
     {
@@ -343,6 +355,8 @@ class JFusionUser_dokuwiki extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function updateUsergroup($userinfo, &$existinguser, &$status)
     {

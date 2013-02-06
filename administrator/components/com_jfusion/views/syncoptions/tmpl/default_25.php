@@ -91,13 +91,14 @@ function renderSyncBody(data) {
 }
 
 function renderSync(data) {
-    $('log_res').empty();
+	var log_res = $('log_res');
+    log_res.empty();
 
     var root = new Element('table',{ 'class': 'adminlist' });
     renderSyncHead().inject(root);
     renderSyncBody(data).inject(root);
 
-    root.inject($('log_res'));
+    root.inject(log_res);
 }
 
 function update() {

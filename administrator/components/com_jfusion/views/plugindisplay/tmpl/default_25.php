@@ -183,7 +183,8 @@ function deleteplugin(jname) {
 }
 
 window.addEvent('domready',function() {
-    $('installSVN').set('send',
+	var installSVN = $('installSVN');
+    installSVN.set('send',
         { onSuccess: function(JSONobject) {
             $('spinnerSVN').innerHTML = '';
             if (JSON.validate(JSONobject)) {
@@ -199,13 +200,14 @@ window.addEvent('domready',function() {
             ajax: true
         }
         });
-    $('installSVN').addEvent('submit', function(e) {
+    installSVN.addEvent('submit', function(e) {
         new Event(e).stop();
         $('spinnerSVN').innerHTML = '<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">';
         this.send('?ajax=true');
     });
 
-    $('installURL').set('send',
+    var installURL = $('installURL');
+    installURL.set('send',
         { onSuccess: function(JSONobject) {
             $('spinnerURL').innerHTML = '';
             if (JSON.validate(JSONobject)) {
@@ -219,13 +221,14 @@ window.addEvent('domready',function() {
             }
         }
         });
-    $('installURL').addEvent('submit', function(e) {
+    installURL.addEvent('submit', function(e) {
         new Event(e).stop();
         $('spinnerURL').innerHTML = '<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">';
         this.send('?ajax=true');
     });
 
-    $('installDIR').set('send',
+    var installDIR = $('installDIR');
+    installDIR.set('send',
         { onSuccess: function(JSONobject) {
             $('spinnerDIR').innerHTML = '';
             if (JSON.validate(JSONobject)) {
@@ -239,13 +242,14 @@ window.addEvent('domready',function() {
             }
         }
         });
-    $('installDIR').addEvent('submit', function(e) {
+    installDIR.addEvent('submit', function(e) {
         new Event(e).stop();
         $('spinnerDIR').innerHTML = '<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">';
         this.send('?ajax=true');
     });
 
-    $('installZIP').addEvent('submit', function(e) {
+    var installZIP = $('installZIP');
+    installZIP.addEvent('submit', function(e) {
         new Event(e).stop();
         $('spinnerZIP').innerHTML = '<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">';
         if (typeof FormData === "undefined") {

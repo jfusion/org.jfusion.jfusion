@@ -34,6 +34,7 @@ class JFusionUser_efront extends JFusionUser
 {
     /**
      * @param object $userinfo
+     *
      * @return null|object
      */
     function getUser($userinfo) {
@@ -211,7 +212,8 @@ class JFusionUser_efront extends JFusionUser
 
     /**
      * @param string $username
-     * @return mixed|string
+     *
+     * @return string
      */
     function filterUsername($username) {
         // as the username also is used as a directory we probably must strip unwanted characters.
@@ -225,6 +227,8 @@ class JFusionUser_efront extends JFusionUser
      * @param object $userinfo
      * @param object $existinguser
      * @param array &$status
+     *
+     * @return void
      */
     function updatePassword($userinfo, &$existinguser, &$status) {
         $params = JFusionFactory::getParams($this->getJname());
@@ -244,6 +248,8 @@ class JFusionUser_efront extends JFusionUser
      * @param object $userinfo
      * @param object &$existinguser
      * @param array &$status
+     *
+     * @return void
      */
     function updateUsername($userinfo, &$existinguser, &$status) {
         // not implemented in jFusion 1.x
@@ -253,6 +259,8 @@ class JFusionUser_efront extends JFusionUser
      * @param object $userinfo
      * @param object $existinguser
      * @param array &$status
+     *
+     * @return void
      */
     function updateEmail($userinfo, &$existinguser, &$status) {
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -269,6 +277,8 @@ class JFusionUser_efront extends JFusionUser
      * @param object $userinfo
      * @param object $existinguser
      * @param array &$status
+     *
+     * @return void
      */
     function blockUser($userinfo, &$existinguser, &$status) {
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -285,6 +295,8 @@ class JFusionUser_efront extends JFusionUser
      * @param object $userinfo
      * @param object $existinguser
      * @param array &$status
+     *
+     * @return void
      */
     function unblockUser($userinfo, &$existinguser, &$status) {
         //unblock the user
@@ -302,6 +314,8 @@ class JFusionUser_efront extends JFusionUser
      * @param object $userinfo
      * @param object $existinguser
      * @param array &$status
+     *
+     * @return void
      */
     function activateUser($userinfo, &$existinguser, &$status) {
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -318,6 +332,8 @@ class JFusionUser_efront extends JFusionUser
      * @param object $userinfo
      * @param object &$existinguser
      * @param array &$status
+     *
+     * @return void
      */
     function inactivateUser($userinfo, &$existinguser, &$status) {
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -333,6 +349,8 @@ class JFusionUser_efront extends JFusionUser
     /**
      * @param object $userinfo
      * @param array &$status
+     *
+     * @return void
      */
     function createUser($userinfo, &$status) {
        /**
@@ -459,6 +477,7 @@ class JFusionUser_efront extends JFusionUser
 
     /**
      * @param object $userinfo
+     *
      * @return array|bool
      */
     function deleteUser($userinfo){
@@ -540,6 +559,8 @@ class JFusionUser_efront extends JFusionUser
      * @param object $userinfo
      * @param object &$existinguser
      * @param array &$status
+     *
+     * @return void
      */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);

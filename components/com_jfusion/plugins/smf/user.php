@@ -43,6 +43,7 @@ class JFusionUser_smf extends JFusionUser
      * @param object $userinfo holds the new user data
      *
      * @access public
+     *
      * @return null|object
      */
     function getUser($userinfo)
@@ -101,6 +102,7 @@ class JFusionUser_smf extends JFusionUser
      * @param object $userinfo holds the new user data
      *
      * @access public
+     *
      * @return array
      */
     function deleteUser($userinfo)
@@ -156,6 +158,7 @@ class JFusionUser_smf extends JFusionUser
      * @param array  $options  Status array
      *
      * @access public
+     *
      * @return array
      */
     function destroySession($userinfo, $options)
@@ -174,6 +177,7 @@ class JFusionUser_smf extends JFusionUser
      * @param array  $options  options
      *
      * @access public
+     *
      * @return array
      */
     function createSession($userinfo, $options)
@@ -195,6 +199,7 @@ class JFusionUser_smf extends JFusionUser
      * @param string $username holds the new user data
      *
      * @access public
+     *
      * @return string
      */
     function filterUsername($username)
@@ -211,6 +216,7 @@ class JFusionUser_smf extends JFusionUser
      * @param array  &$status       Status array
      *
      * @access public
+     *
      * @return void
      */
     function updatePassword($userinfo, &$existinguser, &$status)
@@ -236,6 +242,7 @@ class JFusionUser_smf extends JFusionUser
      * @param array  &$status       Status array
      *
      * @access public
+     *
      * @return void
      */
     function updateUsername($userinfo, &$existinguser, &$status)
@@ -250,6 +257,7 @@ class JFusionUser_smf extends JFusionUser
      * @param array  &$status       Status array
      *
      * @access public
+     *
      * @return void
      */
     function updateEmail($userinfo, &$existinguser, &$status)
@@ -273,6 +281,7 @@ class JFusionUser_smf extends JFusionUser
      * @param array  &$status       Status array
      *
      * @access public
+     *
      * @return void
      */
     function updateUsergroup($userinfo, &$existinguser, &$status)
@@ -302,6 +311,8 @@ class JFusionUser_smf extends JFusionUser
      * @param array  &$status       Status array
      *
      * @access publics
+     *
+     * @return void
      */
     function blockUser($userinfo, &$existinguser, &$status)
     {
@@ -338,6 +349,7 @@ class JFusionUser_smf extends JFusionUser
      * @param array  &$status       Status array
      *
      * @access public
+     *
      * @return void
      */
     function unblockUser($userinfo, &$existinguser, &$status)
@@ -365,6 +377,7 @@ class JFusionUser_smf extends JFusionUser
      * @param array  &$status       Status array
      *
      * @access public
+     *
      * @return void
      */
     function activateUser($userinfo, &$existinguser, &$status)
@@ -387,6 +400,7 @@ class JFusionUser_smf extends JFusionUser
      * @param array  &$status       Status array
      *
      * @access public
+     *
      * @return void
      */
     function inactivateUser($userinfo, &$existinguser, &$status)
@@ -408,7 +422,8 @@ class JFusionUser_smf extends JFusionUser
      * @param array  &$status  Status array
      *
      * @access public
-     * @return mixed null on fail or array with status
+     *
+     * @return void
      */
     function createUser($userinfo, &$status)
     {

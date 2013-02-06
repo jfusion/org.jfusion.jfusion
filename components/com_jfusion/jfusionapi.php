@@ -67,6 +67,8 @@ class JFusionAPI {
     /**
      * @param string $url
      * @param string $secretkey
+     *
+     * @return void
      */
     public function setTarget($url = '', $secretkey = '')
 	{
@@ -75,14 +77,14 @@ class JFusionAPI {
 	}
 
     /**
-     * @return null
+     * @return null|array
      */
     public function getError() {
 		return $this->error;
     }
 
     /**
-     * @return null
+     * @return null|array
      */
     public function getDebug() {
 		return $this->debug;
@@ -90,6 +92,8 @@ class JFusionAPI {
 
     /**
      * @param $class
+     *
+     * @return void
      */
     private function setClass($class)
     {
@@ -98,6 +102,8 @@ class JFusionAPI {
 
     /**
      * @param $type
+     *
+     * @return void
      */
     private function setType($type)
     {
@@ -106,6 +112,8 @@ class JFusionAPI {
 
     /**
      * @param $task
+     *
+     * @return void
      */
     private function setTask($task)
     {
@@ -114,6 +122,7 @@ class JFusionAPI {
 
     /**
      * @param $read
+     *
      * @return string
      */
     public function read($read)
@@ -123,6 +132,8 @@ class JFusionAPI {
 
     /**
      * @param $payload
+     *
+     * @return void
      */
     private function setPayload($payload)
     {
@@ -135,7 +146,7 @@ class JFusionAPI {
     private function retrieveKey()
 	{
 		if ($this->hash && $this->sid) return true;
-		$FileData = $this->_raw('get','status', 'key', null);
+		$FileData = $this->_raw('get','status', 'key');
 		if ($this->error) {
 			return false;
 		} elseif (isset($FileData['hash'])) {
@@ -151,7 +162,7 @@ class JFusionAPI {
     public function ping()
     {
         if ($this->hash && $this->sid) return true;
-        $FileData = $this->_raw('get','status', 'ping', null);
+        $FileData = $this->_raw('get','status', 'ping');
         if ($this->error) {
             return false;
         } elseif (isset($FileData['payload'])) {
@@ -162,6 +173,9 @@ class JFusionAPI {
         return false;
     }
 
+	/**
+	 * @return void
+	 */
     public function parse() {
     	$this->setClass($this->read('jfclass'));    	
     	$this->setType($this->read('jftype'));
@@ -203,6 +217,7 @@ class JFusionAPI {
      * @param $class
      * @param $task
      * @param $return
+     *
      * @return string
      */
     public function getExecuteURL($class,$task,$return)
@@ -218,6 +233,7 @@ class JFusionAPI {
      * @param $class
      * @param $task
      * @param $payload
+     *
      * @return bool
      */
     public function set($class, $task, $payload)
@@ -229,6 +245,7 @@ class JFusionAPI {
      * @param $class
      * @param $task
      * @param null $payload
+     *
      * @return bool
      */
     public function get($class, $task, $payload=null)
@@ -241,6 +258,7 @@ class JFusionAPI {
      * @param $task
      * @param array $payload
      * @param string $return
+     *
      * @return bool
      */
     public function execute($class, $task, $payload=array(), $return='')
@@ -261,7 +279,7 @@ class JFusionAPI {
 
      * @return bool
      */
-    private function _raw($type, $class, $task, $payload)
+    private function _raw($type, $class, $task, $payload=null)
     {
     	$key = true;
         $class = $this->createClass();
@@ -292,6 +310,7 @@ class JFusionAPI {
      * @static
      * @param null $class
      * @param bool $delete
+     *
      * @return mixed
      */
     static function getSession($class=null,$delete=false)
@@ -347,7 +366,8 @@ class JFusionAPI {
     /**
      * @static
      * @param $keyinfo
-     * @param $payload
+     * @param array $payload
+     *
      * @return null|string
      */
     public static function encrypt($keyinfo, $payload)
@@ -364,7 +384,8 @@ class JFusionAPI {
      * @static
      * @param $keyinfo
      * @param $payload
-     * @return bool|mixed
+     *
+     * @return bool|array
      */
     public static function decrypt($keyinfo, $payload)
     {
@@ -378,6 +399,7 @@ class JFusionAPI {
 
     /**
      * @param array $post
+     *
      * @return array|bool
      */
     private function post($post=array())
@@ -428,6 +450,8 @@ class JFusionAPI {
     /**
      * @param $output
      * @param bool $encrypt
+     *
+     * @return void
      */
     private function doOutput($output,$encrypt=false)
     {
@@ -444,6 +468,7 @@ class JFusionAPI {
 
     /**
      * @param $input
+     *
      * @return bool
      */
     private function getOutput($input)
@@ -493,6 +518,7 @@ class JFusionAPIBase {
 
     /**
      * @param $encrypt
+     *
      * @return bool
      */
     protected function readPayload($encrypt)
@@ -511,6 +537,7 @@ class JFusionAPIBase {
 
     /**
      * @param $payload
+     *
      * @return string
      */
     protected function buildPayload($payload)
@@ -520,6 +547,8 @@ class JFusionAPIBase {
 
     /**
      * @param string|null $url Url of where to redirect to
+     *
+     * @return void
      */
     protected function doExit($url = null) {
         if ($url && isset($_GET['jfreturn'])) {
@@ -604,7 +633,10 @@ class JFusionAPI_User extends JFusionAPIBase {
 			return false;
 		}
 	}
-	
+
+	/**
+	 * @return void
+	 */
 	public function executeLogin()
 	{
 		$session = JFusionAPI::getSession('user',true);
@@ -621,7 +653,10 @@ class JFusionAPI_User extends JFusionAPIBase {
 		}
         $this->doExit();
 	}
-	
+
+	/**
+	 * @return void
+	 */
 	public function executeLogout()
 	{
 		if ($this->readPayload(false)) {
@@ -636,7 +671,10 @@ class JFusionAPI_User extends JFusionAPIBase {
 		}
         $this->doExit();
 	}
-	
+
+	/**
+	 * @return void
+	 */
 	public function executeRegister()
 	{
 		if ( $this->payload ) {
@@ -665,7 +703,10 @@ class JFusionAPI_User extends JFusionAPIBase {
 			$this->error[] = 'invalid payload';
 		}
 	}
-	
+
+	/**
+	 * @return void
+	 */
 	public function executeUpdate()
 	{
 		if ( $this->payload ) {
@@ -690,6 +731,9 @@ class JFusionAPI_User extends JFusionAPIBase {
 		}
 	}
 
+	/**
+	 * @return void
+	 */
     public function executeDelete()
     {
         if ( $this->payload ) {
@@ -726,7 +770,10 @@ class JFusionAPI_Cookie extends JFusionAPIBase {
 			return false;
 		}
 	}
-	
+
+	/**
+	 * @return void
+	 */
 	public function executeCookies()
 	{
 		if ($this->readPayload(false)) {
@@ -838,6 +885,8 @@ class JFusionAPIInternal extends JFusionAPIBase {
 
     /**
      * @param string $plugin
+     *
+     * @return void
      */
     public function setActivePlugin($plugin)
     {
@@ -848,6 +897,8 @@ class JFusionAPIInternal extends JFusionAPIBase {
      * @param string $username
      * @param string $password
      * @param int $remember
+     *
+     * @return void
      */
     public function login($username,$password,$remember = 1)
     {
@@ -896,6 +947,8 @@ class JFusionAPIInternal extends JFusionAPIBase {
 
     /**
      * @param null|string $username
+     *
+     * @return void
      */
     public function logout($username=null)
     {
@@ -935,6 +988,8 @@ class JFusionAPIInternal extends JFusionAPIBase {
 
     /**
      * @param object $userinfo
+     *
+     * @return void
      */
     public function register($userinfo)
     {
@@ -975,6 +1030,8 @@ class JFusionAPIInternal extends JFusionAPIBase {
     /**
      * @param object $userinfo
      * @param $overwrite
+     *
+     * @return void
      */
     public function update($userinfo,$overwrite)
     {
@@ -1018,6 +1075,8 @@ class JFusionAPIInternal extends JFusionAPIBase {
 
     /**
      * @param int $userid
+     *
+     * @return void
      */
     public function delete($userid)
     {

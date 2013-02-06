@@ -35,6 +35,7 @@ defined('_JEXEC') or die('Restricted access');
 class JFusionUser_prestashop extends JFusionUser {
     /**
      * @param object $userinfo
+     *
      * @return null|object
      */
     function getUser($userinfo) {
@@ -69,6 +70,7 @@ class JFusionUser_prestashop extends JFusionUser {
 
     /**
      * returns the name of this JFusion plugin
+     *
      * @return string name of current JFusion plugin
      */    
     function getJname() 
@@ -78,6 +80,7 @@ class JFusionUser_prestashop extends JFusionUser {
 
     /**
      * @param object $userinfo
+     *
      * @return array
      */
     function deleteUser($userinfo) {
@@ -99,6 +102,7 @@ class JFusionUser_prestashop extends JFusionUser {
     /**
      * @param string $userinfo
      * @param string $option
+     *
      * @return array
      */
     function destroySession($userinfo = '', $option = '') {
@@ -112,7 +116,7 @@ class JFusionUser_prestashop extends JFusionUser {
 		require($params->get('source_path') . DS . 'classes' . DS . 'ObjectModel.php');
 		require($params->get('source_path') . DS . 'classes' . DS . 'Db.php');
 		require($params->get('source_path') . DS . 'classes' . DS . 'SubDomain.php');
-        $cookie = new cookie('ps');
+        $cookie = new cookie('ps', '', '');
 		$status['error'][] = 'Random debugging text';
 	    if(!$cookie->mylogout()) {
             $status['error'][] = 'Error Could not delete session, doe not exist';
@@ -126,6 +130,7 @@ class JFusionUser_prestashop extends JFusionUser {
      * @param object $userinfo
      * @param array $options
      * @param bool $framework
+     *
      * @return array
      */
     function createSession($userinfo, $options, $framework = true) {
@@ -141,7 +146,7 @@ class JFusionUser_prestashop extends JFusionUser {
 		require($params->get('source_path') . DS . 'classes' . DS . 'Db.php');
 		require($params->get('source_path') . DS . 'classes' . DS . 'SubDomain.php');
 		require($params->get('source_path') . DS . 'classes' . DS . 'Validate.php');
-		$cookie = new cookie('ps');
+		$cookie = new cookie('ps', '', '');
 		$passwd = $userinfo->password_clear;
 	    $email = $userinfo->email;
 		$passwd = trim($passwd);
@@ -183,6 +188,7 @@ class JFusionUser_prestashop extends JFusionUser {
 
     /**
      * @param string $username
+     *
      * @return string
      */
     function filterUsername($username) {
@@ -193,6 +199,8 @@ class JFusionUser_prestashop extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function updatePassword($userinfo, &$existinguser, &$status) {
         jimport('joomla.user.helper');
@@ -211,6 +219,8 @@ class JFusionUser_prestashop extends JFusionUser {
     /**
      * @param object $userinfo
      * @param array $status
+     *
+     * @return void
      */
     function createUser($userinfo, &$status) {
 		$db = JFusionFactory::getDatabase($this->getJname());
@@ -432,6 +442,8 @@ class JFusionUser_prestashop extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function updateEmail($userinfo, &$existinguser, &$status) {
         //we need to update the email
@@ -450,6 +462,8 @@ class JFusionUser_prestashop extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function activateUser($userinfo, &$existinguser, &$status) {
         /* change the 'active' field of the customer in the ps_customer table to 1 */
@@ -462,6 +476,8 @@ class JFusionUser_prestashop extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function inactivateUser($userinfo, &$existinguser, &$status) {
         /* change the 'active' field of the customer in the ps_customer table to 0 */
@@ -474,6 +490,8 @@ class JFusionUser_prestashop extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);

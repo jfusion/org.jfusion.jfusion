@@ -45,6 +45,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
 
     /**
      * returns the name of this JFusion plugin
+     *
      * @return string name of current JFusion plugin
      */
     function getJname()
@@ -81,6 +82,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
      * @param string $for
      * @param JParameter $params
      * @param string $object
+     *
      * @return array
      */
     function prepareText(&$text, $for = 'forum', $params = null, $object = null)
@@ -204,6 +206,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
     }
     /**
      * Returns number of guests
+     *
      * @return int
      */
     function getNumberOnlineGuests()
@@ -215,6 +218,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
     }
     /**
      * Returns number of logged in users
+     *
      * @return int
      */
     function getNumberOnlineMembers()
@@ -227,6 +231,8 @@ class JFusionPublic_vbulletin extends JFusionPublic
 
     /**
      * @param object $jfdata
+     *
+     * @return void
      */
     function getBuffer(&$jfdata)
     {
@@ -357,6 +363,8 @@ class JFusionPublic_vbulletin extends JFusionPublic
 
     /**
      * @param object $data
+     *
+     * @return void
      */
     function parseBody(&$data)
     {
@@ -409,6 +417,8 @@ class JFusionPublic_vbulletin extends JFusionPublic
 
     /**
      * @param object $data
+     *
+     * @return void
      */
     function parseHeader(&$data)
     {
@@ -441,6 +451,8 @@ JS;
 
     /**
      * @return array
+     *
+     * @return void
      */
     function getPathWay()
     {
@@ -612,6 +624,7 @@ JS;
 
     /**
      * @param $vb_url
+     *
      * @return string
      */
     function getAlternateProfileURL($vb_url)
@@ -651,6 +664,7 @@ JS;
 
     /**
      * @param object $pluginParam
+     *
      * @return string
      */
     function getSearchQuery(&$pluginParam)
@@ -670,6 +684,8 @@ JS;
      * @param string &$where
      * @param JParameter &$pluginParam
      * @param string $ordering
+     *
+     * @return void
      */
     function getSearchCriteria(&$where, &$pluginParam, $ordering)
     {
@@ -708,6 +724,8 @@ JS;
     /**
      * @param array &$results
      * @param object &$pluginParam
+     *
+     * @return void
      */
     function filterSearchResults(&$results, &$pluginParam)
     {
@@ -717,6 +735,7 @@ JS;
 
     /**
      * @param mixed $post
+     *
      * @return string
      */
     function getSearchResultLink($post)

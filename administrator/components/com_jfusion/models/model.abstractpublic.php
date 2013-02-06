@@ -43,6 +43,7 @@ class JFusionPublic
      * gets the visual html output from the plugin
      *
      * @param object &$data object containing all frameless data
+     * @return void
      */
     function getBuffer(&$data)
     {

@@ -56,6 +56,7 @@ class JFusionUser_magento extends JFusionUser {
      *
      * @param $proxi
      * @param $sessionId
+     *
      * @return array
      */
     function connect_to_api(&$proxi, &$sessionId) {
@@ -82,6 +83,7 @@ class JFusionUser_magento extends JFusionUser {
      * Returns an array of Magento entity types
      *
      * @param $eav_entity_code
+     *
      * @return bool
      */
     function getMagentoEntityTypeID($eav_entity_code) {
@@ -109,7 +111,8 @@ class JFusionUser_magento extends JFusionUser {
      * @author henk wevers
      *
      * @param $entity_type_code
-     * @return bool
+     *
+     * @return bool|array
      */
      function getMagentoDataObjectRaw($entity_type_code) {
         static $eav_attributes;
@@ -141,6 +144,7 @@ class JFusionUser_magento extends JFusionUser {
 
     /**
      * @param $entity_type_code
+     *
      * @return array
      */
     function getMagentoDataObject($entity_type_code) {
@@ -157,6 +161,7 @@ class JFusionUser_magento extends JFusionUser {
      * @param $entity_type_code
      * @param $entity_id
      * @param $entity_type_id
+     *
      * @return array|bool
      */
     function fillMagentoDataObject($entity_type_code, $entity_id, $entity_type_id) {
@@ -444,6 +449,8 @@ class JFusionUser_magento extends JFusionUser {
     /**
      * @param object $userinfo
      * @param array $status
+     *
+     * @return void
      */
     function createUser($userinfo, &$status) {
         $params = JFusionFactory::getParams($this->getJname());
@@ -517,6 +524,8 @@ class JFusionUser_magento extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function updatePassword($userinfo, $existinguser, &$status) {
         $magento_user = $this->getMagentoDataObjectRaw('customer');
@@ -535,6 +544,8 @@ class JFusionUser_magento extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function updateUsername($userinfo, &$existinguser, &$status) {
     }
@@ -543,6 +554,8 @@ class JFusionUser_magento extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function activateUser($userinfo, &$existinguser, &$status) {
         $magento_user = $this->getMagentoDataObjectRaw('customer');
@@ -559,6 +572,8 @@ class JFusionUser_magento extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function inactivateUser($userinfo, &$existinguser, &$status) {
         $magento_user = $this->getMagentoDataObjectRaw('customer');
@@ -573,6 +588,7 @@ class JFusionUser_magento extends JFusionUser {
 
     /**
      * @param object $userinfo
+     *
      * @return array
      */
     function deleteUser($userinfo) {
@@ -619,6 +635,8 @@ class JFusionUser_magento extends JFusionUser {
      * @param object $existinguser
      * @param array $status
      * @param $jname
+     *
+     * @return void
      */
     function updateEmail($userinfo, &$existinguser, &$status, $jname) {
         //set the userid
@@ -649,6 +667,8 @@ class JFusionUser_magento extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);

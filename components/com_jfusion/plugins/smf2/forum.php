@@ -346,12 +346,14 @@ class JFusionForum_smf2 extends JFusionForum
 	}
 
 	 /**
-     * Updates information in a specific thread/post
-     * @param JParameter &$dbparams with discussion bot parameters
-     * @param object &$existingthread with existing thread info
-     * @param object &$contentitem object containing content information
-     * @param array &$status contains errors and status of actions
-     */
+	  * Updates information in a specific thread/post
+	  * @param JParameter &$dbparams with discussion bot parameters
+	  * @param object &$existingthread with existing thread info
+	  * @param object &$contentitem object containing content information
+	  * @param array &$status contains errors and status of actions
+	  *
+	  * @return void
+     **/
 	function updateThread(&$dbparams, &$existingthread, &$contentitem, &$status)
 	{
 		$threadid =& $existingthread->threadid;
@@ -804,6 +806,8 @@ HTML;
 	 * Filter forums from a set of results sent in / useful if the plugin needs to restrict the forums visible to a user
 	 * @param $results set of results from query
 	 * @param $limit int limit results parameter as set in the module's params; used for plugins that cannot limit using a query limiter
+	 *
+	 * @return void
 	 */
 	function filterActivityResults(&$results, $limit=0)
 	{

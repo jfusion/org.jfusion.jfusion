@@ -204,6 +204,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 
     /**
      * @param string $username
+     *
      * @return string
      */
     function filterUsername($username)
@@ -216,6 +217,8 @@ class JFusionUser_mediawiki extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function updatePassword($userinfo, &$existinguser, &$status)
     {
@@ -234,6 +237,8 @@ class JFusionUser_mediawiki extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function updateUsername($userinfo, &$existinguser, &$status)
     {
@@ -244,6 +249,8 @@ class JFusionUser_mediawiki extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function updateEmail($userinfo, &$existinguser, &$status)
     {
@@ -262,6 +269,8 @@ class JFusionUser_mediawiki extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function updateUsergroup($userinfo, &$existinguser, &$status)
 	{
@@ -293,6 +302,8 @@ class JFusionUser_mediawiki extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function blockUser($userinfo, &$existinguser, &$status)
     {
@@ -330,6 +341,8 @@ class JFusionUser_mediawiki extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function unblockUser($userinfo, &$existinguser, &$status)
     {
@@ -371,6 +384,8 @@ class JFusionUser_mediawiki extends JFusionUser {
     /**
      * @param object $userinfo
      * @param array $status
+     *
+     * @return void
      */
     function createUser($userinfo, &$status)
     {

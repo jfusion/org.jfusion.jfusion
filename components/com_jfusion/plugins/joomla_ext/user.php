@@ -147,6 +147,8 @@ class JFusionUser_joomla_ext extends JFusionUser {
      * @param object $userinfo
      * @param object &$existinguser
      * @param array &$status
+     *
+     * @return void
      */
     function updateUsergroup($userinfo, $existinguser, &$status) {
         JFusionJplugin::updateUsergroup($userinfo, $existinguser, $status, $this->getJname());
@@ -156,6 +158,8 @@ class JFusionUser_joomla_ext extends JFusionUser {
      * @param object $userinfo
      * @param object &$existinguser
      * @param array &$status
+     *
+     * @return void
      */
     function updatePassword($userinfo, &$existinguser, &$status) {
         JFusionJplugin::updatePassword($userinfo, $existinguser, $status, $this->getJname());
@@ -178,6 +182,8 @@ class JFusionUser_joomla_ext extends JFusionUser {
      * @param object $userinfo
      * @param object &$existinguser
      * @param array &$status
+     *
+     * @return void
      */
     function updateUserLanguage($userinfo, &$existinguser, &$status) {
         JFusionJplugin::updateUserLanguage($userinfo, $existinguser, $status, $this->getJname());
@@ -187,6 +193,8 @@ class JFusionUser_joomla_ext extends JFusionUser {
      * @param object $userinfo
      * @param object $existinguser
      * @param array &$status
+     *
+     * @return void
      */
     function updateEmail($userinfo, &$existinguser, &$status) {
         JFusionJplugin::updateEmail($userinfo, $existinguser, $status, $this->getJname());
@@ -196,6 +204,8 @@ class JFusionUser_joomla_ext extends JFusionUser {
      * @param object $userinfo
      * @param object &$existinguser
      * @param array &$status
+     *
+     * @return void
      */
     function blockUser($userinfo, &$existinguser, &$status) {
         JFusionJplugin::blockUser($userinfo, $existinguser, $status, $this->getJname());
@@ -205,6 +215,8 @@ class JFusionUser_joomla_ext extends JFusionUser {
      * @param object $userinfo
      * @param object &$existinguser
      * @param array &$status
+     *
+     * @return void
      */
     function unblockUser($userinfo, &$existinguser, &$status) {
         JFusionJplugin::unblockUser($userinfo, $existinguser, $status, $this->getJname());
@@ -214,6 +226,8 @@ class JFusionUser_joomla_ext extends JFusionUser {
      * @param object $userinfo
      * @param object &$existinguser
      * @param array &$status
+     *
+     * @return void
      */
     function activateUser($userinfo, &$existinguser, &$status) {
         JFusionJplugin::activateUser($userinfo, $existinguser, $status, $this->getJname());
@@ -223,6 +237,8 @@ class JFusionUser_joomla_ext extends JFusionUser {
      * @param object $userinfo
      * @param object &$existinguser
      * @param array &$status
+     *
+     * @return void
      */
     function inactivateUser($userinfo, &$existinguser, &$status) {
         JFusionJplugin::inactivateUser($userinfo, $existinguser, $status, $this->getJname());
@@ -231,6 +247,8 @@ class JFusionUser_joomla_ext extends JFusionUser {
     /**
      * @param object $userinfo
      * @param array &$status
+     *
+     * @return void
      */
     function createUser($userinfo, &$status) {
         JFusionJplugin::createUser($userinfo, $status, $this->getJname());

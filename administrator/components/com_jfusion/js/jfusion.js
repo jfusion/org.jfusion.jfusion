@@ -1,10 +1,11 @@
 //<!--
 function submitbutton(pressbutton) {
+    var adminForm = $('adminForm');
     if (pressbutton == 'applyconfig') {
-        $('adminForm').action.value = 'apply';
+        adminForm.action.value = 'apply';
         submitform('saveconfig');
     } else if (pressbutton == 'import') {
-        $('adminForm').encoding = 'multipart/form-data';
+        adminForm.encoding = 'multipart/form-data';
         submitform(pressbutton);
     } else {
         submitform(pressbutton);
@@ -85,11 +86,12 @@ function multiUsergroupSelect(option) {
 
 if (typeof Joomla != 'undefined') {
 	Joomla.submitbutton = function (pressbutton) {
+        var adminForm = $('adminForm');
         if (pressbutton == 'applyconfig') {
-            $('adminForm').action.value = 'apply';
+            adminForm.action.value = 'apply';
             submitform('saveconfig');
         } else if (pressbutton == 'import') {
-            $('adminForm').encoding = 'multipart/form-data';
+            adminForm.encoding = 'multipart/form-data';
             submitform(pressbutton);
         } else {
             submitform(pressbutton);
@@ -126,8 +128,9 @@ function jfusionError(string, force) {
     if (string.indexOf('<!') == 0) {
         string = 'SESSION TIMEOUT';
     }
-    if ($("jfusionError")) {
-        $("jfusionError").innerHTML = string;
+    var jfusionError = $("jfusionError");
+    if (jfusionError) {
+        jfusionError.innerHTML = string;
         if (force) {
             alert(string);
         }

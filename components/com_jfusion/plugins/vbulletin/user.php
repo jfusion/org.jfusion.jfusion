@@ -331,6 +331,8 @@ class JFusionUser_vbulletin extends JFusionUser
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function updatePassword($userinfo, &$existinguser, &$status)
     {
@@ -354,6 +356,8 @@ class JFusionUser_vbulletin extends JFusionUser
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function updateEmail($userinfo, &$existinguser, &$status)
     {
@@ -377,6 +381,8 @@ class JFusionUser_vbulletin extends JFusionUser
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function blockUser (&$userinfo, &$existinguser, &$status)
     {
@@ -427,6 +433,8 @@ class JFusionUser_vbulletin extends JFusionUser
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function unblockUser($userinfo, &$existinguser, &$status)
     {
@@ -489,6 +497,8 @@ class JFusionUser_vbulletin extends JFusionUser
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function activateUser($userinfo, &$existinguser, &$status)
     {
@@ -520,6 +530,8 @@ class JFusionUser_vbulletin extends JFusionUser
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function inactivateUser($userinfo, &$existinguser, &$status)
     {
@@ -577,6 +589,8 @@ class JFusionUser_vbulletin extends JFusionUser
     /**
      * @param object $userinfo
      * @param array $status
+     *
+     * @return void
      */
     function createUser($userinfo, &$status)
     {
@@ -657,6 +671,7 @@ class JFusionUser_vbulletin extends JFusionUser
      * @param object &$userinfo
      * @param object &$existinguser
      * @param array &$status
+     *
      * @return bool
      */
     function executeUpdateUsergroup(&$userinfo, &$existinguser, &$status)
@@ -696,6 +711,8 @@ class JFusionUser_vbulletin extends JFusionUser
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status
+     *
+     * @return void
      */
     function updateUsergroup($userinfo, &$existinguser, &$status)
     {
@@ -740,6 +757,7 @@ class JFusionUser_vbulletin extends JFusionUser
      *
      * @param $groupid
      * @param int $posts
+     *
      * @return mixed
      */
     function getDefaultUserTitle($groupid, $posts = 0)
@@ -760,6 +778,7 @@ class JFusionUser_vbulletin extends JFusionUser
 
     /**
      * @param bool $keepalive
+     *
      * @return int
      */
     function syncSessions($keepalive = false)
@@ -839,7 +858,11 @@ class JFusionUser_vbulletin extends JFusionUser
                         JError::raiseNotice('500','keep alive disabled or no persistant session found so calling Joomla\'s destorySession');
                     }
                     $JoomlaUser = JFusionFactory::getUser('joomla_int');
-                    $userinfo  = (array) $JUser;
+                    $arr  = (array) $JUser;
+	                $userinfo = new stdClass;
+	                foreach($arr as $key => $value) {
+						$userinfo->$key = $value;
+	                }
                     $options['clientid'][] = '0';
                     $status = $JoomlaUser->destroySession($userinfo, $options);
                     if ($debug) {

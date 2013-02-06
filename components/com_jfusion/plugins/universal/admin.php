@@ -370,14 +370,19 @@ class JFusionAdmin_universal extends JFusionAdmin{
         function changevalue(ref,name,parmtype) {
             var id = $(name);
 
-            if ( $("paramsmap"+parmtype+"value"+name) ) {
-                $("paramsmap"+parmtype+"value"+name).dispose();
+			var paramsmap = $("paramsmap"+parmtype+"value"+name);
+            if ( paramsmap ) {
+                paramsmap.dispose();
             }
-            if ($("paramsmap"+parmtype+"value"+name+"on")) {
-                $("paramsmap"+parmtype+"value"+name+"on").dispose();
+
+            var paramsmapon = $("paramsmap"+parmtype+"value"+name+"on");
+            if (paramsmapon) {
+                paramsmapon.dispose();
             }
-            if ($("paramsmap"+parmtype+"value"+name+"off")) {
-                $("paramsmap"+parmtype+"value"+name+"off").dispose();
+
+            var paramsmapoff = $("paramsmap"+parmtype+"value"+name+"off");
+            if (paramsmapoff) {
+                paramsmapoff.dispose();
             }
 
             var value;
