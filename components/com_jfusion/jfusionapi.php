@@ -1028,7 +1028,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
     }
 
     /**
-     * @param object $userinfo
+     * @param array $userinfo
      * @param $overwrite
      *
      * @return void

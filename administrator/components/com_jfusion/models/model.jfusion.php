@@ -1373,6 +1373,7 @@ class JFusionFunction
      * @param $type
      * @param $name
      * @param null $basePath
+     *
      * @return bool
      */
     public static function loadLanguage($extension,$type,$name, $basePath = null){
@@ -1404,6 +1405,7 @@ class JFusionFunction
      * @param string $jname used to get the database object, and point to the static stored data
      * @param string $table table that we will be looking at
      * @param string $field field that we will be looking at
+     *
      * @return bool|string
      */
     public static function encodeDBString($string, $jname, $table, $field) {
@@ -1457,6 +1459,7 @@ class JFusionFunction
     /**
      * @static
      * @param $matches
+     *
      * @return string
      */
     public static function _callback_htmlspecialchars($matches)
@@ -1467,6 +1470,7 @@ class JFusionFunction
     /**
      * @static
      * @param $matches
+     *
      * @return string
      */
     public static function _callback_code($matches)
@@ -1477,6 +1481,7 @@ class JFusionFunction
     /**
      * @static
      * @param $matches
+     *
      * @return string
      */
     public static function _callback_code_decode($matches)
@@ -1487,6 +1492,7 @@ class JFusionFunction
     /**
      * @static
      * @param $matches
+     *
      * @return string
      */
     public static function _callback_parseTag_img($matches)
@@ -1497,6 +1503,7 @@ class JFusionFunction
     /**
      * @static
      * @param $matches
+     *
      * @return string
      */
     public static function _callback_parseTag_p($matches)
@@ -1507,6 +1514,7 @@ class JFusionFunction
     /**
      * @static
      * @param $matches
+     *
      * @return string
      */
     public static function _callback_url($matches)
@@ -1663,6 +1671,7 @@ class JFusionFunction
      * @static
      * @param object|string $class
      * @param $method
+     *
      * @return bool
      */
     public static function methodDefined($class,$method) {

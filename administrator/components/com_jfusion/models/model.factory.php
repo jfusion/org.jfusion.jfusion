@@ -407,7 +407,7 @@ class JFusionFactory
      * @param boolean $joomla should we exclude joomla_int
      * @param boolean $active only active plugins
      *
-     * @return object plugin details
+     * @return array plugin details
      */
     public static function getPlugins($criteria = 'all' , $joomla = false, $active = true)
     {
