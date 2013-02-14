@@ -251,14 +251,20 @@ class JFusionController extends JController
             //Load usersync library
             include_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.usersync.php';
             $syncdata = JFusionUsersync::getSyncdata($syncid);
-            //start the usersync
-            $plugin_offset = (!empty($syncdata['plugin_offset'])) ? $syncdata['plugin_offset'] : 0;
-            //start at the next user
-            $user_offset = (!empty($syncdata['user_offset'])) ? $syncdata['user_offset'] : 0;
-            if (JRequest::getVar('userbatch')) {
-                $syncdata['userbatch'] = JRequest::getVar('userbatch');
-            }
-            JFusionUsersync::syncExecute($syncdata, $syncdata['action'], $plugin_offset, $user_offset);
+	        if (is_array($syncdata)) {
+		        //start the usersync
+		        $plugin_offset = (!empty($syncdata['plugin_offset'])) ? $syncdata['plugin_offset'] : 0;
+		        //start at the next user
+		        $user_offset = (!empty($syncdata['user_offset'])) ? $syncdata['user_offset'] : 0;
+		        if (JRequest::getVar('userbatch')) {
+			        $syncdata['userbatch'] = JRequest::getVar('userbatch');
+		        }
+		        JFusionUsersync::syncExecute($syncdata, $syncdata['action'], $plugin_offset, $user_offset);
+	        } else {
+		        $syncdata = array();
+		        $syncdata['errors'] = array();
+		        $syncdata['errors'][] = JText::_('SYNC_FAILED_TO_LOAD_SYNC_DATA');
+	        }
         } else {
             $syncdata = array();
             $syncdata['errors'] = array();
