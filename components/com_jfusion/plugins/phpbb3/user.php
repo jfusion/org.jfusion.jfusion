@@ -43,7 +43,7 @@ class JFusionUser_phpbb3 extends JFusionUser
         if ($identifier_type == 'a.username_clean') {
             $identifier = $this->filterUsername($identifier);
         }
-        $query = 'SELECT a.user_id as userid, a.username as name, a.username_clean as username, a.user_email as email, a.user_password as password, null as password_salt, a.user_actkey as activation, a.user_inactive_reason as reason, a.user_lastvisit as lastvisit, a.group_id, b.group_name, a.user_type, a.user_avatar, a.user_avatar_type ' . 'FROM #__users as a INNER JOIN #__groups as b ON a.group_id = b.group_id ' . 'WHERE ' . $identifier_type . ' = ' . $db->Quote($identifier);
+        $query = 'SELECT a.user_id as userid, a.username as name, a.username_clean as username, a.user_email as email, a.user_password as password, null as password_salt, a.user_actkey as activation, a.user_inactive_reason as reason, a.user_lastvisit as lastvisit, a.group_id, b.group_name, a.user_type, a.user_avatar, a.user_avatar_type ' . 'FROM #__users as a LEFT OUTER JOIN #__groups as b ON a.group_id = b.group_id ' . 'WHERE ' . $identifier_type . ' = ' . $db->Quote($identifier);
         $db->setQuery($query);
         $result = $db->loadObject();
         if ($result) {

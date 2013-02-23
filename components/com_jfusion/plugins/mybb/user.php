@@ -36,7 +36,7 @@ class JFusionUser_mybb extends JFusionUser {
         list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'a.username', 'a.email');
         // Get user info from database
         $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT a.uid as userid, a.username, a.usergroup as group_id, a.username as name, a.email, a.password, a.salt as password_salt, a.usergroup as activation, b.isbannedgroup as block FROM #__users as a INNER JOIN #__usergroups as b ON a.usergroup = b.gid WHERE ' . $identifier_type . ' = ' . $db->Quote($identifier);
+        $query = 'SELECT a.uid as userid, a.username, a.usergroup as group_id, a.username as name, a.email, a.password, a.salt as password_salt, a.usergroup as activation, b.isbannedgroup as block FROM #__users as a LEFT OUTER JOIN #__usergroups as b ON a.usergroup = b.gid WHERE ' . $identifier_type . ' = ' . $db->Quote($identifier);
         $db->setQuery($query);
         $result = $db->loadObject();
         if ($result) {
