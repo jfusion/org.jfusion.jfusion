@@ -371,10 +371,10 @@ class jfusionViewplugindisplay extends JView {
     	$row = '<td width="20px;"><div class="dragHandles" id="dragHandles"><img src="components/com_jfusion/images/draggable.png" name="handle"></div></td>';
         $row .= '<td>'.$record->name.'</td>';
 		$row .= '<td width="92px;">';
+	    $row .= '<a href="'.$record->wizardscript.'" title="'.JText::_('WIZARD').'"><img src="'.$record->wizardimage.'" alt="'.JText::_('WIZARD').'" /></a>';
 		$row .= '<a href="index.php?option=com_jfusion&task=plugineditor&jname='.$record->name.'" title="'.JText::_('EDIT').'"><img src="components/com_jfusion/images/edit.png" alt="'.JText::_('EDIT').'" /></a>';               
         $row .= '<a href="'.$record->copyscript.'" title="'.JText::_('COPY').'"><img src="'.$record->copyimage.'" alt="'.JText::_('COPY').'" /></a>';
         $row .= '<a href="'.$record->deletescript.'" title="'.JText::_('DELETE').'"><img src="'.$record->deleteimage.'" alt="'.JText::_('DELETE').'" /></a>';
-        $row .= '<a href="'.$record->wizardscript.'" title="'.JText::_('WIZARD').'"><img src="'.$record->wizardimage.'" alt="'.JText::_('WIZARD').'" /></a>';
 		$row .= '<a class="modal" title="'.JText::_('INFO').'"  href="index.php?option=com_jfusion&task=plugininfo&tmpl=component&jname='.$record->name.'" rel="{handler: \'iframe\', size: {x: 375, y: 375}}"><img src="components/com_jfusion/images/info.png" alt="'.JText::_('INFO').'" /></a>';            	
 		$row .= '</td>';
         $row .= '<td>'.$record->description.'</td>';
