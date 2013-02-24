@@ -189,6 +189,9 @@ case $1 in
 			mv tmp/jfusion.xml tmp/jfusion.tmp
     		VERSION=$(git rev-parse HEAD)
     		sed "s/<revision>\$revision\$<\/revision>/<revision>$VERSION<\/revision>/g" tmp/jfusion.tmp > tmp/jfusion.xml
+    		mv tmp/jfusion.xml tmp/jfusion.tmp
+    		TIMESTAMP=$(date +%s)
+    		sed "s/<timestamp>\$timestamp\$<\/timestamp>/<timestamp>$TIMESTAMP<\/timestamp>/g" tmp/jfusion.tmp > tmp/jfusion.xml
     		rm tmp/jfusion.tmp
 		else
     		echo "git is not available.  Install git command line client."

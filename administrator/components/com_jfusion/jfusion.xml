@@ -10,6 +10,7 @@
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<version>1.8.0-000</version>
 	<revision>$revision$</revision>
+    <timestamp>$timestamp$</timestamp>
 	<description>Universal User Integration</description>
 
 	<installfile>install.jfusion.php</installfile>
