@@ -174,13 +174,13 @@ case $1 in
 		rm tmp/admin/jfusion.xml
 		
 		mkdir tmp/admin/languages
-		rsync -r  --exclude=".*/" administrator/language/* tmp/admin/languages
+		rsync -r  --exclude=".*/" administrator/language/en-GB/* tmp/admin/languages/en-GB
 
 		mkdir tmp/front
 		rsync -r  --exclude=".*/" --exclude="plugins" components/com_jfusion/* tmp/front
 
 		mkdir tmp/front/languages
-		rsync -r  --exclude=".*/" language/* tmp/front/languages/
+		rsync -r  --exclude=".*/" language/en-GB/* tmp/front/languages/en-GB/
 		
 		rsync administrator/components/com_jfusion/jfusion.xml administrator/components/com_jfusion/install.jfusion.php administrator/components/com_jfusion/uninstall.jfusion.php tmp/ 
 		
