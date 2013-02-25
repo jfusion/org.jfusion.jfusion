@@ -149,7 +149,8 @@ case $1 in
 		
 		echo "Update the revision number"
 
-		echo "Revision set to $VERSION"
+		echo "Revision set to $REVISION"
+		echo "Timestamp set to $TIMESTAMP"
 		
 		createxml tmp/jfusion
 		
