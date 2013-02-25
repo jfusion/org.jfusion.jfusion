@@ -106,7 +106,13 @@ if ($this->server_compatible) {
             <?php echo JText::_('JFUSION_SOFTWARE'); ?>
         </th>
         <th class="title" align="center">
+		    <?php echo JText::_('DATE'); ?>
+        </th>
+        <th class="title" align="center">
             <?php echo JText::_('YOUR_VERSION'); ?>
+        </th>
+        <th class="title" align="center">
+		    <?php echo JText::_('DATE'); ?>
         </th>
         <th class="title" align="center">
             <?php echo JText::_('CURRENT_VERSION'); ?>
@@ -122,12 +128,32 @@ if ($this->server_compatible) {
             <?php echo JText::_('JFUSION') . ' ' . $component->name . ' ' . JText::_('VERSION') ;?>
         </td>
         <td>
+		    <?php
+	        if ($component->olddate) {
+		        $date =& JFactory::getDate($component->olddate);
+		        echo $date->toFormat();
+	        } else {
+		        echo JText::_('UNKNOWN');
+	        }
+		    ?>
+        </td>
+        <td>
             <?php
             echo $component->oldversion;
             if ($component->oldrev) {
                 echo ' Rev ( '.$component->oldrev.' )';
             }
             ?>
+        </td>
+        <td>
+		    <?php
+	        if ($component->date) {
+		        $date =& JFactory::getDate($component->date);
+		        echo $date->toFormat();
+	        } else {
+		        echo JText::_('UNKNOWN');
+	        }
+		    ?>
         </td>
         <td>
             <?php
@@ -174,7 +200,13 @@ if ($this->server_compatible) {
             <?php echo JText::_('JFUSION_PLUGINS'); ?>
         </th>
         <th class="title" align="center">
+		    <?php echo JText::_('DATE'); ?>
+        </th>
+        <th class="title" align="center">
             <?php echo JText::_('YOUR_VERSION'); ?>
+        </th>
+        <th class="title" align="center">
+		    <?php echo JText::_('DATE'); ?>
         </th>
         <th class="title" align="center">
             <?php echo JText::_('CURRENT_VERSION'); ?>
@@ -190,12 +222,32 @@ if ($this->server_compatible) {
             <?php echo $jfusion_plugin->name;?>
         </td>
         <td>
+		    <?php
+		    if ($jfusion_plugin->olddate) {
+			    $date =& JFactory::getDate($jfusion_plugin->olddate);
+			    echo $date->toFormat();
+		    } else {
+			    echo JText::_('UNKNOWN');
+		    }
+		    ?>
+        </td>
+        <td>
             <?php
             echo $jfusion_plugin->oldversion;
             if ($jfusion_plugin->oldrev) {
                 echo ' Rev ( '.$jfusion_plugin->oldrev.' )';
             }
             ?>
+        </td>
+        <td>
+		    <?php
+	        if ($jfusion_plugin->date) {
+		        $date =& JFactory::getDate($jfusion_plugin->date);
+		        echo $date->toFormat();
+	        } else {
+		        echo JText::_('UNKNOWN');
+	        }
+		    ?>
         </td>
         <td>
             <?php

@@ -207,6 +207,8 @@ class jfusionViewversioncheck extends JView
 		$output->class = '';
 		$output->rev = '';
 		$output->oldrev = '';
+		$output->date = '';
+		$output->olddate = '';
 		$output->name = $name;
 		$output->updateurl = null;
 
@@ -230,6 +232,10 @@ class jfusionViewversioncheck extends JView
 			if ($element) {
 				$output->rev = trim($element->data());
 			}
+			$element = $xml->getElementByPath($path.'/timestamp');
+			if ($element) {
+				$output->date = trim($element->data());
+			}
 		}
 
 		if (file_exists($filename) && is_readable($filename)) {
@@ -244,6 +250,10 @@ class jfusionViewversioncheck extends JView
 			$revision = $parser->document->getElementByPath('revision');
 			if ($revision) {
 				$output->oldrev = trim($revision->data());
+			}
+			$timestamp = $parser->document->getElementByPath('timestamp');
+			if ($timestamp) {
+				$output->olddate = trim($timestamp->data());
 			}
 
 			if (version_compare($output->oldversion, $output->version) == - 1 || ($output->oldrev && $output->rev && $output->oldrev != $output->rev )) {
