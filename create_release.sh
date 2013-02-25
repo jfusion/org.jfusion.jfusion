@@ -2,7 +2,7 @@
 createxml(){
 		FILE=$1
 		mv $FILE.xml $FILE.tmp
-		sed "s/<revision>\$revision\$<\/revision>/<revision>$VERSION<\/revision>/g" $FILE.tmp > $FILE.xml
+		sed "s/<revision>\$revision\$<\/revision>/<revision>$REVISION<\/revision>/g" $FILE.tmp > $FILE.xml
 		mv $FILE.xml $FILE.tmp
 		TIMESTAMP=$(date +%s)
 		sed "s/<timestamp>\$timestamp\$<\/timestamp>/<timestamp>$TIMESTAMP<\/timestamp>/g" $FILE.tmp > $FILE.xml
