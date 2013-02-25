@@ -262,7 +262,7 @@ if ($this->server_compatible) {
                 <script type="text/javascript">
                     <!--
                     window.addEvent('domready',function() {
-                        $('<?php echo $jfusion_plugin->name ?>').addEvent('click', function(e) {
+                        $('<?php echo $jfusion_plugin->id ?>').addEvent('click', function(e) {
                             new Event(e).stop();
 
                             confirmSubmitPlugin('<?php echo $jfusion_plugin->updateurl; ?>');
@@ -271,7 +271,7 @@ if ($this->server_compatible) {
                     // -->
                 </script>
 
-                <a id="<?php echo $jfusion_plugin->name ?>" href="<?php echo $jfusion_plugin->updateurl; ?>"><?php echo JText::_('UPDATE') ;?></a> / <a href="<?php echo $jfusion_plugin->updateurl; ?>"><?php echo JText::_('DOWNLOAD') ;?></a>
+                <a id="<?php echo $jfusion_plugin->id ?>" href="<?php echo $jfusion_plugin->updateurl; ?>"><?php echo JText::_('UPDATE') ;?></a> / <a href="<?php echo $jfusion_plugin->updateurl; ?>"><?php echo JText::_('DOWNLOAD') ;?></a>
                 <?php
             }
             ?>
@@ -349,13 +349,13 @@ if ($this->up2date) {
                 {
                     var r = false;
                     var installurl,confirmtext;
-	                var adminForm2 = $('adminForm2');
+	                var install = $('install');
                     if (action == 'build') {
                         confirmtext = '<?php echo JText::_('UPGRADE_CONFIRM_BUILD'); ?>';
                         installurl = 'https://github.com/jfusion/org.jfusion.jfusion/raw/develop/jfusion_package.zip';
                     } else if (action == 'git') {
-                        confirmtext = '<?php echo JText::_('UPGRADE_CONFIRM_SVN'); ?> ' + adminForm2.git_tree.value;
-                        installurl = 'https://github.com/jfusion/org.jfusion.jfusion/raw/' + adminForm2.git_tree.value + '/jfusion_package.zip';
+                        confirmtext = '<?php echo JText::_('UPGRADE_CONFIRM_SVN'); ?> ' + install.git_tree.value;
+                        installurl = 'https://github.com/jfusion/org.jfusion.jfusion/raw/' + install.git_tree.value + '/jfusion_package.zip';
                     } else {
                         confirmtext = '<?php echo JText::_('UPGRADE_CONFIRM_RELEASE') . ' ' . $this->JFusionVersion; ?>';
                         installurl = 'https://github.com/jfusion/org.jfusion.jfusion/raw/release/jfusion_package.zip';
@@ -363,8 +363,8 @@ if ($this->up2date) {
 
                     var agree = confirm(confirmtext);
                     if (agree) {
-                        adminForm2.install_url.value = installurl;
-                        $('install').submit();
+                        install.install_url.value = installurl;
+                        install.submit();
                         r = true;
                     }
                     return r;
@@ -389,7 +389,7 @@ if ($this->up2date) {
                 // -->
             </script>
 
-            <form enctype="multipart/form-data" action="index.php" method="post" id="install" name="adminForm2">
+            <form enctype="multipart/form-data" action="index.php" method="post" id="install" name="install">
                 <input type="hidden" name="install_url" value="" />
                 <input type="hidden" name="type" value="" />
                 <input type="hidden" name="installtype" value="url" />

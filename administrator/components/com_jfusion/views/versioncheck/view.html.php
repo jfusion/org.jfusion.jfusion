@@ -210,6 +210,7 @@ class jfusionViewversioncheck extends JView
 		$output->date = '';
 		$output->olddate = '';
 		$output->name = $name;
+		$output->id = md5($filename);
 		$output->updateurl = null;
 
 		$output->version = JText::_('UNKNOWN');
