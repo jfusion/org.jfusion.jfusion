@@ -9,6 +9,8 @@
 	<copyright>Copyright (C) 2009 JFusion. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<version>1.8.0-000</version>
+    <revision>$revision$</revision>
+    <timestamp>$timestamp$</timestamp>
 	<description><![CDATA[System Plugin to integrate the librairies of Magento and use it in different modules and components.<br>To install it, follow the normal joomla installation procedure.<br>
 	But copy in Magento the following file /path/to/magento/app/code/core/Mage/Core/functions.php to /path/to/magento/app/code/local/Mage/Core/functions.php.<br>Pay attention, the 'local' folder is the file target. Then comment the lines 60 to 69 which correspond to comment the whole __autoload deprecated function.]]></description>
 	<files>

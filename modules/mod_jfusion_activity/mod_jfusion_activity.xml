@@ -8,6 +8,8 @@
 	<authorEmail>webmaster@jfusion.org</authorEmail>
 	<authorUrl>www.jfusion.org</authorUrl>
 	<version>1.8.0-000</version>
+    <revision>$revision$</revision>
+    <timestamp>$timestamp$</timestamp>
 	<description>
 		This is the JFusion activity module that displays the latest
 		posts from the integrated forum software.

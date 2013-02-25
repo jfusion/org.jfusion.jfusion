@@ -1,5 +1,5 @@
 @echo off
-SET FULLPATH=%CD%
+SET FULLPATH=%~dp0
 SET PLUGIN_DIR="%FULLPATH%\components\com_jfusion\plugins"
 setlocal enableextensions
 
@@ -21,6 +21,12 @@ IF NOT EXIST "C:\Program Files\Git\bin\git.exe"  (
 		goto end
 	)
 )
+
+SET REVISION=Unknown
+SET TIMESTAMP=Unknown
+
+for /f "tokens=*" %%a in ( 'git rev-parse HEAD' ) do ( set REVISION=%%a )
+call :GetTimeStamp TIMESTAMP
 
 cls
 echo Choices:
@@ -68,57 +74,52 @@ goto end
 del "%FULLPATH%\administrator\components\com_jfusion\packages\*.zip"
 
 echo Create the new packages for the plugins and module
-chdir %FULLPATH%\modules\
-7za a "%FULLPATH%\administrator\components\com_jfusion\packages\jfusion_mod_activity.zip" .\mod_jfusion_activity\* -xr!*.svn* > NUL
-7za a "%FULLPATH%\administrator\components\com_jfusion\packages\jfusion_mod_login.zip" .\mod_jfusion_login\* -r -xr!*.svn* > NUL
-7za a "%FULLPATH%\administrator\components\com_jfusion\packages\jfusion_mod_whosonline.zip" .\mod_jfusion_whosonline\* -xr!*.svn* > NUL
-7za a "%FULLPATH%\administrator\components\com_jfusion\packages\jfusion_mod_user_activity.zip" .\mod_jfusion_user_activity\* -xr!*.svn* > NUL
 
-chdir %FULLPATH%\plugins\
-7za a "%FULLPATH%\administrator\components\com_jfusion\packages\jfusion_plugin_auth.zip" .\authentication\* -xr!*.svn* > NUL
-7za a "%FULLPATH%\administrator\components\com_jfusion\packages\jfusion_plugin_user.zip" .\user\* -xr!*.svn* > NUL
-7za a "%FULLPATH%\administrator\components\com_jfusion\packages\jfusion_plugin_search.zip" .\search\* -xr!*.svn* > NUL
-7za a "%FULLPATH%\administrator\components\com_jfusion\packages\jfusion_plugin_content.zip" .\content\* -xr!*.svn* > NUL
-7za a "%FULLPATH%\administrator\components\com_jfusion\packages\jfusion_plugin_system.zip" .\system\jfusion.* -xr!*.svn* > NUL
+call :CreatePackage modules\mod_jfusion_activity\ administrator\components\com_jfusion\packages\jfusion_mod_activity.zip mod_jfusion_activity
+call :CreatePackage modules\mod_jfusion_login\ administrator\components\com_jfusion\packages\jfusion_mod_login.zip mod_jfusion_login
+call :CreatePackage modules\mod_jfusion_whosonline\ administrator\components\com_jfusion\packages\jfusion_mod_whosonline.zip mod_jfusion_whosonline
+call :CreatePackage modules\mod_jfusion_user_activity\ administrator\components\com_jfusion\packages\jfusion_mod_user_activity.zip mod_jfusion_user_activity
+
+call :CreatePackage plugins\authentication\* administrator\components\com_jfusion\packages\jfusion_plugin_auth.zip
+call :CreatePackage plugins\user\* administrator\components\com_jfusion\packages\jfusion_plugin_user.zip
+call :CreatePackage plugins\search\* administrator\components\com_jfusion\packages\jfusion_plugin_search.zip
+call :CreatePackage plugins\content\* administrator\components\com_jfusion\packages\jfusion_plugin_content.zip
+call :CreatePackage plugins\system\jfusion.* administrator\components\com_jfusion\packages\jfusion_plugin_system.zip
 
 
 echo "create the jfusion plugin packages"
-chdir %FULLPATH%\components\com_jfusion\plugins
-7za a "%FULLPATH%\pluginpackages\jfusion_dokuwiki.zip" .\dokuwiki\* -xr!*.svn* > NUL
-7za a "%FULLPATH%\pluginpackages\jfusion_efront.zip" .\efront\* -xr!*.svn* > NUL
-7za a "%FULLPATH%\pluginpackages\jfusion_elgg.zip" .\elgg\* -xr!*.svn* > NUL
-7za a "%FULLPATH%\pluginpackages\jfusion_gallery2.zip" .\gallery2\* -xr!*.svn* > NUL
-7za a "%FULLPATH%\pluginpackages\jfusion_joomla_ext.zip" .\joomla_ext\* -xr!*.svn* > NUL
-7za a "%FULLPATH%\pluginpackages\jfusion_joomla_int.zip" .\joomla_int\* -xr!*.svn* > NUL
-7za a "%FULLPATH%\pluginpackages\jfusion_magento.zip" .\magento\* -xr!*.svn* > NUL
-7za a "%FULLPATH%\pluginpackages\jfusion_mediawiki.zip" .\mediawiki\* -xr!*.svn* > NUL
-7za a "%FULLPATH%\pluginpackages\jfusion_moodle.zip" .\moodle\* -xr!*.svn* > NUL
-7za a "%FULLPATH%\pluginpackages\jfusion_mybb.zip" .\mybb\* -xr!*.svn* > NUL
-7za a "%FULLPATH%\pluginpackages\jfusion_oscommerce.zip" .\oscommerce\* -xr!*.svn* > NUL
-7za a "%FULLPATH%\pluginpackages\jfusion_phpbb3.zip" .\phpbb3\* -xr!*.svn* > NUL
-7za a "%FULLPATH%\pluginpackages\jfusion_prestashop.zip" .\prestashop\* -xr!*.svn* > NUL
-7za a "%FULLPATH%\pluginpackages\jfusion_smf.zip" .\smf\* -xr!*.svn* > NUL
-7za a "%FULLPATH%\pluginpackages\jfusion_smf2.zip" .\smf2\* -xr!*.svn* > NUL
-7za a "%FULLPATH%\pluginpackages\jfusion_universal.zip" .\universal\* -xr!*.svn* > NUL
-7za a "%FULLPATH%\pluginpackages\jfusion_vbulletin.zip" .\vbulletin\* -xr!*.svn* > NUL
-7za a "%FULLPATH%\pluginpackages\jfusion_wordpress.zip" .\wordpress\* -xr!*.svn* > NUL
+
+call :CreatePackage components\com_jfusion\plugins\dokuwiki pluginpackages\jfusion_dokuwiki.zip
+call :CreatePackage components\com_jfusion\plugins\efront pluginpackages\jfusion_efront.zip
+call :CreatePackage components\com_jfusion\plugins\elgg pluginpackages\jfusion_elgg.zip
+call :CreatePackage components\com_jfusion\plugins\gallery2 pluginpackages\jfusion_gallery2.zip
+call :CreatePackage components\com_jfusion\plugins\joomla_ext pluginpackages\jfusion_joomla_ext.zip
+call :CreatePackage components\com_jfusion\plugins\joomla_int pluginpackages\jfusion_joomla_int.zip
+call :CreatePackage components\com_jfusion\plugins\magento pluginpackages\jfusion_magento.zip
+call :CreatePackage components\com_jfusion\plugins\mediawiki pluginpackages\jfusion_mediawiki.zip
+call :CreatePackage components\com_jfusion\plugins\moodle pluginpackages\jfusion_moodle.zip
+call :CreatePackage components\com_jfusion\plugins\mybb pluginpackages\jfusion_mybb.zip
+call :CreatePackage components\com_jfusion\plugins\oscommerce pluginpackages\jfusion_oscommerce.zip
+call :CreatePackage components\com_jfusion\plugins\phpbb3 pluginpackages\jfusion_phpbb3.zip
+call :CreatePackage components\com_jfusion\plugins\prestashop pluginpackages\jfusion_prestashop.zip
+call :CreatePackage components\com_jfusion\plugins\smf pluginpackages\jfusion_smf.zip
+call :CreatePackage components\com_jfusion\plugins\smf2 pluginpackages\jfusion_smf2.zip
+call :CreatePackage components\com_jfusion\plugins\universal pluginpackages\jfusion_universal.zip
+call :CreatePackage components\com_jfusion\plugins\vbulletin pluginpackages\jfusion_vbulletin.zip
+call :CreatePackage components\com_jfusion\plugins\wordpress pluginpackages\jfusion_wordpress.zip
+
 
 echo "create the new packages for the Magento Integration"
-chdir %FULLPATH%\modules\
-7za a "%FULLPATH%\side_projects\magento\jfusion_mod_magecart.zip" .\mod_jfusion_magecart\* -xr!*.svn* > NUL
-7za a "%FULLPATH%\side_projects\magento\jfusion_mod_mageselectblock.zip" .\mod_jfusion_mageselectblock\* -xr!*.svn* > NUL
-7za a "%FULLPATH%\side_projects\magento\jfusion_mod_magecustomblock.zip" .\mod_jfusion_magecustomblock\* -xr!*.svn* > NUL
 
-chdir %FULLPATH%\plugins\
-7za a "%FULLPATH%\side_projects\magento\jfusion_plugin_magelib.zip" .\system\magelib.* -xr!*.svn* > NUL
+call :CreatePackage modules\mod_jfusion_magecart side_projects\magento\jfusion_mod_magecart.zip mod_jfusion_magecart
+call :CreatePackage modules\mod_jfusion_mageselectblock side_projects\magento\jfusion_mod_mageselectblock.zip mod_jfusion_mageselectblock
+call :CreatePackage modules\mod_jfusion_magecustomblock side_projects\magento\jfusion_mod_magecustomblock.zip mod_jfusion_magecustomblock
 
-chdir %FULLPATH%
+call :CreatePackage plugins\system\magelib.* side_projects\magento\jfusion_plugin_magelib.zip magelib
 
 IF "%action%"=="2" goto end
 
-
 :CREATE_MAIN
-chdir %FULLPATH%
 
 echo Prepare the files for packaging
 md tmp
@@ -142,24 +143,13 @@ copy "%FULLPATH%\administrator\components\com_jfusion\uninstall.jfusion.php" "%F
 
 echo Update the revision number
 
-move "%FULLPATH%\tmp\jfusion.xml" "%FULLPATH%\tmp\jfusion.tmp"
-
-SET REVISION=Unknown
-SET UNIX_TIME=Unknown
-
-for /f "tokens=*" %%a in ( 'git rev-parse HEAD' ) do ( set REVISION=%%a )
-call :GetUnixTime UNIX_TIME
-
 echo Revision set to %REVISION%
-c:\WINDOWS\system32\sed.exe "s/<revision>\$revision\$<\/revision>/<revision>%REVISION%<\/revision>/g" "%FULLPATH%\tmp\jfusion.tmp" > "%FULLPATH%\tmp\jfusion.xml"
-move "%FULLPATH%\tmp\jfusion.xml" "%FULLPATH%\tmp\jfusion.tmp"
-c:\WINDOWS\system32\sed.exe "s/<timestamp>\$timestamp\$<\/timestamp>/<timestamp>%UNIX_TIME%<\/timestamp>/g" "%FULLPATH%\tmp\jfusion.tmp" > "%FULLPATH%\tmp\jfusion.xml"
-
-del "%FULLPATH%\tmp\jfusion.tmp"
+echo Timestamp set to %TIMESTAMP%
+call :CreateXml %FULLPATH%\tmp\jfusion
 
 echo Create the new master package
-chdir %FULLPATH%
-del *.zip
+
+del %FULLPATH%\*.zip
 
 7za a "%FULLPATH%\jfusion_package.zip" .\tmp\* -xr!*.svn* > NUL
 
@@ -174,11 +164,43 @@ IF "%action%"=="1" goto end
 echo Complete
 pause>nul
 
-:GetUnixTime
-setlocal enableextensions
-for /f %%x in ('wmic path win32_utctime get /format:list ^| findstr "="') do (
-    set %%x)
-set /a z=(14-100%Month%%%100)/12, y=10000%Year%%%10000-z
-set /a ut=y*365+y/4-y/100+y/400+(153*(100%Month%%%100+12*z-3)+2)/5+Day-719469
-set /a ut=ut*86400+100%Hour%%%100*3600+100%Minute%%%100*60+100%Second%%%100
+:GetTimeStamp
+	setlocal enableextensions
+	for /f %%x in ('wmic path win32_utctime get /format:list ^| findstr "="') do (
+		set %%x)
+	set /a z=(14-100%Month%%%100)/12, y=10000%Year%%%10000-z
+	set /a ut=y*365+y/4-y/100+y/400+(153*(100%Month%%%100+12*z-3)+2)/5+Day-719469
+	set /a ut=ut*86400+100%Hour%%%100*3600+100%Minute%%%100*60+100%Second%%%100
 endlocal & set "%1=%ut%" & goto :EOF
+
+:CreatePackage
+	setlocal enableextensions
+
+	SET TARGETPATH=%1
+	SET TARGETDEST=%2
+	SET XMLFILE=%3
+
+	IF "%3" == "" SET XMLFILE=jfusion
+
+	md %FULLPATH%\tmppackage
+
+	copy "%FULLPATH%\%TARGETPATH%" "%FULLPATH%\tmppackage" /V /Y > NUL
+
+	call :CreateXml %FULLPATH%\tmppackage\%XMLFILE%
+
+	7za a "%FULLPATH%\%TARGETDEST%" %FULLPATH%\tmppackage\* -xr!*.svn* > NUL
+
+	RMDIR "%FULLPATH%\tmppackage" /S /Q
+endlocal & goto :EOF
+
+:CreateXml
+	setlocal enableextensions
+	SET FILE=%1
+
+	move "%FILE%.xml" "%FILE%.tmp" >nul
+	c:\WINDOWS\system32\sed.exe "s/<revision>\$revision\$<\/revision>/<revision>%REVISION%<\/revision>/g" "%FILE%.tmp" > "%FILE%.xml"
+	move "%FILE%.xml" "%FILE%.tmp" >nul
+	c:\WINDOWS\system32\sed.exe "s/<timestamp>\$timestamp\$<\/timestamp>/<timestamp>%TIMESTAMP%<\/timestamp>/g" "%FILE%.tmp" > "%FILE%.xml"
+
+	del %FILE%.tmp
+endlocal & goto :EOF

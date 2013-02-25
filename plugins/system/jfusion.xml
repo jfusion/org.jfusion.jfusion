@@ -9,6 +9,8 @@
 	<copyright>Copyright (C) 2009 JFusion. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<version>1.8.0-000</version>
+    <revision>$revision$</revision>
+    <timestamp>$timestamp$</timestamp>
 	<description>System Plugin for JFusion</description>
 	<files>
 		<filename plugin="jfusion">jfusion.php</filename>

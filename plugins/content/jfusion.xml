@@ -8,6 +8,8 @@
 	<copyright>Copyright (C) 2009 JFusion. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<version>1.8.0-000</version>
+    <revision>$revision$</revision>
+    <timestamp>$timestamp$</timestamp>
 	<description>
 		This is a discussion bot plugin for JFusion which enables using compatible forum software as a comments backend. 
 		To use for a single article, place {jfusion_discuss id#} where id# is the id of the thread.  Enable auto mode in 

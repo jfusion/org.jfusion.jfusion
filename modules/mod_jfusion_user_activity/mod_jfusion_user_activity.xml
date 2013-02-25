@@ -8,6 +8,8 @@
 	<authorEmail>webmaster@jfusion.org</authorEmail>
 	<authorUrl>www.jfusion.org</authorUrl>
 	<version>1.8.0-000</version>
+    <revision>$revision$</revision>
+    <timestamp>$timestamp$</timestamp>
 	<description>Module for displaying JFusion plugin user activity such as PMs, new forum messages link, etc.</description>
 	<files>
 		<filename module="mod_jfusion_user_activity">mod_jfusion_user_activity.php</filename>
