@@ -105,19 +105,14 @@ case $1 in
 				createpackage components/com_jfusion/plugins/joomla_ext/ pluginpackages/joomla_ext.zip
 				createpackage components/com_jfusion/plugins/joomla_int/ pluginpackages/jfusion_joomla_int.zip
 				createpackage components/com_jfusion/plugins/magento/ pluginpackages/jfusion_magento.zip
-				
 				createpackage components/com_jfusion/plugins/mediawiki/ pluginpackages/jfusion_mediawiki.zip
-				
 				createpackage components/com_jfusion/plugins/moodle/ pluginpackages/jfusion_moodle.zip
-				
-				
 				createpackage components/com_jfusion/plugins/mybb/ pluginpackages/jfusion_mybb.zip
 				createpackage components/com_jfusion/plugins/oscommerce/ pluginpackages/jfusion_oscommerce.zip
 				createpackage components/com_jfusion/plugins/phpbb3/ pluginpackages/jfusion_phpbb3.zip
 				createpackage components/com_jfusion/plugins/prestashop/ pluginpackages/jfusion_prestashop.zip
 				createpackage components/com_jfusion/plugins/smf/ pluginpackages/jfusion_smf.zip
 				createpackage components/com_jfusion/plugins/smf2/ pluginpackages/jfusion_smf2.zip
-				
 				createpackage components/com_jfusion/plugins/universal/ pluginpackages/jfusion_universal.zip
 				createpackage components/com_jfusion/plugins/vbulletin/ pluginpackages/jfusion_vbulletin.zip
 				createpackage components/com_jfusion/plugins/wordpress/ pluginpackages/jfusion_wordpress.zip
