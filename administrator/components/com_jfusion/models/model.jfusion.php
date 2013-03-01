@@ -1258,9 +1258,12 @@ class JFusionFunction
                 if (is_array($usergroups) ) {
                     if (isset($userinfo->group_id) && isset($usergroups[$userinfo->group_id])) {
                         $usergroup = $usergroups[$userinfo->group_id];
-                        //use the first var in the array
-                        $keys = array_keys($usergroup);
-                        $group = array($usergroup[$keys[0]]);
+	                    if (is_array($usergroup)) {
+		                    //use the first var in the array
+		                    $keys = array_keys($usergroup);
+		                    $usergroup = $usergroup[$keys[0]];
+	                    }
+                        $group = array($usergroup);
                     }
                 } else {
                     $group = array($usergroups);
