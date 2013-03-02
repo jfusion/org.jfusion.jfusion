@@ -126,7 +126,7 @@ case $1 in
 		mkdir tmp/admin
 		rsync -r --exclude=".*/" administrator/components/com_jfusion/* tmp/admin
 
-#  rsync -r --exclude=".*/" pluginpackages/* tmp/admin/packages
+		rsync -r --exclude=".*/" pluginpackages/* tmp/admin/packages
 
 		rm tmp/admin/jfusion.xml
 		
