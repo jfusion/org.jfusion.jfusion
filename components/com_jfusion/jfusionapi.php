@@ -32,7 +32,7 @@ class JFusionAPI {
 	private $class = null;
 	private $type = null;
 	private $task = null;
-	private $payload = null;
+	private $payload = array();
 	private $secretkey = null;
 	private $hash = null;
 	private $error = null;
@@ -131,7 +131,7 @@ class JFusionAPI {
     }
 
     /**
-     * @param $payload
+     * @param array $payload
      *
      * @return void
      */
@@ -232,7 +232,7 @@ class JFusionAPI {
     /**
      * @param $class
      * @param $task
-     * @param $payload
+     * @param array $payload
      *
      * @return bool
      */
@@ -244,7 +244,7 @@ class JFusionAPI {
     /**
      * @param $class
      * @param $task
-     * @param null $payload
+     * @param array $payload
      *
      * @return bool
      */
@@ -279,7 +279,7 @@ class JFusionAPI {
 
      * @return bool
      */
-    private function _raw($type, $class, $task, $payload=null)
+    private function _raw($type, $class, $task, $payload=array())
     {
     	$key = true;
         $class = $this->createClass();
@@ -423,7 +423,7 @@ class JFusionAPI {
             if ($this->task) {
                 $post['jftask'] = $this->task;
             }
-            if ($this->payload) {
+            if (!empty($this->payload)) {
                 $post['jfpayload'] = JFusionAPI::encrypt($this->createkey(),$this->payload);
             }
             $this->class = $this->type = $this->task = $this->payload = null;
