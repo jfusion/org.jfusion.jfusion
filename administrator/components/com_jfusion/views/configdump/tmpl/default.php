@@ -59,6 +59,17 @@ if (JRequest::getVar('filter',false)) {
 
 <?php
 $textOutput = array();
+$title = JText::_('SERVER') . ' ' . JText::_('CONFIGURATION');
+//output the information to the user
+debug::show($this->server_info, $title);
+$textOutput[] = debug::getText($this->server_info, $title);
+?><br/><?php
+
+$title = JText::_('JFUSION') . ' ' . JText::_('VERSIONS');
+debug::show($this->jfusion_version, $title);
+$textOutput[] = debug::getText($this->jfusion_version, $title);
+?><br/><?php
+
 debug::$callback = array($this,'jfusion_plugin',null);
 foreach($this->jfusion_plugin as $key => $value) {
     $title = JText::_('JFUSION') . ' ' . $key . ' ' . JText::_('PLUGIN');
