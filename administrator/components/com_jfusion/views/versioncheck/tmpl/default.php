@@ -172,7 +172,7 @@ if ($this->server_compatible) {
                         $('<?php echo $component->name ;?>').addEvent('click', function(e) {
                             new Event(e).stop();
 
-                            confirmSubmit('release');
+                            confirmSubmit('<?php echo $component->updateurl; ?>');
                         });
                     });
                     // -->
@@ -358,7 +358,7 @@ if ($this->up2date) {
                         installurl = 'https://github.com/jfusion/org.jfusion.jfusion/raw/' + install.git_tree.value + '/jfusion_package.zip';
                     } else {
                         confirmtext = '<?php echo JText::_('UPGRADE_CONFIRM_RELEASE') . ' ' . $this->JFusionVersion; ?>';
-                        installurl = 'https://github.com/jfusion/org.jfusion.jfusion/raw/release/jfusion_package.zip';
+                        installurl = action;
                     }
 
                     var agree = confirm(confirmtext);
@@ -371,17 +371,10 @@ if ($this->up2date) {
                 }
 
                 window.addEvent('domready',function() {
-                    $('release').addEvent('click', function(e) {
-                        confirmSubmit('release');
-                    });
-                });
-
-                window.addEvent('domready',function() {
                     $('build').addEvent('click', function(e) {
                         confirmSubmit('build');
                     });
-                });
-                window.addEvent('domready',function() {
+
                     $('git').addEvent('click', function(e) {
                         confirmSubmit('git');
                     });
@@ -403,9 +396,6 @@ if ($this->up2date) {
                 <b>
                     <?php echo JText::_('ADVANCED_WARNING'); ?>
                 </b>
-                <br/>
-
-                <input id="release" type="button" value="<?php echo JText::_('INSTALL') . ' ' . JText::_('LATEST') . ' ' . JText::_('RELEASE'); ?>"/>
                 <br/>
                 <input id="build" type="button" value="<?php echo JText::_('INSTALL') . ' ' . JText::_('LATEST') . ' ' . JText::_('DEVELOPMENT') . ' ' . JText::_('RELEASE'); ?>"/>
                 <br/>
