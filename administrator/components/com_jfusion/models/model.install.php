@@ -264,7 +264,7 @@ class JFusionPluginInstaller extends JObject
                  * Check that the plugin is an actual JFusion plugin
                  */
                 $name = $this->getElementByPath($this->manifest,'name');
-                $name = $this->filterInput->clean($name->data(), 'string');
+	            $name = $this->filterInput->clean($this->getData($name), 'string');
 
                 $result['jname'] = $name;
                 $this->set('name', $name);
@@ -325,10 +325,8 @@ class JFusionPluginInstaller extends JObject
                     foreach ($features as $f) {
                         $xml = $this->getElementByPath($this->manifest,$f);
 
-	                    if ($xml instanceof JSimpleXMLElement) {
-		                    $$f = $this->filterInput->clean($xml->data(), 'integer');
-	                    } elseif ($xml instanceof JXMLElement) {
-		                    $$f = $this->filterInput->clean($xml, 'integer');
+	                    if ($xml instanceof JSimpleXMLElement || $xml instanceof JXMLElement) {
+		                    $$f = $this->filterInput->clean($this->getData($name), 'integer');
 	                    } elseif ($f == 'master' || $f == 'check_encryption') {
                             $$f = 0;
                         } else {
@@ -561,36 +559,34 @@ class JFusionPluginInstaller extends JObject
 	                $childrens = $languages->children();
                 }
 
-                if (count($childrens) > 0) {
-                    /**
-                     * @ignore
-                     * @var $children JSimpleXMLElement
-                     */
-                    foreach ($childrens as $children) {
-                        $tag = $this->getAttribute($children,'tag');
-                        $filepath = $children->data();
-                        // If the language file as a path in the content of the element language
-                        if (strpos($filepath, DS)) {
-                            $folders = explode(DS, $filepath);
-                            array_pop($folders); // remove the file name of the path
-                            $path = implode(DS, $folders) . DS;
-                        }
-                        // @todo - take in consideration if the filename doesn't respect xx-XX.com_jfusion.plg_pluginname.ini
-                        $prefix = $tag . '.com_jfusion.plg_';
-                        $languageFile = $prefix . $jname . '.ini';
-                        $newLanguageFile = $prefix . $new_jname . '.ini';
-                        if (file_exists(JPATH_SITE . DS . "language" . DS . $tag . DS . $languageFile)) {
-                            if (!JFile::copy(JPATH_SITE . DS . "language" . DS . $tag . DS . $languageFile, JPATH_SITE . DS . "language" . DS . $tag . DS . $newLanguageFile)) {
-                                $this->parent->abort(JText::_('COPY_ERROR'));
-                                $result['message'] = JText::_('COPY_ERROR');
-                                return $result;
-                            }
-                        }
-                        // @todo - Need to be improved because it includes admin and site languages files. But at the end it's supposed to be the same name normally!
-                        $regex[] = '#<language tag="' . $tag . '">' . $path . $languageFile . '</language>#ms';
-                        $replace[] = '<language tag="' . $tag . '">' . $path . $newLanguageFile . '</language>';
-                    }
-                }
+	            /**
+	             * @ignore
+	             * @var $children JSimpleXMLElement
+	             */
+	            foreach ($childrens as $children) {
+		            $tag = $this->getAttribute($children,'tag');
+		            $filepath = $this->getData($children);
+		            // If the language file as a path in the content of the element language
+		            if (strpos($filepath, DS)) {
+			            $folders = explode(DS, $filepath);
+			            array_pop($folders); // remove the file name of the path
+			            $path = implode(DS, $folders) . DS;
+		            }
+		            // @todo - take in consideration if the filename doesn't respect xx-XX.com_jfusion.plg_pluginname.ini
+		            $prefix = $tag . '.com_jfusion.plg_';
+		            $languageFile = $prefix . $jname . '.ini';
+		            $newLanguageFile = $prefix . $new_jname . '.ini';
+		            if (file_exists(JPATH_SITE . DS . "language" . DS . $tag . DS . $languageFile)) {
+			            if (!JFile::copy(JPATH_SITE . DS . "language" . DS . $tag . DS . $languageFile, JPATH_SITE . DS . "language" . DS . $tag . DS . $newLanguageFile)) {
+				            $this->parent->abort(JText::_('COPY_ERROR'));
+				            $result['message'] = JText::_('COPY_ERROR');
+				            return $result;
+			            }
+		            }
+		            // @todo - Need to be improved because it includes admin and site languages files. But at the end it's supposed to be the same name normally!
+		            $regex[] = '#<language tag="' . $tag . '">' . $path . $languageFile . '</language>#ms';
+		            $replace[] = '<language tag="' . $tag . '">' . $path . $newLanguageFile . '</language>';
+	            }
                 //reset $childrens to ensure we wont insert front end language in to admin panel as well..
                 $childrens = array();
                 // Copy of admin languages files
@@ -599,36 +595,34 @@ class JFusionPluginInstaller extends JObject
                 } elseif ($adminLanguages instanceof JXMLElement) {
 		            $childrens = $adminLanguages->children();
 	            }
-                if (count($childrens) > 0) {
-                    /**
-                     * @ignore
-                     * @var $children JSimpleXMLElement
-                     */
-                    foreach ($childrens as $children) {
-                        $tag = $this->getAttribute($children,'tag');
-                        $filepath = $children->data();
-                        // If the language file as a path in the content of the element language
-                        if (strpos($filepath, DS)) {
-                            $folders = explode(DS, $filepath);
-                            array_pop($folders); // remove the file name of the path
-                            $path = implode(DS, $folders) . DS;
-                        }
-                        // @todo - take in consideration if the filename doesn't respect xx-XX.com_jfusion.plg_pluginname.ini
-                        $prefix = $tag . '.com_jfusion.plg_';
-                        $languageFile = $prefix . $jname . '.ini';
-                        $newLanguageFile = $prefix . $new_jname . '.ini';
-                        if (file_exists(JPATH_ADMINISTRATOR . DS . "language" . DS . $tag . DS . $languageFile)) {
-                            if (!JFile::copy(JPATH_ADMINISTRATOR . DS . "language" . DS . $tag . DS . $languageFile, JPATH_ADMINISTRATOR . DS . "language" . DS . $tag . DS . $newLanguageFile)) {
-                                $this->parent->abort(JText::_('COPY_ERROR'));
-                                $result['message'] = JText::_('COPY_ERROR');
-                                return $result;
-                            }
-                        }
-                        // @todo - Need to be improved because it includes admin and site languages files. But at the end it's supposed to be the same name normally!
-                        $regex[] = '#<language tag="' . $tag . '">' . $path . $languageFile . '</language>#ms';
-                        $replace[] = '<language tag="' . $tag . '">' . $path . $newLanguageFile . '</language>';
-                    }
-                }
+	            /**
+	             * @ignore
+	             * @var $children JSimpleXMLElement
+	             */
+	            foreach ($childrens as $children) {
+		            $tag = $this->getAttribute($children,'tag');
+		            $filepath = $this->getData($children);
+		            // If the language file as a path in the content of the element language
+		            if (strpos($filepath, DS)) {
+			            $folders = explode(DS, $filepath);
+			            array_pop($folders); // remove the file name of the path
+			            $path = implode(DS, $folders) . DS;
+		            }
+		            // @todo - take in consideration if the filename doesn't respect xx-XX.com_jfusion.plg_pluginname.ini
+		            $prefix = $tag . '.com_jfusion.plg_';
+		            $languageFile = $prefix . $jname . '.ini';
+		            $newLanguageFile = $prefix . $new_jname . '.ini';
+		            if (file_exists(JPATH_ADMINISTRATOR . DS . "language" . DS . $tag . DS . $languageFile)) {
+			            if (!JFile::copy(JPATH_ADMINISTRATOR . DS . "language" . DS . $tag . DS . $languageFile, JPATH_ADMINISTRATOR . DS . "language" . DS . $tag . DS . $newLanguageFile)) {
+				            $this->parent->abort(JText::_('COPY_ERROR'));
+				            $result['message'] = JText::_('COPY_ERROR');
+				            return $result;
+			            }
+		            }
+		            // @todo - Need to be improved because it includes admin and site languages files. But at the end it's supposed to be the same name normally!
+		            $regex[] = '#<language tag="' . $tag . '">' . $path . $languageFile . '</language>#ms';
+		            $replace[] = '<language tag="' . $tag . '">' . $path . $newLanguageFile . '</language>';
+	            }
                 /**
                  * ---------------------------------------------------------------------------------------------
                  * Rename class files and xml file of the new plugin create
@@ -655,10 +649,8 @@ class JFusionPluginInstaller extends JObject
                         $features = array('master', 'slave', 'dual_login', 'check_encryption');
                         foreach ($features as $f) {
                             $xml = $this->getElementByPath($this->manifest,$f);
-	                        if ($xml instanceof JSimpleXMLElement) {
-                                $$f = $this->filterInput->clean($xml->data(), 'integer');
-                            } elseif ($xml instanceof JXMLElement) {
-		                        $$f = $this->filterInput->clean($xml, 'integer');
+	                        if ($xml instanceof JSimpleXMLElement || $xml instanceof JXMLElement) {
+                                $$f = $this->filterInput->clean($this->getData($xml), 'integer');
 	                        } elseif ($f == 'master' || $f == 'check_encryption') {
                                 $$f = 0;
                             } else {
@@ -890,4 +882,19 @@ class JFusionPluginInstaller extends JObject
         }
         return $xml;
     }
+
+	/**
+	 * getData
+	 *
+	 *  @param JXMLElement|JSimpleXMLElement $xml xml object
+	 *
+	 *  @return JXMLElement|string result
+	 */
+	function getData($xml)
+	{
+		if($xml instanceof JSimpleXMLElement) {
+			$xml = $xml->data();
+		}
+		return $xml;
+	}
 }
