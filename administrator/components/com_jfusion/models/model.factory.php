@@ -29,22 +29,6 @@ require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS .
  * @link      http://www.jfusion.org
  */
 jimport('joomla.html.parameter');
-/**
- *
- */
-class JfusionParam extends JParameter
-{
-    /**
-     * @param string $key
-     * @param string $value
-     * @param string $group
-     * @return mixed
-     */
-    function set($key, $value = '', $group = '_default')
-    {
-        return $this->setValue($group . '.' . $key, $value);
-    }
-}
 
 /**
  * Singleton static only class that creates instances for each specific JFusion plugin.

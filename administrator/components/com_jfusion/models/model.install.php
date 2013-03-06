@@ -324,9 +324,12 @@ class JFusionPluginInstaller extends JObject
                     $features = array('master', 'slave', 'dual_login', 'check_encryption');
                     foreach ($features as $f) {
                         $xml = $this->getElementByPath($this->manifest,$f);
-                        if (is_a($xml, 'JSimpleXMLElement') || is_a($xml, 'JXMLElement')) {
-                            $$f = $this->filterInput->clean($xml->data(), 'integer');
-                        } elseif ($f == 'master' || $f == 'check_encryption') {
+
+	                    if ($xml instanceof JSimpleXMLElement) {
+		                    $$f = $this->filterInput->clean($xml->data(), 'integer');
+	                    } elseif ($xml instanceof JXMLElement) {
+		                    $$f = $this->filterInput->clean($xml, 'integer');
+	                    } elseif ($f == 'master' || $f == 'check_encryption') {
                             $$f = 0;
                         } else {
                             $$f = 3;
@@ -552,10 +555,10 @@ class JFusionPluginInstaller extends JObject
                 $adminLanguages = $this->getElementByPath($this->manifest,'administration/languages');
 
                 // Copy of site languages files
-                if (is_a($languages, 'JSimpleXMLElement') || is_a($languages, 'JXMLElement')) {
-                    if ( $languages->count() ) {
-                        $childrens = $languages->children();
-                    }
+                if ($languages instanceof JSimpleXMLElement) {
+	                $childrens = $languages->children();
+                } elseif ($languages instanceof JXMLElement) {
+	                $childrens = $languages->children();
                 }
 
                 if (count($childrens) > 0) {
@@ -591,9 +594,11 @@ class JFusionPluginInstaller extends JObject
                 //reset $childrens to ensure we wont insert front end language in to admin panel as well..
                 $childrens = array();
                 // Copy of admin languages files
-                if (is_a($adminLanguages, 'JSimpleXMLElement') || is_a($adminLanguages, 'JXMLElement')) {
+	            if ($adminLanguages instanceof JSimpleXMLElement) {
                     $childrens = $adminLanguages->children();
-                }
+                } elseif ($adminLanguages instanceof JXMLElement) {
+		            $childrens = $adminLanguages->children();
+	            }
                 if (count($childrens) > 0) {
                     /**
                      * @ignore
@@ -650,9 +655,11 @@ class JFusionPluginInstaller extends JObject
                         $features = array('master', 'slave', 'dual_login', 'check_encryption');
                         foreach ($features as $f) {
                             $xml = $this->getElementByPath($this->manifest,$f);
-                            if (is_a($xml, 'JSimpleXMLElement') || is_a($xml, 'JXMLElement')) {
+	                        if ($xml instanceof JSimpleXMLElement) {
                                 $$f = $this->filterInput->clean($xml->data(), 'integer');
-                            } elseif ($f == 'master' || $f == 'check_encryption') {
+                            } elseif ($xml instanceof JXMLElement) {
+		                        $$f = $this->filterInput->clean($xml, 'integer');
+	                        } elseif ($f == 'master' || $f == 'check_encryption') {
                                 $$f = 0;
                             } else {
                                 $$f = 3;
@@ -852,9 +859,9 @@ class JFusionPluginInstaller extends JObject
     {
         $elements = explode('/',$element);
         foreach ($elements as $element) {
-            if(is_a($xml, 'JXMLElement')) {
+            if($xml instanceof JXMLElement) {
                 $xml = $xml->$element;
-            } elseif(is_a($xml, 'JSimpleXMLElement')) {
+            } elseif($xml instanceof JSimpleXMLElement) {
                 $xml = $xml->getElementByPath($element);
             } else {
                 $xml = null;
@@ -874,9 +881,9 @@ class JFusionPluginInstaller extends JObject
      */
     function getAttribute($xml, $attribute)
     {
-        if(is_a($xml, 'JXMLElement')) {
+        if($xml instanceof JXMLElement) {
             $xml = $xml->getAttribute($attribute);
-        } elseif(is_a($xml, 'JSimpleXMLElement')) {
+        } elseif($xml instanceof JSimpleXMLElement) {
             $xml = $xml->attributes($attribute);
         } else {
             $xml = null;
