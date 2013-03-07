@@ -188,7 +188,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 			$status['debug'][] = JFusionFunction::addCookie($cookie_name  . 'UserName', $userinfo->username, $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
             $_SESSION['wsUserName'] = $userinfo->username;
 
-			$status['debug'][] = JFusionFunction::addCookie($cookie_name  . 'UserName', $userinfo->userid, $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
+			$status['debug'][] = JFusionFunction::addCookie($cookie_name  . 'UserID', $userinfo->userid, $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
             $_SESSION['wsUserID'] = $userinfo->userid;
 
             $_SESSION[ 'wsToken'] = $userinfo->user_token;
