@@ -115,7 +115,7 @@ class plgSystemJfusion extends JPlugin
                     }
                 }
                 //slave plugins
-                $plugins = JFusionFactory::getPlugins('all');
+                $plugins = JFusionFactory::getPlugins('both');
                 foreach ($plugins as $plugin) {
                     //only call keepAlive if the plugin is activated for dual login
                     if ($plugin->dual_login) {

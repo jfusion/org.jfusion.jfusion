@@ -91,7 +91,7 @@ function &plgSearchjfusionAreas()
 {
     static $areas = array();
     //get the softwares with search enabled
-    $plugins = JFusionFactory::getPlugins();
+    $plugins = JFusionFactory::getPlugins('both');
     $searchplugin = JPluginHelper::getPlugin('search', 'jfusion');
     $params = new JParameter($searchplugin->params);
     $enabledPlugins = unserialize(base64_decode($params->get('JFusionPluginParam')));

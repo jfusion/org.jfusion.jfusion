@@ -131,21 +131,31 @@ function com_uninstall() {
     _uninstallPlugin('module', 'mod_jfusion_whosonline', '', 'JFusion Whos Online Module');
 
     //see if any mods from jfusion plugins need to be removed
+	require_once(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.install.php');
     $plugins = JFusionFactory::getPlugins('all',true,false);
     foreach($plugins as $plugin) {
-    	$JFusionPlugin = JFusionFactory::getAdmin($plugin->name);
-        list ($success,$reasons) = $JFusionPlugin->uninstall();
-    	if (!$success) {
-            echo '<table style="background-color:#f9ded9;" width ="100%"><tr style="height:30px">';
-            echo '<td><font size="2"><b>'.JText::_('UNINSTALL') . ' ' . $plugin->name . ' ' . JText::_('FAILED') . ': </b></font></td></tr>';
-            if (is_array($reasons)) {
-                foreach ($reasons as $r) {
-                    echo '<td style="padding-left: 15px;">'.$r.'</td></tr>';
-                }
-            }
-            echo '</table>';
-    	    $return = false;
-    	}
+	    $model = new JFusionModelInstaller();
+	    $result = $model->uninstall($plugin->name);
+
+    	if (!$result['status']) {
+		    $color = '#f9ded9';
+			$description = JText::_('UNINSTALL') . ' ' . $plugin->name . ' ' . JText::_('FAILED');
+    	} else {
+		    $color = '#d9f9e2';
+		    $description = JText::_('UNINSTALL') . ' ' . $plugin->name . ' ' . JText::_('SUCCESS');
+	    }
+	    $html = <<<HTML
+        <table style="background-color:{$color}; width:100%;">
+            <tr style="height:30px">
+                <td>
+                    <font size="2">
+                        <b>{$description}</b>
+                    </font>
+                </td>
+             </tr>
+        </table>
+HTML;
+	    echo $html;
     }
 
     //remove the jfusion tables.
