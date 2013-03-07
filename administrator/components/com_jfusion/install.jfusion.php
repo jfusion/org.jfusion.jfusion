@@ -109,16 +109,16 @@ function com_install() {
 	//create the jfusion_sync_log table if it does not exist already
 	if (array_search($table_prefix . 'jfusion_sync_details',$table_list) == false) {
 		$query = 'CREATE TABLE #__jfusion_sync_details (
-      id int(11) NOT NULL auto_increment,
-      syncid varchar(10),
-      jname varchar(255),
-      username varchar(255),
-      email varchar(255),
-      action varchar(255),
-      message varchar(255),
-      data longblob,
-      PRIMARY KEY  (id)
-    );';
+	      id int(11) NOT NULL auto_increment,
+	      syncid varchar(10),
+	      jname varchar(255),
+	      username varchar(255),
+	      email varchar(255),
+	      action varchar(255),
+	      message varchar(255),
+	      data longblob,
+	      PRIMARY KEY  (id)
+	    );';
 		$db->setQuery($query);
 		if (!$db->query()){
 			echo $db->stderr() . '<br/>';
@@ -139,9 +139,6 @@ function com_install() {
         status tinyint(4) NOT null,
         dual_login tinyint(4) NOT null,
         check_encryption tinyint(4) NOT null,
-        activity tinyint(4) NOT null,
-        search tinyint(4) NOT null DEFAULT 0,
-        discussion tinyint(4) NOT null DEFAULT 0,
         plugin_files LONGBLOB,
         original_name varchar(50) null,
         ordering tinyint(4),

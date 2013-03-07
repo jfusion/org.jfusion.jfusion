@@ -736,6 +736,7 @@ class JFusionPluginInstaller extends JObject
         }
         chdir($cwd);
         $data = ($zipSuccess && file_exists($filename)) ? @file_get_contents($filename) : '';
+	    JFile::delete($filename);
         return $data;
     }
 
