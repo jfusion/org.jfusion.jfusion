@@ -104,12 +104,7 @@ class jfusionViewconfigdump extends JView {
 		}
 
 		$rows = array();
-		/*
-		if ( JModuleHelper::isEnabled('mod_jfusion_login') ) $rows[] = JModuleHelper::getModule('mod_jfusion_login');
-		if ( JModuleHelper::isEnabled('mod_jfusion_activity') ) $rows[] = JModuleHelper::getModule('mod_jfusion_activity');
-		if ( JModuleHelper::isEnabled('mod_jfusion_whosonline') ) $rows[] = JModuleHelper::getModule('mod_jfusion_whosonline');
-		*/
-		$query = 'SELECT id,published,params,module from #__modules WHERE published = 1 AND module IN (\'mod_jfusion_activity\', \'mod_jfusion_whosonline\', \'mod_jfusion_user_activity\');';
+		$query = 'SELECT id,published,params,module from #__modules WHERE published = 1 AND module IN (\'mod_jfusion_login\', \'mod_jfusion_activity\', \'mod_jfusion_whosonline\', \'mod_jfusion_user_activity\');';
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
 		foreach($rows as $row) {
