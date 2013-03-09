@@ -3,7 +3,7 @@ function initJFusionAPI() {
 	if (!defined('_JEXEC')) {
 		$secretkey = 'secret passphrase';
 		if ($secretkey == 'secret passphrasess') {
-			exit('please check your secret passphrase in this file');
+			exit('JFusion Api Disabled');
 		}
 		$JFusionAPI = new JFusionAPI('',$secretkey);
 		$JFusionAPI->parse();
