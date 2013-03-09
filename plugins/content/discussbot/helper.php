@@ -264,11 +264,10 @@ class JFusionDiscussBotHelper {
 
         //allowed components
         $components = array('com_content', 'com_k2');
-        $valid = 0;
-        $validity_reason = '';
+	    $responce = array(0, JText::_('UNKNOWN'));
         //make sure we have an article
         if (!$this->article->id || !in_array($this->option, $components)) {
-            $validity_reason = JText::sprintf('REASON_NOT_AN_ARTICLE', $this->option);
+	        $responce = array(0, JText::sprintf('REASON_NOT_AN_ARTICLE', $this->option));
         } else {
             //if in K2, make sure we are after the article itself and not video or gallery
             $view = JRequest::getVar('view');
@@ -283,23 +282,23 @@ class JFusionDiscussBotHelper {
                 }
 
                 if ($k2_tracker != 'item') {
-                    return array($valid, JTEXT::_('REASON_NOT_IN_K2_ARTICLE_TEXT'));
+	                $responce = array(0, JText::_('REASON_NOT_IN_K2_ARTICLE_TEXT'));
                 }
             }
 
             //make sure there is a default user set
             if ($this->params->get('default_userid',false)===false) {
-                $validity_reason = JText::_('REASON_NO_DEFAULT_USER');
+	            $responce = array(0, JText::_('REASON_NO_DEFAULT_USER'));
             } else {
                 $JFusionForum = JFusionFactory::getForum($this->jname);
                 $forumid = $JFusionForum->getDefaultForum($this->params, $this->article);
                 if (empty($forumid)) {
-                    $validity_reason = JText::_('REASON_NO_FORUM_FOUND');
+	                $responce = array(0, JText::_('REASON_NO_FORUM_FOUND'));
                 } else {
-                    $dbtask = JRequest::getVar('dbtask', 'render_content', 'post');
-                    $bypass_tasks = array('create_thread', 'render_content', 'publish_discussion', 'unpublish_discussion');
+                    $dbtask = JRequest::getVar('dbtask', null, 'post');
+                    $bypass_tasks = array('create_thread', 'publish_discussion', 'unpublish_discussion');
                     if (!empty($dbtask) && !in_array($dbtask, $bypass_tasks)) {
-                        $validity_reason = JText::_('REASON_DISCUSSION_MANUALLY_INITIALISED');
+	                    $responce = array(1, JText::_('REASON_DISCUSSION_MANUALLY_INITIALISED'));
                     } else {
                         //make sure article is published
                         $state = false;
@@ -313,7 +312,7 @@ class JFusionDiscussBotHelper {
                             }
                         }
                         if (!$state) {
-                            $validity_reason = JText::_('REASON_ARTICLE_NOT_PUBLISHED');
+	                        $responce = array(0, JText::_('REASON_ARTICLE_NOT_PUBLISHED'));
                         } else {
                             //make sure the article is set to be published
                             $mainframe = JFactory::getApplication();
@@ -321,8 +320,24 @@ class JFusionDiscussBotHelper {
                             $now = JFactory::getDate('now', $mainframe->getCfg('offset'))->toUnix();
 
                             if ($now < $publish_up) {
-                                $validity_reason = JText::_('REASON_PUBLISHED_IN_FUTURE');
+	                            $responce = array(0, JText::_('REASON_PUBLISHED_IN_FUTURE'));
                             } else {
+	                            $creationMode =& $this->params->get('create_thread','load');
+	                            //make sure create_thread is appropriate
+	                            if ($creationMode == 'reply' && $dbtask != 'create_thread') {
+		                            $responce = array(1, JText::_('REASON_CREATED_ON_FIRST_REPLY'));
+	                            } elseif ($creationMode == 'view') {
+		                            //only create the article if we are in the article view
+		                            $test_view = ($this->option == 'com_k2') ? 'item' : 'article';
+		                            if (JRequest::getVar('view') != $test_view) {
+			                            $responce = array(0, JText::_('REASON_CREATED_ON_VIEW'));
+		                            }
+	                            } elseif ($creationMode == 'new' && !$skip_new_check) {
+		                            //if set to create a thread for new articles only, make sure the thread was created with onAfterContentSave
+		                            if (!$this->thread_status) {
+			                            $responce = array(0, JText::_('REASON_ARTICLE_NOT_NEW'));
+		                            }
+	                            }
                                 if ($this->option == 'com_content') {
                                     if ($this->isJ16) {
                                         //Joomla 1.6 has a different model for sections/category so need to handle it separately from J1.5
@@ -364,31 +379,31 @@ class JFusionDiscussBotHelper {
                                                             $parent = $JCat->get($parent_id);
                                                             $parent_id = $parent->getParent()->id;
                                                             if ($parent_id == 'root') {
-                                                                $validity_reason = JText::_('REASON_NOT_IN_INCLUDED_CATEGORY_OR_PARENTS');
+	                                                            $responce = array(0, JText::_('REASON_NOT_IN_INCLUDED_CATEGORY_OR_PARENTS'));
                                                                 break;
                                                             }
                                                         } else {
-                                                            $validity_reason = JText::_('REASON_IN_INCLUDED_CATEGORY_PARENT');
+	                                                        $responce = array(0, JText::_('REASON_IN_INCLUDED_CATEGORY_PARENT'));
                                                             break;
                                                         }
                                                     }
                                                 } else {
-                                                    $validity_reason = JText::_('REASON_NOT_IN_INCLUDED_CATEGORY_OR_PARENTS');
+	                                                $responce = array(0, JText::_('REASON_NOT_IN_INCLUDED_CATEGORY_OR_PARENTS'));
                                                 }
                                             } else {
-                                                $validity_reason = JText::_('REASON_IN_INCLUDED_CATEGORY');
+	                                            $responce = array(0, JText::_('REASON_IN_INCLUDED_CATEGORY'));
                                             }
 
                                             //make sure the category is not in an excluded category
                                             if ($valid && !empty($excludedCategories)) {
                                                 if (in_array($catid, $excludedCategories)) {
-                                                    $validity_reason = JText::_('REASON_IN_EXCLUDED_CATEGORY');
+	                                                $responce = array(0, JText::_('REASON_IN_EXCLUDED_CATEGORY'));
                                                 }
                                             }
                                         } elseif (!empty($excludedCategories)) {
                                             $valid = (!in_array($catid, $excludedCategories)) ? 1 : 0;
                                             if ($valid) {
-                                                $validity_reason = JText::_('REASON_NOT_IN_EXCLUDED_CATEGORY');
+	                                            $responce = array(1, JText::_('REASON_NOT_IN_EXCLUDED_CATEGORY'));
 
                                                 //now to see if the category is an excluded cat or parent cat
                                                 $parent_id = $cat->getParent()->id;
@@ -403,17 +418,16 @@ class JFusionDiscussBotHelper {
                                                                 break;
                                                             }
                                                         } else {
-                                                            $validity_reason = JText::_('REASON_IN_EXCLUDED_CATEGORY_PARENT');
+	                                                        $responce = array(0, JText::_('REASON_IN_EXCLUDED_CATEGORY_PARENT'));
                                                             break;
                                                         }
                                                     }
                                                 }
                                             } else {
-                                                $validity_reason = JText::_('REASON_IN_EXCLUDED_CATEGORY');
+	                                            $responce = array(0, JText::_('REASON_IN_EXCLUDED_CATEGORY'));
                                             }
                                         } else {
-                                            $validity_reason = JText::_('REASON_NO_STIPULATIONS');
-                                            $valid = 1;
+	                                        $responce = array(1, JText::_('REASON_NO_STIPULATIONS'));
                                         }
                                     } else {
                                         //section and category id of content
@@ -426,7 +440,7 @@ class JFusionDiscussBotHelper {
                                             if ($this->params->get('include_static',false)) {
                                                 return array(1, JText::_('REASON_INCLUDE_UNCATEGORIZED'));
                                             } else {
-                                                return array($valid, JText::_('REASON_DISCLUDE_UNCATEGORIZED'));
+                                                return array(0, JText::_('REASON_DISCLUDE_UNCATEGORIZED'));
                                             }
                                         }
 
@@ -455,68 +469,60 @@ class JFusionDiscussBotHelper {
                                         if (!empty($includedSections)) {
                                             if (!in_array($secid,$includedSections)) {
                                                 //this article is not in one of the sections to include
-                                                $validity_reason = 'REASON_NOT_IN_INCLUDE_SECTION';
+	                                            $responce = array(0, JText::_('REASON_NOT_IN_INCLUDE_SECTION'));
                                             } elseif (!empty($includedCategories)) {
                                                 //there are both specific sections and categories to include
                                                 //check to see if this article is not in the selected categories within the included sections
 
                                                 if (!in_array($catid,$includedCategories)) {
-                                                    $validity_reason = JText::_('REASON_IN_INCLUDED_SECTION_NOT_IN_INCLUDED_CATEGORY');
+	                                                $responce = array(0, JText::_('REASON_IN_INCLUDED_SECTION_NOT_IN_INCLUDED_CATEGORY'));
                                                 } else {
-                                                    $validity_reason = JText::_('REASON_IN_INCLUDED_SECTION_AND_CATEGORY');
-                                                    $valid = 1;
+	                                                $responce = array(1, JText::_('REASON_IN_INCLUDED_SECTION_AND_CATEGORY'));
                                                 }
                                             } elseif (!empty($excludedCategories)) {
                                                 //exclude this article if it is in one of the excluded categories
                                                 if (in_array($catid,$excludedCategories)) {
-                                                    $validity_reason = JText::_('REASON_IN_INCLUDED_SECTION_BUT_IN_EXCLUDED_CATEGORY');
+	                                                $responce = array(0, JText::_('REASON_IN_INCLUDED_SECTION_BUT_IN_EXCLUDED_CATEGORY'));
                                                 } else {
-                                                    $validity_reason = JText::_('REASON_IN_INCLUDED_SECTION_NOT_IN_EXCLUDED_CATEGORY');
-                                                    $valid = 1;
+	                                                $responce = array(1, JText::_('REASON_IN_INCLUDED_SECTION_NOT_IN_EXCLUDED_CATEGORY'));
                                                 }
                                             } else {
-                                                //there are only specific sections to include with no applicable category stipulations
-                                                $validity_reason = JText::_('REASON_IN_INCLUDED_SECTION');
-                                                $valid = 1;
+	                                            //there are only specific sections to include with no applicable category stipulations
+	                                            $responce = array(1, JText::_('REASON_IN_INCLUDED_SECTION'));
                                             }
                                         } elseif (!empty($excludedSections)) {
                                             //there are section stipulations on what articles to exclude
                                             //check to see if this article is in the excluded sections
-                                            $valid = (in_array($secid,$excludedSections)) ? 0 : 1;
-                                            if (!$valid) {
-                                                $validity_reason = JText::_('REASON_IN_EXCLUDED_SECTION');
+                                            if (in_array($secid,$excludedSections)) {
+	                                            $responce = array(0, JText::_('REASON_IN_EXCLUDED_SECTION'));
                                             } else {
-                                                $validity_reason = JText::_('REASON_NOT_IN_EXCLUDED_SECTION');
+	                                            $responce = array(1, JText::_('REASON_NOT_IN_EXCLUDED_SECTION'));
                                             }
-
                                             if ($excludedCategories) {
                                                 //exclude this article if it is in one of the excluded categories
-                                                $valid = (in_array($catid, $excludedCategories)) ? 0 : $valid;
-                                                if (!$valid) {
-                                                    $validity_reason = JText::_('REASON_IN_EXCLUDED_CATEGORY');
+                                                if (in_array($catid, $excludedCategories)) {
+	                                                $responce = array(0, JText::_('REASON_IN_EXCLUDED_CATEGORY'));
                                                 }
                                             }
                                         } elseif (!empty($includedCategories)) {
                                             //there are category stipulations on what articles to include but no section stipulations
                                             //check to see if this article is not in the selected categories
                                             $valid = (!in_array($catid,$includedCategories)) ? 0 : 1;
-                                            if (!$valid) {
-                                                $validity_reason = JText::_('REASON_NOT_IN_INCLUDED_CATEGORY');
+                                            if (in_array($catid,$includedCategories)) {
+	                                            $responce = array(0, JText::_('REASON_NOT_IN_INCLUDED_CATEGORY'));
                                             } else {
-                                                $validity_reason = JText::_('REASON_IN_INCLUDED_CATEGORY');
+	                                            $responce = array(1, JText::_('REASON_IN_INCLUDED_CATEGORY'));
                                             }
                                         } elseif (!empty($excludedCategories)) {
                                             //there are category stipulations on what articles to exclude but no exclude stipulations on section
                                             //check to see if this article is in the excluded categories
-                                            $valid = (in_array($catid,$excludedCategories)) ? 0 : 1;
-                                            if (!$valid) {
-                                                $validity_reason = JText::_('REASON_IN_EXCLUDED_CATEGORY');
+                                            if (in_array($catid,$excludedCategories)) {
+	                                            $responce = array(0, JText::_('REASON_IN_EXCLUDED_CATEGORY'));
                                             } else {
-                                                $validity_reason = JText::_('REASON_NOT_IN_EXCLUDED_CATEGORY');
+	                                            $responce = array(1, JText::_('REASON_NOT_IN_EXCLUDED_CATEGORY'));
                                             }
                                         } else {
-                                            $validity_reason = JText::_('REASON_NO_STIPULATIONS');
-                                            $valid = 1;
+	                                        $responce = array(1, JText::_('REASON_NO_STIPULATIONS'));
                                         }
                                     }
                                 } elseif ($this->option == 'com_k2') {
@@ -540,20 +546,18 @@ class JFusionDiscussBotHelper {
 
                                     if (!empty($includedCategories)) {
                                         //check to see if the article's category is included
-                                        $valid = (in_array($catid, $includedCategories)) ? 1 : 0;
-                                        if ($valid) {
+                                        if (in_array($catid, $includedCategories)) {
                                             //its included
-                                            $validity_reason = JText::_('REASON_IN_INCLUDED_CATEGORY');
+	                                        $responce = array(1, JText::_('REASON_IN_INCLUDED_CATEGORY'));
                                         } elseif (!empty($cat_parentid)) {
-                                            $validity_reason = JText::_('REASON_IN_EXCLUDED_CATEGORY');
+	                                        $responce = array(0, JText::_('REASON_IN_EXCLUDED_CATEGORY'));
 
                                             //see if a parent category is included
                                             $parent_id = $cat_parentid;
                                             while (true) {
                                                 if (!empty($parent_id)) {
                                                     if (in_array($parent_id, $includedCategories)) {
-                                                        $valid = 1;
-                                                        $validity_reason = JText::_('REASON_IN_INCLUDED_CATEGORY_PARENT');
+	                                                    $responce = array(1, JText::_('REASON_IN_INCLUDED_CATEGORY_PARENT'));
                                                         break;
                                                     } else {
                                                         //get the parent's parent
@@ -568,21 +572,20 @@ class JFusionDiscussBotHelper {
                                             }
 
                                             //if valid, make sure the category is not in an exluded cat
-                                            if ($valid && !empty($excludedCategories)) {
+                                            if ($responce[0] && !empty($excludedCategories)) {
                                                 if (in_array($catid, $excludedCategories)) {
-                                                    $validity_reason = JText::_('REASON_IN_EXCLUDED_CATEGORY');
+	                                                $responce = array(0, JText::_('REASON_IN_EXCLUDED_CATEGORY'));
                                                 }
                                             }
                                         }
                                     } elseif (!empty($excludedCategories)) {
-                                        $valid = (!in_array($catid, $excludedCategories)) ? 1 : 0;
-                                        if ($valid) {
-                                            $validity_reason = JText::_('REASON_NOT_IN_EXCLUDED_CATEGORY');
+                                        if (!in_array($catid, $excludedCategories)) {
+	                                        $responce = array(1, JText::_('REASON_NOT_IN_EXCLUDED_CATEGORY'));
                                             $parent_id = $cat_parentid;
                                             while (true) {
                                                 if (!empty($parent_id)) {
                                                     if (in_array($parent_id, $excludedCategories)) {
-                                                        $validity_reason = JText::_('REASON_IN_EXCLUDED_CATEGORY_PARENT');
+	                                                    $responce = array(0, JText::_('REASON_IN_EXCLUDED_CATEGORY_PARENT'));
                                                         break;
                                                     } else {
                                                         //get the parent's parent
@@ -594,42 +597,19 @@ class JFusionDiscussBotHelper {
                                                 }
                                             }
                                         } else {
-                                            $validity_reason = JText::_('REASON_IN_EXCLUDED_CATEGORY');
+	                                        $responce = array(0, JText::_('REASON_IN_EXCLUDED_CATEGORY'));
                                         }
                                     } else {
-                                        $valid = 1;
-                                        $validity_reason = JText::_('REASON_NO_STIPULATIONS');
+	                                    $responce = array(1, JText::_('REASON_NO_STIPULATIONS'));
                                     }
                                 }
-
-	                            $creationMode =& $this->params->get('create_thread','load');
-	                            //make sure create_thread is appropriate
-	                            if ($creationMode == 'reply' && $dbtask != 'create_thread') {
-		                            if (!$this->thread_status) {
-			                            $valid = 0;
-			                            $validity_reason = JText::_('REASON_CREATED_ON_FIRST_REPLY');
-		                            }
-	                            } elseif ($creationMode == 'view') {
-		                            //only create the article if we are in the article view
-		                            $test_view = ($this->option == 'com_k2') ? 'item' : 'article';
-		                            if (JRequest::getVar('view') != $test_view) {
-			                            $valid = 0;
-			                            $validity_reason = JText::_('REASON_CREATED_ON_VIEW');
-		                            }
-	                            } elseif ($creationMode == 'new' && !$skip_new_check) {
-		                            //if set to create a thread for new articles only, make sure the thread was created with onAfterContentSave
-		                            if (!$this->thread_status) {
-			                            $valid = 0;
-			                            $validity_reason = JText::_('REASON_ARTICLE_NOT_NEW');
-		                            }
-	                            }
                             }
                         }
                     }
                 }
             }
         }
-        return array($valid, $validity_reason);
+        return $responce;
     }
 
     public function loadScripts()
@@ -726,24 +706,18 @@ JS;
 
     /**
      * @param $file
-     * @param string $mode
+     *
      * @return bool|string
      */
-    public function renderFile($file, $mode = 'require')
+    public function renderFile($file)
     {
-        $this->debug('Rendering file ' . $file . ' in ' . $mode . ' mode');
+        $this->debug('Rendering file ' . $file);
         if (file_exists(DISCUSSION_TEMPLATE_PATH . $file)) {
-            if ($mode == 'capture') {
-                ob_start();
-                include DISCUSSION_TEMPLATE_PATH.$file;
-                $captured_content = ob_get_contents();
-                ob_end_clean();
-                return $captured_content;
-            } elseif ($mode=='die') {
-                die(include DISCUSSION_TEMPLATE_PATH.$file);
-            } else {
-                include DISCUSSION_TEMPLATE_PATH.$file;
-            }
+	        ob_start();
+	        include DISCUSSION_TEMPLATE_PATH.$file;
+	        $captured_content = ob_get_contents();
+	        ob_end_clean();
+	        return $captured_content;
         } else {
             die(DISCUSSION_TEMPLATE_PATH . $file . " is missing!");
         }

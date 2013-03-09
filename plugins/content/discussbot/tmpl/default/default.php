@@ -1,10 +1,6 @@
 <?php if($this->params->get('show_posts')) : ?>
     <div class="jfusionPostHeader"><?php echo $this->params->get('post_header'); ?></div>
 
-    <?php if($this->params->get('show_refresh_link',1) && !empty($this->threadinfo)) : ?>
-        <a class="jfusionRefreshLink" href="javascript:void(0);" onclick="refreshPosts('<?php echo $this->threadinfo->threadid; ?>');"><?php echo JText::_('REFRESH_POSTS');?></a> <br/>
-    <?php endif; ?>
-
     <div class="jfusionPostArea" id="jfusionPostArea">
         <?php require(DISCUSSION_TEMPLATE_PATH.'default_posts.php'); ?>
     </div>
@@ -29,9 +25,6 @@
                     <input type="button" class="button" id="submitpost" onclick="$('jfusionQuickReply<?php echo $this->article->id; ?>').submit();" value='<?php echo JText::_('SUBMIT'); ?>'/>
                 <?php endif; //enable_ajax ?>
             </div>
-
-            <div id="jfusionAjaxStatus" style="display:none;"></div>
-
         <?php elseif (!empty($this->output['reply_form_error'])) : ?>
             <?php echo $this->output['reply_form_error']; ?>
         <?php endif; //show_reply_form ?>

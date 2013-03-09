@@ -1,4 +1,4 @@
-var ajaxMessageSlide, ajaxErrorSlide, confirmationBoxSlides, updatepostarea, threadid, postarea, ajaxstatusholder, jfusionButtonArea, jfusionPostPagination;
+var ajaxMessageSlide, ajaxErrorSlide, confirmationBoxSlides, updatepostarea, threadid, postarea, jfusionButtonArea, jfusionPostPagination;
 var updatepagination = null;
 
 function initializeDiscussbot() {
@@ -33,7 +33,6 @@ function initializeDiscussbot() {
     }
 
     var url = jfdb_article_url;
-    ajaxstatusholder = $('jfusionAjaxStatus');
     postarea = $('jfusionPostArea');
     jfusionPostPagination = $('jfusionPostPagination');
     jfusionButtonArea = $('jfusionButtonArea' + jfdb_article_id);
@@ -53,9 +52,6 @@ function initializeDiscussbot() {
                 if (jfdb_enable_pagination && jfusionPostPagination) {
                     jfusionPostPagination.innerHTML = JSONobject.pagination;
                 }
-
-                //reset the status area
-                ajaxstatusholder.innerHTML = '';
 
                 var submittedPostId = $('submittedPostId');
                 var quickReply = $('quickReply');
