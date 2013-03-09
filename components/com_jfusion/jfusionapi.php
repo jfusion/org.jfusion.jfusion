@@ -35,7 +35,7 @@ class JFusionAPI {
 	private $payload = array();
 	private $secretkey = null;
 	private $hash = null;
-	private $error = null;
+	private $error = array();
 	private $debug = null;
 
     /**
@@ -77,7 +77,7 @@ class JFusionAPI {
 	}
 
     /**
-     * @return null|array
+     * @return array
      */
     public function getError() {
 		return $this->error;
@@ -146,8 +146,8 @@ class JFusionAPI {
     private function retrieveKey()
 	{
 		if ($this->hash && $this->sid) return true;
-		$FileData = $this->_raw('get','status', 'key');
-		if ($this->error) {
+		$FileData = $this->get('status', 'key');
+		if (!empty($this->error)) {
 			return false;
 		} elseif (isset($FileData['hash'])) {
 			$this->hash = $FileData['hash'];
@@ -162,8 +162,8 @@ class JFusionAPI {
     public function ping()
     {
         if ($this->hash && $this->sid) return true;
-        $FileData = $this->_raw('get','status', 'ping');
-        if ($this->error) {
+        $FileData = $this->get('status', 'ping');
+        if (!empty($this->error)) {
             return false;
         } elseif (isset($FileData['payload'])) {
             if ($FileData['payload'] == 'pong') {
@@ -307,7 +307,7 @@ class JFusionAPI {
 
 	        $FileData = $this->getOutput($FileData);
 
-			if ($this->error) {
+			if (!empty($this->error)) {
 				return false;
 			}
 			return $FileData;
@@ -379,7 +379,7 @@ class JFusionAPI {
      *
      * @return null|string
      */
-    public static function encrypt($keyinfo, $payload)
+    public static function encrypt($keyinfo, $payload=array())
     {
     	if (isset($keyinfo->key) && isset($keyinfo->hash)) {
 	    	$encrypted = trim(base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $keyinfo->key, serialize($payload), MCRYPT_MODE_NOFB, $keyinfo->hash)));
@@ -413,7 +413,7 @@ class JFusionAPI {
      */
     private function post($post=array())
     {
-    	$this->error = null;
+    	$this->error = array();
     	$this->debug = null;
         $result = false;
 		//check to see if cURL is loaded
@@ -435,7 +435,8 @@ class JFusionAPI {
             if (!empty($this->payload)) {
                 $post['jfpayload'] = JFusionAPI::encrypt($this->createkey(),$this->payload);
             }
-            $this->class = $this->type = $this->task = $this->payload = null;
+            $this->class = $this->type = $this->task = null;
+	        $this->payload = array();
 
             $crl = curl_init();
             curl_setopt($crl, CURLOPT_URL,$this->url);
@@ -518,7 +519,7 @@ class JFusionAPI {
 class JFusionAPIBase {
 	public $encrypt = true;
 	public $payload = array();
-	public $error = null;
+	public $error = array();
 	public $debug = null;	
 	public $key = null;
 
