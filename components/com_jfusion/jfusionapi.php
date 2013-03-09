@@ -401,19 +401,20 @@ class JFusionAPI {
 			$this->error[] = 'JfusionAPI: sorry cURL is needed for JFusionAPI';
 		} elseif (!function_exists('mcrypt_decrypt') || !function_exists('mcrypt_encrypt')) {
 			$this->error[] = 'Missing: mcrypt';
+		} elseif (!$this->class) {
+			$this->error[] = 'Client Class Undefined';
+		} elseif (!$this->type) {
+			$this->error[] = 'Client Type Undefined';
+		} elseif (!$this->task) {
+			$this->error[] = 'Client Task Undefined';
 		} else {
 			if ($this->sid) {
 				$post['PHPSESSID'] = $this->sid;
 			}
-			if ($this->class) {
-				$post['jfclass'] = $this->class;
-			}
-			if ($this->type) {
-				$post['jftype'] = $this->type;
-			}
-			if ($this->task) {
-				$post['jftask'] = $this->task;
-			}
+			$post['jfclass'] = $this->class;
+			$post['jftype'] = $this->type;
+			$post['jftask'] = $this->task;
+
 			if (!empty($this->payload)) {
 				$post['jfpayload'] = JFusionAPI::encrypt($this->createkey(),$this->payload);
 			}
