@@ -194,10 +194,10 @@ class JFusionAPI {
 
 					$encrypt = $class->encrypt;
 				} else {
-					$this->error[] = 'Method: '.$function.' undefined';
+					$this->error[] = 'Class: '.$this->class.' Method: '.$function.' undefined';
 				}
 			} else {
-				$this->error[] = 'class: '.$this->class.' undefined';
+				$this->error[] = 'Type: '.$this->type.' Class: undefined';
 			}
 		} else {
 			$this->error[] = 'type not defined';
