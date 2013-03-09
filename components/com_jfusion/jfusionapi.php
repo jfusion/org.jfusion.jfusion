@@ -36,7 +36,7 @@ class JFusionAPI {
 	private $secretkey = null;
 	private $hash = null;
 	private $error = array();
-	private $debug = null;
+	private $debug = array();
 
     /**
      * @param string $url
@@ -44,6 +44,9 @@ class JFusionAPI {
      */
     public function __construct($url = '', $secretkey = '')
 	{
+		if (!function_exists('mcrypt_decrypt') || !function_exists('mcrypt_encrypt')) {
+			$this->error[] = 'Missing: mcrypt';
+		}
 		if ($url == '') {
 			if (session_id()) {
 				session_write_close();
@@ -59,7 +62,7 @@ class JFusionAPI {
 			$session = JFusionAPI::getSession('key');
 			if (isset($session['hash'])) {
 				$this->hash = $session['hash'];
-			}	
+			}
 		}
 		$this->setTarget($url, $secretkey);
 	}
@@ -84,7 +87,7 @@ class JFusionAPI {
     }
 
     /**
-     * @return null|array
+     * @return array
      */
     public function getDebug() {
 		return $this->debug;
@@ -188,14 +191,12 @@ class JFusionAPI {
 			$class = $this->createClass();
             if ($class) {
                 $function = $this->type.$this->task;
-                $payload = null;
                 if (method_exists ( $class , $function )) {
-                    $payload = $class->$function();
+	                $data['payload'] = $class->$function();
 
 	                $this->error = $class->error;
 	                $this->debug = $class->debug;
 
-	                $data['payload'] = $payload;
 	                $encrypt = $class->encrypt;
                 } else {
 	                $this->error[] = 'Method: '.$function.' undefined';
@@ -381,7 +382,7 @@ class JFusionAPI {
      */
     public static function encrypt($keyinfo, $payload=array())
     {
-    	if (isset($keyinfo->key) && isset($keyinfo->hash)) {
+    	if (isset($keyinfo->key) && isset($keyinfo->hash) && function_exists('mcrypt_encrypt')) {
 	    	$encrypted = trim(base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $keyinfo->key, serialize($payload), MCRYPT_MODE_NOFB, $keyinfo->hash)));
     	} else {
     		$encrypted = null;
@@ -398,7 +399,7 @@ class JFusionAPI {
      */
     public static function decrypt($keyinfo, $payload)
     {
-    	if (isset($keyinfo->key) && isset($keyinfo->hash)) {
+    	if (isset($keyinfo->key) && isset($keyinfo->hash) && function_exists('mcrypt_decrypt')) {
 	        $decrypted = @unserialize(trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $keyinfo->key, base64_decode($payload), MCRYPT_MODE_NOFB, $keyinfo->hash)));
     	} else {
     		$decrypted = false;
@@ -414,11 +415,13 @@ class JFusionAPI {
     private function post($post=array())
     {
     	$this->error = array();
-    	$this->debug = null;
+    	$this->debug = array();
         $result = false;
 		//check to see if cURL is loaded
         if (!function_exists('curl_init')) {
         	$this->error[] = 'JfusionAPI: sorry cURL is needed for JFusionAPI';
+        } elseif (!function_exists('mcrypt_decrypt') || !function_exists('mcrypt_encrypt')) {
+	        $this->error[] = 'Missing: mcrypt';
         } else {
             if ($this->sid) {
                 $post['PHPSESSID'] = $this->sid;
@@ -520,7 +523,7 @@ class JFusionAPIBase {
 	public $encrypt = true;
 	public $payload = array();
 	public $error = array();
-	public $debug = null;	
+	public $debug = array();
 	public $key = null;
 
     /**
