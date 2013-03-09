@@ -206,7 +206,7 @@ class JFusionAPI {
 		} else {
 			$this->error[] = 'type not defined';
 		}
-	    $this->doOutput($data, $class->encrypt);
+	    $this->doOutput($data, $encrypt);
     }
 
     /**
@@ -257,7 +257,7 @@ class JFusionAPI {
      *
      * @return bool
      */
-    public function get($class, $task, $payload=null)
+    public function get($class, $task, $payload=array())
 	{
     	return $this->_raw('get',$class, $task, $payload);
 	}
