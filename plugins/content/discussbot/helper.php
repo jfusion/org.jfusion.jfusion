@@ -32,10 +32,10 @@ class JFusionDiscussBotHelper {
     var $params;
     var $jname;
     var $mode;
-    var $thread_status;
+    var $thread_status = false;
     var $threadinfo;
     var $debug_mode;
-    var $debug_output;
+    var $debug_output = array();
     var $output;
     var $reply_count;
     var $option;
@@ -59,12 +59,32 @@ class JFusionDiscussBotHelper {
         }
     }
 
+	/**
+	 * @param mixed $article
+
+	 * @return void
+	 */
+	public function setArticle($article)
+	{
+		$this->article = $article;
+
+		if (isset($this->article->id)) {
+			$session = JFactory::getSession();
+			$this->debug_output = $session->get('jfusion.discussion.debug.' . $this->article->id,false);
+			if ($this->debug_output==false) {
+				$this->debug_output = array();
+			}
+			$session->clear('jfusion.discussion.debug.' . $this->article->id);
+		}
+	}
+
     /**
      * @param bool $update
      * @param bool|object $threadinfo
+     *
      * @return mixed
      */
-    public function &_get_thread_info($update = false, $threadinfo = false)
+    public function getThreadInfo($update = false, $threadinfo = false)
     {
         static $thread_instance;
 
@@ -72,7 +92,11 @@ class JFusionDiscussBotHelper {
             $thread_instance = array();
         }
 
-        $contentid =& $this->article->id;
+	    if (isset($this->article->id)) {
+		    $contentid = $this->article->id;
+	    } else {
+		    return null;
+	    }
 
         if (!empty($threadinfo)) {
             $thread_instance[$contentid] = $threadinfo;
@@ -82,7 +106,7 @@ class JFusionDiscussBotHelper {
             $db->setQuery($query);
             $thread_instance[$contentid] = $db->loadObject();
         }
-
+		$this->threadinfo = $thread_instance[$contentid];
         return $thread_instance[$contentid];
     }
 
@@ -90,9 +114,9 @@ class JFusionDiscussBotHelper {
      * @param int $force_new
      * @return array
      */
-    public function _check_thread_exists($force_new = 0)
+    public function checkThreadExists($force_new = 0)
     {
-        $this->_debug('Checking if thread exists');
+        $this->debug('Checking if thread exists');
 
         $JFusionForum = JFusionFactory::getForum($this->jname);
 
@@ -103,7 +127,7 @@ class JFusionDiscussBotHelper {
             $threadinfo->forumid = 0;
             $manually_created = 1;
         } else {
-            $threadinfo =& $this->_get_thread_info();
+            $threadinfo = $this->getThreadInfo();
             $manually_created = (empty($threadinfo->manual)) ? 0 : 1;
         }
 
@@ -133,7 +157,7 @@ class JFusionDiscussBotHelper {
             }
         }
 
-        $this->_debug($status, $force_new);
+        $this->debug($status, $force_new);
 
         return $status;
     }
@@ -145,7 +169,7 @@ class JFusionDiscussBotHelper {
      * @param bool $xhtml
      * @return string|The
      */
-    public function _get_article_url($jumpto = '', $query = '', $xhtml = true)
+    public function getArticleUrl($jumpto = '', $query = '', $xhtml = true)
     {
         //make sure Joomla's content helper is loaded
         if (!class_exists('ContentHelperRoute')) {
@@ -188,62 +212,45 @@ class JFusionDiscussBotHelper {
     }
 
     /**
-     * @return bool
+     * @return void
      */
-    public function _get_thread_status()
+    public function getThreadStatus()
     {
-        $threadinfo =& $this->_get_thread_info(true);
+        $threadinfo = $this->getThreadInfo(true);
+	    $this->thread_status = false;
         if (!empty($threadinfo)) {
+	        if ($threadinfo->forumid && $threadinfo->published) {
+		        //make sure the forum and thread still exists
+		        $Forum = JFusionFactory::getForum($this->jname);
 
-            if (empty($threadinfo->forumid)) {
-                //could be that publish date is in the future
-                $active = false;
-                return $active;
-            }
-
-            //make sure the forum and thread still exists
-            $JFusionForum = JFusionFactory::getForum($this->jname);
-
-            $forumlist =& $this->_get_lists('forum');
-            if (!in_array($threadinfo->forumid, $forumlist)) {
-                //seems the forum is now missing
-                $active = false;
-                return $active;
-            }
-
-            $forumthread = $JFusionForum->getThread($threadinfo->threadid);
-            if (empty($forumthread)) {
-                //seems the thread is now missing
-                $active = false;
-                return $active;
-            }
+		        $forumlist = $this->getForumList();
+		        if (in_array($threadinfo->forumid, $forumlist)) {
+			        $forumthread = $Forum->getThread($threadinfo->threadid);
+			        if ($forumthread) {
+				        //seems the thread is now missing
+				        $this->thread_status = true;
+			        }
+		        }
+	        }
         }
-
-        $active = (!empty($threadinfo) && !empty($threadinfo->published)) ? true : false;
-        return $active;
     }
 
     /**
-     * @param $type
-     * @return mixed
+     * @return array
      */
-    public function &_get_lists($type)
+    public function getForumList()
     {
         static $lists_instance;
 
-        if ($type=='forum') {
-            if (!isset($lists_instance[$type])) {
-                $JFusionForum = JFusionFactory::getForum($this->jname);
-                $full_list = $JFusionForum->getForumList();
-                $ids = array();
-                foreach ($full_list as $a) {
-                    $ids[] = (isset($a->forum_id)) ? $a->forum_id : $a->id;
-                }
-                $lists_instance[$type] = $ids;
-            }
-        }
-
-        return $lists_instance[$type];
+	    if (!isset($lists_instance)) {
+		    $JFusionForum = JFusionFactory::getForum($this->jname);
+		    $full_list = $JFusionForum->getForumList();
+		    $lists_instance = array();
+		    foreach ($full_list as $a) {
+			    $lists_instance[] = (isset($a->forum_id)) ? $a->forum_id : $a->id;
+		    }
+	    }
+        return $lists_instance;
     }
 
     /**
@@ -251,9 +258,9 @@ class JFusionDiscussBotHelper {
      * @param bool $skip_k2_check
      * @return array
      */
-    public function _validate($skip_new_check = false, $skip_k2_check = false)
+    public function validate($skip_new_check = false, $skip_k2_check = false)
     {
-        $this->_debug('Validating article');
+        $this->debug('Validating article');
 
         //allowed components
         $components = array('com_content', 'com_k2');
@@ -598,8 +605,10 @@ class JFusionDiscussBotHelper {
 	                            $creationMode =& $this->params->get('create_thread','load');
 	                            //make sure create_thread is appropriate
 	                            if ($creationMode == 'reply' && $dbtask != 'create_thread') {
-		                            $valid = 0;
-		                            $validity_reason = JText::_('REASON_CREATED_ON_FIRST_REPLY');
+		                            if (!$this->thread_status) {
+			                            $valid = 0;
+			                            $validity_reason = JText::_('REASON_CREATED_ON_FIRST_REPLY');
+		                            }
 	                            } elseif ($creationMode == 'view') {
 		                            //only create the article if we are in the article view
 		                            $test_view = ($this->option == 'com_k2') ? 'item' : 'article';
@@ -623,92 +632,96 @@ class JFusionDiscussBotHelper {
         return array($valid, $validity_reason);
     }
 
-    public function _load_scripts()
+    public function loadScripts()
     {
-        $this->_debug('Loading scripts into header');
+	    static $scriptsLoaded;
+	    if (!isset($scriptsLoaded)) {
+		    $this->debug('Loading scripts into header');
 
-        $view = JRequest::getVar('view');
-        $test_view = ($this->option == 'com_k2') ? 'item' : 'article';
+		    $view = JRequest::getVar('view');
+		    $test_view = ($this->option == 'com_k2') ? 'item' : 'article';
 
-        $lang_strings = array(
-        	'BUTTON_CANCEL',
-            'BUTTON_INITIATE',
-            'BUTTON_PUBLISH_NEW_DISCUSSION',
-            'BUTTON_REPUBLISH_DISCUSSION',
-            'BUTTON_UNPUBLISH_DISCUSSION',
-            'CONFIRM_THREAD_CREATION',
-            'CONFIRM_UNPUBLISH_DISCUSSION',
-            'CONFIRM_PUBLISH_DISCUSSION',
-            'DISCUSSBOT_ERROR',
-            'HIDE_REPLIES',
-            'JYES',
-        	'SHOW_REPLIES',
-            'SUBMITTING_QUICK_REPLY',
-            'SUCCESSFUL_POST',
-        	'SUCCESSFUL_POST_MODERATED'
-        );
+		    $lang_strings = array(
+			    'BUTTON_CANCEL',
+			    'BUTTON_INITIATE',
+			    'BUTTON_PUBLISH_NEW_DISCUSSION',
+			    'BUTTON_REPUBLISH_DISCUSSION',
+			    'BUTTON_UNPUBLISH_DISCUSSION',
+			    'CONFIRM_THREAD_CREATION',
+			    'CONFIRM_UNPUBLISH_DISCUSSION',
+			    'CONFIRM_PUBLISH_DISCUSSION',
+			    'DISCUSSBOT_ERROR',
+			    'HIDE_REPLIES',
+			    'JYES',
+			    'SHOW_REPLIES',
+			    'SUBMITTING_QUICK_REPLY',
+			    'SUCCESSFUL_POST',
+			    'SUCCESSFUL_POST_MODERATED'
+		    );
 
-        $jumpto_discussion = JRequest::getInt('jumpto_discussion', '0', 'post');
+		    $jumpto_discussion = JRequest::getInt('jumpto_discussion', '0', 'post');
 
-        $js = <<<JS
-        var jfdb_isJ16 = {$this->isJ16};
-        var jfdb_view = '{$view}';
-        var jfdb_jumpto_discussion = {$jumpto_discussion};
-        var jfdb_enable_pagination = {$this->params->get('enable_pagination',1)};
-        var jfdb_enable_ajax = {$this->params->get('enable_ajax',1)};
-        var jfdb_enable_jumpto = {$this->params->get('jumpto_new_post',0)};
+		    $js = <<<JS
+		        var jfdb_isJ16 = {$this->isJ16};
+		        var jfdb_view = '{$view}';
+		        var jfdb_jumpto_discussion = {$jumpto_discussion};
+		        var jfdb_enable_pagination = {$this->params->get('enable_pagination',1)};
+		        var jfdb_enable_ajax = {$this->params->get('enable_ajax',1)};
+		        var jfdb_enable_jumpto = {$this->params->get('jumpto_new_post',0)};
 JS;
 
-        if ($this->debug_mode) {
-            $js .= <<<JS
+		    if ($this->debug_mode) {
+			    $js .= <<<JS
             var jfdb_debug = '1';
 JS;
-        }
+		    }
 
-        foreach ($lang_strings as $str) {
-            $jstr = JText::_($str);
-            $js .= <<<JS
+		    foreach ($lang_strings as $str) {
+			    $jstr = JText::_($str);
+			    $js .= <<<JS
             var JFDB_{$str} = "{$jstr}";
 JS;
-        }
+		    }
 
-        //Load quick reply includes if enabled
-        if ($this->params->get('enable_quickreply')) {
-            $JFusionForum = JFusionFactory::getForum($this->jname);
-            $this->_debug('Quick reply is enabled and thus loading any includes (js, css, etc).');
-            $js .= $JFusionForum->loadQuickReplyIncludes();
-        }
+		    //Load quick reply includes if enabled
+		    if ($this->params->get('enable_quickreply')) {
+			    $JFusionForum = JFusionFactory::getForum($this->jname);
+			    $this->debug('Quick reply is enabled and thus loading any includes (js, css, etc).');
+			    $js .= $JFusionForum->loadQuickReplyIncludes();
+		    }
 
-        if ($view == $test_view) {
-            $joomla_basepath = JPATH_SITE;
-            $js .= <<<JS
-            var jfdb_article_url = '{$this->_get_article_url()}';
+		    if ($view == $test_view) {
+			    $joomla_basepath = JPATH_SITE;
+			    $js .= <<<JS
+            var jfdb_article_url = '{$this->getArticleUrl()}';
             var jfdb_article_id = '{$this->article->id}';
             window.addEvent(window.webkit ? 'load' : 'domready', function () {
                 initializeDiscussbot();
             });
 JS;
-        } else {
-            $js .= <<<JS
+		    } else {
+			    $js .= <<<JS
             window.addEvent(window.webkit ? 'load' : 'domready', function () {
                 initializeConfirmationBoxes();
             });
 JS;
-        }
+		    }
 
-        $document = JFactory::getDocument();
-        $document->addScriptDeclaration($js);
+		    $document = JFactory::getDocument();
+		    $document->addScriptDeclaration($js);
 
-        //check for a custom js file
-        if (file_exists(DISCUSSION_TEMPLATE_PATH.'jfusion.js')) {
-            $document->addScript(DISCUSSION_TEMPLATE_URL.'jfusion.js');
-        }
+		    //check for a custom js file
+		    if (file_exists(DISCUSSION_TEMPLATE_PATH.'jfusion.js')) {
+			    $document->addScript(DISCUSSION_TEMPLATE_URL.'jfusion.js');
+		    }
 
-         //add css
-        $css = DISCUSSION_TEMPLATE_PATH.'jfusion.css';
-        if (file_exists($css)) {
-            $document->addStyleSheet(DISCUSSION_TEMPLATE_URL.'jfusion.css');
-        }
+		    //add css
+		    $css = DISCUSSION_TEMPLATE_PATH.'jfusion.css';
+		    if (file_exists($css)) {
+			    $document->addStyleSheet(DISCUSSION_TEMPLATE_URL.'jfusion.css');
+		    }
+		    $scriptsLoaded = true;
+	    }
     }
 
     /**
@@ -716,9 +729,9 @@ JS;
      * @param string $mode
      * @return bool|string
      */
-    public function _render_file($file, $mode = 'require')
+    public function renderFile($file, $mode = 'require')
     {
-        $this->_debug('Rendering file ' . $file . ' in ' . $mode . ' mode');
+        $this->debug('Rendering file ' . $file . ' in ' . $mode . ' mode');
         if (file_exists(DISCUSSION_TEMPLATE_PATH . $file)) {
             if ($mode == 'capture') {
                 ob_start();
@@ -741,7 +754,7 @@ JS;
      * @param $text
      * @param bool $save
      */
-    public function _debug($text, $save = false)
+    public function debug($text, $save = false)
     {
         if ($this->debug_mode) {
             $this->debug_output[] = $text;
