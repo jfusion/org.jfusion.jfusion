@@ -130,7 +130,11 @@ class JFusionAPI {
      */
     public function read($read)
     {
-		return (string) preg_replace( '/[^A-Z_]/i', '', $_REQUEST[$read]);
+	    $data = null;
+	    if (isset($_REQUEST[$read])) {
+		    $data = (string) preg_replace( '/[^A-Z_]/i', '', $_REQUEST[$read]);
+	    }
+		return $data;
     }
 
     /**
@@ -481,7 +485,7 @@ class JFusionAPI {
 	    if ($result == null) {
 		    $result = base64_encode(serialize($output));
 	    }
-	    echo
+	    echo $result;
 		exit();
 	}
 
