@@ -29,9 +29,6 @@ class JFusionAPI {
 	public $url;
 	public $sid = null;
 
-	private $class = null;
-	private $type = null;
-	private $task = null;
 	private $payload = array();
 	private $secret = null;
 	private $hash = null;
@@ -91,36 +88,6 @@ class JFusionAPI {
 	}
 
 	/**
-	 * @param $class
-	 *
-	 * @return void
-	 */
-	private function setClass($class)
-	{
-		$this->class = ucfirst(strtolower($class));
-	}
-
-	/**
-	 * @param $type
-	 *
-	 * @return void
-	 */
-	private function setType($type)
-	{
-		$this->type = strtolower($type);
-	}
-
-	/**
-	 * @param $task
-	 *
-	 * @return void
-	 */
-	private function setTask($task)
-	{
-		$this->task = ucfirst(strtolower($task));
-	}
-
-	/**
 	 * @param $read
 	 *
 	 * @return string
@@ -132,16 +99,6 @@ class JFusionAPI {
 			$data = (string) preg_replace( '/[^A-Z_]/i', '', $_REQUEST[$read]);
 		}
 		return $data;
-	}
-
-	/**
-	 * @param array $payload
-	 *
-	 * @return void
-	 */
-	private function setPayload($payload)
-	{
-		$this->payload = $payload;
 	}
 
 	/**
@@ -175,18 +132,17 @@ class JFusionAPI {
 	 * @return void
 	 */
 	public function parse() {
-		$this->setClass($this->read('jfclass'));
-		$this->setType($this->read('jftype'));
-		$this->setTask($this->read('jftask'));
+		$type = strtolower($this->read('jftype'));
+		$task = ucfirst(strtolower($this->read('jftask')));
 
 		$data=array();
 		$encrypt = false;
 		//controller for when api gets called externally
-		if ($this->type) {
-			$class = $this->createClass();
+		if ($type) {
+			$class = $this->createClass($this->read('jfclass'));
 			if ($class) {
-				$function = $this->type.$this->task;
-				if (method_exists ( $class , $function )) {
+				$function = $type.$task;
+				if (method_exists( $class , $function )) {
 					$data['payload'] = $class->$function();
 
 					$this->error = $class->error;
@@ -194,10 +150,10 @@ class JFusionAPI {
 
 					$encrypt = $class->encrypt;
 				} else {
-					$this->error[] = 'Class: '.$this->class.' Method: '.$function.' undefined';
+					$this->error[] = 'Class: '.get_class($class).' Method: '.$function.' undefined';
 				}
 			} else {
-				$this->error[] = 'Type: '.$this->type.' Class: undefined';
+				$this->error[] = 'Type: '.$type.' Class: undefined';
 			}
 		} else {
 			$this->error[] = 'type not defined';
@@ -206,14 +162,17 @@ class JFusionAPI {
 	}
 
 	/**
+	 * @param string $class
 	 * @return null|JFusionAPIBase
 	 */
-	public function createClass() {
+	public function createClass($class) {
 		//controller for when api gets called externally
-		$class = null;
-		if ($this->class) {
-			$class = 'JFusionAPI_'.$this->class;
+		$class = ucfirst(strtolower($class));
+		if ($class) {
+			$class = 'JFusionAPI_'.$class;
 			$class = new $class($this->createkey());
+		} else {
+			$class = null;
 		}
 		return $class;
 	}
@@ -241,9 +200,9 @@ class JFusionAPI {
 	 *
 	 * @return bool
 	 */
-	public function set($class, $task, $payload)
+	public function set($class, $task, $payload=array())
 	{
-		return $this->_raw('set',$class, $task, $payload);
+		return $this->raw('set',$class, $task, $payload);
 	}
 
 	/**
@@ -255,7 +214,7 @@ class JFusionAPI {
 	 */
 	public function get($class, $task, $payload=array())
 	{
-		return $this->_raw('get',$class, $task, $payload);
+		return $this->raw('get',$class, $task, $payload);
 	}
 
 	/**
@@ -272,7 +231,7 @@ class JFusionAPI {
 			header('Location: '.$this->getExecuteURL($class,$task,$return).'&jfpayload='.base64_encode(serialize($payload)));
 			return true;
 		} else {
-			return $this->_raw('execute',$class, $task, $payload);
+			return $this->raw('execute',$class, $task, $payload);
 		}
 	}
 
@@ -284,20 +243,15 @@ class JFusionAPI {
 
 	 * @return mixed
 	 */
-	private function _raw($type, $class, $task, $payload=array())
+	private function raw($type, $class, $task, $payload=array())
 	{
 		$key = true;
-		$class = $this->createClass();
-		if ($class && $class->encrypt) {
+		$c = $this->createClass($class);
+		if ($c && $c->encrypt) {
 			$key = $this->retrieveKey();
 		}
 		if ($key) {
-			$this->setType($type);
-			$this->setClass($class);
-			$this->setTask($task);
-			$this->setPayload($payload);
-
-			$result = $this->post();
+			$result = $this->post($class,$type,$task,$payload);
 
 			$result = $this->getOutput($result);
 			if (empty($this->error)) {
@@ -387,11 +341,14 @@ class JFusionAPI {
 	}
 
 	/**
-	 * @param array $post
+	 * @param string $class
+	 * @param string $type
+	 * @param string $task
+	 * @param array $payload
 	 *
 	 * @return string|bool
 	 */
-	private function post($post=array())
+	private function post($class,$type,$task,$payload=array())
 	{
 		$this->error = array();
 		$this->debug = array();
@@ -401,25 +358,18 @@ class JFusionAPI {
 			$this->error[] = 'JfusionAPI: sorry cURL is needed for JFusionAPI';
 		} elseif (!function_exists('mcrypt_decrypt') || !function_exists('mcrypt_encrypt')) {
 			$this->error[] = 'Missing: mcrypt';
-		} elseif (!$this->class) {
-			$this->error[] = 'Client Class Undefined';
-		} elseif (!$this->type) {
-			$this->error[] = 'Client Type Undefined';
-		} elseif (!$this->task) {
-			$this->error[] = 'Client Task Undefined';
 		} else {
+			$post=array();
 			if ($this->sid) {
 				$post['PHPSESSID'] = $this->sid;
 			}
-			$post['jfclass'] = $this->class;
-			$post['jftype'] = $this->type;
-			$post['jftask'] = $this->task;
+			$post['jfclass'] = $class;
+			$post['jftype'] = strtolower($type);
+			$post['jftask'] = $task;
 
-			if (!empty($this->payload)) {
-				$post['jfpayload'] = JFusionAPI::encrypt($this->createkey(),$this->payload);
+			if (!empty($payload)) {
+				$post['jfpayload'] = JFusionAPI::encrypt($this->createkey(),$payload);
 			}
-			$this->class = $this->type = $this->task = null;
-			$this->payload = array();
 
 			$crl = curl_init();
 			curl_setopt($crl, CURLOPT_URL,$this->url);
