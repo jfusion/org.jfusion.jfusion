@@ -177,10 +177,12 @@ class JFusionAPI {
 	 * @return void
 	 */
     public function parse() {
-    	$this->setClass($this->read('jfclass'));    	
+    	$this->setClass($this->read('jfclass'));
     	$this->setType($this->read('jftype'));
-    	$this->setTask($this->read('jftask'));    	
-    	
+    	$this->setTask($this->read('jftask'));
+
+	    $data=array();
+	    $encrypt = false;
 		//controller for when api gets called externally
 		if ($this->type) {
 			$class = $this->createClass();
@@ -189,15 +191,22 @@ class JFusionAPI {
                 $payload = null;
                 if (method_exists ( $class , $function )) {
                     $payload = $class->$function();
+
+	                $this->error = $class->error;
+	                $this->debug = $class->debug;
+
+	                $data['payload'] = $payload;
+	                $encrypt = $class->encrypt;
+                } else {
+	                $this->error[] = 'Method: '.$function.' undefined';
                 }
-
-                $this->error = $class->error;
-                $this->debug = $class->debug;
-
-                $data['payload'] = $payload;
-                $this->doOutput($data, $class->encrypt);
+            } else {
+	            $this->error[] = 'class: '.$this->class.' undefined';
             }
+		} else {
+			$this->error[] = 'type not defined';
 		}
+	    $this->doOutput($data, $class->encrypt);
     }
 
     /**
@@ -458,11 +467,17 @@ class JFusionAPI {
 		$output['PHPSESSID'] = $this->sid;
 		$output['error'] = $this->error;
 		$output['debug'] = $this->debug;
+	    $result = null;
 		if ($encrypt) {
-			echo JFusionAPI::encrypt($this->createkey() , $output);
-		} else {
-			echo base64_encode(serialize($output));
+			$result = JFusionAPI::encrypt($this->createkey() , $output);
+			if ($result == null) {
+				$output['error'] = 'Encryption failed';
+			}
 		}
+	    if ($result == null) {
+		    $result = base64_encode(serialize($output));
+	    }
+	    echo
 		exit();
 	}
 
