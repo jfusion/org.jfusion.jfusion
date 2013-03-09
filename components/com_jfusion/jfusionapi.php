@@ -408,7 +408,6 @@ class JFusionAPI {
 		}
 		if ($result == null) {
 			$result = base64_encode(serialize($output));
-			$result = serialize($output);
 		}
 		echo $result;
 		exit();
