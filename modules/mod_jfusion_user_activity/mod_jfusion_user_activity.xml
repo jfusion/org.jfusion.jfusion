@@ -7,7 +7,7 @@
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<authorEmail>webmaster@jfusion.org</authorEmail>
 	<authorUrl>www.jfusion.org</authorUrl>
-	<version>1.8.0-000</version>
+	<version>1.8.1-000</version>
     <revision>$revision$</revision>
     <timestamp>$timestamp$</timestamp>
 	<description>Module for displaying JFusion plugin user activity such as PMs, new forum messages link, etc.</description>
