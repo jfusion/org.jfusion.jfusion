@@ -479,8 +479,7 @@ class plgContentJfusion extends JPlugin
 		if ($this->params->get('enable_pagination',1)) {
 			$ajax->pagination = $this->updatePagination();
 		}
-	    echo json_encode($ajax);
-		die();
+		die(json_encode($ajax));
 	}
 
 	public function view() {
@@ -946,20 +945,20 @@ HTML;
                 }
             }
 
-            if ($this->ajax_request) {
-	            $ajax->status = true;
-	            $this->helper->getThreadStatus();
-            }
+	        $ajax->status = true;
+	        $this->helper->getThreadStatus();
         } else {
 	        if ($this->ajax_request) {
-		        $ajax->status = false;
 		        $ajax->message = JText::_('ACCESS_DENIED');
 	        } else {
-				die(JText::_('ACCESS_DENIED'));
+		        JFusionFunction::raiseWarning(JText::_('DISCUSSBOT_ERROR'), JText::_('ACCESS_DENIED'), 1);
 	        }
         }
 	    if ($this->ajax_request) {
 		    $this->renderAjaxResponce($ajax);
+	    } else {
+		    $mainframe = JFactory::getApplication();
+		    $mainframe->redirect($this->helper->getArticleUrl('','',false));
 	    }
     }
 
@@ -978,20 +977,21 @@ HTML;
         if ($editAccess && $this->valid && $submittedArticleId == $this->article->id) {
             $threadinfo = $this->helper->getThreadInfo();
             JFusionFunction::updateDiscussionBotLookup($this->article->id, $threadinfo, $this->jname, 1, $threadinfo->manual);
-            if ($this->ajax_request) {
-	            $ajax->status = true;
-	            $this->helper->getThreadStatus();
-            }
+
+	        $ajax->status = true;
+	        $this->helper->getThreadStatus();
         } else {
 	        if ($this->ajax_request) {
-		        $ajax->status = false;
 		        $ajax->message = JText::_('ACCESS_DENIED');
 	        } else {
-		        die(JText::_('ACCESS_DENIED'));
+		        JFusionFunction::raiseWarning(JText::_('DISCUSSBOT_ERROR'), JText::_('ACCESS_DENIED'), 1);
 	        }
         }
 	    if ($this->ajax_request) {
 		    $this->renderAjaxResponce($ajax);
+	    } else {
+		    $mainframe = JFactory::getApplication();
+		    $mainframe->redirect($this->helper->getArticleUrl('','',false));
 	    }
     }
 
@@ -1625,7 +1625,7 @@ HTML;
             $ajax->posts = $this->helper->renderFile('default_posts.php');
 	        $ajax->status = true;
         } else {
-			$ajax->message = 'not published';
+			$ajax->message = JText::_('NOT_PUBLISHED');
         }
 	    $this->renderAjaxResponce($ajax);
     }
