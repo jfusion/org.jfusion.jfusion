@@ -1,4 +1,4 @@
-var ajaxMessageSlide, ajaxErrorSlide, confirmationBoxSlides, updatepostarea, threadid, postarea, jfusionButtonArea, jfusionPostPagination;
+var ajaxMessageSlide, confirmationBoxSlides, updatepostarea, threadid, postarea, jfusionButtonArea, jfusionPostPagination, jfusionMessageArea, delayHiding;
 var updatepagination = null;
 
 function initializeDiscussbot() {
@@ -7,19 +7,10 @@ function initializeDiscussbot() {
     }
 
     //only initiate if the div container exists and if the var has not been declared Fx.Slide
-    var jfusionMessageArea = $('jfusionMessageArea');
+    jfusionMessageArea = $('jfusionMessageArea');
     if (typeof (ajaxMessageSlide) != 'object' && jfusionMessageArea) {
         ajaxMessageSlide = new Fx.Slide('jfusionMessageArea');
         ajaxMessageSlide.hide();
-    }
-
-    if ($('jfusionErrorArea') && typeof (ajaxErrorSlide) != 'object') {
-        ajaxErrorSlide = new Fx.Slide('jfusionErrorArea', {
-            onComplete: function () {
-                ajaxMessageSlide.slideOut();
-            }
-        });
-        ajaxErrorSlide.hide();
     }
 
     //only initiate if the div container exists and if the var has not been declared Fx.Slide
@@ -197,33 +188,16 @@ function prepareAjax() {
     });
 }
 
-var delayHiding;
 function showMessage(msg, type) {
     //stop a slideOut if pending
     if (delayHiding) {
         clearTimeout(delayHiding);
     }
-    var msgDiv, msgArea;
-    if (type == 'Error') {
-        msgDiv = $('jfusionErrorMessage');
-        msgArea = $('jfusionErrorArea');
-    } else {
-        msgDiv = $('jfusionMessage');
-        msgArea = $('jfusionMessageArea');
-    }
 
-    ajaxErrorSlide.hide();
+    $('jfusionMessage').innerHTML = msg;
+    jfusionMessageArea.setAttribute('class', 'jfusion' + type + 'Message');
 
-    msgDiv.innerHTML = msg;
-    msgArea.setAttribute('class', 'jfusion' + type + 'Message');
-
-    if (type == 'Error') {
-        ajaxErrorSlide.slideIn();
-        //ajaxMessageSlide.slideOut();
-    } else {
-        ajaxMessageSlide.slideIn();
-        //ajaxErrorSlide.slideOut();
-    }
+    ajaxMessageSlide.slideIn();
 }
 
 function hideMessage() {

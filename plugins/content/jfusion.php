@@ -434,6 +434,9 @@ class plgContentJfusion extends JPlugin
         }
 	}
 
+	/**
+	 * @return  stdClass
+	 */
 	public function prepareAjaxResponce() {
 		$output = new stdClass;
 		$output->debug = null;
@@ -447,14 +450,15 @@ class plgContentJfusion extends JPlugin
 		return $output;
 	}
 
+	/**
+	 * @param stdClass $ajax
+	 */
 	public function renderAjaxResponce($ajax) {
 	    $ajax->debug = $this->renderDebugOutput();
 		$ajax->buttons = $this->renderButtons(true);
 		if ($this->params->get('enable_pagination',1)) {
 			$ajax->pagination = $this->updatePagination();
 		}
-
-//		$ajax->articleid = $this->article->id;
 	    echo json_encode($ajax);
 		die();
 	}
@@ -648,10 +652,11 @@ HTML;
     /*
      * renderDebugOutput
      *
-     * $return string
+     * @return string
      */
     public function renderDebugOutput()
     {
+	    $debug_contents = '';
         if ($this->debug_mode) {
             require_once(JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.debug.php');
 
@@ -736,6 +741,9 @@ HTML;
         $allowGuests =& $this->params->get('quickreply_allow_guests',0);
         $ajaxEnabled = ($this->params->get('enable_ajax',1) && $this->ajax_request);
 
+	    $jumpto = '';
+	    $url = $this->helper->getArticleUrl($jumpto,'',false);
+	    $msg = '';
         //process quick replies
         if (($allowGuests || !$JoomlaUser->guest) && !$JoomlaUser->block) {
             //make sure something was submitted
@@ -823,18 +831,14 @@ HTML;
                             } else {
                                 if ($this->params->get('jumpto_new_post',0)) {
                                     $jumpto = (isset($status['postid'])) ? "post" . $status['postid'] : '';
-                                } else {
-                                    $jumpto = '';
                                 }
                                 $url = $this->helper->getArticleUrl($jumpto,'',false);
 
                                 if (isset($status['post_moderated'])) {
-                                    $text = ($status['post_moderated']) ? 'SUCCESSFUL_POST_MODERATED' : 'SUCCESSFUL_POST';
+	                                $msg = ($status['post_moderated']) ? 'SUCCESSFUL_POST_MODERATED' : 'SUCCESSFUL_POST';
                                 } else {
-                                    $text = 'SUCCESSFUL_POST';
+	                                $msg = 'SUCCESSFUL_POST';
                                 }
-                                $mainframe = JFactory::getApplication();
-                                $mainframe->redirect($url, JText::_($text));
                             }
                         }
                     } else {
@@ -861,6 +865,9 @@ HTML;
         }
 	    if ($ajaxEnabled) {
 		    $this->renderAjaxResponce($ajax);
+	    } else {
+		    $mainframe = JFactory::getApplication();
+		    $mainframe->redirect($url, JText::_($msg));
 	    }
     }
 
@@ -1517,7 +1524,7 @@ HTML;
         return $post_output;
     }
 
-    /*
+    /**
      * updatePagination
      *
      * @return string

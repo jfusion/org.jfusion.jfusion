@@ -293,7 +293,7 @@ CSS;
                         list($style,$value) = $target->$function($key,$value,$args);
                     }
                     $str.= '<tr>';
-                    $str.= '<td class="'.$keyClass.'" $onClick style="'.$style.'">'.debug::decorateValue($key).'</td>';
+                    $str.= '<td class="'.$keyClass.'" '.$onClick.' style="'.$style.'">'.debug::decorateValue($key).'</td>';
                     $str.= '<td class="value" style="'.$style.'">'.debug::get($value, false).'</td>';
                     $str.= '</tr>';
                 }
