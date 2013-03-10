@@ -1022,7 +1022,11 @@ HTML;
         $this->helper->output['reply_count'] = '';
 
         $show_form = ($allowGuests || (!$JoomlaUser->guest && !empty($JFusionUserinfo)) && !$JoomlaUser->block) ? 1 : 0;
-        
+
+	    $this->helper->output['post_pagination'] = '';
+	    $this->helper->output['posts'] = '';
+	    $this->helper->output['reply_form'] = '';
+	    $this->helper->output['reply_form_error'] = '';
         if (!empty($threadinfo)) {
             if ($this->helper->reply_count === false || $this->helper->reply_count === null) {
                 $this->helper->reply_count = $JFusionForum->getReplyCount($threadinfo);
@@ -1032,11 +1036,9 @@ HTML;
                 $threadLocked = $JFusionForum->getThreadLockedStatus($threadinfo->threadid);
                 if ($threadLocked) {
                     $this->helper->output['reply_form_error'] = $this->params->get('locked_msg');
-                    $this->helper->output['show_reply_form'] = false;
                 } elseif ($show_form) {
                     if (!$JoomlaUser->guest && empty($JFusionUserinfo)) {
                         $this->helper->output['reply_form_error'] =  $this->jname . ': ' . JText::_('USER_NOT_EXIST');
-                        $this->helper->output['show_reply_form'] = false;
                     } else {
                         $showGuestInputs = ($allowGuests && $JoomlaUser->guest) ? true : false;
                         $this->helper->output['reply_form']  = '<form id="jfusionQuickReply'.$this->article->id.'" name="jfusionQuickReply'.$this->article->id.'" method="post" action="'.$action_url.'">';
@@ -1048,11 +1050,9 @@ HTML;
                         }
                         $this->helper->output['reply_form'] .= $JFusionForum->createQuickReply($this->params,$showGuestInputs);
                         $this->helper->output['reply_form'] .= '</form>';
-                        $this->helper->output['show_reply_form'] = true;
                     }
                 } else {
                     $this->helper->output['reply_form_error'] = $this->params->get('must_login_msg');
-                    $this->helper->output['show_reply_form'] = false;
                 }
             }
 
@@ -1069,28 +1069,20 @@ HTML;
                     $application = JFactory::getApplication() ;
                     $limitstart = JRequest::getInt( 'limitstart_discuss', 0 );
                     $limit = (int) $application->getUserStateFromRequest( 'global.list.limit', 'limit_discuss', 5, 'int' );
-                    $this->helper->output['post_pagination']  = '<div id="jfusionPostPagination" class="pagination">';
                     if (!empty($this->helper->reply_count) && $this->helper->reply_count > 5) {
                         $pageNav = new JFusionPagination($this->helper->reply_count, $limitstart, $limit, '_discuss' );
-                        $this->helper->output['post_pagination'] .= '<form method="post" id="jfusionPaginationForm" name="jfusionPaginationForm" action="'.$action_url.'">';
+                        $this->helper->output['post_pagination'] = '<form method="post" id="jfusionPaginationForm" name="jfusionPaginationForm" action="'.$action_url.'">';
                         $this->helper->output['post_pagination'] .= '<input type="hidden" name="jumpto_discussion" value="1" />';
                         $this->helper->output['post_pagination'] .= $pageNav->getListFooter();
                         $this->helper->output['post_pagination'] .= '</form>';
                     }
-                    $this->helper->output['post_pagination'] .= '</div>';
-                } else {
-                    $this->helper->output['post_pagination'] = '';
                 }
-            } else {
-                $this->helper->output['posts'] = '';
-                $this->helper->output['post_pagination'] = '';
             }
         } elseif ($this->creationMode=='reply') {
             //prepare quick reply box if enabled
             if ($show_form) {
                 if (!$JoomlaUser->guest && empty($JFusionUserinfo)) {
                     $this->helper->output['reply_form_error'] =  $this->jname . ': ' . JText::_('USER_NOT_EXIST');
-                    $this->helper->output['show_reply_form'] = false;
                 } else {
                     $showGuestInputs = ($allowGuests && $JoomlaUser->guest) ? true : false;
                     $this->helper->output['reply_form']  = '<form id="jfusionQuickReply'.$this->article->id.'" name="jfusionQuickReply'.$this->article->id.'" method="post" action="'.$action_url.'">';
@@ -1101,11 +1093,9 @@ HTML;
                     }
                     $this->helper->output['reply_form'] .= $JFusionForum->createQuickReply($this->params,$showGuestInputs);
                     $this->helper->output['reply_form'] .= '</form>';
-                    $this->helper->output['show_reply_form'] = true;
                 }
             } else {
                 $this->helper->output['reply_form_error'] = $this->params->get('must_login_msg');
-                $this->helper->output['show_reply_form'] = false;
             }
         }
 
