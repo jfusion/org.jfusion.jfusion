@@ -483,6 +483,10 @@ class plgContentJfusion extends JPlugin
 		die();
 	}
 
+	public function view() {
+		return ($this->helper->option == 'com_k2') ? 'item' : 'article';
+	}
+
     /*
      * prepareContent
      */
@@ -534,8 +538,7 @@ class plgContentJfusion extends JPlugin
 
         //check to see if the fulltext has a manual plug if we are in a blog view
         if (isset($this->article->fulltext)) {
-            $test_view = ($this->helper->option == 'com_k2') ? 'item' : 'article';
-            if (!$this->manual_plug && JRequest::getVar('view') != $test_view) {
+            if (!$this->manual_plug && JRequest::getVar('view') != $this->view()) {
                 preg_match('/\{jfusion_discuss (.*)\}/U',$this->article->fulltext,$match);
                 if (!empty($match)) {
                     $this->helper->debug('No plugs in text but found plugs in fulltext');
@@ -1005,10 +1008,8 @@ HTML;
             $this->helper->reply_count = $JFusionForum->getReplyCount($threadinfo);
         }
         $view = JRequest::getVar('view');
-        $test_view = ($this->helper->option == 'com_k2') ? 'item' : 'article';
-
         //let's only show quick replies and posts on the article view
-        if ($view == $test_view) {
+        if ($view == $this->view()) {
             $JSession = JFactory::getSession();
 
             if (empty($threadinfo->published) && $this->creationMode != 'reply') {
@@ -1225,9 +1226,7 @@ HTML;
         //let's overwrite the readmore link with our own
         //needed as in the case of updating the buttons via ajax which calls the article view
         $view = ($override = JRequest::getVar('view_override')) ? $override : JRequest::getVar('view');
-        $test_view = ($this->helper->option == 'com_k2') ? 'item' : 'article';
-
-        if ($view != $test_view && $this->params->get('overwrite_readmore',1)) {
+        if ($view != $this->view() && $this->params->get('overwrite_readmore',1)) {
             //make sure the readmore link is enabled for this article
 
             if (!empty($show_readmore) && !empty($readmore_catch)) {
@@ -1314,7 +1313,7 @@ HTML;
 /*
     <a class="jfusionRefreshLink" href="javascript:void(0);" onclick=""><?php echo JText::_('REFRESH_POSTS');?></a> <br/>
 */
-	    if($this->params->get('show_refresh_link',1) && $threadinfo) {
+	    if($view==$this->view() && $this->params->get('show_refresh_link',1) && $threadinfo) {
 		    //class="jfusionRefreshLink"
 		    $this->helper->output['buttons']['refresh']['href'] = 'javascript:void(0);';
 		    $this->helper->output['buttons']['refresh']['js']['onclick'] = 'refreshPosts('.$threadinfo->threadid.');';
@@ -1330,7 +1329,7 @@ HTML;
                     $this->helper->reply_count = $JFusionForum->getReplyCount($threadinfo);
                 }
 
-                if ($view==$test_view) {
+                if ($view==$this->view()) {
                     if ($link_mode=="article" || $link_mode=="always") {
                         $this->helper->output['buttons']['discuss']['href'] = JFusionFunction::routeURL($JFusionForum->getThreadURL($threadinfo->threadid), $itemid, $this->jname);
                         $this->helper->output['buttons']['discuss']['text'] = $linkHTML;
@@ -1378,7 +1377,7 @@ HTML;
             }
 
             //show comments link
-            if ($view==$test_view && $this->params->get('show_toggle_posts_link',1)) {
+            if ($view==$this->view() && $this->params->get('show_toggle_posts_link',1)) {
                 $this->helper->output['buttons']['showreplies']['href'] = 'javascript: void(0);';
                 $this->helper->output['buttons']['showreplies']['js']['onclick'] = 'toggleDiscussionVisibility();';
 

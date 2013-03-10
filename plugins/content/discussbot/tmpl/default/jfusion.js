@@ -141,33 +141,35 @@ function prepareAjax() {
     var i;
     var submitpost = $('submitpost');
 
-    //add the submitpost function
-    submitpost.addEvent('click', function (e) {
-        //show a loading
-        showMessage(JFDB_SUBMITTING_QUICK_REPLY, 'Loading');
+    if (submitpost) {
+        //add the submitpost function
+        submitpost.addEvent('click', function (e) {
+            //show a loading
+            showMessage(JFDB_SUBMITTING_QUICK_REPLY, 'Loading');
 
-        //update the post area content
-        var paramString = 'tmpl=component&ajax_request=1';
-        var frm = $('jfusionQuickReply' + jfdb_article_id);
-        for (i = 0; i < frm.elements.length; i++) {
-            if (frm.elements[i].type == "select-one") {
-                if (frm.elements[i].options[frm.elements[i].selectedIndex].value) {
-                    paramString = paramString + '&' + frm.elements[i].name + '=' + frm.elements[i].options[frm.elements[i].selectedIndex].value;
-                }
-            } else {
-                paramString = paramString + '&' + frm.elements[i].name + '=' + frm.elements[i].value;
-                if (frm.elements[i].id == 'threadid') {
-                    threadid = frm.elements[i].value;
+            //update the post area content
+            var paramString = 'tmpl=component&ajax_request=1';
+            var frm = $('jfusionQuickReply' + jfdb_article_id);
+            for (i = 0; i < frm.elements.length; i++) {
+                if (frm.elements[i].type == "select-one") {
+                    if (frm.elements[i].options[frm.elements[i].selectedIndex].value) {
+                        paramString = paramString + '&' + frm.elements[i].name + '=' + frm.elements[i].options[frm.elements[i].selectedIndex].value;
+                    }
+                } else {
+                    paramString = paramString + '&' + frm.elements[i].name + '=' + frm.elements[i].value;
+                    if (frm.elements[i].id == 'threadid') {
+                        threadid = frm.elements[i].value;
+                    }
                 }
             }
-        }
 
-        if (jfdb_isJ16) {
-            updatepostarea.post(paramString);
-        } else {
-            updatepostarea.request(paramString);
-        }
-    });
+            if (jfdb_isJ16) {
+                updatepostarea.post(paramString);
+            } else {
+                updatepostarea.request(paramString);
+            }
+        });
+    }
 }
 
 function showMessage(msg, type) {
