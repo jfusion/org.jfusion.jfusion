@@ -31,96 +31,23 @@ function initializeDiscussbot() {
     // this code will send a data object via a GET request and alert the retrieved data.
 
     updatepostarea = jfdb_isJ16 ? new Request.JSON({url: url ,
-        onSuccess: function(JSONobject){
-            if (JSONobject.status) {
-                //update the post area with the updated content
-                if (postarea) {
-                    postarea.innerHTML = JSONobject.posts;
-                }
-                if (jfusionButtonArea) {
-                    jfusionButtonArea.innerHTML = JSONobject.buttons;
-                }
-                if (jfdb_enable_pagination && jfusionPostPagination) {
-                    jfusionPostPagination.innerHTML = JSONobject.pagination;
-                }
+        onSuccess: function(JSONobject) {
+            updateContent(JSONobject);
+        }, onError: function(JSONobject) {
+            showMessage(JSONobject, 'Error');
 
-                var submittedPostId = $('submittedPostId');
-                var quickReply = $('quickReply');
-                var sucessMessage = JFDB_SUCCESSFUL_POST;
-                if (submittedPostId) {
-                    highlightPost('post' + submittedPostId.innerHTML);
-
-                    //empty the quick reply form
-                    quickReply.value = '';
-
-                    //remove the preview iframe if exists
-                    if ($('markItUpQuickReply')) {
-                        jQuery.markItUp({ call: 'previewClose' });
-                    }
-                } else if ($('moderatedPostId')) {
-                    //empty the quick reply form
-                    quickReply.value = '';
-                    sucessMessage = JFDB_SUCCESSFUL_POST_MODERATED;
-                }
-
-                showMessage(sucessMessage, 'Success');
-                hideMessage();
+        }
+    }) : new Ajax(url, {
+        method: 'post',
+        onSuccess: function(JSONobject) {
+            var response = evaluateJSON(JSONobject);
+            if (response) {
+                updateContent(JSONobject);
             } else {
-                showMessage(JSONobject.error, 'Error');
-                window.location = '#jfusionMessageArea';
-            }
-            var jfusionDebugContainer = $('jfusionDebugContainer' + jfdb_article_id);
-            if (jfusionDebugContainer) {
-                jfusionDebugContainer.innerHTML = JSONobject.debug;
+                showMessage(JSONobject, 'Error');
             }
         }, onError: function(JSONobject) {
             showMessage(JSONobject, 'Error');
-            window.location = '#jfusionMessageArea';
-        }
-    }) : new Ajax(url, {
-        update: ajaxstatusholder,
-        method: 'post',
-
-        onComplete: function () {
-            var i;
-            var ajaxstatus = ajaxstatusholder.innerHTML;
-            var rg = new RegExp(JFDB_DISCUSSBOT_ERROR);
-            if (ajaxstatus.search(rg) == -1) {
-
-                //update the post area with the updated content
-                if (postarea) {
-                    postarea.innerHTML = ajaxstatus;
-                }
-
-                //reset the status area
-                ajaxstatusholder.innerHTML = '';
-
-                var submittedPostId = $('submittedPostId');
-                var quickReply = $('quickReply');
-                if (submittedPostId) {
-                    highlightPost('post' + submittedPostId.innerHTML);
-
-                    //empty the quick reply form
-                    quickReply.value = '';
-
-                    //remove the preview iframe if exists
-                    if ($('markItUpQuickReply')) {
-                        jQuery.markItUp({ call: 'previewClose' });
-                    }
-
-                    showMessage(JFDB_SUCCESSFUL_POST, 'Success');
-                    hideMessage();
-                } else if ($('moderatedPostId')) {
-                    //empty the quick reply form
-                    quickReply.value = '';
-
-                    showMessage(JFDB_SUCCESSFUL_POST_MODERATED, 'Success');
-                    hideMessage();
-                }
-            } else {
-                showMessage(ajaxstatus, 'Error');
-                window.location = '#jfusionMessageArea';
-            }
         }
     });
 
@@ -135,6 +62,61 @@ function initializeDiscussbot() {
     //get ajax ready for submission
     if (jfdb_enable_ajax && jfusionMessageArea) {
 		prepareAjax();
+    }
+}
+
+function evaluateJSON(string) {
+    var response;
+    try {
+        response = Json.evaluate(string,true);
+    } catch (error){
+
+    }
+    if ((typeof response ) != 'object') {
+        response = null;
+    }
+    return response;
+}
+
+function updateContent(JSONobject) {
+    if (JSONobject.status) {
+        //update the post area with the updated content
+        if (postarea) {
+            postarea.innerHTML = JSONobject.posts;
+        }
+        if (jfusionButtonArea) {
+            jfusionButtonArea.innerHTML = JSONobject.buttons;
+        }
+        if (jfdb_enable_pagination && jfusionPostPagination) {
+            jfusionPostPagination.innerHTML = JSONobject.pagination;
+        }
+
+        var submittedPostId = $('submittedPostId');
+        var quickReply = $('quickReply');
+        if (submittedPostId) {
+            highlightPost('post' + submittedPostId.innerHTML);
+
+            //empty the quick reply form
+            quickReply.value = '';
+
+            //remove the preview iframe if exists
+            if ($('markItUpQuickReply')) {
+                jQuery.markItUp({ call: 'previewClose' });
+            }
+            showMessage(JSONobject.message, 'Success');
+            hideMessage();
+        } else if ($('moderatedPostId')) {
+            //empty the quick reply form
+            quickReply.value = '';
+            showMessage(JSONobject.message, 'Success');
+            hideMessage();
+        }
+    } else {
+        showMessage(JSONobject.message, 'Error');
+    }
+    var jfusionDebugContainer = $('jfusionDebugContainer' + jfdb_article_id);
+    if (jfusionDebugContainer) {
+        jfusionDebugContainer.innerHTML = JSONobject.debug;
     }
 }
 
@@ -196,6 +178,9 @@ function showMessage(msg, type) {
 
     $('jfusionMessage').innerHTML = msg;
     jfusionMessageArea.setAttribute('class', 'jfusion' + type + 'Message');
+    if (type == 'Error') {
+        window.location = '#jfusionMessageArea';
+    }
 
     ajaxMessageSlide.slideIn();
 }
@@ -368,11 +353,7 @@ function submitAjaxRequest(id, task, vars, url) {
     if (jfdb_isJ16) {
         performTask = new Request.JSON({url: url ,
             onSuccess: function(JSONobject) {
-                if (JSONobject.status) {
-                    jfusionButtonArea.innerHTML = JSONobject.posts;
-                } else {
-                    jfusionButtonArea.innerHTML = JSONobject.error;
-                }
+                updateContent(JSONobject);
             },
             method: 'post'
         });
@@ -380,45 +361,16 @@ function submitAjaxRequest(id, task, vars, url) {
     } else {
         performTask = new Ajax(url, {
             method: 'post',
-            update: jfusionButtonArea,
-            onComplete: function () {
-
+            onSuccess: function(JSONobject) {
+                var response = evaluateJSON(JSONobject);
+                if (response) {
+                    updateContent(JSONobject);
+                }
             }
         });
         performTask.request('tmpl=component&ajax_request=1&dbtask=' + task + '&threadid=' + threadid + '&articleId=' + id + vars);
     }
     var jfusionDebugContainer = $('jfusionDebugContainer' + id);
-
-    var debug;
-    var discussion = $('discussion');
-    if (jfdb_isJ16) {
-        debug = new Request.HTML({
-            url: url,
-            method: 'post',
-            update: discussion,
-            onComplete: function () {
-                if (task == 'unpublish_discussion') {
-                    $('discussion').setStyle('display', 'none');
-                } else if (task == 'publish_discussion') {
-                    initializeDiscussbot();
-                    toggleDiscussionVisibility(1);
-                }
-            }
-        });
-    } else {
-        debug = new Ajax(url, {
-            method: 'post',
-            update: discussion,
-            onComplete: function () {
-                if (task == 'unpublish_discussion') {
-                    $('discussion').setStyle('display', 'none');
-                } else if (task == 'publish_discussion') {
-                    initializeDiscussbot();
-                    toggleDiscussionVisibility(1);
-                }
-            }
-        });
-    }
 }
 
 function toggleDiscussionVisibility() {

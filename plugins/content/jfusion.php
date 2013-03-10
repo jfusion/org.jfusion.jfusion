@@ -323,7 +323,7 @@ class plgContentJfusion extends JPlugin
 				                    //set manual plug
 				                    $this->manual_plug = true;
 			                    } elseif ($this->dbtask != 'create_thread' && $this->dbtask != 'create_threadpost') {
-				                    $ajax->error = 'Thread not found!';
+				                    $ajax->message = 'Thread not found!';
 				                    $this->renderAjaxResponce($ajax);
 			                    }
 		                    }
@@ -369,7 +369,7 @@ class plgContentJfusion extends JPlugin
 			                    $ajax->status = true;
 			                    $ajax->message = 'jfusion.discussion.visibility set to '.$show_discussion;
 		                    } else {
-			                    $ajax->error = 'Discussion bot ajax request made but it doesn\'t seem to have been picked up';
+			                    $ajax->message = 'Discussion bot ajax request made but it doesn\'t seem to have been picked up';
 		                    }
 		                    $this->renderAjaxResponce($ajax);
 	                    }
@@ -444,7 +444,6 @@ class plgContentJfusion extends JPlugin
 		$output->posts = null;
 		$output->buttons = null;
 		$output->pagination = null;
-		$output->error = null;
 		$output->status = false;
 		$output->message = null;
 		return $output;
@@ -792,7 +791,7 @@ HTML;
                                 } else {
                                     $error = $status['error'];
                                 }
-	                            $ajax->error = JText::_('DISCUSSBOT_ERROR') . ': ' . $error;
+	                            $ajax->message = JText::_('DISCUSSBOT_ERROR') . ': ' . $error;
                             } else {
                                 JFusionFunction::raiseWarning(JText::_('DISCUSSBOT_ERROR'), $status['error'],1);
                             }
@@ -833,37 +832,37 @@ HTML;
                                     $jumpto = (isset($status['postid'])) ? "post" . $status['postid'] : '';
                                 }
                                 $url = $this->helper->getArticleUrl($jumpto,'',false);
-
-                                if (isset($status['post_moderated'])) {
-	                                $msg = ($status['post_moderated']) ? 'SUCCESSFUL_POST_MODERATED' : 'SUCCESSFUL_POST';
-                                } else {
-	                                $msg = 'SUCCESSFUL_POST';
-                                }
                             }
+	                        if (isset($status['post_moderated'])) {
+		                        $msg = ($status['post_moderated']) ? 'SUCCESSFUL_POST_MODERATED' : 'SUCCESSFUL_POST';
+	                        } else {
+		                        $msg = 'SUCCESSFUL_POST';
+	                        }
                         }
                     } else {
                         if ($ajaxEnabled) {
-	                        $ajax->error = JText::_('DISCUSSBOT_ERROR') . ': ' . JText::_('THREADID_NOT_FOUND');
+	                        $ajax->message = JText::_('DISCUSSBOT_ERROR') . ': ' . JText::_('THREADID_NOT_FOUND');
                         } else {
                             JFusionFunction::raiseWarning(JText::_('DISCUSSBOT_ERROR'), JText::_('THREADID_NOT_FOUND'),1);
                         }
                     }
                 } else {
                     if ($ajaxEnabled) {
-	                    $ajax->error = JText::_('DISCUSSBOT_ERROR') . ': ' . JText::_('CAPTCHA_INCORRECT');
+	                    $ajax->message = JText::_('DISCUSSBOT_ERROR') . ': ' . JText::_('CAPTCHA_INCORRECT');
                     } else {
                         JFusionFunction::raiseWarning(JText::_('DISCUSSBOT_ERROR'), JText::_('CAPTCHA_INCORRECT'),1);
                     }
                 }
             } else {
                 if ($ajaxEnabled) {
-	                $ajax->error = JText::_('DISCUSSBOT_ERROR') . ': ' . JText::_('QUICKEREPLY_EMPTY');
+	                $ajax->message = JText::_('DISCUSSBOT_ERROR') . ': ' . JText::_('QUICKEREPLY_EMPTY');
                 } else {
                     JFusionFunction::raiseWarning(JText::_('DISCUSSBOT_ERROR'), JText::_('QUICKEREPLY_EMPTY'),1);
                 }
             }
         }
 	    if ($ajaxEnabled) {
+		    $ajax->message = $msg;
 		    $this->renderAjaxResponce($ajax);
 	    } else {
 		    $mainframe = JFactory::getApplication();
@@ -915,7 +914,7 @@ HTML;
         } else {
 	        if ($this->ajax_request) {
 		        $ajax->status = false;
-		        $ajax->error = 'Access denied!';
+		        $ajax->message = 'Access denied!';
 	        } else {
 				die('Access denied!');
 	        }
@@ -947,7 +946,7 @@ HTML;
         } else {
 	        if ($this->ajax_request) {
 		        $ajax->status = false;
-		        $ajax->error = 'Access denied!';
+		        $ajax->message = 'Access denied!';
 	        } else {
 		        die('Access denied!');
 	        }
@@ -1591,7 +1590,7 @@ HTML;
             $ajax->posts = $this->helper->renderFile('default_posts.php');
 	        $ajax->status = true;
         } else {
-			$ajax->error = 'not published';
+			$ajax->message = 'not published';
         }
 	    $this->renderAjaxResponce($ajax);
     }

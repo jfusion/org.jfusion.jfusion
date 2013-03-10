@@ -95,7 +95,7 @@ case $1 in
 				createpackage modules/mod_jfusion_magecart/ side_projects/magento/jfusion_mod_magecart.zip mod_jfusion_magecart
 				createpackage modules/mod_jfusion_mageselectblock/ side_projects/magento/jfusion_mod_mageselectblock.zip mod_jfusion_mageselectblock
 				createpackage modules/mod_jfusion_magecustomblock/ side_projects/magento/jfusion_mod_magecustomblock.zip mod_jfusion_magecustomblock
-				createpackage "plugins/system/magelib.*" administrator/components/com_jfusion/packages/jfusion_plugin_magelib.zip magelib
+				createpackage "plugins/system/magelib.*" side_projects/magento/jfusion_plugin_magelib.zip magelib
 				
 				
 				createpackage components/com_jfusion/plugins/dokuwiki/ pluginpackages/jfusion_dokuwiki.zip

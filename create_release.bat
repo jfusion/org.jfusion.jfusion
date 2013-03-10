@@ -114,7 +114,6 @@ echo "create the new packages for the Magento Integration"
 call :CreatePackage modules\mod_jfusion_magecart\* side_projects\magento\jfusion_mod_magecart.zip mod_jfusion_magecart
 call :CreatePackage modules\mod_jfusion_mageselectblock\* side_projects\magento\jfusion_mod_mageselectblock.zip mod_jfusion_mageselectblock
 call :CreatePackage modules\mod_jfusion_magecustomblock\* side_projects\magento\jfusion_mod_magecustomblock.zip mod_jfusion_magecustomblock
-
 call :CreatePackage plugins\system\magelib.* side_projects\magento\jfusion_plugin_magelib.zip magelib
 
 IF "%action%"=="2" goto end

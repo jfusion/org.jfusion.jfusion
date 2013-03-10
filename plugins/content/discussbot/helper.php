@@ -634,9 +634,7 @@ class JFusionDiscussBotHelper {
 			    'HIDE_REPLIES',
 			    'JYES',
 			    'SHOW_REPLIES',
-			    'SUBMITTING_QUICK_REPLY',
-			    'SUCCESSFUL_POST',
-			    'SUCCESSFUL_POST_MODERATED'
+			    'SUBMITTING_QUICK_REPLY'
 		    );
 
 		    $jumpto_discussion = JRequest::getInt('jumpto_discussion', '0', 'post');
