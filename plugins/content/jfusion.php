@@ -323,7 +323,7 @@ class plgContentJfusion extends JPlugin
 				                    //set manual plug
 				                    $this->manual_plug = true;
 			                    } elseif ($this->dbtask != 'create_thread' && $this->dbtask != 'create_threadpost') {
-				                    $ajax->message = 'Thread not found!';
+				                    $ajax->message = JText::_('THREAD_NOT_FOUND');
 				                    $this->renderAjaxResponce($ajax);
 			                    }
 		                    }
@@ -432,6 +432,27 @@ class plgContentJfusion extends JPlugin
                 $article->introtext = $article->text;
             }
         }
+	}
+
+	/**
+	 * @param mixed $error
+	 * @return string
+	 */
+	public function ajaxError($error) {
+		//output the error
+		$result = null;
+		if (is_array($error['error'])) {
+			foreach($error['error'] as $err) {
+				if ($result) {
+					$result .= '<br /> - ' . $err;
+				} else {
+					$result = ' - ' . $err;
+				}
+			}
+		} else {
+			$result = $error['error'];
+		}
+		return $result;
 	}
 
 	/**
@@ -706,24 +727,40 @@ HTML;
         $submittedArticleId = JRequest::getInt('articleId', 0, 'post');
         $editAccess = $JoomlaUser->authorize('com_content', 'edit', 'content', 'all');
 
+	    $ajaxEnabled = ($this->params->get('enable_ajax',1) && $this->ajax_request);
+	    $ajax = $this->prepareAjaxResponce();
+
         if ($editAccess && $this->valid && $submittedArticleId == $this->article->id) {
             $status = $this->helper->checkThreadExists(1);
 
             if (!empty($status['error'])) {
-                if (is_array($status['error'])) {
-                    foreach($status['error'] as $err) {
-                        $mainframe->enqueueMessage('error',JText::_('DISCUSSBOT_ERROR'). ': ' . $err);
-                    }
-                } else {
-                    $mainframe->enqueueMessage('error',JText::_('DISCUSSBOT_ERROR'). ': ' . $status['error']);
-                }
-
-                $mainframe->redirect($url);
-
+	            if ($ajaxEnabled) {
+		            $ajax->message = JText::_('DISCUSSBOT_ERROR') . ': ' . $this->ajaxError($status['error']);
+	            } else {
+		            JFusionFunction::raiseWarning(JText::_('DISCUSSBOT_ERROR'), $status['error'], 1);
+	            }
             } else {
-                $mainframe->redirect($url, JText::sprintf('THREAD_CREATED_SUCCESSFULLY',$this->article->title));
+	            $ajax->status = true;
+	            $msg = JText::sprintf('THREAD_CREATED_SUCCESSFULLY',$this->article->title);
+	            if ($ajaxEnabled) {
+		            $ajax->message = $msg;
+	            } else {
+		            JFusionFunction::raiseWarning(JText::_('SUCCESS'), $msg, 1);
+	            }
             }
+        } else {
+	        $msg = JText::_('ACCESS_DENIED');
+	        if ($ajaxEnabled) {
+		        $ajax->message = $msg;
+	        } else {
+		        JFusionFunction::raiseWarning(JText::_('DISCUSSBOT_ERROR'), $msg, 1);
+	        }
         }
+	    if ($ajaxEnabled) {
+		    $this->renderAjaxResponce($ajax);
+	    } else {
+		    $mainframe->redirect($url);
+	    }
     }
 
     /*
@@ -778,20 +815,7 @@ HTML;
 
                         if (!empty($status['error'])){
                             if ($ajaxEnabled) {
-                                //output the error
-                                if (is_array($status['error'])) {
-                                    if (count($status['error']) < 2) {
-                                        $error = $status['error'][0];
-                                    } else {
-                                        $error = '';
-                                        foreach($status['error'] as $err) {
-                                           $error .= '<br /> - ' . $err;
-                                        }
-                                    }
-                                } else {
-                                    $error = $status['error'];
-                                }
-	                            $ajax->message = JText::_('DISCUSSBOT_ERROR') . ': ' . $error;
+	                            $ajax->message = JText::_('DISCUSSBOT_ERROR') . ': ' . $this->ajaxError($status['error']);
                             } else {
                                 JFusionFunction::raiseWarning(JText::_('DISCUSSBOT_ERROR'), $status['error'],1);
                             }
@@ -838,6 +862,12 @@ HTML;
 	                        } else {
 		                        $msg = 'SUCCESSFUL_POST';
 	                        }
+
+	                        if ($ajaxEnabled) {
+		                        $ajax->message = JText::_($msg);
+	                        } else {
+		                        JFusionFunction::raiseWarning(JText::_('SUCCESS'), JText::_($msg),1);
+	                        }
                         }
                     } else {
                         if ($ajaxEnabled) {
@@ -860,13 +890,19 @@ HTML;
                     JFusionFunction::raiseWarning(JText::_('DISCUSSBOT_ERROR'), JText::_('QUICKEREPLY_EMPTY'),1);
                 }
             }
+        } else {
+	        $msg = JText::_('ACCESS_DENIED');
+	        if ($ajaxEnabled) {
+		        $ajax->message = $msg;
+	        } else {
+		        JFusionFunction::raiseWarning(JText::_('DISCUSSBOT_ERROR'), $msg, 1);
+	        }
         }
 	    if ($ajaxEnabled) {
-		    $ajax->message = $msg;
 		    $this->renderAjaxResponce($ajax);
 	    } else {
 		    $mainframe = JFactory::getApplication();
-		    $mainframe->redirect($url, JText::_($msg));
+		    $mainframe->redirect($url);
 	    }
     }
 
@@ -914,9 +950,9 @@ HTML;
         } else {
 	        if ($this->ajax_request) {
 		        $ajax->status = false;
-		        $ajax->message = 'Access denied!';
+		        $ajax->message = JText::_('ACCESS_DENIED');
 	        } else {
-				die('Access denied!');
+				die(JText::_('ACCESS_DENIED'));
 	        }
         }
 	    if ($this->ajax_request) {
@@ -946,9 +982,9 @@ HTML;
         } else {
 	        if ($this->ajax_request) {
 		        $ajax->status = false;
-		        $ajax->message = 'Access denied!';
+		        $ajax->message = JText::_('ACCESS_DENIED');
 	        } else {
-		        die('Access denied!');
+		        die(JText::_('ACCESS_DENIED'));
 	        }
         }
 	    if ($this->ajax_request) {
