@@ -258,6 +258,8 @@ class JFusionAPI {
 				return $result;
 			}
 		}
+
+
 		return false;
 	}
 
@@ -434,8 +436,7 @@ class JFusionAPI {
 		if (isset($return['debug'])) {
 			$this->debug = $return['debug'];
 		}
-		if (isset($return['error'])) {
-			$this->error = $return['error'];
+		if (isset($return['error']) && !empty($return['error'])) {
 			return false;
 		} else if (isset($return['payload'])) {
 			return $return['payload'];
