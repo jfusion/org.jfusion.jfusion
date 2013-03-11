@@ -614,7 +614,7 @@ class JFusionCurl
 	{
         if (strpos($cookiedomain,'http://') === 0 || strpos($cookiedomain,'https://') === 0) {
             $jc = JFusionFactory::getCookies();
-            $jc->addCookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
+            return $jc->addCookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
         } else {
             // Versions of PHP prior to 5.2 do not support HttpOnly cookies
             // IE is buggy when specifying a blank domain so set the cookie manually
@@ -624,6 +624,21 @@ class JFusionCurl
             } else {
                 setcookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure);
             }
+
+	        $debug = array();
+	        $debug[JText::_('COOKIE')][JText::_('JFUSION_CROSS_DOMAIN_URL')] = null;
+	        $debug[JText::_('COOKIE')][JText::_('NAME')] = $name;
+	        $debug[JText::_('COOKIE')][JText::_('VALUE')] = $value;
+	        if (($expires) == 0) {
+		        $expires='Session_cookie';
+	        } else {
+		        $expires=date('d-m-Y H:i:s', $expires);
+	        }
+	        $debug[JText::_('COOKIE')][JText::_('COOKIE_EXPIRES')] = $expires;
+	        $debug[JText::_('COOKIE')][JText::_('COOKIE_PATH')] = $cookiepath;
+	        $debug[JText::_('COOKIE')][JText::_('COOKIE_SECURE')] = $secure;
+	        $debug[JText::_('COOKIE')][JText::_('COOKIE_HTTPONLY')] = $httponly;
+	        return $debug;
         }
 	}
 
@@ -671,14 +686,7 @@ class JFusionCurl
 					$cookiedomain=$cookie['domain'];
 				}
 			}
-			JFusionCurl::addCookie($name, urldecode($value), $expires_time, $cookiepath, $cookiedomain, $secure, $httponly);
-
-			if (($expires_time) == 0) {
-				$expires_time='Session_cookie';
-			} else {
-				$expires_time=date('d-m-Y H:i:s', $expires_time);
-			}
-			$status['debug'][] = JFusionCurl::_('CREATED') . ' ' . JFusionCurl::_('COOKIE') . ': ' . JFusionCurl::_('NAME') . '=' . $name . ', ' . JFusionCurl::_('VALUE') . '=' . urldecode($value) .', ' .JFusionCurl::_('EXPIRES') . '=' .$expires_time .', ' . JFusionCurl::_('COOKIE_PATH') . '=' . $cookiepath . ', ' . JFusionCurl::_('COOKIE_DOMAIN') . '=' . $cookiedomain. ', '.JFusionCurl::_('COOKIE_SECURE') . '=' .$secure. ', '.JFusionCurl::_('COOKIE_HTTPONLY') . '=' .$httponly;
+			$status['debug'][] = JFusionCurl::addCookie($name, urldecode($value), $expires_time, $cookiepath, $cookiedomain, $secure, $httponly);
 			if ($name=='MOODLEID_') {
 				$status['cURL']['moodle'] = urldecode($value);
 			}
@@ -774,21 +782,9 @@ class JFusionCurl
 			if (!$leaveit) {
 				$expires_time=time()-30*60;
 				$value = '';
-				JFusionCurl::addCookie($name, urldecode($value), $expires_time, $cookiepath, $cookiedomain, $secure, $httponly);
-				if (($expires_time) == 0) {
-					$expires_time='Session_cookie';
-				} else {
-					$expires_time=date('d-m-Y H:i:s', $expires_time);
-				}
-				$status['debug'][] = JFusionCurl::_('DELETED') . ' ' . JFusionCurl::_('COOKIE') . ': ' . JFusionCurl::_('NAME') . '=' . $name . ', ' . JFusionCurl::_('VALUE') . '=' . urldecode($value) .', ' .JFusionCurl::_('EXPIRES') . '=' .$expires_time .', ' . JFusionCurl::_('COOKIE_PATH') . '=' . $cookiepath . ', ' . JFusionCurl::_('COOKIE_DOMAIN') . '=' . $cookiedomain. ', '.JFusionCurl::_('COOKIE_SECURE') . '=' .$secure. ', '.JFusionCurl::_('COOKIE_HTTPONLY') . '=' .$httponly;
+				$status['debug'][] = JFusionCurl::addCookie($name, urldecode($value), $expires_time, $cookiepath, $cookiedomain, $secure, $httponly);
 			} else {
-				JFusionCurl::addCookie($name, urldecode($cookie['value']['value']), $expires_time, $cookiepath, $cookiedomain, $secure, $httponly);
-				if (($expires_time) == 0) {
-					$expires_time='Session_cookie';
-				} else {
-					$expires_time=date('d-m-Y H:i:s', $expires_time);
-				}
-				$status['debug'][] = JFusionCurl::_('LEFT_ALONE') . ' ' . JFusionCurl::_('COOKIE') . ': ' . JFusionCurl::_('NAME') . '=' . $name . ', ' . JFusionCurl::_('VALUE') . '=' . urldecode($cookie['value']['value']) .', ' .JFusionCurl::_('EXPIRES') . '=' .$expires_time .', ' . JFusionCurl::_('COOKIE_PATH') . '=' . $cookiepath . ', ' . JFusionCurl::_('COOKIE_DOMAIN') . '=' . $cookiedomain. ', '.JFusionCurl::_('COOKIE_SECURE') . '=' .$secure. ', '.JFusionCurl::_('COOKIE_HTTPONLY') . '=' .$httponly;
+				$status['debug'][] = JFusionCurl::addCookie($name, urldecode($cookie['value']['value']), $expires_time, $cookiepath, $cookiedomain, $secure, $httponly);
 			}
 		}
 		return $status;
