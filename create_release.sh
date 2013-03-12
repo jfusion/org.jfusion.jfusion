@@ -102,7 +102,7 @@ case $1 in
 				createpackage components/com_jfusion/plugins/efront/ pluginpackages/jfusion_efront.zip
 				createpackage components/com_jfusion/plugins/elgg/ pluginpackages/jfusion_elgg.zip
 				createpackage components/com_jfusion/plugins/gallery2/ pluginpackages/jfusion_gallery2.zip
-				createpackage components/com_jfusion/plugins/joomla_ext/ pluginpackages/joomla_ext.zip
+				createpackage components/com_jfusion/plugins/joomla_ext/ pluginpackages/jfusion_joomla_ext.zip
 				createpackage components/com_jfusion/plugins/joomla_int/ pluginpackages/jfusion_joomla_int.zip
 				createpackage components/com_jfusion/plugins/magento/ pluginpackages/jfusion_magento.zip
 				createpackage components/com_jfusion/plugins/mediawiki/ pluginpackages/jfusion_mediawiki.zip
