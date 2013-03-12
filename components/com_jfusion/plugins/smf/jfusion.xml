@@ -109,7 +109,7 @@
 
         <param name="jfusionbox" type="text" default="" label="CURL_OPTIONS_LOGIN" description="" />
         <param name="login_url" type="text" size="60" label="CURL_LOGIN_URL" default="index.php?action=login" description="CURL_LOGIN_URL_DESC" />
-        <param name="brute_force" type="list" default="standard" label="CURL_BRUTE_FORCE" description="CURL_BRUTE_FORCE_DESC">
+        <param name="brute_force" type="list" default="brute_force" label="CURL_BRUTE_FORCE" description="CURL_BRUTE_FORCE_DESC">
             <option value="brute_force">JYES</option>
             <option value="standard">JNO</option>
         </param>
