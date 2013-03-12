@@ -482,6 +482,11 @@ class plgContentJfusion extends JPlugin
 		die(json_encode($ajax));
 	}
 
+	/**
+	 * Returns the view for compare
+	 *
+	 * @return string
+	 */
 	public function view() {
 		return ($this->helper->option == 'com_k2') ? 'item' : 'article';
 	}
@@ -671,7 +676,7 @@ HTML;
         $this->renderDebugOutput();
     }
 
-    /*
+    /**
      * renderDebugOutput
      *
      * @return string

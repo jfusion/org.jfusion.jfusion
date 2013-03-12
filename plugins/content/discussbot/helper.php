@@ -709,17 +709,17 @@ JS;
      */
     public function renderFile($file)
     {
+	    $captured_content = false;
         $this->debug('Rendering file ' . $file);
         if (file_exists(DISCUSSION_TEMPLATE_PATH . $file)) {
 	        ob_start();
 	        include DISCUSSION_TEMPLATE_PATH.$file;
 	        $captured_content = ob_get_contents();
 	        ob_end_clean();
-	        return $captured_content;
         } else {
             die(DISCUSSION_TEMPLATE_PATH . $file . " is missing!");
         }
-        return false;
+        return $captured_content;
     }
 
     /**

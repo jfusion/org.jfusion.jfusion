@@ -29,7 +29,6 @@ class JFusionAPI {
 	public $url;
 	public $sid = null;
 
-	private $payload = array();
 	private $secret = null;
 	private $hash = null;
 	private $error = array();
