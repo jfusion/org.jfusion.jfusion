@@ -309,9 +309,12 @@ class JFusionUser_vbulletin extends JFusionUser
                 $status['debug'][] = JFusionCurl::addCookie($cookie_prefix.'password' , $passwordhash, $expires_time, $cookie_path, $cookie_domain, $secure, $httponly, true);
             } else {
                 $status['debug'][] = JText::_('VB_SESSION_ALREADY_ACTIVE');
+	            /*
+	             * do not want to output as it indicate the cookies are set when they are not.
                 $status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => $cookie_prefix.'userid', JText::_('VALUE') => $cookie_userid, JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
                 $status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => $cookie_prefix.'password', JText::_('VALUE') => substr($cookie_password, 0, 6) . '********, ', JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
                 $status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => $cookie_prefix.'sessionhash', JText::_('VALUE') => $cookie_sessionhash, JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
+	            */
             }
         }
         return $status;
