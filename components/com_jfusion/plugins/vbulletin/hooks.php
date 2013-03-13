@@ -662,11 +662,17 @@ class JFvBulletinTask {
      * @param $existinguser
      * @return array
      */
-    function convertUserData($existinguser)
-    {
-        $userinfo = array('userid' => $existinguser->userid, 'username' => $existinguser->username, 'email' => $existinguser->email, 'password' => $existinguser->password);
-        return $userinfo;
-    }
+	function convertUserData($existinguser)
+	{
+		$userinfo = array('userid' => $existinguser->userid,
+			'username' => $existinguser->username,
+			'email' => $existinguser->email,
+			'password' => $existinguser->password,
+			'usergroupid' => $existinguser->group_id,
+			'displaygroupid' => $existinguser->membergroupids,
+			'membergroupids' => $existinguser->membergroupids);
+		return $userinfo;
+	}
 
     function _createUser() {
         $userinfo =& $this->data['userinfo'];
