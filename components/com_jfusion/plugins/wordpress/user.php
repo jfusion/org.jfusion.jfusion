@@ -165,54 +165,25 @@ class JFusionUser_wordpress extends JFusionUser {
 
         $status = array('error' => array(),'debug' => array());
 		$params = JFusionFactory::getParams($this->getJname());
+		$cookie_name = $params->get('cookie_name');
 		$cookie_domain = $params->get('cookie_domain');
 		$cookie_path = $params->get('cookie_path');
 		$cookie_hash = $params->get('cookie_hash');
-		$forumPath =   $params->get('source_path');
 
-		if (substr($forumPath, -1) == DS) {
-			$myfile = $forumPath . 'wp-config.php';
-		} else {
-			$myfile = $forumPath . DS . 'wp-config.php';
-		}
-
-		if (($file_handle = @fopen($myfile, 'r')) === false) {
-			JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));
-			$result = false;
-			return $result;
-		} else {
-			//parse the file line by line to get only the config variables
-			//			$file_handle = fopen($myfile, 'r');
-			while (!feof($file_handle)) {
-				$line = fgets($file_handle);
-				if (strpos(trim($line), 'define') === 0) {
-					eval($line);
-				}
-				if (strpos(trim($line), '$table_prefix') === 0) {
-					eval($line);
-				}
-			}
-			fclose($file_handle);
-		}
-		// lets try deleting the cookies
-		if (defined('COOKIEHASH')) {
-			$cookie_hash = COOKIEHASH;
-		} else {$cookie_hash = '';
-		}
-		if ($cookie_hash) {
-			$cookie_hash = '_'.$cookie_hash;
-		}
 		$cookies = array();
-		$cookies[0][0] ='wordpress_logged_in'.$cookie_hash.'=';
-		$cookies[1][0] ='wordpress'.$cookie_hash.'=';
+		$cookies[0][0] ='wordpress_logged_in'.$cookie_name.'=';
+		$cookies[1][0] ='wordpress'.$cookie_name.'=';
 
 		$status = JFusionCurl::deletemycookies($status, $cookies, $cookie_domain, $cookie_path, "");
 
 		$cookies = array();
-		$cookies[1][0] ='wordpress'.$cookie_hash.'=';
+		$cookies[1][0] ='wordpress'.$cookie_name.'=';
 
-		$cookie_path .= 'wp-content/plugins';
-		$status = JFusionCurl::deletemycookies($status, $cookies, $cookie_domain, $cookie_path, "");
+		$path = $cookie_path.'wp-content/plugins';
+		$status = JFusionCurl::deletemycookies($status, $cookies, $cookie_domain, $path, "");
+
+	    $path .= $cookie_path.'wp-admin';
+	    $status = JFusionCurl::deletemycookies($status, $cookies, $cookie_domain, $path, "");
 
 		return $status;
 	}

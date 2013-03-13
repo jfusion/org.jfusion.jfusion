@@ -29,7 +29,6 @@ class JFusionAPI {
 	public $url;
 	public $sid = null;
 
-	private $payload = array();
 	private $secret = null;
 	private $hash = null;
 	private $error = array();
@@ -258,6 +257,8 @@ class JFusionAPI {
 				return $result;
 			}
 		}
+
+
 		return false;
 	}
 
@@ -434,8 +435,7 @@ class JFusionAPI {
 		if (isset($return['debug'])) {
 			$this->debug = $return['debug'];
 		}
-		if (isset($return['error'])) {
-			$this->error = $return['error'];
+		if (isset($return['error']) && !empty($return['error'])) {
 			return false;
 		} else if (isset($return['payload'])) {
 			return $return['payload'];
@@ -1034,8 +1034,11 @@ class JFusionAPIInternal extends JFusionAPIBase {
 		$user = JUser::getInstance($userid);
 
 		if ($user) {
-			$user->delete();
-			$this->debug[] = 'user deleted: '.$userid;
+			if ($user->delete()) {
+				$this->debug[] = 'user deleted: '.$userid;
+			} else {
+				$this->error[] = 'Delete user failed: '.$userid;
+			}
 		} else {
 			$this->error[] = 'invalid user';
 		}

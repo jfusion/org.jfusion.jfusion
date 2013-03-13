@@ -79,6 +79,7 @@ class JFusionCookies {
 
         $debug = array();
         $debug[JText::_('COOKIE')][JText::_('JFUSION_CROSS_DOMAIN_URL')] = $url;
+	    $debug[JText::_('COOKIE')][JText::_('COOKIE_DOMAIN')] = $cookiedomain;
         $debug[JText::_('COOKIE')][JText::_('NAME')] = $cookie_name;
         if ($mask) {
             $debug[JText::_('COOKIE')][JText::_('VALUE')] = substr($cookie_value, 0, 6) . '********';

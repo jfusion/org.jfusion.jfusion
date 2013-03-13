@@ -323,7 +323,7 @@ class plgContentJfusion extends JPlugin
 				                    //set manual plug
 				                    $this->manual_plug = true;
 			                    } elseif ($this->dbtask != 'create_thread' && $this->dbtask != 'create_threadpost') {
-				                    $ajax->message = 'Thread not found!';
+				                    $ajax->message = JText::_('THREAD_NOT_FOUND');
 				                    $this->renderAjaxResponce($ajax);
 			                    }
 		                    }
@@ -435,6 +435,27 @@ class plgContentJfusion extends JPlugin
 	}
 
 	/**
+	 * @param mixed $error
+	 * @return string
+	 */
+	public function ajaxError($error) {
+		//output the error
+		$result = null;
+		if (is_array($error['error'])) {
+			foreach($error['error'] as $err) {
+				if ($result) {
+					$result .= '<br /> - ' . $err;
+				} else {
+					$result = ' - ' . $err;
+				}
+			}
+		} else {
+			$result = $error['error'];
+		}
+		return $result;
+	}
+
+	/**
 	 * @return  stdClass
 	 */
 	public function prepareAjaxResponce() {
@@ -458,8 +479,16 @@ class plgContentJfusion extends JPlugin
 		if ($this->params->get('enable_pagination',1)) {
 			$ajax->pagination = $this->updatePagination();
 		}
-	    echo json_encode($ajax);
-		die();
+		die(json_encode($ajax));
+	}
+
+	/**
+	 * Returns the view for compare
+	 *
+	 * @return string
+	 */
+	public function view() {
+		return ($this->helper->option == 'com_k2') ? 'item' : 'article';
 	}
 
     /*
@@ -513,8 +542,7 @@ class plgContentJfusion extends JPlugin
 
         //check to see if the fulltext has a manual plug if we are in a blog view
         if (isset($this->article->fulltext)) {
-            $test_view = ($this->helper->option == 'com_k2') ? 'item' : 'article';
-            if (!$this->manual_plug && JRequest::getVar('view') != $test_view) {
+            if (!$this->manual_plug && JRequest::getVar('view') != $this->view()) {
                 preg_match('/\{jfusion_discuss (.*)\}/U',$this->article->fulltext,$match);
                 if (!empty($match)) {
                     $this->helper->debug('No plugs in text but found plugs in fulltext');
@@ -648,7 +676,7 @@ HTML;
         $this->renderDebugOutput();
     }
 
-    /*
+    /**
      * renderDebugOutput
      *
      * @return string
@@ -706,24 +734,40 @@ HTML;
         $submittedArticleId = JRequest::getInt('articleId', 0, 'post');
         $editAccess = $JoomlaUser->authorize('com_content', 'edit', 'content', 'all');
 
+	    $ajaxEnabled = ($this->params->get('enable_ajax',1) && $this->ajax_request);
+	    $ajax = $this->prepareAjaxResponce();
+
         if ($editAccess && $this->valid && $submittedArticleId == $this->article->id) {
             $status = $this->helper->checkThreadExists(1);
 
             if (!empty($status['error'])) {
-                if (is_array($status['error'])) {
-                    foreach($status['error'] as $err) {
-                        $mainframe->enqueueMessage('error',JText::_('DISCUSSBOT_ERROR'). ': ' . $err);
-                    }
-                } else {
-                    $mainframe->enqueueMessage('error',JText::_('DISCUSSBOT_ERROR'). ': ' . $status['error']);
-                }
-
-                $mainframe->redirect($url);
-
+	            if ($ajaxEnabled) {
+		            $ajax->message = JText::_('DISCUSSBOT_ERROR') . ': ' . $this->ajaxError($status['error']);
+	            } else {
+		            JFusionFunction::raiseWarning(JText::_('DISCUSSBOT_ERROR'), $status['error'], 1);
+	            }
             } else {
-                $mainframe->redirect($url, JText::sprintf('THREAD_CREATED_SUCCESSFULLY',$this->article->title));
+	            $ajax->status = true;
+	            $msg = JText::sprintf('THREAD_CREATED_SUCCESSFULLY',$this->article->title);
+	            if ($ajaxEnabled) {
+		            $ajax->message = $msg;
+	            } else {
+		            JFusionFunction::raiseWarning(JText::_('SUCCESS'), $msg, 1);
+	            }
             }
+        } else {
+	        $msg = JText::_('ACCESS_DENIED');
+	        if ($ajaxEnabled) {
+		        $ajax->message = $msg;
+	        } else {
+		        JFusionFunction::raiseWarning(JText::_('DISCUSSBOT_ERROR'), $msg, 1);
+	        }
         }
+	    if ($ajaxEnabled) {
+		    $this->renderAjaxResponce($ajax);
+	    } else {
+		    $mainframe->redirect($url);
+	    }
     }
 
     /*
@@ -778,20 +822,7 @@ HTML;
 
                         if (!empty($status['error'])){
                             if ($ajaxEnabled) {
-                                //output the error
-                                if (is_array($status['error'])) {
-                                    if (count($status['error']) < 2) {
-                                        $error = $status['error'][0];
-                                    } else {
-                                        $error = '';
-                                        foreach($status['error'] as $err) {
-                                           $error .= '<br /> - ' . $err;
-                                        }
-                                    }
-                                } else {
-                                    $error = $status['error'];
-                                }
-	                            $ajax->message = JText::_('DISCUSSBOT_ERROR') . ': ' . $error;
+	                            $ajax->message = JText::_('DISCUSSBOT_ERROR') . ': ' . $this->ajaxError($status['error']);
                             } else {
                                 JFusionFunction::raiseWarning(JText::_('DISCUSSBOT_ERROR'), $status['error'],1);
                             }
@@ -838,6 +869,12 @@ HTML;
 	                        } else {
 		                        $msg = 'SUCCESSFUL_POST';
 	                        }
+
+	                        if ($ajaxEnabled) {
+		                        $ajax->message = JText::_($msg);
+	                        } else {
+		                        JFusionFunction::raiseWarning(JText::_('SUCCESS'), JText::_($msg),1);
+	                        }
                         }
                     } else {
                         if ($ajaxEnabled) {
@@ -860,13 +897,19 @@ HTML;
                     JFusionFunction::raiseWarning(JText::_('DISCUSSBOT_ERROR'), JText::_('QUICKEREPLY_EMPTY'),1);
                 }
             }
+        } else {
+	        $msg = JText::_('ACCESS_DENIED');
+	        if ($ajaxEnabled) {
+		        $ajax->message = $msg;
+	        } else {
+		        JFusionFunction::raiseWarning(JText::_('DISCUSSBOT_ERROR'), $msg, 1);
+	        }
         }
 	    if ($ajaxEnabled) {
-		    $ajax->message = $msg;
 		    $this->renderAjaxResponce($ajax);
 	    } else {
 		    $mainframe = JFactory::getApplication();
-		    $mainframe->redirect($url, JText::_($msg));
+		    $mainframe->redirect($url);
 	    }
     }
 
@@ -907,20 +950,20 @@ HTML;
                 }
             }
 
-            if ($this->ajax_request) {
-	            $ajax->status = true;
-	            $this->helper->getThreadStatus();
-            }
+	        $ajax->status = true;
+	        $this->helper->getThreadStatus();
         } else {
 	        if ($this->ajax_request) {
-		        $ajax->status = false;
-		        $ajax->message = 'Access denied!';
+		        $ajax->message = JText::_('ACCESS_DENIED');
 	        } else {
-				die('Access denied!');
+		        JFusionFunction::raiseWarning(JText::_('DISCUSSBOT_ERROR'), JText::_('ACCESS_DENIED'), 1);
 	        }
         }
 	    if ($this->ajax_request) {
 		    $this->renderAjaxResponce($ajax);
+	    } else {
+		    $mainframe = JFactory::getApplication();
+		    $mainframe->redirect($this->helper->getArticleUrl('','',false));
 	    }
     }
 
@@ -939,20 +982,21 @@ HTML;
         if ($editAccess && $this->valid && $submittedArticleId == $this->article->id) {
             $threadinfo = $this->helper->getThreadInfo();
             JFusionFunction::updateDiscussionBotLookup($this->article->id, $threadinfo, $this->jname, 1, $threadinfo->manual);
-            if ($this->ajax_request) {
-	            $ajax->status = true;
-	            $this->helper->getThreadStatus();
-            }
+
+	        $ajax->status = true;
+	        $this->helper->getThreadStatus();
         } else {
 	        if ($this->ajax_request) {
-		        $ajax->status = false;
-		        $ajax->message = 'Access denied!';
+		        $ajax->message = JText::_('ACCESS_DENIED');
 	        } else {
-		        die('Access denied!');
+		        JFusionFunction::raiseWarning(JText::_('DISCUSSBOT_ERROR'), JText::_('ACCESS_DENIED'), 1);
 	        }
         }
 	    if ($this->ajax_request) {
 		    $this->renderAjaxResponce($ajax);
+	    } else {
+		    $mainframe = JFactory::getApplication();
+		    $mainframe->redirect($this->helper->getArticleUrl('','',false));
 	    }
     }
 
@@ -969,10 +1013,8 @@ HTML;
             $this->helper->reply_count = $JFusionForum->getReplyCount($threadinfo);
         }
         $view = JRequest::getVar('view');
-        $test_view = ($this->helper->option == 'com_k2') ? 'item' : 'article';
-
         //let's only show quick replies and posts on the article view
-        if ($view == $test_view) {
+        if ($view == $this->view()) {
             $JSession = JFactory::getSession();
 
             if (empty($threadinfo->published) && $this->creationMode != 'reply') {
@@ -1189,9 +1231,7 @@ HTML;
         //let's overwrite the readmore link with our own
         //needed as in the case of updating the buttons via ajax which calls the article view
         $view = ($override = JRequest::getVar('view_override')) ? $override : JRequest::getVar('view');
-        $test_view = ($this->helper->option == 'com_k2') ? 'item' : 'article';
-
-        if ($view != $test_view && $this->params->get('overwrite_readmore',1)) {
+        if ($view != $this->view() && $this->params->get('overwrite_readmore',1)) {
             //make sure the readmore link is enabled for this article
 
             if (!empty($show_readmore) && !empty($readmore_catch)) {
@@ -1278,7 +1318,7 @@ HTML;
 /*
     <a class="jfusionRefreshLink" href="javascript:void(0);" onclick=""><?php echo JText::_('REFRESH_POSTS');?></a> <br/>
 */
-	    if($this->params->get('show_refresh_link',1) && $threadinfo) {
+	    if($view==$this->view() && $this->params->get('show_refresh_link',1) && $threadinfo) {
 		    //class="jfusionRefreshLink"
 		    $this->helper->output['buttons']['refresh']['href'] = 'javascript:void(0);';
 		    $this->helper->output['buttons']['refresh']['js']['onclick'] = 'refreshPosts('.$threadinfo->threadid.');';
@@ -1294,7 +1334,7 @@ HTML;
                     $this->helper->reply_count = $JFusionForum->getReplyCount($threadinfo);
                 }
 
-                if ($view==$test_view) {
+                if ($view==$this->view()) {
                     if ($link_mode=="article" || $link_mode=="always") {
                         $this->helper->output['buttons']['discuss']['href'] = JFusionFunction::routeURL($JFusionForum->getThreadURL($threadinfo->threadid), $itemid, $this->jname);
                         $this->helper->output['buttons']['discuss']['text'] = $linkHTML;
@@ -1342,7 +1382,7 @@ HTML;
             }
 
             //show comments link
-            if ($view==$test_view && $this->params->get('show_toggle_posts_link',1)) {
+            if ($view==$this->view() && $this->params->get('show_toggle_posts_link',1)) {
                 $this->helper->output['buttons']['showreplies']['href'] = 'javascript: void(0);';
                 $this->helper->output['buttons']['showreplies']['js']['onclick'] = 'toggleDiscussionVisibility();';
 
@@ -1590,7 +1630,7 @@ HTML;
             $ajax->posts = $this->helper->renderFile('default_posts.php');
 	        $ajax->status = true;
         } else {
-			$ajax->message = 'not published';
+			$ajax->message = JText::_('NOT_PUBLISHED');
         }
 	    $this->renderAjaxResponce($ajax);
     }

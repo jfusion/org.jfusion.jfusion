@@ -326,7 +326,7 @@ class JFusionPluginInstaller extends JObject
                         $xml = $this->getElementByPath($this->manifest,$f);
 
 	                    if ($xml instanceof JSimpleXMLElement || $xml instanceof JXMLElement) {
-		                    $$f = $this->filterInput->clean($this->getData($name), 'integer');
+		                    $$f = $this->filterInput->clean($this->getData($xml), 'integer');
 	                    } elseif ($f == 'master' || $f == 'check_encryption') {
                             $$f = 0;
                         } else {
