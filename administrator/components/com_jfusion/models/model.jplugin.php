@@ -1306,6 +1306,8 @@ class JFusionJplugin
         $usergroups = JFusionFunction::getCorrectUserGroups($jname,$userinfo);
         //make sure the group exists
         if (empty($usergroups)) {
+	        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST');
+        } else {
             $db = JFusionFactory::getDatabase($jname);
             $params = JFusionFactory::getParams($jname);
             $dispatcher = JDispatcher::getInstance();
@@ -1384,8 +1386,6 @@ class JFusionJplugin
                     }
                 }
             }
-        } else {
-            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST');
         }
         return $status;
     }
