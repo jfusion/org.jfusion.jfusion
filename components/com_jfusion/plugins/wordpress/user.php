@@ -182,7 +182,7 @@ class JFusionUser_wordpress extends JFusionUser {
 		$path = $cookie_path.'wp-content/plugins';
 		$status = JFusionCurl::deletemycookies($status, $cookies, $cookie_domain, $path, "");
 
-	    $path .= $cookie_path.'wp-admin';
+	    $path = $cookie_path.'wp-admin';
 	    $status = JFusionCurl::deletemycookies($status, $cookies, $cookie_domain, $path, "");
 
 		return $status;
@@ -557,6 +557,14 @@ class JFusionUser_wordpress extends JFusionUser {
 		} else {
 			$status['debug'][] = 'Deleted userrecord of user with userid '.$user_id;
 		}
+	    // delete usermeta
+	    $query = 'DELETE FROM #__usermeta WHERE user_id = ' . $user_id;
+	    $db->setQuery($query);
+	    if (!$db->query()) {
+		    $status['error'][] = 'Error Could not delete usermetarecord with userid '.$user_id.': '.$db->stderr();
+	    } else {
+		    $status['debug'][] = 'Deleted usermetarecord of user with userid '.$user_id;
+	    }
 		return $status;
 	}
 

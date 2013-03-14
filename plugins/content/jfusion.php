@@ -89,7 +89,7 @@ class plgContentJfusion extends JPlugin
 
         if ($this->jname !== false) {
             //load the plugin's language file
-            $this->loadLanguage('com_jfusion.plg_' . $this->jname, JPATH_ADMINISTRATOR);
+            $this->loadLanguage('com_jfusion.plg_' . $this->jname, JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion');
         }
 
         //determine what mode we are to operate in

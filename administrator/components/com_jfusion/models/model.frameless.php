@@ -123,10 +123,7 @@ class JFusionFrameless {
 
 		$data->bodymap = $JFusionParam->get('bodymap',$JFusionParam->get('bodymap'));
 		$data->headermap = $JFusionParam->get('headermap',$JFusionParam->get('headermap'));
-        
-		//Load language files
-		$lang = JFactory::getLanguage ();
-		$lang->load ( 'com_jfusion.plg_' . $jname );
+
 		return $data;
 	}
 

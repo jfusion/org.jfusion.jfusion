@@ -127,14 +127,14 @@ c:\windows\system32\xcopy /E /C /V /Y "%FULLPATH%administrator\components\com_jf
 c:\windows\system32\xcopy /E /C /V /Y "%FULLPATH%pluginpackages\*.*" "%FULLPATH%tmp\admin\packages\" > NUL
 del "%FULLPATH%tmp\admin\jfusion.xml"
 
-md tmp\admin\languages
-c:\windows\system32\xcopy /E /C /V /Y "%FULLPATH%administrator\language\en-GB\*.*" "%FULLPATH%tmp\admin\languages\en-GB\" > NUL
+md tmp\admin\language
+c:\windows\system32\xcopy /E /C /V /Y "%FULLPATH%administrator\language\en-GB\*.*" "%FULLPATH%tmp\admin\language\en-GB\" > NUL
 
 md tmp\front
 c:\windows\system32\xcopy /E /C /V /Y /EXCLUDE:%FULLPATH%exclude.txt "%FULLPATH%components\com_jfusion\*.*" "%FULLPATH%tmp\front" > NUL
 
-md tmp\front\languages
-c:\windows\system32\xcopy /E /C /V /Y "%FULLPATH%language\en-GB\*.*" "%FULLPATH%tmp\front\languages\en-GB\" > NUL
+md tmp\front\language
+c:\windows\system32\xcopy /E /C /V /Y "%FULLPATH%language\en-GB\*.*" "%FULLPATH%tmp\front\language\en-GB\" > NUL
 
 copy "%FULLPATH%administrator\components\com_jfusion\jfusion.xml" "%FULLPATH%tmp" /V /Y > NUL
 copy "%FULLPATH%administrator\components\com_jfusion\install.jfusion.php" "%FULLPATH%tmp" /V /Y > NUL
