@@ -8,7 +8,7 @@
 	<authorUrl>http://www.jfusion.org</authorUrl>
 	<copyright>Copyright (C) 2008 JFusion. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-	<version>1.8.2-000</version>
+	<version>1.8.3-000</version>
 	<revision>$revision$</revision>
     <timestamp>$timestamp$</timestamp>
 	<description>Universal User Integration</description>
@@ -27,9 +27,10 @@
 		<folder>helpers</folder>
 		<folder>views</folder>
 		<folder>images</folder>
+        <folder>language</folder>
 	</files>
 
-	<languages folder="front/languages">
+	<languages folder="front/language">
         <language tag="en-GB">en-GB/en-GB.com_jfusion.ini</language>
         <language tag="en-GB">en-GB/en-GB.mod_jfusion_whosonline.ini</language>
         <language tag="en-GB">en-GB/en-GB.mod_jfusion_user_activity.ini</language>
@@ -68,9 +69,10 @@
 			<folder>views</folder>
 			<folder>elements</folder>
             <folder>fields</folder>
+            <folder>language</folder>
 		</files>
 
-		<languages folder="admin/languages">
+		<languages folder="admin/language">
             <language tag="en-GB">en-GB/en-GB.com_jfusion.ini</language>
             <language tag="en-GB">en-GB/en-GB.com_jfusion.menu.ini</language>
             <language tag="en-GB">en-GB/en-GB.com_jfusion.sys.ini</language>

@@ -78,9 +78,9 @@ class jfusionViewlanguages extends JView
             }
         }
 
-        if (JFusionFunction::isJoomlaVersion('1.6')) {
+        if (JFusionFunction::isJoomlaVersion('2.5')) {
             $db = JFactory::getDBO();
-            $query = 'SELECT element, manifest_cache FROM #__extensions WHERE name LIKE \'jfusion\' AND type LIKE \'language\' AND client_id = 1';
+            $query = 'SELECT element, manifest_cache FROM #__extensions WHERE name LIKE \'jfusion %\' AND type LIKE \'file\' AND client_id = 0';
             $db->setQuery($query);
             $results = $db->loadObjectList();
 
@@ -100,11 +100,10 @@ class jfusionViewlanguages extends JView
             }
         } else {
             $path = JPATH_ADMINISTRATOR.DS.'language';
-            $paths = JFolder::folders(JPATH_ADMINISTRATOR.DS.'language');
+            $paths = JFolder::folders($path);
             foreach ($paths as $tag) {
                 $parser = JFactory::getXMLParser('Simple');
-                $file = $path.DS.$tag.DS.$tag.'.com_jfusion.xml';
-                if ($parser->loadFile($file)) {
+                if ($parser->loadFile($path.DS.$tag.DS.$tag.'.com_jfusion.xml')) {
                     $date = $parser->document->getElementByPath('creationdate')->data();
                     if ( $date) {
                         $lang_repo[$tag]->currentdate = $date;

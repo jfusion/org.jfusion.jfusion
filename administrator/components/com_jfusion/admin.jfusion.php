@@ -32,7 +32,7 @@ foreach ($plugins as $plugin) {
     // Language file is loaded in function of the context
     // of the selected language in Joomla
     // and of the JPATH_BASE (in admin = JPATH_ADMINISTRATOR, in site = JPATH_SITE)
-    $lang->load('com_jfusion.plg_' . $name);
+    $lang->load('com_jfusion.plg_' . $name, JPATH_COMPONENT_ADMINISTRATOR);
 }
 
 //load the JFusion CSS and javascript

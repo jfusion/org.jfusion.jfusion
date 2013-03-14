@@ -98,7 +98,7 @@ class JFusionModelInstaller extends InstallerModelInstall
                 }
                 if ( $result['status'] && is_file($package['packagefile']) ) {
                     //save a copy of the plugin for safe keeping
-                    $dest = JPATH_COMPONENT_ADMINISTRATOR . DS . 'packages' . DS . JFile::getName($package['packagefile']);
+                    $dest = JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'packages' . DS . JFile::getName($package['packagefile']);
                     if ( $package['packagefile'] != $dest) {
                         JFile::copy($package['packagefile'],$dest);
                     }
@@ -246,6 +246,7 @@ class JFusionPluginInstaller extends JObject
         } else {
             $this->parent->setPath('source', $dir);
 
+
             // Get the extension manifest object
             $manifest = $this->_getManifest($dir);
             if (is_null($manifest)) {
@@ -309,9 +310,15 @@ class JFusionPluginInstaller extends JObject
                      * Language files Processing Section
                      * ---------------------------------------------------------------------------------------------
                      */
-                    $this->parent->parseLanguages($this->getElementByPath($this->manifest,'languages'));
-                    $this->parent->parseLanguages($this->getElementByPath($this->manifest,'administration/languages'), 1);
-
+	                $languageFolder = $dir. DS.'language';
+	                if (JFolder::exists($languageFolder)) {
+		                $files = JFolder::files($languageFolder);
+		                foreach ($files as $file) {
+			                $dest = JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'language' . DS . substr($file,0,5);
+			                JFolder::create($dest);
+			                JFile::copy($languageFolder. DS .$file, $dest . DS . $file);
+		                }
+	                }
 
                     /**
                      * ---------------------------------------------------------------------------------------------
@@ -481,8 +488,14 @@ class JFusionPluginInstaller extends JObject
                 $this->manifest = $manifest;
 
                 if ($removeLanguage) {
-                    $this->parent->removeFiles($this->getElementByPath($this->manifest,'languages'));
-                    $this->parent->removeFiles($this->getElementByPath($this->manifest,'administration/languages'), 1);
+	                $languageFolder = JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'language';
+	                if (JFolder::exists($languageFolder)) {
+		                $files = JFolder::files(JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'language',  'com_jfusion.plg_'.$jname.'.ini',true);
+		                foreach ($files as $file) {
+			                $file = JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'language' . DS . substr($file,0,5). DS . $file;
+			                JFile::delete($file);
+		                }
+	                }
                 }
 
                 // remove files
