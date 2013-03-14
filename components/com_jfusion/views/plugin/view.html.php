@@ -42,7 +42,7 @@ class jfusionViewPlugin extends JView {
             // Language file is loaded in function of the context
             // of the selected language in Joomla
             // and of the JPATH_BASE (in admin = JPATH_ADMINISTRATOR, in site = JPATH_SITE)
-            $lang->load('com_jfusion.plg_' . $name,JPATH_ADMINISTRATOR . DS . 'components' . DS . com_jfusion);
+            $lang->load('com_jfusion.plg_' . $name,JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion');
         }
 
 		$result = JFusionFrameless::displayContent($data);
