@@ -182,7 +182,7 @@ class JFusionUser_wordpress extends JFusionUser {
 		$path = $cookie_path.'wp-content/plugins';
 		$status = JFusionCurl::deletemycookies($status, $cookies, $cookie_domain, $path, "");
 
-	    $path .= $cookie_path.'wp-admin';
+	    $path = $cookie_path.'wp-admin';
 	    $status = JFusionCurl::deletemycookies($status, $cookies, $cookie_domain, $path, "");
 
 		return $status;
