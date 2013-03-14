@@ -478,7 +478,7 @@ class plgUserJfusion extends JPlugin
         //initialise some vars
         global $JFusionActive, $jfusionDebug;
         $JFusionActive = true;
-        $my = JFactory::getUser($user['id']);
+	    $userinfo = JFactory::getUser($user['id']);
         //allow for the detection of external mods to exclude jfusion plugins
         global $JFusionActivePlugin;
         jimport('joomla.environment.request');
@@ -495,7 +495,7 @@ class plgUserJfusion extends JPlugin
             $master = JFusionFunction::getMaster();
             if ($master->name && $master->name != 'joomla_int' && $JFusionActivePlugin != $master->name) {
                 $JFusionMaster = JFusionFactory::getUser($master->name);
-                $userlookup = JFusionFunction::lookupUser($master->name, $my->get('id'));
+                $userlookup = JFusionFunction::lookupUser($master->name, $userinfo->id);
                 $jfusionDebug['userlookup'] = $userlookup;
                 $MasterUser = $JFusionMaster->getUser($userlookup);
                 if (isset($options['show_unsensored'])) {
@@ -519,7 +519,7 @@ class plgUserJfusion extends JPlugin
                 //check if sessions are enabled
                 if ($slave->dual_login == 1 && $JFusionActivePlugin != $slave->name) {
                     $JFusionSlave = JFusionFactory::getUser($slave->name);
-                    $userlookup = JFusionFunction::lookupUser($slave->name, $my->get('id'));
+                    $userlookup = JFusionFunction::lookupUser($slave->name, $userinfo->id);
                     $SlaveUser = $JFusionSlave->getUser($userlookup);
                     if (isset($options['show_unsensored'])) {
                         $jfusionDebug[$slave->name . ' ' . JText::_('USER') . ' ' . JText::_('DETAILS') ] = $SlaveUser;
@@ -546,7 +546,7 @@ class plgUserJfusion extends JPlugin
         //destroy the joomla session itself
         if ($JFusionActivePlugin != 'joomla_int') {
             $JoomlaUser = JFusionFactory::getUser('joomla_int');
-            $JoomlaUser->destroySession($user, $options);
+            $JoomlaUser->destroySession($userinfo, $options);
         }
 
         $params = JFusionFactory::getParams('joomla_int');
