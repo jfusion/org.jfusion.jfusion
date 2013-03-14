@@ -164,11 +164,12 @@ class JFusionUser_vbulletin extends JFusionUser
     }
 
     /**
-     * @param string $userinfo
-     * @param string $options
+     * @param object $userinfo
+     * @param array $options
+     *
      * @return array
      */
-    function destroySession($userinfo = '', $options = '')
+    function destroySession($userinfo, $options)
     {
         $status = array();
         $status['error'] = array();

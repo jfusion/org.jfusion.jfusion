@@ -119,6 +119,7 @@ class JFusionUser_joomla_ext extends JFusionUser {
     /**
      * @param object $userinfo
      * @param array $options
+     *
      * @return array
      */
     function destroySession($userinfo, $options) {
@@ -130,6 +131,7 @@ class JFusionUser_joomla_ext extends JFusionUser {
     /**
      * @param object $userinfo
      * @param array $options
+     * 
      * @return array
      */
     function createSession($userinfo, $options) {

@@ -110,8 +110,8 @@ class JFusionUser_elgg extends JFusionUser {
     }
 
     /**
-     * @param object|null $userinfo
-     * @param array|null $option
+     * @param object $userinfo
+     * @param array $option
      *
      * @return array
      */

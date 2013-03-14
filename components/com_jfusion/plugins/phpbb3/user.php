@@ -90,6 +90,7 @@ class JFusionUser_phpbb3 extends JFusionUser
     /**
      * @param object $userinfo
      * @param array $options
+     *
      * @return array
      */
     function destroySession($userinfo, $options) {

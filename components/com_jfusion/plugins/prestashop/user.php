@@ -100,12 +100,12 @@ class JFusionUser_prestashop extends JFusionUser {
     }
 
     /**
-     * @param string $userinfo
+     * @param object $userinfo
      * @param string $option
      *
      * @return array
      */
-    function destroySession($userinfo = '', $option = '') {
+    function destroySession($userinfo, $option) {
         $status = array('error' => array(),'debug' => array());
 	    // use prestashop cookie class and functions to delete cookie
 		$params = JFusionFactory::getParams($this->getJname());
