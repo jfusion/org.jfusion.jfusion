@@ -1,1 +1,2 @@
 * text=CRLF
+*.sh text=LF
