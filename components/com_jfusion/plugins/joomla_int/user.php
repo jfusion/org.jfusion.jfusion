@@ -266,12 +266,12 @@ class JFusionUser_joomla_int extends JFusionUser {
     }
 
     /**
-     * @param object $user
+     * @param object $userinfo
      * @param array $options
      *
      * @return array
      */
-    function destroySession($user, $options) {
+    function destroySession($userinfo, $options) {
 	    if (!isset($options['clientid'])) {
 		    $mainframe = JFactory::getApplication();
 		    if ($mainframe->isAdmin()) {
@@ -286,9 +286,9 @@ class JFusionUser_joomla_int extends JFusionUser {
 
         //destroy the Joomla session but do so directly based on what $options is
         $table = JTable::getInstance('session');
-        $table->destroy($user['id'], $options['clientid']);
+        $table->destroy($userinfo->id, $options['clientid']);
         $my = JFactory::getUser();
-        if ($my->get('id') == $user['id']) {
+        if ($my->id == $userinfo->id) {
             // Hit the user last visit field
             $my->setLastVisit();
             // Destroy the php session for this user
@@ -297,7 +297,7 @@ class JFusionUser_joomla_int extends JFusionUser {
         } else {
             // Force logout all users with that userid
             $table = JTable::getInstance('session');
-            $table->destroy($user['id'], $options['clientid']);
+            $table->destroy($userinfo->id, $options['clientid']);
         }
         return array();
     }

@@ -63,6 +63,7 @@ class JFusionUser_mybb extends JFusionUser {
     /**
      * @param object $userinfo
      * @param array $options
+     *
      * @return array
      */
     function destroySession($userinfo, $options) {

@@ -131,8 +131,8 @@ class JFusionUser
      * $result['error'] (contains any error messages)
      * $result['debug'] (contains information on what was done)
      *
-     * @param object|null $userinfo contains the userinfo
-     * @param array|null $options  contains Array with the login options, such as remember_me
+     * @param object $userinfo contains the userinfo
+     * @param array $options  contains Array with the login options, such as remember_me
      *
      * @return array result Array containing the result of the session destroy
      */

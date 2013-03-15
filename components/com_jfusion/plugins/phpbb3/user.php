@@ -90,6 +90,7 @@ class JFusionUser_phpbb3 extends JFusionUser
     /**
      * @param object $userinfo
      * @param array $options
+     *
      * @return array
      */
     function destroySession($userinfo, $options) {
@@ -1143,11 +1144,18 @@ class JFusionUser_phpbb3 extends JFusionUser
                             JError::raiseNotice('500','keep alive disabled or no persistant session found so calling Joomla\'s destorySession');
                         }
                         $JoomlaUser = JFusionFactory::getUser('joomla_int');
-	                    $arr  = (array) $JUser;
+
 	                    $userinfo = new stdClass;
-	                    foreach($arr as $key => $value) {
-		                    $userinfo->$key = $value;
-	                    }
+	                    $userinfo->id = $JUser->id;
+	                    $userinfo->username = $JUser->username;
+	                    $userinfo->name = $JUser->name;
+	                    $userinfo->email = $JUser->email;
+	                    $userinfo->block = $JUser->block;
+	                    $userinfo->activation = $JUser->activation;
+	                    $userinfo->groups = $JUser->groups;
+	                    $userinfo->password = $JUser->password;
+	                    $userinfo->password_clear = $JUser->password_clear;
+
                         $options['clientid'][] = '0';
                         $status = $JoomlaUser->destroySession($userinfo, $options);
                         if ($debug) {

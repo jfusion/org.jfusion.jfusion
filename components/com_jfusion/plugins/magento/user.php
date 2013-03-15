@@ -285,6 +285,7 @@ class JFusionUser_magento extends JFusionUser {
     /**
      * @param object $userinfo
      * @param array $options
+     *
      * @return array
      */
     function destroySession($userinfo, $options) {
@@ -295,6 +296,7 @@ class JFusionUser_magento extends JFusionUser {
     /**
      * @param object $userinfo
      * @param array $options
+     *
      * @return array|string
      */
     function createSession($userinfo, $options) {
