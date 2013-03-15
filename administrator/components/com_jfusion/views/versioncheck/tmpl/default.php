@@ -354,7 +354,7 @@ if ($this->up2date) {
                         confirmtext = '<?php echo JText::_('UPGRADE_CONFIRM_BUILD'); ?>';
                         installurl = 'https://github.com/jfusion/org.jfusion.jfusion/raw/develop/jfusion_package.zip';
                     } else if (action == 'git') {
-                        confirmtext = '<?php echo JText::_('UPGRADE_CONFIRM_SVN'); ?> ' + install.git_tree.value;
+                        confirmtext = '<?php echo JText::_('UPGRADE_CONFIRM_GIT'); ?> ' + install.git_tree.value;
                         installurl = 'https://github.com/jfusion/org.jfusion.jfusion/raw/' + install.git_tree.value + '/jfusion_package.zip';
                     } else {
                         confirmtext = '<?php echo JText::_('UPGRADE_CONFIRM_RELEASE') . ' ' . $this->JFusionVersion; ?>';

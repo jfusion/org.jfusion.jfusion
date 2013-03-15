@@ -46,7 +46,7 @@ class jfusionViewimportexport extends JView
 
         $jname = JRequest::getVar('jname');
 
-        //custom for development purposes / local use only; note do not commit your URL to SVN!!!
+        //custom for development purposes / local use only; note do not commit your URL to GIT!!!
 
 	    jimport('joomla.version');
 	    $jversion = new JVersion();
