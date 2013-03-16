@@ -153,7 +153,7 @@ case $1 in
     if [ "$USEZIPCMD" == "zip" ];
     then
         cd tmp
-    		$ZIPCMD -r $FULLPATH/jfusion_package.zip . > /dev/null
+    	$ZIPCMD -r $FULLPATH/jfusion_package.zip . > /dev/null
     else
         $ZIPCMD a "$FULLPATH/jfusion_package.zip" $FULLPATH/tmp/* -xr!*.svn* > /dev/null
     fi
