@@ -78,7 +78,7 @@ if (in_array($task, $tasklist)) {
 		header('Cache-Control: post-check=0, pre-check=0', false);
 		header('Pragma: no-cache');
 	}
-    //excute the task
+    //execute the task
     $controller->execute($task);
 } else {
     //run the task as a view

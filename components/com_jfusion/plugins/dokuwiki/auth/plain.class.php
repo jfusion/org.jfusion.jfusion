@@ -113,7 +113,7 @@ class doku_auth_plain extends doku_auth_basic {
      * at least these fields:
      *
      * name string  full name of the user
-     * mail string  email addres of the user
+     * mail string  email address of the user
      * grps array   list of groups the user is in
      *
      * @param string $user
@@ -209,7 +209,7 @@ class doku_auth_plain extends doku_auth_basic {
         if (!$this->io->saveFile($file, $userline, true)) {
             JError::raiseWarning(500, 'There was an error modifying your user data. You should register again.');
             return false;
-            // FIXME, user has been deleted but not recreated, should force a logout and redirect to login page
+            // TODO, user has been deleted but not recreated, should force a logout and redirect to login page
 
         }
         $this->users[$newuser] = $userinfo;
@@ -298,7 +298,7 @@ class doku_auth_plain extends doku_auth_basic {
     /**
      * Load all user data
      *
-     * loads the user file into a datastructure
+     * loads the user file into a data structure
      *
      * @author  Andreas Gohr <andi@splitbrain.org>
      *
@@ -338,7 +338,7 @@ class doku_auth_plain extends doku_auth_basic {
      * @return int
      */
     function _filter($user, $info) {
-        // FIXME
+        // TODO
         foreach ($this->_pattern as $item => $pattern) {
             if ($item == 'user') {
                 if (!preg_match($pattern, $user)) return 0;

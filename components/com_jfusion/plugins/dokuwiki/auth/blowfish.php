@@ -1,7 +1,7 @@
 <?php
 /* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
- * The Cipher_blowfish:: class implements the Cipher interface enryption data
+ * The Cipher_blowfish:: class implements the Cipher interface encryption data
  * using the Blowfish algorithm.
  *
  * $Horde: horde/lib/Cipher/blowfish.php,v 1.2.2.3 2003/01/03 13:23:22 jan Exp $
@@ -485,7 +485,7 @@ function JFusion_PMA_blowfish_encrypt($data, $secret)
     $pma_cipher = new JFusion_Horde_Cipher_blowfish;
     $encrypt = '';
 
-    $data .= '_'; // triming fixed for DokuWiki FS#1690 FS#1713
+    $data .= '_'; // trimming fixed for DokuWiki FS#1690 FS#1713
     $mod = strlen($data) % 8;
 
     if ($mod > 0) {
@@ -519,5 +519,5 @@ function JFusion_PMA_blowfish_decrypt($encdata, $secret)
     foreach (str_split($data, 8) as $chunk) {
         $decrypt .= $pma_cipher->decryptBlock($chunk, $secret);
     }
-    return substr(rtrim($decrypt, "\0"), 0, -1); // triming fixed for DokuWiki FS#1690 FS#1713
+    return substr(rtrim($decrypt, "\0"), 0, -1); // trimming fixed for DokuWiki FS#1690 FS#1713
 }

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 /**
  * @package JFusion
@@ -182,7 +182,7 @@ class JFusionFrameless {
             */
 		}
 
-		//get Joomla's session token so we can reset it afterward in case the software closes the session
+		//get Joomla session token so we can reset it afterward in case the software closes the session
         $session = JFactory::getSession();
         $token = $session->getToken();
 
@@ -205,7 +205,7 @@ class JFusionFrameless {
 			}
 		}
 
-		//check to see if the Joomla database is still connnected incase the plugin messed it up
+		//check to see if the Joomla database is still connected in case the plugin messed it up
 		JFusionFunction::reconnectJoomlaDb();
 
 		if ($data->buffer === 0) {
@@ -260,7 +260,7 @@ class JFusionFrameless {
 				$regex_header [] = $pattern;
 				$replace_header [] = '';
 
-				//set meta data to that of softwares
+				//set meta data to that of software
 				$meta = array ('keywords', 'description', 'robots' );
 
 				foreach ( $meta as $m ) {
@@ -283,7 +283,7 @@ class JFusionFrameless {
 					$replace_header [] = '';
 				}
 
-				//use Joomla's default
+				//use Joomla default
 				$regex_header [] = '#<meta http-equiv=["|\']Content-Type["|\'](.*?)>#Si';
 				$replace_header [] = '';
 

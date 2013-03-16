@@ -70,7 +70,7 @@ class JFusionController extends JController
                 //save the params first in order for elements to utilize data
                 JFusionFunctionAdmin::saveParameters($jname, $params, true);
 
-                //make sure the usergroup paramas are available on first view
+                //make sure the usergroup params are available on first view
                 $config_status = $JFusionPlugin->checkConfig();
                 $db = JFactory::getDBO();
                 $query = 'UPDATE #__jfusion SET status = ' . $config_status['config'] . ' WHERE name =' . $db->Quote($jname);
@@ -396,7 +396,7 @@ class JFusionController extends JController
                 //format the syncdata for storage in the JFusion sync table
                 $syncdata['master'] = $master;
                 $syncdata['slave_data'] = $slave_data;
-                //save the submitted syndata in order for AJAX updates to work
+                //save the submitted syncdata in order for AJAX updates to work
                 JFusionUsersync::saveSyncdata($syncdata);
                 //start the usersync
                 JFusionUsersync::syncExecute($syncdata, $action, 0, 0);
@@ -546,7 +546,7 @@ class JFusionController extends JController
      */
     function enableplugins()
     {
-        //enable the JFusion login behaviour, but we wanna make sure there is atleast 1 master with good config
+        //enable the JFusion login behaviour, but we wanna make sure there is at least 1 master with good config
         $db = JFactory::getDBO();
         $query = 'SELECT count(*) from #__jfusion WHERE master = 1 and status = 1';
         $db->setQuery($query);
@@ -588,7 +588,7 @@ class JFusionController extends JController
     }
 
     /**
-     * delere sync history
+     * delete sync history
      *
      * @return void
      */
@@ -679,7 +679,7 @@ JS;
 
     function saveorder()
     {
-        //split the value of the sortation
+        //split the value of the sort action
         $sort_order = JRequest::getVar('sort_order');
         $ids = explode('|',$sort_order);
         $query ='';

@@ -17,7 +17,7 @@ jimport ( 'joomla.application.component.view' );
 require_once (JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.frameless.php');
 
 /**
- * Class that handles the framelesss integration
+ * Class that handles the frameless integration
  * @package JFusion
  */
 class jfusionViewPlugin extends JView {

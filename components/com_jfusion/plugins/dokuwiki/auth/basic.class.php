@@ -37,7 +37,7 @@ class doku_auth_basic
 
     var $success = true;
     /**
-     * Posible things an auth backend module may be able to
+     * Possible things an auth backend module may be able to
      * do. The things a backend can do need to be set to true
      * in the constructor.
      */
@@ -76,7 +76,7 @@ class doku_auth_basic
      * @param string $salt   salt added to password
      *
      * @author  Andreas Gohr <andi@splitbrain.org>
-     * @return  string  The crypted password
+     * @return  string  The encrypted password
      */
     function cryptPassword($clear, $method = '', $salt = '')
     {
@@ -151,14 +151,14 @@ class doku_auth_basic
     }
 
     /**
-     * Verifies a cleartext password against a crypted hash
+     * Verifies a clear text password against a encrypted hash
      *
-     * The method and salt used for the crypted hash is determined automatically
-     * then the clear text password is crypted using the same method. If both hashs
+     * The method and salt used for the encrypted hash is determined automatically
+     * then the clear text password is encrypted using the same method. If both hash's
      * match true is is returned else false
      *
      * @param string $clear username
-     * @param string $crypt crupt
+     * @param string $crypt crypt
      *
      * @author  Andreas Gohr <andi@splitbrain.org>
      * @return  bool
@@ -223,7 +223,7 @@ class doku_auth_basic
      * some pseudo capabilities (shortcutting access to multiple
      * ones)
      *
-     * ususal capabilities start with lowercase letter
+     * usual capabilities start with lowercase letter
      * shortcut capabilities start with uppercase letter
      *
      * @param string $cap action
@@ -255,7 +255,7 @@ class doku_auth_basic
     /**
      * Log off the current user [ OPTIONAL ]
      *
-     * Is run in addition to the ususal logoff method. Should
+     * Is run in addition to the usually logoff method. Should
      * only be needed when trustExternal is implemented.
      *
      * @see    auth_logoff()
@@ -271,7 +271,7 @@ class doku_auth_basic
      * Checks if the given user exists and the given
      * plaintext password is correct
      *
-     * May be ommited if trustExternal is used.
+     * May be omitted if trustExternal is used.
      *
      * @param string $user username
      * @param string $pass password
@@ -292,7 +292,7 @@ class doku_auth_basic
      * at least these fields:
      *
      * name string  full name of the user
-     * mail string  email addres of the user
+     * mail string  email address of the user
      * grps array   list of groups the user is in
      *
      * @param string $user username
@@ -320,7 +320,7 @@ class doku_auth_basic
      * @param string $user username
      * @param string $pass password
      * @param string $name real name
-     * @param string $mail email adress
+     * @param string $mail email address
      * @param string $grps groups
      *
      * @author Andreas Gohr <andi@splitbrain.org>
@@ -355,7 +355,7 @@ class doku_auth_basic
      *
      * Set delUser capability when implemented
      *
-     * @param array $users arrat of users to delete
+     * @param array $users array of users to delete
      *
      * @author Chris Smith <chris@jalakai.co.uk>
      * @return int number of users deleted
@@ -438,21 +438,21 @@ class doku_auth_basic
     /**
      * Check Session Cache validity [implement only where required/possible]
      *
-     * DokuWiki caches user info in the user's session for the timespan defined
+     * DokuWiki caches user info in the user's session for the time span defined
      * in $conf['securitytimeout'].
      *
-     * This makes sure slow authentication backends do not slow down DokuWiki.
+     * This makes sure slow authentication back ends do not slow down DokuWiki.
      * This also means that changes to the user database will not be reflected
      * on currently logged in users.
      *
      * To accommodate for this, the user manager plugin will touch a reference
-     * file whenever a change is submitted. This function compares the filetime
+     * file whenever a change is submitted. This function compares the file time
      * of this reference file with the time stored in the session.
      *
      * This reference file mechanism does not reflect changes done directly in
      * the backend's database through other means than the user manager plugin.
      *
-     * Fast backends might want to return always false, to force rechecks on
+     * Fast back ends might want to return always false, to force rechecks on
      * each page load. Others might want to use their own checking here. If
      * unsure, do not override.
      *

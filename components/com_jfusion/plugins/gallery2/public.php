@@ -286,7 +286,7 @@ class JFusionPublic_gallery2 extends JFusionPublic {
      */
     function getOnlineUserQuery($limit) {
         $limiter = (!empty($limit)) ? "LIMIT 0,$limit" : '';
-        //get a unix time from 5 mintues ago
+        //get a unix time from 5 minutes ago
         date_default_timezone_set('UTC');
         $now = time();
         $active = strtotime('-5 minutes', $now);
@@ -298,7 +298,7 @@ class JFusionPublic_gallery2 extends JFusionPublic {
      * @return int
      */
     function getNumberOnlineMembers() {
-        //get a unix time from 5 mintues ago
+        //get a unix time from 5 minutes ago
         date_default_timezone_set('UTC');
         $now = time();
         $active = strtotime('-5 minutes', $now);
@@ -313,7 +313,7 @@ class JFusionPublic_gallery2 extends JFusionPublic {
      * @return int
      */
     function getNumberOnlineGuests() {
-        //get a unix time from 5 mintues ago
+        //get a unix time from 5 minutes ago
         date_default_timezone_set('UTC');
         $now = time();
         $active = strtotime('-5 minutes', $now);

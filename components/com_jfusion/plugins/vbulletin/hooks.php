@@ -135,7 +135,7 @@ class executeJFusionHook
                 exit;
             }
         }
-        //add our custom hooks into vbulletin's hook cache
+        //add our custom hooks into vbulletin hook cache
         if (!empty($vbulletin->pluginlist) && is_array($vbulletin->pluginlist)) {
             $hooks = $this->getHooks($this->vars);
             if (is_array($hooks)) {
@@ -172,7 +172,7 @@ class executeJFusionHook
 
         //we need to set up the hooks
         if ($plugin == 'frameless') {
-            //retrieve the hooks that jFusion will use to make vB work framelessly
+            //retrieve the hooks that jFusion will use to make vB work fruitlessly
             $hookNames = array('album_picture_complete', 'global_start', 'global_complete', 'global_setup_complete', 'header_redirect', 'logout_process', 'member_profileblock_fetch_unwrapped', 'redirect_generic', 'xml_print_output');
         } elseif ($plugin == 'duallogin') {
             //retrieve the hooks that vBulletin will use to login to Joomla
@@ -904,7 +904,7 @@ class JFvBulletinTask {
         $postdm->set_info('user', $userinfo);
         $postdm->set('userid', $userinfo['userid']);
         /*
-         * TODO: $guest udefined ?
+         * TODO: $guest undefined ?
         if ($guest) {
             $postdm->set('username', $userinfo['username']);
 			if($this->data['post_approved']) {

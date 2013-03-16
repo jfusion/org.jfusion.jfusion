@@ -75,7 +75,7 @@ class JFusionMySQLi extends JDatabaseMySQLi
         }
     }
     /**
-     * rollback trasnaction
+     * rollback transaction
      * 
      */
     function RollbackTrans()

@@ -108,9 +108,9 @@ class JFusionForum_smf extends JFusionForum
     }
 
     /**
-     * Get activity queary
+     * Get activity query
      *
-     * @param string $usedforums   sting coma seperated with board id's
+     * @param string $usedforums   sting coma separated with board id's
      * @param string $result_order how to order
      * @param string $result_limit limit
      *
@@ -278,7 +278,7 @@ class JFusionForum_smf extends JFusionForum
     }
 
     /**
-     * Get gorum list
+     * Get forum list
      *
      * @return array
      */
@@ -334,14 +334,14 @@ class JFusionForum_smf extends JFusionForum
             $result = $db->loadObject();
             if (!empty($result)) {
                 $url = '';
-                // SMF has a wierd way of holding attachments. Get instance of the attachments table
+                // SMF has a wired way of holding attachments. Get instance of the attachments table
                 $db->setQuery('SELECT * FROM #__attachments WHERE ID_MEMBER=' . $puser_id);
                 $db->query();
                 $attachment = $db->loadObject();
-                // See if the user has a specific attachment ment for an avatar
+                // See if the user has a specific attachment meant for an avatar
                 if (!empty($attachment) && $attachment->ID_THUMB == 0 && $attachment->ID_MSG == 0 && empty($result->avatar)) {
                     $url = $params->get('source_url') . 'index.php?action=dlattach;attach=' . $attachment->ID_ATTACH . ';type=avatar';
-                    // If user didnt, check to see if the avatar specified in the first query is a url. If so use it.
+                    // If user didn't, check to see if the avatar specified in the first query is a url. If so use it.
 
                 } else if (preg_match("/http(s?):\/\//", $result->avatar)) {
                     $url = $result->avatar;
@@ -349,10 +349,10 @@ class JFusionForum_smf extends JFusionForum
                     // If the avatar specified in the first query is not a url but is a file name. Make it one
                     $db->setQuery('SELECT * FROM #__settings WHERE variable = \'avatar_url\'');
                     $avatarurl = $db->loadObject();
-                    // Check for trailing slash. If there is one DONT ADD ONE!
+                    // Check for trailing slash. If there is one DON'T ADD ONE!
                     if (substr($avatarurl->value, -1) == DS) {
                         $url = $avatarurl->value . $result->avatar;
-                        // I like redundancy. Recheck to see if there isnt a trailing slash. If there isnt one, add one.
+                        // I like redundancy. Recheck to see if there isn't a trailing slash. If there isn't one, add one.
 
                     } else if (substr($avatarurl->value, -1) !== DS) {
                         $url = $avatarurl->value . '/' . $result->avatar;
@@ -392,7 +392,7 @@ class JFusionForum_smf extends JFusionForum
             $mainframe = JFactory::getApplication();
             $timezone = $mainframe->getCfg('offset');
             $timestamp = strtotime($contentitem->created);
-            //undo Joomla's timezone offset
+            //undo Joomla timezone offset
             $timestamp += ($timezone * 3600);
         } else {
              $timestamp = time();
@@ -732,9 +732,9 @@ HTML;
     }
 
     /**
-     * get number of replyes
+     * get number of replies
      *
-     * @param object &$existingthread info about exsisting thread
+     * @param object &$existingthread info about existing thread
      *
      * @return int
      */

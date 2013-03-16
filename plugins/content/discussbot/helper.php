@@ -171,7 +171,7 @@ class JFusionDiscussBotHelper {
      */
     public function getArticleUrl($jumpto = '', $query = '', $xhtml = true)
     {
-        //make sure Joomla's content helper is loaded
+        //make sure Joomla content helper is loaded
         if (!class_exists('ContentHelperRoute')) {
             require_once JPATH_SITE . DS . 'components' . DS . 'com_content' . DS . 'helpers' . DS . 'route.php';
         }
@@ -571,7 +571,7 @@ class JFusionDiscussBotHelper {
                                                 }
                                             }
 
-                                            //if valid, make sure the category is not in an exluded cat
+                                            //if valid, make sure the category is not in an excluded cat
                                             if ($responce[0] && !empty($excludedCategories)) {
                                                 if (in_array($catid, $excludedCategories)) {
 	                                                $responce = array(0, JText::_('REASON_IN_EXCLUDED_CATEGORY'));

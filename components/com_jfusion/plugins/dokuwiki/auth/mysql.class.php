@@ -1,6 +1,6 @@
 <?php
 /**
- * MySQLP authentication backend
+ * MySQL authentication backend
  *
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * @author     Andreas Gohr <andi@splitbrain.org>
@@ -145,7 +145,7 @@ class doku_auth_mysql extends doku_auth_basic {
 
     /**
      * Checks if the given user exists and the given plaintext password
-     * is correct. Furtheron it might be checked wether the user is
+     * is correct. Furtheron it might be checked whether the user is
      * member of the right group
      *
      * Depending on which SQL string is defined in the config, password
@@ -184,7 +184,7 @@ class doku_auth_mysql extends doku_auth_basic {
      * Returns info about the given user needs to contain
      * at least these fields:
      *   name  string  full name of the user
-     *   mail  string  email addres of the user
+     *   mail  string  email address of the user
      *   grps  array   list of groups the user is in
      *
      * @param $user   user's nick to get data for
@@ -255,16 +255,16 @@ class doku_auth_mysql extends doku_auth_basic {
      * The dataset update will be rejected if the user name should be changed
      * to an already existing one.
      *
-     * The password must be provides unencrypted. Pasword cryption is done
+     * The password must be provides unencrypted. Password encryption is done
      * automatically if configured.
      *
      * If one or more groups could't be updated, an error would be set. In
      * this case the dataset might already be changed and we can't rollback
-     * the changes. Transactions would be really usefull here.
+     * the changes. Transactions would be really useful here.
      *
      * modifyUser() may be called without SQL statements defined that are
      * needed to change group membership (for example if only the user profile
-     * should be modified). In this case we asure that we don't touch groups
+     * should be modified). In this case we ensure that we don't touch groups
      * even $changes['grps'] is set by mistake.
      *
      * @param string $user     nick of the user to be changed
@@ -682,14 +682,14 @@ class doku_auth_mysql extends doku_auth_basic {
      * Updates the user info in the database
      *
      * Update a user data structure in the database according changes
-     * given in an array. The user name can only be changes if it didn't
+     * given in an array. The user name can only be changes if it did not
      * exists already. If the new user name exists the update procedure
      * will be aborted. The database keeps unchanged.
      *
      * The database connection has already to be established for this
      * function to work. Otherwise it will return 'false'.
      *
-     * The password will be crypted if necessary.
+     * The password will be encrypted if necessary.
      *
      * @param  $changes  array of items to change as pairs of item and value
      * @param  $uid      user id of dataset to change, must be unique in DB
@@ -859,7 +859,7 @@ class doku_auth_mysql extends doku_auth_basic {
      *
      * MySQL V3 is not able to handle transactions with COMMIT/ROLLBACK
      * so that this functionality is simulated by this function. Nevertheless
-     * it is not as powerful as transactions, it is a good compromise in safty.
+     * it is not as powerful as transactions, it is a good compromise in safety.
      *
      * @param string $mode  could be 'READ' or 'WRITE'
      *
@@ -935,7 +935,7 @@ class doku_auth_mysql extends doku_auth_basic {
           }
         }
 
-        // we have to check SQLfilter here and must not use $cnt because if
+        // we have to check SQL filter here and must not use $cnt because if
         // any of cnf['Filter????'] is not defined, a malformed SQL string
         // would be generated.
 

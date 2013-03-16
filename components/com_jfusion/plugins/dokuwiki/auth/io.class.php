@@ -216,7 +216,7 @@ class JFusionDokuwiki_Io {
         }
     }
     /**
-     * Creates a directory hierachy.
+     * Creates a directory hierarchy.
      *
      * @link    http://www.php.net/manual/en/function.mkdir.php
      * @author  <saint@corenova.com>
@@ -293,7 +293,7 @@ class JFusionDokuwiki_Io {
         $iswin = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN');
         if ($iswin) $path = str_replace('\\', '/', $path); // windows compatibility
         // check if path begins with "/" or "c:" ie. is absolute
-        // if it isnt concat with script path
+        // if it isn't concat with script path
         if ((!$iswin && $path{0} !== '/') || ($iswin && $path{1} !== ':')) {
             $base = dirname($_SERVER['SCRIPT_FILENAME']);
             $path = $base . "/" . $path;

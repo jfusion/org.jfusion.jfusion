@@ -354,7 +354,7 @@ class JFusionUser_efront extends JFusionUser
      */
     function createUser($userinfo, &$status) {
        /**
-        * NOTE: eFront does a charactercheck on the user credentials. I think we are ok (HW): if (preg_match("/^.*[$\/\'\"]+.*$/", $parameter))
+        * NOTE: eFront does a character check on the user credentials. I think we are ok (HW): if (preg_match("/^.*[$\/\'\"]+.*$/", $parameter))
         */
         $status = array('error' => array(),'debug' => array());
     	$params = JFusionFactory::getParams($this->getJname());
@@ -428,7 +428,7 @@ class JFusionUser_efront extends JFusionUser
                 //return the error
                 $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
             } else {
-                // we need to create the user directories. Can't use Joomla's API because it uses the Joomla Root Path
+                // we need to create the user directories. Can't use Joomla API because it uses the Joomla Root Path
                 $uploadpath = $params->get('uploadpath');
                 $user_dir = $uploadpath.$user->login.'/';
                 if (is_dir($user_dir)) {
@@ -465,7 +465,7 @@ class JFusionUser_efront extends JFusionUser
                     $f_folder->users_LOGIN = $user->login;
                     $errors = $db->insertObject('#__f_folders', $f_folder, 'id');
 
-                    // for eFront Educational and enterprise versions we now should assign skillgap tests
+                    // for eFront Educational and enterprise versions we now should assign skill gap tests
                     // not sure I should implemented it, anyway I have only the community version to work on
                 }
                 //return the good news
@@ -487,7 +487,7 @@ class JFusionUser_efront extends JFusionUser
         // In eFront, it is impossible to trigger the 'ondeleteuser' signal for the
         // modules without loading the complete website. 
         
-    	// check apiuser existance
+    	// check apiuser existence
         $status = array('error' => array(),'debug' => array());
         if (!is_object($userinfo)) {
             $status['error'][] = JText::_('NO_USER_DATA_FOUND');

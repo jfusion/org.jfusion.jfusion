@@ -212,7 +212,7 @@ class JFusionUser_smf extends JFusionUser
      * updatePassword
      *
      * @param object $userinfo      holds the new user data
-     * @param object &$existinguser holds the exsisting user data
+     * @param object &$existinguser holds the existing user data
      * @param array  &$status       Status array
      *
      * @access public
@@ -238,7 +238,7 @@ class JFusionUser_smf extends JFusionUser
      * updateUsername
      *
      * @param object $userinfo      holds the new user data
-     * @param object &$existinguser holds the exsisting user data
+     * @param object &$existinguser holds the existing user data
      * @param array  &$status       Status array
      *
      * @access public
@@ -253,7 +253,7 @@ class JFusionUser_smf extends JFusionUser
      * updateEmail
      *
      * @param object $userinfo      holds the new user data
-     * @param object &$existinguser holds the exsisting user data
+     * @param object &$existinguser holds the existing user data
      * @param array  &$status       Status array
      *
      * @access public
@@ -277,7 +277,7 @@ class JFusionUser_smf extends JFusionUser
      * updateUsergroup
      *
      * @param object $userinfo      holds the new user data
-     * @param object &$existinguser holds the exsisting user data
+     * @param object &$existinguser holds the existing user data
      * @param array  &$status       Status array
      *
      * @access public
@@ -307,10 +307,10 @@ class JFusionUser_smf extends JFusionUser
      * blockUser
      *
      * @param object $userinfo      holds the new user data
-     * @param object &$existinguser holds the exsisting user data
+     * @param object &$existinguser holds the existing user data
      * @param array  &$status       Status array
      *
-     * @access publics
+     * @access public
      *
      * @return void
      */
@@ -345,7 +345,7 @@ class JFusionUser_smf extends JFusionUser
      * unblock user
      *
      * @param object $userinfo      holds the new user data
-     * @param object &$existinguser holds the exsisting user data
+     * @param object &$existinguser holds the existing user data
      * @param array  &$status       Status array
      *
      * @access public
@@ -373,7 +373,7 @@ class JFusionUser_smf extends JFusionUser
      * activate user
      *
      * @param object $userinfo      holds the new user data
-     * @param object &$existinguser holds the exsisting user data
+     * @param object &$existinguser holds the existing user data
      * @param array  &$status       Status array
      *
      * @access public
@@ -396,7 +396,7 @@ class JFusionUser_smf extends JFusionUser
      * deactivate user
      *
      * @param object $userinfo      holds the new user data
-     * @param object &$existinguser holds the exsisting user data
+     * @param object &$existinguser holds the existing user data
      * @param array  &$status       Status array
      *
      * @access public
@@ -511,7 +511,7 @@ class JFusionUser_smf extends JFusionUser
      *
      * @param bool $keepalive
      *
-     * @return int False on Falior
+     * @return int False on Error
      */
     function syncSessions($keepalive = false)
     {

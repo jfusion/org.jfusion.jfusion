@@ -34,7 +34,7 @@ function com_install() {
 	$db = JFactory::getDBO();
 	$table_list = $db->getTableList();
 	$table_prefix = $db->getPrefix();
-	//NOTE moved these before the jfusion table as some tables did not exist in old verions of JFusion thus leading to errors during the upgrade process
+	//NOTE moved these before the jfusion table as some tables did not exist in old versions of JFusion thus leading to errors during the upgrade process
 	//create the jfusion_users table if it does not exist already
 	if (array_search($table_prefix . 'jfusion_users', $table_list) == false) {
 		$query = 'CREATE TABLE #__jfusion_users (
@@ -356,7 +356,7 @@ function com_install() {
 			}
 		}
 
-        //remove colums
+        //remove columns
         $query = 'SHOW COLUMNS FROM #__jfusion';
         $db->setQuery($query);
         $columns = $db->loadResultArray();
@@ -459,7 +459,7 @@ function com_install() {
 		 * General for all upgrades
 		 ***/
 /*
- * todo: Determin if we really need this in the installer ???? also remove unneeded plugin_files field from database ??? if this is NOT needed
+ * todo: Determine if we really need this in the installer ???? also remove unneeded plugin_files field from database ??? if this is NOT needed
 		//restore deleted plugins if possible and applicable
 		//get a list of installed plugins
 		$query = 'SELECT name, original_name, plugin_files FROM #__jfusion';
@@ -575,7 +575,7 @@ HTML;
                 $db->setQuery($query);
                 $copys = $db->loadResult();
                 if (!$copys) {
-                    //only delete if there are no copys
+                    //only delete if there are no copy
                     $db->setQuery('DELETE FROM #__jfusion WHERE name = ' . $db->Quote($row->name));
                     if (!$db->query()) {
                         JError::raiseWarning(500,$db->stderr());

@@ -142,7 +142,7 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
                 ob_start();
             }
 
-            //restore the __autoload handeler
+            //restore the __autoload handler
             if(JFusionFunction::isJoomlaVersion('1.6')) {
                 spl_autoload_register(array('JLoader','load'));
             } else {

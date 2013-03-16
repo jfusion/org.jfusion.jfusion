@@ -93,7 +93,7 @@ class JFusionHelper_dokuwiki
     }
 
     /**
-     * Retrieves, sets, and returns Dokuwiki's cookie salt
+     * Retrieves, sets, and returns Dokuwiki cookie salt
      * @return string   cookie salt
      */
 
@@ -120,7 +120,7 @@ class JFusionHelper_dokuwiki
     }
     
     /**
-     * Retrieves, sets, and returns Dokuwiki's Version
+     * Retrieves, sets, and returns Dokuwiki Version
      *
      * @param string $v
      *
@@ -215,7 +215,7 @@ class JFusionHelper_dokuwiki
      *
      * @param string|bool $path path to config file
      *
-     * @return array on success, false on falior
+     * @return array on success, false on Error
      * @since 1.5
      * @access public
      */

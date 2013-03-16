@@ -52,7 +52,7 @@ class JFusionHelper_phpbb3
     }
 
     /**
-     * This function is to emulate phpbb set_var used needed to propear encode "clean" password, and other variables.
+     * This function is to emulate phpbb set_var used needed to proper encode "clean" password, and other variables.
      *
      * @param $var
      * @return string
@@ -62,7 +62,7 @@ class JFusionHelper_phpbb3
         $var = trim(htmlspecialchars(str_replace(array("\r\n", "\r", "\0"), array("\n", "\n", ''), $var), ENT_COMPAT, 'UTF-8'));
 
         if (!empty($var)) {
-            // Make sure multibyte characters are wellformed
+            // Make sure multibyte characters are well formed
             if (!preg_match('/^./u', $var)) {
                 $var = '';
             }
@@ -88,7 +88,7 @@ class JFusionHelper_phpbb3
      * functions used here you need to rebuild/update the username_clean column in the users table. And all other
      * columns that store a clean string otherwise you will break this functionality.
      *
-     * @param string $text An unclean string, mabye user input (has to be valid UTF-8!)
+     * @param string $text An unclean string, maybe user input (has to be valid UTF-8!)
      * @return string Cleaned up version of the input string
      */
     function utf8_clean_string($text) {
@@ -109,7 +109,7 @@ class JFusionHelper_phpbb3
 
     /**
      * Takes the input and does a "special" case fold. It does minor normalization
-     * and returns NFKC compatable text
+     * and returns NFKC compatible text
      *
      * @param string $text text to be case folded
      * @param string $option determines how we will fold the cases
@@ -200,9 +200,9 @@ class JFusionHelper_phpbb3
         $match = array('#(script|about|applet|activex|chrome):#i');
         $replace = array("\\1&#058;");
         $text = preg_replace($match, $replace, trim($text));
-        //parse smilies phpbb's way
+        //parse smilies phpbb way
         $this->parse_smilies($text);
-        //add phpbb's bbcode_uid to bbcode and generate bbcode_bitfield
+        //add phpbb bbcode_uid to bbcode and generate bbcode_bitfield
         if (strpos($text, '[') !== false) {
             $this->bbcode_bitfield = base64_decode('');
             $this->parse_bbcode($text);
@@ -289,7 +289,7 @@ class JFusionHelper_phpbb3
         // when using the /e modifier, preg_replace slashes double-quotes but does not
         // seem to slash anything else
         $in = str_replace("\r\n", "\n", str_replace('\"', '"', $in));
-        // Trimming here to make sure no empty bbcodes are parsed accidently
+        // Trimming here to make sure no empty bbcodes are parsed accidentally
         if (trim($in) == '') {
             return false;
         }

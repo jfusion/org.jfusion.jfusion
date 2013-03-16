@@ -42,7 +42,7 @@ class jfusionViewwizard extends JView
     {
         $jname = JRequest::getVar('jname');
         if ($jname) {
-            //hides the main menu and disables the Joomla's navigation menu
+            //hides the main menu and disables the Joomla navigation menu
             JRequest::setVar('hidemainmenu', 1);
             $this->assignRef('jname', $jname);
             parent::display($tpl);

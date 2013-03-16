@@ -238,7 +238,7 @@ class JFusionUser_smf2 extends JFusionUser {
      * updateUsergroup
      *
      * @param object $userinfo      holds the new user data
-     * @param object &$existinguser holds the exsisting user data
+     * @param object &$existinguser holds the existing user data
      * @param array  &$status       Status array
      *
      * @access public

@@ -49,7 +49,7 @@ class jfusionViewLogoutCheckerResult extends JView
 	    } else {
 		    $options['show_unsensored'] = 0;
 	    }
-	    //prevent current jooomla session from being destroyed
+	    //prevent current joomla session from being destroyed
 	    global $JFusionActivePlugin, $jfusionDebug;
 	    $jfusionDebug = array();
 	    $JFusionActivePlugin = 'joomla_int';

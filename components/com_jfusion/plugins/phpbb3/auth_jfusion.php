@@ -44,7 +44,7 @@ function login_jfusion(&$username, &$password) {
     }
 
     if (!defined('ADMIN_START')) {
-        //check to see if login succesful and jFusion is not active
+        //check to see if login successful and jFusion is not active
         //backup phpbb globals
         jfusion_backup_restore_globals('backup');
 
@@ -74,7 +74,7 @@ function login_jfusion(&$username, &$password) {
             $session->close();
 
             //if we are not frameless, then we need to manually update the session data as on some servers, this data is getting corrupted
-            //by php's session_write_close and thus the user is not logged into Joomla.  php bug?
+            //by php session_write_close and thus the user is not logged into Joomla.  php bug?
             if (!defined('IN_JOOMLA')) {
                 /**
                  * @ignore
@@ -118,13 +118,13 @@ function login_jfusion(&$username, &$password) {
                         $redirect = $uri->toString();
                 }
 
-                //recreate phpBB's database connection
+                //recreate phpBB database connection
                 $dbhost = $dbuser = $dbpasswd = $dbname = $dbport = null;
                 include $phpbb_root_path . 'config.' . $phpEx;
                 $db->sql_connect($dbhost, $dbuser, $dbpasswd, $dbname, $dbport, false, false);
                 unset($dbpasswd);
 
-                //create phpBB's user session
+                //create phpBB user session
                 $user->session_create($result['user_row']['user_id'], 0, $options['remember']);
 
                 $url = str_replace('&amp;', '&', $redirect);
@@ -132,7 +132,7 @@ function login_jfusion(&$username, &$password) {
                 header("Location: $url");
                 exit();
             } else {
-                //recreate phpBB's database connection
+                //recreate phpBB database connection
                 $dbhost = $dbuser = $dbpasswd = $dbname = $dbport = null;
                 include $phpbb_root_path . 'config.' . $phpEx;
                 $db->sql_connect($dbhost, $dbuser, $dbpasswd, $dbname, $dbport, false, false);
@@ -181,7 +181,7 @@ function logout_jfusion(&$data) {
             $link = $uri->toString();
         }
 
-        //recreate phpBB's database connection
+        //recreate phpBB database connection
         $dbhost = $dbuser = $dbpasswd = $dbname = $dbport = null;
         include $phpbb_root_path . 'config.' . $phpEx;
         $db->sql_connect($dbhost, $dbuser, $dbpasswd, $dbname, $dbport, false, false);

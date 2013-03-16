@@ -150,7 +150,7 @@ class JFusionUser_joomla_int extends JFusionUser {
                     $options['action'] = 'core.login.site';
                 }
 
-                // Chek the user can login.
+                // Check the user can login.
                 $result	= $instance->authorise($options['action']);
                 if (!$result) {
                     $status['error'] = JText::_('JERROR_LOGIN_DENIED');
@@ -201,7 +201,7 @@ class JFusionUser_joomla_int extends JFusionUser {
                 //use new create session function
                 $status = $this->createSession16($userinfo, $options);
             } else {
-                //initalise some objects
+                //initialise some objects
                 $acl = JFactory::getACL();
                 $instance = JUser::getInstance($userinfo->userid);
                 $grp = $acl->getAroGroup($userinfo->userid);

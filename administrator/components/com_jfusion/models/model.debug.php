@@ -35,7 +35,7 @@ class std {
     }
     /**
      * getRequest
-     * merges HTTP_GET, HTTP_POST and HTPP-FILE requests togehter so that you have
+     * merges HTTP_GET, HTTP_POST and HTTP-FILE requests together so that you have
      * afterwards an all in one array
      *
      * @param array $post The HTTP_POST request ($_POST)
@@ -58,7 +58,7 @@ class std {
     }
     /**
      * rearrangeFiles - PRIVATE
-     * re-arrranges the HTTP-FILE-REQUEST array so that its
+     * re-arranges the HTTP-FILE-REQUEST array so that its
      * organized like the POST and GET array afterwards
      *
      * @param array $files the raw FILE-Array
@@ -66,7 +66,7 @@ class std {
      * @return array a POST/GET-Like structured Array
      */
     private static function rearrangeFiles($files) {
-        // Hilfsfunktion f�r std::getRequest() (rekursiv)
+        // Hilfsfunktion for std::getRequest() (recursive)
         $retArr = array();
         foreach ($files as $key => $value) {
             if (arrayfunc::isOneDimensional($value)) {
@@ -225,10 +225,10 @@ CSS;
     }
     /** *************************
      * Craetes and returns a HTML-Code that shows nicely
-     * the Structure and Value(s) of any PHP-Varible, the given Value can be from a simple Integer
+     * the Structure and Value(s) of any PHP-Variable, the given Value can be from a simple Integer
      * to a complex object-structure. This function works recursively.
      *
-     * @param mixed $arr the PHP-Varible to look in
+     * @param mixed $arr the PHP-Variable to look in
      * @param mixed $start a title for the created structure-table, if numeric passed as $height
      * @param mixed $height optional height of scrollzone div,     will be interpreted as the color schema if $start is interpreted as height
      * @param int $schema optional 0 - 9 colorscheme,         will be ignored if $start is interpreted as height
@@ -314,7 +314,7 @@ CSS;
 	/**
 	 * Craetes and returns a String in html code. that shows nicely in copy paste
 	 *
-	 * @param mixed $arr   : the PHP-Varible to look in
+	 * @param mixed $arr   : the PHP-Variable to look in
 	 * @param mixed $start : a title for the created structure-table
 	 * @param int   $level
 	 *
@@ -403,7 +403,7 @@ CSS;
      * Same as debug::get, but prints the created HTML-Code directly to the Standard Output.
      * NOTE: This is the one and only debuging Tool!!
      *
-     * @param mixed $arr the PHP-Varible to look in
+     * @param mixed $arr the PHP-Variable to look in
      * @param mixed $title a title for the created structure-table
      *
      * @return void
@@ -475,9 +475,9 @@ CSS;
     /**
      *    Starts a new (time-)measurement with the given Name
      *    Measurements can be Started within other measurements
-     *    Measurements with the same can be started and stopted multiple times, they will be counted ans summated.
+     *    Measurements with the same can be started and stopped multiple times, they will be counted ans summated.
      *    e.g. within once quicksort, 100 times "HD-read" and 40 times "HD-write"
-     *    - inner Measurements MUST be stoped before the outer measurment stops!
+     *    - inner Measurements MUST be stopped before the outer measurment stops!
      *    - all Measurements MUST be stopped before showing the Results!
      *
      *    @param string $name The Name for this measurement (e.g. "Quicksearch")
@@ -498,7 +498,7 @@ CSS;
         debug::$stackName[count(debug::$stackName) ] = $name;
     }
     /**
-     *    stops the Measurrement with teh given Name
+     *    stops the Measurement with teh given Name
      *
      *    @param string $name the Name of the Measurement to stop
      */
@@ -524,7 +524,7 @@ CSS;
     /**
      *    PRIVATE - This function works recursively.
      *
-     *    Rearaanges the results from all Measurements so that they will get human-understandable
+     *    Rearranges the results from all Measurements so that they will get human-understandable
      *
      *    @param array $laufzeit the raw-array produced by calling start- and stopMessung
      *
@@ -549,7 +549,7 @@ CSS;
         return $result;
     }
     /**
-     *    Showns the mesurements results (they from start- and stopMessung)
+     *    Shows the measurements results (they from start- and stopMessung)
      *    prints HTML-Encoded Results directly to the Standard-Output
      *
      *    @uses debug::show()
@@ -560,7 +560,7 @@ CSS;
         debug::show($lz_nice, "Time measurements in ms");
     }
     /**
-     *    Returns the mesurements results HTML-Encoded(they from start- and stopMessung).
+     *    Returns the measurements results HTML-Encoded(they from start- and stopMessung).
      *
      *    @uses debug::get()
      *    @return string the HTML-Code
@@ -574,13 +574,13 @@ CSS;
     /**
      *    Prepares Values to be used in debug::show / debug::get used to indicate a values type
      *    - Strings will be
-     *        - in double-qutes if they are empty (to see something)
+     *        - in double-quotes if they are empty (to see something)
      *        - Normal if not empty
-     *        - < and > will be rplaced by "&lt;", "&gt;" to avoid tag-Interpretation by a Browser
-     *    - booleans and all numbers will be bold.
+     *        - < and > will be replaced by "&lt;", "&gt;" to avoid tag-Interpretation by a Browser
+     *    - boolean and all numbers will be bold.
      *    - the null-Value will be bold and italic
      *
-     *    @param mixed $value the Value to HMTL-Encode
+     *    @param mixed $value the Value to HTML-Encode
      *
      *    @return string the HTML-Encoded Value
      */
@@ -617,9 +617,9 @@ class trans {
      *    Creates a JavaScript-Code that initializes a JavaScript Variable that contains
      *    the value of the given PHP-Variable
      *
-     *    The PHP-Variable can be fromn a simple integer to a complex object / array
+     *    The PHP-Variable can be from a simple integer to a complex object / array
      *
-     *    @param string $jsVarName, the name the Varible should have in the JavaScript
+     *    @param string $jsVarName, the name the Variable should have in the JavaScript
      *    @param mixed $phpvar, the Value the JS-Variable should be initialized with
      *    @uses trans::phpValue2js()
      *
@@ -687,9 +687,9 @@ class trans {
      *    Creates a PHP-Code that initializes a PHP Variable that contains
      *    the value of the given PHP-Variable, this function works recursively.
      *
-     *    The PHP-Variable can be fromn a simple integer to a complex object / array
+     *    The PHP-Variable can be from a simple integer to a complex object / array
      *
-     *    @param string $phpVarName, the name the Varible should have
+     *    @param string $phpVarName, the name the Variable should have
      *    @param mixed $phpvar, the Value the New-Variable should be initialized with
      *    @param string $firstDimSpacer - OPTIONAL - Just to butify the Output
      *
@@ -730,7 +730,7 @@ class trans {
         return $phpCode;
     }
     /**
-     *    replaces Charachters which would cause Problems in PHP-Code
+     *    replaces Characters which would cause Problems in PHP-Code
      *
      *    @param string $str: the raw String
      *    @return string the escaped String
@@ -741,7 +741,7 @@ class trans {
         return str_replace($patterns, $replacements, $str);
     }
     /**
-     *    converts a HTML-Enncoded String into Plaintext
+     *    converts a HTML-Encoded String into Plaintext
      *    - all tags will be removed
      *       - some special tabs will be replaced  by a newline char
      *    - the <td>-Tag will be replaced ba a tabulator Char
@@ -804,8 +804,8 @@ class trans {
     /**
      *    Explodes a string into a Hashtable
      *
-     *    @param string $delim1, the delemiter that seperates the entries
-     *    @param string $delim2, the delimiter that seperates the key from the Value
+     *    @param string $delim1, the delimiter that separates the entries
+     *    @param string $delim2, the delimiter that separates the key from the Value
      *    @param string $string the String to explode
      *
      *    Example :     String: "width: 100px; height:50px"
@@ -833,8 +833,8 @@ class trans {
      *
      *    Just the opposite of trans::hashExplode
      *
-     *    @param string $delim1, the delemiter that seperates the entries
-     *    @param string $delim2, the delimiter that seperates the key from the Value
+     *    @param string $delim1, the delimiter that separates the entries
+     *    @param string $delim2, the delimiter that separates the key from the Value
      *    @param array $hashy the Hashtable to join
      *
      *    @return string the created string
@@ -847,14 +847,14 @@ class trans {
         return join($delim1, $arr);
     }
     /**
-     *    Like trans::hashJoin except the the Values will be Quoted with the giver Quote Charachter
+     *    Like trans::hashJoin except the the Values will be Quoted with the giver Quote Character
      *
      *    Useful to build-up attribute-lists for HTML Tags
      *
      *    @param array $hashy the Hashtable to join
-     *    @param string $delim, the delemiter that seperates the entries, typically ' '
-     *    @param string $Quote, The Charachter used to Quote the Values, typically '"'
-     *    @param string $equiv, the delimiter that seperates the key from the Value, typically '='
+     *    @param string $delim, the delimiter that separates the entries, typically ' '
+     *    @param string $Quote, The Character used to Quote the Values, typically '"'
+     *    @param string $equiv, the delimiter that separates the key from the Value, typically '='
      *
      *    @return string the created string
      */
@@ -883,8 +883,8 @@ class trans {
         return $headers;
     }
     /**
-     *    Builds up the quiry-part of an URL that represents the given data
-     *    data can be from a simple integer up to a complax object / array
+     *    Builds up the query-part of an URL that represents the given data
+     *    data can be from a simple integer up to a complex object / array
      *    This function works recursively
      *    If a complex array/object is given the keys will be the Variablenames in the query
      *
@@ -913,10 +913,10 @@ class trans {
     /**
      *    Builds up an array from an XML-Encoded String
      *
-     *    NOTE: On error a HTML-formattted Error Message will be sent to the standard output.
+     *    NOTE: On error a HTML-formatted Error Message will be sent to the standard output.
      *        This is to simplify debugging, remove this in production releases or use ob_start() and ob_clean()
      *
-     *    @param string $xml, the XML-String to interprete
+     *    @param string $xml, the XML-String to interpreted
      *    @return array the built up array representing the XML-String, false if it fails
      */
     function xml2array($xml) {
@@ -963,7 +963,7 @@ class trans {
      *    Decodes HTML-Entities (&gt;, &auml; &nbsp;, etc..)
      *
      *    @param string $string, the string to decode
-     *    @return string, the String Where the HTML Entities are replaced by "normal" Charachters
+     *    @return string, the String Where the HTML Entities are replaced by "normal" Characters
      */
     private static function decodeHTML($string) {
         $string = strtr($string, array_flip(get_html_translation_table(HTML_ENTITIES)));
@@ -995,7 +995,7 @@ class arrayfunc {
      *    @param mixed $criteria, the "columnname" to sort, can be comma-separated e.g. "date,time";
      *                can also be an array e.g. array('date', 'time');
      *    @param mixed $direction the sort Direction ASC or DESC, OPTIONAL, ASC is default
-     *                can also be comma-seperated or array, MUST have the same "length" as $criteria
+     *                can also be comma-separated or array, MUST have the same "length" as $criteria
      *    @param boolean $holdIndizes - OPTIONAL, default: false, if the indizes of the "rows" should stay at their
      *                rows. This is useful if the row-indizes represent e.g.
      *                    - the Primary keys of the according Database-Entries
@@ -1038,7 +1038,7 @@ class arrayfunc {
         debug::stopMessung('tableSort');
         return $retArr;
     }
-    /*------------     HOWTO  -------------------------
+    /*------------     HOW TO  -------------------------
 
     $data : 2 Dimensionales Array, keys des 2. Dimension kommen als Kriterium in Frage
     $criteria  : String oder 1-Dimsionales Array von kriterien, meherere Krinerien k�nnen auch
@@ -1047,14 +1047,14 @@ class arrayfunc {
     --------------------------------------------------*/
     /**
      *    Groups a 2-Dimensional Array. Like in tableSort the imagination is that we Group a Table
-     *    The data must be an Arrray of "rows", row must be Hashtables (colname => cellValue)
+     *    The data must be an Array of "rows", row must be Hashtables (colname => cellValue)
      *
-     *    This function groups all rows toghether where the "cellValue" of the given "column" is the same
-     *    One can also say seperates the given Array n Parts where n is the numer of different entries in the
+     *    This function groups all rows together where the "cellValue" of the given "column" is the same
+     *    One can also say separates the given Array n Parts where n is the number of different entries in the
      *    given "column"
      *
      *    @param array $data, the data to Group
-     *    @param mixed $criteria, the Column to use for the seperation, can also be a comma-seperated string or
+     *    @param mixed $criteria, the Column to use for the separation, can also be a comma-separated string or
      *                an array
      *    @param boolean $holdIndizes - OPTIONAL, default: false, if the indizes of the "rows" should stay at their
      *                rows. This is useful if the row-indizes represent e.g.
@@ -1090,8 +1090,8 @@ class arrayfunc {
      *    that single row where the grouping-Column has this value!
      *
      *    @param array $data the data to Group
-     *    @param mixed $criteria the Column to use for the seperation, can also be a comma-seperated string or an array
-     *    @param mixed $field - OPTIONAL -  if you are not intrested in the whole Row in each section but only one
+     *    @param mixed $criteria the Column to use for the separation, can also be a comma-separated string or an array
+     *    @param mixed $field - OPTIONAL -  if you are not interested in the whole Row in each section but only one
      *                "cell-Value" u can specify from which column this value should be taken.
      *
      *    @return array the grouped data
@@ -1128,8 +1128,8 @@ class arrayfunc {
      *    Like at the other tableXXX functions the imagination is to have an Array
      *    of Hashtables representing the rows of a table. The hashkeys will specify the column.
      *
-     *    Runs through the given dataArray and returns all rows in a new array which macht
-     *    with the given filter. A Filter must at leadt consit out of an "column"-Name (the hashkey
+     *    Runs through the given dataArray and returns all rows in a new array which mach
+     *    with the given filter. A Filter must at least consist out of an "column"-Name (the hashkey
      *    of the "Rows" to use) an operator and a value. More than one filter can be given.
      *
      *    @param array $data, tha data to filter.
@@ -1247,10 +1247,10 @@ class arrayfunc {
      *    Parses a filter given to the tableFilter function into an 2-dimensional array that represents
      *    the filter-format 2c described in tableFilter
      *
-     *    @param mixed $filter the filter given to the tableFilter funciton (cam be any Variant, from 1a to 2c)
+     *    @param mixed $filter the filter given to the tableFilter function (cam be any Variant, from 1a to 2c)
      *    @param array $operators the known operators
      *
-     *    @return mixed the 2c-like fomratted filter array
+     *    @return mixed the 2c-like formatted filter array
      *
      *    @see arrayfunc::tableFilter
      */
@@ -1274,9 +1274,9 @@ class arrayfunc {
      *    @param array $data the data to filter
      *    @param string $field, specifies the hash-key to compare
      *    @param string $operator, specifies the comparison operator to use: one of : "=", "<", ">", "LIKE"
-     *    @param string $value, the value the the compared value should have (or should beeing greater..)
+     *    @param string $value, the value the the compared value should have (or should being greater..)
      *
-     *    @return array an array of these hashtables whith matched
+     *    @return array an array of these hashtables which matched
      *
      *    @see arrayfunc::tableFilter, this function is internally user by tableFilter
      */
@@ -1301,7 +1301,7 @@ class arrayfunc {
      *    @param string $operator, specifies the comparison operator to use: one of : "=", "<", ">", "LIKE"
      *    @param string $RHS the Right-Hand-Side Value
      *
-     *    @return boolean if the LHS and RHS match (occording to the given operator)
+     *    @return boolean if the LHS and RHS match (according to the given operator)
      */
     private static function compare($LHS, $operator, $RHS) {
         if ($operator == '=') return ($LHS == $RHS);
@@ -1312,13 +1312,13 @@ class arrayfunc {
         return $result;
     }
     /**
-     *    Performs a Database LIKE-Compare, Case-Insesitive
-     *    '%' as wild-card is understood, '_' as char for exectly one Character NOT
+     *    Performs a Database LIKE-Compare, Case-Insensitive
+     *    '%' as wild-card is understood, '_' as char for exactly one Character NOT
      *
      *    @param string $value the value to check
      *    @param string $pattern the "target"-Value that my contain the wildcards
      *
-     *    @return boolean, if the value mathces the given pattern
+     *    @return boolean, if the value matches the given pattern
      */
     private static function likeCompare($value, $pattern) {
         $pattern = strtolower($pattern); // Damit das ganze Case-INsensitive  l�uft
@@ -1361,7 +1361,7 @@ class arrayfunc {
     }
     /**
      *    Recursively merges two arrays
-     *    If two keys are identical the second one will be choosen
+     *    If two keys are identical the second one will be chosen
      *    If two identical keys are integer both will be taken
      *
      *    @param array $arr1, the first array
@@ -1388,9 +1388,9 @@ class arrayfunc {
     /**
      *    Generates a list of all values of a given "column" in a array of Hashtables
      *
-     *    @param array $data the array of ahstables to use
+     *    @param array $data the array of hastables to use
      *    @param string $fieldName the hashkey of the value to be taken into the list
-     *    @param boolean $holdIndizes - OPTIONAL - if the indizes in the list should be tahe same as in the dataset
+     *    @param boolean $holdIndizes - OPTIONAL - if the indizes in the list should be the same as in the dataset
      *            default: false => the list will be a numeric array from 0 to length-1
      *                 true => use this option if the indizes of the array represtent e.g. database Primary keys
      *

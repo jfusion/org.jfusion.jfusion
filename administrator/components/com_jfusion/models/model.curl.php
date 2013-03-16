@@ -360,8 +360,8 @@ class JFusionCurlHtmlFormParser
 class JFusionCurl
 {
 	/**
-	 * NOTE: The routines buildcookie and imlodeCookies are identical to the ones in model.cookie.
-	 * They are duplicated here because I want this file selfcontained so it can be used by the DSSO routines in
+	 * NOTE: The routines buildcookie and implodeCookies are identical to the ones in model.cookie.
+	 * They are duplicated here because I want this file self contained so it can be used by the DSSO routines in
 	 * the integrations. All you need to do there is to overload the JFusionCurl:: _ function to translate strings
 	 **/
 
@@ -411,7 +411,7 @@ class JFusionCurl
 	 *        4. 4 Delimeters in between key-value pairs
 	 *
 	 * @param array  $array     array
-	 * @param string $delimeter delemeter
+	 * @param string $delimeter delimeter
 	 * @param string $keyssofar keyssofar
 	 *
 	 * @return string imploded cookies
@@ -618,7 +618,7 @@ class JFusionCurl
         } else {
             // Versions of PHP prior to 5.2 do not support HttpOnly cookies
             // IE is buggy when specifying a blank domain so set the cookie manually
-            // solve the empty cookiedomain IE problem by specifying a domain in the plugin's parameters. <------
+            // solve the empty cookiedomain IE problem by specifying a domain in the plugin parameters. <------
             if (version_compare(phpversion(), "5.2.0", ">=")) {
                 setcookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
             } else {
@@ -742,7 +742,7 @@ class JFusionCurl
 		}
 
 		foreach ($cookies as $cookie) {
-			// check if we schould leave the cookie alone
+			// check if we should leave the cookie alone
 			$leaveit = false;
 			if ($leavealone) {
 				for ($i=0;$i<count($leavealonearr);$i++) {
@@ -1077,7 +1077,7 @@ class JFusionCurl
 		// now construct the action parameter
 
 		// we have 4 possible options:
-		// case 0 Form action is without httpo.. and relpath = 0 , special case
+		// case 0 Form action is without http.. and relpath = 0 , special case
 		// case 1 Form action is without http.. and relpath = 1 , just construct the action
 		// case 2 form_action is a full url, eg http..... and relpath = 0 This is easy, we do nothing at all
 		// case 3 form_action is a full url, eg http..... and relpath = 1 special case
@@ -1097,7 +1097,7 @@ class JFusionCurl
 					$form_action = '/'.$form_action;
 				}
 				// we need to correct various situations like
-				// relative url from basedir, relative url from postdir etc
+				// relative url from basedir, relative url from post dir etc
 				$tmpurl   = JFusionCurl::parseUrl($curl_options['post_url']);
 				$pathinfo1  = pathinfo($form_action);
 				$pathinfo = pathinfo($tmpurl[6]);
@@ -1324,7 +1324,7 @@ class JFusionCurl
 			$curl_options['debug'] = false;
 		}
 
-		// prevent usererror by not supplying trailing backslash.
+		// prevent user error by not supplying trailing backslash.
 		// make sure that when parameters are sent we do not add a backslash
 		if (strpos($curl_options['post_url'], '?') === false) {
 			if (!(substr($curl_options['post_url'], -1) == '/')) {

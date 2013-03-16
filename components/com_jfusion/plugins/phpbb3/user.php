@@ -234,7 +234,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 
                         $create_persistant_cookie = false;
                         if (!empty($phpbb_allow_autologin)) {
-                            //check for a valid persistant cookie
+                            //check for a valid persistent cookie
                             $persistant_cookie = ($phpbb_allow_autologin) ? JRequest::getVar($phpbb_cookie_name . '_k', '', 'cookie') : '';
                             if (!empty($persistant_cookie)) {
                                 $query = 'SELECT user_id FROM #__sessions_keys WHERE key_id = ' . $db->Quote(md5($persistant_cookie));
@@ -243,8 +243,8 @@ class JFusionUser_phpbb3 extends JFusionUser
                                 if ($persistant_cookie_userid == $userinfo->userid) {
                                     $status['debug'][] = JText::_('SKIPPED_CREATING_PERSISTANT_COOKIE');
                                     $create_persistant_cookie = false;
-                                    //going to assume that since a persistant cookie exists, $options['remember'] was originally set
-                                    //$options['remember'] does not get set if Joomla's remember me plugin reinitiates the login
+                                    //going to assume that since a persistent cookie exists, $options['remember'] was originally set
+                                    //$options['remember'] does not get set if Joomla remember me plugin reinitiated the login
                                     $jautologin = 1;
                                 }
                             } else {
@@ -283,7 +283,7 @@ class JFusionUser_phpbb3 extends JFusionUser
                             $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_u', $userid, $expires, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly);
                             $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_sid', $session_key, $expires, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly, true);
 
-                            //Force the values into the $_COOKIE variable just in case Joomla's remember me plugin fired this in which the cookie will not be available until after the browser refreshes.  This will hopefully trick phpBB into thinking the cookie is present now and thus handle sessions correctly when in frameless mode
+                            //Force the values into the $_COOKIE variable just in case Joomla remember me plugin fired this in which the cookie will not be available until after the browser refreshes.  This will hopefully trick phpBB into thinking the cookie is present now and thus handle sessions correctly when in frameless mode
                             $_COOKIE[$phpbb_cookie_name . '_u'] = $userid;
                             $_COOKIE[$phpbb_cookie_name . '_sid'] = $session_key;
 
@@ -949,7 +949,7 @@ class JFusionUser_phpbb3 extends JFusionUser
                     $undelivered_msg[] = $row->msg_id;
                     $undelivered_user[$row->user_id][] = true;
                 }
-                //$status['debug'][] = 'Retrieved undelvered private messages from user '.$user_id;
+                //$status['debug'][] = 'Retrieved undelivered private messages from user '.$user_id;
             }
         } else {
             $status['error'][] = 'Error Could not retrieve undeliverd messages to user '.$user_id.': '.$db->stderr();
@@ -1098,7 +1098,7 @@ class JFusionUser_phpbb3 extends JFusionUser
             //user logged into Joomla so let's check for an active phpBB session
 
             if (!empty($phpbb_allow_autologin) && !empty($persistant_cookie) && !empty($sid_cookie_value)) {
-                //we have a persistant cookie set so let phpBB handle the session renewal
+                //we have a persistent cookie set so let phpBB handle the session renewal
                 if ($debug) {
                     JError::raiseNotice('500', 'phpbb persistant cookie enabled and set so let phpbb handle renewal');
                 }
@@ -1112,7 +1112,7 @@ class JFusionUser_phpbb3 extends JFusionUser
                     if ($debug) {
                         JError::raiseNotice('500','phpbb3 has a guest session');
                     }
-                    //find the userid attached to Joomla's userid
+                    //find the userid attached to Joomla userid
                     $joomla_userid = $JUser->get('id');
                     $userlookup = JFusionFunction::lookupUser($this->getJname(), $joomla_userid);
                     //get the user's info

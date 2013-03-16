@@ -145,7 +145,7 @@ class modjfusionActivityHelper
 
                 $r->output->subject = $subject;
 
-                //combine all info into an urlstring
+                //combine all info into an url string
                 if ($config['linktype'] == LINKPOST) {
                     $r->output->subject_url = JFusionFunction::routeURL($forum->getPostURL($r->threadid, $r->postid), $config['itemid'], $jname);
                 } else {
