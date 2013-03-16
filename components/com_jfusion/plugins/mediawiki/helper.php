@@ -59,10 +59,10 @@ class JFusionHelper_mediawiki
 		$this->joomlaSessionId = session_id();
 		$this->joomlaSessionCookieParams = session_get_cookie_params();
 
-		//close Joomla's session
+		//close Joomla session
 		session_write_close();
 
-        //initialize refbase's session
+        //initialize refbase session
 		if (!$this->joomlaSessionUseCookies = ini_get('session.use_cookies')) {
 			ini_set('session.use_cookies', 1);
 		}
@@ -80,7 +80,7 @@ class JFusionHelper_mediawiki
     }
 
     /**
-     * Close session and restore Joomla's
+     * Close session and restore Joomla
      */
     function closeSession() {
 		session_write_close();
@@ -121,7 +121,7 @@ class JFusionHelper_mediawiki
     function includeFramework( & $source_path ) {
         //check for trailing slash and generate file path
         if (substr($source_path, -1) == DS) {
-            //remove it so that we can make it compatible with mediawiki's MW_INSTALL_PATH
+            //remove it so that we can make it compatible with mediawiki MW_INSTALL_PATH
             $source_path = substr($source_path, 0, -1);
         }
 

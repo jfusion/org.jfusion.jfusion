@@ -38,7 +38,7 @@ class plgUserJfusion extends JPlugin
     /**
      * Constructor
      *
-     * For php4 compatability we must not use the __constructor as a constructor for plugins
+     * For php4 compatibility we must not use the __constructor as a constructor for plugins
      * because func_get_args ( void ) returns a copy of all passed arguments NOT references.
      * This causes problems with cross-referencing necessary for the observer design pattern.
      *
@@ -61,15 +61,15 @@ class plgUserJfusion extends JPlugin
      * Method is called after user data is deleted from the database
      *
      * @param array   $user   holds the user data
-     * @param boolean $succes true if user was succesfully stored in the database
+     * @param boolean $success true if user was successfully stored in the database
      * @param string  $msg    message
      *
-     * @return boolean False on Falior
+     * @return boolean False on Error
      */
-    function onAfterDeleteUser($user, $succes, $msg)
+    function onAfterDeleteUser($user, $success, $msg)
     {
         $result = true;
-        if (!$succes) {
+        if (!$success) {
             $result = false;
         } else {
             //create an array to store the debug info
@@ -208,7 +208,7 @@ class plgUserJfusion extends JPlugin
                     $jfusionDebug['init'][] = JText::_('USING_OTHER_AUTH');
                 }
                 if (empty($userinfo)) {
-                    //are we in Joomla's backend?  Let's check internal Joomla for the user if joomla_int isn't already the master to prevent lockouts
+                    //are we in Joomla backend?  Let's check internal Joomla for the user if joomla_int isn't already the master to prevent lockouts
                     if ($master->name != 'joomla_int' && $mainframe->isAdmin()) {
                          $JFusionJoomla = JFusionFactory::getUser('joomla_int');
                          $JoomlaUserinfo = $JFusionJoomla->getUser($auth_userinfo);
@@ -260,10 +260,10 @@ class plgUserJfusion extends JPlugin
                 }
             }
 
-            //apply the cleartext password to the user object
+            //apply the clear text password to the user object
             $userinfo->password_clear = $user['password'];
 
-            //if logging in via Joomla's backend, create a Joomla session and do nothing else to prevent lockouts
+            //if logging in via Joomla backend, create a Joomla session and do nothing else to prevent lockouts
             if (empty($JFusionLoginCheckActive) && $mainframe->isAdmin()) {
                 $JoomlaUserinfo = (empty($JoomlaUserinfo)) ? $JFusionJoomla->getUser($userinfo) : $JoomlaUserinfo;
                 $JoomlaSession = $JFusionJoomla->createSession($JoomlaUserinfo, $options);
@@ -276,7 +276,7 @@ class plgUserJfusion extends JPlugin
                     $success = false;
                     return $success;
                 } else {
-                    //make sure Joomla's salt is Joomla-compatible while we have the clear password
+                    //make sure Joomla salt is Joomla-compatible while we have the clear password
                     if (!empty($userinfo->password_clear) && strlen($userinfo->password_clear) != 32 && strpos($JoomlaUserinfo->password_salt, ':') !== false) {
                         $JoomlaUserinfo->password_clear = $userinfo->password_clear;
                         $JFusionJoomla->updatePassword($userinfo, $JoomlaUserinfo, $jfusionDebug);
@@ -289,7 +289,7 @@ class plgUserJfusion extends JPlugin
 
             // See if the user has been blocked or is not activated
             if (!empty($userinfo->block) || !empty($userinfo->activation)) {
-                //make sure the block is also applied in slave softwares
+                //make sure the block is also applied in slave software
                 $slaves = JFusionFunction::getSlaves();
                 foreach ($slaves as $slave) {
                     if ($JFusionActivePlugin != $slave->name) {
@@ -370,8 +370,8 @@ class plgUserJfusion extends JPlugin
                 $JoomlaUser = array('userinfo' => $userinfo, 'error' => '');
             }
             //setup the master session if
-            //a) The master is not joomla_int and the user is logging into Joomla's frontend only
-            //b) The master is joomla_int and the user is logging into either Joomla's frontend or backend
+            //a) The master is not joomla_int and the user is logging into Joomla frontend only
+            //b) The master is joomla_int and the user is logging into either Joomla frontend or backend
             if ($JFusionActivePlugin != $master->name && $master->dual_login == 1 && (!isset($options['group']) || $master->name == 'joomla_int')) {
                 $MasterSession = $JFusionMaster->createSession($userinfo, $options);
                 if (!empty($MasterSession['error'])) {
@@ -417,7 +417,7 @@ class plgUserJfusion extends JPlugin
                         $jfusionDebug[$slave->name. ' ' . JText::_('USER') . ' ' . JText::_('DETAILS') ] = JFusionFunction::anonymizeUserinfo($SlaveUser['userinfo']);
                     }
 
-                    //apply the cleartext password to the user object
+                    //apply the clear text password to the user object
                     $SlaveUser['userinfo']->password_clear = $user['password'];
                     JFusionFunction::updateLookup($SlaveUser['userinfo'], $JoomlaUser['userinfo']->userid, $slave->name);
                     if (!isset($options['group']) && $slave->dual_login == 1 && $JFusionActivePlugin != $slave->name) {
@@ -591,15 +591,15 @@ class plgUserJfusion extends JPlugin
      *
      * @param array   $user   holds the user data
      * @param boolean $isnew  is new user
-     * @param boolean $succes was it a sucess
+     * @param boolean $success was it a success
      * @param string  $msg    Message
      *
      * @access public
-     * @return boolean False on Falior
+     * @return boolean False on Error
      */
-    function onAfterStoreUser($user, $isnew, $succes, $msg)
+    function onAfterStoreUser($user, $isnew, $success, $msg)
     {
-        if (!$succes) {
+        if (!$success) {
             $result = false;
             return $result;
         }
@@ -687,7 +687,7 @@ class plgUserJfusion extends JPlugin
 	            $master_userinfo = $JFusionMaster->getUser($JoomlaUser);
             	if(!JFusionFunction::isJoomlaVersion('1.6')) {
 	                if ($JoomlaUser->block == 0 && !empty($JoomlaUser->activation)) {
-	                    //let's clear out Joomla's activation status for sanity's sake
+	                    //let's clear out Joomla activation status for sanity's sake
 	                    $db = JFactory::getDBO();
 	                    $query = 'UPDATE #__users SET activation = \'\' WHERE id = ' . $JoomlaUser->id;
 	                    $db->setQuery($query);
@@ -738,7 +738,7 @@ class plgUserJfusion extends JPlugin
                 JFusionFunction::updateLookup($SlaveUser['userinfo'], $JoomlaUser->id, $slave->name);
             }
         }
-        //check to see if the Joomla database is still connnected incase the plugin messed it up
+        //check to see if the Joomla database is still connected in case the plugin messed it up
         JFusionFunction::reconnectJoomlaDb();
         if ($Itemid_backup!=0) {
 	        //reset the global $Itemid so that modules are not repeated
@@ -784,12 +784,12 @@ class plgUserJfusion extends JPlugin
 
     /**
      * @param $user
-     * @param $succes
+     * @param $success
      * @param $msg
      * @return bool
      */
-    public function onUserAfterDelete($user, $succes, $msg)	{
- 	    return $this->onAfterDeleteUser($user, $succes, $msg);
+    public function onUserAfterDelete($user, $success, $msg)	{
+ 	    return $this->onAfterDeleteUser($user, $success, $msg);
 	}
 
     /**

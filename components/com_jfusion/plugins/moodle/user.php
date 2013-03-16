@@ -265,7 +265,7 @@ class JFusionUser_moodle extends JFusionUser {
                     }
                 }
             }
-            // check if the logout was successfull
+            // check if the logout was successfully
             if (!empty($status['cURL']['moodle'])) {
                 $loggedin_user = $this->rc4decrypt($status['cURL']['moodle']);
                 $status['debug'][] = JText::_('CURL_MOODLE_USER') . ' ' . $loggedin_user;
@@ -303,7 +303,7 @@ class JFusionUser_moodle extends JFusionUser {
                 }
             }
             $status = JFusionJplugin::createSession($userinfo, $options, $this->getJname(),$logintype,$curl_options);
-            // check if the login was successfull
+            // check if the login was successfully
             if (!empty($status['cURL']['moodle'])) {
                 $loggedin_user = $this->rc4decrypt($status['cURL']['moodle']);
                 $status['debug'][] = JText::_('CURL_MOODLE_USER') . " " . $loggedin_user;
@@ -321,7 +321,7 @@ class JFusionUser_moodle extends JFusionUser {
      * @return string
      */
     function filterUsername($username) {
-		//Moodle has a switch to allow any character or just alphanumeric, dot, hypen (will be extendedn with @ and _ in Moodle 2.0
+		//Moodle has a switch to allow any character or just alphanumeric, dot, hyphen (will be extended with @ and _ in Moodle 2.0
 		// I recommend to set allow extended usernames to true in Moodles config.
 		// must make note of this in docs.
 		return $username;
@@ -370,7 +370,7 @@ class JFusionUser_moodle extends JFusionUser {
      * @return void
      */
     function updateEmail($userinfo, &$existinguser, &$status) {
-		//TODO ? check for duplicates, or leave it atdb error
+		//TODO ? check for duplicates, or leave it at db error
 		//we need to update the email
 		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = 'UPDATE #__user SET email =' . $db->Quote($userinfo->email) . ' WHERE id =' . (int)$existinguser->userid;
@@ -626,7 +626,7 @@ class JFusionUser_moodle extends JFusionUser {
 	}
 	/*       function updateUsergroup($userinfo, &$existinguser, &$status, $jname) {
 
-	Moodles groupnigs depend on the course. In the current implementation you can map groups FROM moodles
+	Moodles groupings depend on the course. In the current implementation you can map groups FROM moodles
 	roles to usertype. because of the connection between courses, roles and groups the reverse is (not yet) possible.
 	We have to come up with a way to handle this
 	}

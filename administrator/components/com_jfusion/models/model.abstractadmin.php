@@ -251,7 +251,7 @@ class JFusionAdmin
                 JError::raiseNotice(0, $jname . ': ' . JText::_('BEST_COOKIE_DOMAIN') . ' ' . $correct_domain);
             }
         }
-        //also check the cookie path as it can intefere with frameless
+        //also check the cookie path as it can interfere with frameless
         $params = JFusionFactory::getParams($this->getJname());
         $cookie_path = $params->get('cookie_path');
         if (($correct_domain != $cookie_domain) && !($this->allowEmptyCookiePath())) {
@@ -303,7 +303,7 @@ class JFusionAdmin
      * @param string $name         name of element
      * @param string $value        value of element
      * @param string $node         node of element
-     * @param string $control_name name of controler
+     * @param string $control_name name of controller
      *
      * @return string html
      */
@@ -412,7 +412,7 @@ JS;
      * @param string $name         name of element
      * @param string $value        value of element
      * @param string $node         node of element
-     * @param string $control_name name of controler
+     * @param string $control_name name of controller
      *
      * @return string html
      */

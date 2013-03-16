@@ -5,21 +5,21 @@ Windows:
 	7za.exe -> copy to c:\WINDOWS\system32
 	sed.exe -> copy to c:\WINDOWS\system32
 	You must have Git, you can get it here http://git-scm.com/downloads you must install it so that you can use it from command line
-2) Make sure that your local copy is updated to the latest SVN revision (otherwise the revision number will be set to a range of revisions rather the latest)
+2) Make sure that your local copy is updated to the latest GIT revision (otherwise the revision number will be set to a range of revisions rather the latest)
 3) Run the bat file by either
 	a) Open a command prompt (Start -> Run -> cmd)
-	b) cd into your local copy of the SVN repository
+	b) cd into your local copy of the GIT repository
 	c) Type create_release.bat
 
 	OR
 
-	a) Browsing to the local copy of the SVN repository and double clicking the create_release.bat file
+	a) Browsing to the local copy of the GIT repository and double clicking the create_release.bat file
 4) Input the number corresponding to the action you want to take and hit enter.
 
 
 Linux:
 1) You must have Git, you can get it here http://git-scm.com/downloads you must install it so that you can use it from command line
-2) cd into your local copy of the SVN repository
+2) cd into your local copy of the GIT repository
 3) Type "./create_release.sh ACTION"
 Action can be one of the following
 	clear_packages - deletes the module and plugin packages in administrator/components/com_jfusion/packages
@@ -41,7 +41,7 @@ If you prefer a Linux GUI, create a file (with either .sh or no extension) and a
 
 #!/bin/sh
 
-DIR=/path/to/my/local/SVN/repository
+DIR=/path/to/my/local/GIT/repository
 
 cd $DIR;
 

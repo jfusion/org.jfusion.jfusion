@@ -43,7 +43,7 @@ class JFusionAdmin_mediawiki extends JFusionAdmin {
     {
         //check for trailing slash and generate file path
         if (substr($source_path, -1) == DS) {
-            //remove it so that we can make it compatible with mediawiki's MW_INSTALL_PATH
+            //remove it so that we can make it compatible with mediawiki MW_INSTALL_PATH
             $source_path = substr($source_path, 0, -1);
         }
         $myfile = $source_path . DS. 'LocalSettings.php';

@@ -33,7 +33,7 @@ class JElementJFusionCustomParam extends JElement
      * @param string $name         name of element
      * @param string $value        value of element
      * @param JSimpleXMLElement &$node        node of element
-     * @param string $control_name name of controler
+     * @param string $control_name name of controller
      *
      * @return string|void html
      */

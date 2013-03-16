@@ -62,8 +62,8 @@ class JFusionUser_wordpress extends JFusionUser {
 		//    $query = 'SELECT ID as userid, user_login as username, user_email as email, user_pass as password, null as password_salt, user_activation_key as activation, user_status as status FROM #__users WHERE ' . $identifier_type . ' = ' . $db->Quote($identifier);
 
 		// internal note: working toward the JFusion 2.0 plugin system, we read all available userdata into the user object
-		// conversion to the JFusion userobject will be done at the end for JFusion 1.x
-		// we add an localuser field to keep the original data
+		// conversion to the JFusion user object will be done at the end for JFusion 1.x
+		// we add an local user field to keep the original data
 		// will be further developed for 2.0 allowing centralized registration
 
 		$query = 'SELECT * FROM #__users WHERE ' . $identifier_type . ' = ' . $db->Quote($identifier);
@@ -149,8 +149,8 @@ class JFusionUser_wordpress extends JFusionUser {
 		$result->activation        = $user->user_activation_key;
 		$result->block             = 0;
 
-		// todo get to find out where user status stands for. As far as I can see we have also two additioonal fields
-		// in a multisite, one of the spam. This maybe linked to block.
+		// todo get to find out where user status stands for. As far as I can see we have also two additional fields
+		// in a multi site, one of the spam. This maybe linked to block.
 
 		return $result;
 	}
@@ -439,7 +439,7 @@ class JFusionUser_wordpress extends JFusionUser {
                 $metadata['jabber']           = '';
                 $metadata['wp_capabilities']  = serialize($default_role);
                 $metadata['wp_user_level']    = sprintf('%u',$default_userlevel);
-                //		$metadata['default_password_nag'] = '0'; //no nag! can be ommitted
+                //		$metadata['default_password_nag'] = '0'; //no nag! can be omitted
 
                 $meta = new stdClass;
                 $meta->umeta_id = null;

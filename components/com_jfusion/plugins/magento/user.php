@@ -239,7 +239,7 @@ class JFusionUser_magento extends JFusionUser {
                     $magento_user['email']['value'] = $result->email;
                     $magento_user['created_at']['value'] = $result->created_at;
                     $magento_user['updated_at']['value'] = $result->updated_at;
-                    $is_active = $result->is_active; //TO DO: have to figure out what theis means
+                    $is_active = $result->is_active; //TO DO: have to figure out what theirs means
                     $instance->userid = $entity;
                     $instance->username = $magento_user['email']['value'];
                     $name = $magento_user['firstname']['value'];
@@ -342,7 +342,7 @@ class JFusionUser_magento extends JFusionUser {
     function update_create_Magentouser($user, $entity_id) {
         $db = JFusionFactory::getDataBase($this->getJname());
         $sqlDateTime = date('Y-m-d H:i:s', time());
-        // transactional handling of this update is a neccessity
+        // transactional handling of this update is a necessarily
         if (!$entity_id) { //create an (almost) empty user
             // first get the current increment
             //$db->Execute ( 'START TRANSACTION' );//in mysql - Before the query  was BEGIN TRANSACTION

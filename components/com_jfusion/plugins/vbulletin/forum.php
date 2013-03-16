@@ -109,7 +109,7 @@ class JFusionForum_vbulletin extends JFusionForum
     {
         $userid = $this->getThreadAuthor($dbparams, $contentitem);
 
-        //strip title of all html characters and convert entities back to applicable characaters (to prevent double encoding by vB)
+        //strip title of all html characters and convert entities back to applicable characters (to prevent double encoding by vB)
         $title = trim(strip_tags(html_entity_decode($contentitem->title)));
 
         $useContentDate = $dbparams->get('use_content_created_date', false);
@@ -117,7 +117,7 @@ class JFusionForum_vbulletin extends JFusionForum
             $mainframe = JFactory::getApplication();
             $timezone = $mainframe->getCfg('offset');
             $timestamp = strtotime($contentitem->created);
-            //undo Joomla's timezone offset
+            //undo Joomla timezone offset
             $timestamp += ($timezone * 3600);
         } else {
              $timestamp = 'timenow';
@@ -277,7 +277,7 @@ class JFusionForum_vbulletin extends JFusionForum
      */
     function updateThread(&$dbparams, &$existingthread, &$contentitem, &$status)
     {
-        //strip title of all html characters and convert entities back to applicable characaters (to prevent double encoding by vB)
+        //strip title of all html characters and convert entities back to applicable characters (to prevent double encoding by vB)
         $title = trim(strip_tags(html_entity_decode($contentitem->title)));
 		$text = $this->prepareFirstPostBody($dbparams, $contentitem);
 
@@ -553,7 +553,7 @@ class JFusionForum_vbulletin extends JFusionForum
     function getActivityQuery($usedforums, $result_order, $result_limit)
     {
         $usedforums = $this->filterForumList($usedforums);
-        //if no ther were no forums passed, the entire list is called and filtered in filterForumList
+        //if no there were no forums passed, the entire list is called and filtered in filterForumList
         //however if for some reason filterForumList fails, set forumid to 0 to prevent anything from showing protecting private forums
         $where = (!empty($usedforums)) ? 'WHERE a.forumid IN (' . implode(',', $usedforums) . ') AND b.visible = 1 AND c.password = ""' : 'WHERE a.forumid = 0 AND b.visible = 1 AND c.password = ""';
         $end = $result_order . " LIMIT 0," . ($result_limit + 25);

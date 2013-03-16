@@ -425,7 +425,7 @@ HTML;
                 if (!$db->query()) {
                     JError::raiseWarning(500, $db->stderr());
                 }
-                //enable or renable the plugin
+                //enable or re-enable the plugin
                 if ($action != 'disable') {
                     if (($hook == 'redirect' || $hook == 'frameless') && !$this->isValidItemID($itemid)) {
                         JError::raiseWarning(500, JText::_('VB_REDIRECT_HOOK_ITEMID_EMPTY'));

@@ -18,7 +18,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 /**
- * JFusion User Class for elgg
+ * JFusion User Class for Elgg
  * For detailed descriptions on these functions please check the model.abstractuser.php
  * 
  * @category   JFusion
@@ -119,7 +119,7 @@ class JFusionUser_elgg extends JFusionUser {
         $status = array('error' => array(),'debug' => array());
         /*
         NOTE:
-        !Cannont include elgg engine and use core elgg logout functions since it conflicts with Community Builder Logout function!
+        !Can not include elgg engine and use core elgg logout functions since it conflicts with Community Builder Logout function!
         unsetting the elgg cookies has been problematic as well.
         */
         $params = JFusionFactory::getParams($this->getJname());
@@ -152,7 +152,7 @@ class JFusionUser_elgg extends JFusionUser {
             require_once $params->get('source_path') . DS . 'engine' . DS . 'start.php';
             // Get variables
             global $CONFIG;
-            // Action Gatekeep not neccessary as person should already be validated by Joomla!
+            // Action Gatekeep not necessary as person should already be validated by Joomla!
             //action_gatekeeper();
             //Get username and password
             $username = $userinfo->username;
@@ -275,7 +275,7 @@ class JFusionUser_elgg extends JFusionUser {
 
             try {
                 if (((trim($password) != '') && (strcmp($password, $password2) == 0)) && ($guid = register_user($username, $password, $name, $email, true))) {
-    // comented out, if user is created by admin validated emails or not user can still login.., dont think this is what we want as i added update validation functions.
+    // commented out, if user is created by admin validated emails or not user can still login.., don't think this is what we want as i added update validation functions.
     //                $new_user = get_entity($guid);
     //                $new_user->admin_created = true;
                     if (empty($userinfo->password_clear)) {
@@ -324,7 +324,7 @@ class JFusionUser_elgg extends JFusionUser {
      * blockUser
      *
      * @param object $userinfo      holds the new user data
-     * @param object &$existinguser holds the exsisting user data
+     * @param object &$existinguser holds the existing user data
      * @param array  &$status       Status array
      *
      * @access public
@@ -357,7 +357,7 @@ class JFusionUser_elgg extends JFusionUser {
      * unblock user
      *
      * @param object $userinfo      holds the new user data
-     * @param object &&$existinguser holds the exsisting user data
+     * @param object &&$existinguser holds the existing user data
      * @param array  &&$status       Status array
      *
      * @access public

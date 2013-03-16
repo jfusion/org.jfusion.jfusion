@@ -272,7 +272,7 @@ class JFusionPublic
     }
 
     /**
-     * Parsers the buffer recieved from getBuffer into header and body
+     * Parsers the buffer received from getBuffer into header and body
      * @param &$data
      */
     function parseBuffer(&$data) {
@@ -824,7 +824,7 @@ HTML;
         $db = JFusionFactory::getDatabase($this->getJname());
         //get the query used to search
         $query = $this->getSearchQuery($pluginParam);
-        //assign specific table colums to title and text
+        //assign specific table columns to title and text
         $columns = $this->getSearchQueryColumns();
         //build the query
         if ($phrase == 'exact') {

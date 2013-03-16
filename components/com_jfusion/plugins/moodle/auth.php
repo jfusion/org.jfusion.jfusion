@@ -22,9 +22,9 @@
  * These salts are put numbered in the config file as follows:
  * $CFG->passwordsaltalt1    = 'salt number 1';
  * $CFG->passwordsaltalt2    = 'salt number 2';
- * $CFG->passwordsaltalt3    = 'salt nummer 3';
+ * $CFG->passwordsaltalt3    = 'salt number 3';
  * ....
- * $CFG->passwordsaltalt10    = 'salt nummer 10';
+ * $CFG->passwordsaltalt10    = 'salt number 10';
  * Moodles internal authentication routines test for
  * no salt used, then main salt used and thenm for one of the alt salts used
  * when a user logs in the password hash will be updated to either no salt (if configured ths way)
@@ -83,7 +83,7 @@ class JFusionAuth_moodle extends JFusionAuth {
         }
         if ($validated) {
             return $userinfo->password;  // better would be to alter the password, but we need to fool JFusions core
-                                         // don't worry abouyt password updates in thge debugger, after 2 times it will be stable.
+                                         // don't worry about password updates in the debugger, after 2 times it will be stable.
         } else {
             return md5($userinfo->password_clear . $params->get('passwordsaltmain')); //return default
         }

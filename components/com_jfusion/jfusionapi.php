@@ -763,7 +763,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 		$old = error_reporting(0);
 		if (!defined('_JEXEC')) {
 			/**
-			 * todo: determin if we really need session_write_close or if it need to be selectable
+			 * todo: determine if we really need session_write_close or if it need to be selectable
 			 */
 			session_write_close();
 			// trick joomla into thinking we're running through joomla
@@ -773,7 +773,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 
 			// load joomla libraries
 			require_once JPATH_BASE . DS . 'includes' . DS . 'defines.php';
-			define('_JREQUEST_NO_CLEAN', true); // we dont want to clean variables as it can "commupt" them for some applications, it also clear any globals used...
+			define('_JREQUEST_NO_CLEAN', true); // we don't want to clean variables as it can "corrupt" them for some applications, it also clear any globals used...
 
 			if (!class_exists('JVersion')) {
 				if (file_exists(JPATH_LIBRARIES.DS.'cms'.DS.'version'.DS.'version.php')) {
@@ -866,7 +866,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 		$session->close();
 
 		//if we are not frameless, then we need to manually update the session data as on some servers, this data is getting corrupted
-		//by php's session_write_close and thus the user is not logged into Joomla.  php bug?
+		//by php session_write_close and thus the user is not logged into Joomla.  php bug?
 		if (!defined('IN_JOOMLA')) {
 			/**
 			 * @ignore

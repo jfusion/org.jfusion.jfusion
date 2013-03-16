@@ -58,7 +58,7 @@ class plgContentJfusion extends JPlugin
     /**
     * Constructor
     *
-    * For php4 compatability we must not use the __constructor as a constructor for
+    * For php4 compatibility we must not use the __constructor as a constructor for
     * plugins because func_get_args ( void ) returns a copy of all passed arguments
     * NOT references. This causes problems with cross-referencing necessary for the
     * observer design pattern.
@@ -88,7 +88,7 @@ class plgContentJfusion extends JPlugin
         $this->jname =& $this->params->get('jname',false);
 
         if ($this->jname !== false) {
-            //load the plugin's language file
+            //load the plugin language file
             $this->loadLanguage('com_jfusion.plg_' . $this->jname, JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion');
         }
 
@@ -111,7 +111,7 @@ class plgContentJfusion extends JPlugin
             $path = ($isJ16) ? 'jfusion' . DS : '';
             define('DISCUSSBOT_PATH', JPATH_SITE . DS . 'plugins' . DS . 'content' . DS . $path . 'discussbot' . DS);
 
-            //let's first check for customized files in Joomla's template directory
+            //let's first check for customized files in Joomla template directory
             $app = JFactory::getApplication();
             $JoomlaTemplateOverride = JPATH_BASE.DS.'templates'. DS .$app->getTemplate() . DS. 'html' . DS . 'plg_content_jfusion' . DS;
             if (file_exists($JoomlaTemplateOverride)) {
@@ -772,7 +772,7 @@ HTML;
 
     /*
      * createPost
-     * @return voic
+     * @return void
      */
     public function createPost()
     {
@@ -1228,11 +1228,11 @@ HTML;
             $show_readmore = $readmore_catch = $article_params->get($readmore_param);
         }
 
-        //let's overwrite the readmore link with our own
+        //let's overwrite the read more link with our own
         //needed as in the case of updating the buttons via ajax which calls the article view
         $view = ($override = JRequest::getVar('view_override')) ? $override : JRequest::getVar('view');
         if ($view != $this->view() && $this->params->get('overwrite_readmore',1)) {
-            //make sure the readmore link is enabled for this article
+            //make sure the read more link is enabled for this article
 
             if (!empty($show_readmore) && !empty($readmore_catch)) {
                 if ($article_access) {
@@ -1271,7 +1271,7 @@ HTML;
                 $this->helper->output['buttons']['readmore']['text'] = $readmore_text;
                 $this->helper->output['buttons']['readmore']['target'] = '_self';
 
-                //set it so that Joomla does not show its readmore link
+                //set it so that Joomla does not show its read more link
                 if (isset($this->article->readmore)) {
                     $this->article->readmore = 0;
                 }
@@ -1456,7 +1456,7 @@ HTML;
             $post_output[$i]->postid = $postid;
             $post_output[$i]->guest = $guest;
 
-            //get Joomla's id
+            //get Joomla id
             $userlookup = JFusionFunction::lookupUser($JFusionForum->getJname(),$userid,false,$p->{$columns->username});
 
             //avatar

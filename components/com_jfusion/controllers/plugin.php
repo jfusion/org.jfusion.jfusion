@@ -38,7 +38,7 @@ class JFusionControllerPlugin extends JController
 	function display() {
 		//find out if there is an itemID with the view variable
 		$menuitemid = JRequest::getInt('Itemid');
-		//we do not want the frontpage menuitem as it will cause a 500 error in some cases
+		//we do not want the front page menuitem as it will cause a 500 error in some cases
 		$jPluginParam = new JParameter('');
 		//added to prevent a notice of $jview being undefined;
 		if ($menuitemid && $menuitemid!=1) {

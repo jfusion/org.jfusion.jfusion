@@ -44,7 +44,7 @@ class jfusionViewplugineditor extends JView
         //find out the submitted name of the JFusion module
         $jname = JRequest::getVar('jname');
         if ($jname) {
-            //hides the main menu and disables the Joomla's navigation menu
+            //hides the main menu and disables the Joomla navigation menu
             //JRequest::setVar('hidemainmenu', 1);
             // Keep the idea of instanciate the parameters only with the parameters of the XML file from the plugin needed but with a centralized method (JFusionFactory::createParams)
             $parametersInstance = JFusionFactory::createParams($jname);

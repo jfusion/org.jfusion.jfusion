@@ -43,9 +43,9 @@ class JFusionAuth_wordpress extends JFusionAuth
  * NOTE
  * In Wordpress 2.5 and up the password has generation is done by a public domain
  * Portable PHP password hashing framework. The same framework is used by phpBBs, but alas,
- * the signal chatacter is changed. Because of this we cannot load the original framework
- * and the phpBB3 framework at the same time in case phpBB3 and wor4dpress are used together using
- * JFusion; For this reason the original class is put into the file PasswordHash.php is reneamed to
+ * the signal character is changed. Because of this we cannot load the original framework
+ * and the phpBB3 framework at the same time in case phpBB3 and wordpress are used together using
+ * JFusion; For this reason the original class is put into the file PasswordHash.php is renamed to
  * PasswordHashOrg.php and the class PasswordHash has been renamed to PasswordHashOrg.
  * This way we have no clash in the hash classnames. 
  * 

@@ -190,7 +190,7 @@ class JFusionModelInstaller extends InstallerModelInstall
                 // There was an error installing the package
                 $result['message'] = 'JFusion ' . JText::_('PLUGIN') . ' ' . JText::_('COPY') . ' ' . JText::_('FAILED');
             } else {
-                // Package installed sucessfully
+                // Package installed successfully
                 $result['message'] = 'JFusion ' . JText::_('PLUGIN') . ' ' . JText::_('COPY') . ' ' . JText::_('SUCCESS');
                 $result['status'] = true;
             }
@@ -681,8 +681,8 @@ class JFusionPluginInstaller extends JObject
 		}
     	/*
         * Check for a valid XML root tag.
-        * @todo: Remove backwards compatability in a future version
-        * Should be 'install', but for backward compatability we will accept 'mosinstall'.
+        * @todo: Remove backwards compatibility in a future version
+        * Should be 'install', but for backward compatibility we will accept 'mosinstall'.
         */
 		if (!is_object($xml) || ($xml->name() != 'install' && $xml->name() != 'mosinstall')) {
             // Free up xml parser memory and return null
@@ -727,7 +727,7 @@ class JFusionPluginInstaller extends JObject
         //get the contents of the files in the plugin dir
         $filesArray = $this->getFiles($pluginPath, $jname);
         if (extension_loaded('zlib')) {
-            //use Joomla's zip class to create the zip
+            //use Joomla zip class to create the zip
             /**
              * @ignore
              * @var $zip JArchiveZip
@@ -754,7 +754,7 @@ class JFusionPluginInstaller extends JObject
     }
 
     /**
-     * get files functopm
+     * get files function
      *
      *  @param string $folder folder name
      *  @param string $jname  jname

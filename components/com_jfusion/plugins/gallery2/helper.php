@@ -95,7 +95,7 @@ class JFusionHelper_gallery2
                                 $g2_user = $userPlugin->getUser($user);
                                 $userPlugin->createSession($g2_user, null, false);
                             } else {
-                                // comented out we will need to keep an eye on if this will cause problems..
+                                // commented out we will need to keep an eye on if this will cause problems..
                                 //GalleryEmbed::logout();
                             }
                             $cookie_domain = $params->get('cookie_domain');

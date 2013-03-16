@@ -76,7 +76,7 @@ class jfusionViewplugindisplay extends JView {
                 $JFusionParam = JFusionFactory::getParams($record->name);
 
                 $record = $this->initRecord($record->name,$record);
-                //check to see if the plugin's files exist
+                //check to see if the plugin files exist
                 $plugin_xml = JFUSION_PLUGIN_PATH .DS. $record->name .DS. 'jfusion.xml';
                 if(!file_exists($plugin_xml)) {
                     $record->bad_plugin = 1;
@@ -188,7 +188,7 @@ class jfusionViewplugindisplay extends JView {
           	$status =  $JFusionPlugin->checkConfig();
            	//do a check to see if the status field is correct
           	if ($status['config'] != $record->status) {
-               	//update the status and deactive the plugin
+               	//update the status and deactivate the plugin
               	$db->setQuery('UPDATE #__jfusion SET status = '.$db->Quote($status['config']).' WHERE name =' . $db->Quote($record->name));
                 $db->query();
                	//update the record status for the resExecute of the code

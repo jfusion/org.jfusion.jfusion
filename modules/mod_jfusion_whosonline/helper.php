@@ -72,7 +72,7 @@ class modjfusionWhosOnlineHelper {
                         $jfusion_userid = $u->userid;
 
                         if($jname=='joomla_int') {
-                            //Joomla's userid is readily available
+                            //Joomla userid is readily available
                             $joomla_userid = $u->userid;
                         } elseif(!empty($userlookup)) {
                             //obtain the correct Joomla userid for the user
@@ -92,7 +92,7 @@ class modjfusionWhosOnlineHelper {
                             $jfusion_userid = $userinfo->userid;
 
                             if($jname=="joomla_int") {
-                                //Joomla's userid is readily available
+                                //Joomla userid is readily available
                                 $joomla_userid = $u->userid;
                             } else {
                                 $userlookup = JFusionFunction::lookupUser($link_jname, $userinfo->userid, false, $userinfo->username);

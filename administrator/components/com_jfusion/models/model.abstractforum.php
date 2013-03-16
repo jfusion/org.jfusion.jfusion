@@ -78,7 +78,7 @@ class JFusionForum
     /**
      * Retrieves the source path to the user's avatar
      *
-     * @param int $uid softwares user id
+     * @param int $uid software user id
      *
      * @return string with source path to users avatar
      */
@@ -183,8 +183,8 @@ class JFusionForum
      *
      * @param JParameter 	&$dbparams		object with discussion bot parameters
      * @param object 	&$contentitem 	object containing content information
-     * @param object 	&$threadinfo 	object with threadinfo from lookup table
-     * @param array 	&$status        object with debug, error, and action stati
+     * @param object|int 	&$threadinfo 	object with threadinfo from lookup table
+     * @param array 	&$status        object with debug, error, and action static
      */
 	function checkThreadExists(&$dbparams, &$contentitem, &$threadinfo, &$status)
 	{

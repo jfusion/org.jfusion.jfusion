@@ -327,7 +327,7 @@ class JFusionUser_oscommerce extends JFusionUser
         //prepare the variables
         $user = new stdClass;
         $user->customers_id = null;
-        $user->customers_gender = 'm'; // ouch, empty is female, so this is an arbritairely choice
+        $user->customers_gender = 'm'; // ouch, empty is female, so this is an arbitrarily choice
         $parts = explode(' ', $userinfo->name);
         $user->customers_firstname = $parts[0];
         $lastname = '';

@@ -128,10 +128,10 @@ class JFusionPublic_vbulletin extends JFusionPublic
                 $bbcodes = $db->loadObjectList();
                 foreach ($bbcodes as $bb) {
                     $template = $bb->bbcodereplacement;
-                    //replace vb's content holder with nbbc's
+                    //replace vb content holder with nbbc
                     $template = str_replace('%1$s', '{$_content}', $template);
                     if ($bb->twoparams) {
-                        //if using the option tag, replace vb's option tag with one nbbc will understand
+                        //if using the option tag, replace vb option tag with one nbbc will understand
                         $template = str_replace('%2$s', '{$_default}', $template);
                     }
                     $vb_bbcodes[$bb->bbcodetag] = array( 'mode' => 4, 'template' => $template, 'class' => 'inline', 'allow_in' => array('block', 'inline', 'link', 'list', 'listitem', 'columns', 'image'));
@@ -337,7 +337,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
                     chdir($source_path);
                     // Get the output
                     ob_start();
-                    //aaaahhh; basically everything global in vbulletin must be declared here for it to work  ;-{
+                    //ahh; basically everything global in vbulletin must be declared here for it to work  ;-{
                     //did not include specific globals in admincp
                     $vbGlobals = array('_CALENDARHOLIDAYS', '_CALENDAROPTIONS', '_TEMPLATEQUERIES', 'ad_location', 'albumids', 'allday', 'altbgclass', 'attachementids', 'badwords', 'bb_view_cache', 'bgclass', 'birthdaycache', 'cache_postids', 'calendarcache', 'calendarids', 'calendarinfo', 'calmod', 'checked', 'checked', 'cmodcache', 'colspan', 'copyrightyear', 'count', 'counters', 'cpnav', 'curforumid', 'curpostid', 'curpostidkey', 'currentdepth', 'customfields', 'datastore_fetch', 'date1', 'date2', 'datenow', 'day', 'days', 'daysprune', 'db', 'defaultselected', 'DEVDEBUG', 'disablesmiliesoption', 'display', 'dotthreads', 'doublemonth', 'doublemonth1', 'doublemonth2', 'eastercache', 'editor_css', 'eventcache', 'eventdate', 'eventids', 'faqbits', 'faqcache', 'faqjumpbits', 'faqlinks', 'faqparent', 'firstnew', 'folder', 'folderid', 'foldernames', 'folderselect', 'footer', 'foruminfo', 'forumjump', 'forumpermissioncache', 'forumperms', 'forumrules', 'forumshown', 'frmjmpsel', 'gobutton', 'goodwords', 'header', 'headinclude', 'holiday', 'html_allowed', 'hybridposts', 'ifaqcache', 'ignore', 'imodcache', 'imodecache', 'inforum', 'infractionids', 'ipclass', 'ipostarray', 'istyles', 'jumpforumbits', 'jumpforumtitle', 'langaugecount', 'laspostinfo', 'lastpostarray', 'limitlower', 'limitupper', 'links', 'message', 'messagearea', 'messagecounters', 'messageid', 'mod', 'month', 'months', 'monthselected', 'morereplies', 'navclass', 'newpm', 'newthreads', 'notifications_menubits', 'notifications_total', 'onload', 'optionselected', 'p', 'p_two_linebreak', 'pagestarttime', 'pagetitle', 'parent_postids', 'parentassoc', 'parentoptions', 'parents', 'pda', 'period', 'permissions', 'permscache', 'perpage', 'phrasegroups', 'phrasequery', 'pictureids', 'pmbox', 'pmids', 'pmpopupurl', 'post', 'postarray', 'postattache', 'postids', 'postinfo', 'postorder', 'postparent', 'postusername', 'previewpost', 'project_forums', 'project_types', 'querystring', 'querytime', 'rate', 'ratescore', 'recurcriteria', 'reminder', 'replyscore', 'searchforumids', 'searchids', 'searchthread', 'searchthreadid', 'searchtype', 'selectedicon', 'selectedone', 'serveroffset', 'show', 'smilebox', 'socialgroups', 'spacer_close', 'spacer_open', 'strikes', 'style', 'stylecount', 'stylevar', 'subscribecounters', 'subscriptioncache', 'template_hook', 'templateassoc', 'tempusagecache', 'threadedmode', 'threadids', 'threadinfo', 'time1', 'time2', 'timediff', 'timenow', 'timerange', 'timezone', 'titlecolor', 'titleonly', 'today', 'usecategories', 'usercache', 'userids', 'vbcollapse', 'vBeditTemplate', 'vboptions', 'vbphrase', 'vbulletin', 'viewscore', 'wol_album', 'wol_attachement', 'wol_calendar', 'wol_event', 'wol_inf', 'wol_pm', 'wol_post', 'wol_search', 'wol_socialgroup', 'wol_thread', 'wol_user', 'year');
                     foreach ($vbGlobals as $g) {
@@ -436,7 +436,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
 JS;
         $js .= '</script>';
 
-        //we need to find and change the call to vb's yahoo connection file to our own customized one
+        //we need to find and change the call to vb yahoo connection file to our own customized one
         //that adds the source url to the ajax calls
         $yuiURL = JFusionFunction::getJoomlaURL() . JFUSION_PLUGIN_DIR_URL . $this->getJname();
         $data->header = preg_replace('#\<script type="text\/javascript" src="(.*?)(connection-min.js|connection.js)\?v=(.*?)"\>#mS', "$js <script type=\"text/javascript\" src=\"$yuiURL/yui/connection/connection.js?v=$3\">", $data->header);
@@ -636,11 +636,11 @@ JS;
             $juri = new JURI($vb_url);
             $vbUid = $juri->getVar('u');
             if (!empty($vbUid)) {
-                //first get Joomla's id for the vBulletin user
+                //first get Joomla id for the vBulletin user
                 $vbUser = JFusionFactory::getUser($this->getJname());
 				$userinfo = $vbUser->getUser($vbUid, 'userid');
                 $vb_userlookup = JFusionFunction::lookupUser($this->getJname(), $vbUid, false, $userinfo->username);
-                //now get the id of the selected plugin based on Joomla's id
+                //now get the id of the selected plugin based on Joomla id
                 if (!empty($vb_userlookup)) {
                     $profile_userlookup = JFusionFunction::lookupUser($profile_plugin, $vb_userlookup->id);
                     //get the profile link
@@ -1006,7 +1006,7 @@ JS;
             //breakup the selectors
             $selectors = explode(',', $element[0]);
             foreach ($selectors as $sk => $sv) {
-                //add vb framless container
+                //add vb frameless container
                 if (strpos($sv, '<!--') !== false) {
                     var_dump($sv);
                     die();

@@ -241,7 +241,7 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
             $node->name = $entity->getTitle();
             $node->pid = $entity->getParentId();
             $node->modified = $entity->getModificationTimestamp();
-            $node->type = 'separator'; //fool joomap in not trying to add $Itemid=
+            $node->type = 'separator'; //fool joomla in not trying to add $Itemid=
             $node->link = $urlGenerator->generateUrl(array('view' => 'core.ShowItem', 'itemId' => $node->id), array('forceSessionId' => false, 'forceFullUrl' => true));
             // Make sure it's an album
             if ($entity->getCanContainChildren()) {

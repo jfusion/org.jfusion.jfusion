@@ -218,7 +218,7 @@ class JFusionUser_dokuwiki extends JFusionUser {
         $cookie_secure = $params->get('secure', false);
         $httponly = $params->get('httponly', true);
 
-        //setup Dokuwiki's constants
+        //setup Dokuwiki constants
         /**
          * @ignore
          * @var $helper JFusionHelper_dokuwiki
@@ -256,7 +256,7 @@ class JFusionUser_dokuwiki extends JFusionUser {
             $cookie_secure = $params->get('secure', false);
             $httponly = $params->get('httponly', true);
 
-            //setup Dokuwiki's constants
+            //setup Dokuwiki constants
             /**
              * @ignore
              * @var $helper JFusionHelper_dokuwiki

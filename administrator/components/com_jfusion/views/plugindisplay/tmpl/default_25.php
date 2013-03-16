@@ -183,10 +183,10 @@ function deleteplugin(jname) {
 }
 
 window.addEvent('domready',function() {
-	var installSVN = $('installSVN');
-    installSVN.set('send',
+	var installGIT = $('installGIT');
+	installGIT.set('send',
         { onSuccess: function(JSONobject) {
-            $('spinnerSVN').innerHTML = '';
+            $('spinnerGIT').innerHTML = '';
             if (JSON.validate(JSONobject)) {
                 var response = JSON.decode(JSONobject);
                 if (response.overwrite != 1 && response.status === true) {
@@ -200,9 +200,9 @@ window.addEvent('domready',function() {
             ajax: true
         }
         });
-    installSVN.addEvent('submit', function(e) {
+	installGIT.addEvent('submit', function(e) {
         new Event(e).stop();
-        $('spinnerSVN').innerHTML = '<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">';
+        $('spinnerGIT').innerHTML = '<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">';
         this.send('?ajax=true');
     });
 
@@ -369,7 +369,7 @@ window.addEvent('domready',function() {
 <?php if($this->VersionData) {
 //display installer data ?>
 
-<form id="installSVN" method="post" action="./index.php" enctype="multipart/form-data">
+<form id="installGIT" method="post" action="./index.php" enctype="multipart/form-data">
     <input type="hidden" name="option" value="com_jfusion" />
     <input type="hidden" name="task" value="installplugin" />
     <input type="hidden" name="installtype" value="url" />
@@ -404,7 +404,7 @@ window.addEvent('domready',function() {
                                     <?php endforeach; ?>
                             </select>
                             <input type="submit" name="button" id="submitter" />
-                            <div id="spinnerSVN">
+                            <div id="spinnerGIT">
                             </div>
                         </td>
                     </tr>

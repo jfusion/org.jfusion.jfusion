@@ -90,7 +90,7 @@ class JFusionUser_gallery2 extends JFusionUser {
         //Not found jet
         $userinfo->registerdate = null;
         $userinfo->lastvisitdate = null;
-        //Not activated users are saved sepperated so not to set. (PendingUser)
+        //Not activated users are saved separated so not to set. (PendingUser)
         $userinfo->activation = null;
         return $userinfo;
     }
@@ -188,7 +188,7 @@ class JFusionUser_gallery2 extends JFusionUser {
                     }
                 }
             }
-            //Code is paticulary taken from the GalleryEmbed::login function
+            //Code is particularly taken from the GalleryEmbed::login function
             list($ret, $user) = GalleryCoreApi::fetchUserByUserName($userinfo->username);
             if ($ret) {
                 $status['error'][] = $ret->getErrorMessage();
@@ -198,7 +198,7 @@ class JFusionUser_gallery2 extends JFusionUser {
                 //Save the Session
                 $session = & $gallery->getSession();
                 $phpVm = $gallery->getPhpVm();
-                //Set Siteadmin if necessarey
+                //Set Site admin if necessary
                 list($ret, $isSiteAdmin) = GalleryCoreApi::isUserInSiteAdminGroup($user->id);
                 if ($ret) {
                     $status['error'][] = $ret->getErrorMessage();
