@@ -36,7 +36,7 @@ createpackage(){
 	cd $FULLPATH
 }
 
-FULLPATH="$PWD"
+FULLPATH=$(dirname $(readlink -f $0))
 
 if [ -f "/usr/bin/7z" ]; then
    USEZIPCMD="7z"
