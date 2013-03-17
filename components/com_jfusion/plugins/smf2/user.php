@@ -147,6 +147,11 @@ class JFusionUser_smf2 extends JFusionUser {
         $status = array('error' => array(),'debug' => array());
         $params = JFusionFactory::getParams($this->getJname());
         $status['debug'][] = JFusionFunction::addCookie($params->get('cookie_name'), '',0,$params->get('cookie_path'),$params->get('cookie_domain'),$params->get('secure'),$params->get('httponly'));
+
+	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $query = 'DELETE FROM #__log_online WHERE id_member = '.$userinfo->userid.' LIMIT 1';
+	    $db->setQuery($query);
+	    $db->query();
 		return $status;
      }
 
