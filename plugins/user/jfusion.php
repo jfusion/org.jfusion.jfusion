@@ -144,13 +144,14 @@ class plgUserJfusion extends JPlugin
         //prevent any output by the plugins (this could prevent cookies from being passed to the header)
         ob_start();
 	    $success = 0;
+	    $mainframe = JFactory::getApplication();
         //prevent a login if AEC denied a user
         if (defined('AEC_AUTH_ERROR_UNAME')) {
             $success = -1;
         } else {
 	        jimport('joomla.user.helper');
 	        global $JFusionActive, $JFusionLoginCheckActive;
-	        $mainframe = JFactory::getApplication();
+
 	        $JFusionActive = true;
 
 	        //php 5.3 does not allow plugins to contain pass by references
@@ -410,14 +411,14 @@ class plgUserJfusion extends JPlugin
 											}
 										}
 									}
-									$result = 1;
+									$success = 1;
 								}
 							}
 						}
 					}
 		        }
 	        } else {
-		        $result = -1;
+		        $success = -1;
 	        }
         }
 	    ob_end_clean();
@@ -432,19 +433,20 @@ class plgUserJfusion extends JPlugin
 		    $session = JTable::getInstance('session');
 		    $session->purge($expire);
 
-
-		    $params = JFusionFactory::getParams('joomla_int');
-		    $allow_redirect_login = $params->get('allow_redirect_login', 0);
-		    $redirecturl_login = $params->get('redirecturl_login', '');
-		    $source_url = $params->get('source_url', '');
-		    ob_end_clean();
-		    $jfc = JFusionFactory::getCookies();
-		    if ( $allow_redirect_login && !empty($redirecturl_login)) // only redirect if we are in the frontend and allowed and have an URL
-		    {
-			    $jfc->executeRedirect($source_url,$redirecturl_login);
-		    } else {
-			    $jfc->executeRedirect($source_url);
-		    }
+			if (!$mainframe->isAdmin()) {
+				$params = JFusionFactory::getParams('joomla_int');
+				$allow_redirect_login = $params->get('allow_redirect_login', 0);
+				$redirecturl_login = $params->get('redirecturl_login', '');
+				$source_url = $params->get('source_url', '');
+				ob_end_clean();
+				$jfc = JFusionFactory::getCookies();
+				if ( $allow_redirect_login && !empty($redirecturl_login)) // only redirect if we are in the frontend and allowed and have an URL
+				{
+					$jfc->executeRedirect($source_url,$redirecturl_login);
+				} else {
+					$jfc->executeRedirect($source_url);
+				}
+			}
 	    }
 	    return ($success === 1);
     }
