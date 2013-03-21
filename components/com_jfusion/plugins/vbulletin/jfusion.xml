@@ -51,6 +51,11 @@
 			<option value="3">USERNAME_OR_EMAIL</option>
 		</param>
 
+        <param name="sefmode" type="list" default="0" label="SEFMODE" description="SEFMODE_DESCR">
+            <option value="1"><![CDATA[domain.com/index.php/alias/file.php/foo,foo/]]></option>
+            <option value="0"><![CDATA[domain.com/index.php/alias/file.php?foo=foo]]></option>
+        </param>
+
 		<param name="jfusionbox" type="text" default="" label="DATABASE_OPTIONS" description="" />
 		<param name="database_type" type="text" size="20" label="DATABASE_TYPE" default="mysql" description="DATABASE_TYPE_DESC" />
 		<param name="database_host" type="text" size="20" label="DATABASE_HOST" default="" description="DATABASE_HOST_DESC" />
@@ -136,11 +141,6 @@
 		<param name="hook_name" default="" type="hidden" label="" description="" />
 		<param name="hook_action" default="" type="hidden" label="" description="" />
 
-		<param name="jfusionbox" type="text" default="" label="FRAMELESS_INTEGRATION_OPTIONS" description="" />
-		<param name="sefmode" type="list" default="0" label="SEFMODE" description="SEFMODE">
-            <option value="1"><![CDATA[domain.com/index.php/alias/file.php/foo,foo/]]></option>
-            <option value="0"><![CDATA[domain.com/index.php/alias/file.php?foo=foo]]></option>
-		</param>
 		<param name=" " type="helptext" default="VB_FRAMELESS_OPTIMIZATION_DESC" label=""/>
 		<param name="showHook" default="framelessoptimization" type="JFusionCustomParam" label="VB_FRAMELESS_OPTIMIZATION" description="VB_FRAMELESS_OPTIMIZATION" />
 		<param name=" " type="helptext" default="VB_FRAMELESS_PARSE_CSS_DESCR" label=""/>

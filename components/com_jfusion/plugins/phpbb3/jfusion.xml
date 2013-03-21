@@ -47,6 +47,10 @@
             <option value="0">PHPBB_LOGIN_DIRECT</option>
             <option value="1">PHPBB_LOGIN_INDIRECT</option>
         </param>
+        <param name="sefmode" type="list" default="0" label="SEFMODE" description="SEFMODE_DESCR">
+            <option value="1"><![CDATA[domain.com/index.php/alias/file.php/foo,foo/]]></option>
+            <option value="0"><![CDATA[domain.com/index.php/alias/file.php?foo=foo]]></option>
+        </param>
 
         <param name="jfusionbox" type="text" default="" label="DATABASE_OPTIONS" description="" />
         <param name="database_type" type="text" size="20" label="DATABASE_TYPE" default="mysql" description="DATABASE_TYPE_DESC" />
@@ -111,12 +115,6 @@
 		<param name="allow_autologin" type="list" default="1" label="ALLOW_AUTOLOGIN" description="ALLOW_AUTOLOGIN">
 			<option value="0">DISABLED</option>
 			<option value="1">ENABLED</option>
-		</param>
-
-		<param name="jfusionbox" type="text" default="" label="SEF_OPTIONS" description="" />
-		<param name="sefmode" type="list" default="0" label="SEFMODE" description="SEFMODE_DESCR">
-            <option value="1"><![CDATA[domain.com/index.php/alias/file.php/foo,foo/]]></option>
-            <option value="0"><![CDATA[domain.com/index.php/alias/file.php?foo=foo]]></option>
 		</param>
 
 		<param name="jfusionbox" type="text" default="" label="MOD_OPTIONS" description="" />

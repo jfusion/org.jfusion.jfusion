@@ -39,6 +39,10 @@
             <option value="2">EMAIL</option>
             <option value="3">USERNAME_OR_EMAIL</option>
         </param>
+        <param name="sefmode" type="list" default="0" label="SEFMODE" description="SEFMODE_DESCR">
+            <option value="1"><![CDATA[domain.com/index.php/alias/file.php/foo,foo/]]></option>
+            <option value="0"><![CDATA[domain.com/index.php/alias/file.php?foo=foo]]></option>
+        </param>
 
         <param name="jfusionbox" type="text" default="" label="DATABASE_OPTIONS" description="" />
         <param name="database_type" type="text" size="20" label="DATABASE_TYPE" default="mysql" description="DATABASE_TYPE_DESC" />
@@ -79,6 +83,20 @@
             <option value="0">JNO</option>
         </param>
 
+        <param name="jfusionbox" type="text" default="" label="GENERAL_OPTIONS_COOKIE" description="" />
+        <param name="cookie_name" type="text" size="20" default="" description="COOKIE_NAME" label="COOKIE_NAME"/>
+        <param name="cookie_domain" type="text" size="60" label="CURL_COOKIE_DOMAIN" default="" description="CURL_COOKIE_DOMAIN_DESC" />
+        <param name="cookie_path" type="text" size="60" label="CURL_COOKIE_PATH" default="" description="CURL_COOKIE_PATH_DESC" />
+        <param name="cookie_expires" type="text" size="5" label="COOKIE_EXPIRES" default="1800" description="COOKIE_EXPIRES_DESC" />
+        <param name="secure" type="list" default="0" label="COOKIE_SECURE" description="COOKIE_SECURE_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </param>
+        <param name="httponly" type="list" default="0" label="COOKIE_HTTPONLY" description="COOKIE_HTTPONLY_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </param>
+
         <param name="jfusionbox" type="text" default="" label="CURL_OPTIONS_GENERAL" description="" />
         <param name="integrationtype" type="text" size="3" label="CURL_INTEGRATIONTYPE" default="1" description="CURL_INTEGRATIONTYPE_DESC" />
         <param name="httpauth" type="list" default="" label="CURL_HTTPAUTH" description="CURL_HTTPAUTH_DESCR">
@@ -92,20 +110,6 @@
         </param>
         <param name="curl_username" type="text" default="" size="60" label="CURL_USERNAME" description="CURL_USERNAME_DESCR" />
         <param name="curl_password" type="password" default="" size="60" label="CURL_PASSWORD" description="CURL_PASSWORD_DESCR" />
-
-        <param name="jfusionbox" type="text" default="" label="CURL_OPTIONS_COOKIE" description="" />
-        <param name="cookie_name" type="text" size="20" default="" description="COOKIE_NAME" label="COOKIE_NAME"/>
-        <param name="cookie_domain" type="text" size="60" label="CURL_COOKIE_DOMAIN" default="" description="CURL_COOKIE_DOMAIN_DESC" />
-        <param name="cookie_path" type="text" size="60" label="CURL_COOKIE_PATH" default="" description="CURL_COOKIE_PATH_DESC" />
-        <param name="cookie_expires" type="text" size="5" label="COOKIE_EXPIRES" default="1800" description="COOKIE_EXPIRES_DESC" />
-        <param name="secure" type="list" default="0" label="COOKIE_SECURE" description="COOKIE_SECURE_DESC">
-            <option value="1">JYES</option>
-            <option value="0">JNO</option>
-        </param>
-        <param name="httponly" type="list" default="0" label="COOKIE_HTTPONLY" description="COOKIE_HTTPONLY_DESC">
-            <option value="1">JYES</option>
-            <option value="0">JNO</option>
-        </param>
 
         <param name="jfusionbox" type="text" default="" label="CURL_OPTIONS_LOGIN" description="" />
         <param name="login_url" type="text" size="60" label="CURL_LOGIN_URL" default="index.php?action=login" description="CURL_LOGIN_URL_DESC" />
@@ -141,12 +145,6 @@
             <option value="0">JNO</option>
         </param>
         <param name="postfields" type="text" size="60" label="CURL_POSTFIELDS" default="" description="CURL_POSTFIELDS_DESC" />
-
-		<param name="jfusionbox" type="text" default="" label="SEF_OPTIONS" description="" />
-		<param name="sefmode" type="list" default="0" label="SEFMODE" description="SEFMODE_DESCR">
-            <option value="1"><![CDATA[domain.com/index.php/alias/file.php/foo,foo/]]></option>
-            <option value="0"><![CDATA[domain.com/index.php/alias/file.php?foo=foo]]></option>
-		</param>
 
 		<param name="jfusionbox" type="text" default="" label="MOD_OPTIONS" description="" />
 		<param name=" " type="helptext" default="REDIRECT_MOD_DESCR" label=""/>

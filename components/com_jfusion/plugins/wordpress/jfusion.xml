@@ -84,12 +84,6 @@
             <option value="0">JNO</option>
         </param>
         <param name="reassign_username" default="" type="text" label="WP_REASSIGN_USERNAME" description="WP_REASSIGN_USERNAME_DESCR" />
-        <param name=" " type="helptext" default="WP_REASSIGN_BLOGS" label=""/>
-        <param name="reassign_blogs" type="list" default="0" label="WP_REASSIGN_BLOGS_LABEL" description="WP_REASSIGN_BLOGS_DESCR">
-            <option value="1">JYES</option>
-            <option value="0">JNO</option>
-        </param>
-        <param name="reassign_username" default="" type="text" label="WP_REASSIGN_USERNAME" description="WP_REASSIGN_USERNAME_DESCR" />
 
         <param name="jfusionbox" type="text" default="" label="CURL_OPTIONS_GENERAL" description="" />
         <param name="integrationtype" type="text" size="3" label="CURL_INTEGRATIONTYPE" default="0" description="CURL_INTEGRATIONTYPE_DESC" />
