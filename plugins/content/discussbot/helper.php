@@ -29,7 +29,10 @@ defined('_JEXEC' ) or die('Restricted access' );
 */
 class JFusionDiscussBotHelper {
     var $article;
-    var $params;
+	/**
+	 * @var JParameter $params
+	 */
+	var $params;
     var $jname;
     var $mode;
     var $thread_status = false;

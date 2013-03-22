@@ -1,4 +1,8 @@
-<?php foreach ($this->output['buttons'] AS $name => $html) :
+<?php
+/**
+ * @var JFusionDiscussBotHelper $this
+ */
+foreach ($this->output['buttons'] AS $name => $html) :
 
 echo '<a id="jfusionBtn' . ucfirst($name) . $this->article->id .'" class="readon jfusionButton" target="'.$html['target'].'" href="'.$html['href'].'"';
 
