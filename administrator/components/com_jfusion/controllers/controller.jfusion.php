@@ -902,9 +902,11 @@ JS;
         $db = JFactory::getDBO();
         $query = 'SELECT original_name FROM #__jfusion WHERE name =' . $db->Quote($jname);
         $db->setQuery($query);
-        $result = $db->loadResult();
+        $original_name = $db->loadResult();
 
-        $info->addAttribute  ('original_name', $result);
+	    $original_name = $original_name ? $original_name : $jname;
+
+        $info->addAttribute  ('original_name', $original_name);
 
         /**
          * @ignore
