@@ -8,7 +8,7 @@
 	<authorUrl>www.jfusion.org</authorUrl>
 	<copyright>Copyright (C) 2008 JFusion. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-	<version>1.8.3-002</version>
+	<version>1.8.3-003</version>
     <revision>$revision$</revision>
     <timestamp>$timestamp$</timestamp>
 	<description>Universal plugin for JFusion</description>
@@ -29,10 +29,16 @@
 		<param name="jfusionbox" type="text" default="" label="PLUGIN_GENERAL_DETAILS" description="" />
 		<param name="description" type="text" size="60" default="put a description" description="DESCRIPTION" label="DESCRIPTION"/>
 		<param name="source_url" type="text" size="60" default="http://site.com/" description="SOURCE_URL" label="SOURCE_URL"/>
-		<param name="cookie_domain" type="text" size="60" default="" description="CURL_COOKIE_DOMAIN_DESC" label="CURL_COOKIE_DOMAIN"/>
-		<param name="cookie_path" type="text" size="20" default="/" description="CURL_COOKIE_PATH_DESC" label="CURL_COOKIE_PATH"/>
-		<param name="cookie_name" type="text" size="20" default="" description="COOKIE_NAME" label="COOKIE_NAME"/>
+        <param name="login_identifier" type="list" default="1" description="LOGIN_IDENTIFIER_DESCR" label="LOGIN_IDENTIFIER">
+            <option value="1">USERNAME</option>
+            <option value="2">EMAIL</option>
+            <option value="3">USERNAME_OR_EMAIL</option>
+        </param>
 
+        <param name="sefmode" type="list" default="0" label="SEFMODE" description="SEFMODE_DESCR">
+            <option value="1"><![CDATA[domain.com/index.php/alias/file.php/foo,foo/]]></option>
+            <option value="0"><![CDATA[domain.com/index.php/alias/file.php?foo=foo]]></option>
+        </param>
 
 		<param name="jfusionbox" type="text" default="" label="DATABASE_OPTIONS" description="" />
 		<param name="database_type" type="text" size="20" default="" description="DATABASE_TYPE" label="DATABASE_TYPE"/>
@@ -85,6 +91,20 @@
 		</param>
 
 
+        <param name="jfusionbox" type="text" default="" label="GENERAL_OPTIONS_COOKIE" description="" />
+        <param name="cookie_name" type="text" size="20" default="" description="COOKIE_NAME" label="COOKIE_NAME"/>
+        <param name="cookie_domain" type="text" size="60" default="" description="CURL_COOKIE_DOMAIN_DESC" label="CURL_COOKIE_DOMAIN"/>
+        <param name="cookie_path" type="text" size="20" default="/" description="CURL_COOKIE_PATH_DESC" label="CURL_COOKIE_PATH"/>
+        <param name="cookie_expires" type="text" size="5" label="COOKIE_EXPIRES" default="1800" description="COOKIE_EXPIRES_DESC" />
+        <param name="secure" type="list" default="0" label="COOKIE_SECURE" description="COOKIE_SECURE">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </param>
+        <param name="httponly" type="list" default="0" label="COOKIE_HTTPONLY" description="COOKIE_HTTPONLY">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </param>
+
 		<param name="jfusionbox" type="text" default="" label="MOD_OPTIONS" description="" />
 		<param name=" " type="helptext" default="REDIRECT_MOD_DESCR" label=""/>
 		<param name="redirect_itemid" type="JFusionItemid" size="10" default="" description="REDIRECT_ITEMID" label="REDIRECT_ITEMID" feature="redirect_itemid"/>
@@ -128,24 +148,7 @@
 		<param name="bodymap" default="" type="JFusionPair" label="BODY_MAP" description="BODY_MAP_DESCR"/>
 
 
-		<param name="jfusionbox" type="text" default="" label="SEF_OPTIONS" description="" />
-		<param name=" " type="helptext" default="SEFMODE_DESCR" label=""/>
-		<param name="sefmode" type="list" default="0" label="SEFMODE" description="SEFMODE">
-            <option value="1"><![CDATA[domain.com/index.php/alias/file.php/foo,foo/]]></option>
-            <option value="0"><![CDATA[domain.com/index.php/alias/file.php?foo=foo]]></option>
-		</param>
-
-
 		<param name="jfusionbox" type="text" default="hide" label="CURL_OPTIONS" description="CURL_OPTIONS" />
-		<param name="cookie_expires" type="text" size="5" label="COOKIE_EXPIRES" default="1800" description="COOKIE_EXPIRES_DESC" />
-		<param name="secure" type="list" default="0" label="COOKIE_SECURE" description="COOKIE_SECURE">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</param>
-		<param name="httponly" type="list" default="0" label="COOKIE_HTTPONLY" description="COOKIE_HTTPONLY">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</param>
 		<param name="override" type="text" size="60" label="CURL_COOKIE_OVERRIDE" default="cookielength=-1" description="CURL_COOKIE_OVERRIDE" />
 		<param name="leavealone" type="text" size="60" label="CURL_COOKIE_LEAVEALONE" default="" description="CURL_COOKIE_LEAVEALONE" />
 		<param name="integrationtype" type="text" size="3" label="CURL_INTEGRATIONTYPE" default="1" description="CURL_INTEGRATIONTYPE" />
@@ -162,12 +165,6 @@
 			<option value="0">JNO</option>
 		</param>
 		<param name="@spacer" type="spacer" default="" label="" description="" />
-		<param name=" " type="helptext" default="LOGIN_IDENTIFIER_DESCR" label=""/>
-		<param name="login_identifier" type="list" default="1" description="LOGIN_IDENTIFIER" label="LOGIN_IDENTIFIER">
-			<option value="1">USERNAME</option>
-			<option value="2">EMAIL</option>
-			<option value="3">USERNAME_OR_EMAIL</option>
-		</param>
 		<param name="login_url" type="text" size="60" label="CURL_LOGIN_URL" default="index.php?action=login" description="CURL_LOGIN_URL" />
 		<param name="loginform_id" type="text" size="60" label="CURL_LOGINFORM_ID" default="frmLogin" description="CURL_LOGINFORM_ID" />
 		<param name="input_username_id" type="text" size="60" label="CURL_INPUT_USERNAME_ID" default="user" description="CURL_INPUT_USERNAME_ID" />

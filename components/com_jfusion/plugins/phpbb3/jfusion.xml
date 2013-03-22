@@ -8,7 +8,7 @@
 	<authorUrl>www.jfusion.org</authorUrl>
 	<copyright>Copyright (C) 2008 JFusion. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-	<version>1.8.3-002</version>
+	<version>1.8.3-003</version>
     <revision>$revision$</revision>
     <timestamp>$timestamp$</timestamp>
 	<description>phpBB3 plugin for JFusion</description>
@@ -46,6 +46,10 @@
         <param name="login_type" type="list" default="1" label="PHPBB_LOGIN_TYPE" description="PHPBB_LOGIN_TYPE">
             <option value="0">PHPBB_LOGIN_DIRECT</option>
             <option value="1">PHPBB_LOGIN_INDIRECT</option>
+        </param>
+        <param name="sefmode" type="list" default="0" label="SEFMODE" description="SEFMODE_DESCR">
+            <option value="1"><![CDATA[domain.com/index.php/alias/file.php/foo,foo/]]></option>
+            <option value="0"><![CDATA[domain.com/index.php/alias/file.php?foo=foo]]></option>
         </param>
 
         <param name="jfusionbox" type="text" default="" label="DATABASE_OPTIONS" description="" />
@@ -111,12 +115,6 @@
 		<param name="allow_autologin" type="list" default="1" label="ALLOW_AUTOLOGIN" description="ALLOW_AUTOLOGIN">
 			<option value="0">DISABLED</option>
 			<option value="1">ENABLED</option>
-		</param>
-
-		<param name="jfusionbox" type="text" default="" label="SEF_OPTIONS" description="" />
-		<param name="sefmode" type="list" default="0" label="SEFMODE" description="SEFMODE_DESCR">
-            <option value="1"><![CDATA[domain.com/index.php/alias/file.php/foo,foo/]]></option>
-            <option value="0"><![CDATA[domain.com/index.php/alias/file.php?foo=foo]]></option>
 		</param>
 
 		<param name="jfusionbox" type="text" default="" label="MOD_OPTIONS" description="" />

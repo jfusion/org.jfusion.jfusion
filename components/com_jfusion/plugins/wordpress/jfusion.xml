@@ -8,7 +8,7 @@
 	<authorUrl>www.jfusion.org</authorUrl>
 	<copyright>Copyright (C) 2010 JFusion. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-	<version>1.8.3-002</version>
+	<version>1.8.3-003</version>
     <revision>$revision$</revision>
     <timestamp>$timestamp$</timestamp>
 	<description>JFusion plugin for wordpress 3.x</description>
@@ -78,12 +78,6 @@
             <option value="1">JYES</option>
             <option value="0">JNO</option>
         </param>
-        <param name=" " type="helptext" default="WP_REASSIGN_BLOGS" label=""/>
-        <param name="reassign_blogs" type="list" default="0" label="WP_REASSIGN_BLOGS_LABEL" description="WP_REASSIGN_BLOGS_DESCR">
-            <option value="1">JYES</option>
-            <option value="0">JNO</option>
-        </param>
-        <param name="reassign_username" default="" type="text" label="WP_REASSIGN_USERNAME" description="WP_REASSIGN_USERNAME_DESCR" />
         <param name=" " type="helptext" default="WP_REASSIGN_BLOGS" label=""/>
         <param name="reassign_blogs" type="list" default="0" label="WP_REASSIGN_BLOGS_LABEL" description="WP_REASSIGN_BLOGS_DESCR">
             <option value="1">JYES</option>

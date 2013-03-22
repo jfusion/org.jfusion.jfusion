@@ -627,6 +627,7 @@ class JFusionCurl
 
 	        $debug = array();
 	        $debug[JText::_('COOKIE')][JText::_('JFUSION_CROSS_DOMAIN_URL')] = null;
+	        $debug[JText::_('COOKIE')][JText::_('COOKIE_DOMAIN')] = $cookiedomain;
 	        $debug[JText::_('COOKIE')][JText::_('NAME')] = $name;
 	        $debug[JText::_('COOKIE')][JText::_('VALUE')] = $value;
 	        if (($expires) == 0) {

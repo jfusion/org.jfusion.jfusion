@@ -8,7 +8,7 @@
 	<authorUrl>www.jfusion.org</authorUrl>
 	<copyright>Copyright (C) 2008 JFusion. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-	<version>1.8.3-002</version>
+	<version>1.8.3-003</version>
     <revision>$revision$</revision>
     <timestamp>$timestamp$</timestamp>
 	<description>mediawiki plugin for JFusion</description>
@@ -32,7 +32,7 @@
 	
 	<params addpath="/administrator/components/com_jfusion/elements">
 		<param name="jfusionbox" type="text" default="" label="PLUGIN_GENERAL_DETAILS" description="" />
-		<param name="description" type="text" size="60" default="mediawiki" description="DESCRIPTION_DESC" label="DESCRIPTION_DESC"/>
+		<param name="description" type="text" size="60" default="mediawiki" description="DESCRIPTION" label="DESCRIPTION_DESC"/>
         <param name="source_url" type="text" size="60" label="SOURCE_URL" default="http://www.yourdomain.com/mediawiki/" description="SOURCE_URL_DESC" />
         <param name="source_path" type="text" size="60" label="SOURCE_PATH" default="" description="SOURCE_PATH_DESC" />
 
