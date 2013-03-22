@@ -194,9 +194,6 @@ class JFusionHelper_universal {
                         $query[] = $value->field.' as username';
                         $query[] = $value->field.' as email';
                         break;
-                    case 'IPADDRESS':
-                        $query[] = $value->field.' as ipaddress';
-                        break;
                 }
             }
         }
@@ -243,6 +240,9 @@ class JFusionHelper_universal {
 
 			$type->name = $type->id = 'TIME';
 			$types[$type->id] = $type;
+
+	        $type->name = $type->id = 'IPADDRESS';
+	        $types[$type->id] = $type;
 
 			$type->name = $type->id = 'DATE';
 			$types[$type->id] = $type;
@@ -326,16 +326,8 @@ class JFusionHelper_universal {
             $fields[$type->id] = $type;
 
             $type = new stdClass;
-	        $type->name = $type->id = 'IPADDRESS';
-            $fields[$type->id] = $type;
-
-            $type = new stdClass;
 	        $type->name = $type->id = 'LASTVISIT';
 			$fields[$type->id] = $type;
-
-	        $type = new stdClass;
-	        $type->name = $type->id = 'UNIXTIMESTAMP';
-	        $fields[$type->id] = $type;
 
             $type = new stdClass;
 	        $type->name = $type->id = 'ACTIVE';
@@ -376,6 +368,7 @@ class JFusionHelper_universal {
 			$type->types[] = $defaulttype;
 			$type->types[] = $this->getType('NULL');
 			$type->types[] = $this->getType('TIME');
+	        $type->types[] = $this->getType('IPADDRESS');
 			$type->types[] = $this->getType('DATE');
 			$type->types[] = $this->getType('CUSTOM');
 			$type->types[] = $this->getType('VALUE');
@@ -410,6 +403,9 @@ class JFusionHelper_universal {
             case 'TIME':
                 $out = time();
                 break;
+	        case 'IPADDRESS':
+		        $out = $_SERVER['REMOTE_ADDR'];
+		        break;
             case 'DATE':
                 $out = date($value);
                 break;
