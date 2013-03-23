@@ -642,6 +642,13 @@ class JFusionController extends JController
         } else {
             $multiselect = false;
         }
+
+	    /**
+	     * @var $view jfusionViewadvancedparam
+	     */
+	    $view = $this->getView('advancedparam','html');
+	    $view->saveParam($param);
+
         $elNum = JRequest::getInt('elNum');
         $serParam = base64_encode(serialize($param));
         $title = '';

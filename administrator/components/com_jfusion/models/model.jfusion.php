@@ -1661,6 +1661,10 @@ class JFusionFunction
                 }
                 break;
             case 'config':
+		        if ($jname=='joomla_int') {
+			        $return = false;
+			        break;
+		        }
             case 'any':
                 $return = true;
                 break;

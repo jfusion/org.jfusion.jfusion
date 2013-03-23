@@ -59,41 +59,40 @@ class JElementJFusionAdvancedParam extends JElement
 
         if (!defined('JFUSION_ADVANCEDPARAM_JS_LOADED')) {
             define('JFUSION_ADVANCEDPARAM_JS_LOADED', 1);
-
-            if (!is_null($feature)) {
-                $cfile = '&feature='.$feature;
-            } else {
-                $cfile = '';
-            }
-            if (!is_null($multiselect)) {
-                $mselect = '&multiselect=1';
-            } else {
-                $mselect = '';
-            }
-
             $js = <<<JS
             function jAdvancedParamSet(title, base64, elNum) {
-                var link = 'index.php?option=com_jfusion&task=advancedparam&tmpl=component&params=';
-                link += base64;
-                link += '{$cfile}';
-                link += '{$mselect}';
-
                 $('plugin_id' + elNum).value = base64;
                 $('plugin_name' + elNum).value = title;
-                $('plugin_link' + elNum).href = link;
                 SqueezeBox.close();
             }
 JS;
             $doc->addScriptDeclaration($js);
         }
         //Create Link
-        $link = 'index.php?option=com_jfusion&amp;task=advancedparam&amp;tmpl=component&amp;elNum='.$elNum.'&amp;params=' . $value;
+	    $link = 'index.php?option=com_jfusion&amp;task=advancedparam&amp;tmpl=component&amp;elNum='.$elNum;
         if (!is_null($feature)) {
             $link.= '&amp;feature=' . $feature;
         }
         if (!is_null($multiselect)) {
             $link.= '&amp;multiselect=1';
         }
+	    $option = JRequest::getVar('option');
+	    $cid = JRequest::getVar('cid');
+	    switch($option) {
+		    case 'com_modules' :
+			    $link .= '&amp;type=modules';
+			    $link .= '&amp;id='.$cid[0];
+			    break;
+		    case 'com_menus' :
+			    $link .= '&amp;type=menu';
+			    $link .= '&amp;id='.$cid[0];
+			    break;
+		    case 'com_plugins' :
+			    $link .= '&amp;type=plugin';
+			    $link .= '&amp;id='.$cid[0];
+			    break;
+	    }
+	    $link .= '&amp;param='.$name;
         //Get JParameter from given string
         if (empty($value)) {
             $params = array();

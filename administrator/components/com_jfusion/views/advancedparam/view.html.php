@@ -29,126 +29,126 @@ jimport('joomla.application.component.view');
  */
 class jfusionViewadvancedparam extends JView
 {
-    var $featureArray = array('config' => 'config.xml',
-                                'activity' => 'activity.xml',
-                                'search' => 'search.xml',
-                                'whosonline' => 'whosonline.xml',
-                                'useractivity' => 'useractivity.xml');
-    var $isJ16;
+	var $featureArray = array('config' => 'config.xml',
+		'activity' => 'activity.xml',
+		'search' => 'search.xml',
+		'whosonline' => 'whosonline.xml',
+		'useractivity' => 'useractivity.xml');
+	var $isJ16;
 
-    /**
-     * displays the view
-     *
-     * @param string $tpl template name
-     *
-     * @return mixed html output of view
-     */
-    function display($tpl = null)
-    {
-        $this->isJ16 = JFusionFunction::isJoomlaVersion('1.6');
-        if ($this->isJ16) {
-            //include some J1.6+ classes
-            jimport('joomla.form.form');
-            jimport('joomla.form.formfield');
-            jimport('joomla.html.pane');
-        }
+	/**
+	 * displays the view
+	 *
+	 * @param string $tpl template name
+	 *
+	 * @return mixed html output of view
+	 */
+	function display($tpl = null)
+	{
+		$this->isJ16 = JFusionFunction::isJoomlaVersion('1.6');
+		if ($this->isJ16) {
+			//include some J1.6+ classes
+			jimport('joomla.form.form');
+			jimport('joomla.form.formfield');
+			jimport('joomla.html.pane');
+		}
 
-        $mainframe = JFactory::getApplication();
+		$mainframe = JFactory::getApplication();
 
-        $lang = JFactory::getLanguage();
-        $lang->load('com_jfusion');
+		$lang = JFactory::getLanguage();
+		$lang->load('com_jfusion');
 
-        //Load Current feature
-        $feature = JRequest::getVar('feature');
-        if (empty($feature)) {
-            $feature = 'any';
-        }
-        //Load multiselect
-        $multiselect = JRequest::getVar('multiselect');
-        if ($multiselect) {
-            $multiselect = true;
-            //Load Plugin XML Parameter
-            $params = $this->loadXMLParamMulti($feature);
-            //Load enabled Plugin List
-            list($output, $js) = $this->loadElementMulti($params, $feature);
-        } else {
-            $multiselect = false;
-            //Load Plugin XML Parameter
-            $params = $this->loadXMLParamSingle($feature);
-            //Load enabled Plugin List
-            list($output, $js) = $this->loadElementSingle($params, $feature);
-        }
-        //load the element number for multiple advanceparam elements
-        $elNum = JRequest::getInt('elNum');
-        $this->assignRef('elNum', $elNum);
+		//Load Current feature
+		$feature = JRequest::getVar('feature');
+		if (empty($feature)) {
+			$feature = 'any';
+		}
+		//Load multiselect
+		$multiselect = JRequest::getVar('multiselect');
+		if ($multiselect) {
+			$multiselect = true;
+			//Load Plugin XML Parameter
+			$params = $this->loadXMLParamMulti($feature);
+			//Load enabled Plugin List
+			list($output, $js) = $this->loadElementMulti($params, $feature);
+		} else {
+			$multiselect = false;
+			//Load Plugin XML Parameter
+			$params = $this->loadXMLParamSingle($feature);
+			//Load enabled Plugin List
+			list($output, $js) = $this->loadElementSingle($params, $feature);
+		}
+		//load the element number for multiple advanceparam elements
+		$elNum = JRequest::getInt('elNum');
+		$this->assignRef('elNum', $elNum);
 
-        //Add Document dependent things like javascript, css
-        $document = JFactory::getDocument();
-        $document->setTitle('Plugin Selection');
-        $template = $mainframe->getTemplate();
-        $document->addStyleSheet("templates/$template/css/general.css");
-        $document->addStyleSheet('components/com_jfusion/css/jfusion.css');
-        $css = 'table.adminlist, table.admintable{ font-size:11px; }';
-        $document->addStyleDeclaration($css);
-        $document->addScriptDeclaration($js);
-        $this->assignRef('output', $output);
+		//Add Document dependent things like javascript, css
+		$document = JFactory::getDocument();
+		$document->setTitle('Plugin Selection');
+		$template = $mainframe->getTemplate();
+		$document->addStyleSheet("templates/$template/css/general.css");
+		$document->addStyleSheet('components/com_jfusion/css/jfusion.css');
+		$css = 'table.adminlist, table.admintable{ font-size:11px; }';
+		$document->addStyleDeclaration($css);
+		$document->addScriptDeclaration($js);
+		$this->assignRef('output', $output);
 
-        //for J1.6+ single select modes, params is an array
-        if ($this->isJ16 && empty($multiselect)) {
-            $this->assignRef('comp', $params['params']);
-        } else {
-            $this->assignRef('comp', $params);
-        }
+		//for J1.6+ single select modes, params is an array
+		if ($this->isJ16 && empty($multiselect)) {
+			$this->assignRef('comp', $params['params']);
+		} else {
+			$this->assignRef('comp', $params);
+		}
 
-        JHTML::_('behavior.modal');
-        JHTML::_('behavior.tooltip');
-        parent::display($multiselect ? 'multi' : 'single');
-    }
+		JHTML::_('behavior.modal');
+		JHTML::_('behavior.tooltip');
+		parent::display($multiselect ? 'multi' : 'single');
+	}
 
-    /**
-     * Loads a single element
-     *
-     * @param JParameter $params parameters
-     * @param string $feature feature
-     *
-     * @return string html
-     */
-    function loadElementSingle($params, $feature)
-    {
-        if ($this->isJ16) {
-            $JPlugin = (!empty($params['jfusionplugin'])) ? $params['jfusionplugin'] : '';
-        } else {
-            $JPlugin = $params->get('jfusionplugin', '');
-        }
-        $db = JFactory::getDBO();
-        $query = 'SELECT name as id, name as name from #__jfusion WHERE status = 1';
-        $db->setQuery($query);
-        $rows = $db->loadObjectList();
+	/**
+	 * Loads a single element
+	 *
+	 * @param JParameter $params parameters
+	 * @param string $feature feature
+	 *
+	 * @return string html
+	 */
+	function loadElementSingle($params, $feature)
+	{
+		if ($this->isJ16) {
+			$JPlugin = (!empty($params['jfusionplugin'])) ? $params['jfusionplugin'] : '';
+		} else {
+			$JPlugin = $params->get('jfusionplugin', '');
+		}
+		$db = JFactory::getDBO();
+		$query = 'SELECT name as id, name as name from #__jfusion WHERE status = 1';
+		$db->setQuery($query);
+		$rows = $db->loadObjectList();
 
-        foreach ($rows as $key => &$row) {
-            if (!JFusionFunction::hasFeature($row->name,$feature)) {
-                unset($rows[$key]);
-            }
-        }
+		foreach ($rows as $key => &$row) {
+			if (!JFusionFunction::hasFeature($row->name,$feature)) {
+				unset($rows[$key]);
+			}
+		}
 
-        $noSelected = new stdClass();
-        $noSelected->id = null;
-        $noSelected->name = JText::_('SELECT_ONE');
-        $rows = array_merge(array($noSelected), $rows);
-        $attributes = array('size' => '1', 'class' => 'inputbox', 'onchange' => 'jPluginChange(this);');
-        $output = JHTML::_('select.genericlist', $rows, 'params[jfusionplugin]', $attributes, 'id', 'name', $JPlugin);
-        $featureLink = '';
-        if (isset($this->featureArray[$feature])) {
-            $featureLink = '&feature=' . $feature;
-        }
-        $elNum = JRequest::getInt('elNum');
-        $js = <<<JS
+		$noSelected = new stdClass();
+		$noSelected->id = null;
+		$noSelected->name = JText::_('SELECT_ONE');
+		$rows = array_merge(array($noSelected), $rows);
+		$attributes = array('size' => '1', 'class' => 'inputbox', 'onchange' => 'jPluginChange(this);');
+		$output = JHTML::_('select.genericlist', $rows, 'params[jfusionplugin]', $attributes, 'id', 'name', $JPlugin);
+		$featureLink = '';
+		if (isset($this->featureArray[$feature])) {
+			$featureLink = '&feature=' . $feature;
+		}
+		$elNum = JRequest::getInt('elNum');
+		$js = <<<JS
         function jPluginChange(select) {
             var plugin = select.options[select.selectedIndex].value;
             plugin = 'a:1:{s:13:\"jfusionplugin\";s:'+plugin.length+':\"'+plugin+'\";}';
             var value = encode64(plugin);
-            window.location.href = 'index.php?option=com_jfusion&task=advancedparam' +
-                                   '&tmpl=component&elNum={$elNum}{$featureLink}&params='+value;
+     //       window.location.href = 'index.php?option=com_jfusion&task=advancedparam' +
+       //                            '&tmpl=component&elNum={$elNum}{$featureLink}&params='+value;
         }
 
         function encode64(inp){
@@ -184,243 +184,308 @@ class jfusionViewadvancedparam extends JView
         }
 JS;
 
-        return array($output, $js);
-    }
+		return array($output, $js);
+	}
 
-    /**
-     * Loads a single xml param
-     *
-     * @param string $feature feature
-     *
-     * @return array|JParameter html
-     */
-    function loadXMLParamSingle($feature)
-    {
-        $option = JRequest::getCmd('option');
-        //Load current Parameter
-        $value = JRequest::getVar('params');
-        if (empty($value)) {
-            $value = array();
-        } else {
-            $value = base64_decode($value);
-            $value = unserialize($value);
-            if (!is_array($value)) {
-                $value = array();
-            }
-        }
+	/**
+	 * Loads a single xml param
+	 *
+	 * @param string $feature feature
+	 *
+	 * @return array|JParameter html
+	 */
+	function loadXMLParamSingle($feature)
+	{
+		$option = JRequest::getCmd('option');
+		//Load current Parameter
+		$value = $this->getParam();
 
-        if ($this->isJ16) {
-            global $jname;
-            $jname = (!empty($value['jfusionplugin'])) ? $value['jfusionplugin'] : '';
-            if (isset($this->featureArray[$feature]) && !empty($jname)) {
-                $path = JFUSION_PLUGIN_PATH . DS . $jname . DS . $this->featureArray[$feature];
-                $defaultPath = JPATH_ADMINISTRATOR . DS . 'components' . DS . $option . DS . 'views' . DS . 'advancedparam' . DS . 'paramfiles' . DS . $this->featureArray[$feature];
-                $xml_path = (file_exists($path)) ? $path : $defaultPath;
-                $form = false;
-	            $xml = JFusionFunction::getXml($xml_path);
-                if ($xml) {
-                    $fields = $xml->getElementByPath('fields');
-                    if ($fields) {
-                        $data = $fields->toString();
-                        //make sure it is surround by <form>
-                        if (substr($data, 0, 5) != '<form>') {
-                            $data = '<form>' . $data . '</form>';
-                        }
-                        /**
-                         * @ignore
-                         * @var $form JForm
-                         */
-                        $form = JForm::getInstance($jname, $data, array('control' => "params[$jname]"));
-                        //add JFusion's fields
-                        $form->addFieldPath(JPATH_COMPONENT.DS.'fields');
+		if ($this->isJ16) {
+			global $jname;
+			$jname = (!empty($value['jfusionplugin'])) ? $value['jfusionplugin'] : '';
+			if (isset($this->featureArray[$feature]) && !empty($jname)) {
+				$path = JFUSION_PLUGIN_PATH . DS . $jname . DS . $this->featureArray[$feature];
+				$defaultPath = JPATH_ADMINISTRATOR . DS . 'components' . DS . $option . DS . 'views' . DS . 'advancedparam' . DS . 'paramfiles' . DS . $this->featureArray[$feature];
+				$xml_path = (file_exists($path)) ? $path : $defaultPath;
+				$form = false;
+				$xml = JFusionFunction::getXml($xml_path);
+				if ($xml) {
+					$fields = $xml->getElementByPath('fields');
+					if ($fields) {
+						$data = $fields->toString();
+						//make sure it is surround by <form>
+						if (substr($data, 0, 5) != '<form>') {
+							$data = '<form>' . $data . '</form>';
+						}
+						/**
+						 * @ignore
+						 * @var $form JForm
+						 */
+						$form = JForm::getInstance($jname, $data, array('control' => "params[$jname]"));
+						//add JFusion's fields
+						$form->addFieldPath(JPATH_COMPONENT.DS.'fields');
 						if (isset($value[$jname])) {
-                        	$form->bind($value[$jname]);
-                        }
-                    }
-                }
-                $value['params'] = $form;
-            }
-        } else {
-            //Load Plugin XML Parameter
-            $params = new JParameter('');
-            $params->loadArray($value);
-            $params->addElementPath(JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'elements');
-            $JPlugin = $params->get('jfusionplugin', '');
-            if (isset($this->featureArray[$feature]) && !empty($JPlugin)) {
-                global $jname;
-                $jname = $JPlugin;
-                $path = JFUSION_PLUGIN_PATH . DS . $JPlugin . DS . $this->featureArray[$feature];
-                $defaultPath = JPATH_ADMINISTRATOR . DS . 'components' . DS . $option . DS . 'views' . DS . 'advancedparam' . DS . 'paramfiles' . DS . $this->featureArray[$feature];
-                $xml_path = (file_exists($path)) ? $path : $defaultPath;
-	            $xml = JFusionFunction::getXml($xml_path);
-                if ($xml) {
-                    /**
-                     * @ignore
-                     * @var $xmlparams JSimpleXMLElement
-                     */
-                    $xmlparams = $xml->getElementByPath('params');
-                    $params->setXML($xmlparams);
-                }
-            }
-            $value = $params;
-        }
-        return $value;
-    }
+							$form->bind($value[$jname]);
+						}
+					}
+				}
+				$value['params'] = $form;
+			}
+		} else {
+			//Load Plugin XML Parameter
+			$params = new JParameter('');
+			$params->loadArray($value);
+			$params->addElementPath(JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'elements');
+			$JPlugin = $params->get('jfusionplugin', '');
+			if (isset($this->featureArray[$feature]) && !empty($JPlugin)) {
+				global $jname;
+				$jname = $JPlugin;
+				$path = JFUSION_PLUGIN_PATH . DS . $JPlugin . DS . $this->featureArray[$feature];
+				$defaultPath = JPATH_ADMINISTRATOR . DS . 'components' . DS . $option . DS . 'views' . DS . 'advancedparam' . DS . 'paramfiles' . DS . $this->featureArray[$feature];
+				$xml_path = (file_exists($path)) ? $path : $defaultPath;
+				$xml = JFusionFunction::getXml($xml_path);
+				if ($xml) {
+					/**
+					 * @ignore
+					 * @var $xmlparams JSimpleXMLElement
+					 */
+					$xmlparams = $xml->getElementByPath('params');
+					$params->setXML($xmlparams);
+				}
+			}
+			$value = $params;
+		}
+		return $value;
+	}
 
-    /**
-     * Loads a multi element
-     *
-     * @param array $params parameters
-     * @param string $feature feature
-     *
-     * @return string html
-     */
-    function loadElementMulti($params, $feature)
-    {
-        $db = JFactory::getDBO();
-        $query = 'SELECT name as id, name as name from #__jfusion WHERE status = 1';
-        $db->setQuery($query);
-        $rows = $db->loadObjectList();
+	/**
+	 * Loads a multi element
+	 *
+	 * @param array $params parameters
+	 * @param string $feature feature
+	 *
+	 * @return string html
+	 */
+	function loadElementMulti($params, $feature)
+	{
+		$db = JFactory::getDBO();
+		$query = 'SELECT name as id, name as name from #__jfusion WHERE status = 1';
+		$db->setQuery($query);
+		$rows = $db->loadObjectList();
 
-        foreach ($rows as $key => &$row) {
-            if (!JFusionFunction::hasFeature($row->name,$feature)) {
-                unset($rows[$key]);
-            }
-        }
+		foreach ($rows as $key => &$row) {
+			if (!JFusionFunction::hasFeature($row->name,$feature)) {
+				unset($rows[$key]);
+			}
+		}
 
-        //remove plugins that have already been selected
-        foreach ($rows AS $k => $v) {
-            if (array_key_exists($v->name, $params)) {
-                unset($rows[$k]);
-            }
-        }
-        $noSelected = new stdClass();
-        $noSelected->id = null;
-        $noSelected->name = JText::_('SELECT_ONE');
-        $rows = array_merge(array($noSelected), $rows);
-        $attributes = array('size' => '1', 'class' => 'inputbox');
-        $output = JHTML::_('select.genericlist', $rows, 'jfusionplugin', $attributes, 'id', 'name');
-        $output.= ' <input type="button" value="add" name="add" onclick="jPluginAdd(this);" />';
+		//remove plugins that have already been selected
+		foreach ($rows AS $k => $v) {
+			if (array_key_exists($v->name, $params)) {
+				unset($rows[$k]);
+			}
+		}
+		$noSelected = new stdClass();
+		$noSelected->id = null;
+		$noSelected->name = JText::_('SELECT_ONE');
+		$rows = array_merge(array($noSelected), $rows);
+		$attributes = array('size' => '1', 'class' => 'inputbox');
+		$output = JHTML::_('select.genericlist', $rows, 'jfusionplugin', $attributes, 'id', 'name');
+		$output.= ' <input type="button" value="add" name="add" onclick="jPluginAdd(this);" />';
 
-        $featureLink = '';
-        if (isset($this->featureArray[$feature])) {
-            $featureLink = '&feature=' . $feature;
-        }
-        $elNum = JRequest::getInt('elNum');
-        $js = <<<JS
+		$featureLink = '';
+		if (isset($this->featureArray[$feature])) {
+			$featureLink = '&feature=' . $feature;
+		}
+		$elNum = JRequest::getInt('elNum');
+		$js = <<<JS
         function jPluginAdd(button) {
             button.form.jfusion_task.value = 'add';
-            button.form.action = 'index.php?option=com_jfusion&task=advancedparam' +
-                                   '&tmpl=component&elNum={$elNum}{$featureLink}&multiselect=1';
+            button.form.task.value = 'advancedparam';
             button.form.submit();
         }
         function jPluginRemove(button, value) {
             button.form.jfusion_task.value = 'remove';
             button.form.jfusion_value.value = value;
-            button.form.action = 'index.php?option=com_jfusion&task=advancedparam' +
-                                   '&tmpl=component&elNum={$elNum}{$featureLink}&multiselect=1';
+            button.form.task.value = 'advancedparam';
             button.form.submit();
         }
 JS;
 
-        return array($output, $js);
-    }
+		return array($output, $js);
+	}
 
-    /**
-     * Loads a multi XML param
-     *
-     * @param string $feature feature
-     *
-     * @return array html
-     */
-    function loadXMLParamMulti($feature)
-    {
-        global $jname;
-        $option = JRequest::getCmd('option');
-        //Load current Parameter
-        $value = JRequest::getVar('params');
-        if (empty($value)) {
-            $value = array();
-        } else if (!is_array($value)) {
-            $value = base64_decode($value);
-            $value = unserialize($value);
-            if (!is_array($value)) {
-                $value = array();
-            }
-        }
-        $task = JRequest::getVar('jfusion_task');
-        if ($task == 'add') {
-        	$newPlugin = JRequest::getVar('jfusionplugin');
+	/**
+	 * @return JParameter
+	 */
+	function getParams()
+	{
+		$db = JFactory::getDBO();
+		$query = null;
+		switch(JRequest::getVar('type')) {
+			case 'modules':
+				$query = 'SELECT params from #__modules WHERE id = '.$db->quote(JRequest::getVar('id'));
+				break;
+			case 'plugin':
+				if (JFusionFunction::isJoomlaVersion('1.6')) {
+					$query = 'SELECT params from #__extensions WHERE extension_id = '.$db->quote(JRequest::getVar('id'));
+				} else {
+					$query = 'SELECT params from #__plugins WHERE id = '.$db->quote(JRequest::getVar('id'));
+				}
+				break;
+			case 'menu':
+				$query = 'SELECT params from #__menu WHERE id = '.$db->quote(JRequest::getVar('id'));
+				break;
+		}
+		if ($query) {
+			$db->setQuery($query);
+			$data = $db->loadResult();
+		} else {
+			$data = '';
+		}
+		$p = new JParameter($data);
+		return $p;
+	}
+
+	/**
+	 * @return array
+	 */
+	function getParam()
+	{
+		$p = $this->getParams();
+
+		$value = $p->get(JRequest::getVar('param'));
+		if (empty($value)) {
+			$value = array();
+		} else {
+			$value = @unserialize(base64_decode($value));
+			if (!is_array($value)) {
+				$value = array();
+			}
+		}
+		return $value;
+	}
+
+	/**
+	 * @param array $data
+	 */
+	function saveParam($data)
+	{
+		$p = $this->getParams();
+		$p->set(JRequest::getVar('param'),base64_encode(serialize($data)));
+
+		$db = JFactory::getDBO();
+		$query = null;
+		switch(JRequest::getVar('type')) {
+			case 'modules':
+				$query = 'UPDATE #__modules SET params = '.$db->quote($p->toString()).' WHERE id = '.$db->quote(JRequest::getVar('id'));
+				break;
+			case 'plugin':
+				if (JFusionFunction::isJoomlaVersion('1.6')) {
+					$query = 'UPDATE #__extensions SET params = '.$db->quote($p->toString()).' WHERE extension_id = '.$db->quote(JRequest::getVar('id'));
+				} else {
+					$query = 'UPDATE #__plugins SET params = '.$db->quote($p->toString()).' WHERE id = '.$db->quote(JRequest::getVar('id'));
+				}
+				break;
+			case 'menu':
+				$query = 'UPDATE #__menu SET params = '.$db->quote($p->toString()).' WHERE id = '.$db->quote(JRequest::getVar('id'));
+				break;
+		}
+		if ($query) {
+			$db->setQuery($query);
+			$db->query();
+		}
+	}
+
+	/**
+	 * Loads a multi XML param
+	 *
+	 * @param string $feature feature
+	 *
+	 * @return array html
+	 */
+	function loadXMLParamMulti($feature)
+	{
+		global $jname;
+		$option = JRequest::getCmd('option');
+		//Load current Parameter
+		$value = $this->getParam();
+
+		$task = JRequest::getVar('jfusion_task');
+		if ($task == 'add') {
+			$newPlugin = JRequest::getVar('jfusionplugin');
 			if ($newPlugin) {
-	            if (!array_key_exists($newPlugin, $value)) {
-	                $value[$newPlugin] = array('jfusionplugin' => $newPlugin);
-	            } else {
-	                $this->assignRef('error', JText::_('NOT_ADDED_TWICE'));
-	            }
-            } else {
+				if (!array_key_exists($newPlugin, $value)) {
+					$value[$newPlugin] = array('jfusionplugin' => $newPlugin);
+				} else {
+					$this->assignRef('error', JText::_('NOT_ADDED_TWICE'));
+				}
+			} else {
 				$this->assignRef('error', JText::_('MUST_SELLECT_PLUGIN'));
-            }
-        } else if ($task == 'remove') {
-            $rmPlugin = JRequest::getVar('jfusion_value');
-            if (array_key_exists($rmPlugin, $value)) {
-                unset($value[$rmPlugin]);
-            } else {
-                $this->assignRef('error', JText::_('NOT_PLUGIN_REMOVE'));
-            }
-        }
+			}
+			$this->saveParam($value);
+		} else if ($task == 'remove') {
+			$rmPlugin = JRequest::getVar('jfusion_value');
+			if (array_key_exists($rmPlugin, $value)) {
+				unset($value[$rmPlugin]);
+			} else {
+				$this->assignRef('error', JText::_('NOT_PLUGIN_REMOVE'));
+			}
+			$this->saveParam($value);
+		}
 
-        foreach (array_keys($value) as $key) {
-            if ($this->isJ16) {
-                $jname = $value[$key]['jfusionplugin'];
+		foreach (array_keys($value) as $key) {
+			if ($this->isJ16) {
+				$jname = $value[$key]['jfusionplugin'];
 
-                if (isset($this->featureArray[$feature]) && !empty($jname)) {
-                    $path = JFUSION_PLUGIN_PATH . DS . $jname . DS . $this->featureArray[$feature];
-                    $defaultPath = JPATH_ADMINISTRATOR . DS . 'components' . DS . $option . DS . 'views' . DS . 'advancedparam' . DS . 'paramfiles' . DS . $this->featureArray[$feature];
-                    $xml_path = (file_exists($path)) ? $path : $defaultPath;
-	                $xml = JFusionFunction::getXml($xml_path);
-                    if ($xml) {
-                        $fields = $xml->getElementByPath('fields');
-                        if ($fields) {
-                            $data = $fields->toString();
-                            //make sure it is surround by <form>
-                            if (substr($data, 0, 5) != '<form>') {
-                                $data = '<form>' . $data . '</form>';
-                            }
-                            /**
-                             * @ignore
-                             * @var $form JForm
-                             */
-                            $form = JForm::getInstance($jname, $data, array('control' => "params[$jname]"));
-                            //add JFusion's fields
-                            $form->addFieldPath(JPATH_COMPONENT.DS.'fields');
-                            //bind values
-                            $form->bind($value[$key]);
-                            $value[$key]['params'] = $form;
-                        }
-                    }
-                }
-            } else {
-                $params = new JParameter('');
-                $params->loadArray($value[$key]);
-                $params->addElementPath(JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'elements');
-                $jname = $params->get('jfusionplugin', '');
-                if (isset($this->featureArray[$feature]) && !empty($jname)) {
-                    $path = JFUSION_PLUGIN_PATH . DS . $jname . DS . $this->featureArray[$feature];
-                    $defaultPath = JPATH_ADMINISTRATOR . DS . 'components' . DS . $option . DS . 'views' . DS . 'advancedparam' . DS . 'paramfiles' . DS . $this->featureArray[$feature];
-                    $xml_path = (file_exists($path)) ? $path : $defaultPath;
-	                $xml = JFusionFunction::getXml($xml_path);
-                    if ($xml) {
-                        /**
-                         * @ignore
-                         * @var $xmlparams JSimpleXMLElement
-                         */
-                        $xmlparams = $xml->getElementByPath('params');
-                        $params->setXML($xmlparams);
-                    }
-                }
-                $value[$key]['params'] = $params;
-            }
-        }
-        return $value;
-    }
+				if (isset($this->featureArray[$feature]) && !empty($jname)) {
+					$path = JFUSION_PLUGIN_PATH . DS . $jname . DS . $this->featureArray[$feature];
+					$defaultPath = JPATH_ADMINISTRATOR . DS . 'components' . DS . $option . DS . 'views' . DS . 'advancedparam' . DS . 'paramfiles' . DS . $this->featureArray[$feature];
+					$xml_path = (file_exists($path)) ? $path : $defaultPath;
+					$xml = JFusionFunction::getXml($xml_path);
+					if ($xml) {
+						$fields = $xml->getElementByPath('fields');
+						if ($fields) {
+							$data = $fields->toString();
+							//make sure it is surround by <form>
+							if (substr($data, 0, 5) != '<form>') {
+								$data = '<form>' . $data . '</form>';
+							}
+							/**
+							 * @ignore
+							 * @var $form JForm
+							 */
+							$form = JForm::getInstance($jname, $data, array('control' => "params[$jname]"));
+							//add JFusion's fields
+							$form->addFieldPath(JPATH_COMPONENT.DS.'fields');
+							//bind values
+							$form->bind($value[$key]);
+							$value[$key]['params'] = $form;
+						}
+					}
+				}
+			} else {
+				$params = new JParameter('');
+				$params->loadArray($value[$key]);
+				$params->addElementPath(JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'elements');
+				$jname = $params->get('jfusionplugin', '');
+				if (isset($this->featureArray[$feature]) && !empty($jname)) {
+					$path = JFUSION_PLUGIN_PATH . DS . $jname . DS . $this->featureArray[$feature];
+					$defaultPath = JPATH_ADMINISTRATOR . DS . 'components' . DS . $option . DS . 'views' . DS . 'advancedparam' . DS . 'paramfiles' . DS . $this->featureArray[$feature];
+					$xml_path = (file_exists($path)) ? $path : $defaultPath;
+					$xml = JFusionFunction::getXml($xml_path);
+					if ($xml) {
+						/**
+						 * @ignore
+						 * @var $xmlparams JSimpleXMLElement
+						 */
+						$xmlparams = $xml->getElementByPath('params');
+						$params->setXML($xmlparams);
+					}
+				}
+				$value[$key]['params'] = $params;
+			}
+		}
+		return $value;
+	}
 }
