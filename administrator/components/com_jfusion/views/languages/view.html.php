@@ -104,7 +104,7 @@ class jfusionViewlanguages extends JView
             }
         }
         ob_end_clean();
-
+	    ksort($lang_repo);
         $this->assignRef('lang_repo', $lang_repo);
 
         parent::display($tpl);
