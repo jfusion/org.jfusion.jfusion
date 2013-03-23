@@ -697,59 +697,53 @@ JS;
     {
         $jname = JRequest::getVar('jname');
 
-        $msg = null;
-        $error = null;
+        $msg = $xml = $error = null;
 
 	    jimport('joomla.utilities.simplexml');
 	    $file = JRequest::getVar( 'file', '', 'FILES','ARRAY');
 
-	    $url = JRequest::getVar('url');
+	    $filename = JRequest::getVar('url');
 
-	    if( !empty($url) ) {
-		    $url = base64_decode($url);
-		    $ConfigFile = JFusionFunctionAdmin::getFileData($url);
-		    if ( !empty($ConfigFile) ) {
+	    if( !empty($filename) ) {
+		    $filename = base64_decode($filename);
+		    $ConfigFile = JFusionFunctionAdmin::getFileData($filename);
+		    if (!empty($ConfigFile)) {
 			    $xml = JFusionFunction::getXml($ConfigFile,false);
-		    } else {
-			    $error = $jname . ': ' . JText::_('ERROR_LOADING_FILE').': '.$file['tmp_name'];
 		    }
+	    } else if( $file['error'] > 0 ) {
+		    switch ($file['error']) {
+			    case UPLOAD_ERR_INI_SIZE:
+				    $error = JText::_('UPLOAD_ERR_INI_SIZE');
+				    break;
+			    case UPLOAD_ERR_FORM_SIZE:
+				    $error = JText::_('UPLOAD_ERR_FORM_SIZE');
+				    break;
+			    case UPLOAD_ERR_PARTIAL:
+				    $error = JText::_('UPLOAD_ERR_PARTIAL');
+				    break;
+			    case UPLOAD_ERR_NO_FILE:
+				    $error = JText::_('UPLOAD_ERR_NO_FILE');
+				    break;
+			    case UPLOAD_ERR_NO_TMP_DIR:
+				    $error = JText::_('UPLOAD_ERR_NO_TMP_DIR');
+				    break;
+			    case UPLOAD_ERR_CANT_WRITE:
+				    $error = JText::_('UPLOAD_ERR_CANT_WRITE');
+				    break;
+			    case UPLOAD_ERR_EXTENSION:
+				    $error = JText::_('UPLOAD_ERR_EXTENSION');
+				    break;
+			    default:
+				    $error = JText::_('UNKNOWN_UPLOAD_ERROR');
+		    }
+		    $error = $jname . ': ' . JText::_('ERROR').': '.$error;
 	    } else {
-		    if( $file['error'] > 0 ) {
-			    switch ($file['error']) {
-				    case UPLOAD_ERR_INI_SIZE:
-					    $error = JText::_('UPLOAD_ERR_INI_SIZE');
-					    break;
-				    case UPLOAD_ERR_FORM_SIZE:
-					    $error = JText::_('UPLOAD_ERR_FORM_SIZE');
-					    break;
-				    case UPLOAD_ERR_PARTIAL:
-					    $error = JText::_('UPLOAD_ERR_PARTIAL');
-					    break;
-				    case UPLOAD_ERR_NO_FILE:
-					    $error = JText::_('UPLOAD_ERR_NO_FILE');
-					    break;
-				    case UPLOAD_ERR_NO_TMP_DIR:
-					    $error = JText::_('UPLOAD_ERR_NO_TMP_DIR');
-					    break;
-				    case UPLOAD_ERR_CANT_WRITE:
-					    $error = JText::_('UPLOAD_ERR_CANT_WRITE');
-					    break;
-				    case UPLOAD_ERR_EXTENSION:
-					    $error = JText::_('UPLOAD_ERR_EXTENSION');
-					    break;
-				    default:
-					    $error = JText::_('UNKNOWN_UPLOAD_ERROR');
-			    }
-			    $error = $jname . ': ' . JText::_('ERROR').': '.$error;
-		    } else {
-			    $xml = JFusionFunction::getXml($file['tmp_name']);
-			    if(!$xml) {
-				    $error = $jname . ': ' . JText::_('ERROR_LOADING_FILE').': '.$file['tmp_name'];
-			    }
-		    }
+		    $filename = $file['tmp_name'];
+		    $xml = JFusionFunction::getXml($filename);
 	    }
-
-	    if (!$error) {
+	    if(!$xml) {
+		    $error = $jname . ': ' . JText::_('ERROR_LOADING_FILE').': '.$filename;
+	    } else {
 		    /**
 		     * @ignore
 		     * @var $val JSimpleXMLElement
