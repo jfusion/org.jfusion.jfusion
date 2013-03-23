@@ -209,12 +209,6 @@ JS;
             }
         }
 
-        /**
-         * @ignore
-         * @var $xml JSimpleXML
-         */
-        $xml = JFactory::getXMLParser('Simple');
-
         if ($this->isJ16) {
             global $jname;
             $jname = (!empty($value['jfusionplugin'])) ? $value['jfusionplugin'] : '';
@@ -223,8 +217,9 @@ JS;
                 $defaultPath = JPATH_ADMINISTRATOR . DS . 'components' . DS . $option . DS . 'views' . DS . 'advancedparam' . DS . 'paramfiles' . DS . $this->featureArray[$feature];
                 $xml_path = (file_exists($path)) ? $path : $defaultPath;
                 $form = false;
-                if ($xml->loadFile($xml_path)) {
-                    $fields = $xml->document->getElementByPath('fields');
+	            $xml = JFusionFunction::getXml($xml_path);
+                if ($xml) {
+                    $fields = $xml->getElementByPath('fields');
                     if ($fields) {
                         $data = $fields->toString();
                         //make sure it is surround by <form>
@@ -242,8 +237,6 @@ JS;
                         	$form->bind($value[$jname]);
                         }
                     }
-
-                    $this->loadLanguage($xml);
                 }
                 $value['params'] = $form;
             }
@@ -259,14 +252,14 @@ JS;
                 $path = JFUSION_PLUGIN_PATH . DS . $JPlugin . DS . $this->featureArray[$feature];
                 $defaultPath = JPATH_ADMINISTRATOR . DS . 'components' . DS . $option . DS . 'views' . DS . 'advancedparam' . DS . 'paramfiles' . DS . $this->featureArray[$feature];
                 $xml_path = (file_exists($path)) ? $path : $defaultPath;
-                if ($xml->loadFile($xml_path)) {
+	            $xml = JFusionFunction::getXml($xml_path);
+                if ($xml) {
                     /**
                      * @ignore
                      * @var $xmlparams JSimpleXMLElement
                      */
-                    $xmlparams = $xml->document->getElementByPath('params');
+                    $xmlparams = $xml->getElementByPath('params');
                     $params->setXML($xmlparams);
-                    $this->loadLanguage($xml);
                 }
             }
             $value = $params;
@@ -376,11 +369,6 @@ JS;
             }
         }
 
-        /**
-         * @ignore
-         * @var $xml JSimpleXML
-         */
-        $xml = JFactory::getXMLParser('Simple');
         foreach (array_keys($value) as $key) {
             if ($this->isJ16) {
                 $jname = $value[$key]['jfusionplugin'];
@@ -389,9 +377,9 @@ JS;
                     $path = JFUSION_PLUGIN_PATH . DS . $jname . DS . $this->featureArray[$feature];
                     $defaultPath = JPATH_ADMINISTRATOR . DS . 'components' . DS . $option . DS . 'views' . DS . 'advancedparam' . DS . 'paramfiles' . DS . $this->featureArray[$feature];
                     $xml_path = (file_exists($path)) ? $path : $defaultPath;
-
-                    if ($xml->loadFile($xml_path)) {
-                        $fields = $xml->document->getElementByPath('fields');
+	                $xml = JFusionFunction::getXml($xml_path);
+                    if ($xml) {
+                        $fields = $xml->getElementByPath('fields');
                         if ($fields) {
                             $data = $fields->toString();
                             //make sure it is surround by <form>
@@ -409,7 +397,6 @@ JS;
                             $form->bind($value[$key]);
                             $value[$key]['params'] = $form;
                         }
-                        $this->loadLanguage($xml);
                     }
                 }
             } else {
@@ -421,51 +408,19 @@ JS;
                     $path = JFUSION_PLUGIN_PATH . DS . $jname . DS . $this->featureArray[$feature];
                     $defaultPath = JPATH_ADMINISTRATOR . DS . 'components' . DS . $option . DS . 'views' . DS . 'advancedparam' . DS . 'paramfiles' . DS . $this->featureArray[$feature];
                     $xml_path = (file_exists($path)) ? $path : $defaultPath;
-                    if ($xml->loadFile($xml_path)) {
+	                $xml = JFusionFunction::getXml($xml_path);
+                    if ($xml) {
                         /**
                          * @ignore
                          * @var $xmlparams JSimpleXMLElement
                          */
-                        $xmlparams = $xml->document->getElementByPath('params');
+                        $xmlparams = $xml->getElementByPath('params');
                         $params->setXML($xmlparams);
-                        $this->loadLanguage($xml);
                     }
                 }
                 $value[$key]['params'] = $params;
             }
         }
         return $value;
-    }
-
-    /**
-     * Loads the language
-     *
-     * @param object &$xml parameters
-     *
-     * @return string html
-     */
-    function loadLanguage(&$xml)
-    {
-        if (!empty($xml->document) && !empty($xml->document->language[0])) {
-            //check for a language file and set it
-            if ($xml->document->getElementByPath('language')) {
-                $lang = $xml->document->language[0]->attributes();
-                if (!empty($lang)) {
-                    if (!empty($lang['filename'])) {
-                        $location = null;
-                        if (!empty($lang['location'])) {
-                            if ($lang['location'] == 'site' || $lang['location'] == 'frontend') {
-                                $location = JPATH_SITE;
-                            } elseif ($lang['location'] == 'admin' || $lang['location'] == 'administrator') {
-                                $location = JPATH_ADMINISTRATOR;
-                            }
-                        }
-                        jimport('joomla.plugin.plugin');
-						$language = JFactory::getLanguage();
-						$language->load( strtolower($lang['filename']), $location);
-                    }
-                }
-            }
-        }
     }
 }

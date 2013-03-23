@@ -463,14 +463,10 @@ class jfusionViewconfigdump extends JView {
 	{
 		if (file_exists($filename)) {
 			//get the version number
-			/**
-			 * @ignore
-			 * @var $parser JSimpleXML
-			 */
-			$parser = JFactory::getXMLParser('Simple');
-			$parser->loadFile($filename);
-			$jfusion_version[JText::_('JFUSION') . ' ' . $name . ' ' . JText::_('VERSION') ] = ' ' . $parser->document->getElementByPath('version')->data() . ' ';
-			$revision = $parser->document->getElementByPath('revision');
+			$xml = JFusionFunction::getXml($filename);
+
+			$jfusion_version[JText::_('JFUSION') . ' ' . $name . ' ' . JText::_('VERSION') ] = ' ' . $xml->getElementByPath('version')->data() . ' ';
+			$revision = $xml->getElementByPath('revision');
 			if (!empty($revision)) {
 				$jfusion_version[JText::_('JFUSION') . ' ' . $name . ' ' . JText::_('VERSION') ].= '(Rev '.$revision->data().') ';
 			}

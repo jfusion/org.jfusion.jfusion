@@ -21,10 +21,10 @@ defined('_JEXEC') or die('Restricted access');
  */
 jimport('joomla.application.component.controller');
 jimport('joomla.application.component.view');
+require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'defines.php';
 require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.factory.php';
 require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.jfusion.php';
 require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.jfusionadmin.php';
-require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'defines.php';
 /**
  * JFusion Controller class
  *
@@ -477,17 +477,9 @@ class JFusionController extends JController
             //get description
             $plugin_xml = JFUSION_PLUGIN_PATH .DS. $jname .DS. 'jfusion.xml';
             if(file_exists($plugin_xml) && is_readable($plugin_xml)) {
-                /**
-                 * @ignore
-                 * @var $parser JSimpleXML
-                 */
-                $parser = JFactory::getXMLParser('Simple');
-                $parser->loadFile($plugin_xml);
-                /**
-                 * @ignore
-                 * @var $description JSimpleXMLElement
-                 */
-                $description = $parser->document->getElementByPath('description');
+	            $xml = JFusionFunction::getXml($plugin_xml);
+
+                $description = $xml->getElementByPath('description');
                 if(!empty($description)) {
                     $description = $description->data();
                 }
@@ -712,16 +704,12 @@ JS;
 	    $file = JRequest::getVar( 'file', '', 'FILES','ARRAY');
 
 	    $url = JRequest::getVar('url');
-	    /**
-	     * @ignore
-	     * @var $xmlFile JSimpleXML
-	     */
-	    $xmlFile = JFactory::getXMLParser('Simple');
+
 	    if( !empty($url) ) {
 		    $url = base64_decode($url);
 		    $ConfigFile = JFusionFunctionAdmin::getFileData($url);
 		    if ( !empty($ConfigFile) ) {
-			    $xmlFile->loadString($ConfigFile);
+			    $xml = JFusionFunction::getXml($ConfigFile,false);
 		    } else {
 			    $error = $jname . ': ' . JText::_('ERROR_LOADING_FILE').': '.$file['tmp_name'];
 		    }
@@ -754,15 +742,20 @@ JS;
 			    }
 			    $error = $jname . ': ' . JText::_('ERROR').': '.$error;
 		    } else {
-			    if(!$xmlFile->loadFile($file['tmp_name']) ) {
+			    $xml = JFusionFunction::getXml($file['tmp_name']);
+			    if(!$xml) {
 				    $error = $jname . ': ' . JText::_('ERROR_LOADING_FILE').': '.$file['tmp_name'];
 			    }
 		    }
 	    }
 
 	    if (!$error) {
+		    /**
+		     * @ignore
+		     * @var $val JSimpleXMLElement
+		     */
 		    $info = $config = null;
-		    foreach ($xmlFile->document->children() as $key => $val) {
+		    foreach ($xml->children() as $key => $val) {
 			    switch ($val->name()) {
 				    case 'info':
 					    $info = $val;
@@ -862,18 +855,13 @@ JS;
             $arr[$key] = $val;
         }
 
-        /**
-         * @ignore
-         * @var $xml JSimpleXML
-         */
-        $xml = JFactory::getXMLParser('Simple');
-        $xml->loadString('<jfusionconfig></jfusionconfig>');
+	    $xml = JFusionFunction::getXml('<jfusionconfig></jfusionconfig>',false);
 
         /**
          * @ignore
          * @var $info JSimpleXMLElement
          */
-        $info = $xml->document->addChild('info');
+        $info = $xml->addChild('info');
 
         list($VersionCurrent,$RevisionCurrent) = JFusionFunctionAdmin::currentVersion(true);
 
@@ -884,13 +872,9 @@ JS;
         $filename = JFUSION_PLUGIN_PATH .DS.$jname.DS.'jfusion.xml';
         if (file_exists($filename) && is_readable($filename)) {
             //get the version number
-            /**
-             * @ignore
-             * @var $parser JSimpleXML
-             */
-            $parser = JFactory::getXMLParser('Simple');
-            $parser->loadFile($filename);
-            $info->addAttribute('pluginversion', $parser->document->getElementByPath('version')->data());
+	        $element = JFusionFunction::getXml($filename);
+
+            $info->addAttribute('pluginversion', $element->getElementByPath('version')->data());
         } else {
             $info->addAttribute('pluginversion', 'UNKNOWN');
         }
@@ -911,8 +895,10 @@ JS;
         /**
          * @ignore
          * @var $info JSimpleXMLElement
+         * @var $config JSimpleXMLElement
+         * @var $node JSimpleXMLElement
          */
-        $config = $xml->document->addChild('config');
+        $config = $xml->addChild('config');
         foreach ($arr as $key => $val) {
             $attrs = array();
             $attrs['name'] = $key;
@@ -926,7 +912,7 @@ JS;
         header('Pragma: no-cache');
         header('Expires: 0');
 
-        echo $xml->document->toString();
+        echo $xml->toString();
         exit();
     }
 }

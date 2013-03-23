@@ -102,26 +102,16 @@ class jfusionViewplugindisplay extends JView {
 	        $VersionDataRaw = JFusionFunctionAdmin::getFileData($url);
             $VersionData = null;
 	        if (!empty($VersionDataRaw)) {
-                /**
-                 * @ignore
-                 * @var $parser JSimpleXML
-                 */
-	            $parser = JFactory::getXMLParser('Simple');
-	            if ($parser->loadString($VersionDataRaw)) {
-	                if (isset($parser->document)) {
-                        $VersionData = $parser->document;
-	                    unset($parser);
-	                }
+		        $xml = JFusionFunction::getXml($VersionDataRaw,false);
+	            if ($xml) {
+		            $element = $xml->getElementByPath('plugins');
+		            if ($element) {
+			            $VersionData = $element->children();
+		            }
+		            unset($parser);
 	            }
 	        }
-	        if ($VersionData) {
-		        $VersionData = $VersionData->getElementByPath('plugins');
-		        if ($VersionData) {
-			        $VersionData = $VersionData->children();
-		        } else {
-			        $VersionData = null;
-		        }
-	        }
+
 
             //set the error messages
             $errormessage = $this->generateErrorHTML();   
@@ -348,13 +338,8 @@ class jfusionViewplugindisplay extends JView {
 			//get the default description
 			$plugin_xml = JFUSION_PLUGIN_PATH .DS. $record->name .DS. 'jfusion.xml';
 			if(file_exists($plugin_xml) && is_readable($plugin_xml)) {
-                /**
-                 * @ignore
-                 * @var $parser JSimpleXML
-                 */
-				$parser = JFactory::getXMLParser('Simple');
-				$parser->loadFile($plugin_xml);
-                $description = $parser->document->getElementByPath('description');
+				$xml = JFusionFunction::getXml($plugin_xml);
+                $description = $xml->getElementByPath('description');
 				if(!empty($description)) {
 					$record->description = $description->data();
 				}

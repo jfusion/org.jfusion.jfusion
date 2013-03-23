@@ -60,20 +60,16 @@ class JFusionAdmin_magento extends JFusionAdmin
         $xmlfile = $forumPath . 'app' . DS . 'etc' . DS . 'local.xml';
         $params = array();
         if (file_exists($xmlfile)) {
-            /**
-             * @ignore
-             * @var $xml JSimpleXML
-             */
-            $xml = JFactory::getXMLParser('Simple');
-            if (!$xml->loadFile($xmlfile)) {
+	        $xml = JFusionFunction::getXml($xmlfile);
+            if (!$xml) {
                 JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . " $xmlfile " . JText::_('WIZARD_MANUAL'));
             } else {
                 //save the parameters into array
-                $params['database_host'] = (string)$xml->document->getElementByPath('global/resources/default_setup/connection/host')->data();
-                $params['database_name'] = (string)$xml->document->getElementByPath('global/resources/default_setup/connection/dbname')->data();
-                $params['database_user'] = (string)$xml->document->getElementByPath('global/resources/default_setup/connection/username')->data();
-                $params['database_password'] = (string)$xml->document->getElementByPath('global/resources/default_setup/connection/password')->data();
-                $params['database_prefix'] = (string)$xml->document->getElementByPath('global/resources/db/table_prefix')->data();
+                $params['database_host'] = (string)$xml->getElementByPath('global/resources/default_setup/connection/host')->data();
+                $params['database_name'] = (string)$xml->getElementByPath('global/resources/default_setup/connection/dbname')->data();
+                $params['database_user'] = (string)$xml->getElementByPath('global/resources/default_setup/connection/username')->data();
+                $params['database_password'] = (string)$xml->getElementByPath('global/resources/default_setup/connection/password')->data();
+                $params['database_prefix'] = (string)$xml->getElementByPath('global/resources/db/table_prefix')->data();
                 $params['database_type'] = 'mysql';
                 $params['source_path'] = $forumPath;
             }
@@ -348,13 +344,8 @@ HTML;
 		$source_path = $params->get ( 'source_path' );
 		$xmlfile = realpath ( dirname ( __FILE__ ) ) . DS . 'install_module' . DS . 'source' . DS . 'listfiles.xml';
 
-        /**
-         * @ignore
-         * @var $listfiles JSimpleXML
-         */
-        $listfiles = JFactory::getXMLParser('simple');
-		$listfiles->loadFile($xmlfile);
-		$files = $listfiles->document->getElementByPath('file');
+	    $listfiles = JFusionFunction::getXml($xmlfile);
+		$files = $listfiles->getElementByPath('file');
         /**
          * @ignore
          * @var $file JSimpleXMLElement
@@ -425,13 +416,9 @@ HTML;
 		$jfusion_mod_xml = $source_path . DS .'app'. DS .'etc'. DS .'modules'. DS .'Jfusion_All.xml';
 		
 		if(file_exists($jfusion_mod_xml)) {
-            /**
-             * @ignore
-             * @var $xml JSimpleXML
-             */
-            $xml = JFactory::getXMLParser ( 'simple' );
-			$xml->loadfile ( $jfusion_mod_xml );
-			$modules = $xml->document->getElementByPath ( 'modules/jfusion_joomla/active' );
+			$xml = JFusionFunction::getXml($jfusion_mod_xml);
+
+			$modules = $xml->getElementByPath ( 'modules/jfusion_joomla/active' );
 			$activated = $modules->data();
 			
 			if($activated == 'false') {
@@ -473,19 +460,16 @@ HTML;
 		$params = JFusionFactory::getParams ( $jname );
 		$source_path = $params->get ( 'source_path' );
 		$jfusion_mod_xml = $source_path . DS .'app'. DS .'etc'. DS .'modules'. DS .'Jfusion_All.xml';
-        /**
-         * @ignore
-         * @var $xml JSimpleXML
-         */
-		$xml = JFactory::getXMLParser ( 'simple' );
-		$xml->loadfile ( $jfusion_mod_xml );
-		$module = $xml->document->getElementByPath('modules/jfusion_joomla/active');
+
+		$xml = JFusionFunction::getXml($jfusion_mod_xml);
+
+		$module = $xml->getElementByPath('modules/jfusion_joomla/active');
 			
 		//$xml->document->modules->jfusion_joomla->active[0]->setData('false');
 		$module->setData($activation);
 
 		$buffer = '<?xml version="1.0"?'.'>';
-		$buffer .= $xml->document->toString();
+		$buffer .= $xml->toString();
 		JFile::write($jfusion_mod_xml, $buffer);
 	}
 
