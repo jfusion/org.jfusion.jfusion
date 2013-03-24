@@ -239,30 +239,6 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
     }
 
     /**
-     * debug configure
-     *
-     * @return void
-     */
-    function debugConfig()
-    {
-        $jname = $this->getJname();
-        //get registration status
-        $new_registration = $this->allowRegistration();
-        //get the data about the JFusion plugins
-        $db = JFactory::getDBO();
-        $query = 'SELECT * from #__jfusion WHERE name = ' . $db->Quote($jname);
-        $db->setQuery($query);
-        $plugin = $db->loadObject();
-        //output a warning to the administrator if the allowRegistration setting is wrong
-        if ($new_registration && $plugin->slave == '1') {
-            JError::raiseNotice(0, $jname . ': ' . JText::_('DISABLE_REGISTRATION'));
-        }
-        if (!$new_registration && $plugin->master == '1') {
-            JError::raiseNotice(0, $jname . ': ' . JText::_('ENABLE_REGISTRATION'));
-        }
-    }
-
-    /**
      * renerate redirect code
      *
      * @param string $url

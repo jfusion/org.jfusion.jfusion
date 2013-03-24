@@ -32,22 +32,22 @@ require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS .
  */
 class JFormFieldJFusionPair extends JFormField
 {
-    public $type = 'JFusionPair';
-    /**
-     * Get an element
-     *
-     * @return string html
-     */
-    protected function getInput()
-    {
-        static $js;
+	public $type = 'JFusionPair';
+	/**
+	 * Get an element
+	 *
+	 * @return string html
+	 */
+	protected function getInput()
+	{
+		static $js;
 
-        $delete = JText::_('DELETE_PAIR');
+		$delete = JText::_('DELETE_PAIR');
 
-        if (!$js) {
-            $document = JFactory::getDocument();
+		if (!$js) {
+			$document = JFactory::getDocument();
 
-            $output = <<<JS
+			$output = <<<JS
          function addPair(t,s)	{
             var d = document.createElement("p");
             var l = document.createElement("a");
@@ -78,74 +78,84 @@ class JFormFieldJFusionPair extends JFormField
             var image = document.createTextNode("{$delete}");
             l.appendChild(image);
 
-            d.appendChild(group_value);
             d.appendChild(group_name);
+            d.appendChild(group_value);
             d.appendChild(l);
 
-            document.getElementById("params"+t).appendChild(d);
+            $("params"+t).appendChild(d);
             group_value.focus();
+
+
+            $("params"+t+"_save").src = 'components/com_jfusion/images/filesave.png';
         }
 
         function removePair(t,i) {
             var elm = document.getElementById("params"+i);
-            document.getElementById("params"+t).removeChild(elm);
+            $("params"+t).removeChild(elm);
+            $("params"+t+"_save").src = 'components/com_jfusion/images/filesave.png';
         }
 
         function closePair() {
 			$(this.options.target).inject($(this.options.return));
         }
 JS;
-            $document->addScriptDeclaration($output);
-            $js = true;
-        }
+			$document->addScriptDeclaration($output);
+			$js = true;
+		}
 
-        $name = $this->fieldname;
-        $temp = $value = $this->value;
+		$name = $this->fieldname;
+		$temp = $value = $this->value;
 
-        $temp = @unserialize($temp);
+		$temp = @unserialize($temp);
 
-        if (!is_array($temp)) {
-            $values = explode( ',', $value);
-            if ($values) {
-                $temp = array();
-                foreach($values as $pair) {
-                    $result = explode( ':', $pair);
-                    if (count($result)==2) {
-                        $temp['name'][] = $result[0];
-                        $temp['value'][] = $result[1];
-                    }
-                }
-            }
-        }
+		if (!is_array($temp)) {
+			$values = explode( ',', $value);
+			if ($values) {
+				$temp = array();
+				foreach($values as $pair) {
+					$result = explode( ':', $pair);
+					if (count($result)==2) {
+						$temp['name'][] = $result[0];
+						$temp['value'][] = $result[1];
+					}
+				}
+			}
+		}
 
-	    JHTML::_('behavior.modal', 'a.modal');
-	    $value = $temp;
+		JHTML::_('behavior.modal', 'a.modal');
+		$value = $temp;
 
-	    $output = '<div style="display:none;" id="jform_params_'.$name.'">';
-	    $output .= '<div id="target_jform_params_'.$name.'"><div id="params'.$name.'">';
-	    if (!is_array($value) || !count($value)) {
-		    $output .= '<p id="params'.$name.'0">';
-		    $output .= '<input type="text" name="params['.$name.'][value][0]" id="params'.$name.'value0" size="50"/>';
-		    $output .= '<input type="text" name="params['.$name.'][name][0]" id="params'.$name.'name0" size="50"/>';
-		    $output .= '<a href="javascript:removePair(\''.$name.'\', \''.$name.'0\');">'.$delete.'</a>';
-		    $output .= '</p>';
-	    } else {
-		    $i = 0;
-		    foreach ($value['value'] as $key => $val) {
-			    $val = htmlentities($val);
-			    $output .= '<p id="params'.$name.$i.'">';
-			    $output .= '<input value="'.$val.'" type="text" name="params['.$name.'][value]['.$i.']" id="params'.$name.'value'.$i.'" size="50"/>';
-			    $output .= '<input value="'.$value['name'][$key].'" type="text" name="params['.$name.'][name]['.$i.']" id="params'.$name.'name'.$i.'" size="50"/>';
-			    $output .= '<a href="javascript:removePair(\''.$name.'\', \''.$name.$i.'\');">'.$delete.'</a>';
-			    $output .= '</p>';
-			    $i++;
-		    }
-	    }
-	    $output .= '</div><div><a href="javascript:addPair(\''.$name.'\',50);">'.JText::_('ADD_PAIR').'</a></div>';
-	    $output .= '</div>';
-	    $output .= '</div>';
-	    $output.= '<div class="button2-left"><div class="blank"><a class="modal" title="' . JText::_('CONFIGURE') . '"  href="" rel="{target: \'target_jform_params_'.$name.'\', handler: \'adopt\', return: \'jform_params_'.$name.'\', onClose : closePair, size: {x: 650, y: 375}}">' . JText::_('CONFIGURE') . '</a></div></div>';
+		$output = '<div style="display:none;" id="jform_params_'.$name.'">';
+		$output .= '<div id="target_jform_params_'.$name.'"><div id="params'.$name.'">';
+		if (!is_array($value) || !count($value)) {
+			$output .= '<p id="params'.$name.'0">';
+			$output .= '<input type="text" name="params['.$name.'][name][0]" id="params'.$name.'name0" size="50"/>';
+			$output .= '<input type="text" name="params['.$name.'][value][0]" id="params'.$name.'value0" size="50"/>';
+			$output .= '<a href="javascript:removePair(\''.$name.'\', \''.$name.'0\');">'.$delete.'</a>';
+			$output .= '</p>';
+		} else {
+			$i = 0;
+			foreach ($value['value'] as $key => $val) {
+				$val = htmlentities($val);
+				$output .= '<p id="params'.$name.$i.'">';
+				$output .= '<input value="'.$value['name'][$key].'" type="text" name="params['.$name.'][name]['.$i.']" id="params'.$name.'name'.$i.'" size="50"/>';
+				$output .= '<input value="'.$val.'" type="text" name="params['.$name.'][value]['.$i.']" id="params'.$name.'value'.$i.'" size="50"/>';
+				$output .= '<a href="javascript:removePair(\''.$name.'\', \''.$name.$i.'\');">'.$delete.'</a>';
+				$output .= '</p>';
+				$i++;
+			}
+		}
+		$output .= '</div><div><a href="javascript:addPair(\''.$name.'\',50);">'.JText::_('ADD_PAIR').'</a></div>';
+		$output .= '</div>';
+		$output .= '</div>';
+		$output.= '<div class="button2-left"><div class="blank"><a class="modal" title="' . JText::_('CONFIGURE') . '"  href="" rel="{target: \'target_jform_params_'.$name.'\', handler: \'adopt\', return: \'jform_params_'.$name.'\', onClose : closePair, size: {x: 650, y: 375}}">' . JText::_('CONFIGURE') . '</a></div></div>';
 
-        return $output;
-    }
+		if($value) {
+			$src = 'components/com_jfusion/images/tick.png';
+		} else {
+			$src = 'components/com_jfusion/images/clear.png';
+		}
+		$output.= '<img id="params'.$name.'_save" src="'.$src.'" alt="'.JText::_('SAVE').'">';
+		return $output;
+	}
 }
