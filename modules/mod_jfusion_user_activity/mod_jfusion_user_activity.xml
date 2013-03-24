@@ -18,115 +18,94 @@
 		<folder>tmpl</folder>
 	</files>
 
-	<config><fields name="params" addfieldpath="/administrator/components/com_jfusion/fields/"><fieldset name="basic">
+	<config>
+        <fields name="params" addfieldpath="/administrator/components/com_jfusion/fields/">
+            <fieldset name="basic">
+                <field name="moduleclass_sfx" type="text" default="" label="Module Class Suffix" description="PARAMMODULECLASSSUFFIX" />
 
-		<field name="moduleclass_sfx" type="text" default="" label="Module Class Suffix" description="PARAMMODULECLASSSUFFIX" />
+                <field name="JFusionPlugin" type="JFusionAdvancedParam" default="" feature="useractivity" label="JFUSION_PLUGIN" description="JFUSION_PLUGIN_DESCR" />
 
-		<field name="JFusionPlugin" type="JFusionAdvancedParam" default=""
-            feature="useractivity"
-			label="JFUSION_PLUGIN"
-			description="JFUSION_PLUGIN_DESCR" />
+                <field name="itemid" type="JFusionItemid" size="5" default="" label="ITEMID" description="ITEMID_DESCR" />
 
-		<field name="itemid" type="JFusionItemid" size="5" default=""
-			label="ITEMID"
-			description="ITEMID_DESCR" />
+                <field name="new_window" type="list" default="0" label="LINK_TARGET" description="LINK_TARGET_DESCR">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+                <field name="alignment" type="list" default="center" label="TEXT_ALIGNMENT" description="TEXT_ALIGNMENT_DESCR">
+                    <option value="left">LEFT</option>
+                    <option value="center">CENTER</option>
+                </field>
+                <field name="avatar" type="radio" default="1" label="AVATAR_IMAGE" description="AVATAR_IMAGE_DESCR">
+                    <option value="0">HIDE</option>
+                    <option value="1">SHOW</option>
+                </field>
+                <field name="avatar_software" type="list" default="jfusion" label="AVATAR_SOFTWARE" description="AVATAR_SOFTWARE_DESCR">
+                    <option value="cb">Community Builder</option>
+                    <option value="gravatar">Gravatar</option>
+                    <option value="jfusion">JFusion</option>
+                    <option value="jomsocial">JomSocial</option>
+                    <option value="joomunity">Joomunity</option>
+                </field>
+                <field name="avatar_height" type="text" default="40" length="5" label="AVATAR_HEIGHT" description="AVATAR_HEIGHT_DESCR" />
+                <field name="avatar_width" type="text" default="30" length="5" label="AVATAR_WIDTH" description="AVATAR_WIDTH_DESCR" />
+                <field name="avatar_keep_proportional" label="AVATAR_KEEP_PROPORTIONAL" type="radio" default="0" description="AVATAR_KEEP_PROPORTIONAL_DESCR">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+                <field name="avatar_location" type="radio" default="left" label="AVATAR_LOCATION" description="AVATAR_LOCATION_DESCR">
+                    <option value="top">TOP</option>
+                    <option value="left">LEFT</option>
+                </field>
+                <field name="pmcount" type="radio" default="1" label="PM_COUNT" description="PM_COUNT_DESCR">
+                    <option value="0">HIDE</option>
+                    <option value="1">SHOW</option>
+                </field>
+                <field name="viewnewmessages" type="radio" default="1" label="PM_NEW_LINK" description="PM_NEW_LINK_DESCR">
+                    <option value="0">HIDE</option>
+                    <option value="1">SHOW</option>
+                </field>
+                <field name="login_msg" type="text" default="" label="LOGIN_MSG" description="LOGIN_MSG_DESCR" />
 
-		<field name="new_window" type="list" default="0"
-			label="LINK_TARGET" description="LINK_TARGET_DESCR">
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
-		</field>
-		<field name="alignment" type="list" default="center"
-			label="TEXT_ALIGNMENT"
-			description="TEXT_ALIGNMENT_DESCR">
-				<option value="left">LEFT</option>
-				<option value="center">CENTER</option>
-		</field>
-		<field name="avatar" type="radio" default="1"
-			label="AVATAR_IMAGE" description="AVATAR_IMAGE_DESCR">
-			<option value="0">HIDE</option>
-			<option value="1">SHOW</option>
-		</field>
-		<field name="avatar_software" type="list" default="jfusion"
-			label="AVATAR_SOFTWARE"
-			description="AVATAR_SOFTWARE_DESCR">
-				<option value="cb">Community Builder</option>
-				<option value="gravatar">Gravatar</option>
-				<option value="jfusion">JFusion</option>
-				<option value="jomsocial">JomSocial</option>
-				<option value="joomunity">Joomunity</option>
-		</field>
-		<field name="avatar_height" type="text" default="40" length="5" label="AVATAR_HEIGHT" description="AVATAR_HEIGHT_DESCR" />
-		<field name="avatar_width" type="text" default="30" length="5" label="AVATAR_WIDTH" description="AVATAR_WIDTH_DESCR" />
-        <field name="avatar_keep_proportional" label="AVATAR_KEEP_PROPORTIONAL" type="radio" default="0" description="AVATAR_KEEP_PROPORTIONAL_DESCR">
-            <option value="0">JNO</option>
-            <option value="1">JYES</option>          
-        </field>    		
-		<field name="avatar_location" type="radio" default="left"
-			label="AVATAR_LOCATION"
-			description="AVATAR_LOCATION_DESCR">
-			<option value="top">TOP</option>
-			<option value="left">LEFT</option>
-		</field>
-		<field name="pmcount" type="radio" default="1"
-			label="PM_COUNT"
-			description="PM_COUNT_DESCR">
-			<option value="0">HIDE</option>
-			<option value="1">SHOW</option>
-		</field>
-		<field name="viewnewmessages" type="radio" default="1"
-			label="PM_NEW_LINK" description="PM_NEW_LINK_DESCR">
-			<option value="0">HIDE</option>
-			<option value="1">SHOW</option>
-		</field>
-		<field name="login_msg" type="text" default="" label="LOGIN_MSG" description="LOGIN_MSG_DESCR" />
-
-	</fieldset></fields></config>
+	        </fieldset>
+        </fields>
+    </config>
 	
-    <config><fields name="params"><fieldset name="advanced">
-        <field name="cache" type="list" default="0" label="Caching" description="Select whether to cache the content of this module">
-            <option value="1">Use global</option> 
-            <option value="0">No caching</option> 
-        </field>
-        <field name="cache_time" type="text" default="900" label="Cache Time" description="The time before the module is recached" /> 
-    </fieldset></fields></config>		
+    <config>
+        <fields name="params">
+            <fieldset name="advanced">
+                <field name="cache" type="list" default="0" label="Caching" description="Select whether to cache the content of this module">
+                    <option value="1">Use global</option>
+                    <option value="0">No caching</option>
+                </field>
+                <field name="cache_time" type="text" default="900" label="Cache Time" description="The time before the module is recached" />
+            </fieldset>
+        </fields>
+    </config>
 	<params addpath="/administrator/components/com_jfusion/elements">
-
 		<param name="moduleclass_sfx" type="text" default="" label="Module Class Suffix" description="PARAMMODULECLASSSUFFIX" />
 
-		<param name="JFusionPlugin" type="JFusionAdvancedParam" default=""
-            feature="useractivity"
-			label="JFUSION_PLUGIN"
-			description="JFUSION_PLUGIN_DESCR" />
+		<param name="JFusionPlugin" type="JFusionAdvancedParam" default="" feature="useractivity" label="JFUSION_PLUGIN" description="JFUSION_PLUGIN_DESCR" />
 
-		<param name="itemid" type="JFusionItemid" size="5" default=""
-			label="ITEMID"
-			description="ITEMID_DESCR" />
+		<param name="itemid" type="JFusionItemid" size="5" default="" label="ITEMID" description="ITEMID_DESCR" />
 
-		<param name="new_window" type="list" default="0"
-			label="LINK_TARGET" description="LINK_TARGET_DESCR">
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
+		<param name="new_window" type="list" default="0" label="LINK_TARGET" description="LINK_TARGET_DESCR">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
 		</param>
-		<param name="alignment" type="list" default="center"
-			label="TEXT_ALIGNMENT"
-			description="TEXT_ALIGNMENT_DESCR">
-				<option value="left">LEFT</option>
-				<option value="center">CENTER</option>
+		<param name="alignment" type="list" default="center" label="TEXT_ALIGNMENT" description="TEXT_ALIGNMENT_DESCR">
+            <option value="left">LEFT</option>
+            <option value="center">CENTER</option>
 		</param>
-		<param name="avatar" type="radio" default="1"
-			label="AVATAR_IMAGE" description="AVATAR_IMAGE_DESCR">
+		<param name="avatar" type="radio" default="1" label="AVATAR_IMAGE" description="AVATAR_IMAGE_DESCR">
 			<option value="0">HIDE</option>
 			<option value="1">SHOW</option>
 		</param>
-		<param name="avatar_software" type="list" default="jfusion"
-			label="AVATAR_SOFTWARE"
-			description="AVATAR_SOFTWARE_DESCR">
-				<option value="cb">Community Builder</option>
-				<option value="gravatar">Gravatar</option>
-				<option value="jfusion">JFusion</option>
-				<option value="jomsocial">JomSocial</option>
-				<option value="joomunity">Joomunity</option>
+		<param name="avatar_software" type="list" default="jfusion" label="AVATAR_SOFTWARE" description="AVATAR_SOFTWARE_DESCR">
+            <option value="cb">Community Builder</option>
+            <option value="gravatar">Gravatar</option>
+            <option value="jfusion">JFusion</option>
+            <option value="jomsocial">JomSocial</option>
+            <option value="joomunity">Joomunity</option>
 		</param>
 		<param name="avatar_height" type="text" default="40" length="5" label="AVATAR_HEIGHT" description="AVATAR_HEIGHT_DESCR" />
 		<param name="avatar_width" type="text" default="30" length="5" label="AVATAR_WIDTH" description="AVATAR_WIDTH_DESCR" />
@@ -134,25 +113,19 @@
             <option value="0">JNO</option>
             <option value="1">JYES</option>          
         </param>    
-		<param name="avatar_location" type="radio" default="left"
-			label="AVATAR_LOCATION"
-			description="AVATAR_LOCATION_DESCR">
+		<param name="avatar_location" type="radio" default="left" label="AVATAR_LOCATION" description="AVATAR_LOCATION_DESCR">
 			<option value="top">TOP</option>
 			<option value="left">LEFT</option>
 		</param>
-		<param name="pmcount" type="radio" default="1"
-			label="PM_COUNT"
-			description="PM_COUNT_DESCR">
+		<param name="pmcount" type="radio" default="1" label="PM_COUNT" description="PM_COUNT_DESCR">
 			<option value="0">HIDE</option>
 			<option value="1">SHOW</option>
 		</param>
-		<param name="viewnewmessages" type="radio" default="1"
-			label="PM_NEW_LINK" description="PM_NEW_LINK_DESCR">
+		<param name="viewnewmessages" type="radio" default="1" label="PM_NEW_LINK" description="PM_NEW_LINK_DESCR">
 			<option value="0">HIDE</option>
 			<option value="1">SHOW</option>
 		</param>
 		<param name="login_msg" type="text" default="" label="LOGIN_MSG" description="LOGIN_MSG_DESCR" />
-
 	</params>
 	
     <params group="advanced">

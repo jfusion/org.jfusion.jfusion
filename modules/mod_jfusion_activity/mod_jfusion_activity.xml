@@ -21,224 +21,180 @@
    		<folder>tmpl</folder>		
 	</files>
 
-	<config><fields name="params" addfieldpath="/administrator/components/com_jfusion/fields">
-	<fieldset name="basic">
+	<config>
+        <fields name="params" addfieldpath="/administrator/components/com_jfusion/fields">
+            <fieldset name="basic">
+                <field name="moduleclass_sfx" type="text" default="" label="MODULE_SUFFIX" description="MODULE_SUFFIX_DESCR" />
 
-		<field name="moduleclass_sfx" type="text" default=""
-			label="MODULE_SUFFIX" description="MODULE_SUFFIX_DESCR" />
+                <field name="@spacer" type="spacer" default="" label="" description="" />
 
-		<field name="@spacer" type="spacer" default="" label=""
-			description="" />
+                <field name="JFusionPluginParam" type="JFusionAdvancedParam" default="" label="JFUSION_PLUGIN" feature="activity" description="JFUSION_PLUGIN_DESCR"  />
 
-		<field name="JFusionPluginParam" type="JFusionAdvancedParam" default=""
-			label="JFUSION_PLUGIN" feature="activity"
-			description="JFUSION_PLUGIN_DESCR"  />
+                <field name="@spacer" type="spacer" default="" label="" description="" />
 
-		<field name="@spacer" type="spacer" default="" label=""
-			description="" />
+                <field name=" " type="helptext" default="ITEMID_DESCR"/>
 
-    <field name=" " type="helptext" default="ITEMID_DESCR"/>
+                <field name="itemid" type="JFusionItemid" size="5" default="" description="ITEMID"/>
 
-		<field name="itemid" type="JFusionItemid" size="5" default=""
-			description="ITEMID"/>
+                <field name="@spacer" type="spacer" default="" label="" description="" />
 
-		<field name="@spacer" type="spacer" default="" label=""
-			description="" />
+                <field name="mode" type="list" default="0" label="MODE" description="MODE_DESCR">
+                    <option value="0">MODE_LAT</option>
+                    <option value="1">MODE_LCT</option>
+                    <option value="2">MODE_LCP</option>
+                </field>
 
-		<field name="mode" type="list" default="0" label="MODE"
-			description="MODE_DESCR">
-			<option value="0">MODE_LAT</option>
-			<option value="1">MODE_LCT</option>
-			<option value="2">MODE_LCP</option>
-		</field>
+                <field name="lat_mode" type="list" default="first" label="LAT_MODE" description="LAT_MODE_DESCR">
+                    <option value="0">FIRST_POST</option>
+                    <option value="1">LATEST_POST</option>
+                </field>
 
-		<field name="lat_mode" type="list" default="first" label="LAT_MODE" description="LAT_MODE_DESCR">
-			<option value="0">FIRST_POST</option>
-			<option value="1">LATEST_POST</option>
-		</field>
+                <field name="show_reply_num" type="list" default="1" label="SHOW_REPLY_NUM" description="SHOW_REPLY_NUM_DESCR">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
 
-		<field name="show_reply_num" type="list" default="1" label="SHOW_REPLY_NUM" description="SHOW_REPLY_NUM_DESCR">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</field>
-		
-		<field name="linktype" type="list" default="0" label="LINK_TYPE"
-			description="LINK_TYPE_DESCR">
-			<option value="0">THREAD</option>
-			<option value="1">POST</option>
-		</field>
+                <field name="linktype" type="list" default="0" label="LINK_TYPE" description="LINK_TYPE_DESCR">
+                    <option value="0">THREAD</option>
+                    <option value="1">POST</option>
+                </field>
 
-		<field name="display_body" type="list" default="0"
-			label="DISPLAY_BODY" description="DISPLAY_BODY_DESCR">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</field>
+                <field name="display_body" type="list" default="0" label="DISPLAY_BODY" description="DISPLAY_BODY_DESCR">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
 
-        <field name="parse_text" type="list" default="plaintext"
-		      label="PARSE_TEXT" description="PARSE_TEXT_DESCR">
-		      <option value="">PARSE_OPTION_RAW</option>
-			  <option value="plaintext">PARSE_OPTION_PLAINTEXT</option>
-			  <option value="html">PARSE_OPTION_HTML</option>
-        </field>
-		
-		<field name="replace_subject" type="list" default="0"
-			label="REPLACE_SUBJECT" description="REPLACE_SUBJECT_DESCR">
-			<option value="0">REPLACE_SUBJECT_0</option>
-			<option value="1">REPLACE_SUBJECT_1</option>
-			<option value="2">REPLACE_SUBJECT_2</option>
-		</field>
+                <field name="parse_text" type="list" default="plaintext" label="PARSE_TEXT" description="PARSE_TEXT_DESCR">
+                      <option value="">PARSE_OPTION_RAW</option>
+                      <option value="plaintext">PARSE_OPTION_PLAINTEXT</option>
+                      <option value="html">PARSE_OPTION_HTML</option>
+                </field>
 
-		<field name="new_window" type="list" default="0"
-			label="LINK_TARGET" description="LINK_TARGET_DESCR">
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
-		</field>
+                <field name="replace_subject" type="list" default="0" label="REPLACE_SUBJECT" description="REPLACE_SUBJECT_DESCR">
+                    <option value="0">REPLACE_SUBJECT_0</option>
+                    <option value="1">REPLACE_SUBJECT_1</option>
+                    <option value="2">REPLACE_SUBJECT_2</option>
+                </field>
 
-		<field name="forum_mode" type="radio" default="0" label="FORUM_MODE"
-			description="FORUM_MODE_DESCR">
-			<option value="0">FORUM_MODE_0</option>
-			<option value="1">FORUM_MODE_1</option>
-		</field>
+                <field name="new_window" type="list" default="0" label="LINK_TARGET" description="LINK_TARGET_DESCR">
+                        <option value="0">JNO</option>
+                        <option value="1">JYES</option>
+                </field>
 
-		<field name="selected_forums" type="forumlist" default=""
-			label="SELECTED_FORUMS"
-			description="SELECTED_FORUMS_DESCR"  />
+                <field name="forum_mode" type="radio" default="0" label="FORUM_MODE" description="FORUM_MODE_DESCR">
+                    <option value="0">FORUM_MODE_0</option>
+                    <option value="1">FORUM_MODE_1</option>
+                </field>
 
-		<field name="@spacer" type="spacer" default="" label=""
-			description="" />
+                <field name="selected_forums" type="forumlist" default="" label="SELECTED_FORUMS" description="SELECTED_FORUMS_DESCR"  />
 
-		<field name="character_limit" type="text" size="5" default="150"
-			label="DISPLAY_LIMIT"
-			description="DISPLAY_LIMIT_DESC" />
+                <field name="@spacer" type="spacer" default="" label="" description="" />
 
-		<field name="character_limit_subject" type="text" size="5" default="50"
-			label="DISPLAY_LIMIT_SUBJECT"
-			description="DISPLAY_LIMIT_SUBJECT_DESC" />
+                <field name="character_limit" type="text" size="5" default="150" label="DISPLAY_LIMIT" description="DISPLAY_LIMIT_DESC" />
 
-		<field name="result_limit" type="text" size="5" default="5"
-			label="RESULT_LIMIT" description="RESULT_LIMIT_DESCR" />
+                <field name="character_limit_subject" type="text" size="5" default="50" label="DISPLAY_LIMIT_SUBJECT" description="DISPLAY_LIMIT_SUBJECT_DESC" />
 
-		<field name="custom_date" type="text" default=""
-			label="CUSTOM_DATE"
-			description="CUSTOM_DATE_DESCR" />
+                <field name="result_limit" type="text" size="5" default="5" label="RESULT_LIMIT" description="RESULT_LIMIT_DESCR" />
 
-		<field name="tz_offset" type="text" default="0"
-			label="TZ_OFFSET"
-			description="TZ_OFFSET_DESCR" />
+                <field name="custom_date" type="text" default="" label="CUSTOM_DATE" description="CUSTOM_DATE_DESCR" />
 
-		<field name="result_order" type="radio" default="1"
-			label="RESULT_ORDER"
-			description="RESULT_ORDER_DESCR">
-			<option value="0">ASCENDING</option>
-			<option value="1">DESCENDING</option>
-		</field>
+                <field name="tz_offset" type="text" default="0" label="TZ_OFFSET" description="TZ_OFFSET_DESCR" />
 
-		<field name="showdate" type="list" default="1"
-			label="SHOW_DATE" description="SHOW_DATE_DESC">
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>
-			<option value="2">TIME_SINCE</option>
-		</field>
+                <field name="result_order" type="radio" default="1" label="RESULT_ORDER" description="RESULT_ORDER_DESCR">
+                    <option value="0">ASCENDING</option>
+                    <option value="1">DESCENDING</option>
+                </field>
 
-        <field name="shownew" type="radio" default="1"
-            label="SHOW_NEWICON"
-            description="SHOW_NEWICON_DESCR">
-            <option value="0">JNO</option>
-            <option value="1">JYES</option>
-        </field>
-		
-		<field name="showuser" type="radio" default="1"
-			label="SHOW_USER"
-			description="SHOW_USER_DESCR">
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>
-		</field>
+                <field name="showdate" type="list" default="1" label="SHOW_DATE" description="SHOW_DATE_DESC">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                    <option value="2">TIME_SINCE</option>
+                </field>
 
-        <field name="display_name" type="list" default="0"
-            label="DISPLAY_USERNAME_NAME" description="DISPLAY_USERNAME_NAME_DESCR">
-            <option value="0">USERNAME</option>
-            <option value="1">NAME</option>
-        </field>
-		        
-		<field name="userlink" type="radio" default="0"
-			label="USERNAME_LINK"
-			description="USERNAME_LINK_DESCR">
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>
-		</field>
+                <field name="shownew" type="radio" default="1" label="SHOW_NEWICON" description="SHOW_NEWICON_DESCR">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
 
-		<field name="userlink_software" type="list" default="jfusion"
-			label="USERLINK_SOFTWARE"
-			description="USERLINK_SOFTWARE_DESC">
-				<option value="cb">Community Builder</option>
-				<option value="custom">CUSTOM</option>
-				<option value="jfusion">JFusion</option>
-				<option value="jomsocial">JomSocial</option>
-				<option value="joomunity">Joomunity</option>
-		</field>
-		<field name="userlink_custom" type="text" size="20" default="" label="USERLINK_CUSTOM" description="USERLINK_CUSTOM_DESC" />
+                <field name="showuser" type="radio" default="1" label="SHOW_USER" description="SHOW_USER_DESCR">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
 
-		<field name="avatar" type="radio" default="1"
-			label="AVATAR_IMAGE" description="AVATAR_IMAGE_DESCR">
-			<option value="0">HIDE</option>
-			<option value="1">SHOW</option>
-		</field>
-		<field name="avatar_height" label="AVATAR_HEIGHT" type="text" size="5" default="53"/>
-		<field name="avatar_width" label="AVATAR_WIDTH" type="text" size="5" default="40"/>
-	    <field name="avatar_keep_proportional" label="AVATAR_KEEP_PROPORTIONAL" type="radio" default="0" description="AVATAR_KEEP_PROPORTIONAL_DESCR">
-            <option value="0">JNO</option>
-            <option value="1">JYES</option>         
-        </field>        
-		<field name="avatar_software" type="list" default="jfusion"
-			label="AVATAR_SOFTWARE"
-			description="AVATAR_SOFTWARE_DESC">
-				<option value="cb">Community Builder</option>
-				<option value="gravatar">Gravatar</option>
-				<option value="jfusion">JFusion</option>
-				<option value="jomsocial">JomSocial</option>
-				<option value="joomunity">Joomunity</option>
-		</field>
-		
-		<field name="debug" type="list" default=""
-			label="DEBUG"
-			description="DEBUG_DESCR">
-			<option value="">DEBUG_0</option>
-			<option value="1">DEBUG_1</option>
-		</field>
-	</fieldset></fields></config>
+                <field name="display_name" type="list" default="0" label="DISPLAY_USERNAME_NAME" description="DISPLAY_USERNAME_NAME_DESCR">
+                    <option value="0">USERNAME</option>
+                    <option value="1">NAME</option>
+                </field>
+
+                <field name="userlink" type="radio" default="0" label="USERNAME_LINK" description="USERNAME_LINK_DESCR">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+
+                <field name="userlink_software" type="list" default="jfusion" label="USERLINK_SOFTWARE" description="USERLINK_SOFTWARE_DESC">
+                    <option value="cb">Community Builder</option>
+                    <option value="custom">CUSTOM</option>
+                    <option value="jfusion">JFusion</option>
+                    <option value="jomsocial">JomSocial</option>
+                    <option value="joomunity">Joomunity</option>
+                </field>
+                <field name="userlink_custom" type="text" size="20" default="" label="USERLINK_CUSTOM" description="USERLINK_CUSTOM_DESC" />
+
+                <field name="avatar" type="radio" default="1"
+                    label="AVATAR_IMAGE" description="AVATAR_IMAGE_DESCR">
+                    <option value="0">HIDE</option>
+                    <option value="1">SHOW</option>
+                </field>
+                <field name="avatar_height" label="AVATAR_HEIGHT" type="text" size="5" default="53"/>
+                <field name="avatar_width" label="AVATAR_WIDTH" type="text" size="5" default="40"/>
+                <field name="avatar_keep_proportional" label="AVATAR_KEEP_PROPORTIONAL" type="radio" default="0" description="AVATAR_KEEP_PROPORTIONAL_DESCR">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+                <field name="avatar_software" type="list" default="jfusion" label="AVATAR_SOFTWARE" description="AVATAR_SOFTWARE_DESC">
+                    <option value="cb">Community Builder</option>
+                    <option value="gravatar">Gravatar</option>
+                    <option value="jfusion">JFusion</option>
+                    <option value="jomsocial">JomSocial</option>
+                    <option value="joomunity">Joomunity</option>
+                </field>
+
+                <field name="debug" type="list" default="" label="DEBUG" description="DEBUG_DESCR">
+                    <option value="">DEBUG_0</option>
+                    <option value="1">DEBUG_1</option>
+                </field>
+            </fieldset>
+        </fields>
+    </config>
 	
-    <config><fields name="params"><fieldset name="advanced">
-        <field name="cache" type="list" default="0" label="Caching" description="Select whether to cache the content of this module">
-            <option value="1">Use global</option> 
-            <option value="0">No caching</option> 
-        </field>
-        <field name="cache_time" type="text" default="900" label="Cache Time" description="The time before the module is recached" /> 
-    </fieldset></fields></config>		
+    <config>
+        <fields name="params">
+            <fieldset name="advanced">
+                <field name="cache" type="list" default="0" label="Caching" description="Select whether to cache the content of this module">
+                    <option value="1">Use global</option>
+                    <option value="0">No caching</option>
+                </field>
+                <field name="cache_time" type="text" default="900" label="Cache Time" description="The time before the module is recached" />
+            </fieldset>
+        </fields>
+    </config>
 	<params addpath="/administrator/components/com_jfusion/elements">
 
-		<param name="moduleclass_sfx" type="text" default=""
-			label="MODULE_SUFFIX" description="MODULE_SUFFIX_DESCR" />
+		<param name="moduleclass_sfx" type="text" default="" label="MODULE_SUFFIX" description="MODULE_SUFFIX_DESCR" />
 
-		<param name="@spacer" type="spacer" default="" label=""
-			description="" />
+		<param name="@spacer" type="spacer" default="" label="" description="" />
 
-		<param name="JFusionPluginParam" type="JFusionAdvancedParam" default=""
-			label="JFUSION_PLUGIN" feature="activity"
-			description="JFUSION_PLUGIN_DESCR" />
+		<param name="JFusionPluginParam" type="JFusionAdvancedParam" default="" label="JFUSION_PLUGIN" feature="activity" description="JFUSION_PLUGIN_DESCR" />
 
-		<param name="@spacer" type="spacer" default="" label=""
-			description="" />
+		<param name="@spacer" type="spacer" default="" label="" description="" />
 
-    <param name=" " type="helptext" default="ITEMID_DESCR"/>
+        <param name=" " type="helptext" default="ITEMID_DESCR"/>
 
-		<param name="itemid" type="JFusionItemid" size="5" default=""
-			description="ITEMID" />
+		<param name="itemid" type="JFusionItemid" size="5" default="" description="ITEMID" />
 
-		<param name="@spacer" type="spacer" default="" label=""
-			description="" />
+		<param name="@spacer" type="spacer" default="" label="" description="" />
 
-		<param name="mode" type="list" default="0" label="MODE"
-			description="MODE_DESCR">
+		<param name="mode" type="list" default="0" label="MODE" description="MODE_DESCR">
 			<option value="0">MODE_LAT</option>
 			<option value="1">MODE_LCT</option>
 			<option value="2">MODE_LCP</option>
@@ -254,124 +210,93 @@
 			<option value="0">JNO</option>
 		</param>
 		
-		<param name="linktype" type="list" default="0" label="LINK_TYPE"
-			description="LINK_TYPE_DESCR">
+		<param name="linktype" type="list" default="0" label="LINK_TYPE" description="LINK_TYPE_DESCR">
 			<option value="0">THREAD</option>
 			<option value="1">POST</option>
 		</param>
 
-		<param name="display_body" type="list" default="0"
-			label="DISPLAY_BODY" description="DISPLAY_BODY_DESCR">
+		<param name="display_body" type="list" default="0" label="DISPLAY_BODY" description="DISPLAY_BODY_DESCR">
 			<option value="1">JYES</option>
 			<option value="0">JNO</option>
 		</param>
 
-        <param name="parse_text" type="list" default="plaintext"
-		      label="PARSE_TEXT" description="PARSE_TEXT_DESCR">
+        <param name="parse_text" type="list" default="plaintext" label="PARSE_TEXT" description="PARSE_TEXT_DESCR">
 		      <option value="">PARSE_OPTION_RAW</option>
 			  <option value="plaintext">PARSE_OPTION_PLAINTEXT</option>
 			  <option value="html">PARSE_OPTION_HTML</option>
         </param>
 		
-		<param name="replace_subject" type="list" default="0"
-			label="REPLACE_SUBJECT" description="REPLACE_SUBJECT_DESCR">
+		<param name="replace_subject" type="list" default="0" label="REPLACE_SUBJECT" description="REPLACE_SUBJECT_DESCR">
 			<option value="0">REPLACE_SUBJECT_0</option>
 			<option value="1">REPLACE_SUBJECT_1</option>
 			<option value="2">REPLACE_SUBJECT_2</option>
 		</param>
 
-		<param name="new_window" type="list" default="0"
-			label="LINK_TARGET" description="LINK_TARGET_DESCR">
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
+		<param name="new_window" type="list" default="0" label="LINK_TARGET" description="LINK_TARGET_DESCR">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
 		</param>
 
-		<param name="forum_mode" type="radio" default="0" label="FORUM_MODE"
-			description="FORUM_MODE_DESCR">
+		<param name="forum_mode" type="radio" default="0" label="FORUM_MODE" description="FORUM_MODE_DESCR">
 			<option value="0">FORUM_MODE_0</option>
 			<option value="1">FORUM_MODE_1</option>
 		</param>
 
-		<param name="selected_forums" type="forumlist" default=""
-			label="SELECTED_FORUMS"
-			description="SELECTED_FORUMS_DESCR" />
+		<param name="selected_forums" type="forumlist" default="" label="SELECTED_FORUMS" description="SELECTED_FORUMS_DESCR" />
 
-		<param name="@spacer" type="spacer" default="" label=""
-			description="" />
+		<param name="@spacer" type="spacer" default="" label="" description="" />
 
-		<param name="character_limit" type="text" size="5" default="150"
-			label="DISPLAY_LIMIT"
-			description="DISPLAY_LIMIT_DESC" />
+		<param name="character_limit" type="text" size="5" default="150" label="DISPLAY_LIMIT" description="DISPLAY_LIMIT_DESC" />
 
-		<param name="character_limit_subject" type="text" size="5" default="50"
-			label="DISPLAY_LIMIT_SUBJECT"
-			description="DISPLAY_LIMIT_SUBJECT_DESC" />
+		<param name="character_limit_subject" type="text" size="5" default="50" label="DISPLAY_LIMIT_SUBJECT" description="DISPLAY_LIMIT_SUBJECT_DESC" />
 
-		<param name="result_limit" type="text" size="5" default="5"
-			label="RESULT_LIMIT" description="RESULT_LIMIT_DESCR" />
+		<param name="result_limit" type="text" size="5" default="5" label="RESULT_LIMIT" description="RESULT_LIMIT_DESCR" />
 
-		<param name="custom_date" type="text" default=""
-			label="CUSTOM_DATE"
-			description="CUSTOM_DATE_DESCR" />
+		<param name="custom_date" type="text" default="" label="CUSTOM_DATE" description="CUSTOM_DATE_DESCR" />
 
-		<param name="tz_offset" type="text" default="0"
-			label="TZ_OFFSET"
-			description="TZ_OFFSET_DESCR" />
+		<param name="tz_offset" type="text" default="0" label="TZ_OFFSET" description="TZ_OFFSET_DESCR" />
 
-		<param name="result_order" type="radio" default="1"
-			label="RESULT_ORDER"
-			description="RESULT_ORDER_DESCR">
+		<param name="result_order" type="radio" default="1" label="RESULT_ORDER" description="RESULT_ORDER_DESCR">
 			<option value="0">ASCENDING</option>
 			<option value="1">DESCENDING</option>
 		</param>
 
-		<param name="showdate" type="radio" default="1"
-			label="SHOW_DATE" description="SHOW_DATE_DESC">
+		<param name="showdate" type="radio" default="1" label="SHOW_DATE" description="SHOW_DATE_DESC">
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>
 			<option value="2">TIME_SINCE</option>
 		</param>
 
-        <param name="shownew" type="radio" default="1"
-            label="SHOW_NEWICON"
-            description="SHOW_NEWICON_DESCR">
+        <param name="shownew" type="radio" default="1" label="SHOW_NEWICON" description="SHOW_NEWICON_DESCR">
             <option value="0">JNO</option>
             <option value="1">JYES</option>
         </param>
 		
-		<param name="showuser" type="radio" default="1"
-			label="SHOW_USER"
-			description="SHOW_USER_DESCR">
+		<param name="showuser" type="radio" default="1" label="SHOW_USER" description="SHOW_USER_DESCR">
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>
 		</param>
 
-        <param name="display_name" type="list" default="0"
-            label="DISPLAY_USERNAME_NAME" description="DISPLAY_USERNAME_NAME_DESCR">
+        <param name="display_name" type="list" default="0" label="DISPLAY_USERNAME_NAME" description="DISPLAY_USERNAME_NAME_DESCR">
             <option value="0">USERNAME</option>
             <option value="1">NAME</option>
         </param>
 		        
-		<param name="userlink" type="radio" default="0"
-			label="USERNAME_LINK"
-			description="USERNAME_LINK_DESCR">
+		<param name="userlink" type="radio" default="0" label="USERNAME_LINK" description="USERNAME_LINK_DESCR">
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>
 		</param>
 
-		<param name="userlink_software" type="list" default="jfusion"
-			label="USERLINK_SOFTWARE"
-			description="USERLINK_SOFTWARE_DESC">
-				<option value="cb">Community Builder</option>
-				<option value="custom">CUSTOM</option>
-				<option value="jfusion">JFusion</option>
-				<option value="jomsocial">JomSocial</option>
-				<option value="joomunity">Joomunity</option>
+		<param name="userlink_software" type="list" default="jfusion" label="USERLINK_SOFTWARE" description="USERLINK_SOFTWARE_DESC">
+            <option value="cb">Community Builder</option>
+            <option value="custom">CUSTOM</option>
+            <option value="jfusion">JFusion</option>
+            <option value="jomsocial">JomSocial</option>
+            <option value="joomunity">Joomunity</option>
 		</param>
 		<param name="userlink_custom" type="text" size="20" default="" label="USERLINK_CUSTOM" description="USERLINK_CUSTOM_DESC" />
 
-		<param name="avatar" type="radio" default="1"
-			label="AVATAR_IMAGE" description="AVATAR_IMAGE_DESCR">
+		<param name="avatar" type="radio" default="1" label="AVATAR_IMAGE" description="AVATAR_IMAGE_DESCR">
 			<option value="0">HIDE</option>
 			<option value="1">SHOW</option>
 		</param>
@@ -381,19 +306,15 @@
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>			
 		</param>		
-		<param name="avatar_software" type="list" default="jfusion"
-			label="AVATAR_SOFTWARE"
-			description="AVATAR_SOFTWARE_DESC">
-				<option value="cb">Community Builder</option>
-				<option value="gravatar">Gravatar</option>
-				<option value="jfusion">JFusion</option>
-				<option value="jomsocial">JomSocial</option>
-				<option value="joomunity">Joomunity</option>
+		<param name="avatar_software" type="list" default="jfusion" label="AVATAR_SOFTWARE" description="AVATAR_SOFTWARE_DESC">
+            <option value="cb">Community Builder</option>
+            <option value="gravatar">Gravatar</option>
+            <option value="jfusion">JFusion</option>
+            <option value="jomsocial">JomSocial</option>
+            <option value="joomunity">Joomunity</option>
 		</param>
 		
-		<param name="debug" type="list" default=""
-			label="DEBUG"
-			description="DEBUG_DESCR">
+		<param name="debug" type="list" default="" label="DEBUG" description="DEBUG_DESCR">
 			<option value="">DEBUG_0</option>
 			<option value="1">DEBUG_1</option>
 		</param>
