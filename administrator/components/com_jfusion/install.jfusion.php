@@ -17,6 +17,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'defines.php';
+require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.jfusion.php';
 /**
  * @return bool
  */
@@ -600,18 +601,14 @@ HTML;
 
     /**
      * @ignore
-     * @var $parser JSimpleXML
      * @var $installer JInstaller
      */
-	$parser = JFactory::getXMLParser('Simple');
-
     $installer = JInstaller::getInstance();
     $manifest = $installer->getPath('manifest');
 
-    $parser->loadFile($manifest);
-
-    if ($parser->document) {
-        $version = $parser->document->getElementByPath('version')->data();
+	$xml = JFusionFunction::getXml($manifest);
+    if ($xml) {
+        $version = $xml->getElementByPath('version')->data();
     } else {
         $version = JText::_('UNKNOWN');
     }

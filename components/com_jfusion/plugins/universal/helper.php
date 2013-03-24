@@ -194,9 +194,6 @@ class JFusionHelper_universal {
                         $query[] = $value->field.' as username';
                         $query[] = $value->field.' as email';
                         break;
-                    case 'IPADRESS':
-                        $query[] = $value->field.' as ipadress';
-                        break;
                 }
             }
         }
@@ -227,39 +224,34 @@ class JFusionHelper_universal {
         static $types = null;
 
         if ( !is_array($types) ) {
+	        $type = new stdClass;
             $types = array();
-                $type = new stdClass;
-                $type->id = 'MD5';
-                $type->name = 'MD5';
-            $types['MD5'] = $type;
-                $type = new stdClass;
-                $type->id = 'CUSTOM';
-                $type->name = 'CUSTOM';
-            $types['CUSTOM'] = $type;
-                $type = new stdClass;
-                $type->id = 'SALT';
-                $type->name = 'SALT';
-            $types['SALT'] = $type;
-                $type = new stdClass;
-                $type->id = 'NULL';
-                $type->name = 'NULL';
-            $types['NULL'] = $type;
-                $type = new stdClass;
-                $type->id = 'TIME';
-                $type->name = 'TIME';
-            $types['TIME'] = $type;
-                $type = new stdClass;
-                $type->id = 'DATE';
-                $type->name = 'DATE';
-            $types['DATE'] = $type;
-                $type = new stdClass;
-                $type->id = 'VALUE';
-                $type->name = 'VALUE';
-            $types['VALUE'] = $type;
-                $type = new stdClass;
-                $type->id = 'ONOFF';
-                $type->name = 'ONOFF';
-            $types['ONOFF'] = $type;
+			$type->name = $type->id = 'MD5';
+			$types[$type->id] = $type;
+
+			$type->name = $type->id = 'CUSTOM';
+			$types[$type->id] = $type;
+
+			$type->name = $type->id = 'SALT';
+			$types[$type->id] = $type;
+
+			$type->name = $type->id = 'NULL';
+			$types[$type->id] = $type;
+
+			$type->name = $type->id = 'TIME';
+			$types[$type->id] = $type;
+
+	        $type->name = $type->id = 'IPADDRESS';
+	        $types[$type->id] = $type;
+
+			$type->name = $type->id = 'DATE';
+			$types[$type->id] = $type;
+
+			$type->name = $type->id = 'VALUE';
+			$types[$type->id] = $type;
+
+			$type->name = $type->id = 'ONOFF';
+			$types['ONOFF'] = $type;
         }
 
         if ( $t ) {
@@ -281,111 +273,105 @@ class JFusionHelper_universal {
             $defaulttype->name = JText::_('CHANGE_ME');
 
             $fields = array();
-                $type = new stdClass;
-                $type->id = 'IGNORE';
-                $type->name = 'IGNORE';
+            $type = new stdClass;
+            $type->name = $type->id = 'IGNORE';
             $fields[$type->id] = $type;
-                $type = new stdClass;
-                $type->id = 'USERID';
-                $type->name = 'USERID';
+
+            $type = new stdClass;
+            $type->name = $type->id = 'USERID';
             $fields[$type->id] = $type;
-                $type = new stdClass;
-                $type->id = 'USERNAME';
-                $type->name = 'USERNAME';
+
+            $type = new stdClass;
+	        $type->name = $type->id = 'USERNAME';
             $fields[$type->id] = $type;
-                $type = new stdClass;
-                $type->id = 'USERNAMEID';
-                $type->name = 'USERNAMEID';
+
+            $type = new stdClass;
+            $type->name = $type->id = 'USERNAMEID';
             $fields[$type->id] = $type;
-                $type = new stdClass;
-                $type->id = 'EMAIL';
-                $type->name = 'EMAIL';
+
+            $type = new stdClass;
+            $type->name = $type->id = 'EMAIL';
             $fields[$type->id] = $type;
-                $type = new stdClass;
-                $type->id = 'USERNAMEEMAIL';
-                $type->name = 'USERNAMEEMAIL';
+
+            $type = new stdClass;
+            $type->name = $type->id = 'USERNAMEEMAIL';
             $fields[$type->id] = $type;
-                $type = new stdClass;
-                $type->id = 'REALNAME';
-                $type->name = 'REALNAME';
+
+            $type = new stdClass;
+	        $type->name = $type->id = 'REALNAME';
             $fields[$type->id] = $type;
-                $type = new stdClass;
-                $type->id = 'USERNAMEREALNAME';
-                $type->name = 'USERNAMEREALNAME';
+
+            $type = new stdClass;
+	        $type->name = $type->id = 'USERNAMEREALNAME';
             $fields[$type->id] = $type;
-                $type = new stdClass;
-                $type->id = 'USERNAMEIDREALNAME';
-                $type->name = 'USERNAMEIDREALNAME';
+
+            $type = new stdClass;
+	        $type->name = $type->id = 'USERNAMEIDREALNAME';
             $fields[$type->id] = $type;
-                $type = new stdClass;
-                $type->id = 'USERNAMEEMAILREALNAME';
-                $type->name = 'USERNAMEEMAILREALNAME';
+
+            $type = new stdClass;
+	        $type->name = $type->id = 'USERNAMEEMAILREALNAME';
             $fields[$type->id] = $type;
-                $type = new stdClass;
-                $type->id = 'FIRSTNAME';
-                $type->name = 'FIRSTNAME';
+
+            $type = new stdClass;
+	        $type->name = $type->id = 'FIRSTNAME';
             $fields[$type->id] = $type;
-                $type = new stdClass;
-                $type->id = 'LASTNAME';
-                $type->name = 'LASTNAME';
+
+            $type = new stdClass;
+	        $type->name = $type->id = 'LASTNAME';
             $fields[$type->id] = $type;
-                $type = new stdClass;
-                $type->id = 'GROUP';
-                $type->name = 'GROUP';
+
+            $type = new stdClass;
+	        $type->name = $type->id = 'GROUP';
             $fields[$type->id] = $type;
-                $type = new stdClass;
-                $type->id = 'IPADRESS';
-                $type->name = 'IPADRESS';
-/*
-            $fields[$type->id] = $type;
-                $type = new stdClass;
-                $type->id = 'LASTVISIT';
-                $type->name = 'LASTVISIT';
+
+            $type = new stdClass;
+	        $type->name = $type->id = 'LASTVISIT';
 			$fields[$type->id] = $type;
-*/
-                $type = new stdClass;
-                $type->id = 'ACTIVE';
-                $type->name = 'ACTIVE';
-                $type->types[] = $defaulttype;
-                $type->types[] = $this->getType('ONOFF');
+
+            $type = new stdClass;
+	        $type->name = $type->id = 'ACTIVE';
+            $type->types[] = $defaulttype;
+            $type->types[] = $this->getType('ONOFF');
             $fields[$type->id] = $type;
-                $type = new stdClass;
-                $type->id = 'INACTIVE';
-                $type->name = 'INACTIVE';
-                $type->types[] = $defaulttype;
-                $type->types[] = $this->getType('ONOFF');
+
+            $type = new stdClass;
+	        $type->name = $type->id = 'INACTIVE';
+            $type->types[] = $defaulttype;
+            $type->types[] = $this->getType('ONOFF');
             $fields[$type->id] = $type;
-                $type = new stdClass;
-                $type->id = 'ACTIVECODE';
-                $type->name = 'ACTIVECODE';
-                $type->types[] = $defaulttype;
-                $type->types[] = $this->getType('SALT');
-                $type->types[] = $this->getType('CUSTOM');
-                $type->types[] = $this->getType('VALUE');
+
+            $type = new stdClass;
+	        $type->name = $type->id = 'ACTIVECODE';
+            $type->types[] = $defaulttype;
+            $type->types[] = $this->getType('SALT');
+            $type->types[] = $this->getType('CUSTOM');
+            $type->types[] = $this->getType('VALUE');
             $fields[$type->id] = $type;
-                $type = new stdClass;
-                $type->id = 'PASSWORD';
-                $type->name = 'PASSWORD';
-                $type->types[] = $defaulttype;
-                $type->types[] = $this->getType('MD5');
-                $type->types[] = $this->getType('CUSTOM');
+
+			$type = new stdClass;
+			$type->name = $type->id = 'PASSWORD';
+			$type->types[] = $defaulttype;
+			$type->types[] = $this->getType('MD5');
+			$type->types[] = $this->getType('CUSTOM');
+			$fields[$type->id] = $type;
+
+			$type = new stdClass;
+			$type->name = $type->id = 'SALT';
+			$type->types[] = $defaulttype;
+			$type->types[] = $this->getType('SALT');
+			$type->types[] = $this->getType('CUSTOM');
             $fields[$type->id] = $type;
-                $type = new stdClass;
-                $type->id = 'SALT';
-                $type->name = 'SALT';
-                $type->types[] = $defaulttype;
-                $type->types[] = $this->getType('SALT');
-                $type->types[] = $this->getType('CUSTOM');
-            $fields[$type->id] = $type;
-                $type = new stdClass;
-                $type->id = 'DEFAULT';
-                $type->name = 'DEFAULT';
-                $type->types[] = $defaulttype;
-                $type->types[] = $this->getType('NULL');
-                $type->types[] = $this->getType('TIME');
-                $type->types[] = $this->getType('DATE');
-                $type->types[] = $this->getType('CUSTOM');
-                $type->types[] = $this->getType('VALUE');
+
+			$type = new stdClass;
+			$type->name = $type->id = 'DEFAULT';
+			$type->types[] = $defaulttype;
+			$type->types[] = $this->getType('NULL');
+			$type->types[] = $this->getType('TIME');
+	        $type->types[] = $this->getType('IPADDRESS');
+			$type->types[] = $this->getType('DATE');
+			$type->types[] = $this->getType('CUSTOM');
+			$type->types[] = $this->getType('VALUE');
             $fields[$type->id] = $type;
         }
         if ( $field ) {
@@ -417,6 +403,9 @@ class JFusionHelper_universal {
             case 'TIME':
                 $out = time();
                 break;
+	        case 'IPADDRESS':
+		        $out = $_SERVER['REMOTE_ADDR'];
+		        break;
             case 'DATE':
                 $out = date($value);
                 break;

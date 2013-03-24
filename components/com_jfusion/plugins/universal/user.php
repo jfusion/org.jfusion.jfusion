@@ -653,9 +653,6 @@ class JFusionUser_universal extends JFusionUser {
                                         $user->$field = $userinfo->password_salt;
                                     }
                                     break;
-                                case 'IPADRESS':
-                                    $user->$field = $_SERVER['REMOTE_ADDR'];
-                                    break;
                                 case 'DEFAULT':
                                     $val = isset($value->value) ? $value->value : null;
                                     $user->$field = $helper->getValue($value->fieldtype,$val,$userinfo);

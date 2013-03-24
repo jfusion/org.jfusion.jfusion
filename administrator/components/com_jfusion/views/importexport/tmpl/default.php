@@ -12,6 +12,8 @@
  * @copyright  2008 JFusion. All rights reserved.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
+ *
+ * @var $this jfusionViewimportexport
  */
 // no direct access
 defined('_JEXEC') or die('Restricted access');
@@ -120,7 +122,7 @@ $paneTabs = JPane::getInstance('tabs');
     <br>
     <br>
 	<?php
-	if ( isset($this->xmlList->document) ) {
+	if ( isset($this->list) ) {
 		echo JText::_('IMPORT_FROM_SERVER');
 		?>
         <table>
@@ -145,7 +147,7 @@ $paneTabs = JPane::getInstance('tabs');
 		         * @ignore
 		         * @var $val JSimpleXMLElement
 		         */
-		        foreach ($this->xmlList->document->children() as $key => $val) {
+		        foreach ($this->list->children() as $key => $val) {
 			        $original_name = $val->getElementByPath('originalname')->data();
 			        $name = $val->getElementByPath('name')->data();
 

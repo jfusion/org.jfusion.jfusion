@@ -23,6 +23,11 @@ require_once (JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS 
 class jfusionViewPlugin extends JView {
     var $jname;
 
+	/**
+	 * @var JParameter $params
+	 */
+	var $params;
+
     /**
      * @param null $tpl
      * @return bool

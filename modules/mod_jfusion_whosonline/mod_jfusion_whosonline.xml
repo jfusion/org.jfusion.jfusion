@@ -19,26 +19,30 @@
 		<folder>tmpl</folder>
 	</files>
 
-	<config><fields name="params" addfieldpath="/administrator/components/com_jfusion/fields"><fieldset name="basic">
-		<field name="moduleclass_sfx" type="text" default="" label="Module Class Suffix" description="PARAMMODULECLASSSUFFIX" />
+	<config>
+        <fields name="params" addfieldpath="/administrator/components/com_jfusion/fields">
+            <fieldset name="basic">
+                <field name="moduleclass_sfx" type="text" default="" label="Module Class Suffix" description="PARAMMODULECLASSSUFFIX" />
 
-		<field name="JFusionPluginParam" type="JFusionAdvancedParam" default=""
-			label="JFUSION_PLUGIN" feature="whosonline" multiselect="true"
-			description="JFUSION_PLUGIN_DESCR" />
-	</fieldset></fields></config>
-    <config><fields name="params"><fieldset name="advanced">
-        <field name="cache" type="list" default="0" label="Caching" description="Select whether to cache the content of this module">
-            <option value="1">Use global</option> 
-            <option value="0">No caching</option> 
-        </field>
-        <field name="cache_time" type="text" default="900" label="Cache Time" description="The time before the module is recached" /> 
-    </fieldset></fields></config>		
+                <field name="JFusionPluginParam" type="JFusionAdvancedParam" default="" label="JFUSION_PLUGIN" feature="whosonline" multiselect="true" description="JFUSION_PLUGIN_DESCR" />
+            </fieldset>
+        </fields>
+    </config>
+    <config>
+        <fields name="params">
+            <fieldset name="advanced">
+                <field name="cache" type="list" default="0" label="Caching" description="Select whether to cache the content of this module">
+                    <option value="1">Use global</option>
+                    <option value="0">No caching</option>
+                </field>
+                <field name="cache_time" type="text" default="900" label="Cache Time" description="The time before the module is recached" />
+            </fieldset>
+        </fields>
+    </config>
 	<params addpath="/administrator/components/com_jfusion/elements">
 		<param name="moduleclass_sfx" type="text" default="" label="Module Class Suffix" description="PARAMMODULECLASSSUFFIX" />
 
-		<param name="JFusionPluginParam" type="JFusionAdvancedParam" default=""
-			label="JFUSION_PLUGIN" feature="whosonline" multiselect="true"
-			description="JFUSION_PLUGIN_DESCR" />
+		<param name="JFusionPluginParam" type="JFusionAdvancedParam" default="" label="JFUSION_PLUGIN" feature="whosonline" multiselect="true" description="JFUSION_PLUGIN_DESCR" />
 	</params>
     <params group="advanced">
         <param name="cache" type="list" default="0" label="Caching" description="Select whether to cache the content of this module">

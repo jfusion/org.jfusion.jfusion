@@ -666,18 +666,7 @@ class JFusionPluginInstaller extends JObject
              */
 			$xml = JFactory::getXML($file);
 		} else {
-            /**
-             * @ignore
-             * @var $xml JSimpleXML
-             */
-        	$xml = JFactory::getXMLParser('Simple');
-			if (!$xml->loadFile($file)) {
-            	// Free up xml parser memory and return null
-            	unset($xml);
-                $xml = null;
-        	} else {
-                $xml = $xml->document;
-            }
+			$xml = JFusionFunction::getXml($file);
 		}
     	/*
         * Check for a valid XML root tag.

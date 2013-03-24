@@ -1661,6 +1661,10 @@ class JFusionFunction
                 }
                 break;
             case 'config':
+		        if ($jname=='joomla_int') {
+			        $return = false;
+			        break;
+		        }
             case 'any':
                 $return = true;
                 break;
@@ -1702,4 +1706,33 @@ class JFusionFunction
         }
         return $return;
     }
+
+	/**
+	 * Checks to see if a JFusion plugin is properly configured
+	 *
+	 * @param string $data file path or file content
+	 * @param boolean $isFile load from file
+	 *
+	 * @return JSimpleXMLElement returns true if plugin is correctly configured
+	 */
+	public static function getXml($data, $isFile=true)
+	{
+		/**
+		 * @ignore
+		 * @var $xml JSimpleXML
+		 * @var $element JSimpleXMLElement
+		 */
+		$xml = JFactory::getXMLParser('Simple');
+
+		if ($isFile) {
+			$xml->loadFile($data);
+		} else {
+			$xml->loadString($data);
+		}
+		$element = null;
+		if (isset($xml->document)) {
+			$element = $xml->document;
+		}
+		return $element;
+	}
 }

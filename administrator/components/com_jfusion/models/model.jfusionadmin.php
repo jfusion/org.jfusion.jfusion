@@ -263,16 +263,13 @@ HTML;
         $VersionCurrent = $RevisionCurrent = 0;
         if (file_exists($filename) && is_readable($filename)) {
             //get the version number
-            /**
-             * @ignore
-             * @var $parser JSimpleXML
-             */
-            $parser = JFactory::getXMLParser('Simple');
-            $parser->loadFile($filename);
-            $VersionCurrent = $parser->document->getElementByPath('version')->data();
+
+	        $xml = JFusionFunction::getXml($filename);
+
+            $VersionCurrent = $xml->getElementByPath('version')->data();
 
             if($includeRev) {
-                $RevisionCurrent = trim($parser->document->getElementByPath('revision')->data());
+                $RevisionCurrent = trim($xml->getElementByPath('revision')->data());
             }
         }
         return array($VersionCurrent, $RevisionCurrent);

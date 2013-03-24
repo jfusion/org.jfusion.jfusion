@@ -30,6 +30,11 @@ defined('_JEXEC') or die('Restricted access');
  */
 class jfusionViewimportexport extends JView
 {
+	/**
+	 * @var $list JSimpleXMLElement
+	 */
+	var $list;
+
     /**
      * displays the view
      *
@@ -53,14 +58,9 @@ class jfusionViewimportexport extends JView
 	    $url = 'http://update.jfusion.org/jfusion/joomla/configs.php?version='.$jversion->getShortVersion();
         $ConfigList = JFusionFunctionAdmin::getFileData($url);
 
-        /**
-         * @ignore
-         * @var $xmlList JSimpleXML
-         */
-        $xmlList = JFactory::getXMLParser('Simple');
-        $xmlList->loadString($ConfigList);
+	    $xml = JFusionFunction::getXml($ConfigList,false);
 
-        $this->assignRef('xmlList', $xmlList);
+        $this->assignRef('list', $xml);
         $this->assignRef('jname', $jname);
 
         parent::display($tpl);

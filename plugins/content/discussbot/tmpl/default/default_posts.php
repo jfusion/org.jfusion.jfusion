@@ -1,4 +1,8 @@
-<?php if(!empty($this->output['posts'])) : ?>
+<?php
+/**
+ * @var JFusionDiscussBotHelper $this
+ */
+if(!empty($this->output['posts'])) : ?>
 
 <?php if(isset($this->output['submitted_postid'])) : ?>
 <?php $postidName = ($this->output['post_moderated']) ? 'moderatedPostId' : 'submittedPostId'; ?>

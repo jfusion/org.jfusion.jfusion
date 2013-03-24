@@ -26,102 +26,114 @@ defined('_JEXEC') or die();
  */
 class JFormFieldJFusionAdvancedParam extends JFormField
 {
-    public $type = 'JFusionAdvancedParam';
-    /**
-     * Get an element
-     *
-     * @return string html
-     */
-    protected function getInput()
-    {
-        //used to give unique ids to elements when more than one advanced param is loaded (for example in configuring JoomFish)
-        static $elNum;
-        if (!isset($elNum)) {
-            $elNum = 0;
-        }
+	public $type = 'JFusionAdvancedParam';
+	/**
+	 * Get an element
+	 *
+	 * @return string html
+	 */
+	protected function getInput()
+	{
+		//used to give unique ids to elements when more than one advanced param is loaded (for example in configuring JoomFish)
+		static $elNum;
+		if (!isset($elNum)) {
+			$elNum = 0;
+		}
 
-        $lang = JFactory::getLanguage();
-        $lang->load('com_jfusion');
+		$lang = JFactory::getLanguage();
+		$lang->load('com_jfusion');
 
-        $doc = JFactory::getDocument();
-        $fieldName = $this->name;
-        $feature = $this->element['feature'];
-        if (!$feature) {
-            $feature = 'any';
-        }
-        $multiselect = $this->element['multiselect'];
+		$doc = JFactory::getDocument();
+		$fieldName = $this->name;
+		$feature = $this->element['feature'];
+		if (!$feature) {
+			$feature = 'any';
+		}
+		$multiselect = $this->element['multiselect'];
 
-        if (!defined('JFUSION_ADVANCEDPARAM_JS_LOADED')) {
-            define('JFUSION_ADVANCEDPARAM_JS_LOADED', 1);
+		if (!defined('JFUSION_ADVANCEDPARAM_JS_LOADED')) {
+			define('JFUSION_ADVANCEDPARAM_JS_LOADED', 1);
 
-            if (!is_null($feature)) {
-                $cfile = '&feature='.$feature;
-            } else {
-                $cfile = '';
-            }
-            if (!is_null($multiselect)) {
-                $mselect = '&multiselect=1';
-            } else {
-                $mselect = '';
-            }
+			if (!is_null($feature)) {
+				$cfile = '&feature='.$feature;
+			} else {
+				$cfile = '';
+			}
+			if (!is_null($multiselect)) {
+				$mselect = '&multiselect=1';
+			} else {
+				$mselect = '';
+			}
 
-            $js = <<<JS
+			$js = <<<JS
             function jAdvancedParamSet(title, base64, elNum) {
-                var link = 'index.php?option=com_jfusion&task=advancedparam&tmpl=component&params=';
-                link += base64;
-                link += '{$cfile}';
-                link += '{$mselect}';
-
                 $('plugin_id' + elNum).value = base64;
                 $('plugin_name' + elNum).value = title;
-                $('plugin_link' + elNum).href = link;
                 SqueezeBox.close();
             }
 JS;
-            $doc->addScriptDeclaration($js);
-        }
+			$doc->addScriptDeclaration($js);
+		}
 
-        //Create Link
-        $link = 'index.php?option=com_jfusion&amp;task=advancedparam&amp;tmpl=component&amp;elNum='.$elNum.'&amp;params=' . $this->value;
-        if (!is_null($feature)) {
-            $link.= '&amp;feature=' . $feature;
-        }
-        if (!is_null($multiselect)) {
-            $link.= '&amp;multiselect=1';
-        }
-        //Get JParameter from given string
-        if (empty($this->value)) {
-            $params = array();
-        } else {
-            $params = base64_decode($this->value);
-            $params = unserialize($params);
-            if (!is_array($params)) {
-                $params = array();
-            }
-        }
-        $title = '';
-        if (isset($params['jfusionplugin'])) {
-            $title = $params['jfusionplugin'];
-        } else if ($multiselect) {
-            $del = '';
-            foreach ($params as $key => $param) {
-                if (isset($param['jfusionplugin'])) {
-                    $title.= $del . $param['jfusionplugin'];
-                    $del = '; ';
-                }
-            }
-        }
-        if (empty($title)) {
+		//Create Link
+		$link = 'index.php?option=com_jfusion&amp;task=advancedparam&amp;tmpl=component&amp;elNum='.$elNum;
+		if (!is_null($feature)) {
+			$link.= '&amp;feature=' . $feature;
+		}
+		if (!is_null($multiselect)) {
+			$link.= '&amp;multiselect=1';
+		}
+		$option = JRequest::getVar('option');
+		switch($option) {
+			case 'com_modules' :
+				$link .= '&amp;type=modules';
+				$link .= '&amp;id='.JRequest::getVar('id');
+				break;
+			case 'com_menus' :
+				$link .= '&amp;type=menu';
+				$link .= '&amp;id='.JRequest::getVar('id');
+				break;
+			case 'com_plugins' :
+				$link .= '&amp;type=plugin';
+				$link .= '&amp;id='.JRequest::getVar('extension_id');
+				break;
+		}
+
+		$link .= '&amp;param='.$this->fieldname;
+
+		//Get JParameter from given string
+		if (empty($this->value)) {
+			$params = array();
+		} else {
+			$params = base64_decode($this->value);
+			$params = unserialize($params);
+			if (!is_array($params)) {
+				$params = array();
+			}
+		}
+		$title = '';
+		if (isset($params['jfusionplugin'])) {
+			$title = $params['jfusionplugin'];
+		} else if ($multiselect) {
+			$del = '';
+			foreach ($params as $key => $param) {
+				if (isset($param['jfusionplugin'])) {
+					$title.= $del . $param['jfusionplugin'];
+					$del = '; ';
+				}
+			}
+		}
+		if (empty($title)) {
 			$title = JText::_('NO_PLUGIN_SELECTED');
-        }
+		}
 
-        $select_plugin = JText::_('SELECT_PLUGIN');
-        $select = JText::_('SELECT');
+		$select_plugin = JText::_('SELECT_PLUGIN');
+		$select = JText::_('SELECT');
 
-        //Replace new Lines with the placeholder \n
-        JHTML::_('behavior.modal', 'a.modal');
+		//Replace new Lines with the placeholder \n
+		JHTML::_('behavior.modal', 'a.modal');
 
-        $html =<<<HTML
+		$html =<<<HTML
         <div style="float: left;">
             <input style="background: #ffffff;" type="text" id="plugin_name{$elNum}" value="{$title}" disabled="disabled" />
         </div>
@@ -133,7 +145,7 @@ JS;
         <input type="hidden" id="plugin_id{$elNum}" name="{$fieldName}" value="{$this->value}" />
 HTML;
 
-        $elNum++;
-        return $html;
-    }
+		$elNum++;
+		return $html;
+	}
 }
