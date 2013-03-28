@@ -77,8 +77,8 @@
 				<option value="inherit">inherit</option>
 			</field>
 
-            <field name="headermap" default="" type="JFusionPair" label="HEADER_MAP" description="HEADER_MAP"/>
-            <field name="bodymap" default="" type="JFusionPair" label="BODY_MAP" description="BODY_MAP"/>
+            <field name="headermap" default="" col1="SEARCH" col2="REPLACE" type="JFusionPair" label="HEADER_MAP" description="HEADER_MAP"/>
+            <field name="bodymap" default="" col1="SEARCH" col2="REPLACE" type="JFusionPair" label="BODY_MAP" description="BODY_MAP"/>
 		</fieldset>
 	</fields>
 	<params addpath="/administrator/components/com_jfusion/elements">
@@ -150,7 +150,7 @@
 			<option value="inherit">inherit</option>
 		</param>
 
-        <param name="headermap" default="" type="JFusionPair" label="HEADER_MAP" description="HEADER_MAP"/>
-        <param name="bodymap" default="" type="JFusionPair" label="BODY_MAP" description="BODY_MAP"/>
+        <param name="headermap" default="" col1="SEARCH" col2="REPLACE" type="JFusionPair" label="HEADER_MAP" description="HEADER_MAP"/>
+        <param name="bodymap" default="" col1="SEARCH" col2="REPLACE" type="JFusionPair" label="BODY_MAP" description="BODY_MAP"/>
 	</params>
 </metadata>
