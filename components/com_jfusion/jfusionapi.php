@@ -763,7 +763,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 		$old = error_reporting(0);
 		if (!defined('_JEXEC')) {
 			/**
-			 * todo: determine if we really need session_write_close or if it need to be selectable
+			 * @TODO determine if we really need session_write_close or if it need to be selectable
 			 */
 			session_write_close();
 			// trick joomla into thinking we're running through joomla
@@ -844,7 +844,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 	 */
 	public function login($username,$password,$remember = 1)
 	{
-		$mainframe = self::startJoomla();
+		$mainframe = $this->startJoomla();
 
 		if ($this->activePlugin) {
 			global $JFusionActivePlugin;
@@ -894,7 +894,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 	 */
 	public function logout($username=null)
 	{
-		$mainframe = self::startJoomla();
+		$mainframe = $this->startJoomla();
 
 		if ($this->activePlugin) {
 			global $JFusionActivePlugin;
@@ -935,7 +935,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 	 */
 	public function register($userinfo)
 	{
-		$mainframe = self::startJoomla();
+		$mainframe = $this->startJoomla();
 
 		$plugins = JFusionFunction::getSlaves();
 		$plugins[] = JFusionFunction::getMaster();
@@ -977,7 +977,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 	 */
 	public function update($userinfo,$overwrite)
 	{
-		$mainframe = self::startJoomla();
+		$mainframe = $this->startJoomla();
 
 		$plugins = JFusionFunction::getSlaves();
 		$plugins[] = JFusionFunction::getMaster();
@@ -1022,10 +1022,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 	 */
 	public function delete($userid)
 	{
-		/**
-		 * TODO: THINK THIS IS INCORRECT.
-		 */
-		$mainframe = self::startJoomla();
+		$mainframe = $this->startJoomla();
 
 		/**
 		 * @ignore

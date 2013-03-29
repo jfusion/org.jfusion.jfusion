@@ -149,9 +149,10 @@ class JFusionUser_wordpress extends JFusionUser {
 		$result->activation        = $user->user_activation_key;
 		$result->block             = 0;
 
-		// todo get to find out where user status stands for. As far as I can see we have also two additional fields
-		// in a multi site, one of the spam. This maybe linked to block.
-
+		/**
+		 * @TODO get to find out where user status stands for. As far as I can see we have also two additional fields
+		 *       in a multi site, one of the spam. This maybe linked to block.
+		 */
 		return $result;
 	}
 
@@ -364,7 +365,7 @@ class JFusionUser_wordpress extends JFusionUser {
 		$params = JFusionFactory::getParams($this->getJname());
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
         if (empty($usergroups)) {
-			$status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('USERGROUP_MISSING');
+			$status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . JText::_('USERGROUP_MISSING');
 		} else {
             /**
              * @ignore

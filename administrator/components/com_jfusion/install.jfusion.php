@@ -459,8 +459,8 @@ function com_install() {
 		/****
 		 * General for all upgrades
 		 ***/
-/*
- * todo: Determine if we really need this in the installer ???? also remove unneeded plugin_files field from database ??? if this is NOT needed
+/**
+ *  @TODO: Determine if we really need this in the installer ???? also remove unneeded plugin_files field from database ??? if this is NOT needed
 		//restore deleted plugins if possible and applicable
 		//get a list of installed plugins
 		$query = 'SELECT name, original_name, plugin_files FROM #__jfusion';

@@ -826,8 +826,9 @@ class utf_normalizer_phpbb {
                                 $utf_sort = array();
                             }
                             // Add a replacement char then another replacement char for every trailing byte.
-                            //
-                            // @todo I'm not entirely sure that's how we're supposed to mark invalidated byte sequences, check this
+                            /**
+                             * @TODO I'm not entirely sure that's how we're supposed to mark invalidated byte sequences, check this
+                             */
                             $spn = strspn($str, UTF8_TRAILING_BYTES, ++$pos);
                             $tmp.= str_repeat(UTF8_REPLACEMENT, $spn + 1);
                             $dump = $sort = 0;

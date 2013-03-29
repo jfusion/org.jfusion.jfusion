@@ -550,7 +550,7 @@ class JFusionPluginInstaller extends JObject
             /**
              * ---------------------------------------------------------------------------------------------
              * Copy Language files Processing Section
-             * @todo - This section may be improved but works actually
+             * @TODO - This section may be improved but works actually
              * ---------------------------------------------------------------------------------------------
              */
             $manifest = $this->_getManifest($dir);
@@ -654,7 +654,9 @@ class JFusionPluginInstaller extends JObject
     {
         // Initialize variables
 
-        // TODO: DISCUSS if we should allow flexible naming for installation file
+        /**
+         * @TODO DISCUSS if we should allow flexible naming for installation file
+         */
         $file = $dir . DS . 'jfusion.xml';
         $this->parent->setPath('manifest', $file);
         // If we cannot load the xml file return null
@@ -670,7 +672,7 @@ class JFusionPluginInstaller extends JObject
 		}
     	/*
         * Check for a valid XML root tag.
-        * @todo: Remove backwards compatibility in a future version
+        * @TODO Remove backwards compatibility in a future version
         * Should be 'install', but for backward compatibility we will accept 'mosinstall'.
         */
 		if (!is_object($xml) || ($xml->name() != 'install' && $xml->name() != 'mosinstall')) {

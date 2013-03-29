@@ -552,7 +552,7 @@ class JFusionUser_universal extends JFusionUser {
 
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 		if(empty($usergroups)) {
-			$status['error'][] = JText::_('ERROR_CREATING_USER'). ": " . JText::_('USERGROUP_MISSING');
+			$status['error'][] = JText::_('ERROR_CREATE_USER'). ' ' . JText::_('USERGROUP_MISSING');
 		} else {
             $usergroup = $usergroups[0];
             /**

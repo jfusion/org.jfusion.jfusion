@@ -205,8 +205,8 @@ class JFusionHelper_vbulletin
             }
         } elseif (defined('VB_AREA') && VB_AREA == 'JFusion') {
         	if (!$this->vb_data) {
-				/*
-				 * TODO: using defined('VB_AREA') is not safe we we using multi instance VB?
+				/**
+				 * @TODO using defined('VB_AREA') is not safe we we using multi instance VB?
 				 * we need to change something to support that. ? or it just failed t o fine CWD
 				 */
                 $return = false;

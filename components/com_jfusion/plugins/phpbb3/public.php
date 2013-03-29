@@ -356,7 +356,9 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             }
         }
         
-      //lets parse our todo list for regex
+        /**
+         * @TODO lets parse our todo list for regex
+         */
         foreach ($regex_body as $k => $v) {
         	//check if we need to use callback
         	if(!empty($callback_function[$k])){
@@ -620,7 +622,9 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             $callback_header[] = '';
         }
 
-        //lets parse our todo list for regex
+        /**
+         * @TODO lets parse our todo list for regex
+         */
         foreach ($regex_header as $k => $v) {
         	//check if we need to use callback
         	if(!empty($callback_header[$k])){

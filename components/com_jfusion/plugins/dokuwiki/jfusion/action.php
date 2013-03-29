@@ -121,7 +121,10 @@ class action_plugin_jfusion extends DokuWiki_Action_Plugin {
                         ($session['buid'] == auth_browseruid()) ){
                     // he has session, cookie and browser right - let him in
                     $_SERVER['REMOTE_USER'] = $user;
-                    $USERINFO = $session['info']; //TODO move all references to session
+                    $USERINFO = $session['info'];
+	                /**
+	                 * @TODO move all references to session
+	                 */
                     return true;
                 }
                 // no we don't trust it yet - recheck pass but silent
@@ -179,7 +182,7 @@ class action_plugin_jfusion extends DokuWiki_Action_Plugin {
             unset($_SESSION[DOKU_COOKIE]['bc']);
         if(isset($_SERVER['REMOTE_USER']))
             unset($_SERVER['REMOTE_USER']);
-        $USERINFO=null; //TODO
+        $USERINFO=null;
 
         if (version_compare(PHP_VERSION, '5.2.0', '>')) {
             setcookie(DOKU_COOKIE,'',time()-600000,$conf['jfusion']['cookie_path'],$conf['jfusion']['cookie_domain'],($conf['securecookie'] && is_ssl()),true);

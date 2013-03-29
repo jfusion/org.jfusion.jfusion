@@ -78,7 +78,9 @@ class DualLogin {
     function logout($curl_options){
 		$status = array();
 		$helper = new JFusionCurl;
-		// @todo: to fix: For info, with J! 1.6 there is problem with a form token and it's not provided to the post data
+		/**
+		 * @TODO to fix: For info, with J! 1.6 there is problem with a form token and it's not provided to the post data
+		 */
 		// RemoteLogoutUrl not work but RemoteLogout() work. 
 		$status= $helper->RemoteLogoutUrl($curl_options);
 		unset($helper);

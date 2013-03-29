@@ -903,8 +903,8 @@ class JFvBulletinTask {
         $userinfo =& $this->data['userinfo'];
         $postdm->set_info('user', $userinfo);
         $postdm->set('userid', $userinfo['userid']);
-        /*
-         * TODO: $guest undefined ?
+        /**
+         * @TODO $guest undefined ?
         if ($guest) {
             $postdm->set('username', $userinfo['username']);
 			if($this->data['post_approved']) {

@@ -179,7 +179,7 @@ class JFusionUser_joomla_ext extends JFusionUser {
     }
 
     /**
-     * @todo - To implement after the RC 1.1.2
+     * @TODO - To implement after the RC 1.1.2
      *
      * @param object $userinfo
      * @param object &$existinguser

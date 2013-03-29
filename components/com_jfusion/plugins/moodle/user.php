@@ -370,7 +370,9 @@ class JFusionUser_moodle extends JFusionUser {
      * @return void
      */
     function updateEmail($userinfo, &$existinguser, &$status) {
-		//TODO ? check for duplicates, or leave it at db error
+		/**
+		 * @TODO ? check for duplicates, or leave it at db error
+		 */
 		//we need to update the email
 		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = 'UPDATE #__user SET email =' . $db->Quote($userinfo->email) . ' WHERE id =' . (int)$existinguser->userid;
@@ -503,7 +505,7 @@ class JFusionUser_moodle extends JFusionUser {
             $params = JFusionFactory::getParams($this->getJname());
             $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
             if (empty($usergroups)) {
-                $status['error'][] = JText::_('ERROR_CREATING_USER') . ': ' . JText::_('USERGROUP_MISSING');
+                $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . JText::_('USERGROUP_MISSING');
             } else {
                 $usergroup = $usergroups[0];
                 // get some config items

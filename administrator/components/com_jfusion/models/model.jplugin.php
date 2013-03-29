@@ -869,7 +869,6 @@ class JFusionJplugin
      */
     public static function inactivateUser($userinfo, &$existinguser, &$status, $jname)
     {
-    	//TODO joomla 1.6 need to support multi usergroup
         if ($existinguser->group_id != 25) {
             //unblock the user
             $db = JFusionFactory::getDatabase($jname);
@@ -968,7 +967,7 @@ class JFusionJplugin
         //get the default user group and determine if we are using simple or advanced
         //check to make sure that if using the advanced group mode, $userinfo->group_id exists
         if (empty($usergroups)) {
-            $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('USERGROUP_MISSING');
+            $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . JText::_('USERGROUP_MISSING');
         } else {
             //load the database
             $db = JFusionFactory::getDatabase($jname);
@@ -1472,7 +1471,9 @@ class JFusionJplugin
      */
     public static function updateUserLanguage($userinfo, &$existinguser, &$status, $jname)
     {
-    	//TODO joomla 1.5/1.6 if we are talking to external joomla since joomla 1.5 store params in json
+    	/**
+	     * @TODO joomla 1.5/1.6 if we are talking to external joomla since joomla 1.5 store params in json
+	     */
         $db = JFusionFactory::getDatabase($jname);
         $params = new JParameter($existinguser->params);
         $params->set('language', $userinfo->language);

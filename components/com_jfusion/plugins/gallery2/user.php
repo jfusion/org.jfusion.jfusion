@@ -85,7 +85,9 @@ class JFusionUser_gallery2 extends JFusionUser {
                 $userinfo->group_name = $name;
             }
         }
-        //TODO: Research if and in how to detect blocked Users
+        /**
+         * @TODO Research if and in how to detect blocked Users
+         */
         $userinfo->block = 0; //(0 if allowed to access site, 1 if user access is blocked)
         //Not found jet
         $userinfo->registerdate = null;
@@ -110,7 +112,9 @@ class JFusionUser_gallery2 extends JFusionUser {
      * @return string
      */
     function filterUsername($username) {
-        //TODO: Implement User filtering
+        /**
+         * @TODO Implement User filtering
+         */
         return $username;
     }
 
@@ -284,14 +288,14 @@ class JFusionUser_gallery2 extends JFusionUser {
         } else {
             list($ret, $g2_user) = GalleryCoreApi::newFactoryInstance('GalleryEntity', 'GalleryUser');
             if ($ret) {
-                $status['error'][] = JText::_('ERROR_CREATING_USER') . ' ' . $userinfo->username;
+                $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . $userinfo->username;
             } else {
                 if (!isset($g2_user)) {
-                    $status['error'][] = JText::_('ERROR_CREATING_USER') . ': ' . $this->getJname(). ' : ' . $userinfo->username;
+                    $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . $this->getJname(). ' : ' . $userinfo->username;
                 }
                 $ret = $g2_user->create($userinfo->username);
                 if ($ret) {
-                    $status['error'][] = JText::_('ERROR_CREATING_USER') . ': ' . $this->getJname(). ' : ' . $userinfo->username;
+                    $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . $this->getJname(). ' : ' . $userinfo->username;
                 } else {
                     $testcrypt = $userinfo->password;
                     if (isset($userinfo->password_clear)) {
@@ -303,7 +307,7 @@ class JFusionUser_gallery2 extends JFusionUser {
                     $g2_user->setFullName($userinfo->name);
                     $ret = $g2_user->save();
                     if ($ret) {
-                        $status['error'][] = JText::_('ERROR_CREATING_USER') . ': '.$this->getJname().' : ' . $userinfo->username;
+                        $status['error'][] = JText::_('ERROR_CREATE_USER') . ' '.$this->getJname().' : ' . $userinfo->username;
                     } else {
                         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
                         foreach ($usergroups as $group) {

@@ -165,7 +165,7 @@ if ( !class_exists('DokuWikiSearch') ) {
         /**
          * Builds an array of search words from a query
          *
-         * @todo support OR and parenthesises?
+         * @TODO support OR and parenthesises?
          *
          * @param string $query
          *

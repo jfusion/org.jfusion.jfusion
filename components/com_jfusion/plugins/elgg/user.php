@@ -252,7 +252,9 @@ class JFusionUser_elgg extends JFusionUser {
                 jimport('joomla.user.helper');
                 $user->password = JUserHelper::genRandomPassword(12);
             }
-            //TODO: add usergroup functionality
+            /**
+             * @TODO add usergroup functionality
+             */
             if (!empty($userinfo->activation)) {
                 $user->usergroup = 2;
             } elseif (!empty($userinfo->block)) {

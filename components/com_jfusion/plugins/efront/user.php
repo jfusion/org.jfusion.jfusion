@@ -569,11 +569,13 @@ class JFusionUser_efront extends JFusionUser
         } else {
             $usergroup = $usergroups[0];
             $db = JFusionFactory::getDataBase($this->getJname());
-            if ($usergroup< 3) {
-                /**
-                 * TODO: Undefined function
-                 */
-                $user_type = $this->groupIDToName($usergroup);
+            if ($usergroup < 3) {
+	            /**
+	             * @ignore
+	             * @var $helper JFusionHelper_efront
+	             */
+	            $helper = JFusionFactory::getHelper($this->getJname());
+                $user_type = $helper->groupIdToName($usergroup);
                 $user_types_ID = 0;
             } else {
                 $user_types_ID = $usergroup-2;

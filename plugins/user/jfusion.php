@@ -824,7 +824,9 @@ class plgUserJfusion extends JPlugin
 		        $mail_to_user = $params->get('mail_to_user', 0); // change default to 0 to prevent user email spam! while running sync
 
 		        if ($isnew) {
-			        // TODO: Suck in the frontend registration emails here as well. Job for a rainy day.
+			        /**
+			         * @TODO Suck in the frontend registration emails here as well. Job for a rainy day.
+			         */
 
 			        if ($app->isAdmin()) {
 				        if ($mail_to_user) {
@@ -868,7 +870,9 @@ class plgUserJfusion extends JPlugin
 
 
 					        if (!$mail->Send()) {
-						        // TODO: Probably should raise a plugin error but this event is not error checked.
+						        /**
+						         * @TODO Probably should raise a plugin error but this event is not error checked.
+						         */
 						        JError::raiseWarning(500, JText::_('ERROR_SENDING_EMAIL'));
 					        }
 				        }
