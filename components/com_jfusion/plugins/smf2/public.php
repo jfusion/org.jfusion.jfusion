@@ -279,7 +279,11 @@ class JFusionPublic_smf2 extends JFusionPublic {
             //add handler to undo changes that plgSystemSef create
             $dispatcher = JDispatcher::getInstance();
             if (JFusionFunction::isJoomlaVersion('1.6')) {
-                $method = array('event' => 'onAfterRender', 'handler' => array($this, 'onAfterRender'));
+	            /**
+	             * @ignore
+	             * @var $method object
+	             */
+	            $method = array('event' => 'onAfterRender', 'handler' => array($this, 'onAfterRender'));
                 $dispatcher->attach($method);
             } else {
                 $dispatcher->attach($this);
