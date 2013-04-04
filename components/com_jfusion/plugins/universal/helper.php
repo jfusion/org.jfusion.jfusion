@@ -32,7 +32,7 @@ class JFusionHelper_universal {
      * @param string $type
      * @return mixed
      */
-    function getTablename($type='user') {
+    function getTable($type='user') {
         $maped = $this->getMapRaw($type);
         return $maped['table'];
     }
@@ -63,7 +63,7 @@ class JFusionHelper_universal {
      * @return array
      */
     function getMap($type='user') {
-        if( empty($this->_map) && !isset($this->_map[$type]) ) {
+        if( !isset($this->_map[$type]) ) {
             $map = $this->getMapRaw($type);
             if(is_array($map)) {
                 foreach ($map['field'] as $key => $value) {

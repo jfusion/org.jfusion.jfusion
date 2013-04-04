@@ -42,7 +42,7 @@ class JFusionAdmin_universal extends JFusionAdmin{
          * @var $helper JFusionHelper_universal
          */
         $helper = JFusionFactory::getHelper($this->getJname());
-        return $helper->getTablename('user');
+        return $helper->getTable();
     }
 
     /**
