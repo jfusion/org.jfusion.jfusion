@@ -505,6 +505,12 @@ if(!isset($_COOKIE[\'jfusionframeless\']))';
      */
     function isMultiGroup()
     {
-        return false;
+	    $helper = JFusionFactory::getHelper($this->getJname());
+	    $userid = $helper->getFieldType('USERID','group');
+	    if ( $userid ) {
+		    return true;
+	    } else {
+		    return false;
+	    }
     }
 }

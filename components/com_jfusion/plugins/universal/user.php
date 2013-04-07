@@ -332,7 +332,6 @@ class JFusionUser_universal extends JFusionUser {
         if (empty($usergroups)) {
             $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST');
         } else {
-            $usergroup = $usergroups[0];
             $db = JFusionFactory::getDatabase($this->getJname());
             /**
              * @ignore
@@ -346,41 +345,73 @@ class JFusionUser_universal extends JFusionUser {
 
             if ( isset($group) && isset($userid) ) {
                 $table = $helper->getTable();
+	            $type = 'user';
             } else {
                 $table = $helper->getTable('group');
                 $userid = $helper->getFieldType('USERID','group');
                 $group = $helper->getFieldType('GROUP','group');
+	            $type = 'group';
             }
 	        if ( !isset($userid) ) {
 		        $status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . JText::_('NO_USERID_MAPPED');
 	        } else if ( !isset($group) ) {
 		        $status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . JText::_('NO_GROUP_MAPPED');
-	        } else {
-		        $maped = $helper->getMap('group');
-		        $andwhere = '';
-		        if (count($maped) ) {
-			        foreach ($maped as $key => $value) {
-				        $field = $value->field;
-				        switch ($value->type) {
-					        case 'DEFAULT':
-						        if ( $value->fieldtype == 'VALUE' ) {
-							        $andwhere .= ' AND '.$field.' = '.$db->Quote($value->value);
-						        }
-						        break;
-				        }
-			        }
-		        }
-
+	        } else if ( $type == 'user' ) {
+		        $usergroup = $usergroups[0];
 		        $query = 'UPDATE #__'.$table.' '.
 			        'SET '.$group->field.' = '.$db->quote(base64_decode($usergroup)) .' '.
-			        'WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid).$andwhere;
+			        'WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid);
 		        $db->setQuery($query );
 		        if (!$db->query()) {
 			        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' .$db->stderr();
 		        } else {
 			        $status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . base64_decode($existinguser->group_id) . ' -> ' . base64_decode($usergroup);
 		        }
-	        }
+		    } else {
+		        $maped = $helper->getMap('group');
+		        $andwhere = '';
+
+		        foreach ($maped as $key => $value) {
+			        $field = $value->field;
+			        switch ($value->type) {
+				        case 'DEFAULT':
+					        if ( $value->fieldtype == 'VALUE' ) {
+						        $andwhere .= ' AND '.$field.' = '.$db->Quote($value->value);
+					        }
+					        break;
+			        }
+		        }
+		        //remove the old usergroup for the user in the groups table
+		        $query = 'DELETE FROM #__user_group WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid) . $andwhere;
+		        $db->setQuery($query);
+		        if (!$db->query()) {
+			        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
+		        } else {
+			        foreach ($usergroups as $usergroup) {
+				        $addgroup = new stdClass;
+				        foreach ($maped as $key => $value) {
+					        $field = $value->field;
+					        switch ($value->type) {
+						        case 'USERID':
+							        $field2 = $userid->field;
+							        $addgroup->$field = $existinguser->userid;
+							        break;
+						        case 'GROUP':
+							        $addgroup->$field = base64_decode($usergroup);
+							        break;
+						        case 'DEFAULT':
+							        $addgroup->$field = $helper->getValue($value->fieldtype,$value->value,$userinfo);
+							        break;
+					        }
+				        }
+				        if (!$db->insertObject('#__'.$helper->getTable('group'), $addgroup )) {
+					        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' .$db->stderr();
+				        } else {
+					        $status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . base64_decode($existinguser->group_id) . ' -> ' . base64_decode($usergroup);
+				        }
+			        }
+		        }
+            }
 		}
 	}
 
