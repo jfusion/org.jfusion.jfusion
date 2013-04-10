@@ -8,7 +8,7 @@
 	<authorUrl>www.mijnbreincoach.nl</authorUrl>
 	<copyright>Copyright GPL (C) 2008 Open Source Matters. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-	<version>1.8.3-004</version>
+	<version>1.8.4-000</version>
     <revision>$revision$</revision>
     <timestamp>$timestamp$</timestamp>
 	<description>JFusion (1.2.0+) plugin for oscommerce and clones</description>
