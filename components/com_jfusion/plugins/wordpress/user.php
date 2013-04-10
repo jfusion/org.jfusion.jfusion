@@ -470,7 +470,11 @@ class JFusionUser_wordpress extends JFusionUser {
                 $metadata['first_name'] = trim($parts[0]);
                 if ($parts[(count($parts) - 1) ]) {
                     for ($i = 1;$i < (count($parts));$i++) {
-                        $metadata['last_name'] = trim($metadata['last_name'] . ' ' . $parts[$i]);
+	                    if (isset($metadata['last_name'])) {
+		                    $metadata['last_name'] .= ' ' . trim($parts[$i]);
+	                    } else {
+		                    $metadata['last_name'] = trim($parts[$i]);
+	                    }
                     }
                 }
 
