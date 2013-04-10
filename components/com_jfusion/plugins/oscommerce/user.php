@@ -377,7 +377,7 @@ class JFusionUser_oscommerce extends JFusionUser
             case 'osczen':
                 $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
                 if (empty($usergroups)) {
-                    $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('USERGROUP_MISSING');
+                    $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . JText::_('USERGROUP_MISSING');
                     return;
                 }
                 $usergroup = $usergroups[0];
@@ -389,7 +389,7 @@ class JFusionUser_oscommerce extends JFusionUser
             case 'oscseo':
             $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
             if (empty($usergroups)) {
-                    $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('USERGROUP_MISSING');
+                    $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . JText::_('USERGROUP_MISSING');
                     return;
                 }
                 $usergroup = $usergroups[0];
@@ -400,7 +400,7 @@ class JFusionUser_oscommerce extends JFusionUser
             case 'oscmax':
                 $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
                 if (empty($usergroups)) {
-                    $status['error'][] = JText::_('ERROR_CREATING_USER') . ': ' . JText::_('USERGROUP_MISSING');
+                    $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . JText::_('USERGROUP_MISSING');
                     return;
                 }
                 $usergroup = $usergroups[0];
