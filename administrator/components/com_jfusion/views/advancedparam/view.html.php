@@ -79,8 +79,8 @@ class jfusionViewadvancedparam extends JView
 			list($output, $js) = $this->loadElementSingle($params, $feature);
 		}
 		//load the element number for multiple advanceparam elements
-		$elNum = JRequest::getInt('elNum');
-		$this->assignRef('elNum', $elNum);
+		$ename = JRequest::getInt('ename');
+		$this->assignRef('ename', $ename);
 
 		//Add Document dependent things like javascript, css
 		$document = JFactory::getDocument();
@@ -90,7 +90,9 @@ class jfusionViewadvancedparam extends JView
 		$document->addStyleSheet('components/com_jfusion/css/jfusion.css');
 		$css = 'table.adminlist, table.admintable{ font-size:11px; }';
 		$document->addStyleDeclaration($css);
-		$document->addScriptDeclaration($js);
+		if ( $js ) {
+			$document->addScriptDeclaration($js);
+		}
 		$this->assignRef('output', $output);
 
 		//for J1.6+ single select modes, params is an array
@@ -141,49 +143,7 @@ class jfusionViewadvancedparam extends JView
 		if (isset($this->featureArray[$feature])) {
 			$featureLink = '&feature=' . $feature;
 		}
-		$elNum = JRequest::getInt('elNum');
-		$js = <<<JS
-        function jPluginChange(select) {
-            var plugin = select.options[select.selectedIndex].value;
-            plugin = 'a:1:{s:13:\"jfusionplugin\";s:'+plugin.length+':\"'+plugin+'\";}';
-            var value = encode64(plugin);
-     //       window.location.href = 'index.php?option=com_jfusion&task=advancedparam' +
-       //                            '&tmpl=component&elNum={$elNum}{$featureLink}&params='+value;
-        }
-
-        function encode64(inp){
-            var key='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
-            var chr1,chr2,chr3,enc3,enc4,i=0,out='';
-            while(i<inp.length){
-                chr1=inp.charCodeAt(i++);
-                if (chr1>127) {
-                    chr1=88;
-                }
-                chr2=inp.charCodeAt(i++);
-                if (chr2>127) {
-                    chr2=88;
-                }
-                chr3=inp.charCodeAt(i++);
-                if (chr3>127) {
-                    chr3=88;
-                }
-                if (isNaN(chr3)) {
-                    enc4=64;chr3=0;
-                } else {
-                    enc4=chr3&63;
-                }
-                if (isNaN(chr2)) {
-                    enc3=64;
-                    chr2=0;
-                } else {
-                    enc3=((chr2<<2)|(chr3>>6))&63;
-                }
-                out+=key.charAt((chr1>>2)&63)+key.charAt(((chr1<<4)|(chr2>>4))&63)+key.charAt(enc3)+key.charAt(enc4);
-            }
-            return encodeURIComponent(out);
-        }
-JS;
-
+		$js = null;
 		return array($output, $js);
 	}
 
@@ -297,7 +257,6 @@ JS;
 		if (isset($this->featureArray[$feature])) {
 			$featureLink = '&feature=' . $feature;
 		}
-		$elNum = JRequest::getInt('elNum');
 		$js = <<<JS
         function jPluginAdd(button) {
             button.form.jfusion_task.value = 'add';
@@ -316,52 +275,17 @@ JS;
 	}
 
 	/**
-	 * @return JParameter
-	 */
-	function getParams()
-	{
-		$db = JFactory::getDBO();
-		$query = null;
-		switch(JRequest::getVar('type')) {
-			case 'modules':
-				$query = 'SELECT params from #__modules WHERE id = '.$db->quote(JRequest::getVar('id'));
-				break;
-			case 'plugin':
-				if (JFusionFunction::isJoomlaVersion('1.6')) {
-					$query = 'SELECT params from #__extensions WHERE extension_id = '.$db->quote(JRequest::getVar('id'));
-				} else {
-					$query = 'SELECT params from #__plugins WHERE id = '.$db->quote(JRequest::getVar('id'));
-				}
-				break;
-			case 'menu':
-				$query = 'SELECT params from #__menu WHERE id = '.$db->quote(JRequest::getVar('id'));
-				break;
-		}
-		if ($query) {
-			$db->setQuery($query);
-			$data = $db->loadResult();
-		} else {
-			$data = '';
-		}
-		$p = new JParameter($data);
-		return $p;
-	}
-
-	/**
 	 * @return array
 	 */
 	function getParam()
 	{
-		$p = $this->getParams();
+		$hash = JRequest::getVar(JRequest::getVar('ename'));
+		$session = JFactory::getSession();
+		$encoded_pairs = $session->get($hash);
 
-		$value = $p->get(JRequest::getVar('param'));
-		if (empty($value)) {
+		$value = @unserialize(base64_decode($encoded_pairs));
+		if (!is_array($value)) {
 			$value = array();
-		} else {
-			$value = @unserialize(base64_decode($value));
-			if (!is_array($value)) {
-				$value = array();
-			}
 		}
 		return $value;
 	}
@@ -371,30 +295,11 @@ JS;
 	 */
 	function saveParam($data)
 	{
-		$p = $this->getParams();
-		$p->set(JRequest::getVar('param'),base64_encode(serialize($data)));
+		$hash = JRequest::getVar(JRequest::getVar('ename'));
+		$session = JFactory::getSession();
 
-		$db = JFactory::getDBO();
-		$query = null;
-		switch(JRequest::getVar('type')) {
-			case 'modules':
-				$query = 'UPDATE #__modules SET params = '.$db->quote($p->toString()).' WHERE id = '.$db->quote(JRequest::getVar('id'));
-				break;
-			case 'plugin':
-				if (JFusionFunction::isJoomlaVersion('1.6')) {
-					$query = 'UPDATE #__extensions SET params = '.$db->quote($p->toString()).' WHERE extension_id = '.$db->quote(JRequest::getVar('id'));
-				} else {
-					$query = 'UPDATE #__plugins SET params = '.$db->quote($p->toString()).' WHERE id = '.$db->quote(JRequest::getVar('id'));
-				}
-				break;
-			case 'menu':
-				$query = 'UPDATE #__menu SET params = '.$db->quote($p->toString()).' WHERE id = '.$db->quote(JRequest::getVar('id'));
-				break;
-		}
-		if ($query) {
-			$db->setQuery($query);
-			$db->query();
-		}
+		$data = base64_encode(serialize($data));
+		$session->set($hash, $data);
 	}
 
 	/**

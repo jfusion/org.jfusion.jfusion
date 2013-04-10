@@ -633,48 +633,48 @@ class JFusionController extends JController
      *
      * @return void
      */
-    function advancedparamsubmit()
-    {
-        $param = JRequest::getVar('params');
-        $multiselect = JRequest::getVar('multiselect');
-        if ($multiselect) {
-            $multiselect = true;
-        } else {
-            $multiselect = false;
-        }
+	function advancedparamsubmit()
+	{
+		$params = JRequest::getVar('params');
+		$ename = JRequest::getVar('ename');
 
-	    /**
-	     * @var $view jfusionViewadvancedparam
-	     */
-	    $view = $this->getView('advancedparam','html');
-	    $view->saveParam($param);
+		$multiselect = JRequest::getVar('multiselect');
+		if ($multiselect) {
+			$multiselect = true;
+		} else {
+			$multiselect = false;
+		}
 
-        $elNum = JRequest::getInt('elNum');
-        $serParam = base64_encode(serialize($param));
-        $title = '';
-        if (isset($param['jfusionplugin'])) {
-            $title = $param['jfusionplugin'];
-        } else if ($multiselect) {
-            $del = '';
-            if (is_array($param)) {
-                foreach ($param as $key => $value) {
-                    if (isset($value['jfusionplugin'])) {
-                        $title.= $del . $value['jfusionplugin'];
-                        $del = '; ';
-                    }
-                }
-            }
-        }
-        if (empty($title)) {
-            $title = JText::_('NO_PLUGIN_SELECTED');
-        }
-        $js = '<script type="text/javascript">';
-        $js .= <<<JS
-            window.parent.jAdvancedParamSet('{$title}', '{$serParam}','{$elNum}');
+		$serParam = base64_encode(serialize($params));
+
+		$session = JFactory::getSession();
+		$hash = JRequest::getVar($ename);
+		$session->set($hash, $serParam);
+
+		$title = '';
+		if (isset($params['jfusionplugin'])) {
+			$title = $params['jfusionplugin'];
+		} else if ($multiselect) {
+			$del = '';
+			if (is_array($params)) {
+				foreach ($params as $key => $value) {
+					if (isset($value['jfusionplugin'])) {
+						$title.= $del . $value['jfusionplugin'];
+						$del = '; ';
+					}
+				}
+			}
+		}
+		if (empty($title)) {
+			$title = JText::_('NO_PLUGIN_SELECTED');
+		}
+		$js = '<script type="text/javascript">';
+		$js .= <<<JS
+            window.parent.jAdvancedParamSet('{$title}', '{$serParam}','{$ename}');
 JS;
-        $js .= '</script>';
-        echo $js;
-    }
+		$js .= '</script>';
+		echo $js;
+	}
 
     function saveorder()
     {

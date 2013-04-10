@@ -40,6 +40,8 @@ class JFormFieldJFusionAdvancedParam extends JFormField
 			$elNum = 0;
 		}
 
+		$ename = 'jfusionadvancedparam'.$elNum;
+
 		$lang = JFactory::getLanguage();
 		$lang->load('com_jfusion');
 
@@ -66,9 +68,9 @@ class JFormFieldJFusionAdvancedParam extends JFormField
 			}
 
 			$js = <<<JS
-            function jAdvancedParamSet(title, base64, elNum) {
-                $('plugin_id' + elNum).value = base64;
-                $('plugin_name' + elNum).value = title;
+            function jAdvancedParamSet(title, base64, name) {
+                $(name + '_id').value = base64;
+                $(name + '_name').value = title;
                 SqueezeBox.close();
             }
 JS;
@@ -76,30 +78,20 @@ JS;
 		}
 
 		//Create Link
-		$link = 'index.php?option=com_jfusion&amp;task=advancedparam&amp;tmpl=component&amp;elNum='.$elNum;
+		$link = 'index.php?option=com_jfusion&amp;task=advancedparam&amp;tmpl=component&amp;ename='.$ename;
 		if (!is_null($feature)) {
 			$link.= '&amp;feature=' . $feature;
 		}
 		if (!is_null($multiselect)) {
 			$link.= '&amp;multiselect=1';
 		}
-		$option = JRequest::getVar('option');
-		switch($option) {
-			case 'com_modules' :
-				$link .= '&amp;type=modules';
-				$link .= '&amp;id='.JRequest::getVar('id');
-				break;
-			case 'com_menus' :
-				$link .= '&amp;type=menu';
-				$link .= '&amp;id='.JRequest::getVar('id');
-				break;
-			case 'com_plugins' :
-				$link .= '&amp;type=plugin';
-				$link .= '&amp;id='.JRequest::getVar('extension_id');
-				break;
-		}
 
-		$link .= '&amp;param='.$this->fieldname;
+		jimport( 'joomla.user.helper' );
+		$hash = JUtility::getHash( $fieldName.JUserHelper::genRandomPassword());
+		$session = JFactory::getSession();
+		$session->set($hash, $this->value);
+
+		$link .= '&amp;'.$ename.'='.$hash;
 
 		//Get JParameter from given string
 		if (empty($this->value)) {
@@ -135,14 +127,14 @@ JS;
 
 		$html =<<<HTML
         <div style="float: left;">
-            <input style="background: #ffffff;" type="text" id="plugin_name{$elNum}" value="{$title}" disabled="disabled" />
+            <input style="background: #ffffff;" type="text" id="{$ename}_name" value="{$title}" disabled="disabled" />
         </div>
         <div class="button2-left">
             <div class="blank">
-                <a id="plugin_link{$elNum}" class="modal" title="{$select_plugin}"  href="{$link}" rel="{handler: 'iframe', size: {x: window.getSize().x-80, y: window.getSize().y-80}}">{$select}</a>
+                <a id="{$ename}_link" class="modal" title="{$select_plugin}"  href="{$link}" rel="{handler: 'iframe', size: {x: window.getSize().x-80, y: window.getSize().y-80}}">{$select}</a>
             </div>
         </div>
-        <input type="hidden" id="plugin_id{$elNum}" name="{$fieldName}" value="{$this->value}" />
+        <input type="hidden" id="{$ename}_id" name="{$fieldName}" value="{$this->value}" />
 HTML;
 
 		$elNum++;

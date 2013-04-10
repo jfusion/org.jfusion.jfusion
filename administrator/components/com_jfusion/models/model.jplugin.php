@@ -771,6 +771,7 @@ class JFusionJplugin
     public static function updatePassword($userinfo, &$existinguser, &$status, $jname)
     {
         $db = JFusionFactory::getDatabase($jname);
+	    jimport( 'joomla.user.helper' );
         $userinfo->password_salt = JUserHelper::genRandomPassword(32);
         $userinfo->password = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt);
         $new_password = $userinfo->password . ':' . $userinfo->password_salt;
@@ -987,6 +988,7 @@ class JFusionJplugin
                 $status['debug'][] = JText::_('USERNAME') . ':' . $userinfo->username . ' ' . JText::_('FILTERED_USERNAME') . ':' . $username_clean;
                 //create a Joomla password hash if password_clear is available
                 if (!empty($userinfo->password_clear)) {
+	                jimport( 'joomla.user.helper' );
                     $userinfo->password_salt = JUserHelper::genRandomPassword(32);
                     $userinfo->password = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt);
                     $password = $userinfo->password . ':' . $userinfo->password_salt;

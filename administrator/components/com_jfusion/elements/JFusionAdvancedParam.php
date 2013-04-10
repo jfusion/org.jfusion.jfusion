@@ -46,6 +46,8 @@ class JElementJFusionAdvancedParam extends JElement
             $elNum = 0;
         }
 
+	    $ename = 'jfusionadvancedparam'.$elNum;
+
         $lang = JFactory::getLanguage();
         $lang->load('com_jfusion');
 
@@ -60,40 +62,32 @@ class JElementJFusionAdvancedParam extends JElement
         if (!defined('JFUSION_ADVANCEDPARAM_JS_LOADED')) {
             define('JFUSION_ADVANCEDPARAM_JS_LOADED', 1);
             $js = <<<JS
-            function jAdvancedParamSet(title, base64, elNum) {
-                $('plugin_id' + elNum).value = base64;
-                $('plugin_name' + elNum).value = title;
+            function jAdvancedParamSet(title, base64, name) {
+                $(name + '_id').value = base64;
+                $(name + '_name').value = title;
                 SqueezeBox.close();
             }
 JS;
             $doc->addScriptDeclaration($js);
         }
         //Create Link
-	    $link = 'index.php?option=com_jfusion&amp;task=advancedparam&amp;tmpl=component&amp;elNum='.$elNum;
+	    $link = 'index.php?option=com_jfusion&amp;task=advancedparam&amp;tmpl=component&amp;ename='.$ename;
         if (!is_null($feature)) {
             $link.= '&amp;feature=' . $feature;
         }
         if (!is_null($multiselect)) {
             $link.= '&amp;multiselect=1';
         }
-	    $option = JRequest::getVar('option');
-	    $cid = JRequest::getVar('cid');
-	    switch($option) {
-		    case 'com_modules' :
-			    $link .= '&amp;type=modules';
-			    $link .= '&amp;id='.$cid[0];
-			    break;
-		    case 'com_menus' :
-			    $link .= '&amp;type=menu';
-			    $link .= '&amp;id='.$cid[0];
-			    break;
-		    case 'com_plugins' :
-			    $link .= '&amp;type=plugin';
-			    $link .= '&amp;id='.$cid[0];
-			    break;
-	    }
-	    $link .= '&amp;param='.$name;
-        //Get JParameter from given string
+
+	    jimport( 'joomla.user.helper' );
+	    $hash = JUtility::getHash( $fieldName.JUserHelper::genRandomPassword());
+	    $session = JFactory::getSession();
+	    $session->set($hash, $value);
+
+	    $link .= '&amp;'.$ename.'='.$hash;
+
+
+	    //Get JParameter from given string
         if (empty($value)) {
             $params = array();
         } else {
@@ -125,14 +119,14 @@ JS;
         $select = JText::_('SELECT');
         $html = <<<HTML
         <div style="float: left;">
-            <input style="background: #ffffff;" type="text" id="plugin_name{$elNum}" value="{$title}" disabled="disabled" />
+            <input style="background: #ffffff;" type="text" id="{$ename}_name" value="{$title}" disabled="disabled" />
         </div>
         <div class="button2-left">
             <div class="blank">
-                <a id="plugin_link{$elNum}" class="modal" title="{$select_plugin}"  href="{$link}" rel="{handler: 'iframe', size: {x: 750, y: 475}}">{$select}</a>
+                <a id="{$ename}_link" class="modal" title="{$select_plugin}"  href="{$link}" rel="{handler: 'iframe', size: {x: 750, y: 475}}">{$select}</a>
             </div>
         </div>
-        <input type="hidden" id="plugin_id{$elNum}" name="{$fieldName}" value="{$value}" />
+        <input type="hidden" id="{$ename}_id" name="{$fieldName}" value="{$value}" />
 HTML;
         $elNum++;
         return $html;

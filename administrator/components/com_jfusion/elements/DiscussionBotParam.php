@@ -58,23 +58,25 @@ class JElementDiscussionBotParam extends JElement
 	 	if(empty($jname)) {
 	 		return JText::_('NO_PLUGIN_SELECT');
 	 	} else {
-	 		static $db_js_loaded;
-	 		if(empty($db_js_loaded)) {
+	 		static $js_loaded;
+	 		if(empty($js_loaded)) {
                 $js = <<<JS
                 function jDiscussionParamSet(name, base64) {
-					var link = 'index.php?option=com_jfusion&task=discussionbot&tmpl=component&jname={$jname}&ename='+name+'&'+name+'=';
-					link += base64;
 					$(name + '_id').value = base64;
-					$(name + '_link').href = link;
 					$(name + '_img').src = 'components/com_jfusion/images/filesave.png';
 					SqueezeBox.close();
 				}
 JS;
 				$doc->addScriptDeclaration($js);
-				$db_js_loaded = 1;
+			    $js_loaded = 1;
 	 		}
 
-			$link = 'index.php?option=com_jfusion&amp;task=discussionbot&amp;tmpl=component&amp;jname='.$jname.'&amp;ename='.$name.'&amp;'.$name.'='.$value;
+		    jimport( 'joomla.user.helper' );
+		    $hash = JUtility::getHash( $name.JUserHelper::genRandomPassword());
+		    $session = JFactory::getSession();
+		    $session->set($hash, $value);
+
+			$link = 'index.php?option=com_jfusion&amp;task=discussionbot&amp;tmpl=component&amp;jname='.$jname.'&amp;ename='.$name.'&amp;'.$name.'='.$hash;
 
 			JHTML::_('behavior.modal', 'a.modal');
 
