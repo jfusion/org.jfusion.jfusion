@@ -92,14 +92,21 @@ class JFusionUser_efront extends JFusionUser
                  return $status;
             }
         }
-
+    	$params = JFusionFactory::getParams($this->getJname());    	
+        $db = JFusionFactory::getDatabase($this->getJname());
+    	$status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname(),$params->get('logout_type'));
+                
+/*        
+        
+        
+        
         $params = JFusionFactory::getParams($this->getJname());
         $cookiedomain = $params->get('cookie_domain');
         $cookiepath = $params->get('cookie_path', '/');
         $httponly = $params->get('httponly',0);
         $secure = $params->get('secure',0);
         //Set cookie values
-        $expires = -3600;
+        $expires = time()-3*24*60*60;
         if (!$cookiepath) {
             $cookiepath = '/';
         }
@@ -116,7 +123,6 @@ class JFusionUser_efront extends JFusionUser
         }
 
         // do some eFront housekeeping
-        $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'DELETE FROM #__users_to_chatrooms WHERE users_LOGIN = ' . $db->Quote($userinfo->username);
         $db->setQuery($query);
         if (!$db->query()) {
@@ -139,6 +145,7 @@ class JFusionUser_efront extends JFusionUser
         } else {
             $status['debug'][] = 'Deleted users_on_line for user '.$userinfo->username;
         }
+*/        
         $query = 'SELECT action FROM #__logs WHERE users_LOGIN = ' . $db->Quote($userinfo->username).' timestamp desc limit 1';
         $db->setQuery($query);
         $action = $db->loadResult();
@@ -569,13 +576,11 @@ class JFusionUser_efront extends JFusionUser
         } else {
             $usergroup = $usergroups[0];
             $db = JFusionFactory::getDataBase($this->getJname());
-            if ($usergroup < 3) {
-	            /**
-	             * @ignore
-	             * @var $helper JFusionHelper_efront
-	             */
-	            $helper = JFusionFactory::getHelper($this->getJname());
-                $user_type = $helper->groupIdToName($usergroup);
+            if ($usergroup< 3) {
+                /**
+                 * TODO: Undefined function
+                 */
+                $user_type = $this->groupIDToName($usergroup);
                 $user_types_ID = 0;
             } else {
                 $user_types_ID = $usergroup-2;

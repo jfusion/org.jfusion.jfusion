@@ -2,15 +2,15 @@
 <!DOCTYPE install SYSTEM "http://www.jfusion.org/xml/dtd/1.5/plugin-install.dtd">
 <install type="jfusion" version="1.5.0">
 	<name>wordpress</name>
-	<creationDate>25 october 2010</creationDate>
+	<creationDate>9 april 2013</creationDate>
 	<author>JFusion Development Team</author>
 	<authorEmail>webmaster@jfusion.org</authorEmail>
 	<authorUrl>www.jfusion.org</authorUrl>
 	<copyright>Copyright (C) 2010 JFusion. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-	<version>1.8.3-004</version>
-    <revision>$revision$</revision>
-    <timestamp>$timestamp$</timestamp>
+	<version>1.8.4-000</version>
+    <revision>7f0e4f738f1bd5b0d162e8b62043202469d64a69</revision>
+    <timestamp>1364122356</timestamp>
 	<description>JFusion plugin for wordpress 3.x</description>
     <update>http://update.jfusion.org/jfusion/joomla/</update>
     <master>0</master>

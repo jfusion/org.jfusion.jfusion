@@ -64,7 +64,7 @@ class JFusionCurlHtmlFormParser
 	 */
 	function parseForms()
 	{
-		if (preg_match_all("/<form.*>.+<\/form>/isU", $this->html_data, $forms)) {
+      preg_match_all("/<form.*>.+<\/form>/isU", $this->html_data, $forms);
 			foreach ($forms[0] as $form) {
 				$this->button_counter = 0;
 
@@ -94,8 +94,8 @@ class JFusionCurlHtmlFormParser
 				if (preg_match_all("/<input[^<>]+type=[\"']hidden[\"'][^<>]*>/iU", $form, $hiddens)) {
 					foreach ($hiddens[0] as $hidden) {
 						$this->_return[$this->_counter]['form_elements'][$this->_getName($hidden)] = array(
-                            'type'  =>  'hidden',
-                            'value'  =>  $this->_getValue($hidden)
+							'type'  =>  'hidden',
+							'value'  =>  $this->_getValue($hidden)
 						);
 					}
 				}
@@ -104,10 +104,10 @@ class JFusionCurlHtmlFormParser
 				if (preg_match_all("/<input[^<>]+type=[\"']text[\"'][^<>]*>/iU", $form, $texts)) {
 					foreach ($texts[0] as $text) {
 						$this->_return[$this->_counter]['form_elements'][$this->_getName($text)] = array(
-                            'type'  => 'text',
-                            'value'  =>  $this->_getValue($text),
-                            'id'  =>  $this->_getId($text),
-                            'class'  =>  $this->_getClass($text)
+							'type'  => 'text',
+							'value'  =>  $this->_getValue($text),
+							'id'  =>  $this->_getId($text),
+							'class'  =>  $this->_getClass($text)
 						);
 					}
 				}
@@ -116,8 +116,8 @@ class JFusionCurlHtmlFormParser
 				if (preg_match_all("/<input[^<>]+type=[\"']password[\"'][^<>]*>/iU", $form, $passwords)) {
 					foreach ($passwords[0] as $password) {
 						$this->_return[$this->_counter]['form_elements'][$this->_getName($password)] = array(
-                            'type'  =>  'password',
-                            'value'  =>  $this->_getValue($password)
+							'type'  =>  'password',
+							'value'  =>  $this->_getValue($password)
 						);
 					}
 				}
@@ -127,8 +127,8 @@ class JFusionCurlHtmlFormParser
 					foreach ($textareas[0] as $textarea) {
 						preg_match("/<textarea.*>(.*)<\/textarea>/isU", $textarea, $textarea_value);
 						$this->_return[$this->_counter]['form_elements'][$this->_getName($textarea)] = array(
-                            'type'  =>  'textarea',
-                            'value'  =>  $textarea_value[1]
+							'type'  =>  'textarea',
+							'value'  =>  $textarea_value[1]
 						);
 					}
 				}
@@ -138,13 +138,13 @@ class JFusionCurlHtmlFormParser
 					foreach ($checkboxes[0] as $checkbox) {
 						if (preg_match("/checked/i", $checkbox)) {
 							$this->_return[$this->_counter]['form_elements'][$this->_getName($checkbox)] = array(
-                                'type'  =>  'checkbox',
-                                'value'  =>  'on'
+								'type'  =>  'checkbox',
+								'value'  =>  'on'
 							);
 						} else {
 							$this->_return[$this->_counter]['form_elements'][$this->_getName($checkbox)] = array(
-                                'type'  =>  'checkbox',
-                                'value'  =>  ''
+								'type'  =>  'checkbox',
+								'value'  =>  ''
 							);
 						}
 					}
@@ -155,8 +155,8 @@ class JFusionCurlHtmlFormParser
 					foreach ($radios[0] as $radio) {
 						if (preg_match("/checked/i", $radio)) {
 							$this->_return[$this->_counter]['form_elements'][$this->_getName($radio)] = array(
-                                'type'  =>  'radio',
-                                'value'  =>  $this->_getValue($radio)
+								'type'  =>  'radio',
+								'value'  =>  $this->_getValue($radio)
 							);
 						}
 					}
@@ -166,9 +166,9 @@ class JFusionCurlHtmlFormParser
 				if (preg_match_all("/<input[^<>]+type=[\"']submit[\"'][^<>]*>/iU", $form, $submits)) {
 					foreach ($submits[0] as $submit) {
 						$this->_return[$this->_counter]['buttons'][$this->button_counter] = array(
-                            'type'  => 'submit',
-                            'name'  => $this->_getName($submit),
-                            'value'  => $this->_getValue($submit)
+							'type'  => 'submit',
+							'name'  => $this->_getName($submit),
+							'value'  => $this->_getValue($submit)
 						);
 						$this->button_counter++;
 					}
@@ -178,9 +178,9 @@ class JFusionCurlHtmlFormParser
 				if (preg_match_all("/<input[^<>]+type=[\"']button[\"'][^<>]*>/iU", $form, $buttons)) {
 					foreach ($buttons[0] as $button) {
 						$this->_return[$this->_counter]['buttons'][$this->button_counter] = array(
-                            'type'  => 'button',
-                            'name'  => $this->_getName($button),
-                            'value'  => $this->_getValue($button)
+							'type'  => 'button',
+							'name'  => $this->_getName($button),
+							'value'  => $this->_getValue($button)
 						);
 						$this->button_counter++;
 					}
@@ -190,9 +190,9 @@ class JFusionCurlHtmlFormParser
 				if (preg_match_all("/<input[^<>]+type=[\"']reset[\"'][^<>]*>/iU", $form, $resets)) {
 					foreach ($resets[0] as $reset) {
 						$this->_return[$this->_counter]['buttons'][$this->button_counter] = array(
-                            'type'  => 'reset',
-                            'name'  => $this->_getName($reset),
-                            'value'  => $this->_getValue($reset)
+							'type'  => 'reset',
+							'name'  => $this->_getName($reset),
+							'value'  => $this->_getValue($reset)
 						);
 						$this->button_counter++;
 					}
@@ -202,9 +202,9 @@ class JFusionCurlHtmlFormParser
 				if (preg_match_all("/<input[^<>]+type=[\"']image[\"'][^<>]*>/iU", $form, $images)) {
 					foreach ($images[0] as $image) {
 						$this->_return[$this->_counter]['buttons'][$this->button_counter] = array(
-                            'type'  => 'image',
-                            'name'  => $this->_getName($image),
-                            'value'  => $this->_getValue($image)
+							'type'  => 'image',
+							'name'  => $this->_getName($image),
+							'value'  => $this->_getValue($image)
 						);
 						$this->button_counter++;
 					}
@@ -216,7 +216,7 @@ class JFusionCurlHtmlFormParser
 				if (preg_match_all("/<select.*>.+<\/select>/isU", $form, $selects)) {
 					foreach ($selects[0] as $select) {
 						if (preg_match_all("/<option.*>.+<\/option>/isU", $select, $all_options)) {
-                            $option_value = '';
+							$option_value = '';
 							foreach ($all_options[0] as $option) {
 								if (preg_match("/selected/i", $option)) {
 									if (preg_match("/value=[\"'](.*)[\"']\s/iU", $option, $option_value)) {
@@ -240,8 +240,8 @@ class JFusionCurlHtmlFormParser
 								unset($found_selected);
 							}
 							$this->_return[$this->_counter]['form_elements'][$this->_getName($select)] = array(
-                                'type'  => 'select',
-                                'value'  => trim($option_value)
+								'type'  => 'select',
+								'value'  => trim($option_value)
 							);
 						}
 					}
@@ -253,12 +253,12 @@ class JFusionCurlHtmlFormParser
 						if ( !preg_match("/type=(\"([^\"]*)\"|'([^']*)'|[^>\s]*)([^>]*)?>/is", $input) ) {
 							if ( !isset($this->_return[$this->_counter]['form_elements'][$this->_getName($input)]) ) {
 								$this->_return[$this->_counter]['form_elements'][$this->_getName($input)] =
-								array(
-                                    'type'  => 'text',
-                                    'value'  =>  $this->_getValue($input),
-                                    'id'  =>  $this->_getId($input),
-                                    'class'  =>  $this->_getClass($input)
-								);
+									array(
+										'type'  => 'text',
+										'value'  =>  $this->_getValue($input),
+										'id'  =>  $this->_getId($input),
+										'class'  =>  $this->_getClass($input)
+									);
 
 							}
 						}
@@ -268,7 +268,7 @@ class JFusionCurlHtmlFormParser
 				// Update the form counter if we have more then 1 form in the HTML table
 				$this->_counter++;
 			}
-		}
+		
 		return $this->_return;
 	}
 
@@ -288,7 +288,7 @@ class JFusionCurlHtmlFormParser
 			unset($string);
 			return trim($val_match, '"');
 		}
-        return false;
+		return false;
 	}
 
 	/**
@@ -306,7 +306,7 @@ class JFusionCurlHtmlFormParser
 			unset($string);
 			return $val_match;
 		}
-        return false;
+		return false;
 	}
 
 	/**
@@ -325,7 +325,7 @@ class JFusionCurlHtmlFormParser
 			unset($string);
 			return $val_match;
 		}
-        return false;
+		return false;
 	}
 
 	/**
@@ -343,7 +343,7 @@ class JFusionCurlHtmlFormParser
 			unset($string);
 			return $val_match;
 		}
-        return false;
+		return false;
 	}
 }
 
@@ -359,11 +359,80 @@ class JFusionCurlHtmlFormParser
  */
 class JFusionCurl
 {
+	var $options = array();
 	/**
-	 * NOTE: The routines buildcookie and implodeCookies are identical to the ones in model.cookie.
-	 * They are duplicated here because I want this file self contained so it can be used by the DSSO routines in
-	 * the integrations. All you need to do there is to overload the JFusionCurl:: _ function to translate strings
-	 **/
+	 * @var $ch resource
+	 */
+	var $ch = null;
+	var $location = null;
+	var $cookies = array();
+	var $cookiearr = array();
+	var $status = array();
+
+	/**
+	 * @params array $options
+	 */
+	function __construct($options=array())
+	{
+		$this->options = $options;
+
+		// check parameters and set defaults
+		if (!isset($this->options['integrationtype'])) {
+			$this->options['integrationtype'] = 1;
+		}
+		if (!isset($this->options['relpath'])) {
+			$this->options['relpath'] = false;
+		}
+		if (!isset($this->options['hidden'])) {
+			$this->options['hidden'] = false;
+		}
+		if (!isset($this->options['buttons'])) {
+			$this->options['buttons'] = false;
+		}
+		if (!isset($this->options['override'])) {
+			$this->options['override'] = null;
+		}
+		if (!isset($this->options['cookiedomain'])) {
+			$this->options['cookiedomain'] = '';
+		}
+		if (!isset($this->options['cookiepath'])) {
+			$this->options['cookiepath'] = '';
+		}
+		if (!isset($this->options['expires'])) {
+			$this->options['expires'] = 1800;
+		}
+		if (!isset($this->options['input_username_id'])) {
+			$this->options['input_username_id'] = '';
+		}
+		if (!isset($this->options['input_password_id'])) {
+			$this->options['input_password_id'] = '';
+		}
+		if (!isset($this->options['secure'])) {
+			$this->options['secure'] = 0;
+		}
+		if (!isset($this->options['httponly'])) {
+			$this->options['httponly'] = 0;
+		}
+		if (!isset($this->options['verifyhost'])) {
+			$this->options['verifyhost'] = 1;
+		}
+		if (!isset($this->options['debug'])) {
+			$this->options['debug'] = false;
+		}
+		if (!isset($this->options['leavealone'])) {
+			$this->options['leavealone'] = null;
+		}
+		if (!isset($this->options['postfields'])) {
+			$this->options['postfields'] = '';
+		}
+
+		$this->status = array();
+		$this->status['error'] = array();
+		$this->status['debug'] = array();
+		$this->status['cURL']=array();
+		$this->status['cURL']['moodle']='';
+		$this->status['cURL']['data']= array();
+	}
 
 	/**
 	 * Translate function, mimics the php gettext (alias _) function
@@ -377,7 +446,7 @@ class JFusionCurl
 	 *
 	 * @return string The translation of the string
 	 **/
-    public static function _($string, $jsSafe = false)
+	public static function _($string, $jsSafe = false)
 	{
 		return JText::_($string, $jsSafe);
 	}
@@ -397,7 +466,7 @@ class JFusionCurl
 				break;
 			case 'string':
 			default:
-				return JFusionCurl::implodeCookies($_COOKIE, ';');
+				return $this->implodeCookies($_COOKIE, ';');
 				break;
 		}
 	}
@@ -411,7 +480,7 @@ class JFusionCurl
 	 *        4. 4 Delimeters in between key-value pairs
 	 *
 	 * @param array  $array     array
-	 * @param string $delimeter delimeter
+	 * @param string $delimeter delemeter
 	 * @param string $keyssofar keyssofar
 	 *
 	 * @return string imploded cookies
@@ -434,7 +503,7 @@ class JFusionCurl
 				if ($output != '') {
 					$output .= ' ';
 				}
-				$output .= self::implodeCookies($value, $delimeter, $key . $keyssofar);
+				$output .= $this->implodeCookies($value, $delimeter, $key . $keyssofar);
 			}
 		}
 		return $output;
@@ -444,11 +513,9 @@ class JFusionCurl
 	/**
 	 * curl redir exec
 	 *
-	 * @param resource $ch ch
-	 *
 	 * @return string something
 	 */
-	function curl_redir_exec($ch)
+	function curl_redir_exec()
 	{
 		static $curl_loops = 0;
 		static $curl_max_loops = 20;
@@ -457,13 +524,13 @@ class JFusionCurl
 			return false;
 		}
 
-		curl_setopt($ch, CURLOPT_HEADER, true);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		$data = curl_exec($ch);
+		curl_setopt($this->ch, CURLOPT_HEADER, true);
+		curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
+		$data = curl_exec($this->ch);
 		$lastdata = $data;
 		$data = str_replace("\r", '', $data);
 		list($header, $data) = explode("\n\n", $data, 2);
-		$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		$http_code = curl_getinfo($this->ch, CURLINFO_HTTP_CODE);
 		if ($http_code == 301 || $http_code == 302) {
 			$matches = array();
 			preg_match('/Location:(.*?)\n/', $header, $matches);
@@ -473,7 +540,7 @@ class JFusionCurl
 				$curl_loops = 0;
 				return $data;
 			}
-			$last_url = parse_url(curl_getinfo($ch, CURLINFO_EFFECTIVE_URL));
+			$last_url = parse_url(curl_getinfo($this->ch, CURLINFO_EFFECTIVE_URL));
 			/*      if (!$url['scheme'])
 			 $url['scheme'] = $last_url['scheme'];
 			if (!$url['host'])
@@ -481,8 +548,8 @@ class JFusionCurl
 			if (!$url['path'])
 			$url['path'] = $last_url['path'];
 			*/      $new_url = $url['scheme'] . '://' . $url['host'] . $url['path'] . ($url['query']?'?'.$url['query']:'');
-			curl_setopt($ch, CURLOPT_URL, $new_url);
-			return JFusionCurl::curl_redir_exec($ch);
+			curl_setopt($this->ch, CURLOPT_URL, $new_url);
+			return $this->curl_redir_exec();
 		} else {
 			$curl_loops=0;
 			return $lastdata;
@@ -501,33 +568,26 @@ class JFusionCurl
 	 */
 	function read_header($ch, $string)
 	{
-		global $location;
-		global $cookiearr;
-		global $ch;
-		global $cookies_to_set;
-		global $cookies_to_set_index;
-
 		$length = strlen($string);
 		if (!strncmp($string, "Location:", 9)) {
-			$location = trim(substr($string, 9, -1));
+			$this->location = trim(substr($string, 9, -1));
 		}
 		if (!strncmp($string, "Set-Cookie:", 11)) {
-			header($string, false);
+			//	header($string, false);
 			$cookiestr = trim(substr($string, 11, -1));
 			$cookie = explode(';', $cookiestr);
-			$cookies_to_set[$cookies_to_set_index] = $cookie;
-			$cookies_to_set_index++;
+			$this->cookies[] = $cookie;
 			$cookie = explode('=', $cookie[0]);
 			$cookiename = trim(array_shift($cookie));
-			$cookiearr[$cookiename] = trim(implode('=', $cookie));
+			$this->cookiearr[$cookiename] = trim(implode('=', $cookie));
 		}
 
 		$cookie = '';
-		if (!empty($cookiearr) && (trim($string) == '')) {
-			foreach ($cookiearr as $key=>$value) {
+		if (!empty($this->cookiearr) && (trim($string) == '')) {
+			foreach ($this->cookiearr as $key=>$value) {
 				$cookie .= $key.'='.$value.'; ';
 			}
-			curl_setopt($ch, CURLOPT_COOKIE, $cookie);
+			curl_setopt($this->ch, CURLOPT_COOKIE, $cookie);
 		}
 		return $length;
 	}
@@ -608,58 +668,53 @@ class JFusionCurl
 	 * @param int $secure          secure
 	 * @param int $httponly        is the cookie http only
 	 *
-	 * @return string nothing
+	 * @return array nothing
 	 */
-    public static function addCookie($name, $value='', $expires=0, $cookiepath='', $cookiedomain='', $secure=0, $httponly=0)
+	public static function addCookie($name, $value='', $expires=0, $cookiepath='', $cookiedomain='', $secure=0, $httponly=0)
 	{
-        if (strpos($cookiedomain,'http://') === 0 || strpos($cookiedomain,'https://') === 0) {
-            $jc = JFusionFactory::getCookies();
-            return $jc->addCookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
-        } else {
-            // Versions of PHP prior to 5.2 do not support HttpOnly cookies
-            // IE is buggy when specifying a blank domain so set the cookie manually
-            // solve the empty cookiedomain IE problem by specifying a domain in the plugin parameters. <------
-            if (version_compare(phpversion(), "5.2.0", ">=")) {
-                setcookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
-            } else {
-                setcookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure);
-            }
+		if (strpos($cookiedomain,'http://') === 0 || strpos($cookiedomain,'https://') === 0) {
+			$jc = JFusionFactory::getCookies();
+			$now = time();
+			if ($expires) {
+				if ($expires>$now) {
+					$expires = $expires-$now;
+				} else {
+					$expires = $now-$expires;
+				}
+			}
+			$debug = $jc->addCookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
+		} else {
+			// Versions of PHP prior to 5.2 do not support HttpOnly cookies
+			// IE is buggy when specifying a blank domain so set the cookie manually
+			// solve the empty cookiedomain IE problem by specifying a domain in the plugin's parameters. <------
+			if (version_compare(phpversion(), "5.2.0", ">=")) {
+				setcookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
+			} else {
+				setcookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure);
+			}
 
-	        $debug = array();
-	        $debug[JText::_('COOKIE')][JText::_('JFUSION_CROSS_DOMAIN_URL')] = null;
-	        $debug[JText::_('COOKIE')][JText::_('COOKIE_DOMAIN')] = $cookiedomain;
-	        $debug[JText::_('COOKIE')][JText::_('NAME')] = $name;
-	        $debug[JText::_('COOKIE')][JText::_('VALUE')] = $value;
-	        if (($expires) == 0) {
-		        $expires='Session_cookie';
-	        } else {
-		        $expires=date('d-m-Y H:i:s', $expires);
-	        }
-	        $debug[JText::_('COOKIE')][JText::_('COOKIE_EXPIRES')] = $expires;
-	        $debug[JText::_('COOKIE')][JText::_('COOKIE_PATH')] = $cookiepath;
-	        $debug[JText::_('COOKIE')][JText::_('COOKIE_SECURE')] = $secure;
-	        $debug[JText::_('COOKIE')][JText::_('COOKIE_HTTPONLY')] = $httponly;
-	        return $debug;
-        }
+			$debug = array();
+			$debug[JFusionCurl::_('COOKIE')][JFusionCurl::_('JFUSION_CROSS_DOMAIN_URL')] = null;
+			$debug[JFusionCurl::_('COOKIE')][JFusionCurl::_('COOKIE_DOMAIN')] = $cookiedomain;
+			$debug[JFusionCurl::_('COOKIE')][JFusionCurl::_('NAME')] = $name;
+			$debug[JFusionCurl::_('COOKIE')][JFusionCurl::_('VALUE')] = $value;
+			if (($expires) == 0) {
+				$expires='Session_cookie';
+			} else {
+				$expires=date('d-m-Y H:i:s', $expires);
+			}
+			$debug[JFusionCurl::_('COOKIE')][JFusionCurl::_('COOKIE_EXPIRES')] = $expires;
+			$debug[JFusionCurl::_('COOKIE')][JFusionCurl::_('COOKIE_PATH')] = $cookiepath;
+			$debug[JFusionCurl::_('COOKIE')][JFusionCurl::_('COOKIE_SECURE')] = $secure;
+			$debug[JFusionCurl::_('COOKIE')][JFusionCurl::_('COOKIE_HTTPONLY')] = $httponly;
+		}
+		return $debug;
 	}
 
-	/**
-	 * sets my cookies
-	 *
-	 * @param string $status           cookie name
-	 * @param string $mycookies_to_set cookie value
-	 * @param string $cookiedomain     cookie domain
-	 * @param string $cookiepath       cookie path
-	 * @param int $expires          expires
-	 * @param int $secure           secure
-	 * @param int $httponly         is the cookie http only
-	 *
-	 * @return string nothing
-	 */
-    public static function setmycookies($status, $mycookies_to_set, $cookiedomain, $cookiepath, $expires=0, $secure=0, $httponly=1)
+	public function setCookies($cookiedomain, $cookiepath, $expires=0, $secure=0, $httponly=1)
 	{
 		$cookies=array();
-		$cookies=JFusionCurl::parsecookies($mycookies_to_set);
+		$cookies = $this->parsecookies($this->cookies);
 		foreach ($cookies as $cookie) {
 			$name='';
 			$value='';
@@ -687,19 +742,45 @@ class JFusionCurl
 					$cookiedomain=$cookie['domain'];
 				}
 			}
-			$status['debug'][] = JFusionCurl::addCookie($name, urldecode($value), $expires_time, $cookiepath, $cookiedomain, $secure, $httponly);
+			$this->status['debug'][] = $this->addCookie($name, urldecode($value), $expires_time, $cookiepath, $cookiedomain, $secure, $httponly);
 			if ($name=='MOODLEID_') {
-				$status['cURL']['moodle'] = urldecode($value);
+				$this->status['cURL']['moodle'] = urldecode($value);
 			}
 		}
-		return $status;
+		return $this->status;
+	}
+
+	/**
+	 * sets my cookies
+	 *
+	 * @param string $status           status
+	 * @param string $cookies     cookies
+	 * @param string $cookiedomain     cookie domain
+	 * @param string $cookiepath       cookie path
+	 * @param int $expires          expires
+	 * @param int $secure           secure
+	 * @param int $httponly         is the cookie http only
+	 *
+	 * @return string nothing
+	 */
+	public function setmycookies($status, $cookies, $cookiedomain, $cookiepath, $expires=0, $secure=0, $httponly=1)
+	{
+		$options = array();
+		$options['cookiedomain'] = $cookiedomain;
+		$options['cookiepath'] = $cookiepath;
+		$options['expires'] = $expires;
+		$options['secure'] = $secure;
+		$options['httponly'] = httponly;
+
+		$curl = new JFusionCurl($options);
+		$curl->cookies = $cookies;
+		$curl->status = $status;
+		return $curl->setCookies($cookiedomain, $cookiepath, $expires, $secure, $httponly);
 	}
 
 	/**
 	 * delete my cookies
 	 *
-	 * @param string $status           cookie name
-	 * @param string $mycookies_to_set cookie value
 	 * @param string $cookiedomain     cookie domain
 	 * @param string $cookiepath       cookie path
 	 * @param string $leavealone       leavealone
@@ -708,10 +789,10 @@ class JFusionCurl
 	 *
 	 * @return string nothing
 	 */
-    public static function deletemycookies($status, $mycookies_to_set, $cookiedomain, $cookiepath, $leavealone, $secure=0, $httponly=1)
+	public function deleteCookies($cookiedomain, $cookiepath, $leavealone, $secure=0, $httponly=1)
 	{
 		$cookies=array();
-		$cookies=JFusionCurl::parsecookies($mycookies_to_set);
+		$cookies = $this->parsecookies($this->cookies);
 		// leavealone keys/values while deleting
 		// the $leavealone is an array of key=value that controls cookiedeletion
 		// key = value
@@ -725,7 +806,7 @@ class JFusionCurl
 		// 0=> will keep all cookies that are not sessioncookies
 		// 0=0 will keep all cookies
 
-        $leavealonearr = array();
+		$leavealonearr = array();
 		if (trim($leavealone)) {
 			$lines = array();
 			$line=array();
@@ -743,7 +824,7 @@ class JFusionCurl
 		}
 
 		foreach ($cookies as $cookie) {
-			// check if we should leave the cookie alone
+			// check if we schould leave the cookie alone
 			$leaveit = false;
 			if ($leavealone) {
 				for ($i=0;$i<count($leavealonearr);$i++) {
@@ -764,8 +845,8 @@ class JFusionCurl
 			if (isset($cookie['expires'])) {
 				$expires_time=$cookie['expires'];
 			} else {
-                $expires_time = 0;
-            }
+				$expires_time = 0;
+			}
 			if (!$cookiepath) {
 				if (isset($cookie['path'])) {
 					$cookiepath=$cookie['path'];
@@ -777,114 +858,128 @@ class JFusionCurl
 				}
 			}
 			if ($name=='MOODLEID_') {
-				$status['cURL']['moodle'] = urldecode($cookie['value']['value']);
+				$this->status['cURL']['moodle'] = urldecode($cookie['value']['value']);
 			}
 
 			if (!$leaveit) {
 				$expires_time=time()-30*60;
 				$value = '';
-				$status['debug'][] = JFusionCurl::addCookie($name, urldecode($value), $expires_time, $cookiepath, $cookiedomain, $secure, $httponly);
+				$this->status['debug'][] = $this->addCookie($name, urldecode($value), $expires_time, $cookiepath, $cookiedomain, $secure, $httponly);
 			} else {
-				$status['debug'][] = JFusionCurl::addCookie($name, urldecode($cookie['value']['value']), $expires_time, $cookiepath, $cookiedomain, $secure, $httponly);
+				$this->status['debug'][] = $this->addCookie($name, urldecode($cookie['value']['value']), $expires_time, $cookiepath, $cookiedomain, $secure, $httponly);
 			}
 		}
-		return $status;
+		return $this->status;
+	}
+
+
+	/**
+	 * delete my cookies
+	 *
+	 * @param string $status           cookie name
+	 * @param string $cookies          cookies
+	 * @param string $cookiedomain     cookie domain
+	 * @param string $cookiepath       cookie path
+	 * @param string $leavealone       leavealone
+	 * @param int $secure              secure
+	 * @param int $httponly            is the cookie http only
+	 *
+	 * @return string nothing
+	 */
+	public function deletemycookies($status, $cookies, $cookiedomain, $cookiepath, $leavealone, $secure=0, $httponly=1)
+	{
+		$options = array();
+		$options['cookiedomain'] = $cookiedomain;
+		$options['cookiepath'] = $cookiepath;
+		$options['secure'] = $secure;
+		$options['httponly'] = httponly;
+
+		$curl = new JFusionCurl($options);
+		$curl->cookies = $cookies;
+		$curl->status = $status;
+		return $curl->deleteCookies($cookiedomain, $cookiepath, $leavealone, $secure, $httponly);
 	}
 
 	/**
 	 * function ReadPage
 	 * This function will read a page of an integration
 	 * Caller should make sure that the Curl extension is loaded
-     *
-	 * @param array $curl_options curl options
-     * @param array &$status
-     * @param bool $curlinit
+	 *
+	 * @param bool $curlinit
 	 *
 	 * @return string page read
 	 */
 
-    public static function ReadPage($curl_options, &$status, $curlinit=true)
+	public function ReadPage($curlinit=true)
 	{
-		global $ch;
-		global $cookiearr;
-		global $cookies_to_set;
-		global $cookies_to_set_index;
-
-		$cookies_to_set=array();
-		$cookies_to_set_index=0;
 		$open_basedir = ini_get('open_basedir');
 		$safe_mode = ini_get('safe_mode');
 
-
-
-
 		// read the page
 		if ($curlinit) {
-			$ch = curl_init();
+			$this->ch = curl_init();
 		}
-        $ip = $_SERVER['REMOTE_ADDR'];
-        curl_setopt( $ch, CURLOPT_HTTPHEADER, array('REMOTE_ADDR: '.$ip, 'X_FORWARDED_FOR: '.$ip));
-		curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
-		curl_setopt($ch, CURLOPT_URL, $curl_options['post_url']);
-		curl_setopt($ch, CURLOPT_REFERER, "");
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, $curl_options['verifyhost']);
-		curl_setopt($ch, CURLOPT_FAILONERROR, 1);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_VERBOSE, $curl_options['debug']); // Display communication with server
+		$ip = $_SERVER['REMOTE_ADDR'];
+		curl_setopt($this->ch, CURLOPT_HTTPHEADER, array('REMOTE_ADDR: '.$ip, 'X_FORWARDED_FOR: '.$ip));
+		curl_setopt($this->ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
+		curl_setopt($this->ch, CURLOPT_URL, $this->options['post_url']);
+		curl_setopt($this->ch, CURLOPT_REFERER, "");
+		curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, 0);
+		curl_setopt($this->ch, CURLOPT_SSL_VERIFYHOST, $this->options['verifyhost']);
+		curl_setopt($this->ch, CURLOPT_FAILONERROR, 1);
+		curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($this->ch, CURLOPT_VERBOSE, $this->options['debug']); // Display communication with server
 		if (empty($open_basedir) && empty($safe_mode)) {
-			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+			curl_setopt($this->ch, CURLOPT_FOLLOWLOCATION, 1);
 		}
-		curl_setopt($ch, CURLOPT_MAXREDIRS, 2);
-		curl_setopt($ch, CURLOPT_HEADERFUNCTION, array('JFusionCurl','read_header'));
-		if (empty($curl_options['brute_force'])){
-			curl_setopt($ch, CURLOPT_COOKIE, JFusionCurl::buildCookie());
+		curl_setopt($this->ch, CURLOPT_MAXREDIRS, 2);
+		curl_setopt($this->ch, CURLOPT_HEADERFUNCTION, array($this,'read_header'));
+		if (empty($this->options['brute_force'])){
+			curl_setopt($this->ch, CURLOPT_COOKIE, $this->buildCookie());
 		}
 
-		if (!empty($curl_options['httpauth'])) {
-			curl_setopt($ch, CURLOPT_USERPWD, "{$curl_options['httpauth_username']}:{$curl_options['httpauth_password']}");
+		if (!empty($this->options['httpauth'])) {
+			curl_setopt($this->ch, CURLOPT_USERPWD, "{$this->options['httpauth_username']}:{$this->options['httpauth_password']}");
 
-			switch ($curl_options['httpauth']) {
+			switch ($this->options['httpauth']) {
 				case "basic":
-					$curl_options['httpauth'] = CURLAUTH_BASIC;
+					$this->options['httpauth'] = CURLAUTH_BASIC;
 					break;
 				case "gssnegotiate":
-					$curl_options['httpauth'] = CURLAUTH_GSSNEGOTIATE;
+					$this->options['httpauth'] = CURLAUTH_GSSNEGOTIATE;
 					break;
 				case "digest":
-					$curl_options['httpauth'] = CURLAUTH_DIGEST;
+					$this->options['httpauth'] = CURLAUTH_DIGEST;
 					break;
 				case "ntlm":
-					$curl_options['httpauth'] = CURLAUTH_NTLM;
+					$this->options['httpauth'] = CURLAUTH_NTLM;
 					break;
 				case "anysafe":
-					$curl_options['httpauth'] = CURLAUTH_ANYSAFE;
+					$this->options['httpauth'] = CURLAUTH_ANYSAFE;
 					break;
 				case "any":
 				default:
-					$curl_options['httpauth'] = CURLAUTH_ANY;
+					$this->options['httpauth'] = CURLAUTH_ANY;
 			}
 
-			curl_setopt($ch, CURLOPT_HTTPAUTH, $curl_options['httpauth']);
+			curl_setopt($this->ch, CURLOPT_HTTPAUTH, $this->options['httpauth']);
 		}
 
 		if (empty($open_basedir) && empty($safe_mode)) {
-			$remotedata = curl_exec($ch);
+			$remotedata = curl_exec($this->ch);
 		} else {
-			$remotedata= JFusionCurl::curl_redir_exec($ch);
+			$remotedata = $this->curl_redir_exec();
 		}
-		if ($curl_options['debug']) {
-			$status['cURL']['data'][]= $remotedata;
-			$status['debug'][]='CURL_INFO'.': '.print_r(curl_getinfo($ch), true);
+		if ($this->options['debug']) {
+			$this->status['cURL']['data'][]= $remotedata;
+			$this->status['debug'][]='CURL_INFO'.': '.print_r(curl_getinfo($this->ch), true);
 		}
-		if (curl_error($ch)) {
-			$status['error'][] = JFusionCurl::_('CURL_ERROR_MSG').': '.curl_error($ch);
-			curl_close($ch);
-			return null;
-		}
-
-		if ($curl_options['integrationtype'] ==1) {
-			curl_close($ch);
+		if (curl_error($this->ch)) {
+			$this->status['error'][] = JFusionCurl::_('CURL_ERROR_MSG').': '.curl_error($this->ch);
+			curl_close($this->ch);
+			$remotedata =  null;
+		} else if ($this->options['integrationtype'] ==1) {
+			curl_close($this->ch);
 		}
 		return $remotedata;
 	}
@@ -901,628 +996,523 @@ class JFusionCurl
 	 * 29-07-2011 Modified to handle logout as well when the loginform is used for logout
 	 * just call as login and add $curl_options['logout'] = '1'
 	 *
-	 * @param array $curl_options curl options
+	 * @param array $options curl options
 	 *
 	 * @return string something
 	 */
-    public static function RemoteLogin($curl_options)
+	public static function RemoteLogin($options)
 	{
-		global $ch;
-		global $cookiearr;
-		global $cookies_to_set;
-		global $cookies_to_set_index;
+		$curl = new JFusionCurl($options);
+		return $curl->login();
+	}
+
+
+	/**
+	 * preforms a login
+	 */
+	public function login()
+	{
 		// extra lines for passing curl options to other routines, like ambrasubs payment processor
 		// we are using the super global $_SESSION to pass data in $_SESSION[$var]
-		if (isset($curl_options['usesessvar'])){
+		if (isset($this->options['usesessvar'])){
 			$var = 'curl_options';
 			if(!array_key_exists($var,$_SESSION)) $_SESSION[$var]='';
-			$_SESSION[$var]=$curl_options;
+			$_SESSION[$var]=$this->options;
 			$GLOBALS[$var]=&$_SESSION[$var];
 		}
 		// end extra lines
-        $status = array('error' => array(),'debug' => array());
 		$tmpurl = array();
 		$overridearr = array();
 		$newhidden = array();
 		$lines = array();
 		$line=array();
-		$cookies_to_set=array();
-		$status['cURL']=array();
-		$status['cURL']['moodle']='';
-		$status['cURL']['data']= array();
-		$cookies_to_set_index=0;
+
 		$open_basedir = ini_get('open_basedir');
 		$safe_mode = ini_get('safe_mode');
 
-		// check parameters and set defaults
-		if (!isset($curl_options['integrationtype'])) {
-			$curl_options['integrationtype'] = 1;
-		}
-		if (!isset($curl_options['relpath'])) {
-			$curl_options['relpath'] = false;
-		}
-		if (!isset($curl_options['hidden'])) {
-			$curl_options['hidden'] = false;
-		}
-		if (!isset($curl_options['buttons'])) {
-			$curl_options['buttons'] = false;
-		}
-		if (!isset($curl_options['override'])) {
-			$curl_options['override'] = null;
-		}
-		if (!isset($curl_options['cookiedomain'])) {
-			$curl_options['cookiedomain'] = '';
-		}
-		if (!isset($curl_options['cookiepath'])) {
-			$curl_options['cookiepath'] = '';
-		}
-		if (!isset($curl_options['expires'])) {
-			$curl_options['expires'] = 1800;
-		}
-		if (!isset($curl_options['input_username_id'])) {
-			$curl_options['input_username_id'] = '';
-		}
-		if (!isset($curl_options['input_password_id'])) {
-			$curl_options['input_password_id'] = '';
-		}
-		if (!isset($curl_options['secure'])) {
-			$curl_options['secure'] = 0;
-		}
-		if (!isset($curl_options['httponly'])) {
-			$curl_options['httponly'] = 0;
-		}
-		if (!isset($curl_options['verifyhost'])) {
-			$curl_options['verifyhost'] = 1;
-		}
-		if (!isset($curl_options['debug'])) {
-			$curl_options['debug'] = false;
-		}
-
 		// find out if we have a SSL enabled website
-		if (strpos($curl_options['post_url'], 'https://') === false) {
+		if (strpos($this->options['post_url'], 'https://') === false) {
 			$ssl_string = 'http://';
 		} else {
 			$ssl_string = 'https://';
 		}
 
 		// check if curl extension is loaded
-		if (!isset($curl_options['post_url']) || !isset($curl_options['formid'])) {
-			$status['error'][] = JFusionCurl::_('CURL_FATAL');
-			return $status;
-		}
-		if (!extension_loaded('curl')) {
-			$status['error'][] = JFusionCurl::_('CURL_NOTINSTALLED');
-			return $status;
-		}
-		$status['debug'][] = JFusionCurl::_('CURL_POST_URL_1').' '.$curl_options['post_url'];
-		$remotedata = JFusionCurl::ReadPage($curl_options, $status,true);
-		if (!empty($status['error'])) {
-			return $status;
-		}
-		$status['debug'][] = JFusionCurl::_('CURL_PHASE_1');
-		$status1=JFusionCurl::setmycookies($status, $cookies_to_set, $curl_options['cookiedomain'], $curl_options['cookiepath'], $curl_options['expires'], $curl_options['secure'], $curl_options['httponly']);
-		$status = array_merge($status,$status1);
-		//find out if we have the form with the name/id specified
-		$parser = new JFusionCurlHtmlFormParser($remotedata);
-		$result = $parser->parseForms();
-		$frmcount = count($result);
-		$myfrm = -1;
-		$i = 0;
-		do {
-			if (isset($result[$i]['form_data']['name'])) {
-				if ($result[$i]['form_data']['name']==$curl_options['formid']) {
-					$myfrm = $i;
-					break;
-				}
-			}
-			if (isset($result[$i]['form_data']['id'])) {
-				if ($result[$i]['form_data']['id']==$curl_options['formid']) {
-					$myfrm = $i;
-					break;
-				}
-			}
-			if (isset($result[$i]['form_data']['action'])) {
-				if (htmlspecialchars_decode($result[$i]['form_data']['action'])==$curl_options['formid']) {
-					$myfrm = $i;
-					break;
-				}
-			}
-			$i +=1;
-		} while ($i<$frmcount);
-
-		if ($myfrm == -1) {
-			$helpthem = '';
-			if ($frmcount >0) {
-				$i = 0;
-				$helpthem = 'I found';
-				do {
-					if (isset($result[$i]['form_data']['id'])) {
-						$helpthem = $helpthem.' -- Name='.$result[$i]['form_data']['name'].' &ID='.$result[$i]['form_data']['id'];
-					}
-					$i +=1;
-				} while ($i<$frmcount);
-			}
-			$status['debug'][] = JFusionCurl::_('CURL_NO_LOGINFORM').' '.$helpthem;
-			return $status;
-		}
-		$status['debug'][] = JFusionCurl::_('CURL_VALID_FORM');
-
-
-		// by now we have the specified  login/logout form, lets get the data needed to login/logout
-		// we went to all this trouble to get to the hidden input entries.
-		// The stuff is there to enhance security and is, yes, hidden
-		$form_action = htmlspecialchars_decode($result[$myfrm]['form_data']['action']);
-		$form_method = $result[$myfrm]['form_data']['method'];
-		$elements_keys = array_keys($result[$myfrm]['form_elements']);
-		$elements_values = array_values($result[$myfrm]['form_elements']);
-		$elements_count  = count($result[$myfrm]['form_elements']);
-
-		// override keys/values from hidden inputs
-		// the $override is an array of keys/values that override existing keys/values
-
-		if (empty($curl_options['logout'])){
-
-			if ($curl_options['override']) {
-				$lines = explode(',', $curl_options['override']);
-				foreach ($lines as $line) {
-					$cinfo = explode('=', $line);
-					$overridearr[$cinfo[0]]['value'] = $cinfo[1];
-					$overridearr[$cinfo[0]]['type'] = 'hidden';
-				}
-				$newhidden= array_merge($result[$myfrm]['form_elements'], $overridearr);
-				$elements_keys = array_keys($newhidden);
-				$elements_values = array_values($newhidden);
-				$elements_count  = count($newhidden);
-			}
-		}
-		// now construct the action parameter
-
-		// we have 4 possible options:
-		// case 0 Form action is without http.. and relpath = 0 , special case
-		// case 1 Form action is without http.. and relpath = 1 , just construct the action
-		// case 2 form_action is a full url, eg http..... and relpath = 0 This is easy, we do nothing at all
-		// case 3 form_action is a full url, eg http..... and relpath = 1 special case
-
-		$rel = (int)($curl_options['relpath']);
-		//      if (substr($form_action,0,strlen($ssl_string))== $ssl_string) $hashttp = 2; else $hashttp = 0;
-		if (substr($form_action, 0, strlen('http'))== 'http') {
-			$hashttp = 2;
+		if (!isset($this->options['post_url']) || !isset($this->options['formid'])) {
+			$this->status['error'][] = JFusionCurl::_('CURL_FATAL');
 		} else {
-			$hashttp = 0;
-		}
+			if (!extension_loaded('curl')) {
+				$this->status['error'][] = JFusionCurl::_('CURL_NOTINSTALLED');
+			} else {
+				$this->status['debug'][] = JFusionCurl::_('CURL_POST_URL_1').' '.$this->options['post_url'];
+				$remotedata = $this->ReadPage(true);
+				if (empty($this->status['error'])) {
+					$this->status['debug'][] = JFusionCurl::_('CURL_PHASE_1');
+					$this->setCookies($this->options['cookiedomain'], $this->options['cookiepath'], $this->options['expires'], $this->options['secure'], $this->options['httponly']);
+					//find out if we have the form with the name/id specified
+					$parser = new JFusionCurlHtmlFormParser($remotedata);
+					$result = $parser->parseForms();
+					$frmcount = count($result);
+					$myfrm = -1;
+					$i = 0;
+					do {
+						if (isset($result[$i]['form_data']['name'])) {
+							if ($result[$i]['form_data']['name']==$this->options['formid']) {
+								$myfrm = $i;
+								break;
+							}
+						}
+						if (isset($result[$i]['form_data']['id'])) {
+							if ($result[$i]['form_data']['id']==$this->options['formid']) {
+								$myfrm = $i;
+								break;
+							}
+						}
+						if (isset($result[$i]['form_data']['action'])) {
+							if (htmlspecialchars_decode($result[$i]['form_data']['action'])==$this->options['formid']) {
+								$myfrm = $i;
+								break;
+							}
+						}
+						$i +=1;
+					} while ($i<$frmcount);
 
-		switch($rel+$hashttp) {
-			case 0:
-				//add a / in front of form_action
-				if (substr($form_action, 0, 1) != '/') {
-					$form_action = '/'.$form_action;
-				}
-				// we need to correct various situations like
-				// relative url from basedir, relative url from post dir etc
-				$tmpurl   = JFusionCurl::parseUrl($curl_options['post_url']);
-				$pathinfo1  = pathinfo($form_action);
-				$pathinfo = pathinfo($tmpurl[6]);
-				//$status['debug'][] = 'post_url   : '.print_r($curl_options['post_url'],true);
-				//$status['debug'][] = 'tmpurl     : '.print_r($tmpurl,true);
-				//$status['debug'][] = 'form_action: '.print_r($form_action,true);
-				//$status['debug'][] = 'pathinfo1  : '.print_r($pathinfo1,true);
-				//$status['debug'][] = 'pathinfo   : '.print_r($pathinfo,true);
-				if ($pathinfo['dirname'] == $pathinfo1['dirname']) {
-					$pathinfo['dirname']='';
-				} //prevent double directory
-
-				// replace windows DS bt unix DS
-				$pathinfo['dirname'] = str_replace("\\", '/', $pathinfo['dirname']);
-				// get rid of the trailing /  in dir
-				rtrim($pathinfo['dirname'], '/');
-				$port = !empty($tmpurl[5]) ? ":".$tmpurl[5] : '';
-				$form_action = $ssl_string.$tmpurl[4].$port.$pathinfo['dirname'].$form_action;
-				//$status['debug'][] = 'form_action_final: '.print_r($form_action,true);
-				break;
-			case 1:
-				//add a / in front of form_action
-				if (substr($form_action, 0, 1) != '/') {
-					$form_action = '/'.$form_action;
-				}
-				$curl_options['post_url']=rtrim($curl_options['post_url'], '/');
-				$form_action = $curl_options['post_url'].$form_action;
-				break;
-			case 2:
-				//do nothing at all
-				break;
-			case 3:
-				// reserved, maybe something pops up, then we use this
-				break;
-		}
-
-        $input_username_name='';
-        $input_password_name = '';
-		if (empty($curl_options['logout'])){
-			for ($i = 0; $i <= $elements_count-1; $i++) {
-				if ($curl_options['input_username_id']) {
-					if (strtolower($elements_keys[$i]) == strtolower($curl_options['input_username_id'])) {
-						$input_username_name=$elements_keys[$i];
-						break;
-					}
-				}
-				if ($input_username_name == '') {
-					if (strpos(strtolower($elements_keys[$i]), 'user')!==false) {
-						$input_username_name=$elements_keys[$i];
-					}
-					if (strpos(strtolower($elements_keys[$i]), 'name')!==false) {
-						$input_username_name=$elements_keys[$i];
-					}
-				}
-			}
-
-
-			if ($input_username_name == '') {
-				$status['error'][] = JFusionCurl::_('CURL_NO_NAMEFIELD');
-				return $status;
-			}
-
-			for ($i = 0; $i <= $elements_count-1; $i++) {
-				if ($curl_options['input_password_id']) {
-					if (strtolower($elements_keys[$i]) == strtolower($curl_options['input_password_id'])) {
-						$input_password_name=$elements_keys[$i];
-						break;
-					}
-				}
-				if (strpos(strtolower($elements_keys[$i]), 'pass')!==false) {
-					$input_password_name=$elements_keys[$i];
-				}
-			}
-
-			if ($input_password_name=="") {
-				$status['error'][] = JFusionCurl::_('CURL_NO_PASSWORDFIELD');
-				return $status;
-			}
-			$status['debug'][] = JFusionCurl::_('CURL_VALID_USERNAME');
-		}
-		// we now set the submit parameters. These are:
-		// all form_elements name=value combinations with value != '' and type hidden
-		$strParameters='';
-		if ($curl_options['hidden']) {
-			for ($i = 0; $i <= $elements_count-1; $i++) {
-				if (($elements_values[$i] ['value'] != '')&& ($elements_values[$i] ['type'] == 'hidden')) {
-					$strParameters .= '&'.$elements_keys[$i].'='.urlencode($elements_values[$i] ['value']);
-				}
-			}
-		}
-
-		// code for buttons submitted by Daniel Baur
-		if ($curl_options['buttons']) {
-			if (isset($result[$myfrm] ['buttons'][0]['type'])) {
-				if ($result[$myfrm] ['buttons'][0]['type'] =='submit') {
-					if ($result[$myfrm]['buttons'][0]['name']) {
-						$strParameters .= '&'.$result[$myfrm]['buttons'][0]['name'].'='.urlencode($result[$myfrm] ['buttons'][0]['value']);
+					if ($myfrm == -1) {
+						$helpthem = '';
+						if ($frmcount >0) {
+							$i = 0;
+							$helpthem = 'I found';
+							do {
+								if (isset($result[$i]['form_data']['id'])) {
+									$helpthem = $helpthem.' -- Name='.$result[$i]['form_data']['name'].' &ID='.$result[$i]['form_data']['id'];
+								}
+								$i +=1;
+							} while ($i<$frmcount);
+						}
+						$this->status['debug'][] = JFusionCurl::_('CURL_NO_LOGINFORM').' '.$helpthem;
 					} else {
-						$strParameters .= '&'.'submit'.'='.urlencode($result[$myfrm] ['buttons'][0]['value']);
+						$this->status['debug'][] = JFusionCurl::_('CURL_VALID_FORM');
+
+
+						// by now we have the specified  login/logout form, lets get the data needed to login/logout
+						// we went to all this trouble to get to the hidden input entries.
+						// The stuff is there to enhance security and is, yes, hidden
+						$form_action = htmlspecialchars_decode($result[$myfrm]['form_data']['action']);
+						$form_method = $result[$myfrm]['form_data']['method'];
+						$elements_keys = array_keys($result[$myfrm]['form_elements']);
+						$elements_values = array_values($result[$myfrm]['form_elements']);
+						$elements_count  = count($result[$myfrm]['form_elements']);
+
+						// override keys/values from hidden inputs
+						// the $override is an array of keys/values that override existing keys/values
+
+						if (empty($this->options['logout'])){
+
+							if ($this->options['override']) {
+								$lines = explode(',', $this->options['override']);
+								foreach ($lines as $line) {
+									$cinfo = explode('=', $line);
+									$overridearr[$cinfo[0]]['value'] = $cinfo[1];
+									$overridearr[$cinfo[0]]['type'] = 'hidden';
+								}
+								$newhidden= array_merge($result[$myfrm]['form_elements'], $overridearr);
+								$elements_keys = array_keys($newhidden);
+								$elements_values = array_values($newhidden);
+								$elements_count  = count($newhidden);
+							}
+						}
+						// now construct the action parameter
+
+						// we have 4 possible options:
+						// case 0 Form action is without httpo.. and relpath = 0 , special case
+						// case 1 Form action is without http.. and relpath = 1 , just construct the action
+						// case 2 form_action is a full url, eg http..... and relpath = 0 This is easy, we do nothing at all
+						// case 3 form_action is a full url, eg http..... and relpath = 1 special case
+
+						$rel = (int)($this->options['relpath']);
+						//      if (substr($form_action,0,strlen($ssl_string))== $ssl_string) $hashttp = 2; else $hashttp = 0;
+						if (substr($form_action, 0, strlen('http'))== 'http') {
+							$hashttp = 2;
+						} else {
+							$hashttp = 0;
+						}
+
+						switch($rel+$hashttp) {
+							case 0:
+								//add a / in front of form_action
+								if (substr($form_action, 0, 1) != '/') {
+									$form_action = '/'.$form_action;
+								}
+								// we need to correct various situations like
+								// relative url from basedir, relative url from postdir etc
+								$tmpurl   = JFusionCurl::parseUrl($this->options['post_url']);
+								$pathinfo1  = pathinfo($form_action);
+								$pathinfo = pathinfo($tmpurl[6]);
+								//$this->status['debug'][] = 'post_url   : '.print_r($this->options['post_url'],true);
+								//$this->status['debug'][] = 'tmpurl     : '.print_r($tmpurl,true);
+								//$this->status['debug'][] = 'form_action: '.print_r($form_action,true);
+								//$this->status['debug'][] = 'pathinfo1  : '.print_r($pathinfo1,true);
+								//$this->status['debug'][] = 'pathinfo   : '.print_r($pathinfo,true);
+								if ($pathinfo['dirname'] == $pathinfo1['dirname']) {
+									$pathinfo['dirname']='';
+								} //prevent double directory
+
+								// replace windows DS bt unix DS
+								$pathinfo['dirname'] = str_replace("\\", '/', $pathinfo['dirname']);
+								// get rid of the trailing /  in dir
+								rtrim($pathinfo['dirname'], '/');
+								$port = !empty($tmpurl[5]) ? ":".$tmpurl[5] : '';
+								$form_action = $ssl_string.$tmpurl[4].$port.$pathinfo['dirname'].$form_action;
+								//$this->status['debug'][] = 'form_action_final: '.print_r($form_action,true);
+								break;
+							case 1:
+								//add a / in front of form_action
+								if (substr($form_action, 0, 1) != '/') {
+									$form_action = '/'.$form_action;
+								}
+								$this->options['post_url']=rtrim($this->options['post_url'], '/');
+								$form_action = $this->options['post_url'].$form_action;
+								break;
+							case 2:
+								//do nothing at all
+								break;
+							case 3:
+								// reserved, maybe something pops up, then we use this
+								break;
+						}
+
+						$input_username_name='';
+						$input_password_name = '';
+						if (empty($this->options['logout'])){
+							for ($i = 0; $i <= $elements_count-1; $i++) {
+								if ($this->options['input_username_id']) {
+									if (strtolower($elements_keys[$i]) == strtolower($this->options['input_username_id'])) {
+										$input_username_name=$elements_keys[$i];
+										break;
+									}
+								}
+								if ($input_username_name == '') {
+									if (strpos(strtolower($elements_keys[$i]), 'user')!==false) {
+										$input_username_name=$elements_keys[$i];
+									}
+									if (strpos(strtolower($elements_keys[$i]), 'name')!==false) {
+										$input_username_name=$elements_keys[$i];
+									}
+								}
+							}
+
+
+							if ($input_username_name == '') {
+								$this->status['error'][] = JFusionCurl::_('CURL_NO_NAMEFIELD');
+								return $this->status;
+							}
+
+							for ($i = 0; $i <= $elements_count-1; $i++) {
+								if ($this->options['input_password_id']) {
+									if (strtolower($elements_keys[$i]) == strtolower($this->options['input_password_id'])) {
+										$input_password_name=$elements_keys[$i];
+										break;
+									}
+								}
+								if (strpos(strtolower($elements_keys[$i]), 'pass')!==false) {
+									$input_password_name=$elements_keys[$i];
+								}
+							}
+
+							if ($input_password_name=='') {
+								$this->status['error'][] = JFusionCurl::_('CURL_NO_PASSWORDFIELD');
+								return $this->status;
+							}
+							$this->status['debug'][] = JFusionCurl::_('CURL_VALID_USERNAME');
+						}
+						// we now set the submit parameters. These are:
+						// all form_elements name=value combinations with value != '' and type hidden
+						$strParameters='';
+						if ($this->options['hidden']) {
+							for ($i = 0; $i <= $elements_count-1; $i++) {
+								if (($elements_values[$i] ['value'] != '')&& ($elements_values[$i] ['type'] == 'hidden')) {
+									$strParameters .= '&'.$elements_keys[$i].'='.urlencode($elements_values[$i] ['value']);
+								}
+							}
+						}
+
+						// code for buttons submitted by Daniel Baur
+						if ($this->options['buttons']) {
+							if (isset($result[$myfrm] ['buttons'][0]['type'])) {
+								if ($result[$myfrm] ['buttons'][0]['type'] =='submit') {
+									if ($result[$myfrm]['buttons'][0]['name']) {
+										$strParameters .= '&'.$result[$myfrm]['buttons'][0]['name'].'='.urlencode($result[$myfrm] ['buttons'][0]['value']);
+									} else {
+										$strParameters .= '&'.'submit'.'='.urlencode($result[$myfrm] ['buttons'][0]['value']);
+									}
+								}
+							}
+						}
+
+						// extra post parameter to avoid endless loop when more then one jFusion is installed
+						if (isset($this->options['jnodeid'])) {
+							$strParameters .= '&jnodeid='.urlencode($this->options['jnodeid']);
+						}
+
+						// extra post parameter to signal a host calling
+						if (isset($this->options['jhost'])) {
+							$strParameters .= '&jhost=true';
+						}
+
+						if (empty($this->options['logout'])){
+							$post_params = $input_username_name.'='.urlencode($this->options['username']).'&'.$input_password_name.'='.urlencode($this->options['password']);
+							$post_params_debug = $input_username_name.'='.urlencode($this->options['username']).'&'.$input_password_name.'=xxxxxx';
+							$this->status['debug'][] = JFusionCurl::_('CURL_STARTING_LOGIN').' '.$form_action.' parameters= '.$post_params_debug.$strParameters;
+						} else {
+							$post_params = '';
+							$this->status['debug'][] = JFusionCurl::_('CURL_STARTING_LOGOUT').' '.$form_action.' parameters= '.$strParameters;
+						}
+
+						// finally submit the login/logout form:
+						if ($this->options['integrationtype'] == 1) {
+							$this->ch = curl_init();
+							$ip = $_SERVER['REMOTE_ADDR'];
+							curl_setopt($this->ch, CURLOPT_HTTPHEADER, array('REMOTE_ADDR: '.$ip, 'X_FORWARDED_FOR: '.$ip));
+							curl_setopt($this->ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
+							curl_setopt($this->ch, CURLOPT_REFERER, "");
+							curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, 0);
+							curl_setopt($this->ch, CURLOPT_SSL_VERIFYHOST, $this->options['verifyhost']);
+							curl_setopt($this->ch, CURLOPT_FAILONERROR, 1);
+							curl_setopt($this->ch, CURLOPT_HEADERFUNCTION, array($this,'read_header'));
+							if (empty($this->options['brute_force'])){
+								curl_setopt($this->ch, CURLOPT_COOKIE, $this->buildCookie());
+							}
+							curl_setopt($this->ch, CURLOPT_VERBOSE, $this->options['debug']); // Display communication with server
+						}
+						curl_setopt($this->ch, CURLOPT_FOLLOWLOCATION, 0);
+						curl_setopt($this->ch, CURLOPT_URL, $form_action);
+						curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, 1);
+						curl_setopt($this->ch, CURLOPT_POST, 1);
+						curl_setopt($this->ch, CURLOPT_POSTFIELDS, $post_params.$strParameters);
+						if (!empty($this->options['httpauth'])) {
+							curl_setopt($this->ch, CURLOPT_USERPWD, "{$this->options['httpauth_username']}:{$this->options['httpauth_password']}");
+							curl_setopt($this->ch, CURLOPT_HTTPAUTH, $this->options['httpauth']);
+						}
+
+						$remotedata = curl_exec($this->ch);
+						if ($this->options['debug']) {
+							$this->status['cURL']['data'][]= $remotedata;
+							$this->status['debug'][]='CURL_INFO'.': '.print_r(curl_getinfo($this->ch), true);
+						}
+						if (curl_error($this->ch)) {
+							$this->status['error'][] = JFusionCurl::_('CURL_ERROR_MSG').': '.curl_error($this->ch);
+						} else {
+							//we have to set the cookies now
+
+							if (empty($this->options['logout'])){
+								$this->status['debug'][] = JFusionCurl::_('CURL_LOGIN_FINISHED');
+								$this->setCookies($this->options['cookiedomain'], $this->options['cookiepath'], $this->options['expires'], $this->options['secure'], $this->options['httponly']);
+							} else {
+								$this->status['debug'][] = JFusionCurl::_('CURL_LOGOUT_FINISHED');
+								$this->deleteCookies($this->options['cookiedomain'], $this->options['cookiepath'], $this->options['expires'], $this->options['secure'], $this->options['httponly']);
+							}
+						}
+						curl_close($this->ch);
 					}
 				}
 			}
 		}
-
-		// extra post parameter to avoid endless loop when more then one jFusion is installed
-		if (isset($curl_options['jnodeid'])) {
-			$strParameters .= '&jnodeid='.urlencode($curl_options['jnodeid']);
-		}
-
-		// extra post parameter to signal a host calling
-		if (isset($curl_options['jhost'])) {
-			$strParameters .= '&jhost=true';
-		}
-
-		if (empty($curl_options['logout'])){
-			$post_params = $input_username_name.'='.urlencode($curl_options['username']).'&'.$input_password_name.'='.urlencode($curl_options['password']);
-			$post_params_debug = $input_username_name.'='.urlencode($curl_options['username']).'&'.$input_password_name.'=xxxxxx';
-			$status['debug'][] = JFusionCurl::_('CURL_STARTING_LOGIN').' '.$form_action.' parameters= '.$post_params_debug.$strParameters;
-		} else {
-			$post_params = '';
-			$status['debug'][] = JFusionCurl::_('CURL_STARTING_LOGOUT').' '.$form_action.' parameters= '.$strParameters;
-		}
-
-
-
-		// finally submit the login/logout form:
-		if ($curl_options['integrationtype'] == 1) {
-			$ch = curl_init();
-            $ip = $_SERVER['REMOTE_ADDR'];
-            curl_setopt( $ch, CURLOPT_HTTPHEADER, array('REMOTE_ADDR: '.$ip, 'X_FORWARDED_FOR: '.$ip));
-			curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
-			curl_setopt($ch, CURLOPT_REFERER, "");
-			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-			curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, $curl_options['verifyhost']);
-			curl_setopt($ch, CURLOPT_FAILONERROR, 1);
-			curl_setopt($ch, CURLOPT_HEADERFUNCTION, array('JFusionCurl','read_header'));
-			if (empty($curl_options['brute_force'])){
-				curl_setopt($ch, CURLOPT_COOKIE, JFusionCurl::buildCookie());
-			}
-			curl_setopt($ch, CURLOPT_VERBOSE, $curl_options['debug']); // Display communication with server
-		}
-		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 0);
-		curl_setopt($ch, CURLOPT_URL, $form_action);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_POST, 1);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_params.$strParameters);
-		if (!empty($curl_options['httpauth'])) {
-			curl_setopt($ch, CURLOPT_USERPWD, "{$curl_options['httpauth_username']}:{$curl_options['httpauth_password']}");
-			curl_setopt($ch, CURLOPT_HTTPAUTH, $curl_options['httpauth']);
-		}
-
-		$remotedata = curl_exec($ch);
-		if ($curl_options['debug']) {
-			$status['cURL']['data'][]= $remotedata;
-			$status['debug'][]='CURL_INFO'.': '.print_r(curl_getinfo($ch), true);
-		}
-		if (curl_error($ch)) {
-			$status['error'][] = JFusionCurl::_('CURL_ERROR_MSG').': '.curl_error($ch);
-			curl_close($ch);
-			return $status;
-		}
-		curl_close($ch);
-
-		//we have to set the cookies now
-
-		if (empty($curl_options['logout'])){
-			$status['debug'][] = JFusionCurl::_('CURL_LOGIN_FINISHED');
-			$status=JFusionCurl::setmycookies($status, $cookies_to_set, $curl_options['cookiedomain'], $curl_options['cookiepath'], $curl_options['expires'], $curl_options['secure'], $curl_options['httponly']);
-		} else {
-			$status['debug'][] = JFusionCurl::_('CURL_LOGOUT_FINISHED');
-			$status=JFusionCurl::deletemycookies($status, $cookies_to_set, $curl_options['cookiedomain'], $curl_options['cookiepath'], $curl_options['expires'], $curl_options['secure'], $curl_options['httponly']);
-		}
-		$cookies_to_set_index = 0;
-		return $status;
+		return $this->status;
 	}
 
 	/**
 	 * RemoteLogout
 	 *
-	 * @param array $curl_options curl options
+	 * @param array $options curl options
 	 *
 	 * @return string something
 	 */
-    public static function RemoteLogout($curl_options)
+	public static function RemoteLogout($options)
 	{
-		$status=array();
-		global $ch;
-		global $cookiearr;
-		global $cookies_to_set;
-		global $cookies_to_set_index;
+		$curl = new JFusionCurl($options);
+		return $curl->logout();
+	}
+
+	/**
+	 * RemoteLogout
+	 *
+	 * @return string something
+	 */
+	public function logout()
+	{
 		$tmpurl = array();
-		$cookies_to_set=array();
-		$cookies_to_set_index=0;
-		$status['debug']=array();
-		$status['error']=array();
-		$status['cURL']=array();
-		$status['cURL']['moodle']='';
-		$status['cURL']['data']= array();
 
 		// check parameters and set defaults
-		if (!isset($curl_options['post_url'])) {
-			$status['error'][]= 'Fatal programming error : no post_url!';
-			return $status;
-		}
-		if (!isset($curl_options['cookiedomain'])) {
-			$curl_options['cookiedomain'] = '';
-		}
-		if (!isset($curl_options['cookiepath'])) {
-			$curl_options['cookiepath'] = '';
-		}
-		if (!isset($curl_options['leavealone'])) {
-			$curl_options['leavealone'] = null;
-		}
-		if (!isset($curl_options['secure'])) {
-			$curl_options['secure'] = 0;
-		}
-		if (!isset($curl_options['httponly'])) {
-			$curl_options['httponly'] = 0;
-		}
-		if (!isset($curl_options['verifyhost'])) {
-			$curl_options['verifyhost'] = 1;
-		}
-		if (!isset($curl_options['debug'])) {
-			$curl_options['debug'] = false;
-		}
-
-		// prevent user error by not supplying trailing backslash.
-		// make sure that when parameters are sent we do not add a backslash
-		if (strpos($curl_options['post_url'], '?') === false) {
-			if (!(substr($curl_options['post_url'], -1) == '/')) {
-				$curl_options['post_url'] = $curl_options['post_url'].'/';
+		if (!isset($this->options['post_url'])) {
+			$this->status['error'][]= 'Fatal programming error : no post_url!';
+		} else {
+			// prevent user error by not supplying trailing backslash.
+			// make sure that when parameters are sent we do not add a backslash
+			if (strpos($this->options['post_url'], '?') === false) {
+				if (!(substr($this->options['post_url'], -1) == '/')) {
+					$this->options['post_url'] = $this->options['post_url'].'/';
+				}
 			}
-		}
-		$ch = curl_init();
-        $ip = $_SERVER['REMOTE_ADDR'];
-        curl_setopt( $ch, CURLOPT_HTTPHEADER, array('REMOTE_ADDR: '.$ip, 'X_FORWARDED_FOR: '.$ip));
-		curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
-		curl_setopt($ch, CURLOPT_REFERER, "");
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, $curl_options['verifyhost']);
-		curl_setopt($ch, CURLOPT_FAILONERROR, 1);
-		curl_setopt($ch, CURLOPT_HEADERFUNCTION, array('JFusionCurl','read_header'));
-		curl_setopt($ch, CURLOPT_URL, $curl_options['post_url']);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_VERBOSE, $curl_options['debug']); // Display communication with server
+			$this->ch = curl_init();
+			$ip = $_SERVER['REMOTE_ADDR'];
+			curl_setopt($this->ch, CURLOPT_HTTPHEADER, array('REMOTE_ADDR: '.$ip, 'X_FORWARDED_FOR: '.$ip));
+			curl_setopt($this->ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
+			curl_setopt($this->ch, CURLOPT_REFERER, "");
+			curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, 0);
+			curl_setopt($this->ch, CURLOPT_SSL_VERIFYHOST, $this->options['verifyhost']);
+			curl_setopt($this->ch, CURLOPT_FAILONERROR, 1);
+			curl_setopt($this->ch, CURLOPT_HEADERFUNCTION, array($this,'read_header'));
+			curl_setopt($this->ch, CURLOPT_URL, $this->options['post_url']);
+			curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($this->ch, CURLOPT_VERBOSE, $this->options['debug']); // Display communication with server
 
-		if (!empty($curl_options['httpauth'])) {
-			curl_setopt($ch, CURLOPT_USERPWD, "{$curl_options['httpauth_username']}:{$curl_options['httpauth_password']}");
+			if (!empty($this->options['httpauth'])) {
+				curl_setopt($this->ch, CURLOPT_USERPWD, "{$this->options['httpauth_username']}:{$this->options['httpauth_password']}");
 
-			switch ($curl_options['httpauth']) {
-				case "basic":
-					$curl_options['httpauth'] = CURLAUTH_BASIC;
-					break;
-				case "gssnegotiate":
-					$curl_options['httpauth'] = CURLAUTH_GSSNEGOTIATE;
-					break;
-				case "digest":
-					$curl_options['httpauth'] = CURLAUTH_DIGEST;
-					break;
-				case "ntlm":
-					$curl_options['httpauth'] = CURLAUTH_NTLM;
-					break;
-				case "anysafe":
-					$curl_options['httpauth'] = CURLAUTH_ANYSAFE;
-					break;
-				case "any":
-				default:
-					$curl_options['httpauth'] = CURLAUTH_ANY;
+				switch ($this->options['httpauth']) {
+					case "basic":
+						$this->options['httpauth'] = CURLAUTH_BASIC;
+						break;
+					case "gssnegotiate":
+						$this->options['httpauth'] = CURLAUTH_GSSNEGOTIATE;
+						break;
+					case "digest":
+						$this->options['httpauth'] = CURLAUTH_DIGEST;
+						break;
+					case "ntlm":
+						$this->options['httpauth'] = CURLAUTH_NTLM;
+						break;
+					case "anysafe":
+						$this->options['httpauth'] = CURLAUTH_ANYSAFE;
+						break;
+					case "any":
+					default:
+						$this->options['httpauth'] = CURLAUTH_ANY;
+				}
+
+				curl_setopt($this->ch, CURLOPT_HTTPAUTH, $this->options['httpauth']);
 			}
 
-			curl_setopt($ch, CURLOPT_HTTPAUTH, $curl_options['httpauth']);
+			$remotedata = curl_exec($this->ch);
+			if ($this->options['debug']) {
+				$this->status['cURL']['data'][]= $remotedata;
+				$this->status['debug'][]='CURL_INFO'.': '.print_r(curl_getinfo($this->ch), true);
+			}
+			if (curl_error($this->ch)) {
+				$this->status['error'][] = JFusionCurl::_('CURL_ERROR_MSG').': '.curl_error($this->ch);
+			} else {
+				//we have to delete the cookies now
+				$this->deleteCookies($this->options['cookiedomain'], $this->options['cookiepath'], $this->options['leavealone'], $this->options['secure'], $this->options['httponly']);
+			}
+			curl_close($this->ch);
 		}
-
-		$remotedata = curl_exec($ch);
-		if ($curl_options['debug']) {
-			$status['cURL']['data'][]= $remotedata;
-			$status['debug'][]='CURL_INFO'.': '.print_r(curl_getinfo($ch), true);
-		}
-		if (curl_error($ch)) {
-			$status['error'][] = JFusionCurl::_('CURL_ERROR_MSG').': '.curl_error($ch);
-			curl_close($ch);
-			return $status;
-		}
-		curl_close($ch);
-
-		//we have to delete the cookies now
-		$status=JFusionCurl::deletemycookies($status, $cookies_to_set, $curl_options['cookiedomain'], $curl_options['cookiepath'], $curl_options['leavealone'], $curl_options['secure'], $curl_options['httponly']);
-		$cookies_to_set_index = 0;
-		return $status;
+		return $this->status;
 	}
 
 	/**
 	 * remote logout url
 	 *
-	 * @param array $curl_options curl options
+	 * @param array $options curl options
 	 *
 	 * @return string something
 	 */
-    public static function RemoteLogoutUrl($curl_options)
+	public static function RemoteLogoutUrl($options)
 	{
-		$status=array();
-		global $ch;
-		global $cookiearr;
-		global $cookies_to_set;
-		global $cookies_to_set_index;
+		$curl = new JFusionCurl($options);
+		return $curl->logoutUrl();
+	}
+	/**
+	 * remote logout url
+	 *
+	 * @return string something
+	 */
+	public function logoutUrl()
+	{
 		$tmpurl = array();
-		$cookies_to_set=array();
-		$cookies_to_set_index=0;
-		$status['debug']=array();
-		$status['error']=array();
-		$status['cURL']=array();
-		$status['cURL']['moodle']='';
-		$status['cURL']['data']= array();
 		$open_basedir = ini_get('open_basedir');
 		$safe_mode = ini_get('safe_mode');
 
 		// check parameters and set defaults
-		if (!isset($curl_options['post_url'])) {
+		if (!isset($this->options['post_url'])) {
 			$status['error'][]= 'Fatal programming error : no post_url!';
-			return $status;
-		}
-		if (!isset($curl_options['cookiedomain'])) {
-			$curl_options['cookiedomain'] = '';
-		}
-		if (!isset($curl_options['cookiepath'])) {
-			$curl_options['cookiepath'] = '';
-		}
-		if (!isset($curl_options['leavealone'])) {
-			$curl_options['leavealone'] = null;
-		}
-		if (!isset($curl_options['secure'])) {
-			$curl_options['secure'] = 0;
-		}
-		if (!isset($curl_options['httponly'])) {
-			$curl_options['httponly'] = 0;
-		}
-		if (!isset($curl_options['verifyhost'])) {
-			$curl_options['verifyhost'] = 1;
-		}
-		if (!isset($curl_options['debug'])) {
-			$curl_options['debug'] = false;
-		}
-		if (!isset($curl_options['postfields'])) {
-			$curl_options['postfields'] = '';
-		}
-
-		$ch = curl_init();
-        $ip = $_SERVER['REMOTE_ADDR'];
-        curl_setopt( $ch, CURLOPT_HTTPHEADER, array('REMOTE_ADDR: '.$ip, 'X_FORWARDED_FOR: '.$ip));
-		curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
-		curl_setopt($ch, CURLOPT_REFERER, "");
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, $curl_options['verifyhost']);
-		curl_setopt($ch, CURLOPT_FAILONERROR, 1);
-		curl_setopt($ch, CURLOPT_HEADERFUNCTION, array('JFusionCurl','read_header'));
-		curl_setopt($ch, CURLOPT_URL, $curl_options['post_url']);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_COOKIE, JFusionCurl::buildCookie());
-		curl_setopt($ch, CURLOPT_VERBOSE, $curl_options['debug']); // Display communication with server
-		if (empty($open_basedir) && empty($safe_mode)) {
-			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-		}
-
-		if (isset($curl_options['jnodeid'])) {
-			if ($curl_options['postfields']) {
-				$curl_options['postfields']=$curl_options['postfields'].'&jnodeid='.$curl_options['jnodeid'];
-			} else {
-				$curl_options['postfields']= 'jnodeid='.$curl_options['jnodeid'];
-			}
-		}
-
-		if ($curl_options['postfields']){
-			curl_setopt($ch, CURLOPT_POST, 1);
-			curl_setopt($ch, CURLOPT_POSTFIELDS, $curl_options['postfields']);
-		}
-		curl_setopt($ch, CURLOPT_MAXREDIRS, 2);
-		curl_setopt($ch, CURLOPT_HEADERFUNCTION, array('JFusionCurl','read_header'));
-		curl_setopt($ch, CURLOPT_COOKIE, JFusionCurl::buildCookie());
-
-		if (!empty($curl_options['httpauth'])) {
-			curl_setopt($ch, CURLOPT_USERPWD, "{$curl_options['httpauth_username']}:{$curl_options['httpauth_password']}");
-
-			switch ($curl_options['httpauth']) {
-				case "basic":
-					$curl_options['httpauth'] = CURLAUTH_BASIC;
-					break;
-				case "gssnegotiate":
-					$curl_options['httpauth'] = CURLAUTH_GSSNEGOTIATE;
-					break;
-				case "digest":
-					$curl_options['httpauth'] = CURLAUTH_DIGEST;
-					break;
-				case "ntlm":
-					$curl_options['httpauth'] = CURLAUTH_NTLM;
-					break;
-				case "anysafe":
-					$curl_options['httpauth'] = CURLAUTH_ANYSAFE;
-					break;
-				case "any":
-				default:
-					$curl_options['httpauth'] = CURLAUTH_ANY;
-			}
-
-			curl_setopt($ch, CURLOPT_HTTPAUTH, $curl_options['httpauth']);
-		}
-
-		if (empty($open_basedir) && empty($safe_mode)) {
-			$remotedata = curl_exec($ch);
 		} else {
-			$remotedata= JFusionCurl::curl_redir_exec($ch);
+			$this->ch = curl_init();
+			$ip = $_SERVER['REMOTE_ADDR'];
+			curl_setopt($this->ch, CURLOPT_HTTPHEADER, array('REMOTE_ADDR: '.$ip, 'X_FORWARDED_FOR: '.$ip));
+			curl_setopt($this->ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
+			curl_setopt($this->ch, CURLOPT_REFERER, "");
+			curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, 0);
+			curl_setopt($this->ch, CURLOPT_SSL_VERIFYHOST, $this->options['verifyhost']);
+			curl_setopt($this->ch, CURLOPT_FAILONERROR, 1);
+			curl_setopt($this->ch, CURLOPT_HEADERFUNCTION, array($this,'read_header'));
+			curl_setopt($this->ch, CURLOPT_URL, $this->options['post_url']);
+			curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($this->ch, CURLOPT_COOKIE, $this->buildCookie());
+			curl_setopt($this->ch, CURLOPT_VERBOSE, $this->options['debug']); // Display communication with server
+			if (empty($open_basedir) && empty($safe_mode)) {
+				curl_setopt($this->ch, CURLOPT_FOLLOWLOCATION, 1);
+			}
+
+			if (isset($this->options['jnodeid'])) {
+				if ($this->options['postfields']) {
+					$this->options['postfields']=$this->options['postfields'].'&jnodeid='.$this->options['jnodeid'];
+				} else {
+					$this->options['postfields']= 'jnodeid='.$this->options['jnodeid'];
+				}
+			}
+
+			if ($this->options['postfields']){
+				curl_setopt($this->ch, CURLOPT_POST, 1);
+				curl_setopt($this->ch, CURLOPT_POSTFIELDS, $this->options['postfields']);
+			}
+			curl_setopt($this->ch, CURLOPT_MAXREDIRS, 2);
+			curl_setopt($this->ch, CURLOPT_HEADERFUNCTION, array($this,'read_header'));
+			curl_setopt($this->ch, CURLOPT_COOKIE, $this->buildCookie());
+
+			if (!empty($this->options['httpauth'])) {
+				curl_setopt($this->ch, CURLOPT_USERPWD, "{$this->options['httpauth_username']}:{$this->options['httpauth_password']}");
+
+				switch ($this->options['httpauth']) {
+					case "basic":
+						$this->options['httpauth'] = CURLAUTH_BASIC;
+						break;
+					case "gssnegotiate":
+						$this->options['httpauth'] = CURLAUTH_GSSNEGOTIATE;
+						break;
+					case "digest":
+						$this->options['httpauth'] = CURLAUTH_DIGEST;
+						break;
+					case "ntlm":
+						$this->options['httpauth'] = CURLAUTH_NTLM;
+						break;
+					case "anysafe":
+						$this->options['httpauth'] = CURLAUTH_ANYSAFE;
+						break;
+					case "any":
+					default:
+						$this->options['httpauth'] = CURLAUTH_ANY;
+				}
+
+				curl_setopt($this->ch, CURLOPT_HTTPAUTH, $this->options['httpauth']);
+			}
+
+			if (empty($open_basedir) && empty($safe_mode)) {
+				$remotedata = curl_exec($this->ch);
+			} else {
+				$remotedata = $this->curl_redir_exec();
+			}
+			if ($this->options['debug']) {
+				$this->status['cURL']['data'][]= $remotedata;
+				$this->status['debug'][]='CURL_INFO'.': '.print_r(curl_getinfo($this->ch), true);
+			}
+			$this->status['debug'][]= JFusionCurl::_('CURL_LOGOUT_URL').': '.  $this->options['post_url'];
+			if (curl_error($this->ch)) {
+				$this->status['error'][] = JFusionCurl::_('CURL_ERROR_MSG').': '.curl_error($this->ch);
+			} else {
+				$this->setCookies($this->options['cookiedomain'], $this->options['cookiepath'], $this->options['expires'], $this->options['secure'], $this->options['httponly']);
+			}
+			curl_close($this->ch);
 		}
-		if ($curl_options['debug']) {
-			$status['cURL']['data'][]= $remotedata;
-			$status['debug'][]='CURL_INFO'.': '.print_r(curl_getinfo($ch), true);
-		}
-		$status['debug'][]= JFusionCurl::_('CURL_LOGOUT_URL').': '.  $curl_options['post_url'];
-		if (curl_error($ch)) {
-			$status['error'][] = JFusionCurl::_('CURL_ERROR_MSG').': '.curl_error($ch);
-			curl_close($ch);
-			return $status;
-		}
-		curl_close($ch);
-		$status=JFusionCurl::setmycookies($status, $cookies_to_set, $curl_options['cookiedomain'], $curl_options['cookiepath'], $curl_options['expires'], $curl_options['secure'], $curl_options['httponly']);
-		$cookies_to_set_index = 0;
-		return $status;
+		return $this->status;
 	}
 }

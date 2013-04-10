@@ -133,6 +133,30 @@ class JFusionAdmin_joomla_ext extends JFusionAdmin
 		return JFusionJplugin::allowRegistration($this->getJname());
 	}
 
+    function debugConfig() {
+		$jname = $this->getJname();
+		//get registration status
+		$new_registration = $this->allowRegistration();
+		//get the data about the JFusion plugins
+		$db = JFactory::getDBO();
+		$query = 'SELECT * from #__jfusion WHERE name = ' . $db->Quote($jname);
+		$db->setQuery($query);
+		$plugin = $db->loadObject();
+		//output a warning to the administrator if the allowRegistration setting is wrong
+		if ($new_registration && $plugin->slave == '1') {
+			JError::raiseNotice(0, $jname . ': ' . JText::_('DISABLE_REGISTRATION'));
+		}
+		if (!$new_registration && $plugin->master == '1') {
+			JError::raiseNotice(0, $jname . ': ' . JText::_('ENABLE_REGISTRATION'));
+		}
+		//check that master plugin does not have advanced group mode data stored
+		$master = JFusionFunction::getMaster();
+		$params = JFusionFactory::getParams($jname);
+		if (!empty($master) && $master->name == $jname && JFusionFunction::isAdvancedUsergroupMode($this->getJname())) {
+			JError::raiseWarning(0, $jname . ': ' . JText::_('ADVANCED_GROUPMODE_ONLY_SUPPORTED_FORSLAVES'));
+		}
+	}
+
     /**
      * do plugin support multi usergroups
      *

@@ -172,10 +172,8 @@ class JFusionUser_magento extends JFusionUser {
             return $result;
         }
         // walk through the array and fill the object requested
-        /**
-         * @TODO This can be smarter by reading types at once and put the data them in the right place
-         *       for now I'm trying to get this working. optimising comes next
-         */
+        // TODO This can be smarter by reading types at once and put the data them in the right place
+        // for now I'm trying to get this working. optimising comes next
         $filled_object = array();
         $db = JFusionFactory::getDataBase($this->getJname());
         for ($i = 0;$i < count($result);$i++) {
@@ -460,7 +458,7 @@ class JFusionUser_magento extends JFusionUser {
         $params = JFusionFactory::getParams($this->getJname());
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
         if (empty($usergroups)) {
-            $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . JText::_('USERGROUP_MISSING');
+            $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('USERGROUP_MISSING');
         } else {
             $usergroup = $usergroups[0];
             $db = JFusionFactory::getDataBase($this->getJname());
@@ -544,8 +542,7 @@ class JFusionUser_magento extends JFusionUser {
     }
 
     /**
-     * @TODO update username code
-     *
+     * @todo update username code
      * @param object $userinfo
      * @param object $existinguser
      * @param array $status

@@ -149,10 +149,9 @@ class JFusionUser_wordpress extends JFusionUser {
 		$result->activation        = $user->user_activation_key;
 		$result->block             = 0;
 
-		/**
-		 * @TODO get to find out where user status stands for. As far as I can see we have also two additional fields
-		 *       in a multi site, one of the spam. This maybe linked to block.
-		 */
+		// todo get to find out where user status stands for. As far as I can see we have also two additional fields
+		// in a multi site, one of the spam. This maybe linked to block.
+
 		return $result;
 	}
 
@@ -164,30 +163,76 @@ class JFusionUser_wordpress extends JFusionUser {
      */
     function destroySession($userinfo, $options) {
 
-        $status = array('error' => array(),'debug' => array());
+    $status = array('error' => array(),'debug' => array());
 		$params = JFusionFactory::getParams($this->getJname());
-		$cookie_name = $params->get('cookie_name');
-		$cookie_domain = $params->get('cookie_domain');
-		$cookie_path = $params->get('cookie_path');
-		$cookie_hash = $params->get('cookie_hash');
+		$wpnonce=array();
+		
+    $jname = $this->getJname();
+		$params = & JFusionFactory::getParams($jname);
+		$logout_url = $params->get('logout_url');
 
-		$cookies = array();
-		$cookies[0][0] ='wordpress_logged_in'.$cookie_name.'=';
-		$cookies[1][0] ='wordpress'.$cookie_name.'=';
+		$curl_options['post_url'] = $params->get('source_url') . $logout_url;
+		$curl_options['cookiedomain'] = $params->get('cookie_domain');
+		$curl_options['cookiepath'] = $params->get('cookie_path');
+		$curl_options['leavealone'] = $params->get('leavealone');
+		$curl_options['secure'] = $params->get('secure');
+		$curl_options['httponly'] = $params->get('httponly');
+		$curl_options['verifyhost'] = 0; //$params->get('ssl_verifyhost');
+		$curl_options['httpauth'] = $params->get('httpauth');
+		$curl_options['httpauth_username'] = $params->get('curl_username');
+		$curl_options['httpauth_password'] = $params->get('curl_password');
+		$curl_options['integrationtype']=0;
+		$curl_options['debug'] =0;
 
-		$status = JFusionCurl::deletemycookies($status, $cookies, $cookie_domain, $cookie_path, "");
+		// to prevent endless loops on systems where there are multiple places where a user can login
+		// we post an unique ID for the initiating software so we can make a difference between
+		// a user logging out or another jFusion installation, or even another system with reverse dual login code.
+		// We always use the source url of the initializing system, here the source_url as defined in the joomla_int
+		// plugin. This is totally transparent for the the webmaster. No additional setup is needed
 
-		$cookies = array();
-		$cookies[1][0] ='wordpress'.$cookie_name.'=';
 
-		$path = $cookie_path.'wp-content/plugins';
-		$status = JFusionCurl::deletemycookies($status, $cookies, $cookie_domain, $path, "");
+		$my_ID = rtrim(parse_url(JURI::root(), PHP_URL_HOST).parse_url(JURI::root(), PHP_URL_PATH), '/');
+		$curl_options['jnodeid'] = $my_ID;
+		
+		$curl = new JFusionCurl($curl_options);
+		
+		$remotedata = $curl->ReadPage();
+		if (!empty($curl->status['error'])) {
+			$curl->status['debug'][]= JText::_('CURL_COULD_NOT_READ_PAGE: '). $curl->options['post_url'];
+		} else {
+        // get _wpnonce security value
+        preg_match("/action=logout.+?_wpnonce=([\w\s-]*)[\"']/i",$remotedata,$wpnonce);
+        if (!empty($wpnonce[1])){
+ 					$curl_options['post_url'] = $curl_options['post_url']."?action=logout&_wpnonce=".$wpnonce[1];
+					$status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname(),$params->get('logout_type'),$curl_options);
+        } else {
+          // non wpnonce, we are probably not on the logoutpage. Just report
+          $status['debug'][]= JText::_('NO_WPNONCE_FOUND: ');
+  
+          //try to delete all cookies
+          $cookie_name = $params->get('cookie_name');
+          $cookie_domain = $params->get('cookie_domain');
+          $cookie_path = $params->get('cookie_path');
+          $cookie_hash = $params->get('cookie_hash');
 
-	    $path = $cookie_path.'wp-admin';
-	    $status = JFusionCurl::deletemycookies($status, $cookies, $cookie_domain, $path, "");
+          $cookies = array();
+          $cookies[0][0] ='wordpress_logged_in'.$cookie_name.'=';
+          $cookies[1][0] ='wordpress'.$cookie_name.'=';
+          $status = $curl->deletemycookies($status, $cookies, $cookie_domain, $cookie_path, "");
 
+          $cookies = array();
+          $cookies[1][0] ='wordpress'.$cookie_name.'=';
+
+          $path = $cookie_path.'wp-content/plugins';
+          $status = $curl->deletemycookies($status, $cookies, $cookie_domain, $path, "");
+
+          $path = $cookie_path.'wp-admin';
+          $status = $curl->deletemycookies($status, $cookies, $cookie_domain, $path, "");
+        }
+    }      
 		return $status;
 	}
+
 
     /**
      * @param object $userinfo
@@ -365,7 +410,7 @@ class JFusionUser_wordpress extends JFusionUser {
 		$params = JFusionFactory::getParams($this->getJname());
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
         if (empty($usergroups)) {
-			$status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . JText::_('USERGROUP_MISSING');
+			$status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('USERGROUP_MISSING');
 		} else {
             /**
              * @ignore
