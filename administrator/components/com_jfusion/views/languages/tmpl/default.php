@@ -145,5 +145,5 @@ JFusionFunctionAdmin::displayDonate();
     <?php echo JHTML::_('form.token'); ?>
 </form>
 <br/><br/>
-<a target="_blank" href="https://www.transifex.com/projects/p/jfusion/"><img border="0" src="https://ds0k0en9abmn1.cloudfront.net/charts/images/tx-logo-micro.646b0065fce6.png"></a>
+<a target="_blank" href="https://www.transifex.com/projects/p/jfusion/"><img border="0" src="components/com_jfusion/images/transifex.png"></a>
 <br/><br/>
