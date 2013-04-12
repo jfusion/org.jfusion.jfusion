@@ -348,7 +348,6 @@ class JFusionAdmin_universal extends JFusionAdmin{
 
 		$list = json_encode($list);
 
-		$configuration_error = JText::_('CONFIGURATION_ERROR');
 		$output = <<<JS
         var TypeAry = {$list};
 
@@ -399,33 +398,17 @@ class JFusionAdmin_universal extends JFusionAdmin{
 			});
 		}
 
-        function updateoptions() {
-			var userelements = document.getElements('select[id^=paramsmapuserfield]');
-			userelements.each(function(element) {
-				var value = element.get('value');
+        function updateoptions(type) {
+			var elements = document.getElements('select[id^=paramsmap'+type+'field]');
+			elements.each(function(element) {
 				for (var i = 0; i < element.options.length; i++) {
 					if (element.options[i].disabled) {
 						element.options[i].disabled = false;
 					}
 				}
 			});
-			userelements.each(function(element) {
-				var value = element.get('value');
-				disableoptions(userelements,value);
-			});
-
-			var grouplements = document.getElements('select[id^=paramsmapgroupfield]');
-			grouplements.each(function(element) {
-				var value = element.get('value');
-				for (var i = 0; i < element.options.length; i++) {
-					if (element.options[i].disabled) {
-						element.options[i].disabled = false;
-					}
-				}
-			});
-			grouplements.each(function(element) {
-				var value = element.get('value');
-				disableoptions(grouplements,value);
+			elements.each(function(element) {
+				disableoptions(elements,element.get('value'));
 			});
         }
 
@@ -434,7 +417,8 @@ class JFusionAdmin_universal extends JFusionAdmin{
             var id = $(name);
             id.innerHTML = '';
 
-			updateoptions();
+			updateoptions('user');
+			updateoptions('group');
             if ( TypeAry[ref.value].types !== undefined ) {
                 var type = document.createElement("select");
                 type.setAttribute("type", "option");
@@ -505,7 +489,8 @@ class JFusionAdmin_universal extends JFusionAdmin{
         }
 
         window.addEvent('domready',function() {
-        	updateoptions();
+			updateoptions('user');
+			updateoptions('group');
         });
 JS;
 		$document->addScriptDeclaration($output);
