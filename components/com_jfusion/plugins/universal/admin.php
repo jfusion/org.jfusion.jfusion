@@ -16,8 +16,6 @@ defined('_JEXEC' ) or die('Restricted access' );
 require_once(JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.jfusion.php');
 require_once(JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.abstractadmin.php');
 
-require_once(dirname(__FILE__).DS.'map.php');
-
 /**
  * JFusion Admin Class for universal
  * For detailed descriptions on these functions please check the model.abstractadmin.php
@@ -105,7 +103,7 @@ class JFusionAdmin_universal extends JFusionAdmin{
 		 * @var $helper JFusionHelper_universal
 		 */
 		$helper = JFusionFactory::getHelper($this->getJname());
-		$f = array('USERNAME', 'EMAIL', 'USERNAMEEMAIL');
+		$f = array('USERNAME', 'EMAIL');
 		$field = $helper->getQuery($f);
 
 		// initialise some objects
@@ -254,7 +252,11 @@ class JFusionAdmin_universal extends JFusionAdmin{
 
 				$onchange = 'onchange="javascript: groupchange(this)"';
 
+				$output .= '<table>';
+				$output .= '<tr><td>';
 				$output .= JHTML::_('select.genericlist', $tl, $control_name.'['.$name.']['.$type.'][table]', 'onchange="javascript: submitbutton(\'applyconfig\')"',	'id', 'name', $value['table']);
+				$output .= '</td></tr>';
+				$output .= '<tr><td>';
 				if ( !empty($value['table']) ) {
 					$output .= '<table>';
 					foreach ($mapuser as $val) {
@@ -290,20 +292,30 @@ class JFusionAdmin_universal extends JFusionAdmin{
 							}
 						}
 
-						$onchange = 'onchange="javascript: changefield(this,\''.$val->Field.'\',\''.$type.'\')"';
-						$output .= JHTML::_('select.genericlist', $fieldtypes, $control_name.'['.$name.']['.$type.'][field]['.$val->Field.']', $onchange,	'id', 'name', $mapuserfield);
-
+						$onchange = 'size="8" multiple onchange="javascript: changefield(this,\''.$val->Field.'\',\''.$type.'\')"';
+						$output .= '<table>';
+						$output .= '<tr>';
+						$output .= '<td>';
+						$output .= JHTML::_('select.genericlist', $fieldtypes, $control_name.'['.$name.']['.$type.'][field]['.$val->Field.'][]', $onchange,	'id', 'name', $mapuserfield);
+						$output .= '</td>';
+						$output .= '<td>';
 						$onchange = 'onchange="javascript: changevalue(this,\''.$val->Field.'\',\''.$type.'\')"';
-						$output .= '<div id="'.$val->Field.'">';
-						if ( isset( $fieldtypes[$mapuserfield]) ) {
-							if ( isset( $fieldtypes[$mapuserfield]->types) ) {
-								$output .= JHTML::_('select.genericlist', $fieldtypes[$mapuserfield]->types, $control_name.'['.$name.']['.$type.'][type]['.$val->Field.']', $onchange, 'id', 'name', $fieldstype);
+						$output .= '<div id="'.$type.$val->Field.'">';
+
+						if ( isset( $mapuserfield[0]) ) {
+							if ( isset( $fieldtypes[$mapuserfield[0]]) ) {
+								if ( isset( $fieldtypes[$mapuserfield[0]]->types) ) {
+									$output .= JHTML::_('select.genericlist', $fieldtypes[$mapuserfield[0]]->types, $control_name.'['.$name.']['.$type.'][type]['.$val->Field.']', $onchange, 'id', 'name', $fieldstype);
+								}
 							}
 						}
-
+						$output .= '</div>';
+						$output .= '</td>';
+						$output .= '<td>';
+						$output .= '<div id="'.$type.$val->Field.'value">';
 						switch ($fieldstype) {
 							case 'CUSTOM':
-								$output .= '<textarea id="'.$control_name.$name.$type.'value'.$val->Field.'" name="'.$control_name.'['.$name.']['.$type.'][value]['.$val->Field.']" rows="20" cols="55">'.$fieldsvalue.'</textarea>';
+								$output .= '<textarea id="'.$control_name.$name.$type.'value'.$val->Field.'" name="'.$control_name.'['.$name.']['.$type.'][value]['.$val->Field.']" rows="8" cols="55">'.$fieldsvalue.'</textarea>';
 								break;
 							case 'DEFAULT':
 							case 'VALUE':
@@ -317,10 +329,15 @@ class JFusionAdmin_universal extends JFusionAdmin{
 								break;
 						}
 						$output .= '</div>';
+						$output .= '</td>';
+						$output .= '</tr>';
+						$output .= '</table>';
 						$output .= '</td></tr>';
 					}
 					$output .= '</table>';
 				}
+				$output .= '</td></tr>';
+				$output .= '</table>';
 			} else {
 				$output .= JText::_('SAVE_CONFIG_FIRST');
 			}
@@ -353,48 +370,12 @@ class JFusionAdmin_universal extends JFusionAdmin{
 
 		function disableoptions(elements, disable) {
 			elements.each(function(element) {
-				for (var i = 0; i < element.options.length; i++) {
-					var option = element.options[i];
-					var search = [];
-					switch (disable) {
-						case 'USERID':
-							search = [disable,'USERNAMEID'];
-							break;
-						case 'USERNAMEID':
-							search = [disable,'USERID','USERNAME','USERNAMEEMAIL','USERNAMEREALNAME'];
-							break;
-						case 'USERNAME':
-							search = [disable,'USERNAMEID','USERNAMEREALNAME','USERNAMEEMAIL'];
-							break;
-						case 'USERNAMEREALNAME':
-							search = [disable,'USERNAME','USERNAMEID','REALNAME','USERNAMEEMAIL'];
-							break;
-						case 'EMAIL':
-							search = [disable,'USERNAMEEMAIL'];
-							break;
-						case 'USERNAMEEMAIL':
-							search = [disable,'EMAIL','USERNAMEID','USERNAMEREALNAME','USERNAME'];
-							break;
-						case 'ACTIVE':
-						case 'INACTIVE':
-							search = ['ACTIVE','INACTIVE'];
-							break;
-						case 'PASSWORD':
-						case 'LASTVISIT':
-						case 'SALT':
-						case 'FIRSTNAME':
-						case 'LASTNAME':
-						case 'GROUP':
-						case 'ACTIVECODE':
-							search = [disable];
-							break;
-					}
-					if (search.contains(option.value)) {
-					 	if (element.value != disable) {
-					 		option.disabled = true;
-					 	}
-					}
-				}
+				var options = element.getElements('option');
+				options.each(function(option) {
+				    if (option.value == disable && !option.selected) {
+				        option.disabled = true;
+				    }
+				});
 			});
 		}
 
@@ -408,18 +389,47 @@ class JFusionAdmin_universal extends JFusionAdmin{
 				}
 			});
 			elements.each(function(element) {
-				disableoptions(elements,element.get('value'));
+				var options = element.getElements('option');
+				options.each(function(option) {
+					if (option.selected) {
+						switch (option.value) {
+							case 'REALNAME':
+								disableoptions(elements,'LASTNAME');
+								disableoptions(elements,'FIRSTNAME');
+								break;
+							case 'LASTNAME':
+							case 'FIRSTNAME':
+								disableoptions(elements,'REALNAME');
+								break;
+						}
+						disableoptions(elements,option.value);
+					}
+				});
 			});
         }
 
 
         function changefield(ref,name,parmtype) {
-            var id = $(name);
+        	var options = ref.getElements('option');
+        	options.each(function(option) {
+				if (option.selected && option.value) {
+					if (TypeAry[option.value].types !== undefined) {
+						options.each(function(option) {
+							option.selected = false;
+						});
+						option.selected = true;
+					}
+				}
+			});
+
+            var id = $(parmtype+name);
             id.innerHTML = '';
+            var value = $(parmtype+name+'value');
+			value.innerHTML = '';
 
 			updateoptions('user');
 			updateoptions('group');
-            if ( TypeAry[ref.value].types !== undefined ) {
+            if ( ref.value && TypeAry[ref.value].types !== undefined ) {
                 var type = document.createElement("select");
                 type.setAttribute("type", "option");
                 type.setAttribute("id", "paramsmap"+parmtype+"type"+name);
@@ -434,7 +444,7 @@ class JFusionAdmin_universal extends JFusionAdmin{
             }
         }
         function changevalue(ref,name,parmtype) {
-            var id = $(name);
+            var id = $(parmtype+name+'value');
 
 			var paramsmap = $("paramsmap"+parmtype+"value"+name);
             if ( paramsmap ) {
@@ -456,7 +466,7 @@ class JFusionAdmin_universal extends JFusionAdmin{
                 value = document.createElement("textarea");
                 value.setAttribute("id", "paramsmap"+parmtype+"value"+name);
                 value.setAttribute("name", "params[map]["+parmtype+"][value]["+name+"]");
-                value.setAttribute("rows", 20);
+                value.setAttribute("rows", 8);
                 value.setAttribute("cols", 55);
 
                 id.appendChild(value);
@@ -597,22 +607,20 @@ if(!isset($_COOKIE[\'jfusionframeless\']))';
 		$usertable = $helper->getTable();
 		if ($usertable) {
 			$userid = $helper->getFieldType('USERID');
-			$usernameid = $helper->getFieldType('USERNAMEID');
 
 			$username = $helper->getFieldType('USERNAME');
-			$usernameemail = $helper->getFieldType('USERNAMEEMAIL');
 
 			$email = $helper->getFieldType('EMAIL');
 
-			if ( !$userid && !$usernameid ) {
+			if ( !$userid ) {
 				JError::raiseWarning(0, $this->getJname() . ': ' . JText::_('NO_USERID_DEFINED'));
 			}
 
-			if ( !$email && !$usernameemail ) {
+			if ( !$email ) {
 				JError::raiseWarning(0, $this->getJname() . ': ' . JText::_('NO_EMAIL_DEFINED'));
 			}
 
-			if ( !$username && !$usernameid && !$usernameemail ) {
+			if ( !$username ) {
 				JError::raiseWarning(0, $this->getJname() . ': ' . JText::_('NO_USERNAME_DEFINED'));
 			}
 			$grouptable = $helper->getTable('group');
