@@ -392,17 +392,19 @@ class JFusionAdmin_universal extends JFusionAdmin{
 				var options = element.getElements('option');
 				options.each(function(option) {
 					if (option.selected) {
-						switch (option.value) {
-							case 'REALNAME':
-								disableoptions(elements,'LASTNAME');
-								disableoptions(elements,'FIRSTNAME');
-								break;
-							case 'LASTNAME':
-							case 'FIRSTNAME':
-								disableoptions(elements,'REALNAME');
-								break;
+						if (option.value != 'DEFAULT') {
+							switch (option.value) {
+								case 'REALNAME':
+									disableoptions(elements,'LASTNAME');
+									disableoptions(elements,'FIRSTNAME');
+									break;
+								case 'LASTNAME':
+								case 'FIRSTNAME':
+									disableoptions(elements,'REALNAME');
+									break;
+							}
+							disableoptions(elements,option.value);
 						}
-						disableoptions(elements,option.value);
 					}
 				});
 			});
