@@ -846,7 +846,7 @@ HTML;
             $words = explode(' ', $text);
             $wheres = array();
             foreach ($words as $word) {
-                $wheres[] = '((LOWER('.$columns->title.') LIKE \'%'.$word.'%\') OR (LOWER('.$columns->text.') like '%$word%'))';
+                $wheres[] = '((LOWER('.$columns->title.') LIKE \'%'.$word.'%\') OR (LOWER('.$columns->text.') like \'%'.$word.'%\'))';
             }
             if ($phrase == 'all') {
                 $separator = 'AND';
