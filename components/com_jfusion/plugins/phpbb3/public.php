@@ -638,7 +638,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
     /**
      * @return array
      */
-    function getPathway() {
+    function getPathWay() {
         $mainframe = JFactory::getApplication('site');
         $db = JFusionFactory::getDatabase($this->getJname());
         $pathway = array();
