@@ -305,6 +305,14 @@ class JFusionFrameless {
 				$JFusionPlugin->parseCSS($data,$data->header);
 
 				$document->addCustomTag ( $data->header );
+
+				$pathway = $JFusionPlugin->getPathWay();
+				if (is_array($pathway)) {
+					$breadcrumbs = & $mainframe->getPathWay();
+					foreach ($pathway as $path) {
+						$breadcrumbs->addItem($path->title, JFusionFunction::routeURL($path->url, JRequest::getInt('Itemid')));
+					}
+				}
 			}
 
 			// Output the body
