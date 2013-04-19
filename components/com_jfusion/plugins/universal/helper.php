@@ -18,8 +18,8 @@
  * @link       http://www.jfusion.org
  */
 class JFusionHelper_universal {
-	var $_map = array();
-	var $_mapraw = null;
+	var $map = array();
+	var $mapraw = null;
 
 	/**
 	 * @return string
@@ -42,17 +42,17 @@ class JFusionHelper_universal {
 	 * @return bool
 	 */
 	function getMapRaw($type='user') {
-		if( !is_array($this->_mapraw) ) {
+		if( !is_array($this->mapraw) ) {
 			$params = JFusionFactory::getParams($this->getJname());
 			$map = $params->get('map');
 			$map = @unserialize($map);
 			if(is_array($map)) {
-				$this->_mapraw = $map;
+				$this->mapraw = $map;
 			}
 		}
-		if( is_array($this->_mapraw) ) {
-			if( isset($this->_mapraw[$type]) && is_array($this->_mapraw[$type]) ) {
-				return $this->_mapraw[$type];
+		if( is_array($this->mapraw) ) {
+			if( isset($this->mapraw[$type]) && is_array($this->mapraw[$type]) ) {
+				return $this->mapraw[$type];
 			}
 		}
 		return false;
@@ -63,7 +63,7 @@ class JFusionHelper_universal {
 	 * @return array
 	 */
 	function getMap($type='user') {
-		if( !isset($this->_map[$type]) ) {
+		if( !isset($this->map[$type]) ) {
 			$map = $this->getMapRaw($type);
 			if(is_array($map) && isset($map['field'])) {
 				foreach ($map['field'] as $key => $value) {
@@ -77,12 +77,12 @@ class JFusionHelper_universal {
 					if (isset($map['type'][$key])) {
 						$obj->fieldtype = $map['type'][$key];
 					}
-					$this->_map[$type][$key] = $obj;
+					$this->map[$type][$key] = $obj;
 				}
 			}
 		}
-		if( is_array($this->_map) && isset($this->_map[$type]) && is_array($this->_map[$type]) ) {
-			return $this->_map[$type];
+		if( is_array($this->map) && isset($this->map[$type]) && is_array($this->map[$type]) ) {
+			return $this->map[$type];
 		}
 		return array();
 	}
