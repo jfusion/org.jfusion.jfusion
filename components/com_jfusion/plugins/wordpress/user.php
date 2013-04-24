@@ -478,6 +478,8 @@ class JFusionUser_wordpress extends JFusionUser {
                     }
                 }
 
+	            $database_prefix = $params->get('database_prefix');
+
                 $metadata['nickname']         = $userinfo->username;
                 $metadata['description']      = '';
                 $metadata['rich_editing']     = 'true';
@@ -487,8 +489,8 @@ class JFusionUser_wordpress extends JFusionUser {
                 $metadata['aim']              = '';
                 $metadata['yim']              = '';
                 $metadata['jabber']           = '';
-                $metadata['wp_capabilities']  = serialize($default_role);
-                $metadata['wp_user_level']    = sprintf('%u',$default_userlevel);
+                $metadata[$database_prefix.'capabilities']  = serialize($default_role);
+                $metadata[$database_prefix.'user_level']    = sprintf('%u',$default_userlevel);
                 //		$metadata['default_password_nag'] = '0'; //no nag! can be omitted
 
                 $meta = new stdClass;
@@ -632,6 +634,9 @@ class JFusionUser_wordpress extends JFusionUser {
 		} else {
             $db = JFusionFactory::getDatabase($this->getJname());
 
+			$params = JFusionFactory::getParams($this->getJname());
+			$database_prefix = $params->get('database_prefix');
+
             /**
              * @ignore
              * @var $helper JFusionHelper_wordpress
@@ -645,7 +650,7 @@ class JFusionUser_wordpress extends JFusionUser {
             }
 
             $capsfield = serialize($caps);
-            $query = 'UPDATE #__usermeta SET meta_value =' . $db->Quote($capsfield) . " WHERE meta_key = 'wp_capabilities' AND user_id =" . (int)$existinguser->userid;
+            $query = 'UPDATE #__usermeta SET meta_value =' . $db->Quote($capsfield) . ' WHERE meta_key = \''.$database_prefix.'capabilities'.'\' AND user_id =' . (int)$existinguser->userid;
             $db->setQuery($query);
             if (!$db->query()) {
                 $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
