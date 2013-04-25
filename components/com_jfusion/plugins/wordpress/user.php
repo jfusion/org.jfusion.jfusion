@@ -95,6 +95,7 @@ class JFusionUser_wordpress extends JFusionUser {
      * @return \stdClass
      */
     function convertUserobjectToJFusion($user) {
+	    $params = JFusionFactory::getParams($this->getJname());
 		$result = new stdClass;
 
 		$result->userid       = $user->ID;
@@ -109,7 +110,10 @@ class JFusionUser_wordpress extends JFusionUser {
 
 		// usergroup (actually role) is in a serialized field of the user metadata table
 		// unserialize. Gives an array with capabilities
-		$capabilities = unserialize($user->wp_capabilities);
+
+	    $database_prefix = $params->get('database_prefix');
+		$capabilities = $database_prefix.capabilities;
+		$capabilities = unserialize($user->$capabilities);
 		// make sure we only have activated capabilities
 		$x = array_keys($capabilities,"1");
 		// get the values to test
