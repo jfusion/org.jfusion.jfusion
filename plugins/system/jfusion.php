@@ -101,7 +101,7 @@ class plgSystemJfusion extends JPlugin
             $syncsessions = $this->params->get('syncsessions');
             $keepalive = $this->params->get('keepalive');
             $mainframe = JFactory::getApplication();
-            if ($mainframe->isSite() && !empty($syncsessions) && $task != 'logout') {
+            if ($mainframe->isSite() && !empty($syncsessions) && $task != 'logout' && $task != 'user.logout') {
                 //for master if not joomla_int
                 $master = JFusionFunction::getMaster();
                 if (!empty($master) && $master->name != 'joomla_int' && $master->dual_login) {
