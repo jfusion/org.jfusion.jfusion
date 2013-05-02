@@ -1141,11 +1141,20 @@ class JFusionFunction
         if ($mainframe->isAdmin()) {
             //we are on admin side, lets confirm that the user has access to user manager
             $juser = JFactory::getUser();
-            if ($juser->authorize('com_users', 'manage')) {
-                $debug = true;
-            } else {
-                $debug = false;
-            }
+
+	        if (JFusionFunction::isJoomlaVersion()) {
+		        if ($juser->authorise('core.manage', 'com_users')) {
+			        $debug = true;
+		        } else {
+			        $debug = false;
+		        }
+	        } else {
+		        if ($juser->authorize('com_users', 'manage')) {
+			        $debug = true;
+		        } else {
+			        $debug = false;
+		        }
+	        }
         } else {
             $debug = false;
         }

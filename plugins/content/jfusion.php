@@ -732,7 +732,12 @@ HTML;
 
         //make sure the article submitted matches the one loaded
         $submittedArticleId = JRequest::getInt('articleId', 0, 'post');
-        $editAccess = $JoomlaUser->authorize('com_content', 'edit', 'content', 'all');
+
+	    if (JFusionFunction::isJoomlaVersion()) {
+			$editAccess = $JoomlaUser->authorise('core.edit', 'com_content');
+	    } else {
+		    $editAccess = $JoomlaUser->authorize('com_content', 'edit', 'content', 'all');
+	    }
 
 	    $ajaxEnabled = ($this->params->get('enable_ajax',1) && $this->ajax_request);
 	    $ajax = $this->prepareAjaxResponce();
@@ -922,7 +927,11 @@ HTML;
 
         //make sure the article submitted matches the one loaded
         $submittedArticleId = JRequest::getInt('articleId', 0, 'post');
-        $editAccess = $JoomlaUser->authorize('com_content', 'edit', 'content', 'all');
+	    if (JFusionFunction::isJoomlaVersion()) {
+		    $editAccess = $JoomlaUser->authorise('core.edit', 'com_content');
+	    } else {
+		    $editAccess = $JoomlaUser->authorize('com_content', 'edit', 'content', 'all');
+	    }
 
 	    $ajax = $this->prepareAjaxResponce();
         if ($editAccess && $this->valid && $submittedArticleId == $this->article->id) {
@@ -976,7 +985,11 @@ HTML;
 
         //make sure the article submitted matches the one loaded
         $submittedArticleId = JRequest::getInt('articleId', 0, 'post');
-        $editAccess = $JoomlaUser->authorize('com_content', 'edit', 'content', 'all');
+	    if (JFusionFunction::isJoomlaVersion()) {
+		    $editAccess = $JoomlaUser->authorise('core.edit', 'com_content');
+	    } else {
+		    $editAccess = $JoomlaUser->authorize('com_content', 'edit', 'content', 'all');
+	    }
 
 	    $ajax = $this->prepareAjaxResponce();
         if ($editAccess && $this->valid && $submittedArticleId == $this->article->id) {
@@ -1288,7 +1301,11 @@ HTML;
 
         if ($show_button && empty($this->manual_plug)) {
             $user   = JFactory::getUser();
-            $editAccess = $user->authorize('com_content', 'edit', 'content', 'all');
+	        if (JFusionFunction::isJoomlaVersion()) {
+		        $editAccess = $user->authorise('core.edit', 'com_content');
+	        } else {
+		        $editAccess = $user->authorize('com_content', 'edit', 'content', 'all');
+	        }
             if ($editAccess) {
                 if ($this->helper->thread_status) {
                     //discussion is published
