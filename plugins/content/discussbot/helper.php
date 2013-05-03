@@ -386,7 +386,7 @@ class JFusionDiscussBotHelper {
                                                                 break;
                                                             }
                                                         } else {
-	                                                        $responce = array(0, JText::_('REASON_IN_INCLUDED_CATEGORY_PARENT'));
+	                                                        $responce = array(1, JText::_('REASON_IN_INCLUDED_CATEGORY_PARENT'));
                                                             break;
                                                         }
                                                     }
@@ -394,7 +394,7 @@ class JFusionDiscussBotHelper {
 	                                                $responce = array(0, JText::_('REASON_NOT_IN_INCLUDED_CATEGORY_OR_PARENTS'));
                                                 }
                                             } else {
-	                                            $responce = array(0, JText::_('REASON_IN_INCLUDED_CATEGORY'));
+	                                            $responce = array(1, JText::_('REASON_IN_INCLUDED_CATEGORY'));
                                             }
 
                                             //make sure the category is not in an excluded category
