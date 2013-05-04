@@ -745,6 +745,7 @@ JS;
 /**
  *
  */
+jimport( 'joomla.html.pagination' );
 class JFusionPagination extends JPagination {
     var $identifier = '';
 
