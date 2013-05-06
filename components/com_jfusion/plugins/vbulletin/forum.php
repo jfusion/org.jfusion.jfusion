@@ -284,10 +284,10 @@ class JFusionForum_vbulletin extends JFusionForum
 		$text = $this->prepareFirstPostBody($dbparams, $contentitem);
 
         $apidata = array(
-            "existingthread" => $existingthread,
-            "ipaddress" => $_SERVER["REMOTE_ADDR"],
-        	"title" => $title,
-            "text" => $text
+	        'existingthread' => $existingthread,
+            'ipaddress' => $_SERVER['REMOTE_ADDR'],
+        	'title' => $title,
+            'text' => $text
         );
         $response = $this->helper->apiCall('updateThread', $apidata);
 
@@ -331,24 +331,24 @@ class JFusionForum_vbulletin extends JFusionForum
 
 		//set the forum options
 		$options = array(
-			"active" 			=> 1,
-			"allowposting" 		=> 2,
-			"cancontainthreads"	=> 4,
-			"moderatenewpost" 	=> 8,
-			"moderatenewthread" => 16,
-			"moderateattach" 	=> 32,
-			"allowbbcode" 		=> 64,
-			"allowimages" 		=> 128,
-			"allowhtml"			=> 256,
-			"allowsmilies" 		=> 512,
-			"allowicons" 		=> 1024,
-			"allowratings" 		=> 2048,
-			"countposts" 		=> 4096,
-			"canhavepassword" 	=> 8192,
-			"indexposts" 		=> 16384,
-			"styleoverride" 	=> 32768,
-			"showonforumjump" 	=> 65536,
-			"prefixrequired" 	=> 131072
+			'active' 			=> 1,
+			'allowposting' 		=> 2,
+			'cancontainthreads'	=> 4,
+			'moderatenewpost' 	=> 8,
+			'moderatenewthread' => 16,
+			'moderateattach' 	=> 32,
+			'allowbbcode' 		=> 64,
+			'allowimages' 		=> 128,
+			'allowhtml'			=> 256,
+			'allowsmilies' 		=> 512,
+			'allowicons' 		=> 1024,
+			'allowratings' 		=> 2048,
+			'countposts' 		=> 4096,
+			'canhavepassword' 	=> 8192,
+			'indexposts' 		=> 16384,
+			'styleoverride' 	=> 32768,
+			'showonforumjump' 	=> 65536,
+			'prefixrequired' 	=> 131072
 		);
 
 		foreach($options as $name => $val) {
@@ -391,7 +391,7 @@ class JFusionForum_vbulletin extends JFusionForum
         	$jdb->setQuery($query, $limitstart, $limit);
 		} else {
 			$limit_posts = $dbparams->get('limit_posts');
-			$query .= empty($limit_posts) || trim($limit_posts)==0 ? "" :  " LIMIT 0,$limit_posts";
+			$query .= empty($limit_posts) || trim($limit_posts)==0 ? '' :  ' LIMIT 0,'.$limit_posts;
 			$jdb->setQuery($query);
 		}
 
@@ -558,7 +558,7 @@ class JFusionForum_vbulletin extends JFusionForum
         //if no there were no forums passed, the entire list is called and filtered in filterForumList
         //however if for some reason filterForumList fails, set forumid to 0 to prevent anything from showing protecting private forums
         $where = (!empty($usedforums)) ? 'WHERE a.forumid IN (' . implode(',', $usedforums) . ') AND b.visible = 1 AND c.password = ""' : 'WHERE a.forumid = 0 AND b.visible = 1 AND c.password = ""';
-        $end = $result_order . " LIMIT 0," . ($result_limit + 25);
+        $end = $result_order . ' LIMIT 0,' . ($result_limit + 25);
 
         $numargs = func_num_args();
 
