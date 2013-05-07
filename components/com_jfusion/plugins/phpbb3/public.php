@@ -87,6 +87,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
                 $text = str_replace('{' . $plugin . '}', "", $text);
             }
             $text = JFusionFunction::parseCode($text, 'bbcode');
+	        $text = str_replace("\n", '<br/>', $text);
         } elseif ($for == 'joomla' || ($for == 'activity' && $params->get('parse_text') == 'html')) {
             //remove phpbb bbcode uids
             $text = preg_replace("#\[(.*?):(.*?)]#si", "[$1]", $text);
