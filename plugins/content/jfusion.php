@@ -410,8 +410,10 @@ class plgContentJfusion extends JPlugin
      */
     public function onContentPrepare($context, &$article, &$params, $limitstart=0)
 	{
- 		//seems syntax has completely changed :(
-		$this->onPrepareContent($article, $params);
+		if ( $context != 'com_content.featured') {
+			//seems syntax has completely changed :(
+			$this->onPrepareContent($article, $params);
+		}
 	}
 
     /**
