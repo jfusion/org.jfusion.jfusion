@@ -238,7 +238,7 @@ class JFusionHelper_phpbb3
      * @param string &$text
      */
     function parse_bbcode(&$text) {
-        if (!empty($this->bbcodes)) {
+        if (empty($this->bbcodes)) {
             $this->bbcodes = array(
 	            'code'          => array('bbcode_id' => 8, 'regexp' => array('#\[code(?:=([a-z]+))?\](.+\[/code\])#ise' => "\$this->bbcode_code('\$1', '\$2')")),
 	            'quote'         => array('bbcode_id' => 0, 'regexp' => array('#\[quote(?:=&quot;(.*?)&quot;)?\](.+)\[/quote\]#ise' => "\$this->bbcode_quote('\$0')")),
