@@ -903,9 +903,8 @@ class JFvBulletinTask {
         $userinfo =& $this->data['userinfo'];
         $postdm->set_info('user', $userinfo);
         $postdm->set('userid', $userinfo['userid']);
-        /**
-         * @TODO $guest undefined ?
-        if ($guest) {
+
+        if (!$userinfo['userid']) {
             $postdm->set('username', $userinfo['username']);
 			if($this->data['post_approved']) {
                 $postdm->set('visible', 0);
@@ -915,7 +914,7 @@ class JFvBulletinTask {
         } else {
             $postdm->set('visible', 1);
         }
-        */
+
         $postdm->setr('parentid', $this->data['ids']->postid);
         $postdm->setr('threadid', $this->data['ids']->threadid);
         $postdm->setr('ipaddress', $this->data['ipaddress']);

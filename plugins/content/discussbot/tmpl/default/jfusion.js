@@ -192,12 +192,16 @@ function hideMessage() {
 }
 
 function highlightPost(postid) {
-    $(postid).setStyle('border', '2px solid #FCFC33');
-    (function () { $(postid).setStyle('border', '2px solid #afafaf'); }).delay(5000);
+    var post = $(postid);
+    if (post) {
+        post.setStyle('border', '2px solid #FCFC33');
+        (function () { post.setStyle('border', '2px solid #afafaf'); }).delay(5000);
 
-    if (jfdb_enable_jumpto) {
-        window.location = '#' + postid;
+        if (jfdb_enable_jumpto) {
+            window.location = '#' + postid;
+        }
     }
+
 }
 
 function refreshPosts(id) {

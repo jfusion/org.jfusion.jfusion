@@ -443,8 +443,8 @@ class plgContentJfusion extends JPlugin
 	public function ajaxError($error) {
 		//output the error
 		$result = null;
-		if (is_array($error['error'])) {
-			foreach($error['error'] as $err) {
+		if (is_array($error)) {
+			foreach($error as $err) {
 				if ($result) {
 					$result .= '<br /> - ' . $err;
 				} else {
@@ -452,7 +452,7 @@ class plgContentJfusion extends JPlugin
 				}
 			}
 		} else {
-			$result = $error['error'];
+			$result = $error;
 		}
 		return $result;
 	}
