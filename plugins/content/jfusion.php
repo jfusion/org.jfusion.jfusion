@@ -582,10 +582,12 @@ class plgContentJfusion extends JPlugin
             if ($this->mode=='auto') {
                 $this->helper->debug('In auto mode');
                 if ($this->valid) {
-                    $status = $this->helper->checkThreadExists();
-                    if ($status['action'] == 'created') {
-                        $threadinfo = $status['threadinfo'];
-                    }
+	                if ($threadinfo || $this->creationMode=='load' || ($this->creationMode=='view' && JRequest::getVar('view') == $this->view()) ) {
+		                $status = $this->helper->checkThreadExists();
+		                if ($status['action'] == 'created') {
+			                $threadinfo = $status['threadinfo'];
+		                }
+	                }
                 }
                 if ($this->validity_reason != JText::_('REASON_NOT_IN_K2_ARTICLE_TEXT')) {
                     //a catch in case a plugin does something wrong

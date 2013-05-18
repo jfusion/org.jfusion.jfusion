@@ -541,7 +541,7 @@ class JFusionFunction
             include_once JPATH_SITE . DS . 'components' . DS . 'com_k2' . DS . 'helpers' . DS . 'route.php';
             $article_url = urldecode(K2HelperRoute::getItemRoute($contentitem->id.':'.urlencode($contentitem->alias),$contentitem->catid.':'.urlencode($contentitem->category->alias)));
         } else {
-            if (empty($contentitem->slug)) {
+            if (empty($contentitem->slug) || empty($contentitem->catslug)) {
                 //article was edited and saved from editor
                 $db = JFactory::getDBO();
                 $query = 'SELECT CASE WHEN CHAR_LENGTH(a.alias) THEN CONCAT_WS(":", a.id, a.alias) ELSE a.id END as slug,'.
