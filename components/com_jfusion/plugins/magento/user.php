@@ -172,8 +172,10 @@ class JFusionUser_magento extends JFusionUser {
 			return $result;
 		}
 		// walk through the array and fill the object requested
-		// TODO This can be smarter by reading types at once and put the data them in the right place
-		// for now I'm trying to get this working. optimising comes next
+        /**
+         * @TODO This can be smarter by reading types at once and put the data them in the right place
+         *       for now I'm trying to get this working. optimising comes next
+         */
 		$filled_object = array();
 		$db = JFusionFactory::getDataBase($this->getJname());
 		for ($i = 0;$i < count($result);$i++) {
@@ -239,7 +241,7 @@ class JFusionUser_magento extends JFusionUser {
 					$magento_user['email']['value'] = $result->email;
 					$magento_user['created_at']['value'] = $result->created_at;
 					$magento_user['updated_at']['value'] = $result->updated_at;
-					$is_active = $result->is_active; //TO DO: have to figure out what theis means
+                    $is_active = $result->is_active; //TO DO: have to figure out what theirs means
 					$instance->userid = $entity;
 					$instance->username = $magento_user['email']['value'];
 					$name = $magento_user['firstname']['value'];
@@ -285,6 +287,7 @@ class JFusionUser_magento extends JFusionUser {
 	/**
 	 * @param object $userinfo
 	 * @param array $options
+     *
 	 * @return array
 	 */
 	function destroySession($userinfo, $options) {
@@ -295,6 +298,7 @@ class JFusionUser_magento extends JFusionUser {
 	/**
 	 * @param object $userinfo
 	 * @param array $options
+     *
 	 * @return array|string
 	 */
 	function createSession($userinfo, $options) {
@@ -340,7 +344,7 @@ class JFusionUser_magento extends JFusionUser {
 	function update_create_Magentouser($user, $entity_id) {
 		$db = JFusionFactory::getDataBase($this->getJname());
 		$sqlDateTime = date('Y-m-d H:i:s', time());
-		// transactional handling of this update is a neccessity
+        // transactional handling of this update is a necessarily
 		if (!$entity_id) { //create an (almost) empty user
 			// first get the current increment
 			//$db->Execute ( 'START TRANSACTION' );//in mysql - Before the query  was BEGIN TRANSACTION
@@ -567,7 +571,8 @@ class JFusionUser_magento extends JFusionUser {
 	}
 
 	/**
-	 * @todo update username code
+     * @TODO update username code
+     *
 	 * @param object $userinfo
 	 * @param object $existinguser
 	 * @param array $status
