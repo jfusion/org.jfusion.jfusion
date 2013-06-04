@@ -1,4 +1,8 @@
-<?php if($this->params->get('show_posts')) : ?>
+<?php
+/**
+ * @var JFusionDiscussBotHelper $this
+ */
+if($this->params->get('show_posts')) : ?>
     <div class="jfusionPostHeader"><?php echo $this->params->get('post_header'); ?></div>
 
     <div class="jfusionPostArea" id="jfusionPostArea">

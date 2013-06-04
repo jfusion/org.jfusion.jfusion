@@ -34,7 +34,7 @@ class JElementJFusionAdvancedParam extends JElement
      * @param string $name         name of element
      * @param string $value        value of element
      * @param JSimpleXMLElement &$node        node of element
-     * @param string $control_name name of controler
+     * @param string $control_name name of controller
      *
      * @return string|void html
      */
@@ -45,6 +45,8 @@ class JElementJFusionAdvancedParam extends JElement
         if (!isset($elNum)) {
             $elNum = 0;
         }
+
+	    $ename = 'jfusionadvancedparam'.$elNum;
 
         $lang = JFactory::getLanguage();
         $lang->load('com_jfusion');
@@ -59,42 +61,33 @@ class JElementJFusionAdvancedParam extends JElement
 
         if (!defined('JFUSION_ADVANCEDPARAM_JS_LOADED')) {
             define('JFUSION_ADVANCEDPARAM_JS_LOADED', 1);
-
-            if (!is_null($feature)) {
-                $cfile = '&feature='.$feature;
-            } else {
-                $cfile = '';
-            }
-            if (!is_null($multiselect)) {
-                $mselect = '&multiselect=1';
-            } else {
-                $mselect = '';
-            }
-
             $js = <<<JS
-            function jAdvancedParamSet(title, base64, elNum) {
-                var link = 'index.php?option=com_jfusion&task=advancedparam&tmpl=component&params=';
-                link += base64;
-                link += '{$cfile}';
-                link += '{$mselect}';
-
-                $('plugin_id' + elNum).value = base64;
-                $('plugin_name' + elNum).value = title;
-                $('plugin_link' + elNum).href = link;
+            function jAdvancedParamSet(title, base64, name) {
+                $(name + '_id').value = base64;
+                $(name + '_name').value = title;
                 SqueezeBox.close();
             }
 JS;
             $doc->addScriptDeclaration($js);
         }
         //Create Link
-        $link = 'index.php?option=com_jfusion&amp;task=advancedparam&amp;tmpl=component&amp;elNum='.$elNum.'&amp;params=' . $value;
+	    $link = 'index.php?option=com_jfusion&amp;task=advancedparam&amp;tmpl=component&amp;ename='.$ename;
         if (!is_null($feature)) {
             $link.= '&amp;feature=' . $feature;
         }
         if (!is_null($multiselect)) {
             $link.= '&amp;multiselect=1';
         }
-        //Get JParameter from given string
+
+	    jimport( 'joomla.user.helper' );
+	    $hash = JUtility::getHash( $fieldName.JUserHelper::genRandomPassword());
+	    $session = JFactory::getSession();
+	    $session->set($hash, $value);
+
+	    $link .= '&amp;'.$ename.'='.$hash;
+
+
+	    //Get JParameter from given string
         if (empty($value)) {
             $params = array();
         } else {
@@ -126,14 +119,14 @@ JS;
         $select = JText::_('SELECT');
         $html = <<<HTML
         <div style="float: left;">
-            <input style="background: #ffffff;" type="text" id="plugin_name{$elNum}" value="{$title}" disabled="disabled" />
+            <input style="background: #ffffff;" type="text" id="{$ename}_name" value="{$title}" disabled="disabled" />
         </div>
         <div class="button2-left">
             <div class="blank">
-                <a id="plugin_link{$elNum}" class="modal" title="{$select_plugin}"  href="{$link}" rel="{handler: 'iframe', size: {x: 750, y: 475}}">{$select}</a>
+                <a id="{$ename}_link" class="modal" title="{$select_plugin}"  href="{$link}" rel="{handler: 'iframe', size: {x: 750, y: 475}}">{$select}</a>
             </div>
         </div>
-        <input type="hidden" id="plugin_id{$elNum}" name="{$fieldName}" value="{$value}" />
+        <input type="hidden" id="{$ename}_id" name="{$fieldName}" value="{$value}" />
 HTML;
         $elNum++;
         return $html;

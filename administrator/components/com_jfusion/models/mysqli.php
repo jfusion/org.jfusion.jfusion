@@ -35,7 +35,13 @@ require_once JPATH_LIBRARIES . DS . 'joomla' . DS . 'database' . DS . 'database'
  */
 class JFusionMySQLi extends JDatabaseMySQLi
 {
-    var $_resource=null;
+	/**
+	 * @var mysqli $_resource
+	 */
+	var $_resource=null;
+	/**
+	 * @var mysqli $connection
+	 */
     public $connection=null;
     /**
      * @param array $options
@@ -69,7 +75,7 @@ class JFusionMySQLi extends JDatabaseMySQLi
         }
     }
     /**
-     * rollback trasnaction
+     * rollback transaction
      * 
      */
     function RollbackTrans()

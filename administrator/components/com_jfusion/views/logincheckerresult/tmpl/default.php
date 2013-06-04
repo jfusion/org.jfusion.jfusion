@@ -40,7 +40,7 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.debug.p
 
 		<?php
 		$textOutput = array();
-		//prevent current jooomla session from being destroyed
+		//prevent current joomla session from being destroyed
 		global $JFusionActivePlugin, $JFusionLoginCheckActive;
 		$JFusionActivePlugin = 'joomla_int';
 		$JFusionLoginCheckActive = true;

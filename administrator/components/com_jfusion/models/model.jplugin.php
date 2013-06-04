@@ -335,11 +335,11 @@ class JFusionJplugin
         $params = JFusionFactory::getParams($jname);
         $source_url = $params->get('source_url');
         $login_url = $params->get('login_url');
-        //prevent usererror by not supplying trailing forwardslash
+        //prevent user error by not supplying trailing forward slash
         if (substr($source_url, -1) != '/') {
             $source_url = $source_url . '/';
         }
-        //prevent usererror by preventing a heading forwardslash
+        //prevent user error by preventing a heading forward slash
         ltrim($login_url, '/');
         $curl_options['post_url'] = $source_url . $login_url;
 
@@ -406,7 +406,7 @@ class JFusionJplugin
         // We need to check if JFusion tries to create this session because of this integration
         // initiated a login by means of the reverse dual login extensions. Note that
         // if the curl routines are not used, the same check must be performed in the
-        // createsession routine in the user.php file of the plugin concerned.
+        // create session routine in the user.php file of the plugin concerned.
         // In version 2.0 we will never reach this point as the user plugin will handle this
         $jnodeid = strtolower(JRequest::getVar('jnodeid'));
         if (!empty($jnodeid)){
@@ -491,11 +491,11 @@ class JFusionJplugin
         $params = JFusionFactory::getParams($jname);
         $source_url = $params->get('source_url');
         $logout_url = $params->get('logout_url');
-        //prevent usererror by not supplying trailing forwardslash
+        //prevent user error by not supplying trailing forward slash
         if (substr($source_url, -1) != '/') {
         	$source_url = $source_url . '/';
         }
-        //prevent usererror by preventing a heading forwardslash
+        //prevent user error by preventing a heading forward slash
         ltrim($logout_url, '/');
         $curl_options['post_url'] = $source_url . $logout_url;
 
@@ -567,7 +567,7 @@ class JFusionJplugin
         $jnodeid = strtolower(JRequest::getVar('jnodeid'));
         if (!empty($jnodeid)){
             if($jnodeid == JFusionFactory::getPluginNodeId($jname)) {
-                // do not delete a session, this integration started the log outand the user is already logged out
+                // do not delete a session, this integration started the log out and the user is already logged out
                 $status['debug'][]=JText::_('ALREADY_LOGGED_OUT');
                 return $status;
             }
@@ -740,7 +740,7 @@ class JFusionJplugin
      * Function that updates the user email
      *
      * @param object $userinfo      Object containing the new userinfo
-     * @param object &$existinguser Object containg the old userinfo
+     * @param object &$existinguser Object containing the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
      * @param string $jname         jname
      *
@@ -762,7 +762,7 @@ class JFusionJplugin
      * Function that updates the user password
      *
      * @param object $userinfo      Object containing the new userinfo
-     * @param object &$existinguser Object containg the old userinfo
+     * @param object &$existinguser Object containing the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
      * @param string $jname         jname
      *
@@ -771,6 +771,7 @@ class JFusionJplugin
     public static function updatePassword($userinfo, &$existinguser, &$status, $jname)
     {
         $db = JFusionFactory::getDatabase($jname);
+	    jimport( 'joomla.user.helper' );
         $userinfo->password_salt = JUserHelper::genRandomPassword(32);
         $userinfo->password = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt);
         $new_password = $userinfo->password . ':' . $userinfo->password_salt;
@@ -787,7 +788,7 @@ class JFusionJplugin
      * Function that blocks user
      *
      * @param object $userinfo      Object containing the new userinfo
-     * @param object &$existinguser Object containg the old userinfo
+     * @param object &$existinguser Object containing the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
      * @param string $jname         jname
      *
@@ -815,7 +816,7 @@ class JFusionJplugin
      * Function that unblocks user
      *
      * @param object $userinfo      Object containing the new userinfo
-     * @param object &$existinguser Object containg the old userinfo
+     * @param object &$existinguser Object containing the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
      * @param string $jname         jname
      *
@@ -838,7 +839,7 @@ class JFusionJplugin
      * Function that activates user
      *
      * @param object $userinfo      Object containing the new userinfo
-     * @param object &$existinguser Object containg the old userinfo
+     * @param object &$existinguser Object containing the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
      * @param string $jname         jname
      *
@@ -861,7 +862,7 @@ class JFusionJplugin
      * Function that inactivates user
      *
      * @param object $userinfo      Object containing the new userinfo
-     * @param object &$existinguser Object containg the old userinfo
+     * @param object &$existinguser Object containing the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
      * @param string $jname         jname
      *
@@ -869,7 +870,6 @@ class JFusionJplugin
      */
     public static function inactivateUser($userinfo, &$existinguser, &$status, $jname)
     {
-    	//TODO joomla 1.6 need to support multi usergroup
         if ($existinguser->group_id != 25) {
             //unblock the user
             $db = JFusionFactory::getDatabase($jname);
@@ -921,7 +921,7 @@ class JFusionJplugin
      * Function that updates username
      *
      * @param object $userinfo      Object containing the new userinfo
-     * @param object &$existinguser Object containg the old userinfo
+     * @param object &$existinguser Object containing the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
      * @param string $jname         jname
      *
@@ -968,7 +968,7 @@ class JFusionJplugin
         //get the default user group and determine if we are using simple or advanced
         //check to make sure that if using the advanced group mode, $userinfo->group_id exists
         if (empty($usergroups)) {
-            $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('USERGROUP_MISSING');
+            $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . JText::_('USERGROUP_MISSING');
         } else {
             //load the database
             $db = JFusionFactory::getDatabase($jname);
@@ -988,6 +988,7 @@ class JFusionJplugin
                 $status['debug'][] = JText::_('USERNAME') . ':' . $userinfo->username . ' ' . JText::_('FILTERED_USERNAME') . ':' . $username_clean;
                 //create a Joomla password hash if password_clear is available
                 if (!empty($userinfo->password_clear)) {
+	                jimport( 'joomla.user.helper' );
                     $userinfo->password_salt = JUserHelper::genRandomPassword(32);
                     $userinfo->password = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt);
                     $password = $userinfo->password . ':' . $userinfo->password_salt;
@@ -1008,7 +1009,7 @@ class JFusionJplugin
                 $instance->set('activation', $userinfo->activation);
                 $instance->set('sendEmail', 0);
                 //find out what usergroup the new user should have
-                //the $userinfo object was probably reconstructed in the user plugin and autregister = 1
+                //the $userinfo object was probably reconstructed in the user plugin and autoregister = 1
                 $isadmin = false;
                 if (isset($usergroups[0])) {
                     if(JFusionFunction::isJoomlaVersion('1.6',$jname)) {
@@ -1058,7 +1059,7 @@ class JFusionJplugin
                             JFusionJplugin::updateUsergroup($userinfo, $createdUser, $status, $jname, false);
                         }
                         //create a new entry in the lookup table
-                        //if the credentialed username is available (from the auth plugin), store it; otherwise store the $userinfo's username
+                        //if the credentialed username is available (from the auth plugin), store it; otherwise store the $userinfo username
                         $username = (!empty($userinfo->credentialed_username)) ? $userinfo->credentialed_username : $userinfo->username;
                         $query = 'REPLACE INTO #__jfusion_users (id, username) VALUES (' . $createdUser->id . ', ' . $db->Quote($username) . ')';
                         $db->setQuery($query);
@@ -1074,7 +1075,7 @@ class JFusionJplugin
                     unset($user['password_clear']);
                     unset($user['aid']);
                     unset($user['guest']);
-                    // set the creationtime and lastaccess time
+                    // set the creation time and last access time
                     $user['registerDate'] = date('Y-m-d H:i:s', time());
                     $user = (object)$user;
                     $user->id = null;
@@ -1136,7 +1137,7 @@ class JFusionJplugin
     }
 
     /**
-     * Updates or creates a user for the integrated software. This allows JFusion to have external softwares as slave for user management
+     * Updates or creates a user for the integrated software. This allows JFusion to have external software as slave for user management
      *
      * @param object $userinfo  contains the userinfo
      * @param int    $overwrite determines if the userinfo can be overwritten
@@ -1185,7 +1186,7 @@ class JFusionJplugin
                     //check if the password needs to be updated
                     $model = JFusionFactory::getAuth($jname);
                     $testcrypt = $model->generateEncryptedPassword($existinguser);
-                    //if the passwords are not the same or if Joomla's salt has inherited a colon which will confuse Joomla without JFusion; generate a new password hash
+                    //if the passwords are not the same or if Joomla salt has inherited a colon which will confuse Joomla without JFusion; generate a new password hash
                     if ($testcrypt != $existinguser->password || strpos($existinguser->password_salt, ':') !== false) {
                         JFusionJplugin::updatePassword($userinfo, $existinguser, $status, $jname);
                         $changed = true;
@@ -1208,7 +1209,7 @@ class JFusionJplugin
                             $changed = true;
                         }
                     } else {
-                        //return a debug to inform we skiped this step
+                        //return a debug to inform we skipped this step
                         $status['debug'][] = JText::_('SKIPPED_BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
                     }
                 }
@@ -1216,7 +1217,7 @@ class JFusionJplugin
                 if ($existinguser->activation != $userinfo->activation) {
                     if ($update_activation || $overwrite) {
                         if ($userinfo->activation) {
-                            //inactiva the user
+                            //inactive the user
                             JFusionJplugin::inactivateUser($userinfo, $existinguser, $status, $jname);
                             $changed = true;
                         } else {
@@ -1225,7 +1226,7 @@ class JFusionJplugin
                             $changed = true;
                         }
                     } else {
-                        //return a debug to inform we skiped this step
+                        //return a debug to inform we skipped this step
                         $status['debug'][] = JText::_('SKIPPED_EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
                     }
                 }
@@ -1266,7 +1267,7 @@ class JFusionJplugin
                     $existinguser->language = $userinfo->language;
                     $changed = true;
                 } else {
-                    //return a debug to inform we skiped this step
+                    //return a debug to inform we skipped this step
                     $status['debug'][] = JText::_('LANGUAGE_NOT_UPDATED');
                 }
 
@@ -1294,7 +1295,7 @@ class JFusionJplugin
      * Function that updates usergroup
      *
      * @param object $userinfo          Object containing the new userinfo
-     * @param object &$existinguser     Object containg the old userinfo
+     * @param object &$existinguser     Object containing the old userinfo
      * @param array  &$status           Array containing the errors and result of the function
      * @param string $jname             jname
      * @param bool $fire_user_plugins needs more detail
@@ -1306,6 +1307,8 @@ class JFusionJplugin
         $usergroups = JFusionFunction::getCorrectUserGroups($jname,$userinfo);
         //make sure the group exists
         if (empty($usergroups)) {
+	        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST');
+        } else {
             $db = JFusionFactory::getDatabase($jname);
             $params = JFusionFactory::getParams($jname);
             $dispatcher = JDispatcher::getInstance();
@@ -1339,7 +1342,7 @@ class JFusionJplugin
                     $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(',', $existinguser->groups) . ' -> ' .implode(',', $usergroups);
                     //Fire the user plugin functions for joomla_int
                     if ($jname == 'joomla_int' && $fire_user_plugins) {
-                        //Fire the onAftereStoreUser event
+                        //Fire the onAfterStoreUser event
                         $updated = new JUser($existinguser->userid);
                         $dispatcher->trigger('onAfterStoreUser', array($updated->getProperties(), false, true, ''));
                     }
@@ -1373,7 +1376,7 @@ class JFusionJplugin
                                 $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $gid;
                                 //Fire the user plugin functions for joomla_int
                                 if ($jname == 'joomla_int' && $fire_user_plugins) {
-                                    // Fire the onAftereStoreUser event
+                                    // Fire the onAfterStoreUser event
                                     $updated = new JUser($existinguser->userid);
                                     $dispatcher->trigger('onAfterStoreUser', array($updated->getProperties(), false, true, ''));
                                 }
@@ -1384,8 +1387,6 @@ class JFusionJplugin
                     }
                 }
             }
-        } else {
-            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST');
         }
         return $status;
     }
@@ -1466,13 +1467,15 @@ class JFusionJplugin
      * @see JFusionJplugin::setLanguageFrontEnd
      *
 	 * @param object $userinfo      Object containing the new userinfo
-     * @param object &$existinguser Object containg the old userinfo
+     * @param object &$existinguser Object containing the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
      * @param string $jname			current plugin name
      */
     public static function updateUserLanguage($userinfo, &$existinguser, &$status, $jname)
     {
-    	//TODO joomla 1.5/1.6 if we are talking to external joomla since joomla 1.5 store params in json
+    	/**
+	     * @TODO joomla 1.5/1.6 if we are talking to external joomla since joomla 1.5 store params in json
+	     */
         $db = JFusionFactory::getDatabase($jname);
         $params = new JParameter($existinguser->params);
         $params->set('language', $userinfo->language);

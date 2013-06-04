@@ -29,7 +29,6 @@ class JFusionAPI {
 	public $url;
 	public $sid = null;
 
-	private $payload = array();
 	private $secret = null;
 	private $hash = null;
 	private $error = array();
@@ -764,7 +763,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 		$old = error_reporting(0);
 		if (!defined('_JEXEC')) {
 			/**
-			 * todo: determin if we really need session_write_close or if it need to be selectable
+			 * @TODO determine if we really need session_write_close or if it need to be selectable
 			 */
 			session_write_close();
 			// trick joomla into thinking we're running through joomla
@@ -774,7 +773,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 
 			// load joomla libraries
 			require_once JPATH_BASE . DS . 'includes' . DS . 'defines.php';
-			define('_JREQUEST_NO_CLEAN', true); // we dont want to clean variables as it can "commupt" them for some applications, it also clear any globals used...
+			define('_JREQUEST_NO_CLEAN', true); // we don't want to clean variables as it can "corrupt" them for some applications, it also clear any globals used...
 
 			if (!class_exists('JVersion')) {
 				if (file_exists(JPATH_LIBRARIES.DS.'cms'.DS.'version'.DS.'version.php')) {
@@ -845,7 +844,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 	 */
 	public function login($username,$password,$remember = 1)
 	{
-		$mainframe = self::startJoomla();
+		$mainframe = $this->startJoomla();
 
 		if ($this->activePlugin) {
 			global $JFusionActivePlugin;
@@ -867,7 +866,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 		$session->close();
 
 		//if we are not frameless, then we need to manually update the session data as on some servers, this data is getting corrupted
-		//by php's session_write_close and thus the user is not logged into Joomla.  php bug?
+		//by php session_write_close and thus the user is not logged into Joomla.  php bug?
 		if (!defined('IN_JOOMLA')) {
 			/**
 			 * @ignore
@@ -895,7 +894,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 	 */
 	public function logout($username=null)
 	{
-		$mainframe = self::startJoomla();
+		$mainframe = $this->startJoomla();
 
 		if ($this->activePlugin) {
 			global $JFusionActivePlugin;
@@ -936,7 +935,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 	 */
 	public function register($userinfo)
 	{
-		$mainframe = self::startJoomla();
+		$mainframe = $this->startJoomla();
 
 		$plugins = JFusionFunction::getSlaves();
 		$plugins[] = JFusionFunction::getMaster();
@@ -978,7 +977,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 	 */
 	public function update($userinfo,$overwrite)
 	{
-		$mainframe = self::startJoomla();
+		$mainframe = $this->startJoomla();
 
 		$plugins = JFusionFunction::getSlaves();
 		$plugins[] = JFusionFunction::getMaster();
@@ -1023,10 +1022,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 	 */
 	public function delete($userid)
 	{
-		/**
-		 * TODO: THINK THIS IS INCORRECT.
-		 */
-		$mainframe = self::startJoomla();
+		$mainframe = $this->startJoomla();
 
 		/**
 		 * @ignore
@@ -1035,8 +1031,11 @@ class JFusionAPIInternal extends JFusionAPIBase {
 		$user = JUser::getInstance($userid);
 
 		if ($user) {
-			$user->delete();
-			$this->debug[] = 'user deleted: '.$userid;
+			if ($user->delete()) {
+				$this->debug[] = 'user deleted: '.$userid;
+			} else {
+				$this->error[] = 'Delete user failed: '.$userid;
+			}
 		} else {
 			$this->error[] = 'invalid user';
 		}

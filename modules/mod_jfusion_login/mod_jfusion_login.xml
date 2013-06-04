@@ -7,7 +7,7 @@
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<authorEmail>webmaster@jfusion.org</authorEmail>
 	<authorUrl>www.jfusion.org</authorUrl>
-	<version>1.8.1-000</version>
+	<version>1.8.4-001</version>
     <revision>$revision$</revision>
     <timestamp>$timestamp$</timestamp>
 	<description>This is the optional JFusion login module. The only difference between this module and the standard Joomla module, is the forgot password and register URL links.</description>
@@ -19,156 +19,125 @@
    		<folder>tmpl</folder>
 	</files>
 
-	<config><fields name="params" addfieldpath="/administrator/components/com_jfusion/fields"><fieldset name="basic">
+	<config>
+        <fields name="params" addfieldpath="/administrator/components/com_jfusion/fields">
+            <fieldset name="basic">
+                <field name="moduleclass_sfx" type="text" default="" label="Module Class Suffix" description="PARAMMODULECLASSSUFFIX" />
+                    <field name="pretext" type="textarea" cols="20" rows="5" default="" label="PRE_TEXT" description="PRE_TEXT_DESCR" />
+                    <field name="posttext" type="textarea" cols="20" rows="5" default="" label="POST_TEXT" description="POST_TEXT_DESCR" />
+                    <field name="login" type="menuitem" default="" disable="separator" label="LOGIN_REDIRECT" description="LOGIN_REDIRECT_DESCR">
+                        <option value="">JDEFAULT</option>
+                    </field>
+                    <field name="logout" type="menuitem" default="" disable="separator" label="LOGOUT_REDIRECT" description="LOGOUT_REDIRECT_DESCR" >
+                        <option value="">JDEFAULT</option>
+                    </field>
+                    <field name="name" type="list" default="0" label="DISPLAY_USERNAME_NAME" description="DISPLAY_USERNAME_NAME_DESCR">
+                        <option value="0">USERNAME</option>
+                        <option value="1">NAME</option>
+                    </field>
+                    <field name="usesecure" type="radio" default="0" label="ENCRYPT_FORM" description="ENCRYPT_FORM_DESCR">
+                        <option value="0">JNO</option>
+                        <option value="1">JYES</option>
+                    </field>
+                    <field name="show_rememberme" type="radio" default="1" label="REMEMBER_ME" description="REMEMBER_ME_DESCR">
+                        <option value="0">HIDE</option>
+                        <option value="1">SHOW</option>
+                    </field>
+                    <field name="show_labels" type="radio" default="1" label="SHOW_LABELS" description="SHOW_LABELS_DESCR">
+                        <option value="0">HIDE</option>
+                        <option value="1">SHOW</option>
+                    </field>
+                    <field name="layout" type="radio" default="vertical" label="VIEW_MODE" description="VIEW_MODE_DESCR">
+                        <option value="vertical">VERTICAL</option>
+                        <option value="horizontal">HORIZONTAL</option>
+                    </field>
+                    <field name="@spacer" type="spacer" default="" label=""	description="" />
+                    <field name=" " type="helptext" default="ITEMID_DESCR"/>
+                    <field name="itemid" type="JFusionItemid" size="5" default="" description="ITEMID_DESCR" label="ITEMID" />
+                    <field name="lostpassword_url" label="LOST_PASSWORD_URL" type="text" size="50" default="" description="LOST_PASSWORD_URL_DESCR" />
+                    <field name="lostpassword_show" type="radio" default="1" label="LOST_PASSWORD" description="LOST_PASSWORD_DESCR">
+                        <option value="0">HIDE</option>
+                        <option value="1">SHOW</option>
+                    </field>
+                    <field name="lostusername_url" label="LOST_USERNAME_URL" type="text" size="50" default="" description="LOST_USERNAME_URL_DESCR" />
+                    <field name="lostusername_show" type="radio" default="1" label="LOST_USERNAME" description="LOST_USERNAME_DESCR">
+                        <option value="0">HIDE</option>
+                        <option value="1">SHOW</option>
+                    </field>
+                    <field name="register_url" label="REGISTER_URL" type="text" size="50" default="" description="REGISTER_URL_DESCR" />
+                    <field name="register_show" type="radio" default="1" label="CREATE_ACCOUNT" description="CREATE_ACCOUNT_DESCR">
+                        <option value="0">HIDE</option>
+                        <option value="1">SHOW</option>
+                    </field>
+                    <field name="greeting" type="radio" default="1" label="GREETING" description="GREETING_DESCR">
+                        <option value="0">JNO</option>
+                        <option value="1">JYES</option>
+                    </field>
+                    <field name="custom_greeting" label="CUSTOM_GREETING" type="text" size="50" default="" description="CUSTOM_GREETING_DESCR" />
+                    <field name="@spacer" type="spacer" default="" label=""	description="" />
+                    <field name="avatar" type="radio" default="1" label="AVATAR_IMAGE" description="AVATAR_IMAGE_DESCR">
+                        <option value="0">HIDE</option>
+                        <option value="1">SHOW</option>
+                    </field>
+                    <field name="avatar_height" label="AVATAR_HEIGHT" type="text" size="5" default="80"/>
+                    <field name="avatar_width" label="AVATAR_WIDTH" type="text" size="5" default="60"/>
+                    <field name="avatar_software" type="list" default="jfusion" label="AVATAR_SOFTWARE" description="AVATAR_SOFTWARE_DESC">
+                        <option value="cb">Community Builder</option>
+                        <option value="gravatar">Gravatar</option>
+                        <option value="jfusion">JFusion</option>
+                        <option value="jomsocial">JomSocial</option>
+                        <option value="joomunity">Joomunity</option>
+                    </field>
+                    <field name="itemidAvatarPMs" type="JFusionItemid" default="" label="JFUSION_PLUGIN" description="JFUSION_PLUGIN_DESCR" />
 
-	<field name="moduleclass_sfx" type="text" default="" label="Module Class Suffix" description="PARAMMODULECLASSSUFFIX" />
-		<field name="pretext" type="textarea" cols="20" rows="5"
-			default="" label="PRE_TEXT" description="PRE_TEXT_DESCR" />
-		<field name="posttext" type="textarea" cols="20" rows="5"
-			default="" label="POST_TEXT" description="POST_TEXT_DESCR" />
-		<field name="login" type="menuitem" default=""
-			disable="separator" label="LOGIN_REDIRECT"
-			description="LOGIN_REDIRECT_DESCR">
-			<option 
-						value="">JDEFAULT</option>
-			</field>
-		<field name="logout" type="menuitem" default=""
-			disable="separator" label="LOGOUT_REDIRECT"
-			description="LOGOUT_REDIRECT_DESCR" >
-			<option 
-						value="">JDEFAULT</option>
-			</field>
-		<field name="name" type="list" default="0"
-			label="DISPLAY_USERNAME_NAME" description="DISPLAY_USERNAME_NAME_DESCR">
-			<option value="0">USERNAME</option>
-			<option value="1">NAME</option>
-		</field>
-		<field name="usesecure" type="radio" default="0"
-			label="ENCRYPT_FORM"
-			description="ENCRYPT_FORM_DESCR">
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>
-		</field>
-		<field name="show_rememberme" type="radio" default="1"
-			label="REMEMBER_ME" description="REMEMBER_ME_DESCR">
-			<option value="0">HIDE</option>
-			<option value="1">SHOW</option>
-		</field>
-		<field name="show_labels" type="radio" default="1"
-			label="SHOW_LABELS" description="SHOW_LABELS_DESCR">
-			<option value="0">HIDE</option>
-			<option value="1">SHOW</option>
-		</field>
-		<field name="layout" type="radio" default="vertical"
-			label="VIEW_MODE" description="VIEW_MODE_DESCR">
-			<option value="vertical">VERTICAL</option>
-			<option value="horizontal">HORIZONTAL</option>
-		</field>
-		<field name="@spacer" type="spacer" default="" label=""	description="" />
-        <field name=" " type="helptext" default="ITEMID_DESCR"/>
-		<field name="itemid" type="JFusionItemid" size="5" default="" description="ITEMID_DESCR" label="ITEMID" />
-		<field name="lostpassword_url" label="LOST_PASSWORD_URL" type="text" size="50" default="" description="LOST_PASSWORD_URL_DESCR" />
-		<field name="lostpassword_show" type="radio" default="1"
-			label="LOST_PASSWORD" description="LOST_PASSWORD_DESCR">
-			<option value="0">HIDE</option>
-			<option value="1">SHOW</option>
-		</field>
-		<field name="lostusername_url" label="LOST_USERNAME_URL" type="text" size="50" default="" description="LOST_USERNAME_URL_DESCR" />
-		<field name="lostusername_show" type="radio" default="1"
-			label="LOST_USERNAME" description="LOST_USERNAME_DESCR">
-			<option value="0">HIDE</option>
-			<option value="1">SHOW</option>
-		</field>
-		<field name="register_url" label="REGISTER_URL" type="text" size="50" default="" description="REGISTER_URL_DESCR" />
-		<field name="register_show" type="radio" default="1"
-			label="CREATE_ACCOUNT" description="CREATE_ACCOUNT_DESCR">
-			<option value="0">HIDE</option>
-			<option value="1">SHOW</option>
-		</field>
-		<field name="greeting" type="radio" default="1" label="GREETING"
-			description="GREETING_DESCR">
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>
-		</field>
-		<field name="custom_greeting" label="CUSTOM_GREETING" type="text" size="50" default="" description="CUSTOM_GREETING_DESCR" />
-		<field name="@spacer" type="spacer" default="" label=""	description="" />
-		<field name="avatar" type="radio" default="1"
-			label="AVATAR_IMAGE" description="AVATAR_IMAGE_DESCR">
-			<option value="0">HIDE</option>
-			<option value="1">SHOW</option>
-		</field>
-		<field name="avatar_height" label="AVATAR_HEIGHT" type="text" size="5" default="80"/>
-		<field name="avatar_width" label="AVATAR_WIDTH" type="text" size="5" default="60"/>
-		<field name="avatar_software" type="list" default="jfusion"
-			label="AVATAR_SOFTWARE"
-			description="AVATAR_SOFTWARE_DESC">
-				<option value="cb">Community Builder</option>
-				<option value="gravatar">Gravatar</option>
-				<option value="jfusion">JFusion</option>
-				<option value="jomsocial">JomSocial</option>
-				<option value="joomunity">Joomunity</option>
-		</field>
-		<field name="itemidAvatarPMs" type="JFusionItemid" default=""
-			label="JFUSION_PLUGIN"
-			description="JFUSION_PLUGIN_DESCR" />
+                    <field name="pmcount" type="radio" default="1" label="PM_COUNT" description="PM_COUNT_DESCR">
+                        <option value="0">HIDE</option>
+                        <option value="1">SHOW</option>
+                    </field>
+                    <field name="viewnewmessages" type="radio" default="1" label="PM_NEW_LINK" description="PM_NEW_LINK_DESCR">
+                        <option value="0">HIDE</option>
+                        <option value="1">SHOW</option>
+                    </field>
+                </fieldset>
+        </fields>
+    </config>
 
-		<field name="pmcount" type="radio" default="1"
-			label="PM_COUNT"
-			description="PM_COUNT_DESCR">
-			<option value="0">HIDE</option>
-			<option value="1">SHOW</option>
-		</field>
-		<field name="viewnewmessages" type="radio" default="1"
-			label="PM_NEW_LINK" description="PM_NEW_LINK_DESCR">
-			<option value="0">HIDE</option>
-			<option value="1">SHOW</option>
-		</field>	
-	</fieldset></fields></config>
-
-    <config><fields name="params"><fieldset name="advanced">
-        <field name="cache" type="list" default="0" label="Caching" description="Select whether to cache the content of this module">
-            <option value="1">Use global</option> 
-            <option value="0">No caching</option> 
-        </field>
-        <field name="cache_time" type="text" default="900" label="Cache Time" description="The time before the module is recached" /> 
-    </fieldset></fields></config>	
+    <config>
+        <fields name="params">
+            <fieldset name="advanced">
+                <field name="cache" type="list" default="0" label="Caching" description="Select whether to cache the content of this module">
+                    <option value="1">Use global</option>
+                    <option value="0">No caching</option>
+                </field>
+                <field name="cache_time" type="text" default="900" label="Cache Time" description="The time before the module is recached" />
+            </fieldset>
+        </fields>
+    </config>
     
 	<params addpath="/administrator/components/com_jfusion/elements">
 
 	<param name="moduleclass_sfx" type="text" default="" label="Module Class Suffix" description="PARAMMODULECLASSSUFFIX" />
-		<param name="pretext" type="textarea" cols="20" rows="5"
-			default="" label="PRE_TEXT" description="PRE_TEXT_DESCR" />
-		<param name="posttext" type="textarea" cols="20" rows="5"
-			default="" label="POST_TEXT" description="POST_TEXT_DESCR" />
-		<param name="login" type="menuitem" default=""
-			disable="separator" label="LOGIN_REDIRECT"
-			description="LOGIN_REDIRECT_DESCR" />
-		<param name="logout" type="menuitem" default=""
-			disable="separator" label="LOGOUT_REDIRECT"
-			description="LOGOUT_REDIRECT_DESCR" />
-		<param name="name" type="list" default="0"
-			label="DISPLAY_USERNAME_NAME" description="DISPLAY_USERNAME_NAME_DESCR">
+		<param name="pretext" type="textarea" cols="20" rows="5" default="" label="PRE_TEXT" description="PRE_TEXT_DESCR" />
+		<param name="posttext" type="textarea" cols="20" rows="5" default="" label="POST_TEXT" description="POST_TEXT_DESCR" />
+		<param name="login" type="menuitem" default="" disable="separator" label="LOGIN_REDIRECT" description="LOGIN_REDIRECT_DESCR" />
+		<param name="logout" type="menuitem" default="" disable="separator" label="LOGOUT_REDIRECT" description="LOGOUT_REDIRECT_DESCR" />
+		<param name="name" type="list" default="0" label="DISPLAY_USERNAME_NAME" description="DISPLAY_USERNAME_NAME_DESCR">
 			<option value="0">USERNAME</option>
 			<option value="1">NAME</option>
 		</param>
-		<param name="usesecure" type="radio" default="0"
-			label="ENCRYPT_FORM"
-			description="ENCRYPT_FORM_DESCR">
+		<param name="usesecure" type="radio" default="0" label="ENCRYPT_FORM" description="ENCRYPT_FORM_DESCR">
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>
 		</param>
-		<param name="show_rememberme" type="radio" default="1"
-			label="REMEMBER_ME" description="REMEMBER_ME_DESCR">
+		<param name="show_rememberme" type="radio" default="1" label="REMEMBER_ME" description="REMEMBER_ME_DESCR">
 			<option value="0">HIDE</option>
 			<option value="1">SHOW</option>
 		</param>
-		<param name="show_labels" type="radio" default="1"
-			label="SHOW_LABELS" description="SHOW_LABELS_DESCR">
+		<param name="show_labels" type="radio" default="1" label="SHOW_LABELS" description="SHOW_LABELS_DESCR">
 			<option value="0">HIDE</option>
 			<option value="1">SHOW</option>
 		</param>
-		<param name="layout" type="radio" default="vertical"
-			label="VIEW_MODE" description="VIEW_MODE_DESCR">
+		<param name="layout" type="radio" default="vertical" label="VIEW_MODE" description="VIEW_MODE_DESCR">
 			<option value="vertical">VERTICAL</option>
 			<option value="horizontal">HORIZONTAL</option>
 		</param>
@@ -176,58 +145,46 @@
         <param name=" " type="helptext" default="ITEMID_DESCR"/>
 		<param name="itemid" type="JFusionItemid" size="5" default="" description="ITEMID_DESCR" label="ITEMID" />
 		<param name="lostpassword_url" label="LOST_PASSWORD_URL" type="text" size="50" default="" description="LOST_PASSWORD_URL_DESCR" />
-		<param name="lostpassword_show" type="radio" default="1"
-			label="LOST_PASSWORD" description="LOST_PASSWORD_DESCR">
+		<param name="lostpassword_show" type="radio" default="1" label="LOST_PASSWORD" description="LOST_PASSWORD_DESCR">
 			<option value="0">HIDE</option>
 			<option value="1">SHOW</option>
 		</param>
 		<param name="lostusername_url" label="LOST_USERNAME_URL" type="text" size="50" default="" description="LOST_USERNAME_URL_DESCR" />
-		<param name="lostusername_show" type="radio" default="1"
-			label="LOST_USERNAME" description="LOST_USERNAME_DESCR">
+		<param name="lostusername_show" type="radio" default="1" label="LOST_USERNAME" description="LOST_USERNAME_DESCR">
 			<option value="0">HIDE</option>
 			<option value="1">SHOW</option>
 		</param>
 		<param name="register_url" label="REGISTER_URL" type="text" size="50" default="" description="REGISTER_URL_DESCR" />
-		<param name="register_show" type="radio" default="1"
-			label="CREATE_ACCOUNT" description="CREATE_ACCOUNT_DESCR">
+		<param name="register_show" type="radio" default="1" label="CREATE_ACCOUNT" description="CREATE_ACCOUNT_DESCR">
 			<option value="0">HIDE</option>
 			<option value="1">SHOW</option>
 		</param>
-		<param name="greeting" type="radio" default="1" label="GREETING"
-			description="GREETING_DESCR">
+		<param name="greeting" type="radio" default="1" label="GREETING" description="GREETING_DESCR">
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>
 		</param>
 		<param name="custom_greeting" label="CUSTOM_GREETING" type="text" size="50" default="" description="CUSTOM_GREETING_DESCR" />
 		<param name="@spacer" type="spacer" default="" label=""	description="" />
-		<param name="avatar" type="radio" default="1"
-			label="AVATAR_IMAGE" description="AVATAR_IMAGE_DESCR">
+		<param name="avatar" type="radio" default="1" label="AVATAR_IMAGE" description="AVATAR_IMAGE_DESCR">
 			<option value="0">HIDE</option>
 			<option value="1">SHOW</option>
 		</param>
 		<param name="avatar_height" label="AVATAR_HEIGHT" type="text" size="5" default="80"/>
 		<param name="avatar_width" label="AVATAR_WIDTH" type="text" size="5" default="60"/>
-		<param name="avatar_software" type="list" default="jfusion"
-			label="AVATAR_SOFTWARE"
-			description="AVATAR_SOFTWARE_DESC">
+		<param name="avatar_software" type="list" default="jfusion" label="AVATAR_SOFTWARE" description="AVATAR_SOFTWARE_DESC">
 				<option value="cb">Community Builder</option>
 				<option value="gravatar">Gravatar</option>
 				<option value="jfusion">JFusion</option>
 				<option value="jomsocial">JomSocial</option>
 				<option value="joomunity">Joomunity</option>
 		</param>
-		<param name="itemidAvatarPMs" type="JFusionItemid" default=""
-			label="JFUSION_PLUGIN"
-			description="JFUSION_PLUGIN_DESCR" />
+		<param name="itemidAvatarPMs" type="JFusionItemid" default="" label="JFUSION_PLUGIN" description="JFUSION_PLUGIN_DESCR" />
 
-		<param name="pmcount" type="radio" default="1"
-			label="PM_COUNT"
-			description="PM_COUNT_DESCR">
+		<param name="pmcount" type="radio" default="1" label="PM_COUNT" description="PM_COUNT_DESCR">
 			<option value="0">HIDE</option>
 			<option value="1">SHOW</option>
 		</param>
-		<param name="viewnewmessages" type="radio" default="1"
-			label="PM_NEW_LINK" description="PM_NEW_LINK_DESCR">
+		<param name="viewnewmessages" type="radio" default="1" label="PM_NEW_LINK" description="PM_NEW_LINK_DESCR">
 			<option value="0">HIDE</option>
 			<option value="1">SHOW</option>
 		</param>	

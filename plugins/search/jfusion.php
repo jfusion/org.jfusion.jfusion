@@ -64,7 +64,7 @@ if(JFusionFunction::isJoomlaVersion('1.6')) {
 	     * The sql must return the following fields that are used in a common display
 	     * routine: href, title, section, created, text, browsernav
 	     * @param string Target search string
-	     * @param string mathcing option, exact|any|all
+	     * @param string matching option, exact|any|all
 	     * @param string ordering option, newest|oldest|popular|alpha|category
 	     * @param mixed An array if the search it to be restricted to areas, null if search all
          *
@@ -90,7 +90,7 @@ if(JFusionFunction::isJoomlaVersion('1.6')) {
 function &plgSearchjfusionAreas()
 {
     static $areas = array();
-    //get the softwares with search enabled
+    //get the software with search enabled
     $plugins = JFusionFactory::getPlugins('both');
     $searchplugin = JPluginHelper::getPlugin('search', 'jfusion');
     $params = new JParameter($searchplugin->params);

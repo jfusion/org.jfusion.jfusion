@@ -53,7 +53,7 @@ class JFusionUser
     /**
      * Returns the identifier and identifier_type for getUser
      *
-     * @param object &$userinfo    object with user identifing information
+     * @param object &$userinfo    object with user identifying information
      * @param string $username_col Database column for username
      * @param string $email_col    Database column for email
      * @param bool $lowerEmail   Boolean to lowercase emails for comparison
@@ -71,7 +71,7 @@ class JFusionUser
         } else {
             $login_identifier = $params->get('login_identifier', 1);
         }
-        $identifier = $userinfo; // saves some codelines, only change if userinfo is an object
+        $identifier = $userinfo; // saves some code lines, only change if userinfo is an object
         switch ($login_identifier) {
             default:
             case 1:
@@ -131,8 +131,8 @@ class JFusionUser
      * $result['error'] (contains any error messages)
      * $result['debug'] (contains information on what was done)
      *
-     * @param object|null $userinfo contains the userinfo
-     * @param array|null $options  contains Array with the login options, such as remember_me
+     * @param object $userinfo contains the userinfo
+     * @param array $options  contains Array with the login options, such as remember_me
      *
      * @return array result Array containing the result of the session destroy
      */
@@ -150,7 +150,7 @@ class JFusionUser
      * $result['debug'] (contains information on what was done)
      *
      * @param object $userinfo contains the userinfo
-     * @param array  $options  contains srray with the login options, such as remember_me     *
+     * @param array  $options  contains array with the login options, such as remember_me     *
      *
      * @return array result Array containing the result of the session creation
      */
@@ -172,7 +172,7 @@ class JFusionUser
     }
 
     /**
-     * Updates or creates a user for the integrated software. This allows JFusion to have external softwares as slave for user management
+     * Updates or creates a user for the integrated software. This allows JFusion to have external software as slave for user management
      * $result['error'] (contains any error messages)
      * $result['userinfo'] (contains the userinfo object of the integrated software user)
      *
@@ -245,7 +245,7 @@ class JFusionUser
                             $changed = true;
                         }
                     } else {
-                        //return a debug to inform we skiped this step
+                        //return a debug to inform we skipped this step
                         $status['debug'][] = JText::_('SKIPPED_BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
                     }
                 }
@@ -254,7 +254,7 @@ class JFusionUser
                     if ($existinguser->activation != $userinfo->activation) {
                         if ($update_activation || $overwrite) {
                             if ($userinfo->activation) {
-                                //inactiva the user
+                                //inactive the user
                                 $this->inactivateUser($userinfo, $existinguser, $status);
                                 $changed = true;
                             } else {
@@ -263,7 +263,7 @@ class JFusionUser
                                 $changed = true;
                             }
                         } else {
-                            //return a debug to inform we skiped this step
+                            //return a debug to inform we skipped this step
                             $status['debug'][] = JText::_('SKIPPED_ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
                         }
                     }
@@ -292,7 +292,7 @@ class JFusionUser
                     $status['debug'][] = JText::_('LANGUAGE_UPDATED') . ' : ' . $existinguser->language . ' -> ' . $userinfo->language;
                     $changed = true;
                 } else {
-                    //return a debug to inform we skiped this step
+                    //return a debug to inform we skipped this step
                     $status['debug'][] = JText::_('LANGUAGE_NOT_UPDATED');
                 }
 
@@ -337,7 +337,7 @@ class JFusionUser
      * $status['debug'] (contains information on what was done)
      *
      * @param object $userinfo      Object containing the new userinfo
-     * @param object &$existinguser Object containg the old userinfo
+     * @param object &$existinguser Object containing the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
      *
      * @return boolean Whether updateUsergroup was executed or not
@@ -359,7 +359,7 @@ class JFusionUser
      * $status['debug'] (contains information on what was done)
      *
      * @param object $userinfo      Object containing the new userinfo
-     * @param object &$existinguser Object containg the old userinfo
+     * @param object &$existinguser Object containing the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
      */
     function updatePassword($userinfo, &$existinguser, &$status)
@@ -373,7 +373,7 @@ class JFusionUser
      * $status['debug'] (contains information on what was done)
      *
      * @param object $userinfo      Object containing the new userinfo
-     * @param object &$existinguser Object containg the old userinfo
+     * @param object &$existinguser Object containing the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
      */
     function updateUsername($userinfo, &$existinguser, &$status)
@@ -387,7 +387,7 @@ class JFusionUser
      * $status['debug'] (contains information on what was done)
      *
      * @param object $userinfo      Object containing the new userinfo
-     * @param object &$existinguser Object containg the old userinfo
+     * @param object &$existinguser Object containing the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
      */
     function updateEmail($userinfo, &$existinguser, &$status)
@@ -401,7 +401,7 @@ class JFusionUser
      * $status['debug'] (contains information on what was done)
      *
      * @param object $userinfo      Object containing the new userinfo
-     * @param object &$existinguser Object containg the old userinfo
+     * @param object &$existinguser Object containing the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
      */
     function updateUsergroup($userinfo, &$existinguser, &$status)
@@ -415,7 +415,7 @@ class JFusionUser
      * $status['debug'] (contains information on what was done)
      *
      * @param object $userinfo      Object containing the new userinfo
-     * @param object &$existinguser Object containg the old userinfo
+     * @param object &$existinguser Object containing the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
      */
     function blockUser($userinfo, &$existinguser, &$status)
@@ -429,7 +429,7 @@ class JFusionUser
      * $status['debug'] (contains information on what was done)
      *
      * @param object $userinfo      Object containing the new userinfo
-     * @param object &$existinguser Object containg the old userinfo
+     * @param object &$existinguser Object containing the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
      */
     function unblockUser($userinfo, &$existinguser, &$status)
@@ -443,7 +443,7 @@ class JFusionUser
      * $status['debug'] (contains information on what was done)
      *
      * @param object $userinfo      Object containing the new userinfo
-     * @param object &$existinguser Object containg the old userinfo
+     * @param object &$existinguser Object containing the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
      */
     function activateUser($userinfo, &$existinguser, &$status)
@@ -457,7 +457,7 @@ class JFusionUser
      * $status['debug'] (contains information on what was done)
      *
      * @param object $userinfo      Object containing the new userinfo
-     * @param object &$existinguser Object containg the old userinfo
+     * @param object &$existinguser Object containing the old userinfo
      * @param array  &$status       Array containing the errors and result of the function
      */
     function inactivateUser($userinfo, &$existinguser, &$status)
@@ -510,7 +510,7 @@ class JFusionUser
      * Function that that is used to keep sessions in sync and/or alive
      *
      * @param boolean $keepalive    Tells the function to regenerate the inactive session as long as the other is active
-     * unless there is a persistant cookie available for inactive session
+     * unless there is a persistent cookie available for inactive session
      * @return integer 0 if no session changes were made, 1 if session created
      */
     function syncSessions($keepalive = false)

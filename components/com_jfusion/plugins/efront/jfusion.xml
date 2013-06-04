@@ -2,13 +2,13 @@
 <!DOCTYPE install SYSTEM "http://www.jfusion.org/xml/dtd/1.5/plugin-install.dtd">
 <install type="jfusion" version="1.5.0">
 	<name>efront</name>
-	<creationDate>3 November 2009</creationDate>
+	<creationDate>9 April 2013</creationDate>
 	<author>JFusion Development Team -- Hrnk Wevers</author>
 	<authorEmail>webmaster@jfusion.org</authorEmail>
 	<authorUrl>www.jfusion.org</authorUrl>
 	<copyright>Copyright (C) 2008 JFusion. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-	<version>1.8.1-000</version>
+	<version>1.8.4-001</version>
     <revision>$revision$</revision>
     <timestamp>$timestamp$</timestamp>
 	<description>JFusion plugin for eFront 3.x</description>
@@ -26,25 +26,6 @@
 		<filename>public.php</filename>
 		<filename>user.php</filename>
 	</files>
-	
-	<administration>
-		<languages folder="language">
-            <language tag="en-GB">en-GB.com_jfusion.plg_efront.ini</language>
-            <language tag="es-ES">es-ES.com_jfusion.plg_efront.ini</language>
-            <language tag="et-EE">et-EE.com_jfusion.plg_efront.ini</language>
-            <language tag="fa-IR">fa-IR.com_jfusion.plg_efront.ini</language>
-            <language tag="fr-FR">fr-FR.com_jfusion.plg_efront.ini</language>
-            <language tag="de-DE">de-DE.com_jfusion.plg_efront.ini</language>
-            <language tag="it-IT">it-IT.com_jfusion.plg_efront.ini</language>
-            <language tag="nl-NL">nl-NL.com_jfusion.plg_efront.ini</language>
-            <language tag="pl-PL">pl-PL.com_jfusion.plg_efront.ini</language>
-            <language tag="pt-PT">pt-PT.com_jfusion.plg_efront.ini</language>
-            <language tag="ru-RU">ru-RU.com_jfusion.plg_efront.ini</language>
-            <language tag="ru-RU">ru-RU.com_jfusion.plg_efront.ini</language>
-            <language tag="th-TH">th-TH.com_jfusion.plg_efront.ini</language>
-            <language tag="zh-CN">zh-CN.com_jfusion.plg_efront.ini</language>
-		</languages>
-	</administration>
 	
 	<params addpath="/administrator/components/com_jfusion/elements">
 
@@ -128,5 +109,40 @@
             <option value="1">JYES</option>
             <option value="0">JNO</option>
         </param>
+        
+        <param name="jfusionbox" type="text" default="" label="CURL_OPTIONS_LOGIN" description="" />
+        <param name="login_url" type="text" size="60" label="CURL_LOGIN_URL" default="wp-login.php" description="CURL_LOGIN_URL_DESC" />
+        <param name="brute_force" type="list" default="standard" label="CURL_BRUTE_FORCE" description="CURL_BRUTE_FORCE_DESC">
+            <option value="brute_force">JYES</option>
+            <option value="standard">JNO</option>
+        </param>
+        <param name="loginform_id" type="text" size="60" label="CURL_LOGINFORM_ID" default="loginform" description="CURL_LOGINFORM_ID_DESC" />
+        <param name="relpath" type="list" default="0" label="CURL_RELPATH" description="CURL_RELPATH_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </param>
+        <param name="input_username_id" type="text" size="60" label="CURL_INPUT_USERNAME_ID" default="log" description="CURL_INPUT_USERNAME_ID_DESC" />
+        <param name="input_password_id" type="text" size="60" label="CURL_INPUT_PASSWORD_ID" default="pwd" description="CURL_INPUT_PASSWORD_ID_DESC" />
+        <param name="hidden" type="list" default="1" label="CURL_HIDDEN" description="CURL_HIDDEN_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </param>
+        <param name="buttons" type="list" default="1" label="CURL_BUTTONS" description="CURL_BUTTONS_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </param>
+
+        <param name="jfusionbox" type="text" default="" label="CURL_OPTIONS_LOGOUT" description="" />
+        <param name="logout_type" type="list" default="url" label="CURL_LOGOUT_TYPE" description="CURL_LOGOUT_TYPE_DESC">
+            <option value="url">URL</option>
+            <option value="form">FORM</option>
+            <option value="brute_force">BRUTE_FORCE</option>
+        </param>
+        <param name="logout_url" type="text" size="60" label="CURL_LOGOUT_URL" default="wp-login.php" description="CURL_LOGOUT_URL_DESC" />
+        <param name="relpathl" type="list" default="0" label="CURL_RELPATHL" description="CURL_RELPATHL_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </param>
+        <param name="postfields" type="text" size="60" label="CURL_POSTFIELDS" default="" description="CURL_POSTFIELDS_DESC" />
 	</params>
 </install>

@@ -85,12 +85,14 @@ class JFusionUser_gallery2 extends JFusionUser {
                 $userinfo->group_name = $name;
             }
         }
-        //TODO: Research if and in how to detect blocked Users
+        /**
+         * @TODO Research if and in how to detect blocked Users
+         */
         $userinfo->block = 0; //(0 if allowed to access site, 1 if user access is blocked)
         //Not found jet
         $userinfo->registerdate = null;
         $userinfo->lastvisitdate = null;
-        //Not activated users are saved sepperated so not to set. (PendingUser)
+        //Not activated users are saved separated so not to set. (PendingUser)
         $userinfo->activation = null;
         return $userinfo;
     }
@@ -110,7 +112,9 @@ class JFusionUser_gallery2 extends JFusionUser {
      * @return string
      */
     function filterUsername($username) {
-        //TODO: Implement User filtering
+        /**
+         * @TODO Implement User filtering
+         */
         return $username;
     }
 
@@ -188,7 +192,7 @@ class JFusionUser_gallery2 extends JFusionUser {
                     }
                 }
             }
-            //Code is paticulary taken from the GalleryEmbed::login function
+            //Code is particularly taken from the GalleryEmbed::login function
             list($ret, $user) = GalleryCoreApi::fetchUserByUserName($userinfo->username);
             if ($ret) {
                 $status['error'][] = $ret->getErrorMessage();
@@ -198,7 +202,7 @@ class JFusionUser_gallery2 extends JFusionUser {
                 //Save the Session
                 $session = & $gallery->getSession();
                 $phpVm = $gallery->getPhpVm();
-                //Set Siteadmin if necessarey
+                //Set Site admin if necessary
                 list($ret, $isSiteAdmin) = GalleryCoreApi::isUserInSiteAdminGroup($user->id);
                 if ($ret) {
                     $status['error'][] = $ret->getErrorMessage();
@@ -284,14 +288,14 @@ class JFusionUser_gallery2 extends JFusionUser {
         } else {
             list($ret, $g2_user) = GalleryCoreApi::newFactoryInstance('GalleryEntity', 'GalleryUser');
             if ($ret) {
-                $status['error'][] = JText::_('ERROR_CREATING_USER') . ' ' . $userinfo->username;
+                $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . $userinfo->username;
             } else {
                 if (!isset($g2_user)) {
-                    $status['error'][] = JText::_('ERROR_CREATING_USER') . ': ' . $this->getJname(). ' : ' . $userinfo->username;
+                    $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . $this->getJname(). ' : ' . $userinfo->username;
                 }
                 $ret = $g2_user->create($userinfo->username);
                 if ($ret) {
-                    $status['error'][] = JText::_('ERROR_CREATING_USER') . ': ' . $this->getJname(). ' : ' . $userinfo->username;
+                    $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . $this->getJname(). ' : ' . $userinfo->username;
                 } else {
                     $testcrypt = $userinfo->password;
                     if (isset($userinfo->password_clear)) {
@@ -303,7 +307,7 @@ class JFusionUser_gallery2 extends JFusionUser {
                     $g2_user->setFullName($userinfo->name);
                     $ret = $g2_user->save();
                     if ($ret) {
-                        $status['error'][] = JText::_('ERROR_CREATING_USER') . ': '.$this->getJname().' : ' . $userinfo->username;
+                        $status['error'][] = JText::_('ERROR_CREATE_USER') . ' '.$this->getJname().' : ' . $userinfo->username;
                     } else {
                         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
                         foreach ($usergroups as $group) {

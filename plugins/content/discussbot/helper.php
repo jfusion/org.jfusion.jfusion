@@ -29,7 +29,10 @@ defined('_JEXEC' ) or die('Restricted access' );
 */
 class JFusionDiscussBotHelper {
     var $article;
-    var $params;
+	/**
+	 * @var JParameter $params
+	 */
+	var $params;
     var $jname;
     var $mode;
     var $thread_status = false;
@@ -171,7 +174,7 @@ class JFusionDiscussBotHelper {
      */
     public function getArticleUrl($jumpto = '', $query = '', $xhtml = true)
     {
-        //make sure Joomla's content helper is loaded
+        //make sure Joomla content helper is loaded
         if (!class_exists('ContentHelperRoute')) {
             require_once JPATH_SITE . DS . 'components' . DS . 'com_content' . DS . 'helpers' . DS . 'route.php';
         }
@@ -383,7 +386,7 @@ class JFusionDiscussBotHelper {
                                                                 break;
                                                             }
                                                         } else {
-	                                                        $responce = array(0, JText::_('REASON_IN_INCLUDED_CATEGORY_PARENT'));
+	                                                        $responce = array(1, JText::_('REASON_IN_INCLUDED_CATEGORY_PARENT'));
                                                             break;
                                                         }
                                                     }
@@ -391,7 +394,7 @@ class JFusionDiscussBotHelper {
 	                                                $responce = array(0, JText::_('REASON_NOT_IN_INCLUDED_CATEGORY_OR_PARENTS'));
                                                 }
                                             } else {
-	                                            $responce = array(0, JText::_('REASON_IN_INCLUDED_CATEGORY'));
+	                                            $responce = array(1, JText::_('REASON_IN_INCLUDED_CATEGORY'));
                                             }
 
                                             //make sure the category is not in an excluded category
@@ -571,7 +574,7 @@ class JFusionDiscussBotHelper {
                                                 }
                                             }
 
-                                            //if valid, make sure the category is not in an exluded cat
+                                            //if valid, make sure the category is not in an excluded cat
                                             if ($responce[0] && !empty($excludedCategories)) {
                                                 if (in_array($catid, $excludedCategories)) {
 	                                                $responce = array(0, JText::_('REASON_IN_EXCLUDED_CATEGORY'));
@@ -709,17 +712,17 @@ JS;
      */
     public function renderFile($file)
     {
+	    $captured_content = false;
         $this->debug('Rendering file ' . $file);
         if (file_exists(DISCUSSION_TEMPLATE_PATH . $file)) {
 	        ob_start();
 	        include DISCUSSION_TEMPLATE_PATH.$file;
 	        $captured_content = ob_get_contents();
 	        ob_end_clean();
-	        return $captured_content;
         } else {
             die(DISCUSSION_TEMPLATE_PATH . $file . " is missing!");
         }
-        return false;
+        return $captured_content;
     }
 
     /**
@@ -742,6 +745,7 @@ JS;
 /**
  *
  */
+jimport( 'joomla.html.pagination' );
 class JFusionPagination extends JPagination {
     var $identifier = '';
 

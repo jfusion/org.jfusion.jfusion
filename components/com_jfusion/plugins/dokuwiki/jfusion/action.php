@@ -4,7 +4,7 @@
  * @license GPL 2 http://www.gnu.org/licenses/gpl-2.0.html
  * @author  JFusion Team <webmaster@jfusion.org>
  *
- * Adapted from Dokuwiki's own auth routines
+ * Adapted from Dokuwiki own auth routines
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * @author     Andreas Gohr <andi@splitbrain.org>
  */
@@ -45,7 +45,7 @@ class action_plugin_jfusion extends DokuWiki_Action_Plugin {
      * @param $param
      */
     function jfusion_login(&$event, $param) {
-        //do not use Dokuwiki's standard login method
+        //do not use Dokuwiki standard login method
         $event->preventDefault();
 
         $user = & $event->data['user'];
@@ -117,11 +117,14 @@ class action_plugin_jfusion extends DokuWiki_Action_Plugin {
                         $auth->useSessionCache($user) &&
                         ($session['time'] >= time()-$conf['auth_security_timeout']) &&
                         ($session['user'] == $user) &&
-                        ($session['pass'] == $pass) &&  //still crypted
+                        ($session['pass'] == $pass) &&  //still encrypted
                         ($session['buid'] == auth_browseruid()) ){
                     // he has session, cookie and browser right - let him in
                     $_SERVER['REMOTE_USER'] = $user;
-                    $USERINFO = $session['info']; //FIXME move all references to session
+                    $USERINFO = $session['info'];
+	                /**
+	                 * @TODO move all references to session
+	                 */
                     return true;
                 }
                 // no we don't trust it yet - recheck pass but silent
@@ -146,7 +149,7 @@ class action_plugin_jfusion extends DokuWiki_Action_Plugin {
 
         if ($ACT == 'logout') {
             global $ID, $INFO;
-            //do not use Dokuwiki's standard logout method
+            //do not use Dokuwiki standard logout method
             $event->preventDefault();
 
             $lockedby = checklock($ID); //page still locked?
@@ -179,7 +182,7 @@ class action_plugin_jfusion extends DokuWiki_Action_Plugin {
             unset($_SESSION[DOKU_COOKIE]['bc']);
         if(isset($_SERVER['REMOTE_USER']))
             unset($_SERVER['REMOTE_USER']);
-        $USERINFO=null; //FIXME
+        $USERINFO=null;
 
         if (version_compare(PHP_VERSION, '5.2.0', '>')) {
             setcookie(DOKU_COOKIE,'',time()-600000,$conf['jfusion']['cookie_path'],$conf['jfusion']['cookie_domain'],($conf['securecookie'] && is_ssl()),true);
@@ -218,7 +221,7 @@ class action_plugin_jfusion extends DokuWiki_Action_Plugin {
 
     function stopJoomla() {
         global $conf;
-        //restore Dokuwiki's cookie settings
+        //restore Dokuwiki cookie settings
         if (version_compare(PHP_VERSION, '5.2.0', '>')) {
             session_set_cookie_params(0, DOKU_REL, '', ($conf['securecookie'] && is_ssl()), true);
         } else {
@@ -236,7 +239,7 @@ class action_plugin_jfusion extends DokuWiki_Action_Plugin {
         global $JFusionActive, $conf;
         if (empty($JFusionActive)) {
             $mainframe = $this->startJoomla();
-            //if already in Joomla framelessly, then do nothing as the getBuffer function will handle logins/outs
+            //if already in Joomla framelessly, then do nothing as the getBuffer function will handle login/out
             if (!defined('IN_JOOMLA')) {
                 //define that the phpBB3 JFusion plugin needs to be excluded
                 global $JFusionActivePlugin;
@@ -271,7 +274,7 @@ class action_plugin_jfusion extends DokuWiki_Action_Plugin {
             $JFusionActivePlugin =(empty($conf['jfusion']['jfusion_plugin_name'])) ? 'dokuwiki' : $conf['jfusion']['jfusion_plugin_name'];
             $mainframe = $this->startJoomla();
 
-            //if already in Joomla framelessly, then do nothing as the getBuffer function will handle logins/outs
+            //if already in Joomla frameless, then do nothing as the getBuffer function will handle login / out
             if (!defined('IN_JOOMLA')) {
                 //logout any joomla users
                 $mainframe->logout();

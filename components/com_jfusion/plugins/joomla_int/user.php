@@ -150,7 +150,7 @@ class JFusionUser_joomla_int extends JFusionUser {
                     $options['action'] = 'core.login.site';
                 }
 
-                // Chek the user can login.
+                // Check the user can login.
                 $result	= $instance->authorise($options['action']);
                 if (!$result) {
                     $status['error'] = JText::_('JERROR_LOGIN_DENIED');
@@ -201,7 +201,7 @@ class JFusionUser_joomla_int extends JFusionUser {
                 //use new create session function
                 $status = $this->createSession16($userinfo, $options);
             } else {
-                //initalise some objects
+                //initialise some objects
                 $acl = JFactory::getACL();
                 $instance = JUser::getInstance($userinfo->userid);
                 $grp = $acl->getAroGroup($userinfo->userid);
@@ -266,12 +266,12 @@ class JFusionUser_joomla_int extends JFusionUser {
     }
 
     /**
-     * @param object $user
+     * @param object $userinfo
      * @param array $options
      *
      * @return array
      */
-    function destroySession($user, $options) {
+    function destroySession($userinfo, $options) {
 	    if (!isset($options['clientid'])) {
 		    $mainframe = JFactory::getApplication();
 		    if ($mainframe->isAdmin()) {
@@ -286,9 +286,9 @@ class JFusionUser_joomla_int extends JFusionUser {
 
         //destroy the Joomla session but do so directly based on what $options is
         $table = JTable::getInstance('session');
-        $table->destroy($user['id'], $options['clientid']);
+        $table->destroy($userinfo->id, $options['clientid']);
         $my = JFactory::getUser();
-        if ($my->get('id') == $user['id']) {
+        if ($my->id == $userinfo->id) {
             // Hit the user last visit field
             $my->setLastVisit();
             // Destroy the php session for this user
@@ -297,7 +297,7 @@ class JFusionUser_joomla_int extends JFusionUser {
         } else {
             // Force logout all users with that userid
             $table = JTable::getInstance('session');
-            $table->destroy($user['id'], $options['clientid']);
+            $table->destroy($userinfo->id, $options['clientid']);
         }
         return array();
     }
@@ -336,7 +336,7 @@ class JFusionUser_joomla_int extends JFusionUser {
     }
 
     /**
-     * @todo - To implement after the RC 1.1.2
+     * @TODO - To implement after the RC 1.1.2
      *
      * @param object $userinfo
      * @param object $existinguser

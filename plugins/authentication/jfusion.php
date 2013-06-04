@@ -40,7 +40,7 @@ class plgAuthenticationjfusion extends JPlugin
     /**
      * Constructor
      *
-     * For php4 compatability we must not use the __constructor as a constructor for plugins
+     * For php4 compatibility we must not use the __constructor as a constructor for plugins
      * because func_get_args ( void ) returns a copy of all passed arguments NOT references.
      * This causes problems with cross-referencing necessary for the observer design pattern.
      *
@@ -103,7 +103,7 @@ class plgAuthenticationjfusion extends JPlugin
                 }
                 //store this to be stored jfusion_user table by the joomla_int createUser function
                 $userinfo->credentialed_username = $credentials['username'];
-                //apply the cleartext password to the user object
+                //apply the clear text password to the user object
                 $userinfo->password_clear = $credentials['password'];
                 //check the master plugin for a valid password
                 $model = JFusionFactory::getAuth($master->name);

@@ -52,7 +52,7 @@ class JFusionHelper_phpbb3
     }
 
     /**
-     * This function is to emulate phpbb set_var used needed to propear encode "clean" password, and other variables.
+     * This function is to emulate phpbb set_var used needed to proper encode "clean" password, and other variables.
      *
      * @param $var
      * @return string
@@ -62,7 +62,7 @@ class JFusionHelper_phpbb3
         $var = trim(htmlspecialchars(str_replace(array("\r\n", "\r", "\0"), array("\n", "\n", ''), $var), ENT_COMPAT, 'UTF-8'));
 
         if (!empty($var)) {
-            // Make sure multibyte characters are wellformed
+            // Make sure multibyte characters are well formed
             if (!preg_match('/^./u', $var)) {
                 $var = '';
             }
@@ -88,7 +88,7 @@ class JFusionHelper_phpbb3
      * functions used here you need to rebuild/update the username_clean column in the users table. And all other
      * columns that store a clean string otherwise you will break this functionality.
      *
-     * @param string $text An unclean string, mabye user input (has to be valid UTF-8!)
+     * @param string $text An unclean string, maybe user input (has to be valid UTF-8!)
      * @return string Cleaned up version of the input string
      */
     function utf8_clean_string($text) {
@@ -109,7 +109,7 @@ class JFusionHelper_phpbb3
 
     /**
      * Takes the input and does a "special" case fold. It does minor normalization
-     * and returns NFKC compatable text
+     * and returns NFKC compatible text
      *
      * @param string $text text to be case folded
      * @param string $option determines how we will fold the cases
@@ -200,9 +200,9 @@ class JFusionHelper_phpbb3
         $match = array('#(script|about|applet|activex|chrome):#i');
         $replace = array("\\1&#058;");
         $text = preg_replace($match, $replace, trim($text));
-        //parse smilies phpbb's way
+        //parse smilies phpbb way
         $this->parse_smilies($text);
-        //add phpbb's bbcode_uid to bbcode and generate bbcode_bitfield
+        //add phpbb bbcode_uid to bbcode and generate bbcode_bitfield
         if (strpos($text, '[') !== false) {
             $this->bbcode_bitfield = base64_decode('');
             $this->parse_bbcode($text);
@@ -238,8 +238,22 @@ class JFusionHelper_phpbb3
      * @param string &$text
      */
     function parse_bbcode(&$text) {
-        if (!is_array($this->bbcodes)) {
-            $this->bbcodes = array('code' => array('bbcode_id' => 8, 'regexp' => array('#\[code(?:=([a-z]+))?\](.+\[/code\])#ise' => "\$this->bbcode_code('\$1', '\$2')")), 'quote' => array('bbcode_id' => 0, 'regexp' => array('#\[quote(?:=&quot;(.*?)&quot;)?\](.+)\[/quote\]#ise' => "\$this->bbcode_quote('\$0')")), 'attachment' => array('bbcode_id' => 12, 'regexp' => array('#\[attachment=([0-9]+)\](.*?)\[/attachment\]#ise' => "\$this->bbcode_attachment('\$1', '\$2')")), 'b' => array('bbcode_id' => 1, 'regexp' => array('#\[b\](.*?)\[/b\]#ise' => "\$this->bbcode_strong('\$1')")), 'i' => array('bbcode_id' => 2, 'regexp' => array('#\[i\](.*?)\[/i\]#ise' => "\$this->bbcode_italic('\$1')")), 'url' => array('bbcode_id' => 3, 'regexp' => array('#\[url(=(.*))?\](.*)\[/url\]#iUe' => "\$this->validate_url('\$2', '\$3')")), 'img' => array('bbcode_id' => 4, 'regexp' => array('#\[img\](.*)\[/img\]#iUe' => "\$this->bbcode_img('\$1')")), 'size' => array('bbcode_id' => 5, 'regexp' => array('#\[size=([\-\+]?\d+)\](.*?)\[/size\]#ise' => "\$this->bbcode_size('\$1', '\$2')")), 'color' => array('bbcode_id' => 6, 'regexp' => array('!\[color=(#[0-9a-f]{6}|[a-z\-]+)\](.*?)\[/color\]!ise' => "\$this->bbcode_color('\$1', '\$2')")), 'u' => array('bbcode_id' => 7, 'regexp' => array('#\[u\](.*?)\[/u\]#ise' => "\$this->bbcode_underline('\$1')")), 'list' => array('bbcode_id' => 9, 'regexp' => array('#\[list(?:=(?:[a-z0-9]|disc|circle|square))?].*\[/list]#ise' => "\$this->bbcode_parse_list('\$0')")), 'email' => array('bbcode_id' => 10, 'regexp' => array('#\[email=?(.*?)?\](.*?)\[/email\]#ise' => "\$this->validate_email('\$1', '\$2')")), 'flash' => array('bbcode_id' => 11, 'regexp' => array('#\[flash=([0-9]+),([0-9]+)\](.*?)\[/flash\]#ie' => "\$this->bbcode_flash('\$1', '\$2', '\$3')")));
+        if (empty($this->bbcodes)) {
+            $this->bbcodes = array(
+	            'code'          => array('bbcode_id' => 8, 'regexp' => array('#\[code(?:=([a-z]+))?\](.+\[/code\])#ise' => "\$this->bbcode_code('\$1', '\$2')")),
+	            'quote'         => array('bbcode_id' => 0, 'regexp' => array('#\[quote(?:=&quot;(.*?)&quot;)?\](.+)\[/quote\]#ise' => "\$this->bbcode_quote('\$0')")),
+	            'attachment'    => array('bbcode_id' => 12, 'regexp' => array('#\[attachment=([0-9]+)\](.*?)\[/attachment\]#ise' => "\$this->bbcode_attachment('\$1', '\$2')")),
+	            'b'             => array('bbcode_id' => 1, 'regexp' => array('#\[b\](.*?)\[/b\]#ise' => "\$this->bbcode_strong('\$1')")),
+	            'i'             => array('bbcode_id' => 2, 'regexp' => array('#\[i\](.*?)\[/i\]#ise' => "\$this->bbcode_italic('\$1')")),
+	            'url'           => array('bbcode_id' => 3, 'regexp' => array('#\[url(=(.*))?\](.*)\[/url\]#iUe' => "\$this->validate_url('\$2', '\$3')")),
+	            'img'           => array('bbcode_id' => 4, 'regexp' => array('#\[img\](.*)\[/img\]#iUe' => "\$this->bbcode_img('\$1')")),
+	            'size'          => array('bbcode_id' => 5, 'regexp' => array('#\[size=([\-\+]?\d+)\](.*?)\[/size\]#ise' => "\$this->bbcode_size('\$1', '\$2')")),
+	            'color'         => array('bbcode_id' => 6, 'regexp' => array('!\[color=(#[0-9a-f]{6}|[a-z\-]+)\](.*?)\[/color\]!ise' => "\$this->bbcode_color('\$1', '\$2')")),
+	            'u'             => array('bbcode_id' => 7, 'regexp' => array('#\[u\](.*?)\[/u\]#ise' => "\$this->bbcode_underline('\$1')")),
+	            'list'          => array('bbcode_id' => 9, 'regexp' => array('#\[list(?:=(?:[a-z0-9]|disc|circle|square))?].*\[/list]#ise' => "\$this->bbcode_parse_list('\$0')")),
+	            'email'         => array('bbcode_id' => 10, 'regexp' => array('#\[email=?(.*?)?\](.*?)\[/email\]#ise' => "\$this->validate_email('\$1', '\$2')")),
+	            'flash'         => array('bbcode_id' => 11, 'regexp' => array('#\[flash=([0-9]+),([0-9]+)\](.*?)\[/flash\]#ie' => "\$this->bbcode_flash('\$1', '\$2', '\$3')")));
+
             $query = 'SELECT * FROM #__bbcodes';
             $this->db->setQuery($query);
             $results = $this->db->loadObjectList();
@@ -289,7 +303,7 @@ class JFusionHelper_phpbb3
         // when using the /e modifier, preg_replace slashes double-quotes but does not
         // seem to slash anything else
         $in = str_replace("\r\n", "\n", str_replace('\"', '"', $in));
-        // Trimming here to make sure no empty bbcodes are parsed accidently
+        // Trimming here to make sure no empty bbcodes are parsed accidentally
         if (trim($in) == '') {
             return false;
         }

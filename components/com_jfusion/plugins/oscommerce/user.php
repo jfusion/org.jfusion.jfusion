@@ -119,6 +119,7 @@ class JFusionUser_oscommerce extends JFusionUser
     /**
      * @param object $userinfo
      * @param array $options
+     *
      * @return array
      */
     function destroySession($userinfo, $options) {
@@ -326,7 +327,7 @@ class JFusionUser_oscommerce extends JFusionUser
         //prepare the variables
         $user = new stdClass;
         $user->customers_id = null;
-        $user->customers_gender = 'm'; // ouch, empty is female, so this is an arbritairely choice
+        $user->customers_gender = 'm'; // ouch, empty is female, so this is an arbitrarily choice
         $parts = explode(' ', $userinfo->name);
         $user->customers_firstname = $parts[0];
         $lastname = '';
@@ -376,7 +377,7 @@ class JFusionUser_oscommerce extends JFusionUser
             case 'osczen':
                 $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
                 if (empty($usergroups)) {
-                    $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('USERGROUP_MISSING');
+                    $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . JText::_('USERGROUP_MISSING');
                     return;
                 }
                 $usergroup = $usergroups[0];
@@ -388,7 +389,7 @@ class JFusionUser_oscommerce extends JFusionUser
             case 'oscseo':
             $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
             if (empty($usergroups)) {
-                    $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('USERGROUP_MISSING');
+                    $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . JText::_('USERGROUP_MISSING');
                     return;
                 }
                 $usergroup = $usergroups[0];
@@ -399,7 +400,7 @@ class JFusionUser_oscommerce extends JFusionUser
             case 'oscmax':
                 $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
                 if (empty($usergroups)) {
-                    $status['error'][] = JText::_('ERROR_CREATING_USER') . ': ' . JText::_('USERGROUP_MISSING');
+                    $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . JText::_('USERGROUP_MISSING');
                     return;
                 }
                 $usergroup = $usergroups[0];

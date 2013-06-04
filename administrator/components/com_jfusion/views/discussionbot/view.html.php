@@ -31,10 +31,10 @@ class jfusionViewdiscussionbot extends JView
         $mainframe = JFactory::getApplication();
  		$document	= JFactory::getDocument();
         $db			= JFactory::getDBO();
-        $dbtask = JRequest::getVar('ename');
+        $ename = JRequest::getVar('ename');
 		$jname = JRequest::getVar('jname');
 
-		switch ($dbtask) {
+		switch ($ename) {
         	case 'pair_sections' :
         		$title = JText::_('ASSIGN_SECTION_PAIRS');
 				$query = 'SELECT id, title as name FROM #__sections WHERE published = 1 AND scope = \'content\' ORDER BY title';
@@ -88,7 +88,9 @@ class jfusionViewdiscussionbot extends JView
         		return;
         }
 
-		$encoded_pairs = JRequest::getVar($dbtask);
+		$hash = JRequest::getVar($ename);
+	    $session = JFactory::getSession();
+	    $encoded_pairs = $session->get($hash);
 		if($encoded_pairs) {
 			$pairs = unserialize(base64_decode($encoded_pairs));
 		} else {
@@ -102,6 +104,7 @@ class jfusionViewdiscussionbot extends JView
 
 			//recode pairs to be added as hidden var to make sure none are lost on submitting another pair
 			$encoded_pairs = base64_encode(serialize($pairs));
+			$session->set($hash, $encoded_pairs);
 		} elseif (JRequest::getInt('joomlaid',0)) {
 			//add submitted pair
 			$joomlaid = JRequest::getInt('joomlaid');
@@ -110,6 +113,7 @@ class jfusionViewdiscussionbot extends JView
 
 			//recode pairs to be added as hidden var to make sure none are lost on submitting another pair
 			$encoded_pairs = base64_encode(serialize($pairs));
+			$session->set($hash, $encoded_pairs);
 		}
 
 
@@ -120,7 +124,7 @@ class jfusionViewdiscussionbot extends JView
         $joomlaSelectOptions = $joomlaoptions;
 
         //best to do this only for J1.5 due to J1.6+ new structure or for K2
-        if (!JFusionFunction::isJoomlaVersion('1.6') && $dbtask != 'pair_k2_categories') {
+        if (!JFusionFunction::isJoomlaVersion('1.6') && $ename != 'pair_k2_categories') {
             if(!empty($pairs)) {
     	        //remove paired sections/categories from select options
     	        foreach($pairs AS $jid => $fid) {
@@ -146,7 +150,7 @@ class jfusionViewdiscussionbot extends JView
                     <div class="toolbar-list" id="toolbar">
                         <ul>
                             <li class="button" id="toolbar-apply">
-                                <a href="javascript:void(0);" onclick="window.parent.jDiscussionParamSet('{$dbtask}', '{$encoded_pairs}');" class="toolbar"><span class="icon-32-apply"></span>{$apply}</a>
+                                <a href="javascript:void(0);" onclick="window.parent.jDiscussionParamSet('{$ename}', '{$encoded_pairs}');" class="toolbar"><span class="icon-32-apply"></span>{$apply}</a>
                             </li>
                             <li class="button" id="toolbar-cancel">
                                 <a href="javascript:void(0);" onclick="window.parent.SqueezeBox.close();" class="toolbar"><span class="icon-32-cancel"></span>{$close}</a>
@@ -163,7 +167,7 @@ HTML;
                         <tbody>
                             <tr>
                                 <td id="My Toolbar-apply" class="button">
-                                    <a class="toolbar" onclick="window.parent.jDiscussionParamSet('{$dbtask}', '{$encoded_pairs}');" href="javascript: void(0);">
+                                    <a class="toolbar" onclick="window.parent.jDiscussionParamSet('{$ename}', '{$encoded_pairs}');" href="javascript: void(0);">
                                         <span title="{$apply}" class="icon-32-apply"></span>{$apply}
                                     </a>
                                 </td>
@@ -184,12 +188,13 @@ HTML;
 	    $this->assignRef('jname', $jname);
 		$this->assignRef('toolbar', $toolbar);
 		$this->assignRef('title', $title);
-		$this->assignRef('dbtask', $dbtask);
 		$this->assignRef('joomlaoptions', $joomlaoptions);
 		$this->assignRef('joomlaSelectOptions', $joomlaSelectOptions);
 		$this->assignRef('forumSelectOptions', $forumSelectOptions);
 		$this->assignRef('pairs', $pairs);
-		$this->assignRef('encoded_pairs', $encoded_pairs);
+
+	    $this->assignRef('ename', $ename);
+		$this->assignRef('hash', $hash);
 
 		parent::display($tpl);
 	}

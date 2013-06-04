@@ -225,41 +225,47 @@ class JFusionAdmin
         $db->setQuery($query);
         $plugin = $db->loadObject();
         //output a warning to the administrator if the allowRegistration setting is wrong
-        if ($new_registration && $plugin->slave == '1') {
+        if ($new_registration && $plugin->slave == 1) {
             JError::raiseNotice(0, $jname . ': ' . JText::_('DISABLE_REGISTRATION'));
         }
-        if (!$new_registration && $plugin->master == '1') {
+        if (!$new_registration && $plugin->master == 1) {
             JError::raiseNotice(0, $jname . ': ' . JText::_('ENABLE_REGISTRATION'));
         }
         //most dual login problems are due to incorrect cookie domain settings
         //therefore we should check it and output a warning if needed.
-        $params = JFusionFactory::getParams($this->getJname());
-        $cookie_domain = $params->get('cookie_domain');
-        $correct_domain = '';
-        $correct_array = explode('.', html_entity_decode($_SERVER['SERVER_NAME']));
+        $params = JFusionFactory::getParams($jname);
 
-        //check for domain names with double extentions
-        if (isset($correct_array[count($correct_array) - 2]) && isset($correct_array[count($correct_array) - 1])) {
-            //domain array
-            $domain_array = array('com', 'net', 'org', 'co', 'me');
-            if (in_array($correct_array[count($correct_array) - 2], $domain_array)) {
-                $correct_domain = '.' . $correct_array[count($correct_array) - 3] . '.' . $correct_array[count($correct_array) - 2] . '.' . $correct_array[count($correct_array) - 1];
-            } else {
-                $correct_domain = '.' . $correct_array[count($correct_array) - 2] . '.' . $correct_array[count($correct_array) - 1];
-            }
-            if (($correct_domain != $cookie_domain) && !($this->allowEmptyCookieDomain())) {
-                JError::raiseNotice(0, $jname . ': ' . JText::_('BEST_COOKIE_DOMAIN') . ' ' . $correct_domain);
-            }
-        }
-        //also check the cookie path as it can intefere with frameless
-        $params = JFusionFactory::getParams($this->getJname());
-        $cookie_path = $params->get('cookie_path');
-        if (($correct_domain != $cookie_domain) && !($this->allowEmptyCookiePath())) {
-            JError::raiseNotice(0, $jname . ': ' . JText::_('BEST_COOKIE_PATH') . ' /');
-        }
+	    $cookie_domain = $params->get('cookie_domain',-1);
+	    if ($cookie_domain!==-1) {
+		    $cookie_domain = str_replace(array('http://', 'https://'), array('', ''), $cookie_domain);
+		    $correct_domain = '';
+		    $correct_array = explode('.', html_entity_decode($_SERVER['SERVER_NAME']));
+
+		    //check for domain names with double extentions
+		    if (isset($correct_array[count($correct_array) - 2]) && isset($correct_array[count($correct_array) - 1])) {
+			    //domain array
+			    $domain_array = array('com', 'net', 'org', 'co', 'me');
+			    if (in_array($correct_array[count($correct_array) - 2], $domain_array)) {
+				    $correct_domain = '.' . $correct_array[count($correct_array) - 3] . '.' . $correct_array[count($correct_array) - 2] . '.' . $correct_array[count($correct_array) - 1];
+			    } else {
+				    $correct_domain = '.' . $correct_array[count($correct_array) - 2] . '.' . $correct_array[count($correct_array) - 1];
+			    }
+			    if ($correct_domain != $cookie_domain && !$this->allowEmptyCookieDomain()) {
+				    JError::raiseNotice(0, $jname . ': ' . JText::_('BEST_COOKIE_DOMAIN') . ' ' . $correct_domain);
+			    }
+		    }
+	    }
+
+	    //also check the cookie path as it can interfere with frameless
+	    $cookie_path = $params->get('cookie_path',-1);
+	    if ($cookie_path!==-1) {
+		    if ($cookie_path != '/' && !$this->allowEmptyCookiePath()) {
+			    JError::raiseNotice(0, $jname . ': ' . JText::_('BEST_COOKIE_PATH') . ' /');
+		    }
+	    }
+
         //check that master plugin does not have advanced group mode data stored
         $master = JFusionFunction::getMaster();
-        $params = JFusionFactory::getParams($jname);
         if (!empty($master) && $master->name == $jname && JFusionFunction::isAdvancedUsergroupMode($jname)) {
             JError::raiseWarning(0, $jname . ': ' . JText::_('ADVANCED_GROUPMODE_ONLY_SUPPORTED_FORSLAVES'));
         }
@@ -303,7 +309,7 @@ class JFusionAdmin
      * @param string $name         name of element
      * @param string $value        value of element
      * @param string $node         node of element
-     * @param string $control_name name of controler
+     * @param string $control_name name of controller
      *
      * @return string html
      */
@@ -412,7 +418,7 @@ JS;
      * @param string $name         name of element
      * @param string $value        value of element
      * @param string $node         node of element
-     * @param string $control_name name of controler
+     * @param string $control_name name of controller
      *
      * @return string html
      */

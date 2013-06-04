@@ -300,7 +300,7 @@ class JFusionFunction
      * @param string  $jname      name of the JFusion plugin used
      * @param string  $userid     The ID of the user
      * @param boolean $isJoomlaId if true, returns the userinfo data based on Joomla, otherwise the plugin
-     * @param string  $username   If the userid is that of the plugin's, we need the username to find the user in case there is no record in the lookup table
+     * @param string  $username   If the userid is that of the plugin, we need the username to find the user in case there is no record in the lookup table
      *
      * @return object database Returns the userinfo as a Joomla database object
      *
@@ -325,7 +325,7 @@ class JFusionFunction
                 $result = $db->loadResult();
                 $joomla_id = $userid;
             } else {
-                //we have a plugin's id so we need to find Joomla's id then setup a temp $userinfo
+                //we have a plugin id so we need to find Joomla id then setup a temp $userinfo
                 //first try JFusion's user table
                 $query = 'SELECT a.id, a.email FROM #__users AS a INNER JOIN #__jfusion_users as b ON a.id = b.id WHERE b.username = ' . $db->Quote($username);
                 $db->setQuery($query);
@@ -343,7 +343,7 @@ class JFusionFunction
                 }
             }
             if (!empty($result) && !empty($joomla_id) && !empty($jname)) {
-                //get the plugin's userinfo - specifically we need the userid which it will provide
+                //get the plugin userinfo - specifically we need the userid which it will provide
                 $user = JFusionFactory::getUser($jname);
                 $existinguser = $user->getUser($result);
                 if (!empty($existinguser)) {
@@ -374,7 +374,7 @@ class JFusionFunction
      *
      * @param string $jname name of the JFusion plugin used
      *
-     * @return bolean returns true if plugin is correctly configured
+     * @return boolean returns true if plugin is correctly configured
      */
     public static function validPlugin($jname)
     {
@@ -421,7 +421,7 @@ class JFusionFunction
      * @param int    $expires   cookie expiry time
      * @param string $path      cookie path
      * @param string $domain    cookie domain
-     * @param bool $secure      is the secute
+     * @param bool $secure      is the secure
      * @param bool $httponly    is the cookie http only
      * @param bool $mask        should debug info be masked ?
      *
@@ -541,7 +541,7 @@ class JFusionFunction
             include_once JPATH_SITE . DS . 'components' . DS . 'com_k2' . DS . 'helpers' . DS . 'route.php';
             $article_url = urldecode(K2HelperRoute::getItemRoute($contentitem->id.':'.urlencode($contentitem->alias),$contentitem->catid.':'.urlencode($contentitem->category->alias)));
         } else {
-            if (empty($contentitem->slug)) {
+            if (empty($contentitem->slug) || empty($contentitem->catslug)) {
                 //article was edited and saved from editor
                 $db = JFactory::getDBO();
                 $query = 'SELECT CASE WHEN CHAR_LENGTH(a.alias) THEN CONCAT_WS(":", a.id, a.alias) ELSE a.id END as slug,'.
@@ -675,7 +675,7 @@ class JFusionFunction
                 $text = str_replace("\n", "  ", $text);
             }
         } elseif ($to == 'html') {
-            //Encode html entities added by the plugin's prepareText function
+            //Encode html entities added by the plugin prepareText function
             $text = htmlentities($text);
 
             $bbcode = JFusionFactory::getCodeParser();
@@ -729,7 +729,7 @@ class JFusionFunction
                 $options['strip_all_html'] = true;
             }
 
-            //remove all linebreaks to prevent massive empty space in bbcode
+            //remove all line breaks to prevent massive empty space in bbcode
             $text = str_replace(array("\n","\r","\n\r"), "", $text);
 
             static $search, $replace;
@@ -813,7 +813,7 @@ class JFusionFunction
     /**
      * Used by the JFusionFunction::parseCode function to parse various tags when parsing to bbcode.
      * For example, some Joomla editors like to use an empty paragraph tag for line breaks which gets
-     * parsed into a lot of unnecesary line breaks
+     * parsed into a lot of unnecessary line breaks
      *
      * @param mixed $matches mixed values from preg functions
      * @param string $tag
@@ -855,7 +855,7 @@ class JFusionFunction
      */
     public static function reconnectJoomlaDb($forceReload=false)
     {
-        //check to see if the Joomla database is still connnected
+        //check to see if the Joomla database is still connected
         $db = JFactory::getDBO();
         jimport('joomla.database.database');
         jimport('joomla.database.table');
@@ -918,7 +918,7 @@ class JFusionFunction
 	        	die('JFusion error: could not select Joomla database when trying to restore Joomla database object');
    	        }
         } else {
-            //database reconnect succesful, some final tidy ups
+            //database reconnect successful, some final tidy ups
        	
         	//add utf8 support
             $db->setQuery('SET names \'utf8\'');
@@ -1040,7 +1040,7 @@ class JFusionFunction
     /**
      * Gets the source_url from the joomla_int plugin
      *
-     * @return string Joomla's source URL
+     * @return string Joomla source URL
      */
     public static function getJoomlaURL()
     {
@@ -1056,7 +1056,7 @@ class JFusionFunction
      * Gets the base url of a specific menu item
      *
      * @param int $itemid int id of the menu item
-     * @param boolean $xhtml  return URL with encoded amperstands
+     * @param boolean $xhtml  return URL with encoded ampersands
      *
      * @return string parsed base URL of the menu item
      */
@@ -1141,11 +1141,20 @@ class JFusionFunction
         if ($mainframe->isAdmin()) {
             //we are on admin side, lets confirm that the user has access to user manager
             $juser = JFactory::getUser();
-            if ($juser->authorize('com_users', 'manage')) {
-                $debug = true;
-            } else {
-                $debug = false;
-            }
+
+	        if (JFusionFunction::isJoomlaVersion()) {
+		        if ($juser->authorise('core.manage', 'com_users')) {
+			        $debug = true;
+		        } else {
+			        $debug = false;
+		        }
+	        } else {
+		        if ($juser->authorize('com_users', 'manage')) {
+			        $debug = true;
+		        } else {
+			        $debug = false;
+		        }
+	        }
         } else {
             $debug = false;
         }
@@ -1170,7 +1179,7 @@ class JFusionFunction
 
     /**
      * Retrieves the current timezone based on user preference
-     * Defaults to Joomla's global config for timezone
+     * Defaults to Joomla global config for timezone
      * Hopefully the need for this will be deprecated in Joomla 1.6
      *
      * @return timezone in -6 format
@@ -1313,7 +1322,7 @@ class JFusionFunction
     }
 
     /**
-     * compare set of usergroup with a user returs true if the usergroups are correct
+     * compare set of usergroup with a user returns true if the usergroups are correct
      *
      * @param object $userinfo user with current usergroups
      * @param array $usergroups array with the correct usergroups
@@ -1526,7 +1535,7 @@ class JFusionFunction
     }
 
     /**
-     * Check if feature exsists
+     * Check if feature exists
      *
      * @static
      * @param string $jname
@@ -1661,6 +1670,10 @@ class JFusionFunction
                 }
                 break;
             case 'config':
+		        if ($jname=='joomla_int') {
+			        $return = false;
+			        break;
+		        }
             case 'any':
                 $return = true;
                 break;
@@ -1702,4 +1715,33 @@ class JFusionFunction
         }
         return $return;
     }
+
+	/**
+	 * Checks to see if a JFusion plugin is properly configured
+	 *
+	 * @param string $data file path or file content
+	 * @param boolean $isFile load from file
+	 *
+	 * @return JSimpleXMLElement returns true if plugin is correctly configured
+	 */
+	public static function getXml($data, $isFile=true)
+	{
+		/**
+		 * @ignore
+		 * @var $xml JSimpleXML
+		 * @var $element JSimpleXMLElement
+		 */
+		$xml = JFactory::getXMLParser('Simple');
+
+		if ($isFile) {
+			$xml->loadFile($data);
+		} else {
+			$xml->loadString($data);
+		}
+		$element = null;
+		if (isset($xml->document)) {
+			$element = $xml->document;
+		}
+		return $element;
+	}
 }

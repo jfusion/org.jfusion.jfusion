@@ -123,9 +123,9 @@ class JFusionHelper_efront {
         //  4   next record in yser_types table
         //  etc
         // as there is no protection for duplicate usertype names we will display
-        // the basic usertype between brackets, eg  record 3 is diaplayed as testtype (student)
+        // the basic usertype between brackets, eg  record 3 is displayed as testtype (student)
         // if it has a basic type : student.
-        // there is no check in the admin software of efront on duplicate usertypes (samen name/basic usertype)
+        // there is no check in the admin software of efront on duplicate usertypes (same name/basic usertype)
         // this won't harm jFusion but can confuse admin when selection usergroups to sync.
         // should make note so duplicate groups in efront is not a jFusion bug.
 
@@ -148,7 +148,7 @@ class JFusionHelper_efront {
         $db->setQuery($query);
         //getting the results
         $additional_types = $db->loadObjectList();
-        // constrct the array
+        // construct the array
         $i = 3;
         foreach ($additional_types as $usertype){
 	        $user_types[$i] = new stdClass;
@@ -159,7 +159,7 @@ class JFusionHelper_efront {
         return $user_types;
     }
     /**
-     * connects to api, using userbame and password
+     * connects to api, using username and password
      * returns token, or empty string when not successful
      *
      * @param array $curl_options
@@ -172,11 +172,11 @@ class JFusionHelper_efront {
 
     	$params = JFusionFactory::getParams($this->getJname());
         $source_url = $params->get('source_url');
-        // prevent usererror by not supplying trailing backslash. 
+        // prevent user error by not supplying trailing backslash.
         if (!(substr($source_url, -1) == '/')) {
             $source_url = $source_url.'/';
         }    
-        //prevent usererror by preventing a heading forwardslash
+        //prevent user error by preventing a heading forward slash
         ltrim($source_url);
         $apipath = $source_url.'api.php?action=';
         $post_url = $apipath.$curl_options['action'].$curl_options['parms'];

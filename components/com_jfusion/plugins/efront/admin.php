@@ -142,7 +142,7 @@ class JFusionAdmin_efront extends JFusionAdmin
         // eFront does not have a single user id field in its userdatabase.
         // jFusion needs one, so add it here. This routine runs once
         // when configuring the eFront plugin 
-        // Also we need an indication that the module initialisation neds to be performed for this user
+        // Also we need an indication that the module initialisation needs to be performed for this user
         // because we cannot run this from outside eFront (unless we load the whole framework on top of Joomla)
         $tableFields = $db->getTableFields('users',false);
         if (!array_key_exists('id',$tableFields['users'])) {

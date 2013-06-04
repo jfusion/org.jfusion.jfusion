@@ -18,7 +18,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 /**
- * JFusion Public Class for elgg
+ * JFusion Public Class for Elgg
  * For detailed descriptions on these functions please check the model.abstractpublic.php
  * 
  * @category   JFusion

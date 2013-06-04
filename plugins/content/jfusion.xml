@@ -7,16 +7,16 @@
 	<authorUrl>http://www.jfusion.org</authorUrl>
 	<copyright>Copyright (C) 2009 JFusion. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-	<version>1.8.1-000</version>
+	<version>1.8.4-001</version>
     <revision>$revision$</revision>
     <timestamp>$timestamp$</timestamp>
 	<description>
 		This is a discussion bot plugin for JFusion which enables using compatible forum software as a comments backend. 
 		To use for a single article, place {jfusion_discuss id#} where id# is the id of the thread.  Enable auto mode in 
-		the plugin's configuration to have JFusion take care of everything automatically based on the bots parameters. If 
+		the plugin configuration to have JFusion take care of everything automatically based on the bots parameters. If
 		using auto mode, it is highly recommended to first run the discussion bot in test mode to prevent unwanted threads.
 		Manually plugging an article will override auto mode.  You can customize the look of the discussion bot by editing
-		the files in plugins/content/discussbot/tmpl/default.  You can copy the template's files to Joomla's template 
+		the files in plugins/content/discussbot/tmpl/default.  You can copy the template's files to Joomla template
 		in templates/{your template}/html/plg_content_jfusion to preserve your customizations after upgrades/reinstallations.
 	</description>
 

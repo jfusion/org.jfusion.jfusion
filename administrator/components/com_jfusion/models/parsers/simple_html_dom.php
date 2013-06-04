@@ -523,7 +523,7 @@ class simple_html_dom_node {
         foreach ($matches as $m) {
             $m[0] = trim($m[0]);
             if ($m[0]==='' || $m[0]==='/' || $m[0]==='//') continue;
-            // for borwser grnreated xpath
+            // for browser generated xpath
             if ($m[1]==='tbody') continue;
 
             list($tag, $key, $val, $exp, $no_key) = array($m[1], null, null, '=', false);
@@ -922,7 +922,7 @@ class simple_html_dom {
                         $this->parent = $this->parent->parent;
 
                     if (strtolower($this->parent->tag)!==$tag_lower) {
-                        $this->parent = $org_parent; // restore origonal parent
+                        $this->parent = $org_parent; // restore original parent
                         if ($this->parent->parent) $this->parent = $this->parent->parent;
                         $this->parent->_[HDOM_INFO_END] = $this->cursor;
                         return $this->as_text_node($tag);
@@ -936,7 +936,7 @@ class simple_html_dom {
                         $this->parent = $this->parent->parent;
 
                     if (strtolower($this->parent->tag)!==$tag_lower) {
-                        $this->parent = $org_parent; // restore origonal parent
+                        $this->parent = $org_parent; // restore original parent
                         $this->parent->_[HDOM_INFO_END] = $this->cursor;
                         return $this->as_text_node($tag);
                     }

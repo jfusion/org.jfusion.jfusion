@@ -1,11 +1,13 @@
 <?php
 /**
-* @package JFusion
-* @subpackage Views
-* @author JFusion development team
-* @copyright Copyright (C) 2008 JFusion. All rights reserved.
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
-*/
+ * @package JFusion
+ * @subpackage Views
+ * @author JFusion development team
+ * @copyright Copyright (C) 2008 JFusion. All rights reserved.
+ * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ *
+ * @var $this jfusionViewplugindisplay
+ */
 
 // no direct access
 defined('_JEXEC') or die('Restricted access');
@@ -200,13 +202,13 @@ function deleteplugin(jname) {
 }
 
 window.addEvent('domready',function() {
-	$('installSVN').addEvent('submit', function(e) {
+	$('installGIT').addEvent('submit', function(e) {
 		new Event(e).stop();
 
-		$('spinnerSVN').innerHTML = '<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">';
+		$('spinnerGIT').innerHTML = '<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">';
 		this.send({ method: 'post',
             onSuccess: function(JSONobject) {
-                $('spinnerSVN').innerHTML = '';
+                $('spinnerGIT').innerHTML = '';
                 var response = evaluateJSON(JSONobject);
                 if (response) {
                     if (response.overwrite != 1 && response.status === true) {
@@ -356,7 +358,7 @@ window.addEvent('domready',function() {
 <?php if($this->VersionData) {
 //display installer data ?>
 
-<form id="installSVN" method="post" action="index.php" enctype="multipart/form-data">
+<form id="installGIT" method="post" action="index.php" enctype="multipart/form-data">
 	<input type="hidden" name="option" value="com_jfusion" />
 	<input type="hidden" name="task" value="installplugin" />
 	<input type="hidden" name="installtype" value="url" />
@@ -390,7 +392,7 @@ window.addEvent('domready',function() {
 			    				<option value="<?php echo $plugin->getElementByPath('remotefile')->data() ?>"><?php echo $plugin->name() . ' - ' . $plugin->getElementByPath('description')->data(); ?></option>
 			    				<?php endforeach; ?>
 			            	</select>
-			    			<input type="submit" name="button" id="submitter" /><div id="spinnerSVN"></div>
+			    			<input type="submit" name="button" id="submitter" /><div id="spinnerGIT"></div>
 			    		</td>
 			    	</tr>
 		    	</table>

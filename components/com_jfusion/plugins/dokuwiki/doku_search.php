@@ -100,7 +100,7 @@ if ( !class_exists('DokuWikiSearch') ) {
             // handle phrases
             if (count($q['phrases'])) {
                 $q['phrases'] = array_map('utf8_strtolower', $q['phrases']);
-                // use this for higlighting later:
+                // use this for highlighting later:
                 $highlight = array_merge($highlight, $q['phrases']);
                 $q['phrases'] = array_map('preg_quote_cb', $q['phrases']);
                 // check the source of all documents for the exact phrases
@@ -165,7 +165,7 @@ if ( !class_exists('DokuWikiSearch') ) {
         /**
          * Builds an array of search words from a query
          *
-         * @todo support OR and parenthesises?
+         * @TODO support OR and parenthesises?
          *
          * @param string $query
          *
@@ -497,7 +497,7 @@ if ( !class_exists('DokuWikiSearch') ) {
                     } else if (@file_exists($fn . '.bz2')) {
                         $fn.= '.bz2';
                     } else {
-                        //file doesnt exist yet, so we take the configured extension
+                        //file doesn't exist yet, so we take the configured extension
                         $fn.= '.' . $conf['compression'];
                     }
                 }
@@ -568,7 +568,7 @@ if ( !class_exists('DokuWikiSearch') ) {
             $id = trim((string)$raw_id);
             $id = utf8_strtolower($id);
 
-            //alternative namespace seperator
+            //alternative namespace separator
             $id = strtr($id,';',':');
             if($conf['useslash']) {
                 $id = strtr($id,'/',':');

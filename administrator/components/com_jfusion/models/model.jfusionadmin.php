@@ -56,7 +56,7 @@ class JFusionFunctionAdmin
      * @param array  $post  Array of JFusion plugin parameters posted to the JFusion component
      * @param boolean $wizard Notes if function was called by wizardresult();
      *
-     * @return true|false returns true if succesful and false if an error occurred
+     * @return true|false returns true if successful and false if an error occurred
      */
     public static function saveParameters($jname, $post, $wizard = false)
     {
@@ -129,7 +129,7 @@ class JFusionFunctionAdmin
      * @param string $folder        folder name of the plugin
      * @param int    $testPublished Variable to determine if the function should test to see if the plugin is published
      *
-     * @return true|false returns true if succesful and false if an error occurred
+     * @return true|false returns true if successful and false if an error occurred
      */
     public static function isPluginInstalled($element, $folder, $testPublished)
     {
@@ -263,16 +263,13 @@ HTML;
         $VersionCurrent = $RevisionCurrent = 0;
         if (file_exists($filename) && is_readable($filename)) {
             //get the version number
-            /**
-             * @ignore
-             * @var $parser JSimpleXML
-             */
-            $parser = JFactory::getXMLParser('Simple');
-            $parser->loadFile($filename);
-            $VersionCurrent = $parser->document->getElementByPath('version')->data();
+
+	        $xml = JFusionFunction::getXml($filename);
+
+            $VersionCurrent = $xml->getElementByPath('version')->data();
 
             if($includeRev) {
-                $RevisionCurrent = trim($parser->document->getElementByPath('revision')->data());
+                $RevisionCurrent = trim($xml->getElementByPath('revision')->data());
             }
         }
         return array($VersionCurrent, $RevisionCurrent);

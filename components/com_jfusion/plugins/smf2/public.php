@@ -72,7 +72,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
             }
             if (!is_array($bbcode)) {
                 $bbcode = array();
-                //pattens to run in begening
+                //pattens to run in beginning
                 $bbcode[0][] = "#<a[^>]*href=['|\"](ftp://)(.*?)['|\"][^>]*>(.*?)</a>#si";
                 $bbcode[1][] = "[ftp=$1$2]$3[/ftp]";
                 //pattens to run in end
@@ -276,10 +276,14 @@ class JFusionPublic_smf2 extends JFusionPublic {
 		if ( ! is_file($index_file) ) {
 			JError::raiseWarning(500, 'The path to the SMF index file set in the component preferences does not exist');
 		} else {
-            //add handeler to undo changes that plgSystemSef create
+            //add handler to undo changes that plgSystemSef create
             $dispatcher = JDispatcher::getInstance();
             if (JFusionFunction::isJoomlaVersion('1.6')) {
-                $method = array('event' => 'onAfterRender', 'handler' => array($this, 'onAfterRender'));
+	            /**
+	             * @ignore
+	             * @var $method object
+	             */
+	            $method = array('event' => 'onAfterRender', 'handler' => array($this, 'onAfterRender'));
                 $dispatcher->attach($method);
             } else {
                 $dispatcher->attach($this);
@@ -377,7 +381,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 		$regex_body[]	= '#sScriptUrl: \'http://joomla.fanno.dk/smf2/index.php\'#mSsi';
 		$replace_body[]	= 'sScriptUrl: \''.$data->baseURL.'\'';
 
-        // Chaptcha fix
+        // Captcha fix
         $regex_body[] = '#(?<=src=")' . $data->integratedURL . '(index.php\?action=verificationcode.*?)(?=")#si';
         $replace_body[] = '';
         $callback_body[] = 'fixURL';
@@ -456,7 +460,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 		$baseURL = $this->data->baseURL;
 		$fullURL = $this->data->fullURL;
 
-        //SMF uses semi-colons to seperate vars as well. Convert these to normal ampersands
+        //SMF uses semi-colons to separate vars as well. Convert these to normal ampersands
         $q = str_replace(';', '&amp;', $q);
         if (strpos($q, '#') === 0) {
             $url = $fullURL . $q;
@@ -970,7 +974,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 	/**
 	 * Function called by sh404sef for url building
      * @param array with titles for url
-     * @param array global pointer to sh404sef remaning $_GET values from the url
+     * @param array global pointer to sh404sef remaining $_GET values from the url
 	 */
 	function sh404sef(&$title,&$get)
 	{

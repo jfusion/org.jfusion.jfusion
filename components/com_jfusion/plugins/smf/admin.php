@@ -217,7 +217,7 @@ class JFusionAdmin_smf extends JFusionAdmin
     }
 
     /**
-     * renerate redirect code
+     * regenerate redirect code
      *
      * @param string $url
      * @param int $itemid
@@ -325,7 +325,7 @@ if (!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') ===
      * @param string $name         name of element
      * @param string $value        value of element
      * @param string $node         node
-     * @param string $control_name name of controler
+     * @param string $control_name name of controller
      *
      * @return string html
      */

@@ -7,7 +7,7 @@
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<authorEmail>webmaster@jfusion.org</authorEmail>
 	<authorUrl>www.jfusion.org</authorUrl>
-	<version>1.8.1-000</version>
+	<version>1.8.4-001</version>
     <revision>$revision$</revision>
     <timestamp>$timestamp$</timestamp>
 	<description>This module will display the content of a custom block of Magento into Joomla. You need to have the magelib plugin system and Jfusion installed.</description>
@@ -15,27 +15,35 @@
 		<filename module="mod_jfusion_magecustomblock">mod_jfusion_magecustomblock.php</filename>
 		<filename>index.html</filename>
 	</files>
-	<config><fields name="params"><fieldset name="basic">
-		<field name="block_type" type="text" label="Custom block type" default="" description="Provide here the custom block type that you want to integrate in Joomla. It should be something of this kind: checkout/cart (see the structure of Magento it helps a lot or a layout file 'block type=checkout/cart')" />
-		<field name="block_name" type="text" label="Custom block name" default="" description="Provide here the custom block name that you want to integrate in Joomla. It must be unique (see a layout file in Magento 'block type=checkout/cart name=cart ')" />
-		<field name="mage_template_path" type="text" label="Custom block template" default="" description="Provide here the template path of the phtml file that you want to use. It must be an existing one in your magento active template. Exple: catalog/navigation/top.phtml." />
-        <field name="@spacer" type="spacer" default="" label="" description="" />
-		<field name="enable_scriptaculous" label="Scriptaculous enable" type="list" default="0" description="Enable or not the scriptaculous script from Magento. Some modules of Magento need it for Ajax call or rollover/menu effect. BE AWARE: not compatible with module or content using Mootools of Joomla">
-			<option value="1">Enable</option> 
-            <option value="0">Disable</option>
-		</field>
-        <field name="@spacer" type="spacer" default="" label="" description="" />
-		<field name="xml_output" type="textarea" default="" cols="50" rows="30" label="XML code" description="You can provide here a customized xml code. The syntax is the same as the one in layout xml files. See Magento Layout Documentation to know how to write it here. Priority is done to this code, it means if there is inhalt here, the field above won't be taken." />
-        <field name="@spacer" type="spacer" default="" label="" description="" />
-		<field name="moduleclass_sfx" type="text" label="Module Class Suffix" default="" description="PARAMMODULECLASSSUFFIX" />
-	</fieldset></fields></config>
-    <config><fields name="params"><fieldset name="advanced">
-        <field name="cache" type="list" default="0" label="Caching" description="Select whether to cache the content of this module">
-            <option value="1">Use global</option> 
-            <option value="0">No caching</option> 
-        </field>
-        <field name="cache_time" type="text" default="900" label="Cache Time" description="The time before the module is recached" /> 
-	</fieldset></fields></config>
+	<config>
+        <fields name="params">
+            <fieldset name="basic">
+                <field name="block_type" type="text" label="Custom block type" default="" description="Provide here the custom block type that you want to integrate in Joomla. It should be something of this kind: checkout/cart (see the structure of Magento it helps a lot or a layout file 'block type=checkout/cart')" />
+                <field name="block_name" type="text" label="Custom block name" default="" description="Provide here the custom block name that you want to integrate in Joomla. It must be unique (see a layout file in Magento 'block type=checkout/cart name=cart ')" />
+                <field name="mage_template_path" type="text" label="Custom block template" default="" description="Provide here the template path of the phtml file that you want to use. It must be an existing one in your magento active template. Exple: catalog/navigation/top.phtml." />
+                <field name="@spacer" type="spacer" default="" label="" description="" />
+                <field name="enable_scriptaculous" label="Scriptaculous enable" type="list" default="0" description="Enable or not the scriptaculous script from Magento. Some modules of Magento need it for Ajax call or rollover/menu effect. BE AWARE: not compatible with module or content using Mootools of Joomla">
+                    <option value="1">Enable</option>
+                    <option value="0">Disable</option>
+                </field>
+                <field name="@spacer" type="spacer" default="" label="" description="" />
+                <field name="xml_output" type="textarea" default="" cols="50" rows="30" label="XML code" description="You can provide here a customized xml code. The syntax is the same as the one in layout xml files. See Magento Layout Documentation to know how to write it here. Priority is done to this code, it means if there is inhalt here, the field above won't be taken." />
+                <field name="@spacer" type="spacer" default="" label="" description="" />
+                <field name="moduleclass_sfx" type="text" label="Module Class Suffix" default="" description="PARAMMODULECLASSSUFFIX" />
+            </fieldset>
+        </fields>
+    </config>
+    <config>
+        <fields name="params">
+            <fieldset name="advanced">
+                <field name="cache" type="list" default="0" label="Caching" description="Select whether to cache the content of this module">
+                    <option value="1">Use global</option>
+                    <option value="0">No caching</option>
+                </field>
+                <field name="cache_time" type="text" default="900" label="Cache Time" description="The time before the module is recached" />
+            </fieldset>
+        </fields>
+    </config>
 	<params>
 		<param name="block_type" type="text" label="Custom block type" default="" description="Provide here the custom block type that you want to integrate in Joomla. It should be something of this kind: checkout/cart (see the structure of Magento it helps a lot or a layout file 'block type=checkout/cart')" />
 		<param name="block_name" type="text" label="Custom block name" default="" description="Provide here the custom block name that you want to integrate in Joomla. It must be unique (see a layout file in Magento 'block type=checkout/cart name=cart ')" />

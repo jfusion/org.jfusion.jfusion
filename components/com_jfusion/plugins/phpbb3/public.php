@@ -88,7 +88,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             }
             $text = JFusionFunction::parseCode($text, 'bbcode');
         } elseif ($for == 'joomla' || ($for == 'activity' && $params->get('parse_text') == 'html')) {
-            //remove phpbb's bbcode uids
+            //remove phpbb bbcode uids
             $text = preg_replace("#\[(.*?):(.*?)]#si", "[$1]", $text);
             //encode &nbsp; prior to decoding as somehow it is getting added into phpBB without getting encoded
             $text = str_replace('&nbsp;', '&amp;nbsp;', $text);
@@ -139,7 +139,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
      */
     function getOnlineUserQuery($limit) {
         $limiter = (!empty($limit)) ? 'LIMIT 0,'.$limit : '';
-        //get a unix time from 5 mintues ago
+        //get a unix time from 5 minutes ago
         date_default_timezone_set('UTC');
         $active = strtotime('-5 minutes', time());
         $query = 'SELECT DISTINCT u.user_id AS userid, u.username_clean AS username, u.username AS name, u.user_email as email FROM #__users AS u INNER JOIN #__sessions AS s ON u.user_id = s.session_user_id WHERE s.session_viewonline =1 AND  s.session_user_id != 1 AND s.session_time > '.$active.' '.$limiter;
@@ -150,7 +150,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
      * @return int
      */
     function getNumberOnlineGuests() {
-        //get a unix time from 5 mintues ago
+        //get a unix time from 5 minutes ago
         date_default_timezone_set('UTC');
         $active = strtotime('-5 minutes', time());
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -164,7 +164,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
      * @return int
      */
     function getNumberOnlineMembers() {
-        //get a unix time from 5 mintues ago
+        //get a unix time from 5 minutes ago
         date_default_timezone_set('UTC');
         $active = strtotime('-5 minutes', time());
         $db = JFusionFactory::getDatabase($this->getJname());
@@ -356,7 +356,9 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             }
         }
         
-      //lets parse our todo list for regex
+        /**
+         * @TODO lets parse our todo list for regex
+         */
         foreach ($regex_body as $k => $v) {
         	//check if we need to use callback
         	if(!empty($callback_function[$k])){
@@ -372,7 +374,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
      */
     function parseRoute(&$vars) {
         foreach ($vars as $k => $v) {
-            //must undo Joomla's parsing that changes dashes to colons so that PM browsing works correctly
+            //must undo Joomla parsing that changes dashes to colons so that PM browsing works correctly
             if ($k == 'f') {
                 $vars[$k] = str_replace (':', '-', $v);
             } elseif ($k == 'redirect') {
@@ -620,7 +622,9 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             $callback_header[] = '';
         }
 
-        //lets parse our todo list for regex
+        /**
+         * @TODO lets parse our todo list for regex
+         */
         foreach ($regex_header as $k => $v) {
         	//check if we need to use callback
         	if(!empty($callback_header[$k])){
@@ -634,7 +638,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
     /**
      * @return array
      */
-    function getPathway() {
+    function getPathWay() {
         $mainframe = JFactory::getApplication('site');
         $db = JFusionFactory::getDatabase($this->getJname());
         $pathway = array();

@@ -431,10 +431,10 @@ class JFusionForum_phpbb3 extends JFusionForum {
     }
 
     /**
-     * Update premissions for phpbb
+     * Update permissions for phpbb
      *
-     * @param int $old exsisting premission
-     * @param int $new new premission
+     * @param int $old existing permission
+     * @param int $new new precession
      *
      * @return void
      */
@@ -508,7 +508,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
             $mainframe = JFactory::getApplication();
             $timezone = $mainframe->getCfg('offset');
             $timestamp = strtotime($contentitem->created);
-            //undo Joomla's timezone offset
+            //undo Joomla timezone offset
             $timestamp += ($timezone * 3600);
         } else {
              $timestamp = time();

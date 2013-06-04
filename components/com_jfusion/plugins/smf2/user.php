@@ -147,6 +147,11 @@ class JFusionUser_smf2 extends JFusionUser {
         $status = array('error' => array(),'debug' => array());
         $params = JFusionFactory::getParams($this->getJname());
         $status['debug'][] = JFusionFunction::addCookie($params->get('cookie_name'), '',0,$params->get('cookie_path'),$params->get('cookie_domain'),$params->get('secure'),$params->get('httponly'));
+
+	    $db = JFusionFactory::getDatabase($this->getJname());
+	    $query = 'DELETE FROM #__log_online WHERE id_member = '.$userinfo->userid.' LIMIT 1';
+	    $db->setQuery($query);
+	    $db->query();
 		return $status;
      }
 
@@ -238,7 +243,7 @@ class JFusionUser_smf2 extends JFusionUser {
      * updateUsergroup
      *
      * @param object $userinfo      holds the new user data
-     * @param object &$existinguser holds the exsisting user data
+     * @param object &$existinguser holds the existing user data
      * @param array  &$status       Status array
      *
      * @access public
@@ -384,7 +389,7 @@ class JFusionUser_smf2 extends JFusionUser {
 
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
         if (empty($usergroups)) {
-            $status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('USERGROUP_MISSING');
+            $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . JText::_('USERGROUP_MISSING');
         } else {
             //prepare the user variables
             $user = new stdClass;

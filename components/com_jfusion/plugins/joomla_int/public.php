@@ -88,7 +88,7 @@ class JFusionPublic_joomla_int extends JFusionPublic {
      * Update the language front end param in the account of the user if this one changes it
      * NORMALLY THE LANGUAGE SELECTION AND CHANGEMENT FOR JOOMLA IS PROVIDED BY THIRD PARTY LIKE JOOMFISH
      *
-     * @todo - to implement after the release 1.1.2
+     * @TODO - to implement after the release 1.1.2
      *
      * @param object $userinfo
      * @return array status

@@ -32,7 +32,7 @@ foreach ($plugins as $plugin) {
     // Language file is loaded in function of the context
     // of the selected language in Joomla
     // and of the JPATH_BASE (in admin = JPATH_ADMINISTRATOR, in site = JPATH_SITE)
-    $lang->load('com_jfusion.plg_' . $name);
+    $lang->load('com_jfusion.plg_' . $name, JPATH_COMPONENT_ADMINISTRATOR);
 }
 
 //load the JFusion CSS and javascript
@@ -78,7 +78,7 @@ if (in_array($task, $tasklist)) {
 		header('Cache-Control: post-check=0, pre-check=0', false);
 		header('Pragma: no-cache');
 	}
-    //excute the task
+    //execute the task
     $controller->execute($task);
 } else {
     //run the task as a view

@@ -123,9 +123,9 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
     }
 
     /**
-     * returns avetar
+     * returns avatar
      *
-     * @param string $userid userd used to find avatar
+     * @param string $userid userid used to find avatar
      *
      * @return string
      */
@@ -239,31 +239,6 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
     }
 
     /**
-     * debug configure
-     * asdasd asdas
-     *
-     * @return void
-     */
-    function debugConfig()
-    {
-        $jname = $this->getJname();
-        //get registration status
-        $new_registration = $this->allowRegistration();
-        //get the data about the JFusion plugins
-        $db = JFactory::getDBO();
-        $query = 'SELECT * from #__jfusion WHERE name = ' . $db->Quote($jname);
-        $db->setQuery($query);
-        $plugin = $db->loadObject();
-        //output a warning to the administrator if the allowRegistration setting is wrong
-        if ($new_registration && $plugin->slave == '1') {
-            JError::raiseNotice(0, $jname . ': ' . JText::_('DISABLE_REGISTRATION'));
-        }
-        if (!$new_registration && $plugin->master == '1') {
-            JError::raiseNotice(0, $jname . ': ' . JText::_('ENABLE_REGISTRATION'));
-        }
-    }
-
-    /**
      * renerate redirect code
      *
      * @param string $url
@@ -370,12 +345,12 @@ if (!defined(\'_JEXEC\'))';
     }
 
     /**
-     * Used to display and conofigure the redirect mod
+     * Used to display and configure the redirect mod
      *
      * @param string $name         name of element
      * @param string $value        value of element
      * @param string $node         node
-     * @param string $control_name name of controler
+     * @param string $control_name name of controller
      *
      * @return string html
      */
@@ -419,12 +394,12 @@ HTML;
     }
 
     /**
-     * Used to display and conofigure the Auth mod
+     * Used to display and configure the Auth mod
      *
      * @param string $name         name of element
      * @param string $value        value of element
      * @param string $node         node
-     * @param string $control_name name of controler
+     * @param string $control_name name of controller
      *
      * @return string html
      */
@@ -485,7 +460,7 @@ HTML;
         $plugindir = $source_path . DS . 'lib' . DS . 'plugins' . DS . 'jfusion';
         $pluginsource = JFUSION_PLUGIN_PATH . DS . 'dokuwiki' . DS . 'jfusion';
 
-        //copy the jfusion plugin to Dokuwiki's plugin directory
+        //copy the jfusion plugin to Dokuwiki plugin directory
         jimport('joomla.filesystem.folder');
         jimport('joomla.filesystem.file');
 
@@ -546,7 +521,7 @@ PHP;
         jimport('joomla.filesystem.folder');
         jimport('joomla.filesystem.file');
 
-        //delete the jfusion plugin from Dokuwiki's plugin directory
+        //delete the jfusion plugin from Dokuwiki plugin directory
         if (JFolder::exists($plugindir) && !JFolder::delete($plugindir)) {
             return false;
         }

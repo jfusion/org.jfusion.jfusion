@@ -408,7 +408,7 @@ class JFusionFactory
 		        $query .= ' WHERE (slave = 1 OR master = 1)';
 		        break;
         }
-        $key = $criteria.'-'.$joomla.'-'.$active;
+        $key = $criteria.'_'.$joomla.'_'.$active;
         if (!isset($plugins[$key])) {
             if (!$joomla) {
                 $query .= ' AND name NOT LIKE \'joomla_int\'';
@@ -416,11 +416,9 @@ class JFusionFactory
             if ($active) {
                 $query .= ' AND status = 1';
             }
-            if (empty($plugins)) {
-                $db = JFactory::getDBO();
-                $db->setQuery($query);
-                $plugins[$key] = $db->loadObjectList();
-            }
+	        $db = JFactory::getDBO();
+	        $db->setQuery($query);
+	        $plugins[$key] = $db->loadObjectList();
         }
         return $plugins[$key];
     }

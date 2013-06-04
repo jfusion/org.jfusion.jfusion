@@ -164,11 +164,12 @@ class JFusionUser_vbulletin extends JFusionUser
     }
 
     /**
-     * @param string $userinfo
-     * @param string $options
+     * @param object $userinfo
+     * @param array $options
+     *
      * @return array
      */
-    function destroySession($userinfo = '', $options = '')
+    function destroySession($userinfo, $options)
     {
         $status = array();
         $status['error'] = array();
@@ -199,7 +200,7 @@ class JFusionUser_vbulletin extends JFusionUser
             $status['debug'][] = JText::_('VB_COOKIE_HASH_NOT_FOUND');
         }
 
-        //If blocking a user in Joomla's User Manager, Joomla will initiate a logout.
+        //If blocking a user in Joomla User Manager, Joomla will initiate a logout.
         //Thus, prevent a logout of the currently logged in user if a user has been blocked:
         if (!defined('VBULLETIN_BLOCKUSER_CALLED')) {
             require_once JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.curl.php';
@@ -309,9 +310,12 @@ class JFusionUser_vbulletin extends JFusionUser
                 $status['debug'][] = JFusionCurl::addCookie($cookie_prefix.'password' , $passwordhash, $expires_time, $cookie_path, $cookie_domain, $secure, $httponly, true);
             } else {
                 $status['debug'][] = JText::_('VB_SESSION_ALREADY_ACTIVE');
+	            /*
+	             * do not want to output as it indicate the cookies are set when they are not.
                 $status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => $cookie_prefix.'userid', JText::_('VALUE') => $cookie_userid, JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
                 $status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => $cookie_prefix.'password', JText::_('VALUE') => substr($cookie_password, 0, 6) . '********, ', JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
                 $status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => $cookie_prefix.'sessionhash', JText::_('VALUE') => $cookie_sessionhash, JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
+	            */
             }
         }
         return $status;
@@ -398,7 +402,7 @@ class JFusionUser_vbulletin extends JFusionUser
         if (!$db->query()) {
             $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ': ' . $db->stderr();
         } else {
-            //add a banned user catch to vbulletin's database
+            //add a banned user catch to vbulletin database
             $ban = new stdClass;
             $ban->userid = $existinguser->userid;
             $ban->usergroupid = $existinguser->group_id;
@@ -443,7 +447,7 @@ class JFusionUser_vbulletin extends JFusionUser
         $bannedgroup = $this->params->get('bannedgroup');
 
         //first check to see if user is banned and if so, retrieve the prebanned fields
-        //must be something other than $db because it conflicts with vbulletin's global variables
+        //must be something other than $db because it conflicts with vbulletin global variables
         $jdb = JFusionFactory::getDatabase($this->getJname());
         $query = 'SELECT b.*, g.usertitle AS bantitle FROM #__userban AS b INNER JOIN #__user AS u ON b.userid = u.userid INNER JOIN #__usergroup AS g ON u.usergroupid = g.usergroupid WHERE b.userid = ' . $existinguser->userid;
         $jdb->setQuery($query );
@@ -472,7 +476,7 @@ class JFusionUser_vbulletin extends JFusionUser
         $response = $this->helper->apiCall('unblockUser', $apidata);
 
         if ($result) {
-            //remove any banned user catches from vbulletin's database
+            //remove any banned user catches from vbulletin database
             $query = 'DELETE FROM #__userban WHERE userid='. $existinguser->userid;
             $jdb->setQuery($query);
             if (!$jdb->Query()) {
@@ -512,7 +516,7 @@ class JFusionUser_vbulletin extends JFusionUser
         $db->setQuery($query );
 
         if ($db->query()) {
-            //remove any activation catches from vbulletins database
+            //remove any activation catches from vbulletin database
             $query = 'DELETE FROM #__useractivation WHERE userid = ' . $existinguser->userid;
             $db->setQuery($query);
 
@@ -550,7 +554,7 @@ class JFusionUser_vbulletin extends JFusionUser
             $db->setQuery($query);
             $count = $db->loadResult();
             if (empty($count)) {
-                //if not, then add an activation catch to vbulletin's database
+                //if not, then add an activation catch to vbulletin database
                 $useractivation = new stdClass;
                 $useractivation->userid = $existinguser->userid;
                 $useractivation->dateline = time();
@@ -599,7 +603,7 @@ class JFusionUser_vbulletin extends JFusionUser
 
         //return if we are in advanced user group mode but the master did not pass in a group_id
         if (is_array($usergroups) && !isset($userinfo->group_id)) {
-            $status['error'][] = JText::_('ERROR_CREATING_USER'). ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+            $status['error'][] = JText::_('ERROR_CREATE_USER'). ' ' . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
         } else {
             if (empty($userinfo->activation)) {
                 $defaultgroup = (is_array($usergroups)) ? $usergroups[$userinfo->group_id]['defaultgroup'] : $usergroups;
@@ -788,7 +792,7 @@ class JFusionUser_vbulletin extends JFusionUser
             JError::raiseNotice('500', 'vbulletin keep alive called');
         }
         $options = array();
-        //retrieve the values for vb's cookies
+        //retrieve the values for vb cookies
         $cookie_prefix = $this->params->get('cookie_prefix');
         $vbversion = $this->helper->getVersion();
         if ((int) substr($vbversion, 0, 1) > 3) {
@@ -818,7 +822,7 @@ class JFusionUser_vbulletin extends JFusionUser
                 JError::raiseNotice('500', 'Joomla user logged in');
             }
 
-            //find the userid attached to Joomla's userid
+            //find the userid attached to Joomla userid
             $joomla_userid = $JUser->get('id');
             $userlookup = JFusionFunction::lookupUser($this->getJname(), $joomla_userid);
             $vb_userid = (!empty($userlookup)) ? $userlookup->userid : 0;
@@ -830,7 +834,7 @@ class JFusionUser_vbulletin extends JFusionUser
                 JError::raiseNotice('400', 'vB session active: ' . $vb_session);
             }
 
-            //create a new session if one does not exist and either keep alive is enabled or a joomla persistant cookie exists
+            //create a new session if one does not exist and either keep alive is enabled or a joomla persistent cookie exists
             if (!$vb_session) {
                 if ((!empty($keepalive) || !empty($joomla_persistant_cookie))) {
                     if ($debug) {
@@ -858,11 +862,18 @@ class JFusionUser_vbulletin extends JFusionUser
                         JError::raiseNotice('500','keep alive disabled or no persistant session found so calling Joomla\'s destorySession');
                     }
                     $JoomlaUser = JFusionFactory::getUser('joomla_int');
-                    $arr  = (array) $JUser;
+
 	                $userinfo = new stdClass;
-	                foreach($arr as $key => $value) {
-						$userinfo->$key = $value;
-	                }
+	                $userinfo->id = $JUser->id;
+	                $userinfo->username = $JUser->username;
+	                $userinfo->name = $JUser->name;
+	                $userinfo->email = $JUser->email;
+	                $userinfo->block = $JUser->block;
+	                $userinfo->activation = $JUser->activation;
+	                $userinfo->groups = $JUser->groups;
+	                $userinfo->password = $JUser->password;
+	                $userinfo->password_clear = $JUser->password_clear;
+
                     $options['clientid'][] = '0';
                     $status = $JoomlaUser->destroySession($userinfo, $options);
                     if ($debug) {
@@ -880,7 +891,7 @@ class JFusionUser_vbulletin extends JFusionUser
             }
 
             if (!empty($cookie_userid) && $cookie_userid != $session_userid) {
-                $status = $this->destroySession();
+                $status = $this->destroySession(null, null);
                 if ($debug) {
                     JError::raiseNotice('500', 'Cookie userid did not match session userid thus destroyed vB\'s session.');
                     JFusionFunction::raiseWarning('500', $status);
@@ -900,7 +911,7 @@ class JFusionUser_vbulletin extends JFusionUser
                     JError::raiseNotice('500','Keep alive disabled so kill vBs session');
                 }
                 //something fishy or user chose not to use remember me so let's destroy vB's session
-                $this->destroySession();
+                $this->destroySession(null, null);
                 return 1;
             } elseif ($debug) {
                 JError::raiseNotice('500','Keep alive enabled so renew Joomla\'s session');

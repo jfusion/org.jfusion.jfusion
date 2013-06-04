@@ -194,9 +194,9 @@ class JFusionHelper_vbulletin
                 //force into global scope
                 $GLOBALS['vbulletin'] = $vbulletin;
                 $vbulletin->db->query_first('USE `' . $this->params->get('database_name') . '`');
-                //fixed do not remove ascii blankspace because we are in joomla everything is utf8
+                //fixed do not remove ascii backspace because we are in joomla everything is utf8
                 $vbulletin->options['blankasciistrip'] = 'u8205 u8204 u8237 u8238';
-                // set conection to use utf8
+                // set connection to use utf8
                 $vbulletin->db->query_first('SET names \''.$this->params->get('database_charset', 'utf8').'\'');
                 $GLOBALS['db'] = $vbulletin->db;
             } else {
@@ -205,16 +205,16 @@ class JFusionHelper_vbulletin
             }
         } elseif (defined('VB_AREA') && VB_AREA == 'JFusion') {
         	if (!$this->vb_data) {
-				/*
-				 * TODO: using defined('VB_AREA') is not safe we we using multi instance VB?
+				/**
+				 * @TODO using defined('VB_AREA') is not safe we we using multi instance VB?
 				 * we need to change something to support that. ? or it just failed t o fine CWD
 				 */
                 $return = false;
         	} else {
                 $this->vb_data->db->query_first('USE `' . $this->params->get('database_name') . '`');
-                //fixed do not remove ascii blankspace because we are in joomla everything is utf8
+                //fixed do not remove ascii backspace because we are in joomla everything is utf8
                 $this->vb_data->db->options['blankasciistrip'] = 'u8205 u8204 u8237 u8238';
-                // set conection to use utf8
+                // set connection to use utf8
                 $this->vb_data->db->query_first('SET names \''.$this->params->get('database_charset', 'utf8').'\'');
                 if (empty($GLOBALS['vbulletin'])) {
                     $GLOBALS['vbulletin'] = $this->vb_data;
@@ -252,7 +252,7 @@ class JFusionHelper_vbulletin
     }
 
     /**
-     * Backs up Joomla's various Joomla variables before calling vBulletin's data managers
+     * Backs up Joomla various Joomla variables before calling vBulletin's data managers
      */
     function backupJoomla()
     {
@@ -262,11 +262,11 @@ class JFusionHelper_vbulletin
     }
 
     /**
-     * Restores Joomla's various Joomla variables after calling vBulletin's data managers
+     * Restores Joomla various Joomla variables after calling vBulletin's data managers
      */
     function restoreJoomla()
     {
-        //restore Joomla's autoload function
+        //restore Joomla autoload function
 		if(JFusionFunction::isJoomlaVersion('1.6')) {
             spl_autoload_register(array('JLoader','load'));
         } else {
@@ -282,7 +282,7 @@ class JFusionHelper_vbulletin
             $Itemid = $this->backup['itemid'];
         }
         $this->backup = array();
-        //make sure Joomla's db object is still connected
+        //make sure Joomla db object is still connected
         JFusionFunction::reconnectJoomlaDb();
     }
 

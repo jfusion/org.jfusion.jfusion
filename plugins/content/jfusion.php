@@ -58,7 +58,7 @@ class plgContentJfusion extends JPlugin
     /**
     * Constructor
     *
-    * For php4 compatability we must not use the __constructor as a constructor for
+    * For php4 compatibility we must not use the __constructor as a constructor for
     * plugins because func_get_args ( void ) returns a copy of all passed arguments
     * NOT references. This causes problems with cross-referencing necessary for the
     * observer design pattern.
@@ -88,8 +88,8 @@ class plgContentJfusion extends JPlugin
         $this->jname =& $this->params->get('jname',false);
 
         if ($this->jname !== false) {
-            //load the plugin's language file
-            $this->loadLanguage('com_jfusion.plg_' . $this->jname, JPATH_ADMINISTRATOR);
+            //load the plugin language file
+            $this->loadLanguage('com_jfusion.plg_' . $this->jname, JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion');
         }
 
         //determine what mode we are to operate in
@@ -111,7 +111,7 @@ class plgContentJfusion extends JPlugin
             $path = ($isJ16) ? 'jfusion' . DS : '';
             define('DISCUSSBOT_PATH', JPATH_SITE . DS . 'plugins' . DS . 'content' . DS . $path . 'discussbot' . DS);
 
-            //let's first check for customized files in Joomla's template directory
+            //let's first check for customized files in Joomla template directory
             $app = JFactory::getApplication();
             $JoomlaTemplateOverride = JPATH_BASE.DS.'templates'. DS .$app->getTemplate() . DS. 'html' . DS . 'plg_content_jfusion' . DS;
             if (file_exists($JoomlaTemplateOverride)) {
@@ -410,8 +410,10 @@ class plgContentJfusion extends JPlugin
      */
     public function onContentPrepare($context, &$article, &$params, $limitstart=0)
 	{
- 		//seems syntax has completely changed :(
-		$this->onPrepareContent($article, $params);
+		if ( $context != 'com_content.featured' && $context != 'com_content.category' ) {
+			//seems syntax has completely changed :(
+			$this->onPrepareContent($article, $params);
+		}
 	}
 
     /**
@@ -441,8 +443,8 @@ class plgContentJfusion extends JPlugin
 	public function ajaxError($error) {
 		//output the error
 		$result = null;
-		if (is_array($error['error'])) {
-			foreach($error['error'] as $err) {
+		if (is_array($error)) {
+			foreach($error as $err) {
 				if ($result) {
 					$result .= '<br /> - ' . $err;
 				} else {
@@ -450,7 +452,7 @@ class plgContentJfusion extends JPlugin
 				}
 			}
 		} else {
-			$result = $error['error'];
+			$result = $error;
 		}
 		return $result;
 	}
@@ -482,6 +484,11 @@ class plgContentJfusion extends JPlugin
 		die(json_encode($ajax));
 	}
 
+	/**
+	 * Returns the view for compare
+	 *
+	 * @return string
+	 */
 	public function view() {
 		return ($this->helper->option == 'com_k2') ? 'item' : 'article';
 	}
@@ -575,10 +582,12 @@ class plgContentJfusion extends JPlugin
             if ($this->mode=='auto') {
                 $this->helper->debug('In auto mode');
                 if ($this->valid) {
-                    $status = $this->helper->checkThreadExists();
-                    if ($status['action'] == 'created') {
-                        $threadinfo = $status['threadinfo'];
-                    }
+	                if ($threadinfo || $this->creationMode=='load' || ($this->creationMode=='view' && JRequest::getVar('view') == $this->view()) ) {
+		                $status = $this->helper->checkThreadExists();
+		                if ($status['action'] == 'created') {
+			                $threadinfo = $status['threadinfo'];
+		                }
+	                }
                 }
                 if ($this->validity_reason != JText::_('REASON_NOT_IN_K2_ARTICLE_TEXT')) {
                     //a catch in case a plugin does something wrong
@@ -671,7 +680,7 @@ HTML;
         $this->renderDebugOutput();
     }
 
-    /*
+    /**
      * renderDebugOutput
      *
      * @return string
@@ -727,7 +736,12 @@ HTML;
 
         //make sure the article submitted matches the one loaded
         $submittedArticleId = JRequest::getInt('articleId', 0, 'post');
-        $editAccess = $JoomlaUser->authorize('com_content', 'edit', 'content', 'all');
+
+	    if (JFusionFunction::isJoomlaVersion()) {
+			$editAccess = $JoomlaUser->authorise('core.edit', 'com_content');
+	    } else {
+		    $editAccess = $JoomlaUser->authorize('com_content', 'edit', 'content', 'all');
+	    }
 
 	    $ajaxEnabled = ($this->params->get('enable_ajax',1) && $this->ajax_request);
 	    $ajax = $this->prepareAjaxResponce();
@@ -767,7 +781,7 @@ HTML;
 
     /*
      * createPost
-     * @return voic
+     * @return void
      */
     public function createPost()
     {
@@ -917,7 +931,11 @@ HTML;
 
         //make sure the article submitted matches the one loaded
         $submittedArticleId = JRequest::getInt('articleId', 0, 'post');
-        $editAccess = $JoomlaUser->authorize('com_content', 'edit', 'content', 'all');
+	    if (JFusionFunction::isJoomlaVersion()) {
+		    $editAccess = $JoomlaUser->authorise('core.edit', 'com_content');
+	    } else {
+		    $editAccess = $JoomlaUser->authorize('com_content', 'edit', 'content', 'all');
+	    }
 
 	    $ajax = $this->prepareAjaxResponce();
         if ($editAccess && $this->valid && $submittedArticleId == $this->article->id) {
@@ -971,7 +989,11 @@ HTML;
 
         //make sure the article submitted matches the one loaded
         $submittedArticleId = JRequest::getInt('articleId', 0, 'post');
-        $editAccess = $JoomlaUser->authorize('com_content', 'edit', 'content', 'all');
+	    if (JFusionFunction::isJoomlaVersion()) {
+		    $editAccess = $JoomlaUser->authorise('core.edit', 'com_content');
+	    } else {
+		    $editAccess = $JoomlaUser->authorize('com_content', 'edit', 'content', 'all');
+	    }
 
 	    $ajax = $this->prepareAjaxResponce();
         if ($editAccess && $this->valid && $submittedArticleId == $this->article->id) {
@@ -1223,11 +1245,11 @@ HTML;
             $show_readmore = $readmore_catch = $article_params->get($readmore_param);
         }
 
-        //let's overwrite the readmore link with our own
+        //let's overwrite the read more link with our own
         //needed as in the case of updating the buttons via ajax which calls the article view
         $view = ($override = JRequest::getVar('view_override')) ? $override : JRequest::getVar('view');
         if ($view != $this->view() && $this->params->get('overwrite_readmore',1)) {
-            //make sure the readmore link is enabled for this article
+            //make sure the read more link is enabled for this article
 
             if (!empty($show_readmore) && !empty($readmore_catch)) {
                 if ($article_access) {
@@ -1266,7 +1288,7 @@ HTML;
                 $this->helper->output['buttons']['readmore']['text'] = $readmore_text;
                 $this->helper->output['buttons']['readmore']['target'] = '_self';
 
-                //set it so that Joomla does not show its readmore link
+                //set it so that Joomla does not show its read more link
                 if (isset($this->article->readmore)) {
                     $this->article->readmore = 0;
                 }
@@ -1283,7 +1305,11 @@ HTML;
 
         if ($show_button && empty($this->manual_plug)) {
             $user   = JFactory::getUser();
-            $editAccess = $user->authorize('com_content', 'edit', 'content', 'all');
+	        if (JFusionFunction::isJoomlaVersion()) {
+		        $editAccess = $user->authorise('core.edit', 'com_content');
+	        } else {
+		        $editAccess = $user->authorize('com_content', 'edit', 'content', 'all');
+	        }
             if ($editAccess) {
                 if ($this->helper->thread_status) {
                     //discussion is published
@@ -1451,7 +1477,7 @@ HTML;
             $post_output[$i]->postid = $postid;
             $post_output[$i]->guest = $guest;
 
-            //get Joomla's id
+            //get Joomla id
             $userlookup = JFusionFunction::lookupUser($JFusionForum->getJname(),$userid,false,$p->{$columns->username});
 
             //avatar

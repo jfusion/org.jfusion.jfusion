@@ -12,6 +12,8 @@
  * @copyright  2008 JFusion. All rights reserved.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
+ *
+ * @var $this jfusionViewsynchistory
  */
 // no direct access
 defined('_JEXEC') or die('Restricted access');

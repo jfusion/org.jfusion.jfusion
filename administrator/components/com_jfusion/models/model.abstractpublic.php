@@ -189,10 +189,16 @@ class JFusionPublic
             }
         }
 
-        if ( method_exists($this , '_parseBody') ) {
-            $this->_parseBody($data);
-        }
+	    $this->_parseBody($data);
     }
+
+	/**
+	 * function that parses the HTML body and fixes up URLs and form actions
+	 * @param &$data
+	 */
+	function _parseBody(&$data)
+	{
+	}
 
     /**
      * function that parses the HTML header and fixes up URLs
@@ -266,13 +272,20 @@ class JFusionPublic
             }
         }
 
-        if ( method_exists($this , '_parseHeader') ) {
-            $this->_parseHeader($data);
-        }
+	    $this->_parseHeader($data);
     }
 
+	/**
+	 * function that parses the HTML header and fixes up URLs
+	 * @param &$data
+	 */
+	function _parseHeader(&$data)
+	{
+
+	}
+
     /**
-     * Parsers the buffer recieved from getBuffer into header and body
+     * Parsers the buffer received from getBuffer into header and body
      * @param &$data
      */
     function parseBuffer(&$data) {
@@ -824,7 +837,7 @@ HTML;
         $db = JFusionFactory::getDatabase($this->getJname());
         //get the query used to search
         $query = $this->getSearchQuery($pluginParam);
-        //assign specific table colums to title and text
+        //assign specific table columns to title and text
         $columns = $this->getSearchQueryColumns();
         //build the query
         if ($phrase == 'exact') {
@@ -833,7 +846,7 @@ HTML;
             $words = explode(' ', $text);
             $wheres = array();
             foreach ($words as $word) {
-                $wheres[] = '((LOWER('.$columns->title.') LIKE \'%'.$word.'%\') OR (LOWER('.$columns->text.') like '%$word%'))';
+                $wheres[] = '((LOWER('.$columns->title.') LIKE \'%'.$word.'%\') OR (LOWER('.$columns->text.') like \'%'.$word.'%\'))';
             }
             if ($phrase == 'all') {
                 $separator = 'AND';

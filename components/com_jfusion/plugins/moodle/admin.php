@@ -327,13 +327,8 @@ HTML;
         $source_path = $params->get ( 'source_path' );
         $xmlfile = realpath ( dirname ( __FILE__ ) ) . DS . 'install_module' . DS . 'source' . DS . 'listfiles.xml';
 
-        /**
-         * @ignore
-         * @var $listfiles JSimpleXML
-         */
-        $listfiles = JFactory::getXMLParser('simple');
-        $listfiles->loadFile($xmlfile);
-        $files = $listfiles->document->getElementByPath('file');
+	    $listfiles = JFusionFunction::getXml($xmlfile);
+        $files = $listfiles->getElementByPath('file');
 
         /**
          * @ignore

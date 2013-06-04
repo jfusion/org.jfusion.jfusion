@@ -88,7 +88,7 @@ class JFusionAuth_phpbb3 extends JFusionAuth
 				//password is correct
 				return $userinfo->password;								
 			} else {
-				//ah who cares lets just a md5 standar encryption
+				//ah who cares lets just a md5 standard encryption
 				$encrypt_password = md5($password_old_format);
                 return $encrypt_password;
 			}				

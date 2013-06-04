@@ -217,7 +217,7 @@ class utf_normalizer_phpbb {
             $c = $str[$pos];
             $c_mask = $c & "\xF0";
             if (isset($utf_len_mask[$c_mask])) {
-                // Byte at $pos is either a leading byte or a missplaced trailing byte
+                // Byte at $pos is either a leading byte or a misplaced trailing byte
                 if ($utf_len = $utf_len_mask[$c_mask]) {
                     // Capture the char
                     $buffer[++$i & 7] = $utf_char = substr($str, $pos, $utf_len);
@@ -352,7 +352,7 @@ class utf_normalizer_phpbb {
                 //
                 // We are going to capture the shortest UTF sequence that satisfies these two conditions:
                 //
-                //  1 - If the sequence does not start at the begginning of the string, it must begin with a starter,
+                //  1 - If the sequence does not start at the beginning of the string, it must begin with a starter,
                 // and that starter must not have the NF[K]C_QC property equal to "MAYBE"
                 //
                 //  2 - If the sequence does not end at the end of the string, it must end with a non-starter and be
@@ -385,7 +385,7 @@ class utf_normalizer_phpbb {
                 $k = 0;
                 if (isset($utf_combining_class[$utf_seq[0]]) || $qc[$utf_char] == UNICODE_QC_MAYBE) {
                     // Not a starter, inspect previous characters
-                    // The last 8 characters are kept in a buffer so that we don't have to capture them everytime.
+                    // The last 8 characters are kept in a buffer so that we don't have to capture them every time.
                     // This is enough for all real-life strings but even if it wasn't, we can capture characters in backward mode,
                     // although it is slower than this method.
                     //
@@ -644,7 +644,7 @@ class utf_normalizer_phpbb {
         while ($pos < $len);
         // Now is time to return the string
         if ($tmp_pos) {
-            // If the $tmp_pos cursor is not at the beggining of the string then at least one character was not in normal form. Replace $str with the fixed version
+            // If the $tmp_pos cursor is not at the beginning of the string then at least one character was not in normal form. Replace $str with the fixed version
             if ($tmp_pos == $len) {
                 // The $tmp_pos cursor is at the end of $str, therefore $tmp holds the whole $str
                 return $tmp;
@@ -826,8 +826,9 @@ class utf_normalizer_phpbb {
                                 $utf_sort = array();
                             }
                             // Add a replacement char then another replacement char for every trailing byte.
-                            //
-                            // @todo I'm not entirely sure that's how we're supposed to mark invalidated byte sequences, check this
+                            /**
+                             * @TODO I'm not entirely sure that's how we're supposed to mark invalidated byte sequences, check this
+                             */
                             $spn = strspn($str, UTF8_TRAILING_BYTES, ++$pos);
                             $tmp.= str_repeat(UTF8_REPLACEMENT, $spn + 1);
                             $dump = $sort = 0;
@@ -949,7 +950,7 @@ class utf_normalizer_phpbb {
                     } else {
                         // Hangul syllable
                         $idx = (((ord($utf_char[0]) & 0x0F) << 12) | ((ord($utf_char[1]) & 0x3F) << 6) | (ord($utf_char[2]) & 0x3F)) - UNICODE_HANGUL_SBASE;
-                        // LIndex can only range from 0 to 18, therefore it cannot influence the first two bytes of the L Jamo, which allows us to hardcode them (based on LBase).
+                        // LIndex can only range from 0 to 18, therefore it cannot influence the first two bytes of the L Jamo, which allows us to hardcod them (based on LBase).
                         //
                         // The same goes for VIndex, but for TIndex there's a catch: the value of the third byte could exceed 0xBF and we would have to increment the second byte
                         if ($t_index = $idx % UNICODE_HANGUL_TCOUNT) {

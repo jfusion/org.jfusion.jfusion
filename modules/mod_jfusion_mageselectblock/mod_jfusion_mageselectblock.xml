@@ -7,7 +7,7 @@
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<authorEmail>webmaster@jfusion.org</authorEmail>
 	<authorUrl>www.jfusion.org</authorUrl>
-	<version>1.8.1-000</version>
+	<version>1.8.4-001</version>
     <revision>$revision$</revision>
     <timestamp>$timestamp$</timestamp>
 	<description>This module will display the content of an existing static CMS block of Magento into Joomla. You need to have the magelib plugin system and Jfusion component installed. Apply first the Magento plugin selection then select the static CMS block.</description>
@@ -17,17 +17,25 @@
 		<folder>elements</folder>
 		<folder>helper</folder>
 	</files>
-	<config><fields name="params" addfieldpath="/modules/mod_jfusion_mageselectblock/fields/"><fieldset name="basic">
-		<field name="magento_plugin" type="JFusionPlugins" default="magento" label="Jfusion Magento plugin" description="Select the plugin of Magento to use for this module. Note that it\'s used by the next params. So you\'ll need to apply before to set the others params" />
-		<field name="block_id" type="JFusionCmsBlock" default="" label="Static CMS Block of Magento" description="Choose the existing static CMS block of Magento to integrate it in Joomla" />
-	</fieldset></fields></config>
-    <config><fields name="params"><fieldset name="advanced">
-        <field name="cache" type="list" default="0" label="Caching" description="Select whether to cache the content of this module">
-            <option value="1">Use global</option> 
-            <option value="0">No caching</option> 
-        </field>
-        <field name="cache_time" type="text" default="900" label="Cache Time" description="The time before the module is recached" /> 
-    </fieldset></fields></config>		
+	<config>
+        <fields name="params" addfieldpath="/modules/mod_jfusion_mageselectblock/fields/">
+            <fieldset name="basic">
+                <field name="magento_plugin" type="JFusionPlugins" default="magento" label="Jfusion Magento plugin" description="Select the plugin of Magento to use for this module. Note that it\'s used by the next params. So you\'ll need to apply before to set the others params" />
+                <field name="block_id" type="JFusionCmsBlock" default="" label="Static CMS Block of Magento" description="Choose the existing static CMS block of Magento to integrate it in Joomla" />
+            </fieldset>
+        </fields>
+    </config>
+    <config>
+        <fields name="params">
+            <fieldset name="advanced">
+                <field name="cache" type="list" default="0" label="Caching" description="Select whether to cache the content of this module">
+                    <option value="1">Use global</option>
+                    <option value="0">No caching</option>
+                </field>
+                <field name="cache_time" type="text" default="900" label="Cache Time" description="The time before the module is recached" />
+            </fieldset>
+        </fields>
+    </config>
 	<params addpath="/modules/mod_jfusion_mageselectblock/elements">
 		<param name="magento_plugin" type="JFusionPlugins" default="magento" label="Jfusion Magento plugin" description="Select the plugin of Magento to use for this module. Note that it\'s used by the next params. So you\'ll need to apply before to set the others params" />
 		<param name="block_id" type="JFusionCmsBlock" default="" label="Static CMS Block of Magento" description="Choose the existing static CMS block of Magento to integrate it in Joomla" />

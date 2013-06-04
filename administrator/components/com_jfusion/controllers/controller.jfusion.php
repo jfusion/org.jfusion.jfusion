@@ -21,10 +21,10 @@ defined('_JEXEC') or die('Restricted access');
  */
 jimport('joomla.application.component.controller');
 jimport('joomla.application.component.view');
+require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'defines.php';
 require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.factory.php';
 require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.jfusion.php';
 require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.jfusionadmin.php';
-require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'defines.php';
 /**
  * JFusion Controller class
  *
@@ -70,7 +70,7 @@ class JFusionController extends JController
                 //save the params first in order for elements to utilize data
                 JFusionFunctionAdmin::saveParameters($jname, $params, true);
 
-                //make sure the usergroup paramas are available on first view
+                //make sure the usergroup params are available on first view
                 $config_status = $JFusionPlugin->checkConfig();
                 $db = JFactory::getDBO();
                 $query = 'UPDATE #__jfusion SET status = ' . $config_status['config'] . ' WHERE name =' . $db->Quote($jname);
@@ -396,7 +396,7 @@ class JFusionController extends JController
                 //format the syncdata for storage in the JFusion sync table
                 $syncdata['master'] = $master;
                 $syncdata['slave_data'] = $slave_data;
-                //save the submitted syndata in order for AJAX updates to work
+                //save the submitted syncdata in order for AJAX updates to work
                 JFusionUsersync::saveSyncdata($syncdata);
                 //start the usersync
                 JFusionUsersync::syncExecute($syncdata, $action, 0, 0);
@@ -477,17 +477,9 @@ class JFusionController extends JController
             //get description
             $plugin_xml = JFUSION_PLUGIN_PATH .DS. $jname .DS. 'jfusion.xml';
             if(file_exists($plugin_xml) && is_readable($plugin_xml)) {
-                /**
-                 * @ignore
-                 * @var $parser JSimpleXML
-                 */
-                $parser = JFactory::getXMLParser('Simple');
-                $parser->loadFile($plugin_xml);
-                /**
-                 * @ignore
-                 * @var $description JSimpleXMLElement
-                 */
-                $description = $parser->document->getElementByPath('description');
+	            $xml = JFusionFunction::getXml($plugin_xml);
+
+                $description = $xml->getElementByPath('description');
                 if(!empty($description)) {
                     $description = $description->data();
                 }
@@ -546,7 +538,7 @@ class JFusionController extends JController
      */
     function enableplugins()
     {
-        //enable the JFusion login behaviour, but we wanna make sure there is atleast 1 master with good config
+        //enable the JFusion login behaviour, but we wanna make sure there is at least 1 master with good config
         $db = JFactory::getDBO();
         $query = 'SELECT count(*) from #__jfusion WHERE master = 1 and status = 1';
         $db->setQuery($query);
@@ -588,7 +580,7 @@ class JFusionController extends JController
     }
 
     /**
-     * delere sync history
+     * delete sync history
      *
      * @return void
      */
@@ -641,45 +633,52 @@ class JFusionController extends JController
      *
      * @return void
      */
-    function advancedparamsubmit()
-    {
-        $param = JRequest::getVar('params');
-        $multiselect = JRequest::getVar('multiselect');
-        if ($multiselect) {
-            $multiselect = true;
-        } else {
-            $multiselect = false;
-        }
-        $elNum = JRequest::getInt('elNum');
-        $serParam = base64_encode(serialize($param));
-        $title = '';
-        if (isset($param['jfusionplugin'])) {
-            $title = $param['jfusionplugin'];
-        } else if ($multiselect) {
-            $del = '';
-            if (is_array($param)) {
-                foreach ($param as $key => $value) {
-                    if (isset($value['jfusionplugin'])) {
-                        $title.= $del . $value['jfusionplugin'];
-                        $del = '; ';
-                    }
-                }
-            }
-        }
-        if (empty($title)) {
-            $title = JText::_('NO_PLUGIN_SELECTED');
-        }
-        $js = '<script type="text/javascript">';
-        $js .= <<<JS
-            window.parent.jAdvancedParamSet('{$title}', '{$serParam}','{$elNum}');
+	function advancedparamsubmit()
+	{
+		$params = JRequest::getVar('params');
+		$ename = JRequest::getVar('ename');
+
+		$multiselect = JRequest::getVar('multiselect');
+		if ($multiselect) {
+			$multiselect = true;
+		} else {
+			$multiselect = false;
+		}
+
+		$serParam = base64_encode(serialize($params));
+
+		$session = JFactory::getSession();
+		$hash = JRequest::getVar($ename);
+		$session->set($hash, $serParam);
+
+		$title = '';
+		if (isset($params['jfusionplugin'])) {
+			$title = $params['jfusionplugin'];
+		} else if ($multiselect) {
+			$del = '';
+			if (is_array($params)) {
+				foreach ($params as $key => $value) {
+					if (isset($value['jfusionplugin'])) {
+						$title.= $del . $value['jfusionplugin'];
+						$del = '; ';
+					}
+				}
+			}
+		}
+		if (empty($title)) {
+			$title = JText::_('NO_PLUGIN_SELECTED');
+		}
+		$js = '<script type="text/javascript">';
+		$js .= <<<JS
+            window.parent.jAdvancedParamSet('{$title}', '{$serParam}','{$ename}');
 JS;
-        $js .= '</script>';
-        echo $js;
-    }
+		$js .= '</script>';
+		echo $js;
+	}
 
     function saveorder()
     {
-        //split the value of the sortation
+        //split the value of the sort action
         $sort_order = JRequest::getVar('sort_order');
         $ids = explode('|',$sort_order);
         $query ='';
@@ -705,64 +704,59 @@ JS;
     {
         $jname = JRequest::getVar('jname');
 
-        $msg = null;
-        $error = null;
+        $msg = $xml = $error = null;
 
 	    jimport('joomla.utilities.simplexml');
 	    $file = JRequest::getVar( 'file', '', 'FILES','ARRAY');
 
-	    $url = JRequest::getVar('url');
-	    /**
-	     * @ignore
-	     * @var $xmlFile JSimpleXML
-	     */
-	    $xmlFile = JFactory::getXMLParser('Simple');
-	    if( !empty($url) ) {
-		    $url = base64_decode($url);
-		    $ConfigFile = JFusionFunctionAdmin::getFileData($url);
-		    if ( !empty($ConfigFile) ) {
-			    $xmlFile->loadString($ConfigFile);
-		    } else {
-			    $error = $jname . ': ' . JText::_('ERROR_LOADING_FILE').': '.$file['tmp_name'];
-		    }
-	    } else {
-		    if( $file['error'] > 0 ) {
-			    switch ($file['error']) {
-				    case UPLOAD_ERR_INI_SIZE:
-					    $error = JText::_('UPLOAD_ERR_INI_SIZE');
-					    break;
-				    case UPLOAD_ERR_FORM_SIZE:
-					    $error = JText::_('UPLOAD_ERR_FORM_SIZE');
-					    break;
-				    case UPLOAD_ERR_PARTIAL:
-					    $error = JText::_('UPLOAD_ERR_PARTIAL');
-					    break;
-				    case UPLOAD_ERR_NO_FILE:
-					    $error = JText::_('UPLOAD_ERR_NO_FILE');
-					    break;
-				    case UPLOAD_ERR_NO_TMP_DIR:
-					    $error = JText::_('UPLOAD_ERR_NO_TMP_DIR');
-					    break;
-				    case UPLOAD_ERR_CANT_WRITE:
-					    $error = JText::_('UPLOAD_ERR_CANT_WRITE');
-					    break;
-				    case UPLOAD_ERR_EXTENSION:
-					    $error = JText::_('UPLOAD_ERR_EXTENSION');
-					    break;
-				    default:
-					    $error = JText::_('UNKNOWN_UPLOAD_ERROR');
-			    }
-			    $error = $jname . ': ' . JText::_('ERROR').': '.$error;
-		    } else {
-			    if(!$xmlFile->loadFile($file['tmp_name']) ) {
-				    $error = $jname . ': ' . JText::_('ERROR_LOADING_FILE').': '.$file['tmp_name'];
-			    }
-		    }
-	    }
+	    $filename = JRequest::getVar('url');
 
-	    if (!$error) {
+	    if( !empty($filename) ) {
+		    $filename = base64_decode($filename);
+		    $ConfigFile = JFusionFunctionAdmin::getFileData($filename);
+		    if (!empty($ConfigFile)) {
+			    $xml = JFusionFunction::getXml($ConfigFile,false);
+		    }
+	    } else if( $file['error'] > 0 ) {
+		    switch ($file['error']) {
+			    case UPLOAD_ERR_INI_SIZE:
+				    $error = JText::_('UPLOAD_ERR_INI_SIZE');
+				    break;
+			    case UPLOAD_ERR_FORM_SIZE:
+				    $error = JText::_('UPLOAD_ERR_FORM_SIZE');
+				    break;
+			    case UPLOAD_ERR_PARTIAL:
+				    $error = JText::_('UPLOAD_ERR_PARTIAL');
+				    break;
+			    case UPLOAD_ERR_NO_FILE:
+				    $error = JText::_('UPLOAD_ERR_NO_FILE');
+				    break;
+			    case UPLOAD_ERR_NO_TMP_DIR:
+				    $error = JText::_('UPLOAD_ERR_NO_TMP_DIR');
+				    break;
+			    case UPLOAD_ERR_CANT_WRITE:
+				    $error = JText::_('UPLOAD_ERR_CANT_WRITE');
+				    break;
+			    case UPLOAD_ERR_EXTENSION:
+				    $error = JText::_('UPLOAD_ERR_EXTENSION');
+				    break;
+			    default:
+				    $error = JText::_('UNKNOWN_UPLOAD_ERROR');
+		    }
+		    $error = $jname . ': ' . JText::_('ERROR').': '.$error;
+	    } else {
+		    $filename = $file['tmp_name'];
+		    $xml = JFusionFunction::getXml($filename);
+	    }
+	    if(!$xml) {
+		    $error = $jname . ': ' . JText::_('ERROR_LOADING_FILE').': '.$filename;
+	    } else {
+		    /**
+		     * @ignore
+		     * @var $val JSimpleXMLElement
+		     */
 		    $info = $config = null;
-		    foreach ($xmlFile->document->children() as $key => $val) {
+		    foreach ($xml->children() as $key => $val) {
 			    switch ($val->name()) {
 				    case 'info':
 					    $info = $val;
@@ -862,18 +856,13 @@ JS;
             $arr[$key] = $val;
         }
 
-        /**
-         * @ignore
-         * @var $xml JSimpleXML
-         */
-        $xml = JFactory::getXMLParser('Simple');
-        $xml->loadString('<jfusionconfig></jfusionconfig>');
+	    $xml = JFusionFunction::getXml('<jfusionconfig></jfusionconfig>',false);
 
         /**
          * @ignore
          * @var $info JSimpleXMLElement
          */
-        $info = $xml->document->addChild('info');
+        $info = $xml->addChild('info');
 
         list($VersionCurrent,$RevisionCurrent) = JFusionFunctionAdmin::currentVersion(true);
 
@@ -884,13 +873,9 @@ JS;
         $filename = JFUSION_PLUGIN_PATH .DS.$jname.DS.'jfusion.xml';
         if (file_exists($filename) && is_readable($filename)) {
             //get the version number
-            /**
-             * @ignore
-             * @var $parser JSimpleXML
-             */
-            $parser = JFactory::getXMLParser('Simple');
-            $parser->loadFile($filename);
-            $info->addAttribute('pluginversion', $parser->document->getElementByPath('version')->data());
+	        $element = JFusionFunction::getXml($filename);
+
+            $info->addAttribute('pluginversion', $element->getElementByPath('version')->data());
         } else {
             $info->addAttribute('pluginversion', 'UNKNOWN');
         }
@@ -902,15 +887,19 @@ JS;
         $db = JFactory::getDBO();
         $query = 'SELECT original_name FROM #__jfusion WHERE name =' . $db->Quote($jname);
         $db->setQuery($query);
-        $result = $db->loadResult();
+        $original_name = $db->loadResult();
 
-        $info->addAttribute  ('original_name', $result);
+	    $original_name = $original_name ? $original_name : $jname;
+
+        $info->addAttribute  ('original_name', $original_name);
 
         /**
          * @ignore
          * @var $info JSimpleXMLElement
+         * @var $config JSimpleXMLElement
+         * @var $node JSimpleXMLElement
          */
-        $config = $xml->document->addChild('config');
+        $config = $xml->addChild('config');
         foreach ($arr as $key => $val) {
             $attrs = array();
             $attrs['name'] = $key;
@@ -924,7 +913,7 @@ JS;
         header('Pragma: no-cache');
         header('Expires: 0');
 
-        echo $xml->document->toString();
+        echo $xml->toString();
         exit();
     }
 }

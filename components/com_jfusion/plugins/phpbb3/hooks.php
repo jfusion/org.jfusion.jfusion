@@ -53,7 +53,7 @@ function phpbb_hook_register(&$hook)
  */
 class JFusionHook {
     /**
-     * Throws an exeption at the end of the phpBB3 execution to return to JFusion
+     * Throws an exception at the end of the phpBB3 execution to return to JFusion
      *
      * @param mixed $hook
      *

@@ -36,7 +36,7 @@ createpackage(){
 	cd $FULLPATH
 }
 
-FULLPATH="$PWD"
+FULLPATH=$(dirname $(readlink -f $0))
 
 if [ -f "/usr/bin/7z" ]; then
    USEZIPCMD="7z"
@@ -102,7 +102,7 @@ case $1 in
 				createpackage components/com_jfusion/plugins/efront/ pluginpackages/jfusion_efront.zip
 				createpackage components/com_jfusion/plugins/elgg/ pluginpackages/jfusion_elgg.zip
 				createpackage components/com_jfusion/plugins/gallery2/ pluginpackages/jfusion_gallery2.zip
-				createpackage components/com_jfusion/plugins/joomla_ext/ pluginpackages/joomla_ext.zip
+				createpackage components/com_jfusion/plugins/joomla_ext/ pluginpackages/jfusion_joomla_ext.zip
 				createpackage components/com_jfusion/plugins/joomla_int/ pluginpackages/jfusion_joomla_int.zip
 				createpackage components/com_jfusion/plugins/magento/ pluginpackages/jfusion_magento.zip
 				createpackage components/com_jfusion/plugins/mediawiki/ pluginpackages/jfusion_mediawiki.zip
@@ -130,14 +130,14 @@ case $1 in
 
 		rm tmp/admin/jfusion.xml
 		
-		mkdir tmp/admin/languages
-		rsync -r  --exclude=".*/" administrator/language/en-GB/* tmp/admin/languages/en-GB
+		mkdir tmp/admin/language
+		rsync -r  --exclude=".*/" administrator/language/en-GB/* tmp/admin/language/en-GB
 
 		mkdir tmp/front
 		rsync -r  --exclude=".*/" --exclude="plugins" components/com_jfusion/* tmp/front
 
-		mkdir tmp/front/languages
-		rsync -r  --exclude=".*/" language/en-GB/* tmp/front/languages/en-GB/
+		mkdir tmp/front/language
+		rsync -r  --exclude=".*/" language/en-GB/* tmp/front/language/en-GB/
 		
 		rsync administrator/components/com_jfusion/jfusion.xml administrator/components/com_jfusion/install.jfusion.php administrator/components/com_jfusion/uninstall.jfusion.php tmp/ 
 		
@@ -153,7 +153,7 @@ case $1 in
     if [ "$USEZIPCMD" == "zip" ];
     then
         cd tmp
-    		$ZIPCMD -r $FULLPATH/jfusion_package.zip . > /dev/null
+    	$ZIPCMD -r $FULLPATH/jfusion_package.zip . > /dev/null
     else
         $ZIPCMD a "$FULLPATH/jfusion_package.zip" $FULLPATH/tmp/* -xr!*.svn* > /dev/null
     fi

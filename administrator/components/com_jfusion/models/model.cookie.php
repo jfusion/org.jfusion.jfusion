@@ -49,18 +49,21 @@ class JFusionCookies {
     	
     	// Versions of PHP prior to 5.2 do not support HttpOnly cookies and IE is buggy when specifying a blank domain so set the cookie manually
 		$cookie = $cookie_name.'='.urlencode($cookie_value);
+
+	    list ($url,$cookiedomain) = $this->getApiUrl($cookiedomain);
+
+	    if (!empty($cookiedomain)) {
+		    $cookie .= '; domain='.$cookiedomain;
+	    }
+
+	    if (!empty($cookiepath)) {
+		    $cookie .= '; path='.$cookiepath;
+	    }
+
 		if ($cookie_expires_time > 0) {
 			$cookie .= '; expires='.gmdate('D, d-M-Y H:i:s \\G\\M\\T', $cookie_expires_time);
 		}
-		if (!empty($cookiepath)) {
-			$cookie .= '; path='.$cookiepath;
-		}
-		
-		list ($url,$cookiedomain) = $this->getApiUrl($cookiedomain);
-		
-		if (!empty($cookiedomain)) {
-			$cookie .= '; domain='.$cookiedomain;
-		}
+
 		if($cookie_secure == true) {
 			$cookie .= '; Secure';
 		}
@@ -79,6 +82,7 @@ class JFusionCookies {
 
         $debug = array();
         $debug[JText::_('COOKIE')][JText::_('JFUSION_CROSS_DOMAIN_URL')] = $url;
+	    $debug[JText::_('COOKIE')][JText::_('COOKIE_DOMAIN')] = $cookiedomain;
         $debug[JText::_('COOKIE')][JText::_('NAME')] = $cookie_name;
         if ($mask) {
             $debug[JText::_('COOKIE')][JText::_('VALUE')] = substr($cookie_value, 0, 6) . '********';
@@ -106,7 +110,7 @@ class JFusionCookies {
     function executeRedirect($source_url=null,$return=null) {
     	$mainframe = JFactory::getApplication();
     	if (!$mainframe->isAdmin() || !$this->secret) {
-	    	if(!count($this->_cookies)) {
+	    	if(count($this->_cookies)) {
 	    		if (empty($return)) {
                     $return = JRequest::getVar ( 'return', '', 'method', 'base64' );
 	    			if ($return) {

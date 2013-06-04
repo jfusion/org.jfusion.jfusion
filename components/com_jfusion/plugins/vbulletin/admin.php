@@ -425,7 +425,7 @@ HTML;
                 if (!$db->query()) {
                     JError::raiseWarning(500, $db->stderr());
                 }
-                //enable or renable the plugin
+                //enable or re-enable the plugin
                 if ($action != 'disable') {
                     if (($hook == 'redirect' || $hook == 'frameless') && !$this->isValidItemID($itemid)) {
                         JError::raiseWarning(500, JText::_('VB_REDIRECT_HOOK_ITEMID_EMPTY'));
@@ -606,7 +606,7 @@ HTML;
             }
         }
         $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT COUNT(*) FROM #__plugin WHERE hookname = \'init_startup\' AND title = \'jfvbtask\' AND active = 1';
+        $query = 'SELECT COUNT(*) FROM #__plugin WHERE hookname = \'init_startup\' AND title = \'JFusion API Plugin - REQUIRED\' AND active = 1';
         $db->setQuery($query);
         if ($db->loadResult() == 0) {
             JError::raiseWarning(0, $this->getJname() . ': ' . JText::_('VB_API_HOOK_NOT_INSTALLED'));

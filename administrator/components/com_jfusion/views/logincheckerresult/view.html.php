@@ -65,7 +65,7 @@ class jfusionViewLoginCheckerResult extends JView
 			$options['overwrite'] = 0;
 		}
 
-		//prevent current jooomla session from being destroyed
+		//prevent current joomla session from being destroyed
 		global $JFusionActivePlugin, $JFusionLoginCheckActive;
 		$JFusionActivePlugin = 'joomla_int';
 		$JFusionLoginCheckActive = true;
@@ -133,8 +133,12 @@ class jfusionViewLoginCheckerResult extends JView
 				}
 			}
 		}
-		// Create authencication response
+		// Create Authentication response
 		$response = new JAuthenticationResponse();
+		/**
+		 * @ignore
+		 * @var $plugin plgAuthenticationjfusion
+		 */
 		foreach ($plugins as $plugin) {
 			$className = 'plg' . $plugin->type . $plugin->name;
 			if (class_exists($className)) {
@@ -146,7 +150,7 @@ class jfusionViewLoginCheckerResult extends JView
 			} else {
 				$plugin->onAuthenticate($credentials, $options, $response);
 			}
-			// If authentication is successfull break out of the loop
+			// If authentication is successfully break out of the loop
 			if ($response->status === JAUTHENTICATE_STATUS_SUCCESS) {
 				if (empty($response->type)) {
 					$response->type = isset($plugin->_name) ? $plugin->_name : $plugin->name;

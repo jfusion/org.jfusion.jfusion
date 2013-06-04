@@ -8,7 +8,7 @@
 	<authorUrl>http://www.jfusion.org</authorUrl>
 	<copyright>Copyright (C) 2009 JFusion. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-	<version>1.8.1-000</version>
+	<version>1.8.4-001</version>
     <revision>$revision$</revision>
     <timestamp>$timestamp$</timestamp>
 	<description><![CDATA[System Plugin to integrate the librairies of Magento and use it in different modules and components.<br>To install it, follow the normal joomla installation procedure.<br>
@@ -16,11 +16,15 @@
 	<files>
 		<filename plugin="magelib">magelib.php</filename>
 	</files>
-	<config><fields name="params" addfieldpath="/administrator/components/com_jfusion/fields"><fieldset name="basic">
-		<field name="mage_path" type="text" default="" label="Magento root path installation" description="Not required if you have JFusion and you have set the Plugin Magento just below. Provide here the path server of your magento installation. exple: /path/to/your/magento/folder/." />
-		<field name="mage_plugin" type="JFusionPlugins" size="20" default="magento" label="Plugin Magento" description="Select the Magento plugin from JFusion if the component is available" />
-		<field name="mage_store" type="text" default="" label="Magento default store" description="Choose the default store to use for your integration. If empty, the default store is used" />
-	</fieldset></fields></config>
+	<config>
+        <fields name="params" addfieldpath="/administrator/components/com_jfusion/fields">
+            <fieldset name="basic">
+                <field name="mage_path" type="text" default="" label="Magento root path installation" description="Not required if you have JFusion and you have set the Plugin Magento just below. Provide here the path server of your magento installation. exple: /path/to/your/magento/folder/." />
+                <field name="mage_plugin" type="JFusionPlugins" size="20" default="magento" label="Plugin Magento" description="Select the Magento plugin from JFusion if the component is available" />
+                <field name="mage_store" type="text" default="" label="Magento default store" description="Choose the default store to use for your integration. If empty, the default store is used" />
+            </fieldset>
+        </fields>
+    </config>
 	<params addpath="/administrator/components/com_jfusion/elements">
 		<param name="mage_path" type="text" default="" label="Magento root path installation" description="Not required if you have JFusion and you have set the Plugin Magento just below. Provide here the path server of your magento installation. exple: /path/to/your/magento/folder/." />
 		<param name="mage_plugin" type="JFusionPlugins" size="20" default="magento" label="Plugin Magento" description="Select the Magento plugin from JFusion if the component is available" />

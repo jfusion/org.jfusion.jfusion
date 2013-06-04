@@ -42,45 +42,37 @@ class jfusionViewlanguages extends JView
         //get the jfusion news
         ob_start();
 
-        /**
-         * @ignore
-         * @var $parser JSimpleXML
-         */
 	    jimport('joomla.version');
 	    $jversion = new JVersion();
         $data = JFusionFunctionAdmin::getFileData('http://update.jfusion.org/jfusion/joomla/?version='.$jversion->getShortVersion());
-        $parser = JFactory::getXMLParser('Simple');
 
         $lang_repo = array();
-        if ($parser->loadString($data)) {
-            if (isset($parser->document)) {
-                //$JFusionVersionInfo = $parser->document;
-                //$language_data = $JFusionVersionInfo->getElementByPath('languages');
-                $languages = $parser->document->getElementByPath('languages')->children();
-                /**
-                 * @ignore
-                 * @var $language JSimpleXMLElement
-                 */
-                foreach ($languages as $language) {
-                    $name = $language->attributes('tag');
+	    $xml = JFusionFunction::getXml($data,false);
+        if ($xml) {
+	        $languages = $xml->getElementByPath('languages')->children();
+	        /**
+	         * @ignore
+	         * @var $language JSimpleXMLElement
+	         */
+	        foreach ($languages as $language) {
+		        $name = $language->attributes('tag');
 
-                    $lang = new stdClass;
-                    $lang->file = $language->getElementByPath('remotefile')->data();
-                    $lang->date = $language->getElementByPath('creationdate')->data();
-                    $lang->description = $language->getElementByPath('description')->data();
-                    $lang->progress = $language->getElementByPath('progress')->data();
-                    $lang->translateurl = $language->getElementByPath('translateurl')->data();
-                    $lang->currentdate = null;
-                    $lang->class = 'row';
+		        $lang = new stdClass;
+		        $lang->file = $language->getElementByPath('remotefile')->data();
+		        $lang->date = $language->getElementByPath('creationdate')->data();
+		        $lang->description = $language->getElementByPath('description')->data();
+		        $lang->progress = $language->getElementByPath('progress')->data();
+		        $lang->translateurl = $language->getElementByPath('translateurl')->data();
+		        $lang->currentdate = null;
+		        $lang->class = 'row';
 
-                    $lang_repo[$name] = $lang;
-                }
-            }
+		        $lang_repo[$name] = $lang;
+	        }
         }
 
-        if (JFusionFunction::isJoomlaVersion('1.6')) {
+        if (JFusionFunction::isJoomlaVersion('2.5')) {
             $db = JFactory::getDBO();
-            $query = 'SELECT element, manifest_cache FROM #__extensions WHERE name LIKE \'jfusion\' AND type LIKE \'language\' AND client_id = 1';
+            $query = 'SELECT element, manifest_cache FROM #__extensions WHERE name LIKE \'jfusion %\' AND type LIKE \'file\' AND client_id = 0';
             $db->setQuery($query);
             $results = $db->loadObjectList();
 
@@ -100,22 +92,19 @@ class jfusionViewlanguages extends JView
             }
         } else {
             $path = JPATH_ADMINISTRATOR.DS.'language';
-            $paths = JFolder::folders(JPATH_ADMINISTRATOR.DS.'language');
+            $paths = JFolder::folders($path);
             foreach ($paths as $tag) {
-                $parser = JFactory::getXMLParser('Simple');
-                $file = $path.DS.$tag.DS.$tag.'.com_jfusion.xml';
-                if ($parser->loadFile($file)) {
-                    $date = $parser->document->getElementByPath('creationdate')->data();
+	            $xml = JFusionFunction::getXml($path.DS.$tag.DS.$tag.'.com_jfusion.xml');
+                if ($xml) {
+                    $date = $xml->getElementByPath('creationdate')->data();
                     if ( $date) {
                         $lang_repo[$tag]->currentdate = $date;
                     }
                 }
             }
         }
-
-        unset($parser);
         ob_end_clean();
-
+	    ksort($lang_repo);
         $this->assignRef('lang_repo', $lang_repo);
 
         parent::display($tpl);

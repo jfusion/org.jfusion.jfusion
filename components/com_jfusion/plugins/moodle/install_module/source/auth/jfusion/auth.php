@@ -11,7 +11,7 @@
  * Jfusion will trigger the onloginuser and onlogoutuser routines in jfusions user plugin and make jfusion login/out of all supported software
  *
  * When a user logs in on Moodle and the user is not registered on Moodle then the DSSO mechanism will find
- * the user if registered elsewere in the network and create the user in Moodle
+ * the user if registered elsewhere in the network and create the user in Moodle
  * The system works slightly different for JFusion 1.x and jFusion 2.x, but the code here acommodate both versions
  *
  * When the user is registered on Moodle this module will send a login/logout request to Joomla WITH its nodeID (see jfusion doc)
@@ -78,7 +78,9 @@ class DualLogin {
     function logout($curl_options){
 		$status = array();
 		$helper = new JFusionCurl;
-		// @todo: to fix: For info, with J! 1.6 there is problem with a form token and it's not provided to the post data
+		/**
+		 * @TODO to fix: For info, with J! 1.6 there is problem with a form token and it's not provided to the post data
+		 */
 		// RemoteLogoutUrl not work but RemoteLogout() work. 
 		$status= $helper->RemoteLogoutUrl($curl_options);
 		unset($helper);
@@ -121,7 +123,7 @@ class auth_plugin_jfusion extends auth_plugin_base {
 	 * @return bool Authentication success or failure.
 	 */
 	function user_login($username, $password) {
-		// if we come here, no active authentication methode succeded (or returned false) so the user does not exist
+		// if we come here, no active authentication methods succeeded (or returned false) so the user does not exist
 		// as far as Moodle is concerned.
 		// if Moodle is master, this is it, return
 		global $CFG;
@@ -256,10 +258,10 @@ class auth_plugin_jfusion extends auth_plugin_base {
 		}
 		$curl_options=array();
 
-		#prevent usererror by preventing a heading forwardslash
+		#prevent user error by preventing a heading forward slash
 		ltrim($params_logoutpath,'/');
 
-		#prevent usererror by not supplying trailing forwardslash
+		#prevent user error by not supplying trailing forward slash
 		if (substr($params_logoutpath,-1) != '/') {
 			$params_logoutpath = $params_logoutpath.'/';
 		}
@@ -388,9 +390,9 @@ class auth_plugin_jfusion extends auth_plugin_base {
 
 		$curl_options=array();
 
-		#prevent usererror by preventing a heading forwardslash
+		#prevent user error by preventing a heading forward slash
 		ltrim($params_loginpath,'/');
-		#prevent usererror by not supplying trailing forwardslash
+		#prevent user error by not supplying trailing forward slash
 		if (substr($params_loginpath,-1) != '/') {
 			$params_loginpath = $params_loginpath.'/';
 		}
@@ -404,7 +406,7 @@ class auth_plugin_jfusion extends auth_plugin_base {
 		}
 
 		// abort the Joomla login routine if we have switched off the SSO routines
-		// just to prevent programmin errors
+		// just to prevent programming errors
 		// This should have been done earlier in the code
 
 		if ($params_joomlaactive != '0')
