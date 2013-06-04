@@ -51,6 +51,8 @@
 		<param name="description" type="text" size="60" default="Magento Ecommerce site" description="DESCRIPTION_DESC" label="DESCRIPTION_DESC"/>
 		<param name="source_url" type="text" size="60" label="SOURCE_URL" default="http://www.yourdomain.com/yourdir/" description="SOURCE_URL_DESC" />
 		<param name="source_path" type="text" size="60" label="SOURCE_PATH" default="" description="SOURCE_PATH_DESC" />
+		<param name="magento_version" type = "text" size = "60" default = "1.7" label ="MAGENTO_VERSION" description = "MAGENTO_VERSION_DESC" />
+		
 		<param name="language_store_view" type="text" size="60" default="" label="LANGUAGE_STORE_VIEW" description="LANGUAGE_STORE_VIEW_DESC" />
 		<param name="apiuser" type="text" size="60" label="APIUSER" default="" description="APIUSER_DESC" />
 		<param name="apikey" type="text" size="60" label="APIKEY" default="" description="APIKEY_DESC" />

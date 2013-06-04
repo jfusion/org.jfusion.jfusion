@@ -47,6 +47,36 @@ class JFusionAdmin_magento extends JFusionAdmin
     function getTablename() {
         return 'admin_user';
     }
+    
+    public function normalize_version($version) {
+    	/// 1.9 Beta 2 should be read 1.9 , not 1.9.2
+    	/// we can discard everything after the first space
+    	$version = trim($version);
+    	$versionarr = explode(" ",$version);
+    	if (!empty($versionarr)) {
+    		$version = $versionarr[0];
+    	}
+    	/// Replace everything but numbers and dots by dots
+    	$version = preg_replace('/[^\.\d]/', '.', $version);
+    	/// Combine multiple dots in one
+    	$version = preg_replace('/(\.{2,})/', '.', $version);
+    	/// Trim possible leading and trailing dots
+    	$version = trim($version, '.');
+    	return $version;
+    }
+    
+    
+    // get the Magento version number
+    function getMagentoVersion($forumPath) {
+    	$file = file_get_contents(rtrim($forumPath,DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.'Mage.php');
+    	$pstart = strpos($file,'function getVersionInfo()');
+    	$pend = strpos($file,'}',$pstart);
+    	eval(substr($file,$pstart,$pend-$pstart+1));
+    	$version = getVersionInfo();
+    	return $version['major'].".".$version['minor'].".".$version['revision'];
+    }
+    
+    
 
     /**
      * @param string $forumPath
@@ -81,6 +111,9 @@ class JFusionAdmin_magento extends JFusionAdmin
         } else {
             JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . " $xmlfile " . JText::_('WIZARD_MANUAL'));
         }
+        
+        $params['magento_version'] = $this->normalize_version($this->getMagentoVersion($forumPath));
+        
         return $params;
     }
 
@@ -182,11 +215,13 @@ class JFusionAdmin_magento extends JFusionAdmin
                 $api_key = $hashArr[0];
                 $api_salt = $hashArr[1];
                 if ($api_salt) {
-                    $params_hash = md5($api_salt . $apikey);
+                    $params_hash_md5 = md5($api_salt . $apikey);
+                	$params_hash_sha256 = hash("sha256",$api_salt . $apikey);
                 } else {
-                    $params_hash = md5($apikey);
+                    $params_hash_md5 = md5($apikey);
+                	$params_hash_sha256 = hash("sha256",$apikey);
                 }
-                if ($params_hash != $api_key) {
+                	if ($params_hash_md5 != $api_key && $params_hash_sha256 != $api_key) {
                     JError::raiseWarning(0, $jname . '-plugin: ' . JText::_('MAGENTO_WRONG_APIUSER_APIKEY_COMBINATION'));
                 }
             }
