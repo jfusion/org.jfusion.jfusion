@@ -172,7 +172,6 @@ class jfusionViewplugindisplay extends JView {
     	$JFusionPlugin = JFusionFactory::getAdmin($record->name);
     	$JFusionParam = JFusionFactory::getParams($record->name);
 
-
      	if($record->status==1) {
          	//added check for database configuration to prevent error after moving sites
           	$status =  $JFusionPlugin->checkConfig();
@@ -187,7 +186,7 @@ class jfusionViewplugindisplay extends JView {
       	}
 
      	//set copy options
-      	if ($record->name == 'joomla_int' || $record->original_name) {
+      	if (!$JFusionPlugin->multiInstance() || $record->original_name) {
           	//cannot copy joomla_int
           	$record->copyimage = 'components/com_jfusion/images/copy_icon_dim.png';
           	$record->copyscript =  'javascript:void(0)';
@@ -208,7 +207,7 @@ class jfusionViewplugindisplay extends JView {
           	$record->deleteimage = 'components/com_jfusion/images/delete_icon.png';
           	$record->deletescript =  'javascript: deleteplugin(\'' . $record->name .'\')"';
       	}
-        ;
+
 		//set wizard options
 		$record->wizard = JFusionFunction::hasFeature($record->name,'wizard');
    		if($record->wizard){

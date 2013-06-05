@@ -174,4 +174,12 @@ class JFusionAdmin_elgg extends JFusionAdmin
 	{
 		return 'JYES';
 	}
+
+	/**
+	 * @return bool do the plugin support multi instance
+	 */
+	function multiInstance()
+	{
+		return false;
+	}
 }

@@ -214,6 +214,14 @@ class JFusionAdmin_prestashop extends JFusionAdmin
      */
     function requireFileAccess()
 	{
-		return 'JNO';
-	}	
+		return 'JYES';
+	}
+
+	/**
+	 * @return bool do the plugin support multi instance
+	 */
+	function multiInstance()
+	{
+		return false;
+	}
 }

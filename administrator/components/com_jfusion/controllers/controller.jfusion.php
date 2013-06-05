@@ -470,29 +470,35 @@ class JFusionController extends JController
         $db->setQuery($query);
         $record = $db->loadResult();
         if ($jname && $new_jname && $record) {
-            include_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.install.php';
-            $model = new JFusionModelInstaller();
-            $result = $model->copy($jname, $new_jname);
+	        $JFusionPlugin = JFusionFactory::getAdmin($jname);
+	        if ($JFusionPlugin->multiInstance()) {
+		        include_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.install.php';
+		        $model = new JFusionModelInstaller();
+		        $result = $model->copy($jname, $new_jname);
 
-            //get description
-            $plugin_xml = JFUSION_PLUGIN_PATH .DS. $jname .DS. 'jfusion.xml';
-            if(file_exists($plugin_xml) && is_readable($plugin_xml)) {
-	            $xml = JFusionFunction::getXml($plugin_xml);
+		        //get description
+		        $plugin_xml = JFUSION_PLUGIN_PATH .DS. $jname .DS. 'jfusion.xml';
+		        if(file_exists($plugin_xml) && is_readable($plugin_xml)) {
+			        $xml = JFusionFunction::getXml($plugin_xml);
 
-                $description = $xml->getElementByPath('description');
-                if(!empty($description)) {
-                    $description = $description->data();
-                }
-            }
-            if ($result['status']) {
-                $result['new_jname'] =  $new_jname;
-                /**
-                 * @ignore
-                 * @var $view jfusionViewplugindisplay
-                 */
-                $view = $this->getView('plugindisplay','html');
-                $result['rowhtml'] = $view->generateRowHTML($view->initRecord($new_jname));
-            }
+			        $description = $xml->getElementByPath('description');
+			        if(!empty($description)) {
+				        $description = $description->data();
+			        }
+		        }
+		        if ($result['status']) {
+			        $result['new_jname'] =  $new_jname;
+			        /**
+			         * @ignore
+			         * @var $view jfusionViewplugindisplay
+			         */
+			        $view = $this->getView('plugindisplay','html');
+			        $result['rowhtml'] = $view->generateRowHTML($view->initRecord($new_jname));
+		        }
+	        } else {
+		        $result['status'] = false;
+		        $result['message'] =  JText::_('CANT_COPY');
+	        }
         } else {
             $result['status'] = false;
             $result['message'] =  JText::_('NONE_SELECTED');

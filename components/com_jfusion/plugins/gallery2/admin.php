@@ -310,5 +310,13 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
     function requireFileAccess()
 	{
 		return 'JYES';
-	}    
+	}
+
+	/**
+	 * @return bool do the plugin support multi instance
+	 */
+	function multiInstance()
+	{
+		return false;
+	}
 }

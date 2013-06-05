@@ -743,6 +743,13 @@ JS;
         return 'UNKNOWN';
     }
 
+	/**
+	 * @return bool do the plugin support multi instance
+	 */
+	function multiInstance()
+	{
+		return true;
+	}
 
     /**
      * Function to check if a given itemid is configured for the plugin in question.
