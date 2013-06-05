@@ -181,6 +181,14 @@ class JFusionAdmin_mediawiki extends JFusionAdmin {
     function requireFileAccess()
 	{
 		return 'JYES';
-	} 
+	}
+
+	/**
+	 * @return bool do the plugin support multi instance
+	 */
+	function multiInstance()
+	{
+		return false;
+	}
 }
 
