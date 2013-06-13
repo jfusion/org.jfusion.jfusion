@@ -245,7 +245,8 @@ if (!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') ===
         $file = $_SERVER["SCRIPT_NAME"];
         $break = explode(\'/\', $file);
         $pfile = $break[count($break) - 1];
-        $jfusion_url = $joomla_url . \'index.php?option=com_jfusion&Itemid=\' . $joomla_itemid . \'&jfile=\'.$pfile. \'&\' . $_SERVER[\'QUERY_STRING\'];
+        $query = str_replace(\';\', \'&\', $_SERVER[\'QUERY_STRING\']);
+        $jfusion_url = $joomla_url . \'index.php?option=com_jfusion&Itemid=\' . $joomla_itemid . \'&jfile=\'.$pfile. \'&\' . $query;
         header(\'Location: \' . $jfusion_url);
         exit;
     }
