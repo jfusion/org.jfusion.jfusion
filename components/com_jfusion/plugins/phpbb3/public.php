@@ -240,7 +240,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             //set the current directory to phpBB3
             chdir($source_path);
             /* set scope for variables required later */
-            global $phpbb_root_path, $phpEx, $db, $config, $user, $auth, $cache, $template, $phpbb_hook, $module, $mode;
+            global $phpbb_root_path, $phpEx, $db, $config, $user, $auth, $cache, $template, $phpbb_hook, $module, $mode, $table_prefix;
             if ($jfile == 'mcp.php') {
                 //must globalize these to make sure urls are generated correctly via extra_url() in mcp.php
                 global $forum_id, $topic_id, $post_id, $report_id, $user_id, $action;
