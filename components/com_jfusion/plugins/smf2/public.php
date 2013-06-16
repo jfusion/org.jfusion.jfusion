@@ -876,8 +876,8 @@ class JFusionPublic_smf2 extends JFusionPublic {
 
 		foreach($results as $rkey => $result) {
 			foreach( $vulgar as $key => $value ) {
-				$results[$rkey]->subject = preg_replace  ( '#\b'.preg_quote($value,'#').'\b#is' , $proper[$key]  , $result->subject );
-				$results[$rkey]->body = preg_replace  ( '#\b'.preg_quote($value,'#').'\b#is' , $proper[$key]  , $result->body );
+				$results[$rkey]->title = preg_replace  ( '#\b'.preg_quote($value,'#').'\b#is' , $proper[$key]  , $result->title );
+				$results[$rkey]->text = preg_replace  ( '#\b'.preg_quote($value,'#').'\b#is' , $proper[$key]  , $result->text );
 			}
 		}
 	}
