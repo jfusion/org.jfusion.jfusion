@@ -342,7 +342,11 @@ class JFusionFrameless {
 	function parseEncoding($buffer) {
 		if ( preg_match  ( '#<meta.*?content="(.*?); charset=(.*?)".*?/>#isS'  , $buffer , $matches)) {
 			if ( stripos  ( $matches[1] , 'text/html' ) !== false && stripos( $matches[2] , 'utf-8' ) === false ) {
-				$buffer = mb_convert_encoding( $buffer , 'UTF-8', $matches[2] );
+				foreach(mb_list_encodings() as $chr) {
+					if (stripos( $matches[2] , $chr ) !== false) {
+						$buffer = mb_convert_encoding( $buffer , 'UTF-8', $matches[2] );
+					}
+				}
 			}
 		}
 		return $buffer;
