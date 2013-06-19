@@ -565,14 +565,16 @@ class JFusionPublic_phpbb3 extends JFusionPublic
                 $replacement = 'action="' . $url . '"' . $extra . '>';
                 return $replacement;
             } else {
-                //simple SEF mode
-                $url_details = parse_url($url);
-                $url_variables = array();
-                if(!empty($url_details['query'])){
-                    parse_str($url_details['query'], $url_variables);
-                }
-                $jfile = basename($url_details['path']);
-                $replacement = 'action="' . $baseURL . $jfile . '"' . $extra . '>';
+	            //simple SEF mode
+	            $url_details = parse_url($url);
+	            $url_variables = array();
+	            if(!empty($url_details['query'])) {
+		            $query = '?'.$url_details['query'];
+	            } else {
+		            $query = '';
+	            }
+	            $jfile = basename($url_details['path']);
+	            $replacement = 'action="' . $baseURL . $jfile . $query . '"' . $extra . '>';
             }
         }
         unset($url_variables['option'], $url_variables['jfile'], $url_variables['Itemid']);
