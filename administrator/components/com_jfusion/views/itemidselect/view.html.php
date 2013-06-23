@@ -86,7 +86,7 @@ class jfusionViewitemidselect extends JView
 	        if (is_array($jPluginParam)) {
 		        $row->jfusionplugin = $jPluginParam['jfusionplugin'];
 	        }
-            if (!JFusionFunction::validPlugin($row->jfusionplugin) || !JFusionFunction::hasFeature($row->name,$feature,$row->id)) {
+            if (!JFusionFunction::validPlugin($row->jfusionplugin) || !JFusionFunction::hasFeature($row->jfusionplugin,$feature,$row->id)) {
                 unset($menuitems[$key]);
             }
         }
