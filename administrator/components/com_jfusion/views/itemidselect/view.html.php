@@ -56,7 +56,7 @@ class jfusionViewitemidselect extends JView
         $ename = JRequest::getVar('ename');
         //get the number to attach to the id of the input to update after selecting a menu item
         $elId = JRequest::getVar('elId');
-        $feature = JRequest::getVar('feature');
+        $feature = JRequest::getVar('feature', 'any');
         JHTML::_('behavior.tooltip');
         
         //get a list of jfusion menuitems
