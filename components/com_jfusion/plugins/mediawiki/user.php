@@ -15,9 +15,9 @@ defined('_JEXEC' ) or die('Restricted access' );
  * For detailed descriptions on these functions please check the model.abstractuser.php
  * @package JFusion_mediawiki
  */
-//require_once(JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.jfusion.php');
-//require_once(JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.abstractuser.php');
-require_once(JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.jplugin.php');
+//require_once(JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.jfusion.php');
+//require_once(JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.abstractuser.php');
+require_once(JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.jplugin.php');
 /**
  * JFusionUser_mediawiki class
  *
@@ -108,12 +108,12 @@ class JFusionUser_mediawiki extends JFusionUser {
 
 		$query = 'DELETE FROM #__user WHERE user_name = '.$db->quote($userinfo->username);
 		$db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
        		$status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' .  $db->stderr();
         } else {
 			$query = 'DELETE FROM #__user_groups WHERE ug_user = '.$db->quote($userinfo->userid);
 			$db->setQuery($query);
-			$db->query();
+			$db->execute();
 			$status['debug'][] = JText::_('USER_DELETION'). ' ' . $userinfo->username;
 		}
 
@@ -227,7 +227,7 @@ class JFusionUser_mediawiki extends JFusionUser {
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'UPDATE #__user SET user_password = ' . $db->quote($existinguser->password). ' WHERE user_id  = ' . $existinguser->userid;
         $db->setQuery($query );
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR')  . $db->stderr();
         } else {
 	        $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password,0,6) . '********';
@@ -259,7 +259,7 @@ class JFusionUser_mediawiki extends JFusionUser {
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'UPDATE #__user SET user_email ='.$db->quote($userinfo->email) .' WHERE user_id =' . $existinguser->userid;
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $db->stderr();
         } else {
 	        $status['debug'][] = JText::_('EMAIL_UPDATE'). ': ' . $existinguser->email . ' -> ' . $userinfo->email;
@@ -283,7 +283,7 @@ class JFusionUser_mediawiki extends JFusionUser {
             $db = JFusionFactory::getDatabase($this->getJname());
             $query = 'DELETE FROM #__user_groups WHERE ug_user = '.$db->quote($existinguser->userid);
             $db->setQuery($query);
-            $db->query();
+            $db->execute();
             foreach($usergroups as $usergroup) {
                 //prepare the user variables
                 $ug = new stdClass;
@@ -350,7 +350,7 @@ class JFusionUser_mediawiki extends JFusionUser {
     	$db = JFusionFactory::getDatabase($this->getJname());
         $query = 'DELETE FROM #__ipblocks WHERE ipb_user = ' . $db->quote($existinguser->userid);
         $db->setQuery($query);
-	    if (!$db->query()) {
+	    if (!$db->execute()) {
     	    $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $db->stderr();
     	} else {
         	$status['debug'][] = JText::_('BLOCK_UPDATE'). ': ' . $existinguser->block . ' -> ' . $userinfo->block;
@@ -362,7 +362,7 @@ class JFusionUser_mediawiki extends JFusionUser {
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'UPDATE #__user SET is_activated = 1, validation_code = \'\' WHERE user_id  = ' . $existinguser->userid;
         $db->setQuery($query );
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $db->stderr();
         } else {
 	        $status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
@@ -374,7 +374,7 @@ class JFusionUser_mediawiki extends JFusionUser {
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'UPDATE #__user SET is_activated = 0, validation_code = '.$db->Quote($userinfo->activation).' WHERE user_id  = ' . $existinguser->userid;
         $db->setQuery($query );
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $db->stderr();
         } else {
 	        $status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
@@ -415,7 +415,7 @@ class JFusionUser_mediawiki extends JFusionUser {
             $user->user_newpass_time = $user->user_newpassword = null;
 
             $db->setQuery("SHOW COLUMNS FROM #__user LIKE 'user_options'");
-            if ($db->query() && $db->getNumRows() ) {
+            if ($db->execute() && $db->getNumRows() ) {
                 $user->user_options = ' ';
             }
 
@@ -463,7 +463,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 
                 $query = 'UPDATE #__user SET user_token = '.$db->Quote($mToken).' WHERE user_id = '.$db->Quote($user->user_id);
                 $db->setQuery($query);
-                if (!$db->query()) {
+                if (!$db->execute()) {
                     //return the error
                     $status['error'][] = JText::_('USER_CREATION_ERROR')  . ' ' .  $db->stderr();
                 } else {

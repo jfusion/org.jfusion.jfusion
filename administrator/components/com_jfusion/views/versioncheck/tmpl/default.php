@@ -386,11 +386,7 @@ if ($this->up2date) {
                 <input type="hidden" name="install_url" value="" />
                 <input type="hidden" name="type" value="" />
                 <input type="hidden" name="installtype" value="url" />
-                <?php if(JFusionFunction::isJoomlaVersion('1.6')){ ?>
-                <input type="hidden" name="task" value="install.install" />
-                <?php } else { ?>
-                <input type="hidden" name="task" value="doInstall" />
-                <?php } ?>
+	            <input type="hidden" name="task" value="install.install" />
                 <input type="hidden" name="option" value="com_installer" />
                 <?php echo JHTML::_('form.token'); ?>
                 <b>

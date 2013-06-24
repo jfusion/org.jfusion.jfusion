@@ -16,7 +16,7 @@
 
 // no direct access
 defined('_JEXEC') or die('Restricted access');
-require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.abstractuser.php';
+require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.abstractuser.php';
 
 /**
  * JFusion Admin Class for eFront 3.5+
@@ -58,9 +58,9 @@ class JFusionAdmin_efront extends JFusionAdmin
     function setupFromPath($forumPath) {
         //check for trailing slash and generate file path
         if (substr($forumPath, -1) == DS) {
-            $myfile = $forumPath . 'libraries'. DS. 'configuration.php';
+            $myfile = $forumPath . 'libraries'. DIRECTORY_SEPARATOR. 'configuration.php';
         } else {
-            $myfile = $forumPath . DS .'libraries'. DS .'configuration.php';
+            $myfile = $forumPath . DIRECTORY_SEPARATOR .'libraries'. DIRECTORY_SEPARATOR .'configuration.php';
         }
         $params = array();
         if (($file_handle = @fopen($myfile, 'r')) === false) {
@@ -79,9 +79,9 @@ class JFusionAdmin_efront extends JFusionAdmin
             fclose($file_handle);
             // need more defines from eFront
             if (substr($forumPath, -1) == DS) {
-                $myfile = $forumPath . 'libraries'. DS. 'globals.php';
+                $myfile = $forumPath . 'libraries'. DIRECTORY_SEPARATOR. 'globals.php';
             } else {
-                $myfile = $forumPath . DS .'libraries'. DS .'globals.php';
+                $myfile = $forumPath . DIRECTORY_SEPARATOR .'libraries'. DIRECTORY_SEPARATOR .'globals.php';
             }
             if (($file_handle = @fopen($myfile, 'r')) === false) {
                 JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));
@@ -148,12 +148,12 @@ class JFusionAdmin_efront extends JFusionAdmin
         if (!array_key_exists('id',$tableFields['users'])) {
             $query = 'ALTER TABLE users ADD id int(11) NOT null AUTO_INCREMENT FIRST, ADD UNIQUE (id)';
             $db->setQuery($query);
-            $db->query();
+            $db->execute();
         }
         if (!array_key_exists('need_mod_init',$tableFields['users'])) {
             $query = 'ALTER TABLE users ADD need_mod_init int(11) NOT null DEFAULT 0';
             $db->setQuery($query);
-            $db->query();
+            $db->execute();
         }
         $query = 'SELECT count(*) from #__users';
         $db->setQuery($query);

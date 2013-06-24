@@ -84,7 +84,7 @@ class doku_auth_plain extends doku_auth_basic {
         if (substr($sorce_path, -1) == DS) {
             $sorce_path = $sorce_path . 'conf/users.auth.php';
         } else {
-            $sorce_path = $sorce_path . DS . 'conf/users.auth.php';
+            $sorce_path = $sorce_path . DIRECTORY_SEPARATOR . 'conf/users.auth.php';
         }
         return $sorce_path;
     }

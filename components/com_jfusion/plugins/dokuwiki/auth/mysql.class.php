@@ -833,7 +833,7 @@ class doku_auth_mysql extends doku_auth_basic {
     function _modifyDB($query) {
 		if ($this->dbcon) {
 			$this->dbcon->setQuery($query);
-			$result = $this->dbcon->query();
+			$result = $this->dbcon->execute();
         	if ($result) {
           		$rc = $this->dbcon->insertid(); //give back ID on insert
           		if ($rc !== false) return $rc;

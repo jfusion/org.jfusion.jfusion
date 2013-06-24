@@ -57,7 +57,7 @@ class JFusionAdmin_mybb extends JFusionAdmin
         if (substr($forumPath, -1) != DS) {
             $forumPath.= DS;
         }
-        $myfile = $forumPath . 'inc' . DS . 'config.php';
+        $myfile = $forumPath . 'inc' . DIRECTORY_SEPARATOR . 'config.php';
 
         $params = array();
         //include config file

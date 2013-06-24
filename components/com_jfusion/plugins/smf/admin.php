@@ -20,8 +20,8 @@ defined('_JEXEC') or die('Restricted access');
 /**
  * Load the JFusion framework
  */
-require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.jfusion.php';
-require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.abstractadmin.php';
+require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jfusion.php';
+require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.abstractadmin.php';
 
 /**
  * JFusion Admin Class for SMF 1.1.x
@@ -71,7 +71,7 @@ class JFusionAdmin_smf extends JFusionAdmin
         if (substr($forumPath, -1) == DS) {
             $myfile = $forumPath . 'Settings.php';
         } else {
-            $myfile = $forumPath . DS . 'Settings.php';
+            $myfile = $forumPath . DIRECTORY_SEPARATOR . 'Settings.php';
         }
         $params = array();
         //try to open the file

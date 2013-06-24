@@ -94,7 +94,7 @@ class JFusionHelper_phpbb3
     function utf8_clean_string($text) {
         static $homographs = array();
         if (empty($homographs)) {
-            $homographs = include (JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'utf' . DS . 'confusables.php');
+            $homographs = include (JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'utf' . DIRECTORY_SEPARATOR . 'confusables.php');
         }
         $text = $this->utf8_case_fold_nfkc($text);
         $text = strtr($text, $homographs);
@@ -124,7 +124,7 @@ class JFusionHelper_phpbb3
         $utf8_advanced = $params->get('utf8_advanced');
         if ($utf8_advanced == 'enabled') {
             if (!class_exists('utf_normalizer_phpbb')) {
-                require_once JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'utf' . DS . 'utf_normalizer.php';
+                require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'utf' . DIRECTORY_SEPARATOR . 'utf_normalizer.php';
             }
             utf_normalizer_phpbb::nfkc($text);
         }
@@ -144,15 +144,15 @@ class JFusionHelper_phpbb3
         $option = 'not full';
         // common is always set
         if (!isset($uniarray['c'])) {
-            $uniarray['c'] = include (JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'utf' . DS . 'case_fold_c.php');
+            $uniarray['c'] = include (JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'utf' . DIRECTORY_SEPARATOR . 'case_fold_c.php');
         }
         // only set full if we need to
         if ($option === 'full' && !isset($uniarray['f'])) {
-            $uniarray['f'] = include (JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'utf' . DS . 'case_fold_f.php');
+            $uniarray['f'] = include (JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'utf' . DIRECTORY_SEPARATOR . 'case_fold_f.php');
         }
         // only set simple if we need to
         if ($option !== 'full' && !isset($uniarray['s'])) {
-            $uniarray['s'] = include (JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'utf' . DS . 'case_fold_s.php');
+            $uniarray['s'] = include (JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'utf' . DIRECTORY_SEPARATOR . 'case_fold_s.php');
         }
         // common is always replaced
         $text = strtr($text, $uniarray['c']);

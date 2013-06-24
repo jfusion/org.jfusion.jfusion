@@ -270,7 +270,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 		if (substr($source_path, -1) == DS) {
 			$index_file = $source_path .'index.php';
 		} else {
-			$index_file = $source_path .DS.'index.php';
+			$index_file = $source_path .DIRECTORY_SEPARATOR.'index.php';
 		}
 
 		if ( ! is_file($index_file) ) {
@@ -278,16 +278,12 @@ class JFusionPublic_smf2 extends JFusionPublic {
 		} else {
             //add handler to undo changes that plgSystemSef create
             $dispatcher = JDispatcher::getInstance();
-            if (JFusionFunction::isJoomlaVersion('1.6')) {
-	            /**
-	             * @ignore
-	             * @var $method object
-	             */
-	            $method = array('event' => 'onAfterRender', 'handler' => array($this, 'onAfterRender'));
-                $dispatcher->attach($method);
-            } else {
-                $dispatcher->attach($this);
-            }
+			/**
+			 * @ignore
+			 * @var $method object
+			 */
+			$method = array('event' => 'onAfterRender', 'handler' => array($this, 'onAfterRender'));
+			$dispatcher->attach($method);
 
             //set the current directory to SMF
             chdir($source_path);

@@ -252,28 +252,9 @@ class JFusionForum
 		$forumid = $dbparams->get('default_forum');
 		$catid = $contentitem->catid;
 		$option = JRequest::getCmd('option');
-		$isJ16 = JFusionFunction::isJoomlaVersion('1.6');
 
 		if ($option == 'com_k2' || $option == 'com_content') {
     		//determine default forum
-    		if ($option == 'com_content' && !$isJ16) {
-    		    //only J1.5 uses sections
-        		$sectionid = $contentitem->sectionid;
-        		$sections = $dbparams->get('pair_sections');
-        		if(!empty($sections)) {
-        			$pairs = base64_decode($sections);
-        			$sectionPairs = @unserialize($pairs);
-        			if ($sectionPairs === false) {
-        			    $sectionPairs = array();
-        			}
-        		} else {
-        			$sectionPairs = array();
-        		}
-
-        		if(array_key_exists($sectionid, $sectionPairs)) {
-        			$forumid = $sectionPairs[$sectionid];
-        		}
-    	    }
 
 	        $param_name = ($option == 'com_k2') ? 'pair_k2_categories' : 'pair_categories';
     		$categories = $dbparams->get($param_name);
@@ -289,7 +270,7 @@ class JFusionForum
 
     		if(array_key_exists($catid, $categoryPairs)) {
     			$forumid = $categoryPairs[$catid];
-			} elseif (($option == 'com_k2' && isset($contentitem->category)) || ($option == 'com_content' && $isJ16)) {
+			} elseif (($option == 'com_k2' && isset($contentitem->category)) || ($option == 'com_content')) {
     		    //let's see if a parent has been assigned a forum
     		    if ($option == 'com_k2') {
     		        //see if a parent category is included
@@ -521,7 +502,7 @@ class JFusionForum
 		//using markitup http://markitup.jaysalvat.com/ for bbcode textbox
 		$document = JFactory::getDocument();
 		$option = JRequest::getCmd('option');
-		$path = (JFusionFunction::isJoomlaVersion('1.6')) ? 'jfusion/discussbot' : 'discussbot';
+		$path = 'jfusion/discussbot';
 		if ($option != 'com_k2') {
 		    //k2 loads jquery already
 		    $document->addScript(JFusionFunction::getJoomlaURL().'plugins/content/'.$path.'/markitup/jquery.pack.js');
@@ -605,7 +586,7 @@ HTML;
 				break;
 			case 'recaptcha':
 				//using reCAPTCHA (http://recaptcha.net)
-				$recaptchalib = JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'recaptchalib.php';
+				$recaptchalib = JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'recaptchalib.php';
 				if(file_exists($recaptchalib)) {
 					$theme = $dbparams->get('recaptcha_theme','red');
 					$lang = $dbparams->get('recaptcha_lang','en');
@@ -698,7 +679,7 @@ JS;
 				break;
 			case 'recaptcha':
 				//using reCAPTCHA (http://recaptcha.net)
-				$recaptchalib = JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'recaptchalib.php';
+				$recaptchalib = JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'recaptchalib.php';
 				if(file_exists($recaptchalib)) {
 					if (!function_exists('recaptcha_check_answer')) {
                 		include_once $recaptchalib;

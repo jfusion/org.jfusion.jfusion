@@ -239,7 +239,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
         global $vbsefmode, $vbJname, $vbsefenabled, $baseURL, $integratedURL, $hookFile;
         //make sure the curl model is loaded for the hooks file
         if (!class_exists('JFusionCurl')) {
-            require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.curl.php';
+            require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.curl.php';
         }
         //define('_JFUSION_DEBUG',1);
         define('_VBFRAMELESS', 1);
@@ -273,7 +273,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
                 $integratedURL = $jfdata->integratedURL;
                 $config = JFactory::getConfig();
                 $vbsefenabled = $config->getValue('config.sef');
-                $hookFile = JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'hooks.php';
+                $hookFile = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'hooks.php';
                 if ($vbsefmode) {
                     //need to set the base tag as vB JS/ajax requires it to function
                     $document = JFactory::getDocument();
@@ -328,7 +328,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
                 if (substr($source_path, -1) == DS) {
                     $index_file = $source_path . $jfile;
                 } else {
-                    $index_file = $source_path . DS . $jfile;
+                    $index_file = $source_path . DIRECTORY_SEPARATOR . $jfile;
                 }
                 if (!is_file($index_file)) {
                     JError::raiseWarning(500, 'The path to the requested does not exist');

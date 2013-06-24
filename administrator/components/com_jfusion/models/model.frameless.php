@@ -11,8 +11,8 @@
 // no direct access
 defined('_JEXEC' ) or die('Restricted access' );
 
-require_once (JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.jfusion.php');
-require_once (JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.factory.php');
+require_once (JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jfusion.php');
+require_once (JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.factory.php');
 
 /**
  * Singleton static only class that creates instances for each specific JFusion plugin.
@@ -81,7 +81,7 @@ class JFusionFrameless {
 		if ($JFusionPluginParam) {
 			$params = unserialize(base64_decode($JFusionPluginParam));
 			if ($params && isset($params['jfusionplugin'])) {
-				if (JFusionFunction::isJoomlaVersion('1.6') && isset($params[$params['jfusionplugin']]['params'])) {
+				if (isset($params[$params['jfusionplugin']]['params'])) {
 					$params += $params[$params['jfusionplugin']]['params'];
 					unset($params[$params['jfusionplugin']]);
 				}
@@ -143,7 +143,7 @@ class JFusionFrameless {
 		$document = JFactory::getDocument();
 
 		if (!$data->isPlugin) {
-			require_once(JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.abstractpublic.php');
+			require_once(JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.abstractpublic.php');
 			$JFusionPlugin = new JFusionPublic();
 		} else {
 			$JFusionPlugin = JFusionFactory::getPublic ( $data->jname );
@@ -177,7 +177,7 @@ class JFusionFrameless {
 				$db = JFusionFactory::getDatabase($this->jname);
 				$query = 'USE '.$db_name;
 				$db->setQuery($query);
-				$db->query();
+				$db->execute();
 			}
 			*/
 		}
@@ -198,11 +198,7 @@ class JFusionFrameless {
 
 		//clear the page title
 		if (! empty ( $data->buffer )) {
-			if (JFusionFunction::isJoomlaVersion('1.6')) {
-				$document->setTitle('');
-			} else {
-				$mainframe->setPageTitle('');
-			}
+			$document->setTitle('');
 		}
 
 		//check to see if the Joomla database is still connected in case the plugin messed it up
@@ -251,11 +247,7 @@ class JFusionFrameless {
 				$pattern = '#<title>(.*?)<\/title>#si';
 				preg_match ( $pattern, $data->header, $page_title );
 
-				if (JFusionFunction::isJoomlaVersion('1.6')) {
-					$document->setTitle( html_entity_decode ( $page_title [1], ENT_QUOTES, "utf-8" ) );
-				} else {
-					$mainframe->setPageTitle ( html_entity_decode ( $page_title [1], ENT_QUOTES, "utf-8" ) );
-				}
+				$document->setTitle( html_entity_decode ( $page_title [1], ENT_QUOTES, "utf-8" ) );
 
 				$regex_header [] = $pattern;
 				$replace_header [] = '';
@@ -359,7 +351,7 @@ class JFusionFrameless {
 	function parseBody(&$data) {
 		if ( !empty($data->bodyextract) || !empty($data->bodyremove) ) {
 			/*
-			require_once (JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'parsers' . DS . 'simple_html_dom.php');
+			require_once (JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'parsers' . DIRECTORY_SEPARATOR . 'simple_html_dom.php');
 			$html = str_get_html($data->body);
 
 			if ( !empty($data->bodyremove) ) {

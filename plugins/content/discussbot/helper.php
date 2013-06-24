@@ -55,11 +55,8 @@ class JFusionDiscussBotHelper {
         $this->jname = $jname;
         $this->mode = $mode;
         $this->debug_mode = $debug_mode;
-        $this->isJ16 = (JFusionFunction::isJoomlaVersion('1.6')) ? 1 : 0;
-        if ($this->isJ16) {
-            //needed for category support
-            jimport('joomla.application.categories');
-        }
+	    //needed for category support
+	    jimport('joomla.application.categories');
     }
 
 	/**
@@ -176,21 +173,17 @@ class JFusionDiscussBotHelper {
     {
         //make sure Joomla content helper is loaded
         if (!class_exists('ContentHelperRoute')) {
-            require_once JPATH_SITE . DS . 'components' . DS . 'com_content' . DS . 'helpers' . DS . 'route.php';
+            require_once JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_content' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'route.php';
         }
         if ($this->option == 'com_k2') {
             if (!class_exists('K2HelperRoute')) {
-                include_once JPATH_SITE . DS . 'components' . DS . 'com_k2' . DS . 'helpers' . DS . 'route.php';
+                include_once JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_k2' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'route.php';
             }
         }
 
         if ($this->option == 'com_content') {
             //take into account page breaks
-            if ($this->isJ16) {
-                $url = ContentHelperRoute::getArticleRoute($this->article->slug, $this->article->catid);
-            } else {
-                $url = ContentHelperRoute::getArticleRoute($this->article->slug, $this->article->catslug, $this->article->sectionid);
-            }
+	        $url = ContentHelperRoute::getArticleRoute($this->article->slug, $this->article->catid);
             $start = JRequest::getInt('start',0);
             if ($start) {
                 $url .= '&start='.$start;
@@ -342,192 +335,95 @@ class JFusionDiscussBotHelper {
 		                            }
 	                            }
                                 if ($this->option == 'com_content') {
-                                    if ($this->isJ16) {
-                                        //Joomla 1.6 has a different model for sections/category so need to handle it separately from J1.5
-                                        $catid =& $this->article->catid;
-                                        $JCat =& JCategories::getInstance('Content');
-                                        /**
-                                         * @ignore
-                                         * @var $cat JCategoryNode
-                                         */
-                                        $cat = $JCat->get($catid);
+	                                //Joomla 1.6 has a different model for sections/category so need to handle it separately from J1.5
+	                                $catid =& $this->article->catid;
+	                                $JCat =& JCategories::getInstance('Content');
+	                                /**
+	                                 * @ignore
+	                                 * @var $cat JCategoryNode
+	                                 */
+	                                $cat = $JCat->get($catid);
 
-                                        $includedCategories = $this->params->get('include_categories');
-                                        if (!is_array($includedCategories)) {
-                                            $includedCategories = (empty($includedCategories)) ? array() : array($includedCategories);
-                                        }
+	                                $includedCategories = $this->params->get('include_categories');
+	                                if (!is_array($includedCategories)) {
+		                                $includedCategories = (empty($includedCategories)) ? array() : array($includedCategories);
+	                                }
 
-                                        $excludedCategories = $this->params->get('exclude_categories');
-                                        if (!is_array($excludedCategories)) {
-                                            $excludedCategories = (empty($excludedCategories)) ? array() : array($excludedCategories);
-                                        }
+	                                $excludedCategories = $this->params->get('exclude_categories');
+	                                if (!is_array($excludedCategories)) {
+		                                $excludedCategories = (empty($excludedCategories)) ? array() : array($excludedCategories);
+	                                }
 
-                                        if (!empty($includedCategories)) {
-                                            //there are category stipulations on what articles to include
-                                            //check to see if this article is not in the selected categories
-                                            $valid = (!in_array($catid,$includedCategories)) ? 0 : 1;
-                                            if (!$valid) {
-                                                //check to see if this article is in any included parents
-                                                $parent_id = $cat->getParent()->id;
-                                                if ($parent_id !== 'root') {
-                                                    while (true) {
-                                                        $valid = (!in_array($parent_id,$includedCategories)) ? 0 : 1;
-                                                        //keep going up
-                                                        if (!$valid) {
-                                                            //get the parent's parent id
-                                                            /**
-                                                             * @ignore
-                                                             * @var $parent JCategoryNode
-                                                             */
-                                                            $parent = $JCat->get($parent_id);
-                                                            $parent_id = $parent->getParent()->id;
-                                                            if ($parent_id == 'root') {
-	                                                            $responce = array(0, JText::_('REASON_NOT_IN_INCLUDED_CATEGORY_OR_PARENTS'));
-                                                                break;
-                                                            }
-                                                        } else {
-	                                                        $responce = array(1, JText::_('REASON_IN_INCLUDED_CATEGORY_PARENT'));
-                                                            break;
-                                                        }
-                                                    }
-                                                } else {
-	                                                $responce = array(0, JText::_('REASON_NOT_IN_INCLUDED_CATEGORY_OR_PARENTS'));
-                                                }
-                                            } else {
-	                                            $responce = array(1, JText::_('REASON_IN_INCLUDED_CATEGORY'));
-                                            }
+	                                if (!empty($includedCategories)) {
+		                                //there are category stipulations on what articles to include
+		                                //check to see if this article is not in the selected categories
+		                                $valid = (!in_array($catid,$includedCategories)) ? 0 : 1;
+		                                if (!$valid) {
+			                                //check to see if this article is in any included parents
+			                                $parent_id = $cat->getParent()->id;
+			                                if ($parent_id !== 'root') {
+				                                while (true) {
+					                                $valid = (!in_array($parent_id,$includedCategories)) ? 0 : 1;
+					                                //keep going up
+					                                if (!$valid) {
+						                                //get the parent's parent id
+						                                /**
+						                                 * @ignore
+						                                 * @var $parent JCategoryNode
+						                                 */
+						                                $parent = $JCat->get($parent_id);
+						                                $parent_id = $parent->getParent()->id;
+						                                if ($parent_id == 'root') {
+							                                $responce = array(0, JText::_('REASON_NOT_IN_INCLUDED_CATEGORY_OR_PARENTS'));
+							                                break;
+						                                }
+					                                } else {
+						                                $responce = array(1, JText::_('REASON_IN_INCLUDED_CATEGORY_PARENT'));
+						                                break;
+					                                }
+				                                }
+			                                } else {
+				                                $responce = array(0, JText::_('REASON_NOT_IN_INCLUDED_CATEGORY_OR_PARENTS'));
+			                                }
+		                                } else {
+			                                $responce = array(1, JText::_('REASON_IN_INCLUDED_CATEGORY'));
+		                                }
 
-                                            //make sure the category is not in an excluded category
-                                            if ($valid && !empty($excludedCategories)) {
-                                                if (in_array($catid, $excludedCategories)) {
-	                                                $responce = array(0, JText::_('REASON_IN_EXCLUDED_CATEGORY'));
-                                                }
-                                            }
-                                        } elseif (!empty($excludedCategories)) {
-                                            $valid = (!in_array($catid, $excludedCategories)) ? 1 : 0;
-                                            if ($valid) {
-	                                            $responce = array(1, JText::_('REASON_NOT_IN_EXCLUDED_CATEGORY'));
+		                                //make sure the category is not in an excluded category
+		                                if ($valid && !empty($excludedCategories)) {
+			                                if (in_array($catid, $excludedCategories)) {
+				                                $responce = array(0, JText::_('REASON_IN_EXCLUDED_CATEGORY'));
+			                                }
+		                                }
+	                                } elseif (!empty($excludedCategories)) {
+		                                $valid = (!in_array($catid, $excludedCategories)) ? 1 : 0;
+		                                if ($valid) {
+			                                $responce = array(1, JText::_('REASON_NOT_IN_EXCLUDED_CATEGORY'));
 
-                                                //now to see if the category is an excluded cat or parent cat
-                                                $parent_id = $cat->getParent()->id;
-                                                if ($parent_id !== 'root') {
-                                                    while (true) {
-                                                        //keep going up
-                                                        if (!in_array($parent_id,$excludedCategories)) {
-                                                            //get the parent's parent id
-                                                            $parent = $JCat->get($parent_id);
-                                                            $parent_id = $parent->getParent()->id;
-                                                            if ($parent_id == 'root') {
-                                                                break;
-                                                            }
-                                                        } else {
-	                                                        $responce = array(0, JText::_('REASON_IN_EXCLUDED_CATEGORY_PARENT'));
-                                                            break;
-                                                        }
-                                                    }
-                                                }
-                                            } else {
-	                                            $responce = array(0, JText::_('REASON_IN_EXCLUDED_CATEGORY'));
-                                            }
-                                        } else {
-	                                        $responce = array(1, JText::_('REASON_NO_STIPULATIONS'));
-                                        }
-                                    } else {
-                                        //section and category id of content
-                                        $secid =& $this->article->sectionid;
-                                        $catid =& $this->article->catid;
-
-                                        //check to see if we have an uncategorized article
-                                        if (empty($secid) && empty($catid)) {
-                                            //does the admin want a thread generated?
-                                            if ($this->params->get('include_static',false)) {
-                                                return array(1, JText::_('REASON_INCLUDE_UNCATEGORIZED'));
-                                            } else {
-                                                return array(0, JText::_('REASON_DISCLUDE_UNCATEGORIZED'));
-                                            }
-                                        }
-
-                                        //check to see if there are sections/categories that are specifically included/excluded
-                                        $includedSections = $this->params->get('include_sections');
-                                        if (!is_array($includedSections)) {
-                                            $includedSections = (empty($includedSections)) ? array() : array($includedSections);
-                                        }
-
-                                        $includedCategories = $this->params->get('include_categories');
-                                        if (!is_array($includedCategories)) {
-                                            $includedCategories = (empty($includedCategories)) ? array() : array($includedCategories);
-                                        }
-
-                                        $excludedSections = $this->params->get('exclude_sections');
-                                        if (!is_array($excludedSections)) {
-                                            $excludedSections = (empty($excludedSections)) ? array() : array($excludedSections);
-                                        }
-
-                                        $excludedCategories = $this->params->get('exclude_categories');
-                                        if (!is_array($excludedCategories)) {
-                                            $excludedCategories = (empty($excludedCategories)) ? array() : array($excludedCategories);
-                                        }
-
-                                        //there are section stipulations on what articles to include
-                                        if (!empty($includedSections)) {
-                                            if (!in_array($secid,$includedSections)) {
-                                                //this article is not in one of the sections to include
-	                                            $responce = array(0, JText::_('REASON_NOT_IN_INCLUDE_SECTION'));
-                                            } elseif (!empty($includedCategories)) {
-                                                //there are both specific sections and categories to include
-                                                //check to see if this article is not in the selected categories within the included sections
-
-                                                if (!in_array($catid,$includedCategories)) {
-	                                                $responce = array(0, JText::_('REASON_IN_INCLUDED_SECTION_NOT_IN_INCLUDED_CATEGORY'));
-                                                } else {
-	                                                $responce = array(1, JText::_('REASON_IN_INCLUDED_SECTION_AND_CATEGORY'));
-                                                }
-                                            } elseif (!empty($excludedCategories)) {
-                                                //exclude this article if it is in one of the excluded categories
-                                                if (in_array($catid,$excludedCategories)) {
-	                                                $responce = array(0, JText::_('REASON_IN_INCLUDED_SECTION_BUT_IN_EXCLUDED_CATEGORY'));
-                                                } else {
-	                                                $responce = array(1, JText::_('REASON_IN_INCLUDED_SECTION_NOT_IN_EXCLUDED_CATEGORY'));
-                                                }
-                                            } else {
-	                                            //there are only specific sections to include with no applicable category stipulations
-	                                            $responce = array(1, JText::_('REASON_IN_INCLUDED_SECTION'));
-                                            }
-                                        } elseif (!empty($excludedSections)) {
-                                            //there are section stipulations on what articles to exclude
-                                            //check to see if this article is in the excluded sections
-                                            if (in_array($secid,$excludedSections)) {
-	                                            $responce = array(0, JText::_('REASON_IN_EXCLUDED_SECTION'));
-                                            } else {
-	                                            $responce = array(1, JText::_('REASON_NOT_IN_EXCLUDED_SECTION'));
-                                            }
-                                            if ($excludedCategories) {
-                                                //exclude this article if it is in one of the excluded categories
-                                                if (in_array($catid, $excludedCategories)) {
-	                                                $responce = array(0, JText::_('REASON_IN_EXCLUDED_CATEGORY'));
-                                                }
-                                            }
-                                        } elseif (!empty($includedCategories)) {
-                                            //there are category stipulations on what articles to include but no section stipulations
-                                            //check to see if this article is not in the selected categories
-                                            $valid = (!in_array($catid,$includedCategories)) ? 0 : 1;
-                                            if (in_array($catid,$includedCategories)) {
-	                                            $responce = array(0, JText::_('REASON_NOT_IN_INCLUDED_CATEGORY'));
-                                            } else {
-	                                            $responce = array(1, JText::_('REASON_IN_INCLUDED_CATEGORY'));
-                                            }
-                                        } elseif (!empty($excludedCategories)) {
-                                            //there are category stipulations on what articles to exclude but no exclude stipulations on section
-                                            //check to see if this article is in the excluded categories
-                                            if (in_array($catid,$excludedCategories)) {
-	                                            $responce = array(0, JText::_('REASON_IN_EXCLUDED_CATEGORY'));
-                                            } else {
-	                                            $responce = array(1, JText::_('REASON_NOT_IN_EXCLUDED_CATEGORY'));
-                                            }
-                                        } else {
-	                                        $responce = array(1, JText::_('REASON_NO_STIPULATIONS'));
-                                        }
-                                    }
+			                                //now to see if the category is an excluded cat or parent cat
+			                                $parent_id = $cat->getParent()->id;
+			                                if ($parent_id !== 'root') {
+				                                while (true) {
+					                                //keep going up
+					                                if (!in_array($parent_id,$excludedCategories)) {
+						                                //get the parent's parent id
+						                                $parent = $JCat->get($parent_id);
+						                                $parent_id = $parent->getParent()->id;
+						                                if ($parent_id == 'root') {
+							                                break;
+						                                }
+					                                } else {
+						                                $responce = array(0, JText::_('REASON_IN_EXCLUDED_CATEGORY_PARENT'));
+						                                break;
+					                                }
+				                                }
+			                                }
+		                                } else {
+			                                $responce = array(0, JText::_('REASON_IN_EXCLUDED_CATEGORY'));
+		                                }
+	                                } else {
+		                                $responce = array(1, JText::_('REASON_NO_STIPULATIONS'));
+	                                }
                                 } elseif ($this->option == 'com_k2') {
                                     $includedCategories = $this->params->get('include_k2_categories');
                                     if (!is_array($includedCategories)) {
@@ -643,7 +539,6 @@ class JFusionDiscussBotHelper {
 		    $jumpto_discussion = JRequest::getInt('jumpto_discussion', '0', 'post');
 
 		    $js = <<<JS
-		        var jfdb_isJ16 = {$this->isJ16};
 		        var jfdb_view = '{$view}';
 		        var jfdb_jumpto_discussion = {$jumpto_discussion};
 		        var jfdb_enable_pagination = {$this->params->get('enable_pagination',1)};

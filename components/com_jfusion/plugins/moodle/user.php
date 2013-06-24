@@ -28,7 +28,7 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
-require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.jplugin.php';
+require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jplugin.php';
 
 /**
  * JFusion User Class for Moodle 1.8+
@@ -300,7 +300,7 @@ class JFusionUser_moodle extends JFusionUser {
 		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = 'UPDATE #__user SET password =' . $db->Quote($existinguser->password) . ' WHERE id =' . $existinguser->userid;
 		$db->setQuery($query);
-		if (!$db->query()) {
+		if (!$db->execute()) {
 			$status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . $db->stderr();
 		} else {
 			$status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
@@ -315,7 +315,7 @@ class JFusionUser_moodle extends JFusionUser {
 		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = 'UPDATE #__user SET email =' . $db->Quote($userinfo->email) . ' WHERE id =' . (int)$existinguser->userid;
 		$db->setQuery($query);
-		if (!$db->query()) {
+		if (!$db->execute()) {
 			$status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $db->stderr();
 		} else {
 			$status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
@@ -329,7 +329,7 @@ class JFusionUser_moodle extends JFusionUser {
 		if ($sitepolicy->value) {
 			$query = 'UPDATE #__user SET policyagreed = false WHERE id =' . (int)$existinguser->userid;
 			$db->setQuery($query);
-			if (!$db->query()) {
+			if (!$db->execute()) {
 				$status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $db->stderr();
 			} else {
 				$status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
@@ -346,7 +346,7 @@ class JFusionUser_moodle extends JFusionUser {
 		if ($sitepolicy->value) {
 			$query = 'UPDATE #__user SET policyagreed = true WHERE id =' . (int)$existinguser->userid;
 			$db->setQuery($query);
-			if (!$db->query()) {
+			if (!$db->execute()) {
 				$status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $db->stderr();
 			} else {
 				$status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
@@ -360,7 +360,7 @@ class JFusionUser_moodle extends JFusionUser {
 		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = 'UPDATE #__user SET confirmed = true WHERE id =' . (int)$existinguser->userid;
 		$db->setQuery($query);
-		if (!$db->query()) {
+		if (!$db->execute()) {
 			$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $db->stderr();
 		} else {
 			$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
@@ -370,7 +370,7 @@ class JFusionUser_moodle extends JFusionUser {
 		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = 'UPDATE #__user SET confirmed = false WHERE id =' . (int)$existinguser->userid;
 		$db->setQuery($query);
-		if (!$db->query()) {
+		if (!$db->execute()) {
 			$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $db->stderr();
 		} else {
 			$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
@@ -390,7 +390,7 @@ class JFusionUser_moodle extends JFusionUser {
 			// Thus for Moodle internal working we need to use this record and resurrect the user
 			$query = "UPDATE #__user SET deleted = '0' WHERE id = ". $db->Quote($result->id);
 			$db->setQuery($query);
-			if (!$db->query()) {
+			if (!$db->execute()) {
 				//return the error
 				$status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
 				return;
@@ -518,7 +518,7 @@ class JFusionUser_moodle extends JFusionUser {
 		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = "UPDATE #__user SET deleted = '1' WHERE id =" . (int)$userinfo->userid;
 		$db->setQuery($query);
-		if (!$db->query()) {
+		if (!$db->execute()) {
 			$status['error'][] = JText::_('USER_DELETION_ERROR') . $db->stderr();
 		} else {
 			$status['debug'][] = JText::_('USER_DELETION') . ': ' . $userinfo->userid . ' -> ' . $userinfo->username;

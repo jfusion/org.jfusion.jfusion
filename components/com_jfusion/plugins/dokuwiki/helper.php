@@ -44,12 +44,12 @@ class JFusionHelper_dokuwiki
         $database_host = $params->get('database_host');
         if ($database_host && $database_type == 'mysql') {
             if (!class_exists('doku_auth_mysql')) {
-                require_once('auth'.DS.'mysql.class.php');
+                require_once('auth'.DIRECTORY_SEPARATOR.'mysql.class.php');
             }
             $this->auth = new doku_auth_mysql($this);
         } else {
             if (!class_exists('doku_auth_plain')) {
-                require_once('auth'.DS.'plain.class.php');
+                require_once('auth'.DIRECTORY_SEPARATOR.'plain.class.php');
             }
             $this->auth = new doku_auth_plain($this);
         }
@@ -105,10 +105,10 @@ class JFusionHelper_dokuwiki
             $source_path = $params->get('source_path');
 
             $conf = $this->getConf();
-            $data_dir = (isset($conf['savedir'])) ? $source_path . DS . $conf['savedir'] : $source_path . DS . 'data';
+            $data_dir = (isset($conf['savedir'])) ? $source_path . DIRECTORY_SEPARATOR . $conf['savedir'] : $source_path . DIRECTORY_SEPARATOR . 'data';
 
             //get the cookie salt file
-            $saltfile = $data_dir . DS . 'meta' . DS .'_htcookiesalt';
+            $saltfile = $data_dir . DIRECTORY_SEPARATOR . 'meta' . DIRECTORY_SEPARATOR .'_htcookiesalt';
             jimport('joomla.filesystem.file');
             $dokuwiki_cookie_salt = JFile::read($saltfile);
             if(empty($dokuwiki_cookie_salt)){
@@ -135,7 +135,7 @@ class JFusionHelper_dokuwiki
             $source_path = $params->get('source_path');
 
             jimport('joomla.filesystem.file');
-            $file_version = JFile::read($source_path.DS.'VERSION');
+            $file_version = JFile::read($source_path.DIRECTORY_SEPARATOR.'VERSION');
             $matches = array();
             if (preg_match('#([a-z]*)([0-9]*-[0-9]*-[0-9]*)([a-z]*)#is' , $file_version, $matches)) {
 	            list($fullversion, $rc, $version, $sub) = $matches;
@@ -167,11 +167,11 @@ class JFusionHelper_dokuwiki
             }
 
             //standard config path
-            $config_path .= 'conf' . DS;
+            $config_path .= 'conf' . DIRECTORY_SEPARATOR;
 
             //check to see if conf directory is located somewhere else
-            if (file_exists($source_path  . DS . 'inc' . DS . 'preload.php')) {
-                include_once $source_path  . DS . 'inc' . DS . 'preload.php';
+            if (file_exists($source_path  . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'preload.php')) {
+                include_once $source_path  . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'preload.php';
                 if (defined('DOKU_CONF')) {
                     $config_path = DOKU_CONF;
                     //make sure we have a ending DS

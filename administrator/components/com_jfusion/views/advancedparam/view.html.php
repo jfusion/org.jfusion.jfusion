@@ -27,14 +27,13 @@ jimport('joomla.application.component.view');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class jfusionViewadvancedparam extends JView
+class jfusionViewadvancedparam extends JViewLegacy
 {
 	var $featureArray = array('config' => 'config.xml',
 		'activity' => 'activity.xml',
 		'search' => 'search.xml',
 		'whosonline' => 'whosonline.xml',
 		'useractivity' => 'useractivity.xml');
-	var $isJ16;
 
 	/**
 	 * displays the view
@@ -45,13 +44,9 @@ class jfusionViewadvancedparam extends JView
 	 */
 	function display($tpl = null)
 	{
-		$this->isJ16 = JFusionFunction::isJoomlaVersion('1.6');
-		if ($this->isJ16) {
-			//include some J1.6+ classes
-			jimport('joomla.form.form');
-			jimport('joomla.form.formfield');
-			jimport('joomla.html.pane');
-		}
+		jimport('joomla.form.form');
+		jimport('joomla.form.formfield');
+		jimport('joomla.html.pane');
 
 		$mainframe = JFactory::getApplication();
 
@@ -96,11 +91,7 @@ class jfusionViewadvancedparam extends JView
 		$this->assignRef('output', $output);
 
 		//for J1.6+ single select modes, params is an array
-		if ($this->isJ16 && empty($multiselect)) {
-			$this->assignRef('comp', $params['params']);
-		} else {
-			$this->assignRef('comp', $params);
-		}
+		$this->assignRef('comp', $params['params']);
 
 		JHTML::_('behavior.modal');
 		JHTML::_('behavior.tooltip');
@@ -117,11 +108,8 @@ class jfusionViewadvancedparam extends JView
 	 */
 	function loadElementSingle($params, $feature)
 	{
-		if ($this->isJ16) {
-			$JPlugin = (!empty($params['jfusionplugin'])) ? $params['jfusionplugin'] : '';
-		} else {
-			$JPlugin = $params->get('jfusionplugin', '');
-		}
+		$JPlugin = (!empty($params['jfusionplugin'])) ? $params['jfusionplugin'] : '';
+
 		$db = JFactory::getDBO();
 		$query = 'SELECT name as id, name as name from #__jfusion WHERE status = 1';
 		$db->setQuery($query);
@@ -160,60 +148,35 @@ class jfusionViewadvancedparam extends JView
 		//Load current Parameter
 		$value = $this->getParam();
 
-		if ($this->isJ16) {
-			global $jname;
-			$jname = (!empty($value['jfusionplugin'])) ? $value['jfusionplugin'] : '';
-			if (isset($this->featureArray[$feature]) && !empty($jname)) {
-				$path = JFUSION_PLUGIN_PATH . DS . $jname . DS . $this->featureArray[$feature];
-				$defaultPath = JPATH_ADMINISTRATOR . DS . 'components' . DS . $option . DS . 'views' . DS . 'advancedparam' . DS . 'paramfiles' . DS . $this->featureArray[$feature];
-				$xml_path = (file_exists($path)) ? $path : $defaultPath;
-				$form = false;
-				$xml = JFusionFunction::getXml($xml_path);
-				if ($xml) {
-					$fields = $xml->getElementByPath('fields');
-					if ($fields) {
-						$data = $fields->toString();
-						//make sure it is surround by <form>
-						if (substr($data, 0, 5) != '<form>') {
-							$data = '<form>' . $data . '</form>';
-						}
-						/**
-						 * @ignore
-						 * @var $form JForm
-						 */
-						$form = JForm::getInstance($jname, $data, array('control' => "params[$jname]"));
-						//add JFusion's fields
-						$form->addFieldPath(JPATH_COMPONENT.DS.'fields');
-						if (isset($value[$jname])) {
-							$form->bind($value[$jname]);
-						}
+		global $jname;
+		$jname = (!empty($value['jfusionplugin'])) ? $value['jfusionplugin'] : '';
+		if (isset($this->featureArray[$feature]) && !empty($jname)) {
+			$path = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . $this->featureArray[$feature];
+			$defaultPath = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . $option . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'advancedparam' . DIRECTORY_SEPARATOR . 'paramfiles' . DIRECTORY_SEPARATOR . $this->featureArray[$feature];
+			$xml_path = (file_exists($path)) ? $path : $defaultPath;
+			$form = false;
+			$xml = JFusionFunction::getXml($xml_path);
+			if ($xml) {
+				$fields = $xml->getElementByPath('fields');
+				if ($fields) {
+					$data = $fields->toString();
+					//make sure it is surround by <form>
+					if (substr($data, 0, 5) != '<form>') {
+						$data = '<form>' . $data . '</form>';
 					}
-				}
-				$value['params'] = $form;
-			}
-		} else {
-			//Load Plugin XML Parameter
-			$params = new JParameter('');
-			$params->loadArray($value);
-			$params->addElementPath(JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'elements');
-			$JPlugin = $params->get('jfusionplugin', '');
-			if (isset($this->featureArray[$feature]) && !empty($JPlugin)) {
-				global $jname;
-				$jname = $JPlugin;
-				$path = JFUSION_PLUGIN_PATH . DS . $JPlugin . DS . $this->featureArray[$feature];
-				$defaultPath = JPATH_ADMINISTRATOR . DS . 'components' . DS . $option . DS . 'views' . DS . 'advancedparam' . DS . 'paramfiles' . DS . $this->featureArray[$feature];
-				$xml_path = (file_exists($path)) ? $path : $defaultPath;
-				$xml = JFusionFunction::getXml($xml_path);
-				if ($xml) {
 					/**
 					 * @ignore
-					 * @var $xmlparams JSimpleXMLElement
+					 * @var $form JForm
 					 */
-					$xmlparams = $xml->getElementByPath('params');
-					$params->setXML($xmlparams);
+					$form = JForm::getInstance($jname, $data, array('control' => "params[$jname]"));
+					//add JFusion's fields
+					$form->addFieldPath(JPATH_COMPONENT.DIRECTORY_SEPARATOR.'fields');
+					if (isset($value[$jname])) {
+						$form->bind($value[$jname]);
+					}
 				}
 			}
-			$value = $params;
+			$value['params'] = $form;
 		}
 		return $value;
 	}
@@ -340,55 +303,33 @@ JS;
 		}
 
 		foreach (array_keys($value) as $key) {
-			if ($this->isJ16) {
-				$jname = $value[$key]['jfusionplugin'];
+			$jname = $value[$key]['jfusionplugin'];
 
-				if (isset($this->featureArray[$feature]) && !empty($jname)) {
-					$path = JFUSION_PLUGIN_PATH . DS . $jname . DS . $this->featureArray[$feature];
-					$defaultPath = JPATH_ADMINISTRATOR . DS . 'components' . DS . $option . DS . 'views' . DS . 'advancedparam' . DS . 'paramfiles' . DS . $this->featureArray[$feature];
-					$xml_path = (file_exists($path)) ? $path : $defaultPath;
-					$xml = JFusionFunction::getXml($xml_path);
-					if ($xml) {
-						$fields = $xml->getElementByPath('fields');
-						if ($fields) {
-							$data = $fields->toString();
-							//make sure it is surround by <form>
-							if (substr($data, 0, 5) != '<form>') {
-								$data = '<form>' . $data . '</form>';
-							}
-							/**
-							 * @ignore
-							 * @var $form JForm
-							 */
-							$form = JForm::getInstance($jname, $data, array('control' => "params[$jname]"));
-							//add JFusion's fields
-							$form->addFieldPath(JPATH_COMPONENT.DS.'fields');
-							//bind values
-							$form->bind($value[$key]);
-							$value[$key]['params'] = $form;
+			if (isset($this->featureArray[$feature]) && !empty($jname)) {
+				$path = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . $this->featureArray[$feature];
+				$defaultPath = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . $option . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'advancedparam' . DIRECTORY_SEPARATOR . 'paramfiles' . DIRECTORY_SEPARATOR . $this->featureArray[$feature];
+				$xml_path = (file_exists($path)) ? $path : $defaultPath;
+				$xml = JFusionFunction::getXml($xml_path);
+				if ($xml) {
+					$fields = $xml->getElementByPath('fields');
+					if ($fields) {
+						$data = $fields->toString();
+						//make sure it is surround by <form>
+						if (substr($data, 0, 5) != '<form>') {
+							$data = '<form>' . $data . '</form>';
 						}
-					}
-				}
-			} else {
-				$params = new JParameter('');
-				$params->loadArray($value[$key]);
-				$params->addElementPath(JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'elements');
-				$jname = $params->get('jfusionplugin', '');
-				if (isset($this->featureArray[$feature]) && !empty($jname)) {
-					$path = JFUSION_PLUGIN_PATH . DS . $jname . DS . $this->featureArray[$feature];
-					$defaultPath = JPATH_ADMINISTRATOR . DS . 'components' . DS . $option . DS . 'views' . DS . 'advancedparam' . DS . 'paramfiles' . DS . $this->featureArray[$feature];
-					$xml_path = (file_exists($path)) ? $path : $defaultPath;
-					$xml = JFusionFunction::getXml($xml_path);
-					if ($xml) {
 						/**
 						 * @ignore
-						 * @var $xmlparams JSimpleXMLElement
+						 * @var $form JForm
 						 */
-						$xmlparams = $xml->getElementByPath('params');
-						$params->setXML($xmlparams);
+						$form = JForm::getInstance($jname, $data, array('control' => "params[$jname]"));
+						//add JFusion's fields
+						$form->addFieldPath(JPATH_COMPONENT.DIRECTORY_SEPARATOR.'fields');
+						//bind values
+						$form->bind($value[$key]);
+						$value[$key]['params'] = $form;
 					}
 				}
-				$value[$key]['params'] = $params;
 			}
 		}
 		return $value;

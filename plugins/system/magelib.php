@@ -10,7 +10,7 @@
 // no direct access
 defined ( '_JEXEC' ) or trigger_error ( 'Restricted access' );
 
-$jfusion_component = JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.factory.php';
+$jfusion_component = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.factory.php';
 if(file_exists ( $jfusion_component )):
 	require_once $jfusion_component;
 else:

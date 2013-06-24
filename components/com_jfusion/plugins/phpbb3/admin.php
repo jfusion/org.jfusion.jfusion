@@ -57,7 +57,7 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
         if (substr($forumPath, -1) == DS) {
             $myfile = $forumPath . 'config.php';
         } else {
-            $myfile = $forumPath . DS . 'config.php';
+            $myfile = $forumPath . DIRECTORY_SEPARATOR . 'config.php';
         }
         $params = array();
         if (($file_handle = @fopen($myfile, 'r')) === false) {
@@ -381,7 +381,7 @@ HTML;
         }
         $error = 0;
         $reason = '';
-        $mod_file = $this->getModFile('includes' . DS . 'auth' . DS . 'auth_jfusion.php', $error, $reason);
+        $mod_file = $this->getModFile('includes' . DIRECTORY_SEPARATOR . 'auth' . DIRECTORY_SEPARATOR . 'auth_jfusion.php', $error, $reason);
         if ($error == 0) {
             //get the joomla path from the file
             jimport('joomla.filesystem.file');
@@ -427,11 +427,11 @@ HTML;
     function enableAuthMod() {
         $error = 0;
         $reason = '';
-        $auth_file = $this->getModFile('includes' . DS . 'auth' . DS . 'auth_jfusion.php', $error, $reason);
+        $auth_file = $this->getModFile('includes' . DIRECTORY_SEPARATOR . 'auth' . DIRECTORY_SEPARATOR . 'auth_jfusion.php', $error, $reason);
         //see if the auth mod file exists
         if (!file_exists($auth_file)) {
             jimport('joomla.filesystem.file');
-            $copy_file = JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'auth_jfusion.php';
+            $copy_file = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'auth_jfusion.php';
             JFile::copy($copy_file, $auth_file);
         }
         //get the joomla path from the file
@@ -440,7 +440,7 @@ HTML;
         //compare it with our joomla path
         if (preg_match_all('/JFUSION_PATH/', $file_data, $matches)) {
             $file_data = preg_replace('/JFUSION_JNAME/', $this->getJname(), $file_data);
-	        $file_data = preg_replace('/JFUSION_PATH/', JPATH_SITE . DS . 'components' . DS . 'com_jfusion', $file_data);
+	        $file_data = preg_replace('/JFUSION_PATH/', JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion', $file_data);
             JFile::write($auth_file, $file_data);
         }
 
@@ -454,7 +454,7 @@ HTML;
             if ($auth_method != 'jfusion') {
                 $query = 'UPDATE #__config SET config_value = \'jfusion\' WHERE config_name = \'auth_method\'';
                 $db->setQuery($query);
-                if (!$db->query()) {
+                if (!$db->execute()) {
                     //there was an error saving the parameters
                     JError::raiseWarning(0, $db->stderr());
                 }
@@ -464,7 +464,7 @@ HTML;
             $db = JFusionFactory::getDatabase($this->getJname());
             $query = 'UPDATE #__config SET config_value = \'db\' WHERE config_name = \'auth_method\'';
             $db->setQuery($query);
-            if (!$db->query()) {
+            if (!$db->execute()) {
                 //there was an error saving the parameters
                 JError::raiseWarning(0, $db->stderr());
             }
@@ -482,7 +482,7 @@ HTML;
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'UPDATE #__config SET config_value = \'db\' WHERE config_name = \'auth_method\'';
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             //there was an error saving the parameters
             JError::raiseWarning(0, $db->stderr());
             $return = false;
@@ -491,9 +491,9 @@ HTML;
         $params = JFusionFactory::getParams($this->getJname());
         $path = $params->get('source_path');
         if (substr($path, -1) == DS) {
-            $auth_file = $path . 'includes' . DS . 'auth' . DS . 'auth_jfusion.php';
+            $auth_file = $path . 'includes' . DIRECTORY_SEPARATOR . 'auth' . DIRECTORY_SEPARATOR . 'auth_jfusion.php';
         } else {
-            $auth_file = $path . DS . 'includes' . DS . 'auth' . DS . 'auth_jfusion.php';
+            $auth_file = $path . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'auth' . DIRECTORY_SEPARATOR . 'auth_jfusion.php';
         }
         if (file_exists($auth_file)) {
             jimport('joomla.filesystem.file');
@@ -594,7 +594,7 @@ HTML;
     function clearConfigCache() {
         $params = JFusionFactory::getParams($this->getJname());
         $source_path = $params->get('source_path');
-        $cache = $source_path . DS . 'cache' . DS . 'data_global.php';
+        $cache = $source_path . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'data_global.php';
         if (file_exists($cache)) {
             jimport('joomla.filesystem.file');
             return JFile::delete($cache);

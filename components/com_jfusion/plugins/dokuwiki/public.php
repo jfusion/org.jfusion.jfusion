@@ -108,22 +108,18 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
             }
         }
         $index_file = $source_path . 'doku.php';
-        if (JRequest::getVar('jfile') == 'detail.php') $index_file = $source_path . 'lib' . DS . 'exe' . DS . 'detail.php';
+        if (JRequest::getVar('jfile') == 'detail.php') $index_file = $source_path . 'lib' . DIRECTORY_SEPARATOR . 'exe' . DIRECTORY_SEPARATOR . 'detail.php';
 
         if (JRequest::getVar('media')) JRequest::setVar('media', str_replace(':', '-', JRequest::getVar('media')));
         //loading the JString, to prevent error!
-        require_once JPATH_LIBRARIES . DS . 'joomla' . DS . 'utilities' . DS . 'string.php';
-        if( !JFusionFunction::isJoomlaVersion('1.6') ) {
-        	require_once JPATH_LIBRARIES . DS . 'phputf8' . DS . 'mbstring' . DS . 'strlen.php';
-        	require_once JPATH_LIBRARIES . DS . 'phputf8' . DS . 'mbstring' . DS . 'case.php';
-        }
-        require_once JPATH_LIBRARIES . DS . 'phputf8' . DS . 'mbstring' . DS . 'core.php';
+        require_once JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'joomla' . DIRECTORY_SEPARATOR . 'utilities' . DIRECTORY_SEPARATOR . 'string.php';
+        require_once JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'phputf8' . DIRECTORY_SEPARATOR . 'mbstring' . DIRECTORY_SEPARATOR . 'core.php';
 
         define('DOKU_INC', $source_path);
-        require_once $source_path . 'inc' . DS . 'events.php';
-        require_once $source_path . 'inc' . DS . 'init.php';
+        require_once $source_path . 'inc' . DIRECTORY_SEPARATOR . 'events.php';
+        require_once $source_path . 'inc' . DIRECTORY_SEPARATOR . 'init.php';
 
-        require_once JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'hooks.php';
+        require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'hooks.php';
         if (!is_file($index_file)) {
             JError::raiseWarning(500, 'The path to the DokuWiki index file set in the component preferences does not exist');
         } else {
@@ -143,11 +139,7 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
             }
 
             //restore the __autoload handler
-            if(JFusionFunction::isJoomlaVersion('1.6')) {
-                spl_autoload_register(array('JLoader','load'));
-            } else {
-                spl_autoload_register('__autoload');
-            }
+	        spl_autoload_register(array('JLoader','load'));
 
             //change the current directory back to Joomla. 5*60
             chdir(JPATH_SITE);

@@ -17,7 +17,7 @@ jimport('joomla.application.component.view');
  * @package JFusion
  */
 
-class jfusionViewconfigdump extends JView {
+class jfusionViewconfigdump extends JViewLegacy {
 	/**
 	 * @var array
 	 */
@@ -121,11 +121,7 @@ class jfusionViewconfigdump extends JView {
 		$menus		= $app->getMenu('site');
 		$component	= JComponentHelper::getComponent('com_jfusion');
 
-		if ( JFusionFunction::isJoomlaVersion()) {
-			$items		= $menus->getItems('component_id', $component->id);
-		} else {
-			$items		= $menus->getItems('componentid', $component->id);
-		}
+		$items		= $menus->getItems('component_id', $component->id);
 
 		if ($items && is_array($items)) {
 			foreach($items as $row) {
@@ -411,11 +407,7 @@ class jfusionViewconfigdump extends JView {
 
 		$server_info['Browser Information'] = $_SERVER['HTTP_USER_AGENT'];
 		//display active plugins
-		if(JFusionFunction::isJoomlaVersion('1.6')){
-			$query = 'SELECT folder, element, enabled as published from #__extensions WHERE (folder = \'authentication\' OR folder = \'user\') AND (element =\'jfusion\' OR enabled = 1)';
-		} else {
-			$query = 'SELECT folder, element, published from #__plugins WHERE (folder = \'authentication\' OR folder = \'user\') AND (element =\'jfusion\' OR published = 1)';
-		}
+		$query = 'SELECT folder, element, enabled as published from #__extensions WHERE (folder = \'authentication\' OR folder = \'user\') AND (element =\'jfusion\' OR enabled = 1)';
 
 		$db->setQuery($query);
 		$system_plugins = $db->loadObjectList();
@@ -432,21 +424,14 @@ class jfusionViewconfigdump extends JView {
 	function getVersion()
 	{
 		$jfusion_version = array();
-		$this->getVersionNumber(JPATH_COMPONENT_ADMINISTRATOR . DS . 'jfusion.xml', JText::_('COMPONENT'), $jfusion_version);
-		$this->getVersionNumber(JPATH_SITE . DS . 'modules' . DS . 'mod_jfusion_activity' . DS . 'mod_jfusion_activity.xml', JText::_('ACTIVITY') . ' ' . JText::_('MODULE'), $jfusion_version);
-		$this->getVersionNumber(JPATH_SITE . DS . 'modules' . DS . 'mod_jfusion_login' . DS . 'mod_jfusion_login.xml', JText::_('LOGIN') . ' ' . JText::_('MODULE'), $jfusion_version);
+		$this->getVersionNumber(JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'jfusion.xml', JText::_('COMPONENT'), $jfusion_version);
+		$this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'mod_jfusion_activity' . DIRECTORY_SEPARATOR . 'mod_jfusion_activity.xml', JText::_('ACTIVITY') . ' ' . JText::_('MODULE'), $jfusion_version);
+		$this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'mod_jfusion_login' . DIRECTORY_SEPARATOR . 'mod_jfusion_login.xml', JText::_('LOGIN') . ' ' . JText::_('MODULE'), $jfusion_version);
 
-		if(JFusionFunction::isJoomlaVersion('1.6')) {
-			$this->getVersionNumber(JPATH_SITE . DS . 'plugins' . DS . 'authentication' . DS . 'jfusion' . DS . 'jfusion.xml', JText::_('AUTHENTICATION') . ' ' . JText::_('PLUGIN'), $jfusion_version);
-			$this->getVersionNumber(JPATH_SITE . DS . 'plugins' . DS . 'user' . DS . 'jfusion' . DS .'jfusion.xml', JText::_('USER') . ' ' . JText::_('PLUGIN'), $jfusion_version);
-			$this->getVersionNumber(JPATH_SITE . DS . 'plugins' . DS . 'search' . DS . 'jfusion' . DS .'jfusion.xml', JText::_('SEARCH') . ' ' . JText::_('PLUGIN'), $jfusion_version);
-			$this->getVersionNumber(JPATH_SITE . DS . 'plugins' . DS . 'content' . DS . 'jfusion' . DS .'jfusion.xml', JText::_('DISCUSSION') . ' ' . JText::_('PLUGIN'), $jfusion_version);
-		} else {
-			$this->getVersionNumber(JPATH_SITE . DS . 'plugins' . DS . 'authentication' . DS . 'jfusion.xml', JText::_('AUTHENTICATION') . ' ' . JText::_('PLUGIN'), $jfusion_version);
-			$this->getVersionNumber(JPATH_SITE . DS . 'plugins' . DS . 'user' . DS . 'jfusion.xml', JText::_('USER') . ' ' . JText::_('PLUGIN'), $jfusion_version);
-			$this->getVersionNumber(JPATH_SITE . DS . 'plugins' . DS . 'search' . DS . 'jfusion.xml', JText::_('SEARCH') . ' ' . JText::_('PLUGIN'), $jfusion_version);
-			$this->getVersionNumber(JPATH_SITE . DS . 'plugins' . DS . 'content' . DS . 'jfusion.xml', JText::_('DISCUSSION') . ' ' . JText::_('PLUGIN'), $jfusion_version);
-		}
+		$this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'authentication' . DIRECTORY_SEPARATOR . 'jfusion' . DIRECTORY_SEPARATOR . 'jfusion.xml', JText::_('AUTHENTICATION') . ' ' . JText::_('PLUGIN'), $jfusion_version);
+		$this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'user' . DIRECTORY_SEPARATOR . 'jfusion' . DIRECTORY_SEPARATOR .'jfusion.xml', JText::_('USER') . ' ' . JText::_('PLUGIN'), $jfusion_version);
+		$this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'search' . DIRECTORY_SEPARATOR . 'jfusion' . DIRECTORY_SEPARATOR .'jfusion.xml', JText::_('SEARCH') . ' ' . JText::_('PLUGIN'), $jfusion_version);
+		$this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . 'jfusion' . DIRECTORY_SEPARATOR .'jfusion.xml', JText::_('DISCUSSION') . ' ' . JText::_('PLUGIN'), $jfusion_version);
 		$this->assignRef('jfusion_version', $jfusion_version);
 	}
 

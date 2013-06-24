@@ -19,8 +19,8 @@ defined('_JEXEC') or die('Restricted access');
 /**
  * load the JFusion framework
  */
-require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.jfusion.php';
-require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.curl.php';
+require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jfusion.php';
+require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.curl.php';
 /**
  * Common Class for Joomla JFusion plugins
  *
@@ -66,11 +66,7 @@ class JFusionJplugin
      */
     public static function getRegistrationURL($jname='joomla_int')
     {
-        if(JFusionFunction::isJoomlaVersion('1.6',$jname)) {
-            $url = 'index.php?option=com_users&view=registration';
-        } else {
-            $url = 'index.php?option=com_user&view=register';
-        }
+	    $url = 'index.php?option=com_users&view=registration';
         return $url;
     }
 
@@ -83,11 +79,7 @@ class JFusionJplugin
      */
     public static function getLostPasswordURL($jname='joomla_int')
     {
-        if(JFusionFunction::isJoomlaVersion('1.6',$jname)) {
-            $url = 'index.php?option=com_users&view=reset';
-        } else {
-            $url = 'index.php?option=com_user&view=reset';
-        }
+	    $url = 'index.php?option=com_users&view=reset';
         return $url;
     }
 
@@ -100,11 +92,7 @@ class JFusionJplugin
      */
     public static function getLostUsernameURL($jname='joomla_int')
     {
-        if(JFusionFunction::isJoomlaVersion('1.6',$jname)) {
-            $url = 'index.php?option=com_users&view=remind';
-        } else {
-            $url = 'index.php?option=com_user&view=remind';
-        }
+	    $url = 'index.php?option=com_users&view=remind';
         return $url;
     }
 
@@ -151,11 +139,9 @@ class JFusionJplugin
     public static function getUsergroupList($jname)
     {
         $db = JFusionFactory::getDatabase($jname);
-        if(JFusionFunction::isJoomlaVersion('1.6',$jname)){
-            $query = 'SELECT id, title as name FROM #__usergroups';
-        } else {
-        	$query = 'SELECT id, name FROM #__core_acl_aro_groups WHERE name != \'ROOT\' AND name != \'USERS\'';
-        }
+
+	    $query = 'SELECT id, title as name FROM #__usergroups';
+
         $db->setQuery($query);
         //getting the results
         return $db->loadObjectList();
@@ -175,19 +161,11 @@ class JFusionJplugin
         if (JFusionFunction::isAdvancedUsergroupMode($jname)) {
             $group = JText::_('ADVANCED_GROUP_MODE');
         } else {
-            if(JFusionFunction::isJoomlaVersion('1.6',$jname)) {
-                $usergroup_id = $params->get('usergroup', 2);
-                //we want to output the usergroup name
-                $query = 'SELECT title from #__usergroups WHERE id = ' . $usergroup_id;
-                $db->setQuery($query);
-                $group = $db->loadResult();
-            } else {
-                $usergroup_id = $params->get('usergroup', 18);
-                //we want to output the usergroup name
-                $query = 'SELECT name from #__core_acl_aro_groups WHERE id = ' . $usergroup_id;
-                $db->setQuery($query);
-                $group = $db->loadResult();
-            }
+	        $usergroup_id = $params->get('usergroup', 2);
+	        //we want to output the usergroup name
+	        $query = 'SELECT title from #__usergroups WHERE id = ' . $usergroup_id;
+	        $db->setQuery($query);
+	        $group = $db->loadResult();
         }
         return $group;
     }
@@ -204,17 +182,12 @@ class JFusionJplugin
     {
         $params = JFusionFactory::getParams($jname);
         $db = JFusionFactory::getDatabase($jname);
-        if(JFusionFunction::isJoomlaVersion('1.6',$jname)) {
-			//we want to output the usergroup name
-			$query = 'SELECT title from #__usergroups WHERE id = ' . $gid;
-			$db->setQuery($query);
-            $group = $db->loadResult();
-        } else {
-			//we want to output the usergroup name
-			$query = 'SELECT name from #__core_acl_aro_groups WHERE id = ' . $gid;
-			$db->setQuery($query);
-			$group = $db->loadResult();
-        }
+
+	    //we want to output the usergroup name
+	    $query = 'SELECT title from #__usergroups WHERE id = ' . $gid;
+	    $db->setQuery($query);
+	    $group = $db->loadResult();
+
         return $group;
     }
 
@@ -232,17 +205,11 @@ class JFusionJplugin
         } else {
             $db = JFusionFactory::getDatabase($jname);
 
-            if(JFusionFunction::isJoomlaVersion('1.6',$jname)) {
-                //we want to output the usergroup name
-                $query = 'SELECT params from #__extensions WHERE element = \'com_users\'';
-                $db->setQuery($query);
-                $params = $db->loadResult();
-            } else {
-                //we want to output the usergroup name
-                $query = 'SELECT params from #__components WHERE option = \'com_users\'';
-                $db->setQuery($query);
-                $params = $db->loadResult();
-            }
+	        //we want to output the usergroup name
+	        $query = 'SELECT params from #__extensions WHERE element = \'com_users\'';
+	        $db->setQuery($query);
+	        $params = $db->loadResult();
+
             $params = new JParameter($params);
         }
 		// Return true if the 'allowUserRegistration' switch is enabled in the component parameters.
@@ -263,10 +230,10 @@ class JFusionJplugin
         if (substr($path, -1) == DS) {
             $configfile = $path . 'configuration.php';
             //joomla 1.6+ test
-            $test_version_file = $path . 'includes' . DS . 'version.php';
+            $test_version_file = $path . 'includes' . DIRECTORY_SEPARATOR . 'version.php';
         } else {
-            $configfile = $path . DS . 'configuration.php';
-            $test_version_file = $path . DS . 'includes' . DS . 'version.php';
+            $configfile = $path . DIRECTORY_SEPARATOR . 'configuration.php';
+            $test_version_file = $path . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'version.php';
         }
         $params = array();
         if (($file_handle = @fopen($configfile, 'r')) === false) {
@@ -629,11 +596,8 @@ class JFusionJplugin
                 $where = 'a.' . $identifier_type . ' = ' . $db->Quote($identifier);
             }
             //first check the JFusion user table if the identifier_type = username
-            if(JFusionFunction::isJoomlaVersion('1.6',$jname)){
-                $db->setQuery('SELECT b.id as userid, b.activation, a.username, b.name, b.password, b.email, b.block, b.params FROM #__users as b INNER JOIN #__jfusion_users as a ON a.id = b.id WHERE ' . $where);
-            } else {
-                $db->setQuery('SELECT b.id as userid, b.activation, a.username, b.name, b.password, b.email, b.block, b.usertype as group_name, b.gid as group_id, b.params FROM #__users as b INNER JOIN #__jfusion_users as a ON a.id = b.id WHERE ' . $where);
-            }
+	        $db->setQuery('SELECT b.id as userid, b.activation, a.username, b.name, b.password, b.email, b.block, b.params FROM #__users as b INNER JOIN #__jfusion_users as a ON a.id = b.id WHERE ' . $where);
+
             $result = $db->loadObject();
             if (!$result) {
                 if ($params->get('case_insensitive')) {
@@ -642,49 +606,40 @@ class JFusionJplugin
                     $where = $identifier_type . ' = ' . $db->Quote($identifier);
                 }
                 //check directly in the joomla user table
-                if(JFusionFunction::isJoomlaVersion('1.6',$jname)){
-                    $db->setQuery('SELECT id as userid, activation, username, name, password, email, block, params FROM #__users WHERE ' . $where);
-                } else {
-                    $db->setQuery('SELECT id as userid, activation, username, name, password, email, block, usertype as group_name, gid as group_id, params FROM #__users WHERE ' . $where);
-                }
+	            $db->setQuery('SELECT id as userid, activation, username, name, password, email, block, params FROM #__users WHERE ' . $where);
+
                 $result = $db->loadObject();
                 if ($result) {
                     //update the lookup table so that we don't have to do a double query next time
                     $query = 'REPLACE INTO #__jfusion_users (id, username) VALUES (' . $result->userid . ', ' . $db->Quote($identifier) . ')';
                     $db->setQuery($query);
-                    if (!$db->query()) {
+                    if (!$db->execute()) {
                         JError::raiseWarning(0, $db->stderr());
                     }
                 }
             }
         } else {
-        	if(JFusionFunction::isJoomlaVersion('1.6',$jname)){
-                $db->setQuery('SELECT id as userid, activation, username, name, password, email, block, params FROM #__users WHERE ' . $identifier_type . ' = ' . $db->Quote($identifier));
-        	} else {
-                $db->setQuery('SELECT id as userid, activation, username, name, password, email, block, usertype as group_name, gid as group_id, params FROM #__users WHERE ' . $identifier_type . ' = ' . $db->Quote($identifier));
-        	}
+	        $db->setQuery('SELECT id as userid, activation, username, name, password, email, block, params FROM #__users WHERE ' . $identifier_type . ' = ' . $db->Quote($identifier));
             $result = $db->loadObject();
         }
         if ($result) {
-			if(JFusionFunction::isJoomlaVersion('1.6',$jname)){
-       	    	$query = 'SELECT a.group_id, b.title as name FROM #__user_usergroup_map as a INNER JOIN #__usergroups as b ON a.group_id = b.id WHERE a.user_id='.$db->Quote($result->userid);
-        		$db->setQuery($query);
-				$groupList = $db->loadObjectList();
-				if ($groupList) {
-					foreach ($groupList as $group) {
-						$result->groups[] = $group->group_id;
-						$result->groupnames[] = $group->name;
+	        $query = 'SELECT a.group_id, b.title as name FROM #__user_usergroup_map as a INNER JOIN #__usergroups as b ON a.group_id = b.id WHERE a.user_id='.$db->Quote($result->userid);
+	        $db->setQuery($query);
+	        $groupList = $db->loadObjectList();
+	        if ($groupList) {
+		        foreach ($groupList as $group) {
+			        $result->groups[] = $group->group_id;
+			        $result->groupnames[] = $group->name;
 
-						if ( !isset($result->group_id) || $group->group_id > $result->group_id) {
-                            $result->group_id = $group->group_id;
-                            $result->group_name =  $group->name;
-						}
-					}
-				} else {
-					$result->groups = array();
-					$result->groupnames = array();
-				}
-        	}
+			        if ( !isset($result->group_id) || $group->group_id > $result->group_id) {
+				        $result->group_id = $group->group_id;
+				        $result->group_name =  $group->name;
+			        }
+		        }
+	        } else {
+		        $result->groups = array();
+		        $result->groupnames = array();
+	        }
             //split up the password if it contains a salt
             //note we cannot use explode as a salt from another software may contain a colon which messes Joomla up
             if (strpos($result->password, ':') !== false) {
@@ -710,11 +665,8 @@ class JFusionJplugin
             }
 
             //check to see if CB is installed and activated and if so update the activation and ban accordingly
-            if(JFusionFunction::isJoomlaVersion('1.6',$jname)){
-                $query = 'SELECT enabled FROM #__extensions WHERE name LIKE \'%com_comprofiler%\'';
-            } else {
-                $query = 'SELECT enabled FROM #__components WHERE link LIKE \'%option=com_comprofiler%\'';
-            }
+	        $query = 'SELECT enabled FROM #__extensions WHERE name LIKE \'%com_comprofiler%\'';
+
             $db->setQuery($query);
             $cbenabled = $db->loadResult();
 
@@ -751,7 +703,7 @@ class JFusionJplugin
         $db = JFusionFactory::getDatabase($jname);
         $query = 'UPDATE #__users SET email =' . $db->Quote($userinfo->email) . ' WHERE id =' . $existinguser->userid;
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $db->stderr();
         } else {
             $status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
@@ -777,7 +729,7 @@ class JFusionJplugin
         $new_password = $userinfo->password . ':' . $userinfo->password_salt;
         $query = 'UPDATE #__users SET password =' . $db->Quote($new_password) . ' WHERE id =' . $existinguser->userid;
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . $db->stderr();
         } else {
             $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
@@ -802,7 +754,7 @@ class JFusionJplugin
             $db = JFusionFactory::getDatabase($jname);
             $query = 'UPDATE #__users SET block = 1 WHERE id =' . $existinguser->userid;
             $db->setQuery($query);
-            if (!$db->query()) {
+            if (!$db->execute()) {
                 $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $db->stderr();
             } else {
                 $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
@@ -828,7 +780,7 @@ class JFusionJplugin
         $db = JFusionFactory::getDatabase($jname);
         $query = 'UPDATE #__users SET block = 0 WHERE id =' . $existinguser->userid;
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $db->stderr();
         } else {
             $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
@@ -851,7 +803,7 @@ class JFusionJplugin
         $db = JFusionFactory::getDatabase($jname);
         $query = 'UPDATE #__users SET block = 0, activation = \'\' WHERE id =' . $existinguser->userid;
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $db->stderr();
         } else {
             $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
@@ -875,7 +827,7 @@ class JFusionJplugin
             $db = JFusionFactory::getDatabase($jname);
             $query = 'UPDATE #__users SET block = 1, activation = ' . $db->Quote($userinfo->activation) . ' WHERE id =' . $existinguser->userid;
             $db->setQuery($query);
-            if (!$db->query()) {
+            if (!$db->execute()) {
                 $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $db->stderr();
             } else {
                 $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
@@ -935,7 +887,7 @@ class JFusionJplugin
         $status['debug'][] = JText::_('USERNAME') . ': ' . $userinfo->username . ' -> ' . JText::_('FILTERED_USERNAME') . ':' . $username_clean;
         $query = 'UPDATE #__users SET username =' . $db->Quote($username_clean) . 'WHERE id =' . $existinguser->userid;
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             //update failed, return error
             $status['error'][] = JText::_('USERNAME_UPDATE_ERROR') . ': ' . $db->stderr();
         } else {
@@ -945,7 +897,7 @@ class JFusionJplugin
             //update the lookup table
             $query = 'REPLACE INTO #__jfusion_users (id, username) VALUES (' . $existinguser->userid . ', ' . $db->Quote($userinfo->username) . ')';
             $db->setQuery($query);
-            if (!$db->query()) {
+            if (!$db->execute()) {
                 $status['error'][] = JText::_('USERNAME_UPDATE_ERROR') . ': ' . $db->stderr();
             } else {
                 $status['debug'][] = JText::_('USERNAME_UPDATE') . ': ' . $username_clean;
@@ -1012,36 +964,18 @@ class JFusionJplugin
                 //the $userinfo object was probably reconstructed in the user plugin and autoregister = 1
                 $isadmin = false;
                 if (isset($usergroups[0])) {
-                    if(JFusionFunction::isJoomlaVersion('1.6',$jname)) {
-                        $isadmin = (in_array ( 7 , $usergroups,true ) || in_array ( 8 , $usergroups,true )) ? true : false;
-                    } else {
-                        $isadmin = ($usergroups[0] == 24 || $usergroups[0] == 25) ? true : false;
-                    }
+	                $isadmin = (in_array ( 7 , $usergroups,true ) || in_array ( 8 , $usergroups,true )) ? true : false;
                 } else {
-                    if(JFusionFunction::isJoomlaVersion('1.6',$jname)) {
-                        $usergroups = array(2);
-                    } else {
-                        $usergroups = array(18);
-                    }
+	                $usergroups = array(2);
                 }
 
                 //work around the issue where joomla will not allow the creation of an admin or super admin if the logged in user is not a super admin
                 if ($isadmin && $jname == 'joomla_int') {
-                    if(JFusionFunction::isJoomlaVersion('1.6',$jname)) {
-                        $usergroups = array(2);
-                    } else {
-                        $usergroups = array(18);
-                    }
+	                $usergroups = array(2);
                 }
 
-                if(JFusionFunction::isJoomlaVersion('1.6',$jname)) {
-                    $instance->set('usertype', 'deprecated');
-                    $instance->set('groups', $usergroups);
-                } else {
-                    $usergroup = JFusionJplugin::getUsergroupName($jname,$usergroups[0]);
-                    $instance->set('usertype', $usergroup);
-                    $instance->set('gid', $usergroups[0]);
-                }
+	            $instance->set('usertype', 'deprecated');
+	            $instance->set('groups', $usergroups);
                 if ($jname == 'joomla_int') {
                     //store the username passed into this to prevent the user plugin from attempting to recreate users
                     $instance->set('original_username', $userinfo->username);
@@ -1063,7 +997,7 @@ class JFusionJplugin
                         $username = (!empty($userinfo->credentialed_username)) ? $userinfo->credentialed_username : $userinfo->username;
                         $query = 'REPLACE INTO #__jfusion_users (id, username) VALUES (' . $createdUser->id . ', ' . $db->Quote($username) . ')';
                         $db->setQuery($query);
-                        if (!$db->query()) {
+                        if (!$db->execute()) {
                             JError::raiseWarning(0, $db->stderr());
                         }
                     }
@@ -1085,37 +1019,13 @@ class JFusionJplugin
                         return $status;
                     }
 
-                    if(JFusionFunction::isJoomlaVersion('1.6',$jname)) {
-                        foreach ($usergroups as $group) {
-                            $query = 'INSERT INTO #__user_usergroup_map (group_id,user_id) VALUES (' . $group . ',' . $user->id . ')';
-                            $db->setQuery($query);
-                            if (!$db->query()) {
-                                $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-                            }
-                        }
-                    } else {
-                        //add the user to the core_acl_aro
-                        $acl = array();
-                        $acl['section_value'] = 'users';
-                        $acl['value'] = $user->id;
-                        $acl['order_value'] = 0;
-                        $acl['name'] = $userinfo->name;
-                        $acl['hidden'] = 0;
-                        $acl = (object)$acl;
-                        $acl->id = null;
-                        if (!$db->insertObject('#__core_acl_aro', $acl, 'id')) {
-                            //return the error
-                            $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-                            return $status;
-                        }
-                        // and finally add the user to the core_acl_groups_aro_map
-                        $query = 'INSERT INTO #__core_acl_groups_aro_map (group_id, aro_id) VALUES (' . $usergroups[0] . ',' . $acl->id . ')';
-                        $db->setQuery($query);
-                        if (!$db->query()) {
-                            $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-                            return $status;
-                        }
-                    }
+	                foreach ($usergroups as $group) {
+		                $query = 'INSERT INTO #__user_usergroup_map (group_id,user_id) VALUES (' . $group . ',' . $user->id . ')';
+		                $db->setQuery($query);
+		                if (!$db->execute()) {
+			                $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
+		                }
+	                }
                 }
                 //check to see if the user exists now
                 $joomla_user = JFusionJplugin::getUser($userinfo, $jname);
@@ -1236,28 +1146,12 @@ class JFusionJplugin
                     if (JFusionFunction::isAdvancedUsergroupMode($jname)) {
                         $usergroups = JFusionFunction::getCorrectUserGroups($jname,$userinfo);
 
-                        if(JFusionFunction::isJoomlaVersion('1.6',$jname)) {
-                            if (!JFusionFunction::compareUserGroups($existinguser,$usergroups)) {
-                                JFusionJplugin::updateUsergroup($userinfo, $existinguser, $status, $jname);
-                                $changed = true;
-                            } else {
-                                $status['debug'][] = JText::_('SKIPPED_GROUP_UPDATE') . ':' . JText::_('GROUP_VALID');
-                            }
-                        } else if (isset($usergroups[0])) {
-                            $correct_usergroup = $usergroups[0];
-                            //make sure that ACL has not been corrupted
-                            $correct_groupname = JFusionJplugin::getUsergroupName($jname,$correct_usergroup);
-                            $query = 'SELECT group_id FROM #__core_acl_aro as a INNER JOIN #__core_acl_groupsaro__map as b ON a.id = b.aro_id WHERE a.value = ' . $existinguser->userid;
-                            $db->setQuery($query);
-                            $acl_group_id = $db->loadResult();
-
-                            if ($correct_usergroup != $existinguser->group_id || $correct_groupname != $existinguser->group_name || $correct_usergroup != $acl_group_id) {
-                                JFusionJplugin::updateUsergroup($userinfo, $existinguser, $status, $jname);
-                                $changed = true;
-                            } else {
-                                $status['debug'][] = JText::_('SKIPPED_GROUP_UPDATE') . ':' . JText::_('GROUP_VALID');
-                            }
-                        }
+	                    if (!JFusionFunction::compareUserGroups($existinguser,$usergroups)) {
+		                    JFusionJplugin::updateUsergroup($userinfo, $existinguser, $status, $jname);
+		                    $changed = true;
+	                    } else {
+		                    $status['debug'][] = JText::_('SKIPPED_GROUP_UPDATE') . ':' . JText::_('GROUP_VALID');
+	                    }
                     }
                 }
 
@@ -1322,71 +1216,30 @@ class JFusionJplugin
                 $dispatcher->trigger('onBeforeStoreUser', array($old->getProperties(), false));
             }
 
-            if(JFusionFunction::isJoomlaVersion('1.6',$jname)) {
-                jimport('joomla.user.helper');
-                $query = 'DELETE FROM #__user_usergroup_map WHERE user_id = ' . $db->Quote($existinguser->userid);
-                $db->setQuery($query);
-                if (!$db->query()) {
-                    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $db->stderr();
-                } else {
-                    foreach ($usergroups as $key => $group) {
-                        $temp = new stdClass;
-                        $temp->user_id = $existinguser->userid;
-                        $temp->group_id = $group;
-                        if (!$db->insertObject('#__user_usergroup_map', $temp)) {
-                            //return the error
-                            $status['error'] = JText::_('USER_CREATION_ERROR') . ': ' . $db->stderr();
-                            return $status;
-                        }
-                    }
-                    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(',', $existinguser->groups) . ' -> ' .implode(',', $usergroups);
-                    //Fire the user plugin functions for joomla_int
-                    if ($jname == 'joomla_int' && $fire_user_plugins) {
-                        //Fire the onAfterStoreUser event
-                        $updated = new JUser($existinguser->userid);
-                        $dispatcher->trigger('onAfterStoreUser', array($updated->getProperties(), false, true, ''));
-                    }
-                }
-            } else {
-                $gid = $usergroups[0];
-                $usertype = JFusionJplugin::getUsergroupName($jname,$gid);
-                if (!empty($gid) && !empty($usertype ) ) {
-                    //update the user table
-                    $query = 'UPDATE #__users SET usertype = '.$db->Quote($usertype).' , gid = '.$gid.'  WHERE id = '.$existinguser->userid;
-                    $db->setQuery($query);
-                    if (!$db->query()) {
-                        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $db->stderr();
-                    } else {
-                        //we have to update the acl table
-                        $query = 'SELECT id FROM #__core_acl_aro WHERE value = ' . $existinguser->userid;
-                        $db->setQuery($query);
-                        $aro_id = $db->loadResult();
-                        if (!empty($aro_id)) {
-                            $query = 'UPDATE #__core_acl_groups_aro_map SET group_id = '.$gid.' WHERE aro_id = '.$aro_id;
-                            $db->setQuery($query);
-                            if (!$db->query()) {
-                                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $db->stderr();
-                                //update to acl table failed, attempt to revert changes to user table
-                                $query = 'UPDATE #__users SET usertype = '.$db->Quote($existinguser->group_name).' , gid = '.$existinguser->group_id.' WHERE id = '.$existinguser->userid;
-                                $db->setQuery($query);
-                                if (!$db->query()) {
-                                    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $db->stderr();
-                                }
-                            } else {
-                                $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . $existinguser->group_id . ' -> ' . $gid;
-                                //Fire the user plugin functions for joomla_int
-                                if ($jname == 'joomla_int' && $fire_user_plugins) {
-                                    // Fire the onAfterStoreUser event
-                                    $updated = new JUser($existinguser->userid);
-                                    $dispatcher->trigger('onAfterStoreUser', array($updated->getProperties(), false, true, ''));
-                                }
-                            }
-                        } else {
-                            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $db->stderr();
-                        }
-                    }
-                }
-            }
+	        jimport('joomla.user.helper');
+	        $query = 'DELETE FROM #__user_usergroup_map WHERE user_id = ' . $db->Quote($existinguser->userid);
+	        $db->setQuery($query);
+	        if (!$db->execute()) {
+		        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $db->stderr();
+	        } else {
+		        foreach ($usergroups as $key => $group) {
+			        $temp = new stdClass;
+			        $temp->user_id = $existinguser->userid;
+			        $temp->group_id = $group;
+			        if (!$db->insertObject('#__user_usergroup_map', $temp)) {
+				        //return the error
+				        $status['error'] = JText::_('USER_CREATION_ERROR') . ': ' . $db->stderr();
+				        return $status;
+			        }
+		        }
+		        $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(',', $existinguser->groups) . ' -> ' .implode(',', $usergroups);
+		        //Fire the user plugin functions for joomla_int
+		        if ($jname == 'joomla_int' && $fire_user_plugins) {
+			        //Fire the onAfterStoreUser event
+			        $updated = new JUser($existinguser->userid);
+			        $dispatcher->trigger('onAfterStoreUser', array($updated->getProperties(), false, true, ''));
+		        }
+	        }
         }
         return $status;
     }
@@ -1481,7 +1334,7 @@ class JFusionJplugin
         $params->set('language', $userinfo->language);
         $query = 'UPDATE #__users SET params =' . $db->Quote($params->toString()) . ' WHERE id =' . $existinguser->userid;
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['error'][] = JText::_('LANGUAGE_UPDATE_ERROR') . $db->stderr();
         } else {
             $status['debug'][] = JText::_('LANGUAGE_UPDATE') . ' ' . $existinguser->language;

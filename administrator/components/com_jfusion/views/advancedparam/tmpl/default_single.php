@@ -15,7 +15,6 @@
  */
 // no direct access
 defined('_JEXEC') or die('Restricted access');
-$isJ16 = JFusionFunction::isJoomlaVersion('1.6');
 $uri = JURI::getInstance();
 $uri->setVar('task','advancedparamsubmit');
 ?>
@@ -32,7 +31,7 @@ $uri->setVar('task','advancedparamsubmit');
 		<tr style="padding:0; margin:0;">
 			<td colspan="2" style="padding:0; margin:0;">
 				<?php
-				if ($isJ16 && !empty($this->comp)):
+				if (!empty($this->comp)):
 					$fieldsets = $this->comp->getFieldsets();
 					$pane = JPane::getInstance('tabs', array('startOffset'=>2));
 					echo $pane->startPane('params');
@@ -56,10 +55,6 @@ $uri->setVar('task','advancedparamsubmit');
 						echo $pane->endPanel();
 					endforeach;
 					$pane->endPane();
-				else:
-					if ($this->comp && ($params = $this->comp->render('params'))) {
-						echo $params;
-					}
 				endif;
 				?>
 			</td>

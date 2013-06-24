@@ -85,9 +85,9 @@ class JFusionAdmin_magento extends JFusionAdmin
     function setupFromPath($forumPath) {
         //check for trailing slash and generate file path
         if (substr($forumPath, -1) != DS) {
-            $forumPath = $forumPath . DS;
+            $forumPath = $forumPath . DIRECTORY_SEPARATOR;
         }
-        $xmlfile = $forumPath . 'app' . DS . 'etc' . DS . 'local.xml';
+        $xmlfile = $forumPath . 'app' . DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'local.xml';
         $params = array();
         if (file_exists($xmlfile)) {
 	        $xml = JFusionFunction::getXml($xmlfile);
@@ -258,11 +258,11 @@ class JFusionAdmin_magento extends JFusionAdmin
         $db = JFusionFactory::getDatabase ( $jname );
         if (! JError::isError ( $db ) && ! empty ( $db )) {
             $source_path = $params->get ( 'source_path', '' );
-            if (! file_exists ( $source_path . DS . 'app' . DS . 'Mage.php' )) {
+            if (! file_exists ( $source_path . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Mage.php' )) {
                 $html = JText::_ ( 'MAGE_CONFIG_SOURCE_PATH' );
             } else {
                 $mod_exists = false;
-                if (file_exists ( $source_path . DS . 'app' . DS . 'etc' . DS . 'modules' . DS . 'Jfusion_All.xml' )) {
+                if (file_exists ( $source_path . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'Jfusion_All.xml' )) {
                     $mod_exists = true;
                 }
 
@@ -303,16 +303,16 @@ HTML;
 		$source_path = $params->get ( 'source_path' );
 		jimport ( 'joomla.filesystem.archive' );
 		jimport ( 'joomla.filesystem.file' );
-        $pear_path = realpath ( dirname ( __FILE__ ) ) . DS .'..'.DS.'..'.DS.'models'.DS. 'pear';
-        require_once $pear_path.DS.'PEAR.php';
-        $pear_archive_path = $pear_path.DS.archive_tar.DS.'Archive_Tar.php';
+        $pear_path = realpath ( dirname ( __FILE__ ) ) . DIRECTORY_SEPARATOR .'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR. 'pear';
+        require_once $pear_path.DIRECTORY_SEPARATOR.'PEAR.php';
+        $pear_archive_path = $pear_path.DIRECTORY_SEPARATOR.archive_tar.DIRECTORY_SEPARATOR.'Archive_Tar.php';
         require_once $pear_archive_path;
 
         $status = array('error' => array(),'debug' => array());
 		$archive_filename = 'magento_module_jfusion.tar.gz';
 		$old_chdir = getcwd();
-		$src_archive =  $src_path = realpath ( dirname ( __FILE__ ) ) . DS . 'install_module';
-		$src_code =  $src_archive . DS . 'source';
+		$src_archive =  $src_path = realpath ( dirname ( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'install_module';
+		$src_code =  $src_archive . DIRECTORY_SEPARATOR . 'source';
 		$dest = $source_path;
 		
 		// Create an archive to facilitate the installation into the Magento installation while extracting
@@ -322,8 +322,8 @@ HTML;
 		$tar->createModify( 'app' , '', '' );
 		chdir($old_chdir);
 		
-		$ret = JArchive::extract ( $src_code . DS . $archive_filename, $dest );
-		JFile::delete($src_code . DS . $archive_filename);
+		$ret = JArchive::extract ( $src_code . DIRECTORY_SEPARATOR . $archive_filename, $dest );
+		JFile::delete($src_code . DIRECTORY_SEPARATOR . $archive_filename);
 		
 		// Initialize default data config in Magento database
 		$joomla = JFusionFactory::getParams('joomla_int');
@@ -333,7 +333,7 @@ HTML;
 		$query = 'REPLACE INTO #__core_config_data SET path = \'joomla/joomlaconfig/baseurl\', value = \''.$joomla_baseurl.'\';';
 		$db->BeginTrans();
         $db->setQuery($query);
-        $db->query();
+        $db->execute();
 		if ($db->getErrorNum() != 0) {
 			$db->RollbackTrans();
 			$status['error'] = $db->stderr ();
@@ -341,7 +341,7 @@ HTML;
             $query = 'REPLACE INTO #__core_config_data SET path = \'joomla/joomlaconfig/installationpath\', value = \''.JPATH_SITE.'\';';
             $db->BeginTrans();
             $db->setQuery($query);
-            $db->query();
+            $db->execute();
             if ($db->getErrorNum() != 0) {
                 $db->RollbackTrans();
                 $status['error'] = $db->stderr ();
@@ -349,7 +349,7 @@ HTML;
                 $query = 'REPLACE INTO #__core_config_data SET path = \'joomla/joomlaconfig/secret_key\', value = \''.$joomla_secret.'\';';
                 $db->BeginTrans();
                 $db->setQuery($query);
-                $db->query();
+                $db->execute();
                 if ($db->getErrorNum() != 0) {
                     $db->RollbackTrans();
                     $status['error'] = $db->stderr ();
@@ -377,7 +377,7 @@ HTML;
 		$db = JFusionFactory::getDatabase($jname);
 		$params = JFusionFactory::getParams ( $jname );
 		$source_path = $params->get ( 'source_path' );
-		$xmlfile = realpath ( dirname ( __FILE__ ) ) . DS . 'install_module' . DS . 'source' . DS . 'listfiles.xml';
+		$xmlfile = realpath ( dirname ( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'install_module' . DIRECTORY_SEPARATOR . 'source' . DIRECTORY_SEPARATOR . 'listfiles.xml';
 
 	    $listfiles = JFusionFunction::getXml($xmlfile);
 		$files = $listfiles->getElementByPath('file');
@@ -388,11 +388,11 @@ HTML;
 		foreach($files as $file) {
 			$file = $file->data();
 			$file = preg_replace('#/#', DS, $file);
-			@chmod($source_path . DS . $file, 0777);
-			if (!is_dir($source_path . DS . $file)) {
-				JFile::delete($source_path . DS . $file);
+			@chmod($source_path . DIRECTORY_SEPARATOR . $file, 0777);
+			if (!is_dir($source_path . DIRECTORY_SEPARATOR . $file)) {
+				JFile::delete($source_path . DIRECTORY_SEPARATOR . $file);
 			} else {
-				JFolder::delete($source_path . DS . $file);
+				JFolder::delete($source_path . DIRECTORY_SEPARATOR . $file);
 			}
 		}
 		
@@ -416,7 +416,7 @@ HTML;
 		$query = 'DELETE FROM #__core_config_data WHERE path = \'joomla/joomlaconfig/installationpath\'';
 		$db->BeginTrans();
 		$db->setQuery($query);
-        $db->query();
+        $db->execute();
 		if ($db->getErrorNum() != 0) {
 			$db->RollbackTrans();
 			$status['error'] = $db->stderr ();
@@ -426,7 +426,7 @@ HTML;
 		$query = 'DELETE FROM #__core_config_data WHERE path = \'joomla/joomlaconfig/secret_key\'';
 		$db->BeginTrans();
 		$db->setQuery($query);
-        $db->query();
+        $db->execute();
 		if ($db->getErrorNum() != 0) {
 			$db->RollbackTrans();
 			$status['error'] = $db->stderr ();
@@ -448,7 +448,7 @@ HTML;
 		$params = JFusionFactory::getParams ( $jname );
 		$source_path = $params->get ( 'source_path' );
 		
-		$jfusion_mod_xml = $source_path . DS .'app'. DS .'etc'. DS .'modules'. DS .'Jfusion_All.xml';
+		$jfusion_mod_xml = $source_path . DIRECTORY_SEPARATOR .'app'. DIRECTORY_SEPARATOR .'etc'. DIRECTORY_SEPARATOR .'modules'. DIRECTORY_SEPARATOR .'Jfusion_All.xml';
 		
 		if(file_exists($jfusion_mod_xml)) {
 			$xml = JFusionFunction::getXml($jfusion_mod_xml);
@@ -494,7 +494,7 @@ HTML;
 		$jname =  $this->getJname ();
 		$params = JFusionFactory::getParams ( $jname );
 		$source_path = $params->get ( 'source_path' );
-		$jfusion_mod_xml = $source_path . DS .'app'. DS .'etc'. DS .'modules'. DS .'Jfusion_All.xml';
+		$jfusion_mod_xml = $source_path . DIRECTORY_SEPARATOR .'app'. DIRECTORY_SEPARATOR .'etc'. DIRECTORY_SEPARATOR .'modules'. DIRECTORY_SEPARATOR .'Jfusion_All.xml';
 
 		$xml = JFusionFunction::getXml($jfusion_mod_xml);
 

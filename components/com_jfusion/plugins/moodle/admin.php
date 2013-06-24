@@ -56,7 +56,7 @@ class JFusionAdmin_moodle extends JFusionAdmin
         if (substr($forumPath, -1) == DS) {
             $myfile = $forumPath . 'config.php';
         } else {
-            $myfile = $forumPath . DS . 'config.php';
+            $myfile = $forumPath . DIRECTORY_SEPARATOR . 'config.php';
         }
         $params = array();
         if (($file_handle = @fopen($myfile, 'r')) === false) {
@@ -203,12 +203,12 @@ class JFusionAdmin_moodle extends JFusionAdmin
         if (! JError::isError ( $db ) && ! empty ( $db )) {
 
             $source_path = $params->get ( 'source_path', '' );
-            if (! file_exists ( $source_path . DS . 'admin' . DS . 'auth.php' )) {
+            if (! file_exists ( $source_path . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'auth.php' )) {
                 return JText::_ ( 'MOODLE_CONFIG_SOURCE_PATH' );
             }
 
             $mod_exists = false;
-            if (file_exists ( $source_path . DS . 'auth' . DS . 'jfusion' . DS . 'auth.php' )) {
+            if (file_exists ( $source_path . DIRECTORY_SEPARATOR . 'auth' . DIRECTORY_SEPARATOR . 'jfusion' . DIRECTORY_SEPARATOR . 'auth.php' )) {
                 $mod_exists = true;
             }
 
@@ -248,16 +248,16 @@ HTML;
         $source_path = $params->get ( 'source_path' );
         jimport ( 'joomla.filesystem.archive' );
         jimport ( 'joomla.filesystem.file' );
-        $pear_path = realpath ( dirname ( __FILE__ ) ) . DS .'..'.DS.'..'.DS.'models'.DS. 'pear';
-        require_once $pear_path.DS.'PEAR.php';
-        $pear_archive_path = $pear_path.DS.archive_tar.DS.'Archive_Tar.php';
+        $pear_path = realpath ( dirname ( __FILE__ ) ) . DIRECTORY_SEPARATOR .'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR. 'pear';
+        require_once $pear_path.DIRECTORY_SEPARATOR.'PEAR.php';
+        $pear_archive_path = $pear_path.DIRECTORY_SEPARATOR.archive_tar.DIRECTORY_SEPARATOR.'Archive_Tar.php';
         require_once $pear_archive_path;
 
         $status = array('error' => array(),'debug' => array());
         $archive_filename = 'moodle_module_jfusion.tar.gz';
         $old_chdir = getcwd();
-        $src_archive =  $src_path = realpath ( dirname ( __FILE__ ) ) . DS . 'install_module';
-        $src_code =  $src_archive . DS . 'source';
+        $src_archive =  $src_path = realpath ( dirname ( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'install_module';
+        $src_code =  $src_archive . DIRECTORY_SEPARATOR . 'source';
         $dest = $source_path;
 
         // Create an archive to facilitate the installation into the Moodle installation while extracting
@@ -267,13 +267,13 @@ HTML;
         $tar->createModify( 'auth lang' , '', '' );
         chdir($old_chdir);
 
-        $ret = JArchive::extract ( $src_code . DS . $archive_filename, $dest );
-        JFile::delete($src_code . DS . $archive_filename);
+        $ret = JArchive::extract ( $src_code . DIRECTORY_SEPARATOR . $archive_filename, $dest );
+        JFile::delete($src_code . DIRECTORY_SEPARATOR . $archive_filename);
 
         if ($ret) {
             $joomla = JFusionFactory::getParams('joomla_int');
             $joomla_baseurl = $joomla->get('source_url');
-            $joomla_source_path = JPATH_ROOT.DS;
+            $joomla_source_path = JPATH_ROOT.DIRECTORY_SEPARATOR;
 
             // now set all relevant parameters in Moodles database
             // do not yet activate!
@@ -298,7 +298,7 @@ HTML;
             $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_expires\', value = \'1800\'';
             foreach($querys as $query){
                 $db->setQuery($query);
-                $db->query();
+                $db->execute();
                 if ($db->getErrorNum() != 0) {
                     $status['error'] = $db->stderr ();
                     return $status;
@@ -325,7 +325,7 @@ HTML;
         $db = JFusionFactory::getDatabase($jname);
         $params = JFusionFactory::getParams ( $jname );
         $source_path = $params->get ( 'source_path' );
-        $xmlfile = realpath ( dirname ( __FILE__ ) ) . DS . 'install_module' . DS . 'source' . DS . 'listfiles.xml';
+        $xmlfile = realpath ( dirname ( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'install_module' . DIRECTORY_SEPARATOR . 'source' . DIRECTORY_SEPARATOR . 'listfiles.xml';
 
 	    $listfiles = JFusionFunction::getXml($xmlfile);
         $files = $listfiles->getElementByPath('file');
@@ -337,11 +337,11 @@ HTML;
         foreach($files as $file){
             $file = $file->data();
             $file = preg_replace('#/#', DS, $file);
-            @chmod($source_path . DS . $file, 0777);
-            if(!is_dir($source_path . DS . $file)){
-                JFile::delete($source_path . DS . $file);
+            @chmod($source_path . DIRECTORY_SEPARATOR . $file, 0777);
+            if(!is_dir($source_path . DIRECTORY_SEPARATOR . $file)){
+                JFile::delete($source_path . DIRECTORY_SEPARATOR . $file);
             }else{
-                JFolder::delete($source_path . DS . $file);
+                JFolder::delete($source_path . DIRECTORY_SEPARATOR . $file);
             }
         }
         $querys = array();
@@ -365,7 +365,7 @@ HTML;
         $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_expires\'';
         foreach($querys as $query){
             $db->setQuery($query);
-            $db->query();
+            $db->execute();
             if ($db->getErrorNum() != 0) {
                 $status['error'] = $db->stderr ();
                 return $status;
@@ -401,7 +401,7 @@ HTML;
         $db = JFusionFactory::getDatabase($jname);
 
         $source_path = $params->get ( 'source_path' );
-        $jfusion_auth = $source_path . DS .'auth'. DS .'jfusion'. DS .'auth.php';
+        $jfusion_auth = $source_path . DIRECTORY_SEPARATOR .'auth'. DIRECTORY_SEPARATOR .'jfusion'. DIRECTORY_SEPARATOR .'auth.php';
         if(file_exists($jfusion_auth)){
             // find out if jfusion is listed in the active auth plugins
             $query = 'SELECT value from #__config WHERE name = \'auth\'';
@@ -457,7 +457,7 @@ HTML;
         if ($activation == 'true') {
             $query = 'UPDATE #__config_plugins SET value = \'1\' WHERE plugin = \'auth/jfusion\' AND name = \'jf_enabled\'';
             $db->setQuery($query);
-            $db->query();
+            $db->execute();
             if ($db->getErrorNum() != 0) {
                 $status['error'] = $db->stderr ();
                 return $status;
@@ -478,7 +478,7 @@ HTML;
             $value .= ',jfusion';
             $query = 'UPDATE #__config SET value = \''.$value.'\' WHERE name = \'auth\'';
             $db->setQuery($query);
-            $db->query();
+            $db->execute();
             if ($db->getErrorNum() != 0) {
                 $status['error'] = $db->stderr ();
                 return $status;
@@ -486,7 +486,7 @@ HTML;
         } else {
             $query = 'UPDATE #__config_plugins SET value = \'0\' WHERE plugin = \'auth/jfusion\' AND name = \'jf_enabled\'';
             $db->setQuery($query);
-            $db->query();
+            $db->execute();
             if ($db->getErrorNum() != 0) {
                 $status['error'] = $db->stderr ();
                 return $status;
@@ -506,7 +506,7 @@ HTML;
                 }
                 $query = 'UPDATE #__config SET value = \''.$authstr.'\' WHERE name = \'auth\'';
                 $db->setQuery($query);
-                $db->query();
+                $db->execute();
                 if ($db->getErrorNum() != 0) {
                     $status['error'] = $db->stderr ();
                     return $status;

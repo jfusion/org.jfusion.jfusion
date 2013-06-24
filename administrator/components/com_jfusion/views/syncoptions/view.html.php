@@ -28,7 +28,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class jfusionViewsyncoptions extends JView
+class jfusionViewsyncoptions extends JViewLegacy
 {
 
     /**
@@ -54,7 +54,7 @@ class jfusionViewsyncoptions extends JView
             $query = 'SELECT syncid FROM #__jfusion_sync WHERE syncid =' . $db->Quote($syncid);
             $db->setQuery($query);
             if ($db->loadResult()) {
-                include_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.usersync.php';
+                include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
                 $syncdata = JFusionUsersync::getSyncdata($syncid);
                 $this->assignRef('syncdata', $syncdata);
                 $mode = 'resume';
@@ -96,11 +96,7 @@ class jfusionViewsyncoptions extends JView
             $this->assignRef('slave_data', $slave_data);
             $this->assignRef('syncid', $syncid);
             $this->assignRef('sync_active', $sync_active);
-            if(JFusionFunction::isJoomlaVersion('1.6')){
-                parent::display('25');
-            } else {
-                parent::display('15');
-            }
+	        parent::display('25');
         } else {
             JFusionFunctionAdmin::displayDonate();
             JError::raiseWarning(500, JText::_('SYNC_NOCONFIG'));

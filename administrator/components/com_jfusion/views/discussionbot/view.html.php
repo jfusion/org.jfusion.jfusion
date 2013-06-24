@@ -15,7 +15,7 @@ jimport('joomla.application.component.view');
 * Renders the a screen that allows the user to choose a JFusion integration method
 * @package JFusion
 */
-class jfusionViewdiscussionbot extends JView
+class jfusionViewdiscussionbot extends JViewLegacy
 {
     /**
      * @param null $tpl
@@ -44,26 +44,20 @@ class jfusionViewdiscussionbot extends JView
         	case 'pair_categories' :
         		$title = JText::_('ASSIGN_CATEGORY_PAIRS');
 
-        		if (JFusionFunction::isJoomlaVersion('1.6')) {
-        		    $query	= $db->getQuery(true);
-        			$query->select('a.id, a.title as name, a.level');
-        			$query->from('#__categories AS a');
-        			$query->where('a.parent_id > 0');
-        			$query->where('extension = \'com_content\'');
-                    $query->where('a.published = 1');
-        			$query->order('a.lft');
+		        $query	= $db->getQuery(true);
+		        $query->select('a.id, a.title as name, a.level');
+		        $query->from('#__categories AS a');
+		        $query->where('a.parent_id > 0');
+		        $query->where('extension = \'com_content\'');
+		        $query->where('a.published = 1');
+		        $query->order('a.lft');
 
-        			$db->setQuery($query);
-        			$joomlaoptions = $db->loadObjectList('id');
-        			foreach ($joomlaoptions as &$item) {
-        				$repeat = ( $item->level - 1 >= 0 ) ? $item->level - 1 : 0;
-        				$item->name = str_repeat('- ', $repeat).$item->name;
-        			}
-        		} else {
-    			    $query = 'SELECT c.id, CONCAT_WS( "/",s.title, c.title ) AS name FROM #__categories AS c LEFT JOIN #__sections AS s ON s.id=c.section WHERE c.published = 1 AND s.scope = "content" ORDER BY s.title, c.title';
-    			    $db->setQuery($query);
-        		    $joomlaoptions = $db->loadObjectList('id');
-        		}
+		        $db->setQuery($query);
+		        $joomlaoptions = $db->loadObjectList('id');
+		        foreach ($joomlaoptions as &$item) {
+			        $repeat = ( $item->level - 1 >= 0 ) ? $item->level - 1 : 0;
+			        $item->name = str_repeat('- ', $repeat).$item->name;
+		        }
 
         		break;
         	case 'pair_k2_categories':
@@ -123,16 +117,6 @@ class jfusionViewdiscussionbot extends JView
 		//joomla select options
         $joomlaSelectOptions = $joomlaoptions;
 
-        //best to do this only for J1.5 due to J1.6+ new structure or for K2
-        if (!JFusionFunction::isJoomlaVersion('1.6') && $ename != 'pair_k2_categories') {
-            if(!empty($pairs)) {
-    	        //remove paired sections/categories from select options
-    	        foreach($pairs AS $jid => $fid) {
-    	        	unset($joomlaSelectOptions[$jid]);
-    	        }
-            }
-        }
-
 		$document->addStyleSheet('components/com_jfusion/css/jfusion.css');
         $template = $mainframe->getTemplate();
 		$document->addStyleSheet("templates/$template/css/general.css");
@@ -144,8 +128,7 @@ class jfusionViewdiscussionbot extends JView
 		//prepare a toolbar
         $apply = JText::_('APPLY');
         $close = JText::_('CLOSE');
-        if (JFusionFunction::isJoomlaVersion('1.6')) {
-            $toolbar = <<<HTML
+	    $toolbar = <<<HTML
                 <div class="m">
                     <div class="toolbar-list" id="toolbar">
                         <ul>
@@ -160,29 +143,6 @@ class jfusionViewdiscussionbot extends JView
                     </div>
                 </div>
 HTML;
-        } else {
-            $toolbar = <<<HTML
-    		    <div id="My Toolbar" class="toolbar">
-                    <table class="toolbar">
-                        <tbody>
-                            <tr>
-                                <td id="My Toolbar-apply" class="button">
-                                    <a class="toolbar" onclick="window.parent.jDiscussionParamSet('{$ename}', '{$encoded_pairs}');" href="javascript: void(0);">
-                                        <span title="{$apply}" class="icon-32-apply"></span>{$apply}
-                                    </a>
-                                </td>
-                                <td id="My Toolbar-cancel" class="button">
-                                    <a class="toolbar" onclick="window.parent.SqueezeBox.close();" href="javascript:void(0);">
-                                        <span title="{$close}" class="icon-32-cancel"></span>
-                                        {$close}
-                                    </a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-HTML;
-        }
 
 	    //assign references
 	    $this->assignRef('jname', $jname);

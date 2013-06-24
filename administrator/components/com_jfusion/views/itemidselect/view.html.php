@@ -28,7 +28,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class jfusionViewitemidselect extends JView
+class jfusionViewitemidselect extends JViewLegacy
 {
     /**
      * displays the view
@@ -64,18 +64,13 @@ class jfusionViewitemidselect extends JView
         $menus		= $app->getMenu('site');
         $component	= JComponentHelper::getComponent('com_jfusion');
 
-        if ( JFusionFunction::isJoomlaVersion()) {
-            $menuitems		= $menus->getItems('component_id', $component->id);
-        } else {
-            $menuitems		= $menus->getItems('componentid', $component->id);
-        }
+	    $menuitems		= $menus->getItems('component_id', $component->id);
+
         foreach ($menuitems as $key => $row) {
             if ($row->link != 'index.php?option=com_jfusion&view=plugin') {
                 unset($menuitems[$key]);
             } else {
-                if (JFusionFunction::isJoomlaVersion('1.6')) {
-                    $row->name = $row->title;
-                }
+	            $row->name = $row->title;
             }
         }
 

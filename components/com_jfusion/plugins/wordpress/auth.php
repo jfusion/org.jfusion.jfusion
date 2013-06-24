@@ -59,7 +59,7 @@ class JFusionAuth_wordpress extends JFusionAuth
     function generateEncryptedPassword($userinfo) {
         // get the encryption PHP file
         if (!class_exists('PasswordHashOrg')) {
-            require_once JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'PasswordHashOrg.php';
+            require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'PasswordHashOrg.php';
         }
         $t_hasher = new PasswordHashOrg(8, true);
         $check = $t_hasher->CheckPassword($userinfo->password_clear, $userinfo->password);

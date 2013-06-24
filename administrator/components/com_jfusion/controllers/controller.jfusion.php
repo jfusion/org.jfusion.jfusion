@@ -21,10 +21,10 @@ defined('_JEXEC') or die('Restricted access');
  */
 jimport('joomla.application.component.controller');
 jimport('joomla.application.component.view');
-require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'defines.php';
-require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.factory.php';
-require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.jfusion.php';
-require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.jfusionadmin.php';
+require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'defines.php';
+require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.factory.php';
+require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jfusion.php';
+require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jfusionadmin.php';
 /**
  * JFusion Controller class
  *
@@ -35,7 +35,7 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.jfusion
  * @license   http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link      http://www.jfusion.org
  */
-class JFusionController extends JController
+class JFusionController extends JControllerLegacy
 {
     /**
      * @param bool $cachable
@@ -75,7 +75,7 @@ class JFusionController extends JController
                 $db = JFactory::getDBO();
                 $query = 'UPDATE #__jfusion SET status = ' . $config_status['config'] . ' WHERE name =' . $db->Quote($jname);
                 $db->setQuery($query);
-                $db->query();
+                $db->execute();
 
                 $msg = JText::_('WIZARD_SUCCESS');
                 $msgType = 'notice';
@@ -104,12 +104,12 @@ class JFusionController extends JController
                 //If a master is being set make sure all other masters are disabled first
                 $query = 'UPDATE #__jfusion SET master = 0';
                 $db->setQuery($query);
-                $db->query();
+                $db->execute();
             }
             //perform the update
             $query = 'UPDATE #__jfusion SET ' . $field_name . ' =' . $db->Quote($field_value) . ' WHERE name = ' . $db->Quote($jname);
             $db->setQuery($query);
-            $db->query();
+            $db->execute();
             //get the new plugin settings
             $query = 'SELECT * FROM #__jfusion WHERE name = ' . $db->Quote($jname);
             $db->setQuery($query);
@@ -118,13 +118,13 @@ class JFusionController extends JController
             if ($field_name == 'master' && $field_value == '1' && $result->slave == '1') {
                 $query = 'UPDATE #__jfusion SET slave = 0 WHERE name = ' . $db->Quote($jname);
                 $db->setQuery($query);
-                $db->query();
+                $db->execute();
             }
             //disable a master when it is turned into a slave
             if ($field_name == 'slave' && $field_value == '1' && $result->master == '1') {
                 $query = 'UPDATE #__jfusion SET master = 0 WHERE name = ' . $db->Quote($jname);
                 $db->setQuery($query);
-                $db->query();
+                $db->execute();
             }
             //auto enable the auth and dual login for newly enabled plugins
             if (($field_name == 'slave' || $field_name == 'master') && $field_value == '1') {
@@ -135,11 +135,11 @@ class JFusionController extends JController
                     //only set the encryption if dual login is disabled
                     $query = 'UPDATE #__jfusion SET check_encryption = 1 WHERE name = ' . $db->Quote($jname);
                     $db->setQuery($query);
-                    $db->query();
+                    $db->execute();
                 } else {
                     $query = 'UPDATE #__jfusion SET dual_login = 1, check_encryption = 1 WHERE name = ' . $db->Quote($jname);
                     $db->setQuery($query);
-                    $db->query();
+                    $db->execute();
                 }
             }
             //auto disable the auth and dual login for newly disabled plugins
@@ -147,7 +147,7 @@ class JFusionController extends JController
                 //only set the encryption if dual login is disabled
                 $query = 'UPDATE #__jfusion SET check_encryption = 0, dual_login = 0 WHERE name = ' . $db->Quote($jname);
                 $db->setQuery($query);
-                $db->query();
+                $db->execute();
             }
         }
 
@@ -211,7 +211,7 @@ class JFusionController extends JController
             $db = JFactory::getDBO();
             $query = 'UPDATE #__jfusion SET status = ' . $config_status['config'] . ' WHERE name =' . $db->Quote($jname);
             $db->setQuery($query);
-            $db->query();
+            $db->execute();
             if (empty($config_status['config'])) {
                 $msg = $jname . ': ' . $config_status['message'];
                 $msgType = 'error';
@@ -249,7 +249,7 @@ class JFusionController extends JController
         $db->setQuery($query);
         if ($db->loadResult()) {
             //Load usersync library
-            include_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.usersync.php';
+            include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
             $syncdata = JFusionUsersync::getSyncdata($syncid);
 	        if (is_array($syncdata)) {
 		        //start the usersync
@@ -281,7 +281,7 @@ class JFusionController extends JController
     function syncprogress()
     {
         $syncid = JRequest::getVar('syncid', '', 'GET');
-        include_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.usersync.php';
+        include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
         $syncdata = JFusionUsersync::getSyncdata($syncid);
         die(json_encode($syncdata));
     }
@@ -294,7 +294,7 @@ class JFusionController extends JController
     function syncerror()
     {
         //Load usersync library
-        include_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.usersync.php';
+        include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
         $syncError = JRequest::getVar('syncError', array(), 'POST', 'array');
         $syncid = JRequest::getVar('syncid', '', 'POST');
         if ($syncError) {
@@ -315,7 +315,7 @@ class JFusionController extends JController
     function syncerrordetails()
     {
         //Load usersync library
-        include_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.usersync.php';
+        include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
         /**
          * @ignore
          * @var $view JView
@@ -335,7 +335,7 @@ class JFusionController extends JController
     function syncinitiate()
     {
         //Load usersync library
-        include_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.usersync.php';
+        include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
         //check to see if the sync has already started
         $syncid = JRequest::getVar('syncid');
         $action = JRequest::getVar('action');
@@ -414,7 +414,7 @@ class JFusionController extends JController
      */
     function installplugin()
     {
-        include_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.install.php';
+        include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.install.php';
         $model = new JFusionModelInstaller();
         $result = $model->install();
 
@@ -442,10 +442,10 @@ class JFusionController extends JController
     function installplugins()
     {
         $jfusionplugins = JRequest::getVar('jfusionplugins', array(), 'post', 'array');
-        include_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.install.php';
+        include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.install.php';
         foreach ($jfusionplugins as $plugin) {
             //install updates
-            $packagename = JPATH_COMPONENT_ADMINISTRATOR . DS . 'packages' . DS . 'jfusion_' . $plugin . '.zip';
+            $packagename = JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'packages' . DIRECTORY_SEPARATOR . 'jfusion_' . $plugin . '.zip';
             $model = new JFusionModelInstaller();
             $result = $model->installZIP($packagename);
             JError::raiseNotice(0, $result['message']);
@@ -472,12 +472,12 @@ class JFusionController extends JController
         if ($jname && $new_jname && $record) {
 	        $JFusionPlugin = JFusionFactory::getAdmin($jname);
 	        if ($JFusionPlugin->multiInstance()) {
-		        include_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.install.php';
+		        include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.install.php';
 		        $model = new JFusionModelInstaller();
 		        $result = $model->copy($jname, $new_jname);
 
 		        //get description
-		        $plugin_xml = JFUSION_PLUGIN_PATH .DS. $jname .DS. 'jfusion.xml';
+		        $plugin_xml = JFUSION_PLUGIN_PATH .DIRECTORY_SEPARATOR. $jname .DIRECTORY_SEPARATOR. 'jfusion.xml';
 		        if(file_exists($plugin_xml) && is_readable($plugin_xml)) {
 			        $xml = JFusionFunction::getXml($plugin_xml);
 
@@ -524,7 +524,7 @@ class JFusionController extends JController
 
         //check to see if an integration was selected
         if ($jname && $jname != 'joomla_int' && !$copys) {
-            include_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.install.php';
+            include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.install.php';
             $model = new JFusionModelInstaller();
             $result = $model->uninstall($jname);
         } else {
@@ -600,11 +600,11 @@ class JFusionController extends JController
             foreach ($syncid as $key => $value) {
                 $query = 'DELETE FROM #__jfusion_sync WHERE syncid = ' . $db->Quote($key);
                 $db->setQuery($query);
-                $db->query();
+                $db->execute();
 
                 $query = 'DELETE FROM #__jfusion_sync_details WHERE syncid = ' . $db->Quote($key);
                 $db->setQuery($query);
-                $db->query();
+                $db->execute();
             }
         }
         JRequest::setVar('view', 'synchistory');
@@ -820,7 +820,7 @@ JS;
 						    $db = JFactory::getDBO();
 						    $query = 'UPDATE #__jfusion SET status = ' . $config_status['config'] . ' WHERE name =' . $db->Quote($jname);
 						    $db->setQuery($query);
-						    $db->query();
+						    $db->execute();
 						    if (empty($config_status['config'])) {
 							    $error = $jname . ': ' . $config_status['message'];
 						    } else {
@@ -876,7 +876,7 @@ JS;
         $info->addAttribute  ('jfusionrevision',  $RevisionCurrent);
 
         //get the current JFusion version number
-        $filename = JFUSION_PLUGIN_PATH .DS.$jname.DS.'jfusion.xml';
+        $filename = JFUSION_PLUGIN_PATH .DIRECTORY_SEPARATOR.$jname.DIRECTORY_SEPARATOR.'jfusion.xml';
         if (file_exists($filename) && is_readable($filename)) {
             //get the version number
 	        $element = JFusionFunction::getXml($filename);

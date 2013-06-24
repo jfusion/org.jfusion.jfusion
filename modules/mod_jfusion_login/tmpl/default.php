@@ -32,7 +32,7 @@ defined('_JEXEC') or die('Restricted access');
  */
 
 $output = '';
-$form_id = (JFusionFunction::isJoomlaVersion('1.6')) ? 'login-form' : 'form-login';
+$form_id = 'login-form';
 if ( $params->get('layout') == 'horizontal' ) {
     if ($type == 'logout') {
          $output .= '<form action="' . JRoute::_( 'index.php', true, $params->get('usesecure')). '" method="post" name="login" id="'.$form_id.'" >';
@@ -75,13 +75,8 @@ if ( $params->get('layout') == 'horizontal' ) {
         $output .= '<input type="hidden" name="silent" value="true" />';
         $output .= '<input type="hidden" name="return" value="' .$return .'" />';
 
-        if(JFusionFunction::isJoomlaVersion('1.6')){
-            $output .= '<input type="hidden" name="task" value="user.logout" />';
-            $output .= '<input type="hidden" name="option" value="com_users" />';
-        } else {
-            $output .= '<input type="hidden" name="task" value="logout" />';
-            $output .= '<input type="hidden" name="option" value="com_user" />';
-        }
+	    $output .= '<input type="hidden" name="task" value="user.logout" />';
+	    $output .= '<input type="hidden" name="option" value="com_users" />';
         $output .= JHTML::_('form.token');
         $output .= '</form>';
     } else {
@@ -99,11 +94,7 @@ if ( $params->get('layout') == 'horizontal' ) {
         if ($params->get('show_labels',1)) {
         	$output .= '<label for="modlgn_passwd">'. JText::_('PASSWORD'). '</label> ';
         }
-        if(JFusionFunction::isJoomlaVersion('1.6')){
-            $output .= '<input placeholder="'.JText::_('PASSWORD').'" id="modlgn_passwd" type="password" name="password" class="inputbox" size="18" alt="password" /> ';
-        } else {
-            $output .= '<input placeholder="'.JText::_('PASSWORD').'" id="modlgn_passwd" type="password" name="passwd" class="inputbox" size="18" alt="password" /> ';
-        }
+	    $output .= '<input placeholder="'.JText::_('PASSWORD').'" id="modlgn_passwd" type="password" name="password" class="inputbox" size="18" alt="password" /> ';
 
         if ($params->get('show_rememberme')) {
             $output .= '<label for="modlgn_remember">' .JText::_('REMEMBER_ME') .'</label> ';
@@ -131,13 +122,8 @@ if ( $params->get('layout') == 'horizontal' ) {
 
         $output .= $params->get('posttext');
 
-        if(JFusionFunction::isJoomlaVersion('1.6')){
-            $output .= '<input type="hidden" name="task" value="user.login" />';
-            $output .= '<input type="hidden" name="option" value="com_users" />';
-        } else {
-            $output .= '<input type="hidden" name="task" value="login" />';
-            $output .= '<input type="hidden" name="option" value="com_user" />';
-        }
+	    $output .= '<input type="hidden" name="task" value="user.login" />';
+	    $output .= '<input type="hidden" name="option" value="com_users" />';
         $output .= '<input type="hidden" name="silent" value="true" />';
         $output .= '<input type="hidden" name="return" value="' .$return . '" />';
         $output .= JHTML::_('form.token') . '</form>';
@@ -185,13 +171,8 @@ if ( $params->get('layout') == 'horizontal' ) {
         $output .= '<input type="submit" name="Submit" class="button" value="' .JText::_('BUTTON_LOGOUT'). '" />';
         $output .= '</div>';
 
-        if(JFusionFunction::isJoomlaVersion('1.6')){
-            $output .= '<input type="hidden" name="task" value="user.logout" />';
-            $output .= '<input type="hidden" name="option" value="com_users" />';
-        } else {
-            $output .= '<input type="hidden" name="task" value="logout" />';
-            $output .= '<input type="hidden" name="option" value="com_user" />';
-        }
+	    $output .= '<input type="hidden" name="task" value="user.logout" />';
+	    $output .= '<input type="hidden" name="option" value="com_users" />';
 
         $output .= '<input type="hidden" name="silent" value="true" />';
         $output .= '<input type="hidden" name="return" value="' .$return .'" />';
@@ -212,12 +193,8 @@ if ( $params->get('layout') == 'horizontal' ) {
         
         if ($params->get('show_labels',1)) {
         	$output .= '<label for="modlgn_passwd">'. JText::_('PASSWORD'). '</label><br />';
-        }        
-        if(JFusionFunction::isJoomlaVersion('1.6')){
-            $output .= '<input placeholder="'.JText::_('PASSWORD').'" id="modlgn_passwd" type="password" name="password" class="inputbox" size="18" alt="password" /></p> ';
-        } else {
-            $output .= '<input placeholder="'.JText::_('PASSWORD').'" id="modlgn_passwd" type="password" name="passwd" class="inputbox" size="18" alt="password" /></p> ';
         }
+	    $output .= '<input placeholder="'.JText::_('PASSWORD').'" id="modlgn_passwd" type="password" name="password" class="inputbox" size="18" alt="password" /></p> ';
 
         if ($params->get('show_rememberme')) {
             $output .= '<p id="form-login-remember">';
@@ -246,13 +223,8 @@ if ( $params->get('layout') == 'horizontal' ) {
 
         $output .= $params->get('posttext');
 
-        if(JFusionFunction::isJoomlaVersion('1.6')){
-            $output .= '<input type="hidden" name="task" value="user.login" />';
-            $output .= '<input type="hidden" name="option" value="com_users" />';
-        } else {
-            $output .= '<input type="hidden" name="task" value="login" />';
-            $output .= '<input type="hidden" name="option" value="com_user" />';
-        }
+	    $output .= '<input type="hidden" name="task" value="user.login" />';
+	    $output .= '<input type="hidden" name="option" value="com_users" />';
         $output .= '<input type="hidden" name="silent" value="true" />';
         $output .= '<input type="hidden" name="return" value="' .$return . '" />';
         $output .= JHTML::_('form.token') . '</form>';

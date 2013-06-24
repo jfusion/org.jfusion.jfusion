@@ -110,7 +110,7 @@ class JFusionUser_phpbb3 extends JFusionUser
         //update session time for the user into user table
         $query = 'UPDATE #__users SET user_lastvisit =' . time() . ' WHERE user_id =' . (int)$userinfo->userid;
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['debug'][] = 'Error could not update the last visit field ' . $db->stderr();
         }
         //delete the cookies
@@ -124,13 +124,13 @@ class JFusionUser_phpbb3 extends JFusionUser
         //delete the database sessions
         $query = 'DELETE FROM #__sessions WHERE session_user_id =' . (int)$userinfo->userid;
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['error'][] = 'Error: Could not delete session in database ' . $db->stderr();
             return $status;
         }
         $query = 'DELETE FROM #__sessions_keys WHERE user_id =' . (int)$userinfo->userid;
         $db->setQuery($query);
-        if ($db->query()) {
+        if ($db->execute()) {
             $status['debug'][] = 'Deleted the session key';
         } else {
             $status['debug'][] = 'Error could not delete the session key:' . $db->stderr();
@@ -351,7 +351,7 @@ class JFusionUser_phpbb3 extends JFusionUser
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'UPDATE #__users SET user_password =' . $db->Quote($existinguser->password) . ', user_pass_convert = 0 WHERE user_id =' . (int)$existinguser->userid;
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . $db->stderr();
         } else {
             $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
@@ -380,7 +380,7 @@ class JFusionUser_phpbb3 extends JFusionUser
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'UPDATE #__users SET user_email =' . $db->Quote($userinfo->email) . ' WHERE user_id =' . (int)$existinguser->userid;
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $db->stderr();
         } else {
             $status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
@@ -429,7 +429,7 @@ class JFusionUser_phpbb3 extends JFusionUser
                 //remove the old usergroup for the user in the groups table
                 $query = 'DELETE FROM #__user_group WHERE group_id = ' . (int)$existinguser->group_id . ' AND user_id = ' . (int)$existinguser->userid;
                 $db->setQuery($query);
-                if (!$db->query()) {
+                if (!$db->execute()) {
                     $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
                 }
 
@@ -440,7 +440,7 @@ class JFusionUser_phpbb3 extends JFusionUser
                 if ($existinguser->group_id == $groups['NEWLY_REGISTERED']->group_id) {
                     $query = 'DELETE FROM #__user_group WHERE group_id = ' . (int)$groups['REGISTERED']->group_id . ' AND user_id = ' . (int)$existinguser->userid;
                     $db->setQuery($query);
-                    if (!$db->query()) {
+                    if (!$db->execute()) {
                         //return the error
                         $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
                         return;
@@ -450,14 +450,14 @@ class JFusionUser_phpbb3 extends JFusionUser
                 //add the user in the groups table
                 $query = 'INSERT INTO #__user_group (group_id, user_id ,group_leader, user_pending) VALUES (' . (int)$usergroup . ', ' . (int)$existinguser->userid . ',0,0)';
                 $db->setQuery($query);
-                if (!$db->query()) {
+                if (!$db->execute()) {
                     $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
                 } else {
                     if ($usergroup == $groups['NEWLY_REGISTERED']->group_id) {
                         //we need to also add the user to the regular registered group or they may find themselves groupless
                         $query = 'INSERT INTO #__user_group (group_id, user_id, group_leader, user_pending) VALUES (' . $groups['REGISTERED']->group_id . ',' . (int)$existinguser->userid . ', 0,0 )';
                         $db->setQuery($query);
-                        if (!$db->query()) {
+                        if (!$db->execute()) {
                             //return the error
                             $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
                             return;
@@ -467,21 +467,21 @@ class JFusionUser_phpbb3 extends JFusionUser
                     //update correct group colors where applicable
                     $query = 'UPDATE #__forums SET forum_last_poster_colour = ' . $db->Quote($user->user_colour) . ' WHERE forum_last_poster_id = ' . (int)$existinguser->userid;
                     $db->setQuery($query);
-                    if (!$db->query()) {
+                    if (!$db->execute()) {
                         //return the error
                         $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
                     }
 
                     $query = 'UPDATE #__topics SET topic_first_poster_colour = ' . $db->Quote($user->user_colour) . ' WHERE topic_poster = ' . (int)$existinguser->userid;
                     $db->setQuery($query);
-                    if (!$db->query()) {
+                    if (!$db->execute()) {
                         //return the error
                         $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
                     }
 
                     $query = 'UPDATE #__topics SET topic_last_poster_colour = ' . $db->Quote($user->user_colour) . ' WHERE topic_last_poster_id = ' . (int)$existinguser->userid;
                     $db->setQuery($query);
-                    if (!$db->query()) {
+                    if (!$db->execute()) {
                         //return the error
                         $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
                     }
@@ -491,7 +491,7 @@ class JFusionUser_phpbb3 extends JFusionUser
                     $newest_user_id = $db->loadResult();
                     if ($newest_user_id == $existinguser->userid) {
                         $query = 'UPDATE #__config SET config_value = ' . $db->Quote($user->user_colour) . ' WHERE config_name = \'newest_user_id\'';
-                        if (!$db->query()) {
+                        if (!$db->execute()) {
                             //return the error
                             $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
                         }
@@ -516,7 +516,7 @@ class JFusionUser_phpbb3 extends JFusionUser
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'INSERT INTO #__banlist (ban_userid, ban_start) VALUES (' . (int)$existinguser->userid . ',' . time() . ')';
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $db->stderr();
         } else {
             $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
@@ -535,7 +535,7 @@ class JFusionUser_phpbb3 extends JFusionUser
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'DELETE FROM #__banlist WHERE ban_userid=' . (int)$existinguser->userid;
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $db->stderr();
         } else {
             $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
@@ -554,7 +554,7 @@ class JFusionUser_phpbb3 extends JFusionUser
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'UPDATE #__users SET user_type = 0, user_inactive_reason =0, user_actkey = \'\'  WHERE user_id =' . (int)$existinguser->userid;
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $db->stderr();
         } else {
             $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
@@ -573,7 +573,7 @@ class JFusionUser_phpbb3 extends JFusionUser
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'UPDATE #__users SET user_type = 1, user_inactive_reason = 1, user_actkey =' . $db->Quote($userinfo->activation) . ' WHERE user_id =' . (int)$existinguser->userid;
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $db->stderr();
         } else {
             $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
@@ -703,7 +703,7 @@ class JFusionUser_phpbb3 extends JFusionUser
                     //now create a user_group entry
                     $query = 'INSERT INTO #__user_group (group_id, user_id, group_leader, user_pending) VALUES (' . $usergroup . ',' . (int)$user->id . ', 0,0 )';
                     $db->setQuery($query);
-                    if (!$db->query()) {
+                    if (!$db->execute()) {
                         //return the error
                         $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
                     } else {
@@ -715,7 +715,7 @@ class JFusionUser_phpbb3 extends JFusionUser
                             //we need to also add the user to the regular registered group or they may find themselves groupless
                             $query = 'INSERT INTO #__user_group (group_id, user_id, group_leader, user_pending) VALUES (' . $groups['REGISTERED']->group_id . ',' . (int)$user->id . ', 0,0 )';
                             $db->setQuery($query);
-                            if (!$db->query()) {
+                            if (!$db->execute()) {
                                 //return the error
                                 $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
                                 return;
@@ -725,21 +725,21 @@ class JFusionUser_phpbb3 extends JFusionUser
                         //update the total user count
                         $query = 'UPDATE #__config SET config_value = config_value + 1 WHERE config_name = \'num_users\'';
                         $db->setQuery($query);
-                        if (!$db->query()) {
+                        if (!$db->execute()) {
                             //return the error
                             $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
                         } else {
                             //update the newest username
                             $query = 'UPDATE #__config SET config_value = ' . $db->Quote($userinfo->username) . ' WHERE config_name = \'newest_username\'';
                             $db->setQuery($query);
-                            if (!$db->query()) {
+                            if (!$db->execute()) {
                                 //return the error
                                 $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
                             } else {
                                 //update the newest userid
                                 $query = 'UPDATE #__config SET config_value = ' . (int)$user->id . ' WHERE config_name = \'newest_user_id\'';
                                 $db->setQuery($query);
-                                if (!$db->query()) {
+                                if (!$db->execute()) {
                                     //return the error
                                     $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
                                 } else {
@@ -748,7 +748,7 @@ class JFusionUser_phpbb3 extends JFusionUser
                                         //set the correct new username color
                                         $query = 'UPDATE #__config SET config_value = ' . $db->Quote($user->user_colour) . ' WHERE config_name = \'newest_user_colour\'';
                                         $db->setQuery($query);
-                                        if (!$db->query()) {
+                                        if (!$db->execute()) {
                                             //return the error
                                             $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
                                         }
@@ -756,7 +756,7 @@ class JFusionUser_phpbb3 extends JFusionUser
                                     if (!empty($userinfo->block) && $update_block) {
                                         $query = 'INSERT INTO #__banlist (ban_userid, ban_start) VALUES (' . (int)$user->id . ',' . time() . ')';
                                         $db->setQuery($query);
-                                        if (!$db->query()) {
+                                        if (!$db->execute()) {
                                             $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $db->stderr();
                                         } else {
                                             $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $userinfo->block;
@@ -792,7 +792,7 @@ class JFusionUser_phpbb3 extends JFusionUser
                 AND p.post_id = r.post_id';
         $db->setQuery($query);
         $report_posts = $report_topics = array();
-        if ($db->query()) {
+        if ($db->execute()) {
             $results = $db->loadObjectList();
             if ($results) {
                 foreach ($results as $row) {
@@ -816,7 +816,7 @@ class JFusionUser_phpbb3 extends JFusionUser
                     AND post_id IN (' . implode(', ', $report_posts) . ')';
             $db->setQuery($query);
             $keep_report_topics = array();
-            if ($db->query()) {
+            if ($db->execute()) {
                 $results = $db->loadObjectList();
                 if ($results) {
                     foreach ($results as $row) {
@@ -836,7 +836,7 @@ class JFusionUser_phpbb3 extends JFusionUser
                 SET post_reported = 0
                 WHERE post_id IN (' . implode(', ', $report_posts) . ')';
             $db->setQuery($query);
-            if (!$db->query()) {
+            if (!$db->execute()) {
                 $status['error'][] = 'Error Could not update post reported flag: '.$db->stderr();
             } else {
                 //$status['debug'][] = 'Updated reported posts flag.';
@@ -846,7 +846,7 @@ class JFusionUser_phpbb3 extends JFusionUser
                     SET topic_reported = 0
                     WHERE topic_id IN (' . implode(', ', $report_topics) . ')';
                 $db->setQuery($query);
-                if (!$db->query()) {
+                if (!$db->execute()) {
                     $status['error'][] = 'Error Could not update topics reported flag: '.$db->stderr();
                 } else {
                     //$status['debug'][] = 'Updated reported topics flag.';
@@ -856,7 +856,7 @@ class JFusionUser_phpbb3 extends JFusionUser
         // Remove reports
         $query = 'DELETE FROM #__reports WHERE user_id = ' . (int)$user_id;
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['error'][] = 'Error Could not delete reports by user '.$user_id.': '.$db->stderr();
         } else {
             //$status['debug'][] = 'Deleted reported posts/topics by user '.$user_id;
@@ -867,7 +867,7 @@ class JFusionUser_phpbb3 extends JFusionUser
             SET forum_last_poster_id = 1, forum_last_poster_name = ' . $db->Quote($post_username) . ", forum_last_poster_colour = ''
             WHERE forum_last_poster_id = $user_id";
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['error'][] = 'Error Could not update forum last poster for user '.$user_id.': '.$db->stderr();
         } else {
             //$status['debug'][] = 'Updated last poster to anonymous if last post was by user '.$user_id;
@@ -876,7 +876,7 @@ class JFusionUser_phpbb3 extends JFusionUser
             SET poster_id = 1, post_username = ' . $db->Quote($post_username) . '
             WHERE poster_id = '.$user_id;
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['error'][] = 'Error Could not update posts by user '.$user_id.': '.$db->stderr();
         } else {
             //$status['debug'][] = 'Updated posts to be from anonymous if posted by user '.$user_id;
@@ -885,7 +885,7 @@ class JFusionUser_phpbb3 extends JFusionUser
             SET post_edit_user = 1
             WHERE post_edit_user = '.$user_id;
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['error'][] = 'Error Could not update edited posts by user '.$user_id.': '.$db->stderr();
         } else {
             //$status['debug'][] = 'Updated edited posts to be from anonymous if edited by user '.$user_id;
@@ -894,7 +894,7 @@ class JFusionUser_phpbb3 extends JFusionUser
             SET topic_poster = 1, topic_first_poster_name = ' . $db->Quote($post_username) . ', topic_first_poster_colour = \'\'
             WHERE topic_poster = '.$user_id;
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['error'][] = 'Error Could not update topics by user '.$user_id.': '.$db->stderr();
         } else {
             //$status['debug'][] = 'Updated topics to be from anonymous if started by user '.$user_id;
@@ -903,7 +903,7 @@ class JFusionUser_phpbb3 extends JFusionUser
             SET topic_last_poster_id = 1, topic_last_poster_name = ' . $db->Quote($post_username) . ', topic_last_poster_colour = \'\'
             WHERE topic_last_poster_id = '.$user_id;
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['error'][] = 'Error Could not update last topic poster for user '.$user_id.': '.$db->stderr();
         } else {
             //$status['debug'][] = 'Updated topic last poster to be anonymous if set as user '.$user_id;
@@ -918,7 +918,7 @@ class JFusionUser_phpbb3 extends JFusionUser
                 SET user_posts = user_posts + '.$user_posts.
                 ' WHERE user_id = 1';
             $db->setQuery($query);
-            if (!$db->query()) {
+            if (!$db->execute()) {
                 $status['error'][] = 'Error Could not update the number of posts for anonymous user: '.$db->stderr();
             } else {
                 //$status['debug'][] = 'Updated post count for anonymous user.';
@@ -929,7 +929,7 @@ class JFusionUser_phpbb3 extends JFusionUser
             $query = 'DELETE FROM #__'.$table.
                 ' WHERE user_id = '.$user_id;
             $db->setQuery($query);
-            if (!$db->query()) {
+            if (!$db->execute()) {
                 $status['error'][] = 'Error Could not delete records from '.$table.' for user '.$user_id.': '.$db->stderr();
             } else {
                 //$status['debug'][] = 'Deleted records from '.$table.' for user '.$user_id;
@@ -942,7 +942,7 @@ class JFusionUser_phpbb3 extends JFusionUser
                 AND folder_id = -3';
         $db->setQuery($query);
         $undelivered_msg = $undelivered_user = array();
-        if ($db->query()) {
+        if ($db->execute()) {
             $results = $db->loadObjectList();
             if ($results) {
                 foreach ($results as $row) {
@@ -958,7 +958,7 @@ class JFusionUser_phpbb3 extends JFusionUser
             $query = 'DELETE FROM #__privmsgs
                 WHERE msg_id (' . implode(', ', $undelivered_msg) . ')';
             $db->setQuery($query);
-            if (!$db->query()) {
+            if (!$db->execute()) {
                 $status['error'][] = 'Error Could not delete private messages for user '.$user_id.': '.$db->stderr();
             } else {
                 //$status['debug'][] = 'Deleted undelivered private messages from user '.$user_id;
@@ -968,7 +968,7 @@ class JFusionUser_phpbb3 extends JFusionUser
             WHERE author_id = ' . $user_id . '
                 AND folder_id = -3';
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['error'][] = 'Error Could not delete private messages that are in no folder from user '.$user_id.': '.$db->stderr();
         } else {
             //$status['debug'][] = 'Deleted private messages that are in no folder from user '.$user_id;
@@ -977,7 +977,7 @@ class JFusionUser_phpbb3 extends JFusionUser
         $query = 'DELETE FROM #__privmsgs_to
             WHERE user_id = ' . $user_id;
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['error'][] = 'Error Could not delete private messages to user '.$user_id.': '.$db->stderr();
         } else {
             //$status['debug'][] = 'Deleted private messages sent to user '.$user_id;
@@ -987,7 +987,7 @@ class JFusionUser_phpbb3 extends JFusionUser
             SET author_id = 1
             WHERE author_id = ' . $user_id;
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['error'][] = 'Error Could not update rest of private messages for user '.$user_id.' to anonymous: '.$db->stderr();
         } else {
             //$status['debug'][] = 'Updated the author to anonymous for the rest of the PMs in the "to" table if originally sent by user '.$user_id;
@@ -996,7 +996,7 @@ class JFusionUser_phpbb3 extends JFusionUser
             SET author_id = 1
             WHERE author_id = ' . $user_id;
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['error'][] = 'Error Could not update rest of private messages for user '.$user_id.' to anonymous: '.$db->stderr();
         } else {
             //$status['debug'][] = 'Updated the author to anonymous for the rest of the PMs in the main PM table if originally sent by user '.$user_id;
@@ -1010,7 +1010,7 @@ class JFusionUser_phpbb3 extends JFusionUser
                     user_unread_privmsg = user_unread_privmsg - ' . sizeof($ary) . '
                 WHERE user_id = ' . $_user_id;
             $db->setQuery($query);
-            if (!$db->query()) {
+            if (!$db->execute()) {
                 $status['error'][] = 'Error Could not update the number of PMs for user '.$_user_id.' for user '.$user_id.' was deleted: '.$db->stderr();
             } else {
                 //$status['debug'][] = 'Updated the the number of PMs for user '.$_user_id.' since user '.$user_id.' was deleted.';
@@ -1019,7 +1019,7 @@ class JFusionUser_phpbb3 extends JFusionUser
         //update the total user count
         $query = 'UPDATE #__config SET config_value = config_value - 1 WHERE config_name = \'num_users\'';
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             //return the error
             $status['error'][] = JText::_('USER_DELETION_ERROR') . $db->stderr();
             return $status;
@@ -1036,7 +1036,7 @@ class JFusionUser_phpbb3 extends JFusionUser
                 //update the newest username
                 $query = 'UPDATE #__config SET config_value = ' . $db->Quote($newest_user->username) . ' WHERE config_name = \'newest_username\'';
                 $db->setQuery($query);
-                if (!$db->query()) {
+                if (!$db->execute()) {
                     //return the error
                     $status['error'][] = JText::_('USER_DELETION_ERROR') . $db->stderr();
                     return $status;
@@ -1044,7 +1044,7 @@ class JFusionUser_phpbb3 extends JFusionUser
                 //update the newest userid
                 $query = 'UPDATE #__config SET config_value = ' . $newest_user->user_id . ' WHERE config_name = \'newest_user_id\'';
                 $db->setQuery($query);
-                if (!$db->query()) {
+                if (!$db->execute()) {
                     //return the error
                     $status['error'][] = JText::_('USER_DELETION_ERROR') . $db->stderr();
                     return $status;
@@ -1052,7 +1052,7 @@ class JFusionUser_phpbb3 extends JFusionUser
                 //set the correct new username color
                 $query = 'UPDATE #__config SET config_value = ' . $db->Quote($newest_user->user_colour) . ' WHERE config_name = \'newest_user_colour\'';
                 $db->setQuery($query);
-                if (!$db->query()) {
+                if (!$db->execute()) {
                     //return the error
                     $status['error'][] = JText::_('USER_DELETION_ERROR') . $db->stderr();
                     return $status;

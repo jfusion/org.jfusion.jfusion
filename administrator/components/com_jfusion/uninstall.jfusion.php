@@ -28,7 +28,7 @@ defined('_JEXEC') or die('Restricted access');
  * @return unknown_type
  */
 
-require_once(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.factory.php');
+require_once(JPATH_ADMINISTRATOR.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.factory.php');
 
 /**
  * @param $type
@@ -104,14 +104,14 @@ function com_uninstall() {
     $version = $jversion->getShortVersion();
     if(version_compare($version, '1.6') >= 0){
         $db->setQuery('UPDATE #__extensions SET enabled = 1 WHERE element =\'joomla\' and folder = \'authentication\'');
-        $db->Query();
+        $db->execute();
         $db->setQuery('UPDATE #__extensions SET enabled = 1 WHERE element =\'joomla\' and folder = \'user\'');
-        $db->Query();
+        $db->execute();
     } else {
         $db->setQuery('UPDATE #__plugins SET published = 1 WHERE element =\'joomla\' and folder = \'authentication\'');
-        $db->Query();
+        $db->execute();
         $db->setQuery('UPDATE #__plugins SET published = 1 WHERE element =\'joomla\' and folder = \'user\'');
-        $db->Query();
+        $db->execute();
     }
 
     echo '<table style="background-color:#d9f9e2;" width ="100%"><tr style="height:30px">';
@@ -131,7 +131,7 @@ function com_uninstall() {
     _uninstallPlugin('module', 'mod_jfusion_whosonline', '', 'JFusion Whos Online Module');
 
     //see if any mods from jfusion plugins need to be removed
-	require_once(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.install.php');
+	require_once(JPATH_ADMINISTRATOR.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.install.php');
     $plugins = JFusionFactory::getPlugins('all',true,false);
     foreach($plugins as $plugin) {
 	    $model = new JFusionModelInstaller();
@@ -162,35 +162,35 @@ HTML;
     $db = JFactory::getDBO();
     $query = 'DROP TABLE #__jfusion';
     $db->setQuery($query);
-    if (!$db->Query()){
+    if (!$db->execute()){
         echo $db->stderr() . '<br />';
         $return = false;
     }
 
     $query = 'DROP TABLE #__jfusion_sync';
     $db->setQuery($query);
-    if (!$db->Query()){
+    if (!$db->execute()){
         echo $db->stderr() . '<br />';
         $return = false;
     }
 
     $query = 'DROP TABLE #__jfusion_sync_details';
     $db->setQuery($query);
-    if (!$db->Query()){
+    if (!$db->execute()){
         echo $db->stderr() . '<br />';
         $return = false;
     }
 
     $query = 'DROP TABLE #__jfusion_users';
     $db->setQuery($query);
-    if (!$db->Query()){
+    if (!$db->execute()){
         echo $db->stderr() . '<br />';
         $return = false;
     }
 
     $query = 'DROP TABLE #__jfusion_users_plugin';
     $db->setQuery($query);
-    if (!$db->Query()){
+    if (!$db->execute()){
         echo $db->stderr() . '<br />';
         $return = false;
     }

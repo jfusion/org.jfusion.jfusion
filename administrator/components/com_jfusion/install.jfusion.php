@@ -16,8 +16,8 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
-require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'defines.php';
-require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.jfusion.php';
+require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'defines.php';
+require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jfusion.php';
 /**
  * @return bool
  */
@@ -44,7 +44,7 @@ function com_install() {
       PRIMARY KEY (id)
     ) DEFAULT CHARACTER SET utf8;';
 		$db->setQuery($query);
-		if (!$db->query()) {
+		if (!$db->execute()) {
 			echo $db->stderr() . '<br />';
 			$return = false;
 			return $return;
@@ -62,7 +62,7 @@ function com_install() {
       UNIQUE `lookup` (id,jname)
     ) DEFAULT CHARACTER SET utf8;';
 		$db->setQuery($query);
-		if (!$db->query()) {
+		if (!$db->execute()) {
 			echo $db->stderr() . '<br />';
 			$return = false;
 			return $return;
@@ -83,7 +83,7 @@ function com_install() {
     	UNIQUE `lookup` (contentid,jname)
     ) CHARSET=utf8;';
 		$db->setQuery($query);
-		if (!$db->query()){
+		if (!$db->execute()){
 			echo $db->stderr() . '<br/>';
 			$return = false;
 			return $return;
@@ -101,7 +101,7 @@ function com_install() {
       PRIMARY KEY  (syncid)
     );';
 		$db->setQuery($query);
-		if (!$db->query()) {
+		if (!$db->execute()) {
 			echo $db->stderr() . '<br />';
 			$return = false;
 			return $return;
@@ -121,7 +121,7 @@ function com_install() {
 	      PRIMARY KEY  (id)
 	    );';
 		$db->setQuery($query);
-		if (!$db->query()){
+		if (!$db->execute()){
 			echo $db->stderr() . '<br/>';
 			$return = false;
 			return $return;
@@ -170,7 +170,7 @@ function com_install() {
 		if (in_array('description', $columns)) {
 			$query = 'ALTER TABLE #__jfusion DROP COLUMN version, DROP COLUMN description, DROP COLUMN date, DROP COLUMN author, DROP COLUMN support';
 			$db->setQuery($query);
-			if (!$db->query()) {
+			if (!$db->execute()) {
 				echo $db->stderr() . '<br />';
 				$return = false;
 				return $return;
@@ -185,7 +185,7 @@ function com_install() {
 			$query = 'ALTER TABLE #__jfusion
               ADD COLUMN plugin_files LONGBLOB ';
 			$db->setQuery($query);
-			if (!$db->query()) {
+			if (!$db->execute()) {
 				echo $db->stderr() . '<br />';
 				$return = false;
 				return $return;
@@ -195,7 +195,7 @@ function com_install() {
 			//add the column
 			$query = 'ALTER TABLE #__jfusion ADD COLUMN original_name varchar(50) null';
 			$db->setQuery($query);
-			if (!$db->query()) {
+			if (!$db->execute()) {
 				echo $db->stderr() . '<br />';
 				$return = false;
 				return $return;
@@ -211,7 +211,7 @@ function com_install() {
               ADD COLUMN search tinyint(4) NOT null DEFAULT 0,
                 ADD COLUMN discussion tinyint(4) NOT null DEFAULT 0';
 			$db->setQuery($query);
-			if (!$db->query()) {
+			if (!$db->execute()) {
 				echo $db->stderr() . '<br />';
 				$return = false;
 				return $return;
@@ -227,13 +227,13 @@ function com_install() {
 			$query = 'CREATE TABLE #__jfusion_users_plugin_backup AS
               SELECT * FROM  #__jfusion_users_plugin WHERE 1 GROUP BY id, jname';
 			$db->setQuery($query);
-			if ($db->query()) {
+			if ($db->execute()) {
 				$query = 'DROP TABLE #__jfusion_users_plugin';
 				$db->setQuery($query);
-				if ($db->query()) {
+				if ($db->execute()) {
 					$query = 'RENAME TABLE #__jfusion_users_plugin_backup TO #__jfusion_users_plugin';
 					$db->setQuery($query);
-					if (!$db->query()) {
+					if (!$db->execute()) {
 						echo $db->stderr() . '<br />';
 						$return = false;
 						return $return;
@@ -256,7 +256,7 @@ function com_install() {
               CHANGE `autoid` `autoid` INT( 11 ) NOT null AUTO_INCREMENT,
               CHANGE `userid` `userid` VARCHAR(50) NOT null';
 			$db->setQuery($query);
-			if (!$db->query()) {
+			if (!$db->execute()) {
 				echo $db->stderr() . '<br />';
 				$return = false;
 				return $return;
@@ -265,12 +265,12 @@ function com_install() {
 		//make sure that the slave and dual_login capabilties of the joomla_ext plugin is enabled
 		$query = 'UPDATE #__jfusion SET slave = 0 WHERE name = \'joomla_ext\' AND slave = 3';
 		$db->setQuery($query);
-		$db->query();
+		$db->execute();
 		$query = 'UPDATE #__jfusion SET dual_login = 0 WHERE name = \'joomla_ext\' AND dual_login = 3';
 		$db->setQuery($query);
-		$db->query();
+		$db->execute();
 		//we need to remove a couple parameter files if they exists to prevent duplicates from showing up
-		$files2delete = array(JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'config.xml', JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'com_jfusion.xml');
+		$files2delete = array(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'config.xml', JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'com_jfusion.xml');
 		foreach ($files2delete as $f) {
 			if (file_exists($f)) {
 				if (!JFile::delete($f)) {
@@ -283,7 +283,7 @@ function com_install() {
 		 */
 		$query = 'ALTER TABLE `#__jfusion_sync` CHANGE `syncdata` `syncdata` LONGBLOB null DEFAULT null';
 		$db->setQuery($query);
-		if (!$db->query()) {
+		if (!$db->execute()) {
 			echo $db->stderr() . '<br />';
 			$return = false;
 			return $return;
@@ -294,7 +294,7 @@ function com_install() {
 		//make id the primary key so that the username will be updated
 		$query = 'ALTER TABLE `#__jfusion_users` DROP PRIMARY KEY, ADD PRIMARY KEY ( `id` )';
 		$db->setQuery($query);
-		if (!$db->query()) {
+		if (!$db->execute()) {
 			echo $db->stderr() . '<br />';
 			$return = false;
 			return $return;
@@ -311,7 +311,7 @@ function com_install() {
 			$query = 'ALTER TABLE #__jfusion_sync
               ADD COLUMN active int(1) NOT null DEFAULT 0';
 			$db->setQuery($query);
-			if (!$db->query()) {
+			if (!$db->execute()) {
 				echo $db->stderr() . '<br />';
 				$return = false;
 				return $return;
@@ -330,7 +330,7 @@ function com_install() {
 			$query = 'ALTER TABLE #__jfusion
               ADD COLUMN ordering int(4)';
 			$db->setQuery($query);
-			if (!$db->query()) {
+			if (!$db->execute()) {
 				echo $db->stderr() . '<br />';
 				$return = false;
 				return $return;
@@ -340,13 +340,13 @@ function com_install() {
 		/**
 		 * UPGRADES FOR 1.8
 		 */
-		$dir = JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'plugins';
+		$dir = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'plugins';
 		if (JFolder::exists($dir)) {
 			$folders = JFolder::folders($dir);
 			$results = true;
 			foreach ($folders as $folder) {
-				if (!JFolder::exists(JFUSION_PLUGIN_PATH .DS. $folder) ) {
-					$r = JFolder::copy($dir .DS. $folder, JFUSION_PLUGIN_PATH .DS. $folder);
+				if (!JFolder::exists(JFUSION_PLUGIN_PATH .DIRECTORY_SEPARATOR. $folder) ) {
+					$r = JFolder::copy($dir .DIRECTORY_SEPARATOR. $folder, JFUSION_PLUGIN_PATH .DIRECTORY_SEPARATOR. $folder);
 					if ($results===true) {
 						$results = $r;
 					}
@@ -364,21 +364,21 @@ function com_install() {
         if (in_array('activity', $columns)) {
             $query = 'ALTER TABLE #__jfusion DROP column activity';
             $db->setQuery($query);
-            if (!$db->query()) {
+            if (!$db->execute()) {
                 echo $db->stderr() . '<br />';
             }
         }
         if (in_array('search', $columns)) {
             $query = 'ALTER TABLE #__jfusion DROP column search';
             $db->setQuery($query);
-            if (!$db->query()) {
+            if (!$db->execute()) {
                 echo $db->stderr() . '<br />';
             }
         }
         if (in_array('discussion', $columns)) {
             $query = 'ALTER TABLE #__jfusion DROP column discussion';
             $db->setQuery($query);
-            if (!$db->query()) {
+            if (!$db->execute()) {
                 echo $db->stderr() . '<br />';
             }
         }
@@ -406,7 +406,7 @@ function com_install() {
 			if(!empty($row_inserts)) {
 				$query = 'REPLACE INTO #__jfusion_discussion_bot (' . implode(', ', $columns) . ') VALUES ' . implode(', ', $row_inserts);
 				$db->setQuery($query);
-				if(!$db->query()) {
+				if(!$db->execute()) {
 					echo $db->stderr() . '<br />';
 					$migrate_success = false;
 				} else {
@@ -420,13 +420,13 @@ function com_install() {
 				//add com_content to components column
 				$query = 'UPDATE #__jfusion_discussion_bot SET component = \'com_content\'';
 				$db->setQuery($query);
-				if(!$db->query()) {
+				if(!$db->execute()) {
 					echo $db->stderr() . '<br />';
 				}
 
 				$query = 'DROP TABLE #__jfusion_forum_plugin';
 				$db->setQuery($query);
-				if(!$db->query()) {
+				if(!$db->execute()) {
 					echo $db->stderr() . '<br />';
 					$return = false;
 					return $return;
@@ -444,12 +444,12 @@ function com_install() {
 			if (!in_array('component', $columns)) {
 				$query = 'ALTER TABLE #__jfusion_discussion_bot ADD COLUMN component varchar(255) NOT NULL';
 				$db->setQuery($query);
-				if (!$db->query()) {
+				if (!$db->execute()) {
 					echo $db->stderr() . '<br />';
 				} else {
 					$query = 'UPDATE #__jfusion_discussion_bot SET component = \'com_content\'';
 					$db->setQuery($query);
-					if(!$db->query()) {
+					if(!$db->execute()) {
 						echo $db->stderr() . '<br />';
 					}
 				}
@@ -474,11 +474,11 @@ function com_install() {
 		//stores plugin names of plugins that was attempted to be restored
 		$restorePlugins = array();
 		//require the model.install.php file to recreate copied plugins
-		include_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.install.php';
+		include_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.install.php';
 		$model = new JFusionModelInstaller();
 		foreach ($installedPlugins as $plugin) {
 			//attempt to restore missing plugins
-			if (!file_exists(JFUSION_PLUGIN_PATH . DS . $plugin->name)) {
+			if (!file_exists(JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $plugin->name)) {
 				//restore files for custom/copied plugins if available
 				$restorePlugins[] = $plugin->name;
 				$config = JFactory::getConfig();
@@ -493,10 +493,10 @@ function com_install() {
 					}
 				} elseif (!empty($plugin->plugin_files)) {
 					//save the compressed file to the tmp dir
-					$zipfile = $tmpDir . DS . $plugin->name . '.zip';
+					$zipfile = $tmpDir . DIRECTORY_SEPARATOR . $plugin->name . '.zip';
 					if (@JFile::write($zipfile, $plugin->plugin_files)) {
 						//decompress the file
-						if (!@JArchive::extract($zipfile, JFUSION_PLUGIN_PATH . DS . $plugin->name)) {
+						if (!@JArchive::extract($zipfile, JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $plugin->name)) {
 							//decompression failed
 							$uninstallPlugin[] = $plugin->name;
 							$uninstallReason[$plugin->name] = JText::_('UPGRADE_DECOMPRESS_FAILED');
@@ -504,7 +504,7 @@ function com_install() {
 							unlink($zipfile);
 						} else {
 							//extra check to make sure the files were decompressed to prevent possible fatal errors
-							if (!file_exists(JFUSION_PLUGIN_PATH . DS . $plugin->name)) {
+							if (!file_exists(JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $plugin->name)) {
 								$uninstallPlugin[] = $plugin->name;
 								$uninstallReason[$plugin->name] = JText::_('UPGRADE_DECOMPRESS_FAILED');
 							}
@@ -534,7 +534,7 @@ function com_install() {
 		if (count($uninstallPlugin) > 0) {
 			$query = 'DELETE FROM #__jfusion WHERE name IN (\'' . implode('\', \'', $uninstallPlugin) . '\')';
 			$db->setQuery($query);
-			if (!$db->query()) {
+			if (!$db->execute()) {
 				echo $db->stderr() . '<br />';
 			}
 		}
@@ -578,19 +578,19 @@ HTML;
                 if (!$copys) {
                     //only delete if there are no copy
                     $db->setQuery('DELETE FROM #__jfusion WHERE name = ' . $db->Quote($row->name));
-                    if (!$db->query()) {
+                    if (!$db->execute()) {
                         JError::raiseWarning(500,$db->stderr());
                     }
                     $db->setQuery('DELETE FROM #__jfusion_discussion_bot WHERE jname = ' . $db->Quote($row->name));
-                    if (!$db->query()) {
+                    if (!$db->execute()) {
                         JError::raiseWarning(500,$db->stderr());
                     }
                     $db->setQuery('DELETE FROM #__jfusion_users_plugin WHERE jname = ' . $db->Quote($row->name));
-                    if (!$db->query()) {
+                    if (!$db->execute()) {
                         JError::raiseWarning(500,$db->stderr());
                     }
-                    if (JFolder::exists(JFUSION_PLUGIN_PATH . DS . $row->name)) {
-                        JFolder::delete(JFUSION_PLUGIN_PATH . DS . $row->name);
+                    if (JFolder::exists(JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $row->name)) {
+                        JFolder::delete(JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $row->name);
                     }
                 }
             }
@@ -693,12 +693,12 @@ HTML;
     }
     $installedPlugins['joomla_int'] = 'joomla_int';
 
-    include_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.install.php';
+    include_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.install.php';
     foreach ($installedPlugins as $plugin) {
         if (array_key_exists ($plugin, $jfusion_plugins)) {
             //install updates
             $model = new JFusionModelInstaller();
-            $result = $model->installZIP($basedir . DS . 'packages' . DS . 'jfusion_' . $plugin . '.zip');
+            $result = $model->installZIP($basedir . DIRECTORY_SEPARATOR . 'packages' . DIRECTORY_SEPARATOR . 'jfusion_' . $plugin . '.zip');
             //remove plugin from install list
             unset($jfusion_plugins[$plugin]);
 
@@ -796,16 +796,16 @@ HTML;
 
     //install the JFusion packages
     jimport('joomla.installer.helper');
-    $packages['Login Module'] = $basedir . DS . 'packages' . DS . 'jfusion_mod_login.zip';
-    $packages['Activity Module'] = $basedir . DS . 'packages' . DS . 'jfusion_mod_activity.zip';
-    $packages['User Activity Module'] = $basedir . DS . 'packages' . DS . 'jfusion_mod_user_activity.zip';
-    $packages['Whos Online Module'] = $basedir . DS . 'packages' . DS . 'jfusion_mod_whosonline.zip';
+    $packages['Login Module'] = $basedir . DIRECTORY_SEPARATOR . 'packages' . DIRECTORY_SEPARATOR . 'jfusion_mod_login.zip';
+    $packages['Activity Module'] = $basedir . DIRECTORY_SEPARATOR . 'packages' . DIRECTORY_SEPARATOR . 'jfusion_mod_activity.zip';
+    $packages['User Activity Module'] = $basedir . DIRECTORY_SEPARATOR . 'packages' . DIRECTORY_SEPARATOR . 'jfusion_mod_user_activity.zip';
+    $packages['Whos Online Module'] = $basedir . DIRECTORY_SEPARATOR . 'packages' . DIRECTORY_SEPARATOR . 'jfusion_mod_whosonline.zip';
 
-    $packages['User Plugin'] = $basedir . DS . 'packages' . DS . 'jfusion_plugin_user.zip';
-    $packages['Authentication Plugin'] = $basedir . DS . 'packages' . DS . 'jfusion_plugin_auth.zip';
-    $packages['Search Plugin'] = $basedir . DS . 'packages' . DS . 'jfusion_plugin_search.zip';
-    $packages['System Plugin'] = $basedir . DS . 'packages' . DS . 'jfusion_plugin_system.zip';
-    $packages['Discussion Bot'] = $basedir . DS . 'packages' . DS . 'jfusion_plugin_content.zip';
+    $packages['User Plugin'] = $basedir . DIRECTORY_SEPARATOR . 'packages' . DIRECTORY_SEPARATOR . 'jfusion_plugin_user.zip';
+    $packages['Authentication Plugin'] = $basedir . DIRECTORY_SEPARATOR . 'packages' . DIRECTORY_SEPARATOR . 'jfusion_plugin_auth.zip';
+    $packages['Search Plugin'] = $basedir . DIRECTORY_SEPARATOR . 'packages' . DIRECTORY_SEPARATOR . 'jfusion_plugin_search.zip';
+    $packages['System Plugin'] = $basedir . DIRECTORY_SEPARATOR . 'packages' . DIRECTORY_SEPARATOR . 'jfusion_plugin_system.zip';
+    $packages['Discussion Bot'] = $basedir . DIRECTORY_SEPARATOR . 'packages' . DIRECTORY_SEPARATOR . 'jfusion_plugin_content.zip';
 
     foreach ($packages as $name => $filename) {
         $package = JInstallerHelper::unpack($filename);
@@ -842,10 +842,10 @@ HTML;
     }
 
     //cleanup the packages directory
-    $package_dir = $basedir . DS . 'packages';
+    $package_dir = $basedir . DIRECTORY_SEPARATOR . 'packages';
     $folders = JFolder::folders($package_dir);
     foreach ($folders as $folder) {
-        JFolder::delete($package_dir.DS.$folder);
+        JFolder::delete($package_dir.DIRECTORY_SEPARATOR.$folder);
     }
 
     //Make sure the status field in jos_jfusion has got either 0 or 1
@@ -854,10 +854,10 @@ HTML;
     if ($db->loadResult()) {
         $query = 'UPDATE #__jfusion SET status = 0 WHERE status <> 3';
         $db->setQuery($query);
-        $db->query();
+        $db->execute();
         $query = 'UPDATE #__jfusion SET status = 1 WHERE status = 3';
         $db->setQuery($query);
-        $db->query();
+        $db->execute();
     }
 
     return $return;

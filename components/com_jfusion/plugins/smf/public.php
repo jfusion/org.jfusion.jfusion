@@ -279,12 +279,12 @@ class JFusionPublic_smf extends JFusionPublic
         global $settings, $options, $board_info, $attachments, $messages_request, $memberContext, $db_character_set;
         // Required to avoid a warning about a license violation even though this is not the case
         global $forum_version;
-        // require_once JFUSION_PLUGIN_PATH.DS.$this->getJname().DS.'hooks.php';
+        // require_once JFUSION_PLUGIN_PATH.DIRECTORY_SEPARATOR.$this->getJname().DIRECTORY_SEPARATOR.'hooks.php';
         $source_path = $params->get('source_path');
         if (substr($source_path, -1) == DS) {
             $index_file = $source_path . 'index.php';
         } else {
-            $index_file = $source_path . DS . 'index.php';
+            $index_file = $source_path . DIRECTORY_SEPARATOR . 'index.php';
         }
         if (!is_file($index_file)) {
             JError::raiseWarning(500, 'The path to the SMF index file set in the component preferences does not exist');

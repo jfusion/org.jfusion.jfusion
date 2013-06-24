@@ -28,7 +28,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class jfusionViewsyncerror extends JView
+class jfusionViewsyncerror extends JViewLegacy
 {
     /**
      * displays the view
@@ -40,7 +40,7 @@ class jfusionViewsyncerror extends JView
     function display($tpl = null)
     {
         //Load usersync library
-        include_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.usersync.php';
+        include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
         //check to see if the sync has already started
         $syncid = JRequest::getVar('syncid');
         $syncdata = JFusionUsersync::getSyncdata($syncid);

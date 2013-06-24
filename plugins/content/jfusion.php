@@ -21,8 +21,8 @@ defined('_JEXEC' ) or die('Restricted access' );
 */
 jimport('joomla.plugin.plugin');
 jimport('joomla.html.pagination');
-require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.jfusion.php';
-require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.factory.php';
+require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jfusion.php';
+require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.factory.php';
 /**
  * ContentPlugin Class for jfusion
  *
@@ -89,7 +89,7 @@ class plgContentJfusion extends JPlugin
 
         if ($this->jname !== false) {
             //load the plugin language file
-            $this->loadLanguage('com_jfusion.plg_' . $this->jname, JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion');
+            $this->loadLanguage('com_jfusion.plg_' . $this->jname, JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion');
         }
 
         //determine what mode we are to operate in
@@ -104,21 +104,20 @@ class plgContentJfusion extends JPlugin
         $this->debug_mode = $this->params->get('debug', JRequest::getInt('debug_discussionbot',0));
 
         //define some constants
-        $isJ16 = JFusionFunction::isJoomlaVersion('1.6');
         if (!defined('DISCUSSION_TEMPLATE_PATH')) {
-            $url_path = ($isJ16) ? 'jfusion/' : '';
+            $url_path = 'jfusion/';
             define('DISCUSSBOT_URL_PATH', 'plugins/content/' . $url_path . 'discussbot/');
-            $path = ($isJ16) ? 'jfusion' . DS : '';
-            define('DISCUSSBOT_PATH', JPATH_SITE . DS . 'plugins' . DS . 'content' . DS . $path . 'discussbot' . DS);
+            $path = 'jfusion' . DIRECTORY_SEPARATOR;
+            define('DISCUSSBOT_PATH', JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . $path . 'discussbot' . DIRECTORY_SEPARATOR);
 
             //let's first check for customized files in Joomla template directory
             $app = JFactory::getApplication();
-            $JoomlaTemplateOverride = JPATH_BASE.DS.'templates'. DS .$app->getTemplate() . DS. 'html' . DS . 'plg_content_jfusion' . DS;
+            $JoomlaTemplateOverride = JPATH_BASE.DIRECTORY_SEPARATOR.'templates'. DIRECTORY_SEPARATOR .$app->getTemplate() . DIRECTORY_SEPARATOR. 'html' . DIRECTORY_SEPARATOR . 'plg_content_jfusion' . DIRECTORY_SEPARATOR;
             if (file_exists($JoomlaTemplateOverride)) {
                 define('DISCUSSION_TEMPLATE_PATH', $JoomlaTemplateOverride);
                 define('DISCUSSION_TEMPLATE_URL', JFusionFunction::getJoomlaURL() . 'templates/' . $app->getTemplate() . '/html/plg_content_jfusion/');
             } else {
-                define('DISCUSSION_TEMPLATE_PATH',JPATH_BASE.DS.'plugins'.DS.'content'.DS.$path.'discussbot'.DS.'tmpl'.DS.$this->template.DS);
+                define('DISCUSSION_TEMPLATE_PATH',JPATH_BASE.DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.'content'.DIRECTORY_SEPARATOR.$path.'discussbot'.DIRECTORY_SEPARATOR.'tmpl'.DIRECTORY_SEPARATOR.$this->template.DIRECTORY_SEPARATOR);
                 define('DISCUSSION_TEMPLATE_URL',JFusionFunction::getJoomlaURL().'plugins/content/'.$url_path.'discussbot/tmpl/'.$this->template.'/');
             }
         }
@@ -689,7 +688,7 @@ HTML;
     {
 	    $debug_contents = '';
         if ($this->debug_mode) {
-            require_once(JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.debug.php');
+            require_once(JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.debug.php');
 
 	        if ($this->ajax_request) {
 		        debug::$toggleScriptInited = true;
@@ -737,11 +736,7 @@ HTML;
         //make sure the article submitted matches the one loaded
         $submittedArticleId = JRequest::getInt('articleId', 0, 'post');
 
-	    if (JFusionFunction::isJoomlaVersion()) {
-			$editAccess = $JoomlaUser->authorise('core.edit', 'com_content');
-	    } else {
-		    $editAccess = $JoomlaUser->authorize('com_content', 'edit', 'content', 'all');
-	    }
+	    $editAccess = $JoomlaUser->authorise('core.edit', 'com_content');
 
 	    $ajaxEnabled = ($this->params->get('enable_ajax',1) && $this->ajax_request);
 	    $ajax = $this->prepareAjaxResponce();
@@ -931,11 +926,7 @@ HTML;
 
         //make sure the article submitted matches the one loaded
         $submittedArticleId = JRequest::getInt('articleId', 0, 'post');
-	    if (JFusionFunction::isJoomlaVersion()) {
-		    $editAccess = $JoomlaUser->authorise('core.edit', 'com_content');
-	    } else {
-		    $editAccess = $JoomlaUser->authorize('com_content', 'edit', 'content', 'all');
-	    }
+	    $editAccess = $JoomlaUser->authorise('core.edit', 'com_content');
 
 	    $ajax = $this->prepareAjaxResponce();
         if ($editAccess && $this->valid && $submittedArticleId == $this->article->id) {
@@ -959,7 +950,7 @@ HTML;
                 if (!empty($fullTextCount) || !empty($introTextCount)) {
                     $query = 'UPDATE #__content SET `fulltext` = ' . $jdb->Quote($fulltext) . ', `introtext` = ' .$jdb->Quote($introtext) . ' WHERE id = ' . (int) $this->article->id;
                     $jdb->setQuery($query);
-                    $jdb->query();
+                    $jdb->execute();
                 }
             }
 
@@ -989,11 +980,7 @@ HTML;
 
         //make sure the article submitted matches the one loaded
         $submittedArticleId = JRequest::getInt('articleId', 0, 'post');
-	    if (JFusionFunction::isJoomlaVersion()) {
-		    $editAccess = $JoomlaUser->authorise('core.edit', 'com_content');
-	    } else {
-		    $editAccess = $JoomlaUser->authorize('com_content', 'edit', 'content', 'all');
-	    }
+	    $editAccess = $JoomlaUser->authorise('core.edit', 'com_content');
 
 	    $ajax = $this->prepareAjaxResponce();
         if ($editAccess && $this->valid && $submittedArticleId == $this->article->id) {
@@ -1305,11 +1292,7 @@ HTML;
 
         if ($show_button && empty($this->manual_plug)) {
             $user   = JFactory::getUser();
-	        if (JFusionFunction::isJoomlaVersion()) {
-		        $editAccess = $user->authorise('core.edit', 'com_content');
-	        } else {
-		        $editAccess = $user->authorize('com_content', 'edit', 'content', 'all');
-	        }
+	        $editAccess = $user->authorise('core.edit', 'com_content');
             if ($editAccess) {
                 if ($this->helper->thread_status) {
                     //discussion is published

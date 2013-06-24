@@ -55,7 +55,7 @@ class JFusionHelper_gallery2
             if (substr($source_path, -1) == DS) {
                 $index_file = $source_path . 'embed.php';
             } else {
-                $index_file = $source_path . DS . 'embed.php';
+                $index_file = $source_path . DIRECTORY_SEPARATOR . 'embed.php';
             }
             if (substr($source_url, 0, 1) == '/') {
                 $uri = JURI::getInstance();
@@ -76,7 +76,7 @@ class JFusionHelper_gallery2
                     if (substr($source_path, -1) == DS) {
                         $config_file = $source_path . 'config.php';
                     } else {
-                        $config_file = $source_path . DS . 'config.php';
+                        $config_file = $source_path . DIRECTORY_SEPARATOR . 'config.php';
                     }
                     require $config_file;
                 }

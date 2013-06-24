@@ -19,11 +19,11 @@ defined('_JEXEC' ) or die('Restricted access' );
 /**
 * load the helper file
 */
-require_once(dirname(__FILE__).DS.'helper.php');
+require_once(dirname(__FILE__).DIRECTORY_SEPARATOR.'helper.php');
 
 //check if the JFusion component is installed
-$model_file = JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.factory.php';
-$factory_file = JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.jfusion.php';
+$model_file = JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.factory.php';
+$factory_file = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jfusion.php';
 if (file_exists($model_file) && file_exists($factory_file)) {
 
 	/**
@@ -49,16 +49,12 @@ if (file_exists($model_file) && file_exists($factory_file)) {
 	$jname = $parametersInstance->get('jfusionplugin');
 
 	if(JFusionFunction::validPlugin($jname)) {
-		if (JFusionFunction::isJoomlaVersion()) {
-			$pluginParam = new JParameter('');
-			$data = $parametersInstance->get($jname);
-			if (is_array($data)) {
-				foreach ($data as $key => $value) {
-					$pluginParam->set($key, $value);
-				}
+		$pluginParam = new JParameter('');
+		$data = $parametersInstance->get($jname);
+		if (is_array($data)) {
+			foreach ($data as $key => $value) {
+				$pluginParam->set($key, $value);
 			}
-		} else {
-			$pluginParam = $parametersInstance;
 		}
 		
 		$view = $pluginParam->get('view', 'auto');

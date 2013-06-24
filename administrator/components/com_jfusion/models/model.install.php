@@ -19,9 +19,9 @@ defined('_JEXEC') or die('Restricted access');
 /**
  * Require the Joomla Installer model
  */
-require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_installer' . DS . 'models' . DS . 'install.php';
-require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.jfusion.php';
-require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'defines.php';
+require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_installer' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'install.php';
+require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jfusion.php';
+require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'defines.php';
 jimport('joomla.installer.helper');
 
 /**
@@ -94,11 +94,11 @@ class JFusionModelInstaller extends InstallerModelInstall
                 // Cleanup the install files
                 if (!is_file($package['packagefile'])) {
                     $config = JFactory::getConfig();
-                    $package['packagefile'] = $config->getValue('config.tmp_path') . DS . $package['packagefile'];
+                    $package['packagefile'] = $config->getValue('config.tmp_path') . DIRECTORY_SEPARATOR . $package['packagefile'];
                 }
                 if ( $result['status'] && is_file($package['packagefile']) ) {
                     //save a copy of the plugin for safe keeping
-                    $dest = JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'packages' . DS . JFile::getName($package['packagefile']);
+                    $dest = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'packages' . DIRECTORY_SEPARATOR . JFile::getName($package['packagefile']);
                     if ( $package['packagefile'] != $dest) {
                         JFile::copy($package['packagefile'],$dest);
                     }
@@ -135,7 +135,7 @@ class JFusionModelInstaller extends InstallerModelInstall
         // Cleanup the install files
         if (!is_file($package['packagefile'])) {
             $config = JFactory::getConfig();
-            $package['packagefile'] = $config->getValue('config.tmp_path') . DS . $package['packagefile'];
+            $package['packagefile'] = $config->getValue('config.tmp_path') . DIRECTORY_SEPARATOR . $package['packagefile'];
         }
        // JInstallerHelper::cleanupInstall($package['packagefile'], $package['extractdir']);
 
@@ -255,16 +255,8 @@ class JFusionPluginInstaller extends JObject
             } else {
                 $this->manifest = $manifest;
 
-	            $file = JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'jfusion.xml';
-	            if(JFusionFunction::isJoomlaVersion('1.6')) {
-		            /**
-		             *  @ignore
-		             * @var $jfusionxml JXMLElement
-		             */
-		            $jfusionxml = JFactory::getXML($file);
-	            } else {
-		            $jfusionxml = JFusionFunction::getXml($file);
-	            }
+	            $file = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'jfusion.xml';
+	            $jfusionxml = JFusionFunction::getXml($file);
 
 	            $jfusionversion = $this->getElementByPath($jfusionxml,'version');
 	            $jfusionversion = $this->getData($jfusionversion);
@@ -290,7 +282,7 @@ class JFusionPluginInstaller extends JObject
 		            $this->set('name', $name);
 
 		            // installation path
-		            $this->parent->setPath('extension_root', JFUSION_PLUGIN_PATH . DS . $name);
+		            $this->parent->setPath('extension_root', JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $name);
 		            // get files to copy
 		            $element = $this->getElementByPath($this->manifest,'files');
 
@@ -329,13 +321,13 @@ class JFusionPluginInstaller extends JObject
 			             * Language files Processing Section
 			             * ---------------------------------------------------------------------------------------------
 			             */
-			            $languageFolder = $dir. DS.'language';
+			            $languageFolder = $dir. DIRECTORY_SEPARATOR.'language';
 			            if (JFolder::exists($languageFolder)) {
 				            $files = JFolder::files($languageFolder);
 				            foreach ($files as $file) {
-					            $dest = JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'language' . DS . substr($file,0,5);
+					            $dest = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'language' . DIRECTORY_SEPARATOR . substr($file,0,5);
 					            JFolder::create($dest);
-					            JFile::copy($languageFolder. DS .$file, $dest . DS . $file);
+					            JFile::copy($languageFolder. DIRECTORY_SEPARATOR .$file, $dest . DIRECTORY_SEPARATOR . $file);
 				            }
 			            }
 
@@ -384,7 +376,7 @@ class JFusionPluginInstaller extends JObject
 					            }
 					            $query.= ' WHERE id = ' . $plugin->id;
 					            $db->setQuery($query);
-					            $db->query();
+					            $db->execute();
 
 					            //set the overwrite tag
 					            $result['overwrite'] = 1;
@@ -482,18 +474,18 @@ class JFusionPluginInstaller extends JObject
 
         // delete raw
         $db->setQuery('DELETE FROM #__jfusion WHERE name = ' . $db->Quote($jname));
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $this->parent->abort($db->stderr());
         }
         $db->setQuery('DELETE FROM #__jfusion_discussion_bot WHERE jname = ' . $db->Quote($jname));
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $this->parent->abort($db->stderr());
         }
         $db->setQuery('DELETE FROM #__jfusion_users_plugin WHERE jname = ' . $db->Quote($jname));
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $this->parent->abort($db->stderr());
         }
-        $dir = JFUSION_PLUGIN_PATH . DS . $jname;
+        $dir = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname;
         if (!$jname || !JFolder::exists($dir)) {
             $this->parent->abort(JText::_('UNINSTALL_ERROR_PATH'));
             $result['message'] = JText::_('UNINSTALL_ERROR_PATH');
@@ -512,11 +504,11 @@ class JFusionPluginInstaller extends JObject
                 $this->manifest = $manifest;
 
                 if ($removeLanguage) {
-	                $languageFolder = JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'language';
+	                $languageFolder = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'language';
 	                if (JFolder::exists($languageFolder)) {
-		                $files = JFolder::files(JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'language',  'com_jfusion.plg_'.$jname.'.ini',true);
+		                $files = JFolder::files(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'language',  'com_jfusion.plg_'.$jname.'.ini',true);
 		                foreach ($files as $file) {
-			                $file = JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'language' . DS . substr($file,0,5). DS . $file;
+			                $file = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'language' . DIRECTORY_SEPARATOR . substr($file,0,5). DIRECTORY_SEPARATOR . $file;
 			                JFile::delete($file);
 		                }
 	                }
@@ -548,8 +540,8 @@ class JFusionPluginInstaller extends JObject
      */
     function copy($jname, $new_jname, $update = false)
     {
-        $dir = JFUSION_PLUGIN_PATH . DS . $jname;
-        $new_dir = JFUSION_PLUGIN_PATH . DS . $new_jname;
+        $dir = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname;
+        $new_dir = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $new_jname;
         $result['status'] = false;
         if (!$jname || !JFolder::exists($dir)) {
             $this->parent->abort(JText::_('COPY_ERROR_PATH'));
@@ -592,7 +584,7 @@ class JFusionPluginInstaller extends JObject
                  * ---------------------------------------------------------------------------------------------
                  */
                 //define which files need parsing
-                $parse_files = array($new_dir . DS . 'auth.php', $new_dir . DS . 'admin.php', $new_dir . DS . 'user.php', $new_dir . DS . 'jfusion.xml', $new_dir . DS . 'forum.php', $new_dir . DS . 'public.php', $new_dir . DS . 'helper.php');
+                $parse_files = array($new_dir . DIRECTORY_SEPARATOR . 'auth.php', $new_dir . DIRECTORY_SEPARATOR . 'admin.php', $new_dir . DIRECTORY_SEPARATOR . 'user.php', $new_dir . DIRECTORY_SEPARATOR . 'jfusion.xml', $new_dir . DIRECTORY_SEPARATOR . 'forum.php', $new_dir . DIRECTORY_SEPARATOR . 'public.php', $new_dir . DIRECTORY_SEPARATOR . 'helper.php');
                 foreach ($parse_files as $parse_file) {
                     if (file_exists($parse_file)) {
                         $file_data = JFile::read($parse_file);
@@ -639,7 +631,7 @@ class JFusionPluginInstaller extends JObject
                     }
                     $query.= ' WHERE name = ' . $db->Quote($new_jname);
                     $db->setQuery($query);
-                    $db->query();
+                    $db->execute();
                 } else {
                     //add the new entry in the JFusion plugin table
                     $db->setQuery('SELECT * FROM #__jfusion WHERE name = ' . $db->Quote($jname));
@@ -681,19 +673,11 @@ class JFusionPluginInstaller extends JObject
         /**
          * @TODO DISCUSS if we should allow flexible naming for installation file
          */
-        $file = $dir . DS . 'jfusion.xml';
+        $file = $dir . DIRECTORY_SEPARATOR . 'jfusion.xml';
         $this->parent->setPath('manifest', $file);
         // If we cannot load the xml file return null
 
-		if(JFusionFunction::isJoomlaVersion('1.6')) {
-            /**
-             *  @ignore
-             * @var $xml JXMLElement
-             */
-			$xml = JFactory::getXML($file);
-		} else {
-			$xml = JFusionFunction::getXml($file);
-		}
+	    $xml = JFusionFunction::getXml($file);
     	/*
         * Check for a valid XML root tag.
         * @TODO Remove backwards compatibility in a future version
@@ -731,9 +715,9 @@ class JFusionPluginInstaller extends JObject
         $config = JFactory::getConfig();
         $tmpDir = $config->getValue('config.tmp_path');
         //compress the files
-        $filename = $tmpDir . DS . $jname . '.zip';
+        $filename = $tmpDir . DIRECTORY_SEPARATOR . $jname . '.zip';
         //retrieve a list of files within the plugin directory
-        $pluginPath = JFUSION_PLUGIN_PATH . DS . $jname;
+        $pluginPath = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname;
         //check for zip creation
         $zipSuccess = false;
         //we need to chdir into the plugin path
@@ -781,7 +765,7 @@ class JFusionPluginInstaller extends JObject
         $filesArray = array();
         $files = JFolder::files($folder, null, false, true);
         foreach ($files as $file) {
-            $file = str_replace(JFUSION_PLUGIN_PATH . DS . $jname . DS, '', $file);
+            $file = str_replace(JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR, '', $file);
             $data = JFile::read($file);
             $filesArray[] = array('name' => $file, 'data' => $data);
         }

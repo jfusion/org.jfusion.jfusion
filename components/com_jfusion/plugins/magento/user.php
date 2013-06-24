@@ -18,7 +18,7 @@ defined('_JEXEC') or die('Restricted access');
 /**
  * load the Factory and jplugin model
  */
-require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.jplugin.php';
+require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jplugin.php';
 
 /**
  * JFusion User Class for Magento 1.1
@@ -353,7 +353,7 @@ class JFusionUser_magento extends JFusionUser {
 			$db->BeginTrans();
 			$query = 'SELECT increment_last_id FROM #__eav_entity_store WHERE entity_type_id = ' . (int)$this->getMagentoEntityTypeID('customer') . ' AND store_id = 0';
 			$db->setQuery($query);
-			$db->query();
+			$db->execute();
 			if ($db->getErrorNum() != 0) {
 				//$db->Execute ( 'ROLLBACK' );//ROLLBACK TRANSACTION
 				$db->RollbackTrans();
@@ -363,7 +363,7 @@ class JFusionUser_magento extends JFusionUser {
 			$increment_last_id = sprintf("%'09u", ($increment_last_id_int + 1));
 			$query = 'UPDATE #__eav_entity_store SET increment_last_id = ' . $db->Quote($increment_last_id) . ' WHERE entity_type_id = ' . (int)$this->getMagentoEntityTypeID('customer') . ' AND store_id = 0';
 			$db->setQuery($query);
-			$db->query();
+			$db->execute();
 			if ($db->getErrorNum() != 0) {
 				//$db->Execute ( 'ROLLBACK' );
 				$db->RollbackTrans();
@@ -372,7 +372,7 @@ class JFusionUser_magento extends JFusionUser {
 			// so far so good, now create an empty user, to be updates later
 			$query = 'INSERT INTO #__customer_entity   (entity_type_id, increment_id, is_active, created_at, updated_at) VALUES ' . '(' . (int)$this->getMagentoEntityTypeID('customer') . ',' . $db->Quote($increment_last_id) . ',1,' . $db->Quote($sqlDateTime) . ', ' . $db->Quote($sqlDateTime) . ')';
 			$db->setQuery($query);
-			$db->query();
+			$db->execute();
 			if ($db->getErrorNum() != 0) {
 				//$db->Execute ( 'ROLLBACK' );
 				$db->RollbackTrans();
@@ -382,7 +382,7 @@ class JFusionUser_magento extends JFusionUser {
 		} else { // we are updating
 			$query = 'UPDATE #__customer_entity' . ' SET updated_at = ' . $db->Quote($sqlDateTime) . ' WHERE entity_id = ' . (int)$entity_id;
 			$db->setQuery($query);
-			$db->query();
+			$db->execute();
 			if ($db->getErrorNum() != 0) {
 				//$db->Execute ( 'ROLLBACK' );
 				$db->RollbackTrans();
@@ -395,7 +395,7 @@ class JFusionUser_magento extends JFusionUser {
 				if (isset($user[$i]['value'])) {
 					$query = 'UPDATE #__customer_entity' . ' SET ' . $user[$i]['attribute_code'] . '= ' . $db->Quote($user[$i]['value']) . ' WHERE entity_id = ' . $entity_id;
 					$db->setQuery($query);
-					$db->query();
+					$db->execute();
 					if ($db->getErrorNum() != 0) {
 						//$db->Execute ( 'ROLLBACK' );
 						$db->RollbackTrans();
@@ -406,7 +406,7 @@ class JFusionUser_magento extends JFusionUser {
 				if (isset($user[$i]['value'])) {
 					$query = 'SELECT value FROM #__customer_entity' . '_' . $user[$i]['backend_type'] . ' WHERE entity_id = ' . (int)$entity_id . ' AND entity_type_id = ' . (int)$this->getMagentoEntityTypeID('customer') . ' AND attribute_id = ' . (int)$user[$i]['attribute_id'];
 					$db->setQuery($query);
-					$db->query();
+					$db->execute();
 					$result = $db->loadresult();
 					if ($result) {
 						// we do not update an empty value, but remove the record instead
@@ -419,7 +419,7 @@ class JFusionUser_magento extends JFusionUser {
 						$query = 'INSERT INTO #__customer_entity' . '_' . $user[$i]['backend_type'] . ' (value, attribute_id, entity_id, entity_type_id) VALUES (' . $db->Quote($user[$i]['value']) . ', ' . $user[$i]['attribute_id'] . ', ' . $entity_id . ', ' . (int)$this->getMagentoEntityTypeID('customer') . ')';
 					}
 					$db->setQuery($query);
-					$db->query();
+					$db->execute();
 					if ($db->getErrorNum() != 0) {
 						//$db->Execute ( 'ROLLBACK' );
 						$db->RollbackTrans();
@@ -712,7 +712,7 @@ class JFusionUser_magento extends JFusionUser {
 			$db = JFusionFactory::getDataBase($this->getJname());
 			$query = 'UPDATE #__customer_entity SET group_id = ' . (int)$usergroup . ' WHERE entity_id =' . (int)$existinguser->userid;
 			$db->setQuery($query);
-			if (!$db->query()) {
+			if (!$db->execute()) {
 				$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
 			} else {
 				$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode (' , ', $existinguser->groups) . ' -> ' . $usergroup;

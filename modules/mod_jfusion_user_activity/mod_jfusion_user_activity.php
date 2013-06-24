@@ -18,11 +18,11 @@ defined('_JEXEC' ) or die('Restricted access' );
 /**
 * load the helper file
 */
-require_once(dirname(__FILE__).DS.'helper.php');
+require_once(dirname(__FILE__).DIRECTORY_SEPARATOR.'helper.php');
 
 //check if the JFusion component is installed
-$model_file = JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.factory.php';
-$factory_file = JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.jfusion.php';
+$model_file = JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.factory.php';
+$factory_file = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jfusion.php';
 if (file_exists($model_file) && file_exists($factory_file)) {
 
 	/**

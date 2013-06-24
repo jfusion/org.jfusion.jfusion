@@ -17,7 +17,7 @@ jimport('joomla.application.component.controller');
  * @package JFusion
  */
 
-class JFusionControllerPlugin extends JController
+class JFusionControllerPlugin extends JControllerLegacy
 {
 
 	/**
@@ -27,7 +27,7 @@ class JFusionControllerPlugin extends JController
         $jname = JRequest::getVar('jname');
         $userid = JRequest::getVar('userid');
         $username = JRequest::getVar('username');
-        require_once(JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.jfusionpublic.php');
+        require_once(JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.jfusionpublic.php');
         $user = JFusionFunction::lookupUser($jname, $userid, false, $username);
 
         die(print_r($user));

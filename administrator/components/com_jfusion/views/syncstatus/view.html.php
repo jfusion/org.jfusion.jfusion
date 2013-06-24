@@ -28,7 +28,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class jfusionViewsyncstatus extends JView
+class jfusionViewsyncstatus extends JViewLegacy
 {
     var $syncid;
     var $syncdata;
@@ -53,7 +53,7 @@ class jfusionViewsyncstatus extends JView
         JHTML::_('behavior.tooltip');
 
         //Load usersync library
-        include_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.usersync.php';
+        include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
         if (!isset($this->syncid)) {
             $syncid = JRequest::getVar('syncid');
             $this->assignRef('syncid', $syncid);

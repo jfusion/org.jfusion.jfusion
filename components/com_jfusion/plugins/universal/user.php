@@ -13,11 +13,11 @@ defined('_JEXEC' ) or die('Restricted access' );
 /**
  * Load the JFusion framework
  */
-require_once(JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.jfusion.php');
-require_once(JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.abstractuser.php');
-require_once(JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.jplugin.php');
+require_once(JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.jfusion.php');
+require_once(JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.abstractuser.php');
+require_once(JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.jplugin.php');
 
-require_once(dirname(__FILE__).DS.'map.php');
+require_once(dirname(__FILE__).DIRECTORY_SEPARATOR.'map.php');
 
 /**
  * JFusion User Class for universal
@@ -134,7 +134,7 @@ class JFusionUser_universal extends JFusionUser {
 				'WHERE '.$userid->field.'=' . $db->Quote($userinfo->userid);
 
 			$db->setQuery($query);
-			if (!$db->query()) {
+			if (!$db->execute()) {
 				$status['error'][] = JText::_('USER_DELETION_ERROR') . ': ' .  $db->stderr();
 			} else {
 				$group = $helper->getFieldType('GROUP','group');
@@ -160,7 +160,7 @@ class JFusionUser_universal extends JFusionUser {
 					$query = 'DELETE FROM #__'.$helper->getTable('group').' '.
 						'WHERE '.$userid->field.'=' . $db->Quote($userinfo->userid).$andwhere;
 					$db->setQuery($query );
-					if (!$db->query()) {
+					if (!$db->execute()) {
 						$status['error'][] = JText::_('USER_DELETION_ERROR') . ': ' .  $db->stderr();
 					} else {
 						$status['debug'][] = JText::_('USER_DELETION'). ': ' . $userinfo->username;
@@ -266,7 +266,7 @@ class JFusionUser_universal extends JFusionUser {
 				'WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid);
 
 			$db->setQuery($query );
-			if (!$db->query()) {
+			if (!$db->execute()) {
 				$status['error'][] = JText::_('PASSWORD_UPDATE_ERROR')  . ': ' .$db->stderr();
 			} else {
 				$status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password,0,6) . '********';
@@ -314,7 +314,7 @@ class JFusionUser_universal extends JFusionUser {
 				'SET '.$email->field.' = '.$db->quote($userinfo->email) .' '.
 				'WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid);
 			$db->setQuery($query );
-			if (!$db->query()) {
+			if (!$db->execute()) {
 				$status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . ': ' .$db->stderr();
 			} else {
 				$status['debug'][] = JText::_('EMAIL_UPDATE'). ': ' . $existinguser->email . ' -> ' . $userinfo->email;
@@ -366,7 +366,7 @@ class JFusionUser_universal extends JFusionUser {
 					'SET '.$group->field.' = '.$db->quote(base64_decode($usergroup)) .' '.
 					'WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid);
 				$db->setQuery($query );
-				if (!$db->query()) {
+				if (!$db->execute()) {
 					$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' .$db->stderr();
 				} else {
 					$status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . base64_decode($existinguser->group_id) . ' -> ' . base64_decode($usergroup);
@@ -390,7 +390,7 @@ class JFusionUser_universal extends JFusionUser {
 				//remove the old usergroup for the user in the groups table
 				$query = 'DELETE FROM #__user_group WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid) . $andwhere;
 				$db->setQuery($query);
-				if (!$db->query()) {
+				if (!$db->execute()) {
 					$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
 				} else {
 					foreach ($usergroups as $usergroup) {
@@ -467,7 +467,7 @@ class JFusionUser_universal extends JFusionUser {
 					'SET '.$active->field.' = '. $db->Quote($userStatus) .' '.
 					'WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid);
 				$db->setQuery($query );
-				if (!$db->query()) {
+				if (!$db->execute()) {
 					$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' .$db->stderr();
 				} else {
 					$status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
@@ -507,7 +507,7 @@ class JFusionUser_universal extends JFusionUser {
 				'SET '.$active->field.' = '. $db->Quote($userStatus) .' '.
 				'WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid);
 			$db->setQuery($query );
-			if (!$db->query()) {
+			if (!$db->execute()) {
 				$status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ': ' .$db->stderr();
 			} else {
 				$status['debug'][] = JText::_('BLOCK_UPDATE'). ': ' . $existinguser->block . ' -> ' . $userinfo->block;
@@ -541,7 +541,7 @@ class JFusionUser_universal extends JFusionUser {
 				'SET '.$activecode->field.' = '. $db->Quote($userinfo->activation) .' '.
 				'WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid);
 			$db->setQuery($query );
-			if (!$db->query()) {
+			if (!$db->execute()) {
 				$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' .$db->stderr();
 			} else {
 				$status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
@@ -575,7 +575,7 @@ class JFusionUser_universal extends JFusionUser {
 				'SET '.$activecode->field.' = '. $db->Quote($userinfo->activation) .' '.
 				'WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid);
 			$db->setQuery($query );
-			if (!$db->query()) {
+			if (!$db->execute()) {
 				$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' .$db->stderr();
 			} else {
 				$status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;

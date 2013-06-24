@@ -60,7 +60,7 @@ class JFusionAdmin_prestashop extends JFusionAdmin
         if (substr($storePath, -1) == DS) {
             $myfile = $storePath . 'config/settings.inc.php';
         } else {
-            $myfile = $storePath . DS . 'config/settings.inc.php';
+            $myfile = $storePath . DIRECTORY_SEPARATOR . 'config/settings.inc.php';
         }
         $config = array();
         if (($file_handle = @fopen($myfile, 'r')) === false) {

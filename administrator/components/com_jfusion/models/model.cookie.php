@@ -122,7 +122,7 @@ class JFusionCookies {
 	    			}
 	    		}
 		
-				require_once(JPATH_SITE.DS.'components'.DS.'com_jfusion'.DS.'jfusionapi.php');
+				require_once(JPATH_SITE.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'jfusionapi.php');
 
                 $api = null;
                 $data = array();

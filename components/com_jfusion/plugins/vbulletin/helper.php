@@ -267,11 +267,7 @@ class JFusionHelper_vbulletin
     function restoreJoomla()
     {
         //restore Joomla autoload function
-		if(JFusionFunction::isJoomlaVersion('1.6')) {
-            spl_autoload_register(array('JLoader','load'));
-        } else {
-            spl_autoload_register('__autoload');
-        }
+	    spl_autoload_register(array('JLoader','load'));
 
         if (isset($this->backup['globals'])) {
             $GLOBALS = $this->backup['globals'];

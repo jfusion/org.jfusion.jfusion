@@ -112,7 +112,7 @@ class JFusionUsersync
         $db = JFactory::getDBO();
         $query = 'INSERT INTO #__jfusion_sync (syncdata, syncid, time_start, action) VALUES (' . $db->Quote($serialized) . ', ' . $db->Quote($syncdata['syncid']) . ', ' . $db->Quote(time()) . ', ' . $db->Quote($syncdata['action']) . ')';
         $db->setQuery($query);
-        $db->query();
+        $db->execute();
     }
 
     /**
@@ -130,7 +130,7 @@ class JFusionUsersync
         $db = JFactory::getDBO();
         $query = 'UPDATE #__jfusion_sync SET syncdata = ' . $db->Quote($serialized) . ' WHERE syncid =' . $db->Quote($syncdata['syncid']);
         $db->setQuery($query);
-        $db->query();
+        $db->execute();
     }
 
     /**
@@ -164,7 +164,7 @@ class JFusionUsersync
     public static function syncError($syncid, $syncError)
     {
         //Load debug library
-        include_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.debug.php';
+        include_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.debug.php';
         ?><div style="border: 0 none ; margin: 0; padding: 0 5px; width: 800px;">
         <?php
         $synclog = JFusionUsersync::getLogData($syncid,'error');
@@ -246,7 +246,7 @@ class JFusionUsersync
         $db = JFactory::getDBO();
         $query = 'UPDATE #__jfusion_sync_details SET action = \'resolved\' WHERE id = '.$id;
         $db->setQuery($query);
-        $db->query();
+        $db->execute();
     }
 
     /**
@@ -412,7 +412,7 @@ class JFusionUsersync
                     $db = JFactory::getDBO();
                     $query = 'UPDATE #__jfusion_sync SET time_end = ' . $db->Quote(time()) . ' WHERE syncid =' . $db->Quote($syncdata['syncid']);
                     $db->setQuery($query);
-                    $db->query();
+                    $db->execute();
                 }
                 JFusionUsersync::updateSyncdata($syncdata);
                 JFusionUsersync::changeSyncStatus($syncid, 0);
@@ -429,7 +429,7 @@ class JFusionUsersync
         $db = JFactory::getDBO();
         $query = 'UPDATE #__jfusion_sync SET active = ' . (int) $status . ' WHERE syncid = ' . $db->Quote($syncid);
         $db->setQuery($query);
-        $db->query();
+        $db->execute();
     }
 
     /**

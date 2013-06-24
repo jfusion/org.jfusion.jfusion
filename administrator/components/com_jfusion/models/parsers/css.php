@@ -247,7 +247,7 @@ class cssparser {
     	$this->Clear();
 
 		$this->url = htmlspecialchars_decode($url);
-		require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.jfusionadmin.php';
+		require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jfusionadmin.php';
 		$content = JFusionFunctionAdmin::getFileData($this->url);
 
 		if(strlen($content)) {

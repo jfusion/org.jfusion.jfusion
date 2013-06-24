@@ -21,7 +21,7 @@ defined('_JEXEC') or die('Restricted access');
  * Note: We cannot use jimport here as it does not include the file unless needed (if using php5+)
  * This leads to a fatal error if the plugin uses a different driver than Joomla
  */
-require_once JPATH_LIBRARIES . DS . 'joomla' . DS . 'database' . DS . 'database' . DS . 'mysqli.php';
+require_once JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'joomla' . DIRECTORY_SEPARATOR . 'database' . DIRECTORY_SEPARATOR . 'database' . DIRECTORY_SEPARATOR . 'mysqli.php';
 
 /**
  * Extention of the mysqli database object to support rollbacks

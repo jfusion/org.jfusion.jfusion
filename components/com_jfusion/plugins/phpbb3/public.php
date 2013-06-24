@@ -232,7 +232,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
         if (substr($source_path, -1) == DS) {
             $index_file = $source_path . basename($jfile);
         } else {
-            $index_file = $source_path . DS . basename($jfile);
+            $index_file = $source_path . DIRECTORY_SEPARATOR . basename($jfile);
         }
         if (!is_file($index_file)) {
             JError::raiseWarning(500, 'The path to the requested does not exist');
@@ -254,7 +254,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             }
 
             //define the phpBB3 hooks
-            require_once JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'hooks.php';
+            require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'hooks.php';
             // Get the output
             ob_start();
 

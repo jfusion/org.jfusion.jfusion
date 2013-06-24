@@ -41,12 +41,10 @@ class JFusionFunctionAdmin
 	public static function changePluginStatus($element,$folder,$status) {
 		//get joomla specs
         $db = JFactory::getDBO();
-        if(JFusionFunction::isJoomlaVersion('1.6')){
-            $db->setQuery('UPDATE #__extensions SET enabled = ' . $status .' WHERE element =' . $db->Quote($element) . ' and folder = ' . $db->Quote($folder));
-        } else {
-            $db->setQuery('UPDATE #__plugins SET published = ' . $status .' WHERE element =' . $db->Quote($element) . ' and folder = ' . $db->Quote($folder));
-        }
-        $db->Query();
+
+		$db->setQuery('UPDATE #__extensions SET enabled = ' . $status .' WHERE element =' . $db->Quote($element) . ' and folder = ' . $db->Quote($folder));
+
+        $db->execute();
 	}
 
     /**
@@ -80,7 +78,7 @@ class JFusionFunctionAdmin
         //set the current parameters in the jfusion table
         $query = 'UPDATE #__jfusion SET params = ' . $db->Quote($serialized) . ' WHERE name = ' . $db->Quote($jname);
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             //there was an error saving the parameters
             JError::raiseWarning(0, $db->stderr());
             $result = false;
@@ -134,11 +132,9 @@ class JFusionFunctionAdmin
     public static function isPluginInstalled($element, $folder, $testPublished)
     {
         $db = JFactory::getDBO();
-        if(JFusionFunction::isJoomlaVersion('1.6')){
-            $query = 'SELECT enabled FROM #__extensions WHERE element=' . $db->Quote($element) . ' AND folder=' . $db->Quote($folder);
-        } else {
-            $query = 'SELECT published FROM #__plugins WHERE element=' . $db->Quote($element) . ' AND folder=' . $db->Quote($folder);
-        }
+
+	    $query = 'SELECT enabled FROM #__extensions WHERE element=' . $db->Quote($element) . ' AND folder=' . $db->Quote($folder);
+
         $db->setQuery($query);
         $result = $db->loadResult();
         if ($result) {
@@ -233,7 +229,7 @@ HTML;
             jimport('joomla.installer.helper');
             $filename = JInstallerHelper::getFilenameFromURL($url);
             $config = JFactory::getConfig();
-            $target = $config->getValue('config.tmp_path').DS.JInstallerHelper::getFilenameFromURL($url);
+            $target = $config->getValue('config.tmp_path').DIRECTORY_SEPARATOR.JInstallerHelper::getFilenameFromURL($url);
             // Write buffer to file
             JFile::write($target, $FileData);
             if ($unpack) {
@@ -259,7 +255,7 @@ HTML;
     public static function currentVersion($includeRev = false)
     {
         //get the current JFusion version number
-        $filename = JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'jfusion.xml';
+        $filename = JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'jfusion.xml';
         $VersionCurrent = $RevisionCurrent = 0;
         if (file_exists($filename) && is_readable($filename)) {
             //get the version number

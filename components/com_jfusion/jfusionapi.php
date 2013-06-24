@@ -769,32 +769,32 @@ class JFusionAPIInternal extends JFusionAPIBase {
 			// trick joomla into thinking we're running through joomla
 			define('_JEXEC', true);
 			define('DS', DIRECTORY_SEPARATOR);
-			define('JPATH_BASE', dirname(__FILE__). DS . '..'. DS . '..');
+			define('JPATH_BASE', dirname(__FILE__). DIRECTORY_SEPARATOR . '..'. DIRECTORY_SEPARATOR . '..');
 
 			// load joomla libraries
-			require_once JPATH_BASE . DS . 'includes' . DS . 'defines.php';
+			require_once JPATH_BASE . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'defines.php';
 			define('_JREQUEST_NO_CLEAN', true); // we don't want to clean variables as it can "corrupt" them for some applications, it also clear any globals used...
 
 			if (!class_exists('JVersion')) {
-				if (file_exists(JPATH_LIBRARIES.DS.'cms'.DS.'version'.DS.'version.php')) {
-					include_once(JPATH_LIBRARIES.DS.'cms'.DS.'version'.DS.'version.php');
-				} elseif (file_exists(JPATH_LIBRARIES.DS.'joomla'.DS.'version.php')) {
-					include_once(JPATH_LIBRARIES.DS.'joomla'.DS.'version.php');
-				} elseif (file_exists(JPATH_ROOT.DS.'includes'.DS.'version.php')) {
-					include_once(JPATH_ROOT.DS.'includes'.DS.'version.php');
+				if (file_exists(JPATH_LIBRARIES.DIRECTORY_SEPARATOR.'cms'.DIRECTORY_SEPARATOR.'version'.DIRECTORY_SEPARATOR.'version.php')) {
+					include_once(JPATH_LIBRARIES.DIRECTORY_SEPARATOR.'cms'.DIRECTORY_SEPARATOR.'version'.DIRECTORY_SEPARATOR.'version.php');
+				} elseif (file_exists(JPATH_LIBRARIES.DIRECTORY_SEPARATOR.'joomla'.DIRECTORY_SEPARATOR.'version.php')) {
+					include_once(JPATH_LIBRARIES.DIRECTORY_SEPARATOR.'joomla'.DIRECTORY_SEPARATOR.'version.php');
+				} elseif (file_exists(JPATH_ROOT.DIRECTORY_SEPARATOR.'includes'.DIRECTORY_SEPARATOR.'version.php')) {
+					include_once(JPATH_ROOT.DIRECTORY_SEPARATOR.'includes'.DIRECTORY_SEPARATOR.'version.php');
 				}
 			}
 
 			include_once JPATH_LIBRARIES.'/import.php';
 
-			require_once JPATH_LIBRARIES . DS . 'loader.php';
+			require_once JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'loader.php';
 
 			$autoloaders = spl_autoload_functions();
 			if ($autoloaders && in_array('__autoload', $autoloaders)) {
 				spl_autoload_register('__autoload');
 			}
 
-			require_once JPATH_ROOT . DS . 'includes' . DS . 'framework.php';
+			require_once JPATH_ROOT . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'framework.php';
 			jimport('joomla.base.object');
 			jimport('joomla.factory');
 			jimport('joomla.filter.filterinput');
@@ -808,12 +808,12 @@ class JFusionAPIInternal extends JFusionAPIBase {
 			jimport('joomla.user.user');
 			jimport('joomla.html.parameter');
 			// JText cannot be loaded with jimport since it's not in a file called text.php but in methods
-			JLoader::register('JText', JPATH_LIBRARIES . DS . 'joomla' . DS . 'methods.php');
-			JLoader::register('JRoute', JPATH_LIBRARIES . DS . 'joomla' . DS . 'methods.php');
+			JLoader::register('JText', JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'joomla' . DIRECTORY_SEPARATOR . 'methods.php');
+			JLoader::register('JRoute', JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'joomla' . DIRECTORY_SEPARATOR . 'methods.php');
 
 			//load JFusion's libraries
-			require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS  . 'models' . DS . 'model.factory.php';
-			require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS  . 'models' . DS . 'model.jfusion.php';
+			require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR  . 'models' . DIRECTORY_SEPARATOR . 'model.factory.php';
+			require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR  . 'models' . DIRECTORY_SEPARATOR . 'model.jfusion.php';
 		} elseif (!defined('IN_JOOMLA')) {
 			define('IN_JOOMLA', 1);
 			JFusionFunction::reconnectJoomlaDb();

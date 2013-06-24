@@ -41,16 +41,15 @@ $document->addStyleSheet('components/com_jfusion/css/jfusion.css');
 /**
  * Require the base controller
  */
-require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'controllers' . DS . 'controller.jfusion.php';
+require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . 'controller.jfusion.php';
 
-if (JFusionFunction::isJoomlaVersion('1.7')) {
-    JHtml::_('behavior.framework');
-}
+JHtml::_('behavior.framework');
+
 $document->addScript('components/com_jfusion/js/jfusion.js');
 // Require specific controller if requested
 $controller = JRequest::getWord('controller');
 if ($controller) {
-    $path = JPATH_COMPONENT_ADMINISTRATOR . DS . 'controllers' . DS . $controller . '.php';
+    $path = JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $controller . '.php';
     if (file_exists($path)) {
         include_once $path;
     } else {

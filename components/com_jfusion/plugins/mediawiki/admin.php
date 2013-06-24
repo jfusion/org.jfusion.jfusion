@@ -46,7 +46,7 @@ class JFusionAdmin_mediawiki extends JFusionAdmin {
             //remove it so that we can make it compatible with mediawiki MW_INSTALL_PATH
             $source_path = substr($source_path, 0, -1);
         }
-        $myfile = $source_path . DS. 'LocalSettings.php';
+        $myfile = $source_path . DIRECTORY_SEPARATOR. 'LocalSettings.php';
         $params = array();
          //try to open the file
         if ( !file_exists($myfile) ) {

@@ -16,7 +16,7 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
-require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'defines.php';
+require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'defines.php';
 
 /**
  * Abstract interface for all JFusion functions that are accessed through the Joomla administrator interface
@@ -150,7 +150,7 @@ class JFusionAdmin
                 $status['message'] = $jname.' -> joomla_int '. JText::_('NO_DATABASE');
             } else {
                 //added check for missing files of copied plugins after upgrade
-                $path = JFUSION_PLUGIN_PATH . DS . $jname . DS;
+                $path = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR;
                 if (!file_exists($path.'admin.php')) {
                     $status['config'] = 0;
                     $status['message'] = JText::_('NO_FILES').' admin.php';
@@ -162,7 +162,7 @@ class JFusionAdmin
                     $jfc = JFusionFactory::getCookies();
                     list($url) = $jfc->getApiUrl($cookie_domain);
                     if ($url) {
-                        require_once(JPATH_SITE.DS.'components'.DS.'com_jfusion'.DS.'jfusionapi.php');
+                        require_once(JPATH_SITE.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'jfusionapi.php');
 
                         $joomla_int = JFusionFactory::getParams('joomla_int');
                         $api = new JFusionAPI($url,$joomla_int->get('secret'));
@@ -320,10 +320,8 @@ class JFusionAdmin
         $master = JFusionFunction::getMaster();
         $advanced = 0;
 
-        if(JFusionFunction::isJoomlaVersion('1.6')){
-            // set output format options in 1.6 only
-            JHTML::setFormatOptions(array('format.eol' => "", 'format.indent' => ""));
-        }
+	    JHTML::setFormatOptions(array('format.eol' => "", 'format.indent' => ""));
+
         //detect is value is a serialized array
         if (substr($value, 0, 2) == 'a:') {
             $value = unserialize($value);
@@ -429,10 +427,8 @@ JS;
         $master = JFusionFunction::getMaster();
         $advanced = 0;
 
-        if(JFusionFunction::isJoomlaVersion('1.6')){
-            // set output format options in 1.6 only
-            JHTML::setFormatOptions(array('format.eol' => '', 'format.indent' => ''));
-        }
+	    JHTML::setFormatOptions(array('format.eol' => '', 'format.indent' => ''));
+
         //detect is value is a serialized array
         if (substr($value, 0, 2) == 'a:') {
             $value = unserialize($value);
@@ -695,7 +691,7 @@ JS;
         if (substr($path, -1) == DS) {
             $mod_file = $path . $filename;
         } else {
-            $mod_file = $path . DS . $filename;
+            $mod_file = $path . DIRECTORY_SEPARATOR . $filename;
         }
         //see if the file exists
         if (!file_exists($mod_file) && $error == 0) {

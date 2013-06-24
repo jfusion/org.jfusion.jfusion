@@ -17,7 +17,7 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
-require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'defines.php';
+require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'defines.php';
 jimport('joomla.application.component.view');
 
 /**
@@ -32,7 +32,7 @@ jimport('joomla.application.component.view');
  * @link       http://www.jfusion.org
  */
 
-class jfusionViewplugindisplay extends JView {
+class jfusionViewplugindisplay extends JViewLegacy {
     /**
      * displays the view
      *
@@ -56,7 +56,7 @@ class jfusionViewplugindisplay extends JView {
             $ordering = 1;
             foreach ($rows as $row){
                 $db->setQuery('UPDATE #__jfusion SET ordering = '.$ordering.' WHERE name = '. $db->Quote($row->name));
-                $db->query();
+                $db->execute();
                 $ordering++;
             }
         }
@@ -77,7 +77,7 @@ class jfusionViewplugindisplay extends JView {
 
                 $record = $this->initRecord($record->name,$record);
                 //check to see if the plugin files exist
-                $plugin_xml = JFUSION_PLUGIN_PATH .DS. $record->name .DS. 'jfusion.xml';
+                $plugin_xml = JFUSION_PLUGIN_PATH .DIRECTORY_SEPARATOR. $record->name .DIRECTORY_SEPARATOR. 'jfusion.xml';
                 if(!file_exists($plugin_xml)) {
                     $record->bad_plugin = 1;
                     JError::raiseWarning(500, $record->name . ': ' . JText::_('NO_FILES'));
@@ -120,12 +120,7 @@ class jfusionViewplugindisplay extends JView {
             //pass the data onto the view
             $this->assignRef('plugins', $plugins);
             $this->assignRef('VersionData', $VersionData);
-            if(JFusionFunction::isJoomlaVersion('1.6')) {
-            	parent::display('25'); 
-            } else {
-            	parent::display('15');
-            }
-           
+	        parent::display('25');
         } else {
             JError::raiseWarning(500, JText::_('NO_JFUSION_TABLE'));
         }
@@ -143,15 +138,9 @@ class jfusionViewplugindisplay extends JView {
              * @ignore
              * @var $message JException
              */
-            if(JFusionFunction::isJoomlaVersion('1.6')){
-                foreach ($errors as $message) {
-	                $result .= '<ul><li>' . $message->__toString() . '</li></ul>';
-                }
-            } else {
-                foreach ($errors as $message) {
-	                $result .= '<ul><li>' . $message->toString() . '</li></ul>';
-                }
-            }
+		    foreach ($errors as $message) {
+			    $result .= '<ul><li>' . $message->__toString() . '</li></ul>';
+		    }
             $result .= '</dd></dl>';
         } 	
         return $result;	
@@ -179,7 +168,7 @@ class jfusionViewplugindisplay extends JView {
           	if ($status['config'] != $record->status) {
                	//update the status and deactivate the plugin
               	$db->setQuery('UPDATE #__jfusion SET status = '.$db->Quote($status['config']).' WHERE name =' . $db->Quote($record->name));
-                $db->query();
+                $db->execute();
                	//update the record status for the resExecute of the code
             	$record->status = $status['config'];
          	}
@@ -335,7 +324,7 @@ class jfusionViewplugindisplay extends JView {
 		$record->description = $JFusionParam->get('description');
 		if(empty($record->description)){
 			//get the default description
-			$plugin_xml = JFUSION_PLUGIN_PATH .DS. $record->name .DS. 'jfusion.xml';
+			$plugin_xml = JFUSION_PLUGIN_PATH .DIRECTORY_SEPARATOR. $record->name .DIRECTORY_SEPARATOR. 'jfusion.xml';
 			if(file_exists($plugin_xml) && is_readable($plugin_xml)) {
 				$xml = JFusionFunction::getXml($plugin_xml);
                 $description = $xml->getElementByPath('description');

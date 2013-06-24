@@ -100,5 +100,5 @@ $bar = JToolBar::getInstance('toolbar');
 $bar->prependButton('Custom', '<img border="0" alt="Enabled" src="components/com_jfusion/images/jfusion_logo.png"/>');
 
 $task = JRequest::getVar('task');
-JLoader::register('JFusionHelper', JPATH_COMPONENT_ADMINISTRATOR . DS . 'helpers' . DS . 'jfusion.php');
+JLoader::register('JFusionHelper', JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'jfusion.php');
 JFusionHelper::addSubmenu($task);

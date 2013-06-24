@@ -57,11 +57,11 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
     {
         //check for trailing slash and generate file path
         if (substr($forumPath, -1) == DS) {
-            $configfile = $forumPath . 'includes' . DS . 'config.php';
-            $funcfile = $forumPath . 'includes' . DS . 'functions.php';
+            $configfile = $forumPath . 'includes' . DIRECTORY_SEPARATOR . 'config.php';
+            $funcfile = $forumPath . 'includes' . DIRECTORY_SEPARATOR . 'functions.php';
         } else {
-            $configfile = $forumPath . DS . 'includes' . DS . 'config.php';
-            $funcfile = $forumPath . DS . 'includes' . DS . 'functions.php';
+            $configfile = $forumPath . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'config.php';
+            $funcfile = $forumPath . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'functions.php';
         }
         //try to open the file
         $params = array();
@@ -252,15 +252,9 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
     {
         static $jsSet;
         if (empty($jsSet)) {
-            if (JFusionFunction::isJoomlaVersion('1.6')) {
-                $itemid = 'params[plugin_itemid]_id0';
-                $fieldname = 'params_hook_name';
-                $fieldaction = 'params_hook_action';
-            } else {
-                $itemid = 'plugin_itemid_id0';
-                $fieldname = 'paramshook_name';
-                $fieldaction = 'paramshook_action';
-            }
+	        $itemid = 'params[plugin_itemid]_id0';
+	        $fieldname = 'params_hook_name';
+	        $fieldaction = 'params_hook_action';
 
             $empty = JText::_('VB_REDIRECT_ITEMID_EMPTY');
 
@@ -422,7 +416,7 @@ HTML;
                 //all three cases, we want to remove the old hook
                 $query = 'DELETE FROM #__plugin WHERE hookname = \'init_startup\' AND title = ' . $db->Quote($hookName);
                 $db->setQuery($query);
-                if (!$db->query()) {
+                if (!$db->execute()) {
                     JError::raiseWarning(500, $db->stderr());
                 }
                 //enable or re-enable the plugin
@@ -440,7 +434,7 @@ HTML;
                         active = 1,
                         executionorder = 1';
                         $db->setQuery($query);
-                        if (!$db->query()) {
+                        if (!$db->execute()) {
                             JError::raiseWarning(500, $db->stderr());
                         }
                     }
@@ -468,7 +462,7 @@ HTML;
                         $q = 'UPDATE #__'.$tbl.' SET '.$col.' = \''.$i[1].'\' WHERE '.$tbl.'id = '.$i[0];
                     }
                     $db->setQuery($q);
-                    $db->query();
+                    $db->execute();
                 }
             }
             //let's update the default icon
@@ -483,7 +477,7 @@ HTML;
                     $q = 'UPDATE #__setting SET value = \''.$deficon.'\' WHERE varname = \'showdeficon\'';
                 }
                 $db->setQuery($q);
-                $db->query();
+                $db->execute();
             }
         }
     }
@@ -496,7 +490,7 @@ HTML;
     function getHookPHP($plugin, $itemid)
     {
         $params = JFusionFactory::getParams($this->getJname());
-        $hookFile = JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'hooks.php';
+        $hookFile = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'hooks.php';
         $php = "defined('_VBJNAME') or define('_VBJNAME', '{$this->getJname()}');\n";
         $php.= "defined('JPATH_PATH') or define('JPATH_BASE', '" . (str_replace(DS.'administrator', '', JPATH_BASE)) . "');\n";
         $php.= "defined('JFUSION_VB_HOOK_FILE') or define('JFUSION_VB_HOOK_FILE', '$hookFile');\n";
@@ -627,10 +621,7 @@ HTML;
         //detect is value is a serialized array
         $advanced = 0;
 
-        if(JFusionFunction::isJoomlaVersion('1.6')){
-            // set output format options in 1.6 only
-            JHTML::setFormatOptions(array('format.eol' => "", 'format.indent' => ""));
-        }
+	    JHTML::setFormatOptions(array('format.eol' => "", 'format.indent' => ""));
 
         if (substr($value, 0, 2) == 'a:') {
             $value = unserialize($value);
@@ -799,7 +790,7 @@ HTML;
 
         $query = 'DELETE FROM #__plugin WHERE hookname = \'init_startup\' AND title IN (\'' . implode('\', \'', $hookNames) . '\')';
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $reasons[] = $db->stderr();
             $return = false;
         }

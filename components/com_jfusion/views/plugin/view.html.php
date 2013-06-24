@@ -14,13 +14,13 @@ defined ( '_JEXEC' ) or die ( 'Restricted access' );
  * load the JFusion framework
  */
 jimport ( 'joomla.application.component.view' );
-require_once (JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.frameless.php');
+require_once (JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.frameless.php');
 
 /**
  * Class that handles the frameless integration
  * @package JFusion
  */
-class jfusionViewPlugin extends JView {
+class jfusionViewPlugin extends JViewLegacy {
     var $jname;
 
 	/**
@@ -47,7 +47,7 @@ class jfusionViewPlugin extends JView {
             // Language file is loaded in function of the context
             // of the selected language in Joomla
             // and of the JPATH_BASE (in admin = JPATH_ADMINISTRATOR, in site = JPATH_SITE)
-            $lang->load('com_jfusion.plg_' . $name,JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion');
+            $lang->load('com_jfusion.plg_' . $name,JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion');
         }
 
 		$result = JFusionFrameless::displayContent($data);

@@ -74,11 +74,9 @@ class JFusionFunction
 	public static function getPluginStatus($element,$folder) {
 		//get joomla specs
         $db = JFactory::getDBO();
-        if(JFusionFunction::isJoomlaVersion('1.6')){
-            $query = 'SELECT published FROM #__extensions WHERE element=' . $db->Quote($element) . ' AND folder=' . $db->Quote($folder);
-        } else {
-            $query = 'SELECT published FROM #__plugins WHERE element=' . $db->Quote($element) . ' AND folder=' . $db->Quote($folder);
-        }
+
+		$query = 'SELECT published FROM #__extensions WHERE element=' . $db->Quote($element) . ' AND folder=' . $db->Quote($folder);
+
         $db->setQuery($query);
         $result = $db->loadResult();
         return $result;
@@ -229,13 +227,13 @@ class JFusionFunction
 				    //Delete old user data in the lookup table
 				    $query = 'DELETE FROM #__jfusion_users WHERE id =' . $joomla_id . ' OR username = ' . $db->Quote($userinfo->username) . ' OR LOWER(username) = ' . strtolower($db->Quote($userinfo->email));
 				    $db->setQuery($query);
-				    if (!$db->query()) {
+				    if (!$db->execute()) {
 					    JError::raiseWarning(0, $db->stderr());
 				    }
 				    //Delete old user data in the lookup table
 				    $query = 'DELETE FROM #__jfusion_users_plugin WHERE id =' . $joomla_id . ' OR username = ' . $db->Quote($userinfo->username) . ' OR LOWER(username) = ' . strtolower($db->Quote($userinfo->email));
 				    $db->setQuery($query);
-				    if (!$db->query()) {
+				    if (!$db->execute()) {
 					    JError::raiseWarning(0, $db->stderr());
 				    }
 			    }
@@ -275,7 +273,7 @@ class JFusionFunction
 						    $query = 'REPLACE INTO #__jfusion_users_plugin (userid,username,id,jname) VALUES (' . implode(',', $queries) . ')';
 					    }
 					    $db->setQuery($query);
-					    if (!$db->query()) {
+					    if (!$db->execute()) {
 						    JError::raiseWarning(0, $db->stderr());
 					    }
 				    }
@@ -286,7 +284,7 @@ class JFusionFunction
 					    $query = 'REPLACE INTO #__jfusion_users_plugin (userid,username,id,jname) VALUES ('.$db->Quote($userinfo->userid) .' ,'.$db->Quote($userinfo->username) .' ,'.$joomla_id.' , '.$db->Quote($jname).' )';
 				    }
 				    $db->setQuery($query);
-				    if (!$db->query()) {
+				    if (!$db->execute()) {
 					    JError::raiseWarning(0, $db->stderr());
 				    }
 			    }
@@ -403,12 +401,12 @@ class JFusionFunction
         $db = JFactory::getDBO();
         $query = 'DELETE FROM #__jfusion_users WHERE id =' . $userinfo->id . ' OR username =' . $db->Quote($userinfo->username) . ' OR LOWER(username) = ' . strtolower($db->Quote($userinfo->email));
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             JError::raiseWarning(0, $db->stderr());
         }
         $query = 'DELETE FROM #__jfusion_users_plugin WHERE id =' . $userinfo->id;
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             JError::raiseWarning(0, $db->stderr());
         }
     }
@@ -520,7 +518,7 @@ class JFusionFunction
 					published = '.$published.',
 					manual = '.$manual;
 		$fdb->setQuery($query);
-		$fdb->query();
+		$fdb->execute();
 	}
 
     /**
@@ -538,7 +536,7 @@ class JFusionFunction
         $option = JRequest::getVar('option');
 
         if ($option == 'com_k2') {
-            include_once JPATH_SITE . DS . 'components' . DS . 'com_k2' . DS . 'helpers' . DS . 'route.php';
+            include_once JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_k2' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'route.php';
             $article_url = urldecode(K2HelperRoute::getItemRoute($contentitem->id.':'.urlencode($contentitem->alias),$contentitem->catid.':'.urlencode($contentitem->category->alias)));
         } else {
             if (empty($contentitem->slug) || empty($contentitem->catslug)) {
@@ -558,12 +556,8 @@ class JFusionFunction
                 }
             }
 
-            include_once JPATH_SITE.DS.'components'.DS.'com_content'.DS.'helpers'.DS.'route.php';
-            if (JFusionFunction::isJoomlaVersion('1.6')) {
-                $article_url = ContentHelperRoute::getArticleRoute($contentitem->slug, $contentitem->catslug);
-            } else {
-                $article_url = ContentHelperRoute::getArticleRoute($contentitem->slug, $contentitem->catslug, $contentitem->sectionid);
-            }
+            include_once JPATH_SITE.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_content'.DIRECTORY_SEPARATOR.'helpers'.DIRECTORY_SEPARATOR.'route.php';
+	        $article_url = ContentHelperRoute::getArticleRoute($contentitem->slug, $contentitem->catslug);
         }
 
         if ($mainframe->isAdmin()) {
@@ -853,7 +847,7 @@ class JFusionFunction
      *
      * @return string nothing
      */
-    public static function reconnectJoomlaDb($forceReload=false)
+    public static function reconnectJoomlaDb()
     {
         //check to see if the Joomla database is still connected
         $db = JFactory::getDBO();
@@ -867,62 +861,21 @@ class JFusionFunction
         } elseif (!$db->connected()){
             $connected = false;
         }
-        
-        if (!$connected||$forceReload) {
-            $driver = $conf->getValue('config.dbtype');
 
-            //reset current database connection
-            if (JFusionFunction::isJoomlaVersion('1.7')) {
-                JFactory::$database = null;
-            } else {
-                $db = null;
-            }
-
-            //create new connection
-            if ($driver == 'mysql') {
-                jimport('joomla.database.database');
-                jimport( 'joomla.database.table' );
-                $host       = $conf->getValue('config.host');
-                $user       = $conf->getValue('config.user');
-                $password   = $conf->getValue('config.password');
-                $database   = $conf->getValue('config.db');
-                $prefix     = $conf->getValue('config.dbprefix','');
-                $debug      = $conf->getValue('config.debug');
-                $options    = array ( 'driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database, 'prefix' => $prefix );
-
-                require_once dirname(__FILE__) . DS . 'mysql.reconnect.php';
-                $newDBO = new JFusionReconnectMySQL($options);
-
-                if ( JFusionFunction::isJoomlaVersion('1.7') ) {
-                    JFactory::$database = $newDBO;
-                }
-                $db = $newDBO;
-                if ($db->getErrorNum() > 0) {
-                    die('Jfusion: Could not reconnect to database <br />' . $db->getErrorNum().' - '.$db->getErrorMsg());
-                }
-                $db->debug( $debug );
-            } else {
-            	//connection still current no need to reload
-                $db = JFactory::getDBO();
-            }
+        if (!$connected) {
+	        $db->disconnect();
+	        $db->connect();
         }
         //try to select the joomla database
         if (!$db->select($database)) {
 	        //oops database select failed
-        	if (!$forceReload) {
-        		//try to create a new database object first
-	    	    JFusionFunction::reconnectJoomlaDb(true);
-	        } else {
-	        	//even new database connection fails to resolve error
-	        	//only option now is to die
-	        	die('JFusion error: could not select Joomla database when trying to restore Joomla database object');
-   	        }
+	        die('JFusion error: could not select Joomla database when trying to restore Joomla database object');
         } else {
             //database reconnect successful, some final tidy ups
        	
         	//add utf8 support
             $db->setQuery('SET names \'utf8\'');
-            $db->query();
+            $db->execute();
             //legacy $database must be restored
             if (JPluginHelper::getPlugin('system', 'legacy')) {
                 $GLOBALS['database'] = $db;
@@ -1142,18 +1095,10 @@ class JFusionFunction
             //we are on admin side, lets confirm that the user has access to user manager
             $juser = JFactory::getUser();
 
-	        if (JFusionFunction::isJoomlaVersion()) {
-		        if ($juser->authorise('core.manage', 'com_users')) {
-			        $debug = true;
-		        } else {
-			        $debug = false;
-		        }
+	        if ($juser->authorise('core.manage', 'com_users')) {
+		        $debug = true;
 	        } else {
-		        if ($juser->authorize('com_users', 'manage')) {
-			        $debug = true;
-		        } else {
-			        $debug = false;
-		        }
+		        $debug = false;
 	        }
         } else {
             $debug = false;
@@ -1213,12 +1158,12 @@ class JFusionFunction
 	        	//file has now moved in Joomla 2.5
 	        	//manual include added as JImport has strange behaviours when called from outside core
                 if (!class_exists('JVersion')) {
-                    if (file_exists(JPATH_LIBRARIES.DS.'cms'.DS.'version'.DS.'version.php')) {
-                        include_once(JPATH_LIBRARIES.DS.'cms'.DS.'version'.DS.'version.php');
-                    } elseif (file_exists(JPATH_LIBRARIES.DS.'joomla'.DS.'version.php')) {
-                        include_once(JPATH_LIBRARIES.DS.'joomla'.DS.'version.php');
-                    } elseif (file_exists(JPATH_ROOT.DS.'includes'.DS.'version.php')) {
-                        include_once(JPATH_ROOT.DS.'includes'.DS.'version.php');
+                    if (file_exists(JPATH_LIBRARIES.DIRECTORY_SEPARATOR.'cms'.DIRECTORY_SEPARATOR.'version'.DIRECTORY_SEPARATOR.'version.php')) {
+                        include_once(JPATH_LIBRARIES.DIRECTORY_SEPARATOR.'cms'.DIRECTORY_SEPARATOR.'version'.DIRECTORY_SEPARATOR.'version.php');
+                    } elseif (file_exists(JPATH_LIBRARIES.DIRECTORY_SEPARATOR.'joomla'.DIRECTORY_SEPARATOR.'version.php')) {
+                        include_once(JPATH_LIBRARIES.DIRECTORY_SEPARATOR.'joomla'.DIRECTORY_SEPARATOR.'version.php');
+                    } elseif (file_exists(JPATH_ROOT.DIRECTORY_SEPARATOR.'includes'.DIRECTORY_SEPARATOR.'version.php')) {
+                        include_once(JPATH_ROOT.DIRECTORY_SEPARATOR.'includes'.DIRECTORY_SEPARATOR.'version.php');
                     }
                 }
 				$version = new JVersion;
@@ -1390,22 +1335,14 @@ class JFusionFunction
      */
     public static function loadLanguage($extension,$type,$name, $basePath = null){
 		$extension = $extension.'_'.$type.'_'.$name;
-    	if(JFusionFunction::isJoomlaVersion('1.6')) {
-			if ($basePath == null) {
-				$basePath = JPATH_ADMINISTRATOR;
-			}
-			$lang = JFactory::getLanguage();
-			return $lang->load(strtolower($extension), $basePath, null, false, false)
-                ||	$lang->load(strtolower($extension), JPATH_PLUGINS .DS.$type.DS.$name, null, false, false)
-		    	||	$lang->load(strtolower($extension), $basePath, $lang->getDefault(), false, false)
-		    	||	$lang->load(strtolower($extension), JPATH_PLUGINS .DS.$type.DS.$name, $lang->getDefault(), false, false);
-    	} else {
-			if ($basePath == null) {
-				$basePath = JPATH_BASE;
-			}
-			jimport('joomla.plugin.plugin');
-			JPlugin::loadLanguage($extension, $basePath);
-    	}
+	    if ($basePath == null) {
+		    $basePath = JPATH_ADMINISTRATOR;
+	    }
+	    $lang = JFactory::getLanguage();
+	    return $lang->load(strtolower($extension), $basePath, null, false, false)
+	    ||	$lang->load(strtolower($extension), JPATH_PLUGINS .DIRECTORY_SEPARATOR.$type.DIRECTORY_SEPARATOR.$name, null, false, false)
+	    ||	$lang->load(strtolower($extension), $basePath, $lang->getDefault(), false, false)
+	    ||	$lang->load(strtolower($extension), JPATH_PLUGINS .DIRECTORY_SEPARATOR.$type.DIRECTORY_SEPARATOR.$name, $lang->getDefault(), false, false);
         return false;
     }
 

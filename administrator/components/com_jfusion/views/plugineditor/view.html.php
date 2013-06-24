@@ -28,7 +28,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class jfusionViewplugineditor extends JView
+class jfusionViewplugineditor extends JViewLegacy
 {
     /**
      * displays the view
@@ -48,50 +48,48 @@ class jfusionViewplugineditor extends JView
             //JRequest::setVar('hidemainmenu', 1);
             // Keep the idea of instanciate the parameters only with the parameters of the XML file from the plugin needed but with a centralized method (JFusionFactory::createParams)
             $parametersInstance = JFusionFactory::createParams($jname);
-            $file = JFUSION_PLUGIN_PATH . DS . $jname . DS . 'jfusion.xml';
+            $file = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'jfusion.xml';
             if (file_exists($file)) {
                 $parametersInstance->loadSetupFile($file);
             }
             $params = $parametersInstance->getParams();
-            
-			if (JFusionFunction::isJoomlaVersion()) {
-	            jimport('joomla.filesystem.file');
-	            $content = JFile::read($file);
-	            $content = str_replace(array('<param','</param'),array('<field','</field'),$content);
 
-                /**
-                 * @ignore
-                 * @var $xml JXMLElement|SimpleXMLElement
-                 */
-				$xml = JFactory::getXML($content, false);
-	            $fields = $xml->xpath('//field');
-	            jimport('joomla.form.form');
-	            jimport('joomla.form.helper');
-	            $form = new JForm($jname,array('control'=>'params'));
-				JFormHelper::addFieldPath(JPATH_COMPONENT_ADMINISTRATOR.'/fields');
-				foreach ($params as $key => $param) {
-                    /**
-                     * @ignore
-                     * @var $element JXMLElement|SimpleXMLElement
-                     */
-					$element = $fields[$key];
-					$name = $element->getAttribute('name');
-					if ($name!='jfusionbox') {
-                        /**
-                         * @ignore
-                         * @var $field JFormField
-                         */
-                        $field = JFormHelper::loadFieldType($element->getAttribute('type'), true);
-						if ($field) {
-							$value = $parametersInstance->get($name, $element->getAttribute('default'));
-							$field->setForm($form);
-							$field->setup($element, $value);
-							$params[$key][0] = $field->label;
-							$params[$key][1] = $field->input;
-						}
-					}
-				}
-            }
+	        jimport('joomla.filesystem.file');
+	        $content = JFile::read($file);
+	        $content = str_replace(array('<param','</param'),array('<field','</field'),$content);
+
+	        /**
+	         * @ignore
+	         * @var $xml JXMLElement|SimpleXMLElement
+	         */
+	        $xml = JFactory::getXML($content, false);
+	        $fields = $xml->xpath('//field');
+	        jimport('joomla.form.form');
+	        jimport('joomla.form.helper');
+	        $form = new JForm($jname,array('control'=>'params'));
+	        JFormHelper::addFieldPath(JPATH_COMPONENT_ADMINISTRATOR.'/fields');
+	        foreach ($params as $key => $param) {
+		        /**
+		         * @ignore
+		         * @var $element JXMLElement|SimpleXMLElement
+		         */
+		        $element = $fields[$key];
+		        $name = $element->getAttribute('name');
+		        if ($name!='jfusionbox') {
+			        /**
+			         * @ignore
+			         * @var $field JFormField
+			         */
+			        $field = JFormHelper::loadFieldType($element->getAttribute('type'), true);
+			        if ($field) {
+				        $value = $parametersInstance->get($name, $element->getAttribute('default'));
+				        $field->setForm($form);
+				        $field->setup($element, $value);
+				        $params[$key][0] = $field->label;
+				        $params[$key][1] = $field->input;
+			        }
+		        }
+	        }
             
             //assign data to view
             $this->assignRef('params', $params);

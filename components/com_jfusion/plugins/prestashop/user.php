@@ -109,13 +109,13 @@ class JFusionUser_prestashop extends JFusionUser {
         $status = array('error' => array(),'debug' => array());
 	    // use prestashop cookie class and functions to delete cookie
 		$params = JFusionFactory::getParams($this->getJname());
-		require_once $params->get('source_path') . DS . 'config' . DS . 'settings.inc.php';
-	    require($params->get('source_path') . DS . 'classes' . DS . 'Cookie.php');
-		require($params->get('source_path') . DS . 'classes' . DS . 'Blowfish.php');
-		require($params->get('source_path') . DS . 'classes' . DS . 'Tools.php');
-		require($params->get('source_path') . DS . 'classes' . DS . 'ObjectModel.php');
-		require($params->get('source_path') . DS . 'classes' . DS . 'Db.php');
-		require($params->get('source_path') . DS . 'classes' . DS . 'SubDomain.php');
+		require_once $params->get('source_path') . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'settings.inc.php';
+	    require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Cookie.php');
+		require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Blowfish.php');
+		require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Tools.php');
+		require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'ObjectModel.php');
+		require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Db.php');
+		require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'SubDomain.php');
         $cookie = new cookie('ps', '', '');
 		$status['error'][] = 'Random debugging text';
 	    if(!$cookie->mylogout()) {
@@ -138,14 +138,14 @@ class JFusionUser_prestashop extends JFusionUser {
         $status = array('error' => array(),'debug' => array());
         // this uses a code extract from authentication.php that deals with logging in completely
 		$db = JFusionFactory::getDatabase($this->getJname());
-		require_once $params->get('source_path') . DS . 'config' . DS . 'settings.inc.php';
-	    require($params->get('source_path') . DS . 'classes' . DS . 'Cookie.php');
-		require($params->get('source_path') . DS . 'classes' . DS . 'Blowfish.php');
-		require($params->get('source_path') . DS . 'classes' . DS . 'Tools.php');
-		require($params->get('source_path') . DS . 'classes' . DS . 'ObjectModel.php');
-		require($params->get('source_path') . DS . 'classes' . DS . 'Db.php');
-		require($params->get('source_path') . DS . 'classes' . DS . 'SubDomain.php');
-		require($params->get('source_path') . DS . 'classes' . DS . 'Validate.php');
+		require_once $params->get('source_path') . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'settings.inc.php';
+	    require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Cookie.php');
+		require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Blowfish.php');
+		require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Tools.php');
+		require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'ObjectModel.php');
+		require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Db.php');
+		require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'SubDomain.php');
+		require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Validate.php');
 		$cookie = new cookie('ps', '', '');
 		$passwd = $userinfo->password_clear;
 	    $email = $userinfo->email;
@@ -209,7 +209,7 @@ class JFusionUser_prestashop extends JFusionUser {
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'UPDATE #__customer SET password =' . $db->Quote($existinguser->password) . ', salt = ' . $db->Quote($existinguser->password_salt) . ' WHERE id_customer =' . (int)$existinguser->userid;
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . $db->stderr();
         } else {
             $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
@@ -226,13 +226,13 @@ class JFusionUser_prestashop extends JFusionUser {
 		$db = JFusionFactory::getDatabase($this->getJname());
 	    $params = JFusionFactory::getParams($this->getJname());
         $errors = array();
-		require($params->get('source_path') . DS . "classes" . DS . "Validate.php");
-		require($params->get('source_path') . DS . "classes" . DS . "ObjectModel.php");
-		require($params->get('source_path') . DS . "classes" . DS . "Db.php");
-		require($params->get('source_path') . DS . "classes" . DS . "Country.php");
-		require($params->get('source_path') . DS . "classes" . DS . "State.php");
-		require($params->get('source_path') . DS . "classes" . DS . "Tools.php");
-		require($params->get('source_path') . DS . "classes" . DS . "Customer.php");
+		require($params->get('source_path') . DIRECTORY_SEPARATOR . "classes" . DIRECTORY_SEPARATOR . "Validate.php");
+		require($params->get('source_path') . DIRECTORY_SEPARATOR . "classes" . DIRECTORY_SEPARATOR . "ObjectModel.php");
+		require($params->get('source_path') . DIRECTORY_SEPARATOR . "classes" . DIRECTORY_SEPARATOR . "Db.php");
+		require($params->get('source_path') . DIRECTORY_SEPARATOR . "classes" . DIRECTORY_SEPARATOR . "Country.php");
+		require($params->get('source_path') . DIRECTORY_SEPARATOR . "classes" . DIRECTORY_SEPARATOR . "State.php");
+		require($params->get('source_path') . DIRECTORY_SEPARATOR . "classes" . DIRECTORY_SEPARATOR . "Tools.php");
+		require($params->get('source_path') . DIRECTORY_SEPARATOR . "classes" . DIRECTORY_SEPARATOR . "Customer.php");
 		
 		/* split full name into first and with/or without middlename, and lastname */
 		$users_name = $userinfo->name;
@@ -451,7 +451,7 @@ class JFusionUser_prestashop extends JFusionUser {
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'UPDATE #__customer SET email =' . $db->Quote($userinfo->email) . ' WHERE id_customer =' . (int)$existinguser->userid;
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $db->stderr();
         } else {
             $status['debug'][] = JText::_('PASSWORD_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
@@ -502,8 +502,8 @@ class JFusionUser_prestashop extends JFusionUser {
             // now delete the user
             $query = 'DELETE FROM #__customer_group WHERE id_customer = ' . $existinguser->userid;
             $db->setQuery($query);
-            $db->query();
-            if (!$db->query()) {
+            $db->execute();
+            if (!$db->execute()) {
                 $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
             } else {
                 foreach($usergroups as $value) {

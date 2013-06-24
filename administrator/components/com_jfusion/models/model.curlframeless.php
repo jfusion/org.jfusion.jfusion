@@ -11,7 +11,7 @@
 // no direct access
 defined('_JEXEC' ) or die('Restricted access' );
 
-require_once(JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.cookie.php');
+require_once(JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.cookie.php');
 
 /**
  * Singleton static only class that creates instances for each specific JFusion plugin.
@@ -115,7 +115,7 @@ class JFusionCurlFrameless {
 							$name=$file['name'][$key];
 							$path=$file['tmp_name'][$key];
 							if ($name) {
-								$filepath[$key] = JPATH_ROOT.DS.'tmp'.DS.$name;
+								$filepath[$key] = JPATH_ROOT.DIRECTORY_SEPARATOR.'tmp'.DIRECTORY_SEPARATOR.$name;
 								rename($path, $filepath[$key]);
 								$post[$userfile.'['.$key.']']='@'.$filepath[$key];
 							}
@@ -124,7 +124,7 @@ class JFusionCurlFrameless {
 						$path = $file['tmp_name'];
 						$name=$file['name'];
 						$key = $path;
-						$filepath[$key] = JPATH_ROOT.DS.'tmp'.DS.$name;
+						$filepath[$key] = JPATH_ROOT.DIRECTORY_SEPARATOR.'tmp'.DIRECTORY_SEPARATOR.$name;
 						rename($path, $filepath[$key]);
 						$post[$userfile]='@'.$filepath[$key];
 					}

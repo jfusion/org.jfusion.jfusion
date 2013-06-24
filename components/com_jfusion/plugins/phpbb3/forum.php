@@ -92,7 +92,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
             $dbparams = JFusionFactory::getParams($this->getJname());
             $db = JFusionFactory::getDatabase($this->getJname());
             $db->setQuery('SELECT user_avatar, user_avatar_type FROM #__users WHERE user_id=' . (int)$puser_id);
-            $db->query();
+            $db->execute();
             $result = $db->loadObject();
             if (!empty($result)) {
                 if ($result->user_avatar_type == 1) {
@@ -101,7 +101,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
                 } else if ($result->user_avatar_type == 3) {
                     // AVATAR_GALLERY
                     $db->setQuery("SELECT config_value FROM #__config WHERE config_name='avatar_gallery_path'");
-                    $db->query();
+                    $db->execute();
                     $path = $db->loadResult();
                     if (!empty($path)) {
                         $url = $dbparams->get('source_url') . $path . '/' . $result->user_avatar;
@@ -611,13 +611,13 @@ class JFusionForum_phpbb3 extends JFusionForum {
                         //update some stats
                         $query = 'UPDATE #__users SET user_posts = user_posts + 1 WHERE user_id = '.$userid;
                         $jdb->setQuery($query);
-                        if(!$jdb->query()) {
+                        if(!$jdb->execute()) {
                             $status['error'] = $jdb->stderr();
                         }
 
                         $query = 'UPDATE #__config SET config_value = config_value + 1 WHERE config_name = \'num_topics\'';
                         $jdb->setQuery($query);
-                        if(!$jdb->query()) {
+                        if(!$jdb->execute()) {
                             $status['error'] = $jdb->stderr();
                         }
 
@@ -696,7 +696,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 			//update the thread title
 			$query = 'UPDATE #__topics SET topic_title = ' . $jdb->Quote($subject) . ' WHERE topic_id = ' . (int) $threadid;
             $jdb->setQuery($query);
-            $jdb->query();
+            $jdb->execute();
 		}
 	}
 
@@ -846,13 +846,13 @@ class JFusionForum_phpbb3 extends JFusionForum {
 				//update some stats
 				$query = 'UPDATE #__users SET user_posts = user_posts + 1 WHERE user_id = '.$userid;
 				$jdb->setQuery($query);
-				if(!$jdb->query()) {
+				if(!$jdb->execute()) {
 					$status['error'] = $jdb->stderr();
 				}
 
 				$query = 'UPDATE #__config SET config_value = config_value + 1 WHERE config_name = \'num_posts\'';
 				$jdb->setQuery($query);
-				if(!$jdb->query()) {
+				if(!$jdb->execute()) {
 					$status['error'] = $jdb->stderr();
 				}
 			} else {

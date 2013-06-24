@@ -19,7 +19,7 @@ defined('_JEXEC') or die('Restricted access');
 /**
  * load the common Joomla JFusion plugin functions
  */
-require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.jplugin.php';
+require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jplugin.php';
 //require the standard joomla user functions
 jimport('joomla.user.helper');
 /**
@@ -66,33 +66,15 @@ class JFusionUser_joomla_ext extends JFusionUser {
         $userid = $userinfo->userid;
         $query = 'DELETE FROM #__users WHERE id = ' . (int)$userid;
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['error'][] = JText::_('ERROR_DELETE') . ' ' . $username . ' ' . $db->stderr();
         } else {
-            if (JFusionFunction::isJoomlaVersion('1.6',$this->getJname())) {
-                $query = 'DELETE FROM #__user_profiles WHERE user_id = ' . (int)$userid;
-                $db->setQuery($query);
-                $db->query();
-                $query = 'DELETE FROM #__user_usergroup_map WHERE user_id = ' . (int)$userid;
-                $db->setQuery($query);
-                $db->query();
-            } else {
-                $query = 'SELECT id FROM #__core_acl_aro WHERE value = ' . (int)$userid;
-                $db->setQuery($query);
-                $aroid = $db->loadResult();
-                if ($aroid != '') {
-                    $query = 'DELETE FROM #__core_acl_aro WHERE value = ' . (int)$userid;
-                    $db->setQuery($query);
-                    if (!$db->query()) {
-                        $status['error'][] = JText::_('ERROR_DELETE') . ' ' . $username . ' ' . $db->stderr();
-                    }
-                    $query = 'DELETE FROM #__core_acl_groups_aro_map WHERE aro_id = ' . (int)$aroid;
-                    $db->setQuery($query);
-                    if (!$db->query()) {
-                        $status['error'][] = JText::_('ERROR_DELETE') . ' ' . $username . ' ' . $db->stderr();
-                    }
-                }
-            }
+	        $query = 'DELETE FROM #__user_profiles WHERE user_id = ' . (int)$userid;
+	        $db->setQuery($query);
+	        $db->execute();
+	        $query = 'DELETE FROM #__user_usergroup_map WHERE user_id = ' . (int)$userid;
+	        $db->setQuery($query);
+	        $db->execute();
             $status['debug'][] = JText::_('USER_DELETION') . ' ' . $username;
         }
         return $status;

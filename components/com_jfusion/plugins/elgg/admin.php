@@ -54,9 +54,9 @@ class JFusionAdmin_elgg extends JFusionAdmin
     function loadSetup($path) {
         //generate the destination file
         if (substr($path, -1) != DS) {
-            $myfile = $path . DS . 'engine' . DS . 'settings.php';
+            $myfile = $path . DIRECTORY_SEPARATOR . 'engine' . DIRECTORY_SEPARATOR . 'settings.php';
         } else {
-            $myfile = $path . 'engine' . DS . 'settings.php';
+            $myfile = $path . 'engine' . DIRECTORY_SEPARATOR . 'settings.php';
         }
         $config = array();
         //check if the file exists
@@ -155,7 +155,7 @@ class JFusionAdmin_elgg extends JFusionAdmin
      */
     function allowRegistration() {
         $params = JFusionFactory::getParams($this->getJname());
-        include_once $params->get('source_path') . DS . 'engine' . DS . 'start.php';
+        include_once $params->get('source_path') . DIRECTORY_SEPARATOR . 'engine' . DIRECTORY_SEPARATOR . 'start.php';
         // Get variables
         global $CONFIG;
         $result = true;

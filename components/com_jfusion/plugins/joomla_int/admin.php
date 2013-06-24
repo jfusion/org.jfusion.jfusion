@@ -20,7 +20,7 @@ defined('_JEXEC') or die('Restricted access');
 /**
  * load the common Joomla JFusion plugin functions
  */
-require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.jplugin.php';
+require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jplugin.php';
 
 /**
  * JFusion Admin class for the internal Joomla database
@@ -106,13 +106,9 @@ class JFusionAdmin_joomla_int extends JFusionAdmin {
     function usergroup($name, $value, $node, $control_name)
     {
         $params = JFusionFactory::getParams($this->getJname());
-        
-        if(JFusionFunction::isJoomlaVersion('1.6')) {
-			$value = $params->get('multiusergroup');
-        	return parent::multiusergroup('multiusergroup', $value, $node, $control_name);
-        } else {
-        	return parent::usergroup($name, $value, $node, $control_name);
-        }
+
+	    $value = $params->get('multiusergroup');
+	    return parent::multiusergroup('multiusergroup', $value, $node, $control_name);
     }
 
     /**

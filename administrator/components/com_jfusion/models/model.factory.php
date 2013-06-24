@@ -16,7 +16,7 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
-require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'defines.php';
+require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'defines.php';
 
 /**
  * Custom parameter class that can save array values
@@ -58,9 +58,9 @@ class JFusionFactory
         //only create a new plugin instance if it has not been created before
         if (!isset($public_instances[$jname])) {
             //load the Abstract Public Class
-            include_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.abstractpublic.php';
+            include_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.abstractpublic.php';
 
-            $filename = JFUSION_PLUGIN_PATH . DS . $jname . DS . 'public.php';
+            $filename = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'public.php';
             if (file_exists($filename)) {
                 //load the plugin class itself
                 include_once $filename;
@@ -90,9 +90,9 @@ class JFusionFactory
         //only create a new plugin instance if it has not been created before
         if (!isset($admin_instances[$jname])) {
             //load the Abstract Admin Class
-            include_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.abstractadmin.php';
+            include_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.abstractadmin.php';
 
-            $filename = JFUSION_PLUGIN_PATH . DS . $jname . DS . 'admin.php';
+            $filename = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'admin.php';
             if (file_exists($filename)) {
                 //load the plugin class itself
                 $jn = $jname;
@@ -123,8 +123,8 @@ class JFusionFactory
         //only create a new authentication instance if it has not been created before
         if (!isset($auth_instances[$jname])) {
             //load the Abstract Auth Class
-            include_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.abstractauth.php';
-            $filename = JFUSION_PLUGIN_PATH . DS . $jname . DS . 'auth.php';
+            include_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.abstractauth.php';
+            $filename = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'auth.php';
             if (file_exists($filename)) {
                 //load the plugin class itself
                 include_once $filename;
@@ -156,8 +156,8 @@ class JFusionFactory
         //only create a new user instance if it has not been created before
         if (!isset($user_instances[$jname])) {
             //load the User Public Class
-            include_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.abstractuser.php';
-            $filename = JFUSION_PLUGIN_PATH . DS . $jname . DS . 'user.php';
+            include_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.abstractuser.php';
+            $filename = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'user.php';
             if (file_exists($filename)) {
                 //load the plugin class itself
                 include_once $filename;
@@ -189,8 +189,8 @@ class JFusionFactory
         //only create a new thread instance if it has not been created before
         if (!isset($forum_instances[$jname])) {
             //load the Abstract Forum Class
-            include_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.abstractforum.php';
-            $filename = JFUSION_PLUGIN_PATH . DS . $jname . DS . 'forum.php';
+            include_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.abstractforum.php';
+            $filename = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'forum.php';
             if (file_exists($filename)) {
                 //load the plugin class itself
                 include_once $filename;
@@ -220,7 +220,7 @@ class JFusionFactory
         }
         //only create a new thread instance if it has not been created before
         if (!isset($helper_instances[$jname])) {
-            $filename = JFUSION_PLUGIN_PATH . DS . $jname . DS . 'helper.php';
+            $filename = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'helper.php';
             if (file_exists($filename)) {
                 //load the plugin class itself
                 include_once $filename;
@@ -297,7 +297,7 @@ class JFusionFactory
         $db->setQuery($query);
         $serialized = $db->loadResult();
         //get the parameters from the XML file
-        //$file = JFUSION_PLUGIN_PATH .DS. $jname . DS.'jfusion.xml';
+        //$file = JFUSION_PLUGIN_PATH .DIRECTORY_SEPARATOR. $jname . DIRECTORY_SEPARATOR.'jfusion.xml';
         //$parametersInstance = new JParameter('', $file );
         //now load params without XML files, as this creates overhead when only values are needed
         $parametersInstance = new JParameter('');
@@ -358,7 +358,7 @@ class JFusionFactory
                 jimport('joomla.database.database');
                 jimport('joomla.database.table');
                 //create the actual connection
-                include_once dirname(__FILE__) . DS . $driver . '.php';
+                include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . $driver . '.php';
                 if ($driver == 'mysql') {
                     $db = new JFusionMySQL($options);
                 } else {
@@ -374,7 +374,7 @@ class JFusionFactory
                     } else {
                         //add support for UTF8
                         $db->setQuery('SET names ' . $db->quote($charset));
-                        $db->query();
+                        $db->execute();
                         //support debugging
                         $db->debug($debug);
                     }
@@ -469,7 +469,7 @@ class JFusionFactory
             switch ($type) {
                 case 'bbcode':
                     if (!class_exists('BBCode_Parser')) {
-                        include_once 'parsers'.DS.'nbbc.php';
+                        include_once 'parsers'.DIRECTORY_SEPARATOR.'nbbc.php';
                     }
                     $jfusion_code_parsers[$type] = new BBCode_Parser;
                     break;
@@ -492,7 +492,7 @@ class JFusionFactory
     	//only create a new plugin instance if it has not been created before
     	if (!isset($instances)) {
     		//  load the Abstract Public Class
-    		require_once (JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.cookie.php');
+    		require_once (JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.cookie.php');
     		
 			$params = JFusionFactory::getParams('joomla_int');
     		$instances = new JFusionCookies($params->get('secret'));

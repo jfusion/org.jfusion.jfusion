@@ -28,7 +28,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class jfusionViewLoginChecker extends JView
+class jfusionViewLoginChecker extends JViewLegacy
 {
     /**
      * displays the view

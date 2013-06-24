@@ -254,14 +254,14 @@ class executeJFusionHook
                             WHERE sessionhash = {$vdb->Quote($vars[dbsessionhash]) }";
                 }
                 $vdb->setQuery($query);
-                $vdb->query();
+                $vdb->execute();
             }
             //we need to perform the shutdown queries that mark PMs read, etc
             if (is_array($vbulletin->db->shutdownqueries)) {
                 foreach ($vbulletin->db->shutdownqueries AS $name => $query) {
                     if (!empty($query) AND ($name !== 'pmpopup' OR !defined('NOPMPOPUP'))) {
                         $vdb->setQuery($query);
-                        $vdb->query();
+                        $vdb->execute();
                     }
                 }
             }
@@ -551,7 +551,7 @@ class executeJFusionHook
         require_once JPATH_BASE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR  . 'jfusionapi.php';
         $mainframe = JFusionAPIInternal::startJoomla();
 
-        $curlFile = JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.curl.php';
+        $curlFile = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.curl.php';
         if (file_exists($curlFile)) {
             require_once $curlFile;
         }

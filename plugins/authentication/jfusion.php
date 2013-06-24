@@ -20,8 +20,8 @@ defined('_JEXEC') or die('Restricted access');
  * Load the JFusion framework
  */
 jimport('joomla.event.plugin');
-require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.factory.php';
-require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.jfusion.php';
+require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.factory.php';
+require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jfusion.php';
 
 /**
  * JFusion Authentication class
@@ -182,13 +182,8 @@ class plgAuthenticationjfusion extends JPlugin
 
                 if (empty($JFusionLoginCheckActive) && $mainframe->isAdmin()) {
                     //Logging in via Joomla admin but JFusion failed so attempt the normal joomla behaviour
-                    if(JFusionFunction::isJoomlaVersion('1.6')){
-                        $JAuth = JPATH_PLUGINS . DS . 'authentication' . DS . 'joomla' . DS . 'joomla.php';
-                        $method = 'onUserAuthenticate';
-                    } else {
-                        $JAuth = JPATH_PLUGINS . DS . 'authentication' . DS . 'joomla.php';
-                        $method = 'onAuthenticate';
-                    }
+	                $JAuth = JPATH_PLUGINS . DIRECTORY_SEPARATOR . 'authentication' . DIRECTORY_SEPARATOR . 'joomla' . DIRECTORY_SEPARATOR . 'joomla.php';
+	                $method = 'onUserAuthenticate';
                     if (file_exists($JAuth) && $method) {
                         require_once($JAuth);
                         plgAuthenticationJoomla::$method($credentials, $options, $response);
@@ -204,13 +199,8 @@ class plgAuthenticationjfusion extends JPlugin
             } else {
                 if (empty($JFusionLoginCheckActive) && $mainframe->isAdmin()) {
                     //Logging in via Joomla admin but JFusion failed so attempt the normal joomla behaviour
-                    if(JFusionFunction::isJoomlaVersion('1.6')){
-                        $JAuth = JPATH_PLUGINS . DS . 'authentication' . DS . 'joomla' . DS . 'joomla.php';
-                        $method = 'onUserAuthenticate';
-                    } else {
-                        $JAuth = JPATH_PLUGINS . DS . 'authentication' . DS . 'joomla.php';
-                        $method = 'onAuthenticate';
-                    }
+	                $JAuth = JPATH_PLUGINS . DIRECTORY_SEPARATOR . 'authentication' . DIRECTORY_SEPARATOR . 'joomla' . DIRECTORY_SEPARATOR . 'joomla.php';
+	                $method = 'onUserAuthenticate';
                     if (file_exists($JAuth) && $method) {
                         require_once($JAuth);
                         plgAuthenticationJoomla::$method($credentials, $options, $response);
@@ -225,13 +215,8 @@ class plgAuthenticationjfusion extends JPlugin
             }
         } else {
             //we have to call the main Joomla plugin as we have no master
-            if(JFusionFunction::isJoomlaVersion('1.6')){
-                $JAuth = JPATH_PLUGINS . DS . 'authentication' . DS . 'joomla' . DS . 'joomla.php';
-                $method = 'onUserAuthenticate';
-            } else {
-                $JAuth = JPATH_PLUGINS . DS . 'authentication' . DS . 'joomla.php';
-                $method = 'onAuthenticate';
-            }
+	        $JAuth = JPATH_PLUGINS . DIRECTORY_SEPARATOR . 'authentication' . DIRECTORY_SEPARATOR . 'joomla' . DIRECTORY_SEPARATOR . 'joomla.php';
+	        $method = 'onUserAuthenticate';
             if (file_exists($JAuth) && $method) {
                 require_once($JAuth);
                 plgAuthenticationJoomla::$method($credentials, $options, $response);

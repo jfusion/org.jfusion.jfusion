@@ -600,7 +600,7 @@ if ( !class_exists('DokuWikiSearch') ) {
          * @return string
          */
         function getPage($page) {
-            $file = $this->path . 'data' . DS . 'pages' . DS . str_replace(":", DS, $page) . '.txt';
+            $file = $this->path . 'data' . DIRECTORY_SEPARATOR . 'pages' . DIRECTORY_SEPARATOR . str_replace(":", DS, $page) . '.txt';
             $text = '';
             if (file_exists($file)) {
                 $handle = fopen($file, "r");
@@ -618,7 +618,7 @@ if ( !class_exists('DokuWikiSearch') ) {
          */
         function getPageModifiedDateTime($page) {
             $datetime = '';
-            $file = $this->path . 'data' . DS . 'pages' . DS . str_replace(":", DS, $page) . '.txt';
+            $file = $this->path . 'data' . DIRECTORY_SEPARATOR . 'pages' . DIRECTORY_SEPARATOR . str_replace(":", DS, $page) . '.txt';
             if (file_exists($file)) {
                 $datetime = date ('Y-m-d h:i:s', filemtime($file));
             }

@@ -17,7 +17,7 @@ jimport('joomla.application.component.controller');
  * @package JFusion
  */
 
-class JFusionControllerWeb extends JController
+class JFusionControllerWeb extends JControllerLegacy
 {
     /**
      * Displays the integrated software inside Joomla without a frame

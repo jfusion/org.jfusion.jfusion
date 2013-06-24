@@ -20,8 +20,8 @@ defined('_JEXEC') or die('Restricted access');
 /**
  * load the JFusion framework
  */
-require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.jfusion.php';
-require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.abstractadmin.php';
+require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jfusion.php';
+require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.abstractadmin.php';
 
 /**
  * JFusion plugin class for Gallery2
@@ -62,7 +62,7 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
         if (substr($forumPath, -1) == DS) {
             $myfile = $forumPath . 'config.php';
         } else {
-            $myfile = $forumPath . DS . 'config.php';
+            $myfile = $forumPath . DIRECTORY_SEPARATOR . 'config.php';
         }
         $params = array();
         $config = array();
@@ -280,11 +280,7 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
         if ($ret) {
             return array($ret, null);
         }
-        if (JFusionFunction::isJoomlaVersion('1.6')) {
-            $cname = $control_name . '[params][' . $name . ']';
-        } else {
-            $cname = $control_name . '[' . $name . ']';
-        }
+	    $cname = $control_name . '[params][' . $name . ']';
 
         $output = '<select name="' . $cname.'" id="'.$name.'">';
 

@@ -415,11 +415,11 @@ HTML;
         $conf = $helper->getConf();
         $params = JFusionFactory::getParams($this->getJname());
         $source_path = $params->get('source_path');
-        $plugindir = $source_path . DS . 'lib' . DS . 'plugins';
+        $plugindir = $source_path . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'plugins';
 
         //check to see if plugin installed and config options available
         jimport('joomla.filesystem.folder');
-        if (!JFolder::exists($plugindir . DS . 'jfusion') || empty($conf['jfusion'])) {
+        if (!JFolder::exists($plugindir . DIRECTORY_SEPARATOR . 'jfusion') || empty($conf['jfusion'])) {
             $error = 1;
             $reason = JText::_('MOD_NOT_ENABLED');
         }
@@ -457,8 +457,8 @@ HTML;
     {
         $params = JFusionFactory::getParams($this->getJname());
         $source_path = $params->get('source_path');
-        $plugindir = $source_path . DS . 'lib' . DS . 'plugins' . DS . 'jfusion';
-        $pluginsource = JFUSION_PLUGIN_PATH . DS . 'dokuwiki' . DS . 'jfusion';
+        $plugindir = $source_path . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'jfusion';
+        $pluginsource = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . 'dokuwiki' . DIRECTORY_SEPARATOR . 'jfusion';
 
         //copy the jfusion plugin to Dokuwiki plugin directory
         jimport('joomla.filesystem.folder');
@@ -516,7 +516,7 @@ PHP;
     {
         $params = JFusionFactory::getParams($this->getJname());
         $source_path = $params->get('source_path');
-        $plugindir = $source_path . DS . 'lib' . DS . 'plugins' . DS . 'jfusion';
+        $plugindir = $source_path . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'jfusion';
 
         jimport('joomla.filesystem.folder');
         jimport('joomla.filesystem.file');

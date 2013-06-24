@@ -20,8 +20,8 @@ defined('_JEXEC') or die('Restricted access');
  * Load the JFusion framework
  */
 jimport('joomla.plugin.plugin');
-require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.factory.php';
-require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.jfusion.php';
+require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.factory.php';
+require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jfusion.php';
 /**
  * JFusion User class
  *
@@ -119,7 +119,7 @@ class plgUserJfusion extends JPlugin
             //delete any sessions that the user could have active
             $db = JFactory::getDBO();
             $db->setQuery('DELETE FROM #__session WHERE userid = ' . $db->Quote($user['id']));
-            $db->Query();
+            $db->execute();
             //return output if allowed
             $isAdministrator = JFusionFunction::isAdministrator();
             if ($isAdministrator === true) {
@@ -622,7 +622,7 @@ class plgUserJfusion extends JPlugin
                 //update the jfusion_user table with the new username
                 $query = 'REPLACE INTO #__jfusion_users (id, username) VALUES (' . (int)$JoomlaUser->id . ', ' . $db->Quote($JoomlaUser->username) . ')';
                 $db->setQuery($query);
-                if (!$db->query()) {
+                if (!$db->execute()) {
                     JError::raiseWarning(0, $db->stderr());
                 }
                 //if we had a username stored in jfusion_users, update the olduserinfo with that username before passing it into the plugins so they will find the intended user
@@ -672,16 +672,6 @@ class plgUserJfusion extends JPlugin
 // commented out because we should use the joomla use object (in out plugins)
 //	            $master_userinfo = $JoomlaUser;
 	            $master_userinfo = $JFusionMaster->getUser($JoomlaUser);
-            	if(!JFusionFunction::isJoomlaVersion('1.6')) {
-	                if ($JoomlaUser->block == 0 && !empty($JoomlaUser->activation)) {
-	                    //let's clear out Joomla activation status for sanity's sake
-	                    $db = JFactory::getDBO();
-	                    $query = 'UPDATE #__users SET activation = \'\' WHERE id = ' . $JoomlaUser->id;
-	                    $db->setQuery($query);
-	                    $db->query();
-	                    $JoomlaUser->activation = '';
-	                }
-				}                
             }
             if ( !empty($JoomlaUser->password_clear) ) {
             	$master_userinfo->password_clear = $JoomlaUser->password_clear;

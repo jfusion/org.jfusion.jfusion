@@ -19,7 +19,7 @@ defined('_JEXEC') or die('Restricted access');
 /**
  * load the jplugin model
  */
-require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.jplugin.php';
+require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jplugin.php';
 
 /**
  * @category   JFusion
@@ -125,7 +125,7 @@ class JFusionUser_efront extends JFusionUser
         // do some eFront housekeeping
         $query = 'DELETE FROM #__users_to_chatrooms WHERE users_LOGIN = ' . $db->Quote($userinfo->username);
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['debug'][] = 'Error Could not delete users_to_chatroom for user '.$userinfo->username.': '.$db->stderr();
         } else {
             $status['debug'][] = 'Deleted users_to_chatroom for user '.$userinfo->username;
@@ -133,14 +133,14 @@ class JFusionUser_efront extends JFusionUser
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'DELETE FROM #__chatrooms WHERE users_LOGIN = ' . $db->Quote($userinfo->username). ' AND type = '.$db->Quote('one_to_one');
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['debug'][] = 'Error Could not delete chatrooms for user '.$userinfo->username.': '.$db->stderr();
         } else {
             $status['debug'][] = 'Deleted chatrooms for user '.$userinfo->username;
         }
         $query = 'DELETE FROM #__users_online WHERE users_LOGIN = ' . $db->Quote($userinfo->username);
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['debug'][] = 'Error Could not delete users_on_line for user '.$userinfo->username.': '.$db->stderr();
         } else {
             $status['debug'][] = 'Deleted users_on_line for user '.$userinfo->username;
@@ -244,7 +244,7 @@ class JFusionUser_efront extends JFusionUser
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'UPDATE #__users SET password =' . $db->Quote($existinguser->password). 'WHERE id =' . (int)$existinguser->userid;
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . $db->stderr();
         } else {
             $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
@@ -273,7 +273,7 @@ class JFusionUser_efront extends JFusionUser
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'UPDATE #__users SET email =' . $db->Quote($userinfo->email) . ' WHERE id =' . (int)$existinguser->userid;
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $db->stderr();
         } else {
             $status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
@@ -291,7 +291,7 @@ class JFusionUser_efront extends JFusionUser
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'UPDATE #__users SET active = 0 WHERE id =' . (int)$existinguser->userid;
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $db->stderr();
         } else {
             $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
@@ -310,7 +310,7 @@ class JFusionUser_efront extends JFusionUser
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'UPDATE #__users SET active = 1 WHERE id =' . (int)$existinguser->userid;
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $db->stderr();
         } else {
             $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
@@ -328,7 +328,7 @@ class JFusionUser_efront extends JFusionUser
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'UPDATE #__users SET pending = 0 WHERE id =' . (int)$existinguser->userid;
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $db->stderr();
         } else {
             $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
@@ -346,7 +346,7 @@ class JFusionUser_efront extends JFusionUser
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'UPDATE #__users SET pending = 1 WHERE id =' . (int)$existinguser->userid;
         $db->setQuery($query);
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $db->stderr();
         } else {
             $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
@@ -590,7 +590,7 @@ class JFusionUser_efront extends JFusionUser
             }
             $query = 'UPDATE #__users SET user_type = '.$db->Quote($user_type).', user_types_ID = '.$user_types_ID.' WHERE id =' . $existinguser->userid;
             $db->setQuery($query);
-            if (!$db->query()) {
+            if (!$db->execute()) {
                 $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
             } else {
                 $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode (' , ', $existinguser->groups) . ' -> ' . $usergroup;

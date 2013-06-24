@@ -19,7 +19,7 @@ JFusionFunctionAdmin::displayDonate();
 /**
  *     Load debug library
  */
-require_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.debug.php';
+require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.debug.php';
 /**
  * Output information about the server for future support queries
  */

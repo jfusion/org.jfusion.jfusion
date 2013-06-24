@@ -175,14 +175,14 @@ class JFusionForum_smf2 extends JFusionForum
 			$db = JFusionFactory::getDatabase($this->getJname());
 			// Load member params from database "mainly to get the avatar"
 			$db->setQuery('SELECT * FROM #__members WHERE id_member='.$puser_id);
-			$db->query();
+			$db->execute();
 			$result = $db->loadObject();
 
 			if (!empty($result)) {
 				$url = '';
 				// SMF has a wired way of holding attachments. Get instance of the attachments table
 				$db->setQuery('SELECT * FROM #__attachments WHERE id_member='.$puser_id);
-				$db->query();
+				$db->execute();
 				$attachment = $db->loadObject();
 				// See if the user has a specific attachment meant for an avatar
 				if(!empty($attachment) && $attachment->id_thumb == 0 && $attachment->id_msg == 0 && empty($result->avatar)) {
@@ -326,12 +326,12 @@ class JFusionForum_smf2 extends JFusionForum
                 if ($updateLastPost) {
                     $query = 'REPLACE INTO #__log_topics SET id_member = '.$userid.', id_topic = '.$topicid.', id_msg = ' . ($postid + 1);
                     $jdb->setQuery($query);
-                    if (!$jdb->query()) {
+                    if (!$jdb->execute()) {
                         $status['error'] = $jdb->stderr();
                     }
                     $query = 'REPLACE INTO #__log_boards SET id_member = '.$userid.', id_board = '.$forumid.', id_msg = '.$postid;
                     $jdb->setQuery($query);
-                    if (!$jdb->query()) {
+                    if (!$jdb->execute()) {
                         $status['error'] = $jdb->stderr();
                     }
                 }
@@ -560,19 +560,19 @@ HTML;
 	            //update stats for threadmarking purposes
                 $query = 'REPLACE INTO #__log_topics SET id_member = '.$userid.', id_topic = '.$ids->threadid.', id_msg = ' . ($postid + 1);
                 $jdb->setQuery($query);
-                if (!$jdb->query()) {
+                if (!$jdb->execute()) {
                     $status['error'] = $jdb->stderr();
                 }
                 $query = 'REPLACE INTO #__log_boards SET id_member = '.$userid.', id_board = '.$ids->forumid.', id_msg = '.$postid;
                 $jdb->setQuery($query);
-                if (!$jdb->query()) {
+                if (!$jdb->execute()) {
                     $status['error'] = $jdb->stderr();
                 }
 			} else {
 				//add the post to the approval queue
 				$query = 'INSERT INTO #__approval_queue id_msg VALUES ('.$postid.')';
 				$jdb->setQuery($query);
-				$jdb->query();
+				$jdb->execute();
 			}
 
 			//update moderation status to tell discussion bot to notify user

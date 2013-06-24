@@ -47,7 +47,7 @@ class JFusionPublic
      */
     function getBuffer(&$data)
     {
-        require_once(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.curlframeless.php');
+        require_once(JPATH_ADMINISTRATOR.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.curlframeless.php');
 
         $frameless = new JFusionCurlFrameless();
 
@@ -337,7 +337,7 @@ JS;
 
         $document = JFactory::getDocument();
 
-        $sourcepath = JPATH_SITE . DS . 'components' . DS . 'com_jfusion' . DS . 'css' . DS .$jname . DS;
+        $sourcepath = JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR .$jname . DIRECTORY_SEPARATOR;
         $urlpath = 'components/com_jfusion/css/'.$jname.'/';
 
         jimport('joomla.filesystem.file');
@@ -350,7 +350,7 @@ JS;
             $urlReplace = array('', '', '', '', '-', '', '', '', '', '', '', '', '', ',', '_');
             if ($data->parse_css) {
                 if (preg_match_all( '#<link(.*?type=[\'|"]text\/css[\'|"][^>]*)>#Si', $html, $css )) {
-                    require_once (JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'parsers' . DS . 'css.php');
+                    require_once (JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'parsers' . DIRECTORY_SEPARATOR . 'css.php');
 
                     jimport('joomla.filesystem.file');
                     foreach ($css[1] as $key => $values) {
@@ -393,10 +393,10 @@ JS;
         }
         if ($data->parse_infile_css) {
             if (preg_match_all( '#<style.*?type=[\'|"]text/css[\'|"].*?>(.*?)</style>#Sims', $html, $css )) {
-                require_once (JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'parsers' . DS . 'css.php');
+                require_once (JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'parsers' . DIRECTORY_SEPARATOR . 'css.php');
                 foreach ($css[1] as $key => $values) {
                     $filename = md5($values).'.css';
-                    $filenamesource = $sourcepath.'infile'.DS.$filename;
+                    $filenamesource = $sourcepath.'infile'.DIRECTORY_SEPARATOR.$filename;
 
                     if ( preg_match( '#media=[\'|"](.*?)[\'|"]#Si', $css[0][$key], $cssMedia ) ) {
                         $cssMedia = $cssMedia[1];

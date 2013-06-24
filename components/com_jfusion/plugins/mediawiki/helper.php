@@ -125,13 +125,13 @@ class JFusionHelper_mediawiki
             $source_path = substr($source_path, 0, -1);
         }
 
-        $return[] = $source_path . DS. 'includes'. DS. 'DefaultSettings.php';
-        $return[] = $source_path . DS. 'LocalSettings.php';
+        $return[] = $source_path . DIRECTORY_SEPARATOR. 'includes'. DIRECTORY_SEPARATOR. 'DefaultSettings.php';
+        $return[] = $source_path . DIRECTORY_SEPARATOR. 'LocalSettings.php';
 
-        $paths[] = $source_path . DS. 'includes'. DS. 'Defines.php';
-        $paths[] = $source_path . DS. 'includes'. DS. 'IP.php';
-        $paths[] = $source_path . DS. 'includes'. DS. 'WebRequest.php';
-        $paths[] = $source_path . DS. 'includes'. DS. 'SiteConfiguration.php';
+        $paths[] = $source_path . DIRECTORY_SEPARATOR. 'includes'. DIRECTORY_SEPARATOR. 'Defines.php';
+        $paths[] = $source_path . DIRECTORY_SEPARATOR. 'includes'. DIRECTORY_SEPARATOR. 'IP.php';
+        $paths[] = $source_path . DIRECTORY_SEPARATOR. 'includes'. DIRECTORY_SEPARATOR. 'WebRequest.php';
+        $paths[] = $source_path . DIRECTORY_SEPARATOR. 'includes'. DIRECTORY_SEPARATOR. 'SiteConfiguration.php';
         defined ('MEDIAWIKI') or define( 'MEDIAWIKI',TRUE );
         defined ('MW_INSTALL_PATH') or define('MW_INSTALL_PATH', $source_path);
         foreach($paths as $path) {

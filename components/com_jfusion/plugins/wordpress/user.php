@@ -16,7 +16,7 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
-require_once JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.jplugin.php';
+require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jplugin.php';
 
 /**
  * JFusion User Class for Wordpress 3+
@@ -297,7 +297,7 @@ class JFusionUser_wordpress extends JFusionUser {
     function updatePassword($userinfo, $existinguser, &$status) {
 		// get the encryption PHP file
 		if (!class_exists('PasswordHashOrg')) {
-			require_once JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'PasswordHashOrg.php';
+			require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'PasswordHashOrg.php';
 		}
 		$t_hasher = new PasswordHashOrg(8, true);
 		$existinguser->password = $t_hasher->HashPassword($userinfo->password_clear);
@@ -305,7 +305,7 @@ class JFusionUser_wordpress extends JFusionUser {
 		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = 'UPDATE #__users SET user_pass =' . $db->Quote($existinguser->password) . ' WHERE ID =' . (int)$existinguser->userid;
 		$db->setQuery($query);
-		if (!$db->query()) {
+		if (!$db->execute()) {
 			$status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . $db->stderr();
 		} else {
 			$status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
@@ -335,7 +335,7 @@ class JFusionUser_wordpress extends JFusionUser {
 		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = 'UPDATE #__users SET user_email =' . $db->Quote($userinfo->email) . ' WHERE ID =' . (int)$existinguser->userid;
 		$db->setQuery($query);
-		if (!$db->query()) {
+		if (!$db->execute()) {
 			$status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $db->stderr();
 		} else {
 			$status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
@@ -376,7 +376,7 @@ class JFusionUser_wordpress extends JFusionUser {
 		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = 'UPDATE #__users SET user_activation_key = \'\'  WHERE ID =' . (int)$existinguser->userid;
 		$db->setQuery($query);
-		if (!$db->query()) {
+		if (!$db->execute()) {
 			$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $db->stderr();
 		} else {
 			$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
@@ -395,7 +395,7 @@ class JFusionUser_wordpress extends JFusionUser {
 		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = 'UPDATE #__users SET user_activation_key =' . $db->Quote($userinfo->activation) . ' WHERE ID =' . (int)$existinguser->userid;
 		$db->setQuery($query);
-		if (!$db->query()) {
+		if (!$db->execute()) {
 			$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $db->stderr();
 		} else {
 			$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
@@ -433,7 +433,7 @@ class JFusionUser_wordpress extends JFusionUser {
             if (isset($userinfo->password_clear)) {
                 //we can update the password
                 if (!class_exists('PasswordHashOrg')) {
-                    require_once JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'PasswordHashOrg.php';
+                    require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'PasswordHashOrg.php';
                 }
                 $t_hasher = new PasswordHashOrg(8, true);
                 $user_password = $t_hasher->HashPassword($userinfo->password_clear);
@@ -555,13 +555,13 @@ class JFusionUser_wordpress extends JFusionUser {
 		if ($reassign){
 			$query = 'SELECT ID FROM #__posts WHERE post_author = '.$user_id;
 			$db->setQuery($query);
-			if ($db->query()) {
+			if ($db->execute()) {
                 $results = $db->loadObjectList();
 				if ($results) {
 					foreach ($results as $row) {
 						$query = 'UPDATE #__posts SET post_author = '.$reassign. ' WHERE ID = '. $row->ID;
 						$db->setQuery($query);
-						if (!$db->query()) {
+						if (!$db->execute()) {
 							$status['error'][] = 'Error Could not reassign posts by user '.$user_id.': '.$db->stderr();
 							break;
 						}
@@ -572,13 +572,13 @@ class JFusionUser_wordpress extends JFusionUser {
 				}
 				$query = 'SELECT link_id FROM #__links WHERE link_owner = '.$user_id;
 				$db->setQuery($query);
-				if ($db->query()) {
+				if ($db->execute()) {
                     $results = $db->loadObjectList();
 					if ($results) {
 						foreach ($results as $row) {
 							$query = 'UPDATE #__links SET link_owner = '.$reassign. ' WHERE link_id = '. $row->link_id;
 							$db->setQuery($query);
-							if (!$db->query()) {
+							if (!$db->execute()) {
 								$status['error'][] = 'Error Could not reassign links by user '.$user_id.': '.$db->stderr();
 								break;
 							}
@@ -592,14 +592,14 @@ class JFusionUser_wordpress extends JFusionUser {
 		} else {
 			$query = 'DELETE FROM #__posts WHERE post_author = ' . $user_id;
 			$db->setQuery($query);
-			if (!$db->query()) {
+			if (!$db->execute()) {
 				$status['error'][] = 'Error Could not delete posts by user '.$user_id.': '.$db->stderr();
 			} else {
 				$status['debug'][] = 'Deleted posts from user with id '.$user_id;
 			}
 			$query = 'DELETE FROM #__links WHERE link_owner = ' . $user_id;
 			$db->setQuery($query);
-			if (!$db->query()) {
+			if (!$db->execute()) {
 				$status['error'][] = 'Error Could not delete links by user '.$user_id.': '.$db->stderr();
 			} else {
 				$status['debug'][] = 'Deleted links from user '.$user_id;
@@ -608,7 +608,7 @@ class JFusionUser_wordpress extends JFusionUser {
 		// now delete the user
 		$query = 'DELETE FROM #__users WHERE ID = ' . $user_id;
 		$db->setQuery($query);
-		if (!$db->query()) {
+		if (!$db->execute()) {
 			$status['error'][] = 'Error Could not delete userrecord with userid '.$user_id.': '.$db->stderr();
 		} else {
 			$status['debug'][] = 'Deleted userrecord of user with userid '.$user_id;
@@ -616,7 +616,7 @@ class JFusionUser_wordpress extends JFusionUser {
 	    // delete usermeta
 	    $query = 'DELETE FROM #__usermeta WHERE user_id = ' . $user_id;
 	    $db->setQuery($query);
-	    if (!$db->query()) {
+	    if (!$db->execute()) {
 		    $status['error'][] = 'Error Could not delete usermetarecord with userid '.$user_id.': '.$db->stderr();
 	    } else {
 		    $status['debug'][] = 'Deleted usermetarecord of user with userid '.$user_id;
@@ -656,7 +656,7 @@ class JFusionUser_wordpress extends JFusionUser {
             $capsfield = serialize($caps);
             $query = 'UPDATE #__usermeta SET meta_value =' . $db->Quote($capsfield) . ' WHERE meta_key = \''.$database_prefix.'capabilities'.'\' AND user_id =' . (int)$existinguser->userid;
             $db->setQuery($query);
-            if (!$db->query()) {
+            if (!$db->execute()) {
                 $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
             } else {
                 $status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . implode (' , ', $existinguser->groups) . ' -> ' . implode (' , ', $usergroups);

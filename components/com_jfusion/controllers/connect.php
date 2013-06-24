@@ -12,7 +12,7 @@ defined ( '_JEXEC' ) or die ( 'Restricted access' );
 
 jimport ( 'joomla.application.component.controller' );
 jimport ( 'joomla.application.module.helper' );
-require_once (JPATH_SITE . DS . 'components' . DS . 'com_jfusion' . DS . 'helpers' . DS . 'helper.php');
+require_once (JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'helper.php');
 /**
  * JFusionControllerConnect class
  *
@@ -24,7 +24,7 @@ require_once (JPATH_SITE . DS . 'components' . DS . 'com_jfusion' . DS . 'helper
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionControllerConnect extends JController {
+class JFusionControllerConnect extends JControllerLegacy {
 	
 	public function module() {
 		

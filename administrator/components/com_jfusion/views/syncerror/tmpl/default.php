@@ -186,7 +186,7 @@ JHTML::_('behavior.modal', 'a.modal');
 				    /**
 				     * Load the debug model
 				     */
-				    include_once JPATH_COMPONENT_ADMINISTRATOR . DS . 'models' . DS . 'model.debug.php';
+				    include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.debug.php';
 				    //debug::show($error, 'Info on Error');
 				
 				    ?>

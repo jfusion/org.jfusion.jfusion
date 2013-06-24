@@ -250,7 +250,7 @@ class JFusionUser_dokuwiki extends JFusionUser {
             $params = JFusionFactory::getParams($this->getJname());
 
             //set login cookie
-            require_once JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'auth' . DS .'blowfish.php';
+            require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'auth' . DIRECTORY_SEPARATOR .'blowfish.php';
             $cookie_path = $params->get('cookie_path', '/');
             $cookie_domain = $params->get('cookie_domain');
             $cookie_secure = $params->get('secure', false);

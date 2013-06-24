@@ -28,7 +28,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class jfusionViewLoginCheckerResult extends JView
+class jfusionViewLoginCheckerResult extends JViewLegacy
 {
 	/**
 	 * displays the view
@@ -126,11 +126,7 @@ class jfusionViewLoginCheckerResult extends JView
 			if ($value->name == 'joomla') {
 				unset($plugins[$key]);
 			} else {
-				if(JFusionFunction::isJoomlaVersion('1.6')){
-					include_once JPATH_SITE . DS . 'plugins' . DS . 'authentication' . DS . $value->name. DS .$value->name . '.php';
-				} else {
-					include_once JPATH_SITE . DS . 'plugins' . DS . 'authentication' . DS . $value->name . '.php';
-				}
+				include_once JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'authentication' . DIRECTORY_SEPARATOR . $value->name. DIRECTORY_SEPARATOR .$value->name . '.php';
 			}
 		}
 		// Create Authentication response
@@ -145,15 +141,11 @@ class jfusionViewLoginCheckerResult extends JView
 				$plugin = new $className($this, (array)$plugin);
 			}
 			// Try to authenticate
-			if(JFusionFunction::isJoomlaVersion('1.6')){
-				$plugin->onUserAuthenticate($credentials, $options, $response);
-			} else {
-				$plugin->onAuthenticate($credentials, $options, $response);
-			}
+			$plugin->onUserAuthenticate($credentials, $options, $response);
 			// If authentication is successfully break out of the loop
 			if ($response->status === JAUTHENTICATE_STATUS_SUCCESS) {
 				if (empty($response->type)) {
-					$response->type = isset($plugin->_name) ? $plugin->_name : $plugin->name;
+					$response->type = $plugin->name;
 				}
 				if (empty($response->username)) {
 					$response->username = $credentials['username'];
@@ -210,18 +202,14 @@ class jfusionViewLoginCheckerResult extends JView
 			}
 
 			foreach ($plugins as $plugin) {
-				if(JFusionFunction::isJoomlaVersion('1.6')) {
-					include_once JPATH_SITE . DS . 'plugins' . DS . 'user' . DS . $plugin->name .  DS . $plugin->name . '.php';
-				} else {
-					include_once JPATH_SITE . DS . 'plugins' . DS . 'user' . DS . $plugin->name . '.php';
-				}
+				include_once JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'user' . DIRECTORY_SEPARATOR . $plugin->name .  DS . $plugin->name . '.php';
 				$className = 'plg' . ucfirst($plugin->type) . ucfirst($plugin->name);
 				$plugin_name = $plugin->name;
 				if (class_exists($className)) {
 					$plugin = new $className($this, (array)$plugin);
 				}
 
-				$method_name = (JFusionFunction::isJoomlaVersion('1.6')) ? 'onUserLogin' : 'onLoginUser';
+				$method_name = 'onUserLogin';
 				if (method_exists($plugin, $method_name)) {
 					// Try to authenticate
 					$user_results = (array)$response;

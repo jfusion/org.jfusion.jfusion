@@ -330,13 +330,13 @@ class JFusionForum_smf extends JFusionForum
             $db = JFusionFactory::getDatabase($this->getJname());
             // Load member params from database "mainly to get the avatar"
             $db->setQuery('SELECT * FROM #__members WHERE ID_MEMBER=' . $puser_id);
-            $db->query();
+            $db->execute();
             $result = $db->loadObject();
             if (!empty($result)) {
                 $url = '';
                 // SMF has a wired way of holding attachments. Get instance of the attachments table
                 $db->setQuery('SELECT * FROM #__attachments WHERE ID_MEMBER=' . $puser_id);
-                $db->query();
+                $db->execute();
                 $attachment = $db->loadObject();
                 // See if the user has a specific attachment meant for an avatar
                 if (!empty($attachment) && $attachment->ID_THUMB == 0 && $attachment->ID_MSG == 0 && empty($result->avatar)) {
@@ -467,12 +467,12 @@ class JFusionForum_smf extends JFusionForum
                 if ($updateLastPost) {
                     $query = 'REPLACE INTO #__log_topics SET ID_MEMBER = '.$userid.', ID_TOPIC = '.$topicid.', ID_MSG = ' . ($postid + 1);
                     $jdb->setQuery($query);
-                    if (!$jdb->query()) {
+                    if (!$jdb->execute()) {
                         $status['error'] = $jdb->stderr();
                     }
                     $query = 'REPLACE INTO #__log_boards SET ID_MEMBER = '.$userid.', ID_BOARD = '.$forumid.', ID_MSG = '.$postid;
                     $jdb->setQuery($query);
-                    if (!$jdb->query()) {
+                    if (!$jdb->execute()) {
                         $status['error'] = $jdb->stderr();
                     }
                 }
@@ -683,12 +683,12 @@ HTML;
             //update stats for threadmarking purposes
             $query = 'REPLACE INTO #__log_topics SET ID_MEMBER = '.$userid.', ID_TOPIC = '.$ids->threadid.', ID_MSG = ' . ($postid + 1);
             $jdb->setQuery($query);
-            if (!$jdb->query()) {
+            if (!$jdb->execute()) {
                 $status['error'] = $jdb->stderr();
             }
             $query = 'REPLACE INTO #__log_boards SET ID_MEMBER = '.$userid.', ID_BOARD = '.$ids->forumid.', ID_MSG = '.$postid;
             $jdb->setQuery($query);
-            if (!$jdb->query()) {
+            if (!$jdb->execute()) {
                 $status['error'] = $jdb->stderr();
             }
         }

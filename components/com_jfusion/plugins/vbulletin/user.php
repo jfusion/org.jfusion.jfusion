@@ -203,7 +203,7 @@ class JFusionUser_vbulletin extends JFusionUser
         //If blocking a user in Joomla User Manager, Joomla will initiate a logout.
         //Thus, prevent a logout of the currently logged in user if a user has been blocked:
         if (!defined('VBULLETIN_BLOCKUSER_CALLED')) {
-            require_once JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.curl.php';
+            require_once JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.curl.php';
 
             //clear out all of vB's cookies
             foreach ($_COOKIE AS $key => $val) {
@@ -223,7 +223,7 @@ class JFusionUser_vbulletin extends JFusionUser
 
             foreach ($queries as $q) {
                 $db->setQuery($q);
-                if (!$db->query()) {
+                if (!$db->execute()) {
                     $status['debug'][] = $db->stderr();
                 }
             }
@@ -247,7 +247,7 @@ class JFusionUser_vbulletin extends JFusionUser
         if (!empty($userinfo->block) || !empty($userinfo->activation)) {
             $status['error'][] = JText::_('FUSION_BLOCKED_USER');
         } else {
-            require_once JPATH_ADMINISTRATOR .DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.curl.php';
+            require_once JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.curl.php';
             //first check to see if striking is enabled to prevent further strikes
             $db = JFusionFactory::getDatabase($this->getJname());
             $query = 'SELECT value FROM #__setting WHERE varname = \'usestrikesystem\'';
@@ -349,7 +349,7 @@ class JFusionUser_vbulletin extends JFusionUser
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'UPDATE #__user SET passworddate = ' . $db->Quote($date) . ', password = ' . $db->Quote($existinguser->password). ', salt = ' . $db->Quote($existinguser->password_salt). ' WHERE userid  = ' . $existinguser->userid;
         $db->setQuery($query );
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR')  . ': ' . $db->stderr();
         } else {
             $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password,0,6) . '********';
@@ -399,7 +399,7 @@ class JFusionUser_vbulletin extends JFusionUser
         $query = 'UPDATE #__user SET usergroupid = ' . $bannedgroup . ' WHERE userid  = ' . $existinguser->userid;
         $db->setQuery($query);
 
-        if (!$db->query()) {
+        if (!$db->execute()) {
             $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ': ' . $db->stderr();
         } else {
             //add a banned user catch to vbulletin database
@@ -479,7 +479,7 @@ class JFusionUser_vbulletin extends JFusionUser
             //remove any banned user catches from vbulletin database
             $query = 'DELETE FROM #__userban WHERE userid='. $existinguser->userid;
             $jdb->setQuery($query);
-            if (!$jdb->Query()) {
+            if (!$jdb->execute()) {
                 $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ': ' . $jdb->stderr();
             }
         }
@@ -515,12 +515,12 @@ class JFusionUser_vbulletin extends JFusionUser
         $query = 'UPDATE #__user SET usergroupid = ' . $usergroup . ' WHERE userid  = ' . $existinguser->userid;
         $db->setQuery($query );
 
-        if ($db->query()) {
+        if ($db->execute()) {
             //remove any activation catches from vbulletin database
             $query = 'DELETE FROM #__useractivation WHERE userid = ' . $existinguser->userid;
             $db->setQuery($query);
 
-            if (!$db->Query()) {
+            if (!$db->execute()) {
                 $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' . $db->stderr();
             } else {
                 $status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
@@ -547,7 +547,7 @@ class JFusionUser_vbulletin extends JFusionUser
         $query = 'UPDATE #__user SET usergroupid = ' . $usergroup . ' WHERE userid  = ' . $existinguser->userid;
         $db->setQuery($query );
 
-        if ($db->Query()) {
+        if ($db->execute()) {
             //update the activation status
             //check to see if the user is already inactivated
             $query = 'SELECT COUNT(*) FROM #__useractivation WHERE userid = ' . $existinguser->userid;
@@ -643,7 +643,7 @@ class JFusionUser_vbulletin extends JFusionUser
                 if (!isset($userinfo->password_clear)) {
                     $db = JFusionFactory::getDatabase($this->getJname());
                     $query = 'UPDATE #__user SET password = ' . $db->Quote($userinfo->password). ' WHERE userid  = ' . $userdmid;
-                    if (!$db->query()) {
+                    if (!$db->execute()) {
                         $status['debug'][] = JText::_('USER_CREATION_ERROR') .'. '. JText::_('USERID') . ' ' . $userdmid . ': '.JText::_('MASTER_PASSWORD_NOT_COPIED');
                     }
                 }

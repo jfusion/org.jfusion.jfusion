@@ -10,8 +10,8 @@
 defined ( '_JEXEC' ) or die ( 'Restricted access' );
 
 //require the constants
-require_once(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_jfusion'.DS.'defines.php');
-require_once(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_jfusion'.DS.'models'.DS.'model.factory.php');
+require_once(JPATH_ADMINISTRATOR.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'defines.php');
+require_once(JPATH_ADMINISTRATOR.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.factory.php');
 
 jimport ( 'joomla.filesystem.file' );
 
@@ -19,12 +19,12 @@ jimport ( 'joomla.filesystem.file' );
 $view = JRequest::getVar('view','plugin');
 
 //this is needed as a safe guard in the case a plugin submits a form to index.php with an input named view that is used by the integrated software
-$jfusion_views = JFolder::folders(JPATH_SITE.DS.'components'.DS.'com_jfusion'.DS.'views');
+$jfusion_views = JFolder::folders(JPATH_SITE.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'views');
 if(!in_array($view,$jfusion_views)) $view = 'plugin';
 
 // Load the appropriate controller
 $controller = JRequest::getCmd('controller', $view ); // Black magic: Get controller based on the selected view
-$path = JPATH_COMPONENT . DS . 'controllers' . DS . $controller . '.php';
+$path = JPATH_COMPONENT . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $controller . '.php';
 
 if (JFile::exists ( $path )) {
 	// The requested controller exists and there you load it...

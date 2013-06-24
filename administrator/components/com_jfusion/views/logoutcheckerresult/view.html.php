@@ -28,7 +28,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class jfusionViewLogoutCheckerResult extends JView
+class jfusionViewLogoutCheckerResult extends JViewLegacy
 {
     /**
      * displays the view
@@ -55,16 +55,12 @@ class jfusionViewLogoutCheckerResult extends JView
 	    $JFusionActivePlugin = 'joomla_int';
 	    $jfusion_user = array('type' => 'user', 'name' => 'jfusion', 'params' => '');
 	    $plugin = (object)$jfusion_user;
-	        if(JFusionFunction::isJoomlaVersion('1.6')){
-	            include_once JPATH_SITE . DS . 'plugins' . DS . 'user' . DS . $plugin->name .  DS . $plugin->name . '.php';
-	        } else {
-	            include_once JPATH_SITE . DS . 'plugins' . DS . 'user' . DS . $plugin->name . '.php';
-	        }
+	    include_once JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'user' . DIRECTORY_SEPARATOR . $plugin->name .  DS . $plugin->name . '.php';
 	    $className = 'plg' . $plugin->type . $plugin->name;
 	    if (class_exists($className)) {
 	        $plugin = new $className($this, (array)$plugin);
 	    }
-	    $method_name = (JFusionFunction::isJoomlaVersion('1.6')) ? 'onUserLogout' : 'onLogoutUser';
+	    $method_name = 'onUserLogout';
 	    if (method_exists($plugin, $method_name)) {
 	        $response = $plugin->$method_name($user, $options);
 	    }

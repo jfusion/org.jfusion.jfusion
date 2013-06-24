@@ -79,7 +79,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 		if (substr($forumPath, -1) == DS) {
 			$myfile = $forumPath . 'wp-config.php';
 		} else {
-			$myfile = $forumPath . DS . 'wp-config.php';
+			$myfile = $forumPath . DIRECTORY_SEPARATOR . 'wp-config.php';
 		}
         $params = array();
         if (($file_handle = @fopen($myfile, 'r')) === false) {

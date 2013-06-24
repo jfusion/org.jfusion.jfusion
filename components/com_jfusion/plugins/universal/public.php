@@ -10,7 +10,7 @@
 // no direct access
 defined('_JEXEC' ) or die('Restricted access' );
 
-require_once (JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'models' . DS . 'model.curlframeless.php');
+require_once (JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.curlframeless.php');
 
 /**
  * JFusion Public Class for universal plugin
