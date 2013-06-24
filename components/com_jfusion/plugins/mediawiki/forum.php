@@ -27,7 +27,7 @@ class JFusionForum_mediawiki extends JFusionForum
     /**
      * @param $config
      * @param $view
-     * @param JParameter $pluginParam
+     * @param JRegistry $pluginParam
      *
      * @return string
      */

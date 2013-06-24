@@ -482,7 +482,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
     /**
      * Creates new thread and posts first post
      *
-     * @param JParameter &$dbparams with discussion bot parameters
+     * @param JRegistry &$dbparams with discussion bot parameters
      * @param object &$contentitem
      * @param int $forumid Id of forum to create thread
      * @param array &$status contains errors and status of actions
@@ -646,7 +646,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 
 	 /**
       * Updates information in a specific thread/post
-      * @param JParameter &$dbparams with discussion bot parameters
+      * @param JRegistry &$dbparams with discussion bot parameters
       * @param object &$existingthread with existing thread info
       * @param object &$contentitem object containing content information
       * @param array &$status contains errors and status of actions
@@ -703,7 +703,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 	/**
 	 * Creates a post from the quick reply
      *
-	 * @param JParameter &$dbparams with discussion bot parameters
+	 * @param JRegistry &$dbparams with discussion bot parameters
 	 * @param object &$ids array with thread id ($ids['threadid']) and first post id ($ids['postid'])
 	 * @param &$contentitem object of content item
 	 * @param &$userinfo object info of the forum user
@@ -905,7 +905,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 	/**
      * Retrieves the posts to be displayed in the content item if enabled
      *
-     * @param JParameter &$dbparams with discussion bot parameters
+     * @param JRegistry &$dbparams with discussion bot parameters
      * @param object &$existingthread
      *
      * @return array or object Returns retrieved posts

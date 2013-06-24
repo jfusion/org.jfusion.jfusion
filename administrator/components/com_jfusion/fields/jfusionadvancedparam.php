@@ -93,7 +93,7 @@ JS;
 
 		$link .= '&amp;'.$ename.'='.$hash;
 
-		//Get JParameter from given string
+		//Get JRegistry from given string
 		if (empty($this->value)) {
 			$params = array();
 		} else {

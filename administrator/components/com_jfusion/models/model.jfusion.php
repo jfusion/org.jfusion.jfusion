@@ -121,7 +121,7 @@ class JFusionFunction
                     $menu = JSite::getMenu();
                     /**
                      * @ignore
-                     * @var $menu_param JParameter
+                     * @var $menu_param JRegistry
                      */
                     $menu_param = $menu->getParams($itemid);
                     $plugin_param = unserialize(base64_decode($menu_param->get('JFusionPluginParam')));
@@ -137,7 +137,7 @@ class JFusionFunction
             $url = str_replace($source_url, '', $url);
 
             $config = JFactory::getConfig();
-            $sefenabled = $config->getValue('config.sef');
+            $sefenabled = $config->get('config.sef');
             $params = JFusionFactory::getParams($jname);
             $sefmode = $params->get('sefmode', 1);
             if ($sefenabled && !$sefmode) {
@@ -843,8 +843,6 @@ class JFusionFunction
     /**
      * Reconnects Joomla DB if it gets disconnected
      *
-     * @param bool $forceReload
-     *
      * @return string nothing
      */
     public static function reconnectJoomlaDb()
@@ -854,7 +852,7 @@ class JFusionFunction
         jimport('joomla.database.database');
         jimport('joomla.database.table');
         $conf = JFactory::getConfig();
-        $database = $conf->getValue('config.db');
+        $database = $conf->get('config.db');
         $connected = true;
         if (!method_exists($db,'connected')){
             $connected = false;	
@@ -1343,7 +1341,6 @@ class JFusionFunction
 	    ||	$lang->load(strtolower($extension), JPATH_PLUGINS .DIRECTORY_SEPARATOR.$type.DIRECTORY_SEPARATOR.$name, null, false, false)
 	    ||	$lang->load(strtolower($extension), $basePath, $lang->getDefault(), false, false)
 	    ||	$lang->load(strtolower($extension), JPATH_PLUGINS .DIRECTORY_SEPARATOR.$type.DIRECTORY_SEPARATOR.$name, $lang->getDefault(), false, false);
-        return false;
     }
 
     /**
@@ -1659,26 +1656,11 @@ class JFusionFunction
 	 * @param string $data file path or file content
 	 * @param boolean $isFile load from file
 	 *
-	 * @return JSimpleXMLElement returns true if plugin is correctly configured
+	 * @return JXMLElement returns true if plugin is correctly configured
 	 */
 	public static function getXml($data, $isFile=true)
 	{
-		/**
-		 * @ignore
-		 * @var $xml JSimpleXML
-		 * @var $element JSimpleXMLElement
-		 */
-		$xml = JFactory::getXMLParser('Simple');
-
-		if ($isFile) {
-			$xml->loadFile($data);
-		} else {
-			$xml->loadString($data);
-		}
-		$element = null;
-		if (isset($xml->document)) {
-			$element = $xml->document;
-		}
-		return $element;
+		$xml = JFactory::getXML($data,$isFile);
+		return $xml;
 	}
 }

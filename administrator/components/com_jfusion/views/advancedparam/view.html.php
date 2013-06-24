@@ -101,7 +101,7 @@ class jfusionViewadvancedparam extends JViewLegacy
 	/**
 	 * Loads a single element
 	 *
-	 * @param JParameter $params parameters
+	 * @param JRegistry $params parameters
 	 * @param string $feature feature
 	 *
 	 * @return string html
@@ -140,7 +140,7 @@ class jfusionViewadvancedparam extends JViewLegacy
 	 *
 	 * @param string $feature feature
 	 *
-	 * @return array|JParameter html
+	 * @return array|JRegistry html
 	 */
 	function loadXMLParamSingle($feature)
 	{

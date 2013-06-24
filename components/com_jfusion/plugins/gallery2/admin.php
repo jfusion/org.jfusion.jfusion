@@ -187,8 +187,8 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
     }
 
     /**
-     * @param JParameter $jFusionParam
-     * @param JParameter $jPluginParam
+     * @param JRegistry $jFusionParam
+     * @param JRegistry $jPluginParam
      * @param $itemId
      *
      * @return array|null

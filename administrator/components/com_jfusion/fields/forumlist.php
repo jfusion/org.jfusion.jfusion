@@ -48,9 +48,9 @@ class JFormFieldForumlist extends JFormField
         $query = 'SELECT params FROM #__modules  WHERE module = \'mod_jfusion_activity\' and id = ' . $db->Quote($cid[0]);
         $db->setQuery($query);
         $params = $db->loadResult();
-        $parametersInstance = new JParameter($params, '');
+        $parametersInstance = new JRegistry($params);
         //load custom plugin parameter
-        $jPluginParam = new JParameter('');
+        $jPluginParam = new JRegistry('');
         $jPluginParamRaw = unserialize(base64_decode($parametersInstance->get('JFusionPluginParam')));
         $output = '<span style="float:left; margin: 5px 0; font-weight: bold;">';
         $jname = $jPluginParamRaw['jfusionplugin'];

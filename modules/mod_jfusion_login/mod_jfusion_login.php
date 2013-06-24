@@ -25,7 +25,7 @@ require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTOR
 $user = JFactory::getUser();
 /**
  * @ignore
- * @var $params JParameter
+ * @var $params JRegistry
  */
 $params->def('greeting', 1);
 $type = modjfusionLoginHelper::getType();
@@ -49,7 +49,7 @@ if (file_exists($model_file) && file_exists($factory_file)) {
         $menu = JSite::getMenu();
         /**
          * @ignore
-         * @var $menu_param JParameter
+         * @var $menu_param JRegistry
          */
         $menu_param = $menu->getParams($link_itemid);
         $plugin_param = unserialize(base64_decode($menu_param->get('JFusionPluginParam')));
@@ -74,7 +74,7 @@ if (file_exists($model_file) && file_exists($factory_file)) {
         $menu = JSite::getMenu();
         /**
          * @ignore
-         * @var $menu_param JParameter
+         * @var $menu_param JRegistry
          */
         $menu_param = $menu->getParams($itemid);
         $plugin_param = unserialize(base64_decode($menu_param->get('JFusionPluginParam')));

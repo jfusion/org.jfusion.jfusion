@@ -96,7 +96,7 @@ class jfusionViewsyncoptions extends JViewLegacy
             $this->assignRef('slave_data', $slave_data);
             $this->assignRef('syncid', $syncid);
             $this->assignRef('sync_active', $sync_active);
-	        parent::display('25');
+	        parent::display();
         } else {
             JFusionFunctionAdmin::displayDonate();
             JError::raiseWarning(500, JText::_('SYNC_NOCONFIG'));

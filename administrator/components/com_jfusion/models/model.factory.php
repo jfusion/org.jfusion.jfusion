@@ -264,7 +264,7 @@ class JFusionFactory
      * @param string  $jname name of the JFusion plugin used
      * @param boolean $reset switch to force a recreate of the instance
      *
-     * @return JParameter JParam object for the JFusion plugin
+     * @return JRegistry JParam object for the JFusion plugin
      */
     public static function &getParams($jname, $reset = false)
     {
@@ -286,7 +286,7 @@ class JFusionFactory
      *
      * @param string $jname name of the JFusion plugin used
      *
-     * @return JParameter JParam object for the JFusion plugin
+     * @return JRegistry JParam object for the JFusion plugin
      */
     public static function &createParams($jname)
     {
@@ -298,9 +298,9 @@ class JFusionFactory
         $serialized = $db->loadResult();
         //get the parameters from the XML file
         //$file = JFUSION_PLUGIN_PATH .DIRECTORY_SEPARATOR. $jname . DIRECTORY_SEPARATOR.'jfusion.xml';
-        //$parametersInstance = new JParameter('', $file );
+        //$parametersInstance = new JRegistry('', $file );
         //now load params without XML files, as this creates overhead when only values are needed
-        $parametersInstance = new JParameter('');
+        $parametersInstance = new JRegistry('');
         //apply the stored valued
         if ($serialized) {
             $params = unserialize(base64_decode($serialized));
@@ -333,7 +333,7 @@ class JFusionFactory
         } else {
             //get the debug configuration setting
             $conf = JFactory::getConfig();
-            $debug = $conf->getValue('config.debug');
+            $debug = $conf->get('config.debug');
             //get config values
             $conf = JFactory::getConfig();
             $params = JFusionFactory::getParams($jname);
@@ -344,7 +344,7 @@ class JFusionFactory
             $database = $params->get('database_name');
             $prefix = $params->get('database_prefix','');
             $driver = $params->get('database_type');
-            $debug = $conf->getValue('config.debug');
+            $debug = $conf->get('config.debug');
             $charset = $params->get('database_charset', 'utf8');
             //added extra code to prevent error when $driver is incorrect
             if ($driver != 'mysql' && $driver != 'mysqli') {

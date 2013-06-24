@@ -50,7 +50,7 @@ function jfusionBuildRoute(&$query)
     }
     if (count($segments)) {
 	    $config = JFactory::getConfig();
-	    $sef_suffix = $config->getValue('config.sef_suffix');
+	    $sef_suffix = $config->get('config.sef_suffix');
 	    if (!$sef_suffix) {
 		    $segments[count($segments) - 1].= '/';
 	    }
@@ -119,13 +119,13 @@ function jfusionParseRoute($segments)
     $item = $menu->getActive();
     $vars += $item->query;
 	if ($vars['view'] == 'plugin') {
-	    $menu_params = new JParameter($item->params, '');
+	    $menu_params = new JRegistry($item->params);
 	    $JFusionPluginParam = $menu_params->get('JFusionPluginParam');
 	    if (empty($JFusionPluginParam)) {
 	        JError::raiseError('404', JText::_('ERROR_PLUGIN_CONFIG'));
 	    } else {
 	        //load custom plugin parameter
-	        $jPluginParam = new JParameter('');
+	        $jPluginParam = new JRegistry('');
 	        $jPluginParam->loadArray(unserialize(base64_decode($JFusionPluginParam)));
 	        $jname = $jPluginParam->get('jfusionplugin');
 	

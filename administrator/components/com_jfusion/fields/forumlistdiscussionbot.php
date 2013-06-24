@@ -43,7 +43,7 @@ class JFormFieldForumListDiscussionbot extends JFormField
         $query = 'SELECT params FROM #__extensions WHERE element = \'jfusion\' and folder = \'content\'';
         $db->setQuery($query);
         $params = $db->loadResult();
-        $jPluginParam = new JParameter($params);
+        $jPluginParam = new JRegistry($params);
         $jname = $jPluginParam->get('jname', false);
         $output = '<span style="float:left; margin: 5px 0; font-weight: bold;">';
         if ($jname !== false) {

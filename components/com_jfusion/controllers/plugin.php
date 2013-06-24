@@ -39,12 +39,12 @@ class JFusionControllerPlugin extends JControllerLegacy
 		//find out if there is an itemID with the view variable
 		$menuitemid = JRequest::getInt('Itemid');
 		//we do not want the front page menuitem as it will cause a 500 error in some cases
-		$jPluginParam = new JParameter('');
+		$jPluginParam = new JRegistry('');
 		//added to prevent a notice of $jview being undefined;
 		if ($menuitemid && $menuitemid!=1) {
             $menu = JMenu::getInstance('site');
             $item = $menu->getItem($menuitemid);
-            $menu_params = new JParameter($item->params, '');
+            $menu_params = new JRegistry($item->params);
 			$jview = $menu_params->get('visual_integration','wrapper');
 
 			//load custom plugin parameter

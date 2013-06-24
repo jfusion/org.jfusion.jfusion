@@ -24,7 +24,7 @@ class jfusionViewPlugin extends JViewLegacy {
     var $jname;
 
 	/**
-	 * @var JParameter $params
+	 * @var JRegistry $params
 	 */
 	var $params;
 

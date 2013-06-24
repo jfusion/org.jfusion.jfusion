@@ -42,6 +42,11 @@ require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTOR
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org */
 class JFusionUser_moodle extends JFusionUser {
+	/**
+	 * @param $data
+	 *
+	 * @return mixed
+	 */
 	function rc4encrypt($data) {
 		$password = 'nfgjeingjk';
 		return endecrypt($password, $data, '');
@@ -116,6 +121,11 @@ class JFusionUser_moodle extends JFusionUser {
 		return $cipher;
 	}
 
+	/**
+	 * @param object $userinfo
+	 *
+	 * @return mixed|null
+	 */
 	function &getUser($userinfo) {
 		$db = JFusionFactory::getDatabase($this->getJname());
 		$params = JFusionFactory::getParams($this->getJname());
@@ -159,6 +169,17 @@ class JFusionUser_moodle extends JFusionUser {
 	{
 		return 'moodle';
 	}
+
+	/**
+	 * Function that automatically logs out the user from the integrated software
+	 * $result['error'] (contains any error messages)
+	 * $result['debug'] (contains information on what was done)
+	 *
+	 * @param object $userinfo contains the userinfo
+	 * @param array $options  contains Array with the login options, such as remember_me
+	 *
+	 * @return array result Array containing the result of the session destroy
+	 */
 	function destroySession($userinfo, $options) {
 
 		global $ch;
@@ -256,6 +277,17 @@ class JFusionUser_moodle extends JFusionUser {
 		}
 		return $curl->$status;
 	}
+
+	/**
+	 * Function that automatically logs in the user from the integrated software
+	 * $result['error'] (contains any error messages)
+	 * $result['debug'] (contains information on what was done)
+	 *
+	 * @param object $userinfo contains the userinfo
+	 * @param array  $options  contains array with the login options, such as remember_me     *
+	 *
+	 * @return array result Array containing the result of the session creation
+	 */
 	function createSession($userinfo, $options) {
 		$status = array();
 
@@ -284,12 +316,30 @@ class JFusionUser_moodle extends JFusionUser {
 		}
 		return $status;
 	}
+
+	/**
+	 * Function that filters the username according to the JFusion plugin
+	 *
+	 * @param string $username Username as it was entered by the user
+	 *
+	 * @return string filtered username that should be used for lookups
+	 */
 	function filterUsername($username) {
 		//Moodle has a switch to allow any character or just alphanumeric, dot, hypen (will be extendedn with @ and _ in Moodle 2.0
 		// I recommend to set allow extended usernames to true in Moodles config.
 		// must make note of this in docs.
 		return $username;
 	}
+
+	/**
+	 * Function that updates the user password
+	 * $status['error'] (contains any error messages)
+	 * $status['debug'] (contains information on what was done)
+	 *
+	 * @param object $userinfo      Object containing the new userinfo
+	 * @param object &$existinguser Object containing the old userinfo
+	 * @param array  &$status       Array containing the errors and result of the function
+	 */
 	function updatePassword($userinfo, $existinguser, &$status) {
 		$params = JFusionFactory::getParams('moodle');
 		if ($params->get('passwordsaltmain')) {
@@ -306,9 +356,29 @@ class JFusionUser_moodle extends JFusionUser {
 			$status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
 		}
 	}
+
+	/**
+	 * Function that updates the username
+	 * $status['error'] (contains any error messages)
+	 * $status['debug'] (contains information on what was done)
+	 *
+	 * @param object $userinfo      Object containing the new userinfo
+	 * @param object &$existinguser Object containing the old userinfo
+	 * @param array  &$status       Array containing the errors and result of the function
+	 */
 	function updateUsername($userinfo, &$existinguser, &$status) {
 		// not implemented in jFusion 1.x
 	}
+
+	/**
+	 * Function that updates the user email address
+	 * $status['error'] (contains any error messages)
+	 * $status['debug'] (contains information on what was done)
+	 *
+	 * @param object $userinfo      Object containing the new userinfo
+	 * @param object &$existinguser Object containing the old userinfo
+	 * @param array  &$status       Array containing the errors and result of the function
+	 */
 	function updateEmail($userinfo, &$existinguser, &$status) {
 		//TODO ? check for duplicates, or leave it atdb error
 		//we need to update the email
@@ -321,6 +391,16 @@ class JFusionUser_moodle extends JFusionUser {
 			$status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
 		}
 	}
+
+	/**
+	 * Function that updates the blocks the user account
+	 * $status['error'] (contains any error messages)
+	 * $status['debug'] (contains information on what was done)
+	 *
+	 * @param object $userinfo      Object containing the new userinfo
+	 * @param object &$existinguser Object containing the old userinfo
+	 * @param array  &$status       Array containing the errors and result of the function
+	 */
 	function blockUser($userinfo, &$existinguser, &$status) {
 		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = 'SELECT value FROM #__config WHERE  name = \'sitepolicy\'';
@@ -338,6 +418,16 @@ class JFusionUser_moodle extends JFusionUser {
 			$status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . JText::_('BLOCK_UPDATE_SITEPOLICY_NOT_SET');
 		}
 	}
+
+	/**
+	 * Function that unblocks the user account
+	 * $status['error'] (contains any error messages)
+	 * $status['debug'] (contains information on what was done)
+	 *
+	 * @param object $userinfo      Object containing the new userinfo
+	 * @param object &$existinguser Object containing the old userinfo
+	 * @param array  &$status       Array containing the errors and result of the function
+	 */
 	function unblockUser($userinfo, &$existinguser, &$status) {
 		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = 'SELECT value FROM #__config WHERE  name = sitepolicy';
@@ -355,6 +445,16 @@ class JFusionUser_moodle extends JFusionUser {
 			$status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . JText::_('BLOCK_UPDATE_SITEPOLICY_NOT_SET');
 		}
 	}
+
+	/**
+	 * Function that activates the users account
+	 * $status['error'] (contains any error messages)
+	 * $status['debug'] (contains information on what was done)
+	 *
+	 * @param object $userinfo      Object containing the new userinfo
+	 * @param object &$existinguser Object containing the old userinfo
+	 * @param array  &$status       Array containing the errors and result of the function
+	 */
 	function activateUser($userinfo, &$existinguser, &$status) {
 		//activate the user
 		$db = JFusionFactory::getDatabase($this->getJname());
@@ -366,6 +466,16 @@ class JFusionUser_moodle extends JFusionUser {
 			$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 		}
 	}
+
+	/**
+	 * Function that inactivates the users account
+	 * $status['error'] (contains any error messages)
+	 * $status['debug'] (contains information on what was done)
+	 *
+	 * @param object $userinfo      Object containing the new userinfo
+	 * @param object &$existinguser Object containing the old userinfo
+	 * @param array  &$status       Array containing the errors and result of the function
+	 */
 	function inactivateUser($userinfo, &$existinguser, &$status) {
 		$db = JFusionFactory::getDatabase($this->getJname());
 		$query = 'UPDATE #__user SET confirmed = false WHERE id =' . (int)$existinguser->userid;
@@ -376,6 +486,16 @@ class JFusionUser_moodle extends JFusionUser {
 			$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 		}
 	}
+
+	/**
+	 * Function that creates a new user account
+	 * $status['error'] (contains any error messages)
+	 * $status['debug'] (contains information on what was done)
+	 *
+	 * @param object $userinfo Object containing the new userinfo
+	 * @param array  &$status  Array containing the errors and result of the function
+	 * @return null|void
+	 */
 	function createUser($userinfo, &$status) {
 		// first find out if the user already exists, but with deleted flag set
 		$db = JFusionFactory::getDatabase($this->getJname());
@@ -506,6 +626,16 @@ class JFusionUser_moodle extends JFusionUser {
 		$status['userinfo'] = $this->getUser($userinfo);
 		$status['debug'][] = JText::_('USER_CREATION');
 	}
+
+	/**
+	 * Function that deletes a user account
+	 * $status['error'] (contains any error messages)
+	 * $status['debug'] (contains information on what was done)
+	 *
+	 * @param object $userinfo Object containing the existing userinfo
+	 *
+	 * @return array status Array containing the errors and result of the function
+	 */
 	function deleteUser($userinfo) {
 		//setup status array to hold debug info and errors
 		$status = array();

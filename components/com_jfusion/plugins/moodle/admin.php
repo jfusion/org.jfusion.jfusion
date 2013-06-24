@@ -332,7 +332,7 @@ HTML;
 
         /**
          * @ignore
-         * @var $file JSimpleXMLElement
+         * @var $file JXMLElement
          */
         foreach($files as $file){
             $file = $file->data();

@@ -94,7 +94,7 @@ class JFusionModelInstaller extends InstallerModelInstall
                 // Cleanup the install files
                 if (!is_file($package['packagefile'])) {
                     $config = JFactory::getConfig();
-                    $package['packagefile'] = $config->getValue('config.tmp_path') . DIRECTORY_SEPARATOR . $package['packagefile'];
+                    $package['packagefile'] = $config->get('config.tmp_path') . DIRECTORY_SEPARATOR . $package['packagefile'];
                 }
                 if ( $result['status'] && is_file($package['packagefile']) ) {
                     //save a copy of the plugin for safe keeping
@@ -135,7 +135,7 @@ class JFusionModelInstaller extends InstallerModelInstall
         // Cleanup the install files
         if (!is_file($package['packagefile'])) {
             $config = JFactory::getConfig();
-            $package['packagefile'] = $config->getValue('config.tmp_path') . DIRECTORY_SEPARATOR . $package['packagefile'];
+            $package['packagefile'] = $config->get('config.tmp_path') . DIRECTORY_SEPARATOR . $package['packagefile'];
         }
        // JInstallerHelper::cleanupInstall($package['packagefile'], $package['extractdir']);
 
@@ -343,7 +343,7 @@ class JFusionPluginInstaller extends JObject
 			            foreach ($features as $f) {
 				            $xml = $this->getElementByPath($this->manifest,$f);
 
-				            if ($xml instanceof JSimpleXMLElement || $xml instanceof JXMLElement) {
+				            if ($xml instanceof JXMLElement) {
 					            $$f = $this->filterInput->clean($this->getData($xml), 'integer');
 				            } elseif ($f == 'master' || $f == 'check_encryption') {
 					            $$f = 0;
@@ -604,7 +604,7 @@ class JFusionPluginInstaller extends JObject
                         $features = array('master', 'slave', 'dual_login', 'check_encryption');
                         foreach ($features as $f) {
                             $xml = $this->getElementByPath($this->manifest,$f);
-	                        if ($xml instanceof JSimpleXMLElement || $xml instanceof JXMLElement) {
+	                        if ($xml instanceof JXMLElement) {
                                 $$f = $this->filterInput->clean($this->getData($xml), 'integer');
 	                        } elseif ($f == 'master' || $f == 'check_encryption') {
                                 $$f = 0;
@@ -713,7 +713,7 @@ class JFusionPluginInstaller extends JObject
     function backup($jname)
     {
         $config = JFactory::getConfig();
-        $tmpDir = $config->getValue('config.tmp_path');
+        $tmpDir = $config->get('config.tmp_path');
         //compress the files
         $filename = $tmpDir . DIRECTORY_SEPARATOR . $jname . '.zip';
         //retrieve a list of files within the plugin directory
@@ -781,10 +781,10 @@ class JFusionPluginInstaller extends JObject
     /**
      * getElementByPath
      *
-     *  @param JXMLElement|JSimpleXMLElement $xml xml object
+     *  @param JXMLElement $xml xml object
      *  @param string $element element path
      *
-     *  @return JXMLElement|JSimpleXMLElement elements
+     *  @return JXMLElement elements
      */
     function getElementByPath($xml, $element)
     {
@@ -792,8 +792,6 @@ class JFusionPluginInstaller extends JObject
         foreach ($elements as $element) {
             if($xml instanceof JXMLElement) {
                 $xml = $xml->$element;
-            } elseif($xml instanceof JSimpleXMLElement) {
-                $xml = $xml->getElementByPath($element);
             } else {
                 $xml = null;
                 break;
@@ -805,7 +803,7 @@ class JFusionPluginInstaller extends JObject
     /**
      * getAttribute
      *
-     *  @param JXMLElement|JSimpleXMLElement $xml xml object
+     *  @param JXMLElement $xml xml object
      *  @param string $attribute attribute name
      *
      *  @return string result
@@ -814,8 +812,6 @@ class JFusionPluginInstaller extends JObject
     {
         if($xml instanceof JXMLElement) {
             $xml = $xml->getAttribute($attribute);
-        } elseif($xml instanceof JSimpleXMLElement) {
-            $xml = $xml->attributes($attribute);
         } else {
             $xml = null;
         }
@@ -825,15 +821,12 @@ class JFusionPluginInstaller extends JObject
 	/**
 	 * getData
 	 *
-	 *  @param JXMLElement|JSimpleXMLElement $xml xml object
+	 *  @param JXMLElement $xml xml object
 	 *
 	 *  @return JXMLElement|string result
 	 */
 	function getData($xml)
 	{
-		if($xml instanceof JSimpleXMLElement) {
-			$xml = $xml->data();
-		}
 		return $xml;
 	}
 }

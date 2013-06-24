@@ -32,7 +32,7 @@ if (file_exists($model_file) && file_exists($factory_file)) {
 	require_once $factory_file;
     /**
      * @ignore
-     * @var $params JParameter
+     * @var $params JRegistry
      * @var $config array
      */
     $pluginParamValue = $params->get('JFusionPlugin');

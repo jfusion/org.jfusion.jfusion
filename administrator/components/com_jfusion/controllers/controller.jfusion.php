@@ -759,7 +759,7 @@ JS;
 	    } else {
 		    /**
 		     * @ignore
-		     * @var $val JSimpleXMLElement
+		     * @var $val JXMLElement
 		     */
 		    $info = $config = null;
 		    foreach ($xml->children() as $key => $val) {
@@ -789,7 +789,7 @@ JS;
 					    $conf = array();
 					    /**
 					     * @ignore
-					     * @var $val JSimpleXMLElement
+					     * @var $val JXMLElement
 					     */
 					    foreach ($config as $key => $val) {
 						    $attName = (string)$val->attributes('name');
@@ -866,7 +866,7 @@ JS;
 
         /**
          * @ignore
-         * @var $info JSimpleXMLElement
+         * @var $info JXMLElement
          */
         $info = $xml->addChild('info');
 
@@ -901,9 +901,9 @@ JS;
 
         /**
          * @ignore
-         * @var $info JSimpleXMLElement
-         * @var $config JSimpleXMLElement
-         * @var $node JSimpleXMLElement
+         * @var $info JXMLElement
+         * @var $config JXMLElement
+         * @var $node JXMLElement
          */
         $config = $xml->addChild('config');
         foreach ($arr as $key => $val) {

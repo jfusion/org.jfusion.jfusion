@@ -31,7 +31,7 @@ defined('_JEXEC' ) or die('Restricted access' );
 class JFusionUser_vbulletin extends JFusionUser
 {
     /**
-     * @var $params JParameter
+     * @var $params JRegistry
      */
     var $params;
     /**
@@ -630,7 +630,7 @@ class JFusionUser_vbulletin extends JFusionUser
             //set the timezone
             if (!isset($userinfo->timezone)) {
                 $config = JFactory::getConfig();
-                $userinfo->timezone = $config->getValue('config.offset',0);
+                $userinfo->timezone = $config->get('config.offset',0);
             }
 
             $apidata['userinfo'] = $userinfo;

@@ -353,7 +353,7 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
      * Retrieves the search results to be displayed.  Placed here so that plugins that do not use the database can retrieve and return results
      * @param string &$text string text to be searched
      * @param string &$phrase string how the search should be performed exact, all, or any
-     * @param JParameter &$pluginParam custom plugin parameters in search.xml
+     * @param JRegistry &$pluginParam custom plugin parameters in search.xml
      * @param int $itemid what menu item to use when creating the URL
      * @param string $ordering
      *

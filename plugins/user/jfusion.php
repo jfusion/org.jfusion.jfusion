@@ -425,7 +425,7 @@ class plgUserJfusion extends JPlugin
 	    if ($success === 1) {
 		    //Clean up the joomla session table
 		    $conf = JFactory::getConfig();
-		    $expire = ($conf->getValue('config.lifetime')) ? $conf->getValue('config.lifetime') * 60 : 900;
+		    $expire = ($conf->get('config.lifetime')) ? $conf->get('config.lifetime') * 60 : 900;
 		    /**
 		     * @ignore
 		     * @var $session JTableSession

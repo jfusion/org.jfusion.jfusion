@@ -11,7 +11,7 @@
 defined ( '_JEXEC' ) or trigger_error ( 'Restricted access' );
 /**
  * @ignore
- * @var $params JParameter
+ * @var $params JRegistry
  * @var $module object
  */
 if (JPluginHelper::importPlugin ( 'system', 'magelib' )) {

@@ -40,7 +40,7 @@ class modjfusionWhosOnlineHelper {
 			$menu = JSite::getMenu();
             /**
              * @ignore
-             * @var $menu_param JParameter
+             * @var $menu_param JRegistry
              */
 			$menu_param = $menu->getParams($link_itemid);
 			$plugin_param = unserialize(base64_decode($menu_param->get('JFusionPluginParam')));

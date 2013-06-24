@@ -44,7 +44,7 @@ class JFormFieldForumListSearchPlugin extends JFormField
         $query = 'SELECT params FROM #__extensions  WHERE element = \'jfusion\' and folder = \'search\'';
         $db->setQuery($query);
         $params = $db->loadResult();
-        $parametersInstance = new JParameter($params, '');
+        $parametersInstance = new JRegistry($params);
         //load custom plugin parameter
         $jPluginParamRaw = unserialize(base64_decode($parametersInstance->get('JFusionPluginParam')));
 
@@ -60,7 +60,7 @@ class JFormFieldForumListSearchPlugin extends JFormField
                 if (!isset($jPluginParamRaw[$jname])) {
                     $jPluginParamRaw[$jname] = array();
                 }
-                $JPluginParam = new JParameter('');
+                $JPluginParam = new JRegistry('');
                 $JPluginParam->loadArray($jPluginParamRaw[$jname]);
                 $JFusionPlugin = JFusionFactory::getForum($jname);
                 if (method_exists($JFusionPlugin, 'getForumList')) {

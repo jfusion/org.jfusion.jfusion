@@ -78,7 +78,7 @@ class jfusionViewconfigdump extends JViewLegacy {
 
 		if(count($rows) ) {
 			foreach($rows as $row) {
-				$jPluginParam = new JParameter('');
+				$jPluginParam = new JRegistry('');
 				if ( $row->params ) $jPluginParam->loadArray(unserialize(base64_decode($row->params)));
 				$row->params = $jPluginParam->toString();
 
@@ -190,12 +190,12 @@ class jfusionViewconfigdump extends JViewLegacy {
 	 * @return stdClass
 	 */
 	function loadParams($row) {
-		$JParameter = new JParameter('');
+		$JParameter = new JRegistry('');
 		$new = new stdClass;
 		$new->params = new stdClass;
 		foreach($row as $key => $value) {
 			if ($key == 'params') {
-				$params = new JParameter($value);
+				$params = new JRegistry($value);
 				$params = $params->toObject();
 
 				if (isset($params->JFusionPluginParam)) {

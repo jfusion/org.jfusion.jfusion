@@ -59,7 +59,7 @@ class plgSearchJfusion extends JPlugin
 		//get the software with search enabled
 		$plugins = JFusionFactory::getPlugins('both');
 		$searchplugin = JPluginHelper::getPlugin('search', 'jfusion');
-		$params = new JParameter($searchplugin->params);
+		$params = new JRegistry($searchplugin->params);
 		$enabledPlugins = unserialize(base64_decode($params->get('JFusionPluginParam')));
 		if (is_array($plugins) && is_array($enabledPlugins)) {
 			foreach ($plugins as $plugin) {
@@ -103,7 +103,7 @@ class plgSearchJfusion extends JPlugin
 		}
 		//get the search plugin parameters
 		$plugin = JPluginHelper::getPlugin('search', 'jfusion');
-		$params = new JParameter($plugin->params);
+		$params = new JRegistry($plugin->params);
 		$pluginParamValue = $params->get('JFusionPluginParam');
 		$pluginParamValue = unserialize(base64_decode($pluginParamValue));
 		//To hold all the search results
@@ -132,10 +132,10 @@ class plgSearchJfusion extends JPlugin
 		foreach ($searchPlugins AS $jname) {
 			$searchMe = JFusionFactory::getPublic($jname);
 			if (is_array($pluginParamValue)) {
-				$pluginParam = new JParameter('');
+				$pluginParam = new JRegistry('');
 				$pluginParam->loadArray($pluginParamValue[$jname]);
 			} else {
-				$pluginParam = new JParameter('');
+				$pluginParam = new JRegistry('');
 			}
 			$itemid = $pluginParam->get('itemid');
 			$results = $searchMe->getSearchResults($text, $phrase, $pluginParam, $itemid, $ordering);

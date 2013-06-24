@@ -42,7 +42,7 @@ class JElementJFusionCmsBlock extends JElement {
 		
 		$db->setQuery ( $query );
 		$params = $db->loadResult ();
-		$parametersInstance = new JParameter ( $params, '' );
+		$parametersInstance = new JRegistry ( $params, '' );
 		
 		$jname = $parametersInstance->get ( 'magento_plugin', '' );
 		if (! empty ( $jname )) {

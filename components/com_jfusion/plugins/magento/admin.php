@@ -47,8 +47,12 @@ class JFusionAdmin_magento extends JFusionAdmin
     function getTablename() {
         return 'admin_user';
     }
-    
-    public function normalize_version($version) {
+
+	/**
+	 * @param $version
+	 *
+	 * @return string
+	 */public function normalize_version($version) {
     	/// 1.9 Beta 2 should be read 1.9 , not 1.9.2
     	/// we can discard everything after the first space
     	$version = trim($version);
@@ -67,7 +71,11 @@ class JFusionAdmin_magento extends JFusionAdmin
     
     
     // get the Magento version number
-    function getMagentoVersion($forumPath) {
+	/**
+	 * @param $forumPath
+	 *
+	 * @return string
+	 */function getMagentoVersion($forumPath) {
     	$file = file_get_contents(rtrim($forumPath,DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.'Mage.php');
     	$pstart = strpos($file,'function getVersionInfo()');
     	$pend = strpos($file,'}',$pstart);
@@ -383,7 +391,7 @@ HTML;
 		$files = $listfiles->getElementByPath('file');
         /**
          * @ignore
-         * @var $file JSimpleXMLElement
+         * @var $file JXMLElement
          */
 		foreach($files as $file) {
 			$file = $file->data();

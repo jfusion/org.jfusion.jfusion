@@ -711,6 +711,15 @@ class JFusionCurl
 		return $debug;
 	}
 
+	/**
+	 * @param     $cookiedomain
+	 * @param     $cookiepath
+	 * @param int $expires
+	 * @param int $secure
+	 * @param int $httponly
+	 *
+	 * @return array
+	 */
 	public function setCookies($cookiedomain, $cookiepath, $expires=0, $secure=0, $httponly=1)
 	{
 		$cookies=array();

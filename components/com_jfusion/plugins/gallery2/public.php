@@ -64,7 +64,7 @@ class JFusionPublic_gallery2 extends JFusionPublic {
     function getBuffer(&$data) {
         /**
          * @ignore
-         * @var $jPluginParam JParameter
+         * @var $jPluginParam JRegistry
          */
         $jPluginParam = $data->jParam;
         //Handle PHP based Gallery Rewrite
@@ -205,7 +205,7 @@ class JFusionPublic_gallery2 extends JFusionPublic {
     /**
      * @param string &$text
      * @param string &$phrase
-     * @param JParameter &$pluginParam
+     * @param JRegistry &$pluginParam
      * @param int $itemid
      * @param string $ordering
      * @return array
@@ -347,7 +347,7 @@ class JFusionPublic_gallery2 extends JFusionPublic {
         if (!isset($query['g2_itemId'])) {
             /**
              * @ignore
-             * @var $mParam JParameter
+             * @var $mParam JRegistry
              */
             $mParam = $data->mParam;
             $album = $mParam->get('album', false);

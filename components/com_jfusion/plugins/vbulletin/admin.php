@@ -507,7 +507,7 @@ HTML;
             $php.= "if (!defined('_JEXEC')){\n";
             $sefmode = $params->get('sefmode', 0);
             $config = JFactory::getConfig();
-            $sef = $config->getValue('config.sef');
+            $sef = $config->get('config.sef');
             //get the baseUR
             $app = JApplication::getInstance('site');
             $router = $app->getRouter();
@@ -556,7 +556,7 @@ HTML;
         $php.= "if (file_exists(JFUSION_VB_HOOK_FILE)) {\n";
         $php.= "include_once(JFUSION_VB_HOOK_FILE);\n";
         $php.= "\$val = '$plugin';\n";
-        $secret = $params->get('vb_secret', JFactory::getConfig()->getValue('config.secret'));
+        $secret = $params->get('vb_secret', JFactory::getConfig()->get('config.secret'));
         $php.= "\$JFusionHook = new executeJFusionHook('init_startup', \$val, '$secret');\n";
         /**
          * @ignore

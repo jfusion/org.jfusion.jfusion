@@ -13,7 +13,7 @@ defined ( '_JEXEC' ) or trigger_error ( 'Restricted access' );
 if (JPluginHelper::importPlugin ( 'system', 'magelib' )) {
     /**
      * @ignore
-     * @var $params JParameter
+     * @var $params JRegistry
      */
 	$template_selection = $params->get ( 'template_selection', 1 ); // Use the Magento template by default
 	$moduleclass_sfx = $params->get('moduleclass_sfx');

@@ -30,24 +30,12 @@ function initializeDiscussbot() {
 
     // this code will send a data object via a GET request and alert the retrieved data.
 
-    updatepostarea = jfdb_isJ16 ? new Request.JSON({url: url ,
+    updatepostarea = new Request.JSON({url: url ,
         onSuccess: function(JSONobject) {
             updateContent(JSONobject);
         }, onError: function(JSONobject) {
             showMessage(JSONobject, 'Error');
 
-        }
-    }) : new Ajax(url, {
-        method: 'post',
-        onSuccess: function(JSONobject) {
-            var response = evaluateJSON(JSONobject);
-            if (response) {
-                updateContent(JSONobject);
-            } else {
-                showMessage(JSONobject, 'Error');
-            }
-        }, onError: function(JSONobject) {
-            showMessage(JSONobject, 'Error');
         }
     });
 
@@ -163,11 +151,7 @@ function prepareAjax() {
                 }
             }
 
-            if (jfdb_isJ16) {
-                updatepostarea.post(paramString);
-            } else {
-                updatepostarea.request(paramString);
-            }
+            updatepostarea.post(paramString);
         });
     }
 }
@@ -206,11 +190,7 @@ function highlightPost(postid) {
 
 function refreshPosts(id) {
 	threadid = id;
-    if (jfdb_isJ16) {
-        updatepostarea.post('tmpl=component&ajax_request=1&dbtask=update_posts&threadid=' + threadid);
-    } else {
-        updatepostarea.request('tmpl=component&ajax_request=1&dbtask=update_posts&threadid=' + threadid);
-    }
+    updatepostarea.post('tmpl=component&ajax_request=1&dbtask=update_posts&threadid=' + threadid);
 }
 
 function confirmThreadAction(id, task, vars, url) {
@@ -227,26 +207,15 @@ function confirmThreadAction(id, task, vars, url) {
     }
 
     //set the confirmation text
-    if (jfdb_isJ16) {
-		new Element('span', {
-			text: msg,
-			styles: {
-                fontWeight: "bold",
-                display: "block",
-                fontSize: "13px",
-                padding: "5px"
-			}
-		}).inject(container);
-    } else {
-		new Element('span', {
-			styles: {
-                fontWeight: "bold",
-                display: "block",
-                fontSize: "13px",
-                padding: "5px"
-			}
-		}).setHTML(msg).inject(container);
-    }
+    new Element('span', {
+        text: msg,
+        styles: {
+            fontWeight: "bold",
+            display: "block",
+            fontSize: "13px",
+            padding: "5px"
+        }
+    }).inject(container);
 
     //create a div for the buttons
     var divBtnContainer = new Element('div', {
@@ -356,26 +325,15 @@ function submitAjaxRequest(id, task, vars, url) {
     var performTask;
 
     var jfusionButtonArea = $('jfusionButtonArea' + id);
-    if (jfdb_isJ16) {
-        performTask = new Request.JSON({url: url ,
-            onSuccess: function(JSONobject) {
-                updateContent(JSONobject);
-            },
-            method: 'post'
-        });
-        performTask.post('tmpl=component&ajax_request=1&dbtask=' + task + '&threadid=' + threadid + '&articleId=' + id + vars);
-    } else {
-        performTask = new Ajax(url, {
-            method: 'post',
-            onSuccess: function(JSONobject) {
-                var response = evaluateJSON(JSONobject);
-                if (response) {
-                    updateContent(JSONobject);
-                }
-            }
-        });
-        performTask.request('tmpl=component&ajax_request=1&dbtask=' + task + '&threadid=' + threadid + '&articleId=' + id + vars);
-    }
+
+    performTask = new Request.JSON({url: url ,
+        onSuccess: function(JSONobject) {
+            updateContent(JSONobject);
+        },
+        method: 'post'
+    });
+    performTask.post('tmpl=component&ajax_request=1&dbtask=' + task + '&threadid=' + threadid + '&articleId=' + id + vars);
+
     var jfusionDebugContainer = $('jfusionDebugContainer' + id);
 }
 
@@ -402,28 +360,16 @@ function toggleDiscussionVisibility() {
         showdiscussion = override;
     }
     var setdiscussionvisibility;
-    if (jfdb_isJ16) {
-        setdiscussionvisibility = new Request.HTML({
-            url: jfdb_article_url,
-            method: 'get',
-            onComplete: function () {
-                if (discusslink!==undefined) {
-                    window.location = discusslink;
-                }
+    setdiscussionvisibility = new Request.HTML({
+        url: jfdb_article_url,
+        method: 'get',
+        onComplete: function () {
+            if (discusslink!==undefined) {
+                window.location = discusslink;
             }
-        });
-        setdiscussionvisibility.post('tmpl=component&ajax_request=1&show_discussion=' + showdiscussion);
-    } else {
-        setdiscussionvisibility = new Ajax(jfdb_article_url, {
-            method: 'get',
-            onComplete: function () {
-                if (discusslink!==undefined) {
-                    window.location = discusslink;
-                }
-            }
-        });
-        setdiscussionvisibility.request('tmpl=component&ajax_request=1&show_discussion=' + showdiscussion);
-    }
+        }
+    });
+    setdiscussionvisibility.post('tmpl=component&ajax_request=1&show_discussion=' + showdiscussion);
 }
 
 function jfusionQuote(pid) {

@@ -145,7 +145,7 @@ $paneTabs = JPane::getInstance('tabs');
 		        $pluginname = $plugin->original_name ? $plugin->original_name : $plugin->name;
 		        /**
 		         * @ignore
-		         * @var $val JSimpleXMLElement
+		         * @var $val JXMLElement
 		         */
 		        foreach ($this->list->children() as $key => $val) {
 			        $original_name = $val->getElementByPath('originalname')->data();

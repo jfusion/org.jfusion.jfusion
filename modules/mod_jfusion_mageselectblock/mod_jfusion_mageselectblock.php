@@ -15,7 +15,7 @@ require_once 'helper/default.php';
 if (JPluginHelper::importPlugin ( 'system', 'magelib' )) {
     /**
      * @ignore
-     * @var $params JParameter
+     * @var $params JRegistry
      */
 	$plgMageLib = new plgSystemMagelib ( );
 	$plgMageLib->destroyTemporaryJoomlaSession ();

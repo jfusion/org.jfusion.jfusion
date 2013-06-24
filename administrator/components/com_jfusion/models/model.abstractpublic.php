@@ -490,7 +490,7 @@ JS;
      *                                  forum (to be published in a thread or post; used by discussion bot)
      *                                  activity (displayed in activity module; used by the activity module)
      *                                  search (displayed as search results; used by search plugin)
-     * @param JParameter $params        (optional) Joomla parameter object passed in by JFusion's module/plugin
+     * @param JRegistry $params        (optional) Joomla parameter object passed in by JFusion's module/plugin
      * @param mixed $object             (optional) Object with information for the specific element the text is from
      *
      * @return array  $status           Information passed back to calling script such as limit_applied
@@ -825,7 +825,7 @@ HTML;
      *
      * @param string &$text        string text to be searched
      * @param string &$phrase      string how the search should be performed exact, all, or any
-     * @param JParameter &$pluginParam custom plugin parameters in search.xml
+     * @param JRegistry &$pluginParam custom plugin parameters in search.xml
      * @param int    $itemid       what menu item to use when creating the URL
      * @param string $ordering     ordering sent by Joomla: null, oldest, popular, category, alpha, or newest
      *
@@ -996,7 +996,7 @@ HTML;
     /**
      * @param array $config
      * @param $view
-     * @param JParameter $params
+     * @param JRegistry $params
      *
      * @return string
      */
@@ -1008,7 +1008,7 @@ HTML;
     /**
      * @param array $config
      * @param $view
-     * @param JParameter $params
+     * @param JRegistry $params
      *
      * @return string
      */

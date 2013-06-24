@@ -120,7 +120,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
             //pass the data onto the view
             $this->assignRef('plugins', $plugins);
             $this->assignRef('VersionData', $VersionData);
-	        parent::display('25');
+	        parent::display();
         } else {
             JError::raiseWarning(500, JText::_('NO_JFUSION_TABLE'));
         }

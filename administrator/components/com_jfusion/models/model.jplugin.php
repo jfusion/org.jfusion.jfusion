@@ -210,7 +210,7 @@ class JFusionJplugin
 	        $db->setQuery($query);
 	        $params = $db->loadResult();
 
-            $params = new JParameter($params);
+            $params = new JRegistry($params);
         }
 		// Return true if the 'allowUserRegistration' switch is enabled in the component parameters.
 		return ($params->get('allowUserRegistration') ? true : false);
@@ -651,7 +651,7 @@ class JFusionJplugin
                 $result->password_salt = '';
             }
             // Get the language of the user and store it as variable in the user object
-            $user_params = new JParameter($result->params);
+            $user_params = new JRegistry($result->params);
             $JLang = JFactory::getLanguage();
             $result->language = $user_params->get('language', $JLang->getTag());
             unset($JLang);
@@ -1330,7 +1330,7 @@ class JFusionJplugin
 	     * @TODO joomla 1.5/1.6 if we are talking to external joomla since joomla 1.5 store params in json
 	     */
         $db = JFusionFactory::getDatabase($jname);
-        $params = new JParameter($existinguser->params);
+        $params = new JRegistry($existinguser->params);
         $params->set('language', $userinfo->language);
         $query = 'UPDATE #__users SET params =' . $db->Quote($params->toString()) . ' WHERE id =' . $existinguser->userid;
         $db->setQuery($query);

@@ -46,7 +46,7 @@ class JFusionAdmin_joomla_ext extends JFusionAdmin
 		// find out what Joomla version we have
         /**
          * @ignore
-         * @var $params JParameter
+         * @var $params JRegistry
          */
 		$params = JFusionFactory::getParams($this->getJname());
 		$joomlaversion = $params->get('joomlaversion','');

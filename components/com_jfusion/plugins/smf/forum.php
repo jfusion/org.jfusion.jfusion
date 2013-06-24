@@ -367,7 +367,7 @@ class JFusionForum_smf extends JFusionForum
     /**
      * Creates new thread and posts first post
      *
-     * @param JParameter &$dbparams    with discussion bot parameters
+     * @param JRegistry &$dbparams    with discussion bot parameters
      * @param object &$contentitem object containing content information
      * @param int    $forumid      Id of forum to create thread
      * @param array  &$status      contains errors and status of actions
@@ -489,7 +489,7 @@ class JFusionForum_smf extends JFusionForum
     /**
      * Updates information in a specific thread/post
      *
-     * @param JParameter &$dbparams       with discussion bot parameters
+     * @param JRegistry &$dbparams       with discussion bot parameters
      * @param object &$existingthread with existing thread info
      * @param object &$contentitem    object containing content information
      * @param array  &$status         contains errors and status of actions
@@ -528,7 +528,7 @@ class JFusionForum_smf extends JFusionForum
     /**
      * Returns HTML of a quick reply
      *
-     * @param JParameter  &$dbparams       with discussion bot parameters
+     * @param JRegistry  &$dbparams       with discussion bot parameters
      * @param boolean $showGuestInputs toggles whether to show guest inputs or not
      *
      * @return string of html
@@ -698,7 +698,7 @@ HTML;
     /**
      * Retrieves the posts to be displayed in the content item if enabled
      *
-     * @param JParameter &$dbparams       with discussion bot parameters
+     * @param JRegistry &$dbparams       with discussion bot parameters
      * @param object &$existingthread info about thread
      *
      * @return array or object Returns retrieved posts

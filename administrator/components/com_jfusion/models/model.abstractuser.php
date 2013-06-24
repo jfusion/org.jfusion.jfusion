@@ -187,7 +187,7 @@ class JFusionUser
         //$db = JFusionFactory::getDatabase($this->getJname());
         $params = JFusionFactory::getParams($this->getJname());
         if (!empty($userinfo->params)) {
-            $user_params = new JParameter($userinfo->params);
+            $user_params = new JRegistry($userinfo->params);
         }
         $update_block = $params->get('update_block');
         $update_activation = $params->get('update_activation');

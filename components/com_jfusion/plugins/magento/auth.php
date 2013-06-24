@@ -32,6 +32,9 @@ require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTOR
  */
 class JFusionAuth_magento extends JFusionAuth {
 
+	/**
+	 * @return string
+	 */
 	function getJname()
 	{
 		return 'magento';

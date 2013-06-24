@@ -33,11 +33,11 @@ if (file_exists($model_file) && file_exists($factory_file)) {
 	require_once $factory_file;
     /**
      * @ignore
-     * @var $params JParameter
+     * @var $params JRegistry
      */
     $pluginParamValue = $params->get('JFusionPluginParam');
     
-	$parametersInstance = new JParameter('');
+	$parametersInstance = new JRegistry('');
     if ($pluginParamValue) {
 		$data = unserialize(base64_decode($pluginParamValue));
 		if (is_array($data)) {
@@ -49,7 +49,7 @@ if (file_exists($model_file) && file_exists($factory_file)) {
 	$jname = $parametersInstance->get('jfusionplugin');
 
 	if(JFusionFunction::validPlugin($jname)) {
-		$pluginParam = new JParameter('');
+		$pluginParam = new JRegistry('');
 		$data = $parametersInstance->get($jname);
 		if (is_array($data)) {
 			foreach ($data as $key => $value) {

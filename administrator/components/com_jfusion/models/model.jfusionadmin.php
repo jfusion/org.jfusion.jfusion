@@ -229,7 +229,7 @@ HTML;
             jimport('joomla.installer.helper');
             $filename = JInstallerHelper::getFilenameFromURL($url);
             $config = JFactory::getConfig();
-            $target = $config->getValue('config.tmp_path').DIRECTORY_SEPARATOR.JInstallerHelper::getFilenameFromURL($url);
+            $target = $config->get('config.tmp_path').DIRECTORY_SEPARATOR.JInstallerHelper::getFilenameFromURL($url);
             // Write buffer to file
             JFile::write($target, $FileData);
             if ($unpack) {

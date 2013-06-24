@@ -78,9 +78,9 @@ class plgContentJfusion extends JPlugin
         //retrieve plugin software for discussion bot
         if ($this->params===false) {
             if (is_array($params)) {
-                $this->params = new JParameter( $params[params]);
+                $this->params = new JRegistry( $params[params]);
             } else {
-                $this->params = new JParameter( $params->params);
+                $this->params = new JRegistry( $params->params);
             }
 
         }
@@ -1199,12 +1199,12 @@ HTML;
         $this->helper->output['buttons'] = array();
         /**
          * @ignore
-         * @var $article_params JParameter
+         * @var $article_params JRegistry
          */
         $attribs = $readmore_param = $article_params = null;
         $show_readmore = $readmore_catch = 0;
         if ($this->helper->option == 'com_content') {
-            $attribs = new JParameter($this->article->attribs);
+            $attribs = new JRegistry($this->article->attribs);
 
             if (isset($this->article->params)) {
                 //blog view

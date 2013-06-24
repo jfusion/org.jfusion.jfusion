@@ -16,7 +16,7 @@ defined('_JEXEC') or die('Restricted access');
  */
 class JFusionHelper {
     /**
-     * @param JParameter $params
+     * @param JRegistry $params
      * @param string $type
      *
      * @return string

@@ -36,7 +36,7 @@ class plgSystemMagelib {
      */
     function __construct() {
 		$plugin = JPluginHelper::getPlugin ( 'system', 'magelib' );
-		$this->params = new JParameter ( $plugin->params );
+		$this->params = new JRegistry ( $plugin->params );
 		
 		$mage_plugin = $this->params->get ( 'mage_plugin', 'magento' );
 		$mage_path = JFusionFactory::getParams ( $mage_plugin )->get ( 'source_path', false );

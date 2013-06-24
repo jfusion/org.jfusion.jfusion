@@ -80,7 +80,7 @@ class JFusionCurlFrameless {
 		$url = $data->source_url;
 
         $config = JFactory::getConfig();
-        $sefenabled = $config->getValue('config.sef');
+        $sefenabled = $config->get('config.sef');
         if(!empty($sefenabled)) {
 			$uri = JURI::getInstance();
 			$current = $uri->toString( array( 'path', 'query'));

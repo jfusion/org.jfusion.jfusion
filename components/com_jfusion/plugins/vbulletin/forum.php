@@ -98,7 +98,7 @@ class JFusionForum_vbulletin extends JFusionForum
     }
 
     /**
-     * @param JParameter &$dbparams
+     * @param JRegistry &$dbparams
      * @param object &$contentitem
      * @param int $forumid
      * @param array &$status
@@ -185,7 +185,7 @@ class JFusionForum_vbulletin extends JFusionForum
     }
 
     /**
-     * @param JParameter $dbparams
+     * @param JRegistry $dbparams
      * @param object $ids
      * @param object $contentitem
      * @param object $userinfo
@@ -270,7 +270,7 @@ class JFusionForum_vbulletin extends JFusionForum
     }
 
     /**
-     * @param JParameter &$dbparams
+     * @param JRegistry &$dbparams
      * @param object &$existingthread
      * @param object &$contentitem
      * @param array &$status
@@ -361,7 +361,7 @@ class JFusionForum_vbulletin extends JFusionForum
 	}
 
     /**
-     * @param JParameter $dbparams
+     * @param JRegistry $dbparams
      * @param object $existingthread
      *
      * @return array

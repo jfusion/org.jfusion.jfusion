@@ -181,7 +181,7 @@ class JFusionForum
     /**
      * Checks to see if a thread already exists for the content item and calls the appropriate function
      *
-     * @param JParameter 	&$dbparams		object with discussion bot parameters
+     * @param JRegistry 	&$dbparams		object with discussion bot parameters
      * @param object 	&$contentitem 	object containing content information
      * @param object|int 	&$threadinfo 	object with threadinfo from lookup table
      * @param array 	&$status        object with debug, error, and action static
@@ -241,7 +241,7 @@ class JFusionForum
     /**
      * Retrieves the default forum based on section/category stipulations or default set in the plugins config
      *
-     * @param JParameter &$dbparams    discussion bot parameters
+     * @param JRegistry &$dbparams    discussion bot parameters
      * @param object &$contentitem object containing content information
      *
      * @return int Returns id number of the forum
@@ -350,7 +350,7 @@ class JFusionForum
      * Function that determines the author of an article or returns the default user if one is not found
      * For the discussion bot
      *
-     * @param JParameter &$dbparams    object with discussion bot parameters
+     * @param JRegistry &$dbparams    object with discussion bot parameters
      * @param object &$contentitem contentitem
      *
      * @return int forum's userid
@@ -421,7 +421,7 @@ class JFusionForum
 	/**
 	 * Prepares the body for the first post in a thread
 	 *
-	 * @param JParameter &$dbparams 		object with discussion bot parameters
+	 * @param JRegistry &$dbparams 		object with discussion bot parameters
 	 * @param object	$contentitem 	object containing content information
 	 *
 	 * @return string
@@ -522,7 +522,7 @@ JS;
     /**
      * Returns HTML of a quick reply
      *
-     * @param JParameter &$dbparams       object with discussion bot parameters
+     * @param JRegistry &$dbparams       object with discussion bot parameters
      * @param boolean $showGuestInputs toggles whether to show guest inputs or not
      *
      * @return string of html
@@ -557,7 +557,7 @@ HTML;
     /**
      * Creates the html for the selected captcha for the discussion bot
      *
-     * @param JParameter $dbparams object with discussion bot parameters
+     * @param JRegistry $dbparams object with discussion bot parameters
      *
      * @return string
      */
@@ -645,7 +645,7 @@ JS;
     /**
      * Verifies captcha of a guest post submitted by the discussion bot
      *
-     * @param JParameter &$dbparams object with discussion bot parameters
+     * @param JRegistry &$dbparams object with discussion bot parameters
      *
      * @return boolean
      */
@@ -752,7 +752,7 @@ JS;
     /**
      * @param array $config
      * @param $view
-     * @param JParameter $params
+     * @param JRegistry $params
      *
      * @return string
      */

@@ -212,7 +212,7 @@ class JFusionForum_smf2 extends JFusionForum
      /**
       * Creates new thread and posts first post
       *
-      * @param JParameter &$dbparams with discussion bot parameters
+      * @param JRegistry &$dbparams with discussion bot parameters
       * @param object &$contentitem object containing content information
       * @param int $forumid Id of forum to create thread
       * @param array &$status contains errors and status of actions
@@ -347,7 +347,7 @@ class JFusionForum_smf2 extends JFusionForum
 
 	 /**
 	  * Updates information in a specific thread/post
-	  * @param JParameter &$dbparams with discussion bot parameters
+	  * @param JRegistry &$dbparams with discussion bot parameters
 	  * @param object &$existingthread with existing thread info
 	  * @param object &$contentitem object containing content information
 	  * @param array &$status contains errors and status of actions
@@ -388,7 +388,7 @@ class JFusionForum_smf2 extends JFusionForum
 
 	/**
 	 * Returns HTML of a quick reply
-	 * @param JParameter $dbparams object with discussion bot parameters
+	 * @param JRegistry $dbparams object with discussion bot parameters
 	 * @param boolean $showGuestInputs toggles whether to show guest inputs or not
 	 * @return string of html
 	 */
@@ -431,7 +431,7 @@ HTML;
 
 	/**
 	 * Creates a post from the quick reply
-	 * @param JParameter &$dbparams with discussion bot parameters
+	 * @param JRegistry &$dbparams with discussion bot parameters
 	 * @param object &$ids stdClass with thread id ($ids->threadid) and first post id ($ids->postid)
 	 * @param $contentitem object of content item
 	 * @param $userinfo object info of the forum user
@@ -585,7 +585,7 @@ HTML;
 	/**
      * Retrieves the posts to be displayed in the content item if enabled
      *
-     * @param JParameter &$dbparams with discussion bot parameters
+     * @param JRegistry &$dbparams with discussion bot parameters
      * @param object &$existingthread
      *
      * @return array or object Returns retrieved posts

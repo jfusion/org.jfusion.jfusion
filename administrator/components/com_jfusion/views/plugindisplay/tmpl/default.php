@@ -399,7 +399,7 @@ window.addEvent('domready',function() {
                                 <?php
                                 /**
                                  * @ignore
-                                 * @var $plugin JSimpleXMLElement
+                                 * @var $plugin JXMLElement
                                  */
                                 foreach ($this->VersionData as $plugin): ?>
                                     <option value="<?php echo $plugin->getElementByPath('remotefile')->data() ?>"><?php echo $plugin->name() . ' - ' . $plugin->getElementByPath('description')->data(); ?></option>

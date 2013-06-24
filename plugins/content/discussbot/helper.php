@@ -30,7 +30,7 @@ defined('_JEXEC' ) or die('Restricted access' );
 class JFusionDiscussBotHelper {
     var $article;
 	/**
-	 * @var JParameter $params
+	 * @var JRegistry $params
 	 */
 	var $params;
     var $jname;
@@ -45,7 +45,7 @@ class JFusionDiscussBotHelper {
     var $isJ16;
 
     /**
-     * @param JParameter $params
+     * @param JRegistry $params
      * @param $jname
      * @param $mode
      * @param $debug_mode
@@ -641,6 +641,9 @@ JS;
  *
  */
 jimport( 'joomla.html.pagination' );
+/**
+ * Class JFusionPagination
+ */
 class JFusionPagination extends JPagination {
     var $identifier = '';
 
