@@ -1142,52 +1142,6 @@ class JFusionFunction
     }
 
     /**
-     * Returns value from version_compare what version joomla is
-     *
-     * @param string $v version to check
-     * @param string $jname name of joomla_ext plugin
-     *
-     * @return true/false
-     */
-    public static function isJoomlaVersion($v='1.6',$jname='joomla_int') {
-        static $versions;
-		if (!isset($versions[$jname][$v])) {
-	        if ($jname=='joomla_int') {
-	        	//file has now moved in Joomla 2.5
-	        	//manual include added as JImport has strange behaviours when called from outside core
-                if (!class_exists('JVersion')) {
-                    if (file_exists(JPATH_LIBRARIES.DIRECTORY_SEPARATOR.'cms'.DIRECTORY_SEPARATOR.'version'.DIRECTORY_SEPARATOR.'version.php')) {
-                        include_once(JPATH_LIBRARIES.DIRECTORY_SEPARATOR.'cms'.DIRECTORY_SEPARATOR.'version'.DIRECTORY_SEPARATOR.'version.php');
-                    } elseif (file_exists(JPATH_LIBRARIES.DIRECTORY_SEPARATOR.'joomla'.DIRECTORY_SEPARATOR.'version.php')) {
-                        include_once(JPATH_LIBRARIES.DIRECTORY_SEPARATOR.'joomla'.DIRECTORY_SEPARATOR.'version.php');
-                    } elseif (file_exists(JPATH_ROOT.DIRECTORY_SEPARATOR.'includes'.DIRECTORY_SEPARATOR.'version.php')) {
-                        include_once(JPATH_ROOT.DIRECTORY_SEPARATOR.'includes'.DIRECTORY_SEPARATOR.'version.php');
-                    }
-                }
-				$version = new JVersion;
-		    	if (version_compare($version->getShortVersion(), $v) >= 0) {
-		        	$versions[$jname][$v] = true;
-		    	} else {
-		        	$versions[$jname][$v] = false;
-		    	}
-	        } else {
-                /**
-                 * @ignore
-                 * @var $admin JFusionAdmin_joomla_ext
-                 */
-                $admin = JFusionFactory::getAdmin($jname);
-        		$version = $admin->getVersion();
-		    	if (version_compare($version, $v) >= 0) {
-		        	$versions[$jname][$v] = true;
-		    	} else {
-		        	$versions[$jname][$v] = false;
-		    	}
-	        }
-		}
-        return $versions[$jname][$v];
-    }
-
-    /**
      * return the correct usergroups for a given user
      *
      * @param string $jname plugin name

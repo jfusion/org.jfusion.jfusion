@@ -55,7 +55,7 @@ class jfusionViewLogoutCheckerResult extends JViewLegacy
 	    $JFusionActivePlugin = 'joomla_int';
 	    $jfusion_user = array('type' => 'user', 'name' => 'jfusion', 'params' => '');
 	    $plugin = (object)$jfusion_user;
-	    include_once JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'user' . DIRECTORY_SEPARATOR . $plugin->name .  DS . $plugin->name . '.php';
+	    include_once JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'user' . DIRECTORY_SEPARATOR . $plugin->name .  DIRECTORY_SEPARATOR . $plugin->name . '.php';
 	    $className = 'plg' . $plugin->type . $plugin->name;
 	    if (class_exists($className)) {
 	        $plugin = new $className($this, (array)$plugin);

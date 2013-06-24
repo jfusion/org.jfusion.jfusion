@@ -46,7 +46,7 @@ class JFusionAdmin_smf2 extends JFusionAdmin{
     function setupFromPath($forumPath)
     {
         //check for trailing slash and generate file path
-        if (substr($forumPath, -1) == DS) {
+        if (substr($forumPath, -1) == DIRECTORY_SEPARATOR) {
             $myfile = $forumPath . 'Settings.php';
         } else {
             $myfile = $forumPath . DIRECTORY_SEPARATOR. 'Settings.php';

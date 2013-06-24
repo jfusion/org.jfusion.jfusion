@@ -52,7 +52,7 @@ class JFusionHelper_gallery2
             $params = JFusionFactory::getParams($this->getJname());
             $source_url = $params->get('source_url');
             $source_path = $params->get('source_path');
-            if (substr($source_path, -1) == DS) {
+            if (substr($source_path, -1) == DIRECTORY_SEPARATOR) {
                 $index_file = $source_path . 'embed.php';
             } else {
                 $index_file = $source_path . DIRECTORY_SEPARATOR . 'embed.php';
@@ -73,7 +73,7 @@ class JFusionHelper_gallery2
                     require_once $index_file;
                 } else {
                     global $gallery;
-                    if (substr($source_path, -1) == DS) {
+                    if (substr($source_path, -1) == DIRECTORY_SEPARATOR) {
                         $config_file = $source_path . 'config.php';
                     } else {
                         $config_file = $source_path . DIRECTORY_SEPARATOR . 'config.php';

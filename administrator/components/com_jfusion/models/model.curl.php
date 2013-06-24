@@ -1166,7 +1166,7 @@ class JFusionCurl
 									$pathinfo['dirname']='';
 								} //prevent double directory
 
-								// replace windows DS bt unix DS
+								// replace windows DIRECTORY_SEPARATOR bt unix DIRECTORY_SEPARATOR
 								$pathinfo['dirname'] = str_replace("\\", '/', $pathinfo['dirname']);
 								// get rid of the trailing /  in dir
 								rtrim($pathinfo['dirname'], '/');

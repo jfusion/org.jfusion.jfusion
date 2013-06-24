@@ -281,7 +281,7 @@ class JFusionPublic_smf extends JFusionPublic
         global $forum_version;
         // require_once JFUSION_PLUGIN_PATH.DIRECTORY_SEPARATOR.$this->getJname().DIRECTORY_SEPARATOR.'hooks.php';
         $source_path = $params->get('source_path');
-        if (substr($source_path, -1) == DS) {
+        if (substr($source_path, -1) == DIRECTORY_SEPARATOR) {
             $index_file = $source_path . 'index.php';
         } else {
             $index_file = $source_path . DIRECTORY_SEPARATOR . 'index.php';

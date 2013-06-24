@@ -53,7 +53,7 @@ class JFusionAdmin_moodle extends JFusionAdmin
      */
     function setupFromPath($forumPath) {
         //check for trailing slash and generate file path
-        if (substr($forumPath, -1) == DS) {
+        if (substr($forumPath, -1) == DIRECTORY_SEPARATOR) {
             $myfile = $forumPath . 'config.php';
         } else {
             $myfile = $forumPath . DIRECTORY_SEPARATOR . 'config.php';
@@ -336,7 +336,7 @@ HTML;
          */
         foreach($files as $file){
             $file = $file->data();
-            $file = preg_replace('#/#', DS, $file);
+            $file = preg_replace('#/#', DIRECTORY_SEPARATOR, $file);
             @chmod($source_path . DIRECTORY_SEPARATOR . $file, 0777);
             if(!is_dir($source_path . DIRECTORY_SEPARATOR . $file)){
                 JFile::delete($source_path . DIRECTORY_SEPARATOR . $file);

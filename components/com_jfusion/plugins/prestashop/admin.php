@@ -57,7 +57,7 @@ class JFusionAdmin_prestashop extends JFusionAdmin
      */
     function loadSetup($storePath) {
         //check for trailing slash and generate file path
-        if (substr($storePath, -1) == DS) {
+        if (substr($storePath, -1) == DIRECTORY_SEPARATOR) {
             $myfile = $storePath . 'config/settings.inc.php';
         } else {
             $myfile = $storePath . DIRECTORY_SEPARATOR . 'config/settings.inc.php';

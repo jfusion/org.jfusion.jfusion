@@ -350,11 +350,11 @@ class JFusionForum_smf extends JFusionForum
                     $db->setQuery('SELECT * FROM #__settings WHERE variable = \'avatar_url\'');
                     $avatarurl = $db->loadObject();
                     // Check for trailing slash. If there is one DON'T ADD ONE!
-                    if (substr($avatarurl->value, -1) == DS) {
+                    if (substr($avatarurl->value, -1) == DIRECTORY_SEPARATOR) {
                         $url = $avatarurl->value . $result->avatar;
                         // I like redundancy. Recheck to see if there isn't a trailing slash. If there isn't one, add one.
 
-                    } else if (substr($avatarurl->value, -1) !== DS) {
+                    } else if (substr($avatarurl->value, -1) !== DIRECTORY_SEPARATOR) {
                         $url = $avatarurl->value . '/' . $result->avatar;
                     }
                 }

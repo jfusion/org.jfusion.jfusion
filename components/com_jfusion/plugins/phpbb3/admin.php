@@ -54,7 +54,7 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
      */
     function setupFromPath($forumPath) {
         //check for trailing slash and generate file path
-        if (substr($forumPath, -1) == DS) {
+        if (substr($forumPath, -1) == DIRECTORY_SEPARATOR) {
             $myfile = $forumPath . 'config.php';
         } else {
             $myfile = $forumPath . DIRECTORY_SEPARATOR . 'config.php';
@@ -490,7 +490,7 @@ HTML;
         //remove the file as well to allow for updates of the auth mod content
         $params = JFusionFactory::getParams($this->getJname());
         $path = $params->get('source_path');
-        if (substr($path, -1) == DS) {
+        if (substr($path, -1) == DIRECTORY_SEPARATOR) {
             $auth_file = $path . 'includes' . DIRECTORY_SEPARATOR . 'auth' . DIRECTORY_SEPARATOR . 'auth_jfusion.php';
         } else {
             $auth_file = $path . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'auth' . DIRECTORY_SEPARATOR . 'auth_jfusion.php';

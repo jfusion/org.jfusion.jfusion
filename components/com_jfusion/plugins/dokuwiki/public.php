@@ -72,8 +72,8 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
         $params = JFusionFactory::getParams($this->getJname());
         $source_path = $params->get('source_path');
 
-        if (substr($source_path, -1) != DS) {
-            $source_path .= DS;
+        if (substr($source_path, -1) != DIRECTORY_SEPARATOR) {
+            $source_path .= DIRECTORY_SEPARATOR;
         }
 
         //setup constants needed by Dokuwiki
@@ -342,7 +342,7 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
                 $is_get = false;
             }
             $value = $this->fixUrl(array(1 => $links[2][$key]));
-            if ($is_get && substr($value, -1) != DS) $links[4][$key] = $getData . $links[4][$key];
+            if ($is_get && substr($value, -1) != DIRECTORY_SEPARATOR) $links[4][$key] = $getData . $links[4][$key];
             $data->body = str_replace($links[0][$key], '<form' . $links[1][$key] . 'action="' . $value . '"' . $links[3][$key] . '>' . $links[4][$key] . '</form>', $data->body);
         }
     }

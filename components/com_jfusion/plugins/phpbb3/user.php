@@ -159,8 +159,8 @@ class JFusionUser_phpbb3 extends JFusionUser
                     //let phpbb3 handle login
                     $source_path = $params->get('source_path');
                     //combine the path and filename
-                    if (substr($source_path, -1) != DS) {
-                        $source_path .= DS;
+                    if (substr($source_path, -1) != DIRECTORY_SEPARATOR) {
+                        $source_path .= DIRECTORY_SEPARATOR;
                     }
 
                     //set the current directory to phpBB3

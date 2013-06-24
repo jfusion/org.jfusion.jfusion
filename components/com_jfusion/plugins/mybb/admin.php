@@ -54,8 +54,8 @@ class JFusionAdmin_mybb extends JFusionAdmin
      */
     function setupFromPath($forumPath) {
         //check for trailing slash and generate config file path
-        if (substr($forumPath, -1) != DS) {
-            $forumPath.= DS;
+        if (substr($forumPath, -1) != DIRECTORY_SEPARATOR) {
+            $forumPath.= DIRECTORY_SEPARATOR;
         }
         $myfile = $forumPath . 'inc' . DIRECTORY_SEPARATOR . 'config.php';
 
@@ -85,8 +85,8 @@ class JFusionAdmin_mybb extends JFusionAdmin
             $query = 'SELECT value FROM #__settings WHERE name = \'bburl\'';
             $bb->setQuery($query);
             $bb_url = $bb->loadResult();
-            if (substr($bb_url, -1) != DS) {
-                $bb_url.= DS;
+            if (substr($bb_url, -1) != DIRECTORY_SEPARATOR) {
+                $bb_url.= DIRECTORY_SEPARATOR;
             }
             $params['source_url'] = $bb_url;
             $query = 'SELECT value FROM #__settings WHERE name=\'cookiedomain\'';

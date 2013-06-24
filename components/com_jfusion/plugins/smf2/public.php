@@ -267,7 +267,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 		// Get the path
 		$source_path = $params->get('source_path');
 
-		if (substr($source_path, -1) == DS) {
+		if (substr($source_path, -1) == DIRECTORY_SEPARATOR) {
 			$index_file = $source_path .'index.php';
 		} else {
 			$index_file = $source_path .DIRECTORY_SEPARATOR.'index.php';

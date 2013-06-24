@@ -229,7 +229,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             exit();
         }
         //combine the path and filename
-        if (substr($source_path, -1) == DS) {
+        if (substr($source_path, -1) == DIRECTORY_SEPARATOR) {
             $index_file = $source_path . basename($jfile);
         } else {
             $index_file = $source_path . DIRECTORY_SEPARATOR . basename($jfile);

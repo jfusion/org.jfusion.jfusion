@@ -37,8 +37,8 @@ if ( !class_exists('DokuWikiSearch') ) {
              */
             $helper = JFusionFactory::getHelper($jname);
             $this->path = $params->get('source_path');
-            if (substr($this->path, -1) != DS) {
-                $this->path .= DS;
+            if (substr($this->path, -1) != DIRECTORY_SEPARATOR) {
+                $this->path .= DIRECTORY_SEPARATOR;
             }
 
             $this->conf = $helper->getConf($this->path);
@@ -600,7 +600,7 @@ if ( !class_exists('DokuWikiSearch') ) {
          * @return string
          */
         function getPage($page) {
-            $file = $this->path . 'data' . DIRECTORY_SEPARATOR . 'pages' . DIRECTORY_SEPARATOR . str_replace(":", DS, $page) . '.txt';
+            $file = $this->path . 'data' . DIRECTORY_SEPARATOR . 'pages' . DIRECTORY_SEPARATOR . str_replace(":", DIRECTORY_SEPARATOR, $page) . '.txt';
             $text = '';
             if (file_exists($file)) {
                 $handle = fopen($file, "r");
@@ -618,7 +618,7 @@ if ( !class_exists('DokuWikiSearch') ) {
          */
         function getPageModifiedDateTime($page) {
             $datetime = '';
-            $file = $this->path . 'data' . DIRECTORY_SEPARATOR . 'pages' . DIRECTORY_SEPARATOR . str_replace(":", DS, $page) . '.txt';
+            $file = $this->path . 'data' . DIRECTORY_SEPARATOR . 'pages' . DIRECTORY_SEPARATOR . str_replace(":", DIRECTORY_SEPARATOR, $page) . '.txt';
             if (file_exists($file)) {
                 $datetime = date ('Y-m-d h:i:s', filemtime($file));
             }

@@ -50,7 +50,7 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
      */
     function setupFromPath($forumPath) {
         //check for trailing slash and generate file path
-        if (substr($forumPath, -1) == DS) {
+        if (substr($forumPath, -1) == DIRECTORY_SEPARATOR) {
             $myfile = $forumPath . 'includes' . DIRECTORY_SEPARATOR . 'configure.php';
         } else {
             $myfile = $forumPath . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'configure.php';

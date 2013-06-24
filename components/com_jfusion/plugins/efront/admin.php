@@ -57,7 +57,7 @@ class JFusionAdmin_efront extends JFusionAdmin
      */
     function setupFromPath($forumPath) {
         //check for trailing slash and generate file path
-        if (substr($forumPath, -1) == DS) {
+        if (substr($forumPath, -1) == DIRECTORY_SEPARATOR) {
             $myfile = $forumPath . 'libraries'. DIRECTORY_SEPARATOR. 'configuration.php';
         } else {
             $myfile = $forumPath . DIRECTORY_SEPARATOR .'libraries'. DIRECTORY_SEPARATOR .'configuration.php';
@@ -78,7 +78,7 @@ class JFusionAdmin_efront extends JFusionAdmin
             }
             fclose($file_handle);
             // need more defines from eFront
-            if (substr($forumPath, -1) == DS) {
+            if (substr($forumPath, -1) == DIRECTORY_SEPARATOR) {
                 $myfile = $forumPath . 'libraries'. DIRECTORY_SEPARATOR. 'globals.php';
             } else {
                 $myfile = $forumPath . DIRECTORY_SEPARATOR .'libraries'. DIRECTORY_SEPARATOR .'globals.php';

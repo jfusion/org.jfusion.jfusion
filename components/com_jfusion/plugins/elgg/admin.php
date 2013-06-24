@@ -53,7 +53,7 @@ class JFusionAdmin_elgg extends JFusionAdmin
      */
     function loadSetup($path) {
         //generate the destination file
-        if (substr($path, -1) != DS) {
+        if (substr($path, -1) != DIRECTORY_SEPARATOR) {
             $myfile = $path . DIRECTORY_SEPARATOR . 'engine' . DIRECTORY_SEPARATOR . 'settings.php';
         } else {
             $myfile = $path . 'engine' . DIRECTORY_SEPARATOR . 'settings.php';

@@ -227,7 +227,7 @@ class JFusionJplugin
     public static function setupFromPath($path)
     {
         //check for trailing slash and generate file path
-        if (substr($path, -1) == DS) {
+        if (substr($path, -1) == DIRECTORY_SEPARATOR) {
             $configfile = $path . 'configuration.php';
             //joomla 1.6+ test
             $test_version_file = $path . 'includes' . DIRECTORY_SEPARATOR . 'version.php';

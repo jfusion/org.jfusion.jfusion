@@ -92,7 +92,7 @@ class JFusionAdmin_magento extends JFusionAdmin
      */
     function setupFromPath($forumPath) {
         //check for trailing slash and generate file path
-        if (substr($forumPath, -1) != DS) {
+        if (substr($forumPath, -1) != DIRECTORY_SEPARATOR) {
             $forumPath = $forumPath . DIRECTORY_SEPARATOR;
         }
         $xmlfile = $forumPath . 'app' . DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'local.xml';
@@ -395,7 +395,7 @@ HTML;
          */
 		foreach($files as $file) {
 			$file = $file->data();
-			$file = preg_replace('#/#', DS, $file);
+			$file = preg_replace('#/#', DIRECTORY_SEPARATOR, $file);
 			@chmod($source_path . DIRECTORY_SEPARATOR . $file, 0777);
 			if (!is_dir($source_path . DIRECTORY_SEPARATOR . $file)) {
 				JFile::delete($source_path . DIRECTORY_SEPARATOR . $file);

@@ -56,7 +56,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
     function setupFromPath($forumPath)
     {
         //check for trailing slash and generate file path
-        if (substr($forumPath, -1) == DS) {
+        if (substr($forumPath, -1) == DIRECTORY_SEPARATOR) {
             $configfile = $forumPath . 'includes' . DIRECTORY_SEPARATOR . 'config.php';
             $funcfile = $forumPath . 'includes' . DIRECTORY_SEPARATOR . 'functions.php';
         } else {
@@ -492,7 +492,7 @@ HTML;
         $params = JFusionFactory::getParams($this->getJname());
         $hookFile = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'hooks.php';
         $php = "defined('_VBJNAME') or define('_VBJNAME', '{$this->getJname()}');\n";
-        $php.= "defined('JPATH_PATH') or define('JPATH_BASE', '" . (str_replace(DS.'administrator', '', JPATH_BASE)) . "');\n";
+        $php.= "defined('JPATH_PATH') or define('JPATH_BASE', '" . (str_replace(DIRECTORY_SEPARATOR.'administrator', '', JPATH_BASE)) . "');\n";
         $php.= "defined('JFUSION_VB_HOOK_FILE') or define('JFUSION_VB_HOOK_FILE', '$hookFile');\n";
         if ($plugin == 'globalfix') {
             $php.= "if (defined('_JEXEC') && empty(\$GLOBALS['vbulletin']) && !empty(\$vbulletin)) {\n";

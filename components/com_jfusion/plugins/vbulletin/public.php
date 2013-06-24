@@ -325,7 +325,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
                     $jfile = 'index.php';
                 }
                 //combine the path and filename
-                if (substr($source_path, -1) == DS) {
+                if (substr($source_path, -1) == DIRECTORY_SEPARATOR) {
                     $index_file = $source_path . $jfile;
                 } else {
                     $index_file = $source_path . DIRECTORY_SEPARATOR . $jfile;

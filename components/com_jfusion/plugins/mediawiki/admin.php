@@ -42,7 +42,7 @@ class JFusionAdmin_mediawiki extends JFusionAdmin {
     function setupFromPath($source_path)
     {
         //check for trailing slash and generate file path
-        if (substr($source_path, -1) == DS) {
+        if (substr($source_path, -1) == DIRECTORY_SEPARATOR) {
             //remove it so that we can make it compatible with mediawiki MW_INSTALL_PATH
             $source_path = substr($source_path, 0, -1);
         }

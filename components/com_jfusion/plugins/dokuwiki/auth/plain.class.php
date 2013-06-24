@@ -81,7 +81,7 @@ class doku_auth_plain extends doku_auth_basic {
     function auth_file() {
         $params = JFusionFactory::getParams($this->helper->getJname());
         $sorce_path = $params->get('source_path');
-        if (substr($sorce_path, -1) == DS) {
+        if (substr($sorce_path, -1) == DIRECTORY_SEPARATOR) {
             $sorce_path = $sorce_path . 'conf/users.auth.php';
         } else {
             $sorce_path = $sorce_path . DIRECTORY_SEPARATOR . 'conf/users.auth.php';

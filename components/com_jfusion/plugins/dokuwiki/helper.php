@@ -161,9 +161,9 @@ class JFusionHelper_dokuwiki
             $source_path = $params->get('source_path');
             $config_path = (empty($path)) ? $source_path : $path;
 
-            //make sure the source path ends with a DS
-            if (substr($path, -1) != DS) {
-                $config_path .= DS;
+            //make sure the source path ends with a DIRECTORY_SEPARATOR
+            if (substr($path, -1) != DIRECTORY_SEPARATOR) {
+                $config_path .= DIRECTORY_SEPARATOR;
             }
 
             //standard config path
@@ -174,9 +174,9 @@ class JFusionHelper_dokuwiki
                 include_once $source_path  . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'preload.php';
                 if (defined('DOKU_CONF')) {
                     $config_path = DOKU_CONF;
-                    //make sure we have a ending DS
-                    if (substr($config_path, -1) != DS) {
-                       $config_path .= DS;
+                    //make sure we have a ending DIRECTORY_SEPARATOR
+                    if (substr($config_path, -1) != DIRECTORY_SEPARATOR) {
+                       $config_path .= DIRECTORY_SEPARATOR;
                     }
                 }
             }

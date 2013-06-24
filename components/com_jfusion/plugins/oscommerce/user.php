@@ -512,14 +512,16 @@ class JFusionUser_oscommerce extends JFusionUser
             // delete review items osc2 & osc3 &  osczen & oscxt
             $delete_reviews = $params->get('delete_reviews');
             if ($delete_reviews == '1') {
-                $db->query('select reviews_id from #__reviews where customers_id = \'' . (int)$user_id . '\'');
+                $db->setQuery('select reviews_id from #__reviews where customers_id = \'' . (int)$user_id . '\'');
+	            $db->execute();
                 $reviews = $db->loadObjectList();
                 foreach ($reviews as $review) {
-                    $db->query('delete from #__reviews_description where reviews_id = \'' . (int)$review->reviews_id . '\'');
+                    $db->setQuery('delete from #__reviews_description where reviews_id = \'' . (int)$review->reviews_id . '\'');
+	                $db->execute();
                 }
-                $db->query('DELETE FROM #__reviews WHERE customers_id = \'' . (int)$user_id . '\'');
+                $db->setQuery('DELETE FROM #__reviews WHERE customers_id = \'' . (int)$user_id . '\'');
             } else {
-                $db->query('UPDATE #__reviews set customers_id = null where customers_id = \'' . (int)$user_id . '\'');
+                $db->setQuery('UPDATE #__reviews set customers_id = null where customers_id = \'' . (int)$user_id . '\'');
             }
             if (!$db->execute()) {
                 $status['error'][] = 'Error Could not delete customer reviews with userid '.$user_id.': '.$db->stderr();
