@@ -1,78 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="component" version="1.6" method="upgrade">
-    <name>com_jfusion</name>
-    <creationDate>December 2010</creationDate>
-    <author>JFusion Development Team</author>
-    <authorEmail>webmaster@jfusion.org</authorEmail>
-    <authorUrl>http://www.jfusion.org</authorUrl>
-    <copyright>Copyright (C) 2008 JFusion. All rights reserved.</copyright>
-    <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-    <version>1.8.0-000</version>
-    <revision>$revision$</revision>
+	<name>com_jfusion</name>
+	<creationDate>December 2010</creationDate>
+	<author>JFusion Development Team</author>
+	<authorEmail>webmaster@jfusion.org</authorEmail>
+	<authorUrl>http://www.jfusion.org</authorUrl>
+	<copyright>Copyright (C) 2008 JFusion. All rights reserved.</copyright>
+	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
+	<version>1.8.0-000</version>
+	<revision>$revision$</revision>
     <timestamp>$timestamp$</timestamp>
-    <description>Universal User Integration</description>
+	<description>Universal User Integration</description>
 
     <scriptfile>script.php</scriptfile>
 
-    <files folder="front">
-        <filename>metadata.xml</filename>
-        <filename>index.html</filename>
-        <filename>jfusion.php</filename>
-        <filename>jfusionapi.php</filename>
-        <filename>router.php</filename>
-        <folder>controllers</folder>
-        <folder>css</folder>
-        <folder>helpers</folder>
-        <folder>views</folder>
-        <folder>images</folder>
-    </files>
+	<files folder="front">
+		<filename>metadata.xml</filename>
+		<filename>index.html</filename>
+		<filename>jfusion.php</filename>
+		<filename>jfusionapi.php</filename>
+		<filename>router.php</filename>
+		<folder>controllers</folder>
+		<folder>css</folder>
+		<folder>helpers</folder>
+		<folder>views</folder>
+		<folder>images</folder>
+	</files>
 
-    <languages folder="front/languages">
+	<languages folder="front/languages">
         <language tag="en-GB">en-GB/en-GB.com_jfusion.ini</language>
         <language tag="en-GB">en-GB/en-GB.mod_jfusion_whosonline.ini</language>
         <language tag="en-GB">en-GB/en-GB.mod_jfusion_user_activity.ini</language>
         <language tag="en-GB">en-GB/en-GB.mod_jfusion_login.ini</language>
         <language tag="en-GB">en-GB/en-GB.mod_jfusion_activity.ini</language>
-    </languages>
-
-    <administration>
-        <menu img="components/com_jfusion/images/jfusion_small.png" link="option=com_jfusion">COM_JFUSION</menu>
-        <submenu>
-            <menu img="components/com_jfusion/images/control.png" link="option=com_jfusion&amp;task=cpanel">CPANEL</menu>
-            <menu img="components/com_jfusion/images/joomla_small.png" link="option=com_jfusion&amp;task=plugineditor&amp;jname=joomla_int">JOOMLA_OPTIONS</menu>
-            <menu img="components/com_jfusion/images/process.png" link="option=com_jfusion&amp;task=plugindisplay">CONFIGURATION</menu>
-            <menu img="components/com_jfusion/images/user.png" link="option=com_jfusion&amp;task=syncoptions">NEW_USERSYNC</menu>
-            <menu img="components/com_jfusion/images/user.png" link="option=com_jfusion&amp;task=synchistory">USERSYNC_HISTORY</menu>
-            <menu img="components/com_jfusion/images/disconnect.png" link="option=com_jfusion&amp;task=loginchecker">LOGIN_CHECKER</menu>
-            <menu img="components/com_jfusion/images/configdump_small.png" link="option=com_jfusion&amp;task=configdump">CONFIG_DUMP</menu>
+	</languages>
+	
+	<administration>
+		<menu img="components/com_jfusion/images/jfusion_small.png" link="option=com_jfusion">COM_JFUSION</menu>
+		<submenu>
+			<menu img="components/com_jfusion/images/control.png" link="option=com_jfusion&amp;task=cpanel">CPANEL</menu>
+			<menu img="components/com_jfusion/images/joomla_small.png" link="option=com_jfusion&amp;task=plugineditor&amp;jname=joomla_int">JOOMLA_OPTIONS</menu>
+			<menu img="components/com_jfusion/images/process.png" link="option=com_jfusion&amp;task=plugindisplay">CONFIGURATION</menu>
+			<menu img="components/com_jfusion/images/user.png" link="option=com_jfusion&amp;task=syncoptions">NEW_USERSYNC</menu>
+			<menu img="components/com_jfusion/images/user.png" link="option=com_jfusion&amp;task=synchistory">USERSYNC_HISTORY</menu>
+			<menu img="components/com_jfusion/images/disconnect.png" link="option=com_jfusion&amp;task=loginchecker">LOGIN_CHECKER</menu>
+			<menu img="components/com_jfusion/images/configdump_small.png" link="option=com_jfusion&amp;task=configdump">CONFIG_DUMP</menu>
             <menu img="components/com_jfusion/images/language_icon_small.png" link="option=com_jfusion&amp;task=languages">LANGUAGE</menu>
             <menu img="components/com_jfusion/images/version.png" link="option=com_jfusion&amp;task=versioncheck">VERSIONS</menu>
-        </submenu>
+		</submenu>
 
-        <files folder="admin">
-            <filename>index.html</filename>
+		<files folder="admin">
+			<filename>index.html</filename>
             <filename>script.php</filename>
             <filename>jfusion.php</filename>
-            <filename>defines.php</filename>
-            <filename>toolbar.jfusion.php</filename>
-            <folder>controllers</folder>
-            <folder>packages</folder>
-            <folder>css</folder>
-            <folder>js</folder>
-            <folder>helpers</folder>
-            <folder>images</folder>
-            <folder>models</folder>
-            <folder>views</folder>
+			<filename>defines.php</filename>
+			<filename>toolbar.jfusion.php</filename>
+			<folder>controllers</folder>
+			<folder>packages</folder>
+			<folder>css</folder>
+			<folder>js</folder>
+			<folder>helpers</folder>
+			<folder>images</folder>
+			<folder>models</folder>
+			<folder>views</folder>
             <folder>fields</folder>
-        </files>
+		</files>
 
-        <languages folder="admin/languages">
+		<languages folder="admin/languages">
             <language tag="en-GB">en-GB/en-GB.com_jfusion.ini</language>
             <language tag="en-GB">en-GB/en-GB.com_jfusion.menu.ini</language>
             <language tag="en-GB">en-GB/en-GB.com_jfusion.sys.ini</language>
             <language tag="en-GB">en-GB/en-GB.plg_content_jfusion.ini</language>
             <language tag="en-GB">en-GB/en-GB.plg_search_jfusion.ini</language>
             <language tag="en-GB">en-GB/en-GB.plg_system_jfusion.ini</language>
-        </languages>
-    </administration>
+		</languages>
+	</administration>
 </extension>

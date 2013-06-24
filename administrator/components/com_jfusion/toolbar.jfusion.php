@@ -89,7 +89,6 @@ switch($task)
     case 'versioncheck':
         JToolBarHelper::title( JText::_('VERSION_CHECK'), 'versioncheck.png' );
 		break;
-
 	default:
         JToolBarHelper::title( JText::_('JFUSION_UNIVERSAL_BRIDGE'), 'jfusion.png' );
         break;
@@ -99,6 +98,5 @@ switch($task)
 $bar = JToolBar::getInstance('toolbar');
 $bar->prependButton('Custom', '<img border="0" alt="Enabled" src="components/com_jfusion/images/jfusion_logo.png"/>');
 
-$task = JRequest::getVar('task');
 JLoader::register('JFusionHelper', JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'jfusion.php');
 JFusionHelper::addSubmenu($task);
