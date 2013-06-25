@@ -104,7 +104,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 	        if (!empty($VersionDataRaw)) {
 		        $xml = JFusionFunction::getXml($VersionDataRaw,false);
 	            if ($xml) {
-		            $element = $xml->getElementByPath('plugins');
+		            $element = $xml->plugins;
 		            if ($element) {
 			            $VersionData = $element->children();
 		            }
@@ -327,7 +327,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 			$plugin_xml = JFUSION_PLUGIN_PATH .DIRECTORY_SEPARATOR. $record->name .DIRECTORY_SEPARATOR. 'jfusion.xml';
 			if(file_exists($plugin_xml) && is_readable($plugin_xml)) {
 				$xml = JFusionFunction::getXml($plugin_xml);
-                $description = $xml->getElementByPath('description');
+                $description = $xml->description;
 				if(!empty($description)) {
 					$record->description = (string)$description;
 				}

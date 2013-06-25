@@ -148,15 +148,15 @@ jimport('joomla.html.pane');
 		         * @var $val JXMLElement
 		         */
 		        foreach ($this->list->children() as $key => $val) {
-			        $original_name = (string)$val->getElementByPath('originalname');
-			        $name = (string)$val->getElementByPath('name');
+			        $original_name = (string)$val->originalname;
+			        $name = (string)$val->name;
 
 			        if ($name && $original_name == $pluginname) {
-				        $version = (string)$val->getElementByPath('version');
-				        $description = (string)$val->getElementByPath('description');
-				        $creator = (string)$val->getElementByPath('creator');
-				        $date = (string)$val->getElementByPath('date');
-				        $remotefile = (string)$val->getElementByPath('remotefile');
+				        $version = (string)$val->version;
+				        $description = (string)$val->description;
+				        $creator = (string)$val->creator;
+				        $date = (string)$val->date;
+				        $remotefile = (string)$val->remotefile;
 
 				        $version = $version?$version:JText::_('UNKNOWN');
 				        $description = $description?$description:JText::_('JNONE');

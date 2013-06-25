@@ -481,7 +481,7 @@ class JFusionController extends JControllerLegacy
 		        if(file_exists($plugin_xml) && is_readable($plugin_xml)) {
 			        $xml = JFusionFunction::getXml($plugin_xml);
 
-			        $description = $xml->getElementByPath('description');
+			        $description = $xml->description;
 			        if(!empty($description)) {
 				        $description = (string)$description;
 			        }
@@ -881,7 +881,7 @@ JS;
             //get the version number
 	        $element = JFusionFunction::getXml($filename);
 
-            $info->addAttribute('pluginversion', (string)$element->getElementByPath('version'));
+            $info->addAttribute('pluginversion', (string)$element->version);
         } else {
             $info->addAttribute('pluginversion', 'UNKNOWN');
         }

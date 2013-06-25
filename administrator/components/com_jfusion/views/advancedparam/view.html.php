@@ -157,7 +157,7 @@ class jfusionViewadvancedparam extends JViewLegacy
 			$form = false;
 			$xml = JFusionFunction::getXml($xml_path);
 			if ($xml) {
-				$fields = $xml->getElementByPath('fields');
+				$fields = $xml->fields;
 				if ($fields) {
 					$data = $fields->toString();
 					//make sure it is surround by <form>
@@ -311,7 +311,7 @@ JS;
 				$xml_path = (file_exists($path)) ? $path : $defaultPath;
 				$xml = JFusionFunction::getXml($xml_path);
 				if ($xml) {
-					$fields = $xml->getElementByPath('fields');
+					$fields = $xml->fields;
 					if ($fields) {
 						$data = $fields->toString();
 						//make sure it is surround by <form>

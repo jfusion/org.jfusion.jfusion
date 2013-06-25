@@ -328,7 +328,7 @@ HTML;
         $xmlfile = realpath ( dirname ( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'install_module' . DIRECTORY_SEPARATOR . 'source' . DIRECTORY_SEPARATOR . 'listfiles.xml';
 
 	    $listfiles = JFusionFunction::getXml($xmlfile);
-        $files = $listfiles->getElementByPath('file');
+        $files = $listfiles->file;
 
         /**
          * @ignore

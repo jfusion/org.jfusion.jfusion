@@ -258,7 +258,7 @@ class JFusionPluginInstaller extends JObject
 	            $file = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'jfusion.xml';
 	            $jfusionxml = JFusionFunction::getXml($file);
 
-	            $jfusionversion = $this->getElementByPath($jfusionxml,'version');
+	            $jfusionversion = $jfusionxml->version;
 	            $jfusionversion = $this->getData($jfusionversion);
 
 	            $version = $this->getAttribute($this->manifest,'version');
@@ -272,7 +272,7 @@ class JFusionPluginInstaller extends JObject
 	            /**
 	             * Check that the plugin is an actual JFusion plugin
 	             */
-	            $name = $this->getElementByPath($this->manifest,'name');
+	            $name = $this->manifest->name;
 	            $name = $this->filterInput->clean($this->getData($name), 'string');
 
 	            if (!$jfusionversion || !$version || version_compare($jfusionversion, $version) >= 0) {
@@ -284,7 +284,7 @@ class JFusionPluginInstaller extends JObject
 		            // installation path
 		            $this->parent->setPath('extension_root', JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $name);
 		            // get files to copy
-		            $element = $this->getElementByPath($this->manifest,'files');
+		            $element = $this->manifest->files;
 
 		            /**
 		             * ---------------------------------------------------------------------------------------------
@@ -341,7 +341,7 @@ class JFusionPluginInstaller extends JObject
 			            //$features = array('master', 'slave', 'dual_login', 'check_encryption', 'activity', 'search', 'discussion');
 			            $features = array('master', 'slave', 'dual_login', 'check_encryption');
 			            foreach ($features as $f) {
-				            $xml = $this->getElementByPath($this->manifest,$f);
+				            $xml = $this->manifest->$f;
 
 				            if ($xml instanceof JXMLElement) {
 					            $$f = $this->filterInput->clean($this->getData($xml), 'integer');
@@ -355,7 +355,7 @@ class JFusionPluginInstaller extends JObject
 			            $db->setQuery('SELECT id, ' . implode(', ', $features) . ' FROM #__jfusion WHERE name = ' . $db->Quote($name));
 			            $plugin = $db->loadObject();
 			            if (!empty($plugin)) {
-				            if (!$this->parent->getOverwrite()) {
+				            if (!$this->parent->isOverwrite()) {
 					            // Install failed, roll back changes
 					            $msg = JText::_('PLUGIN') . ' ' . JText::_('INSTALL') . ': ' . JText::_('PLUGIN') . ' "' . $name . '" ' . JText::_('ALREADY_EXISTS');
 					            $this->parent->abort($msg);
@@ -603,7 +603,7 @@ class JFusionPluginInstaller extends JObject
                         //copy() was called directly because we are upgrading the component
                         $features = array('master', 'slave', 'dual_login', 'check_encryption');
                         foreach ($features as $f) {
-                            $xml = $this->getElementByPath($this->manifest,$f);
+                            $xml = $this->manifest->$f;
 	                        if ($xml instanceof JXMLElement) {
                                 $$f = $this->filterInput->clean($this->getData($xml), 'integer');
 	                        } elseif ($f == 'master' || $f == 'check_encryption') {
@@ -683,6 +683,7 @@ class JFusionPluginInstaller extends JObject
         * @TODO Remove backwards compatibility in a future version
         * Should be 'install', but for backward compatibility we will accept 'mosinstall'.
         */
+
 		if (!is_object($xml) || ($xml->name() != 'extension')) {
             // Free up xml parser memory and return null
             unset($xml);
@@ -694,6 +695,10 @@ class JFusionPluginInstaller extends JObject
             $type = $this->getAttribute($xml,'type');
 
             if ($type!=='jfusion') {
+	            var_dump($type);
+	            die();
+
+
                 //Free up xml parser memory and return null
                 unset ($xml);
                 $xml = null;
@@ -811,7 +816,12 @@ class JFusionPluginInstaller extends JObject
     function getAttribute($xml, $attribute)
     {
         if($xml instanceof JXMLElement) {
-            $xml = $xml->getAttribute($attribute);
+	        $attributes = $xml->attributes();
+	        if (isset($attributes[$attribute])) {
+		        $xml = (string)$attributes[$attribute];
+	        } else {
+		        $xml = null;
+	        }
         } else {
             $xml = null;
         }

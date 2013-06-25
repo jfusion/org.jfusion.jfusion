@@ -262,10 +262,10 @@ HTML;
 
 	        $xml = JFusionFunction::getXml($filename);
 
-            $VersionCurrent = (string)$xml->getElementByPath('version');
+            $VersionCurrent = (string)$xml->version;
 
             if($includeRev) {
-                $RevisionCurrent = trim((string)$xml->getElementByPath('revision'));
+                $RevisionCurrent = trim((string)$xml->revision);
             }
         }
         return array($VersionCurrent, $RevisionCurrent);

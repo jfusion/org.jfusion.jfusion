@@ -103,11 +103,11 @@ class JFusionAdmin_magento extends JFusionAdmin
                 JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . " $xmlfile " . JText::_('WIZARD_MANUAL'));
             } else {
                 //save the parameters into array
-                $params['database_host'] = (string)$xml->getElementByPath('global/resources/default_setup/connection/host');
-                $params['database_name'] = (string)$xml->getElementByPath('global/resources/default_setup/connection/dbname');
-                $params['database_user'] = (string)$xml->getElementByPath('global/resources/default_setup/connection/username');
-                $params['database_password'] = (string)$xml->getElementByPath('global/resources/default_setup/connection/password');
-                $params['database_prefix'] = (string)$xml->getElementByPath('global/resources/db/table_prefix');
+                $params['database_host'] = (string)$xml->global->resources->default_setup->connection->host;
+                $params['database_name'] = (string)$xml->global->resources->default_setup->connection->dbname;
+                $params['database_user'] = (string)$xml->global->resources->default_setup->connection->username;
+                $params['database_password'] = (string)$xml->global->resources->default_setup->connection->password;
+                $params['database_prefix'] = (string)$xml->global->resources->db->table_prefix;
                 $params['database_type'] = 'mysql';
                 $params['source_path'] = $forumPath;
             }
@@ -388,7 +388,7 @@ HTML;
 		$xmlfile = realpath ( dirname ( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'install_module' . DIRECTORY_SEPARATOR . 'source' . DIRECTORY_SEPARATOR . 'listfiles.xml';
 
 	    $listfiles = JFusionFunction::getXml($xmlfile);
-		$files = $listfiles->getElementByPath('file');
+		$files = $listfiles->file;
         /**
          * @ignore
          * @var $file JXMLElement
@@ -461,7 +461,7 @@ HTML;
 		if(file_exists($jfusion_mod_xml)) {
 			$xml = JFusionFunction::getXml($jfusion_mod_xml);
 
-			$modules = $xml->getElementByPath ( 'modules/jfusion_joomla/active' );
+			$modules = $xml->modules->jfusion_joomla->active;
 			$activated = (string)$modules;
 			
 			if($activated == 'false') {
@@ -506,7 +506,7 @@ HTML;
 
 		$xml = JFusionFunction::getXml($jfusion_mod_xml);
 
-		$module = $xml->getElementByPath('modules/jfusion_joomla/active');
+		$module = $xml->modules->jfusion_joomla->active;
 			
 		//$xml->document->modules->jfusion_joomla->active[0]->setData('false');
 		$module->setData($activation);

@@ -450,8 +450,8 @@ class jfusionViewconfigdump extends JViewLegacy {
 			//get the version number
 			$xml = JFusionFunction::getXml($filename);
 
-			$jfusion_version[JText::_('JFUSION') . ' ' . $name . ' ' . JText::_('VERSION') ] = ' ' . (string)$xml->getElementByPath('version') . ' ';
-			$revision = $xml->getElementByPath('revision');
+			$jfusion_version[JText::_('JFUSION') . ' ' . $name . ' ' . JText::_('VERSION') ] = ' ' . (string)$xml->version . ' ';
+			$revision = $xml->revision;
 			if (!empty($revision)) {
 				$jfusion_version[JText::_('JFUSION') . ' ' . $name . ' ' . JText::_('VERSION') ].= '(Rev '.(string)$revision.') ';
 			}

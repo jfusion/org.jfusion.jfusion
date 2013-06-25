@@ -58,7 +58,7 @@ class jfusionViewversioncheck extends JViewLegacy
 		foreach ($plugins as $plugin) {
 			$xml = JFusionFunction::getXml(JFUSION_PLUGIN_PATH.DIRECTORY_SEPARATOR.$plugin->name.DIRECTORY_SEPARATOR.'jfusion.xml');
 			if($xml) {
-				$update = $xml->getElementByPath('update');
+				$update = $xml->update;
 				if ($update) {
 					$u = trim((string)$update);
 					if (strpos($u,'?') === false) {
@@ -91,7 +91,7 @@ class jfusionViewversioncheck extends JViewLegacy
 				if ( $url->url == $jfusionurl->url) {
 					$php = new stdClass;
 					$php->oldversion = phpversion();
-					$php->version = (string)$xml->getElementByPath('system/php');
+					$php->version = (string)$xml->system->php;
 					$php->name = 'PHP';
 
 					if (version_compare(phpversion(), $php->version) == - 1) {
@@ -106,7 +106,7 @@ class jfusionViewversioncheck extends JViewLegacy
 					$version = new JVersion;
 					$joomla_version = $version->getShortVersion();
 					$joomla->oldversion = $joomla_version;
-					$joomla->version = (string)$xml->getElementByPath('system/joomla');
+					$joomla->version = (string)$xml->system->joomla;
 					$joomla->name = 'Joomla';
 
 					//remove any letters from the version
@@ -124,7 +124,7 @@ class jfusionViewversioncheck extends JViewLegacy
 					$mysql_version = $db->getVersion();
 
 					$mysql->oldversion = $mysql_version;
-					$mysql->version = (string)$xml->getElementByPath('system/mysql');
+					$mysql->version = (string)$xml->system->mysql;
 					$mysql->name = 'MySQL';
 
 					if (version_compare($mysql_version, $mysql->version) == - 1) {
@@ -137,7 +137,7 @@ class jfusionViewversioncheck extends JViewLegacy
 
 					//check the JFusion component,plugins and modules versions
 					$JFusion = $this->getVersionNumber(JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'jfusion.xml', JText::_('COMPONENT'), 'component', $xml);
-					$p = $xml->getElementByPath('component/version');
+					$p = $xml->component->version;
 					if ($p) {
 						$JFusionVersion = (string)$p;
 					}
@@ -204,19 +204,19 @@ class jfusionViewversioncheck extends JViewLegacy
 		$output->oldversion = JText::_('UNKNOWN');
 
 		if ($path && $xml) {
-			$element = $xml->getElementByPath($path.'/version');
+			$element = $xml->$path->version;
 			if ($element) {
 				$output->version = (string)$element;
 			}
-			$element = $xml->getElementByPath($path.'/remotefile');
+			$element = $xml->$path->remotefile;
 			if ($element) {
 				$output->updateurl = (string)$element;
 			}
-			$element = $xml->getElementByPath($path.'/revision');
+			$element = $xml->$path->revision;
 			if ($element) {
 				$output->rev = trim((string)$element);
 			}
-			$element = $xml->getElementByPath($path.'/timestamp');
+			$element = $xml->$path->timestamp;
 			if ($element) {
 				$output->date = trim((string)$element);
 			}
@@ -226,12 +226,12 @@ class jfusionViewversioncheck extends JViewLegacy
 			//get the version number
 			$xml = JFusionFunction::getXml($filename);
 
-			$output->oldversion = (string)$xml->getElementByPath('version');
-			$revision = $xml->getElementByPath('revision');
+			$output->oldversion = (string)$xml->version;
+			$revision = $xml->revision;
 			if ($revision) {
 				$output->oldrev = trim((string)$revision);
 			}
-			$timestamp = $xml->getElementByPath('timestamp');
+			$timestamp = $xml->timestamp;
 			if ($timestamp) {
 				$output->olddate = trim((string)$timestamp);
 			}

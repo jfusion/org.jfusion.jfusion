@@ -71,7 +71,7 @@ class jfusionViewplugineditor extends JViewLegacy
 	        foreach ($params as $key => $param) {
 		        /**
 		         * @ignore
-		         * @var $element JXMLElement|SimpleXMLElement
+		         * @var $element JXMLElement
 		         */
 		        $element = $fields[$key];
 		        $name = $element->getAttribute('name');

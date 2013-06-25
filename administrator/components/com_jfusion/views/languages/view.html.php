@@ -49,7 +49,7 @@ class jfusionViewlanguages extends JViewLegacy
         $lang_repo = array();
 	    $xml = JFusionFunction::getXml($data,false);
         if ($xml) {
-	        $languages = $xml->getElementByPath('languages')->children();
+	        $languages = $xml->languages->children();
 	        /**
 	         * @ignore
 	         * @var $language JXMLElement
@@ -58,11 +58,11 @@ class jfusionViewlanguages extends JViewLegacy
 		        $name = $language->attributes('tag');
 
 		        $lang = new stdClass;
-		        $lang->file = (string)$language->getElementByPath('remotefile');
-		        $lang->date = (string)$language->getElementByPath('creationdate');
-		        $lang->description = (string)$language->getElementByPath('description');
-		        $lang->progress = (string)$language->getElementByPath('progress');
-		        $lang->translateurl = (string)$language->getElementByPath('translateurl');
+		        $lang->file = (string)$language->remotefile;
+		        $lang->date = (string)$language->creationdate;
+		        $lang->description = (string)$language->description;
+		        $lang->progress = (string)$language->progress;
+		        $lang->translateurl = (string)$language->translateurl;
 		        $lang->currentdate = null;
 		        $lang->class = 'row';
 
