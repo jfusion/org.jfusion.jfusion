@@ -1,174 +1,154 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE install SYSTEM "http://www.jfusion.org/xml/dtd/1.5/plugin-install.dtd">
-<install type="jfusion" version="1.5.0">
-	<name>universal</name>
-	<creationDate>June 2008</creationDate>
-	<author>JFusion Development Team</author>
-	<authorEmail>webmaster@jfusion.org</authorEmail>
-	<authorUrl>www.jfusion.org</authorUrl>
-	<copyright>Copyright (C) 2008 JFusion. All rights reserved.</copyright>
-	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-	<version>2.0.0-000</version>
+<!DOCTYPE extension SYSTEM "http://www.jfusion.org/xml/dtd/2.0/plugin-install.dtd">
+<extension type="jfusion" version="1.5.0">
+    <name>universal</name>
+    <creationDate>June 2008</creationDate>
+    <author>JFusion Development Team</author>
+    <authorEmail>webmaster@jfusion.org</authorEmail>
+    <authorUrl>www.jfusion.org</authorUrl>
+    <copyright>Copyright (C) 2008 JFusion. All rights reserved.</copyright>
+    <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
+    <version>2.0.0-000</version>
     <revision>$revision$</revision>
     <timestamp>$timestamp$</timestamp>
-	<description>Universal plugin for JFusion</description>
+    <description>Universal plugin for JFusion</description>
     <update>http://update.jfusion.org/jfusion/joomla/</update>
 
-	<files>
-		<filename>admin.php</filename>
-		<filename>auth.php</filename>
+    <files>
+        <filename>admin.php</filename>
+        <filename>auth.php</filename>
         <filename>helper.php</filename>
-		<filename>index.html</filename>
-		<filename>jfusion.xml</filename>
-		<filename>map.php</filename>
-		<filename>public.php</filename>
-		<filename>user.php</filename>
-	</files>
+        <filename>index.html</filename>
+        <filename>jfusion.xml</filename>
+        <filename>map.php</filename>
+        <filename>public.php</filename>
+        <filename>user.php</filename>
+    </files>
 
-  	<params addpath="/administrator/components/com_jfusion/elements">
-		<param name="jfusionbox" type="text" default="" label="PLUGIN_GENERAL_DETAILS" description="" />
-		<param name="description" type="text" size="60" default="put a description" description="DESCRIPTION" label="DESCRIPTION"/>
-		<param name="source_url" type="text" size="60" default="http://site.com/" description="SOURCE_URL" label="SOURCE_URL"/>
-        <param name="login_identifier" type="list" default="1" description="LOGIN_IDENTIFIER_DESCR" label="LOGIN_IDENTIFIER">
-            <option value="1">USERNAME</option>
-            <option value="2">EMAIL</option>
-            <option value="3">USERNAME_OR_EMAIL</option>
-        </param>
+    <administration>
+        <languages folder="language">
+            <language tag="en-GB">en-GB.com_jfusion.plg_universal.ini</language>
+            <language tag="es-ES">es-ES.com_jfusion.plg_universal.ini</language>
+            <language tag="et-EE">et-EE.com_jfusion.plg_universal.ini</language>
+            <language tag="fa-IR">fa-IR.com_jfusion.plg_universal.ini</language>
+            <language tag="fr-FR">fr-FR.com_jfusion.plg_universal.ini</language>
+            <language tag="de-DE">de-DE.com_jfusion.plg_universal.ini</language>
+            <language tag="it-IT">it-IT.com_jfusion.plg_universal.ini</language>
+            <language tag="nl-NL">nl-NL.com_jfusion.plg_universal.ini</language>
+            <language tag="pl-PL">pl-PL.com_jfusion.plg_universal.ini</language>
+            <language tag="pt-PT">pt-PT.com_jfusion.plg_universal.ini</language>
+            <language tag="ru-RU">ru-RU.com_jfusion.plg_universal.ini</language>
+            <language tag="ru-RU">ru-RU.com_jfusion.plg_universal.ini</language>
+            <language tag="th-TH">th-TH.com_jfusion.plg_universal.ini</language>
+            <language tag="zh-CN">zh-CN.com_jfusion.plg_universal.ini</language>
+        </languages>
+    </administration>
 
-        <param name="sefmode" type="list" default="0" label="SEFMODE" description="SEFMODE_DESCR">
-            <option value="1"><![CDATA[domain.com/index.php/alias/file.php/foo,foo/]]></option>
-            <option value="0"><![CDATA[domain.com/index.php/alias/file.php?foo=foo]]></option>
-        </param>
+    <form>
+        <fields name="params">
+            <fieldset name="PLUGIN_GENERAL_DETAILS" addfieldpath="/administrator/components/com_jfusion/fields">
+                <field name="description" type="text" size="60" default="put a description" description="DESCRIPTION" label="DESCRIPTION"/>
+                <field name="source_url" type="text" size="60" default="http://site.com/" description="SOURCE_URL" label="SOURCE_URL"/>
+                <field name="cookie_domain" type="text" size="60" default="" description="CURL_COOKIE_DOMAIN_DESC" label="CURL_COOKIE_DOMAIN"/>
+                <field name="cookie_path" type="text" size="20" default="/" description="CURL_COOKIE_PATH_DESC" label="CURL_COOKIE_PATH"/>
+                <field name="cookie_name" type="text" size="20" default="" description="COOKIE_NAME" label="COOKIE_NAME"/>
+            </fieldset>
 
-		<param name="jfusionbox" type="text" default="" label="DATABASE_OPTIONS" description="" />
-		<param name="database_type" type="text" size="20" default="" description="DATABASE_TYPE" label="DATABASE_TYPE"/>
-		<param name="database_host" type="text" size="20" default="" description="DATABASE_HOST" label="DATABASE_HOST"/>
-		<param name="database_name" type="text" size="20" default="" description="DATABASE_NAME" label="DATABASE_NAME"/>
-		<param name="database_user" type="text" size="20" default="" description="DATABASE_USER" label="DATABASE_USER"/>
-		<param name="database_password" type="password" size="20" default="" description="DATABASE_PASSWORD" label="DATABASE_PASSWORD"/>
-		<param name="database_prefix" type="text" size="20" default="" description="DATABASE_PREFIX" label="DATABASE_PREFIX"/>
-		<param name="database_charset" type="text" size="20" default="utf8" description="DATABASE_CHARSET" label="DATABASE_CHARSET"/>
-		<param name="@spacer" type="spacer" default="" label=""	description=""/>
+            <fieldset name="DATABASE_OPTIONS" addfieldpath="/administrator/components/com_jfusion/fields">
+                <field name="database_type" type="text" size="20" default="" description="DATABASE_TYPE" label="DATABASE_TYPE"/>
+                <field name="database_host" type="text" size="20" default="" description="DATABASE_HOST" label="DATABASE_HOST"/>
+                <field name="database_name" type="text" size="20" default="" description="DATABASE_NAME" label="DATABASE_NAME"/>
+                <field name="database_user" type="text" size="20" default="" description="DATABASE_USER" label="DATABASE_USER"/>
+                <field name="database_password" type="password" size="20" default="" description="DATABASE_PASSWORD" label="DATABASE_PASSWORD"/>
+                <field name="database_prefix" type="text" size="20" default="" description="DATABASE_PREFIX" label="DATABASE_PREFIX"/>
+                <field name="database_charset" type="text" size="20" default="utf8" description="DATABASE_CHARSET" label="DATABASE_CHARSET"/>
+                <field name="@spacer" type="spacer" default="" label=""	description=""/>
+            </fieldset>
 
-
-		<param name="jfusionbox" type="text" default="" label="USER_OPTIONS" description="" />
-		<param name="js" default="" type="JFusionCustomParam" label=" " description=" "/>
-		<param name="mapuser" default="" type="JFusionCustomParam" label="USER_MAPING" description="USER_MAPING_DESCR"/>
-
-		<param name="user_auth" default="md5($userinfo->password_clear)" type="JFusionCustomParam" label="USER_AUTH" description="USER_AUTH_DESCR"/>
-
-		<param name="usergroupmap" default="" type="JFusionPair" label="USERGROUP_MAP" description="USERGROUP_MAP"/>
-
-		<param name=" " type="helptext" default="DEFAULT_USERGROUP_DESCR" label=""/>
-		<param name="multiusergroup" default="" type="JFusionCustomParam" label="USERGROUP_MANAGEMENT" description="ADVANCED_USERGROUP"/>
-
-		<param name="mapgroup" default="" type="JFusionCustomParam" label="GROUP_MAPING" description="GROUP_MAPING_DESCR"/>
-
-		<param name="registerurl" type="text" size="100" default="index.php?action=register" description="REGISTERURL" label="REGISTERURL"/>
-
-		<param name="lostpasswordurl" type="text" size="100" default="index.php?action=reminder" description="LOSTPASSWORDURL" label="LOSTPASSWORDURL"/>
-
-		<param name="lostusernameurl" type="text" size="100" default="index.php?action=reminder" description="LOSTUSERNAMEURL" label="LOSTUSERNAMEURL"/>
-
-		<param name=" " type="helptext" default="AUTO_UPDATE_DESCR" label=""/>
-		<param name="update_activation" type="list" default="1" label="UPDATE_ACTIVATION" description="UPDATE_ACTIVATION">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</param>
-		<param name="update_block" type="list" default="1" label="UPDATE_BLOCK" description="UPDATE_BLOCK">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</param>
-		<param name="update_email" type="list" default="1" label="UPDATE_EMAIL" description="UPDATE_EMAIL">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</param>
-		<param name="@spacer" type="spacer" default="" label="" description="" />
-		<param name=" " type="helptext" default="ALLOW_DELETE_USERS_DESCR" label=""/>
-		<param name="allow_delete_users" type="list" default="0" label="ALLOW_DELETE_USERS" description="ALLOW_DELETE_USERS">
-		    <option value="1">JYES</option>
-		    <option value="0">JNO</option>
-		</param>
-
-
-        <param name="jfusionbox" type="text" default="" label="GENERAL_OPTIONS_COOKIE" description="" />
-        <param name="cookie_name" type="text" size="20" default="" description="COOKIE_NAME" label="COOKIE_NAME"/>
-        <param name="cookie_domain" type="text" size="60" default="" description="CURL_COOKIE_DOMAIN_DESC" label="CURL_COOKIE_DOMAIN"/>
-        <param name="cookie_path" type="text" size="20" default="/" description="CURL_COOKIE_PATH_DESC" label="CURL_COOKIE_PATH"/>
-        <param name="cookie_expires" type="text" size="5" label="COOKIE_EXPIRES" default="1800" description="COOKIE_EXPIRES_DESC" />
-        <param name="secure" type="list" default="0" label="COOKIE_SECURE" description="COOKIE_SECURE">
-            <option value="1">JYES</option>
-            <option value="0">JNO</option>
-        </param>
-        <param name="httponly" type="list" default="0" label="COOKIE_HTTPONLY" description="COOKIE_HTTPONLY">
-            <option value="1">JYES</option>
-            <option value="0">JNO</option>
-        </param>
-
-		<param name="jfusionbox" type="text" default="" label="MOD_OPTIONS" description="" />
-		<param name=" " type="helptext" default="REDIRECT_MOD_DESCR" label=""/>
-		<param name="redirect_itemid" type="JFusionItemid" size="10" default="" description="REDIRECT_ITEMID" label="REDIRECT_ITEMID" feature="redirect_itemid"/>
-		<param name="showRedirectMod" default="" type="JFusionCustomParam" description="REDIRECTION_MOD" label="REDIRECTION_MOD"/>
+            <fieldset name="USER_OPTIONS" addfieldpath="/administrator/components/com_jfusion/fields">
+                <field name="js" default="" type="JFusionCustomParam" label=" " description=" "/>
+                <field name="mapuser" default="" type="JFusionCustomParam" label="USER_MAPING" description="USER_MAPING_DESCR"/>
+                <field name="user_auth" default="md5($userinfo->password_clear)" type="JFusionCustomParam" label="USER_AUTH" description="USER_AUTH_DESCR"/>
+                <field name="usergroupmap" default="" type="JFusionPair" label="USERGROUP_MAP" description="USERGROUP_MAP"/>
+                <field name=" " type="helptext" default="DEFAULT_USERGROUP_DESCR" label=""/>
+                <field name="multiusergroup" default="" type="JFusionCustomParam" label="USERGROUP_MANAGEMENT" description="ADVANCED_USERGROUP"/>
+                <field name="mapgroup" default="" type="JFusionCustomParam" label="GROUP_MAPING" description="GROUP_MAPING_DESCR"/>
+                <field name="registerurl" type="text" size="100" default="index.php?action=register" description="REGISTERURL" label="REGISTERURL"/>
+                <field name="lostpasswordurl" type="text" size="100" default="index.php?action=reminder" description="LOSTPASSWORDURL" label="LOSTPASSWORDURL"/>
+                <field name="lostusernameurl" type="text" size="100" default="index.php?action=reminder" description="LOSTUSERNAMEURL" label="LOSTUSERNAMEURL"/>
+                <field name=" " type="helptext" default="AUTO_UPDATE_DESCR" label=""/>
+                <field name="update_activation" type="radio" class="btn-group" default="1" label="UPDATE_ACTIVATION" description="UPDATE_ACTIVATION">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="update_block" type="radio" class="btn-group" default="1" label="UPDATE_BLOCK" description="UPDATE_BLOCK">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="update_email" type="radio" class="btn-group" default="1" label="UPDATE_EMAIL" description="UPDATE_EMAIL">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="@spacer" type="spacer" default="" label="" description="" />
+                <field name=" " type="helptext" default="ALLOW_DELETE_USERS_DESCR" label=""/>
+                <field name="allow_delete_users" type="radio" class="btn-group" default="0" label="ALLOW_DELETE_USERS" description="ALLOW_DELETE_USERS">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+            </fieldset>
 
 
-		<param name="jfusionbox" type="text" default="" label="FRAMELESS_OPTIONS" description="" />
-        <param name="parse_anchors" type="list" default="1" label="PARSE_ANCHORS" description="PARSE_ANCHORS">
-            <option value="1">JYES</option>
-            <option value="0">JNO</option>
-        </param>
-        <param name="parse_rel_url" type="list" default="1" label="PARSE_REL_URL" description="PARSE_REL_URL">
-            <option value="1">JYES</option>
-            <option value="0">JNO</option>
-        </param>
-        <param name="parse_abs_url" type="list" default="1" label="PARSE_ABS_URL" description="PARSE_ABS_URL">
-            <option value="1">JYES</option>
-            <option value="0">JNO</option>
-        </param>
-        <param name="parse_abs_path" type="list" default="1" label="PARSE_ABS_PATH" description="PARSE_ABS_PATH">
-            <option value="1">JYES</option>
-            <option value="0">JNO</option>
-        </param>
-        <param name="parse_rel_img" type="list" default="1" label="PARSE_REL_IMG" description="PARSE_REL_IMG">
-            <option value="1">JYES</option>
-            <option value="0">JNO</option>
-        </param>
-        <param name="parse_action" type="list" default="1" label="PARSE_ACTION" description="PARSE_ACTION">
-            <option value="1">JYES</option>
-            <option value="0">JNO</option>
-        </param>
-        <param name="parse_popup" type="list" default="1" label="PARSE_POPUP" description="PARSE_POPUP">
-            <option value="1">JYES</option>
-            <option value="0">JNO</option>
-        </param>
-        <param name="parse_redirect" type="list" default="1" label="PARSE_REDIRECT" description="PARSE_REDIRECT">
-            <option value="1">JYES</option>
-            <option value="0">JNO</option>
-        </param>
-		<param name="headermap" default="" col1="SEARCH" col2="REPLACE" type="JFusionPair" label="HEADER_MAP" description="HEADER_MAP_DESCR"/>
-		<param name="bodymap" default="" col1="SEARCH" col2="REPLACE" type="JFusionPair" label="BODY_MAP" description="BODY_MAP_DESCR"/>
+            <fieldset name="FRAMELESS_OPTIONS" addfieldpath="/administrator/components/com_jfusion/fields">
+                <field name="headermap" default="" type="JFusionPair" label="HEADER_MAP" description="HEADER_MAP_DESCR"/>
+                <field name="bodymap" default="" type="JFusionPair" label="BODY_MAP" description="BODY_MAP_DESCR"/>
+            </fieldset>
 
+            <fieldset name="SEF_OPTIONS" addfieldpath="/administrator/components/com_jfusion/fields">
+                <field name=" " type="helptext" default="SEFMODE_DESCR" label=""/>
+                <field name="sefmode" type="list" default="0" label="SEFMODE" description="SEFMODE">
+                    <option value="1"><![CDATA[domain.com/index.php/alias/file.php/foo,foo/]]></option>
+                    <option value="0"><![CDATA[domain.com/index.php/alias/file.php?foo=foo]]></option>
+                </field>
+            </fieldset>
 
-		<param name="jfusionbox" type="text" default="hide" label="CURL_OPTIONS" description="CURL_OPTIONS" />
-		<param name="override" type="text" size="60" label="CURL_COOKIE_OVERRIDE" default="cookielength=-1" description="CURL_COOKIE_OVERRIDE" />
-		<param name="leavealone" type="text" size="60" label="CURL_COOKIE_LEAVEALONE" default="" description="CURL_COOKIE_LEAVEALONE" />
-		<param name="integrationtype" type="text" size="3" label="CURL_INTEGRATIONTYPE" default="1" description="CURL_INTEGRATIONTYPE" />
-		<param name="relpath" type="list" default="0" label="CURL_RELPATH" description="CURL_RELPATH">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</param>
-		<param name="hidden" type="list" default="1" label="CURL_HIDDEN" description="CURL_HIDDEN">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</param>
-		<param name="buttons" type="list" default="1" label="CURL_BUTTONS" description="CURL_BUTTONS">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</param>
-		<param name="@spacer" type="spacer" default="" label="" description="" />
-		<param name="login_url" type="text" size="60" label="CURL_LOGIN_URL" default="index.php?action=login" description="CURL_LOGIN_URL" />
-		<param name="loginform_id" type="text" size="60" label="CURL_LOGINFORM_ID" default="frmLogin" description="CURL_LOGINFORM_ID" />
-		<param name="input_username_id" type="text" size="60" label="CURL_INPUT_USERNAME_ID" default="user" description="CURL_INPUT_USERNAME_ID" />
-		<param name="input_password_id" type="text" size="60" label="CURL_INPUT_PASSWORD_ID" default="passwrd" description="CURL_INPUT_PASSWORD_ID" />
-		<param name="logout_url" type="text" size="60" label="CURL_LOGOUT_URL" default="index.php?action=logout" description="CURL_LOGOUT_URL" />
-	</params>
-</install>
+            <fieldset name="CURL_OPTIONS" addfieldpath="/administrator/components/com_jfusion/fields">
+                <field name="cookie_expires" type="text" size="5" label="COOKIE_EXPIRES" default="1800" description="COOKIE_EXPIRES_DESC" />
+                <field name="secure" type="radio" class="btn-group" default="0" label="COOKIE_SECURE" description="COOKIE_SECURE">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="httponly" type="radio" class="btn-group" default="0" label="COOKIE_HTTPONLY" description="COOKIE_HTTPONLY">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="override" type="text" size="60" label="CURL_COOKIE_OVERRIDE" default="cookielength=-1" description="CURL_COOKIE_OVERRIDE" />
+                <field name="leavealone" type="text" size="60" label="CURL_COOKIE_LEAVEALONE" default="" description="CURL_COOKIE_LEAVEALONE" />
+                <field name="integrationtype" type="text" size="3" label="CURL_INTEGRATIONTYPE" default="1" description="CURL_INTEGRATIONTYPE" />
+                <field name="relpath" type="radio" class="btn-group" default="0" label="CURL_RELPATH" description="CURL_RELPATH">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="hidden" type="radio" class="btn-group" default="1" label="CURL_HIDDEN" description="CURL_HIDDEN">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="buttons" type="radio" class="btn-group" default="1" label="CURL_BUTTONS" description="CURL_BUTTONS">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="@spacer" type="spacer" default="" label="" description="" />
+                <field name=" " type="helptext" default="LOGIN_IDENTIFIER_DESCR" label=""/>
+                <field name="login_identifier" type="list" default="1" description="LOGIN_IDENTIFIER" label="LOGIN_IDENTIFIER">
+                    <option value="1">USERNAME</option>
+                    <option value="2">EMAIL</option>
+                    <option value="3">USERNAME_OR_EMAIL</option>
+                </field>
+                <field name="login_url" type="text" size="60" label="CURL_LOGIN_URL" default="index.php?action=login" description="CURL_LOGIN_URL" />
+                <field name="loginform_id" type="text" size="60" label="CURL_LOGINFORM_ID" default="frmLogin" description="CURL_LOGINFORM_ID" />
+                <field name="input_username_id" type="text" size="60" label="CURL_INPUT_USERNAME_ID" default="user" description="CURL_INPUT_USERNAME_ID" />
+                <field name="input_password_id" type="text" size="60" label="CURL_INPUT_PASSWORD_ID" default="passwrd" description="CURL_INPUT_PASSWORD_ID" />
+                <field name="logout_url" type="text" size="60" label="CURL_LOGOUT_URL" default="index.php?action=logout" description="CURL_LOGOUT_URL" />
+            </fieldset>
+        </fields>
+    </form>
+</extension>

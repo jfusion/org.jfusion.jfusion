@@ -1,154 +1,165 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE install SYSTEM "http://www.jfusion.org/xml/dtd/1.5/plugin-install.dtd">
-<install type="jfusion" version="1.5.0">
-	<name>smf</name>
-	<creationDate>June 2008</creationDate>
-	<author>JFusion Development Team</author>
-	<authorEmail>webmaster@jfusion.org</authorEmail>
-	<authorUrl>www.jfusion.org</authorUrl>
-	<copyright>Copyright (C) 2008 JFusion. All rights reserved.</copyright>
-	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-	<version>2.0.0-000</version>
+<!DOCTYPE extension SYSTEM "http://www.jfusion.org/xml/dtd/2.0/plugin-install.dtd">
+<extension type="jfusion" version="1.5.0">
+    <name>smf</name>
+    <creationDate>June 2008</creationDate>
+    <author>JFusion Development Team</author>
+    <authorEmail>webmaster@jfusion.org</authorEmail>
+    <authorUrl>www.jfusion.org</authorUrl>
+    <copyright>Copyright (C) 2008 JFusion. All rights reserved.</copyright>
+    <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
+    <version>2.0.0-000</version>
     <revision>$revision$</revision>
     <timestamp>$timestamp$</timestamp>
-	<description>SMF plugin for JFusion</description>
+    <description>SMF plugin for JFusion</description>
     <update>http://update.jfusion.org/jfusion/joomla/</update>
-	<slave>0</slave>
-	<dual_login>0</dual_login>
-	
-	<files>
-		<filename>admin.php</filename>
-		<filename>auth.php</filename>
-		<filename>forum.php</filename>
-		<filename>index.html</filename>
-		<filename>jfusion.xml</filename>
-		<filename>public.php</filename>
-		<filename>search.xml</filename>
-		<filename>user.php</filename>
+
+    <files>
+        <filename>admin.php</filename>
+        <filename>auth.php</filename>
+        <filename>forum.php</filename>
+        <filename>index.html</filename>
+        <filename>jfusion.xml</filename>
+        <filename>public.php</filename>
+        <filename>search.xml</filename>
+        <filename>user.php</filename>
         <folder>js</folder>
-	</files>
-	
-	<params addpath="/administrator/components/com_jfusion/elements">
-		<param name="jfusionbox" type="text" default="" label="PLUGIN_GENERAL_DETAILS" description="" />
-        <param name="description" type="text" size="60" label="DESCRIPTION" default="smf 1.x" description="DESCRIPTION_DESC" />
-        <param name="source_url" type="text" size="60" label="SOURCE_URL" default="http://www.yourdomain.com/smf/" description="SOURCE_URL_DESC" />
-        <param name="source_path" type="text" size="60" label="SOURCE_PATH" default="" description="SOURCE_PATH_DESC" />
-        <param name="@spacer" type="spacer" default="" label="" description="" />
-        <param name="login_identifier" type="list" label="LOGIN_IDENTIFIER" default="1" description="LOGIN_IDENTIFIER_DESC">
-            <option value="1">USERNAME</option>
-            <option value="2">EMAIL</option>
-            <option value="3">USERNAME_OR_EMAIL</option>
-        </param>
-        <param name="sefmode" type="list" default="0" label="SEFMODE" description="SEFMODE_DESCR">
-            <option value="1"><![CDATA[domain.com/index.php/alias/file.php/foo,foo/]]></option>
-            <option value="0"><![CDATA[domain.com/index.php/alias/file.php?foo=foo]]></option>
-        </param>
+    </files>
 
-        <param name="jfusionbox" type="text" default="" label="DATABASE_OPTIONS" description="" />
-        <param name="database_type" type="text" size="20" label="DATABASE_TYPE" default="mysql" description="DATABASE_TYPE_DESC" />
-        <param name="database_host" type="text" size="20" label="DATABASE_HOST" default="" description="DATABASE_HOST_DESC" />
-        <param name="database_name" type="text" size="20" label="DATABASE_NAME" default="" description="DATABASE_NAME_DESC" />
-        <param name="database_user" type="text" size="20" label="DATABASE_USER" default="" description="DATABASE_USER_DESC" />
-        <param name="database_password" type="password" size="20" label="DATABASE_PASSWORD" default="" description="DATABASE_PASSWORD_DESC" />
-        <param name="database_prefix" type="text" size="20" label="DATABASE_PREFIX" default="" description="DATABASE_PREFIX_DESC" />
-        <param name="database_charset" type="text" size="20" label="DATABASE_CHARSET" default="utf8" description="DATABASE_CHARSET_DESC" />
+    <form>
+        <fields name="params">
+            <fieldset name="PLUGIN_GENERAL_DETAILS" addfieldpath="/administrator/components/com_jfusion/fields">
+                <field name="description" type="text" size="60" label="DESCRIPTION" default="smf 1.x" description="DESCRIPTION_DESC" />
+                <field name="source_url" type="text" size="60" label="SOURCE_URL" default="http://www.yourdomain.com/smf/" description="SOURCE_URL_DESC" />
+                <field name="source_path" type="text" size="60" label="SOURCE_PATH" default="" description="SOURCE_PATH_DESC" />
+                <field name="@spacer" type="spacer" default="" label="" description="" />
+                <field name="login_identifier" type="list" label="LOGIN_IDENTIFIER" default="1" description="LOGIN_IDENTIFIER_DESC">
+                    <option value="1">USERNAME</option>
+                    <option value="2">EMAIL</option>
+                    <option value="3">USERNAME_OR_EMAIL</option>
+                </field>
+            </fieldset>
 
-        <param name="jfusionbox" type="text" default="" label="USER_OPTIONS" description="" />
-        <param name="multiusergroup" default="" type="JFusionCustomParam" label="USERGROUP_MANAGEMENT" description="ADVANCED_USERGROUP" />
-        <param name="userpostgroup" type="JFusionUserpostgroups" description="DEFAULT_USERPOSTGROUP_DESCR" label="DEFAULT_USERPOSTGROUP" />
-        <param name="@spacer" type="spacer" default="" label="" description="" />
-        <param name="update_activation" type="list" default="1" label="UPDATE_ACTIVATION" description="UPDATE_ACTIVATION_DESC">
-            <option value="1">JYES</option>
-            <option value="0">JNO</option>
-        </param>
-        <param name="update_email" type="list" default="1" label="UPDATE_EMAIL" description="UPDATE_EMAIL_DESC">
-            <option value="1">JYES</option>
-            <option value="0">JNO</option>
-        </param>
-        <param name="update_block" type="list" default="1" label="UPDATE_BLOCK" description="UPDATE_BLOCK_DESC">
-            <option value="1">JYES</option>
-            <option value="0">JNO</option>
-        </param>
-        <param name="create_inactive" type="list" default="1" label="CREATE_INACTIVE" description="CREATE_INACTIVE_DESC">
-            <option value="1">JYES</option>
-            <option value="0">JNO</option>
-        </param>
-        <param name="create_blocked" type="list" default="1" label="CREATE_BLOCKED" description="CREATE_BLOCKED_DESC">
-            <option value="1">JYES</option>
-            <option value="0">JNO</option>
-        </param>
-        <param name="@spacer" type="spacer" default="" label="" description="" />
-        <param name="allow_delete_users" type="list" default="0" label="ALLOW_DELETE_USERS" description="ALLOW_DELETE_USERS_DESCR">
-            <option value="1">JYES</option>
-            <option value="0">JNO</option>
-        </param>
+            <fieldset name="DATABASE_OPTIONS" addfieldpath="/administrator/components/com_jfusion/fields">
+                <field name="database_type" type="text" size="20" label="DATABASE_TYPE" default="mysql" description="DATABASE_TYPE_DESC" />
+                <field name="database_host" type="text" size="20" label="DATABASE_HOST" default="" description="DATABASE_HOST_DESC" />
+                <field name="database_name" type="text" size="20" label="DATABASE_NAME" default="" description="DATABASE_NAME_DESC" />
+                <field name="database_user" type="text" size="20" label="DATABASE_USER" default="" description="DATABASE_USER_DESC" />
+                <field name="database_password" type="password" size="20" label="DATABASE_PASSWORD" default="" description="DATABASE_PASSWORD_DESC" />
+                <field name="database_prefix" type="text" size="20" label="DATABASE_PREFIX" default="" description="DATABASE_PREFIX_DESC" />
+                <field name="database_charset" type="text" size="20" label="DATABASE_CHARSET" default="utf8" description="DATABASE_CHARSET_DESC" />
+            </fieldset>
 
-        <param name="jfusionbox" type="text" default="" label="GENERAL_OPTIONS_COOKIE" description="" />
-        <param name="cookie_name" type="text" size="20" default="" description="COOKIE_NAME" label="COOKIE_NAME"/>
-        <param name="cookie_domain" type="text" size="60" label="CURL_COOKIE_DOMAIN" default="" description="CURL_COOKIE_DOMAIN_DESC" />
-        <param name="cookie_path" type="text" size="60" label="CURL_COOKIE_PATH" default="" description="CURL_COOKIE_PATH_DESC" />
-        <param name="cookie_expires" type="text" size="5" label="COOKIE_EXPIRES" default="1800" description="COOKIE_EXPIRES_DESC" />
-        <param name="secure" type="list" default="0" label="COOKIE_SECURE" description="COOKIE_SECURE_DESC">
-            <option value="1">JYES</option>
-            <option value="0">JNO</option>
-        </param>
-        <param name="httponly" type="list" default="0" label="COOKIE_HTTPONLY" description="COOKIE_HTTPONLY_DESC">
-            <option value="1">JYES</option>
-            <option value="0">JNO</option>
-        </param>
+            <fieldset name="USER_OPTIONS" addfieldpath="/administrator/components/com_jfusion/fields">
+                <field name="multiusergroup" default="" type="JFusionCustomParam" label="USERGROUP_MANAGEMENT" description="ADVANCED_USERGROUP" />
+                <field name="userpostgroup" type="JFusionUserpostgroups" description="DEFAULT_USERPOSTGROUP_DESCR" label="DEFAULT_USERPOSTGROUP" />
+                <field name="@spacer" type="spacer" default="" label="" description="" />
+                <field name="update_activation" type="radio" class="btn-group" default="1" label="UPDATE_ACTIVATION" description="UPDATE_ACTIVATION_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="update_email" type="radio" class="btn-group" default="1" label="UPDATE_EMAIL" description="UPDATE_EMAIL_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="update_block" type="radio" class="btn-group" default="1" label="UPDATE_BLOCK" description="UPDATE_BLOCK_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="create_inactive" type="radio" class="btn-group" default="1" label="CREATE_INACTIVE" description="CREATE_INACTIVE_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="create_blocked" type="radio" class="btn-group" default="1" label="CREATE_BLOCKED" description="CREATE_BLOCKED_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="@spacer" type="spacer" default="" label="" description="" />
+                <field name="allow_delete_users" type="radio" class="btn-group" default="0" label="ALLOW_DELETE_USERS" description="ALLOW_DELETE_USERS_DESCR">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+            </fieldset>
 
-        <param name="jfusionbox" type="text" default="" label="CURL_OPTIONS_GENERAL" description="" />
-        <param name="integrationtype" type="text" size="3" label="CURL_INTEGRATIONTYPE" default="1" description="CURL_INTEGRATIONTYPE_DESC" />
-        <param name="httpauth" type="list" default="" label="CURL_HTTPAUTH" description="CURL_HTTPAUTH_DESCR">
-            <option value="">DISABLED</option>
-            <option value="any">ANY</option>
-            <option value="anysafe">ANYSAFE</option>
-            <option value="basic">BASIC</option>
-            <option value="digest">DIGEST</option>
-            <option value="gssnegotiate">Kerberos</option>
-            <option value="ntlm">NTLM</option>
-        </param>
-        <param name="curl_username" type="text" default="" size="60" label="CURL_USERNAME" description="CURL_USERNAME_DESCR" />
-        <param name="curl_password" type="password" default="" size="60" label="CURL_PASSWORD" description="CURL_PASSWORD_DESCR" />
+            <fieldset name="CURL_OPTIONS_GENERAL" addfieldpath="/administrator/components/com_jfusion/fields">
+                <field name="integrationtype" type="text" size="3" label="CURL_INTEGRATIONTYPE" default="1" description="CURL_INTEGRATIONTYPE_DESC" />
+                <field name="httpauth" type="list" default="" label="CURL_HTTPAUTH" description="CURL_HTTPAUTH_DESCR">
+                    <option value="">DISABLED</option>
+                    <option value="any">ANY</option>
+                    <option value="anysafe">ANYSAFE</option>
+                    <option value="basic">BASIC</option>
+                    <option value="digest">DIGEST</option>
+                    <option value="gssnegotiate">Kerberos</option>
+                    <option value="ntlm">NTLM</option>
+                </field>
+                <field name="curl_username" type="text" default="" size="60" label="CURL_USERNAME" description="CURL_USERNAME_DESCR" />
+                <field name="curl_password" type="password" default="" size="60" label="CURL_PASSWORD" description="CURL_PASSWORD_DESCR" />
+            </fieldset>
 
-        <param name="jfusionbox" type="text" default="" label="CURL_OPTIONS_LOGIN" description="" />
-        <param name="login_url" type="text" size="60" label="CURL_LOGIN_URL" default="index.php?action=login" description="CURL_LOGIN_URL_DESC" />
-        <param name="brute_force" type="list" default="brute_force" label="CURL_BRUTE_FORCE" description="CURL_BRUTE_FORCE_DESC">
-            <option value="brute_force">JYES</option>
-            <option value="standard">JNO</option>
-        </param>
-        <param name="loginform_id" type="text" size="60" label="CURL_LOGINFORM_ID" default="frmLogin" description="CURL_LOGINFORM_ID_DESC" />
-        <param name="relpath" type="list" default="0" label="CURL_RELPATH" description="CURL_RELPATH_DESC">
-            <option value="1">JYES</option>
-            <option value="0">JNO</option>
-        </param>
-        <param name="input_username_id" type="text" size="60" label="CURL_INPUT_USERNAME_ID" default="user" description="CURL_INPUT_USERNAME_ID_DESC" />
-        <param name="input_password_id" type="text" size="60" label="CURL_INPUT_PASSWORD_ID" default="passwrd" description="CURL_INPUT_PASSWORD_ID_DESC" />
-        <param name="hidden" type="list" default="1" label="CURL_HIDDEN" description="CURL_HIDDEN_DESC">
-            <option value="1">JYES</option>
-            <option value="0">JNO</option>
-        </param>
-        <param name="buttons" type="list" default="1" label="CURL_BUTTONS" description="CURL_BUTTONS_DESC">
-            <option value="1">JYES</option>
-            <option value="0">JNO</option>
-        </param>
+            <fieldset name="CURL_OPTIONS_COOKIE" addfieldpath="/administrator/components/com_jfusion/fields">
+                <field name="cookie_name" type="text" size="20" default="" description="COOKIE_NAME" label="COOKIE_NAME"/>
+                <field name="cookie_domain" type="text" size="60" label="CURL_COOKIE_DOMAIN" default="" description="CURL_COOKIE_DOMAIN_DESC" />
+                <field name="cookie_path" type="text" size="60" label="CURL_COOKIE_PATH" default="" description="CURL_COOKIE_PATH_DESC" />
+                <field name="cookie_expires" type="text" size="5" label="COOKIE_EXPIRES" default="1800" description="COOKIE_EXPIRES_DESC" />
+                <field name="secure" type="radio" class="btn-group" default="0" label="COOKIE_SECURE" description="COOKIE_SECURE_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="httponly" type="radio" class="btn-group" default="0" label="COOKIE_HTTPONLY" description="COOKIE_HTTPONLY_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+            </fieldset>
 
-        <param name="jfusionbox" type="text" default="" label="CURL_OPTIONS_LOGOUT" description="" />
-        <param name="logout_type" type="list" default="brute_force" label="CURL_LOGOUT_TYPE" description="CURL_LOGOUT_TYPE_DESC">
-            <option value="url">URL</option>
-            <option value="form">FORM</option>
-            <option value="brute_force">BRUTE_FORCE</option>
-        </param>
-        <param name="logout_url" type="text" size="60" label="CURL_LOGOUT_URL" default="index.php?action=logout" description="CURL_LOGOUT_URL_DESC" />
-        <param name="relpathl" type="list" default="0" label="CURL_RELPATHL" description="CURL_RELPATHL_DESC">
-            <option value="1">JYES</option>
-            <option value="0">JNO</option>
-        </param>
-        <param name="postfields" type="text" size="60" label="CURL_POSTFIELDS" default="" description="CURL_POSTFIELDS_DESC" />
+            <fieldset name="CURL_OPTIONS_LOGIN" addfieldpath="/administrator/components/com_jfusion/fields">
+                <field name="login_url" type="text" size="60" label="CURL_LOGIN_URL" default="index.php?action=login" description="CURL_LOGIN_URL_DESC" />
+                <field name="brute_force" type="radio" class="btn-group" default="standard" label="CURL_BRUTE_FORCE" description="CURL_BRUTE_FORCE_DESC">
+                    <option value="brute_force">JYES</option>
+                    <option value="standard">JNO</option>
+                </field>
+                <field name="loginform_id" type="text" size="60" label="CURL_LOGINFORM_ID" default="frmLogin" description="CURL_LOGINFORM_ID_DESC" />
+                <field name="relpath" type="radio" class="btn-group" default="0" label="CURL_RELPATH" description="CURL_RELPATH_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="input_username_id" type="text" size="60" label="CURL_INPUT_USERNAME_ID" default="user" description="CURL_INPUT_USERNAME_ID_DESC" />
+                <field name="input_password_id" type="text" size="60" label="CURL_INPUT_PASSWORD_ID" default="passwrd" description="CURL_INPUT_PASSWORD_ID_DESC" />
+                <field name="hidden" type="radio" class="btn-group" default="1" label="CURL_HIDDEN" description="CURL_HIDDEN_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="buttons" type="radio" class="btn-group" default="1" label="CURL_BUTTONS" description="CURL_BUTTONS_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+            </fieldset>
 
-		<param name="jfusionbox" type="text" default="" label="MOD_OPTIONS" description="" />
-		<param name=" " type="helptext" default="REDIRECT_MOD_DESCR" label=""/>
-		<param name="redirect_itemid" type="JFusionItemid" size="10" default="" description="REDIRECT_ITEMID" label="REDIRECT_ITEMID" feature="redirect_itemid"/>
-		<param name="showRedirectMod" default="" type="JFusionCustomParam" description="REDIRECTION_MOD" label="REDIRECTION_MOD"/>
-	</params>
-</install>
+            <fieldset name="CURL_OPTIONS_LOGOUT" addfieldpath="/administrator/components/com_jfusion/fields">
+                <field name="logout_type" type="list" default="brute_force" label="CURL_LOGOUT_TYPE" description="CURL_LOGOUT_TYPE_DESC">
+                    <option value="url">URL</option>
+                    <option value="form">FORM</option>
+                    <option value="brute_force">BRUTE_FORCE</option>
+                </field>
+                <field name="logout_url" type="text" size="60" label="CURL_LOGOUT_URL" default="index.php?action=logout" description="CURL_LOGOUT_URL_DESC" />
+                <field name="relpathl" type="radio" class="btn-group" default="0" label="CURL_RELPATHL" description="CURL_RELPATHL_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="postfields" type="text" size="60" label="CURL_POSTFIELDS" default="" description="CURL_POSTFIELDS_DESC" />
+            </fieldset>
+
+            <fieldset name="SEF_OPTIONS" addfieldpath="/administrator/components/com_jfusion/fields">
+                <field name="sefmode" type="list" default="0" label="SEFMODE" description="SEFMODE_DESCR">
+                    <option value="1"><![CDATA[domain.com/index.php/alias/file.php/foo,foo/]]></option>
+                    <option value="0"><![CDATA[domain.com/index.php/alias/file.php?foo=foo]]></option>
+                </field>
+            </fieldset>
+
+            <fieldset name="MOD_OPTIONS" addfieldpath="/administrator/components/com_jfusion/fields">
+                <field name=" " type="helptext" default="REDIRECT_MOD_DESCR" label=""/>
+                <field name="redirect_itemid" type="JFusionItemid" size="10" default="" description="REDIRECT_ITEMID" label="REDIRECT_ITEMID" feature="redirect_itemid"/>
+                <field name="showRedirectMod" default="" type="JFusionCustomParam" description="REDIRECTION_MOD" label="REDIRECTION_MOD"/>
+            </fieldset>
+        </fields>
+    </form>
+</extension>
