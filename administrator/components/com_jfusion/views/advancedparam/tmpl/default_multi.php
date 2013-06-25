@@ -42,10 +42,9 @@ $uri->delVar('task');
 					echo '<legend><span>' . $key . '</span><input type="button" name="remove" value="Remove" onclick="jPluginRemove(this, \'' . $key . '\');" style="margin-left: 3px;" /></legend>';
 					if (isset($value['params'])) {
 						$fieldsets = $value['params']->getFieldsets();
-						$pane = JPane::getInstance('tabs', array('startOffset'=>2));
-						echo $pane->startPane('params');
+						echo JHtml::_('tabs.start','tabs', array('startOffset'=>2));
 						foreach ($fieldsets as $fieldset):
-							echo $pane->startPanel(JText::_($fieldset->name.'_jform_fieldset_label'), $fieldsets);
+							echo JHtml::_('tabs.panel',JText::_($fieldset->name.'_jform_fieldset_label'), $fieldset->name.'_jform_fieldset_label');
 							echo '<fieldset class="panelform">';
 							echo '<dl>';
 							if ($fieldset->name == 'basic'):
@@ -66,9 +65,8 @@ $uri->delVar('task');
 							endforeach;
 							echo '</dl>';
 							echo '</fieldset>';
-							echo $pane->endPanel();
 						endforeach;
-						$pane->endPane();
+						echo JHtml::_('tabs.end');
 					}
 					echo '<input type="hidden" name="params[' . $key . '][jfusionplugin]" value="' . $value['jfusionplugin'] . '" />';
 					echo '</fieldset>';

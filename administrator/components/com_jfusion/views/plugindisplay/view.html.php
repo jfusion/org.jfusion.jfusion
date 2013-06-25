@@ -329,7 +329,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 				$xml = JFusionFunction::getXml($plugin_xml);
                 $description = $xml->getElementByPath('description');
 				if(!empty($description)) {
-					$record->description = $description->data();
+					$record->description = (string)$description;
 				}
 			}
 		}

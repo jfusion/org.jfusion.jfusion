@@ -335,7 +335,7 @@ HTML;
          * @var $file JXMLElement
          */
         foreach($files as $file){
-            $file = $file->data();
+            $file = (string)$file;
             $file = preg_replace('#/#', DIRECTORY_SEPARATOR, $file);
             @chmod($source_path . DIRECTORY_SEPARATOR . $file, 0777);
             if(!is_dir($source_path . DIRECTORY_SEPARATOR . $file)){

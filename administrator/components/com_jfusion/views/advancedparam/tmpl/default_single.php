@@ -33,10 +33,10 @@ $uri->setVar('task','advancedparamsubmit');
 				<?php
 				if (!empty($this->comp)):
 					$fieldsets = $this->comp->getFieldsets();
-					$pane = JPane::getInstance('tabs', array('startOffset'=>2));
+					echo JHtml::_('tabs.start','tabs', array('startOffset'=>2));
 					echo $pane->startPane('params');
 					foreach ($fieldsets as $fieldset):
-						echo $pane->startPanel(JText::_($fieldset->name.'_jform_fieldset_label'), $fieldsets);
+						echo JHtml::_('tabs.panel',JText::_($fieldset->name.'_jform_fieldset_label'), $fieldset->name.'_jform_fieldset_label');
 						echo '<fieldset class="panelform">';
 						echo '<dl>';
 						foreach($this->comp->getFieldset($fieldset->name) as $field):
@@ -52,9 +52,8 @@ $uri->setVar('task','advancedparamsubmit');
 						endforeach;
 						echo '</dl>';
 						echo '</fieldset>';
-						echo $pane->endPanel();
 					endforeach;
-					$pane->endPane();
+					echo JHtml::_('tabs.end');
 				endif;
 				?>
 			</td>

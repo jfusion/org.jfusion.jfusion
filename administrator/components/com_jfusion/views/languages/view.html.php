@@ -58,11 +58,11 @@ class jfusionViewlanguages extends JViewLegacy
 		        $name = $language->attributes('tag');
 
 		        $lang = new stdClass;
-		        $lang->file = $language->getElementByPath('remotefile')->data();
-		        $lang->date = $language->getElementByPath('creationdate')->data();
-		        $lang->description = $language->getElementByPath('description')->data();
-		        $lang->progress = $language->getElementByPath('progress')->data();
-		        $lang->translateurl = $language->getElementByPath('translateurl')->data();
+		        $lang->file = (string)$language->getElementByPath('remotefile');
+		        $lang->date = (string)$language->getElementByPath('creationdate');
+		        $lang->description = (string)$language->getElementByPath('description');
+		        $lang->progress = (string)$language->getElementByPath('progress');
+		        $lang->translateurl = (string)$language->getElementByPath('translateurl');
 		        $lang->currentdate = null;
 		        $lang->class = 'row';
 

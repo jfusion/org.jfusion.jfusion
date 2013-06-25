@@ -50,13 +50,13 @@ defined('_JEXEC') or die('Restricted access');
 
 <?php
 jimport('joomla.html.pane');
-$paneTabs = JPane::getInstance('tabs');
+
 ?>
 
 <form method="post" action="index.php" name="adminForm" id="adminForm">
 	<?php
-	echo $paneTabs->startPane('jfusion_import_export');
-	echo $paneTabs->startPanel( JText::_('IMPORT'), 'IMPORT' );
+	echo JHtml::_('tabs.start','jfusion_import_export', array('startOffset'=>2));
+	echo JHtml::_('tabs.panel',JText::_('IMPORT'), 'IMPORT');
 	?>
     <input type="hidden" name="option" value="com_jfusion" />
     <input type="hidden" name="task" value="" />
@@ -148,15 +148,15 @@ $paneTabs = JPane::getInstance('tabs');
 		         * @var $val JXMLElement
 		         */
 		        foreach ($this->list->children() as $key => $val) {
-			        $original_name = $val->getElementByPath('originalname')->data();
-			        $name = $val->getElementByPath('name')->data();
+			        $original_name = (string)$val->getElementByPath('originalname');
+			        $name = (string)$val->getElementByPath('name');
 
 			        if ($name && $original_name == $pluginname) {
-				        $version = $val->getElementByPath('version')->data();
-				        $description = $val->getElementByPath('description')->data();
-				        $creator = $val->getElementByPath('creator')->data();
-				        $date = $val->getElementByPath('date')->data();
-				        $remotefile = $val->getElementByPath('remotefile')->data();
+				        $version = (string)$val->getElementByPath('version');
+				        $description = (string)$val->getElementByPath('description');
+				        $creator = (string)$val->getElementByPath('creator');
+				        $date = (string)$val->getElementByPath('date');
+				        $remotefile = (string)$val->getElementByPath('remotefile');
 
 				        $version = $version?$version:JText::_('UNKNOWN');
 				        $description = $description?$description:JText::_('JNONE');
@@ -201,8 +201,7 @@ $paneTabs = JPane::getInstance('tabs');
 	} else {
 		echo JText::_('NO_CONECTION_TO_JFUSION_SERVER');
 	}
-	echo $paneTabs->endPanel();
-	echo $paneTabs->startPanel( JText::_('EXPORT'), 'EXPORT' );
+	echo JHtml::_('tabs.panel',JText::_('EXPORT'), 'EXPORT');
 	?>
 	<?php echo JText::_('EXPORT_DATABASE_INFO_DESC'); ?>
     <br>
@@ -211,7 +210,6 @@ $paneTabs = JPane::getInstance('tabs');
 
     <input type="hidden" name="jname" value="<?php echo $this->jname; ?>"/>
 	<?php
-	echo $paneTabs->endPanel();
-	echo $paneTabs->endPane();
+	echo JHtml::_('tabs.end');
 	?>
 </form>

@@ -27,8 +27,7 @@ JFusionFunctionAdmin::displayDonate();
     <?php
     if ($this->params) {
         jimport('joomla.html.pane');
-        $paneTabs = JPane::getInstance('tabs');
-        echo $paneTabs->startPane('jfusion_plugin_editor');
+	    echo JHtml::_('tabs.start','jfusion_plugin_editor', array('startOffset'=>2));
         $inbox = 0;
         foreach ($this->params as $param) {
             $label = isset($param[0]) ? $param[0] : '';
@@ -38,11 +37,10 @@ JFusionFunctionAdmin::displayDonate();
             if ($name == 'jfusionbox') {
                 if (!empty($inbox)) {
                     echo '</table>';
-                    echo $paneTabs->endPanel();
                 } else {
                     $inbox = 1;
                 }
-                echo $paneTabs->startPanel( JText::_($titel), $titel );
+	            echo JHtml::_('tabs.panel', JText::_($titel), $titel);
                 echo '<table>';
             } else if (!empty($label) && $titel != ' ' && strpos($titel , '@') !== 0) {
                 echo '<tr><td width="250px">' . $label . '</td><td>' . $content . '</td></tr>';
@@ -51,8 +49,7 @@ JFusionFunctionAdmin::displayDonate();
             }
         }
         echo '</table>';
-        echo $paneTabs->endPanel();
-        echo $paneTabs->endPane();
+	    echo JHtml::_('tabs.end');
     }
     ?>
     <input type="hidden" name="jname" value="<?php echo $this->jname; ?>"/>

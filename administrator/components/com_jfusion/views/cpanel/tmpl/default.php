@@ -174,13 +174,12 @@ JFusionFunctionAdmin::displayDonate();
 			}
 			jimport('joomla.html.pane');
             if ($this->JFusionCpanel) {
-                $pane = JPane::getInstance('tabs');
-                echo $pane->startPane('pane');
+	            echo JHtml::_('tabs.start','pane', array('startOffset'=>2));
                 foreach ($this->JFusionCpanel->item as $item) {
-                    echo $pane->startPanel($item->title[0]->data(), $item->title[0]->data());
-                    echo $item->body[0]->data();
-                    echo $pane->endPanel();
+	                echo JHtml::_('tabs.panel', (string)$item->title[0], $item->title[0]);
+                    echo (string)$item->body[0];
                 }
+	            echo JHtml::_('tabs.end');
             }
 			?>
 		</td>

@@ -402,7 +402,7 @@ window.addEvent('domready',function() {
                                  * @var $plugin JXMLElement
                                  */
                                 foreach ($this->VersionData as $plugin): ?>
-                                    <option value="<?php echo $plugin->getElementByPath('remotefile')->data() ?>"><?php echo $plugin->name() . ' - ' . $plugin->getElementByPath('description')->data(); ?></option>
+                                    <option value="<?php echo (string)$plugin->getElementByPath('remotefile') ?>"><?php echo $plugin->name() . ' - ' . (string)$plugin->getElementByPath('description'); ?></option>
                                     <?php endforeach; ?>
                             </select>
                             <input type="submit" name="button" id="submitter" />

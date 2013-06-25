@@ -483,7 +483,7 @@ class JFusionController extends JControllerLegacy
 
 			        $description = $xml->getElementByPath('description');
 			        if(!empty($description)) {
-				        $description = $description->data();
+				        $description = (string)$description;
 			        }
 		        }
 		        if ($result['status']) {
@@ -793,7 +793,7 @@ JS;
 					     */
 					    foreach ($config as $key => $val) {
 						    $attName = (string)$val->attributes('name');
-						    $conf[$attName] = htmlspecialchars_decode($val->data());
+						    $conf[$attName] = htmlspecialchars_decode((string)$val);
 						    if ( strpos($conf[$attName], 'a:') === 0 ) $conf[$attName] = unserialize($conf[$attName]);
 					    }
 
@@ -881,7 +881,7 @@ JS;
             //get the version number
 	        $element = JFusionFunction::getXml($filename);
 
-            $info->addAttribute('pluginversion', $element->getElementByPath('version')->data());
+            $info->addAttribute('pluginversion', (string)$element->getElementByPath('version'));
         } else {
             $info->addAttribute('pluginversion', 'UNKNOWN');
         }
