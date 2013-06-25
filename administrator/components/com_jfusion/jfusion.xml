@@ -25,6 +25,7 @@
 		<folder>helpers</folder>
 		<folder>views</folder>
 		<folder>images</folder>
+        <folder>language</folder>
 	</files>
 
 	<languages folder="front/languages">
@@ -64,6 +65,7 @@
 			<folder>models</folder>
 			<folder>views</folder>
             <folder>fields</folder>
+            <folder>language</folder>
 		</files>
 
 		<languages folder="admin/languages">
