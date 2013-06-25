@@ -137,8 +137,7 @@ md tmp\front\language
 c:\windows\system32\xcopy /E /C /V /Y "%FULLPATH%language\en-GB\*.*" "%FULLPATH%tmp\front\language\en-GB\" > NUL
 
 copy "%FULLPATH%administrator\components\com_jfusion\jfusion.xml" "%FULLPATH%tmp" /V /Y > NUL
-copy "%FULLPATH%administrator\components\com_jfusion\install.jfusion.php" "%FULLPATH%tmp" /V /Y > NUL
-copy "%FULLPATH%administrator\components\com_jfusion\uninstall.jfusion.php" "%FULLPATH%tmp" /V /Y > NUL
+copy "%FULLPATH%administrator\components\com_jfusion\script.php" "%FULLPATH%\tmp" /V /Y > NUL
 
 echo Update the revision number
 

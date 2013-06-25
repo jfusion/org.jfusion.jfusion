@@ -139,7 +139,7 @@ case $1 in
 		mkdir tmp/front/language
 		rsync -r  --exclude=".*/" language/en-GB/* tmp/front/language/en-GB/
 		
-		rsync administrator/components/com_jfusion/jfusion.xml administrator/components/com_jfusion/install.jfusion.php administrator/components/com_jfusion/uninstall.jfusion.php tmp/ 
+		rsync administrator/components/com_jfusion/jfusion.xml administrator/components/com_jfusion/script.php tmp/
 		
 		echo "Update the revision number"
 
