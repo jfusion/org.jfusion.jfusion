@@ -683,7 +683,7 @@ class JFusionPluginInstaller extends JObject
         * @TODO Remove backwards compatibility in a future version
         * Should be 'install', but for backward compatibility we will accept 'mosinstall'.
         */
-		if (!is_object($xml) || ($xml->name() != 'install' && $xml->name() != 'mosinstall')) {
+		if (!is_object($xml) || ($xml->name() != 'extension')) {
             // Free up xml parser memory and return null
             unset($xml);
             $xml = null;
