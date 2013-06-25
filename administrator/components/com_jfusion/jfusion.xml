@@ -28,7 +28,7 @@
         <folder>language</folder>
 	</files>
 
-	<languages folder="front/languages">
+	<languages folder="front/language">
         <language tag="en-GB">en-GB/en-GB.com_jfusion.ini</language>
         <language tag="en-GB">en-GB/en-GB.mod_jfusion_whosonline.ini</language>
         <language tag="en-GB">en-GB/en-GB.mod_jfusion_user_activity.ini</language>
@@ -68,7 +68,7 @@
             <folder>language</folder>
 		</files>
 
-		<languages folder="admin/languages">
+		<languages folder="admin/language">
             <language tag="en-GB">en-GB/en-GB.com_jfusion.ini</language>
             <language tag="en-GB">en-GB/en-GB.com_jfusion.menu.ini</language>
             <language tag="en-GB">en-GB/en-GB.com_jfusion.sys.ini</language>
