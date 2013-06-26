@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<install version="1.5" type="plugin" group="system" method="upgrade">
-	<name>System - JFusion Magento Librairies</name>
-	<author>JFusion Development Team</author>
-	<creationDate>February 2009</creationDate>
-	<author>JFusion Development Team</author>
-	<authorEmail>webmaster@jfusion.org</authorEmail>
-	<authorUrl>http://www.jfusion.org</authorUrl>
-	<copyright>Copyright (C) 2009 JFusion. All rights reserved.</copyright>
-	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-	<version>2.0.0-000</version>
+<extension version="1.6" type="plugin" group="system" method="upgrade">
+    <name>System - JFusion Magento Librairies</name>
+    <author>JFusion Development Team</author>
+    <creationDate>February 2009</creationDate>
+    <author>JFusion Development Team</author>
+    <authorEmail>webmaster@jfusion.org</authorEmail>
+    <authorUrl>http://www.jfusion.org</authorUrl>
+    <copyright>Copyright (C) 2009 JFusion. All rights reserved.</copyright>
+    <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
+    <version>1.8.0-000</version>
     <revision>$revision$</revision>
     <timestamp>$timestamp$</timestamp>
-	<description><![CDATA[System Plugin to integrate the librairies of Magento and use it in different modules and components.<br>To install it, follow the normal joomla installation procedure.<br>
+    <description><![CDATA[System Plugin to integrate the librairies of Magento and use it in different modules and components.<br>To install it, follow the normal joomla installation procedure.<br>
 	But copy in Magento the following file /path/to/magento/app/code/core/Mage/Core/functions.php to /path/to/magento/app/code/local/Mage/Core/functions.php.<br>Pay attention, the 'local' folder is the file target. Then comment the lines 60 to 69 which correspond to comment the whole __autoload deprecated function.]]></description>
-	<files>
-		<filename plugin="magelib">magelib.php</filename>
-	</files>
-	<config>
+    <files>
+        <filename plugin="magelib">magelib.php</filename>
+    </files>
+    <config>
         <fields name="params" addfieldpath="/administrator/components/com_jfusion/fields">
             <fieldset name="basic">
                 <field name="mage_path" type="text" default="" label="Magento root path installation" description="Not required if you have JFusion and you have set the Plugin Magento just below. Provide here the path server of your magento installation. exple: /path/to/your/magento/folder/." />
@@ -25,9 +25,4 @@
             </fieldset>
         </fields>
     </config>
-	<params addpath="/administrator/components/com_jfusion/elements">
-		<param name="mage_path" type="text" default="" label="Magento root path installation" description="Not required if you have JFusion and you have set the Plugin Magento just below. Provide here the path server of your magento installation. exple: /path/to/your/magento/folder/." />
-		<param name="mage_plugin" type="JFusionPlugins" size="20" default="magento" label="Plugin Magento" description="Select the Magento plugin from JFusion if the component is available" />
-		<param name="mage_store" type="text" default="" label="Magento default store" description="Choose the default store to use for your integration. If empty, the default store is used" />
-	</params>	
-</install>
+</extension>

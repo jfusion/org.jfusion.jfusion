@@ -1,35 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<install type="module" version="1.5" method="upgrade" client="site">
-	<name>JFusion Whos Online Module</name>
-	<author>JFusion Development Team</author>
-	<creationDate>February 2009</creationDate>
-	<copyright>Copyright (C) 2009 JFusion. All rights reserved.</copyright>
-	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-	<authorEmail>webmaster@jfusion.org</authorEmail>
-	<authorUrl>www.jfusion.org</authorUrl>
-	<version>2.0.0-000</version>
+<extension type="module" version="1.5" method="upgrade" client="site">
+    <name>JFusion Whos Online Module</name>
+    <author>JFusion Development Team</author>
+    <creationDate>February 2009</creationDate>
+    <copyright>Copyright (C) 2009 JFusion. All rights reserved.</copyright>
+    <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
+    <authorEmail>webmaster@jfusion.org</authorEmail>
+    <authorUrl>www.jfusion.org</authorUrl>
+    <version>1.8.0-000</version>
     <revision>$revision$</revision>
     <timestamp>$timestamp$</timestamp>
-	<description>JFusion's Who's Online Module displays the number of Guests and Registered Users (ones logged in) that are currently accessing JFusion Plugin software.</description>
+    <description>JFusion's Who's Online Module displays the number of Guests and Registered Users (ones logged in) that are currently accessing JFusion Plugin softwares.</description>
 
-	<files>
-		<filename module="mod_jfusion_whosonline">mod_jfusion_whosonline.php</filename>
-		<filename>index.html</filename>
-		<filename>helper.php</filename>
-		<folder>tmpl</folder>
-	</files>
+    <files>
+        <filename module="mod_jfusion_whosonline">mod_jfusion_whosonline.php</filename>
+        <filename>index.html</filename>
+        <filename>helper.php</filename>
+        <folder>tmpl</folder>
+    </files>
 
-	<config>
+    <config>
         <fields name="params" addfieldpath="/administrator/components/com_jfusion/fields">
             <fieldset name="basic">
                 <field name="moduleclass_sfx" type="text" default="" label="Module Class Suffix" description="PARAMMODULECLASSSUFFIX" />
 
                 <field name="JFusionPluginParam" type="JFusionAdvancedParam" default="" label="JFUSION_PLUGIN" feature="whosonline" multiselect="true" description="JFUSION_PLUGIN_DESCR" />
             </fieldset>
-        </fields>
-    </config>
-    <config>
-        <fields name="params">
+
             <fieldset name="advanced">
                 <field name="cache" type="list" default="0" label="Caching" description="Select whether to cache the content of this module">
                     <option value="1">Use global</option>
@@ -39,16 +36,4 @@
             </fieldset>
         </fields>
     </config>
-	<params addpath="/administrator/components/com_jfusion/elements">
-		<param name="moduleclass_sfx" type="text" default="" label="Module Class Suffix" description="PARAMMODULECLASSSUFFIX" />
-
-		<param name="JFusionPluginParam" type="JFusionAdvancedParam" default="" label="JFUSION_PLUGIN" feature="whosonline" multiselect="true" description="JFUSION_PLUGIN_DESCR" />
-	</params>
-    <params group="advanced">
-        <param name="cache" type="list" default="0" label="Caching" description="Select whether to cache the content of this module">
-            <option value="1">Use global</option> 
-            <option value="0">No caching</option> 
-        </param>
-        <param name="cache_time" type="text" default="900" label="Cache Time" description="The time before the module is recached" /> 
-    </params>		    
-</install>
+</extension>

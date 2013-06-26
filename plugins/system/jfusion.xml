@@ -1,67 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<install version="1.5" type="plugin" group="system" method="upgrade">
-	<name>System - JFusion</name>
-	<author>JFusion Development Team</author>
-	<creationDate>February 2009</creationDate>
-	<author>JFusion Development Team</author>
-	<authorEmail>webmaster@jfusion.org</authorEmail>
-	<authorUrl>http://www.jfusion.org</authorUrl>
-	<copyright>Copyright (C) 2009 JFusion. All rights reserved.</copyright>
-	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-	<version>2.0.0-000</version>
+<extension version="1.6" type="plugin" group="system" method="upgrade">
+    <name>System - JFusion</name>
+    <author>JFusion Development Team</author>
+    <creationDate>February 2009</creationDate>
+    <author>JFusion Development Team</author>
+    <authorEmail>webmaster@jfusion.org</authorEmail>
+    <authorUrl>http://www.jfusion.org</authorUrl>
+    <copyright>Copyright (C) 2009 JFusion. All rights reserved.</copyright>
+    <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
+    <version>1.8.0-000</version>
     <revision>$revision$</revision>
     <timestamp>$timestamp$</timestamp>
-	<description>System Plugin for JFusion</description>
-	<files>
-		<filename plugin="jfusion">jfusion.php</filename>
-	</files>
-		
-	<config>
-		<fields name="params" addfieldpath="/administrator/components/com_jfusion/fields">
-			<fieldset name="basic">
-		       <field name=" " type="helptext" label="" default="SYNCSESSION_DESCR"/>
-		       <field name="syncsessions" type="list" default="0" label="SYNCSESSION" description="SYNCSESSION_DESCR">
-		            <option value="0">JNO</option>
-		            <option value="1">JYES</option>
-		        </field>
-				<field name="keepalive" type="list" default="0" label="KEEPALIVE" description="KEEPALIVE_DESCR">
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>
-				</field>
-				<field name="@spacer" type="spacer" default="" label="" description="" />
-				<field name=" " type="helptext" label="" default="SYNCLANGUAGE_DESCR"/>
-				<field name="synclanguage" type="list" default="0" label="SYNCLANGUAGE" description="SYNCLANGUAGE_DESCR">
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>
-				</field>
-			    <field name="@spacer" type="spacer" default="" label="" description="" />
-		        <field name="debug" type="list" default="0" label="Debug" description="Debug">
-		            <option value="0">JNO</option>
-		            <option value="1">JYES</option>
-		        </field>
-			</fieldset>
-		</fields>
-	</config>	
-	<params addpath="/administrator/components/com_jfusion/elements">
-       <param name=" " type="helptext" label="" default="SYNCSESSION_DESCR"/>
-       <param name="syncsessions" type="list" default="0" label="SYNCSESSION" description="SYNCSESSION_DESCR">
-            <option value="0">JNO</option>
-            <option value="1">JYES</option>
-        </param>
-		<param name="keepalive" type="list" default="0" label="KEEPALIVE" description="KEEPALIVE_DESCR">
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>
-		</param>
-		<param name="@spacer" type="spacer" default="" label="" description="" />
-		<param name=" " type="helptext" label="" default="SYNCLANGUAGE_DESCR"/>
-		<param name="synclanguage" type="list" default="0" label="SYNCLANGUAGE" description="SYNCLANGUAGE_DESCR">
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>
-		</param>
-	    <param name="@spacer" type="spacer" default="" label="" description="" />
-        <param name="debug" type="list" default="0" label="Debug" description="Debug">
-            <option value="0">JNO</option>
-            <option value="1">JYES</option>
-        </param>
-	</params>		
-</install>
+    <description>System Plugin for JFusion</description>
+    <files>
+        <filename plugin="jfusion">jfusion.php</filename>
+    </files>
+
+    <config>
+        <fields name="params" addfieldpath="/administrator/components/com_jfusion/fields">
+            <fieldset name="basic">
+                <field name=" " type="helptext" label="" default="SYNCSESSION_DESCR"/>
+                <field name="syncsessions" type="radio" class="btn-group" default="0" label="SYNCSESSION" description="SYNCSESSION_DESCR">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+                <field name="keepalive" type="radio" class="btn-group" default="0" label="KEEPALIVE" description="KEEPALIVE_DESCR">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+                <field name="@spacer" type="spacer" default="" label="" description="" />
+                <field name=" " type="helptext" label="" default="SYNCLANGUAGE_DESCR"/>
+                <field name="synclanguage" type="radio" class="btn-group" default="0" label="SYNCLANGUAGE" description="SYNCLANGUAGE_DESCR">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+                <field name="@spacer" type="spacer" default="" label="" description="" />
+                <field name="debug" type="radio" class="btn-group" default="0" label="Debug" description="Debug">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+            </fieldset>
+        </fields>
+    </config>
+</extension>

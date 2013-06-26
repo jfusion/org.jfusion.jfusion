@@ -694,10 +694,6 @@ class JFusionPluginInstaller extends JObject
             $type = $this->getAttribute($xml,'type');
 
             if ($type!=='jfusion') {
-	            var_dump($type);
-	            die();
-
-
                 //Free up xml parser memory and return null
                 unset ($xml);
                 $xml = null;
@@ -716,6 +712,11 @@ class JFusionPluginInstaller extends JObject
      */
     function backup($jname)
     {
+		/**
+		 * @TODO disable backup?
+		 */
+	    return '';
+
         $config = JFactory::getConfig();
         $tmpDir = $config->get('config.tmp_path');
         //compress the files

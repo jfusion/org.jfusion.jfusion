@@ -1,493 +1,257 @@
 <?xml version="1.0" encoding="utf-8"?>
-<install version="1.5" type="plugin" group="content" method="upgrade" client="site">
-	<name>Content - JFusion Discussion Bot</name>
-	<author>JFusion Development Team</author>
-	<creationDate>February 2009</creationDate>
-	<authorEmail>webmaster@jfusion.org</authorEmail>
-	<authorUrl>http://www.jfusion.org</authorUrl>
-	<copyright>Copyright (C) 2009 JFusion. All rights reserved.</copyright>
-	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-	<version>2.0.0-000</version>
+<extension version="1.6" type="plugin" group="content" method="upgrade" client="site">
+    <name>Content - JFusion Discussion Bot</name>
+    <author>JFusion Development Team</author>
+    <creationDate>February 2009</creationDate>
+    <authorEmail>webmaster@jfusion.org</authorEmail>
+    <authorUrl>http://www.jfusion.org</authorUrl>
+    <copyright>Copyright (C) 2009 JFusion. All rights reserved.</copyright>
+    <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
+    <version>1.8.0-000</version>
     <revision>$revision$</revision>
     <timestamp>$timestamp$</timestamp>
-	<description>
-		This is a discussion bot plugin for JFusion which enables using compatible forum software as a comments backend. 
-		To use for a single article, place {jfusion_discuss id#} where id# is the id of the thread.  Enable auto mode in 
-		the plugin configuration to have JFusion take care of everything automatically based on the bots parameters. If
-		using auto mode, it is highly recommended to first run the discussion bot in test mode to prevent unwanted threads.
-		Manually plugging an article will override auto mode.  You can customize the look of the discussion bot by editing
-		the files in plugins/content/discussbot/tmpl/default.  You can copy the template's files to Joomla template
-		in templates/{your template}/html/plg_content_jfusion to preserve your customizations after upgrades/reinstallations.
-	</description>
+    <description>
+        This is a discussion bot plugin for JFusion which enables using compatible forum software as a comments backend.
+        To use for a single article, place {jfusion_discuss id#} where id# is the id of the thread.  Enable auto mode in
+        the plugin's configuration to have JFusion take care of everything automatically based on the bots parameters. If
+        using auto mode, it is highly recommended to first run the discussion bot in test mode to prevent unwanted threads.
+        Manually plugging an article will override auto mode.  You can customize the look of the discussion bot by editing
+        the files in plugins/content/discussbot/tmpl/default.  You can copy the template's files to Joomla's template
+        in templates/{your template}/html/plg_content_jfusion to preserve your customizations after upgrades/reinstallations.
+    </description>
 
-	<files>
-		<filename plugin="jfusion">jfusion.php</filename>
-		<folder>discussbot</folder>
-	</files>
+    <files>
+        <filename plugin="jfusion">jfusion.php</filename>
+        <folder>discussbot</folder>
+    </files>
 
 
     <config>
         <fields name="params" addfieldpath="/administrator/components/com_jfusion/fields">
             <fieldset name="basic">
-                <field name="spacer" type="spacer" class="text" label="DISCUSSBOT_GENERAL_DESC" />    
-		        <field name="jname" type="JFusionActivePlugins" feature="discussion" default="" label="JFUSION_PLUGIN" description="JFUSION_PLUGIN_DESC" />
-		
-		        <field name="itemid" type="JFusionItemid" default="" label="ITEMID" description="ITEMID_DESCR" feature="discussion"/>
-		        <field name="link_text" type="text" size="20" default="" label="DISCUSSBOT_LINK_TEXT" description="DISCUSSBOT_LINK_TEXT_DESC" />
-		        <field name="link_type" type="radio" default="text" label="LINK_TYPE" description="LINK_TYPE_DESCR">
-		            <option value="text">TEXT</option>
-		            <option value="image">IMAGE</option>
-		        </field>
-		        <field name="link_target" type="list" default="_self" label="LINK_TARGET" description="LINK_TARGET_DESC">
-		            <option value="_blank">NEW_WINDOW</option>
-		            <option value="_self">SAME_WINDOW</option>
-		        </field>
-		        <field name="link_mode" type="list" default="always" label="LINK_MODE" description="LINK_MODE_DESC">
-		            <option value="always">LINK_MODE_ALWAYS_SHOW_LINK</option>
-		            <option value="never">LINK_MODE_NEVER_SHOW_LINK</option>
-		            <option value="rticle">LINK_MODE_IN_ARTICLE_ONLY</option>
-		            <option value="blog">LINK_MODE_IN_BLOG_ONLY</option>
-		        </field>
-		        <field name="blog_link_mode" type="list" default="forum" label="BLOG_LINK_MODE" description="BLOG_LINK_MODE_DESC">
-		             <option value="forum">BLOG_LINK_MODE_FORUM</option>
-		            <option value="joomla">BLOG_LINK_MODE_JOOMLA</option>
-		        </field>
-		        <field name="enable_comment_in_forum_button" type="radio" default="0" label="ENABLE_COMMENT_IN_FORUM_BUTTON" description="ENABLE_COMMENT_IN_FORUM_BUTTON_DESCR">
-		            <option value="1">JYES</option>
-		            <option value="0">JNO</option>
-		        </field>
-		        <field name="comment_in_forum_link_text" type="text" size="20" default="" label="COMMENT_IN_FORUM_LINK_TEXT" description="COMMENT_IN_FORUM_LINK_TEXT_DESCR" />
-		        <field name="comment_in_forum_link_type" type="radio" default="text" label="COMMENT_IN_FORUM_LINK_TYPE" description="COMMENT_IN_FORUM_LINK_TYPE_DESCR">
-		            <option value="text">TEXT</option>
-		            <option value="image">IMAGE</option>
-		        </field>        
-		        <field name="overwrite_readmore" type="list" default="1" label="OVERWRITE_READMORE" description="OVERWRITE_READMORE_DESCR">
-		            <option value="1">JFusion</option>
-		            <option value="0">Joomla</option>
-		        </field>    
-		        <field name="show_reply_num" type="radio" default="1" label="SHOW_REPLY_NUM" description="SHOW_REPLY_NUM_DESCR">
-		            <option value="1">JYES</option>
-		            <option value="0">JNO</option>
-		        </field>
-		        <field name="enable_initiate_buttons" type="radio" default="1" label="ENABLE_INITIATE_BUTTONS" description="ENABLE_INITIATE_BUTTONS_DESCR">
-		            <option value="1">JYES</option>
-		            <option value="0">JNO</option>
-		        </field>    
-		        <field name="spacerhr1" type="spacer" hr="true" />
-		        <field name="spacer2" type="spacer" class="text" label="DISCUSSBOT_POST_SETUP_DESC" />       
-		        <field name="show_posts" type="radio" default="0" label="SHOW_POSTS" description="SHOW_POSTS_DESC">
-		            <option value="1">JYES</option>
-		            <option value="0">JNO</option>
-		        </field>    
-		        <field name="post_header" type="text" size="20" default="" label="POST_HEADER" description="POST_HEADER_DESC" />
-		        <field name="no_posts_msg" type="text" size="20" default="" label="NO_POSTS_MSG" description="NO_POSTS_MSG_DESC" />
-		        <field name="show_refresh_link" type="radio" default="1" label="SHOW_REFRESH_LINK" description="SHOW_REFRESH_LINK_DESCR">
-                    <option value="1">JYES</option>
-                    <option value="0">JNO</option>
-		        </field>    
-		        <field name="show_toggle_posts_link" type="radio" default="1" label="SHOW_TOGGLE_POSTS_LINK" description="SHOW_TOGGLE_POSTS_LINK_DESCR">
-                    <option value="1">JYES</option>
-                    <option value="0">JNO</option>
-		        </field>        
-		        <field name="collapse_discussion" type="radio" default="1" label="COLLAPSE_DISCUSSION" description="COLLAPSE_DISCUSSION_DESCR">
-                    <option value="1">JYES</option>
-                    <option value="0">JNO</option>
-		        </field>
-		        <field name="enable_pagination" type="radio" default="1" label="ENABLE_PAGINATION" description="ENABLE_PAGINATION_DESCR">
-                    <option value="1">JYES</option>
-                    <option value="0">JNO</option>
-		        </field>        
-		        <field name="limit_posts" type="text" size="20" default="" label="LIMIT_POSTS" description="LIMIT_POSTS_DESC" />
-		        <field name="sort_posts" type="list" default="DESC" label="SORT_POSTS" description="SORT_POSTS_DESC">
-		            <option value="DESC">NEWEST_TO_OLDEST</option>
-		            <option value="ASC">OLDEST_TO_NEWEST</option>
-		        </field>
-		        <field name="character_limit" type="text" size="20" default="" label="BODY_LIMIT" description="BODY_LIMIT_DESC" />
-		
-		        <field name="show_date" type="radio" default="1" label="SHOW_DATE" description="SHOW_DATE_DESC">
-		            <option value="1">JYES</option>
-		            <option value="0">JNO</option>
-		        </field>
-		        <field name="date_format" type="text" size="20" default="" label="DATE_FORMAT" description="DATE_FORMAT_DESC" />
-	            <field name="spacerhr2" type="spacer" hr="true" />
-		        <field name="show_user" tpe="radio" default="1" label="SHOW_USER" description="SHOW_USER_DESC">
-		            <option value="1">JYES</option>
-		            <option value="0">JNO</option>
-		        </field>
-		        <field name="display_name" type="list" default="0" label="DISPLAY_USERNAME_NAME" description="DISPLAY_USERNAME_NAME_DESCR">
-		            <option value="0">USERNAME</option>
-		            <option value="1">NAME</option>
-		        </field>        
-		        <field name="user_link" type="radio" default="0" label="USER_LINK" description="USER_LINK_DESC">
-		            <option value="1">JYES</option>
-		            <option value="0">JNO</option>
-		        </field>
-		
-		        <field name="userlink_software" type="list" default="jfusion" label="USERLINK_SOFTWARE" description="USERLINK_SOFTWARE_DESC">
-		                <option value="custom">CUSTOM</option>
-		                <option value="jfusion">JFusion</option>
-		        </field>
-		        <field name="userlink_custom" type="text" size="20" default="" label="USERLINK_CUSTOM" description="USERLINK_CUSTOM_DESC" />
-		       
-		        <field name="show_avatar" type="radio" default="0" label="SHOW_AVATAR" description="SHOW_AVATAR_DESC">
-		            <option value="1">JYES</option>
-		            <option value="0">JNO</option>
-		        </field>
-		
-		        <field name="avatar_height" label="AVATAR_HEIGHT" type="text" size="5" default="80"/>
-		        <field name="avatar_width" label="AVATAR_WIDTH" type="text" size="5" default="60"/>
-		        <field name="avatar_keep_proportional" label="AVATAR_KEEP_PROPORTIONAL" type="radio" default="0" description="AVATAR_KEEP_PROPORTIONAL_DESCR">
-		            <option value="0">JNO</option>
-		            <option value="1">JYES</option>          
-		        </field>        
-		        <field name="avatar_software" type="list" default="jfusion" label="AVATAR_SOFTWARE" description="AVATAR_SOFTWARE_DESC">
-                    <option value="gravatar">Gravatar</option>
-                    <option value="jfusion">JFusion</option>
-		        </field>
-		
-		        <field name="spacerhr3" type="spacer" hr="true" />       
-		
-		        <field name="enable_quickreply" type="radio" default="0" label="SHOW_QUICKREPLY" description="SHOW_QUICKREPLY_DESC">
-		            <option value="1">JYES</option>
-		            <option value="0">JNO</option>
-		        </field>
-		        <field name="must_login_msg" type="text" size="20" default="Login to reply" label="LOGIN_TO_POST_MSG" description="LOGIN_TO_POST_MSG_DESC" />
-		        <field name="locked_msg" type="text" size="20" default="Topic is locked for posting" label="LOCKED_MSG" description="LOCKED_MSG_DESC" />        
-		        <field name="quick_reply_header" type="text" size="20" default="" label="QUICKREPLY_HEADER" description="QUICKREPLY_HEADER_DESC" />
-		        <field name="enable_ajax" type="radio" default="1" label="ENABLE_AJAX_POSTING" description="ENABLE_AJAX_POSTING_DESCR">
-		            <option value="1">JYES</option>
-		            <option value="0">JNO</option>
-		        </field>
-		        <field name="jumpto_new_post" type="radio" default="0" label="JUMP_TO_NEW_POST" description="JUMP_TO_NEW_POST_DESCR">
-		            <option value="1">JYES</option>
-		            <option value="0">JNO</option>
-		        </field>
-		        <field name="quickreply_allow_guests" type="radio" default="0" label="QUICKREPLY_ALLOW_GUESTS" description="QUICKREPLY_ALLOW_GUESTS_DESCR">
-		            <option value="1">JYES</option>
-		            <option value="0">JNO</option>
-		        </field>
-		        <field name="moderate_guests" type="radio" default="1" label="GUEST_MODERATION" description="GUEST_MODERATION_DESCR">
-		            <option value="1">JYES</option>
-		            <option value="0">JNO</option>
-		        </field>        
-		        <field name="captcha_mode" type="list" default="question" label="CAPTCHA_MODE" description="CAPTCHA_MODE_DESCR" >
-		            <option value="disabled">DISABLED</option>
-		            <option value="question">QUESTION</option>
-		            <option value="joomla15captcha">joomla15captcha</option>
-		            <option value="recaptcha">reCaptcha</option>
-		            <option value="custom">CUSTOM</option>          
-		        </field>
-		        <field name="captcha_question" type="text" size="20" default="What is 2 + 3?" label="CAPTCHA_QUESTION" description="CAPTCHA_QUESTION_DESCR" />
-		        <field name="captcha_answer" type="text" size="20" default="5" label="CAPTCHA_ANSWER" description="CAPTCHA_ANSWER_DESCR" />
-		        <field name="recaptcha_privatekey" type="text" size="20" default="" label="RECAPTCHA_PRIVATEKEY" description="RECAPTCHA_KEY_DESCR" />
-		        <field name="recaptcha_publickey" type="text" size="20" default="" label="RECAPTCHA_PUBLICKEY" description="RECAPTCHA_KEY_DESCR" />
-		        <field type="list" name="recaptcha_theme" default="red" label="RECAPTCHA_THEME" description="RECAPTCHA_THEME" >
-		            <option value="white">White</option>
-		            <option value="red">Red</option>
-		            <option value="blackglass">Blackglass</option>
-		            <option value="clean">Clean</option>
-		        </field>
-		        <field type="list" name="recaptcha_lang" default="en" label="RECAPTCHA_LANG" description="RECAPTCHA_LANG" >
-		            <option value="en">English</option>
-		            <option value="nl">Dutch</option>
-		            <option value="fr">French</option>
-		            <option value="de">German</option>
-		            <option value="pt">Portuguese</option>
-		            <option value="ru">Russian</option>
-		            <option value="es">Spanish</option>
-		            <option value="tr">Turkish</option>
-		        </field>
-                <field name="spacerhr4" type="spacer" hr="true" />
-		        <field name="spacer4" type="spacer" class="text" label="DISCUSSBOT_AUTO_DESC" />       
-		
-		        <field name="auto_create" type="radio" default="0" label="AUTO_CREATE" description="AUTO_CREATE_DESC">
-		            <option value="1">JYES</option>
-		            <option value="0">JNO</option>
-		        </field>
-		        <field name="test_mode" type="radio" default="1" label="TEST_MODE" description="TEST_MODE_DESCR">
-		            <option value="1">JYES</option>
-		            <option value="0">JNO</option>
-		        </field>
-		        <field name="create_thread" type="list" default="load" label="CREATE_THREAD" description="CREATE_THREAD_DESCR">
-		            <option value="view">CREATE_THREAD_UPON_ARTICLE_VIEW</option>
-		            <option value="load">CREATE_THREAD_UPON_LOAD</option>
-		            <option value="new">CREATE_THREAD_UPON_NEW_ARTICLE</option>
-		            <option value="reply">CREATE_THREAD_UPON_FIRST_REPLY</option>
-		        </field>    
-		        <field name="use_content_created_date" type="radio" default="0" label="USE_CONTENT_CREATED_DATE" description="USE_CONTENT_CREATED_DATE_DESCR">
-		            <option value="1">JYES</option>
-		            <option value="0">JNO</option>
-		        </field>        
-		        <field name="include_categories" type="jfusionsql" multiple="1" jname="joomla_int" default="" key_field="id" value_field="name" label="INCLUDE_CATEGORIES" description="INCLUDE_CATEGORIES_DESC" query="joomla.categories" />
-		        <field name="exclude_categories" type="jfusionsql" multiple="1" jname="joomla_int" default="" key_field="id" value_field="name" label="EXCLUDE_CATEGORIES" description="EXCLUDE_CATEGORIES_DESC" query="joomla.categories" />
-		        <field name="pair_categories" type="DiscussionBotParam" default="" label="PAIR_CATEGORIES" description="PAIR_CATEGORIES_DESC" />
-                <field name="include_k2_categories" type="jfusionsql" multiple="1" jname="joomla_int" default="" key_field="id" value_field="name" label="INCLUDE_K2_CATEGORIES" description="INCLUDE_K2_CATEGORIES_DESC" query="k2.categories" />
-                <field name="excluded_k2_categories" type="jfusionsql" multiple="1" jname="joomla_int" default="" key_field="id" value_field="name" label="EXCLUDE_K2_CATEGORIES" description="EXCLUDE_k2_CATEGORIES_DESC" query="k2.categories" />
-                <field name="pair_k2_categories" type="DiscussionBotParam" default="" label="PAIR_K2_CATEGORIES" description="PAIR_K2_CATEGORIES_DESC" />
-                
-		        <field name="default_forum" type="ForumListDiscussionbot" description="DEFAULT_FORUM" label="DEFAULT_FORUM" />
-		        <field name="use_article_userid" type="radio" label="USE_ARTICLE_USER" description="USE_ARTICLE_USER_DESCR" default="1">
-		            <option value="1">JYES</option>
-		            <option value="0">JNO</option>
-		        </field>
-		        <field name="default_userid" type="text" size="20" default="" description="DEFAULT_FORUM_USERID_DESC" label="DEFAULT_FORUM_USERID" />
-		        <field name="first_post_text" type="list" default="intro" label="FIRST_POST_TEXT" description="FIRST_POST_TEXT_DESCR">
-		            <option value="intro">FIRST_POST_INTRO</option>
-		            <option value="full">FIRST_POST_FULLTEXT</option>
-		            <option value="none">FIRST_POST_NONE</option>
-		        </field>    
-		        <field name="first_post_link" type="radio" default="1" label="FIRST_POST_LINK" description="FIRST_POST_LINK_DESCR">
-		            <option value="1">JYES</option>
-		            <option value="0">JNO</option>
-		        </field>
-		        <field name="first_post_link_text" type="text" size="20" default="" description="FIRST_POST_LINK_TEXT_DESC" label="FIRST_POST_LINK_TEXT" />
-		        <field name="first_post_link_type" type="radio" default="text" label="LINK_TYPE" description="LINK_TYPE_DESCR">
-		            <option value="text">TEXT</option>
-		            <option value="image">IMAGE</option>
-		        </field>
-                <field name="spacerhr5" type="spacer" hr="true" />
-                <field name="spacer5" type="spacer" class="text" label="ADVANCED_SETTINGS" />
-          	    <field name="debug" type="radio" default="0" label="DEBUG_MODE" description="DEBUG_MODE_DESCR">
+                <field name="spacer" type="spacer" class="text" label="DISCUSSBOT_GENERAL_DESC" />
+                <field name="jname" type="JFusionActivePlugins" feature="discussion" default="" label="JFUSION_PLUGIN" description="JFUSION_PLUGIN_DESC" />
+
+                <field name="itemid" type="JFusionItemid" default="" label="ITEMID" description="ITEMID_DESCR" feature="discussion"/>
+                <field name="link_text" type="text" size="20" default="" label="DISCUSSBOT_LINK_TEXT" description="DISCUSSBOT_LINK_TEXT_DESC" />
+                <field name="link_type" type="radio" default="text" label="LINK_TYPE" description="LINK_TYPE_DESCR">
+                    <option value="text">TEXT</option>
+                    <option value="image">IMAGE</option>
+                </field>
+                <field name="link_target" type="list" default="_self" label="LINK_TARGET" description="LINK_TARGET_DESC">
+                    <option value="_blank">NEW_WINDOW</option>
+                    <option value="_self">SAME_WINDOW</option>
+                </field>
+                <field name="link_mode" type="list" default="always" label="LINK_MODE" description="LINK_MODE_DESC">
+                    <option value="always">LINK_MODE_ALWAYS_SHOW_LINK</option>
+                    <option value="never">LINK_MODE_NEVER_SHOW_LINK</option>
+                    <option value="rticle">LINK_MODE_IN_ARTICLE_ONLY</option>
+                    <option value="blog">LINK_MODE_IN_BLOG_ONLY</option>
+                </field>
+                <field name="blog_link_mode" type="list" default="forum" label="BLOG_LINK_MODE" description="BLOG_LINK_MODE_DESC">
+                    <option value="forum">BLOG_LINK_MODE_FORUM</option>
+                    <option value="joomla">BLOG_LINK_MODE_JOOMLA</option>
+                </field>
+                <field name="enable_comment_in_forum_button" type="radio" class="btn-group" default="0" label="ENABLE_COMMENT_IN_FORUM_BUTTON" description="ENABLE_COMMENT_IN_FORUM_BUTTON_DESCR">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
                 </field>
-	        </fieldset>
-	    </fields>
+                <field name="comment_in_forum_link_text" type="text" size="20" default="" label="COMMENT_IN_FORUM_LINK_TEXT" description="COMMENT_IN_FORUM_LINK_TEXT_DESCR" />
+                <field name="comment_in_forum_link_type" type="radio" default="text" label="COMMENT_IN_FORUM_LINK_TYPE" description="COMMENT_IN_FORUM_LINK_TYPE_DESCR">
+                    <option value="text">TEXT</option>
+                    <option value="image">IMAGE</option>
+                </field>
+                <field name="overwrite_readmore" type="list" default="1" label="OVERWRITE_READMORE" description="OVERWRITE_READMORE_DESCR">
+                    <option value="1">JFusion</option>
+                    <option value="0">Joomla</option>
+                </field>
+                <field name="show_reply_num" type="radio" class="btn-group" default="1" label="SHOW_REPLY_NUM" description="SHOW_REPLY_NUM_DESCR">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="enable_initiate_buttons" type="radio" class="btn-group" default="1" label="ENABLE_INITIATE_BUTTONS" description="ENABLE_INITIATE_BUTTONS_DESCR">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="spacerhr1" type="spacer" hr="true" />
+                <field name="spacer2" type="spacer" class="text" label="DISCUSSBOT_POST_SETUP_DESC" />
+                <field name="show_posts" type="radio" class="btn-group" default="0" label="SHOW_POSTS" description="SHOW_POSTS_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="post_header" type="text" size="20" default="" label="POST_HEADER" description="POST_HEADER_DESC" />
+                <field name="no_posts_msg" type="text" size="20" default="" label="NO_POSTS_MSG" description="NO_POSTS_MSG_DESC" />
+                <field name="show_refresh_link" type="radio" class="btn-group" default="1" label="SHOW_REFRESH_LINK" description="SHOW_REFRESH_LINK_DESCR">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="show_toggle_posts_link" type="radio" class="btn-group" default="1" label="SHOW_TOGGLE_POSTS_LINK" description="SHOW_TOGGLE_POSTS_LINK_DESCR">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="collapse_discussion" type="radio" class="btn-group" default="1" label="COLLAPSE_DISCUSSION" description="COLLAPSE_DISCUSSION_DESCR">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="enable_pagination" type="radio" class="btn-group" default="1" label="ENABLE_PAGINATION" description="ENABLE_PAGINATION_DESCR">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="limit_posts" type="text" size="20" default="" label="LIMIT_POSTS" description="LIMIT_POSTS_DESC" />
+                <field name="sort_posts" type="list" default="DESC" label="SORT_POSTS" description="SORT_POSTS_DESC">
+                    <option value="DESC">NEWEST_TO_OLDEST</option>
+                    <option value="ASC">OLDEST_TO_NEWEST</option>
+                </field>
+                <field name="character_limit" type="text" size="20" default="" label="BODY_LIMIT" description="BODY_LIMIT_DESC" />
+
+                <field name="show_date" type="radio" class="btn-group" default="1" label="SHOW_DATE" description="SHOW_DATE_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="date_format" type="text" size="20" default="" label="DATE_FORMAT" description="DATE_FORMAT_DESC" />
+                <field name="spacerhr2" type="spacer" hr="true" />
+                <field name="show_user" type="radio" class="btn-group" default="1" label="SHOW_USER" description="SHOW_USER_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="display_name" type="list" default="0" label="DISPLAY_USERNAME_NAME" description="DISPLAY_USERNAME_NAME_DESCR">
+                    <option value="0">USERNAME</option>
+                    <option value="1">NAME</option>
+                </field>
+                <field name="user_link" type="radio" class="btn-group" default="0" label="USER_LINK" description="USER_LINK_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+
+                <field name="userlink_software" type="list" default="jfusion" label="USERLINK_SOFTWARE" description="USERLINK_SOFTWARE_DESC">
+                    <option value="custom">CUSTOM</option>
+                    <option value="jfusion">JFusion</option>
+                </field>
+                <field name="userlink_custom" type="text" size="20" default="" label="USERLINK_CUSTOM" description="USERLINK_CUSTOM_DESC" />
+
+                <field name="show_avatar" type="radio" class="btn-group" default="0" label="SHOW_AVATAR" description="SHOW_AVATAR_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+
+                <field name="avatar_height" label="AVATAR_HEIGHT" type="text" size="5" default="80"/>
+                <field name="avatar_width" label="AVATAR_WIDTH" type="text" size="5" default="60"/>
+                <field name="avatar_keep_proportional" label="AVATAR_KEEP_PROPORTIONAL" type="radio" class="btn-group" default="0" description="AVATAR_KEEP_PROPORTIONAL_DESCR">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+                <field name="avatar_software" type="list" default="jfusion" label="AVATAR_SOFTWARE" description="AVATAR_SOFTWARE_DESC">
+                    <option value="gravatar">Gravatar</option>
+                    <option value="jfusion">JFusion</option>
+                </field>
+
+                <field name="spacerhr3" type="spacer" hr="true" />
+
+                <field name="enable_quickreply" type="radio" class="btn-group" default="0" label="SHOW_QUICKREPLY" description="SHOW_QUICKREPLY_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="must_login_msg" type="text" size="20" default="Login to reply" label="LOGIN_TO_POST_MSG" description="LOGIN_TO_POST_MSG_DESC" />
+                <field name="locked_msg" type="text" size="20" default="Topic is locked for posting" label="LOCKED_MSG" description="LOCKED_MSG_DESC" />
+                <field name="quick_reply_header" type="text" size="20" default="" label="QUICKREPLY_HEADER" description="QUICKREPLY_HEADER_DESC" />
+                <field name="enable_ajax" type="radio" class="btn-group" default="1" label="ENABLE_AJAX_POSTING" description="ENABLE_AJAX_POSTING_DESCR">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="jumpto_new_post" type="radio" class="btn-group" default="0" label="JUMP_TO_NEW_POST" description="JUMP_TO_NEW_POST_DESCR">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="quickreply_allow_guests" type="radio" class="btn-group" default="0" label="QUICKREPLY_ALLOW_GUESTS" description="QUICKREPLY_ALLOW_GUESTS_DESCR">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="moderate_guests" type="radio" class="btn-group" default="1" label="GUEST_MODERATION" description="GUEST_MODERATION_DESCR">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="captcha_mode" type="list" default="question" label="CAPTCHA_MODE" description="CAPTCHA_MODE_DESCR" >
+                    <option value="disabled">DISABLED</option>
+                    <option value="question">QUESTION</option>
+                    <option value="joomla15captcha">joomla15captcha</option>
+                    <option value="recaptcha">reCaptcha</option>
+                    <option value="custom">CUSTOM</option>
+                </field>
+                <field name="captcha_question" type="text" size="20" default="What is 2 + 3?" label="CAPTCHA_QUESTION" description="CAPTCHA_QUESTION_DESCR" />
+                <field name="captcha_answer" type="text" size="20" default="5" label="CAPTCHA_ANSWER" description="CAPTCHA_ANSWER_DESCR" />
+                <field name="recaptcha_privatekey" type="text" size="20" default="" label="RECAPTCHA_PRIVATEKEY" description="RECAPTCHA_KEY_DESCR" />
+                <field name="recaptcha_publickey" type="text" size="20" default="" label="RECAPTCHA_PUBLICKEY" description="RECAPTCHA_KEY_DESCR" />
+                <field type="list" name="recaptcha_theme" default="red" label="RECAPTCHA_THEME" description="RECAPTCHA_THEME" >
+                    <option value="white">White</option>
+                    <option value="red">Red</option>
+                    <option value="blackglass">Blackglass</option>
+                    <option value="clean">Clean</option>
+                </field>
+                <field type="list" name="recaptcha_lang" default="en" label="RECAPTCHA_LANG" description="RECAPTCHA_LANG" >
+                    <option value="en">English</option>
+                    <option value="nl">Dutch</option>
+                    <option value="fr">French</option>
+                    <option value="de">German</option>
+                    <option value="pt">Portuguese</option>
+                    <option value="ru">Russian</option>
+                    <option value="es">Spanish</option>
+                    <option value="tr">Turkish</option>
+                </field>
+                <field name="spacerhr4" type="spacer" hr="true" />
+                <field name="spacer4" type="spacer" class="text" label="DISCUSSBOT_AUTO_DESC" />
+
+                <field name="auto_create" type="radio" class="btn-group" default="0" label="AUTO_CREATE" description="AUTO_CREATE_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="test_mode" type="radio" class="btn-group" default="1" label="TEST_MODE" description="TEST_MODE_DESCR">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="create_thread" type="list" default="load" label="CREATE_THREAD" description="CREATE_THREAD_DESCR">
+                    <option value="view">CREATE_THREAD_UPON_ARTICLE_VIEW</option>
+                    <option value="load">CREATE_THREAD_UPON_LOAD</option>
+                    <option value="new">CREATE_THREAD_UPON_NEW_ARTICLE</option>
+                    <option value="reply">CREATE_THREAD_UPON_FIRST_REPLY</option>
+                </field>
+                <field name="use_content_created_date" type="radio" class="btn-group" default="0" label="USE_CONTENT_CREATED_DATE" description="USE_CONTENT_CREATED_DATE_DESCR">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="include_categories" type="jfusionsql" multiple="1" jname="joomla_int" default="" key_field="id" value_field="name" label="INCLUDE_CATEGORIES" description="INCLUDE_CATEGORIES_DESC" query="joomla.categories" />
+                <field name="exclude_categories" type="jfusionsql" multiple="1" jname="joomla_int" default="" key_field="id" value_field="name" label="EXCLUDE_CATEGORIES" description="EXCLUDE_CATEGORIES_DESC" query="joomla.categories" />
+                <field name="pair_categories" type="DiscussionBotParam" default="" label="PAIR_CATEGORIES" description="PAIR_CATEGORIES_DESC" />
+                <field name="include_k2_categories" type="jfusionsql" multiple="1" jname="joomla_int" default="" key_field="id" value_field="name" label="INCLUDE_K2_CATEGORIES" description="INCLUDE_K2_CATEGORIES_DESC" query="k2.categories" />
+                <field name="excluded_k2_categories" type="jfusionsql" multiple="1" jname="joomla_int" default="" key_field="id" value_field="name" label="EXCLUDE_K2_CATEGORIES" description="EXCLUDE_k2_CATEGORIES_DESC" query="k2.categories" />
+                <field name="pair_k2_categories" type="DiscussionBotParam" default="" label="PAIR_K2_CATEGORIES" description="PAIR_K2_CATEGORIES_DESC" />
+
+                <field name="default_forum" type="ForumListDiscussionbot" description="DEFAULT_FORUM" label="DEFAULT_FORUM" />
+                <field name="use_article_userid" type="radio" class="btn-group" label="USE_ARTICLE_USER" description="USE_ARTICLE_USER_DESCR" default="1">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="default_userid" type="text" size="20" default="" description="DEFAULT_FORUM_USERID_DESC" label="DEFAULT_FORUM_USERID" />
+                <field name="first_post_text" type="list" default="intro" label="FIRST_POST_TEXT" description="FIRST_POST_TEXT_DESCR">
+                    <option value="intro">FIRST_POST_INTRO</option>
+                    <option value="full">FIRST_POST_FULLTEXT</option>
+                    <option value="none">FIRST_POST_NONE</option>
+                </field>
+                <field name="first_post_link" type="radio" class="btn-group" default="1" label="FIRST_POST_LINK" description="FIRST_POST_LINK_DESCR">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="first_post_link_text" type="text" size="20" default="" description="FIRST_POST_LINK_TEXT_DESC" label="FIRST_POST_LINK_TEXT" />
+                <field name="first_post_link_type" type="radio" default="text" label="LINK_TYPE" description="LINK_TYPE_DESCR">
+                    <option value="text">TEXT</option>
+                    <option value="image">IMAGE</option>
+                </field>
+                <field name="spacerhr5" type="spacer" hr="true" />
+                <field name="spacer5" type="spacer" class="text" label="ADVANCED_SETTINGS" />
+                <field name="debug" type="radio" class="btn-group" default="0" label="DEBUG_MODE" description="DEBUG_MODE_DESCR">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+            </fieldset>
+        </fields>
     </config>
-    
-	<params addpath="/administrator/components/com_jfusion/elements">
-		<param name="jfusionbox" type="helptext" label=" " description="DISCUSSBOT_GENERAL_DESC" default="DISCUSSBOT_GENERAL_DESC"/>
-		<param name="jname" type="JFusionActivePlugins" feature="discussion" default="" label="JFUSION_PLUGIN" description="JFUSION_PLUGIN_DESC" />
-
-		<param name="itemid" type="JFusionItemid" default="" label="ITEMID" description="ITEMID_DESCR" feature="discussion"/>
-		<param name="link_text" type="text" size="20" default="" label="DISCUSSBOT_LINK_TEXT" description="DISCUSSBOT_LINK_TEXT_DESC" />
-		<param name="link_type" type="radio" default="text" label="LINK_TYPE" description="LINK_TYPE_DESCR">
-			<option value="text">TEXT</option>
-			<option value="image">IMAGE</option>
-		</param>
-		<param name="link_target" type="list" default="_self" label="LINK_TARGET" description="LINK_TARGET_DESC">
-			<option value="_blank">NEW_WINDOW</option>
-			<option value="_self">SAME_WINDOW</option>
-		</param>
-		<param name="link_mode" type="list" default="always" label="LINK_MODE" description="LINK_MODE_DESC">
-			<option value="always">LINK_MODE_ALWAYS_SHOW_LINK</option>
-			<option value="never">LINK_MODE_NEVER_SHOW_LINK</option>
-			<option value="article">LINK_MODE_IN_ARTICLE_ONLY</option>
-			<option value="blog">LINK_MODE_IN_BLOG_ONLY</option>
-		</param>
-		<param name="blog_link_mode" type="list" default="forum" label="BLOG_LINK_MODE" description="BLOG_LINK_MODE_DESC">
-			 <option value="forum">BLOG_LINK_MODE_FORUM</option>
-			<option value="joomla">BLOG_LINK_MODE_JOOMLA</option>
-		</param>
-        <param name="enable_comment_in_forum_button" type="radio" default="0" label="ENABLE_COMMENT_IN_FORUM_BUTTON" description="ENABLE_COMMENT_IN_FORUM_BUTTON_DESCR">
-            <option value="1">JYES</option>
-            <option value="0">JNO</option>
-        </param>
-        <param name="comment_in_forum_link_text" type="text" size="20" default="" label="COMMENT_IN_FORUM_LINK_TEXT" description="COMMENT_IN_FORUM_LINK_TEXT_DESCR" />
-        <param name="comment_in_forum_link_type" type="radio" default="text" label="COMMENT_IN_FORUM_LINK_TYPE" description="COMMENT_IN_FORUM_LINK_TYPE_DESCR">
-            <option value="text">TEXT</option>
-            <option value="image">IMAGE</option>
-        </param>		
-		<param name="overwrite_readmore" type="list" default="1" label="OVERWRITE_READMORE" description="OVERWRITE_READMORE_DESCR">
-			<option value="1">JFusion</option>
-			<option value="0">Joomla</option>
-		</param>	
-		<param name="show_reply_num" type="radio" default="1" label="SHOW_REPLY_NUM" description="SHOW_REPLY_NUM_DESCR">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</param>
-		<param name="enable_initiate_buttons" type="radio" default="1" label="ENABLE_INITIATE_BUTTONS" description="ENABLE_INITIATE_BUTTONS_DESCR">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</param>	
-		<param name="@spacer" type="spacer" default="" label="" description="" />		
-		
-		<param name="jfusionbox" type="helptext" label=" " description="DISCUSSBOT_POST_SETUP_DESC" default="DISCUSSBOT_POST_SETUP_DESC"/>
-		<param name="show_posts" type="radio" default="0" label="SHOW_POSTS" description="SHOW_POSTS_DESC">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</param>	
-		<param name="post_header" type="text" size="20" default="" label="POST_HEADER" description="POST_HEADER_DESC" />
-		<param name="no_posts_msg" type="text" size="20" default="" label="NO_POSTS_MSG" description="NO_POSTS_MSG_DESC" />
-		<param name="show_refresh_link" type="radio" default="1" label="SHOW_REFRESH_LINK" description="SHOW_REFRESH_LINK_DESCR">
-            <option value="1">JYES</option>
-            <option value="0">JNO</option>
-		</param>	
-		<param name="show_toggle_posts_link" type="radio" default="1" label="SHOW_TOGGLE_POSTS_LINK" description="SHOW_TOGGLE_POSTS_LINK_DESCR">
-            <option value="1">JYES</option>
-            <option value="0">JNO</option>
-		</param>		
-		<param name="collapse_discussion" type="radio" default="1" label="COLLAPSE_DISCUSSION" description="COLLAPSE_DISCUSSION_DESCR">
-            <option value="1">JYES</option>
-            <option value="0">JNO</option>
-		</param>
-		<param name="enable_pagination" type="radio" default="1" label="ENABLE_PAGINATION" description="ENABLE_PAGINATION_DESCR">
-            <option value="1">JYES</option>
-            <option value="0">JNO</option>
-		</param>		
-		<param name="limit_posts" type="text" size="20" default="" label="LIMIT_POSTS" description="LIMIT_POSTS_DESC" />
-		<param name="sort_posts" type="list" default="DESC" label="SORT_POSTS" description="SORT_POSTS_DESC">
-			<option value="DESC">NEWEST_TO_OLDEST</option>
-			<option value="ASC">OLDEST_TO_NEWEST</option>
-		</param>
-		<param name="character_limit" type="text" size="20" default="" label="BODY_LIMIT" description="BODY_LIMIT_DESC" />
-
-		<param name="show_date" type="radio" default="1" label="SHOW_DATE" description="SHOW_DATE_DESC">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</param>
-		<param name="date_format" type="text" size="20" default="" label="DATE_FORMAT" description="DATE_FORMAT_DESC" />
-		
-		<param name="@spacer" type="spacer" default="" label="" description="" />		
-		<param name="show_user" type="radio" default="1" label="SHOW_USER" description="SHOW_USER_DESC">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</param>
-        <param name="display_name" type="list" default="0"
-            label="DISPLAY_USERNAME_NAME" description="DISPLAY_USERNAME_NAME_DESCR">
-            <option value="0">USERNAME</option>
-            <option value="1">NAME</option>
-        </param>		
-		<param name="user_link" type="radio" default="0" label="USER_LINK" description="USER_LINK_DESC">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</param>
-
-		<param name="userlink_software" type="list" default="jfusion" label="USERLINK_SOFTWARE" description="USERLINK_SOFTWARE_DESC">
-            <option value="custom">CUSTOM</option>
-            <option value="jfusion">JFusion</option>
-		</param>
-		<param name="userlink_custom" type="text" size="20" default="" label="USERLINK_CUSTOM" description="USERLINK_CUSTOM_DESC" />
-
-		<param name="@spacer" type="spacer" default="" label="" description="" />		
-		<param name="show_avatar" type="radio" default="0" label="SHOW_AVATAR" description="SHOW_AVATAR_DESC">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</param>
-
-		<param name="avatar_height" label="AVATAR_HEIGHT" type="text" size="5" default="80"/>
-		<param name="avatar_width" label="AVATAR_WIDTH" type="text" size="5" default="60"/>
-        <param name="avatar_keep_proportional" label="AVATAR_KEEP_PROPORTIONAL" type="radio" default="0" description="AVATAR_KEEP_PROPORTIONAL_DESCR">
-            <option value="0">JNO</option>
-            <option value="1">JYES</option>          
-        </param>        
-		<param name="avatar_software" type="list" default="jfusion" label="AVATAR_SOFTWARE" description="AVATAR_SOFTWARE_DESC">
-            <option value="gravatar">Gravatar</option>
-            <option value="jfusion">JFusion</option>
-		</param>
-
-		<param name="@spacer" type="spacer" default="" label="" description="" />		
-
-		<param name="enable_quickreply" type="radio" default="0" label="SHOW_QUICKREPLY" description="SHOW_QUICKREPLY_DESC">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</param>
-		<param name="must_login_msg" type="text" size="20" default="Login to reply" label="LOGIN_TO_POST_MSG" description="LOGIN_TO_POST_MSG_DESC" />
-		<param name="locked_msg" type="text" size="20" default="Topic is locked for posting" label="LOCKED_MSG" description="LOCKED_MSG_DESC" />		
-		<param name="quick_reply_header" type="text" size="20" default="" label="QUICKREPLY_HEADER" description="QUICKREPLY_HEADER_DESC" />
-		<param name="enable_ajax" type="radio" default="1" label="ENABLE_AJAX_POSTING" description="ENABLE_AJAX_POSTING_DESCR">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</param>
-		<param name="jumpto_new_post" type="radio" default="0" label="JUMP_TO_NEW_POST" description="JUMP_TO_NEW_POST_DESCR">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</param>
-		<param name="quickreply_allow_guests" type="radio" default="0" label="QUICKREPLY_ALLOW_GUESTS" description="QUICKREPLY_ALLOW_GUESTS_DESCR">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</param>
-		<param name="moderate_guests" type="radio" default="1" label="GUEST_MODERATION" description="GUEST_MODERATION_DESCR">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</param>		
-		<param name="captcha_mode" type="list" default="question" label="CAPTCHA_MODE" description="CAPTCHA_MODE_DESCR" >
-			<option value="disabled">DISABLED</option>
-			<option value="question">QUESTION</option>
-			<option value="joomla15captcha">joomla15captcha</option>
-			<option value="recaptcha">reCaptcha</option>
-			<option value="custom">CUSTOM</option>			
-		</param>
-		<param name="captcha_question" type="text" size="20" default="What is 2 + 3?" label="CAPTCHA_QUESTION" description="CAPTCHA_QUESTION_DESCR" />
-		<param name="captcha_answer" type="text" size="20" default="5" label="CAPTCHA_ANSWER" description="CAPTCHA_ANSWER_DESCR" />
-		<param name="recaptcha_privatekey" type="text" size="20" default="" label="RECAPTCHA_PRIVATEKEY" description="RECAPTCHA_KEY_DESCR" />
-		<param name="recaptcha_publickey" type="text" size="20" default="" label="RECAPTCHA_PUBLICKEY" description="RECAPTCHA_KEY_DESCR" />
-		<param type="list" name="recaptcha_theme" default="red" label="RECAPTCHA_THEME" description="RECAPTCHA_THEME" >
-			<option value="white">White</option>
-	        <option value="red">Red</option>
-			<option value="blackglass">Blackglass</option>
-	        <option value="clean">Clean</option>
-		</param>
-		<param type="list" name="recaptcha_lang" default="en" label="RECAPTCHA_LANG" description="RECAPTCHA_LANG" >
-			<option value="en">English</option>
-	        <option value="nl">Dutch</option>
-			<option value="fr">French</option>
-	        <option value="de">German</option>
-			<option value="pt">Portuguese</option>
-	        <option value="ru">Russian</option>
-			<option value="es">Spanish</option>
-	        <option value="tr">Turkish</option>
-		</param>
-
-		<param name="@spacer" type="spacer" default="" label="" description="" />		
-
-		<param name="jfusionbox" type="helptext" label=" " description="DISCUSSBOT_AUTO_DESC" default="DISCUSSBOT_AUTO_DESC"/>
-		<param name="auto_create" type="radio" default="0" label="AUTO_CREATE" description="AUTO_CREATE_DESC">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</param>
-		<param name="test_mode" type="radio" default="1" label="TEST_MODE" description="TEST_MODE_DESCR">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</param>
-		<param name="create_thread" type="list" default="load" label="CREATE_THREAD" description="CREATE_THREAD_DESCR">
-			<option value="view">CREATE_THREAD_UPON_ARTICLE_VIEW</option>
-			<option value="load">CREATE_THREAD_UPON_LOAD</option>
-			<option value="new">CREATE_THREAD_UPON_NEW_ARTICLE</option>
-			<option value="reply">CREATE_THREAD_UPON_FIRST_REPLY</option>
-		</param>	
-		<param name="use_content_created_date" type="radio" default="0" label="USE_CONTENT_CREATED_DATE" description="USE_CONTENT_CREATED_DATE_DESCR">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</param>		
-		<param name="include_static" type="radio" default="0" label="INCLUDE_STATIC_CONTENT" description="INCLUDE_STATIC_CONTENT_DESC">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</param>
-		<param name="include_sections" type="jfusionsql" multiple="1" jname="joomla_int" default="" key_field="id" value_field="name" label="INCLUDE_SECTIONS" description="INCLUDE_SECTIONS_DESC" query="SELECT id, title as name FROM #__sections WHERE published = 1 AND scope = 'content' ORDER BY title" />
-		<param name="exclude_sections" type="jfusionsql" multiple="1" jname="joomla_int" default="" key_field="id" value_field="name" label="EXCLUDE_SECTIONS" description="EXCLUDE_SECTIONS_DESC" query="SELECT id, title as name FROM #__sections WHERE published = 1 AND scope = 'content' ORDER BY title" />
-        <param name="include_categories" type="jfusionsql" multiple="1" jname="joomla_int" default="" key_field="id" value_field="name" label="INCLUDE_CATEGORIES" description="INCLUDE_CATEGORIES_DESC" query="SELECT c.id, CONCAT_WS( '/',s.title, c.title ) AS name FROM #__categories AS c LEFT JOIN #__sections AS s ON s.id=c.section WHERE c.published = 1 AND s.scope = 'content' ORDER BY s.title, c.title" />
-		<param name="exclude_categories" type="jfusionsql" multiple="1" jname="joomla_int" default="" key_field="id" value_field="name" label="EXCLUDE_CATEGORIES" description="EXCLUDE_CATEGORIES_DESC" query="SELECT c.id, CONCAT_WS( '/',s.title, c.title ) AS name FROM #__categories AS c LEFT JOIN #__sections AS s ON s.id=c.section WHERE c.published = 1 AND s.scope = 'content' ORDER BY s.title, c.title" />
-		<param name="pair_sections" type="DiscussionBotParam" default="" label="PAIR_SECTIONS" description="PAIR_SECTIONS_DESC" />
-		<param name="pair_categories" type="DiscussionBotParam" default="" label="PAIR_CATEGORIES" description="PAIR_CATEGORIES_DESC" />
-        <param name="include_k2_categories" type="jfusionsql" multiple="1" jname="joomla_int" default="" key_field="id" value_field="name" label="INCLUDE_K2_CATEGORIES" description="INCLUDE_K2_CATEGORIES_DESC" query="k2.categories" />
-        <param name="exclude_k2_categories" type="jfusionsql" multiple="1" jname="joomla_int" default="" key_field="id" value_field="name" label="EXCLUDE_K2_CATEGORIES" description="EXCLUDE_k2_CATEGORIES_DESC" query="k2.categories" />
-        <param name="pair_k2_categories" type="DiscussionBotParam" default="" label="PAIR_K2_CATEGORIES" description="PAIR_K2_CATEGORIES_DESC" />		
-		<param name="default_forum" type="ForumListDiscussionbot" description="DEFAULT_FORUM" label="DEFAULT_FORUM" />
-		<param name="use_article_userid" type="radio" label="USE_ARTICLE_USER" description="USE_ARTICLE_USER_DESCR" default="1">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</param>
-		<param name="default_userid" type="text" size="20" default="" description="DEFAULT_FORUM_USERID_DESC" label="DEFAULT_FORUM_USERID" />
-		<param name="first_post_text" type="list" default="intro" label="FIRST_POST_TEXT" description="FIRST_POST_TEXT_DESCR">
-			<option value="intro">FIRST_POST_INTRO</option>
-			<option value="full">FIRST_POST_FULLTEXT</option>
-			<option value="none">FIRST_POST_NONE</option>
-		</param>	
-		<param name="first_post_link" type="radio" default="1" label="FIRST_POST_LINK" description="FIRST_POST_LINK_DESCR">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</param>
-		<param name="first_post_link_text" type="text" size="20" default="" description="FIRST_POST_LINK_TEXT_DESC" label="FIRST_POST_LINK_TEXT" />
-		<param name="first_post_link_type" type="radio" default="text" label="LINK_TYPE" description="LINK_TYPE_DESCR">
-			<option value="text">TEXT</option>
-			<option value="image">IMAGE</option>
-		</param>
-        <param name="@spacer" type="spacer" default="" label="" description="" />       
-        <param name="jfusionbox" type="helptext" label=" " description="ADVANCED_SETTINGS" default="ADVANCED_SETTINGS"/>		
-        <param name="debug" type="radio" default="0" label="DEBUG_MODE" description="DEBUG_MODE_DESCR">
-            <option value="1">JYES</option>
-            <option value="0">JNO</option>
-        </param>		
-	</params>
-</install>
+</extension>
