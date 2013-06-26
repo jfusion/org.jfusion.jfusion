@@ -44,61 +44,41 @@ class jfusionViewplugineditor extends JViewLegacy
         //find out the submitted name of the JFusion module
         $jname = JRequest::getVar('jname');
         if ($jname) {
-            //hides the main menu and disables the Joomla navigation menu
-            //JRequest::setVar('hidemainmenu', 1);
-            // Keep the idea of instanciate the parameters only with the parameters of the XML file from the plugin needed but with a centralized method (JFusionFactory::createParams)
-            $parametersInstance = JFusionFactory::createParams($jname);
-            $file = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'jfusion.xml';
-            if (file_exists($file)) {
-                $parametersInstance->loadSetupFile($file);
-            }
-            $params = $parametersInstance->getParams();
+	        // Keep the idea of instanciate the parameters only with the parameters of the XML file from the plugin needed but with a centralized method (JFusionFactory::createParams)
+	        $parametersInstance = JFusionFactory::createParams($jname);
 
-	        jimport('joomla.filesystem.file');
-	        $content = JFile::read($file);
-	        $content = str_replace(array('<param','</param'),array('<field','</field'),$content);
+	        $file = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'jfusion.xml';
+	        $form = new JForm($jname);
+	        if (file_exists($file)) {
+		        jimport('joomla.filesystem.file');
+		        $content = JFile::read($file);
 
-	        /**
-	         * @ignore
-	         * @var $xml JXMLElement|SimpleXMLElement
-	         */
-	        $xml = JFactory::getXML($content, false);
-	        $fields = $xml->xpath('//field');
-	        jimport('joomla.form.form');
-	        jimport('joomla.form.helper');
-	        $form = new JForm($jname,array('control'=>'params'));
-	        JFormHelper::addFieldPath(JPATH_COMPONENT_ADMINISTRATOR.'/fields');
-	        foreach ($params as $key => $param) {
 		        /**
 		         * @ignore
-		         * @var $element JXMLElement
+		         * @var $xml JXMLElement
 		         */
-		        $element = $fields[$key];
-		        $name = $element->getAttribute('name');
-		        if ($name!='jfusionbox') {
-			        /**
-			         * @ignore
-			         * @var $field JFormField
-			         */
-			        $field = JFormHelper::loadFieldType($element->getAttribute('type'), true);
-			        if ($field) {
-				        $value = $parametersInstance->get($name, $element->getAttribute('default'));
-				        $field->setForm($form);
-				        $field->setup($element, $value);
-				        $params[$key][0] = $field->label;
-				        $params[$key][1] = $field->input;
-			        }
-		        }
+		        $xml = JFactory::getXML($content, false);
+
+		        $fields = $xml->form;
+		        jimport('joomla.form.form');
+		        jimport('joomla.form.helper');
+
+		        JFormHelper::addFieldPath(JPATH_COMPONENT_ADMINISTRATOR.'/fields');
+
+		        $form->load($fields);
+		        $params = array();
+		        $params['params'] = $parametersInstance->toArray();
+		        $form->bind($params);
 	        }
-            
-            //assign data to view
-            $this->assignRef('params', $params);
-            $this->assignRef('jname', $jname);
-            //output detailed configuration warnings for the plugin
-            if (JFusionFunction::validPlugin($jname)) {
-                $JFusionPlugin = JFusionFactory::getAdmin($jname);
-                $JFusionPlugin->debugConfig();
-            }
+
+	        //assign data to view
+	        $this->assignRef('form', $form);
+	        $this->assignRef('jname', $jname);
+	        //output detailed configuration warnings for the plugin
+	        if (JFusionFunction::validPlugin($jname)) {
+		        $JFusionPlugin = JFusionFactory::getAdmin($jname);
+		        $JFusionPlugin->debugConfig();
+	        }
             //render view
             parent::display($tpl);
         } else {
