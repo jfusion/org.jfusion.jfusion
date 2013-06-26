@@ -130,8 +130,8 @@ if ($this->server_compatible) {
         <td>
 		    <?php
 	        if ($component->olddate) {
-		        $date =& JFactory::getDate($component->olddate);
-		        echo $date->toFormat();
+		        $date = JFactory::getDate($component->olddate);
+		        echo $date->toSql();
 	        } else {
 		        echo JText::_('UNKNOWN');
 	        }
@@ -148,8 +148,8 @@ if ($this->server_compatible) {
         <td>
 		    <?php
 	        if ($component->date) {
-		        $date =& JFactory::getDate($component->date);
-		        echo $date->toFormat();
+		        $date = JFactory::getDate($component->date);
+		        echo $date->toSql();
 	        } else {
 		        echo JText::_('UNKNOWN');
 	        }
@@ -224,8 +224,8 @@ if ($this->server_compatible) {
         <td>
 		    <?php
 		    if ($jfusion_plugin->olddate) {
-			    $date =& JFactory::getDate($jfusion_plugin->olddate);
-			    echo $date->toFormat();
+			    $date = JFactory::getDate($jfusion_plugin->olddate);
+			    echo $date->toSql();
 		    } else {
 			    echo JText::_('UNKNOWN');
 		    }
@@ -242,8 +242,8 @@ if ($this->server_compatible) {
         <td>
 		    <?php
 	        if ($jfusion_plugin->date) {
-		        $date =& JFactory::getDate($jfusion_plugin->date);
-		        echo $date->toFormat();
+		        $date = JFactory::getDate($jfusion_plugin->date);
+		        echo $date->toSql();
 	        } else {
 		        echo JText::_('UNKNOWN');
 	        }

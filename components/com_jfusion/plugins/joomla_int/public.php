@@ -93,7 +93,7 @@ class JFusionPublic_joomla_int extends JFusionPublic {
      * @param object $userinfo
      * @return array status
      */
-    function setLanguageFrontEnd($userinfo) {
+    function setLanguageFrontEnd($userinfo = null) {
         return JFusionJplugin::setLanguageFrontEnd($this->getJname(),$userinfo);
     }
 }

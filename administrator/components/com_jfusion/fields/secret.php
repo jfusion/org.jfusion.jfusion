@@ -29,7 +29,7 @@ class JFormFieldSecret extends JFormField
 	        $value = htmlspecialchars(html_entity_decode($this->value, ENT_QUOTES), ENT_QUOTES);
 		} else {
 			jimport('joomla.user.helper');
-			$value = JUtility::getHash( JUserHelper::genRandomPassword());
+			$value = JApplication::getHash(JUserHelper::genRandomPassword());
 			$value = substr($value, 0, 10);
 		}
 
