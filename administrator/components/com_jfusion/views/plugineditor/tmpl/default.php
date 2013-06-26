@@ -20,37 +20,57 @@ JFusionFunctionAdmin::displayDonate();
 ?>
 
 <form method="post" action="index.php" name="adminForm" id="adminForm">
-    <input type="hidden" name="option" value="com_jfusion" />
-    <input type="hidden" name="task" value="" />
-    <input type="hidden" name="action" value="" />
-    <input type="hidden" name="customcommand" value="" />
-    <?php
-    if ($this->params) {
-        jimport('joomla.html.pane');
-	    echo JHtml::_('tabs.start','jfusion_plugin_editor', array('startOffset'=>2));
-        $inbox = 0;
-        foreach ($this->params as $param) {
-            $label = isset($param[0]) ? $param[0] : '';
-            $content = isset($param[1]) ? $param[1] : '';
-            $titel = isset($param[3]) ? $param[3] : '';
-            $name = isset($param[5]) ? $param[5] : '';
-            if ($name == 'jfusionbox') {
-                if (!empty($inbox)) {
-                    echo '</table>';
-                } else {
-                    $inbox = 1;
-                }
-	            echo JHtml::_('tabs.panel', JText::_($titel), $titel);
-                echo '<table>';
-            } else if (!empty($label) && $titel != ' ' && strpos($titel , '@') !== 0) {
-                echo '<tr><td width="250px">' . $label . '</td><td>' . $content . '</td></tr>';
-            } else {
-                echo '<tr><td colspan=2>' . $content . '</td></tr>';
-            }
-        }
-        echo '</table>';
-	    echo JHtml::_('tabs.end');
-    }
-    ?>
-    <input type="hidden" name="jname" value="<?php echo $this->jname; ?>"/>
+	<input type="hidden" name="option" value="com_jfusion" />
+	<input type="hidden" name="task" value="" />
+	<input type="hidden" name="action" value="" />
+	<input type="hidden" name="customcommand" value="" />
+	<style type="text/css">
+
+	</style>
+	<?php
+	if ($this->form) {
+		$params = $this->form->getGroup('params');
+
+		echo JHtml::_('tabs.start', 'params');
+		// Iterate through the extra form fieldsets and display each one.
+		foreach ($this->form->getFieldsets("params") as $fieldsets => $fieldset):
+			echo JHtml::_('tabs.panel', JText::_($fieldset->name), $fieldsets);
+			?>
+			<table>
+				<?php
+				// Iterate through the fields and display them.
+				foreach($this->form->getFieldset($fieldset->name) as $field):
+					// If the field is hidden, just display the input.
+					?>
+					<?php
+					if ($field->hidden):
+						echo $field->input;
+					else:
+						?>
+						<tr>
+							<td>
+								<?php echo $field->label; ?>
+							</td>
+							<td>
+								<?php echo $field->input; ?>
+							</td>
+						</tr>
+					<?php
+					endif;
+					?>
+
+				<?php
+				endforeach;
+				?>
+			</table>
+		<?php
+
+		endforeach;
+		?>
+		<?php echo JHtml::_('tabs.end'); ?>
+	<?php
+
+	}
+	?>
+	<input type="hidden" name="jname" value="<?php echo $this->jname; ?>"/>
 </form>
