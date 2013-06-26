@@ -246,7 +246,6 @@ class JFusionPluginInstaller extends JObject
         } else {
             $this->parent->setPath('source', $dir);
 
-
             // Get the extension manifest object
             $manifest = $this->_getManifest($dir);
             if (is_null($manifest)) {
@@ -753,7 +752,10 @@ class JFusionPluginInstaller extends JObject
         }
         chdir($cwd);
         $data = ($zipSuccess && file_exists($filename)) ? @file_get_contents($filename) : '';
-	    JFile::delete($filename);
+/*
+ * @TODO deal with delete
+ * JFile::delete($filename);
+ */
         return $data;
     }
 
