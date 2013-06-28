@@ -17,18 +17,20 @@
 defined('_JEXEC') or die('Restricted access');
 //display the paypal donation button
 ?>
-<h1><?php echo $this->jname.' '.JText::_('FEATURES'); ?></h1>
-<table>
-	<?php foreach ($this->features as $cname => $category) { ?>
-		<?php foreach ($category as $name => $value) { ?>
-		<tr>
-			<td width="160px">
-				<?php echo JText::_($name); ?>
-			</td>
-			<td>
-				<?php echo $value; ?>
-			</td>					
-		</tr>
-		<?php } ?>	
-	<?php } ?>
-</table>
+<div class="jfusion">
+	<h1><?php echo $this->jname.' '.JText::_('FEATURES'); ?></h1>
+	<table>
+		<?php foreach ($this->features as $cname => $category) { ?>
+			<?php foreach ($category as $name => $value) { ?>
+			<tr>
+				<td width="160px">
+					<?php echo JText::_($name); ?>
+				</td>
+				<td>
+					<?php echo $value; ?>
+				</td>
+			</tr>
+			<?php } ?>
+		<?php } ?>
+	</table>
+</div>

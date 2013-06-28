@@ -143,7 +143,7 @@ class jfusionViewLoginCheckerResult extends JViewLegacy
 			// Try to authenticate
 			$plugin->onUserAuthenticate($credentials, $options, $response);
 			// If authentication is successfully break out of the loop
-			if ($response->status === JAUTHENTICATE_STATUS_SUCCESS) {
+			if ($response->status === JAuthentication::STATUS_SUCCESS) {
 				if (empty($response->type)) {
 					$response->type = $plugin->name;
 				}
@@ -179,7 +179,7 @@ class jfusionViewLoginCheckerResult extends JViewLegacy
 		}
 
 		$auth_results = array();
-		if ($response->status === JAUTHENTICATE_STATUS_SUCCESS) {
+		if ($response->status === JAuthentication::STATUS_SUCCESS) {
 			/**
 			 * Launch User Plugin Code
 			 */

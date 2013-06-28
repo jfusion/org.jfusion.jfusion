@@ -18,28 +18,29 @@ defined('_JEXEC') or die('Restricted access');
 //display the paypal donation button
 JFusionFunctionAdmin::displayDonate();
 ?>
-
-<form method="post" action="index.php" name="adminForm" id="adminForm">
-	<input type="hidden" name="option" value="com_jfusion" />
-	<input type="hidden" name="task" value="wizardresult" />
-	<font size="2">
-		<?php echo JText::_('WIZARD_INSTR'); ?>
-	</font>
-	<br><br><br>
-	<table style="width:100%;;border-spacing:1px;" class="paramlist admintable">
-		<tr>
-			<td class="paramlist_key">
-				<?php echo JText::_('WIZARD_PATH'); ?>
-			</td>
-			<td class="paramlist_value">
-				<input type="text" name="params[source_path]" id="paramssource_path" value="<?php echo JPATH_ROOT; ?>" class="text_area" size="100" />
-			</td>
-		</tr>
-	</table>
-	<br>
-	<font size="2">
-		<?php echo JText::_('WIZARD_INSTR2'); ?>
-	</font>
-	<br>
-	<input type=hidden name=jname value="<?php echo $this->jname; ?>">
-</form>
+<div class="jfusion">
+	<form method="post" action="index.php" name="adminForm" id="adminForm">
+		<input type="hidden" name="option" value="com_jfusion" />
+		<input type="hidden" name="task" value="wizardresult" />
+		<font size="2">
+			<?php echo JText::_('WIZARD_INSTR'); ?>
+		</font>
+		<br><br><br>
+		<table style="width:100%;;border-spacing:1px;" class="paramlist admintable">
+			<tr>
+				<td class="paramlist_key">
+					<?php echo JText::_('WIZARD_PATH'); ?>
+				</td>
+				<td class="paramlist_value">
+					<input type="text" name="params[source_path]" id="paramssource_path" value="<?php echo JPATH_ROOT; ?>" class="text_area" size="100" />
+				</td>
+			</tr>
+		</table>
+		<br>
+		<font size="2">
+			<?php echo JText::_('WIZARD_INSTR2'); ?>
+		</font>
+		<br>
+		<input type=hidden name=jname value="<?php echo $this->jname; ?>">
+	</form>
+</div>

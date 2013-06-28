@@ -170,3 +170,185 @@ a.navButton:hover {
 .icon-48-importexport {
     background-image: url(../images/importexport.png);
 }
+
+.jfusion div.current fieldset.adminform {
+    border: 1px #ccc solid;
+}
+
+.jfusion table.adminform {
+    background-color: #fff;
+    border: solid 1px #d5d5d5;
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8px 0 10px 0;
+    margin-bottom: 15px;
+}
+
+.jfusion table.adminform tr.row0 {
+    background-color: #f9f9f9;
+}
+
+.jfusion table.adminform tr.row1 {
+    background-color: #eeeeee;
+}
+
+.jfusion table.adminform th {
+    font-size: 1.091em;
+    padding: 6px 2px 4px 4px;
+    text-align: left;
+    height: 25px;
+    color: #000;
+    background-repeat: repeat;
+}
+
+.jfusion table.adminform td {
+    padding: 5px;
+    text-align: left;
+    font-size: 1.091em;
+}
+
+.jfusion table.adminlist {
+    width: 100%;
+    border-spacing: 1px;
+    background-color: #f3f3f3;
+    color: #666;
+}
+
+.jfusion table.adminlist td,
+.jfusion table.adminlist th {
+    padding: 4px;
+}
+
+.jfusion table.adminlist td {padding-left: 8px;}
+
+.jfusion table.adminlist thead th {
+    text-align: center;
+    background: #f7f7f7;
+    color: #666;
+    border-bottom: 1px solid #CCC;
+    border-left: 1px solid #fff;
+}
+
+.jfusion table.adminlist thead th.left {
+    text-align: left;
+}
+
+.jfusion table.adminlist thead a:hover {
+    text-decoration: none;
+}
+
+.jfusion table.adminlist thead th img {
+    vertical-align: middle;
+    padding-left: 3px;
+}
+
+.jfusion table.adminlist tbody th {
+    font-weight: bold;
+}
+
+.jfusion table.adminlist tbody tr {
+    background-color: #fff;
+    text-align: left;
+}
+
+.jfusion table.adminlist tbody tr.row0:hover td,
+.jfusion table.adminlist tbody tr.row1:hover td	{
+    background-color: #e8f6fe;
+}
+
+.jfusion table.adminlist tbody tr td {
+    background: #fff;
+    border: 1px solid #fff;
+}
+
+.jfusion table.adminlist tbody tr.row1 td {
+    background: #f0f0f0;
+    border-top: 1px solid #FFF;
+}
+
+.jfusion table.adminlist tfoot tr {
+    text-align: center;
+    color: #333;
+}
+
+.jfusion table.adminlist tfoot td,
+.jfusion table.adminlist tfoot th {
+    background-color: #f7f7f7;
+    border-top: 1px solid #999;
+    text-align: center;
+}
+
+.jfusion table.adminlist td.order {
+    text-align: center;
+    white-space: nowrap;
+    width: 200px;
+}
+
+.jfusion table.adminlist td.order span {
+    float: left;
+    width: 20px;
+    text-align: center;
+    background-repeat: no-repeat;
+    height: 13px;
+}
+
+.jfusion table.adminlist .pagination {
+    display: inline-block;
+    padding: 0;
+    margin: 0 auto;
+}
+
+/* Tree indentation & nesting - Up to 10 levels deep so don't go crazy :) */
+.jfusion table.adminlist td.indent-4 	{	padding-left: 4px;		}
+.jfusion table.adminlist td.indent-19 	{	padding-left: 19px;		}
+.jfusion table.adminlist td.indent-34 	{	padding-left: 34px;		}
+.jfusion table.adminlist td.indent-49 	{	padding-left: 49px;		}
+.jfusion table.adminlist td.indent-64 	{	padding-left: 64px;		}
+.jfusion table.adminlist td.indent-79 	{	padding-left: 79px;		}
+.jfusion table.adminlist td.indent-94 	{	padding-left: 94px;		}
+.jfusion table.adminlist td.indent-109 	{	padding-left: 109px;	}
+.jfusion table.adminlist td.indent-124 	{	padding-left: 124px;	}
+.jfusion table.adminlist td.indent-139 	{	padding-left: 139px;	}
+
+.jfusion table.adminlist tr td.btns a {
+    text-decoration: underline;
+}
+
+/**
+ * Jfusion tabs
+ */
+.jfusion .tabs dt {
+    float: left;
+}
+
+.jfusion dd[class="tabs"] {
+    clear:both;
+    border: 1px solid #b0d0e9;
+    padding: 20px;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+}
+
+.jfusion .tabs dt {
+    float: left;
+    background: #e8f0f5;
+    border: 1px solid #e8f0f5;
+    border-bottom: 0;
+    padding: 0 1em;
+    position: relative;
+    left: 35px;
+    margin-right: 1px;
+    -webkit-border-top-left-radius: 10px;
+    -webkit-border-top-right-radius: 10px;
+    -moz-border-radius-topleft: 10px;
+    -moz-border-radius-topright: 10px;
+}
+.jfusion .tabs dt.open {
+    border-color: #b0d0e9;
+    background: #fff;
+    z-index: 3;
+}
+
+.jfusion .dumparea {
+    width: 100%;
+}

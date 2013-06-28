@@ -83,7 +83,7 @@ class jfusionViewadvancedparam extends JViewLegacy
 		$template = $mainframe->getTemplate();
 		$document->addStyleSheet("templates/$template/css/general.css");
 		$document->addStyleSheet('components/com_jfusion/css/jfusion.css');
-		$css = 'table.adminlist, table.admintable{ font-size:11px; }';
+		$css = '.jfusion table.adminlist, table.admintable{ font-size:11px; }';
 		$document->addStyleDeclaration($css);
 		if ( $js ) {
 			$document->addScriptDeclaration($js);

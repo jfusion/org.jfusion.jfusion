@@ -86,7 +86,7 @@ class plgAuthenticationjfusion extends JPlugin
                 $debug = JFusionFunction::isAdministrator();
                 if (!empty($options['skip_password_check']) && $debug === true) {
                     $response->debug[] = JText::_('SKIPPED') . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK');
-                    $response->status = JAUTHENTICATE_STATUS_SUCCESS;
+                    $response->status = JAuthentication::STATUS_SUCCESS;
                     $response->email = $userinfo->email;
                     $response->fullname = $userinfo->name;
                     $response->error_message = '';
@@ -96,7 +96,7 @@ class plgAuthenticationjfusion extends JPlugin
                 }
                 // Joomla does not like blank passwords
                 if (empty($credentials['password'])) {
-                    $response->status = JAUTHENTICATE_STATUS_FAILURE;
+                    $response->status = JAuthentication::STATUS_FAILURE;
                     $response->error_message = JText::_('EMPTY_PASSWORD_NO_ALLOWED');
                     $result = false;
                     return $result;
@@ -117,7 +117,7 @@ class plgAuthenticationjfusion extends JPlugin
                 if ($testcrypt == $userinfo->password) {
                     //found a match
                     $response->debug[] = $master->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' . JText::_('SUCCESS');
-                    $response->status = JAUTHENTICATE_STATUS_SUCCESS;
+                    $response->status = JAuthentication::STATUS_SUCCESS;
                     $response->email = $userinfo->email;
                     $response->fullname = $userinfo->name;
                     $response->error_message = '';
@@ -155,7 +155,7 @@ class plgAuthenticationjfusion extends JPlugin
                     if ($check) {
                         //found a match
                         $response->debug[] = $auth_model->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('ENCRYPTION') . ' ' . JText::_('CHECK') . ': ' . JText::_('SUCCESS');
-                        $response->status = JAUTHENTICATE_STATUS_SUCCESS;
+                        $response->status = JAuthentication::STATUS_SUCCESS;
                         $response->email = $userinfo->email;
                         $response->fullname = $userinfo->name;
                         $response->error_message = '';
@@ -182,46 +182,31 @@ class plgAuthenticationjfusion extends JPlugin
 
                 if (empty($JFusionLoginCheckActive) && $mainframe->isAdmin()) {
                     //Logging in via Joomla admin but JFusion failed so attempt the normal joomla behaviour
-	                $JAuth = JPATH_PLUGINS . DIRECTORY_SEPARATOR . 'authentication' . DIRECTORY_SEPARATOR . 'joomla' . DIRECTORY_SEPARATOR . 'joomla.php';
-	                $method = 'onUserAuthenticate';
-                    if (file_exists($JAuth) && $method) {
-                        require_once($JAuth);
-                        plgAuthenticationJoomla::$method($credentials, $options, $response);
-                        $response->debug[] = JText::_('JOOMLA_AUTH_PLUGIN_USED_JFUSION_FAILED');
-                    }
+	                JFusionFunction::getJoomlaAuth()->onUserAuthenticate($credentials, $options, $response);
+	                $response->debug[] = JText::_('JOOMLA_AUTH_PLUGIN_USED_JFUSION_FAILED');
                 }
 
-                if (isset($response->status) && $response->status != JAUTHENTICATE_STATUS_SUCCESS) {
+                if (isset($response->status) && $response->status != JAuthentication::STATUS_SUCCESS) {
                     //no matching password found
-                    $response->status = JAUTHENTICATE_STATUS_FAILURE;
+                    $response->status = JAuthentication::STATUS_FAILURE;
                     $response->error_message = JText::_('FUSION_INVALID_PASSWORD');
                 }
             } else {
                 if (empty($JFusionLoginCheckActive) && $mainframe->isAdmin()) {
                     //Logging in via Joomla admin but JFusion failed so attempt the normal joomla behaviour
-	                $JAuth = JPATH_PLUGINS . DIRECTORY_SEPARATOR . 'authentication' . DIRECTORY_SEPARATOR . 'joomla' . DIRECTORY_SEPARATOR . 'joomla.php';
-	                $method = 'onUserAuthenticate';
-                    if (file_exists($JAuth) && $method) {
-                        require_once($JAuth);
-                        plgAuthenticationJoomla::$method($credentials, $options, $response);
-                        $response->debug[] = JText::_('JOOMLA_AUTH_PLUGIN_USED_JFUSION_FAILED');
-                    }
+	                JFusionFunction::getJoomlaAuth()->onUserAuthenticate($credentials, $options, $response);
+	                $response->debug[] = JText::_('JOOMLA_AUTH_PLUGIN_USED_JFUSION_FAILED');
                 }
 
-                if (isset($response->status) && $response->status != JAUTHENTICATE_STATUS_SUCCESS) {
-                    $response->status = JAUTHENTICATE_STATUS_FAILURE;
+                if (isset($response->status) && $response->status != JAuthentication::STATUS_SUCCESS) {
+                    $response->status = JAuthentication::STATUS_FAILURE;
                     $response->error_message = JText::_('USER_NOT_EXIST');
                 }
             }
         } else {
             //we have to call the main Joomla plugin as we have no master
-	        $JAuth = JPATH_PLUGINS . DIRECTORY_SEPARATOR . 'authentication' . DIRECTORY_SEPARATOR . 'joomla' . DIRECTORY_SEPARATOR . 'joomla.php';
-	        $method = 'onUserAuthenticate';
-            if (file_exists($JAuth) && $method) {
-                require_once($JAuth);
-                plgAuthenticationJoomla::$method($credentials, $options, $response);
-                $response->debug[] = JText::_('JOOMLA_AUTH_PLUGIN_USED_NO_MASTER');
-            }
+	        JFusionFunction::getJoomlaAuth()->onUserAuthenticate($credentials, $options, $response);
+	        $response->debug[] = JText::_('JOOMLA_AUTH_PLUGIN_USED_NO_MASTER');
         }
         return false;
     }

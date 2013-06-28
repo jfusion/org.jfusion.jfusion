@@ -24,15 +24,16 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DI
  * Output information about the server for future support queries
  */
 ?>
-
-<form method="post" action="index.php" name="adminForm" id="adminForm">
-	<input type="hidden" name="option" value="com_jfusion" />
-	<input type="hidden" name="task" value="logoutcheckerresult" />
-</form>
-<div style="border:0 none ; margin:0; padding:0 5px; width: 800px; float: left;">
-	<?php
-	$title = JText::_('LOGOUT') . ' ' . JText::_('DEBUG');
-    debug::show($this->debug, $title);
-	?>
-	<textarea rows="25" cols="110"><?php echo debug::getText($this->debug, $title) ?></textarea>
+<div class="jfusion">
+	<form method="post" action="index.php" name="adminForm" id="adminForm">
+		<input type="hidden" name="option" value="com_jfusion" />
+		<input type="hidden" name="task" value="logoutcheckerresult" />
+	</form>
+	<div style="border:0 none ; margin:0; padding:0 5px; width: 800px; float: left;">
+		<?php
+		$title = JText::_('LOGOUT') . ' ' . JText::_('DEBUG');
+	    debug::show($this->debug, $title);
+		?>
+		<textarea rows="25" class="dumparea"><?php echo debug::getText($this->debug, $title) ?></textarea>
+	</div>
 </div>

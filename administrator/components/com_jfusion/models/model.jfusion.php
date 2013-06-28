@@ -1617,4 +1617,29 @@ class JFusionFunction
 		$xml = JFactory::getXML($data,$isFile);
 		return $xml;
 	}
+
+	/**
+	 * @return plgAuthenticationJoomla
+	 */
+	public static function getJoomlaAuth() {
+		$dispatcher = JEventDispatcher::getInstance();
+
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+
+		$query->select('folder, type, element AS name, params')
+			->from('#__extensions')
+			->where('element = ' . $db->Quote('joomla'))
+			->where('type =' . $db->Quote('plugin'))
+			->where('folder =' . $db->Quote('authentication'));
+
+		$plugin = $db->setQuery($query)->loadObject();
+		$plugin->type = $plugin->folder;
+
+		$path = JPATH_PLUGINS . '/authentication/joomla/joomla.php';
+		require_once $path;
+
+		$className = 'plg' . $plugin->type . $plugin->name;
+		return new plgAuthenticationJoomla($dispatcher, (array) ($plugin));
+	}
 }

@@ -268,84 +268,86 @@ window.addEvent('domready', function() {
 );
 // -->
 </script>
-<h3><?php echo JText::_('SYNC_WARNING'); ?></h3><br/>
+<div class="jfusion">
+	<h3><?php echo JText::_('SYNC_WARNING'); ?></h3><br/>
 
-<?php
-if ($this->sync_active) {
-    echo '<h3 style="color:red;">' . JText::_('SYNC_IN_PROGRESS_WARNING') . "</h3><br />\n" ;
-}
-?>
-<?php if ($this->sync_mode == 'new') { ?>
-<div id="log_res">
-    <form method="post" action="index.php" name="adminForm" id="adminForm">
-        <input type="hidden" name="option" value="com_jfusion" />
-        <input type="hidden" name="task" value="syncstatus" />
-        <input type="hidden" name="syncid" value="<?php echo $this->syncid; ?>" />
-        <div class="ajax_bar">
-            <?php echo JText::_('SYNC_DIRECTION_SELECT'); ?>
-            <select name="action" style="margin-right:10px; margin-left:5px;">
-                <option value="master"><?php echo JText::_('SYNC_MASTER'); ?></option>
-                <option value="slave"><?php echo JText::_('SYNC_SLAVE'); ?></option>
-            </select>
-            <?php echo JText::_('SYNC_NUMBER_OF_USERS'); ?>
-            <input name="userbatch" class="inputbox" style="margin-right:10px; margin-left:5px;" value="500"/>
-        </div>
-        <br/>
+	<?php
+	if ($this->sync_active) {
+	    echo '<h3 style="color:red;">' . JText::_('SYNC_IN_PROGRESS_WARNING') . "</h3><br />\n" ;
+	}
+	?>
+	<?php if ($this->sync_mode == 'new') { ?>
+	<div id="log_res">
+	    <form method="post" action="index.php" name="adminForm" id="adminForm">
+	        <input type="hidden" name="option" value="com_jfusion" />
+	        <input type="hidden" name="task" value="syncstatus" />
+	        <input type="hidden" name="syncid" value="<?php echo $this->syncid; ?>" />
+	        <div class="ajax_bar">
+	            <?php echo JText::_('SYNC_DIRECTION_SELECT'); ?>
+	            <select name="action" style="margin-right:10px; margin-left:5px;">
+	                <option value="master"><?php echo JText::_('SYNC_MASTER'); ?></option>
+	                <option value="slave"><?php echo JText::_('SYNC_SLAVE'); ?></option>
+	            </select>
+	            <?php echo JText::_('SYNC_NUMBER_OF_USERS'); ?>
+	            <input name="userbatch" class="inputbox" style="margin-right:10px; margin-left:5px;" value="500"/>
+	        </div>
+	        <br/>
 
-        <table class="adminlist" style="border-spacing:1px;">
-            <thead>
-            <tr>
-                <th width="50px"><?php echo JText::_('NAME'); ?></th>
-                <th width="50px"><?php echo JText::_('TYPE'); ?></th>
-                <th width="50px"><?php echo JText::_('USERS'); ?></th>
-                <th width="200px"><?php echo JText::_('OPTIONS'); ?></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td><?php echo $this->master_data['jname']; ?></td>
-                <td><?php echo JText::_('MASTER') ?></td>
-                <td><?php echo $this->master_data['total']; ?></td>
-                <td></td>
-            </tr>
+	        <table class="adminlist" style="border-spacing:1px;">
+	            <thead>
+	            <tr>
+	                <th width="50px"><?php echo JText::_('NAME'); ?></th>
+	                <th width="50px"><?php echo JText::_('TYPE'); ?></th>
+	                <th width="50px"><?php echo JText::_('USERS'); ?></th>
+	                <th width="200px"><?php echo JText::_('OPTIONS'); ?></th>
+	            </tr>
+	            </thead>
+	            <tbody>
+	            <tr>
+	                <td><?php echo $this->master_data['jname']; ?></td>
+	                <td><?php echo JText::_('MASTER') ?></td>
+	                <td><?php echo $this->master_data['total']; ?></td>
+	                <td></td>
+	            </tr>
 
-                <?php
-                foreach ($this->slave_data as $slave) { ?>
-                <tr>
-                    <td><?php echo $slave['jname']; ?></td>
-                    <td><?php echo JText::_('SLAVE') ?></td>
-                    <td><?php echo $slave['total']; ?></td>
-                    <td>
-                        <select id="<?php echo $slave['jname']; ?>" name="slave[<?php echo $slave['jname']; ?>][perform_sync]">
-                            <option value=""><?php echo JText::_('SYNC_EXCLUDE_PLUGIN'); ?></option>
-                            <option value="1"><?php echo JText::_('SYNC_INCLUDE_PLUGIN'); ?></option>
-                        </select>
-                    </td>
-                </tr>
-                    <?php }
-                ?>
-            </tbody>
-        </table>
-    </form>
-</div>
-<?php
-} else {
-    ?>
-<div id="log_res">
-</div>
-<script type="text/javascript">
-    <!--
-    response = <?php echo json_encode($this->syncdata);?>;
-    renderSync(response);
-    // -->
-</script>
-<?php
-} ?>
-<br/>
-<div id="jfusionError" style="color:red;"></div>
-<div id="counter"></div>
-<br/>
-<div class="ajax_bar">
-    <b><?php echo JText::_('SYNC_CONTROLLER'); ?></b>&nbsp;&nbsp;&nbsp;
-    <a id="start" href="#"><?php echo JText::_('START'); ?></a>
+	                <?php
+	                foreach ($this->slave_data as $slave) { ?>
+	                <tr>
+	                    <td><?php echo $slave['jname']; ?></td>
+	                    <td><?php echo JText::_('SLAVE') ?></td>
+	                    <td><?php echo $slave['total']; ?></td>
+	                    <td>
+	                        <select id="<?php echo $slave['jname']; ?>" name="slave[<?php echo $slave['jname']; ?>][perform_sync]">
+	                            <option value=""><?php echo JText::_('SYNC_EXCLUDE_PLUGIN'); ?></option>
+	                            <option value="1"><?php echo JText::_('SYNC_INCLUDE_PLUGIN'); ?></option>
+	                        </select>
+	                    </td>
+	                </tr>
+	                    <?php }
+	                ?>
+	            </tbody>
+	        </table>
+	    </form>
+	</div>
+	<?php
+	} else {
+	    ?>
+	<div id="log_res">
+	</div>
+	<script type="text/javascript">
+	    <!--
+	    response = <?php echo json_encode($this->syncdata);?>;
+	    renderSync(response);
+	    // -->
+	</script>
+	<?php
+	} ?>
+	<br/>
+	<div id="jfusionError" style="color:red;"></div>
+	<div id="counter"></div>
+	<br/>
+	<div class="ajax_bar">
+	    <b><?php echo JText::_('SYNC_CONTROLLER'); ?></b>&nbsp;&nbsp;&nbsp;
+	    <a id="start" href="#"><?php echo JText::_('START'); ?></a>
+	</div>
 </div>
