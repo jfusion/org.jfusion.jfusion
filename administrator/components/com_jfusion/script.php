@@ -567,7 +567,7 @@ HTML;
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
 		if(!empty($rows)) {
-			require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.install.php';
+			require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.install.php';
 			foreach ($rows as $row) {
 				$query = 'SELECT count(*) from #__jfusion WHERE (params IS NOT NULL OR params != \'\' OR params != \'0\' OR master = 1 OR slave = 1) AND original_name LIKE '. $db->Quote($row->name);
 				$db->setQuery($query);

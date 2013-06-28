@@ -83,16 +83,6 @@ class JFusionPublic_mediawiki extends JFusionPublic {
 	}
 
     /**
-     * @param string $results
-     * @param object $pluginParam
-     *
-     * @return void
-     */
-    function filterSearchResults(&$results, &$pluginParam)
-	{
-	}
-
-    /**
      * @param mixed $post
      *
      * @return string

@@ -48,7 +48,7 @@ class JFusionUser_joomla_ext extends JFusionUser {
      * @param int $overwrite
      * @return array
      */
-    function updateUser($userinfo, $overwrite) {
+    function updateUser($userinfo, $overwrite = 0) {
         $status = JFusionJplugin::updateUser($userinfo, $overwrite, $this->getJname());
         return $status;
     }

@@ -35,7 +35,7 @@ class JFusionUser_dokuwiki extends JFusionUser {
      *
      * @return array
      */
-    function updateUser($userinfo, $overwrite) {
+    function updateUser($userinfo, $overwrite = 0) {
         // Initialise some variables
         $params = JFusionFactory::getParams($this->getJname());
         /**

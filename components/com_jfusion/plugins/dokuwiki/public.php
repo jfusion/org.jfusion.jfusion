@@ -375,7 +375,8 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
         $search = new DokuWikiSearch($this->getJname());
         $results = $search->ft_pageSearch($text, $highlights);
         //pass results back to the plugin in case they need to be filtered
-        $this->filterSearchResults($results);
+
+        $this->filterSearchResults($results, $pluginParam);
         $rows = array();
         $pos = 0;
 
@@ -390,14 +391,6 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
             $pos++;
         }
         return $rows;
-    }
-
-    /**
-     * @param string &$results
-     *
-     * @return void
-     */
-    function filterSearchResults(&$results) {
     }
 
     /**
