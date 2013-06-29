@@ -31,7 +31,7 @@ function changesetting(fieldname, fieldvalue, jname){
             showSpinner(jname,fieldname);
         },
         onSuccess: function(JSONobject) {
-            $('jfusionError').innerHTML = JSONobject.errormessage;
+            $('system-message-container').innerHTML = JSONobject.errormessage;
 
             //also update the check_encryption and dual_login fields if needed
             if (fieldname == 'master' || fieldname == 'slave') {
@@ -286,7 +286,6 @@ window.addEvent('domready',function() {
 //]]>
 </script>
 <div class="jfusion">
-	<div id="jfusionError" style="color:red;"><?php echo $this->errormessage; ?></div>
 	<form method="post" action="index.php" name="adminForm">
 	    <input type="hidden" name="option" value="com_jfusion" />
 	    <input type="hidden" name="task" value="saveorder" />

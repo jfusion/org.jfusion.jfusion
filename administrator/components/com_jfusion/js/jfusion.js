@@ -128,7 +128,7 @@ function jfusionError(string, force) {
     if (string.indexOf('<!') == 0) {
         string = 'SESSION TIMEOUT';
     }
-    var jfusionError = $("jfusionError");
+    var jfusionError = $("system-message-container");
     if (jfusionError) {
         jfusionError.innerHTML = string;
         if (force) {

@@ -1642,4 +1642,50 @@ class JFusionFunction
 		$className = 'plg' . $plugin->type . $plugin->name;
 		return new plgAuthenticationJoomla($dispatcher, (array) ($plugin));
 	}
+
+	/**
+	 * @param null|array $msgList
+	 *
+	 * @return string
+	 */
+	public static function renderMessage($msgList=null)
+	{
+		$levels = array(
+			E_NOTICE 	=> 'notice',
+			E_WARNING	=> 'warning',
+			E_ERROR 	=> 'error');
+		if ($msgList===null) {
+			$errors = JError::getErrors();
+			$msgList = array();
+			if(!empty($errors)) {
+				foreach ($errors as $error)
+				{
+					$level = $error->get('level');
+					if ( isset($levels[$level]) ) {
+						$msgList[$levels[$level]][] = $error->get('message');
+					}
+				}
+			}
+		}
+		$buffer  = null;
+		$alert = array('error' => 'alert-error', 'warning' => '', 'notice' => 'alert-info', 'message' => 'alert-success');
+
+		if (is_array($msgList))
+		{
+			foreach ($msgList as $type => $msgs)
+			{
+				$buffer .= '<div class="alert ' . $alert[$type]. '">';
+				$buffer .= "\n<h4 class=\"alert-heading\">" . JText::_($type) . "</h4>";
+				if (count($msgs))
+				{
+					foreach ($msgs as $msg)
+					{
+						$buffer .= "\n\t\t<p>" . $msg . "</p>";
+					}
+				}
+				$buffer .= "\n</div>";
+			}
+		}
+		return $buffer;
+	}
 }

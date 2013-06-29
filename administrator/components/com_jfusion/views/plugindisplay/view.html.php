@@ -67,7 +67,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
         $rows = $db->loadObjectList();
         $plugins = array();
         //disable the default error reports
-        JError::setErrorHandling(E_ALL, "ignore");
+	    //JError::setErrorHandling(E_ALL, "ignore");
             
         if ($rows) {
             //we found plugins now prepare the data
@@ -112,11 +112,6 @@ class jfusionViewplugindisplay extends JViewLegacy {
 	            }
 	        }
 
-
-            //set the error messages
-            $errormessage = $this->generateErrorHTML();   
-            $this->assignRef('errormessage', $errormessage);
-
             //pass the data onto the view
             $this->assignRef('plugins', $plugins);
             $this->assignRef('VersionData', $VersionData);
@@ -126,25 +121,38 @@ class jfusionViewplugindisplay extends JViewLegacy {
         }
     }
 
-    /**
-     * @return string
-     */
-    function generateErrorHTML() {
-        $errors = JError::getErrors(); 
-    	$result = '';
-    	if(!empty($errors)){
-            $result .= '<dl id="system-message"><dt class="notice">Notice</dt><dd class="notice message fade">';
-            /**
-             * @ignore
-             * @var $message JException
-             */
-		    foreach ($errors as $message) {
-			    $result .= '<ul><li>' . $message->__toString() . '</li></ul>';
-		    }
-            $result .= '</dd></dl>';
-        } 	
-        return $result;	
-    }
+	/**
+	 * @param null|array $msgList
+	 *
+	 * @return string
+	 */
+	public static function renderMessage($msgList=null)
+	{
+		if ($msgList===null) {
+			$errors = JError::getErrors();
+			$msgList = $errors;
+		}
+		$buffer  = null;
+		$alert = array('error' => 'alert-error', 'warning' => '', 'notice' => 'alert-info', 'message' => 'alert-success');
+
+		if (is_array($msgList))
+		{
+			foreach ($msgList as $type => $msgs)
+			{
+				$buffer .= '<div class="alert ' . $alert[$type]. '">';
+				$buffer .= "\n<h4 class=\"alert-heading\">" . JText::_($type) . "</h4>";
+				if (count($msgs))
+				{
+					foreach ($msgs as $msg)
+					{
+						$buffer .= "\n\t\t<p>" . $msg . "</p>";
+					}
+				}
+				$buffer .= "\n</div>";
+			}
+		}
+		return $buffer;
+	}
 
     /**
      * @param $jname

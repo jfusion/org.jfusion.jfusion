@@ -343,7 +343,6 @@ window.addEvent('domready', function() {
 	<?php
 	} ?>
 	<br/>
-	<div id="jfusionError" style="color:red;"></div>
 	<div id="counter"></div>
 	<br/>
 	<div class="ajax_bar">

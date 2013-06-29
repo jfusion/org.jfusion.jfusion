@@ -164,12 +164,8 @@ class JFusionController extends JControllerLegacy
             }
         }
         $debug = array();
-        /**
-         * @ignore
-         * @var $view jfusionViewplugindisplay
-         */
-        $view = $this->getView('plugindisplay','html');
-        $debug['errormessage'] = $view->generateErrorHTML();
+
+        $debug['errormessage'] = JFusionFunction::renderMessage();
         die(json_encode($debug));
     }
 
