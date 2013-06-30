@@ -36,7 +36,7 @@ JFusionFunctionAdmin::displayDonate();
 			foreach ($this->form->getFieldsets("params") as $fieldsets => $fieldset):
 				echo JHtml::_('tabs.panel', JText::_($fieldset->name), $fieldsets);
 				?>
-				<table>
+				<table class="settings">
 					<?php
 					// Iterate through the fields and display them.
 					foreach($this->form->getFieldset($fieldset->name) as $field):

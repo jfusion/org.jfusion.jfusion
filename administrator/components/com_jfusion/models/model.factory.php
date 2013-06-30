@@ -314,7 +314,7 @@ class JFusionFactory
             }
         }
         if (!is_object($parametersInstance)) {
-            JError::raiseError(500, JText::_('NO_FORUM_PARAMETERS'));
+	        throw new Exception(JText::_('NO_FORUM_PARAMETERS'));
         }
         return $parametersInstance;
     }
@@ -349,7 +349,7 @@ class JFusionFactory
             //added extra code to prevent error when $driver is incorrect
             if ($driver != 'mysql' && $driver != 'mysqli') {
                 //invalid driver
-                JError::raiseWarning(0, $jname . ' : ' .JText::_('INVALID_DRIVER'));
+                JFusionFunction::raiseWarning(0, $jname . ' : ' .JText::_('INVALID_DRIVER'));
                 $db = false;
             } else {
 	            $options = array('driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database, 'prefix' => $prefix);
@@ -367,7 +367,7 @@ class JFusionFactory
 		            $db->debug($debug);
 
 		            if (!method_exists($db, 'Query')) {
-			            JError::raiseWarning(0, $jname . ' : ' .JText::_('NO_DATABASE'));
+			            JFusionFunction::raiseWarning(0, $jname . ' : ' .JText::_('NO_DATABASE'));
 			            $db = false;
 		            }
 	            } catch (RuntimeException $e) {

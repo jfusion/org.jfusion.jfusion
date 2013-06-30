@@ -122,7 +122,7 @@ function jfusionParseRoute($segments)
 	    $menu_params = new JRegistry($item->params);
 	    $JFusionPluginParam = $menu_params->get('JFusionPluginParam');
 	    if (empty($JFusionPluginParam)) {
-	        JError::raiseError('404', JText::_('ERROR_PLUGIN_CONFIG'));
+		    throw new Exception( JText::_ ( 'ERROR_PLUGIN_CONFIG' ) );
 	    } else {
 	        //load custom plugin parameter
 	        $jPluginParam = new JRegistry('');

@@ -31,7 +31,7 @@ if (JFile::exists ( $path )) {
 	require_once ($path);
 } else {
 	// Hmm... an invalid controller was passed
-	JError::raiseError ( '500', JText::_ ( 'Unknown controller' ) );
+	throw new Exception( JText::_ ( 'Unknown controller' ) );
 }
 
 // Instanciate and execute the controller

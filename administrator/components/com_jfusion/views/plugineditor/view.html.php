@@ -83,7 +83,7 @@ class jfusionViewplugineditor extends JViewLegacy
             parent::display($tpl);
         } else {
             //report error
-            JError::raiseWarning(500, JText::_('NONE_SELECTED'));
+            JFusionFunction::raiseWarning(500, JText::_('NONE_SELECTED'));
         }
     }
 }

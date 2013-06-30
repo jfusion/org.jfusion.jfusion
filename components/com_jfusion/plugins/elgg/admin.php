@@ -61,7 +61,7 @@ class JFusionAdmin_elgg extends JFusionAdmin
         $config = array();
         //check if the file exists
         if (($file_handle = @fopen($myfile, 'r')) === false) {
-            JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));
+            JFusionFunction::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));
         } else {
             //parse the file line by line to get only the config variables
             $file_handle = fopen($myfile, 'r');

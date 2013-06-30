@@ -205,13 +205,13 @@ class JFusionFrameless {
 		JFusionFunction::reconnectJoomlaDb();
 
 		if ($data->buffer === 0) {
-			JError::raiseWarning ( 500, JText::_ ( 'NO_FRAMELESS' ) );
+			JFusionFunction::raiseWarning ( 500, JText::_ ( 'NO_FRAMELESS' ) );
 			$result = false;
 			return $result;
 		}
 
 		if (! $data->buffer) {
-			JError::raiseWarning ( 500, JText::_ ( 'NO_BUFFER' ) );
+			JFusionFunction::raiseWarning ( 500, JText::_ ( 'NO_BUFFER' ) );
 			$result = false;
 			return $result;
 		}
@@ -233,7 +233,7 @@ class JFusionFrameless {
 			else {
 				unset ( $data->buffer );
 				//no output returned
-				JError::raiseWarning ( 500, JText::_ ( 'NO_HTML' ) );
+				JFusionFunction::raiseWarning ( 500, JText::_ ( 'NO_HTML' ) );
 			}
 		}
 		else {

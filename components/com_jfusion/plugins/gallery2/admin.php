@@ -68,7 +68,7 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
         $config = array();
         //try to open the file
         if (($file_handle = @fopen($myfile, 'r')) === false) {
-            JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));
+            JFusionFunction::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));
             //get the default parameters object
         } else {
             //parse the file line by line to get only the config variables

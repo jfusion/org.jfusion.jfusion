@@ -789,7 +789,7 @@ class JFusionUser_vbulletin extends JFusionUser
     {
         $debug = (defined('DEBUG_SYSTEM_PLUGIN') ? true : false);
         if ($debug) {
-            JError::raiseNotice('500', 'vbulletin keep alive called');
+            JFusionFunction::raiseNotice('500', 'vbulletin keep alive called');
         }
         $options = array();
         //retrieve the values for vb cookies
@@ -819,7 +819,7 @@ class JFusionUser_vbulletin extends JFusionUser
         if (!$JUser->get('guest', true)) {
             //user logged into Joomla so let's check for an active vb session
             if ($debug) {
-                JError::raiseNotice('500', 'Joomla user logged in');
+                JFusionFunction::raiseNotice('500', 'Joomla user logged in');
             }
 
             //find the userid attached to Joomla userid
@@ -831,17 +831,17 @@ class JFusionUser_vbulletin extends JFusionUser
             $vb_session = ((!empty($cookie_userid) && !empty($cookie_password) && $cookie_userid == $vb_userid) || (!empty($session_userid) && $session_userid == $vb_userid)) ? 1 : 0;
 
             if ($debug) {
-                JError::raiseNotice('400', 'vB session active: ' . $vb_session);
+                JFusionFunction::raiseNotice('400', 'vB session active: ' . $vb_session);
             }
 
             //create a new session if one does not exist and either keep alive is enabled or a joomla persistent cookie exists
             if (!$vb_session) {
                 if ((!empty($keepalive) || !empty($joomla_persistant_cookie))) {
                     if ($debug) {
-                        JError::raiseNotice('500', 'vbulletin guest');
-                        JError::raiseNotice('500', "cookie_sessionhash = $cookie_sessionhash");
-                        JError::raiseNotice('500', "session_userid = $session_userid");
-                        JError::raiseNotice('500', "vb_userid = $vb_userid");
+                        JFusionFunction::raiseNotice('500', 'vbulletin guest');
+                        JFusionFunction::raiseNotice('500', "cookie_sessionhash = $cookie_sessionhash");
+                        JFusionFunction::raiseNotice('500', "session_userid = $session_userid");
+                        JFusionFunction::raiseNotice('500', "vb_userid = $vb_userid");
                     }
                     //enable remember me as this is a keep alive function anyway
                     $options['remember'] = 1;
@@ -853,13 +853,13 @@ class JFusionUser_vbulletin extends JFusionUser
                     //create a new session
                     $status = $this->createSession($userinfo, $options);
                     if ($debug) {
-                        JFusionFunction::raiseWarning('500', $status);
+                        JFusionFunction::raise('500', $status);
                     }
                     //signal that session was changed
                     return 1;
                 } else {
                    if ($debug) {
-                        JError::raiseNotice('500','keep alive disabled or no persistant session found so calling Joomla\'s destorySession');
+                        JFusionFunction::raiseNotice('500','keep alive disabled or no persistant session found so calling Joomla\'s destorySession');
                     }
                     $JoomlaUser = JFusionFactory::getUser('joomla_int');
 
@@ -877,24 +877,24 @@ class JFusionUser_vbulletin extends JFusionUser
                     $options['clientid'][] = '0';
                     $status = $JoomlaUser->destroySession($userinfo, $options);
                     if ($debug) {
-                        JFusionFunction::raiseWarning('500',$status);
+                        JFusionFunction::raise('500',$status);
                     }
                 }
             } elseif ($debug) {
-                JError::raiseNotice('400', 'Nothing done as both Joomla and vB have active sessions.');
+                JFusionFunction::raiseNotice('400', 'Nothing done as both Joomla and vB have active sessions.');
             }
         } elseif (!empty($session_userid) || (!empty($cookie_userid) && !empty($cookie_password))) {
             //the user is not logged into Joomla and we have an active vB session
 
            if ($debug) {
-                JError::raiseNotice('500','Joomla has a guest session');
+                JFusionFunction::raiseNotice('500','Joomla has a guest session');
             }
 
             if (!empty($cookie_userid) && $cookie_userid != $session_userid) {
                 $status = $this->destroySession(null, null);
                 if ($debug) {
-                    JError::raiseNotice('500', 'Cookie userid did not match session userid thus destroyed vB\'s session.');
-                    JFusionFunction::raiseWarning('500', $status);
+                    JFusionFunction::raiseNotice('500', 'Cookie userid did not match session userid thus destroyed vB\'s session.');
+                    JFusionFunction::raise('500', $status);
                 }
             }
 
@@ -903,23 +903,23 @@ class JFusionUser_vbulletin extends JFusionUser
 
             if (!empty($joomla_persistant_cookie)) {
                if ($debug) {
-                    JError::raiseNotice('500','Joomla persistant cookie found so let Joomla handle renewal');
+                    JFusionFunction::raiseNotice('500','Joomla persistant cookie found so let Joomla handle renewal');
                 }
                 return 0;
             } elseif (empty($keepalive)) {
                if ($debug) {
-                    JError::raiseNotice('500','Keep alive disabled so kill vBs session');
+                    JFusionFunction::raiseNotice('500','Keep alive disabled so kill vBs session');
                 }
                 //something fishy or user chose not to use remember me so let's destroy vB's session
                 $this->destroySession(null, null);
                 return 1;
             } elseif ($debug) {
-                JError::raiseNotice('500','Keep alive enabled so renew Joomla\'s session');
+                JFusionFunction::raiseNotice('500','Keep alive enabled so renew Joomla\'s session');
             }
 
             if (!empty($userlookup)) {
                if ($debug) {
-                    JError::raiseNotice('500','Found a phpBB user so attempting to renew Joomla\'s session.');
+                    JFusionFunction::raiseNotice('500','Found a phpBB user so attempting to renew Joomla\'s session.');
                 }
                 //get the user's info
                 $db = JFactory::getDBO();
@@ -933,7 +933,7 @@ class JFusionUser_vbulletin extends JFusionUser
                     $JFusionActivePlugin = $this->getJname();
                     $status = $JoomlaUser->createSession($userinfo, $options);
                     if ($debug) {
-                        JFusionFunction::raiseWarning('500',$status);
+                        JFusionFunction::raise('500',$status);
                     }
                     //no need to signal refresh as Joomla will recognize this anyway
                     return 0;

@@ -237,7 +237,7 @@ class JFusionJplugin
         }
         $params = array();
         if (($file_handle = @fopen($configfile, 'r')) === false) {
-            JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $configfile " . JText::_('WIZARD_MANUAL'));
+            JFusionFunction::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $configfile " . JText::_('WIZARD_MANUAL'));
         } else {
             //parse the file line by line to get only the config variables
             //we can not directly include the config file as JConfig is already defined
@@ -614,7 +614,7 @@ class JFusionJplugin
                     $query = 'REPLACE INTO #__jfusion_users (id, username) VALUES (' . $result->userid . ', ' . $db->Quote($identifier) . ')';
                     $db->setQuery($query);
                     if (!$db->execute()) {
-                        JError::raiseWarning(0, $db->stderr());
+                        JFusionFunction::raiseWarning(0, $db->stderr());
                     }
                 }
             }
@@ -998,7 +998,7 @@ class JFusionJplugin
                         $query = 'REPLACE INTO #__jfusion_users (id, username) VALUES (' . $createdUser->id . ', ' . $db->Quote($username) . ')';
                         $db->setQuery($query);
                         if (!$db->execute()) {
-                            JError::raiseWarning(0, $db->stderr());
+                            JFusionFunction::raiseWarning(0, $db->stderr());
                         }
                     }
                 } else {

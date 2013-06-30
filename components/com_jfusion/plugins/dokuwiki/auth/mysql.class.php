@@ -62,7 +62,7 @@ class doku_auth_mysql extends doku_auth_basic {
 
 		if(!function_exists('mysql_connect')) {
 			if ($this->cnf['debug']) {
-				JError::raiseWarning(500, 'MySQL err: PHP MySQL extension not found.');
+				JFusionFunction::raiseWarning(500, 'MySQL err: PHP MySQL extension not found.');
 			}
 			$this->success = false;
 		}
@@ -80,7 +80,7 @@ class doku_auth_mysql extends doku_auth_basic {
           	empty($this->cnf['password']) ||
           	empty($this->cnf['database'])) {
         	if ($this->cnf['debug']) {
-				JError::raiseWarning(500, 'MySQL err: insufficient configuration.');
+				JFusionFunction::raiseWarning(500, 'MySQL err: insufficient configuration.');
         	}        
 //          msg('MySQL err: insufficient configuration.',-1,__LINE__,__FILE__);
 			$this->success = false;
@@ -620,7 +620,7 @@ class doku_auth_mysql extends doku_auth_basic {
                     * is not a big issue so we ignore this problem here.
                     */
                     $this->_delUser($user);
-                    if ($this->cnf['debug']) JError::raiseWarning(500,'MySQL err: Adding user \''.$user.'\' to group \''.$group.'\' failed.');
+                    if ($this->cnf['debug']) JFusionFunction::raiseWarning(500,'MySQL err: Adding user \''.$user.'\' to group \''.$group.'\' failed.');
                 }
             }
         }
@@ -800,7 +800,7 @@ class doku_auth_mysql extends doku_auth_basic {
      */
     function _queryDB($query) {
 		if($this->cnf['debug'] >= 2) {
-			JError::raiseWarning(500,'MySQL query: '.hsc($query));
+			JFusionFunction::raiseWarning(500,'MySQL query: '.hsc($query));
 		}
 
 		$resultarray = array();
@@ -812,7 +812,7 @@ class doku_auth_mysql extends doku_auth_basic {
             }
 	        if ($this->cnf['debug']) {
 				if ($this->dbcon->getErrorNum()) {
-					JError::raiseWarning(500,'MySQL err: '.$this->dbcon->stderr());
+					JFusionFunction::raiseWarning(500,'MySQL err: '.$this->dbcon->stderr());
         		}
 	        }
 		}
@@ -840,7 +840,7 @@ class doku_auth_mysql extends doku_auth_basic {
         	}
         	if ($this->cnf['debug']) {
 				if ($this->dbcon->getErrorNum()) {
-					JError::raiseWarning(500,'MySQL err: '.$this->dbcon->stderr());
+					JFusionFunction::raiseWarning(500,'MySQL err: '.$this->dbcon->stderr());
         		}
         	}
 		}

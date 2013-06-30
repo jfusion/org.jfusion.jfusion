@@ -88,12 +88,12 @@ function copyplugin(jname) {
 
         // this code will send a data object via a GET request and alert the retrieved data.
         new Request.JSON({url: url ,
-            onSuccess: function(JSONobject){
+            onSuccess: function(JSONobject) {
+	            JFusion.OnMessages(JSONobject.messages);
                 if(JSONobject.status === true) {
                     //add new row
                     addRow(JSONobject.new_jname, JSONobject.rowhtml);
                 }
-                alert(JSONobject.message);
             }, onError: function(JSONobject) {
 		        JFusion.OnError(JSONobject);
             }
@@ -116,9 +116,7 @@ function initSortables() {
     var ajaxsync = new Request.JSON({ url: url,
         method: 'get',
         onSuccess: function(JSONobject) {
-            if (JSONobject.status === false) {
-                alert(JSONobject.message);
-            }
+	        JFusion.OnMessages(JSONobject.messages);
         }, onError: function(JSONobject) {
 		    JFusion.OnError(JSONobject);
         }
@@ -170,11 +168,11 @@ function deleteplugin(jname) {
         // this code will send a data object via a GET request and alert the retrieved data.
         new Request.JSON({url: url ,
             onSuccess: function(JSONobject) {
+	            JFusion.OnMessages(JSONobject.messages);
                 if(JSONobject.status ===  true) {
                     var el = $(JSONobject.jname);
                     el.parentNode.removeChild(el);
                 }
-                alert(JSONobject.message);
             }, onError: function(JSONobject) {
 		        JFusion.OnError(JSONobject);
             }}).get({'option': 'com_jfusion',
@@ -190,11 +188,11 @@ window.addEvent('domready',function() {
         { onSuccess: function(JSONobject) {
             $('spinnerGIT').innerHTML = '';
             if (JSON.validate(JSONobject)) {
+	            JFusion.OnMessages(JSONobject.messages);
                 var response = JSON.decode(JSONobject);
                 if (response.overwrite != 1 && response.status === true) {
                     addRow(response.jname, response.rowhtml);
                 }
-                alert(response.message);
             } else {
 	            JFusion.OnError(JSONobject);
             }
@@ -213,11 +211,11 @@ window.addEvent('domready',function() {
         { onSuccess: function(JSONobject) {
             $('spinnerURL').innerHTML = '';
             if (JSON.validate(JSONobject)) {
+	            JFusion.OnMessages(JSONobject.messages);
                 var response = JSON.decode(JSONobject);
                 if (response.overwrite != 1 && response.status === true) {
                     addRow(response.jname, response.rowhtml);
                 }
-                alert(response.message);
             } else {
 	            JFusion.OnError(JSONobject);
             }
@@ -234,11 +232,11 @@ window.addEvent('domready',function() {
         { onSuccess: function(JSONobject) {
             $('spinnerDIR').innerHTML = '';
             if (JSON.validate(JSONobject)) {
+	            JFusion.OnMessages(JSONobject.messages);
                 var response = JSON.decode(JSONobject);
                 if (response.overwrite != 1 && response.status === true) {
                     addRow(response.jname, response.rowhtml);
                 }
-                alert(response.message);
             } else {
 	            JFusion.OnError(JSONobject);
             }
@@ -268,11 +266,11 @@ window.addEvent('domready',function() {
                 onComplete : function (JSONobject) {
                     $('spinnerZIP').innerHTML = '';
                     if (JSON.validate(JSONobject)) {
+	                    JFusion.OnMessages(JSONobject.messages);
                         var response = JSON.decode(JSONobject);
                         if (response.overwrite != 1 && response.status === true) {
                             addRow(response.jname, response.rowhtml);
                         }
-                        alert(response.message);
                     } else {
 	                    JFusion.OnError(JSONobject);
                     }

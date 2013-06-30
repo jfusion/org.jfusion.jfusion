@@ -228,13 +228,13 @@ class JFusionFunction
 				    $query = 'DELETE FROM #__jfusion_users WHERE id =' . $joomla_id . ' OR username = ' . $db->Quote($userinfo->username) . ' OR LOWER(username) = ' . strtolower($db->Quote($userinfo->email));
 				    $db->setQuery($query);
 				    if (!$db->execute()) {
-					    JError::raiseWarning(0, $db->stderr());
+					    JFusionFunction::raiseWarning(0, $db->stderr());
 				    }
 				    //Delete old user data in the lookup table
 				    $query = 'DELETE FROM #__jfusion_users_plugin WHERE id =' . $joomla_id . ' OR username = ' . $db->Quote($userinfo->username) . ' OR LOWER(username) = ' . strtolower($db->Quote($userinfo->email));
 				    $db->setQuery($query);
 				    if (!$db->execute()) {
-					    JError::raiseWarning(0, $db->stderr());
+					    JFusionFunction::raiseWarning(0, $db->stderr());
 				    }
 			    }
 		    } else {
@@ -274,7 +274,7 @@ class JFusionFunction
 					    }
 					    $db->setQuery($query);
 					    if (!$db->execute()) {
-						    JError::raiseWarning(0, $db->stderr());
+						    JFusionFunction::raiseWarning(0, $db->stderr());
 					    }
 				    }
 			    } else {
@@ -285,7 +285,7 @@ class JFusionFunction
 				    }
 				    $db->setQuery($query);
 				    if (!$db->execute()) {
-					    JError::raiseWarning(0, $db->stderr());
+					    JFusionFunction::raiseWarning(0, $db->stderr());
 				    }
 			    }
 		    }
@@ -402,12 +402,12 @@ class JFusionFunction
         $query = 'DELETE FROM #__jfusion_users WHERE id =' . $userinfo->id . ' OR username =' . $db->Quote($userinfo->username) . ' OR LOWER(username) = ' . strtolower($db->Quote($userinfo->email));
         $db->setQuery($query);
         if (!$db->execute()) {
-            JError::raiseWarning(0, $db->stderr());
+            JFusionFunction::raiseWarning(0, $db->stderr());
         }
         $query = 'DELETE FROM #__jfusion_users_plugin WHERE id =' . $userinfo->id;
         $db->setQuery($query);
         if (!$db->execute()) {
-            JError::raiseWarning(0, $db->stderr());
+            JFusionFunction::raiseWarning(0, $db->stderr());
         }
     }
 
@@ -429,30 +429,6 @@ class JFusionFunction
     {
     	$cookies = JFusionFactory::getCookies();
     	return $cookies->addCookie($name, $value, $expires, $path, $domain, $secure, $httponly, $mask);
-    }
-
-    /**
-     * Raise warning function that can handle arrays
-     *
-     * @param string $type      type of warning
-     * @param array $warning   warning itself
-     * @param int    $redundant not used
-     *
-     * @return string nothing
-     */
-    public static function raiseWarning($type, $warning, $redundant = 0)
-    {
-        if (is_array($warning)) {
-            foreach ($warning as $warningtype => $warningtext) {
-                //if still an array implode for nicer display
-                if (is_array($warningtext)) {
-                    $warningtext = implode('</li><li>' . $warningtype . ': ', $warningtext);
-                }
-                JError::RaiseNotice('500', $warningtype . ': ' . $warningtext);
-            }
-        } else {
-            JError::RaiseNotice('500', $type . ': ' . $warning);
-        }
     }
 
     /**
@@ -1334,7 +1310,7 @@ class JFusionFunction
                 	//do nothing
                     break;
                 default:
-                	JError::raiseError(500, 'JFusion Encoding support missing: '.$charset);
+	                throw new Exception('JFusion Encoding support missing: '.$charset);
                     break;
             }
             if (isset($encoding)) {
@@ -1344,12 +1320,12 @@ class JFusionFunction
 	            } else if (function_exists('mb_convert_encoding')) {
                     $converted = mb_convert_encoding($string, $encoding, 'utf-8');
                 } else {
-                    JError::raiseError(500, 'JFusion: missing iconv or mb_convert_encoding');
+		            throw new Exception('JFusion: missing iconv or mb_convert_encoding');
                 }
                 if ($converted !== false) {
                 	$string = $converted;
                 } else {
-                    JError::raiseError(500, 'JFusion Encoding failed '.$charset);
+	                throw new Exception('JFusion Encoding failed '.$charset);
                 }
             }
         }
@@ -1643,28 +1619,64 @@ class JFusionFunction
 		return new plgAuthenticationJoomla($dispatcher, (array) ($plugin));
 	}
 
+	public static function raiseMessage($code, $msg, $info = null) {
+		$app = JFactory::getApplication();
+		$app->enqueueMessage($msg,'message');
+	}
+
+	public static function raiseNotice($code, $msg, $info = null) {
+		$app = JFactory::getApplication();
+		$app->enqueueMessage($msg,'notice');
+	}
+
+	public static function raiseWarning($code, $msg, $info = null) {
+		$app = JFactory::getApplication();
+		$app->enqueueMessage($msg,'warning');
+	}
+
+	public static function raiseError($code, $msg, $info = null) {
+		$app = JFactory::getApplication();
+		$app->enqueueMessage($msg,'error');
+	}
+
+	/**
+	 * Raise warning function that can handle arrays
+	 *
+	 * @param string $type      type of warning
+	 * @param array $warning   warning itself
+	 * @param int    $redundant not used
+	 *
+	 * @return string nothing
+	 */
+	public static function raise($type, $warning, $redundant = 0) {
+		if (is_array($warning)) {
+			foreach ($warning as $warningtype => $warningtext) {
+				//if still an array implode for nicer display
+				if (is_array($warningtext)) {
+//					$warningtext = implode('</li><li>' . $warningtype . ': ', $warningtext);
+					JFusionFunction::raiseNotice('500', $warningtype . ': ' . $warningtext);
+				}
+			}
+		} else {
+			JFusionFunction::raiseNotice('500', $type . ': ' . $warning);
+		}
+	}
+
 	/**
 	 * @return array
 	 */
 	public static function renderMessage() {
-		$levels = array(
-			E_NOTICE 	=> 'notice',
-			E_WARNING	=> 'warning',
-			E_ERROR 	=> 'error');
-		$errors = JError::getErrors();
-		$msgList = array();
-		if(!empty($errors)) {
-			foreach ($errors as $error) {
-				$level = $error->get('level');
-				if ( isset($levels[$level]) ) {
-					if ( !isset($msgList[$levels[$level]]) ) {
-						$msgList[$levels[$level]] = array();
-					}
-					$msgList[$levels[$level]][] = $error->get('message');
-				}
+		$app = JFactory::getApplication();
+
+		$messages = $app->getMessageQueue();
+
+		$list = array();
+		if(!empty($messages)) {
+			foreach ($messages as $message) {
+				$list[$message['type']][] = $message['message'];
 			}
 		}
-		return $msgList;
+		return $list;
 	}
 
 	/**

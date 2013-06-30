@@ -100,7 +100,7 @@ class JFusionAdmin_magento extends JFusionAdmin
         if (file_exists($xmlfile)) {
 	        $xml = JFusionFunction::getXml($xmlfile);
             if (!$xml) {
-                JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . " $xmlfile " . JText::_('WIZARD_MANUAL'));
+                JFusionFunction::raiseWarning(500, JText::_('WIZARD_FAILURE') . " $xmlfile " . JText::_('WIZARD_MANUAL'));
             } else {
                 //save the parameters into array
                 $params['database_host'] = (string)$xml->global->resources->default_setup->connection->host;
@@ -113,7 +113,7 @@ class JFusionAdmin_magento extends JFusionAdmin
             }
             unset($xml);
         } else {
-            JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . " $xmlfile " . JText::_('WIZARD_MANUAL'));
+            JFusionFunction::raiseWarning(500, JText::_('WIZARD_FAILURE') . " $xmlfile " . JText::_('WIZARD_MANUAL'));
         }
         
         $params['magento_version'] = $this->normalize_version($this->getMagentoVersion($forumPath));
@@ -202,14 +202,14 @@ class JFusionAdmin_magento extends JFusionAdmin
         $db->setQuery($query);
         $no_users = $db->loadResult();
         if ($no_users <= 0) {
-            JError::raiseWarning(0, $jname . ': ' . JText::_('MAGENTO_NEED_API_USER'));
+            JFusionFunction::raiseWarning(0, $jname . ': ' . JText::_('MAGENTO_NEED_API_USER'));
         } else {
             // check if we have valid parameters  for apiuser and api key
             $params = JFusionFactory::getParams($this->getJname());
             $apiuser = $params->get('apiuser');
             $apikey = $params->get('apikey');
             if (!$apiuser || !$apikey) {
-                JError::raiseWarning(0, $jname . '-plugin: ' . JText::_('MAGENTO_NO_API_DATA'));
+                JFusionFunction::raiseWarning(0, $jname . '-plugin: ' . JText::_('MAGENTO_NO_API_DATA'));
             } else {
                 //finally check if the apiuser and apikey are valid
                 $query = 'SELECT api_key FROM #__api_user WHERE username = ' . $db->Quote($apiuser);
@@ -226,7 +226,7 @@ class JFusionAdmin_magento extends JFusionAdmin
                 	$params_hash_sha256 = hash("sha256",$apikey);
                 }
                 	if ($params_hash_md5 != $api_key && $params_hash_sha256 != $api_key) {
-                    JError::raiseWarning(0, $jname . '-plugin: ' . JText::_('MAGENTO_WRONG_APIUSER_APIKEY_COMBINATION'));
+                    JFusionFunction::raiseWarning(0, $jname . '-plugin: ' . JText::_('MAGENTO_WRONG_APIUSER_APIKEY_COMBINATION'));
                 }
             }
         }
@@ -236,12 +236,12 @@ class JFusionAdmin_magento extends JFusionAdmin
         if ($db->getErrorNum() == 0) {
             $value = $db->loadResult();
             if ($value) {
-                JError::raiseWarning(0, $jname . ': ' . JText::_('MAGENTO_USE_REMOTE_ADDRESS_NOT_DISABLED'));
+                JFusionFunction::raiseWarning(0, $jname . ': ' . JText::_('MAGENTO_USE_REMOTE_ADDRESS_NOT_DISABLED'));
             }
         }
         // we need to have the curl library installed
         if (!extension_loaded('curl')) {
-            JError::raiseWarning(0, $jname . ': ' . JText::_('CURL_NOTINSTALLED'));
+            JFusionFunction::raiseWarning(0, $jname . ': ' . JText::_('CURL_NOTINSTALLED'));
         }
     }
 

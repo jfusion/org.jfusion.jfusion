@@ -70,7 +70,7 @@ class plgSystemJfusion extends JPlugin
      */
     function onAfterInitialise()
     {
-        //JError::raiseNotice('500','system plugin called');
+        //JFusionFunction::raiseNotice('500','system plugin called');
         $session = JFactory::getSession();
         //initialise some vars
         ob_start();
@@ -93,7 +93,7 @@ class plgSystemJfusion extends JPlugin
                 $_REQUEST = $_REQUEST + $backup['request'];
                 $session->clear('JFusionVarBackup');
                 if ($debug) {
-                    JError::raiseNotice('500', 'Form variables restored.');
+                    JFusionFunction::raiseNotice('500', 'Form variables restored.');
                 }
             }
         } else {
@@ -109,7 +109,7 @@ class plgSystemJfusion extends JPlugin
                     $changed = $JFusionUser->syncSessions($keepalive);
                     if (!empty($changed)) {
                         if ($debug) {
-                            JError::raiseNotice('500',$master->name.' session changed');
+                            JFusionFunction::raiseNotice('500',$master->name.' session changed');
                         }
                         $refresh = true;
                     }
@@ -123,7 +123,7 @@ class plgSystemJfusion extends JPlugin
                         $changed = $JFusionUser->syncSessions($keepalive);
                         if (!empty($changed)) {
                             if ($debug) {
-                                JError::raiseNotice('500',$plugin->name.' session changed');
+                                JFusionFunction::raiseNotice('500',$plugin->name.' session changed');
                             }
                             $refresh = true;
                         }
@@ -152,7 +152,7 @@ class plgSystemJfusion extends JPlugin
                 $backup['files'] = $_FILES;
                 $session->set('JFusionVarBackup',$backup);
                 if ($debug) {
-                    JError::raiseNotice('500','Refresh is true');
+                    JFusionFunction::raiseNotice('500','Refresh is true');
                 }
                 $uri = JURI::getInstance();
                 //add a variable to ensure refresh
@@ -182,7 +182,7 @@ class plgSystemJfusion extends JPlugin
 				$status = $JFusionMasterPublic->setLanguageFrontEnd ( $userinfo );
 				if (! empty ( $status ['error'] )) {
 					//could not set the language
-					JFusionFunction::raiseWarning ( $master->name . ' ' . JText::_ ( 'SET_LANGUAGEFRONTEND_ERROR' ), $status ['error'], 1 );
+					JFusionFunction::raise ( $master->name . ' ' . JText::_ ( 'SET_LANGUAGEFRONTEND_ERROR' ), $status ['error'], 1 );
 				}
 			} else {
 				$status ['debug'] [] = JText::_ ( 'METHOD_NOT_IMPLEMENTED' ) . ": " . $master->name;
@@ -194,7 +194,7 @@ class plgSystemJfusion extends JPlugin
 					$status = $JFusionSlavePublic->setLanguageFrontEnd ( $userinfo );
 					if (! empty ( $status ['error'] )) {
 						//could not set the language
-						JFusionFunction::raiseWarning ( $slave->name . ' ' . JText::_ ( 'SET_LANGUAGEFRONTEND_ERROR' ), $status ['error'], 1 );
+						JFusionFunction::raise ( $slave->name . ' ' . JText::_ ( 'SET_LANGUAGEFRONTEND_ERROR' ), $status ['error'], 1 );
 					}
 				} else {
 					$status ['debug'] [] = JText::_ ( 'METHOD_NOT_IMPLEMENTED' ) . ": " . $slave->name;

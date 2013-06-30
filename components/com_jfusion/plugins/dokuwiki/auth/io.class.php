@@ -64,7 +64,7 @@ class JFusionDokuwiki_Io {
         if (substr($file, -3) == '.gz') {
             $fh = @gzopen($file, $mode . '9');
             if (!$fh) {
-                JError::raiseWarning(500, "Writing $file failed");
+                JFusionFunction::raiseWarning(500, "Writing $file failed");
                 $this->unlock($file);
                 return false;
             }
@@ -73,7 +73,7 @@ class JFusionDokuwiki_Io {
         } else if (substr($file, -4) == '.bz2') {
             $fh = @bzopen($file, $mode{0});
             if (!$fh) {
-                JError::raiseWarning(500, "Writing $file failed");
+                JFusionFunction::raiseWarning(500, "Writing $file failed");
                 $this->unlock($file);
                 return false;
             }
@@ -82,7 +82,7 @@ class JFusionDokuwiki_Io {
         } else {
             $fh = @fopen($file, $mode);
             if ($fh === false) {
-                JError::raiseWarning(500, "Writing $file failed");
+                JFusionFunction::raiseWarning(500, "Writing $file failed");
                 $this->unlock($file);
                 return false;
             }
@@ -133,7 +133,7 @@ class JFusionDokuwiki_Io {
             if (substr($file, -3) == '.gz') {
                 $fh = @gzopen($file, 'wb9');
                 if (!$fh) {
-                    JError::raiseWarning(500, "Removing content from $file failed");
+                    JFusionFunction::raiseWarning(500, "Removing content from $file failed");
                     $this->unlock($file);
                     return false;
                 }
@@ -142,7 +142,7 @@ class JFusionDokuwiki_Io {
             } else {
                 $fh = @fopen($file, 'wb');
                 if (!$fh) {
-                    JError::raiseWarning(500, "Removing content from $file failed");
+                    JFusionFunction::raiseWarning(500, "Removing content from $file failed");
                     $this->unlock($file);
                     return false;
                 }
@@ -212,7 +212,7 @@ class JFusionDokuwiki_Io {
     function makeFileDir($file) {
         $dir = dirname($file);
         if (!@is_dir($dir)) {
-            $this->mkdir_p($dir) || JError::raiseWarning(500, "Creating directory $dir failed");
+            $this->mkdir_p($dir) || JFusionFunction::raiseWarning(500, "Creating directory $dir failed");
         }
     }
     /**
@@ -257,16 +257,16 @@ class JFusionDokuwiki_Io {
     function mkdir_ftp($dir) {
         $conf = $this->helper->getConf();
         if (!function_exists('ftp_connect')) {
-            JError::raiseWarning(500, "FTP support not found - safemode workaround not usable");
+            JFusionFunction::raiseWarning(500, "FTP support not found - safemode workaround not usable");
             return false;
         }
         $conn = @ftp_connect($conf['ftp']['host'], $conf['ftp']['port'], 10);
         if (!$conn) {
-            JError::raiseWarning(500, "FTP connection failed");
+            JFusionFunction::raiseWarning(500, "FTP connection failed");
             return false;
         }
         if (!@ftp_login($conn, $conf['ftp']['user'], $conf['ftp']['pass'])) {
-            JError::raiseWarning(500, "FTP login failed");
+            JFusionFunction::raiseWarning(500, "FTP login failed");
             return false;
         }
         //create directory

@@ -38,7 +38,7 @@ class JFormFieldJFusionCustomParam extends JFormField
             //load the custom param output
             $JFusionPlugin = JFusionFactory::getAdmin($jname);
             if (method_exists($JFusionPlugin, $this->fieldname)) {
-                $output = $JFusionPlugin->{$this->fieldname}($this->fieldname, $this->value, $this->element, $this->formControl);
+                $output = $JFusionPlugin->{$this->fieldname}($this->fieldname, $this->value, $this->element, $this->group);
                 return $output;
             } else {
                 return 'Undefined function:' . $this->fieldname . ' in plugin:' . $jname;

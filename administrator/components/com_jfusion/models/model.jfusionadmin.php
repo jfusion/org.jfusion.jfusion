@@ -80,7 +80,7 @@ class JFusionFunctionAdmin
         $db->setQuery($query);
         if (!$db->execute()) {
             //there was an error saving the parameters
-            JError::raiseWarning(0, $db->stderr());
+            JFusionFunction::raiseWarning(0, $db->stderr());
             $result = false;
         } else {
             //reset the params instance for this plugin
@@ -100,21 +100,21 @@ class JFusionFunctionAdmin
         $userPlugin = true;
         $authPlugin = true;
         if (!JFusionFunctionAdmin::isPluginInstalled('jfusion', 'authentication', false)) {
-            JError::raiseWarning(0, JText::_('FUSION_MISSING_AUTH'));
+            JFusionFunction::raiseWarning(0, JText::_('FUSION_MISSING_AUTH'));
             $authPlugin = false;
         }
         if (!JFusionFunctionAdmin::isPluginInstalled('jfusion', 'user', false)) {
-            JError::raiseWarning(0, JText::_('FUSION_MISSING_USER'));
+            JFusionFunction::raiseWarning(0, JText::_('FUSION_MISSING_USER'));
             $userPlugin = false;
         }
         if ($authPlugin && $userPlugin) {
             $jAuth = JFusionFunctionAdmin::isPluginInstalled('jfusion', 'user', true);
             $jUser = JFusionFunctionAdmin::isPluginInstalled('jfusion', 'authentication', true);
             if (!$jAuth) {
-                JError::raiseNotice(0, JText::_('FUSION_READY_TO_USE_AUTH'));
+                JFusionFunction::raiseNotice(0, JText::_('FUSION_READY_TO_USE_AUTH'));
             }
             if (!$jUser) {
-                JError::raiseNotice(0, JText::_('FUSION_READY_TO_USE_USER'));
+                JFusionFunction::raiseNotice(0, JText::_('FUSION_READY_TO_USE_USER'));
             }
         }
     }
@@ -211,7 +211,7 @@ HTML;
             curl_close($crl);
             if ($FileInfo['http_code'] != 200) {
                 //there was an error
-                JError::raiseWarning(0,$FileInfo['http_code'] . ' error for file:' . $url);
+                JFusionFunction::raiseWarning(0,$FileInfo['http_code'] . ' error for file:' . $url);
                 $FileData = false;
             }
         } else {
@@ -220,7 +220,7 @@ HTML;
             if (!empty($fopen_check)) {
                 $FileData = file_get_contents($url);
             } else {
-                JError::raiseWarning(0,JText::_('CURL_DISABLED'));
+                JFusionFunction::raiseWarning(0,JText::_('CURL_DISABLED'));
                 $FileData = false;
             }
         }

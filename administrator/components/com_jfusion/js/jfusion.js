@@ -28,6 +28,7 @@ JFusion.OnMessages = function(messages, force) {
     var jfusionError = $("system-message-container");
     jfusionError.empty();
 
+    this.OnMessage('message', messages.message, force);
     this.OnMessage('notice', messages.notice, force);
     this.OnMessage('warning', messages.warning, force);
     this.OnMessage('error', messages.error, force);

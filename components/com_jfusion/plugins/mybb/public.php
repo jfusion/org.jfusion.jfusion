@@ -81,7 +81,7 @@ class JFusionPublic_mybb extends JFusionPublic {
             $index_file = $source_path . DIRECTORY_SEPARATOR . $jfile;
         }
         if (!is_file($index_file)) {
-            JError::raiseWarning(500, 'The path to the requested does not exist');
+            JFusionFunction::raiseWarning(500, 'The path to the requested does not exist');
         } else {
             //set the current directory to MyBB
             chdir($source_path);

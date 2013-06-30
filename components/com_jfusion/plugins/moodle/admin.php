@@ -60,7 +60,7 @@ class JFusionAdmin_moodle extends JFusionAdmin
         }
         $params = array();
         if (($file_handle = @fopen($myfile, 'r')) === false) {
-            JError::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));
+            JFusionFunction::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));
         } else {
             //parse the file line by line to get only the config variables
         	$CFG = new stdClass();

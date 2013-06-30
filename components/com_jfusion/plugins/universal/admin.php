@@ -561,11 +561,11 @@ if(!isset($_COOKIE[\'jfusionframeless\']))';
 
 			//check to see if all vars are set
 			if (empty($joomla_url)) {
-				JError::raiseWarning(0, JText::_('MISSING') . ' Joomla URL');
+				JFusionFunction::raiseWarning(0, JText::_('MISSING') . ' Joomla URL');
 			} else if (empty($joomla_itemid) || !is_numeric($joomla_itemid)) {
-				JError::raiseWarning(0, JText::_('MISSING') . ' ItemID');
+				JFusionFunction::raiseWarning(0, JText::_('MISSING') . ' ItemID');
 			} else if (!$this->isValidItemID($joomla_itemid)) {
-				JError::raiseWarning(0, JText::_('MISSING') . ' ItemID '. JText::_('MUST BE'). ' ' . $this->getJname());
+				JFusionFunction::raiseWarning(0, JText::_('MISSING') . ' ItemID '. JText::_('MUST BE'). ' ' . $this->getJname());
 			} else {
 				header('Content-disposition: attachment; filename=jfusion_'.$this->getJname().'_redirectcode.txt');
 				header('Pragma: no-cache');
@@ -615,15 +615,15 @@ if(!isset($_COOKIE[\'jfusionframeless\']))';
 			$email = $helper->getFieldType('EMAIL');
 
 			if ( !$userid ) {
-				JError::raiseWarning(0, $this->getJname() . ': ' . JText::_('NO_USERID_DEFINED'));
+				JFusionFunction::raiseWarning(0, $this->getJname() . ': ' . JText::_('NO_USERID_DEFINED'));
 			}
 
 			if ( !$email ) {
-				JError::raiseWarning(0, $this->getJname() . ': ' . JText::_('NO_EMAIL_DEFINED'));
+				JFusionFunction::raiseWarning(0, $this->getJname() . ': ' . JText::_('NO_EMAIL_DEFINED'));
 			}
 
 			if ( !$username ) {
-				JError::raiseWarning(0, $this->getJname() . ': ' . JText::_('NO_USERNAME_DEFINED'));
+				JFusionFunction::raiseWarning(0, $this->getJname() . ': ' . JText::_('NO_USERNAME_DEFINED'));
 			}
 			$grouptable = $helper->getTable('group');
 			if ($grouptable) {
@@ -631,18 +631,18 @@ if(!isset($_COOKIE[\'jfusionframeless\']))';
 				$group_group = $helper->getFieldType('GROUP','group');
 
 				if ( !$group_userid ) {
-					JError::raiseWarning(0, $this->getJname() . ': ' . JText::_('NO_GROUP_USERID_DEFINED'));
+					JFusionFunction::raiseWarning(0, $this->getJname() . ': ' . JText::_('NO_GROUP_USERID_DEFINED'));
 				}
 				if ( !$group_group ) {
-					JError::raiseWarning(0, $this->getJname() . ': ' . JText::_('NO_GROUP_GROUPID_DEFINED'));
+					JFusionFunction::raiseWarning(0, $this->getJname() . ': ' . JText::_('NO_GROUP_GROUPID_DEFINED'));
 				}
 			}
 			$grouplist = $this->getUsergroupList();
 			if (empty($grouplist)) {
-				JError::raiseWarning(0, $this->getJname() . ': ' . JText::_('NO_GROUPS_MAPPED'));
+				JFusionFunction::raiseWarning(0, $this->getJname() . ': ' . JText::_('NO_GROUPS_MAPPED'));
 			}
 		} else {
-			JError::raiseWarning(0, $this->getJname() . ': ' . JText::_('NO_USERTABLE_DEFINED'));
+			JFusionFunction::raiseWarning(0, $this->getJname() . ': ' . JText::_('NO_USERTABLE_DEFINED'));
 		}
 	}
 }

@@ -102,7 +102,7 @@ class jfusionViewsyncoptions extends JViewLegacy
 	        parent::display();
         } else {
             JFusionFunctionAdmin::displayDonate();
-            JError::raiseWarning(500, JText::_('SYNC_NOCONFIG'));
+            JFusionFunction::raiseWarning(500, JText::_('SYNC_NOCONFIG'));
         }
     }
 }

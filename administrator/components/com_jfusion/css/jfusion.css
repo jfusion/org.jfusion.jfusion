@@ -219,7 +219,9 @@ a.navButton:hover {
     padding: 4px;
 }
 
-.jfusion table.adminlist td {padding-left: 8px;}
+.jfusion table.adminlist td {
+    padding-left: 8px;
+}
 
 .jfusion table.adminlist thead th {
     text-align: center;
@@ -257,7 +259,7 @@ a.navButton:hover {
 }
 
 .jfusion table.adminlist tbody tr td {
-    background: #fff;
+    background: #F0F1DA;
     border: 1px solid #fff;
 }
 
@@ -314,6 +316,16 @@ a.navButton:hover {
     text-decoration: underline;
 }
 
+.jfusion input {
+    width: auto;
+}
+
+.jfusion .settings td {
+    padding-right: 10px;
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+
 /**
  * Jfusion tabs
  */
@@ -346,7 +358,8 @@ a.navButton:hover {
 .jfusion .tabs dt.open {
     border-color: #b0d0e9;
     background: #fff;
-    z-index: 3;
+    border-bottom: 1px solid #fff;
+    margin: 0 0 -1px 0;
 }
 
 .jfusion .dumparea {

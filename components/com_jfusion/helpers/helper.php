@@ -93,7 +93,7 @@ class JFusionHelper {
 		$db->setQuery ( $query );
 		
 		if (null === ($modules = $db->loadObjectList ( $type ))) {
-			JError::raiseWarning ( 'SOME_ERROR_CODE', JText::_ ( 'Error Loading Modules' ) . $db->getErrorMsg () );
+			JFusionFunction::raiseWarning ( 'SOME_ERROR_CODE', JText::_ ( 'Error Loading Modules' ) . $db->getErrorMsg () );
 			return false;
 		}
 		

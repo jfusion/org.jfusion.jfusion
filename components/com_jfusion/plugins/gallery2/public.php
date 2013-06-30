@@ -106,9 +106,9 @@ class JFusionPublic_gallery2 extends JFusionPublic {
                 var_dump($match2);
                 echo '</pre>';
                 if (isset($match1['head']) && isset($match2['desc'])) {
-                    JError::raiseError(500, $match1['head'], $match2['desc']);
+	                throw new Exception( $match1['head'] .': '. $match2['desc'] );
                 } else {
-                    JError::raiseError(500, 'Gallery2 Internal Error');
+	                throw new Exception( 'Gallery2 Internal Error' );
                 }
             } else {
                 print $output;
@@ -159,7 +159,7 @@ class JFusionPublic_gallery2 extends JFusionPublic {
 		$extra = $matches[2];
 		$baseURL = $this->data->baseURL;
 		    	
-        //JError::raiseWarning(500, $url);
+        //JFusionFunction::raiseWarning(500, $url);
         $url = htmlspecialchars_decode($url);
         $Itemid = JRequest::getInt('Itemid');
         $extra = stripslashes($extra);

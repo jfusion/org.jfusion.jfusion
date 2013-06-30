@@ -121,7 +121,7 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
 
         require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'hooks.php';
         if (!is_file($index_file)) {
-            JError::raiseWarning(500, 'The path to the DokuWiki index file set in the component preferences does not exist');
+            JFusionFunction::raiseWarning(500, 'The path to the DokuWiki index file set in the component preferences does not exist');
         } else {
             //set the current directory to dokuwiki
             chdir($source_path);
@@ -145,7 +145,7 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
             chdir(JPATH_SITE);
             // Log an error if we could not include the file
             if (!$rs) {
-                JError::raiseWarning(500, 'Could not find DokuWiki in the specified directory');
+                JFusionFunction::raiseWarning(500, 'Could not find DokuWiki in the specified directory');
             }
         }
     }

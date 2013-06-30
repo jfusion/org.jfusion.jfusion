@@ -512,7 +512,7 @@ class JFusionUser_efront extends JFusionUser
                 $login = $existinguser->username;
                 $jname = $this->getJname();
                 if (!$apiuser || !$apikey) {
-                    JError::raiseWarning(0, $jname . '-plugin: ' . JText::_('EFRONT_WRONG_APIUSER_APIKEY_COMBINATION'));
+                    JFusionFunction::raiseWarning(0, $jname . '-plugin: ' . JText::_('EFRONT_WRONG_APIUSER_APIKEY_COMBINATION'));
                     $status['error'][] = '';
                 } else {
                     // get token
