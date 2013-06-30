@@ -352,33 +352,30 @@ class JFusionFactory
                 JError::raiseWarning(0, $jname . ' : ' .JText::_('INVALID_DRIVER'));
                 $db = false;
             } else {
-                //create an options variable that contains all database connection variables
-                $options = array('driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database, 'prefix' => $prefix);
-                //make sure the database model is loaded
-                jimport('joomla.database.database');
-                jimport('joomla.database.table');
-                //create the actual connection
-                include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . $driver . '.php';
-                if ($driver == 'mysql') {
-                    $db = new JFusionMySQL($options);
-                } else {
-                    $db = new JFusionMySQLi($options);
-                }
-                if (!method_exists($db, 'Query')) {
-                    JError::raiseWarning(0, $jname . ' : ' .JText::_('NO_DATABASE'));
-                    $db = false;
-                } else {
-                    if($db->getErrorNum()) {
-                        JError::raiseWarning(0, $jname . ' : ' .JText::_('DATABASE_ERROR') . ': ' . $db->getErrorMsg());
-                        $db = false;
-                    } else {
-                        //add support for UTF8
-                        $db->setQuery('SET names ' . $db->quote($charset));
-                        $db->execute();
-                        //support debugging
-                        $db->debug($debug);
-                    }
-                }
+	            $options = array('driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database, 'prefix' => $prefix);
+
+	            jimport('joomla.database.database');
+	            jimport('joomla.database.table');
+
+	            try {
+		            $db = JDatabaseDriver::getInstance($options);
+
+		            //add support for UTF8
+		            $db->setQuery('SET names ' . $db->quote($charset));
+		            $db->execute();
+		            //support debugging
+		            $db->debug($debug);
+
+		            if (!method_exists($db, 'Query')) {
+			            JError::raiseWarning(0, $jname . ' : ' .JText::_('NO_DATABASE'));
+			            $db = false;
+		            }
+	            } catch (RuntimeException $e) {
+		            if (!headers_sent()) {
+			            header('HTTP/1.1 500 Internal Server Error');
+		            }
+		            jexit('Database Error: ' . $jname . ' : ' .JText::_('DATABASE_ERROR') . ': ' . $e->getMessage());
+	            }
             }
         }
         return $db;

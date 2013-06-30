@@ -1,4 +1,75 @@
 //<!--
+if("undefined"===typeof JFusion) {
+    var JFusion={};
+    JFusion.Text = [];
+}
+
+JFusion.JText = function(key) {
+    key = key.toUpperCase();
+    if (this.Text[key]) {
+        return this.Text[key];
+    } else {
+        return key;
+    }
+}
+
+JFusion.OnError = function(messages, force) {
+    var jfusionError = $("system-message-container");
+    jfusionError.empty();
+    if (messages.indexOf('<!') == 0) {
+        messages = [ this.JText('SESSION_TIMEOUT') ];
+    } else {
+        messages = [ messages ];
+    }
+    this.OnMessage('error', messages, force);
+}
+
+JFusion.OnMessages = function(messages, force) {
+    var jfusionError = $("system-message-container");
+    jfusionError.empty();
+
+    this.OnMessage('notice', messages.notice, force);
+    this.OnMessage('warning', messages.warning, force);
+    this.OnMessage('error', messages.error, force);
+}
+
+JFusion.OnMessage = function(type, messages, force) {
+    if (messages instanceof Array) {
+        if (messages.length) {
+            var jfusionError = $("system-message-container");
+
+            var errorlist = { 'error' : 'alert-error', 'warning' : '', 'notice' : 'alert-info', 'message' : 'alert-success'};
+
+            var div = new Element('div', {'class' : 'alert'+' '+ errorlist[type] });
+
+            new Element('h4',{'class': 'alert-heading', 'html' : this.JText(type) }).inject(div);
+            Array.each(messages, function(message, index) {
+                new Element('p' , { 'html' : message } ).inject(div);
+                if (force) {
+                    alert(message);
+                }
+            });
+            div.inject(jfusionError);
+        }
+    }
+}
+
+JFusion.groupDataArray = [];
+JFusion.usergroupSelect = function(option) {
+    $('JFusionUsergroup').innerHTML = this.groupDataArray[option];
+}
+
+JFusion.multiUsergroupSelect = function(option) {
+    this.usergroupSelect(option);
+
+    var addgroupset = $('addgroupset');
+    if (option == 1) {
+        addgroupset.style.display = 'block';
+    } else {
+        addgroupset.style.display = 'none';
+    }
+}
+
 function submitbutton(pressbutton) {
     var adminForm = $('adminForm');
     if (pressbutton == 'applyconfig') {
@@ -69,21 +140,6 @@ function module(action) {
     submitform('saveconfig');
 }
 
-function usergroupSelect(option) {
-    $('JFusionUsergroup').innerHTML = myArray[option];
-}
-
-function multiUsergroupSelect(option) {
-    usergroupSelect(option);
-
-    var addgroupset = $('addgroupset');
-    if (option == 1) {
-        addgroupset.style.display = 'block';
-    } else {
-        addgroupset.style.display = 'none';
-    }
-}
-
 if (typeof Joomla != 'undefined') {
 	Joomla.submitbutton = function (pressbutton) {
         var adminForm = $('adminForm');
@@ -109,33 +165,5 @@ if (typeof Joomla != 'undefined') {
 	Joomla.setSort = function (col) {
 		return setSort(col);
 	};
-}
-
-function evaluateJSON(string) {
-    var response;
-    try {
-        response = Json.evaluate(string,true);
-    } catch (error){
-
-    }
-    if ((typeof response ) != 'object') {
-        response = null;
-    }
-    return response;
-}
-
-function jfusionError(string, force) {
-    if (string.indexOf('<!') == 0) {
-        string = 'SESSION TIMEOUT';
-    }
-    var jfusionError = $("system-message-container");
-    if (jfusionError) {
-        jfusionError.innerHTML = string;
-        if (force) {
-            alert(string);
-        }
-    } else {
-        alert(string);
-    }
 }
 //-->

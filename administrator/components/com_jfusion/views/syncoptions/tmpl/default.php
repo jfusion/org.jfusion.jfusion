@@ -151,7 +151,7 @@ window.addEvent('domready', function() {
             onSuccess: function(JSONobject) {
                 render(JSONobject);
             }, onError: function(JSONobject) {
-                jfusionError(JSONobject);
+		        JFusion.OnError(JSONobject);
             }
         });
 
@@ -161,7 +161,7 @@ window.addEvent('domready', function() {
             onSuccess: function(JSONobject) {
                 render(JSONobject);
             }, onError: function(JSONobject) {
-                jfusionError(JSONobject);
+		        JFusion.OnError(JSONobject);
             }
         });
 
@@ -245,11 +245,11 @@ window.addEvent('domready', function() {
                                 method: 'get' ,onSuccess: function(JSONobject) {
                                     render(JSONobject);
                                 }, onError: function(JSONobject) {
-                                    jfusionError(JSONobject);
+		                            JFusion.OnError(JSONobject);
                                 }}).send(paramString);
                         }
                     } else {
-                        jfusionError("<?php echo JText::_('SYNC_NODATA',true); ?>",true);
+	                    JFusion.OnError("<?php echo JText::_('SYNC_NODATA',true); ?>",true);
                     }
                 } else {
                     syncRunning = true;

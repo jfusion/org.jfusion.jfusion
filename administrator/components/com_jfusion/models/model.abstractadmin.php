@@ -349,7 +349,7 @@ class JFusionAdmin
         $query = 'SELECT slave FROM #__jfusion WHERE name = ' . $db->Quote($jname);
         $db->setQuery($query);
         $slave = $db->loadResult();
-        $list_box = '<select onchange="usergroupSelect(this.selectedIndex);">';
+        $list_box = '<select onchange="JFusion.usergroupSelect(this.selectedIndex);">';
         if ($advanced == 1) {
             $list_box.= '<option value="0">'.JText::_('SIMPLE').'</option>';
         } else {
@@ -389,14 +389,8 @@ class JFusionAdmin
         $document = JFactory::getDocument();
 
         $js = <<<JS
-        function usergroupSelect(option)
-        {
-            var myArray = [];
-            myArray[0] = '{$simple_usergroup}';
-            myArray[1] = '{$advanced_usergroup}';
-
-            $('JFusionUsergroup').innerHTML = myArray[option];
-        }
+        JFusion.groupDataArray[0] = '{$simple_usergroup}';
+        JFusion.groupDataArray[1] = '{$advanced_usergroup}';
 JS;
         $document->addScriptDeclaration($js);
 
@@ -466,7 +460,7 @@ JS;
         $query = 'SELECT slave FROM #__jfusion WHERE name = ' . $db->Quote($jname);
         $db->setQuery($query);
         $slave = $db->loadResult();
-        $list_box = '<select onchange="usergroupSelect(this.selectedIndex);">';
+        $list_box = '<select onchange="JFusion.multiUsergroupSelect(this.selectedIndex);">';
         if ($advanced == 1) {
             $list_box.= '<option value="0">'.JText::_('SIMPLE').'</option>';
         } else {
@@ -566,20 +560,8 @@ JS;
         $js = <<<JS
 			var jfPlugin = {$plugin};
 
-	        function usergroupSelect(option)
-	        {
-	            var myArray = [];
-	            myArray[0] = '{$simple_usergroup}';
-	            myArray[1] = '{$advanced_usergroup}';
-	            $('JFusionUsergroup').innerHTML = myArray[option];
-
-	            var addgroupset = $('addgroupset');
-	            if (option == 1) {
-	            	addgroupset.style.display = 'block';
-	            } else {
-	            	addgroupset.style.display = 'none';
-	            }
-	        }
+	        JFusion.groupDataArray[0] = '{$simple_usergroup}';
+	        JFusion.groupDataArray[1] = '{$advanced_usergroup}';
 
 	        function addRow() {
 	        	jfPlugin['count']++;

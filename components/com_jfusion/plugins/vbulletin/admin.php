@@ -647,7 +647,7 @@ HTML;
         $query = 'SELECT slave FROM #__jfusion WHERE name = ' . $db->Quote($this->getJname());
         $db->setQuery($query);
         $slave = $db->loadResult();
-        $list_box = '<select onchange="usergroupSelect(this.selectedIndex);">';
+        $list_box = '<select onchange="JFusion.usergroupSelect(this.selectedIndex);">';
         if ($advanced == 1) {
             $list_box.= '<option value="0" selected="selected">Simple</option>';
         } else {
@@ -715,21 +715,25 @@ HTML;
             $advanced_usergroup = str_replace("'", "\'", $advanced_usergroup);
         }
         $list_box.= '</select>';
-        $js= "var myArray = [];\n";
-        $js.= "myArray[0] = '$simple_usergroup';\n";
-        $js.= "myArray[1] = '$advanced_usergroup';\n";
 
-        $js.= "function toggleSecondaryGroups(vbid,masterid){\n";
-        $js.= "var groups = new Array(" . implode(',', $jsGroups) . ");\n";
-        $js.= "for(i=0; i<groups.length; i++){\n";
-        $js.= "var element = $('vbgroup'+masterid+'-'+groups[i]);\n";
-        $js.= "if (element.value==vbid){\n";
-        $js.= "element.disabled = true;\n";
-        $js.= "element.checked = false;\n";
-        $js.= "}\n";
-        $js.= "else {element.disabled = false;}\n";
-        $js.= "}\n";
-        $js.= "}\n";
+	    $jsGroups = implode(',', $jsGroups);
+	    $js = <<<JS
+        JFusion.groupDataArray[0] = '{$simple_usergroup}';
+        JFusion.groupDataArray[1] = '{$advanced_usergroup}';
+
+        function toggleSecondaryGroups(vbid,masterid) {
+        	var groups = new Array({$jsGroups});
+	        for(i=0; i<groups.length; i++) {
+        		var element = $('vbgroup'+masterid+'-'+groups[i]);
+        		if (element.value==vbid) {
+        			element.disabled = true;
+        			element.checked = false;
+        		} else {
+        			element.disabled = false;
+        		}
+        	}
+        }
+JS;
         $document = JFactory::getDocument();
         $document->addScriptDeclaration($js);
         if ($advanced == 1) {

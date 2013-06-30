@@ -165,7 +165,7 @@ class JFusionController extends JControllerLegacy
         }
         $debug = array();
 
-        $debug['errormessage'] = JFusionFunction::renderMessage();
+        $debug['messages'] = JFusionFunction::renderMessage();
         die(json_encode($debug));
     }
 

@@ -115,44 +115,14 @@ class jfusionViewplugindisplay extends JViewLegacy {
             //pass the data onto the view
             $this->assignRef('plugins', $plugins);
             $this->assignRef('VersionData', $VersionData);
+
+	        JFusionFunction::loadJSLanguage();
+
 	        parent::display();
         } else {
             JError::raiseWarning(500, JText::_('NO_JFUSION_TABLE'));
         }
     }
-
-	/**
-	 * @param null|array $msgList
-	 *
-	 * @return string
-	 */
-	public static function renderMessage($msgList=null)
-	{
-		if ($msgList===null) {
-			$errors = JError::getErrors();
-			$msgList = $errors;
-		}
-		$buffer  = null;
-		$alert = array('error' => 'alert-error', 'warning' => '', 'notice' => 'alert-info', 'message' => 'alert-success');
-
-		if (is_array($msgList))
-		{
-			foreach ($msgList as $type => $msgs)
-			{
-				$buffer .= '<div class="alert ' . $alert[$type]. '">';
-				$buffer .= "\n<h4 class=\"alert-heading\">" . JText::_($type) . "</h4>";
-				if (count($msgs))
-				{
-					foreach ($msgs as $msg)
-					{
-						$buffer .= "\n\t\t<p>" . $msg . "</p>";
-					}
-				}
-				$buffer .= "\n</div>";
-			}
-		}
-		return $buffer;
-	}
 
     /**
      * @param $jname
@@ -368,5 +338,5 @@ class jfusionViewplugindisplay extends JViewLegacy {
         $row .= '<td><img src="'.$record->registrationimage.'" border="0" alt="'.$record->registrationalt.'" />'.$record->registrationalt.'</td>';
 		$row .= '<td>'.$record->usergrouptext.'</td>';
 		return  $row;
-    }    
+    }
 }

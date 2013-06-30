@@ -31,7 +31,7 @@ function changesetting(fieldname, fieldvalue, jname){
             showSpinner(jname,fieldname);
         },
         onSuccess: function(JSONobject) {
-            $('system-message-container').innerHTML = JSONobject.errormessage;
+	        JFusion.OnMessages(JSONobject.messages);
 
             //also update the check_encryption and dual_login fields if needed
             if (fieldname == 'master' || fieldname == 'slave') {
@@ -57,7 +57,7 @@ function changesetting(fieldname, fieldvalue, jname){
             //update the image and link
             updateJavaScript(jname,fieldname,fieldvalue);
         }, onError: function(JSONobject) {
-            jfusionError(JSONobject);
+		    JFusion.OnError(JSONobject);
         }
 
     }).send(syncdata);
@@ -95,7 +95,7 @@ function copyplugin(jname) {
                 }
                 alert(JSONobject.message);
             }, onError: function(JSONobject) {
-                jfusionError(JSONobject);
+		        JFusion.OnError(JSONobject);
             }
         }).get({'option': 'com_jfusion', 'task': 'plugincopy', 'jname': jname, 'new_jname': newjname});
     }
@@ -120,7 +120,7 @@ function initSortables() {
                 alert(JSONobject.message);
             }
         }, onError: function(JSONobject) {
-            jfusionError(JSONobject);
+		    JFusion.OnError(JSONobject);
         }
     });
 
@@ -176,7 +176,7 @@ function deleteplugin(jname) {
                 }
                 alert(JSONobject.message);
             }, onError: function(JSONobject) {
-                jfusionError(JSONobject);
+		        JFusion.OnError(JSONobject);
             }}).get({'option': 'com_jfusion',
                 'task': 'uninstallplugin',
                 'jname': jname,
@@ -196,7 +196,7 @@ window.addEvent('domready',function() {
                 }
                 alert(response.message);
             } else {
-                jfusionError(JSONobject);
+	            JFusion.OnError(JSONobject);
             }
         }, data: {
             ajax: true
@@ -219,7 +219,7 @@ window.addEvent('domready',function() {
                 }
                 alert(response.message);
             } else {
-                jfusionError(JSONobject);
+	            JFusion.OnError(JSONobject);
             }
         }
         });
@@ -240,7 +240,7 @@ window.addEvent('domready',function() {
                 }
                 alert(response.message);
             } else {
-                jfusionError(JSONobject);
+	            JFusion.OnError(JSONobject);
             }
         }
         });
@@ -274,7 +274,7 @@ window.addEvent('domready',function() {
                         }
                         alert(response.message);
                     } else {
-                        jfusionError(JSONobject);
+	                    JFusion.OnError(JSONobject);
                     }
                 }
             });

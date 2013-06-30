@@ -1644,48 +1644,45 @@ class JFusionFunction
 	}
 
 	/**
-	 * @param null|array $msgList
-	 *
-	 * @return string
+	 * @return array
 	 */
-	public static function renderMessage($msgList=null)
-	{
+	public static function renderMessage() {
 		$levels = array(
 			E_NOTICE 	=> 'notice',
 			E_WARNING	=> 'warning',
 			E_ERROR 	=> 'error');
-		if ($msgList===null) {
-			$errors = JError::getErrors();
-			$msgList = array();
-			if(!empty($errors)) {
-				foreach ($errors as $error)
-				{
-					$level = $error->get('level');
-					if ( isset($levels[$level]) ) {
-						$msgList[$levels[$level]][] = $error->get('message');
+		$errors = JError::getErrors();
+		$msgList = array();
+		if(!empty($errors)) {
+			foreach ($errors as $error) {
+				$level = $error->get('level');
+				if ( isset($levels[$level]) ) {
+					if ( !isset($msgList[$levels[$level]]) ) {
+						$msgList[$levels[$level]] = array();
 					}
+					$msgList[$levels[$level]][] = $error->get('message');
 				}
 			}
 		}
-		$buffer  = null;
-		$alert = array('error' => 'alert-error', 'warning' => '', 'notice' => 'alert-info', 'message' => 'alert-success');
+		return $msgList;
+	}
 
-		if (is_array($msgList))
-		{
-			foreach ($msgList as $type => $msgs)
-			{
-				$buffer .= '<div class="alert ' . $alert[$type]. '">';
-				$buffer .= "\n<h4 class=\"alert-heading\">" . JText::_($type) . "</h4>";
-				if (count($msgs))
-				{
-					foreach ($msgs as $msg)
-					{
-						$buffer .= "\n\t\t<p>" . $msg . "</p>";
-					}
-				}
-				$buffer .= "\n</div>";
-			}
+	/**
+	 * @return void
+	 */
+	public static function loadJSLanguage() {
+		$keys = array( 'SESSION_TIMEOUT', 'SYNC_NODATA', 'NOTICE', 'WARNING', 'MESSAGE', 'ERROR' );
+
+		$text = array();
+		foreach($keys as $key) {
+			$text[$key] = JText::_($key,true);
 		}
-		return $buffer;
+		$text = json_encode($text);
+		$js=<<<HTML
+			JFusion.Text = {$text};
+HTML;
+
+		$document = JFactory::getDocument();
+		$document->addScriptDeclaration($js);
 	}
 }

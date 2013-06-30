@@ -96,6 +96,9 @@ class jfusionViewsyncoptions extends JViewLegacy
             $this->assignRef('slave_data', $slave_data);
             $this->assignRef('syncid', $syncid);
             $this->assignRef('sync_active', $sync_active);
+
+	        JFusionFunction::loadJSLanguage();
+
 	        parent::display();
         } else {
             JFusionFunctionAdmin::displayDonate();
