@@ -156,22 +156,17 @@ class JFusionController extends JControllerLegacy
             }
         }
 
-        //recheck the enabled plugins
-        $query = 'SELECT * from #__jfusion WHERE master = 1 or slave = 1';
-        $db->setQuery($query );
-        $rows = $db->loadObjectList();
-        $plugins = array();
+	    $result = array();
+	    /**
+	     * @ignore
+	     * @var $view jfusionViewplugindisplay
+	     */
+	    $view = $this->getView('plugindisplay','html');
+	    $plugins = $view->getPlugins();
+	    $result['pluginlist'] = $view->generateListHTML($plugins);
 
-        if ($rows) {
-            foreach($rows as $record) {
-                $JFusionPlugin = JFusionFactory::getAdmin($record->name);
-                $JFusionPlugin->debugConfig();
-            }
-        }
-        $debug = array();
-
-        $debug['messages'] = JFusionFunction::renderMessage();
-        die(json_encode($debug));
+	    $result['messages'] = JFusionFunction::renderMessage();
+        die(json_encode($result));
     }
 
     /**
@@ -421,15 +416,14 @@ class JFusionController extends JControllerLegacy
 
         $ajax = JRequest::getVar('ajax');
         if ($ajax == true) {
-            if(!empty($result['jname'])) {
-                /**
-                 * @ignore
-                 * @var $view jfusionViewplugindisplay
-                 */
-                $view = $this->getView('plugindisplay','html');
-	            $plugins = $view->getPlugins();
-	            $result['pluginlist'] = $view->generateListHTML($plugins);
-            }
+	        /**
+	         * @ignore
+	         * @var $view jfusionViewplugindisplay
+	         */
+	        $view = $this->getView('plugindisplay','html');
+	        $plugins = $view->getPlugins();
+	        $result['pluginlist'] = $view->generateListHTML($plugins);
+
 	        $result['messages'] = JFusionFunction::renderMessage();
 
             die(json_encode($result));
@@ -486,13 +480,6 @@ class JFusionController extends JControllerLegacy
 		        }
 		        if ($result['status']) {
 			        $result['new_jname'] =  $new_jname;
-			        /**
-			         * @ignore
-			         * @var $view jfusionViewplugindisplay
-			         */
-			        $view = $this->getView('plugindisplay','html');
-			        $plugins = $view->getPlugins();
-			        $result['pluginlist'] = $view->generateListHTML($plugins);
 		        }
 	        } else {
 		        $result['status'] = false;
@@ -502,6 +489,14 @@ class JFusionController extends JControllerLegacy
             $result['status'] = false;
 	        JFusionFunction::raiseError(0, JText::_('NONE_SELECTED'));
         }
+
+	    /**
+	     * @ignore
+	     * @var $view jfusionViewplugindisplay
+	     */
+	    $view = $this->getView('plugindisplay','html');
+	    $plugins = $view->getPlugins();
+	    $result['pluginlist'] = $view->generateListHTML($plugins);
 
 	    $result['messages'] = JFusionFunction::renderMessage();
         //output results

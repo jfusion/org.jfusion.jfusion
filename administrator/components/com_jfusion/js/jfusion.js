@@ -84,47 +84,12 @@ JFusion.changeSetting = function (fieldname, fieldvalue, jname) {
         onSuccess: function(JSONobject) {
             JFusion.OnMessages(JSONobject.messages);
 
-            //also update the check_encryption and dual_login fields if needed
-            if (fieldname == 'master' || fieldname == 'slave') {
-                if (fieldvalue == 1 && fieldname == 'master') {
-                    //also untick other masters
-                    var mtable=$('sortables');
-                    var tablelength = mtable.rows.length - 1;
-                    for (var i=1; i<=tablelength; i++) {
-                        JFusion.updateJavaScript(mtable.rows[i].id,'master',0);
-                    }
-                }
-                JFusion.updateJavaScript(jname,'check_encryption',fieldvalue);
-                JFusion.updateJavaScript(jname,'dual_login',fieldvalue);
-                //also ensure the opposite value is set for master or slave
-                if (fieldvalue == 1) {
-                    if (fieldname == 'master') {
-                        JFusion.updateJavaScript(jname,'slave',0);
-                    } else {
-                        JFusion.updateJavaScript(jname,'master',0);
-                    }
-                }
-            }
-            //update the image and link
-            JFusion.updateJavaScript(jname,fieldname,fieldvalue);
+            JFusion.updateList(JSONobject.pluginlist);
         }, onError: function(JSONobject) {
             JFusion.OnError(JSONobject);
         }
 
     }).send(syncdata);
-}
-
-JFusion.updateJavaScript = function (plugin,field, value) {
-    var element = $(plugin + '_' + field);
-    var newValue = 0;
-    element = element.getFirst();
-    if (value == 1) {
-        element.getFirst().set('src', 'components/com_jfusion/images/tick.png');
-    } else {
-        element.getFirst().set('src', 'components/com_jfusion/images/cross.png');
-        newValue = 1;
-    }
-    element.set('href', "javascript: JFusion.changeSetting('"+field+"','"+newValue+"','"+plugin+"')");
 }
 
 JFusion.copyPlugin = function(jname) {
@@ -146,8 +111,6 @@ JFusion.copyPlugin = function(jname) {
 JFusion.deletePlugin = function(jname) {
     var confirmdelete = confirm(JFusion.JText('DELETE')+' '+JFusion.JText('PLUGIN')+' ' + jname + '?');
     if(confirmdelete) {
-        //update the database
-
         // this code will send a data object via a GET request and alert the retrieved data.
         new Request.JSON({url: JFusion.url ,
             onSuccess: function(JSONobject) {
@@ -166,8 +129,9 @@ JFusion.deletePlugin = function(jname) {
 }
 
 JFusion.updateList = function(html) {
-    $("sort_table").empty();
-    $("sort_table").set('html', html);
+    var list = $("sort_table");
+    list.empty();
+    list.set('html', html);
     this.initSortables();
 }
 
