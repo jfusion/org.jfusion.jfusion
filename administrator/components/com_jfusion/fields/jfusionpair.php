@@ -49,51 +49,50 @@ class JFormFieldJFusionPair extends JFormField
 
 			$output = <<<JS
 		function addPair(t,s)	{
-            var tr = document.createElement("tr");
-
+            var tr = document.createElement('tr');
 
             var index = 0;
             var list;
             while (true) {
-                list = document.getElementById("params"+t+"value"+index);
+                list = document.getElementById('params'+t+'value'+index);
                 if (!list) break;
                 index++;
             }
-            tr.setAttribute("id", "params"+t+index);
+            tr.setAttribute('id', 'params'+t+index);
 
-            var input = document.createElement("input");
-            var td = document.createElement("td");
-            input.setAttribute("type", "text");
-            input.setAttribute("id", "params"+t+"name"+index);
-            input.setAttribute("name", "params["+t+"][name]["+index+"]");
-            input.setAttribute("size", s);
+            var input = document.createElement('input');
+            var td = document.createElement('td');
+            input.setAttribute('type', 'text');
+            input.setAttribute('id', 'params'+t+'name'+index);
+            input.setAttribute('name', 'params['+t+'][name]['+index+']');
+            input.setAttribute('size', s);
             td.appendChild(input);
             tr.appendChild(td);
 
-            input = document.createElement("input");
-            td = document.createElement("td");
-			input.setAttribute("type", "text");
-            input.setAttribute("id", "params"+t+"value"+index);
-            input.setAttribute("name", "params["+t+"][value]["+index+"]");
-            input.setAttribute("size", s);
+            input = document.createElement('input');
+            td = document.createElement('td');
+			input.setAttribute('type', 'text');
+            input.setAttribute('id', 'params'+t+'value'+index);
+            input.setAttribute('name', 'params['+t+'][value]['+index+']');
+            input.setAttribute('size', s);
             td.appendChild(input);
             tr.appendChild(td);
 
-			var a = document.createElement("a");
-			td = document.createElement("td");
-            a.setAttribute("href", "javascript:removePair(\'"+t+"\',\'"+t+index+"\');");
-            a.appendChild(document.createTextNode("{$delete}"));
+			var a = document.createElement('a');
+			td = document.createElement('td');
+            a.setAttribute('href', "javascript:removePair(\'"+t+"\',\'"+t+index+"\');");
+            a.appendChild(document.createTextNode('{$delete}'));
             td.appendChild(a);
             tr.appendChild(td);
 
-            $("params"+t).appendChild(tr);
+            $('params'+t).appendChild(tr);
 
-            $("params"+t+"_save").src = 'components/com_jfusion/images/filesave.png';
+			$('params'+t+'_save').set('src', 'components/com_jfusion/images/filesave.png');
         }
 
         function removePair(t,i) {
-            $("params"+t).removeChild($("params"+i));
-            $("params"+t+"_save").src = 'components/com_jfusion/images/filesave.png';
+            $('params'+t).removeChild($('params'+i));
+            $('params'+t+'_save').set('src', 'components/com_jfusion/images/filesave.png');
         }
 
         function closePair() {
@@ -133,29 +132,38 @@ JS;
 
 		$values = '';
 		if (!is_array($value) || !count($value)) {
-			$values .= '<tr id="params'.$name.'0">';
-			$values .= '<td>';
-			$values .= '<input type="text" name="params['.$name.'][name][0]" id="params'.$name.'name0" size="50"/>';
-			$values .= '</td><td>';
-			$values .= '<input type="text" name="params['.$name.'][value][0]" id="params'.$name.'value0" size="50"/>';
-			$values .= '</td><td>';
-			$values .= '<a href="javascript:removePair(\''.$name.'\', \''.$name.'0\');">'.$delete.'</a>';
-			$values .= '</td>';
-			$values .= '</tr>';
+			$values .=<<<HTML
+			<tr id="params{$name}0">
+				<td>
+					<input type="text" name="params[{$name}][name][0]" id="params{$name}name0" size="50"/>
+				</td>
+				<td>
+					<input type="text" name="params[{$name}][value][0]" id="params{$name}value0" size="50"/>
+				</td>
+				<td>
+					<a href="javascript:removePair('{$name}', '{$name}0');">{$delete}</a>
+				</td>
+			</tr>
+HTML;
 		} else {
 			$i = 0;
 			foreach ($value['value'] as $key => $val) {
 				$v = htmlentities($val);
 				$n = htmlentities($value['name'][$key]);
-				$values .= '<tr id="params'.$name.$i.'">';
-				$values .= '<td>';
-				$values .= '<input value="'.$n.'" type="text" name="params['.$name.'][name]['.$i.']" id="params'.$name.'name'.$i.'" size="50"/>';
-				$values .= '</td><td>';
-				$values .= '<input value="'.$v.'" type="text" name="params['.$name.'][value]['.$i.']" id="params'.$name.'value'.$i.'" size="50"/>';
-				$values .= '</td><td>';
-				$values .= '<a href="javascript:removePair(\''.$name.'\', \''.$name.$i.'\');">'.$delete.'</a>';
-				$values .= '</td>';
-				$values .= '</tr>';
+
+				$values .=<<<HTML
+				<tr id="params{$name}{$i}">
+					<td>
+						<input type="text" name="params[{$name}][name][{$i}]" id="params{$name}name{$i}" size="50"/>
+					</td>
+					<td>
+						<input type="text" name="params[{$name}][value][{$i}]" id="params{$name}value{$i}" size="50"/>
+					</td>
+					<td>
+						<a href="javascript:removePair('{$name}', '{$name}{$i}');">{$delete}</a>
+					</td>
+				</tr>
+HTML;
 				$i++;
 			}
 		}

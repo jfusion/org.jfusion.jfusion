@@ -170,7 +170,7 @@ JFusionFunctionAdmin::displayDonate();
 	                    <!--
 	                    window.addEvent('domready',function() {
 	                        $('<?php echo $component->name ;?>').addEvent('click', function(e) {
-	                            new Event(e).stop();
+		                        e.stop();
 
 	                            confirmSubmit('<?php echo $component->updateurl; ?>');
 	                        });
@@ -263,7 +263,7 @@ JFusionFunctionAdmin::displayDonate();
 	                    <!--
 	                    window.addEvent('domready',function() {
 	                        $('<?php echo $jfusion_plugin->id ?>').addEvent('click', function(e) {
-	                            new Event(e).stop();
+		                        e.stop();
 
 	                            confirmSubmitPlugin('<?php echo $jfusion_plugin->updateurl; ?>');
 	                        });

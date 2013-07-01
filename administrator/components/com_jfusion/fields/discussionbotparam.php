@@ -63,7 +63,7 @@ class JFormFieldDiscussionbotparam extends JFormField
                 $js = <<<JS
                 function jDiscussionParamSet(name, base64) {
 					$(name + '_id').value = base64;
-					$(name + '_img').src = 'components/com_jfusion/images/filesave.png';
+					$(name + '_img').set('src', 'components/com_jfusion/images/filesave.png');
 					SqueezeBox.close();
 				}
 JS;

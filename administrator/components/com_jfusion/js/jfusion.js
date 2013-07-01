@@ -2,6 +2,7 @@
 if("undefined"===typeof JFusion) {
     var JFusion={};
     JFusion.Text = [];
+    JFusion.url = '';
 }
 
 JFusion.JText = function(key) {
@@ -57,7 +58,7 @@ JFusion.OnMessage = function(type, messages, force) {
 
 JFusion.groupDataArray = [];
 JFusion.usergroupSelect = function(option) {
-    $('JFusionUsergroup').innerHTML = this.groupDataArray[option];
+    $('JFusionUsergroup').set('html',this.groupDataArray[option]);
 }
 
 JFusion.multiUsergroupSelect = function(option) {
@@ -70,6 +71,166 @@ JFusion.multiUsergroupSelect = function(option) {
         addgroupset.style.display = 'none';
     }
 }
+
+JFusion.changeSetting = function (fieldname, fieldvalue, jname) {
+    //change the image
+    var syncdata = 'jname=' + jname + '&field_name=' + fieldname + '&field_value=' + fieldvalue + '&task=changesettings&option=com_jfusion';
+    new Request.JSON({ url: JFusion.url, method: 'get',
+
+        onRequest: function() {
+            var element = $(jname + '_' + fieldname).getFirst().getFirst();
+            element.set('src', 'components/com_jfusion/images/spinner.gif');
+        },
+        onSuccess: function(JSONobject) {
+            JFusion.OnMessages(JSONobject.messages);
+
+            //also update the check_encryption and dual_login fields if needed
+            if (fieldname == 'master' || fieldname == 'slave') {
+                if (fieldvalue == 1 && fieldname == 'master') {
+                    //also untick other masters
+                    var mtable=$('sortables');
+                    var tablelength = mtable.rows.length - 1;
+                    for (var i=1; i<=tablelength; i++) {
+                        JFusion.updateJavaScript(mtable.rows[i].id,'master',0);
+                    }
+                }
+                JFusion.updateJavaScript(jname,'check_encryption',fieldvalue);
+                JFusion.updateJavaScript(jname,'dual_login',fieldvalue);
+                //also ensure the opposite value is set for master or slave
+                if (fieldvalue == 1) {
+                    if (fieldname == 'master') {
+                        JFusion.updateJavaScript(jname,'slave',0);
+                    } else {
+                        JFusion.updateJavaScript(jname,'master',0);
+                    }
+                }
+            }
+            //update the image and link
+            JFusion.updateJavaScript(jname,fieldname,fieldvalue);
+        }, onError: function(JSONobject) {
+            JFusion.OnError(JSONobject);
+        }
+
+    }).send(syncdata);
+}
+
+JFusion.updateJavaScript = function (plugin,field, value) {
+    var element = $(plugin + '_' + field);
+    var newValue = 0;
+    element = element.getFirst();
+    if (value == 1) {
+        element.getFirst().set('src', 'components/com_jfusion/images/tick.png');
+    } else {
+        element.getFirst().set('src', 'components/com_jfusion/images/cross.png');
+        newValue = 1;
+    }
+    element.set('href', "javascript: JFusion.changeSetting('"+field+"','"+newValue+"','"+plugin+"')");
+}
+
+JFusion.copyPlugin = function(jname) {
+    var newjname = prompt('Please type in the name to use for the copied plugin. This name must not already be in use.', '');
+    if(newjname) {
+        // this code will send a data object via a GET request and alert the retrieved data.
+        new Request.JSON({url: JFusion.url ,
+            onSuccess: function(JSONobject) {
+                JFusion.OnMessages(JSONobject.messages);
+
+                JFusion.updateList(JSONobject.pluginlist);
+            }, onError: function(JSONobject) {
+                JFusion.OnError(JSONobject);
+            }
+        }).get({'option': 'com_jfusion', 'task': 'plugincopy', 'jname': jname, 'new_jname': newjname});
+    }
+}
+
+JFusion.deletePlugin = function(jname) {
+    var confirmdelete = confirm(JFusion.JText('DELETE')+' '+JFusion.JText('PLUGIN')+' ' + jname + '?');
+    if(confirmdelete) {
+        //update the database
+
+        // this code will send a data object via a GET request and alert the retrieved data.
+        new Request.JSON({url: JFusion.url ,
+            onSuccess: function(JSONobject) {
+                JFusion.OnMessages(JSONobject.messages);
+                if(JSONobject.status ===  true) {
+                    var el = $(JSONobject.jname);
+                    el.parentNode.removeChild(el);
+                }
+            }, onError: function(JSONobject) {
+                JFusion.OnError(JSONobject);
+            }}).get({'option': 'com_jfusion',
+                'task': 'uninstallplugin',
+                'jname': jname,
+                'tmpl': 'component'});
+    }
+}
+
+JFusion.updateList = function(html) {
+    $("sort_table").empty();
+    $("sort_table").set('html', html);
+    this.initSortables();
+}
+
+JFusion.initSortables = function() {
+    /* allow for updates of row order */
+    var ajaxsync = new Request.JSON({ url: JFusion.url,
+        method: 'get',
+        onSuccess: function(JSONobject) {
+            JFusion.OnMessages(JSONobject.messages);
+        }, onError: function(JSONobject) {
+            JFusion.OnError(JSONobject);
+        }
+    });
+
+    new Sortables('sort_table',{
+        /* set options */
+        handle: 'div.dragHandles',
+
+        /* initialization stuff here */
+        initialize: function() {
+            // do nothing yet
+        },
+        /* once an item is selected */
+        onStart: function(el) {
+            //a little fancy work to hide the clone which mootools 1.1 doesn't seem to give the option for
+            var checkme = $$('div tr#' + el.id);
+            if (checkme[1]) {
+                checkme[1].setStyle('display','none');
+            }
+        },
+
+        onComplete: function(el) {
+            //build a string of the order
+            var sortorder = '';
+            var rowcount = 0;
+            $$('#sort_table tr').each(function(tr) {
+                $(tr.id).setAttribute('class', 'row' + rowcount);
+                if (rowcount === 0) {
+                    rowcount = 1;
+                } else {
+                    rowcount = 0;
+                }
+                sortorder = sortorder +  tr.id  + '|';
+            });
+
+            //update the database
+            ajaxsync.send('option=com_jfusion&task=saveorder&tmpl=component&sort_order='+sortorder);
+        }
+    });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function submitbutton(pressbutton) {
     var adminForm = $('adminForm');
@@ -86,7 +247,7 @@ function submitbutton(pressbutton) {
 
 function setCheckedValue(radioObj, newValue) {
     var i;
-	if (radioObj) {
+    if (radioObj) {
         var radioLength = radioObj.length;
         if (radioLength === undefined) {
             radioObj.checked = (radioObj.value == newValue.toString());
@@ -99,9 +260,9 @@ function setCheckedValue(radioObj, newValue) {
 }
 
 function setSort(col) {
-	var form = $('adminForm');
-	var prevCol = form.log_sort.value;
-	if (prevCol == col) {
+    var form = $('adminForm');
+    var prevCol = form.log_sort.value;
+    if (prevCol == col) {
         var direction = form.log_dir.value;
         if (direction == '1') {
             form.log_dir.value = '-1';
@@ -111,13 +272,13 @@ function setSort(col) {
     } else {
         form.log_dir.value = '1';
     }
-	form.log_sort.value = col;
-	form.submit();
+    form.log_sort.value = col;
+    form.submit();
 }
 
 function getCheckedValue(radioObj) {
     var r = "", i;
-	if (radioObj) {
+    if (radioObj) {
         var radioLength = radioObj.length;
         if (radioLength === undefined) {
             if (radioObj.checked) {
@@ -131,7 +292,7 @@ function getCheckedValue(radioObj) {
             }
         }
     }
-	return r;
+    return r;
 }
 
 function module(action) {
@@ -142,7 +303,7 @@ function module(action) {
 }
 
 if (typeof Joomla != 'undefined') {
-	Joomla.submitbutton = function (pressbutton) {
+    Joomla.submitbutton = function (pressbutton) {
         var adminForm = $('adminForm');
         if (pressbutton == 'applyconfig') {
             adminForm.action.value = 'apply';
@@ -153,18 +314,18 @@ if (typeof Joomla != 'undefined') {
         } else {
             submitform(pressbutton);
         }
-	};
+    };
 
-	Joomla.getCheckedValue = function (radioObj) {
-		return getCheckedValue(radioObj);
-	};
+    Joomla.getCheckedValue = function (radioObj) {
+        return getCheckedValue(radioObj);
+    };
 
-	Joomla.setCheckedValue = function (radioObj, newValue) {
-		return setCheckedValue(radioObj, newValue);
-	};
+    Joomla.setCheckedValue = function (radioObj, newValue) {
+        return setCheckedValue(radioObj, newValue);
+    };
 
-	Joomla.setSort = function (col) {
-		return setSort(col);
-	};
+    Joomla.setSort = function (col) {
+        return setSort(col);
+    };
 }
 //-->

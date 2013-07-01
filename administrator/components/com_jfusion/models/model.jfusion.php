@@ -1683,7 +1683,7 @@ class JFusionFunction
 	 * @return void
 	 */
 	public static function loadJSLanguage() {
-		$keys = array( 'SESSION_TIMEOUT', 'SYNC_NODATA', 'NOTICE', 'WARNING', 'MESSAGE', 'ERROR' );
+		$keys = array( 'SESSION_TIMEOUT', 'SYNC_NODATA', 'NOTICE', 'WARNING', 'MESSAGE', 'ERROR', 'DELETE', 'PLUGIN' );
 
 		$text = array();
 		foreach($keys as $key) {

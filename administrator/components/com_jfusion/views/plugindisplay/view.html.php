@@ -42,59 +42,9 @@ class jfusionViewplugindisplay extends JViewLegacy {
      */
     function display($tpl = null)
     {
-        //check to see if the ordering is correct
-        $db = JFactory::getDBO();
-        $query = 'SELECT * from #__jfusion WHERE ordering = \'\' OR ordering IS NULL';
-        $db->setQuery($query );
-        $ordering = $db->loadObjectList();
-        JHTML::_('behavior.modal', 'a.modal');
-        if(!empty($ordering)){
-            //set a new order
-            $query = 'SELECT * from #__jfusion ORDER BY ordering ASC';
-            $db->setQuery($query );
-            $rows = $db->loadObjectList();
-            $ordering = 1;
-            foreach ($rows as $row){
-                $db->setQuery('UPDATE #__jfusion SET ordering = '.$ordering.' WHERE name = '. $db->Quote($row->name));
-                $db->execute();
-                $ordering++;
-            }
-        }
-
-        //get the data about the JFusion plugins
-        $query = 'SELECT * from #__jfusion ORDER BY ordering ASC';
-        $db->setQuery($query );
-        $rows = $db->loadObjectList();
-        $plugins = array();
-        //disable the default error reports
-	    //JError::setErrorHandling(E_ALL, "ignore");
-            
-        if ($rows) {
+	    $plugins = $this->getPlugins();
+        if (!empty($plugins)) {
             //we found plugins now prepare the data
-            foreach($rows as $record) {
-                $JFusionPlugin = JFusionFactory::getAdmin($record->name);
-                $JFusionParam = JFusionFactory::getParams($record->name);
-
-                $record = $this->initRecord($record->name,$record);
-                //check to see if the plugin files exist
-                $plugin_xml = JFUSION_PLUGIN_PATH .DIRECTORY_SEPARATOR. $record->name .DIRECTORY_SEPARATOR. 'jfusion.xml';
-                if(!file_exists($plugin_xml)) {
-                    $record->bad_plugin = 1;
-                    JFusionFunction::raiseWarning(500, $record->name . ': ' . JText::_('NO_FILES'));
-                } else {
-                    $record->bad_plugin = 0;
-                }
-
-                //output detailed configuration warnings for enabled plugins
-                if ($record->status==1) {
-		        	if ($record->master == '1' || $record->slave == '1') {
-		            	$JFusionPlugin->debugConfig();
-		        	}
-                }
-                
-                $plugins[]=$record;
-            }
-
 	        jimport('joomla.version');
 	        $jversion = new JVersion();
             //get the install xml
@@ -159,7 +109,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
           	$record->copyscript =  'javascript:void(0)';
        	} else {
           	$record->copyimage = 'components/com_jfusion/images/copy_icon.png';
-          	$record->copyscript =  'javascript: copyplugin(\'' . $record->name . '\')';
+          	$record->copyscript =  'javascript: JFusion.copyPlugin(\'' . $record->name . '\')';
      	}
 
        	//set uninstall options
@@ -172,7 +122,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
           	$record->deletescript =  'javascript:void(0)';
      	} else {
           	$record->deleteimage = 'components/com_jfusion/images/delete_icon.png';
-          	$record->deletescript =  'javascript: deleteplugin(\'' . $record->name .'\')"';
+          	$record->deletescript =  'javascript: JFusion.deletePlugin(\'' . $record->name .'\')"';
       	}
 
 		//set wizard options
@@ -192,11 +142,11 @@ class jfusionViewplugindisplay extends JViewLegacy {
            	$record->masteralt =  'unavailable';
        	} elseif ($record->master == 1) {
          	$record->masterimage = 'components/com_jfusion/images/tick.png';
-         	$record->masterscript =  'javascript: changesetting(\'master\',\'0\',\'' .$record->name.'\');';
+         	$record->masterscript =  'javascript: JFusion.changeSetting(\'master\',\'0\',\'' .$record->name.'\');';
            	$record->masteralt =  'enabled';
       	} else {
           	$record->masterimage = 'components/com_jfusion/images/cross.png';
-           	$record->masterscript =  'javascript: changesetting(\'master\',\'1\',\'' .$record->name.'\');';
+           	$record->masterscript =  'javascript: JFusion.changeSetting(\'master\',\'1\',\'' .$record->name.'\');';
           	$record->masteralt =  'disabled';
     	}
 
@@ -207,11 +157,11 @@ class jfusionViewplugindisplay extends JViewLegacy {
            	$record->slavealt =  'unavailable';
       	} elseif ($record->slave == 1) {
           	$record->slaveimage = 'components/com_jfusion/images/tick.png';
-          	$record->slavescript =  'javascript: changesetting(\'slave\',\'0\',\'' .$record->name.'\');';
+          	$record->slavescript =  'javascript: JFusion.changeSetting(\'slave\',\'0\',\'' .$record->name.'\');';
           	$record->slavealt =  'enabled';
        	} else {
          	$record->slaveimage = 'components/com_jfusion/images/cross.png';
-          	$record->slavescript =  'javascript: changesetting(\'slave\',\'1\',\'' .$record->name.'\');';
+          	$record->slavescript =  'javascript: JFusion.changeSetting(\'slave\',\'1\',\'' .$record->name.'\');';
          	$record->slavealt =  'disabled';
      	}
 
@@ -222,11 +172,11 @@ class jfusionViewplugindisplay extends JViewLegacy {
            	$record->encryptalt =  'unavailable';
         } elseif ($record->check_encryption == 1) {
            	$record->encryptimage = 'components/com_jfusion/images/tick.png';
-           	$record->encryptscript =  'javascript: changesetting(\'check_encryption\',\'0\',\'' .$record->name.'\');';
+           	$record->encryptscript =  'javascript: JFusion.changeSetting(\'check_encryption\',\'0\',\'' .$record->name.'\');';
            	$record->encryptalt =  'enabled';
        	} else {
            	$record->encryptimage = 'components/com_jfusion/images/cross.png';
-           	$record->encryptscript =  'javascript: changesetting(\'check_encryption\',\'1\',\'' .$record->name.'\');';
+           	$record->encryptscript =  'javascript: JFusion.changeSetting(\'check_encryption\',\'1\',\'' .$record->name.'\');';
          	$record->encryptalt =  'disabled';
        	}
 
@@ -237,11 +187,11 @@ class jfusionViewplugindisplay extends JViewLegacy {
            	$record->dualalt =  'unavailable';
       	} elseif ($record->dual_login == 1) {
             $record->dualimage = 'components/com_jfusion/images/tick.png';
-           	$record->dualscript =  'javascript: changesetting(\'dual_login\',\'0\',\'' .$record->name.'\');';
+           	$record->dualscript =  'javascript: JFusion.changeSetting(\'dual_login\',\'0\',\'' .$record->name.'\');';
       		$record->dualalt =  'enabled';
        	} else {
          	$record->dualimage = 'components/com_jfusion/images/cross.png';
-          	$record->dualscript =  'javascript: changesetting(\'dual_login\',\'1\',\'' .$record->name.'\');';
+          	$record->dualscript =  'javascript: JFusion.changeSetting(\'dual_login\',\'1\',\'' .$record->name.'\');';
        		$record->dualalt =  'disabled';
   		}
 
@@ -314,11 +264,126 @@ class jfusionViewplugindisplay extends JViewLegacy {
 		return  $record;
     }
 
+	function getPlugins() {
+		//check to see if the ordering is correct
+		$db = JFactory::getDBO();
+		$query = 'SELECT * from #__jfusion WHERE ordering = \'\' OR ordering IS NULL';
+		$db->setQuery($query );
+		$ordering = $db->loadObjectList();
+		JHTML::_('behavior.modal', 'a.modal');
+		if(!empty($ordering)){
+			//set a new order
+			$query = 'SELECT * from #__jfusion ORDER BY ordering ASC';
+			$db->setQuery($query );
+			$rows = $db->loadObjectList();
+			$ordering = 1;
+			foreach ($rows as $row){
+				$db->setQuery('UPDATE #__jfusion SET ordering = '.$ordering.' WHERE name = '. $db->Quote($row->name));
+				$db->execute();
+				$ordering++;
+			}
+		}
+
+		//get the data about the JFusion plugins
+		$query = 'SELECT * from #__jfusion ORDER BY ordering ASC';
+		$db->setQuery($query );
+		$rows = $db->loadObjectList();
+		$plugins = array();
+
+		if ($rows) {
+			//we found plugins now prepare the data
+			foreach($rows as $record) {
+				$JFusionPlugin = JFusionFactory::getAdmin($record->name);
+				$JFusionParam = JFusionFactory::getParams($record->name);
+
+				$record = $this->initRecord($record->name,$record);
+				//check to see if the plugin files exist
+				$plugin_xml = JFUSION_PLUGIN_PATH .DIRECTORY_SEPARATOR. $record->name .DIRECTORY_SEPARATOR. 'jfusion.xml';
+				if(!file_exists($plugin_xml)) {
+					$record->bad_plugin = 1;
+					JFusionFunction::raiseWarning(500, $record->name . ': ' . JText::_('NO_FILES'));
+				} else {
+					$record->bad_plugin = 0;
+				}
+
+				//output detailed configuration warnings for enabled plugins
+				if ($record->status==1) {
+					if ($record->master == '1' || $record->slave == '1') {
+						$JFusionPlugin->debugConfig();
+					}
+				}
+				$plugins[]=$record;
+			}
+		}
+		return $plugins;
+	}
+
+	/**
+	 * @param array $plugins
+	 *
+	 * @return string
+	 */
+	function generateListHTML($plugins) {
+		$row_count = 0;
+		$html = '';
+		foreach($plugins as $record) {
+			$row = $this->generateRowHTML($record);
+
+			$count = ($row_count % 2);
+			$html .=<<<HTML
+			<tr id="{$record->name}" class="row{$count}">
+				{$row}
+			</tr>
+HTML;
+			$row_count++;
+		}
+		return $html;
+	}
+
     /**
      * @param $record
      * @return string
      */
     function generateRowHTML($record) {
+	    $wizard = JText::_('WIZARD');
+	    $edit = JText::_('EDIT');
+	    $copy = JText::_('COPY');
+	    $delete = JText::_('DELETE');
+	    $info = JText::_('INFO');
+	    $html =<<<HTML
+    	<td width="20px;"><div class="dragHandles" id="dragHandles"><img src="components/com_jfusion/images/draggable.png" name="handle"></div></td>
+        <td>{$record->name}</td>
+		<td width="96px;">
+		    <a href="{$record->wizardscript}" title="{$wizard}"><img src="{$record->wizardimage}" alt="{$wizard}" /></a>
+			<a href="index.php?option=com_jfusion&task=plugineditor&jname={$record->name}" title="{$edit}"><img src="components/com_jfusion/images/edit.png" alt="{$edit}" /></a>
+	        <a href="{$record->copyscript}" title="{$copy}"><img src="{$record->copyimage}" alt="{$copy}" /></a>
+	        <a href="{$record->deletescript}" title="{$delete}"><img src="{$record->deleteimage}" alt="{$delete}" /></a>
+			<a class="modal" title="{$info}"  href="index.php?option=com_jfusion&task=plugininfo&tmpl=component&jname={$record->name}" rel="{handler: \'iframe\', size: {x: 375, y: 375}}"><img src="components/com_jfusion/images/info.png" alt="{$info}" /></a>
+		</td>
+        <td>{$record->description}</td>
+        <td width="40px;" id="{$record->name}_master">
+        	<a href="{$record->masterscript}"><img src="{$record->masterimage}" border="0" alt="{$record->masteralt}" /></a>
+		</td>
+        <td width="40px;" id="{$record->name}_slave">
+        	<a href="{$record->slavescript}"><img src="{$record->slaveimage}" border="0" alt="{$record->slavealt}" /></a>
+        </td>
+        <td width="40px;" id="{$record->name}_check_encryption">
+        	<a href="{$record->encryptscript}"><img src="{$record->encryptimage}" border="0" alt="{$record->encryptalt}" /></a>
+        </td>
+        <td width="40px;" id="{$record->name}_dual_login">
+        	<a href="{$record->dualscript}"><img src="{$record->dualimage}" border="0" alt="{$record->dualalt}" /></a>
+        </td>
+		<td>
+			<img src="{$record->statusimage}" border="0" alt="{$record->statusalt}" /><a href="index.php?option=com_jfusion&task=plugineditor&jname={$record->name}">{$record->statusalt}</a>
+		</td>
+       	<td>{$record->usercount}</td>
+        <td>
+        	<img src="{$record->registrationimage}" border="0" alt="{$record->registrationalt}" />{$record->registrationalt}
+        </td>
+		<td>{$record->usergrouptext}</td>
+HTML;
+	    return $html;
+/*
     	$row = '<td width="20px;"><div class="dragHandles" id="dragHandles"><img src="components/com_jfusion/images/draggable.png" name="handle"></div></td>';
         $row .= '<td>'.$record->name.'</td>';
 		$row .= '<td width="92px;">';
@@ -338,5 +403,6 @@ class jfusionViewplugindisplay extends JViewLegacy {
         $row .= '<td><img src="'.$record->registrationimage.'" border="0" alt="'.$record->registrationalt.'" />'.$record->registrationalt.'</td>';
 		$row .= '<td>'.$record->usergrouptext.'</td>';
 		return  $row;
+*/
     }
 }

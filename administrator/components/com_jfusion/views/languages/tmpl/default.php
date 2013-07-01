@@ -94,7 +94,7 @@ JFusionFunctionAdmin::displayDonate();
 	                            <!--
 	                            window.addEvent('domready',function() {
 	                                $('<?php echo $lang ;?>').addEvent('click', function(e) {
-	                                    new Event(e).stop();
+		                                e.stop();
 
 	                                    confirmSubmitLanguage('<?php echo $data->file; ?>');
 	                                });

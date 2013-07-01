@@ -427,15 +427,13 @@ class JFusionController extends JControllerLegacy
                  * @var $view jfusionViewplugindisplay
                  */
                 $view = $this->getView('plugindisplay','html');
-                $result['rowhtml'] = $view->generateRowHTML($view->initRecord($result['jname']));
+	            $plugins = $view->getPlugins();
+	            $result['pluginlist'] = $view->generateListHTML($plugins);
             }
+	        $result['messages'] = JFusionFunction::renderMessage();
+
             die(json_encode($result));
         } else {
-            if ($result['status']) {
-                JFusionFunction::raiseNotice(0, $result['message']);
-            } else {
-                JFusionFunction::raiseWarning(0, $result['message']);
-            }
             $this->setRedirect('index.php?option=com_jfusion&task=plugindisplay');
         }
     }
@@ -449,7 +447,6 @@ class JFusionController extends JControllerLegacy
             $packagename = JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'packages' . DIRECTORY_SEPARATOR . 'jfusion_' . $plugin . '.zip';
             $model = new JFusionModelInstaller();
             $result = $model->installZIP($packagename);
-            JFusionFunction::raiseNotice(0, $result['message']);
         }
         $this->setRedirect('index.php?option=com_jfusion&task=plugindisplay');
     }
@@ -494,10 +491,8 @@ class JFusionController extends JControllerLegacy
 			         * @var $view jfusionViewplugindisplay
 			         */
 			        $view = $this->getView('plugindisplay','html');
-			        $result['rowhtml'] = $view->generateRowHTML($view->initRecord($new_jname));
-			        JFusionFunction::raiseMessage(0, $result['message']);
-		        } else {
-			        JFusionFunction::raiseError(0, $result['message']);
+			        $plugins = $view->getPlugins();
+			        $result['pluginlist'] = $view->generateListHTML($plugins);
 		        }
 	        } else {
 		        $result['status'] = false;
@@ -533,12 +528,6 @@ class JFusionController extends JControllerLegacy
             include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.install.php';
             $model = new JFusionModelInstaller();
             $result = $model->uninstall($jname);
-
-	        if ($result['status']) {
-		        JFusionFunction::raiseMessage(0, $result['message']);
-	        } else {
-		        JFusionFunction::raiseError(0, $result['message']);
-	        }
         } else {
 	        JFusionFunction::raiseError(0, 'JFusion ' . JText::_('PLUGIN') . ' ' . JText::_('UNINSTALL') . ' ' . JText::_('FAILED'));
             $result['status'] = false;

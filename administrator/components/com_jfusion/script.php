@@ -883,7 +883,7 @@ HTML;
 		foreach ($installedPlugins as $plugin) {
 			if (array_key_exists ($plugin, $jfusion_plugins)) {
 				//install updates
-				$model = new JFusionModelInstaller();
+				$model = new JFusionModelInstaller(false);
 				$result = $model->installZIP($basedir . DIRECTORY_SEPARATOR . 'packages' . DIRECTORY_SEPARATOR . 'jfusion_' . $plugin . '.zip');
 				//remove plugin from install list
 				unset($jfusion_plugins[$plugin]);

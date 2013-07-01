@@ -196,7 +196,7 @@ window.addEvent('domready', function() {
         // start and stop click events
         $('start').addEvent('click', function(e) {
             // prevent default
-            new Event(e).stop();
+	        e.stop();
             if (!syncRunning) {
                 // prevent insane clicks to start numerous requests
                 $clear(periodical);

@@ -52,7 +52,7 @@ class JFormFieldJFusionItemid extends JFormField
             function jSelectItemid(name,id,num) {
 	            $(name+'_id'+num).value = id;
 	            $(name+'_name'+num).value = id;
-	            $(name+'_save'+num).src = 'components/com_jfusion/images/filesave.png';
+	            $(name+'_save'+num).set('src', 'components/com_jfusion/images/filesave.png');
 	            SqueezeBox.close();
 	        }
 JS;
