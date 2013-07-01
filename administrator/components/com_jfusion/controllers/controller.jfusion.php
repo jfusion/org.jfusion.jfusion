@@ -702,6 +702,14 @@ JS;
 	            }
             }
         }
+	    /**
+	     * @ignore
+	     * @var $view jfusionViewplugindisplay
+	     */
+	    $view = $this->getView('plugindisplay','html');
+	    $plugins = $view->getPlugins();
+	    $result['pluginlist'] = $view->generateListHTML($plugins);
+
 	    $result['messages'] = JFusionFunction::renderMessage();
         die(json_encode($result));
     }

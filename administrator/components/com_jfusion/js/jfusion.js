@@ -141,6 +141,8 @@ JFusion.initSortables = function() {
         method: 'get',
         onSuccess: function(JSONobject) {
             JFusion.OnMessages(JSONobject.messages);
+
+            JFusion.updateList(JSONobject.pluginlist);
         }, onError: function(JSONobject) {
             JFusion.OnError(JSONobject);
         }
