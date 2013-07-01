@@ -287,7 +287,7 @@ class JFusionAdmin_magento extends JFusionAdmin
                 $html = <<<HTML
                 <div class="button2-left">
                     <div class="blank">
-                        <a href="javascript:void(0);" onclick="return module('{$mod}');">{$text}</a>
+                        <a href="javascript:void(0);" onclick="return JFusion.module('{$mod}');">{$text}</a>
                     </div>
                 </div>
 
@@ -481,7 +481,7 @@ HTML;
             $html = <<<HTML
 			    <div class="button2-left">
 			        <div class="blank">
-			            <a href="javascript:void(0);"  onclick="return module('activateModule');">{$text}</a>
+			            <a href="javascript:void(0);"  onclick="return JFusion.module('activateModule');">{$text}</a>
 			        </div>
 			    </div>
 			    <input type="hidden" name="activation" id="activation" value="{$activated}"/>

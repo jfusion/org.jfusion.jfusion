@@ -1,6 +1,6 @@
 //<!--
-if("undefined"===typeof JFusion) {
-    var JFusion={};
+if('undefined'===typeof JFusion) {
+    var JFusion = {};
     JFusion.Text = [];
     JFusion.url = '';
 }
@@ -15,8 +15,8 @@ JFusion.JText = function(key) {
 }
 
 JFusion.OnError = function(messages, force) {
-    var jfusionError = $("system-message-container");
-    jfusionError.empty();
+    var systemMessageContainer = $('system-message-container');
+    systemMessageContainer.empty();
     if (messages.indexOf('<!') == 0) {
         messages = [ this.JText('SESSION_TIMEOUT') ];
     } else {
@@ -26,8 +26,8 @@ JFusion.OnError = function(messages, force) {
 }
 
 JFusion.OnMessages = function(messages, force) {
-    var jfusionError = $("system-message-container");
-    jfusionError.empty();
+    var systemMessageContainer = $('system-message-container');
+    systemMessageContainer.empty();
 
     this.OnMessage('message', messages.message, force);
     this.OnMessage('notice', messages.notice, force);
@@ -38,7 +38,7 @@ JFusion.OnMessages = function(messages, force) {
 JFusion.OnMessage = function(type, messages, force) {
     if (messages instanceof Array) {
         if (messages.length) {
-            var jfusionError = $("system-message-container");
+            var systemMessageContainer = $('system-message-container');
 
             var errorlist = { 'error' : 'alert-error', 'warning' : '', 'notice' : 'alert-info', 'message' : 'alert-success'};
 
@@ -51,7 +51,7 @@ JFusion.OnMessage = function(type, messages, force) {
                     alert(message);
                 }
             });
-            div.inject(jfusionError);
+            div.inject(systemMessageContainer);
         }
     }
 }
@@ -185,20 +185,14 @@ JFusion.initSortables = function() {
     });
 }
 
+JFusion.module = function(action) {
+    var form = $('adminForm');
+    form.customcommand.value = action;
+    form.action.value = 'apply';
+    submitform('saveconfig');
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-function submitbutton(pressbutton) {
+Joomla.submitbutton = function (pressbutton) {
     var adminForm = $('adminForm');
     if (pressbutton == 'applyconfig') {
         adminForm.action.value = 'apply';
@@ -209,40 +203,9 @@ function submitbutton(pressbutton) {
     } else {
         submitform(pressbutton);
     }
-}
+};
 
-function setCheckedValue(radioObj, newValue) {
-    var i;
-    if (radioObj) {
-        var radioLength = radioObj.length;
-        if (radioLength === undefined) {
-            radioObj.checked = (radioObj.value == newValue.toString());
-        } else {
-            for (i = 0; i < radioLength; i++) {
-                radioObj[i].checked = radioObj[i].value == newValue.toString();
-            }
-        }
-    }
-}
-
-function setSort(col) {
-    var form = $('adminForm');
-    var prevCol = form.log_sort.value;
-    if (prevCol == col) {
-        var direction = form.log_dir.value;
-        if (direction == '1') {
-            form.log_dir.value = '-1';
-        } else {
-            form.log_dir.value = '1';
-        }
-    } else {
-        form.log_dir.value = '1';
-    }
-    form.log_sort.value = col;
-    form.submit();
-}
-
-function getCheckedValue(radioObj) {
+Joomla.getCheckedValue = function (radioObj) {
     var r = "", i;
     if (radioObj) {
         var radioLength = radioObj.length;
@@ -259,39 +222,36 @@ function getCheckedValue(radioObj) {
         }
     }
     return r;
-}
+};
 
-function module(action) {
-    var form = $('adminForm');
-    form.customcommand.value = action;
-    form.action.value = 'apply';
-    submitform('saveconfig');
-}
-
-if (typeof Joomla != 'undefined') {
-    Joomla.submitbutton = function (pressbutton) {
-        var adminForm = $('adminForm');
-        if (pressbutton == 'applyconfig') {
-            adminForm.action.value = 'apply';
-            submitform('saveconfig');
-        } else if (pressbutton == 'import') {
-            adminForm.encoding = 'multipart/form-data';
-            submitform(pressbutton);
+Joomla.setCheckedValue = function (radioObj, newValue) {
+    var i;
+    if (radioObj) {
+        var radioLength = radioObj.length;
+        if (radioLength === undefined) {
+            radioObj.checked = (radioObj.value == newValue.toString());
         } else {
-            submitform(pressbutton);
+            for (i = 0; i < radioLength; i++) {
+                radioObj[i].checked = radioObj[i].value == newValue.toString();
+            }
         }
-    };
+    }
+};
 
-    Joomla.getCheckedValue = function (radioObj) {
-        return getCheckedValue(radioObj);
-    };
-
-    Joomla.setCheckedValue = function (radioObj, newValue) {
-        return setCheckedValue(radioObj, newValue);
-    };
-
-    Joomla.setSort = function (col) {
-        return setSort(col);
-    };
-}
+Joomla.setSort = function (col) {
+    var form = $('adminForm');
+    var prevCol = form.log_sort.value;
+    if (prevCol == col) {
+        var direction = form.log_dir.value;
+        if (direction == '1') {
+            form.log_dir.value = '-1';
+        } else {
+            form.log_dir.value = '1';
+        }
+    } else {
+        form.log_dir.value = '1';
+    }
+    form.log_sort.value = col;
+    form.submit();
+};
 //-->
