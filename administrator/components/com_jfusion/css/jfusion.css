@@ -75,14 +75,14 @@ div.ajax_bar {
     min-width: 950px;
 }
 
-div.edit{
+div.edit {
 	float:left;
 	margin-right:10px;
 	display:inline;
 }
 
 div.edit IMG,
-div.wizard IMG{
+div.wizard IMG {
 	width:16px;
 	height:16px;
 }
