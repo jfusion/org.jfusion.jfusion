@@ -122,7 +122,7 @@ class JFusionUsersync
      *
      * @return string nothing
      */
-    function updateSyncdata(&$syncdata)
+	public static function updateSyncdata(&$syncdata)
     {
         //serialize the $syncdata to allow storage in a SQL field
         $serialized = base64_encode(serialize($syncdata));
@@ -242,7 +242,7 @@ class JFusionUsersync
      * Marks an error in sync details as resolved to prevent it from constantly showing up in the resolve error view
      * @param $id
      */
-    function markResolved($id) {
+	public static function markResolved($id) {
         $db = JFactory::getDBO();
         $query = 'UPDATE #__jfusion_sync_details SET action = \'resolved\' WHERE id = '.$id;
         $db->setQuery($query);

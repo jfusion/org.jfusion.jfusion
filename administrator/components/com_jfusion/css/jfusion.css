@@ -56,7 +56,6 @@ div.ajax_bar {
     border-left-color: #e4e4e4;
     border-top-color: #e4e4e4;
     margin-top: 0;
-    height: 20px;
     padding: 3px 5px;
     vertical-align: middle;
 }
@@ -73,7 +72,7 @@ div.ajax_bar {
 }
 
 #log_res {
-    overflow: auto;
+    min-width: 950px;
 }
 
 div.edit{

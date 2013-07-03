@@ -214,19 +214,19 @@ class jfusionViewadvancedparam extends JViewLegacy
 		$rows = array_merge(array($noSelected), $rows);
 		$attributes = array('size' => '1', 'class' => 'inputbox');
 		$output = JHTML::_('select.genericlist', $rows, 'jfusionplugin', $attributes, 'id', 'name');
-		$output.= ' <input type="button" value="add" name="add" onclick="jPluginAdd(this);" />';
+		$output.= ' <input type="button" value="add" name="add" onclick="JFusion.jPluginAdd(this);" />';
 
 		$featureLink = '';
 		if (isset($this->featureArray[$feature])) {
 			$featureLink = '&feature=' . $feature;
 		}
 		$js = <<<JS
-        function jPluginAdd(button) {
+        JFusion.jPluginAdd = function(button) {
             button.form.jfusion_task.value = 'add';
             button.form.task.value = 'advancedparam';
             button.form.submit();
         }
-        function jPluginRemove(button, value) {
+        JFusion.jPluginRemove = function(button, value) {
             button.form.jfusion_task.value = 'remove';
             button.form.jfusion_value.value = value;
             button.form.task.value = 'advancedparam';

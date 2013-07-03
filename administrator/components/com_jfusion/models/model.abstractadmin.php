@@ -510,7 +510,7 @@ JS;
                         $checked = 'checked';
                     }
                     $advanced_usergroup.= '<td><input type="radio" '.$checked.' name="'.$control_name . '[' . $name . 'default]" value="'.$jfGroupCount.'"></td>';
-                    $advanced_usergroup.= '<td><a href="javascript:removeRow('.$jfGroupCount.')">'. JText::_('REMOVE').'</a></td>';
+                    $advanced_usergroup.= '<td><a href="javascript:JFusion.removeRow('.$jfGroupCount.')">'. JText::_('REMOVE').'</a></td>';
 
                     $advanced_usergroup.= '</tr>';
                 }
@@ -532,7 +532,7 @@ JS;
                 }
                 $checked = 'checked';
                 $advanced_usergroup.= '<td><input type="radio" '.$checked.' name="'.$control_name . '[' . $name . 'default]" value="'.$jfGroupCount.'"></td>';
-                $advanced_usergroup.= '<td><a href="javascript:removeRow('.$jfGroupCount.')">'.JText::_('REMOVE').'</a></td>';
+                $advanced_usergroup.= '<td><a href="javascript:JFusion.removeRow('.$jfGroupCount.')">'.JText::_('REMOVE').'</a></td>';
 
                 $advanced_usergroup.= '</tr>';
             }
@@ -563,7 +563,7 @@ JS;
 	        JFusion.groupDataArray[0] = '{$simple_usergroup}';
 	        JFusion.groupDataArray[1] = '{$advanced_usergroup}';
 
-	        function addRow() {
+	        JFusion.addRow = function() {
 	        	jfPlugin['count']++;
 	        	var count = jfPlugin['count'];
 
@@ -574,10 +574,10 @@ JS;
 	        	elTrNew.id = 'usergroups_row'+count;
 
 	        	var elTdmaster = document.createElement('td');
-	        	elTdmaster.appendChild(createSelect(master));
+	        	elTdmaster.appendChild(JFusion.createSelect(master));
 
 	        	var elTdjname = document.createElement('td');
-	        	elTdjname.appendChild(createSelect(name));
+	        	elTdjname.appendChild(JFusion.createSelect(name));
 
 	        	var elInputNew = document.createElement('input');
 	        	elInputNew.type = 'radio';
@@ -588,7 +588,7 @@ JS;
 	        	elTddefault.appendChild(elInputNew);
 
 	        	var elANew = document.createElement('a');
-	        	elANew.href = 'javascript:removeRow('+count+')';
+	        	elANew.href = 'javascript:JFusion.removeRow('+count+')';
 	        	elANew.innerHTML = 'Remove';
 
 	        	var elTdremove = document.createElement('td');
@@ -601,15 +601,15 @@ JS;
 
 	        	var divEls = $('usergroups');
 	        	divEls.appendChild(elTrNew);
-	        }
+	        };
 
-	        function removeRow(row) {
+	        JFusion.removeRow = function (row) {
 	        	var trEl = $("usergroups_row"+row);
 	        	trEl.style.display = 'none';
 	        	trEl.innerHTML = '';
 	        }
 
-	        function createSelect(name) {
+	        JFusion.createSelect = function(name) {
 	        	var count = jfPlugin['count'];
 	        	var type = jfPlugin[name]['type'];
 	        	var groups = jfPlugin[name]['groups'];
@@ -638,12 +638,12 @@ JS;
         $return = '<table><tr><td>'.JText::_('USERGROUP'). ' '. JText::_('MODE').'</td><td>'.$list_box.'</td></tr><tr><td colspan="2"><div id="JFusionUsergroup">';
         if ($advanced == 1) {
             if (($JFusionMaster && $JFusionMaster->isMultiGroup()) || $this->isMultiGroup()) {
-                $addbutton = '<a id="addgroupset" href="javascript:addRow()">'. JText::_('ADD_GROUP_PAIR').'</a>';
+                $addbutton = '<a id="addgroupset" href="javascript:JFusion.addRow()">'. JText::_('ADD_GROUP_PAIR').'</a>';
             }
             $return .= $advanced_usergroup;
         } else {
             if (($JFusionMaster && $JFusionMaster->isMultiGroup()) || $this->isMultiGroup()) {
-                $addbutton = '<a id="addgroupset" style="display: none;" href="javascript:addRow()">'. JText::_('ADD_GROUP_PAIR').'</a>';
+                $addbutton = '<a id="addgroupset" style="display: none;" href="javascript:JFusion.addRow()">'. JText::_('ADD_GROUP_PAIR').'</a>';
             }
             $return .= $simple_usergroup;
         }

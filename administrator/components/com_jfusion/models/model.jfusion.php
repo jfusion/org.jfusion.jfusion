@@ -1683,7 +1683,9 @@ class JFusionFunction
 	 * @return void
 	 */
 	public static function loadJSLanguage() {
-		$keys = array( 'SESSION_TIMEOUT', 'SYNC_NODATA', 'NOTICE', 'WARNING', 'MESSAGE', 'ERROR', 'DELETE', 'PLUGIN' );
+		$keys = array( 'SESSION_TIMEOUT', 'SYNC_NODATA', 'NOTICE', 'WARNING', 'MESSAGE', 'ERROR', 'DELETE', 'PLUGIN',
+					'SYNC_PROGRESS', 'SYNC_USERS_TODO', 'USER', 'USERS', 'NAME', 'CREATED', 'DELETED', 'UPDATED', 'CONFLICTS',
+					'UNCHANGED', 'FINISHED', 'PAUSE', 'CLICK_FOR_MORE_DETAILS', 'UPDATE_IN', 'SECONDS', 'SYNC_CONFIRM_START');
 
 		$text = array();
 		foreach($keys as $key) {

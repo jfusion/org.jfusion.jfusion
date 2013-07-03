@@ -243,10 +243,14 @@ class JFusionController extends JControllerLegacy
         $db = JFactory::getDBO();
         $query = 'SELECT syncid FROM #__jfusion_sync WHERE syncid =' . $db->Quote($syncid);
         $db->setQuery($query);
+
+	    $syncdata = array();
+	    $syncdata['errors'] = array();
         if ($db->loadResult()) {
             //Load usersync library
             include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
             $syncdata = JFusionUsersync::getSyncdata($syncid);
+	        $syncdata['errors'] = array();
 	        if (is_array($syncdata)) {
 		        //start the usersync
 		        $plugin_offset = (!empty($syncdata['plugin_offset'])) ? $syncdata['plugin_offset'] : 0;
@@ -257,15 +261,17 @@ class JFusionController extends JControllerLegacy
 		        }
 		        JFusionUsersync::syncExecute($syncdata, $syncdata['action'], $plugin_offset, $user_offset);
 	        } else {
-		        $syncdata = array();
-		        $syncdata['errors'] = array();
-		        $syncdata['errors'][] = JText::_('SYNC_FAILED_TO_LOAD_SYNC_DATA');
+		        $msg = JText::_('SYNC_FAILED_TO_LOAD_SYNC_DATA');
+		        $syncdata['errors'][] = $msg;
+		        JFusionFunction::raiseError(0, $msg);
 	        }
         } else {
-            $syncdata = array();
-            $syncdata['errors'] = array();
-            $syncdata['errors'][] = JText::sprintf('SYNC_ID_NOT_EXIST', $syncid);
+	        $msg = JText::sprintf('SYNC_ID_NOT_EXIST', $syncid);
+            $syncdata['errors'][] = $msg;
+	        JFusionFunction::raiseError(0, $msg);
         }
+
+	    $syncdata['messages'] = JFusionFunction::renderMessage();
         die(json_encode($syncdata));
     }
 
@@ -279,6 +285,8 @@ class JFusionController extends JControllerLegacy
         $syncid = JRequest::getVar('syncid', '', 'GET');
         include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
         $syncdata = JFusionUsersync::getSyncdata($syncid);
+
+	    $syncdata['messages'] = JFusionFunction::renderMessage();
         die(json_encode($syncdata));
     }
 
@@ -340,7 +348,6 @@ class JFusionController extends JControllerLegacy
             JFusionUsersync::changeSyncStatus($syncid, 0);
         }
         $syncdata = array();
-        $syncdata['errors'] = array();
         $syncdata['completed'] = false;
         $syncdata['sync_errors'] = 0;
         $syncdata['total_to_sync'] = 0;
@@ -362,7 +369,7 @@ class JFusionController extends JControllerLegacy
             //initialise the slave data array
             $slave_data = array();
             if (empty($slaves)) {
-                $syncdata['errors'][] = JText::_('SYNC_NODATA');
+	            JFusionFunction::raiseError(0, JText::_('SYNC_NODATA'));
             } else {
                 //lets find out which slaves need to be imported into the Master
                 foreach ($slaves as $jname => $slave) {
@@ -398,8 +405,10 @@ class JFusionController extends JControllerLegacy
                 JFusionUsersync::syncExecute($syncdata, $action, 0, 0);
             }
         } else {
-            $syncdata['errors'][] = JText::_('SYNC_CANNOT_START');
+	        JFusionFunction::raiseError(0, JText::_('SYNC_CANNOT_START'));
         }
+
+	    $syncdata['messages'] = JFusionFunction::renderMessage();
         die(json_encode($syncdata));
     }
 
@@ -425,7 +434,6 @@ class JFusionController extends JControllerLegacy
 	        $result['pluginlist'] = $view->generateListHTML($plugins);
 
 	        $result['messages'] = JFusionFunction::renderMessage();
-
             die(json_encode($result));
         } else {
             $this->setRedirect('index.php?option=com_jfusion&task=plugindisplay');
