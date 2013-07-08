@@ -14,6 +14,7 @@ require_once(JPATH_ADMINISTRATOR.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPA
 require_once(JPATH_ADMINISTRATOR.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.factory.php');
 
 jimport ( 'joomla.filesystem.file' );
+jimport ( 'joomla.filesystem.folder' );
 
 //force a jfusion view if the plugin submitted form to index.php without a view input
 $view = JRequest::getVar('view','plugin');
