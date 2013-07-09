@@ -87,7 +87,7 @@ JS;
 		}
 
 		jimport( 'joomla.user.helper' );
-		$hash = JUtility::getHash( $fieldName.JUserHelper::genRandomPassword());
+		$hash = JApplication::getHash( $fieldName.JUserHelper::genRandomPassword());
 		$session = JFactory::getSession();
 		$session->set($hash, $this->value);
 

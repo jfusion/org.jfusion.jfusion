@@ -205,7 +205,7 @@ class JFusionUser_phpbb3 extends JFusionUser
                     chdir(JPATH_SITE);
                 } else {
                     jimport('joomla.user.helper');
-                    $session_key = JUtility::getHash(JUserHelper::genRandomPassword(32));
+                    $session_key = JApplication::getHash(JUserHelper::genRandomPassword(32));
                     //Check for admin access
                     $query = 'SELECT b.group_name FROM #__user_group as a INNER JOIN #__groups as b ON a.group_id = b.group_id WHERE b.group_name = \'ADMINISTRATORS\' and a.user_id = ' . (int)$userinfo->userid;
                     $db->setQuery($query);
@@ -1093,7 +1093,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 	        $JUser = JFactory::getUser();
 	        if (JPluginHelper::isEnabled ( 'system', 'remember' )) {
 	            jimport('joomla.utilities.utility');
-	            $hash = JUtility::getHash('JLOGIN_REMEMBER');
+	            $hash = JApplication::getHash('JLOGIN_REMEMBER');
 	            $joomla_persistant_cookie = JRequest::getString($hash, '', 'cookie', JREQUEST_ALLOWRAW | JREQUEST_NOTRIM);
 	        } else {
 	            $joomla_persistant_cookie = '';
