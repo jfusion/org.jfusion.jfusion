@@ -20,7 +20,7 @@ require_once 'basic.class.php';
 class doku_auth_mysql extends doku_auth_basic {
 
     /**
-     * @var $dbcon JFusionMySQL|JFusionMySQLi|JDatabase
+     * @var $dbcon JDatabaseDriver
      */
     var $dbcon        = null;
     var $dbver        = 0;    // database version

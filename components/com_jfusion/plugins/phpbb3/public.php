@@ -734,7 +734,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             //no forums were selected so pull them all then filter
             $query = 'SELECT forum_id FROM #__forums WHERE forum_type = 1 ORDER BY left_id';
             $db->setQuery($query);
-            $forumids = $db->loadResultArray();
+            $forumids = $db->loadColumn();
             $forumids = $forum->filterForumList($forumids);
         }
         if (empty($forumids)) {

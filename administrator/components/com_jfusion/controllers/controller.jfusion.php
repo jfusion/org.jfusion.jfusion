@@ -320,10 +320,7 @@ class JFusionController extends JControllerLegacy
     {
         //Load usersync library
         include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
-        /**
-         * @ignore
-         * @var $view JView
-         */
+
         $view = $this->getView('syncerrordetails', 'html');
         $view->setLayout('default');
         //$result = $view->loadTemplate();
@@ -630,7 +627,7 @@ class JFusionController extends JControllerLegacy
 	        JFactory::getApplication()->input->set('view', 'synchistory');
         } else {
             foreach ($syncid as $key => $value) {
-                $syncid = JFactory::getApplication()->input->set('syncid', $key);
+                JFactory::getApplication()->input->set('syncid', $key);
                 //output the sync errors to the user
 	            JFactory::getApplication()->input->set('view', 'syncerror');
                 break;

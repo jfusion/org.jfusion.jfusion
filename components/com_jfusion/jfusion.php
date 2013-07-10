@@ -40,7 +40,7 @@ if (JFile::exists ( $path )) {
 $classname = 'JFusionController' . ucfirst ( $controller );
 /**
  * @ignore
- * @var $controller JController
+ * @var $controller JControllerLegacy
  */
 $controller = new $classname ( );
 

@@ -241,7 +241,7 @@ class JFusionFactory
      *
      * @param string $jname name of the JFusion plugin used
      *
-     * @return JFusionMySQL|JFusionMySQLi|JDatabase JDatabase Database connection for the JFusion plugin
+     * @return JDatabaseDriver Database connection for the JFusion plugin
      */
     public static function &getDatabase($jname)
     {
@@ -324,7 +324,7 @@ class JFusionFactory
      *
      * @param string $jname name of the JFusion plugin used
      *
-     * @return JFusionMySQL|JFusionMySQLi|JDatabase database object
+     * @return JDatabaseDriver database object
      */
     public static function &createDatabase($jname)
     {
@@ -363,7 +363,7 @@ class JFusionFactory
 		            $db->setQuery('SET names ' . $db->quote($charset));
 		            $db->execute();
 		            //support debugging
-		            $db->debug($debug);
+		            $db->setDebug($debug);
 
 		            if (!method_exists($db, 'Query')) {
 			            JFusionFunction::raiseWarning(0, $jname . ' : ' .JText::_('NO_DATABASE'));

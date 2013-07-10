@@ -49,12 +49,12 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 	}
 
     /**
-     * @param JDatabase $db
+     * @param JDatabaseDriver $db
      * @param string $database_prefix
      * @return array
      */
-    function getUsergroupListWPA($db,$database_prefix) {
-		$query = 'SELECT option_value FROM #__options WHERE option_name = '.$db->quote($database_prefix.'user_roles');
+    function getUsergroupListWPA($db, $database_prefix) {
+		$query = 'SELECT option_value FROM #__options WHERE option_name = '. $db->quote($database_prefix.'user_roles');
 		$db->setQuery($query);
 		$roles_ser = $db->loadResult();
 		$roles = unserialize($roles_ser);

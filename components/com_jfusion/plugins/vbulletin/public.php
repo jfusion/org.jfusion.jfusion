@@ -159,7 +159,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
                 $vb_bbcodes_plain = array();
                 $query = 'SELECT bbcodetag FROM #__bbcode';
                 $db->setQuery($query);
-                $vb_bbcodes_plain = $db->loadResultArray();
+                $vb_bbcodes_plain = $db->loadColumn();
 
             }
 

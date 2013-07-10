@@ -77,16 +77,12 @@ class JFusionControllerPlugin extends JControllerLegacy
             }
 
             //load the view
-            /**
-             * @ignore
-             * @var $view JView
-             */
             $view = $this->getView('plugin', 'html');
             //render the view
-            $view->assignRef('jname', $jname);
-            $view->assignRef('jPluginParam', $jPluginParam);
-            $view->assignRef('params', $item->params);
-            $view->assignRef('type', $jview);
+            $view->jname = $jname;
+			$view->jPluginParam = $jPluginParam;
+			$view->params = $item->params;
+			$view->type = $jview;
             $view->setLayout('default');
             $view->$jview();
         }

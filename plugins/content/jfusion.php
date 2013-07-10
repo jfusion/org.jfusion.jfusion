@@ -1181,7 +1181,7 @@ HTML;
             if ($this->helper->option == 'com_content') {
                 $article_access = $this->article->params->get('access-view');
             } elseif ($this->helper->option == 'com_k2') {
-                $article_access = (in_array($this->article->access, $JUser->authorisedLevels()) && in_array($this->article->category->access, $JUser->authorisedLevels()));
+                $article_access = (in_array($this->article->access, $JUser->getAuthorisedViewLevels()) && in_array($this->article->category->access, $JUser->getAuthorisedViewLevels()));
             } else {
                 $article_access = 1;
             }

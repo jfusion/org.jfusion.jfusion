@@ -259,7 +259,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
             //no forums were selected so pull them all
             $query = 'SELECT forum_id FROM #__forums WHERE forum_type = 1 ORDER BY left_id';
             $db->setQuery($query);
-            $forumids = $db->loadResultArray();
+            $forumids = $db->loadColumn();
         } elseif (!is_array($forumids)) {
             $forumids = explode(',', $forumids);
         }
@@ -292,7 +292,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
             $db = JFusionFactory::getDatabase($this->getJname());
             $query = 'SELECT forum_id FROM #__forums WHERE forum_type = 1 ORDER BY left_id';
             $db->setQuery($query);
-            $forumids = $db->loadResultArray();
+            $forumids = $db->loadColumn();
 
             //prevent SQL errors
             if (empty($forumids)) {
@@ -309,7 +309,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
                         $userid = $userinfo->userid;
                         $query = 'SELECT group_id FROM #__user_group WHERE user_id = '.$userid;
                         $db->setQuery($query);
-                        $groupids = $db->loadResultArray();
+                        $groupids = $db->loadColumn();
 
                         $query = 'SELECT user_type FROM #__users WHERE user_id = '.$userid;
                         $db->setQuery($query);

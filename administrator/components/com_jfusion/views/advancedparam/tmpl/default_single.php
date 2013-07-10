@@ -35,7 +35,6 @@ $uri->setVar('task','advancedparamsubmit');
 					if (!empty($this->comp)):
 						$fieldsets = $this->comp->getFieldsets();
 						echo JHtml::_('tabs.start','tabs', array('startOffset'=>2));
-						echo $pane->startPane('params');
 						foreach ($fieldsets as $fieldset):
 							echo JHtml::_('tabs.panel',JText::_($fieldset->name.'_jform_fieldset_label'), $fieldset->name.'_jform_fieldset_label');
 							echo '<fieldset class="panelform">';
