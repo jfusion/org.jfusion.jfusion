@@ -101,7 +101,7 @@ class JFusionCurlFrameless {
 		$url .= $current;
 		$post = $this->buildUrl('POST');
 
-		$files = JRequest::get('FILES');
+		$files = $_FILES;
 		$filepath = array();
 		if($post) {
 			foreach($files as $userfile=>$file) {
