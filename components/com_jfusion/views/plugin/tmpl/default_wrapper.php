@@ -41,20 +41,30 @@ defined('_JEXEC') or die('Restricted access');
         frame.height = frameDoc.body.offsetHeight;
     }
 </script>
+<?php
+$wrapper_scroll = $this->params->get('wrapper_scroll', 'auto');
+if ($wrapper_scroll=='hidden') {
+	$scroll = 'no';
+} elseif ($wrapper_scroll=='scroll') {
+	$scroll = 'yes';
+} else {
+	$scroll = 'auto';
+}
+?>
 <div class="contentpane<?php echo $this->params->get('pageclass_sfx','')?>">
-<iframe
-<?php if($this->params->get('wrapper_autoheight', 1)) {?>
-onload="adjustMyFrameHeight();"
-<?php }?>
-id="blockrandom" name="iframe" src="<?php echo $this->url; ?>"
-width="<?php echo $this->params->get('wrapper_width', '100%'); ?>"
-height="<?php echo $this->params->get('wrapper_height', '500'); ?>"
-<?php if ($this->params->get('wrapper_transparency')) { ?>
-allowtransparency="true"
-<?php } else { ?>
-allowtransparency="false"
-<?php } ?>
-style="vertical-align:top;border-style:none;overflow:<?php echo $this->params->get('wrapper_scroll', 'auto'); ?>;" class="wrapper">
-<?php echo JText::_('OLD_BROWSER');?>
-</iframe>
+	<iframe scrolling="<?php echo $scroll; ?>"
+		<?php if($this->params->get('wrapper_autoheight', 1)) { ?>
+			onload="adjustMyFrameHeight();"
+		<?php }?>
+		id="blockrandom" name="iframe" src="<?php echo $this->url; ?>"
+		width="<?php echo $this->params->get('wrapper_width', '100%'); ?>"
+		height="<?php echo $this->params->get('wrapper_height', '500'); ?>"
+		<?php if ($this->params->get('wrapper_transparency')) { ?>
+			allowtransparency="true"
+		<?php } else { ?>
+			allowtransparency="false"
+		<?php } ?>
+		style="vertical-align:top; border-style:none; overflow:<?php echo $wrapper_scroll; ?>;" class="wrapper">
+		<?php echo JText::_('OLD_BROWSER');?>
+	</iframe>
 </div>
