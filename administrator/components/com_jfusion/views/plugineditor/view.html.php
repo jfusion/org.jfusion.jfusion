@@ -42,7 +42,7 @@ class jfusionViewplugineditor extends JViewLegacy
         //set jname as a global variable in order for elements to access it.
         global $jname;
         //find out the submitted name of the JFusion module
-        $jname = JRequest::getVar('jname');
+        $jname = JFactory::getApplication()->input->get('jname');
         if ($jname) {
 	        // Keep the idea of instanciate the parameters only with the parameters of the XML file from the plugin needed but with a centralized method (JFusionFactory::createParams)
 	        $parametersInstance = JFusionFactory::createParams($jname);
@@ -51,13 +51,9 @@ class jfusionViewplugineditor extends JViewLegacy
 	        $form = new JForm($jname);
 	        if (file_exists($file)) {
 		        jimport('joomla.filesystem.file');
-		        $content = JFile::read($file);
+		        $content = file_get_contents($file);
 
-		        /**
-		         * @ignore
-		         * @var $xml JXMLElement
-		         */
-		        $xml = JFactory::getXML($content, false);
+		        $xml = JFusionFunction::getXML($content, false);
 
 		        $fields = $xml->form;
 		        jimport('joomla.form.form');
@@ -72,8 +68,8 @@ class jfusionViewplugineditor extends JViewLegacy
 	        }
 
 	        //assign data to view
-	        $this->assignRef('form', $form);
-	        $this->assignRef('jname', $jname);
+	        $this->form = $form;
+	        $this->jname = $jname;
 	        //output detailed configuration warnings for the plugin
 	        if (JFusionFunction::validPlugin($jname)) {
 		        $JFusionPlugin = JFusionFactory::getAdmin($jname);

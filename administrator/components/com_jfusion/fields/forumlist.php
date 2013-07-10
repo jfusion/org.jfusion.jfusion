@@ -40,8 +40,8 @@ class JFormFieldForumlist extends JFormField
     protected function getInput()
     {
         //Query current selected Module Id
-        $id = JRequest::getVar('id', 0, 'method', 'int');
-        $cid = JRequest::getVar('cid', array($id), 'method', 'array');
+        $id = JFactory::getApplication()->input->getInt('id', 0);
+        $cid = JFactory::getApplication()->input->get('cid', array($id));
         JArrayHelper::toInteger($cid, array(0));
         //find out which JFusion plugin is used in the activity module
         $db = JFactory::getDBO();

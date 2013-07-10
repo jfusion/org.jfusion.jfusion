@@ -453,7 +453,7 @@ HTML;
         $params = JFusionFactory::getParams ( $jname );
         $db = JFusionFactory::getDatabase($jname);
 
-        $activation = ((JRequest::getVar('activation', 1))?'true':'false');
+        $activation = ((JFactory::getApplication()->input->get('activation', 1))?'true':'false');
         if ($activation == 'true') {
             $query = 'UPDATE #__config_plugins SET value = \'1\' WHERE plugin = \'auth/jfusion\' AND name = \'jf_enabled\'';
             $db->setQuery($query);

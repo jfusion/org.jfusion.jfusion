@@ -75,10 +75,10 @@ function jfusionBuildRoute(&$query)
 function jfusionParseRoute($segments)
 {
     //needed to force Joomla to use JDocumentHTML when adding a .html suffix is enabled
-    JRequest::setVar('format', 'html');
+	JFactory::getApplication()->input->set('format', 'html');
 
     $vars = array();
-    JRequest::setVar('jFusion_Route', serialize($segments));
+	JFactory::getApplication()->input->set('jFusion_Route', serialize($segments));
     if (isset($segments[0])) {
         if (!strpos($segments[0], ',') && !strpos($segments[0], '&')) {
             $vars['jfile'] = $segments[0];

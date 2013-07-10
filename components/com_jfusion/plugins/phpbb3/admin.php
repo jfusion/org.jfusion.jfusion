@@ -87,7 +87,7 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
             //create a connection to the database
             $options = array('driver' => $params['database_type'], 'host' => $params['database_host'], 'user' => $params['database_user'], 'password' => $params['database_password'], 'database' => $params['database_name'], 'prefix' => $params['database_prefix']);
             //Get configuration settings stored in the database
-            $vdb = JDatabase::getInstance($options);
+            $vdb = JDatabaseDriver::getInstance($options);
             $query = 'SELECT config_name, config_value FROM #__config WHERE config_name IN (\'script_path\', \'cookie_path\', \'server_name\', \'cookie_domain\', \'cookie_name\', \'allow_autologin\')';
             if (JError::isError($vdb) || !$vdb) {
                 JFusionFunction::raiseWarning(0, JText::_('NO_DATABASE'));
@@ -286,7 +286,7 @@ if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\'
             if ($error == 0) {
                 //get the joomla path from the file
                 jimport('joomla.filesystem.file');
-                $file_data = JFile::read($mod_file);
+                $file_data = file_get_contents($mod_file);
                 $redirect_code = $this->generateRedirectCode($joomla_url,$joomla_itemid);
                 $search = '/\<\?php/si';
                 $replace = '<?php' . $redirect_code;
@@ -307,7 +307,7 @@ if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\'
         if ($error == 0) {
             //get the joomla path from the file
             jimport('joomla.filesystem.file');
-            $file_data = JFile::read($mod_file);
+            $file_data = file_get_contents($mod_file);
             $search = '/(\r?\n)\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END/si';
             preg_match_all($search, $file_data, $matches);
             //remove any old code
@@ -335,7 +335,7 @@ if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\'
         if ($error == 0) {
             //get the joomla path from the file
             jimport('joomla.filesystem.file');
-            $file_data = JFile::read($mod_file);
+            $file_data = file_get_contents($mod_file);
             preg_match_all('/\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END/ms', $file_data, $matches);
             //compare it with our joomla path
             if (empty($matches[1][0])) {
@@ -385,7 +385,7 @@ HTML;
         if ($error == 0) {
             //get the joomla path from the file
             jimport('joomla.filesystem.file');
-            $file_data = JFile::read($mod_file);
+            $file_data = file_get_contents($mod_file);
             if(preg_match_all('/define\(\'JPATH_BASE\'\,(.*)\)/', $file_data, $matches)) {
        			//compare it with our joomla path
 	            if ($matches[1][0] != '\'' . JPATH_SITE . '\'') {
@@ -436,7 +436,7 @@ HTML;
         }
         //get the joomla path from the file
         jimport('joomla.filesystem.file');
-        $file_data = JFile::read($auth_file);
+        $file_data = file_get_contents($auth_file);
         //compare it with our joomla path
         if (preg_match_all('/JFUSION_PATH/', $file_data, $matches)) {
             $file_data = preg_replace('/JFUSION_JNAME/', $this->getJname(), $file_data);
@@ -525,7 +525,7 @@ HTML;
         if ($error == 0) {
             //get the joomla path from the file
             jimport('joomla.filesystem.file');
-            $file_data = JFile::read($mod_file);
+            $file_data = file_get_contents($mod_file);
             preg_match_all('/global \$action/', $file_data, $matches);
             //compare it with our joomla path
             if (!isset($matches[0][0])) {
@@ -560,7 +560,7 @@ HTML;
         if ($error == 0) {
             //get the joomla path from the file
             jimport('joomla.filesystem.file');
-            $file_data = JFile::read($mod_file);
+            $file_data = file_get_contents($mod_file);
             $search = '/\$action \= request_var/si';
             $replace = 'global $action; $action = request_var';
             $file_data = preg_replace($search, $replace, $file_data);
@@ -578,7 +578,7 @@ HTML;
         if ($error == 0) {
             //get the joomla path from the file
             jimport('joomla.filesystem.file');
-            $file_data = JFile::read($mod_file);
+            $file_data = file_get_contents($mod_file);
             $search = '/global \$action\;/si';
             $file_data = preg_replace($search, '', $file_data);
             if (!JFile::write($mod_file, $file_data)) {

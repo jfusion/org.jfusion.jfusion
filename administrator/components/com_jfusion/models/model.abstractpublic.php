@@ -689,7 +689,7 @@ HTML;
             $q = str_replace('?', '&amp;', $q);
             $url = $baseURL . '&amp;jfile=' . $q;
         } elseif ($this->data->sefmode == 1) {
-            $url = JFusionFunction::routeURL($q, JRequest::getInt('Itemid'));
+            $url = JFusionFunction::routeURL($q, JFactory::getApplication()->input->getInt('Itemid'));
         } else {
             //we can just append both variables
             $url = $baseURL . $q;
@@ -707,7 +707,7 @@ HTML;
         $baseURL = $this->data->baseURL;
 
         $url = htmlspecialchars_decode($url);
-        $Itemid = JRequest::getInt('Itemid');
+        $Itemid = JFactory::getApplication()->input->getInt('Itemid');
         //strip any leading dots
         if (substr($url, 0, 2) == './') {
             $url = substr($url, 2);
@@ -745,8 +745,8 @@ HTML;
         unset($url_variables['option'], $url_variables['jfile'], $url_variables['Itemid']);
         if(!empty($url_variables['mode'])){
             if ($url_variables['mode'] == 'topic_view') {
-                $url_variables['t'] = JRequest::getVar('t');
-                $url_variables['f'] = JRequest::getVar('f');
+                $url_variables['t'] = JFactory::getApplication()->input->get('t');
+                $url_variables['f'] = JFactory::getApplication()->input->get('f');
             }
         }
 
@@ -793,7 +793,7 @@ HTML;
                 if (!empty($query)) {
                     $url.= '?' . $query;
                 }
-                $url = JFusionFunction::routeURL($url, JRequest::getInt('Itemid'));
+                $url = JFusionFunction::routeURL($url, JFactory::getApplication()->input->getInt('Itemid'));
             } else {
                 //simple SEF mode, we can just combine both variables
                 $url = $baseURL . $jfile;

@@ -15,7 +15,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 switch($task)
 {
 	case 'plugineditor':
-        $jname = JRequest::getVar('jname');
+        $jname = JFactory::getApplication()->input->get('jname');
 		JToolBarHelper::title( $jname . ' ' . JText::_('PLUGIN_EDITOR'), 'controlpanel.png' );
         JToolBarHelper::custom('importexport', 'importexport-icon.png', 'importexport-icon.png', JText::_('IMPORTEXPORT'), false, false);
 		JToolBarHelper::save('saveconfig');
@@ -23,15 +23,15 @@ switch($task)
 		JToolBarHelper::cancel('plugindisplay');
 		break;
     case 'importexport':
-        $jname = JRequest::getVar('jname');
+        $jname = JFactory::getApplication()->input->get('jname');
         JToolBarHelper::title( $jname . ' ' . JText::_('IMPORTEXPORT'), 'importexport.png' );
         JToolBarHelper::custom('import', 'import-icon.png', 'import-icon.png', JText::_('IMPORT'), false, false);
         JToolBarHelper::custom('export', 'export-icon.png', 'export-icon.png', JText::_('EXPORT'), false, false);
         JToolBarHelper::cancel('plugindisplay');
         break;
 	case 'joomlaeditor':
-		$folder = JRequest::getVar('folder');
-		$element = JRequest::getVar('element');
+		$folder = JFactory::getApplication()->input->get('folder');
+		$element = JFactory::getApplication()->input->get('element');
 		$db = JFactory::getDBO();
 		$query = 'SELECT name from #__plugins WHERE folder = '.$db->Quote($folder) . ' AND element ='.$db->Quote($element);
 		$db->setQuery($query);

@@ -36,7 +36,7 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DI
 		
 		<?php
 		//get the error
-		$errorid = JRequest::getVar('errorid', '', 'GET');
+		$errorid = JFactory::getApplication()->input->get->get('errorid', '');
 		$error =& unserialize($this->synclog[$errorid]->data);
 		//display the userlist info
 		debug::show($error['user']['jname'], 'User from Plugin', 1);

@@ -552,7 +552,7 @@ if(!isset($_COOKIE[\'jfusionframeless\']))';
 	 */
 	function showRedirectMod($name, $value, $node, $control_name)
 	{
-		$action = JRequest::getVar('action');
+		$action = JFactory::getApplication()->input->get('action');
 		if ($action == 'redirectcode') {
 			$params = JFusionFactory::getParams($this->getJname());
 			$joomla_params = JFusionFactory::getParams('joomla_int');

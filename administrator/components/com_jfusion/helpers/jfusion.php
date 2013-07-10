@@ -36,56 +36,56 @@ class JFusionHelper
 	 */
 	public static function addSubmenu($vName)
 	{
-        $jname = JRequest::getVar('jname');
-		JSubMenuHelper::addEntry(
+        $jname = JFactory::getApplication()->input->get('jname');
+		JHtmlSidebar::addEntry(
 			JText::_('CPANEL'),
 			'index.php?option=com_jfusion&task=cpanel',
 			$vName == 'cpanel'
 		);
 
-		JSubMenuHelper::addEntry(
+		JHtmlSidebar::addEntry(
 			JText::_('JOOMLA_OPTIONS'),
 			'index.php?option=com_jfusion&task=plugineditor&jname=joomla_int',
 			$vName == 'plugineditor' && $jname == 'joomla_int'
 		);
 
-		JSubMenuHelper::addEntry(
+		JHtmlSidebar::addEntry(
 			JText::_('CONFIGURATION'),
 			'index.php?option=com_jfusion&task=plugindisplay',
 			$vName == 'plugindisplay' || ( $vName == 'plugineditor' && $jname != 'joomla_int' )
 		);
 
-		JSubMenuHelper::addEntry(
+		JHtmlSidebar::addEntry(
 			JText::_('NEW_USERSYNC'),
 			'index.php?option=com_jfusion&task=syncoptions',
 			$vName == 'syncoptions'
 		);
 
-		JSubMenuHelper::addEntry(
+		JHtmlSidebar::addEntry(
 			JText::_('USERSYNC_HISTORY'),
 			'index.php?option=com_jfusion&task=synchistory',
 			$vName == 'synchistory'
 		);
 
-		JSubMenuHelper::addEntry(
+		JHtmlSidebar::addEntry(
 			JText::_('LOGIN_CHECKER'),
 			'index.php?option=com_jfusion&task=loginchecker',
 			($vName == 'loginchecker'||$vName == 'logincheckerresult'||$vName == 'logoutcheckerresult')
 		);
-		
-		JSubMenuHelper::addEntry(
+
+		JHtmlSidebar::addEntry(
 				JText::_('CONFIG_DUMP'),
 				'index.php?option=com_jfusion&task=configdump',
 				$vName == 'configdump'
 		);
 
-        JSubMenuHelper::addEntry(
+		JHtmlSidebar::addEntry(
             JText::_('LANGUAGE'),
             'index.php?option=com_jfusion&task=languages',
             $vName == 'languages'
         );
 
-		JSubMenuHelper::addEntry(
+		JHtmlSidebar::addEntry(
 			JText::_('VERSIONS'),
 			'index.php?option=com_jfusion&task=versioncheck',
 			$vName == 'versioncheck'

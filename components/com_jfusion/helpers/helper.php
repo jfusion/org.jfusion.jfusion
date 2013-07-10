@@ -30,7 +30,7 @@ class JFusionHelper {
 			$url = JRoute::_($url);
 		} else {
 			// Redirect to login
-			$uri = JFactory::getURI();
+			$uri = JUri::getInstance();
 			$url = $uri->toString();
 		}
 		

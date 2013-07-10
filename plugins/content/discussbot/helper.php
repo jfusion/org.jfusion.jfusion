@@ -184,11 +184,11 @@ class JFusionDiscussBotHelper {
         if ($this->option == 'com_content') {
             //take into account page breaks
 	        $url = ContentHelperRoute::getArticleRoute($this->article->slug, $this->article->catid);
-            $start = JRequest::getInt('start',0);
+            $start = JFactory::getApplication()->input->getInt('start',0);
             if ($start) {
                 $url .= '&start='.$start;
             }
-            $limitstart = JRequest::getInt('limitstart',0);
+            $limitstart = JFactory::getApplication()->input->getInt('limitstart',0);
             if ($limitstart) {
                 $url .= '&limitstart='.$limitstart;
             }
@@ -266,7 +266,7 @@ class JFusionDiscussBotHelper {
 	        $responce = array(0, JText::sprintf('REASON_NOT_AN_ARTICLE', $this->option));
         } else {
             //if in K2, make sure we are after the article itself and not video or gallery
-            $view = JRequest::getVar('view');
+            $view = JFactory::getApplication()->input->get('view');
             if ($this->option == 'com_k2' && $view == 'item' && !$skip_k2_check && is_object($this->article->params)) {
                 static $k2_tracker;
                 if ($this->article->params->get('itemImageGallery') && empty($k2_tracker)) {
@@ -291,7 +291,7 @@ class JFusionDiscussBotHelper {
                 if (empty($forumid)) {
 	                $responce = array(0, JText::_('REASON_NO_FORUM_FOUND'));
                 } else {
-                    $dbtask = JRequest::getVar('dbtask', null, 'post');
+                    $dbtask = JFactory::getApplication()->input->post->get('dbtask', null);
                     $bypass_tasks = array('create_thread', 'publish_discussion', 'unpublish_discussion');
                     if (!empty($dbtask) && !in_array($dbtask, $bypass_tasks)) {
 	                    $responce = array(1, JText::_('REASON_DISCUSSION_MANUALLY_INITIALISED'));
@@ -325,7 +325,7 @@ class JFusionDiscussBotHelper {
 	                            } elseif ($creationMode == 'view') {
 		                            //only create the article if we are in the article view
 		                            $test_view = ($this->option == 'com_k2') ? 'item' : 'article';
-		                            if (JRequest::getVar('view') != $test_view) {
+		                            if (JFactory::getApplication()->input->get('view') != $test_view) {
 			                            $responce = array(0, JText::_('REASON_CREATED_ON_VIEW'));
 		                            }
 	                            } elseif ($creationMode == 'new' && !$skip_new_check) {
@@ -517,7 +517,7 @@ class JFusionDiscussBotHelper {
 	    if (!isset($scriptsLoaded)) {
 		    $this->debug('Loading scripts into header');
 
-		    $view = JRequest::getVar('view');
+		    $view = JFactory::getApplication()->input->get('view');
 		    $test_view = ($this->option == 'com_k2') ? 'item' : 'article';
 
 		    $lang_strings = array(
@@ -536,7 +536,7 @@ class JFusionDiscussBotHelper {
 			    'SUBMITTING_QUICK_REPLY'
 		    );
 
-		    $jumpto_discussion = JRequest::getInt('jumpto_discussion', '0', 'post');
+		    $jumpto_discussion = JFactory::getApplication()->input->getInt('jumpto_discussion', '0', 'post');
 
 		    $js = <<<JS
 		        var jfdb_view = '{$view}';

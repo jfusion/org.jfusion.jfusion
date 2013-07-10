@@ -36,9 +36,9 @@ class JFusionControllerConnect extends JControllerLegacy {
 		}
 		
 		//perform a secret key check
-		$secret = JRequest::getVar ( 'secret' );
-		$params = JFusionFactory::getParams ( 'joomla_int' );
-		$module = new stdClass ( );
+		$secret = JFactory::getApplication()->input->get( 'secret' );
+		$params = JFusionFactory::getParams( 'joomla_int' );
+		$module = new stdClass();
 		
 		if (! $params->get ( 'allow_connections', 0 )) {
 			die(JText::_('Connections are not allowed' ));
@@ -52,24 +52,24 @@ class JFusionControllerConnect extends JControllerLegacy {
 		/* Maybe don't need htmlspecialchars and strip_tags functions, JRequest may do the filter */
 		/* Priority to the id of a module - More precise to retreive the module informations */
 		if (isset($_REQUEST ['id'])) {
-			$id = htmlspecialchars ( strip_tags ( JRequest::getVar ( 'id' ) ) );
+			$id = htmlspecialchars ( strip_tags ( JFactory::getApplication()->input->get( 'id' ) ) );
 			$module = JFusionHelper::getModuleById ( $id );
 		} else if (isset($_REQUEST ['title'])) {
-			$module->title = htmlspecialchars ( strip_tags ( JRequest::getVar ( 'title' ) ) );
+			$module->title = htmlspecialchars ( strip_tags ( JFactory::getApplication()->input->get( 'title' ) ) );
 			$module = JFusionHelper::getModuleByTitle($module->title);
 		}
-		
+
 		if (isset($_REQUEST ['modulename']) && empty($module->name)) {
-			$module->name = htmlspecialchars ( strip_tags ( JRequest::getVar ( 'modulename' ) ) );
+			$module->name = htmlspecialchars ( strip_tags ( JFactory::getApplication()->input->get( 'modulename' ) ) );
 		}
 		
 		if (empty ( $module )) {
 			echo JText::_ ( 'No module found!' );
 			exit(0);
 		}
-		
+
 		if (isset($_REQUEST ['style'])) {
-			$module->style = htmlspecialchars ( strip_tags ( JRequest::getVar ( 'style' ) ) );
+			$module->style = htmlspecialchars ( strip_tags ( JFactory::getApplication()->input->get( 'style' ) ) );
 		}else{
 			$module->style = 'none';
 		}

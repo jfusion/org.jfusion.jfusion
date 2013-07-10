@@ -128,7 +128,7 @@ class JFusionHelper_gallery2
     function getEmbedUri($itemId = null) {
         $mainframe = JFactory::getApplication();
         $router = $mainframe->getRouter();
-        $id = JRequest::getVar('Itemid', -1);
+        $id = JFactory::getApplication()->input->get('Itemid', -1);
         if ($itemId !== null) {
             $id = $itemId;
         }

@@ -40,7 +40,7 @@ class modjfusionLoginHelper
      */
     public static function getReturnURL($params, $type)
     {
-    	$override_return = JRequest::getVar('return', '', 'method', 'base64');
+    	$override_return = JFactory::getApplication()->input->getBase64('return', '');
         $itemid = $params->get($type);
         if (!empty($override_return)) {
     	    return $override_return;
@@ -49,7 +49,7 @@ class modjfusionLoginHelper
             $url = JRoute::_($url);
         } else {
             // Redirect to login
-            $uri = JFactory::getURI();
+            $uri = JUri::getInstance();
             $url = $uri->toString();
         }
         return base64_encode(str_replace('&amp;', '&', $url));

@@ -40,11 +40,11 @@ class jfusionViewwizard extends JViewLegacy
      */
     function display($tpl = null)
     {
-        $jname = JRequest::getVar('jname');
+        $jname = JFactory::getApplication()->input->get('jname');
         if ($jname) {
             //hides the main menu and disables the Joomla navigation menu
-            JRequest::setVar('hidemainmenu', 1);
-            $this->assignRef('jname', $jname);
+	        JFactory::getApplication()->input->set('hidemainmenu', 1);
+	        $this->jname = $jname;
             parent::display($tpl);
         } else {
             JFusionFunction::raiseWarning(500, JText::_('NONE_SELECTED'));

@@ -69,7 +69,7 @@ class JFusionPublic_gallery2 extends JFusionPublic {
          */
         $jPluginParam = $data->jParam;
         //Handle PHP based Gallery Rewrite
-        $segments = JRequest::getVar('jFusion_Route');
+        $segments = JFactory::getApplication()->input->get('jFusion_Route');
         if (!empty($segments)) {
             $path_info = '/' . implode('/', unserialize($segments));
             $path_info = str_replace(':', '-', $path_info);
@@ -162,7 +162,7 @@ class JFusionPublic_gallery2 extends JFusionPublic {
 		    	
         //JFusionFunction::raiseWarning(500, $url);
         $url = htmlspecialchars_decode($url);
-        $Itemid = JRequest::getInt('Itemid');
+        $Itemid = JFactory::getApplication()->input->getInt('Itemid');
         $extra = stripslashes($extra);
         if (substr($baseURL, -1) != '/') {
             //non-SEF mode

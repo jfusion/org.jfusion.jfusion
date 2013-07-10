@@ -72,7 +72,7 @@ class jfusionViewcpanel extends JViewLegacy
         //end the outputbuffer
         ob_end_clean();
         //pass on the variables to the view
-        $this->assignRef('JFusionCpanel', $xml);
+	    $this->JFusionCpanel = $xml;
         parent::display($tpl);
     }
 }

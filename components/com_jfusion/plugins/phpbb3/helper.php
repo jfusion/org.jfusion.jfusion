@@ -67,15 +67,6 @@ class JFusionHelper_phpbb3
                 $var = '';
             }
         }
-
-        // Register globals and magic quotes have been dropped in PHP 5.4
-        if (version_compare(PHP_VERSION, '5.4.0-dev', '>=')) {
-            $strip = false;
-        } else {
-            @set_magic_quotes_runtime(0);
-            $strip = (get_magic_quotes_gpc()) ? true : false;
-        }
-        $var = ($strip) ? stripslashes($var) : $var;
         return $var;
     }
     /**

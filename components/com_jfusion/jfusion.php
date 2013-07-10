@@ -17,14 +17,14 @@ jimport ( 'joomla.filesystem.file' );
 jimport ( 'joomla.filesystem.folder' );
 
 //force a jfusion view if the plugin submitted form to index.php without a view input
-$view = JRequest::getVar('view','plugin');
+$view = JFactory::getApplication()->input->get('view','plugin');
 
 //this is needed as a safe guard in the case a plugin submits a form to index.php with an input named view that is used by the integrated software
 $jfusion_views = JFolder::folders(JPATH_SITE.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'views');
 if(!in_array($view,$jfusion_views)) $view = 'plugin';
 
 // Load the appropriate controller
-$controller = JRequest::getCmd('controller', $view ); // Black magic: Get controller based on the selected view
+$controller = JFactory::getApplication()->input->getCmd('controller', $view ); // Black magic: Get controller based on the selected view
 $path = JPATH_COMPONENT . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $controller . '.php';
 
 if (JFile::exists ( $path )) {
@@ -44,7 +44,7 @@ $classname = 'JFusionController' . ucfirst ( $controller );
  */
 $controller = new $classname ( );
 
-$controller->execute( JRequest::getCmd ( 'task' ) );
+$controller->execute( JFactory::getApplication()->input->getCmd( 'task' ) );
 
 // Redirect
 $controller->redirect();

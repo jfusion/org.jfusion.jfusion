@@ -89,7 +89,7 @@ class JFusionModelInstaller extends InstallerModelInstall
     	$result['status'] = false;
         $this->setState('action', 'install');
         $package = null;
-        switch (JRequest::getWord('installtype')) {
+        switch (JFactory::getApplication()->input->getWord('installtype')) {
             case 'folder':
                 $package = $this->_getPackageFromFolder();
                 break;
@@ -615,7 +615,7 @@ class JFusionPluginInstaller extends JObject
                 $parse_files = array($new_dir . DIRECTORY_SEPARATOR . 'auth.php', $new_dir . DIRECTORY_SEPARATOR . 'admin.php', $new_dir . DIRECTORY_SEPARATOR . 'user.php', $new_dir . DIRECTORY_SEPARATOR . 'jfusion.xml', $new_dir . DIRECTORY_SEPARATOR . 'forum.php', $new_dir . DIRECTORY_SEPARATOR . 'public.php', $new_dir . DIRECTORY_SEPARATOR . 'helper.php');
                 foreach ($parse_files as $parse_file) {
                     if (file_exists($parse_file)) {
-                        $file_data = JFile::read($parse_file);
+                        $file_data = file_get_contents($parse_file);
                         $file_data = preg_replace($regex, $replace, $file_data);
                         JFile::write($parse_file, $file_data);
                     }
@@ -804,7 +804,7 @@ class JFusionPluginInstaller extends JObject
         $files = JFolder::files($folder, null, false, true);
         foreach ($files as $file) {
             $file = str_replace(JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR, '', $file);
-            $data = JFile::read($file);
+            $data = file_get_contents($file);
             $filesArray[] = array('name' => $file, 'data' => $data);
         }
         $folders = JFolder::folders($folder, null, false, true);

@@ -715,7 +715,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
         $status = array('error' => array(),'debug' => array());
 
 		if($userinfo->guest) {
-			$userinfo->username = JRequest::getVar('guest_username', '', 'POST');
+			$userinfo->username = JFactory::getApplication()->input->post->get('guest_username', '');
 			$userinfo->userid = 1;
 
 			if(empty($userinfo->username)) {
@@ -743,7 +743,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 		$userid =& $userinfo->userid;
 		$jdb = JFusionFactory::getDatabase($this->getJname());
 		$public = JFusionFactory::getPublic($this->getJname());
-		$text = JRequest::getVar('quickReply', false, 'POST');
+		$text = JFactory::getApplication()->input->post->get('quickReply', false);
 		//strip out html from post
 		$text = strip_tags($text);
 
@@ -924,7 +924,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 
 		if($dbparams->get('enable_pagination',true)) {
 			$application = JFactory::getApplication() ;
-			$limitstart = JRequest::getInt( 'limitstart_discuss', 0 );
+			$limitstart = JFactory::getApplication()->input->getInt( 'limitstart_discuss', 0 );
 			$limit = (int) $application->getUserStateFromRequest( 'global.list.limit', 'limit_discuss', 5, 'int' );
 			$jdb->setQuery($query,$limitstart,$limit);
 		} else {

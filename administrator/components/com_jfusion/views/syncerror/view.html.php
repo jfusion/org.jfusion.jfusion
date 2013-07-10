@@ -42,13 +42,13 @@ class jfusionViewsyncerror extends JViewLegacy
         //Load usersync library
         include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
         //check to see if the sync has already started
-        $syncid = JRequest::getVar('syncid');
+        $syncid = JFactory::getApplication()->input->get('syncid');
         $syncdata = JFusionUsersync::getSyncdata($syncid);
-        
+
         //append log
         $mainframe = JFactory::getApplication();
-        $client             = JRequest::getWord( 'filter_client', 'site' );
-        $option = JRequest::getCmd('option');
+        $client             = JFactory::getApplication()->input->getWord( 'filter_client', 'site' );
+        $option = JFactory::getApplication()->input->getCmd('option');
         $filter_order       = $mainframe->getUserStateFromRequest( "$option.$client.filter_order",      'filter_order',     'id',       'cmd' );
         $filter_order_Dir   = $mainframe->getUserStateFromRequest( "$option.$client.filter_order_Dir",  'filter_order_Dir', '',         'word' );
         $limit              = (int)$mainframe->getUserStateFromRequest( 'global.list.limit', 'limit', $mainframe->getCfg('list_limit'), 'int' );
@@ -62,12 +62,13 @@ class jfusionViewsyncerror extends JViewLegacy
         jimport('joomla.html.pagination');
         $pageNav = new JPagination($total, $limitstart, $limit);
 
-        $this->assignRef('pageNav', $pageNav);
-        $this->assignRef('filter', $filter);        
-        
-        $this->assignRef('syncid', $syncid);
-        $this->assignRef('syncdata', $syncdata);
-        $this->assignRef('synclog', $synclog);
+
+	    $this->pageNav = $pageNav;
+	    $this->filter = $filter;
+
+	    $this->syncid = $syncid;
+	    $this->syncdata = $syncdata;
+	    $this->synclog = $synclog;
         parent::display($tpl);
     }
 }

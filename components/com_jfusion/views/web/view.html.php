@@ -28,19 +28,19 @@ class jfusionViewWeb extends JViewLegacy {
      * @return mixed
      */
     function display($tpl = null) {
-		$jname = JRequest::getVar ( 'Itemid' );
+		$jname = JFactory::getApplication()->input->get( 'Itemid' );
 		$data = JFusionFrameless::initData($jname,false);
 
 		$result = JFusionFrameless::displayContent($data);
 		if (!$result) return false;
 
 		if (isset ( $data->style )) {
-			$this->assignRef ( 'style', $data->style );
+			$this->style = $data->style;
 		}
 
 		// Output the body
 		if (isset ( $data->body )) {
-			$this->assignRef ( 'body', $data->body );
+			$this->body = $data->body;
 		}
 		parent::display ( $tpl );
         return true;

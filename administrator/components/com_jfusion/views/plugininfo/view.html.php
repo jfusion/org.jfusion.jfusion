@@ -42,7 +42,7 @@ class jfusionViewplugininfo extends JViewLegacy
         //set jname as a global variable in order for elements to access it.
         global $jname;
         //find out the submitted name of the JFusion module
-        $jname = JRequest::getVar('jname');
+        $jname = JFactory::getApplication()->input->get('jname');
         if ($jname) {
 			$features = array();
 			 
@@ -86,10 +86,9 @@ class jfusionViewplugininfo extends JViewLegacy
 			$features['USER']['FEATURE_BLOCK_USER'] = $this->outputFeature(JFusionFunction::hasFeature($jname,'blockuser'));
 			$features['USER']['FEATURE_ACTIVATE_USER'] = $this->outputFeature(JFusionFunction::hasFeature($jname,'activateuser'));
 			$features['USER']['FEATURE_DELETE_USER'] = $this->outputFeature(JFusionFunction::hasFeature($jname,'deleteuser'));
-			
-			
-        	$this->assignRef('features', $features);
-            $this->assignRef('jname', $jname);
+
+	        $this->features = $features;
+	        $this->jname = $jname;
             //render view
             parent::display($tpl);
         } else {

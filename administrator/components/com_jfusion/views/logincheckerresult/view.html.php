@@ -39,27 +39,28 @@ class jfusionViewLoginCheckerResult extends JViewLegacy
 	 */
 	function display($tpl = null)
 	{
+
 		//get the submitted login details
-		$credentials['username'] = JRequest::getVar('check_username');
-		$credentials['password'] = JRequest::getVar('check_password', '', 'post', 'string', JREQUEST_ALLOWRAW);
+		$credentials['username'] = JFactory::getApplication()->input->get('check_username');
+		$credentials['password'] = JFactory::getApplication()->input->post->get('check_password', '', 'raw');
 		//setup the options array
 		$options = array();
-		if (JRequest::getVar('remember') == 1) {
+		if (JFactory::getApplication()->input->get('remember') == 1) {
 			$options['remember'] = 1;
 		} else {
 			$options['remember'] = 0;
 		}
-		if (JRequest::getVar('show_unsensored') == 1) {
+		if (JFactory::getApplication()->input->get('show_unsensored') == 1) {
 			$options['show_unsensored'] = 1;
 		} else {
 			$options['show_unsensored'] = 0;
 		}
-		if (JRequest::getVar('skip_password_check') == 1) {
+		if (JFactory::getApplication()->input->get('skip_password_check') == 1) {
 			$options['skip_password_check'] = 1;
 		} else {
 			$options['skip_password_check'] = 0;
 		}
-		if (JRequest::getVar('overwrite') == 1) {
+		if (JFactory::getApplication()->input->get('overwrite') == 1) {
 			$options['overwrite'] = 1;
 		} else {
 			$options['overwrite'] = 0;
@@ -74,7 +75,7 @@ class jfusionViewLoginCheckerResult extends JViewLegacy
 
 		$this->getAuth($credentials, $options);
 
-		$this->assignRef('options', $options);
+		$this->options = $options;
 		parent::display($tpl);
 	}
 
@@ -99,7 +100,7 @@ class jfusionViewLoginCheckerResult extends JViewLegacy
 			$plugin->configuration->check_encryption = $plugin_details->check_encryption;
 			$plugins[] = $plugin;
 		}
-		$this->assignRef('plugins', $plugins);
+		$this->plugins = $plugins;
 	}
 
 	/**
@@ -223,9 +224,9 @@ class jfusionViewLoginCheckerResult extends JViewLegacy
 			}
 		}
 
-		$this->assignRef('auth_userinfo', $auth_userinfo);
-		$this->assignRef('response', $response);
-		$this->assignRef('auth_results', $auth_results);
+		$this->auth_userinfo = $auth_userinfo;
+		$this->response = $response;
+		$this->auth_results = $auth_results;
 	}
 
 	/**

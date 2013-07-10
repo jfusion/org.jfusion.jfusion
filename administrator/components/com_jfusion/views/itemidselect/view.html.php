@@ -53,10 +53,10 @@ class jfusionViewitemidselect extends JViewLegacy
         $document->addStyleSheet('components/com_jfusion/css/jfusion.css');
         $css = '.jfusion table.adminlist, .jfusion table.admintable{ font-size:11px; }';
         $document->addStyleDeclaration($css);
-        $ename = JRequest::getVar('ename');
+        $ename = JFactory::getApplication()->input->get('ename');
         //get the number to attach to the id of the input to update after selecting a menu item
-        $elId = JRequest::getVar('elId');
-        $feature = JRequest::getVar('feature', 'any');
+        $elId = JFactory::getApplication()->input->get('elId');
+        $feature = JFactory::getApplication()->input->get('feature', 'any');
         JHTML::_('behavior.tooltip');
         
         //get a list of jfusion menuitems
@@ -99,13 +99,12 @@ class jfusionViewitemidselect extends JViewLegacy
                 unset($directlinks[$key]);
             }
         }
-        
-        $this->assignRef('menuitems', $menuitems);
-        $this->assignRef('directlinks', $directlinks);
-        
-        $this->assignRef('ename', $ename);
-        $this->assignRef('elId', $elId);
-        
+
+	    $this->menuitems = $menuitems;
+	    $this->directlinks = $directlinks;
+
+	    $this->ename = $ename;
+	    $this->elId = $elId;
         parent::display($tpl);
     }
 }

@@ -251,7 +251,7 @@ class JFusionForum
 		//set some vars
 		$forumid = $dbparams->get('default_forum');
 		$catid = $contentitem->catid;
-		$option = JRequest::getCmd('option');
+		$option = JFactory::getApplication()->input->getCmd('option');
 
 		if ($option == 'com_k2' || $option == 'com_content') {
     		//determine default forum
@@ -501,7 +501,7 @@ class JFusionForum
     function loadQuickReplyIncludes() {
 		//using markitup http://markitup.jaysalvat.com/ for bbcode textbox
 		$document = JFactory::getDocument();
-		$option = JRequest::getCmd('option');
+		$option = JFactory::getApplication()->input->getCmd('option');
 		$path = 'jfusion/discussbot';
 		if ($option != 'com_k2') {
 		    //k2 loads jquery already
@@ -531,7 +531,7 @@ JS;
 	{
 		$html = '';
 		if($showGuestInputs) {
-			$username = JRequest::getVar('guest_username','','post');
+			$username = JFactory::getApplication()->input->post->get('guest_username','');
             $jusername = JText::_('USERNAME');
             $html = <<<HTML
             <table>
@@ -549,7 +549,7 @@ JS;
 HTML;
 
 		}
-		$quickReply = JRequest::getVar('quickReply','','post');
+		$quickReply = JFactory::getApplication()->input->post->get('quickReply','');
 	   	$html .= '<textarea id="quickReply" name="quickReply" class="inputbox" rows="15" cols="100">'.$quickReply.'</textarea><br />';
 	   	return $html;
 	}
@@ -576,7 +576,7 @@ HTML;
 				break;
 			case 'joomla15captcha':
 				//using joomla15captcha (http://code.google.com/p/joomla15captcha)
-				$dispatcher = JDispatcher::getInstance();
+				$dispatcher = JEventDispatcher::getInstance();
 				$results = $dispatcher->trigger( 'onCaptchaRequired', array( 'jfusion.discussion' ) );
 				if ($results[0])
 					ob_start();
@@ -658,19 +658,19 @@ JS;
 		switch($captcha_mode) {
 			case 'question':
 				//question/answer method
-				$captcha_answer = JRequest::getVar('captcha_answer', '', 'POST');
+				$captcha_answer = JFactory::getApplication()->input->post->get('captcha_answer', '');
 				if(!empty($captcha_answer) && $captcha_answer == $dbparams->get('captcha_answer')) {
 					$captcha_verification = true;
 				}
 				break;
 			case "joomla15captcha":
 				//using joomla15captcha (http://code.google.com/p/joomla15captcha)
-				$dispatcher = JDispatcher::getInstance();
+				$dispatcher = JEventDispatcher::getInstance();
 				$results = $dispatcher->trigger( 'onCaptchaRequired', array( 'jfusion.discussion' ) );
 				if ( $results[0] ) {
-					$captchaparams = array( JRequest::getVar( 'captchacode', '', 'post' )
-						, JRequest::getVar( 'captchasuffix', '', 'post' )
-						, JRequest::getVar( 'captchasessionid', '', 'post' ));
+					$captchaparams = array(JFactory::getApplication()->input->post->get( 'captchacode', '' )
+						, JFactory::getApplication()->input->post->get( 'captchasuffix', '' )
+						, JFactory::getApplication()->input->post->get( 'captchasessionid', '' ));
 					$results = $dispatcher->trigger( 'onCaptchaVerify', $captchaparams );
 					if ( $results[0] ) {
 						$captcha_verification = true;
@@ -686,8 +686,8 @@ JS;
             		}
 
 					$privatekey = $dbparams->get('recaptcha_privatekey');
-					$response_field  = JRequest::getVar('recaptcha_response_field', '', 'post', 'string');
-					$challenge_field = JRequest::getVar('recaptcha_challenge_field', '', 'post', 'string');
+					$response_field  = JFactory::getApplication()->input->post->getString('recaptcha_response_field', '');
+					$challenge_field = JFactory::getApplication()->input->post->getString('recaptcha_challenge_field', '');
 
 					$resp = recaptcha_check_answer ($privatekey,
 						$_SERVER['REMOTE_ADDR'],

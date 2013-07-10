@@ -50,7 +50,7 @@ include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'controllers'
 
 $controller = new JFusionController();
 // Perform the Request task
-$task = JRequest::getVar('task');
+$task = JFactory::getApplication()->input->get('task');
 if (!$task) {
     $task = 'cpanel';
 }
@@ -68,7 +68,7 @@ if (in_array($task, $tasklist)) {
     $controller->execute($task);
 } else {
     //run the task as a view
-    JRequest::setVar('view', $task);
+	JFactory::getApplication()->input->set('view', $task);
     $controller->display();
 }
 // Redirect if set by the controller

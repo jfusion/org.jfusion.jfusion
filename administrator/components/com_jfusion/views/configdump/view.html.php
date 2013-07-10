@@ -138,12 +138,10 @@ class jfusionViewconfigdump extends JViewLegacy {
 		$this->getServerInfo();
 		$this->getVersion();
 
-
-		$this->assignRef('jfusion_plugin', $jfusion_plugin);
-		$this->assignRef('jfusion_module', $jfusion_module);
-		$this->assignRef('joomla_plugin', $joomla_plugin);
-		$this->assignRef('menu_item', $menu_item);
-
+		$this->jfusion_plugin = $jfusion_plugin;
+		$this->jfusion_module = $jfusion_module;
+		$this->joomla_plugin = $joomla_plugin;
+		$this->menu_item = $menu_item;
 		parent::display($tpl);
 	}
 
@@ -232,7 +230,7 @@ class jfusionViewconfigdump extends JViewLegacy {
 	 * @param null $type
 	 */
 	function clearParameters(&$new,$name,$type=null) {
-		if (JRequest::getVar('filter',false)) {
+		if (JFactory::getApplication()->input->get('filter',false)) {
 			foreach($new->params as $key => $value) {
 				if ( !isset($this->checkvalue[$name]['*'][$key]) && !isset($this->checkvalue[$name][$type][$key]) ) {
 					unset($new->params->$key);
@@ -320,7 +318,7 @@ class jfusionViewconfigdump extends JViewLegacy {
 						break;
 					case 'mask':
 						$valid = 1;
-						if (JRequest::getVar('mask',false)) {
+						if (JFactory::getApplication()->input->get('mask',false)) {
 							$value = '************';
 						}
 						break;
@@ -418,7 +416,7 @@ class jfusionViewconfigdump extends JViewLegacy {
 				$server_info[$system_plugin->element . ' ' . $system_plugin->folder . ' Plugin'] = JText::_('DISABLED');
 			}
 		}
-		$this->assignRef('server_info', $server_info);
+		$this->server_info = $server_info;
 	}
 
 	function getVersion()
@@ -432,7 +430,7 @@ class jfusionViewconfigdump extends JViewLegacy {
 		$this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'user' . DIRECTORY_SEPARATOR . 'jfusion' . DIRECTORY_SEPARATOR .'jfusion.xml', JText::_('USER') . ' ' . JText::_('PLUGIN'), $jfusion_version);
 		$this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'search' . DIRECTORY_SEPARATOR . 'jfusion' . DIRECTORY_SEPARATOR .'jfusion.xml', JText::_('SEARCH') . ' ' . JText::_('PLUGIN'), $jfusion_version);
 		$this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . 'jfusion' . DIRECTORY_SEPARATOR .'jfusion.xml', JText::_('DISCUSSION') . ' ' . JText::_('PLUGIN'), $jfusion_version);
-		$this->assignRef('jfusion_version', $jfusion_version);
+		$this->jfusion_version = $jfusion_version;
 	}
 
 	/**

@@ -69,7 +69,7 @@ class JFusionDokuWikiHook {
         $session->close();
         */
         $event->data['id'] = str_replace(':', ';', $event->data['id']);
-        $baseURL = JFusionFunction::getPluginURL(JRequest::getInt('Itemid'), false);
+        $baseURL = JFusionFunction::getPluginURL(JFactory::getApplication()->input->getInt('Itemid'), false);
         if (is_array($event->data['preact'])) {
             $q = 'doku.php?id=' . $event->data['id'];
         } else {
@@ -84,7 +84,7 @@ class JFusionDokuWikiHook {
             $params = JFusionFactory::getParams($jname);
             $sefmode = $params->get('sefmode');
             if ($sefmode == 1) {
-                $url = JFusionFunction::routeURL($q, JRequest::getInt('Itemid'));
+                $url = JFusionFunction::routeURL($q, JFactory::getApplication()->input->getInt('Itemid'));
             } else {
                 //we can just append both variables
                 $url = $baseURL . $q;

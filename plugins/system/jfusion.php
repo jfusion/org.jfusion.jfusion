@@ -76,14 +76,14 @@ class plgSystemJfusion extends JPlugin
         ob_start();
         $refresh = false;
         $status = array('error' => array(),'debug' => array());
-        $task = JRequest::getVar('task');
+        $task = JFactory::getApplication()->input->get('task');
         $debug = $this->params->get('debug', 0);
         if ($debug) {
             define('DEBUG_SYSTEM_PLUGIN', 1);
         }
 
         //prevent endless loops
-        $time = JRequest::getVar('time');
+        $time = JFactory::getApplication()->input->get('time');
         if (!empty($time)) {
             //restore $_POST, $_FILES, and $_REQUEST data if this was a refresh
             $backup = $session->get('JFusionVarBackup', array());

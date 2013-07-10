@@ -166,14 +166,12 @@ class jfusionViewversioncheck extends JViewLegacy
 			$jfusion_plugins[] = $this->getVersionNumber(JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $plugin->name . DIRECTORY_SEPARATOR . 'jfusion.xml', $plugin->name);
 		}
 		ob_end_clean();
-    
 
-		$this->assignRef('up2date', $this->up2date);
-		$this->assignRef('server_compatible', $server_compatible);
-		$this->assignRef('system', $system);
-		$this->assignRef('jfusion_plugins', $jfusion_plugins);
-		$this->assignRef('components', $components);
-		$this->assignRef('JFusionVersion', $JFusionVersion);
+		$this->server_compatible = $server_compatible;
+		$this->system = $system;
+		$this->jfusion_plugins = $jfusion_plugins;
+		$this->components = $components;
+		$this->JFusionVersion = $JFusionVersion;
 		parent::display($tpl);
 	}
 

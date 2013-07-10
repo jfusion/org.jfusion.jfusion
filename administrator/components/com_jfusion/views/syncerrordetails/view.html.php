@@ -53,12 +53,12 @@ class jfusionViewsyncerrordetails extends JViewLegacy
         include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
         include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.debug.php';
         //check to see if the sync has already started
-        $syncid = JRequest::getVar('syncid');
+        $syncid = JFactory::getApplication()->input->get('syncid');
         $syncdata = JFusionUsersync::getSyncdata($syncid);
         $synclog = JFusionUsersync::getLogData($syncid, 'error');
-        $this->assignRef('syncdata', $syncdata);
-        $this->assignRef('synclog', $synclog);
-        $this->assignRef('syncid', $syncid);
+	    $this->syncdata = $syncdata;
+	    $this->synclog = $synclog;
+	    $this->syncid = $syncid;
         parent::display($tpl);
     }
 }

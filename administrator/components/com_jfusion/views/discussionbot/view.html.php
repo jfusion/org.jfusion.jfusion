@@ -31,8 +31,8 @@ class jfusionViewdiscussionbot extends JViewLegacy
         $mainframe = JFactory::getApplication();
  		$document	= JFactory::getDocument();
         $db			= JFactory::getDBO();
-        $ename = JRequest::getVar('ename');
-		$jname = JRequest::getVar('jname');
+        $ename = JFactory::getApplication()->input->get('ename');
+		$jname = JFactory::getApplication()->input->get('jname');
 
 		switch ($ename) {
         	case 'pair_sections' :
@@ -82,7 +82,7 @@ class jfusionViewdiscussionbot extends JViewLegacy
         		return;
         }
 
-		$hash = JRequest::getVar($ename);
+		$hash = JFactory::getApplication()->input->get($ename);
 	    $session = JFactory::getSession();
 	    $encoded_pairs = $session->get($hash);
 		if($encoded_pairs) {
@@ -92,17 +92,17 @@ class jfusionViewdiscussionbot extends JViewLegacy
 		}
 
 		//remove pair
-		if(JRequest::getInt('remove')) {
-			$joomlaid = JRequest::getInt('remove');
+		if(JFactory::getApplication()->input->getInt('remove')) {
+			$joomlaid = JFactory::getApplication()->input->getInt('remove');
 			unset($pairs[$joomlaid]);
 
 			//recode pairs to be added as hidden var to make sure none are lost on submitting another pair
 			$encoded_pairs = base64_encode(serialize($pairs));
 			$session->set($hash, $encoded_pairs);
-		} elseif (JRequest::getInt('joomlaid',0)) {
+		} elseif (JFactory::getApplication()->input->getInt('joomlaid',0)) {
 			//add submitted pair
-			$joomlaid = JRequest::getInt('joomlaid');
-			$forumid = JRequest::getInt('forumid');
+			$joomlaid = JFactory::getApplication()->input->getInt('joomlaid');
+			$forumid = JFactory::getApplication()->input->getInt('forumid');
 			$pairs[$joomlaid] = $forumid;
 
 			//recode pairs to be added as hidden var to make sure none are lost on submitting another pair
@@ -145,16 +145,17 @@ class jfusionViewdiscussionbot extends JViewLegacy
 HTML;
 
 	    //assign references
-	    $this->assignRef('jname', $jname);
-		$this->assignRef('toolbar', $toolbar);
-		$this->assignRef('title', $title);
-		$this->assignRef('joomlaoptions', $joomlaoptions);
-		$this->assignRef('joomlaSelectOptions', $joomlaSelectOptions);
-		$this->assignRef('forumSelectOptions', $forumSelectOptions);
-		$this->assignRef('pairs', $pairs);
 
-	    $this->assignRef('ename', $ename);
-		$this->assignRef('hash', $hash);
+	    $this->jname = $jname;
+	    $this->toolbar = $toolbar;
+	    $this->title = $title;
+	    $this->joomlaoptions = $joomlaoptions;
+	    $this->joomlaSelectOptions = $joomlaSelectOptions;
+	    $this->forumSelectOptions = $forumSelectOptions;
+	    $this->pairs = $pairs;
+
+	    $this->ename = $ename;
+	    $this->hash = $hash;
 
 		parent::display($tpl);
 	}

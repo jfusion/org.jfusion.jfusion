@@ -498,7 +498,7 @@ HTML;
 		
 		jimport ( 'joomla.filesystem.file' );
 		
-		$activation = ((JRequest::getVar('activation', 1))?'true':'false');
+		$activation = ((JFactory::getApplication()->input->get('activation', 1))?'true':'false');
 		$jname =  $this->getJname ();
 		$params = JFusionFactory::getParams ( $jname );
 		$source_path = $params->get ( 'source_path' );

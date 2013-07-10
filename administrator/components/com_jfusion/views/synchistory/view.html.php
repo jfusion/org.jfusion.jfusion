@@ -44,7 +44,7 @@ class jfusionViewsynchistory extends JViewLegacy
         $query = 'SELECT * from #__jfusion_sync ORDER BY time_end DESC, time_start DESC';
         $db->setQuery($query);
         $rows = $db->loadObjectList();
-        $this->assignRef('rows', $rows);
+	    $this->rows = $rows;
         parent::display($tpl);
     }
     

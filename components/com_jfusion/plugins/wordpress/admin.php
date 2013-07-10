@@ -111,7 +111,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 			$options = array('driver' => $driver, 'host' => $params['database_host'], 'user' => $params['database_user'],
                         'password' => $params['database_password'], 'database' => $params['database_name'],
                         'prefix' => $params['database_prefix']);
-			$db = JDatabase::getInstance($options );
+			$db = JDatabaseDriver::getInstance($options );
 
 			//Find the url to Wordpress
 			$query = 'SELECT option_value FROM #__options WHERE option_name = \'siteurl\'';

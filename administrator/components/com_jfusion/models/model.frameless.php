@@ -43,7 +43,7 @@ class JFusionFrameless {
 		$data->jname = $jname;
 		$data->integratedURL = null;
 		$data->isPlugin = $isPlugin;
-		$data->Itemid = JRequest::getVar ( 'Itemid' );
+		$data->Itemid = JFactory::getApplication()->input->get( 'Itemid' );
 
 		//Get the base URL to the specific JFusion plugin
 		$data->baseURL = JFusionFunction::getPluginURL ( $data->Itemid );
@@ -146,10 +146,13 @@ class JFusionFrameless {
 
 			$sef_suffix = $mainframe->getCfg('sef_suffix');
 			$sef = $mainframe->getCfg('sef');
-			if($sef_suffix == 1 && $sef == 1 && !count(JRequest::get('POST'))){
+
+
+
+			if($sef_suffix == 1 && $sef == 1 && !JFactory::getApplication()->input->post->count()){
 				//redirect if url non_sef
 				if (strrpos($data->fullURL, '?') !== false) {
-					$u = JFactory::getURI();
+					$u = JUri::getInstance();
 					if ($u->getVar('Itemid') && $u->getVar('option')) {
 						$u->delVar('Itemid');
 						$u->delVar('option');
@@ -298,7 +301,7 @@ class JFusionFrameless {
 				if (is_array($pathway)) {
 					$breadcrumbs = & $mainframe->getPathWay();
 					foreach ($pathway as $path) {
-						$breadcrumbs->addItem($path->title, JFusionFunction::routeURL($path->url, JRequest::getInt('Itemid')));
+						$breadcrumbs->addItem($path->title, JFusionFunction::routeURL($path->url, JFactory::getApplication()->input->getInt('Itemid')));
 					}
 				}
 			}

@@ -55,19 +55,18 @@ class jfusionViewsyncstatus extends JViewLegacy
         //Load usersync library
         include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
         if (!isset($this->syncid)) {
-            $syncid = JRequest::getVar('syncid');
-            $this->assignRef('syncid', $syncid);
+            $syncid = JFactory::getApplication()->input->get('syncid');
+	        $this->syncid = $syncid;
         }
-
         if (!isset($this->syncdata)) {
             //get the syncdata
             $syncdata = JFusionUsersync::getSyncdata($this->syncid);
-            $this->assignRef('syncdata', $syncdata);
+	        $this->syncdata = $syncdata;
         }
         //append log
         $mainframe = JFactory::getApplication();
-        $client             = JRequest::getWord( 'filter_client', 'site' );
-        $option = JRequest::getCmd('option');
+        $client             = JFactory::getApplication()->input->getWord( 'filter_client', 'site' );
+        $option = JFactory::getApplication()->input->getCmd('option');
         $filter_order       = $mainframe->getUserStateFromRequest( "$option.$client.filter_order",      'filter_order',     'id',       'cmd' );
         $filter_order_Dir   = $mainframe->getUserStateFromRequest( "$option.$client.filter_order_Dir",  'filter_order_Dir', '',         'word' );
         $limit              = (int)$mainframe->getUserStateFromRequest( 'global.list.limit', 'limit', $mainframe->getCfg('list_limit'), 'int' );
@@ -82,8 +81,8 @@ class jfusionViewsyncstatus extends JViewLegacy
         jimport('joomla.html.pagination');
         $pageNav = new JPagination($total, $limitstart, $limit);
 
-        $this->assignRef('pageNav', $pageNav);
-        $this->assignRef('filter', $filter);
+	    $this->pageNav = $pageNav;
+	    $this->filter = $filter;
 
         if (!empty($this->sync_completed)) {
             //ajax calling this page so die so that header info is not put into the body

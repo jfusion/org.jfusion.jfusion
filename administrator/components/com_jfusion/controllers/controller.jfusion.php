@@ -57,8 +57,8 @@ class JFusionController extends JControllerLegacy
         //set jname as a global variable in order for elements to access it.
         global $jname;
         //find out the submitted values
-        $jname = JRequest::getVar('jname');
-        $post = JRequest::getVar('params', array(), 'post', 'array');
+        $jname = JFactory::getApplication()->input->get('jname');
+        $post = JFactory::getApplication()->input->post->get('params', array());
         //check to see data was posted
         $msg = JText::_('WIZARD_FAILURE');
         $msgType = 'warning';
@@ -99,9 +99,9 @@ class JFusionController extends JControllerLegacy
     function changesettings()
     {
         //find out the posted ID of the JFusion module to publish
-        $jname = JRequest::getVar('jname');
-        $field_name = JRequest::getVar('field_name');
-        $field_value = JRequest::getVar('field_value');
+        $jname = JFactory::getApplication()->input->get('jname');
+        $field_name = JFactory::getApplication()->input->get('field_name');
+        $field_value = JFactory::getApplication()->input->get('field_value');
         //check to see if an integration was selected
         $db = JFactory::getDBO();
         if ($jname) {
@@ -179,8 +179,8 @@ class JFusionController extends JControllerLegacy
         //set jname as a global variable in order for elements to access it.
         global $jname;
         //get the posted variables
-        $post = JRequest::getVar('params', array(), 'post', 'array');
-        $jname = JRequest::getVar('jname', '', 'POST', 'STRING');
+        $post = JFactory::getApplication()->input->post->get('params', array());
+        $jname = JFactory::getApplication()->input->post->getString('jname', '');
         //check for trailing slash in URL, in order for us not to worry about it later
         if (substr($post['source_url'], -1) == '/') {
         } else {
@@ -215,7 +215,7 @@ class JFusionController extends JControllerLegacy
                 $msg = $jname . ': ' . JText::_('SAVE_SUCCESS');
                 $msgType = 'message';
                 //check for any custom commands
-                $customcommand = JRequest::getVar('customcommand');
+                $customcommand = JFactory::getApplication()->input->get('customcommand');
                 if (!empty($customcommand)) {
                     $JFusionPlugin = JFusionFactory::getAdmin($jname);
                     if (method_exists($JFusionPlugin, $customcommand)) {
@@ -224,7 +224,7 @@ class JFusionController extends JControllerLegacy
                 }
             }
         }
-        $action = JRequest::getVar('action');
+        $action = JFactory::getApplication()->input->get('action');
         if ($action == 'apply') {
             $this->setRedirect('index.php?option=com_jfusion&task=plugineditor&jname=' . $jname, $msg, $msgType);
         } else {
@@ -239,7 +239,7 @@ class JFusionController extends JControllerLegacy
      */
     function syncresume()
     {
-        $syncid = JRequest::getVar('syncid', '', 'GET');
+        $syncid = JFactory::getApplication()->input->get->get('syncid', '');
         $db = JFactory::getDBO();
         $query = 'SELECT syncid FROM #__jfusion_sync WHERE syncid =' . $db->Quote($syncid);
         $db->setQuery($query);
@@ -256,8 +256,8 @@ class JFusionController extends JControllerLegacy
 		        $plugin_offset = (!empty($syncdata['plugin_offset'])) ? $syncdata['plugin_offset'] : 0;
 		        //start at the next user
 		        $user_offset = (!empty($syncdata['user_offset'])) ? $syncdata['user_offset'] : 0;
-		        if (JRequest::getVar('userbatch')) {
-			        $syncdata['userbatch'] = JRequest::getVar('userbatch');
+		        if (JFactory::getApplication()->input->get('userbatch')) {
+			        $syncdata['userbatch'] = JFactory::getApplication()->input->get('userbatch');
 		        }
 		        JFusionUsersync::syncExecute($syncdata, $syncdata['action'], $plugin_offset, $user_offset);
 	        } else {
@@ -282,7 +282,7 @@ class JFusionController extends JControllerLegacy
      */
     function syncprogress()
     {
-        $syncid = JRequest::getVar('syncid', '', 'GET');
+        $syncid = JFactory::getApplication()->input->get->get('syncid', '');
         include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
         $syncdata = JFusionUsersync::getSyncdata($syncid);
 
@@ -299,14 +299,14 @@ class JFusionController extends JControllerLegacy
     {
         //Load usersync library
         include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
-        $syncError = JRequest::getVar('syncError', array(), 'POST', 'array');
-        $syncid = JRequest::getVar('syncid', '', 'POST');
+        $syncError = JFactory::getApplication()->input->post->get('syncError', array());
+        $syncid = JJFactory::getApplication()->input->post->get('syncid', '');
         if ($syncError) {
             //apply the submitted sync error instructions
             JFusionUsersync::syncError($syncid, $syncError);
         } else {
             //output the sync errors to the user
-            JRequest::setVar('view', 'syncerror');
+	        JFactory::getApplication()->input->get('view', 'syncerror');
             $this->display();
         }
     }
@@ -341,8 +341,8 @@ class JFusionController extends JControllerLegacy
         //Load usersync library
         include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
         //check to see if the sync has already started
-        $syncid = JRequest::getVar('syncid');
-        $action = JRequest::getVar('action');
+        $syncid = JFactory::getApplication()->input->get('syncid');
+        $action = JFactory::getApplication()->input->get('action');
         if (!empty($syncid)) {
             //clear sync in progress catch in case we manually stopped the sync so that the sync will continue
             JFusionUsersync::changeSyncStatus($syncid, 0);
@@ -352,7 +352,7 @@ class JFusionController extends JControllerLegacy
         $syncdata['sync_errors'] = 0;
         $syncdata['total_to_sync'] = 0;
         $syncdata['synced_users'] = 0;
-        $syncdata['userbatch'] = JRequest::getVar('userbatch', 100);
+        $syncdata['userbatch'] = JFactory::getApplication()->input->get('userbatch', 100);
         $syncdata['user_offset'] = 0;
         $syncdata['syncid'] = $syncid;
         $syncdata['action'] = $action;
@@ -362,7 +362,7 @@ class JFusionController extends JControllerLegacy
         $db->setQuery($query);
         if (!$db->loadResult()) {
             //sync has not started, lets get going :)
-            $slaves = JRequest::getVar('slave');
+            $slaves = JFactory::getApplication()->input->get('slave');
             $master_plugin = JFusionFunction::getMaster();
             $master = $master_plugin->name;
             $JFusionMaster = JFusionFactory::getAdmin($master);
@@ -423,7 +423,7 @@ class JFusionController extends JControllerLegacy
         $model = new JFusionModelInstaller();
         $result = $model->install();
 
-        $ajax = JRequest::getVar('ajax');
+        $ajax = JFactory::getApplication()->input->get('ajax');
         if ($ajax == true) {
 	        /**
 	         * @ignore
@@ -442,7 +442,7 @@ class JFusionController extends JControllerLegacy
 
     function installplugins()
     {
-        $jfusionplugins = JRequest::getVar('jfusionplugins', array(), 'post', 'array');
+        $jfusionplugins = JFactory::getApplication()->input->post->get('jfusionplugins', array());
         include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.install.php';
         foreach ($jfusionplugins as $plugin) {
             //install updates
@@ -455,8 +455,8 @@ class JFusionController extends JControllerLegacy
 
     function plugincopy()
     {
-        $jname = JRequest::getVar('jname');
-        $new_jname = JRequest::getVar('new_jname');
+        $jname = JFactory::getApplication()->input->get('jname');
+        $new_jname = JFactory::getApplication()->input->get('new_jname');
 
         //replace not-allowed characters with _
         $new_jname = preg_replace('/([^a-zA-Z0-9_])/', '_', $new_jname);
@@ -518,7 +518,7 @@ class JFusionController extends JControllerLegacy
      */
     function uninstallplugin()
     {
-        $jname = JRequest::getVar('jname');
+        $jname = JFactory::getApplication()->input->get('jname');
 
         //set uninstall options
         $db = JFactory::getDBO();
@@ -586,7 +586,7 @@ class JFusionController extends JControllerLegacy
      */
     function configdump()
     {
-        JRequest::setVar('view', 'configdump');
+	    JFactory::getApplication()->input->set('view', 'configdump');
         $this->display();
     }
 
@@ -598,7 +598,7 @@ class JFusionController extends JControllerLegacy
     function deletehistory()
     {
         $db = JFactory::getDBO();
-        $syncid = JRequest::getVar('syncid');
+        $syncid = JFactory::getApplication()->input->get('syncid');
         if(!is_array($syncid)) {
             JFusionFunction::raiseWarning(500, JText::_('NO_SYNCID_SELECTED'));
         } else {
@@ -612,7 +612,7 @@ class JFusionController extends JControllerLegacy
                 $db->execute();
             }
         }
-        JRequest::setVar('view', 'synchistory');
+	    JFactory::getApplication()->input->set('view', 'synchistory');
         $this->display();
     }
 
@@ -624,15 +624,15 @@ class JFusionController extends JControllerLegacy
     function resolveerror()
     {
         $db = JFactory::getDBO();
-        $syncid = JRequest::getVar('syncid');
+        $syncid = JFactory::getApplication()->input->get('syncid');
         if(!is_array($syncid)) {
             JFusionFunction::raiseWarning(500, JText::_('NO_SYNCID_SELECTED'));
-            JRequest::setVar('view', 'synchistory');
+	        JFactory::getApplication()->input->set('view', 'synchistory');
         } else {
             foreach ($syncid as $key => $value) {
-                $syncid = JRequest::setVar('syncid', $key);
+                $syncid = JFactory::getApplication()->input->set('syncid', $key);
                 //output the sync errors to the user
-                JRequest::setVar('view', 'syncerror');
+	            JFactory::getApplication()->input->set('view', 'syncerror');
                 break;
             }
         }
@@ -646,10 +646,10 @@ class JFusionController extends JControllerLegacy
      */
 	function advancedparamsubmit()
 	{
-		$params = JRequest::getVar('params');
-		$ename = JRequest::getVar('ename');
+		$params = JFactory::getApplication()->input->get('params');
+		$ename = JFactory::getApplication()->input->get('ename');
 
-		$multiselect = JRequest::getVar('multiselect');
+		$multiselect = JFactory::getApplication()->input->get('multiselect');
 		if ($multiselect) {
 			$multiselect = true;
 		} else {
@@ -659,7 +659,7 @@ class JFusionController extends JControllerLegacy
 		$serParam = base64_encode(serialize($params));
 
 		$session = JFactory::getSession();
-		$hash = JRequest::getVar($ename);
+		$hash = JFactory::getApplication()->input->get($ename);
 		$session->set($hash, $serParam);
 
 		$title = '';
@@ -690,7 +690,7 @@ JS;
     function saveorder()
     {
         //split the value of the sort action
-        $sort_order = JRequest::getVar('sort_order');
+        $sort_order = JFactory::getApplication()->input->get('sort_order');
         $ids = explode('|',$sort_order);
         $db = JFactory::getDBO();
 
@@ -724,14 +724,14 @@ JS;
 
     function import()
     {
-        $jname = JRequest::getVar('jname');
+        $jname = JFactory::getApplication()->input->get('jname');
 
         $msg = $xml = $error = null;
 
 	    jimport('joomla.utilities.simplexml');
-	    $file = JRequest::getVar( 'file', '', 'FILES','ARRAY');
+	    $file = JFactory::getApplication()->input->files->get('file');
 
-	    $filename = JRequest::getVar('url');
+	    $filename = JFactory::getApplication()->input->get('url');
 
 	    if( !empty($filename) ) {
 		    $filename = base64_decode($filename);
@@ -813,12 +813,12 @@ JS;
 						    if ( strpos($conf[$attName], 'a:') === 0 ) $conf[$attName] = unserialize($conf[$attName]);
 					    }
 
-					    $database_type = JRequest::getVar('database_type');
-					    $database_host = JRequest::getVar('database_host');
-					    $database_name = JRequest::getVar('database_name');
-					    $database_user = JRequest::getVar('database_user');
-					    $database_password = JRequest::getVar('database_password');
-					    $database_prefix = JRequest::getVar('database_prefix');
+					    $database_type = JFactory::getApplication()->input->get('database_type');
+					    $database_host = JFactory::getApplication()->input->get('database_host');
+					    $database_name = JFactory::getApplication()->input->get('database_name');
+					    $database_user = JFactory::getApplication()->input->get('database_user');
+					    $database_password = JFactory::getApplication()->input->get('database_password');
+					    $database_prefix = JFactory::getApplication()->input->get('database_prefix');
 
 					    if( !empty($database_type) ) $conf['database_type'] = $database_type;
 					    if( !empty($database_host) ) $conf['database_host'] = $database_host;
@@ -863,8 +863,8 @@ JS;
 
     function export()
     {
-        $jname = JRequest::getVar('jname');
-        $dbinfo = JRequest::getVar('dbinfo');
+        $jname = JFactory::getApplication()->input->get('jname');
+        $dbinfo = JFactory::getApplication()->input->get('dbinfo');
 
         $params = JFusionFactory::getParams($jname);
         $params = $params->toObject();

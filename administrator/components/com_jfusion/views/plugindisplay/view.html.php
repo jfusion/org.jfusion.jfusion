@@ -63,8 +63,8 @@ class jfusionViewplugindisplay extends JViewLegacy {
 	        }
 
             //pass the data onto the view
-            $this->assignRef('plugins', $plugins);
-            $this->assignRef('VersionData', $VersionData);
+	        $this->plugins = $plugins;
+	        $this->VersionData = $VersionData;
 
 	        JFusionFunction::loadJSLanguage();
 

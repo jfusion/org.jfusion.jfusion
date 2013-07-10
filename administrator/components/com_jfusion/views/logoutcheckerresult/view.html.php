@@ -40,11 +40,11 @@ class jfusionViewLogoutCheckerResult extends JViewLegacy
     function display($tpl = null)
     {
         //get the joomla id
-	    $joomlaid = JRequest::getVar('joomlaid');
+	    $joomlaid = JFactory::getApplication()->input->get('joomlaid');
 	    $user = (array)JFactory::getUser($joomlaid);
 	    $options = array();
 	    $options['group'] = 'USERS';
-	    if (JRequest::getVar('show_unsensored') == 1) {
+	    if (JFactory::getApplication()->input->get('show_unsensored') == 1) {
 	        $options['show_unsensored'] = 1;
 	    } else {
 		    $options['show_unsensored'] = 0;
@@ -64,8 +64,8 @@ class jfusionViewLogoutCheckerResult extends JViewLegacy
 	    if (method_exists($plugin, $method_name)) {
 	        $response = $plugin->$method_name($user, $options);
 	    }
-	    
-	    $this->assignRef('debug', $jfusionDebug);
+
+	    $this->debug = $jfusionDebug;
         parent::display($tpl);
     }
     

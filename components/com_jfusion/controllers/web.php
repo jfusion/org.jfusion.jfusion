@@ -25,7 +25,7 @@ class JFusionControllerWeb extends JControllerLegacy
     function display()
     {
         // Select which layout to use in the view
-        JRequest::setVar ( 'layout', 'default' );
+	    JFactory::getApplication()->input->set('layout', 'default');
         /**
         * @ignore
          * @var $menu JMenu
@@ -45,7 +45,7 @@ class JFusionControllerWeb extends JControllerLegacy
          * @var $view jfusionViewWeb
          */
         $view = $this->getView ( 'web', 'html' );
-        $view->assignRef('params',$params);
+	    $view->params = $params;
         $view->display ();
     }
 }

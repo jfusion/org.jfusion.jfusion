@@ -24,9 +24,9 @@ class JFusionControllerPlugin extends JControllerLegacy
 	 * Displays the profile for a user
 	 */
 	function profile() {
-        $jname = JRequest::getVar('jname');
-        $userid = JRequest::getVar('userid');
-        $username = JRequest::getVar('username');
+        $jname = JFactory::getApplication()->input->get('jname');
+        $userid = JFactory::getApplication()->input->get('userid');
+        $username = JFactory::getApplication()->input->get('username');
         require_once(JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.jfusionpublic.php');
         $user = JFusionFunction::lookupUser($jname, $userid, false, $username);
 
@@ -42,7 +42,7 @@ class JFusionControllerPlugin extends JControllerLegacy
 	 */
 	public function display($cachable = false, $urlparams = array()) {
 		//find out if there is an itemID with the view variable
-		$menuitemid = JRequest::getInt('Itemid');
+		$menuitemid = JFactory::getApplication()->input->getInt('Itemid');
 		//we do not want the front page menuitem as it will cause a 500 error in some cases
 		$jPluginParam = new JRegistry('');
 		//added to prevent a notice of $jview being undefined;

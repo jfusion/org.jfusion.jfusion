@@ -101,7 +101,7 @@ class plgContentJfusion extends JPlugin
 
         $this->creationMode =& $this->params->get('create_thread','load');
 
-        $this->debug_mode = $this->params->get('debug', JRequest::getInt('debug_discussionbot',0));
+        $this->debug_mode = $this->params->get('debug', JFactory::getApplication()->input->getInt('debug_discussionbot',0));
 
         //define some constants
         if (!defined('DISCUSSION_TEMPLATE_PATH')) {
@@ -128,7 +128,7 @@ class plgContentJfusion extends JPlugin
         $this->helper = new JFusionDiscussBotHelper($this->params, $this->jname, $this->mode, $this->debug_mode);
 
         //set option
-        $this->helper->option = JRequest::getCmd('option');
+        $this->helper->option = JFactory::getApplication()->input->getCmd('option');
     }
 
 
@@ -296,18 +296,18 @@ class plgContentJfusion extends JPlugin
 
                     //make sure we have an actual article
                     if (!empty($this->article->id)) {
-                        $this->dbtask = JRequest::getVar('dbtask', null, 'post');
+                        $this->dbtask = JFactory::getApplication()->input->post->get('dbtask', null);
                         $skip_new_check = ($this->dbtask=='create_thread') ? true : false;
                         $skip_k2_check = ($this->helper->option == 'com_k2' && in_array($this->dbtask, array('unpublish_discussion', 'publish_discussion'))) ? true : false;
 
                         list($this->valid, $this->validity_reason) = $this->helper->validate($skip_new_check, $skip_k2_check);
                         $this->helper->debug('Validity: ' . $this->valid . "; " . $this->validity_reason);
 
-                        $this->ajax_request = JRequest::getInt('ajax_request',0);
+                        $this->ajax_request = JFactory::getApplication()->input->getInt('ajax_request',0);
 	                    $ajax = $this->prepareAjaxResponce();
 	                    if ($this->ajax_request) {
 		                    //get and set the threadinfo
-		                    $threadid = JRequest::getInt('threadid', 0, 'post');
+		                    $threadid = JFactory::getApplication()->input->getInt('threadid', 0, 'post');
 		                    $threadinfo = $this->helper->getThreadInfo();
 		                    if (empty($threadinfo))  {
 			                    //could be a manual plug so let's get the thread info directly
@@ -351,7 +351,7 @@ class plgContentJfusion extends JPlugin
 	                    }
 
 	                    //save the visibility of the posts if applicable
-	                    $show_discussion = JRequest::getVar('show_discussion','');
+	                    $show_discussion = JFactory::getApplication()->input->get('show_discussion','');
 	                    if ($show_discussion!=='') {
 		                    $JSession = JFactory::getSession();
 		                    $JSession->set('jfusion.discussion.visibility',(int) $show_discussion);
@@ -423,8 +423,8 @@ class plgContentJfusion extends JPlugin
      */
     public function onContentAfterDisplay($context, &$article, &$params, $limitstart=0)
 	{
-	    $view = JRequest::getVar('view');
-	    $layout = JRequest::getVar('layout');
+	    $view = JFactory::getApplication()->input->get('view');
+	    $layout = JFactory::getApplication()->input->get('layout');
 
         if ($this->helper->option == 'com_content') {
             if ($view == 'featured' || ($view == 'category' && $layout == 'blog')) {
@@ -543,7 +543,7 @@ class plgContentJfusion extends JPlugin
 
         //check to see if the fulltext has a manual plug if we are in a blog view
         if (isset($this->article->fulltext)) {
-            if (!$this->manual_plug && JRequest::getVar('view') != $this->view()) {
+            if (!$this->manual_plug && JFactory::getApplication()->input->get('view') != $this->view()) {
                 preg_match('/\{jfusion_discuss (.*)\}/U',$this->article->fulltext,$match);
                 if (!empty($match)) {
                     $this->helper->debug('No plugs in text but found plugs in fulltext');
@@ -581,7 +581,7 @@ class plgContentJfusion extends JPlugin
             if ($this->mode=='auto') {
                 $this->helper->debug('In auto mode');
                 if ($this->valid) {
-	                if ($threadinfo || $this->creationMode=='load' || ($this->creationMode=='view' && JRequest::getVar('view') == $this->view()) ) {
+	                if ($threadinfo || $this->creationMode=='load' || ($this->creationMode=='view' && JFactory::getApplication()->input->get('view') == $this->view()) ) {
 		                $status = $this->helper->checkThreadExists();
 		                if ($status['action'] == 'created') {
 			                $threadinfo = $status['threadinfo'];
@@ -661,7 +661,7 @@ class plgContentJfusion extends JPlugin
         if (empty($taskFormLoaded)) {
             $this->helper->debug('Adding task form');
             //tak on the task form; it only needs to be added once which will be used for create_thread
-            $uri = JFactory::getURI();
+            $uri = JUri::getInstance();
             $url = $uri->toString(array('path', 'query', 'fragment'));
             $url = str_replace('&', '&amp;', $url);
 
@@ -717,11 +717,11 @@ HTML;
     {
         $JoomlaUser = JFactory::getUser();
         $mainframe = JFactory::getApplication();
-        $return = JRequest::getVar('return');
+        $return = JFactory::getApplication()->input->get('return');
         if ($return) {
             $url = base64_decode($return);
         } else {
-            $uri = JFactory::getURI();
+            $uri = JUri::getInstance();
             $url = $uri->toString(array('path', 'query', 'fragment'));
             $url = JRoute::_($url, false);
             if ($uri->getVar('view')=='article') {
@@ -734,7 +734,7 @@ HTML;
         }
 
         //make sure the article submitted matches the one loaded
-        $submittedArticleId = JRequest::getInt('articleId', 0, 'post');
+        $submittedArticleId = JFactory::getApplication()->input->getInt('articleId', 0, 'post');
 
 	    $editAccess = $JoomlaUser->authorise('core.edit', 'com_content');
 
@@ -794,7 +794,7 @@ HTML;
         //process quick replies
         if (($allowGuests || !$JoomlaUser->guest) && !$JoomlaUser->block) {
             //make sure something was submitted
-            $quickReplyText = JRequest::getVar('quickReply', '', 'POST');
+            $quickReplyText = JFactory::getApplication()->input->post->get('quickReply', '');
 
             if (!empty($quickReplyText)) {
                 //retrieve the userid from forum software
@@ -843,7 +843,7 @@ HTML;
                                     } else {
                                         $limitstart = 0;
                                     }
-                                    JRequest::setVar('limitstart_discuss',$limitstart);
+	                                JFactory::getApplication()->input->set('limitstart_discuss',$limitstart);
                                 }
 
                                 $posts = $JFusionForum->getPosts($this->params, $threadinfo);
@@ -925,7 +925,7 @@ HTML;
         $JoomlaUser = JFactory::getUser();
 
         //make sure the article submitted matches the one loaded
-        $submittedArticleId = JRequest::getInt('articleId', 0, 'post');
+        $submittedArticleId = JFactory::getApplication()->input->getInt('articleId', 0, 'post');
 	    $editAccess = $JoomlaUser->authorise('core.edit', 'com_content');
 
 	    $ajax = $this->prepareAjaxResponce();
@@ -979,7 +979,7 @@ HTML;
         $JoomlaUser = JFactory::getUser();
 
         //make sure the article submitted matches the one loaded
-        $submittedArticleId = JRequest::getInt('articleId', 0, 'post');
+        $submittedArticleId = JFactory::getApplication()->input->getInt('articleId', 0, 'post');
 	    $editAccess = $JoomlaUser->authorise('core.edit', 'com_content');
 
 	    $ajax = $this->prepareAjaxResponce();
@@ -1016,7 +1016,7 @@ HTML;
             $JFusionForum = JFusionFactory::getForum($this->jname);
             $this->helper->reply_count = $JFusionForum->getReplyCount($threadinfo);
         }
-        $view = JRequest::getVar('view');
+        $view = JFactory::getApplication()->input->get('view');
         //let's only show quick replies and posts on the article view
         if ($view == $this->view()) {
             $JSession = JFactory::getSession();
@@ -1096,7 +1096,7 @@ HTML;
                         $this->helper->output['reply_form']  = '<form id="jfusionQuickReply'.$this->article->id.'" name="jfusionQuickReply'.$this->article->id.'" method="post" action="'.$action_url.'">';
                         $this->helper->output['reply_form'] .= '<input type="hidden" name="dbtask" value="create_post" />';
                         $this->helper->output['reply_form'] .= '<input type="hidden" name="threadid" id="threadid" value="'.$threadinfo->threadid.'"/>';
-                        $page_limitstart = JRequest::getInt('limitstart', 0);
+                        $page_limitstart = JFactory::getApplication()->input->getInt('limitstart', 0);
                         if ($page_limitstart) {
                             $this->helper->output['reply_form'] .= '<input type="hidden" name="limitstart" value="'.$page_limitstart.'" />';
                         }
@@ -1119,7 +1119,7 @@ HTML;
 
                 if ($this->params->get('enable_pagination',1)) {
                     $application = JFactory::getApplication() ;
-                    $limitstart = JRequest::getInt( 'limitstart_discuss', 0 );
+                    $limitstart = JFactory::getApplication()->input->getInt( 'limitstart_discuss', 0 );
                     $limit = (int) $application->getUserStateFromRequest( 'global.list.limit', 'limit_discuss', 5, 'int' );
                     if (!empty($this->helper->reply_count) && $this->helper->reply_count > 5) {
                         $pageNav = new JFusionPagination($this->helper->reply_count, $limitstart, $limit, '_discuss' );
@@ -1139,7 +1139,7 @@ HTML;
                     $showGuestInputs = ($allowGuests && $JoomlaUser->guest) ? true : false;
                     $this->helper->output['reply_form']  = '<form id="jfusionQuickReply'.$this->article->id.'" name="jfusionQuickReply'.$this->article->id.'" method="post" action="'.$action_url.'">';
                     $this->helper->output['reply_form'] .= '<input type="hidden" name="dbtask" value="create_threadpost"/>';
-                    $page_limitstart = JRequest::getInt('limitstart', 0);
+                    $page_limitstart = JFactory::getApplication()->input->getInt('limitstart', 0);
                     if ($page_limitstart) {
                         $this->helper->output['reply_form'] .= '<input type="hidden" name="limitstart" value="'.$page_limitstart.'" />';
                     }
@@ -1214,14 +1214,14 @@ HTML;
             } elseif (isset($this->article->parameters)) {
                 //article view
                 $article_params =& $this->article->parameters;
-                $readmore_catch = JRequest::getInt('readmore');
-                $override = JRequest::getInt('show_readmore',false);
+                $readmore_catch = JFactory::getApplication()->input->getInt('readmore');
+                $override = JFactory::getApplication()->input->getInt('show_readmore',false);
                 $show_readmore = ($override!==false) ? $override : $article_params->get('show_readmore');
             }
             $readmore_param = 'show_readmore';
-        } elseif ($this->helper->option == 'com_k2' && JRequest::getVar('view') == 'itemlist') {
+        } elseif ($this->helper->option == 'com_k2' && JFactory::getApplication()->input->get('view') == 'itemlist') {
             $article_params =& $this->article->params;
-            $layout = JRequest::getVar('layout');
+            $layout = JFactory::getApplication()->input->get('layout');
             if ($layout == 'category') {
                 $readmore_param = 'catItemReadMore';
             } elseif ($layout == 'user') {
@@ -1234,7 +1234,7 @@ HTML;
 
         //let's overwrite the read more link with our own
         //needed as in the case of updating the buttons via ajax which calls the article view
-        $view = ($override = JRequest::getVar('view_override')) ? $override : JRequest::getVar('view');
+        $view = ($override = JFactory::getApplication()->input->get('view_override')) ? $override : JFactory::getApplication()->input->get('view');
         if ($view != $this->view() && $this->params->get('overwrite_readmore',1)) {
             //make sure the read more link is enabled for this article
 
@@ -1574,7 +1574,7 @@ HTML;
      */
     public function updatePagination()
     {
-        $this->helper->reply_count = JRequest::getVar('reply_count','');
+        $this->helper->reply_count = JFactory::getApplication()->input->get('reply_count','');
         if ($this->helper->reply_count == '') {
             $JFusionForum = JFusionFactory::getForum($this->jname);
             $threadinfo = $this->helper->getThreadInfo();

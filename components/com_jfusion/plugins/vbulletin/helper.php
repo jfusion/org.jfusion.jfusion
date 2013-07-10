@@ -258,7 +258,7 @@ class JFusionHelper_vbulletin
     {
         $this->backup['globals'] = $GLOBALS;
         //let's take special precautions for Itemid
-        $this->backup['itemid'] = JRequest::getInt('Itemid', 0);
+        $this->backup['itemid'] = JFactory::getApplication()->input->getInt('Itemid', 0);
     }
 
     /**
@@ -273,7 +273,7 @@ class JFusionHelper_vbulletin
             $GLOBALS = $this->backup['globals'];
         }
         if (isset($this->backup['itemid'])) {
-            JRequest::setVar('Itemid', $this->backup['itemid']);
+	        JFactory::getApplication()->input->set('Itemid', $this->backup['itemid']);
             global $Itemid;
             $Itemid = $this->backup['itemid'];
         }

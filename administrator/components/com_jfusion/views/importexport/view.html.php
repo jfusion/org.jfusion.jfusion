@@ -49,7 +49,7 @@ class jfusionViewimportexport extends JViewLegacy
         $lang = JFactory::getLanguage();
         $lang->load('com_jfusion');
 
-        $jname = JRequest::getVar('jname');
+        $jname = JFactory::getApplication()->input->get('jname');
 
         //custom for development purposes / local use only; note do not commit your URL to GIT!!!
 
@@ -60,9 +60,8 @@ class jfusionViewimportexport extends JViewLegacy
 
 	    $xml = JFusionFunction::getXml($ConfigList,false);
 
-        $this->assignRef('list', $xml);
-        $this->assignRef('jname', $jname);
-
+	    $this->list = $xml;
+	    $this->jname = $jname;
         parent::display($tpl);
     }
 }

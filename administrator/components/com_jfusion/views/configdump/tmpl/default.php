@@ -15,12 +15,12 @@ JFusionFunctionAdmin::displayDonate();
 require_once(JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.debug.php');
 
 $mask = '';
-if (JRequest::getVar('mask',false)) {
+if (JFactory::getApplication()->input->get('mask',false)) {
     $mask = 'checked="yes"';
 }
 
 $filter = '';
-if (JRequest::getVar('filter',false)) {
+if (JFactory::getApplication()->input->get('filter',false)) {
     $filter = 'checked="yes"';
 }
 ?>

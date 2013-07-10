@@ -15,7 +15,7 @@
  */
 // no direct access
 defined('_JEXEC') or die('Restricted access');
-$inline = (!empty($this->sync_completed) || JRequest::getVar('tmpl') != 'component') ? true : false;
+$inline = (!empty($this->sync_completed) || JFactory::getApplication()->input->get('tmpl') != 'component') ? true : false;
 //check to see if there is anything to output
 if (!isset($this->syncdata['slave_data']) || !$this->syncdata['slave_data']) {
     ?>

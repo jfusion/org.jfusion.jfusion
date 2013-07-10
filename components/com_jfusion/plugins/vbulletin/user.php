@@ -190,12 +190,12 @@ class JFusionUser_vbulletin extends JFusionUser
         $httponly = $this->params->get('httponly',true);
         $timenow = time();
 
-        $session_user = JRequest::getVar($cookie_prefix . "userid", '', 'cookie');
+        $session_user = JFactory::getApplication()->input->cookie->get($cookie_prefix . 'userid', '');
         if (empty($session_user)) {
             $status['debug'][] = JText::_('VB_COOKIE_USERID_NOT_FOUND');
         }
 
-        $session_hash = JRequest::getVar($cookie_prefix . "sessionhash", '', 'cookie');
+        $session_hash = JFactory::getApplication()->input->cookie->get($cookie_prefix . 'sessionhash', '');
         if (empty($session_hash)) {
             $status['debug'][] = JText::_('VB_COOKIE_HASH_NOT_FOUND');
         }
@@ -292,9 +292,9 @@ class JFusionUser_vbulletin extends JFusionUser
             $db->setQuery($query);
             $sessionhash = $db->loadResult();
 
-            $cookie_sessionhash = JRequest::getVar($cookie_prefix . 'sessionhash', '', 'cookie');
-            $cookie_userid = JRequest::getVar($cookie_prefix . 'userid', '', 'cookie');
-            $cookie_password = JRequest::getVar($cookie_prefix . 'password', '', 'cookie');
+            $cookie_sessionhash = JFactory::getApplication()->input->cookie->get($cookie_prefix . 'sessionhash', '');
+            $cookie_userid = JFactory::getApplication()->input->cookie->get($cookie_prefix . 'userid', '');
+            $cookie_password = JFactory::getApplication()->input->cookie->get($cookie_prefix . 'password', '');
 
             if (!empty($cookie_userid) && $cookie_userid == $userinfo->userid && !empty($cookie_password) && $cookie_password == $passwordhash) {
                 $vbcookieuser = true;
@@ -800,14 +800,15 @@ class JFusionUser_vbulletin extends JFusionUser
                $cookie_prefix .= '_';
            }
         }
-        $cookie_sessionhash = JRequest::getVar($cookie_prefix . 'sessionhash', '', 'cookie');
-        $cookie_userid = JRequest::getVar($cookie_prefix . 'userid', '', 'cookie');
-        $cookie_password = JRequest::getVar($cookie_prefix . 'password', '', 'cookie');
+        $cookie_sessionhash = JFactory::getApplication()->input->cookie->get($cookie_prefix . 'sessionhash', '');
+        $cookie_userid = JFactory::getApplication()->input->cookie->get($cookie_prefix . 'userid', '');
+        $cookie_password = JFactory::getApplication()->input->cookie->get($cookie_prefix . 'password', '');
         $JUser = JFactory::getUser();
         if (JPluginHelper::isEnabled ( 'system', 'remember' )) {
             jimport('joomla.utilities.utility');
             $hash = JApplication::getHash('JLOGIN_REMEMBER');
-            $joomla_persistant_cookie = JRequest::getString($hash, '', 'cookie', JREQUEST_ALLOWRAW | JREQUEST_NOTRIM);
+
+            $joomla_persistant_cookie = JFactory::getApplication()->input->cookie->get($hash, '','raw');
         } else {
             $joomla_persistant_cookie = '';
         }

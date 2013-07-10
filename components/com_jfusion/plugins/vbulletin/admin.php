@@ -103,7 +103,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
             $prefix = $config['Database']['tableprefix'];
             $driver = 'mysql';
             $options = array('driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database, 'prefix' => $prefix);
-            $vdb = JDatabase::getInstance($options);
+            $vdb = JDatabaseDriver::getInstance($options);
             if (method_exists($vdb, 'setQuery')) {
                 //Find the path to vbulletin
                 $query = 'SELECT value, varname FROM #__setting WHERE varname IN (\'bburl\',\'cookietimeout\',\'cookiepath\',\'cookiedomain\')';
@@ -388,7 +388,7 @@ HTML;
      */
     function toggleHook()
     {
-        $params = JRequest::getVar('params');
+        $params = JFactory::getApplication()->input->get('params');
         $itemid = $params['plugin_itemid'];
         $hook = $params['hook_name'];
         $action = $params['hook_action'];

@@ -281,7 +281,7 @@ if (!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') ===
             if ($error == 0) {
                 //get the joomla path from the file
                 jimport('joomla.filesystem.file');
-                $file_data = JFile::read($mod_file);
+                $file_data = file_get_contents($mod_file);
                 $redirect_code = $this->generateRedirectCode($joomla_url,$joomla_itemid);
 
                 $search = '/\<\?php/si';
@@ -306,7 +306,7 @@ if (!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') ===
         if ($error == 0) {
             //get the joomla path from the file
             jimport('joomla.filesystem.file');
-            $file_data = JFile::read($mod_file);
+            $file_data = file_get_contents($mod_file);
             $search = '/(\r?\n)\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END/si';
             preg_match_all($search, $file_data, $matches);
             //remove any old code
@@ -338,7 +338,7 @@ if (!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') ===
         if ($error == 0) {
             //get the joomla path from the file
             jimport('joomla.filesystem.file');
-            $file_data = JFile::read($mod_file);
+            $file_data = file_get_contents($mod_file);
             preg_match_all('/\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END/ms', $file_data, $matches);
             //compare it with our joomla path
             if (empty($matches[1][0])) {

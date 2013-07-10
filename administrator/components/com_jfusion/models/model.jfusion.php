@@ -467,7 +467,7 @@ class JFusionFunction
 	{
 		$fdb = JFactory::getDBO();
 		$modified = JFactory::getDate()->toUnix();
-        $option = JRequest::getCmd('option');
+        $option = JFactory::getApplication()->input->getCmd('option');
 
         //populate threadinfo with other fields if necessary for content generation purposes
         //mainly used if the thread was just created
@@ -506,7 +506,7 @@ class JFusionFunction
     public static function createJoomlaArticleURL(&$contentitem, $text, $jname='')
     {
         $mainframe = JFactory::getApplication();
-        $option = JRequest::getVar('option');
+        $option = JFactory::getApplication()->input->get('option');
 
         if ($option == 'com_k2') {
             include_once JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_k2' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'route.php';

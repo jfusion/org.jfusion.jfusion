@@ -375,7 +375,7 @@ class JFusionJplugin
         // if the curl routines are not used, the same check must be performed in the
         // create session routine in the user.php file of the plugin concerned.
         // In version 2.0 we will never reach this point as the user plugin will handle this
-        $jnodeid = strtolower(JRequest::getVar('jnodeid'));
+        $jnodeid = strtolower(JFactory::getApplication()->input->get('jnodeid'));
         if (!empty($jnodeid)){
         	if($jnodeid == JFusionFactory::getPluginNodeId($jname)) {
         		// do not create a session, this integration started the log in and the user is already logged in
@@ -531,7 +531,7 @@ class JFusionJplugin
         // if the curl routines are not used, the same check must be performed in the
         // destroysession routine in the user.php file of the plugin concerned.
         // In version 2.0 we will never reach this point as the user plugin will handle this
-        $jnodeid = strtolower(JRequest::getVar('jnodeid'));
+        $jnodeid = strtolower(JFactory::getApplication()->input->get('jnodeid'));
         if (!empty($jnodeid)){
             if($jnodeid == JFusionFactory::getPluginNodeId($jname)) {
                 // do not delete a session, this integration started the log out and the user is already logged out
@@ -1205,7 +1205,7 @@ class JFusionJplugin
         } else {
             $db = JFusionFactory::getDatabase($jname);
             $params = JFusionFactory::getParams($jname);
-            $dispatcher = JDispatcher::getInstance();
+            $dispatcher = JEventDispatcher::getInstance();
 
             //Fire the user plugin functions for joomla_int
             if ($jname == 'joomla_int' && $fire_user_plugins) {

@@ -94,13 +94,13 @@ class JFusionCurlFrameless {
 			}
 			$current = ltrim ( $current , '/' );
         } else {
-			$current = JRequest::getVar('jfile').'?';
+			$current = JFactory::getApplication()->input->get('jfile').'?';
             $current .= $this->buildUrl('GET');
         }
 
 		$url .= $current;
-
 		$post = $this->buildUrl('POST');
+
 		$files = JRequest::get('FILES');
 		$filepath = array();
 		if($post) {

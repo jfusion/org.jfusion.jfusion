@@ -787,7 +787,7 @@ HTML;
 		$installer = JInstaller::getInstance();
 		$manifest = $installer->getPath('manifest');
 
-		$parser = JFactory::getXML($manifest);
+		$parser = JFusionFunction::getXML($manifest);
 
 		if ($parser->version) {
 			$version = $parser->version;

@@ -52,8 +52,7 @@ class jfusionViewPlugin extends JViewLegacy {
 
 		$result = JFusionFrameless::displayContent($data);
 		if (!$result) return false;
-
-	    $this->assignRef ( 'data', $data );
+	    $this->data = $data;
 		parent::display ( $tpl );
         return true;
 	}
@@ -69,7 +68,7 @@ class jfusionViewPlugin extends JViewLegacy {
         $url = $JFusionPlugin->getWrapperURL($data);
 
         //set params
-        $this->assignRef('url', $url);
+        $this->url = $url;
 
         parent::display($tpl);
     }

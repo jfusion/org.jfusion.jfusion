@@ -49,14 +49,14 @@ class jfusionViewsyncoptions extends JViewLegacy
         $db->setQuery($query);
         $slaves = $db->loadObjectList();
         //were we redirected here for a sync resume?
-        $syncid = JRequest::getVar('syncid', '', 'GET');
+        $syncid = JFactory::getApplication()->input->get->get('syncid', '');
         if (!empty($syncid)) {
             $query = 'SELECT syncid FROM #__jfusion_sync WHERE syncid =' . $db->Quote($syncid);
             $db->setQuery($query);
             if ($db->loadResult()) {
                 include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
                 $syncdata = JFusionUsersync::getSyncdata($syncid);
-                $this->assignRef('syncdata', $syncdata);
+	            $this->syncdata = $syncdata;
                 $mode = 'resume';
             } else {
                 $mode = 'new';
@@ -91,11 +91,11 @@ class jfusionViewsyncoptions extends JViewLegacy
             $master_serial = serialize($master_data);
 
             //print out results to user
-            $this->assignRef('sync_mode', $mode);
-            $this->assignRef('master_data', $master_data);
-            $this->assignRef('slave_data', $slave_data);
-            $this->assignRef('syncid', $syncid);
-            $this->assignRef('sync_active', $sync_active);
+	        $this->sync_mode = $mode;
+	        $this->master_data = $master_data;
+	        $this->slave_data = $slave_data;
+	        $this->syncid = $syncid;
+	        $this->sync_active = $sync_active;
 
 	        JFusionFunction::loadJSLanguage();
 

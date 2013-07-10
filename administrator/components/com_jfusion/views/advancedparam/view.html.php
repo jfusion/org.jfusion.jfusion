@@ -54,12 +54,12 @@ class jfusionViewadvancedparam extends JViewLegacy
 		$lang->load('com_jfusion');
 
 		//Load Current feature
-		$feature = JRequest::getVar('feature');
+		$feature = JFactory::getApplication()->input->get('feature');
 		if (empty($feature)) {
 			$feature = 'any';
 		}
 		//Load multiselect
-		$multiselect = JRequest::getVar('multiselect');
+		$multiselect = JFactory::getApplication()->input->get('multiselect');
 		if ($multiselect) {
 			$multiselect = true;
 			//Load Plugin XML Parameter
@@ -74,8 +74,8 @@ class jfusionViewadvancedparam extends JViewLegacy
 			list($output, $js) = $this->loadElementSingle($params, $feature);
 		}
 		//load the element number for multiple advanceparam elements
-		$ename = JRequest::getInt('ename');
-		$this->assignRef('ename', $ename);
+		$ename = JFactory::getApplication()->input->getInt('ename');
+		$this->ename = $ename;
 
 		//Add Document dependent things like javascript, css
 		$document = JFactory::getDocument();
@@ -88,10 +88,10 @@ class jfusionViewadvancedparam extends JViewLegacy
 		if ( $js ) {
 			$document->addScriptDeclaration($js);
 		}
-		$this->assignRef('output', $output);
+		$this->output = $output;
 
 		//for J1.6+ single select modes, params is an array
-		$this->assignRef('comp', $params['params']);
+		$this->comp = $params['params'];
 
 		JHTML::_('behavior.modal');
 		JHTML::_('behavior.tooltip');
@@ -144,7 +144,7 @@ class jfusionViewadvancedparam extends JViewLegacy
 	 */
 	function loadXMLParamSingle($feature)
 	{
-		$option = JRequest::getCmd('option');
+		$option = JFactory::getApplication()->input->getCmd('option');
 		//Load current Parameter
 		$value = $this->getParam();
 
@@ -242,7 +242,7 @@ JS;
 	 */
 	function getParam()
 	{
-		$hash = JRequest::getVar(JRequest::getVar('ename'));
+		$hash = JFactory::getApplication()->input->get(JFactory::getApplication()->input->get('ename'));
 		$session = JFactory::getSession();
 		$encoded_pairs = $session->get($hash);
 
@@ -258,7 +258,7 @@ JS;
 	 */
 	function saveParam($data)
 	{
-		$hash = JRequest::getVar(JRequest::getVar('ename'));
+		$hash = JFactory::getApplication()->input->get(JFactory::getApplication()->input->get('ename'));
 		$session = JFactory::getSession();
 
 		$data = base64_encode(serialize($data));
@@ -275,29 +275,29 @@ JS;
 	function loadXMLParamMulti($feature)
 	{
 		global $jname;
-		$option = JRequest::getCmd('option');
+		$option = JFactory::getApplication()->input->getCmd('option');
 		//Load current Parameter
 		$value = $this->getParam();
 
-		$task = JRequest::getVar('jfusion_task');
+		$task = JFactory::getApplication()->input->get('jfusion_task');
 		if ($task == 'add') {
-			$newPlugin = JRequest::getVar('jfusionplugin');
+			$newPlugin = JFactory::getApplication()->input->get('jfusionplugin');
 			if ($newPlugin) {
 				if (!array_key_exists($newPlugin, $value)) {
 					$value[$newPlugin] = array('jfusionplugin' => $newPlugin);
 				} else {
-					$this->assignRef('error', JText::_('NOT_ADDED_TWICE'));
+					$this->error = JText::_('NOT_ADDED_TWICE');
 				}
 			} else {
-				$this->assignRef('error', JText::_('MUST_SELLECT_PLUGIN'));
+				$this->error = JText::_('MUST_SELLECT_PLUGIN');
 			}
 			$this->saveParam($value);
 		} else if ($task == 'remove') {
-			$rmPlugin = JRequest::getVar('jfusion_value');
+			$rmPlugin = JFactory::getApplication()->input->get('jfusion_value');
 			if (array_key_exists($rmPlugin, $value)) {
 				unset($value[$rmPlugin]);
 			} else {
-				$this->assignRef('error', JText::_('NOT_PLUGIN_REMOVE'));
+				$this->error = JText::_('NOT_PLUGIN_REMOVE');
 			}
 			$this->saveParam($value);
 		}

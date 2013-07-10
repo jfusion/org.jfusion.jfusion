@@ -169,7 +169,7 @@ class plgUserJfusion extends JPlugin
 	        //allow for the detection of external mods to exclude jfusion plugins
 	        global $JFusionActivePlugin;
 	        jimport('joomla.environment.request');
-	        $jnodeid = strtolower(JRequest::getVar('jnodeid'));
+	        $jnodeid = strtolower(JFactory::getApplication()->input->get('jnodeid'));
 	        if (!empty($jnodeid)){
 		        $JFusionActivePlugin = $jnodeid;
 	        }
@@ -469,7 +469,7 @@ class plgUserJfusion extends JPlugin
         //allow for the detection of external mods to exclude jfusion plugins
         global $JFusionActivePlugin;
         jimport('joomla.environment.request');
-        $jnodeid = strtolower(JRequest::getVar('jnodeid'));
+        $jnodeid = strtolower(JFactory::getApplication()->input->get('jnodeid'));
         if (!empty($jnodeid)){
             $JFusionActivePlugin = $jnodeid;
         }
@@ -594,7 +594,7 @@ class plgUserJfusion extends JPlugin
         $debug_info = array();
         //prevent any output by the plugins (this could prevent cookies from being passed to the header)
         ob_start();
-        $Itemid_backup = JRequest::getInt('Itemid', 0);
+        $Itemid_backup = JFactory::getApplication()->input->getInt('Itemid', 0);
         global $JFusionActive;
         if (!$JFusionActive) {
             //A change has been made to a user without JFusion knowing about it
@@ -722,7 +722,7 @@ class plgUserJfusion extends JPlugin
 	        global $Itemid;
     	    $Itemid = $Itemid_backup;
 	        //reset Itemid so that it can be obtained via getVar
-        	JRequest::setVar('Itemid', $Itemid_backup);
+	        JFactory::getApplication()->input->set('Itemid', $Itemid_backup);
         }
         //return output if allowed
         $isAdministrator = JFusionFunction::isAdministrator();

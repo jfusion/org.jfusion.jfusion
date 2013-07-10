@@ -235,7 +235,7 @@ class JFusionUser_phpbb3 extends JFusionUser
                         $create_persistant_cookie = false;
                         if (!empty($phpbb_allow_autologin)) {
                             //check for a valid persistent cookie
-                            $persistant_cookie = ($phpbb_allow_autologin) ? JRequest::getVar($phpbb_cookie_name . '_k', '', 'cookie') : '';
+                            $persistant_cookie = ($phpbb_allow_autologin) ? JFactory::getApplication()->input->cookie->get($phpbb_cookie_name . '_k', '') : '';
                             if (!empty($persistant_cookie)) {
                                 $query = 'SELECT user_id FROM #__sessions_keys WHERE key_id = ' . $db->Quote(md5($persistant_cookie));
                                 $db->setQuery($query);
@@ -1085,16 +1085,16 @@ class JFusionUser_phpbb3 extends JFusionUser
 
 	        //phpbb variables
 	        $phpbb_cookie_prefix = $params->get('cookie_prefix');
-	        $userid_cookie_value = JRequest::getVar($phpbb_cookie_prefix . '_u', '', 'cookie');
-	        $sid_cookie_value = JRequest::getVar($phpbb_cookie_prefix . '_sid', '', 'cookie');
+	        $userid_cookie_value = JFactory::getApplication()->input->cookie->get($phpbb_cookie_prefix . '_u', '');
+	        $sid_cookie_value = JFactory::getApplication()->input->cookie->get($phpbb_cookie_prefix . '_sid', '');
 	        $phpbb_allow_autologin = $params->get('allow_autologin');
-	        $persistant_cookie = ($phpbb_allow_autologin) ? JRequest::getVar($phpbb_cookie_prefix . '_k', '', 'cookie') : '';
+	        $persistant_cookie = ($phpbb_allow_autologin) ? JFactory::getApplication()->input->cookie->get($phpbb_cookie_prefix . '_k', '') : '';
 	        //joomla variables
 	        $JUser = JFactory::getUser();
 	        if (JPluginHelper::isEnabled ( 'system', 'remember' )) {
 	            jimport('joomla.utilities.utility');
 	            $hash = JApplication::getHash('JLOGIN_REMEMBER');
-	            $joomla_persistant_cookie = JRequest::getString($hash, '', 'cookie', JREQUEST_ALLOWRAW | JREQUEST_NOTRIM);
+	            $joomla_persistant_cookie = JFactory::getApplication()->input->cookie->get($hash, '', 'raw');
 	        } else {
 	            $joomla_persistant_cookie = '';
 	        }
