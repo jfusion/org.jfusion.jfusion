@@ -567,7 +567,6 @@ HTML;
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
 		if(!empty($rows)) {
-			require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.install.php';
 			foreach ($rows as $row) {
 				$query = 'SELECT count(*) from #__jfusion WHERE (params IS NOT NULL OR params != \'\' OR params != \'0\' OR master = 1 OR slave = 1) AND original_name LIKE '. $db->Quote($row->name);
 				$db->setQuery($query);
@@ -622,7 +621,6 @@ HTML;
 		$this->_uninstallPlugin('module', 'mod_jfusion_whosonline', '', 'JFusion Whos Online Module');
 
 		//see if any mods from jfusion plugins need to be removed
-		require_once(JPATH_ADMINISTRATOR.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.install.php');
 		$plugins = JFusionFactory::getPlugins('all',true,false);
 		foreach($plugins as $plugin) {
 			$model = new JFusionModelInstaller();
@@ -776,6 +774,8 @@ HTML;
 
 	function display()
 	{
+		$this->init();
+
 		//output some info to the user
 		$db = JFactory::getDBO();
 		/**
@@ -879,7 +879,6 @@ HTML;
 		}
 		$installedPlugins['joomla_int'] = 'joomla_int';
 
-		include_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.install.php';
 		foreach ($installedPlugins as $plugin) {
 			if (array_key_exists ($plugin, $jfusion_plugins)) {
 				//install updates
@@ -1002,5 +1001,7 @@ HTML;
 		$lang->load('com_jfusion', JPATH_BASE);
 		require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'defines.php';
 		require_once JPATH_ADMINISTRATOR. DIRECTORY_SEPARATOR .'components'. DIRECTORY_SEPARATOR .'com_jfusion'. DIRECTORY_SEPARATOR .'models'. DIRECTORY_SEPARATOR .'model.factory.php';
+		require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jfusion.php';
+		require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.install.php';
 	}
 }
