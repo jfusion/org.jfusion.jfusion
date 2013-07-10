@@ -111,8 +111,6 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
         if (JRequest::getVar('jfile') == 'detail.php') $index_file = $source_path . 'lib' . DIRECTORY_SEPARATOR . 'exe' . DIRECTORY_SEPARATOR . 'detail.php';
 
         if (JRequest::getVar('media')) JRequest::setVar('media', str_replace(':', '-', JRequest::getVar('media')));
-        //loading the JString, to prevent error!
-        require_once JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'joomla' . DIRECTORY_SEPARATOR . 'utilities' . DIRECTORY_SEPARATOR . 'string.php';
         require_once JPATH_LIBRARIES . DIRECTORY_SEPARATOR . 'phputf8' . DIRECTORY_SEPARATOR . 'mbstring' . DIRECTORY_SEPARATOR . 'core.php';
 
         define('DOKU_INC', $source_path);

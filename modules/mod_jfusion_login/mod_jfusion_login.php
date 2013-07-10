@@ -46,11 +46,8 @@ if (file_exists($model_file) && file_exists($factory_file)) {
     //get the itemid and jname to get any missing urls
     $link_itemid = $params->get('itemid');
     if (is_numeric($link_itemid)) {
-        $menu = JSite::getMenu();
-        /**
-         * @ignore
-         * @var $menu_param JRegistry
-         */
+	    $menu = JMenu::getInstance('site');
+
         $menu_param = $menu->getParams($link_itemid);
         $plugin_param = unserialize(base64_decode($menu_param->get('JFusionPluginParam')));
         $link_jname = $plugin_param['jfusionplugin'];
@@ -71,11 +68,7 @@ if (file_exists($model_file) && file_exists($factory_file)) {
     //now find out from which plugin the avatars need to be displayed
     $itemid = $params->get('itemidAvatarPMs');
     if (is_numeric($itemid)) {
-        $menu = JSite::getMenu();
-        /**
-         * @ignore
-         * @var $menu_param JRegistry
-         */
+	    $menu = JMenu::getInstance('site');
         $menu_param = $menu->getParams($itemid);
         $plugin_param = unserialize(base64_decode($menu_param->get('JFusionPluginParam')));
         $jname = $plugin_param['jfusionplugin'];

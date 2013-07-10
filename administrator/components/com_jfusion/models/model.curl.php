@@ -480,7 +480,7 @@ class JFusionCurl
 	 *        4. 4 Delimeters in between key-value pairs
 	 *
 	 * @param array  $array     array
-	 * @param string $delimeter delemeter
+	 * @param string $delimeter delimeter
 	 * @param string $keyssofar keyssofar
 	 *
 	 * @return string imploded cookies
@@ -686,7 +686,7 @@ class JFusionCurl
 		} else {
 			// Versions of PHP prior to 5.2 do not support HttpOnly cookies
 			// IE is buggy when specifying a blank domain so set the cookie manually
-			// solve the empty cookiedomain IE problem by specifying a domain in the plugin's parameters. <------
+			// solve the empty cookiedomain IE problem by specifying a domain in the plugins parameters. <------
 			if (version_compare(phpversion(), "5.2.0", ">=")) {
 				setcookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
 			} else {
@@ -833,7 +833,7 @@ class JFusionCurl
 		}
 
 		foreach ($cookies as $cookie) {
-			// check if we schould leave the cookie alone
+			// check if we should leave the cookie alone
 			$leaveit = false;
 			if ($leavealone) {
 				for ($i=0;$i<count($leavealonearr);$i++) {
@@ -1133,7 +1133,7 @@ class JFusionCurl
 						// now construct the action parameter
 
 						// we have 4 possible options:
-						// case 0 Form action is without httpo.. and relpath = 0 , special case
+						// case 0 Form action is without http.. and relpath = 0 , special case
 						// case 1 Form action is without http.. and relpath = 1 , just construct the action
 						// case 2 form_action is a full url, eg http..... and relpath = 0 This is easy, we do nothing at all
 						// case 3 form_action is a full url, eg http..... and relpath = 1 special case
@@ -1153,7 +1153,7 @@ class JFusionCurl
 									$form_action = '/'.$form_action;
 								}
 								// we need to correct various situations like
-								// relative url from basedir, relative url from postdir etc
+								// relative url from basedir, relative url from post dir etc
 								$tmpurl   = JFusionCurl::parseUrl($this->options['post_url']);
 								$pathinfo1  = pathinfo($form_action);
 								$pathinfo = pathinfo($tmpurl[6]);

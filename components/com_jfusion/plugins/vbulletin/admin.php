@@ -507,7 +507,7 @@ HTML;
             $php.= "if (!defined('_JEXEC')){\n";
             $sefmode = $params->get('sefmode', 0);
             $config = JFactory::getConfig();
-            $sef = $config->get('config.sef');
+            $sef = $config->get('sef');
             //get the baseUR
             $app = JApplication::getInstance('site');
             $router = $app->getRouter();
@@ -556,7 +556,7 @@ HTML;
         $php.= "if (file_exists(JFUSION_VB_HOOK_FILE)) {\n";
         $php.= "include_once(JFUSION_VB_HOOK_FILE);\n";
         $php.= "\$val = '$plugin';\n";
-        $secret = $params->get('vb_secret', JFactory::getConfig()->get('config.secret'));
+        $secret = $params->get('vb_secret', JFactory::getConfig()->get('secret'));
         $php.= "\$JFusionHook = new executeJFusionHook('init_startup', \$val, '$secret');\n";
         /**
          * @ignore
@@ -723,7 +723,7 @@ HTML;
 
         function toggleSecondaryGroups(vbid,masterid) {
         	var groups = new Array({$jsGroups});
-	        for(i=0; i<groups.length; i++) {
+	        for(var i=0; i<groups.length; i++) {
         		var element = $('vbgroup'+masterid+'-'+groups[i]);
         		if (element.value==vbid) {
         			element.disabled = true;

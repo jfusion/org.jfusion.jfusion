@@ -5,14 +5,16 @@ if('undefined'===typeof JFusion) {
     JFusion.url = '';
 }
 
+/**
+ * @return {string}
+ */
 JFusion.JText = function(key) {
     key = key.toUpperCase();
     if (this.Text[key]) {
-        return this.Text[key];
-    } else {
-        return key;
+        key = this.Text[key];
     }
-}
+    return key;
+};
 
 JFusion.OnError = function(messages, force) {
     var systemMessageContainer = $('system-message-container');
@@ -23,7 +25,7 @@ JFusion.OnError = function(messages, force) {
         messages = [ messages ];
     }
     this.OnMessage('error', messages, force);
-}
+};
 
 JFusion.OnMessages = function(messages, force) {
     var systemMessageContainer = $('system-message-container');
@@ -33,7 +35,7 @@ JFusion.OnMessages = function(messages, force) {
     this.OnMessage('notice', messages.notice, force);
     this.OnMessage('warning', messages.warning, force);
     this.OnMessage('error', messages.error, force);
-}
+};
 
 JFusion.OnMessage = function(type, messages, force) {
     if (messages instanceof Array) {
@@ -54,12 +56,12 @@ JFusion.OnMessage = function(type, messages, force) {
             div.inject(systemMessageContainer);
         }
     }
-}
+};
 
 JFusion.groupDataArray = [];
 JFusion.usergroupSelect = function(option) {
     $('JFusionUsergroup').set('html',this.groupDataArray[option]);
-}
+};
 
 JFusion.multiUsergroupSelect = function(option) {
     this.usergroupSelect(option);
@@ -70,7 +72,7 @@ JFusion.multiUsergroupSelect = function(option) {
     } else {
         addgroupset.style.display = 'none';
     }
-}
+};
 
 JFusion.changeSetting = function (fieldname, fieldvalue, jname) {
     //change the image
@@ -90,7 +92,7 @@ JFusion.changeSetting = function (fieldname, fieldvalue, jname) {
         }
 
     }).send(syncdata);
-}
+};
 
 JFusion.copyPlugin = function(jname) {
     var newjname = prompt('Please type in the name to use for the copied plugin. This name must not already be in use.', '');
@@ -106,7 +108,7 @@ JFusion.copyPlugin = function(jname) {
             }
         }).get({'option': 'com_jfusion', 'task': 'plugincopy', 'jname': jname, 'new_jname': newjname});
     }
-}
+};
 
 JFusion.deletePlugin = function(jname) {
     var confirmdelete = confirm(JFusion.JText('DELETE')+' '+JFusion.JText('PLUGIN')+' ' + jname + '?');
@@ -126,14 +128,14 @@ JFusion.deletePlugin = function(jname) {
                 'jname': jname,
                 'tmpl': 'component'});
     }
-}
+};
 
 JFusion.updateList = function(html) {
     var list = $("sort_table");
     list.empty();
     list.set('html', html);
     this.initSortables();
-}
+};
 
 JFusion.initSortables = function() {
     /* allow for updates of row order */
@@ -183,14 +185,14 @@ JFusion.initSortables = function() {
             ajaxsync.send('option=com_jfusion&task=saveorder&tmpl=component&sort_order='+sortorder);
         }
     });
-}
+};
 
 JFusion.module = function(action) {
     var form = $('adminForm');
     form.customcommand.value = action;
     form.action.value = 'apply';
     submitform('saveconfig');
-}
+};
 
 Joomla.submitbutton = function (pressbutton) {
     var adminForm = $('adminForm');

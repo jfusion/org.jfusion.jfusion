@@ -607,7 +607,7 @@ JS;
 	        	var trEl = $("usergroups_row"+row);
 	        	trEl.style.display = 'none';
 	        	trEl.innerHTML = '';
-	        }
+	        };
 
 	        JFusion.createSelect = function(name) {
 	        	var count = jfPlugin['count'];
@@ -630,7 +630,7 @@ JS;
 					}
 				}
 				return elSelNew;
-	        }
+	        };
 JS;
         $document->addScriptDeclaration($js);
 

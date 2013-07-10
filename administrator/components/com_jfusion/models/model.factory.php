@@ -281,13 +281,14 @@ class JFusionFactory
         }
     }
 
-    /**
-     * creates new param object
-     *
-     * @param string $jname name of the JFusion plugin used
-     *
-     * @return JRegistry JParam object for the JFusion plugin
-     */
+	/**
+	 * creates new param object
+	 *
+	 * @param string $jname name of the JFusion plugin used
+	 *
+	 * @throws Exception
+	 * @return JRegistry JParam object for the JFusion plugin
+	 */
     public static function &createParams($jname)
     {
         jimport('joomla.html.parameter');
@@ -332,10 +333,9 @@ class JFusionFactory
             $db = JFactory::getDBO();
         } else {
             //get the debug configuration setting
-            $conf = JFactory::getConfig();
-            $debug = $conf->get('config.debug');
+	        $conf = JFactory::getConfig();
+            $debug = $conf->get('debug');
             //get config values
-            $conf = JFactory::getConfig();
             $params = JFusionFactory::getParams($jname);
             //prepare the data for creating a database connection
             $host = $params->get('database_host');
@@ -344,7 +344,6 @@ class JFusionFactory
             $database = $params->get('database_name');
             $prefix = $params->get('database_prefix','');
             $driver = $params->get('database_type');
-            $debug = $conf->get('config.debug');
             $charset = $params->get('database_charset', 'utf8');
             //added extra code to prevent error when $driver is incorrect
             if ($driver != 'mysql' && $driver != 'mysqli') {
@@ -375,6 +374,7 @@ class JFusionFactory
 			            header('HTTP/1.1 500 Internal Server Error');
 		            }
 		            jexit('Database Error: ' . $jname . ' : ' .JText::_('DATABASE_ERROR') . ': ' . $e->getMessage());
+		            $db = false;
 	            }
             }
         }

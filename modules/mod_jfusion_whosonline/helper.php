@@ -37,11 +37,8 @@ class modjfusionWhosOnlineHelper {
 		//get the itemid and jname to get any missing urls
 		$link_itemid = $config['itemid'];
 		if (is_numeric($link_itemid)) {
-			$menu = JSite::getMenu();
-            /**
-             * @ignore
-             * @var $menu_param JRegistry
-             */
+			$menu = JMenu::getInstance('site');
+
 			$menu_param = $menu->getParams($link_itemid);
 			$plugin_param = unserialize(base64_decode($menu_param->get('JFusionPluginParam')));
 			$link_jname = $plugin_param['jfusionplugin'];

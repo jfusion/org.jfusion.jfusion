@@ -57,6 +57,12 @@ class JFusionModelInstaller extends InstallerModelInstall
         parent::__construct();
     }
 
+	/**
+	 * @param $type
+	 * @param $msg
+	 *
+	 * @return mixed
+	 */
 	function raise($type,$msg) {
 		$this->setState('message', $msg);
 		if ($this->raise) {
@@ -111,7 +117,7 @@ class JFusionModelInstaller extends InstallerModelInstall
                 // Cleanup the install files
                 if (!is_file($package['packagefile'])) {
                     $config = JFactory::getConfig();
-                    $package['packagefile'] = $config->get('config.tmp_path') . DIRECTORY_SEPARATOR . $package['packagefile'];
+                    $package['packagefile'] = $config->get('tmp_path') . DIRECTORY_SEPARATOR . $package['packagefile'];
                 }
                 if ( $result['status'] && is_file($package['packagefile']) ) {
                     //save a copy of the plugin for safe keeping
@@ -152,7 +158,7 @@ class JFusionModelInstaller extends InstallerModelInstall
         // Cleanup the install files
         if (!is_file($package['packagefile'])) {
             $config = JFactory::getConfig();
-            $package['packagefile'] = $config->get('config.tmp_path') . DIRECTORY_SEPARATOR . $package['packagefile'];
+            $package['packagefile'] = $config->get('tmp_path') . DIRECTORY_SEPARATOR . $package['packagefile'];
         }
        // JInstallerHelper::cleanupInstall($package['packagefile'], $package['extractdir']);
 
@@ -278,7 +284,6 @@ class JFusionPluginInstaller extends JObject
 	            $jfusionxml = JFusionFunction::getXml($file);
 
 	            $jfusionversion = $jfusionxml->version;
-	            $jfusionversion = $this->getData($jfusionversion);
 
 	            $version = $this->getAttribute($this->manifest,'version');
 
@@ -292,7 +297,7 @@ class JFusionPluginInstaller extends JObject
 	             * Check that the plugin is an actual JFusion plugin
 	             */
 	            $name = $this->manifest->name;
-	            $name = $this->filterInput->clean($this->getData($name), 'string');
+	            $name = $this->filterInput->clean($name, 'string');
 
 	            if (!$jfusionversion || !$version || version_compare($jfusionversion, $version) >= 0) {
 
@@ -363,7 +368,7 @@ class JFusionPluginInstaller extends JObject
 				            $xml = $this->manifest->$f;
 
 				            if ($xml instanceof JXMLElement) {
-					            $$f = $this->filterInput->clean($this->getData($xml), 'integer');
+					            $$f = $this->filterInput->clean($xml, 'integer');
 				            } elseif ($f == 'master' || $f == 'check_encryption') {
 					            $$f = 0;
 				            } else {
@@ -628,7 +633,7 @@ class JFusionPluginInstaller extends JObject
                         foreach ($features as $f) {
                             $xml = $this->manifest->$f;
 	                        if ($xml instanceof JXMLElement) {
-                                $$f = $this->filterInput->clean($this->getData($xml), 'integer');
+                                $$f = $this->filterInput->clean($xml, 'integer');
 	                        } elseif ($f == 'master' || $f == 'check_encryption') {
                                 $$f = 0;
                             } else {
@@ -707,8 +712,7 @@ class JFusionPluginInstaller extends JObject
         * @TODO Remove backwards compatibility in a future version
         * Should be 'install', but for backward compatibility we will accept 'mosinstall'.
         */
-
-		if (!is_object($xml) || ($xml->name() != 'extension')) {
+		if (!($xml instanceof JXMLElement) || ($xml->name() != 'extension')) {
             // Free up xml parser memory and return null
             unset($xml);
             $xml = null;
@@ -744,7 +748,7 @@ class JFusionPluginInstaller extends JObject
 	    return '';
 
         $config = JFactory::getConfig();
-        $tmpDir = $config->get('config.tmp_path');
+        $tmpDir = $config->get('tmp_path');
         //compress the files
         $filename = $tmpDir . DIRECTORY_SEPARATOR . $jname . '.zip';
         //retrieve a list of files within the plugin directory
@@ -856,16 +860,4 @@ class JFusionPluginInstaller extends JObject
         }
         return $xml;
     }
-
-	/**
-	 * getData
-	 *
-	 *  @param JXMLElement $xml xml object
-	 *
-	 *  @return JXMLElement|string result
-	 */
-	function getData($xml)
-	{
-		return $xml;
-	}
 }

@@ -354,7 +354,7 @@ class com_jfusionInstallerScript
 			}
 		}
 
-		//remove colums
+		//remove columns
 		$query = 'SHOW COLUMNS FROM #__jfusion';
 		$db->setQuery($query);
 		$columns = $db->loadColumn();
@@ -455,7 +455,7 @@ class com_jfusionInstallerScript
 		 * General for all upgrades
 		 ***/
 		/*
-		 * todo: Determin if we really need this in the installer ???? also remove unneeded plugin_files field from database ??? if this is NOT needed
+		 * todo: Determine if we really need this in the installer ???? also remove unneeded plugin_files field from database ??? if this is NOT needed
 		//restore deleted plugins if possible and applicable
 		//get a list of installed plugins
 		$query = 'SELECT name, original_name, plugin_files FROM #__jfusion';
@@ -477,7 +477,7 @@ class com_jfusionInstallerScript
 				//restore files for custom/copied plugins if available
 				$restorePlugins[] = $plugin->name;
 				$config = JFactory::getConfig();
-				$tmpDir = $config->get('config.tmp_path');
+				$tmpDir = $config->get('tmp_path');
 				//check to see if this is a copy of a default plugin
 				if (in_array($plugin->original_name, $defaultPlugins)) {
 					//recreate the copy and update the database

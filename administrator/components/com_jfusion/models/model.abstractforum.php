@@ -601,7 +601,7 @@ HTML;
 					var RecaptchaOptions = {
    					    theme : '{$theme}',
    					    lang: '{$lang}'
-					}
+					};
 JS;
 
 					$document->addScriptDeclaration($js);

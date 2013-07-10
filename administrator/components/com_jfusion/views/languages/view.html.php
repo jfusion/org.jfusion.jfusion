@@ -66,7 +66,7 @@ class jfusionViewlanguages extends JViewLegacy
 		        $lang->currentdate = null;
 		        $lang->class = 'row';
 
-		        $lang_repo[$name] = $lang;
+		        $lang_repo[(string) $name] = $lang;
 	        }
         }
 

@@ -134,11 +134,11 @@ class JFusionForum_mediawiki extends JFusionForum
 					if($showdate) {
 						jimport('joomla.utilities.date');
 						$JDate =  new JDate($value->created);
-						$JDate->setOffset($tz_offset);
+						$JDate->setTimezone($tz_offset);
 						if (empty($custom_date)) {
-                            $output .= ' '.$JDate->toFormat(_DATE_FORMAT_LC2,true);
+                            $output .= ' '.$JDate->format(_DATE_FORMAT_LC2,true);
 						} else {
-                            $output .= ' '.$JDate->toFormat($custom_date,true);
+                            $output .= ' '.$JDate->format($custom_date,true);
 						}
 					}
 					if($display_body) {

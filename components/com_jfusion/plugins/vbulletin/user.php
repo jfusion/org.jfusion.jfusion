@@ -630,7 +630,7 @@ class JFusionUser_vbulletin extends JFusionUser
             //set the timezone
             if (!isset($userinfo->timezone)) {
                 $config = JFactory::getConfig();
-                $userinfo->timezone = $config->get('config.offset',0);
+                $userinfo->timezone = $config->get('offset',0);
             }
 
             $apidata['userinfo'] = $userinfo;

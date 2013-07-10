@@ -118,11 +118,8 @@ class JFusionFunction
                     $routeURL_jname = array();
                 }
                 if (!isset($routeURL_jname[$itemid])) {
-                    $menu = JSite::getMenu();
-                    /**
-                     * @ignore
-                     * @var $menu_param JRegistry
-                     */
+	                $menu = JMenu::getInstance('site');
+
                     $menu_param = $menu->getParams($itemid);
                     $plugin_param = unserialize(base64_decode($menu_param->get('JFusionPluginParam')));
                     $routeURL_jname[$itemid] = $plugin_param['jfusionplugin'];
@@ -137,7 +134,7 @@ class JFusionFunction
             $url = str_replace($source_url, '', $url);
 
             $config = JFactory::getConfig();
-            $sefenabled = $config->get('config.sef');
+            $sefenabled = $config->get('sef');
             $params = JFusionFactory::getParams($jname);
             $sefmode = $params->get('sefmode', 1);
             if ($sefenabled && !$sefmode) {
@@ -542,7 +539,7 @@ class JFusionFunction
             $router = $app->getRouter();
             /**
              * @ignore
-             * @var $uri JURI
+             * @var $uri JUri
              */
             $uri = $router->build($article_url);
             $article_url = $uri->toString();
@@ -828,7 +825,7 @@ class JFusionFunction
         jimport('joomla.database.database');
         jimport('joomla.database.table');
         $conf = JFactory::getConfig();
-        $database = $conf->get('config.db');
+        $database = $conf->get('db');
         $connected = true;
         if (!method_exists($db,'connected')){
             $connected = false;	
@@ -1273,17 +1270,19 @@ class JFusionFunction
 	    ||	$lang->load(strtolower($extension), JPATH_PLUGINS .DIRECTORY_SEPARATOR.$type.DIRECTORY_SEPARATOR.$name, $lang->getDefault(), false, false);
     }
 
-    /**
-     * Convert a utf-8 joomla string in to a valid encoding matching the table/filed it will be sent to
-     *
-     * @static
-     * @param string $string string to convert
-     * @param string $jname used to get the database object, and point to the static stored data
-     * @param string $table table that we will be looking at
-     * @param string $field field that we will be looking at
-     *
-     * @return bool|string
-     */
+	/**
+	 * Convert a utf-8 joomla string in to a valid encoding matching the table/filed it will be sent to
+	 *
+	 * @static
+	 *
+	 * @param string $string string to convert
+	 * @param string $jname  used to get the database object, and point to the static stored data
+	 * @param string $table  table that we will be looking at
+	 * @param string $field  field that we will be looking at
+	 *
+	 * @throws Exception
+	 * @return bool|string
+	 */
     public static function encodeDBString($string, $jname, $table, $field) {
         static $data;
         $data = array();
@@ -1619,21 +1618,41 @@ class JFusionFunction
 		return new plgAuthenticationJoomla($dispatcher, (array) ($plugin));
 	}
 
+	/**
+	 * @param      $code
+	 * @param      $msg
+	 * @param null $info
+	 */
 	public static function raiseMessage($code, $msg, $info = null) {
 		$app = JFactory::getApplication();
 		$app->enqueueMessage($msg,'message');
 	}
 
+	/**
+	 * @param      $code
+	 * @param      $msg
+	 * @param null $info
+	 */
 	public static function raiseNotice($code, $msg, $info = null) {
 		$app = JFactory::getApplication();
 		$app->enqueueMessage($msg,'notice');
 	}
 
+	/**
+	 * @param      $code
+	 * @param      $msg
+	 * @param null $info
+	 */
 	public static function raiseWarning($code, $msg, $info = null) {
 		$app = JFactory::getApplication();
 		$app->enqueueMessage($msg,'warning');
 	}
 
+	/**
+	 * @param      $code
+	 * @param      $msg
+	 * @param null $info
+	 */
 	public static function raiseError($code, $msg, $info = null) {
 		$app = JFactory::getApplication();
 		$app->enqueueMessage($msg,'error');
@@ -1653,7 +1672,6 @@ class JFusionFunction
 			foreach ($warning as $warningtype => $warningtext) {
 				//if still an array implode for nicer display
 				if (is_array($warningtext)) {
-//					$warningtext = implode('</li><li>' . $warningtype . ': ', $warningtext);
 					JFusionFunction::raiseNotice('500', $warningtype . ': ' . $warningtext);
 				}
 			}

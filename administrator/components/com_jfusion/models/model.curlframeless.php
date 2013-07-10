@@ -80,18 +80,14 @@ class JFusionCurlFrameless {
 		$url = $data->source_url;
 
         $config = JFactory::getConfig();
-        $sefenabled = $config->get('config.sef');
+        $sefenabled = $config->get('sef');
         if(!empty($sefenabled)) {
 			$uri = JURI::getInstance();
 			$current = $uri->toString( array( 'path', 'query'));
 
-            /**
-             * @ignore
-             * @var $menus JMenu
-             */
-            $menus = JSite::getMenu();
-        	$menu = $menus->getActive();
-			$index = '/'.$menu->route;
+	        $menu = JMenu::getInstance('site');
+        	$item = $menu->getActive();
+			$index = '/'.$item->route;
 			$pos = strpos($current, $index);
 			if ( $pos !== false ) {
 				$current = substr($current, $pos+strlen($index));

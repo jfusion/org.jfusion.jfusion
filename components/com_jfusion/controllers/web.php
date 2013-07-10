@@ -30,7 +30,7 @@ class JFusionControllerWeb extends JControllerLegacy
         * @ignore
          * @var $menu JMenu
         */
-        $menu = JSite::getMenu ();
+	    $menu = JMenu::getInstance('site');
         $item = $menu->getActive ();
         if ($item) {
             $params = $menu->getParams ( $item->id );

@@ -49,7 +49,7 @@ JFusion.renderSyncHead = function() {
 
 	tr.inject(root);
 	return root;
-}
+};
 
 JFusion.renderSyncBody = function (data) {
 	var root = new Element('tBody');
@@ -89,7 +89,7 @@ JFusion.renderSyncBody = function (data) {
 		tr.inject(root);
 	}
 	return root;
-}
+};
 
 JFusion.renderSync = function(data) {
 	var log_res = $('log_res');
@@ -100,7 +100,7 @@ JFusion.renderSync = function(data) {
 	JFusion.renderSyncBody(data).inject(root);
 
 	root.inject(log_res);
-}
+};
 
 JFusion.update = function() {
 	if (syncRunning != -1) {
@@ -128,7 +128,7 @@ JFusion.update = function() {
 		}
 		$("counter").set('html', '<b>'+text+'</b>');
 	}
-}
+};
 
 JFusion.render = function(JSONobject) {
 	response = JSONobject;
@@ -136,11 +136,6 @@ JFusion.render = function(JSONobject) {
 	JFusion.OnMessages(JSONobject.messages);
 	if (JSONobject.messages.error) {
 		clearInterval(periodical);
-		/*
-		 for(var i=0; i<JSONobject.errors.length; i++) {
-		 alert(JSONobject.errors[i]);
-		 }
-		 */
 	} else {
 		JFusion.renderSync(JSONobject);
 
@@ -148,7 +143,7 @@ JFusion.render = function(JSONobject) {
 			JFusion.update();
 		}
 	}
-}
+};
 
 window.addEvent('domready', function() {
 		/* our ajax istance for starting the sync */

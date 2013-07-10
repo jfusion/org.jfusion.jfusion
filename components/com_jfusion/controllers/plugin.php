@@ -32,10 +32,15 @@ class JFusionControllerPlugin extends JControllerLegacy
 
         die(print_r($user));
 	}
+
 	/**
-	 * Displays the integrated software inside Joomla without a frame
+	 * @param   boolean $cachable   If true, the view output will be cached
+	 * @param   array   $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
+	 *
+	 * @throws Exception
+	 * @return $this|\JControllerLegacy
 	 */
-	function display() {
+	public function display($cachable = false, $urlparams = array()) {
 		//find out if there is an itemID with the view variable
 		$menuitemid = JRequest::getInt('Itemid');
 		//we do not want the front page menuitem as it will cause a 500 error in some cases
@@ -44,11 +49,10 @@ class JFusionControllerPlugin extends JControllerLegacy
 		if ($menuitemid && $menuitemid!=1) {
             $menu = JMenu::getInstance('site');
             $item = $menu->getItem($menuitemid);
-            $menu_params = new JRegistry($item->params);
-			$jview = $menu_params->get('visual_integration','wrapper');
+			$jview = $item->params->get('visual_integration','wrapper');
 
 			//load custom plugin parameter
-			$JFusionPluginParam = $menu_params->get('JFusionPluginParam');
+			$JFusionPluginParam = $item->params->get('JFusionPluginParam');
 			if(empty($JFusionPluginParam)){
 				throw new Exception( JText::_ ( 'ERROR_PLUGIN_CONFIG' ) );
 			}
@@ -81,10 +85,11 @@ class JFusionControllerPlugin extends JControllerLegacy
             //render the view
             $view->assignRef('jname', $jname);
             $view->assignRef('jPluginParam', $jPluginParam);
-            $view->assignRef('params', $menu_params);
+            $view->assignRef('params', $item->params);
             $view->assignRef('type', $jview);
             $view->setLayout('default');
             $view->$jview();
         }
+		return $this;
 	}
 }

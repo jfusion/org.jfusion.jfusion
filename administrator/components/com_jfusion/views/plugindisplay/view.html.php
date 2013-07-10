@@ -264,6 +264,9 @@ class jfusionViewplugindisplay extends JViewLegacy {
 		return  $record;
     }
 
+	/**
+	 * @return array
+	 */
 	function getPlugins() {
 		//check to see if the ordering is correct
 		$db = JFactory::getDBO();
@@ -383,26 +386,5 @@ HTML;
 		<td>{$record->usergrouptext}</td>
 HTML;
 	    return $html;
-/*
-    	$row = '<td width="20px;"><div class="dragHandles" id="dragHandles"><img src="components/com_jfusion/images/draggable.png" name="handle"></div></td>';
-        $row .= '<td>'.$record->name.'</td>';
-		$row .= '<td width="92px;">';
-	    $row .= '<a href="'.$record->wizardscript.'" title="'.JText::_('WIZARD').'"><img src="'.$record->wizardimage.'" alt="'.JText::_('WIZARD').'" /></a>';
-		$row .= '<a href="index.php?option=com_jfusion&task=plugineditor&jname='.$record->name.'" title="'.JText::_('EDIT').'"><img src="components/com_jfusion/images/edit.png" alt="'.JText::_('EDIT').'" /></a>';               
-        $row .= '<a href="'.$record->copyscript.'" title="'.JText::_('COPY').'"><img src="'.$record->copyimage.'" alt="'.JText::_('COPY').'" /></a>';
-        $row .= '<a href="'.$record->deletescript.'" title="'.JText::_('DELETE').'"><img src="'.$record->deleteimage.'" alt="'.JText::_('DELETE').'" /></a>';
-		$row .= '<a class="modal" title="'.JText::_('INFO').'"  href="index.php?option=com_jfusion&task=plugininfo&tmpl=component&jname='.$record->name.'" rel="{handler: \'iframe\', size: {x: 375, y: 375}}"><img src="components/com_jfusion/images/info.png" alt="'.JText::_('INFO').'" /></a>';            	
-		$row .= '</td>';
-        $row .= '<td>'.$record->description.'</td>';
-        $row .= '<td width="40px;" id="'.$record->name.'_master"><a href="'.$record->masterscript.'"><img src="'.$record->masterimage.'" border="0" alt="'.$record->masteralt.'" /></a></td>';
-        $row .= '<td width="40px;" id="'.$record->name.'_slave"><a href="'.$record->slavescript.'"><img src="'.$record->slaveimage.'" border="0" alt="'.$record->slavealt.'" /></a></td>';
-        $row .= '<td width="40px;" id="'.$record->name.'_check_encryption"><a href="'.$record->encryptscript.'"><img src="'.$record->encryptimage.'" border="0" alt="'.$record->encryptalt.'" /></a></td>';
-        $row .= '<td width="40px;" id="'.$record->name.'_dual_login"><a href="'.$record->dualscript.'"><img src="'.$record->dualimage.'" border="0" alt="'.$record->dualalt.'" /></a></td>';
-		$row .= '<td><img src="'.$record->statusimage.'" border="0" alt="'.$record->statusalt.'" /><a href="index.php?option=com_jfusion&task=plugineditor&jname='.$record->name.'">' . $record->statusalt.'</a></td>';
-       	$row .= '<td>'.$record->usercount.'</td>';
-        $row .= '<td><img src="'.$record->registrationimage.'" border="0" alt="'.$record->registrationalt.'" />'.$record->registrationalt.'</td>';
-		$row .= '<td>'.$record->usergrouptext.'</td>';
-		return  $row;
-*/
     }
 }

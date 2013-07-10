@@ -121,11 +121,11 @@ class modjfusionActivityHelper
                     } else {
                         jimport('joomla.utilities.date');
                         $JDate =  new JDate($r->dateline);
-                        $JDate->setOffset($config['tz_offset']);
+                        $JDate->setTimezone($config['tz_offset']);
                         if (empty($config['date_format'])) {
                             $r->output->date = $JDate->toISO8601(true);
                         } else {
-                            $r->output->date = $JDate->toFormat($config['date_format'],true);
+                            $r->output->date = $JDate->format($config['date_format'],true);
                         }
                     }
                 } else {

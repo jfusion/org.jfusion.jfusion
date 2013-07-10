@@ -210,7 +210,7 @@ class JFusionUser_wordpress extends JFusionUser {
  					$curl_options['post_url'] = $curl_options['post_url']."?action=logout&_wpnonce=".$wpnonce[1];
 					$status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname(),$params->get('logout_type'),$curl_options);
         } else {
-          // non wpnonce, we are probably not on the logoutpage. Just report
+          // non wpnonce, we are probably not on the logout page. Just report
           $status['debug'][]= JText::_('NO_WPNONCE_FOUND: ');
   
           //try to delete all cookies

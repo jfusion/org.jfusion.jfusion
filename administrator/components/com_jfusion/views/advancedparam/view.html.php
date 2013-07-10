@@ -225,13 +225,13 @@ class jfusionViewadvancedparam extends JViewLegacy
             button.form.jfusion_task.value = 'add';
             button.form.task.value = 'advancedparam';
             button.form.submit();
-        }
+        };
         JFusion.jPluginRemove = function(button, value) {
             button.form.jfusion_task.value = 'remove';
             button.form.jfusion_value.value = value;
             button.form.task.value = 'advancedparam';
             button.form.submit();
-        }
+        };
 JS;
 
 		return array($output, $js);

@@ -56,11 +56,12 @@ class JFusionPublic_gallery2 extends JFusionPublic {
         return '?g2_view=core.UserAdmin&g2_subView=core.UserRecoverPassword';
     }
 
-    /**
-     * @param object &$data
-     *
-     * @return void
-     */
+	/**
+	 * @param object &$data
+	 *
+	 * @throws Exception
+	 * @return void
+	 */
     function getBuffer(&$data) {
         /**
          * @ignore

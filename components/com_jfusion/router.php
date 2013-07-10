@@ -50,7 +50,7 @@ function jfusionBuildRoute(&$query)
     }
     if (count($segments)) {
 	    $config = JFactory::getConfig();
-	    $sef_suffix = $config->get('config.sef_suffix');
+	    $sef_suffix = $config->get('sef_suffix');
 	    if (!$sef_suffix) {
 		    $segments[count($segments) - 1].= '/';
 	    }
@@ -69,6 +69,7 @@ function jfusionBuildRoute(&$query)
  *
  * @param array $segments segments to parse
  *
+ * @throws Exception
  * @return string vars
  */
 function jfusionParseRoute($segments)
@@ -119,8 +120,7 @@ function jfusionParseRoute($segments)
     $item = $menu->getActive();
     $vars += $item->query;
 	if ($vars['view'] == 'plugin') {
-	    $menu_params = new JRegistry($item->params);
-	    $JFusionPluginParam = $menu_params->get('JFusionPluginParam');
+	    $JFusionPluginParam = $item->params->get('JFusionPluginParam');
 	    if (empty($JFusionPluginParam)) {
 		    throw new Exception( JText::_ ( 'ERROR_PLUGIN_CONFIG' ) );
 	    } else {

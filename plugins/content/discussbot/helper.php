@@ -555,7 +555,7 @@ JS;
 		    foreach ($lang_strings as $str) {
 			    $jstr = JText::_($str);
 			    $js .= <<<JS
-            var JFDB_{$str} = "{$jstr}";
+            var JFDB_{$str} = '{$jstr}';
 JS;
 		    }
 

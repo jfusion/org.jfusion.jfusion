@@ -272,7 +272,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
                 $baseURL = $jfdata->baseURL;
                 $integratedURL = $jfdata->integratedURL;
                 $config = JFactory::getConfig();
-                $vbsefenabled = $config->get('config.sef');
+                $vbsefenabled = $config->get('sef');
                 $hookFile = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'hooks.php';
                 if ($vbsefmode) {
                     //need to set the base tag as vB JS/ajax requires it to function
@@ -375,7 +375,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
         $params = JFusionFactory::getParams($this->getJname());
         $vbsefmode = $params->get('sefmode', 0);
         $config = JFactory::getConfig();
-        $vbsefenabled = $config->get('config.sef');
+        $vbsefenabled = $config->get('sef');
         //fix for form actions
         //cannot use preg_replace here because it adds unneeded slashes which messes up JS
         $action_search = '#action="(?!http)(.*?)"(.*?)>#mS';
@@ -429,7 +429,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
         $params = JFusionFactory::getParams($this->getJname());
         $vbsefmode = $params->get('sefmode', 0);
         $config = JFactory::getConfig();
-        $vbsefenabled = $config->get('config.sef');
+        $vbsefenabled = $config->get('sef');
         $js = '<script type="text/javascript">';
         $js .= <<<JS
             var vbSourceURL = '{$integratedURL}';

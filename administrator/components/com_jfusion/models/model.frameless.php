@@ -54,11 +54,7 @@ class JFusionFrameless {
 		$data->fullURL = $query ? $url . '?' . $query : $url;
 		$data->fullURL = str_replace('&', '&amp;', $data->fullURL);
 
-		/**
-		 * @ignore
-		 * @var $menu JMenu
-		 */
-		$menu = JSite::getMenu();
+		$menu = JMenu::getInstance('site');
 		if(!$isPlugin) {
 			$item = $menu->getItem($jname);
 
@@ -90,7 +86,7 @@ class JFusionFrameless {
 		}
 
 		//Get the integrated URL
-		$data->integratedURL = $JFusionParam->get ( 'source_url' );
+		$data->integratedURL = $JFusionParam->get ('source_url');
 
 		$data->source_url = $JFusionParam->get('source_url');
 		$data->cookie_domain = $JFusionParam->get('cookie_domain');
