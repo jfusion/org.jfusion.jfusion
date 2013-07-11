@@ -179,7 +179,7 @@ class JFusionPublic
 			    }
 		    }
 	    }
-	    $data->body = preg_replace($regex_body, $replace_body, $data->body);
+
         foreach ($regex_body as $k => $v) {
             //check if we need to use callback
             if(!empty($callback_body[$k])){
