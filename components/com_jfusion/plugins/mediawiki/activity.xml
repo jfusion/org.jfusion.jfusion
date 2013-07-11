@@ -36,8 +36,6 @@
 	
 	        <field name="custom_date" type="text" default="" label="CUSTOM_DATE" description="CUSTOM_DATE_DESCR" />
 	
-	        <field name="tz_offset" type="text" default="0" label="TZ_OFFSET" description="TZ_OFFSET_DESCR" />
-	
 	        <field name="result_order" type="radio" default="1" label="RESULT_ORDER" description="RESULT_ORDER_DESCR">
 	            <option value="0">ASCENDING</option>
 	            <option value="1">DESCENDING</option>
@@ -106,8 +104,6 @@
 		<param name="result_limit" type="text" size="5" default="5" label="RESULT_LIMIT" description="RESULT_LIMIT_DESCR" />
 
 		<param name="custom_date" type="text" default="" label="CUSTOM_DATE" description="CUSTOM_DATE_DESCR" />
-
-		<param name="tz_offset" type="text" default="0" label="TZ_OFFSET" description="TZ_OFFSET_DESCR" />
 
 		<param name="result_order" type="radio" default="1" label="RESULT_ORDER" description="RESULT_ORDER_DESCR">
 			<option value="0">ASCENDING</option>

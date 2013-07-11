@@ -119,9 +119,9 @@ class modjfusionActivityHelper
                     
                         $r->output->date = ($count == 1) ? '1 '.JText::_($name.'_AGO') : $count.' '.JText::_($name.'S_AGO');
                     } else {
-                        jimport('joomla.utilities.date');
+                    jimport('joomla.utilities.date');
                         $JDate =  new JDate($r->dateline);
-                        $JDate->setTimezone($config['tz_offset']);
+	                    $JDate->setTimezone(new DateTimeZone(JFusionFunction::getJoomlaTimezone()));
                         if (empty($config['date_format'])) {
                             $r->output->date = $JDate->toISO8601(true);
                         } else {

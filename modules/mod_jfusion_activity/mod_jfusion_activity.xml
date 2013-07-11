@@ -115,10 +115,6 @@
                        label="CUSTOM_DATE"
                        description="CUSTOM_DATE_DESCR" />
 
-                <field name="tz_offset" type="text" default="0"
-                       label="TZ_OFFSET"
-                       description="TZ_OFFSET_DESCR" />
-
                 <field name="result_order" type="radio" class="btn-group" default="1"
                        label="RESULT_ORDER"
                        description="RESULT_ORDER_DESCR">

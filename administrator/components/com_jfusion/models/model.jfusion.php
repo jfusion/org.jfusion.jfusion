@@ -1106,6 +1106,7 @@ class JFusionFunction
         if (!isset($timezone)) {
             $mainframe = JFactory::getApplication();
             $timezone = $mainframe->getCfg('offset');
+
             $JUser = JFactory::getUser();
             if (!$JUser->guest) {
                 $timezone = $JUser->getParam('timezone', $timezone);

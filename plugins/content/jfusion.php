@@ -1529,10 +1529,9 @@ HTML;
             //post date
             if ($showdate){
                 jimport('joomla.utilities.date');
-                $tz_offset =& JFusionFunction::getJoomlaTimezone();
-                $dateline += ($tz_offset * 3600);
-                $date = gmstrftime($date_format, (int) $dateline);
-                $post_output[$i]->date = $date;
+	            $JDate =  new JDate($dateline);
+	            $JDate->setTimezone(new DateTimeZone(JFusionFunction::getJoomlaTimezone()));
+                $post_output[$i]->date = $JDate->format($date_format, true);
             } else {
                 $post_output[$i]->date = '';
             }

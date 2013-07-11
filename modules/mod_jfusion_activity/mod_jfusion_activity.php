@@ -80,7 +80,6 @@ if (file_exists($model_file) && file_exists($factory_file)) {
         $config['character_limit_subject'] = $params->get('character_limit_subject', 50);
 		$config['result_limit'] = $params->get('result_limit', 5);
         $config['date_format'] = $params->get('custom_date', _DATE_FORMAT_LC2);
-        $config['tz_offset'] = $params->get('tz_offset', 0);
         $config['result_order'] = ($params->get('result_order', 0)) ? 'DESC' : 'ASC';
         $config['showdate'] = $params->get('showdate', 1);
         $config['showuser'] = $params->get('showuser', 1);

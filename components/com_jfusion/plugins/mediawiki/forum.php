@@ -49,7 +49,6 @@ class JFusionForum_mediawiki extends JFusionForum
 		$avatar_software = $pluginParam->get('avatar_software');
 		$showdate = $pluginParam->get('showdate');
 		$custom_date = $pluginParam->get('custom_date');
-		$tz_offset = $pluginParam->get('tz_offset');
 		$result_order = $pluginParam->get('result_order');
 		$showuser = $pluginParam->get('showuser');
 		$display_body = $pluginParam->get('display_body');
@@ -134,7 +133,7 @@ class JFusionForum_mediawiki extends JFusionForum
 					if($showdate) {
 						jimport('joomla.utilities.date');
 						$JDate =  new JDate($value->created);
-						$JDate->setTimezone($tz_offset);
+						$JDate->setTimezone(new DateTimeZone(JFusionFunction::getJoomlaTimezone()));
 						if (empty($custom_date)) {
                             $output .= ' '.$JDate->format(_DATE_FORMAT_LC2,true);
 						} else {
