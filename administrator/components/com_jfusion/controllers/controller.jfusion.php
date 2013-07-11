@@ -58,7 +58,7 @@ class JFusionController extends JControllerLegacy
         global $jname;
         //find out the submitted values
         $jname = JFactory::getApplication()->input->get('jname');
-        $post = JFactory::getApplication()->input->post->get('params', array());
+        $post = JFactory::getApplication()->input->post->get('params', array(), 'array');
         //check to see data was posted
         $msg = JText::_('WIZARD_FAILURE');
         $msgType = 'warning';
@@ -179,7 +179,7 @@ class JFusionController extends JControllerLegacy
         //set jname as a global variable in order for elements to access it.
         global $jname;
         //get the posted variables
-        $post = JFactory::getApplication()->input->post->get('params', array());
+        $post = JFactory::getApplication()->input->post->get('params', array(), 'array');
         $jname = JFactory::getApplication()->input->post->getString('jname', '');
         //check for trailing slash in URL, in order for us not to worry about it later
         if (substr($post['source_url'], -1) == '/') {
@@ -299,7 +299,7 @@ class JFusionController extends JControllerLegacy
     {
         //Load usersync library
         include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
-        $syncError = JFactory::getApplication()->input->post->get('syncError', array());
+        $syncError = JFactory::getApplication()->input->post->get('syncError', array(), 'array');
         $syncid = JJFactory::getApplication()->input->post->get('syncid', '');
         if ($syncError) {
             //apply the submitted sync error instructions
@@ -439,7 +439,7 @@ class JFusionController extends JControllerLegacy
 
     function installplugins()
     {
-        $jfusionplugins = JFactory::getApplication()->input->post->get('jfusionplugins', array());
+        $jfusionplugins = JFactory::getApplication()->input->post->get('jfusionplugins', array(), 'array');
         include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.install.php';
         foreach ($jfusionplugins as $plugin) {
             //install updates

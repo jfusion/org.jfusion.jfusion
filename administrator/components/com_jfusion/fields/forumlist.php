@@ -41,7 +41,7 @@ class JFormFieldForumlist extends JFormField
     {
         //Query current selected Module Id
         $id = JFactory::getApplication()->input->getInt('id', 0);
-        $cid = JFactory::getApplication()->input->get('cid', array($id));
+        $cid = JFactory::getApplication()->input->get('cid', array($id), 'array');
         JArrayHelper::toInteger($cid, array(0));
         //find out which JFusion plugin is used in the activity module
         $db = JFactory::getDBO();
