@@ -160,10 +160,11 @@ class JFusionUser_universal extends JFusionUser {
 					$query = 'DELETE FROM #__'.$helper->getTable('group').' '.
 						'WHERE '.$userid->field.'=' . $db->Quote($userinfo->userid).$andwhere;
 					$db->setQuery($query );
-					if (!$db->execute()) {
-						$status['error'][] = JText::_('USER_DELETION_ERROR') . ': ' .  $db->stderr();
-					} else {
+					try {
+						$db->execute();
 						$status['debug'][] = JText::_('USER_DELETION'). ': ' . $userinfo->username;
+					} catch (Exception $e) {
+						$status['error'][] = JText::_('USER_DELETION_ERROR') . ': ' . $e->getMessage();
 					}
 				}
 			}

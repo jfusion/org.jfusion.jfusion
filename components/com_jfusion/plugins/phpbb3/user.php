@@ -110,9 +110,12 @@ class JFusionUser_phpbb3 extends JFusionUser
         //update session time for the user into user table
         $query = 'UPDATE #__users SET user_lastvisit =' . time() . ' WHERE user_id =' . (int)$userinfo->userid;
         $db->setQuery($query);
-        if (!$db->execute()) {
-            $status['debug'][] = 'Error could not update the last visit field ' . $db->stderr();
-        }
+	    try {
+		    $db->execute();
+	    } catch (Exception $e) {
+		    $status['debug'][] = 'Error could not update the last visit field ' . $e->getMessage();
+	    }
+
         //delete the cookies
         $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_u', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly);
         $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_sid', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly);
@@ -124,17 +127,17 @@ class JFusionUser_phpbb3 extends JFusionUser
         //delete the database sessions
         $query = 'DELETE FROM #__sessions WHERE session_user_id =' . (int)$userinfo->userid;
         $db->setQuery($query);
-        if (!$db->execute()) {
-            $status['error'][] = 'Error: Could not delete session in database ' . $db->stderr();
-            return $status;
-        }
-        $query = 'DELETE FROM #__sessions_keys WHERE user_id =' . (int)$userinfo->userid;
-        $db->setQuery($query);
-        if ($db->execute()) {
-            $status['debug'][] = 'Deleted the session key';
-        } else {
-            $status['debug'][] = 'Error could not delete the session key:' . $db->stderr();
-        }
+	    try {
+		    $db->execute();
+
+		    $query = 'DELETE FROM #__sessions_keys WHERE user_id =' . (int)$userinfo->userid;
+		    $db->setQuery($query);
+		    $db->execute();
+
+		    $status['debug'][] = 'Deleted the session';
+	    } catch (Exception $e) {
+		    $status['debug'][] = 'Error could not delete the session:' . $e->getMessage();
+	    }
         return $status;
     }
 

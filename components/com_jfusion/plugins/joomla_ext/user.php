@@ -66,17 +66,21 @@ class JFusionUser_joomla_ext extends JFusionUser {
         $userid = $userinfo->userid;
         $query = 'DELETE FROM #__users WHERE id = ' . (int)$userid;
         $db->setQuery($query);
-        if (!$db->execute()) {
-            $status['error'][] = JText::_('ERROR_DELETE') . ' ' . $username . ' ' . $db->stderr();
-        } else {
-	        $query = 'DELETE FROM #__user_profiles WHERE user_id = ' . (int)$userid;
-	        $db->setQuery($query);
-	        $db->execute();
-	        $query = 'DELETE FROM #__user_usergroup_map WHERE user_id = ' . (int)$userid;
-	        $db->setQuery($query);
-	        $db->execute();
-            $status['debug'][] = JText::_('USER_DELETION') . ' ' . $username;
-        }
+	    try {
+		    $db->execute();
+
+		    $query = 'DELETE FROM #__user_profiles WHERE user_id = ' . (int)$userid;
+		    $db->setQuery($query);
+		    $db->execute();
+
+		    $query = 'DELETE FROM #__user_usergroup_map WHERE user_id = ' . (int)$userid;
+		    $db->setQuery($query);
+		    $db->execute();
+
+		    $status['debug'][] = JText::_('USER_DELETION') . ' ' . $username;
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('ERROR_DELETE') . ' ' . $username . ' ' . $e->getMessage();
+	    }
         return $status;
     }
 

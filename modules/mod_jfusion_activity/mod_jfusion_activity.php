@@ -126,7 +126,13 @@ if (file_exists($model_file) && file_exists($factory_file)) {
                     $db->setQuery($query[$config['mode']]);
                 }
 
-                $results = $db->loadObjectList();
+	            try {
+		            $results = $db->loadObjectList();
+		            $error = JText::_('JLIB_DATABASE_FUNCTION_NOERROR');
+	            } catch( Exception $e ) {
+		            $error = $e->getMessage();
+	            }
+
                 if($config['debug']) {
                     $resultBeforeFiltering = $results;
                 } else {
@@ -144,7 +150,7 @@ if (file_exists($model_file) && file_exists($factory_file)) {
                     $debug  = 'Query mode: ' . $queryMode . '<br><br>';
                     $sqlQuery = ($config['mode']==LAT) ? $query[$config['mode'].$config['lat_mode']] : $query[$config['mode']];
                     $debug .= 'SQL Query: ' . $sqlQuery .'<br><br>';
-                    $debug .= 'Error: ' . $db->stderr() . '<br><br>';
+                    $debug .= 'Error: ' . $error . '<br><br>';
                     $debug .= 'Results Before Filtering:<br><pre>'.print_r($resultBeforeFiltering,true).'</pre><br><br>';
                     $debug .= 'Results After Filtering:<br><pre>'.print_r($results,true).'</pre><br><br>';
                     die($debug);

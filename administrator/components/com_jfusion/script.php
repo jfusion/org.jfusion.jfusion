@@ -34,8 +34,10 @@ class com_jfusionInstallerScript
 			      PRIMARY KEY (id)
 			    ) DEFAULT CHARACTER SET utf8;';
 			$db->setQuery($query);
-			if (!$db->execute()) {
-				echo $db->stderr() . '<br />';
+			try {
+				$db->execute();
+			} catch( Exception $e ) {
+				echo $e->getMessage() . '<br />';
 				return;
 			}
 		}
@@ -51,8 +53,10 @@ class com_jfusionInstallerScript
 			      UNIQUE `lookup` (id,jname)
 			    ) DEFAULT CHARACTER SET utf8;';
 			$db->setQuery($query);
-			if (!$db->execute()) {
-				echo $db->stderr() . '<br />';
+			try {
+				$db->execute();
+			} catch( Exception $e ) {
+				echo $e->getMessage() . '<br />';
 				return;
 			}
 		}
@@ -71,8 +75,10 @@ class com_jfusionInstallerScript
 			        UNIQUE `lookup` (contentid,jname)
 			    ) CHARSET=utf8;';
 			$db->setQuery($query);
-			if (!$db->execute()){
-				echo $db->stderr() . '<br/>';
+			try {
+				$db->execute();
+			} catch( Exception $e ) {
+				echo $e->getMessage() . '<br />';
 				return;
 			}
 		}
@@ -88,8 +94,10 @@ class com_jfusionInstallerScript
 			      PRIMARY KEY  (syncid)
 			    );';
 			$db->setQuery($query);
-			if (!$db->execute()) {
-				echo $db->stderr() . '<br />';
+			try {
+				$db->execute();
+			} catch( Exception $e ) {
+				echo $e->getMessage() . '<br />';
 				return;
 			}
 		}
@@ -107,8 +115,10 @@ class com_jfusionInstallerScript
 			      PRIMARY KEY  (id)
 			    );';
 			$db->setQuery($query);
-			if (!$db->execute()){
-				echo $db->stderr() . '<br/>';
+			try {
+				$db->execute();
+			} catch( Exception $e ) {
+				echo $e->getMessage() . '<br />';
 				return;
 			}
 		}
@@ -132,8 +142,10 @@ class com_jfusionInstallerScript
 			      );';
 
 			$db->setQuery($query);
-			if (!$db->execute()) {
-				echo $db->stderr() . '<br />';
+			try {
+				$db->execute();
+			} catch( Exception $e ) {
+				echo $e->getMessage() . '<br />';
 				return;
 			}
 
@@ -175,8 +187,10 @@ class com_jfusionInstallerScript
 		if (in_array('description', $columns)) {
 			$query = 'ALTER TABLE #__jfusion DROP COLUMN version, DROP COLUMN description, DROP COLUMN date, DROP COLUMN author, DROP COLUMN support';
 			$db->setQuery($query);
-			if (!$db->execute()) {
-				echo $db->stderr() . '<br />';
+			try {
+				$db->execute();
+			} catch( Exception $e ) {
+				echo $e->getMessage() . '<br />';
 				return;
 			}
 		}
@@ -189,8 +203,10 @@ class com_jfusionInstallerScript
 			$query = 'ALTER TABLE #__jfusion
               ADD COLUMN plugin_files LONGBLOB ';
 			$db->setQuery($query);
-			if (!$db->execute()) {
-				echo $db->stderr() . '<br />';
+			try {
+				$db->execute();
+			} catch( Exception $e ) {
+				echo $e->getMessage() . '<br />';
 				return;
 			}
 		}
@@ -198,8 +214,10 @@ class com_jfusionInstallerScript
 			//add the column
 			$query = 'ALTER TABLE #__jfusion ADD COLUMN original_name varchar(50) null';
 			$db->setQuery($query);
-			if (!$db->execute()) {
-				echo $db->stderr() . '<br />';
+			try {
+				$db->execute();
+			} catch( Exception $e ) {
+				echo $e->getMessage() . '<br />';
 				return;
 			}
 		}
@@ -213,8 +231,10 @@ class com_jfusionInstallerScript
               ADD COLUMN search tinyint(4) NOT null DEFAULT 0,
                 ADD COLUMN discussion tinyint(4) NOT null DEFAULT 0';
 			$db->setQuery($query);
-			if (!$db->execute()) {
-				echo $db->stderr() . '<br />';
+			try {
+				$db->execute();
+			} catch( Exception $e ) {
+				echo $e->getMessage() . '<br />';
 				return;
 			}
 		}
@@ -228,24 +248,21 @@ class com_jfusionInstallerScript
 			$query = 'CREATE TABLE #__jfusion_users_plugin_backup AS
               SELECT * FROM  #__jfusion_users_plugin WHERE 1 GROUP BY id, jname';
 			$db->setQuery($query);
-			if ($db->execute()) {
+			try {
+				$db->execute();
+
 				$query = 'DROP TABLE #__jfusion_users_plugin';
 				$db->setQuery($query);
-				if ($db->execute()) {
-					$query = 'RENAME TABLE #__jfusion_users_plugin_backup TO #__jfusion_users_plugin';
-					$db->setQuery($query);
-					if (!$db->execute()) {
-						echo $db->stderr() . '<br />';
-						return;
-					}
-				} else {
-					echo $db->stderr() . '<br />';
-					return;
-				}
-			} else {
-				echo $db->stderr() . '<br />';
+				$db->execute();
+
+				$query = 'RENAME TABLE #__jfusion_users_plugin_backup TO #__jfusion_users_plugin';
+				$db->setQuery($query);
+				$db->execute();
+			} catch (Exception $e) {
+				echo $e->getMessage() . '<br />';
 				return;
 			}
+
 			//in addition the unique indexes we need to change the userid column to accept text as
 			//plugins such as dokuwiki does not use int userids
 			$query = 'ALTER TABLE #__jfusion_users_plugin
@@ -254,8 +271,10 @@ class com_jfusionInstallerScript
               CHANGE `autoid` `autoid` INT( 11 ) NOT null AUTO_INCREMENT,
               CHANGE `userid` `userid` VARCHAR(50) NOT null';
 			$db->setQuery($query);
-			if (!$db->execute()) {
-				echo $db->stderr() . '<br />';
+			try {
+				$db->execute();
+			} catch( Exception $e ) {
+				echo $e->getMessage() . '<br />';
 				return;
 			}
 		}
@@ -284,8 +303,10 @@ class com_jfusionInstallerScript
 		 */
 		$query = 'ALTER TABLE `#__jfusion_sync` CHANGE `syncdata` `syncdata` LONGBLOB null DEFAULT null';
 		$db->setQuery($query);
-		if (!$db->execute()) {
-			echo $db->stderr() . '<br />';
+		try {
+			$db->execute();
+		} catch( Exception $e ) {
+			echo $e->getMessage() . '<br />';
 			return;
 		}
 		/***
@@ -294,11 +315,12 @@ class com_jfusionInstallerScript
 		//make id the primary key so that the username will be updated
 		$query = 'ALTER TABLE `#__jfusion_users` DROP PRIMARY KEY, ADD PRIMARY KEY ( `id` )';
 		$db->setQuery($query);
-		if (!$db->execute()) {
-			echo $db->stderr() . '<br />';
+		try {
+			$db->execute();
+		} catch( Exception $e ) {
+			echo $e->getMessage() . '<br />';
 			return;
 		}
-
 		/**
 		 * UPGRADES FOR 1.5
 		 */
@@ -310,8 +332,10 @@ class com_jfusionInstallerScript
 			$query = 'ALTER TABLE #__jfusion_sync
               ADD COLUMN active int(1) NOT null DEFAULT 0';
 			$db->setQuery($query);
-			if (!$db->execute()) {
-				echo $db->stderr() . '<br />';
+			try {
+				$db->execute();
+			} catch( Exception $e ) {
+				echo $e->getMessage() . '<br />';
 				return;
 			}
 		}
@@ -328,8 +352,10 @@ class com_jfusionInstallerScript
 			$query = 'ALTER TABLE #__jfusion
               ADD COLUMN ordering int(4)';
 			$db->setQuery($query);
-			if (!$db->execute()) {
-				echo $db->stderr() . '<br />';
+			try {
+				$db->execute();
+			} catch( Exception $e ) {
+				echo $e->getMessage() . '<br />';
 				return;
 			}
 		}
@@ -361,22 +387,28 @@ class com_jfusionInstallerScript
 		if (in_array('activity', $columns)) {
 			$query = 'ALTER TABLE #__jfusion DROP column activity';
 			$db->setQuery($query);
-			if (!$db->execute()) {
-				echo $db->stderr() . '<br />';
+			try {
+				$db->execute();
+			} catch( Exception $e ) {
+				echo $e->getMessage() . '<br />';
 			}
 		}
 		if (in_array('search', $columns)) {
 			$query = 'ALTER TABLE #__jfusion DROP column search';
 			$db->setQuery($query);
-			if (!$db->execute()) {
-				echo $db->stderr() . '<br />';
+			try {
+				$db->execute();
+			} catch( Exception $e ) {
+				echo $e->getMessage() . '<br />';
 			}
 		}
 		if (in_array('discussion', $columns)) {
 			$query = 'ALTER TABLE #__jfusion DROP column discussion';
 			$db->setQuery($query);
-			if (!$db->execute()) {
-				echo $db->stderr() . '<br />';
+			try {
+				$db->execute();
+			} catch( Exception $e ) {
+				echo $e->getMessage() . '<br />';
 			}
 		}
 
@@ -417,14 +449,18 @@ class com_jfusionInstallerScript
 				//add com_content to components column
 				$query = 'UPDATE #__jfusion_discussion_bot SET component = \'com_content\'';
 				$db->setQuery($query);
-				if(!$db->execute()) {
-					echo $db->stderr() . '<br />';
+				try {
+					$db->execute();
+				} catch( Exception $e ) {
+					echo $e->getMessage() . '<br />';
 				}
 
 				$query = 'DROP TABLE #__jfusion_forum_plugin';
 				$db->setQuery($query);
-				if(!$db->execute()) {
-					echo $db->stderr() . '<br />';
+				try {
+					$db->execute();
+				} catch( Exception $e ) {
+					echo $e->getMessage() . '<br />';
 					return;
 				}
 			} else {
@@ -439,14 +475,15 @@ class com_jfusionInstallerScript
 			if (!in_array('component', $columns)) {
 				$query = 'ALTER TABLE #__jfusion_discussion_bot ADD COLUMN component varchar(255) NOT NULL';
 				$db->setQuery($query);
-				if (!$db->execute()) {
-					echo $db->stderr() . '<br />';
-				} else {
+
+				try {
+					$db->execute();
+
 					$query = 'UPDATE #__jfusion_discussion_bot SET component = \'com_content\'';
 					$db->setQuery($query);
-					if(!$db->execute()) {
-						echo $db->stderr() . '<br />';
-					}
+					$db->execute();
+				} catch( Exception $e ) {
+					echo $e->getMessage() . '<br />';
 				}
 			}
 		}
@@ -529,8 +566,10 @@ class com_jfusionInstallerScript
 		if (count($uninstallPlugin) > 0) {
 			$query = 'DELETE FROM #__jfusion WHERE name IN (\'' . implode('\', \'', $uninstallPlugin) . '\')';
 			$db->setQuery($query);
-			if (!$db->execute()) {
-				echo $db->stderr() . '<br />';
+			try {
+				$db->execute();
+			} catch( Exception $e ) {
+				echo $e->getMessage() . '<br />';
 			}
 		}
         $restorePluginOutput = '';
@@ -599,10 +638,15 @@ HTML;
 
 		$jversion = new JVersion;
 		$version = $jversion->getShortVersion();
-		$db->setQuery('UPDATE #__extensions SET enabled = 1 WHERE element =\'joomla\' and folder = \'authentication\'');
-		$db->execute();
-		$db->setQuery('UPDATE #__extensions SET enabled = 1 WHERE element =\'joomla\' and folder = \'user\'');
-		$db->execute();
+
+		try {
+			$db->setQuery('UPDATE #__extensions SET enabled = 1 WHERE element =\'joomla\' and folder = \'authentication\'');
+			$db->execute();
+			$db->setQuery('UPDATE #__extensions SET enabled = 1 WHERE element =\'joomla\' and folder = \'user\'');
+			$db->execute();
+		} catch( Exception $e ) {
+			echo $e->getMessage() . '<br />';
+		}
 
 		echo '<table style="background-color:#d9f9e2;" width ="100%"><tr style="height:30px">';
 		echo '<td><font size="2"><b>' . JText::_('NORMAL_JOOMLA_BEHAVIOR_RESTORED') . '</b></font></td></tr></table>';
@@ -651,38 +695,50 @@ HTML;
 		$db = JFactory::getDBO();
 		$query = 'DROP TABLE #__jfusion';
 		$db->setQuery($query);
-		if (!$db->execute()){
-			echo $db->stderr() . '<br />';
+		try {
+			$db->execute();
+		} catch( Exception $e ) {
+			echo $e->getMessage() . '<br />';
 		}
 
 		$query = 'DROP TABLE #__jfusion_sync';
 		$db->setQuery($query);
-		if (!$db->execute()){
-			echo $db->stderr() . '<br />';
+		try {
+			$db->execute();
+		} catch( Exception $e ) {
+			echo $e->getMessage() . '<br />';
 		}
 
 		$query = 'DROP TABLE #__jfusion_sync_details';
 		$db->setQuery($query);
-		if (!$db->execute()){
-			echo $db->stderr() . '<br />';
+		try {
+			$db->execute();
+		} catch( Exception $e ) {
+			echo $e->getMessage() . '<br />';
 		}
 
 		$query = 'DROP TABLE #__jfusion_users';
 		$db->setQuery($query);
-		if (!$db->execute()){
-			echo $db->stderr() . '<br />';
+		try {
+			$db->execute();
+		} catch( Exception $e ) {
+			echo $e->getMessage() . '<br />';
 		}
 
 		$query = 'DROP TABLE #__jfusion_users_plugin';
 		$db->setQuery($query);
-		if (!$db->execute()){
-			echo $db->stderr() . '<br />';
+		try {
+			$db->execute();
+		} catch( Exception $e ) {
+			echo $e->getMessage() . '<br />';
 		}
 
 		$query = 'DROP TABLE #__jfusion_discussion_bot';
 		$db->setQuery($query);
-		if (!$db->execute()){
-			echo $db->stderr() . '<br />';
+		try {
+			$db->execute();
+		} catch( Exception $e ) {
+			echo $e->getMessage() . '<br />';
 		}
 	}
 

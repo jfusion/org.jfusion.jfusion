@@ -96,10 +96,7 @@ class JFusionUser_efront extends JFusionUser
         $db = JFusionFactory::getDatabase($this->getJname());
     	$status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname(),$params->get('logout_type'));
                 
-/*        
-        
-        
-        
+/*
         $params = JFusionFactory::getParams($this->getJname());
         $cookiedomain = $params->get('cookie_domain');
         $cookiepath = $params->get('cookie_path', '/');
@@ -244,11 +241,12 @@ class JFusionUser_efront extends JFusionUser
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'UPDATE #__users SET password =' . $db->Quote($existinguser->password). 'WHERE id =' . (int)$existinguser->userid;
         $db->setQuery($query);
-        if (!$db->execute()) {
-            $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . $db->stderr();
-        } else {
-            $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
-        }
+	    try {
+		    $db->execute();
+		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password,0,6) . '********';
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR')  . $e->getMessage();
+	    }
     }
 
     /**

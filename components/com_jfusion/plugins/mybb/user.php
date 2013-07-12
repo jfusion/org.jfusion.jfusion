@@ -162,20 +162,17 @@ class JFusionUser_mybb extends JFusionUser {
         $user->reason = 'JFusion';
         $user->lifted = 0;
         //now append the new user data
-        if (!$db->insertObject('#__banned', $user, 'uid')) {
-            //return the error
-            $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $db->stderr();
-        } else {
-            //change its usergroup
-            $query = 'UPDATE #__users SET usergroup = 7 WHERE uid = ' . (int)$existinguser->userid;
-            $db->setQuery($query);
-            if (!$db->execute()) {
-                //return the error
-                $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $db->stderr();
-            } else {
-                $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
-            }
-        }
+	    try {
+		    $db->insertObject('#__banned', $user, 'uid');
+
+		    //change its usergroup
+		    $query = 'UPDATE #__users SET usergroup = 7 WHERE uid = ' . (int)$existinguser->userid;
+		    $db->setQuery($query);
+		    $db->execute();
+		    $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $e->getMessage();
+	    }
     }
 
     /**
@@ -194,32 +191,29 @@ class JFusionUser_mybb extends JFusionUser {
         //delete the ban
         $query = 'DELETE FROM #__banned WHERE uid = ' . (int)$existinguser->userid;
         $db->setQuery($query);
-        if (!$db->execute()) {
-            //return the error
-            $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $db->stderr();
-        } else {
-            //check the oldgroup
-            if (empty($oldgroup)) {
-                $params = JFusionFactory::getParams($this->getJname());
-                $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
-                if (!empty($usergroups)) {
-                    $oldgroup = $usergroups[0];
-                }
-            }
-            if (empty($oldgroup)) {
-                $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ": " . JText::_('USERGROUP_MISSING');
-            } else {
-                //restore the usergroup
-                $query = 'UPDATE #__users SET usergroup = ' . (int)$oldgroup . ' WHERE uid = ' . (int)$existinguser->userid;
-                $db->setQuery($query);
-                if (!$db->execute()) {
-                    //return the error
-                    $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $db->stderr();
-                } else {
-                    $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
-                }
-            }
-        }
+	    try {
+		    $db->execute();
+
+		    //check the oldgroup
+		    if (empty($oldgroup)) {
+			    $params = JFusionFactory::getParams($this->getJname());
+			    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+			    if (!empty($usergroups)) {
+				    $oldgroup = $usergroups[0];
+			    }
+		    }
+		    if (empty($oldgroup)) {
+			    $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ": " . JText::_('USERGROUP_MISSING');
+		    } else {
+			    //restore the usergroup
+			    $query = 'UPDATE #__users SET usergroup = ' . (int)$oldgroup . ' WHERE uid = ' . (int)$existinguser->userid;
+			    $db->setQuery($query);
+			    $db->execute();
+			    $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+		    }
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $e->getMessage();
+	    }
     }
 
     /**
@@ -236,11 +230,12 @@ class JFusionUser_mybb extends JFusionUser {
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'UPDATE #__users SET password =' . $db->Quote($existinguser->password) . ', salt = ' . $db->Quote($existinguser->password_salt) . ' WHERE uid =' . (int)$existinguser->userid;
         $db->setQuery($query);
-        if (!$db->execute()) {
-            $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . $db->stderr();
-        } else {
-            $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
-        }
+	    try {
+		    $db->execute();
+		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password,0,6) . '********';
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR')  . $e->getMessage();
+	    }
     }
 
     /**

@@ -622,9 +622,13 @@ class plgUserJfusion extends JPlugin
                 //update the jfusion_user table with the new username
                 $query = 'REPLACE INTO #__jfusion_users (id, username) VALUES (' . (int)$JoomlaUser->id . ', ' . $db->Quote($JoomlaUser->username) . ')';
                 $db->setQuery($query);
-                if (!$db->execute()) {
-                    JFusionFunction::raiseWarning(0, $db->stderr());
-                }
+
+	            try {
+		            $db->execute();
+	            } catch( Exception $e ) {
+		            JFusionFunction::raiseWarning(0, $e->getMessage());
+	            }
+
                 //if we had a username stored in jfusion_users, update the olduserinfo with that username before passing it into the plugins so they will find the intended user
                 if (!empty($storedUsername)) {
                     $JoomlaUser->olduserinfo->username = $storedUsername;

@@ -78,15 +78,17 @@ class JFusionFunctionAdmin
         //set the current parameters in the jfusion table
         $query = 'UPDATE #__jfusion SET params = ' . $db->Quote($serialized) . ' WHERE name = ' . $db->Quote($jname);
         $db->setQuery($query);
-        if (!$db->execute()) {
-            //there was an error saving the parameters
-            JFusionFunction::raiseWarning(0, $db->stderr());
-            $result = false;
-        } else {
-            //reset the params instance for this plugin
-            JFusionFactory::getParams($jname, true);
-            $result = true;
-        }
+	    try {
+		    $db->execute();
+
+		    //reset the params instance for this plugin
+		    JFusionFactory::getParams($jname, true);
+		    $result = true;
+	    } catch( Exception $e ) {
+		    //there was an error saving the parameters
+		    JFusionFunction::raiseWarning(0, $e->getMessage());
+		    $result = false;
+	    }
         return $result;
     }
 

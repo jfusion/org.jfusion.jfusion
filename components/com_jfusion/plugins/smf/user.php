@@ -112,42 +112,38 @@ class JFusionUser_smf extends JFusionUser
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'DELETE FROM #__members WHERE memberName = ' . $db->quote($userinfo->username);
         $db->setQuery($query);
-        if (!$db->execute()) {
-            $status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . $db->stderr();
-        } else {
-            //update the stats
-            $query = 'UPDATE #__settings SET value = value - 1     WHERE variable = \'totalMembers\' ';
-            $db->setQuery($query);
-            if (!$db->execute()) {
-                //return the error
-                $status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . $db->stderr();
-            } else {
-                $query = 'SELECT MAX(ID_MEMBER) as ID_MEMBER FROM #__members WHERE is_activated = 1';
-                $db->setQuery($query);
-                $resultID = $db->loadObject();
-                if (!$resultID) {
-                    //return the error
-                    $status['error'][] = JText::_('USER_DELETION_ERROR') . $db->stderr();
-                } else {
-                    $query = 'SELECT realName as name FROM #__members WHERE ID_MEMBER = ' . $db->quote($resultID->ID_MEMBER) . ' LIMIT 1';
-                    $db->setQuery($query);
-                    $resultName = $db->loadObject();
-                    if (!$resultName) {
-                        //return the error
-                        $status['error'][] = JText::_('USER_DELETION_ERROR') . $db->stderr();
-                    } else {
-                        $query = 'REPLACE INTO #__settings (variable, value) VALUES (\'latestMember\', ' . $resultID->ID_MEMBER . '), (\'latestRealName\', ' . $db->quote($resultName->name) . ')';
-                        $db->setQuery($query);
-                        if (!$db->execute()) {
-                            //return the error
-                            $status['error'][] = JText::_('USER_DELETION_ERROR') . $db->stderr();
-                        } else {
-                            $status['debug'][] = JText::_('USER_DELETION') . ' ' . $userinfo->username;
-                        }
-                    }
-                }
-            }
-        }
+	    try {
+		    $db->execute();
+
+		    //update the stats
+		    $query = 'UPDATE #__settings SET value = value - 1     WHERE variable = \'totalMembers\' ';
+		    $db->setQuery($query);
+		    $db->execute();
+
+		    $query = 'SELECT MAX(ID_MEMBER) as ID_MEMBER FROM #__members WHERE is_activated = 1';
+		    $db->setQuery($query);
+		    $resultID = $db->loadObject();
+		    if (!$resultID) {
+			    //return the error
+			    $status['error'][] = JText::_('USER_DELETION_ERROR');
+		    } else {
+			    $query = 'SELECT realName as name FROM #__members WHERE ID_MEMBER = ' . $db->quote($resultID->ID_MEMBER) . ' LIMIT 1';
+			    $db->setQuery($query);
+			    $resultName = $db->loadObject();
+			    if (!$resultName) {
+				    //return the error
+				    $status['error'][] = JText::_('USER_DELETION_ERROR');
+			    } else {
+				    $query = 'REPLACE INTO #__settings (variable, value) VALUES (\'latestMember\', ' . $resultID->ID_MEMBER . '), (\'latestRealName\', ' . $db->quote($resultName->name) . ')';
+				    $db->setQuery($query);
+				    $db->execute();
+
+				    $status['debug'][] = JText::_('USER_DELETION') . ' ' . $userinfo->username;
+			    }
+		    }
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . $e->getMessage();
+	    }
         return $status;
     }
 
@@ -232,11 +228,12 @@ class JFusionUser_smf extends JFusionUser
         $query = 'UPDATE #__members SET passwd = ' . $db->quote($existinguser->password) . ', passwordSalt = ' . $db->quote($existinguser->password_salt) . ' WHERE ID_MEMBER  = ' . (int)$existinguser->userid;
         $db = JFusionFactory::getDatabase($this->getJname());
         $db->setQuery($query);
-        if (!$db->execute()) {
-            $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . $db->stderr();
-        } else {
-            $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
-        }
+	    try {
+		    $db->execute();
+		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password,0,6) . '********';
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR')  . $e->getMessage();
+	    }
     }
 
     /**

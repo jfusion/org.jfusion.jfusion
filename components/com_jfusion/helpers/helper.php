@@ -91,9 +91,15 @@ class JFusionHelper {
 		$db = JFactory::getDBO ();
 		$query = 'SELECT id, title, module, params, content FROM #__modules WHERE ' . $where;
 		$db->setQuery ( $query );
-		
-		if (null === ($modules = $db->loadObjectList ( $type ))) {
-			JFusionFunction::raiseWarning ( 'SOME_ERROR_CODE', JText::_ ( 'Error Loading Modules' ) . $db->getErrorMsg () );
+
+	    try {
+		    $modules = $db->loadObjectList($type);
+	    } catch( Exception $e ) {
+		    JFusionFunction::raiseWarning ( 'SOME_ERROR_CODE', JText::_ ( 'Error Loading Modules' ) . $e->getMessage() );
+		    return false;
+	    }
+		if (null === $modules) {
+			JFusionFunction::raiseWarning ( 'SOME_ERROR_CODE', JText::_ ( 'Error Loading Modules' ) );
 			return false;
 		}
 		

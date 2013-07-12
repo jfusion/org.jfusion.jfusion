@@ -164,9 +164,11 @@ class JFusionForum_vbulletin extends JFusionForum
                 }
                 $query.= ' WHERE forumid = '.$forumid;
                 $jdb->setQuery($query);
-                if (!$jdb->execute()) {
-                    $status['error'][] = $jdb->stderr();
-                }
+	            try {
+		            $jdb->execute();
+	            } catch (Exception $e) {
+		            $status['error'][] = $e->getMessage();
+	            }
             }
 
 			//add information to update forum lookup

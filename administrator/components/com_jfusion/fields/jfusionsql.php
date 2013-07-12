@@ -102,15 +102,20 @@ class JFormFieldjfusionsql extends JFormField
             		return JHTML::_('select.genericlist',  $results, $param_name, 'class="inputbox" '.$multiple, $key, $val, $this->value, $this->formControl.'_'.$this->group.'_'.$this->fieldname);
 		    	} else {
     				$db->setQuery($this->element['query']);
-                    $results = $db->loadObjectList();
-    				if($results) {
-    					if(!empty($add_default)) {
-    						array_unshift($results, JHTML::_('select.option', '', '- '.JText::_('SELECT_ONE').' -', $key, $val));
-    					}
-    					return JHTML::_('select.genericlist',  $results, $param_name, 'class="inputbox" '.$multiple, $key, $val, $this->value, $this->formControl.'_'.$this->group.'_'.$this->fieldname);
-    				} else {
-    					return '<span style="float:left; margin: 5px 0; font-weight: bold;">' . $db->stderr() . '</span>';
-    				}
+
+				    try {
+					    $results = $db->loadObjectList();
+
+					    if(!empty($add_default)) {
+						    array_unshift($results, JHTML::_('select.option', '', '- '.JText::_('SELECT_ONE').' -', $key, $val));
+					    }
+					    return JHTML::_('select.genericlist',  $results, $param_name, 'class="inputbox" '.$multiple, $key, $val, $this->value, $this->formControl.'_'.$this->group.'_'.$this->fieldname);
+				    } catch( Exception $e ) {
+					    //there was an error saving the parameters
+					    JFusionFunction::raiseWarning(0, $e->getMessage());
+
+					    return '<span style="float:left; margin: 5px 0; font-weight: bold;">' . $e->getMessage() . '</span>';
+				    }
 		    	}
     		} else {
                 return '<span style="float:left; margin: 5px 0; font-weight: bold;">' . JText::_('SAVE_CONFIG_FIRST') . '</span>';

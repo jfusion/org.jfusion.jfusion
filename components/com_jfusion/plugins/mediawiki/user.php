@@ -108,15 +108,17 @@ class JFusionUser_mediawiki extends JFusionUser {
 
 		$query = 'DELETE FROM #__user WHERE user_name = '.$db->quote($userinfo->username);
 		$db->setQuery($query);
-        if (!$db->execute()) {
-       		$status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' .  $db->stderr();
-        } else {
-			$query = 'DELETE FROM #__user_groups WHERE ug_user = '.$db->quote($userinfo->userid);
-			$db->setQuery($query);
-			$db->execute();
-			$status['debug'][] = JText::_('USER_DELETION'). ' ' . $userinfo->username;
-		}
+	    try {
+		    $db->execute();
 
+		    $query = 'DELETE FROM #__user_groups WHERE ug_user = '.$db->quote($userinfo->userid);
+		    $db->setQuery($query);
+		    $db->execute();
+
+		    $status['debug'][] = JText::_('USER_DELETION'). ' ' . $userinfo->username;
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' .  $e->getMessage();
+	    }
 		return $status;
     }
 
@@ -227,11 +229,12 @@ class JFusionUser_mediawiki extends JFusionUser {
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'UPDATE #__user SET user_password = ' . $db->quote($existinguser->password). ' WHERE user_id  = ' . $existinguser->userid;
         $db->setQuery($query );
-        if (!$db->execute()) {
-            $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR')  . $db->stderr();
-        } else {
-	        $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password,0,6) . '********';
-        }
+	    try {
+		    $db->execute();
+		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password,0,6) . '********';
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR')  . $e->getMessage();
+	    }
     }
 
     /**

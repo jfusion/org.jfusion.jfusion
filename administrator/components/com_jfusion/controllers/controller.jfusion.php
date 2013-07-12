@@ -776,7 +776,7 @@ JS;
 		     */
 		    $info = $config = null;
 		    foreach ($xml->children() as $key => $val) {
-			    switch ($val->name()) {
+			    switch ($val->getName()) {
 				    case 'info':
 					    $info = $val;
 					    break;

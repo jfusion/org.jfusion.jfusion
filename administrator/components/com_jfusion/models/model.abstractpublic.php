@@ -332,7 +332,7 @@ JS;
         $param = JFusionFactory::getParams ( $this->getJname() );
 
         if (empty($jname)) {
-            $jname = JRequest::getVar ( 'Itemid' );
+            $jname = JFactory::getApplication()->input->get('Itemid');
         }
 
         $document = JFactory::getDocument();

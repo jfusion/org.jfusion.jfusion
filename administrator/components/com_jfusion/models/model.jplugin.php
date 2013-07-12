@@ -613,9 +613,11 @@ class JFusionJplugin
                     //update the lookup table so that we don't have to do a double query next time
                     $query = 'REPLACE INTO #__jfusion_users (id, username) VALUES (' . $result->userid . ', ' . $db->Quote($identifier) . ')';
                     $db->setQuery($query);
-                    if (!$db->execute()) {
-                        JFusionFunction::raiseWarning(0, $db->stderr());
-                    }
+	                try {
+		                $db->execute();
+	                } catch (Exception $e) {
+		                JFusionFunction::raiseWarning(0, $e->getMessage());
+	                }
                 }
             }
         } else {
@@ -997,9 +999,11 @@ class JFusionJplugin
                         $username = (!empty($userinfo->credentialed_username)) ? $userinfo->credentialed_username : $userinfo->username;
                         $query = 'REPLACE INTO #__jfusion_users (id, username) VALUES (' . $createdUser->id . ', ' . $db->Quote($username) . ')';
                         $db->setQuery($query);
-                        if (!$db->execute()) {
-                            JFusionFunction::raiseWarning(0, $db->stderr());
-                        }
+	                    try {
+		                    $db->execute();
+	                    } catch (Exception $e) {
+		                    JFusionFunction::raiseWarning(0, $e->getMessage());
+	                    }
                     }
                 } else {
                     // joomla_ext
@@ -1013,17 +1017,21 @@ class JFusionJplugin
                     $user['registerDate'] = date('Y-m-d H:i:s', time());
                     $user = (object)$user;
                     $user->id = null;
-                    if (!$db->insertObject('#__users', $user, 'id')) {
-                        //return the error
-                        $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-                        return $status;
-                    }
+
+	                try {
+		                $db->insertObject('#__users', $user, 'id');
+	                } catch (Exception $e) {
+		                $status['error'][] = JText::_('USER_CREATION_ERROR') . $e->getMessage();
+		                return $status;
+	                }
 
 	                foreach ($usergroups as $group) {
 		                $query = 'INSERT INTO #__user_usergroup_map (group_id,user_id) VALUES (' . $group . ',' . $user->id . ')';
 		                $db->setQuery($query);
-		                if (!$db->execute()) {
-			                $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
+		                try {
+			                $db->execute();
+		                } catch (Exception $e) {
+			                $status['error'][] = JText::_('USER_CREATION_ERROR') . $e->getMessage();
 		                }
 	                }
                 }
@@ -1219,18 +1227,16 @@ class JFusionJplugin
 	        jimport('joomla.user.helper');
 	        $query = 'DELETE FROM #__user_usergroup_map WHERE user_id = ' . $db->Quote($existinguser->userid);
 	        $db->setQuery($query);
-	        if (!$db->execute()) {
-		        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $db->stderr();
-	        } else {
+
+	        try {
+		        $db->execute();
+
 		        foreach ($usergroups as $key => $group) {
 			        $temp = new stdClass;
 			        $temp->user_id = $existinguser->userid;
 			        $temp->group_id = $group;
-			        if (!$db->insertObject('#__user_usergroup_map', $temp)) {
-				        //return the error
-				        $status['error'] = JText::_('USER_CREATION_ERROR') . ': ' . $db->stderr();
-				        return $status;
-			        }
+
+			        $db->insertObject('#__user_usergroup_map', $temp);
 		        }
 		        $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode(',', $existinguser->groups) . ' -> ' .implode(',', $usergroups);
 		        //Fire the user plugin functions for joomla_int
@@ -1239,6 +1245,8 @@ class JFusionJplugin
 			        $updated = new JUser($existinguser->userid);
 			        $dispatcher->trigger('onAfterStoreUser', array($updated->getProperties(), false, true, ''));
 		        }
+	        } catch (Exception $e) {
+		        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $e->getMessage();
 	        }
         }
         return $status;
@@ -1334,10 +1342,11 @@ class JFusionJplugin
         $params->set('language', $userinfo->language);
         $query = 'UPDATE #__users SET params =' . $db->Quote($params->toString()) . ' WHERE id =' . $existinguser->userid;
         $db->setQuery($query);
-        if (!$db->execute()) {
-            $status['error'][] = JText::_('LANGUAGE_UPDATE_ERROR') . $db->stderr();
-        } else {
-            $status['debug'][] = JText::_('LANGUAGE_UPDATE') . ' ' . $existinguser->language;
-        }
+	    try {
+		    $db->execute();
+		    $status['debug'][] = JText::_('LANGUAGE_UPDATE') . ' ' . $existinguser->language;
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('LANGUAGE_UPDATE_ERROR') . $e->getMessage();
+	    }
     }
 }

@@ -349,11 +349,12 @@ class JFusionUser_vbulletin extends JFusionUser
         $db = JFusionFactory::getDatabase($this->getJname());
         $query = 'UPDATE #__user SET passworddate = ' . $db->Quote($date) . ', password = ' . $db->Quote($existinguser->password). ', salt = ' . $db->Quote($existinguser->password_salt). ' WHERE userid  = ' . $existinguser->userid;
         $db->setQuery($query );
-        if (!$db->execute()) {
-            $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR')  . ': ' . $db->stderr();
-        } else {
-            $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password,0,6) . '********';
-        }
+	    try {
+		    $db->execute();
+		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password,0,6) . '********';
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR')  . $e->getMessage();
+	    }
     }
 
     /**

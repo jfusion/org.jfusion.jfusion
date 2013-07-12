@@ -227,7 +227,7 @@ $document->addScript('components/com_jfusion/js/File.Upload.js');
 									 * @var $plugin JXMLElement
 									 */
 									foreach ($this->VersionData as $plugin): ?>
-										<option value="<?php echo (string)$plugin->remotefile; ?>"><?php echo $plugin->name() . ' - ' . (string)$plugin->description; ?></option>
+										<option value="<?php echo (string)$plugin->remotefile; ?>"><?php echo $plugin->getName() . ' - ' . (string)$plugin->description; ?></option>
 									<?php endforeach; ?>
 								</select>
 								<input type="submit" name="button" id="submitter" />

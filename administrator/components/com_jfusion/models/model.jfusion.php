@@ -224,14 +224,19 @@ class JFusionFunction
 				    //Delete old user data in the lookup table
 				    $query = 'DELETE FROM #__jfusion_users WHERE id =' . $joomla_id . ' OR username = ' . $db->Quote($userinfo->username) . ' OR LOWER(username) = ' . strtolower($db->Quote($userinfo->email));
 				    $db->setQuery($query);
-				    if (!$db->execute()) {
-					    JFusionFunction::raiseWarning(0, $db->stderr());
+				    try {
+					    $db->execute();
+				    } catch (Exception $e) {
+					    FusionFunction::raiseWarning(0, $e->getMessage());
 				    }
+
 				    //Delete old user data in the lookup table
 				    $query = 'DELETE FROM #__jfusion_users_plugin WHERE id =' . $joomla_id . ' OR username = ' . $db->Quote($userinfo->username) . ' OR LOWER(username) = ' . strtolower($db->Quote($userinfo->email));
 				    $db->setQuery($query);
-				    if (!$db->execute()) {
-					    JFusionFunction::raiseWarning(0, $db->stderr());
+				    try {
+					    $db->execute();
+				    } catch (Exception $e) {
+					    FusionFunction::raiseWarning(0, $e->getMessage());
 				    }
 			    }
 		    } else {
@@ -270,8 +275,10 @@ class JFusionFunction
 						    $query = 'REPLACE INTO #__jfusion_users_plugin (userid,username,id,jname) VALUES (' . implode(',', $queries) . ')';
 					    }
 					    $db->setQuery($query);
-					    if (!$db->execute()) {
-						    JFusionFunction::raiseWarning(0, $db->stderr());
+					    try {
+						    $db->execute();
+					    } catch (Exception $e) {
+						    JFusionFunction::raiseWarning(0, $e->getMessage());
 					    }
 				    }
 			    } else {
@@ -281,8 +288,10 @@ class JFusionFunction
 					    $query = 'REPLACE INTO #__jfusion_users_plugin (userid,username,id,jname) VALUES ('.$db->Quote($userinfo->userid) .' ,'.$db->Quote($userinfo->username) .' ,'.$joomla_id.' , '.$db->Quote($jname).' )';
 				    }
 				    $db->setQuery($query);
-				    if (!$db->execute()) {
-					    JFusionFunction::raiseWarning(0, $db->stderr());
+				    try {
+					    $db->execute();
+				    } catch (Exception $e) {
+					    JFusionFunction::raiseWarning(0, $e->getMessage());
 				    }
 			    }
 		    }
@@ -398,14 +407,18 @@ class JFusionFunction
         $db = JFactory::getDBO();
         $query = 'DELETE FROM #__jfusion_users WHERE id =' . $userinfo->id . ' OR username =' . $db->Quote($userinfo->username) . ' OR LOWER(username) = ' . strtolower($db->Quote($userinfo->email));
         $db->setQuery($query);
-        if (!$db->execute()) {
-            JFusionFunction::raiseWarning(0, $db->stderr());
-        }
+	    try {
+		    $db->execute();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseWarning(0, $e->getMessage());
+	    }
         $query = 'DELETE FROM #__jfusion_users_plugin WHERE id =' . $userinfo->id;
         $db->setQuery($query);
-        if (!$db->execute()) {
-            JFusionFunction::raiseWarning(0, $db->stderr());
-        }
+	    try {
+		    $db->execute();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseWarning(0, $e->getMessage());
+	    }
     }
 
     /**

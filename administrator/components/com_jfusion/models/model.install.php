@@ -121,7 +121,7 @@ class JFusionModelInstaller extends InstallerModelInstall
                 }
                 if ( $result['status'] && is_file($package['packagefile']) ) {
                     //save a copy of the plugin for safe keeping
-                    $dest = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'packages' . DIRECTORY_SEPARATOR . JFile::getName($package['packagefile']);
+                    $dest = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'packages' . DIRECTORY_SEPARATOR . basename($package['packagefile']);
                     if ( $package['packagefile'] != $dest) {
                         JFile::copy($package['packagefile'],$dest);
                     }
@@ -712,7 +712,7 @@ class JFusionPluginInstaller extends JObject
         * @TODO Remove backwards compatibility in a future version
         * Should be 'install', but for backward compatibility we will accept 'mosinstall'.
         */
-		if (!($xml instanceof JXMLElement) || ($xml->name() != 'extension')) {
+		if (!($xml instanceof JXMLElement) || ($xml->getName() != 'extension')) {
             // Free up xml parser memory and return null
             unset($xml);
             $xml = null;
