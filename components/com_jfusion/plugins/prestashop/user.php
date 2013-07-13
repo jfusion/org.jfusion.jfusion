@@ -448,16 +448,18 @@ class JFusionUser_prestashop extends JFusionUser {
      * @return void
      */
     function updateEmail($userinfo, &$existinguser, &$status) {
-        //we need to update the email
-		$params = JFusionFactory::getParams($this->getJname());
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'UPDATE #__customer SET email =' . $db->Quote($userinfo->email) . ' WHERE id_customer =' . (int)$existinguser->userid;
-        $db->setQuery($query);
-        if (!$db->execute()) {
-            $status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $db->stderr();
-        } else {
-            $status['debug'][] = JText::_('PASSWORD_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
-        }
+	    try {
+		    //we need to update the email
+		    $params = JFusionFactory::getParams($this->getJname());
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'UPDATE #__customer SET email =' . $db->Quote($userinfo->email) . ' WHERE id_customer =' . (int)$existinguser->userid;
+		    $db->setQuery($query);
+		    $db->execute();
+
+		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $e->getMessage();
+	    }
     }
 
     /**

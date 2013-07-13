@@ -374,15 +374,16 @@ class JFusionUser_wordpress extends JFusionUser {
      * @return void
      */
     function activateUser($userinfo, &$existinguser, &$status) {
-		//activate the user
-		$db = JFusionFactory::getDatabase($this->getJname());
-		$query = 'UPDATE #__users SET user_activation_key = \'\'  WHERE ID =' . (int)$existinguser->userid;
-		$db->setQuery($query);
-		if (!$db->execute()) {
-			$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $db->stderr();
-		} else {
-			$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
-		}
+	    try {
+		    //activate the user
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'UPDATE #__users SET user_activation_key = \'\'  WHERE ID =' . (int)$existinguser->userid;
+		    $db->setQuery($query);
+		    $db->execute();
+		    $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $e->getMessage();
+	    }
 	}
 
     /**

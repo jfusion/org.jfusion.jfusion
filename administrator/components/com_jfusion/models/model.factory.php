@@ -242,6 +242,7 @@ class JFusionFactory
      * @param string $jname name of the JFusion plugin used
      *
      * @return JDatabaseDriver Database connection for the JFusion plugin
+     * @throws  RuntimeException
      */
     public static function &getDatabase($jname)
     {
@@ -325,6 +326,7 @@ class JFusionFactory
      * @param string $jname name of the JFusion plugin used
      *
      * @return JDatabaseDriver database object
+     * @throws  RuntimeException
      */
     public static function &createDatabase($jname)
     {
@@ -356,26 +358,13 @@ class JFusionFactory
 	            jimport('joomla.database.database');
 	            jimport('joomla.database.table');
 
-	            try {
-		            $db = JDatabaseDriver::getInstance($options);
+	            $db = JDatabaseDriver::getInstance($options);
 
-		            //add support for UTF8
-		            $db->setQuery('SET names ' . $db->quote($charset));
-		            $db->execute();
-		            //support debugging
-		            $db->setDebug($debug);
-
-		            if (!method_exists($db, 'Query')) {
-			            JFusionFunction::raiseWarning(0, $jname . ' : ' .JText::_('NO_DATABASE'));
-			            $db = false;
-		            }
-	            } catch (RuntimeException $e) {
-		            if (!headers_sent()) {
-			            header('HTTP/1.1 500 Internal Server Error');
-		            }
-		            jexit('Database Error: ' . $jname . ' : ' .JText::_('DATABASE_ERROR') . ': ' . $e->getMessage());
-		            $db = false;
-	            }
+	            //add support for UTF8
+	            $db->setQuery('SET names ' . $db->quote($charset));
+	            $db->execute();
+	            //support debugging
+	            $db->setDebug($debug);
             }
         }
         return $db;

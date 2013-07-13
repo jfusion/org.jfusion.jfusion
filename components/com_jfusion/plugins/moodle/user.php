@@ -404,20 +404,22 @@ class JFusionUser_moodle extends JFusionUser {
 	 * @param array  &$status       Array containing the errors and result of the function
 	 */
 	function blockUser($userinfo, &$existinguser, &$status) {
-		$db = JFusionFactory::getDatabase($this->getJname());
-		$query = 'SELECT value FROM #__config WHERE  name = \'sitepolicy\'';
-		$db->setQuery($query);
-		$sitepolicy = $db->loadObject();
-		if ($sitepolicy->value) {
-			$query = 'UPDATE #__user SET policyagreed = false WHERE id =' . (int)$existinguser->userid;
+		try {
+			$db = JFusionFactory::getDatabase($this->getJname());
+			$query = 'SELECT value FROM #__config WHERE  name = \'sitepolicy\'';
 			$db->setQuery($query);
-			if (!$db->execute()) {
-				$status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $db->stderr();
-			} else {
+			$sitepolicy = $db->loadObject();
+			if ($sitepolicy->value) {
+				$query = 'UPDATE #__user SET policyagreed = false WHERE id =' . (int)$existinguser->userid;
+				$db->setQuery($query);
+				$db->execute();
+
 				$status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+			} else {
+				$status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . JText::_('BLOCK_UPDATE_SITEPOLICY_NOT_SET');
 			}
-		} else {
-			$status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . JText::_('BLOCK_UPDATE_SITEPOLICY_NOT_SET');
+		} catch (Exception $e) {
+			$status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $e->getMessage();
 		}
 	}
 
@@ -431,20 +433,22 @@ class JFusionUser_moodle extends JFusionUser {
 	 * @param array  &$status       Array containing the errors and result of the function
 	 */
 	function unblockUser($userinfo, &$existinguser, &$status) {
-		$db = JFusionFactory::getDatabase($this->getJname());
-		$query = 'SELECT value FROM #__config WHERE  name = sitepolicy';
-		$db->setQuery($query);
-		$sitepolicy = $db->loadObject();
-		if ($sitepolicy->value) {
-			$query = 'UPDATE #__user SET policyagreed = true WHERE id =' . (int)$existinguser->userid;
+		try {
+			$db = JFusionFactory::getDatabase($this->getJname());
+			$query = 'SELECT value FROM #__config WHERE  name = sitepolicy';
 			$db->setQuery($query);
-			if (!$db->execute()) {
-				$status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $db->stderr();
-			} else {
+			$sitepolicy = $db->loadObject();
+			if ($sitepolicy->value) {
+				$query = 'UPDATE #__user SET policyagreed = true WHERE id =' . (int)$existinguser->userid;
+				$db->setQuery($query);
+				$db->execute();
+
 				$status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+			} else {
+				$status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . JText::_('BLOCK_UPDATE_SITEPOLICY_NOT_SET');
 			}
-		} else {
-			$status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . JText::_('BLOCK_UPDATE_SITEPOLICY_NOT_SET');
+		} catch (Exception $e) {
+			$status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $e->getMessage();
 		}
 	}
 
@@ -458,14 +462,16 @@ class JFusionUser_moodle extends JFusionUser {
 	 * @param array  &$status       Array containing the errors and result of the function
 	 */
 	function activateUser($userinfo, &$existinguser, &$status) {
-		//activate the user
-		$db = JFusionFactory::getDatabase($this->getJname());
-		$query = 'UPDATE #__user SET confirmed = true WHERE id =' . (int)$existinguser->userid;
-		$db->setQuery($query);
-		if (!$db->execute()) {
-			$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $db->stderr();
-		} else {
+		try {
+			//activate the user
+			$db = JFusionFactory::getDatabase($this->getJname());
+			$query = 'UPDATE #__user SET confirmed = true WHERE id =' . (int)$existinguser->userid;
+			$db->setQuery($query);
+			$db->execute();
+
 			$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+		} catch (Exception $e) {
+			$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $e->getMessage();
 		}
 	}
 

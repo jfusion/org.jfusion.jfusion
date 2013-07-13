@@ -137,11 +137,12 @@ class JFusionUser_oscommerce extends JFusionUser
                     $db = JFusionFactory::getDatabase($this->getJname());
                     $query = 'DELETE FROM #__sessions WHERE id = \'' . $session_id . '\'';
                     $db->setQuery($query);
-                    if (!$db->execute()) {
-                        $status['error'][] = 'Error Could not delete session with sessionID '.$session_id.': '.$db->stderr();
-                    } else {
-                        $status['debug'][] = 'Deleted sessionrecord with id '.$session_id;
-                    }
+	                try {
+		                $db->execute();
+		                $status['debug'][] = 'Deleted sessionrecord with id '.$session_id;
+	                } catch (Exception $e) {
+		                $status['error'][] = 'Error Could not delete session with sessionID '.$session_id.': '.$e->getMessage();
+	                }
                 }
                 break;
             default:

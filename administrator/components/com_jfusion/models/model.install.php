@@ -415,9 +415,11 @@ class JFusionPluginInstaller extends JObject
 				            $plugin_entry->slave = $slave;
 				            $plugin_entry->plugin_files = $this->backup($name);
 				            //now append the new plugin data
-				            if (!$db->insertObject('#__jfusion', $plugin_entry, 'id')) {
+				            try {
+					            $db->insertObject('#__jfusion', $plugin_entry, 'id');
+				            } catch (Exception $e) {
 					            // Install failed, roll back changes
-					            $msg = JText::_('PLUGIN') . ' ' . JText::_('INSTALL') . ' ' . JText::_('ERROR') . ': ' . $db->stderr();
+					            $msg = JText::_('PLUGIN') . ' ' . JText::_('INSTALL') . ' ' . JText::_('ERROR') . ': ' . $e->getMessage();
 					            $this->parent->abort($msg);
 					            $result['message'] = $this->module->raise('error', $msg);
 					            return $result;
@@ -501,17 +503,23 @@ class JFusionPluginInstaller extends JObject
 
         // delete raw
         $db->setQuery('DELETE FROM #__jfusion WHERE name = ' . $db->Quote($jname));
-        if (!$db->execute()) {
-            $this->parent->abort($db->stderr());
-        }
+	    try {
+		    $db->execute();
+	    } catch (Exception $e) {
+		    $this->parent->abort($e->getMessage());
+	    }
         $db->setQuery('DELETE FROM #__jfusion_discussion_bot WHERE jname = ' . $db->Quote($jname));
-        if (!$db->execute()) {
-            $this->parent->abort($db->stderr());
-        }
+	    try {
+		    $db->execute();
+	    } catch (Exception $e) {
+		    $this->parent->abort($e->getMessage());
+	    }
         $db->setQuery('DELETE FROM #__jfusion_users_plugin WHERE jname = ' . $db->Quote($jname));
-        if (!$db->execute()) {
-            $this->parent->abort($db->stderr());
-        }
+	    try {
+		    $db->execute();
+	    } catch (Exception $e) {
+		    $this->parent->abort($e->getMessage());
+	    }
         $dir = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname;
         if (!$jname || !JFolder::exists($dir)) {
             $this->parent->abort(JText::_('UNINSTALL_ERROR_PATH'));
@@ -673,13 +681,15 @@ class JFusionPluginInstaller extends JObject
                     if (empty($plugin_entry->original_name)) {
                         $plugin_entry->original_name = $jname;
                     }
-                    if (!$db->insertObject('#__jfusion', $plugin_entry, 'id')) {
-                        //return the error
-                        $msg = 'Error while creating the plugin: ' . $db->stderr();
-                        $this->parent->abort($msg);
-	                    $result['message'] = $this->module->raise('error', $msg);
-                        return $result;
-                    }
+	                try {
+		                $db->insertObject('#__jfusion', $plugin_entry, 'id');
+	                } catch (Exception $e) {
+		                //return the error
+		                $msg = 'Error while creating the plugin: ' . $e->getMessage();
+		                $this->parent->abort($msg);
+		                $result['message'] = $this->module->raise('error', $msg);
+		                return $result;
+	                }
                 }
 	            $result['message'] = $this->module->raise('message', JText::_('PLUGIN') . ' ' .$jname .' ' . JText::_('COPY') . ': ' . JText::_('SUCCESS'));
                 $result['status'] = true;

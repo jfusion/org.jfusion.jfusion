@@ -277,28 +277,33 @@ class JFusionUser_mediawiki extends JFusionUser {
      */
     function updateUsergroup($userinfo, &$existinguser, &$status)
 	{
-        $params = JFusionFactory::getParams($this->getJname());
-        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
-        if (empty($usergroups)) {
-            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('USERGROUP_MISSING');
-        } else {
-            $db = JFusionFactory::getDatabase($this->getJname());
-            $query = 'DELETE FROM #__user_groups WHERE ug_user = '.$db->quote($existinguser->userid);
-            $db->setQuery($query);
-            $db->execute();
-            foreach($usergroups as $usergroup) {
-                //prepare the user variables
-                $ug = new stdClass;
-                $ug->ug_user = $existinguser->userid;
-                $ug->ug_group = $usergroup;
+		try {
+			$params = JFusionFactory::getParams($this->getJname());
+			$usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+			if (empty($usergroups)) {
+				$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('USERGROUP_MISSING');
+			} else {
+				$db = JFusionFactory::getDatabase($this->getJname());
+				try {
+					$query = 'DELETE FROM #__user_groups WHERE ug_user = '.$db->quote($existinguser->userid);
+					$db->setQuery($query);
+					$db->execute();
+				} catch (Exception $e) {
+				}
+				foreach($usergroups as $usergroup) {
+					//prepare the user variables
+					$ug = new stdClass;
+					$ug->ug_user = $existinguser->userid;
+					$ug->ug_group = $usergroup;
 
-                if (!$db->insertObject('#__user_groups', $ug, 'ug_user' )) {
-                    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-                } else {
-                    $status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . implode (' , ', $existinguser->groups) . ' -> ' . $usergroup;
-                }
-            }
-        }
+					$db->insertObject('#__user_groups', $ug, 'ug_user' );
+
+					$status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . implode (' , ', $existinguser->groups) . ' -> ' . $usergroup;
+				}
+			}
+		} catch (Exception $e) {
+			$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $e->getMessage();
+		}
 	}
 
     /**

@@ -394,47 +394,51 @@ class JFusionUser_vbulletin extends JFusionUser
      */
     function blockUser (&$userinfo, &$existinguser, &$status)
     {
-        $db = JFusionFactory::getDatabase($this->getJname());
+	    try {
+		    $db = JFusionFactory::getDatabase($this->getJname());
 
-        //get the id of the banned group
-        $bannedgroup = $this->params->get('bannedgroup');
+		    //get the id of the banned group
+		    $bannedgroup = $this->params->get('bannedgroup');
 
-        //update the usergroup to banned
-        $query = 'UPDATE #__user SET usergroupid = ' . $bannedgroup . ' WHERE userid  = ' . $existinguser->userid;
-        $db->setQuery($query);
+		    //update the usergroup to banned
+		    $query = 'UPDATE #__user SET usergroupid = ' . $bannedgroup . ' WHERE userid  = ' . $existinguser->userid;
+		    $db->setQuery($query);
 
-        if (!$db->execute()) {
-            $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ': ' . $db->stderr();
-        } else {
-            //add a banned user catch to vbulletin database
-            $ban = new stdClass;
-            $ban->userid = $existinguser->userid;
-            $ban->usergroupid = $existinguser->group_id;
-            $ban->displaygroupid = $existinguser->displaygroupid;
-            $ban->customtitle = $existinguser->customtitle;
-            $ban->usertitle = $existinguser->usertitle;
-            $ban->adminid = 1;
-            $ban->bandate = time();
-            $ban->liftdate = 0;
-            $ban->reason = (!empty($status['aec'])) ? $status['block_message'] : $this->params->get('blockmessage');
+		    $db->execute();
 
-            //now append or update the new user data
-            $query = 'SELECT COUNT(*) FROM #__userban WHERE userid = ' . $existinguser->userid;
-            $db->setQuery($query);
-            $banned = $db->loadResult();
+		    //add a banned user catch to vbulletin database
+		    $ban = new stdClass;
+		    $ban->userid = $existinguser->userid;
+		    $ban->usergroupid = $existinguser->group_id;
+		    $ban->displaygroupid = $existinguser->displaygroupid;
+		    $ban->customtitle = $existinguser->customtitle;
+		    $ban->usertitle = $existinguser->usertitle;
+		    $ban->adminid = 1;
+		    $ban->bandate = time();
+		    $ban->liftdate = 0;
+		    $ban->reason = (!empty($status['aec'])) ? $status['block_message'] : $this->params->get('blockmessage');
 
-            $result = ($banned) ?  $db->updateObject('#__userban', $ban, 'userid' ) : $db->insertObject('#__userban', $ban, 'userid' );
-            if (!$result) {
-                $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ': ' . $db->stderr();
-            } else {
-                $status['debug'][] = JText::_('BLOCK_UPDATE'). ': ' . $existinguser->block . ' -> ' . $userinfo->block;
-            }
-        }
+		    //now append or update the new user data
+		    $query = 'SELECT COUNT(*) FROM #__userban WHERE userid = ' . $existinguser->userid;
+		    $db->setQuery($query);
+		    $banned = $db->loadResult();
 
-        //note that blockUser has been called
-        if (empty($status['aec'])) {
-            define('VBULLETIN_BLOCKUSER_CALLED',1);
-        }
+		    if ($banned) {
+			    $db->updateObject('#__userban', $ban, 'userid');
+		    } else {
+			    $db->insertObject('#__userban', $ban, 'userid');
+		    }
+
+		    $status['debug'][] = JText::_('BLOCK_UPDATE'). ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+
+		    //note that blockUser has been called
+		    if (empty($status['aec'])) {
+			    define('VBULLETIN_BLOCKUSER_CALLED',1);
+		    }
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ': ' . $e->getMessage();
+	    }
+
     }
 
     /**

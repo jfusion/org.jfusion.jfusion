@@ -435,11 +435,12 @@ class com_jfusionInstallerScript
 			if(!empty($row_inserts)) {
 				$query = 'REPLACE INTO #__jfusion_discussion_bot (' . implode(', ', $columns) . ') VALUES ' . implode(', ', $row_inserts);
 				$db->setQuery($query);
-				if(!$db->execute()) {
-					echo $db->stderr() . '<br />';
-					$migrate_success = false;
-				} else {
+				try {
+					$db->execute();
 					$migrate_success = true;
+				} catch (Exception $e) {
+					echo $e->getMessage() . '<br />';
+					$migrate_success = false;
 				}
 			} else {
 				$migrate_success = true;

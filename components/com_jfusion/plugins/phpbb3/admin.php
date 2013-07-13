@@ -451,28 +451,32 @@ HTML;
 
         //only update the database if the file now exists
         if (file_exists($auth_file)) {
-            //check to see if the mod is enabled
-            $db = JFusionFactory::getDatabase($this->getJname());
-            $query = 'SELECT config_value FROM #__config WHERE config_name = \'auth_method\'';
-            $db->setQuery($query);
-            $auth_method = $db->loadResult();
-            if ($auth_method != 'jfusion') {
-                $query = 'UPDATE #__config SET config_value = \'jfusion\' WHERE config_name = \'auth_method\'';
-                $db->setQuery($query);
-                if (!$db->execute()) {
-                    //there was an error saving the parameters
-                    JFusionFunction::raiseWarning(0, $db->stderr());
-                }
-            }
+	        try {
+		        //check to see if the mod is enabled
+		        $db = JFusionFactory::getDatabase($this->getJname());
+		        $query = 'SELECT config_value FROM #__config WHERE config_name = \'auth_method\'';
+		        $db->setQuery($query);
+		        $auth_method = $db->loadResult();
+		        if ($auth_method != 'jfusion') {
+			        $query = 'UPDATE #__config SET config_value = \'jfusion\' WHERE config_name = \'auth_method\'';
+			        $db->setQuery($query);
+			        $db->execute();
+		        }
+	        } catch (Exception $e) {
+		        //there was an error saving the parameters
+		        JFusionFunction::raiseWarning(0, $e->getMessage());
+	        }
         } else {
-            //safety catch to make sure we use phpBB default to prevent lockout from phpBB
-            $db = JFusionFactory::getDatabase($this->getJname());
-            $query = 'UPDATE #__config SET config_value = \'db\' WHERE config_name = \'auth_method\'';
-            $db->setQuery($query);
-            if (!$db->execute()) {
-                //there was an error saving the parameters
-                JFusionFunction::raiseWarning(0, $db->stderr());
-            }
+	        try {
+		        //safety catch to make sure we use phpBB default to prevent lockout from phpBB
+		        $db = JFusionFactory::getDatabase($this->getJname());
+		        $query = 'UPDATE #__config SET config_value = \'db\' WHERE config_name = \'auth_method\'';
+		        $db->setQuery($query);
+		        $db->execute();
+	        } catch (Exception $e) {
+			    //there was an error saving the parameters
+			    JFusionFunction::raiseWarning(0, $e->getMessage());
+		    }
         }
         //clear the config cache so that phpBB recognizes the change
         $this->clearConfigCache();

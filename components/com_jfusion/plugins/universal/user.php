@@ -222,52 +222,54 @@ class JFusionUser_universal extends JFusionUser {
 	 */
 	function updatePassword($userinfo, &$existinguser, &$status)
 	{
-		/**
-		 * @ignore
-		 * @var $helper JFusionHelper_universal
-		 */
-		$helper = JFusionFactory::getHelper($this->getJname());
-		$db = JFusionFactory::getDatabase($this->getJname());
-		$maped = $helper->getMap();
-		$params = JFusionFactory::getParams($this->getJname());
+		try {
+			/**
+			 * @ignore
+			 * @var $helper JFusionHelper_universal
+			 */
+			$helper = JFusionFactory::getHelper($this->getJname());
+			$db = JFusionFactory::getDatabase($this->getJname());
+			$maped = $helper->getMap();
+			$params = JFusionFactory::getParams($this->getJname());
 
-		$userid = $helper->getFieldUserID();
-		if (!$userid) {
-			$status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_USERID_SET');
-		} else {
-			$qset = array();
+			$userid = $helper->getFieldUserID();
+			if (!$userid) {
+				$status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_USERID_SET');
+			} else {
+				$qset = array();
 
-			foreach ($maped as $value) {
-				foreach ($value->type as $type) {
-					switch ($type) {
-						case 'PASSWORD':
-							if ( isset($userinfo->password_clear) ) {
-								$qset[] = $value->field.' = '.$db->quote($helper->getValue($value->fieldtype,$userinfo->password_clear,$userinfo));
-							} else {
-								$qset[] = $value->field.' = '.$db->quote($userinfo->password);
-							}
-							break;
-						case 'SALT':
-							if (!isset($userinfo->password_salt)) {
-								$qset[] = $value->field.' = '.$db->quote($helper->getValue($value->fieldtype,$value->value,$userinfo));
-							} else {
-								$qset[] = $value->field.' = '.$db->quote($existinguser->password_salt);
-							}
-							break;
+				foreach ($maped as $value) {
+					foreach ($value->type as $type) {
+						switch ($type) {
+							case 'PASSWORD':
+								if ( isset($userinfo->password_clear) ) {
+									$qset[] = $value->field.' = '.$db->quote($helper->getValue($value->fieldtype,$userinfo->password_clear,$userinfo));
+								} else {
+									$qset[] = $value->field.' = '.$db->quote($userinfo->password);
+								}
+								break;
+							case 'SALT':
+								if (!isset($userinfo->password_salt)) {
+									$qset[] = $value->field.' = '.$db->quote($helper->getValue($value->fieldtype,$value->value,$userinfo));
+								} else {
+									$qset[] = $value->field.' = '.$db->quote($existinguser->password_salt);
+								}
+								break;
+						}
 					}
 				}
-			}
 
-			$query = 'UPDATE #__'.$helper->getTable().' '.
-				'SET '.implode  ( ', '  , $qset  ).' '.
-				'WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid);
+				$query = 'UPDATE #__'.$helper->getTable().' '.
+					'SET '.implode  ( ', '  , $qset  ).' '.
+					'WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid);
 
-			$db->setQuery($query );
-			if (!$db->execute()) {
-				$status['error'][] = JText::_('PASSWORD_UPDATE_ERROR')  . ': ' .$db->stderr();
-			} else {
+				$db->setQuery($query );
+				$db->execute();
+
 				$status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password,0,6) . '********';
 			}
+		} catch (Exception $e) {
+			$status['error'][] = JText::_('PASSWORD_UPDATE_ERROR')  . ': ' .$e->getMessage();
 		}
 	}
 
@@ -430,48 +432,50 @@ class JFusionUser_universal extends JFusionUser {
 	 */
 	function blockUser($userinfo, &$existinguser, &$status)
 	{
-		/**
-		 * @ignore
-		 * @var $helper JFusionHelper_universal
-		 */
-		$helper = JFusionFactory::getHelper($this->getJname());
-		$userid = $helper->getFieldUserID();
-		$active = $helper->getFieldType('ACTIVE');
-		$inactive = $helper->getFieldType('INACTIVE');
+		try {
+			/**
+			 * @ignore
+			 * @var $helper JFusionHelper_universal
+			 */
+			$helper = JFusionFactory::getHelper($this->getJname());
+			$userid = $helper->getFieldUserID();
+			$active = $helper->getFieldType('ACTIVE');
+			$inactive = $helper->getFieldType('INACTIVE');
 
-		if (!$userid) {
-			$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_USERID_SET');
-		} else if (!$active && !$inactive) {
-			$status['debug'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_ACTIVE_OR_INACTIVE_SET');
-		} else {
-			$userStatus = null;
-			if ($userinfo->block) {
-				if ( isset($inactive) ) {
-					$userStatus = $inactive->value['on'];
-				}
-				if ( isset($active) ) {
-					$userStatus = $active->value['off'];
-				}
+			if (!$userid) {
+				$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_USERID_SET');
+			} else if (!$active && !$inactive) {
+				$status['debug'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_ACTIVE_OR_INACTIVE_SET');
 			} else {
-				if ( isset($inactive) ) {
-					$userStatus = $inactive->value['off'];
-				}
-				if ( isset($active) ) {
-					$userStatus = $active->value['on'];
-				}
-			}
-			if ($userStatus != null) {
-				$db = JFusionFactory::getDatabase($this->getJname());
-				$query = 'UPDATE #__'.$helper->getTable().' '.
-					'SET '.$active->field.' = '. $db->Quote($userStatus) .' '.
-					'WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid);
-				$db->setQuery($query );
-				if (!$db->execute()) {
-					$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' .$db->stderr();
+				$userStatus = null;
+				if ($userinfo->block) {
+					if ( isset($inactive) ) {
+						$userStatus = $inactive->value['on'];
+					}
+					if ( isset($active) ) {
+						$userStatus = $active->value['off'];
+					}
 				} else {
+					if ( isset($inactive) ) {
+						$userStatus = $inactive->value['off'];
+					}
+					if ( isset($active) ) {
+						$userStatus = $active->value['on'];
+					}
+				}
+				if ($userStatus != null) {
+					$db = JFusionFactory::getDatabase($this->getJname());
+					$query = 'UPDATE #__'.$helper->getTable().' '.
+						'SET '.$active->field.' = '. $db->Quote($userStatus) .' '.
+						'WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid);
+					$db->setQuery($query );
+					$db->execute();
+
 					$status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 				}
 			}
+		} catch (Exception $e) {
+			$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' .$e->getMessage();
 		}
 	}
 

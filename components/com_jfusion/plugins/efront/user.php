@@ -156,12 +156,13 @@ class JFusionUser_efront extends JFusionUser
         	$log->lessons_ID =0;
         	$ip = explode('.',$_SERVER['REMOTE_ADDR']);
         	$log->session_ip = sprintf('%02x%02x%02x%02x',  $ip[0],  $ip[1],  $ip[2],  $ip[3]);
-            $ok = $db->insertObject('#__logs', $log, 'id');
-            if (!$ok) {
-                $status['debug'][] = 'Error Could not log the logout action for user '.$userinfo->username.': '.$db->stderr();
-            } else {
-                $status['debug'][] = 'Logged the logout action for user '.$userinfo->username;
-            }
+	        try {
+		        $ok = $db->insertObject('#__logs', $log, 'id');
+
+		        $status['debug'][] = 'Logged the logout action for user '.$userinfo->username;
+	        } catch (Exception $e) {
+		        $status['debug'][] = 'Error Could not log the logout action for user '.$userinfo->username.': '.$e->getMessage();
+	        }
         }
         return $status;
     }
@@ -269,14 +270,15 @@ class JFusionUser_efront extends JFusionUser
      * @return void
      */
     function updateEmail($userinfo, &$existinguser, &$status) {
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'UPDATE #__users SET email =' . $db->Quote($userinfo->email) . ' WHERE id =' . (int)$existinguser->userid;
-        $db->setQuery($query);
-        if (!$db->execute()) {
-            $status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $db->stderr();
-        } else {
-            $status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
-        }
+	    try {
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'UPDATE #__users SET email =' . $db->Quote($userinfo->email) . ' WHERE id =' . (int)$existinguser->userid;
+		    $db->setQuery($query);
+		    $db->execute();
+		    $status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $e->getMessage();
+	    }
     }
 
     /**
@@ -287,14 +289,16 @@ class JFusionUser_efront extends JFusionUser
      * @return void
      */
     function blockUser($userinfo, &$existinguser, &$status) {
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'UPDATE #__users SET active = 0 WHERE id =' . (int)$existinguser->userid;
-        $db->setQuery($query);
-        if (!$db->execute()) {
-            $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $db->stderr();
-        } else {
-            $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
-        }
+	    try {
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'UPDATE #__users SET active = 0 WHERE id =' . (int)$existinguser->userid;
+		    $db->setQuery($query);
+		    $db->execute();
+
+		    $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $e->getMessage();
+	    }
     }
 
     /**
@@ -343,14 +347,16 @@ class JFusionUser_efront extends JFusionUser
      * @return void
      */
     function inactivateUser($userinfo, &$existinguser, &$status) {
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'UPDATE #__users SET pending = 1 WHERE id =' . (int)$existinguser->userid;
-        $db->setQuery($query);
-        if (!$db->execute()) {
-            $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $db->stderr();
-        } else {
-            $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
-        }
+	    try {
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'UPDATE #__users SET pending = 1 WHERE id =' . (int)$existinguser->userid;
+		    $db->setQuery($query);
+		    $db->execute();
+
+		    $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $e->getMessage();
+	    }
     }
 
     /**
