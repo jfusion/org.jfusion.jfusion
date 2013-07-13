@@ -349,8 +349,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
                     }
                     try {
                         include_once ($index_file);
-                    }
-                    catch(Exception $e) {
+                    } catch(Exception $e) {
                         $jfdata->buffer = ob_get_contents();
                         ob_end_clean();
                     }

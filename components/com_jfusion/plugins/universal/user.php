@@ -119,24 +119,23 @@ class JFusionUser_universal extends JFusionUser {
 	{
 		//setup status array to hold debug info and errors
 		$status = array('error' => array(),'debug' => array());
-
-		/**
-		 * @ignore
-		 * @var $helper JFusionHelper_universal
-		 */
-		$helper = JFusionFactory::getHelper($this->getJname());
-		$userid = $helper->getFieldUserID();
-		if (!$userid) {
-			$status['error'][] = JText::_('USER_DELETION_ERROR') . ': '.JText::_('UNIVERSAL_NO_USERID_SET');
-		} else {
-			$db = JFusionFactory::getDatabase($this->getJname());
-			$query = 'DELETE FROM #__'.$helper->getTable().' '.
-				'WHERE '.$userid->field.'=' . $db->Quote($userinfo->userid);
-
-			$db->setQuery($query);
-			if (!$db->execute()) {
-				$status['error'][] = JText::_('USER_DELETION_ERROR') . ': ' .  $db->stderr();
+		try {
+			/**
+			 * @ignore
+			 * @var $helper JFusionHelper_universal
+			 */
+			$helper = JFusionFactory::getHelper($this->getJname());
+			$userid = $helper->getFieldUserID();
+			if (!$userid) {
+				$status['error'][] = JText::_('USER_DELETION_ERROR') . ': '.JText::_('UNIVERSAL_NO_USERID_SET');
 			} else {
+				$db = JFusionFactory::getDatabase($this->getJname());
+				$query = 'DELETE FROM #__'.$helper->getTable().' '.
+					'WHERE '.$userid->field.'=' . $db->Quote($userinfo->userid);
+
+				$db->setQuery($query);
+				$db->execute();
+
 				$group = $helper->getFieldType('GROUP','group');
 				if ( isset($group) ) {
 					$userid = $helper->getFieldType('USERID','group');
@@ -156,18 +155,15 @@ class JFusionUser_universal extends JFusionUser {
 						}
 					}
 
-					$db = JFusionFactory::getDatabase($this->getJname());
 					$query = 'DELETE FROM #__'.$helper->getTable('group').' '.
 						'WHERE '.$userid->field.'=' . $db->Quote($userinfo->userid).$andwhere;
 					$db->setQuery($query );
-					try {
-						$db->execute();
-						$status['debug'][] = JText::_('USER_DELETION'). ': ' . $userinfo->username;
-					} catch (Exception $e) {
-						$status['error'][] = JText::_('USER_DELETION_ERROR') . ': ' . $e->getMessage();
-					}
+					$db->execute();
+					$status['debug'][] = JText::_('USER_DELETION'). ': ' . $userinfo->username;
 				}
 			}
+		} catch (Exception $e) {
+			$status['error'][] = JText::_('USER_DELETION_ERROR') . ': ' . $e->getMessage();
 		}
 		return $status;
 	}
@@ -296,30 +292,32 @@ class JFusionUser_universal extends JFusionUser {
 	 */
 	function updateEmail($userinfo, &$existinguser, &$status)
 	{
-		/**
-		 * @ignore
-		 * @var $helper JFusionHelper_universal
-		 */
-		$helper = JFusionFactory::getHelper($this->getJname());
-		$params = JFusionFactory::getParams($this->getJname());
+		try {
+			/**
+			 * @ignore
+			 * @var $helper JFusionHelper_universal
+			 */
+			$helper = JFusionFactory::getHelper($this->getJname());
+			$params = JFusionFactory::getParams($this->getJname());
 
-		$userid = $helper->getFieldUserID();
-		$email = $helper->getFieldEmail();
-		if (!$userid) {
-			$status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_USERID_SET');
-		} else if (!$email) {
-			$status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_EMAIL_SET');
-		} else {
-			$db = JFusionFactory::getDatabase($this->getJname());
-			$query = 'UPDATE #__'.$helper->getTable().' '.
-				'SET '.$email->field.' = '.$db->quote($userinfo->email) .' '.
-				'WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid);
-			$db->setQuery($query );
-			if (!$db->execute()) {
-				$status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . ': ' .$db->stderr();
+			$userid = $helper->getFieldUserID();
+			$email = $helper->getFieldEmail();
+			if (!$userid) {
+				$status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_USERID_SET');
+			} else if (!$email) {
+				$status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_EMAIL_SET');
 			} else {
+				$db = JFusionFactory::getDatabase($this->getJname());
+				$query = 'UPDATE #__'.$helper->getTable().' '.
+					'SET '.$email->field.' = '.$db->quote($userinfo->email) .' '.
+					'WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid);
+				$db->setQuery($query );
+				$db->execute();
+
 				$status['debug'][] = JText::_('EMAIL_UPDATE'). ': ' . $existinguser->email . ' -> ' . $userinfo->email;
 			}
+		} catch (Exception $e) {
+			$status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . ': ' .$e->getMessage();
 		}
 	}
 

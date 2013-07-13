@@ -295,21 +295,23 @@ class JFusionUser_wordpress extends JFusionUser {
      * @return void
      */
     function updatePassword($userinfo, $existinguser, &$status) {
-		// get the encryption PHP file
-		if (!class_exists('PasswordHashOrg')) {
-			require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'PasswordHashOrg.php';
-		}
-		$t_hasher = new PasswordHashOrg(8, true);
-		$existinguser->password = $t_hasher->HashPassword($userinfo->password_clear);
-		unset($t_hasher);
-		$db = JFusionFactory::getDatabase($this->getJname());
-		$query = 'UPDATE #__users SET user_pass =' . $db->Quote($existinguser->password) . ' WHERE ID =' . (int)$existinguser->userid;
-		$db->setQuery($query);
-		if (!$db->execute()) {
-			$status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . $db->stderr();
-		} else {
-			$status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
-		}
+	    try {
+		    // get the encryption PHP file
+		    if (!class_exists('PasswordHashOrg')) {
+			    require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'PasswordHashOrg.php';
+		    }
+		    $t_hasher = new PasswordHashOrg(8, true);
+		    $existinguser->password = $t_hasher->HashPassword($userinfo->password_clear);
+		    unset($t_hasher);
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'UPDATE #__users SET user_pass =' . $db->Quote($existinguser->password) . ' WHERE ID =' . (int)$existinguser->userid;
+		    $db->setQuery($query);
+		    $db->execute();
+
+		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . $e->getMessage();
+	    }
 	}
 
     /**

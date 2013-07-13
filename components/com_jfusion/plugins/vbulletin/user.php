@@ -223,9 +223,11 @@ class JFusionUser_vbulletin extends JFusionUser
 
             foreach ($queries as $q) {
                 $db->setQuery($q);
-                if (!$db->execute()) {
-                    $status['debug'][] = $db->stderr();
-                }
+	            try {
+		            $db->execute();
+	            } catch (Exception $e) {
+		            $status['debug'][] = $e->getMessage();
+	            }
             }
             return $status;
         } else {
@@ -340,17 +342,18 @@ class JFusionUser_vbulletin extends JFusionUser
      */
     function updatePassword($userinfo, &$existinguser, &$status)
     {
-        jimport('joomla.user.helper');
-        $existinguser->password_salt = JUserHelper::genRandomPassword(3);
-        $existinguser->password = md5(md5($userinfo->password_clear).$existinguser->password_salt);
-
-        $date = date('Y-m-d');
-
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'UPDATE #__user SET passworddate = ' . $db->Quote($date) . ', password = ' . $db->Quote($existinguser->password). ', salt = ' . $db->Quote($existinguser->password_salt). ' WHERE userid  = ' . $existinguser->userid;
-        $db->setQuery($query );
 	    try {
+	        jimport('joomla.user.helper');
+	        $existinguser->password_salt = JUserHelper::genRandomPassword(3);
+	        $existinguser->password = md5(md5($userinfo->password_clear).$existinguser->password_salt);
+
+	        $date = date('Y-m-d');
+
+	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $query = 'UPDATE #__user SET passworddate = ' . $db->Quote($date) . ', password = ' . $db->Quote($existinguser->password). ', salt = ' . $db->Quote($existinguser->password_salt). ' WHERE userid  = ' . $existinguser->userid;
+	        $db->setQuery($query );
 		    $db->execute();
+
 		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password,0,6) . '********';
 	    } catch (Exception $e) {
 		    $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR')  . $e->getMessage();

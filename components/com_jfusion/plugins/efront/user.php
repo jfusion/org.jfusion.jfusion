@@ -235,13 +235,14 @@ class JFusionUser_efront extends JFusionUser
      * @return void
      */
     function updatePassword($userinfo, &$existinguser, &$status) {
-        $params = JFusionFactory::getParams($this->getJname());
-        $md5_key = $params->get('md5_key');
-        $existinguser->password = md5($userinfo->password_clear.$md5_key);
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'UPDATE #__users SET password =' . $db->Quote($existinguser->password). 'WHERE id =' . (int)$existinguser->userid;
-        $db->setQuery($query);
 	    try {
+	        $params = JFusionFactory::getParams($this->getJname());
+	        $md5_key = $params->get('md5_key');
+	        $existinguser->password = md5($userinfo->password_clear.$md5_key);
+	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $query = 'UPDATE #__users SET password =' . $db->Quote($existinguser->password). 'WHERE id =' . (int)$existinguser->userid;
+	        $db->setQuery($query);
+
 		    $db->execute();
 		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password,0,6) . '********';
 	    } catch (Exception $e) {
@@ -304,15 +305,16 @@ class JFusionUser_efront extends JFusionUser
      * @return void
      */
     function unblockUser($userinfo, &$existinguser, &$status) {
-        //unblock the user
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'UPDATE #__users SET active = 1 WHERE id =' . (int)$existinguser->userid;
-        $db->setQuery($query);
-        if (!$db->execute()) {
-            $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $db->stderr();
-        } else {
-            $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
-        }
+	    try {
+		    //unblock the user
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'UPDATE #__users SET active = 1 WHERE id =' . (int)$existinguser->userid;
+		    $db->setQuery($query);
+		    $db->execute();
+		    $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $e->getMessage();
+	    }
     }
 
     /**

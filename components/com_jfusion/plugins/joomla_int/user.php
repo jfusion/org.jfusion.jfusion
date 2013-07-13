@@ -134,15 +134,14 @@ class JFusionUser_joomla_int extends JFusionUser {
         } else {
 	        jimport('joomla.user.helper');
 	        $instance = JUser::getInstance();
-	        $instance->load($userinfo->userid);
 
 	        // If _getUser returned an error, then pass it back.
-	        if (JError::isError($instance)) {
-		        $status['error'] = $instance;
+	        if (!$instance->load($userinfo->userid)) {
+		        $status['error'][] = JText::_('FUSION_ERROR_LOADING_USER');
 	        } else {
 		        // If the user is blocked, redirect with an error
 		        if ($instance->get('block') == 1) {
-			        $status['error'] = JText::_('JERROR_NOLOGIN_BLOCKED');
+			        $status['error'][] = JText::_('JERROR_NOLOGIN_BLOCKED');
 		        } else {
 			        // Authorise the user based on the group information
 			        if (!isset($options['group'])) {
@@ -156,7 +155,7 @@ class JFusionUser_joomla_int extends JFusionUser {
 			        // Check the user can login.
 			        $result	= $instance->authorise($options['action']);
 			        if (!$result) {
-				        $status['error'] = JText::_('JERROR_LOGIN_DENIED');
+				        $status['error'][] = JText::_('JERROR_LOGIN_DENIED');
 			        } else {
 				        // Mark the user as logged in
 				        $instance->set('guest', 0);
@@ -166,21 +165,25 @@ class JFusionUser_joomla_int extends JFusionUser {
 				        $session->set('user', $instance);
 
 				        // Update the user related fields for the Joomla sessions table.
-				        $db = JFactory::getDBO();
-				        $db->setQuery(
-					        'UPDATE `#__session`' .
-					        ' SET `guest` = '.$db->quote($instance->get('guest')).',' .
-					        '	`username` = '.$db->quote($instance->get('username')).',' .
-					        '	`userid` = '.(int) $instance->get('id') .
-					        ' WHERE `session_id` = '.$db->quote($session->getId())
-				        );
-				        $db->execute();
+				        try {
+					        $db = JFactory::getDBO();
+					        $db->setQuery(
+						        'UPDATE `#__session`' .
+						        ' SET `guest` = '.$db->quote($instance->get('guest')).',' .
+						        '	`username` = '.$db->quote($instance->get('username')).',' .
+						        '	`userid` = '.(int) $instance->get('id') .
+						        ' WHERE `session_id` = '.$db->quote($session->getId())
+					        );
+					        $db->execute();
 
-				        // Hit the user last visit field
-				        if ($instance->setLastVisit()) {
-					        $status['debug'] = 'Joomla session created';
-				        } else {
-					        $status['error'] = $instance->getError();
+					        // Hit the user last visit field
+					        if ($instance->setLastVisit()) {
+						        $status['debug'][] = 'Joomla session created';
+					        } else {
+						        $status['error'][] = 'Error Joomla session created';
+					        }
+				        } catch (Exception $e) {
+					        $status['error'][] = $e->getMessage();
 				        }
 			        }
 		        }

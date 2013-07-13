@@ -203,13 +203,14 @@ class JFusionUser_prestashop extends JFusionUser {
      * @return void
      */
     function updatePassword($userinfo, &$existinguser, &$status) {
-        jimport('joomla.user.helper');
-        $existinguser->password_salt = JUserHelper::genRandomPassword(8);
-        $existinguser->password = md5($userinfo->password_clear . $existinguser->password_salt);
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'UPDATE #__customer SET password =' . $db->Quote($existinguser->password) . ', salt = ' . $db->Quote($existinguser->password_salt) . ' WHERE id_customer =' . (int)$existinguser->userid;
-        $db->setQuery($query);
 	    try {
+	        jimport('joomla.user.helper');
+	        $existinguser->password_salt = JUserHelper::genRandomPassword(8);
+	        $existinguser->password = md5($userinfo->password_clear . $existinguser->password_salt);
+	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $query = 'UPDATE #__customer SET password =' . $db->Quote($existinguser->password) . ', salt = ' . $db->Quote($existinguser->password_salt) . ' WHERE id_customer =' . (int)$existinguser->userid;
+	        $db->setQuery($query);
+
 		    $db->execute();
 		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
 	    } catch (Exception $e) {

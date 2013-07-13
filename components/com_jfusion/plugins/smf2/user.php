@@ -91,14 +91,13 @@ class JFusionUser_smf2 extends JFusionUser {
      */
     function deleteUser($userinfo)
     {
-    	//setup status array to hold debug info and errors
-        $status = array('error' => array(),'debug' => array());
-        $db = JFusionFactory::getDatabase($this->getJname());
-
-		$query = 'DELETE FROM #__members WHERE member_name = '.$db->quote($userinfo->username);
-		$db->setQuery($query);
-
 	    try {
+	        //setup status array to hold debug info and errors
+	        $status = array('error' => array(),'debug' => array());
+	        $db = JFusionFactory::getDatabase($this->getJname());
+
+			$query = 'DELETE FROM #__members WHERE member_name = '.$db->quote($userinfo->username);
+			$db->setQuery($query);
 		    $db->execute();
 
 		    //update the stats
@@ -142,13 +141,16 @@ class JFusionUser_smf2 extends JFusionUser {
     function destroySession($userinfo, $options)
     {
         $status = array('error' => array(),'debug' => array());
-        $params = JFusionFactory::getParams($this->getJname());
-        $status['debug'][] = JFusionFunction::addCookie($params->get('cookie_name'), '',0,$params->get('cookie_path'),$params->get('cookie_domain'),$params->get('secure'),$params->get('httponly'));
+	    try {
+	        $params = JFusionFactory::getParams($this->getJname());
+	        $status['debug'][] = JFusionFunction::addCookie($params->get('cookie_name'), '',0,$params->get('cookie_path'),$params->get('cookie_domain'),$params->get('secure'),$params->get('httponly'));
 
-	    $db = JFusionFactory::getDatabase($this->getJname());
-	    $query = 'DELETE FROM #__log_online WHERE id_member = '.$userinfo->userid.' LIMIT 1';
-	    $db->setQuery($query);
-	    $db->execute();
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'DELETE FROM #__log_online WHERE id_member = '.$userinfo->userid.' LIMIT 1';
+		    $db->setQuery($query);
+		    $db->execute();
+	    } catch (Exception $e) {
+	    }
 		return $status;
      }
 
@@ -191,13 +193,14 @@ class JFusionUser_smf2 extends JFusionUser {
      */
     function updatePassword($userinfo, &$existinguser, &$status)
     {
-        $existinguser->password = sha1(strtolower($userinfo->username) . $userinfo->password_clear);
-        $existinguser->password_salt = substr(md5(rand()), 0, 4);
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'UPDATE #__members SET passwd = ' . $db->quote($existinguser->password). ', password_salt = ' . $db->quote($existinguser->password_salt). ' WHERE id_member  = ' . $existinguser->userid;
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $db->setQuery($query );
 	    try {
+	        $existinguser->password = sha1(strtolower($userinfo->username) . $userinfo->password_clear);
+	        $existinguser->password_salt = substr(md5(rand()), 0, 4);
+	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $query = 'UPDATE #__members SET passwd = ' . $db->quote($existinguser->password). ', password_salt = ' . $db->quote($existinguser->password_salt). ' WHERE id_member  = ' . $existinguser->userid;
+	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $db->setQuery($query );
+
 		    $db->execute();
 		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password,0,6) . '********';
 	    } catch (Exception $e) {
@@ -226,15 +229,17 @@ class JFusionUser_smf2 extends JFusionUser {
      */
     function updateEmail($userinfo, &$existinguser, &$status)
     {
-        //we need to update the email
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'UPDATE #__members SET email_address ='.$db->quote($userinfo->email) .' WHERE id_member =' . $existinguser->userid;
-        $db->setQuery($query);
-        if (!$db->execute()) {
-            $status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $db->stderr();
-        } else {
-	        $status['debug'][] = JText::_('EMAIL_UPDATE'). ': ' . $existinguser->email . ' -> ' . $userinfo->email;
-        }
+	    try {
+		    //we need to update the email
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'UPDATE #__members SET email_address ='.$db->quote($userinfo->email) .' WHERE id_member =' . $existinguser->userid;
+		    $db->setQuery($query);
+		    $db->execute();
+
+		    $status['debug'][] = JText::_('EMAIL_UPDATE'). ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $e->getMessage();
+	    }
     }
     
     /**
@@ -250,24 +255,26 @@ class JFusionUser_smf2 extends JFusionUser {
      */
     function updateUsergroup($userinfo, &$existinguser, &$status)
     {
-        $params = JFusionFactory::getParams($this->getJname());
-        //get the usergroup and determine if working in advanced or simple mode
+	    try {
+	        $params = JFusionFactory::getParams($this->getJname());
+	        //get the usergroup and determine if working in advanced or simple mode
 
-        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
-        if (empty($usergroups)) {
-            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST');
-        } else {
-            $usergroup = $usergroups[0];
-            
-			$db = JFusionFactory::getDatabase($this->getJname());
-			$query = 'UPDATE #__members SET id_group =' . $db->quote($usergroup) . ' WHERE id_member =' . (int)$existinguser->userid;
-			$db->setQuery($query);
-			if (!$db->execute()) {
-				$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-			} else {
-				$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode (' , ', $existinguser->groups) . ' -> ' . $usergroup;
-			}
-        }
+	        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+	        if (empty($usergroups)) {
+	            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST');
+	        } else {
+	            $usergroup = $usergroups[0];
+
+				$db = JFusionFactory::getDatabase($this->getJname());
+				$query = 'UPDATE #__members SET id_group =' . $db->quote($usergroup) . ' WHERE id_member =' . (int)$existinguser->userid;
+				$db->setQuery($query);
+		        $db->execute();
+
+		        $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode (' , ', $existinguser->groups) . ' -> ' . $usergroup;
+	        }
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $e->getMessage();
+	    }
     }
 
     /**
@@ -279,32 +286,34 @@ class JFusionUser_smf2 extends JFusionUser {
      */
     function blockUser($userinfo, &$existinguser, &$status)
     {
+	    try {
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $ban = new stdClass;
+		    $ban->id_ban_group = NULL;
+		    $ban->name = $existinguser->username;
+		    $ban->ban_time = time();
+		    $ban->expire_time = NULL;
+		    $ban->cannot_access = 1;
+		    $ban->cannot_register = 0;
+		    $ban->cannot_post = 0;
+		    $ban->cannot_login = 0;
+		    $ban->reason = 'You have been banned from this software. Please contact your site admin for more details';
 
-            $db = JFusionFactory::getDatabase($this->getJname());
-            $ban = new stdClass;
-            $ban->id_ban_group = NULL;
-            $ban->name = $existinguser->username;
-            $ban->ban_time = time();
-            $ban->expire_time = NULL;
-            $ban->cannot_access = 1;
-            $ban->cannot_register = 0;
-            $ban->cannot_post = 0;
-            $ban->cannot_login = 0;
-            $ban->reason = 'You have been banned from this software. Please contact your site admin for more details';
+		    //now append the new user data
+		    try {
+			    $db->insertObject('#__ban_groups', $ban, 'id_ban_group' );
+		    } catch (Exception $e) {
+			    $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $e->getMessage();
+		    }
 
-            //now append the new user data
-            if (!$db->insertObject('#__ban_groups', $ban, 'id_ban_group' )) {
-         	   $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $db->stderr();
-	        }
-
-            $ban_item = new stdClass;
-            $ban_item->id_ban_group = $ban->id_ban_group;
-            $ban_item->id_member = $existinguser->userid;
-            if (!$db->insertObject('#__ban_items', $ban_item, 'id_ban' )) {
-               $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $db->stderr();
-           	} else {
-               $status['debug'][] = JText::_('BLOCK_UPDATE'). ': ' . $existinguser->block . ' -> ' . $userinfo->block;
-            }
+		    $ban_item = new stdClass;
+		    $ban_item->id_ban_group = $ban->id_ban_group;
+		    $ban_item->id_member = $existinguser->userid;
+		    $db->insertObject('#__ban_items', $ban_item, 'id_ban' );
+		    $status['debug'][] = JText::_('BLOCK_UPDATE'). ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $e->getMessage();
+	    }
     }
 
     /**
@@ -316,22 +325,20 @@ class JFusionUser_smf2 extends JFusionUser {
      */
     function unblockUser($userinfo, &$existinguser, &$status)
     {
-        	$db = JFusionFactory::getDatabase($this->getJname());
-            $query = 'DELETE FROM #__ban_groups WHERE name = ' . $db->quote($existinguser->username);
-            $db->setQuery($query);
-		    if (!$db->execute()) {
-        	    $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $db->stderr();
-        	}
+	    try {
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'DELETE FROM #__ban_groups WHERE name = ' . $db->quote($existinguser->username);
+		    $db->setQuery($query);
+		    $db->execute();
 
-            $query = 'DELETE FROM #__ban_items WHERE id_member = ' . $existinguser->userid;
-            $db->setQuery($query);
-	        if (!$db->execute()) {
-               $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $db->stderr();
-            } else {
-               $status['debug'][] = JText::_('BLOCK_UPDATE'). ': ' . $existinguser->block . ' -> ' . $userinfo->block;
-            }
+		    $query = 'DELETE FROM #__ban_items WHERE id_member = ' . $existinguser->userid;
+		    $db->setQuery($query);
+		    $db->execute();
 
-
+		    $status['debug'][] = JText::_('BLOCK_UPDATE'). ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $e->getMessage();
+	    }
     }
 
     /**
@@ -343,14 +350,16 @@ class JFusionUser_smf2 extends JFusionUser {
      */
     function activateUser($userinfo, &$existinguser, &$status)
     {
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'UPDATE #__members SET is_activated = 1, validation_code = \'\' WHERE id_member  = ' . $existinguser->userid;
-        $db->setQuery($query );
-        if (!$db->execute()) {
-            $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $db->stderr();
-        } else {
-	        $status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
-        }
+	    try {
+	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $query = 'UPDATE #__members SET is_activated = 1, validation_code = \'\' WHERE id_member  = ' . $existinguser->userid;
+	        $db->setQuery($query );
+		    $db->execute();
+
+		    $status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $e->getMessage();
+	    }
     }
 
     /**
@@ -362,14 +371,16 @@ class JFusionUser_smf2 extends JFusionUser {
      */
     function inactivateUser($userinfo, &$existinguser, &$status)
     {
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'UPDATE #__members SET is_activated = 0, validation_code = '.$db->Quote($userinfo->activation).' WHERE id_member  = ' . $existinguser->userid;
-        $db->setQuery($query );
-        if (!$db->execute()) {
-            $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $db->stderr();
-        } else {
-	        $status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
-        }
+	    try {
+	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $query = 'UPDATE #__members SET is_activated = 0, validation_code = '.$db->Quote($userinfo->activation).' WHERE id_member  = ' . $existinguser->userid;
+	        $db->setQuery($query );
+		    $db->execute();
+
+		    $status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $e->getMessage();
+	    }
     }
 
     /**

@@ -179,7 +179,8 @@ class JFusionPublic_phpbb3 extends JFusionPublic
      *
      * @return void
      */
-    function getBuffer(&$jfdata) {
+    function getBuffer(&$jfdata)
+    {
     	$session = JFactory::getSession();
     	//detect if phpbb3 is already loaded for dual login
     	if (defined('IN_PHPBB')) {
@@ -274,8 +275,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
                     define('UTF8_CASE', true);
                 }
                 include_once ($index_file);
-            }
-            catch(Exception $e) {
+            } catch(Exception $e) {
                 $jfdata->buffer = ob_get_contents();
                 ob_end_clean();
             }

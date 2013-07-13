@@ -99,16 +99,15 @@ class JFusionUser_mediawiki extends JFusionUser {
      * @param object $userinfo
      * @return array
      */
-    function deleteUser($userinfo)
-    {
-    	//setup status array to hold debug info and errors
-        $status = array('error' => array(),'debug' => array());
-
-        $db = JFusionFactory::getDatabase($this->getJname());
-
-		$query = 'DELETE FROM #__user WHERE user_name = '.$db->quote($userinfo->username);
-		$db->setQuery($query);
+    function deleteUser($userinfo) {
 	    try {
+	        //setup status array to hold debug info and errors
+	        $status = array('error' => array(),'debug' => array());
+
+	        $db = JFusionFactory::getDatabase($this->getJname());
+
+			$query = 'DELETE FROM #__user WHERE user_name = '.$db->quote($userinfo->username);
+			$db->setQuery($query);
 		    $db->execute();
 
 		    $query = 'DELETE FROM #__user_groups WHERE ug_user = '.$db->quote($userinfo->userid);
@@ -223,14 +222,14 @@ class JFusionUser_mediawiki extends JFusionUser {
      *
      * @return void
      */
-    function updatePassword($userinfo, &$existinguser, &$status)
-    {
-        $existinguser->password = ':A:' . md5( $userinfo->password_clear);
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'UPDATE #__user SET user_password = ' . $db->quote($existinguser->password). ' WHERE user_id  = ' . $existinguser->userid;
-        $db->setQuery($query );
+    function updatePassword($userinfo, &$existinguser, &$status) {
 	    try {
+	        $existinguser->password = ':A:' . md5( $userinfo->password_clear);
+	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $query = 'UPDATE #__user SET user_password = ' . $db->quote($existinguser->password). ' WHERE user_id  = ' . $existinguser->userid;
+	        $db->setQuery($query );
 		    $db->execute();
+
 		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password,0,6) . '********';
 	    } catch (Exception $e) {
 		    $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR')  . $e->getMessage();

@@ -341,17 +341,18 @@ class JFusionUser_moodle extends JFusionUser {
 	 * @param array  &$status       Array containing the errors and result of the function
 	 */
 	function updatePassword($userinfo, $existinguser, &$status) {
-		$params = JFusionFactory::getParams('moodle');
-		if ($params->get('passwordsaltmain')) {
-			$existinguser->password = md5($userinfo->password_clear . $params->get('passwordsaltmain'));
-		} else {
-			$existinguser->password = md5($userinfo->password_clear);
-		}
-		$db = JFusionFactory::getDatabase($this->getJname());
-		$query = 'UPDATE #__user SET password =' . $db->Quote($existinguser->password) . ' WHERE id =' . $existinguser->userid;
-		$db->setQuery($query);
 		try {
+			$params = JFusionFactory::getParams('moodle');
+			if ($params->get('passwordsaltmain')) {
+				$existinguser->password = md5($userinfo->password_clear . $params->get('passwordsaltmain'));
+			} else {
+				$existinguser->password = md5($userinfo->password_clear);
+			}
+			$db = JFusionFactory::getDatabase($this->getJname());
+			$query = 'UPDATE #__user SET password =' . $db->Quote($existinguser->password) . ' WHERE id =' . $existinguser->userid;
+			$db->setQuery($query);
 			$db->execute();
+
 			$status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password,0,6) . '********';
 		} catch (Exception $e) {
 			$status['error'][] = JText::_('PASSWORD_UPDATE_ERROR')  . $e->getMessage();

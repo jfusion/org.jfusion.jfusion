@@ -93,41 +93,42 @@ class JFusionUser_phpbb3 extends JFusionUser
      *
      * @return array
      */
-    function destroySession($userinfo, $options) {
-        $status = array('error' => array(),'debug' => array());
-        $db = JFusionFactory::getDatabase($this->getJname());
-        //get the cookie parameters
-        $params = JFusionFactory::getParams($this->getJname());
-        $phpbb_cookie_name = $params->get('cookie_prefix');
-        $phpbb_cookie_path = $params->get('cookie_path');
-        $secure = $params->get('secure',false);
-        $httponly = $params->get('httponly',true);
-        //baltie cookie domain fix
-        $phpbb_cookie_domain = $params->get('cookie_domain');
-        if ($phpbb_cookie_domain == 'localhost' || $phpbb_cookie_domain == '127.0.0.1') {
-            $phpbb_cookie_domain = '';
-        }
-        //update session time for the user into user table
-        $query = 'UPDATE #__users SET user_lastvisit =' . time() . ' WHERE user_id =' . (int)$userinfo->userid;
-        $db->setQuery($query);
+    function destroySession($userinfo, $options)
+    {
+	    $status = array('error' => array(),'debug' => array());
 	    try {
-		    $db->execute();
-	    } catch (Exception $e) {
-		    $status['debug'][] = 'Error could not update the last visit field ' . $e->getMessage();
-	    }
+	        $db = JFusionFactory::getDatabase($this->getJname());
+	        //get the cookie parameters
+	        $params = JFusionFactory::getParams($this->getJname());
+	        $phpbb_cookie_name = $params->get('cookie_prefix');
+	        $phpbb_cookie_path = $params->get('cookie_path');
+	        $secure = $params->get('secure',false);
+	        $httponly = $params->get('httponly',true);
+	        //baltie cookie domain fix
+	        $phpbb_cookie_domain = $params->get('cookie_domain');
+	        if ($phpbb_cookie_domain == 'localhost' || $phpbb_cookie_domain == '127.0.0.1') {
+	            $phpbb_cookie_domain = '';
+	        }
+	        //update session time for the user into user table
+	        $query = 'UPDATE #__users SET user_lastvisit =' . time() . ' WHERE user_id =' . (int)$userinfo->userid;
+	        $db->setQuery($query);
+		    try {
+			    $db->execute();
+		    } catch (Exception $e) {
+			    $status['debug'][] = 'Error could not update the last visit field ' . $e->getMessage();
+		    }
 
-        //delete the cookies
-        $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_u', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly);
-        $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_sid', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly);
-        $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_k', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly);
+	        //delete the cookies
+	        $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_u', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly);
+	        $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_sid', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly);
+	        $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_k', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly);
 
-        $_COOKIE[$phpbb_cookie_name . '_u'] = '';
-        $_COOKIE[$phpbb_cookie_name . '_sid'] = '';
-        $_COOKIE[$phpbb_cookie_name . '_k'] = '';
-        //delete the database sessions
-        $query = 'DELETE FROM #__sessions WHERE session_user_id =' . (int)$userinfo->userid;
-        $db->setQuery($query);
-	    try {
+	        $_COOKIE[$phpbb_cookie_name . '_u'] = '';
+	        $_COOKIE[$phpbb_cookie_name . '_sid'] = '';
+	        $_COOKIE[$phpbb_cookie_name . '_k'] = '';
+	        //delete the database sessions
+	        $query = 'DELETE FROM #__sessions WHERE session_user_id =' . (int)$userinfo->userid;
+	        $db->setQuery($query);
 		    $db->execute();
 
 		    $query = 'DELETE FROM #__sessions_keys WHERE user_id =' . (int)$userinfo->userid;

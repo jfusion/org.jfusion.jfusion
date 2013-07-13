@@ -107,12 +107,12 @@ class JFusionUser_smf extends JFusionUser
      */
     function deleteUser($userinfo)
     {
-        //setup status array to hold debug info and errors
-        $status = array('error' => array(),'debug' => array());
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'DELETE FROM #__members WHERE memberName = ' . $db->quote($userinfo->username);
-        $db->setQuery($query);
 	    try {
+	        //setup status array to hold debug info and errors
+	        $status = array('error' => array(),'debug' => array());
+	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $query = 'DELETE FROM #__members WHERE memberName = ' . $db->quote($userinfo->username);
+	        $db->setQuery($query);
 		    $db->execute();
 
 		    //update the stats
@@ -222,14 +222,15 @@ class JFusionUser_smf extends JFusionUser
      */
     function updatePassword($userinfo, &$existinguser, &$status)
     {
-        $existinguser->password = sha1(strtolower($userinfo->username) . $userinfo->password_clear);
-        $existinguser->password_salt = substr(md5(rand()), 0, 4);
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'UPDATE #__members SET passwd = ' . $db->quote($existinguser->password) . ', passwordSalt = ' . $db->quote($existinguser->password_salt) . ' WHERE ID_MEMBER  = ' . (int)$existinguser->userid;
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $db->setQuery($query);
 	    try {
+	        $existinguser->password = sha1(strtolower($userinfo->username) . $userinfo->password_clear);
+	        $existinguser->password_salt = substr(md5(rand()), 0, 4);
+	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $query = 'UPDATE #__members SET passwd = ' . $db->quote($existinguser->password) . ', passwordSalt = ' . $db->quote($existinguser->password_salt) . ' WHERE ID_MEMBER  = ' . (int)$existinguser->userid;
+	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $db->setQuery($query);
 		    $db->execute();
+
 		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password,0,6) . '********';
 	    } catch (Exception $e) {
 		    $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR')  . $e->getMessage();

@@ -211,13 +211,14 @@ class JFusionUser_elgg extends JFusionUser {
      * @return void
      */
     function updatePassword($userinfo, &$existinguser, &$status) {
-        jimport('joomla.user.helper');
-        $existinguser->password_salt = JUserHelper::genRandomPassword(8);
-        $existinguser->password = md5($userinfo->password_clear . $existinguser->password_salt);
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'UPDATE #__users_entity SET password =' . $db->Quote($existinguser->password) . ', salt = ' . $db->Quote($existinguser->password_salt) . ' WHERE guid =' . (int)$existinguser->userid;
-        $db->setQuery($query);
 	    try {
+	        jimport('joomla.user.helper');
+	        $existinguser->password_salt = JUserHelper::genRandomPassword(8);
+	        $existinguser->password = md5($userinfo->password_clear . $existinguser->password_salt);
+	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $query = 'UPDATE #__users_entity SET password =' . $db->Quote($existinguser->password) . ', salt = ' . $db->Quote($existinguser->password_salt) . ' WHERE guid =' . (int)$existinguser->userid;
+	        $db->setQuery($query);
+
 		    $db->execute();
 		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password,0,6) . '********';
 	    } catch (Exception $e) {
@@ -311,16 +312,19 @@ class JFusionUser_elgg extends JFusionUser {
      *
      * @return void
      */
-    function updateEmail($userinfo, &$existinguser, &$status) {
-        //we need to update the email
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'UPDATE #__users_entity SET email =' . $db->Quote($userinfo->email) . ' WHERE guid =' . (int)$existinguser->userid;
-        $db->setQuery($query);
-        if (!$db->execute()) {
-            $status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $db->stderr();
-        } else {
-            $status['debug'][] = JText::_('PASSWORD_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
-        }
+    function updateEmail($userinfo, &$existinguser, &$status)
+    {
+	    try {
+		    //we need to update the email
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'UPDATE #__users_entity SET email =' . $db->Quote($userinfo->email) . ' WHERE guid =' . (int)$existinguser->userid;
+		    $db->setQuery($query);
+		    $db->execute();
+
+		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $e->getMessage();
+	    }
     }
     
     /**

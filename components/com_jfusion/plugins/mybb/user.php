@@ -151,18 +151,19 @@ class JFusionUser_mybb extends JFusionUser {
      * @return void
      */
     function blockUser($userinfo, &$existinguser, &$status) {
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $user = new stdClass;
-        $user->uid = $existinguser->userid;
-        $user->gid = 7;
-        $user->oldgroup = $existinguser->groups[0];
-        $user->admin = 1;
-        $user->dateline = time();
-        $user->bantime = '---';
-        $user->reason = 'JFusion';
-        $user->lifted = 0;
-        //now append the new user data
 	    try {
+	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $user = new stdClass;
+	        $user->uid = $existinguser->userid;
+	        $user->gid = 7;
+	        $user->oldgroup = $existinguser->groups[0];
+	        $user->admin = 1;
+	        $user->dateline = time();
+	        $user->bantime = '---';
+	        $user->reason = 'JFusion';
+	        $user->lifted = 0;
+	        //now append the new user data
+
 		    $db->insertObject('#__banned', $user, 'uid');
 
 		    //change its usergroup
@@ -183,15 +184,15 @@ class JFusionUser_mybb extends JFusionUser {
      * @return void
      */
     function unblockUser($userinfo, &$existinguser, &$status) {
-        $db = JFusionFactory::getDatabase($this->getJname());
-        //found out what the old usergroup was
-        $query = 'SELECT oldgroup from #__banned WHERE uid =' . (int)$existinguser->userid;;
-        $db->setQuery($query);
-        $oldgroup = $db->loadResult();
-        //delete the ban
-        $query = 'DELETE FROM #__banned WHERE uid = ' . (int)$existinguser->userid;
-        $db->setQuery($query);
 	    try {
+	        $db = JFusionFactory::getDatabase($this->getJname());
+	        //found out what the old usergroup was
+	        $query = 'SELECT oldgroup from #__banned WHERE uid =' . (int)$existinguser->userid;;
+	        $db->setQuery($query);
+	        $oldgroup = $db->loadResult();
+	        //delete the ban
+	        $query = 'DELETE FROM #__banned WHERE uid = ' . (int)$existinguser->userid;
+	        $db->setQuery($query);
 		    $db->execute();
 
 		    //check the oldgroup
@@ -224,14 +225,15 @@ class JFusionUser_mybb extends JFusionUser {
      * @return void
      */
     function updatePassword($userinfo, &$existinguser, &$status) {
-        jimport('joomla.user.helper');
-        $existinguser->password_salt = JUserHelper::genRandomPassword(6);
-        $existinguser->password = md5(md5($existinguser->password_salt) . md5($userinfo->password_clear));
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'UPDATE #__users SET password =' . $db->Quote($existinguser->password) . ', salt = ' . $db->Quote($existinguser->password_salt) . ' WHERE uid =' . (int)$existinguser->userid;
-        $db->setQuery($query);
 	    try {
+	        jimport('joomla.user.helper');
+	        $existinguser->password_salt = JUserHelper::genRandomPassword(6);
+	        $existinguser->password = md5(md5($existinguser->password_salt) . md5($userinfo->password_clear));
+	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $query = 'UPDATE #__users SET password =' . $db->Quote($existinguser->password) . ', salt = ' . $db->Quote($existinguser->password_salt) . ' WHERE uid =' . (int)$existinguser->userid;
+	        $db->setQuery($query);
 		    $db->execute();
+
 		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password,0,6) . '********';
 	    } catch (Exception $e) {
 		    $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR')  . $e->getMessage();
@@ -245,23 +247,25 @@ class JFusionUser_mybb extends JFusionUser {
      *
      * @return void
      */
-    function updateUsergroup($userinfo, &$existinguser, &$status) {
+    function updateUsergroup($userinfo, &$existinguser, &$status)
+    {
+		try {
+			$usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+			if (empty($usergroups)) {
+				$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('USERGROUP_MISSING');
+			} else {
+				$usergroup = $usergroups[0];
+				//update the usergroup
+				$db = JFusionFactory::getDatabase($this->getJname());
+				$query = 'UPDATE #__users SET usergroup = ' . $usergroup . ' WHERE uid  = ' . (int)$existinguser->userid;
+				$db->setQuery($query);
+				$db->execute();
 
-        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
-        if (empty($usergroups)) {
-            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('USERGROUP_MISSING');
-        } else {
-            $usergroup = $usergroups[0];
-            //update the usergroup
-            $db = JFusionFactory::getDatabase($this->getJname());
-            $query = 'UPDATE #__users SET usergroup = ' . $usergroup . ' WHERE uid  = ' . (int)$existinguser->userid;
-            $db->setQuery($query);
-            if (!$db->execute()) {
-                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-            } else {
-                $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode (' , ', $existinguser->groups) . ' -> ' . $usergroup;
-            }
-        }
+				$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode (' , ', $existinguser->groups) . ' -> ' . $usergroup;
+			}
+		} catch (Exception $e) {
+			$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $e->getMessage();
+		}
     }
 
     /**
@@ -271,52 +275,53 @@ class JFusionUser_mybb extends JFusionUser {
      * @return void
      */
     function createUser($userinfo, &$status) {
-        //found out what usergroup should be used
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $params = JFusionFactory::getParams($this->getJname());
-        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
-        if (empty($usergroups)) {
-            $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . JText::_('USERGROUP_MISSING');
-        } else {
-            $usergroup = $usergroups[0];
-            $username_clean = $this->filterUsername($userinfo->username);
-            //prepare the variables
-            $user = new stdClass;
-            $user->uid = null;
-            $user->username = $username_clean;
-            $user->email = $userinfo->email;
-            jimport('joomla.user.helper');
-            if (isset($userinfo->password_clear)) {
-                //we can update the password
-                $user->salt = JUserHelper::genRandomPassword(6);
-                $user->password = md5(md5($user->salt) . md5($userinfo->password_clear));
-                $user->loginkey = JUserHelper::genRandomPassword(50);
-            } else {
-                $user->password = $userinfo->password;
-                if (!isset($userinfo->password_salt)) {
-                    $user->salt = JUserHelper::genRandomPassword(6);
-                } else {
-                    $user->salt = $userinfo->password_salt;
-                }
-                $user->loginkey = JUserHelper::genRandomPassword(50);
-            }
-            if (!empty($userinfo->activation)) {
-                $user->usergroup = $params->get('activationgroup');
-            } elseif (!empty($userinfo->block)) {
-                $user->usergroup = 7;
-            } else {
-                $user->usergroup = $usergroup;
-            }
-            //now append the new user data
-            if (!$db->insertObject('#__users', $user, 'uid')) {
-                //return the error
-                $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-            } else {
-                //return the good news
-                $status['debug'][] = JText::_('USER_CREATION');
-                $status['userinfo'] = $this->getUser($userinfo);
-            }
-        }
+	    try {
+		    //found out what usergroup should be used
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $params = JFusionFactory::getParams($this->getJname());
+		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+		    if (empty($usergroups)) {
+			    $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . JText::_('USERGROUP_MISSING');
+		    } else {
+			    $usergroup = $usergroups[0];
+			    $username_clean = $this->filterUsername($userinfo->username);
+			    //prepare the variables
+			    $user = new stdClass;
+			    $user->uid = null;
+			    $user->username = $username_clean;
+			    $user->email = $userinfo->email;
+			    jimport('joomla.user.helper');
+			    if (isset($userinfo->password_clear)) {
+				    //we can update the password
+				    $user->salt = JUserHelper::genRandomPassword(6);
+				    $user->password = md5(md5($user->salt) . md5($userinfo->password_clear));
+				    $user->loginkey = JUserHelper::genRandomPassword(50);
+			    } else {
+				    $user->password = $userinfo->password;
+				    if (!isset($userinfo->password_salt)) {
+					    $user->salt = JUserHelper::genRandomPassword(6);
+				    } else {
+					    $user->salt = $userinfo->password_salt;
+				    }
+				    $user->loginkey = JUserHelper::genRandomPassword(50);
+			    }
+			    if (!empty($userinfo->activation)) {
+				    $user->usergroup = $params->get('activationgroup');
+			    } elseif (!empty($userinfo->block)) {
+				    $user->usergroup = 7;
+			    } else {
+				    $user->usergroup = $usergroup;
+			    }
+			    //now append the new user data
+			    $db->insertObject('#__users', $user, 'uid');
+
+			    //return the good news
+			    $status['debug'][] = JText::_('USER_CREATION');
+			    $status['userinfo'] = $this->getUser($userinfo);
+		    }
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('USER_CREATION_ERROR') . $e->getMessage();
+	    }
     }
 
     /**

@@ -58,15 +58,15 @@ class JFusionUser_joomla_ext extends JFusionUser {
      * @return array
      */
     function deleteUser($userinfo) {
-        //get the database ready
-        $db = JFusionFactory::getDatabase($this->getJname());
-        //setup status array to hold debug info and errors
-        $status = array('error' => array(),'debug' => array());
-        $username = $userinfo->username;
-        $userid = $userinfo->userid;
-        $query = 'DELETE FROM #__users WHERE id = ' . (int)$userid;
-        $db->setQuery($query);
 	    try {
+	        //get the database ready
+	        $db = JFusionFactory::getDatabase($this->getJname());
+	        //setup status array to hold debug info and errors
+	        $status = array('error' => array(),'debug' => array());
+	        $username = $userinfo->username;
+	        $userid = $userinfo->userid;
+	        $query = 'DELETE FROM #__users WHERE id = ' . (int)$userid;
+	        $db->setQuery($query);
 		    $db->execute();
 
 		    $query = 'DELETE FROM #__user_profiles WHERE user_id = ' . (int)$userid;

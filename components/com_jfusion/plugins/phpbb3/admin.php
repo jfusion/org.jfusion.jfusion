@@ -87,39 +87,44 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
             //create a connection to the database
             $options = array('driver' => $params['database_type'], 'host' => $params['database_host'], 'user' => $params['database_user'], 'password' => $params['database_password'], 'database' => $params['database_name'], 'prefix' => $params['database_prefix']);
             //Get configuration settings stored in the database
-            $vdb = JDatabaseDriver::getInstance($options);
-            $query = 'SELECT config_name, config_value FROM #__config WHERE config_name IN (\'script_path\', \'cookie_path\', \'server_name\', \'cookie_domain\', \'cookie_name\', \'allow_autologin\')';
-            if (JError::isError($vdb) || !$vdb) {
-                JFusionFunction::raiseWarning(0, JText::_('NO_DATABASE'));
-                $result = false;
-                return $result;
-            } else {
-                $vdb->setQuery($query);
-                $rows = $vdb->loadObjectList();
-                foreach ($rows as $row) {
-                    $config[$row->config_name] = $row->config_value;
-                }
-                //store the new found parameters
-                $params['cookie_path'] = isset($config['cookie_path']) ? $config['cookie_path'] : '';
-                $params['cookie_domain'] = isset($config['cookie_domain']) ? $config['cookie_domain'] : '';
-                $params['cookie_prefix'] = isset($config['cookie_name']) ? $config['cookie_name'] : '';
-                $params['allow_autologin'] = isset($config['allow_autologin']) ? $config['allow_autologin'] : '';
-                $params['source_path'] = $forumPath;
-            }
-            $params['source_url'] = '';
-            if (isset($config['server_name'])) {
-                //check for trailing slash
-                if (substr($config['server_name'], -1) == '/' && substr($config['script_path'], 0, 1) == '/') {
-                    //too many slashes, we need to remove one
-                    $params['source_url'] = $config['server_name'] . substr($config['script_path'], 1);
-                } else if (substr($config['server_name'], -1) == '/' || substr($config['script_path'], 0, 1) == '/') {
-                    //the correct number of slashes
-                    $params['source_url'] = $config['server_name'] . $config['script_path'];
-                } else {
-                    //no slashes found, we need to add one
-                    $params['source_url'] = $config['server_name'] . '/' . $config['script_path'];
-                }
-            }
+	        try {
+		        $vdb = JDatabaseDriver::getInstance($options);
+
+		        if (!$vdb) {
+			        JFusionFunction::raiseWarning(0, JText::_('NO_DATABASE'));
+			        return false;
+		        } else {
+			        $query = 'SELECT config_name, config_value FROM #__config WHERE config_name IN (\'script_path\', \'cookie_path\', \'server_name\', \'cookie_domain\', \'cookie_name\', \'allow_autologin\')';
+			        $vdb->setQuery($query);
+			        $rows = $vdb->loadObjectList();
+			        foreach ($rows as $row) {
+				        $config[$row->config_name] = $row->config_value;
+			        }
+			        //store the new found parameters
+			        $params['cookie_path'] = isset($config['cookie_path']) ? $config['cookie_path'] : '';
+			        $params['cookie_domain'] = isset($config['cookie_domain']) ? $config['cookie_domain'] : '';
+			        $params['cookie_prefix'] = isset($config['cookie_name']) ? $config['cookie_name'] : '';
+			        $params['allow_autologin'] = isset($config['allow_autologin']) ? $config['allow_autologin'] : '';
+			        $params['source_path'] = $forumPath;
+		        }
+		        $params['source_url'] = '';
+		        if (isset($config['server_name'])) {
+			        //check for trailing slash
+			        if (substr($config['server_name'], -1) == '/' && substr($config['script_path'], 0, 1) == '/') {
+				        //too many slashes, we need to remove one
+				        $params['source_url'] = $config['server_name'] . substr($config['script_path'], 1);
+			        } else if (substr($config['server_name'], -1) == '/' || substr($config['script_path'], 0, 1) == '/') {
+				        //the correct number of slashes
+				        $params['source_url'] = $config['server_name'] . $config['script_path'];
+			        } else {
+				        //no slashes found, we need to add one
+				        $params['source_url'] = $config['server_name'] . '/' . $config['script_path'];
+			        }
+		        }
+	        } catch (Exception $e) {
+		        JFusionFunction::raiseWarning(0, JText::_('NO_DATABASE') . ' '. $e->getMessage());
+		        return false;
+	        }
         }
         //return the parameters so it can be saved permanently
         return $params;

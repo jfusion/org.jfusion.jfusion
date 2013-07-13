@@ -702,14 +702,16 @@ class JFusionJplugin
      */
     public static function updateEmail($userinfo, &$existinguser, &$status, $jname)
     {
-        $db = JFusionFactory::getDatabase($jname);
-        $query = 'UPDATE #__users SET email =' . $db->Quote($userinfo->email) . ' WHERE id =' . $existinguser->userid;
-        $db->setQuery($query);
-        if (!$db->execute()) {
-            $status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $db->stderr();
-        } else {
-            $status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
-        }
+	    try {
+	        $db = JFusionFactory::getDatabase($jname);
+	        $query = 'UPDATE #__users SET email =' . $db->Quote($userinfo->email) . ' WHERE id =' . $existinguser->userid;
+	        $db->setQuery($query);
+		    $db->execute();
+
+		    $status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $e->getMessage();
+	    }
     }
 
     /**
@@ -724,18 +726,20 @@ class JFusionJplugin
      */
     public static function updatePassword($userinfo, &$existinguser, &$status, $jname)
     {
-        $db = JFusionFactory::getDatabase($jname);
-	    jimport( 'joomla.user.helper' );
-        $userinfo->password_salt = JUserHelper::genRandomPassword(32);
-        $userinfo->password = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt);
-        $new_password = $userinfo->password . ':' . $userinfo->password_salt;
-        $query = 'UPDATE #__users SET password =' . $db->Quote($new_password) . ' WHERE id =' . $existinguser->userid;
-        $db->setQuery($query);
-        if (!$db->execute()) {
-            $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . $db->stderr();
-        } else {
-            $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
-        }
+	    try {
+	        $db = JFusionFactory::getDatabase($jname);
+		    jimport( 'joomla.user.helper' );
+	        $userinfo->password_salt = JUserHelper::genRandomPassword(32);
+	        $userinfo->password = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt);
+	        $new_password = $userinfo->password . ':' . $userinfo->password_salt;
+	        $query = 'UPDATE #__users SET password =' . $db->Quote($new_password) . ' WHERE id =' . $existinguser->userid;
+	        $db->setQuery($query);
+		    $db->execute();
+
+		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . $e->getMessage();
+	    }
     }
 
     /**
@@ -750,20 +754,22 @@ class JFusionJplugin
      */
     public static function blockUser($userinfo, &$existinguser, &$status, $jname)
     {
-        //do not block super administrators
-        if ($existinguser->group_id != 25) {
-            //block the user
-            $db = JFusionFactory::getDatabase($jname);
-            $query = 'UPDATE #__users SET block = 1 WHERE id =' . $existinguser->userid;
-            $db->setQuery($query);
-            if (!$db->execute()) {
-                $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $db->stderr();
-            } else {
-                $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
-            }
-        } else {
-            $status['debug'][] = JText::_('BLOCK_UPDATE_ERROR') . ': ' . JText::_('CANNOT_BLOCK_SUPERADMINS');
-        }
+	    try {
+	        //do not block super administrators
+	        if ($existinguser->group_id != 25) {
+	            //block the user
+	            $db = JFusionFactory::getDatabase($jname);
+	            $query = 'UPDATE #__users SET block = 1 WHERE id =' . $existinguser->userid;
+	            $db->setQuery($query);
+		        $db->execute();
+
+		        $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+	        } else {
+	            $status['debug'][] = JText::_('BLOCK_UPDATE_ERROR') . ': ' . JText::_('CANNOT_BLOCK_SUPERADMINS');
+	        }
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $e->getMessage();
+	    }
     }
 
     /**
@@ -778,15 +784,17 @@ class JFusionJplugin
      */
     public static function unblockUser($userinfo, &$existinguser, &$status, $jname)
     {
-        //unblock the user
-        $db = JFusionFactory::getDatabase($jname);
-        $query = 'UPDATE #__users SET block = 0 WHERE id =' . $existinguser->userid;
-        $db->setQuery($query);
-        if (!$db->execute()) {
-            $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $db->stderr();
-        } else {
-            $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
-        }
+	    try {
+		    //unblock the user
+		    $db = JFusionFactory::getDatabase($jname);
+		    $query = 'UPDATE #__users SET block = 0 WHERE id =' . $existinguser->userid;
+		    $db->setQuery($query);
+		    $db->execute();
+
+		    $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $e->getMessage();
+	    }
     }
 
     /**
@@ -801,15 +809,17 @@ class JFusionJplugin
      */
     public static function activateUser($userinfo, &$existinguser, &$status, $jname)
     {
-        //unblock the user
-        $db = JFusionFactory::getDatabase($jname);
-        $query = 'UPDATE #__users SET block = 0, activation = \'\' WHERE id =' . $existinguser->userid;
-        $db->setQuery($query);
-        if (!$db->execute()) {
-            $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $db->stderr();
-        } else {
-            $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
-        }
+	    try {
+		    //unblock the user
+		    $db = JFusionFactory::getDatabase($jname);
+		    $query = 'UPDATE #__users SET block = 0, activation = \'\' WHERE id =' . $existinguser->userid;
+		    $db->setQuery($query);
+		    $db->execute();
+
+		    $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $e->getMessage();
+	    }
     }
 
     /**
@@ -824,19 +834,21 @@ class JFusionJplugin
      */
     public static function inactivateUser($userinfo, &$existinguser, &$status, $jname)
     {
-        if ($existinguser->group_id != 25) {
-            //unblock the user
-            $db = JFusionFactory::getDatabase($jname);
-            $query = 'UPDATE #__users SET block = 1, activation = ' . $db->Quote($userinfo->activation) . ' WHERE id =' . $existinguser->userid;
-            $db->setQuery($query);
-            if (!$db->execute()) {
-                $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $db->stderr();
-            } else {
-                $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
-            }
-        } else {
-            $status['debug'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' . JText::_('CANNOT_INACTIVATE_SUPERADMINS');
-        }
+	    try {
+		    if ($existinguser->group_id != 25) {
+			    //unblock the user
+			    $db = JFusionFactory::getDatabase($jname);
+			    $query = 'UPDATE #__users SET block = 1, activation = ' . $db->Quote($userinfo->activation) . ' WHERE id =' . $existinguser->userid;
+			    $db->setQuery($query);
+			    $db->execute();
+
+			    $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+		    } else {
+			    $status['debug'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' . JText::_('CANNOT_INACTIVATE_SUPERADMINS');
+		    }
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $e->getMessage();
+	    }
     }
 
     /**
@@ -883,28 +895,31 @@ class JFusionJplugin
      */
     public static function updateUsername($userinfo, &$existinguser, &$status, $jname)
     {
-        //generate the filtered integration username
-        $db = JFusionFactory::getDatabase($jname);
-        $username_clean = JFusionJplugin::filterUsername($userinfo->username, $jname);
-        $status['debug'][] = JText::_('USERNAME') . ': ' . $userinfo->username . ' -> ' . JText::_('FILTERED_USERNAME') . ':' . $username_clean;
-        $query = 'UPDATE #__users SET username =' . $db->Quote($username_clean) . 'WHERE id =' . $existinguser->userid;
-        $db->setQuery($query);
-        if (!$db->execute()) {
-            //update failed, return error
-            $status['error'][] = JText::_('USERNAME_UPDATE_ERROR') . ': ' . $db->stderr();
-        } else {
-            $status['debug'][] = JText::_('USERNAME_UPDATE') . ': ' . $username_clean;
-        }
-        if ($jname == 'joomla_int') {
-            //update the lookup table
-            $query = 'REPLACE INTO #__jfusion_users (id, username) VALUES (' . $existinguser->userid . ', ' . $db->Quote($userinfo->username) . ')';
-            $db->setQuery($query);
-            if (!$db->execute()) {
-                $status['error'][] = JText::_('USERNAME_UPDATE_ERROR') . ': ' . $db->stderr();
-            } else {
-                $status['debug'][] = JText::_('USERNAME_UPDATE') . ': ' . $username_clean;
-            }
-        }
+	    try {
+		    //generate the filtered integration username
+		    $db = JFusionFactory::getDatabase($jname);
+		    $username_clean = JFusionJplugin::filterUsername($userinfo->username, $jname);
+		    $status['debug'][] = JText::_('USERNAME') . ': ' . $userinfo->username . ' -> ' . JText::_('FILTERED_USERNAME') . ':' . $username_clean;
+		    $query = 'UPDATE #__users SET username =' . $db->Quote($username_clean) . 'WHERE id =' . $existinguser->userid;
+		    $db->setQuery($query);
+		    try {
+			    $db->execute();
+			    $status['debug'][] = JText::_('USERNAME_UPDATE') . ': ' . $username_clean;
+		    } catch (Exception $e) {
+			    $status['error'][] = JText::_('USERNAME_UPDATE_ERROR') . ': ' . $e->getMessage();
+		    }
+
+		    if ($jname == 'joomla_int') {
+			    //update the lookup table
+			    $query = 'REPLACE INTO #__jfusion_users (id, username) VALUES (' . $existinguser->userid . ', ' . $db->Quote($userinfo->username) . ')';
+			    $db->setQuery($query);
+			    $db->execute();
+
+			    $status['debug'][] = JText::_('USERNAME_UPDATE') . ': ' . $username_clean;
+		    }
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('USERNAME_UPDATE_ERROR') . ': ' . $e->getMessage();
+	    }
     }
 
     /**
