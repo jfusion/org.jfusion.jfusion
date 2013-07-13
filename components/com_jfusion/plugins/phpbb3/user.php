@@ -491,6 +491,7 @@ class JFusionUser_phpbb3 extends JFusionUser
                     $newest_user_id = $db->loadResult();
                     if ($newest_user_id == $existinguser->userid) {
                         $query = 'UPDATE #__config SET config_value = ' . $db->Quote($user->user_colour) . ' WHERE config_name = \'newest_user_id\'';
+	                    $db->setQuery($query);
                         if (!$db->query()) {
                             //return the error
                             $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
