@@ -28,7 +28,7 @@ defined('_JEXEC') or die('Restricted access');
  */
 class JFusionUser_mybb extends JFusionUser {
     /**
-     * @param stdClass $userinfo
+     * @param object $userinfo
      * @return null|stdClass
      */
     function getUser($userinfo) {

@@ -339,27 +339,27 @@ HTML;
 		$joomla_secret = $joomla->get('secret');
 		
 		$query = 'REPLACE INTO #__core_config_data SET path = \'joomla/joomlaconfig/baseurl\', value = \''.$joomla_baseurl.'\';';
-		$db->BeginTrans();
+		$db->transactionStart();
         $db->setQuery($query);
         $db->execute();
 		if ($db->getErrorNum() != 0) {
-			$db->RollbackTrans();
+			$db->transactionRollback();
 			$status['error'] = $db->stderr ();
 		} else {
             $query = 'REPLACE INTO #__core_config_data SET path = \'joomla/joomlaconfig/installationpath\', value = \''.JPATH_SITE.'\';';
-            $db->BeginTrans();
+            $db->transactionStart();
             $db->setQuery($query);
             $db->execute();
             if ($db->getErrorNum() != 0) {
-                $db->RollbackTrans();
+                $db->transactionRollback();
                 $status['error'] = $db->stderr ();
             } else {
                 $query = 'REPLACE INTO #__core_config_data SET path = \'joomla/joomlaconfig/secret_key\', value = \''.$joomla_secret.'\';';
-                $db->BeginTrans();
+                $db->transactionStart();
                 $db->setQuery($query);
                 $db->execute();
                 if ($db->getErrorNum() != 0) {
-                    $db->RollbackTrans();
+                    $db->transactionRollback();
                     $status['error'] = $db->stderr ();
                 } else {
                     if ($ret !== true) {
@@ -411,10 +411,11 @@ HTML;
 		
 		foreach($paths as $path) {
 			$query = 'DELETE FROM #__core_config_data WHERE path = ' . $db->Quote($path);
-			$db->BeginTrans ();
-			$db->Execute ( $query );
+			$db->transactionStart();
+			$db->setQuery($query);
+			$db->execute();
 			if ($db->getErrorNum() != 0) {
-				$db->RollbackTrans ();
+				$db->transactionRollback();
 				$status['error'] = $db->stderr();
                 break;
 			}
@@ -422,21 +423,21 @@ HTML;
 		
 		/*
 		$query = 'DELETE FROM #__core_config_data WHERE path = \'joomla/joomlaconfig/installationpath\'';
-		$db->BeginTrans();
+		$db->transactionStart();
 		$db->setQuery($query);
         $db->execute();
 		if ($db->getErrorNum() != 0) {
-			$db->RollbackTrans();
+			$db->transactionRollback();
 			$status['error'] = $db->stderr ();
 			return $status;
 		}
 		
 		$query = 'DELETE FROM #__core_config_data WHERE path = \'joomla/joomlaconfig/secret_key\'';
-		$db->BeginTrans();
+		$db->transactionStart();
 		$db->setQuery($query);
         $db->execute();
 		if ($db->getErrorNum() != 0) {
-			$db->RollbackTrans();
+			$db->transactionRollback();
 			$status['error'] = $db->stderr ();
 			return $status;
 		}

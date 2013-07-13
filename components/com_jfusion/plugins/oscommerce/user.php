@@ -206,23 +206,23 @@ class JFusionUser_oscommerce extends JFusionUser
             break;
         }
         if ($query1) {
-            $db->BeginTrans();
+            $db->transactionStart();
             $db->setQuery($query1);
             if (!$db->execute()) {
-                $db->RollbackTrans();
+                $db->transactionRollback();
                 $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . $db->stderr();
                 return;
             } else {
                 if ($query2) {
                     $db->setQuery($query2);
                     if (!$db->execute()) {
-                        $db->RollbackTrans();
+                        $db->transactionRollback();
                         $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . $db->stderr();
                         return;
                     }
                 }
             }
-            $db->CommitTrans();
+            $db->transactionCommit();
             $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
         } else {
             $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR');
@@ -270,17 +270,17 @@ class JFusionUser_oscommerce extends JFusionUser
             break;
         }
         if ($query1) {
-            $db->BeginTrans();
+            $db->transactionStart();
             $db->setQuery($query1);
             if (!$db->execute()) {
-                $db->RollbackTrans();
+                $db->transactionRollback();
                 $status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $db->stderr();
                 return;
             } else {
                 if ($query2) {
                     $db->setQuery($query2);
                     if (!$db->execute()) {
-                        $db->RollbackTrans();
+                        $db->transactionRollback();
                         $status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $db->stderr();
                         return;
                     }
@@ -414,7 +414,7 @@ class JFusionUser_oscommerce extends JFusionUser
             break;
         }
         //now append the new user data
-        $db->BeginTrans();
+        $db->transactionStart();
         $ok = $db->insertObject('#__customers', $user, 'customers_id');
         if ($ok) {
             $userid = $db->insertid();
@@ -452,7 +452,7 @@ class JFusionUser_oscommerce extends JFusionUser
                         break;
                     }
                     if ($ok) {
-                        $db->CommitTrans();
+                        $db->transactionCommit();
                         $status['debug'][] = JText::_('USER_CREATION');
                         $status['userinfo'] = $this->getUser($userinfo);
                         return;
@@ -461,7 +461,7 @@ class JFusionUser_oscommerce extends JFusionUser
             }
         }
         $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-        $db->RollbackTrans();
+        $db->transactionRollback();
     }
 
     /**

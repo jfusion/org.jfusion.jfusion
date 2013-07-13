@@ -347,16 +347,14 @@ class JFusionUser_magento extends JFusionUser {
         // transactional handling of this update is a necessarily
 		if (!$entity_id) { //create an (almost) empty user
 			// first get the current increment
-			//$db->Execute ( 'START TRANSACTION' );//in mysql - Before the query  was BEGIN TRANSACTION
 			// This method is an empty implemented method into the core of joomla database class
 			// So, we need to implement it for our purpose that's why there is a new factory for magento
-			$db->BeginTrans();
+			$db->transactionStart();
 			$query = 'SELECT increment_last_id FROM #__eav_entity_store WHERE entity_type_id = ' . (int)$this->getMagentoEntityTypeID('customer') . ' AND store_id = 0';
 			$db->setQuery($query);
 			$db->execute();
 			if ($db->getErrorNum() != 0) {
-				//$db->Execute ( 'ROLLBACK' );//ROLLBACK TRANSACTION
-				$db->RollbackTrans();
+				$db->transactionRollback();
 				return $db->stderr();
 			}
 			$increment_last_id_int = ( int )$db->loadresult();
@@ -365,8 +363,7 @@ class JFusionUser_magento extends JFusionUser {
 			$db->setQuery($query);
 			$db->execute();
 			if ($db->getErrorNum() != 0) {
-				//$db->Execute ( 'ROLLBACK' );
-				$db->RollbackTrans();
+				$db->transactionRollback();
 				return $db->stderr();
 			}
 			// so far so good, now create an empty user, to be updates later
@@ -374,8 +371,7 @@ class JFusionUser_magento extends JFusionUser {
 			$db->setQuery($query);
 			$db->execute();
 			if ($db->getErrorNum() != 0) {
-				//$db->Execute ( 'ROLLBACK' );
-				$db->RollbackTrans();
+				$db->transactionRollback();
 				return $db->stderr();
 			}
 			$entity_id = $db->insertid();
@@ -384,8 +380,7 @@ class JFusionUser_magento extends JFusionUser {
 			$db->setQuery($query);
 			$db->execute();
 			if ($db->getErrorNum() != 0) {
-				//$db->Execute ( 'ROLLBACK' );
-				$db->RollbackTrans();
+				$db->transactionRollback();
 				return $db->stderr();
 			}
 		}
@@ -397,8 +392,7 @@ class JFusionUser_magento extends JFusionUser {
 					$db->setQuery($query);
 					$db->execute();
 					if ($db->getErrorNum() != 0) {
-						//$db->Execute ( 'ROLLBACK' );
-						$db->RollbackTrans();
+						$db->transactionRollback();
 						return $db->stderr();
 					}
 				}
@@ -421,16 +415,14 @@ class JFusionUser_magento extends JFusionUser {
 					$db->setQuery($query);
 					$db->execute();
 					if ($db->getErrorNum() != 0) {
-						//$db->Execute ( 'ROLLBACK' );
-						$db->RollbackTrans();
+						$db->transactionRollback();
 						return $db->stderr();
 					}
 				}
 			}
 		}
 		// Change COMMIT TRANSACTION to COMMIT - This last is used in mysql but in fact it depends of the database system
-		//$db->Execute ( 'COMMIT' );
-		$db->CommitTrans();
+		$db->transactionCommit();
 		$result = false;
 		return $result; //NOTE false is NO ERRORS!
 
