@@ -469,99 +469,89 @@ class JFusionPluginInstaller extends JObject
     function uninstall($jname)
     {
     	$result['status'] = false;
-        if (JFusionFunction::validPlugin($jname)) {
-            //if this plugin had been valid, call its uninstall function if it exists
-            $JFusionAdmin = JFusionFactory::getAdmin($jname);
-            $result = $JFusionAdmin->uninstall();
-            $reason = '';
-            if (is_array($result)) {
-                $success = $result[0];
-                if (is_array($result[1])) {
-                    $reason = implode('</li><li>'.$jname . ': ',$result[1]);
-                } elseif (!empty($result[1])) {
-                    $reason = $result[1];
-                }
-            } else {
-                $success = $jname . ': ' . $result;
-            }
-            if (!$success) {
-                $msg = JText::_('PLUGIN') . ' ' .$jname .' ' . JText::_('UNINSTALL') . ' ' . JText::_('FAILED') . ': ' . $reason;
-                $this->parent->abort($msg);
-	            $result['message'] = $this->module->raise('error', $msg);
-                return $result;
-            }
-        }
-        $db = JFactory::getDBO();
-
-        $query = 'SELECT name , original_name from #__jfusion WHERE name = ' . $db->Quote($jname);
-        $db->setQuery($query);
-        $plugin = $db->loadObject();
-        $removeLanguage = true;
-        if (!$plugin || $plugin->original_name) {
-            $removeLanguage = false;
-        }
-
-        // delete raw
-        $db->setQuery('DELETE FROM #__jfusion WHERE name = ' . $db->Quote($jname));
 	    try {
+		    if (JFusionFunction::validPlugin($jname)) {
+			    //if this plugin had been valid, call its uninstall function if it exists
+			    $JFusionAdmin = JFusionFactory::getAdmin($jname);
+			    $result = $JFusionAdmin->uninstall();
+			    $reason = '';
+			    if (is_array($result)) {
+				    $success = $result[0];
+				    if (is_array($result[1])) {
+					    $reason = implode('</li><li>'.$jname . ': ',$result[1]);
+				    } elseif (!empty($result[1])) {
+					    $reason = $result[1];
+				    }
+			    } else {
+				    $success = $jname . ': ' . $result;
+			    }
+			    if (!$success) {
+				    throw new Exception(JText::_('PLUGIN') . ' ' .$jname .' ' . JText::_('UNINSTALL') . ' ' . JText::_('FAILED') . ': ' . $reason);
+			    }
+		    }
+		    $db = JFactory::getDBO();
+
+		    $query = 'SELECT name , original_name from #__jfusion WHERE name = ' . $db->Quote($jname);
+		    $db->setQuery($query);
+		    $plugin = $db->loadObject();
+		    $removeLanguage = true;
+		    if (!$plugin || $plugin->original_name) {
+			    $removeLanguage = false;
+		    }
+
+		    // delete raw
+		    $db->setQuery('DELETE FROM #__jfusion WHERE name = ' . $db->Quote($jname));
 		    $db->execute();
+
+		    $db->setQuery('DELETE FROM #__jfusion_discussion_bot WHERE jname = ' . $db->Quote($jname));
+		    $db->execute();
+
+		    $db->setQuery('DELETE FROM #__jfusion_users_plugin WHERE jname = ' . $db->Quote($jname));
+		    $db->execute();
+
+		    $dir = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname;
+		    if (!$jname || !JFolder::exists($dir)) {
+			    throw new Exception(JText::_('UNINSTALL_ERROR_PATH'));
+		    } else {
+			    /**
+			     * ---------------------------------------------------------------------------------------------
+			     * Remove Language files Processing Section
+			     * ---------------------------------------------------------------------------------------------
+			     */
+			    // Get the extension manifest object
+			    $manifest = $this->_getManifest($dir);
+			    if (is_null($manifest)) {
+				    throw new Exception(JText::_('INSTALL_NOT_VALID_PLUGIN'));
+			    } else {
+				    $this->manifest = $manifest;
+
+				    if ($removeLanguage) {
+					    $languageFolder = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'language';
+					    if (JFolder::exists($languageFolder)) {
+						    $files = JFolder::files(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'language',  'com_jfusion.plg_'.$jname.'.ini',true);
+						    foreach ($files as $file) {
+							    $file = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'language' . DIRECTORY_SEPARATOR . substr($file,0,5). DIRECTORY_SEPARATOR . $file;
+							    JFile::delete($file);
+						    }
+					    }
+				    }
+
+				    // remove files
+				    if (!JFolder::delete($dir)) {
+					    throw new Exception(JText::_('UNINSTALL_ERROR_DELETE'));
+				    } else {
+					    //return success
+					    $msg = JText::_('PLUGIN') . ' ' .$jname .' ' . JText::_('UNINSTALL') . ': ' . JText::_('SUCCESS');
+					    $result['message'] = $this->module->raise('message', $msg);
+					    $result['status'] = true;
+					    $result['jname'] = $jname;
+				    }
+			    }
+		    }
 	    } catch (Exception $e) {
+		    $result['message'] = $this->module->raise('error', $e->getMessage());
 		    $this->parent->abort($e->getMessage());
 	    }
-        $db->setQuery('DELETE FROM #__jfusion_discussion_bot WHERE jname = ' . $db->Quote($jname));
-	    try {
-		    $db->execute();
-	    } catch (Exception $e) {
-		    $this->parent->abort($e->getMessage());
-	    }
-        $db->setQuery('DELETE FROM #__jfusion_users_plugin WHERE jname = ' . $db->Quote($jname));
-	    try {
-		    $db->execute();
-	    } catch (Exception $e) {
-		    $this->parent->abort($e->getMessage());
-	    }
-        $dir = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname;
-        if (!$jname || !JFolder::exists($dir)) {
-            $this->parent->abort(JText::_('UNINSTALL_ERROR_PATH'));
-	        $result['message'] = $this->module->raise('error', JText::_('UNINSTALL_ERROR_PATH'));
-        } else {
-            /**
-             * ---------------------------------------------------------------------------------------------
-             * Remove Language files Processing Section
-             * ---------------------------------------------------------------------------------------------
-             */
-            // Get the extension manifest object
-            $manifest = $this->_getManifest($dir);
-            if (is_null($manifest)) {
-                $this->parent->abort(JText::_('INSTALL_NOT_VALID_PLUGIN'));
-	            $result['message'] = $this->module->raise('error', JText::_('INSTALL_NOT_VALID_PLUGIN'));
-            } else {
-                $this->manifest = $manifest;
-
-                if ($removeLanguage) {
-	                $languageFolder = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'language';
-	                if (JFolder::exists($languageFolder)) {
-		                $files = JFolder::files(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'language',  'com_jfusion.plg_'.$jname.'.ini',true);
-		                foreach ($files as $file) {
-			                $file = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'language' . DIRECTORY_SEPARATOR . substr($file,0,5). DIRECTORY_SEPARATOR . $file;
-			                JFile::delete($file);
-		                }
-	                }
-                }
-
-                // remove files
-                if (!JFolder::delete($dir)) {
-                    $this->parent->abort(JText::_('UNINSTALL_ERROR_DELETE'));
-	                $result['message'] = $this->module->raise('error', JText::_('UNINSTALL_ERROR_DELETE'));
-                } else {
-                    //return success
-                    $msg = JText::_('PLUGIN') . ' ' .$jname .' ' . JText::_('UNINSTALL') . ': ' . JText::_('SUCCESS');
-	                $result['message'] = $this->module->raise('message', $msg);
-                    $result['status'] = true;
-                    $result['jname'] = $jname;
-                }
-            }
-        }
         return $result;
     }
 

@@ -147,8 +147,6 @@ class JFusionFrameless {
 			$sef_suffix = $mainframe->getCfg('sef_suffix');
 			$sef = $mainframe->getCfg('sef');
 
-
-
 			if($sef_suffix == 1 && $sef == 1 && !JFactory::getApplication()->input->post->count()){
 				//redirect if url non_sef
 				if (strrpos($data->fullURL, '?') !== false) {
@@ -204,15 +202,11 @@ class JFusionFrameless {
 		JFusionFunction::reconnectJoomlaDb();
 
 		if ($data->buffer === 0) {
-			JFusionFunction::raiseWarning ( 500, JText::_ ( 'NO_FRAMELESS' ) );
-			$result = false;
-			return $result;
+			throw new Exception(JText::_ ( 'NO_FRAMELESS' ));
 		}
 
 		if (! $data->buffer) {
-			JFusionFunction::raiseWarning ( 500, JText::_ ( 'NO_BUFFER' ) );
-			$result = false;
-			return $result;
+			throw new Exception(JText::_ ( 'NO_BUFFER' ));
 		}
 
 		$data->buffer = JFusionFrameless::parseEncoding($data->buffer);
@@ -228,11 +222,10 @@ class JFusionFrameless {
 			if (! empty ( $data->buffer )) {
 				//non html output, return without parsing
 				die ( $data->buffer );
-			}
-			else {
+			} else {
 				unset ( $data->buffer );
 				//no output returned
-				JFusionFunction::raiseWarning ( 500, JText::_ ( 'NO_HTML' ) );
+				throw new Exception(JText::_ ( 'NO_HTML' ));
 			}
 		}
 		else {

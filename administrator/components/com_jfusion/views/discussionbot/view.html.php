@@ -110,10 +110,15 @@ class jfusionViewdiscussionbot extends JViewLegacy
 			$session->set($hash, $encoded_pairs);
 		}
 
-
 		//get the forum listings
 		$JFusionForum = JFusionFactory::getForum($jname);
-		$forumSelectOptions = $JFusionForum->getForumList();
+	    try {
+		    $forumSelectOptions = $JFusionForum->getForumList();
+	    } catch (Exception $e) {
+			JFusionFunction::raiseError(0, $e->getMessage());
+		    $forumSelectOptions = array();
+	    }
+
 		//joomla select options
         $joomlaSelectOptions = $joomlaoptions;
 

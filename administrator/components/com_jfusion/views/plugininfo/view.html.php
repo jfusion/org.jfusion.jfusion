@@ -92,8 +92,7 @@ class jfusionViewplugininfo extends JViewLegacy
             //render view
             parent::display($tpl);
         } else {
-            //report error
-            JFusionFunction::raiseWarning(500, JText::_('NONE_SELECTED'));
+	        throw new Exception(JText::_('NONE_SELECTED'));
         }
     }
 

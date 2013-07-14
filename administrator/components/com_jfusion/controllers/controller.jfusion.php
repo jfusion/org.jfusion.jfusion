@@ -59,36 +59,33 @@ class JFusionController extends JControllerLegacy
         //find out the submitted values
         $jname = JFactory::getApplication()->input->get('jname');
         $post = JFactory::getApplication()->input->post->get('params', array(), 'array');
-        //check to see data was posted
-        $msg = JText::_('WIZARD_FAILURE');
-        $msgType = 'warning';
-        if ($jname && $post) {
-            //Initialize the forum
-            $JFusionPlugin = JFusionFactory::getAdmin($jname);
-            $params = $JFusionPlugin->setupFromPath($post['source_path']);
-            if (!empty($params)) {
-                //save the params first in order for elements to utilize data
-                JFusionFunctionAdmin::saveParameters($jname, $params, true);
 
-                //make sure the usergroup params are available on first view
-                $config_status = $JFusionPlugin->checkConfig();
-                $db = JFactory::getDBO();
-                $query = 'UPDATE #__jfusion SET status = ' . $config_status['config'] . ' WHERE name =' . $db->Quote($jname);
-                $db->setQuery($query);
-	            try {
-		            $db->execute();
+	    //check to see data was posted
+	    $msg = JText::_('WIZARD_FAILURE');
+	    $msgType = 'warning';
+	    if ($jname && $post) {
+		    try {
+			    //Initialize the forum
+			    $JFusionPlugin = JFusionFactory::getAdmin($jname);
+			    $params = $JFusionPlugin->setupFromPath($post['source_path']);
+			    if (!empty($params)) {
+				    //save the params first in order for elements to utilize data
+				    JFusionFunctionAdmin::saveParameters($jname, $params, true);
 
-		            $msg = JText::_('WIZARD_SUCCESS');
-		            $msgType = 'notice';
-	            } catch (Exception $e) {
-		            $msg = $e->getMessage();
-		            $msgType = 'notice';
-	            }
-            }
-            $this->setRedirect('index.php?option=com_jfusion&task=plugineditor&jname=' . $jname, $msg, $msgType);
-        } else {
-            $this->setRedirect('index.php?option=com_jfusion&task=plugindisplay', $msg, $msgType);
-        }
+				    //make sure the usergroup params are available on first view
+				    $config_status = $JFusionPlugin->checkConfig();
+				    $db = JFactory::getDBO();
+				    $query = 'UPDATE #__jfusion SET status = ' . $config_status['config'] . ' WHERE name =' . $db->Quote($jname);
+				    $db->setQuery($query);
+				    $db->execute();
+			    }
+			    $this->setRedirect('index.php?option=com_jfusion&task=plugineditor&jname=' . $jname, 'notice', JText::_('WIZARD_SUCCESS'));
+		    } catch (Exception $e) {
+			    $this->setRedirect('index.php?option=com_jfusion&task=plugineditor&jname=' . $jname, $e->getMessage(), 'warning');
+		    }
+	    } else {
+		    $this->setRedirect('index.php?option=com_jfusion&task=plugindisplay', $msg, $msgType);
+	    }
     }
 
     /**
@@ -197,39 +194,43 @@ class JFusionController extends JControllerLegacy
                 JFusionFunction::raiseWarning(500, JText::_('SOURCE_PATH_NOT_FOUND'));
             }
         }
-        if (!JFusionFunctionAdmin::saveParameters($jname, $post)) {
-            $msg = $jname . ': ' . JText::_('SAVE_FAILURE');
-            $msgType = 'error';
-        } else {
-            //update the status field
-            $JFusionPlugin = JFusionFactory::getAdmin($jname);
-            $config_status = $JFusionPlugin->checkConfig();
-            $db = JFactory::getDBO();
-            $query = 'UPDATE #__jfusion SET status = ' . $config_status['config'] . ' WHERE name =' . $db->Quote($jname);
-            $db->setQuery($query);
-            $db->execute();
-            if (empty($config_status['config'])) {
-                $msg = $jname . ': ' . $config_status['message'];
-                $msgType = 'error';
-            } else {
-                $msg = $jname . ': ' . JText::_('SAVE_SUCCESS');
-                $msgType = 'message';
-                //check for any custom commands
-                $customcommand = JFactory::getApplication()->input->get('customcommand');
-                if (!empty($customcommand)) {
-                    $JFusionPlugin = JFusionFactory::getAdmin($jname);
-                    if (method_exists($JFusionPlugin, $customcommand)) {
-                        $JFusionPlugin->$customcommand();
-                    }
-                }
-            }
-        }
-        $action = JFactory::getApplication()->input->get('action');
-        if ($action == 'apply') {
-            $this->setRedirect('index.php?option=com_jfusion&task=plugineditor&jname=' . $jname, $msg, $msgType);
-        } else {
-            $this->setRedirect('index.php?option=com_jfusion&task=plugindisplay', $msg, $msgType);
-        }
+	    try {
+		    if (!JFusionFunctionAdmin::saveParameters($jname, $post)) {
+			    throw new Exception(JText::_('SAVE_FAILURE'));
+		    } else {
+			    //update the status field
+			    $JFusionPlugin = JFusionFactory::getAdmin($jname);
+			    $config_status = $JFusionPlugin->checkConfig();
+			    $db = JFactory::getDBO();
+			    $query = 'UPDATE #__jfusion SET status = ' . $config_status['config'] . ' WHERE name =' . $db->Quote($jname);
+			    $db->setQuery($query);
+			    $db->execute();
+			    if (empty($config_status['config'])) {
+				    throw new Exception($config_status['message']);
+			    } else {
+				    $msg = $jname . ': ' . JText::_('SAVE_SUCCESS');
+				    $msgType = 'message';
+				    //check for any custom commands
+				    $customcommand = JFactory::getApplication()->input->get('customcommand');
+				    if (!empty($customcommand)) {
+					    $JFusionPlugin = JFusionFactory::getAdmin($jname);
+					    if (method_exists($JFusionPlugin, $customcommand)) {
+						    $JFusionPlugin->$customcommand();
+					    }
+				    }
+			    }
+		    }
+		    $action = JFactory::getApplication()->input->get('action');
+
+	    } catch (Exception $e) {
+		    $msg = $jname . ': ' . $e->getMessage();
+		    $msgType = 'error';
+	    }
+	    if ($action == 'apply') {
+		    $this->setRedirect('index.php?option=com_jfusion&task=plugineditor&jname=' . $jname, $msg, $msgType);
+	    } else {
+		    $this->setRedirect('index.php?option=com_jfusion&task=plugindisplay', $msg, $msgType);
+	    }
     }
 
     /**
@@ -354,56 +355,60 @@ class JFusionController extends JControllerLegacy
         $syncdata['syncid'] = $syncid;
         $syncdata['action'] = $action;
 
-        $db = JFactory::getDBO();
-        $query = 'SELECT syncid FROM #__jfusion_sync WHERE syncid =' . $db->Quote($syncid);
-        $db->setQuery($query);
-        if (!$db->loadResult()) {
-            //sync has not started, lets get going :)
-            $slaves = JFactory::getApplication()->input->get('slave');
-            $master_plugin = JFusionFunction::getMaster();
-            $master = $master_plugin->name;
-            $JFusionMaster = JFusionFactory::getAdmin($master);
-            //initialise the slave data array
-            $slave_data = array();
-            if (empty($slaves)) {
-	            JFusionFunction::raiseError(0, JText::_('SYNC_NODATA'));
-            } else {
-                //lets find out which slaves need to be imported into the Master
-                foreach ($slaves as $jname => $slave) {
-                    if ($slave['perform_sync']) {
-                        $temp_data = array();
-                        $temp_data['jname'] = $jname;
-                        $JFusionPlugin = JFusionFactory::getAdmin($jname);
-                        if ($action == 'master') {
-                            $temp_data['total'] = $JFusionPlugin->getUserCount();
-                        } else {
-                            $temp_data['total'] = $JFusionMaster->getUserCount();
-                        }
-                        $syncdata['total_to_sync']+= $temp_data['total'];
-                        //this doesn't change and used by usersync when limiting the number of users to grab at a time
-                        $temp_data['total_to_sync'] = $temp_data['total'];
-                        $temp_data['created'] = 0;
-                        $temp_data['deleted'] = 0;
-                        $temp_data['updated'] = 0;
-                        $temp_data['error'] = 0;
-                        $temp_data['unchanged'] = 0;
-                        //save the data
-                        $slave_data[] = $temp_data;
-                        //reset the variables
-                        unset($temp_data, $JFusionPlugin);
-                    }
-                }
-                //format the syncdata for storage in the JFusion sync table
-                $syncdata['master'] = $master;
-                $syncdata['slave_data'] = $slave_data;
-                //save the submitted syncdata in order for AJAX updates to work
-                JFusionUsersync::saveSyncdata($syncdata);
-                //start the usersync
-                JFusionUsersync::syncExecute($syncdata, $action, 0, 0);
-            }
-        } else {
-	        JFusionFunction::raiseError(0, JText::_('SYNC_CANNOT_START'));
-        }
+	    try {
+		    $db = JFactory::getDBO();
+		    $query = 'SELECT syncid FROM #__jfusion_sync WHERE syncid =' . $db->Quote($syncid);
+		    $db->setQuery($query);
+		    if (!$db->loadResult()) {
+			    //sync has not started, lets get going :)
+			    $slaves = JFactory::getApplication()->input->get('slave');
+			    $master_plugin = JFusionFunction::getMaster();
+			    $master = $master_plugin->name;
+			    $JFusionMaster = JFusionFactory::getAdmin($master);
+			    //initialise the slave data array
+			    $slave_data = array();
+			    if (empty($slaves)) {
+				    throw new Exception(JText::_('SYNC_NODATA'));
+			    } else {
+				    //lets find out which slaves need to be imported into the Master
+				    foreach ($slaves as $jname => $slave) {
+					    if ($slave['perform_sync']) {
+						    $temp_data = array();
+						    $temp_data['jname'] = $jname;
+						    $JFusionPlugin = JFusionFactory::getAdmin($jname);
+						    if ($action == 'master') {
+							    $temp_data['total'] = $JFusionPlugin->getUserCount();
+						    } else {
+							    $temp_data['total'] = $JFusionMaster->getUserCount();
+						    }
+						    $syncdata['total_to_sync']+= $temp_data['total'];
+						    //this doesn't change and used by usersync when limiting the number of users to grab at a time
+						    $temp_data['total_to_sync'] = $temp_data['total'];
+						    $temp_data['created'] = 0;
+						    $temp_data['deleted'] = 0;
+						    $temp_data['updated'] = 0;
+						    $temp_data['error'] = 0;
+						    $temp_data['unchanged'] = 0;
+						    //save the data
+						    $slave_data[] = $temp_data;
+						    //reset the variables
+						    unset($temp_data, $JFusionPlugin);
+					    }
+				    }
+				    //format the syncdata for storage in the JFusion sync table
+				    $syncdata['master'] = $master;
+				    $syncdata['slave_data'] = $slave_data;
+				    //save the submitted syncdata in order for AJAX updates to work
+				    JFusionUsersync::saveSyncdata($syncdata);
+				    //start the usersync
+				    JFusionUsersync::syncExecute($syncdata, $action, 0, 0);
+			    }
+		    } else {
+			    throw new Exception(JText::_('SYNC_CANNOT_START'));
+		    }
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError(0, $e->getMessage());
+	    }
 
 	    $syncdata['messages'] = JFusionFunction::renderMessage();
         die(json_encode($syncdata));
@@ -461,39 +466,42 @@ class JFusionController extends JControllerLegacy
         //initialise response element
         $result = array();
 
-        //check to see if an integration was selected
-        $db = JFactory::getDBO();
-        $query = 'SELECT count(*) from #__jfusion WHERE original_name IS NULL && name LIKE '.$db->quote($jname);
-        $db->setQuery($query);
-        $record = $db->loadResult();
-        if ($jname && $new_jname && $record) {
-	        $JFusionPlugin = JFusionFactory::getAdmin($jname);
-	        if ($JFusionPlugin->multiInstance()) {
-		        include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.install.php';
-		        $model = new JFusionModelInstaller();
-		        $result = $model->copy($jname, $new_jname);
+	    try {
+		    //check to see if an integration was selected
+		    $db = JFactory::getDBO();
+		    $query = 'SELECT count(*) from #__jfusion WHERE original_name IS NULL && name LIKE '.$db->quote($jname);
+		    $db->setQuery($query);
+		    $record = $db->loadResult();
+		    if ($jname && $new_jname && $record) {
+			    $JFusionPlugin = JFusionFactory::getAdmin($jname);
+			    if ($JFusionPlugin->multiInstance()) {
+				    include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.install.php';
+				    $model = new JFusionModelInstaller();
+				    $result = $model->copy($jname, $new_jname);
 
-		        //get description
-		        $plugin_xml = JFUSION_PLUGIN_PATH .DIRECTORY_SEPARATOR. $jname .DIRECTORY_SEPARATOR. 'jfusion.xml';
-		        if(file_exists($plugin_xml) && is_readable($plugin_xml)) {
-			        $xml = JFusionFunction::getXml($plugin_xml);
+				    //get description
+				    $plugin_xml = JFUSION_PLUGIN_PATH .DIRECTORY_SEPARATOR. $jname .DIRECTORY_SEPARATOR. 'jfusion.xml';
+				    if(file_exists($plugin_xml) && is_readable($plugin_xml)) {
+					    $xml = JFusionFunction::getXml($plugin_xml);
 
-			        $description = $xml->description;
-			        if(!empty($description)) {
-				        $description = (string)$description;
-			        }
-		        }
-		        if ($result['status']) {
-			        $result['new_jname'] =  $new_jname;
-		        }
-	        } else {
-		        $result['status'] = false;
-		        JFusionFunction::raiseError(0, JText::_('CANT_COPY'));
-	        }
-        } else {
-            $result['status'] = false;
-	        JFusionFunction::raiseError(0, JText::_('NONE_SELECTED'));
-        }
+					    $description = $xml->description;
+					    if(!empty($description)) {
+						    $description = (string)$description;
+					    }
+				    }
+				    if ($result['status']) {
+					    $result['new_jname'] =  $new_jname;
+				    }
+			    } else {
+				    throw new Exception(JText::_('CANT_COPY'));
+			    }
+		    } else {
+				throw new Exception(JText::_('NONE_SELECTED'));
+		    }
+	    } catch (Exception $e) {
+		    $result['status'] = false;
+		    JFusionFunction::raiseError(0, $e->getMessage());
+	    }
 
 	    /**
 	     * @ignore
@@ -724,137 +732,133 @@ JS;
         $jname = JFactory::getApplication()->input->get('jname');
 
         $msg = $xml = $error = null;
+	    $mainframe = JFactory::getApplication();
+	    try {
+		    jimport('joomla.utilities.simplexml');
+		    $file = JFactory::getApplication()->input->files->get('file');
 
-	    jimport('joomla.utilities.simplexml');
-	    $file = JFactory::getApplication()->input->files->get('file');
+		    $filename = JFactory::getApplication()->input->get('url');
 
-	    $filename = JFactory::getApplication()->input->get('url');
-
-	    if( !empty($filename) ) {
-		    $filename = base64_decode($filename);
-		    $ConfigFile = JFusionFunctionAdmin::getFileData($filename);
-		    if (!empty($ConfigFile)) {
-			    $xml = JFusionFunction::getXml($ConfigFile,false);
-		    }
-	    } else if( $file['error'] > 0 ) {
-		    switch ($file['error']) {
-			    case UPLOAD_ERR_INI_SIZE:
-				    $error = JText::_('UPLOAD_ERR_INI_SIZE');
-				    break;
-			    case UPLOAD_ERR_FORM_SIZE:
-				    $error = JText::_('UPLOAD_ERR_FORM_SIZE');
-				    break;
-			    case UPLOAD_ERR_PARTIAL:
-				    $error = JText::_('UPLOAD_ERR_PARTIAL');
-				    break;
-			    case UPLOAD_ERR_NO_FILE:
-				    $error = JText::_('UPLOAD_ERR_NO_FILE');
-				    break;
-			    case UPLOAD_ERR_NO_TMP_DIR:
-				    $error = JText::_('UPLOAD_ERR_NO_TMP_DIR');
-				    break;
-			    case UPLOAD_ERR_CANT_WRITE:
-				    $error = JText::_('UPLOAD_ERR_CANT_WRITE');
-				    break;
-			    case UPLOAD_ERR_EXTENSION:
-				    $error = JText::_('UPLOAD_ERR_EXTENSION');
-				    break;
-			    default:
-				    $error = JText::_('UNKNOWN_UPLOAD_ERROR');
-		    }
-		    $error = $jname . ': ' . JText::_('ERROR').': '.$error;
-	    } else {
-		    $filename = $file['tmp_name'];
-		    $xml = JFusionFunction::getXml($filename);
-	    }
-	    if(!$xml) {
-		    $error = $jname . ': ' . JText::_('ERROR_LOADING_FILE').': '.$filename;
-	    } else {
-		    /**
-		     * @ignore
-		     * @var $val JXMLElement
-		     */
-		    $info = $config = null;
-		    foreach ($xml->children() as $key => $val) {
-			    switch ($val->getName()) {
-				    case 'info':
-					    $info = $val;
-					    break;
-				    case 'config':
-					    $config = $val->children();
-					    break;
+		    if( !empty($filename) ) {
+			    $filename = base64_decode($filename);
+			    $ConfigFile = JFusionFunctionAdmin::getFileData($filename);
+			    if (!empty($ConfigFile)) {
+				    $xml = JFusionFunction::getXml($ConfigFile,false);
 			    }
-		    }
-
-		    if (!$info || !$config) {
-			    JFusionFunction::raiseWarning(0, $jname . ': ' . JText::_('ERROR_FILE_SYNTAX').': '.$file['type'] );
-			    $error = $jname . ': ' . JText::_('ERROR_FILE_SYNTAX').': '.$file['type'];
+		    } else if( $file['error'] > 0 ) {
+			    switch ($file['error']) {
+				    case UPLOAD_ERR_INI_SIZE:
+					    $error = JText::_('UPLOAD_ERR_INI_SIZE');
+					    break;
+				    case UPLOAD_ERR_FORM_SIZE:
+					    $error = JText::_('UPLOAD_ERR_FORM_SIZE');
+					    break;
+				    case UPLOAD_ERR_PARTIAL:
+					    $error = JText::_('UPLOAD_ERR_PARTIAL');
+					    break;
+				    case UPLOAD_ERR_NO_FILE:
+					    $error = JText::_('UPLOAD_ERR_NO_FILE');
+					    break;
+				    case UPLOAD_ERR_NO_TMP_DIR:
+					    $error = JText::_('UPLOAD_ERR_NO_TMP_DIR');
+					    break;
+				    case UPLOAD_ERR_CANT_WRITE:
+					    $error = JText::_('UPLOAD_ERR_CANT_WRITE');
+					    break;
+				    case UPLOAD_ERR_EXTENSION:
+					    $error = JText::_('UPLOAD_ERR_EXTENSION');
+					    break;
+				    default:
+					    $error = JText::_('UNKNOWN_UPLOAD_ERROR');
+			    }
+			    throw new Exception( JText::_('ERROR').': '.$error);
 		    } else {
-			    $original_name = (string)$info->attributes('original_name');
-			    $db = JFactory::getDBO();
-			    $query = 'SELECT name , original_name from #__jfusion WHERE name = ' . $db->Quote($jname);
-			    $db->setQuery($query);
-			    $plugin = $db->loadObject();
+			    $filename = $file['tmp_name'];
+			    $xml = JFusionFunction::getXml($filename);
+		    }
+		    if(!$xml) {
+			    throw new Exception(JText::_('ERROR_LOADING_FILE').': '.$filename);
+		    } else {
+			    /**
+			     * @ignore
+			     * @var $val JXMLElement
+			     */
+			    $info = $config = null;
+			    foreach ($xml->children() as $key => $val) {
+				    switch ($val->getName()) {
+					    case 'info':
+						    $info = $val;
+						    break;
+					    case 'config':
+						    $config = $val->children();
+						    break;
+				    }
+			    }
 
-			    if ($plugin) {
-				    $pluginname = $plugin->original_name ? $plugin->original_name : $plugin->name;
-				    if ($pluginname == $original_name) {
-					    $conf = array();
-					    /**
-					     * @ignore
-					     * @var $val JXMLElement
-					     */
-					    foreach ($config as $key => $val) {
-						    $attName = (string)$val->attributes('name');
-						    $conf[$attName] = htmlspecialchars_decode((string)$val);
-						    if ( strpos($conf[$attName], 'a:') === 0 ) $conf[$attName] = unserialize($conf[$attName]);
-					    }
+			    if (!$info || !$config) {
+				    throw new Exception(JText::_('ERROR_FILE_SYNTAX').': '.$file['type']);
+			    } else {
+				    $original_name = (string)$info->attributes('original_name');
+				    $db = JFactory::getDBO();
+				    $query = 'SELECT name , original_name from #__jfusion WHERE name = ' . $db->Quote($jname);
+				    $db->setQuery($query);
+				    $plugin = $db->loadObject();
 
-					    $database_type = JFactory::getApplication()->input->get('database_type');
-					    $database_host = JFactory::getApplication()->input->get('database_host');
-					    $database_name = JFactory::getApplication()->input->get('database_name');
-					    $database_user = JFactory::getApplication()->input->get('database_user');
-					    $database_password = JFactory::getApplication()->input->get('database_password');
-					    $database_prefix = JFactory::getApplication()->input->get('database_prefix');
-
-					    if( !empty($database_type) ) $conf['database_type'] = $database_type;
-					    if( !empty($database_host) ) $conf['database_host'] = $database_host;
-					    if( !empty($database_name) ) $conf['database_name'] = $database_name;
-					    if( !empty($database_user) ) $conf['database_user'] = $database_user;
-					    if( !empty($database_password) ) $conf['database_password'] = $database_password;
-					    if( !empty($database_prefix) ) $conf['database_prefix'] = $database_prefix;
-
-					    if (!JFusionFunctionAdmin::saveParameters($jname, $conf)) {
-						    $error = $jname . ': ' . JText::_('SAVE_FAILURE');
-					    } else {
-						    //update the status field
-						    $JFusionPlugin = JFusionFactory::getAdmin($jname);
-						    $config_status = $JFusionPlugin->checkConfig();
-						    $db = JFactory::getDBO();
-						    $query = 'UPDATE #__jfusion SET status = ' . $config_status['config'] . ' WHERE name =' . $db->Quote($jname);
-						    $db->setQuery($query);
-						    $db->execute();
-						    if (empty($config_status['config'])) {
-							    $error = $jname . ': ' . $config_status['message'];
-						    } else {
-							    $msg = $jname . ': ' . JText::_('IMPORT_SUCCESS');
+				    if ($plugin) {
+					    $pluginname = $plugin->original_name ? $plugin->original_name : $plugin->name;
+					    if ($pluginname == $original_name) {
+						    $conf = array();
+						    /**
+						     * @ignore
+						     * @var $val JXMLElement
+						     */
+						    foreach ($config as $key => $val) {
+							    $attName = (string)$val->attributes('name');
+							    $conf[$attName] = htmlspecialchars_decode((string)$val);
+							    if ( strpos($conf[$attName], 'a:') === 0 ) $conf[$attName] = unserialize($conf[$attName]);
 						    }
+
+						    $database_type = JFactory::getApplication()->input->get('database_type');
+						    $database_host = JFactory::getApplication()->input->get('database_host');
+						    $database_name = JFactory::getApplication()->input->get('database_name');
+						    $database_user = JFactory::getApplication()->input->get('database_user');
+						    $database_password = JFactory::getApplication()->input->get('database_password');
+						    $database_prefix = JFactory::getApplication()->input->get('database_prefix');
+
+						    if( !empty($database_type) ) $conf['database_type'] = $database_type;
+						    if( !empty($database_host) ) $conf['database_host'] = $database_host;
+						    if( !empty($database_name) ) $conf['database_name'] = $database_name;
+						    if( !empty($database_user) ) $conf['database_user'] = $database_user;
+						    if( !empty($database_password) ) $conf['database_password'] = $database_password;
+						    if( !empty($database_prefix) ) $conf['database_prefix'] = $database_prefix;
+
+						    if (!JFusionFunctionAdmin::saveParameters($jname, $conf)) {
+							    throw new Exception(JText::_('SAVE_FAILURE'));
+						    } else {
+							    //update the status field
+							    $JFusionPlugin = JFusionFactory::getAdmin($jname);
+							    $config_status = $JFusionPlugin->checkConfig();
+							    $db = JFactory::getDBO();
+							    $query = 'UPDATE #__jfusion SET status = ' . $config_status['config'] . ' WHERE name =' . $db->Quote($jname);
+							    $db->setQuery($query);
+							    $db->execute();
+							    if (empty($config_status['config'])) {
+								    throw new Exception($config_status['message']);
+							    }
+						    }
+					    } else {
+						    throw new Exception(JText::_('PLUGIN_DONT_MATCH_XMLFILE'));
 					    }
 				    } else {
-					    $error = $jname.': '.JText::_('PLUGIN_DONT_MATCH_XMLFILE');
+					    throw new Exception(JText::_('PLUGIN_NOT_FOUNED'));
 				    }
-			    } else {
-				    $error = $jname.': '.JText::_('PLUGIN_NOT_FOUNED');
 			    }
 		    }
+		    $mainframe->redirect('index.php?option=com_jfusion&task=plugineditor&jname='.$jname, $jname . ': ' . JText::_('IMPORT_SUCCESS'));
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseWarning(0, $jname.': '.$e->getMessage() );
+		    $mainframe->redirect('index.php?option=com_jfusion&task=importexport&jname='.$jname);
 	    }
-        $mainframe = JFactory::getApplication();
-        if ($error) {
-            JFusionFunction::raiseWarning(0, $error );
-            $mainframe->redirect('index.php?option=com_jfusion&task=importexport&jname='.$jname);
-        } else {
-            $mainframe->redirect('index.php?option=com_jfusion&task=plugineditor&jname='.$jname,$msg);
-        }
         exit();
     }
 

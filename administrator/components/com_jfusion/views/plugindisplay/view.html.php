@@ -304,22 +304,29 @@ class jfusionViewplugindisplay extends JViewLegacy {
 				$JFusionPlugin = JFusionFactory::getAdmin($record->name);
 				$JFusionParam = JFusionFactory::getParams($record->name);
 
-				$record = $this->initRecord($record->name,$record);
 				//check to see if the plugin files exist
 				$plugin_xml = JFUSION_PLUGIN_PATH .DIRECTORY_SEPARATOR. $record->name .DIRECTORY_SEPARATOR. 'jfusion.xml';
 				if(!file_exists($plugin_xml)) {
-					$record->bad_plugin = 1;
+					$record->status = 1;
 					JFusionFunction::raiseWarning(500, $record->name . ': ' . JText::_('NO_FILES'));
 				} else {
-					$record->bad_plugin = 0;
+					$record->status = 0;
 				}
 
 				//output detailed configuration warnings for enabled plugins
 				if ($record->status==1) {
 					if ($record->master == '1' || $record->slave == '1') {
-						$JFusionPlugin->debugConfig();
+						try {
+							$JFusionPlugin->debugConfig();
+						} catch (Exception $e) {
+							JFusionFunction::raiseError(500, $record->name . ': ' . $e->getMessage());
+							$record->status = 0;
+						}
 					}
 				}
+
+				$record = $this->initRecord($record->name,$record);
+
 				$plugins[]=$record;
 			}
 		}

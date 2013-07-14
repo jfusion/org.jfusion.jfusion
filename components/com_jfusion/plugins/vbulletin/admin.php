@@ -576,35 +576,39 @@ HTML;
 
     function debugConfigExtra()
     {
-        //check for usergroups to make sure membergroups do not include default or display group
-        $params = JFusionFactory::getParams($this->getJname());
-        if (JFusionFunction::isAdvancedUsergroupMode($this->getJname())) {
-            $usergroups = unserialize($params->get('usergroup'));
-            $master = JFusionFunction::getMaster();
-            if (!empty($master)) {
-                if ($master->name != $this->getJName()) {
-                    $JFusionMaster = JFusionFactory::getAdmin($master->name);
-                    $master_usergroups = $JFusionMaster->getUsergroupList();
-                    foreach ($master_usergroups as $group) {
-                        if (isset($usergroups[$group->id]['membergroups']) && isset($usergroups[$group->id]['defaultgroup'])) {
-                            $membergroups = $usergroups[$group->id]['membergroups'];
-                            $defaultgroup = $usergroups[$group->id]['defaultgroup'];
-                            if ((is_array($membergroups) && in_array($defaultgroup, $membergroups)) || $defaultgroup == $membergroups) {
-                                JFusionFunction::raiseWarning(0, $this->getJname() . ': ' . JText::sprintf('VB_GROUP_MISMATCH', $group->name));
-                            }
-                        }
-                    }
-                } else {
-                    JFusionFunction::raiseWarning(0, $this->getJname() . ': ' . JText::_('ADVANCED_GROUPMODE_ONLY_SUPPORTED_FORSLAVES'));
-                }
-            }
-        }
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT COUNT(*) FROM #__plugin WHERE hookname = \'init_startup\' AND title = \'JFusion API Plugin - REQUIRED\' AND active = 1';
-        $db->setQuery($query);
-        if ($db->loadResult() == 0) {
-            JFusionFunction::raiseWarning(0, $this->getJname() . ': ' . JText::_('VB_API_HOOK_NOT_INSTALLED'));
-        }
+	    try {
+		    //check for usergroups to make sure membergroups do not include default or display group
+		    $params = JFusionFactory::getParams($this->getJname());
+		    if (JFusionFunction::isAdvancedUsergroupMode($this->getJname())) {
+			    $usergroups = unserialize($params->get('usergroup'));
+			    $master = JFusionFunction::getMaster();
+			    if (!empty($master)) {
+				    if ($master->name != $this->getJName()) {
+					    $JFusionMaster = JFusionFactory::getAdmin($master->name);
+					    $master_usergroups = $JFusionMaster->getUsergroupList();
+					    foreach ($master_usergroups as $group) {
+						    if (isset($usergroups[$group->id]['membergroups']) && isset($usergroups[$group->id]['defaultgroup'])) {
+							    $membergroups = $usergroups[$group->id]['membergroups'];
+							    $defaultgroup = $usergroups[$group->id]['defaultgroup'];
+							    if ((is_array($membergroups) && in_array($defaultgroup, $membergroups)) || $defaultgroup == $membergroups) {
+								    JFusionFunction::raiseWarning(0, $this->getJname() . ': ' . JText::sprintf('VB_GROUP_MISMATCH', $group->name));
+							    }
+						    }
+					    }
+				    } else {
+					    JFusionFunction::raiseWarning(0, $this->getJname() . ': ' . JText::_('ADVANCED_GROUPMODE_ONLY_SUPPORTED_FORSLAVES'));
+				    }
+			    }
+		    }
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT COUNT(*) FROM #__plugin WHERE hookname = \'init_startup\' AND title = \'JFusion API Plugin - REQUIRED\' AND active = 1';
+		    $db->setQuery($query);
+		    if ($db->loadResult() == 0) {
+			    JFusionFunction::raiseWarning(0, $this->getJname() . ': ' . JText::_('VB_API_HOOK_NOT_INSTALLED'));
+		    }
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError(0, $this->getJname() . ': ' . $e->getMessage());
+	    }
     }
 
     /**
