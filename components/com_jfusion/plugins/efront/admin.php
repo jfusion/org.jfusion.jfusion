@@ -64,7 +64,7 @@ class JFusionAdmin_efront extends JFusionAdmin
         }
         $params = array();
         if (($file_handle = @fopen($myfile, 'r')) === false) {
-            JFusionFunction::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));
+            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));
         } else {
             //parse the file line by line to get only the config variables
             $file_handle = fopen($myfile, 'r');
@@ -84,7 +84,7 @@ class JFusionAdmin_efront extends JFusionAdmin
                 $myfile = $forumPath . DIRECTORY_SEPARATOR .'libraries'. DIRECTORY_SEPARATOR .'globals.php';
             }
             if (($file_handle = @fopen($myfile, 'r')) === false) {
-                JFusionFunction::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));
+                JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));
             } else {
                 //parse the file line by line to get only the config variables
                 $file_handle = fopen($myfile, 'r');
@@ -232,7 +232,7 @@ class JFusionAdmin_efront extends JFusionAdmin
         $apiuser = $params->get('apiuser');
         $apikey = $params->get('apikey');
         if (!$apiuser || !$apikey) {
-                JFusionFunction::raiseWarning(0, $jname . '-plugin: ' . JText::_('EFRONT_NO_API_DATA'));
+                JFusionFunction::raiseWarning($jname . '-plugin: ' . JText::_('EFRONT_NO_API_DATA'));
         } else {
             //check if the apiuser and apikey are valid
             $query = 'SELECT password FROM #__users WHERE login = ' . $db->Quote($apiuser);
@@ -241,12 +241,12 @@ class JFusionAdmin_efront extends JFusionAdmin
             $md5_key = $params->get('md5_key');
             $params_hash = md5($apikey.$md5_key);
             if ($params_hash != $api_key) {
-                JFusionFunction::raiseWarning(0, $jname . '-plugin: ' . JText::_('EFRONT_WRONG_APIUSER_APIKEY_COMBINATION'));
+                JFusionFunction::raiseWarning($jname . '-plugin: ' . JText::_('EFRONT_WRONG_APIUSER_APIKEY_COMBINATION'));
             }
         }
         // we need to have the curl library installed
         if (!extension_loaded('curl')) {
-            JFusionFunction::raiseWarning(0, $jname . ': ' . JText::_('CURL_NOTINSTALLED'));
+            JFusionFunction::raiseWarning($jname . ': ' . JText::_('CURL_NOTINSTALLED'));
         }
     }
 

@@ -191,7 +191,7 @@ class JFusionController extends JControllerLegacy
         }
         if (!empty($post['source_path'])) {
             if (!is_dir($post['source_path'])) {
-                JFusionFunction::raiseWarning(500, JText::_('SOURCE_PATH_NOT_FOUND'));
+                JFusionFunction::raiseWarning(JText::_('SOURCE_PATH_NOT_FOUND'));
             }
         }
 	    try {
@@ -264,12 +264,12 @@ class JFusionController extends JControllerLegacy
 	        } else {
 		        $msg = JText::_('SYNC_FAILED_TO_LOAD_SYNC_DATA');
 		        $syncdata['errors'][] = $msg;
-		        JFusionFunction::raiseError(0, $msg);
+		        JFusionFunction::raiseError($msg);
 	        }
         } else {
 	        $msg = JText::sprintf('SYNC_ID_NOT_EXIST', $syncid);
             $syncdata['errors'][] = $msg;
-	        JFusionFunction::raiseError(0, $msg);
+	        JFusionFunction::raiseError($msg);
         }
 
 	    $syncdata['messages'] = JFusionFunction::renderMessage();
@@ -407,7 +407,7 @@ class JFusionController extends JControllerLegacy
 			    throw new Exception(JText::_('SYNC_CANNOT_START'));
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError(0, $e->getMessage());
+		    JFusionFunction::raiseError($e->getMessage());
 	    }
 
 	    $syncdata['messages'] = JFusionFunction::renderMessage();
@@ -500,7 +500,7 @@ class JFusionController extends JControllerLegacy
 		    }
 	    } catch (Exception $e) {
 		    $result['status'] = false;
-		    JFusionFunction::raiseError(0, $e->getMessage());
+		    JFusionFunction::raiseError($e->getMessage());
 	    }
 
 	    /**
@@ -537,7 +537,7 @@ class JFusionController extends JControllerLegacy
             $model = new JFusionModelInstaller();
             $result = $model->uninstall($jname);
         } else {
-	        JFusionFunction::raiseError(0, 'JFusion ' . JText::_('PLUGIN') . ' ' . JText::_('UNINSTALL') . ' ' . JText::_('FAILED'));
+	        JFusionFunction::raiseError('JFusion ' . JText::_('PLUGIN') . ' ' . JText::_('UNINSTALL') . ' ' . JText::_('FAILED'));
             $result['status'] = false;
         }
 
@@ -564,7 +564,7 @@ class JFusionController extends JControllerLegacy
             JFusionFunctionAdmin::changePluginStatus('jfusion','authentication',1);
             JFusionFunctionAdmin::changePluginStatus('jfusion','user',1);
         } else {
-            JFusionFunction::raiseWarning(500, JText::_('NO_MASTER_WARNING'));
+            JFusionFunction::raiseWarning(JText::_('NO_MASTER_WARNING'));
         }
         $this->setRedirect('index.php?option=com_jfusion&task=cpanel');
     }
@@ -605,7 +605,7 @@ class JFusionController extends JControllerLegacy
         $db = JFactory::getDBO();
         $syncid = JFactory::getApplication()->input->get('syncid');
         if(!is_array($syncid)) {
-            JFusionFunction::raiseWarning(500, JText::_('NO_SYNCID_SELECTED'));
+            JFusionFunction::raiseWarning(JText::_('NO_SYNCID_SELECTED'));
         } else {
             foreach ($syncid as $key => $value) {
                 $query = 'DELETE FROM #__jfusion_sync WHERE syncid = ' . $db->Quote($key);
@@ -631,7 +631,7 @@ class JFusionController extends JControllerLegacy
         $db = JFactory::getDBO();
         $syncid = JFactory::getApplication()->input->get('syncid');
         if(!is_array($syncid)) {
-            JFusionFunction::raiseWarning(500, JText::_('NO_SYNCID_SELECTED'));
+            JFusionFunction::raiseWarning(JText::_('NO_SYNCID_SELECTED'));
 	        JFactory::getApplication()->input->set('view', 'synchistory');
         } else {
             foreach ($syncid as $key => $value) {
@@ -710,7 +710,7 @@ JS;
 	            try {
 		            $db->execute();
 	            } catch (RuntimeException $e) {
-		            JFusionFunction::raiseError(0,$e->getMessage());
+		            JFusionFunction::raiseError($e->getMessage());
 		            $result['status'] = false;
 	            }
             }
@@ -856,7 +856,7 @@ JS;
 		    }
 		    $mainframe->redirect('index.php?option=com_jfusion&task=plugineditor&jname='.$jname, $jname . ': ' . JText::_('IMPORT_SUCCESS'));
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseWarning(0, $jname.': '.$e->getMessage() );
+		    JFusionFunction::raiseWarning($jname.': '.$e->getMessage() );
 		    $mainframe->redirect('index.php?option=com_jfusion&task=importexport&jname='.$jname);
 	    }
         exit();

@@ -145,7 +145,7 @@ class doku_auth_basic
             case 'my411':
                 return '*' . sha1(pack('H*', sha1($clear)));
             default:
-                JFusionFunction::raiseWarning(500, "Unsupported crypt method $method");
+                JFusionFunction::raiseWarning("Unsupported crypt method $method");
             }
         return false;
     }
@@ -245,7 +245,7 @@ class doku_auth_basic
             default:
                 // print a helping message for developers
                 if (!isset($this->cando[$cap])) {
-                    JFusionFunction::raiseWarning(500, "Check for unknown capability '$cap' - Do you use an outdated Plugin?");
+                    JFusionFunction::raiseWarning("Check for unknown capability '$cap' - Do you use an outdated Plugin?");
                     return false;
                 }
                 return $this->cando[$cap];
@@ -281,7 +281,7 @@ class doku_auth_basic
      */
     function checkPass($user, $pass)
     {
-        JFusionFunction::raiseWarning(500, "no valid authorisation system in use");
+        JFusionFunction::raiseWarning('no valid authorisation system in use');
         return false;
     }
 
@@ -302,7 +302,7 @@ class doku_auth_basic
      */
     function getUserData($user)
     {
-        if (!$this->cando['external']) JFusionFunction::raiseWarning(500, "no valid authorisation system in use");
+        if (!$this->cando['external']) JFusionFunction::raiseWarning('no valid authorisation system in use');
         return false;
     }
 
@@ -329,7 +329,7 @@ class doku_auth_basic
      */
     function createUser($user, $pass, $name, $mail, $grps = null)
     {
-        JFusionFunction::raiseWarning(500, "authorisation method does not allow creation of new users");
+        JFusionFunction::raiseWarning('authorisation method does not allow creation of new users');
         return null;
     }
 
@@ -346,7 +346,7 @@ class doku_auth_basic
      */
     function modifyUser($user, $changes)
     {
-        JFusionFunction::raiseWarning(500, "authorisation method does not allow modifying of user data");
+        JFusionFunction::raiseWarning('authorisation method does not allow modifying of user data');
         return false;
     }
 
@@ -362,7 +362,7 @@ class doku_auth_basic
      */
     function deleteUsers($users)
     {
-        JFusionFunction::raiseWarning(500, "authorisation method does not allow deleting of users");
+        JFusionFunction::raiseWarning('authorisation method does not allow deleting of users');
         return false;
     }
 
@@ -380,7 +380,7 @@ class doku_auth_basic
      */
     function getUserCount($filter = array())
     {
-        JFusionFunction::raiseWarning(500, "authorisation method does not provide user counts");
+        JFusionFunction::raiseWarning('authorisation method does not provide user counts');
         return 0;
     }
 
@@ -398,7 +398,7 @@ class doku_auth_basic
      */
     function retrieveUsers($start = 0, $limit = - 1, $filter = null)
     {
-        JFusionFunction::raiseWarning(500, "authorisation method does not provide user counts");
+        JFusionFunction::raiseWarning('authorisation method does not provide user counts');
         return array();
     }
 
@@ -414,7 +414,7 @@ class doku_auth_basic
      */
     function addGroup($group)
     {
-        JFusionFunction::raiseWarning(500, "authorisation method does not support independent group creation");
+        JFusionFunction::raiseWarning('authorisation method does not support independent group creation');
         return false;
     }
 
@@ -431,7 +431,7 @@ class doku_auth_basic
      */
     function retrieveGroups($start = 0, $limit = 0)
     {
-        JFusionFunction::raiseWarning(500, "authorisation method does not support group list retrieval");
+        JFusionFunction::raiseWarning('authorisation method does not support group list retrieval');
         return array();
     }
 

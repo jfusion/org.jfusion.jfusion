@@ -115,7 +115,7 @@ class jfusionViewdiscussionbot extends JViewLegacy
 	    try {
 		    $forumSelectOptions = $JFusionForum->getForumList();
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError(0, $e->getMessage());
+			JFusionFunction::raiseError($e->getMessage());
 		    $forumSelectOptions = array();
 	    }
 

@@ -123,7 +123,7 @@ class plgUserJfusion extends JPlugin
             //return output if allowed
             $isAdministrator = JFusionFunction::isAdministrator();
             if ($isAdministrator === true) {
-                JFusionFunction::raise('', $debug_info, 1);
+                JFusionFunction::raiseNotices('onAfterDeleteUser', $debug_info);
             }
         }
         return $result;
@@ -240,7 +240,7 @@ class plgUserJfusion extends JPlugin
 						        } else {
 							        //could not create user
 							        $jfusionDebug['init'][] = $master->name . ' ' . JText::_('USER') . ' ' . JText::_('CREATE') . ' ' . JText::_('ERROR') . ' ' . $status['error'];
-							        JFusionFunction::raise($master->name . ' ' . JText::_('USER') . ' ' . JText::_('CREATE'), $status['error'], 1);
+							        JFusionFunction::raiseNotices($master->name . ' ' . JText::_('USER') . ' ' . JText::_('CREATE'), $status['error']);
 							        $success = -1;
 						        }
 					        } else {
@@ -262,7 +262,7 @@ class plgUserJfusion extends JPlugin
 				        $JoomlaSession = $JFusionJoomla->createSession($JoomlaUserinfo, $options);
 				        if (!empty($JoomlaSession['error'])) {
 					        //no Joomla session could be created -> deny login
-					        JFusionFunction::raise('joomla_int ' . ' ' . JText::_('SESSION') . ' ' . JText::_('CREATE'), $JoomlaSession['error'], 1);
+					        JFusionFunction::raiseNotices('joomla_int ' . ' ' . JText::_('SESSION') . ' ' . JText::_('CREATE'), $JoomlaSession['error']);
 					        //hide the default Joomla login failure message
 					        JError::setErrorHandling(E_WARNING, 'ignore');
 					        $success = -1;
@@ -296,13 +296,13 @@ class plgUserJfusion extends JPlugin
 							}
 							if (!empty($userinfo->block)) {
 								$jfusionDebug['error'][] = JText::_('FUSION_BLOCKED_USER');
-								JFusionFunction::raiseWarning('500', JText::_('FUSION_BLOCKED_USER'));
+								JFusionFunction::raiseWarning(JText::_('FUSION_BLOCKED_USER'));
 								//hide the default Joomla login failure message
 								JError::setErrorHandling(E_WARNING, 'ignore');
 								$success = -1;
 							} else {
 								$jfusionDebug['error'][] = JText::_('FUSION_INACTIVE_USER');
-								JFusionFunction::raiseWarning('500', JText::_('FUSION_INACTIVE_USER'));
+								JFusionFunction::raiseWarning(JText::_('FUSION_INACTIVE_USER'));
 								//hide the default Joomla login failure message
 								JError::setErrorHandling(E_WARNING, 'ignore');
 								$success = -1;
@@ -316,7 +316,7 @@ class plgUserJfusion extends JPlugin
 									//no Joomla user could be created, fatal error
 									$jfusionDebug['joomla_int ' . JText::_('USER') . ' ' . JText::_('UPDATE') . ' ' . JText::_('DEBUG') ] = $JoomlaUser['debug'];
 									$jfusionDebug['joomla_int ' . JText::_('USER') . ' ' . JText::_('UPDATE') . ' ' . JText::_('ERROR') ] = $JoomlaUser['error'];
-									JFusionFunction::raise('joomla_int: ' . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE'), $JoomlaUser['error'], 1);
+									JFusionFunction::raiseNotices('joomla_int: ' . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE'), $JoomlaUser['error']);
 									//hide the default Joomla login failure message
 									JError::setErrorHandling(E_WARNING, 'ignore');
 									$success = -1;
@@ -334,7 +334,7 @@ class plgUserJfusion extends JPlugin
 											$jfusionDebug['joomla_int ' . JText::_('SESSION') . ' ' . JText::_('DEBUG') ] = $JoomlaSession['debug'];
 											$jfusionDebug['joomla_int ' . JText::_('SESSION') . ' ' . JText::_('ERROR') ] = $JoomlaSession['error'];
 											//no Joomla session could be created -> deny login
-											JFusionFunction::raise('joomla_int ' . ' ' . JText::_('SESSION') . ' ' . JText::_('CREATE'), $JoomlaSession['error'], 1);
+											JFusionFunction::raiseNotices('joomla_int ' . ' ' . JText::_('SESSION') . ' ' . JText::_('CREATE'), $JoomlaSession['error']);
 											//hide the default Joomla login failure message
 											JError::setErrorHandling(E_WARNING, 'ignore');
 											$success = -1;
@@ -358,7 +358,7 @@ class plgUserJfusion extends JPlugin
 										$jfusionDebug[$master->name . ' ' . JText::_('SESSION') . ' ' . JText::_('DEBUG') ] = $MasterSession['debug'];
 										$jfusionDebug[$master->name . ' ' . JText::_('SESSION') . ' ' . JText::_('ERROR') ] = $MasterSession['error'];
 										//report the error back
-										JFusionFunction::raise($master->name . ' ' . JText::_('SESSION') . ' ' . JText::_('CREATE'), $MasterSession['error'], 1);
+										JFusionFunction::raiseNotices($master->name . ' ' . JText::_('SESSION') . ' ' . JText::_('CREATE'), $MasterSession['error']);
 										if ($master->name == 'joomla_int') {
 											//we can not tolerate Joomla session failures
 											//hide the default Joomla login failure message
@@ -383,7 +383,7 @@ class plgUserJfusion extends JPlugin
 										if (!empty($SlaveUser['error'])) {
 											$jfusionDebug[$slave->name . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE') . ' ' . JText::_('DEBUG') ] = $SlaveUser['debug'];
 											$jfusionDebug[$slave->name . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE') . ' ' . JText::_('ERROR') ] = $SlaveUser['error'];
-											JFusionFunction::raise($slave->name . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE'), $SlaveUser['error'], 1);
+											JFusionFunction::raiseNotices($slave->name . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE'), $SlaveUser['error']);
 										} else {
 											//make sure the userinfo is available
 											if (empty($SlaveUser['userinfo'])) {
@@ -404,7 +404,7 @@ class plgUserJfusion extends JPlugin
 												if (!empty($SlaveSession['error'])) {
 													$jfusionDebug[$slave->name . ' ' . JText::_('SESSION') . ' ' . JText::_('DEBUG') ] = $SlaveSession['debug'];
 													$jfusionDebug[$slave->name . ' ' . JText::_('SESSION') . ' ' . JText::_('ERROR') ] = $SlaveSession['error'];
-													JFusionFunction::raise($slave->name . ' ' . JText::_('SESSION') . ' ' . JText::_('CREATE'), $SlaveSession['error'], 1);
+													JFusionFunction::raiseNotices($slave->name . ' ' . JText::_('SESSION') . ' ' . JText::_('CREATE'), $SlaveSession['error']);
 												} else {
 													$jfusionDebug[$slave->name . ' ' . JText::_('SESSION') ] = $SlaveSession['debug'];
 												}
@@ -494,11 +494,11 @@ class plgUserJfusion extends JPlugin
                 if (!empty($MasterUser)) {
                     $MasterSession = $JFusionMaster->destroySession($MasterUser, $options);
                     if (!empty($MasterSession['error'])) {
-                        JFusionFunction::raise($master->name . ' ' . JText::_('SESSION') . ' ' . JText::_('DESTROY'), $MasterSession['error']);
+                        JFusionFunction::raiseNotices($master->name . ' ' . JText::_('SESSION') . ' ' . JText::_('DESTROY'), $MasterSession['error']);
                     }
                     $jfusionDebug[$master->name . ' logout'] = $MasterSession['debug'];
                 } else {
-                    JFusionFunction::raise($master->name . ' ' . JText::_('LOGOUT'), JText::_('COULD_NOT_FIND_USER'), 1);
+                    JFusionFunction::raiseNotices($master->name . ' ' . JText::_('LOGOUT'), JText::_('COULD_NOT_FIND_USER'));
                 }
             }
             $slaves = JFusionFactory::getPlugins('slave');
@@ -518,13 +518,13 @@ class plgUserJfusion extends JPlugin
                     if (!empty($SlaveUser)) {
                         $SlaveSession = $JFusionSlave->destroySession($SlaveUser, $options);
                         if (!empty($SlaveSession['error'])) {
-                            JFusionFunction::raise($slave->name . ' ' . JText::_('SESSION') . ' ' . JText::_('DESTROY'), $SlaveSession['error'], 1);
+                            JFusionFunction::raiseNotices($slave->name . ' ' . JText::_('SESSION') . ' ' . JText::_('DESTROY'), $SlaveSession['error']);
                         }
                         if (!empty($SlaveSession['debug'])) {
                         	$jfusionDebug[$slave->name . ' logout'] = $SlaveSession['debug'];
                         }
                     } else {
-                        JFusionFunction::raise($slave->name . ' ' . JText::_('LOGOUT'), JText::_('COULD_NOT_FIND_USER'), 1);
+                        JFusionFunction::raiseNotices($slave->name . ' ' . JText::_('LOGOUT'), JText::_('COULD_NOT_FIND_USER'));
                     }
                 }
             }
@@ -626,7 +626,7 @@ class plgUserJfusion extends JPlugin
 	            try {
 		            $db->execute();
 	            } catch( Exception $e ) {
-		            JFusionFunction::raiseWarning(0, $e->getMessage());
+		            JFusionFunction::raiseWarning($e->getMessage());
 	            }
 
                 //if we had a username stored in jfusion_users, update the olduserinfo with that username before passing it into the plugins so they will find the intended user
@@ -731,7 +731,7 @@ class plgUserJfusion extends JPlugin
         //return output if allowed
         $isAdministrator = JFusionFunction::isAdministrator();
         if ($isAdministrator === true) {
-            JFusionFunction::raise('', $debug_info, 1);
+            JFusionFunction::raiseNotices('onAfterStoreUser', $debug_info);
         }
         //stop output buffer
         ob_end_clean();
@@ -867,7 +867,7 @@ class plgUserJfusion extends JPlugin
 						        /**
 						         * @TODO Probably should raise a plugin error but this event is not error checked.
 						         */
-						        JFusionFunction::raiseWarning(500, JText::_('ERROR_SENDING_EMAIL'));
+						        JFusionFunction::raiseWarning(JText::_('ERROR_SENDING_EMAIL'));
 					        }
 				        }
 			        }

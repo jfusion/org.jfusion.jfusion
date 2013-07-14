@@ -48,7 +48,7 @@ if (JPluginHelper::importPlugin ( 'system', 'magelib' )) {
 				}
 				echo $output;
 			} else {
-				JFusionFunction::raiseNotice ( 0, 'MODULE_BAD_CONFIGURED: ' . $module->title );
+				JFusionFunction::raiseNotice('MODULE_BAD_CONFIGURED: ' . $module->title );
 			}
 		}else{
 			$xml = '<block type="core/text_list" name="content">'.$xml_output.'</block>';
@@ -70,6 +70,6 @@ if (JPluginHelper::importPlugin ( 'system', 'magelib' )) {
 		endif;
 	$plgMageLib->restartJoomlaSession ();
 } else {
-	$error = JFusionFunction::raiseWarning ( 0, JText::_ ( 'Plugin system magelib not installed or activated!' ) );
+	$error = JFusionFunction::raiseWarning(JText::_ ( 'Plugin system magelib not installed or activated!' ) );
 	JError::handleLog ( $error, array() );
 }

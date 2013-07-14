@@ -83,7 +83,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 		}
         $params = array();
         if (($file_handle = @fopen($myfile, 'r')) === false) {
-			JFusionFunction::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));
+			JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));
 		} else {
 			//parse the file line by line to get only the config variables
 			//			$file_handle = fopen($myfile, 'r');

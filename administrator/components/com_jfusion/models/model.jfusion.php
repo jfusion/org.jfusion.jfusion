@@ -43,7 +43,6 @@ class JFusionFunction
 			$jfusion_master = $db->loadObject();
 		}
 		return $jfusion_master;
-
 	}
 	
 	/**
@@ -227,7 +226,7 @@ class JFusionFunction
 				    try {
 					    $db->execute();
 				    } catch (Exception $e) {
-					    FusionFunction::raiseWarning(0, $e->getMessage());
+					    FusionFunction::raiseWarning($e->getMessage());
 				    }
 
 				    //Delete old user data in the lookup table
@@ -236,7 +235,7 @@ class JFusionFunction
 				    try {
 					    $db->execute();
 				    } catch (Exception $e) {
-					    FusionFunction::raiseWarning(0, $e->getMessage());
+					    FusionFunction::raiseWarning($e->getMessage());
 				    }
 			    }
 		    } else {
@@ -278,7 +277,7 @@ class JFusionFunction
 					    try {
 						    $db->execute();
 					    } catch (Exception $e) {
-						    JFusionFunction::raiseWarning(0, $e->getMessage());
+						    JFusionFunction::raiseWarning($e->getMessage());
 					    }
 				    }
 			    } else {
@@ -291,7 +290,7 @@ class JFusionFunction
 				    try {
 					    $db->execute();
 				    } catch (Exception $e) {
-					    JFusionFunction::raiseWarning(0, $e->getMessage());
+					    JFusionFunction::raiseWarning($e->getMessage());
 				    }
 			    }
 		    }
@@ -410,14 +409,14 @@ class JFusionFunction
 	    try {
 		    $db->execute();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseWarning(0, $e->getMessage());
+		    JFusionFunction::raiseWarning($e->getMessage());
 	    }
         $query = 'DELETE FROM #__jfusion_users_plugin WHERE id =' . $userinfo->id;
         $db->setQuery($query);
 	    try {
 		    $db->execute();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseWarning(0, $e->getMessage());
+		    JFusionFunction::raiseWarning($e->getMessage());
 	    }
     }
 
@@ -1633,41 +1632,33 @@ class JFusionFunction
 	}
 
 	/**
-	 * @param      $code
 	 * @param      $msg
-	 * @param null $info
 	 */
-	public static function raiseMessage($code, $msg, $info = null) {
+	public static function raiseMessage($msg) {
 		$app = JFactory::getApplication();
 		$app->enqueueMessage($msg,'message');
 	}
 
 	/**
-	 * @param      $code
 	 * @param      $msg
-	 * @param null $info
 	 */
-	public static function raiseNotice($code, $msg, $info = null) {
+	public static function raiseNotice($msg) {
 		$app = JFactory::getApplication();
 		$app->enqueueMessage($msg,'notice');
 	}
 
 	/**
-	 * @param      $code
 	 * @param      $msg
-	 * @param null $info
 	 */
-	public static function raiseWarning($code, $msg, $info = null) {
+	public static function raiseWarning($msg) {
 		$app = JFactory::getApplication();
 		$app->enqueueMessage($msg,'warning');
 	}
 
 	/**
-	 * @param      $code
 	 * @param      $msg
-	 * @param null $info
 	 */
-	public static function raiseError($code, $msg, $info = null) {
+	public static function raiseError($msg) {
 		$app = JFactory::getApplication();
 		$app->enqueueMessage($msg,'error');
 	}
@@ -1677,20 +1668,19 @@ class JFusionFunction
 	 *
 	 * @param string $type      type of warning
 	 * @param array $warning   warning itself
-	 * @param int    $redundant not used
 	 *
 	 * @return string nothing
 	 */
-	public static function raise($type, $warning, $redundant = 0) {
+	public static function raiseNotices($type, $warning) {
 		if (is_array($warning)) {
 			foreach ($warning as $warningtype => $warningtext) {
 				//if still an array implode for nicer display
 				if (is_array($warningtext)) {
-					JFusionFunction::raiseNotice('500', $warningtype . ': ' . $warningtext);
+					JFusionFunction::raiseNotice($warningtype . ': ' . $warningtext);
 				}
 			}
 		} else {
-			JFusionFunction::raiseNotice('500', $type . ': ' . $warning);
+			JFusionFunction::raiseNotice($type . ': ' . $warning);
 		}
 	}
 

@@ -70,7 +70,7 @@ class plgSystemJfusion extends JPlugin
      */
     function onAfterInitialise()
     {
-        //JFusionFunction::raiseNotice('500','system plugin called');
+        //JFusionFunction::raiseNotice('system plugin called');
         $session = JFactory::getSession();
         //initialise some vars
         ob_start();
@@ -93,7 +93,7 @@ class plgSystemJfusion extends JPlugin
                 $_REQUEST = $_REQUEST + $backup['request'];
                 $session->clear('JFusionVarBackup');
                 if ($debug) {
-                    JFusionFunction::raiseNotice('500', 'Form variables restored.');
+                    JFusionFunction::raiseNotice('Form variables restored.');
                 }
             }
         } else {
@@ -109,7 +109,7 @@ class plgSystemJfusion extends JPlugin
                     $changed = $JFusionUser->syncSessions($keepalive);
                     if (!empty($changed)) {
                         if ($debug) {
-                            JFusionFunction::raiseNotice('500',$master->name.' session changed');
+                            JFusionFunction::raiseNotice($master->name.' session changed');
                         }
                         $refresh = true;
                     }
@@ -123,7 +123,7 @@ class plgSystemJfusion extends JPlugin
                         $changed = $JFusionUser->syncSessions($keepalive);
                         if (!empty($changed)) {
                             if ($debug) {
-                                JFusionFunction::raiseNotice('500',$plugin->name.' session changed');
+                                JFusionFunction::raiseNotice($plugin->name.' session changed');
                             }
                             $refresh = true;
                         }
@@ -152,7 +152,7 @@ class plgSystemJfusion extends JPlugin
                 $backup['files'] = $_FILES;
                 $session->set('JFusionVarBackup',$backup);
                 if ($debug) {
-                    JFusionFunction::raiseNotice('500','Refresh is true');
+                    JFusionFunction::raiseNotice('Refresh is true');
                 }
                 $uri = JURI::getInstance();
                 //add a variable to ensure refresh

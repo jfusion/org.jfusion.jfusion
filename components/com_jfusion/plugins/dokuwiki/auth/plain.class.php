@@ -159,7 +159,7 @@ class doku_auth_plain extends doku_auth_basic {
       	// prepare user line
       	$groups = join(',',$grps);
       	if (empty($groups)) {
-      		JFusionFunction::raiseWarning(500,' no usergroup set. Please inform the Wiki-Admin');
+      		JFusionFunction::raiseWarning(' no usergroup set. Please inform the Wiki-Admin');
       		return false;      		
       	}
       	$name = str_replace("\n", '', $name);
@@ -169,7 +169,7 @@ class doku_auth_plain extends doku_auth_basic {
         	$this->users[$user] = compact('username','pass','name','mail','grps');
         	return $pwd;
       	}
-      	JFusionFunction::raiseWarning(500,' file is not writable. Please inform the Wiki-Admin');
+      	JFusionFunction::raiseWarning('file is not writable. Please inform the Wiki-Admin');
       	return false;
     }
     /**
@@ -201,13 +201,13 @@ class doku_auth_plain extends doku_auth_basic {
       	$userline = join(':',array($newuser, $userinfo['pass'], $userinfo['name'], $userinfo['mail'], $groups))."\n";
         if (!$this->io) $this->io = new JFusionDokuwiki_Io($this->helper);
         if (!$this->deleteUsers(array($user))) {
-            JFusionFunction::raiseWarning(500, 'Unable to modify user data. Please inform the Wiki-Admin');
+            JFusionFunction::raiseWarning('Unable to modify user data. Please inform the Wiki-Admin');
             return false;
         }
         $file = $this->auth_file();
         if (!$this->io) $this->io = new JFusionDokuwiki_Io($this->helper);
         if (!$this->io->saveFile($file, $userline, true)) {
-            JFusionFunction::raiseWarning(500, 'There was an error modifying your user data. You should register again.');
+            JFusionFunction::raiseWarning('There was an error modifying your user data. You should register again.');
             return false;
             /**
              * @TODO user has been deleted but not recreated, should force a logout and redirect to login page

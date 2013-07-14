@@ -66,7 +66,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
         //try to open the file
         $params = array();
         if (($file_handle = @fopen($configfile, 'r')) === false) {
-            JFusionFunction::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $configfile " . JText::_('WIZARD_MANUAL'));
+            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ": $configfile " . JText::_('WIZARD_MANUAL'));
         } else {
             //parse the file line by line to get only the config variables
             $file_handle = fopen($configfile, 'r');
@@ -417,12 +417,12 @@ HTML;
                 $query = 'DELETE FROM #__plugin WHERE hookname = \'init_startup\' AND title = ' . $db->Quote($hookName);
                 $db->setQuery($query);
                 if (!$db->execute()) {
-                    JFusionFunction::raiseWarning(500, $db->stderr());
+                    JFusionFunction::raiseWarning($db->stderr());
                 }
                 //enable or re-enable the plugin
                 if ($action != 'disable') {
                     if (($hook == 'redirect' || $hook == 'frameless') && !$this->isValidItemID($itemid)) {
-                        JFusionFunction::raiseWarning(500, JText::_('VB_REDIRECT_HOOK_ITEMID_EMPTY'));
+                        JFusionFunction::raiseWarning(JText::_('VB_REDIRECT_HOOK_ITEMID_EMPTY'));
                     } else {
                         //install the hook
                         $php = $this->getHookPHP($hook, $itemid);
@@ -435,7 +435,7 @@ HTML;
                         executionorder = 1';
                         $db->setQuery($query);
                         if (!$db->execute()) {
-                            JFusionFunction::raiseWarning(500, $db->stderr());
+                            JFusionFunction::raiseWarning($db->stderr());
                         }
                     }
                 }
@@ -591,12 +591,12 @@ HTML;
 							    $membergroups = $usergroups[$group->id]['membergroups'];
 							    $defaultgroup = $usergroups[$group->id]['defaultgroup'];
 							    if ((is_array($membergroups) && in_array($defaultgroup, $membergroups)) || $defaultgroup == $membergroups) {
-								    JFusionFunction::raiseWarning(0, $this->getJname() . ': ' . JText::sprintf('VB_GROUP_MISMATCH', $group->name));
+								    JFusionFunction::raiseWarning($this->getJname() . ': ' . JText::sprintf('VB_GROUP_MISMATCH', $group->name));
 							    }
 						    }
 					    }
 				    } else {
-					    JFusionFunction::raiseWarning(0, $this->getJname() . ': ' . JText::_('ADVANCED_GROUPMODE_ONLY_SUPPORTED_FORSLAVES'));
+					    JFusionFunction::raiseWarning($this->getJname() . ': ' . JText::_('ADVANCED_GROUPMODE_ONLY_SUPPORTED_FORSLAVES'));
 				    }
 			    }
 		    }
@@ -604,10 +604,10 @@ HTML;
 		    $query = 'SELECT COUNT(*) FROM #__plugin WHERE hookname = \'init_startup\' AND title = \'JFusion API Plugin - REQUIRED\' AND active = 1';
 		    $db->setQuery($query);
 		    if ($db->loadResult() == 0) {
-			    JFusionFunction::raiseWarning(0, $this->getJname() . ': ' . JText::_('VB_API_HOOK_NOT_INSTALLED'));
+			    JFusionFunction::raiseWarning($this->getJname() . ': ' . JText::_('VB_API_HOOK_NOT_INSTALLED'));
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError(0, $this->getJname() . ': ' . $e->getMessage());
+		    JFusionFunction::raiseError($this->getJname() . ': ' . $e->getMessage());
 	    }
     }
 

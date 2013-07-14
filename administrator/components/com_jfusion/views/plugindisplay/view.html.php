@@ -70,7 +70,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 
 	        parent::display();
         } else {
-            JFusionFunction::raiseWarning(500, JText::_('NO_JFUSION_TABLE'));
+            JFusionFunction::raiseWarning(JText::_('NO_JFUSION_TABLE'));
         }
     }
 
@@ -258,7 +258,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 				    $record->usergrouptext = $usergroup;
 			    } else {
 				    $record->usergrouptext = '<img src="components/com_jfusion/images/cross.png" border="0" alt="Disabled" />' . JText::_('MISSING') . ' ' . JText::_('DEFAULT_USERGROUP') ;
-				    JFusionFunction::raiseWarning(0, $record->name . ': ' . JText::_('MISSING') . ' ' . JText::_('DEFAULT_USERGROUP'));
+				    JFusionFunction::raiseWarning($record->name . ': ' . JText::_('MISSING') . ' ' . JText::_('DEFAULT_USERGROUP'));
 			    }
 		    } else {
 			    $record->usergrouptext = '';
@@ -308,7 +308,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 				$plugin_xml = JFUSION_PLUGIN_PATH .DIRECTORY_SEPARATOR. $record->name .DIRECTORY_SEPARATOR. 'jfusion.xml';
 				if(!file_exists($plugin_xml)) {
 					$record->status = 1;
-					JFusionFunction::raiseWarning(500, $record->name . ': ' . JText::_('NO_FILES'));
+					JFusionFunction::raiseWarning($record->name . ': ' . JText::_('NO_FILES'));
 				} else {
 					$record->status = 0;
 				}
@@ -319,7 +319,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 						try {
 							$JFusionPlugin->debugConfig();
 						} catch (Exception $e) {
-							JFusionFunction::raiseError(500, $record->name . ': ' . $e->getMessage());
+							JFusionFunction::raiseError($record->name . ': ' . $e->getMessage());
 							$record->status = 0;
 						}
 					}

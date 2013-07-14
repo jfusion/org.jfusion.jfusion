@@ -68,10 +68,10 @@ class JFusionModelInstaller extends InstallerModelInstall
 		if ($this->raise) {
 			switch($type) {
 				case 'message':
-					JFusionFunction::raiseMessage(0, $msg);
+					JFusionFunction::raiseMessage($msg);
 					break;
 				case 'error':
-					JFusionFunction::raiseError(0, $msg);
+					JFusionFunction::raiseError($msg);
 					break;
 			}
 		}

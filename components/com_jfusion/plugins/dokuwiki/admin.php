@@ -86,7 +86,7 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
         $config = $helper->getConf($Path);
         $params = array();
         if ($config === false) {
-            JFusionFunction::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $Path " . JText::_('WIZARD_MANUAL'));
+            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ": $Path " . JText::_('WIZARD_MANUAL'));
         } else {
             if (isset($config['auth']['mysql']) && isset($config['authtype']) && $config['authtype'] == 'mysql') {
 	            $params['database_type'] = 'mysql';
@@ -291,11 +291,11 @@ if (!defined(\'_JEXEC\'))';
 
         //check to see if all vars are set
         if (empty($joomla_url)) {
-            JFusionFunction::raiseWarning(0, JText::_('MISSING') . ' Joomla URL');
+            JFusionFunction::raiseWarning(JText::_('MISSING') . ' Joomla URL');
         } else if (empty($joomla_itemid) || !is_numeric($joomla_itemid)) {
-            JFusionFunction::raiseWarning(0, JText::_('MISSING') . ' ItemID');
+            JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID');
         } else if (!$this->isValidItemID($joomla_itemid)) {
-            JFusionFunction::raiseWarning(0, JText::_('MISSING') . ' ItemID '. JText::_('MUST BE'). ' ' . $this->getJname());
+            JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID '. JText::_('MUST BE'). ' ' . $this->getJname());
         } else {
             $error = $this->disableRedirectMod();
             $reason = '';

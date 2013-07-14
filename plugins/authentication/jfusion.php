@@ -168,7 +168,7 @@ class plgAuthenticationjfusion extends JPlugin
                             $JFusionMaster->updatePassword($userinfo, $userinfo, $status);
                             if (!empty($status['error'])) {
                                 $response->debug[] = $auth_model->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('UPDATE') . ' ' . JText::_('ERROR') . ': ' . $status['error'];
-                                JFusionFunction::raise($master->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('UPDATE'), $status['error'], 1);
+                                JFusionFunction::raiseNotices($master->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('UPDATE'), $status['error']);
                             } else {
                                 $response->debug[] = $auth_model->name . ' ' . JText::_('PASSWORD') . ' ' . JText::_('UPDATE') . ' ' . JText::_('SUCCESS');
                             }

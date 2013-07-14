@@ -252,7 +252,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
         $helper = JFusionFactory::getHelper($this->getJname());
         $version = $helper->getVersion();
         if ((int) substr($version, 0, 1) > 3) {
-            JFusionFunction::raiseWarning(500, JText::sprintf('VB_FRAMELESS_NOT_SUPPORTED',$version));
+            JFusionFunction::raiseWarning(JText::sprintf('VB_FRAMELESS_NOT_SUPPORTED',$version));
         } else {
             //check to make sure the frameless hook is installed
             $db = JFusionFactory::getDatabase($this->getJname());
@@ -260,7 +260,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
             $db->setQuery($q);
             $active = $db->loadResult();
             if ($active != '1') {
-                JFusionFunction::raiseWarning(500, JText::_('VB_FRAMELESS_HOOK_NOT_INSTALLED'));
+                JFusionFunction::raiseWarning(JText::_('VB_FRAMELESS_HOOK_NOT_INSTALLED'));
             } else {
                 //have to clear this as it shows up in some text boxes
                 unset($q);
@@ -331,7 +331,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
                     $index_file = $source_path . DIRECTORY_SEPARATOR . $jfile;
                 }
                 if (!is_file($index_file)) {
-                    JFusionFunction::raiseWarning(500, 'The path to the requested does not exist');
+                    JFusionFunction::raiseWarning('The path to the requested does not exist');
                 } else {
                     //set the current directory to vBulletin
                     chdir($source_path);

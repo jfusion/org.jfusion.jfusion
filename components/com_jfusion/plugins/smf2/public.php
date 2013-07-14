@@ -274,7 +274,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 		}
 
 		if ( ! is_file($index_file) ) {
-			JFusionFunction::raiseWarning(500, 'The path to the SMF index file set in the component preferences does not exist');
+			JFusionFunction::raiseWarning('The path to the SMF index file set in the component preferences does not exist');
 		} else {
             //add handler to undo changes that plgSystemSef create
             $dispatcher = JEventDispatcher::getInstance();
@@ -314,7 +314,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 
             // Log an error if we could not include the file
             if (!$rs) {
-                JFusionFunction::raiseWarning(500, 'Could not find SMF in the specified directory');
+                JFusionFunction::raiseWarning('Could not find SMF in the specified directory');
             }
         }
 	}
@@ -503,7 +503,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 		$extra = $matches[2];		
 
 		$baseURL = $this->data->baseURL;    	
-        //JFusionFunction::raiseWarning(500, $url);
+        //JFusionFunction::raiseWarning($url);
         $url = htmlspecialchars_decode($url);
         $Itemid = JFactory::getApplication()->input->getInt('Itemid');
         $extra = stripslashes($extra);
@@ -563,7 +563,8 @@ class JFusionPublic_smf2 extends JFusionPublic {
 		$url = $matches[1];
 		$baseURL = $this->data->baseURL;
 		    	
-        //JFusionFunction::raiseWarning(500, $url);
+        //JFusionFunction::raiseWarning($url);
+        //JFusionFunction::raiseWarning($url);
         //split up the timeout from url
         $parts = explode(';url=', $url);
         $timeout = $parts[0];
@@ -601,7 +602,8 @@ class JFusionPublic_smf2 extends JFusionPublic {
             $redirectURL .= '#'.$fragment;
         }
         $return = '<meta http-equiv="refresh" content="' . $timeout . ';url=' . $redirectURL . '">';
-        //JFusionFunction::raiseWarning(500, htmlentities($return));
+        //JFusionFunction::raiseWarning(htmlentities($return));
+        //JFusionFunction::raiseWarning(htmlentities($return));
         return $return;
     }
 

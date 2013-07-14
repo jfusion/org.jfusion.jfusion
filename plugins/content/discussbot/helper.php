@@ -137,7 +137,7 @@ class JFusionDiscussBotHelper {
 
         $JFusionForum->checkThreadExists($this->params, $this->article, $threadinfo, $status);
         if (!empty($status['error'])) {
-            JFusionFunction::raise($this->jname . ' ' .JText::_('FORUM') . ' ' .JText::_('UPDATE'), $status['error'],1);
+            JFusionFunction::raiseNotices($this->jname . ' ' .JText::_('FORUM') . ' ' .JText::_('UPDATE'), $status['error']);
         } else {
             if ($status['action']!='unchanged') {
                 if ($status['action'] == 'created') {

@@ -160,7 +160,7 @@ class JFusionPublic_gallery2 extends JFusionPublic {
 		$extra = $matches[2];
 		$baseURL = $this->data->baseURL;
 		    	
-        //JFusionFunction::raiseWarning(500, $url);
+        //JFusionFunction::raiseWarning($url);
         $url = htmlspecialchars_decode($url);
         $Itemid = JFactory::getApplication()->input->getInt('Itemid');
         $extra = stripslashes($extra);

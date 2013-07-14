@@ -141,7 +141,7 @@ class plgContentJfusion extends JPlugin
         //check to see if a valid $content object was passed on
         $result = true;
         if (!is_object($subject)){
-            JFusionFunction::raise(JText::_('DISCUSSBOT_ERROR'), JText::_('NO_CONTENT_DATA_FOUND'), 1);
+	        JFusionFunction::raiseNotices(JText::_('DISCUSSBOT_ERROR'),JText::_('NO_CONTENT_DATA_FOUND'));
             $result = false;
         } else {
             $this->article =& $subject;
@@ -241,7 +241,7 @@ class plgContentJfusion extends JPlugin
                             $content .= JText::_('AUTHORID') . ': ' . $author . '<br />';
                         }
                     }
-                    JFusionFunction::raiseNotice('500', $content);
+                    JFusionFunction::raiseNotice($content);
                 } else {
                     $this->helper->debug('In manual mode...checking to see if article has been initialized');
                     $threadinfo = $this->helper->getThreadInfo();
@@ -280,7 +280,7 @@ class plgContentJfusion extends JPlugin
 
         //check to see if a valid $content object was passed on
         if (!is_object($subject)){
-            JFusionFunction::raise(JText::_('DISCUSSBOT_ERROR'), JText::_('NO_CONTENT_DATA_FOUND'), 1);
+            JFusionFunction::raiseNotices(JText::_('DISCUSSBOT_ERROR'),JText::_('NO_CONTENT_DATA_FOUND'));
             $result = false;
         } else {
             //make sure there is a plugin
@@ -748,7 +748,7 @@ HTML;
 	            if ($ajaxEnabled) {
 		            $ajax->message = JText::_('DISCUSSBOT_ERROR') . ': ' . $this->ajaxError($status['error']);
 	            } else {
-		            JFusionFunction::raise(JText::_('DISCUSSBOT_ERROR'), $status['error'], 1);
+		            JFusionFunction::raiseNotices(JText::_('DISCUSSBOT_ERROR'), $status['error']);
 	            }
             } else {
 	            $ajax->status = true;
@@ -756,7 +756,7 @@ HTML;
 	            if ($ajaxEnabled) {
 		            $ajax->message = $msg;
 	            } else {
-		            JFusionFunction::raise(JText::_('SUCCESS'), $msg, 1);
+		            JFusionFunction::raiseNotices(JText::_('SUCCESS'), $msg);
 	            }
             }
         } else {
@@ -764,7 +764,7 @@ HTML;
 	        if ($ajaxEnabled) {
 		        $ajax->message = $msg;
 	        } else {
-		        JFusionFunction::raise(JText::_('DISCUSSBOT_ERROR'), $msg, 1);
+		        JFusionFunction::raiseNotices(JText::_('DISCUSSBOT_ERROR'), $msg);
 	        }
         }
 	    if ($ajaxEnabled) {
@@ -828,7 +828,7 @@ HTML;
                             if ($ajaxEnabled) {
 	                            $ajax->message = JText::_('DISCUSSBOT_ERROR') . ': ' . $this->ajaxError($status['error']);
                             } else {
-                                JFusionFunction::raise(JText::_('DISCUSSBOT_ERROR'), $status['error'],1);
+                                JFusionFunction::raiseNotices(JText::_('DISCUSSBOT_ERROR'), $status['error']);
                             }
                         } else {
                             if ($ajaxEnabled) {
@@ -877,28 +877,28 @@ HTML;
 	                        if ($ajaxEnabled) {
 		                        $ajax->message = JText::_($msg);
 	                        } else {
-		                        JFusionFunction::raise(JText::_('SUCCESS'), JText::_($msg),1);
+		                        JFusionFunction::raiseNotices(JText::_('SUCCESS'), JText::_($msg));
 	                        }
                         }
                     } else {
                         if ($ajaxEnabled) {
 	                        $ajax->message = JText::_('DISCUSSBOT_ERROR') . ': ' . JText::_('THREADID_NOT_FOUND');
                         } else {
-                            JFusionFunction::raise(JText::_('DISCUSSBOT_ERROR'), JText::_('THREADID_NOT_FOUND'),1);
+                            JFusionFunction::raiseNotices(JText::_('DISCUSSBOT_ERROR'), JText::_('THREADID_NOT_FOUND'));
                         }
                     }
                 } else {
                     if ($ajaxEnabled) {
 	                    $ajax->message = JText::_('DISCUSSBOT_ERROR') . ': ' . JText::_('CAPTCHA_INCORRECT');
                     } else {
-                        JFusionFunction::raise(JText::_('DISCUSSBOT_ERROR'), JText::_('CAPTCHA_INCORRECT'),1);
+                        JFusionFunction::raiseNotices(JText::_('DISCUSSBOT_ERROR'), JText::_('CAPTCHA_INCORRECT'));
                     }
                 }
             } else {
                 if ($ajaxEnabled) {
 	                $ajax->message = JText::_('DISCUSSBOT_ERROR') . ': ' . JText::_('QUICKEREPLY_EMPTY');
                 } else {
-                    JFusionFunction::raise(JText::_('DISCUSSBOT_ERROR'), JText::_('QUICKEREPLY_EMPTY'),1);
+                    JFusionFunction::raiseNotices(JText::_('DISCUSSBOT_ERROR'), JText::_('QUICKEREPLY_EMPTY'));
                 }
             }
         } else {
@@ -906,7 +906,7 @@ HTML;
 	        if ($ajaxEnabled) {
 		        $ajax->message = $msg;
 	        } else {
-		        JFusionFunction::raise(JText::_('DISCUSSBOT_ERROR'), $msg, 1);
+		        JFusionFunction::raiseNotices(JText::_('DISCUSSBOT_ERROR'), $msg);
 	        }
         }
 	    if ($ajaxEnabled) {
@@ -960,7 +960,7 @@ HTML;
 	        if ($this->ajax_request) {
 		        $ajax->message = JText::_('ACCESS_DENIED');
 	        } else {
-		        JFusionFunction::raise(JText::_('DISCUSSBOT_ERROR'), JText::_('ACCESS_DENIED'), 1);
+		        JFusionFunction::raiseNotices(JText::_('DISCUSSBOT_ERROR'), JText::_('ACCESS_DENIED'));
 	        }
         }
 	    if ($this->ajax_request) {
@@ -993,7 +993,7 @@ HTML;
 	        if ($this->ajax_request) {
 		        $ajax->message = JText::_('ACCESS_DENIED');
 	        } else {
-		        JFusionFunction::raise(JText::_('DISCUSSBOT_ERROR'), JText::_('ACCESS_DENIED'), 1);
+		        JFusionFunction::raiseNotices(JText::_('DISCUSSBOT_ERROR'), JText::_('ACCESS_DENIED'));
 	        }
         }
 	    if ($this->ajax_request) {

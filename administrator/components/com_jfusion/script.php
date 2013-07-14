@@ -292,7 +292,7 @@ class com_jfusionInstallerScript
 		foreach ($files2delete as $f) {
 			if (file_exists($f)) {
 				if (!JFile::delete($f)) {
-					JFusionFunction::raiseWarning(500, JText::sprintf('UPGRADE_UNABLE_TO_REMOVE_FILE', $f));
+					JFusionFunction::raiseWarning(JText::sprintf('UPGRADE_UNABLE_TO_REMOVE_FILE', $f));
 				}
 			}
 		}

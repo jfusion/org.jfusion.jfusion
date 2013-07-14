@@ -69,47 +69,47 @@ class JFusionHelper {
      * @return bool
      */
     public function getModuleQuery($type = 'id', $identifier = null) {
-		
-		if ($identifier == null) {
-			return false;
-		}
-		
-		static $modules = array ();
-		if ($modules [$identifier]) {
-			return $modules [$identifier];
-		}
-		switch ($type) {
-            default;
-			case 'id' :
-				$where = 'id=' . ( int ) $identifier;
-				break;
-			case 'title' :
-				$where = 'title="' . $identifier . '"';
-				break;
-		}
-		
-		$db = JFactory::getDBO ();
-		$query = 'SELECT id, title, module, params, content FROM #__modules WHERE ' . $where;
-		$db->setQuery ( $query );
 
 	    try {
+		    if ($identifier == null) {
+			    return false;
+		    }
+
+		    static $modules = array ();
+		    if ($modules [$identifier]) {
+			    return $modules [$identifier];
+		    }
+		    switch ($type) {
+			    default;
+			    case 'id' :
+				    $where = 'id=' . ( int ) $identifier;
+				    break;
+			    case 'title' :
+				    $where = 'title="' . $identifier . '"';
+				    break;
+		    }
+
+		    $db = JFactory::getDBO ();
+		    $query = 'SELECT id, title, module, params, content FROM #__modules WHERE ' . $where;
+		    $db->setQuery ( $query );
+
 		    $modules = $db->loadObjectList($type);
-	    } catch( Exception $e ) {
-		    JFusionFunction::raiseWarning ( 'SOME_ERROR_CODE', JText::_ ( 'Error Loading Modules' ) . $e->getMessage() );
+
+		    if (null === $modules) {
+			    throw new Exception(JText::_ ('Error Loading Modules'));
+		    }
+
+		    //determine if this is a custom module
+		    $file = $modules [$identifier]->module;
+		    $custom = substr ( $file, 0, 4 ) == 'mod_' ? 0 : 1;
+		    $modules [$identifier]->user = $custom;
+		    // CHECK: custom module name is given by the title field, otherwise it's just 'om' ??
+		    $modules [$identifier]->name = $custom ? $modules [$identifier]->title : substr ( $file, 4 );
+
+		    return $modules [$identifier];
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseWarning($e->getMessage());
 		    return false;
 	    }
-		if (null === $modules) {
-			JFusionFunction::raiseWarning ( 'SOME_ERROR_CODE', JText::_ ( 'Error Loading Modules' ) );
-			return false;
-		}
-		
-		//determine if this is a custom module
-		$file = $modules [$identifier]->module;
-		$custom = substr ( $file, 0, 4 ) == 'mod_' ? 0 : 1;
-		$modules [$identifier]->user = $custom;
-		// CHECK: custom module name is given by the title field, otherwise it's just 'om' ??
-		$modules [$identifier]->name = $custom ? $modules [$identifier]->title : substr ( $file, 4 );
-		
-		return $modules [$identifier];
 	}
 }

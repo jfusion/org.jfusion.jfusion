@@ -1090,7 +1090,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 	    $login_type = $params->get('login_type');
 	    if ($login_type == 1) {
 	        if ($debug) {
-	            JFusionFunction::raiseNotice('500','phpbb3 syncSessions called');
+	            JFusionFunction::raiseNotice('phpbb3 syncSessions called');
 	        }
 
 	        $options = array();
@@ -1118,17 +1118,17 @@ class JFusionUser_phpbb3 extends JFusionUser
 	            if (!empty($phpbb_allow_autologin) && !empty($persistant_cookie) && !empty($sid_cookie_value)) {
 	                //we have a persistent cookie set so let phpBB handle the session renewal
 	                if ($debug) {
-	                    JFusionFunction::raiseNotice('500', 'phpbb persistant cookie enabled and set so let phpbb handle renewal');
+	                    JFusionFunction::raiseNotice('phpbb persistant cookie enabled and set so let phpbb handle renewal');
 	                }
 	            } else {
 	                if ($debug) {
-	                    JFusionFunction::raiseNotice('500','Joomla user is logged in');
+	                    JFusionFunction::raiseNotice('Joomla user is logged in');
 	                }
 
 	                //check to see if the userid cookie is empty or if it contains the anonymous user, or if sid cookie is empty or missing
 	                if (empty($userid_cookie_value) || $userid_cookie_value == '1' || empty($sid_cookie_value)) {
 	                    if ($debug) {
-	                        JFusionFunction::raiseNotice('500','phpbb3 has a guest session');
+	                        JFusionFunction::raiseNotice('phpbb3 has a guest session');
 	                    }
 	                    //find the userid attached to Joomla userid
 	                    $joomla_userid = $JUser->get('id');
@@ -1144,7 +1144,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 
 	                    if (!empty($userinfo) && (!empty($keepalive) || !empty($joomla_persistant_cookie))) {
 	                        if ($debug) {
-	                            JFusionFunction::raiseNotice('500','keep alive enabled or Joomla persistant cookie found, and found a valid phpbb3 user so calling createSession');
+	                            JFusionFunction::raiseNotice('keep alive enabled or Joomla persistant cookie found, and found a valid phpbb3 user so calling createSession');
 	                        }
 	                        //enable remember me as this is a keep alive function anyway
 	                        $options['remember'] = 1;
@@ -1152,14 +1152,14 @@ class JFusionUser_phpbb3 extends JFusionUser
 	                        $status = $this->createSession($userinfo, $options);
 
 	                        if ($debug) {
-	                            JFusionFunction::raise('500',$status);
+	                            JFusionFunction::raiseNotices($this->getJname(),$status);
 	                        }
 
 	                        //signal that session was changed
 	                        $return = 1;
 	                    } else {
 	                        if ($debug) {
-	                            JFusionFunction::raiseNotice('500','keep alive disabled or no persistant session found so calling Joomla\'s destorySession');
+	                            JFusionFunction::raiseNotice($this->getJname(),'keep alive disabled or no persistant session found so calling Joomla\'s destorySession');
 	                        }
 	                        $JoomlaUser = JFusionFactory::getUser('joomla_int');
 
@@ -1177,27 +1177,27 @@ class JFusionUser_phpbb3 extends JFusionUser
 	                        $options['clientid'][] = '0';
 	                        $status = $JoomlaUser->destroySession($userinfo, $options);
 	                        if ($debug) {
-	                            JFusionFunction::raise('500',$status);
+	                            JFusionFunction::raiseNotices($this->getJname(),$status);
 	                        }
 	                    }
 	                } else {
 	                    if ($debug) {
-	                        JFusionFunction::raiseNotice('500','phpBB user logged in');
+	                        JFusionFunction::raiseNotice('phpBB user logged in');
 	                    }
 	                }
 	            }
 	        } elseif ((!empty($sid_cookie_value) || !empty($persistant_cookie)) && $userid_cookie_value != '1') {
 	            if ($debug) {
-	                JFusionFunction::raiseNotice('500','Joomla has a guest session');
+	                JFusionFunction::raiseNotice('Joomla has a guest session');
 	            }
 	            //the user is not logged into Joomla and we have an active phpBB session
 	            if (!empty($joomla_persistant_cookie)) {
 	                if ($debug) {
-	                    JFusionFunction::raiseNotice('500','Joomla persistant cookie found so let Joomla handle renewal');
+	                    JFusionFunction::raiseNotice('Joomla persistant cookie found so let Joomla handle renewal');
 	                }
 	            } elseif (empty($keepalive)) {
 	               if ($debug) {
-	                    JFusionFunction::raiseNotice('500','Keep alive disabled so kill phpBBs session');
+	                    JFusionFunction::raiseNotice('Keep alive disabled so kill phpBBs session');
 	                }
 	                //something fishy or person chose not to use remember me so let's destroy phpBBs session
 	                $params = JFusionFactory::getParams($this->getJname());
@@ -1214,18 +1214,18 @@ class JFusionUser_phpbb3 extends JFusionUser
 	                $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_k', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain);
 	                $return = 1;
 	            } elseif ($debug) {
-	                JFusionFunction::raiseNotice('500','Keep alive enabled so renew Joomla\'s session');
+	                JFusionFunction::raiseNotice('Keep alive enabled so renew Joomla\'s session');
 	            } else {
 	                $db = JFusionFactory::getDatabase($this->getJname());
 	                if (!empty($persistant_cookie)) {
 	                    $query = 'SELECT user_id FROM #__sessions_keys WHERE key_id = ' . $db->Quote(md5($persistant_cookie));
 	                    if ($debug) {
-	                        JFusionFunction::raiseNotice('500','Using phpBB persistant cookie to find user');
+	                        JFusionFunction::raiseNotice('Using phpBB persistant cookie to find user');
 	                    }
 	                } else {
 	                    $query = 'SELECT session_user_id FROM #__sessions WHERE session_id = ' . $db->Quote($sid_cookie_value);
 	                    if ($debug) {
-	                        JFusionFunction::raiseNotice('500','Using phpBB sid cookie to find user');
+	                        JFusionFunction::raiseNotice('Using phpBB sid cookie to find user');
 	                    }
 	                }
 	                $db->setQuery($query);
@@ -1233,7 +1233,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 	                $userlookup = JFusionFunction::lookupUser($this->getJname(), $userid, false);
 	                if (!empty($userlookup)) {
 	                    if ($debug) {
-	                        JFusionFunction::raiseNotice('500','Found a phpBB user so attempting to renew Joomla\'s session.');
+	                        JFusionFunction::raiseNotice('Found a phpBB user so attempting to renew Joomla\'s session.');
 	                    }
 	                    //get the user's info
 	                    $jdb = JFactory::getDBO();
@@ -1247,7 +1247,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 	                        $JFusionActivePlugin = $this->getJname();
 	                        $status = $JoomlaUser->createSession($userinfo, $options);
 	                        if ($debug) {
-	                            JFusionFunction::raise('500',$status);
+	                            JFusionFunction::raiseNotices($this->getJname(),$status);
 	                        }
 	                        //no need to signal refresh as Joomla will recognize this anyway
 	                    }
@@ -1256,7 +1256,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 	        }
 	    } else {
 		    if ($debug) {
-			    JFusionFunction::raiseNotice('500','phpbb3 syncSessions do not work in this login mode.');
+			    JFusionFunction::raiseNotice('phpbb3 syncSessions do not work in this login mode.');
 		    }
 	    }
         return $return;

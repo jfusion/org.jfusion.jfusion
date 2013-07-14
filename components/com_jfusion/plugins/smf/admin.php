@@ -76,7 +76,7 @@ class JFusionAdmin_smf extends JFusionAdmin
         $params = array();
         //try to open the file
         if (($file_handle = @fopen($myfile, 'r')) === false) {
-            JFusionFunction::raiseWarning(500, JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));
+            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));
         } else {
             //parse the file line by line to get only the config variables
             $file_handle = fopen($myfile, 'r');
@@ -269,11 +269,11 @@ if (!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') ===
 
         //check to see if all vars are set
         if (empty($joomla_url)) {
-            JFusionFunction::raiseWarning(0, JText::_('MISSING') . ' Joomla URL');
+            JFusionFunction::raiseWarning(JText::_('MISSING') . ' Joomla URL');
         } else if (empty($joomla_itemid) || !is_numeric($joomla_itemid)) {
-            JFusionFunction::raiseWarning(0, JText::_('MISSING') . ' ItemID');
+            JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID');
         } else if (!$this->isValidItemID($joomla_itemid)) {
-            JFusionFunction::raiseWarning(0, JText::_('MISSING') . ' ItemID '. JText::_('MUST BE'). ' ' . $this->getJname());
+            JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID '. JText::_('MUST BE'). ' ' . $this->getJname());
         } else {
             $error = $this->disableRedirectMod();
             $reason = '';

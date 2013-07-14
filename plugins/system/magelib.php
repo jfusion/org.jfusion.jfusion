@@ -14,7 +14,7 @@ $jfusion_component = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . 
 if(file_exists ( $jfusion_component )):
 	require_once $jfusion_component;
 else:
-	JFusionFunction::raiseWarning(0, 'MageLib: The file '.$jfusion_component.' doesn\'t exists. Please install JFusion component or update it.');
+	JFusionFunction::raiseWarning('MageLib: The file '.$jfusion_component.' doesn\'t exists. Please install JFusion component or update it.');
 endif;
 
 /**
@@ -106,7 +106,7 @@ class plgSystemMagelib {
 			
 			if (! file_exists ( $bootstrap )) {
 				$error_message = JText::sprintf ( 'The file %s doesn\'t exists', $bootstrap );
-				$error = JFusionFunction::raiseWarning ( 0, $error_message );
+				$error = JFusionFunction::raiseWarning($error_message );
 				$error->message = get_class ( $this ) . '::loadAndStartMagentoBootstrap - ' . $error_message;
 				JError::handleLog ( $error, array() );
 				return false;
