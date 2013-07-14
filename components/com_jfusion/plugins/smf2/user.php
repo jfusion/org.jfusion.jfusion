@@ -31,48 +31,53 @@ class JFusionUser_smf2 extends JFusionUser {
      */
     function getUser($userinfo)
     {
-		//get the identifier
-		list($identifier_type,$identifier) = $this->getUserIdentifier($userinfo,'a.member_name','a.email_address');
+	    try {
+		    //get the identifier
+		    list($identifier_type,$identifier) = $this->getUserIdentifier($userinfo,'a.member_name','a.email_address');
 
-        // initialise some objects
-        $db = JFusionFactory::getDatabase($this->getJname());
+		    // initialise some objects
+		    $db = JFusionFactory::getDatabase($this->getJname());
 
-        $query = 'SELECT a.id_member as userid, a.member_name as username, a.real_name as name, a.email_address as email, a.passwd as password, a.password_salt as password_salt, a.validation_code as activation, a.is_activated, NULL as reason, a.last_login as lastvisit, a.id_group as group_id '.
-        		'FROM #__members as a '.
-        		'WHERE '.$identifier_type.'=' . $db->Quote($identifier);
+		    $query = 'SELECT a.id_member as userid, a.member_name as username, a.real_name as name, a.email_address as email, a.passwd as password, a.password_salt as password_salt, a.validation_code as activation, a.is_activated, NULL as reason, a.last_login as lastvisit, a.id_group as group_id '.
+			    'FROM #__members as a '.
+			    'WHERE '.$identifier_type.'=' . $db->Quote($identifier);
 
-        $db->setQuery($query );
-        $result = $db->loadObject();
+		    $db->setQuery($query );
+		    $result = $db->loadObject();
 
-        if ($result) {
-        	if ($result->group_id==0) {
-        		$result->group_name = 'Default Usergroup';
-        	} else {
-        		$query = 'SELECT group_name FROM #__membergroups WHERE id_group = ' . $result->group_id;
-        		$db->setQuery($query );
-        		$result->group_name = $db->loadResult();
-        	}
-            $result->groups = array($result->group_id);
-            $result->groupnames = array($result->group_name);
+		    if ($result) {
+			    if ($result->group_id==0) {
+				    $result->group_name = 'Default Usergroup';
+			    } else {
+				    $query = 'SELECT group_name FROM #__membergroups WHERE id_group = ' . $result->group_id;
+				    $db->setQuery($query );
+				    $result->group_name = $db->loadResult();
+			    }
+			    $result->groups = array($result->group_id);
+			    $result->groupnames = array($result->group_name);
 
-            //Check to see if they are banned
-            $query = 'SELECT id_ban_group, expire_time FROM #__ban_groups WHERE name= ' . $db->quote($result->username);
-            $db->setQuery($query);
-            $expire_time = $db->loadObject();
-            if ($expire_time) {
-            	if ($expire_time->expire_time == '' || $expire_time->expire_time > time() ){
-                	$result->block = 1;
-            	} else {
-                	$result->block = 0;
-            	}
-            } else {
-                $result->block = 0;
-            }
+			    //Check to see if they are banned
+			    $query = 'SELECT id_ban_group, expire_time FROM #__ban_groups WHERE name= ' . $db->quote($result->username);
+			    $db->setQuery($query);
+			    $expire_time = $db->loadObject();
+			    if ($expire_time) {
+				    if ($expire_time->expire_time == '' || $expire_time->expire_time > time() ){
+					    $result->block = 1;
+				    } else {
+					    $result->block = 0;
+				    }
+			    } else {
+				    $result->block = 0;
+			    }
 
-            if ($result->is_activated == 1){
-				$result->activation = '';
-            }
-        }
+			    if ($result->is_activated == 1){
+				    $result->activation = '';
+			    }
+		    }
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    $result = null;
+	    }
         return $result;
     }
 
@@ -150,6 +155,7 @@ class JFusionUser_smf2 extends JFusionUser {
 		    $db->setQuery($query);
 		    $db->execute();
 	    } catch (Exception $e) {
+		    $status['error'][] = $e->getMessage();
 	    }
 		return $status;
      }
@@ -261,7 +267,7 @@ class JFusionUser_smf2 extends JFusionUser {
 
 	        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 	        if (empty($usergroups)) {
-	            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST');
+		        throw new Exception(JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST'));
 	        } else {
 	            $usergroup = $usergroups[0];
 
@@ -273,7 +279,7 @@ class JFusionUser_smf2 extends JFusionUser {
 		        $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode (' , ', $existinguser->groups) . ' -> ' . $usergroup;
 	        }
 	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $e->getMessage();
+		    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $e->getMessage();
 	    }
     }
 
@@ -391,86 +397,78 @@ class JFusionUser_smf2 extends JFusionUser {
      */
     function createUser($userinfo, &$status)
     {
-        //we need to create a new SMF user
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $params = JFusionFactory::getParams($this->getJname());
-        $source_path = $params->get('source_path');
+	    try {
+		    //we need to create a new SMF user
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $params = JFusionFactory::getParams($this->getJname());
+		    $source_path = $params->get('source_path');
 
-        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
-        if (empty($usergroups)) {
-            $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . JText::_('USERGROUP_MISSING');
-        } else {
-            //prepare the user variables
-            $user = new stdClass;
-            $user->id_member = NULL;
-            $user->member_name = $userinfo->username;
-            $user->real_name = $userinfo->name;
-            $user->email_address = $userinfo->email;
+		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+		    if (empty($usergroups)) {
+			    throw new Exception(JText::_('USERGROUP_MISSING'));
+		    } else {
+			    //prepare the user variables
+			    $user = new stdClass;
+			    $user->id_member = NULL;
+			    $user->member_name = $userinfo->username;
+			    $user->real_name = $userinfo->name;
+			    $user->email_address = $userinfo->email;
 
-            if (isset($userinfo->password_clear)) {
-                $user->passwd = sha1(strtolower($userinfo->username) . $userinfo->password_clear);
-                $user->password_salt = substr(md5(rand()), 0, 4);
-            } else {
-                $user->passwd = $userinfo->password;
+			    if (isset($userinfo->password_clear)) {
+				    $user->passwd = sha1(strtolower($userinfo->username) . $userinfo->password_clear);
+				    $user->password_salt = substr(md5(rand()), 0, 4);
+			    } else {
+				    $user->passwd = $userinfo->password;
 
-                if (!isset($userinfo->password_salt)) {
-                    $user->password_salt = substr(md5(rand()), 0, 4);
-                } else {
-                    $user->password_salt = $userinfo->password_salt;
-                }
-            }
+				    if (!isset($userinfo->password_salt)) {
+					    $user->password_salt = substr(md5(rand()), 0, 4);
+				    } else {
+					    $user->password_salt = $userinfo->password_salt;
+				    }
+			    }
 
-            $user->posts = 0 ;
-            $user->date_registered = time();
+			    $user->posts = 0 ;
+			    $user->date_registered = time();
 
-            if ($userinfo->activation){
-                $user->is_activated = 0;
-                $user->validation_code = $userinfo->activation;
-            } else {
-                $user->is_activated = 1;
-                $user->validation_code = '';
-            }
+			    if ($userinfo->activation){
+				    $user->is_activated = 0;
+				    $user->validation_code = $userinfo->activation;
+			    } else {
+				    $user->is_activated = 1;
+				    $user->validation_code = '';
+			    }
 
-            $user->personal_text = '';
-            $user->pm_email_notify = 1;
-            $user->hide_email = 1;
-            $user->id_theme = 0;
+			    $user->personal_text = '';
+			    $user->pm_email_notify = 1;
+			    $user->hide_email = 1;
+			    $user->id_theme = 0;
 
-            $user->id_group = $usergroups[0];
-            $user->id_post_group = $params->get('userpostgroup', 4);
+			    $user->id_group = $usergroups[0];
+			    $user->id_post_group = $params->get('userpostgroup', 4);
 
-            //now append the new user data
-            if (!$db->insertObject('#__members', $user, 'id_member' )) {
-                //return the error
-                $status['error'] = JText::_('USER_CREATION_ERROR'). ': ' . $db->stderr();
-            } else {
-                //update the stats
-                $query = 'UPDATE #__settings SET value = value + 1 	WHERE variable = \'totalMembers\' ';
-                $db->setQuery($query);
-                if (!$db->execute()) {
-                    //return the error
-                    $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-                } else {
-                    $date = strftime('%Y-%m-%d');
-                    $query = 'UPDATE #__log_activity SET registers = registers + 1 WHERE date = \''.$date.'\'';
-                    $db->setQuery($query);
-                    if (!$db->execute()) {
-                        //return the error
-                        $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-                    } else {
-                        $query = 'REPLACE INTO #__settings (variable, value) VALUES (\'latestMember\', ' . $user->id_member . '), (\'latestRealName\', ' . $db->quote($userinfo->name) . ')';
-                        $db->setQuery($query);
-                        if (!$db->execute()) {
-                            //return the error
-                            $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-                        } else {
-                            //return the good news
-                            $status['debug'][] = JText::_('USER_CREATION');
-                            $status['userinfo'] = $this->getUser($userinfo);
-                        }
-                    }
-                }
-            }
-        }
+			    //now append the new user data
+			    $db->insertObject('#__members', $user, 'id_member' );
+
+			    //update the stats
+			    $query = 'UPDATE #__settings SET value = value + 1 	WHERE variable = \'totalMembers\' ';
+			    $db->setQuery($query);
+			    $db->execute();
+
+			    $date = strftime('%Y-%m-%d');
+			    $query = 'UPDATE #__log_activity SET registers = registers + 1 WHERE date = \''.$date.'\'';
+			    $db->setQuery($query);
+			    $db->execute();
+
+			    $query = 'REPLACE INTO #__settings (variable, value) VALUES (\'latestMember\', ' . $user->id_member . '), (\'latestRealName\', ' . $db->quote($userinfo->name) . ')';
+			    $db->setQuery($query);
+			    $db->execute();
+
+			    //return the good news
+			    $status['debug'][] = JText::_('USER_CREATION');
+			    $status['userinfo'] = $this->getUser($userinfo);
+		    }
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('USER_CREATION_ERROR').': ' . $e->getMessage());
+	    }
     }
 }

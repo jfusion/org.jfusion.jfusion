@@ -749,7 +749,7 @@ HTML;
             $i = 3;
             for ($i = 3; $i < $numargs; $i++) {
                 if ($filters[$i][0] == 'userid') {
-                    $where.= ' HAVING userid = ' . $db->Quote($filters[$i][1]);
+                    $where.= ' HAVING userid = ' . $db->quote($filters[$i][1]);
                 }
             }
         }
@@ -829,26 +829,29 @@ HTML;
 	 */
 	function filterActivityResults(&$results, $limit=0)
 	{
-		$db = JFusionFactory::getDatabase($this->getJname());
-		$query = 'SELECT value FROM #__settings WHERE variable=\'censor_vulgar\'';
-		$db->setQuery($query);
-		$vulgar = $db->loadResult();
+		try {
+			$db = JFusionFactory::getDatabase($this->getJname());
+			$query = 'SELECT value FROM #__settings WHERE variable=\'censor_vulgar\'';
+			$db->setQuery($query);
+			$vulgar = $db->loadResult();
 
-		$db = JFusionFactory::getDatabase($this->getJname());
-		$query = 'SELECT value FROM #__settings WHERE variable=\'censor_proper\'';
-		$db->setQuery($query);
-		$proper = $db->loadResult();
+			$query = 'SELECT value FROM #__settings WHERE variable=\'censor_proper\'';
+			$db->setQuery($query);
+			$proper = $db->loadResult();
 
-		$vulgar = explode  ( ',' , $vulgar );
-		$proper = explode  ( ',' , $proper );
+			$vulgar = explode  ( ',' , $vulgar );
+			$proper = explode  ( ',' , $proper );
 
-		foreach($results as $rkey => $result) {
-			foreach( $vulgar as $key => $value ) {
-				$results[$rkey]->subject = preg_replace  ( '#\b'.preg_quote($value,'#').'\b#is' , $proper[$key]  , $result->subject );
-                if (isset($results[$rkey]->body)) {
-                    $results[$rkey]->body = preg_replace  ( '#\b'.preg_quote($value,'#').'\b#is' , $proper[$key]  , $result->body );
-                }
+			foreach($results as $rkey => $result) {
+				foreach( $vulgar as $key => $value ) {
+					$results[$rkey]->subject = preg_replace  ( '#\b'.preg_quote($value,'#').'\b#is' , $proper[$key]  , $result->subject );
+					if (isset($results[$rkey]->body)) {
+						$results[$rkey]->body = preg_replace  ( '#\b'.preg_quote($value,'#').'\b#is' , $proper[$key]  , $result->body );
+					}
+				}
 			}
+		} catch (Exception $e) {
+			JFusionFunction::raiseError($e);
 		}
 	}
 }
