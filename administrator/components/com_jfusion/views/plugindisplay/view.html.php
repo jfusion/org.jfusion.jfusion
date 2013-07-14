@@ -307,10 +307,10 @@ class jfusionViewplugindisplay extends JViewLegacy {
 				//check to see if the plugin files exist
 				$plugin_xml = JFUSION_PLUGIN_PATH .DIRECTORY_SEPARATOR. $record->name .DIRECTORY_SEPARATOR. 'jfusion.xml';
 				if(!file_exists($plugin_xml)) {
-					$record->status = 1;
+					$record->status = 0;
 					JFusionFunction::raiseWarning($record->name . ': ' . JText::_('NO_FILES'));
 				} else {
-					$record->status = 0;
+					$record->status = 1;
 				}
 
 				//output detailed configuration warnings for enabled plugins
