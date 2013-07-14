@@ -127,6 +127,8 @@ class JFusionFrameless {
 	/**
 	 * @static
 	 * @param $data
+	 *
+	 * @throws Exception
 	 * @return bool
 	 */
 	public static function displayContent($data)

@@ -30,13 +30,14 @@ defined('_JEXEC') or die('Restricted access');
  */
 class jfusionViewplugininfo extends JViewLegacy
 {
-    /**
-     * displays the view
-     *
-     * @param string $tpl template name
-     *
-     * @return mixed html output of view
-     */
+	/**
+	 * displays the view
+	 *
+	 * @param string $tpl template name
+	 *
+	 * @throws Exception
+	 * @return mixed html output of view
+	 */
     function display($tpl = null)
     {
         //set jname as a global variable in order for elements to access it.

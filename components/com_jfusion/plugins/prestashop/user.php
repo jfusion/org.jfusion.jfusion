@@ -403,8 +403,8 @@ class JFusionUser_prestashop extends JFusionUser {
 				    if($user_variables['id_state'] === '0'){
 					    /* state valid to apply for none state */
 				    } else {
-					    throw new Exception(Tools::displayError('invalid state'));
 					    unset($ps_customer);
+					    throw new Exception(Tools::displayError('invalid state'));
 				    }
 			    }
 

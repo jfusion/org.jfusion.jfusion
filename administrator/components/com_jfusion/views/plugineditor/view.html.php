@@ -35,6 +35,7 @@ class jfusionViewplugineditor extends JViewLegacy
      *
      * @param string $tpl template name
      *
+     * @throws Exception
      * @return mixed html output of view
      */
     function display($tpl = null)
