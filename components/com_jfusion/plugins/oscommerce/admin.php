@@ -144,12 +144,17 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
      * @return array
      */
     function getUserList($limitstart = 0, $limit = 0) {
-        //getting the connection to the db
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT customers_email_address as username, customers_email_address as email from #__customers';
-        $db->setQuery($query,$limitstart,$limit);
-        //getting the results
-        $userlist = $db->loadObjectList();
+	    try {
+		    //getting the connection to the db
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT customers_email_address as username, customers_email_address as email from #__customers';
+		    $db->setQuery($query,$limitstart,$limit);
+		    //getting the results
+		    $userlist = $db->loadObjectList();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    $userlist = array();
+	    }
         return $userlist;
     }
 
@@ -157,12 +162,17 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
      * @return int
      */
     function getUserCount() {
-        //getting the connection to the db
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT count(*) from #__customers';
-        $db->setQuery($query);
-        //getting the results
-        $no_users = $db->loadResult();
+	    try {
+		    //getting the connection to the db
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT count(*) from #__customers';
+		    $db->setQuery($query);
+		    //getting the results
+		    $no_users = $db->loadResult();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    $no_users = 0;
+	    }
         return $no_users;
     }
 
@@ -170,96 +180,110 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
      * @return array|bool
      */
     function getUsergroupList() {
-        $params = JFusionFactory::getParams($this->getJname());
-        $osCversion = $params->get('osCversion');
-        switch ($osCversion) {
-            case 'osc2':
-            case 'osc3':
-                $result = array();
-		        $result[0] = new stdClass;
-		        $result[0]->id ='0';
-		        $result[0]->name ='-none-';
-                return $result;
-            case 'osczen':
-                $db = JFusionFactory::getDataBase($this->getJname());
-                $query = 'SELECT group_id as id, group_name as name from #__group_pricing;';
-                $db->setQuery($query);
-                //getting the results
-                $result1 = $db->loadObjectList();
-                $result = array();
-	            $result[0] = new stdClass;
-	            $result[0]->id ='0';
-	            $result[0]->name ='-none-';
-                $result = array_merge((array)$result, (array)$result1);
-                return $result;
-            case 'oscxt':
-            case 'oscseo':
-                // get default language
-                $db = JFusionFactory::getDataBase($this->getJname());
-                $query = 'SELECT configuration_value from #__configuration WHERE configuration_key = \'DEFAULT_LANGUAGE\'';
-                $db->setQuery($query);
-                $default_language = $db->loadResult();
-                $query = 'SELECT languages_id from #__languages WHERE code =' . $db->Quote($default_language);
-                $db->setQuery($query);
-                $default_language_id = $db->loadResult();
-                $query = 'SELECT customers_status_id as id, customers_status_name as name from #__customers_status WHERE language_id =' . $default_language_id;
-                $db->setQuery($query);
-                //getting the results
-                $result = $db->loadObjectList();
-                return $result;
-            case 'oscmax':
-                $db = JFusionFactory::getDataBase($this->getJname());
-                $query = 'SELECT customers_group_id as id, customers_group_name as name from #__customers_groups;';
-                $db->setQuery($query);
-                //getting the results
-                $result = $db->loadObjectList();
-                return $result;
-        }
-        return false;
+	    $result = array();
+	    try {
+	        $params = JFusionFactory::getParams($this->getJname());
+	        $osCversion = $params->get('osCversion');
+	        switch ($osCversion) {
+	            case 'osc2':
+	            case 'osc3':
+	                $result = array();
+			        $result[0] = new stdClass;
+			        $result[0]->id ='0';
+			        $result[0]->name ='-none-';
+	                break;
+	            case 'osczen':
+	                $db = JFusionFactory::getDataBase($this->getJname());
+	                $query = 'SELECT group_id as id, group_name as name from #__group_pricing;';
+	                $db->setQuery($query);
+	                //getting the results
+	                $result1 = $db->loadObjectList();
+	                $result = array();
+		            $result[0] = new stdClass;
+		            $result[0]->id ='0';
+		            $result[0]->name ='-none-';
+	                $result = array_merge((array)$result, (array)$result1);
+		            break;
+	            case 'oscxt':
+	            case 'oscseo':
+	                // get default language
+	                $db = JFusionFactory::getDataBase($this->getJname());
+	                $query = 'SELECT configuration_value from #__configuration WHERE configuration_key = \'DEFAULT_LANGUAGE\'';
+	                $db->setQuery($query);
+	                $default_language = $db->loadResult();
+	                $query = 'SELECT languages_id from #__languages WHERE code =' . $db->Quote($default_language);
+	                $db->setQuery($query);
+	                $default_language_id = $db->loadResult();
+	                $query = 'SELECT customers_status_id as id, customers_status_name as name from #__customers_status WHERE language_id =' . $default_language_id;
+	                $db->setQuery($query);
+	                //getting the results
+	                $result = $db->loadObjectList();
+		            break;
+	            case 'oscmax':
+	                $db = JFusionFactory::getDataBase($this->getJname());
+	                $query = 'SELECT customers_group_id as id, customers_group_name as name from #__customers_groups;';
+	                $db->setQuery($query);
+	                //getting the results
+	                $result = $db->loadObjectList();
+		            break;
+	        }
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+	    }
+        return $result;
     }
 
     /**
      * @return bool|string
      */
     function getDefaultUsergroup() {
-        $params = JFusionFactory::getParams($this->getJname());
-        $osCversion = $params->get('osCversion');
-        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
-        $usergroup_id = null;
-        if(!empty($usergroups)) {
-            $usergroup_id = $usergroups[0];
-        }
-        switch ($osCversion) {
-            case 'osc2':
-            case 'osc3':
-                return '-none-';
-            case 'osczen':
-                //we want to output the usergroup name
-                $db = JFusionFactory::getDatabase($this->getJname());
-                $query = 'SELECT group_name from #__group_pricing WHERE group_id = ' . $usergroup_id;
-                $db->setQuery($query);
-                return $db->loadResult();
-            case 'oscxt':
-            case 'oscseo':
-                $db = JFusionFactory::getDataBase($this->getJname());
-                $query = 'SELECT configuration_value from #__configuration WHERE configuration_key = \'DEFAULT_LANGUAGE\'';
-                $db->setQuery($query);
-                $default_language = $db->loadResult();
-                $query = 'SELECT languages_id from #__languages WHERE code =' . $db->Quote($default_language);
-                $db->setQuery($query);
-                $default_language_id = $db->loadResult();
-                //we want to output the usergroup name
-                $query = 'SELECT customers_status_name from #__customers_status WHERE customers_status_id = ' . $usergroup_id . ' AND language_id = ' . $default_language_id;
-                $db->setQuery($query);
-                return $db->loadResult();
-            case 'oscmax':
-                //we want to output the usergroup name
-                $db = JFusionFactory::getDatabase($this->getJname());
-                $query = 'SELECT customers_group_name from #__customers_groups WHERE customers_group_id = ' . $usergroup_id;
-                $db->setQuery($query);
-                return $db->loadResult();
-        }
-        return false;
+	    $group = '';
+	    try {
+		    $params = JFusionFactory::getParams($this->getJname());
+		    $osCversion = $params->get('osCversion');
+		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
+		    $usergroup_id = null;
+		    if(!empty($usergroups)) {
+			    $usergroup_id = $usergroups[0];
+		    }
+		    switch ($osCversion) {
+			    case 'osc2':
+			    case 'osc3':
+			        $group = '-none-';
+				    break;
+			    case 'osczen':
+				    //we want to output the usergroup name
+				    $db = JFusionFactory::getDatabase($this->getJname());
+				    $query = 'SELECT group_name from #__group_pricing WHERE group_id = ' . $usergroup_id;
+				    $db->setQuery($query);
+				    $group = $db->loadResult();
+				    break;
+			    case 'oscxt':
+			    case 'oscseo':
+				    $db = JFusionFactory::getDataBase($this->getJname());
+				    $query = 'SELECT configuration_value from #__configuration WHERE configuration_key = \'DEFAULT_LANGUAGE\'';
+				    $db->setQuery($query);
+				    $default_language = $db->loadResult();
+				    $query = 'SELECT languages_id from #__languages WHERE code =' . $db->Quote($default_language);
+				    $db->setQuery($query);
+				    $default_language_id = $db->loadResult();
+				    //we want to output the usergroup name
+				    $query = 'SELECT customers_status_name from #__customers_status WHERE customers_status_id = ' . $usergroup_id . ' AND language_id = ' . $default_language_id;
+				    $db->setQuery($query);
+				    $group = $db->loadResult();
+				    break;
+			    case 'oscmax':
+				    //we want to output the usergroup name
+				    $db = JFusionFactory::getDatabase($this->getJname());
+				    $query = 'SELECT customers_group_name from #__customers_groups WHERE customers_group_id = ' . $usergroup_id;
+				    $db->setQuery($query);
+				    $group = $db->loadResult();
+				    break;
+		    }
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+	    }
+        return $group;
     }
 
     /**

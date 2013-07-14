@@ -39,22 +39,27 @@ class JFusionHelper_wordpress {
      * @return array
      */
     function getUsergroupListWP() {
-		$db = JFusionFactory::getDatabase($this->getJname());
-        $params = JFusionFactory::getParams($this->getJname());
-        $database_prefix = $params->get('database_prefix');
-        $query = 'SELECT option_value FROM #__options WHERE option_name = '.$db->quote($database_prefix.'user_roles');
-		$db->setQuery($query);
-		$roles_ser = $db->loadResult();
-		$roles = unserialize($roles_ser);
-		$keys = array_keys($roles);
-		$usergroups=array();
-		$count= count($keys);
-		for($i=0;$i < $count;$i++) {
-        	$group = new stdClass;
-        	$group->id = $i;
-        	$group->name = $keys[$i];
-        	$usergroups[$i] = $group;
-		}
+	    $usergroups=array();
+	    try {
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $params = JFusionFactory::getParams($this->getJname());
+		    $database_prefix = $params->get('database_prefix');
+		    $query = 'SELECT option_value FROM #__options WHERE option_name = '.$db->quote($database_prefix.'user_roles');
+		    $db->setQuery($query);
+		    $roles_ser = $db->loadResult();
+		    $roles = unserialize($roles_ser);
+		    $keys = array_keys($roles);
+
+		    $count= count($keys);
+		    for($i=0;$i < $count;$i++) {
+			    $group = new stdClass;
+			    $group->id = $i;
+			    $group->name = $keys[$i];
+			    $usergroups[$i] = $group;
+		    }
+	    } catch (Exception $e) {
+			JFusionFunction::raiseError($e);
+	    }
 		return $usergroups;
 	}
 
@@ -98,15 +103,20 @@ class JFusionHelper_wordpress {
      */
     function WP_userlevel_from_role( $max, $role ) {
 		static $allroles;
-		if (!isset($allroles)){
-			$db = JFusionFactory::getDatabase($this->getJname());
-			$params = JFusionFactory::getParams($this->getJname());
-			$database_prefix = $params->get('database_prefix');
+		if (!isset($allroles)) {
+			try {
+				$db = JFusionFactory::getDatabase($this->getJname());
+				$params = JFusionFactory::getParams($this->getJname());
+				$database_prefix = $params->get('database_prefix');
 
-			$query = 'SELECT option_value FROM #__options WHERE option_name = \''.$database_prefix.'user_roles\'';
-			$db->setQuery($query);
-			$roles_ser = $db->loadResult();
-			$allroles = unserialize($roles_ser);
+				$query = 'SELECT option_value FROM #__options WHERE option_name = \''.$database_prefix.'user_roles\'';
+				$db->setQuery($query);
+				$roles_ser = $db->loadResult();
+				$allroles = unserialize($roles_ser);
+			} catch (Exception $e) {
+				JFusionFunction::raiseError($e);
+				$allroles = array();
+			}
 		}
 
 		$item=implode(array_keys($allroles[$role]['capabilities']));

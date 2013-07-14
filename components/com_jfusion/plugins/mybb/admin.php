@@ -110,11 +110,16 @@ class JFusionAdmin_mybb extends JFusionAdmin
      * @return array
      */
     function getUserList($limitstart = 0, $limit = 0) {
-        //getting the connection to the db
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT username, email from #__users';
-        $db->setQuery($query,$limitstart,$limit);
-        $userlist = $db->loadObjectList();
+	    try {
+		    //getting the connection to the db
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT username, email from #__users';
+		    $db->setQuery($query,$limitstart,$limit);
+		    $userlist = $db->loadObjectList();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    $userlist = array();
+	    }
         return $userlist;
     }
 
@@ -122,56 +127,74 @@ class JFusionAdmin_mybb extends JFusionAdmin
      * @return int
      */
     function getUserCount() {
-        //getting the connection to the db
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT count(*) from #__users';
-        $db->setQuery($query);
-        //getting the results
-        return $db->loadResult();
+	    try {
+	        //getting the connection to the db
+	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $query = 'SELECT count(*) from #__users';
+	        $db->setQuery($query);
+	        //getting the results
+	        return $db->loadResult();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    return 0;
+		}
     }
 
     /**
      * @return array
      */
     function getUsergroupList() {
-        //getting the connection to the db
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT gid as id, title as name FROM #__usergroups';
-        $db->setQuery($query);
-        //getting the results
-        return $db->loadObjectList();
+	    try {
+	        //getting the connection to the db
+	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $query = 'SELECT gid as id, title as name FROM #__usergroups';
+	        $db->setQuery($query);
+	        //getting the results
+	        return $db->loadObjectList();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    return array();
+		}
     }
 
     /**
      * @return string
      */
     function getDefaultUsergroup() {
-        $params = JFusionFactory::getParams($this->getJname());
-        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
-        $usergroup_id = null;
-        if(!empty($usergroups)) {
-            $usergroup_id = $usergroups[0];
-        }
-        //we want to output the usergroup name
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT title from #__usergroups WHERE gid = ' . (int)$usergroup_id;
-        $db->setQuery($query);
-        return $db->loadResult();
+	    try {
+		    $params = JFusionFactory::getParams($this->getJname());
+		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
+		    $usergroup_id = null;
+		    if(!empty($usergroups)) {
+			    $usergroup_id = $usergroups[0];
+		    }
+		    //we want to output the usergroup name
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT title from #__usergroups WHERE gid = ' . (int)$usergroup_id;
+		    $db->setQuery($query);
+		    return $db->loadResult();
+	    } catch (Exception $e) {
+			JFusionFunction::raiseError($e);
+	    }
+	    return '';
     }
 
     /**
      * @return bool
      */
     function allowRegistration() {
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT value FROM #__settings  WHERE name =\'disableregs\'';
-        $db->setQuery($query);
-        $disableregs = $db->loadResult();
-        if ($disableregs == '0') {
-            $result = true;
-        } else {
-            $result = false;
-        }
+	    $result = false;
+	    try {
+	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $query = 'SELECT value FROM #__settings  WHERE name =\'disableregs\'';
+	        $db->setQuery($query);
+	        $disableregs = $db->loadResult();
+	        if ($disableregs == '0') {
+	            $result = true;
+	        }
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+	    }
         return $result;
     }
 

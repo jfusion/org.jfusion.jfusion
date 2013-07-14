@@ -150,13 +150,18 @@ class JFusionAdmin_wordpress extends JFusionAdmin
      */
     function getUserList($limitstart = 0, $limit = 0)
 	{
-		//getting the connection to the db
-		$db = JFusionFactory::getDatabase($this->getJname());
-		$query = 'SELECT user_login as username, user_email as email from #__users';
-		$db->setQuery($query,$limitstart,$limit);
+		try {
+			//getting the connection to the db
+			$db = JFusionFactory::getDatabase($this->getJname());
+			$query = 'SELECT user_login as username, user_email as email from #__users';
+			$db->setQuery($query,$limitstart,$limit);
 
-		//getting the results
-		$userlist = $db->loadObjectList();
+			//getting the results
+			$userlist = $db->loadObjectList();
+		} catch (Exception $e) {
+			JFusionFunction::raiseError($e);
+			$userlist = array();
+		}
 		return $userlist;
 	}
 
@@ -164,12 +169,17 @@ class JFusionAdmin_wordpress extends JFusionAdmin
      * @return int
      */
     function getUserCount() {
-		//getting the connection to the db
-		$db = JFusionFactory::getDatabase($this->getJname());
-		$query = 'SELECT count(*) from #__users';
-		$db->setQuery($query);
-		//getting the results
-		$no_users = $db->loadResult();
+	    try {
+			//getting the connection to the db
+			$db = JFusionFactory::getDatabase($this->getJname());
+			$query = 'SELECT count(*) from #__users';
+			$db->setQuery($query);
+			//getting the results
+			$no_users = $db->loadResult();
+	    } catch (Exception $e) {
+			JFusionFunction::raiseError($e);
+		    $no_users = 0;
+		}
 		return $no_users;
 	}
 
@@ -208,16 +218,19 @@ class JFusionAdmin_wordpress extends JFusionAdmin
      * @return bool
      */
     function allowRegistration() {
-		$db = JFusionFactory::getDatabase($this->getJname());
-		$query = 'SELECT option_value FROM #__options WHERE option_name = \'users_can_register\'';
-		$db->setQuery($query);
-		$auths = $db->loadResult();
-		if (empty($auths)) {
-			$result = false;
-			return $result;
-		} else {
-			return ($auths=="1");
-		}
+	    $result = false;
+	    try {
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT option_value FROM #__options WHERE option_name = \'users_can_register\'';
+		    $db->setQuery($query);
+		    $auths = $db->loadResult();
+
+		    $result = ($auths=='1');
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    $result = false;
+	    }
+	    return $result;
 	}
 
 

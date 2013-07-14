@@ -98,20 +98,24 @@ class JFusionAdmin_universal extends JFusionAdmin{
 	 */
 	function getUserList($limitstart = 0, $limit = 0)
 	{
-		/**
-		 * @ignore
-		 * @var $helper JFusionHelper_universal
-		 */
-		$helper = JFusionFactory::getHelper($this->getJname());
-		$f = array('USERNAME', 'EMAIL');
-		$field = $helper->getQuery($f);
+		try {
+			/**
+			 * @ignore
+			 * @var $helper JFusionHelper_universal
+			 */
+			$helper = JFusionFactory::getHelper($this->getJname());
+			$f = array('USERNAME', 'EMAIL');
+			$field = $helper->getQuery($f);
 
-		// initialise some objects
-		$db = JFusionFactory::getDatabase($this->getJname());
-		$query = 'SELECT '.$field.' from #__'.$this->getTablename();
-		$db->setQuery($query,$limitstart,$limit);
-		$userlist = $db->loadObjectList();
-
+			// initialise some objects
+			$db = JFusionFactory::getDatabase($this->getJname());
+			$query = 'SELECT '.$field.' from #__'.$this->getTablename();
+			$db->setQuery($query,$limitstart,$limit);
+			$userlist = $db->loadObjectList();
+		} catch (Exception $e) {
+			JFusionFunction::raiseError($e);
+			$userlist = array();
+		}
 		return $userlist;
 	}
 
@@ -120,13 +124,18 @@ class JFusionAdmin_universal extends JFusionAdmin{
 	 */
 	function getUserCount()
 	{
-		//getting the connection to the db
-		$db = JFusionFactory::getDatabase($this->getJname());
-		$query = 'SELECT count(*) from #__'.$this->getTablename();
-		$db->setQuery($query );
+		try {
+			//getting the connection to the db
+			$db = JFusionFactory::getDatabase($this->getJname());
+			$query = 'SELECT count(*) from #__'.$this->getTablename();
+			$db->setQuery($query );
 
-		//getting the results
-		return $db->loadResult();
+			//getting the results
+			return $db->loadResult();
+		} catch (Exception $e) {
+			JFusionFunction::raiseError($e);
+			return 0;
+		}
 	}
 
 	/**
@@ -197,14 +206,20 @@ class JFusionAdmin_universal extends JFusionAdmin{
 	 */
 	function map($name, $value, $node, $control_name,$type)
 	{
-		$jname = $this->getJname();
-		$params = JFusionFactory::getParams($jname);
-
-		$database_name = $params->get('database_name');
-		$database_prefix = $params->get('database_prefix');
 		$output = '';
-		$db = JFusionFactory::getDatabase($jname);
-		if ( $db ) {
+		try {
+			$jname = $this->getJname();
+			$params = JFusionFactory::getParams($jname);
+
+			$database_name = $params->get('database_name');
+			$database_prefix = $params->get('database_prefix');
+
+			try {
+				$db = JFusionFactory::getDatabase($jname);
+			} catch (Exception $e) {
+				throw new Exception(JText::_('SAVE_CONFIG_FIRST'));
+			}
+
 			$query = 'SHOW TABLES FROM '.$database_name;
 			$db->setQuery($query);
 			$tabelslist = $db->loadRowList();
@@ -339,10 +354,10 @@ class JFusionAdmin_universal extends JFusionAdmin{
 				$output .= '</td></tr>';
 				$output .= '</table>';
 			} else {
-				$output .= JText::_('SAVE_CONFIG_FIRST');
+				throw new Exception(JText::_('SAVE_CONFIG_FIRST'));
 			}
-		} else {
-			$output .= JText::_('SAVE_CONFIG_FIRST');
+		} catch (Exception $e) {
+			$output = $e->getMessage();
 		}
 		return $output;
 	}

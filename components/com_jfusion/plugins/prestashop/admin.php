@@ -126,12 +126,17 @@ class JFusionAdmin_prestashop extends JFusionAdmin
      * @return array
      */
     function getUserList($limitstart = 0, $limit = 0) {
-        //getting the connection to the db
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT email as email, id_customer as userid from #__customer WHERE email NOT LIKE \'\' and email IS NOT null';
-        $db->setQuery($query,$limitstart,$limit);
-        //getting the results
-        $userlist = $db->loadObjectList();
+	    try {
+		    //getting the connection to the db
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT email as email, id_customer as userid from #__customer WHERE email NOT LIKE \'\' and email IS NOT null';
+		    $db->setQuery($query,$limitstart,$limit);
+		    //getting the results
+		    $userlist = $db->loadObjectList();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    $userlist = array();
+	    }
         return $userlist;
     }
 
@@ -139,12 +144,17 @@ class JFusionAdmin_prestashop extends JFusionAdmin
      * @return int
      */
     function getUserCount() {
-        //getting the connection to the db
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT count(*) from #__customer WHERE email NOT LIKE \'\' and email IS NOT null';
-        $db->setQuery($query);
-        //getting the results
-        $no_users = $db->loadResult();
+	    try {
+	        //getting the connection to the db
+	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $query = 'SELECT count(*) from #__customer WHERE email NOT LIKE \'\' and email IS NOT null';
+	        $db->setQuery($query);
+	        //getting the results
+	        $no_users = $db->loadResult();
+	    } catch (Exception $e) {
+			JFusionFunction::raiseError($e);
+		    $no_users = 0;
+		}
         return $no_users;
     }
 
@@ -152,20 +162,25 @@ class JFusionAdmin_prestashop extends JFusionAdmin
      * @return array
      */
     function getUsergroupList() {
-        //get the connection to the db
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT value FROM #__configuration WHERE name IN (\'PS_LANG_DEFAULT\');';
-        $db->setQuery($query);
-        //getting the default language to load groups
-        $default_language = $db->loadResult();
-        //prestashop uses two group categories which are employees and customers, each have there own groups to access either the front or back end
-        /*
-          Customers only for this plugin
-        */
-        $query = 'SELECT id_group as id, name as name from #__group_lang WHERE id_lang IN (' . $db->Quote($default_language) . ');';
-        $db->setQuery($query);
-        //getting the results
-		$result = $db->loadObjectList();
+	    try {
+		    //get the connection to the db
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT value FROM #__configuration WHERE name IN (\'PS_LANG_DEFAULT\');';
+		    $db->setQuery($query);
+		    //getting the default language to load groups
+		    $default_language = $db->loadResult();
+		    //prestashop uses two group categories which are employees and customers, each have there own groups to access either the front or back end
+		    /*
+		  Customers only for this plugin
+		*/
+		    $query = 'SELECT id_group as id, name as name from #__group_lang WHERE id_lang IN (' . $db->Quote($default_language) . ');';
+		    $db->setQuery($query);
+		    //getting the results
+		    $result = $db->loadObjectList();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    $result = array();
+	    }
         return $result;
     }
 
@@ -173,15 +188,20 @@ class JFusionAdmin_prestashop extends JFusionAdmin
      * @return string
      */
     function getDefaultUsergroup() {
-	    $db = JFusionFactory::getDatabase($this->getJname());
-        //we want to output the usergroup name
-        $query = 'SELECT value FROM #__configuration WHERE name IN (\'PS_LANG_DEFAULT\');';
-        $db->setQuery($query);
-        //getting the default language to load groups
-        $default_language = $db->loadResult();
-        $query = 'SELECT name as name from #__group_lang WHERE id_lang IN (' . $db->Quote($default_language) . ') AND id_group IN (\'1\')';
-        $db->setQuery($query);
-		return $db->loadResult();
+	    try {
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    //we want to output the usergroup name
+		    $query = 'SELECT value FROM #__configuration WHERE name IN (\'PS_LANG_DEFAULT\');';
+		    $db->setQuery($query);
+		    //getting the default language to load groups
+		    $default_language = $db->loadResult();
+		    $query = 'SELECT name as name from #__group_lang WHERE id_lang IN (' . $db->Quote($default_language) . ') AND id_group IN (\'1\')';
+		    $db->setQuery($query);
+		    return $db->loadResult();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+	    }
+	    return '';
     }
 
     /**

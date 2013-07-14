@@ -51,40 +51,44 @@ class JFusionUser_wordpress extends JFusionUser {
      * @return null|object
      */
     function getUser($userinfo) {
-		//get the identifier
-		list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'user_login', 'user_email');
-		// Get a database object
-		$db = JFusionFactory::getDatabase($this->getJname());
-		//make the username case insensitive
-		if ($identifier_type == 'user_login') {
-			$identifier = $this->filterUsername($identifier);
-		}
-		//    $query = 'SELECT ID as userid, user_login as username, user_email as email, user_pass as password, null as password_salt, user_activation_key as activation, user_status as status FROM #__users WHERE ' . $identifier_type . ' = ' . $db->Quote($identifier);
+	    $result = null;
+	    try {
+		    //get the identifier
+		    list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'user_login', 'user_email');
+		    // Get a database object
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    //make the username case insensitive
+		    if ($identifier_type == 'user_login') {
+			    $identifier = $this->filterUsername($identifier);
+		    }
+		    //    $query = 'SELECT ID as userid, user_login as username, user_email as email, user_pass as password, null as password_salt, user_activation_key as activation, user_status as status FROM #__users WHERE ' . $identifier_type . ' = ' . $db->Quote($identifier);
 
-		// internal note: working toward the JFusion 2.0 plugin system, we read all available userdata into the user object
-		// conversion to the JFusion user object will be done at the end for JFusion 1.x
-		// we add an local user field to keep the original data
-		// will be further developed for 2.0 allowing centralized registration
+		    // internal note: working toward the JFusion 2.0 plugin system, we read all available userdata into the user object
+		    // conversion to the JFusion user object will be done at the end for JFusion 1.x
+		    // we add an local user field to keep the original data
+		    // will be further developed for 2.0 allowing centralized registration
 
-		$query = 'SELECT * FROM #__users WHERE ' . $identifier_type . ' = ' . $db->Quote($identifier);
-		$db->setQuery($query);
-		$result = $db->loadObject();
-		if ($result) {
-			// get the meta userdata
-			$query = 'SELECT * FROM #__usermeta WHERE user_id = ' . $db->Quote($result->ID);
-			$db->setQuery($query);
-			$result1 = $db->loadObjectList();
-			if ($result1) {
-				foreach ($result1 as $metarecord) {
-					$result->{$metarecord->meta_key} = $metarecord->meta_value;
-				}
-			}
-			$jFusionUserObject = $this->convertUserobjectToJFusion($result);
-			$jFusionUserObject->{$this->getJname().'_UserObject'}=$result;
-			return $jFusionUserObject;
-		} else {
-			return $result;
-		}
+		    $query = 'SELECT * FROM #__users WHERE ' . $identifier_type . ' = ' . $db->Quote($identifier);
+		    $db->setQuery($query);
+		    $result = $db->loadObject();
+		    if ($result) {
+			    // get the meta userdata
+			    $query = 'SELECT * FROM #__usermeta WHERE user_id = ' . $db->Quote($result->ID);
+			    $db->setQuery($query);
+			    $result1 = $db->loadObjectList();
+			    if ($result1) {
+				    foreach ($result1 as $metarecord) {
+					    $result->{$metarecord->meta_key} = $metarecord->meta_value;
+				    }
+			    }
+			    $jFusionUserObject = $this->convertUserobjectToJFusion($result);
+			    $jFusionUserObject->{$this->getJname().'_UserObject'}=$result;
+			    $result = $jFusionUserObject;
+		    }
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+	    }
+	    return $result;
 	}
 
     /**
@@ -115,7 +119,7 @@ class JFusionUser_wordpress extends JFusionUser {
 		$capabilities = $database_prefix.capabilities;
 		$capabilities = unserialize($user->$capabilities);
 		// make sure we only have activated capabilities
-		$x = array_keys($capabilities,"1");
+		$x = array_keys($capabilities,'1');
 		// get the values to test
 		$y = array_values($x);
 		// now find out what we have
@@ -333,15 +337,17 @@ class JFusionUser_wordpress extends JFusionUser {
      * @return void
      */
     function updateEmail($userinfo, &$existinguser, &$status) {
-		//we need to update the email
-		$db = JFusionFactory::getDatabase($this->getJname());
-		$query = 'UPDATE #__users SET user_email =' . $db->Quote($userinfo->email) . ' WHERE ID =' . (int)$existinguser->userid;
-		$db->setQuery($query);
-		if (!$db->execute()) {
-			$status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $db->stderr();
-		} else {
-			$status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
-		}
+	    try {
+		    //we need to update the email
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'UPDATE #__users SET user_email =' . $db->Quote($userinfo->email) . ' WHERE ID =' . (int)$existinguser->userid;
+		    $db->setQuery($query);
+		    $db->execute();
+
+		    $status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $e->getMessage();
+	    }
 	}
 
     /**
@@ -394,15 +400,17 @@ class JFusionUser_wordpress extends JFusionUser {
      * @return void
      */
     function inactivateUser($userinfo, &$existinguser, &$status) {
-		//set activation key
-		$db = JFusionFactory::getDatabase($this->getJname());
-		$query = 'UPDATE #__users SET user_activation_key =' . $db->Quote($userinfo->activation) . ' WHERE ID =' . (int)$existinguser->userid;
-		$db->setQuery($query);
-		if (!$db->execute()) {
-			$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $db->stderr();
-		} else {
-			$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
-		}
+	    try {
+			//set activation key
+			$db = JFusionFactory::getDatabase($this->getJname());
+			$query = 'UPDATE #__users SET user_activation_key =' . $db->Quote($userinfo->activation) . ' WHERE ID =' . (int)$existinguser->userid;
+			$db->setQuery($query);
+		    $db->execute();
+
+		    $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $e->getMessage();
+	    }
 	}
 
     /**
@@ -412,114 +420,111 @@ class JFusionUser_wordpress extends JFusionUser {
      * @return void
      */
     function createUser($userinfo, &$status) {
-		//find out what usergroup should be used
-		$db = JFusionFactory::getDatabase($this->getJname());
-		$params = JFusionFactory::getParams($this->getJname());
-        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
-        if (empty($usergroups)) {
-			$status['error'][] = JText::_('ERROR_CREATING_USER') . ": " . JText::_('USERGROUP_MISSING');
-		} else {
-            /**
-             * @ignore
-             * @var $helper JFusionHelper_wordpress
-             */
-            $helper = JFusionFactory::getHelper($this->getJname());
+	    try {
+		    //find out what usergroup should be used
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $params = JFusionFactory::getParams($this->getJname());
+		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+		    if (empty($usergroups)) {
+			    throw new Exception(JText::_('USERGROUP_MISSING'));
+		    } else {
+			    /**
+			     * @ignore
+			     * @var $helper JFusionHelper_wordpress
+			     */
+			    $helper = JFusionFactory::getHelper($this->getJname());
 
-            $update_activation = $params->get('update_activation');
-            $default_role_id = $usergroups[0];
-            $default_role_name = strtolower($helper->getUsergroupNameWP($default_role_id));
-            $default_role = array();
-            $default_role[$default_role_name]=1;
+			    $update_activation = $params->get('update_activation');
+			    $default_role_id = $usergroups[0];
+			    $default_role_name = strtolower($helper->getUsergroupNameWP($default_role_id));
+			    $default_role = array();
+			    $default_role[$default_role_name]=1;
 
-            $default_userlevel = $helper->WP_userlevel_from_role(0,$default_role_name);
-            $username_clean = $this->filterUsername($userinfo->username);
-            if (isset($userinfo->password_clear)) {
-                //we can update the password
-                if (!class_exists('PasswordHashOrg')) {
-                    require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'PasswordHashOrg.php';
-                }
-                $t_hasher = new PasswordHashOrg(8, true);
-                $user_password = $t_hasher->HashPassword($userinfo->password_clear);
-                unset($t_hasher);
-            } else {
-                $user_password = $userinfo->password;
-            }
-            if (!empty($userinfo->activation) && $update_activation) {
-                $user_activation_key = $userinfo->activation;
-            } else {
-                $user_activation_key = '';
-            }
+			    $default_userlevel = $helper->WP_userlevel_from_role(0,$default_role_name);
+			    $username_clean = $this->filterUsername($userinfo->username);
+			    if (isset($userinfo->password_clear)) {
+				    //we can update the password
+				    if (!class_exists('PasswordHashOrg')) {
+					    require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'PasswordHashOrg.php';
+				    }
+				    $t_hasher = new PasswordHashOrg(8, true);
+				    $user_password = $t_hasher->HashPassword($userinfo->password_clear);
+				    unset($t_hasher);
+			    } else {
+				    $user_password = $userinfo->password;
+			    }
+			    if (!empty($userinfo->activation) && $update_activation) {
+				    $user_activation_key = $userinfo->activation;
+			    } else {
+				    $user_activation_key = '';
+			    }
 
-            //prepare the variables
-            $user = new stdClass;
-            $user->ID                 = null;
-            $user->user_login         = $userinfo->username;
-            $user->user_pass          = $user_password;
-            $user->user_nicename      = strtolower($userinfo->username);
-            $user->user_email         = strtolower($userinfo->email);
-            $user->user_url           = '';
-            $user->user_registered    = date('Y-m-d H:i:s', time()); // seems WP has a switch to use GMT. Could not find that
-            $user->user_activation_key= $user_activation_key;
-            $user->user_status        = 0;
-            $user->display_name       = $userinfo->username;
-            //now append the new user data
-            if (!$db->insertObject('#__users', $user, 'ID')) {
-                //return the error
-                $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-            } else {
-                // get new ID
-                $user_id = $db->insertid();
+			    //prepare the variables
+			    $user = new stdClass;
+			    $user->ID                 = null;
+			    $user->user_login         = $userinfo->username;
+			    $user->user_pass          = $user_password;
+			    $user->user_nicename      = strtolower($userinfo->username);
+			    $user->user_email         = strtolower($userinfo->email);
+			    $user->user_url           = '';
+			    $user->user_registered    = date('Y-m-d H:i:s', time()); // seems WP has a switch to use GMT. Could not find that
+			    $user->user_activation_key= $user_activation_key;
+			    $user->user_status        = 0;
+			    $user->display_name       = $userinfo->username;
+			    //now append the new user data
+			    $db->insertObject('#__users', $user, 'ID');
 
-                // have to set user metadata
-                $metadata=array();
+			    // get new ID
+			    $user_id = $db->insertid();
 
-                $parts = explode(' ', $userinfo->name);
-                $metadata['first_name'] = trim($parts[0]);
-                if ($parts[(count($parts) - 1) ]) {
-                    for ($i = 1;$i < (count($parts));$i++) {
-	                    if (isset($metadata['last_name'])) {
-		                    $metadata['last_name'] .= ' ' . trim($parts[$i]);
-	                    } else {
-		                    $metadata['last_name'] = trim($parts[$i]);
-	                    }
-                    }
-                }
+			    // have to set user metadata
+			    $metadata=array();
 
-	            $database_prefix = $params->get('database_prefix');
+			    $parts = explode(' ', $userinfo->name);
+			    $metadata['first_name'] = trim($parts[0]);
+			    if ($parts[(count($parts) - 1) ]) {
+				    for ($i = 1;$i < (count($parts));$i++) {
+					    if (isset($metadata['last_name'])) {
+						    $metadata['last_name'] .= ' ' . trim($parts[$i]);
+					    } else {
+						    $metadata['last_name'] = trim($parts[$i]);
+					    }
+				    }
+			    }
 
-                $metadata['nickname']         = $userinfo->username;
-                $metadata['description']      = '';
-                $metadata['rich_editing']     = 'true';
-                $metadata['comment_shortcuts']= 'false';
-                $metadata['admin_color']      = 'fresh';
-                $metadata['use_ssl']          = '0';
-                $metadata['aim']              = '';
-                $metadata['yim']              = '';
-                $metadata['jabber']           = '';
-                $metadata[$database_prefix.'capabilities']  = serialize($default_role);
-                $metadata[$database_prefix.'user_level']    = sprintf('%u',$default_userlevel);
-                //		$metadata['default_password_nag'] = '0'; //no nag! can be omitted
+			    $database_prefix = $params->get('database_prefix');
 
-                $meta = new stdClass;
-                $meta->umeta_id = null;
-                $meta->user_id = $user_id;
+			    $metadata['nickname']         = $userinfo->username;
+			    $metadata['description']      = '';
+			    $metadata['rich_editing']     = 'true';
+			    $metadata['comment_shortcuts']= 'false';
+			    $metadata['admin_color']      = 'fresh';
+			    $metadata['use_ssl']          = '0';
+			    $metadata['aim']              = '';
+			    $metadata['yim']              = '';
+			    $metadata['jabber']           = '';
+			    $metadata[$database_prefix.'capabilities']  = serialize($default_role);
+			    $metadata[$database_prefix.'user_level']    = sprintf('%u',$default_userlevel);
+			    //		$metadata['default_password_nag'] = '0'; //no nag! can be omitted
 
-                $keys=array_keys($metadata);
-                foreach($keys as $key){
-                    $meta->meta_key = $key;
-                    $meta->meta_value = $metadata[$key];
-                    $meta->umeta_id = null;
-                    if (!$db->insertObject('#__usermeta', $meta, 'umeta_id')) {
-                        //return the error
-                        $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-                        return;
-                    }
-                }
-                //return the good news
-                $status['userinfo'] = $this->getUser($userinfo);
-                $status['debug'][] = JText::_('USER_CREATION');
-            }
-        }
+			    $meta = new stdClass;
+			    $meta->umeta_id = null;
+			    $meta->user_id = $user_id;
+
+			    $keys=array_keys($metadata);
+			    foreach($keys as $key){
+				    $meta->meta_key = $key;
+				    $meta->meta_value = $metadata[$key];
+				    $meta->umeta_id = null;
+				    $db->insertObject('#__usermeta', $meta, 'umeta_id');
+			    }
+			    //return the good news
+			    $status['userinfo'] = $this->getUser($userinfo);
+			    $status['debug'][] = JText::_('USER_CREATION');
+		    }
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('USER_CREATION_ERROR') . $e->getMessage();
+	    }
 	}
 
     /**
@@ -639,35 +644,37 @@ class JFusionUser_wordpress extends JFusionUser {
      * @return void
      */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
-        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
-		if (empty($usergroups)) {
-			$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . JText::_('USERGROUP_MISSING');
-		} else {
-            $db = JFusionFactory::getDatabase($this->getJname());
+	    try {
+		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+		    if (empty($usergroups)) {
+			    throw new Exception(JText::_('USERGROUP_MISSING'));
+		    } else {
+			    $db = JFusionFactory::getDatabase($this->getJname());
 
-			$params = JFusionFactory::getParams($this->getJname());
-			$database_prefix = $params->get('database_prefix');
+			    $params = JFusionFactory::getParams($this->getJname());
+			    $database_prefix = $params->get('database_prefix');
 
-            /**
-             * @ignore
-             * @var $helper JFusionHelper_wordpress
-             */
-            $helper = JFusionFactory::getHelper($this->getJname());
+			    /**
+			     * @ignore
+			     * @var $helper JFusionHelper_wordpress
+			     */
+			    $helper = JFusionFactory::getHelper($this->getJname());
 
-            $caps = array();
-            foreach($usergroups as $usergroup) {
-                $newgroupname = strtolower($helper->getUsergroupNameWP($usergroup));
-                $caps[$newgroupname]='1';
-            }
+			    $caps = array();
+			    foreach($usergroups as $usergroup) {
+				    $newgroupname = strtolower($helper->getUsergroupNameWP($usergroup));
+				    $caps[$newgroupname]='1';
+			    }
 
-            $capsfield = serialize($caps);
-            $query = 'UPDATE #__usermeta SET meta_value =' . $db->Quote($capsfield) . ' WHERE meta_key = \''.$database_prefix.'capabilities'.'\' AND user_id =' . (int)$existinguser->userid;
-            $db->setQuery($query);
-            if (!$db->execute()) {
-                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-            } else {
-                $status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . implode (' , ', $existinguser->groups) . ' -> ' . implode (' , ', $usergroups);
-            }
-        }
+			    $capsfield = serialize($caps);
+			    $query = 'UPDATE #__usermeta SET meta_value =' . $db->Quote($capsfield) . ' WHERE meta_key = \''.$database_prefix.'capabilities'.'\' AND user_id =' . (int)$existinguser->userid;
+			    $db->setQuery($query);
+			    $db->execute();
+
+			    $status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . implode (' , ', $existinguser->groups) . ' -> ' . implode (' , ', $usergroups);
+		    }
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $e->getMessage();
+	    }
 	}
 }
