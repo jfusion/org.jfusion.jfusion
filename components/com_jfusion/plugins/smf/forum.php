@@ -444,58 +444,56 @@ class JFusionForum_smf extends JFusionForum
 		    $post_row->modifiedName = '';
 		    $post_row->body = $text;
 		    $post_row->icon = 'xx';
-		    if (!$jdb->insertObject('#__messages', $post_row, 'ID_MSG')) {
-			    $status['error'] = $jdb->stderr();
+		    $jdb->insertObject('#__messages', $post_row, 'ID_MSG');
+
+		    $postid = $jdb->insertid();
+		    $post_row = new stdClass();
+		    $post_row->ID_MSG = $postid;
+		    $post_row->ID_MSG_MODIFIED = $postid;
+		    $jdb->updateObject('#__messages', $post_row, 'ID_MSG');
+
+		    $topic_row = new stdClass();
+		    $topic_row->ID_FIRST_MSG = $postid;
+		    $topic_row->ID_LAST_MSG = $postid;
+		    $topic_row->ID_TOPIC = $topicid;
+		    $jdb->updateObject('#__topics', $topic_row, 'ID_TOPIC');
+
+		    $forum_stats = new stdClass();
+		    $forum_stats->ID_BOARD = $forumid;
+		    $query = 'SELECT m.posterTime FROM #__messages AS m INNER JOIN #__boards AS b ON b.ID_LAST_MSG = m.ID_MSG WHERE b.ID_BOARD = '.$forumid;
+		    $jdb->setQuery($query);
+		    $lastPostTime = (int)$jdb->loadResult();
+		    if ($dbparams->get('use_content_created_date', false)) {
+			    //only update the last post for the board if it really is newer
+			    $updateLastPost = ($timestamp > $lastPostTime) ? true : false;
 		    } else {
-			    $postid = $jdb->insertid();
-			    $post_row = new stdClass();
-			    $post_row->ID_MSG = $postid;
-			    $post_row->ID_MSG_MODIFIED = $postid;
-			    $jdb->updateObject('#__messages', $post_row, 'ID_MSG');
+			    $updateLastPost = true;
+		    }
+		    if ($updateLastPost) {
+			    $forum_stats->ID_LAST_MSG = $postid;
+			    $forum_stats->ID_MSG_UPDATED = $postid;
+		    }
+		    $query = 'SELECT numTopics, numPosts FROM #__boards WHERE ID_BOARD = '.$forumid;
+		    $jdb->setQuery($query);
+		    $num = $jdb->loadObject();
+		    $forum_stats->numPosts = $num->numPosts + 1;
+		    $forum_stats->numTopics = $num->numTopics + 1;
+		    $jdb->updateObject('#__boards', $forum_stats, 'ID_BOARD');
 
-			    $topic_row = new stdClass();
-			    $topic_row->ID_FIRST_MSG = $postid;
-			    $topic_row->ID_LAST_MSG = $postid;
-			    $topic_row->ID_TOPIC = $topicid;
-			    $jdb->updateObject('#__topics', $topic_row, 'ID_TOPIC');
-
-			    $forum_stats = new stdClass();
-			    $forum_stats->ID_BOARD = $forumid;
-			    $query = 'SELECT m.posterTime FROM #__messages AS m INNER JOIN #__boards AS b ON b.ID_LAST_MSG = m.ID_MSG WHERE b.ID_BOARD = '.$forumid;
+		    if ($updateLastPost) {
+			    $query = 'REPLACE INTO #__log_topics SET ID_MEMBER = '.$userid.', ID_TOPIC = '.$topicid.', ID_MSG = ' . ($postid + 1);
 			    $jdb->setQuery($query);
-			    $lastPostTime = (int)$jdb->loadResult();
-			    if ($dbparams->get('use_content_created_date', false)) {
-				    //only update the last post for the board if it really is newer
-				    $updateLastPost = ($timestamp > $lastPostTime) ? true : false;
-			    } else {
-				    $updateLastPost = true;
-			    }
-			    if ($updateLastPost) {
-				    $forum_stats->ID_LAST_MSG = $postid;
-				    $forum_stats->ID_MSG_UPDATED = $postid;
-			    }
-			    $query = 'SELECT numTopics, numPosts FROM #__boards WHERE ID_BOARD = '.$forumid;
+			    $jdb->execute();
+
+			    $query = 'REPLACE INTO #__log_boards SET ID_MEMBER = '.$userid.', ID_BOARD = '.$forumid.', ID_MSG = '.$postid;
 			    $jdb->setQuery($query);
-			    $num = $jdb->loadObject();
-			    $forum_stats->numPosts = $num->numPosts + 1;
-			    $forum_stats->numTopics = $num->numTopics + 1;
-			    $jdb->updateObject('#__boards', $forum_stats, 'ID_BOARD');
-
-			    if ($updateLastPost) {
-				    $query = 'REPLACE INTO #__log_topics SET ID_MEMBER = '.$userid.', ID_TOPIC = '.$topicid.', ID_MSG = ' . ($postid + 1);
-				    $jdb->setQuery($query);
-				    $jdb->execute();
-
-				    $query = 'REPLACE INTO #__log_boards SET ID_MEMBER = '.$userid.', ID_BOARD = '.$forumid.', ID_MSG = '.$postid;
-				    $jdb->setQuery($query);
-				    $jdb->execute();
-			    }
-			    if (!empty($topicid) && !empty($postid)) {
-				    //add information to update forum lookup
-				    $status['threadinfo']->forumid = $forumid;
-				    $status['threadinfo']->threadid = $topicid;
-				    $status['threadinfo']->postid = $postid;
-			    }
+			    $jdb->execute();
+		    }
+		    if (!empty($topicid) && !empty($postid)) {
+			    //add information to update forum lookup
+			    $status['threadinfo']->forumid = $forumid;
+			    $status['threadinfo']->threadid = $topicid;
+			    $status['threadinfo']->postid = $postid;
 		    }
 	    } catch (Exception $e) {
 		    $status['error'] = $e->getMessage();
