@@ -468,7 +468,7 @@ class JFusionUser_smf2 extends JFusionUser {
 			    $status['userinfo'] = $this->getUser($userinfo);
 		    }
 	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('USER_CREATION_ERROR').': ' . $e->getMessage());
+		    $status['error'][] = JText::_('USER_CREATION_ERROR').': ' . $e->getMessage();
 	    }
     }
 }

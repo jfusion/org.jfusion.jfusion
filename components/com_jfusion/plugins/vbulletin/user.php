@@ -59,62 +59,66 @@ class JFusionUser_vbulletin extends JFusionUser
      */
     function getUser($userinfo, $identifier_type = 'auto', $ignore_id = 0)
     {
-    	if($identifier_type == 'auto') {
-        	//get the identifier
-        	list($identifier_type,$identifier) = $this->getUserIdentifier($userinfo,'u.username','u.email');
-        	if ($identifier_type == 'u.username') {
-        	    //lower the username for case insensitivity purposes
-        	    $identifier_type = 'LOWER(u.username)';
-        	    $identifier = strtolower($identifier);
-        	}
-    	} else {
-    		$identifier_type = 'u.' . $identifier_type;
-    		$identifier = $userinfo;
-    	}
+	    try {
+		    if($identifier_type == 'auto') {
+			    //get the identifier
+			    list($identifier_type,$identifier) = $this->getUserIdentifier($userinfo,'u.username','u.email');
+			    if ($identifier_type == 'u.username') {
+				    //lower the username for case insensitivity purposes
+				    $identifier_type = 'LOWER(u.username)';
+				    $identifier = strtolower($identifier);
+			    }
+		    } else {
+			    $identifier_type = 'u.' . $identifier_type;
+			    $identifier = $userinfo;
+		    }
 
-        // Get user info from database
-        $db = JFusionFactory::getDatabase($this->getJname());
+		    // Get user info from database
+		    $db = JFusionFactory::getDatabase($this->getJname());
 
-        $name_field = $this->params->get('name_field');
+		    $name_field = $this->params->get('name_field');
 
-        $query = 'SELECT u.userid, u.username, u.email, u.usergroupid AS group_id, u.membergroupids, u.displaygroupid, u.password, u.salt as password_salt, u.usertitle, u.customtitle, u.posts, u.username as name FROM #__user AS u WHERE ' . $identifier_type . ' = ' . $db->Quote($identifier);
-        $query.= ($ignore_id) ? ' AND u.userid != '.$ignore_id : '';
+		    $query = 'SELECT u.userid, u.username, u.email, u.usergroupid AS group_id, u.membergroupids, u.displaygroupid, u.password, u.salt as password_salt, u.usertitle, u.customtitle, u.posts, u.username as name FROM #__user AS u WHERE ' . $identifier_type . ' = ' . $db->Quote($identifier);
+		    $query.= ($ignore_id) ? ' AND u.userid != '.$ignore_id : '';
 
-        $db->setQuery($query );
-        $result = $db->loadObject();
+		    $db->setQuery($query );
+		    $result = $db->loadObject();
 
-        if ($result) {
-            $query = 'SELECT title FROM #__usergroup WHERE usergroupid = '.$result->group_id;
-            $db->setQuery($query);
-            $result->group_name = $db->loadResult();
+		    if ($result) {
+			    $query = 'SELECT title FROM #__usergroup WHERE usergroupid = '.$result->group_id;
+			    $db->setQuery($query);
+			    $result->group_name = $db->loadResult();
 
-            if (!empty($name_field)) {
-                $query = 'SELECT $name_field FROM #__userfield WHERE userid = '.$result->userid;
-                $db->setQuery($query);
-                $name = $db->loadResult();
-                if (!empty($name)) {
-                    $result->name = $name;
-                }
-            }
-            //Check to see if they are banned
-            $query = 'SELECT userid FROM #__userban WHERE userid='. $result->userid;
-            $db->setQuery($query);
-            if ($db->loadObject() || ($this->params->get('block_coppa_users', 1) && (int) $result->group_id == 4)) {
-                $result->block = 1;
-            } else {
-                $result->block = 0;
-            }
+			    if (!empty($name_field)) {
+				    $query = 'SELECT $name_field FROM #__userfield WHERE userid = '.$result->userid;
+				    $db->setQuery($query);
+				    $name = $db->loadResult();
+				    if (!empty($name)) {
+					    $result->name = $name;
+				    }
+			    }
+			    //Check to see if they are banned
+			    $query = 'SELECT userid FROM #__userban WHERE userid='. $result->userid;
+			    $db->setQuery($query);
+			    if ($db->loadObject() || ($this->params->get('block_coppa_users', 1) && (int) $result->group_id == 4)) {
+				    $result->block = 1;
+			    } else {
+				    $result->block = 0;
+			    }
 
-            //check to see if the user is awaiting activation
-            $activationgroup = $this->params->get('activationgroup');
+			    //check to see if the user is awaiting activation
+			    $activationgroup = $this->params->get('activationgroup');
 
-            if ($activationgroup == $result->group_id) {
-                jimport('joomla.user.helper');
-                $result->activation = JUserHelper::genRandomPassword(32);
-            } else {
-                $result->activation = '';
-            }
-        }
+			    if ($activationgroup == $result->group_id) {
+				    jimport('joomla.user.helper');
+				    $result->activation = JUserHelper::genRandomPassword(32);
+			    } else {
+				    $result->activation = '';
+			    }
+		    }
+	    } catch (Exception $e) {
+			JFusionFunction::raiseError($e);
+	    }
         return $result;
     }
 
@@ -171,69 +175,68 @@ class JFusionUser_vbulletin extends JFusionUser
      */
     function destroySession($userinfo, $options)
     {
-        $status = array();
-        $status['error'] = array();
-        $status['debug'] = array();
+	    $status = array('error' => array(), 'debug' => array());
+	    try {
+		    $cookie_prefix = $this->params->get('cookie_prefix');
+		    $vbversion = $this->helper->getVersion();
+		    if ((int) substr($vbversion, 0, 1) > 3) {
+			    if (substr($cookie_prefix, -1) !== '_') {
+				    $cookie_prefix .= '_';
+			    }
+		    }
+		    $cookie_domain = $this->params->get('cookie_domain');
+		    $cookie_path = $this->params->get('cookie_path');
+		    $cookie_salt = $this->params->get('cookie_salt');
+		    $cookie_expires = $this->params->get('cookie_expires', '15') * 60;
+		    $secure = $this->params->get('secure',false);
+		    $httponly = $this->params->get('httponly',true);
+		    $timenow = time();
 
-        $cookie_prefix = $this->params->get('cookie_prefix');
-        $vbversion = $this->helper->getVersion();
-        if ((int) substr($vbversion, 0, 1) > 3) {
-           if (substr($cookie_prefix, -1) !== '_') {
-               $cookie_prefix .= '_';
-           }
-        }
-        $cookie_domain = $this->params->get('cookie_domain');
-        $cookie_path = $this->params->get('cookie_path');
-        $cookie_salt = $this->params->get('cookie_salt');
-        $cookie_expires = $this->params->get('cookie_expires', '15') * 60;
-        $secure = $this->params->get('secure',false);
-        $httponly = $this->params->get('httponly',true);
-        $timenow = time();
+		    $session_user = JFactory::getApplication()->input->cookie->get($cookie_prefix . 'userid', '');
+		    if (empty($session_user)) {
+			    $status['debug'][] = JText::_('VB_COOKIE_USERID_NOT_FOUND');
+		    }
 
-        $session_user = JFactory::getApplication()->input->cookie->get($cookie_prefix . 'userid', '');
-        if (empty($session_user)) {
-            $status['debug'][] = JText::_('VB_COOKIE_USERID_NOT_FOUND');
-        }
+		    $session_hash = JFactory::getApplication()->input->cookie->get($cookie_prefix . 'sessionhash', '');
+		    if (empty($session_hash)) {
+			    $status['debug'][] = JText::_('VB_COOKIE_HASH_NOT_FOUND');
+		    }
 
-        $session_hash = JFactory::getApplication()->input->cookie->get($cookie_prefix . 'sessionhash', '');
-        if (empty($session_hash)) {
-            $status['debug'][] = JText::_('VB_COOKIE_HASH_NOT_FOUND');
-        }
+		    //If blocking a user in Joomla User Manager, Joomla will initiate a logout.
+		    //Thus, prevent a logout of the currently logged in user if a user has been blocked:
+		    if (!defined('VBULLETIN_BLOCKUSER_CALLED')) {
+			    require_once JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.curl.php';
 
-        //If blocking a user in Joomla User Manager, Joomla will initiate a logout.
-        //Thus, prevent a logout of the currently logged in user if a user has been blocked:
-        if (!defined('VBULLETIN_BLOCKUSER_CALLED')) {
-            require_once JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.curl.php';
+			    //clear out all of vB's cookies
+			    foreach ($_COOKIE AS $key => $val) {
+				    if (strpos($key, $cookie_prefix) !== false) {
+					    $status['debug'][] = JFusionCurl::addCookie($key , 0, $timenow - 3600, $cookie_path, $cookie_domain, $secure, $httponly);
+				    }
+			    }
 
-            //clear out all of vB's cookies
-            foreach ($_COOKIE AS $key => $val) {
-		        if (strpos($key, $cookie_prefix) !== false) {
-                    $status['debug'][] = JFusionCurl::addCookie($key , 0, $timenow - 3600, $cookie_path, $cookie_domain, $secure, $httponly);
-		        }
-            }
+			    $db = JFusionFactory::getDatabase($this->getJname());
+			    $queries = array();
 
-    		$db = JFusionFactory::getDatabase($this->getJname());
-    		$queries = array();
+			    if ($session_user) {
+				    $queries[] = 'UPDATE #__user SET lastvisit = ' . $db->Quote($timenow) . ', lastactivity = ' . $db->Quote($timenow - $cookie_expires) . ' WHERE userid = ' . $db->Quote($session_user);
+				    $queries[] = 'DELETE FROM #__session WHERE userid = ' . $db->Quote($session_user);
+			    }
+			    $queries[] = 'DELETE FROM #__session WHERE sessionhash = ' . $db->Quote($session_hash);
 
-    		if ($session_user) {
-    			$queries[] = 'UPDATE #__user SET lastvisit = ' . $db->Quote($timenow) . ', lastactivity = ' . $db->Quote($timenow - $cookie_expires) . ' WHERE userid = ' . $db->Quote($session_user);
-            	$queries[] = 'DELETE FROM #__session WHERE userid = ' . $db->Quote($session_user);
-    		}
-        	$queries[] = 'DELETE FROM #__session WHERE sessionhash = ' . $db->Quote($session_hash);
-
-            foreach ($queries as $q) {
-                $db->setQuery($q);
-	            try {
-		            $db->execute();
-	            } catch (Exception $e) {
-		            $status['debug'][] = $e->getMessage();
-	            }
-            }
-            return $status;
-        } else {
-            $status = array();
-            $status['debug'] = 'Joomla initiated a logout of a blocked user thus skipped vBulletin destroySession() to prevent current user from getting logged out.';
-        }
+			    foreach ($queries as $q) {
+				    $db->setQuery($q);
+				    try {
+					    $db->execute();
+				    } catch (Exception $e) {
+					    $status['debug'][] = $e->getMessage();
+				    }
+			    }
+		    } else {
+			    $status['debug'][] = 'Joomla initiated a logout of a blocked user thus skipped vBulletin destroySession() to prevent current user from getting logged out.';
+		    }
+	    } catch (Exception $e) {
+		    $status['error'][] = $e->getMessage();
+	    }
         return $status;
     }
 
@@ -245,81 +248,83 @@ class JFusionUser_vbulletin extends JFusionUser
     function createSession(&$userinfo, $options)
     {
         $status = array('error' => array(),'debug' => array());
-        //do not create sessions for blocked users
-        if (!empty($userinfo->block) || !empty($userinfo->activation)) {
-            $status['error'][] = JText::_('FUSION_BLOCKED_USER');
-        } else {
-            require_once JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.curl.php';
-            //first check to see if striking is enabled to prevent further strikes
-            $db = JFusionFactory::getDatabase($this->getJname());
-            $query = 'SELECT value FROM #__setting WHERE varname = \'usestrikesystem\'';
-            $db->setQuery($query);
-            $strikeEnabled = $db->loadResult();
+	    try {
+		    //do not create sessions for blocked users
+		    if (!empty($userinfo->block) || !empty($userinfo->activation)) {
+			    throw new Exception(JText::_('FUSION_BLOCKED_USER'));
+		    } else {
+			    require_once JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.curl.php';
+			    //first check to see if striking is enabled to prevent further strikes
+			    $db = JFusionFactory::getDatabase($this->getJname());
+			    $query = 'SELECT value FROM #__setting WHERE varname = \'usestrikesystem\'';
+			    $db->setQuery($query);
+			    $strikeEnabled = $db->loadResult();
 
-            if ($strikeEnabled) {
-                $ip = $_SERVER['REMOTE_ADDR'];
-                $time = strtotime('-15 minutes');
-                $query = 'SELECT COUNT(*) FROM #__strikes WHERE strikeip = '.$db->Quote($ip).' AND striketime >= '.$time;
-                $db->setQuery($query);
-                $strikes = $db->loadResult();
+			    if ($strikeEnabled) {
+				    $ip = $_SERVER['REMOTE_ADDR'];
+				    $time = strtotime('-15 minutes');
+				    $query = 'SELECT COUNT(*) FROM #__strikes WHERE strikeip = '.$db->Quote($ip).' AND striketime >= '.$time;
+				    $db->setQuery($query);
+				    $strikes = $db->loadResult();
 
-                if ($strikes >= 5) {
-                    $status = array();
-                    $status['error'] = JText::_('VB_TOO_MANY_STRIKES');
-                    return $status;
-                }
-            }
+				    if ($strikes >= 5) {
+					    throw new Exception(JText::_('VB_TOO_MANY_STRIKES'));
+				    }
+			    }
 
-            //make sure a session is not already active for this user
-            $cookie_prefix = $this->params->get('cookie_prefix');
-            $vbversion = $this->helper->getVersion();
-            if ((int) substr($vbversion, 0, 1) > 3) {
-                if (substr($cookie_prefix, -1) !== '_') {
-                    $cookie_prefix .= '_';
-                }
-            }
-            $cookie_salt = $this->params->get('cookie_salt');
-            $cookie_domain = $this->params->get('cookie_domain');
-            $cookie_path = $this->params->get('cookie_path');
-            $cookie_expires  = (!empty($options['remember'])) ? 0 : $this->params->get('cookie_expires');
-            if ($cookie_expires == 0) {
-                $expires_time = time() + (60 * 60 * 24 * 365);
-            } else {
-                $expires_time = time() + ( 60 * $cookie_expires );
-            }
-            $debug_expiration = date('Y-m-d H:i:s', $expires_time);
-            $passwordhash = md5($userinfo->password.$cookie_salt);
+			    //make sure a session is not already active for this user
+			    $cookie_prefix = $this->params->get('cookie_prefix');
+			    $vbversion = $this->helper->getVersion();
+			    if ((int) substr($vbversion, 0, 1) > 3) {
+				    if (substr($cookie_prefix, -1) !== '_') {
+					    $cookie_prefix .= '_';
+				    }
+			    }
+			    $cookie_salt = $this->params->get('cookie_salt');
+			    $cookie_domain = $this->params->get('cookie_domain');
+			    $cookie_path = $this->params->get('cookie_path');
+			    $cookie_expires  = (!empty($options['remember'])) ? 0 : $this->params->get('cookie_expires');
+			    if ($cookie_expires == 0) {
+				    $expires_time = time() + (60 * 60 * 24 * 365);
+			    } else {
+				    $expires_time = time() + ( 60 * $cookie_expires );
+			    }
+			    $debug_expiration = date('Y-m-d H:i:s', $expires_time);
+			    $passwordhash = md5($userinfo->password.$cookie_salt);
 
-            $query = 'SELECT sessionhash FROM #__session WHERE userid = ' . $userinfo->userid;
-            $db->setQuery($query);
-            $sessionhash = $db->loadResult();
+			    $query = 'SELECT sessionhash FROM #__session WHERE userid = ' . $userinfo->userid;
+			    $db->setQuery($query);
+			    $sessionhash = $db->loadResult();
 
-            $cookie_sessionhash = JFactory::getApplication()->input->cookie->get($cookie_prefix . 'sessionhash', '');
-            $cookie_userid = JFactory::getApplication()->input->cookie->get($cookie_prefix . 'userid', '');
-            $cookie_password = JFactory::getApplication()->input->cookie->get($cookie_prefix . 'password', '');
+			    $cookie_sessionhash = JFactory::getApplication()->input->cookie->get($cookie_prefix . 'sessionhash', '');
+			    $cookie_userid = JFactory::getApplication()->input->cookie->get($cookie_prefix . 'userid', '');
+			    $cookie_password = JFactory::getApplication()->input->cookie->get($cookie_prefix . 'password', '');
 
-            if (!empty($cookie_userid) && $cookie_userid == $userinfo->userid && !empty($cookie_password) && $cookie_password == $passwordhash) {
-                $vbcookieuser = true;
-            } else {
-                $vbcookieuser = false;
-            }
+			    if (!empty($cookie_userid) && $cookie_userid == $userinfo->userid && !empty($cookie_password) && $cookie_password == $passwordhash) {
+				    $vbcookieuser = true;
+			    } else {
+				    $vbcookieuser = false;
+			    }
 
-            if (!$vbcookieuser && (empty($cookie_sessionhash) || $sessionhash != $cookie_sessionhash)) {
-                $secure = $this->params->get('secure', false);
-                $httponly = $this->params->get('httponly', true);
+			    if (!$vbcookieuser && (empty($cookie_sessionhash) || $sessionhash != $cookie_sessionhash)) {
+				    $secure = $this->params->get('secure', false);
+				    $httponly = $this->params->get('httponly', true);
 
-                $status['debug'][] = JFusionCurl::addCookie($cookie_prefix.'userid' , $userinfo->userid, $expires_time,  $cookie_path, $cookie_domain, $secure, $httponly);
-                $status['debug'][] = JFusionCurl::addCookie($cookie_prefix.'password' , $passwordhash, $expires_time, $cookie_path, $cookie_domain, $secure, $httponly, true);
-            } else {
-                $status['debug'][] = JText::_('VB_SESSION_ALREADY_ACTIVE');
-	            /*
-	             * do not want to output as it indicate the cookies are set when they are not.
-                $status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => $cookie_prefix.'userid', JText::_('VALUE') => $cookie_userid, JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
-                $status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => $cookie_prefix.'password', JText::_('VALUE') => substr($cookie_password, 0, 6) . '********, ', JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
-                $status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => $cookie_prefix.'sessionhash', JText::_('VALUE') => $cookie_sessionhash, JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
-	            */
-            }
-        }
+				    $status['debug'][] = JFusionCurl::addCookie($cookie_prefix.'userid' , $userinfo->userid, $expires_time,  $cookie_path, $cookie_domain, $secure, $httponly);
+				    $status['debug'][] = JFusionCurl::addCookie($cookie_prefix.'password' , $passwordhash, $expires_time, $cookie_path, $cookie_domain, $secure, $httponly, true);
+			    } else {
+				    $status['debug'][] = JText::_('VB_SESSION_ALREADY_ACTIVE');
+				    /*
+				 * do not want to output as it indicate the cookies are set when they are not.
+				$status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => $cookie_prefix.'userid', JText::_('VALUE') => $cookie_userid, JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
+				$status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => $cookie_prefix.'password', JText::_('VALUE') => substr($cookie_password, 0, 6) . '********, ', JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
+				$status['debug'][JText::_('COOKIES')][] = array(JText::_('NAME') => $cookie_prefix.'sessionhash', JText::_('VALUE') => $cookie_sessionhash, JText::_('EXPIRES') => $debug_expiration, JText::_('COOKIE_PATH') => $cookie_path, JText::_('COOKIE_DOMAIN') => $cookie_domain);
+				*/
+			    }
+		    }
+	    } catch (Exception $e) {
+		    $status['error'][] = $e->getMessage();
+	    }
         return $status;
     }
 
@@ -450,59 +455,61 @@ class JFusionUser_vbulletin extends JFusionUser
      */
     function unblockUser($userinfo, &$existinguser, &$status)
     {
-        //found out what usergroup should be used
-        $usergroups = JFusionFunction::isAdvancedUsergroupMode($this->getJname()) ? unserialize($this->params->get('usergroup')) : $this->params->get('usergroup');
-        $bannedgroup = $this->params->get('bannedgroup');
+	    try {
+		    //found out what usergroup should be used
+		    $usergroups = JFusionFunction::isAdvancedUsergroupMode($this->getJname()) ? unserialize($this->params->get('usergroup')) : $this->params->get('usergroup');
+		    $bannedgroup = $this->params->get('bannedgroup');
 
-        //first check to see if user is banned and if so, retrieve the prebanned fields
-        //must be something other than $db because it conflicts with vbulletin global variables
-        $jdb = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT b.*, g.usertitle AS bantitle FROM #__userban AS b INNER JOIN #__user AS u ON b.userid = u.userid INNER JOIN #__usergroup AS g ON u.usergroupid = g.usergroupid WHERE b.userid = ' . $existinguser->userid;
-        $jdb->setQuery($query );
-        $result = $jdb->loadObject();
+		    //first check to see if user is banned and if so, retrieve the prebanned fields
+		    //must be something other than $db because it conflicts with vbulletin global variables
+		    $jdb = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT b.*, g.usertitle AS bantitle FROM #__userban AS b INNER JOIN #__user AS u ON b.userid = u.userid INNER JOIN #__usergroup AS g ON u.usergroupid = g.usergroupid WHERE b.userid = ' . $existinguser->userid;
+		    $jdb->setQuery($query );
+		    $result = $jdb->loadObject();
 
-        if (is_array($usergroups)) {
-            $defaultgroup = $usergroups[$existinguser->group_id]['defaultgroup'];
-            $displaygroup = $usergroups[$existinguser->group_id]['displaygroup'];
-        } else {
-            $defaultgroup = $usergroups;
-            $displaygroup = $usergroups;
-        }
+		    if (is_array($usergroups)) {
+			    $defaultgroup = $usergroups[$existinguser->group_id]['defaultgroup'];
+			    $displaygroup = $usergroups[$existinguser->group_id]['displaygroup'];
+		    } else {
+			    $defaultgroup = $usergroups;
+			    $displaygroup = $usergroups;
+		    }
 
-        $defaulttitle = $this->getDefaultUserTitle($defaultgroup, $existinguser->posts);
+		    $defaulttitle = $this->getDefaultUserTitle($defaultgroup, $existinguser->posts);
 
-        $apidata = array(
-        	"userinfo" => $userinfo,
-        	"existinguser" => $existinguser,
-            "usergroups" => $usergroups,
-        	"bannedgroup" => $bannedgroup,
-        	"defaultgroup" => $defaultgroup,
-        	"displaygroup" => $displaygroup,
-        	"defaulttitle" => $defaulttitle,
-            "result" => $result
-        );
-        $response = $this->helper->apiCall('unblockUser', $apidata);
+		    $apidata = array(
+			    "userinfo" => $userinfo,
+			    "existinguser" => $existinguser,
+			    "usergroups" => $usergroups,
+			    "bannedgroup" => $bannedgroup,
+			    "defaultgroup" => $defaultgroup,
+			    "displaygroup" => $displaygroup,
+			    "defaulttitle" => $defaulttitle,
+			    "result" => $result
+		    );
+		    $response = $this->helper->apiCall('unblockUser', $apidata);
 
-        if ($result) {
-            //remove any banned user catches from vbulletin database
-            $query = 'DELETE FROM #__userban WHERE userid='. $existinguser->userid;
-            $jdb->setQuery($query);
-            if (!$jdb->execute()) {
-                $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ': ' . $jdb->stderr();
-            }
-        }
+		    if ($result) {
+			    //remove any banned user catches from vbulletin database
+			    $query = 'DELETE FROM #__userban WHERE userid='. $existinguser->userid;
+			    $jdb->setQuery($query);
+			    $jdb->execute();
+		    }
 
-        if (empty($response['errors'])) {
-            $status['debug'][] = JText::_('BLOCK_UPDATE'). ': ' . $existinguser->block . ' -> ' . $userinfo->block;
-        } else {
-            foreach ($response['errors'] as $error) {
-                $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ' ' . $error;
-            }
-        }
+		    if (empty($response['errors'])) {
+			    $status['debug'][] = JText::_('BLOCK_UPDATE'). ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+		    } else {
+			    foreach ($response['errors'] as $error) {
+				    $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ': ' . $error;
+			    }
+		    }
 
-        if (!empty($response['debug'])) {
-		    $status['debug']['api_call'] = $response['debug'];
-		}
+		    if (!empty($response['debug'])) {
+			    $status['debug']['api_call'] = $response['debug'];
+		    }
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ': ' . $e->getMessage();
+	    }
     }
 
     /**
@@ -514,28 +521,26 @@ class JFusionUser_vbulletin extends JFusionUser
      */
     function activateUser($userinfo, &$existinguser, &$status)
     {
-        //found out what usergroup should be used
-        $usergroups = JFusionFunction::isAdvancedUsergroupMode($this->getJname()) ? unserialize($this->params->get('usergroup')) : $this->params->get('usergroup');
-        $usergroup = (is_array($usergroups)) ? $usergroups[$userinfo->group_id]['defaultgroup'] : $usergroups;
+	    try {
+		    //found out what usergroup should be used
+		    $usergroups = JFusionFunction::isAdvancedUsergroupMode($this->getJname()) ? unserialize($this->params->get('usergroup')) : $this->params->get('usergroup');
+		    $usergroup = (is_array($usergroups)) ? $usergroups[$userinfo->group_id]['defaultgroup'] : $usergroups;
 
-        //update the usergroup to default group
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'UPDATE #__user SET usergroupid = ' . $usergroup . ' WHERE userid  = ' . $existinguser->userid;
-        $db->setQuery($query );
+		    //update the usergroup to default group
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'UPDATE #__user SET usergroupid = ' . $usergroup . ' WHERE userid  = ' . $existinguser->userid;
+		    $db->setQuery($query );
+		    $db->execute();
 
-        if ($db->execute()) {
-            //remove any activation catches from vbulletin database
-            $query = 'DELETE FROM #__useractivation WHERE userid = ' . $existinguser->userid;
-            $db->setQuery($query);
+		    //remove any activation catches from vbulletin database
+		    $query = 'DELETE FROM #__useractivation WHERE userid = ' . $existinguser->userid;
+		    $db->setQuery($query);
+		    $db->execute();
 
-            if (!$db->execute()) {
-                $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' . $db->stderr();
-            } else {
-                $status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
-            }
-        } else {
-            $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' . $db->stderr();
-        }
+		    $status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' . $e->getMessage();
+	    }
     }
 
     /**
@@ -547,55 +552,54 @@ class JFusionUser_vbulletin extends JFusionUser
      */
     function inactivateUser($userinfo, &$existinguser, &$status)
     {
-        //found out what usergroup should be used
-        $usergroup = $this->params->get('activationgroup');
+	    try {
+		    //found out what usergroup should be used
+		    $usergroup = $this->params->get('activationgroup');
 
-        //update the usergroup to awaiting activation
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'UPDATE #__user SET usergroupid = ' . $usergroup . ' WHERE userid  = ' . $existinguser->userid;
-        $db->setQuery($query );
+		    //update the usergroup to awaiting activation
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'UPDATE #__user SET usergroupid = ' . $usergroup . ' WHERE userid  = ' . $existinguser->userid;
+		    $db->setQuery($query );
+		    $db->execute();
 
-        if ($db->execute()) {
-            //update the activation status
-            //check to see if the user is already inactivated
-            $query = 'SELECT COUNT(*) FROM #__useractivation WHERE userid = ' . $existinguser->userid;
-            $db->setQuery($query);
-            $count = $db->loadResult();
-            if (empty($count)) {
-                //if not, then add an activation catch to vbulletin database
-                $useractivation = new stdClass;
-                $useractivation->userid = $existinguser->userid;
-                $useractivation->dateline = time();
-                jimport('joomla.user.helper');
-                $useractivation->activationid = JUserHelper::genRandomPassword(40);
+		    //update the activation status
+		    //check to see if the user is already inactivated
+		    $query = 'SELECT COUNT(*) FROM #__useractivation WHERE userid = ' . $existinguser->userid;
+		    $db->setQuery($query);
+		    $count = $db->loadResult();
+		    if (empty($count)) {
+			    //if not, then add an activation catch to vbulletin database
+			    $useractivation = new stdClass;
+			    $useractivation->userid = $existinguser->userid;
+			    $useractivation->dateline = time();
+			    jimport('joomla.user.helper');
+			    $useractivation->activationid = JUserHelper::genRandomPassword(40);
 
-                $usergroups = JFusionFunction::isAdvancedUsergroupMode($this->getJname()) ? unserialize($this->params->get('usergroup')) : $this->params->get('usergroup');
-                $usergroup = (is_array($usergroups)) ? $usergroups[$userinfo->group_id]['defaultgroup'] : $usergroups;
-                $useractivation->usergroupid = $usergroup;
+			    $usergroups = JFusionFunction::isAdvancedUsergroupMode($this->getJname()) ? unserialize($this->params->get('usergroup')) : $this->params->get('usergroup');
+			    $usergroup = (is_array($usergroups)) ? $usergroups[$userinfo->group_id]['defaultgroup'] : $usergroups;
+			    $useractivation->usergroupid = $usergroup;
 
-                if ($db->insertObject('#__useractivation', $useractivation, 'useractivationid' )) {
-                    $apidata = array('existinguser' => $existinguser);
-                    $response = $this->helper->apiCall('inactivateUser', $apidata);
-                    if (empty($response['errors'])) {
-                        $status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
-                    } else {
-                        foreach ($response['errors'] as $error) {
-                            $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ' ' . $error;
-                        }
-                    }
-                } else {
-                    $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' . $db->stderr();
-                }
-            } else {
-                $status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
-            }
-        } else {
-            $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' . $db->stderr();
-        }
+			    $db->insertObject('#__useractivation', $useractivation, 'useractivationid' );
 
-        if (!empty($response['debug'])) {
-		    $status['debug']['api_call'] = $response['debug'];
-		}
+			    $apidata = array('existinguser' => $existinguser);
+			    $response = $this->helper->apiCall('inactivateUser', $apidata);
+			    if (empty($response['errors'])) {
+				    $status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+			    } else {
+				    foreach ($response['errors'] as $error) {
+					    $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ' ' . $error;
+				    }
+			    }
+		    } else {
+			    $status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+		    }
+
+		    if (!empty($response['debug'])) {
+			    $status['debug']['api_call'] = $response['debug'];
+		    }
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' . $e->getMessage();
+	    }
     }
 
     /**
@@ -606,77 +610,83 @@ class JFusionUser_vbulletin extends JFusionUser
      */
     function createUser($userinfo, &$status)
     {
-        //get the default user group and determine if we are using simple or advanced
-        $usergroups = JFusionFunction::isAdvancedUsergroupMode($this->getJname()) ? unserialize($this->params->get('usergroup')) : $this->params->get('usergroup');
+	    try {
+		    //get the default user group and determine if we are using simple or advanced
+		    $usergroups = JFusionFunction::isAdvancedUsergroupMode($this->getJname()) ? unserialize($this->params->get('usergroup')) : $this->params->get('usergroup');
 
-        //return if we are in advanced user group mode but the master did not pass in a group_id
-        if (is_array($usergroups) && !isset($userinfo->group_id)) {
-            $status['error'][] = JText::_('ERROR_CREATE_USER'). ' ' . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
-        } else {
-            if (empty($userinfo->activation)) {
-                $defaultgroup = (is_array($usergroups)) ? $usergroups[$userinfo->group_id]['defaultgroup'] : $usergroups;
-                $setAsNeedsActivation = false;
-            } else {
-                $defaultgroup = $this->params->get('activationgroup');
-                $setAsNeedsActivation = true;
-            }
+		    //return if we are in advanced user group mode but the master did not pass in a group_id
+		    if (is_array($usergroups) && !isset($userinfo->group_id)) {
+			    throw new Exception(JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID'));
+		    } else {
+			    if (empty($userinfo->activation)) {
+				    $defaultgroup = (is_array($usergroups)) ? $usergroups[$userinfo->group_id]['defaultgroup'] : $usergroups;
+				    $setAsNeedsActivation = false;
+			    } else {
+				    $defaultgroup = $this->params->get('activationgroup');
+				    $setAsNeedsActivation = true;
+			    }
 
-            $apidata = array();
-            $apidata['usergroups'] = $usergroups;
-            $apidata['defaultgroup'] = $defaultgroup;
+			    $apidata = array();
+			    $apidata['usergroups'] = $usergroups;
+			    $apidata['defaultgroup'] = $defaultgroup;
 
-            $usertitle = $this->getDefaultUserTitle($defaultgroup);
-            $userinfo->usertitle = $usertitle;
+			    $usertitle = $this->getDefaultUserTitle($defaultgroup);
+			    $userinfo->usertitle = $usertitle;
 
-            if (!isset($userinfo->password_clear)) {
-                //clear password is not available, set a random password for now
-                jimport('joomla.user.helper');
-                $random_password = JApplication::getHash(JUserHelper::genRandomPassword(10));
-                $userinfo->password_clear = $random_password;
-            }
+			    if (!isset($userinfo->password_clear)) {
+				    //clear password is not available, set a random password for now
+				    jimport('joomla.user.helper');
+				    $random_password = JApplication::getHash(JUserHelper::genRandomPassword(10));
+				    $userinfo->password_clear = $random_password;
+			    }
 
-            //set the timezone
-            if (!isset($userinfo->timezone)) {
-                $config = JFactory::getConfig();
-                $userinfo->timezone = $config->get('offset',0);
-            }
+			    //set the timezone
+			    if (!isset($userinfo->timezone)) {
+				    $config = JFactory::getConfig();
+				    $userinfo->timezone = $config->get('offset',0);
+			    }
 
-            $apidata['userinfo'] = $userinfo;
+			    $apidata['userinfo'] = $userinfo;
 
-            //performs some final VB checks before saving
-            $response = $this->helper->apiCall('createUser', $apidata);
-            if (empty($response['errors'])) {
-                $userdmid = $response['new_id'];
-                //if we set a temp password, we need to move the hashed password over
-                if (!isset($userinfo->password_clear)) {
-                    $db = JFusionFactory::getDatabase($this->getJname());
-                    $query = 'UPDATE #__user SET password = ' . $db->Quote($userinfo->password). ' WHERE userid  = ' . $userdmid;
-                    if (!$db->execute()) {
-                        $status['debug'][] = JText::_('USER_CREATION_ERROR') .'. '. JText::_('USERID') . ' ' . $userdmid . ': '.JText::_('MASTER_PASSWORD_NOT_COPIED');
-                    }
-                }
+			    //performs some final VB checks before saving
+			    $response = $this->helper->apiCall('createUser', $apidata);
+			    if (empty($response['errors'])) {
+				    $userdmid = $response['new_id'];
+				    //if we set a temp password, we need to move the hashed password over
+				    if (!isset($userinfo->password_clear)) {
+					    try {
+						    $db = JFusionFactory::getDatabase($this->getJname());
+						    $query = 'UPDATE #__user SET password = ' . $db->Quote($userinfo->password). ' WHERE userid  = ' . $userdmid;
+						    $db->setQuery($query);
+						    $db->execute();
+					    } catch (Exception $e) {
+						    $status['debug'][] = JText::_('USER_CREATION_ERROR') .'. '. JText::_('USERID') . ' ' . $userdmid . ': '.JText::_('MASTER_PASSWORD_NOT_COPIED');
+					    }
+				    }
 
-                //save the new user
-                $status['userinfo'] = $this->getUser($userinfo);
+				    //save the new user
+				    $status['userinfo'] = $this->getUser($userinfo);
 
-                //does the user still need to be activated?
-                if ($setAsNeedsActivation) {
-                    $this->inactivateUser($userinfo, $status['userinfo'], $status);
-                }
+				    //does the user still need to be activated?
+				    if ($setAsNeedsActivation) {
+					    $this->inactivateUser($userinfo, $status['userinfo'], $status);
+				    }
 
-                //return the good news
-                $status['debug'][] = JText::_('USER_CREATION') .'. '. JText::_('USERID') . ' ' . $userdmid;
-            } else {
-                foreach ($response['errors'] as $error)
-                {
-                    $status['error'][] = JText::_('USER_CREATION_ERROR') . ' ' . $error;
-                }
-            }
+				    //return the good news
+				    $status['debug'][] = JText::_('USER_CREATION') .'. '. JText::_('USERID') . ' ' . $userdmid;
+			    } else {
+				    foreach ($response['errors'] as $error) {
+					    $status['error'][] = JText::_('USER_CREATION_ERROR') . ' ' . $error;
+				    }
+			    }
 
-            if (!empty($response['debug'])) {
-                $status['debug']['api_call'] = $response['debug'];
-            }
-        }
+			    if (!empty($response['debug'])) {
+				    $status['debug']['api_call'] = $response['debug'];
+			    }
+		    }
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('ERROR_CREATE_USER'). ': ' . $e->getMessage();
+	    }
     }
 
     /**
@@ -774,17 +784,20 @@ class JFusionUser_vbulletin extends JFusionUser
      */
     function getDefaultUserTitle($groupid, $posts = 0)
     {
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT usertitle FROM #__usergroup WHERE usergroupid = '.$groupid;
-        $db->setQuery($query);
-        $title = $db->loadResult();
+	    try {
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT usertitle FROM #__usergroup WHERE usergroupid = '.$groupid;
+		    $db->setQuery($query);
+		    $title = $db->loadResult();
 
-        if (empty($title)) {
-            $query = 'SELECT title FROM #__usertitle WHERE minposts <= ' . $posts . ' ORDER BY minposts DESC LIMIT 1';
-            $db->setQuery($query);
-            $title = $db->loadResult();
-        }
-
+		    if (empty($title)) {
+			    $query = 'SELECT title FROM #__usertitle WHERE minposts <= ' . $posts . ' ORDER BY minposts DESC LIMIT 1';
+			    $db->setQuery($query);
+			    $title = $db->loadResult();
+		    }
+	    } catch (Exception $e) {
+		    $title = '';
+	    }
         return $title;
     }
 
@@ -795,160 +808,164 @@ class JFusionUser_vbulletin extends JFusionUser
      */
     function syncSessions($keepalive = false)
     {
-        $debug = (defined('DEBUG_SYSTEM_PLUGIN') ? true : false);
-        if ($debug) {
-            JFusionFunction::raiseNotice('vbulletin keep alive called');
-        }
-        $options = array();
-        //retrieve the values for vb cookies
-        $cookie_prefix = $this->params->get('cookie_prefix');
-        $vbversion = $this->helper->getVersion();
-        if ((int) substr($vbversion, 0, 1) > 3) {
-           if (substr($cookie_prefix, -1) !== '_') {
-               $cookie_prefix .= '_';
-           }
-        }
-        $cookie_sessionhash = JFactory::getApplication()->input->cookie->get($cookie_prefix . 'sessionhash', '');
-        $cookie_userid = JFactory::getApplication()->input->cookie->get($cookie_prefix . 'userid', '');
-        $cookie_password = JFactory::getApplication()->input->cookie->get($cookie_prefix . 'password', '');
-        $JUser = JFactory::getUser();
-        if (JPluginHelper::isEnabled ( 'system', 'remember' )) {
-            jimport('joomla.utilities.utility');
-            $hash = JApplication::getHash('JLOGIN_REMEMBER');
+	    try {
+		    $debug = (defined('DEBUG_SYSTEM_PLUGIN') ? true : false);
+		    if ($debug) {
+			    JFusionFunction::raiseNotice('vbulletin keep alive called');
+		    }
+		    $options = array();
+		    //retrieve the values for vb cookies
+		    $cookie_prefix = $this->params->get('cookie_prefix');
+		    $vbversion = $this->helper->getVersion();
+		    if ((int) substr($vbversion, 0, 1) > 3) {
+			    if (substr($cookie_prefix, -1) !== '_') {
+				    $cookie_prefix .= '_';
+			    }
+		    }
+		    $cookie_sessionhash = JFactory::getApplication()->input->cookie->get($cookie_prefix . 'sessionhash', '');
+		    $cookie_userid = JFactory::getApplication()->input->cookie->get($cookie_prefix . 'userid', '');
+		    $cookie_password = JFactory::getApplication()->input->cookie->get($cookie_prefix . 'password', '');
+		    $JUser = JFactory::getUser();
+		    if (JPluginHelper::isEnabled ( 'system', 'remember' )) {
+			    jimport('joomla.utilities.utility');
+			    $hash = JApplication::getHash('JLOGIN_REMEMBER');
 
-            $joomla_persistant_cookie = JFactory::getApplication()->input->cookie->get($hash, '','raw');
-        } else {
-            $joomla_persistant_cookie = '';
-        }
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT userid FROM #__session WHERE sessionhash = ' . $db->Quote($cookie_sessionhash);
-        $db->setQuery($query);
-        $session_userid = $db->loadResult();
+			    $joomla_persistant_cookie = JFactory::getApplication()->input->cookie->get($hash, '','raw');
+		    } else {
+			    $joomla_persistant_cookie = '';
+		    }
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT userid FROM #__session WHERE sessionhash = ' . $db->Quote($cookie_sessionhash);
+		    $db->setQuery($query);
+		    $session_userid = $db->loadResult();
 
-        if (!$JUser->get('guest', true)) {
-            //user logged into Joomla so let's check for an active vb session
-            if ($debug) {
-                JFusionFunction::raiseNotice('Joomla user logged in');
-            }
+		    if (!$JUser->get('guest', true)) {
+			    //user logged into Joomla so let's check for an active vb session
+			    if ($debug) {
+				    JFusionFunction::raiseNotice('Joomla user logged in');
+			    }
 
-            //find the userid attached to Joomla userid
-            $joomla_userid = $JUser->get('id');
-            $userlookup = JFusionFunction::lookupUser($this->getJname(), $joomla_userid);
-            $vb_userid = (!empty($userlookup)) ? $userlookup->userid : 0;
+			    //find the userid attached to Joomla userid
+			    $joomla_userid = $JUser->get('id');
+			    $userlookup = JFusionFunction::lookupUser($this->getJname(), $joomla_userid);
+			    $vb_userid = (!empty($userlookup)) ? $userlookup->userid : 0;
 
-            //is there a valid VB user logged in?
-            $vb_session = ((!empty($cookie_userid) && !empty($cookie_password) && $cookie_userid == $vb_userid) || (!empty($session_userid) && $session_userid == $vb_userid)) ? 1 : 0;
+			    //is there a valid VB user logged in?
+			    $vb_session = ((!empty($cookie_userid) && !empty($cookie_password) && $cookie_userid == $vb_userid) || (!empty($session_userid) && $session_userid == $vb_userid)) ? 1 : 0;
 
-            if ($debug) {
-                JFusionFunction::raiseNotice('vB session active: ' . $vb_session);
-            }
+			    if ($debug) {
+				    JFusionFunction::raiseNotice('vB session active: ' . $vb_session);
+			    }
 
-            //create a new session if one does not exist and either keep alive is enabled or a joomla persistent cookie exists
-            if (!$vb_session) {
-                if ((!empty($keepalive) || !empty($joomla_persistant_cookie))) {
-                    if ($debug) {
-                        JFusionFunction::raiseNotice('vbulletin guest');
-                        JFusionFunction::raiseNotice("cookie_sessionhash = $cookie_sessionhash");
-                        JFusionFunction::raiseNotice("session_userid = $session_userid");
-                        JFusionFunction::raiseNotice("vb_userid = $vb_userid");
-                    }
-                    //enable remember me as this is a keep alive function anyway
-                    $options['remember'] = 1;
-                    //get the user's info
-                    $query = 'SELECT username, email FROM #__user WHERE userid = '.$userlookup->userid;
-                    $db->setQuery($query);
-                    $user_identifiers = $db->loadObject();
-                    $userinfo = $this->getUser($user_identifiers);
-                    //create a new session
-                    $status = $this->createSession($userinfo, $options);
-                    if ($debug) {
-                        JFusionFunction::raiseNotices($this->getJname(), $status);
-                    }
-                    //signal that session was changed
-                    return 1;
-                } else {
-                   if ($debug) {
-                        JFusionFunction::raiseNotice('keep alive disabled or no persistant session found so calling Joomla\'s destorySession');
-                    }
-                    $JoomlaUser = JFusionFactory::getUser('joomla_int');
+			    //create a new session if one does not exist and either keep alive is enabled or a joomla persistent cookie exists
+			    if (!$vb_session) {
+				    if ((!empty($keepalive) || !empty($joomla_persistant_cookie))) {
+					    if ($debug) {
+						    JFusionFunction::raiseNotice('vbulletin guest');
+						    JFusionFunction::raiseNotice("cookie_sessionhash = $cookie_sessionhash");
+						    JFusionFunction::raiseNotice("session_userid = $session_userid");
+						    JFusionFunction::raiseNotice("vb_userid = $vb_userid");
+					    }
+					    //enable remember me as this is a keep alive function anyway
+					    $options['remember'] = 1;
+					    //get the user's info
+					    $query = 'SELECT username, email FROM #__user WHERE userid = '.$userlookup->userid;
+					    $db->setQuery($query);
+					    $user_identifiers = $db->loadObject();
+					    $userinfo = $this->getUser($user_identifiers);
+					    //create a new session
+					    $status = $this->createSession($userinfo, $options);
+					    if ($debug) {
+						    JFusionFunction::raiseNotices($this->getJname(), $status);
+					    }
+					    //signal that session was changed
+					    return 1;
+				    } else {
+					    if ($debug) {
+						    JFusionFunction::raiseNotice('keep alive disabled or no persistant session found so calling Joomla\'s destorySession');
+					    }
+					    $JoomlaUser = JFusionFactory::getUser('joomla_int');
 
-	                $userinfo = new stdClass;
-	                $userinfo->id = $JUser->id;
-	                $userinfo->username = $JUser->username;
-	                $userinfo->name = $JUser->name;
-	                $userinfo->email = $JUser->email;
-	                $userinfo->block = $JUser->block;
-	                $userinfo->activation = $JUser->activation;
-	                $userinfo->groups = $JUser->groups;
-	                $userinfo->password = $JUser->password;
-	                $userinfo->password_clear = $JUser->password_clear;
+					    $userinfo = new stdClass;
+					    $userinfo->id = $JUser->id;
+					    $userinfo->username = $JUser->username;
+					    $userinfo->name = $JUser->name;
+					    $userinfo->email = $JUser->email;
+					    $userinfo->block = $JUser->block;
+					    $userinfo->activation = $JUser->activation;
+					    $userinfo->groups = $JUser->groups;
+					    $userinfo->password = $JUser->password;
+					    $userinfo->password_clear = $JUser->password_clear;
 
-                    $options['clientid'][] = '0';
-                    $status = $JoomlaUser->destroySession($userinfo, $options);
-                    if ($debug) {
-                        JFusionFunction::raiseNotices($this->getJname(),$status);
-                    }
-                }
-            } elseif ($debug) {
-                JFusionFunction::raiseNotice('Nothing done as both Joomla and vB have active sessions.');
-            }
-        } elseif (!empty($session_userid) || (!empty($cookie_userid) && !empty($cookie_password))) {
-            //the user is not logged into Joomla and we have an active vB session
+					    $options['clientid'][] = '0';
+					    $status = $JoomlaUser->destroySession($userinfo, $options);
+					    if ($debug) {
+						    JFusionFunction::raiseNotices($this->getJname(),$status);
+					    }
+				    }
+			    } elseif ($debug) {
+				    JFusionFunction::raiseNotice('Nothing done as both Joomla and vB have active sessions.');
+			    }
+		    } elseif (!empty($session_userid) || (!empty($cookie_userid) && !empty($cookie_password))) {
+			    //the user is not logged into Joomla and we have an active vB session
 
-           if ($debug) {
-                JFusionFunction::raiseNotice('Joomla has a guest session');
-            }
+			    if ($debug) {
+				    JFusionFunction::raiseNotice('Joomla has a guest session');
+			    }
 
-            if (!empty($cookie_userid) && $cookie_userid != $session_userid) {
-                $status = $this->destroySession(null, null);
-                if ($debug) {
-                    JFusionFunction::raiseNotice('Cookie userid did not match session userid thus destroyed vB\'s session.');
-                    JFusionFunction::raiseNotices($this->getJname(), $status);
-                }
-            }
+			    if (!empty($cookie_userid) && $cookie_userid != $session_userid) {
+				    $status = $this->destroySession(null, null);
+				    if ($debug) {
+					    JFusionFunction::raiseNotice('Cookie userid did not match session userid thus destroyed vB\'s session.');
+					    JFusionFunction::raiseNotices($this->getJname(), $status);
+				    }
+			    }
 
-            //find the Joomla user id attached to the vB user
-            $userlookup = JFusionFunction::lookupUser($this->getJname(), $session_userid, false);
+			    //find the Joomla user id attached to the vB user
+			    $userlookup = JFusionFunction::lookupUser($this->getJname(), $session_userid, false);
 
-            if (!empty($joomla_persistant_cookie)) {
-               if ($debug) {
-                    JFusionFunction::raiseNotice('Joomla persistant cookie found so let Joomla handle renewal');
-                }
-                return 0;
-            } elseif (empty($keepalive)) {
-               if ($debug) {
-                    JFusionFunction::raiseNotice('Keep alive disabled so kill vBs session');
-                }
-                //something fishy or user chose not to use remember me so let's destroy vB's session
-                $this->destroySession(null, null);
-                return 1;
-            } elseif ($debug) {
-                JFusionFunction::raiseNotice('Keep alive enabled so renew Joomla\'s session');
-            }
+			    if (!empty($joomla_persistant_cookie)) {
+				    if ($debug) {
+					    JFusionFunction::raiseNotice('Joomla persistant cookie found so let Joomla handle renewal');
+				    }
+				    return 0;
+			    } elseif (empty($keepalive)) {
+				    if ($debug) {
+					    JFusionFunction::raiseNotice('Keep alive disabled so kill vBs session');
+				    }
+				    //something fishy or user chose not to use remember me so let's destroy vB's session
+				    $this->destroySession(null, null);
+				    return 1;
+			    } elseif ($debug) {
+				    JFusionFunction::raiseNotice('Keep alive enabled so renew Joomla\'s session');
+			    }
 
-            if (!empty($userlookup)) {
-               if ($debug) {
-                    JFusionFunction::raiseNotice('Found a phpBB user so attempting to renew Joomla\'s session.');
-                }
-                //get the user's info
-                $db = JFactory::getDBO();
-                $query = 'SELECT username, email FROM #__users WHERE id = '.$userlookup->id;
-                $db->setQuery($query);
-                $user_identifiers = $db->loadObject();
-                $JoomlaUser = JFusionFactory::getUser('joomla_int');
-                $userinfo = $JoomlaUser->getUser($user_identifiers);
-                if (!empty($userinfo)) {
-                    global $JFusionActivePlugin;
-                    $JFusionActivePlugin = $this->getJname();
-                    $status = $JoomlaUser->createSession($userinfo, $options);
-                    if ($debug) {
-                        JFusionFunction::raiseNotices($this->getJname(),$status);
-                    }
-                    //no need to signal refresh as Joomla will recognize this anyway
-                    return 0;
-                }
-            }
-        }
+			    if (!empty($userlookup)) {
+				    if ($debug) {
+					    JFusionFunction::raiseNotice('Found a phpBB user so attempting to renew Joomla\'s session.');
+				    }
+				    //get the user's info
+				    $db = JFactory::getDBO();
+				    $query = 'SELECT username, email FROM #__users WHERE id = '.$userlookup->id;
+				    $db->setQuery($query);
+				    $user_identifiers = $db->loadObject();
+				    $JoomlaUser = JFusionFactory::getUser('joomla_int');
+				    $userinfo = $JoomlaUser->getUser($user_identifiers);
+				    if (!empty($userinfo)) {
+					    global $JFusionActivePlugin;
+					    $JFusionActivePlugin = $this->getJname();
+					    $status = $JoomlaUser->createSession($userinfo, $options);
+					    if ($debug) {
+						    JFusionFunction::raiseNotices($this->getJname(),$status);
+					    }
+					    //no need to signal refresh as Joomla will recognize this anyway
+					    return 0;
+				    }
+			    }
+		    }
+	    } catch (Exception $e) {
+			JFusionFunction::raiseError($e);
+	    }
         return 0;
     }
 

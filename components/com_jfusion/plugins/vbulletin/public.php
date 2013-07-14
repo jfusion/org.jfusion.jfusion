@@ -99,43 +99,52 @@ class JFusionPublic_vbulletin extends JFusionPublic
             $text = html_entity_decode($text);
             $text = JFusionFunction::parseCode($text, 'bbcode');
         } elseif ($for == 'joomla' || ($for == 'activity' && $params->get('parse_text') == 'html')) {
-            $db = JFusionFactory::getDatabase($this->getJname());
             static $custom_smileys, $vb_bbcodes;
-            $options = array();
+	        $options = array();
+	        try {
+		        $db = JFusionFactory::getDatabase($this->getJname());
 
-            //parse smilies
-            if (!is_array($custom_smileys)) {
-                $query = 'SELECT title, smilietext, smiliepath FROM #__smilie';
-                $db->setQuery($query);
-                $smilies = $db->loadObjectList();
-                $vburl = $this->params->get('source_url');
-                if (!empty($smilies)) {
-                    $custom_smileys = array();
-                    foreach ($smilies as $s) {
-                        $path = (strpos($s->smiliepath, 'http') !== false) ? $s->smiliepath : $vburl . $s->smiliepath;
-                        $custom_smileys[$s->smilietext] = $path;
-                    }
-                }
-            }
+		        //parse smilies
+		        if (!is_array($custom_smileys)) {
+			        $query = 'SELECT title, smilietext, smiliepath FROM #__smilie';
+			        $db->setQuery($query);
+			        $smilies = $db->loadObjectList();
+			        $vburl = $this->params->get('source_url');
+			        if (!empty($smilies)) {
+				        $custom_smileys = array();
+				        foreach ($smilies as $s) {
+					        $path = (strpos($s->smiliepath, 'http') !== false) ? $s->smiliepath : $vburl . $s->smiliepath;
+					        $custom_smileys[$s->smilietext] = $path;
+				        }
+			        }
+		        }
+	        } catch (Exception $e) {
+				JFusionFunction::raiseError($e);
+	        }
+
             $options['custom_smileys'] = $custom_smileys;
             $options['parse_smileys'] = true;
 
             //add custom bbcode rules
             if (!is_array($vb_bbcodes)) {
                 $vb_bbcodes = array();
-                $query = 'SELECT bbcodetag, bbcodereplacement, twoparams FROM #__bbcode';
-                $db->setQuery($query);
-                $bbcodes = $db->loadObjectList();
-                foreach ($bbcodes as $bb) {
-                    $template = $bb->bbcodereplacement;
-                    //replace vb content holder with nbbc
-                    $template = str_replace('%1$s', '{$_content}', $template);
-                    if ($bb->twoparams) {
-                        //if using the option tag, replace vb option tag with one nbbc will understand
-                        $template = str_replace('%2$s', '{$_default}', $template);
-                    }
-                    $vb_bbcodes[$bb->bbcodetag] = array( 'mode' => 4, 'template' => $template, 'class' => 'inline', 'allow_in' => array('block', 'inline', 'link', 'list', 'listitem', 'columns', 'image'));
-                }
+	            try {
+		            $query = 'SELECT bbcodetag, bbcodereplacement, twoparams FROM #__bbcode';
+		            $db->setQuery($query);
+		            $bbcodes = $db->loadObjectList();
+		            foreach ($bbcodes as $bb) {
+			            $template = $bb->bbcodereplacement;
+			            //replace vb content holder with nbbc
+			            $template = str_replace('%1$s', '{$_content}', $template);
+			            if ($bb->twoparams) {
+				            //if using the option tag, replace vb option tag with one nbbc will understand
+				            $template = str_replace('%2$s', '{$_default}', $template);
+			            }
+			            $vb_bbcodes[$bb->bbcodetag] = array( 'mode' => 4, 'template' => $template, 'class' => 'inline', 'allow_in' => array('block', 'inline', 'link', 'list', 'listitem', 'columns', 'image'));
+		            }
+	            } catch (Exception $e) {
+		            JFusionFunction::raiseError($e);
+	            }
             }
 
             if (!empty($vb_bbcodes)) {
@@ -150,18 +159,21 @@ class JFusionPublic_vbulletin extends JFusionPublic
             //remove the post id from any quote heads
             $text = preg_replace('#<div class="bbcode_quote_head">(.*?);(.*?) (.*?):</div>#' , '<div class="bbcode_quote_head">$1 $3:</div>', $text);
         } elseif ($for == 'activity' || $for == 'search') {
-
-            $db = JFusionFactory::getDatabase($this->getJname());
             static $vb_bbcodes_plain;
             $options = array();
-            //add custom bbcode rules
-            if (!is_array($vb_bbcodes_plain)) {
-                $vb_bbcodes_plain = array();
-                $query = 'SELECT bbcodetag FROM #__bbcode';
-                $db->setQuery($query);
-                $vb_bbcodes_plain = $db->loadColumn();
+	        try {
+		        $db = JFusionFactory::getDatabase($this->getJname());
 
-            }
+		        //add custom bbcode rules
+		        if (!is_array($vb_bbcodes_plain)) {
+			        $vb_bbcodes_plain = array();
+			        $query = 'SELECT bbcodetag FROM #__bbcode';
+			        $db->setQuery($query);
+			        $vb_bbcodes_plain = $db->loadColumn();
+		        }
+	        } catch (Exception $e) {
+		        JFusionFunction::raiseError($e);
+	        }
 
             if (!empty($vb_bbcodes_plain)) {
                 $options['plain_tags'] = $vb_bbcodes_plain;
@@ -211,10 +223,15 @@ class JFusionPublic_vbulletin extends JFusionPublic
      */
     function getNumberOnlineGuests()
     {
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT COUNT(DISTINCT(host)) FROM #__session WHERE userid = 0';
-        $db->setQuery($query);
-        return $db->loadResult();
+	    try {
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT COUNT(DISTINCT(host)) FROM #__session WHERE userid = 0';
+		    $db->setQuery($query);
+		    return $db->loadResult();
+	    } catch (Exception $e) {
+		    FusionFunction::raiseError($e);
+		    return 0;
+	    }
     }
     /**
      * Returns number of logged in users
@@ -223,10 +240,15 @@ class JFusionPublic_vbulletin extends JFusionPublic
      */
     function getNumberOnlineMembers()
     {
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT COUNT(DISTINCT(userid)) FROM #__session WHERE userid != 0';
-        $db->setQuery($query);
-        return $db->loadResult();
+	    try {
+	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $query = 'SELECT COUNT(DISTINCT(userid)) FROM #__session WHERE userid != 0';
+	        $db->setQuery($query);
+	        return $db->loadResult();
+	    } catch (Exception $e) {
+			FusionFunction::raiseError($e);
+			return 0;
+		}
     }
 
     /**
@@ -254,11 +276,18 @@ class JFusionPublic_vbulletin extends JFusionPublic
         if ((int) substr($version, 0, 1) > 3) {
             JFusionFunction::raiseWarning(JText::sprintf('VB_FRAMELESS_NOT_SUPPORTED',$version));
         } else {
-            //check to make sure the frameless hook is installed
-            $db = JFusionFactory::getDatabase($this->getJname());
-            $q = 'SELECT active FROM #__plugin WHERE hookname = \'init_startup\' AND title = \'JFusion Frameless Integration Plugin\'';
-            $db->setQuery($q);
-            $active = $db->loadResult();
+
+	        try {
+		        //check to make sure the frameless hook is installed
+		        $db = JFusionFactory::getDatabase($this->getJname());
+		        $q = 'SELECT active FROM #__plugin WHERE hookname = \'init_startup\' AND title = \'JFusion Frameless Integration Plugin\'';
+		        $db->setQuery($q);
+		        $active = $db->loadResult();
+	        } catch (Exception $e) {
+		        JFusionFunction::raiseError($e);
+		        $active = 0;
+	        }
+
             if ($active != '1') {
                 JFusionFunction::raiseWarning(JText::_('VB_FRAMELESS_HOOK_NOT_INSTALLED'));
             } else {
@@ -455,169 +484,173 @@ JS;
      */
     function getPathWay()
     {
-        $mainframe = JFactory::getApplication();
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $pathway = array();
-        //let's get the jfile
-        $jfile = JFactory::getApplication()->input->get('jfile');
-        //we are viewing a forum
-        if (JFactory::getApplication()->input->get('f', false) !== false) {
-            $fid = JFactory::getApplication()->input->get('f');
-            $query = 'SELECT title, parentlist, parentid from #__forum WHERE forumid = '.$db->Quote($fid);
-            $db->setQuery($query);
-            $forum = $db->loadObject();
-            if ($forum->parentid != '-1') {
-                $parents = array_reverse(explode(',', $forum->parentlist));
-                foreach ($parents as $p) {
-                    if ($p != '-1') {
-                        $query = 'SELECT title from #__forum WHERE forumid = '.$p;
-                        $db->setQuery($query);
-                        $title = $db->loadResult();
-                        $crumb = new stdClass();
-                        $crumb->title = $title;
-                        $crumb->url = 'forumdisplay.php?f='.$p;
-                        $pathway[] = $crumb;
-                    }
-                }
-            } else {
-                $crumb = new stdClass();
-                $crumb->title = $forum->title;
-                $crumb->url = 'forumdisplay.php?f='.$fid;
-                $pathway[] = $crumb;
-            }
-        } elseif (JFactory::getApplication()->input->get('t', false) !== false) {
-            $tid = JFactory::getApplication()->input->get('t');
-            $query = 'SELECT t.title AS thread, f.title AS forum, f.forumid, f.parentid, f.parentlist FROM #__thread AS t JOIN #__forum AS f ON t.forumid = f.forumid WHERE t.threadid = '.$db->Quote($tid);
-            $db->setQuery($query);
-            $result = $db->loadObject();
-            if ($result->parentid != '-1') {
-                $parents = array_reverse(explode(',', $result->parentlist));
-                foreach ($parents as $p) {
-                    if ($p != '-1') {
-                        $query = 'SELECT title from #__forum WHERE forumid = '.$p;
-                        $db->setQuery($query);
-                        $title = $db->loadResult();
-                        $crumb = new stdClass();
-                        $crumb->title = $title;
-                        $crumb->url = 'forumdisplay.php?f='.$p;
-                        $pathway[] = $crumb;
-                    }
-                }
-            } else {
-                $crumb = new stdClass();
-                $crumb->title = $result->forum;
-                $crumb->url = 'forumdisplay.php?f='.$result->forumid;
-                $pathway[] = $crumb;
-            }
-            $crumb = new stdClass();
-            $crumb->title = $result->thread;
-            $crumb->url = 'showthread.php?t='.$tid;
-            $pathway[] = $crumb;
-        } elseif (JFactory::getApplication()->input->get('p', false) !== false) {
-            $pid = JFactory::getApplication()->input->get('p');
-            $query = 'SELECT t.title AS thread, t.threadid, f.title AS forum, f.forumid, f.parentid, f.parentlist FROM #__thread AS t JOIN #__forum AS f JOIN #__post AS p ON t.forumid = f.forumid AND t.threadid = p.threadid WHERE p.postid = '.$db->Quote($pid);
-            $db->setQuery($query);
-            $result = $db->loadObject();
-            if ($result->parentid != '-1') {
-                $parents = array_reverse(explode(',', $result->parentlist));
-                foreach ($parents as $p) {
-                    if ($p != '-1') {
-                        $query = 'SELECT title from #__forum WHERE forumid = '.$p;
-                        $db->setQuery($query);
-                        $title = $db->loadResult();
-                        $crumb = new stdClass();
-                        $crumb->title = $title;
-                        $crumb->url = 'forumdisplay.php?f='.$p;
-                        $pathway[] = $crumb;
-                    }
-                }
-            } else {
-                $crumb = new stdClass();
-                $crumb->title = $result->forum;
-                $crumb->url = 'forumdisplay.php?f='.$result->forumid;
-                $pathway[] = $crumb;
-            }
-            $crumb = new stdClass();
-            $crumb->title = $result->thread;
-            $crumb->url = 'showthread.php?t='.$result->threadid;
-            $pathway[] = $crumb;
-        } elseif (JFactory::getApplication()->input->get('u', false) !== false) {
-            if ($jfile == 'member.php') {
-                // we are viewing a member's profile
-                $uid = JFactory::getApplication()->input->get('u');
-                $crumb = new stdClass();
-                $crumb->title = 'Members List';
-                $crumb->url = 'memberslist.php';
-                $pathway[] = $crumb;
-                $query = 'SELECT username FROM #__user WHERE userid = '.$db->Quote($uid);
-                $db->setQuery($query);
-                $username = $db->loadResult();
-                $crumb = new stdClass();
-                $crumb->title = $username.'\'s Profile';
-                $crumb->url = 'member.php?u='.$uid;
-                $pathway[] = $crumb;
-            }
-        } elseif ($jfile == 'search.php') {
-            $crumb = new stdClass();
-            $crumb->title = 'Search';
-            $crumb->url = 'search.php';
-            $pathway[] = $crumb;
-            if (JFactory::getApplication()->input->get('do', false) !== false) {
-                $do = JFactory::getApplication()->input->get('do');
-                if ($do == 'getnew') {
-                    $crumb = new stdClass();
-                    $crumb->title = 'New Posts';
-                    $crumb->url = 'search.php?do=getnew';
-                    $pathway[] = $crumb;
-                } elseif ($do == 'getdaily') {
-                    $crumb = new stdClass();
-                    $crumb->title = 'Today\'s Posts';
-                    $crumb->url = 'search.php?do=getdaily';
-                    $pathway[] = $crumb;
-                }
-            }
-        } elseif ($jfile == 'private.php') {
-            $crumb = new stdClass();
-            $crumb->title = 'User Control Panel';
-            $crumb->url = 'usercp.php';
-            $pathway[] = $crumb;
-            $crumb = new stdClass();
-            $crumb->title = 'Private Messages';
-            $crumb->url = 'private.php';
-            $pathway[] = $crumb;
-        } elseif ($jfile == 'usercp.php') {
-            $crumb = new stdClass();
-            $crumb->title = 'User Control Panel';
-            $crumb->url = 'usercp.php';
-            $pathway[] = $crumb;
-        } elseif ($jfile == 'profile.php') {
-            $crumb = new stdClass();
-            $crumb->title = 'User Control Panel';
-            $crumb->url = 'usercp.php';
-            $pathway[] = $crumb;
-            if (JFactory::getApplication()->input->get('do', false) !== false) {
-                $crumb = new stdClass();
-                $crumb->title = 'Your Profile';
-                $crumb->url = 'profile.php?do=editprofile';
-                $pathway[] = $crumb;
-            }
-        } elseif ($jfile == 'moderation.php') {
-            $crumb = new stdClass();
-            $crumb->title = 'User Control Panel';
-            $crumb->url = 'usercp.php';
-            $pathway[] = $crumb;
-            if (JFactory::getApplication()->input->get('do', false) !== false) {
-                $crumb = new stdClass();
-                $crumb->title = 'Moderator Tasks';
-                $crumb->url = 'moderation.php';
-                $pathway[] = $crumb;
-            }
-        } elseif ($jfile == 'memberlist.php') {
-            $crumb = new stdClass();
-            $crumb->title = 'Members List';
-            $crumb->url = 'memberslist.php';
-            $pathway[] = $crumb;
-        }
+	    $pathway = array();
+	    try {
+		    $mainframe = JFactory::getApplication();
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    //let's get the jfile
+		    $jfile = JFactory::getApplication()->input->get('jfile');
+		    //we are viewing a forum
+		    if (JFactory::getApplication()->input->get('f', false) !== false) {
+			    $fid = JFactory::getApplication()->input->get('f');
+			    $query = 'SELECT title, parentlist, parentid from #__forum WHERE forumid = '.$db->Quote($fid);
+			    $db->setQuery($query);
+			    $forum = $db->loadObject();
+			    if ($forum->parentid != '-1') {
+				    $parents = array_reverse(explode(',', $forum->parentlist));
+				    foreach ($parents as $p) {
+					    if ($p != '-1') {
+						    $query = 'SELECT title from #__forum WHERE forumid = '.$p;
+						    $db->setQuery($query);
+						    $title = $db->loadResult();
+						    $crumb = new stdClass();
+						    $crumb->title = $title;
+						    $crumb->url = 'forumdisplay.php?f='.$p;
+						    $pathway[] = $crumb;
+					    }
+				    }
+			    } else {
+				    $crumb = new stdClass();
+				    $crumb->title = $forum->title;
+				    $crumb->url = 'forumdisplay.php?f='.$fid;
+				    $pathway[] = $crumb;
+			    }
+		    } elseif (JFactory::getApplication()->input->get('t', false) !== false) {
+			    $tid = JFactory::getApplication()->input->get('t');
+			    $query = 'SELECT t.title AS thread, f.title AS forum, f.forumid, f.parentid, f.parentlist FROM #__thread AS t JOIN #__forum AS f ON t.forumid = f.forumid WHERE t.threadid = '.$db->Quote($tid);
+			    $db->setQuery($query);
+			    $result = $db->loadObject();
+			    if ($result->parentid != '-1') {
+				    $parents = array_reverse(explode(',', $result->parentlist));
+				    foreach ($parents as $p) {
+					    if ($p != '-1') {
+						    $query = 'SELECT title from #__forum WHERE forumid = '.$p;
+						    $db->setQuery($query);
+						    $title = $db->loadResult();
+						    $crumb = new stdClass();
+						    $crumb->title = $title;
+						    $crumb->url = 'forumdisplay.php?f='.$p;
+						    $pathway[] = $crumb;
+					    }
+				    }
+			    } else {
+				    $crumb = new stdClass();
+				    $crumb->title = $result->forum;
+				    $crumb->url = 'forumdisplay.php?f='.$result->forumid;
+				    $pathway[] = $crumb;
+			    }
+			    $crumb = new stdClass();
+			    $crumb->title = $result->thread;
+			    $crumb->url = 'showthread.php?t='.$tid;
+			    $pathway[] = $crumb;
+		    } elseif (JFactory::getApplication()->input->get('p', false) !== false) {
+			    $pid = JFactory::getApplication()->input->get('p');
+			    $query = 'SELECT t.title AS thread, t.threadid, f.title AS forum, f.forumid, f.parentid, f.parentlist FROM #__thread AS t JOIN #__forum AS f JOIN #__post AS p ON t.forumid = f.forumid AND t.threadid = p.threadid WHERE p.postid = '.$db->Quote($pid);
+			    $db->setQuery($query);
+			    $result = $db->loadObject();
+			    if ($result->parentid != '-1') {
+				    $parents = array_reverse(explode(',', $result->parentlist));
+				    foreach ($parents as $p) {
+					    if ($p != '-1') {
+						    $query = 'SELECT title from #__forum WHERE forumid = '.$p;
+						    $db->setQuery($query);
+						    $title = $db->loadResult();
+						    $crumb = new stdClass();
+						    $crumb->title = $title;
+						    $crumb->url = 'forumdisplay.php?f='.$p;
+						    $pathway[] = $crumb;
+					    }
+				    }
+			    } else {
+				    $crumb = new stdClass();
+				    $crumb->title = $result->forum;
+				    $crumb->url = 'forumdisplay.php?f='.$result->forumid;
+				    $pathway[] = $crumb;
+			    }
+			    $crumb = new stdClass();
+			    $crumb->title = $result->thread;
+			    $crumb->url = 'showthread.php?t='.$result->threadid;
+			    $pathway[] = $crumb;
+		    } elseif (JFactory::getApplication()->input->get('u', false) !== false) {
+			    if ($jfile == 'member.php') {
+				    // we are viewing a member's profile
+				    $uid = JFactory::getApplication()->input->get('u');
+				    $crumb = new stdClass();
+				    $crumb->title = 'Members List';
+				    $crumb->url = 'memberslist.php';
+				    $pathway[] = $crumb;
+				    $query = 'SELECT username FROM #__user WHERE userid = '.$db->Quote($uid);
+				    $db->setQuery($query);
+				    $username = $db->loadResult();
+				    $crumb = new stdClass();
+				    $crumb->title = $username.'\'s Profile';
+				    $crumb->url = 'member.php?u='.$uid;
+				    $pathway[] = $crumb;
+			    }
+		    } elseif ($jfile == 'search.php') {
+			    $crumb = new stdClass();
+			    $crumb->title = 'Search';
+			    $crumb->url = 'search.php';
+			    $pathway[] = $crumb;
+			    if (JFactory::getApplication()->input->get('do', false) !== false) {
+				    $do = JFactory::getApplication()->input->get('do');
+				    if ($do == 'getnew') {
+					    $crumb = new stdClass();
+					    $crumb->title = 'New Posts';
+					    $crumb->url = 'search.php?do=getnew';
+					    $pathway[] = $crumb;
+				    } elseif ($do == 'getdaily') {
+					    $crumb = new stdClass();
+					    $crumb->title = 'Today\'s Posts';
+					    $crumb->url = 'search.php?do=getdaily';
+					    $pathway[] = $crumb;
+				    }
+			    }
+		    } elseif ($jfile == 'private.php') {
+			    $crumb = new stdClass();
+			    $crumb->title = 'User Control Panel';
+			    $crumb->url = 'usercp.php';
+			    $pathway[] = $crumb;
+			    $crumb = new stdClass();
+			    $crumb->title = 'Private Messages';
+			    $crumb->url = 'private.php';
+			    $pathway[] = $crumb;
+		    } elseif ($jfile == 'usercp.php') {
+			    $crumb = new stdClass();
+			    $crumb->title = 'User Control Panel';
+			    $crumb->url = 'usercp.php';
+			    $pathway[] = $crumb;
+		    } elseif ($jfile == 'profile.php') {
+			    $crumb = new stdClass();
+			    $crumb->title = 'User Control Panel';
+			    $crumb->url = 'usercp.php';
+			    $pathway[] = $crumb;
+			    if (JFactory::getApplication()->input->get('do', false) !== false) {
+				    $crumb = new stdClass();
+				    $crumb->title = 'Your Profile';
+				    $crumb->url = 'profile.php?do=editprofile';
+				    $pathway[] = $crumb;
+			    }
+		    } elseif ($jfile == 'moderation.php') {
+			    $crumb = new stdClass();
+			    $crumb->title = 'User Control Panel';
+			    $crumb->url = 'usercp.php';
+			    $pathway[] = $crumb;
+			    if (JFactory::getApplication()->input->get('do', false) !== false) {
+				    $crumb = new stdClass();
+				    $crumb->title = 'Moderator Tasks';
+				    $crumb->url = 'moderation.php';
+				    $pathway[] = $crumb;
+			    }
+		    } elseif ($jfile == 'memberlist.php') {
+			    $crumb = new stdClass();
+			    $crumb->title = 'Members List';
+			    $crumb->url = 'memberslist.php';
+			    $pathway[] = $crumb;
+		    }
+	    } catch (Exception $e) {
+			JFusionFunction::raiseError($e);
+	    }
         return $pathway;
     }
 

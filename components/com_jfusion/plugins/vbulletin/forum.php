@@ -75,10 +75,15 @@ class JFusionForum_vbulletin extends JFusionForum
      */
     function getThread($threadid)
     {
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT threadid, forumid, firstpostid AS postid FROM #__thread WHERE threadid = '.$threadid;
-        $db->setQuery($query);
-        $results = $db->loadObject();
+	    try {
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT threadid, forumid, firstpostid AS postid FROM #__thread WHERE threadid = '.$threadid;
+		    $db->setQuery($query);
+		    $results = $db->loadObject();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    $results = null;
+	    }
         return $results;
     }
 
@@ -89,11 +94,16 @@ class JFusionForum_vbulletin extends JFusionForum
      */
     function getThreadLockedStatus($threadid)
     {
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT open FROM #__thread WHERE threadid = '.$threadid;
-        $db->setQuery($query);
-        $open = $db->loadResult();
-        $locked = ($open) ? false : true;
+	    try {
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT open FROM #__thread WHERE threadid = '.$threadid;
+		    $db->setQuery($query);
+		    $open = $db->loadResult();
+		    $locked = ($open) ? false : true;
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    $locked = true;
+	    }
         return $locked;
     }
 
@@ -198,77 +208,76 @@ class JFusionForum_vbulletin extends JFusionForum
     function createPost(&$dbparams, &$ids, &$contentitem, &$userinfo)
     {
         $status = array('error' => array(),'debug' => array());
-        if ($userinfo->guest) {
-            $userinfo->username = JFactory::getApplication()->input->post->get('guest_username', '');
-            $userinfo->userid = 0;
-            if (empty($userinfo->username)) {
-                $status['error'][] = JTEXT::_('GUEST_FIELDS_MISSING');
-                return $status;
-            } else {
-                $db = JFusionFactory::getDatabase($this->getJname());
-				$query = 'SELECT COUNT(*) FROM #__user '
-						. ' WHERE LOWER(username) = ' . strtolower($db->Quote($userinfo->username))
-						. ' OR LOWER(email) = ' . strtolower($db->Quote($userinfo->username));
-                $db->setQuery($query);
-                $result = $db->loadResult();
-                if (!empty($result)) {
-                    $status['error'][] = JText::_('USERNAME_IN_USE');
-                    return $status;
-                }
+	    try {
+		    if ($userinfo->guest) {
+			    $userinfo->username = JFactory::getApplication()->input->post->get('guest_username', '');
+			    $userinfo->userid = 0;
+			    if (empty($userinfo->username)) {
+				    throw new Exception(JTEXT::_('GUEST_FIELDS_MISSING'));
+			    } else {
+				    $db = JFusionFactory::getDatabase($this->getJname());
+				    $query = 'SELECT COUNT(*) FROM #__user '
+					    . ' WHERE LOWER(username) = ' . strtolower($db->Quote($userinfo->username))
+					    . ' OR LOWER(email) = ' . strtolower($db->Quote($userinfo->username));
+				    $db->setQuery($query);
+				    $result = $db->loadResult();
+				    if (!empty($result)) {
+					    throw new Exception(JTEXT::_('USERNAME_IN_USE'));
+				    }
 
-                $name_field = $this->params->get('name_field');
-                if (!empty($name_field)) {
-                    $query = 'SELECT COUNT(*) FROM #__userfield WHERE LOWER('.$name_field.') = ' . strtolower($db->Quote($userinfo->username)) . ' OR LOWER('.$name_field.') = ' . strtolower($db->Quote($userinfo->username));
-                    $db->setQuery($query);
-                    $result = $db->loadResult();
-                    if (!empty($result)) {
-                        $status['error'][] = JText::_('USERNAME_IN_USE');
-                        return $status;
-                    }
-                }
-            }
-        }
-        $guest = $userinfo->guest;
-        $text = JFactory::getApplication()->input->post->get('quickReply', false);
-		//strip out html from post
-		$text = strip_tags($text);
+				    $name_field = $this->params->get('name_field');
+				    if (!empty($name_field)) {
+					    $query = 'SELECT COUNT(*) FROM #__userfield WHERE LOWER('.$name_field.') = ' . strtolower($db->Quote($userinfo->username)) . ' OR LOWER('.$name_field.') = ' . strtolower($db->Quote($userinfo->username));
+					    $db->setQuery($query);
+					    $result = $db->loadResult();
+					    if (!empty($result)) {
+						    throw new Exception(JTEXT::_('USERNAME_IN_USE'));
+					    }
+				    }
+			    }
+		    }
+		    $guest = $userinfo->guest;
+		    $text = JFactory::getApplication()->input->post->get('quickReply', false);
+		    //strip out html from post
+		    $text = strip_tags($text);
 
-        if (!empty($text)) {
-			$foruminfo = $this->getForumInfo($ids->forumid);
-			$threadinfo = $this->getThreadInfo($ids->threadid, $dbparams);
-			$post_approved = ($userinfo->guest && ($foruminfo['moderatenewposts'] || $dbparams->get('moderate_guests',1))) ? 0 : 1;
-            $title = 'Re: ' . $threadinfo['title'];
-            $public = JFusionFactory::getPublic($this->getJname());
-            $public->prepareText($title);
+		    if (!empty($text)) {
+			    $foruminfo = $this->getForumInfo($ids->forumid);
+			    $threadinfo = $this->getThreadInfo($ids->threadid, $dbparams);
+			    $post_approved = ($userinfo->guest && ($foruminfo['moderatenewposts'] || $dbparams->get('moderate_guests',1))) ? 0 : 1;
+			    $title = 'Re: ' . $threadinfo['title'];
+			    $public = JFusionFactory::getPublic($this->getJname());
+			    $public->prepareText($title);
 
-	        $apidata = array(
-                'userinfo' => $this->helper->convertUserData($userinfo),
-                'ids' => $ids,
-	            'ipaddress' => $_SERVER['REMOTE_ADDR'],
-            	'title' => $title,
-                'text' => $text,
-	            'post_approved' => $post_approved
-            );
-            $response = $this->helper->apiCall('createPost', $apidata);
+			    $apidata = array(
+				    'userinfo' => $this->helper->convertUserData($userinfo),
+				    'ids' => $ids,
+				    'ipaddress' => $_SERVER['REMOTE_ADDR'],
+				    'title' => $title,
+				    'text' => $text,
+				    'post_approved' => $post_approved
+			    );
+			    $response = $this->helper->apiCall('createPost', $apidata);
 
-            if (!empty($response['errors'])) {
-                $status['error'] = array_merge($status['error'], $response['errors']);
-            } else {
-                $id = $response['new_id'];;
+			    if (!empty($response['errors'])) {
+				    $status['error'] = array_merge($status['error'], $response['errors']);
+			    } else {
+				    $id = $response['new_id'];;
 
-                //store post id
-                $status['postid'] = $id;
-            }
+				    //store post id
+				    $status['postid'] = $id;
+			    }
 
+			    //update moderation status to tell discussion bot to notify user
+			    $status['post_moderated'] = ($post_approved) ? 0 : 1;
+		    }
 
-			//update moderation status to tell discussion bot to notify user
-			$status['post_moderated'] = ($post_approved) ? 0 : 1;
-		}
-
-		if (!empty($response['debug'])) {
-		    $status['debug'][] = $response['debug'];
-		}
-
+		    if (!empty($response['debug'])) {
+			    $status['debug'][] = $response['debug'];
+		    }
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('USERNAME_IN_USE');
+	    }
         return $status;
     }
 
@@ -311,13 +320,18 @@ class JFusionForum_vbulletin extends JFusionForum
      */
     function getThreadInfo($id, &$dbparams)
     {
-        $threadid = intval($id);
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT if (visible = 2, 1, 0) AS isdeleted,';
-        $query.= ' thread.* FROM #__thread AS thread';
-        $query.= ' WHERE thread.threadid = '.$threadid;
-        $db->setQuery($query);
-        $threadinfo = $db->loadAssoc();
+	    try {
+		    $threadid = intval($id);
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT if (visible = 2, 1, 0) AS isdeleted,';
+		    $query.= ' thread.* FROM #__thread AS thread';
+		    $query.= ' WHERE thread.threadid = '.$threadid;
+		    $db->setQuery($query);
+		    $threadinfo = $db->loadAssoc();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    $threadinfo = null;
+	    }
         return $threadinfo;
     }
 
@@ -327,38 +341,43 @@ class JFusionForum_vbulletin extends JFusionForum
      * @return array
      */
     function getForumInfo($id) {
-		$jdb = JFusionFactory::getDatabase($this->getJname());
-		$query = 'SELECT * FROM #__forum WHERE forumid = ' . (int) $id;
-		$jdb->setQuery($query);
-		$foruminfo = $jdb->loadAssoc();
+	    try {
+		    $jdb = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT * FROM #__forum WHERE forumid = ' . (int) $id;
+		    $jdb->setQuery($query);
+		    $foruminfo = $jdb->loadAssoc();
 
-		//set the forum options
-		$options = array(
-			'active' 			=> 1,
-			'allowposting' 		=> 2,
-			'cancontainthreads'	=> 4,
-			'moderatenewpost' 	=> 8,
-			'moderatenewthread' => 16,
-			'moderateattach' 	=> 32,
-			'allowbbcode' 		=> 64,
-			'allowimages' 		=> 128,
-			'allowhtml'			=> 256,
-			'allowsmilies' 		=> 512,
-			'allowicons' 		=> 1024,
-			'allowratings' 		=> 2048,
-			'countposts' 		=> 4096,
-			'canhavepassword' 	=> 8192,
-			'indexposts' 		=> 16384,
-			'styleoverride' 	=> 32768,
-			'showonforumjump' 	=> 65536,
-			'prefixrequired' 	=> 131072
-		);
+		    //set the forum options
+		    $options = array(
+			    'active' 			=> 1,
+			    'allowposting' 		=> 2,
+			    'cancontainthreads'	=> 4,
+			    'moderatenewpost' 	=> 8,
+			    'moderatenewthread' => 16,
+			    'moderateattach' 	=> 32,
+			    'allowbbcode' 		=> 64,
+			    'allowimages' 		=> 128,
+			    'allowhtml'			=> 256,
+			    'allowsmilies' 		=> 512,
+			    'allowicons' 		=> 1024,
+			    'allowratings' 		=> 2048,
+			    'countposts' 		=> 4096,
+			    'canhavepassword' 	=> 8192,
+			    'indexposts' 		=> 16384,
+			    'styleoverride' 	=> 32768,
+			    'showonforumjump' 	=> 65536,
+			    'prefixrequired' 	=> 131072
+		    );
 
-		foreach($options as $name => $val) {
-			$foruminfo[$name] = (($foruminfo['options'] & $val) ? 1 : 0);
-		}
+		    foreach($options as $name => $val) {
+			    $foruminfo[$name] = (($foruminfo['options'] & $val) ? 1 : 0);
+		    }
 
-		$foruminfo['depth'] = substr_count($foruminfo['parentlist'], ',') - 1;
+		    $foruminfo['depth'] = substr_count($foruminfo['parentlist'], ',') - 1;
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    $foruminfo = array();
+	    }
 
 		return $foruminfo;
 	}
@@ -371,34 +390,39 @@ class JFusionForum_vbulletin extends JFusionForum
      */
     function getPosts(&$dbparams, &$existingthread)
     {
-        $threadid = $existingthread->threadid;
-        $postid = $existingthread->postid;
-        //set the query
-        $sort = $dbparams->get('sort_posts');
-        $where = 'WHERE a.threadid = '.$threadid.' AND a.postid != '.$postid.' AND a.visible = 1';
-        $name_field = $this->params->get('name_field');
-        if (empty($name_field)) {
-            $query = 'SELECT a.postid , a.username, a.username as name, a.userid, CASE WHEN a.userid = 0 THEN 1 ELSE 0 END AS guest, a.title, a.dateline, a.pagetext, a.threadid, b.title AS threadtitle FROM `#__post` as a INNER JOIN `#__thread` as b ON a.threadid = b.threadid '.$where.' ORDER BY a.dateline '.$sort;
-        } else {
-            $query = '(SELECT a.postid , a.username, CASE WHEN f.'.$name_field.' IS NULL OR f.'.$name_field.' = \'\' THEN a.username ELSE f.'.$name_field.' END AS name, a.userid, 0 AS guest, a.title, a.dateline, a.dateline as order_by_date, a.pagetext, a.threadid, b.title AS threadtitle FROM `#__post` as a INNER JOIN `#__thread` as b ON a.threadid = b.threadid INNER JOIN `#__userfield` as f ON f.userid = a.userid '.$where.' AND a.userid != 0)';
-            $query.= ' UNION ';
-            $query.= '(SELECT a.postid , a.username, a.username as name, a.userid, 1 AS guest, a.title, a.dateline, a.dateline as order_by_date, a.pagetext, a.threadid, b.title AS threadtitle FROM `#__post` as a INNER JOIN `#__thread` as b ON a.threadid = b.threadid '.$where.' AND a.userid = 0)';
-            $query.= ' ORDER BY order_by_date '.$sort;
-        }
-        $jdb = JFusionFactory::getDatabase($this->getJname());
+	    try {
+		    $threadid = $existingthread->threadid;
+		    $postid = $existingthread->postid;
+		    //set the query
+		    $sort = $dbparams->get('sort_posts');
+		    $where = 'WHERE a.threadid = '.$threadid.' AND a.postid != '.$postid.' AND a.visible = 1';
+		    $name_field = $this->params->get('name_field');
+		    if (empty($name_field)) {
+			    $query = 'SELECT a.postid , a.username, a.username as name, a.userid, CASE WHEN a.userid = 0 THEN 1 ELSE 0 END AS guest, a.title, a.dateline, a.pagetext, a.threadid, b.title AS threadtitle FROM `#__post` as a INNER JOIN `#__thread` as b ON a.threadid = b.threadid '.$where.' ORDER BY a.dateline '.$sort;
+		    } else {
+			    $query = '(SELECT a.postid , a.username, CASE WHEN f.'.$name_field.' IS NULL OR f.'.$name_field.' = \'\' THEN a.username ELSE f.'.$name_field.' END AS name, a.userid, 0 AS guest, a.title, a.dateline, a.dateline as order_by_date, a.pagetext, a.threadid, b.title AS threadtitle FROM `#__post` as a INNER JOIN `#__thread` as b ON a.threadid = b.threadid INNER JOIN `#__userfield` as f ON f.userid = a.userid '.$where.' AND a.userid != 0)';
+			    $query.= ' UNION ';
+			    $query.= '(SELECT a.postid , a.username, a.username as name, a.userid, 1 AS guest, a.title, a.dateline, a.dateline as order_by_date, a.pagetext, a.threadid, b.title AS threadtitle FROM `#__post` as a INNER JOIN `#__thread` as b ON a.threadid = b.threadid '.$where.' AND a.userid = 0)';
+			    $query.= ' ORDER BY order_by_date '.$sort;
+		    }
+		    $jdb = JFusionFactory::getDatabase($this->getJname());
 
-		if($dbparams->get('enable_pagination',true)) {
-			$application = JFactory::getApplication() ;
-			$limitstart = JFactory::getApplication()->input->getInt( 'limitstart_discuss', 0 );
-			$limit = (int) $application->getUserStateFromRequest( 'global.list.limit', 'limit_discuss', 5, 'int' );
-        	$jdb->setQuery($query, $limitstart, $limit);
-		} else {
-			$limit_posts = $dbparams->get('limit_posts');
-			$query .= empty($limit_posts) || trim($limit_posts)==0 ? '' :  ' LIMIT 0,'.$limit_posts;
-			$jdb->setQuery($query);
-		}
+		    if($dbparams->get('enable_pagination',true)) {
+			    $application = JFactory::getApplication() ;
+			    $limitstart = JFactory::getApplication()->input->getInt( 'limitstart_discuss', 0 );
+			    $limit = (int) $application->getUserStateFromRequest( 'global.list.limit', 'limit_discuss', 5, 'int' );
+			    $jdb->setQuery($query, $limitstart, $limit);
+		    } else {
+			    $limit_posts = $dbparams->get('limit_posts');
+			    $query .= empty($limit_posts) || trim($limit_posts)==0 ? '' :  ' LIMIT 0,'.$limit_posts;
+			    $jdb->setQuery($query);
+		    }
 
-        $posts = $jdb->loadObjectList();
+		    $posts = $jdb->loadObjectList();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    $posts = array();
+	    }
         return $posts;
     }
 
@@ -409,10 +433,15 @@ class JFusionForum_vbulletin extends JFusionForum
      */
     function getReplyCount(&$existingthread)
     {
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT replycount FROM #__thread WHERE threadid = '.$existingthread->threadid;
-        $db->setQuery($query);
-        $result = $db->loadResult();
+	    try {
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT replycount FROM #__thread WHERE threadid = '.$existingthread->threadid;
+		    $db->setQuery($query);
+		    $result = $db->loadResult();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    $result = 0;
+	    }
         return $result;
     }
 
@@ -473,13 +502,18 @@ class JFusionForum_vbulletin extends JFusionForum
      */
     function getPrivateMessageCounts($userid)
     {
-        // initialise some objects
-        $jdb = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT pmtotal,pmunread FROM #__user WHERE userid = ' . $userid;
-        $jdb->setQuery($query);
-        $vbPMData = $jdb->loadObject();
-        $pmcount['total'] = $vbPMData->pmtotal;
-        $pmcount['unread'] = $vbPMData->pmunread;
+	    $pmcount = array('total' => 0, 'unread' => 0);
+	    try {
+		    // initialise some objects
+		    $jdb = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT pmtotal,pmunread FROM #__user WHERE userid = ' . $userid;
+		    $jdb->setQuery($query);
+		    $vbPMData = $jdb->loadObject();
+		    $pmcount['total'] = $vbPMData->pmtotal;
+		    $pmcount['unread'] = $vbPMData->pmunread;
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+	    }
         return $pmcount;
     }
 
@@ -502,50 +536,53 @@ class JFusionForum_vbulletin extends JFusionForum
     /**
      * @param int $userid
      *
-     * @return int|null|string
+     * @return null|string
      */
     function getAvatar($userid)
     {
-        $url = 0;
-        if ($userid) {
-            $db = JFusionFactory::getDatabase($this->getJname());
+        $url = false;
+	    try {
+		    if ($userid) {
+			    $db = JFusionFactory::getDatabase($this->getJname());
 
-            $query = 'SELECT u.avatarid, u.avatarrevision, avatarpath, NOT ISNULL(c.userid) AS usecustom, c.dateline
+			    $query = 'SELECT u.avatarid, u.avatarrevision, avatarpath, NOT ISNULL(c.userid) AS usecustom, c.dateline
                         FROM #__user AS u
                         LEFT JOIN #__avatar AS a ON a.avatarid = u.avatarid
                         LEFT JOIN #__customavatar AS c ON c.userid = u.userid
                         WHERE u.userid = '.$userid;
-            $db->setQuery($query);
-            $avatar = $db->loadObject();
+			    $db->setQuery($query);
+			    $avatar = $db->loadObject();
 
-            $usefileavatar = $avatarurl = null;
-            $query = 'SELECT varname, value FROM #__setting WHERE varname = \'usefileavatar\' OR varname = \'avatarurl\'';
-            $db->setQuery($query);
-            $settings = $db->loadObjectList();
-	        if ($settings) {
-		        foreach ($settings as $s) {
-			        ${$s->varname} = $s->value;
-		        }
-	        }
+			    $usefileavatar = $avatarurl = null;
+			    $query = 'SELECT varname, value FROM #__setting WHERE varname = \'usefileavatar\' OR varname = \'avatarurl\'';
+			    $db->setQuery($query);
+			    $settings = $db->loadObjectList();
+			    if ($settings) {
+				    foreach ($settings as $s) {
+					    ${$s->varname} = $s->value;
+				    }
+			    }
 
-            if (!empty($avatar->avatarpath)) {
-                if (strpos($avatar->avatarpath, 'http') === false) {
-                    $url = $this->params->get('source_url') . $avatar->avatarpath;
-                } else {
-                    $url = $avatar->avatarpath;
-                }
-            } elseif (isset($avatar->usecustom)) {
-                if ($usefileavatar && $avatarurl) {
-                    //avatars are saved to the filesystem
-                    $url = (strpos($avatarurl, 'http') === false) ? $this->params->get('source_url') . $avatarurl : $avatarurl;
-                    $url.= '/avatar'.$userid.'_'.$avatar->avatarrevision.'.gif';
-                } else {
-                    //avatars are saved in the database
-                    $url = $this->params->get('source_url') . 'image.php?u=' . $userid . '&amp;dateline=' . $avatar->dateline;
-                }
-            }
-        }
-
+			    if (!empty($avatar->avatarpath)) {
+				    if (strpos($avatar->avatarpath, 'http') === false) {
+					    $url = $this->params->get('source_url') . $avatar->avatarpath;
+				    } else {
+					    $url = $avatar->avatarpath;
+				    }
+			    } elseif (isset($avatar->usecustom)) {
+				    if ($usefileavatar && $avatarurl) {
+					    //avatars are saved to the filesystem
+					    $url = (strpos($avatarurl, 'http') === false) ? $this->params->get('source_url') . $avatarurl : $avatarurl;
+					    $url.= '/avatar'.$userid.'_'.$avatar->avatarrevision.'.gif';
+				    } else {
+					    //avatars are saved in the database
+					    $url = $this->params->get('source_url') . 'image.php?u=' . $userid . '&amp;dateline=' . $avatar->dateline;
+				    }
+			    }
+		    }
+	    } catch (Exception $e) {
+			JFusionFunction::raiseError($e);
+	    }
         return $url;
     }
 
@@ -571,7 +608,7 @@ class JFusionForum_vbulletin extends JFusionForum
             $i = 3;
             for ($i = 3; $i < $numargs; $i++) {
                 if ($filters[$i][0] == 'userid') {
-                    $where.= ' AND b.userid = ' . $db->Quote($filters[$i][1]);
+                    $where.= ' AND b.userid = ' . $db->quote($filters[$i][1]);
                 }
             }
         }
@@ -625,41 +662,44 @@ class JFusionForum_vbulletin extends JFusionForum
     function checkReadStatus(&$post)
     {
 		$JUser = JFactory::getUser();
-    	if (!$JUser->guest) {
-            static $marktimes;
-            if (!is_array($marktimes)) {
-                $marktimes = array();
-                $db = JFusionFactory::getDatabase($this->getJname());
-                $userlookup = JFusionFunction::lookupUser($this->getJname(), $JUser->id);
-                if (!empty($userlookup)) {
-                    $query = 'SELECT threadid, readtime FROM #__threadread WHERE userid = '.$userlookup->userid;
-                    $db->setQuery($query);
-                    $marktimes['thread'] = $db->loadObjectList('threadid');
+	    $newstatus = 0;
+	    try {
+		    if (!$JUser->guest) {
+			    static $marktimes;
+			    if (!is_array($marktimes)) {
+				    $marktimes = array();
+				    $db = JFusionFactory::getDatabase($this->getJname());
+				    $userlookup = JFusionFunction::lookupUser($this->getJname(), $JUser->id);
+				    if (!empty($userlookup)) {
+					    $query = 'SELECT threadid, readtime FROM #__threadread WHERE userid = '.$userlookup->userid;
+					    $db->setQuery($query);
+					    $marktimes['thread'] = $db->loadObjectList('threadid');
 
-                    $query = 'SELECT forumid, readtime FROM #__forumread WHERE userid = '.$userlookup->userid;
-                    $db->setQuery($query);
-                    $marktimes['forum'] = $db->loadObjectList('forumid');
+					    $query = 'SELECT forumid, readtime FROM #__forumread WHERE userid = '.$userlookup->userid;
+					    $db->setQuery($query);
+					    $marktimes['forum'] = $db->loadObjectList('forumid');
 
-                    $query = 'SELECT lastvisit FROM #__user WHERE userid = '.$userlookup->userid;
-                    $db->setQuery($query);
-                    $marktimes['user'] = $db->loadResult();
-                }
-            }
+					    $query = 'SELECT lastvisit FROM #__user WHERE userid = '.$userlookup->userid;
+					    $db->setQuery($query);
+					    $marktimes['user'] = $db->loadResult();
+				    }
+			    }
 
-            if (isset($marktimes['thread'][$post->threadid])) {
-                $marktime = $marktimes['thread'][$post->threadid]->readtime;
-            } elseif (isset($marktimes['forum'][$post->forumid])) {
-                $marktime = $marktimes['forum'][$post->forumid]->readtime;
-            } elseif (isset($marktimes['user'])) {
-                $marktime = $marktimes['user'];
-            } else {
-                $marktime = false;
-            }
+			    if (isset($marktimes['thread'][$post->threadid])) {
+				    $marktime = $marktimes['thread'][$post->threadid]->readtime;
+			    } elseif (isset($marktimes['forum'][$post->forumid])) {
+				    $marktime = $marktimes['forum'][$post->forumid]->readtime;
+			    } elseif (isset($marktimes['user'])) {
+				    $marktime = $marktimes['user'];
+			    } else {
+				    $marktime = false;
+			    }
 
-            $newstatus = ($marktime !== false && $post->lastpost > $marktime) ? 1 : 0;
-        } else {
-            $newstatus = 0;
-        }
+			    $newstatus = ($marktime !== false && $post->lastpost > $marktime) ? 1 : 0;
+		    }
+	    } catch (Exception $e) {
+			JFusionFunction::raiseError($e);
+	    }
         return $newstatus;
     }
 
@@ -669,26 +709,31 @@ class JFusionForum_vbulletin extends JFusionForum
      */
     function getForumList($objectList = true)
     {
-        //get the connection to the db
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT forumid as id, title_clean as name, options FROM #__forum ORDER BY forumid';
-        $db->setQuery($query);
-        $results = $db->loadObjectList('id');
-        //we have to filter out those that are considered categories
-        $temp = array();
-        foreach ($results as $r) {
-            if ($r->options & 4) {
-                $temp[$r->id] = $r;
-            }
-        }
-        $results = $temp;
-        if (!$objectList) {
-            $array = array();
-            foreach ($results as $r) {
-                $array[$r->id] = $r->id;
-            }
-            $results = $array;
-        }
+	    $results = array();
+	    try {
+		    //get the connection to the db
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT forumid as id, title_clean as name, options FROM #__forum ORDER BY forumid';
+		    $db->setQuery($query);
+		    $results = $db->loadObjectList('id');
+		    //we have to filter out those that are considered categories
+		    $temp = array();
+		    foreach ($results as $r) {
+			    if ($r->options & 4) {
+				    $temp[$r->id] = $r;
+			    }
+		    }
+		    $results = $temp;
+		    if (!$objectList) {
+			    $array = array();
+			    foreach ($results as $r) {
+				    $array[$r->id] = $r->id;
+			    }
+			    $results = $array;
+		    }
+	    } catch (Exception $e) {
+			JFusionFunction::raiseError($e);
+	    }
         return $results;
     }
 

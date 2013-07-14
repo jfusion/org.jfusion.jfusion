@@ -290,13 +290,17 @@ class JFusionHelper_vbulletin
     function getVersion()
     {
         static $jfusion_vb_version;
-        if(empty($jfusion_vb_version)) {
-            $db = JFusionFactory::getDatabase($this->getJname());
-            $q = 'SELECT value FROM #__setting WHERE varname = \'templateversion\'';
-            $db->setQuery($q);
-            $jfusion_vb_version = $db->loadResult();
-        }
-        return $jfusion_vb_version;
+	    try {
+		    if(empty($jfusion_vb_version)) {
+			    $db = JFusionFactory::getDatabase($this->getJname());
+			    $q = 'SELECT value FROM #__setting WHERE varname = \'templateversion\'';
+			    $db->setQuery($q);
+			    $jfusion_vb_version = $db->loadResult();
+		    }
+		    return $jfusion_vb_version;
+	    } catch (Exception $e) {
+		    return '';
+	    }
     }
 
     /**
@@ -310,80 +314,84 @@ class JFusionHelper_vbulletin
      */
     function getVbURL($url, $type = false)
     {
-        $params = JFusionFactory::getParams($this->getJname());
-        $allow_sef = $params->get('allow_sef', 1);
-        $vbversion = $this->getVersion();
-        if (!empty($allow_sef) && (int) substr($vbversion, 0, 1) > 3) {
-            $db = JFusionFactory::getDatabase($this->getJname());
+	    try {
+		    $params = JFusionFactory::getParams($this->getJname());
+		    $allow_sef = $params->get('allow_sef', 1);
+		    $vbversion = $this->getVersion();
+		    if (!empty($allow_sef) && (int) substr($vbversion, 0, 1) > 3) {
+			    $db = JFusionFactory::getDatabase($this->getJname());
 
-            if (!defined('JFVB_FRIENDLYURL')) {
-                $query = 'SELECT value FROM #__setting WHERE varname = \'friendlyurl\'';
-                $db->setQuery($query);
-                $sefmode = $db->loadResult();
-                define('JFVB_FRIENDLYURL', (int) $sefmode);
-            }
+			    if (!defined('JFVB_FRIENDLYURL')) {
+				    $query = 'SELECT value FROM #__setting WHERE varname = \'friendlyurl\'';
+				    $db->setQuery($query);
+				    $sefmode = $db->loadResult();
+				    define('JFVB_FRIENDLYURL', (int) $sefmode);
+			    }
 
-            $uri = new JURI($url);
+			    $uri = new JURI($url);
 
-            switch ($type) {
-                case 'members':
-                    $query = 'SELECT username FROM #__user WHERE userid = ' . $uri->getVar('u');
-                    $db->setQuery($query);
-                    $username = $db->loadResult();
-                    $this->cleanForVbURL($username);
-                    $vburi = $uri->getVar('u') . '-' . $username;
-                    break;
-                case 'threads':
-                    $query = 'SELECT title FROM #__thread WHERE threadid = ' . $uri->getVar('t');
-                    $db->setQuery($query);
-                    $title = $db->loadResult();
-                    $this->cleanForVbURL($title);
-                    $vburi = $uri->getVar('t') . '-' . $title;
-                    break;
-                case 'post':
-                    $pid = $uri->getVar('p');
-                    $tid = $uri->getVar('t');
+			    switch ($type) {
+				    case 'members':
+					    $query = 'SELECT username FROM #__user WHERE userid = ' . $uri->getVar('u');
+					    $db->setQuery($query);
+					    $username = $db->loadResult();
+					    $this->cleanForVbURL($username);
+					    $vburi = $uri->getVar('u') . '-' . $username;
+					    break;
+				    case 'threads':
+					    $query = 'SELECT title FROM #__thread WHERE threadid = ' . $uri->getVar('t');
+					    $db->setQuery($query);
+					    $title = $db->loadResult();
+					    $this->cleanForVbURL($title);
+					    $vburi = $uri->getVar('t') . '-' . $title;
+					    break;
+				    case 'post':
+					    $pid = $uri->getVar('p');
+					    $tid = $uri->getVar('t');
 
-                    $title = null;
-                    if (empty($tid)) {
-                        $query = 'SELECT threadid FROM #__post WHERE postid = ' . $pid;
-                        $db->setQuery($query);
-                        $tid = $db->loadResult();
-                        $query = 'SELECT title FROM #__thread WHERE threadid = ' . $tid;
-                        $db->setQuery($query);
-                        $title = $db->loadResult();
-                        $this->cleanForVbURL($title);
-                    }
+					    $title = null;
+					    if (empty($tid)) {
+						    $query = 'SELECT threadid FROM #__post WHERE postid = ' . $pid;
+						    $db->setQuery($query);
+						    $tid = $db->loadResult();
+						    $query = 'SELECT title FROM #__thread WHERE threadid = ' . $tid;
+						    $db->setQuery($query);
+						    $title = $db->loadResult();
+						    $this->cleanForVbURL($title);
+					    }
 
-                    $vburi = $tid . '-' . $title;
-                    $uri->setVar('viewfull', 1);
-                    $type = 'threads';
-                    break;
-                case 'forums':
-                default:
-                    $vburi = null;
-                    break;
-            }
-            if ($vburi) {
-                $query = $uri->getQuery();
-                $fragment = $uri->getFragment();
-                if ($fragment) {
-                    $fragment = '#' . $fragment;
-                }
+					    $vburi = $tid . '-' . $title;
+					    $uri->setVar('viewfull', 1);
+					    $type = 'threads';
+					    break;
+				    case 'forums':
+				    default:
+					    $vburi = null;
+					    break;
+			    }
+			    if ($vburi) {
+				    $query = $uri->getQuery();
+				    $fragment = $uri->getFragment();
+				    if ($fragment) {
+					    $fragment = '#' . $fragment;
+				    }
 
-                switch (JFVB_FRIENDLYURL) {
-                    case 1:
-                        $url = $uri->getPath() . '?' . $vburi . ($query ? '&' . $query : '') . $fragment;
-                        break;
-                    case 2:
-                        $url = $uri->getPath() . '/' . $vburi . ($query ? '?' . $query : '') . $fragment;
-                        break;
-                    case 3:
-                        $url = $type . '/' . $vburi . ($query ? '?' . $query : '') . $fragment;
-                        break;
-                }
-            }
-        }
+				    switch (JFVB_FRIENDLYURL) {
+					    case 1:
+						    $url = $uri->getPath() . '?' . $vburi . ($query ? '&' . $query : '') . $fragment;
+						    break;
+					    case 2:
+						    $url = $uri->getPath() . '/' . $vburi . ($query ? '?' . $query : '') . $fragment;
+						    break;
+					    case 3:
+						    $url = $type . '/' . $vburi . ($query ? '?' . $query : '') . $fragment;
+						    break;
+				    }
+			    }
+		    }
+	    } catch (Exception $e) {
+			JFusionFunction::raiseError($e);
+	    }
         return $url;
     }
 

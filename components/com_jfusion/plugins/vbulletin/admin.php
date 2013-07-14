@@ -170,12 +170,17 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
      */
     function getUserList($limitstart = 0, $limit = 0)
     {
-        // initialise some objects
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT username, email from #__user';
-        $db->setQuery($query, $limitstart, $limit);
-        //getting the results
-        $userlist = $db->loadObjectList();
+	    try {
+		    // initialise some objects
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT username, email from #__user';
+		    $db->setQuery($query, $limitstart, $limit);
+		    //getting the results
+		    $userlist = $db->loadObjectList();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    $userlist = array();
+	    }
         return $userlist;
     }
 
@@ -184,12 +189,17 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
      */
     function getUserCount()
     {
-        //getting the connection to the db
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT count(*) from #__user';
-        $db->setQuery($query);
-        //getting the results
-        $no_users = $db->loadResult();
+	    try {
+		    //getting the connection to the db
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT count(*) from #__user';
+		    $db->setQuery($query);
+		    //getting the results
+		    $no_users = $db->loadResult();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    $no_users = 0;
+	    }
         return $no_users;
     }
 
@@ -198,12 +208,17 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
      */
     function getUsergroupList()
     {
-        //get the connection to the db
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT usergroupid as id, title as name from #__usergroup';
-        $db->setQuery($query);
-        //getting the results
-        return $db->loadObjectList();
+	    try {
+		    //get the connection to the db
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT usergroupid as id, title as name from #__usergroup';
+		    $db->setQuery($query);
+		    //getting the results
+		    return $db->loadObjectList();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    return array();
+	    }
     }
 
     /**
@@ -211,17 +226,22 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
      */
     function getDefaultUsergroup()
     {
-        $params = JFusionFactory::getParams($this->getJname());
-        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
-        $usergroup_id = null;
-        if(!empty($usergroups)) {
-            $usergroup_id = $usergroups[0];
-        }
-        //we want to output the usergroup name
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT title from #__usergroup WHERE usergroupid = ' . $usergroup_id;
-        $db->setQuery($query);
-        return $db->loadResult();
+	    try {
+		    $params = JFusionFactory::getParams($this->getJname());
+		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
+		    $usergroup_id = null;
+		    if(!empty($usergroups)) {
+			    $usergroup_id = $usergroups[0];
+		    }
+		    //we want to output the usergroup name
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT title from #__usergroup WHERE usergroupid = ' . $usergroup_id;
+		    $db->setQuery($query);
+		    return $db->loadResult();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    return '';
+	    }
     }
 
     /**
@@ -229,18 +249,20 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
      */
     function allowRegistration()
     {
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT value FROM #__setting WHERE varname = \'allowregistration\'';
-        $db->setQuery($query);
-        //getting the results
-        $new_registration = $db->loadResult();
-        if ($new_registration == 1) {
-            $result = true;
-            return $result;
-        } else {
-            $result = false;
-            return $result;
-        }
+	    $result = false;
+	    try {
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT value FROM #__setting WHERE varname = \'allowregistration\'';
+		    $db->setQuery($query);
+		    //getting the results
+		    $new_registration = $db->loadResult();
+		    if ($new_registration == 1) {
+			    $result = true;
+		    }
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+	    }
+	    return $result;
     }
 
     /**
@@ -283,104 +305,110 @@ JS;
 
             $jsSet = true;
         }
-        $db = JFusionFactory::getDatabase($this->getJname());
-        if (!JError::isError($db) && !empty($db)) {
-            if ($hook != 'framelessoptimization') {
-                $hookName = null;
-                switch ($hook) {
-                    case 'globalfix':
-                        $hookName = 'JFusion Global Fix Plugin';
-                    break;
-                    case 'frameless':
-                        $hookName = 'JFusion Frameless Integration Plugin';
-                    break;
-                    case 'duallogin':
-                        $hookName = 'JFusion Dual Login Plugin';
-                    break;
-                    case 'redirect':
-                        $hookName = 'JFusion Redirect Plugin';
-                    break;
-                    case 'jfvbtask':
-                        $hookName = 'JFusion API Plugin - REQUIRED';
-                    break;
-                }
-                if ($hookName) {
-                    $query = 'SELECT COUNT(*) FROM #__plugin WHERE hookname = \'init_startup\' AND title = \''.$hookName.'\' AND active = 1';
-                    $db->setQuery($query);
-                    $check = ($db->loadResult() > 0) ? true : false;
-                } else {
-                    $check = false;
-                }
-                if ($check) {
-                    //return success
-                    $enabled = JText::_('ENABLED');
-                    $disable = JText::_('DISABLE_THIS_PLUGIN');
-                    $reenable = JText::_('REENABLE_THIS_PLUGIN');
-                    $output = <<<HTML
-                    <img style="float: left;" src="components/com_jfusion/images/check_good_small.png">
-                    <span style="float: left; margin-left: 5px;">{$enabled}</span>
-                    <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return toggleHook('{$hook}','disable')">{$disable}</a>
-                    <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return toggleHook('{$hook}','reenable')">{$reenable}</a>
-HTML;
-                    return $output;
-                } else {
-                    $disabled = JText::_('DISABLED');
-                    $enable = JText::_('ENABLE_THIS_PLUGIN');
-                    $output = <<<HTML
-                    <img style="float: left;" src="components/com_jfusion/images/check_bad_small.png">
-                    <span style="float: left; margin-left: 5px;">{$disabled}</span>
-                    <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return toggleHook('{$hook}','enable')">{$enable}</a>
-HTML;
-                    return $output;
-                }
 
-            } else {
-                //let's first check the default icon
-                $check = true;
-                $q = 'SELECT value FROM #__setting WHERE varname = \'showdeficon\'';
-                $db->setQuery($q);
-                $deficon = $db->loadResult();
-                $check = (!empty($deficon) && strpos($deficon, 'http') === false) ? false : true;
-                if ($check) {
-                    //this will perform functions like rewriting image paths to include the full URL to images to save processing time
-                    $tables = array('smilie' => 'smiliepath', 'avatar' => 'avatarpath', 'icon' => 'iconpath');
-                    foreach ($tables as $tbl => $col) {
-                        $q = 'SELECT '.$col.' FROM #__'.$tbl;
-                        $db->setQuery($q);
-                        $images = $db->loadRowList();
-                        if ($images) {
-                            foreach ($images as $image) {
-                                $check = (strpos($image[0], 'http') !== false) ? true : false;
-                                if (!$check) break;
-                            }
-                        }
-                        if (!$check) break;
-                    }
-                }
-                if ($check) {
-                    //return success
-                    $complete = JText::_('COMPLETE');
-                    $undo = JText::_('VB_UNDO_OPTIMIZATION');
-                    $output = <<<HTML
-                    <img style="float: left;" src="components/com_jfusion/images/check_good_small.png">
-                    <span style="float: left; margin-left: 5px;">{$complete}</span>
-                    <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return toggleHook('{$hook}','disable')">{$undo}</a>
+		try {
+			try {
+				$db = JFusionFactory::getDatabase($this->getJname());
+			} catch (Exception $e) {
+				throw new Exception(JText::_('VB_CONFIG_FIRST'));
+			}
+
+			if ($hook != 'framelessoptimization') {
+				$hookName = null;
+				switch ($hook) {
+					case 'globalfix':
+						$hookName = 'JFusion Global Fix Plugin';
+						break;
+					case 'frameless':
+						$hookName = 'JFusion Frameless Integration Plugin';
+						break;
+					case 'duallogin':
+						$hookName = 'JFusion Dual Login Plugin';
+						break;
+					case 'redirect':
+						$hookName = 'JFusion Redirect Plugin';
+						break;
+					case 'jfvbtask':
+						$hookName = 'JFusion API Plugin - REQUIRED';
+						break;
+				}
+				if ($hookName) {
+					$query = 'SELECT COUNT(*) FROM #__plugin WHERE hookname = \'init_startup\' AND title = \''.$hookName.'\' AND active = 1';
+					$db->setQuery($query);
+					$check = ($db->loadResult() > 0) ? true : false;
+				} else {
+					$check = false;
+				}
+				if ($check) {
+					//return success
+					$enabled = JText::_('ENABLED');
+					$disable = JText::_('DISABLE_THIS_PLUGIN');
+					$reenable = JText::_('REENABLE_THIS_PLUGIN');
+					$output = <<<HTML
+		                    <img style="float: left;" src="components/com_jfusion/images/check_good_small.png">
+		                    <span style="float: left; margin-left: 5px;">{$enabled}</span>
+		                    <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return toggleHook('{$hook}','disable')">{$disable}</a>
+		                    <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return toggleHook('{$hook}','reenable')">{$reenable}</a>
 HTML;
-                    return $output;
-                } else {
-                    $incomplete = JText::_('INCOMPLETE');
-                    $do = JText::_('VB_DO_OPTIMIZATION');
-                    $output = <<<HTML
-                    <img style="float: left;" src="components/com_jfusion/images/check_bad_small.png">
-                    <span style="float: left; margin-left: 5px;">{$incomplete}</span>
-                    <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return toggleHook('{$hook}','enable')">{$do}</a>
+					return $output;
+				} else {
+					$disabled = JText::_('DISABLED');
+					$enable = JText::_('ENABLE_THIS_PLUGIN');
+					$output = <<<HTML
+		                    <img style="float: left;" src="components/com_jfusion/images/check_bad_small.png">
+		                    <span style="float: left; margin-left: 5px;">{$disabled}</span>
+		                    <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return toggleHook('{$hook}','enable')">{$enable}</a>
 HTML;
-                    return $output;
-                }
-            }
-        } else {
-            return JText::_('VB_CONFIG_FIRST');
-        }
+					return $output;
+				}
+
+			} else {
+				//let's first check the default icon
+				$check = true;
+				$q = 'SELECT value FROM #__setting WHERE varname = \'showdeficon\'';
+				$db->setQuery($q);
+				$deficon = $db->loadResult();
+				$check = (!empty($deficon) && strpos($deficon, 'http') === false) ? false : true;
+				if ($check) {
+					//this will perform functions like rewriting image paths to include the full URL to images to save processing time
+					$tables = array('smilie' => 'smiliepath', 'avatar' => 'avatarpath', 'icon' => 'iconpath');
+					foreach ($tables as $tbl => $col) {
+						$q = 'SELECT '.$col.' FROM #__'.$tbl;
+						$db->setQuery($q);
+						$images = $db->loadRowList();
+						if ($images) {
+							foreach ($images as $image) {
+								$check = (strpos($image[0], 'http') !== false) ? true : false;
+								if (!$check) break;
+							}
+						}
+						if (!$check) break;
+					}
+				}
+				if ($check) {
+					//return success
+					$complete = JText::_('COMPLETE');
+					$undo = JText::_('VB_UNDO_OPTIMIZATION');
+					$output = <<<HTML
+		                    <img style="float: left;" src="components/com_jfusion/images/check_good_small.png">
+		                    <span style="float: left; margin-left: 5px;">{$complete}</span>
+		                    <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return toggleHook('{$hook}','disable')">{$undo}</a>
+HTML;
+					return $output;
+				} else {
+					$incomplete = JText::_('INCOMPLETE');
+					$do = JText::_('VB_DO_OPTIMIZATION');
+					$output = <<<HTML
+		                    <img style="float: left;" src="components/com_jfusion/images/check_bad_small.png">
+		                    <span style="float: left; margin-left: 5px;">{$incomplete}</span>
+		                    <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return toggleHook('{$hook}','enable')">{$do}</a>
+HTML;
+					return $output;
+				}
+			}
+		} catch (Exception $e) {
+			return $e->getMessage();
+		}
     }
 
     /**
@@ -388,98 +416,102 @@ HTML;
      */
     function toggleHook()
     {
-        $params = JFactory::getApplication()->input->get('params');
-        $itemid = $params['plugin_itemid'];
-        $hook = $params['hook_name'];
-        $action = $params['hook_action'];
-        $db = JFusionFactory::getDatabase($this->getJname());
-        if ($hook != 'framelessoptimization') {
-            $hookName = null;
-            switch ($hook) {
-                case 'globalfix':
-                    $hookName = 'JFusion Global Fix Plugin';
-                break;
-                case 'frameless':
-                    $hookName = 'JFusion Frameless Integration Plugin';
-                break;
-                case 'duallogin':
-                    $hookName = 'JFusion Dual Login Plugin';
-                break;
-                case 'redirect':
-                    $hookName = 'JFusion Redirect Plugin';
-                break;
-                case 'jfvbtask':
-                    $hookName = 'JFusion API Plugin - REQUIRED';
-                break;
-            }
-            if ($hookName) {
-                //all three cases, we want to remove the old hook
-                $query = 'DELETE FROM #__plugin WHERE hookname = \'init_startup\' AND title = ' . $db->Quote($hookName);
-                $db->setQuery($query);
-                if (!$db->execute()) {
-                    JFusionFunction::raiseWarning($db->stderr());
-                }
-                //enable or re-enable the plugin
-                if ($action != 'disable') {
-                    if (($hook == 'redirect' || $hook == 'frameless') && !$this->isValidItemID($itemid)) {
-                        JFusionFunction::raiseWarning(JText::_('VB_REDIRECT_HOOK_ITEMID_EMPTY'));
-                    } else {
-                        //install the hook
-                        $php = $this->getHookPHP($hook, $itemid);
-                        $query = 'INSERT INTO #__plugin SET
+	    try {
+		    $params = JFactory::getApplication()->input->get('params');
+		    $itemid = $params['plugin_itemid'];
+		    $hook = $params['hook_name'];
+		    $action = $params['hook_action'];
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    if ($hook != 'framelessoptimization') {
+			    $hookName = null;
+			    switch ($hook) {
+				    case 'globalfix':
+					    $hookName = 'JFusion Global Fix Plugin';
+					    break;
+				    case 'frameless':
+					    $hookName = 'JFusion Frameless Integration Plugin';
+					    break;
+				    case 'duallogin':
+					    $hookName = 'JFusion Dual Login Plugin';
+					    break;
+				    case 'redirect':
+					    $hookName = 'JFusion Redirect Plugin';
+					    break;
+				    case 'jfvbtask':
+					    $hookName = 'JFusion API Plugin - REQUIRED';
+					    break;
+			    }
+			    if ($hookName) {
+				    //all three cases, we want to remove the old hook
+				    $query = 'DELETE FROM #__plugin WHERE hookname = \'init_startup\' AND title = ' . $db->Quote($hookName);
+				    $db->setQuery($query);
+				    if (!$db->execute()) {
+					    JFusionFunction::raiseWarning($db->stderr());
+				    }
+				    //enable or re-enable the plugin
+				    if ($action != 'disable') {
+					    if (($hook == 'redirect' || $hook == 'frameless') && !$this->isValidItemID($itemid)) {
+						    JFusionFunction::raiseWarning(JText::_('VB_REDIRECT_HOOK_ITEMID_EMPTY'));
+					    } else {
+						    //install the hook
+						    $php = $this->getHookPHP($hook, $itemid);
+						    $query = 'INSERT INTO #__plugin SET
                         title = ' . $db->Quote($hookName) . ',
                         hookname = \'init_startup\',
                         phpcode = ' . $db->Quote($php) . ',
                         product = \'vbulletin\',
                         active = 1,
                         executionorder = 1';
-                        $db->setQuery($query);
-                        if (!$db->execute()) {
-                            JFusionFunction::raiseWarning($db->stderr());
-                        }
-                    }
-                }
-            }
-        } else {
-            //this will perform functions like rewriting image paths to include the full URL to images to save processing time
-            $params = JFusionFactory::getParams($this->getJname());
-            $source_url = $params->get('source_url');
-            if (substr($source_url, -1) != '/') {
-                $source_url.= '/';
-            }
-            //let's first update all the image paths for database stored images
-            $tables = array('smilie' => 'smiliepath', 'avatar' => 'avatarpath', 'icon' => 'iconpath');
-            foreach ($tables as $tbl => $col) {
-                $criteria = ($action == 'enable') ? 'NOT LIKE \'http%\'' : 'LIKE \'%http%\'';
-                $q = 'SELECT '.$tbl.'id, '.$col.' FROM #__'.$tbl.' WHERE '.$col.' '.$criteria;
-                $db->setQuery($q);
-                $images = $db->loadRowList();
-                foreach ($images as $i) {
-                    if ($action == 'enable') {
-                        $q = 'UPDATE #__'.$tbl.' SET '.$col.' = \''.$source_url.$i[1].'\' WHERE '.$tbl.'id = '.$i[0];
-                    } else {
-                        $i[1] = str_replace($source_url, '', $i[1]);
-                        $q = 'UPDATE #__'.$tbl.' SET '.$col.' = \''.$i[1].'\' WHERE '.$tbl.'id = '.$i[0];
-                    }
-                    $db->setQuery($q);
-                    $db->execute();
-                }
-            }
-            //let's update the default icon
-            $q = 'SELECT value FROM #__setting WHERE varname = \'showdeficon\'';
-            $db->setQuery($q);
-            $deficon = $db->loadResult();
-            if (!empty($deficon)) {
-                if ($action == 'enable' && strpos($deficon, 'http') === false) {
-                    $q = 'UPDATE #__setting SET value = \''.$source_url.$deficon.'\' WHERE varname = \'showdeficon\'';
-                } elseif ($action == 'disable') {
-                    $deficon = str_replace($source_url, '', $deficon);
-                    $q = 'UPDATE #__setting SET value = \''.$deficon.'\' WHERE varname = \'showdeficon\'';
-                }
-                $db->setQuery($q);
-                $db->execute();
-            }
-        }
+						    $db->setQuery($query);
+						    if (!$db->execute()) {
+							    JFusionFunction::raiseWarning($db->stderr());
+						    }
+					    }
+				    }
+			    }
+		    } else {
+			    //this will perform functions like rewriting image paths to include the full URL to images to save processing time
+			    $params = JFusionFactory::getParams($this->getJname());
+			    $source_url = $params->get('source_url');
+			    if (substr($source_url, -1) != '/') {
+				    $source_url.= '/';
+			    }
+			    //let's first update all the image paths for database stored images
+			    $tables = array('smilie' => 'smiliepath', 'avatar' => 'avatarpath', 'icon' => 'iconpath');
+			    foreach ($tables as $tbl => $col) {
+				    $criteria = ($action == 'enable') ? 'NOT LIKE \'http%\'' : 'LIKE \'%http%\'';
+				    $q = 'SELECT '.$tbl.'id, '.$col.' FROM #__'.$tbl.' WHERE '.$col.' '.$criteria;
+				    $db->setQuery($q);
+				    $images = $db->loadRowList();
+				    foreach ($images as $i) {
+					    if ($action == 'enable') {
+						    $q = 'UPDATE #__'.$tbl.' SET '.$col.' = \''.$source_url.$i[1].'\' WHERE '.$tbl.'id = '.$i[0];
+					    } else {
+						    $i[1] = str_replace($source_url, '', $i[1]);
+						    $q = 'UPDATE #__'.$tbl.' SET '.$col.' = \''.$i[1].'\' WHERE '.$tbl.'id = '.$i[0];
+					    }
+					    $db->setQuery($q);
+					    $db->execute();
+				    }
+			    }
+			    //let's update the default icon
+			    $q = 'SELECT value FROM #__setting WHERE varname = \'showdeficon\'';
+			    $db->setQuery($q);
+			    $deficon = $db->loadResult();
+			    if (!empty($deficon)) {
+				    if ($action == 'enable' && strpos($deficon, 'http') === false) {
+					    $q = 'UPDATE #__setting SET value = \''.$source_url.$deficon.'\' WHERE varname = \'showdeficon\'';
+				    } elseif ($action == 'disable') {
+					    $deficon = str_replace($source_url, '', $deficon);
+					    $q = 'UPDATE #__setting SET value = \''.$deficon.'\' WHERE varname = \'showdeficon\'';
+				    }
+				    $db->setQuery($q);
+				    $db->execute();
+			    }
+		    }
+	    } catch (Exception $e) {
+			JFusionFunction::raiseError($e);
+	    }
     }
 
     /**
@@ -756,28 +788,36 @@ JS;
      */
     function name_field($name, $value, $node, $control_name)
     {
-        if (JFusionFunction::validPlugin($this->getJname())) {
-            $db = JFusionFactory::getDatabase($this->getJname());
+	    try {
+		    if (JFusionFunction::validPlugin($this->getJname())) {
+			    try {
+				    $db = JFusionFactory::getDatabase($this->getJname());
+			    } catch (Exception $e) {
+					throw new Exception(JText::_('SAVE_CONFIG_FIRST'));
+			    }
 
-            //get a list of field names for custom profile fields
-            $custom_fields = $db->getTableFields('#__userfield');
-            unset($custom_fields['#__userfield']['userid']);
-            unset($custom_fields['#__userfield']['temp']);
+			    //get a list of field names for custom profile fields
+			    $custom_fields = $db->getTableFields('#__userfield');
+			    unset($custom_fields['#__userfield']['userid']);
+			    unset($custom_fields['#__userfield']['temp']);
 
-            $vb_options = array();
-            $vb_options = array(JHTML::_('select.option', '', '', 'id', 'name'));
-            foreach($custom_fields['#__userfield'] as $field  => $type) {
-                $query = 'SELECT text FROM #__phrase WHERE varname = \''.$field.'_title\' AND fieldname = \'cprofilefield\' LIMIT 0,1';
-                $db->setQuery($query);
-                $title = $db->loadResult();
-                $vb_options[] = JHTML::_('select.option', $field, $title, 'id', 'name');
-            }
-            $value = (empty($value)) ? '' : $value;
+			    $vb_options = array();
+			    $vb_options = array(JHTML::_('select.option', '', '', 'id', 'name'));
+			    foreach($custom_fields['#__userfield'] as $field  => $type) {
+				    $query = 'SELECT text FROM #__phrase WHERE varname = \''.$field.'_title\' AND fieldname = \'cprofilefield\' LIMIT 0,1';
+				    $db->setQuery($query);
+				    $title = $db->loadResult();
+				    $vb_options[] = JHTML::_('select.option', $field, $title, 'id', 'name');
+			    }
+			    $value = (empty($value)) ? '' : $value;
 
-            return JHTML::_('select.genericlist', $vb_options, $control_name . '[' . $name . ']', 'class="inputbox"', 'id', 'name', $value);
-        } else {
-            return JText::_('SAVE_CONFIG_FIRST');
-        }
+			    return JHTML::_('select.genericlist', $vb_options, $control_name . '[' . $name . ']', 'class="inputbox"', 'id', 'name', $value);
+		    } else {
+			    throw new Exception(JText::_('SAVE_CONFIG_FIRST'));
+		    }
+	    } catch (Exception $e) {
+		    return $e->getMessage();
+	    }
     }
 
     /**
@@ -785,23 +825,26 @@ JS;
      */
     function uninstall()
     {
-        $return = true;
-        $reasons = array();
+	    $return = false;
+	    $reasons = array();
+	    try {
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $hookNames = array();
+		    $hookNames[] = 'JFusion Global Fix Plugin';
+		    $hookNames[] = 'JFusion Frameless Integration Plugin';
+		    $hookNames[] = 'JFusion Dual Login Plugin';
+		    $hookNames[] = 'JFusion Redirect Plugin';
+		    $hookNames[] = 'JFusion API Plugin - REQUIRED';
 
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $hookNames = array();
-        $hookNames[] = 'JFusion Global Fix Plugin';
-        $hookNames[] = 'JFusion Frameless Integration Plugin';
-        $hookNames[] = 'JFusion Dual Login Plugin';
-        $hookNames[] = 'JFusion Redirect Plugin';
-        $hookNames[] = 'JFusion API Plugin - REQUIRED';
+		    $query = 'DELETE FROM #__plugin WHERE hookname = \'init_startup\' AND title IN (\'' . implode('\', \'', $hookNames) . '\')';
+		    $db->setQuery($query);
+		    $db->execute();
 
-        $query = 'DELETE FROM #__plugin WHERE hookname = \'init_startup\' AND title IN (\'' . implode('\', \'', $hookNames) . '\')';
-        $db->setQuery($query);
-        if (!$db->execute()) {
-            $reasons[] = $db->stderr();
-            $return = false;
-        }
+		    $return = true;
+	    } catch (Exception $e) {
+		    $reasons[] = $e->getMessage();
+	    }
+
         return array($return, $reasons);
     }
     
