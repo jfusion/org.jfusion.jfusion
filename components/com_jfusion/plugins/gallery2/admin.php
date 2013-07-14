@@ -119,11 +119,16 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
      * @return array
      */
     function getUserList($limitstart = 0, $limit = 0) {
-        // initialise some objects
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT g_userName as username, g_email as email, g_id as userid from #__User where g_id != 5';
-        $db->setQuery($query,$limitstart,$limit);
-        $userlist = $db->loadObjectList();
+	    try {
+	        // initialise some objects
+	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $query = 'SELECT g_userName as username, g_email as email, g_id as userid from #__User where g_id != 5';
+	        $db->setQuery($query,$limitstart,$limit);
+	        $userlist = $db->loadObjectList();
+	    } catch (Exception $e) {
+			JFusionFunction::raiseError($e);
+		    $userlist = array();
+		}
         return $userlist;
     }
 
@@ -131,12 +136,17 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
      * @return int
      */
     function getUserCount() {
-        //getting the connection to the db
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT count(*) from #__User where g_id != 5';
-        $db->setQuery($query);
-        //getting the results
-        $no_users = $db->loadResult();
+	    try {
+	        //getting the connection to the db
+	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $query = 'SELECT count(*) from #__User where g_id != 5';
+	        $db->setQuery($query);
+	        //getting the results
+	        $no_users = $db->loadResult();
+	    } catch (Exception $e) {
+			JFusionFunction::raiseError($e);
+		    $no_users = 0;
+		}
         return $no_users;
     }
 
@@ -144,45 +154,59 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
      * @return array
      */
     function getUsergroupList() {
-        //getting the connection to the db
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT g_id as id, g_groupName as name FROM #__Group
-                WHERE g_id != 4';
-        $db->setQuery($query);
-        //getting the results
-        return $db->loadObjectList();
+	    try {
+	        //getting the connection to the db
+	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $query = 'SELECT g_id as id, g_groupName as name FROM #__Group
+	                WHERE g_id != 4';
+	        $db->setQuery($query);
+	        //getting the results
+	        return $db->loadObjectList();
+	    } catch (Exception $e) {
+			JFusionFunction::raiseError($e);
+		    return array();
+	    }
     }
     /**
      * @return string
      */
     function getDefaultUsergroup() {
-        $params = JFusionFactory::getParams($this->getJname());
-        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
-        $usergroup_id = null;
-        if(!empty($usergroups)) {
-            $usergroup_id = $usergroups[0];
-        }
-        //we want to output the usergroup name
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT g_groupName FROM #__Group WHERE g_id = ' . (int)$usergroup_id;
-        $db->setQuery($query);
-        return $db->loadResult();
+	    try {
+	        $params = JFusionFactory::getParams($this->getJname());
+	        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
+	        $usergroup_id = null;
+	        if(!empty($usergroups)) {
+	            $usergroup_id = $usergroups[0];
+	        }
+	        //we want to output the usergroup name
+	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $query = 'SELECT g_groupName FROM #__Group WHERE g_id = ' . (int)$usergroup_id;
+	        $db->setQuery($query);
+	        return $db->loadResult();
+	    } catch (Exception $e) {
+			JFusionFunction::raiseError($e);
+		}
+	    return '';
     }
     /**
      * @return bool
      */
     function allowRegistration() {
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT g_active FROM #__PluginMap WHERE g_pluginType = \'module\' and g_pluginId = \'register\';';
-        $db->setQuery($query);
-        $new_registration = $db->loadResult();
-        if ($new_registration) {
-            if ($new_registration == 0) {
-                return false;
-            } else {
-                return true;
-            }
-        }
+	    try {
+	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $query = 'SELECT g_active FROM #__PluginMap WHERE g_pluginType = \'module\' and g_pluginId = \'register\';';
+	        $db->setQuery($query);
+	        $new_registration = $db->loadResult();
+	        if ($new_registration) {
+	            if ($new_registration == 0) {
+	                return false;
+	            } else {
+	                return true;
+	            }
+	        }
+	    } catch (Exception $e) {
+			JFusionFunction::raiseError($e);
+		}
         return false;
     }
 

@@ -108,7 +108,7 @@ class JFusionHelper {
 
 		    return $modules [$identifier];
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseWarning($e->getMessage());
+		    JFusionFunction::raiseWarning($e);
 		    return false;
 	    }
 	}

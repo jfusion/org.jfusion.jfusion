@@ -226,7 +226,7 @@ class JFusionFunction
 				    try {
 					    $db->execute();
 				    } catch (Exception $e) {
-					    FusionFunction::raiseWarning($e->getMessage());
+					    FusionFunction::raiseWarning($e);
 				    }
 
 				    //Delete old user data in the lookup table
@@ -235,7 +235,7 @@ class JFusionFunction
 				    try {
 					    $db->execute();
 				    } catch (Exception $e) {
-					    FusionFunction::raiseWarning($e->getMessage());
+					    FusionFunction::raiseWarning($e);
 				    }
 			    }
 		    } else {
@@ -277,7 +277,7 @@ class JFusionFunction
 					    try {
 						    $db->execute();
 					    } catch (Exception $e) {
-						    JFusionFunction::raiseWarning($e->getMessage());
+						    JFusionFunction::raiseWarning($e);
 					    }
 				    }
 			    } else {
@@ -290,7 +290,7 @@ class JFusionFunction
 				    try {
 					    $db->execute();
 				    } catch (Exception $e) {
-					    JFusionFunction::raiseWarning($e->getMessage());
+					    JFusionFunction::raiseWarning($e);
 				    }
 			    }
 		    }
@@ -409,14 +409,14 @@ class JFusionFunction
 	    try {
 		    $db->execute();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseWarning($e->getMessage());
+		    JFusionFunction::raiseWarning($e);
 	    }
         $query = 'DELETE FROM #__jfusion_users_plugin WHERE id =' . $userinfo->id;
         $db->setQuery($query);
 	    try {
 		    $db->execute();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseWarning($e->getMessage());
+		    JFusionFunction::raiseWarning($e);
 	    }
     }
 
@@ -1632,34 +1632,46 @@ class JFusionFunction
 	}
 
 	/**
-	 * @param      $msg
+	 * @param string|Exception $msg
 	 */
 	public static function raiseMessage($msg) {
 		$app = JFactory::getApplication();
+		if ($msg instanceof Exception) {
+			$msg = $msg->getMessage();
+		}
 		$app->enqueueMessage($msg,'message');
 	}
 
 	/**
-	 * @param      $msg
+	 * @param string|Exception $msg
 	 */
 	public static function raiseNotice($msg) {
 		$app = JFactory::getApplication();
+		if ($msg instanceof Exception) {
+			$msg = $msg->getMessage();
+		}
 		$app->enqueueMessage($msg,'notice');
 	}
 
 	/**
-	 * @param      $msg
+	 * @param string|Exception $msg
 	 */
 	public static function raiseWarning($msg) {
 		$app = JFactory::getApplication();
+		if ($msg instanceof Exception) {
+			$msg = $msg->getMessage();
+		}
 		$app->enqueueMessage($msg,'warning');
 	}
 
 	/**
-	 * @param      $msg
+	 * @param string|Exception $msg
 	 */
 	public static function raiseError($msg) {
 		$app = JFactory::getApplication();
+		if ($msg instanceof Exception) {
+			$msg = $msg->getMessage();
+		}
 		$app->enqueueMessage($msg,'error');
 	}
 

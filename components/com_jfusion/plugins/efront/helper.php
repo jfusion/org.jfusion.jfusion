@@ -94,15 +94,19 @@ class JFusionHelper_efront {
            case 2: return 'administrator';
         }
 
-         // correct id
-         $group_id = $group_id - 2;
-         $db = JFusionFactory::getDatabase($this->getJname());
-         if (!empty($db)){
-              $query = 'SELECT name, basic_user_type from #__user_types WHERE id = '.$group_id;
-              $db->setQuery($query);
-              $user_type = (array)$db->loadObject();
-              return $user_type['name'].' ('.$user_type['basic_user_type'].')';
-         }
+	    try {
+		    // correct id
+		    $group_id = $group_id - 2;
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    if (!empty($db)){
+			    $query = 'SELECT name, basic_user_type from #__user_types WHERE id = '.$group_id;
+			    $db->setQuery($query);
+			    $user_type = (array)$db->loadObject();
+			    return $user_type['name'].' ('.$user_type['basic_user_type'].')';
+		    }
+	    } catch (Exception $e) {
+			JFusionFunction::raiseError($e);
+	    }
         return false;
     }
 
@@ -142,20 +146,24 @@ class JFusionHelper_efront {
 	    $user_types[2]->id ='2';
 	    $user_types[3]->name ='administrator';
 
-        //get the connection to the db
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT id, name, basic_user_type from #__user_types;';
-        $db->setQuery($query);
-        //getting the results
-        $additional_types = $db->loadObjectList();
-        // construct the array
-        $i = 3;
-        foreach ($additional_types as $usertype){
-	        $user_types[$i] = new stdClass;
-			$user_types[$i]->id = $usertype->id+2;
-	        $user_types[$i]->name = $usertype->name.' ('.$usertype->basic_user_type.')';
-            $i++;
-        }
+		try {
+	        //get the connection to the db
+	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $query = 'SELECT id, name, basic_user_type from #__user_types;';
+	        $db->setQuery($query);
+	        //getting the results
+	        $additional_types = $db->loadObjectList();
+	        // construct the array
+	        $i = 3;
+	        foreach ($additional_types as $usertype){
+		        $user_types[$i] = new stdClass;
+				$user_types[$i]->id = $usertype->id+2;
+		        $user_types[$i]->name = $usertype->name.' ('.$usertype->basic_user_type.')';
+	            $i++;
+	        }
+	    } catch (Exception $e) {
+			JFusionFunction::raiseError($e);
+		}
         return $user_types;
     }
     /**

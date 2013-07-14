@@ -833,55 +833,60 @@ HTML;
      */
     function getSearchResults(&$text, &$phrase, &$pluginParam, $itemid, $ordering)
     {
-        //initialize plugin database
-        $db = JFusionFactory::getDatabase($this->getJname());
-        //get the query used to search
-        $query = $this->getSearchQuery($pluginParam);
-        //assign specific table columns to title and text
-        $columns = $this->getSearchQueryColumns();
-        //build the query
-        if ($phrase == 'exact') {
-            $where = '((LOWER('.$columns->title.') LIKE \'%'.$text.'%\') OR (LOWER('.$columns->text.') like \'%'.$text.'%\'))';
-        } else {
-            $words = explode(' ', $text);
-            $wheres = array();
-            foreach ($words as $word) {
-                $wheres[] = '((LOWER('.$columns->title.') LIKE \'%'.$word.'%\') OR (LOWER('.$columns->text.') like \'%'.$word.'%\'))';
-            }
-            if ($phrase == 'all') {
-                $separator = 'AND';
-            } else {
-                $separator = 'OR';
-            }
-            $where = '(' . implode(') '.$separator.' (', $wheres) . ')';
-        }
-        //pass the where clause into the plugin in case it wants to add something
-        $this->getSearchCriteria($where, $pluginParam, $ordering);
-        $query.= ' WHERE '.$where;
-        //add a limiter if set
-        $limit = $pluginParam->get('search_limit', '');
-        if (!empty($limit)) {
-            $db->setQuery($query, 0, $limit);
-        } else {
-            $db->setQuery($query);
-        }
-        $results = $db->loadObjectList();
-        //pass results back to the plugin in case they need to be filtered
-        $this->filterSearchResults($results, $pluginParam);
-        //load the results
-        if (is_array($results)) {
-            foreach ($results as $result) {
-                //add a link
-                $href = JFusionFunction::routeURL($this->getSearchResultLink($result), $itemid, $this->getJname(), false);
-                $result->href = $href;
-                //open link in same window
-                $result->browsernav = 2;
-                //clean up the text such as removing bbcode, etc
-                $this->prepareText($result->text, 'search', $pluginParam, $result);
-                $this->prepareText($result->title, 'search', $pluginParam, $result);
-                $this->prepareText($result->section, 'search', $pluginParam, $result);
-            }
-        }
+	    try {
+		    //initialize plugin database
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    //get the query used to search
+		    $query = $this->getSearchQuery($pluginParam);
+		    //assign specific table columns to title and text
+		    $columns = $this->getSearchQueryColumns();
+		    //build the query
+		    if ($phrase == 'exact') {
+			    $where = '((LOWER('.$columns->title.') LIKE \'%'.$text.'%\') OR (LOWER('.$columns->text.') like \'%'.$text.'%\'))';
+		    } else {
+			    $words = explode(' ', $text);
+			    $wheres = array();
+			    foreach ($words as $word) {
+				    $wheres[] = '((LOWER('.$columns->title.') LIKE \'%'.$word.'%\') OR (LOWER('.$columns->text.') like \'%'.$word.'%\'))';
+			    }
+			    if ($phrase == 'all') {
+				    $separator = 'AND';
+			    } else {
+				    $separator = 'OR';
+			    }
+			    $where = '(' . implode(') '.$separator.' (', $wheres) . ')';
+		    }
+		    //pass the where clause into the plugin in case it wants to add something
+		    $this->getSearchCriteria($where, $pluginParam, $ordering);
+		    $query.= ' WHERE '.$where;
+		    //add a limiter if set
+		    $limit = $pluginParam->get('search_limit', '');
+		    if (!empty($limit)) {
+			    $db->setQuery($query, 0, $limit);
+		    } else {
+			    $db->setQuery($query);
+		    }
+		    $results = $db->loadObjectList();
+		    //pass results back to the plugin in case they need to be filtered
+		    $this->filterSearchResults($results, $pluginParam);
+		    //load the results
+		    if (is_array($results)) {
+			    foreach ($results as $result) {
+				    //add a link
+				    $href = JFusionFunction::routeURL($this->getSearchResultLink($result), $itemid, $this->getJname(), false);
+				    $result->href = $href;
+				    //open link in same window
+				    $result->browsernav = 2;
+				    //clean up the text such as removing bbcode, etc
+				    $this->prepareText($result->text, 'search', $pluginParam, $result);
+				    $this->prepareText($result->title, 'search', $pluginParam, $result);
+				    $this->prepareText($result->section, 'search', $pluginParam, $result);
+			    }
+		    }
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    $results = array();
+	    }
         return $results;
     }
 

@@ -299,14 +299,19 @@ class JFusionPublic_gallery2 extends JFusionPublic {
      * @return int
      */
     function getNumberOnlineMembers() {
-        //get a unix time from 5 minutes ago
-        date_default_timezone_set('UTC');
-        $now = time();
-        $active = strtotime('-5 minutes', $now);
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT COUNT(*) FROM #__SessionMap s WHERE g_modificationTimestamp > '.$active.' AND s.g_userId != 5';
-        $db->setQuery($query);
-        $result = $db->loadResult();
+	    try {
+		    //get a unix time from 5 minutes ago
+		    date_default_timezone_set('UTC');
+		    $now = time();
+		    $active = strtotime('-5 minutes', $now);
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT COUNT(*) FROM #__SessionMap s WHERE g_modificationTimestamp > '.$active.' AND s.g_userId != 5';
+		    $db->setQuery($query);
+		    $result = $db->loadResult();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    $result = 0;
+	    }
         return $result;
     }
     /**
@@ -314,14 +319,19 @@ class JFusionPublic_gallery2 extends JFusionPublic {
      * @return int
      */
     function getNumberOnlineGuests() {
-        //get a unix time from 5 minutes ago
-        date_default_timezone_set('UTC');
-        $now = time();
-        $active = strtotime('-5 minutes', $now);
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT COUNT(*) FROM #__SessionMap s WHERE g_modificationTimestamp > '.$active.' AND s.g_userId = 5';
-        $db->setQuery($query);
-        $result = $db->loadResult();
+	    try {
+	        //get a unix time from 5 minutes ago
+	        date_default_timezone_set('UTC');
+	        $now = time();
+	        $active = strtotime('-5 minutes', $now);
+	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $query = 'SELECT COUNT(*) FROM #__SessionMap s WHERE g_modificationTimestamp > '.$active.' AND s.g_userId = 5';
+	        $db->setQuery($query);
+	        $result = $db->loadResult();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    $result = 0;
+	    }
         return $result;
     }
 

@@ -24,79 +24,83 @@ require_once(dirname(__FILE__).DIRECTORY_SEPARATOR.'helper.php');
 //check if the JFusion component is installed
 $model_file = JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.factory.php';
 $factory_file = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jfusion.php';
-if (file_exists($model_file) && file_exists($factory_file)) {
-	/**
-	* require the JFusion libraries
-	*/
-	require_once $model_file;
-	require_once $factory_file;
-    /**
-     * @ignore
-     * @var $params JRegistry
-     * @var $config array
-     */
-	$pluginParamValue = $params->get('JFusionPluginParam');
-	$pluginParamValue = unserialize(base64_decode($pluginParamValue));
+try {
+	if (file_exists($model_file) && file_exists($factory_file)) {
+		/**
+		* require the JFusion libraries
+		*/
+		require_once $model_file;
+		require_once $factory_file;
+	    /**
+	     * @ignore
+	     * @var $params JRegistry
+	     * @var $config array
+	     */
+		$pluginParamValue = $params->get('JFusionPluginParam');
+		$pluginParamValue = unserialize(base64_decode($pluginParamValue));
 
-	if(is_array($pluginParamValue)) {
-		$outputs = array();
+		if(is_array($pluginParamValue)) {
+			$outputs = array();
 
-		foreach($pluginParamValue as $jname => $value) {
-			$pluginParam = new JRegistry('');
-			$pluginParam->loadArray($value);
-			$view = $pluginParam->get('view', 'auto');
-			if(JFusionFunction::validPlugin($jname)) {
-				$public = JFusionFactory::getPublic($jname);
+			foreach($pluginParamValue as $jname => $value) {
+				$pluginParam = new JRegistry('');
+				$pluginParam->loadArray($value);
+				$view = $pluginParam->get('view', 'auto');
+				if(JFusionFunction::validPlugin($jname)) {
+					$public = JFusionFactory::getPublic($jname);
 
-				$output = new stdClass();
-				$title = $pluginParam->get('title', NULL);
-				$output->title = $title;
+					$output = new stdClass();
+					$title = $pluginParam->get('title', NULL);
+					$output->title = $title;
 
-				if($view == 'auto') {
-					// configuration
-					$config = array();
-					$config['showmode'] = intval($pluginParam->get('showmode'));
-					$config['member_limit'] = $pluginParam->get('member_limit');
-					$config['group_limit'] = $pluginParam->get('group_limit','');
-					$config['group_limit_mode'] = $pluginParam->get('group_limit_mode','');
+					if($view == 'auto') {
+						// configuration
+						$config = array();
+						$config['showmode'] = intval($pluginParam->get('showmode'));
+						$config['member_limit'] = $pluginParam->get('member_limit');
+						$config['group_limit'] = $pluginParam->get('group_limit','');
+						$config['group_limit_mode'] = $pluginParam->get('group_limit_mode','');
 
-					//overwrite the group limit if the mode is set to display all
-					$config['group_limit'] = (!empty($config['group_limit_mode'])) ? $config['group_limit'] : '';
+						//overwrite the group limit if the mode is set to display all
+						$config['group_limit'] = (!empty($config['group_limit_mode'])) ? $config['group_limit'] : '';
 
-					$config['show_total_users'] = $pluginParam->get('show_total_users', 0);
-					$config['name'] = $pluginParam->get('name');
-					$config['userlink'] = intval($pluginParam->get('userlink'),false);
-					$config['userlink_software'] = $pluginParam->get('userlink_software',false);
-					$config['userlink_custom'] = $pluginParam->get('userlink_custom',false);
-					$config['itemid'] = $pluginParam->get('itemid');
-					$config['avatar'] = $pluginParam->get('avatar',false);
-					$config['avatar_height'] = $pluginParam->get('avatar_height',53);
-					$config['avatar_width'] = $pluginParam->get('avatar_width',40);
-					$config['avatar_software'] = $pluginParam->get('avatar_software','jfusion');
-					$config['avatar_keep_proportional'] = $pluginParam->get('avatar_keep_proportional',false);
-					$db = JFusionFactory::getDatabase($jname);
-					$query = $public->getOnlineUserQuery($config['member_limit'], $config['group_limit']);
-					$db->setQuery($query);
-					$output->online_users = $db->loadObjectList();
+						$config['show_total_users'] = $pluginParam->get('show_total_users', 0);
+						$config['name'] = $pluginParam->get('name');
+						$config['userlink'] = intval($pluginParam->get('userlink'),false);
+						$config['userlink_software'] = $pluginParam->get('userlink_software',false);
+						$config['userlink_custom'] = $pluginParam->get('userlink_custom',false);
+						$config['itemid'] = $pluginParam->get('itemid');
+						$config['avatar'] = $pluginParam->get('avatar',false);
+						$config['avatar_height'] = $pluginParam->get('avatar_height',53);
+						$config['avatar_width'] = $pluginParam->get('avatar_width',40);
+						$config['avatar_software'] = $pluginParam->get('avatar_software','jfusion');
+						$config['avatar_keep_proportional'] = $pluginParam->get('avatar_keep_proportional',false);
+						$db = JFusionFactory::getDatabase($jname);
+						$query = $public->getOnlineUserQuery($config['member_limit'], $config['group_limit']);
+						$db->setQuery($query);
+						$output->online_users = $db->loadObjectList();
 
-					modjfusionWhosOnlineHelper::appendAutoOutput($jname, $config, $params, $output);
-				} else {
-					if (JFusionFunction::methodDefined($public, 'renderWhosOnlineModule')) {
-						$output->custom_output = $public->renderWhosOnlineModule($config, $view, $pluginParam);
+						modjfusionWhosOnlineHelper::appendAutoOutput($jname, $config, $params, $output);
 					} else {
-						$output->error = JText::_('NOT_IMPLEMENTED_YET');
+						if (JFusionFunction::methodDefined($public, 'renderWhosOnlineModule')) {
+							$output->custom_output = $public->renderWhosOnlineModule($config, $view, $pluginParam);
+						} else {
+							$output->error = JText::_('NOT_IMPLEMENTED_YET');
+						}
 					}
+
+					$outputs[] = $output;
 				}
-
-				$outputs[] = $output;
 			}
+
+			require(JModuleHelper::getLayoutPath('mod_jfusion_whosonline'));
+
+		} else {
+			throw new Exception(JText::_('MODULE_NOT_CONFIGURED'));
 		}
-
-		require(JModuleHelper::getLayoutPath('mod_jfusion_whosonline'));
-
 	} else {
-		echo JText::_('MODULE_NOT_CONFIGURED');
+		throw new Exception(JText::_('NO_COMPONENT'));
 	}
-} else {
-    echo JText::_('NO_COMPONENT');
+} catch (Exception $e) {
+	echo $e->getMessage();
 }

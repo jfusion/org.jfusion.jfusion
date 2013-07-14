@@ -43,15 +43,21 @@ class JFusionForum_efront extends JFusionForum {
      * @return string
      */
     function getAvatar($userid) {
-        //get the connection to the db
-        $db = JFusionFactory::getDatabase($this->getJname());
-        // read unread count
-        $db->setQuery('SELECT avatar FROM #__users WHERE id = ' . (int)$userid);
-        $avatar_id = $db->loadResult();
-        $db->setQuery('SELECT path FROM #__files WHERE id = ' . (int)$avatar_id);
-        $params = JFusionFactory::getParams($this->getJname());
-        $avatar = $db->loadResult();
-        $url = $params->get('avatar_url') . $avatar;
+	    try {
+		    //get the connection to the db
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    // read unread count
+		    $db->setQuery('SELECT avatar FROM #__users WHERE id = ' . (int)$userid);
+		    $avatar_id = $db->loadResult();
+		    $db->setQuery('SELECT path FROM #__files WHERE id = ' . (int)$avatar_id);
+		    $params = JFusionFactory::getParams($this->getJname());
+		    $avatar = $db->loadResult();
+		    $url = $params->get('avatar_url') . $avatar;
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    $url = '';
+	    }
+
         return $url;
     }
 }

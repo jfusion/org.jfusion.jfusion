@@ -109,12 +109,17 @@ class JFusionAdmin_elgg extends JFusionAdmin
      * @return array
      */
     function getUserList($limitstart = 0, $limit = 0) {
-        //getting the connection to the db
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT username, email from #__users_entity';
-        $db->setQuery($query,$limitstart,$limit);
-        //getting the results
-        $userlist = $db->loadObjectList();
+	    try {
+		    //getting the connection to the db
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT username, email from #__users_entity';
+		    $db->setQuery($query,$limitstart,$limit);
+		    //getting the results
+		    $userlist = $db->loadObjectList();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    $userlist = array();
+	    }
         return $userlist;
     }
 
@@ -122,12 +127,17 @@ class JFusionAdmin_elgg extends JFusionAdmin
      * @return int
      */
     function getUserCount() {
-        //getting the connection to the db
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT count(*) from #__users_entity';
-        $db->setQuery($query);
-        //getting the results
-        return $db->loadResult();
+	    try {
+	        //getting the connection to the db
+	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $query = 'SELECT count(*) from #__users_entity';
+	        $db->setQuery($query);
+	        //getting the results
+	        return $db->loadResult();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    return 0;
+	    }
     }
 
     /**

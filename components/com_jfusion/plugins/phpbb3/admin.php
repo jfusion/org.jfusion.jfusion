@@ -464,7 +464,7 @@ HTML;
 		        }
 	        } catch (Exception $e) {
 		        //there was an error saving the parameters
-		        JFusionFunction::raiseWarning($e->getMessage());
+		        JFusionFunction::raiseWarning($e);
 	        }
         } else {
 	        try {
@@ -475,7 +475,7 @@ HTML;
 		        $db->execute();
 	        } catch (Exception $e) {
 			    //there was an error saving the parameters
-			    JFusionFunction::raiseWarning($e->getMessage());
+			    JFusionFunction::raiseWarning($e);
 		    }
         }
         //clear the config cache so that phpBB recognizes the change
@@ -515,7 +515,7 @@ HTML;
 			    throw new Exception('Cash not cleared!');
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseWarning($e->getMessage());
+		    JFusionFunction::raiseWarning($e);
 		    $return = false;
 	    }
         return $return;

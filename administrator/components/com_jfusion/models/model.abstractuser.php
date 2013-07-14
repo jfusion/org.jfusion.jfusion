@@ -184,7 +184,6 @@ class JFusionUser
     function updateUser($userinfo, $overwrite = 0)
     {
         // Initialise some variables
-        //$db = JFusionFactory::getDatabase($this->getJname());
         $params = JFusionFactory::getParams($this->getJname());
         if (!empty($userinfo->params)) {
             $user_params = new JRegistry($userinfo->params);

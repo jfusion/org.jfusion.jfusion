@@ -121,90 +121,74 @@ class JFusionAdmin
     function checkConfig()
     {
         $status = array();
+	    $status['config'] = 0;
+	    $status['message'] = JText::_('UNKNOWN');
         $jname = $this->getJname();
         //for joomla_int check to see if the source_url does not equal the default
         $params = JFusionFactory::getParams($jname);
-        if ($jname == 'joomla_int') {
-            $source_url = $params->get('source_url');
-            if (!empty($source_url)) {
-                $status['config'] = 1;
-                $status['message'] = JText::_('GOOD_CONFIG');
-            } else {
-                $status['config'] = 0;
-                $status['message'] = JText::_('NOT_CONFIGURED');
-            }
-        } else {
-            $db = JFusionFactory::getDatabase($jname);
-            $jdb = JFactory::getDBO();
-            if (JError::isError($db) || !$db || strpos($db->name, 'mysql') === FALSE) {
-                $status['config'] = 0;
-                $status['message'] = $jname.' '.JText::_('NO_DATABASE');
-            } elseif (JError::isError($jdb) || !$jdb || strpos($jdb->name, 'mysql') === FALSE) {
-                $status['config'] = 0;
-                $status['message'] = $jname.' -> joomla_int '.JText::_('NO_DATABASE');
-            } elseif (!$db->connected()) {
-                $status['config'] = 0;
-                $status['message'] = $jname.' '.JText::_('NO_DATABASE');
-            } elseif (!$jdb->connected()) {
-                $status['config'] = 0;
-                $status['message'] = $jname.' -> joomla_int '. JText::_('NO_DATABASE');
-            } else {
-                //added check for missing files of copied plugins after upgrade
-                $path = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR;
-                if (!file_exists($path.'admin.php')) {
-                    $status['config'] = 0;
-                    $status['message'] = JText::_('NO_FILES').' admin.php';
-                } else if (!file_exists($path.'user.php')) {
-                    $status['config'] = 0;
-                    $status['message'] = JText::_('NO_FILES').' user.php';
-                } else {
-                    $cookie_domain = $params->get('cookie_domain');
-                    $jfc = JFusionFactory::getCookies();
-                    list($url) = $jfc->getApiUrl($cookie_domain);
-                    if ($url) {
-                        require_once(JPATH_SITE.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'jfusionapi.php');
+	    try {
+		    if ($jname == 'joomla_int') {
+			    $source_url = $params->get('source_url');
+			    if (empty($source_url)) {
+				    throw new Exception(JText::_('GOOD_CONFIG'));
+			    }
+		    } else {
+			    $db = JFusionFactory::getDatabase($jname);
+			    $jdb = JFactory::getDBO();
+			    if (!$db->connected()) {
+				    throw new Exception($jname.' '.JText::_('NO_DATABASE'));
+			    } elseif (!$jdb->connected()) {
+				    throw new Exception($jname.' -> joomla_int '. JText::_('NO_DATABASE'));
+			    } else {
+				    //added check for missing files of copied plugins after upgrade
+				    $path = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR;
+				    if (!file_exists($path.'admin.php')) {
+					    throw new Exception(JText::_('NO_FILES').' admin.php');
+				    } else if (!file_exists($path.'user.php')) {
+					    throw new Exception(JText::_('NO_FILES').' user.php');
+				    } else {
+					    $cookie_domain = $params->get('cookie_domain');
+					    $jfc = JFusionFactory::getCookies();
+					    list($url) = $jfc->getApiUrl($cookie_domain);
+					    if ($url) {
+						    require_once(JPATH_SITE.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'jfusionapi.php');
 
-                        $joomla_int = JFusionFactory::getParams('joomla_int');
-                        $api = new JFusionAPI($url,$joomla_int->get('secret'));
-                        if (!$api->ping()) {
-                            list ($message) = $api->getError();
-                            $status['config'] = 0;
-                            $status['message'] = $api->url. ' ' .$message;
-                            return $status;
-                        }
-                    }
-                    $source_path = $params->get('source_path');
-                    if ($source_path && (strpos($source_path, 'http://') === 0 || strpos($source_path, 'https://') === 0)) {
-                        $status['config'] = 0;
-                        $status['message'] = JText::_('ERROR_SOURCE_PATH'). ' : '.$source_path ;
-                    } else {
-                        //get the user table name
-                        $tablename = $this->getTablename();
-                        // lets check if the table exists, now using the Joomla API
-                        $table_list = $db->getTableList();
-                        $table_prefix = $db->getPrefix();
-                        if (!is_array($table_list)) {
-                            $status['config'] = 0;
-                            $status['message'] = $table_prefix . $tablename . ': ' . JText::_('NO_TABLE');
-                        } else {
-                            if (array_search($table_prefix . $tablename, $table_list) === false) {
-                                //do a final check for case insensitive windows servers
-                                if (array_search(strtolower($table_prefix . $tablename), $table_list) === false) {
-                                    $status['config'] = 0;
-                                    $status['message'] = $table_prefix . $tablename . ': ' . JText::_('NO_TABLE');
-                                } else {
-                                    $status['config'] = 1;
-                                    $status['message'] = JText::_('GOOD_CONFIG');
-                                }
-                            } else {
-                                $status['config'] = 1;
-                                $status['message'] = JText::_('GOOD_CONFIG');
-                            }
-                        }
-                    }
-                }
-            }
-        }
+						    $joomla_int = JFusionFactory::getParams('joomla_int');
+						    $api = new JFusionAPI($url,$joomla_int->get('secret'));
+						    if (!$api->ping()) {
+							    list ($message) = $api->getError();
+
+							    throw new Exception($api->url. ' ' .$message);
+						    }
+					    }
+					    $source_path = $params->get('source_path');
+					    if ($source_path && (strpos($source_path, 'http://') === 0 || strpos($source_path, 'https://') === 0)) {
+						    throw new Exception(JText::_('ERROR_SOURCE_PATH'). ' : '.$source_path);
+					    } else {
+						    //get the user table name
+						    $tablename = $this->getTablename();
+						    // lets check if the table exists, now using the Joomla API
+						    $table_list = $db->getTableList();
+						    $table_prefix = $db->getPrefix();
+						    if (!is_array($table_list)) {
+							    throw new Exception($table_prefix . $tablename . ': ' . JText::_('NO_TABLE'));
+						    } else {
+							    if (array_search($table_prefix . $tablename, $table_list) === false) {
+								    //do a final check for case insensitive windows servers
+								    if (array_search(strtolower($table_prefix . $tablename), $table_list) === false) {
+									    throw new Exception($table_prefix . $tablename . ': ' . JText::_('NO_TABLE'));
+								    }
+							    }
+						    }
+					    }
+				    }
+			    }
+		    }
+		    $status['config'] = 1;
+		    $status['message'] = JText::_('GOOD_CONFIG');
+	    } catch (Exception $e) {
+		    $status['message'] = $e->getMessage();
+	    }
         return $status;
     }
 

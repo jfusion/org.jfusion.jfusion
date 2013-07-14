@@ -769,9 +769,14 @@ class doku_auth_mysql extends doku_auth_basic {
      */
     function _openDB() {
 		$this->init();
-		$db = JFusionFactory::getDatabase($this->helper->getJname());
-		$this->dbcon = $db;
-		return $db->connected();
+	    try {
+		    $db = JFusionFactory::getDatabase($this->helper->getJname());
+		    $this->dbcon = $db;
+		    return $db->connected();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    return false;
+	    }
     }
 
     /**

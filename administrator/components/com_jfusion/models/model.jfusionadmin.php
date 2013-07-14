@@ -86,7 +86,7 @@ class JFusionFunctionAdmin
 		    $result = true;
 	    } catch( Exception $e ) {
 		    //there was an error saving the parameters
-		    JFusionFunction::raiseWarning($e->getMessage());
+		    JFusionFunction::raiseWarning($e);
 		    $result = false;
 	    }
         return $result;

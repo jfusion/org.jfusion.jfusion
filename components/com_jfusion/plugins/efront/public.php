@@ -87,13 +87,18 @@ class JFusionPublic_efront extends JFusionPublic
      * @return int
      */
     function getNumberOnlineMembers() {
-        //get a unix time from 5 minutes ago
-        date_default_timezone_set('UTC');
-        // $active = strtotime('-5 minutes', time());
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT COUNT(*) FROM #__users_online'; // WHERE  timestamp > '.$active;
-        $db->setQuery($query);
-        $result = $db->loadResult();
+	    try {
+	        //get a unix time from 5 minutes ago
+	        date_default_timezone_set('UTC');
+	        // $active = strtotime('-5 minutes', time());
+	        $db = JFusionFactory::getDatabase($this->getJname());
+	        $query = 'SELECT COUNT(*) FROM #__users_online'; // WHERE  timestamp > '.$active;
+	        $db->setQuery($query);
+	        $result = $db->loadResult();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    $result = 0;
+	    }
         return $result;
     }
 }

@@ -407,7 +407,7 @@ class JFusionController extends JControllerLegacy
 			    throw new Exception(JText::_('SYNC_CANNOT_START'));
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e->getMessage());
+		    JFusionFunction::raiseError($e);
 	    }
 
 	    $syncdata['messages'] = JFusionFunction::renderMessage();
@@ -500,7 +500,7 @@ class JFusionController extends JControllerLegacy
 		    }
 	    } catch (Exception $e) {
 		    $result['status'] = false;
-		    JFusionFunction::raiseError($e->getMessage());
+		    JFusionFunction::raiseError($e);
 	    }
 
 	    /**
@@ -710,7 +710,7 @@ JS;
 	            try {
 		            $db->execute();
 	            } catch (RuntimeException $e) {
-		            JFusionFunction::raiseError($e->getMessage());
+		            JFusionFunction::raiseError($e);
 		            $result['status'] = false;
 	            }
             }

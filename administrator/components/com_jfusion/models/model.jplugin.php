@@ -113,7 +113,7 @@ class JFusionJplugin
 		    $db->setQuery($query,$limitstart,$limit);
 		    $userlist = $db->loadObjectList();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e->getMessage());
+		    JFusionFunction::raiseError($e);
 		    $userlist = array();
 	    }
         return $userlist;
@@ -134,7 +134,7 @@ class JFusionJplugin
 	        //getting the results
 	        return $db->loadResult();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e->getMessage());
+		    JFusionFunction::raiseError($e);
 		    return 0;
 	    }
     }
@@ -157,7 +157,7 @@ class JFusionJplugin
 	        //getting the results
 	        return $db->loadObjectList();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e->getMessage());
+		    JFusionFunction::raiseError($e);
 		    return array();
 	    }
     }
@@ -184,7 +184,7 @@ class JFusionJplugin
 			    $group = $db->loadResult();
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e->getMessage());
+		    JFusionFunction::raiseError($e);
 		    $group = '';
 	    }
         return $group;
@@ -209,7 +209,7 @@ class JFusionJplugin
 		    $db->setQuery($query);
 		    $group = $db->loadResult();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e->getMessage());
+		    JFusionFunction::raiseError($e);
 		    $group = '';
 	    }
         return $group;
@@ -240,7 +240,7 @@ class JFusionJplugin
 		    // Return true if the 'allowUserRegistration' switch is enabled in the component parameters.
 		    return ($params->get('allowUserRegistration') ? true : false);
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e->getMessage());
+		    JFusionFunction::raiseError($e);
 		    return false;
 	    }
     }
@@ -646,7 +646,7 @@ class JFusionJplugin
 					    try {
 						    $db->execute();
 					    } catch (Exception $e) {
-						    JFusionFunction::raiseWarning($e->getMessage());
+						    JFusionFunction::raiseWarning($e);
 					    }
 				    }
 			    }
@@ -718,7 +718,7 @@ class JFusionJplugin
 			    }
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e->getMessage());
+		    JFusionFunction::raiseError($e);
 		    $result = null;
 	    }
         return $result;
@@ -1050,7 +1050,7 @@ class JFusionJplugin
 						    try {
 							    $db->execute();
 						    } catch (Exception $e) {
-							    JFusionFunction::raiseWarning($e->getMessage());
+							    JFusionFunction::raiseWarning($e);
 						    }
 					    }
 				    } else {

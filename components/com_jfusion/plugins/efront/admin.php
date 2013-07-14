@@ -123,12 +123,18 @@ class JFusionAdmin_efront extends JFusionAdmin
      * @return array
      */
     function getUserList($limitstart = 0, $limit = 0) {
-        //getting the connection to the db
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT login AS username, email from #__users';
-        $db->setQuery($query,$limitstart,$limit);
-        //getting the results
-        $userlist = $db->loadObjectList();
+	    try {
+		    //getting the connection to the db
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT login AS username, email from #__users';
+		    $db->setQuery($query,$limitstart,$limit);
+		    //getting the results
+		    $userlist = $db->loadObjectList();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    $userlist = array();
+	    }
+
         return $userlist;
     }
 
@@ -136,30 +142,34 @@ class JFusionAdmin_efront extends JFusionAdmin
      * @return int
      */
     function getUserCount() {
-        //getting the connection to the db
-        $db = JFusionFactory::getDatabase($this->getJname());
+	    try {
+		    //getting the connection to the db
+		    $db = JFusionFactory::getDatabase($this->getJname());
 
-        // eFront does not have a single user id field in its userdatabase.
-        // jFusion needs one, so add it here. This routine runs once
-        // when configuring the eFront plugin 
-        // Also we need an indication that the module initialisation needs to be performed for this user
-        // because we cannot run this from outside eFront (unless we load the whole framework on top of Joomla)
-        $tableFields = $db->getTableFields('users',false);
-        if (!array_key_exists('id',$tableFields['users'])) {
-            $query = 'ALTER TABLE users ADD id int(11) NOT null AUTO_INCREMENT FIRST, ADD UNIQUE (id)';
-            $db->setQuery($query);
-            $db->execute();
-        }
-        if (!array_key_exists('need_mod_init',$tableFields['users'])) {
-            $query = 'ALTER TABLE users ADD need_mod_init int(11) NOT null DEFAULT 0';
-            $db->setQuery($query);
-            $db->execute();
-        }
-        $query = 'SELECT count(*) from #__users';
-        $db->setQuery($query);
-        //getting the results
-        $no_users = $db->loadResult();
-        return $no_users;
+		    // eFront does not have a single user id field in its userdatabase.
+		    // jFusion needs one, so add it here. This routine runs once
+		    // when configuring the eFront plugin
+		    // Also we need an indication that the module initialisation needs to be performed for this user
+		    // because we cannot run this from outside eFront (unless we load the whole framework on top of Joomla)
+		    $tableFields = $db->getTableFields('users',false);
+		    if (!array_key_exists('id',$tableFields['users'])) {
+			    $query = 'ALTER TABLE users ADD id int(11) NOT null AUTO_INCREMENT FIRST, ADD UNIQUE (id)';
+			    $db->setQuery($query);
+			    $db->execute();
+		    }
+		    if (!array_key_exists('need_mod_init',$tableFields['users'])) {
+			    $query = 'ALTER TABLE users ADD need_mod_init int(11) NOT null DEFAULT 0';
+			    $db->setQuery($query);
+			    $db->execute();
+		    }
+		    $query = 'SELECT count(*) from #__users';
+		    $db->setQuery($query);
+		    //getting the results
+		    return $db->loadResult();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    return 0;
+	    }
     }
 
     /**
@@ -196,17 +206,20 @@ class JFusionAdmin_efront extends JFusionAdmin
      * @return bool
      */
     function allowRegistration() {
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT value FROM #__configuration WHERE name = \'signup\'';
-        $db->setQuery($query);
-        $signup = $db->loadResult();
-        if ($signup == 0) {
-                    $result = false;
-            return $result;
-        } else {
-            $result = true;
-            return $result;
-        }
+	    try {
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT value FROM #__configuration WHERE name = \'signup\'';
+		    $db->setQuery($query);
+		    $signup = $db->loadResult();
+		    if ($signup == 0) {
+			    $result = false;
+		    } else {
+			    $result = true;
+		    }
+	    } catch (Exception $e) {
+		    $result = false;
+	    }
+	    return $result;
     }
 
     /**

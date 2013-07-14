@@ -164,19 +164,6 @@ class JFusionFrameless {
 					}
 				}
 			}
-
-			/*
-			 * Caused issues with more people than it helped
-			//make sure that the software's database is selected in the case the mysql server and credentials are the same but a different database is used
-			$JFusionParam = JFusionFactory::getParams($data->jname);
-			$db_name = $JFusionParam->get('database_name');
-			if (!empty($db_name)) {
-				$db = JFusionFactory::getDatabase($this->jname);
-				$query = 'USE '.$db_name;
-				$db->setQuery($query);
-				$db->execute();
-			}
-			*/
 		}
 
 		//get Joomla session token so we can reset it afterward in case the software closes the session
