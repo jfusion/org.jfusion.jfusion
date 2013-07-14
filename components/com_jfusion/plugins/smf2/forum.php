@@ -85,13 +85,18 @@ class JFusionForum_smf2 extends JFusionForum
      */
     function getForumList()
     {
-        // initialise some objects
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT id_board as id, name FROM #__boards';
-        $db->setQuery($query );
+	    try {
+		    // initialise some objects
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT id_board as id, name FROM #__boards';
+		    $db->setQuery($query );
 
-        //getting the results
-        return $db->loadObjectList('id');
+		    //getting the results
+		    return $db->loadObjectList('id');
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    return array();
+	    }
     }
 
     /**
@@ -101,41 +106,44 @@ class JFusionForum_smf2 extends JFusionForum
     function checkReadStatus(&$post)
     {
 		$JUser = JFactory::getUser();
-    	if (!$JUser->guest) {
-            static $markread;
-            if (!is_array($markread)) {
-                $markread = array();
-                $db = JFusionFactory::getDatabase($this->getJname());
-                $userlookup = JFusionFunction::lookupUser($this->getJname(), $JUser->id);
-                if (!empty($userlookup)) {
-                    $query = 'SELECT id_msg, id_topic FROM #__log_topics WHERE id_member = '.$userlookup->userid;
-                    $db->setQuery($query);
-                    $markread['topic'] = $db->loadObjectList('id_topic');
+	    $newstatus = 0;
+	    try {
+	        if (!$JUser->guest) {
+	            static $markread;
+	            if (!is_array($markread)) {
+	                $markread = array();
+	                $db = JFusionFactory::getDatabase($this->getJname());
+	                $userlookup = JFusionFunction::lookupUser($this->getJname(), $JUser->id);
+	                if (!empty($userlookup)) {
+	                    $query = 'SELECT id_msg, id_topic FROM #__log_topics WHERE id_member = '.$userlookup->userid;
+	                    $db->setQuery($query);
+	                    $markread['topic'] = $db->loadObjectList('id_topic');
 
-                    $query = 'SELECT id_msg, id_board FROM #__log_mark_read WHERE id_member = '.$userlookup->userid;
-                    $db->setQuery($query);
-                    $markread['mark_read'] = $db->loadObjectList('id_board');
+	                    $query = 'SELECT id_msg, id_board FROM #__log_mark_read WHERE id_member = '.$userlookup->userid;
+	                    $db->setQuery($query);
+	                    $markread['mark_read'] = $db->loadObjectList('id_board');
 
-                    $query = 'SELECT id_msg, id_board FROM #__log_boards WHERE id_member = '.$userlookup->userid;
-                    $db->setQuery($query);
-                    $markread['board'] = $db->loadObjectList('id_board');
-                }
-            }
+	                    $query = 'SELECT id_msg, id_board FROM #__log_boards WHERE id_member = '.$userlookup->userid;
+	                    $db->setQuery($query);
+	                    $markread['board'] = $db->loadObjectList('id_board');
+	                }
+	            }
 
-            if (isset($markread['topic'][$post->threadid])) {
-                $latest_read_msgid = $markread['topic'][$post->threadid]->id_msg;
-            } elseif (isset($markread['mark_read'][$post->forumid])) {
-                $latest_read_msgid = $markread['mark_read'][$post->forumid]->id_msg;
-            } elseif (isset($markread['board'][$post->forumid])) {
-                $latest_read_msgid = $markread['board'][$post->forumid]->id_msg;
-            } else {
-                $latest_read_msgid = false;
-            }
+	            if (isset($markread['topic'][$post->threadid])) {
+	                $latest_read_msgid = $markread['topic'][$post->threadid]->id_msg;
+	            } elseif (isset($markread['mark_read'][$post->forumid])) {
+	                $latest_read_msgid = $markread['mark_read'][$post->forumid]->id_msg;
+	            } elseif (isset($markread['board'][$post->forumid])) {
+	                $latest_read_msgid = $markread['board'][$post->forumid]->id_msg;
+	            } else {
+	                $latest_read_msgid = false;
+	            }
 
-            $newstatus = ($latest_read_msgid !== false && $post->postid > $latest_read_msgid) ? 1 : 0;
-        } else {
-            $newstatus = 0;
-        }
+	            $newstatus = ($latest_read_msgid !== false && $post->postid > $latest_read_msgid) ? 1 : 0;
+	        }
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+	    }
         return $newstatus;
     }
 
@@ -146,19 +154,22 @@ class JFusionForum_smf2 extends JFusionForum
     function getPrivateMessageCounts($userid)
     {
         if ($userid) {
+	        try {
+		        // initialise some objects
+		        $db = JFusionFactory::getDatabase($this->getJname());
 
-            // initialise some objects
-            $db = JFusionFactory::getDatabase($this->getJname());
+		        // read unread count
+		        $db->setQuery('SELECT unread_messages FROM #__members WHERE id_member = '.$userid);
+		        $unreadCount = $db->loadResult();
 
-            // read unread count
-            $db->setQuery('SELECT unread_messages FROM #__members WHERE id_member = '.$userid);
-            $unreadCount = $db->loadResult();
+		        // read total pm count
+		        $db->setQuery('SELECT instant_messages FROM #__members WHERE id_member = '.$userid);
+		        $totalCount = $db->loadResult();
 
-            // read total pm count
-            $db->setQuery('SELECT instant_messages FROM #__members WHERE id_member = '.$userid);
-            $totalCount = $db->loadResult();
-
-            return array('unread' => $unreadCount, 'total' => $totalCount);
+		        return array('unread' => $unreadCount, 'total' => $totalCount);
+	        } catch (Exception $e) {
+		        JFusionFunction::raiseError($e);
+	        }
         }
         return array('unread' => 0, 'total' => 0);
     }
@@ -169,44 +180,49 @@ class JFusionForum_smf2 extends JFusionForum
      */
     function getAvatar($puser_id)
     {
-		if ($puser_id) {
-			// Get SMF Params and get an instance of the database
-			$params = JFusionFactory::getParams($this->getJname());
-			$db = JFusionFactory::getDatabase($this->getJname());
-			// Load member params from database "mainly to get the avatar"
-			$db->setQuery('SELECT * FROM #__members WHERE id_member='.$puser_id);
-			$db->execute();
-			$result = $db->loadObject();
+	    try {
+		    if ($puser_id) {
+			    // Get SMF Params and get an instance of the database
+			    $params = JFusionFactory::getParams($this->getJname());
+			    $db = JFusionFactory::getDatabase($this->getJname());
+			    // Load member params from database "mainly to get the avatar"
+			    $db->setQuery('SELECT * FROM #__members WHERE id_member='.$puser_id);
+			    $db->execute();
+			    $result = $db->loadObject();
 
-			if (!empty($result)) {
-				$url = '';
-				// SMF has a wired way of holding attachments. Get instance of the attachments table
-				$db->setQuery('SELECT * FROM #__attachments WHERE id_member='.$puser_id);
-				$db->execute();
-				$attachment = $db->loadObject();
-				// See if the user has a specific attachment meant for an avatar
-				if(!empty($attachment) && $attachment->id_thumb == 0 && $attachment->id_msg == 0 && empty($result->avatar)) {
-					$url = $params->get('source_url').'index.php?action=dlattach;attach='.$attachment->id_attach.';type=avatar';
-				// If user didn't, check to see if the avatar specified in the first query is a url. If so use it.
-				} else if(preg_match("/http(s?):\/\//",$result->avatar)){
-					$url = $result->avatar;
-				} else if($result->avatar) {
-					// If the avatar specified in the first query is not a url but is a file name. Make it one
-					$db->setQuery('SELECT * FROM #__settings WHERE variable = \'avatar_url\'');
-					$avatarurl = $db->loadObject();
-					// Check for trailing slash. If there is one DON'T ADD ONE!
-					if(substr($avatarurl->value, -1) == DIRECTORY_SEPARATOR){
-						$url = $avatarurl->value.$result->avatar;
-					// I like redundancy. Recheck to see if there isn't a trailing slash. If there isn't one, add one.
-					} else if(substr($avatarurl->value, -1) !== DIRECTORY_SEPARATOR){
-						$url = $avatarurl->value.'/'.$result->avatar;
-					}
-				}
+			    if (!empty($result)) {
+				    $url = '';
+				    // SMF has a wired way of holding attachments. Get instance of the attachments table
+				    $db->setQuery('SELECT * FROM #__attachments WHERE id_member='.$puser_id);
+				    $db->execute();
+				    $attachment = $db->loadObject();
+				    // See if the user has a specific attachment meant for an avatar
+				    if(!empty($attachment) && $attachment->id_thumb == 0 && $attachment->id_msg == 0 && empty($result->avatar)) {
+					    $url = $params->get('source_url').'index.php?action=dlattach;attach='.$attachment->id_attach.';type=avatar';
+					    // If user didn't, check to see if the avatar specified in the first query is a url. If so use it.
+				    } else if(preg_match("/http(s?):\/\//",$result->avatar)){
+					    $url = $result->avatar;
+				    } else if($result->avatar) {
+					    // If the avatar specified in the first query is not a url but is a file name. Make it one
+					    $db->setQuery('SELECT * FROM #__settings WHERE variable = \'avatar_url\'');
+					    $avatarurl = $db->loadObject();
+					    // Check for trailing slash. If there is one DON'T ADD ONE!
+					    if(substr($avatarurl->value, -1) == DIRECTORY_SEPARATOR){
+						    $url = $avatarurl->value.$result->avatar;
+						    // I like redundancy. Recheck to see if there isn't a trailing slash. If there isn't one, add one.
+					    } else if(substr($avatarurl->value, -1) !== DIRECTORY_SEPARATOR){
+						    $url = $avatarurl->value.'/'.$result->avatar;
+					    }
+				    }
 
-				return $url;
-			}
-		}
-        return false;
+				    return $url;
+			    }
+		    }
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    $url = false;
+	    }
+        return $url;
 	}
 
      /**
@@ -349,33 +365,35 @@ class JFusionForum_smf2 extends JFusionForum
      **/
 	function updateThread(&$dbparams, &$existingthread, &$contentitem, &$status)
 	{
-		$threadid =& $existingthread->threadid;
-		$forumid =& $existingthread->forumid;
-		$postid =& $existingthread->postid;
+		try {
+			$threadid =& $existingthread->threadid;
+			$forumid =& $existingthread->forumid;
+			$postid =& $existingthread->postid;
 
-		//setup some variables
-		$jdb = JFusionFactory::getDatabase($this->getJname());
-		$subject = trim(strip_tags($contentitem->title));
+			//setup some variables
+			$jdb = JFusionFactory::getDatabase($this->getJname());
+			$subject = trim(strip_tags($contentitem->title));
 
-		//prepare the content body
-		$text = $this->prepareFirstPostBody($dbparams, $contentitem);
+			//prepare the content body
+			$text = $this->prepareFirstPostBody($dbparams, $contentitem);
 
-        $timestamp = time();
-		$userid = $dbparams->get('default_user');
+	        $timestamp = time();
+			$userid = $dbparams->get('default_user');
 
-		$query = 'SELECT member_name FROM #__members WHERE id_member = '.$userid;
-		$jdb->setQuery($query);
-		$smfUser = $jdb->loadObject();
+			$query = 'SELECT member_name FROM #__members WHERE id_member = '.$userid;
+			$jdb->setQuery($query);
+			$smfUser = $jdb->loadObject();
 
-		$post_row = new stdClass();
-		$post_row->subject			= $subject;
-		$post_row->body				= $text;
-		$post_row->modified_time 	= $timestamp;
-		$post_row->modified_name 	= $smfUser->member_name;
-		$post_row->id_msg_modified	= $postid;
-		$post_row->id_msg 			= $postid;
-		if(!$jdb->updateObject('#__messages', $post_row, 'id_msg')) {
-			$status['error'] = $jdb->stderr();
+			$post_row = new stdClass();
+			$post_row->subject			= $subject;
+			$post_row->body				= $text;
+			$post_row->modified_time 	= $timestamp;
+			$post_row->modified_name 	= $smfUser->member_name;
+			$post_row->id_msg_modified	= $postid;
+			$post_row->id_msg 			= $postid;
+			$jdb->updateObject('#__messages', $post_row, 'id_msg');
+		} catch (Exception $e) {
+			$status['error'] = $e->getMessage();
 		}
 	}
 
@@ -433,145 +451,133 @@ HTML;
 	function createPost(&$dbparams, &$ids, &$contentitem, &$userinfo)
 	{
         $status = array('error' => array(),'debug' => array());
-
-		if($userinfo->guest) {
-			$userinfo->username = JFactory::getApplication()->input->post->get('guest_username', '');
-			$userinfo->email = JFactory::getApplication()->input->post->get('guest_email', '');
-			$userinfo->userid = 0;
-
-			$pattern = "^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$";
-			            if (empty($userinfo->username) || empty($userinfo->email) || !preg_match('/^[^@]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$/', $userinfo->email)) {
-				$status['error'][] = JTEXT::_('GUEST_FIELDS_MISSING');
-				return $status;
-			} else {
-				//check to see if user exists to prevent user hijacking
-				$JFusionUser = JFusionFactory::getUser($this->getJname());
-				define('OVERRIDE_IDENTIFIER',3);
-				$existinguser = $JFusionUser->getUser($userinfo->username);
-				if(!empty($existinguser)) {
-					$status['error'][] = JText::_('USERNAME_IN_USE');
-					return $status;
-				}
-
-				//check for email
-				$existinguser = $JFusionUser->getUser($userinfo->email);
-				if(!empty($existinguser)) {
-					$status['error'][] = JText::_('EMAIL_IN_USE');
-					return $status;
-				}
-			}
-		}
-
-		//setup some variables
-		$userid = $userinfo->userid;
-		$jdb = JFusionFactory::getDatabase($this->getJname());
-        $public = JFusionFactory::getPublic($this->getJname());
-		$text = JFactory::getApplication()->input->post->get('quickReply', false);
-		//strip out html from post
-		$text = strip_tags($text);
-
-		if(!empty($text)) {
-			$public->prepareText($text);
-
-			//get some topic information
-			$where = 'WHERE t.id_topic = '.$ids->threadid.' AND m.id_msg = t.id_first_msg';
-			$query = 'SELECT t.id_first_msg , t.num_replies, m.subject FROM `#__messages` as m INNER JOIN `#__topics` as t ON t.id_topic = m.id_topic '.$where;
-
-			$jdb->setQuery($query);
-			$topic = $jdb->loadObject();
-
-			//the user information
+		try {
 			if($userinfo->guest) {
-				$smfUser = new stdClass();
-				$smfUser->member_name = $userinfo->username;
-				$smfUser->email_address = $userinfo->email;
-			} else {
-				$query = 'SELECT member_name,email_address FROM #__members WHERE id_member = '.$userid;
+				$userinfo->username = JFactory::getApplication()->input->post->get('guest_username', '');
+				$userinfo->email = JFactory::getApplication()->input->post->get('guest_email', '');
+				$userinfo->userid = 0;
+
+				$pattern = "^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$";
+				if (empty($userinfo->username) || empty($userinfo->email) || !preg_match('/^[^@]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$/', $userinfo->email)) {
+					throw new Exception(JText::_('GUEST_FIELDS_MISSING'));
+				} else {
+					//check to see if user exists to prevent user hijacking
+					$JFusionUser = JFusionFactory::getUser($this->getJname());
+					define('OVERRIDE_IDENTIFIER',3);
+					$existinguser = $JFusionUser->getUser($userinfo->username);
+					if(!empty($existinguser)) {
+						throw new Exception(JText::_('USERNAME_IN_USE'));
+					}
+
+					//check for email
+					$existinguser = $JFusionUser->getUser($userinfo->email);
+					if(!empty($existinguser)) {
+						throw new Exception(JText::_('EMAIL_IN_USE'));
+					}
+				}
+			}
+
+			//setup some variables
+			$userid = $userinfo->userid;
+			$jdb = JFusionFactory::getDatabase($this->getJname());
+	        $public = JFusionFactory::getPublic($this->getJname());
+			$text = JFactory::getApplication()->input->post->get('quickReply', false);
+			//strip out html from post
+			$text = strip_tags($text);
+
+			if(!empty($text)) {
+				$public->prepareText($text);
+
+				//get some topic information
+				$where = 'WHERE t.id_topic = '.$ids->threadid.' AND m.id_msg = t.id_first_msg';
+				$query = 'SELECT t.id_first_msg , t.num_replies, m.subject FROM `#__messages` as m INNER JOIN `#__topics` as t ON t.id_topic = m.id_topic '.$where;
+
 				$jdb->setQuery($query);
-				$smfUser = $jdb->loadObject();
-			}
+				$topic = $jdb->loadObject();
 
-            $timestamp = time();
-
-			$post_approved = ($userinfo->guest && $dbparams->get('moderate_guests',1)) ? 0 : 1;
-
-			$post_row = new stdClass();
-			$post_row->id_board			= $ids->forumid;
-			$post_row->id_topic 		= $ids->threadid;
-			$post_row->poster_time		= $timestamp;
-			$post_row->id_member		= $userid;
-			$post_row->subject			= 'Re: '.$topic->subject;
-			$post_row->poster_name		= $smfUser->member_name;
-			$post_row->poster_email		= $smfUser->email_address;
-			$post_row->poster_ip		= $_SERVER["REMOTE_ADDR"];
-			$post_row->smileys_enabled	= 1;
-			$post_row->modified_time	= 0;
-			$post_row->modified_name	= '';
-			$post_row->body				= $text;
-			$post_row->icon				= 'xx';
-			$post_row->approved 		= $post_approved;
-
-			if(!$jdb->insertObject('#__messages', $post_row, 'id_msg')) {
-				$status['error'] = $jdb->stderr();
-				return $status;
-			}
-			$postid = $jdb->insertid();
-
-			$post_row = new stdClass();
-			$post_row->id_msg = $postid;
-			$post_row->id_msg_modified = $postid;
-			if(!$jdb->updateObject('#__messages', $post_row, 'id_msg' )) {
-				$status['error'] = $jdb->stderr();
-			}
-
-			//store the postid
-			$status['postid'] = $postid;
-
-			//only update the counters if the post is approved
-			if($post_approved) {
-				$topic_row = new stdClass();
-				$topic_row->id_last_msg			= $postid;
-				$topic_row->id_member_updated	= (int) $userid;
-				$topic_row->num_replies			= $topic->num_replies + 1;
-				$topic_row->id_topic			= $ids->threadid;
-				if(!$jdb->updateObject('#__topics', $topic_row, 'id_topic' )) {
-					$status['error'] = $jdb->stderr();
+				//the user information
+				if($userinfo->guest) {
+					$smfUser = new stdClass();
+					$smfUser->member_name = $userinfo->username;
+					$smfUser->email_address = $userinfo->email;
+				} else {
+					$query = 'SELECT member_name,email_address FROM #__members WHERE id_member = '.$userid;
+					$jdb->setQuery($query);
+					$smfUser = $jdb->loadObject();
 				}
 
-				$forum_stats = new stdClass();
-				$forum_stats->id_last_msg 		=  $postid;
-				$forum_stats->id_msg_updated	=  $postid;
-				$query = 'SELECT num_posts FROM #__boards WHERE id_board = '.$ids->forumid;
-				$jdb->setQuery($query);
-				$num = $jdb->loadObject();
-				$forum_stats->num_posts = $num->num_posts + 1;
-				$forum_stats->id_board 			= $ids->forumid;
-				if(!$jdb->updateObject('#__boards', $forum_stats, 'id_board' )) {
-					$status['error'] = $jdb->stderr();
+	            $timestamp = time();
+
+				$post_approved = ($userinfo->guest && $dbparams->get('moderate_guests',1)) ? 0 : 1;
+
+				$post_row = new stdClass();
+				$post_row->id_board			= $ids->forumid;
+				$post_row->id_topic 		= $ids->threadid;
+				$post_row->poster_time		= $timestamp;
+				$post_row->id_member		= $userid;
+				$post_row->subject			= 'Re: '.$topic->subject;
+				$post_row->poster_name		= $smfUser->member_name;
+				$post_row->poster_email		= $smfUser->email_address;
+				$post_row->poster_ip		= $_SERVER["REMOTE_ADDR"];
+				$post_row->smileys_enabled	= 1;
+				$post_row->modified_time	= 0;
+				$post_row->modified_name	= '';
+				$post_row->body				= $text;
+				$post_row->icon				= 'xx';
+				$post_row->approved 		= $post_approved;
+
+				$jdb->insertObject('#__messages', $post_row, 'id_msg');
+
+				$postid = $jdb->insertid();
+
+				$post_row = new stdClass();
+				$post_row->id_msg = $postid;
+				$post_row->id_msg_modified = $postid;
+				$jdb->updateObject('#__messages', $post_row, 'id_msg' );
+
+				//store the postid
+				$status['postid'] = $postid;
+
+				//only update the counters if the post is approved
+				if($post_approved) {
+					$topic_row = new stdClass();
+					$topic_row->id_last_msg			= $postid;
+					$topic_row->id_member_updated	= (int) $userid;
+					$topic_row->num_replies			= $topic->num_replies + 1;
+					$topic_row->id_topic			= $ids->threadid;
+					$jdb->updateObject('#__topics', $topic_row, 'id_topic' );
+
+					$forum_stats = new stdClass();
+					$forum_stats->id_last_msg 		=  $postid;
+					$forum_stats->id_msg_updated	=  $postid;
+					$query = 'SELECT num_posts FROM #__boards WHERE id_board = '.$ids->forumid;
+					$jdb->setQuery($query);
+					$num = $jdb->loadObject();
+					$forum_stats->num_posts = $num->num_posts + 1;
+					$forum_stats->id_board 			= $ids->forumid;
+					$jdb->updateObject('#__boards', $forum_stats, 'id_board' );
+
+		            //update stats for threadmarking purposes
+	                $query = 'REPLACE INTO #__log_topics SET id_member = '.$userid.', id_topic = '.$ids->threadid.', id_msg = ' . ($postid + 1);
+	                $jdb->setQuery($query);
+					$jdb->execute();
+
+	                $query = 'REPLACE INTO #__log_boards SET id_member = '.$userid.', id_board = '.$ids->forumid.', id_msg = '.$postid;
+	                $jdb->setQuery($query);
+					$jdb->execute();
+				} else {
+					//add the post to the approval queue
+					$query = 'INSERT INTO #__approval_queue id_msg VALUES ('.$postid.')';
+					$jdb->setQuery($query);
+					$jdb->execute();
 				}
 
-	            //update stats for threadmarking purposes
-                $query = 'REPLACE INTO #__log_topics SET id_member = '.$userid.', id_topic = '.$ids->threadid.', id_msg = ' . ($postid + 1);
-                $jdb->setQuery($query);
-                if (!$jdb->execute()) {
-                    $status['error'] = $jdb->stderr();
-                }
-                $query = 'REPLACE INTO #__log_boards SET id_member = '.$userid.', id_board = '.$ids->forumid.', id_msg = '.$postid;
-                $jdb->setQuery($query);
-                if (!$jdb->execute()) {
-                    $status['error'] = $jdb->stderr();
-                }
-			} else {
-				//add the post to the approval queue
-				$query = 'INSERT INTO #__approval_queue id_msg VALUES ('.$postid.')';
-				$jdb->setQuery($query);
-				$jdb->execute();
+				//update moderation status to tell discussion bot to notify user
+				$status['post_moderated'] = ($post_approved) ? 0 : 1;
 			}
-
-			//update moderation status to tell discussion bot to notify user
-			$status['post_moderated'] = ($post_approved) ? 0 : 1;
+		} catch (Exception $e) {
+			$status['error'] = $e->getMessage();
 		}
-
 		return $status;
 	}
 
@@ -585,31 +591,35 @@ HTML;
      */
 	function getPosts(&$dbparams, &$existingthread)
 	{
-		$threadid =& $existingthread->threadid;
-		$postid =& $existingthread->postid;
+		try {
+			$threadid =& $existingthread->threadid;
+			$postid =& $existingthread->postid;
 
-		//set the query
-		$sort = $dbparams->get('sort_posts');
-		$where = 'WHERE id_topic = '.$threadid.' AND id_msg != '.$postid.' AND approved = 1';
-        $query = '(SELECT a.id_topic , a.id_msg, a.poster_name, b.real_name, a.id_member, 0 AS guest, a.subject, a.poster_time, a.body, a.poster_time AS order_by_date FROM `#__messages` as a INNER JOIN #__members as b ON a.id_member = b.id_member '.$where.' AND a.id_member != 0)';
-        $query.= ' UNION ';
-        $query.= '(SELECT a.id_topic , a.id_msg, a.poster_name, a.poster_name as real_name, a.id_member, 1 AS guest, a.subject, a.poster_time, a.body, a.poster_time AS order_by_date FROM `#__messages` as a '.$where.' AND a.id_member = 0)';
-        $query.= ' ORDER BY order_by_date '.$sort;
-		$jdb = JFusionFactory::getDatabase($this->getJname());
+			//set the query
+			$sort = $dbparams->get('sort_posts');
+			$where = 'WHERE id_topic = '.$threadid.' AND id_msg != '.$postid.' AND approved = 1';
+	        $query = '(SELECT a.id_topic , a.id_msg, a.poster_name, b.real_name, a.id_member, 0 AS guest, a.subject, a.poster_time, a.body, a.poster_time AS order_by_date FROM `#__messages` as a INNER JOIN #__members as b ON a.id_member = b.id_member '.$where.' AND a.id_member != 0)';
+	        $query.= ' UNION ';
+	        $query.= '(SELECT a.id_topic , a.id_msg, a.poster_name, a.poster_name as real_name, a.id_member, 1 AS guest, a.subject, a.poster_time, a.body, a.poster_time AS order_by_date FROM `#__messages` as a '.$where.' AND a.id_member = 0)';
+	        $query.= ' ORDER BY order_by_date '.$sort;
+			$jdb = JFusionFactory::getDatabase($this->getJname());
 
-		if($dbparams->get('enable_pagination',true)) {
-			$application = JFactory::getApplication() ;
-			$limitstart = JFactory::getApplication()->input->getInt( 'limitstart_discuss', 0 );
-			$limit = (int) $application->getUserStateFromRequest( 'global.list.limit', 'limit_discuss', 5, 'int' );
-			$jdb->setQuery($query,$limitstart,$limit);
-		} else {
-			$limit_posts = $dbparams->get('limit_posts');
-			$query .= empty($limit_posts) || trim($limit_posts)==0 ? '' :  ' LIMIT 0,'.$limit_posts;
-			$jdb->setQuery($query);
+			if($dbparams->get('enable_pagination',true)) {
+				$application = JFactory::getApplication() ;
+				$limitstart = JFactory::getApplication()->input->getInt( 'limitstart_discuss', 0 );
+				$limit = (int) $application->getUserStateFromRequest( 'global.list.limit', 'limit_discuss', 5, 'int' );
+				$jdb->setQuery($query,$limitstart,$limit);
+			} else {
+				$limit_posts = $dbparams->get('limit_posts');
+				$query .= empty($limit_posts) || trim($limit_posts)==0 ? '' :  ' LIMIT 0,'.$limit_posts;
+				$jdb->setQuery($query);
+			}
+
+			$posts = $jdb->loadObjectList();
+		} catch (Exception $e) {
+			JFusionFunction::raiseError($e);
+			$posts = array();
 		}
-
-		$posts = $jdb->loadObjectList();
-
 		return $posts;
 	}
 
@@ -619,10 +629,15 @@ HTML;
      */
     function getReplyCount(&$existingthread)
 	{
-		$db = JFusionFactory::getDatabase($this->getJname());
-		$query = 'SELECT num_replies FROM #__topics WHERE id_topic = '.$existingthread->threadid;
-		$db->setQuery($query);
-		$result = $db->loadResult();
+		try {
+			$db = JFusionFactory::getDatabase($this->getJname());
+			$query = 'SELECT num_replies FROM #__topics WHERE id_topic = '.$existingthread->threadid;
+			$db->setQuery($query);
+			$result = $db->loadResult();
+		} catch (Exception $e) {
+			JFusionFunction::raiseError($e);
+			$result = 0;
+		}
 		return $result;
 	}
 
@@ -661,10 +676,15 @@ HTML;
      */
     function getThread($threadid)
     {
-		$db = JFusionFactory::getDatabase($this->getJname());
-		$query = 'SELECT id_topic AS threadid, id_board AS forumid, id_first_msg AS postid FROM #__topics WHERE id_topic = '.$threadid;
-		$db->setQuery($query);
-		$results = $db->loadObject();
+	    try {
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT id_topic AS threadid, id_board AS forumid, id_first_msg AS postid FROM #__topics WHERE id_topic = '.$threadid;
+		    $db->setQuery($query);
+		    $results = $db->loadObject();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    $results = null;
+	    }
 		return $results;
     }
 
@@ -673,11 +693,16 @@ HTML;
      * @return bool
      */
     function getThreadLockedStatus($threadid) {
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT locked FROM #__topics WHERE id_topic = '.$threadid;
-        $db->setQuery($query);
-        $locked = $db->loadResult();
-        return $locked;
+	    try {
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT locked FROM #__topics WHERE id_topic = '.$threadid;
+		    $db->setQuery($query);
+		    $locked = $db->loadResult();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    $locked = true;
+	    }
+	    return $locked;
     }
 
     /**

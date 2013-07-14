@@ -112,18 +112,23 @@ class JFusionPublic_smf extends JFusionPublic
             static $custom_smileys;
             if (!is_array($custom_smileys)) {
                 $custom_smileys = array();
-                $db = JFusionFactory::getDatabase($this->getJname());
-                $query = 'SELECT value, variable FROM #__settings WHERE variable = \'smileys_url\' OR variable = \'smiley_sets_default\'';
-                $db->setQuery($query);
-                $settings = $db->loadObjectList('variable');
-                $query = 'SELECT code, filename FROM #__smileys ORDER BY smileyOrder';
-                $db->setQuery($query);
-                $smilies = $db->loadObjectList();
-                if (!empty($smilies)) {
-                    foreach ($smilies as $s) {
-                        $custom_smileys[$s->code] = "{$settings['smileys_url']->value}/{$settings['smiley_sets_default']->value}/{$s->filename}";
-                    }
-                }
+	            try {
+		            $db = JFusionFactory::getDatabase($this->getJname());
+		            $query = 'SELECT value, variable FROM #__settings WHERE variable = \'smileys_url\' OR variable = \'smiley_sets_default\'';
+		            $db->setQuery($query);
+		            $settings = $db->loadObjectList('variable');
+
+		            $query = 'SELECT code, filename FROM #__smileys ORDER BY smileyOrder';
+		            $db->setQuery($query);
+		            $smilies = $db->loadObjectList();
+		            if (!empty($smilies)) {
+			            foreach ($smilies as $s) {
+				            $custom_smileys[$s->code] = "{$settings['smileys_url']->value}/{$settings['smiley_sets_default']->value}/{$s->filename}";
+			            }
+		            }
+	            } catch (Exception $e) {
+		            JFusionFunction::raiseError($e);
+	            }
             }
             $options['custom_smileys'] = $custom_smileys;
             $options['parse_smileys'] = true;
@@ -627,146 +632,150 @@ class JFusionPublic_smf extends JFusionPublic
      */
     function getPathWay()
     {
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $pathway = array();
+	    $pathway = array();
+	    try {
+		    $db = JFusionFactory::getDatabase($this->getJname());
 
-        list ($board_id ) = explode( '.'  , JFactory::getApplication()->input->get('board'),1 );
-        list ($topic_id ) = explode( '.'  , JFactory::getApplication()->input->get('topic'),1 );
-        list ($action ) = explode( ';'  , JFactory::getApplication()->input->get('action'),1 );
+		    list ($board_id ) = explode( '.'  , JFactory::getApplication()->input->get('board'),1 );
+		    list ($topic_id ) = explode( '.'  , JFactory::getApplication()->input->get('topic'),1 );
+		    list ($action ) = explode( ';'  , JFactory::getApplication()->input->get('action'),1 );
 
-        $msg = JFactory::getApplication()->input->get('msg');
+		    $msg = JFactory::getApplication()->input->get('msg');
 
-        $query = 'SELECT ID_TOPIC,ID_BOARD, subject '.
-        'FROM #__messages '.
-        'WHERE ID_TOPIC = ' . $db->Quote($topic_id);
-        $db->setQuery($query );
-        $topic = $db->loadObject();
+		    $query = 'SELECT ID_TOPIC,ID_BOARD, subject '.
+			    'FROM #__messages '.
+			    'WHERE ID_TOPIC = ' . $db->Quote($topic_id);
+		    $db->setQuery($query );
+		    $topic = $db->loadObject();
 
-        if ($topic) {
-            $board_id = $topic->ID_BOARD;
-        }
+		    if ($topic) {
+			    $board_id = $topic->ID_BOARD;
+		    }
 
-        if ($board_id) {
-            $boards = array();
-            // Loop while the parent is non-zero.
-            while ($board_id != 0)
-            {
-                $query = 'SELECT b.ID_PARENT , b.ID_BOARD, b.ID_CAT, b.name , c.name as catname '.
-                'FROM #__boards AS b INNER JOIN #__categories AS c ON b.ID_CAT = c.ID_CAT '.
-                'WHERE ID_BOARD = ' . $db->Quote($board_id);
-                $db->setQuery($query );
-                $result = $db->loadObject();
+		    if ($board_id) {
+			    $boards = array();
+			    // Loop while the parent is non-zero.
+			    while ($board_id != 0)
+			    {
+				    $query = 'SELECT b.ID_PARENT , b.ID_BOARD, b.ID_CAT, b.name , c.name as catname '.
+					    'FROM #__boards AS b INNER JOIN #__categories AS c ON b.ID_CAT = c.ID_CAT '.
+					    'WHERE ID_BOARD = ' . $db->Quote($board_id);
+				    $db->setQuery($query );
+				    $result = $db->loadObject();
 
-                $board_id = 0;
-                if ($result) {
-                    $board_id = $result->ID_PARENT;
-                    $boards[] = $result;
-                }
-            }
-            $boards = array_reverse($boards);
-            $cat_id = 0;
-            foreach ($boards as $board) {
-                $path = new stdClass();
-                if ( $board->ID_CAT != $cat_id ) {
-                    $cat_id = $board->ID_CAT;
-                    $path->title = $board->catname;
-                    $path->url = 'index.php#'.$board->ID_CAT;
-                    $pathway[] = $path;
+				    $board_id = 0;
+				    if ($result) {
+					    $board_id = $result->ID_PARENT;
+					    $boards[] = $result;
+				    }
+			    }
+			    $boards = array_reverse($boards);
+			    $cat_id = 0;
+			    foreach ($boards as $board) {
+				    $path = new stdClass();
+				    if ( $board->ID_CAT != $cat_id ) {
+					    $cat_id = $board->ID_CAT;
+					    $path->title = $board->catname;
+					    $path->url = 'index.php#'.$board->ID_CAT;
+					    $pathway[] = $path;
 
-                    $path = new stdClass();
-                    $path->title = $board->name;
-                    $path->url = 'index.php?board='.$board->ID_BOARD.'.0';
-                } else {
-                    $path->title = $board->name;
-                    $path->url = 'index.php?board='.$board->ID_BOARD.'.0';
-                }
-                $pathway[] = $path;
-            }
-        }
-        switch ($action) {
-            case 'post':
-                $path = new stdClass();
-                if ( JFactory::getApplication()->input->get('board')) {
-                    $path->title = 'Modify Toppic ( Start new topic )';
-                    $path->url = 'index.php?action=post&board='.$board_id.'.0';;
-                } else if ( $msg ) {
-                    $path->title = 'Modify Toppic ( '.$topic->subject.' )';
-                    $path->url = 'index.php?action=post&topic='.$topic_id.'.msg'.$msg.'#msg'.$msg;
-                } else {
-                    $path->title = 'Post reply ( Re: '.$topic->subject.' )';
-                    $path->url = 'index.php?action=post&topic='.$topic_id;
-                }
-                $pathway[] = $path;
-                break;
-            case 'pm':
-                $path = new stdClass();
-                $path->title = 'Personal Messages';
-                $path->url = 'index.php?action=pm';
-                $pathway[] = $path;
+					    $path = new stdClass();
+					    $path->title = $board->name;
+					    $path->url = 'index.php?board='.$board->ID_BOARD.'.0';
+				    } else {
+					    $path->title = $board->name;
+					    $path->url = 'index.php?board='.$board->ID_BOARD.'.0';
+				    }
+				    $pathway[] = $path;
+			    }
+		    }
+		    switch ($action) {
+			    case 'post':
+				    $path = new stdClass();
+				    if ( JFactory::getApplication()->input->get('board')) {
+					    $path->title = 'Modify Toppic ( Start new topic )';
+					    $path->url = 'index.php?action=post&board='.$board_id.'.0';;
+				    } else if ( $msg ) {
+					    $path->title = 'Modify Toppic ( '.$topic->subject.' )';
+					    $path->url = 'index.php?action=post&topic='.$topic_id.'.msg'.$msg.'#msg'.$msg;
+				    } else {
+					    $path->title = 'Post reply ( Re: '.$topic->subject.' )';
+					    $path->url = 'index.php?action=post&topic='.$topic_id;
+				    }
+				    $pathway[] = $path;
+				    break;
+			    case 'pm':
+				    $path = new stdClass();
+				    $path->title = 'Personal Messages';
+				    $path->url = 'index.php?action=pm';
+				    $pathway[] = $path;
 
-                $path = new stdClass();
-                if ( JFactory::getApplication()->input->get('sa')=='send' ) {
-                    $path->title = 'New Message';
-                    $path->url = 'index.php?action=pm&sa=send';
-                    $pathway[] = $path;
-                } elseif ( JFactory::getApplication()->input->get('sa')=='search' ) {
-                    $path->title = 'Search Messages';
-                    $path->url = 'index.php?action=pm&sa=search';
-                    $pathway[] = $path;
-                } elseif ( JFactory::getApplication()->input->get('sa')=='prune' ) {
-                    $path->title = 'Prune Messages';
-                    $path->url = 'index.php?action=pm&sa=prune';
-                    $pathway[] = $path;
-                } elseif ( JFactory::getApplication()->input->get('sa')=='manlabels' ) {
-                    $path->title = 'Manage Labels';
-                    $path->url = 'index.php?action=pm&sa=manlabels';
-                    $pathway[] = $path;
-                } elseif ( JFactory::getApplication()->input->get('f')=='outbox' ) {
-                    $path->title = 'Outbox';
-                    $path->url = 'index.php?action=pm&f=outbox';
-                    $pathway[] = $path;
-                } else {
-                    $path->title = 'Inbox';
-                    $path->url = 'index.php?action=pm';
-                    $pathway[] = $path;
-                }
-                break;
-            case 'search2':
-                $path = new stdClass();
-                $path->title = 'Search';
-                $path->url = 'index.php?action=search';
-                $pathway[] = $path;
-                $path = new stdClass();
-                $path->title = 'Search Results';
-                $path->url = 'index.php?action=search';
-                $pathway[] = $path;
-                break;
-            case 'search':
-                $path = new stdClass();
-                $path->title = 'Search';
-                $path->url = 'index.php?action=search';
-                $pathway[] = $path;
-                break;
-            case 'unread':
-                $path = new stdClass();
-                $path->title = 'Recent Unread Topics';
-                $path->url = 'index.php?action=unread';
-                $pathway[] = $path;
-                break;
-            case 'unreadreplies':
-                $path = new stdClass();
-                $path->title = 'Updated Topics';
-                $path->url = 'index.php?action=unreadreplies';
-                $pathway[] = $path;
-                break;
-            default:
-                if ( $topic_id ) {
-                    $path = new stdClass();
-                    $path->title = $topic->subject;
-                    $path->url = 'index.php?topic='.$topic_id;
-                    $pathway[] = $path;
-                }
-        }
+				    $path = new stdClass();
+				    if ( JFactory::getApplication()->input->get('sa')=='send' ) {
+					    $path->title = 'New Message';
+					    $path->url = 'index.php?action=pm&sa=send';
+					    $pathway[] = $path;
+				    } elseif ( JFactory::getApplication()->input->get('sa')=='search' ) {
+					    $path->title = 'Search Messages';
+					    $path->url = 'index.php?action=pm&sa=search';
+					    $pathway[] = $path;
+				    } elseif ( JFactory::getApplication()->input->get('sa')=='prune' ) {
+					    $path->title = 'Prune Messages';
+					    $path->url = 'index.php?action=pm&sa=prune';
+					    $pathway[] = $path;
+				    } elseif ( JFactory::getApplication()->input->get('sa')=='manlabels' ) {
+					    $path->title = 'Manage Labels';
+					    $path->url = 'index.php?action=pm&sa=manlabels';
+					    $pathway[] = $path;
+				    } elseif ( JFactory::getApplication()->input->get('f')=='outbox' ) {
+					    $path->title = 'Outbox';
+					    $path->url = 'index.php?action=pm&f=outbox';
+					    $pathway[] = $path;
+				    } else {
+					    $path->title = 'Inbox';
+					    $path->url = 'index.php?action=pm';
+					    $pathway[] = $path;
+				    }
+				    break;
+			    case 'search2':
+				    $path = new stdClass();
+				    $path->title = 'Search';
+				    $path->url = 'index.php?action=search';
+				    $pathway[] = $path;
+				    $path = new stdClass();
+				    $path->title = 'Search Results';
+				    $path->url = 'index.php?action=search';
+				    $pathway[] = $path;
+				    break;
+			    case 'search':
+				    $path = new stdClass();
+				    $path->title = 'Search';
+				    $path->url = 'index.php?action=search';
+				    $pathway[] = $path;
+				    break;
+			    case 'unread':
+				    $path = new stdClass();
+				    $path->title = 'Recent Unread Topics';
+				    $path->url = 'index.php?action=unread';
+				    $pathway[] = $path;
+				    break;
+			    case 'unreadreplies':
+				    $path = new stdClass();
+				    $path->title = 'Updated Topics';
+				    $path->url = 'index.php?action=unreadreplies';
+				    $pathway[] = $path;
+				    break;
+			    default:
+				    if ( $topic_id ) {
+					    $path = new stdClass();
+					    $path->title = $topic->subject;
+					    $path->url = 'index.php?topic='.$topic_id;
+					    $pathway[] = $path;
+				    }
+		    }
+	    } catch (Exception $e) {
+			JFusionFunction::raiseError($e);
+	    }
         return $pathway;
     }
 
@@ -856,25 +865,28 @@ class JFusionPublic_smf extends JFusionPublic
      */
     function filterSearchResults(&$results, &$pluginParam)
     {
-		$db = JFusionFactory::getDatabase($this->getJname());
-		$query = 'SELECT value FROM #__settings WHERE variable=\'censor_vulgar\'';
-		$db->setQuery($query);
-		$vulgar = $db->loadResult();
+	    try {
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT value FROM #__settings WHERE variable=\'censor_vulgar\'';
+		    $db->setQuery($query);
+		    $vulgar = $db->loadResult();
 
-		$db = JFusionFactory::getDatabase($this->getJname());
-		$query = 'SELECT value FROM #__settings WHERE variable=\'censor_proper\'';
-		$db->setQuery($query);
-		$proper = $db->loadResult();
+		    $query = 'SELECT value FROM #__settings WHERE variable=\'censor_proper\'';
+		    $db->setQuery($query);
+		    $proper = $db->loadResult();
 
-		$vulgar = explode  ( ',' , $vulgar );
-		$proper = explode  ( ',' , $proper );
+		    $vulgar = explode  ( ',' , $vulgar );
+		    $proper = explode  ( ',' , $proper );
 
-		foreach($results as $rkey => &$result) {
-			foreach( $vulgar as $key => $value ) {
-				$results[$rkey]->title = preg_replace  ( '#\b'.preg_quote($value,'#').'\b#is' , $proper[$key]  , $result->title );
-				$results[$rkey]->text = preg_replace  ( '#\b'.preg_quote($value,'#').'\b#is' , $proper[$key]  , $result->text );
-			}
-		}
+		    foreach($results as $rkey => &$result) {
+			    foreach( $vulgar as $key => $value ) {
+				    $results[$rkey]->title = preg_replace  ( '#\b'.preg_quote($value,'#').'\b#is' , $proper[$key]  , $result->title );
+				    $results[$rkey]->text = preg_replace  ( '#\b'.preg_quote($value,'#').'\b#is' , $proper[$key]  , $result->text );
+			    }
+		    }
+	    } catch (Exception $e) {
+			JFusionFunction::raiseError($e);
+	    }
     }
 
     /**
@@ -915,10 +927,15 @@ class JFusionPublic_smf extends JFusionPublic
      */
     function getNumberOnlineGuests()
     {
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT COUNT(DISTINCT(ip)) FROM #__log_online WHERE ID_MEMBER = 0';
-        $db->setQuery($query);
-        return $db->loadResult();
+	    try {
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT COUNT(DISTINCT(ip)) FROM #__log_online WHERE ID_MEMBER = 0';
+		    $db->setQuery($query);
+		    return $db->loadResult();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    return 0;
+	    }
     }
 
     /**
@@ -928,10 +945,15 @@ class JFusionPublic_smf extends JFusionPublic
      */
     function getNumberOnlineMembers()
     {
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT COUNT(DISTINCT(ip)) FROM #__log_online WHERE ID_MEMBER != 0';
-        $db->setQuery($query);
-        return $db->loadResult();
+	    try {
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT COUNT(DISTINCT(ip)) FROM #__log_online WHERE ID_MEMBER != 0';
+		    $db->setQuery($query);
+		    return $db->loadResult();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    return 0;
+	    }
     }
 
     /**

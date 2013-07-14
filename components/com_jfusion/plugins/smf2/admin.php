@@ -95,12 +95,16 @@ class JFusionAdmin_smf2 extends JFusionAdmin{
      */
     function getUserList($limitstart = 0, $limit = 0)
     {
-        // initialise some objects
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT member_name as username, email_address as email from #__members';
-        $db->setQuery($query,$limitstart,$limit);
-        $userlist = $db->loadObjectList();
-
+	    try {
+		    // initialise some objects
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT member_name as username, email_address as email from #__members';
+		    $db->setQuery($query,$limitstart,$limit);
+		    $userlist = $db->loadObjectList();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    $userlist = array();
+	    }
         return $userlist;
     }
 
@@ -109,13 +113,18 @@ class JFusionAdmin_smf2 extends JFusionAdmin{
      */
     function getUserCount()
     {
-        //getting the connection to the db
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT count(*) from #__members';
-        $db->setQuery($query );
+	    try {
+		    //getting the connection to the db
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT count(*) from #__members';
+		    $db->setQuery($query );
 
-        //getting the results
-        return $db->loadResult();
+		    //getting the results
+		    return $db->loadResult();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    return 0;
+	    }
     }
 
     /**
@@ -125,17 +134,22 @@ class JFusionAdmin_smf2 extends JFusionAdmin{
      */
     function getUsergroupList()
     {
-        //getting the connection to the db
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT id_group as id, group_name as name FROM #__membergroups WHERE min_posts = -1';
-        $db->setQuery($query);
-        $usergrouplist = $db->loadObjectList();
-        //append the default usergroup
-        $default_group = new stdClass;
-        $default_group->id = 0;
-        $default_group->name = 'Default User';
-        $usergrouplist[] = $default_group;
-        return $usergrouplist;
+	    try {
+		    //getting the connection to the db
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT id_group as id, group_name as name FROM #__membergroups WHERE min_posts = -1';
+		    $db->setQuery($query);
+		    $usergrouplist = $db->loadObjectList();
+		    //append the default usergroup
+		    $default_group = new stdClass;
+		    $default_group->id = 0;
+		    $default_group->name = 'Default User';
+		    $usergrouplist[] = $default_group;
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    $usergrouplist = array();
+	    }
+	    return $usergrouplist;
     }
 
     /**
@@ -143,21 +157,27 @@ class JFusionAdmin_smf2 extends JFusionAdmin{
      */
     function getDefaultUsergroup()
     {
-        $params = JFusionFactory::getParams($this->getJname());
-        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
-        $usergroup_id = 0;
-        if(!empty($usergroups)) {
-            $usergroup_id = $usergroups[0];
-        }
-        if ($usergroup_id==0) {
-            return 'Default Usergroup';
-        }
+	    $group = 'Default Usergroup';
+	    try {
+		    $params = JFusionFactory::getParams($this->getJname());
+		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
+		    $usergroup_id = 0;
+		    if(!empty($usergroups)) {
+			    $usergroup_id = $usergroups[0];
+		    }
+		    if ($usergroup_id!=0) {
+			    //we want to output the usergroup name
+			    $db = JFusionFactory::getDatabase($this->getJname());
+			    $query = 'SELECT group_name FROM #__membergroups WHERE id_group = ' . (int)$usergroup_id;
+			    $db->setQuery($query);
+			    $group = $db->loadResult();
+		    }
 
-        //we want to output the usergroup name
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT group_name FROM #__membergroups WHERE id_group = ' . $usergroup_id;
-        $db->setQuery($query );
-        return $db->loadResult();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    $group = '';
+	    }
+	    return $group;
     }
 
     /**
@@ -167,11 +187,16 @@ class JFusionAdmin_smf2 extends JFusionAdmin{
      */
     function getUserpostgroupList()
     {
-        //getting the connection to the db
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT id_group as id, group_name as name FROM #__membergroups WHERE min_posts != -1';
-        $db->setQuery($query);
-        return $db->loadObjectList();
+	    try {
+		    //getting the connection to the db
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT id_group as id, group_name as name FROM #__membergroups WHERE min_posts != -1';
+		    $db->setQuery($query);
+		    return $db->loadObjectList();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    return array();
+	    }
     }
 
     /**
@@ -179,19 +204,19 @@ class JFusionAdmin_smf2 extends JFusionAdmin{
      */
     function allowRegistration()
     {
-
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT value FROM #__settings WHERE variable =\'registration_method\';';
-        $db->setQuery($query );
-        $new_registration = $db->loadResult();
-
-        if ($new_registration == 3) {
-            $result = false;
-            return $result;
-        } else {
-            $result = true;
-            return $result;
-        }
+	    $result = false;
+	    try {
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT value FROM #__settings WHERE variable =\'registration_method\';';
+		    $db->setQuery($query);
+		    $new_registration = $db->loadResult();
+		    if ($new_registration != 3) {
+			    $result = true;
+		    }
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+	    }
+	    return $result;
     }
 
     /**
