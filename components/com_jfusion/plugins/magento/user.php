@@ -88,19 +88,21 @@ class JFusionUser_magento extends JFusionUser {
 	 */
 	function getMagentoEntityTypeID($eav_entity_code) {
 		static $eav_entity_types;
-		if (!isset($eav_entity_types)) {
-			$db = JFusionFactory::getDataBase($this->getJname());
-			$db->setQuery('SELECT entity_type_id,entity_type_code FROM #__eav_entity_type');
-			if ($db->getErrorNum() != 0) {
-				$result = false;
-				return $result;
+		try {
+			if (!isset($eav_entity_types)) {
+				$db = JFusionFactory::getDataBase($this->getJname());
+				$db->setQuery('SELECT entity_type_id,entity_type_code FROM #__eav_entity_type');
+
+				$result = $db->loadObjectList();
+				for ($i = 0;$i < count($result);$i++) {
+					$eav_entity_types[$result[$i]->entity_type_code] = $result[$i]->entity_type_id;
+				}
 			}
-			$result = $db->loadObjectList();
-			for ($i = 0;$i < count($result);$i++) {
-				$eav_entity_types[$result[$i]->entity_type_code] = $result[$i]->entity_type_id;
-			}
+			return $eav_entity_types[$eav_entity_code];
+		} catch (Exception $e) {
+			JFusionFunction::raiseError($e);
+			return false;
 		}
-		return $eav_entity_types[$eav_entity_code];
 	}
 
 	/**
@@ -116,30 +118,27 @@ class JFusionUser_magento extends JFusionUser {
 	 */
 	function getMagentoDataObjectRaw($entity_type_code) {
 		static $eav_attributes;
-		if (!isset($eav_attributes[$entity_type_code])) {
-			// first get the entity_type_id to access the attribute table
-			$entity_type_id = $this->getMagentoEntityTypeID('customer');
-			$db = JFusionFactory::getDataBase($this->getJname());
-			// Get a database object
-			$db->setQuery('SELECT attribute_id, attribute_code, backend_type FROM #__eav_attribute WHERE entity_type_id =' . (int)$entity_type_id);
-			if ($db->getErrorNum() != 0) {
-				$result = false;
-				return $result;
-			}
-			//getting the results
-			$result = $db->loadObjectList();
-			for ($i = 0;$i < count($result);$i++) {
+		try {
+			if (!isset($eav_attributes[$entity_type_code])) {
+				// first get the entity_type_id to access the attribute table
+				$entity_type_id = $this->getMagentoEntityTypeID('customer');
+				$db = JFusionFactory::getDataBase($this->getJname());
+				// Get a database object
 				$db->setQuery('SELECT attribute_id, attribute_code, backend_type FROM #__eav_attribute WHERE entity_type_id =' . (int)$entity_type_id);
-				$eav_attributes[$entity_type_code][$i]['attribute_code'] = $result[$i]->attribute_code;
-				$eav_attributes[$entity_type_code][$i]['attribute_id'] = $result[$i]->attribute_id;
-				$eav_attributes[$entity_type_code][$i]['backend_type'] = $result[$i]->backend_type;
-				if ($db->getErrorNum() != 0) {
-					$result = false;
-					return $result;
+				//getting the results
+				$result = $db->loadObjectList();
+				for ($i = 0;$i < count($result);$i++) {
+					$eav_attributes[$entity_type_code][$i]['attribute_code'] = $result[$i]->attribute_code;
+					$eav_attributes[$entity_type_code][$i]['attribute_id'] = $result[$i]->attribute_id;
+					$eav_attributes[$entity_type_code][$i]['backend_type'] = $result[$i]->backend_type;
 				}
 			}
+			return $eav_attributes[$entity_type_code];
+		} catch (Exception $e) {
+			JFusionFunction::raiseError($e);
+			return false;
 		}
-		return $eav_attributes[$entity_type_code];
+
 	}
 
 	/**
@@ -166,39 +165,34 @@ class JFusionUser_magento extends JFusionUser {
 	 */
 	function fillMagentoDataObject($entity_type_code, $entity_id, $entity_type_id) {
 		$result = array();
-		$result = $this->getMagentoDataObjectRaw($entity_type_code);
-		if (!$result) {
-			$result = false;
-			return $result;
-		}
-		// walk through the array and fill the object requested
-        /**
-         * @TODO This can be smarter by reading types at once and put the data them in the right place
-         *       for now I'm trying to get this working. optimising comes next
-         */
-		$filled_object = array();
-		$db = JFusionFactory::getDataBase($this->getJname());
-		for ($i = 0;$i < count($result);$i++) {
-			if ($result[$i]['backend_type'] == 'static') {
-				$query = 'SELECT ' . $result[$i]['attribute_code'] . ' FROM #__' . $entity_type_code . '_entity' . ' WHERE entity_type_id =' . (int)$entity_type_id . ' AND entity_id =' . (int)$entity_id;
-				$db->setQuery($query);
-				if ($db->getErrorNum() != 0) {
-					$result = false;
-					return $result;
+		try {
+			$result = $this->getMagentoDataObjectRaw($entity_type_code);
+			if ($result) {
+				// walk through the array and fill the object requested
+				/**
+				 * @TODO This can be smarter by reading types at once and put the data them in the right place
+				 *       for now I'm trying to get this working. optimising comes next
+				 */
+				$filled_object = array();
+				$db = JFusionFactory::getDataBase($this->getJname());
+				for ($i = 0;$i < count($result);$i++) {
+					if ($result[$i]['backend_type'] == 'static') {
+						$query = 'SELECT ' . $result[$i]['attribute_code'] . ' FROM #__' . $entity_type_code . '_entity' . ' WHERE entity_type_id =' . (int)$entity_type_id . ' AND entity_id =' . (int)$entity_id;
+						$db->setQuery($query);
+					} else {
+						$query = 'SELECT value FROM #__' . $entity_type_code . '_entity_' . $result[$i]['backend_type'] . ' WHERE entity_type_id =' . (int)$entity_type_id . ' AND attribute_id =' . (int)$result[$i]['attribute_id'] . ' AND entity_id =' . (int)$entity_id;
+						$db->setQuery($query);
+					}
+					$filled_object[$result[$i]['attribute_code']]['value'] = $db->loadResult();
+					$filled_object[$result[$i]['attribute_code']]['attribute_id'] = $result[$i]['attribute_id'];
+					$filled_object[$result[$i]['attribute_code']]['backend_type'] = $result[$i]['backend_type'];
 				}
-			} else {
-				$query = 'SELECT value FROM #__' . $entity_type_code . '_entity_' . $result[$i]['backend_type'] . ' WHERE entity_type_id =' . (int)$entity_type_id . ' AND attribute_id =' . (int)$result[$i]['attribute_id'] . ' AND entity_id =' . (int)$entity_id;
-				$db->setQuery($query);
-				if ($db->getErrorNum() != 0) {
-					$result = false;
-					return $result;
-				}
+				$result = $filled_object;
 			}
-			$filled_object[$result[$i]['attribute_code']]['value'] = $db->loadResult();
-			$filled_object[$result[$i]['attribute_code']]['attribute_id'] = $result[$i]['attribute_id'];
-			$filled_object[$result[$i]['attribute_code']]['backend_type'] = $result[$i]['backend_type'];
+		} catch (Exception $e) {
+			JFusionFunction::raiseError($e);
 		}
-		return $filled_object;
+		return $result;
 	}
 	/**
 	 * @param object $userinfo
@@ -342,90 +336,75 @@ class JFusionUser_magento extends JFusionUser {
 	 * @return bool
 	 */
 	function update_create_Magentouser($user, $entity_id) {
-		$db = JFusionFactory::getDataBase($this->getJname());
-		$sqlDateTime = date('Y-m-d H:i:s', time());
-        // transactional handling of this update is a necessarily
-		if (!$entity_id) { //create an (almost) empty user
-			// first get the current increment
-			// This method is an empty implemented method into the core of joomla database class
-			// So, we need to implement it for our purpose that's why there is a new factory for magento
-			$db->transactionStart();
-			$query = 'SELECT increment_last_id FROM #__eav_entity_store WHERE entity_type_id = ' . (int)$this->getMagentoEntityTypeID('customer') . ' AND store_id = 0';
-			$db->setQuery($query);
-			$db->execute();
-			if ($db->getErrorNum() != 0) {
-				$db->transactionRollback();
-				return $db->stderr();
-			}
-			$increment_last_id_int = ( int )$db->loadresult();
-			$increment_last_id = sprintf("%'09u", ($increment_last_id_int + 1));
-			$query = 'UPDATE #__eav_entity_store SET increment_last_id = ' . $db->Quote($increment_last_id) . ' WHERE entity_type_id = ' . (int)$this->getMagentoEntityTypeID('customer') . ' AND store_id = 0';
-			$db->setQuery($query);
-			$db->execute();
-			if ($db->getErrorNum() != 0) {
-				$db->transactionRollback();
-				return $db->stderr();
-			}
-			// so far so good, now create an empty user, to be updates later
-			$query = 'INSERT INTO #__customer_entity   (entity_type_id, increment_id, is_active, created_at, updated_at) VALUES ' . '(' . (int)$this->getMagentoEntityTypeID('customer') . ',' . $db->Quote($increment_last_id) . ',1,' . $db->Quote($sqlDateTime) . ', ' . $db->Quote($sqlDateTime) . ')';
-			$db->setQuery($query);
-			$db->execute();
-			if ($db->getErrorNum() != 0) {
-				$db->transactionRollback();
-				return $db->stderr();
-			}
-			$entity_id = $db->insertid();
-		} else { // we are updating
-			$query = 'UPDATE #__customer_entity' . ' SET updated_at = ' . $db->Quote($sqlDateTime) . ' WHERE entity_id = ' . (int)$entity_id;
-			$db->setQuery($query);
-			$db->execute();
-			if ($db->getErrorNum() != 0) {
-				$db->transactionRollback();
-				return $db->stderr();
-			}
-		}
-		// the basic userrecord is created, now update/create the eav records
-		for ($i = 0;$i < count($user);$i++) {
-			if ($user[$i]['backend_type'] == 'static') {
-				if (isset($user[$i]['value'])) {
-					$query = 'UPDATE #__customer_entity' . ' SET ' . $user[$i]['attribute_code'] . '= ' . $db->Quote($user[$i]['value']) . ' WHERE entity_id = ' . $entity_id;
-					$db->setQuery($query);
-					$db->execute();
-					if ($db->getErrorNum() != 0) {
-						$db->transactionRollback();
-						return $db->stderr();
-					}
-				}
-			} else {
-				if (isset($user[$i]['value'])) {
-					$query = 'SELECT value FROM #__customer_entity' . '_' . $user[$i]['backend_type'] . ' WHERE entity_id = ' . (int)$entity_id . ' AND entity_type_id = ' . (int)$this->getMagentoEntityTypeID('customer') . ' AND attribute_id = ' . (int)$user[$i]['attribute_id'];
-					$db->setQuery($query);
-					$db->execute();
-					$result = $db->loadresult();
-					if ($result) {
-						// we do not update an empty value, but remove the record instead
-						if ($user[$i]['value'] == '') {
-							$query = 'DELETE FROM #__customer_entity' . '_' . $user[$i]['backend_type'] . ' WHERE entity_id = ' . (int)$entity_id . ' AND entity_type_id = ' . (int)$this->getMagentoEntityTypeID('customer') . ' AND attribute_id = ' . (int)$user[$i]['attribute_id'];
-						} else {
-							$query = 'UPDATE #__customer_entity' . '_' . $user[$i]['backend_type'] . ' SET value = ' . $db->Quote($user[$i]['value']) . ' WHERE entity_id = ' . (int)$entity_id . ' AND entity_type_id = ' . (int)$this->getMagentoEntityTypeID('customer') . ' AND attribute_id = ' . (int)$user[$i]['attribute_id'];
-						}
-					} else { // must create
-						$query = 'INSERT INTO #__customer_entity' . '_' . $user[$i]['backend_type'] . ' (value, attribute_id, entity_id, entity_type_id) VALUES (' . $db->Quote($user[$i]['value']) . ', ' . $user[$i]['attribute_id'] . ', ' . $entity_id . ', ' . (int)$this->getMagentoEntityTypeID('customer') . ')';
-					}
-					$db->setQuery($query);
-					$db->execute();
-					if ($db->getErrorNum() != 0) {
-						$db->transactionRollback();
-						return $db->stderr();
-					}
-				}
-			}
-		}
-		// Change COMMIT TRANSACTION to COMMIT - This last is used in mysql but in fact it depends of the database system
-		$db->transactionCommit();
-		$result = false;
-		return $result; //NOTE false is NO ERRORS!
+		try {
+			$db = JFusionFactory::getDataBase($this->getJname());
+			$sqlDateTime = date('Y-m-d H:i:s', time());
+			// transactional handling of this update is a necessarily
+			if (!$entity_id) { //create an (almost) empty user
+				// first get the current increment
+				// This method is an empty implemented method into the core of joomla database class
+				// So, we need to implement it for our purpose that's why there is a new factory for magento
+				$db->transactionStart();
+				$query = 'SELECT increment_last_id FROM #__eav_entity_store WHERE entity_type_id = ' . (int)$this->getMagentoEntityTypeID('customer') . ' AND store_id = 0';
+				$db->setQuery($query);
+				$db->execute();
 
+				$increment_last_id_int = ( int )$db->loadresult();
+				$increment_last_id = sprintf("%'09u", ($increment_last_id_int + 1));
+				$query = 'UPDATE #__eav_entity_store SET increment_last_id = ' . $db->Quote($increment_last_id) . ' WHERE entity_type_id = ' . (int)$this->getMagentoEntityTypeID('customer') . ' AND store_id = 0';
+				$db->setQuery($query);
+				$db->execute();
+
+				// so far so good, now create an empty user, to be updates later
+				$query = 'INSERT INTO #__customer_entity   (entity_type_id, increment_id, is_active, created_at, updated_at) VALUES ' . '(' . (int)$this->getMagentoEntityTypeID('customer') . ',' . $db->Quote($increment_last_id) . ',1,' . $db->Quote($sqlDateTime) . ', ' . $db->Quote($sqlDateTime) . ')';
+				$db->setQuery($query);
+				$db->execute();
+				$entity_id = $db->insertid();
+			} else { // we are updating
+				$query = 'UPDATE #__customer_entity' . ' SET updated_at = ' . $db->Quote($sqlDateTime) . ' WHERE entity_id = ' . (int)$entity_id;
+				$db->setQuery($query);
+				$db->execute();
+			}
+			// the basic userrecord is created, now update/create the eav records
+			for ($i = 0;$i < count($user);$i++) {
+				if ($user[$i]['backend_type'] == 'static') {
+					if (isset($user[$i]['value'])) {
+						$query = 'UPDATE #__customer_entity' . ' SET ' . $user[$i]['attribute_code'] . '= ' . $db->Quote($user[$i]['value']) . ' WHERE entity_id = ' . $entity_id;
+						$db->setQuery($query);
+						$db->execute();
+					}
+				} else {
+					if (isset($user[$i]['value'])) {
+						$query = 'SELECT value FROM #__customer_entity' . '_' . $user[$i]['backend_type'] . ' WHERE entity_id = ' . (int)$entity_id . ' AND entity_type_id = ' . (int)$this->getMagentoEntityTypeID('customer') . ' AND attribute_id = ' . (int)$user[$i]['attribute_id'];
+						$db->setQuery($query);
+						$db->execute();
+						$result = $db->loadresult();
+
+						if ($result) {
+							// we do not update an empty value, but remove the record instead
+							if ($user[$i]['value'] == '') {
+								$query = 'DELETE FROM #__customer_entity' . '_' . $user[$i]['backend_type'] . ' WHERE entity_id = ' . (int)$entity_id . ' AND entity_type_id = ' . (int)$this->getMagentoEntityTypeID('customer') . ' AND attribute_id = ' . (int)$user[$i]['attribute_id'];
+							} else {
+								$query = 'UPDATE #__customer_entity' . '_' . $user[$i]['backend_type'] . ' SET value = ' . $db->Quote($user[$i]['value']) . ' WHERE entity_id = ' . (int)$entity_id . ' AND entity_type_id = ' . (int)$this->getMagentoEntityTypeID('customer') . ' AND attribute_id = ' . (int)$user[$i]['attribute_id'];
+							}
+						} else { // must create
+							$query = 'INSERT INTO #__customer_entity' . '_' . $user[$i]['backend_type'] . ' (value, attribute_id, entity_id, entity_type_id) VALUES (' . $db->Quote($user[$i]['value']) . ', ' . $user[$i]['attribute_id'] . ', ' . $entity_id . ', ' . (int)$this->getMagentoEntityTypeID('customer') . ')';
+						}
+						$db->setQuery($query);
+						$db->execute();
+					}
+				}
+			}
+			// Change COMMIT TRANSACTION to COMMIT - This last is used in mysql but in fact it depends of the database system
+			$db->transactionCommit();
+			$result = false;
+		} catch (Exception $e) {
+			if (isset($db)) {
+				$db->transactionRollback();
+			}
+			$result = $e->getMessage();
+		}
+		return $result; //NOTE false is NO ERRORS!
 	}
 
 	/**

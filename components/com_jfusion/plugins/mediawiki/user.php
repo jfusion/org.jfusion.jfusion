@@ -257,15 +257,17 @@ class JFusionUser_mediawiki extends JFusionUser {
      */
     function updateEmail($userinfo, &$existinguser, &$status)
     {
-        //we need to update the email
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'UPDATE #__user SET user_email ='.$db->quote($userinfo->email) .' WHERE user_id =' . $existinguser->userid;
-        $db->setQuery($query);
-        if (!$db->execute()) {
-            $status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $db->stderr();
-        } else {
-	        $status['debug'][] = JText::_('EMAIL_UPDATE'). ': ' . $existinguser->email . ' -> ' . $userinfo->email;
-        }
+	    try {
+		    //we need to update the email
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'UPDATE #__user SET user_email ='.$db->quote($userinfo->email) .' WHERE user_id =' . $existinguser->userid;
+		    $db->setQuery($query);
+		    $db->execute();
+
+		    $status['debug'][] = JText::_('EMAIL_UPDATE'). ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $e->getMessage();
+	    }
     }
 
     /**
@@ -315,34 +317,36 @@ class JFusionUser_mediawiki extends JFusionUser {
      */
     function blockUser($userinfo, &$existinguser, &$status)
     {
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $ban = new stdClass;
-        $ban->ipb_id = NULL;
-        $ban->ipb_address = NULL;
-        $ban->ipb_user = $existinguser->userid;
-        $ban->ipb_by = $existinguser->userid;
-        $ban->ipb_by_text = $existinguser->username;
+	    try {
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $ban = new stdClass;
+		    $ban->ipb_id = NULL;
+		    $ban->ipb_address = NULL;
+		    $ban->ipb_user = $existinguser->userid;
+		    $ban->ipb_by = $existinguser->userid;
+		    $ban->ipb_by_text = $existinguser->username;
 
-        $ban->ipb_reason = 'You have been banned from this software. Please contact your site admin for more details';
-        $ban->ipb_timestamp = gmdate( 'YmdHis', time() );
+		    $ban->ipb_reason = 'You have been banned from this software. Please contact your site admin for more details';
+		    $ban->ipb_timestamp = gmdate( 'YmdHis', time() );
 
-		$ban->ipb_auto = 0;
-		$ban->ipb_anon_only = 0;
-		$ban->ipb_create_account = 1;
-		$ban->ipb_enable_autoblock = 1;
-		$ban->ipb_expiry = 'infinity';
-		$ban->ipb_range_start = NULL;
-		$ban->ipb_range_end = NULL;
-		$ban->ipb_deleted = 0;
-		$ban->ipb_block_email = 0;
-		$ban->ipb_allow_usertalk = 0;
+		    $ban->ipb_auto = 0;
+		    $ban->ipb_anon_only = 0;
+		    $ban->ipb_create_account = 1;
+		    $ban->ipb_enable_autoblock = 1;
+		    $ban->ipb_expiry = 'infinity';
+		    $ban->ipb_range_start = NULL;
+		    $ban->ipb_range_end = NULL;
+		    $ban->ipb_deleted = 0;
+		    $ban->ipb_block_email = 0;
+		    $ban->ipb_allow_usertalk = 0;
 
-        //now append the new user data
-        if (!$db->insertObject('#__ipblocks', $ban, 'ipb_id' )) {
-     	   $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $db->stderr();
-        } else {
-	        $status['debug'][] = JText::_('BLOCK_UPDATE'). ': ' . $existinguser->block . ' -> ' . $userinfo->block;
-    	}
+		    //now append the new user data
+		    $db->insertObject('#__ipblocks', $ban, 'ipb_id' );
+
+		    $status['debug'][] = JText::_('BLOCK_UPDATE'). ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('BLOCK_UPDATE_ERROR'). ': ' . $e->getMessage();
+	    }
     }
 
     /**
@@ -354,14 +358,16 @@ class JFusionUser_mediawiki extends JFusionUser {
      */
     function unblockUser($userinfo, &$existinguser, &$status)
     {
-    	$db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'DELETE FROM #__ipblocks WHERE ipb_user = ' . $db->quote($existinguser->userid);
-        $db->setQuery($query);
-	    if (!$db->execute()) {
-    	    $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $db->stderr();
-    	} else {
-        	$status['debug'][] = JText::_('BLOCK_UPDATE'). ': ' . $existinguser->block . ' -> ' . $userinfo->block;
-    	}
+	    try {
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'DELETE FROM #__ipblocks WHERE ipb_user = ' . $db->quote($existinguser->userid);
+		    $db->setQuery($query);
+		    $db->execute();
+
+		    $status['debug'][] = JText::_('BLOCK_UPDATE'). ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('BLOCK_UPDATE_ERROR'). ': ' . $e->getMessage();
+	    }
     }
 /*
     function activateUser($userinfo, &$existinguser, &$status)

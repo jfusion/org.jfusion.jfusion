@@ -382,15 +382,17 @@ class JFusionUser_moodle extends JFusionUser {
 	 * @param array  &$status       Array containing the errors and result of the function
 	 */
 	function updateEmail($userinfo, &$existinguser, &$status) {
-		//TODO ? check for duplicates, or leave it at db error
-		//we need to update the email
-		$db = JFusionFactory::getDatabase($this->getJname());
-		$query = 'UPDATE #__user SET email =' . $db->Quote($userinfo->email) . ' WHERE id =' . (int)$existinguser->userid;
-		$db->setQuery($query);
-		if (!$db->execute()) {
-			$status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . $db->stderr();
-		} else {
+		try {
+			//TODO ? check for duplicates, or leave it at db error
+			//we need to update the email
+			$db = JFusionFactory::getDatabase($this->getJname());
+			$query = 'UPDATE #__user SET email =' . $db->Quote($userinfo->email) . ' WHERE id =' . (int)$existinguser->userid;
+			$db->setQuery($query);
+			$db->execute();
+
 			$status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
+		} catch (Exception $e) {
+			$status['error'][] = JText::_('EMAIL_UPDATE_ERROR')  . $e->getMessage();
 		}
 	}
 

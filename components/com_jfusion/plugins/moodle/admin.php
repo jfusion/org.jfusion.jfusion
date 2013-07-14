@@ -199,30 +199,35 @@ class JFusionAdmin_moodle extends JFusionAdmin
         $jname = $this->getJname ();
         $params = JFusionFactory::getParams ( $jname );
 
-        $db = JFusionFactory::getDatabase ( $jname );
-        if (! JError::isError ( $db ) && ! empty ( $db )) {
+	    try {
+		    try {
+			    $db = JFusionFactory::getDatabase ( $jname );
+		    } catch (Exception $e) {
+				throw new Exception(JText::_('MOODLE_CONFIG_FIRST'));
+		    }
+		    $db = JFusionFactory::getDatabase ( $jname );
 
-            $source_path = $params->get ( 'source_path', '' );
-            if (! file_exists ( $source_path . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'auth.php' )) {
-                return JText::_ ( 'MOODLE_CONFIG_SOURCE_PATH' );
-            }
+		    $source_path = $params->get ( 'source_path', '' );
+		    if (! file_exists ( $source_path . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'auth.php' )) {
+			    return JText::_ ( 'MOODLE_CONFIG_SOURCE_PATH' );
+		    }
 
-            $mod_exists = false;
-            if (file_exists ( $source_path . DIRECTORY_SEPARATOR . 'auth' . DIRECTORY_SEPARATOR . 'jfusion' . DIRECTORY_SEPARATOR . 'auth.php' )) {
-                $mod_exists = true;
-            }
+		    $mod_exists = false;
+		    if (file_exists ( $source_path . DIRECTORY_SEPARATOR . 'auth' . DIRECTORY_SEPARATOR . 'jfusion' . DIRECTORY_SEPARATOR . 'auth.php' )) {
+			    $mod_exists = true;
+		    }
 
-            if ($mod_exists) {
-                $src = 'components/com_jfusion/images/tick.png';
-                $mod = 'uninstallModule';
-                $text = JText::_ ( 'MODULE_UNINSTALL_BUTTON' );
-            } else {
-                $src = 'components/com_jfusion/images/cross.png';
-                $mod = 'installModule';
-                $text = JText::_ ( 'MODULE_INSTALL_BUTTON' );
-            }
+		    if ($mod_exists) {
+			    $src = 'components/com_jfusion/images/tick.png';
+			    $mod = 'uninstallModule';
+			    $text = JText::_ ( 'MODULE_UNINSTALL_BUTTON' );
+		    } else {
+			    $src = 'components/com_jfusion/images/cross.png';
+			    $mod = 'installModule';
+			    $text = JText::_ ( 'MODULE_INSTALL_BUTTON' );
+		    }
 
-            $html = <<<HTML
+		    $html = <<<HTML
                 <div class="button2-left">
                     <div class="blank">
                         <a href="javascript:void(0);" onclick="return JFusion.module('{$mod}');">{$text}</a>
@@ -231,84 +236,82 @@ class JFusionAdmin_moodle extends JFusionAdmin
 
                 <img src="{$src}" style="margin-left:10px;" id="usergroups_img"/>
 HTML;
-            return $html;
-        } else {
-            return JText::_ ( 'MOODLE_CONFIG_FIRST' );
-        }
+		    return $html;
+	    } catch (Exception $e) {
+		    return $e->getMessage();
+	    }
     }
 
     /**
      * @return array
      */
     public function installModule() {
+		try {
+			 $jname =  $this->getJname ();
+			 $db = JFusionFactory::getDatabase($jname);
+			 $params = JFusionFactory::getParams ( $jname );
+			 $source_path = $params->get ( 'source_path' );
+			 jimport ( 'joomla.filesystem.archive' );
+			 jimport ( 'joomla.filesystem.file' );
+			 $pear_path = realpath ( dirname ( __FILE__ ) ) . DIRECTORY_SEPARATOR .'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR. 'pear';
+			 require_once $pear_path.DIRECTORY_SEPARATOR.'PEAR.php';
+			 $pear_archive_path = $pear_path.DIRECTORY_SEPARATOR.archive_tar.DIRECTORY_SEPARATOR.'Archive_Tar.php';
+			 require_once $pear_archive_path;
 
-        $jname =  $this->getJname ();
-        $db = JFusionFactory::getDatabase($jname);
-        $params = JFusionFactory::getParams ( $jname );
-        $source_path = $params->get ( 'source_path' );
-        jimport ( 'joomla.filesystem.archive' );
-        jimport ( 'joomla.filesystem.file' );
-        $pear_path = realpath ( dirname ( __FILE__ ) ) . DIRECTORY_SEPARATOR .'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR. 'pear';
-        require_once $pear_path.DIRECTORY_SEPARATOR.'PEAR.php';
-        $pear_archive_path = $pear_path.DIRECTORY_SEPARATOR.archive_tar.DIRECTORY_SEPARATOR.'Archive_Tar.php';
-        require_once $pear_archive_path;
+			 $status = array('error' => array(),'debug' => array());
+			 $archive_filename = 'moodle_module_jfusion.tar.gz';
+			 $old_chdir = getcwd();
+			 $src_archive =  $src_path = realpath ( dirname ( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'install_module';
+			 $src_code =  $src_archive . DIRECTORY_SEPARATOR . 'source';
+			 $dest = $source_path;
 
-        $status = array('error' => array(),'debug' => array());
-        $archive_filename = 'moodle_module_jfusion.tar.gz';
-        $old_chdir = getcwd();
-        $src_archive =  $src_path = realpath ( dirname ( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'install_module';
-        $src_code =  $src_archive . DIRECTORY_SEPARATOR . 'source';
-        $dest = $source_path;
+			 // Create an archive to facilitate the installation into the Moodle installation while extracting
+			 chdir($src_code);
+			 $tar = new Archive_Tar( $archive_filename, 'gz' );
+			 $tar->setErrorHandling(PEAR_ERROR_PRINT);
+			 $tar->createModify( 'auth lang' , '', '' );
+			 chdir($old_chdir);
 
-        // Create an archive to facilitate the installation into the Moodle installation while extracting
-        chdir($src_code);
-        $tar = new Archive_Tar( $archive_filename, 'gz' );
-        $tar->setErrorHandling(PEAR_ERROR_PRINT);
-        $tar->createModify( 'auth lang' , '', '' );
-        chdir($old_chdir);
+			 $ret = JArchive::extract ( $src_code . DIRECTORY_SEPARATOR . $archive_filename, $dest );
+			 JFile::delete($src_code . DIRECTORY_SEPARATOR . $archive_filename);
 
-        $ret = JArchive::extract ( $src_code . DIRECTORY_SEPARATOR . $archive_filename, $dest );
-        JFile::delete($src_code . DIRECTORY_SEPARATOR . $archive_filename);
+			 if ($ret) {
+				 $joomla = JFusionFactory::getParams('joomla_int');
+				 $joomla_baseurl = $joomla->get('source_url');
+				 $joomla_source_path = JPATH_ROOT.DIRECTORY_SEPARATOR;
 
-        if ($ret) {
-            $joomla = JFusionFactory::getParams('joomla_int');
-            $joomla_baseurl = $joomla->get('source_url');
-            $joomla_source_path = JPATH_ROOT.DIRECTORY_SEPARATOR;
+				 // now set all relevant parameters in Moodles database
+				 // do not yet activate!
 
-            // now set all relevant parameters in Moodles database
-            // do not yet activate!
+				 $querys = array();
+				 $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_enabled\', value = \'0\'';
+				 $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_ismaster\', value = \'0\'';
+				 $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_fullpath\', value = '.$db->quote($joomla_source_path);
+				 $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_baseurl\', value = '.$db->quote($joomla_baseurl);
+				 $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_loginpath\', value = \'\'';
+				 $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_logoutpath\', value = \'\'';
+				 $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_formid\', value = \'login\'';
+				 $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_relpath\', value = \'0\'';
+				 $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_cookiedomain\', value = \'\'';
+				 $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_cookiepath\', value = \'\'';
+				 $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_username_id\', value = \'\'';
+				 $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_password_id\', value = \'\'';
+				 $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_cookie_secure\', value = \'0\'';
+				 $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_cookie_httponly\', value = \'0\'';
+				 $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_verifyhost\', value = \'0\'';
+				 $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_leavealone\', value = \'\'';
+				 $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_expires\', value = \'1800\'';
+				 foreach($querys as $query) {
+					 $db->setQuery($query);
+					 $db->execute();
+				 }
+				 $status['error'] = $jname . ': ' . JText::sprintf('INSTALL_MODULE_ERROR', $src_archive, $dest);
+			 } else {
+				 $status['message'] = $jname .': ' . JText::_('INSTALL_MODULE_SUCCESS');
+			 }
+		} catch (Exception $e) {
 
-            $querys = array();
-            $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_enabled\', value = \'0\'';
-            $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_ismaster\', value = \'0\'';
-            $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_fullpath\', value = '.$db->quote($joomla_source_path);
-            $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_baseurl\', value = '.$db->quote($joomla_baseurl);
-            $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_loginpath\', value = \'\'';
-            $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_logoutpath\', value = \'\'';
-            $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_formid\', value = \'login\'';
-            $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_relpath\', value = \'0\'';
-            $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_cookiedomain\', value = \'\'';
-            $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_cookiepath\', value = \'\'';
-            $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_username_id\', value = \'\'';
-            $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_password_id\', value = \'\'';
-            $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_cookie_secure\', value = \'0\'';
-            $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_cookie_httponly\', value = \'0\'';
-            $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_verifyhost\', value = \'0\'';
-            $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_leavealone\', value = \'\'';
-            $querys[] = 'REPLACE INTO #__config_plugins SET plugin = \'auth/jfusion\' , name = \'jf_expires\', value = \'1800\'';
-            foreach($querys as $query){
-                $db->setQuery($query);
-                $db->execute();
-                if ($db->getErrorNum() != 0) {
-                    $status['error'] = $db->stderr ();
-                    return $status;
-                }
-            }
-            $status['error'] = $jname . ': ' . JText::sprintf('INSTALL_MODULE_ERROR', $src_archive, $dest);
-        } else {
-            $status['message'] = $jname .': ' . JText::_('INSTALL_MODULE_SUCCESS');
-        }
-
+		}
         return $status;
     }
 
@@ -316,79 +319,78 @@ HTML;
      * @return array
      */
     public function uninstallModule() {
-
         $status = array('error' => array(),'debug' => array());
-        jimport ( 'joomla.filesystem.file' );
-        jimport ( 'joomla.filesystem.folder' );
+	    try {
+		    jimport ( 'joomla.filesystem.file' );
+		    jimport ( 'joomla.filesystem.folder' );
 
-        $jname =  $this->getJname ();
-        $db = JFusionFactory::getDatabase($jname);
-        $params = JFusionFactory::getParams ( $jname );
-        $source_path = $params->get ( 'source_path' );
-        $xmlfile = realpath ( dirname ( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'install_module' . DIRECTORY_SEPARATOR . 'source' . DIRECTORY_SEPARATOR . 'listfiles.xml';
+		    $jname =  $this->getJname ();
+		    $db = JFusionFactory::getDatabase($jname);
+		    $params = JFusionFactory::getParams ( $jname );
+		    $source_path = $params->get ( 'source_path' );
+		    $xmlfile = realpath ( dirname ( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'install_module' . DIRECTORY_SEPARATOR . 'source' . DIRECTORY_SEPARATOR . 'listfiles.xml';
 
-	    $listfiles = JFusionFunction::getXml($xmlfile);
-        $files = $listfiles->file;
+		    $listfiles = JFusionFunction::getXml($xmlfile);
+		    $files = $listfiles->file;
 
-        /**
-         * @ignore
-         * @var $file JXMLElement
-         */
-        foreach($files as $file){
-            $file = (string)$file;
-            $file = preg_replace('#/#', DIRECTORY_SEPARATOR, $file);
-            @chmod($source_path . DIRECTORY_SEPARATOR . $file, 0777);
-            if(!is_dir($source_path . DIRECTORY_SEPARATOR . $file)){
-                JFile::delete($source_path . DIRECTORY_SEPARATOR . $file);
-            }else{
-                JFolder::delete($source_path . DIRECTORY_SEPARATOR . $file);
-            }
-        }
-        $querys = array();
-        $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_enabled\'';
-        $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_ismaster\'';
-        $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_fullpath\'';
-        $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_baseurl\'';
-        $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_loginpath\'';
-        $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_logoutpath\'';
-        $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_formid\'';
-        $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_relpath\'';
-        $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_cookiedomain\'';
-        $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_cookiepath\'';
-        $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_username_id\'';
-        $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_password_id\'';
-        $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_cookie_secure\'';
-        $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_cookie_httponly\'';
-        $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_verifyhost\'';
-        $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_leavealone\'';
-        $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_expires\'';
-        $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_expires\'';
-        foreach($querys as $query){
-            $db->setQuery($query);
-            $db->execute();
-            if ($db->getErrorNum() != 0) {
-                $status['error'] = $db->stderr ();
-                return $status;
-            }
-        }
+		    /**
+		     * @ignore
+		     * @var $file JXMLElement
+		     */
+		    foreach($files as $file) {
+			    $file = (string)$file;
+			    $file = preg_replace('#/#', DIRECTORY_SEPARATOR, $file);
+			    @chmod($source_path . DIRECTORY_SEPARATOR . $file, 0777);
+			    if(!is_dir($source_path . DIRECTORY_SEPARATOR . $file)){
+				    JFile::delete($source_path . DIRECTORY_SEPARATOR . $file);
+			    } else {
+				    JFolder::delete($source_path . DIRECTORY_SEPARATOR . $file);
+			    }
+		    }
+		    $querys = array();
+		    $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_enabled\'';
+		    $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_ismaster\'';
+		    $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_fullpath\'';
+		    $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_baseurl\'';
+		    $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_loginpath\'';
+		    $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_logoutpath\'';
+		    $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_formid\'';
+		    $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_relpath\'';
+		    $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_cookiedomain\'';
+		    $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_cookiepath\'';
+		    $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_username_id\'';
+		    $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_password_id\'';
+		    $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_cookie_secure\'';
+		    $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_cookie_httponly\'';
+		    $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_verifyhost\'';
+		    $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_leavealone\'';
+		    $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_expires\'';
+		    $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_expires\'';
+		    foreach($querys as $query){
+			    $db->setQuery($query);
+			    $db->execute();
+		    }
 
-        $status['message'] = $jname .': ' . JText::_('UNINSTALL_MODULE_SUCCESS');
+		    $status['message'] = $jname .': ' . JText::_('UNINSTALL_MODULE_SUCCESS');
 
-        // remove jfusion as active plugin
-        $query = 'SELECT value from #__config WHERE name = \'auth\'';
-        $db->setQuery($query);
-        $value = $db->loadResult();
-        $auths = explode(',',$value);
-        $key = array_search('jfusion',$auths);
-        if ($key !== false){
-            $authstr = $auths[0];
-            for ($i=1; $i <= (count($auths)-1);$i++){
-                if ($auths[$i] != 'jfusion'){
-                    $authstr .= ','.$auths[$i];
-                }
-            }
+		    // remove jfusion as active plugin
+		    $query = 'SELECT value from #__config WHERE name = \'auth\'';
+		    $db->setQuery($query);
+		    $value = $db->loadResult();
+		    $auths = explode(',',$value);
+		    $key = array_search('jfusion',$auths);
+		    if ($key !== false){
+			    $authstr = $auths[0];
+			    for ($i=1; $i <= (count($auths)-1);$i++){
+				    if ($auths[$i] != 'jfusion'){
+					    $authstr .= ','.$auths[$i];
+				    }
+			    }
 
-        }
+		    }
+	    } catch (Exception $e) {
+		    $status['error'] = $e->getMessage();
+	    }
         return $status;
     }
 

@@ -195,54 +195,61 @@ class JFusionAdmin_magento extends JFusionAdmin
     }
 
     function debugConfigExtra() {
-        // see if we have an api user in Magento
-        $jname = $this->getJname();
-        $db = JFusionFactory::getDataBase($this->getJname());
-        $query = 'SELECT count(*) from #__api_user';
-        $db->setQuery($query);
-        $no_users = $db->loadResult();
-        if ($no_users <= 0) {
-            JFusionFunction::raiseWarning($jname . ': ' . JText::_('MAGENTO_NEED_API_USER'));
-        } else {
-            // check if we have valid parameters  for apiuser and api key
-            $params = JFusionFactory::getParams($this->getJname());
-            $apiuser = $params->get('apiuser');
-            $apikey = $params->get('apikey');
-            if (!$apiuser || !$apikey) {
-                JFusionFunction::raiseWarning($jname . '-plugin: ' . JText::_('MAGENTO_NO_API_DATA'));
-            } else {
-                //finally check if the apiuser and apikey are valid
-                $query = 'SELECT api_key FROM #__api_user WHERE username = ' . $db->Quote($apiuser);
-                $db->setQuery($query);
-                $api_key = $db->loadResult();
-                $hashArr = explode(':', $api_key);
-                $api_key = $hashArr[0];
-                $api_salt = $hashArr[1];
-                if ($api_salt) {
-                    $params_hash_md5 = md5($api_salt . $apikey);
-                	$params_hash_sha256 = hash("sha256",$api_salt . $apikey);
-                } else {
-                    $params_hash_md5 = md5($apikey);
-                	$params_hash_sha256 = hash("sha256",$apikey);
-                }
-                	if ($params_hash_md5 != $api_key && $params_hash_sha256 != $api_key) {
-                    JFusionFunction::raiseWarning($jname . '-plugin: ' . JText::_('MAGENTO_WRONG_APIUSER_APIKEY_COMBINATION'));
-                }
-            }
-        }
-        // check the user_remote_addr security settings
-        $query = 'SELECT  value FROM #__core_config_data WHERE path = \'web/session/use_remote_addr\'';
-        $db->setQuery($query);
-        if ($db->getErrorNum() == 0) {
-            $value = $db->loadResult();
-            if ($value) {
-                JFusionFunction::raiseWarning($jname . ': ' . JText::_('MAGENTO_USE_REMOTE_ADDRESS_NOT_DISABLED'));
-            }
-        }
-        // we need to have the curl library installed
-        if (!extension_loaded('curl')) {
-            JFusionFunction::raiseWarning($jname . ': ' . JText::_('CURL_NOTINSTALLED'));
-        }
+	    try {
+		    // see if we have an api user in Magento
+		    $jname = $this->getJname();
+		    $db = JFusionFactory::getDataBase($this->getJname());
+		    $query = 'SELECT count(*) from #__api_user';
+		    $db->setQuery($query);
+		    $no_users = $db->loadResult();
+		    if ($no_users <= 0) {
+			    JFusionFunction::raiseWarning($jname . ': ' . JText::_('MAGENTO_NEED_API_USER'));
+		    } else {
+			    // check if we have valid parameters  for apiuser and api key
+			    $params = JFusionFactory::getParams($this->getJname());
+			    $apiuser = $params->get('apiuser');
+			    $apikey = $params->get('apikey');
+			    if (!$apiuser || !$apikey) {
+				    JFusionFunction::raiseWarning($jname . '-plugin: ' . JText::_('MAGENTO_NO_API_DATA'));
+			    } else {
+				    //finally check if the apiuser and apikey are valid
+				    $query = 'SELECT api_key FROM #__api_user WHERE username = ' . $db->Quote($apiuser);
+				    $db->setQuery($query);
+				    $api_key = $db->loadResult();
+				    $hashArr = explode(':', $api_key);
+				    $api_key = $hashArr[0];
+				    $api_salt = $hashArr[1];
+				    if ($api_salt) {
+					    $params_hash_md5 = md5($api_salt . $apikey);
+					    $params_hash_sha256 = hash("sha256",$api_salt . $apikey);
+				    } else {
+					    $params_hash_md5 = md5($apikey);
+					    $params_hash_sha256 = hash("sha256",$apikey);
+				    }
+				    if ($params_hash_md5 != $api_key && $params_hash_sha256 != $api_key) {
+					    JFusionFunction::raiseWarning($jname . '-plugin: ' . JText::_('MAGENTO_WRONG_APIUSER_APIKEY_COMBINATION'));
+				    }
+			    }
+		    }
+		    try {
+			    // check the user_remote_addr security settings
+			    $query = 'SELECT  value FROM #__core_config_data WHERE path = \'web/session/use_remote_addr\'';
+			    $db->setQuery($query);
+			    $value = $db->loadResult();
+			    if ($value) {
+				    JFusionFunction::raiseWarning($jname . ': ' . JText::_('MAGENTO_USE_REMOTE_ADDRESS_NOT_DISABLED'));
+			    }
+			    // we need to have the curl library installed
+			    if (!extension_loaded('curl')) {
+				    JFusionFunction::raiseWarning($jname . ': ' . JText::_('CURL_NOTINSTALLED'));
+			    }
+		    } catch (Exception $e) {
+
+		    }
+
+	    } catch (Exception $e) {
+
+	    }
     }
 
     /**
@@ -263,28 +270,33 @@ class JFusionAdmin_magento extends JFusionAdmin
         $jname = $this->getJname ();
         $params = JFusionFactory::getParams ( $jname );
 
-        $db = JFusionFactory::getDatabase ( $jname );
-        if (! JError::isError ( $db ) && ! empty ( $db )) {
-            $source_path = $params->get ( 'source_path', '' );
-            if (! file_exists ( $source_path . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Mage.php' )) {
-                $html = JText::_ ( 'MAGE_CONFIG_SOURCE_PATH' );
-            } else {
-                $mod_exists = false;
-                if (file_exists ( $source_path . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'Jfusion_All.xml' )) {
-                    $mod_exists = true;
-                }
+	    try {
+		    try {
+			    $db = JFusionFactory::getDatabase ( $jname );
+		    } catch (Exception $e) {
+			    throw new Exception(JText::_('MOODLE_CONFIG_FIRST'));
+		    }
 
-                if ($mod_exists) {
-                    $src = 'components/com_jfusion/images/tick.png';
-                    $mod = 'uninstallModule';
-                    $text = JText::_ ( 'MODULE_UNINSTALL_BUTTON' );
-                } else {
-                    $src = 'components/com_jfusion/images/cross.png';
-                    $mod = 'installModule';
-                    $text = JText::_ ( 'MODULE_INSTALL_BUTTON' );
-                }
+		    $source_path = $params->get ( 'source_path', '' );
+		    if (! file_exists ( $source_path . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Mage.php' )) {
+			    throw new Exception(JText::_('MAGE_CONFIG_SOURCE_PATH'));
+		    } else {
+			    $mod_exists = false;
+			    if (file_exists ( $source_path . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'Jfusion_All.xml' )) {
+				    $mod_exists = true;
+			    }
 
-                $html = <<<HTML
+			    if ($mod_exists) {
+				    $src = 'components/com_jfusion/images/tick.png';
+				    $mod = 'uninstallModule';
+				    $text = JText::_ ( 'MODULE_UNINSTALL_BUTTON' );
+			    } else {
+				    $src = 'components/com_jfusion/images/cross.png';
+				    $mod = 'installModule';
+				    $text = JText::_ ( 'MODULE_INSTALL_BUTTON' );
+			    }
+
+			    $html = <<<HTML
                 <div class="button2-left">
                     <div class="blank">
                         <a href="javascript:void(0);" onclick="return JFusion.module('{$mod}');">{$text}</a>
@@ -293,83 +305,77 @@ class JFusionAdmin_magento extends JFusionAdmin
 
                 <img src="{$src}" style="margin-left:10px;" id="usergroups_img"/>
 HTML;
-            }
-        } else {
-            $html = JText::_ ( 'MAGE_CONFIG_FIRST' );
-		}
-        return $html;
+		    }
+		    return $html;
+	    } catch (Exception $e) {
+		    return $e->getMessage();
+	    }
+
 	}
 
     /**
      * @return array
      */
     public function installModule() {
-		
-		$jname =  $this->getJname ();
-		$db = JFusionFactory::getDatabase($jname);
-		$params = JFusionFactory::getParams ( $jname );
-		$source_path = $params->get ( 'source_path' );
-		jimport ( 'joomla.filesystem.archive' );
-		jimport ( 'joomla.filesystem.file' );
-        $pear_path = realpath ( dirname ( __FILE__ ) ) . DIRECTORY_SEPARATOR .'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR. 'pear';
-        require_once $pear_path.DIRECTORY_SEPARATOR.'PEAR.php';
-        $pear_archive_path = $pear_path.DIRECTORY_SEPARATOR.archive_tar.DIRECTORY_SEPARATOR.'Archive_Tar.php';
-        require_once $pear_archive_path;
+	    $status = array('error' => array(),'debug' => array());
+		try {
+			$jname =  $this->getJname ();
+			$db = JFusionFactory::getDatabase($jname);
+			$params = JFusionFactory::getParams ( $jname );
+			$source_path = $params->get ( 'source_path' );
+			jimport ( 'joomla.filesystem.archive' );
+			jimport ( 'joomla.filesystem.file' );
+			$pear_path = realpath ( dirname ( __FILE__ ) ) . DIRECTORY_SEPARATOR .'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR. 'pear';
+			require_once $pear_path.DIRECTORY_SEPARATOR.'PEAR.php';
+			$pear_archive_path = $pear_path.DIRECTORY_SEPARATOR.archive_tar.DIRECTORY_SEPARATOR.'Archive_Tar.php';
+			require_once $pear_archive_path;
 
-        $status = array('error' => array(),'debug' => array());
-		$archive_filename = 'magento_module_jfusion.tar.gz';
-		$old_chdir = getcwd();
-		$src_archive =  $src_path = realpath ( dirname ( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'install_module';
-		$src_code =  $src_archive . DIRECTORY_SEPARATOR . 'source';
-		$dest = $source_path;
-		
-		// Create an archive to facilitate the installation into the Magento installation while extracting
-		chdir($src_code);
-		$tar = new Archive_Tar( $archive_filename, 'gz' );
-		$tar->setErrorHandling(PEAR_ERROR_PRINT);
-		$tar->createModify( 'app' , '', '' );
-		chdir($old_chdir);
-		
-		$ret = JArchive::extract ( $src_code . DIRECTORY_SEPARATOR . $archive_filename, $dest );
-		JFile::delete($src_code . DIRECTORY_SEPARATOR . $archive_filename);
-		
-		// Initialize default data config in Magento database
-		$joomla = JFusionFactory::getParams('joomla_int');
-		$joomla_baseurl = $joomla->get('source_url');
-		$joomla_secret = $joomla->get('secret');
-		
-		$query = 'REPLACE INTO #__core_config_data SET path = \'joomla/joomlaconfig/baseurl\', value = \''.$joomla_baseurl.'\';';
-		$db->transactionStart();
-        $db->setQuery($query);
-        $db->execute();
-		if ($db->getErrorNum() != 0) {
-			$db->transactionRollback();
-			$status['error'] = $db->stderr ();
-		} else {
-            $query = 'REPLACE INTO #__core_config_data SET path = \'joomla/joomlaconfig/installationpath\', value = \''.JPATH_SITE.'\';';
-            $db->transactionStart();
-            $db->setQuery($query);
-            $db->execute();
-            if ($db->getErrorNum() != 0) {
-                $db->transactionRollback();
-                $status['error'] = $db->stderr ();
-            } else {
-                $query = 'REPLACE INTO #__core_config_data SET path = \'joomla/joomlaconfig/secret_key\', value = \''.$joomla_secret.'\';';
-                $db->transactionStart();
-                $db->setQuery($query);
-                $db->execute();
-                if ($db->getErrorNum() != 0) {
-                    $db->transactionRollback();
-                    $status['error'] = $db->stderr ();
-                } else {
-                    if ($ret !== true) {
-                        $status['error'] = $jname . ': ' . JText::sprintf('INSTALL_MODULE_ERROR', $src_archive, $dest);
-                    } else {
-                        $status['message'] = $jname .': ' . JText::_('INSTALL_MODULE_SUCCESS');
-                    }
-                }
-            }
-        }
+			$archive_filename = 'magento_module_jfusion.tar.gz';
+			$old_chdir = getcwd();
+			$src_archive =  $src_path = realpath ( dirname ( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'install_module';
+			$src_code =  $src_archive . DIRECTORY_SEPARATOR . 'source';
+			$dest = $source_path;
+
+			// Create an archive to facilitate the installation into the Magento installation while extracting
+			chdir($src_code);
+			$tar = new Archive_Tar( $archive_filename, 'gz' );
+			$tar->setErrorHandling(PEAR_ERROR_PRINT);
+			$tar->createModify( 'app' , '', '' );
+			chdir($old_chdir);
+
+			$ret = JArchive::extract ( $src_code . DIRECTORY_SEPARATOR . $archive_filename, $dest );
+			JFile::delete($src_code . DIRECTORY_SEPARATOR . $archive_filename);
+
+			if ($ret === true) {
+				// Initialize default data config in Magento database
+				$joomla = JFusionFactory::getParams('joomla_int');
+				$joomla_baseurl = $joomla->get('source_url');
+				$joomla_secret = $joomla->get('secret');
+
+				$query = 'REPLACE INTO #__core_config_data SET path = \'joomla/joomlaconfig/baseurl\', value = \''.$joomla_baseurl.'\';';
+				$db->transactionStart();
+				$db->setQuery($query);
+				$db->execute();
+
+				$query = 'REPLACE INTO #__core_config_data SET path = \'joomla/joomlaconfig/installationpath\', value = \''.JPATH_SITE.'\';';
+				$db->transactionStart();
+				$db->setQuery($query);
+				$db->execute();
+
+				$query = 'REPLACE INTO #__core_config_data SET path = \'joomla/joomlaconfig/secret_key\', value = \''.$joomla_secret.'\';';
+				$db->transactionStart();
+				$db->setQuery($query);
+				$db->execute();
+				$status['message'] = $jname .': ' . JText::_('INSTALL_MODULE_SUCCESS');
+			} else {
+				$status['error'] = $jname . ': ' . JText::sprintf('INSTALL_MODULE_ERROR', $src_archive, $dest);
+			}
+		} catch (Exception $e) {
+			if (isset($db)) {
+				$db->transactionRollback();
+			}
+			$status['error'] = $e->getMessage();
+		}
 		return $status;
 	}
 
@@ -378,74 +384,52 @@ HTML;
      */
     public function uninstallModule() {
         $status = array('error' => array(),'debug' => array());
-		jimport ( 'joomla.filesystem.file' );
-		jimport ( 'joomla.filesystem.folder' );
-		
-		$jname =  $this->getJname ();
-		$db = JFusionFactory::getDatabase($jname);
-		$params = JFusionFactory::getParams ( $jname );
-		$source_path = $params->get ( 'source_path' );
-		$xmlfile = realpath ( dirname ( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'install_module' . DIRECTORY_SEPARATOR . 'source' . DIRECTORY_SEPARATOR . 'listfiles.xml';
+	    try {
+		    jimport ( 'joomla.filesystem.file' );
+		    jimport ( 'joomla.filesystem.folder' );
 
-	    $listfiles = JFusionFunction::getXml($xmlfile);
-		$files = $listfiles->file;
-        /**
-         * @ignore
-         * @var $file JXMLElement
-         */
-		foreach($files as $file) {
-			$file = (string)$file;
-			$file = preg_replace('#/#', DIRECTORY_SEPARATOR, $file);
-			@chmod($source_path . DIRECTORY_SEPARATOR . $file, 0777);
-			if (!is_dir($source_path . DIRECTORY_SEPARATOR . $file)) {
-				JFile::delete($source_path . DIRECTORY_SEPARATOR . $file);
-			} else {
-				JFolder::delete($source_path . DIRECTORY_SEPARATOR . $file);
-			}
-		}
-		
-		$paths = array();
-		$paths[] = 'joomla/joomlaconfig/baseurl';
-		$paths[] = 'joomla/joomlaconfig/installationpath';
-		$paths[] = 'joomla/joomlaconfig/secret_key';
-		
-		foreach($paths as $path) {
-			$query = 'DELETE FROM #__core_config_data WHERE path = ' . $db->Quote($path);
-			$db->transactionStart();
-			$db->setQuery($query);
-			$db->execute();
-			if ($db->getErrorNum() != 0) {
-				$db->transactionRollback();
-				$status['error'] = $db->stderr();
-                break;
-			}
-		}
-		
-		/*
-		$query = 'DELETE FROM #__core_config_data WHERE path = \'joomla/joomlaconfig/installationpath\'';
-		$db->transactionStart();
-		$db->setQuery($query);
-        $db->execute();
-		if ($db->getErrorNum() != 0) {
-			$db->transactionRollback();
-			$status['error'] = $db->stderr ();
-			return $status;
-		}
-		
-		$query = 'DELETE FROM #__core_config_data WHERE path = \'joomla/joomlaconfig/secret_key\'';
-		$db->transactionStart();
-		$db->setQuery($query);
-        $db->execute();
-		if ($db->getErrorNum() != 0) {
-			$db->transactionRollback();
-			$status['error'] = $db->stderr ();
-			return $status;
-		}
-		*/
+		    $jname =  $this->getJname ();
+		    $db = JFusionFactory::getDatabase($jname);
+		    $params = JFusionFactory::getParams ( $jname );
+		    $source_path = $params->get ( 'source_path' );
+		    $xmlfile = realpath ( dirname ( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'install_module' . DIRECTORY_SEPARATOR . 'source' . DIRECTORY_SEPARATOR . 'listfiles.xml';
 
-        if (empty($status['error'])) {
-            $status['message'] = $jname .': ' . JText::_('UNINSTALL_MODULE_SUCCESS');
-        }
+		    $listfiles = JFusionFunction::getXml($xmlfile);
+		    $files = $listfiles->file;
+		    /**
+		     * @ignore
+		     * @var $file JXMLElement
+		     */
+		    foreach($files as $file) {
+			    $file = (string)$file;
+			    $file = preg_replace('#/#', DIRECTORY_SEPARATOR, $file);
+			    @chmod($source_path . DIRECTORY_SEPARATOR . $file, 0777);
+			    if (!is_dir($source_path . DIRECTORY_SEPARATOR . $file)) {
+				    JFile::delete($source_path . DIRECTORY_SEPARATOR . $file);
+			    } else {
+				    JFolder::delete($source_path . DIRECTORY_SEPARATOR . $file);
+			    }
+		    }
+
+		    $paths = array();
+		    $paths[] = 'joomla/joomlaconfig/baseurl';
+		    $paths[] = 'joomla/joomlaconfig/installationpath';
+		    $paths[] = 'joomla/joomlaconfig/secret_key';
+
+		    foreach($paths as $path) {
+			    $query = 'DELETE FROM #__core_config_data WHERE path = ' . $db->Quote($path);
+			    $db->transactionStart();
+			    $db->setQuery($query);
+			    $db->execute();
+		    }
+
+		    $status['message'] = $jname .': ' . JText::_('UNINSTALL_MODULE_SUCCESS');
+	    } catch (Exception $e) {
+		    if (isset($db)) {
+			    $db->transactionRollback();
+		    }
+		    $status['error'] = $e->getMessage();
+	    }
         return $status;
 	}
 

@@ -332,68 +332,66 @@ class JFusionUser_universal extends JFusionUser {
 	 */
 	function updateUsergroup($userinfo, &$existinguser, &$status)
 	{
-		//get the usergroup and determine if working in advanced or simple mode
-		$usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
-		if (empty($usergroups)) {
-			$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST');
-		} else {
-			$db = JFusionFactory::getDatabase($this->getJname());
-			/**
-			 * @ignore
-			 * @var $helper JFusionHelper_universal
-			 */
-			$helper = JFusionFactory::getHelper($this->getJname());
-			$params = JFusionFactory::getParams($this->getJname());
-
-			$userid = $helper->getFieldUserID();
-			$group = $helper->getFieldType('GROUP');
-
-			if ( isset($group) && isset($userid) ) {
-				$table = $helper->getTable();
-				$type = 'user';
+		try {
+			//get the usergroup and determine if working in advanced or simple mode
+			$usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+			if (empty($usergroups)) {
+				throw new Exception(JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST'));
 			} else {
-				$table = $helper->getTable('group');
-				$userid = $helper->getFieldType('USERID','group');
-				$group = $helper->getFieldType('GROUP','group');
-				$type = 'group';
-			}
-			if ( !isset($userid) ) {
-				$status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . JText::_('NO_USERID_MAPPED');
-			} else if ( !isset($group) ) {
-				$status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . JText::_('NO_GROUP_MAPPED');
-			} else if ( $type == 'user' ) {
-				$usergroup = $usergroups[0];
-				$query = 'UPDATE #__'.$table.' '.
-					'SET '.$group->field.' = '.$db->quote(base64_decode($usergroup)) .' '.
-					'WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid);
-				$db->setQuery($query );
-				if (!$db->execute()) {
-					$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' .$db->stderr();
+				$db = JFusionFactory::getDatabase($this->getJname());
+				/**
+				 * @ignore
+				 * @var $helper JFusionHelper_universal
+				 */
+				$helper = JFusionFactory::getHelper($this->getJname());
+				$params = JFusionFactory::getParams($this->getJname());
+
+				$userid = $helper->getFieldUserID();
+				$group = $helper->getFieldType('GROUP');
+
+				if ( isset($group) && isset($userid) ) {
+					$table = $helper->getTable();
+					$type = 'user';
 				} else {
-					$status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . base64_decode($existinguser->group_id) . ' -> ' . base64_decode($usergroup);
+					$table = $helper->getTable('group');
+					$userid = $helper->getFieldType('USERID','group');
+					$group = $helper->getFieldType('GROUP','group');
+					$type = 'group';
 				}
-			} else {
-				$maped = $helper->getMap('group');
-				$andwhere = '';
+				if ( !isset($userid) ) {
+					$status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . JText::_('NO_USERID_MAPPED');
+				} else if ( !isset($group) ) {
+					$status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . JText::_('NO_GROUP_MAPPED');
+				} else if ( $type == 'user' ) {
+					$usergroup = $usergroups[0];
+					$query = 'UPDATE #__'.$table.' '.
+						'SET '.$group->field.' = '.$db->quote(base64_decode($usergroup)) .' '.
+						'WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid);
+					$db->setQuery($query );
+					$db->execute();
 
-				foreach ($maped as $key => $value) {
-					$field = $value->field;
-					foreach ($value->type as $type) {
-						switch ($type) {
-							case 'DEFAULT':
-								if ( $value->fieldtype == 'VALUE' ) {
-									$andwhere .= ' AND '.$field.' = '.$db->Quote($value->value);
-								}
-								break;
+					$status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . base64_decode($existinguser->group_id) . ' -> ' . base64_decode($usergroup);
+				} else {
+					$maped = $helper->getMap('group');
+					$andwhere = '';
+
+					foreach ($maped as $key => $value) {
+						$field = $value->field;
+						foreach ($value->type as $type) {
+							switch ($type) {
+								case 'DEFAULT':
+									if ( $value->fieldtype == 'VALUE' ) {
+										$andwhere .= ' AND '.$field.' = '.$db->Quote($value->value);
+									}
+									break;
+							}
 						}
 					}
-				}
-				//remove the old usergroup for the user in the groups table
-				$query = 'DELETE FROM #__user_group WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid) . $andwhere;
-				$db->setQuery($query);
-				if (!$db->execute()) {
-					$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-				} else {
+					//remove the old usergroup for the user in the groups table
+					$query = 'DELETE FROM #__user_group WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid) . $andwhere;
+					$db->setQuery($query);
+					$db->execute();
+
 					foreach ($usergroups as $usergroup) {
 						$addgroup = new stdClass;
 						foreach ($maped as $key => $value) {
@@ -412,14 +410,14 @@ class JFusionUser_universal extends JFusionUser {
 								}
 							}
 						}
-						if (!$db->insertObject('#__'.$helper->getTable('group'), $addgroup )) {
-							$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' .$db->stderr();
-						} else {
-							$status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . base64_decode($existinguser->group_id) . ' -> ' . base64_decode($usergroup);
-						}
+						$db->insertObject('#__'.$helper->getTable('group'), $addgroup );
+
+						$status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . base64_decode($existinguser->group_id) . ' -> ' . base64_decode($usergroup);
 					}
 				}
 			}
+		} catch (Exception $e) {
+			$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' .$e->getMessage();
 		}
 	}
 
