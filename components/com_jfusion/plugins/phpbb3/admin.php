@@ -487,36 +487,37 @@ HTML;
      */
     function disableAuthMod() {
         $return = true;
-        //check to see if the mod is enabled
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'UPDATE #__config SET config_value = \'db\' WHERE config_name = \'auth_method\'';
-        $db->setQuery($query);
-        if (!$db->execute()) {
-            //there was an error saving the parameters
-            JFusionFunction::raiseWarning(0, $db->stderr());
-            $return = false;
-        }
-        //remove the file as well to allow for updates of the auth mod content
-        $params = JFusionFactory::getParams($this->getJname());
-        $path = $params->get('source_path');
-        if (substr($path, -1) == DIRECTORY_SEPARATOR) {
-            $auth_file = $path . 'includes' . DIRECTORY_SEPARATOR . 'auth' . DIRECTORY_SEPARATOR . 'auth_jfusion.php';
-        } else {
-            $auth_file = $path . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'auth' . DIRECTORY_SEPARATOR . 'auth_jfusion.php';
-        }
-        if (file_exists($auth_file)) {
-            jimport('joomla.filesystem.file');
-            if (!JFile::delete($auth_file)) {
-                $return = false;
-            }
-        }
+	    try {
+		    //check to see if the mod is enabled
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'UPDATE #__config SET config_value = \'db\' WHERE config_name = \'auth_method\'';
+		    $db->setQuery($query);
+		    $db->execute();
 
-        //clear the config cache so that phpBB recognizes the change
-        $cleared = $this->clearConfigCache();
-        if (!$cleared) {
-            $return = false;
-        }
+		    //remove the file as well to allow for updates of the auth mod content
+		    $params = JFusionFactory::getParams($this->getJname());
+		    $path = $params->get('source_path');
+		    if (substr($path, -1) == DIRECTORY_SEPARATOR) {
+			    $auth_file = $path . 'includes' . DIRECTORY_SEPARATOR . 'auth' . DIRECTORY_SEPARATOR . 'auth_jfusion.php';
+		    } else {
+			    $auth_file = $path . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'auth' . DIRECTORY_SEPARATOR . 'auth_jfusion.php';
+		    }
+		    if (file_exists($auth_file)) {
+			    jimport('joomla.filesystem.file');
+			    if (!JFile::delete($auth_file)) {
+				    throw new Exception('Cant delete file: '.$auth_file);
+			    }
+		    }
 
+		    //clear the config cache so that phpBB recognizes the change
+		    $cleared = $this->clearConfigCache();
+		    if (!$cleared) {
+			    throw new Exception('Cash not cleared!');
+		    }
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseWarning(0, $e->getMessage());
+		    $return = false;
+	    }
         return $return;
     }
 

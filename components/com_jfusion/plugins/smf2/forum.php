@@ -221,128 +221,121 @@ class JFusionForum_smf2 extends JFusionForum
      */
 	function createThread(&$dbparams, &$contentitem, $forumid, &$status)
 	{
-		//setup some variables
-		$userid = $this->getThreadAuthor($dbparams,$contentitem);
-		$jdb = JFusionFactory::getDatabase($this->getJname());
-		$subject = trim(strip_tags($contentitem->title));
+		try {
+			//setup some variables
+			$userid = $this->getThreadAuthor($dbparams,$contentitem);
+			$jdb = JFusionFactory::getDatabase($this->getJname());
+			$subject = trim(strip_tags($contentitem->title));
 
-		//prepare the content body
-		$text = $this->prepareFirstPostBody($dbparams, $contentitem);
+			//prepare the content body
+			$text = $this->prepareFirstPostBody($dbparams, $contentitem);
 
-		//the user information
-		$query = 'SELECT member_name, email_address FROM #__members WHERE id_member = '.$userid;
-		$jdb->setQuery($query);
-		$smfUser = $jdb->loadObject();
+			//the user information
+			$query = 'SELECT member_name, email_address FROM #__members WHERE id_member = '.$userid;
+			$jdb->setQuery($query);
+			$smfUser = $jdb->loadObject();
 
-        if ($dbparams->get('use_content_created_date', false)) {
-        	$mainframe = JFactory::getApplication();
-            $timezone = $mainframe->getCfg('offset');
-            $timestamp = strtotime($contentitem->created);
-            //undo Joomla timezone offset
-            $timestamp += ($timezone * 3600);
-        } else {
-             $timestamp = time();
-        }
+			if ($dbparams->get('use_content_created_date', false)) {
+				$mainframe = JFactory::getApplication();
+				$timezone = $mainframe->getCfg('offset');
+				$timestamp = strtotime($contentitem->created);
+				//undo Joomla timezone offset
+				$timestamp += ($timezone * 3600);
+			} else {
+				$timestamp = time();
+			}
 
-		$topic_row = new stdClass();
+			$topic_row = new stdClass();
 
-		$topic_row->is_sticky = 0;
-		$topic_row->id_board = $forumid;
-		$topic_row->id_first_msg = $topic_row->id_last_msg = 0;
-		$topic_row->id_member_started = $topic_row->id_member_updated =  $userid;
-		$topic_row->id_poll = 0;
-		$topic_row->num_replies = 0;
-		$topic_row->num_views = 0;
-		$topic_row->locked = 0;
+			$topic_row->is_sticky = 0;
+			$topic_row->id_board = $forumid;
+			$topic_row->id_first_msg = $topic_row->id_last_msg = 0;
+			$topic_row->id_member_started = $topic_row->id_member_updated =  $userid;
+			$topic_row->id_poll = 0;
+			$topic_row->num_replies = 0;
+			$topic_row->num_views = 0;
+			$topic_row->locked = 0;
 
-		if(!$jdb->insertObject('#__topics', $topic_row, 'id_topic' )){
-			$status['error'] = $jdb->stderr();
-		} else {
-            $topicid = $jdb->insertid();
+			$jdb->insertObject('#__topics', $topic_row, 'id_topic' );
+			$topicid = $jdb->insertid();
 
-            $post_row = new stdClass();
-            $post_row->id_board			= $forumid;
-            $post_row->id_topic 		= $topicid;
-            $post_row->poster_time		= $timestamp;
-            $post_row->id_member		= $userid;
-            $post_row->subject			= $subject;
-            $post_row->poster_name		= $smfUser->member_name;
-            $post_row->poster_email		= $smfUser->email_address;
-            $post_row->poster_ip			= $_SERVER['REMOTE_ADDR'];
-            $post_row->smileys_enabled	= 1;
-            $post_row->modified_time		= 0;
-            $post_row->modified_name		= '';
-            $post_row->body				= $text;
-            $post_row->icon				= 'xx';
+			$post_row = new stdClass();
+			$post_row->id_board			= $forumid;
+			$post_row->id_topic 		= $topicid;
+			$post_row->poster_time		= $timestamp;
+			$post_row->id_member		= $userid;
+			$post_row->subject			= $subject;
+			$post_row->poster_name		= $smfUser->member_name;
+			$post_row->poster_email		= $smfUser->email_address;
+			$post_row->poster_ip			= $_SERVER['REMOTE_ADDR'];
+			$post_row->smileys_enabled	= 1;
+			$post_row->modified_time		= 0;
+			$post_row->modified_name		= '';
+			$post_row->body				= $text;
+			$post_row->icon				= 'xx';
 
-            if(!$jdb->insertObject('#__messages', $post_row, 'id_msg')) {
-                $status['error'] = $jdb->stderr();
-            } else {
-                $postid = $jdb->insertid();
+			$jdb->insertObject('#__messages', $post_row, 'id_msg');
 
-                $post_row = new stdClass();
-                $post_row->id_msg = $postid;
-                $post_row->id_msg_modified = $postid;
-                if(!$jdb->updateObject('#__messages', $post_row, 'id_msg' )) {
-                    $status['error'] = $jdb->stderr();
-                }
+			$postid = $jdb->insertid();
 
-                $topic_row = new stdClass();
+			$post_row = new stdClass();
+			$post_row->id_msg = $postid;
+			$post_row->id_msg_modified = $postid;
 
-                $topic_row->id_first_msg	= $postid;
-                $topic_row->id_last_msg		= $postid;
-                $topic_row->id_topic 		= $topicid;
-                if(!$jdb->updateObject('#__topics', $topic_row, 'id_topic' )) {
-                    $status['error'] = $jdb->stderr();
-                }
+			$jdb->updateObject('#__messages', $post_row, 'id_msg' );
 
-                $forum_stats = new stdClass();
-                $forum_stats->id_board =  $forumid;
+			$topic_row = new stdClass();
 
-                $query = 'SELECT m.poster_time FROM #__messages AS m INNER JOIN #__boards AS b ON b.id_last_msg = m.id_msg WHERE b.id_board = '.$forumid;
-                $jdb->setQuery($query);
-                $lastPostTime = (int) $jdb->loadResult();
-                if($dbparams->get('use_content_created_date',false)) {
-                    //only update the last post for the board if it really is newer
-                    $updateLastPost = ($timestamp > $lastPostTime) ? true : false;
-                } else {
-                    $updateLastPost = true;
-                }
+			$topic_row->id_first_msg	= $postid;
+			$topic_row->id_last_msg		= $postid;
+			$topic_row->id_topic 		= $topicid;
 
-                if($updateLastPost) {
-                    $forum_stats->id_last_msg =  $postid;
-                    $forum_stats->id_msg_updated =  $postid;
-                }
+			$jdb->updateObject('#__topics', $topic_row, 'id_topic' );
 
-                $query = 'SELECT num_topics, num_posts FROM #__boards WHERE id_board = '.$forumid;
-                $jdb->setQuery($query);
-                $num = $jdb->loadObject();
-                $forum_stats->num_posts =  $num->num_posts +1;
-                $forum_stats->num_topics =  $num->num_topics +1;
+			$forum_stats = new stdClass();
+			$forum_stats->id_board =  $forumid;
 
-                if(!$jdb->updateObject('#__boards', $forum_stats, 'id_board' )) {
-                    $status['error'] = $jdb->stderr();
-                }
-                if ($updateLastPost) {
-                    $query = 'REPLACE INTO #__log_topics SET id_member = '.$userid.', id_topic = '.$topicid.', id_msg = ' . ($postid + 1);
-                    $jdb->setQuery($query);
-                    if (!$jdb->execute()) {
-                        $status['error'] = $jdb->stderr();
-                    }
-                    $query = 'REPLACE INTO #__log_boards SET id_member = '.$userid.', id_board = '.$forumid.', id_msg = '.$postid;
-                    $jdb->setQuery($query);
-                    if (!$jdb->execute()) {
-                        $status['error'] = $jdb->stderr();
-                    }
-                }
-                if(!empty($topicid) && !empty($postid)) {
-                    //add information to update forum lookup
-                    $status['threadinfo']->forumid = $forumid;
-                    $status['threadinfo']->threadid = $topicid;
-                    $status['threadinfo']->postid = $postid;
-                }
-            }
-        }
+			$query = 'SELECT m.poster_time FROM #__messages AS m INNER JOIN #__boards AS b ON b.id_last_msg = m.id_msg WHERE b.id_board = '.$forumid;
+			$jdb->setQuery($query);
+			$lastPostTime = (int) $jdb->loadResult();
+			if($dbparams->get('use_content_created_date',false)) {
+				//only update the last post for the board if it really is newer
+				$updateLastPost = ($timestamp > $lastPostTime) ? true : false;
+			} else {
+				$updateLastPost = true;
+			}
+
+			if($updateLastPost) {
+				$forum_stats->id_last_msg =  $postid;
+				$forum_stats->id_msg_updated =  $postid;
+			}
+
+			$query = 'SELECT num_topics, num_posts FROM #__boards WHERE id_board = '.$forumid;
+			$jdb->setQuery($query);
+			$num = $jdb->loadObject();
+			$forum_stats->num_posts =  $num->num_posts +1;
+			$forum_stats->num_topics =  $num->num_topics +1;
+
+			$jdb->updateObject('#__boards', $forum_stats, 'id_board' );
+
+			if ($updateLastPost) {
+				$query = 'REPLACE INTO #__log_topics SET id_member = '.$userid.', id_topic = '.$topicid.', id_msg = ' . ($postid + 1);
+				$jdb->setQuery($query);
+				$jdb->execute();
+
+				$query = 'REPLACE INTO #__log_boards SET id_member = '.$userid.', id_board = '.$forumid.', id_msg = '.$postid;
+				$jdb->setQuery($query);
+				$jdb->execute();
+			}
+			if(!empty($topicid) && !empty($postid)) {
+				//add information to update forum lookup
+				$status['threadinfo']->forumid = $forumid;
+				$status['threadinfo']->threadid = $topicid;
+				$status['threadinfo']->postid = $postid;
+			}
+		} catch (Exception $e) {
+			$status['error'] = $e->getMessage();
+		}
 	}
 
 	 /**

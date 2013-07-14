@@ -50,79 +50,76 @@ class JFormFieldjfusionsql extends JFormField
 		$val = ($this->element['value_field']) ? (string) $this->element['value_field'] : '';
         $param_name = ($multiple) ? $this->formControl.'['.$this->group.']['.$this->fieldname.'][]' : $this->formControl.'['.$this->group.']['.$this->fieldname.']';
 
-		if(!empty($jname)) {
-    		if (JFusionFunction::validPlugin($jname)) {
-		    	$db = JFusionFactory::getDatabase($jname);
-		    	$query = (string) $this->element['query'];
+	    try {
+		    if($jname) {
+			    if (JFusionFunction::validPlugin($jname)) {
+				    $db = JFusionFactory::getDatabase($jname);
+				    $query = (string) $this->element['query'];
 
-		    	//some special queries for discussion bot
-		    	if ($query == 'joomla.categories') {
-		    	    //joomla 1.6+
-                    /**
-                     * @ignore
-                     * @var $params JDatabaseInterface
-                     */
-        			$query = $db->getQuery(true);
-        			$query->select('a.id, a.title as name, a.level');
-        			$query->from('#__categories AS a');
-        			$query->where('a.parent_id > 0');
-        			$query->where('extension = \'com_content\'');
-                    $query->where('a.published = 1');
-        			$query->order('a.lft');
+				    //some special queries for discussion bot
+				    if ($query == 'joomla.categories') {
+					    //joomla 1.6+
+					    /**
+					     * @ignore
+					     * @var $params JDatabaseInterface
+					     */
+					    $query = $db->getQuery(true);
+					    $query->select('a.id, a.title as name, a.level');
+					    $query->from('#__categories AS a');
+					    $query->where('a.parent_id > 0');
+					    $query->where('extension = \'com_content\'');
+					    $query->where('a.published = 1');
+					    $query->order('a.lft');
 
-        			$db->setQuery($query);
-        			$items = $db->loadObjectList();
-        			foreach ($items as &$item) {
-        				$repeat = ( $item->level - 1 >= 0 ) ? $item->level - 1 : 0;
-        				$item->name = str_repeat('- ', $repeat).$item->name;
-        			}
-        			return JHTML::_('select.genericlist',  $items, $param_name, 'class="inputbox" '.$multiple, $key, $val, $this->value, $this->formControl.'_'.$this->group.'_'.$this->fieldname);
-		    	} elseif ($query == 'k2.categories') {
-		    	    $jdb = JFactory::getDBO();
-                    $query = 'SELECT enabled FROM #__extensions WHERE element = ' . $jdb->Quote('com_k2');
-                    $db->setQuery( $query );
-                    $enabled = $jdb->loadResult();
-                    if (empty($enabled)) {
-                        return '<span style="float:left; margin: 5px 0; font-weight: bold;">' . JText::_('K2_NOT_AVAILABLE') . '</span>';
-                    }
-                    $query = 'SELECT id, name as title, parent FROM #__k2_categories WHERE id > 0 AND trash = 0 AND published = 1';
-		    	    $db->setQuery($query);
-        			$items = $db->loadObjectList();
-            		$children = array ();
-            		if(count($items)){
-            			foreach ($items as $v) {
-            				$pt = $v->parent;
-            				$list = @$children[$pt]?$children[$pt]: array ();
-            				array_push($list, $v);
-            				$children[$pt] = $list;
-            			}
-            		}
+					    $db->setQuery($query);
+					    $items = $db->loadObjectList();
+					    foreach ($items as &$item) {
+						    $repeat = ( $item->level - 1 >= 0 ) ? $item->level - 1 : 0;
+						    $item->name = str_repeat('- ', $repeat).$item->name;
+					    }
+					    return JHTML::_('select.genericlist',  $items, $param_name, 'class="inputbox" '.$multiple, $key, $val, $this->value, $this->formControl.'_'.$this->group.'_'.$this->fieldname);
+				    } elseif ($query == 'k2.categories') {
+					    $jdb = JFactory::getDBO();
+					    $query = 'SELECT enabled FROM #__extensions WHERE element = ' . $jdb->Quote('com_k2');
+					    $db->setQuery( $query );
+					    $enabled = $jdb->loadResult();
+					    if (empty($enabled)) {
+						    throw new Exception(JText::_('K2_NOT_AVAILABLE'));
+					    }
+					    $query = 'SELECT id, name as title, parent FROM #__k2_categories WHERE id > 0 AND trash = 0 AND published = 1';
+					    $db->setQuery($query);
+					    $items = $db->loadObjectList();
+					    $children = array ();
+					    if(count($items)){
+						    foreach ($items as $v) {
+							    $pt = $v->parent;
+							    $list = @$children[$pt]?$children[$pt]: array ();
+							    array_push($list, $v);
+							    $children[$pt] = $list;
+						    }
+					    }
 
-            		$results = JFormFieldjfusionsql::buildRecursiveTree(0, '', array(), $children);
-            		return JHTML::_('select.genericlist',  $results, $param_name, 'class="inputbox" '.$multiple, $key, $val, $this->value, $this->formControl.'_'.$this->group.'_'.$this->fieldname);
-		    	} else {
-    				$db->setQuery($this->element['query']);
+					    $results = JFormFieldjfusionsql::buildRecursiveTree(0, '', array(), $children);
+					    return JHTML::_('select.genericlist',  $results, $param_name, 'class="inputbox" '.$multiple, $key, $val, $this->value, $this->formControl.'_'.$this->group.'_'.$this->fieldname);
+				    } else {
+					    $db->setQuery($this->element['query']);
 
-				    try {
 					    $results = $db->loadObjectList();
 
 					    if(!empty($add_default)) {
 						    array_unshift($results, JHTML::_('select.option', '', '- '.JText::_('SELECT_ONE').' -', $key, $val));
 					    }
 					    return JHTML::_('select.genericlist',  $results, $param_name, 'class="inputbox" '.$multiple, $key, $val, $this->value, $this->formControl.'_'.$this->group.'_'.$this->fieldname);
-				    } catch( Exception $e ) {
-					    //there was an error saving the parameters
-					    JFusionFunction::raiseWarning(0, $e->getMessage());
-
-					    return '<span style="float:left; margin: 5px 0; font-weight: bold;">' . $e->getMessage() . '</span>';
 				    }
-		    	}
-    		} else {
-                return '<span style="float:left; margin: 5px 0; font-weight: bold;">' . JText::_('SAVE_CONFIG_FIRST') . '</span>';
-        	}
-        } else {
-            return '<span style="float:left; margin: 5px 0; font-weight: bold;">Programming error: You must define global \$jname before the JParam object can be rendered</span>';
-        }
+			    } else {
+				    throw new Exception(JText::_('SAVE_CONFIG_FIRST'));
+			    }
+		    } else {
+			    throw new Exception('Programming error: You must define global $jname before the JParam object can be rendered.');
+		    }
+	    } catch (Exception $e) {
+		    return '<span style="float:left; margin: 5px 0; font-weight: bold;">'.$e->getMessage().'</span>';
+	    }
 	}
 
     /**

@@ -47,24 +47,28 @@ class JFormFieldForumListDiscussionbot extends JFormField
         $jname = $jPluginParam->get('jname', false);
         $output = '<span style="float:left; margin: 5px 0; font-weight: bold;">';
         if ($jname !== false) {
-            if (JFusionFunction::validPlugin($jname)) {
-                $JFusionPlugin = JFusionFactory::getForum($jname);
-                if (method_exists($JFusionPlugin, 'getForumList')) {
-                    $forumlist = $JFusionPlugin->getForumList();
-                    if (!empty($forumlist)) {
-                    	$selectedValue = $jPluginParam->get($this->fieldname);
-                        $output = JHTML::_('select.genericlist', $forumlist, $this->formControl.'['.$this->group.']['.$this->fieldname.']', 'class="inputbox"', 'id', 'name', $selectedValue);
-                        return $output;
-                    } else {
-                        $output.= $jname . ': ' . JText::_('NO_LIST');
-                    }
-                } else {
-                    $output.= $jname . ': ' . JText::_('NO_LIST');
-                }
-                $output.= '<br />';
-            } else {
-                $output.= $jname . ': ' . JText::_('NO_VALID_PLUGINS');
-            }
+	        try {
+		        if (JFusionFunction::validPlugin($jname)) {
+			        $JFusionPlugin = JFusionFactory::getForum($jname);
+			        if (method_exists($JFusionPlugin, 'getForumList')) {
+				        $forumlist = $JFusionPlugin->getForumList();
+				        if (!empty($forumlist)) {
+					        $selectedValue = $jPluginParam->get($this->fieldname);
+					        $output = JHTML::_('select.genericlist', $forumlist, $this->formControl.'['.$this->group.']['.$this->fieldname.']', 'class="inputbox"', 'id', 'name', $selectedValue);
+					        return $output;
+				        } else {
+					        $output.= $jname . ': ' . JText::_('NO_LIST');
+				        }
+			        } else {
+				        $output.= $jname . ': ' . JText::_('NO_LIST');
+			        }
+			        $output.= '<br />';
+		        } else {
+			        $output.= $jname . ': ' . JText::_('NO_VALID_PLUGINS');
+		        }
+	        } catch (Exception $e) {
+		        $output.= $jname . ': ' . JText::_('NO_VALID_PLUGINS') . ' '.$e->getMessage();
+	        }
         } else {
             $output.= JText::_('NO_PLUGIN_SELECT');
         }

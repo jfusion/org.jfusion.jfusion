@@ -33,27 +33,31 @@ class JFormFieldJFusionUsergroupList extends JFormField
     protected function getInput()
     {
         global $jname;
-		if ($jname){
-        	if (JFusionFunction::validPlugin($jname)) {
-            	$JFusionPlugin = JFusionFactory::getAdmin($jname);
+	    try {
+		    if ($jname){
+			    if (JFusionFunction::validPlugin($jname)) {
+				    $JFusionPlugin = JFusionFactory::getAdmin($jname);
 
-            	$grouptype = (string) $this->element['grouptype'];
-            	$usergroups = $JFusionPlugin->getUsergroupList($grouptype);
+				    $grouptype = (string) $this->element['grouptype'];
+				    $usergroups = $JFusionPlugin->getUsergroupList($grouptype);
 
-            	$multiple = ($this->element['multiple']) ? ' MULTIPLE ' : '';
-            	if (!empty($usergroups)) {
-					$param_name = ($multiple) ? $this->formControl.'['.$this->group.']['.$this->fieldname.'][]' : $this->formControl.'['.$this->group.']['.$this->fieldname.']';
-                	return JHTML::_('select.genericlist', $usergroups, $param_name, $multiple,
-                	'id', 'name', $this->value);
-            	} else {
-                	return '';
-            	}
-        	} else {
-                return JText::_('SAVE_CONFIG_FIRST');
-        	}
-        } else {
-            return 'Programming error: You must define global $jname before the JParam object can be rendered';
-        }
+				    $multiple = ($this->element['multiple']) ? ' MULTIPLE ' : '';
+				    if (!empty($usergroups)) {
+					    $param_name = ($multiple) ? $this->formControl.'['.$this->group.']['.$this->fieldname.'][]' : $this->formControl.'['.$this->group.']['.$this->fieldname.']';
+					    return JHTML::_('select.genericlist', $usergroups, $param_name, $multiple,
+						    'id', 'name', $this->value);
+				    } else {
+					    return '';
+				    }
+			    } else {
+				    return JText::_('SAVE_CONFIG_FIRST');
+			    }
+		    } else {
+			    throw new Exception('Programming error: You must define global $jname before the JParam object can be rendered.');
+		    }
+	    } catch (Exception $e) {
+		    return '<span style="float:left; margin: 5px 0; font-weight: bold;">'.$e->getMessage().'</span>';
+	    }
     }
 }
 

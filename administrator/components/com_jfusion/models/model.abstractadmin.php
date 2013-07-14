@@ -216,62 +216,67 @@ class JFusionAdmin
      */
     function debugConfig()
     {
-        //get registration status
-        $new_registration = $this->allowRegistration();
-        $jname = $this->getJname();
-        //get the data about the JFusion plugins
-        $db = JFactory::getDBO();
-        $query = 'SELECT * from #__jfusion WHERE name = ' . $db->Quote($jname);
-        $db->setQuery($query);
-        $plugin = $db->loadObject();
-        //output a warning to the administrator if the allowRegistration setting is wrong
-        if ($new_registration && $plugin->slave == 1) {
-            JFusionFunction::raiseNotice(0, $jname . ': ' . JText::_('DISABLE_REGISTRATION'));
-        }
-        if (!$new_registration && $plugin->master == 1) {
-            JFusionFunction::raiseNotice(0, $jname . ': ' . JText::_('ENABLE_REGISTRATION'));
-        }
-        //most dual login problems are due to incorrect cookie domain settings
-        //therefore we should check it and output a warning if needed.
-        $params = JFusionFactory::getParams($jname);
+	    $jname = $this->getJname();
+	    try {
+		    //get registration status
+		    $new_registration = $this->allowRegistration();
 
-	    $cookie_domain = $params->get('cookie_domain',-1);
-	    if ($cookie_domain!==-1) {
-		    $cookie_domain = str_replace(array('http://', 'https://'), array('', ''), $cookie_domain);
-		    $correct_domain = '';
-		    $correct_array = explode('.', html_entity_decode($_SERVER['SERVER_NAME']));
+		    //get the data about the JFusion plugins
+		    $db = JFactory::getDBO();
+		    $query = 'SELECT * from #__jfusion WHERE name = ' . $db->Quote($jname);
+		    $db->setQuery($query);
+		    $plugin = $db->loadObject();
+		    //output a warning to the administrator if the allowRegistration setting is wrong
+		    if ($new_registration && $plugin->slave == 1) {
+			    JFusionFunction::raiseNotice(0, $jname . ': ' . JText::_('DISABLE_REGISTRATION'));
+		    }
+		    if (!$new_registration && $plugin->master == 1) {
+			    JFusionFunction::raiseNotice(0, $jname . ': ' . JText::_('ENABLE_REGISTRATION'));
+		    }
+		    //most dual login problems are due to incorrect cookie domain settings
+		    //therefore we should check it and output a warning if needed.
+		    $params = JFusionFactory::getParams($jname);
 
-		    //check for domain names with double extentions
-		    if (isset($correct_array[count($correct_array) - 2]) && isset($correct_array[count($correct_array) - 1])) {
-			    //domain array
-			    $domain_array = array('com', 'net', 'org', 'co', 'me');
-			    if (in_array($correct_array[count($correct_array) - 2], $domain_array)) {
-				    $correct_domain = '.' . $correct_array[count($correct_array) - 3] . '.' . $correct_array[count($correct_array) - 2] . '.' . $correct_array[count($correct_array) - 1];
-			    } else {
-				    $correct_domain = '.' . $correct_array[count($correct_array) - 2] . '.' . $correct_array[count($correct_array) - 1];
-			    }
-			    if ($correct_domain != $cookie_domain && !$this->allowEmptyCookieDomain()) {
-				    JFusionFunction::raiseNotice(0, $jname . ': ' . JText::_('BEST_COOKIE_DOMAIN') . ' ' . $correct_domain);
+		    $cookie_domain = $params->get('cookie_domain',-1);
+		    if ($cookie_domain!==-1) {
+			    $cookie_domain = str_replace(array('http://', 'https://'), array('', ''), $cookie_domain);
+			    $correct_domain = '';
+			    $correct_array = explode('.', html_entity_decode($_SERVER['SERVER_NAME']));
+
+			    //check for domain names with double extentions
+			    if (isset($correct_array[count($correct_array) - 2]) && isset($correct_array[count($correct_array) - 1])) {
+				    //domain array
+				    $domain_array = array('com', 'net', 'org', 'co', 'me');
+				    if (in_array($correct_array[count($correct_array) - 2], $domain_array)) {
+					    $correct_domain = '.' . $correct_array[count($correct_array) - 3] . '.' . $correct_array[count($correct_array) - 2] . '.' . $correct_array[count($correct_array) - 1];
+				    } else {
+					    $correct_domain = '.' . $correct_array[count($correct_array) - 2] . '.' . $correct_array[count($correct_array) - 1];
+				    }
+				    if ($correct_domain != $cookie_domain && !$this->allowEmptyCookieDomain()) {
+					    JFusionFunction::raiseNotice(0, $jname . ': ' . JText::_('BEST_COOKIE_DOMAIN') . ' ' . $correct_domain);
+				    }
 			    }
 		    }
-	    }
 
-	    //also check the cookie path as it can interfere with frameless
-	    $cookie_path = $params->get('cookie_path',-1);
-	    if ($cookie_path!==-1) {
-		    if ($cookie_path != '/' && !$this->allowEmptyCookiePath()) {
-			    JFusionFunction::raiseNotice(0, $jname . ': ' . JText::_('BEST_COOKIE_PATH') . ' /');
+		    //also check the cookie path as it can interfere with frameless
+		    $cookie_path = $params->get('cookie_path',-1);
+		    if ($cookie_path!==-1) {
+			    if ($cookie_path != '/' && !$this->allowEmptyCookiePath()) {
+				    JFusionFunction::raiseNotice(0, $jname . ': ' . JText::_('BEST_COOKIE_PATH') . ' /');
+			    }
 		    }
+
+		    //check that master plugin does not have advanced group mode data stored
+		    $master = JFusionFunction::getMaster();
+		    if (!empty($master) && $master->name == $jname && JFusionFunction::isAdvancedUsergroupMode($jname)) {
+			    JFusionFunction::raiseWarning(0, $jname . ': ' . JText::_('ADVANCED_GROUPMODE_ONLY_SUPPORTED_FORSLAVES'));
+		    }
+
+		    // allow additional checking of the configuration
+		    $this->debugConfigExtra();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseWarning(0, $jname . ': ' . $e->getMessage());
 	    }
-
-        //check that master plugin does not have advanced group mode data stored
-        $master = JFusionFunction::getMaster();
-        if (!empty($master) && $master->name == $jname && JFusionFunction::isAdvancedUsergroupMode($jname)) {
-            JFusionFunction::raiseWarning(0, $jname . ': ' . JText::_('ADVANCED_GROUPMODE_ONLY_SUPPORTED_FORSLAVES'));
-        }
-
-        // allow additional checking of the configuration
-        $this->debugConfigExtra();
     }
 
     /**

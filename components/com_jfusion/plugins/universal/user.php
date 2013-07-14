@@ -527,28 +527,30 @@ class JFusionUser_universal extends JFusionUser {
 	 */
 	function activateUser($userinfo, &$existinguser, &$status)
 	{
-		/**
-		 * @ignore
-		 * @var $helper JFusionHelper_universal
-		 */
-		$helper = JFusionFactory::getHelper($this->getJname());
-		$userid = $helper->getFieldUserID();
-		$activecode = $helper->getFieldType('ACTIVECODE');
-		if (!$userid) {
-			$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_USERID_SET');
-		} else if (!$activecode) {
-			$status['debug'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_ACTIVECODE_SET');
-		} else {
-			$db = JFusionFactory::getDatabase($this->getJname());
-			$query = 'UPDATE #__'.$helper->getTable().' '.
-				'SET '.$activecode->field.' = '. $db->Quote($userinfo->activation) .' '.
-				'WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid);
-			$db->setQuery($query );
-			if (!$db->execute()) {
-				$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' .$db->stderr();
+		try {
+			/**
+			 * @ignore
+			 * @var $helper JFusionHelper_universal
+			 */
+			$helper = JFusionFactory::getHelper($this->getJname());
+			$userid = $helper->getFieldUserID();
+			$activecode = $helper->getFieldType('ACTIVECODE');
+			if (!$userid) {
+				$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_USERID_SET');
+			} else if (!$activecode) {
+				$status['debug'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_ACTIVECODE_SET');
 			} else {
+				$db = JFusionFactory::getDatabase($this->getJname());
+				$query = 'UPDATE #__'.$helper->getTable().' '.
+					'SET '.$activecode->field.' = '. $db->Quote($userinfo->activation) .' '.
+					'WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid);
+				$db->setQuery($query );
+				$db->execute();
+
 				$status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 			}
+		} catch (Exception $e) {
+			$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' .$e->getMessage();
 		}
 	}
 

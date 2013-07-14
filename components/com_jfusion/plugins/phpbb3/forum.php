@@ -584,7 +584,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 
                     $forum_stats = new stdClass();
 
-                    if($dbparams->get('use_content_created_date',false)) {
+                    if ($dbparams->get('use_content_created_date',false)) {
                         //only update the last post for the topic if it really is newer
                         $updateLastPost = ($timestamp > $num->forum_last_post_time) ? true : false;
                     } else {

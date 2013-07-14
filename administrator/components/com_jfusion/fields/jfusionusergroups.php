@@ -41,29 +41,27 @@ class JFormFieldJFusionUsergroups extends JFormField
     protected function getInput()
     {
         global $jname;
-        if ($jname) {
-            if (JFusionFunction::validPlugin($jname) || $jname == 'joomla_int') {
-                $JFusionPlugin = JFusionFactory::getAdmin($jname);
-                $usergroups = $JFusionPlugin->getUsergroupList();
-                $multiple = $this->multiple;
-                if (!empty($usergroups)) {
-                    $multiple = (!empty($multiple)) ? ' MULTIPLE ' : '';
-                    $param_name = ($multiple) ? $this->name . '[]' : $this->name;
-                    return JHTML::_('select.genericlist', $usergroups, $param_name, $multiple, 'id', 'name', $this->value);
-                } else {
-                    return '';
-                }
-            } else {
-                $output = '<span style="float:left; margin: 5px 0; font-weight: bold;">';
-                $output.= JText::_('SAVE_CONFIG_FIRST');
-                $output.= '</span>';
-                return $output;
-            }
-        } else {
-            $output = '<span style="float:left; margin: 5px 0; font-weight: bold;">';
-            $output.= 'Programming error: You must define global $jname before the JParam object can be rendered';
-            $output.= '</span>';
-            return $output;
-        }
+	    try {
+	        if ($jname) {
+	            if (JFusionFunction::validPlugin($jname) || $jname == 'joomla_int') {
+	                $JFusionPlugin = JFusionFactory::getAdmin($jname);
+	                $usergroups = $JFusionPlugin->getUsergroupList();
+	                $multiple = $this->multiple;
+	                if (!empty($usergroups)) {
+	                    $multiple = (!empty($multiple)) ? ' MULTIPLE ' : '';
+	                    $param_name = ($multiple) ? $this->name . '[]' : $this->name;
+	                    return JHTML::_('select.genericlist', $usergroups, $param_name, $multiple, 'id', 'name', $this->value);
+	                } else {
+	                    return '';
+	                }
+	            } else {
+		            throw new Exception(JText::_('SAVE_CONFIG_FIRST'));
+	            }
+	        } else {
+		        throw new Exception('Programming error: You must define global $jname before the JParam object can be rendered.');
+	        }
+	    } catch (Exception $e) {
+		    return '<span style="float:left; margin: 5px 0; font-weight: bold;">'.$e->getMessage().'</span>';
+	    }
     }
 }

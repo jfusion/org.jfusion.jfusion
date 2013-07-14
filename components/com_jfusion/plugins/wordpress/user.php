@@ -529,100 +529,104 @@ class JFusionUser_wordpress extends JFusionUser {
     function deleteUser($userinfo) {
 		//setup status array to hold debug info and errors
         $status = array('error' => array(),'debug' => array());
-		if (!is_object($userinfo)) {
-			$status['error'][] = JText::_('NO_USER_DATA_FOUND');
-			return $status;
-		}
-		$db = JFusionFactory::getDatabase($this->getJname());
-		$params = JFusionFactory::getParams($this->getJname());
-		$reassign = $params->get('reassign_blogs');
-		$reassign_to=$params->get('reassign_username');
-		$user_id=$userinfo->userid;
+	    try {
+		    if (!is_object($userinfo)) {
+			    throw new Exception(JText::_('NO_USER_DATA_FOUND'));
+		    }
 
-		// decide if we need to reassign
-		if (($reassign == '1') && (trim($reassign_to))){
-			// see if we have a valid user
-			$query = 'SELECT * FROM #__users WHERE user_login = ' . $db->Quote($reassign_to);
-			$db->setQuery($query);
-			$result = $db->loadObject();
-			if (!$result) {
-				$reassign = '';
-			} else {
-				$reassign = $result->ID;
-			}
-		} else {
-			$reassign = '';
-		}
-			
-		// handle posts and links
-		if ($reassign){
-			$query = 'SELECT ID FROM #__posts WHERE post_author = '.$user_id;
-			$db->setQuery($query);
-			if ($db->execute()) {
-                $results = $db->loadObjectList();
-				if ($results) {
-					foreach ($results as $row) {
-						$query = 'UPDATE #__posts SET post_author = '.$reassign. ' WHERE ID = '. $row->ID;
-						$db->setQuery($query);
-						if (!$db->execute()) {
-							$status['error'][] = 'Error Could not reassign posts by user '.$user_id.': '.$db->stderr();
-							break;
-						}
-					}
-					$status['debug'][] = 'Reassigned posts from user with id '.$user_id.' to user '.$reassign;
-				} elseif ($db->getErrorNum() != 0) {
-					$status['error'][] = 'Error Could not retrieve posts by user '.$user_id.': '.$db->stderr();
-				}
-				$query = 'SELECT link_id FROM #__links WHERE link_owner = '.$user_id;
-				$db->setQuery($query);
-				if ($db->execute()) {
-                    $results = $db->loadObjectList();
-					if ($results) {
-						foreach ($results as $row) {
-							$query = 'UPDATE #__links SET link_owner = '.$reassign. ' WHERE link_id = '. $row->link_id;
-							$db->setQuery($query);
-							if (!$db->execute()) {
-								$status['error'][] = 'Error Could not reassign links by user '.$user_id.': '.$db->stderr();
-								break;
-							}
-						}
-						$status['debug'][] = 'Reassigned links from user with id '.$user_id.' to user '.$reassign;
-					} elseif ($db->getErrorNum() != 0) {
-						$status['error'][] = 'Error Could not retrieve links by user '.$user_id.': '.$db->stderr();
-					}
-				}
-			}
-		} else {
-			$query = 'DELETE FROM #__posts WHERE post_author = ' . $user_id;
-			$db->setQuery($query);
-			if (!$db->execute()) {
-				$status['error'][] = 'Error Could not delete posts by user '.$user_id.': '.$db->stderr();
-			} else {
-				$status['debug'][] = 'Deleted posts from user with id '.$user_id;
-			}
-			$query = 'DELETE FROM #__links WHERE link_owner = ' . $user_id;
-			$db->setQuery($query);
-			if (!$db->execute()) {
-				$status['error'][] = 'Error Could not delete links by user '.$user_id.': '.$db->stderr();
-			} else {
-				$status['debug'][] = 'Deleted links from user '.$user_id;
-			}
-		}
-		// now delete the user
-		$query = 'DELETE FROM #__users WHERE ID = ' . $user_id;
-		$db->setQuery($query);
-		if (!$db->execute()) {
-			$status['error'][] = 'Error Could not delete userrecord with userid '.$user_id.': '.$db->stderr();
-		} else {
-			$status['debug'][] = 'Deleted userrecord of user with userid '.$user_id;
-		}
-	    // delete usermeta
-	    $query = 'DELETE FROM #__usermeta WHERE user_id = ' . $user_id;
-	    $db->setQuery($query);
-	    if (!$db->execute()) {
-		    $status['error'][] = 'Error Could not delete usermetarecord with userid '.$user_id.': '.$db->stderr();
-	    } else {
-		    $status['debug'][] = 'Deleted usermetarecord of user with userid '.$user_id;
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $params = JFusionFactory::getParams($this->getJname());
+		    $reassign = $params->get('reassign_blogs');
+		    $reassign_to=$params->get('reassign_username');
+		    $user_id=$userinfo->userid;
+
+		    // decide if we need to reassign
+		    if (($reassign == '1') && (trim($reassign_to))){
+			    // see if we have a valid user
+			    $query = 'SELECT * FROM #__users WHERE user_login = ' . $db->Quote($reassign_to);
+			    $db->setQuery($query);
+			    $result = $db->loadObject();
+			    if (!$result) {
+				    $reassign = '';
+			    } else {
+				    $reassign = $result->ID;
+			    }
+		    } else {
+			    $reassign = '';
+		    }
+
+		    // handle posts and links
+		    if ($reassign){
+			    $query = 'SELECT ID FROM #__posts WHERE post_author = '.$user_id;
+			    $db->setQuery($query);
+			    if ($db->execute()) {
+				    $results = $db->loadObjectList();
+				    if ($results) {
+					    foreach ($results as $row) {
+						    $query = 'UPDATE #__posts SET post_author = '.$reassign. ' WHERE ID = '. $row->ID;
+						    $db->setQuery($query);
+						    if (!$db->execute()) {
+							    $status['error'][] = 'Error Could not reassign posts by user '.$user_id.': '.$db->stderr();
+							    break;
+						    }
+					    }
+					    $status['debug'][] = 'Reassigned posts from user with id '.$user_id.' to user '.$reassign;
+				    } elseif ($db->getErrorNum() != 0) {
+					    $status['error'][] = 'Error Could not retrieve posts by user '.$user_id.': '.$db->stderr();
+				    }
+				    $query = 'SELECT link_id FROM #__links WHERE link_owner = '.$user_id;
+				    $db->setQuery($query);
+				    if ($db->execute()) {
+					    $results = $db->loadObjectList();
+					    if ($results) {
+						    foreach ($results as $row) {
+							    $query = 'UPDATE #__links SET link_owner = '.$reassign. ' WHERE link_id = '. $row->link_id;
+							    $db->setQuery($query);
+							    if (!$db->execute()) {
+								    $status['error'][] = 'Error Could not reassign links by user '.$user_id.': '.$db->stderr();
+								    break;
+							    }
+						    }
+						    $status['debug'][] = 'Reassigned links from user with id '.$user_id.' to user '.$reassign;
+					    } elseif ($db->getErrorNum() != 0) {
+						    $status['error'][] = 'Error Could not retrieve links by user '.$user_id.': '.$db->stderr();
+					    }
+				    }
+			    }
+		    } else {
+			    $query = 'DELETE FROM #__posts WHERE post_author = ' . $user_id;
+			    $db->setQuery($query);
+			    if (!$db->execute()) {
+				    $status['error'][] = 'Error Could not delete posts by user '.$user_id.': '.$db->stderr();
+			    } else {
+				    $status['debug'][] = 'Deleted posts from user with id '.$user_id;
+			    }
+			    $query = 'DELETE FROM #__links WHERE link_owner = ' . $user_id;
+			    $db->setQuery($query);
+			    if (!$db->execute()) {
+				    $status['error'][] = 'Error Could not delete links by user '.$user_id.': '.$db->stderr();
+			    } else {
+				    $status['debug'][] = 'Deleted links from user '.$user_id;
+			    }
+		    }
+		    // now delete the user
+		    $query = 'DELETE FROM #__users WHERE ID = ' . $user_id;
+		    $db->setQuery($query);
+		    if (!$db->execute()) {
+			    $status['error'][] = 'Error Could not delete userrecord with userid '.$user_id.': '.$db->stderr();
+		    } else {
+			    $status['debug'][] = 'Deleted userrecord of user with userid '.$user_id;
+		    }
+		    // delete usermeta
+		    $query = 'DELETE FROM #__usermeta WHERE user_id = ' . $user_id;
+		    $db->setQuery($query);
+		    if (!$db->execute()) {
+			    $status['error'][] = 'Error Could not delete usermetarecord with userid '.$user_id.': '.$db->stderr();
+		    } else {
+			    $status['debug'][] = 'Deleted usermetarecord of user with userid '.$user_id;
+		    }
+	    } catch (Exception $e) {
+		    $status['error'][] = $e->getMessage();
 	    }
 		return $status;
 	}

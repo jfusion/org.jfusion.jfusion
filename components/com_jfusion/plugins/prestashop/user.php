@@ -498,29 +498,27 @@ class JFusionUser_prestashop extends JFusionUser {
      * @return void
      */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
-        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
-        if (empty($usergroups)) {
-            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('USERGROUP_MISSING');
-        } else {
-            $db = JFusionFactory::getDatabase($this->getJname());
-            // now delete the user
-            $query = 'DELETE FROM #__customer_group WHERE id_customer = ' . $existinguser->userid;
-            $db->setQuery($query);
-            $db->execute();
-            if (!$db->execute()) {
-                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-            } else {
-                foreach($usergroups as $value) {
-                    $group = new stdClass;
-                    $group->id_customer = $existinguser->userid;
-                    $group->id_group = $value;
-                    if (!$db->insertObject('#__customer_group', $group)) {
-                        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-                    } else {
-                        $status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . implode (' , ', $existinguser->groups) . ' -> ' . implode (' , ', $usergroups);
-                    }
-                }
-            }
-        }
+	    try {
+		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+		    if (empty($usergroups)) {
+			    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('USERGROUP_MISSING');
+		    } else {
+			    $db = JFusionFactory::getDatabase($this->getJname());
+			    // now delete the user
+			    $query = 'DELETE FROM #__customer_group WHERE id_customer = ' . $existinguser->userid;
+			    $db->setQuery($query);
+			    $db->execute();
+
+			    foreach($usergroups as $value) {
+				    $group = new stdClass;
+				    $group->id_customer = $existinguser->userid;
+				    $group->id_group = $value;
+				    $db->insertObject('#__customer_group', $group);
+			    }
+			    $status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . implode (' , ', $existinguser->groups) . ' -> ' . implode (' , ', $usergroups);
+		    }
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $e->getMessage();
+	    }
     }
 }

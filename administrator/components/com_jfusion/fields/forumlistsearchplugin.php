@@ -56,29 +56,33 @@ class JFormFieldForumListSearchPlugin extends JFormField
 
         $output = '<span style="float:left; margin: 5px 0; font-weight: bold;">';
         if (!empty($jname)) {
-            if (JFusionFunction::validPlugin($jname)) {
-                if (!isset($jPluginParamRaw[$jname])) {
-                    $jPluginParamRaw[$jname] = array();
-                }
-                $JPluginParam = new JRegistry('');
-                $JPluginParam->loadArray($jPluginParamRaw[$jname]);
-                $JFusionPlugin = JFusionFactory::getForum($jname);
-                if (method_exists($JFusionPlugin, 'getForumList')) {
-                    $forumlist = $JFusionPlugin->getForumList();
-                    if (!empty($forumlist)) {
-                        $selectedValue = $JPluginParam->get($this->fieldname);
-                        $output = JHTML::_('select.genericlist', $forumlist, $this->name . '[]', 'multiple size="6" class="inputbox"', 'id', 'name', $selectedValue);
-                        return $output;
-                    } else {
-                        $output.= $jname . ': ' . JText::_('NO_LIST');
-                    }
-                } else {
-                    $output.= $jname . ': ' . JText::_('NO_LIST');
-                }
-                $output.= '<br />';
-            } else {
-                $output.= $jname . ': ' . JText::_('NO_VALID_PLUGINS') . '<br />';
-            }
+	        try {
+		        if (JFusionFunction::validPlugin($jname)) {
+			        if (!isset($jPluginParamRaw[$jname])) {
+				        $jPluginParamRaw[$jname] = array();
+			        }
+			        $JPluginParam = new JRegistry('');
+			        $JPluginParam->loadArray($jPluginParamRaw[$jname]);
+			        $JFusionPlugin = JFusionFactory::getForum($jname);
+			        if (method_exists($JFusionPlugin, 'getForumList')) {
+				        $forumlist = $JFusionPlugin->getForumList();
+				        if (!empty($forumlist)) {
+					        $selectedValue = $JPluginParam->get($this->fieldname);
+					        $output = JHTML::_('select.genericlist', $forumlist, $this->name . '[]', 'multiple size="6" class="inputbox"', 'id', 'name', $selectedValue);
+					        return $output;
+				        } else {
+					        $output.= $jname . ': ' . JText::_('NO_LIST');
+				        }
+			        } else {
+				        $output.= $jname . ': ' . JText::_('NO_LIST');
+			        }
+			        $output.= '<br />';
+		        } else {
+			        $output.= $jname . ': ' . JText::_('NO_VALID_PLUGINS') . '<br />';
+		        }
+	        } catch (Exception $e) {
+		        $output.= $jname . ': ' . JText::_('NO_VALID_PLUGINS'). ' : ' . $e->getMessage() . '<br />';
+	        }
         } else {
             $output.= JText::_('NO_PLUGIN_SELECT');
         }

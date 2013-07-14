@@ -25,26 +25,30 @@ defined('_JEXEC') or die();
  */
 class JFormFieldJFusionCustomParam extends JFormField
 {
-    public $type = 'JFusionCustomParam';
-    /**
-     * Get an element
-     *
-     * @return string html
-     */
-    protected function getInput()
-    {
-        global $jname;
-        if ($jname) {
-            //load the custom param output
-            $JFusionPlugin = JFusionFactory::getAdmin($jname);
-            if (method_exists($JFusionPlugin, $this->fieldname)) {
-                $output = $JFusionPlugin->{$this->fieldname}($this->fieldname, $this->value, $this->element, $this->group);
-                return $output;
-            } else {
-                return 'Undefined function:' . $this->fieldname . ' in plugin:' . $jname;
-            }
-        } else {
-            return 'Programming error: You must define global $jname before the JParam object can be rendered';
-        }
-    }
+	public $type = 'JFusionCustomParam';
+	/**
+	 * Get an element
+	 *
+	 * @return string html
+	 */
+	protected function getInput()
+	{
+		global $jname;
+		try {
+			if ($jname) {
+				//load the custom param output
+				$JFusionPlugin = JFusionFactory::getAdmin($jname);
+				if (method_exists($JFusionPlugin, $this->fieldname)) {
+					$output = $JFusionPlugin->{$this->fieldname}($this->fieldname, $this->value, $this->element, $this->group);
+					return $output;
+				} else {
+					throw new Exception('Undefined function:' . $this->fieldname . ' in plugin:' . $jname);
+				}
+			} else {
+				throw new Exception('Programming error: You must define global $jname before the JParam object can be rendered.');
+			}
+		} catch (Exception $e) {
+			return '<span style="float:left; margin: 5px 0; font-weight: bold;">'.$e->getMessage().'</span>';
+		}
+	}
 }

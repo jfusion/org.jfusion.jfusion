@@ -932,14 +932,14 @@ class JFusionUser_phpbb3 extends JFusionUser
 		    $user_posts = $db->loadResult();
 		    // Update the post count for the anonymous user
 		    if ($user_posts > 0) {
-			    $query = 'UPDATE #__users
-                SET user_posts = user_posts + '.$user_posts.
-				    ' WHERE user_id = 1';
-			    $db->setQuery($query);
-			    if (!$db->execute()) {
-				    $status['error'][] = 'Error Could not update the number of posts for anonymous user: '.$db->stderr();
-			    } else {
-				    //$status['debug'][] = 'Updated post count for anonymous user.';
+			    try {
+				    $query = 'UPDATE #__users
+		                SET user_posts = user_posts + '.$user_posts.
+					    ' WHERE user_id = 1';
+				    $db->setQuery($query);
+				    $db->execute();
+			    } catch (Exception $e) {
+				    $status['error'][] = 'Error Could not update the number of posts for anonymous user: '.$e->getMessage();
 			    }
 		    }
 		    $table_ary = array('users', 'user_group', 'topics_watch', 'forums_watch', 'acl_users', 'topics_track', 'topics_posted', 'forums_track', 'profile_fields_data', 'moderator_cache', 'drafts', 'bookmarks');
@@ -973,75 +973,77 @@ class JFusionUser_phpbb3 extends JFusionUser
 			    $status['error'][] = 'Error Could not retrieve undeliverd messages to user '.$user_id.': '.$db->stderr();
 		    }
 		    if (sizeof($undelivered_msg)) {
-			    $query = 'DELETE FROM #__privmsgs
-                WHERE msg_id (' . implode(', ', $undelivered_msg) . ')';
-			    $db->setQuery($query);
-			    if (!$db->execute()) {
-				    $status['error'][] = 'Error Could not delete private messages for user '.$user_id.': '.$db->stderr();
-			    } else {
-				    //$status['debug'][] = 'Deleted undelivered private messages from user '.$user_id;
+			    try {
+				    $query = 'DELETE FROM #__privmsgs
+                        WHERE msg_id (' . implode(', ', $undelivered_msg) . ')';
+				    $db->setQuery($query);
+				    $db->execute();
+			    } catch (Exception $e) {
+				    $status['error'][] = 'Error Could not delete private messages for user '.$user_id.': '.$e->getMessage();
 			    }
 		    }
-		    $query = 'DELETE FROM #__privmsgs_to
-            WHERE author_id = ' . $user_id . '
-                AND folder_id = -3';
-		    $db->setQuery($query);
-		    if (!$db->execute()) {
-			    $status['error'][] = 'Error Could not delete private messages that are in no folder from user '.$user_id.': '.$db->stderr();
-		    } else {
-			    //$status['debug'][] = 'Deleted private messages that are in no folder from user '.$user_id;
+
+		    try {
+			    $query = 'DELETE FROM #__privmsgs_to
+		            WHERE author_id = ' . $user_id . '
+		                AND folder_id = -3';
+			    $db->setQuery($query);
+			    $db->execute();
+		    } catch (Exception $e) {
+			    $status['error'][] = 'Error Could not delete private messages that are in no folder from user '.$user_id.': '.$e->getMessage();
 		    }
-		    // Delete all to-information
-		    $query = 'DELETE FROM #__privmsgs_to
-            WHERE user_id = ' . $user_id;
-		    $db->setQuery($query);
-		    if (!$db->execute()) {
-			    $status['error'][] = 'Error Could not delete private messages to user '.$user_id.': '.$db->stderr();
-		    } else {
-			    //$status['debug'][] = 'Deleted private messages sent to user '.$user_id;
+
+		    try {
+			    // Delete all to-information
+			    $query = 'DELETE FROM #__privmsgs_to
+		            WHERE user_id = ' . $user_id;
+			    $db->setQuery($query);
+			    $db->execute();
+		    } catch (Exception $e) {
+			    $status['error'][] = 'Error Could not delete private messages to user '.$user_id.': '.$e->getMessage();
 		    }
-		    // Set the remaining author id to anonymous - this way users are still able to read messages from users being removed
-		    $query = 'UPDATE #__privmsgs_to
-            SET author_id = 1
-            WHERE author_id = ' . $user_id;
-		    $db->setQuery($query);
-		    if (!$db->execute()) {
-			    $status['error'][] = 'Error Could not update rest of private messages for user '.$user_id.' to anonymous: '.$db->stderr();
-		    } else {
-			    //$status['debug'][] = 'Updated the author to anonymous for the rest of the PMs in the "to" table if originally sent by user '.$user_id;
+
+		    try {
+			    // Set the remaining author id to anonymous - this way users are still able to read messages from users being removed
+			    $query = 'UPDATE #__privmsgs_to
+		            SET author_id = 1
+		            WHERE author_id = ' . $user_id;
+			    $db->setQuery($query);
+			    $db->execute();
+		    } catch (Exception $e) {
+			    $status['error'][] = 'Error Could not update rest of private messages for user '.$user_id.' to anonymous: '.$e->getMessage();
 		    }
-		    $query = 'UPDATE #__privmsgs
-            SET author_id = 1
-            WHERE author_id = ' . $user_id;
-		    $db->setQuery($query);
-		    if (!$db->execute()) {
-			    $status['error'][] = 'Error Could not update rest of private messages for user '.$user_id.' to anonymous: '.$db->stderr();
-		    } else {
-			    //$status['debug'][] = 'Updated the author to anonymous for the rest of the PMs in the main PM table if originally sent by user '.$user_id;
+
+		    try {
+			    $query = 'UPDATE #__privmsgs
+		            SET author_id = 1
+		            WHERE author_id = ' . $user_id;
+			    $db->setQuery($query);
+			    $db->execute();
+		    } catch (Exception $e) {
+			    $status['error'][] = 'Error Could not update rest of private messages for user '.$user_id.' to anonymous: '.$e->getMessage();
 		    }
+
 		    foreach ($undelivered_user as $_user_id => $ary) {
 			    if ($_user_id == $user_id) {
 				    continue;
 			    }
-			    $query = 'UPDATE #__users
-                SET user_new_privmsg = user_new_privmsg - ' . sizeof($ary) . ',
-                    user_unread_privmsg = user_unread_privmsg - ' . sizeof($ary) . '
-                WHERE user_id = ' . $_user_id;
-			    $db->setQuery($query);
-			    if (!$db->execute()) {
-				    $status['error'][] = 'Error Could not update the number of PMs for user '.$_user_id.' for user '.$user_id.' was deleted: '.$db->stderr();
-			    } else {
-				    //$status['debug'][] = 'Updated the the number of PMs for user '.$_user_id.' since user '.$user_id.' was deleted.';
+			    try {
+				    $query = 'UPDATE #__users
+		                SET user_new_privmsg = user_new_privmsg - ' . sizeof($ary) . ',
+		                    user_unread_privmsg = user_unread_privmsg - ' . sizeof($ary) . '
+		                WHERE user_id = ' . $_user_id;
+				    $db->setQuery($query);
+				    $db->execute();
+			    } catch (Exception $e) {
+				    $status['error'][] = 'Error Could not update the number of PMs for user '.$_user_id.' for user '.$user_id.' was deleted: '.$e->getMessage();
 			    }
 		    }
 		    //update the total user count
 		    $query = 'UPDATE #__config SET config_value = config_value - 1 WHERE config_name = \'num_users\'';
 		    $db->setQuery($query);
-		    if (!$db->execute()) {
-			    //return the error
-			    $status['error'][] = JText::_('USER_DELETION_ERROR') . $db->stderr();
-			    return $status;
-		    }
+		    $db->execute();
+
 		    //check to see if this user was the newest user
 		    $query = 'SELECT COUNT(*) FROM #__config WHERE config_name = \'newest_user_id\' AND config_value = '.$db->Quote($user_id);
 		    $db->setQuery($query);
@@ -1054,34 +1056,23 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    //update the newest username
 				    $query = 'UPDATE #__config SET config_value = ' . $db->Quote($newest_user->username) . ' WHERE config_name = \'newest_username\'';
 				    $db->setQuery($query);
-				    if (!$db->execute()) {
-					    //return the error
-					    $status['error'][] = JText::_('USER_DELETION_ERROR') . $db->stderr();
-					    return $status;
-				    }
+				    $db->execute();
+
 				    //update the newest userid
 				    $query = 'UPDATE #__config SET config_value = ' . $newest_user->user_id . ' WHERE config_name = \'newest_user_id\'';
 				    $db->setQuery($query);
-				    if (!$db->execute()) {
-					    //return the error
-					    $status['error'][] = JText::_('USER_DELETION_ERROR') . $db->stderr();
-					    return $status;
-				    }
+				    $db->execute();
+
 				    //set the correct new username color
 				    $query = 'UPDATE #__config SET config_value = ' . $db->Quote($newest_user->user_colour) . ' WHERE config_name = \'newest_user_colour\'';
 				    $db->setQuery($query);
-				    if (!$db->execute()) {
-					    //return the error
-					    $status['error'][] = JText::_('USER_DELETION_ERROR') . $db->stderr();
-					    return $status;
-				    }
+				    $db->execute();
 			    }
 		    }
 		    $status['debug'][] = JText::_('USER_DELETION'). ' ' . $user_id;
 	    } catch (Exception $e) {
-
+		    $status['error'][] = JText::_('USER_DELETION_ERROR') . $e->getMessage();
 	    }
-
         return $status;
     }
 
