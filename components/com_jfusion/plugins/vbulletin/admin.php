@@ -281,7 +281,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
             $empty = JText::_('VB_REDIRECT_ITEMID_EMPTY');
 
             $js = <<<JS
-            function toggleHook(hook, action) {
+            JFusion.Plugin.toggleHook = function(hook, action) {
                 var form = $('adminForm');
                 var itemid = $('{$itemid}');
 
@@ -347,8 +347,8 @@ JS;
 					$output = <<<HTML
 		                    <img style="float: left;" src="components/com_jfusion/images/check_good_small.png">
 		                    <span style="float: left; margin-left: 5px;">{$enabled}</span>
-		                    <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return toggleHook('{$hook}','disable')">{$disable}</a>
-		                    <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return toggleHook('{$hook}','reenable')">{$reenable}</a>
+		                    <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return JFusion.Plugin.toggleHook('{$hook}','disable')">{$disable}</a>
+		                    <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return JFusion.Plugin.toggleHook('{$hook}','reenable')">{$reenable}</a>
 HTML;
 					return $output;
 				} else {
@@ -357,7 +357,7 @@ HTML;
 					$output = <<<HTML
 		                    <img style="float: left;" src="components/com_jfusion/images/check_bad_small.png">
 		                    <span style="float: left; margin-left: 5px;">{$disabled}</span>
-		                    <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return toggleHook('{$hook}','enable')">{$enable}</a>
+		                    <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return JFusion.Plugin.toggleHook('{$hook}','enable')">{$enable}</a>
 HTML;
 					return $output;
 				}
@@ -392,7 +392,7 @@ HTML;
 					$output = <<<HTML
 		                    <img style="float: left;" src="components/com_jfusion/images/check_good_small.png">
 		                    <span style="float: left; margin-left: 5px;">{$complete}</span>
-		                    <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return toggleHook('{$hook}','disable')">{$undo}</a>
+		                    <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return JFusion.Plugin.toggleHook('{$hook}','disable')">{$undo}</a>
 HTML;
 					return $output;
 				} else {
@@ -401,7 +401,7 @@ HTML;
 					$output = <<<HTML
 		                    <img style="float: left;" src="components/com_jfusion/images/check_bad_small.png">
 		                    <span style="float: left; margin-left: 5px;">{$incomplete}</span>
-		                    <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return toggleHook('{$hook}','enable')">{$do}</a>
+		                    <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return JFusion.Plugin.toggleHook('{$hook}','enable')">{$do}</a>
 HTML;
 					return $output;
 				}
@@ -734,7 +734,7 @@ HTML;
                 $displaygroup = ($advanced && isset($value[$master_usergroup->id]['displaygroup'])) ? $value[$master_usergroup->id]['displaygroup'] : '';
                 $membergroups = ($advanced && isset($value[$master_usergroup->id]['membergroups'])) ? $value[$master_usergroup->id]['membergroups'] : '';
                 $advanced_usergroup.= '<tr><td colspan="2"><b>' . $master_usergroup->name . '</b></td></tr>';
-                $advanced_usergroup.= '<tr><td>' . JText::_('DEFAULT_USERGROUP') . '</td><td>' . JHTML::_('select.genericlist', $usergroups, $control_name . '[' . $name . '][' . $master_usergroup->id . '][defaultgroup]', 'onclick="toggleSecondaryGroups(this.value,' . $master_usergroup->id . ');" class="inputbox"', 'id', 'name', $defaultgroup) . '</td></tr>';
+                $advanced_usergroup.= '<tr><td>' . JText::_('DEFAULT_USERGROUP') . '</td><td>' . JHTML::_('select.genericlist', $usergroups, $control_name . '[' . $name . '][' . $master_usergroup->id . '][defaultgroup]', 'onclick="JFusion.Plugin.toggleSecondaryGroups(this.value,' . $master_usergroup->id . ');" class="inputbox"', 'id', 'name', $defaultgroup) . '</td></tr>';
 
                 $advanced_usergroup.= '<tr><td>' . JText::_('DEFAULT_DISPLAYGROUP') . '</td><td>' . JHTML::_('select.genericlist', $displaygroups, $control_name . '[' . $name . '][' . $master_usergroup->id . '][displaygroup]', 'class="inputbox"', 'id', 'name', $displaygroup) . '</td></tr>';
                 $advanced_usergroup.= '<tr><td>' . JText::_('DEFAULT_MEMBERGROUPS') . '</td><td>';
@@ -757,7 +757,7 @@ HTML;
         JFusion.groupDataArray[0] = '{$simple_usergroup}';
         JFusion.groupDataArray[1] = '{$advanced_usergroup}';
 
-        function toggleSecondaryGroups(vbid,masterid) {
+        JFusion.Plugin.toggleSecondaryGroups = function(vbid,masterid) {
         	var groups = new Array({$jsGroups});
 	        for(var i=0; i<groups.length; i++) {
         		var element = $('vbgroup'+masterid+'-'+groups[i]);

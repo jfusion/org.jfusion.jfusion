@@ -1,6 +1,7 @@
 //<!--
 if('undefined'===typeof JFusion) {
     var JFusion = {};
+    JFusion.Plugin = {};
     JFusion.Text = [];
     JFusion.url = '';
 }
@@ -214,8 +215,6 @@ JFusion.advancedParamSet = function(title, base64, name) {
 };
 
 JFusion.addPair = function(name,id)	{
-    var tr = document.createElement('tr');
-
     var index = 0;
     var list;
     while (true) {
@@ -257,8 +256,7 @@ JFusion.addPair = function(name,id)	{
     td.appendChild(input);
     tr.appendChild(td);
 
-    var a = document.createElement('a');
-    td = document.createElement('td');
+    td = new Element('td');
     var a = new Element('a', {
         'href': 'javascript:JFusion.removePair(\'+id+\',\'+index+\');',
         'html': this.JText('DELETE_PAIR')
@@ -284,6 +282,7 @@ JFusion.addPlugin = function(button) {
     button.form.task.value = 'advancedparam';
     button.form.submit();
 };
+
 JFusion.removePlugin = function(button, value) {
     button.form.jfusion_task.value = 'remove';
     button.form.jfusion_value.value = value;
@@ -291,20 +290,9 @@ JFusion.removePlugin = function(button, value) {
     button.form.submit();
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/**
+ * Joomla stuff
+ */
 
 
 Joomla.submitbutton = function (pressbutton) {

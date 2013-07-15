@@ -307,14 +307,14 @@ class JFusionAdmin_universal extends JFusionAdmin{
 							}
 						}
 
-						$onchange = 'size="8" multiple onchange="javascript: changefield(this,\''.$val->Field.'\',\''.$type.'\')"';
+						$onchange = 'size="8" multiple onchange="javascript: JFusion.Plugin.changeField(this,\''.$val->Field.'\',\''.$type.'\')"';
 						$output .= '<table>';
 						$output .= '<tr>';
 						$output .= '<td>';
 						$output .= JHTML::_('select.genericlist', $fieldtypes, $control_name.'['.$name.']['.$type.'][field]['.$val->Field.'][]', $onchange,	'id', 'name', $mapuserfield);
 						$output .= '</td>';
 						$output .= '<td>';
-						$onchange = 'onchange="javascript: changevalue(this,\''.$val->Field.'\',\''.$type.'\')"';
+						$onchange = 'onchange="javascript: JFusion.Plugin.changeValue(this,\''.$val->Field.'\',\''.$type.'\')"';
 						$output .= '<div id="'.$type.$val->Field.'">';
 
 						if ( isset( $mapuserfield[0]) ) {
@@ -383,7 +383,7 @@ class JFusionAdmin_universal extends JFusionAdmin{
 		$output = <<<JS
         var TypeAry = {$list};
 
-		function disableoptions(elements, disable) {
+		JFusion.Plugin.disableOptions = function(elements, disable) {
 			elements.each(function(element) {
 				var options = element.getElements('option');
 				options.each(function(option) {
@@ -392,9 +392,14 @@ class JFusionAdmin_universal extends JFusionAdmin{
 				    }
 				});
 			});
-		}
+		};
 
-        function updateoptions(type) {
+		JFusion.Plugin.update = function() {
+			JFusion.Plugin.updateOptions('user');
+			JFusion.Plugin.updateOptions('group');
+		};
+
+        JFusion.Plugin.updateOptions = function(type) {
 			var elements = document.getElements('select[id^=paramsmap'+type+'field]');
 			elements.each(function(element) {
 				for (var i = 0; i < element.options.length; i++) {
@@ -410,23 +415,22 @@ class JFusionAdmin_universal extends JFusionAdmin{
 						if (option.value != 'DEFAULT') {
 							switch (option.value) {
 								case 'REALNAME':
-									disableoptions(elements,'LASTNAME');
-									disableoptions(elements,'FIRSTNAME');
+									JFusion.Plugin.disableOptions(elements,'LASTNAME');
+									JFusion.Plugin.disableOptions(elements,'FIRSTNAME');
 									break;
 								case 'LASTNAME':
 								case 'FIRSTNAME':
-									disableoptions(elements,'REALNAME');
+									JFusion.Plugin.disableOptions(elements,'REALNAME');
 									break;
 							}
-							disableoptions(elements,option.value);
+							JFusion.Plugin.disableOptions(elements,option.value);
 						}
 					}
 				});
 			});
-        }
+        };
 
-
-        function changefield(ref,name,parmtype) {
+        JFusion.Plugin.changeField = function(ref,name,parmtype) {
         	var options = ref.getElements('option');
         	options.each(function(option) {
 				if (option.selected && option.value) {
@@ -444,14 +448,18 @@ class JFusionAdmin_universal extends JFusionAdmin{
             var value = $(parmtype+name+'value');
 			value.innerHTML = '';
 
-			updateoptions('user');
-			updateoptions('group');
+			JFusion.Plugin.update();
             if ( ref.value && TypeAry[ref.value].types !== undefined ) {
-                var type = document.createElement("select");
-                type.setAttribute("type", "option");
-                type.setAttribute("id", "paramsmap"+parmtype+"type"+name);
-                type.setAttribute("name", "params[map][user][type]["+name+"]");
-                type.setAttribute("onchange", "javascript: changevalue(this,'"+name+"','"+parmtype+"')");
+	            var type = new Element('select', {
+					'type': 'option',
+					'id': 'paramsmap'+parmtype+'type'+name,
+					'name': 'params[map][user][type]['+name+']',
+					'events': {
+			            'change': function () {
+			                JFusion.Plugin.changeValue(this, name, parmtype);
+			            }
+			        }
+	            });
 
                 type.options.length = 0;
                 for (var i=0; i<TypeAry[ref.value].types.length; i++) {
@@ -459,8 +467,9 @@ class JFusionAdmin_universal extends JFusionAdmin{
                 }
                 id.appendChild(type);
             }
-        }
-        function changevalue(ref,name,parmtype) {
+        };
+
+        JFusion.Plugin.changeValue = function(ref,name,parmtype) {
             var id = $(parmtype+name+'value');
 
 			var paramsmap = $("paramsmap"+parmtype+"value"+name);
@@ -480,44 +489,45 @@ class JFusionAdmin_universal extends JFusionAdmin{
 
             var value;
             if(ref.value == 'CUSTOM') {
-                value = document.createElement("textarea");
-                value.setAttribute("id", "paramsmap"+parmtype+"value"+name);
-                value.setAttribute("name", "params[map]["+parmtype+"][value]["+name+"]");
-                value.setAttribute("rows", 8);
-                value.setAttribute("cols", 55);
-
+            	value = new Element('textarea', {
+					'id': 'paramsmap'+parmtype+'value'+name,
+					'name': 'params[map]['+parmtype+'][value]['+name+']',
+					'rows': 8,
+					'cols': 55
+            	});
                 id.appendChild(value);
             } else if(ref.value == 'DATE' || ref.value == 'VALUE') {
-                value = document.createElement("input");
-                value.setAttribute("type", "text");
-                value.setAttribute("id", "paramsmap"+parmtype+"value"+name);
-                value.setAttribute("name", "params[map]["+parmtype+"][value]["+name+"]");
-                value.setAttribute("size", "100");
+            	value = new Element('input', {
+					'type': 'text',
+					'id': 'paramsmap'+parmtype+'value'+name,
+					'name': 'params[map]['+parmtype+'][value]['+name+']',
+					'size': 100
+            	});
                 if (ref.value == 'DATE') {
                     value.setAttribute("value", 'Y-m-d H:i:s');
                 }
                 id.appendChild(value);
             } else if ( ref.value == 'ONOFF') {
-                value = document.createElement("input");
-                value.setAttribute("type", "text");
-                value.setAttribute("id", "paramsmap"+parmtype+"value"+name+"on");
-                value.setAttribute("name", "params[map]["+parmtype+"][value]["+name+"][on]");
-                value.setAttribute("size", "40");
+				value = new Element('input', {
+					'type': 'text',
+					'id': 'paramsmap'+parmtype+'value'+name+'on',
+					'name': 'params[map]['+parmtype+'][value]['+name+'][on]',
+					'size': 40
+            	});
                 id.appendChild(value);
 
-                value = document.createElement("input");
-                value.setAttribute("type", "text");
-                value.setAttribute("id", "paramsmap"+parmtype+"value"+name+"off");
-                value.setAttribute("name", "params[map]["+parmtype+"][value]["+name+"][off]");
-                value.setAttribute("size", "40");
-
+				value = new Element('input', {
+					'type': 'text',
+					'id': 'paramsmap'+parmtype+'value'+name+'off',
+					'name': 'params[map]['+parmtype+'][value]['+name+'][off]',
+					'size': 40
+            	});
                 id.appendChild(value);
             }
-        }
+        };
 
         window.addEvent('domready',function() {
-			updateoptions('user');
-			updateoptions('group');
+			JFusion.Plugin.update();
         });
 JS;
 		$document->addScriptDeclaration($output);

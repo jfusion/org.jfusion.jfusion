@@ -1722,7 +1722,7 @@ class JFusionFunction
 			$keys = array( 'SESSION_TIMEOUT', 'SYNC_NODATA', 'NOTICE', 'WARNING', 'MESSAGE', 'ERROR', 'DELETE', 'PLUGIN',
 				'SYNC_PROGRESS', 'SYNC_USERS_TODO', 'USER', 'USERS', 'NAME', 'CREATED', 'DELETED', 'UPDATED', 'CONFLICTS',
 				'UNCHANGED', 'FINISHED', 'PAUSE', 'CLICK_FOR_MORE_DETAILS', 'UPDATE_IN', 'SECONDS', 'SYNC_CONFIRM_START',
-				'DELETE_PAIR');
+				'DELETE_PAIR', 'REMOVE');
 
 			$text = array();
 			foreach($keys as $key) {

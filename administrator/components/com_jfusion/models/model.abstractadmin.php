@@ -559,28 +559,32 @@ JS;
 	        	var master = jfPlugin['master'];
 	        	var name = jfPlugin['name'];
 
-	        	var elTrNew = document.createElement('tr');
-	        	elTrNew.id = 'usergroups_row'+count;
+	        	var elTrNew = new Element('tr', {
+					'id' : 'usergroups_row'+count
+	        	});
 
-	        	var elTdmaster = document.createElement('td');
+
+	        	var elTdmaster = new Element('td');
 	        	elTdmaster.appendChild(JFusion.createSelect(master));
 
-	        	var elTdjname = document.createElement('td');
+	        	var elTdjname = new Element('td');
 	        	elTdjname.appendChild(JFusion.createSelect(name));
 
-	        	var elInputNew = document.createElement('input');
-	        	elInputNew.type = 'radio';
-	        	elInputNew.name = 'params[multiusergroupdefault]';
-				elInputNew.value = count;
+	        	var elInputNew = new Element('input', {
+	        		'type': 'radio',
+	        		'name': 'params[multiusergroupdefault]',
+	        		'value': count
+	        	});
 
-	        	var elTddefault = document.createElement('td');
+	        	var elTddefault = new Element('td');
 	        	elTddefault.appendChild(elInputNew);
 
-	        	var elANew = document.createElement('a');
-	        	elANew.href = 'javascript:JFusion.removeRow('+count+')';
-	        	elANew.innerHTML = 'Remove';
+	        	var elANew = new Element('a', {
+					'href': 'javascript:JFusion.removeRow('+count+')',
+					'html': JFusion.JText('REMOVE')
+	        	});
 
-	        	var elTdremove = document.createElement('td');
+	        	var elTdremove = new Element('td');
 	        	elTdremove.appendChild(elANew);
 
 	        	elTrNew.appendChild(elTdmaster);
@@ -603,18 +607,24 @@ JS;
 	        	var type = jfPlugin[name]['type'];
 	        	var groups = jfPlugin[name]['groups'];
 
-				var elSelNew = document.createElement('select');
 				if (type == 'multi') {
-					elSelNew.size=10;
-					elSelNew.multiple='multiple';
+					var elSelNew = new Element('select', {
+						'name': 'params[multiusergroup]['+name+']['+count+'][]',
+						'size': 10,
+						'multiple': 'multiple'
+					});
+				} else {
+					var elSelNew = new Element('select', {
+						'name': 'params[multiusergroup]['+name+']['+count+'][]'
+					});
 				}
-				elSelNew.name='params[multiusergroup]['+name+']['+count+'][]';
 				var x;
 				for (x in groups) {
 					if (groups.hasOwnProperty(x)) {
-						var elOptNew = document.createElement('option');
-						elOptNew.text = groups[x].name;
-						elOptNew.value = groups[x].id;
+						var elOptNew = new Element('option', {
+							'text': groups[x].name,
+							'value': groups[x].id
+						});
 						elSelNew.appendChild(elOptNew);
 					}
 				}
