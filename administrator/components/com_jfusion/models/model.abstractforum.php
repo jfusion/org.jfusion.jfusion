@@ -470,12 +470,10 @@ class JFusionForum
      *
      * @param object &$params         object with discussion bot parameters
      * @param object &$existingthread object with forumid, threadid, and postid (first post in thread)
-     * @param int 	 $limitstart	  (optional) obtain results starting with this number
-     * @param int 	 $limit	  		  (optional) limit number of results returned
      *
      * @return array or object Returns retrieved posts
      */
-    function getPosts(&$params, &$existingthread, $limitstart = null, $limit = null)
+    function getPosts(&$params, &$existingthread)
     {
         return array();
     }

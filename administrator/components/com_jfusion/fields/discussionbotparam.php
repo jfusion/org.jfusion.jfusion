@@ -82,7 +82,7 @@ class JFormFieldDiscussionbotparam extends JFormField
             $html =<<<HTML
 			<div class="button2-left">
 			    <div class="blank">
-			        <a class="modal" id="{$name}_link" title="{$assign_paits}"  href="{$link}" rel="{handler: 'iframe', size: {x: 650, y: 375}}">{$assign_paits}</a>
+			        <a class="modal btn" id="{$name}_link" title="{$assign_paits}"  href="{$link}" rel="{handler: 'iframe', size: {x: 650, y: 375}}">{$assign_paits}</a>
                 </div>
             </div>
 			<img id="{$name}_img" src="{$src}">

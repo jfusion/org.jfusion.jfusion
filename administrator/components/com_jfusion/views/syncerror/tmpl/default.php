@@ -199,7 +199,7 @@ JHTML::_('behavior.modal', 'a.modal');
 					    ?>
 				    </td>
 				    <td>
-				    <a class="modal" rel="{handler: 'iframe', size: {x: 650, y: 375}}" href="index.php?option=com_jfusion&amp;task=syncerrordetails&amp;syncid=<?php echo $this->syncdata['syncid']; ?>&amp;tmpl=component&amp;errorid=<?php echo $i; ?>"><?php echo JText::_('DETAILS'); ?></a>
+				    <a class="modal btn" rel="{handler: 'iframe', size: {x: 650, y: 375}}" href="index.php?option=com_jfusion&amp;task=syncerrordetails&amp;syncid=<?php echo $this->syncdata['syncid']; ?>&amp;tmpl=component&amp;errorid=<?php echo $i; ?>"><?php echo JText::_('DETAILS'); ?></a>
 				    </td>
 				    <td>
 					    <?php

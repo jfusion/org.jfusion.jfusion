@@ -125,7 +125,7 @@ function applyAll() {
 				    }
 				    echo '<td>' . $total_error . '</td>'; ?>
 				    <td>
-				        <a class="modal" rel="{handler: 'iframe', size: {x: 650, y: 375}}" href="index.php?option=com_jfusion&amp;task=syncstatus&amp;tmpl=component&amp;syncid=<?php echo $record->syncid; ?>">
+				        <a class="modal btn" rel="{handler: 'iframe', size: {x: 650, y: 375}}" href="index.php?option=com_jfusion&amp;task=syncstatus&amp;tmpl=component&amp;syncid=<?php echo $record->syncid; ?>">
 				            <?php echo JText::_('CLICK_FOR_MORE_DETAILS'); ?>
 				        </a>
 				    </td>

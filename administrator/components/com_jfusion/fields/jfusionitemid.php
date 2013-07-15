@@ -72,7 +72,7 @@ class JFormFieldJFusionItemid extends JFormField
             </div>
             <div class="button2-left">
                 <div class="blank">
-                    <a class="modal" title="{$select_menuitem}"  href="{$link}" rel="{handler: 'iframe', size: {x: 650, y: 375}}">{$select}</a>
+                    <a class="modal btn" title="{$select_menuitem}"  href="{$link}" rel="{handler: 'iframe', size: {x: 650, y: 375}}">{$select}</a>
                 </div>
             </div>
             <img id="{$name}_save{$elId}" src="{$src}" alt="Save">

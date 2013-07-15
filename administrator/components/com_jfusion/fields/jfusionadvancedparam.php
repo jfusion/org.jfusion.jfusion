@@ -109,7 +109,7 @@ class JFormFieldJFusionAdvancedParam extends JFormField
         </div>
         <div class="button2-left">
             <div class="blank">
-                <a id="{$ename}_link" class="modal" title="{$select_plugin}"  href="{$link}" rel="{handler: 'iframe', size: {x: window.getSize().x-80, y: window.getSize().y-80}}">{$select}</a>
+                <a id="{$ename}_link" class="modal btn" title="{$select_plugin}"  href="{$link}" rel="{handler: 'iframe', size: {x: window.getSize().x-80, y: window.getSize().y-80}}">{$select}</a>
             </div>
         </div>
         <input type="hidden" id="{$ename}_id" name="{$this->name}" value="{$this->value}" />

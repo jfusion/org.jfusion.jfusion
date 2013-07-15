@@ -147,7 +147,7 @@ HTML;
 			</div>
 			<div class="button2-left">
 				<div class="blank">
-					<a class="modal" title="{$configure}"  href="" rel="{target: '{$this->id}_target', handler: 'adopt', return: '{$this->id}', onClose : JFusion.closeAdopt, size: {x: 650, y: 375}}">{$configure}</a>
+					<a class="modal btn" title="{$configure}"  href="" rel="{target: '{$this->id}_target', handler: 'adopt', return: '{$this->id}', onClose : JFusion.closeAdopt, size: {x: 650, y: 375}}">{$configure}</a>
 				</div>
 			</div>
 HTML;
