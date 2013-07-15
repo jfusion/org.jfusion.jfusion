@@ -417,7 +417,7 @@ HTML;
     function toggleHook()
     {
 	    try {
-		    $params = JFactory::getApplication()->input->get('params');
+		    $params = JFactory::getApplication()->input->get('params', array(), 'array');
 		    $itemid = $params['plugin_itemid'];
 		    $hook = $params['hook_name'];
 		    $action = $params['hook_action'];

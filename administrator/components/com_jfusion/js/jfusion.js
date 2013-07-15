@@ -279,10 +279,17 @@ JFusion.closeAdopt = function() {
     $(this.options.target).inject($(this.options.return));
 };
 
-closeAdopt = function() {
-    $(this.options.target).inject($(this.options.return));
+JFusion.addPlugin = function(button) {
+    button.form.jfusion_task.value = 'add';
+    button.form.task.value = 'advancedparam';
+    button.form.submit();
 };
-
+JFusion.removePlugin = function(button, value) {
+    button.form.jfusion_task.value = 'remove';
+    button.form.jfusion_value.value = value;
+    button.form.task.value = 'advancedparam';
+    button.form.submit();
+};
 
 
 

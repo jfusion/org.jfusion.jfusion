@@ -65,13 +65,13 @@ class jfusionViewadvancedparam extends JViewLegacy
 			//Load Plugin XML Parameter
 			$params = $this->loadXMLParamMulti($feature);
 			//Load enabled Plugin List
-			list($output, $js) = $this->loadElementMulti($params, $feature);
+			$output = $this->loadElementMulti($params, $feature);
 		} else {
 			$multiselect = false;
 			//Load Plugin XML Parameter
 			$params = $this->loadXMLParamSingle($feature);
 			//Load enabled Plugin List
-			list($output, $js) = $this->loadElementSingle($params, $feature);
+			$output = $this->loadElementSingle($params, $feature);
 		}
 		//load the element number for multiple advanceparam elements
 		$ename = JFactory::getApplication()->input->getInt('ename');
@@ -85,13 +85,13 @@ class jfusionViewadvancedparam extends JViewLegacy
 		$document->addStyleSheet('components/com_jfusion/css/jfusion.css');
 		$css = '.jfusion table.adminlist, table.admintable{ font-size:11px; }';
 		$document->addStyleDeclaration($css);
-		if ( $js ) {
-			$document->addScriptDeclaration($js);
-		}
+
+		JFusionFunction::loadJSLanguage();
+
 		$this->output = $output;
 
 		//for J1.6+ single select modes, params is an array
-		$this->comp = $params['params'];
+		$this->comp = isset($params['params']) ? $params['params'] : array();
 
 		JHTML::_('behavior.modal');
 		JHTML::_('behavior.tooltip');
@@ -131,8 +131,7 @@ class jfusionViewadvancedparam extends JViewLegacy
 		if (isset($this->featureArray[$feature])) {
 			$featureLink = '&feature=' . $feature;
 		}
-		$js = null;
-		return array($output, $js);
+		return $output;
 	}
 
 	/**
@@ -153,26 +152,28 @@ class jfusionViewadvancedparam extends JViewLegacy
 		if (isset($this->featureArray[$feature]) && !empty($jname)) {
 			$path = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . $this->featureArray[$feature];
 			$defaultPath = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . $option . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'advancedparam' . DIRECTORY_SEPARATOR . 'paramfiles' . DIRECTORY_SEPARATOR . $this->featureArray[$feature];
-			$xml_path = (file_exists($path)) ? $path : $defaultPath;
+			$xml_path = (JFile::exists($path)) ? $path : $defaultPath;
 			$form = false;
-			$xml = JFusionFunction::getXml($xml_path);
-			if ($xml) {
-				$fields = $xml->fields;
-				if ($fields) {
-					$data = $fields->toString();
-					//make sure it is surround by <form>
-					if (substr($data, 0, 5) != '<form>') {
-						$data = '<form>' . $data . '</form>';
-					}
-					/**
-					 * @ignore
-					 * @var $form JForm
-					 */
-					$form = JForm::getInstance($jname, $data, array('control' => "params[$jname]"));
-					//add JFusion's fields
-					$form->addFieldPath(JPATH_COMPONENT.DIRECTORY_SEPARATOR.'fields');
-					if (isset($value[$jname])) {
-						$form->bind($value[$jname]);
+			if (JFile::exists($xml_path)) {
+				$xml = JFusionFunction::getXml($xml_path);
+				if ($xml) {
+					$fields = $xml->fields;
+					if ($fields) {
+						$data = $fields->toString();
+						//make sure it is surround by <form>
+						if (substr($data, 0, 5) != '<form>') {
+							$data = '<form>' . $data . '</form>';
+						}
+						/**
+						 * @ignore
+						 * @var $form JForm
+						 */
+						$form = JForm::getInstance($jname, $data, array('control' => "params[$jname]"));
+						//add JFusion's fields
+						$form->addFieldPath(JPATH_COMPONENT.DIRECTORY_SEPARATOR.'fields');
+						if (isset($value[$jname])) {
+							$form->bind($value[$jname]);
+						}
 					}
 				}
 			}
@@ -214,27 +215,13 @@ class jfusionViewadvancedparam extends JViewLegacy
 		$rows = array_merge(array($noSelected), $rows);
 		$attributes = array('size' => '1', 'class' => 'inputbox');
 		$output = JHTML::_('select.genericlist', $rows, 'jfusionplugin', $attributes, 'id', 'name');
-		$output.= ' <input type="button" value="add" name="add" onclick="JFusion.jPluginAdd(this);" />';
+		$output.= ' <input type="button" value="add" name="add" onclick="JFusion.addPlugin(this);" />';
 
 		$featureLink = '';
 		if (isset($this->featureArray[$feature])) {
 			$featureLink = '&feature=' . $feature;
 		}
-		$js = <<<JS
-        JFusion.jPluginAdd = function(button) {
-            button.form.jfusion_task.value = 'add';
-            button.form.task.value = 'advancedparam';
-            button.form.submit();
-        };
-        JFusion.jPluginRemove = function(button, value) {
-            button.form.jfusion_task.value = 'remove';
-            button.form.jfusion_value.value = value;
-            button.form.task.value = 'advancedparam';
-            button.form.submit();
-        };
-JS;
-
-		return array($output, $js);
+		return array($output);
 	}
 
 	/**

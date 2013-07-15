@@ -40,7 +40,7 @@ $uri->delVar('task');
 					foreach ($this->comp as $key => $value) {
 						$jname = $key;
 						echo '<fieldset class="adminform">';
-						echo '<legend><span>' . $key . '</span><input type="button" name="remove" value="Remove" onclick="JFusion.jPluginRemove(this, \'' . $key . '\');" style="margin-left: 3px;" /></legend>';
+						echo '<legend><span>' . $key . '</span><input type="button" name="remove" value="Remove" onclick="JFusion.removePlugin(this, \'' . $key . '\');" style="margin-left: 3px;" /></legend>';
 						if (isset($value['params'])) {
 							$fieldsets = $value['params']->getFieldsets();
 							echo JHtml::_('tabs.start','tabs', array('startOffset'=>2));

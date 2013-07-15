@@ -650,7 +650,7 @@ class JFusionController extends JControllerLegacy
      */
 	function advancedparamsubmit()
 	{
-		$params = JFactory::getApplication()->input->get('params');
+		$params = JFactory::getApplication()->input->get('params', array(), 'array');
 		$ename = JFactory::getApplication()->input->get('ename');
 
 		$multiselect = JFactory::getApplication()->input->get('multiselect');

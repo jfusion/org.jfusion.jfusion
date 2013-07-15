@@ -34,14 +34,17 @@ class JFormFieldJFusionPlugins extends JFormField
      */
     protected function getInput()
     {
-        $db = JFactory::getDBO();
-        $query = 'SELECT name as id, name as name from #__jfusion';
-        $db->setQuery($query);
-        $rows = $db->loadObjectList();
-        if (!empty($rows)) {
-            return JHTML::_('select.genericlist', $rows, $this->name, 'size="1" class="inputbox"', 'id', 'name', $this->value);
-        } else {
-            return '<span style="float:left; margin: 5px 0; font-weight: bold;">' . JText::_('NO_VALID_PLUGINS') . '</span>';
-        }
+	    try {
+		    $db = JFactory::getDBO();
+		    $query = 'SELECT name as id, name as name from #__jfusion';
+		    $db->setQuery($query);
+		    $rows = $db->loadObjectList();
+		    if (!empty($rows)) {
+			    return JHTML::_('select.genericlist', $rows, $this->name, 'size="1" class="inputbox"', 'id', 'name', $this->value);
+		    }
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+	    }
+	    return '<span style="float:left; margin: 5px 0; font-weight: bold;">' . JText::_('NO_VALID_PLUGINS') . '</span>';
     }
 }
