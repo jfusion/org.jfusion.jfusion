@@ -47,7 +47,7 @@
                     <option value="0">HIDE</option>
                     <option value="1">SHOW</option>
                 </field>
-                <field name="layout" type="radio" default="vertical" label="VIEW_MODE" description="VIEW_MODE_DESCR">
+                <field name="layout" type="radio" class="btn-group" default="vertical" label="VIEW_MODE" description="VIEW_MODE_DESCR">
                     <option value="vertical">VERTICAL</option>
                     <option value="horizontal">HORIZONTAL</option>
                 </field>
@@ -101,7 +101,7 @@
             </fieldset>
 
             <fieldset name="advanced">
-                <field name="cache" type="list" default="0" label="Caching" description="Select whether to cache the content of this module">
+                <field name="cache" type="radio" class="btn-group" default="0" label="Caching" description="Select whether to cache the content of this module">
                     <option value="1">Use global</option>
                     <option value="0">No caching</option>
                 </field>

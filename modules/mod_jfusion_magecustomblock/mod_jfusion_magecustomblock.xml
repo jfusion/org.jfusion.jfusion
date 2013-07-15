@@ -22,7 +22,7 @@
                 <field name="block_name" type="text" label="Custom block name" default="" description="Provide here the custom block name that you want to integrate in Joomla. It must be unique (see a layout file in Magento 'block type=checkout/cart name=cart ')" />
                 <field name="mage_template_path" type="text" label="Custom block template" default="" description="Provide here the template path of the phtml file that you want to use. It must be an existing one in your magento active template. Exple: catalog/navigation/top.phtml." />
                 <field name="@spacer" type="spacer" default="" label="" description="" />
-                <field name="enable_scriptaculous" label="Scriptaculous enable" type="list" default="0" description="Enable or not the scriptaculous script from Magento. Some modules of Magento need it for Ajax call or rollover/menu effect. BE AWARE: not compatible with module or content using Mootools of Joomla">
+                <field name="enable_scriptaculous" label="Scriptaculous enable" type="radio" class="btn-group" default="0" description="Enable or not the scriptaculous script from Magento. Some modules of Magento need it for Ajax call or rollover/menu effect. BE AWARE: not compatible with module or content using Mootools of Joomla">
                     <option value="1">Enable</option>
                     <option value="0">Disable</option>
                 </field>
@@ -33,7 +33,7 @@
             </fieldset>
 
             <fieldset name="advanced">
-                <field name="cache" type="list" default="0" label="Caching" description="Select whether to cache the content of this module">
+                <field name="cache" type="radio" class="btn-group" default="0" label="Caching" description="Select whether to cache the content of this module">
                     <option value="1">Use global</option>
                     <option value="0">No caching</option>
                 </field>

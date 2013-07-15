@@ -23,48 +23,48 @@
 	
 			<field name="@spacer" type="spacer" default="" label="" description="" />
 	
-			<field name="parse_anchors" type="list" default="1" label="PARSE_ANCHORS" description="PARSE_ANCHORS">
+			<field name="parse_anchors" type="radio" class="btn-group" default="1" label="PARSE_ANCHORS" description="PARSE_ANCHORS">
 				<option value="1">JYES</option>
 				<option value="0">JNO</option>
 			</field>
-			<field name="parse_rel_url" type="list" default="1" label="PARSE_REL_URL" description="PARSE_REL_URL">
+			<field name="parse_rel_url" type="radio" class="btn-group" default="1" label="PARSE_REL_URL" description="PARSE_REL_URL">
 				<option value="1">JYES</option>
 				<option value="0">JNO</option>
 			</field>
-			<field name="parse_abs_url" type="list" default="1" label="PARSE_ABS_URL" description="PARSE_ABS_URL">
+			<field name="parse_abs_url" type="radio" class="btn-group" default="1" label="PARSE_ABS_URL" description="PARSE_ABS_URL">
 				<option value="1">JYES</option>
 				<option value="0">JNO</option>
 			</field>
-			<field name="parse_abs_path" type="list" default="1" label="PARSE_ABS_PATH" description="PARSE_ABS_PATH">
+			<field name="parse_abs_path" type="radio" class="btn-group" default="1" label="PARSE_ABS_PATH" description="PARSE_ABS_PATH">
 				<option value="1">JYES</option>
 				<option value="0">JNO</option>
 			</field>
-			<field name="parse_rel_img" type="list" default="1" label="PARSE_REL_IMG" description="PARSE_REL_IMG">
+			<field name="parse_rel_img" type="radio" class="btn-group" default="1" label="PARSE_REL_IMG" description="PARSE_REL_IMG">
 				<option value="1">JYES</option>
 				<option value="0">JNO</option>
 			</field>
-			<field name="parse_action" type="list" default="1" label="PARSE_ACTION" description="PARSE_ACTION">
+			<field name="parse_action" type="radio" class="btn-group" default="1" label="PARSE_ACTION" description="PARSE_ACTION">
 				<option value="1">JYES</option>
 				<option value="0">JNO</option>
 			</field>
-			<field name="parse_popup" type="list" default="1" label="PARSE_POPUP" description="PARSE_POPUP">
+			<field name="parse_popup" type="radio" class="btn-group" default="1" label="PARSE_POPUP" description="PARSE_POPUP">
 				<option value="1">JYES</option>
 				<option value="0">JNO</option>
 			</field>
-			<field name="parse_redirect" type="list" default="1" label="PARSE_REDIRECT" description="PARSE_REDIRECT">
+			<field name="parse_redirect" type="radio" class="btn-group" default="1" label="PARSE_REDIRECT" description="PARSE_REDIRECT">
 				<option value="1">JYES</option>
 				<option value="0">JNO</option>
 			</field>
 	
-			<field name="parse_css" type="list" default="1" label="PARSE_CSS" description="PARSE_CSS">
+			<field name="parse_css" type="radio" class="btn-group" default="1" label="PARSE_CSS" description="PARSE_CSS">
 				<option value="1">JYES</option>
 				<option value="0">JNO</option>
 			</field>
-			<field name="parse_infile_css" type="list" default="1" label="PARSE_INFILE_CSS" description="PARSE_INFILE_CSS">
+			<field name="parse_infile_css" type="radio" class="btn-group" default="1" label="PARSE_INFILE_CSS" description="PARSE_INFILE_CSS">
 				<option value="1">JYES</option>
 				<option value="0">JNO</option>
 			</field>
-			<field name="default_css" type="list" default="1" label="DEFAULT_CSS" description="DEFAULT_CSS">
+			<field name="default_css" type="radio" class="btn-group" default="1" label="DEFAULT_CSS" description="DEFAULT_CSS">
 				<option value="1">JYES</option>
 				<option value="0">JNO</option>
 			</field>
@@ -81,76 +81,4 @@
             <field name="bodymap" default="" col1="SEARCH" col2="REPLACE" type="JFusionPair" label="BODY_MAP" description="BODY_MAP"/>
 		</fieldset>
 	</fields>
-	<params addpath="/administrator/components/com_jfusion/elements">
-		<param name="source_url" type="text" size="60" default="http://www.yourdomain.com/" description="SOURCE_URL" />
-		<param name="cookie_domain" type="text" size="60" default="" description="COOKIE_DOMAIN" />
-		<param name="cookie_path" type="text" size="20" default="/" description="CURL_COOKIE_PATH"/>
-		<param name="cookie_name" type="text" size="20" default="" description="COOKIE_NAME" />
-
-		<param name="@spacer" type="spacer" default="" label="" description="" />
-
-		<param name="sefmode" type="list" default="0" label="SEFMODE" description="SEFMODE">
-            <option value="1"><![CDATA[domain.com/index.php/alias/file.php/foo,foo/]]></option>
-            <option value="0"><![CDATA[domain.com/index.php/alias/file.php?foo=foo]]></option>
-		</param>
-
-		<param name="@spacer" type="spacer" default="" label="" description="" />
-
-		<param name="parse_anchors" type="list" default="1" label="PARSE_ANCHORS" description="PARSE_ANCHORS">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</param>
-		<param name="parse_rel_url" type="list" default="1" label="PARSE_REL_URL" description="PARSE_REL_URL">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</param>
-		<param name="parse_abs_url" type="list" default="1" label="PARSE_ABS_URL" description="PARSE_ABS_URL">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</param>
-		<param name="parse_abs_path" type="list" default="1" label="PARSE_ABS_PATH" description="PARSE_ABS_PATH">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</param>
-		<param name="parse_rel_img" type="list" default="1" label="PARSE_REL_IMG" description="PARSE_REL_IMG">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</param>
-		<param name="parse_action" type="list" default="1" label="PARSE_ACTION" description="PARSE_ACTION">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</param>
-		<param name="parse_popup" type="list" default="1" label="PARSE_POPUP" description="PARSE_POPUP">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</param>
-		<param name="parse_redirect" type="list" default="1" label="PARSE_REDIRECT" description="PARSE_REDIRECT">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</param>
-
-		<param name="parse_css" type="list" default="1" label="PARSE_CSS" description="PARSE_CSS">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</param>
-		<param name="parse_infile_css" type="list" default="1" label="PARSE_INFILE_CSS" description="PARSE_INFILE_CSS">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</param>
-		<param name="default_css" type="list" default="1" label="DEFAULT_CSS" description="DEFAULT_CSS">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</param>
-
-		<param name="default_css_overflow" type="list" default="visible" label="DEFAULT_CSS_OVERFLOW" description="DEFAULT_CSS_OVERFLOW">
-			<option value="visible">visible</option>
-			<option value="hidden">hidden</option>
-			<option value="scroll">scroll</option>
-			<option value="auto">auto</option>
-			<option value="inherit">inherit</option>
-		</param>
-
-        <param name="headermap" default="" col1="SEARCH" col2="REPLACE" type="JFusionPair" label="HEADER_MAP" description="HEADER_MAP"/>
-        <param name="bodymap" default="" col1="SEARCH" col2="REPLACE" type="JFusionPair" label="BODY_MAP" description="BODY_MAP"/>
-	</params>
 </metadata>

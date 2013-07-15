@@ -1,17 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
-	<params addpath="/components/com_jfusion/plugins/gallery2/elements">
-		<param name="album" type="Galleries" label="Default Gallery" description="test" />
-		<param name="dispSideBar" type="radio" default="1" label="Show Sidebar" description="SHOWSIDEBAR">
-            <option value="0">HIDE</option>
-            <option value="1">SHOW</option>
-		</param>
-		<param name="show_templateList" default="" type="JFusionCustomParam" label="Gallery Template" description="Gallery Template"/>
-	</params>
 	<fields name="params" addfieldpath="/components/com_jfusion/plugins/gallery2/fields">
 		<fieldset name="basic">	
 			<field name="album" type="Galleries" label="Default Gallery" description="test" />
-			<field name="dispSideBar" type="radio" default="1" label="Show Sidebar" description="SHOWSIDEBAR">
+			<field name="dispSideBar" type="radio" class="btn-group" default="1" label="Show Sidebar" description="SHOWSIDEBAR">
                 <option value="0">HIDE</option>
                 <option value="1">SHOW</option>
 			</field>

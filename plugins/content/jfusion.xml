@@ -34,11 +34,11 @@
 
                 <field name="itemid" type="JFusionItemid" default="" label="ITEMID" description="ITEMID_DESCR" feature="discussion"/>
                 <field name="link_text" type="text" size="20" default="" label="DISCUSSBOT_LINK_TEXT" description="DISCUSSBOT_LINK_TEXT_DESC" />
-                <field name="link_type" type="radio" default="text" label="LINK_TYPE" description="LINK_TYPE_DESCR">
+                <field name="link_type" type="radio" class="btn-group" default="text" label="LINK_TYPE" description="LINK_TYPE_DESCR">
                     <option value="text">TEXT</option>
                     <option value="image">IMAGE</option>
                 </field>
-                <field name="link_target" type="list" default="_self" label="LINK_TARGET" description="LINK_TARGET_DESC">
+                <field name="link_target" type="radio" class="btn-group" default="_self" label="LINK_TARGET" description="LINK_TARGET_DESC">
                     <option value="_blank">NEW_WINDOW</option>
                     <option value="_self">SAME_WINDOW</option>
                 </field>
@@ -48,7 +48,7 @@
                     <option value="rticle">LINK_MODE_IN_ARTICLE_ONLY</option>
                     <option value="blog">LINK_MODE_IN_BLOG_ONLY</option>
                 </field>
-                <field name="blog_link_mode" type="list" default="forum" label="BLOG_LINK_MODE" description="BLOG_LINK_MODE_DESC">
+                <field name="blog_link_mode" type="radio" class="btn-group" default="forum" label="BLOG_LINK_MODE" description="BLOG_LINK_MODE_DESC">
                     <option value="forum">BLOG_LINK_MODE_FORUM</option>
                     <option value="joomla">BLOG_LINK_MODE_JOOMLA</option>
                 </field>
@@ -241,7 +241,7 @@
                     <option value="0">JNO</option>
                 </field>
                 <field name="first_post_link_text" type="text" size="20" default="" description="FIRST_POST_LINK_TEXT_DESC" label="FIRST_POST_LINK_TEXT" />
-                <field name="first_post_link_type" type="radio" default="text" label="LINK_TYPE" description="LINK_TYPE_DESCR">
+                <field name="first_post_link_type" type="radio" class="btn-group" default="text" label="LINK_TYPE" description="LINK_TYPE_DESCR">
                     <option value="text">TEXT</option>
                     <option value="image">IMAGE</option>
                 </field>

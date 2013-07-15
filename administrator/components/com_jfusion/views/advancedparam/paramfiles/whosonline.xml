@@ -18,7 +18,7 @@
 	        <field name="group_limit" type="JFusionUsergroupList" grouptype="all" multiple="yes" label="GROUP_LIMIT" />
 	        <field name="show_total_users" type="radio" value="1" default="1" label="SHOW_TOTAL_MEMEBER_COUNT" description="SHOW_TOTAL_MEMEBER_COUNT_DESCR">
 	            <option value="0">JNO</option>
-	            <option value="1">JYES</option>          
+	            <option value="1">JYES</option>
 	        </field>
 	        <field name="itemid" type="JFusionItemid" size="5" default="" label="MENU_ITEM" description="MENU_ITEM_DESCR" />
 	                
@@ -26,7 +26,7 @@
 	            <option value="0">USERNAME</option>
 	            <option value="1">NAME</option>
 	        </field>
-	        <field name="userlink" type="radio" default="1" label="USERNAME_LINK" description="USERNAME_LINK_DESCR">
+	        <field name="userlink" type="radio" class="btn-group" default="1" label="USERNAME_LINK" description="USERNAME_LINK_DESCR">
 	            <option value="0">JNO</option>
 	            <option value="1">JYES</option>
 	        </field>
@@ -39,7 +39,7 @@
                 <option value="joomunity">Joomunity</option>
 	        </field>
 	        <field name="userlink_custom" type="text" size="20" default="" label="USERLINK_CUSTOM" description="USERLINK_CUSTOM_DESC" />        
-	        <field name="avatar" type="radio" default="1"
+	        <field name="avatar" type="radio" class="btn-group" default="1"
 	            label="AVATAR_IMAGE" description="AVATAR_IMAGE_DESCR">
 	            <option value="0">HIDE</option>
 	            <option value="1">SHOW</option>
@@ -53,65 +53,10 @@
 	        </field>            
 	        <field name="avatar_height" label="AVATAR_HEIGHT" type="text" size="5" default="53"/>
 	        <field name="avatar_width" label="AVATAR_WIDTH" type="text" size="5" default="40"/>     
-	        <field name="avatar_keep_proportional" label="AVATAR_KEEP_PROPORTIONAL" type="radio" default="0" description="AVATAR_KEEP_PROPORTIONAL_DESCR">
+	        <field name="avatar_keep_proportional" label="AVATAR_KEEP_PROPORTIONAL" type="radio" class="btn-group" default="0" description="AVATAR_KEEP_PROPORTIONAL_DESCR">
 	            <option value="0">JNO</option>
 	            <option value="1">JYES</option>          
 	        </field>
 	    </fieldset>
     </fields>
-	
-	<params addpath="/administrator/components/com_jfusion/elements">
-		<param name="showmode" type="list" default="0" label="DISPLAY" description="DISPLAY_DESC">
-			<option value="0">NUMBER_OF_GUESTS_MEMBERS</option>
-			<option value="1">MEMBER_NAMES</option>
-			<option value="2">BOTH</option>
-		</param>
-		
-		<param name="member_limit" type="text" size="20" default="10" label="MEMBER_LIMIT" description="MEMBER_LIMIT_DESCR" />
-		<param name="group_limit_mode" type="radio" default="0" label="GROUP_LIMIT_MODE">
-			<option value="0">GROUP_LIMIT_ALL</option>
-			<option value="1">GROUP_LIMIT_SELECTED</option>
-		</param>	
-		<param name="group_limit" type="JFusionUsergroupList" grouptype="all" multiple="yes" label="GROUP_LIMIT" />
-		<param name="show_total_users" type="radio" value="1" default="1" label="SHOW_TOTAL_MEMEBER_COUNT" description="SHOW_TOTAL_MEMEBER_COUNT_DESCR">
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>			
-		</param>
-		<param name="itemid" type="JFusionItemid" size="5" default="" label="MENU_ITEM" description="MENU_ITEM_DESCR" />
-				
-		<param name="name" type="list" default="0" label="DISPLAY_USERNAME_NAME" description="DISPLAY_USERNAME_NAME_DESCR">
-			<option value="0">USERNAME</option>
-			<option value="1">NAME</option>
-		</param>
-		<param name="userlink" type="radio" default="1" label="USERNAME_LINK" description="USERNAME_LINK_DESCR">
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>
-		</param>
-		
-		<param name="userlink_software" type="list" default="jfusion" label="USERLINK_SOFTWARE" description="USERLINK_SOFTWARE_DESC">
-            <option value="cb">Community Builder</option>
-            <option value="custom">CUSTOM</option>
-            <option value="jfusion">JFusion</option>
-            <option value="jomsocial">JomSocial</option>
-            <option value="joomunity">Joomunity</option>
-		</param>
-		<param name="userlink_custom" type="text" size="20" default="" label="USERLINK_CUSTOM" description="USERLINK_CUSTOM_DESC" />		
-		<param name="avatar" type="radio" default="1" label="AVATAR_IMAGE" description="AVATAR_IMAGE_DESCR">
-			<option value="0">HIDE</option>
-			<option value="1">SHOW</option>
-		</param>
-		<param name="avatar_software" type="list" default="jfusion" label="AVATAR_SOFTWARE" description="AVATAR_SOFTWARE_DESC">
-            <option value="cb">Community Builder</option>
-            <option value="gravatar">Gravatar</option>
-            <option value="jfusion">JFusion</option>
-            <option value="jomsocial">JomSocial</option>
-            <option value="joomunity">Joomunity</option>
-		</param>			
-		<param name="avatar_height" label="AVATAR_HEIGHT" type="text" size="5" default="53"/>
-		<param name="avatar_width" label="AVATAR_WIDTH" type="text" size="5" default="40"/>		
-		<param name="avatar_keep_proportional" label="AVATAR_KEEP_PROPORTIONAL" type="radio" default="0" description="AVATAR_KEEP_PROPORTIONAL_DESCR">
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>			
-		</param>
-	</params>
 </config>

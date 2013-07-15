@@ -26,13 +26,13 @@
                     <option value="1">Magento</option>
                 </field>
                 <field name="mage_template_path" type="text" default="" label="Magento Template Path" description="MAGENTO_TEMPLATE_PATH" />
-                <field name="enable_scriptaculous" label="Scriptaculous enable" type="list" default="0" description="Enable or not the scriptaculous script from Magento. Some modules of Magento need it for Ajax call or rollover/menu effect. BE AWARE: not compatible with module or content using Mootools of Joomla">
+                <field name="enable_scriptaculous" label="Scriptaculous enable" type="radio" class="btn-group" default="0" description="Enable or not the scriptaculous script from Magento. Some modules of Magento need it for Ajax call or rollover/menu effect. BE AWARE: not compatible with module or content using Mootools of Joomla">
                     <option value="1">Enable</option>
                     <option value="0">Disable</option>
                 </field>
             </fieldset>
             <fieldset name="advanced">
-                <field name="cache" type="list" default="0" label="Caching" description="Select whether to cache the content of this module">
+                <field name="cache" type="radio" class="btn-group" default="0" label="Caching" description="Select whether to cache the content of this module">
                     <option value="1">Use global</option>
                     <option value="0">No caching</option>
                 </field>
