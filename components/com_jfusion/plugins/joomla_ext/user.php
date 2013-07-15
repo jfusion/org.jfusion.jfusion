@@ -63,7 +63,6 @@ class JFusionUser_joomla_ext extends JFusionUser {
 	        $db = JFusionFactory::getDatabase($this->getJname());
 	        //setup status array to hold debug info and errors
 	        $status = array('error' => array(),'debug' => array());
-	        $username = $userinfo->username;
 	        $userid = $userinfo->userid;
 	        $query = 'DELETE FROM #__users WHERE id = ' . (int)$userid;
 	        $db->setQuery($query);
@@ -77,9 +76,9 @@ class JFusionUser_joomla_ext extends JFusionUser {
 		    $db->setQuery($query);
 		    $db->execute();
 
-		    $status['debug'][] = JText::_('USER_DELETION') . ' ' . $username;
+		    $status['debug'][] = JText::_('USER_DELETION') . ' ' . $userinfo->username;
 	    } catch (Exception $e) {
-		    $status['error'][] = JText::_('ERROR_DELETE') . ' ' . $username . ' ' . $e->getMessage();
+		    $status['error'][] = JText::_('ERROR_DELETE') . ' ' . $userinfo->username . ' ' . $e->getMessage();
 	    }
         return $status;
     }

@@ -129,6 +129,8 @@ class JFusionPublic_vbulletin extends JFusionPublic
             if (!is_array($vb_bbcodes)) {
                 $vb_bbcodes = array();
 	            try {
+		            $db = JFusionFactory::getDatabase($this->getJname());
+
 		            $query = 'SELECT bbcodetag, bbcodereplacement, twoparams FROM #__bbcode';
 		            $db->setQuery($query);
 		            $bbcodes = $db->loadObjectList();

@@ -180,6 +180,7 @@ class JFusionForum_smf2 extends JFusionForum
      */
     function getAvatar($puser_id)
     {
+	    $url = false;
 	    try {
 		    if ($puser_id) {
 			    // Get SMF Params and get an instance of the database
@@ -214,7 +215,6 @@ class JFusionForum_smf2 extends JFusionForum
 						    $url = $avatarurl->value.'/'.$result->avatar;
 					    }
 				    }
-
 				    return $url;
 			    }
 		    }

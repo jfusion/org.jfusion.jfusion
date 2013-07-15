@@ -339,6 +339,7 @@ class JFusionForum_smf extends JFusionForum
      */
     function getAvatar($puser_id)
     {
+	    $url = false;
 	    try {
 		    if ($puser_id) {
 			    // Get SMF Params and get an instance of the database

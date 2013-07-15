@@ -194,6 +194,7 @@ class JFusionController extends JControllerLegacy
                 JFusionFunction::raiseWarning(JText::_('SOURCE_PATH_NOT_FOUND'));
             }
         }
+	    $action = JFactory::getApplication()->input->get('action');
 	    try {
 		    if (!JFusionFunctionAdmin::saveParameters($jname, $post)) {
 			    throw new Exception(JText::_('SAVE_FAILURE'));
@@ -220,8 +221,6 @@ class JFusionController extends JControllerLegacy
 				    }
 			    }
 		    }
-		    $action = JFactory::getApplication()->input->get('action');
-
 	    } catch (Exception $e) {
 		    $msg = $jname . ': ' . $e->getMessage();
 		    $msgType = 'error';

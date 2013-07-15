@@ -54,9 +54,8 @@ class jfusionViewplugindisplay extends JViewLegacy {
 	        if (!empty($VersionDataRaw)) {
 		        $xml = JFusionFunction::getXml($VersionDataRaw,false);
 	            if ($xml) {
-		            $element = $xml->plugins;
-		            if ($element) {
-			            $VersionData = $element->children();
+		            if ($xml->plugins) {
+			            $VersionData = $xml->plugins->children();
 		            }
 		            unset($parser);
 	            }

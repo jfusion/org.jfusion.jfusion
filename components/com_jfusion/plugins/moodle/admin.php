@@ -246,8 +246,9 @@ HTML;
      * @return array
      */
     public function installModule() {
+	    $status = array('error' => array(),'debug' => array());
+	    $jname =  $this->getJname ();
 		try {
-			 $jname =  $this->getJname ();
 			 $db = JFusionFactory::getDatabase($jname);
 			 $params = JFusionFactory::getParams ( $jname );
 			 $source_path = $params->get ( 'source_path' );
@@ -258,7 +259,6 @@ HTML;
 			 $pear_archive_path = $pear_path.DIRECTORY_SEPARATOR.archive_tar.DIRECTORY_SEPARATOR.'Archive_Tar.php';
 			 require_once $pear_archive_path;
 
-			 $status = array('error' => array(),'debug' => array());
 			 $archive_filename = 'moodle_module_jfusion.tar.gz';
 			 $old_chdir = getcwd();
 			 $src_archive =  $src_path = realpath ( dirname ( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'install_module';
@@ -305,12 +305,12 @@ HTML;
 					 $db->setQuery($query);
 					 $db->execute();
 				 }
-				 $status['error'] = $jname . ': ' . JText::sprintf('INSTALL_MODULE_ERROR', $src_archive, $dest);
-			 } else {
 				 $status['message'] = $jname .': ' . JText::_('INSTALL_MODULE_SUCCESS');
+			 } else {
+				 throw new Exception(JText::sprintf('INSTALL_MODULE_ERROR', $src_archive, $dest));
 			 }
 		} catch (Exception $e) {
-
+			$status['error'] = $jname . ': ' . $e->getMessage();
 		}
         return $status;
     }

@@ -132,6 +132,7 @@ try {
 			            $error = JText::_('JLIB_DATABASE_FUNCTION_NOERROR');
 		            } catch( Exception $e ) {
 			            $error = $e->getMessage();
+			            $results = array();
 		            }
 
 	                if($config['debug']) {

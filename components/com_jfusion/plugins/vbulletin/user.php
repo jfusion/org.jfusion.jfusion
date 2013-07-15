@@ -118,6 +118,7 @@ class JFusionUser_vbulletin extends JFusionUser
 		    }
 	    } catch (Exception $e) {
 			JFusionFunction::raiseError($e);
+		    $result = null;
 	    }
         return $result;
     }

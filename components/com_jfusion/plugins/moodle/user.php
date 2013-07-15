@@ -554,7 +554,7 @@ class JFusionUser_moodle extends JFusionUser {
 
 		//prepare the variables
 		$user = new stdClass;
-		$user->id = $record_id;
+		$user->id = null;
 		$user->auth = 'manual';
 		if ($userinfo->activation) {
 			$user->confirmed = 0;
@@ -582,18 +582,22 @@ class JFusionUser_moodle extends JFusionUser {
 		// $user->idnumber= ??
 		$parts = explode(' ', $userinfo->name);
 		$user->firstname = trim($parts[0]);
+		$lastname = '';
 		if ($parts[(count($parts) - 1) ]) {
 			for ($i = 1;$i < (count($parts));$i++) {
-				$lastname = $lastname . ' ' . $parts[$i];
+				if (!empty($lastname)) {
+					$lastname = $lastname . ' ' . $parts[$i];
+				} else {
+					$lastname = $parts[$i];
+				}
+
 			}
 		}
 		$user->lastname = trim($lastname);
 		$user->email = strtolower($userinfo->email);
 		$user->country = $country;
 		$user->lang = $lang;
-		if ($record_id==null) {
-			$user->firstaccess = time();
-		}
+		$user->firstaccess = time();
 		$user->timemodified = time();
 		//now append the new user data
 		if (!$db->insertObject('#__user', $user, 'id')) {
