@@ -57,19 +57,10 @@ class JFormFieldDiscussionbotparam extends JFormField
 	 	if(empty($jname)) {
 	 		return '<span style="float:left; margin: 5px 0; font-weight: bold;">'.JText::_('NO_PLUGIN_SELECT').'</span>';
 	 	} else {
-	 		static $js_loaded;
+		    JHtml::_('behavior.framework');
 
-	 		if(empty($js_loaded)) {
-                $js = <<<JS
-                function jDiscussionParamSet(name, base64) {
-					$(name + '_id').value = base64;
-					$(name + '_img').set('src', 'components/com_jfusion/images/filesave.png');
-					SqueezeBox.close();
-				}
-JS;
-				$doc->addScriptDeclaration($js);
-			    $js_loaded = 1;
-	 		}
+		    $document = JFactory::getDocument();
+		    $document->addScript('components/com_jfusion/js/jfusion.js');
 
 		    jimport( 'joomla.user.helper' );
 		    $hash = JApplication::getHash( $name.JUserHelper::genRandomPassword());

@@ -40,127 +40,77 @@ class JFormFieldJFusionPair extends JFormField
 	 */
 	protected function getInput()
 	{
-		static $js;
+		JHtml::_('behavior.framework');
+		JHTML::_('behavior.modal', 'a.modal');
+
+		$document = JFactory::getDocument();
+		$document->addScript('components/com_jfusion/js/jfusion.js');
+
+		JFusionFunction::loadJSLanguage();
 
 		$delete = JText::_('DELETE_PAIR');
-
-		if (!$js) {
-			$document = JFactory::getDocument();
-
-			$output = <<<JS
-		function addPair(t,s)	{
-            var tr = document.createElement('tr');
-
-            var index = 0;
-            var list;
-            while (true) {
-                list = document.getElementById('params'+t+'value'+index);
-                if (!list) break;
-                index++;
-            }
-            tr.setAttribute('id', 'params'+t+index);
-
-            var input = document.createElement('input');
-            var td = document.createElement('td');
-            input.setAttribute('type', 'text');
-            input.setAttribute('id', 'params'+t+'name'+index);
-            input.setAttribute('name', 'params['+t+'][name]['+index+']');
-            input.setAttribute('size', s);
-            td.appendChild(input);
-            tr.appendChild(td);
-
-            input = document.createElement('input');
-            td = document.createElement('td');
-			input.setAttribute('type', 'text');
-            input.setAttribute('id', 'params'+t+'value'+index);
-            input.setAttribute('name', 'params['+t+'][value]['+index+']');
-            input.setAttribute('size', s);
-            td.appendChild(input);
-            tr.appendChild(td);
-
-			var a = document.createElement('a');
-			td = document.createElement('td');
-            a.setAttribute('href', "javascript:removePair(\'"+t+"\',\'"+t+index+"\');");
-            a.appendChild(document.createTextNode('{$delete}'));
-            td.appendChild(a);
-            tr.appendChild(td);
-
-            $('params'+t).appendChild(tr);
-
-			$('params'+t+'_save').set('src', 'components/com_jfusion/images/filesave.png');
-        }
-
-        function removePair(t,i) {
-            $('params'+t).removeChild($('params'+i));
-            $('params'+t+'_save').set('src', 'components/com_jfusion/images/filesave.png');
-        }
-
-        function closePair() {
-			$(this.options.target).inject($(this.options.return));
-        }
-JS;
-			$document->addScriptDeclaration($output);
-			$js = true;
-		}
-
-		$name = $this->fieldname;
-		$temp = $value = $this->value;
-
-		$temp = @unserialize($temp);
-
-		if (!is_array($temp)) {
-			$values = explode( ',', $value);
-			if ($values) {
-				$temp = array();
-				foreach($values as $pair) {
-					$result = explode( ':', $pair);
-					if (count($result)==2) {
-						$temp['name'][] = $result[0];
-						$temp['value'][] = $result[1];
-					}
-				}
-			}
-		}
-
-		JHTML::_('behavior.modal', 'a.modal');
-		$value = $temp;
+		$add = JText::_('ADD_PAIR');
+		$configure = JText::_('CONFIGURE');
 
 		$att = $this->element->attributes();
 
 		$col1 = isset($att['col1']) ? JText::_($att['col1']) : JText::_('NAME');
 		$col2 = isset($att['col2']) ? JText::_($att['col2']) : JText::_('VALUE');
 
+		$js = '';
 		$values = '';
-		if (!is_array($value) || !count($value)) {
+		if (!is_array($this->value) || !count($this->value)) {
+			$js .=<<<JS
+			$('{$this->id}name0').addEvent('change', function () {
+				$('{$this->id}_save').set('src', 'components/com_jfusion/images/filesave.png');
+			});
+			$('{$this->id}value0').addEvent('change', function () {
+				$('{$this->id}_save').set('src', 'components/com_jfusion/images/filesave.png');
+			});
+JS;
 			$values .=<<<HTML
-			<tr id="params{$name}0">
+			<tr id="{$this->id}0">
 				<td>
-					<input type="text" name="params[{$name}][name][0]" id="params{$name}name0" size="50"/>
+					<input type="text" name="{$this->name}[name][0]" id="{$this->id}name0" size="50"/>
 				</td>
 				<td>
-					<input type="text" name="params[{$name}][value][0]" id="params{$name}value0" size="50"/>
+					<input type="text" name="{$this->name}[value][0]" id="{$this->id}value0" size="50"/>
 				</td>
 				<td>
-					<a href="javascript:removePair('{$name}', '{$name}0');">{$delete}</a>
+					<a href="javascript:JFusion.removePair('{$this->id}', '0');">{$delete}</a>
 				</td>
+				<script type="text/javascript">
+					window.addEvent('domready',function() {
+
+					}
+				</script>
 			</tr>
 HTML;
 		} else {
 			$i = 0;
-			foreach ($value['value'] as $key => $val) {
-				$v = htmlentities($val);
-				$n = htmlentities($value['name'][$key]);
+			foreach ($this->value['value'] as $key => $value) {
+				$v = htmlentities($value);
+				$n = htmlentities($this->value['name'][$key]);
+
+				$js .=<<<JS
+				$('{$this->id}name{$i}').addEvent('change', function () {
+					$('{$this->id}_save').set('src', 'components/com_jfusion/images/filesave.png');
+				});
+				$('{$this->id}value{$i}').addEvent('change', function () {
+					$('{$this->id}_save').set('src', 'components/com_jfusion/images/filesave.png');
+				});
+JS;
 
 				$values .=<<<HTML
-				<tr id="params{$name}{$i}">
+				<tr id="{$this->id}{$i}">
 					<td>
-						<input type="text" name="params[{$name}][name][{$i}]" id="params{$name}name{$i}" size="50"/>
+						<input type="text" name="{$this->name}[name][{$i}]" id="{$this->id}name{$i}" size="50" value="{$n}"/>
 					</td>
 					<td>
-						<input type="text" name="params[{$name}][value][{$i}]" id="params{$name}value{$i}" size="50"/>
+						<input type="text" name="{$this->name}[value][{$i}]" id="{$this->id}value{$i}" size="50" value="{$v}"/>
 					</td>
 					<td>
-						<a href="javascript:removePair('{$name}', '{$name}{$i}');">{$delete}</a>
+						<a href="javascript:JFusion.removePair('{$this->id}', '{$i}');">{$delete}</a>
 					</td>
 				</tr>
 HTML;
@@ -168,11 +118,11 @@ HTML;
 			}
 		}
 
-		$add = JText::_('ADD_PAIR');
+		$document->addScriptDeclaration('window.addEvent(\'domready\',function() { '.$js.' });');
 
 		$output = <<<HTML
-			<div style="display:none;" id="jform_params_{$name}">
-				<div id="target_jform_params_{$name}">
+			<div style="display:none;" id="{$this->id}">
+				<div id="{$this->id}_target">
 					<table>
 						<thead>
 							<tr>
@@ -186,23 +136,28 @@ HTML;
 								</th>
 							</tr>
 						</thead>
-						<tbody id="params{$name}">
+						<tbody id="{$this->id}_params">
 							{$values}
 						</tbody>
 					</table>
 					<div>
-						<a href="javascript:addPair('{$name}',50);">{$add}</a>
+						<a href="javascript:JFusion.addPair('{$this->name}','{$this->id}',50);">{$add}</a>
 					</div>
 	    		</div>
 			</div>
+			<div class="button2-left">
+				<div class="blank">
+					<a class="modal" title="{$configure}"  href="" rel="{target: '{$this->id}_target', handler: 'adopt', return: '{$this->id}', onClose : JFusion.closeAdopt, size: {x: 650, y: 375}}">{$configure}</a>
+				</div>
+			</div>
 HTML;
-		$output .= '<div class="button2-left"><div class="blank"><a class="modal" title="' . JText::_('CONFIGURE') . '"  href="" rel="{target: \'target_jform_params_'.$name.'\', handler: \'adopt\', return: \'jform_params_'.$name.'\', onClose : closePair, size: {x: 650, y: 375}}">' . JText::_('CONFIGURE') . '</a></div></div>';
-		if($value) {
+
+		if($this->value) {
 			$src = 'components/com_jfusion/images/tick.png';
 		} else {
 			$src = 'components/com_jfusion/images/clear.png';
 		}
-		$output .= '<img id="params'.$name.'_save" src="'.$src.'" alt="Save">';
+		$output .= '<img id="'.$this->id.'_save" src="'.$src.'" alt="' . JText::_('SAVE') . '">';
 		return $output;
 	}
 }

@@ -194,6 +194,112 @@ JFusion.module = function(action) {
     submitform('saveconfig');
 };
 
+JFusion.selectItemid = function(name,num,id) {
+    $(name+'_id'+num).value = id;
+    $(name+'_name'+num).value = id;
+    $(name+'_save'+num).set('src', 'components/com_jfusion/images/filesave.png');
+    SqueezeBox.close();
+};
+
+JFusion.discussionParamSet = function(name, base64) {
+    $(name + '_id').value = base64;
+    $(name + '_img').set('src', 'components/com_jfusion/images/filesave.png');
+    SqueezeBox.close();
+};
+
+JFusion.advancedParamSet = function(title, base64, name) {
+    $(name + '_id').value = base64;
+    $(name + '_name').value = title;
+    SqueezeBox.close();
+};
+
+JFusion.addPair = function(name,id)	{
+    var tr = document.createElement('tr');
+
+    var index = 0;
+    var list;
+    while (true) {
+        list = document.getElementById(id+'value'+index);
+        if (!list) break;
+        index++;
+    }
+    var tr = new Element('tr', {
+        'id': +id+index
+    });
+
+    var td = new Element('td');
+    var input = new Element('input', {
+        'type': 'text',
+        'id': id+'name'+index,
+        'name': name+'[name]['+index+']',
+        'size': 50,
+        'events': {
+            'change': function () {
+                $(id+'_save').set('src', 'components/com_jfusion/images/filesave.png');
+            }
+        }
+    });
+    td.appendChild(input);
+    tr.appendChild(td);
+
+    td = new Element('td');
+    input = new Element('input', {
+        'type': 'text',
+        'id': id+'value'+index,
+        'name': name+'[value]['+index+']',
+        'size': 50,
+        'events': {
+            'change': function () {
+                $(id+'_save').set('src', 'components/com_jfusion/images/filesave.png');
+            }
+        }
+    });
+    td.appendChild(input);
+    tr.appendChild(td);
+
+    var a = document.createElement('a');
+    td = document.createElement('td');
+    var a = new Element('a', {
+        'href': 'javascript:JFusion.removePair(\'+id+\',\'+index+\');',
+        'html': this.JText('DELETE_PAIR')
+    });
+
+    td.appendChild(a);
+    tr.appendChild(td);
+
+    $(id+'_params').appendChild(tr);
+};
+
+JFusion.removePair = function(id,index) {
+    $(id+'_params').removeChild($(id+index));
+    $(id+'_save').set('src', 'components/com_jfusion/images/filesave.png');
+};
+
+JFusion.closeAdopt = function() {
+    $(this.options.target).inject($(this.options.return));
+};
+
+closeAdopt = function() {
+    $(this.options.target).inject($(this.options.return));
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Joomla.submitbutton = function (pressbutton) {
     var adminForm = $('adminForm');
     if (pressbutton == 'applyconfig') {

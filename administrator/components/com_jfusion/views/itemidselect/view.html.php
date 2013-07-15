@@ -53,7 +53,7 @@ class jfusionViewitemidselect extends JViewLegacy
         $document->addStyleSheet('components/com_jfusion/css/jfusion.css');
         $css = '.jfusion table.adminlist, .jfusion table.admintable{ font-size:11px; }';
         $document->addStyleDeclaration($css);
-        $ename = JFactory::getApplication()->input->get('ename');
+        $ename = JFactory::getApplication()->input->getString('ename');
         //get the number to attach to the id of the input to update after selecting a menu item
         $elId = JFactory::getApplication()->input->get('elId');
         $feature = JFactory::getApplication()->input->get('feature', 'any');

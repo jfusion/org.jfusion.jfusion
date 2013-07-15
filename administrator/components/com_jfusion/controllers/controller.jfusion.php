@@ -686,7 +686,7 @@ class JFusionController extends JControllerLegacy
 		}
 		$js = '<script type="text/javascript">';
 		$js .= <<<JS
-            window.parent.jAdvancedParamSet('{$title}', '{$serParam}','{$ename}');
+            window.parent.JFusion.advancedParamSet('{$title}', '{$serParam}','{$ename}');
 JS;
 		$js .= '</script>';
 		echo $js;

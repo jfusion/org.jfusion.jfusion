@@ -138,7 +138,7 @@ class jfusionViewdiscussionbot extends JViewLegacy
                     <div class="toolbar-list" id="toolbar">
                         <ul>
                             <li class="button" id="toolbar-apply">
-                                <a href="javascript:void(0);" onclick="window.parent.jDiscussionParamSet('{$ename}', '{$encoded_pairs}');" class="toolbar"><span class="icon-32-apply"></span>{$apply}</a>
+                                <a href="javascript:void(0);" onclick="window.parent.JFusion.discussionParamSet('{$ename}', '{$encoded_pairs}');" class="toolbar"><span class="icon-32-apply"></span>{$apply}</a>
                             </li>
                             <li class="button" id="toolbar-cancel">
                                 <a href="javascript:void(0);" onclick="window.parent.SqueezeBox.close();" class="toolbar"><span class="icon-32-cancel"></span>{$close}</a>

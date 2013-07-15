@@ -35,29 +35,21 @@ class JFormFieldJFusionItemid extends JFormField
      */
     protected function getInput()
     {
+	    JHtml::_('behavior.framework');
         JHTML::_('behavior.modal', 'a.modal');
+
+	    $document = JFactory::getDocument();
+	    $document->addScript('components/com_jfusion/js/jfusion.js');
 
     	$value = $this->value;
     	$name = $this->name;
         static $elId;
-        static $js;
         if (!is_int($elId)) {
             $elId = 0;
         } else {
             $elId++;
         }
-        if (!$js) {
-        	$doc = JFactory::getDocument();
-            $js = <<<JS
-            function jSelectItemid(name,id,num) {
-	            $(name+'_id'+num).value = id;
-	            $(name+'_name'+num).value = id;
-	            $(name+'_save'+num).set('src', 'components/com_jfusion/images/filesave.png');
-	            SqueezeBox.close();
-	        }
-JS;
-	        $doc->addScriptDeclaration($js);
-        }
+
         $feature = $this->element['feature'];
 
         if (!$feature) {

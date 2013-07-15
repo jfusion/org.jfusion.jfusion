@@ -34,6 +34,10 @@ class JFormFieldJFusionAdvancedParam extends JFormField
 	 */
 	protected function getInput()
 	{
+		JHtml::_('behavior.framework');
+
+		$document = JFactory::getDocument();
+		$document->addScript('components/com_jfusion/js/jfusion.js');
 		//used to give unique ids to elements when more than one advanced param is loaded (for example in configuring JoomFish)
 		static $elNum;
 		if (!isset($elNum)) {
@@ -45,37 +49,11 @@ class JFormFieldJFusionAdvancedParam extends JFormField
 		$lang = JFactory::getLanguage();
 		$lang->load('com_jfusion');
 
-		$doc = JFactory::getDocument();
-		$fieldName = $this->name;
 		$feature = $this->element['feature'];
 		if (!$feature) {
 			$feature = 'any';
 		}
 		$multiselect = $this->element['multiselect'];
-
-		if (!defined('JFUSION_ADVANCEDPARAM_JS_LOADED')) {
-			define('JFUSION_ADVANCEDPARAM_JS_LOADED', 1);
-
-			if (!is_null($feature)) {
-				$cfile = '&feature='.$feature;
-			} else {
-				$cfile = '';
-			}
-			if (!is_null($multiselect)) {
-				$mselect = '&multiselect=1';
-			} else {
-				$mselect = '';
-			}
-
-			$js = <<<JS
-            function jAdvancedParamSet(title, base64, name) {
-                $(name + '_id').value = base64;
-                $(name + '_name').value = title;
-                SqueezeBox.close();
-            }
-JS;
-			$doc->addScriptDeclaration($js);
-		}
 
 		//Create Link
 		$link = 'index.php?option=com_jfusion&amp;task=advancedparam&amp;tmpl=component&amp;ename='.$ename;
@@ -87,7 +65,7 @@ JS;
 		}
 
 		jimport( 'joomla.user.helper' );
-		$hash = JApplication::getHash( $fieldName.JUserHelper::genRandomPassword());
+		$hash = JApplication::getHash( $this->name.JUserHelper::genRandomPassword());
 		$session = JFactory::getSession();
 		$session->set($hash, $this->value);
 
@@ -134,7 +112,7 @@ JS;
                 <a id="{$ename}_link" class="modal" title="{$select_plugin}"  href="{$link}" rel="{handler: 'iframe', size: {x: window.getSize().x-80, y: window.getSize().y-80}}">{$select}</a>
             </div>
         </div>
-        <input type="hidden" id="{$ename}_id" name="{$fieldName}" value="{$this->value}" />
+        <input type="hidden" id="{$ename}_id" name="{$this->name}" value="{$this->value}" />
 HTML;
 
 		$elNum++;
