@@ -302,7 +302,7 @@ class JFusionUser_smf extends JFusionUser
 	    try {
 		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 		    if (empty($usergroups)) {
-			    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST');
+			    throw new Exception(JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST'));
 		    } else {
 			    $usergroup = $usergroups[0];
 
@@ -376,15 +376,11 @@ class JFusionUser_smf extends JFusionUser
 		    $db->setQuery($query);
 		    $db->execute();
 
-		    try {
-			    $query = 'DELETE FROM #__ban_items WHERE ID_MEMBER = ' . (int)$existinguser->userid;
-			    $db->setQuery($query);
-			    $db->execute();
+		    $query = 'DELETE FROM #__ban_items WHERE ID_MEMBER = ' . (int)$existinguser->userid;
+		    $db->setQuery($query);
+		    $db->execute();
 
-			    $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
-		    } catch (Exception $e) {
-			    $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $e->getMessage();
-		    }
+		    $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
 	    } catch (Exception $e) {
 		    $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $e->getMessage();
 	    }

@@ -139,12 +139,17 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
      * @return array
      */
     function getUserList($limitstart = 0, $limit = 0) {
-        //getting the connection to the db
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT username_clean as username, user_email as email, user_id as userid from #__users WHERE user_email NOT LIKE \'\' and user_email IS NOT null';
-        $db->setQuery($query, $limitstart, $limit);
-        //getting the results
-        $userlist = $db->loadObjectList();
+	    try {
+		    //getting the connection to the db
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT username_clean as username, user_email as email, user_id as userid from #__users WHERE user_email NOT LIKE \'\' and user_email IS NOT null';
+		    $db->setQuery($query, $limitstart, $limit);
+		    //getting the results
+		    $userlist = $db->loadObjectList();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    $userlist = array();
+	    }
         return $userlist;
     }
 
@@ -152,12 +157,17 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
      * @return int
      */
     function getUserCount() {
-        //getting the connection to the db
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT count(*) from #__users WHERE user_email NOT LIKE \'\' and user_email IS NOT null ';
-        $db->setQuery($query);
-        //getting the results
-        $no_users = $db->loadResult();
+	    try {
+		    //getting the connection to the db
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT count(*) from #__users WHERE user_email NOT LIKE \'\' and user_email IS NOT null ';
+		    $db->setQuery($query);
+		    //getting the results
+		    $no_users = $db->loadResult();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    $no_users = 0;
+	    }
         return $no_users;
     }
 
@@ -165,47 +175,59 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
      * @return array
      */
     function getUsergroupList() {
-        //get the connection to the db
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT group_id as id, group_name as name from #__groups;';
-        $db->setQuery($query);
-        //getting the results
-        return $db->loadObjectList();
+	    try {
+		    //get the connection to the db
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT group_id as id, group_name as name from #__groups;';
+		    $db->setQuery($query);
+		    //getting the results
+		    return $db->loadObjectList();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    return array();
+	    }
     }
 
     /**
      * @return string
      */
     function getDefaultUsergroup() {
-        $params = JFusionFactory::getParams($this->getJname());
-        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
-        $usergroup_id = null;
-        if(!empty($usergroups)) {
-            $usergroup_id = $usergroups[0];
-        }
-        //we want to output the usergroup name
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT group_name from #__groups WHERE group_id = ' . (int)$usergroup_id;
-        $db->setQuery($query);
-        return $db->loadResult();
+	    try {
+		    $params = JFusionFactory::getParams($this->getJname());
+		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
+		    $usergroup_id = null;
+		    if(!empty($usergroups)) {
+			    $usergroup_id = $usergroups[0];
+		    }
+		    //we want to output the usergroup name
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT group_name from #__groups WHERE group_id = ' . (int)$usergroup_id;
+		    $db->setQuery($query);
+		    return $db->loadResult();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    return '';
+	    }
     }
 
     /**
      * @return bool
      */
     function allowRegistration() {
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT config_value FROM #__config WHERE config_name = \'require_activation\'';
-        $db->setQuery($query);
-        //getting the results
-        $new_registration = $db->loadResult();
-        if ($new_registration == 3) {
-            $result = false;
-            return $result;
-        } else {
-            $result = true;
-            return $result;
-        }
+	    $result = false;
+	    try {
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT config_value FROM #__config WHERE config_name = \'require_activation\'';
+		    $db->setQuery($query);
+		    //getting the results
+		    $new_registration = $db->loadResult();
+		    if ($new_registration != 3) {
+			    $result = true;
+		    }
+	    } catch (Exception $e) {
+			JFusionFunction::raiseError($e);
+	    }
+	    return $result;
     }
 
     /**
@@ -215,10 +237,11 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
      * @return string
      */
     function generateRedirectCode($url, $itemid) {
-        $params = JFusionFactory::getParams($this->getJname());
-        $cookie_name = $params->get('cookie_prefix') . '_u';
-        //create the new redirection code
-        $redirect_code = '
+	    try {
+		    $params = JFusionFactory::getParams($this->getJname());
+		    $cookie_name = $params->get('cookie_prefix') . '_u';
+		    //create the new redirection code
+		    $redirect_code = '
 //JFUSION REDIRECT START
 //SET SOME VARS
 if (!empty($_COOKIE[\'' . $cookie_name . '\']))
@@ -238,34 +261,38 @@ if (isset($_GET[\'jfile\'])) {
      $jfile = $_GET[\'jfile\'];
 }
     ';
-        $allow_mods = $params->get('mod_ids');
-        if (!empty($allow_mods)) {
-            //get a userlist of mod ids
-            $db = JFusionFactory::getDatabase($this->getJname());
-            $query = 'SELECT b.user_id, a.group_name FROM #__groups as a INNER JOIN #__user_group as b ON a.group_id = b.group_id WHERE a.group_name = \'GLOBAL_MODERATORS\' or a.group_name = \'ADMINISTRATORS\'';
-            $db->setQuery($query);
-            $mod_list = $db->loadObjectList();
-            $mod_array = array();
-            foreach ($mod_list as $mod) {
-                if (!isset($mod_array[$mod->user_id])) {
-                    $mod_array[$mod->user_id] = $mod->user_id;
-                }
-            }
-            $mod_ids = implode(',', $mod_array);
-            $redirect_code.= '
+		    $allow_mods = $params->get('mod_ids');
+		    if (!empty($allow_mods)) {
+			    //get a userlist of mod ids
+			    $db = JFusionFactory::getDatabase($this->getJname());
+			    $query = 'SELECT b.user_id, a.group_name FROM #__groups as a INNER JOIN #__user_group as b ON a.group_id = b.group_id WHERE a.group_name = \'GLOBAL_MODERATORS\' or a.group_name = \'ADMINISTRATORS\'';
+			    $db->setQuery($query);
+			    $mod_list = $db->loadObjectList();
+			    $mod_array = array();
+			    foreach ($mod_list as $mod) {
+				    if (!isset($mod_array[$mod->user_id])) {
+					    $mod_array[$mod->user_id] = $mod->user_id;
+				    }
+			    }
+			    $mod_ids = implode(',', $mod_array);
+			    $redirect_code.= '
 $mod_ids = array(' . $mod_ids . ');
 if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\') && $pfile != \'file.php\' && $jfile != \'file.php\' && $pfile != \'feed.php\' && $jfile != \'feed.php\' && !in_array($current_userid, $mod_ids))';
-        } else {
-            $redirect_code.= '
+		    } else {
+			    $redirect_code.= '
 if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\') && $pfile != \'file.php\' && $jfile != \'file.php\' && $pfile != \'feed.php\' && $jfile != \'feed.php\')';
-        }
-        $redirect_code.= '
+		    }
+		    $redirect_code.= '
 {
     $jfusion_url = $joomla_url . \'index.php?option=com_jfusion&Itemid=\' . $joomla_itemid . \'&jfile=\'.$pfile. \'&\' . $_SERVER[\'QUERY_STRING\'];
     header(\'Location: \' . $jfusion_url);
 }
 //JFUSION REDIRECT END';
-        return $redirect_code;
+		    return $redirect_code;
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    return '';
+	    }
     }
 
     /**
@@ -379,55 +406,57 @@ HTML;
      * @return mixed|string
      */
     function showAuthMod($name, $value, $node, $control_name) {
-        //do a database check to avoid fatal error with incorrect database settings
-        $db = JFusionFactory::getDatabase($this->getJname());
-        if (!method_exists($db, 'setQuery')) {
-            return JText::_('NO_DATABASE');
-        }
-        $error = 0;
-        $reason = '';
-        $mod_file = $this->getModFile('includes' . DIRECTORY_SEPARATOR . 'auth' . DIRECTORY_SEPARATOR . 'auth_jfusion.php', $error, $reason);
-        if ($error == 0) {
-            //get the joomla path from the file
-            jimport('joomla.filesystem.file');
-            $file_data = file_get_contents($mod_file);
-            if(preg_match_all('/define\(\'JPATH_BASE\'\,(.*)\)/', $file_data, $matches)) {
-       			//compare it with our joomla path
-	            if ($matches[1][0] != '\'' . JPATH_SITE . '\'') {
-	                $error = 1;
-	                $reason = JText::_('PATH') . ' ' . JText::_('INVALID');
-	            }
-            }
-        }
-        if ($error == 0) {
-            //check to see if the mod is enabled
-            $query = 'SELECT config_value FROM #__config WHERE config_name = \'auth_method\'';
-            $db->setQuery($query);
-            $auth_method = $db->loadResult();
-            if ($auth_method != 'jfusion') {
-                $error = 1;
-                $reason = JText::_('MOD_NOT_ENABLED');
-            }
-        }
-        //add the javascript to enable buttons
-        if ($error == 0) {
-            //return success
-            $text = JText::_('AUTHENTICATION_MOD') . ' ' . JText::_('ENABLED');
-            $disable = JText::_('MOD_DISABLE');
-            $output = <<<HTML
+	    try {
+		    //do a database check to avoid fatal error with incorrect database settings
+		    $db = JFusionFactory::getDatabase($this->getJname());
+
+		    $error = 0;
+		    $reason = '';
+		    $mod_file = $this->getModFile('includes' . DIRECTORY_SEPARATOR . 'auth' . DIRECTORY_SEPARATOR . 'auth_jfusion.php', $error, $reason);
+		    if ($error == 0) {
+			    //get the joomla path from the file
+			    jimport('joomla.filesystem.file');
+			    $file_data = file_get_contents($mod_file);
+			    if(preg_match_all('/define\(\'JPATH_BASE\'\,(.*)\)/', $file_data, $matches)) {
+				    //compare it with our joomla path
+				    if ($matches[1][0] != '\'' . JPATH_SITE . '\'') {
+					    $error = 1;
+					    $reason = JText::_('PATH') . ' ' . JText::_('INVALID');
+				    }
+			    }
+		    }
+		    if ($error == 0) {
+			    //check to see if the mod is enabled
+			    $query = 'SELECT config_value FROM #__config WHERE config_name = \'auth_method\'';
+			    $db->setQuery($query);
+			    $auth_method = $db->loadResult();
+			    if ($auth_method != 'jfusion') {
+				    $error = 1;
+				    $reason = JText::_('MOD_NOT_ENABLED');
+			    }
+		    }
+		    //add the javascript to enable buttons
+		    if ($error == 0) {
+			    //return success
+			    $text = JText::_('AUTHENTICATION_MOD') . ' ' . JText::_('ENABLED');
+			    $disable = JText::_('MOD_DISABLE');
+			    $output = <<<HTML
             <img src="components/com_jfusion/images/check_good_small.png">{$text}
             <a href="javascript:void(0);" onclick="return JFusion.module('disableAuthMod')">{$disable}</a>
 HTML;
-            return $output;
-        } else {
-            $text = JText::_('AUTHENTICATION_MOD') . ' ' . JText::_('DISABLED') . ': ' . $reason;
-            $enable = JText::_('MOD_ENABLE');
-            $output = <<<HTML
+			    return $output;
+		    } else {
+			    $text = JText::_('AUTHENTICATION_MOD') . ' ' . JText::_('DISABLED') . ': ' . $reason;
+			    $enable = JText::_('MOD_ENABLE');
+			    $output = <<<HTML
             <img src="components/com_jfusion/images/check_bad_small.png">{$text}
             <a href="javascript:void(0);" onclick="return JFusion.module('enableAuthMod')">{$enable}</a>
 HTML;
-            return $output;
-        }
+			    return $output;
+		    }
+	    } catch (Exception $e) {
+            return $e->getMessage();
+	    }
     }
     function enableAuthMod() {
         $error = 0;

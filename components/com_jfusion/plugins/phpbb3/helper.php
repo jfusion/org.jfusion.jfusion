@@ -169,35 +169,40 @@ class JFusionHelper_phpbb3
         $this->bbcodes = array();
         $this->bbcode_bitfield = '';
 
-        $params = JFusionFactory::getParams($this->getJname());
-        $source_path = $params->get('source_path');
-        $this->db = JFusionFactory::getDatabase($this->getJname());
-        if (!defined('IN_PHPBB')) {
-            define('IN_PHPBB', true);
-        }
-        $table_prefix = $params->get('database_prefix');
-        include_once ($source_path . '/includes/constants.php');
-        //get a bbcode_uid
-        if (empty($this->bbcode_uid)) {
-            $query = 'SELECT config_value FROM #__config WHERE config_name = \'rand_seed\'';
-            $this->db->setQuery($query);
-            $rand_seed = $this->db->loadResult();
-            $val = $rand_seed . microtime();
-            $val = md5($val);
-            $uniqueid = substr($val, 4, 16);
-            $this->bbcode_uid = substr(base_convert($uniqueid, 16, 36), 0, BBCODE_UID_LEN);
-        }
-        //remove unwanted stuff
-        $match = array('#(script|about|applet|activex|chrome):#i');
-        $replace = array("\\1&#058;");
-        $text = preg_replace($match, $replace, trim($text));
-        //parse smilies phpbb way
-        $this->parse_smilies($text);
-        //add phpbb bbcode_uid to bbcode and generate bbcode_bitfield
-        if (strpos($text, '[') !== false) {
-            $this->bbcode_bitfield = base64_decode('');
-            $this->parse_bbcode($text);
-        }
+	    try {
+		    $params = JFusionFactory::getParams($this->getJname());
+		    $source_path = $params->get('source_path');
+		    $this->db = JFusionFactory::getDatabase($this->getJname());
+		    if (!defined('IN_PHPBB')) {
+			    define('IN_PHPBB', true);
+		    }
+		    $table_prefix = $params->get('database_prefix');
+		    include_once ($source_path . '/includes/constants.php');
+		    //get a bbcode_uid
+		    if (empty($this->bbcode_uid)) {
+			    $query = 'SELECT config_value FROM #__config WHERE config_name = \'rand_seed\'';
+			    $this->db->setQuery($query);
+			    $rand_seed = $this->db->loadResult();
+			    $val = $rand_seed . microtime();
+			    $val = md5($val);
+			    $uniqueid = substr($val, 4, 16);
+			    $this->bbcode_uid = substr(base_convert($uniqueid, 16, 36), 0, BBCODE_UID_LEN);
+		    }
+		    //remove unwanted stuff
+		    $match = array('#(script|about|applet|activex|chrome):#i');
+		    $replace = array("\\1&#058;");
+		    $text = preg_replace($match, $replace, trim($text));
+		    //parse smilies phpbb way
+		    $this->parse_smilies($text);
+		    //add phpbb bbcode_uid to bbcode and generate bbcode_bitfield
+		    if (strpos($text, '[') !== false) {
+			    $this->bbcode_bitfield = base64_decode('');
+			    $this->parse_bbcode($text);
+		    }
+	    } catch (Exception $e) {
+			JFusionFunction::raiseError($e);
+	    }
+
         $bbcode = new stdClass;
         $bbcode->text = $text;
         $bbcode->warn_msg = $this->warn_msg;

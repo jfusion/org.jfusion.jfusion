@@ -153,8 +153,8 @@ class JFusionForum_smf2 extends JFusionForum
      */
     function getPrivateMessageCounts($userid)
     {
-        if ($userid) {
-	        try {
+        try {
+	        if ($userid) {
 		        // initialise some objects
 		        $db = JFusionFactory::getDatabase($this->getJname());
 
@@ -167,9 +167,9 @@ class JFusionForum_smf2 extends JFusionForum
 		        $totalCount = $db->loadResult();
 
 		        return array('unread' => $unreadCount, 'total' => $totalCount);
-	        } catch (Exception $e) {
-		        JFusionFunction::raiseError($e);
 	        }
+        } catch (Exception $e) {
+	        JFusionFunction::raiseError($e);
         }
         return array('unread' => 0, 'total' => 0);
     }

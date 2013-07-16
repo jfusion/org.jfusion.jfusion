@@ -167,17 +167,22 @@ class JFusionAdmin_magento extends JFusionAdmin
      * @return string
      */
     function getDefaultUsergroup() {
-        $params = JFusionFactory::getParams($this->getJname());
-        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
-        $usergroup_id = null;
-        if(!empty($usergroups)) {
-            $usergroup_id = $usergroups[0];
-        }
-        //we want to output the usergroup name
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT customer_group_code from #__customer_group WHERE customer_group_id = ' . (int)$usergroup_id;
-        $db->setQuery($query);
-        return $db->loadResult();
+	    try {
+		    $params = JFusionFactory::getParams($this->getJname());
+		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
+		    $usergroup_id = null;
+		    if(!empty($usergroups)) {
+			    $usergroup_id = $usergroups[0];
+		    }
+		    //we want to output the usergroup name
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT customer_group_code from #__customer_group WHERE customer_group_id = ' . (int)$usergroup_id;
+		    $db->setQuery($query);
+		    return $db->loadResult();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    return '';
+	    }
     }
 
     /**
@@ -246,7 +251,6 @@ class JFusionAdmin_magento extends JFusionAdmin
 		    } catch (Exception $e) {
 
 		    }
-
 	    } catch (Exception $e) {
 
 	    }
@@ -267,12 +271,12 @@ class JFusionAdmin_magento extends JFusionAdmin
      * @return string
      */
     public function moduleInstallation() {
-        $jname = $this->getJname ();
-        $params = JFusionFactory::getParams ( $jname );
+        $jname = $this->getJname();
+        $params = JFusionFactory::getParams($jname);
 
 	    try {
 		    try {
-			    $db = JFusionFactory::getDatabase ( $jname );
+			    $db = JFusionFactory::getDatabase($jname);
 		    } catch (Exception $e) {
 			    throw new Exception(JText::_('MOODLE_CONFIG_FIRST'));
 		    }

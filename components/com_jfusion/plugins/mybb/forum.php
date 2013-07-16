@@ -87,10 +87,16 @@ class JFusionForum_mybb extends JFusionForum {
      * @return object
      */
     function getThread($threadid) {
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT tid AS threadid, fid AS forumid, firstpost AS postid FROM #__threads WHERE tid = '. (int)$threadid;
-        $db->setQuery($query);
-        $results = $db->loadObject();
+	    try {
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT tid AS threadid, fid AS forumid, firstpost AS postid FROM #__threads WHERE tid = '. (int)$threadid;
+		    $db->setQuery($query);
+		    $results = $db->loadObject();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    $results = null;
+	    }
+
         return $results;
     }
 
@@ -99,10 +105,15 @@ class JFusionForum_mybb extends JFusionForum {
      * @return int
      */
     function getReplyCount(&$existingthread) {
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT replies FROM #__threads WHERE tid = ' .(int) $existingthread->threadid;
-        $db->setQuery($query);
-        $result = $db->loadResult();
+	    try {
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT replies FROM #__threads WHERE tid = ' .(int) $existingthread->threadid;
+		    $db->setQuery($query);
+		    $result = $db->loadResult();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    $result = 0;
+	    }
         return $result;
     }
 
@@ -110,12 +121,17 @@ class JFusionForum_mybb extends JFusionForum {
      * @return array
      */
     function getForumList() {
-        //get the connection to the db
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT fid as id, name FROM #__forums';
-        $db->setQuery($query);
-        //getting the results
-        return $db->loadObjectList();
+	    try {
+		    //get the connection to the db
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT fid as id, name FROM #__forums';
+		    $db->setQuery($query);
+		    //getting the results
+		    return $db->loadObjectList();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    return array();
+	    }
     }
 
     /**
@@ -123,14 +139,18 @@ class JFusionForum_mybb extends JFusionForum {
      * @return array
      */
     function getPrivateMessageCounts($userid) {
-        if ($userid) {
-            //get the connection to the db
-            $db = JFusionFactory::getDatabase($this->getJname());
-            // read unread count
-            $db->setQuery('SELECT totalpms, unreadpms FROM #__users WHERE uid = ' . (int)$userid);
-            $pminfo = $db->loadObject();
-            return array('unread' => $pminfo->unreadpms, 'total' => $pminfo->totalpms);
-        }
+	    try {
+		    if ($userid) {
+			    //get the connection to the db
+			    $db = JFusionFactory::getDatabase($this->getJname());
+			    // read unread count
+			    $db->setQuery('SELECT totalpms, unreadpms FROM #__users WHERE uid = ' . (int)$userid);
+			    $pminfo = $db->loadObject();
+			    return array('unread' => $pminfo->unreadpms, 'total' => $pminfo->totalpms);
+		    }
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+	    }
         return array('unread' => 0, 'total' => 0);
     }
 
@@ -153,14 +173,19 @@ class JFusionForum_mybb extends JFusionForum {
      * @return string
      */
     function getAvatar($userid) {
-        //get the connection to the db
-        $db = JFusionFactory::getDatabase($this->getJname());
-        // read unread count
-        $db->setQuery('SELECT avatar FROM #__users WHERE uid = ' . (int)$userid);
-        $avatar = $db->loadResult();
-        $avatar = substr($avatar, 2);
-        $params = JFusionFactory::getParams($this->getJname());
-        $url = $params->get('source_url') . $avatar;
+	    try {
+		    //get the connection to the db
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    // read unread count
+		    $db->setQuery('SELECT avatar FROM #__users WHERE uid = ' . (int)$userid);
+		    $avatar = $db->loadResult();
+		    $avatar = substr($avatar, 2);
+		    $params = JFusionFactory::getParams($this->getJname());
+		    $url = $params->get('source_url') . $avatar;
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    $url = '';
+	    }
         return $url;
     }
 }

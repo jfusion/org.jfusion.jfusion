@@ -96,13 +96,17 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             $text = html_entity_decode($text);
             if (strpos($text, 'SMILIES_PATH') !== false) {
                 //must convert smilies
-                $db = JFusionFactory::getDatabase($this->getJname());
-                $query = 'SELECT config_value FROM #__config WHERE config_name = \'smilies_path\'';
-                $db->setQuery($query);
-                $smilie_path = $db->loadResult();
-                $jfparams = JFusionFactory::getParams($this->getJname());
-                $source_url = $jfparams->get('source_url');
-                $text = preg_replace('#<!-- s(.*?) --><img src="\{SMILIES_PATH\}\/(.*?)" alt="(.*?)" title="(.*?)" \/><!-- s\\1 -->#si', "[img]{$source_url}{$smilie_path}/$2[/img]", $text);
+	            try {
+		            $db = JFusionFactory::getDatabase($this->getJname());
+		            $query = 'SELECT config_value FROM #__config WHERE config_name = \'smilies_path\'';
+		            $db->setQuery($query);
+		            $smilie_path = $db->loadResult();
+		            $jfparams = JFusionFactory::getParams($this->getJname());
+		            $source_url = $jfparams->get('source_url');
+		            $text = preg_replace('#<!-- s(.*?) --><img src="\{SMILIES_PATH\}\/(.*?)" alt="(.*?)" title="(.*?)" \/><!-- s\\1 -->#si', "[img]{$source_url}{$smilie_path}/$2[/img]", $text);
+	            } catch (Exception $e) {
+					JFusionFunction::raiseError($e);
+	            }
             }
             //parse bbcode to html
             $options = array();
@@ -150,13 +154,18 @@ class JFusionPublic_phpbb3 extends JFusionPublic
      * @return int
      */
     function getNumberOnlineGuests() {
-        //get a unix time from 5 minutes ago
-        date_default_timezone_set('UTC');
-        $active = strtotime('-5 minutes', time());
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT COUNT(DISTINCT(session_ip)) FROM #__sessions WHERE session_user_id = 1 AND session_time > '.$active;
-        $db->setQuery($query);
-        $result = $db->loadResult();
+	    try {
+		    //get a unix time from 5 minutes ago
+		    date_default_timezone_set('UTC');
+		    $active = strtotime('-5 minutes', time());
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT COUNT(DISTINCT(session_ip)) FROM #__sessions WHERE session_user_id = 1 AND session_time > '.$active;
+		    $db->setQuery($query);
+		    $result = $db->loadResult();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    $result = 0;
+	    }
         return $result;
     }
 
@@ -164,13 +173,18 @@ class JFusionPublic_phpbb3 extends JFusionPublic
      * @return int
      */
     function getNumberOnlineMembers() {
-        //get a unix time from 5 minutes ago
-        date_default_timezone_set('UTC');
-        $active = strtotime('-5 minutes', time());
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT COUNT(DISTINCT(session_user_id)) FROM #__sessions WHERE session_viewonline = 1 AND session_user_id != 1 AND session_time > '.$active;
-        $db->setQuery($query);
-        $result = $db->loadResult();
+	    try {
+		    //get a unix time from 5 minutes ago
+		    date_default_timezone_set('UTC');
+		    $active = strtotime('-5 minutes', time());
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT COUNT(DISTINCT(session_user_id)) FROM #__sessions WHERE session_viewonline = 1 AND session_user_id != 1 AND session_time > '.$active;
+		    $db->setQuery($query);
+		    $result = $db->loadResult();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    $result = 0;
+	    }
         return $result;
     }
 
@@ -440,10 +454,15 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             static $profile_mod_id;
             if (empty($profile_mod_id)) {
                 //the first item listed in the profile module is the edit profile link so must rewrite it to go to signature instead
-                $db = JFusionFactory::getDatabase($this->getJname());
-                $query = 'SELECT module_id FROM #__modules WHERE module_langname = \'UCP_PROFILE\'';
-                $db->setQuery($query);
-                $profile_mod_id = $db->loadResult();
+	            try {
+		            $db = JFusionFactory::getDatabase($this->getJname());
+		            $query = 'SELECT module_id FROM #__modules WHERE module_langname = \'UCP_PROFILE\'';
+		            $db->setQuery($query);
+		            $profile_mod_id = $db->loadResult();
+	            } catch (Exception $e) {
+		            JFusionFunction::raiseError($e);
+		            $profile_mod_id = null;
+	            }
             }
             if (!empty($profile_mod_id) && strstr($q, 'i='.$profile_mod_id)) {
                 $url = 'ucp.php?i=profile&mode=signature';
@@ -641,52 +660,58 @@ class JFusionPublic_phpbb3 extends JFusionPublic
      * @return array
      */
     function getPathWay() {
-        $mainframe = JFactory::getApplication('site');
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $pathway = array();
+	    try {
+		    $mainframe = JFactory::getApplication('site');
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $pathway = array();
 
-        $forum_id = JFactory::getApplication()->input->getInt('f');
-        if (!empty($forum_id)) {
-            //get the forum's info
-            $query = 'SELECT forum_name, parent_id, left_id, right_id, forum_parents FROM #__forums WHERE forum_id = '.$db->Quote($forum_id);
-            $db->setQuery($query);
-            $forum_info = $db->loadObject();
+		    $forum_id = JFactory::getApplication()->input->getInt('f');
+		    if (!empty($forum_id)) {
+			    //get the forum's info
+			    $query = 'SELECT forum_name, parent_id, left_id, right_id, forum_parents FROM #__forums WHERE forum_id = '.$db->Quote($forum_id);
+			    $db->setQuery($query);
+			    $forum_info = $db->loadObject();
 
-            if (!empty($forum_info)) {
-                //get forum parents
-                $query = 'SELECT forum_id, forum_name FROM #__forums WHERE left_id < '.$forum_info->left_id.' AND right_id > '.$forum_info->right_id.' ORDER BY left_id ASC';
-                $db->setQuery($query);
-                $forum_parents = $db->loadObjectList();
+			    if (!empty($forum_info)) {
+				    //get forum parents
+				    $query = 'SELECT forum_id, forum_name FROM #__forums WHERE left_id < '.$forum_info->left_id.' AND right_id > '.$forum_info->right_id.' ORDER BY left_id ASC';
+				    $db->setQuery($query);
+				    $forum_parents = $db->loadObjectList();
 
-                if (!empty($forum_parents)) {
-                    foreach ($forum_parents as $k => $data) {
-                        $crumb = new stdClass();
-                        $crumb->title = $data->forum_name;
-                        $crumb->url = 'viewforum.php?f='.$data->forum_id;
-                        $pathway[] = $crumb;
-                    }
-                }
+				    if (!empty($forum_parents)) {
+					    foreach ($forum_parents as $k => $data) {
+						    $crumb = new stdClass();
+						    $crumb->title = $data->forum_name;
+						    $crumb->url = 'viewforum.php?f='.$data->forum_id;
+						    $pathway[] = $crumb;
+					    }
+				    }
 
-                $crumb = new stdClass();
-                $crumb->title = $forum_info->forum_name;
-                $crumb->url = 'viewforum.php?f=' . $forum_id;
-                $pathway[] = $crumb;
-            }
-        }
+				    $crumb = new stdClass();
+				    $crumb->title = $forum_info->forum_name;
+				    $crumb->url = 'viewforum.php?f=' . $forum_id;
+				    $pathway[] = $crumb;
+			    }
+		    }
 
-        $topic_id = JFactory::getApplication()->input->getInt('t');
-        if (!empty($topic_id)) {
-            $query = 'SELECT topic_title FROM #__topics WHERE topic_id = '.$db->Quote($topic_id);
-            $db->setQuery($query);
-            $topic_title = $db->loadObject();
+		    $topic_id = JFactory::getApplication()->input->getInt('t');
+		    if (!empty($topic_id)) {
+			    $query = 'SELECT topic_title FROM #__topics WHERE topic_id = '.$db->Quote($topic_id);
+			    $db->setQuery($query);
+			    $topic_title = $db->loadObject();
 
-            if (!empty($topic_title)) {
-                $crumb = new stdClass();
-                $crumb->title = $topic_title->topic_title;
-                $crumb->url = 'viewtopic.php?f='.$forum_id.'&amp;t='.$topic_id;
-                $pathway[] = $crumb;
-            }
-        }
+			    if (!empty($topic_title)) {
+				    $crumb = new stdClass();
+				    $crumb->title = $topic_title->topic_title;
+				    $crumb->url = 'viewtopic.php?f='.$forum_id.'&amp;t='.$topic_id;
+				    $pathway[] = $crumb;
+			    }
+		    }
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    $pathway = array();
+	    }
+
         return $pathway;
     }
 
@@ -730,12 +755,18 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             $selected_ids = $pluginParam->get('selected_forums', array());
             $forumids = $forum->filterForumList($selected_ids);
         } else {
-            $db = JFusionFactory::getDatabase($this->getJname());
-            //no forums were selected so pull them all then filter
-            $query = 'SELECT forum_id FROM #__forums WHERE forum_type = 1 ORDER BY left_id';
-            $db->setQuery($query);
-            $forumids = $db->loadColumn();
-            $forumids = $forum->filterForumList($forumids);
+	        try {
+		        $db = JFusionFactory::getDatabase($this->getJname());
+		        //no forums were selected so pull them all then filter
+		        $query = 'SELECT forum_id FROM #__forums WHERE forum_type = 1 ORDER BY left_id';
+		        $db->setQuery($query);
+		        $forumids = $db->loadColumn();
+		        $forumids = $forum->filterForumList($forumids);
+	        } catch (Exception $e) {
+		        JFusionFunction::raiseError($e);
+		        $forumids = array();
+	        }
+
         }
         if (empty($forumids)) {
             $forumids = array(0);

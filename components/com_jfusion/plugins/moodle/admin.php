@@ -111,71 +111,92 @@ class JFusionAdmin_moodle extends JFusionAdmin
      */
     function getUserList($limitstart = 0, $limit = 0)
     {
-        //getting the connection to the db
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT username, email from #__user';
-        $db->setQuery($query,$limitstart,$limit);
+	    try {
+		    //getting the connection to the db
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT username, email from #__user';
+		    $db->setQuery($query,$limitstart,$limit);
 
-        //getting the results
-        $userlist = $db->loadObjectList();
-        return $userlist;
+		    //getting the results
+		    $userlist = $db->loadObjectList();
+		    return $userlist;
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    return array();
+	    }
     }
 
     /**
      * @return int
      */
     function getUserCount() {
-        //getting the connection to the db
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT count(*) from #__user';
-        $db->setQuery($query);
-        //getting the results
-        $no_users = $db->loadResult();
-        return $no_users;
+	    try {
+		    //getting the connection to the db
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT count(*) from #__user';
+		    $db->setQuery($query);
+		    //getting the results
+		    $no_users = $db->loadResult();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    $no_users = 0;
+	    }
+	    return $no_users;
     }
     /**
      * @return array
      */
     function getUsergroupList() {
-        //get the connection to the db
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT id, name from #__role;';
-        $db->setQuery($query);
-        //getting the results
-        return $db->loadObjectList();
+	    try {
+		    //get the connection to the db
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT id, name from #__role;';
+		    $db->setQuery($query);
+		    //getting the results
+		    return $db->loadObjectList();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    return array();
+	    }
     }
     /**
      * @return string
      */
     function getDefaultUsergroup() {
-        $params = JFusionFactory::getParams($this->getJname());
-        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
-        $usergroup_id = null;
-        if(!empty($usergroups)) {
-            $usergroup_id = $usergroups[0];
-        }
-        //we want to output the usergroup name
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT name from #__role WHERE id = ' . (int)$usergroup_id;
-        $db->setQuery($query);
-        return $db->loadResult();
+	    try {
+		    $params = JFusionFactory::getParams($this->getJname());
+		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
+		    $usergroup_id = null;
+		    if(!empty($usergroups)) {
+			    $usergroup_id = $usergroups[0];
+		    }
+		    //we want to output the usergroup name
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT name from #__role WHERE id = ' . (int)$usergroup_id;
+		    $db->setQuery($query);
+		    return $db->loadResult();
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    return '';
+	    }
     }
 
     /**
      * @return bool
      */
     function allowRegistration() {
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'SELECT value FROM #__config WHERE name = \'auth\' and value != \'jfusion\'';
-        $db->setQuery($query);
-        $auths = $db->loadResult();
-        if (empty($auths)) {
-            $result = false;
-            return $result;
-        } else {
-            $result = true;
-            return $result;
-        }
+	    try {
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'SELECT value FROM #__config WHERE name = \'auth\' and value != \'jfusion\'';
+		    $db->setQuery($query);
+		    $auths = $db->loadResult();
+		    if (!empty($auths)) {
+			    $result = true;
+		    }
+	    } catch (Exception $e) {
+			JFusionFunction::raiseError($e);
+	    }
+	    return $result;
     }
 
     /**
@@ -398,40 +419,42 @@ HTML;
      * @return mixed|string
      */
     public function moduleActivation() {
-        $jname =  $this->getJname ();
-        $params = JFusionFactory::getParams ( $jname );
-        $db = JFusionFactory::getDatabase($jname);
+	    $html = JText::_('MOODLE_CONFIG_FIRST');
+	    try {
+		    $jname = $this->getJname ();
+		    $params = JFusionFactory::getParams($jname);
+		    $db = JFusionFactory::getDatabase($jname);
 
-        $source_path = $params->get ( 'source_path' );
-        $jfusion_auth = $source_path . DIRECTORY_SEPARATOR .'auth'. DIRECTORY_SEPARATOR .'jfusion'. DIRECTORY_SEPARATOR .'auth.php';
-        if(file_exists($jfusion_auth)){
-            // find out if jfusion is listed in the active auth plugins
-            $query = 'SELECT value from #__config WHERE name = \'auth\'';
-            $db->setQuery($query);
-            $value = $db->loadResult();
-            if (stripos($value,'jfusion')!== false ){
-                // now find out if we have enabled the plugin
-                $query = 'SELECT value from #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_enabled\'';
-                $db->setQuery($query);
-                $value = $db->loadResult();
-                if  ($value == '1'){
-                    $activated = 1;
-                } else {
-                    $activated = 0 ;
-                }
-            } else {
-                $activated = 0;
-            }
+		    $source_path = $params->get ( 'source_path' );
+		    $jfusion_auth = $source_path . DIRECTORY_SEPARATOR .'auth'. DIRECTORY_SEPARATOR .'jfusion'. DIRECTORY_SEPARATOR .'auth.php';
+		    if(file_exists($jfusion_auth)){
+			    // find out if jfusion is listed in the active auth plugins
+			    $query = 'SELECT value from #__config WHERE name = \'auth\'';
+			    $db->setQuery($query);
+			    $value = $db->loadResult();
+			    if (stripos($value,'jfusion')!== false ){
+				    // now find out if we have enabled the plugin
+				    $query = 'SELECT value from #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_enabled\'';
+				    $db->setQuery($query);
+				    $value = $db->loadResult();
+				    if  ($value == '1'){
+					    $activated = 1;
+				    } else {
+					    $activated = 0 ;
+				    }
+			    } else {
+				    $activated = 0;
+			    }
 
-            if ($activated) {
-                $src = 'components/com_jfusion/images/tick.png';
-                $text = JText::_ ( 'MODULE_DEACTIVATION_BUTTON' );
-            } else {
-                $src = 'components/com_jfusion/images/cross.png';
-                $text = JText::_ ( 'MODULE_ACTIVATION_BUTTON' );
-            }
+			    if ($activated) {
+				    $src = 'components/com_jfusion/images/tick.png';
+				    $text = JText::_ ( 'MODULE_DEACTIVATION_BUTTON' );
+			    } else {
+				    $src = 'components/com_jfusion/images/cross.png';
+				    $text = JText::_ ( 'MODULE_ACTIVATION_BUTTON' );
+			    }
 
-            $html = <<<HTML
+			    $html = <<<HTML
 			    <div class="button2-left">
 			        <div class="blank">
 			            <a href="javascript:void(0);"  onclick="return JFusion.module('activateModule');">{$text}</a>
@@ -441,9 +464,10 @@ HTML;
 
 			    <img src="{$src}" style="margin-left:10px;"/>
 HTML;
-        } else {
-            $html = JText::_ ( 'MOODLE_CONFIG_FIRST' );
-        }
+		    }
+	    } catch (Exception $e) {
+			JFusionFunction::raiseError($e);
+	    }
         return $html;
     }
 
@@ -451,71 +475,61 @@ HTML;
      * @return array|bool
      */
     public function activateModule(){
-        $jname =  $this->getJname ();
-        $params = JFusionFactory::getParams ( $jname );
-        $db = JFusionFactory::getDatabase($jname);
+	    try {
+		    $jname =  $this->getJname ();
+		    $params = JFusionFactory::getParams ( $jname );
+		    $db = JFusionFactory::getDatabase($jname);
 
-        $activation = ((JFactory::getApplication()->input->get('activation', 1))?'true':'false');
-        if ($activation == 'true') {
-            $query = 'UPDATE #__config_plugins SET value = \'1\' WHERE plugin = \'auth/jfusion\' AND name = \'jf_enabled\'';
-            $db->setQuery($query);
-            $db->execute();
-            if ($db->getErrorNum() != 0) {
-                $status['error'] = $db->stderr ();
-                return $status;
-            }
-            // add jfusion plugin jfusion as active plugin
-            $query = 'SELECT value from #__config WHERE name = \'auth\'';
-            $db->setQuery($query);
+		    $activation = ((JFactory::getApplication()->input->get('activation', 1))?'true':'false');
+		    if ($activation == 'true') {
+			    $query = 'UPDATE #__config_plugins SET value = \'1\' WHERE plugin = \'auth/jfusion\' AND name = \'jf_enabled\'';
+			    $db->setQuery($query);
+			    $db->execute();
 
-            $value = $db->loadResult();
-            $auths = explode(',',$value);
+			    // add jfusion plugin jfusion as active plugin
+			    $query = 'SELECT value from #__config WHERE name = \'auth\'';
+			    $db->setQuery($query);
 
-            $key = array_search('jfusion',$auths);
+			    $value = $db->loadResult();
+			    $auths = explode(',',$value);
 
-            if ($key !== false){ // already enabled ?!
-                $status['error'] = 'key already enabled?';
-                return $status;
-            }
-            $value .= ',jfusion';
-            $query = 'UPDATE #__config SET value = \''.$value.'\' WHERE name = \'auth\'';
-            $db->setQuery($query);
-            $db->execute();
-            if ($db->getErrorNum() != 0) {
-                $status['error'] = $db->stderr ();
-                return $status;
-            }
-        } else {
-            $query = 'UPDATE #__config_plugins SET value = \'0\' WHERE plugin = \'auth/jfusion\' AND name = \'jf_enabled\'';
-            $db->setQuery($query);
-            $db->execute();
-            if ($db->getErrorNum() != 0) {
-                $status['error'] = $db->stderr ();
-                return $status;
-            }
-            // remove jfusion as active plugin
-            $query = 'SELECT value from #__config WHERE name = \'auth\'';
-            $db->setQuery($query);
-            $value = $db->loadResult();
-            $auths = explode(',',$value);
-            $key = array_search('jfusion',$auths);
-            if ($key !== false){
-                $authstr = $auths[0];
-                for ($i=1; $i <= (count($auths)-1);$i++){
-                    if ($auths[$i] != 'jfusion'){
-                        $authstr .= ','.$auths[$i];
-                    }
-                }
-                $query = 'UPDATE #__config SET value = \''.$authstr.'\' WHERE name = \'auth\'';
-                $db->setQuery($query);
-                $db->execute();
-                if ($db->getErrorNum() != 0) {
-                    $status['error'] = $db->stderr ();
-                    return $status;
-                }
+			    $key = array_search('jfusion',$auths);
 
-            }
-        }
+			    if ($key !== false) {
+					// already enabled ?!
+				    throw new Exception('key already enabled?');
+			    }
+			    $value .= ',jfusion';
+			    $query = 'UPDATE #__config SET value = \''.$value.'\' WHERE name = \'auth\'';
+			    $db->setQuery($query);
+			    $db->execute();
+		    } else {
+			    $query = 'UPDATE #__config_plugins SET value = \'0\' WHERE plugin = \'auth/jfusion\' AND name = \'jf_enabled\'';
+			    $db->setQuery($query);
+			    $db->execute();
+
+			    // remove jfusion as active plugin
+			    $query = 'SELECT value from #__config WHERE name = \'auth\'';
+			    $db->setQuery($query);
+			    $value = $db->loadResult();
+			    $auths = explode(',',$value);
+			    $key = array_search('jfusion',$auths);
+			    if ($key !== false){
+				    $authstr = $auths[0];
+				    for ($i=1; $i <= (count($auths)-1);$i++){
+					    if ($auths[$i] != 'jfusion'){
+						    $authstr .= ','.$auths[$i];
+					    }
+				    }
+				    $query = 'UPDATE #__config SET value = \''.$authstr.'\' WHERE name = \'auth\'';
+				    $db->setQuery($query);
+				    $db->execute();
+			    }
+		    }
+	    } catch (Exception $e) {
+		    $status = array('error' => $e->getMessage());
+		    return $status;
+	    }
         return false;
     }
 

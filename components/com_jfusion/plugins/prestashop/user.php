@@ -487,8 +487,11 @@ class JFusionUser_prestashop extends JFusionUser {
 		    $db = JFusionFactory::getDatabase($this->getJname());
 		    $query = 'UPDATE #__customer SET active =\'1\' WHERE id_customer =\'' . (int)$existinguser->userid . '\'';
 		    $db->setQuery($query);
+		    $db->execute();
+
+		    $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e);
+		    $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $e->getMessage();
 	    }
     }
 
@@ -505,8 +508,11 @@ class JFusionUser_prestashop extends JFusionUser {
 		    $db = JFusionFactory::getDatabase($this->getJname());
 		    $query = 'UPDATE #__customer SET active =\'0\' WHERE id_customer =\'' . (int)$existinguser->userid . '\'';
 		    $db->setQuery($query);
+		    $db->execute();
+
+		    $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $e->getMessage();
 	    }
     }
 
@@ -521,7 +527,7 @@ class JFusionUser_prestashop extends JFusionUser {
 	    try {
 		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 		    if (empty($usergroups)) {
-			    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('USERGROUP_MISSING');
+			    throw new Exception(JText::_('USERGROUP_MISSING'));
 		    } else {
 			    $db = JFusionFactory::getDatabase($this->getJname());
 			    // now delete the user

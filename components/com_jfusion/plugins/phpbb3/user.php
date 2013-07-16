@@ -35,47 +35,53 @@ class JFusionUser_phpbb3 extends JFusionUser
      * @return null|object
      */
     function getUser($userinfo) {
-        //get the identifier
-        list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'a.username_clean', 'a.user_email');
-        // Get a database object
-        $db = JFusionFactory::getDatabase($this->getJname());
-        //make the username case insensitive
-        if ($identifier_type == 'a.username_clean') {
-            $identifier = $this->filterUsername($identifier);
-        }
-        $query = 'SELECT a.user_id as userid, a.username as name, a.username_clean as username, a.user_email as email, a.user_password as password, null as password_salt, a.user_actkey as activation, a.user_inactive_reason as reason, a.user_lastvisit as lastvisit, a.group_id, b.group_name, a.user_type, a.user_avatar, a.user_avatar_type ' . 'FROM #__users as a LEFT OUTER JOIN #__groups as b ON a.group_id = b.group_id ' . 'WHERE ' . $identifier_type . ' = ' . $db->Quote($identifier);
-        $db->setQuery($query);
-        $result = $db->loadObject();
-        if ($result) {
-            //prevent anonymous user accessed
-            if ($result->username == 'anonymous') {
-                $result = null;
-            } else {
-                $result->groups = array($result->group_id);
-                $result->groupnames = array($result->group_name);
+	    try {
+		    //get the identifier
+		    list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'a.username_clean', 'a.user_email');
+		    // Get a database object
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    //make the username case insensitive
+		    if ($identifier_type == 'a.username_clean') {
+			    $identifier = $this->filterUsername($identifier);
+		    }
+		    $query = 'SELECT a.user_id as userid, a.username as name, a.username_clean as username, a.user_email as email, a.user_password as password, null as password_salt, a.user_actkey as activation, a.user_inactive_reason as reason, a.user_lastvisit as lastvisit, a.group_id, b.group_name, a.user_type, a.user_avatar, a.user_avatar_type ' . 'FROM #__users as a LEFT OUTER JOIN #__groups as b ON a.group_id = b.group_id ' . 'WHERE ' . $identifier_type . ' = ' . $db->Quote($identifier);
+		    $db->setQuery($query);
+		    $result = $db->loadObject();
+		    if ($result) {
+			    //prevent anonymous user accessed
+			    if ($result->username == 'anonymous') {
+				    $result = null;
+			    } else {
+				    $result->groups = array($result->group_id);
+				    $result->groupnames = array($result->group_name);
 
-                //Check to see if they are banned
-                $query = 'SELECT ban_userid FROM #__banlist WHERE ban_userid =' . (int)$result->userid;
-                $db->setQuery($query);
-                if ($db->loadObject()) {
-                    $result->block = 1;
-                } else {
-                    $result->block = 0;
-                }
-                //if no inactive reason is set clear the activation code
-                if ($result->user_type == 1) {
-                    //user is inactive
-                    if (empty($result->activation)) {
-                        //user not active generate a random code
-                        jimport('joomla.user.helper');
-                        $result->activation = JUserHelper::genRandomPassword(13);
-                    }
-                } else {
-                    //active user, make sure no activation code is set
-                    $result->activation = '';
-                }
-            }
-        }
+				    //Check to see if they are banned
+				    $query = 'SELECT ban_userid FROM #__banlist WHERE ban_userid =' . (int)$result->userid;
+				    $db->setQuery($query);
+				    if ($db->loadObject()) {
+					    $result->block = 1;
+				    } else {
+					    $result->block = 0;
+				    }
+				    //if no inactive reason is set clear the activation code
+				    if ($result->user_type == 1) {
+					    //user is inactive
+					    if (empty($result->activation)) {
+						    //user not active generate a random code
+						    jimport('joomla.user.helper');
+						    $result->activation = JUserHelper::genRandomPassword(13);
+					    }
+				    } else {
+					    //active user, make sure no activation code is set
+					    $result->activation = '';
+				    }
+			    }
+		    }
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    $result = null;
+	    }
+
         return $result;
     }
     /**
@@ -518,15 +524,17 @@ class JFusionUser_phpbb3 extends JFusionUser
      * @return void
      */
     function blockUser($userinfo, &$existinguser, &$status) {
-        //block the user
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'INSERT INTO #__banlist (ban_userid, ban_start) VALUES (' . (int)$existinguser->userid . ',' . time() . ')';
-        $db->setQuery($query);
-        if (!$db->execute()) {
-            $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $db->stderr();
-        } else {
-            $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
-        }
+	    try {
+		    //block the user
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'INSERT INTO #__banlist (ban_userid, ban_start) VALUES (' . (int)$existinguser->userid . ',' . time() . ')';
+		    $db->setQuery($query);
+		    $db->execute();
+
+		    $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $e->getMessage();
+	    }
     }
 
     /**
@@ -537,15 +545,17 @@ class JFusionUser_phpbb3 extends JFusionUser
      * @return void
      */
     function unblockUser($userinfo, &$existinguser, &$status) {
-        //unblock the user
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'DELETE FROM #__banlist WHERE ban_userid=' . (int)$existinguser->userid;
-        $db->setQuery($query);
-        if (!$db->execute()) {
-            $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $db->stderr();
-        } else {
-            $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
-        }
+	    try {
+		    //unblock the user
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'DELETE FROM #__banlist WHERE ban_userid=' . (int)$existinguser->userid;
+		    $db->setQuery($query);
+		    $db->execute();
+
+		    $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $e->getMessage();
+	    }
     }
 
     /**
@@ -556,15 +566,17 @@ class JFusionUser_phpbb3 extends JFusionUser
      * @return void
      */
     function activateUser($userinfo, &$existinguser, &$status) {
-        //activate the user
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'UPDATE #__users SET user_type = 0, user_inactive_reason =0, user_actkey = \'\'  WHERE user_id =' . (int)$existinguser->userid;
-        $db->setQuery($query);
-        if (!$db->execute()) {
-            $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $db->stderr();
-        } else {
-            $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
-        }
+	    try {
+		    //activate the user
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'UPDATE #__users SET user_type = 0, user_inactive_reason =0, user_actkey = \'\'  WHERE user_id =' . (int)$existinguser->userid;
+		    $db->setQuery($query);
+		    $db->execute();
+
+		    $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $e->getMessage();
+	    }
     }
 
     /**
@@ -575,15 +587,17 @@ class JFusionUser_phpbb3 extends JFusionUser
      * @return void
      */
     function inactivateUser($userinfo, &$existinguser, &$status) {
-        //set activation key
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $query = 'UPDATE #__users SET user_type = 1, user_inactive_reason = 1, user_actkey =' . $db->Quote($userinfo->activation) . ' WHERE user_id =' . (int)$existinguser->userid;
-        $db->setQuery($query);
-        if (!$db->execute()) {
-            $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $db->stderr();
-        } else {
-            $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
-        }
+	    try {
+		    //set activation key
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $query = 'UPDATE #__users SET user_type = 1, user_inactive_reason = 1, user_actkey =' . $db->Quote($userinfo->activation) . ' WHERE user_id =' . (int)$existinguser->userid;
+		    $db->setQuery($query);
+		    $db->execute();
+
+		    $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $e->getMessage();
+	    }
     }
 
     /**
@@ -593,191 +607,176 @@ class JFusionUser_phpbb3 extends JFusionUser
      * @return void
      */
     function createUser($userinfo, &$status) {
-    	//found out what usergroup should be used
-        $db = JFusionFactory::getDatabase($this->getJname());
-        $params = JFusionFactory::getParams($this->getJname());
-        $update_block = $params->get('update_block');
-        $update_activation = $params->get('update_activation');
-        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
-        if (empty($usergroups)) {
-            $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . JText::_('USERGROUP_MISSING');
-        } else {
-            $usergroup = $usergroups[0];
-            $username_clean = $this->filterUsername($userinfo->username);
+	    try {
+		    //found out what usergroup should be used
+		    $db = JFusionFactory::getDatabase($this->getJname());
+		    $params = JFusionFactory::getParams($this->getJname());
+		    $update_block = $params->get('update_block');
+		    $update_activation = $params->get('update_activation');
+		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+		    if (empty($usergroups)) {
+			    throw new Exception(JText::_('USERGROUP_MISSING'));
+		    } else {
+			    $usergroup = $usergroups[0];
+			    $username_clean = $this->filterUsername($userinfo->username);
 
-            //prevent anonymous user being created
-            if ($username_clean == 'anonymous'){
-                $status['error'][] = 'reserved username';
-            } else {
-                //prepare the variables
-                $user = new stdClass;
-                $user->id = null;
-                $user->username = $userinfo->username;
-                $user->username_clean = $username_clean;
-                if (isset($userinfo->password_clear)) {
-                    /**
-                     * @ignore
-                     * @var $auth JFusionAuth_phpbb3
-                     */
-                    $auth = JFusionFactory::getAuth($this->getJname());
-                    $user->user_password = $auth->HashPassword($userinfo->password_clear);
-                } else {
-                    $user->user_password = $userinfo->password;
-                }
-                $user->user_pass_convert = 0;
-                $user->user_email = strtolower($userinfo->email);
-                $user->user_email_hash = crc32(strtolower($userinfo->email)) . strlen($userinfo->email);
-                $user->group_id = $usergroup;
-                $user->user_permissions = '';
-                $user->user_allow_pm = 1;
-                $user->user_actkey = '';
-                $user->user_ip = '';
-                $user->user_regdate = time();
-                $user->user_passchg = time();
-                $user->user_options = 895;
-                if (!empty($userinfo->activation) && $update_activation) {
-                    $user->user_inactive_reason = 1;
-                    $user->user_actkey = $userinfo->activation;
-                    $user->user_type = 1;
-                } else {
-                    $user->user_inactive_reason = 0;
-                    $user->user_type = 0;
-                }
-                $user->user_inactive_time = 0;
-                $user->user_lastmark = time();
-                $user->user_lastvisit = 0;
-                $user->user_lastpost_time = 0;
-                $user->user_lastpage = '';
-                $user->user_posts = 0;
-                $user->user_colour = '';
-                $user->user_occ = '';
-                $user->user_interests = '';
-                $user->user_avatar = '';
-                $user->user_avatar_type = 0;
-                $user->user_avatar_width = 0;
-                $user->user_avatar_height = 0;
-                $user->user_new_privmsg = 0;
-                $user->user_unread_privmsg = 0;
-                $user->user_last_privmsg = 0;
-                $user->user_message_rules = 0;
-                $user->user_emailtime = 0;
-                $user->user_notify = 0;
-                $user->user_notify_pm = 1;
-                $user->user_allow_pm = 1;
-                $user->user_allow_viewonline = 1;
-                $user->user_allow_viewemail = 1;
-                $user->user_allow_massemail = 1;
-                $user->user_sig = '';
-                $user->user_sig_bbcode_uid = '';
-                $user->user_sig_bbcode_bitfield = '';
-                //Find some default values
-                $query = 'SELECT config_name, config_value FROM #__config WHERE config_name IN(\'board_timezone\', \'default_dateformat\', \'default_lang\', \'default_style\', \'board_dst\', \'rand_seed\')';
-                $db->setQuery($query);
-                $rows = $db->loadObjectList();
-                $config = array();
-                foreach ($rows as $row) {
-                    $config[$row->config_name] = $row->config_value;
-                }
-                $user->user_timezone = $config['board_timezone'];
-                $user->user_dateformat = $config['default_dateformat'];
-                $user->user_lang = $config['default_lang'];
-                $user->user_style = $config['default_style'];
-                $user->user_dst = $config['board_dst'];
-                $user->user_full_folder = - 4;
-                $user->user_notify_type = 0;
-                //generate a unique id
-                jimport('joomla.user.helper');
-                $user->user_form_salt = JUserHelper::genRandomPassword(13);
+			    //prevent anonymous user being created
+			    if ($username_clean == 'anonymous') {
+				    throw new Exception('reserved username');
+			    } else {
+				    //prepare the variables
+				    $user = new stdClass;
+				    $user->id = null;
+				    $user->username = $userinfo->username;
+				    $user->username_clean = $username_clean;
+				    if (isset($userinfo->password_clear)) {
+					    /**
+					     * @ignore
+					     * @var $auth JFusionAuth_phpbb3
+					     */
+					    $auth = JFusionFactory::getAuth($this->getJname());
+					    $user->user_password = $auth->HashPassword($userinfo->password_clear);
+				    } else {
+					    $user->user_password = $userinfo->password;
+				    }
+				    $user->user_pass_convert = 0;
+				    $user->user_email = strtolower($userinfo->email);
+				    $user->user_email_hash = crc32(strtolower($userinfo->email)) . strlen($userinfo->email);
+				    $user->group_id = $usergroup;
+				    $user->user_permissions = '';
+				    $user->user_allow_pm = 1;
+				    $user->user_actkey = '';
+				    $user->user_ip = '';
+				    $user->user_regdate = time();
+				    $user->user_passchg = time();
+				    $user->user_options = 895;
+				    if (!empty($userinfo->activation) && $update_activation) {
+					    $user->user_inactive_reason = 1;
+					    $user->user_actkey = $userinfo->activation;
+					    $user->user_type = 1;
+				    } else {
+					    $user->user_inactive_reason = 0;
+					    $user->user_type = 0;
+				    }
+				    $user->user_inactive_time = 0;
+				    $user->user_lastmark = time();
+				    $user->user_lastvisit = 0;
+				    $user->user_lastpost_time = 0;
+				    $user->user_lastpage = '';
+				    $user->user_posts = 0;
+				    $user->user_colour = '';
+				    $user->user_occ = '';
+				    $user->user_interests = '';
+				    $user->user_avatar = '';
+				    $user->user_avatar_type = 0;
+				    $user->user_avatar_width = 0;
+				    $user->user_avatar_height = 0;
+				    $user->user_new_privmsg = 0;
+				    $user->user_unread_privmsg = 0;
+				    $user->user_last_privmsg = 0;
+				    $user->user_message_rules = 0;
+				    $user->user_emailtime = 0;
+				    $user->user_notify = 0;
+				    $user->user_notify_pm = 1;
+				    $user->user_allow_pm = 1;
+				    $user->user_allow_viewonline = 1;
+				    $user->user_allow_viewemail = 1;
+				    $user->user_allow_massemail = 1;
+				    $user->user_sig = '';
+				    $user->user_sig_bbcode_uid = '';
+				    $user->user_sig_bbcode_bitfield = '';
+				    //Find some default values
+				    $query = 'SELECT config_name, config_value FROM #__config WHERE config_name IN(\'board_timezone\', \'default_dateformat\', \'default_lang\', \'default_style\', \'board_dst\', \'rand_seed\')';
+				    $db->setQuery($query);
+				    $rows = $db->loadObjectList();
+				    $config = array();
+				    foreach ($rows as $row) {
+					    $config[$row->config_name] = $row->config_value;
+				    }
+				    $user->user_timezone = $config['board_timezone'];
+				    $user->user_dateformat = $config['default_dateformat'];
+				    $user->user_lang = $config['default_lang'];
+				    $user->user_style = $config['default_style'];
+				    $user->user_dst = $config['board_dst'];
+				    $user->user_full_folder = - 4;
+				    $user->user_notify_type = 0;
+				    //generate a unique id
+				    jimport('joomla.user.helper');
+				    $user->user_form_salt = JUserHelper::genRandomPassword(13);
 
-                //update the user colour, avatar, etc to the groups if applicable
-                $query = 'SELECT group_colour, group_rank, group_avatar, group_avatar_type, group_avatar_width, group_avatar_height FROM #__groups WHERE group_id = '.$usergroup;
-                $db->setQuery($query);
-                $group_attribs = $db->loadAssoc();
-                if (!empty($group_attribs)) {
-                    foreach($group_attribs AS $k => $v) {
-                        if (!empty($v)) {
-                            $user->{str_replace('group_', 'user_', $k)} = $v;
-                        }
-                    }
-                }
+				    //update the user colour, avatar, etc to the groups if applicable
+				    $query = 'SELECT group_colour, group_rank, group_avatar, group_avatar_type, group_avatar_width, group_avatar_height FROM #__groups WHERE group_id = '.$usergroup;
+				    $db->setQuery($query);
+				    $group_attribs = $db->loadAssoc();
+				    if (!empty($group_attribs)) {
+					    foreach($group_attribs AS $k => $v) {
+						    if (!empty($v)) {
+							    $user->{str_replace('group_', 'user_', $k)} = $v;
+						    }
+					    }
+				    }
 
-                //now append the new user data
-                if (!$db->insertObject('#__users', $user, 'id')) {
-                    //return the error
-                    $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-                } else {
-                    //now create a user_group entry
-                    $query = 'INSERT INTO #__user_group (group_id, user_id, group_leader, user_pending) VALUES (' . $usergroup . ',' . (int)$user->id . ', 0,0 )';
-                    $db->setQuery($query);
-                    if (!$db->execute()) {
-                        //return the error
-                        $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-                    } else {
-                        //is this group the newly registered group?
-                        $query = 'SELECT group_id, group_name FROM #__groups WHERE group_name IN (\'NEWLY_REGISTERED\',\'REGISTERED\') AND group_type = 3';
-                        $db->setQuery($query);
-                        $groups = $db->loadObjectList('group_name');
-                        if ($usergroup == $groups['NEWLY_REGISTERED']->group_id) {
-                            //we need to also add the user to the regular registered group or they may find themselves groupless
-                            $query = 'INSERT INTO #__user_group (group_id, user_id, group_leader, user_pending) VALUES (' . $groups['REGISTERED']->group_id . ',' . (int)$user->id . ', 0,0 )';
-                            $db->setQuery($query);
-                            if (!$db->execute()) {
-                                //return the error
-                                $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-                                return;
-                            }
-                        }
+				    $db->insertObject('#__users', $user, 'id');
+				    //now append the new user data
+				    //now create a user_group entry
+				    $query = 'INSERT INTO #__user_group (group_id, user_id, group_leader, user_pending) VALUES (' . $usergroup . ',' . (int)$user->id . ', 0,0 )';
+				    $db->setQuery($query);
+				    $db->execute();
 
-                        //update the total user count
-                        $query = 'UPDATE #__config SET config_value = config_value + 1 WHERE config_name = \'num_users\'';
-                        $db->setQuery($query);
-                        if (!$db->execute()) {
-                            //return the error
-                            $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-                        } else {
-                            //update the newest username
-                            $query = 'UPDATE #__config SET config_value = ' . $db->Quote($userinfo->username) . ' WHERE config_name = \'newest_username\'';
-                            $db->setQuery($query);
-                            if (!$db->execute()) {
-                                //return the error
-                                $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-                            } else {
-                                //update the newest userid
-                                $query = 'UPDATE #__config SET config_value = ' . (int)$user->id . ' WHERE config_name = \'newest_user_id\'';
-                                $db->setQuery($query);
-                                if (!$db->execute()) {
-                                    //return the error
-                                    $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-                                } else {
-                                    //get the username color
-                                    if (!empty($user->user_colour)) {
-                                        //set the correct new username color
-                                        $query = 'UPDATE #__config SET config_value = ' . $db->Quote($user->user_colour) . ' WHERE config_name = \'newest_user_colour\'';
-                                        $db->setQuery($query);
-                                        if (!$db->execute()) {
-                                            //return the error
-                                            $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-                                        }
-                                    }
-                                    if (!empty($userinfo->block) && $update_block) {
-                                        $query = 'INSERT INTO #__banlist (ban_userid, ban_start) VALUES (' . (int)$user->id . ',' . time() . ')';
-                                        $db->setQuery($query);
-                                        if (!$db->execute()) {
-                                            $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . $db->stderr();
-                                        } else {
-                                            $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $userinfo->block;
-                                        }
-                                    }
-                                    //return the good news
-                                    $status['debug'][] = JText::_('USER_CREATION');
-                                    $status['userinfo'] = $this->getUser($userinfo);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+				    //is this group the newly registered group?
+				    $query = 'SELECT group_id, group_name FROM #__groups WHERE group_name IN (\'NEWLY_REGISTERED\',\'REGISTERED\') AND group_type = 3';
+				    $db->setQuery($query);
+				    $groups = $db->loadObjectList('group_name');
+				    if ($usergroup == $groups['NEWLY_REGISTERED']->group_id) {
+					    //we need to also add the user to the regular registered group or they may find themselves groupless
+					    $query = 'INSERT INTO #__user_group (group_id, user_id, group_leader, user_pending) VALUES (' . $groups['REGISTERED']->group_id . ',' . (int)$user->id . ', 0,0 )';
+					    $db->setQuery($query);
+					    if (!$db->execute()) {
+						    //return the error
+						    $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
+						    return;
+					    }
+				    }
+
+				    //update the total user count
+				    $query = 'UPDATE #__config SET config_value = config_value + 1 WHERE config_name = \'num_users\'';
+				    $db->setQuery($query);
+				    $db->execute();
+
+				    //update the newest username
+				    $query = 'UPDATE #__config SET config_value = ' . $db->Quote($userinfo->username) . ' WHERE config_name = \'newest_username\'';
+				    $db->setQuery($query);
+				    $db->execute();
+
+				    //update the newest userid
+				    $query = 'UPDATE #__config SET config_value = ' . (int)$user->id . ' WHERE config_name = \'newest_user_id\'';
+				    $db->setQuery($query);
+				    $db->execute();
+
+				    //get the username color
+				    if (!empty($user->user_colour)) {
+					    //set the correct new username color
+					    $query = 'UPDATE #__config SET config_value = ' . $db->Quote($user->user_colour) . ' WHERE config_name = \'newest_user_colour\'';
+					    $db->setQuery($query);
+					    $db->execute();
+				    }
+				    if (!empty($userinfo->block) && $update_block) {
+					    try {
+						    $query = 'INSERT INTO #__banlist (ban_userid, ban_start) VALUES (' . (int)$user->id . ',' . time() . ')';
+						    $db->setQuery($query);
+						    $db->execute();
+					    } catch (Exception $e) {
+							throw new Exception(JText::_('BLOCK_UPDATE_ERROR').': '. $e->getMessage());
+					    }
+				    }
+				    //return the good news
+				    $status['debug'][] = JText::_('USER_CREATION');
+				    $status['userinfo'] = $this->getUser($userinfo);
+			    }
+		    }
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('ERROR_CREATE_USER').': '. $e->getMessage();
+	    }
     }
 
     /**
@@ -1084,181 +1083,185 @@ class JFusionUser_phpbb3 extends JFusionUser
      */
     function syncSessions($keepalive = false) {
         $return = 0;
-        $debug = (defined('DEBUG_SYSTEM_PLUGIN') ? true : false);
+	    try {
+		    $debug = (defined('DEBUG_SYSTEM_PLUGIN') ? true : false);
 
-	    $params = JFusionFactory::getParams($this->getJname());
+		    $params = JFusionFactory::getParams($this->getJname());
 
-	    $login_type = $params->get('login_type');
-	    if ($login_type == 1) {
-	        if ($debug) {
-	            JFusionFunction::raiseNotice('phpbb3 syncSessions called');
-	        }
+		    $login_type = $params->get('login_type');
+		    if ($login_type == 1) {
+			    if ($debug) {
+				    JFusionFunction::raiseNotice('phpbb3 syncSessions called');
+			    }
 
-	        $options = array();
-	        $options['action'] = 'core.login.site';
+			    $options = array();
+			    $options['action'] = 'core.login.site';
 
-	        //phpbb variables
-	        $phpbb_cookie_prefix = $params->get('cookie_prefix');
-	        $userid_cookie_value = JFactory::getApplication()->input->cookie->get($phpbb_cookie_prefix . '_u', '');
-	        $sid_cookie_value = JFactory::getApplication()->input->cookie->get($phpbb_cookie_prefix . '_sid', '');
-	        $phpbb_allow_autologin = $params->get('allow_autologin');
-	        $persistant_cookie = ($phpbb_allow_autologin) ? JFactory::getApplication()->input->cookie->get($phpbb_cookie_prefix . '_k', '') : '';
-	        //joomla variables
-	        $JUser = JFactory::getUser();
-	        if (JPluginHelper::isEnabled ( 'system', 'remember' )) {
-	            jimport('joomla.utilities.utility');
-	            $hash = JApplication::getHash('JLOGIN_REMEMBER');
-	            $joomla_persistant_cookie = JFactory::getApplication()->input->cookie->get($hash, '', 'raw');
-	        } else {
-	            $joomla_persistant_cookie = '';
-	        }
+			    //phpbb variables
+			    $phpbb_cookie_prefix = $params->get('cookie_prefix');
+			    $userid_cookie_value = JFactory::getApplication()->input->cookie->get($phpbb_cookie_prefix . '_u', '');
+			    $sid_cookie_value = JFactory::getApplication()->input->cookie->get($phpbb_cookie_prefix . '_sid', '');
+			    $phpbb_allow_autologin = $params->get('allow_autologin');
+			    $persistant_cookie = ($phpbb_allow_autologin) ? JFactory::getApplication()->input->cookie->get($phpbb_cookie_prefix . '_k', '') : '';
+			    //joomla variables
+			    $JUser = JFactory::getUser();
+			    if (JPluginHelper::isEnabled ( 'system', 'remember' )) {
+				    jimport('joomla.utilities.utility');
+				    $hash = JApplication::getHash('JLOGIN_REMEMBER');
+				    $joomla_persistant_cookie = JFactory::getApplication()->input->cookie->get($hash, '', 'raw');
+			    } else {
+				    $joomla_persistant_cookie = '';
+			    }
 
-	        if (!$JUser->get('guest', true)) {
-	            //user logged into Joomla so let's check for an active phpBB session
+			    if (!$JUser->get('guest', true)) {
+				    //user logged into Joomla so let's check for an active phpBB session
 
-	            if (!empty($phpbb_allow_autologin) && !empty($persistant_cookie) && !empty($sid_cookie_value)) {
-	                //we have a persistent cookie set so let phpBB handle the session renewal
-	                if ($debug) {
-	                    JFusionFunction::raiseNotice('phpbb persistant cookie enabled and set so let phpbb handle renewal');
-	                }
-	            } else {
-	                if ($debug) {
-	                    JFusionFunction::raiseNotice('Joomla user is logged in');
-	                }
+				    if (!empty($phpbb_allow_autologin) && !empty($persistant_cookie) && !empty($sid_cookie_value)) {
+					    //we have a persistent cookie set so let phpBB handle the session renewal
+					    if ($debug) {
+						    JFusionFunction::raiseNotice('phpbb persistant cookie enabled and set so let phpbb handle renewal');
+					    }
+				    } else {
+					    if ($debug) {
+						    JFusionFunction::raiseNotice('Joomla user is logged in');
+					    }
 
-	                //check to see if the userid cookie is empty or if it contains the anonymous user, or if sid cookie is empty or missing
-	                if (empty($userid_cookie_value) || $userid_cookie_value == '1' || empty($sid_cookie_value)) {
-	                    if ($debug) {
-	                        JFusionFunction::raiseNotice('phpbb3 has a guest session');
-	                    }
-	                    //find the userid attached to Joomla userid
-	                    $joomla_userid = $JUser->get('id');
-	                    $userlookup = JFusionFunction::lookupUser($this->getJname(), $joomla_userid);
-	                    //get the user's info
-	                    if (!empty($userlookup)) {
-	                        $db = JFusionFactory::getDatabase($this->getJname());
-	                        $query = 'SELECT username_clean AS username, user_email as email FROM #__users WHERE user_id = '.$userlookup->userid;
-	                        $db->setQuery($query);
-	                        $user_identifiers = $db->loadObject();
-	                        $userinfo = $this->getUser($user_identifiers);
-	                    }
+					    //check to see if the userid cookie is empty or if it contains the anonymous user, or if sid cookie is empty or missing
+					    if (empty($userid_cookie_value) || $userid_cookie_value == '1' || empty($sid_cookie_value)) {
+						    if ($debug) {
+							    JFusionFunction::raiseNotice('phpbb3 has a guest session');
+						    }
+						    //find the userid attached to Joomla userid
+						    $joomla_userid = $JUser->get('id');
+						    $userlookup = JFusionFunction::lookupUser($this->getJname(), $joomla_userid);
+						    //get the user's info
+						    if (!empty($userlookup)) {
+							    $db = JFusionFactory::getDatabase($this->getJname());
+							    $query = 'SELECT username_clean AS username, user_email as email FROM #__users WHERE user_id = '.$userlookup->userid;
+							    $db->setQuery($query);
+							    $user_identifiers = $db->loadObject();
+							    $userinfo = $this->getUser($user_identifiers);
+						    }
 
-	                    if (!empty($userinfo) && (!empty($keepalive) || !empty($joomla_persistant_cookie))) {
-	                        if ($debug) {
-	                            JFusionFunction::raiseNotice('keep alive enabled or Joomla persistant cookie found, and found a valid phpbb3 user so calling createSession');
-	                        }
-	                        //enable remember me as this is a keep alive function anyway
-	                        $options['remember'] = 1;
-	                        //create a new session
-	                        $status = $this->createSession($userinfo, $options);
+						    if (!empty($userinfo) && (!empty($keepalive) || !empty($joomla_persistant_cookie))) {
+							    if ($debug) {
+								    JFusionFunction::raiseNotice('keep alive enabled or Joomla persistant cookie found, and found a valid phpbb3 user so calling createSession');
+							    }
+							    //enable remember me as this is a keep alive function anyway
+							    $options['remember'] = 1;
+							    //create a new session
+							    $status = $this->createSession($userinfo, $options);
 
-	                        if ($debug) {
-	                            JFusionFunction::raiseNotices($this->getJname(),$status);
-	                        }
+							    if ($debug) {
+								    JFusionFunction::raiseNotices($this->getJname(),$status);
+							    }
 
-	                        //signal that session was changed
-	                        $return = 1;
-	                    } else {
-	                        if ($debug) {
-	                            JFusionFunction::raiseNotice($this->getJname(),'keep alive disabled or no persistant session found so calling Joomla\'s destorySession');
-	                        }
-	                        $JoomlaUser = JFusionFactory::getUser('joomla_int');
+							    //signal that session was changed
+							    $return = 1;
+						    } else {
+							    if ($debug) {
+								    JFusionFunction::raiseNotice($this->getJname(),'keep alive disabled or no persistant session found so calling Joomla\'s destorySession');
+							    }
+							    $JoomlaUser = JFusionFactory::getUser('joomla_int');
 
-		                    $userinfo = new stdClass;
-		                    $userinfo->id = $JUser->id;
-		                    $userinfo->username = $JUser->username;
-		                    $userinfo->name = $JUser->name;
-		                    $userinfo->email = $JUser->email;
-		                    $userinfo->block = $JUser->block;
-		                    $userinfo->activation = $JUser->activation;
-		                    $userinfo->groups = $JUser->groups;
-		                    $userinfo->password = $JUser->password;
-		                    $userinfo->password_clear = $JUser->password_clear;
+							    $userinfo = new stdClass;
+							    $userinfo->id = $JUser->id;
+							    $userinfo->username = $JUser->username;
+							    $userinfo->name = $JUser->name;
+							    $userinfo->email = $JUser->email;
+							    $userinfo->block = $JUser->block;
+							    $userinfo->activation = $JUser->activation;
+							    $userinfo->groups = $JUser->groups;
+							    $userinfo->password = $JUser->password;
+							    $userinfo->password_clear = $JUser->password_clear;
 
-	                        $options['clientid'][] = '0';
-	                        $status = $JoomlaUser->destroySession($userinfo, $options);
-	                        if ($debug) {
-	                            JFusionFunction::raiseNotices($this->getJname(),$status);
-	                        }
-	                    }
-	                } else {
-	                    if ($debug) {
-	                        JFusionFunction::raiseNotice('phpBB user logged in');
-	                    }
-	                }
-	            }
-	        } elseif ((!empty($sid_cookie_value) || !empty($persistant_cookie)) && $userid_cookie_value != '1') {
-	            if ($debug) {
-	                JFusionFunction::raiseNotice('Joomla has a guest session');
-	            }
-	            //the user is not logged into Joomla and we have an active phpBB session
-	            if (!empty($joomla_persistant_cookie)) {
-	                if ($debug) {
-	                    JFusionFunction::raiseNotice('Joomla persistant cookie found so let Joomla handle renewal');
-	                }
-	            } elseif (empty($keepalive)) {
-	               if ($debug) {
-	                    JFusionFunction::raiseNotice('Keep alive disabled so kill phpBBs session');
-	                }
-	                //something fishy or person chose not to use remember me so let's destroy phpBBs session
-	                $params = JFusionFactory::getParams($this->getJname());
-	                $phpbb_cookie_name = $params->get('cookie_prefix');
-	                $phpbb_cookie_path = $params->get('cookie_path');
-	                //baltie cookie domain fix
-	                $phpbb_cookie_domain = $params->get('cookie_domain');
-	                if ($phpbb_cookie_domain == 'localhost' || $phpbb_cookie_domain == '127.0.0.1') {
-	                    $phpbb_cookie_domain = '';
-	                }
-	                //delete the cookies
-	                $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_u', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain);
-	                $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_sid', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain);
-	                $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_k', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain);
-	                $return = 1;
-	            } elseif ($debug) {
-	                JFusionFunction::raiseNotice('Keep alive enabled so renew Joomla\'s session');
-	            } else {
-	                $db = JFusionFactory::getDatabase($this->getJname());
-	                if (!empty($persistant_cookie)) {
-	                    $query = 'SELECT user_id FROM #__sessions_keys WHERE key_id = ' . $db->Quote(md5($persistant_cookie));
-	                    if ($debug) {
-	                        JFusionFunction::raiseNotice('Using phpBB persistant cookie to find user');
-	                    }
-	                } else {
-	                    $query = 'SELECT session_user_id FROM #__sessions WHERE session_id = ' . $db->Quote($sid_cookie_value);
-	                    if ($debug) {
-	                        JFusionFunction::raiseNotice('Using phpBB sid cookie to find user');
-	                    }
-	                }
-	                $db->setQuery($query);
-	                $userid = $db->loadresult();
-	                $userlookup = JFusionFunction::lookupUser($this->getJname(), $userid, false);
-	                if (!empty($userlookup)) {
-	                    if ($debug) {
-	                        JFusionFunction::raiseNotice('Found a phpBB user so attempting to renew Joomla\'s session.');
-	                    }
-	                    //get the user's info
-	                    $jdb = JFactory::getDBO();
-	                    $query = 'SELECT username, email FROM #__users WHERE id = '.$userlookup->id;
-	                    $jdb->setQuery($query);
-	                    $user_identifiers = $jdb->loadObject();
-	                    $JoomlaUser = JFusionFactory::getUser('joomla_int');
-	                    $userinfo = $JoomlaUser->getUser($user_identifiers);
-	                    if (!empty($userinfo)) {
-	                        global $JFusionActivePlugin;
-	                        $JFusionActivePlugin = $this->getJname();
-	                        $status = $JoomlaUser->createSession($userinfo, $options);
-	                        if ($debug) {
-	                            JFusionFunction::raiseNotices($this->getJname(),$status);
-	                        }
-	                        //no need to signal refresh as Joomla will recognize this anyway
-	                    }
-	                }
-	            }
-	        }
-	    } else {
-		    if ($debug) {
-			    JFusionFunction::raiseNotice('phpbb3 syncSessions do not work in this login mode.');
+							    $options['clientid'][] = '0';
+							    $status = $JoomlaUser->destroySession($userinfo, $options);
+							    if ($debug) {
+								    JFusionFunction::raiseNotices($this->getJname(),$status);
+							    }
+						    }
+					    } else {
+						    if ($debug) {
+							    JFusionFunction::raiseNotice('phpBB user logged in');
+						    }
+					    }
+				    }
+			    } elseif ((!empty($sid_cookie_value) || !empty($persistant_cookie)) && $userid_cookie_value != '1') {
+				    if ($debug) {
+					    JFusionFunction::raiseNotice('Joomla has a guest session');
+				    }
+				    //the user is not logged into Joomla and we have an active phpBB session
+				    if (!empty($joomla_persistant_cookie)) {
+					    if ($debug) {
+						    JFusionFunction::raiseNotice('Joomla persistant cookie found so let Joomla handle renewal');
+					    }
+				    } elseif (empty($keepalive)) {
+					    if ($debug) {
+						    JFusionFunction::raiseNotice('Keep alive disabled so kill phpBBs session');
+					    }
+					    //something fishy or person chose not to use remember me so let's destroy phpBBs session
+					    $params = JFusionFactory::getParams($this->getJname());
+					    $phpbb_cookie_name = $params->get('cookie_prefix');
+					    $phpbb_cookie_path = $params->get('cookie_path');
+					    //baltie cookie domain fix
+					    $phpbb_cookie_domain = $params->get('cookie_domain');
+					    if ($phpbb_cookie_domain == 'localhost' || $phpbb_cookie_domain == '127.0.0.1') {
+						    $phpbb_cookie_domain = '';
+					    }
+					    //delete the cookies
+					    $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_u', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain);
+					    $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_sid', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain);
+					    $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_k', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain);
+					    $return = 1;
+				    } elseif ($debug) {
+					    JFusionFunction::raiseNotice('Keep alive enabled so renew Joomla\'s session');
+				    } else {
+					    $db = JFusionFactory::getDatabase($this->getJname());
+					    if (!empty($persistant_cookie)) {
+						    $query = 'SELECT user_id FROM #__sessions_keys WHERE key_id = ' . $db->Quote(md5($persistant_cookie));
+						    if ($debug) {
+							    JFusionFunction::raiseNotice('Using phpBB persistant cookie to find user');
+						    }
+					    } else {
+						    $query = 'SELECT session_user_id FROM #__sessions WHERE session_id = ' . $db->Quote($sid_cookie_value);
+						    if ($debug) {
+							    JFusionFunction::raiseNotice('Using phpBB sid cookie to find user');
+						    }
+					    }
+					    $db->setQuery($query);
+					    $userid = $db->loadresult();
+					    $userlookup = JFusionFunction::lookupUser($this->getJname(), $userid, false);
+					    if (!empty($userlookup)) {
+						    if ($debug) {
+							    JFusionFunction::raiseNotice('Found a phpBB user so attempting to renew Joomla\'s session.');
+						    }
+						    //get the user's info
+						    $jdb = JFactory::getDBO();
+						    $query = 'SELECT username, email FROM #__users WHERE id = '.$userlookup->id;
+						    $jdb->setQuery($query);
+						    $user_identifiers = $jdb->loadObject();
+						    $JoomlaUser = JFusionFactory::getUser('joomla_int');
+						    $userinfo = $JoomlaUser->getUser($user_identifiers);
+						    if (!empty($userinfo)) {
+							    global $JFusionActivePlugin;
+							    $JFusionActivePlugin = $this->getJname();
+							    $status = $JoomlaUser->createSession($userinfo, $options);
+							    if ($debug) {
+								    JFusionFunction::raiseNotices($this->getJname(),$status);
+							    }
+							    //no need to signal refresh as Joomla will recognize this anyway
+						    }
+					    }
+				    }
+			    }
+		    } else {
+			    if ($debug) {
+				    JFusionFunction::raiseNotice('phpbb3 syncSessions do not work in this login mode.');
+			    }
 		    }
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
 	    }
         return $return;
     }

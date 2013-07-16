@@ -603,14 +603,18 @@ class JFusionForum_vbulletin extends JFusionForum
         $numargs = func_num_args();
 
         if ($numargs > 3) {
-            $db = JFusionFactory::getDatabase($this->getJname());
-            $filters = func_get_args();
-            $i = 3;
-            for ($i = 3; $i < $numargs; $i++) {
-                if ($filters[$i][0] == 'userid') {
-                    $where.= ' AND b.userid = ' . $db->quote($filters[$i][1]);
-                }
-            }
+	        try {
+		        $db = JFusionFactory::getDatabase($this->getJname());
+		        $filters = func_get_args();
+		        $i = 3;
+		        for ($i = 3; $i < $numargs; $i++) {
+			        if ($filters[$i][0] == 'userid') {
+				        $where.= ' AND b.userid = ' . $db->quote($filters[$i][1]);
+			        }
+		        }
+	        } catch (Exception $e) {
+				JFusionFunction::raiseError($e);
+	        }
         }
 
         $name_field = $this->params->get('name_field');
@@ -744,103 +748,110 @@ class JFusionForum_vbulletin extends JFusionForum
     function getForumPermissions($userid = 'find')
     {
         static $forumPerms, $groupPerms;
-        if (empty($forumPerms)) {
-            if ($userid == 'find') {
-                //get the joomla user
-                $JoomlaUser = JFactory::getUser();
-                //get the vb user
-                if (!$JoomlaUser->guest) {
-                    $user = JFusionFunction::lookupUser($this->getJname(), $JoomlaUser->id);
-                    if (!empty($user)) {
-                        $userid = $user->userid;
-                    } else {
-                        //oops, something has failed
-                        $userid = 0;
-                    }
-                } else {
-                    $userid = 0;
-                }
-            }
-            //define some permissions
-            defined('CAN_VIEW_THREAD_CONTENT') OR define('CAN_VIEW_THREAD_CONTENT', 524288);
-            defined('CAN_VIEW_FORUM') OR define('CAN_VIEW_FORUM', 1);
-            defined('CAN_VIEW_OTHERS_THREADS') OR define('CAN_VIEW_OTHERS_THREADS', 2);
-            defined('CAN_SEARCH_FORUM') OR define('CAN_SEARCH_FORUM', 4);
-            //get the usergroup permissions
-            $db = JFusionFactory::getDatabase($this->getJname());
-            if ($userid != 0) {
-                $query = 'SELECT u.usergroupid AS gid, u.membergroupids, g.forumpermissions AS perms FROM #__user AS u INNER JOIN #__usergroup AS g ON u.usergroupid = g.usergroupid WHERE u.userid = '.$userid;
-            } else {
-                $query = 'SELECT usergroupid AS gid, forumpermissions AS perms FROM #__usergroup WHERE usergroupid = \'1\'';
-            }
-            $db->setQuery($query);
-            $usergroup = $db->loadObject();
-            $groupPerms = $usergroup->perms;
-            //merge the permissions of member groups
-            if (!empty($usergroup->membergroupids)) {
-                $membergroups = explode(',', $usergroup->membergroupids);
-                $query = 'SELECT forumpermissions FROM #__usergroup WHERE usergroupid IN ('.$usergroup->membergroupids.')';
-                $db->setQuery($query);
-                $perms = $db->loadObjectList();
-                foreach ($perms as $p) {
-                    //use which ever grants the greatest number of permissions
-                    if ($p->forumpermissions > $groupPerms) {
-                        $groupPerms = $p->forumpermissions;
-                    }
-                }
-            }
-            //get custom forum permissions
-            $query = 'SELECT p.forumpermissions, p.forumid, p.usergroupid, f.parentlist, f.childlist FROM #__forumpermission AS p INNER JOIN #__forum AS f ON p.forumid = f.forumid WHERE p.usergroupid = '.$usergroup->gid.' ORDER BY p.forumid';
-            $db->setQuery($query);
-            $perms = $db->loadObjectList();
-            $tempPerms = array();
-            if (is_array($perms)) {
-                foreach ($perms as $p) {
-                    $tempPerms[$p->forumid]['perms'] = $p->forumpermissions;
-                    $tempPerms[$p->forumid]['childlist'] = explode(',', $p->childlist, -1);
-                    $tempPerms[$p->forumid]['parentlist'] = array_reverse(explode(',', $p->parentlist, -1));
-                }
-            }
-            //get custom forum permissions for member groups
-            if (!empty($membergroups)) {
-                $query = 'SELECT p.forumpermissions, p.forumid, p.usergroupid, f.parentlist, f.childlist FROM #__forumpermission AS p INNER JOIN #__forum AS f ON p.forumid = f.forumid WHERE p.usergroupid IN ('.$usergroup->membergroupids.') ORDER BY p.forumid';
-                $db->setQuery($query);
-                $perms = $db->loadObjectList();
-                foreach ($perms as $p) {
-                    if (!isset($tempPerms[$p->forumid])) {
-                        $tempPerms[$p->forumid]['perms'] = 0;
-                        $tempPerms[$p->forumid]['childlist'] = explode(',', $p->childlist, -1);
-                        $tempPerms[$p->forumid]['parentlist'] = array_reverse(explode(',', $p->parentlist, -1));
-                    }
-                    //use which ever grants the greatest number of permissions
-                    if ($p->forumpermissions > $tempPerms[$p->forumid]['perms']) {
-                        $tempPerms[$p->forumid]['perms'] = $p->forumpermissions;
-                    }
-                }
-            }
-            $forumPerms = array();
-            //we need to copy parent's permissions to the children if the child does not have custom permissions
-            foreach ($tempPerms as $id => $attributes) {
-                if (!array_key_exists($id, $forumPerms)) {
-                    $forumPerms[$id] = $tempPerms[$id]['perms'];
-                }
-                $parent = '';
-                //the permissions are set by the top parent with custom params
-                foreach ($attributes['parentlist'] as $p) {
-                    if (array_key_exists($p, $tempPerms)) {
-                        $parent = $p;
-                        break;
-                    }
-                }
-                if (!empty($parent)) {
-                    foreach ($attributes['childlist'] AS $c) {
-                        if (!array_key_exists($c, $tempPerms) && array_key_exists($parent, $tempPerms)) {
-                            $forumPerms[$c] = $tempPerms[$parent]['perms'];
-                        }
-                    }
-                }
-            }
-        }
+	    try {
+		    if (empty($forumPerms)) {
+			    if ($userid == 'find') {
+				    //get the joomla user
+				    $JoomlaUser = JFactory::getUser();
+				    //get the vb user
+				    if (!$JoomlaUser->guest) {
+					    $user = JFusionFunction::lookupUser($this->getJname(), $JoomlaUser->id);
+					    if (!empty($user)) {
+						    $userid = $user->userid;
+					    } else {
+						    //oops, something has failed
+						    $userid = 0;
+					    }
+				    } else {
+					    $userid = 0;
+				    }
+			    }
+			    //define some permissions
+			    defined('CAN_VIEW_THREAD_CONTENT') OR define('CAN_VIEW_THREAD_CONTENT', 524288);
+			    defined('CAN_VIEW_FORUM') OR define('CAN_VIEW_FORUM', 1);
+			    defined('CAN_VIEW_OTHERS_THREADS') OR define('CAN_VIEW_OTHERS_THREADS', 2);
+			    defined('CAN_SEARCH_FORUM') OR define('CAN_SEARCH_FORUM', 4);
+			    //get the usergroup permissions
+			    $db = JFusionFactory::getDatabase($this->getJname());
+			    if ($userid != 0) {
+				    $query = 'SELECT u.usergroupid AS gid, u.membergroupids, g.forumpermissions AS perms FROM #__user AS u INNER JOIN #__usergroup AS g ON u.usergroupid = g.usergroupid WHERE u.userid = '.$userid;
+			    } else {
+				    $query = 'SELECT usergroupid AS gid, forumpermissions AS perms FROM #__usergroup WHERE usergroupid = \'1\'';
+			    }
+			    $db->setQuery($query);
+			    $usergroup = $db->loadObject();
+			    $groupPerms = $usergroup->perms;
+			    //merge the permissions of member groups
+			    if (!empty($usergroup->membergroupids)) {
+				    $membergroups = explode(',', $usergroup->membergroupids);
+				    $query = 'SELECT forumpermissions FROM #__usergroup WHERE usergroupid IN ('.$usergroup->membergroupids.')';
+				    $db->setQuery($query);
+				    $perms = $db->loadObjectList();
+				    foreach ($perms as $p) {
+					    //use which ever grants the greatest number of permissions
+					    if ($p->forumpermissions > $groupPerms) {
+						    $groupPerms = $p->forumpermissions;
+					    }
+				    }
+			    }
+			    //get custom forum permissions
+			    $query = 'SELECT p.forumpermissions, p.forumid, p.usergroupid, f.parentlist, f.childlist FROM #__forumpermission AS p INNER JOIN #__forum AS f ON p.forumid = f.forumid WHERE p.usergroupid = '.$usergroup->gid.' ORDER BY p.forumid';
+			    $db->setQuery($query);
+			    $perms = $db->loadObjectList();
+			    $tempPerms = array();
+			    if (is_array($perms)) {
+				    foreach ($perms as $p) {
+					    $tempPerms[$p->forumid]['perms'] = $p->forumpermissions;
+					    $tempPerms[$p->forumid]['childlist'] = explode(',', $p->childlist, -1);
+					    $tempPerms[$p->forumid]['parentlist'] = array_reverse(explode(',', $p->parentlist, -1));
+				    }
+			    }
+			    //get custom forum permissions for member groups
+			    if (!empty($membergroups)) {
+				    $query = 'SELECT p.forumpermissions, p.forumid, p.usergroupid, f.parentlist, f.childlist FROM #__forumpermission AS p INNER JOIN #__forum AS f ON p.forumid = f.forumid WHERE p.usergroupid IN ('.$usergroup->membergroupids.') ORDER BY p.forumid';
+				    $db->setQuery($query);
+				    $perms = $db->loadObjectList();
+				    foreach ($perms as $p) {
+					    if (!isset($tempPerms[$p->forumid])) {
+						    $tempPerms[$p->forumid]['perms'] = 0;
+						    $tempPerms[$p->forumid]['childlist'] = explode(',', $p->childlist, -1);
+						    $tempPerms[$p->forumid]['parentlist'] = array_reverse(explode(',', $p->parentlist, -1));
+					    }
+					    //use which ever grants the greatest number of permissions
+					    if ($p->forumpermissions > $tempPerms[$p->forumid]['perms']) {
+						    $tempPerms[$p->forumid]['perms'] = $p->forumpermissions;
+					    }
+				    }
+			    }
+			    $forumPerms = array();
+			    //we need to copy parent's permissions to the children if the child does not have custom permissions
+			    foreach ($tempPerms as $id => $attributes) {
+				    if (!array_key_exists($id, $forumPerms)) {
+					    $forumPerms[$id] = $tempPerms[$id]['perms'];
+				    }
+				    $parent = '';
+				    //the permissions are set by the top parent with custom params
+				    foreach ($attributes['parentlist'] as $p) {
+					    if (array_key_exists($p, $tempPerms)) {
+						    $parent = $p;
+						    break;
+					    }
+				    }
+				    if (!empty($parent)) {
+					    foreach ($attributes['childlist'] AS $c) {
+						    if (!array_key_exists($c, $tempPerms) && array_key_exists($parent, $tempPerms)) {
+							    $forumPerms[$c] = $tempPerms[$parent]['perms'];
+						    }
+					    }
+				    }
+			    }
+		    }
+	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e);
+		    $forumPerms = array();
+		    $groupPerms = null;
+	    }
+
         return array($groupPerms, $forumPerms);
     }
 

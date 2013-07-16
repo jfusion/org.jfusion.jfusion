@@ -127,37 +127,42 @@ class JFusionUser_moodle extends JFusionUser {
 	 * @return mixed|null
 	 */
 	function &getUser($userinfo) {
-		$db = JFusionFactory::getDatabase($this->getJname());
-		$params = JFusionFactory::getParams($this->getJname());
-		//get the identifier
-		list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'username', 'email');
-		//initialise some params
-		$update_block = $params->get('update_block');
-		$query = 'SELECT * FROM #__user WHERE ' . $identifier_type . ' = ' . $db->Quote($identifier);
-		$db->setQuery($query);
-		$result = $db->loadObject();
-		if ($result)
-		{
-			// check the deleted flag
-			if ($result->deleted){
-				$result = null;
-				return $result;
-			}
-			// change/add fields used by jFusion
-			$result->userid = $result->id;
-			$result->name = trim($result->firstname . ' ' . $result->lastname);
-			$result->activation = !$result->confirmed;
-			// get the policy agreed stuff
-			$query = 'SELECT value FROM #__config WHERE  name = \'sitepolicy\'';
+		try {
+			$db = JFusionFactory::getDatabase($this->getJname());
+			$params = JFusionFactory::getParams($this->getJname());
+			//get the identifier
+			list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'username', 'email');
+			//initialise some params
+			$update_block = $params->get('update_block');
+			$query = 'SELECT * FROM #__user WHERE ' . $identifier_type . ' = ' . $db->Quote($identifier);
 			$db->setQuery($query);
-			$sitepolicy = $db->loadResult();
-			if ($sitepolicy) {
-				$result->block = !$result->policyagreed;
-			} else {
-				$result->block = 0;
+			$result = $db->loadObject();
+			if ($result)
+			{
+				// check the deleted flag
+				if ($result->deleted){
+					$result = null;
+				} else {
+					// change/add fields used by jFusion
+					$result->userid = $result->id;
+					$result->name = trim($result->firstname . ' ' . $result->lastname);
+					$result->activation = !$result->confirmed;
+					// get the policy agreed stuff
+					$query = 'SELECT value FROM #__config WHERE  name = \'sitepolicy\'';
+					$db->setQuery($query);
+					$sitepolicy = $db->loadResult();
+					if ($sitepolicy) {
+						$result->block = !$result->policyagreed;
+					} else {
+						$result->block = 0;
+					}
+					$result->registerDate = date('d-m-Y H:i:s', $result->firstaccess);
+					$result->lastvisitDate = date('d-m-Y H:i:s', $result->lastlogin);
+				}
 			}
-			$result->registerDate = date('d-m-Y H:i:s', $result->firstaccess);
-			$result->lastvisitDate = date('d-m-Y H:i:s', $result->lastlogin);
+		} catch (Exception $e) {
+			JFusionFunction::raiseError($e);
+			$result = null;
 		}
 		return $result;
 	}
@@ -487,13 +492,15 @@ class JFusionUser_moodle extends JFusionUser {
 	 * @param array  &$status       Array containing the errors and result of the function
 	 */
 	function inactivateUser($userinfo, &$existinguser, &$status) {
-		$db = JFusionFactory::getDatabase($this->getJname());
-		$query = 'UPDATE #__user SET confirmed = false WHERE id =' . (int)$existinguser->userid;
-		$db->setQuery($query);
-		if (!$db->execute()) {
-			$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . $db->stderr();
-		} else {
+		try {
+			$db = JFusionFactory::getDatabase($this->getJname());
+			$query = 'UPDATE #__user SET confirmed = false WHERE id =' . (int)$existinguser->userid;
+			$db->setQuery($query);
+			$db->execute();
+
 			$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
+		} catch (Exception $e) {
+			$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR'). ': ' . $e->getMessage();
 		}
 	}
 
@@ -507,138 +514,121 @@ class JFusionUser_moodle extends JFusionUser {
 	 * @return null|void
 	 */
 	function createUser($userinfo, &$status) {
-		// first find out if the user already exists, but with deleted flag set
-		$db = JFusionFactory::getDatabase($this->getJname());
-		$params = JFusionFactory::getParams($this->getJname());
-		//get the identifier
-		list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'username', 'email');
-		$query = 'SELECT * FROM #__user WHERE ' . $identifier_type . ' = ' . $db->Quote($identifier);
-		$db->setQuery($query);
-		$result = $db->loadObject();
-		if ($result) {
-			//We have a record, probably with the deleted flag set.
-			// Thus for Moodle internal working we need to use this record and resurrect the user
-			$query = "UPDATE #__user SET deleted = '0' WHERE id = ". $db->Quote($result->id);
+		try {
+			// first find out if the user already exists, but with deleted flag set
+			$db = JFusionFactory::getDatabase($this->getJname());
+			$params = JFusionFactory::getParams($this->getJname());
+			//get the identifier
+			list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'username', 'email');
+			$query = 'SELECT * FROM #__user WHERE ' . $identifier_type . ' = ' . $db->Quote($identifier);
 			$db->setQuery($query);
-			if (!$db->execute()) {
-				//return the error
-				$status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-				return;
+			$result = $db->loadObject();
+			if ($result) {
+				//We have a record, probably with the deleted flag set.
+				// Thus for Moodle internal working we need to use this record and resurrect the user
+				$query = "UPDATE #__user SET deleted = '0' WHERE id = ". $db->Quote($result->id);
+				$db->setQuery($query);
+				$db->execute();
+			} else {
+				//find out what usergroup should be used
+				$db = JFusionFactory::getDatabase($this->getJname());
+				$params = JFusionFactory::getParams($this->getJname());
+				$usergroups = (substr($params->get('usergroup'), 0, 2) == 'a:') ? unserialize($params->get('usergroup')) : $params->get('usergroup', 18);
+				//check to make sure that if using the advanced group mode, $userinfo->group_id exists
+				if (is_array($usergroups) && !isset($userinfo->group_id)) {
+					throw new Exception(JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID'));
+				}
+				$default_group_id = (is_array($usergroups)) ? $usergroups[$userinfo->group_id] : $usergroups;
+				// get some config items
+				$query = 'SELECT value FROM #__config WHERE  name = \'mnet_localhost_id\'';
+				$db->setQuery($query);
+				$mnet_localhost_id = $db->loadResult();
+				$query = 'SELECT value FROM #__config WHERE  name = \'lang\'';
+				$db->setQuery($query);
+				$lang = $db->loadResult();
+				$query = 'SELECT value FROM #__config WHERE  name = \'country\'';
+				$db->setQuery($query);
+				$country = $db->loadResult();
+
+				//prepare the variables
+				$user = new stdClass;
+				$user->id = null;
+				$user->auth = 'manual';
+				if ($userinfo->activation) {
+					$user->confirmed = 0;
+				} else {
+					$user->confirmed = 1;
+				}
+				$user->policyagreed = !$userinfo->block; // just write, true doesn't harm
+				$user->deleted = 0;
+				$user->mnethostid = $mnet_localhost_id;
+				$user->username = $userinfo->username;
+				if (isset($userinfo->password_clear) && strlen($userinfo->password_clear) != 32) {
+					$params = JFusionFactory::getParams('moodle');
+					if ($params->get('passwordsaltmain')) {
+						$user->password = md5($userinfo->password_clear . $params->get('passwordsaltmain'));
+					} else {
+						$user->password = md5($userinfo->password_clear);
+					}
+				} else {
+					if (!empty($userinfo->password_salt)) {
+						$user->password = $userinfo->password . ':' . $userinfo->password_salt;
+					} else {
+						$user->password = $userinfo->password;
+					}
+				}
+				// $user->idnumber= ??
+				$parts = explode(' ', $userinfo->name);
+				$user->firstname = trim($parts[0]);
+				$lastname = '';
+				if ($parts[(count($parts) - 1) ]) {
+					for ($i = 1;$i < (count($parts));$i++) {
+						if (!empty($lastname)) {
+							$lastname = $lastname . ' ' . $parts[$i];
+						} else {
+							$lastname = $parts[$i];
+						}
+
+					}
+				}
+				$user->lastname = trim($lastname);
+				$user->email = strtolower($userinfo->email);
+				$user->country = $country;
+				$user->lang = $lang;
+				$user->firstaccess = time();
+				$user->timemodified = time();
+				//now append the new user data
+				$db->insertObject('#__user', $user, 'id');
+
+				// get new ID
+				$userid = $db->insertid();
+				// have to set user preferences
+				$user_1 = new stdClass;
+				$user_1->id = null;
+				$user_1->userid = $userid;
+				$user_1->name = 'auth_forcepasswordchange';
+				$user_1->value = 0;
+				$db->insertObject('#__user_preferences', $user_1, 'id');
+
+				$user_1->id = null;
+				$user_1->userid = $userid;
+				$user_1->name = 'email_bounce_count';
+				$user_1->value = 1;
+				$db->insertObject('#__user_preferences', $user_1, 'id');
+
+				$user_1->id = null;
+				$user_1->userid = $userid;
+				$user_1->name = 'email_send_count';
+				$user_1->value = 1;
+				$db->insertObject('#__user_preferences', $user_1, 'id');
 			}
+
 			//return the good news
 			$status['userinfo'] = $this->getUser($userinfo);
 			$status['debug'][] = JText::_('USER_CREATION');
-			return;
+		} catch (Exception $e) {
+			$status['error'][] = JText::_('USER_CREATION_ERROR').': ' . $e->getMessage();
 		}
-
-		//find out what usergroup should be used
-		$db = JFusionFactory::getDatabase($this->getJname());
-		$params = JFusionFactory::getParams($this->getJname());
-		$usergroups = (substr($params->get('usergroup'), 0, 2) == 'a:') ? unserialize($params->get('usergroup')) : $params->get('usergroup', 18);
-		//check to make sure that if using the advanced group mode, $userinfo->group_id exists
-		if (is_array($usergroups) && !isset($userinfo->group_id)) {
-			$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
-			return null;
-		}
-		$default_group_id = (is_array($usergroups)) ? $usergroups[$userinfo->group_id] : $usergroups;
-		// get some config items
-		$query = 'SELECT value FROM #__config WHERE  name = \'mnet_localhost_id\'';
-		$db->setQuery($query);
-		$mnet_localhost_id = $db->loadResult();
-		$query = 'SELECT value FROM #__config WHERE  name = \'lang\'';
-		$db->setQuery($query);
-		$lang = $db->loadResult();
-		$query = 'SELECT value FROM #__config WHERE  name = \'country\'';
-		$db->setQuery($query);
-		$country = $db->loadResult();
-
-		//prepare the variables
-		$user = new stdClass;
-		$user->id = null;
-		$user->auth = 'manual';
-		if ($userinfo->activation) {
-			$user->confirmed = 0;
-		} else {
-			$user->confirmed = 1;
-		}
-		$user->policyagreed = !$userinfo->block; // just write, true doesn't harm
-		$user->deleted = 0;
-		$user->mnethostid = $mnet_localhost_id;
-		$user->username = $userinfo->username;
-		if (isset($userinfo->password_clear) && strlen($userinfo->password_clear) != 32) {
-			$params = JFusionFactory::getParams('moodle');
-			if ($params->get('passwordsaltmain')) {
-				$user->password = md5($userinfo->password_clear . $params->get('passwordsaltmain'));
-			} else {
-				$user->password = md5($userinfo->password_clear);
-			}
-		} else {
-			if (!empty($userinfo->password_salt)) {
-				$user->password = $userinfo->password . ':' . $userinfo->password_salt;
-			} else {
-				$user->password = $userinfo->password;
-			}
-		}
-		// $user->idnumber= ??
-		$parts = explode(' ', $userinfo->name);
-		$user->firstname = trim($parts[0]);
-		$lastname = '';
-		if ($parts[(count($parts) - 1) ]) {
-			for ($i = 1;$i < (count($parts));$i++) {
-				if (!empty($lastname)) {
-					$lastname = $lastname . ' ' . $parts[$i];
-				} else {
-					$lastname = $parts[$i];
-				}
-
-			}
-		}
-		$user->lastname = trim($lastname);
-		$user->email = strtolower($userinfo->email);
-		$user->country = $country;
-		$user->lang = $lang;
-		$user->firstaccess = time();
-		$user->timemodified = time();
-		//now append the new user data
-		if (!$db->insertObject('#__user', $user, 'id')) {
-			//return the error
-			$status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-			return;
-		}
-		// get new ID
-		$userid = $db->insertid();
-		// have to set user preferences
-		$user_1 = new stdClass;
-		$user_1->id = null;
-		$user_1->userid = $userid;
-		$user_1->name = 'auth_forcepasswordchange';
-		$user_1->value = 0;
-		if (!$db->insertObject('#__user_preferences', $user_1, 'id')) {
-			//return the error
-			$status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-			return;
-		}
-		$user_1->id = null;
-		$user_1->userid = $userid;
-		$user_1->name = 'email_bounce_count';
-		$user_1->value = 1;
-		if (!$db->insertObject('#__user_preferences', $user_1, 'id')) {
-			//return the error
-			$status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-			return;
-		}
-		$user_1->id = null;
-		$user_1->userid = $userid;
-		$user_1->name = 'email_send_count';
-		$user_1->value = 1;
-		if (!$db->insertObject('#__user_preferences', $user_1, 'id')) {
-			//return the error
-			$status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-			return;
-		}
-		//return the good news
-		$status['userinfo'] = $this->getUser($userinfo);
-		$status['debug'][] = JText::_('USER_CREATION');
 	}
 
 	/**
@@ -651,21 +641,23 @@ class JFusionUser_moodle extends JFusionUser {
 	 * @return array status Array containing the errors and result of the function
 	 */
 	function deleteUser($userinfo) {
-		//setup status array to hold debug info and errors
-		$status = array();
-		$status['debug'] = array();
-		$status['error'] = array();
-		if (!is_object($userinfo)) {
-			$status['error'][] = JText::_('NO_USER_DATA_FOUND');
-			return $status;
-		}
-		$db = JFusionFactory::getDatabase($this->getJname());
-		$query = "UPDATE #__user SET deleted = '1' WHERE id =" . (int)$userinfo->userid;
-		$db->setQuery($query);
-		if (!$db->execute()) {
-			$status['error'][] = JText::_('USER_DELETION_ERROR') . $db->stderr();
-		} else {
+		$status = array('debug' => array(), 'error' => array());
+		try {
+			//setup status array to hold debug info and errors
+
+			$status['debug'] = array();
+			$status['error'] = array();
+			if (!is_object($userinfo)) {
+				throw new Exception(JText::_('NO_USER_DATA_FOUND'));
+			}
+			$db = JFusionFactory::getDatabase($this->getJname());
+			$query = "UPDATE #__user SET deleted = '1' WHERE id =" . (int)$userinfo->userid;
+			$db->setQuery($query);
+			$db->execute();
+
 			$status['debug'][] = JText::_('USER_DELETION') . ': ' . $userinfo->userid . ' -> ' . $userinfo->username;
+		} catch (Exception $e) {
+			$status['error'][] = JText::_('USER_DELETION_ERROR'). ': ' . $e->getMessage();
 		}
 		return $status;
 	}

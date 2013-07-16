@@ -123,13 +123,17 @@ class JFusionForum_smf extends JFusionForum
 
         $numargs = func_num_args();
         if ($numargs > 3) {
-            $db = JFusionFactory::getDatabase($this->getJname());
-            $filters = func_get_args();
-            for ($i = 3; $i < $numargs; $i++) {
-                if ($filters[$i][0] == 'userid') {
-                    $where.= ' HAVING userid = ' . $db->quote($filters[$i][1]);
-                }
-            }
+	        try {
+		        $db = JFusionFactory::getDatabase($this->getJname());
+		        $filters = func_get_args();
+		        for ($i = 3; $i < $numargs; $i++) {
+			        if ($filters[$i][0] == 'userid') {
+				        $where.= ' HAVING userid = ' . $db->quote($filters[$i][1]);
+			        }
+		        }
+	        } catch (Exception $e) {
+				JFusionFunction::raiseError($e);
+	        }
         }
 
         //setup the guest where clause to be used in union query
