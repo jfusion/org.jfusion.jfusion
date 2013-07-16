@@ -1032,11 +1032,8 @@ HTML;
     {
         //get the url
         $query = ($_GET);
-        if(isset($query['jfile'])){
-            $jfile = $query['jfile'];
-        } else {
-            $jfile = 'index.php';
-        }
+
+	    $jfile = JFactory::getApplication()->input->get('jfile','index.php','raw');
 
         unset($query['option'], $query['jfile'], $query['Itemid'], $query['jFusion_Route'], $query['view'],$query['layout'], $query['controller'], $query['lang'], $query['task']);
 
