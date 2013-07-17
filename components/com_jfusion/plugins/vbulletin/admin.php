@@ -260,6 +260,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
 			    $result = true;
 		    }
 	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e, $this->getJname());
 	    }
 	    return $result;
     }

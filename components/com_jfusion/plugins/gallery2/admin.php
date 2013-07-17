@@ -202,6 +202,7 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
 			    $result = true;
 		    }
 	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e, $this->getJname());
 		}
 	    return $result;
     }

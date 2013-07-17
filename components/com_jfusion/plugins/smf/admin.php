@@ -241,6 +241,7 @@ class JFusionAdmin_smf extends JFusionAdmin
 			    $result = true;
 		    }
 	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e, $this->getJname());
 	    }
 	    return $result;
     }

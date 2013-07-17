@@ -209,8 +209,7 @@ class JFusionAdmin_prestashop extends JFusionAdmin
      */
     function allowRegistration() {
         //you cannot disable registration
-        $result = true;
-        return $result;
+        return true;
     }
 
     /**

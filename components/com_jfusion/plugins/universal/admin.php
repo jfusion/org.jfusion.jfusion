@@ -143,7 +143,7 @@ class JFusionAdmin_universal extends JFusionAdmin{
 	 */
 	function allowRegistration()
 	{
-		return false;
+		return true;
 	}
 
 	/**

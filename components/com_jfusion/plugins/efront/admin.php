@@ -216,6 +216,7 @@ class JFusionAdmin_efront extends JFusionAdmin
 			    $result = true;
 		    }
 	    } catch (Exception $e) {
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $result = false;
 	    }
 	    return $result;
