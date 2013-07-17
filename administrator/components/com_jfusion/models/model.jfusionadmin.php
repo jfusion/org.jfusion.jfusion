@@ -272,4 +272,38 @@ HTML;
         }
         return array($VersionCurrent, $RevisionCurrent);
     }
+
+	/**
+	 * @return void
+	 */
+	public static function initJavaScript() {
+		static $js;
+		if (!$js) {
+			$text = array();
+			if ( JFactory::getApplication()->isAdmin() ) {
+				$keys = array( 'SESSION_TIMEOUT', 'SYNC_NODATA', 'NOTICE', 'WARNING', 'MESSAGE', 'ERROR', 'DELETE', 'PLUGIN',
+					'SYNC_PROGRESS', 'SYNC_USERS_TODO', 'USER', 'USERS', 'NAME', 'CREATED', 'DELETED', 'UPDATED', 'CONFLICTS',
+					'UNCHANGED', 'FINISHED', 'PAUSE', 'CLICK_FOR_MORE_DETAILS', 'UPDATE_IN', 'SECONDS', 'SYNC_CONFIRM_START',
+					'DELETE_PAIR', 'REMOVE');
+
+				$url = JURI::root() . 'administrator/index.php';
+			} else {
+				$url = JURI::root() . 'index.php';
+			}
+
+			foreach($keys as $key) {
+				$text[$key] = JText::_($key,true);
+			}
+			$text = json_encode($text);
+
+			$js=<<<JS
+			JFusion.url = '{$url}';
+
+			JFusion.Text = {$text};
+JS;
+
+			$document = JFactory::getDocument();
+			$document->addScriptDeclaration($js);
+		}
+	}
 }

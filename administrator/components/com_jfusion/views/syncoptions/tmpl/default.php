@@ -28,8 +28,6 @@ JFusion.syncid = '<?php echo $this->syncid; ?>';
 
 var periodical;
 
-JFusion.url = '<?php echo JURI::current(); ?>';
-
 // refresh every 10 seconds
 var syncRunning = -1;
 var counter = 10;

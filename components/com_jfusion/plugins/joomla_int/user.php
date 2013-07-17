@@ -94,7 +94,6 @@ class JFusionUser_joomla_int extends JFusionUser {
                 $status['debug'][] = JText::_('USER_DELETION') . ' ' . $username;
             } else {
                 //could not find user and return an error
-                //JFusionFunction::raiseWarning(JText::_('ERROR_DELETE') . $username);
                 $status['error'][] = JText::_('ERROR_DELETE') . $username;
             }
         }

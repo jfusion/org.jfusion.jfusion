@@ -110,7 +110,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 	                    }
 	                }
 	            } catch (Exception $e) {
-		            JFusionFunction::raiseError($e);
+		            JFusionFunction::raiseError($e, $this->getJname());
 	            }
             }
             $options['custom_smileys'] = $custom_smileys;
@@ -278,7 +278,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 		}
 
 		if ( ! is_file($index_file) ) {
-			JFusionFunction::raiseWarning('The path to the SMF index file set in the component preferences does not exist');
+			JFusionFunction::raiseWarning('The path to the SMF index file set in the component preferences does not exist', $this->helper->getJname());
 		} else {
             //add handler to undo changes that plgSystemSef create
             $dispatcher = JEventDispatcher::getInstance();
@@ -318,7 +318,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 
             // Log an error if we could not include the file
             if (!$rs) {
-                JFusionFunction::raiseWarning('Could not find SMF in the specified directory');
+                JFusionFunction::raiseWarning('Could not find SMF in the specified directory', $this->helper->getJname());
             }
         }
 	}
@@ -507,7 +507,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 		$extra = $matches[2];		
 
 		$baseURL = $this->data->baseURL;    	
-        //JFusionFunction::raiseWarning($url);
+        //JFusionFunction::raiseWarning($url, $this->helper->getJname());
         $url = htmlspecialchars_decode($url);
         $Itemid = JFactory::getApplication()->input->getInt('Itemid');
         $extra = stripslashes($extra);
@@ -567,8 +567,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 		$url = $matches[1];
 		$baseURL = $this->data->baseURL;
 		    	
-        //JFusionFunction::raiseWarning($url);
-        //JFusionFunction::raiseWarning($url);
+        //JFusionFunction::raiseWarning($url, $this->helper->getJname());
         //split up the timeout from url
         $parts = explode(';url=', $url);
         $timeout = $parts[0];
@@ -606,8 +605,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
             $redirectURL .= '#'.$fragment;
         }
         $return = '<meta http-equiv="refresh" content="' . $timeout . ';url=' . $redirectURL . '">';
-        //JFusionFunction::raiseWarning(htmlentities($return));
-        //JFusionFunction::raiseWarning(htmlentities($return));
+        //JFusionFunction::raiseWarning(htmlentities($return), $this->helper->getJname());
         return $return;
     }
 
@@ -757,7 +755,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 					}
 			}
 		} catch (Exception $e) {
-			JFusionFunction::raiseError($e);
+			JFusionFunction::raiseError($e, $this->getJname());
 		}
 		return $pathway;
 	}
@@ -858,7 +856,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 			}
 			$where .= ' AND p.id_board IN ('.implode(',',$list).') ORDER BY ' . $sort;
 		} catch (Exception $e) {
-			JFusionFunction::raiseError($e);
+			JFusionFunction::raiseError($e, $this->getJname());
 		}
 	}
 
@@ -891,7 +889,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 				}
 			}
 		} catch (Exception $e) {
-			JFusionFunction::raiseError($e);
+			JFusionFunction::raiseError($e, $this->getJname());
 		}
 	}
 
@@ -952,7 +950,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 			$db->setQuery($query);
 			return $db->loadResult();
 		} catch (Exception $e) {
-			JFusionFunction::raiseError($e);
+			JFusionFunction::raiseError($e, $this->getJname());
 			return 0;
 		}
 	}
@@ -989,7 +987,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 			$db->setQuery($query);
 			return $db->loadResult();
 		} catch (Exception $e) {
-			JFusionFunction::raiseError($e);
+			JFusionFunction::raiseError($e, $this->getJname());
 			return 0 ;
 		}
 	}

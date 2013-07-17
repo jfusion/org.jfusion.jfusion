@@ -133,12 +133,22 @@ class JFusionAdmin
 				    throw new Exception(JText::_('GOOD_CONFIG'));
 			    }
 		    } else {
-			    $db = JFusionFactory::getDatabase($jname);
-			    $jdb = JFactory::getDBO();
+			    try {
+				    $db = JFusionFactory::getDatabase($jname);
+			    } catch (Exception $e) {
+				    throw new Exception(JText::_('NO_DATABASE').' : '.$e->getMessage());
+			    }
+
+			    try {
+				    $jdb = JFactory::getDBO();
+			    } catch (Exception $e) {
+				    throw new Exception(' -> joomla_int '. JText::_('NO_DATABASE').' : '.$e->getMessage());
+			    }
+
 			    if (!$db->connected()) {
-				    throw new Exception($jname.' '.JText::_('NO_DATABASE'));
+				    throw new Exception(JText::_('NO_DATABASE'));
 			    } elseif (!$jdb->connected()) {
-				    throw new Exception($jname.' -> joomla_int '. JText::_('NO_DATABASE'));
+				    throw new Exception(' -> joomla_int '. JText::_('NO_DATABASE'));
 			    } else {
 				    //added check for missing files of copied plugins after upgrade
 				    $path = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR;

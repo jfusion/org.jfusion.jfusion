@@ -83,7 +83,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 		}
         $params = array();
         if (($file_handle = @fopen($myfile, 'r')) === false) {
-			JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));
+			JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'), $this->helper->getJname());
 		} else {
 			//parse the file line by line to get only the config variables
 			//			$file_handle = fopen($myfile, 'r');
@@ -159,7 +159,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 			//getting the results
 			$userlist = $db->loadObjectList();
 		} catch (Exception $e) {
-			JFusionFunction::raiseError($e);
+			JFusionFunction::raiseError($e, $this->getJname());
 			$userlist = array();
 		}
 		return $userlist;
@@ -177,7 +177,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 			//getting the results
 			$no_users = $db->loadResult();
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e);
+			JFusionFunction::raiseError($e, $this->getJname());
 		    $no_users = 0;
 		}
 		return $no_users;
@@ -227,8 +227,6 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 
 		    $result = ($auths=='1');
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
-		    $result = false;
 	    }
 	    return $result;
 	}

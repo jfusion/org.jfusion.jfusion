@@ -58,7 +58,7 @@ class JFusionHelper_wordpress {
 			    $usergroups[$i] = $group;
 		    }
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e);
+			JFusionFunction::raiseError($e, $this->getJname());
 	    }
 		return $usergroups;
 	}
@@ -114,7 +114,7 @@ class JFusionHelper_wordpress {
 				$roles_ser = $db->loadResult();
 				$allroles = unserialize($roles_ser);
 			} catch (Exception $e) {
-				JFusionFunction::raiseError($e);
+				JFusionFunction::raiseError($e, $this->getJname());
 				$allroles = array();
 			}
 		}

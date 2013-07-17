@@ -119,7 +119,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 			    }
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $url = false;
 	    }
 	    return $url;
@@ -151,7 +151,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 			    $totalCount = $db->loadResult();
 		    }
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e);
+			JFusionFunction::raiseError($e, $this->getJname());
 	    }
 
         return array('unread' => $unreadCount, 'total' => $totalCount);
@@ -184,7 +184,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 			        }
 		        }
 	        } catch (Exception $e) {
-				JFusionFunction::raiseError($e);
+				JFusionFunction::raiseError($e, $this->getJname());
 	        }
         }
 
@@ -246,7 +246,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 			    $newstatus = ($marktime !== false && $post->last_post_dateline > $marktime) ? 1 : 0;
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 	    }
         return $newstatus;
     }
@@ -264,7 +264,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 		    //getting the results
 		    return $db->loadObjectList('id');
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    return array();
 	    }
     }
@@ -287,7 +287,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 			    $forumids = explode(',', $forumids);
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $forumids = array();
 	    }
 
@@ -455,7 +455,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 			    }
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $phpbb_acl = array();
 	    }
         return $phpbb_acl;
@@ -954,8 +954,8 @@ class JFusionForum_phpbb3 extends JFusionForum {
 
 			$posts = $jdb->loadObjectList();
 		} catch (Exception $e) {
-			JFusionFunction::raiseError($e);
-			$e = array();
+			JFusionFunction::raiseError($e, $this->getJname());
+			$posts = array();
 		}
 		return $posts;
 	}
@@ -973,7 +973,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 			$db->setQuery($query);
 			$result = $db->loadResult();
 		} catch (Exception $e) {
-			JFusionFunction::raiseError($e);
+			JFusionFunction::raiseError($e, $this->getJname());
 			$result = 0;
 		}
 		return $result;

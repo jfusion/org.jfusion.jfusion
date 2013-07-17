@@ -96,7 +96,7 @@ class JFusionPublic_efront extends JFusionPublic
 	        $db->setQuery($query);
 	        $result = $db->loadResult();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $result = 0;
 	    }
         return $result;

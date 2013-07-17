@@ -93,7 +93,7 @@ class JFusionForum_mybb extends JFusionForum {
 		    $db->setQuery($query);
 		    $results = $db->loadObject();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $results = null;
 	    }
 
@@ -111,7 +111,7 @@ class JFusionForum_mybb extends JFusionForum {
 		    $db->setQuery($query);
 		    $result = $db->loadResult();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $result = 0;
 	    }
         return $result;
@@ -129,7 +129,7 @@ class JFusionForum_mybb extends JFusionForum {
 		    //getting the results
 		    return $db->loadObjectList();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    return array();
 	    }
     }
@@ -149,7 +149,7 @@ class JFusionForum_mybb extends JFusionForum {
 			    return array('unread' => $pminfo->unreadpms, 'total' => $pminfo->totalpms);
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 	    }
         return array('unread' => 0, 'total' => 0);
     }
@@ -183,7 +183,7 @@ class JFusionForum_mybb extends JFusionForum {
 		    $params = JFusionFactory::getParams($this->getJname());
 		    $url = $params->get('source_url') . $avatar;
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $url = '';
 	    }
         return $url;

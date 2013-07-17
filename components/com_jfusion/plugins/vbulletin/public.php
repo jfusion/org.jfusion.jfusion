@@ -119,7 +119,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
 			        }
 		        }
 	        } catch (Exception $e) {
-				JFusionFunction::raiseError($e);
+				JFusionFunction::raiseError($e, $this->getJname());
 	        }
 
             $options['custom_smileys'] = $custom_smileys;
@@ -145,7 +145,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
 			            $vb_bbcodes[$bb->bbcodetag] = array( 'mode' => 4, 'template' => $template, 'class' => 'inline', 'allow_in' => array('block', 'inline', 'link', 'list', 'listitem', 'columns', 'image'));
 		            }
 	            } catch (Exception $e) {
-		            JFusionFunction::raiseError($e);
+		            JFusionFunction::raiseError($e, $this->getJname());
 	            }
             }
 
@@ -174,7 +174,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
 			        $vb_bbcodes_plain = $db->loadColumn();
 		        }
 	        } catch (Exception $e) {
-		        JFusionFunction::raiseError($e);
+		        JFusionFunction::raiseError($e, $this->getJname());
 	        }
 
             if (!empty($vb_bbcodes_plain)) {
@@ -231,7 +231,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
 		    $db->setQuery($query);
 		    return $db->loadResult();
 	    } catch (Exception $e) {
-		    FusionFunction::raiseError($e);
+		    FusionFunction::raiseError($e, $this->getJname());
 		    return 0;
 	    }
     }
@@ -248,7 +248,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
 	        $db->setQuery($query);
 	        return $db->loadResult();
 	    } catch (Exception $e) {
-			FusionFunction::raiseError($e);
+			FusionFunction::raiseError($e, $this->getJname());
 			return 0;
 		}
     }
@@ -276,7 +276,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
         $helper = JFusionFactory::getHelper($this->getJname());
         $version = $helper->getVersion();
         if ((int) substr($version, 0, 1) > 3) {
-            JFusionFunction::raiseWarning(JText::sprintf('VB_FRAMELESS_NOT_SUPPORTED',$version));
+            JFusionFunction::raiseWarning(JText::sprintf('VB_FRAMELESS_NOT_SUPPORTED',$version), $this->helper->getJname());
         } else {
 
 	        try {
@@ -286,12 +286,12 @@ class JFusionPublic_vbulletin extends JFusionPublic
 		        $db->setQuery($q);
 		        $active = $db->loadResult();
 	        } catch (Exception $e) {
-		        JFusionFunction::raiseError($e);
+		        JFusionFunction::raiseError($e, $this->getJname());
 		        $active = 0;
 	        }
 
             if ($active != '1') {
-                JFusionFunction::raiseWarning(JText::_('VB_FRAMELESS_HOOK_NOT_INSTALLED'));
+                JFusionFunction::raiseWarning(JText::_('VB_FRAMELESS_HOOK_NOT_INSTALLED'), $this->helper->getJname());
             } else {
                 //have to clear this as it shows up in some text boxes
                 unset($q);
@@ -362,7 +362,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
                     $index_file = $source_path . DIRECTORY_SEPARATOR . $jfile;
                 }
                 if (!is_file($index_file)) {
-                    JFusionFunction::raiseWarning('The path to the requested does not exist');
+                    JFusionFunction::raiseWarning('The path to the requested does not exist', $this->helper->getJname());
                 } else {
                     //set the current directory to vBulletin
                     chdir($source_path);
@@ -651,7 +651,7 @@ JS;
 			    $pathway[] = $crumb;
 		    }
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e);
+			JFusionFunction::raiseError($e, $this->getJname());
 	    }
         return $pathway;
     }

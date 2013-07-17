@@ -200,7 +200,7 @@ class JFusionHelper_phpbb3
 			    $this->parse_bbcode($text);
 		    }
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e);
+			JFusionFunction::raiseError($e, $this->getJname());
 	    }
 
         $bbcode = new stdClass;

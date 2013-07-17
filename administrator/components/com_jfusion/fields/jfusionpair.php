@@ -18,7 +18,7 @@ defined('_JEXEC') or die();
  * Require the Jfusion plugin factory
  */
 require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.factory.php';
-require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jfusion.php';
+require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jfusionadmin.php';
 
 /**
  * JFusion Element class Discussionbot
@@ -46,7 +46,7 @@ class JFormFieldJFusionPair extends JFormField
 		$document = JFactory::getDocument();
 		$document->addScript('components/com_jfusion/js/jfusion.js');
 
-		JFusionFunction::loadJSLanguage();
+		JFusionFunctionAdmin::initJavaScript();
 
 		$delete = JText::_('DELETE_PAIR');
 		$add = JText::_('ADD_PAIR');

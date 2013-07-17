@@ -86,7 +86,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 			    $result->activation = '';
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $result = null;
 	    }
         return $result;

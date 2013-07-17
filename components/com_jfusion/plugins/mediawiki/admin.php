@@ -50,7 +50,7 @@ class JFusionAdmin_mediawiki extends JFusionAdmin {
         $params = array();
          //try to open the file
         if ( !file_exists($myfile) ) {
-            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE'). ': '.$myfile.' ' . JText::_('WIZARD_MANUAL'));
+            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE'). ': '.$myfile.' ' . JText::_('WIZARD_MANUAL'), $this->helper->getJname());
         } else {
             $wgDBserver = $wgDBtype = $wgDBname = $wgDBuser = $wgDBpassword = $wgDBprefix = '';
             /**
@@ -98,7 +98,7 @@ class JFusionAdmin_mediawiki extends JFusionAdmin {
 
 		    return $userlist;
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $userlist = array();
 	    }
 	    return $userlist;
@@ -118,7 +118,7 @@ class JFusionAdmin_mediawiki extends JFusionAdmin {
 		    //getting the results
 		    return $db->loadResult();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    return 0;
 	    }
     }

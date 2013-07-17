@@ -65,7 +65,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 	        $this->plugins = $plugins;
 	        $this->VersionData = $VersionData;
 
-	        JFusionFunction::loadJSLanguage();
+	        JFusionFunctionAdmin::initJavaScript();
 
 	        parent::display();
         } else {
@@ -256,8 +256,8 @@ class jfusionViewplugindisplay extends JViewLegacy {
 			    if ($usergroup) {
 				    $record->usergrouptext = $usergroup;
 			    } else {
-				    $record->usergrouptext = '<img src="components/com_jfusion/images/cross.png" border="0" alt="Disabled" />' . JText::_('MISSING') . ' ' . JText::_('DEFAULT_USERGROUP') ;
-				    JFusionFunction::raiseWarning($record->name . ': ' . JText::_('MISSING') . ' ' . JText::_('DEFAULT_USERGROUP'));
+				    $record->usergrouptext = '<img src="components/com_jfusion/images/cross.png" border="0" alt="'.JText::_('DISABLED').'" />' . JText::_('MISSING') . ' ' . JText::_('DEFAULT_USERGROUP') ;
+				    JFusionFunction::raiseWarning(JText::_('MISSING') . ' ' . JText::_('DEFAULT_USERGROUP'), $record->name);
 			    }
 		    } else {
 			    $record->usergrouptext = '';
@@ -303,28 +303,28 @@ class jfusionViewplugindisplay extends JViewLegacy {
 				$JFusionPlugin = JFusionFactory::getAdmin($record->name);
 				$JFusionParam = JFusionFactory::getParams($record->name);
 
-				//check to see if the plugin files exist
-				$plugin_xml = JFUSION_PLUGIN_PATH .DIRECTORY_SEPARATOR. $record->name .DIRECTORY_SEPARATOR. 'jfusion.xml';
-				if(!file_exists($plugin_xml)) {
-					$record->status = 0;
-					JFusionFunction::raiseWarning($record->name . ': ' . JText::_('NO_FILES'));
-				} else {
-					$record->status = 1;
-				}
-
 				//output detailed configuration warnings for enabled plugins
 				if ($record->status==1) {
+					//check to see if the plugin files exist
+					$plugin_xml = JFUSION_PLUGIN_PATH .DIRECTORY_SEPARATOR. $record->name .DIRECTORY_SEPARATOR. 'jfusion.xml';
+					if(!file_exists($plugin_xml)) {
+						$record->status = 0;
+						JFusionFunction::raiseWarning(JText::_('NO_FILES'), $record->name);
+					} else {
+						$record->status = 1;
+					}
+
 					if ($record->master == '1' || $record->slave == '1') {
 						try {
 							$JFusionPlugin->debugConfig();
 						} catch (Exception $e) {
-							JFusionFunction::raiseError($record->name . ': ' . $e->getMessage());
+							JFusionFunction::raiseError($e->getMessage(), $record->name);
 							$record->status = 0;
 						}
 					}
 				}
 
-				$record = $this->initRecord($record->name,$record);
+				$record = $this->initRecord($record->name, $record);
 
 				$plugins[]=$record;
 			}
@@ -372,7 +372,7 @@ HTML;
 			<a href="index.php?option=com_jfusion&task=plugineditor&jname={$record->name}" title="{$edit}"><img src="components/com_jfusion/images/edit.png" alt="{$edit}" /></a>
 	        <a href="{$record->copyscript}" title="{$copy}"><img src="{$record->copyimage}" alt="{$copy}" /></a>
 	        <a href="{$record->deletescript}" title="{$delete}"><img src="{$record->deleteimage}" alt="{$delete}" /></a>
-			<a class="modal btn" title="{$info}"  href="index.php?option=com_jfusion&task=plugininfo&tmpl=component&jname={$record->name}" rel="{handler: \'iframe\', size: {x: 375, y: 375}}"><img src="components/com_jfusion/images/info.png" alt="{$info}" /></a>
+			<a class="modal" title="{$info}"  href="index.php?option=com_jfusion&task=plugininfo&tmpl=component&jname={$record->name}" rel="{handler: \'iframe\', size: {x: 375, y: 375}}"><img src="components/com_jfusion/images/info.png" alt="{$info}" /></a>
 		</td>
         <td>{$record->description}</td>
         <td width="40px;" id="{$record->name}_master">

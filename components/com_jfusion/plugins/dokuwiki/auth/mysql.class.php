@@ -62,7 +62,7 @@ class doku_auth_mysql extends doku_auth_basic {
 
 		if(!function_exists('mysql_connect')) {
 			if ($this->cnf['debug']) {
-				JFusionFunction::raiseWarning('MySQL err: PHP MySQL extension not found.');
+				JFusionFunction::raiseWarning('MySQL err: PHP MySQL extension not found.', $this->helper->getJname());
 			}
 			$this->success = false;
 		}
@@ -80,7 +80,7 @@ class doku_auth_mysql extends doku_auth_basic {
           	empty($this->cnf['password']) ||
           	empty($this->cnf['database'])) {
         	if ($this->cnf['debug']) {
-				JFusionFunction::raiseWarning('MySQL err: insufficient configuration.');
+				JFusionFunction::raiseWarning('MySQL err: insufficient configuration.', $this->helper->getJname());
         	}        
 //          msg('MySQL err: insufficient configuration.',-1,__LINE__,__FILE__);
 			$this->success = false;
@@ -620,7 +620,7 @@ class doku_auth_mysql extends doku_auth_basic {
                     * is not a big issue so we ignore this problem here.
                     */
                     $this->_delUser($user);
-                    if ($this->cnf['debug']) JFusionFunction::raiseWarning('MySQL err: Adding user \''.$user.'\' to group \''.$group.'\' failed.');
+                    if ($this->cnf['debug']) JFusionFunction::raiseWarning('MySQL err: Adding user \''.$user.'\' to group \''.$group.'\' failed.', $this->helper->getJname());
                 }
             }
         }
@@ -774,7 +774,7 @@ class doku_auth_mysql extends doku_auth_basic {
 		    $this->dbcon = $db;
 		    return $db->connected();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->helper->getJname());
 		    return false;
 	    }
     }
@@ -805,7 +805,7 @@ class doku_auth_mysql extends doku_auth_basic {
      */
     function _queryDB($query) {
 		if($this->cnf['debug'] >= 2) {
-			JFusionFunction::raiseWarning('MySQL query: '.hsc($query));
+			JFusionFunction::raiseWarning('MySQL query: '.hsc($query), $this->helper->getJname());
 		}
 
 		$resultarray = array();

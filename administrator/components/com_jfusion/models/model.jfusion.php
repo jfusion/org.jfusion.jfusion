@@ -1644,33 +1644,45 @@ class JFusionFunction
 
 	/**
 	 * @param string|Exception $msg
+	 * @param string           $jname
 	 */
-	public static function raiseNotice($msg) {
+	public static function raiseNotice($msg, $jname='') {
 		$app = JFactory::getApplication();
 		if ($msg instanceof Exception) {
 			$msg = $msg->getMessage();
+		}
+		if (!empty($msg)) {
+			$msg = $jname.': '.$msg;
 		}
 		$app->enqueueMessage($msg,'notice');
 	}
 
 	/**
 	 * @param string|Exception $msg
+	 * @param string           $jname
 	 */
-	public static function raiseWarning($msg) {
+	public static function raiseWarning($msg, $jname='') {
 		$app = JFactory::getApplication();
 		if ($msg instanceof Exception) {
 			$msg = $msg->getMessage();
+		}
+		if (!empty($msg)) {
+			$msg = $jname.': '.$msg;
 		}
 		$app->enqueueMessage($msg,'warning');
 	}
 
 	/**
 	 * @param string|Exception $msg
+	 * @param string           $jname
 	 */
-	public static function raiseError($msg) {
+	public static function raiseError($msg, $jname='') {
 		$app = JFactory::getApplication();
 		if ($msg instanceof Exception) {
 			$msg = $msg->getMessage();
+		}
+		if (!empty($msg)) {
+			$msg = $jname.': '.$msg;
 		}
 		$app->enqueueMessage($msg,'error');
 	}
@@ -1711,30 +1723,5 @@ class JFusionFunction
 			}
 		}
 		return $list;
-	}
-
-	/**
-	 * @return void
-	 */
-	public static function loadJSLanguage() {
-		static $js;
-		if (!$js) {
-			$keys = array( 'SESSION_TIMEOUT', 'SYNC_NODATA', 'NOTICE', 'WARNING', 'MESSAGE', 'ERROR', 'DELETE', 'PLUGIN',
-				'SYNC_PROGRESS', 'SYNC_USERS_TODO', 'USER', 'USERS', 'NAME', 'CREATED', 'DELETED', 'UPDATED', 'CONFLICTS',
-				'UNCHANGED', 'FINISHED', 'PAUSE', 'CLICK_FOR_MORE_DETAILS', 'UPDATE_IN', 'SECONDS', 'SYNC_CONFIRM_START',
-				'DELETE_PAIR', 'REMOVE');
-
-			$text = array();
-			foreach($keys as $key) {
-				$text[$key] = JText::_($key,true);
-			}
-			$text = json_encode($text);
-			$js=<<<HTML
-			JFusion.Text = {$text};
-HTML;
-
-			$document = JFactory::getDocument();
-			$document->addScriptDeclaration($js);
-		}
 	}
 }

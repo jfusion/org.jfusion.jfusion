@@ -61,7 +61,7 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
         }
         $params = array();
         if (($file_handle = @fopen($myfile, 'r')) === false) {
-            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));
+            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'), $this->helper->getJname());
         } else {
             //parse the file line by line to get only the config variables
             $file_handle = fopen($myfile, 'r');
@@ -91,7 +91,7 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
 		        $vdb = JDatabaseDriver::getInstance($options);
 
 		        if (!$vdb) {
-			        JFusionFunction::raiseWarning(JText::_('NO_DATABASE'));
+			        JFusionFunction::raiseWarning(JText::_('NO_DATABASE'), $this->helper->getJname());
 			        return false;
 		        } else {
 			        $query = 'SELECT config_name, config_value FROM #__config WHERE config_name IN (\'script_path\', \'cookie_path\', \'server_name\', \'cookie_domain\', \'cookie_name\', \'allow_autologin\')';
@@ -122,7 +122,7 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
 			        }
 		        }
 	        } catch (Exception $e) {
-		        JFusionFunction::raiseWarning(JText::_('NO_DATABASE') . ' '. $e->getMessage());
+		        JFusionFunction::raiseWarning(JText::_('NO_DATABASE') . ' '. $e->getMessage(), $this->helper->getJname());
 		        return false;
 	        }
         }
@@ -147,7 +147,7 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
 		    //getting the results
 		    $userlist = $db->loadObjectList();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $userlist = array();
 	    }
         return $userlist;
@@ -165,7 +165,7 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
 		    //getting the results
 		    $no_users = $db->loadResult();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $no_users = 0;
 	    }
         return $no_users;
@@ -183,7 +183,7 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
 		    //getting the results
 		    return $db->loadObjectList();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    return array();
 	    }
     }
@@ -205,7 +205,7 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
 		    $db->setQuery($query);
 		    return $db->loadResult();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    return '';
 	    }
     }
@@ -225,7 +225,6 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
 			    $result = true;
 		    }
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e);
 	    }
 	    return $result;
     }
@@ -290,7 +289,7 @@ if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\'
 //JFUSION REDIRECT END';
 		    return $redirect_code;
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    return '';
 	    }
     }
@@ -306,11 +305,11 @@ if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\'
 
         //check to see if all vars are set
         if (empty($joomla_url)) {
-            JFusionFunction::raiseWarning(JText::_('MISSING') . ' Joomla URL');
+            JFusionFunction::raiseWarning(JText::_('MISSING') . ' Joomla URL', $this->helper->getJname());
         } else if (empty($joomla_itemid) || !is_numeric($joomla_itemid)) {
-            JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID');
+            JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID', $this->helper->getJname());
         } else if (!$this->isValidItemID($joomla_itemid)) {
-            JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID '. JText::_('MUST BE'). ' ' . $this->getJname());
+            JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID '. JText::_('MUST BE'). ' ' . $this->getJname(), $this->helper->getJname());
         } else {
             $error = $this->disableRedirectMod();
             $reason = '';
@@ -493,7 +492,7 @@ HTML;
 		        }
 	        } catch (Exception $e) {
 		        //there was an error saving the parameters
-		        JFusionFunction::raiseWarning($e);
+		        JFusionFunction::raiseWarning($e, $this->helper->getJname());
 	        }
         } else {
 	        try {
@@ -504,7 +503,7 @@ HTML;
 		        $db->execute();
 	        } catch (Exception $e) {
 			    //there was an error saving the parameters
-			    JFusionFunction::raiseWarning($e);
+			    JFusionFunction::raiseWarning($e, $this->helper->getJname());
 		    }
         }
         //clear the config cache so that phpBB recognizes the change
@@ -544,7 +543,7 @@ HTML;
 			    throw new Exception('Cash not cleared!');
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseWarning($e);
+		    JFusionFunction::raiseWarning($e, $this->helper->getJname());
 		    $return = false;
 	    }
         return $return;

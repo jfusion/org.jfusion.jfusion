@@ -65,7 +65,7 @@ class JFusionUser_prestashop extends JFusionUser {
 			    }
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $result = null;
 	    }
         // read through params for cookie key (the salt used)

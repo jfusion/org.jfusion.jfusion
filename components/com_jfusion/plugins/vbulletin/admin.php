@@ -66,7 +66,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
         //try to open the file
         $params = array();
         if (($file_handle = @fopen($configfile, 'r')) === false) {
-            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ": $configfile " . JText::_('WIZARD_MANUAL'));
+            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ": $configfile " . JText::_('WIZARD_MANUAL'), $this->helper->getJname());
         } else {
             //parse the file line by line to get only the config variables
             $file_handle = fopen($configfile, 'r');
@@ -178,7 +178,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
 		    //getting the results
 		    $userlist = $db->loadObjectList();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $userlist = array();
 	    }
         return $userlist;
@@ -197,7 +197,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
 		    //getting the results
 		    $no_users = $db->loadResult();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $no_users = 0;
 	    }
         return $no_users;
@@ -216,7 +216,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
 		    //getting the results
 		    return $db->loadObjectList();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    return array();
 	    }
     }
@@ -239,7 +239,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
 		    $db->setQuery($query);
 		    return $db->loadResult();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    return '';
 	    }
     }
@@ -260,7 +260,6 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
 			    $result = true;
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
 	    }
 	    return $result;
     }
@@ -445,9 +444,8 @@ HTML;
 				    //all three cases, we want to remove the old hook
 				    $query = 'DELETE FROM #__plugin WHERE hookname = \'init_startup\' AND title = ' . $db->Quote($hookName);
 				    $db->setQuery($query);
-				    if (!$db->execute()) {
-					    JFusionFunction::raiseWarning($db->stderr());
-				    }
+				    $db->execute();
+
 				    //enable or re-enable the plugin
 				    if ($action != 'disable') {
 					    if (($hook == 'redirect' || $hook == 'frameless') && !$this->isValidItemID($itemid)) {
@@ -463,9 +461,7 @@ HTML;
                         active = 1,
                         executionorder = 1';
 						    $db->setQuery($query);
-						    if (!$db->execute()) {
-							    JFusionFunction::raiseWarning($db->stderr());
-						    }
+						    $db->execute();
 					    }
 				    }
 			    }
@@ -510,7 +506,7 @@ HTML;
 			    }
 		    }
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e);
+			JFusionFunction::raiseError($e, $this->getJname());
 	    }
     }
 
@@ -623,12 +619,12 @@ HTML;
 							    $membergroups = $usergroups[$group->id]['membergroups'];
 							    $defaultgroup = $usergroups[$group->id]['defaultgroup'];
 							    if ((is_array($membergroups) && in_array($defaultgroup, $membergroups)) || $defaultgroup == $membergroups) {
-								    JFusionFunction::raiseWarning($this->getJname() . ': ' . JText::sprintf('VB_GROUP_MISMATCH', $group->name));
+								    JFusionFunction::raiseWarning(JText::sprintf('VB_GROUP_MISMATCH', $group->name), $this->helper->getJname());
 							    }
 						    }
 					    }
 				    } else {
-					    JFusionFunction::raiseWarning($this->getJname() . ': ' . JText::_('ADVANCED_GROUPMODE_ONLY_SUPPORTED_FORSLAVES'));
+					    JFusionFunction::raiseWarning(JText::_('ADVANCED_GROUPMODE_ONLY_SUPPORTED_FORSLAVES'), $this->helper->getJname());
 				    }
 			    }
 		    }
@@ -636,10 +632,10 @@ HTML;
 		    $query = 'SELECT COUNT(*) FROM #__plugin WHERE hookname = \'init_startup\' AND title = \'JFusion API Plugin - REQUIRED\' AND active = 1';
 		    $db->setQuery($query);
 		    if ($db->loadResult() == 0) {
-			    JFusionFunction::raiseWarning($this->getJname() . ': ' . JText::_('VB_API_HOOK_NOT_INSTALLED'));
+			    JFusionFunction::raiseWarning(JText::_('VB_API_HOOK_NOT_INSTALLED'), $this->helper->getJname());
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($this->getJname() . ': ' . $e->getMessage());
+		    JFusionFunction::raiseError($e, $this->getJname());
 	    }
     }
 

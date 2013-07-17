@@ -105,7 +105,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 		            $source_url = $jfparams->get('source_url');
 		            $text = preg_replace('#<!-- s(.*?) --><img src="\{SMILIES_PATH\}\/(.*?)" alt="(.*?)" title="(.*?)" \/><!-- s\\1 -->#si', "[img]{$source_url}{$smilie_path}/$2[/img]", $text);
 	            } catch (Exception $e) {
-					JFusionFunction::raiseError($e);
+					JFusionFunction::raiseError($e, $this->getJname());
 	            }
             }
             //parse bbcode to html
@@ -163,7 +163,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 		    $db->setQuery($query);
 		    $result = $db->loadResult();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $result = 0;
 	    }
         return $result;
@@ -182,7 +182,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 		    $db->setQuery($query);
 		    $result = $db->loadResult();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $result = 0;
 	    }
         return $result;
@@ -250,7 +250,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             $index_file = $source_path . DIRECTORY_SEPARATOR . basename($jfile);
         }
         if (!is_file($index_file)) {
-            JFusionFunction::raiseWarning('The path to the requested does not exist');
+            JFusionFunction::raiseWarning('The path to the requested does not exist', $this->helper->getJname());
         } else {
             //set the current directory to phpBB3
             chdir($source_path);
@@ -460,7 +460,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 		            $db->setQuery($query);
 		            $profile_mod_id = $db->loadResult();
 	            } catch (Exception $e) {
-		            JFusionFunction::raiseError($e);
+		            JFusionFunction::raiseError($e, $this->getJname());
 		            $profile_mod_id = null;
 	            }
             }
@@ -504,7 +504,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 		$url = $matches[1];
 		$baseURL = $this->data->baseURL;
 		    	
-        //JFusionFunction::raiseWarning($url);
+        //JFusionFunction::raiseWarning($url, $this->helper->getJname());
         //split up the timeout from url
         $parts = explode(';url=', $url);
         $timeout = $parts[0];
@@ -542,7 +542,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             $redirectURL .= '#'.$fragment;
         }
         $return = '<meta http-equiv="refresh" content="' . $timeout . ';url=' . $redirectURL . '">';
-        //JFusionFunction::raiseWarning(htmlentities($return));
+        //JFusionFunction::raiseWarning(htmlentities($return), $this->helper->getJname());
         return $return;
     }
 
@@ -708,7 +708,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 			    }
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $pathway = array();
 	    }
 
@@ -763,7 +763,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 		        $forumids = $db->loadColumn();
 		        $forumids = $forum->filterForumList($forumids);
 	        } catch (Exception $e) {
-		        JFusionFunction::raiseError($e);
+		        JFusionFunction::raiseError($e, $this->getJname());
 		        $forumids = array();
 	        }
 

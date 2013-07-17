@@ -200,7 +200,7 @@ class JFusionHelper_vbulletin
                 $vbulletin->db->query_first('SET names \''.$this->params->get('database_charset', 'utf8').'\'');
                 $GLOBALS['db'] = $vbulletin->db;
             } else {
-                JFusionFunction::raiseWarning(JText::_('SOURCE_PATH_NOT_FOUND'));
+                JFusionFunction::raiseWarning(JText::_('SOURCE_PATH_NOT_FOUND'), $this->helper->getJname());
                 $return = false;
             }
         } elseif (defined('VB_AREA') && VB_AREA == 'JFusion') {
@@ -390,7 +390,7 @@ class JFusionHelper_vbulletin
 			    }
 		    }
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e);
+			JFusionFunction::raiseError($e, $this->getJname());
 	    }
         return $url;
     }

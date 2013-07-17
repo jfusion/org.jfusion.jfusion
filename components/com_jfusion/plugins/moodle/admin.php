@@ -60,7 +60,7 @@ class JFusionAdmin_moodle extends JFusionAdmin
         }
         $params = array();
         if (($file_handle = @fopen($myfile, 'r')) === false) {
-            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));
+            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'), $this->helper->getJname());
         } else {
             //parse the file line by line to get only the config variables
         	$CFG = new stdClass();
@@ -121,7 +121,7 @@ class JFusionAdmin_moodle extends JFusionAdmin
 		    $userlist = $db->loadObjectList();
 		    return $userlist;
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    return array();
 	    }
     }
@@ -138,7 +138,7 @@ class JFusionAdmin_moodle extends JFusionAdmin
 		    //getting the results
 		    $no_users = $db->loadResult();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $no_users = 0;
 	    }
 	    return $no_users;
@@ -155,7 +155,7 @@ class JFusionAdmin_moodle extends JFusionAdmin
 		    //getting the results
 		    return $db->loadObjectList();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    return array();
 	    }
     }
@@ -176,7 +176,7 @@ class JFusionAdmin_moodle extends JFusionAdmin
 		    $db->setQuery($query);
 		    return $db->loadResult();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    return '';
 	    }
     }
@@ -185,6 +185,7 @@ class JFusionAdmin_moodle extends JFusionAdmin
      * @return bool
      */
     function allowRegistration() {
+	    $result = false;
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
 		    $query = 'SELECT value FROM #__config WHERE name = \'auth\' and value != \'jfusion\'';
@@ -194,7 +195,6 @@ class JFusionAdmin_moodle extends JFusionAdmin
 			    $result = true;
 		    }
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e);
 	    }
 	    return $result;
     }
@@ -466,7 +466,7 @@ HTML;
 HTML;
 		    }
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e);
+			JFusionFunction::raiseError($e, $this->getJname());
 	    }
         return $html;
     }

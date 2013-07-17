@@ -72,7 +72,7 @@ class JFusionUser_elgg extends JFusionUser {
 			    }
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $result = null;
 	    }
         return $result;

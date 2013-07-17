@@ -81,7 +81,7 @@ class JFusionForum_vbulletin extends JFusionForum
 		    $db->setQuery($query);
 		    $results = $db->loadObject();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $results = null;
 	    }
         return $results;
@@ -101,7 +101,7 @@ class JFusionForum_vbulletin extends JFusionForum
 		    $open = $db->loadResult();
 		    $locked = ($open) ? false : true;
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $locked = true;
 	    }
         return $locked;
@@ -329,7 +329,7 @@ class JFusionForum_vbulletin extends JFusionForum
 		    $db->setQuery($query);
 		    $threadinfo = $db->loadAssoc();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $threadinfo = null;
 	    }
         return $threadinfo;
@@ -375,7 +375,7 @@ class JFusionForum_vbulletin extends JFusionForum
 
 		    $foruminfo['depth'] = substr_count($foruminfo['parentlist'], ',') - 1;
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $foruminfo = array();
 	    }
 
@@ -420,7 +420,7 @@ class JFusionForum_vbulletin extends JFusionForum
 
 		    $posts = $jdb->loadObjectList();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $posts = array();
 	    }
         return $posts;
@@ -439,7 +439,7 @@ class JFusionForum_vbulletin extends JFusionForum
 		    $db->setQuery($query);
 		    $result = $db->loadResult();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $result = 0;
 	    }
         return $result;
@@ -512,7 +512,7 @@ class JFusionForum_vbulletin extends JFusionForum
 		    $pmcount['total'] = $vbPMData->pmtotal;
 		    $pmcount['unread'] = $vbPMData->pmunread;
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 	    }
         return $pmcount;
     }
@@ -581,7 +581,7 @@ class JFusionForum_vbulletin extends JFusionForum
 			    }
 		    }
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e);
+			JFusionFunction::raiseError($e, $this->getJname());
 	    }
         return $url;
     }
@@ -613,7 +613,7 @@ class JFusionForum_vbulletin extends JFusionForum
 			        }
 		        }
 	        } catch (Exception $e) {
-				JFusionFunction::raiseError($e);
+				JFusionFunction::raiseError($e, $this->getJname());
 	        }
         }
 
@@ -702,7 +702,7 @@ class JFusionForum_vbulletin extends JFusionForum
 			    $newstatus = ($marktime !== false && $post->lastpost > $marktime) ? 1 : 0;
 		    }
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e);
+			JFusionFunction::raiseError($e, $this->getJname());
 	    }
         return $newstatus;
     }
@@ -736,7 +736,7 @@ class JFusionForum_vbulletin extends JFusionForum
 			    $results = $array;
 		    }
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e);
+			JFusionFunction::raiseError($e, $this->getJname());
 	    }
         return $results;
     }
@@ -847,7 +847,7 @@ class JFusionForum_vbulletin extends JFusionForum
 			    }
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $forumPerms = array();
 		    $groupPerms = null;
 	    }

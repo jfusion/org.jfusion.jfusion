@@ -21,8 +21,6 @@ $document->addScript('components/com_jfusion/js/File.Upload.js');
 ?>
 <script type="text/javascript">
 	//<![CDATA[
-	JFusion.url = '<?php echo JURI::root() . 'administrator/index.php'; ?>';
-
 	window.addEvent('domready',function() {
 		var installGIT = $('installGIT');
 		installGIT.set('send',

@@ -100,7 +100,7 @@ class JFusionUser_magento extends JFusionUser {
 			}
 			return $eav_entity_types[$eav_entity_code];
 		} catch (Exception $e) {
-			JFusionFunction::raiseError($e);
+			JFusionFunction::raiseError($e, $this->getJname());
 			return false;
 		}
 	}
@@ -135,7 +135,7 @@ class JFusionUser_magento extends JFusionUser {
 			}
 			return $eav_attributes[$entity_type_code];
 		} catch (Exception $e) {
-			JFusionFunction::raiseError($e);
+			JFusionFunction::raiseError($e, $this->getJname());
 			return false;
 		}
 
@@ -190,7 +190,7 @@ class JFusionUser_magento extends JFusionUser {
 				$result = $filled_object;
 			}
 		} catch (Exception $e) {
-			JFusionFunction::raiseError($e);
+			JFusionFunction::raiseError($e, $this->getJname());
 		}
 		return $result;
 	}

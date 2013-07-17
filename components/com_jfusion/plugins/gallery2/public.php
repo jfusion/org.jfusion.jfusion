@@ -160,7 +160,7 @@ class JFusionPublic_gallery2 extends JFusionPublic {
 		$extra = $matches[2];
 		$baseURL = $this->data->baseURL;
 		    	
-        //JFusionFunction::raiseWarning($url);
+        //JFusionFunction::raiseWarning($url, $this->helper->getJname());
         $url = htmlspecialchars_decode($url);
         $Itemid = JFactory::getApplication()->input->getInt('Itemid');
         $extra = stripslashes($extra);
@@ -309,7 +309,7 @@ class JFusionPublic_gallery2 extends JFusionPublic {
 		    $db->setQuery($query);
 		    $result = $db->loadResult();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $result = 0;
 	    }
         return $result;
@@ -329,7 +329,7 @@ class JFusionPublic_gallery2 extends JFusionPublic {
 	        $db->setQuery($query);
 	        $result = $db->loadResult();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $result = 0;
 	    }
         return $result;

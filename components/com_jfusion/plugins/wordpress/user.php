@@ -86,7 +86,7 @@ class JFusionUser_wordpress extends JFusionUser {
 			    $result = $jFusionUserObject;
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 	    }
 	    return $result;
 	}

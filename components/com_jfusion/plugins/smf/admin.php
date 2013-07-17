@@ -76,7 +76,7 @@ class JFusionAdmin_smf extends JFusionAdmin
         $params = array();
         //try to open the file
         if (($file_handle = @fopen($myfile, 'r')) === false) {
-            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));
+            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'), $this->helper->getJname());
         } else {
             //parse the file line by line to get only the config variables
             $file_handle = fopen($myfile, 'r');
@@ -123,7 +123,7 @@ class JFusionAdmin_smf extends JFusionAdmin
 		    $db->setQuery($query,$limitstart,$limit);
 		    $userlist = $db->loadObjectList();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 			$userlist = array();
 	    }
         return $userlist;
@@ -144,7 +144,7 @@ class JFusionAdmin_smf extends JFusionAdmin
 		    //getting the results
 		    return $db->loadResult();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    return 0;
 	    }
     }
@@ -163,7 +163,7 @@ class JFusionAdmin_smf extends JFusionAdmin
 		    $db->setQuery($query);
 		    $usergrouplist = $db->loadObjectList();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $usergrouplist = array();
 	    }
 	    //append the default usergroup
@@ -199,7 +199,7 @@ class JFusionAdmin_smf extends JFusionAdmin
 	        }
 
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e);
+			JFusionFunction::raiseError($e, $this->getJname());
 		    $group = '';
 		}
 	    return $group;
@@ -219,7 +219,7 @@ class JFusionAdmin_smf extends JFusionAdmin
 		    $db->setQuery($query);
 		    return $db->loadObjectList();
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e);
+			JFusionFunction::raiseError($e, $this->getJname());
 		    return array();
 	    }
     }
@@ -241,7 +241,6 @@ class JFusionAdmin_smf extends JFusionAdmin
 			    $result = true;
 		    }
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e);
 	    }
 	    return $result;
     }
@@ -299,11 +298,11 @@ if (!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') ===
 
         //check to see if all vars are set
         if (empty($joomla_url)) {
-            JFusionFunction::raiseWarning(JText::_('MISSING') . ' Joomla URL');
+            JFusionFunction::raiseWarning(JText::_('MISSING') . ' Joomla URL', $this->helper->getJname());
         } else if (empty($joomla_itemid) || !is_numeric($joomla_itemid)) {
-            JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID');
+            JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID', $this->helper->getJname());
         } else if (!$this->isValidItemID($joomla_itemid)) {
-            JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID '. JText::_('MUST BE'). ' ' . $this->getJname());
+            JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID '. JText::_('MUST BE'). ' ' . $this->getJname(), $this->helper->getJname());
         } else {
             $error = $this->disableRedirectMod();
             $reason = '';

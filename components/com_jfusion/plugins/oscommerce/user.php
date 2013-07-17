@@ -107,7 +107,7 @@ class JFusionUser_oscommerce extends JFusionUser
 			    }
 		    }
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e);
+			JFusionFunction::raiseError($e, $this->getJname());
 	    }
         return null;
     }
@@ -154,7 +154,7 @@ class JFusionUser_oscommerce extends JFusionUser
 				    $status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname(),$params->get('logout_type'));
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 	    }
         return $status;
     }

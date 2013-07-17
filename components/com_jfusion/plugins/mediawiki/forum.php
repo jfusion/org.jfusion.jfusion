@@ -150,7 +150,7 @@ class JFusionForum_mediawiki extends JFusionForum
 			    $output .= '</ul>';
 		    }
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e);
+			JFusionFunction::raiseError($e, $this->getJname());
 	    }
         return $output;
 	}

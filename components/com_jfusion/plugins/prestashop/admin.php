@@ -64,7 +64,7 @@ class JFusionAdmin_prestashop extends JFusionAdmin
         }
         $config = array();
         if (($file_handle = @fopen($myfile, 'r')) === false) {
-            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));
+            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'), $this->helper->getJname());
         } else {
             //parse the file line by line to get only the config variables
             $file_handle = fopen($myfile, 'r');
@@ -134,7 +134,7 @@ class JFusionAdmin_prestashop extends JFusionAdmin
 		    //getting the results
 		    $userlist = $db->loadObjectList();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $userlist = array();
 	    }
         return $userlist;
@@ -152,7 +152,7 @@ class JFusionAdmin_prestashop extends JFusionAdmin
 	        //getting the results
 	        $no_users = $db->loadResult();
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e);
+			JFusionFunction::raiseError($e, $this->getJname());
 		    $no_users = 0;
 		}
         return $no_users;
@@ -178,7 +178,7 @@ class JFusionAdmin_prestashop extends JFusionAdmin
 		    //getting the results
 		    $result = $db->loadObjectList();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $result = array();
 	    }
         return $result;
@@ -199,7 +199,7 @@ class JFusionAdmin_prestashop extends JFusionAdmin
 		    $db->setQuery($query);
 		    return $db->loadResult();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 	    }
 	    return '';
     }
@@ -209,8 +209,8 @@ class JFusionAdmin_prestashop extends JFusionAdmin
      */
     function allowRegistration() {
         //you cannot disable registration
-            $result = true;
-            return $result;
+        $result = true;
+        return $result;
     }
 
     /**

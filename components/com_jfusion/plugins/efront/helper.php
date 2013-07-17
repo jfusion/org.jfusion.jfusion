@@ -105,7 +105,7 @@ class JFusionHelper_efront {
 			    return $user_type['name'].' ('.$user_type['basic_user_type'].')';
 		    }
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e);
+			JFusionFunction::raiseError($e, $this->getJname());
 	    }
         return false;
     }
@@ -162,7 +162,7 @@ class JFusionHelper_efront {
 	            $i++;
 	        }
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e);
+			JFusionFunction::raiseError($e, $this->getJname());
 		}
         return $user_types;
     }

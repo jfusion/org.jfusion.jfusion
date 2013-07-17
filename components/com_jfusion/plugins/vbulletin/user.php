@@ -117,7 +117,7 @@ class JFusionUser_vbulletin extends JFusionUser
 			    }
 		    }
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e);
+			JFusionFunction::raiseError($e, $this->getJname());
 		    $result = null;
 	    }
         return $result;
@@ -812,7 +812,7 @@ class JFusionUser_vbulletin extends JFusionUser
 	    try {
 		    $debug = (defined('DEBUG_SYSTEM_PLUGIN') ? true : false);
 		    if ($debug) {
-			    JFusionFunction::raiseNotice('vbulletin keep alive called');
+			    JFusionFunction::raiseNotice('keep alive called', $this->getJname());
 		    }
 		    $options = array();
 		    //retrieve the values for vb cookies
@@ -843,7 +843,7 @@ class JFusionUser_vbulletin extends JFusionUser
 		    if (!$JUser->get('guest', true)) {
 			    //user logged into Joomla so let's check for an active vb session
 			    if ($debug) {
-				    JFusionFunction::raiseNotice('Joomla user logged in');
+				    JFusionFunction::raiseNotice('Joomla user logged in', $this->getJname());
 			    }
 
 			    //find the userid attached to Joomla userid
@@ -855,17 +855,17 @@ class JFusionUser_vbulletin extends JFusionUser
 			    $vb_session = ((!empty($cookie_userid) && !empty($cookie_password) && $cookie_userid == $vb_userid) || (!empty($session_userid) && $session_userid == $vb_userid)) ? 1 : 0;
 
 			    if ($debug) {
-				    JFusionFunction::raiseNotice('vB session active: ' . $vb_session);
+				    JFusionFunction::raiseNotice('vB session active: ' . $vb_session, $this->getJname());
 			    }
 
 			    //create a new session if one does not exist and either keep alive is enabled or a joomla persistent cookie exists
 			    if (!$vb_session) {
 				    if ((!empty($keepalive) || !empty($joomla_persistant_cookie))) {
 					    if ($debug) {
-						    JFusionFunction::raiseNotice('vbulletin guest');
-						    JFusionFunction::raiseNotice("cookie_sessionhash = $cookie_sessionhash");
-						    JFusionFunction::raiseNotice("session_userid = $session_userid");
-						    JFusionFunction::raiseNotice("vb_userid = $vb_userid");
+						    JFusionFunction::raiseNotice('vbulletin guest', $this->getJname());
+						    JFusionFunction::raiseNotice("cookie_sessionhash = $cookie_sessionhash", $this->getJname());
+						    JFusionFunction::raiseNotice("session_userid = $session_userid", $this->getJname());
+						    JFusionFunction::raiseNotice("vb_userid = $vb_userid", $this->getJname());
 					    }
 					    //enable remember me as this is a keep alive function anyway
 					    $options['remember'] = 1;
@@ -883,7 +883,7 @@ class JFusionUser_vbulletin extends JFusionUser
 					    return 1;
 				    } else {
 					    if ($debug) {
-						    JFusionFunction::raiseNotice('keep alive disabled or no persistant session found so calling Joomla\'s destorySession');
+						    JFusionFunction::raiseNotice('keep alive disabled or no persistant session found so calling Joomla\'s destorySession', $this->getJname());
 					    }
 					    $JoomlaUser = JFusionFactory::getUser('joomla_int');
 
@@ -905,19 +905,19 @@ class JFusionUser_vbulletin extends JFusionUser
 					    }
 				    }
 			    } elseif ($debug) {
-				    JFusionFunction::raiseNotice('Nothing done as both Joomla and vB have active sessions.');
+				    JFusionFunction::raiseNotice('Nothing done as both Joomla and vB have active sessions.', $this->getJname());
 			    }
 		    } elseif (!empty($session_userid) || (!empty($cookie_userid) && !empty($cookie_password))) {
 			    //the user is not logged into Joomla and we have an active vB session
 
 			    if ($debug) {
-				    JFusionFunction::raiseNotice('Joomla has a guest session');
+				    JFusionFunction::raiseNotice('Joomla has a guest session', $this->getJname());
 			    }
 
 			    if (!empty($cookie_userid) && $cookie_userid != $session_userid) {
 				    $status = $this->destroySession(null, null);
 				    if ($debug) {
-					    JFusionFunction::raiseNotice('Cookie userid did not match session userid thus destroyed vB\'s session.');
+					    JFusionFunction::raiseNotice('Cookie userid did not match session userid thus destroyed vB\'s session.', $this->getJname());
 					    JFusionFunction::raiseNotices($this->getJname(), $status);
 				    }
 			    }
@@ -927,23 +927,23 @@ class JFusionUser_vbulletin extends JFusionUser
 
 			    if (!empty($joomla_persistant_cookie)) {
 				    if ($debug) {
-					    JFusionFunction::raiseNotice('Joomla persistant cookie found so let Joomla handle renewal');
+					    JFusionFunction::raiseNotice('Joomla persistant cookie found so let Joomla handle renewal', $this->getJname());
 				    }
 				    return 0;
 			    } elseif (empty($keepalive)) {
 				    if ($debug) {
-					    JFusionFunction::raiseNotice('Keep alive disabled so kill vBs session');
+					    JFusionFunction::raiseNotice('Keep alive disabled so kill vBs session', $this->getJname());
 				    }
 				    //something fishy or user chose not to use remember me so let's destroy vB's session
 				    $this->destroySession(null, null);
 				    return 1;
 			    } elseif ($debug) {
-				    JFusionFunction::raiseNotice('Keep alive enabled so renew Joomla\'s session');
+				    JFusionFunction::raiseNotice('Keep alive enabled so renew Joomla\'s session', $this->getJname());
 			    }
 
 			    if (!empty($userlookup)) {
 				    if ($debug) {
-					    JFusionFunction::raiseNotice('Found a phpBB user so attempting to renew Joomla\'s session.');
+					    JFusionFunction::raiseNotice('Found a phpBB user so attempting to renew Joomla\'s session.', $this->getJname());
 				    }
 				    //get the user's info
 				    $db = JFactory::getDBO();
@@ -965,7 +965,7 @@ class JFusionUser_vbulletin extends JFusionUser
 			    }
 		    }
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e);
+			JFusionFunction::raiseError($e, $this->getJname());
 	    }
         return 0;
     }

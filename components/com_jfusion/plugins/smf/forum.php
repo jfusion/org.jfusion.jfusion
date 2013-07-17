@@ -132,7 +132,7 @@ class JFusionForum_smf extends JFusionForum
 			        }
 		        }
 	        } catch (Exception $e) {
-				JFusionFunction::raiseError($e);
+				JFusionFunction::raiseError($e, $this->getJname());
 	        }
         }
 
@@ -235,7 +235,7 @@ class JFusionForum_smf extends JFusionForum
 			    }
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 	    }
     }
 
@@ -282,7 +282,7 @@ class JFusionForum_smf extends JFusionForum
 			    $newstatus = ($latest_read_msgid !== false && $post->postid > $latest_read_msgid) ? 1 : 0;
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 	    }
         return $newstatus;
     }
@@ -302,7 +302,7 @@ class JFusionForum_smf extends JFusionForum
 		    //getting the results
 		    return $db->loadObjectList('id');
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 			return array();
 	    }
     }
@@ -328,7 +328,7 @@ class JFusionForum_smf extends JFusionForum
 		        $totalCount = $db->loadResult();
 		        return array('unread' => $unreadCount, 'total' => $totalCount);
 	        } catch (Exception $e) {
-				JFusionFunction::raiseError($e);
+				JFusionFunction::raiseError($e, $this->getJname());
 	        }
         }
         return array('unread' => 0, 'total' => 0);
@@ -382,7 +382,7 @@ class JFusionForum_smf extends JFusionForum
 			    }
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $url = false;
 	    }
         return $url;
@@ -745,7 +745,7 @@ HTML;
 
 		    $posts = $jdb->loadObjectList();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $posts = array();
 	    }
         return $posts;
@@ -766,7 +766,7 @@ HTML;
 		    $db->setQuery($query);
 		    $result = $db->loadResult();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $result = 0;
 	    }
         return $result;
@@ -817,7 +817,7 @@ HTML;
 		    $db->setQuery($query);
 		    $results = $db->loadObject();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $results = null;
 	    }
         return $results;
@@ -834,7 +834,7 @@ HTML;
 		    $db->setQuery($query);
 		    $locked = $db->loadResult();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $locked = true;
 	    }
         return $locked;

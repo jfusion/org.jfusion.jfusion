@@ -71,7 +71,7 @@ class JFusionUser_efront extends JFusionUser
 	            $result->block = !$result->active;
 	        }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $result = null;
 	    }
         return $result;
@@ -124,7 +124,7 @@ class JFusionUser_efront extends JFusionUser
 		        }
 	        }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 	    }
         return $status;
     }
@@ -488,7 +488,7 @@ class JFusionUser_efront extends JFusionUser
                 $login = $existinguser->username;
                 $jname = $this->getJname();
                 if (!$apiuser || !$apikey) {
-                    JFusionFunction::raiseWarning($jname . '-plugin: ' . JText::_('EFRONT_WRONG_APIUSER_APIKEY_COMBINATION'));
+                    JFusionFunction::raiseWarning(JText::_('EFRONT_WRONG_APIUSER_APIKEY_COMBINATION'), $this->helper->getJname());
                     $status['error'][] = '';
                 } else {
                     // get token

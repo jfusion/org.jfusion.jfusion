@@ -62,7 +62,7 @@ class JFusionAdmin_mybb extends JFusionAdmin
         $params = array();
         //include config file
         if (($file_handle = @fopen($myfile, 'r')) === false) {
-            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));
+            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'), $this->helper->getJname());
         } else {
             $config = array();
             include_once($myfile);
@@ -117,7 +117,7 @@ class JFusionAdmin_mybb extends JFusionAdmin
 		    $db->setQuery($query,$limitstart,$limit);
 		    $userlist = $db->loadObjectList();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $userlist = array();
 	    }
         return $userlist;
@@ -135,7 +135,7 @@ class JFusionAdmin_mybb extends JFusionAdmin
 	        //getting the results
 	        return $db->loadResult();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    return 0;
 		}
     }
@@ -152,7 +152,7 @@ class JFusionAdmin_mybb extends JFusionAdmin
 	        //getting the results
 	        return $db->loadObjectList();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    return array();
 		}
     }
@@ -174,7 +174,7 @@ class JFusionAdmin_mybb extends JFusionAdmin
 		    $db->setQuery($query);
 		    return $db->loadResult();
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e);
+			JFusionFunction::raiseError($e, $this->getJname());
 	    }
 	    return '';
     }
@@ -193,7 +193,6 @@ class JFusionAdmin_mybb extends JFusionAdmin
 	            $result = true;
 	        }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
 	    }
         return $result;
     }

@@ -68,7 +68,7 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
         $config = array();
         //try to open the file
         if (($file_handle = @fopen($myfile, 'r')) === false) {
-            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'));
+            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'), $this->helper->getJname());
             //get the default parameters object
         } else {
             //parse the file line by line to get only the config variables
@@ -126,7 +126,7 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
 	        $db->setQuery($query,$limitstart,$limit);
 	        $userlist = $db->loadObjectList();
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e);
+			JFusionFunction::raiseError($e, $this->getJname());
 		    $userlist = array();
 		}
         return $userlist;
@@ -144,7 +144,7 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
 	        //getting the results
 	        $no_users = $db->loadResult();
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e);
+			JFusionFunction::raiseError($e, $this->getJname());
 		    $no_users = 0;
 		}
         return $no_users;
@@ -163,7 +163,7 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
 	        //getting the results
 	        return $db->loadObjectList();
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e);
+			JFusionFunction::raiseError($e, $this->getJname());
 		    return array();
 	    }
     }
@@ -184,7 +184,7 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
 	        $db->setQuery($query);
 	        return $db->loadResult();
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e);
+			JFusionFunction::raiseError($e, $this->getJname());
 		}
 	    return '';
     }
@@ -192,22 +192,18 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
      * @return bool
      */
     function allowRegistration() {
+	    $result = false;
 	    try {
 	        $db = JFusionFactory::getDatabase($this->getJname());
 	        $query = 'SELECT g_active FROM #__PluginMap WHERE g_pluginType = \'module\' and g_pluginId = \'register\';';
 	        $db->setQuery($query);
 	        $new_registration = $db->loadResult();
-	        if ($new_registration) {
-	            if ($new_registration == 0) {
-	                return false;
-	            } else {
-	                return true;
-	            }
-	        }
+		    if ($new_registration != 0) {
+			    $result = true;
+		    }
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e);
 		}
-        return false;
+	    return $result;
     }
 
     /**
