@@ -109,7 +109,7 @@ class plgSystemJfusion extends JPlugin
                     $changed = $JFusionUser->syncSessions($keepalive);
                     if (!empty($changed)) {
                         if ($debug) {
-                            JFusionFunction::raiseNotice($master->name.' session changed');
+                            JFusionFunction::raiseNotice('session changed', $master->name);
                         }
                         $refresh = true;
                     }
@@ -123,7 +123,7 @@ class plgSystemJfusion extends JPlugin
                         $changed = $JFusionUser->syncSessions($keepalive);
                         if (!empty($changed)) {
                             if ($debug) {
-                                JFusionFunction::raiseNotice($plugin->name.' session changed');
+                                JFusionFunction::raiseNotice(' session changed', $plugin->name);
                             }
                             $refresh = true;
                         }

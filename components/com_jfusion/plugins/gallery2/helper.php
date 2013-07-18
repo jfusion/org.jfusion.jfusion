@@ -67,7 +67,7 @@ class JFusionHelper_gallery2
             $initParams['loginRedirect'] = JRoute::_('index.php?option=com_user&view=login');
             $initParams['fullInit'] = $fullInit;
             if (!is_file($index_file)) {
-                JFusionFunction::raiseWarning('The path to the Gallery2('.$this->getJname().' path: '.$index_file.') embed file set in the component preferences does not exist', $this->helper->getJname());
+                JFusionFunction::raiseWarning('The path to the Gallery2(path: '.$index_file.') embed file set in the component preferences does not exist', $this->helper->getJname());
             } else {
                 if (!class_exists('GalleryEmbed')) {
                     require_once $index_file;

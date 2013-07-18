@@ -855,7 +855,7 @@ JS;
 		    }
 		    $mainframe->redirect('index.php?option=com_jfusion&task=plugineditor&jname='.$jname, $jname . ': ' . JText::_('IMPORT_SUCCESS'));
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseWarning($jname.': '.$e->getMessage() );
+		    JFusionFunction::raiseWarning($e->getMessage(), $jname);
 		    $mainframe->redirect('index.php?option=com_jfusion&task=importexport&jname='.$jname);
 	    }
         exit();
