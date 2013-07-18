@@ -36,7 +36,7 @@ class JFusionForum_mediawiki extends JFusionForum
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
 		    $params = JFusionFactory::getParams($this->getJname());
-		    defined('_DATE_FORMAT_LC2') or define('_DATE_FORMAT_LC2','%A, %d %B %Y %H:%M');
+		    defined('_DATE_FORMAT_LC2') or define('_DATE_FORMAT_LC2','Y M d h:i:s A');
 
 		    // configuration
 		    $display_limit_subject = $pluginParam->get('character_limit_subject');

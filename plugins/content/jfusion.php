@@ -1424,7 +1424,7 @@ HTML;
         $this->helper->debug('Preparing posts output');
 
         //get required params
-        defined('_DATE_FORMAT_LC2') or define('_DATE_FORMAT_LC2','%A, %d %B %Y %H:%M');
+        defined('_DATE_FORMAT_LC2') or define('_DATE_FORMAT_LC2','Y M d h:i:s A');
         $date_format = $this->params->get('custom_date', _DATE_FORMAT_LC2);
         $showdate = intval($this->params->get('show_date'));
         $showuser = intval($this->params->get('show_user'));

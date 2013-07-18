@@ -61,7 +61,7 @@ try {
 			$view = $pluginParam->get('view', 'auto');
 	        $forum = JFusionFactory::getForum($jname);
 
-			defined('_DATE_FORMAT_LC2') or define('_DATE_FORMAT_LC2','%A, %d %B %Y %H:%M');
+			defined('_DATE_FORMAT_LC2') or define('_DATE_FORMAT_LC2','Y M d h:i:s A');
 			defined('LAT') or define('LAT', 0);
 			defined('LCT') or define('LCT', 1);
 			defined('LCP') or define('LCP', 2);
