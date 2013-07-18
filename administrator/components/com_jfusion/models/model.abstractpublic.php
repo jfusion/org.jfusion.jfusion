@@ -60,7 +60,7 @@ class JFusionPublic
         }
         if ( isset($status['error']) ) {
             foreach ( $status['error'] as $key => $value ) {
-                JFusionFunction::raiseWarning($value);
+                JFusionFunction::raiseWarning($value, $this->getJname());
             }
         }
     }
@@ -770,7 +770,7 @@ HTML;
         preg_match ( '#(.*?;url=)(.*)#mi' , $matches[1] , $matches2 );
         list(,$timeout , $url) = $matches2;
 
-        //JFusionFunction::raiseWarning($url);
+        //JFusionFunction::raiseWarning($url, $this->getJname());
         //split up the timeout from url
         $parts = explode(';URL=', $url);
         $uri = new JURI($url);
@@ -805,7 +805,7 @@ HTML;
         if (!empty($fragment)) {
             $url .= '#' . $fragment;
         }
-        //JFusionFunction::raiseWarning(htmlentities($return));
+        //JFusionFunction::raiseWarning(htmlentities($return), $this->getJname());
         return $timeout . $url;
     }
 
@@ -884,7 +884,7 @@ HTML;
 			    }
 		    }
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseError($e);
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    $results = array();
 	    }
         return $results;

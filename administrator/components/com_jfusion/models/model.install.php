@@ -63,7 +63,7 @@ class JFusionModelInstaller extends InstallerModelInstall
 	 *
 	 * @return mixed
 	 */
-	function raise($type,$msg) {
+	function raise($type, $msg) {
 		$this->setState('message', $msg);
 		if ($this->raise) {
 			switch($type) {

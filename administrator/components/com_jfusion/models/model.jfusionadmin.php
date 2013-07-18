@@ -86,7 +86,7 @@ class JFusionFunctionAdmin
 		    $result = true;
 	    } catch( Exception $e ) {
 		    //there was an error saving the parameters
-		    JFusionFunction::raiseWarning($e);
+		    JFusionFunction::raiseWarning($e, $jname);
 		    $result = false;
 	    }
         return $result;
@@ -197,7 +197,7 @@ HTML;
      * @param int $unpack
      * @return bool|string|array
      */
-    public static function getFileData($url,$save = 0, $unpack = 0)
+    public static function getFileData($url, $save = 0, $unpack = 0)
     {
         ob_start();
         $FileData = false;

@@ -182,7 +182,7 @@ class plgSystemJfusion extends JPlugin
 				$status = $JFusionMasterPublic->setLanguageFrontEnd($userinfo);
 				if (!empty($status['error'])) {
 					//could not set the language
-					JFusionFunction::raiseNotices($master->name . ' ' . JText::_('SET_LANGUAGEFRONTEND_ERROR'), $status['error']);
+					JFusionFunction::raiseNotices(JText::_('SET_LANGUAGEFRONTEND_ERROR'), $status['error'], $master->name);
 				}
 			} else {
 				$status['debug'][] = JText::_('METHOD_NOT_IMPLEMENTED') . ': ' . $master->name;
@@ -194,7 +194,7 @@ class plgSystemJfusion extends JPlugin
 					$status = $JFusionSlavePublic->setLanguageFrontEnd ( $userinfo );
 					if (!empty($status['error'])) {
 						//could not set the language
-						JFusionFunction::raiseNotices($slave->name . ' ' . JText::_('SET_LANGUAGEFRONTEND_ERROR'), $status['error']);
+						JFusionFunction::raiseNotices(JText::_('SET_LANGUAGEFRONTEND_ERROR'), $status['error'], $slave->name);
 					}
 				} else {
 					$status['debug'][] = JText::_('METHOD_NOT_IMPLEMENTED') . ': ' . $slave->name;

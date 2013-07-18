@@ -244,7 +244,7 @@ class jfusionViewversioncheck extends JViewLegacy
 
 			//cleanup for the next function call
 		} else {
-			JFusionFunction::raiseNotices(JText::_('ERROR'), JText::_('XML_FILE_MISSING') . ' '. JText::_('JFUSION') . ' ' . $name . ' ' . JText::_('PLUGIN'));
+			JFusionFunction::raiseNotices(JText::_('ERROR'), JText::_('XML_FILE_MISSING') . ' '. JText::_('JFUSION') . ' ' . $name . ' ' . JText::_('PLUGIN'), $name);
 		}
 		return $output;
 	}

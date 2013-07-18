@@ -226,7 +226,7 @@ class JFusionFunction
 				    try {
 					    $db->execute();
 				    } catch (Exception $e) {
-					    FusionFunction::raiseWarning($e);
+					    FusionFunction::raiseWarning($e, $jname);
 				    }
 
 				    //Delete old user data in the lookup table
@@ -235,7 +235,7 @@ class JFusionFunction
 				    try {
 					    $db->execute();
 				    } catch (Exception $e) {
-					    FusionFunction::raiseWarning($e);
+					    FusionFunction::raiseWarning($e, $jname);
 				    }
 			    }
 		    } else {
@@ -277,7 +277,7 @@ class JFusionFunction
 					    try {
 						    $db->execute();
 					    } catch (Exception $e) {
-						    JFusionFunction::raiseWarning($e);
+						    JFusionFunction::raiseWarning($e, $jname);
 					    }
 				    }
 			    } else {
@@ -290,7 +290,7 @@ class JFusionFunction
 				    try {
 					    $db->execute();
 				    } catch (Exception $e) {
-					    JFusionFunction::raiseWarning($e);
+					    JFusionFunction::raiseWarning($e, $jname);
 				    }
 			    }
 		    }
@@ -1654,7 +1654,7 @@ class JFusionFunction
 		if (!empty($msg)) {
 			$msg = $jname.': '.$msg;
 		}
-		$app->enqueueMessage($msg,'notice');
+		$app->enqueueMessage($msg, 'notice');
 	}
 
 	/**
@@ -1691,20 +1691,21 @@ class JFusionFunction
 	 * Raise warning function that can handle arrays
 	 *
 	 * @param string $type      type of warning
-	 * @param array $warning   warning itself
+	 * @param array  $warning   warning itself
+	 * @param string $jname
 	 *
 	 * @return string nothing
 	 */
-	public static function raiseNotices($type, $warning) {
+	public static function raiseNotices($type, $warning, $jname='') {
 		if (is_array($warning)) {
 			foreach ($warning as $warningtype => $warningtext) {
 				//if still an array implode for nicer display
 				if (is_array($warningtext)) {
-					JFusionFunction::raiseNotice($warningtype . ': ' . $warningtext);
+					JFusionFunction::raiseNotice($warningtype . ': ' . $warningtext, $jname);
 				}
 			}
 		} else {
-			JFusionFunction::raiseNotice($type . ': ' . $warning);
+			JFusionFunction::raiseNotice($type . ': ' . $warning, $jname);
 		}
 	}
 

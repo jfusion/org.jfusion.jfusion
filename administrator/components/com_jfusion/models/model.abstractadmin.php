@@ -222,10 +222,10 @@ class JFusionAdmin
 		    $plugin = $db->loadObject();
 		    //output a warning to the administrator if the allowRegistration setting is wrong
 		    if ($new_registration && $plugin->slave == 1) {
-			    JFusionFunction::raiseNotice($jname . ': ' . JText::_('DISABLE_REGISTRATION'));
+			    JFusionFunction::raiseNotice(JText::_('DISABLE_REGISTRATION'), $jname);
 		    }
 		    if (!$new_registration && $plugin->master == 1) {
-			    JFusionFunction::raiseNotice($jname . ': ' . JText::_('ENABLE_REGISTRATION'));
+			    JFusionFunction::raiseNotice(JText::_('ENABLE_REGISTRATION'), $jname);
 		    }
 		    //most dual login problems are due to incorrect cookie domain settings
 		    //therefore we should check it and output a warning if needed.
@@ -247,7 +247,7 @@ class JFusionAdmin
 					    $correct_domain = '.' . $correct_array[count($correct_array) - 2] . '.' . $correct_array[count($correct_array) - 1];
 				    }
 				    if ($correct_domain != $cookie_domain && !$this->allowEmptyCookieDomain()) {
-					    JFusionFunction::raiseNotice($jname . ': ' . JText::_('BEST_COOKIE_DOMAIN') . ' ' . $correct_domain);
+					    JFusionFunction::raiseNotice(JText::_('BEST_COOKIE_DOMAIN') . ' ' . $correct_domain, $jname);
 				    }
 			    }
 		    }
@@ -256,20 +256,20 @@ class JFusionAdmin
 		    $cookie_path = $params->get('cookie_path',-1);
 		    if ($cookie_path!==-1) {
 			    if ($cookie_path != '/' && !$this->allowEmptyCookiePath()) {
-				    JFusionFunction::raiseNotice($jname . ': ' . JText::_('BEST_COOKIE_PATH') . ' /');
+				    JFusionFunction::raiseNotice(JText::_('BEST_COOKIE_PATH') . ' /', $jname);
 			    }
 		    }
 
 		    //check that master plugin does not have advanced group mode data stored
 		    $master = JFusionFunction::getMaster();
 		    if (!empty($master) && $master->name == $jname && JFusionFunction::isAdvancedUsergroupMode($jname)) {
-			    JFusionFunction::raiseWarning($jname . ': ' . JText::_('ADVANCED_GROUPMODE_ONLY_SUPPORTED_FORSLAVES'));
+			    JFusionFunction::raiseWarning(JText::_('ADVANCED_GROUPMODE_ONLY_SUPPORTED_FORSLAVES'), $jname);
 		    }
 
 		    // allow additional checking of the configuration
 		    $this->debugConfigExtra();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseWarning($jname . ': ' . $e->getMessage());
+		    JFusionFunction::raiseWarning($e->getMessage(), $jname);
 	    }
     }
 
