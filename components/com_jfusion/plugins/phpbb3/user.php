@@ -160,7 +160,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 		    if (!empty($userinfo->block) || !empty($userinfo->activation)) {
 			    throw new Exception(JText::_('FUSION_BLOCKED_USER'));
 		    } else {
-			    $db = JFusionFactory::getDatabase($this->getJname());
+			    $jdb = JFusionFactory::getDatabase($this->getJname());
 			    $userid = $userinfo->userid;
 			    if ($userid && !empty($userid) && ($userid > 0)) {
 				    $params = JFusionFactory::getParams($this->getJname());
@@ -174,53 +174,57 @@ class JFusionUser_phpbb3 extends JFusionUser
 						    $source_path .= DIRECTORY_SEPARATOR;
 					    }
 
-					    //set the current directory to phpBB3
-					    chdir($source_path);
-					    /* set scope for variables required later */
-					    global $phpbb_root_path, $phpEx, $db, $config, $user, $auth, $cache, $template, $phpbb_hook, $module, $mode;
-					    if (!defined('UTF8_STRLEN')) {
-						    define('UTF8_STRLEN', true);
-					    }
-					    if (!defined('UTF8_CORE')) {
-						    define('UTF8_CORE', true);
-					    }
-					    if (!defined('UTF8_CASE')) {
-						    define('UTF8_CASE', true);
-					    }
-					    if (!defined('IN_PHPBB')) {
-						    define('IN_PHPBB', true);
-					    }
+					    if (!file_exists($source_path . 'common.php')) {
+						    //set the current directory to phpBB3
+						    chdir($source_path);
+						    /* set scope for variables required later */
+						    global $phpbb_root_path, $phpEx, $db, $config, $user, $auth, $cache, $template, $phpbb_hook, $module, $mode;
+						    if (!defined('UTF8_STRLEN')) {
+							    define('UTF8_STRLEN', true);
+						    }
+						    if (!defined('UTF8_CORE')) {
+							    define('UTF8_CORE', true);
+						    }
+						    if (!defined('UTF8_CASE')) {
+							    define('UTF8_CASE', true);
+						    }
+						    if (!defined('IN_PHPBB')) {
+							    define('IN_PHPBB', true);
+						    }
 
-					    $phpbb_root_path = $source_path;
-					    $phpEx = 'php';
+						    $phpbb_root_path = $source_path;
+						    $phpEx = 'php';
 
-					    include_once $source_path . 'common.php';
+						    include_once $source_path . 'common.php';
 
-					    //get phpbb3 session object
-					    $user->session_begin();
-					    $auth->acl($user->data);
+						    //get phpbb3 session object
+						    $user->session_begin();
+						    $auth->acl($user->data);
 
-					    //perform the login
-					    if ($options['remember']) {
-						    $remember = true;
+						    //perform the login
+						    if ($options['remember']) {
+							    $remember = true;
+						    } else {
+							    $remember = false;
+						    }
+						    $result = $auth->login($userinfo->username, $userinfo->password_clear, $remember, 1, 0);
+						    if ($result['status'] == LOGIN_SUCCESS) {
+							    $status['debug'][] = JText::_('CREATED') . ' ' . JText::_('PHPBB') . ' ' . JText::_('SESSION');
+						    } else {
+							    $status['debug'][] = JText::_('ERROR') . ' ' . JText::_('PHPBB') . ' ' . JText::_('SESSION');
+						    }
+						    //change the current directory back to Joomla.
+						    chdir(JPATH_SITE);
 					    } else {
-						    $remember = false;
+						    throw new Exception(JText::sprintf('UNABLE_TO_FIND_FILE', 'common.php'));
 					    }
-					    $result = $auth->login($userinfo->username, $userinfo->password_clear, $remember, 1, 0);
-					    if ($result['status'] == LOGIN_SUCCESS) {
-						    $status['debug'][] = JText::_('CREATED') . ' ' . JText::_('PHPBB') . ' ' . JText::_('SESSION');
-					    } else {
-						    $status['debug'][] = JText::_('ERROR') . ' ' . JText::_('PHPBB') . ' ' . JText::_('SESSION');
-					    }
-					    //change the current directory back to Joomla.
-					    chdir(JPATH_SITE);
 				    } else {
 					    jimport('joomla.user.helper');
 					    $session_key = JApplication::getHash(JUserHelper::genRandomPassword(32));
 					    //Check for admin access
 					    $query = 'SELECT b.group_name FROM #__user_group as a INNER JOIN #__groups as b ON a.group_id = b.group_id WHERE b.group_name = \'ADMINISTRATORS\' and a.user_id = ' . (int)$userinfo->userid;
-					    $db->setQuery($query);
-					    $usergroup = $db->loadResult();
+					    $jdb->setQuery($query);
+					    $usergroup = $jdb->loadResult();
 					    if ($usergroup == 'ADMINISTRATORS') {
 						    $admin_access = 1;
 					    } else {
@@ -248,9 +252,9 @@ class JFusionUser_phpbb3 extends JFusionUser
 							    //check for a valid persistent cookie
 							    $persistant_cookie = ($phpbb_allow_autologin) ? JFactory::getApplication()->input->cookie->get($phpbb_cookie_name . '_k', '') : '';
 							    if (!empty($persistant_cookie)) {
-								    $query = 'SELECT user_id FROM #__sessions_keys WHERE key_id = ' . $db->Quote(md5($persistant_cookie));
-								    $db->setQuery($query);
-								    $persistant_cookie_userid = $db->loadResult();
+								    $query = 'SELECT user_id FROM #__sessions_keys WHERE key_id = ' . $jdb->Quote(md5($persistant_cookie));
+								    $jdb->setQuery($query);
+								    $persistant_cookie_userid = $jdb->loadResult();
 								    if ($persistant_cookie_userid == $userinfo->userid) {
 									    $status['debug'][] = JText::_('SKIPPED_CREATING_PERSISTANT_COOKIE');
 									    $create_persistant_cookie = false;
@@ -265,8 +269,8 @@ class JFusionUser_phpbb3 extends JFusionUser
 
 						    if ($jautologin) {
 							    $query = 'SELECT config_value FROM #__config WHERE config_name = \'max_autologin_time\'';
-							    $db->setQuery($query);
-							    $max_autologin_time = $db->loadResult();
+							    $jdb->setQuery($query);
+							    $max_autologin_time = $jdb->loadResult();
 							    $expires = ($max_autologin_time) ? 86400 * (int) $max_autologin_time : 31536000;
 						    } else {
 							    $expires = 31536000;
@@ -287,7 +291,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 						    $session_obj->session_autologin = $jautologin;
 						    $session_obj->session_admin = $admin_access;
 
-						    $db->insertObject('#__sessions', $session_obj);
+						    $jdb->insertObject('#__sessions', $session_obj);
 
 						    //Set cookies
 						    $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_u', $userid, $expires, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly);
@@ -306,7 +310,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 							    $session_key_ins->user_id = $userid;
 							    $session_key_ins->last_ip = $_SERVER['REMOTE_ADDR'];
 							    $session_key_ins->last_login = $session_start;
-							    $db->insertObject('#__sessions_keys', $session_key_ins);
+							    $jdb->insertObject('#__sessions_keys', $session_key_ins);
 
 							    $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_k', $key_id, $expires, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly, true);
 							    $_COOKIE[$phpbb_cookie_name . '_k'] = $key_id;
