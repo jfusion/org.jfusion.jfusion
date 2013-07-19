@@ -24,8 +24,11 @@ JFusionFunctionAdmin::displayDonate();
     tr.bad0 { background-color: #f9ded9; }
     tr.bad1 { background-color: #f9e5e2; }
 </style>
+<form method="post" action="index.php?option=com_jfusion" name="adminForm" id="adminForm">
+	<input type="hidden" name="task" value="languages" />
+</form>
 <div class="jfusion">
-	<table class="adminform" style="border-spacing:1px;">
+	<table class="jfusionform" style="border-spacing:1px;">
 	    <thead>
 	        <tr>
 	            <th class="title" align="left">
@@ -99,7 +102,7 @@ JFusionFunctionAdmin::displayDonate();
 	?>
 
 	<br/><br/>
-	<table class="adminform" style="border-spacing:1px;">
+	<table class="jfusionform" style="border-spacing:1px;">
 	    <thead>
 	    <tr>
 	        <th class="title" align="left">
@@ -193,7 +196,7 @@ JFusionFunctionAdmin::displayDonate();
 	</table>
 	<br/>
 
-	<table class="adminform" style="border-spacing:1px;">
+	<table class="jfusionform" style="border-spacing:1px;">
 	    <thead>
 	    <tr>
 	        <th class="title" align="left">

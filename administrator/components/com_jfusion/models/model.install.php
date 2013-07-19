@@ -58,20 +58,22 @@ class JFusionModelInstaller extends InstallerModelInstall
     }
 
 	/**
-	 * @param $type
-	 * @param $msg
+	 * @param        $type
+	 * @param        $msg
+	 *
+	 * @param string $jname
 	 *
 	 * @return mixed
 	 */
-	function raise($type, $msg) {
+	function raise($type, $msg, $jname='') {
 		$this->setState('message', $msg);
 		if ($this->raise) {
 			switch($type) {
 				case 'message':
-					JFusionFunction::raiseMessage($msg);
+					JFusionFunction::raiseMessage($msg,$jname);
 					break;
 				case 'error':
-					JFusionFunction::raiseError($msg);
+					JFusionFunction::raiseError($msg,$jname);
 					break;
 			}
 		}
@@ -180,7 +182,7 @@ class JFusionModelInstaller extends InstallerModelInstall
         $myId = $db->loadResult();
         $result['status'] = false;
         if (!$myId) {
-	        $result['message'] = $this->raise('error', 'JFusion ' . JText::_('PLUGIN') . ' ' . JText::_('UNINSTALL') . ' ' . JText::_('FAILED'));
+	        $result['message'] = $this->raise('error', 'JFusion ' . JText::_('PLUGIN') . ' ' . JText::_('UNINSTALL') . ' ' . JText::_('FAILED'), $jname);
         } else {
             $installer = new JfusionPluginInstaller($this);
             // Install the package
@@ -205,16 +207,16 @@ class JFusionModelInstaller extends InstallerModelInstall
         $myId = $db->loadResult();
         $result['status'] = false;
         if (!$myId) {
-	        $result['message'] = $this->raise('error', 'JFusion ' . JText::_('PLUGIN') . ' ' . JText::_('COPY') . ' ' . JText::_('FAILED'));
+	        $result['message'] = $this->raise('error', 'JFusion ' . JText::_('PLUGIN') . ' ' . JText::_('COPY') . ' ' . JText::_('FAILED'), $new_jname);
         } else {
             $installer = new JfusionPluginInstaller($this);
             // Install the package
             if (!$installer->copy($jname, $new_jname, $update)) {
                 // There was an error installing the package
-	            $result['message'] = $this->raise('error', 'JFusion ' . JText::_('PLUGIN') . ' ' . JText::_('COPY') . ' ' . JText::_('FAILED'));
+	            $result['message'] = $this->raise('error', 'JFusion ' . JText::_('PLUGIN') . ' ' . JText::_('COPY') . ' ' . JText::_('FAILED'), $new_jname);
             } else {
                 // Package installed successfully
-	            $result['message'] = $this->raise('message', 'JFusion ' . JText::_('PLUGIN') . ' ' . JText::_('COPY') . ' ' . JText::_('SUCCESS'));
+	            $result['message'] = $this->raise('message', 'JFusion ' . JText::_('PLUGIN') . ' ' . JText::_('COPY') . ' ' . JText::_('SUCCESS'), $new_jname);
                 $result['status'] = true;
             }
         }
@@ -322,7 +324,7 @@ class JFusionPluginInstaller extends JObject
 			            if (!$created = JFolder::create($this->parent->getPath('extension_root'))) {
 				            $msg = JText::_('PLUGIN') . ' ' . JText::_('INSTALL') . ': ' . JText::_('INSTALL_FAILED_DIRECTORY') . ': "' . $this->parent->getPath('extension_root') . '"';
 				            $this->parent->abort($msg);
-				            $result['message'] = $this->module->raise('error', $msg);
+				            $result['message'] = $this->module->raise('error', $msg, $name);
 				            return $result;
 			            }
 		            }
@@ -338,7 +340,7 @@ class JFusionPluginInstaller extends JObject
 		            if ($this->parent->parseFiles($element, -1) === false) {
 			            // Install failed, roll back changes
 			            $this->parent->abort();
-			            $result['message'] = $this->module->raise('error', JText::_('PLUGIN') . ' ' . $name . ' ' . JText::_('INSTALL') . ': ' . JText::_('FAILED'));
+			            $result['message'] = $this->module->raise('error', JText::_('PLUGIN') . ' ' . $name . ' ' . JText::_('INSTALL') . ': ' . JText::_('FAILED'), $name);
 		            } else {
 			            /**
 			             * ---------------------------------------------------------------------------------------------
@@ -383,7 +385,7 @@ class JFusionPluginInstaller extends JObject
 					            // Install failed, roll back changes
 					            $msg = JText::_('PLUGIN') . ' ' . JText::_('INSTALL') . ': ' . JText::_('PLUGIN') . ' "' . $name . '" ' . JText::_('ALREADY_EXISTS');
 					            $this->parent->abort($msg);
-					            $result['message'] = $this->module->raise('error', $msg);
+					            $result['message'] = $this->module->raise('error', $msg, $name);
 					            return $result;
 				            } else {
 					            //enable/disable features and update the plugin files
@@ -446,13 +448,13 @@ class JFusionPluginInstaller extends JObject
 			            } else {
 				            $msg = JText::_('PLUGIN') . ' ' .$name .' ' . JText::_('INSTALL') . ': ' . JText::_('SUCCESS');
 			            }
-			            $result['message'] = $this->module->raise('message', $msg);
+			            $result['message'] = $this->module->raise('message', $msg, $name);
 			            $result['status'] = true;
 		            }
 	            } else {
 		            $msg = JText::_('PLUGIN') . ' ' .$name . ': ' . JText::_('FAILED') . ' ' . JText::_('NEED_JFUSION_VERSION') . ' "' . $version . '" ' . JText::_('OR_HIGHER');
 		            $this->parent->abort($msg);
-		            $result['message'] = $this->module->raise('error', $msg);
+		            $result['message'] = $this->module->raise('error', $msg, $name);
 	            }
             }
         }
@@ -549,7 +551,7 @@ class JFusionPluginInstaller extends JObject
 			    }
 		    }
 	    } catch (Exception $e) {
-		    $result['message'] = $this->module->raise('error', $e->getMessage());
+		    $result['message'] = $this->module->raise('error', $e->getMessage(), $jname);
 		    $this->parent->abort($e->getMessage());
 	    }
         return $result;
@@ -571,11 +573,11 @@ class JFusionPluginInstaller extends JObject
         $result['status'] = false;
         if (!$jname || !JFolder::exists($dir)) {
             $this->parent->abort(JText::_('COPY_ERROR_PATH'));
-	        $result['message'] = $this->module->raise('error', JText::_('COPY_ERROR_PATH'));
+	        $result['message'] = $this->module->raise('error', JText::_('COPY_ERROR_PATH'), $new_jname);
         } else if (!JFolder::copy($dir, $new_dir, null, $update)) {
             //copy the files
             $this->parent->abort(JText::_('COPY_ERROR'));
-	        $result['message'] = $this->module->raise('error', JText::_('COPY_ERROR'));
+	        $result['message'] = $this->module->raise('error', JText::_('COPY_ERROR'), $new_jname);
         } else {
             // Define our preg arrays
             $regex = array();
@@ -598,7 +600,7 @@ class JFusionPluginInstaller extends JObject
             $manifest = $this->_getManifest($dir);
             if (is_null($manifest)) {
                 $this->parent->abort(JText::_('INSTALL_NOT_VALID_PLUGIN'));
-	            $result['message'] = $this->module->raise('error', JText::_('INSTALL_NOT_VALID_PLUGIN'));
+	            $result['message'] = $this->module->raise('error', JText::_('INSTALL_NOT_VALID_PLUGIN'), $new_jname);
             } else {
                 $this->manifest = $manifest;
                 $childrens = array();
@@ -677,11 +679,11 @@ class JFusionPluginInstaller extends JObject
 		                //return the error
 		                $msg = 'Error while creating the plugin: ' . $e->getMessage();
 		                $this->parent->abort($msg);
-		                $result['message'] = $this->module->raise('error', $msg);
+		                $result['message'] = $this->module->raise('error', $msg, $new_jname);
 		                return $result;
 	                }
                 }
-	            $result['message'] = $this->module->raise('message', JText::_('PLUGIN') . ' ' .$jname .' ' . JText::_('COPY') . ': ' . JText::_('SUCCESS'));
+	            $result['message'] = $this->module->raise('message', JText::_('PLUGIN') . ' ' .$jname .' ' . JText::_('COPY') . ': ' . JText::_('SUCCESS'), $new_jname);
                 $result['status'] = true;
             }
         }

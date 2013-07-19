@@ -19,15 +19,14 @@ defined('_JEXEC') or die('Restricted access');
 JFusionFunctionAdmin::displayDonate();
 ?>
 <div class="jfusion">
-	<form method="post" action="index.php" name="adminForm" id="adminForm">
-	    <input type="hidden" name="option" value="com_jfusion" />
+	<form method="post" action="index.php?option=com_jfusion" name="adminForm" id="adminForm">
 		<input type="hidden" name="task" value="logincheckerresult" />
 
 	    <font size="2">
 	        <?php echo JText::_('LOGIN_CHECKER_TEXT'); ?>
 	    </font>
 		<br/><br/>
-		<table class="adminlist" style="border-spacing:1px;">
+		<table class="jfusionlist" style="border-spacing:1px;">
 	        <thead>
 	            <tr>
 	                <th colspan="2" class="title" >

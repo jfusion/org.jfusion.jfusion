@@ -23,7 +23,7 @@ $uri->setVar('task','advancedparamsubmit');
 	<form
 		action="<?php echo $uri->toString() ?>"
 		method="post" name="adminForm" id="adminForm">
-		<table class="paramlist admintable" style="width:100%;border-spacing:1px;">
+		<table class="paramlist jfusiontable" style="width:100%;border-spacing:1px;">
 			<tbody>
 			<tr>
 				<td class="paramlist_key">JFusion Plugin</td>

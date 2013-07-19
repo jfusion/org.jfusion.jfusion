@@ -30,8 +30,7 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DI
 ?>
 <div class="jfusion">
 	<div style="border:0 none ; margin:0; padding:0 5px; width: 800px; float: left;">
-	    <form method="post" action="index.php" name="adminForm" id="adminForm">
-	        <input type="hidden" name="option" value="com_jfusion" />
+	    <form method="post" action="index.php?option=com_jfusion" name="adminForm" id="adminForm">
 	        <input type="hidden" name="show_unsensored" value="<?php echo $this->options['show_unsensored']; ?>" />
 	        <input type="hidden" name="task" value="logoutcheckerresult" />
 			<?php if (!empty($jfusionDebug['joomlaid'])) : ?>

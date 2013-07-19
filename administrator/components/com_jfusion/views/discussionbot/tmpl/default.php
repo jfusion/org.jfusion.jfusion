@@ -15,14 +15,13 @@ defined('_JEXEC') or die('Restricted access');
 	echo $this->toolbar;
 	echo '<h3>' . $this->title . '</h3>';
 	?>
-	<form name="adminForm" id='adminForm' method="post" action="index.php">
-		<input type='hidden' name='option' value='com_jfusion' />
-		<input type='hidden' name='task' value='discussionbot' />
-		<input type='hidden' name='tmpl' value='component' />
-		<input type='hidden' name='jname' value='<?php echo $this->jname; ?>' />
-		<input type='hidden' name='<?php echo $this->ename; ?>' value='<?php echo $this->hash; ?>' />
-		<input type='hidden' name='ename' value='<?php echo $this->ename; ?>' />
-		<input type='hidden' name='remove' value='' />
+	<form name="adminForm" id='adminForm' method="post" action="index.php?option=com_jfusion">
+		<input type="hidden" name="task" value="discussionbot" />
+		<input type="hidden" name="tmpl" value="component" />
+		<input type="hidden" name="jname" value="<?php echo $this->jname; ?>" />
+		<input type="hidden" name="<?php echo $this->ename; ?>" value="<?php echo $this->hash; ?>" />
+		<input type="hidden" name="ename" value="<?php echo $this->ename; ?>" />
+		<input type="hidden" name="remove" value="" />
 		<?php
 		if(!empty($this->joomlaSelectOptions)) {
 			echo JHTML::_('select.genericlist', $this->joomlaSelectOptions, 'joomlaid', 'class="inputbox" style="margin-right:15px;"', 'id', 'name', '');
@@ -44,7 +43,7 @@ defined('_JEXEC') or die('Restricted access');
 			echo '<input id="add_plugin" type=button class="button" style="margin-left:5px;" value="'.JText::_('ADD').'" onclick="if(this.value!=\'\') { $(\'adminForm\').submit(); }" /><br /><br />';
 		}
 		?>
-		<table class="adminlist" style="border-spacing:1px;">
+		<table class="jfusionlist" style="border-spacing:1px;">
 			<thead>
 				<tr>
 					<th class="title">

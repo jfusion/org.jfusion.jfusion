@@ -360,7 +360,7 @@ class JFusionController extends JControllerLegacy
 		    $db->setQuery($query);
 		    if (!$db->loadResult()) {
 			    //sync has not started, lets get going :)
-			    $slaves = JFactory::getApplication()->input->get('slave');
+			    $slaves = JFactory::getApplication()->input->get('slave', array(), 'array');
 			    $master_plugin = JFusionFunction::getMaster();
 			    $master = $master_plugin->name;
 			    $JFusionMaster = JFusionFactory::getAdmin($master);
@@ -584,17 +584,6 @@ class JFusionController extends JControllerLegacy
     }
 
     /**
-     * Config dump
-     *
-     * @return void
-     */
-    function configdump()
-    {
-	    JFactory::getApplication()->input->set('view', 'configdump');
-        $this->display();
-    }
-
-    /**
      * delete sync history
      *
      * @return void
@@ -602,8 +591,8 @@ class JFusionController extends JControllerLegacy
     function deletehistory()
     {
         $db = JFactory::getDBO();
-        $syncid = JFactory::getApplication()->input->get('syncid');
-        if(!is_array($syncid)) {
+        $syncid = JFactory::getApplication()->input->get('syncid', array(), 'array');
+        if(!is_array($syncid) || empty($syncid)) {
             JFusionFunction::raiseWarning(JText::_('NO_SYNCID_SELECTED'));
         } else {
             foreach ($syncid as $key => $value) {
@@ -616,8 +605,7 @@ class JFusionController extends JControllerLegacy
                 $db->execute();
             }
         }
-	    JFactory::getApplication()->input->set('view', 'synchistory');
-        $this->display();
+	    $this->setRedirect('index.php?option=com_jfusion&task=synchistory');
     }
 
     /**
@@ -628,19 +616,18 @@ class JFusionController extends JControllerLegacy
     function resolveerror()
     {
         $db = JFactory::getDBO();
-        $syncid = JFactory::getApplication()->input->get('syncid');
-        if(!is_array($syncid)) {
+        $syncid = JFactory::getApplication()->input->get('syncid', array(), 'array');
+        if(!is_array($syncid) || empty($syncid)) {
             JFusionFunction::raiseWarning(JText::_('NO_SYNCID_SELECTED'));
-	        JFactory::getApplication()->input->set('view', 'synchistory');
+	        $this->setRedirect('index.php?option=com_jfusion&task=synchistory');
         } else {
             foreach ($syncid as $key => $value) {
-                JFactory::getApplication()->input->set('syncid', $key);
                 //output the sync errors to the user
-	            JFactory::getApplication()->input->set('view', 'syncerror');
+	            $this->setRedirect('index.php?option=com_jfusion&task=syncerror&syncid=',$key);
                 break;
             }
         }
-        $this->display();
+	    $this->setRedirect('index.php?option=com_jfusion&task=syncerror');
     }
 
     /**

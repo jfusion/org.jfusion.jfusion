@@ -19,8 +19,7 @@ defined('_JEXEC') or die('Restricted access');
 JFusionFunctionAdmin::displayDonate();
 ?>
 <div class="jfusion">
-	<form method="post" action="index.php" name="adminForm" id="adminForm">
-		<input type="hidden" name="option" value="com_jfusion" />
+	<form method="post" action="index.php?option=com_jfusion" name="adminForm" id="adminForm">
 		<input type="hidden" name="task" value="" />
 		<input type="hidden" name="action" value="" />
 		<input type="hidden" name="customcommand" value="" />

@@ -19,7 +19,7 @@ defined('_JEXEC') or die('Restricted access');
 <div class="jfusion">
 	<h3><?php echo JText::_('SELECT_INTEGRATED_VIEW')?> </h3>
 
-	<table class="adminlist" style="border-spacing:1px;">
+	<table class="jfusionlist" style="border-spacing:1px;">
 		<thead>
 	        <tr>
 		        <th width="10">
@@ -89,7 +89,7 @@ defined('_JEXEC') or die('Restricted access');
 		</tbody>
 	</table>
 	<?php echo '<br/><h3>' . JText::_('SELECT_DIRECT_VIEW') . '</h3>'; ?>
-	<table class="adminlist" style="border-spacing:1px;">
+	<table class="jfusionlist" style="border-spacing:1px;">
 		<thead>
 	        <tr>
 		        <th class="title">

@@ -54,15 +54,10 @@ class jfusionViewsyncstatus extends JViewLegacy
 
         //Load usersync library
         include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
-        if (!isset($this->syncid)) {
-            $syncid = JFactory::getApplication()->input->get('syncid');
-	        $this->syncid = $syncid;
-        }
-        if (!isset($this->syncdata)) {
-            //get the syncdata
-            $syncdata = JFusionUsersync::getSyncdata($this->syncid);
-	        $this->syncdata = $syncdata;
-        }
+
+	    $this->syncid = JFactory::getApplication()->input->get('syncid');
+	    $syncdata = JFusionUsersync::getSyncdata($this->syncid);
+
         //append log
         $mainframe = JFactory::getApplication();
         $client             = JFactory::getApplication()->input->getWord( 'filter_client', 'site' );
@@ -83,6 +78,7 @@ class jfusionViewsyncstatus extends JViewLegacy
 
 	    $this->pageNav = $pageNav;
 	    $this->filter = $filter;
+	    $this->syncdata = $syncdata;
 
         if (!empty($this->sync_completed)) {
             //ajax calling this page so die so that header info is not put into the body

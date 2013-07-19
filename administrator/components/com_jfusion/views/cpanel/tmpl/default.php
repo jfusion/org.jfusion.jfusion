@@ -19,7 +19,7 @@ defined('_JEXEC') or die('Restricted access');
 JFusionFunctionAdmin::displayDonate();
 ?>
 <div class="jfusion">
-	<table class="adminform">
+	<table class="jfusionform">
 		<tr>
 			<td width="55%" valign="top">
 				<div id="cpanel">

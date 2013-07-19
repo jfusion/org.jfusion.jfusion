@@ -37,14 +37,13 @@ function applyAll() {
 //-->
 </script>
 <div class="jfusion">
-	<form method="post" action="index.php" name="adminForm" id="adminForm">
-		<input type="hidden" name="option" value="com_jfusion" />
+	<form method="post" action="index.php?option=com_jfusion" name="adminForm" id="adminForm">
 		<input type="hidden" name="task" value="syncstatus" />
 
 		<?php //why is this here?
 		/*<input type="hidden" name="syncid" value="<?php echo $this->syncid;?>" />*/
 		?>
-		<table class="adminlist" style="border-spacing:1px;">
+		<table class="jfusionlist" style="border-spacing:1px;">
 			<thead>
 				<tr>
 					<th class="title" width="20px">

@@ -25,8 +25,7 @@ if (JFactory::getApplication()->input->get('filter',false)) {
 }
 ?>
 <div class="jfusion">
-	<form method="post" action="index.php" name="adminForm" id="adminForm">
-	    <input type="hidden" name="option" value="com_jfusion" />
+	<form method="post" action="index.php?option=com_jfusion" name="adminForm" id="adminForm">
 	    <input type="hidden" name="task" value="configdump" />
 	    <table>
 	        <tr>

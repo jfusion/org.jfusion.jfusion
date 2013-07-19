@@ -119,11 +119,10 @@ $document->addScript('components/com_jfusion/js/File.Upload.js');
 	//]]>
 </script>
 <div class="jfusion">
-<form method="post" action="index.php" name="adminForm">
-	<input type="hidden" name="option" value="com_jfusion" />
+<form method="post" action="index.php?option=com_jfusion" name="adminForm">
 	<input type="hidden" name="task" value="saveorder" />
 
-	<table class="adminlist" style="border-spacing:1px;" id="sortables">
+	<table class="jfusionlist" style="border-spacing:1px;" id="sortables">
 		<thead>
 		<tr>
 			<th class="title" width="20px;">
@@ -199,7 +198,7 @@ $document->addScript('components/com_jfusion/js/File.Upload.js');
 		<input type="hidden" name="task" value="installplugin" />
 		<input type="hidden" name="installtype" value="url" />
 
-		<table class="adminform">
+		<table class="jfusionform">
 			<tr>
 				<td>
 					<img src="components/com_jfusion/images/folder_url.png">
@@ -239,7 +238,7 @@ $document->addScript('components/com_jfusion/js/File.Upload.js');
 		</table>
 	</form>
 <?php }  else { ?>
-	<table class="adminform">
+	<table class="jfusionform">
 		<tr>
 			<td>
 				<img src="components/com_jfusion/images/folder_url.png">
@@ -271,7 +270,7 @@ $document->addScript('components/com_jfusion/js/File.Upload.js');
 	<input type="hidden" name="option" value="com_jfusion" />
 	<input type="hidden" name="task" value="installplugin" />
 	<input type="hidden" name="installtype" value="upload" />
-	<table class="adminform">
+	<table class="jfusionform">
 		<tr>
 			<td>
 				<img src="components/com_jfusion/images/folder_zip.png">
@@ -306,7 +305,7 @@ $document->addScript('components/com_jfusion/js/File.Upload.js');
 	<input type="hidden" name="option" value="com_jfusion" />
 	<input type="hidden" name="task" value="installplugin" />
 	<input type="hidden" name="installtype" value="folder" />
-	<table class="adminform">
+	<table class="jfusionform">
 		<tr>
 			<td>
 				<img src="components/com_jfusion/images/folder_dir.png">
@@ -340,7 +339,7 @@ $document->addScript('components/com_jfusion/js/File.Upload.js');
 	<input type="hidden" name="option" value="com_jfusion" />
 	<input type="hidden" name="task" value="installplugin" />
 	<input type="hidden" name="installtype" value="url" />
-	<table class="adminform">
+	<table class="jfusionform">
 		<tr>
 			<td>
 				<img src="components/com_jfusion/images/folder_url.png">

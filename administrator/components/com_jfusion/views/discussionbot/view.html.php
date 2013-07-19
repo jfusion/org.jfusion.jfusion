@@ -127,7 +127,7 @@ class jfusionViewdiscussionbot extends JViewLegacy
 		$document->addStyleSheet("templates/$template/css/general.css");
 		$document->addStyleSheet("templates/$template/css/icon.css");
 		$document->setTitle($title);
-		$css = '.jfusion table.adminlist, table.admintable{ font-size:11px; } .jfusion table.adminlist tbody tr td { vertical-align:top; }';
+		$css = '.jfusion table.jfusionlist, table.jfusiontable{ font-size:11px; } .jfusion table.jfusionlist tbody tr td { vertical-align:top; }';
 		$document->addStyleDeclaration($css);
 
 		//prepare a toolbar

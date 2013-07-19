@@ -6,19 +6,6 @@
 * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
 */
 
-* {
-	margin: 0;
-	padding: 0;
-}
-body {
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 12px;
-	line-height: 1.5;
-	padding-top: 30px;
-}
-
-h2 { font-size:15px; }
-
 /** cpanel **/
 #cpanel div.icon {
 	text-align: center;
@@ -26,6 +13,7 @@ h2 { font-size:15px; }
 	float: left;
 	margin-bottom: 5px;
 }
+
 #cpanel div.icon a {
 	display: block;
 	float: left;
@@ -170,11 +158,11 @@ a.navButton:hover {
     background-image: url(../images/importexport.png);
 }
 
-.jfusion div.current fieldset.adminform {
+.jfusion div.current fieldset.jfusionform {
     border: 1px #ccc solid;
 }
 
-.jfusion table.adminform {
+.jfusion table.jfusionform {
     background-color: #fff;
     border: solid 1px #d5d5d5;
     width: 100%;
@@ -183,15 +171,15 @@ a.navButton:hover {
     margin-bottom: 15px;
 }
 
-.jfusion table.adminform tr.row0 {
+.jfusion table.jfusionform tr.row0 {
     background-color: #f9f9f9;
 }
 
-.jfusion table.adminform tr.row1 {
+.jfusion table.jfusionform tr.row1 {
     background-color: #eeeeee;
 }
 
-.jfusion table.adminform th {
+.jfusion table.jfusionform th {
     font-size: 1.091em;
     padding: 6px 2px 4px 4px;
     text-align: left;
@@ -200,29 +188,29 @@ a.navButton:hover {
     background-repeat: repeat;
 }
 
-.jfusion table.adminform td {
+.jfusion table.jfusionform td {
     padding: 5px;
     text-align: left;
     font-size: 1.091em;
 }
 
-.jfusion table.adminlist {
+.jfusion table.jfusionlist {
     width: 100%;
     border-spacing: 1px;
     background-color: #f3f3f3;
     color: #666;
 }
 
-.jfusion table.adminlist td,
-.jfusion table.adminlist th {
+.jfusion table.jfusionlist td,
+.jfusion table.jfusionlist th {
     padding: 4px;
 }
 
-.jfusion table.adminlist td {
+.jfusion table.jfusionlist td {
     padding-left: 8px;
 }
 
-.jfusion table.adminlist thead th {
+.jfusion table.jfusionlist thead th {
     text-align: center;
     background: #f7f7f7;
     color: #666;
@@ -230,62 +218,62 @@ a.navButton:hover {
     border-left: 1px solid #fff;
 }
 
-.jfusion table.adminlist thead th.left {
+.jfusion table.jfusionlist thead th.left {
     text-align: left;
 }
 
-.jfusion table.adminlist thead a:hover {
+.jfusion table.jfusionlist thead a:hover {
     text-decoration: none;
 }
 
-.jfusion table.adminlist thead th img {
+.jfusion table.jfusionlist thead th img {
     vertical-align: middle;
     padding-left: 3px;
 }
 
-.jfusion table.adminlist tbody th {
+.jfusion table.jfusionlist tbody th {
     font-weight: bold;
 }
 
-.jfusion table.adminlist tbody tr {
+.jfusion table.jfusionlist tbody tr {
     background-color: #fff;
     text-align: left;
 }
 
-.jfusion table.adminlist tbody tr.row0:hover td,
-.jfusion table.adminlist tbody tr.row1:hover td	{
+.jfusion table.jfusionlist tbody tr.row0:hover td,
+.jfusion table.jfusionlist tbody tr.row1:hover td	{
     background-color: #e8f6fe;
 }
 
-.jfusion table.adminlist tbody tr td {
+.jfusion table.jfusionlist tbody tr td {
     background: #F0F1DA;
     border: 1px solid #fff;
 }
 
-.jfusion table.adminlist tbody tr.row1 td {
+.jfusion table.jfusionlist tbody tr.row1 td {
     background: #f0f0f0;
     border-top: 1px solid #FFF;
 }
 
-.jfusion table.adminlist tfoot tr {
+.jfusion table.jfusionlist tfoot tr {
     text-align: center;
     color: #333;
 }
 
-.jfusion table.adminlist tfoot td,
-.jfusion table.adminlist tfoot th {
+.jfusion table.jfusionlist tfoot td,
+.jfusion table.jfusionlist tfoot th {
     background-color: #f7f7f7;
     border-top: 1px solid #999;
     text-align: center;
 }
 
-.jfusion table.adminlist td.order {
+.jfusion table.jfusionlist td.order {
     text-align: center;
     white-space: nowrap;
     width: 200px;
 }
 
-.jfusion table.adminlist td.order span {
+.jfusion table.jfusionlist td.order span {
     float: left;
     width: 20px;
     text-align: center;
@@ -293,25 +281,25 @@ a.navButton:hover {
     height: 13px;
 }
 
-.jfusion table.adminlist .pagination {
+.jfusion table.jfusionlist .pagination {
     display: inline-block;
     padding: 0;
     margin: 0 auto;
 }
 
 /* Tree indentation & nesting - Up to 10 levels deep so don't go crazy :) */
-.jfusion table.adminlist td.indent-4 	{	padding-left: 4px;		}
-.jfusion table.adminlist td.indent-19 	{	padding-left: 19px;		}
-.jfusion table.adminlist td.indent-34 	{	padding-left: 34px;		}
-.jfusion table.adminlist td.indent-49 	{	padding-left: 49px;		}
-.jfusion table.adminlist td.indent-64 	{	padding-left: 64px;		}
-.jfusion table.adminlist td.indent-79 	{	padding-left: 79px;		}
-.jfusion table.adminlist td.indent-94 	{	padding-left: 94px;		}
-.jfusion table.adminlist td.indent-109 	{	padding-left: 109px;	}
-.jfusion table.adminlist td.indent-124 	{	padding-left: 124px;	}
-.jfusion table.adminlist td.indent-139 	{	padding-left: 139px;	}
+.jfusion table.jfusionlist td.indent-4 	{	padding-left: 4px;		}
+.jfusion table.jfusionlist td.indent-19 	{	padding-left: 19px;		}
+.jfusion table.jfusionlist td.indent-34 	{	padding-left: 34px;		}
+.jfusion table.jfusionlist td.indent-49 	{	padding-left: 49px;		}
+.jfusion table.jfusionlist td.indent-64 	{	padding-left: 64px;		}
+.jfusion table.jfusionlist td.indent-79 	{	padding-left: 79px;		}
+.jfusion table.jfusionlist td.indent-94 	{	padding-left: 94px;		}
+.jfusion table.jfusionlist td.indent-109 	{	padding-left: 109px;	}
+.jfusion table.jfusionlist td.indent-124 	{	padding-left: 124px;	}
+.jfusion table.jfusionlist td.indent-139 	{	padding-left: 139px;	}
 
-.jfusion table.adminlist tr td.btns a {
+.jfusion table.jfusionlist tr td.btns a {
     text-decoration: underline;
 }
 

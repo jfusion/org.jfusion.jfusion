@@ -48,14 +48,20 @@ switch($task)
 		break;
 	case 'plugindisplay':
 		JToolBarHelper::title( JText::_('PLUGIN_CONFIGURATION'), 'controlpanel.png' );
+		JToolBarHelper::cancel('cpanel');
 		break;
 	case 'syncoptions':
 		JToolBarHelper::title( JText::_('USERSYNC'), 'usersync.png' );
 		JToolBarHelper::cancel('cpanel');
 		break;
+	case 'syncstatus':
+		JToolBarHelper::title( JText::_('SYNCSTATUS'), 'syncstatus.png' );
+		JToolBarHelper::cancel('synchistory');
+		break;
 	case 'synchistory':
 		JToolBarHelper::title( JText::_('SYNC_HISTORY'), 'synchistory.png' );
-		JToolBarHelper::custom('deletehistory', 'delete.png','delete.png', 'Delete Record', false, false );
+		JToolBarHelper::custom('deletehistory', 'delete.png','delete.png', 'Delete Record', false, false);
+		JToolBarHelper::cancel('cpanel');
 		break;
 	case 'extensions':
 		JToolBarHelper::title( JText::_('EXTENSIONS'), 'extension.png' );
@@ -85,9 +91,11 @@ switch($task)
 		break;
     case 'languages':
         JToolBarHelper::title( JText::_('CONFIG_DUMP'), 'languages.png' );
+	    JToolBarHelper::cancel('cpanel');
 		break;
     case 'versioncheck':
         JToolBarHelper::title( JText::_('VERSION_CHECK'), 'versioncheck.png' );
+	    JToolBarHelper::cancel('cpanel');
 		break;
 	default:
         JToolBarHelper::title( JText::_('JFUSION_UNIVERSAL_BRIDGE'), 'jfusion.png' );

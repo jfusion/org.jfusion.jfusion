@@ -93,7 +93,7 @@ JFusion.renderSync = function(data) {
 	var log_res = $('log_res');
 	log_res.empty();
 
-	var root = new Element('table',{ 'class': 'adminlist' });
+	var root = new Element('table',{ 'class': 'jfusionlist' });
 	JFusion.renderSyncHead().inject(root);
 	JFusion.renderSyncBody(data).inject(root);
 
@@ -177,7 +177,7 @@ window.addEvent('domready', function() {
 					//generate the get variable for submission
 
 					var subvars = 'option=com_jfusion&task=syncresume&tmpl=component&dummy=' + dummy + '&syncid=' + JFusion.syncid;
-					var form = $('adminForm');
+					var form = $('syncForm');
 					if (form) {
 						for (var i = 0; i < form.elements.length; i++) {
 							if (form.elements[i].name == 'userbatch') {
@@ -202,7 +202,7 @@ window.addEvent('domready', function() {
 				clearInterval(periodical);
 
 				if (sync_mode == 'new') {
-					var form = $('adminForm');
+					var form = $('syncForm');
 					var count = 0;
 					var i;
 
@@ -268,6 +268,9 @@ window.addEvent('domready', function() {
 );
 // -->
 </script>
+<form method="post" action="index.php?option=com_jfusion" name="adminForm" id="adminForm">
+	<input type="hidden" name="task" value="syncoptions" />
+</form>
 <div class="jfusion">
 	<h3><?php echo JText::_('SYNC_WARNING'); ?></h3><br/>
 
@@ -278,7 +281,7 @@ window.addEvent('domready', function() {
 	?>
 	<?php if ($this->sync_mode == 'new') { ?>
 		<div id="log_res">
-			<form method="post" action="index.php" name="adminForm" id="adminForm">
+			<form method="post" action="index.php" name="syncForm" id="syncForm">
 				<input type="hidden" name="option" value="com_jfusion" />
 				<input type="hidden" name="task" value="syncstatus" />
 				<input type="hidden" name="syncid" value="<?php echo $this->syncid; ?>" />
@@ -293,7 +296,7 @@ window.addEvent('domready', function() {
 				</div>
 				<br/>
 
-				<table class="adminlist" style="border-spacing:1px;">
+				<table class="jfusionlist" style="border-spacing:1px;">
 					<thead>
 					<tr>
 						<th width="50px"><?php echo JText::_('NAME'); ?></th>

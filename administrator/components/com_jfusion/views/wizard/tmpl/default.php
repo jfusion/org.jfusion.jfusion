@@ -19,14 +19,13 @@ defined('_JEXEC') or die('Restricted access');
 JFusionFunctionAdmin::displayDonate();
 ?>
 <div class="jfusion">
-	<form method="post" action="index.php" name="adminForm" id="adminForm">
-		<input type="hidden" name="option" value="com_jfusion" />
+	<form method="post" action="index.php?option=com_jfusion" name="adminForm" id="adminForm">
 		<input type="hidden" name="task" value="wizardresult" />
 		<font size="2">
 			<?php echo JText::_('WIZARD_INSTR'); ?>
 		</font>
 		<br><br><br>
-		<table style="width:100%;;border-spacing:1px;" class="paramlist admintable">
+		<table style="width:100%;;border-spacing:1px;" class="paramlist jfusiontable">
 			<tr>
 				<td class="paramlist_key">
 					<?php echo JText::_('WIZARD_PATH'); ?>

@@ -160,11 +160,13 @@ class JFusionFunctionAdmin
     {
         $msg = JText::_('BANNER_MESSAGE');
         $html =<<<HTML
-        <table class="adminform">
+        <table class="jfusionform">
             <tr>
+            	<!--
                 <td>
                     <img src="components/com_jfusion/images/jfusion_logo.png">
                 </td>
+                -->
                 <td>
                     <font size="3"><b>{$msg}</b></font>
                 </td>

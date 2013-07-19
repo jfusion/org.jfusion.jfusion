@@ -1651,7 +1651,7 @@ class JFusionFunction
 		if ($msg instanceof Exception) {
 			$msg = $msg->getMessage();
 		}
-		if (!empty($msg)) {
+		if (!empty($jname)) {
 			$msg = $jname.': '.$msg;
 		}
 		$app->enqueueMessage($msg, 'notice');
@@ -1666,7 +1666,7 @@ class JFusionFunction
 		if ($msg instanceof Exception) {
 			$msg = $msg->getMessage();
 		}
-		if (!empty($msg)) {
+		if (!empty($jname)) {
 			$msg = $jname.': '.$msg;
 		}
 		$app->enqueueMessage($msg,'warning');
@@ -1681,7 +1681,7 @@ class JFusionFunction
 		if ($msg instanceof Exception) {
 			$msg = $msg->getMessage();
 		}
-		if (!empty($msg)) {
+		if (!empty($jname)) {
 			$msg = $jname.': '.$msg;
 		}
 		$app->enqueueMessage($msg,'error');

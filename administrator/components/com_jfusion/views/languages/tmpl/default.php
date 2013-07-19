@@ -27,8 +27,11 @@ JFusionFunctionAdmin::displayDonate();
     .percentbar { background:#CCCCCC; border:1px solid #666666; height:10px; }
     .percentbar div { background: #28B8C0; height: 10px; }
 </style>
+<form method="post" action="index.php?option=com_jfusion" name="adminForm" id="adminForm">
+	<input type="hidden" name="task" value="languages" />
+</form>
 <div class="jfusion">
-	<table class="adminform" style="border-spacing:1px;">
+	<table class="jfusionform" style="border-spacing:1px;">
 	    <thead>
 	        <tr>
 	            <th class="title " align="left">
@@ -131,7 +134,7 @@ JFusionFunctionAdmin::displayDonate();
 	    }
 	    // -->
 	</script>
-	<form enctype="multipart/form-data" action="index.php" method="post" id="install" name="adminForm2">
+	<form enctype="multipart/form-data" action="index.php" method="post" id="install" name="languagesForm">
 	    <input type="hidden" name="install_url" value="" />
 	    <input type="hidden" name="type" value="" />
 	    <input type="hidden" name="installtype" value="url" />

@@ -51,7 +51,7 @@ if (!isset($this->syncdata['slave_data']) || !$this->syncdata['slave_data']) {
     ?>
     <h2><?php echo JText::_('SYNC_STATUS'); ?></h2>
 
-    <table class="adminlist" style="border-spacing:1px;"><thead><tr><th width="50px">
+    <table class="jfusionlist" style="border-spacing:1px;"><thead><tr><th width="50px">
     <?php echo JText::_('PLUGIN') . ' ' . JText::_('NAME');
     ?>
     </th><th align="center" class="title">
@@ -90,17 +90,17 @@ if (!isset($this->syncdata['slave_data']) || !$this->syncdata['slave_data']) {
     <?php
     echo '<br/><h2>' . JText::_('SYNC_LOG') . '</h2><br/>';?>
 
-    <form action="index.php" method="post" name="adminForm" id="adminForm">
-        <table class="adminlist">
+    <form action="index.php?option=com_jfusion" method="post" name="adminForm" id="adminForm">
+        <table class="jfusionlist">
             <thead>
                 <tr>
                     <th width="20"><?php echo '#';?></th>
-                    <th><?php echo JHTML::_('grid.sort',   JText::_('PLUGIN') , 'jname', $this->filter['dir'], $this->filter['order'] );?></th>
-                    <th><?php echo JHTML::_('grid.sort',   JText::_('USERNAME') , 'username', $this->filter['dir'], $this->filter['order'] );?></th>
-                    <th><?php echo JHTML::_('grid.sort',   JText::_('EMAIL') , 'email', $this->filter['dir'], $this->filter['order'] );?></th>
-                    <th><?php echo JHTML::_('grid.sort',   JText::_('ACTION') , 'action', $this->filter['dir'], $this->filter['order'] );?></th>
+                    <th><?php echo JHTML::_('grid.sort',   JText::_('PLUGIN') , 'jname', $this->filter['dir'], $this->filter['order'], 'syncstatus' );?></th>
+                    <th><?php echo JHTML::_('grid.sort',   JText::_('USERNAME') , 'username', $this->filter['dir'], $this->filter['order'], 'syncstatus' );?></th>
+                    <th><?php echo JHTML::_('grid.sort',   JText::_('EMAIL') , 'email', $this->filter['dir'], $this->filter['order'], 'syncstatus' );?></th>
+                    <th><?php echo JHTML::_('grid.sort',   JText::_('ACTION') , 'action', $this->filter['dir'], $this->filter['order'], 'syncstatus' );?></th>
                     <th><?php echo JText::_('MESSAGE');?></th>
-                    <th><?php echo JHTML::_('grid.sort',   'ID' , 'id', $this->filter['dir'], $this->filter['order'] );?></th>
+                    <th><?php echo JHTML::_('grid.sort',   'ID' , 'id', $this->filter['dir'], $this->filter['order'], 'syncstatus' );?></th>
                 </tr>
             </thead>
             <tbody>
@@ -130,7 +130,6 @@ if (!isset($this->syncdata['slave_data']) || !$this->syncdata['slave_data']) {
             <td colspan="7"><?php echo $this->pageNav->getListFooter(); ?></td>
             </tfoot>
         </table>
-        <input type="hidden" name="option" value="com_jfusion" />
         <input type="hidden" name="task" value="syncstatus" />
         <input type="hidden" name="syncid" value="<?php echo $this->syncid; ?>" />
         <?php

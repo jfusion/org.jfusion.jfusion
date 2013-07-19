@@ -27,7 +27,7 @@ $uri->delVar('task');
 			echo $this->error;
 		}
 		?>
-		<table class="paramlist admintable" style="width:100%;border-spacing:1px;">
+		<table class="paramlist jfusiontable" style="width:100%;border-spacing:1px;">
 			<tbody>
 			<tr>
 				<td class="paramlist_key">JFusion Plugin</td>
@@ -39,7 +39,7 @@ $uri->delVar('task');
 					global $jname;
 					foreach ($this->comp as $key => $value) {
 						$jname = $key;
-						echo '<fieldset class="adminform">';
+						echo '<fieldset class="jfusionform">';
 						echo '<legend><span>' . $key . '</span><input type="button" name="remove" value="Remove" onclick="JFusion.removePlugin(this, \'' . $key . '\');" style="margin-left: 3px;" /></legend>';
 						if (isset($value['params'])) {
 							$fieldsets = $value['params']->getFieldsets();
