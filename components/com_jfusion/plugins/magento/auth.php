@@ -47,20 +47,18 @@ class JFusionAuth_magento extends JFusionAuth {
 	function generateEncryptedPassword($userinfo) {
 		$params = JFusionFactory::getParams($this->getJname());
 		$magentoVersion = $params->get('magento_version','1.7');
-		if (version_compare($this->integration_version_number,'1.8','<')) {
+		if (version_compare($magentoVersion,'1.8','<')) {
 			if ($userinfo->password_salt) {
 				$hash = md5($userinfo->password_salt . $userinfo->password_clear);
 			} else {
 				$hash = md5($userinfo->password_clear);
 			}
-
 		} else {
 			if ($userinfo->password_salt) {
 				$hash = hash("sha256",$userinfo->password_salt . $userinfo->password_clear);
 			} else {
 				$hash = hash("sha256",$userinfo->password_clear);
 			}
-
 		}
 		return $hash;
 	}
