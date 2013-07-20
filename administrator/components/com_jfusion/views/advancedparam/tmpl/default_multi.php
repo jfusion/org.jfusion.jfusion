@@ -21,7 +21,8 @@ $uri->delVar('task');
 ?>
 <div class="jfusion">
 	<h1>Select Plugin Multi</h1>
-	<form action="<?php echo $uri->toString() ?>" method="post" name="adminForm" id="adminForm">
+
+	<form action="<?php echo $uri->toString() ?>" method="post" name="adminForm" id="adminForm" class="form-horizontal">
 		<?php
 		if (isset($this->error)) {
 			echo $this->error;
@@ -37,46 +38,48 @@ $uri->delVar('task');
 				<td colspan="2" style="padding:0; margin:0;">
 					<?php
 					global $jname;
+					echo JHtml::_('tabs.start','tabs', array('startOffset'=>2));
 					foreach ($this->comp as $key => $value) {
 						$jname = $key;
+						echo JHtml::_('tabs.panel',JText::_($jname), $jname.'_jform_fieldset_label');
+
+						echo '<div align="right"><input type="button" name="remove" value="Remove" onclick="JFusion.removePlugin(this, \'' . $key . '\');" style="margin-left: 3px;" /></div>';
 						echo '<fieldset class="jfusionform">';
-						echo '<legend><span>' . $key . '</span><input type="button" name="remove" value="Remove" onclick="JFusion.removePlugin(this, \'' . $key . '\');" style="margin-left: 3px;" /></legend>';
-						if (isset($value['params'])) {
-							$fieldsets = $value['params']->getFieldsets();
-							echo JHtml::_('tabs.start','tabs', array('startOffset'=>2));
+						if (isset($value['form'])) {
+							$form = $value['form'];
+							$fieldsets = $form->getFieldsets();
 							foreach ($fieldsets as $fieldset):
-								echo JHtml::_('tabs.panel',JText::_($fieldset->name.'_jform_fieldset_label'), $fieldset->name.'_jform_fieldset_label');
 								echo '<fieldset class="panelform">';
-								echo '<dl>';
-								if ($fieldset->name == 'basic'):
-									echo '<dt><label title="" class="hasTip" for="params_'.$key.'_title" id="params_'.$key.'_title-lbl">' . JText::_('TITLE') . '</label></dt>';
-									$title_value = (isset($value['title'])) ? $value['title'] : '';
-									echo '<dd><input type="text" name="params['.$key.'][title]" id="params_'.$key.'_title" value="'.$title_value.'" /></dd>';
-								endif;
-								foreach($value['params']->getFieldset($fieldset->name) as $field):
+								$fields = $form->getFieldset($fieldset->name);
+								foreach($fields as $field):
 									// If the field is hidden, just display the input.
-									if ($field->hidden):
-										echo $field->input;
-									else:
-										echo '<dt>' . $field->label . '</dt>';
-										echo '<dd' . (($field->type == 'Editor' || $field->type == 'Textarea') ? ' style="clear: both; margin: 0;"' : '') . '>';
-										echo $field->input;
-										echo '</dd>';
-									endif;
+									echo '<div class="control-group">';
+										if (!$field->hidden):
+											echo '<div class="control-label">';
+												echo $field->label;
+											echo '</div>';
+										endif;
+										echo '<div class="controls">';
+											echo $field->input;
+										echo '</div>';
+									echo '</div>';
 								endforeach;
-								echo '</dl>';
 								echo '</fieldset>';
 							endforeach;
-							echo JHtml::_('tabs.end');
 						}
 						echo '<input type="hidden" name="params[' . $key . '][jfusionplugin]" value="' . $value['jfusionplugin'] . '" />';
 						echo '</fieldset>';
 					}
+					echo JHtml::_('tabs.end');
 					?>
 				</td>
 			</tr>
 			<tr>
-				<td colspan="2"><input type="submit" value="Save" /></td>
+				<td colspan="2">
+					<div align="right">
+						<input type="submit" value="Save" />
+					</div>
+				</td>
 			</tr>
 			</tbody>
 		</table>

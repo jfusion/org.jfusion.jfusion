@@ -2,10 +2,13 @@
 <config>
 	<language filename="plg_search_jfusion" location="admin" />
 
-    <fields>
-        <fieldset name="basic">
-	        <field name="itemid" type="JFusionItemid" size="5" default="" label="ITEMID" description="ITEMID_DESCR" feature="search"/>
-	        <field name="search_limit" type="text" size="5" default="50" label="SEARCH_LIMIT" description="SEARCH_LIMIT_DESCR"/>
-	    </fieldset>
-    </fields>
+    <form>
+        <fields>
+            <fieldset name="basic">
+                <field name="title" type="text" default="" label="TITLE" description="TITLE_DESCR"/>
+                <field name="itemid" type="JFusionItemid" size="5" default="" label="ITEMID" description="ITEMID_DESCR" feature="search"/>
+                <field name="search_limit" type="text" size="5" default="50" label="SEARCH_LIMIT" description="SEARCH_LIMIT_DESCR"/>
+            </fieldset>
+        </fields>
+    </form>
 </config>

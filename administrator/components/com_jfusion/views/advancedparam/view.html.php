@@ -91,7 +91,7 @@ class jfusionViewadvancedparam extends JViewLegacy
 		$this->output = $output;
 
 		//for J1.6+ single select modes, params is an array
-		$this->comp = isset($params['params']) ? $params['params'] : array();
+		$this->comp = is_array($params) ? $params : array();
 
 		JHTML::_('behavior.modal');
 		JHTML::_('behavior.tooltip');
@@ -157,18 +157,12 @@ class jfusionViewadvancedparam extends JViewLegacy
 			if (JFile::exists($xml_path)) {
 				$xml = JFusionFunction::getXml($xml_path);
 				if ($xml) {
-					$fields = $xml->fields;
-					if ($fields) {
-						$data = $fields->toString();
-						//make sure it is surround by <form>
-						if (substr($data, 0, 5) != '<form>') {
-							$data = '<form>' . $data . '</form>';
-						}
+					if ($xml->form) {
 						/**
 						 * @ignore
 						 * @var $form JForm
 						 */
-						$form = JForm::getInstance($jname, $data, array('control' => "params[$jname]"));
+						$form = JForm::getInstance($jname, $xml->form->asXML(), array('control' => "params[$jname]"));
 						//add JFusion's fields
 						$form->addFieldPath(JPATH_COMPONENT.DIRECTORY_SEPARATOR.'fields');
 						if (isset($value[$jname])) {
@@ -177,7 +171,7 @@ class jfusionViewadvancedparam extends JViewLegacy
 					}
 				}
 			}
-			$value['params'] = $form;
+			$value['form'] = $form;
 		}
 		return $value;
 	}
@@ -221,7 +215,7 @@ class jfusionViewadvancedparam extends JViewLegacy
 		if (isset($this->featureArray[$feature])) {
 			$featureLink = '&feature=' . $feature;
 		}
-		return array($output);
+		return $output;
 	}
 
 	/**
@@ -298,23 +292,17 @@ class jfusionViewadvancedparam extends JViewLegacy
 				$xml_path = (file_exists($path)) ? $path : $defaultPath;
 				$xml = JFusionFunction::getXml($xml_path);
 				if ($xml) {
-					$fields = $xml->fields;
-					if ($fields) {
-						$data = $fields->toString();
-						//make sure it is surround by <form>
-						if (substr($data, 0, 5) != '<form>') {
-							$data = '<form>' . $data . '</form>';
-						}
+					if ($xml->form) {
 						/**
 						 * @ignore
 						 * @var $form JForm
 						 */
-						$form = JForm::getInstance($jname, $data, array('control' => "params[$jname]"));
+						$form = JForm::getInstance($jname, $xml->form->asXML(), array('control' => "params[$jname]"));
 						//add JFusion's fields
 						$form->addFieldPath(JPATH_COMPONENT.DIRECTORY_SEPARATOR.'fields');
 						//bind values
 						$form->bind($value[$key]);
-						$value[$key]['params'] = $form;
+						$value[$key]['form'] = $form;
 					}
 				}
 			}

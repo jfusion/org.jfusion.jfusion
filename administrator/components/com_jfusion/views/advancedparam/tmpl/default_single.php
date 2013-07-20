@@ -32,25 +32,27 @@ $uri->setVar('task','advancedparamsubmit');
 			<tr style="padding:0; margin:0;">
 				<td colspan="2" style="padding:0; margin:0;">
 					<?php
-					if (!empty($this->comp)):
-						$fieldsets = $this->comp->getFieldsets();
+					if (!empty($this->comp) && !empty($this->comp['form'])):
+						$form = $this->comp['form'];
+						$fieldsets = $form->getFieldsets();
 						echo JHtml::_('tabs.start','tabs', array('startOffset'=>2));
 						foreach ($fieldsets as $fieldset):
 							echo JHtml::_('tabs.panel',JText::_($fieldset->name.'_jform_fieldset_label'), $fieldset->name.'_jform_fieldset_label');
 							echo '<fieldset class="panelform">';
-							echo '<dl>';
-							foreach($this->comp->getFieldset($fieldset->name) as $field):
+							$fields = $this->comp->getFieldset($fieldset->name);
+							foreach($fields as $field):
 								// If the field is hidden, just display the input.
-								if ($field->hidden):
-									echo $field->input;
-								else:
-									echo '<dt>' . $field->label . '</dt>';
-									echo '<dd' . (($field->type == 'Editor' || $field->type == 'Textarea') ? ' style="clear: both; margin: 0;"' : '') . '>';
-									echo $field->input;
-									echo '</dd>';
+								echo '<div class="control-group">';
+								if (!$field->hidden):
+									echo '<div class="control-label">';
+									echo $field->label;
+									echo '</div>';
 								endif;
+								echo '<div class="controls">';
+								echo $field->input;
+								echo '</div>';
+								echo '</div>';
 							endforeach;
-							echo '</dl>';
 							echo '</fieldset>';
 						endforeach;
 						echo JHtml::_('tabs.end');
