@@ -372,7 +372,7 @@ HTML;
 			<a href="index.php?option=com_jfusion&task=plugineditor&jname={$record->name}" title="{$edit}"><img src="components/com_jfusion/images/edit.png" alt="{$edit}" /></a>
 	        <a href="{$record->copyscript}" title="{$copy}"><img src="{$record->copyimage}" alt="{$copy}" /></a>
 	        <a href="{$record->deletescript}" title="{$delete}"><img src="{$record->deleteimage}" alt="{$delete}" /></a>
-			<a class="modal" title="{$info}"  href="index.php?option=com_jfusion&task=plugininfo&tmpl=component&jname={$record->name}" rel="{handler: \'iframe\', size: {x: 375, y: 375}}"><img src="components/com_jfusion/images/info.png" alt="{$info}" /></a>
+			<a class="modal" title="{$info}"  href="index.php?option=com_jfusion&task=plugininfo&tmpl=component&jname={$record->name}" rel="{handler: 'iframe', size: {x: 375, y: 375}}"><img src="components/com_jfusion/images/info.png" alt="{$info}" /></a>
 		</td>
         <td>{$record->description}</td>
         <td width="40px;" id="{$record->name}_master">
