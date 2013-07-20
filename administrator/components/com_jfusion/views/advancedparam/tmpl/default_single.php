@@ -22,7 +22,7 @@ $uri->setVar('task','advancedparamsubmit');
 	<h1>Select Plugin Single</h1>
 	<form
 		action="<?php echo $uri->toString() ?>"
-		method="post" name="adminForm" id="adminForm">
+		method="post" name="adminForm" id="adminForm" class="form-horizontal">
 		<table class="paramlist jfusiontable" style="width:100%;border-spacing:1px;">
 			<tbody>
 			<tr>
@@ -38,20 +38,10 @@ $uri->setVar('task','advancedparamsubmit');
 						echo JHtml::_('tabs.start','tabs', array('startOffset'=>2));
 						foreach ($fieldsets as $fieldset):
 							echo JHtml::_('tabs.panel',JText::_($fieldset->name.'_jform_fieldset_label'), $fieldset->name.'_jform_fieldset_label');
-							echo '<fieldset class="panelform">';
+							echo '<fieldset class="jfusionform">';
 							$fields = $this->comp->getFieldset($fieldset->name);
 							foreach($fields as $field):
-								// If the field is hidden, just display the input.
-								echo '<div class="control-group">';
-								if (!$field->hidden):
-									echo '<div class="control-label">';
-									echo $field->label;
-									echo '</div>';
-								endif;
-								echo '<div class="controls">';
-								echo $field->input;
-								echo '</div>';
-								echo '</div>';
+								echo JFusionFunctionAdmin::renderField($field);
 							endforeach;
 							echo '</fieldset>';
 						endforeach;

@@ -44,31 +44,19 @@ $uri->delVar('task');
 						echo JHtml::_('tabs.panel',JText::_($jname), $jname.'_jform_fieldset_label');
 
 						echo '<div align="right"><input type="button" name="remove" value="Remove" onclick="JFusion.removePlugin(this, \'' . $key . '\');" style="margin-left: 3px;" /></div>';
-						echo '<fieldset class="jfusionform">';
 						if (isset($value['form'])) {
 							$form = $value['form'];
 							$fieldsets = $form->getFieldsets();
 							foreach ($fieldsets as $fieldset):
-								echo '<fieldset class="panelform">';
+								echo '<fieldset class="jfusionform">';
 								$fields = $form->getFieldset($fieldset->name);
 								foreach($fields as $field):
-									// If the field is hidden, just display the input.
-									echo '<div class="control-group">';
-										if (!$field->hidden):
-											echo '<div class="control-label">';
-												echo $field->label;
-											echo '</div>';
-										endif;
-										echo '<div class="controls">';
-											echo $field->input;
-										echo '</div>';
-									echo '</div>';
+									echo JFusionFunctionAdmin::renderField($field);
 								endforeach;
 								echo '</fieldset>';
 							endforeach;
 						}
 						echo '<input type="hidden" name="params[' . $key . '][jfusionplugin]" value="' . $value['jfusionplugin'] . '" />';
-						echo '</fieldset>';
 					}
 					echo JHtml::_('tabs.end');
 					?>

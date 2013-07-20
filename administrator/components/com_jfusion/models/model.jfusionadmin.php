@@ -308,4 +308,30 @@ JS;
 			$document->addScriptDeclaration($js);
 		}
 	}
+
+	/**
+	 * @param JFormField $field
+	 *
+	 * @return string
+	 */
+	public static function renderField($field) {
+
+		if (!$field->hidden) {
+			$label =<<<HTML
+			<div class="control-label">
+				{$field->label}
+			</div>
+HTML;
+		}
+
+		$html=<<<HTML
+		<div class="control-group">
+			{$label}
+			<div class="controls">
+				{$field->input}
+			</div>
+		</div>
+HTML;
+		return $html;
+	}
 }
