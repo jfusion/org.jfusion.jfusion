@@ -181,7 +181,7 @@ class jfusionViewversioncheck extends JViewLegacy
 	 * @param string $filename   filename
 	 * @param string $name       name
 	 * @param string $path    version
-	 * @param JXMLElement $xml    version
+	 * @param SimpleXMLElement $xml    version
 	 *
 	 * @return string nothing
 	 *

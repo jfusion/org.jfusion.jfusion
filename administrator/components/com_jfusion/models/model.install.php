@@ -369,7 +369,7 @@ class JFusionPluginInstaller extends JObject
 			            foreach ($features as $f) {
 				            $xml = $this->manifest->$f;
 
-				            if ($xml instanceof JXMLElement) {
+				            if ($xml instanceof SimpleXMLElement) {
 					            $$f = $this->filterInput->clean($xml, 'integer');
 				            } elseif ($f == 'master' || $f == 'check_encryption') {
 					            $$f = 0;
@@ -632,7 +632,7 @@ class JFusionPluginInstaller extends JObject
                         $features = array('master', 'slave', 'dual_login', 'check_encryption');
                         foreach ($features as $f) {
                             $xml = $this->manifest->$f;
-	                        if ($xml instanceof JXMLElement) {
+	                        if ($xml instanceof SimpleXMLElement) {
                                 $$f = $this->filterInput->clean($xml, 'integer');
 	                        } elseif ($f == 'master' || $f == 'check_encryption') {
                                 $$f = 0;
@@ -695,7 +695,7 @@ class JFusionPluginInstaller extends JObject
      *
      * @param string $dir Directory
      *
-     * @return simpleXML|JXMLElement object (or null)
+     * @return SimpleXMLElement object (or null)
      */
     function _getManifest($dir)
     {
@@ -714,7 +714,7 @@ class JFusionPluginInstaller extends JObject
         * @TODO Remove backwards compatibility in a future version
         * Should be 'install', but for backward compatibility we will accept 'mosinstall'.
         */
-		if (!($xml instanceof JXMLElement) || ($xml->getName() != 'extension')) {
+		if (!($xml instanceof SimpleXMLElement) || ($xml->getName() != 'extension')) {
             // Free up xml parser memory and return null
             unset($xml);
             $xml = null;
@@ -819,38 +819,16 @@ class JFusionPluginInstaller extends JObject
     }
 
     /**
-     * getElementByPath
-     *
-     *  @param JXMLElement $xml xml object
-     *  @param string $element element path
-     *
-     *  @return JXMLElement elements
-     */
-    function getElementByPath($xml, $element)
-    {
-        $elements = explode('/',$element);
-        foreach ($elements as $element) {
-            if($xml instanceof JXMLElement) {
-                $xml = $xml->$element;
-            } else {
-                $xml = null;
-                break;
-            }
-        }
-        return $xml;
-    }
-
-    /**
      * getAttribute
      *
-     *  @param JXMLElement $xml xml object
+     *  @param SimpleXMLElement $xml xml object
      *  @param string $attribute attribute name
      *
      *  @return string result
      */
     function getAttribute($xml, $attribute)
     {
-        if($xml instanceof JXMLElement) {
+        if($xml instanceof SimpleXMLElement) {
 	        $attributes = $xml->attributes();
 	        if (isset($attributes[$attribute])) {
 		        $xml = (string)$attributes[$attribute];

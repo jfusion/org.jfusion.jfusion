@@ -144,7 +144,7 @@ jimport('joomla.html.pane');
 			        $pluginname = $plugin->original_name ? $plugin->original_name : $plugin->name;
 			        /**
 			         * @ignore
-			         * @var $val JXMLElement
+			         * @var $val SimpleXMLElement
 			         */
 			        foreach ($this->list->children() as $key => $val) {
 				        $original_name = (string)$val->originalname;

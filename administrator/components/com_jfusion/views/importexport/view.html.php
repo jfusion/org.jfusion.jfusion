@@ -31,7 +31,7 @@ defined('_JEXEC') or die('Restricted access');
 class jfusionViewimportexport extends JViewLegacy
 {
 	/**
-	 * @var $list JXMLElement
+	 * @var $list SimpleXMLElement
 	 */
 	var $list;
 

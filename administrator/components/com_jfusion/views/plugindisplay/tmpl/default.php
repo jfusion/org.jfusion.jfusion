@@ -221,7 +221,7 @@ $document->addScript('components/com_jfusion/js/File.Upload.js');
 									<?php
 									/**
 									 * @ignore
-									 * @var $plugin JXMLElement
+									 * @var $plugin SimpleXMLElement
 									 */
 									foreach ($this->VersionData as $plugin): ?>
 										<option value="<?php echo (string)$plugin->remotefile; ?>"><?php echo $plugin->getName() . ' - ' . (string)$plugin->description; ?></option>

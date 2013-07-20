@@ -1598,11 +1598,37 @@ class JFusionFunction
 	 * @param string $data file path or file content
 	 * @param boolean $isFile load from file
 	 *
-	 * @return JXMLElement returns true if plugin is correctly configured
+	 * @return SimpleXMLElement returns true if plugin is correctly configured
 	 */
 	public static function getXml($data, $isFile=true)
 	{
-		$xml = JFactory::getXML($data,$isFile);
+		// Disable libxml errors and allow to fetch error information as needed
+		libxml_use_internal_errors(true);
+
+		if ($isFile)
+		{
+			// Try to load the XML file
+			$xml = simplexml_load_file($data);
+		}
+		else
+		{
+			// Try to load the XML string
+			$xml = simplexml_load_string($data);
+		}
+
+		if ($xml === false)
+		{
+			JFusionFunction::raiseError(JText::_('JLIB_UTIL_ERROR_XML_LOAD'));
+
+			if ($isFile)
+			{
+				JFusionFunction::raiseError($data);
+			}
+			foreach (libxml_get_errors() as $error)
+			{
+				JFusionFunction::raiseError($error->message);
+			}
+		}
 		return $xml;
 	}
 

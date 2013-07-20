@@ -402,7 +402,7 @@ HTML;
 		    $files = $listfiles->file;
 		    /**
 		     * @ignore
-		     * @var $file JXMLElement
+		     * @var $file SimpleXMLElement
 		     */
 		    foreach($files as $file) {
 			    $file = (string)$file;

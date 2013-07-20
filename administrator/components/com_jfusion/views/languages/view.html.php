@@ -52,7 +52,7 @@ class jfusionViewlanguages extends JViewLegacy
 	        $languages = $xml->languages->children();
 	        /**
 	         * @ignore
-	         * @var $language JXMLElement
+	         * @var $language SimpleXMLElement
 	         */
 	        foreach ($languages as $language) {
 		        $name = $language->attributes('tag');
