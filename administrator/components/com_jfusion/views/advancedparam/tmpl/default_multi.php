@@ -23,11 +23,6 @@ $uri->delVar('task');
 	<h1>Select Plugin Multi</h1>
 
 	<form action="<?php echo $uri->toString() ?>" method="post" name="adminForm" id="adminForm" class="form-horizontal">
-		<?php
-		if (isset($this->error)) {
-			echo $this->error;
-		}
-		?>
 		<table class="paramlist jfusiontable" style="width:100%;border-spacing:1px;">
 			<tbody>
 			<tr>

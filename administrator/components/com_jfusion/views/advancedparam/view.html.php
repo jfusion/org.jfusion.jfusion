@@ -267,10 +267,10 @@ class jfusionViewadvancedparam extends JViewLegacy
 				if (!array_key_exists($newPlugin, $value)) {
 					$value[$newPlugin] = array('jfusionplugin' => $newPlugin);
 				} else {
-					$this->error = JText::_('NOT_ADDED_TWICE');
+					JFusionFunction::raiseError(JText::_('NOT_ADDED_TWICE'), $newPlugin);
 				}
 			} else {
-				$this->error = JText::_('MUST_SELLECT_PLUGIN');
+				JFusionFunction::raiseError(JText::_('MUST_SELLECT_PLUGIN'));
 			}
 			$this->saveParam($value);
 		} else if ($task == 'remove') {
@@ -278,7 +278,7 @@ class jfusionViewadvancedparam extends JViewLegacy
 			if (array_key_exists($rmPlugin, $value)) {
 				unset($value[$rmPlugin]);
 			} else {
-				$this->error = JText::_('NOT_PLUGIN_REMOVE');
+				JFusionFunction::raiseError(JText::_('NOT_PLUGIN_REMOVE'));
 			}
 			$this->saveParam($value);
 		}
