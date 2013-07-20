@@ -217,7 +217,7 @@ $document->addScript('components/com_jfusion/js/File.Upload.js');
 								</label>
 							</td>
 							<td>
-								<select name="install_url" id="install_url2">
+								<select name="install_url" id="install_url2" style="width: auto;">
 									<?php
 									/**
 									 * @ignore
