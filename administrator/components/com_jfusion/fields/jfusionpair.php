@@ -79,11 +79,6 @@ JS;
 				<td>
 					<a href="javascript:JFusion.removePair('{$this->id}', '0');">{$delete}</a>
 				</td>
-				<script type="text/javascript">
-					window.addEvent('domready',function() {
-
-					}
-				</script>
 			</tr>
 HTML;
 		} else {
@@ -145,11 +140,7 @@ HTML;
 					</div>
 	    		</div>
 			</div>
-			<div class="button2-left">
-				<div class="blank">
-					<a class="modal btn" title="{$configure}"  href="" rel="{target: '{$this->id}_target', handler: 'adopt', return: '{$this->id}', onClose : JFusion.closeAdopt, size: {x: 650, y: 375}}">{$configure}</a>
-				</div>
-			</div>
+			<a class="modal btn" title="{$configure}"  href="" rel="{target: '{$this->id}_target', handler: 'adopt', return: '{$this->id}', onClose : JFusion.closeAdopt, size: {x: 650, y: 375}}">{$configure}</a>
 HTML;
 
 		if($this->value) {

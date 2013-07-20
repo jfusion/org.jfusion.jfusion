@@ -42,13 +42,15 @@ class JFormFieldJFusionItemid extends JFormField
 	    $document->addScript('components/com_jfusion/js/jfusion.js');
 
     	$value = $this->value;
-    	$name = $this->name;
+
         static $elId;
         if (!is_int($elId)) {
             $elId = 0;
         } else {
             $elId++;
         }
+	    $name = $this->name.$elId;
+
 
         $feature = $this->element['feature'];
 
@@ -62,21 +64,17 @@ class JFormFieldJFusionItemid extends JFormField
             $src = 'components/com_jfusion/images/clear.png';
         }
 
-        $link = 'index.php?option=com_jfusion&amp;task=itemidselect&amp;tmpl=component&amp;ename=' . $name . '&amp;elId=' . $elId . '&amp;feature=' . $feature;
+        $link = 'index.php?option=com_jfusion&amp;task=itemidselect&amp;tmpl=component&amp;ename=' . $name . '&amp;feature=' . $feature;
 
         $select_menuitem = JText::_('SELECT_MENUITEM');
         $select = JText::_('SELECT');
         $html = <<<HTML
-            <div style="float: left;">
-                <input style="background: #ffffff;" type="text" id="{$name}_name{$elId}" value="{$value}" disabled="disabled" />
+            <div style="float: left; margin-right:5px">
+                <input style="background: #ffffff;" type="text" id="{$name}_name" value="{$value}" disabled="disabled" />
             </div>
-            <div class="button2-left">
-                <div class="blank">
-                    <a class="modal btn" title="{$select_menuitem}"  href="{$link}" rel="{handler: 'iframe', size: {x: 650, y: 375}}">{$select}</a>
-                </div>
-            </div>
-            <img id="{$name}_save{$elId}" src="{$src}" alt="Save">
-            <input type="hidden" id="{$name}_id{$elId}" name="{$name}" value="{$value}" />
+            <a class="modal btn" title="{$select_menuitem}"  href="{$link}" rel="{handler: 'iframe', size: {x: 650, y: 375}}">{$select}</a>
+            <img id="{$name}_save" src="{$src}" alt="Save">
+            <input type="hidden" id="{$name}_id" name="{$name}" value="{$value}" />
 HTML;
         return $html;
     }

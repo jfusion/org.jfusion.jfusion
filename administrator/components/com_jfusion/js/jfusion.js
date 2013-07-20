@@ -195,22 +195,23 @@ JFusion.module = function(action) {
     submitform('saveconfig');
 };
 
-JFusion.selectItemid = function(name,num,id) {
-    $(name+'_id'+num).value = id;
-    $(name+'_name'+num).value = id;
-    $(name+'_save'+num).set('src', 'components/com_jfusion/images/filesave.png');
-    SqueezeBox.close();
-};
-
-JFusion.discussionParamSet = function(name, base64) {
-    $(name + '_id').value = base64;
-    $(name + '_img').set('src', 'components/com_jfusion/images/filesave.png');
-    SqueezeBox.close();
-};
-
-JFusion.advancedParamSet = function(title, base64, name) {
-    $(name + '_id').value = base64;
-    $(name + '_name').value = title;
+JFusion.submitParams = function(name, value, title) {
+    var id = $(name+'_id');
+    if (id.value != value) {
+        var save = $(name+'_save');
+        if (save) {
+            save.set('src', 'components/com_jfusion/images/filesave.png');
+        }
+        $(name+'_id').value = value;
+    }
+    var n = $(name+'_name');
+    if (n) {
+        if (title) {
+            n.value = title;
+        } else {
+            n.value = value;
+        }
+    }
     SqueezeBox.close();
 };
 

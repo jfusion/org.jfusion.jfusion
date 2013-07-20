@@ -55,7 +55,6 @@ class jfusionViewitemidselect extends JViewLegacy
         $document->addStyleDeclaration($css);
         $ename = JFactory::getApplication()->input->getString('ename');
         //get the number to attach to the id of the input to update after selecting a menu item
-        $elId = JFactory::getApplication()->input->get('elId');
         $feature = JFactory::getApplication()->input->get('feature', 'any');
         JHTML::_('behavior.tooltip');
         
@@ -104,7 +103,6 @@ class jfusionViewitemidselect extends JViewLegacy
 	    $this->directlinks = $directlinks;
 
 	    $this->ename = $ename;
-	    $this->elId = $elId;
         parent::display($tpl);
     }
 }

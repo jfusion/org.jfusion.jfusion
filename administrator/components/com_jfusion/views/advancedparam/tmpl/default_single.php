@@ -19,6 +19,7 @@ $uri = JURI::getInstance();
 $uri->setVar('task','advancedparamsubmit');
 ?>
 <div class="jfusion">
+	<?php echo $this->toolbar; ?>
 	<h1>Select Plugin Single</h1>
 	<form
 		action="<?php echo $uri->toString() ?>"
@@ -49,9 +50,6 @@ $uri->setVar('task','advancedparamsubmit');
 					endif;
 					?>
 				</td>
-			</tr>
-			<tr>
-				<td colspan="2"><input type="submit" value="Save" /></td>
 			</tr>
 			</tbody>
 		</table>

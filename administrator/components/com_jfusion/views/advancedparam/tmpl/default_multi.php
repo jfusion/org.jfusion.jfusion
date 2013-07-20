@@ -20,6 +20,7 @@ $uri = JURI::getInstance();
 $uri->delVar('task');
 ?>
 <div class="jfusion">
+	<?php echo $this->toolbar; ?>
 	<h1>Select Plugin Multi</h1>
 
 	<form action="<?php echo $uri->toString() ?>" method="post" name="adminForm" id="adminForm" class="form-horizontal">
@@ -55,13 +56,6 @@ $uri->delVar('task');
 					}
 					echo JHtml::_('tabs.end');
 					?>
-				</td>
-			</tr>
-			<tr>
-				<td colspan="2">
-					<div align="right">
-						<input type="submit" value="Save" />
-					</div>
 				</td>
 			</tr>
 			</tbody>

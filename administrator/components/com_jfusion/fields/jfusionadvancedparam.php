@@ -104,14 +104,10 @@ class JFormFieldJFusionAdvancedParam extends JFormField
 		JHTML::_('behavior.modal', 'a.modal');
 
 		$html =<<<HTML
-        <div style="float: left;">
+        <div style="float: left; margin-right:5px">
             <input style="background: #ffffff;" type="text" id="{$ename}_name" value="{$title}" disabled="disabled" />
         </div>
-        <div class="button2-left">
-            <div class="blank">
-                <a id="{$ename}_link" class="modal btn" title="{$select_plugin}"  href="{$link}" rel="{handler: 'iframe', size: {x: window.getSize().x-80, y: window.getSize().y-80}}">{$select}</a>
-            </div>
-        </div>
+        <a id="{$ename}_link" class="modal btn" title="{$select_plugin}"  href="{$link}" rel="{handler: 'iframe', size: {x: window.getSize().x-80, y: window.getSize().y-80}}">{$select}</a>
         <input type="hidden" id="{$ename}_id" name="{$this->name}" value="{$this->value}" />
 HTML;
 

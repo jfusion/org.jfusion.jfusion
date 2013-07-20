@@ -220,10 +220,10 @@
                 </field>
                 <field name="include_categories" type="jfusionsql" multiple="1" jname="joomla_int" default="" key_field="id" value_field="name" label="INCLUDE_CATEGORIES" description="INCLUDE_CATEGORIES_DESC" query="joomla.categories" />
                 <field name="exclude_categories" type="jfusionsql" multiple="1" jname="joomla_int" default="" key_field="id" value_field="name" label="EXCLUDE_CATEGORIES" description="EXCLUDE_CATEGORIES_DESC" query="joomla.categories" />
-                <field name="pair_categories" type="DiscussionBotParam" default="" label="PAIR_CATEGORIES" description="PAIR_CATEGORIES_DESC" />
+                <field name="pair_categories" type="DiscussionBotParam"  feature="joomla" default="" label="PAIR_CATEGORIES" description="PAIR_CATEGORIES_DESC" />
                 <field name="include_k2_categories" type="jfusionsql" multiple="1" jname="joomla_int" default="" key_field="id" value_field="name" label="INCLUDE_K2_CATEGORIES" description="INCLUDE_K2_CATEGORIES_DESC" query="k2.categories" />
                 <field name="excluded_k2_categories" type="jfusionsql" multiple="1" jname="joomla_int" default="" key_field="id" value_field="name" label="EXCLUDE_K2_CATEGORIES" description="EXCLUDE_k2_CATEGORIES_DESC" query="k2.categories" />
-                <field name="pair_k2_categories" type="DiscussionBotParam" default="" label="PAIR_K2_CATEGORIES" description="PAIR_K2_CATEGORIES_DESC" />
+                <field name="pair_k2_categories" type="DiscussionBotParam"  feature="k2" default="" label="PAIR_K2_CATEGORIES" description="PAIR_K2_CATEGORIES_DESC" />
 
                 <field name="default_forum" type="ForumListDiscussionbot" description="DEFAULT_FORUM" label="DEFAULT_FORUM" />
                 <field name="use_article_userid" type="radio" class="btn-group" label="USE_ARTICLE_USER" description="USE_ARTICLE_USER_DESCR" default="1">

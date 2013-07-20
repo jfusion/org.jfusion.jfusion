@@ -90,6 +90,29 @@ class jfusionViewadvancedparam extends JViewLegacy
 
 		$this->output = $output;
 
+		$apply = JText::_('APPLY');
+		$close = JText::_('CLOSE');
+		$toolbar = <<<HTML
+	    <div class="btn-toolbar" id="toolbar">
+			<div class="btn-group" id="toolbar-apply">
+				<button href="#" onclick="$('adminForm').submit()" class="btn btn-small btn-success">
+					<i class="icon-apply icon-white">
+					</i>
+					{$apply}
+				</button>
+			</div>
+
+			<div class="btn-group" id="toolbar-cancel">
+				<button href="#" onclick="window.parent.SqueezeBox.close();" class="btn btn-small">
+					<i class="icon-cancel ">
+					</i>
+				    {$close}
+				</button>
+			</div>
+		</div>
+HTML;
+		$this->toolbar = $toolbar;
+
 		//for J1.6+ single select modes, params is an array
 		$this->comp = is_array($params) ? $params : array();
 

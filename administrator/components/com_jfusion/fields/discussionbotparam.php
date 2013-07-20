@@ -36,59 +36,72 @@ class JFormFieldDiscussionbotparam extends JFormField
      */
 	function getInput()
 	{
-		$mainframe = JFactory::getApplication();
+		$html = '';
+		try {
+			$mainframe = JFactory::getApplication();
 
-		$db			= JFactory::getDBO();
-		$doc 		= JFactory::getDocument();
-		$fieldName = $this->formControl.'['.$this->group.'][' . $this->fieldname . ']';
-        $name = (string) $this->fieldname;
-        $value = $this->value;
+			$db			= JFactory::getDBO();
+			$doc 		= JFactory::getDocument();
+			$fieldName = $this->formControl.'['.$this->group.'][' . $this->fieldname . ']';
+			$name = (string) $this->fieldname;
+			$value = $this->value;
 
-	    $query = 'SELECT params FROM #__extensions WHERE element = \'jfusion\' AND folder = \'content\'';
+			$query = 'SELECT params FROM #__extensions WHERE element = \'jfusion\' AND folder = \'content\'';
 
-        $db->setQuery($query);
-        $results = $db->loadResult();
-        if($results) {
-			$registry = new JRegistry($results);
-			$params = $registry->toArray();
-            $jname = (isset($params['jname'])) ? $params['jname'] : '';
-        }
+			$db->setQuery($query);
+			$results = $db->loadResult();
+			if($results) {
+				$registry = new JRegistry($results);
+				$params = $registry->toArray();
+				$jname = (isset($params['jname'])) ? $params['jname'] : '';
+			}
 
-	 	if(empty($jname)) {
-	 		return '<span style="float:left; margin: 5px 0; font-weight: bold;">'.JText::_('NO_PLUGIN_SELECT').'</span>';
-	 	} else {
-		    JHtml::_('behavior.framework');
+			$feature = $this->element['feature'];
 
-		    $document = JFactory::getDocument();
-		    $document->addScript('components/com_jfusion/js/jfusion.js');
+			if ($feature == 'k2') {
+				$jdb = JFactory::getDBO();
+				$query = 'SELECT enabled FROM #__extensions WHERE element = ' . $jdb->Quote('com_k2');
+				$db->setQuery( $query );
+				$enabled = $jdb->loadResult();
+				if (empty($enabled)) {
+					throw new Exception(JText::_('K2_NOT_AVAILABLE'));
+				}
+			}
 
-		    jimport( 'joomla.user.helper' );
-		    $hash = JApplication::getHash( $name.JUserHelper::genRandomPassword());
-		    $session = JFactory::getSession();
-		    $session->set($hash, $value);
+			if(empty($jname)) {
+				throw new Exception(JText::_('NO_PLUGIN_SELECT'));
+			} else {
+				JHtml::_('behavior.framework');
 
-			$link = 'index.php?option=com_jfusion&amp;task=discussionbot&amp;tmpl=component&amp;jname='.$jname.'&amp;ename='.$name.'&amp;'.$name.'='.$hash;
+				$document = JFactory::getDocument();
+				$document->addScript('components/com_jfusion/js/jfusion.js');
 
-			JHTML::_('behavior.modal', 'a.modal');
+				jimport( 'joomla.user.helper' );
+				$hash = JApplication::getHash( $name.JUserHelper::genRandomPassword());
+				$session = JFactory::getSession();
+				$session->set($hash, $value);
 
-            $assign_paits = JText::_('ASSIGN_PAIRS');
+				$link = 'index.php?option=com_jfusion&amp;task=discussionbot&amp;tmpl=component&amp;jname='.$jname.'&amp;ename='.$name.'&amp;'.$name.'='.$hash;
 
-            if(!empty($params[$name])) {
-                $src = 'components/com_jfusion/images/tick.png';
-            } else {
-                $src = 'components/com_jfusion/images/clear.png';
-            }
+				JHTML::_('behavior.modal', 'a.modal');
 
-            $html =<<<HTML
-			<div class="button2-left">
-			    <div class="blank">
-			        <a class="modal btn" id="{$name}_link" title="{$assign_paits}"  href="{$link}" rel="{handler: 'iframe', size: {x: 650, y: 375}}">{$assign_paits}</a>
-                </div>
-            </div>
-			<img id="{$name}_img" src="{$src}">
+				$assign_paits = JText::_('ASSIGN_PAIRS');
+
+				if(!empty($params[$name])) {
+					$src = 'components/com_jfusion/images/tick.png';
+				} else {
+					$src = 'components/com_jfusion/images/clear.png';
+				}
+
+				$html =<<<HTML
+			<a class="modal btn" id="{$name}_link" title="{$assign_paits}"  href="{$link}" rel="{handler: 'iframe', size: {x: 650, y: 375}}">{$assign_paits}</a>
+			<img id="{$name}_save" src="{$src}">
 			<input type="hidden" id="{$name}_id" name="{$fieldName}" value="{$value}" />
 HTML;
-			return $html;
-	 	}
+			}
+		} catch (Exception $e) {
+			$html = '<span style="float:left; margin: 5px 0; font-weight: bold;">'.$e->getMessage().'</span>';
+		}
+		return $html;
 	}
 }

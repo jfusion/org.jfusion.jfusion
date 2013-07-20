@@ -178,24 +178,28 @@ class JFusionController extends JControllerLegacy
         //get the posted variables
         $post = JFactory::getApplication()->input->post->get('params', array(), 'array');
         $jname = JFactory::getApplication()->input->post->getString('jname', '');
-        //check for trailing slash in URL, in order for us not to worry about it later
-        if (substr($post['source_url'], -1) == '/') {
-        } else {
-            $post['source_url'].= '/';
-        }
-        //now also check to see that the url starts with http:// or https://
-        if (substr($post['source_url'], 0, 7) != 'http://' && substr($post['source_url'], 0, 8) != 'https://') {
-            if (substr($post['source_url'], 0, 1) != '/') {
-                $post['source_url'] = 'http://' . $post['source_url'];
-            }
-        }
-        if (!empty($post['source_path'])) {
-            if (!is_dir($post['source_path'])) {
-                JFusionFunction::raiseWarning(JText::_('SOURCE_PATH_NOT_FOUND'));
-            }
-        }
-	    $action = JFactory::getApplication()->input->get('action');
 	    try {
+		    if (empty($post)) {
+			    throw new Exception(JText::_('SAVE_FAILURE'));
+		    }
+	        //check for trailing slash in URL, in order for us not to worry about it later
+	        if (substr($post['source_url'], -1) == '/') {
+	        } else {
+	            $post['source_url'].= '/';
+	        }
+	        //now also check to see that the url starts with http:// or https://
+	        if (substr($post['source_url'], 0, 7) != 'http://' && substr($post['source_url'], 0, 8) != 'https://') {
+	            if (substr($post['source_url'], 0, 1) != '/') {
+	                $post['source_url'] = 'http://' . $post['source_url'];
+	            }
+	        }
+	        if (!empty($post['source_path'])) {
+	            if (!is_dir($post['source_path'])) {
+	                JFusionFunction::raiseWarning(JText::_('SOURCE_PATH_NOT_FOUND'));
+	            }
+	        }
+		    $action = JFactory::getApplication()->input->get('action');
+
 		    if (!JFusionFunctionAdmin::saveParameters($jname, $post)) {
 			    throw new Exception(JText::_('SAVE_FAILURE'));
 		    } else {
@@ -672,7 +676,7 @@ class JFusionController extends JControllerLegacy
 		}
 		$js = '<script type="text/javascript">';
 		$js .= <<<JS
-            window.parent.JFusion.advancedParamSet('{$title}', '{$serParam}','{$ename}');
+            window.parent.JFusion.submitParams('{$ename}', '{$serParam}','{$title}');
 JS;
 		$js .= '</script>';
 		echo $js;

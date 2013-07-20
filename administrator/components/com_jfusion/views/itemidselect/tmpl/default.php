@@ -53,7 +53,7 @@ defined('_JEXEC') or die('Restricted access');
 			?>
 				<td>
 
-	                <a style="cursor: pointer;" onclick="window.parent.JFusion.selectItemid('<?php echo $this->ename; ?>', '<?php echo $this->elId; ?>' , '<?php echo $row->id; ?>');">
+	                <a style="cursor: pointer;" onclick="window.parent.JFusion.submitParams('<?php echo $this->ename; ?>', '<?php echo $row->id; ?>');">
 	                    <?php echo htmlspecialchars($row->id, ENT_QUOTES, 'UTF-8'); ?>
 	                </a>
 	            </td>
@@ -61,7 +61,7 @@ defined('_JEXEC') or die('Restricted access');
 	                <?php echo $row->menutype;?>
 	            </td>
 	            <td>
-	                <a style="cursor: pointer;" onclick="window.parent.JFusion.selectItemid('<?php echo $this->ename; ?>', '<?php echo $this->elId; ?>','<?php echo $row->id; ?>');">
+	                <a style="cursor: pointer;" onclick="window.parent.JFusion.submitParams('<?php echo $this->ename; ?>', '<?php echo $row->id; ?>');">
 	                    <?php echo $row->name; ?>
 	                </a>
 	            </td>
@@ -110,7 +110,7 @@ defined('_JEXEC') or die('Restricted access');
 		?>
 			<tr class="row<?php echo ($row_count % 2); ?>">
 	            <td>
-		            <a style="cursor: pointer;" onclick="window.parent.JFusion.selectItemid('<?php echo $this->ename; ?>', '<?php echo $this->elId; ?>' ,'<?php echo $row->name; ?>');">
+		            <a style="cursor: pointer;" onclick="window.parent.JFusion.submitParams('<?php echo $this->ename; ?>', '<?php echo $row->name; ?>');">
 		                <?php echo htmlspecialchars($row->name, ENT_QUOTES, 'UTF-8'); ?>
 		            </a>
 	            </td>

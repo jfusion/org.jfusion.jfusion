@@ -134,19 +134,23 @@ class jfusionViewdiscussionbot extends JViewLegacy
         $apply = JText::_('APPLY');
         $close = JText::_('CLOSE');
 	    $toolbar = <<<HTML
-                <div class="m">
-                    <div class="toolbar-list" id="toolbar">
-                        <ul>
-                            <li class="button" id="toolbar-apply">
-                                <a href="javascript:void(0);" onclick="window.parent.JFusion.discussionParamSet('{$ename}', '{$encoded_pairs}');" class="toolbar"><span class="icon-32-apply"></span>{$apply}</a>
-                            </li>
-                            <li class="button" id="toolbar-cancel">
-                                <a href="javascript:void(0);" onclick="window.parent.SqueezeBox.close();" class="toolbar"><span class="icon-32-cancel"></span>{$close}</a>
-                            </li>
-                        </ul>
-                        <div class="clr"></div>
-                    </div>
-                </div>
+	    <div class="btn-toolbar" id="toolbar">
+			<div class="btn-group" id="toolbar-apply">
+				<button href="#" onclick="window.parent.JFusion.submitParams('{$ename}', '{$encoded_pairs}')" class="btn btn-small btn-success">
+					<i class="icon-apply icon-white">
+					</i>
+					{$apply}
+				</button>
+			</div>
+
+			<div class="btn-group" id="toolbar-cancel">
+				<button href="#" onclick="window.parent.SqueezeBox.close();" class="btn btn-small">
+					<i class="icon-cancel ">
+					</i>
+				    {$close}
+				</button>
+			</div>
+		</div>
 HTML;
 
 	    //assign references

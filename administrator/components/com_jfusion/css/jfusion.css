@@ -158,10 +158,6 @@ a.navButton:hover {
     background-image: url(../images/importexport.png);
 }
 
-.jfusion div.current fieldset.jfusionform {
-    border: 1px #ccc solid;
-}
-
 .jfusion table.jfusionform {
     background-color: #fff;
     border: solid 1px #d5d5d5;
