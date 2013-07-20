@@ -136,27 +136,26 @@ class jfusionViewversioncheck extends JViewLegacy
 					$system[] = $mysql;
 
 					//check the JFusion component,plugins and modules versions
-					$JFusion = $this->getVersionNumber(JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'jfusion.xml', JText::_('COMPONENT'), 'component', $xml);
-					$p = $xml->component->version;
-					if ($p) {
-						$JFusionVersion = (string)$p;
+					$JFusion = $this->getVersionNumber(JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'jfusion.xml', JText::_('COMPONENT'), $xml->component);
+					if ($xml->component->version) {
+						$JFusionVersion = (string)$xml->component->version;
 					}
 					$components[] = $JFusion;
-					$components[] = $this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'mod_jfusion_activity' . DIRECTORY_SEPARATOR . 'mod_jfusion_activity.xml', JText::_('ACTIVITY') . ' ' . JText::_('MODULE'), 'module/activity', $xml);
-					$components[] = $this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'mod_jfusion_user_activity' . DIRECTORY_SEPARATOR . 'mod_jfusion_user_activity.xml', JText::_('USER') . ' ' . JText::_('ACTIVITY') . ' ' . JText::_('MODULE'), 'module/useractivity', $xml);
-					$components[] = $this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'mod_jfusion_whosonline' . DIRECTORY_SEPARATOR . 'mod_jfusion_whosonline.xml', JText::_('WHOSONLINE') . ' ' . JText::_('MODULE'), 'module/whosonline', $xml);
-					$components[] = $this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'mod_jfusion_login' . DIRECTORY_SEPARATOR . 'mod_jfusion_login.xml', JText::_('LOGIN') . ' ' . JText::_('MODULE'), 'module/login', $xml);
+					$components[] = $this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'mod_jfusion_activity' . DIRECTORY_SEPARATOR . 'mod_jfusion_activity.xml', JText::_('ACTIVITY') . ' ' . JText::_('MODULE'), $xml->module->activity);
+					$components[] = $this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'mod_jfusion_user_activity' . DIRECTORY_SEPARATOR . 'mod_jfusion_user_activity.xml', JText::_('USER') . ' ' . JText::_('ACTIVITY') . ' ' . JText::_('MODULE'), $xml->module->useractivity);
+					$components[] = $this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'mod_jfusion_whosonline' . DIRECTORY_SEPARATOR . 'mod_jfusion_whosonline.xml', JText::_('WHOSONLINE') . ' ' . JText::_('MODULE'), $xml->module->whosonline);
+					$components[] = $this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'mod_jfusion_login' . DIRECTORY_SEPARATOR . 'mod_jfusion_login.xml', JText::_('LOGIN') . ' ' . JText::_('MODULE'), $xml->module->login);
 
-					$components[] = $this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'authentication' . DIRECTORY_SEPARATOR . 'jfusion'. DIRECTORY_SEPARATOR . 'jfusion.xml', JText::_('AUTHENTICATION') . ' ' . JText::_('PLUGIN'), 'plugin/auth', $xml);
-					$components[] = $this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'user' . DIRECTORY_SEPARATOR .  'jfusion'. DIRECTORY_SEPARATOR . 'jfusion.xml', JText::_('USER') . ' ' . JText::_('PLUGIN'), 'plugin/user', $xml);
-					$components[] = $this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'search' . DIRECTORY_SEPARATOR .  'jfusion'. DIRECTORY_SEPARATOR . 'jfusion.xml', JText::_('SEARCH') . ' ' . JText::_('PLUGIN'), 'plugin/search', $xml);
-					$components[] = $this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR .  'jfusion'. DIRECTORY_SEPARATOR . 'jfusion.xml', JText::_('DISCUSSION') . ' ' . JText::_('PLUGIN'), 'plugin/discussion', $xml);
-					$components[] = $this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'system' . DIRECTORY_SEPARATOR .  'jfusion'. DIRECTORY_SEPARATOR . 'jfusion.xml', JText::_('SYSTEM') . ' ' . JText::_('PLUGIN'), 'plugin/system', $xml);
+					$components[] = $this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'authentication' . DIRECTORY_SEPARATOR . 'jfusion'. DIRECTORY_SEPARATOR . 'jfusion.xml', JText::_('AUTHENTICATION') . ' ' . JText::_('PLUGIN'), $xml->plugin->auth);
+					$components[] = $this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'user' . DIRECTORY_SEPARATOR .  'jfusion'. DIRECTORY_SEPARATOR . 'jfusion.xml', JText::_('USER') . ' ' . JText::_('PLUGIN'), $xml->plugin->user);
+					$components[] = $this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'search' . DIRECTORY_SEPARATOR .  'jfusion'. DIRECTORY_SEPARATOR . 'jfusion.xml', JText::_('SEARCH') . ' ' . JText::_('PLUGIN'), $xml->plugin->search);
+					$components[] = $this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR .  'jfusion'. DIRECTORY_SEPARATOR . 'jfusion.xml', JText::_('DISCUSSION') . ' ' . JText::_('PLUGIN'), $xml->plugin->discussion);
+					$components[] = $this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'system' . DIRECTORY_SEPARATOR .  'jfusion'. DIRECTORY_SEPARATOR . 'jfusion.xml', JText::_('SYSTEM') . ' ' . JText::_('PLUGIN'), $xml->plugin->system);
 				}
 
 				foreach ($plugins as $key => $plugin) {
 					if (in_array($plugin->name,$url->jnames)) {
-						$jfusion_plugins[] = $this->getVersionNumber(JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $plugin->name . DIRECTORY_SEPARATOR . 'jfusion.xml', $plugin->name, 'plugins/'.$plugin->name, $xml);
+						$jfusion_plugins[] = $this->getVersionNumber(JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $plugin->name . DIRECTORY_SEPARATOR . 'jfusion.xml', $plugin->name, $xml->plugins->{$plugin->name});
 						unset($plugins[$key]);
 					}
 				}
@@ -180,13 +179,12 @@ class jfusionViewversioncheck extends JViewLegacy
 	 *
 	 * @param string $filename   filename
 	 * @param string $name       name
-	 * @param string $path    version
 	 * @param SimpleXMLElement $xml    version
 	 *
 	 * @return string nothing
 	 *
 	 */
-	function getVersionNumber($filename, $name, $path=null, $xml=null)
+	function getVersionNumber($filename, $name, $xml=null)
 	{
 		$output = new stdClass;
 		$output->class = '';
@@ -201,22 +199,18 @@ class jfusionViewversioncheck extends JViewLegacy
 		$output->version = JText::_('UNKNOWN');
 		$output->oldversion = JText::_('UNKNOWN');
 
-		if ($path && $xml) {
-			$element = $xml->$path->version;
-			if ($element) {
-				$output->version = (string)$element;
+		if ($xml) {
+			if ($xml->version) {
+				$output->version = (string)$xml->version;
 			}
-			$element = $xml->$path->remotefile;
-			if ($element) {
-				$output->updateurl = (string)$element;
+			if ($xml->remotefile) {
+				$output->updateurl = (string)$xml->remotefile;
 			}
-			$element = $xml->$path->revision;
-			if ($element) {
-				$output->rev = trim((string)$element);
+			if ($xml->revision) {
+				$output->rev = trim((string)$xml->revision);
 			}
-			$element = $xml->$path->timestamp;
-			if ($element) {
-				$output->date = trim((string)$element);
+			if ($xml->timestamp) {
+				$output->date = trim((string)$xml->timestamp);
 			}
 		}
 
@@ -225,13 +219,11 @@ class jfusionViewversioncheck extends JViewLegacy
 			$xml = JFusionFunction::getXml($filename);
 
 			$output->oldversion = (string)$xml->version;
-			$revision = $xml->revision;
-			if ($revision) {
-				$output->oldrev = trim((string)$revision);
+			if ($xml->revision) {
+				$output->oldrev = trim((string)$xml->revision);
 			}
-			$timestamp = $xml->timestamp;
-			if ($timestamp) {
-				$output->olddate = trim((string)$timestamp);
+			if ($xml->timestamp) {
+				$output->olddate = trim((string)$xml->timestamp);
 			}
 
 			if (version_compare($output->oldversion, $output->version) == - 1 || ($output->oldrev && $output->rev && $output->oldrev != $output->rev )) {
