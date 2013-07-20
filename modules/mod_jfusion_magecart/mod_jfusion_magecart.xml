@@ -7,7 +7,7 @@
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<authorEmail>webmaster@jfusion.org</authorEmail>
 	<authorUrl>www.jfusion.org</authorUrl>
-	<version>1.8.4-002</version>
+	<version>1.8.4-003</version>
     <revision>$revision$</revision>
     <timestamp>$timestamp$</timestamp>
 	<description>This module will display a box with the current cart of the user. You need to have the magelib plugin system installed.</description>
