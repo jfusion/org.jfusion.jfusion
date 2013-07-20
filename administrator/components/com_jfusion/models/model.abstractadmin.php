@@ -723,6 +723,8 @@ JS;
     }
 
     /**
+     * This function is used to display to the user if the software requires file access to work
+     *
      * @return string UNKNOWN or JNO or JYES or ??
      */
     function requireFileAccess()
@@ -731,6 +733,8 @@ JS;
     }
 
 	/**
+	 * This function tells if the software supports more than one instance
+	 *
 	 * @return bool do the plugin support multi instance
 	 */
 	function multiInstance()
