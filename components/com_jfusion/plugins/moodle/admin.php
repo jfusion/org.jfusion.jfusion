@@ -248,7 +248,7 @@ HTML;
         $source_path = $params->get ( 'source_path' );
         jimport ( 'joomla.filesystem.archive' );
         jimport ( 'joomla.filesystem.file' );
-        $pear_path = realpath ( dirname ( __FILE__ ) ) . DS .'..'.DS.'..'.DS.'models'.DS. 'pear';
+	    $pear_path = JPATH_ADMINISTRATOR.DS.'components'.DS.'com_jfusion'.DS.'models'.DS. 'pear';
         require_once $pear_path.DS.'PEAR.php';
         $pear_archive_path = $pear_path.DS.archive_tar.DS.'Archive_Tar.php';
         require_once $pear_archive_path;
