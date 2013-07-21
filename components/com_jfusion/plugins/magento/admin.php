@@ -329,7 +329,7 @@ HTML;
 			$source_path = $params->get ( 'source_path' );
 			jimport ( 'joomla.filesystem.archive' );
 			jimport ( 'joomla.filesystem.file' );
-			$pear_path = realpath ( dirname ( __FILE__ ) ) . DIRECTORY_SEPARATOR .'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR. 'pear';
+			$pear_path = JPATH_ADMINISTRATOR.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR. 'pear';
 			require_once $pear_path.DIRECTORY_SEPARATOR.'PEAR.php';
 			$pear_archive_path = $pear_path.DIRECTORY_SEPARATOR.archive_tar.DIRECTORY_SEPARATOR.'Archive_Tar.php';
 			require_once $pear_archive_path;
