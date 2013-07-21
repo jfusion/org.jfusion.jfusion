@@ -14,32 +14,43 @@ defined('_JEXEC') or die('Restricted access');
 
 ?>
 <script type="text/javascript">
-    function getElement(aID)
-    {
-        return (document.getElementById) ?
-            document.getElementById(aID) : document.all[aID];
-    }
+	if('undefined'=== typeof JFusion) {
+		var JFusion = {};
+	}
 
-    function getIFrameDocument(aID){
-        var rv = null;
-        var frame=getElement(aID);
-        // if contentDocument exists, W3C compliant (e.g. Mozilla)
+	JFusion.getElement = function(aID) {
+		return (document.getElementById) ? document.getElementById(aID) : document.all[aID];
+	}
 
-        if (frame.contentDocument) {
-            rv = frame.contentDocument;
-        } else {
-            // bad IE  ;)
-            rv = document.frames[aID].document;
-        }
-        return rv;
-    }
+	JFusion.getIFrameDocument = function(aID) {
+		var rv = null;
+		var frame=JFusion.getElement(aID);
+		// if contentDocument exists, W3C compliant (e.g. Mozilla)
 
-    function adjustMyFrameHeight()
-    {
-        var frame = getElement("blockrandom");
-        var frameDoc = getIFrameDocument("blockrandom");
-        frame.height = frameDoc.body.offsetHeight;
-    }
+		if (frame.contentDocument) {
+			rv = frame.contentDocument;
+		} else {
+			// bad IE  ;)
+			rv = document.frames[aID].document;
+		}
+		return rv;
+	}
+
+	JFusion.adjustMyFrameHeight = function() {
+		var frame = JFusion.getElement("jfusioniframe");
+		frame.height = JFusion.getIFrameDocument("jfusioniframe").body.offsetHeight;
+
+		window.scrollTo(window.pageYOffset,JFusion.getOffsetTop(frame));
+	}
+
+	JFusion.getOffsetTop = function(el) {
+		var top = 0;
+		while( el && !isNaN( el.offsetTop ) ) {
+			top += el.offsetTop;
+			el = el.offsetParent;
+		}
+		return top;
+	}
 </script>
 <?php
 $wrapper_scroll = $this->params->get('wrapper_scroll', 'auto');
@@ -54,9 +65,9 @@ if ($wrapper_scroll=='hidden') {
 <div class="contentpane<?php echo $this->params->get('pageclass_sfx','')?>">
 	<iframe scrolling="<?php echo $scroll; ?>"
 		<?php if($this->params->get('wrapper_autoheight', 1)) { ?>
-			onload="adjustMyFrameHeight();"
+			onload="JFusion.adjustMyFrameHeight();"
 		<?php }?>
-		id="blockrandom" name="iframe" src="<?php echo $this->url; ?>"
+		id="jfusioniframe" name="iframe" src="<?php echo $this->url; ?>"
 		width="<?php echo $this->params->get('wrapper_width', '100%'); ?>"
 		height="<?php echo $this->params->get('wrapper_height', '500'); ?>"
 		<?php if ($this->params->get('wrapper_transparency')) { ?>
