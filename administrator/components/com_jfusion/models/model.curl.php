@@ -414,7 +414,7 @@ class JFusionCurl
 			$this->options['httponly'] = 0;
 		}
 		if (!isset($this->options['verifyhost'])) {
-			$this->options['verifyhost'] = 1;
+			$this->options['verifyhost'] = 2;
 		}
 		if (!isset($this->options['debug'])) {
 			$this->options['debug'] = false;
