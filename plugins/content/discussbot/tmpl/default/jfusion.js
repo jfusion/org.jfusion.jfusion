@@ -353,8 +353,8 @@ JFusion.toggleDiscussionVisibility = function() {
     var discusslink = arguments[1];
     var showdiscussion = '';
     var discussion = $('discussion');
-    var jfusionBtnShowreplies = $('jfusionBtnShowreplies' + JFusion.articleId);
     if (discussion) {
+        var jfusionBtnShowreplies = $('jfusionBtnShowreplies' + JFusion.articleId);
         var state = discussion.style.display;
         if (state == 'none') {
             discussion.style.display = 'block';
@@ -365,22 +365,25 @@ JFusion.toggleDiscussionVisibility = function() {
             jfusionBtnShowreplies.innerHTML = JFusion.JText('SHOW_REPLIES');
             showdiscussion = 0;
         }
-    }
-
-    if (override !== null) {
-        showdiscussion = override;
-    }
-    var setdiscussionvisibility;
-    setdiscussionvisibility = new Request.HTML({
-        url: JFusion.articleUrl,
-        method: 'get',
-        onComplete: function () {
-            if (discusslink!==undefined) {
-                window.location = discusslink;
-            }
+        if (override !== null) {
+            showdiscussion = override;
         }
-    });
-    setdiscussionvisibility.post('tmpl=component&ajax_request=1&show_discussion=' + showdiscussion);
+        var setdiscussionvisibility;
+        setdiscussionvisibility = new Request.HTML({
+            url: JFusion.articleUrl,
+            method: 'get',
+            onComplete: function () {
+                if (discusslink!==undefined) {
+                    window.location = discusslink;
+                }
+            }
+        });
+        setdiscussionvisibility.post('tmpl=component&ajax_request=1&show_discussion=' + showdiscussion);
+    } else {
+        if (discusslink!==undefined) {
+            window.location = discusslink;
+        }
+    }
 }
 
 JFusion.quote = function(pid) {
