@@ -181,8 +181,8 @@ class JFusionCurlFrameless {
 		curl_setopt($this->ch, CURLOPT_FAILONERROR,0);
 		curl_setopt($this->ch, CURLOPT_MAXREDIRS, 2 );
 		curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, 0);
-		$data->verifyhost = isset($data->verifyhost)?$data->verifyhost:1;
-		curl_setopt($this->ch, CURLOPT_SSL_VERIFYHOST,$data->verifyhost);
+		$data->verifyhost = isset($data->verifyhost) ? $data->verifyhost : 2;
+		curl_setopt($this->ch, CURLOPT_SSL_VERIFYHOST, $data->verifyhost);
 
 		curl_setopt($this->ch, CURLOPT_HEADER, 0);
 
