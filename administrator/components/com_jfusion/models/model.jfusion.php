@@ -1751,4 +1751,43 @@ class JFusionFunction
 		}
 		return $list;
 	}
+
+	/**
+	 * @return void
+	 */
+	public static function initJavaScript() {
+		static $js;
+		if (!$js) {
+			$text = array();
+			if ( JFactory::getApplication()->isAdmin() ) {
+				$keys = array( 'SESSION_TIMEOUT', 'SYNC_NODATA', 'NOTICE', 'WARNING', 'MESSAGE', 'ERROR', 'DELETE', 'PLUGIN',
+					'SYNC_PROGRESS', 'SYNC_USERS_TODO', 'USER', 'USERS', 'NAME', 'CREATED', 'DELETED', 'UPDATED', 'CONFLICTS',
+					'UNCHANGED', 'FINISHED', 'PAUSE', 'CLICK_FOR_MORE_DETAILS', 'UPDATE_IN', 'SECONDS', 'SYNC_CONFIRM_START',
+					'DELETE_PAIR', 'REMOVE');
+
+				$url = JURI::root() . 'administrator/index.php';
+			} else {
+				$keys = array( 'BUTTON_CANCEL', 'BUTTON_INITIATE', 'BUTTON_PUBLISH_NEW_DISCUSSION', 'BUTTON_REPUBLISH_DISCUSSION',
+					'BUTTON_UNPUBLISH_DISCUSSION', 'CONFIRM_THREAD_CREATION', 'CONFIRM_UNPUBLISH_DISCUSSION', 'CONFIRM_PUBLISH_DISCUSSION',
+					'DISCUSSBOT_ERROR', 'HIDE_REPLIES', 'JYES', 'SHOW_REPLIES', 'SUBMITTING_QUICK_REPLY'
+				);
+
+				$url = JURI::root() . 'index.php';
+			}
+
+			foreach($keys as $key) {
+				$text[$key] = JText::_($key,true);
+			}
+			$text = json_encode($text);
+
+			$js=<<<JS
+			JFusion.url = '{$url}';
+
+			JFusion.Text = {$text};
+JS;
+
+			$document = JFactory::getDocument();
+			$document->addScriptDeclaration($js);
+		}
+	}
 }

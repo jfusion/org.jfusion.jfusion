@@ -97,7 +97,7 @@ class jfusionViewsyncoptions extends JViewLegacy
 	        $this->syncid = $syncid;
 	        $this->sync_active = $sync_active;
 
-	        JFusionFunctionAdmin::initJavaScript();
+	        JFusionFunction::initJavaScript();
 
 	        parent::display();
         } else {

@@ -65,7 +65,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 	        $this->plugins = $plugins;
 	        $this->VersionData = $VersionData;
 
-	        JFusionFunctionAdmin::initJavaScript();
+	        JFusionFunction::initJavaScript();
 
 	        parent::display();
         } else {

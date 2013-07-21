@@ -1313,7 +1313,7 @@ HTML;
                 $vars  = '&view_override='.$view;
                 $vars .= ($this->params->get('overwrite_readmore',1)) ? '&readmore='.$readmore_catch.'&show_readmore='.$show_readmore : '';
 
-                $this->helper->output['buttons']['initiate']['js']['onclick'] = 'confirmThreadAction('.$this->article->id.",'$dbtask', '$vars', '{$this->helper->getArticleUrl()}');";
+                $this->helper->output['buttons']['initiate']['js']['onclick'] = 'JFusion.confirmThreadAction('.$this->article->id.",'$dbtask', '$vars', '{$this->helper->getArticleUrl()}');";
                 $this->helper->output['buttons']['initiate']['text'] = JText::_($text);
                 $this->helper->output['buttons']['initiate']['target'] = '_self';
             }
@@ -1325,7 +1325,7 @@ HTML;
 	    if($view==$this->view() && $this->params->get('show_refresh_link',1) && $threadinfo) {
 		    //class="jfusionRefreshLink"
 		    $this->helper->output['buttons']['refresh']['href'] = 'javascript:void(0);';
-		    $this->helper->output['buttons']['refresh']['js']['onclick'] = 'refreshPosts('.$threadinfo->threadid.');';
+		    $this->helper->output['buttons']['refresh']['js']['onclick'] = 'JFusion.refreshPosts('.$threadinfo->threadid.');';
 		    $this->helper->output['buttons']['refresh']['text'] = JText::_('REFRESH_POSTS');
 		    $this->helper->output['buttons']['refresh']['target'] = $linkTarget;
 	    }
@@ -1366,7 +1366,7 @@ HTML;
                             $discuss_link = JRoute::_('index.php?option=com_user&view=login&return='.$return_url);
                         }
                         $this->helper->output['buttons']['discuss']['href'] = 'javascript: void(0);';
-                        $this->helper->output['buttons']['discuss']['js']['onclick'] = 'toggleDiscussionVisibility(1,\''.$discuss_link.'\');';
+                        $this->helper->output['buttons']['discuss']['js']['onclick'] = 'JFusion.toggleDiscussionVisibility(1,\''.$discuss_link.'\');';
                         $this->helper->output['buttons']['discuss']['target'] = '_self';
                     } else {
                         $this->helper->output['buttons']['discuss']['href'] = JFusionFunction::routeURL($JFusionForum->getThreadURL($threadinfo->threadid), $itemid, $this->jname);
@@ -1388,7 +1388,7 @@ HTML;
             //show comments link
             if ($view==$this->view() && $this->params->get('show_toggle_posts_link',1)) {
                 $this->helper->output['buttons']['showreplies']['href'] = 'javascript: void(0);';
-                $this->helper->output['buttons']['showreplies']['js']['onclick'] = 'toggleDiscussionVisibility();';
+                $this->helper->output['buttons']['showreplies']['js']['onclick'] = 'JFusion.toggleDiscussionVisibility();';
 
                 $JSession = JFactory::getSession();
                 $show_replies = $JSession->get('jfusion.discussion.visibility',0);
@@ -1552,7 +1552,7 @@ HTML;
             if ($this->params->get('enable_quickreply')){
                 $JoomlaUser = JFactory::getUser();
                 if ($this->params->get('quickreply_allow_guests',0) || !$JoomlaUser->guest) {
-                    $toolbar[] = '<a href="javascript:void(0);" onclick="jfusionQuote('.$postid.');">'.JText::_('QUOTE').'</a>';
+                    $toolbar[] = '<a href="javascript:void(0);" onclick="JFusion.quote('.$postid.');">'.JText::_('QUOTE').'</a>';
                 }
             }
 

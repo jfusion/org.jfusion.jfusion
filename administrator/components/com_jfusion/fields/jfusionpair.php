@@ -46,7 +46,7 @@ class JFormFieldJFusionPair extends JFormField
 		$document = JFactory::getDocument();
 		$document->addScript('components/com_jfusion/js/jfusion.js');
 
-		JFusionFunctionAdmin::initJavaScript();
+		JFusionFunction::initJavaScript();
 
 		$delete = JText::_('DELETE_PAIR');
 		$add = JText::_('ADD_PAIR');

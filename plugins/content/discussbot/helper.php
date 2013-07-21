@@ -520,44 +520,18 @@ class JFusionDiscussBotHelper {
 		    $view = JFactory::getApplication()->input->get('view');
 		    $test_view = ($this->option == 'com_k2') ? 'item' : 'article';
 
-		    $lang_strings = array(
-			    'BUTTON_CANCEL',
-			    'BUTTON_INITIATE',
-			    'BUTTON_PUBLISH_NEW_DISCUSSION',
-			    'BUTTON_REPUBLISH_DISCUSSION',
-			    'BUTTON_UNPUBLISH_DISCUSSION',
-			    'CONFIRM_THREAD_CREATION',
-			    'CONFIRM_UNPUBLISH_DISCUSSION',
-			    'CONFIRM_PUBLISH_DISCUSSION',
-			    'DISCUSSBOT_ERROR',
-			    'HIDE_REPLIES',
-			    'JYES',
-			    'SHOW_REPLIES',
-			    'SUBMITTING_QUICK_REPLY'
-		    );
-
 		    $jumpto_discussion = JFactory::getApplication()->input->getInt('jumpto_discussion', '0', 'post');
 
 		    $js = <<<JS
-		        var jfdb_view = '{$view}';
-		        var jfdb_jumpto_discussion = {$jumpto_discussion};
-		        var jfdb_enable_pagination = {$this->params->get('enable_pagination',1)};
-		        var jfdb_enable_ajax = {$this->params->get('enable_ajax',1)};
-		        var jfdb_enable_jumpto = {$this->params->get('jumpto_new_post',0)};
+		        JFusion.view = '{$view}';
+		        JFusion.jumptoDiscussion = {$jumpto_discussion};
+		        JFusion.enablePagination = {$this->params->get('enable_pagination',1)};
+		        JFusion.enableAjax = {$this->params->get('enable_ajax',1)};
+		        JFusion.enableJumpto = {$this->params->get('jumpto_new_post',0)};
+		        JFusion.debug = {$this->debug_mode};
 JS;
 
-		    if ($this->debug_mode) {
-			    $js .= <<<JS
-            var jfdb_debug = '1';
-JS;
-		    }
-
-		    foreach ($lang_strings as $str) {
-			    $jstr = JText::_($str);
-			    $js .= <<<JS
-            var JFDB_{$str} = '{$jstr}';
-JS;
-		    }
+		    JFusionFunction::initJavaScript();
 
 		    //Load quick reply includes if enabled
 		    if ($this->params->get('enable_quickreply')) {
@@ -567,19 +541,18 @@ JS;
 		    }
 
 		    if ($view == $test_view) {
-			    $joomla_basepath = JPATH_SITE;
 			    $js .= <<<JS
-            var jfdb_article_url = '{$this->getArticleUrl()}';
-            var jfdb_article_id = '{$this->article->id}';
-            window.addEvent(window.webkit ? 'load' : 'domready', function () {
-                initializeDiscussbot();
-            });
+	            JFusion.articleUrl = '{$this->getArticleUrl()}';
+	            JFusion.articleId = '{$this->article->id}';
+	            window.addEvent(window.webkit ? 'load' : 'domready', function () {
+                	JFusion.initializeDiscussbot();
+	            });
 JS;
 		    } else {
 			    $js .= <<<JS
-            window.addEvent(window.webkit ? 'load' : 'domready', function () {
-                initializeConfirmationBoxes();
-            });
+	            window.addEvent(window.webkit ? 'load' : 'domready', function () {
+	                JFusion.initializeConfirmationBoxes();
+	            });
 JS;
 		    }
 

@@ -500,18 +500,18 @@ class JFusionForum
 		//using markitup http://markitup.jaysalvat.com/ for bbcode textbox
 		$document = JFactory::getDocument();
 		$option = JFactory::getApplication()->input->getCmd('option');
-		$path = 'jfusion/discussbot';
+		$path = 'plugins/content/jfusion/discussbot/markitup';
 		if ($option != 'com_k2') {
 		    //k2 loads jquery already
-		    $document->addScript(JFusionFunction::getJoomlaURL().'plugins/content/'.$path.'/markitup/jquery.pack.js');
+		    $document->addScript(JFusionFunction::getJoomlaURL().$path.'/jquery.pack.js');
 		}
-		$document->addScript(JFusionFunction::getJoomlaURL().'plugins/content/'.$path.'/markitup/jquery.markitup.js');
-		$document->addScript(JFusionFunction::getJoomlaURL().'plugins/content/'.$path.'/markitup/sets/bbcode/set.js');
-		$document->addStylesheet(JFusionFunction::getJoomlaURL().'plugins/content/'.$path.'/markitup/skins/simple/style.css');
-		$document->addStylesheet(JFusionFunction::getJoomlaURL().'plugins/content/'.$path.'/markitup/sets/bbcode/style.css');
+		$document->addScript(JFusionFunction::getJoomlaURL().$path.'/jquery.markitup.js');
+		$document->addScript(JFusionFunction::getJoomlaURL().$path.'/sets/bbcode/set.js');
+		$document->addStylesheet(JFusionFunction::getJoomlaURL().$path.'/skins/simple/style.css');
+		$document->addStylesheet(JFusionFunction::getJoomlaURL().$path.'/sets/bbcode/style.css');
 
         $js = <<<JS
-		var jfdb_load_markitup = 1;
+		JFusion.loadMarkitup = true;
 		jQuery.noConflict();
 JS;
 		return $js;
