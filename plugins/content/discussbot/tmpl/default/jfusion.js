@@ -384,8 +384,8 @@ function toggleDiscussionVisibility() {
     var discusslink = arguments[1];
     var showdiscussion = '';
     var discussion = $('discussion');
-    var jfusionBtnShowreplies = $('jfusionBtnShowreplies' + jfdb_article_id);
     if (discussion) {
+        var jfusionBtnShowreplies = $('jfusionBtnShowreplies' + jfdb_article_id);
         var state = discussion.style.display;
         if (state == 'none') {
             discussion.style.display = 'block';
@@ -396,33 +396,36 @@ function toggleDiscussionVisibility() {
             jfusionBtnShowreplies.innerHTML = JFDB_SHOW_REPLIES;
             showdiscussion = 0;
         }
-    }
-
-    if (override !== null) {
-        showdiscussion = override;
-    }
-    var setdiscussionvisibility;
-    if (jfdb_isJ16) {
-        setdiscussionvisibility = new Request.HTML({
-            url: jfdb_article_url,
-            method: 'get',
-            onComplete: function () {
-                if (discusslink!==undefined) {
-                    window.location = discusslink;
+        if (override !== null) {
+            showdiscussion = override;
+        }
+        var setdiscussionvisibility;
+        if (jfdb_isJ16) {
+            setdiscussionvisibility = new Request.HTML({
+                url: jfdb_article_url,
+                method: 'get',
+                onComplete: function () {
+                    if (discusslink!==undefined) {
+                        window.location = discusslink;
+                    }
                 }
-            }
-        });
-        setdiscussionvisibility.post('tmpl=component&ajax_request=1&show_discussion=' + showdiscussion);
+            });
+            setdiscussionvisibility.post('tmpl=component&ajax_request=1&show_discussion=' + showdiscussion);
+        } else {
+            setdiscussionvisibility = new Ajax(jfdb_article_url, {
+                method: 'get',
+                onComplete: function () {
+                    if (discusslink!==undefined) {
+                        window.location = discusslink;
+                    }
+                }
+            });
+            setdiscussionvisibility.request('tmpl=component&ajax_request=1&show_discussion=' + showdiscussion);
+        }
     } else {
-        setdiscussionvisibility = new Ajax(jfdb_article_url, {
-            method: 'get',
-            onComplete: function () {
-                if (discusslink!==undefined) {
-                    window.location = discusslink;
-                }
-            }
-        });
-        setdiscussionvisibility.request('tmpl=component&ajax_request=1&show_discussion=' + showdiscussion);
+        if (discusslink!==undefined) {
+            window.location = discusslink;
+        }
     }
 }
 
