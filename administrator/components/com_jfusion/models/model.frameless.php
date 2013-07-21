@@ -95,7 +95,7 @@ class JFusionFrameless {
 		$data->httpauth = $JFusionParam->get('httpauth');
 		$data->httpauth_username = $JFusionParam->get('curl_username');
 		$data->httpauth_password = $JFusionParam->get('curl_password');
-		$data->verifyhost = $JFusionParam->get('verifyhost');
+		$data->verifyhost = $JFusionParam->get('verifyhost',2);
 
 		$data->sefmode = $MenuParam->get('sefmode',$JFusionParam->get('sefmode',0));
 
