@@ -322,10 +322,10 @@ class JFusionDiscussBotHelper {
                             $publish_up = JFactory::getDate($this->article->publish_up)->toUnix();
                             $now = JFactory::getDate('now', $mainframe->getCfg('offset'))->toUnix();
 
-                            if ($now < $publish_up) {
+	                        $creationMode = $this->params->get('create_thread','load');
+                            if ($now < $publish_up && $creationMode != 'new') {
 	                            $responce = array(0, JText::_('REASON_PUBLISHED_IN_FUTURE'));
                             } else {
-	                            $creationMode =& $this->params->get('create_thread','load');
 	                            //make sure create_thread is appropriate
 	                            if ($creationMode == 'reply' && $dbtask != 'create_thread') {
 		                            $responce = array(1, JText::_('REASON_CREATED_ON_FIRST_REPLY'));
