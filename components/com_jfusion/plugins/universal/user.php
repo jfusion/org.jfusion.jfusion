@@ -486,33 +486,34 @@ class JFusionUser_universal extends JFusionUser {
 	 */
 	function unblockUser($userinfo, &$existinguser, &$status)
 	{
-		/**
-		 * @ignore
-		 * @var $helper JFusionHelper_universal
-		 */
-		$helper = JFusionFactory::getHelper($this->getJname());
-		$userid = $helper->getFieldUserID();
-		$active = $helper->getFieldType('ACTIVE');
-		$inactive = $helper->getFieldType('INACTIVE');
-		if (!$userid) {
-			$status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_USERID_SET');
-		} else if (!$active && !$inactive) {
-			$status['debug'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_ACTIVE_OR_INACTIVE_SET');
-		} else {
-			$userStatus = null;
-			if ( isset($inactive) ) $userStatus = $inactive->value['off'];
-			if ( isset($active) ) $userStatus = $active->value['on'];
-
-			$db = JFusionFactory::getDatabase($this->getJname());
-			$query = 'UPDATE #__'.$helper->getTable().' '.
-				'SET '.$active->field.' = '. $db->Quote($userStatus) .' '.
-				'WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid);
-			$db->setQuery($query );
-			if (!$db->execute()) {
-				$status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ': ' .$db->stderr();
+		try {
+			/**
+			 * @ignore
+			 * @var $helper JFusionHelper_universal
+			 */
+			$helper = JFusionFactory::getHelper($this->getJname());
+			$userid = $helper->getFieldUserID();
+			$active = $helper->getFieldType('ACTIVE');
+			$inactive = $helper->getFieldType('INACTIVE');
+			if (!$userid) {
+				throw new Exception(JText::_('UNIVERSAL_NO_USERID_SET'));
+			} else if (!$active && !$inactive) {
+				throw new Exception(JText::_('UNIVERSAL_NO_ACTIVE_OR_INACTIVE_SET'));
 			} else {
+				$userStatus = null;
+				if ( isset($inactive) ) $userStatus = $inactive->value['off'];
+				if ( isset($active) ) $userStatus = $active->value['on'];
+
+				$db = JFusionFactory::getDatabase($this->getJname());
+				$query = 'UPDATE #__'.$helper->getTable().' '.
+					'SET '.$active->field.' = '. $db->Quote($userStatus) .' '.
+					'WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid);
+				$db->setQuery($query );
+				$db->execute();
 				$status['debug'][] = JText::_('BLOCK_UPDATE'). ': ' . $existinguser->block . ' -> ' . $userinfo->block;
 			}
+		} catch (Exception $e) {
+			$status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ': ' .$e->getMessage();
 		}
 	}
 
@@ -561,28 +562,29 @@ class JFusionUser_universal extends JFusionUser {
 	 */
 	function inactivateUser($userinfo, &$existinguser, &$status)
 	{
-		/**
-		 * @ignore
-		 * @var $helper JFusionHelper_universal
-		 */
-		$helper = JFusionFactory::getHelper($this->getJname());
-		$userid = $helper->getFieldUserID();
-		$activecode = $helper->getFieldType('ACTIVECODE');
-		if (!$userid) {
-			$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_USERID_SET');
-		} else if (!$activecode) {
-			$status['debug'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_ACTIVECODE_SET');
-		} else {
-			$db = JFusionFactory::getDatabase($this->getJname());
-			$query = 'UPDATE #__'.$helper->getTable().' '.
-				'SET '.$activecode->field.' = '. $db->Quote($userinfo->activation) .' '.
-				'WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid);
-			$db->setQuery($query );
-			if (!$db->execute()) {
-				$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' .$db->stderr();
+		try {
+			/**
+			 * @ignore
+			 * @var $helper JFusionHelper_universal
+			 */
+			$helper = JFusionFactory::getHelper($this->getJname());
+			$userid = $helper->getFieldUserID();
+			$activecode = $helper->getFieldType('ACTIVECODE');
+			if (!$userid) {
+				throw new Exception(JText::_('UNIVERSAL_NO_USERID_SET'));
+			} else if (!$activecode) {
+				throw new Exception(JText::_('UNIVERSAL_NO_ACTIVECODE_SET'));
 			} else {
+				$db = JFusionFactory::getDatabase($this->getJname());
+				$query = 'UPDATE #__'.$helper->getTable().' '.
+					'SET '.$activecode->field.' = '. $db->Quote($userinfo->activation) .' '.
+					'WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid);
+				$db->setQuery($query );
+				$db->execute();
 				$status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 			}
+		} catch(Exception $e) {
+			$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' .$e->getMessage();
 		}
 	}
 
@@ -594,117 +596,116 @@ class JFusionUser_universal extends JFusionUser {
 	 */
 	function createUser($userinfo, &$status)
 	{
-		$params = JFusionFactory::getParams($this->getJname());
+		try {
+			$params = JFusionFactory::getParams($this->getJname());
 
-		$usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
-		if(empty($usergroups)) {
-			$status['error'][] = JText::_('ERROR_CREATE_USER'). ' ' . JText::_('USERGROUP_MISSING');
-		} else {
-			$usergroup = $usergroups[0];
-			/**
-			 * @ignore
-			 * @var $helper JFusionHelper_universal
-			 */
-			$helper = JFusionFactory::getHelper($this->getJname());
-
-			$userid = $helper->getFieldUserID();
-			if(empty($userid)) {
-				$status['error'][] = JText::_('USER_CREATION_ERROR'). ': ' . JText::_('UNIVERSAL_NO_USERID_SET'). ': ' . $this->getJname();
+			$usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+			if(empty($usergroups)) {
+				throw new Exception(JText::_('USERGROUP_MISSING'));
 			} else {
-				$password = $helper->getFieldType('PASSWORD');
-				if(empty($password)) {
-					$status['error'][] = JText::_('USER_CREATION_ERROR'). ': ' . JText::_('UNIVERSAL_NO_PASSWORD_SET'). ': ' . $this->getJname();
+				$usergroup = $usergroups[0];
+				/**
+				 * @ignore
+				 * @var $helper JFusionHelper_universal
+				 */
+				$helper = JFusionFactory::getHelper($this->getJname());
+
+				$userid = $helper->getFieldUserID();
+				if(empty($userid)) {
+					throw new Exception(JText::_('UNIVERSAL_NO_USERID_SET'));
 				} else {
-					$email = $helper->getFieldEmail();
-					if(empty($email)) {
-						$status['error'][] = JText::_('USER_CREATION_ERROR'). ': ' . $this->getJname() . ': ' . JText::_('UNIVERSAL_NO_EMAIL_SET');
+					$password = $helper->getFieldType('PASSWORD');
+					if(empty($password)) {
+						throw new Exception(JText::_('UNIVERSAL_NO_PASSWORD_SET'));
 					} else {
-						$user = new stdClass;
-						$maped = $helper->getMap();
-						$db = JFusionFactory::getDatabase($this->getJname());
-						foreach ($maped as $key => $value) {
-							$field = $value->field;
-							foreach ($value->type as $type) {
-								switch ($type) {
-									case 'USERID':
-										$query = 'SHOW COLUMNS FROM #__'.$helper->getTable().' where Field = '.$db->Quote($field).' AND Extra like \'%auto_increment%\'';
-										$db->setQuery($query);
-										$fieldslist = $db->loadObject();
-										if ($fieldslist) {
-											$user->$field = NULL;
-										} else {
-											$f = $helper->getQuery(array('USERID'));
-											$query = 'SELECT '.$f.' FROM #__'.$helper->getTable().' ORDER BY userid DESC LIMIT 1';
+						$email = $helper->getFieldEmail();
+						if(empty($email)) {
+							throw new Exception(JText::_('UNIVERSAL_NO_EMAIL_SET'));
+						} else {
+							$user = new stdClass;
+							$maped = $helper->getMap();
+							$db = JFusionFactory::getDatabase($this->getJname());
+							foreach ($maped as $key => $value) {
+								$field = $value->field;
+								foreach ($value->type as $type) {
+									switch ($type) {
+										case 'USERID':
+											$query = 'SHOW COLUMNS FROM #__'.$helper->getTable().' where Field = '.$db->Quote($field).' AND Extra like \'%auto_increment%\'';
 											$db->setQuery($query);
-											$value = $db->loadResult();
-											if (!$value) {
-												$value = 1;
+											$fieldslist = $db->loadObject();
+											if ($fieldslist) {
+												$user->$field = NULL;
 											} else {
-												$value++;
+												$f = $helper->getQuery(array('USERID'));
+												$query = 'SELECT '.$f.' FROM #__'.$helper->getTable().' ORDER BY userid DESC LIMIT 1';
+												$db->setQuery($query);
+												$value = $db->loadResult();
+												if (!$value) {
+													$value = 1;
+												} else {
+													$value++;
+												}
+												$user->$field = $value;
 											}
-											$user->$field = $value;
-										}
-										break;
-									case 'REALNAME':
-										$user->$field = $userinfo->name;
-										break;
-									case 'FIRSTNAME':
-										list($firstname,$lastname) = explode(' ',$userinfo->name ,2);
-										$user->$field = $firstname;
-										break;
-									case 'LASTNAME':
-										list($firstname,$lastname) = explode(' ',$userinfo->name ,2);
-										$user->$field = $lastname;
-										break;
-									case 'GROUP':
-										$user->$field = base64_decode($usergroup);
-										break;
-									case 'USERNAME':
-										$user->$field = $userinfo->username;
-										break;
-									case 'EMAIL':
-										$user->$field = $userinfo->email;
-										break;
-									case 'ACTIVE':
-										if ($userinfo->block){
-											$user->$field = $value->value['off'];
-										} else {
-											$user->$field = $value->value['on'];
-										}
-										break;
-									case 'INACTIVE':
-										if ($userinfo->block){
-											$user->$field = $value->value['on'];
-										} else {
-											$user->$field = $value->value['off'];
-										}
-										break;
-									case 'PASSWORD':
-										if ( isset($userinfo->password_clear) ) {
-											$user->$field = $helper->getValue($value->fieldtype,$userinfo->password_clear,$userinfo);
-										} else {
-											$user->$field = $userinfo->password;
-										}
-										break;
-									case 'SALT':
-										if (!isset($userinfo->password_salt)) {
-											$user->$field = $helper->getValue($value->fieldtype,$value->value,$userinfo);
-										} else {
-											$user->$field = $userinfo->password_salt;
-										}
-										break;
-									case 'DEFAULT':
-										$val = isset($value->value) ? $value->value : null;
-										$user->$field = $helper->getValue($value->fieldtype,$val,$userinfo);
-										break;
+											break;
+										case 'REALNAME':
+											$user->$field = $userinfo->name;
+											break;
+										case 'FIRSTNAME':
+											list($firstname,$lastname) = explode(' ',$userinfo->name ,2);
+											$user->$field = $firstname;
+											break;
+										case 'LASTNAME':
+											list($firstname,$lastname) = explode(' ',$userinfo->name ,2);
+											$user->$field = $lastname;
+											break;
+										case 'GROUP':
+											$user->$field = base64_decode($usergroup);
+											break;
+										case 'USERNAME':
+											$user->$field = $userinfo->username;
+											break;
+										case 'EMAIL':
+											$user->$field = $userinfo->email;
+											break;
+										case 'ACTIVE':
+											if ($userinfo->block){
+												$user->$field = $value->value['off'];
+											} else {
+												$user->$field = $value->value['on'];
+											}
+											break;
+										case 'INACTIVE':
+											if ($userinfo->block){
+												$user->$field = $value->value['on'];
+											} else {
+												$user->$field = $value->value['off'];
+											}
+											break;
+										case 'PASSWORD':
+											if ( isset($userinfo->password_clear) ) {
+												$user->$field = $helper->getValue($value->fieldtype,$userinfo->password_clear,$userinfo);
+											} else {
+												$user->$field = $userinfo->password;
+											}
+											break;
+										case 'SALT':
+											if (!isset($userinfo->password_salt)) {
+												$user->$field = $helper->getValue($value->fieldtype,$value->value,$userinfo);
+											} else {
+												$user->$field = $userinfo->password_salt;
+											}
+											break;
+										case 'DEFAULT':
+											$val = isset($value->value) ? $value->value : null;
+											$user->$field = $helper->getValue($value->fieldtype,$val,$userinfo);
+											break;
+									}
 								}
 							}
-						}
-						//now append the new user data
-						if (!$db->insertObject('#__'.$helper->getTable(), $user, $userid->field )) {
-							//return the error
-							$status['error'] = JText::_('USER_CREATION_ERROR'). ': ' . $db->stderr();
-						} else {
+							//now append the new user data
+							$db->insertObject('#__'.$helper->getTable(), $user, $userid->field );
+
 							$group = $helper->getFieldType('GROUP');
 
 							if ( !isset($group) ) {
@@ -735,24 +736,18 @@ class JFusionUser_universal extends JFusionUser {
 											}
 										}
 									}
-									if (!$db->insertObject('#__'.$helper->getTable('group'), $addgroup, $groupuserid->field )) {
-										//return the error
-										$status['error'] = JText::_('USER_CREATION_ERROR'). ': ' . $db->stderr();
-									} else {
-										//return the good news
-										$status['debug'][] = JText::_('USER_CREATION');
-										$status['userinfo'] = $this->getUser($userinfo);
-									}
+									$db->insertObject('#__'.$helper->getTable('group'), $addgroup, $groupuserid->field );
 								}
-							} else {
-								//return the good news
-								$status['debug'][] = JText::_('USER_CREATION');
-								$status['userinfo'] = $this->getUser($userinfo);
 							}
+							//return the good news
+							$status['debug'][] = JText::_('USER_CREATION');
+							$status['userinfo'] = $this->getUser($userinfo);
 						}
 					}
 				}
 			}
+		} catch(Exception $e) {
+			$status['error'] = JText::_('USER_CREATION_ERROR'). ': ' . $e->getMessage();
 		}
 	}
 }

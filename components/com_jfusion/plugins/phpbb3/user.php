@@ -735,11 +735,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 					    //we need to also add the user to the regular registered group or they may find themselves groupless
 					    $query = 'INSERT INTO #__user_group (group_id, user_id, group_leader, user_pending) VALUES (' . $groups['REGISTERED']->group_id . ',' . (int)$user->id . ', 0,0 )';
 					    $db->setQuery($query);
-					    if (!$db->execute()) {
-						    //return the error
-						    $status['error'][] = JText::_('USER_CREATION_ERROR') . $db->stderr();
-						    return;
-					    }
+					    $db->execute();
 				    }
 
 				    //update the total user count
@@ -957,14 +953,15 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    $status['error'][] = 'Error Could not delete records from '.$table.' for user '.$user_id.': '.$e->getMessage();
 			    }
 		    }
-		    // Remove any undelivered mails...
-		    $query = 'SELECT msg_id, user_id
-            FROM #__privmsgs_to
-            WHERE author_id = ' . $user_id . '
-                AND folder_id = -3';
-		    $db->setQuery($query);
+
 		    $undelivered_msg = $undelivered_user = array();
-		    if ($db->execute()) {
+		    try {
+			    // Remove any undelivered mails...
+			    $query = 'SELECT msg_id, user_id
+			            FROM #__privmsgs_to
+			            WHERE author_id = ' . $user_id . '
+		                AND folder_id = -3';
+			    $db->setQuery($query);
 			    $results = $db->loadObjectList();
 			    if ($results) {
 				    foreach ($results as $row) {
@@ -973,10 +970,11 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    }
 				    //$status['debug'][] = 'Retrieved undelivered private messages from user '.$user_id;
 			    }
-		    } else {
-			    $status['error'][] = 'Error Could not retrieve undeliverd messages to user '.$user_id.': '.$db->stderr();
+		    } catch (Exception $e) {
+			    $status['error'][] = 'Error Could not retrieve undeliverd messages to user '.$user_id.': '.$e->getMessage();
 		    }
-		    if (sizeof($undelivered_msg)) {
+
+		    if (!empty($undelivered_msg)) {
 			    try {
 				    $query = 'DELETE FROM #__privmsgs
                         WHERE msg_id (' . implode(', ', $undelivered_msg) . ')';

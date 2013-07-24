@@ -810,16 +810,17 @@ class doku_auth_mysql extends doku_auth_basic {
 
 		$resultarray = array();
 		if ($this->dbcon) {
-		    $this->dbcon->setQuery($query);
-		    $result = $this->dbcon->loadAssocList();
-            if ($result) {
-				return $result;
-            }
-	        if ($this->cnf['debug']) {
-				if ($this->dbcon->getErrorNum()) {
-					JFusionFunction::raiseWarning('MySQL err: '.$this->dbcon->stderr());
-        		}
-	        }
+			try {
+				$this->dbcon->setQuery($query);
+				$result = $this->dbcon->loadAssocList();
+				if ($result) {
+					return $result;
+				}
+			} catch (Exception $e) {
+				if ($this->cnf['debug']) {
+					JFusionFunction::raiseWarning($e, $this->helper->getJname());
+				}
+			}
 		}
 		return false;
     }
@@ -837,17 +838,18 @@ class doku_auth_mysql extends doku_auth_basic {
      */
     function _modifyDB($query) {
 		if ($this->dbcon) {
-			$this->dbcon->setQuery($query);
-			$result = $this->dbcon->execute();
-        	if ($result) {
-          		$rc = $this->dbcon->insertid(); //give back ID on insert
-          		if ($rc !== false) return $rc;
-        	}
-        	if ($this->cnf['debug']) {
-				if ($this->dbcon->getErrorNum()) {
-					JFusionFunction::raiseWarning('MySQL err: '.$this->dbcon->stderr());
-        		}
-        	}
+			try {
+				$this->dbcon->setQuery($query);
+				$result = $this->dbcon->execute();
+				if ($result) {
+					$rc = $this->dbcon->insertid(); //give back ID on insert
+					if ($rc !== false) return $rc;
+				}
+			} catch (Exception $e) {
+				if ($this->cnf['debug']) {
+					JFusionFunction::raiseWarning($e, $this->helper->getJname());
+				}
+			}
 		}
 		return false;
     }

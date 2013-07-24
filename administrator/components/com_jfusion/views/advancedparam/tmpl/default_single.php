@@ -33,6 +33,10 @@ $uri->setVar('task','advancedparamsubmit');
 			<tr style="padding:0; margin:0;">
 				<td colspan="2" style="padding:0; margin:0;">
 					<?php
+					/**
+					 * @ignore
+					 * @var $form JForm
+					 */
 					if (!empty($this->comp) && !empty($this->comp['form'])):
 						$form = $this->comp['form'];
 						$fieldsets = $form->getFieldsets();

@@ -391,8 +391,7 @@ class JFusionPluginInstaller extends JObject
 					            //store enabled/disabled features to update copies
 					            global $plugin_features;
 					            $plugin_features = array();
-					            $plugin_files = $this->backup($name);
-					            $query = 'UPDATE #__jfusion SET plugin_files = ' . $db->Quote($plugin_files);
+					            $query = 'UPDATE #__jfusion SET plugin_files = ' . $db->Quote('');
 					            foreach ($features as $f) {
 						            if (($$f == 3 && $plugin->$f != 3) || ($$f != 3 && $plugin->$f == 3)) {
 							            $query.= ', ' . $f . '=' . $$f;
@@ -414,7 +413,7 @@ class JFusionPluginInstaller extends JObject
 				            $plugin_entry->name = $name;
 				            $plugin_entry->dual_login = $dual_login;
 				            $plugin_entry->slave = $slave;
-				            $plugin_entry->plugin_files = $this->backup($name);
+				            $plugin_entry->plugin_files = '';
 				            //now append the new plugin data
 				            try {
 					            $db->insertObject('#__jfusion', $plugin_entry, 'id');
@@ -622,8 +621,7 @@ class JFusionPluginInstaller extends JObject
                 $db = JFactory::getDBO();
                 if ($update) {
                     //update the copied plugin files
-                    $plugin_files = $this->backup($new_jname);
-                    $query = 'UPDATE #__jfusion SET plugin_files = ' . $db->Quote($plugin_files);
+                    $query = 'UPDATE #__jfusion SET plugin_files = ' . $db->Quote('');
                     //get the features of the updated plugin
                     global $plugin_features;
                     if (empty($plugin_features)) {
@@ -667,7 +665,7 @@ class JFusionPluginInstaller extends JObject
                     $plugin_entry->id = null;
                     $plugin_entry->master = ($plugin_entry->master == 3) ? 3 : 0;
                     $plugin_entry->slave = ($plugin_entry->slave == 3) ? 3 : 0;
-                    $plugin_entry->plugin_files = $this->backup($new_jname);
+                    $plugin_entry->plugin_files = '';
                     //only change the original name if this is not a copy itself
                     if (empty($plugin_entry->original_name)) {
                         $plugin_entry->original_name = $jname;
@@ -732,63 +730,6 @@ class JFusionPluginInstaller extends JObject
 
         // Valid manifest file return the object
         return $xml;
-    }
-
-    /**
-     * handles JFusion plugin backups
-     *
-     * @param string $jname name of the JFusion plugin used
-     *
-     * @return backup zip file data or location
-     */
-    function backup($jname)
-    {
-		/**
-		 * @TODO disable backup?
-		 */
-	    return '';
-
-        $config = JFactory::getConfig();
-        $tmpDir = $config->get('tmp_path');
-        //compress the files
-        $filename = $tmpDir . DIRECTORY_SEPARATOR . $jname . '.zip';
-        //retrieve a list of files within the plugin directory
-        $pluginPath = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname;
-        //check for zip creation
-        $zipSuccess = false;
-        //we need to chdir into the plugin path
-        $cwd = getcwd();
-        chdir($pluginPath);
-        //get the contents of the files in the plugin dir
-        $filesArray = $this->getFiles($pluginPath, $jname);
-        if (extension_loaded('zlib')) {
-            //use Joomla zip class to create the zip
-            /**
-             * @ignore
-             * @var $zip JArchiveZip
-             */
-            $zip = JArchive::getAdapter('zip');
-            if ($zip->create($filename, $filesArray)) {
-                $zipSuccess = true;
-            }
-        } elseif (class_exists('ZipArchive')) {
-            //use PECL ZipArchive to create the zip
-            $zip = new ZipArchive();
-            if ($zip->open($filename, ZIPARCHIVE::CREATE) === true) {
-                foreach ($filesArray as $file) {
-                    $zip->addFromString($file['name'], $file['data']);
-                }
-                $zip->close();
-                $zipSuccess = true;
-            }
-        }
-        chdir($cwd);
-        $data = ($zipSuccess && file_exists($filename)) ? @file_get_contents($filename) : '';
-/*
- * @TODO deal with delete
- * JFile::delete($filename);
- */
-        return $data;
     }
 
     /**

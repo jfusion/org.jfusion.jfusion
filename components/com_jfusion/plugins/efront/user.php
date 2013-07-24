@@ -546,31 +546,32 @@ class JFusionUser_efront extends JFusionUser
      * @return void
      */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
-        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
-        if (empty($usergroups)) {
-            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('USERGROUP_MISSING');
-        } else {
-            $usergroup = $usergroups[0];
-            $db = JFusionFactory::getDataBase($this->getJname());
-            if ($usergroup< 3) {
-                /**
-                 * TODO: Undefined function
-                 */
-                $user_type = $this->groupIDToName($usergroup);
-                $user_types_ID = 0;
-            } else {
-                $user_types_ID = $usergroup-2;
-                $query = 'SELECT basic_user_type from #__user_types WHERE id = '.$user_types_ID;
-                $db->setQuery($query);
-                $user_type = $db->loadResult();
-            }
-            $query = 'UPDATE #__users SET user_type = '.$db->Quote($user_type).', user_types_ID = '.$user_types_ID.' WHERE id =' . $existinguser->userid;
-            $db->setQuery($query);
-            if (!$db->execute()) {
-                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $db->stderr();
-            } else {
-                $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode (' , ', $existinguser->groups) . ' -> ' . $usergroup;
-            }
-        }
+	    try {
+		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+		    if (empty($usergroups)) {
+			    throw new Exception(JText::_('USERGROUP_MISSING'));
+		    } else {
+			    $usergroup = $usergroups[0];
+			    $db = JFusionFactory::getDataBase($this->getJname());
+			    if ($usergroup< 3) {
+				    /**
+				     * TODO: Undefined function
+				     */
+				    $user_type = $this->groupIDToName($usergroup);
+				    $user_types_ID = 0;
+			    } else {
+				    $user_types_ID = $usergroup-2;
+				    $query = 'SELECT basic_user_type from #__user_types WHERE id = '.$user_types_ID;
+				    $db->setQuery($query);
+				    $user_type = $db->loadResult();
+			    }
+			    $query = 'UPDATE #__users SET user_type = '.$db->Quote($user_type).', user_types_ID = '.$user_types_ID.' WHERE id =' . $existinguser->userid;
+			    $db->setQuery($query);
+			    $db->execute();
+			    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode (' , ', $existinguser->groups) . ' -> ' . $usergroup;
+		    }
+	    } catch (Exception $e) {
+		    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $e->getMessage();
+	    }
     }
 }

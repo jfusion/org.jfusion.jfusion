@@ -274,6 +274,7 @@ class simple_html_dom_node {
         if (isset($this->_[HDOM_INFO_TEXT])) return $this->dom->restore_noise($this->_[HDOM_INFO_TEXT]);
 
         // render begin tag
+
         $ret = $this->dom->nodes[$this->_[HDOM_INFO_BEGIN]]->makeup();
 
         // render inner text
@@ -701,6 +702,10 @@ class simple_html_dom {
      * @var $root simple_html_dom_node
      */
     public $root = null;
+	/**
+	 * @ignore
+	 * @var $nodes simple_html_dom_node[]
+	 */
     public $nodes = array();
 
     /**

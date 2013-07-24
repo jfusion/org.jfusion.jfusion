@@ -20,7 +20,7 @@ defined('_JEXEC') or die('Restricted access');
 
 	JFusion.getElement = function(aID) {
 		return (document.getElementById) ? document.getElementById(aID) : document.all[aID];
-	}
+	};
 
 	JFusion.getIFrameDocument = function(aID) {
 		var rv = null;
@@ -34,14 +34,14 @@ defined('_JEXEC') or die('Restricted access');
 			rv = document.frames[aID].document;
 		}
 		return rv;
-	}
+	};
 
 	JFusion.adjustMyFrameHeight = function() {
 		var frame = JFusion.getElement("jfusioniframe");
 		frame.height = JFusion.getIFrameDocument("jfusioniframe").body.offsetHeight;
 
 		window.scrollTo(window.pageYOffset,JFusion.getOffsetTop(frame));
-	}
+	};
 
 	JFusion.getOffsetTop = function(el) {
 		var top = 0;
@@ -50,7 +50,7 @@ defined('_JEXEC') or die('Restricted access');
 			el = el.offsetParent;
 		}
 		return top;
-	}
+	};
 </script>
 <?php
 $wrapper_scroll = $this->params->get('wrapper_scroll', 'auto');

@@ -178,6 +178,7 @@ class JFusionController extends JControllerLegacy
         //get the posted variables
         $post = JFactory::getApplication()->input->post->get('params', array(), 'array');
         $jname = JFactory::getApplication()->input->post->getString('jname', '');
+	    $action = JFactory::getApplication()->input->get('action');
 	    try {
 		    if (empty($post)) {
 			    throw new Exception(JText::_('SAVE_FAILURE'));
@@ -198,7 +199,6 @@ class JFusionController extends JControllerLegacy
 	                JFusionFunction::raiseWarning(JText::_('SOURCE_PATH_NOT_FOUND'));
 	            }
 	        }
-		    $action = JFactory::getApplication()->input->get('action');
 
 		    if (!JFusionFunctionAdmin::saveParameters($jname, $post)) {
 			    throw new Exception(JText::_('SAVE_FAILURE'));

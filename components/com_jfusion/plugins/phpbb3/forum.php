@@ -131,8 +131,8 @@ class JFusionForum_phpbb3 extends JFusionForum {
      * @return array
      */
     function getPrivateMessageCounts($puser_id) {
+	    $unreadCount = $totalCount = 0;
 	    try {
-		    $unreadCount = $totalCount = 0;
 		    if ($puser_id) {
 			    // read pm counts
 			    $db = JFusionFactory::getDatabase($this->getJname());

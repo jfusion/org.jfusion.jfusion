@@ -281,7 +281,7 @@ HTML;
 	 * @return string
 	 */
 	public static function renderField($field) {
-
+		$label = '';
 		if (!$field->hidden) {
 			$label =<<<HTML
 			<div class="control-label">

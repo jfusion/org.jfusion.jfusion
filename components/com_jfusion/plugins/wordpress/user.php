@@ -570,15 +570,11 @@ class JFusionUser_wordpress extends JFusionUser {
 					    foreach ($results as $row) {
 						    $query = 'UPDATE #__posts SET post_author = '.$reassign. ' WHERE ID = '. $row->ID;
 						    $db->setQuery($query);
-						    if (!$db->execute()) {
-							    $status['error'][] = 'Error Could not reassign posts by user '.$user_id.': '.$db->stderr();
-							    break;
-						    }
+						    $db->execute();
 					    }
 					    $status['debug'][] = 'Reassigned posts from user with id '.$user_id.' to user '.$reassign;
-				    } elseif ($db->getErrorNum() != 0) {
-					    $status['error'][] = 'Error Could not retrieve posts by user '.$user_id.': '.$db->stderr();
 				    }
+
 				    $query = 'SELECT link_id FROM #__links WHERE link_owner = '.$user_id;
 				    $db->setQuery($query);
 				    if ($db->execute()) {
@@ -587,49 +583,34 @@ class JFusionUser_wordpress extends JFusionUser {
 						    foreach ($results as $row) {
 							    $query = 'UPDATE #__links SET link_owner = '.$reassign. ' WHERE link_id = '. $row->link_id;
 							    $db->setQuery($query);
-							    if (!$db->execute()) {
-								    $status['error'][] = 'Error Could not reassign links by user '.$user_id.': '.$db->stderr();
-								    break;
-							    }
+							    $db->execute();
 						    }
 						    $status['debug'][] = 'Reassigned links from user with id '.$user_id.' to user '.$reassign;
-					    } elseif ($db->getErrorNum() != 0) {
-						    $status['error'][] = 'Error Could not retrieve links by user '.$user_id.': '.$db->stderr();
 					    }
 				    }
 			    }
 		    } else {
 			    $query = 'DELETE FROM #__posts WHERE post_author = ' . $user_id;
 			    $db->setQuery($query);
-			    if (!$db->execute()) {
-				    $status['error'][] = 'Error Could not delete posts by user '.$user_id.': '.$db->stderr();
-			    } else {
-				    $status['debug'][] = 'Deleted posts from user with id '.$user_id;
-			    }
+			    $db->execute();
+			    $status['debug'][] = 'Deleted posts from user with id '.$user_id;
+
 			    $query = 'DELETE FROM #__links WHERE link_owner = ' . $user_id;
 			    $db->setQuery($query);
-			    if (!$db->execute()) {
-				    $status['error'][] = 'Error Could not delete links by user '.$user_id.': '.$db->stderr();
-			    } else {
-				    $status['debug'][] = 'Deleted links from user '.$user_id;
-			    }
+			    $db->execute();
+			    $status['debug'][] = 'Deleted links from user '.$user_id;
 		    }
 		    // now delete the user
 		    $query = 'DELETE FROM #__users WHERE ID = ' . $user_id;
 		    $db->setQuery($query);
-		    if (!$db->execute()) {
-			    $status['error'][] = 'Error Could not delete userrecord with userid '.$user_id.': '.$db->stderr();
-		    } else {
-			    $status['debug'][] = 'Deleted userrecord of user with userid '.$user_id;
-		    }
+		    $db->execute();
+		    $status['debug'][] = 'Deleted userrecord of user with userid '.$user_id;
+
 		    // delete usermeta
 		    $query = 'DELETE FROM #__usermeta WHERE user_id = ' . $user_id;
 		    $db->setQuery($query);
-		    if (!$db->execute()) {
-			    $status['error'][] = 'Error Could not delete usermetarecord with userid '.$user_id.': '.$db->stderr();
-		    } else {
-			    $status['debug'][] = 'Deleted usermetarecord of user with userid '.$user_id;
-		    }
+		    $db->execute();
+		    $status['debug'][] = 'Deleted usermetarecord of user with userid '.$user_id;
 	    } catch (Exception $e) {
 		    $status['error'][] = $e->getMessage();
 	    }

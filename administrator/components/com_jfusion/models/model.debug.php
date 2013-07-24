@@ -261,12 +261,10 @@ CSS;
                 $keyClass = 'o_key';
                 $emptyWhat = 'empty-object';
             }
+	        $empty = true;
             if (debug::isOneDimensional($arr) && !$start) {
-                if (count($arr) == 0) {
-                    $str.= '<span class="'.$keyClass.'">'.$emptyWhat.'</span><br>'."\n";
-                }
-
                 foreach ($arr as $key => $value) {
+	                $empty = false;
                     $style = '';
                     if (debug::$callback) {
                         list($target,$function,$args) = debug::$callback;
@@ -275,6 +273,9 @@ CSS;
                     $str.= '<span class="'.$keyClass.'" style="'.$style.'"> ' . debug::decorateValue($key) . '</span> ';
                     $str.= '<span class="value" style="'.$style.'" > ' . debug::decorateValue($value) . '</span><br/>';
                 }
+	            if ($empty) {
+		            $str.= '<span class="'.$keyClass.'">'.$emptyWhat.'</span><br>'."\n";
+	            }
             } else {
                 $onClick = '';
                 if (debug::$toggleFunctionName != '') $onClick = 'onclick="' . debug::$toggleFunctionName . '(event)"';
@@ -283,10 +284,8 @@ CSS;
                     $str.= '<thead '.$onClick.'><tr><th colspan="2" class="title">'.$name.'</th></tr></thead>';
                 }
                 $str.= '<tbody>';
-                if (count($arr) == 0) {
-                    $str.= '<tr><td colspan="2" class="'.$keyClass.'">$emptyWhat</td></tr>';
-                }
                 foreach ($arr as $key => $value) {
+	                $empty = false;
                     $style = '';
                     if (debug::$callback) {
                         list($target,$function,$args) = debug::$callback;
@@ -297,6 +296,9 @@ CSS;
                     $str.= '<td class="value" style="'.$style.'">'.debug::get($value, false).'</td>';
                     $str.= '</tr>';
                 }
+	            if ($empty) {
+		            $str.= '<tr><td colspan="2" class="'.$keyClass.'">'.$emptyWhat.'</td></tr>';
+	            }
                 $str.= '</tbody></table>';
             }
             if ($start == true) { // the top-Level run
@@ -334,40 +336,41 @@ CSS;
 			if (is_object($arr)) {
 				$emptyWhat = 'empty-object';
 			}
+			$empty = true;
 			if (debug::isOneDimensional($arr)) {
-				if (count($arr) == 0) {
+				foreach ($arr as $key => $value) {
+					$empty = false;
+					if (debug::$callback) {
+						list($target,$function,$args) = debug::$callback;
+						list($style,$value) = $target->$function($key,$value,$args);
+					}
+					$str.= $levelText.$key.' &rarr; '.$value."\n";
+				}
+				if ($empty) {
 					$str.= $levelText.$emptyWhat."\n";
-				} else {
-					foreach ($arr as $key => $value) {
-						if (debug::$callback) {
-							list($target,$function,$args) = debug::$callback;
-							list($style,$value) = $target->$function($key,$value,$args);
+				}
+			} else {
+				foreach ($arr as $key => $value) {
+					$empty = false;
+					$emptyWhat = 'empty-array';
+					if (is_object($value)) {
+						$emptyWhat = 'empty-object';
+					}
+					if (debug::$callback) {
+						list($target,$function,$args) = debug::$callback;
+						list($style,$value) = $target->$function($key,$value,$args);
+					}
+					if ( is_array($value) || is_object($value) ) {
+						if (count($value) == 0) {
+							$str.= $emptyWhat."\n";
 						}
+						$str.= $levelText.$key.' - &darr; '."\n".debug::getText($value, false,$level+1);
+					} else {
 						$str.= $levelText.$key.' &rarr; '.$value."\n";
 					}
 				}
-			} else {
-				if (count($arr) == 0) {
+				if ($empty) {
 					$str.= $emptyWhat."\n";
-				} else {
-					foreach ($arr as $key => $value) {
-						$emptyWhat = 'empty-array';
-						if (is_object($value)) {
-							$emptyWhat = 'empty-object';
-						}
-						if (debug::$callback) {
-							list($target,$function,$args) = debug::$callback;
-							list($style,$value) = $target->$function($key,$value,$args);
-						}
-						if ( is_array($value) || is_object($value) ) {
-							if (count($value) == 0) {
-								$str.= $emptyWhat."\n";
-							}
-							$str.= $levelText.$key.' - &darr; '."\n".debug::getText($value, false,$level+1);
-						} else {
-							$str.= $levelText.$key.' &rarr; '.$value."\n";
-						}
-					}
 				}
 			}
 		} else {

@@ -134,7 +134,7 @@ class jfusionViewLoginCheckerResult extends JViewLegacy
 		$response = new JAuthenticationResponse();
 		/**
 		 * @ignore
-		 * @var $plugin plgAuthenticationjfusion
+		 * @var $plugin plgAuthenticationjfusion|plgUserJfusion
 		 */
 		foreach ($plugins as $plugin) {
 			$className = 'plg' . $plugin->type . $plugin->name;

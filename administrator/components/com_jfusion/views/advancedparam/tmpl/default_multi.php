@@ -33,6 +33,10 @@ $uri->delVar('task');
 			<tr style="padding:0; margin:0;">
 				<td colspan="2" style="padding:0; margin:0;">
 					<?php
+					/**
+					 * @ignore
+					 * @var $form JForm
+					 */
 					global $jname;
 					echo JHtml::_('tabs.start','tabs', array('startOffset'=>2));
 					foreach ($this->comp as $key => $value) {
