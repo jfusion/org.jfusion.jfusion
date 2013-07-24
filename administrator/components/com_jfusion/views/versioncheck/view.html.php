@@ -136,7 +136,7 @@ class jfusionViewversioncheck extends JViewLegacy
 					$system[] = $mysql;
 
 					//check the JFusion component,plugins and modules versions
-					$JFusion = $this->getVersionNumber(JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'jfusion.xml', JText::_('COMPONENT'), $xml->component);
+					$JFusion = $this->getVersionNumber(JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'jfusion.xml', JText::_('COMPONENT'), $xml->component[0]);
 					if ($xml->component->version) {
 						$JFusionVersion = (string)$xml->component->version;
 					}
@@ -236,7 +236,7 @@ class jfusionViewversioncheck extends JViewLegacy
 
 			//cleanup for the next function call
 		} else {
-			JFusionFunction::raiseNotices(JText::_('ERROR'), JText::_('XML_FILE_MISSING') . ' '. JText::_('JFUSION') . ' ' . $name . ' ' . JText::_('PLUGIN'), $name);
+			JFusionFunction::raiseNotice(JText::_('ERROR').': '.JText::_('XML_FILE_MISSING') . ' '. JText::_('JFUSION') . ' ' . $name . ' ' . JText::_('PLUGIN'), $name);
 		}
 		return $output;
 	}

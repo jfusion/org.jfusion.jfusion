@@ -56,7 +56,7 @@ class JFusionAdmin_magento extends JFusionAdmin
     	/// 1.9 Beta 2 should be read 1.9 , not 1.9.2
     	/// we can discard everything after the first space
     	$version = trim($version);
-    	$versionarr = explode(" ",$version);
+    	$versionarr = explode(' ',$version);
     	if (!empty($versionarr)) {
     		$version = $versionarr[0];
     	}
@@ -226,10 +226,10 @@ class JFusionAdmin_magento extends JFusionAdmin
 				    $api_salt = $hashArr[1];
 				    if ($api_salt) {
 					    $params_hash_md5 = md5($api_salt . $apikey);
-					    $params_hash_sha256 = hash("sha256",$api_salt . $apikey);
+					    $params_hash_sha256 = hash('sha256',$api_salt . $apikey);
 				    } else {
 					    $params_hash_md5 = md5($apikey);
-					    $params_hash_sha256 = hash("sha256",$apikey);
+					    $params_hash_sha256 = hash('sha256',$apikey);
 				    }
 				    if ($params_hash_md5 != $api_key && $params_hash_sha256 != $api_key) {
 					    JFusionFunction::raiseWarning(JText::_('MAGENTO_WRONG_APIUSER_APIKEY_COMBINATION'), $this->helper->getJname());
@@ -495,13 +495,11 @@ HTML;
 
 		$xml = JFusionFunction::getXml($jfusion_mod_xml);
 
-		$module = $xml->modules->jfusion_joomla->active;
-			
-		//$xml->document->modules->jfusion_joomla->active[0]->setData('false');
-		$module->setData($activation);
+		unset($xml->modules->jfusion_joomla->active);
+		$xml->modules->jfusion_joomla->addChild('active',$activation);
 
 		$buffer = '<?xml version="1.0"?'.'>';
-		$buffer .= $xml->toString();
+		$buffer .= $xml->asXML();
 		JFile::write($jfusion_mod_xml, $buffer);
 	}
 

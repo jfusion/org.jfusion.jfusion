@@ -303,7 +303,7 @@ class cssparser {
      */
     function modifyContent(&$content) {
     	//Remove comments
-		$content = preg_replace("#\/\*(?!\*\/)(.*?)\*\/#si", "", $content);
+		$content = preg_replace("#\/\*(?!\*\/)(.*?)\*\/#si", '', $content);
 		$content = str_replace('<!--', '', $content);
 		$content = str_replace('-->', '', $content);
 		$content = trim($content);

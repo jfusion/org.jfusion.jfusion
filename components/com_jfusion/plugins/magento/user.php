@@ -483,7 +483,7 @@ class JFusionUser_magento extends JFusionUser {
 			} else {
 				if (isset($userinfo->password_clear) && strlen($userinfo->password_clear) != 32) {
 					$password_salt = $this->getRandomString(32);
-					$this->fillMagentouser($magento_user, 'password_hash', hash("sha256",$password_salt . $userinfo->password_clear) . ':' . $password_salt);
+					$this->fillMagentouser($magento_user, 'password_hash', hash('sha256',$password_salt . $userinfo->password_clear) . ':' . $password_salt);
 				} else {
 					if (!empty($userinfo->password_salt)) {
 						$this->fillMagentouser($magento_user, 'password_hash', $userinfo->password . ':' . $userinfo->password_salt);
@@ -531,7 +531,7 @@ class JFusionUser_magento extends JFusionUser {
 			$this->fillMagentouser($magento_user, 'password_hash', md5($password_salt . $userinfo->password_clear) . ':' . $password_salt);
 		} else {
 			$password_salt = $this->getRandomString(32);
-			$this->fillMagentouser($magento_user, 'password_hash', hash("sha256",$password_salt . $userinfo->password_clear) . ':' . $password_salt);
+			$this->fillMagentouser($magento_user, 'password_hash', hash('sha256',$password_salt . $userinfo->password_clear) . ':' . $password_salt);
 		}
 		$errors = $this->update_create_Magentouser($magento_user, $existinguser->userid);
 		if ($errors) {

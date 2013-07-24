@@ -651,7 +651,7 @@ class JFusionFunction
             if ($options['plaintext_line_breaks'] == 'br') {
                 $text = $bbcode->nl2br($text);
             } elseif ($options['plaintext_line_breaks'] == 'space') {
-                $text = str_replace("\n", "  ", $text);
+                $text = str_replace("\n", '  ', $text);
             }
         } elseif ($to == 'html') {
             //Encode html entities added by the plugin prepareText function
@@ -709,7 +709,7 @@ class JFusionFunction
             }
 
             //remove all line breaks to prevent massive empty space in bbcode
-            $text = str_replace(array("\n","\r","\n\r"), "", $text);
+            $text = str_replace(array("\n","\r","\n\r"), '', $text);
 
             static $search, $replace;
             if (!is_array($search)) {
@@ -1716,22 +1716,26 @@ class JFusionFunction
 	/**
 	 * Raise warning function that can handle arrays
 	 *
-	 * @param string $type      type of warning
 	 * @param array  $warning   warning itself
 	 * @param string $jname
 	 *
 	 * @return string nothing
 	 */
-	public static function raiseNotices($type, $warning, $jname='') {
+	public static function raiseNotices($warning, $jname='') {
 		if (is_array($warning)) {
 			foreach ($warning as $warningtype => $warningtext) {
 				//if still an array implode for nicer display
+				if (is_numeric($warningtype)) {
+					$warningtype = $jname;
+				}
 				if (is_array($warningtext)) {
-					JFusionFunction::raiseNotice($warningtype . ': ' . $warningtext, $jname);
+					JFusionFunction::raiseNotices($warningtext, $warningtype);
+				} else {
+					JFusionFunction::raiseNotice($warningtext, $warningtype);
 				}
 			}
 		} else {
-			JFusionFunction::raiseNotice($type . ': ' . $warning, $jname);
+			JFusionFunction::raiseNotice($warning, $jname);
 		}
 	}
 

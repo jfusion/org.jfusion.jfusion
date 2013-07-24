@@ -21,14 +21,14 @@ defined('_JEXEC') or die('Restricted access');
 
 <script type="text/javascript">
     function doShowHide(item) {
-        var obj=$("x"+item);
+        var obj=$('x'+item);
         var col=$(item);
-        if (obj.style.display=="none") {
-            obj.style.display="block";
-            col.innerHTML="[-]";
+        if (obj.style.display=='none') {
+            obj.style.display='block';
+            col.innerHTML='[-]';
         } else {
-            obj.style.display="none";
-            col.innerHTML="[+]";
+            obj.style.display='none';
+            col.innerHTML='[+]';
         }
     }
 

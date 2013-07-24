@@ -32,7 +32,7 @@ JFusionFunctionAdmin::displayDonate();
 
 			echo JHtml::_('tabs.start', 'params');
 			// Iterate through the extra form fieldset and display each one.
-			foreach ($this->form->getFieldsets("params") as $fieldsets => $fieldset):
+			foreach ($this->form->getFieldsets('params') as $fieldsets => $fieldset):
 				echo JHtml::_('tabs.panel', JText::_($fieldset->name), $fieldsets);
 				?>
 				<table class="settings">

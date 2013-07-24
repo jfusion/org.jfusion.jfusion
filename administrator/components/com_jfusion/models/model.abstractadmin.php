@@ -607,7 +607,7 @@ JS;
 	        };
 
 	        JFusion.removeRow = function (row) {
-	        	var trEl = $("usergroups_row"+row);
+	        	var trEl = $('usergroups_row'+row);
 	        	trEl.style.display = 'none';
 	        	trEl.innerHTML = '';
 	        };

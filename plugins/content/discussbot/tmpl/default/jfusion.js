@@ -26,11 +26,11 @@ if('undefined'===typeof JFusion) {
 }
 
 JFusion.JText = function(key) {
-    key = key.toUpperCase();
-    if (this.Text[key]) {
-        key = this.Text[key];
+    var text = key.toUpperCase();
+    if (this.Text[text]) {
+        text = this.Text[text];
     }
-    return key;
+    return text;
 };
 
 

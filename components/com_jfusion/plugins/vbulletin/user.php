@@ -877,7 +877,7 @@ class JFusionUser_vbulletin extends JFusionUser
 					    //create a new session
 					    $status = $this->createSession($userinfo, $options);
 					    if ($debug) {
-						    JFusionFunction::raiseNotices($this->getJname(), $status);
+						    JFusionFunction::raiseNotices($status,$this->getJname());
 					    }
 					    //signal that session was changed
 					    return 1;
@@ -901,7 +901,7 @@ class JFusionUser_vbulletin extends JFusionUser
 					    $options['clientid'][] = '0';
 					    $status = $JoomlaUser->destroySession($userinfo, $options);
 					    if ($debug) {
-						    JFusionFunction::raiseNotices($this->getJname(),$status);
+						    JFusionFunction::raiseNotices($status,$this->getJname());
 					    }
 				    }
 			    } elseif ($debug) {
@@ -918,7 +918,7 @@ class JFusionUser_vbulletin extends JFusionUser
 				    $status = $this->destroySession(null, null);
 				    if ($debug) {
 					    JFusionFunction::raiseNotice('Cookie userid did not match session userid thus destroyed vB\'s session.', $this->getJname());
-					    JFusionFunction::raiseNotices($this->getJname(), $status);
+					    JFusionFunction::raiseNotices($status,$this->getJname());
 				    }
 			    }
 
@@ -957,7 +957,7 @@ class JFusionUser_vbulletin extends JFusionUser
 					    $JFusionActivePlugin = $this->getJname();
 					    $status = $JoomlaUser->createSession($userinfo, $options);
 					    if ($debug) {
-						    JFusionFunction::raiseNotices($this->getJname(),$status);
+						    JFusionFunction::raiseNotices($status,$this->getJname());
 					    }
 					    //no need to signal refresh as Joomla will recognize this anyway
 					    return 0;

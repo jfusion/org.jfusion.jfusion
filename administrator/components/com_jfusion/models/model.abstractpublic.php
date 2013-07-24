@@ -662,7 +662,7 @@ HTML;
                     $return = '<div style="color: red;">* '.$default.' '.$content.'</div>';
                     break;
                 case 'time':
-                    $return = date("Y-m-d H:i", $content);
+                    $return = date('Y-m-d H:i', $content);
                     break;
                 default:
                     break;

@@ -49,24 +49,26 @@ class jfusionViewlanguages extends JViewLegacy
         $lang_repo = array();
 	    $xml = JFusionFunction::getXml($data,false);
         if ($xml) {
-	        $languages = $xml->languages->children();
-	        /**
-	         * @ignore
-	         * @var $language SimpleXMLElement
-	         */
-	        foreach ($languages as $language) {
-		        $name = $language->attributes('tag');
+	        if ($xml->languages) {
+		        $languages = $xml->languages->children();
+		        /**
+		         * @ignore
+		         * @var $language SimpleXMLElement
+		         */
+		        foreach ($languages as $language) {
+			        $name = $language->attributes('tag');
 
-		        $lang = new stdClass;
-		        $lang->file = (string)$language->remotefile;
-		        $lang->date = (string)$language->creationdate;
-		        $lang->description = (string)$language->description;
-		        $lang->progress = (string)$language->progress;
-		        $lang->translateurl = (string)$language->translateurl;
-		        $lang->currentdate = null;
-		        $lang->class = 'row';
+			        $lang = new stdClass;
+			        $lang->file = (string)$language->remotefile;
+			        $lang->date = (string)$language->creationdate;
+			        $lang->description = (string)$language->description;
+			        $lang->progress = (string)$language->progress;
+			        $lang->translateurl = (string)$language->translateurl;
+			        $lang->currentdate = null;
+			        $lang->class = 'row';
 
-		        $lang_repo[(string) $name] = $lang;
+			        $lang_repo[(string) $name] = $lang;
+		        }
 	        }
         }
 

@@ -1157,7 +1157,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 							    $status = $this->createSession($userinfo, $options);
 
 							    if ($debug) {
-								    JFusionFunction::raiseNotices($this->getJname(),$status);
+								    JFusionFunction::raiseNotices($status,$this->getJname());
 							    }
 
 							    //signal that session was changed
@@ -1182,7 +1182,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 							    $options['clientid'][] = '0';
 							    $status = $JoomlaUser->destroySession($userinfo, $options);
 							    if ($debug) {
-								    JFusionFunction::raiseNotices($this->getJname(),$status);
+								    JFusionFunction::raiseNotices($status,$this->getJname());
 							    }
 						    }
 					    } else {
@@ -1252,7 +1252,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 							    $JFusionActivePlugin = $this->getJname();
 							    $status = $JoomlaUser->createSession($userinfo, $options);
 							    if ($debug) {
-								    JFusionFunction::raiseNotices($this->getJname(),$status);
+								    JFusionFunction::raiseNotices($status,$this->getJname());
 							    }
 							    //no need to signal refresh as Joomla will recognize this anyway
 						    }

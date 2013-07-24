@@ -124,8 +124,8 @@ class jfusionViewdiscussionbot extends JViewLegacy
 
 		$document->addStyleSheet('components/com_jfusion/css/jfusion.css');
         $template = $mainframe->getTemplate();
-		$document->addStyleSheet("templates/$template/css/general.css");
-		$document->addStyleSheet("templates/$template/css/icon.css");
+		$document->addStyleSheet('templates/'.$template.'/css/general.css');
+		$document->addStyleSheet('templates/'.$template.'/css/icon.css');
 		$document->setTitle($title);
 		$css = '.jfusion table.jfusionlist, table.jfusiontable{ font-size:11px; } .jfusion table.jfusionlist tbody tr td { vertical-align:top; }';
 		$document->addStyleDeclaration($css);

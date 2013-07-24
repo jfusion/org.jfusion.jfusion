@@ -310,7 +310,6 @@ class JFusionPluginInstaller extends JObject
 		            // installation path
 		            $this->parent->setPath('extension_root', JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $name);
 		            // get files to copy
-		            $element = $this->manifest->files;
 
 		            /**
 		             * ---------------------------------------------------------------------------------------------
@@ -337,7 +336,7 @@ class JFusionPluginInstaller extends JObject
 			            $this->parent->pushStep(array('type' => 'folder', 'path' => $this->parent->getPath('extension_root')));
 		            }
 		            // Copy all necessary files
-		            if ($this->parent->parseFiles($element, -1) === false) {
+		            if ($this->parent->parseFiles($this->manifest->files[0], -1) === false) {
 			            // Install failed, roll back changes
 			            $this->parent->abort();
 			            $result['message'] = $this->module->raise('error', JText::_('PLUGIN') . ' ' . $name . ' ' . JText::_('INSTALL') . ': ' . JText::_('FAILED'), $name);

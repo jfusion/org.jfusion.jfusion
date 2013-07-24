@@ -837,7 +837,6 @@ HTML;
 		$db = JFactory::getDBO();
 		/**
 		 * @ignore
-		 * @var $parser JSimpleXML
 		 * @var $installer JInstaller
 		 */
 

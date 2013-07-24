@@ -435,7 +435,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 			    }
 			    $user->user_newpass_time = $user->user_newpassword = null;
 
-			    $db->setQuery("SHOW COLUMNS FROM #__user LIKE 'user_options'");
+			    $db->setQuery('SHOW COLUMNS FROM #__user LIKE \'user_options\'');
 			    $db->execute();
 
 			    if ($db->getNumRows() ) {

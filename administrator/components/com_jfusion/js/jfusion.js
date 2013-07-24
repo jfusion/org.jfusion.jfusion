@@ -132,7 +132,7 @@ JFusion.deletePlugin = function(jname) {
 };
 
 JFusion.updateList = function(html) {
-    var list = $("sort_table");
+    var list = $('sort_table');
     list.empty();
     list.set('html', html);
     this.initSortables();

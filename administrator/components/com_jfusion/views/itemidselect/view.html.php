@@ -49,7 +49,7 @@ class jfusionViewitemidselect extends JViewLegacy
         $document = JFactory::getDocument();
         $document->setTitle('Plugin Selection');
         $template = $mainframe->getTemplate();
-        $document->addStyleSheet("templates/$template/css/general.css");
+        $document->addStyleSheet('templates/'.$template.'/css/general.css');
         $document->addStyleSheet('components/com_jfusion/css/jfusion.css');
         $css = '.jfusion table.jfusionlist, .jfusion table.jfusiontable{ font-size:11px; }';
         $document->addStyleDeclaration($css);

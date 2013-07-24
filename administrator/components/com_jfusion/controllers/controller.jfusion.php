@@ -871,10 +871,6 @@ JS;
 
 	    $xml = JFusionFunction::getXml('<jfusionconfig></jfusionconfig>',false);
 
-        /**
-         * @ignore
-         * @var $info SimpleXMLElement
-         */
         $info = $xml->addChild('info');
 
         list($VersionCurrent,$RevisionCurrent) = JFusionFunctionAdmin::currentVersion(true);
@@ -906,27 +902,17 @@ JS;
 
         $info->addAttribute  ('original_name', $original_name);
 
-        /**
-         * @ignore
-         * @var $info SimpleXMLElement
-         * @var $config SimpleXMLElement
-         * @var $node SimpleXMLElement
-         */
-        $config = $xml->addChild('config');
-        foreach ($arr as $key => $val) {
-            $attrs = array();
-            $attrs['name'] = $key;
-            $node = $config->addChild('key',$attrs);
-            if (is_array($val)) $val = serialize($val);
-            $node->setData($val);
-        }
-
-        header('Content-disposition: attachment; filename=jfusion_'.$jname.'_config.xml');
-        header('content-type: text/xml');
-        header('Pragma: no-cache');
-        header('Expires: 0');
-
-        echo $xml->toString();
-        exit();
+	    $config = $xml->addChild('config');
+	    foreach ($arr as $key => $val) {
+		    if (is_array($val)) $val = serialize($val);
+		    $node = $config->addChild('key', $val);
+		    $node->addAttribute('name', $key);
+	    }
+	    header('content-type: text/xml');
+	    header('Content-disposition: attachment; filename=jfusion_'.$jname.'_config.xml');
+	    header('Pragma: no-cache');
+	    header('Expires: 0');
+	    echo $xml->asXML();
+	    exit();
     }
 }

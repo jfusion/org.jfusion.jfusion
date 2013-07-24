@@ -48,7 +48,7 @@ class jfusionViewsyncstatus extends JViewLegacy
         $document = JFactory::getDocument();
         $document->addStyleSheet('components/com_jfusion/css/jfusion.css');
         $template = $mainframe->getTemplate();
-        $document->addStyleSheet("templates/$template/css/general.css");
+        $document->addStyleSheet('templates/'.$template.'/css/general.css');
         JHTML::_('behavior.modal');
         JHTML::_('behavior.tooltip');
 

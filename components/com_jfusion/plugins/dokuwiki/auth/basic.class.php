@@ -145,7 +145,7 @@ class doku_auth_basic
             case 'my411':
                 return '*' . sha1(pack('H*', sha1($clear)));
             default:
-                JFusionFunction::raiseWarning("Unsupported crypt method $method", $this->helper->getJname());
+                JFusionFunction::raiseWarning('Unsupported crypt method '.$method, $this->helper->getJname());
             }
         return false;
     }

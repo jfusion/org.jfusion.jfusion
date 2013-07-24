@@ -30,7 +30,7 @@ class std {
      *    @returns array the actual tim in seconds
      */
     public static function getMicroTime() {
-        list($usec, $sec) = explode(" ", microtime());
+        list($usec, $sec) = explode(' ', microtime());
         return ($usec + $sec);
     }
     /**
@@ -755,9 +755,9 @@ class trans {
     function html2plaintext($htmlstr, $newLineChar = "\n", $tabChar = "\t") {
         $DEF_TAGLIST_LINEBREAK = array("br", "h1", "h2", "h3", "h4", "h5", "h6", "p", "div", "tr");
         $DEF_TAGLIST_TAB = array("td");
-        $htmlstr = str_replace("\n", "", $htmlstr);
-        $htmlstr = str_replace("\r", "", $htmlstr);
-        $htmlstr = str_replace("<br>", $newLineChar, $htmlstr);
+        $htmlstr = str_replace("\n", '', $htmlstr);
+        $htmlstr = str_replace("\r", '', $htmlstr);
+        $htmlstr = str_replace('<br>', $newLineChar, $htmlstr);
         foreach ($DEF_TAGLIST_LINEBREAK as $tag) {
             $htmlstr = str_replace("</$tag>", $newLineChar, $htmlstr);
             $htmlstr = str_replace("<$tag />", $newLineChar, $htmlstr);
@@ -781,8 +781,8 @@ class trans {
     $what = strtoupper($what);
     switch ($what) {
     case 'IV':
-    $str = str_replace("'", "&#039;", $str);
-    $str = str_replace('"', "&quot", $str);
+    $str = str_replace("'", '&#039;', $str);
+    $str = str_replace('"', '&quot', $str);
     break;
     case 'DBV':
 
@@ -871,7 +871,7 @@ class trans {
      *
      *    @param array $header the Hashtable to use
      *
-     *    a shortcut for trans::hashJoin("\r\n", ": ", $header);
+     *    a shortcut for trans::hashJoin("\r\n", ': ', $header);
      *
      *    @return string the created string
      */
@@ -967,7 +967,7 @@ class trans {
      */
     private static function decodeHTML($string) {
         $string = strtr($string, array_flip(get_html_translation_table(HTML_ENTITIES)));
-        $string = preg_replace("/&#([0-9]+);/me", "chr('\\1')", $string);
+        $string = preg_replace('/&#([0-9]+);/me', "chr('\\1')", $string);
         return $string;
     }
 }
