@@ -1315,7 +1315,7 @@ HTML;
 
                 $JSession = JFactory::getSession();
                 $show_replies = $JSession->get('jfusion.discussion.visibility', 0);
-                $text = (empty($show_replies)) ? 'HIDE_REPLIES' : 'SHOW_REPLIES';
+                $text = (empty($show_replies)) ? 'SHOW_REPLIES' : 'HIDE_REPLIES';
 
                 $this->helper->output['buttons']['showreplies']['text'] = JText::_($text);
                 $this->helper->output['buttons']['showreplies']['target'] = '_self';
@@ -1330,7 +1330,7 @@ HTML;
                 <div class="jfusionclearfix" id="jfusionButtonArea{$this->article->id}">
                     {$this->helper->renderFile('default_buttons.php')}
                 </div>
-                <div class="jfusionclearfix jfusionButtonConfirmationBox" id="jfusionButtonConfirmationBox{$this->article->id}">
+                <div class="jfusionclearfix jfusionButtonConfirmationBox" style="display: none;" id="jfusionButtonConfirmationBox{$this->article->id}">
                 </div>
 HTML;
         }

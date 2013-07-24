@@ -25,10 +25,10 @@ defined('_JEXEC') or die('Restricted access');
         var col=$(item);
         if (obj.style.display=='none') {
             obj.style.display='block';
-            col.innerHTML='[-]';
+            col.set('html', '[-]');
         } else {
             obj.style.display='none';
-            col.innerHTML='[+]';
+	        col.set('html', '[+]');
         }
     }
 

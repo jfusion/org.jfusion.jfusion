@@ -189,7 +189,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
      */
     function getBuffer(&$data)
 	{
-	    $jFusion_Route = JFactory::getApplication()->input->get('jFusion_Route',null);
+	    $jFusion_Route = JFactory::getApplication()->input->get('jFusion_Route',null,'raw');
         if ($jFusion_Route) {
         	$jFusion_Route = unserialize ($jFusion_Route);
         	foreach ($jFusion_Route as $value) {
@@ -1061,7 +1061,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
                 } else if(window.attachEvent) { // IE
                     window.attachEvent(\'onload\', function(){
                         {$temp[1]}
-                    });
+                    });jfusionButtonConfirmationBox
                 }
 JS;
                 $js .='</script>';

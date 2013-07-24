@@ -444,9 +444,9 @@ class JFusionAdmin_universal extends JFusionAdmin{
 			});
 
             var id = $(parmtype+name);
-            id.innerHTML = '';
+            id.empty();
             var value = $(parmtype+name+'value');
-			value.innerHTML = '';
+			value.empty();
 
 			JFusion.Plugin.update();
             if ( ref.value && TypeAry[ref.value].types !== undefined ) {

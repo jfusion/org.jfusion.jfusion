@@ -4,13 +4,11 @@ if('undefined'===typeof JFusion) {
     JFusion.jumptoDiscussion = true;
     JFusion.messageArea = false;
     JFusion.ajaxMessageSlide = false;
-    JFusion.postPagination = false;
     JFusion.buttonArea = false;
     JFusion.delayHiding = false;
     JFusion.confirmationBoxSlides = [];
 
     JFusion.updatePostArea = false;
-    JFusion.postArea = false;
     JFusion.threadid = 0;
 
     JFusion.view = false;
@@ -55,7 +53,9 @@ JFusion.OnMessages = function(messages, force) {
     this.OnMessage('warning', messages.warning, force);
     this.OnMessage('error', messages.error, force);
 
-    JFusion.delayHiding = setTimeout('JFusion.ajaxMessageSlide.slideOut()', 5000);
+    JFusion.delayHiding = setTimeout(function () {
+        JFusion.ajaxMessageSlide.slideOut();
+    }, 15000);
 };
 
 JFusion.OnMessage = function(type, messages, force) {
@@ -107,8 +107,6 @@ JFusion.initializeDiscussbot = function() {
         JFusion.confirmationBoxSlides['jfusionButtonConfirmationBox' + JFusion.articleId].hide();
     }
 
-    JFusion.postArea = $('jfusionPostArea');
-    JFusion.postPagination = $('jfusionPostPagination');
     JFusion.buttonArea = $('jfusionButtonArea' + JFusion.articleId);
 
     // this code will send a data object via a GET request and alert the retrieved data.
@@ -138,20 +136,24 @@ JFusion.initializeDiscussbot = function() {
 JFusion.updateContent = function(JSONobject) {
     if (JSONobject.status) {
         //update the post area with the updated content
-        if (JFusion.postArea) {
-            JFusion.postArea.innerHTML = JSONobject.posts;
+        var postArea = $('jfusionPostArea');
+        if (postArea) {
+            postArea.set('html',JSONobject.posts);
         }
         if (JFusion.buttonArea) {
-            JFusion.buttonArea.innerHTML = JSONobject.buttons;
+            JFusion.buttonArea.set('html',JSONobject.buttons);
         }
-        if (JFusion.enablePagination && JFusion.postPagination) {
-            JFusion.postPagination.innerHTML = JSONobject.pagination;
+        if (JFusion.enablePagination) {
+            var postPagination = $('jfusionPostPagination');
+            if (postPagination) {
+                postPagination.set('html',JSONobject.pagination);
+            }
         }
 
         var submittedPostId = $('submittedPostId');
         var quickReply = $('quickReply');
         if (submittedPostId) {
-            JFusion.highlightPost('post' + submittedPostId.innerHTML);
+            JFusion.highlightPost('post' + submittedPostId.get('html'));
 
             //empty the quick reply form
             quickReply.value = '';
@@ -168,7 +170,7 @@ JFusion.updateContent = function(JSONobject) {
     JFusion.OnMessages(JSONobject.messages);
     var jfusionDebugContainer = $('jfusionDebugContainer' + JFusion.articleId);
     if (jfusionDebugContainer) {
-        jfusionDebugContainer.innerHTML = JSONobject.debug;
+        jfusionDebugContainer.set('html', JSONobject.debug);
     }
 };
 
@@ -236,126 +238,129 @@ JFusion.refreshPosts = function(id) {
 
 JFusion.confirmThreadAction = function(id, task, vars, url) {
 	var container = $('jfusionButtonConfirmationBox' + id);
-	//clear anything already there
-	container.innerHTML = '';
-	var msg = '';
-    if (task == 'create_thread') {
-        msg = JFusion.JText('CONFIRM_THREAD_CREATION');
-    } else if (task == 'unpublish_discussion') {
-        msg = JFusion.JText('CONFIRM_UNPUBLISH_DISCUSSION');
-    } else if (task == 'publish_discussion') {
-        msg = JFusion.JText('CONFIRM_PUBLISH_DISCUSSION');
-    }
-
-    //set the confirmation text
-    new Element('span', {
-        text: msg,
-        styles: {
-            fontWeight: "bold",
-            display: "block",
-            fontSize: "13px",
-            padding: "5px"
+    if (container) {
+        //clear anything already there
+        container.empty();
+        var msg = '';
+        if (task == 'create_thread') {
+            msg = JFusion.JText('CONFIRM_THREAD_CREATION');
+        } else if (task == 'unpublish_discussion') {
+            msg = JFusion.JText('CONFIRM_UNPUBLISH_DISCUSSION');
+        } else if (task == 'publish_discussion') {
+            msg = JFusion.JText('CONFIRM_PUBLISH_DISCUSSION');
         }
-    }).inject(container);
 
-    //create a div for the buttons
-    var divBtnContainer = new Element('div', {
-        styles: {
-            display: 'block',
-            textAlign: 'right',
-            marginTop: '5px',
-            marginBottom: '5px'
+        //set the confirmation text
+        new Element('span', {
+            text: msg,
+            styles: {
+                fontWeight: "bold",
+                display: "block",
+                fontSize: "13px",
+                padding: "5px"
+            }
+        }).inject(container);
+
+        //create a div for the buttons
+        var divBtnContainer = new Element('div', {
+            styles: {
+                display: 'block',
+                textAlign: 'right',
+                marginTop: '5px',
+                marginBottom: '5px'
+            }
+        });
+
+        //create standard cancel button
+        new Element('input', {
+            type: 'button',
+            'class': 'button',
+            value: JFusion.JText('BUTTON_CANCEL'),
+            events: {
+                click: function () {
+                    JFusion.clearConfirmationBox(id);
+                }
+            }
+        }).inject(divBtnContainer);
+
+        //create the buttons
+        if (task == 'create_thread') {
+            new Element('input', {
+                type: 'button',
+                'class': 'button',
+                value: JFusion.JText('BUTTON_INITIATE'),
+                styles: {
+                    marginLeft: '3px'
+                },
+                events: {
+                    click: function () {
+                        var form = $('JFusionTaskForm');
+                        form.articleId.value = id;
+                        form.dbtask.value = task;
+                        form.submit();
+                    }
+                }
+            }).inject(divBtnContainer);
+        } else if (task == 'publish_discussion') {
+            new Element('input', {
+                type: 'button',
+                'class': 'button',
+                value: JFusion.JText('BUTTON_REPUBLISH_DISCUSSION'),
+                styles: {
+                    marginLeft: '3px'
+                },
+                events: {
+                    click: function () {
+                        JFusion.submitAjaxRequest(id, task, vars, url);
+                    }
+                }
+            }).inject(divBtnContainer);
+
+            new Element('input', {
+                type: 'button',
+                'class': 'button',
+                value: JFusion.JText('BUTTON_PUBLISH_NEW_DISCUSSION'),
+                styles: {
+                    marginLeft: '3px'
+                },
+                events: {
+                    click: function () {
+                        var form = $('JFusionTaskForm');
+                        form.articleId.value = id;
+                        form.dbtask.value = 'create_thread';
+                        form.submit();
+                    }
+                }
+            }).inject(divBtnContainer);
+        } else if (task == 'unpublish_discussion') {
+            new Element('input', {
+                type: 'button',
+                'class': 'button',
+                value: JFusion.JText('BUTTON_UNPUBLISH_DISCUSSION'),
+                styles: {
+                    marginLeft: '3px'
+                },
+                events: {
+                    click: function () {
+                        JFusion.submitAjaxRequest(id, task, vars, url);
+                    }
+                }
+            }).inject(divBtnContainer);
         }
-    });
 
-    //create standard cancel button
-	new Element('input', {
-		type: 'button',
-		'class': 'button',
-		value: JFusion.JText('BUTTON_CANCEL'),
-		events: {
-			click: function () {
-                JFusion.clearConfirmationBox(id);
-			}
-		}
-	}).inject(divBtnContainer);
+        //attach the buttons
+        divBtnContainer.inject(container);
 
-    //create the buttons
-	if (task == 'create_thread') {
-		new Element('input', {
-			type: 'button',
-			'class': 'button',
-			value: JFusion.JText('BUTTON_INITIATE'),
-			styles: {
-				marginLeft: '3px'
-			},
-			events: {
-				click: function () {
-                    var form = $('JFusionTaskForm');
-                    form.articleId.value = id;
-                    form.dbtask.value = task;
-                    form.submit();
-				}
-			}
-		}).inject(divBtnContainer);
-    } else if (task == 'publish_discussion') {
-		new Element('input', {
-			type: 'button',
-			'class': 'button',
-			value: JFusion.JText('BUTTON_REPUBLISH_DISCUSSION'),
-			styles: {
-				marginLeft: '3px'
-			},
-			events: {
-				click: function () {
-                    JFusion.submitAjaxRequest(id, task, vars, url);
-				}
-			}
-		}).inject(divBtnContainer);
-
-		new Element('input', {
-			type: 'button',
-			'class': 'button',
-			value: JFusion.JText('BUTTON_PUBLISH_NEW_DISCUSSION'),
-			styles: {
-				marginLeft: '3px'
-			},
-			events: {
-				click: function () {
-                    var form = $('JFusionTaskForm');
-                    form.articleId.value = id;
-                    form.dbtask.value = 'create_thread';
-                    form.submit();
-				}
-			}
-		}).inject(divBtnContainer);
-    } else if (task == 'unpublish_discussion') {
-		new Element('input', {
-			type: 'button',
-			'class': 'button',
-			value: JFusion.JText('BUTTON_UNPUBLISH_DISCUSSION'),
-			styles: {
-				marginLeft: '3px'
-			},
-			events: {
-				click: function () {
-                    JFusion.submitAjaxRequest(id, task, vars, url);
-				}
-			}
-		}).inject(divBtnContainer);
+        //show the message
+        container.show();
+        JFusion.confirmationBoxSlides['jfusionButtonConfirmationBox' + id].slideIn();
     }
-
-    //attach the buttons
-    divBtnContainer.inject(container);
-
-    //show the message
-    JFusion.confirmationBoxSlides['jfusionButtonConfirmationBox' + id].slideIn();
 };
 
 JFusion.clearConfirmationBox = function(id) {
 	var container = $('jfusionButtonConfirmationBox' + id);
 	if (container) {
-		container.innerHTML = '';
+        container.empty();
         JFusion.confirmationBoxSlides['jfusionButtonConfirmationBox' + id].hide();
 	}
 };
@@ -388,14 +393,14 @@ JFusion.toggleDiscussionVisibility = function() {
         var state = discussion.style.display;
         if (state == 'none') {
             discussion.style.display = 'block';
-            jfusionBtnShowreplies.innerHTML = JFusion.JText('HIDE_REPLIES');
+            jfusionBtnShowreplies.set('html',JFusion.JText('HIDE_REPLIES'));
             showdiscussion = 1;
         } else {
             discussion.style.display = 'none';
-            jfusionBtnShowreplies.innerHTML = JFusion.JText('SHOW_REPLIES');
+            jfusionBtnShowreplies.set('html',JFusion.JText('SHOW_REPLIES'));
             showdiscussion = 0;
         }
-        if (override !== null) {
+        if (override !== undefined) {
             showdiscussion = override;
         }
         var setdiscussionvisibility;
@@ -403,14 +408,14 @@ JFusion.toggleDiscussionVisibility = function() {
             url: JFusion.articleUrl,
             method: 'get',
             onComplete: function () {
-                if (discusslink!==undefined) {
+                if (discusslink !== undefined) {
                     window.location = discusslink;
                 }
             }
         });
         setdiscussionvisibility.post('tmpl=component&ajax_request=1&show_discussion=' + showdiscussion);
     } else {
-        if (discusslink!==undefined) {
+        if (discusslink !== undefined) {
             window.location = discusslink;
         }
     }
@@ -418,7 +423,7 @@ JFusion.toggleDiscussionVisibility = function() {
 
 JFusion.quote = function(pid) {
     var quickReply = $('quickReply');
-    quickReply.value = $('originalText' + pid).innerHTML;
+    quickReply.value = $('originalText' + pid).get('html');
     window.location = '#jfusionQuickReply';
     quickReply.focus();
 };

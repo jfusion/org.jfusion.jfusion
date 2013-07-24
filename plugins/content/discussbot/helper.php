@@ -735,7 +735,7 @@ class JFusionPagination extends JPagination {
 		$limits[] = JHTML::_('select.option', '100');
 		$limits[] = JHTML::_('select.option', '0', JText::_('all'));
 
-		$selected = $this->_viewall ? 0 : $this->limit;
+		$selected = $this->viewall ? 0 : $this->limit;
 
 		// Build the select list
 		if ($mainframe->isAdmin()) {

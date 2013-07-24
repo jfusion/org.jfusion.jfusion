@@ -212,7 +212,7 @@ class JFusionPublic_smf extends JFusionPublic
      */
     function getBuffer(&$data)
     {
-        $jFusion_Route = JFactory::getApplication()->input->get('jFusion_Route',null);
+        $jFusion_Route = JFactory::getApplication()->input->get('jFusion_Route',null,'raw');
         if ($jFusion_Route) {
         	$jFusion_Route = unserialize ($jFusion_Route);
         	foreach ($jFusion_Route as $key => $value) {
