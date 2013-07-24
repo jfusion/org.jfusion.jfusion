@@ -1047,6 +1047,11 @@ HTML;
                 }
                 $generate_guts = true;
             }
+	        if ($display == 'none') {
+		        $JSession->set('jfusion.discussion.visibility',0);
+	        } else {
+		        $JSession->set('jfusion.discussion.visibility',1);
+	        }
 
             $content = '<div style="float:none; display:'.$display.';" id="discussion">';
 
