@@ -396,7 +396,7 @@ function toggleDiscussionVisibility() {
             jfusionBtnShowreplies.innerHTML = JFDB_SHOW_REPLIES;
             showdiscussion = 0;
         }
-        if (override !== null) {
+        if (override !== undefined) {
             showdiscussion = override;
         }
         var setdiscussionvisibility;
