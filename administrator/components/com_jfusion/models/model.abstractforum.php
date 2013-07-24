@@ -501,11 +501,11 @@ class JFusionForum
 		$document = JFactory::getDocument();
 		$option = JFactory::getApplication()->input->getCmd('option');
 		$path = 'plugins/content/jfusion/discussbot/markitup';
+//	    $document->addScript(JFusionFunction::getJoomlaURL().$path.'/jquery.markitup.js');
 		if ($option != 'com_k2') {
 		    //k2 loads jquery already
-		    $document->addScript(JFusionFunction::getJoomlaURL().$path.'/jquery.pack.js');
+//		    $document->addScript(JFusionFunction::getJoomlaURL().$path.'/jquery.pack.js');
 		}
-		$document->addScript(JFusionFunction::getJoomlaURL().$path.'/jquery.markitup.js');
 		$document->addScript(JFusionFunction::getJoomlaURL().$path.'/sets/bbcode/set.js');
 		$document->addStylesheet(JFusionFunction::getJoomlaURL().$path.'/skins/simple/style.css');
 		$document->addStylesheet(JFusionFunction::getJoomlaURL().$path.'/sets/bbcode/style.css');
@@ -514,6 +514,10 @@ class JFusionForum
 		JFusion.loadMarkitup = true;
 		jQuery.noConflict();
 JS;
+	    /*
+	     * @TODO RESOLVE ERROR
+	     */
+	    $js = '';
 		return $js;
     }
 

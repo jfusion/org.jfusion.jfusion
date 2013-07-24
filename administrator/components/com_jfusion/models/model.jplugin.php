@@ -446,7 +446,7 @@ class JFusionJplugin
         switch ($type) {
             case "url":
 //              $status = JFusionCurl::RemoteLoginUrl($curl_options);
-                $status['error'][]=JText::_('CURL_LOGINTYPE_NOT_SUPPORTED');
+                $status['error'][] = JText::_('CURL_LOGINTYPE_NOT_SUPPORTED');
                 break;
             case "brute_force":
         	   $curl_options['brute_force'] = $type;
@@ -455,7 +455,7 @@ class JFusionJplugin
             default:
                 $status = JFusionCurl::RemoteLogin($curl_options);
         }
-        $status['debug'][]=JText::_('CURL_LOGINTYPE').'='.$type;
+        $status['debug'][] = JText::_('CURL_LOGINTYPE').'='.$type;
         return $status;
     }
 
@@ -1085,17 +1085,17 @@ class JFusionJplugin
 					    $status['userinfo'] = $joomla_user;
 					    $status['debug'][] = JText::_('USER_CREATION');
 				    } else {
-					    $status['error'] = JText::_('COULD_NOT_CREATE_USER');
+					    $status['error'][] = JText::_('COULD_NOT_CREATE_USER');
 				    }
 			    } else {
 				    //Joomla does not allow duplicate emails report error
 				    $status['debug'][] = JText::_('USERNAME') . ' ' . JText::_('CONFLICT') . ': ' . $existinguser->username . ' -> ' . $userinfo->username;
-				    $status['error'] = JText::_('EMAIL_CONFLICT') . '. UserID: ' . $existinguser->userid . ' JFusionPlugin: ' . $jname;
+				    $status['error'][] = JText::_('EMAIL_CONFLICT') . '. UserID: ' . $existinguser->userid . ' JFusionPlugin: ' . $jname;
 				    $status['userinfo'] = $existinguser;
 			    }
 		    }
 	    } catch (Exception $e) {
-		    $status['error'] = JText::_('USER_CREATION_ERROR') . $e->getMessage();
+		    $status['error'][] = JText::_('USER_CREATION_ERROR') . $e->getMessage();
 	    }
         return $status;
     }

@@ -501,7 +501,7 @@ class JFusionForum_smf extends JFusionForum
 			    $status['threadinfo']->postid = $postid;
 		    }
 	    } catch (Exception $e) {
-		    $status['error'] = $e->getMessage();
+		    $status['error'][] = $e->getMessage();
 	    }
     }
 
@@ -542,7 +542,7 @@ class JFusionForum_smf extends JFusionForum
 		    $post_row->ID_MSG = $postid;
 		    $jdb->updateObject('#__messages', $post_row, 'ID_MSG');
 	    } catch (Exception $e) {
-		    $status['error'] = $e->getMessage();
+		    $status['error'][] = $e->getMessage();
 	    }
     }
 

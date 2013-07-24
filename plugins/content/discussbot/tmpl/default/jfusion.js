@@ -35,6 +35,60 @@ JFusion.JText = function(key) {
     return text;
 };
 
+JFusion.OnError = function(messages, force) {
+    var jfusionMessageArea = $('jfusionMessageArea');
+    jfusionMessageArea.empty();
+    if (messages.indexOf('<!') == 0) {
+        messages = [ this.JText('SESSION_TIMEOUT') ];
+    } else {
+        messages = [ messages ];
+    }
+    this.OnMessage('error', messages, force);
+};
+
+JFusion.OnMessages = function(messages, force) {
+    var jfusionMessageArea = $('jfusionMessageArea');
+    jfusionMessageArea.empty();
+
+    this.OnMessage('message', messages.message, force);
+    this.OnMessage('notice', messages.notice, force);
+    this.OnMessage('warning', messages.warning, force);
+    this.OnMessage('error', messages.error, force);
+
+    JFusion.delayHiding = setTimeout('JFusion.ajaxMessageSlide.slideOut()', 5000);
+};
+
+JFusion.OnMessage = function(type, messages, force) {
+    if (messages instanceof Array) {
+        if (messages.length) {
+            if (type == 'error') {
+                window.location = '#jfusionMessageArea';
+            }
+
+            //stop a slideOut if pending
+            if (JFusion.delayHiding) {
+                clearTimeout(JFusion.delayHiding);
+            }
+
+            var jfusionMessageArea = $('jfusionMessageArea');
+
+            var errorlist = { 'error' : 'alert-error', 'warning' : '', 'notice' : 'alert-info', 'message' : 'alert-success'};
+
+            var div = new Element('div', {'class' : 'alert'+' '+ errorlist[type] });
+
+            new Element('h4',{'class': 'alert-heading', 'html' : this.JText(type) }).inject(div);
+            Array.each(messages, function(message, index) {
+                new Element('p' , { 'html' : message } ).inject(div);
+                if (force) {
+                    alert(message);
+                }
+            });
+            div.inject(jfusionMessageArea);
+
+            JFusion.ajaxMessageSlide.slideIn();
+        }
+    }
+};
 
 JFusion.initializeDiscussbot = function() {
     if (JFusion.jumptoDiscussion) {
@@ -63,8 +117,7 @@ JFusion.initializeDiscussbot = function() {
         onSuccess: function(JSONobject) {
             JFusion.updateContent(JSONobject);
         }, onError: function(JSONobject) {
-            JFusion.showMessage(JSONobject, 'Error');
-
+            JFusion.OnError(JSONobject);
         }
     });
 
@@ -107,17 +160,12 @@ JFusion.updateContent = function(JSONobject) {
             if ($('markItUpQuickReply')) {
                 jQuery.markItUp({ call: 'previewClose' });
             }
-            JFusion.showMessage(JSONobject.message, 'Success');
-            JFusion.hideMessage();
         } else if ($('moderatedPostId')) {
             //empty the quick reply form
             quickReply.value = '';
-            JFusion.showMessage(JSONobject.message, 'Success');
-            JFusion.hideMessage();
         }
-    } else {
-        JFusion.showMessage(JSONobject.message, 'Error');
     }
+    JFusion.OnMessages(JSONobject.messages);
     var jfusionDebugContainer = $('jfusionDebugContainer' + JFusion.articleId);
     if (jfusionDebugContainer) {
         jfusionDebugContainer.innerHTML = JSONobject.debug;
@@ -146,7 +194,7 @@ JFusion.prepareAjax = function() {
         //add the submitpost function
         submitpost.addEvent('click', function (e) {
             //show a loading
-            JFusion.showMessage(JFusion.JText('SUBMITTING_QUICK_REPLY'), 'Loading');
+            JFusion.OnMessage('message', [JFusion.JText('SUBMITTING_QUICK_REPLY')]);
 
             //update the post area content
             var paramString = 'tmpl=component&ajax_request=1';
@@ -167,25 +215,6 @@ JFusion.prepareAjax = function() {
             JFusion.updatePostArea.post(paramString);
         });
     }
-};
-
-JFusion.showMessage = function(msg, type) {
-    //stop a slideOut if pending
-    if (JFusion.delayHiding) {
-        clearTimeout(JFusion.delayHiding);
-    }
-
-    $('jfusionMessage').innerHTML = msg;
-    JFusion.messageArea.setAttribute('class', 'jfusion' + type + 'Message');
-    if (type == 'Error') {
-        window.location = '#jfusionMessageArea';
-    }
-
-    JFusion.ajaxMessageSlide.slideIn();
-};
-
-JFusion.hideMessage = function() {
-    JFusion.delayHiding = setTimeout('JFusion.ajaxMessageSlide.slideOut()', 5000);
 };
 
 JFusion.highlightPost = function(postid) {

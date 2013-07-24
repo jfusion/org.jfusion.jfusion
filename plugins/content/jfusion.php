@@ -85,7 +85,7 @@ class plgContentJfusion extends JPlugin
 
         }
 
-        $this->jname =& $this->params->get('jname',false);
+        $this->jname = $this->params->get('jname',false);
 
         if ($this->jname !== false) {
             //load the plugin language file
@@ -99,7 +99,7 @@ class plgContentJfusion extends JPlugin
             $this->mode = 'manual';
         }
 
-        $this->creationMode =& $this->params->get('create_thread','load');
+        $this->creationMode =    $this->params->get('create_thread','load');
 
         $this->debug_mode = $this->params->get('debug', JFactory::getApplication()->input->getInt('debug_discussionbot',0));
 
@@ -144,7 +144,7 @@ class plgContentJfusion extends JPlugin
 	        JFusionFunction::raiseNotice(JText::_('NO_CONTENT_DATA_FOUND'), JText::_('DISCUSSBOT_ERROR'));
             $result = false;
         } else {
-            $this->article =& $subject;
+            $this->article = $subject;
 	        $this->helper->setArticle($this->article);
 
             //make sure there is a plugin
@@ -267,7 +267,7 @@ class plgContentJfusion extends JPlugin
     public function onPrepareContent(&$subject, $params)
     {
         $result = true;
-        $this->article =& $subject;
+        $this->article = $subject;
 	    $this->helper->setArticle($this->article);
 
         //reset some vars
@@ -322,7 +322,7 @@ class plgContentJfusion extends JPlugin
 				                    //set manual plug
 				                    $this->manual_plug = true;
 			                    } elseif ($this->dbtask != 'create_thread' && $this->dbtask != 'create_threadpost') {
-				                    $ajax->message = JText::_('THREAD_NOT_FOUND');
+				                    JFusionFunction::raiseError(JText::_('THREAD_NOT_FOUND'), JText::_('DISCUSSBOT_ERROR'));
 				                    $this->renderAjaxResponce($ajax);
 			                    }
 		                    }
@@ -366,9 +366,9 @@ class plgContentJfusion extends JPlugin
 			                    $ajax->status = true;
 		                    } else if ($show_discussion!=='') {
 			                    $ajax->status = true;
-			                    $ajax->message = 'jfusion.discussion.visibility set to '.$show_discussion;
+			                    JFusionFunction::raiseNotice('jfusion.discussion.visibility set to '.$show_discussion);
 		                    } else {
-			                    $ajax->message = 'Discussion bot ajax request made but it doesn\'t seem to have been picked up';
+			                    JFusionFunction::raiseError('Discussion bot ajax request made but it doesn\'t seem to have been picked up', JText::_('DISCUSSBOT_ERROR'));
 		                    }
 		                    $this->renderAjaxResponce($ajax);
 	                    }
@@ -376,7 +376,7 @@ class plgContentJfusion extends JPlugin
 	                    $this->helper->loadScripts();
 
                         if (empty($this->article->params) && !empty($this->article->parameters)) {
-                            $this->article->params =& $this->article->parameters;
+                            $this->article->params = $this->article->parameters;
                         }
 
                         if (!empty($this->article->params)) {
@@ -436,27 +436,6 @@ class plgContentJfusion extends JPlugin
 	}
 
 	/**
-	 * @param mixed $error
-	 * @return string
-	 */
-	public function ajaxError($error) {
-		//output the error
-		$result = null;
-		if (is_array($error)) {
-			foreach($error as $err) {
-				if ($result) {
-					$result .= '<br /> - ' . $err;
-				} else {
-					$result = ' - ' . $err;
-				}
-			}
-		} else {
-			$result = $error;
-		}
-		return $result;
-	}
-
-	/**
 	 * @return  stdClass
 	 */
 	public function prepareAjaxResponce() {
@@ -467,7 +446,7 @@ class plgContentJfusion extends JPlugin
 		$output->buttons = null;
 		$output->pagination = null;
 		$output->status = false;
-		$output->message = null;
+		$output->messages = array();
 		return $output;
 	}
 
@@ -480,6 +459,7 @@ class plgContentJfusion extends JPlugin
 		if ($this->params->get('enable_pagination',1)) {
 			$ajax->pagination = $this->updatePagination();
 		}
+		$ajax->messages = JFusionFunction::renderMessage();
 		die(json_encode($ajax));
 	}
 
@@ -497,7 +477,7 @@ class plgContentJfusion extends JPlugin
      */
     public function prepareContent()
     {
-        JHTML::_( 'behavior.mootools' );
+	    JHtml::_('behavior.framework');
         $this->helper->debug('Preparing content');
 
         $content = '';
@@ -745,27 +725,14 @@ HTML;
             $status = $this->helper->checkThreadExists(1);
 
             if (!empty($status['error'])) {
-	            if ($ajaxEnabled) {
-		            $ajax->message = JText::_('DISCUSSBOT_ERROR') . ': ' . $this->ajaxError($status['error']);
-	            } else {
-		            JFusionFunction::raiseNotices($status['error'], JText::_('DISCUSSBOT_ERROR'));
-	            }
+	            JFusionFunction::raiseNotices($status['error'], JText::_('DISCUSSBOT_ERROR'));
             } else {
 	            $ajax->status = true;
 	            $msg = JText::sprintf('THREAD_CREATED_SUCCESSFULLY',$this->article->title);
-	            if ($ajaxEnabled) {
-		            $ajax->message = $msg;
-	            } else {
-		            JFusionFunction::raiseNotice($msg, JText::_('SUCCESS'));
-	            }
+	            JFusionFunction::raiseMessage($msg, JText::_('SUCCESS'));
             }
         } else {
-	        $msg = JText::_('ACCESS_DENIED');
-	        if ($ajaxEnabled) {
-		        $ajax->message = $msg;
-	        } else {
-		        JFusionFunction::raiseNotices($msg, JText::_('DISCUSSBOT_ERROR'));
-	        }
+	        JFusionFunction::raiseError(JText::_('ACCESS_DENIED'), JText::_('DISCUSSBOT_ERROR'));
         }
 	    if ($ajaxEnabled) {
 		    $this->renderAjaxResponce($ajax);
@@ -785,7 +752,7 @@ HTML;
         $JFusionForum = JFusionFactory::getForum($this->jname);
 
         //define some variables
-        $allowGuests =& $this->params->get('quickreply_allow_guests',0);
+        $allowGuests = $this->params->get('quickreply_allow_guests',0);
         $ajaxEnabled = ($this->params->get('enable_ajax',1) && $this->ajax_request);
 
 	    $jumpto = '';
@@ -824,12 +791,8 @@ HTML;
                     if (!empty($threadinfo) && !empty($threadinfo->threadid) && !empty($threadinfo->forumid)) {
                         $status = $JFusionForum->createPost($this->params, $threadinfo, $this->article, $userinfo);
 
-                        if (!empty($status['error'])){
-                            if ($ajaxEnabled) {
-	                            $ajax->message = JText::_('DISCUSSBOT_ERROR') . ': ' . $this->ajaxError($status['error']);
-                            } else {
-                                JFusionFunction::raiseNotices($status['error'], JText::_('DISCUSSBOT_ERROR'));
-                            }
+                        if (!empty($status['error'])) {
+	                        JFusionFunction::raiseNotices(JText::_('ACCESS_DENIED'), JText::_('DISCUSSBOT_ERROR'));
                         } else {
                             if ($ajaxEnabled) {
                                 //if pagination is set, set $limitstart so that we go to the added post
@@ -859,7 +822,7 @@ HTML;
                                 }
 
                                 //output only the new post div
-                                $this->helper->threadinfo =& $threadinfo;
+                                $this->helper->threadinfo = $threadinfo;
 	                            $ajax->posts = $this->helper->renderFile('default_posts.php');
 	                            $ajax->status = true;
                             } else {
@@ -869,45 +832,23 @@ HTML;
                                 $url = $this->helper->getArticleUrl($jumpto,'',false);
                             }
 	                        if (isset($status['post_moderated'])) {
-		                        $msg = ($status['post_moderated']) ? 'SUCCESSFUL_POST_MODERATED' : 'SUCCESSFUL_POST';
+		                        $msg = ($status['post_moderated']) ? JText::_('SUCCESSFUL_POST_MODERATED') : JText::_('SUCCESSFUL_POST');
 	                        } else {
-		                        $msg = 'SUCCESSFUL_POST';
+		                        $msg = JText::_('SUCCESSFUL_POST');
 	                        }
-	                        $msg = JText::_($msg);
-	                        if ($ajaxEnabled) {
-		                        $ajax->message = $msg;
-	                        } else {
-		                        JFusionFunction::raiseNotice($msg, JText::_('SUCCESS'));
-	                        }
+	                        JFusionFunction::raiseMessage($msg, JText::_('SUCCESS'));
                         }
                     } else {
-                        if ($ajaxEnabled) {
-	                        $ajax->message = JText::_('DISCUSSBOT_ERROR') . ': ' . JText::_('THREADID_NOT_FOUND');
-                        } else {
-                            JFusionFunction::raiseNotice(JText::_('THREADID_NOT_FOUND'), JText::_('DISCUSSBOT_ERROR'));
-                        }
+	                    JFusionFunction::raiseError(JText::_('THREADID_NOT_FOUND'), JText::_('DISCUSSBOT_ERROR'));
                     }
                 } else {
-                    if ($ajaxEnabled) {
-	                    $ajax->message = JText::_('DISCUSSBOT_ERROR') . ': ' . JText::_('CAPTCHA_INCORRECT');
-                    } else {
-                        JFusionFunction::raiseNotice(JText::_('CAPTCHA_INCORRECT'), JText::_('DISCUSSBOT_ERROR'));
-                    }
+	                JFusionFunction::raiseError(JText::_('CAPTCHA_INCORRECT'), JText::_('DISCUSSBOT_ERROR'));
                 }
             } else {
-                if ($ajaxEnabled) {
-	                $ajax->message = JText::_('DISCUSSBOT_ERROR') . ': ' . JText::_('QUICKEREPLY_EMPTY');
-                } else {
-                    JFusionFunction::raiseNotice(JText::_('QUICKEREPLY_EMPTY'), JText::_('DISCUSSBOT_ERROR'));
-                }
+	            JFusionFunction::raiseError(JText::_('QUICKEREPLY_EMPTY'), JText::_('DISCUSSBOT_ERROR'));
             }
         } else {
-	        $msg = JText::_('ACCESS_DENIED');
-	        if ($ajaxEnabled) {
-		        $ajax->message = $msg;
-	        } else {
-		        JFusionFunction::raiseNotice($msg, JText::_('DISCUSSBOT_ERROR'));
-	        }
+	        JFusionFunction::raiseError(JText::_('ACCESS_DENIED'), JText::_('DISCUSSBOT_ERROR'));
         }
 	    if ($ajaxEnabled) {
 		    $this->renderAjaxResponce($ajax);
@@ -957,11 +898,7 @@ HTML;
 	        $ajax->status = true;
 	        $this->helper->getThreadStatus();
         } else {
-	        if ($this->ajax_request) {
-		        $ajax->message = JText::_('ACCESS_DENIED');
-	        } else {
-		        JFusionFunction::raiseNotice(JText::_('ACCESS_DENIED'), JText::_('DISCUSSBOT_ERROR'));
-	        }
+	        JFusionFunction::raiseError(JText::_('ACCESS_DENIED'), JText::_('DISCUSSBOT_ERROR'));
         }
 	    if ($this->ajax_request) {
 		    $this->renderAjaxResponce($ajax);
@@ -990,11 +927,7 @@ HTML;
 	        $ajax->status = true;
 	        $this->helper->getThreadStatus();
         } else {
-	        if ($this->ajax_request) {
-		        $ajax->message = JText::_('ACCESS_DENIED');
-	        } else {
-		        JFusionFunction::raiseNotice(JText::_('ACCESS_DENIED'), JText::_('DISCUSSBOT_ERROR'));
-	        }
+	        JFusionFunction::raiseError(JText::_('NOT_PUBLISHED'), JText::_('DISCUSSBOT_ERROR'));
         }
 	    if ($this->ajax_request) {
 		    $this->renderAjaxResponce($ajax);
@@ -1026,7 +959,7 @@ HTML;
                 $display = 'none';
                 $generate_guts = false;
             } else {
-                if ($JSession->get('jfusion.discussion.visibility',0) || empty($threadinfo) && $this->creationMode == 'reply') {
+                if ($JSession->get('jfusion.discussion.visibility',0) || (empty($threadinfo) && $this->creationMode == 'reply')) {
                     //show the discussion area if no replies have been made and creationMode is set to on first reply OR if user has set it to show
                     $display = 'block';
                 } else {
@@ -1034,6 +967,11 @@ HTML;
                 }
                 $generate_guts = true;
             }
+			if ($display == 'none') {
+				$JSession->set('jfusion.discussion.visibility',0);
+			} else {
+				$JSession->set('jfusion.discussion.visibility',1);
+			}
 
             $content = '<div style="float:none; display:'.$display.';" id="discussion">';
 
@@ -1064,7 +1002,7 @@ HTML;
 
         //setup parameters
         $JFusionForum = JFusionFactory::getForum($this->jname);
-        $allowGuests =& $this->params->get('quickreply_allow_guests',0);
+        $allowGuests = $this->params->get('quickreply_allow_guests',0);
         $JoomlaUser = JFactory::getUser();
         //make sure the user exists in the software before displaying the quick reply
         $JFusionUser = JFusionFactory::getUser($this->jname);
@@ -1152,7 +1090,7 @@ HTML;
         }
 
         //populate the template
-        $this->helper->threadinfo =& $threadinfo;
+        $this->helper->threadinfo = $threadinfo;
         $content = $this->helper->renderFile('default.php');
         return $content;
     }
@@ -1170,30 +1108,22 @@ HTML;
         $threadinfo = $this->helper->getThreadInfo();
 
         $JUser = JFactory::getUser();
-        $itemid =& $this->params->get('itemid');
-        $link_text =& $this->params->get('link_text');
-        $link_type=& $this->params->get('link_type','text');
-        $link_mode=& $this->params->get('link_mode','always');
-        $blog_link_mode=& $this->params->get('blog_link_mode','forum');
+        $itemid = $this->params->get('itemid');
+        $link_text = $this->params->get('link_text');
+        $link_type= $this->params->get('link_type','text');
+        $link_mode= $this->params->get('link_mode','always');
+        $blog_link_mode= $this->params->get('blog_link_mode','forum');
         $linkHTML = ($link_type=='image') ? '<img style="border:0;" src="'.$link_text.'">' : $link_text;
-        $linkTarget =& $this->params->get('link_target','_parent');
-        if ($this->helper->isJ16) {
-            if ($this->helper->option == 'com_content') {
-                $article_access = $this->article->params->get('access-view');
-            } elseif ($this->helper->option == 'com_k2') {
-                $article_access = (in_array($this->article->access, $JUser->getAuthorisedViewLevels()) && in_array($this->article->category->access, $JUser->getAuthorisedViewLevels()));
-            } else {
-                $article_access = 1;
-            }
-        } else {
-            if ($this->helper->option == 'com_content') {
-                $article_access = ($this->article->access <= $JUser->get('aid', 0));
-            } elseif ($this->helper->option == 'com_k2') {
-                $article_access = ($this->article->access <= $JUser->get('aid', 0) && $this->article->category->access <= $JUser->get('aid', 0));
-            } else {
-                $article_access = 1;
-            }
-        }
+        $linkTarget = $this->params->get('link_target','_parent');
+
+	    if ($this->helper->option == 'com_content') {
+		    $article_access = $this->article->params->get('access-view');
+	    } elseif ($this->helper->option == 'com_k2') {
+		    $article_access = (in_array($this->article->access, $JUser->getAuthorisedViewLevels()) && in_array($this->article->category->access, $JUser->getAuthorisedViewLevels()));
+	    } else {
+		    $article_access = 1;
+	    }
+
         //prevent notices and warnings in default_buttons.php if there are no buttons to display
         $this->helper->output = array();
         $this->helper->output['buttons'] = array();
@@ -1208,19 +1138,18 @@ HTML;
 
             if (isset($this->article->params)) {
                 //blog view
-                $article_params =& $this->article->params;
-                $show_readmore = $article_params->get('show_readmore');
-                $readmore_catch = ($this->helper->isJ16) ? $show_readmore : ((isset($this->article->readmore)) ? $this->article->readmore : 0);
+                $article_params = $this->article->params;
+	            $readmore_catch = $show_readmore = $article_params->get('show_readmore');
             } elseif (isset($this->article->parameters)) {
                 //article view
-                $article_params =& $this->article->parameters;
+                $article_params = $this->article->parameters;
                 $readmore_catch = JFactory::getApplication()->input->getInt('readmore');
                 $override = JFactory::getApplication()->input->getInt('show_readmore',false);
                 $show_readmore = ($override!==false) ? $override : $article_params->get('show_readmore');
             }
             $readmore_param = 'show_readmore';
         } elseif ($this->helper->option == 'com_k2' && JFactory::getApplication()->input->get('view') == 'itemlist') {
-            $article_params =& $this->article->params;
+            $article_params = $this->article->params;
             $layout = JFactory::getApplication()->input->get('layout');
             if ($layout == 'category') {
                 $readmore_param = 'catItemReadMore';
@@ -1242,23 +1171,17 @@ HTML;
                 if ($article_access) {
                     $readmore_link = $this->helper->getArticleUrl();
                     if ($this->helper->option == 'com_content') {
-                        if ($this->helper->isJ16) {
-                            if (!empty($this->article->alternative_readmore)) {
-        						$readmore = $this->article->alternative_readmore;
-        						if ($this->article->params->get('show_readmore_title', 0) != 0) {
-						            $readmore.= JHtml::_('string.truncate', ($this->article->title), $this->article->params->get('readmore_limit'));
-        						}
-                            } elseif ($this->article->params->get('show_readmore_title', 0) == 0) {
-        						$readmore = JText::_('READ_MORE');
-                            } else {
-        						$readmore = JText::_('READ_MORE') . ': ';
-        						$readmore.= JHtml::_('string.truncate', ($this->article->title), $this->article->params->get('readmore_limit'));
-                            }
-                        } else {
-                            if ($attribs) {
-                                $readmore = $attribs->get('readmore');
-                            }
-                        }
+	                    if (!empty($this->article->alternative_readmore)) {
+		                    $readmore = $this->article->alternative_readmore;
+		                    if ($this->article->params->get('show_readmore_title', 0) != 0) {
+			                    $readmore.= JHtml::_('string.truncate', ($this->article->title), $this->article->params->get('readmore_limit'));
+		                    }
+	                    } elseif ($this->article->params->get('show_readmore_title', 0) == 0) {
+		                    $readmore = JText::_('READ_MORE');
+	                    } else {
+		                    $readmore = JText::_('READ_MORE') . ': ';
+		                    $readmore.= JHtml::_('string.truncate', ($this->article->title), $this->article->params->get('readmore_limit'));
+	                    }
                     }
                     if (!empty($readmore)) {
                         $readmore_text = $readmore;
@@ -1391,7 +1314,7 @@ HTML;
                 $this->helper->output['buttons']['showreplies']['js']['onclick'] = 'JFusion.toggleDiscussionVisibility();';
 
                 $JSession = JFactory::getSession();
-                $show_replies = $JSession->get('jfusion.discussion.visibility',0);
+                $show_replies = $JSession->get('jfusion.discussion.visibility', 0);
                 $text = (empty($show_replies)) ? 'HIDE_REPLIES' : 'SHOW_REPLIES';
 
                 $this->helper->output['buttons']['showreplies']['text'] = JText::_($text);
@@ -1399,7 +1322,7 @@ HTML;
             }
         }
 
-        $this->helper->threadinfo =& $threadinfo;
+        $this->helper->threadinfo = $threadinfo;
         if ($innerhtml) {
             $button_output = $this->helper->renderFile('default_buttons.php');
         } else {
@@ -1445,15 +1368,15 @@ HTML;
         $post_output = array();
         for ($i=0; $i<count($posts); $i++)
         {
-            $p =& $posts[$i];
-            $userid =& $p->{$columns->userid};
+            $p = $posts[$i];
+            $userid = $p->{$columns->userid};
             $username = ($this->params->get('display_name') && isset($p->{$columns->name})) ? $p->{$columns->name} : $p->{$columns->username};
-            $dateline =& $p->{$columns->dateline};
-            $posttext =& $p->{$columns->posttext};
-            $posttitle =& $p->{$columns->posttitle};
-            $postid =& $p->{$columns->postid};
-            $threadid =& $p->{$columns->threadid};
-            $guest =& $p->{$columns->guest};
+            $dateline = $p->{$columns->dateline};
+            $posttext = $p->{$columns->posttext};
+            $posttitle = $p->{$columns->posttitle};
+            $postid = $p->{$columns->postid};
+            $threadid = $p->{$columns->threadid};
+            $guest = $p->{$columns->guest};
             $threadtitle = (isset($columns->threadtitle)) ? $p->{$columns->threadtitle} : '';
 
             $post_output[$i] = new stdClass();
@@ -1600,7 +1523,7 @@ HTML;
         if ($limit == $this->helper->reply_count) {
             $reply_count = $this->helper->reply_count - 1;
         } else {
-            $reply_count =& $this->helper->reply_count;
+            $reply_count = $this->helper->reply_count;
         }
 
         if (!empty($reply_count) && $reply_count > 5) {
@@ -1633,7 +1556,7 @@ HTML;
             $ajax->posts = $this->helper->renderFile('default_posts.php');
 	        $ajax->status = true;
         } else {
-			$ajax->message = JText::_('NOT_PUBLISHED');
+	        JFusionFunction::raiseError(JText::_('NOT_PUBLISHED'));
         }
 	    $this->renderAjaxResponce($ajax);
     }

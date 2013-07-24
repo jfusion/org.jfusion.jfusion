@@ -320,7 +320,7 @@ class JFusionUser_dokuwiki extends JFusionUser {
             //now append the new user data
             if (!$helper->auth->createUser($userinfo->username, $pass, $userinfo->name, $userinfo->email,$usergroup)) {
                 //return the error
-                $status['error'] = JText::_('USER_CREATION_ERROR');
+                $status['error'][] = JText::_('USER_CREATION_ERROR');
             } else {
                 //return the good news
                 $status['debug'][] = JText::_('USER_CREATION');

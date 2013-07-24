@@ -11,7 +11,7 @@ if(!empty($this->output['posts'])) : ?>
 endif;
 
 for ($i=0; $i<count($this->output['posts']); $i++) {
-$p =& $this->output['posts'][$i];
+$p = $this->output['posts'][$i];
 ?>
 
 <div class="jfusionPostBody" id="post<?php echo $p->postid; ?>">

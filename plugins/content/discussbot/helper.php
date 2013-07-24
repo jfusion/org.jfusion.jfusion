@@ -141,7 +141,7 @@ class JFusionDiscussBotHelper {
         } else {
             if ($status['action']!='unchanged') {
                 if ($status['action'] == 'created') {
-                    $threadinfo =& $status['threadinfo'];
+                    $threadinfo = $status['threadinfo'];
                 }
 
                 //catch in case plugins screwed up
@@ -336,8 +336,8 @@ class JFusionDiscussBotHelper {
 	                            }
                                 if ($this->option == 'com_content') {
 	                                //Joomla 1.6 has a different model for sections/category so need to handle it separately from J1.5
-	                                $catid =& $this->article->catid;
-	                                $JCat =& JCategories::getInstance('Content');
+	                                $catid = $this->article->catid;
+	                                $JCat = JCategories::getInstance('Content');
 	                                /**
 	                                 * @ignore
 	                                 * @var $cat JCategoryNode
@@ -422,7 +422,7 @@ class JFusionDiscussBotHelper {
 			                                $responce = array(0, JText::_('REASON_IN_EXCLUDED_CATEGORY'));
 		                                }
 	                                } else {
-		                                $responce = array(1, JText::_('REASON_NO_STIPULATIONS'));
+		                                $responce = array(0, JText::_('REASON_NO_STIPULATIONS'));
 	                                }
                                 } elseif ($this->option == 'com_k2') {
                                     $includedCategories = $this->params->get('include_k2_categories');
@@ -499,7 +499,7 @@ class JFusionDiscussBotHelper {
 	                                        $responce = array(0, JText::_('REASON_IN_EXCLUDED_CATEGORY'));
                                         }
                                     } else {
-	                                    $responce = array(1, JText::_('REASON_NO_STIPULATIONS'));
+	                                    $responce = array(0, JText::_('REASON_NO_STIPULATIONS'));
                                     }
                                 }
                             }

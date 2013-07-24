@@ -488,8 +488,7 @@ class JFusionUser_efront extends JFusionUser
                 $login = $existinguser->username;
                 $jname = $this->getJname();
                 if (!$apiuser || !$apikey) {
-                    JFusionFunction::raiseWarning(JText::_('EFRONT_WRONG_APIUSER_APIKEY_COMBINATION'), $this->helper->getJname());
-                    $status['error'][] = '';
+                    $status['error'][] = JText::_('EFRONT_WRONG_APIUSER_APIKEY_COMBINATION');
                 } else {
                     // get token
                     $curl_options['action'] ='token';
@@ -506,17 +505,17 @@ class JFusionUser_efront extends JFusionUser
                             if($result->status == 'ok'){
                                 // logged in (must logout later)
                                 // delete user
-                                $curl_options['action']='remove_user';
+                                $curl_options['action'] = 'remove_user';
                                 $curl_options['parms'] = '&token='.$token.'&login='.$login;
                                 $status = $helper->send_to_api($curl_options,$status);
                                 $errorstatus = $status;
                                 if ($status['error']){
                                     $status['debug'][] = $status['error'][0];
-                                    $status['error']=array();
+                                    $status['error'] = array();
                                 }
                                 $result = $status['result'][0];
                                 if($result->status != 'ok'){
-                                    $errorstatus['debug'][]=$jname.' eFront API--'.$result->message;
+                                    $errorstatus['debug'][] = $jname.' eFront API--'.$result->message;
                                 }
                                 // logout
                                 $curl_options['action']='logout';
@@ -524,11 +523,10 @@ class JFusionUser_efront extends JFusionUser
                                 $status = $helper->send_to_api($curl_options,$status);
                                 $result = $status['result'][0];
                                 if($result->status != 'ok'){
-                                    $errorstatus['error'][]=$jname.' eFront API--'.$result->message;
+                                    $errorstatus['error'][] = $jname.' eFront API--'.$result->message;
                                     return $errorstatus;
                                 }
                             }
-                            $status['error']= null;
                             $status['debug'][] = JText::_('DELETED').JTEXT::_(' USER: ' ).$login;
                         }
                     }

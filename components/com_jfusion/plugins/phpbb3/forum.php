@@ -726,7 +726,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 			$jdb->setQuery($query);
 			$jdb->execute();
 		} catch (Exception $e) {
-			$status['error'] = $e->getMessage();
+			$status['error'][] = $e->getMessage();
 		}
 	}
 

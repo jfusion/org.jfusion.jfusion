@@ -350,7 +350,7 @@ class JFusionForum_smf2 extends JFusionForum
 				$status['threadinfo']->postid = $postid;
 			}
 		} catch (Exception $e) {
-			$status['error'] = $e->getMessage();
+			$status['error'][] = $e->getMessage();
 		}
 	}
 

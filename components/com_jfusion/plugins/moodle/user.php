@@ -191,14 +191,12 @@ class JFusionUser_moodle extends JFusionUser {
 		global $cookiearr;
 		global $cookies_to_set;
 		global $cookies_to_set_index;
-		$status = array();
+		$status = array('debug' => array(), 'error' => array());
 		$tmpurl = array();
 		$overridearr = array();
 		$newhidden = array();
 		$lines = array();
 		$line=array();
-		$status['debug']=array();
-		$status['error']=array();
 		$status['cURL']=array();
 		$status['cURL']['moodle']='';
 		$status['cURL']['data']= array();
@@ -644,9 +642,6 @@ class JFusionUser_moodle extends JFusionUser {
 		$status = array('debug' => array(), 'error' => array());
 		try {
 			//setup status array to hold debug info and errors
-
-			$status['debug'] = array();
-			$status['error'] = array();
 			if (!is_object($userinfo)) {
 				throw new Exception(JText::_('NO_USER_DATA_FOUND'));
 			}
