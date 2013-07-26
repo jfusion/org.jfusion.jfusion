@@ -2,30 +2,19 @@
 /**
  * @var JFusionDiscussBotHelper $this
  */
-foreach ($this->output['buttons'] AS $name => $html) :
+//var_dump($this->output['buttons']);
+foreach ($this->output['buttons'] AS $name => $html) {
+	$id = ucfirst($name) . $this->article->id;
 
-echo '<a id="jfusionBtn' . ucfirst($name) . $this->article->id .'" class="readon jfusionButton" target="'.$html['target'].'" href="'.$html['href'].'"';
-
-if(isset($html['js'])) :
-	foreach($html['js'] AS $func => $js) :
-		echo $func.' = "'.$js.'"';
-	endforeach;
-endif;
-
-//close opening a tag
-echo '><span>';
-
-echo $html['text'];
-
-//add the number of replies to the discuss button html if set to do so
-if($this->params->get('show_reply_num') && $name=='discuss') :
-	$post = ($this->reply_count==1) ? 'REPLY' : 'REPLIES';
-	if ($html['text']) {
-		echo ' ';
+	$extras = '';
+	if(isset($html['js'])) {
+		foreach($html['js'] AS $func => $js) {
+			$extras .= $func.' = "'.$js.'" ';
+		}
 	}
-	echo '['.$this->reply_count.' '.JText::_($post).']';
-endif;
 
-echo '</span></a>';
-
-endforeach;
+	$html =<<<HTML
+	<a id="jfusionBtn{$id}" class="readon jfusionButton" target="{$html['target']}" {$extras} href="{$html['href']}"><span>{$html['text']}</span></a>
+HTML;
+	echo $html;
+}

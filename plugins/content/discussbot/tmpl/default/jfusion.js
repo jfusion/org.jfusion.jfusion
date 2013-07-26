@@ -114,6 +114,7 @@ JFusion.initializeDiscussbot = function() {
     JFusion.updatePostArea = new Request.JSON({url: JFusion.articleUrl ,
         onSuccess: function(JSONobject) {
             JFusion.updateContent(JSONobject);
+            $('quickReply').set('value','');
         }, onError: function(JSONobject) {
             JFusion.OnError(JSONobject);
         }
@@ -151,20 +152,13 @@ JFusion.updateContent = function(JSONobject) {
         }
 
         var submittedPostId = $('submittedPostId');
-        var quickReply = $('quickReply');
         if (submittedPostId) {
             JFusion.highlightPost('post' + submittedPostId.get('html'));
-
-            //empty the quick reply form
-            quickReply.value = '';
 
             //remove the preview iframe if exists
             if ($('markItUpQuickReply')) {
                 jQuery.markItUp({ call: 'previewClose' });
             }
-        } else if ($('moderatedPostId')) {
-            //empty the quick reply form
-            quickReply.value = '';
         }
     }
     JFusion.OnMessages(JSONobject.messages);
@@ -176,16 +170,16 @@ JFusion.updateContent = function(JSONobject) {
 
 JFusion.initializeConfirmationBoxes = function () {
     var i;
-	var containers = $$('div.jfusionButtonConfirmationBox');
-	if (containers) {
-		for (i = 0; i < containers.length; i++) {
-			var divId = containers[i].id;
+    var containers = $$('div.jfusionButtonConfirmationBox');
+    if (containers) {
+        for (i = 0; i < containers.length; i++) {
+            var divId = containers[i].get('id');
             if (typeof (JFusion.confirmationBoxSlides[divId]) != 'object') {
                 JFusion.confirmationBoxSlides[divId] = new Fx.Slide(divId);
                 JFusion.confirmationBoxSlides[divId].hide();
             }
-		}
-	}
+        }
+    }
 };
 
 JFusion.prepareAjax = function() {
@@ -196,6 +190,10 @@ JFusion.prepareAjax = function() {
         //add the submitpost function
         submitpost.addEvent('click', function (e) {
             //show a loading
+            var jfusionMessageArea = $('jfusionMessageArea');
+            jfusionMessageArea.empty();
+            JFusion.ajaxMessageSlide.hide();
+
             JFusion.OnMessage('message', [JFusion.JText('SUBMITTING_QUICK_REPLY')]);
 
             //update the post area content
@@ -203,13 +201,15 @@ JFusion.prepareAjax = function() {
             var frm = $('jfusionQuickReply' + JFusion.articleId);
             for (i = 0; i < frm.elements.length; i++) {
                 if (frm.elements[i].type == "select-one") {
-                    if (frm.elements[i].options[frm.elements[i].selectedIndex].value) {
-                        paramString = paramString + '&' + frm.elements[i].name + '=' + frm.elements[i].options[frm.elements[i].selectedIndex].value;
+                    var value = frm.elements[i].options[frm.elements[i].selectedIndex].get('value');
+                    if (value) {
+                        paramString = paramString + '&' + frm.elements[i].name + '=' + value;
                     }
                 } else {
-                    paramString = paramString + '&' + frm.elements[i].name + '=' + frm.elements[i].value;
-                    if (frm.elements[i].id == 'threadid') {
-                        JFusion.threadid = frm.elements[i].value;
+                    var id = frm.elements[i].get('value');
+                    paramString = paramString + '&' + frm.elements[i].name + '=' + id;
+                    if (frm.elements[i].get('id') == 'threadid') {
+                        JFusion.threadid = id;
                     }
                 }
             }
@@ -237,7 +237,7 @@ JFusion.refreshPosts = function(id) {
 };
 
 JFusion.confirmThreadAction = function(id, task, vars, url) {
-	var container = $('jfusionButtonConfirmationBox' + id);
+    var container = $('jfusionButtonConfirmationBox' + id);
     if (container) {
         //clear anything already there
         container.empty();
@@ -295,8 +295,8 @@ JFusion.confirmThreadAction = function(id, task, vars, url) {
                 events: {
                     click: function () {
                         var form = $('JFusionTaskForm');
-                        form.articleId.value = id;
-                        form.dbtask.value = task;
+                        form.articleId.set('value', id);
+                        form.dbtask.set('value', task);
                         form.submit();
                     }
                 }
@@ -326,8 +326,8 @@ JFusion.confirmThreadAction = function(id, task, vars, url) {
                 events: {
                     click: function () {
                         var form = $('JFusionTaskForm');
-                        form.articleId.value = id;
-                        form.dbtask.value = 'create_thread';
+                        form.articleId.set('value', id);
+                        form.dbtask.set('value', 'create_thread');
                         form.submit();
                     }
                 }
@@ -358,21 +358,19 @@ JFusion.confirmThreadAction = function(id, task, vars, url) {
 };
 
 JFusion.clearConfirmationBox = function(id) {
-	var container = $('jfusionButtonConfirmationBox' + id);
-	if (container) {
+    var container = $('jfusionButtonConfirmationBox' + id);
+    if (container) {
         container.empty();
         JFusion.confirmationBoxSlides['jfusionButtonConfirmationBox' + id].hide();
-	}
+    }
 };
 
 JFusion.submitAjaxRequest = function (id, task, vars, url) {
     JFusion.clearConfirmationBox(id);
 
-    var performTask;
-
     JFusion.buttonArea = $('jfusionButtonArea' + id);
 
-    performTask = new Request.JSON({url: url ,
+    var performTask = new Request.JSON({url: url ,
         onSuccess: function(JSONobject) {
             JFusion.updateContent(JSONobject);
         },
@@ -423,7 +421,8 @@ JFusion.toggleDiscussionVisibility = function() {
 
 JFusion.quote = function(pid) {
     var quickReply = $('quickReply');
-    quickReply.value = $('originalText' + pid).get('html');
-    window.location = '#jfusionQuickReply';
+    quickReply.set('value', quickReply.get('value')+ $('originalText' + pid).get('html'));
     quickReply.focus();
+
+    window.location = '#jfusionQuickReply';
 };

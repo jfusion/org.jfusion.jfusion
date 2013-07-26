@@ -945,10 +945,7 @@ HTML;
     public function render(&$threadinfo)
     {
         $this->helper->debug('Beginning rendering content');
-        if (!empty($threadinfo)) {
-            $JFusionForum = JFusionFactory::getForum($this->jname);
-            $this->helper->reply_count = $JFusionForum->getReplyCount($threadinfo);
-        }
+
         $view = JFactory::getApplication()->input->get('view');
         //let's only show quick replies and posts on the article view
         if ($view == $this->view()) {
@@ -1009,7 +1006,6 @@ HTML;
         $JFusionUserinfo = $JFusionUser->getUser($JoomlaUser);
         $action_url = $this->helper->getArticleUrl();
         $this->helper->output = array();
-        $this->helper->output['reply_count'] = '';
 
         $show_form = ($allowGuests || (!$JoomlaUser->guest && !empty($JFusionUserinfo)) && !$JoomlaUser->block) ? 1 : 0;
 
@@ -1018,9 +1014,8 @@ HTML;
 	    $this->helper->output['reply_form'] = '';
 	    $this->helper->output['reply_form_error'] = '';
         if (!empty($threadinfo)) {
-            if ($this->helper->reply_count === false || $this->helper->reply_count === null) {
-                $this->helper->reply_count = $JFusionForum->getReplyCount($threadinfo);
-            }
+	        $this->updatePostCount($threadinfo);
+
             //prepare quick reply box if enabled
             if ($this->params->get('enable_quickreply')){
                 $threadLocked = $JFusionForum->getThreadLockedStatus($threadinfo->threadid);
@@ -1056,16 +1051,7 @@ HTML;
                 }
 
                 if ($this->params->get('enable_pagination',1)) {
-                    $application = JFactory::getApplication() ;
-                    $limitstart = JFactory::getApplication()->input->getInt( 'limitstart_discuss', 0 );
-                    $limit = (int) $application->getUserStateFromRequest( 'global.list.limit', 'limit_discuss', 5, 'int' );
-                    if (!empty($this->helper->reply_count) && $this->helper->reply_count > 5) {
-                        $pageNav = new JFusionPagination($this->helper->reply_count, $limitstart, $limit, '_discuss' );
-                        $this->helper->output['post_pagination'] = '<form method="post" id="jfusionPaginationForm" name="jfusionPaginationForm" action="'.$action_url.'">';
-                        $this->helper->output['post_pagination'] .= '<input type="hidden" name="jumpto_discussion" value="1" />';
-                        $this->helper->output['post_pagination'] .= $pageNav->getListFooter();
-                        $this->helper->output['post_pagination'] .= '</form>';
-                    }
+	                $this->helper->output['post_pagination'] = $this->updatePagination(true);
                 }
             }
         } elseif ($this->creationMode=='reply') {
@@ -1106,6 +1092,7 @@ HTML;
 
         //setup some variables
         $threadinfo = $this->helper->getThreadInfo();
+	    $this->updatePostCount($threadinfo);
 
         $JUser = JFactory::getUser();
         $itemid = $this->params->get('itemid');
@@ -1114,6 +1101,13 @@ HTML;
         $link_mode= $this->params->get('link_mode','always');
         $blog_link_mode= $this->params->get('blog_link_mode','forum');
         $linkHTML = ($link_type=='image') ? '<img style="border:0;" src="'.$link_text.'">' : $link_text;
+	    if($this->params->get('show_reply_num')) {
+		    $post = ($this->helper->reply_count==1) ? 'REPLY' : 'REPLIES';
+		    if ($linkHTML) {
+			    $linkHTML .= ' ';
+		    }
+		    $linkHTML .= '['.$this->helper->reply_count.' '.JText::_($post).']';
+	    }
         $linkTarget = $this->params->get('link_target','_parent');
 
 	    if ($this->helper->option == 'com_content') {
@@ -1245,7 +1239,7 @@ HTML;
 /*
     <a class="jfusionRefreshLink" href="javascript:void(0);" onclick=""><?php echo JText::_('REFRESH_POSTS');?></a> <br/>
 */
-	    if($view==$this->view() && $this->params->get('show_refresh_link',1) && $threadinfo) {
+	    if($view==$this->view() && $this->params->get('show_posts') && $this->params->get('show_refresh_link',1) && $threadinfo) {
 		    //class="jfusionRefreshLink"
 		    $this->helper->output['buttons']['refresh']['href'] = 'javascript:void(0);';
 		    $this->helper->output['buttons']['refresh']['js']['onclick'] = 'JFusion.refreshPosts('.$threadinfo->threadid.');';
@@ -1257,9 +1251,7 @@ HTML;
         if ($this->helper->thread_status || $this->manual_plug) {
             if ($link_mode!="never") {
                 $JFusionForum = JFusionFactory::getForum($this->jname);
-                if ($this->helper->reply_count === false || $this->helper->reply_count === null) {
-                    $this->helper->reply_count = $JFusionForum->getReplyCount($threadinfo);
-                }
+	            $this->updatePostCount($threadinfo);
 
                 if ($view==$this->view()) {
                     if ($link_mode=="article" || $link_mode=="always") {
@@ -1309,7 +1301,7 @@ HTML;
             }
 
             //show comments link
-            if ($view==$this->view() && $this->params->get('show_toggle_posts_link',1)) {
+            if ($view==$this->view() && $this->params->get('show_posts') && $this->params->get('show_toggle_posts_link',1)) {
                 $this->helper->output['buttons']['showreplies']['href'] = 'javascript: void(0);';
                 $this->helper->output['buttons']['showreplies']['js']['onclick'] = 'JFusion.toggleDiscussionVisibility();';
 
@@ -1489,44 +1481,37 @@ HTML;
         return $post_output;
     }
 
-    /**
-     * updatePagination
-     *
-     * @return string
-     */
-    public function updatePagination()
+	/**
+	 * updatePagination
+	 *
+	 * @param bool $xhtml
+	 *
+	 * @return string
+	 */
+    public function updatePagination($xhtml = false)
     {
-        $this->helper->reply_count = JFactory::getApplication()->input->get('reply_count','');
-        if ($this->helper->reply_count == '') {
-            $JFusionForum = JFusionFactory::getForum($this->jname);
-            $threadinfo = $this->helper->getThreadInfo();
-            if (!empty($threadinfo)) {
-                $this->helper->reply_count = $JFusionForum->getReplyCount($threadinfo);
-            } else {
-                $this->helper->reply_count = 0;
-            }
-        }
+	    $this->updatePostCount($this->helper->getThreadInfo());
 
-        $action_url = $this->helper->getArticleUrl('','',false);
+	    $reply_count = $this->helper->reply_count;
+
+        $action_url = $this->helper->getArticleUrl('','',$xhtml);
         $application = JFactory::getApplication() ;
 
         $limit = (int) $application->getUserStateFromRequest( 'global.list.limit', 'limit_discuss', 5, 'int' );
 
         //set $limitstart so that the created post is shown
-        if ($this->params->get('sort_posts','ASC')=='ASC') {
-            $limitstart = floor(($this->helper->reply_count - 1)/$limit) * $limit;
+        if ($this->params->get('sort_posts','ASC') == 'ASC') {
+            $limitstart = floor(($reply_count - 1)/$limit) * $limit;
         } else {
             $limitstart = 0;
         }
 
         //keep pagination from changing limit to all
-        if ($limit == $this->helper->reply_count) {
-            $reply_count = $this->helper->reply_count - 1;
-        } else {
-            $reply_count = $this->helper->reply_count;
+        if ($limit == $reply_count) {
+            $reply_count--;
         }
 
-        if (!empty($reply_count) && $reply_count > 5) {
+        if ($reply_count && $reply_count > 5) {
             $pageNav = new JFusionPagination($reply_count, $limitstart, $limit, '_discuss');
 
             $pagination = '<form method="post" id="jfusionPaginationForm" name="jfusionPaginationForm" action="'.$action_url.'">';
@@ -1560,4 +1545,19 @@ HTML;
         }
 	    $this->renderAjaxResponce($ajax);
     }
+
+	/**
+	 * updatePostCount
+	 *
+	 * @param object $threadinfo
+     */
+	public function updatePostCount($threadinfo)
+	{
+		if (!empty($threadinfo)) {
+			$JFusionForum = JFusionFactory::getForum($this->jname);
+			$this->helper->reply_count = $JFusionForum->getReplyCount($threadinfo);
+		} else {
+			$this->helper->reply_count = 0;
+		}
+	}
 }

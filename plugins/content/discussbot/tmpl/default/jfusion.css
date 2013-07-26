@@ -173,7 +173,7 @@
 	height: 1%;
 }
 <![endif]-->
-*/
+
 
 .jfusionclearfix {
    display: inline-block;
@@ -181,6 +181,11 @@
  
 html[xmlns] .jfusionclearfix {
    display: block;
+}
+*/
+
+#jfusionPostPagination {
+    height: auto;
 }
 
 /* debug styles put here as well so that IE does not loose CSS formatting when ajax rewrites data */

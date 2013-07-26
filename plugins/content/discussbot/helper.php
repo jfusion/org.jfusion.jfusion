@@ -40,7 +40,7 @@ class JFusionDiscussBotHelper {
     var $debug_mode;
     var $debug_output = array();
     var $output;
-    var $reply_count;
+    var $reply_count = 0;
     var $option;
     var $isJ16;
 
