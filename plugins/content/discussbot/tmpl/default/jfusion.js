@@ -179,7 +179,7 @@ JFusion.highlightPost = function(postid) {
     }
 };
 
-JFusion.refreshPosts = function() {
+JFusion.refreshPosts = function(id) {
     JFusion.updatePostArea.post('tmpl=component&ajax_request=1&dbtask=update_posts');
 };
 

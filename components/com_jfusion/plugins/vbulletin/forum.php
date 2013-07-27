@@ -388,14 +388,12 @@ class JFusionForum_vbulletin extends JFusionForum
      *
      * @return array
      */
-    function getPosts(&$dbparams, &$existingthread)
+    function getPosts($dbparams, $existingthread)
     {
 	    try {
-		    $threadid = $existingthread->threadid;
-		    $postid = $existingthread->postid;
 		    //set the query
 		    $sort = $dbparams->get('sort_posts');
-		    $where = 'WHERE a.threadid = '.$threadid.' AND a.postid != '.$postid.' AND a.visible = 1';
+		    $where = 'WHERE a.threadid = '.$existingthread->threadid.' AND a.postid != '.$existingthread->postid.' AND a.visible = 1';
 		    $name_field = $this->params->get('name_field');
 		    if (empty($name_field)) {
 			    $query = 'SELECT a.postid , a.username, a.username as name, a.userid, CASE WHEN a.userid = 0 THEN 1 ELSE 0 END AS guest, a.title, a.dateline, a.pagetext, a.threadid, b.title AS threadtitle FROM `#__post` as a INNER JOIN `#__thread` as b ON a.threadid = b.threadid '.$where.' ORDER BY a.dateline '.$sort;
@@ -431,7 +429,7 @@ class JFusionForum_vbulletin extends JFusionForum
      *
      * @return int
      */
-    function getReplyCount(&$existingthread)
+    function getReplyCount($existingthread)
     {
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());

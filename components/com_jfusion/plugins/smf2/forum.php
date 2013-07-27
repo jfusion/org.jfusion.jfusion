@@ -584,20 +584,17 @@ HTML;
 	/**
      * Retrieves the posts to be displayed in the content item if enabled
      *
-     * @param JRegistry &$dbparams with discussion bot parameters
-     * @param object &$existingthread
+     * @param JRegistry $dbparams with discussion bot parameters
+     * @param object $existingthread
      *
      * @return array or object Returns retrieved posts
      */
-	function getPosts(&$dbparams, &$existingthread)
+	function getPosts($dbparams, $existingthread)
 	{
 		try {
-			$threadid =& $existingthread->threadid;
-			$postid =& $existingthread->postid;
-
 			//set the query
 			$sort = $dbparams->get('sort_posts');
-			$where = 'WHERE id_topic = '.$threadid.' AND id_msg != '.$postid.' AND approved = 1';
+			$where = 'WHERE id_topic = '.$existingthread->threadid.' AND id_msg != '.$existingthread->postid.' AND approved = 1';
 	        $query = '(SELECT a.id_topic , a.id_msg, a.poster_name, b.real_name, a.id_member, 0 AS guest, a.subject, a.poster_time, a.body, a.poster_time AS order_by_date FROM `#__messages` as a INNER JOIN #__members as b ON a.id_member = b.id_member '.$where.' AND a.id_member != 0)';
 	        $query.= ' UNION ';
 	        $query.= '(SELECT a.id_topic , a.id_msg, a.poster_name, a.poster_name as real_name, a.id_member, 1 AS guest, a.subject, a.poster_time, a.body, a.poster_time AS order_by_date FROM `#__messages` as a '.$where.' AND a.id_member = 0)';
@@ -627,7 +624,7 @@ HTML;
      * @param object $existingthread
      * @return int
      */
-    function getReplyCount(&$existingthread)
+    function getReplyCount($existingthread)
 	{
 		try {
 			$db = JFusionFactory::getDatabase($this->getJname());

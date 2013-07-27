@@ -923,20 +923,17 @@ class JFusionForum_phpbb3 extends JFusionForum {
 	/**
      * Retrieves the posts to be displayed in the content item if enabled
      *
-     * @param JRegistry &$dbparams with discussion bot parameters
-     * @param object &$existingthread
+     * @param JRegistry $dbparams with discussion bot parameters
+     * @param object $existingthread
      *
      * @return array or object Returns retrieved posts
      */
-	function getPosts(&$dbparams, &$existingthread)
+	function getPosts($dbparams, $existingthread)
 	{
 		try {
-			$threadid =& $existingthread->threadid;
-			$postid =& $existingthread->postid;
-
 			//set the query
 			$sort = $dbparams->get('sort_posts');
-			$where = 'WHERE p.topic_id = '.$threadid.' AND p.post_id != '.$postid.' AND p.post_approved = 1';
+			$where = 'WHERE p.topic_id = '.$existingthread->threadid.' AND p.post_id != '.$existingthread->postid.' AND p.post_approved = 1';
 			$query = 'SELECT p.post_id , CASE WHEN p.poster_id = 1 THEN 1 ELSE 0 END AS guest, CASE WHEN p.poster_id = 1 AND p.post_username != \'\' THEN p.post_username ELSE u.username END AS name, CASE WHEN p.poster_id = 1 AND p.post_username != \'\' THEN p.post_username ELSE u.username_clean END AS username, u.user_id, p.post_subject, p.post_time, p.post_text, p.topic_id FROM `#__posts` as p INNER JOIN `#__users` as u ON p.poster_id = u.user_id '.$where.' ORDER BY p.post_time '.$sort;
 
 			$jdb = JFusionFactory::getDatabase($this->getJname());
@@ -965,7 +962,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
      *
      * @return int
      */
-    function getReplyCount(&$existingthread)
+    function getReplyCount($existingthread)
 	{
 		try {
 			$db = JFusionFactory::getDatabase($this->getJname());

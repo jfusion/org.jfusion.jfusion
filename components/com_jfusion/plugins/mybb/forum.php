@@ -104,7 +104,7 @@ class JFusionForum_mybb extends JFusionForum {
      * @param object $existingthread
      * @return int
      */
-    function getReplyCount(&$existingthread) {
+    function getReplyCount($existingthread) {
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
 		    $query = 'SELECT replies FROM #__threads WHERE tid = ' .(int) $existingthread->threadid;

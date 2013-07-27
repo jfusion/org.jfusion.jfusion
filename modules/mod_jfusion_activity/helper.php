@@ -157,7 +157,7 @@ class modjfusionActivityHelper
                         $existingthread = $forum->getThread($r->threadid);
                         $count = (!empty($existingthread)) ? $forum->getReplyCount($existingthread) : 0;
                         $reply = ($count==1) ? 'REPLY' : 'REPLIES';
-                        $r->output->reply_count = $count . ' ' . JText::_($reply);
+                        $r->output->replyCount = $count . ' ' . JText::_($reply);
                     }
 
                     $r->body = '';

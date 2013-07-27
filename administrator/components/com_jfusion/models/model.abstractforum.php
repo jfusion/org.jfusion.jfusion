@@ -468,12 +468,12 @@ class JFusionForum
     /**
      * Retrieves the posts to be displayed in the content item if enabled
      *
-     * @param object &$params         object with discussion bot parameters
-     * @param object &$existingthread object with forumid, threadid, and postid (first post in thread)
+     * @param object $params         object with discussion bot parameters
+     * @param object $existingthread object with forumid, threadid, and postid (first post in thread)
      *
      * @return array or object Returns retrieved posts
      */
-    function getPosts(&$params, &$existingthread)
+    function getPosts($params, $existingthread)
     {
         return array();
     }
@@ -484,7 +484,7 @@ class JFusionForum
      *
      * @return int
      */
-    function getReplyCount(&$existingthread)
+    function getReplyCount($existingthread)
     {
         return 0;
     }

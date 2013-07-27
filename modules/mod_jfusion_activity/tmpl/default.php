@@ -49,8 +49,8 @@ foreach($results as $r) {
 
 	echo ' ' . $output->date;
 
-	if(!empty($output->reply_count)) :
-		echo ' [' . $output->reply_count .']';
+	if(!empty($output->replyCount)) :
+		echo ' [' . $output->replyCount .']';
 	elseif(!empty($output->body)):
 		echo ' - ' .$output->body;
 	endif;

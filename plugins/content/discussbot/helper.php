@@ -35,11 +35,10 @@ class JFusionDiscussBotHelper {
 	var $params;
 	var $jname;
 	var $mode;
-	var $status = false;
 	var $threadinfo = array();
 	var $debug = array();
 	var $output;
-	var $reply_count = 0;
+	var $replyCount = 0;
 	var $option;
 	var $isJ16;
 
@@ -77,54 +76,60 @@ class JFusionDiscussBotHelper {
 	/**
 	 * @param bool $update
 	 *
-	 * @return mixed
+	 * @return stdClass
 	 */
 	public function getThreadInfo($update = false)
 	{
-		$threadinfo = null;
 		if (isset($this->article->id)) {
-			$contentid = $this->article->id;
-
-			if (!isset($thread_instance[$contentid]) || $update) {
+			if (!isset($this->threadinfo[$this->article->id]) || $update) {
 				$db = JFactory::getDBO();
-				$query = 'SELECT * FROM #__jfusion_discussion_bot WHERE contentid = \''.$contentid.'\' AND jname = \''.$this->jname.'\' AND component = '.$db->Quote($this->option);
+				$query = 'SELECT * FROM #__jfusion_discussion_bot WHERE contentid = \''.$this->article->id.'\' AND jname = \''.$this->jname.'\' AND component = '.$db->Quote($this->option);
 				$db->setQuery($query);
-				$threadinfo = $db->loadObject();
+				$threadinfo = $this->setThreadInfo($db->loadObject());
+			} else {
+				$threadinfo = $this->threadinfo[$this->article->id];
 			}
+		} else {
+			$threadinfo = $this->setThreadInfo(null);
 		}
-		return $this->setThreadInfo($threadinfo);
+		return $threadinfo;
 	}
 
 	/**
 	 * @param object $threadinfo
 	 *
-	 * @return mixed
+	 * @return stdClass
 	 */
 	public function setThreadInfo($threadinfo)
 	{
-		$this->reply_count = 0;
-		$this->status = false;
-		if ($threadinfo && isset($this->article->id)) {
-			$contentid = $this->article->id;
+		$this->replyCount = 0;
+		if ($threadinfo) {
+			$threadinfo->valid = false;
+			//make sure the forum and thread still exists
+			$Forum = JFusionFactory::getForum($this->jname);
 
-			if ($threadinfo->forumid && $threadinfo->published) {
-				//make sure the forum and thread still exists
-				$Forum = JFusionFactory::getForum($this->jname);
-
-				$forumlist = $this->getForumList();
-				if (in_array($threadinfo->forumid, $forumlist)) {
-					$forumthread = $Forum->getThread($threadinfo->threadid);
-					$this->reply_count = $Forum->getReplyCount($forumthread);
-					if ($forumthread) {
-						//seems the thread is now missing
-						$this->status = true;
-					}
+			$forumlist = $this->getForumList();
+			if (in_array($threadinfo->forumid, $forumlist)) {
+				$forumthread = $Forum->getThread($threadinfo->threadid);
+				if ($forumthread) {
+					$this->replyCount = $Forum->getReplyCount($forumthread);
+					//seems the thread is now missing
+					$threadinfo->valid = true;
 				}
 			}
-			$this->threadinfo[$contentid] = $threadinfo;
-			return $this->threadinfo[$contentid];
+		} else {
+			$threadinfo = new stdClass();
+			$threadinfo->threadid = 0;
+			$threadinfo->forumid = 0;
+			$threadinfo->postid = 0;
+			$threadinfo->manual = false;
+			$threadinfo->valid = false;
+			$threadinfo->published = false;
 		}
-		return null;
+		if (isset($this->article->id)) {
+			$this->threadinfo[$this->article->id] = $threadinfo;
+		}
+		return $threadinfo;
 	}
 
 	/**
@@ -138,10 +143,7 @@ class JFusionDiscussBotHelper {
 		$JFusionForum = JFusionFactory::getForum($this->jname);
 
 		if ($force_new) {
-			$threadinfo = new stdClass();
-			$threadinfo->threadid = 0;
-			$threadinfo->postid = 0;
-			$threadinfo->forumid = 0;
+			$threadinfo = $this->setThreadInfo(null);
 			$manually_created = 1;
 		} else {
 			$threadinfo = $this->getThreadInfo();
@@ -167,12 +169,10 @@ class JFusionDiscussBotHelper {
 					JFusionFunction::updateDiscussionBotLookup($this->article->id, $threadinfo, $this->jname, 1, $manually_created);
 
 					//set the status to true since it was just created
-					$this->status = true;
-				} else {
-					$this->status = false;
 				}
 			}
 		}
+		$this->setThreadInfo($threadinfo);
 
 		$this->debug($status, $force_new);
 
@@ -250,7 +250,7 @@ class JFusionDiscussBotHelper {
 	public function validate($skip_new_check = false, $skip_k2_check = false)
 	{
 		$this->debug('Validating article');
-
+		$threadinfo = $this->getThreadInfo();
 		//allowed components
 		$components = array('com_content', 'com_k2');
 		$responce = array(0, JText::_('UNKNOWN'));
@@ -323,7 +323,7 @@ class JFusionDiscussBotHelper {
 									}
 								} elseif ($creationMode == 'new' && !$skip_new_check) {
 									//if set to create a thread for new articles only, make sure the thread was created with onAfterContentSave
-									if (!$this->status) {
+									if (!$threadinfo->valid) {
 										$responce = array(0, JText::_('REASON_ARTICLE_NOT_NEW'));
 									}
 								}
