@@ -9,9 +9,9 @@
  * @subpackage DiscussionBot Helper File
  * @author     JFusion Team <webmaster@jfusion.org>
  * @copyright  2008 JFusion. All rights reserved.
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
-*/
+ */
 
 // no direct access
 defined('_JEXEC' ) or die('Restricted access' );
@@ -26,38 +26,34 @@ defined('_JEXEC' ) or die('Restricted access' );
  * @copyright  2008 JFusion. All rights reserved.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
-*/
+ */
 class JFusionDiscussBotHelper {
-    var $article;
+	var $article;
 	/**
 	 * @var JRegistry $params
 	 */
 	var $params;
-    var $jname;
-    var $mode;
-    var $thread_status = false;
-    var $threadinfo;
-    var $debug_mode;
-    var $debug_output = array();
-    var $output;
-    var $reply_count = 0;
-    var $option;
-    var $isJ16;
+	var $jname;
+	var $mode;
+	var $status = false;
+	var $threadinfo = array();
+	var $debug = array();
+	var $output;
+	var $reply_count = 0;
+	var $option;
+	var $isJ16;
 
-    /**
-     * @param JRegistry $params
-     * @param $jname
-     * @param $mode
-     * @param $debug_mode
-     */
-    public function __construct(&$params, $jname, $mode, $debug_mode) {
-        $this->params = $params;
-        $this->jname = $jname;
-        $this->mode = $mode;
-        $this->debug_mode = $debug_mode;
-	    //needed for category support
-	    jimport('joomla.application.categories');
-    }
+	/**
+	 * @param JRegistry $params
+	 * @param $mode
+	 */
+	public function __construct(&$params, $mode) {
+		$this->params = $params;
+		$this->jname = $this->params->get('jname', false);
+		$this->mode = $mode;
+		//needed for category support
+		jimport('joomla.application.categories');
+	}
 
 	/**
 	 * @param mixed $article
@@ -70,544 +66,538 @@ class JFusionDiscussBotHelper {
 
 		if (isset($this->article->id)) {
 			$session = JFactory::getSession();
-			$this->debug_output = $session->get('jfusion.discussion.debug.' . $this->article->id,false);
-			if ($this->debug_output==false) {
-				$this->debug_output = array();
+			$this->debug = $session->get('jfusion.discussion.debug.' . $this->article->id, false);
+			if ($this->debug == false) {
+				$this->debug = array();
 			}
 			$session->clear('jfusion.discussion.debug.' . $this->article->id);
 		}
 	}
 
-    /**
-     * @param bool $update
-     * @param bool|object $threadinfo
-     *
-     * @return mixed
-     */
-    public function getThreadInfo($update = false, $threadinfo = false)
-    {
-        static $thread_instance;
+	/**
+	 * @param bool $update
+	 *
+	 * @return mixed
+	 */
+	public function getThreadInfo($update = false)
+	{
+		$threadinfo = null;
+		if (isset($this->article->id)) {
+			$contentid = $this->article->id;
 
-        if (!is_array($thread_instance)) {
-            $thread_instance = array();
-        }
+			if (!isset($thread_instance[$contentid]) || $update) {
+				$db = JFactory::getDBO();
+				$query = 'SELECT * FROM #__jfusion_discussion_bot WHERE contentid = \''.$contentid.'\' AND jname = \''.$this->jname.'\' AND component = '.$db->Quote($this->option);
+				$db->setQuery($query);
+				$threadinfo = $db->loadObject();
+			}
+		}
+		return $this->setThreadInfo($threadinfo);
+	}
 
-	    if (isset($this->article->id)) {
-		    $contentid = $this->article->id;
-	    } else {
-		    return null;
-	    }
+	/**
+	 * @param object $threadinfo
+	 *
+	 * @return mixed
+	 */
+	public function setThreadInfo($threadinfo)
+	{
+		$this->reply_count = 0;
+		$this->status = false;
+		if ($threadinfo && isset($this->article->id)) {
+			$contentid = $this->article->id;
 
-        if (!empty($threadinfo)) {
-            $thread_instance[$contentid] = $threadinfo;
-        } elseif (empty($thread_instance) || !isset($thread_instance[$contentid]) || $update) {
-            $db = JFactory::getDBO();
-            $query = 'SELECT * FROM #__jfusion_discussion_bot WHERE contentid = \''.$contentid.'\' AND jname = \''.$this->jname.'\' AND component = '.$db->Quote($this->option);
-            $db->setQuery($query);
-            $thread_instance[$contentid] = $db->loadObject();
-        }
-		$this->threadinfo = $thread_instance[$contentid];
-        return $thread_instance[$contentid];
-    }
+			if ($threadinfo->forumid && $threadinfo->published) {
+				//make sure the forum and thread still exists
+				$Forum = JFusionFactory::getForum($this->jname);
 
-    /**
-     * @param int $force_new
-     * @return array
-     */
-    public function checkThreadExists($force_new = 0)
-    {
-        $this->debug('Checking if thread exists');
+				$forumlist = $this->getForumList();
+				if (in_array($threadinfo->forumid, $forumlist)) {
+					$forumthread = $Forum->getThread($threadinfo->threadid);
+					$this->reply_count = $Forum->getReplyCount($forumthread);
+					if ($forumthread) {
+						//seems the thread is now missing
+						$this->status = true;
+					}
+				}
+			}
+			$this->threadinfo[$contentid] = $threadinfo;
+			return $this->threadinfo[$contentid];
+		}
+		return null;
+	}
 
-        $JFusionForum = JFusionFactory::getForum($this->jname);
+	/**
+	 * @param int $force_new
+	 * @return array
+	 */
+	public function checkThreadExists($force_new = 0)
+	{
+		$this->debug('Checking if thread exists');
 
-        if ($force_new) {
-            $threadinfo = new stdClass();
-            $threadinfo->threadid = 0;
-            $threadinfo->postid = 0;
-            $threadinfo->forumid = 0;
-            $manually_created = 1;
-        } else {
-            $threadinfo = $this->getThreadInfo();
-            $manually_created = (empty($threadinfo->manual)) ? 0 : 1;
-        }
+		$JFusionForum = JFusionFactory::getForum($this->jname);
 
-        $status = array('error' => array(),'debug' => array());
-        $status['action'] = 'unchanged';
-        $status['threadinfo'] = new stdClass();
+		if ($force_new) {
+			$threadinfo = new stdClass();
+			$threadinfo->threadid = 0;
+			$threadinfo->postid = 0;
+			$threadinfo->forumid = 0;
+			$manually_created = 1;
+		} else {
+			$threadinfo = $this->getThreadInfo();
+			$manually_created = (empty($threadinfo->manual)) ? 0 : 1;
+		}
 
-        $JFusionForum->checkThreadExists($this->params, $this->article, $threadinfo, $status);
-        if (!empty($status['error'])) {
-            JFusionFunction::raiseNotices($status['error'], $this->jname. ' '. JText::_('FORUM') . ' ' .JText::_('UPDATE'));
-        } else {
-            if ($status['action']!='unchanged') {
-                if ($status['action'] == 'created') {
-                    $threadinfo = $status['threadinfo'];
-                }
+		$status = array('error' => array(),'debug' => array());
+		$status['action'] = 'unchanged';
+		$status['threadinfo'] = new stdClass();
 
-                //catch in case plugins screwed up
-                if (!empty($threadinfo->threadid)) {
-                    //update the lookup table
-                    JFusionFunction::updateDiscussionBotLookup($this->article->id, $threadinfo, $this->jname, 1, $manually_created);
+		$JFusionForum->checkThreadExists($this->params, $this->article, $threadinfo, $status);
+		if (!empty($status['error'])) {
+			JFusionFunction::raiseNotices($status['error'], $this->jname. ' '. JText::_('FORUM') . ' ' .JText::_('UPDATE'));
+		} else {
+			if ($status['action']!='unchanged') {
+				if ($status['action'] == 'created') {
+					$threadinfo = $status['threadinfo'];
+				}
 
-                    //set the thread_status to true since it was just created
-                    $this->thread_status = true;
-                } else {
-                    $this->thread_status = false;
-                }
-            }
-        }
+				//catch in case plugins screwed up
+				if (!empty($threadinfo->threadid)) {
+					//update the lookup table
+					JFusionFunction::updateDiscussionBotLookup($this->article->id, $threadinfo, $this->jname, 1, $manually_created);
 
-        $this->debug($status, $force_new);
+					//set the status to true since it was just created
+					$this->status = true;
+				} else {
+					$this->status = false;
+				}
+			}
+		}
 
-        return $status;
-    }
+		$this->debug($status, $force_new);
 
-
-    /**
-     * @param string $jumpto
-     * @param string $query
-     * @param bool $xhtml
-     * @return string|The
-     */
-    public function getArticleUrl($jumpto = '', $query = '', $xhtml = true)
-    {
-        //make sure Joomla content helper is loaded
-        if (!class_exists('ContentHelperRoute')) {
-            require_once JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_content' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'route.php';
-        }
-        if ($this->option == 'com_k2') {
-            if (!class_exists('K2HelperRoute')) {
-                include_once JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_k2' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'route.php';
-            }
-        }
-
-        if ($this->option == 'com_content') {
-            //take into account page breaks
-	        $url = ContentHelperRoute::getArticleRoute($this->article->slug, $this->article->catid);
-            $start = JFactory::getApplication()->input->getInt('start',0);
-            if ($start) {
-                $url .= '&start='.$start;
-            }
-            $limitstart = JFactory::getApplication()->input->getInt('limitstart',0);
-            if ($limitstart) {
-                $url .= '&limitstart='.$limitstart;
-            }
-            $url .= $query;
-        } else {
-            $url = urldecode(K2HelperRoute::getItemRoute($this->article->id.':'.urlencode($this->article->alias),$this->article->catid.':'.urlencode($this->article->category->alias)));
-        }
+		return $status;
+	}
 
 
-        $url = JRoute::_($url, $xhtml);
+	/**
+	 * @param string $jumpto
+	 * @param string $query
+	 * @param bool $xhtml
+	 * @return string|The
+	 */
+	public function getArticleUrl($jumpto = '', $query = '', $xhtml = true)
+	{
+		//make sure Joomla content helper is loaded
+		if (!class_exists('ContentHelperRoute')) {
+			require_once JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_content' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'route.php';
+		}
+		if ($this->option == 'com_k2') {
+			if (!class_exists('K2HelperRoute')) {
+				include_once JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_k2' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'route.php';
+			}
+		}
 
-        if (!empty($jumpto)) {
-            $url .= '#'.$jumpto;
-        }
+		if ($this->option == 'com_content') {
+			//take into account page breaks
+			$url = ContentHelperRoute::getArticleRoute($this->article->slug, $this->article->catid);
+			$start = JFactory::getApplication()->input->getInt('start',0);
+			if ($start) {
+				$url .= '&start='.$start;
+			}
+			$limitstart = JFactory::getApplication()->input->getInt('limitstart',0);
+			if ($limitstart) {
+				$url .= '&limitstart='.$limitstart;
+			}
+			$url .= $query;
+		} else {
+			$url = urldecode(K2HelperRoute::getItemRoute($this->article->id.':'.urlencode($this->article->alias),$this->article->catid.':'.urlencode($this->article->category->alias)));
+		}
 
-        return $url;
-    }
 
-    /**
-     * @return void
-     */
-    public function getThreadStatus()
-    {
-        $threadinfo = $this->getThreadInfo(true);
-	    $this->thread_status = false;
-        if (!empty($threadinfo)) {
-	        if ($threadinfo->forumid && $threadinfo->published) {
-		        //make sure the forum and thread still exists
-		        $Forum = JFusionFactory::getForum($this->jname);
+		$url = JRoute::_($url, $xhtml);
 
-		        $forumlist = $this->getForumList();
-		        if (in_array($threadinfo->forumid, $forumlist)) {
-			        $forumthread = $Forum->getThread($threadinfo->threadid);
-			        if ($forumthread) {
-				        //seems the thread is now missing
-				        $this->thread_status = true;
-			        }
-		        }
-	        }
-        }
-    }
+		if (!empty($jumpto)) {
+			$url .= '#'.$jumpto;
+		}
 
-    /**
-     * @return array
-     */
-    public function getForumList()
-    {
-        static $lists_instance;
+		return $url;
+	}
 
-	    if (!isset($lists_instance)) {
-		    $JFusionForum = JFusionFactory::getForum($this->jname);
-		    $full_list = $JFusionForum->getForumList();
-		    $lists_instance = array();
-		    foreach ($full_list as $a) {
-			    $lists_instance[] = (isset($a->forum_id)) ? $a->forum_id : $a->id;
-		    }
-	    }
-        return $lists_instance;
-    }
+	/**
+	 * @return array
+	 */
+	public function getForumList()
+	{
+		static $lists_instance;
 
-    /**
-     * @param bool $skip_new_check
-     * @param bool $skip_k2_check
-     * @return array
-     */
-    public function validate($skip_new_check = false, $skip_k2_check = false)
-    {
-        $this->debug('Validating article');
+		if (!isset($lists_instance)) {
+			$JFusionForum = JFusionFactory::getForum($this->jname);
+			$full_list = $JFusionForum->getForumList();
+			$lists_instance = array();
+			foreach ($full_list as $a) {
+				$lists_instance[] = (isset($a->forum_id)) ? $a->forum_id : $a->id;
+			}
+		}
+		return $lists_instance;
+	}
 
-        //allowed components
-        $components = array('com_content', 'com_k2');
-	    $responce = array(0, JText::_('UNKNOWN'));
-        //make sure we have an article
-        if (!$this->article->id || !in_array($this->option, $components)) {
-	        $responce = array(0, JText::sprintf('REASON_NOT_AN_ARTICLE', $this->option));
-        } else {
-            //if in K2, make sure we are after the article itself and not video or gallery
-            $view = JFactory::getApplication()->input->get('view');
-            if ($this->option == 'com_k2' && $view == 'item' && !$skip_k2_check && is_object($this->article->params)) {
-                static $k2_tracker;
-                if ($this->article->params->get('itemImageGallery') && empty($k2_tracker)) {
-                    $k2_tracker = 'gallery';
-                } elseif ($this->article->params->get('itemVideo') && (empty($k2_tracker) || $k2_tracker == 'gallery')) {
-                    $k2_tracker = 'video';
-                } else {
-                    $k2_tracker = 'item';
-                }
+	/**
+	 * @param bool $skip_new_check
+	 * @param bool $skip_k2_check
+	 * @return array
+	 */
+	public function validate($skip_new_check = false, $skip_k2_check = false)
+	{
+		$this->debug('Validating article');
 
-                if ($k2_tracker != 'item') {
-	                $responce = array(0, JText::_('REASON_NOT_IN_K2_ARTICLE_TEXT'));
-                }
-            }
+		//allowed components
+		$components = array('com_content', 'com_k2');
+		$responce = array(0, JText::_('UNKNOWN'));
+		//make sure we have an article
+		if (!$this->article->id || !in_array($this->option, $components)) {
+			$responce = array(0, JText::sprintf('REASON_NOT_AN_ARTICLE', $this->option));
+		} else {
+			//if in K2, make sure we are after the article itself and not video or gallery
+			$view = JFactory::getApplication()->input->get('view');
+			if ($this->option == 'com_k2' && $view == 'item' && !$skip_k2_check && is_object($this->article->params)) {
+				static $k2_tracker;
+				if ($this->article->params->get('itemImageGallery') && empty($k2_tracker)) {
+					$k2_tracker = 'gallery';
+				} elseif ($this->article->params->get('itemVideo') && (empty($k2_tracker) || $k2_tracker == 'gallery')) {
+					$k2_tracker = 'video';
+				} else {
+					$k2_tracker = 'item';
+				}
 
-            //make sure there is a default user set
-            if ($this->params->get('default_userid',false)===false) {
-	            $responce = array(0, JText::_('REASON_NO_DEFAULT_USER'));
-            } else {
-                $JFusionForum = JFusionFactory::getForum($this->jname);
-                $forumid = $JFusionForum->getDefaultForum($this->params, $this->article);
-                if (empty($forumid)) {
-	                $responce = array(0, JText::_('REASON_NO_FORUM_FOUND'));
-                } else {
-                    $dbtask = JFactory::getApplication()->input->post->get('dbtask', null);
-                    $bypass_tasks = array('create_thread', 'publish_discussion', 'unpublish_discussion');
-                    if (!empty($dbtask) && !in_array($dbtask, $bypass_tasks)) {
-	                    $responce = array(1, JText::_('REASON_DISCUSSION_MANUALLY_INITIALISED'));
-                    } else {
-                        //make sure article is published
-                        $state = false;
-                        if ($this->option == 'com_k2') {
-                            if (isset($this->article->published)) {
-                                $state = $this->article->published;
-                            }
-                        } else {
-                            if (isset($this->article->state)) {
-                                $state = $this->article->state;
-                            }
-                        }
-                        if (!$state) {
-	                        $responce = array(0, JText::_('REASON_ARTICLE_NOT_PUBLISHED'));
-                        } else {
-                            //make sure the article is set to be published
-                            $mainframe = JFactory::getApplication();
-                            $publish_up = JFactory::getDate($this->article->publish_up)->toUnix();
-                            $now = JFactory::getDate('now', $mainframe->getCfg('offset'))->toUnix();
+				if ($k2_tracker != 'item') {
+					$responce = array(0, JText::_('REASON_NOT_IN_K2_ARTICLE_TEXT'));
+				}
+			}
 
-	                        $creationMode = $this->params->get('create_thread','load');
-                            if ($now < $publish_up && $creationMode != 'new') {
-	                            $responce = array(0, JText::_('REASON_PUBLISHED_IN_FUTURE'));
-                            } else {
-	                            //make sure create_thread is appropriate
-	                            if ($creationMode == 'reply' && $dbtask != 'create_thread') {
-		                            $responce = array(1, JText::_('REASON_CREATED_ON_FIRST_REPLY'));
-	                            } elseif ($creationMode == 'view') {
-		                            //only create the article if we are in the article view
-		                            $test_view = ($this->option == 'com_k2') ? 'item' : 'article';
-		                            if (JFactory::getApplication()->input->get('view') != $test_view) {
-			                            $responce = array(0, JText::_('REASON_CREATED_ON_VIEW'));
-		                            }
-	                            } elseif ($creationMode == 'new' && !$skip_new_check) {
-		                            //if set to create a thread for new articles only, make sure the thread was created with onAfterContentSave
-		                            if (!$this->thread_status) {
-			                            $responce = array(0, JText::_('REASON_ARTICLE_NOT_NEW'));
-		                            }
-	                            }
-                                if ($this->option == 'com_content') {
-	                                //Joomla 1.6 has a different model for sections/category so need to handle it separately from J1.5
-	                                $catid = $this->article->catid;
-	                                $JCat = JCategories::getInstance('Content');
-	                                /**
-	                                 * @ignore
-	                                 * @var $cat JCategoryNode
-	                                 */
-	                                $cat = $JCat->get($catid);
+			//make sure there is a default user set
+			if ($this->params->get('default_userid',false)===false) {
+				$responce = array(0, JText::_('REASON_NO_DEFAULT_USER'));
+			} else {
+				$JFusionForum = JFusionFactory::getForum($this->jname);
+				$forumid = $JFusionForum->getDefaultForum($this->params, $this->article);
+				if (empty($forumid)) {
+					$responce = array(0, JText::_('REASON_NO_FORUM_FOUND'));
+				} else {
+					$dbtask = JFactory::getApplication()->input->post->get('dbtask', null);
+					$bypass_tasks = array('create_thread', 'publish_discussion', 'unpublish_discussion');
+					if (!empty($dbtask) && !in_array($dbtask, $bypass_tasks)) {
+						$responce = array(1, JText::_('REASON_DISCUSSION_MANUALLY_INITIALISED'));
+					} else {
+						//make sure article is published
+						$state = false;
+						if ($this->option == 'com_k2') {
+							if (isset($this->article->published)) {
+								$state = $this->article->published;
+							}
+						} else {
+							if (isset($this->article->state)) {
+								$state = $this->article->state;
+							}
+						}
+						if (!$state) {
+							$responce = array(0, JText::_('REASON_ARTICLE_NOT_PUBLISHED'));
+						} else {
+							//make sure the article is set to be published
+							$mainframe = JFactory::getApplication();
+							$publish_up = JFactory::getDate($this->article->publish_up)->toUnix();
+							$now = JFactory::getDate('now', $mainframe->getCfg('offset'))->toUnix();
 
-	                                $includedCategories = $this->params->get('include_categories');
-	                                if (!is_array($includedCategories)) {
-		                                $includedCategories = (empty($includedCategories)) ? array() : array($includedCategories);
-	                                }
+							$creationMode = $this->params->get('create_thread','load');
+							if ($now < $publish_up && $creationMode != 'new') {
+								$responce = array(0, JText::_('REASON_PUBLISHED_IN_FUTURE'));
+							} else {
+								//make sure create_thread is appropriate
+								if ($creationMode == 'reply' && $dbtask != 'create_thread') {
+									$responce = array(1, JText::_('REASON_CREATED_ON_FIRST_REPLY'));
+								} elseif ($creationMode == 'view') {
+									//only create the article if we are in the article view
+									$test_view = ($this->option == 'com_k2') ? 'item' : 'article';
+									if (JFactory::getApplication()->input->get('view') != $test_view) {
+										$responce = array(0, JText::_('REASON_CREATED_ON_VIEW'));
+									}
+								} elseif ($creationMode == 'new' && !$skip_new_check) {
+									//if set to create a thread for new articles only, make sure the thread was created with onAfterContentSave
+									if (!$this->status) {
+										$responce = array(0, JText::_('REASON_ARTICLE_NOT_NEW'));
+									}
+								}
+								if ($this->option == 'com_content') {
+									//Joomla 1.6 has a different model for sections/category so need to handle it separately from J1.5
+									$catid = $this->article->catid;
+									$JCat = JCategories::getInstance('Content');
+									/**
+									 * @ignore
+									 * @var $cat JCategoryNode
+									 */
+									$cat = $JCat->get($catid);
 
-	                                $excludedCategories = $this->params->get('exclude_categories');
-	                                if (!is_array($excludedCategories)) {
-		                                $excludedCategories = (empty($excludedCategories)) ? array() : array($excludedCategories);
-	                                }
+									$includedCategories = $this->params->get('include_categories');
+									if (!is_array($includedCategories)) {
+										$includedCategories = (empty($includedCategories)) ? array() : array($includedCategories);
+									}
 
-	                                if (!empty($includedCategories)) {
-		                                //there are category stipulations on what articles to include
-		                                //check to see if this article is not in the selected categories
-		                                $valid = (!in_array($catid,$includedCategories)) ? 0 : 1;
-		                                if (!$valid) {
-			                                //check to see if this article is in any included parents
-			                                $parent_id = $cat->getParent()->id;
-			                                if ($parent_id !== 'root') {
-				                                while (true) {
-					                                $valid = (!in_array($parent_id,$includedCategories)) ? 0 : 1;
-					                                //keep going up
-					                                if (!$valid) {
-						                                //get the parent's parent id
-						                                /**
-						                                 * @ignore
-						                                 * @var $parent JCategoryNode
-						                                 */
-						                                $parent = $JCat->get($parent_id);
-						                                $parent_id = $parent->getParent()->id;
-						                                if ($parent_id == 'root') {
-							                                $responce = array(0, JText::_('REASON_NOT_IN_INCLUDED_CATEGORY_OR_PARENTS'));
-							                                break;
-						                                }
-					                                } else {
-						                                $responce = array(1, JText::_('REASON_IN_INCLUDED_CATEGORY_PARENT'));
-						                                break;
-					                                }
-				                                }
-			                                } else {
-				                                $responce = array(0, JText::_('REASON_NOT_IN_INCLUDED_CATEGORY_OR_PARENTS'));
-			                                }
-		                                } else {
-			                                $responce = array(1, JText::_('REASON_IN_INCLUDED_CATEGORY'));
-		                                }
+									$excludedCategories = $this->params->get('exclude_categories');
+									if (!is_array($excludedCategories)) {
+										$excludedCategories = (empty($excludedCategories)) ? array() : array($excludedCategories);
+									}
 
-		                                //make sure the category is not in an excluded category
-		                                if ($valid && !empty($excludedCategories)) {
-			                                if (in_array($catid, $excludedCategories)) {
-				                                $responce = array(0, JText::_('REASON_IN_EXCLUDED_CATEGORY'));
-			                                }
-		                                }
-	                                } elseif (!empty($excludedCategories)) {
-		                                $valid = (!in_array($catid, $excludedCategories)) ? 1 : 0;
-		                                if ($valid) {
-			                                $responce = array(1, JText::_('REASON_NOT_IN_EXCLUDED_CATEGORY'));
+									if (!empty($includedCategories)) {
+										//there are category stipulations on what articles to include
+										//check to see if this article is not in the selected categories
+										$valid = (!in_array($catid,$includedCategories)) ? 0 : 1;
+										if (!$valid) {
+											//check to see if this article is in any included parents
+											$parent_id = $cat->getParent()->id;
+											if ($parent_id !== 'root') {
+												while (true) {
+													$valid = (!in_array($parent_id,$includedCategories)) ? 0 : 1;
+													//keep going up
+													if (!$valid) {
+														//get the parent's parent id
+														/**
+														 * @ignore
+														 * @var $parent JCategoryNode
+														 */
+														$parent = $JCat->get($parent_id);
+														$parent_id = $parent->getParent()->id;
+														if ($parent_id == 'root') {
+															$responce = array(0, JText::_('REASON_NOT_IN_INCLUDED_CATEGORY_OR_PARENTS'));
+															break;
+														}
+													} else {
+														$responce = array(1, JText::_('REASON_IN_INCLUDED_CATEGORY_PARENT'));
+														break;
+													}
+												}
+											} else {
+												$responce = array(0, JText::_('REASON_NOT_IN_INCLUDED_CATEGORY_OR_PARENTS'));
+											}
+										} else {
+											$responce = array(1, JText::_('REASON_IN_INCLUDED_CATEGORY'));
+										}
 
-			                                //now to see if the category is an excluded cat or parent cat
-			                                $parent_id = $cat->getParent()->id;
-			                                if ($parent_id !== 'root') {
-				                                while (true) {
-					                                //keep going up
-					                                if (!in_array($parent_id,$excludedCategories)) {
-						                                //get the parent's parent id
-						                                $parent = $JCat->get($parent_id);
-						                                $parent_id = $parent->getParent()->id;
-						                                if ($parent_id == 'root') {
-							                                break;
-						                                }
-					                                } else {
-						                                $responce = array(0, JText::_('REASON_IN_EXCLUDED_CATEGORY_PARENT'));
-						                                break;
-					                                }
-				                                }
-			                                }
-		                                } else {
-			                                $responce = array(0, JText::_('REASON_IN_EXCLUDED_CATEGORY'));
-		                                }
-	                                } else {
-		                                $responce = array(0, JText::_('REASON_NO_STIPULATIONS'));
-	                                }
-                                } elseif ($this->option == 'com_k2') {
-                                    $includedCategories = $this->params->get('include_k2_categories');
-                                    if (!is_array($includedCategories)) {
-                                        $includedCategories = (empty($includedCategories)) ? array() : array($includedCategories);
-                                    }
+										//make sure the category is not in an excluded category
+										if ($valid && !empty($excludedCategories)) {
+											if (in_array($catid, $excludedCategories)) {
+												$responce = array(0, JText::_('REASON_IN_EXCLUDED_CATEGORY'));
+											}
+										}
+									} elseif (!empty($excludedCategories)) {
+										$valid = (!in_array($catid, $excludedCategories)) ? 1 : 0;
+										if ($valid) {
+											$responce = array(1, JText::_('REASON_NOT_IN_EXCLUDED_CATEGORY'));
 
-                                    $excludedCategories = $this->params->get('exclude_k2_categories');
-                                    if (!is_array($excludedCategories)) {
-                                        $excludedCategories = (empty($excludedCategories)) ? array() : array($excludedCategories);
-                                    }
+											//now to see if the category is an excluded cat or parent cat
+											$parent_id = $cat->getParent()->id;
+											if ($parent_id !== 'root') {
+												while (true) {
+													//keep going up
+													if (!in_array($parent_id,$excludedCategories)) {
+														//get the parent's parent id
+														$parent = $JCat->get($parent_id);
+														$parent_id = $parent->getParent()->id;
+														if ($parent_id == 'root') {
+															break;
+														}
+													} else {
+														$responce = array(0, JText::_('REASON_IN_EXCLUDED_CATEGORY_PARENT'));
+														break;
+													}
+												}
+											}
+										} else {
+											$responce = array(0, JText::_('REASON_IN_EXCLUDED_CATEGORY'));
+										}
+									} else {
+										$responce = array(0, JText::_('REASON_NO_STIPULATIONS'));
+									}
+								} elseif ($this->option == 'com_k2') {
+									$includedCategories = $this->params->get('include_k2_categories');
+									if (!is_array($includedCategories)) {
+										$includedCategories = (empty($includedCategories)) ? array() : array($includedCategories);
+									}
 
-                                    $catid = $this->article->catid;
-                                    $cat_parentid = (!empty($this->article->category->parent)) ? $this->article->category->parent : 0;
-                                    $db = JFactory::getDBO();
-                                    static $k2_parent_cats;
-                                    if (!is_array($k2_parent_cats)) {
-                                        $k2_parent_cats = array();
-                                    }
+									$excludedCategories = $this->params->get('exclude_k2_categories');
+									if (!is_array($excludedCategories)) {
+										$excludedCategories = (empty($excludedCategories)) ? array() : array($excludedCategories);
+									}
 
-                                    if (!empty($includedCategories)) {
-                                        //check to see if the article's category is included
-                                        if (in_array($catid, $includedCategories)) {
-                                            //its included
-	                                        $responce = array(1, JText::_('REASON_IN_INCLUDED_CATEGORY'));
-                                        } elseif (!empty($cat_parentid)) {
-	                                        $responce = array(0, JText::_('REASON_IN_EXCLUDED_CATEGORY'));
+									$catid = $this->article->catid;
+									$cat_parentid = (!empty($this->article->category->parent)) ? $this->article->category->parent : 0;
+									$db = JFactory::getDBO();
+									static $k2_parent_cats;
+									if (!is_array($k2_parent_cats)) {
+										$k2_parent_cats = array();
+									}
 
-                                            //see if a parent category is included
-                                            $parent_id = $cat_parentid;
-                                            while (true) {
-                                                if (!empty($parent_id)) {
-                                                    if (in_array($parent_id, $includedCategories)) {
-	                                                    $responce = array(1, JText::_('REASON_IN_INCLUDED_CATEGORY_PARENT'));
-                                                        break;
-                                                    } else {
-                                                        //get the parent's parent
-                                                        $query = 'SELECT parent FROM #__k2_categories WHERE id = '.$parent_id;
-                                                        $db->setQuery($query);
-                                                        //keep going up
-                                                        $parent_id = $db->loadResult();
-                                                    }
-                                                } else {
-                                                    break;
-                                                }
-                                            }
+									if (!empty($includedCategories)) {
+										//check to see if the article's category is included
+										if (in_array($catid, $includedCategories)) {
+											//its included
+											$responce = array(1, JText::_('REASON_IN_INCLUDED_CATEGORY'));
+										} elseif (!empty($cat_parentid)) {
+											$responce = array(0, JText::_('REASON_IN_EXCLUDED_CATEGORY'));
 
-                                            //if valid, make sure the category is not in an excluded cat
-                                            if ($responce[0] && !empty($excludedCategories)) {
-                                                if (in_array($catid, $excludedCategories)) {
-	                                                $responce = array(0, JText::_('REASON_IN_EXCLUDED_CATEGORY'));
-                                                }
-                                            }
-                                        }
-                                    } elseif (!empty($excludedCategories)) {
-                                        if (!in_array($catid, $excludedCategories)) {
-	                                        $responce = array(1, JText::_('REASON_NOT_IN_EXCLUDED_CATEGORY'));
-                                            $parent_id = $cat_parentid;
-                                            while (true) {
-                                                if (!empty($parent_id)) {
-                                                    if (in_array($parent_id, $excludedCategories)) {
-	                                                    $responce = array(0, JText::_('REASON_IN_EXCLUDED_CATEGORY_PARENT'));
-                                                        break;
-                                                    } else {
-                                                        //get the parent's parent
-                                                        $query = 'SELECT parent FROM #__k2_categories WHERE id = '.$parent_id;
-                                                        $parent_id = $db->setQuery($query);
-                                                    }
-                                                } else {
-                                                    break;
-                                                }
-                                            }
-                                        } else {
-	                                        $responce = array(0, JText::_('REASON_IN_EXCLUDED_CATEGORY'));
-                                        }
-                                    } else {
-	                                    $responce = array(0, JText::_('REASON_NO_STIPULATIONS'));
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return $responce;
-    }
+											//see if a parent category is included
+											$parent_id = $cat_parentid;
+											while (true) {
+												if (!empty($parent_id)) {
+													if (in_array($parent_id, $includedCategories)) {
+														$responce = array(1, JText::_('REASON_IN_INCLUDED_CATEGORY_PARENT'));
+														break;
+													} else {
+														//get the parent's parent
+														$query = 'SELECT parent FROM #__k2_categories WHERE id = '.$parent_id;
+														$db->setQuery($query);
+														//keep going up
+														$parent_id = $db->loadResult();
+													}
+												} else {
+													break;
+												}
+											}
 
-    public function loadScripts()
-    {
-	    static $scriptsLoaded;
-	    if (!isset($scriptsLoaded)) {
-		    $this->debug('Loading scripts into header');
+											//if valid, make sure the category is not in an excluded cat
+											if ($responce[0] && !empty($excludedCategories)) {
+												if (in_array($catid, $excludedCategories)) {
+													$responce = array(0, JText::_('REASON_IN_EXCLUDED_CATEGORY'));
+												}
+											}
+										}
+									} elseif (!empty($excludedCategories)) {
+										if (!in_array($catid, $excludedCategories)) {
+											$responce = array(1, JText::_('REASON_NOT_IN_EXCLUDED_CATEGORY'));
+											$parent_id = $cat_parentid;
+											while (true) {
+												if (!empty($parent_id)) {
+													if (in_array($parent_id, $excludedCategories)) {
+														$responce = array(0, JText::_('REASON_IN_EXCLUDED_CATEGORY_PARENT'));
+														break;
+													} else {
+														//get the parent's parent
+														$query = 'SELECT parent FROM #__k2_categories WHERE id = '.$parent_id;
+														$parent_id = $db->setQuery($query);
+													}
+												} else {
+													break;
+												}
+											}
+										} else {
+											$responce = array(0, JText::_('REASON_IN_EXCLUDED_CATEGORY'));
+										}
+									} else {
+										$responce = array(0, JText::_('REASON_NO_STIPULATIONS'));
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return $responce;
+	}
 
-		    $view = JFactory::getApplication()->input->get('view');
-		    $test_view = ($this->option == 'com_k2') ? 'item' : 'article';
+	public function loadScripts()
+	{
+		static $scriptsLoaded;
+		if (!isset($scriptsLoaded)) {
+			$this->debug('Loading scripts into header');
 
-		    $jumpto_discussion = JFactory::getApplication()->input->getInt('jumpto_discussion', '0', 'post');
+			$view = JFactory::getApplication()->input->get('view');
+			$test_view = ($this->option == 'com_k2') ? 'item' : 'article';
 
-		    $js = <<<JS
+			$jumpto_discussion = JFactory::getApplication()->input->post->getInt('jumpto_discussion', '0');
+
+			$js = <<<JS
 		        JFusion.view = '{$view}';
 		        JFusion.jumptoDiscussion = {$jumpto_discussion};
-		        JFusion.enablePagination = {$this->params->get('enable_pagination',1)};
-		        JFusion.enableAjax = {$this->params->get('enable_ajax',1)};
+		        JFusion.enablePagination = {$this->params->get('enable_pagination',0)};
+		        JFusion.enableAjax = {$this->params->get('enable_ajax',0)};
 		        JFusion.enableJumpto = {$this->params->get('jumpto_new_post',0)};
-		        JFusion.debug = {$this->debug_mode};
 JS;
 
-		    JFusionFunction::initJavaScript();
+			JFusionFunction::initJavaScript();
 
-		    //Load quick reply includes if enabled
-		    if ($this->params->get('enable_quickreply')) {
-			    $JFusionForum = JFusionFactory::getForum($this->jname);
-			    $this->debug('Quick reply is enabled and thus loading any includes (js, css, etc).');
-			    $js .= $JFusionForum->loadQuickReplyIncludes();
-		    }
+			//Load quick reply includes if enabled
+			if ($this->params->get('enable_quickreply')) {
+				$JFusionForum = JFusionFactory::getForum($this->jname);
+				$this->debug('Quick reply is enabled and thus loading any includes (js, css, etc).');
+				$js .= $JFusionForum->loadQuickReplyIncludes();
+			}
 
-		    if ($view == $test_view) {
-			    $js .= <<<JS
-	            JFusion.articleUrl = '{$this->getArticleUrl()}';
-	            JFusion.articleId = '{$this->article->id}';
+			if ($view == $test_view) {
+				$js .= <<<JS
 	            window.addEvent(window.webkit ? 'load' : 'domready', function () {
                 	JFusion.initializeDiscussbot();
 	            });
 JS;
-		    } else {
-			    $js .= <<<JS
+			} else {
+				$js .= <<<JS
 	            window.addEvent(window.webkit ? 'load' : 'domready', function () {
 	                JFusion.initializeConfirmationBoxes();
 	            });
 JS;
-		    }
+			}
 
-		    $document = JFactory::getDocument();
-		    $document->addScriptDeclaration($js);
+			$document = JFactory::getDocument();
+			$document->addScriptDeclaration($js);
 
-		    //check for a custom js file
-		    if (file_exists(DISCUSSION_TEMPLATE_PATH.'jfusion.js')) {
-			    $document->addScript(DISCUSSION_TEMPLATE_URL.'jfusion.js');
-		    }
+			//check for a custom js file
+			if (file_exists(DISCUSSION_TEMPLATE_PATH.'jfusion.js')) {
+				$document->addScript(DISCUSSION_TEMPLATE_URL.'jfusion.js');
+			}
 
-		    //add css
-		    $css = DISCUSSION_TEMPLATE_PATH.'jfusion.css';
-		    if (file_exists($css)) {
-			    $document->addStyleSheet(DISCUSSION_TEMPLATE_URL.'jfusion.css');
-		    }
-		    $scriptsLoaded = true;
-	    }
-    }
+			//add css
+			$css = DISCUSSION_TEMPLATE_PATH.'jfusion.css';
+			if (file_exists($css)) {
+				$document->addStyleSheet(DISCUSSION_TEMPLATE_URL.'jfusion.css');
+			}
+			$scriptsLoaded = true;
+		}
+	}
 
-    /**
-     * @param $file
-     *
-     * @return bool|string
-     */
-    public function renderFile($file)
-    {
-	    $captured_content = false;
-        $this->debug('Rendering file ' . $file);
-        if (file_exists(DISCUSSION_TEMPLATE_PATH . $file)) {
-	        ob_start();
-	        include DISCUSSION_TEMPLATE_PATH.$file;
-	        $captured_content = ob_get_contents();
-	        ob_end_clean();
-        } else {
-            die(DISCUSSION_TEMPLATE_PATH . $file . " is missing!");
-        }
-        return $captured_content;
-    }
+	/**
+	 * @param $file
+	 *
+	 * @return bool|string
+	 */
+	public function renderFile($file)
+	{
+		$captured_content = false;
+		$this->debug('Rendering file ' . $file);
+		if (file_exists(DISCUSSION_TEMPLATE_PATH . $file)) {
+			ob_start();
+			include DISCUSSION_TEMPLATE_PATH.$file;
+			$captured_content = ob_get_contents();
+			ob_end_clean();
+		} else {
+			die(DISCUSSION_TEMPLATE_PATH . $file . " is missing!");
+		}
+		return $captured_content;
+	}
 
-    /**
-     * @param $text
-     * @param bool $save
-     */
-    public function debug($text, $save = false)
-    {
-        if ($this->debug_mode) {
-            $this->debug_output[] = $text;
+	/**
+	 * @param $text
+	 * @param bool $save
+	 */
+	public function debug($text, $save = false)
+	{
+		if ($this->params->get('debug', 0)) {
+			$this->debug[] = $text;
 
-            if ($save) {
-                $session = JFactory::getSession();
-                $session->set('jfusion.discussion.debug.' . $this->article->id, $this->debug_output);
-            }
-        }
-    }
+			if ($save) {
+				$session = JFactory::getSession();
+				$session->set('jfusion.discussion.debug.' . $this->article->id, $this->debug);
+			}
+		}
+	}
 }
 
 /**
@@ -618,24 +608,24 @@ jimport( 'joomla.html.pagination' );
  * Class JFusionPagination
  */
 class JFusionPagination extends JPagination {
-    var $identifier = '';
+	var $identifier = '';
 
-    /**
-     * @param int $total
-     * @param int $limitstart
-     * @param int $limit
-     * @param string $identifier
-     */
-    public function __construct($total, $limitstart, $limit, $identifier = '')
-    {
-        $this->identifier = $identifier;
-        parent::__construct($total, $limitstart, $limit);
-    }
+	/**
+	 * @param int $total
+	 * @param int $limitstart
+	 * @param int $limit
+	 * @param string $identifier
+	 */
+	public function __construct($total, $limitstart, $limit, $identifier = '')
+	{
+		$this->identifier = $identifier;
+		parent::__construct($total, $limitstart, $limit);
+	}
 
-    /**
-     * @return string
-     */
-    public function getPagesLinks()
+	/**
+	 * @return string
+	 */
+	public function getPagesLinks()
 	{
 		// Build the page navigation list
 		$data = $this->_buildDataObject();
@@ -701,10 +691,10 @@ class JFusionPagination extends JPagination {
 		}
 	}
 
-    /**
-     * @return string
-     */
-    public function getListFooter()
+	/**
+	 * @return string
+	 */
+	public function getListFooter()
 	{
 		$list = array();
 		$list['limit']			= $this->limit;
@@ -717,10 +707,10 @@ class JFusionPagination extends JPagination {
 		return $this->jfusion_list_footer($list);
 	}
 
-    /**
-     * @return mixed|string
-     */
-    public function getLimitBox()
+	/**
+	 * @return mixed|string
+	 */
+	public function getLimitBox()
 	{
 		$mainframe = JFactory::getApplication();
 
@@ -746,11 +736,11 @@ class JFusionPagination extends JPagination {
 		return $html;
 	}
 
-    /**
-     * @param $list
-     * @return null|string
-     */
-    public function jfusion_list_render($list)
+	/**
+	 * @param $list
+	 * @return null|string
+	 */
+	public function jfusion_list_render($list)
 	{
 		// Initialize variables
 		$html = null;
@@ -772,11 +762,11 @@ class JFusionPagination extends JPagination {
 	}
 
 
-    /**
-     * @param $list
-     * @return string
-     */
-    public function jfusion_list_footer($list)
+	/**
+	 * @param $list
+	 * @return string
+	 */
+	public function jfusion_list_footer($list)
 	{
 		// Initialize variables
 		$html = '<div class="list-footer">';
@@ -790,26 +780,26 @@ class JFusionPagination extends JPagination {
 		return $html;
 	}
 
-    /**
-     * @param $item
-     * @return string
-     */
-    public function jfusion_item_active(&$item)
-    {
-    	if($item->base>0) {
-            return '<a href="#" title="'.$item->text.'" onclick="javascript: document.jfusionPaginationForm.limitstart'.$this->identifier.'.value='.$item->base.'; document.jfusionPaginationForm.submit(); return false;">'.$item->text.'</a>';
-        } else{
-            return '<a href="#" title="'.$item->text.'" onclick="javascript: document.jfusionPaginationForm.limitstart'.$this->identifier.'.value=0; document.jfusionPaginationForm.submit(); return false;">'.$item->text.'</a>';
-        }
-    }
+	/**
+	 * @param $item
+	 * @return string
+	 */
+	public function jfusion_item_active(&$item)
+	{
+		if($item->base>0) {
+			return '<a href="#" title="'.$item->text.'" onclick="javascript: document.jfusionPaginationForm.limitstart'.$this->identifier.'.value='.$item->base.'; JFusion.pagination(); return false;">'.$item->text.'</a>';
+		} else {
+			return '<a href="#" title="'.$item->text.'" onclick="javascript: document.jfusionPaginationForm.limitstart'.$this->identifier.'.value=0; JFusion.pagination(); return false;">'.$item->text.'</a>';
+		}
+	}
 
 
-    /**
-     * @param $item
-     * @return string
-     */
-    public function jfusion_item_inactive(&$item)
-    {
-        return '<span class="pagenav">'.$item->text.'</span>';
-    }
+	/**
+	 * @param $item
+	 * @return string
+	 */
+	public function jfusion_item_inactive(&$item)
+	{
+		return '<span class="pagenav">'.$item->text.'</span>';
+	}
 }

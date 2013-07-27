@@ -2,13 +2,7 @@
 /**
  * @var JFusionDiscussBotHelper $this
  */
-if(!empty($this->output['posts'])) : ?>
-
-<?php if(isset($this->output['submitted_postid'])) : ?>
-<?php $postidName = ($this->output['post_moderated']) ? 'moderatedPostId' : 'submittedPostId'; ?>
-<div style="display:none;" id="<?php echo $postidName; ?>"><?php echo $this->output['submitted_postid']; ?></div>
-<?php
-endif;
+if(!empty($this->output['posts'])) :
 
 for ($i=0; $i<count($this->output['posts']); $i++) {
 $p = $this->output['posts'][$i];

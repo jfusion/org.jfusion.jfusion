@@ -943,8 +943,8 @@ class JFusionForum_phpbb3 extends JFusionForum {
 
 			if($dbparams->get('enable_pagination',true)) {
 				$application = JFactory::getApplication() ;
-				$limitstart = JFactory::getApplication()->input->getInt( 'limitstart_discuss', 0 );
-				$limit = (int) $application->getUserStateFromRequest( 'global.list.limit', 'limit_discuss', 5, 'int' );
+				$limit = (int) $application->getUserStateFromRequest( 'global.list.limit_discuss', 'limit_discuss', 5, 'int' );
+				$limitstart = (int) $application->getUserStateFromRequest( 'global.list.limitstart_discuss', 'limitstart_discuss', 0, 'int' );
 				$jdb->setQuery($query,$limitstart,$limit);
 			} else {
 				$limit_posts = $dbparams->get('limit_posts');

@@ -1781,7 +1781,7 @@ class JFusionFunction
 			}
 
 			foreach($keys as $key) {
-				$text[$key] = JText::_($key,true);
+				$text[$key] = JText::_($key);
 			}
 			$text = json_encode($text);
 

@@ -9,16 +9,16 @@
  * @subpackage DiscussionBot
  * @author     JFusion Team <webmaster@jfusion.org>
  * @copyright  2008 JFusion. All rights reserved.
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
-*/
+ */
 
 // no direct access
 defined('_JEXEC' ) or die('Restricted access' );
 
 /**
-* Load the JFusion framework
-*/
+ * Load the JFusion framework
+ */
 jimport('joomla.plugin.plugin');
 jimport('joomla.html.pagination');
 require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jfusion.php';
@@ -33,381 +33,381 @@ require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTOR
  * @copyright  2008 JFusion. All rights reserved.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
-*/
+ */
 class plgContentJfusion extends JPlugin
 {
-    var $params = false;
-    var $mode = '';
-    var $valid = false;
-    var $jname = '';
-    var $creationMode = '';
-    var $template = 'default';
-    /**
-     * @var $article object
-     */
-    var $article = null;
-    var $output = array();
-    var $dbtask = '';
-    var $ajax_request = 0;
-    var $validity_reason = '';
-    var $manual_plug = false;
-    var $manual_threadid = 0;
-    var $debug_mode = 0;
-    var $helper = '';
+	var $params = false;
+	var $mode = '';
+	var $valid = false;
+	var $jname = '';
+	var $creationMode = '';
+	var $template = 'default';
+	/**
+	 * @var $article object
+	 */
+	var $article = null;
+	var $output = array();
+	var $dbtask = '';
+	var $ajax_request = 0;
+	var $validity_reason = '';
+	var $manual = false;
+	var $manual_threadid = 0;
+	var $helper = '';
 
-    /**
-    * Constructor
-    *
-    * For php4 compatibility we must not use the __constructor as a constructor for
-    * plugins because func_get_args ( void ) returns a copy of all passed arguments
-    * NOT references. This causes problems with cross-referencing necessary for the
-    * observer design pattern.
-     *
-     * @param object &$subject The object to observe
-     * @param array|object  $params   An array or object that holds the plugin configuration
-     *
-     * @since 1.5
-     * @return void
-    */
-    public function plgContentJfusion(&$subject, $params)
-    {
-        parent::__construct($subject, $params);
+	var $postid = 0;
+	var $moderated = 0;
 
-        $this->loadLanguage('plg_content_jfusion', JPATH_ADMINISTRATOR);
-
-        //retrieve plugin software for discussion bot
-        if ($this->params===false) {
-            if (is_array($params)) {
-                $this->params = new JRegistry( $params[params]);
-            } else {
-                $this->params = new JRegistry( $params->params);
-            }
-
-        }
-
-        $this->jname = $this->params->get('jname',false);
-
-        if ($this->jname !== false) {
-            //load the plugin language file
-            $this->loadLanguage('com_jfusion.plg_' . $this->jname, JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion');
-        }
-
-        //determine what mode we are to operate in
-        if ($this->params->get('auto_create',0)) {
-            $this->mode = ($this->params->get('test_mode',1)) ? 'test' : 'auto';
-        } else {
-            $this->mode = 'manual';
-        }
-
-        $this->creationMode =    $this->params->get('create_thread','load');
-
-        $this->debug_mode = $this->params->get('debug', JFactory::getApplication()->input->getInt('debug_discussionbot',0));
-
-        //define some constants
-        if (!defined('DISCUSSION_TEMPLATE_PATH')) {
-            $url_path = 'jfusion/';
-            define('DISCUSSBOT_URL_PATH', 'plugins/content/' . $url_path . 'discussbot/');
-            $path = 'jfusion' . DIRECTORY_SEPARATOR;
-            define('DISCUSSBOT_PATH', JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . $path . 'discussbot' . DIRECTORY_SEPARATOR);
-
-            //let's first check for customized files in Joomla template directory
-            $app = JFactory::getApplication();
-            $JoomlaTemplateOverride = JPATH_BASE.DIRECTORY_SEPARATOR.'templates'. DIRECTORY_SEPARATOR .$app->getTemplate() . DIRECTORY_SEPARATOR. 'html' . DIRECTORY_SEPARATOR . 'plg_content_jfusion' . DIRECTORY_SEPARATOR;
-            if (file_exists($JoomlaTemplateOverride)) {
-                define('DISCUSSION_TEMPLATE_PATH', $JoomlaTemplateOverride);
-                define('DISCUSSION_TEMPLATE_URL', JFusionFunction::getJoomlaURL() . 'templates/' . $app->getTemplate() . '/html/plg_content_jfusion/');
-            } else {
-                define('DISCUSSION_TEMPLATE_PATH',JPATH_BASE.DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.'content'.DIRECTORY_SEPARATOR.$path.'discussbot'.DIRECTORY_SEPARATOR.'tmpl'.DIRECTORY_SEPARATOR.$this->template.DIRECTORY_SEPARATOR);
-                define('DISCUSSION_TEMPLATE_URL',JFusionFunction::getJoomlaURL().'plugins/content/'.$url_path.'discussbot/tmpl/'.$this->template.'/');
-            }
-        }
-
-        //load the helper file
-        $helper_path = DISCUSSBOT_PATH . 'helper.php';
-        include_once $helper_path;
-        $this->helper = new JFusionDiscussBotHelper($this->params, $this->jname, $this->mode, $this->debug_mode);
-
-        //set option
-        $this->helper->option = JFactory::getApplication()->input->getCmd('option');
-    }
-
-
-    /**
-     * @param $subject
-     * @param $isNew
-     * @return bool
-     */
-    public function onAfterContentSave(&$subject, $isNew) {
-        //check to see if a valid $content object was passed on
-        $result = true;
-        if (!is_object($subject)){
-	        JFusionFunction::raiseNotice(JText::_('NO_CONTENT_DATA_FOUND'), JText::_('DISCUSSBOT_ERROR'));
-            $result = false;
-        } else {
-            $this->article = $subject;
-	        $this->helper->setArticle($this->article);
-
-            //make sure there is a plugin
-            if (empty($this->jname)) {
-                $result = false;
-            } else {
-                $this->helper->debug('onAfterContentSave called');
-
-                //validate the article
-	            $this->helper->getThreadStatus();
-                // changed _validate to pass the $isNew flag, so that it will only check will happen depending on this flag
-                list($this->valid, $this->validity_reason) = $this->helper->validate($isNew);
-                $this->helper->debug('Validity: ' . $this->valid . '; ' . $this->validity_reason);
-
-                //ignore auto mode if the article has been manually plugged
-                $manually_plugged = preg_match('/\{jfusion_discuss (.*)\}/U', $this->article->introtext . $this->article->fulltext);
-
-                $this->helper->debug('Checking mode...');
-                if ($this->mode=='auto' && empty($manually_plugged)) {
-                    $this->helper->debug('In auto mode');
-
-                    if ($this->valid) {
-                        $threadinfo = $this->helper->getThreadInfo();
-                        $JFusionForum = JFusionFactory::getForum($this->jname);
-                        $forumid = $JFusionForum->getDefaultForum($this->params, $this->article);
-
-                        if (($this->creationMode=='load') ||
-                            ($this->creationMode=='new' && ($isNew || (!$isNew && $this->helper->thread_status))) ||
-                            ($this->creationMode=='reply' && $this->helper->thread_status)) {
-
-                            //update/create thread
-                            $this->helper->checkThreadExists();
-
-                        } else {
-                            $this->helper->debug('Article did not meet requirements to update/create thread');
-                        }
-                    } elseif ($this->creationMode=='new' && $isNew) {
-                        $this->helper->debug('Failed validity test but creationMode is set to new and this is a new article');
-
-                        $mainframe = JFactory::getApplication();
-                        $publish_up = JFactory::getDate($this->article->publish_up)->toUnix();
-                        $now = JFactory::getDate('now', $mainframe->getCfg('offset'))->toUnix();
-                        if ($now < $publish_up || !$this->article->state) {
-                            $this->helper->debug('Article set to be published in the future or is unpublished thus creating an entry in the database so that the thread is created when appropriate.');
-
-                            //the publish date is set for the future so create an entry in the
-                            //database so that the thread is created when the publish date arrives
-                            $placeholder = new stdClass();
-                            $placeholder->threadid = 0;
-                            $placeholder->forumid = 0;
-                            $placeholder->postid = 0;
-                            JFusionFunction::updateDiscussionBotLookup($this->article->id, $placeholder, $this->jname);
-                        }
-                    }
-                } elseif ($this->mode=='test' && empty($manually_plugged)) {
-                    //recheck validity without stipulation
-                    $this->helper->debug('In test mode thus not creating the article');
-                    $threadinfo = $this->helper->getThreadInfo();
-                    $JFusionForum = JFusionFactory::getForum($this->jname);
-                    $content = '<u>' . $this->article->title . '</u><br />';
-                    if (!empty($threadinfo)) {
-                        $content .= JText::_('DISCUSSBOT_TEST_MODE') . '<img src="'.JFusionFunction::getJoomlaURL().DISCUSSBOT_URL_PATH.'images/check.png" style="margin-left:5px;"><br/>';
-                        if ($threadinfo->published) {
-                            $content .= JText::_('STATUS') . ': ' . JText::_('INITIALIZED_AND_PUBLISHED') . '<br />';
-                        } else {
-                            $content .= JText::_('STATUS') . ': ' . JText::_('INITIALIZED_AND_UNPUBLISHED') . '<br />';
-                        }
-                        $content .= JText::_('THREADID') . ': ' . $threadinfo->threadid . '<br />';
-                        $content .= JText::_('FORUMID') . ': ' . $threadinfo->forumid . '<br />';
-                        $content .= JText::_('FIRST_POSTID') . ': ' . $threadinfo->postid. '<br />';
-
-                        $forumlist = $this->helper->getForumList();
-                        if (!in_array($threadinfo->forumid, $forumlist)) {
-                            $content .= '<span style="color:red; font-weight:bold;">' . JText::_('WARNING') . '</span>: ' . JText::_('FORUM_NOT_EXIST') . '<br />';
-                        }
-
-                        $forumthread = $JFusionForum->getThread($threadinfo->threadid);
-                        if (empty($forumthread)) {
-                            $content .= '<span style="color:red; font-weight:bold;">' . JText::_('WARNING') . '</span>: ' . JText::_('THREAD_NOT_EXIST') . '<br />';
-                        }
-                    } else {
-                        $valid = ($this->valid) ? JText::_('JYES') : JText::_('JNO');
-                        if (!$this->valid) {
-                            $content .= JText::_('DISCUSSBOT_TEST_MODE') . '<img src="'.JFusionFunction::getJoomlaURL().DISCUSSBOT_URL_PATH.'images/x.png" style="margin-left:5px;"><br/>';
-                            $content .= JText::_('VALID') . ': ' . $valid . '<br />';
-                            $content .= JText::_('INVALID_REASON') . ': ' . $this->validity_reason . '<br />';
-                        } else {
-                            $content .= '<b>' . JText::_('DISCUSSBOT_TEST_MODE') . '</b><img src="'.JFusionFunction::getJoomlaURL().DISCUSSBOT_URL_PATH.'images/check.png" style="margin-left:5px;2><br/>';
-                            $content .= JText::_('VALID_REASON') . ': ' . $this->validity_reason . '<br />';
-                            $content .= JText::_('STATUS') . ': ' . JText::_('UNINITIALIZED_THREAD_WILL_BE_CREATED') . '<br />';
-                            $forumid = $JFusionForum->getDefaultForum($this->params, $this->article);
-                            $content .= JText::_('FORUMID') . ': ' . $forumid . '<br />';
-                            $author = $JFusionForum->getThreadAuthor($this->params, $this->article);
-                            $content .= JText::_('AUTHORID') . ': ' . $author . '<br />';
-                        }
-                    }
-                    JFusionFunction::raiseNotice($content);
-                } else {
-                    $this->helper->debug('In manual mode...checking to see if article has been initialized');
-                    $threadinfo = $this->helper->getThreadInfo();
-                    if (!empty($threadinfo) && $threadinfo->published == 1 && $threadinfo->manual == 1) {
-                        $this->helper->debug('Article has been initialized...updating thread');
-                        //update thread
-                        $this->helper->checkThreadExists();
-                    } else {
-                        $this->helper->debug('Article has not been initialized');
-                    }
-                }
-                $this->helper->debug('onAfterContentSave complete', true);
-            }
-        }
-        return $result;
-    }
-
-    /**
-     * @param $subject
-     * @param $params
-     * @return bool
-     */
-    public function onPrepareContent(&$subject, $params)
-    {
-        $result = true;
-        $this->article = $subject;
-	    $this->helper->setArticle($this->article);
-
-        //reset some vars
-        $this->manual_plug = false;
-        $this->manual_threadid = 0;
-
-        $this->validity_reason = '';
-	    $this->helper->getThreadStatus();
-        $this->helper->debug('onPrepareContent called');
-
-        //check to see if a valid $content object was passed on
-        if (!is_object($subject)){
-            JFusionFunction::raiseNotice(JText::_('NO_CONTENT_DATA_FOUND'), JText::_('DISCUSSBOT_ERROR'));
-            $result = false;
-        } else {
-            //make sure there is a plugin
-            if (empty($this->jname)) {
-                $result = false;
-            } else {
-                //do nothing if this is a K2 category object
-                if ($this->helper->option == 'com_k2' && get_class($this->article) == 'TableK2Category') {
-                    $result = false;
-                } else {
-                    //set some variables needed throughout
-                    $this->template = $this->params->get('template','default');
-
-                    //make sure we have an actual article
-                    if (!empty($this->article->id)) {
-                        $this->dbtask = JFactory::getApplication()->input->post->get('dbtask', null);
-                        $skip_new_check = ($this->dbtask=='create_thread') ? true : false;
-                        $skip_k2_check = ($this->helper->option == 'com_k2' && in_array($this->dbtask, array('unpublish_discussion', 'publish_discussion'))) ? true : false;
-
-                        list($this->valid, $this->validity_reason) = $this->helper->validate($skip_new_check, $skip_k2_check);
-                        $this->helper->debug('Validity: ' . $this->valid . "; " . $this->validity_reason);
-
-                        $this->ajax_request = JFactory::getApplication()->input->getInt('ajax_request',0);
-	                    $ajax = $this->prepareAjaxResponce();
-	                    if ($this->ajax_request) {
-		                    //get and set the threadinfo
-		                    $threadid = JFactory::getApplication()->input->getInt('threadid', 0, 'post');
-		                    $threadinfo = $this->helper->getThreadInfo();
-		                    if (empty($threadinfo))  {
-			                    //could be a manual plug so let's get the thread info directly
-			                    $JFusionForum = JFusionFactory::getForum($this->jname);
-			                    $threadinfo = $JFusionForum->getThread($threadid);
-			                    if (!empty($threadinfo)) {
-				                    //let's set threadinfo
-				                    $threadinfo->published = 1;
-				                    $this->helper->getThreadInfo(false, $threadinfo);
-				                    //override thread status
-				                    $this->helper->thread_status = true;
-				                    //set manual plug
-				                    $this->manual_plug = true;
-			                    } elseif ($this->dbtask != 'create_thread' && $this->dbtask != 'create_threadpost') {
-				                    JFusionFunction::raiseError(JText::_('THREAD_NOT_FOUND'), JText::_('DISCUSSBOT_ERROR'));
-				                    $this->renderAjaxResponce($ajax);
-			                    }
-		                    }
-	                    }
-
-	                    if ($this->dbtask == 'create_thread') {
-		                    //this article has been manually initiated for discussion
-		                    $this->createThread();
-	                    } elseif (($this->dbtask == 'create_post' || $this->dbtask == 'create_threadpost') && $this->params->get('enable_quickreply',false)) {
-		                    //a quick reply has been submitted so let's create the post
-		                    $this->createPost();
-	                    } elseif ($this->dbtask == 'unpublish_discussion') {
-		                    //an article has been "uninitiated"
-		                    $this->unpublishDiscussion();
-	                    } elseif ($this->dbtask == 'publish_discussion') {
-		                    //an article has been "reinitiated"
-		                    $this->publishDiscussion();
-		                    $threadinfo = $this->helper->getThreadInfo();
-		                    if (!empty($threadinfo->published)) {
-			                    //content is now published so display it
-			                    $ajax->posts = $this->renderDiscussionContent($threadinfo);
-		                    } else {
-			                    $ajax->posts = null;
-		                    }
-		                    $ajax->status = true;
-	                    }
-
-	                    //save the visibility of the posts if applicable
-	                    $show_discussion = JFactory::getApplication()->input->get('show_discussion','');
-	                    if ($show_discussion!=='') {
-		                    $JSession = JFactory::getSession();
-		                    $JSession->set('jfusion.discussion.visibility',(int) $show_discussion);
-	                    }
-
-	                    //check for some specific ajax requests
-	                    if ($this->ajax_request) {
-		                    //check to see if this is an ajax call to update the pagination
-		                    if ($this->params->get('show_posts',1) && $this->dbtask == 'update_posts') {
-			                    $this->updatePosts();
-		                    }  else if ($this->dbtask == 'update_debug_info') {
-			                    $ajax->status = true;
-		                    } else if ($show_discussion!=='') {
-			                    $ajax->status = true;
-			                    JFusionFunction::raiseNotice('jfusion.discussion.visibility set to '.$show_discussion);
-		                    } else {
-			                    JFusionFunction::raiseError('Discussion bot ajax request made but it doesn\'t seem to have been picked up', JText::_('DISCUSSBOT_ERROR'));
-		                    }
-		                    $this->renderAjaxResponce($ajax);
-	                    }
-	                    //add scripts to header
-	                    $this->helper->loadScripts();
-
-                        if (empty($this->article->params) && !empty($this->article->parameters)) {
-                            $this->article->params = $this->article->parameters;
-                        }
-
-                        if (!empty($this->article->params)) {
-                            $this->prepareContent();
-                        }
-                    }
-                }
-            }
-        }
-        return $result;
-    }
-
-    /**
-     * joomla 1.6 compatibility layer
-     *
-     * @param $context
-     * @param $article
-     * @param $isNew
-     */
-    public function onContentAfterSave($context, &$article, $isNew)
+	/**
+	 * Constructor
+	 *
+	 * For php4 compatibility we must not use the __constructor as a constructor for
+	 * plugins because func_get_args ( void ) returns a copy of all passed arguments
+	 * NOT references. This causes problems with cross-referencing necessary for the
+	 * observer design pattern.
+	 *
+	 * @param object &$subject The object to observe
+	 * @param array|object  $params   An array or object that holds the plugin configuration
+	 *
+	 * @since 1.5
+	 * @return void
+	 */
+	public function plgContentJfusion(&$subject, $params)
 	{
- 	    $this->onAfterContentSave($article, $isNew);
+		parent::__construct($subject, $params);
+
+		$this->loadLanguage('plg_content_jfusion', JPATH_ADMINISTRATOR);
+
+		//retrieve plugin software for discussion bot
+		if ($this->params===false) {
+			if (is_array($params)) {
+				$this->params = new JRegistry( $params[params]);
+			} else {
+				$this->params = new JRegistry( $params->params);
+			}
+
+		}
+
+		$this->jname = $this->params->get('jname', false);
+
+		if ($this->jname !== false) {
+			//load the plugin language file
+			$this->loadLanguage('com_jfusion.plg_' . $this->jname, JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion');
+		}
+
+		//determine what mode we are to operate in
+		if ($this->params->get('auto_create',0)) {
+			$this->mode = ($this->params->get('test_mode',1)) ? 'test' : 'auto';
+		} else {
+			$this->mode = 'manual';
+		}
+
+		$this->creationMode =    $this->params->get('create_thread','load');
+
+		//define some constants
+		if (!defined('DISCUSSION_TEMPLATE_PATH')) {
+			$url_path = 'jfusion/';
+			define('DISCUSSBOT_URL_PATH', 'plugins/content/' . $url_path . 'discussbot/');
+			$path = 'jfusion' . DIRECTORY_SEPARATOR;
+			define('DISCUSSBOT_PATH', JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . $path . 'discussbot' . DIRECTORY_SEPARATOR);
+
+			//let's first check for customized files in Joomla template directory
+			$app = JFactory::getApplication();
+			$JoomlaTemplateOverride = JPATH_BASE.DIRECTORY_SEPARATOR.'templates'. DIRECTORY_SEPARATOR .$app->getTemplate() . DIRECTORY_SEPARATOR. 'html' . DIRECTORY_SEPARATOR . 'plg_content_jfusion' . DIRECTORY_SEPARATOR;
+			if (file_exists($JoomlaTemplateOverride)) {
+				define('DISCUSSION_TEMPLATE_PATH', $JoomlaTemplateOverride);
+				define('DISCUSSION_TEMPLATE_URL', JFusionFunction::getJoomlaURL() . 'templates/' . $app->getTemplate() . '/html/plg_content_jfusion/');
+			} else {
+				define('DISCUSSION_TEMPLATE_PATH',JPATH_BASE.DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.'content'.DIRECTORY_SEPARATOR.$path.'discussbot'.DIRECTORY_SEPARATOR.'tmpl'.DIRECTORY_SEPARATOR.$this->template.DIRECTORY_SEPARATOR);
+				define('DISCUSSION_TEMPLATE_URL',JFusionFunction::getJoomlaURL().'plugins/content/'.$url_path.'discussbot/tmpl/'.$this->template.'/');
+			}
+		}
+
+		//load the helper file
+		$helper_path = DISCUSSBOT_PATH . 'helper.php';
+		include_once $helper_path;
+		$this->helper = new JFusionDiscussBotHelper($this->params, $this->mode);
+
+		//set option
+		$this->helper->option = JFactory::getApplication()->input->getCmd('option');
 	}
 
-    /**
-     * @param $context
-     * @param $article
-     * @param $params
-     * @param int $limitstart
-     */
-    public function onContentPrepare($context, &$article, &$params, $limitstart=0)
+
+	/**
+	 * @param $subject
+	 * @param $isNew
+	 * @return bool
+	 */
+	public function onAfterContentSave(&$subject, $isNew) {
+		//check to see if a valid $content object was passed on
+		$result = true;
+		if (!is_object($subject)){
+			JFusionFunction::raiseNotice(JText::_('NO_CONTENT_DATA_FOUND'), JText::_('DISCUSSBOT_ERROR'));
+			$result = false;
+		} else {
+			$this->article = $subject;
+			$this->helper->setArticle($this->article);
+
+			//make sure there is a plugin
+			if (empty($this->jname)) {
+				$result = false;
+			} else {
+				$this->helper->debug('onAfterContentSave called');
+
+				//validate the article
+				// changed _validate to pass the $isNew flag, so that it will only check will happen depending on this flag
+				list($this->valid, $this->validity_reason) = $this->helper->validate($isNew);
+				$this->helper->debug('Validity: ' . $this->valid . '; ' . $this->validity_reason);
+
+				//ignore auto mode if the article has been manually plugged
+				$manually_plugged = preg_match('/\{jfusion_discuss (.*)\}/U', $this->article->introtext . $this->article->fulltext);
+
+				$this->helper->debug('Checking mode...');
+				if ($this->mode=='auto' && empty($manually_plugged)) {
+					$this->helper->debug('In auto mode');
+
+					if ($this->valid) {
+						$threadinfo = $this->helper->getThreadInfo();
+						$JFusionForum = JFusionFactory::getForum($this->jname);
+						$forumid = $JFusionForum->getDefaultForum($this->params, $this->article);
+
+						if (($this->creationMode=='load') ||
+							($this->creationMode=='new' && ($isNew || (!$isNew && $this->helper->status))) ||
+							($this->creationMode=='reply' && $this->helper->status)) {
+
+							//update/create thread
+							$this->helper->checkThreadExists();
+
+						} else {
+							$this->helper->debug('Article did not meet requirements to update/create thread');
+						}
+					} elseif ($this->creationMode=='new' && $isNew) {
+						$this->helper->debug('Failed validity test but creationMode is set to new and this is a new article');
+
+						$mainframe = JFactory::getApplication();
+						$publish_up = JFactory::getDate($this->article->publish_up)->toUnix();
+						$now = JFactory::getDate('now', $mainframe->getCfg('offset'))->toUnix();
+						if ($now < $publish_up || !$this->article->state) {
+							$this->helper->debug('Article set to be published in the future or is unpublished thus creating an entry in the database so that the thread is created when appropriate.');
+
+							//the publish date is set for the future so create an entry in the
+							//database so that the thread is created when the publish date arrives
+							$placeholder = new stdClass();
+							$placeholder->threadid = 0;
+							$placeholder->forumid = 0;
+							$placeholder->postid = 0;
+							JFusionFunction::updateDiscussionBotLookup($this->article->id, $placeholder, $this->jname);
+						}
+					}
+				} elseif ($this->mode=='test' && empty($manually_plugged)) {
+					//recheck validity without stipulation
+					$this->helper->debug('In test mode thus not creating the article');
+					$threadinfo = $this->helper->getThreadInfo();
+					$JFusionForum = JFusionFactory::getForum($this->jname);
+					$content = '<u>' . $this->article->title . '</u><br />';
+					if (!empty($threadinfo)) {
+						$content .= JText::_('DISCUSSBOT_TEST_MODE') . '<img src="'.JFusionFunction::getJoomlaURL().DISCUSSBOT_URL_PATH.'images/check.png" style="margin-left:5px;"><br/>';
+						if ($threadinfo->published) {
+							$content .= JText::_('STATUS') . ': ' . JText::_('INITIALIZED_AND_PUBLISHED') . '<br />';
+						} else {
+							$content .= JText::_('STATUS') . ': ' . JText::_('INITIALIZED_AND_UNPUBLISHED') . '<br />';
+						}
+						$content .= JText::_('THREADID') . ': ' . $threadinfo->threadid . '<br />';
+						$content .= JText::_('FORUMID') . ': ' . $threadinfo->forumid . '<br />';
+						$content .= JText::_('FIRST_POSTID') . ': ' . $threadinfo->postid. '<br />';
+
+						$forumlist = $this->helper->getForumList();
+						if (!in_array($threadinfo->forumid, $forumlist)) {
+							$content .= '<span style="color:red; font-weight:bold;">' . JText::_('WARNING') . '</span>: ' . JText::_('FORUM_NOT_EXIST') . '<br />';
+						}
+
+						$forumthread = $JFusionForum->getThread($threadinfo->threadid);
+						if (empty($forumthread)) {
+							$content .= '<span style="color:red; font-weight:bold;">' . JText::_('WARNING') . '</span>: ' . JText::_('THREAD_NOT_EXIST') . '<br />';
+						}
+					} else {
+						$valid = ($this->valid) ? JText::_('JYES') : JText::_('JNO');
+						if (!$this->valid) {
+							$content .= JText::_('DISCUSSBOT_TEST_MODE') . '<img src="'.JFusionFunction::getJoomlaURL().DISCUSSBOT_URL_PATH.'images/x.png" style="margin-left:5px;"><br/>';
+							$content .= JText::_('VALID') . ': ' . $valid . '<br />';
+							$content .= JText::_('INVALID_REASON') . ': ' . $this->validity_reason . '<br />';
+						} else {
+							$content .= '<b>' . JText::_('DISCUSSBOT_TEST_MODE') . '</b><img src="'.JFusionFunction::getJoomlaURL().DISCUSSBOT_URL_PATH.'images/check.png" style="margin-left:5px;2><br/>';
+							$content .= JText::_('VALID_REASON') . ': ' . $this->validity_reason . '<br />';
+							$content .= JText::_('STATUS') . ': ' . JText::_('UNINITIALIZED_THREAD_WILL_BE_CREATED') . '<br />';
+							$forumid = $JFusionForum->getDefaultForum($this->params, $this->article);
+							$content .= JText::_('FORUMID') . ': ' . $forumid . '<br />';
+							$author = $JFusionForum->getThreadAuthor($this->params, $this->article);
+							$content .= JText::_('AUTHORID') . ': ' . $author . '<br />';
+						}
+					}
+					JFusionFunction::raiseNotice($content);
+				} else {
+					$this->helper->debug('In manual mode...checking to see if article has been initialized');
+					$threadinfo = $this->helper->getThreadInfo();
+					if (!empty($threadinfo) && $threadinfo->published == 1 && $threadinfo->manual == 1) {
+						$this->helper->debug('Article has been initialized...updating thread');
+						//update thread
+						$this->helper->checkThreadExists();
+					} else {
+						$this->helper->debug('Article has not been initialized');
+					}
+				}
+				$this->helper->debug('onAfterContentSave complete', true);
+			}
+		}
+		return $result;
+	}
+
+	/**
+	 * @param $subject
+	 * @param $params
+	 * @return bool
+	 */
+	public function onPrepareContent(&$subject, $params)
+	{
+		$result = true;
+		$this->article = $subject;
+		$this->helper->setArticle($this->article);
+
+		//reset some vars
+		$this->manual = false;
+		$this->manual_threadid = 0;
+
+		$this->validity_reason = '';
+		$this->helper->debug('onPrepareContent called');
+
+		//check to see if a valid $content object was passed on
+		if (!is_object($subject)){
+			JFusionFunction::raiseNotice(JText::_('NO_CONTENT_DATA_FOUND'), JText::_('DISCUSSBOT_ERROR'));
+			$result = false;
+		} else {
+			//make sure there is a plugin
+			if (empty($this->jname)) {
+				$result = false;
+			} else {
+				//do nothing if this is a K2 category object
+				if ($this->helper->option == 'com_k2' && get_class($this->article) == 'TableK2Category') {
+					$result = false;
+				} else {
+					//set some variables needed throughout
+					$this->template = $this->params->get('template','default');
+
+					//make sure we have an actual article
+					if (!empty($this->article->id)) {
+						$this->dbtask = JFactory::getApplication()->input->get('dbtask', null);
+						$skip_new_check = ($this->dbtask=='create_thread') ? true : false;
+						$skip_k2_check = ($this->helper->option == 'com_k2' && in_array($this->dbtask, array('unpublish_discussion', 'publish_discussion'))) ? true : false;
+
+						list($this->valid, $this->validity_reason) = $this->helper->validate($skip_new_check, $skip_k2_check);
+						$this->helper->debug('Validity: ' . $this->valid . '; ' . $this->validity_reason);
+
+						$this->ajax_request = JFactory::getApplication()->input->getInt('ajax_request',0);
+						$ajax = $this->prepareAjaxResponce();
+						/*
+				         * todo: do we need this code ?
+						if ($this->ajax_request) {
+							$threadinfo = $this->helper->getThreadInfo();
+
+
+							if (empty($threadinfo))  {
+								//get and set the threadinfo
+								$threadid = JFactory::getApplication()->input->getInt('threadid', 0);
+								//could be a manual plug so let's get the thread info directly
+								$JFusionForum = JFusionFactory::getForum($this->jname);
+								$threadinfo = $JFusionForum->getThread($threadid);
+								if (!empty($threadinfo)) {
+									//let's set threadinfo
+									$threadinfo->published = 1;
+									$this->helper->setThreadInfo($threadinfo);
+									//set manual plug
+									$this->manual = true;
+								} elseif ($this->dbtask != 'create_thread' && $this->dbtask != 'create_threadpost') {
+									JFusionFunction::raiseError(JText::_('THREAD_NOT_FOUND'), JText::_('DISCUSSBOT_ERROR'));
+									$this->renderAjaxResponce($ajax);
+								}
+							}
+						}
+*/
+						if ($this->dbtask == 'create_thread') {
+							//this article has been manually initiated for discussion
+							$this->createThread();
+						} elseif (($this->dbtask == 'create_post' || $this->dbtask == 'create_threadpost') && $this->params->get('enable_quickreply',false)) {
+							//a quick reply has been submitted so let's create the post
+							$this->createPost();
+						} elseif ($this->dbtask == 'unpublish_discussion') {
+							//an article has been 'uninitiated'
+							$this->unpublishDiscussion();
+						} elseif ($this->dbtask == 'publish_discussion') {
+							//an article has been 'reinitiated'
+							$this->publishDiscussion();
+							$threadinfo = $this->helper->getThreadInfo();
+							if (!empty($threadinfo->published)) {
+								//content is now published so display it
+								$ajax->posts = $this->renderDiscussionContent();
+							} else {
+								$ajax->posts = null;
+							}
+							$ajax->status = true;
+						}
+
+						//save the visibility of the posts if applicable
+						$show_discussion = JFactory::getApplication()->input->get('show_discussion','');
+						if ($show_discussion!=='') {
+							$JSession = JFactory::getSession();
+							$JSession->set('jfusion.discussion.visibility',(int) $show_discussion);
+						}
+
+						//check for some specific ajax requests
+						if ($this->ajax_request) {
+							//check to see if this is an ajax call to update the pagination
+							if ($this->params->get('show_posts',1) && $this->dbtask == 'update_posts') {
+								$this->updatePosts();
+							}  else if ($this->dbtask == 'update_debug_info') {
+								$ajax->status = true;
+							} else if ($show_discussion!=='') {
+								$ajax->status = true;
+								JFusionFunction::raiseNotice('jfusion.discussion.visibility set to '.$show_discussion);
+							} else {
+								JFusionFunction::raiseError('Discussion bot ajax request made but it doesn\'t seem to have been picked up', JText::_('DISCUSSBOT_ERROR'));
+							}
+							$this->renderAjaxResponce($ajax);
+						}
+						//add scripts to header
+						$this->helper->loadScripts();
+
+						if (empty($this->article->params) && !empty($this->article->parameters)) {
+							$this->article->params = $this->article->parameters;
+						}
+
+						if (!empty($this->article->params)) {
+							$this->prepareContent();
+						}
+					}
+				}
+			}
+		}
+		return $result;
+	}
+
+	/**
+	 * joomla 1.6 compatibility layer
+	 *
+	 * @param $context
+	 * @param $article
+	 * @param $isNew
+	 */
+	public function onContentAfterSave($context, &$article, $isNew)
+	{
+		$this->onAfterContentSave($article, $isNew);
+	}
+
+	/**
+	 * @param $context
+	 * @param $article
+	 * @param $params
+	 * @param int $limitstart
+	 */
+	public function onContentPrepare($context, &$article, &$params, $limitstart=0)
 	{
 		if ( $context != 'com_content.featured' && $context != 'com_content.category' ) {
 			//seems syntax has completely changed :(
@@ -415,24 +415,24 @@ class plgContentJfusion extends JPlugin
 		}
 	}
 
-    /**
-     * @param $context
-     * @param $article
-     * @param $params
-     * @param int $limitstart
-     */
-    public function onContentAfterDisplay($context, &$article, &$params, $limitstart=0)
+	/**
+	 * @param $context
+	 * @param $article
+	 * @param $params
+	 * @param int $limitstart
+	 */
+	public function onContentAfterDisplay($context, &$article, &$params, $limitstart=0)
 	{
-	    $view = JFactory::getApplication()->input->get('view');
-	    $layout = JFactory::getApplication()->input->get('layout');
+		$view = JFactory::getApplication()->input->get('view');
+		$layout = JFactory::getApplication()->input->get('layout');
 
-        if ($this->helper->option == 'com_content') {
-            if ($view == 'featured' || ($view == 'category' && $layout == 'blog')) {
-                $article->text = $article->introtext;
-                $this->onPrepareContent($article, $params);
-                $article->introtext = $article->text;
-            }
-        }
+		if ($this->helper->option == 'com_content') {
+			if ($view == 'featured' || ($view == 'category' && $layout == 'blog')) {
+				$article->text = $article->introtext;
+				$this->onPrepareContent($article, $params);
+				$article->introtext = $article->text;
+			}
+		}
 	}
 
 	/**
@@ -440,13 +440,9 @@ class plgContentJfusion extends JPlugin
 	 */
 	public function prepareAjaxResponce() {
 		$output = new stdClass;
-		$output->debug = null;
-
 		$output->posts = null;
-		$output->buttons = null;
 		$output->pagination = null;
 		$output->status = false;
-		$output->messages = array();
 		return $output;
 	}
 
@@ -454,11 +450,18 @@ class plgContentJfusion extends JPlugin
 	 * @param stdClass $ajax
 	 */
 	public function renderAjaxResponce($ajax) {
-	    $ajax->debug = $this->renderDebugOutput();
+		$ajax->debug = $this->renderDebugOutput();
 		$ajax->buttons = $this->renderButtons(true);
-		if ($this->params->get('enable_pagination',1)) {
+		if ($this->params->get('enable_pagination',0)) {
 			$ajax->pagination = $this->updatePagination();
 		}
+//		$ajax->threadinfo = $this->helper->getThreadInfo(true);
+
+		$ajax->articleid = $this->article->id;
+
+		$ajax->postid = $this->postid;
+		$ajax->moderated = $this->moderated;
+
 		$ajax->messages = JFusionFunction::renderMessage();
 		die(json_encode($ajax));
 	}
@@ -472,1014 +475,1001 @@ class plgContentJfusion extends JPlugin
 		return ($this->helper->option == 'com_k2') ? 'item' : 'article';
 	}
 
-    /*
-     * prepareContent
-     */
-    public function prepareContent()
-    {
-	    JHtml::_('behavior.framework');
-        $this->helper->debug('Preparing content');
+	/*
+	 * prepareContent
+	 */
+	public function prepareContent()
+	{
+		JHtml::_('behavior.framework');
+		$this->helper->debug('Preparing content');
 
-        $content = '';
-        //get the jfusion forum object
-        $JFusionForum = JFusionFactory::getForum($this->jname);
+		$content = '';
+		//get the jfusion forum object
+		$JFusionForum = JFusionFactory::getForum($this->jname);
 
-        //find any {jfusion_discuss...} to manually plug
-        $this->helper->debug('Finding all manually added plugs');
-        preg_match_all('/\{jfusion_discuss (.*)\}/U',$this->article->text,$matches);
-        $this->helper->debug(count($matches[1]) . ' matches found');
+		//find any {jfusion_discuss...} to manually plug
+		$this->helper->debug('Finding all manually added plugs');
+		preg_match_all('/\{jfusion_discuss (.*)\}/U',$this->article->text,$matches);
+		$this->helper->debug(count($matches[1]) . ' matches found');
 
-        foreach($matches[1] as $id) {
-            //only use the first and get rid of the others
-            if (empty($this->manual_plug)) {
-                $this->manual_plug = true;
-                $this->helper->debug('Plugging for thread id ' . $id);
-                //get the existing thread information
-                $threadinfo = $JFusionForum->getThread($id);
+		foreach($matches[1] as $id) {
+			//only use the first and get rid of the others
+			if (empty($this->manual)) {
+				$this->manual = true;
+				$this->helper->debug('Plugging for thread id ' . $id);
+				//get the existing thread information
+				$forumthread = $JFusionForum->getThread($id);
 
-                if (!empty($threadinfo)) {
-                    //manually plugged so definitely published
-                    $threadinfo->published = 1;
-                    //$threadinfo->manual = 1;
-                    //set threadinfo
-                    $this->helper->getThreadInfo(false, $threadinfo);
+				if (!empty($forumthread)) {
+					//manually plugged so definitely published
+					$forumthread->published = 1;
+					//$threadinfo->manual = 1;
+					//set threadinfo
+					$this->helper->setThreadInfo($forumthread);
 
-                    $this->helper->debug('Thread info found.');
+					$this->helper->debug('Thread info found.');
+					$content = $this->render();
+					$this->article->text = str_replace('{jfusion_discuss '.$id.'}',$content,$this->article->text);
+				} else {
+					$this->helper->debug('Thread info not found!');
+					$this->article->text = str_replace('{jfusion_discuss '.$id.'}',JText::_('THREADID_NOT_FOUND'),$this->article->text);
+				}
 
-                    //override thread status
-                    $this->helper->thread_status = true;
-                    $content = $this->render($threadinfo);
-                    $this->article->text = str_replace("{jfusion_discuss $id}",$content,$this->article->text);
-                } else {
-                    $this->helper->debug('Thread info not found!');
-                    $this->article->text = str_replace("{jfusion_discuss $id}",JText::_('THREADID_NOT_FOUND'),$this->article->text);
-                }
+			} else {
+				$this->helper->debug('Removing plug for thread ' . $id);
+				$this->article->text = str_replace('{jfusion_discuss '.$id.'}','',$this->article->text);
+			}
+		}
 
-            } else {
-                $this->helper->debug('Removing plug for thread ' . $id);
-                $this->article->text = str_replace("{jfusion_discuss $id}",'',$this->article->text);
-            }
-        }
+		//check to see if the fulltext has a manual plug if we are in a blog view
+		if (isset($this->article->fulltext)) {
+			if (!$this->manual && JFactory::getApplication()->input->get('view') != $this->view()) {
+				preg_match('/\{jfusion_discuss (.*)\}/U',$this->article->fulltext,$match);
+				if (!empty($match)) {
+					$this->helper->debug('No plugs in text but found plugs in fulltext');
+					$this->manual = true;
+					$this->manual_threadid = $match[1];
 
-        //check to see if the fulltext has a manual plug if we are in a blog view
-        if (isset($this->article->fulltext)) {
-            if (!$this->manual_plug && JFactory::getApplication()->input->get('view') != $this->view()) {
-                preg_match('/\{jfusion_discuss (.*)\}/U',$this->article->fulltext,$match);
-                if (!empty($match)) {
-                    $this->helper->debug('No plugs in text but found plugs in fulltext');
-                    $this->manual_plug = true;
-                    $this->manual_threadid = $match[1];
+					//get the existing thread information
+					$forumthread = $JFusionForum->getThread($this->manual_threadid);
 
-                    //get the existing thread information
-                    $threadinfo = $JFusionForum->getThread($this->manual_threadid);
+					if (!empty($forumthread)) {
+						//manually plugged so definitely published
+						$forumthread->published = 1;
+						//$threadinfo->manual = 1;
 
-                    if (!empty($threadinfo)) {
-                        //manually plugged so definitely published
-                        $threadinfo->published = 1;
-                        //$threadinfo->manual = 1;
+						//create buttons for the manually plugged article
+						//set threadinfo
+						$this->helper->setThreadInfo($forumthread);
+						$content = $this->renderButtons(false);
 
-                        //create buttons for the manually plugged article
-                        //set threadinfo
-                        $this->helper->getThreadInfo(false, $threadinfo);
-                        $content = $this->renderButtons(false);
+						//append the content
+						$this->article->text .= $content;
+					} else {
+						$this->article->text .= JText::_('THREADID_NOT_FOUND');
+					}
+				}
+			}
+		}
 
-                        //append the content
-                        $this->article->text .= $content;
-                    } else {
-                        $this->article->text .= JText::_('THREADID_NOT_FOUND');
-                    }
-                }
-            }
-        }
+		//check for auto mode if not already manually plugged
+		if (!$this->manual) {
+			$this->helper->debug('Article not manually plugged...checking for other mode');
+			$threadinfo = $this->helper->getThreadInfo();
 
-        //check for auto mode if not already manually plugged
-        if (!$this->manual_plug) {
-            $this->helper->debug('Article not manually plugged...checking for other mode');
-            $threadinfo = $this->helper->getThreadInfo();
+			//create the thread if this article has been validated
+			if ($this->mode=='auto') {
+				$this->helper->debug('In auto mode');
+				if ($this->valid) {
+					if ($threadinfo || $this->creationMode=='load' || ($this->creationMode=='view' && JFactory::getApplication()->input->get('view') == $this->view()) ) {
+						$status = $this->helper->checkThreadExists();
+						if ($status['action'] == 'created') {
+							$threadinfo = $status['threadinfo'];
+						}
+					}
+				}
+				if ($this->validity_reason != JText::_('REASON_NOT_IN_K2_ARTICLE_TEXT')) {
+					//a catch in case a plugin does something wrong
+					if (!empty($threadinfo->threadid) || $this->creationMode == 'reply') {
+						$content = $this->render();
+					}
+				}
+			} elseif ($this->mode=='test') {
+				$this->helper->debug('In test mode');
+				//get the existing thread information
+				$content  = '<div class="jfusionclearfix" style="border:1px solid #ECF8FD; background-color:#ECF8FD; margin-top:10px; margin-bottom:10px;">';
 
-            //create the thread if this article has been validated
-            if ($this->mode=='auto') {
-                $this->helper->debug('In auto mode');
-                if ($this->valid) {
-	                if ($threadinfo || $this->creationMode=='load' || ($this->creationMode=='view' && JFactory::getApplication()->input->get('view') == $this->view()) ) {
-		                $status = $this->helper->checkThreadExists();
-		                if ($status['action'] == 'created') {
-			                $threadinfo = $status['threadinfo'];
-		                }
-	                }
-                }
-                if ($this->validity_reason != JText::_('REASON_NOT_IN_K2_ARTICLE_TEXT')) {
-                    //a catch in case a plugin does something wrong
-                    if (!empty($threadinfo->threadid) || $this->creationMode == 'reply') {
-                        $content = $this->render($threadinfo);
-                    }
-                }
-            } elseif ($this->mode=='test') {
-                $this->helper->debug('In test mode');
-                //get the existing thread information
-                $content  = '<div class="jfusionclearfix" style="border:1px solid #ECF8FD; background-color:#ECF8FD; margin-top:10px; margin-bottom:10px;">';
+				if (!empty($threadinfo)) {
+					$content .= '<b>' . JText::_('DISCUSSBOT_TEST_MODE') . '</b><img src="'.JFusionFunction::getJoomlaURL().DISCUSSBOT_URL_PATH.'images/check.png" style="margin-left:5px;"><br/>';
+					if ($threadinfo->published) {
+						$content .= JText::_('STATUS') . ': ' . JText::_('INITIALIZED_AND_PUBLISHED') . '<br />';
+					} else {
+						$content .= JText::_('STATUS') . ': ' . JText::_('INITIALIZED_AND_UNPUBLISHED') . '<br />';
+					}
+					$content .= JText::_('THREADID') . ': ' . $threadinfo->threadid . '<br />';
+					$content .= JText::_('FORUMID') . ': ' . $threadinfo->forumid . '<br />';
+					$content .= JText::_('FIRST_POSTID') . ': ' . $threadinfo->postid. '<br />';
 
-                if (!empty($threadinfo)) {
-                    $content .= '<b>' . JText::_('DISCUSSBOT_TEST_MODE') . '</b><img src="'.JFusionFunction::getJoomlaURL().DISCUSSBOT_URL_PATH.'images/check.png" style="margin-left:5px;"><br/>';
-                    if ($threadinfo->published) {
-                        $content .= JText::_('STATUS') . ': ' . JText::_('INITIALIZED_AND_PUBLISHED') . '<br />';
-                    } else {
-                        $content .= JText::_('STATUS') . ': ' . JText::_('INITIALIZED_AND_UNPUBLISHED') . '<br />';
-                    }
-                    $content .= JText::_('THREADID') . ': ' . $threadinfo->threadid . '<br />';
-                    $content .= JText::_('FORUMID') . ': ' . $threadinfo->forumid . '<br />';
-                    $content .= JText::_('FIRST_POSTID') . ': ' . $threadinfo->postid. '<br />';
+					$forumlist = $this->helper->getForumList();
+					if (!in_array($threadinfo->forumid, $forumlist)) {
+						$content .= '<span style="color:red; font-weight:bold;">' . JText::_('WARNING') . '</span>: ' . JText::_('FORUM_NOT_EXIST') . '<br />';
+					}
 
-                    $forumlist = $this->helper->getForumList();
-                    if (!in_array($threadinfo->forumid, $forumlist)) {
-                        $content .= '<span style="color:red; font-weight:bold;">' . JText::_('WARNING') . '</span>: ' . JText::_('FORUM_NOT_EXIST') . '<br />';
-                    }
+					$forumthread = $JFusionForum->getThread($threadinfo->threadid);
+					if (empty($forumthread)) {
+						$content .= '<span style="color:red; font-weight:bold;">' . JText::_('WARNING') . '</span>: ' . JText::_('THREAD_NOT_EXIST') . '<br />';
+					}
+				} else {
+					$valid = ($this->valid) ? JText::_('JYES') : JText::_('JNO');
+					if (!$this->valid) {
+						$content .= '<b>' . JText::_('DISCUSSBOT_TEST_MODE') . '</b><img src="'.JFusionFunction::getJoomlaURL().DISCUSSBOT_URL_PATH.'images/x.png" style="margin-left:5px;"><br/>';
+						$content .= JText::_('VALID') . ': ' . $valid . '<br />';
+						$content .= JText::_('INVALID_REASON') . ': ' . $this->validity_reason . '<br />';
+					} else {
+						$content .= '<b>' . JText::_('DISCUSSBOT_TEST_MODE') . '</b><img src="'.JFusionFunction::getJoomlaURL().DISCUSSBOT_URL_PATH.'images/check.png" style="margin-left:5px;"><br/>';
+						$content .= JText::_('VALID_REASON') . ': ' . $this->validity_reason . '<br />';
+						$content .= JText::_('STATUS') . ': ' . JText::_('UNINITIALIZED_THREAD_WILL_BE_CREATED') . '<br />';
+						$forumid = $JFusionForum->getDefaultForum($this->params, $this->article);
+						$content .= JText::_('FORUMID') . ': ' . $forumid . '<br />';
+						$author = $JFusionForum->getThreadAuthor($this->params, $this->article);
+						$content .= JText::_('AUTHORID') . ': ' . $author . '<br />';
+					}
+				}
+				$content .= '</div>';
+			} elseif (!empty($threadinfo->manual)) {
+				if (!empty($threadinfo->published)) {
+					$this->helper->debug('In manual mode but article has been initialized');
+					//this article was generated by the initialize button
+					$content = $this->render();
+				} else {
+					$this->helper->debug('In manual mode but article was initialized then uninitialized');
+					$content = $this->renderButtons();
+				}
+			} else {
+				$this->helper->debug('In manual mode');
+				//in manual mode so just create the buttons
+				if ($this->validity_reason != JText::_('REASON_NOT_IN_K2_ARTICLE_TEXT')) {
+					$content = $this->renderButtons();
+				}
+			}
 
-                    $forumthread = $JFusionForum->getThread($threadinfo->threadid);
-                    if (empty($forumthread)) {
-                        $content .= '<span style="color:red; font-weight:bold;">' . JText::_('WARNING') . '</span>: ' . JText::_('THREAD_NOT_EXIST') . '<br />';
-                    }
-                } else {
-                    $valid = ($this->valid) ? JText::_('JYES') : JText::_('JNO');
-                    if (!$this->valid) {
-                        $content .= '<b>' . JText::_('DISCUSSBOT_TEST_MODE') . '</b><img src="'.JFusionFunction::getJoomlaURL().DISCUSSBOT_URL_PATH.'images/x.png" style="margin-left:5px;"><br/>';
-                        $content .= JText::_('VALID') . ': ' . $valid . '<br />';
-                        $content .= JText::_('INVALID_REASON') . ': ' . $this->validity_reason . '<br />';
-                    } else {
-                        $content .= '<b>' . JText::_('DISCUSSBOT_TEST_MODE') . '</b><img src="'.JFusionFunction::getJoomlaURL().DISCUSSBOT_URL_PATH.'images/check.png" style="margin-left:5px;"><br/>';
-                        $content .= JText::_('VALID_REASON') . ': ' . $this->validity_reason . '<br />';
-                        $content .= JText::_('STATUS') . ': ' . JText::_('UNINITIALIZED_THREAD_WILL_BE_CREATED') . '<br />';
-                        $forumid = $JFusionForum->getDefaultForum($this->params, $this->article);
-                        $content .= JText::_('FORUMID') . ': ' . $forumid . '<br />';
-                        $author = $JFusionForum->getThreadAuthor($this->params, $this->article);
-                        $content .= JText::_('AUTHORID') . ': ' . $author . '<br />';
-                    }
-                }
-                $content .= '</div>';
-            } elseif (!empty($threadinfo->manual)) {
-                if (!empty($threadinfo->published)) {
-                    $this->helper->debug('In manual mode but article has been initialized');
-                    //this article was generated by the initialize button
-                    $content = $this->render($threadinfo);
-                } else {
-                    $this->helper->debug('In manual mode but article was initialized then uninitialized');
-                    $content = $this->renderButtons();
-                }
-            } else {
-                $this->helper->debug('In manual mode');
-                //in manual mode so just create the buttons
-                if ($this->validity_reason != JText::_('REASON_NOT_IN_K2_ARTICLE_TEXT')) {
-                    $content = $this->renderButtons();
-                }
-            }
+			//append the content
+			$this->article->text .= $content;
+		}
 
-            //append the content
-            $this->article->text .= $content;
-        }
+		$this->renderDebugOutput();
+	}
 
-        static $taskFormLoaded;
-        if (empty($taskFormLoaded)) {
-            $this->helper->debug('Adding task form');
-            //tak on the task form; it only needs to be added once which will be used for create_thread
-            $uri = JUri::getInstance();
-            $url = $uri->toString(array('path', 'query', 'fragment'));
-            $url = str_replace('&', '&amp;', $url);
+	/**
+	 * renderDebugOutput
+	 *
+	 * @return string
+	 */
+	public function renderDebugOutput()
+	{
+		$debug_contents = '';
+		if ($this->params->get('debug', 0)) {
+			require_once(JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.debug.php');
 
-            $content = <<<HTML
-                <form style="display:none;" id="JFusionTaskForm" name="JFusionTaskForm" method="post" action="{$url}">
-                    <input type="hidden" name="articleId" value="" />
-                    <input type="hidden" name="dbtask" value="" />
-                </form>
-HTML;
-            $this->article->text .= $content;
+			if ($this->ajax_request) {
+				debug::$toggleScriptInited = true;
+				debug::$colorSchemeInited[0] = true;
+			}
+			ob_start();
+			debug::show($this->helper->debug, 'Discussion bot debug info',1);
+			$debug_contents = ob_get_contents();
+			ob_end_clean();
 
-            $taskFormLoaded = 1;
-        }
-
-        $this->renderDebugOutput();
-    }
-
-    /**
-     * renderDebugOutput
-     *
-     * @return string
-     */
-    public function renderDebugOutput()
-    {
-	    $debug_contents = '';
-        if ($this->debug_mode) {
-            require_once(JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.debug.php');
-
-	        if ($this->ajax_request) {
-		        debug::$toggleScriptInited = true;
-		        debug::$colorSchemeInited[0] = true;
-	        }
-            ob_start();
-            debug::show($this->helper->debug_output, 'Discussion bot debug info',1);
-            $debug_contents = ob_get_contents();
-            ob_end_clean();
-
-            if (!$this->ajax_request) {
-                $this->article->text .= <<<HTML
+			if (!$this->ajax_request) {
+				$this->article->text .= <<<HTML
                     <div id="jfusionDebugContainer{$this->article->id}">
                         {$debug_contents}
                     </div>
 HTML;
-            }
-        }
-	    return $debug_contents;
-    }
+			}
+		}
+		return $debug_contents;
+	}
 
-    /*
-     * createThread
-     */
-    public function createThread()
-    {
-        $JoomlaUser = JFactory::getUser();
-        $mainframe = JFactory::getApplication();
-        $return = JFactory::getApplication()->input->get('return');
-        if ($return) {
-            $url = base64_decode($return);
-        } else {
-            $uri = JUri::getInstance();
-            $url = $uri->toString(array('path', 'query', 'fragment'));
-            $url = JRoute::_($url, false);
-            if ($uri->getVar('view')=='article') {
-                //tak on the discussion jump to
-                $url .= '#discussion';
+	/*
+	 * createThread
+	 */
+	public function createThread()
+	{
+		$JoomlaUser = JFactory::getUser();
+		$mainframe = JFactory::getApplication();
+		$return = JFactory::getApplication()->input->get('return');
+		if ($return) {
+			$url = base64_decode($return);
+		} else {
+			$uri = JUri::getInstance();
+			$url = $uri->toString(array('path', 'query', 'fragment'));
+			$url = JRoute::_($url, false);
+			if ($uri->getVar('view')=='article') {
+				//tak on the discussion jump to
+				$url .= '#discussion';
 
-                $JSession = JFactory::getSession();
-                $JSession->set('jfusion.discussion.visibility',1);
-            }
-        }
+				$JSession = JFactory::getSession();
+				$JSession->set('jfusion.discussion.visibility',1);
+			}
+		}
 
-        //make sure the article submitted matches the one loaded
-        $submittedArticleId = JFactory::getApplication()->input->getInt('articleId', 0, 'post');
+		//make sure the article submitted matches the one loaded
+		$submittedArticleId = JFactory::getApplication()->input->getInt('articleId', 0);
 
-	    $editAccess = $JoomlaUser->authorise('core.edit', 'com_content');
+		$editAccess = $JoomlaUser->authorise('core.edit', 'com_content');
 
-	    $ajaxEnabled = ($this->params->get('enable_ajax',1) && $this->ajax_request);
-	    $ajax = $this->prepareAjaxResponce();
+		$ajaxEnabled = ($this->params->get('enable_ajax',0) && $this->ajax_request);
+		$ajax = $this->prepareAjaxResponce();
 
-        if ($editAccess && $this->valid && $submittedArticleId == $this->article->id) {
-            $status = $this->helper->checkThreadExists(1);
+		if ($editAccess && $this->valid && $submittedArticleId == $this->article->id) {
+			$status = $this->helper->checkThreadExists(1);
 
-            if (!empty($status['error'])) {
-	            JFusionFunction::raiseNotices($status['error'], JText::_('DISCUSSBOT_ERROR'));
-            } else {
-	            $ajax->status = true;
-	            $msg = JText::sprintf('THREAD_CREATED_SUCCESSFULLY',$this->article->title);
-	            JFusionFunction::raiseMessage($msg, JText::_('SUCCESS'));
-            }
-        } else {
-	        JFusionFunction::raiseError(JText::_('ACCESS_DENIED'), JText::_('DISCUSSBOT_ERROR'));
-        }
-	    if ($ajaxEnabled) {
-		    $this->renderAjaxResponce($ajax);
-	    } else {
-		    $mainframe->redirect($url);
-	    }
-    }
+			if (!empty($status['error'])) {
+				JFusionFunction::raiseNotices($status['error'], JText::_('DISCUSSBOT_ERROR'));
+			} else {
+				$ajax->status = true;
+				$msg = JText::sprintf('THREAD_CREATED_SUCCESSFULLY',$this->article->title);
+				JFusionFunction::raiseMessage($msg, JText::_('SUCCESS'));
+			}
+		} else {
+			JFusionFunction::raiseError(JText::_('ACCESS_DENIED'), JText::_('DISCUSSBOT_ERROR'));
+		}
+		if ($ajaxEnabled) {
+			$this->renderAjaxResponce($ajax);
+		} else {
+			$mainframe->redirect($url);
+		}
+	}
 
-    /*
-     * createPost
-     * @return void
-     */
-    public function createPost()
-    {
-	    $ajax = $this->prepareAjaxResponce();
-        $JoomlaUser = JFactory::getUser();
-        $JFusionForum = JFusionFactory::getForum($this->jname);
+	/*
+	 * createPost
+	 * @return void
+	 */
+	public function createPost()
+	{
+		$ajax = $this->prepareAjaxResponce();
+		$JoomlaUser = JFactory::getUser();
+		$JFusionForum = JFusionFactory::getForum($this->jname);
 
-        //define some variables
-        $allowGuests = $this->params->get('quickreply_allow_guests',0);
-        $ajaxEnabled = ($this->params->get('enable_ajax',1) && $this->ajax_request);
+		//define some variables
+		$allowGuests = $this->params->get('quickreply_allow_guests',0);
+		$ajaxEnabled = ($this->params->get('enable_ajax',0) && $this->ajax_request);
 
-	    $jumpto = '';
-	    $url = $this->helper->getArticleUrl($jumpto,'',false);
-	    $msg = '';
-        //process quick replies
-        if (($allowGuests || !$JoomlaUser->guest) && !$JoomlaUser->block) {
-            //make sure something was submitted
-            $quickReplyText = JFactory::getApplication()->input->post->get('quickReply', '');
+		$jumpto = '';
+		$url = $this->helper->getArticleUrl($jumpto,'',false);
+		$msg = '';
+		//process quick replies
+		if (($allowGuests || !$JoomlaUser->guest) && !$JoomlaUser->block) {
+			//make sure something was submitted
+			$quickReplyText = JFactory::getApplication()->input->post->get('quickReply', '');
 
-            if (!empty($quickReplyText)) {
-                //retrieve the userid from forum software
-                if ($allowGuests && $JoomlaUser->guest) {
-                    $userinfo = new stdClass();
-                    $userinfo->guest = 1;
+			if (!empty($quickReplyText)) {
+				//retrieve the userid from forum software
+				if ($allowGuests && $JoomlaUser->guest) {
+					$userinfo = new stdClass();
+					$userinfo->guest = 1;
 
-                    $captcha_verification = $JFusionForum->verifyCaptcha($this->params);
-                } else {
-                    $JFusionUser = JFusionFactory::getUser($this->jname);
-                    $userinfo = $JFusionUser->getUser($JoomlaUser);
-                    $userinfo->guest = 0;
-                    //we have a user logged in so ignore captcha
-                    $captcha_verification = true;
-                }
+					$captcha_verification = $JFusionForum->verifyCaptcha($this->params);
+				} else {
+					$JFusionUser = JFusionFactory::getUser($this->jname);
+					$userinfo = $JFusionUser->getUser($JoomlaUser);
+					$userinfo->guest = 0;
+					//we have a user logged in so ignore captcha
+					$captcha_verification = true;
+				}
 
-                if ($captcha_verification) {
-                    $threadinfo = null;
-                    if ($this->dbtask=='create_threadpost') {
-                        $status = $this->helper->checkThreadExists();
-                        $threadinfo = $status['threadinfo'];
-                    } elseif ($this->dbtask=="create_post") {
-                        $threadinfo = $this->helper->getThreadInfo();
-                    }
+				if ($captcha_verification) {
+					$threadinfo = null;
+					if ($this->dbtask == 'create_threadpost') {
+						$status = $this->helper->checkThreadExists();
+						$threadinfo = $status['threadinfo'];
+					} elseif ($this->dbtask == 'create_post') {
+						$threadinfo = $this->helper->getThreadInfo();
+					}
 
-                    //create the post
-                    if (!empty($threadinfo) && !empty($threadinfo->threadid) && !empty($threadinfo->forumid)) {
-                        $status = $JFusionForum->createPost($this->params, $threadinfo, $this->article, $userinfo);
+					//create the post
+					if (!empty($threadinfo) && !empty($threadinfo->threadid) && !empty($threadinfo->forumid)) {
+						$status = $JFusionForum->createPost($this->params, $threadinfo, $this->article, $userinfo);
 
-                        if (!empty($status['error'])) {
-	                        JFusionFunction::raiseNotices(JText::_('ACCESS_DENIED'), JText::_('DISCUSSBOT_ERROR'));
-                        } else {
-                            if ($ajaxEnabled) {
-                                //if pagination is set, set $limitstart so that we go to the added post
-                                if ($this->params->get('enable_pagination',true)) {
-                                    $replyCount = $JFusionForum->getReplyCount($threadinfo);
-                                    $application = JFactory::getApplication();
-                                    $limit = $application->getUserStateFromRequest( 'global.list.limit', 'limit_discuss', 5, 'int' );
+						if (!empty($status['error'])) {
+							JFusionFunction::raiseNotices(JText::_('ACCESS_DENIED'), JText::_('DISCUSSBOT_ERROR'));
+						} else {
+							if ($ajaxEnabled) {
+								//if pagination is set, set $limitstart so that we go to the added post
+								if ($this->params->get('enable_pagination',0)) {
+									$replyCount = $JFusionForum->getReplyCount($threadinfo);
+									$application = JFactory::getApplication();
+									$limit = $application->getUserStateFromRequest( 'global.list.limit_discuss', 'limit_discuss', 5, 'int' );
 
-                                    if ($this->params->get('sort_posts','ASC')=='ASC') {
-                                        $limitstart = floor(($replyCount-1)/$limit) * $limit;
-                                    } else {
-                                        $limitstart = 0;
-                                    }
-	                                JFactory::getApplication()->input->set('limitstart_discuss',$limitstart);
-                                }
+									if ($this->params->get('sort_posts','ASC')=='ASC') {
+										$limitstart = floor(($replyCount-1)/$limit) * $limit;
+									} else {
+										$limitstart = 0;
+									}
+									JFactory::getApplication()->input->set('limitstart_discuss',$limitstart);
+								}
 
-                                $posts = $JFusionForum->getPosts($this->params, $threadinfo);
-                                $this->helper->output = array();
-                                $this->helper->output['posts'] = $this->preparePosts($posts);
+								$posts = $JFusionForum->getPosts($this->params, $threadinfo);
+								$this->helper->output = array();
+								$this->helper->output['posts'] = $this->preparePosts($posts);
 
-                                //take note of the created post
-                                $this->helper->output['submitted_postid'] = $status['postid'];
-                                if (isset($status['post_moderated'])) {
-                                    $this->helper->output['post_moderated'] = $status['post_moderated'];
-                                } else {
-                                    $this->helper->output['post_moderated'] = 0;
-                                }
+								//take note of the created post
+								$this->postid = $status['postid'];
 
-                                //output only the new post div
-                                $this->helper->threadinfo = $threadinfo;
-	                            $ajax->posts = $this->helper->renderFile('default_posts.php');
-	                            $ajax->status = true;
-                            } else {
-                                if ($this->params->get('jumpto_new_post',0)) {
-                                    $jumpto = (isset($status['postid'])) ? "post" . $status['postid'] : '';
-                                }
-                                $url = $this->helper->getArticleUrl($jumpto,'',false);
-                            }
-	                        if (isset($status['post_moderated'])) {
-		                        $msg = ($status['post_moderated']) ? JText::_('SUCCESSFUL_POST_MODERATED') : JText::_('SUCCESSFUL_POST');
-	                        } else {
-		                        $msg = JText::_('SUCCESSFUL_POST');
-	                        }
-	                        JFusionFunction::raiseMessage($msg, JText::_('SUCCESS'));
-                        }
-                    } else {
-	                    JFusionFunction::raiseError(JText::_('THREADID_NOT_FOUND'), JText::_('DISCUSSBOT_ERROR'));
-                    }
-                } else {
-	                JFusionFunction::raiseError(JText::_('CAPTCHA_INCORRECT'), JText::_('DISCUSSBOT_ERROR'));
-                }
-            } else {
-	            JFusionFunction::raiseError(JText::_('QUICKEREPLY_EMPTY'), JText::_('DISCUSSBOT_ERROR'));
-            }
-        } else {
-	        JFusionFunction::raiseError(JText::_('ACCESS_DENIED'), JText::_('DISCUSSBOT_ERROR'));
-        }
-	    if ($ajaxEnabled) {
-		    $this->renderAjaxResponce($ajax);
-	    } else {
-		    $mainframe = JFactory::getApplication();
-		    $mainframe->redirect($url);
-	    }
-    }
+								//output only the new post div
+								$this->helper->setThreadInfo($threadinfo);
 
-    /*
-     * unpublishDiscussion
-     */
-    public function unpublishDiscussion()
-    {
-        $JoomlaUser = JFactory::getUser();
+								$ajax->posts = $this->helper->renderFile('default_posts.php');
+								$ajax->status = true;
+							} else {
+								if ($this->params->get('jumpto_new_post',0)) {
+									$jumpto = (isset($status['postid'])) ? 'post' . $status['postid'] : '';
+								}
+								$url = $this->helper->getArticleUrl($jumpto,'',false);
+							}
+							if (isset($status['post_moderated'])) {
+								$this->moderated = $status['post_moderated'];
+								$msg = ($this->moderated) ? JText::_('SUCCESSFUL_POST_MODERATED') : JText::_('SUCCESSFUL_POST');
+							} else {
+								$msg = JText::_('SUCCESSFUL_POST');
+							}
+							JFusionFunction::raiseMessage($msg, JText::_('SUCCESS'));
+						}
+					} else {
+						JFusionFunction::raiseError(JText::_('THREADID_NOT_FOUND'), JText::_('DISCUSSBOT_ERROR'));
+					}
+				} else {
+					JFusionFunction::raiseError(JText::_('CAPTCHA_INCORRECT'), JText::_('DISCUSSBOT_ERROR'));
+				}
+			} else {
+				JFusionFunction::raiseError(JText::_('QUICKEREPLY_EMPTY'), JText::_('DISCUSSBOT_ERROR'));
+			}
+		} else {
+			JFusionFunction::raiseError(JText::_('ACCESS_DENIED'), JText::_('DISCUSSBOT_ERROR'));
+		}
+		if ($ajaxEnabled) {
+			$this->renderAjaxResponce($ajax);
+		} else {
+			$mainframe = JFactory::getApplication();
+			$mainframe->redirect($url);
+		}
+	}
 
-        //make sure the article submitted matches the one loaded
-        $submittedArticleId = JFactory::getApplication()->input->getInt('articleId', 0, 'post');
-	    $editAccess = $JoomlaUser->authorise('core.edit', 'com_content');
+	/*
+	 * unpublishDiscussion
+	 */
+	public function unpublishDiscussion()
+	{
+		$JoomlaUser = JFactory::getUser();
 
-	    $ajax = $this->prepareAjaxResponce();
-        if ($editAccess && $this->valid && $submittedArticleId == $this->article->id) {
-            $threadinfo = $this->helper->getThreadInfo();
+		//make sure the article submitted matches the one loaded
+		$submittedArticleId = JFactory::getApplication()->input->getInt('articleId', 0);
+		$editAccess = $JoomlaUser->authorise('core.edit', 'com_content');
 
-            if (!empty($threadinfo)) {
-                //created by discussion bot thus update the look up table
-                JFusionFunction::updateDiscussionBotLookup($this->article->id, $threadinfo, $this->jname, 0, $threadinfo->manual);
-            } else {
-                //manually plugged thus remove any db plugin tags
-                $jdb = JFactory::getDBO();
-                //retrieve the original text
-                $query = 'SELECT `introtext`, `fulltext` FROM #__content WHERE id = ' . $this->article->id;
-                $jdb->setQuery($query);
-                $texts = $jdb->loadObject();
+		$ajax = $this->prepareAjaxResponce();
+		if ($editAccess && $this->valid && $submittedArticleId == $this->article->id) {
+			$threadinfo = $this->helper->getThreadInfo();
 
-                //remove any {jfusion_discuss...}
-                $fulltext = preg_replace('/\{jfusion_discuss (.*)\}/U','',$texts->fulltext, -1, $fullTextCount);
-                $introtext = preg_replace('/\{jfusion_discuss (.*)\}/U','',$texts->introtext, -1, $introTextCount);
+			if (!empty($threadinfo)) {
+				//created by discussion bot thus update the look up table
+				JFusionFunction::updateDiscussionBotLookup($this->article->id, $threadinfo, $this->jname, 0, $threadinfo->manual);
+			} else {
+				//manually plugged thus remove any db plugin tags
+				$jdb = JFactory::getDBO();
+				//retrieve the original text
+				$query = 'SELECT `introtext`, `fulltext` FROM #__content WHERE id = ' . $this->article->id;
+				$jdb->setQuery($query);
+				$texts = $jdb->loadObject();
 
-                if (!empty($fullTextCount) || !empty($introTextCount)) {
-                    $query = 'UPDATE #__content SET `fulltext` = ' . $jdb->Quote($fulltext) . ', `introtext` = ' .$jdb->Quote($introtext) . ' WHERE id = ' . (int) $this->article->id;
-                    $jdb->setQuery($query);
-                    $jdb->execute();
-                }
-            }
+				//remove any {jfusion_discuss...}
+				$fulltext = preg_replace('/\{jfusion_discuss (.*)\}/U','',$texts->fulltext, -1, $fullTextCount);
+				$introtext = preg_replace('/\{jfusion_discuss (.*)\}/U','',$texts->introtext, -1, $introTextCount);
 
-	        $ajax->status = true;
-	        $this->helper->getThreadStatus();
-        } else {
-	        JFusionFunction::raiseError(JText::_('ACCESS_DENIED'), JText::_('DISCUSSBOT_ERROR'));
-        }
-	    if ($this->ajax_request) {
-		    $this->renderAjaxResponce($ajax);
-	    } else {
-		    $mainframe = JFactory::getApplication();
-		    $mainframe->redirect($this->helper->getArticleUrl('','',false));
-	    }
-    }
+				if (!empty($fullTextCount) || !empty($introTextCount)) {
+					$query = 'UPDATE #__content SET `fulltext` = ' . $jdb->Quote($fulltext) . ', `introtext` = ' .$jdb->Quote($introtext) . ' WHERE id = ' . (int) $this->article->id;
+					$jdb->setQuery($query);
+					$jdb->execute();
+				}
+			}
 
-    /*
-     * publishDiscussion
-     */
-    public function publishDiscussion()
-    {
-        $JoomlaUser = JFactory::getUser();
+			$ajax->status = true;
+		} else {
+			JFusionFunction::raiseError(JText::_('ACCESS_DENIED'), JText::_('DISCUSSBOT_ERROR'));
+		}
+		if ($this->ajax_request) {
+			$this->renderAjaxResponce($ajax);
+		} else {
+			$mainframe = JFactory::getApplication();
+			$mainframe->redirect($this->helper->getArticleUrl('','',false));
+		}
+	}
 
-        //make sure the article submitted matches the one loaded
-        $submittedArticleId = JFactory::getApplication()->input->getInt('articleId', 0, 'post');
-	    $editAccess = $JoomlaUser->authorise('core.edit', 'com_content');
+	/*
+	 * publishDiscussion
+	 */
+	public function publishDiscussion()
+	{
+		$JoomlaUser = JFactory::getUser();
 
-	    $ajax = $this->prepareAjaxResponce();
-        if ($editAccess && $this->valid && $submittedArticleId == $this->article->id) {
-            $threadinfo = $this->helper->getThreadInfo();
-            JFusionFunction::updateDiscussionBotLookup($this->article->id, $threadinfo, $this->jname, 1, $threadinfo->manual);
+		//make sure the article submitted matches the one loaded
+		$submittedArticleId = JFactory::getApplication()->input->getInt('articleId', 0);
+		$editAccess = $JoomlaUser->authorise('core.edit', 'com_content');
 
-	        $ajax->status = true;
-	        $this->helper->getThreadStatus();
-        } else {
-	        JFusionFunction::raiseError(JText::_('NOT_PUBLISHED'), JText::_('DISCUSSBOT_ERROR'));
-        }
-	    if ($this->ajax_request) {
-		    $this->renderAjaxResponce($ajax);
-	    } else {
-		    $mainframe = JFactory::getApplication();
-		    $mainframe->redirect($this->helper->getArticleUrl('','',false));
-	    }
-    }
+		$ajax = $this->prepareAjaxResponce();
+		if ($editAccess && $this->valid && $submittedArticleId == $this->article->id) {
+			$threadinfo = $this->helper->getThreadInfo();
+			JFusionFunction::updateDiscussionBotLookup($this->article->id, $threadinfo, $this->jname, 1, $threadinfo->manual);
 
-    /**
-     * @param $threadinfo
-     *
-     * @return bool|string
-     */
-    public function render(&$threadinfo)
-    {
-        $this->helper->debug('Beginning rendering content');
+			$ajax->status = true;
+		} else {
+			JFusionFunction::raiseError(JText::_('NOT_PUBLISHED'), JText::_('DISCUSSBOT_ERROR'));
+		}
+		if ($this->ajax_request) {
+			$this->renderAjaxResponce($ajax);
+		} else {
+			$mainframe = JFactory::getApplication();
+			$mainframe->redirect($this->helper->getArticleUrl('','',false));
+		}
+	}
 
-        $view = JFactory::getApplication()->input->get('view');
-        //let's only show quick replies and posts on the article view
-        if ($view == $this->view()) {
-            $JSession = JFactory::getSession();
+	/**
+	 * @return bool|string
+	 */
+	public function render()
+	{
+		$this->helper->debug('Beginning rendering content');
+		$threadinfo = $this->helper->getThreadInfo();
 
-            if (empty($threadinfo->published) && $this->creationMode != 'reply') {
-                $this->helper->debug('Discussion content not displayed as this discussion is unpublished');
-                $display = 'none';
-                $generate_guts = false;
-            } else {
-                if ($JSession->get('jfusion.discussion.visibility',0) || (empty($threadinfo) && $this->creationMode == 'reply')) {
-                    //show the discussion area if no replies have been made and creationMode is set to on first reply OR if user has set it to show
-                    $display = 'block';
-                } else {
-                    $display = ($this->params->get('show_toggle_posts_link',1) && $this->params->get('collapse_discussion',1)) ? 'none' : 'block';
-                }
-                $generate_guts = true;
-            }
+		$view = JFactory::getApplication()->input->get('view');
+		//let's only show quick replies and posts on the article view
+		if ($view == $this->view()) {
+			$JSession = JFactory::getSession();
+
+			if (empty($threadinfo->published) && $this->creationMode != 'reply') {
+				$this->helper->debug('Discussion content not displayed as this discussion is unpublished');
+				$display = 'none';
+				$generate_guts = false;
+			} else {
+				if ($JSession->get('jfusion.discussion.visibility',0) || (empty($threadinfo) && $this->creationMode == 'reply')) {
+					//show the discussion area if no replies have been made and creationMode is set to on first reply OR if user has set it to show
+					$display = 'block';
+				} else {
+					$display = ($this->params->get('show_toggle_posts_link',1) && $this->params->get('collapse_discussion',1)) ? 'none' : 'block';
+				}
+				$generate_guts = true;
+			}
 			if ($display == 'none') {
 				$JSession->set('jfusion.discussion.visibility',0);
 			} else {
 				$JSession->set('jfusion.discussion.visibility',1);
 			}
 
-            $content = '<div style="float:none; display:'.$display.';" id="discussion">';
+			$content = '<div style="float:none; display:'.$display.';" id="discussion">';
 
-            if ($generate_guts) {
-                $content .= $this->renderDiscussionContent($threadinfo);
-            }
+			if ($generate_guts) {
+				$content .= $this->renderDiscussionContent();
+			}
 
-            $content .= '</div>';
-            //now generate the buttons in case the thread was just created
-            $button_content  = $this->renderButtons();
-            $content = $button_content . $content;
-        } else {
-            $content = $this->renderButtons();
-        }
+			$content .= '</div>';
+			//now generate the buttons in case the thread was just created
+			$button_content  = $this->renderButtons();
+			$content = $button_content . $content;
+		} else {
+			$content = $this->renderButtons();
+		}
 
-        return $content;
-    }
+		return $content;
+	}
 
 
-    /**
-     * @param $threadinfo
-     *
-     * @return bool|string
-     */
-    public function renderDiscussionContent(&$threadinfo)
-    {
-        $this->helper->debug('Rendering discussion content');
+	/**
+	 * @return bool|string
+	 */
+	public function renderDiscussionContent()
+	{
+		$this->helper->debug('Rendering discussion content');
+		$threadinfo = $this->helper->getThreadInfo();
 
-        //setup parameters
-        $JFusionForum = JFusionFactory::getForum($this->jname);
-        $allowGuests = $this->params->get('quickreply_allow_guests',0);
-        $JoomlaUser = JFactory::getUser();
-        //make sure the user exists in the software before displaying the quick reply
-        $JFusionUser = JFusionFactory::getUser($this->jname);
-        $JFusionUserinfo = $JFusionUser->getUser($JoomlaUser);
-        $action_url = $this->helper->getArticleUrl();
-        $this->helper->output = array();
+		//setup parameters
+		$JFusionForum = JFusionFactory::getForum($this->jname);
+		$allowGuests = $this->params->get('quickreply_allow_guests',0);
+		$JoomlaUser = JFactory::getUser();
+		//make sure the user exists in the software before displaying the quick reply
+		$JFusionUser = JFusionFactory::getUser($this->jname);
+		$JFusionUserinfo = $JFusionUser->getUser($JoomlaUser);
+		$action_url = $this->helper->getArticleUrl();
+		$this->helper->output = array();
 
-        $show_form = ($allowGuests || (!$JoomlaUser->guest && !empty($JFusionUserinfo)) && !$JoomlaUser->block) ? 1 : 0;
+		$show_form = ($allowGuests || (!$JoomlaUser->guest && !empty($JFusionUserinfo)) && !$JoomlaUser->block) ? 1 : 0;
 
-	    $this->helper->output['post_pagination'] = '';
-	    $this->helper->output['posts'] = '';
-	    $this->helper->output['reply_form'] = '';
-	    $this->helper->output['reply_form_error'] = '';
-        if (!empty($threadinfo)) {
-	        $this->updatePostCount($threadinfo);
+		$this->helper->output['post_pagination'] = '';
+		$this->helper->output['posts'] = '';
+		$this->helper->output['reply_form'] = '';
+		$this->helper->output['reply_form_error'] = '';
+		if (!empty($threadinfo)) {
+			//prepare quick reply box if enabled
+			if ($this->params->get('enable_quickreply')){
+				$threadLocked = $JFusionForum->getThreadLockedStatus($threadinfo->threadid);
+				if ($threadLocked) {
+					$this->helper->output['reply_form_error'] = $this->params->get('locked_msg');
+				} elseif ($show_form) {
+					if (!$JoomlaUser->guest && empty($JFusionUserinfo)) {
+						$this->helper->output['reply_form_error'] =  $this->jname . ': ' . JText::_('USER_NOT_EXIST');
+					} else {
+						$showGuestInputs = ($allowGuests && $JoomlaUser->guest) ? true : false;
 
-            //prepare quick reply box if enabled
-            if ($this->params->get('enable_quickreply')){
-                $threadLocked = $JFusionForum->getThreadLockedStatus($threadinfo->threadid);
-                if ($threadLocked) {
-                    $this->helper->output['reply_form_error'] = $this->params->get('locked_msg');
-                } elseif ($show_form) {
-                    if (!$JoomlaUser->guest && empty($JFusionUserinfo)) {
-                        $this->helper->output['reply_form_error'] =  $this->jname . ': ' . JText::_('USER_NOT_EXIST');
-                    } else {
-                        $showGuestInputs = ($allowGuests && $JoomlaUser->guest) ? true : false;
-                        $this->helper->output['reply_form']  = '<form id="jfusionQuickReply'.$this->article->id.'" name="jfusionQuickReply'.$this->article->id.'" method="post" action="'.$action_url.'">';
-                        $this->helper->output['reply_form'] .= '<input type="hidden" name="dbtask" value="create_post" />';
-                        $this->helper->output['reply_form'] .= '<input type="hidden" name="threadid" id="threadid" value="'.$threadinfo->threadid.'"/>';
-                        $page_limitstart = JFactory::getApplication()->input->getInt('limitstart', 0);
-                        if ($page_limitstart) {
-                            $this->helper->output['reply_form'] .= '<input type="hidden" name="limitstart" value="'.$page_limitstart.'" />';
-                        }
-                        $this->helper->output['reply_form'] .= $JFusionForum->createQuickReply($this->params,$showGuestInputs);
-                        $this->helper->output['reply_form'] .= '</form>';
-                    }
-                } else {
-                    $this->helper->output['reply_form_error'] = $this->params->get('must_login_msg');
-                }
-            }
+						$limitstart = JFactory::getApplication()->input->getInt('limitstart', 0);
+						if ($limitstart) {
+							$limitstart = '<input type="hidden" name="limitstart" value="'.$limitstart.'" />';
+						} else {
+							$limitstart = '';
+						}
 
-            //add posts to content if enabled
-            if ($this->params->get('show_posts')) {
-                //get the posts
-                $posts = $JFusionForum->getPosts($this->params, $threadinfo);
+						$form = $JFusionForum->createQuickReply($this->params,$showGuestInputs);
+						$submit = JText::_('SUBMIT');
 
-                if (!empty($posts)){
-                    $this->helper->output['posts'] = $this->preparePosts($posts);
-                }
+						$this->helper->output['reply_form'] =<<<HTML
+						<form id="jfusionQuickReply{$this->article->id}" name="jfusionQuickReply{$this->article->id}" method="post" action="{$action_url}">
+							<input type="hidden" name="dbtask" value="create_post" />
+							{$limitstart}
+							{$form}
+							<div style="width:99%; text-align:right;">
+			                    <input type="submit" class="button" id="submitpost" onclick="return JFusion.submitReply('{$this->article->id}');" value="{$submit}"/>
+		                    </div>
+						</form>
+HTML;
+					}
+				} else {
+					$this->helper->output['reply_form_error'] = $this->params->get('must_login_msg');
+				}
+			}
 
-                if ($this->params->get('enable_pagination',1)) {
-	                $this->helper->output['post_pagination'] = $this->updatePagination(true);
-                }
-            }
-        } elseif ($this->creationMode=='reply') {
-            //prepare quick reply box if enabled
-            if ($show_form) {
-                if (!$JoomlaUser->guest && empty($JFusionUserinfo)) {
-                    $this->helper->output['reply_form_error'] =  $this->jname . ': ' . JText::_('USER_NOT_EXIST');
-                } else {
-                    $showGuestInputs = ($allowGuests && $JoomlaUser->guest) ? true : false;
-                    $this->helper->output['reply_form']  = '<form id="jfusionQuickReply'.$this->article->id.'" name="jfusionQuickReply'.$this->article->id.'" method="post" action="'.$action_url.'">';
-                    $this->helper->output['reply_form'] .= '<input type="hidden" name="dbtask" value="create_threadpost"/>';
-                    $page_limitstart = JFactory::getApplication()->input->getInt('limitstart', 0);
-                    if ($page_limitstart) {
-                        $this->helper->output['reply_form'] .= '<input type="hidden" name="limitstart" value="'.$page_limitstart.'" />';
-                    }
-                    $this->helper->output['reply_form'] .= $JFusionForum->createQuickReply($this->params,$showGuestInputs);
-                    $this->helper->output['reply_form'] .= '</form>';
-                }
-            } else {
-                $this->helper->output['reply_form_error'] = $this->params->get('must_login_msg');
-            }
-        }
+			//add posts to content if enabled
+			if ($this->params->get('show_posts')) {
+				//get the posts
+				$posts = $JFusionForum->getPosts($this->params, $threadinfo);
 
-        //populate the template
-        $this->helper->threadinfo = $threadinfo;
-        $content = $this->helper->renderFile('default.php');
-        return $content;
-    }
+				if (!empty($posts)){
+					$this->helper->output['posts'] = $this->preparePosts($posts);
+				}
 
-    /**
-     * @param bool $innerhtml
-     *
-     * @return bool|string
-     */
-    public function renderButtons($innerhtml = false)
-    {
-        $this->helper->debug('Rendering buttons');
+				if ($this->params->get('enable_pagination',0)) {
+					$this->helper->output['post_pagination'] = $this->updatePagination(true);
+				}
+			}
+		} elseif ($this->creationMode=='reply') {
+			//prepare quick reply box if enabled
+			if ($show_form) {
+				if (!$JoomlaUser->guest && empty($JFusionUserinfo)) {
+					$this->helper->output['reply_form_error'] =  $this->jname . ': ' . JText::_('USER_NOT_EXIST');
+				} else {
+					$showGuestInputs = ($allowGuests && $JoomlaUser->guest) ? true : false;
 
-        //setup some variables
-        $threadinfo = $this->helper->getThreadInfo();
-	    $this->updatePostCount($threadinfo);
+					$limitstart = JFactory::getApplication()->input->getInt('limitstart', 0);
+					if ($limitstart) {
+						$limitstart = '<input type="hidden" name="limitstart" value="'.$limitstart.'" />';
+					} else {
+						$limitstart = '';
+					}
 
-        $JUser = JFactory::getUser();
-        $itemid = $this->params->get('itemid');
-        $link_text = $this->params->get('link_text');
-        $link_type= $this->params->get('link_type','text');
-        $link_mode= $this->params->get('link_mode','always');
-        $blog_link_mode= $this->params->get('blog_link_mode','forum');
-        $linkHTML = ($link_type=='image') ? '<img style="border:0;" src="'.$link_text.'">' : $link_text;
-	    if($this->params->get('show_reply_num')) {
-		    $post = ($this->helper->reply_count==1) ? 'REPLY' : 'REPLIES';
-		    if ($linkHTML) {
-			    $linkHTML .= ' ';
-		    }
-		    $linkHTML .= '['.$this->helper->reply_count.' '.JText::_($post).']';
-	    }
-        $linkTarget = $this->params->get('link_target','_parent');
+					$form = $JFusionForum->createQuickReply($this->params,$showGuestInputs);
+					$submit = JText::_('SUBMIT');
 
-	    if ($this->helper->option == 'com_content') {
-		    $article_access = $this->article->params->get('access-view');
-	    } elseif ($this->helper->option == 'com_k2') {
-		    $article_access = (in_array($this->article->access, $JUser->getAuthorisedViewLevels()) && in_array($this->article->category->access, $JUser->getAuthorisedViewLevels()));
-	    } else {
-		    $article_access = 1;
-	    }
+					$this->helper->output['reply_form'] =<<<HTML
+						<form id="jfusionQuickReply{$this->article->id}" name="jfusionQuickReply{$this->article->id}" method="post" action="{$action_url}">
+							<input type="hidden" name="dbtask" value="create_threadpost" />
+							{$limitstart}
+							{$form}
+							<div style="width:99%; text-align:right;">
+			                    <input type="submit" class="button" id="submitpost" onclick="return JFusion.submitReply('{$this->article->id}');" value="{$submit}"/>
+		                    </div>
+						</form>
+HTML;
+				}
+			} else {
+				$this->helper->output['reply_form_error'] = $this->params->get('must_login_msg');
+			}
+		}
 
-        //prevent notices and warnings in default_buttons.php if there are no buttons to display
-        $this->helper->output = array();
-        $this->helper->output['buttons'] = array();
-        /**
-         * @ignore
-         * @var $article_params JRegistry
-         */
-        $attribs = $readmore_param = $article_params = null;
-        $show_readmore = $readmore_catch = 0;
-        if ($this->helper->option == 'com_content') {
-            $attribs = new JRegistry($this->article->attribs);
+		//populate the template
+		$content = $this->helper->renderFile('default.php');
+		return $content;
+	}
 
-            if (isset($this->article->params)) {
-                //blog view
-                $article_params = $this->article->params;
-	            $readmore_catch = $show_readmore = $article_params->get('show_readmore');
-            } elseif (isset($this->article->parameters)) {
-                //article view
-                $article_params = $this->article->parameters;
-                $readmore_catch = JFactory::getApplication()->input->getInt('readmore');
-                $override = JFactory::getApplication()->input->getInt('show_readmore',false);
-                $show_readmore = ($override!==false) ? $override : $article_params->get('show_readmore');
-            }
-            $readmore_param = 'show_readmore';
-        } elseif ($this->helper->option == 'com_k2' && JFactory::getApplication()->input->get('view') == 'itemlist') {
-            $article_params = $this->article->params;
-            $layout = JFactory::getApplication()->input->get('layout');
-            if ($layout == 'category') {
-                $readmore_param = 'catItemReadMore';
-            } elseif ($layout == 'user') {
-                $readmore_param = 'userItemReadMore';
-            } else {
-                $readmore_param = 'genericItemReadMore';
-            }
-            $show_readmore = $readmore_catch = $article_params->get($readmore_param);
-        }
+	/**
+	 * @param bool $innerhtml
+	 *
+	 * @return bool|string
+	 */
+	public function renderButtons($innerhtml = false)
+	{
+		$this->helper->debug('Rendering buttons');
 
-        //let's overwrite the read more link with our own
-        //needed as in the case of updating the buttons via ajax which calls the article view
-        $view = ($override = JFactory::getApplication()->input->get('view_override')) ? $override : JFactory::getApplication()->input->get('view');
-        if ($view != $this->view() && $this->params->get('overwrite_readmore',1)) {
-            //make sure the read more link is enabled for this article
+		//setup some variables
+		$threadinfo = $this->helper->getThreadInfo();
 
-            if (!empty($show_readmore) && !empty($readmore_catch)) {
-                if ($article_access) {
-                    $readmore_link = $this->helper->getArticleUrl();
-                    if ($this->helper->option == 'com_content') {
-	                    if (!empty($this->article->alternative_readmore)) {
-		                    $readmore = $this->article->alternative_readmore;
-		                    if ($this->article->params->get('show_readmore_title', 0) != 0) {
-			                    $readmore.= JHtml::_('string.truncate', ($this->article->title), $this->article->params->get('readmore_limit'));
-		                    }
-	                    } elseif ($this->article->params->get('show_readmore_title', 0) == 0) {
-		                    $readmore = JText::_('READ_MORE');
-	                    } else {
-		                    $readmore = JText::_('READ_MORE') . ': ';
-		                    $readmore.= JHtml::_('string.truncate', ($this->article->title), $this->article->params->get('readmore_limit'));
-	                    }
-                    }
-                    if (!empty($readmore)) {
-                        $readmore_text = $readmore;
-                    } else {
-                        $readmore_text = JText::_('READ_MORE');
-                    }
-                } else {
-                    $return_url = base64_encode($this->helper->getArticleUrl());
-                    $readmore_link = JRoute::_('index.php?option=com_users&view=login&return='.$return_url);
-                    $readmore_text = JText::_('READ_MORE_REGISTER');
-                }
+		$JUser = JFactory::getUser();
+		$itemid = $this->params->get('itemid');
+		$link_text = $this->params->get('link_text');
+		$link_type= $this->params->get('link_type','text');
+		$link_mode= $this->params->get('link_mode','always');
+		$blog_link_mode= $this->params->get('blog_link_mode','forum');
+		$linkHTML = ($link_type=='image') ? '<img style="border:0;" src="'.$link_text.'">' : $link_text;
+		if($this->params->get('show_reply_num')) {
+			$post = ($this->helper->reply_count==1) ? 'REPLY' : 'REPLIES';
+			if ($linkHTML) {
+				$linkHTML .= ' ';
+			}
+			$linkHTML .= '['.$this->helper->reply_count.' '.JText::_($post).']';
+		}
+		$linkTarget = $this->params->get('link_target','_parent');
 
-                $this->helper->output['buttons']['readmore']['href'] = $readmore_link;
-                $this->helper->output['buttons']['readmore']['text'] = $readmore_text;
-                $this->helper->output['buttons']['readmore']['target'] = '_self';
+		if ($this->helper->option == 'com_content') {
+			$article_access = $this->article->params->get('access-view');
+		} elseif ($this->helper->option == 'com_k2') {
+			$article_access = (in_array($this->article->access, $JUser->getAuthorisedViewLevels()) && in_array($this->article->category->access, $JUser->getAuthorisedViewLevels()));
+		} else {
+			$article_access = 1;
+		}
 
-                //set it so that Joomla does not show its read more link
-                if (isset($this->article->readmore)) {
-                    $this->article->readmore = 0;
-                }
+		//prevent notices and warnings in default_buttons.php if there are no buttons to display
+		$this->helper->output = array();
+		$this->helper->output['buttons'] = array();
+		/**
+		 * @ignore
+		 * @var $article_params JRegistry
+		 */
+		$attribs = $readmore_param = $article_params = null;
+		$show_readmore = $readmore_catch = 0;
+		if ($this->helper->option == 'com_content') {
+			$attribs = new JRegistry($this->article->attribs);
 
-                //hide the articles standard read more
-                if ($readmore_param && $article_params) {
-                    $article_params->set($readmore_param, 0);
-                }
-            }
-        }
+			if (isset($this->article->params)) {
+				//blog view
+				$article_params = $this->article->params;
+				$readmore_catch = $show_readmore = $article_params->get('show_readmore');
+			} elseif (isset($this->article->parameters)) {
+				//article view
+				$article_params = $this->article->parameters;
+				$readmore_catch = JFactory::getApplication()->input->getInt('readmore');
+				$override = JFactory::getApplication()->input->getInt('show_readmore',false);
+				$show_readmore = ($override!==false) ? $override : $article_params->get('show_readmore');
+			}
+			$readmore_param = 'show_readmore';
+		} elseif ($this->helper->option == 'com_k2' && JFactory::getApplication()->input->get('view') == 'itemlist') {
+			$article_params = $this->article->params;
+			$layout = JFactory::getApplication()->input->get('layout');
+			if ($layout == 'category') {
+				$readmore_param = 'catItemReadMore';
+			} elseif ($layout == 'user') {
+				$readmore_param = 'userItemReadMore';
+			} else {
+				$readmore_param = 'genericItemReadMore';
+			}
+			$show_readmore = $readmore_catch = $article_params->get($readmore_param);
+		}
 
-        //create a link to manually create the thread if it is not already
-        $show_button = $this->params->get('enable_initiate_buttons',false);
+		//let's overwrite the read more link with our own
+		//needed as in the case of updating the buttons via ajax which calls the article view
+		$view = ($override = JFactory::getApplication()->input->get('view_override')) ? $override : JFactory::getApplication()->input->get('view');
+		if ($view != $this->view() && $this->params->get('overwrite_readmore',1)) {
+			//make sure the read more link is enabled for this article
 
-        if ($show_button && empty($this->manual_plug)) {
-            $user   = JFactory::getUser();
-	        $editAccess = $user->authorise('core.edit', 'com_content');
-            if ($editAccess) {
-                if ($this->helper->thread_status) {
-                    //discussion is published
-                    $dbtask = 'unpublish_discussion';
-                    $text = 'UNINITIATE_DISCUSSION';
-                } elseif (isset($threadinfo->published)) {
-                    //discussion is unpublished
-                    $dbtask = 'publish_discussion';
-                    $text = 'INITIATE_DISCUSSION';
-                } else {
-                    //discussion is uninitiated
-                    $dbtask = 'create_thread';
-                    $text = 'INITIATE_DISCUSSION';
-                }
+			if (!empty($show_readmore) && !empty($readmore_catch)) {
+				if ($article_access) {
+					$readmore_link = $this->helper->getArticleUrl();
+					if ($this->helper->option == 'com_content') {
+						if (!empty($this->article->alternative_readmore)) {
+							$readmore = $this->article->alternative_readmore;
+							if ($this->article->params->get('show_readmore_title', 0) != 0) {
+								$readmore.= JHtml::_('string.truncate', ($this->article->title), $this->article->params->get('readmore_limit'));
+							}
+						} elseif ($this->article->params->get('show_readmore_title', 0) == 0) {
+							$readmore = JText::_('READ_MORE');
+						} else {
+							$readmore = JText::_('READ_MORE') . ': ';
+							$readmore.= JHtml::_('string.truncate', ($this->article->title), $this->article->params->get('readmore_limit'));
+						}
+					}
+					if (!empty($readmore)) {
+						$readmore_text = $readmore;
+					} else {
+						$readmore_text = JText::_('READ_MORE');
+					}
+				} else {
+					$return_url = base64_encode($this->helper->getArticleUrl());
+					$readmore_link = JRoute::_('index.php?option=com_users&view=login&return='.$return_url);
+					$readmore_text = JText::_('READ_MORE_REGISTER');
+				}
 
-                $this->helper->output['buttons']['initiate']['href'] = 'javascript: void(0);';
+				$this->helper->output['buttons']['readmore']['href'] = $readmore_link;
+				$this->helper->output['buttons']['readmore']['text'] = $readmore_text;
+				$this->helper->output['buttons']['readmore']['target'] = '_self';
 
-                $vars  = '&view_override='.$view;
-                $vars .= ($this->params->get('overwrite_readmore',1)) ? '&readmore='.$readmore_catch.'&show_readmore='.$show_readmore : '';
+				//set it so that Joomla does not show its read more link
+				if (isset($this->article->readmore)) {
+					$this->article->readmore = 0;
+				}
 
-                $this->helper->output['buttons']['initiate']['js']['onclick'] = 'JFusion.confirmThreadAction('.$this->article->id.",'$dbtask', '$vars', '{$this->helper->getArticleUrl()}');";
-                $this->helper->output['buttons']['initiate']['text'] = JText::_($text);
-                $this->helper->output['buttons']['initiate']['target'] = '_self';
-            }
-        }
+				//hide the articles standard read more
+				if ($readmore_param && $article_params) {
+					$article_params->set($readmore_param, 0);
+				}
+			}
+		}
 
-/*
-    <a class="jfusionRefreshLink" href="javascript:void(0);" onclick=""><?php echo JText::_('REFRESH_POSTS');?></a> <br/>
-*/
-	    if($view==$this->view() && $this->params->get('show_posts') && $this->params->get('show_refresh_link',1) && $threadinfo) {
-		    //class="jfusionRefreshLink"
-		    $this->helper->output['buttons']['refresh']['href'] = 'javascript:void(0);';
-		    $this->helper->output['buttons']['refresh']['js']['onclick'] = 'JFusion.refreshPosts('.$threadinfo->threadid.');';
-		    $this->helper->output['buttons']['refresh']['text'] = JText::_('REFRESH_POSTS');
-		    $this->helper->output['buttons']['refresh']['target'] = $linkTarget;
-	    }
+		//create a link to manually create the thread if it is not already
+		$show_button = $this->params->get('enable_initiate_buttons',false);
 
-        //create the discuss this link
-        if ($this->helper->thread_status || $this->manual_plug) {
-            if ($link_mode!="never") {
-                $JFusionForum = JFusionFactory::getForum($this->jname);
-	            $this->updatePostCount($threadinfo);
+		if ($show_button && empty($this->manual)) {
+			$user   = JFactory::getUser();
+			$editAccess = $user->authorise('core.edit', 'com_content');
+			if ($editAccess) {
+				if ($this->helper->status) {
+					//discussion is published
+					$dbtask = 'unpublish_discussion';
+					$text = 'UNINITIATE_DISCUSSION';
+				} elseif (isset($threadinfo->published)) {
+					//discussion is unpublished
+					$dbtask = 'publish_discussion';
+					$text = 'INITIATE_DISCUSSION';
+				} else {
+					//discussion is uninitiated
+					$dbtask = 'create_thread';
+					$text = 'INITIATE_DISCUSSION';
+				}
 
-                if ($view==$this->view()) {
-                    if ($link_mode=="article" || $link_mode=="always") {
-                        $this->helper->output['buttons']['discuss']['href'] = JFusionFunction::routeURL($JFusionForum->getThreadURL($threadinfo->threadid), $itemid, $this->jname);
-                        $this->helper->output['buttons']['discuss']['text'] = $linkHTML;
-                        $this->helper->output['buttons']['discuss']['target'] = $linkTarget;
+				$this->helper->output['buttons']['initiate']['href'] = 'javascript: void(0);';
 
-                        if ($this->params->get('enable_comment_in_forum_button',0)) {
-                            $commentLinkText = $this->params->get('comment_in_forum_link_text', JText::_('ADD_COMMENT'));
-                            $commentLinkHTML = ($this->params->get('comment_in_forum_link_type')=='image') ? '<img style="border:0;" src="'.$commentLinkText.'">' : $commentLinkText;
-                            $this->helper->output['buttons']['comment_in_forum']['href'] = JFusionFunction::routeURL($JFusionForum->getReplyURL($threadinfo->forumid, $threadinfo->threadid), $itemid, $this->jname);
-                            $this->helper->output['buttons']['comment_in_forum']['text'] = $commentLinkHTML;
-                            $this->helper->output['buttons']['comment_in_forum']['target'] = $linkTarget;
-                        }
+				$vars  = '&view_override='.$view;
+				$vars .= ($this->params->get('overwrite_readmore',1)) ? '&readmore='.$readmore_catch.'&show_readmore='.$show_readmore : '';
 
-                    }
-                } elseif ($link_mode=="blog" || $link_mode=="always") {
-                    if ($blog_link_mode=="joomla") {
-                        //see if there are any page breaks
-                        $joomla_text = (isset($this->article->fulltext)) ? $this->article->fulltext : $this->article->text;
-                        $pagebreaks = substr_count($joomla_text, 'system-pagebreak');
-                        $query = ($pagebreaks) ? "&limitstart=$pagebreaks" : '';
-                        if ($article_access) {
-                            $discuss_link = $this->helper->getArticleUrl('discussion', $query);
-                        } else {
-                            $return_url = base64_encode($this->helper->getArticleUrl('discussion', $query));
-                            $discuss_link = JRoute::_('index.php?option=com_user&view=login&return='.$return_url);
-                        }
-                        $this->helper->output['buttons']['discuss']['href'] = 'javascript: void(0);';
-                        $this->helper->output['buttons']['discuss']['js']['onclick'] = 'JFusion.toggleDiscussionVisibility(1,\''.$discuss_link.'\');';
-                        $this->helper->output['buttons']['discuss']['target'] = '_self';
-                    } else {
-                        $this->helper->output['buttons']['discuss']['href'] = JFusionFunction::routeURL($JFusionForum->getThreadURL($threadinfo->threadid), $itemid, $this->jname);
-                        $this->helper->output['buttons']['discuss']['target'] = $linkTarget;
-                    }
+				$this->helper->output['buttons']['initiate']['js']['onclick'] = 'JFusion.confirmThreadAction('.$this->article->id.',\''.$dbtask.'\', \''.$vars.'\', \''.$this->helper->getArticleUrl().'\');';
+				$this->helper->output['buttons']['initiate']['text'] = JText::_($text);
+				$this->helper->output['buttons']['initiate']['target'] = '_self';
+			}
+		}
 
-                    $this->helper->output['buttons']['discuss']['text'] = $linkHTML;
+		if($view==$this->view() && $this->params->get('show_posts') && $this->params->get('show_refresh_link',1) && $threadinfo && $threadinfo->published) {
+			//class='jfusionRefreshLink'
+			$this->helper->output['buttons']['refresh']['href'] = 'javascript:void(0);';
+			$this->helper->output['buttons']['refresh']['js']['onclick'] = 'JFusion.refreshPosts();';
+			$this->helper->output['buttons']['refresh']['text'] = JText::_('REFRESH_POSTS');
+			$this->helper->output['buttons']['refresh']['target'] = $linkTarget;
+		}
 
-                    if ($this->params->get('enable_comment_in_forum_button',0)) {
-                        $commentLinkText = $this->params->get('comment_in_forum_link_text', JText::_('ADD_COMMENT'));
-                        $commentLinkHTML = ($this->params->get('comment_in_forum_link_type')=='image') ? '<img style="border:0;" src="'.$commentLinkText.'">' : $commentLinkText;
-                        $this->helper->output['buttons']['comment_in_forum']['href'] = JFusionFunction::routeURL($JFusionForum->getReplyURL($threadinfo->forumid, $threadinfo->threadid), $itemid, $this->jname);
-                        $this->helper->output['buttons']['comment_in_forum']['text'] = $commentLinkHTML;
-                        $this->helper->output['buttons']['comment_in_forum']['target'] = $linkTarget;
-                    }
-                }
-            }
+		//create the discuss this link
+		if ($this->helper->status || $this->manual) {
+			if ($link_mode != 'never') {
+				$JFusionForum = JFusionFactory::getForum($this->jname);
 
-            //show comments link
-            if ($view==$this->view() && $this->params->get('show_posts') && $this->params->get('show_toggle_posts_link',1)) {
-                $this->helper->output['buttons']['showreplies']['href'] = 'javascript: void(0);';
-                $this->helper->output['buttons']['showreplies']['js']['onclick'] = 'JFusion.toggleDiscussionVisibility();';
+				if ($view==$this->view()) {
+					if ($link_mode == 'article' || $link_mode == 'always') {
+						$this->helper->output['buttons']['discuss']['href'] = JFusionFunction::routeURL($JFusionForum->getThreadURL($threadinfo->threadid), $itemid, $this->jname);
+						$this->helper->output['buttons']['discuss']['text'] = $linkHTML;
+						$this->helper->output['buttons']['discuss']['target'] = $linkTarget;
 
-                $JSession = JFactory::getSession();
-                $show_replies = $JSession->get('jfusion.discussion.visibility', 0);
-                $text = (empty($show_replies)) ? 'SHOW_REPLIES' : 'HIDE_REPLIES';
+						if ($this->params->get('enable_comment_in_forum_button', 0)) {
+							$commentLinkText = $this->params->get('comment_in_forum_link_text', JText::_('ADD_COMMENT'));
+							$commentLinkHTML = ($this->params->get('comment_in_forum_link_type')=='image') ? '<img style="border:0;" src="'.$commentLinkText.'">' : $commentLinkText;
+							$this->helper->output['buttons']['comment_in_forum']['href'] = JFusionFunction::routeURL($JFusionForum->getReplyURL($threadinfo->forumid, $threadinfo->threadid), $itemid, $this->jname);
+							$this->helper->output['buttons']['comment_in_forum']['text'] = $commentLinkHTML;
+							$this->helper->output['buttons']['comment_in_forum']['target'] = $linkTarget;
+						}
 
-                $this->helper->output['buttons']['showreplies']['text'] = JText::_($text);
-                $this->helper->output['buttons']['showreplies']['target'] = '_self';
-            }
-        }
+					}
+				} elseif ($link_mode == 'blog' || $link_mode == 'always') {
+					if ($blog_link_mode == 'joomla') {
+						//see if there are any page breaks
+						$joomla_text = (isset($this->article->fulltext)) ? $this->article->fulltext : $this->article->text;
+						$pagebreaks = substr_count($joomla_text, 'system-pagebreak');
+						$query = ($pagebreaks) ? '&limitstart='.$pagebreaks : '';
+						if ($article_access) {
+							$discuss_link = $this->helper->getArticleUrl('discussion', $query);
+						} else {
+							$return_url = base64_encode($this->helper->getArticleUrl('discussion', $query));
+							$discuss_link = JRoute::_('index.php?option=com_user&view=login&return='.$return_url);
+						}
+						$this->helper->output['buttons']['discuss']['href'] = 'javascript: void(0);';
+						$this->helper->output['buttons']['discuss']['js']['onclick'] = 'JFusion.toggleDiscussionVisibility('.$this->article->id.', 1, \''.$discuss_link.'\');';
+						$this->helper->output['buttons']['discuss']['target'] = '_self';
+					} else {
+						$this->helper->output['buttons']['discuss']['href'] = JFusionFunction::routeURL($JFusionForum->getThreadURL($threadinfo->threadid), $itemid, $this->jname);
+						$this->helper->output['buttons']['discuss']['target'] = $linkTarget;
+					}
 
-        $this->helper->threadinfo = $threadinfo;
-        if ($innerhtml) {
-            $button_output = $this->helper->renderFile('default_buttons.php');
-        } else {
-            $button_output = <<<HTML
+					$this->helper->output['buttons']['discuss']['text'] = $linkHTML;
+
+					if ($this->params->get('enable_comment_in_forum_button',0)) {
+						$commentLinkText = $this->params->get('comment_in_forum_link_text', JText::_('ADD_COMMENT'));
+						$commentLinkHTML = ($this->params->get('comment_in_forum_link_type')=='image') ? '<img style="border:0;" src="'.$commentLinkText.'">' : $commentLinkText;
+						$this->helper->output['buttons']['comment_in_forum']['href'] = JFusionFunction::routeURL($JFusionForum->getReplyURL($threadinfo->forumid, $threadinfo->threadid), $itemid, $this->jname);
+						$this->helper->output['buttons']['comment_in_forum']['text'] = $commentLinkHTML;
+						$this->helper->output['buttons']['comment_in_forum']['target'] = $linkTarget;
+					}
+				}
+			}
+
+			//show comments link
+			if ($view==$this->view() && $this->params->get('show_posts') && $this->params->get('show_toggle_posts_link',1) && $threadinfo && $threadinfo->published) {
+				$this->helper->output['buttons']['showreplies']['href'] = 'javascript: void(0);';
+				$this->helper->output['buttons']['showreplies']['js']['onclick'] = 'JFusion.toggleDiscussionVisibility('.$this->article->id.');';
+
+				$JSession = JFactory::getSession();
+				$show_replies = $JSession->get('jfusion.discussion.visibility', 0);
+				$text = (empty($show_replies)) ? 'SHOW_REPLIES' : 'HIDE_REPLIES';
+
+				$this->helper->output['buttons']['showreplies']['text'] = JText::_($text);
+				$this->helper->output['buttons']['showreplies']['target'] = '_self';
+			}
+		}
+
+		if ($innerhtml) {
+			$button_output = $this->helper->renderFile('default_buttons.php');
+		} else {
+			$button_output = <<<HTML
                 <div class="jfusionclearfix" id="jfusionButtonArea{$this->article->id}">
                     {$this->helper->renderFile('default_buttons.php')}
                 </div>
                 <div class="jfusionclearfix jfusionButtonConfirmationBox" style="display: none;" id="jfusionButtonConfirmationBox{$this->article->id}">
                 </div>
 HTML;
-        }
-        return $button_output;
-    }
+		}
+		return $button_output;
+	}
 
-    /**
-     * @param $posts
-     *
-     * @return array|string
-     */
-    public function preparePosts(&$posts)
-    {
-        $this->helper->debug('Preparing posts output');
+	/**
+	 * @param $posts
+	 *
+	 * @return array|string
+	 */
+	public function preparePosts(&$posts)
+	{
+		$this->helper->debug('Preparing posts output');
 
-        //get required params
-        defined('_DATE_FORMAT_LC2') or define('_DATE_FORMAT_LC2','Y M d h:i:s A');
-        $date_format = $this->params->get('custom_date', _DATE_FORMAT_LC2);
-        $showdate = intval($this->params->get('show_date'));
-        $showuser = intval($this->params->get('show_user'));
-        $showavatar = $this->params->get('show_avatar');
-        $avatar_software = $this->params->get('avatar_software',false);
-        $resize_avatar = $this->params->get('avatar_keep_proportional', false);
-        $userlink = intval($this->params->get('user_link'));
-        $link_software = $this->params->get('userlink_software',false);
-        $userlink_custom = $this->params->get('userlink_custom',false);
-        $character_limit = (int) $this->params->get('character_limit');
-        $itemid = $this->params->get('itemid');
-        $JFusionPublic = JFusionFactory::getPublic($this->jname);
+		//get required params
+		defined('_DATE_FORMAT_LC2') or define('_DATE_FORMAT_LC2','Y M d h:i:s A');
+		$date_format = $this->params->get('custom_date', _DATE_FORMAT_LC2);
+		$showdate = intval($this->params->get('show_date'));
+		$showuser = intval($this->params->get('show_user'));
+		$showavatar = $this->params->get('show_avatar');
+		$avatar_software = $this->params->get('avatar_software',false);
+		$resize_avatar = $this->params->get('avatar_keep_proportional', false);
+		$userlink = intval($this->params->get('user_link'));
+		$link_software = $this->params->get('userlink_software',false);
+		$userlink_custom = $this->params->get('userlink_custom',false);
+		$character_limit = (int) $this->params->get('character_limit');
+		$itemid = $this->params->get('itemid');
+		$JFusionPublic = JFusionFactory::getPublic($this->jname);
 
-        $JFusionForum = JFusionFactory::getForum($this->jname);
-        $columns = $JFusionForum->getDiscussionColumns();
-        if (empty($columns)) return '';
+		$JFusionForum = JFusionFactory::getForum($this->jname);
+		$columns = $JFusionForum->getDiscussionColumns();
+		if (empty($columns)) return '';
 
-        $post_output = array();
-        for ($i=0; $i<count($posts); $i++)
-        {
-            $p = $posts[$i];
-            $userid = $p->{$columns->userid};
-            $username = ($this->params->get('display_name') && isset($p->{$columns->name})) ? $p->{$columns->name} : $p->{$columns->username};
-            $dateline = $p->{$columns->dateline};
-            $posttext = $p->{$columns->posttext};
-            $posttitle = $p->{$columns->posttitle};
-            $postid = $p->{$columns->postid};
-            $threadid = $p->{$columns->threadid};
-            $guest = $p->{$columns->guest};
-            $threadtitle = (isset($columns->threadtitle)) ? $p->{$columns->threadtitle} : '';
+		$post_output = array();
+		for ($i=0; $i<count($posts); $i++)
+		{
+			$p = $posts[$i];
+			$userid = $p->{$columns->userid};
+			$username = ($this->params->get('display_name') && isset($p->{$columns->name})) ? $p->{$columns->name} : $p->{$columns->username};
+			$dateline = $p->{$columns->dateline};
+			$posttext = $p->{$columns->posttext};
+			$posttitle = $p->{$columns->posttitle};
+			$postid = $p->{$columns->postid};
+			$threadid = $p->{$columns->threadid};
+			$guest = $p->{$columns->guest};
+			$threadtitle = (isset($columns->threadtitle)) ? $p->{$columns->threadtitle} : '';
 
-            $post_output[$i] = new stdClass();
-            $post_output[$i]->postid = $postid;
-            $post_output[$i]->guest = $guest;
+			$post_output[$i] = new stdClass();
+			$post_output[$i]->postid = $postid;
+			$post_output[$i]->guest = $guest;
 
-            //get Joomla id
-            $userlookup = JFusionFunction::lookupUser($JFusionForum->getJname(),$userid,false,$p->{$columns->username});
+			//get Joomla id
+			$userlookup = JFusionFunction::lookupUser($JFusionForum->getJname(),$userid,false,$p->{$columns->username});
 
-            //avatar
-            if ($showavatar){
-                if (!empty($avatar_software) && $avatar_software!='jfusion' && !empty($userlookup)) {
-                    $post_output[$i]->avatar_src = JFusionFunction::getAltAvatar($avatar_software, $userlookup->id);
-                } else {
-                    $post_output[$i]->avatar_src = $JFusionForum->getAvatar($userid);
-                }
+			//avatar
+			if ($showavatar){
+				if (!empty($avatar_software) && $avatar_software!='jfusion' && !empty($userlookup)) {
+					$post_output[$i]->avatar_src = JFusionFunction::getAltAvatar($avatar_software, $userlookup->id);
+				} else {
+					$post_output[$i]->avatar_src = $JFusionForum->getAvatar($userid);
+				}
 
-                if (empty($post_output[$i]->avatar_src)) {
-                    $post_output[$i]->avatar_src = JFusionFunction::getJoomlaURL().'components/com_jfusion/images/noavatar.png';
-                }
+				if (empty($post_output[$i]->avatar_src)) {
+					$post_output[$i]->avatar_src = JFusionFunction::getJoomlaURL().'components/com_jfusion/images/noavatar.png';
+				}
 
-                $size = ($resize_avatar) ? @getimagesize($post_output[$i]->avatar_src) : false;
-                $maxheight = $this->params->get('avatar_height',80);
-                $maxwidth = $this->params->get('avatar_width',60);
-                //size the avatar to fit inside the dimensions if larger
-                if ($size!==false && ($size[0] > $maxwidth || $size[1] > $maxheight)) {
-                    $wscale = $maxwidth/$size[0];
-                    $hscale = $maxheight/$size[1];
-                    $scale = min($hscale, $wscale);
-                    $post_output[$i]->avatar_width = floor($scale*$size[0]);
-                    $post_output[$i]->avatar_height = floor($scale*$size[1]);
-                } elseif ($size!==false) {
-                    //the avatar is within the limits
-                    $post_output[$i]->avatar_width = $size[0];
-                    $post_output[$i]->avatar_height = $size[1];
-                } else {
-                    //getimagesize failed
-                    $post_output[$i]->avatar_width = $maxwidth;
-                    $post_output[$i]->avatar_height = $maxheight;
-                }
-            } else {
-                $post_output[$i]->avatar_src = '';
-                $post_output[$i]->avatar_height = '';
-                $post_output[$i]->avatar_width = '';
-            }
+				$size = ($resize_avatar) ? @getimagesize($post_output[$i]->avatar_src) : false;
+				$maxheight = $this->params->get('avatar_height',80);
+				$maxwidth = $this->params->get('avatar_width',60);
+				//size the avatar to fit inside the dimensions if larger
+				if ($size!==false && ($size[0] > $maxwidth || $size[1] > $maxheight)) {
+					$wscale = $maxwidth/$size[0];
+					$hscale = $maxheight/$size[1];
+					$scale = min($hscale, $wscale);
+					$post_output[$i]->avatar_width = floor($scale*$size[0]);
+					$post_output[$i]->avatar_height = floor($scale*$size[1]);
+				} elseif ($size!==false) {
+					//the avatar is within the limits
+					$post_output[$i]->avatar_width = $size[0];
+					$post_output[$i]->avatar_height = $size[1];
+				} else {
+					//getimagesize failed
+					$post_output[$i]->avatar_width = $maxwidth;
+					$post_output[$i]->avatar_height = $maxheight;
+				}
+			} else {
+				$post_output[$i]->avatar_src = '';
+				$post_output[$i]->avatar_height = '';
+				$post_output[$i]->avatar_width = '';
+			}
 
-            //post title
-            $post_output[$i]->subject_url = JFusionFunction::routeURL($JFusionForum->getPostURL($threadid,$postid), $itemid);
-            if (!empty($posttitle)) {
-                $post_output[$i]->subject = $posttitle;
-            } elseif (!empty($threadtitle)) {
-                $post_output[$i]->subject = 'Re: '.$threadtitle;
-            } else {
-                $post_output[$i]->subject = JText::_('NO_SUBJECT');
-            }
+			//post title
+			$post_output[$i]->subject_url = JFusionFunction::routeURL($JFusionForum->getPostURL($threadid,$postid), $itemid);
+			if (!empty($posttitle)) {
+				$post_output[$i]->subject = $posttitle;
+			} elseif (!empty($threadtitle)) {
+				$post_output[$i]->subject = 'Re: '.$threadtitle;
+			} else {
+				$post_output[$i]->subject = JText::_('NO_SUBJECT');
+			}
 
-            //user info
-            if ($showuser) {
-                $post_output[$i]->username_url = '';
-                if ($userlink && empty($guest) && !empty($userlookup)) {
-                    if ($link_software=='custom' && !empty($userlink_custom)  && !empty($userlookup)) {
-                        $post_output[$i]->username_url = $userlink_custom.$userlookup->id;
-                    } else {
-                        $post_output[$i]->username_url = JFusionFunction::routeURL($JFusionForum->getProfileURL($userid, $username), $itemid);
-                    }
-                }
-                $post_output[$i]->username = $username;
-            } else {
-                $post_output[$i]->username = '';
-                $post_output[$i]->username_url  = '';
-            }
+			//user info
+			if ($showuser) {
+				$post_output[$i]->username_url = '';
+				if ($userlink && empty($guest) && !empty($userlookup)) {
+					if ($link_software=='custom' && !empty($userlink_custom)  && !empty($userlookup)) {
+						$post_output[$i]->username_url = $userlink_custom.$userlookup->id;
+					} else {
+						$post_output[$i]->username_url = JFusionFunction::routeURL($JFusionForum->getProfileURL($userid, $username), $itemid);
+					}
+				}
+				$post_output[$i]->username = $username;
+			} else {
+				$post_output[$i]->username = '';
+				$post_output[$i]->username_url  = '';
+			}
 
-            //post date
-            if ($showdate){
-                jimport('joomla.utilities.date');
-	            $JDate =  new JDate($dateline);
-	            $JDate->setTimezone(new DateTimeZone(JFusionFunction::getJoomlaTimezone()));
-                $post_output[$i]->date = $JDate->format($date_format, true);
-            } else {
-                $post_output[$i]->date = '';
-            }
+			//post date
+			if ($showdate){
+				jimport('joomla.utilities.date');
+				$JDate =  new JDate($dateline);
+				$JDate->setTimezone(new DateTimeZone(JFusionFunction::getJoomlaTimezone()));
+				$post_output[$i]->date = $JDate->format($date_format, true);
+			} else {
+				$post_output[$i]->date = '';
+			}
 
-            //post body
-            $post_output[$i]->text = $posttext;
-            $status = $JFusionPublic->prepareText($post_output[$i]->text,'joomla', $this->params, $p);
-            $original_text = '[quote="'.$username.'"]'."\n".$posttext."\n".'[/quote]';
-            $post_output[$i]->original_text = $original_text;
-            $JFusionPublic->prepareText($post_output[$i]->original_text, 'discuss', $this->params, $p);
+			//post body
+			$post_output[$i]->text = $posttext;
+			$status = $JFusionPublic->prepareText($post_output[$i]->text,'joomla', $this->params, $p);
+			$original_text = '[quote="'.$username.'"]'."\n".$posttext."\n".'[/quote]';
+			$post_output[$i]->original_text = $original_text;
+			$JFusionPublic->prepareText($post_output[$i]->original_text, 'discuss', $this->params, $p);
 
-            //apply the post body limit if there is one
-            if (!empty($character_limit) && empty($status['limit_applied']) && JString::strlen($post_output[$i]->text) > $character_limit) {
-                $post_output[$i]->text = JString::substr($post_output[$i]->text,0,$character_limit) . '...';
-            }
+			//apply the post body limit if there is one
+			if (!empty($character_limit) && empty($status['limit_applied']) && JString::strlen($post_output[$i]->text) > $character_limit) {
+				$post_output[$i]->text = JString::substr($post_output[$i]->text,0,$character_limit) . '...';
+			}
 
-            $toolbar = array();
-            if ($this->params->get('enable_quickreply')){
-                $JoomlaUser = JFactory::getUser();
-                if ($this->params->get('quickreply_allow_guests',0) || !$JoomlaUser->guest) {
-                    $toolbar[] = '<a href="javascript:void(0);" onclick="JFusion.quote('.$postid.');">'.JText::_('QUOTE').'</a>';
-                }
-            }
+			$toolbar = array();
+			if ($this->params->get('enable_quickreply')){
+				$JoomlaUser = JFactory::getUser();
+				if ($this->params->get('quickreply_allow_guests',0) || !$JoomlaUser->guest) {
+					$toolbar[] = '<a href="javascript:void(0);" onclick="JFusion.quote('.$postid.');">'.JText::_('QUOTE').'</a>';
+				}
+			}
 
-            if (!empty($toolbar)) {
-                $post_output[$i]->toolbar = '| ' . implode(' | ', $toolbar) . ' |';
-            } else {
-                $post_output[$i]->toolbar = '';
-            }
-        }
+			if (!empty($toolbar)) {
+				$post_output[$i]->toolbar = '| ' . implode(' | ', $toolbar) . ' |';
+			} else {
+				$post_output[$i]->toolbar = '';
+			}
+		}
 
-        return $post_output;
-    }
+		return $post_output;
+	}
 
 	/**
 	 * updatePagination
@@ -1488,76 +1478,45 @@ HTML;
 	 *
 	 * @return string
 	 */
-    public function updatePagination($xhtml = false)
-    {
-	    $this->updatePostCount($this->helper->getThreadInfo());
-
-	    $reply_count = $this->helper->reply_count;
-
-        $action_url = $this->helper->getArticleUrl('','',$xhtml);
-        $application = JFactory::getApplication() ;
-
-        $limit = (int) $application->getUserStateFromRequest( 'global.list.limit', 'limit_discuss', 5, 'int' );
-
-        //set $limitstart so that the created post is shown
-        if ($this->params->get('sort_posts','ASC') == 'ASC') {
-            $limitstart = floor(($reply_count - 1)/$limit) * $limit;
-        } else {
-            $limitstart = 0;
-        }
-
-        //keep pagination from changing limit to all
-        if ($limit == $reply_count) {
-            $reply_count--;
-        }
-
-        if ($reply_count && $reply_count > 5) {
-            $pageNav = new JFusionPagination($reply_count, $limitstart, $limit, '_discuss');
-
-            $pagination = '<form method="post" id="jfusionPaginationForm" name="jfusionPaginationForm" action="'.$action_url.'">';
-            $pagination .= '<input type="hidden" name="jumpto_discussion" value="1"/>';
-            $pagination .= $pageNav->getListFooter();
-            $pagination .= '</form>';
-        } else {
-            $pagination = '';
-        }
-
-	    return $pagination;
-    }
-
-    /*
-     * updatePosts
-     */
-    public function updatePosts()
-    {
-	    $ajax = $this->prepareAjaxResponce();
-        if ($this->helper->thread_status) {
-
-            $JFusionForum = JFusionFactory::getForum($this->jname);
-            $threadinfo = $this->helper->getThreadInfo();
-            $posts = $JFusionForum->getPosts($this->params, $threadinfo);
-            $this->helper->output = array();
-            $this->helper->output['posts'] = $this->preparePosts($posts);
-            $ajax->posts = $this->helper->renderFile('default_posts.php');
-	        $ajax->status = true;
-        } else {
-	        JFusionFunction::raiseError(JText::_('NOT_PUBLISHED'));
-        }
-	    $this->renderAjaxResponce($ajax);
-    }
-
-	/**
-	 * updatePostCount
-	 *
-	 * @param object $threadinfo
-     */
-	public function updatePostCount($threadinfo)
+	public function updatePagination($xhtml = false)
 	{
-		if (!empty($threadinfo)) {
-			$JFusionForum = JFusionFactory::getForum($this->jname);
-			$this->helper->reply_count = $JFusionForum->getReplyCount($threadinfo);
+		$reply_count = $this->helper->reply_count;
+
+		$action_url = $this->helper->getArticleUrl('','',$xhtml);
+		$application = JFactory::getApplication();
+
+		$limit = (int) $application->getUserStateFromRequest( 'global.list.limit_discuss', 'limit_discuss', 5, 'int' );
+		$limitstart = (int) $application->getUserStateFromRequest( 'global.list.limitstart_discuss', 'limitstart_discuss', 0, 'int' );
+
+		if ($reply_count && $reply_count > 5) {
+			$pageNav = new JFusionPagination($reply_count, $limitstart, $limit, '_discuss');
+
+			$pagination = '<form method="post" id="jfusionPaginationForm" name="jfusionPaginationForm" action="'.$action_url.'">';
+			$pagination .= $pageNav->getListFooter();
+			$pagination .= '</form>';
 		} else {
-			$this->helper->reply_count = 0;
+			$pagination = '';
 		}
+		return $pagination;
+	}
+
+	/*
+	 * updatePosts
+	 */
+	public function updatePosts()
+	{
+		$ajax = $this->prepareAjaxResponce();
+		if ($this->helper->status) {
+			$JFusionForum = JFusionFactory::getForum($this->jname);
+			$threadinfo = $this->helper->getThreadInfo();
+			$posts = $JFusionForum->getPosts($this->params, $threadinfo);
+			$this->helper->output = array();
+			$this->helper->output['posts'] = $this->preparePosts($posts);
+			$ajax->posts = $this->helper->renderFile('default_posts.php');
+			$ajax->status = true;
+		} else {
+			JFusionFunction::raiseError(JText::_('NOT_PUBLISHED'));
+		}
+		$this->renderAjaxResponce($ajax);
 	}
 }

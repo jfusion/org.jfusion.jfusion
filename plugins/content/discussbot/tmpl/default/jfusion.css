@@ -87,46 +87,6 @@
 	margin-right: 5px;
 }
 
-#jfusionMessage, #jfusionErrorMessage {
-	margin-left:40px;
-}
-
-.jfusionErrorMessage {
-	color: #c00; 
-	background: #E6C0C0 url(images/error.png) 4px center no-repeat;
-	border-top: 3px solid #DE7A7B; 
-	border-bottom: 3px solid #DE7A7B; 
-	width:99%;
-	margin-bottom:10px;
-	font-size: 12px;
-	font-weight:bold;
-	padding: 5px;
-}
-
-.jfusionLoadingMessage {
-	color: #c00;
-	background: #EFE7B8 url(images/loading.gif) 4px center no-repeat;
-	border-top: 3px solid #F0DC7E; 
-	border-bottom: 3px solid #F0DC7E;
-	width:99%;
-	margin-bottom:10px;
-	font-size: 12px;
-	font-weight:bold;
-	padding: 5px;
-}
-
-.jfusionSuccessMessage {
-	color: #0055BB;
-	background: #C3D2E5 url(images/success.png) 4px center no-repeat;
-	border-top: 3px solid #84A7DB; 
-	border-bottom: 3px solid #84A7DB; 
-	width:99%;
-	margin-bottom:10px;
-	font-size: 12px;
-	font-weight:bold;
-	padding: 5px;
-}
-
 .jfusionButtonConfirmationBox {
     color: #0055BB;
     background: #C3D2E5;
@@ -163,26 +123,6 @@
 .bbcode_quote_head, .bbcode_code_head {
     font-weight: bold;	
 }
-
-/* .jfusionclearfix {display: inline-block;}  /* for IE/Mac  */
-
-/*<!--[if IE]>
-* html .jfusionclearfix {
-	zoom: 1;
-	display: block;
-	height: 1%;
-}
-<![endif]-->
-
-
-.jfusionclearfix {
-   display: inline-block;
-}
- 
-html[xmlns] .jfusionclearfix {
-   display: block;
-}
-*/
 
 #jfusionPostPagination {
     height: auto;
