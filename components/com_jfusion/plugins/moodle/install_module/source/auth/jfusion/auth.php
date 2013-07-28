@@ -126,7 +126,7 @@ class auth_plugin_jfusion extends auth_plugin_base {
 		// if we come here, no active authentication methods succeeded (or returned false) so the user does not exist
 		// as far as Moodle is concerned.
 		// if Moodle is master, this is it, return
-		global $CFG;
+		global $CFG, $DB;
 		// back off if we have not enabled the plugin
 		if ($this->config->jf_enabled != 1) {
 			return false;
@@ -141,8 +141,12 @@ class auth_plugin_jfusion extends auth_plugin_base {
 		}
 		// So Moodle is slave and we have a local login, just call Joomla, with nodeid NOT set
 		$this->LoginJoomla($username, $password, false);
+		$user = $DB->get_record('user', array('username'=>$username, 'mnethostid'=>$CFG->mnet_localhost_id));
 		// now test if we have a valid user, the host should have created one
-        $user = get_record('user', 'username', $username, 'mnethostid', $CFG->mnet_localhost_id);
+		/**
+		 * function commented out, it do not exsist in moodle assueme it is replced by $DB
+		 * $user = get_record('user', 'username', $username, 'mnethostid', $CFG->mnet_localhost_id);
+		 */
 		if ($user) {
 			$valid = validate_internal_user_password($user, $password);
 			if ($valid){
