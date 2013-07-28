@@ -116,7 +116,7 @@ function com_install() {
 	      username varchar(255),
 	      email varchar(255),
 	      action varchar(255),
-	      message varchar(255),
+	      message text,
 	      data longblob,
 	      PRIMARY KEY  (id)
 	    );';
@@ -454,6 +454,12 @@ function com_install() {
 					}
 				}
 			}
+		}
+
+		$query = 'ALTER TABLE  #__jfusion_sync_details CHANGE  `message`  `message` TEXT';
+		$db->setQuery($query);
+		if(!$db->query()) {
+			echo $db->stderr() . '<br />';
 		}
 
 		/****
