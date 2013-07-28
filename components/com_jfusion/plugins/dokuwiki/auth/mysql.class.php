@@ -173,16 +173,16 @@ if (!class_exists('Jfusion_DokuWiki_Mysql')) {
 		 * The dataset update will be rejected if the user name should be changed
 		 * to an already existing one.
 		 *
-		 * The password must be provides unencrypted. Pasword cryption is done
+		 * The password must be provides unencrypted. Password cryption is done
 		 * automatically if configured.
 		 *
 		 * If one or more groups could't be updated, an error would be set. In
 		 * this case the dataset might already be changed and we can't rollback
-		 * the changes. Transactions would be really usefull here.
+		 * the changes. Transactions would be really use full here.
 		 *
 		 * modifyUser() may be called without SQL statements defined that are
 		 * needed to change group membership (for example if only the user profile
-		 * should be modified). In this case we asure that we don't touch groups
+		 * should be modified). In this case we assured that we don't touch groups
 		 * even $changes['grps'] is set by mistake.
 		 *
 		 * @author  Chris Smith <chris@jalakai.co.uk>
@@ -586,7 +586,7 @@ if (!class_exists('Jfusion_DokuWiki_Mysql')) {
 		 * Updates the user info in the database
 		 *
 		 * Update a user data structure in the database according changes
-		 * given in an array. The user name can only be changes if it didn't
+		 * given in an array. The user name can only be changes if it did not
 		 * exists already. If the new user name exists the update procedure
 		 * will be aborted. The database keeps unchanged.
 		 *
@@ -784,7 +784,7 @@ if (!class_exists('Jfusion_DokuWiki_Mysql')) {
 		 *
 		 * MySQL V3 is not able to handle transactions with COMMIT/ROLLBACK
 		 * so that this functionality is simulated by this function. Nevertheless
-		 * it is not as powerful as transactions, it is a good compromise in safty.
+		 * it is not as powerful as transactions, it is a good compromise in safety.
 		 *
 		 * @author Matthias Grimm <matthiasgrimm@users.sourceforge.net>
 		 *
@@ -913,7 +913,7 @@ if (!class_exists('Jfusion_DokuWiki_Mysql')) {
 		 * use this function to access plugin configuration variables
 		 *
 		 * @param string $setting the setting to access
-		 * @param mixed  $notset  what to return if the setting is not available
+		 * @param mixed $notset  what to return if the setting is not available
 		 * @return mixed
 		 */
 		function getConf($setting, $notset=false){

@@ -263,8 +263,6 @@ class plgUserJfusion extends JPlugin
 				        if (!empty($JoomlaSession['error'])) {
 					        //no Joomla session could be created -> deny login
 					        JFusionFunction::raiseNotices($JoomlaSession['error'], 'joomla_int: '.JText::_('SESSION') . ' ' . JText::_('CREATE'));
-					        //hide the default Joomla login failure message
-					        JError::setErrorHandling(E_WARNING, 'ignore');
 					        $success = -1;
 				        } else {
 					        //make sure Joomla salt is Joomla-compatible while we have the clear password
@@ -297,14 +295,10 @@ class plgUserJfusion extends JPlugin
 							if (!empty($userinfo->block)) {
 								$jfusionDebug['error'][] = JText::_('FUSION_BLOCKED_USER');
 								JFusionFunction::raiseWarning(JText::_('FUSION_BLOCKED_USER'));
-								//hide the default Joomla login failure message
-								JError::setErrorHandling(E_WARNING, 'ignore');
 								$success = -1;
 							} else {
 								$jfusionDebug['error'][] = JText::_('FUSION_INACTIVE_USER');
 								JFusionFunction::raiseWarning(JText::_('FUSION_INACTIVE_USER'));
-								//hide the default Joomla login failure message
-								JError::setErrorHandling(E_WARNING, 'ignore');
 								$success = -1;
 							}
 						} else {
@@ -317,8 +311,6 @@ class plgUserJfusion extends JPlugin
 									$jfusionDebug['joomla_int ' . JText::_('USER') . ' ' . JText::_('UPDATE') . ' ' . JText::_('DEBUG') ] = $JoomlaUser['debug'];
 									$jfusionDebug['joomla_int ' . JText::_('USER') . ' ' . JText::_('UPDATE') . ' ' . JText::_('ERROR') ] = $JoomlaUser['error'];
 									JFusionFunction::raiseNotices($JoomlaUser['error'], 'joomla_int: '.JText::_('USER') . ' ' . JText::_('UPDATE'));
-									//hide the default Joomla login failure message
-									JError::setErrorHandling(E_WARNING, 'ignore');
 									$success = -1;
 								} else {
 									$jfusionDebug['joomla_int ' . JText::_('USER') . ' ' . JText::_('UPDATE') ] = $JoomlaUser['debug'];
@@ -335,8 +327,6 @@ class plgUserJfusion extends JPlugin
 											$jfusionDebug['joomla_int ' . JText::_('SESSION') . ' ' . JText::_('ERROR') ] = $JoomlaSession['error'];
 											//no Joomla session could be created -> deny login
 											JFusionFunction::raiseNotices($JoomlaSession['error'], 'joomla_int: '.JText::_('SESSION') . ' ' . JText::_('CREATE'));
-											//hide the default Joomla login failure message
-											JError::setErrorHandling(E_WARNING, 'ignore');
 											$success = -1;
 										} else {
 											$jfusionDebug['joomla_int ' . JText::_('SESSION') ] = $JoomlaSession['debug'];
@@ -360,9 +350,6 @@ class plgUserJfusion extends JPlugin
 										//report the error back
 										JFusionFunction::raiseNotices($MasterSession['error'], $master->name.': '.JText::_('SESSION') . ' ' . JText::_('CREATE'));
 										if ($master->name == 'joomla_int') {
-											//we can not tolerate Joomla session failures
-											//hide the default Joomla login failure message
-											JError::setErrorHandling(E_WARNING, 'ignore');
 											$success = -1;
 										}
 									} else {

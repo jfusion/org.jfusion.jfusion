@@ -110,7 +110,7 @@ if (!class_exists('Jfusion_PassHash')) {
 		/**
 		 * Initialize the passed variable with a salt if needed.
 		 *
-		 * If $salt is not null, the value is kept, but the lenght restriction is
+		 * If $salt is not null, the value is kept, but the length restriction is
 		 * applied (unless, $cut is false).
 		 *
 		 * @param string &$salt The salt, pass null if you want one generated
@@ -120,7 +120,7 @@ if (!class_exists('Jfusion_PassHash')) {
 		public function init_salt(&$salt, $len = 32, $cut = true) {
 			if(is_null($salt)) {
 				$salt = $this->gen_salt($len);
-				$cut  = true; // for new hashes we alway apply length restriction
+				$cut  = true; // for new hashes we always apply length restriction
 			}
 			if(strlen($salt) > $len && $cut) $salt = substr($salt, 0, $len);
 		}
