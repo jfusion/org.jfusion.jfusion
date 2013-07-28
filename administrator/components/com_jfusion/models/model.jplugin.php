@@ -1032,6 +1032,8 @@ class JFusionJplugin
 					    //store the username passed into this to prevent the user plugin from attempting to recreate users
 					    $instance->set('original_username', $userinfo->username);
 					    // save the user
+					    global $JFusionActive;
+					    $JFusionActive = 1;
 					    $instance->save(false);
 
 					    $createdUser = $instance->getProperties();

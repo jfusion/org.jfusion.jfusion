@@ -708,9 +708,9 @@ class plgUserJfusion extends JPlugin
                 //update the jfusion_users_plugin table
                 JFusionFunction::updateLookup($SlaveUser['userinfo'], $JoomlaUser->id, $slave->name);
             }
+	        //check to see if the Joomla database is still connected in case the plugin messed it up
+	        JFusionFunction::reconnectJoomlaDb();
         }
-        //check to see if the Joomla database is still connected in case the plugin messed it up
-        JFusionFunction::reconnectJoomlaDb();
         if ($Itemid_backup!=0) {
 	        //reset the global $Itemid so that modules are not repeated
 	        global $Itemid;
