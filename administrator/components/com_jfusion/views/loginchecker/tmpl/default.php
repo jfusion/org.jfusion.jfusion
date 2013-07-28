@@ -37,50 +37,50 @@ JFusionFunctionAdmin::displayDonate();
 	        <tbody>
 		        <tr>
 			        <td width="200px">
-	                    <?php echo JText::_('USERNAME'); ?>
+				        <label for="check_usernam"><?php echo JText::_('USERNAME'); ?></label>
 					</td>
 					<td>
-					    <input type="text" name="check_username" size="40"/>
+					    <input id="check_usernam" type="text" name="check_username" size="40"/>
 					</td>
 				</tr>
 				<tr>
 					<td width="100px">
-					    <?php echo JText::_('PASSWORD'); ?>
+						<label for="check_password"><?php echo JText::_('PASSWORD'); ?></label>
 					</td>
 					<td>
-					    <input type="password" name="check_password" size="40"/>
+					    <input id="check_password" type="password" name="check_password" size="40"/>
 					</td>
 				</tr>
 				<tr>
 					<td width="100px">
-					    <?php echo JText::_('DEBUG') . ' ' . JText::_('REMEMBER_ME'); ?>
+						<label for="remember"><?php echo JText::_('DEBUG') . ' ' . JText::_('REMEMBER_ME'); ?></label>
 					</td>
 					<td>
-					    <input type="checkbox" name="remember" value="1" alt="Debug Remember Me" />
+					    <input id="remember" type="checkbox" name="remember" value="1" alt="Debug Remember Me" />
 					</td>
 				</tr>
 				<tr>
 					<td width="100px">
-					    <?php echo JText::_('SHOW_UNSENSORED_DATA'); ?>
+						<label for="show_unsensored"><?php echo JText::_('SHOW_UNSENSORED_DATA'); ?></label>
 					</td>
 					<td>
-					    <input type="checkbox" name="show_unsensored" value="1" alt="Show Uncensored Data" />
+					    <input id="show_unsensored" type="checkbox" name="show_unsensored" value="1" alt="Show Uncensored Data" />
 					</td>
 				</tr>
 				<tr>
 					<td width="100px">
-					    <?php echo JText::_('SKIP_PASSWORD_CHECK'); ?>
+						<label for="skip_password_check"><?php echo JText::_('SKIP_PASSWORD_CHECK'); ?></label>
 					</td>
 					<td>
-					    <input type="checkbox" name="skip_password_check" value="1" alt="Skip Password Check" />
+					    <input id="skip_password_check" type="checkbox" name="skip_password_check" value="1" alt="Skip Password Check" />
 					</td>
 				</tr>
 				<tr>
 					<td width="100px">
-	                    <?php echo JText::_('AUTO_OVERWITE_CONFLICTS'); ?>
+						<label for="overwrite"><?php echo JText::_('AUTO_OVERWITE_CONFLICTS'); ?></label>
 					</td>
 					<td>
-	                    <input type="checkbox" name="overwrite" value="1" alt="Auto Overwite Conflicts" />
+	                    <input id="overwrite" type="checkbox" name="overwrite" value="1" alt="Auto Overwite Conflicts" />
 					</td>
 	            </tr>
 	        <tbody>

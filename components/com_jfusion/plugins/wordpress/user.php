@@ -426,7 +426,7 @@ class JFusionUser_wordpress extends JFusionUser {
 		    $params = JFusionFactory::getParams($this->getJname());
 		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 		    if (empty($usergroups)) {
-			    throw new Exception(JText::_('USERGROUP_MISSING'));
+			    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 		    } else {
 			    /**
 			     * @ignore
@@ -536,7 +536,7 @@ class JFusionUser_wordpress extends JFusionUser {
         $status = array('error' => array(),'debug' => array());
 	    try {
 		    if (!is_object($userinfo)) {
-			    throw new Exception(JText::_('NO_USER_DATA_FOUND'));
+			    throw new RuntimeException(JText::_('NO_USER_DATA_FOUND'));
 		    }
 
 		    $db = JFusionFactory::getDatabase($this->getJname());
@@ -628,7 +628,7 @@ class JFusionUser_wordpress extends JFusionUser {
 	    try {
 		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 		    if (empty($usergroups)) {
-			    throw new Exception(JText::_('USERGROUP_MISSING'));
+			    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 		    } else {
 			    $db = JFusionFactory::getDatabase($this->getJname());
 

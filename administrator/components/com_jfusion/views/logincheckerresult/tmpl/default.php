@@ -66,9 +66,9 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DI
 	                    </td>
 	                    <td>
 	                        <h1>
-	                            <b>
+	                            <strong>
 									<?php echo $title; ?>
-	                            </b>
+	                            </strong>
 	                        </h1>
 	                    </td>
 	                </tr>
@@ -88,9 +88,9 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DI
 	                <table style="width:100%">
 	                    <tr style="height:30px">
 	                        <td ALIGN="center" colspan="2" bgcolor="#D6F2FF">
-	                            <b>
+	                            <strong>
 									<?php echo $title; ?>
-	                            </b>
+	                            </strong>
 	                        </td>
 	                    </tr>
 						<?php
@@ -103,9 +103,9 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DI
 	                            </td>
 	                            <td style="background-color:#d9f9e2;">
 	                                <h1>
-	                                    <b>
+	                                    <strong>
 											<?php echo $title; ?>
-	                                    </b>
+	                                    </strong>
 	                                </h1>
 	                            </td>
 	                        </tr>
@@ -119,9 +119,9 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DI
 	                            </td>
 	                            <td style="background-color:#f9ded9;">
 	                                <h1>
-	                                    <b>
+	                                    <strong>
 											<?php echo $title; ?>
-	                                    </b>
+	                                    </strong>
 	                                </h1>
 	                            </td>
 	                        </tr>
@@ -145,9 +145,9 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DI
 	                    </td>
 	                    <td>
 	                        <h1>
-	                            <b>
+	                            <strong>
 									<?php echo $title; ?>
-	                            </b>
+	                            </strong>
 	                        </h1>
 	                    </td>
 	                </tr>
@@ -175,6 +175,7 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DI
 			}
 		}
 		?>
-	    <textarea rows="25" class="dumparea"><?php echo $debug ?></textarea>
+		<label for="debug"><?php echo JText::_('JFUSION').' '.JText::_('DEBUG'); ?></label>
+	    <textarea id="debug" rows="25" class="dumparea"><?php echo $debug ?></textarea>
 	</div>
 </div>

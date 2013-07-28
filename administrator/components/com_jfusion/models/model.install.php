@@ -486,7 +486,7 @@ class JFusionPluginInstaller extends JObject
 				    $success = $jname . ': ' . $result;
 			    }
 			    if (!$success) {
-				    throw new Exception(JText::_('PLUGIN') . ' ' .$jname .' ' . JText::_('UNINSTALL') . ' ' . JText::_('FAILED') . ': ' . $reason);
+				    throw new RuntimeException(JText::_('PLUGIN') . ' ' .$jname .' ' . JText::_('UNINSTALL') . ' ' . JText::_('FAILED') . ': ' . $reason);
 			    }
 		    }
 		    $db = JFactory::getDBO();
@@ -511,7 +511,7 @@ class JFusionPluginInstaller extends JObject
 
 		    $dir = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname;
 		    if (!$jname || !JFolder::exists($dir)) {
-			    throw new Exception(JText::_('UNINSTALL_ERROR_PATH'));
+			    throw new RuntimeException(JText::_('UNINSTALL_ERROR_PATH'));
 		    } else {
 			    /**
 			     * ---------------------------------------------------------------------------------------------
@@ -521,7 +521,7 @@ class JFusionPluginInstaller extends JObject
 			    // Get the extension manifest object
 			    $manifest = $this->_getManifest($dir);
 			    if (is_null($manifest)) {
-				    throw new Exception(JText::_('INSTALL_NOT_VALID_PLUGIN'));
+				    throw new RuntimeException(JText::_('INSTALL_NOT_VALID_PLUGIN'));
 			    } else {
 				    $this->manifest = $manifest;
 
@@ -538,7 +538,7 @@ class JFusionPluginInstaller extends JObject
 
 				    // remove files
 				    if (!JFolder::delete($dir)) {
-					    throw new Exception(JText::_('UNINSTALL_ERROR_DELETE'));
+					    throw new RuntimeException(JText::_('UNINSTALL_ERROR_DELETE'));
 				    } else {
 					    //return success
 					    $msg = JText::_('PLUGIN') . ' ' .$jname .' ' . JText::_('UNINSTALL') . ': ' . JText::_('SUCCESS');

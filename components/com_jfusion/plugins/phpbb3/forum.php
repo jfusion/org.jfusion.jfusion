@@ -749,7 +749,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 				$userinfo->userid = 1;
 
 				if(empty($userinfo->username)) {
-					throw new Exception(JTEXT::_('GUEST_FIELDS_MISSING'));
+					throw new RuntimeException(JTEXT::_('GUEST_FIELDS_MISSING'));
 				} else {
 					$db = JFusionFactory::getDatabase($this->getJname());
 					$user = JFusionFactory::getUser($this->getJname());
@@ -763,7 +763,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 					$db->setQuery($query);
 					$result = $db->loadResult();
 					if(!empty($result)) {
-						throw new Exception(JTEXT::_('USERNAME_IN_USE'));
+						throw new RuntimeException(JTEXT::_('USERNAME_IN_USE'));
 					}
 				}
 			}

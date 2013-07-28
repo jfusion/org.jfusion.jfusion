@@ -35,7 +35,7 @@ class jfusionViewplugineditor extends JViewLegacy
      *
      * @param string $tpl template name
      *
-     * @throws Exception
+     * @throws RuntimeException
      * @return mixed html output of view
      */
     function display($tpl = null)
@@ -79,7 +79,7 @@ class jfusionViewplugineditor extends JViewLegacy
             //render view
             parent::display($tpl);
         } else {
-	        throw new Exception(JText::_('NONE_SELECTED'));
+	        throw new RuntimeException(JText::_('NONE_SELECTED'));
         }
     }
 }

@@ -1293,7 +1293,7 @@ class JFusionFunction
 	 * @param string $table  table that we will be looking at
 	 * @param string $field  field that we will be looking at
 	 *
-	 * @throws Exception
+	 * @throws RuntimeException
 	 * @return bool|string
 	 */
     public static function encodeDBString($string, $jname, $table, $field) {
@@ -1322,7 +1322,7 @@ class JFusionFunction
                 	//do nothing
                     break;
                 default:
-	                throw new Exception('JFusion Encoding support missing: '.$charset);
+	                throw new RuntimeException('JFusion Encoding support missing: '.$charset);
                     break;
             }
             if (isset($encoding)) {
@@ -1332,12 +1332,12 @@ class JFusionFunction
 	            } else if (function_exists('mb_convert_encoding')) {
                     $converted = mb_convert_encoding($string, $encoding, 'utf-8');
                 } else {
-		            throw new Exception('JFusion: missing iconv or mb_convert_encoding');
+		            throw new RuntimeException('JFusion: missing iconv or mb_convert_encoding');
                 }
                 if ($converted !== false) {
                 	$string = $converted;
                 } else {
-	                throw new Exception('JFusion Encoding failed '.$charset);
+	                throw new RuntimeException('JFusion Encoding failed '.$charset);
                 }
             }
         }
@@ -1585,7 +1585,7 @@ class JFusionFunction
                 } else {
                     $return = false;
                 }
-            } catch(Exception $e) {
+            } catch (Exception $e) {
                 $return = false;
             }
         }
@@ -1658,23 +1658,23 @@ class JFusionFunction
 	}
 
 	/**
-	 * @param string|Exception $msg
+	 * @param string|RuntimeException $msg
 	 */
 	public static function raiseMessage($msg) {
 		$app = JFactory::getApplication();
-		if ($msg instanceof Exception) {
+		if ($msg instanceof RuntimeException) {
 			$msg = $msg->getMessage();
 		}
 		$app->enqueueMessage($msg,'message');
 	}
 
 	/**
-	 * @param string|Exception $msg
+	 * @param string|RuntimeException $msg
 	 * @param string           $jname
 	 */
 	public static function raiseNotice($msg, $jname='') {
 		$app = JFactory::getApplication();
-		if ($msg instanceof Exception) {
+		if ($msg instanceof RuntimeException) {
 			$msg = $msg->getMessage();
 		}
 		if (!empty($jname)) {
@@ -1684,12 +1684,12 @@ class JFusionFunction
 	}
 
 	/**
-	 * @param string|Exception $msg
+	 * @param string|RuntimeException $msg
 	 * @param string           $jname
 	 */
 	public static function raiseWarning($msg, $jname='') {
 		$app = JFactory::getApplication();
-		if ($msg instanceof Exception) {
+		if ($msg instanceof RuntimeException) {
 			$msg = $msg->getMessage();
 		}
 		if (!empty($jname)) {
@@ -1699,12 +1699,12 @@ class JFusionFunction
 	}
 
 	/**
-	 * @param string|Exception $msg
+	 * @param string|RuntimeException $msg
 	 * @param string           $jname
 	 */
 	public static function raiseError($msg, $jname='') {
 		$app = JFactory::getApplication();
-		if ($msg instanceof Exception) {
+		if ($msg instanceof RuntimeException) {
 			$msg = $msg->getMessage();
 		}
 		if (!empty($jname)) {

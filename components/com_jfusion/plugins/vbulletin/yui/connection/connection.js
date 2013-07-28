@@ -405,7 +405,7 @@ YAHOO.util.Connect =
 			//  Object literal with http and tId properties
 			obj = { conn:http, tId:transactionId };
 		}
-		catch(e)
+		catch (e)
 		{
 			for(var i=0; i<this._msxml_progid.length; ++i){
 				try
@@ -416,7 +416,7 @@ YAHOO.util.Connect =
 					obj = { conn:http, tId:transactionId };
 					break;
 				}
-				catch(e2){}
+				catch (e2){}
 			}
 		}
 		finally
@@ -454,7 +454,7 @@ YAHOO.util.Connect =
 				this._transaction_id++;
 			}
 		}
-		catch(e){}
+		catch (e){}
 		finally
 		{
 			return o;
@@ -668,7 +668,7 @@ YAHOO.util.Connect =
 				httpStatus = 13030;
 			}
 		}
-		catch(e){
+		catch (e){
 
 			 // 13030 is a custom code to indicate the condition -- in Mozilla/FF --
 			 // when the XHR object's status and statusText properties are
@@ -770,7 +770,7 @@ YAHOO.util.Connect =
 				}
 			}
 		}
-		catch(e){}
+		catch (e){}
 
 		obj.tId = o.tId;
 		// Normalize IE's response to HTTP 204 when Win error 1223.
@@ -1232,7 +1232,7 @@ YAHOO.util.Connect =
 				obj.responseText = io.contentWindow.document.body?io.contentWindow.document.body.innerHTML:io.contentWindow.document.documentElement.textContent;
 				obj.responseXML = io.contentWindow.document.XMLDocument?io.contentWindow.document.XMLDocument:io.contentWindow.document;
 			}
-			catch(e){}
+			catch (e){}
 
 			if(callback && callback.upload){
 				if(!callback.scope){

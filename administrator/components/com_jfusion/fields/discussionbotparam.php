@@ -64,12 +64,12 @@ class JFormFieldDiscussionbotparam extends JFormField
 				$db->setQuery( $query );
 				$enabled = $jdb->loadResult();
 				if (empty($enabled)) {
-					throw new Exception(JText::_('K2_NOT_AVAILABLE'));
+					throw new RuntimeException(JText::_('K2_NOT_AVAILABLE'));
 				}
 			}
 
 			if(empty($jname)) {
-				throw new Exception(JText::_('NO_PLUGIN_SELECT'));
+				throw new RuntimeException(JText::_('NO_PLUGIN_SELECT'));
 			} else {
 				JHtml::_('behavior.framework');
 

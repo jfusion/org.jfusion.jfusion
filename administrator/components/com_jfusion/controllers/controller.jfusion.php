@@ -181,7 +181,7 @@ class JFusionController extends JControllerLegacy
 	    $action = JFactory::getApplication()->input->get('action');
 	    try {
 		    if (empty($post)) {
-			    throw new Exception(JText::_('SAVE_FAILURE'));
+			    throw new RuntimeException(JText::_('SAVE_FAILURE'));
 		    }
 	        //check for trailing slash in URL, in order for us not to worry about it later
 	        if (substr($post['source_url'], -1) == '/') {
@@ -201,7 +201,7 @@ class JFusionController extends JControllerLegacy
 	        }
 
 		    if (!JFusionFunctionAdmin::saveParameters($jname, $post)) {
-			    throw new Exception(JText::_('SAVE_FAILURE'));
+			    throw new RuntimeException(JText::_('SAVE_FAILURE'));
 		    } else {
 			    //update the status field
 			    $JFusionPlugin = JFusionFactory::getAdmin($jname);
@@ -211,7 +211,7 @@ class JFusionController extends JControllerLegacy
 			    $db->setQuery($query);
 			    $db->execute();
 			    if (empty($config_status['config'])) {
-				    throw new Exception($config_status['message']);
+				    throw new RuntimeException($config_status['message']);
 			    } else {
 				    $msg = $jname . ': ' . JText::_('SAVE_SUCCESS');
 				    $msgType = 'message';
@@ -371,11 +371,11 @@ class JFusionController extends JControllerLegacy
 			    //initialise the slave data array
 			    $slave_data = array();
 			    if (empty($slaves)) {
-				    throw new Exception(JText::_('SYNC_NODATA'));
+				    throw new RuntimeException(JText::_('SYNC_NODATA'));
 			    } else {
 				    //lets find out which slaves need to be imported into the Master
 				    foreach ($slaves as $jname => $slave) {
-					    if ($slave['perform_sync']) {
+					    if ($slave['perform_sync'] == $jname) {
 						    $temp_data = array();
 						    $temp_data['jname'] = $jname;
 						    $JFusionPlugin = JFusionFactory::getAdmin($jname);
@@ -407,7 +407,7 @@ class JFusionController extends JControllerLegacy
 				    JFusionUsersync::syncExecute($syncdata, $action, 0, 0);
 			    }
 		    } else {
-			    throw new Exception(JText::_('SYNC_CANNOT_START'));
+			    throw new RuntimeException(JText::_('SYNC_CANNOT_START'));
 		    }
 	    } catch (Exception $e) {
 		    JFusionFunction::raiseError($e);
@@ -496,10 +496,10 @@ class JFusionController extends JControllerLegacy
 					    $result['new_jname'] =  $new_jname;
 				    }
 			    } else {
-				    throw new Exception(JText::_('CANT_COPY'));
+				    throw new RuntimeException(JText::_('CANT_COPY'));
 			    }
 		    } else {
-				throw new Exception(JText::_('NONE_SELECTED'));
+				throw new RuntimeException(JText::_('NONE_SELECTED'));
 		    }
 	    } catch (Exception $e) {
 		    $result['status'] = false;
@@ -699,7 +699,7 @@ JS;
 
 	            try {
 		            $db->execute();
-	            } catch (RuntimeException $e) {
+	            } catch (Exception $e) {
 		            JFusionFunction::raiseError($e);
 		            $result['status'] = false;
 	            }
@@ -761,13 +761,13 @@ JS;
 				    default:
 					    $error = JText::_('UNKNOWN_UPLOAD_ERROR');
 			    }
-			    throw new Exception( JText::_('ERROR').': '.$error);
+			    throw new RuntimeException( JText::_('ERROR').': '.$error);
 		    } else {
 			    $filename = $file['tmp_name'];
 			    $xml = JFusionFunction::getXml($filename);
 		    }
 		    if(!$xml) {
-			    throw new Exception(JText::_('ERROR_LOADING_FILE').': '.$filename);
+			    throw new RuntimeException(JText::_('ERROR_LOADING_FILE').': '.$filename);
 		    } else {
 			    /**
 			     * @ignore
@@ -786,7 +786,7 @@ JS;
 			    }
 
 			    if (!$info || !$config) {
-				    throw new Exception(JText::_('ERROR_FILE_SYNTAX').': '.$file['type']);
+				    throw new RuntimeException(JText::_('ERROR_FILE_SYNTAX').': '.$file['type']);
 			    } else {
 				    $original_name = (string)$info->attributes('original_name');
 				    $db = JFactory::getDBO();
@@ -823,7 +823,7 @@ JS;
 						    if( !empty($database_prefix) ) $conf['database_prefix'] = $database_prefix;
 
 						    if (!JFusionFunctionAdmin::saveParameters($jname, $conf)) {
-							    throw new Exception(JText::_('SAVE_FAILURE'));
+							    throw new RuntimeException(JText::_('SAVE_FAILURE'));
 						    } else {
 							    //update the status field
 							    $JFusionPlugin = JFusionFactory::getAdmin($jname);
@@ -833,14 +833,14 @@ JS;
 							    $db->setQuery($query);
 							    $db->execute();
 							    if (empty($config_status['config'])) {
-								    throw new Exception($config_status['message']);
+								    throw new RuntimeException($config_status['message']);
 							    }
 						    }
 					    } else {
-						    throw new Exception(JText::_('PLUGIN_DONT_MATCH_XMLFILE'));
+						    throw new RuntimeException(JText::_('PLUGIN_DONT_MATCH_XMLFILE'));
 					    }
 				    } else {
-					    throw new Exception(JText::_('PLUGIN_NOT_FOUNED'));
+					    throw new RuntimeException(JText::_('PLUGIN_NOT_FOUNED'));
 				    }
 			    }
 		    }

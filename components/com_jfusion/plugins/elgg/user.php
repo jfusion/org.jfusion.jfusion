@@ -246,7 +246,7 @@ class JFusionUser_elgg extends JFusionUser {
 	        $params = JFusionFactory::getParams($this->getJname());
 	        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 	        if (empty($usergroups)) {
-		        throw new Exception(JText::_('USERGROUP_MISSING'));
+		        throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 	        } else {
 	            $usergroup = $usergroups[0];
 	            $username_clean = $this->filterUsername($userinfo->username);

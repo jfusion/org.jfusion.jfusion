@@ -61,21 +61,30 @@ if ($wrapper_scroll=='hidden') {
 } else {
 	$scroll = 'auto';
 }
+$pageclass_sfx = $this->params->get('pageclass_sfx','');
+
+if($this->params->get('wrapper_autoheight', 1)) {
+	$onload = 'JFusion.adjustMyFrameHeight();';
+} else {
+	$onload = '';
+}
+$wrapper_width = $this->params->get('wrapper_width', '100%');
+$wrapper_height = $this->params->get('wrapper_height', '500');
+
+$oldbrowser = JText::_('OLD_BROWSER');
+$html =<<<HTML
+	<div class="contentpane{$pageclass_sfx}">
+		<iframe scrolling="{$scroll}"
+			onload="{$onload}"
+			id="jfusioniframe" name="iframe" src="{$this->url}"
+			width="{$wrapper_width}"
+			height="{$wrapper_height}"
+			style="vertical-align:top; border-style:none; overflow:{$wrapper_scroll};" class="wrapper">
+			{$oldbrowser}
+		</iframe>
+	</div>
+HTML;
+
+echo $html;
 ?>
-<div class="contentpane<?php echo $this->params->get('pageclass_sfx','')?>">
-	<iframe scrolling="<?php echo $scroll; ?>"
-		<?php if($this->params->get('wrapper_autoheight', 1)) { ?>
-			onload="JFusion.adjustMyFrameHeight();"
-		<?php }?>
-		id="jfusioniframe" name="iframe" src="<?php echo $this->url; ?>"
-		width="<?php echo $this->params->get('wrapper_width', '100%'); ?>"
-		height="<?php echo $this->params->get('wrapper_height', '500'); ?>"
-		<?php if ($this->params->get('wrapper_transparency')) { ?>
-			allowtransparency="true"
-		<?php } else { ?>
-			allowtransparency="false"
-		<?php } ?>
-		style="vertical-align:top; border-style:none; overflow:<?php echo $wrapper_scroll; ?>;" class="wrapper">
-		<?php echo JText::_('OLD_BROWSER');?>
-	</iframe>
-</div>
+

@@ -310,7 +310,7 @@ JS;
 			try {
 				$db = JFusionFactory::getDatabase($this->getJname());
 			} catch (Exception $e) {
-				throw new Exception(JText::_('VB_CONFIG_FIRST'));
+				throw new RuntimeException(JText::_('VB_CONFIG_FIRST'));
 			}
 
 			if ($hook != 'framelessoptimization') {
@@ -794,7 +794,7 @@ JS;
 			    try {
 				    $db = JFusionFactory::getDatabase($this->getJname());
 			    } catch (Exception $e) {
-					throw new Exception(JText::_('SAVE_CONFIG_FIRST'));
+					throw new RuntimeException(JText::_('SAVE_CONFIG_FIRST'));
 			    }
 
 			    //get a list of field names for custom profile fields
@@ -814,7 +814,7 @@ JS;
 
 			    return JHTML::_('select.genericlist', $vb_options, $control_name . '[' . $name . ']', 'class="inputbox"', 'id', 'name', $value);
 		    } else {
-			    throw new Exception(JText::_('SAVE_CONFIG_FIRST'));
+			    throw new RuntimeException(JText::_('SAVE_CONFIG_FIRST'));
 		    }
 	    } catch (Exception $e) {
 		    return $e->getMessage();

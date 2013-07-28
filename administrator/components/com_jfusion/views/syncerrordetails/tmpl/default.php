@@ -24,8 +24,8 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DI
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo JFactory::getLanguage()->getTag(); ?>" lang="<?php echo JFactory::getLanguage()->getTag(); ?>">
-	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	</head>
 	<body>
 		<div id="ajax_bar">

@@ -534,7 +534,7 @@ class JFusionUser_moodle extends JFusionUser {
 				$usergroups = (substr($params->get('usergroup'), 0, 2) == 'a:') ? unserialize($params->get('usergroup')) : $params->get('usergroup', 18);
 				//check to make sure that if using the advanced group mode, $userinfo->group_id exists
 				if (is_array($usergroups) && !isset($userinfo->group_id)) {
-					throw new Exception(JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID'));
+					throw new RuntimeException(JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID'));
 				}
 				$default_group_id = (is_array($usergroups)) ? $usergroups[$userinfo->group_id] : $usergroups;
 				// get some config items
@@ -643,7 +643,7 @@ class JFusionUser_moodle extends JFusionUser {
 		try {
 			//setup status array to hold debug info and errors
 			if (!is_object($userinfo)) {
-				throw new Exception(JText::_('NO_USER_DATA_FOUND'));
+				throw new RuntimeException(JText::_('NO_USER_DATA_FOUND'));
 			}
 			$db = JFusionFactory::getDatabase($this->getJname());
 			$query = "UPDATE #__user SET deleted = '1' WHERE id =" . (int)$userinfo->userid;

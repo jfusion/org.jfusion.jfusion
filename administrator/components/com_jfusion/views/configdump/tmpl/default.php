@@ -45,12 +45,12 @@ if (JFactory::getApplication()->input->get('filter',false)) {
 	        </tr>
 	        <tr>
 	            <td>
-	                <input type="checkbox" <?php echo $filter; ?> name="filter" value="true" /> <?php echo JText::_('CONFIGDUMP_FILTER');?>
+	                <input id="filter" type="checkbox" <?php echo $filter; ?> name="filter" value="true" /> <label for="filter"><?php echo JText::_('CONFIGDUMP_SEEMS_OK'); ?></label>
 	            </td>
 	        </tr>
 	        <tr>
 	            <td>
-	                <input type="checkbox" <?php echo $mask; ?> name="mask" value="true" /> <?php echo JText::_('CONFIGDUMP_MASK');?>
+	                <input id="mask" type="checkbox" <?php echo $mask; ?> name="mask" value="true" /> <label for="mask"><?php echo JText::_('CONFIGDUMP_MASK'); ?></label>
 	            </td>
 	        </tr>
 	    </table>
@@ -108,5 +108,6 @@ if (JFactory::getApplication()->input->get('filter',false)) {
 	    }
 	}
 	?>
-	<textarea rows="25" class="dumparea"><?php echo $debug ?></textarea>
+	<label for="debug"><?php echo JText::_('JFUSION').' '.JText::_('DEBUG'); ?></label>
+	<textarea id="debug" rows="25" class="dumparea"><?php echo $debug ?></textarea>
 </div>

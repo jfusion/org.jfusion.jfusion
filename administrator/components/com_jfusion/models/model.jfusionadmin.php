@@ -84,7 +84,7 @@ class JFusionFunctionAdmin
 		    //reset the params instance for this plugin
 		    JFusionFactory::getParams($jname, true);
 		    $result = true;
-	    } catch( Exception $e ) {
+	    } catch (Exception $e ) {
 		    //there was an error saving the parameters
 		    JFusionFunction::raiseWarning($e, $jname);
 		    $result = false;
@@ -168,7 +168,7 @@ class JFusionFunctionAdmin
                 </td>
                 -->
                 <td>
-                    <h1><b>{$msg}</b></h1>
+                    <h1><strong>{$msg}</strong></h1>
                 </td>
                 <td style="width: 15%; text-align: right;">
                     <div id="navButton">

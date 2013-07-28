@@ -217,7 +217,7 @@ if (!class_exists('Jfusion_DokuWiki_Basic')) {
 		 */
 
 		function cryptPassword($clear, $method = '', $salt = null) {
-			global $conf;
+			$conf = $this->helper->getConf();
 			if(empty($method)) $method = $conf['passcrypt'];
 
 			require_once 'passhash.class.php';

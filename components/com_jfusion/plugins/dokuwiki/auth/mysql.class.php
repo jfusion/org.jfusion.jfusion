@@ -89,7 +89,7 @@ if (!class_exists('Jfusion_DokuWiki_Mysql')) {
 		 * @author  Matthias Grimm <matthiasgrimm@users.sourceforge.net>
 		 */
 		public function checkPass($user, $pass) {
-			global $conf;
+			$conf = $this->helper->getConf();
 			$rc = false;
 
 			if($this->_openDB()) {
@@ -156,7 +156,7 @@ if (!class_exists('Jfusion_DokuWiki_Mysql')) {
 				// set defaultgroup if no groups were given
 
 				$this->_lockTables("WRITE");
-				$pwd = $this->getConf('forwardClearPass') ? $pwd : auth_cryptPassword($pwd);
+				$pwd = $this->getConf('forwardClearPass') ? $pwd : $this->cryptPassword($pwd);
 				$rc  = $this->_addUser($user, $pwd, $name, $mail, $grps);
 				$this->_unlockTables();
 				$this->_closeDB();
@@ -620,7 +620,7 @@ if (!class_exists('Jfusion_DokuWiki_Mysql')) {
 						$sql .= str_replace('%{name}', $value, $this->getConf('UpdateName'));
 					} else if($item == 'pass') {
 						if(!$this->getConf('forwardClearPass'))
-							$value = auth_cryptPassword($value);
+							$value = $this->cryptPassword($value);
 						if($cnt++ > 0) $sql .= ", ";
 						$sql .= str_replace('%{pass}', $value, $this->getConf('UpdatePass'));
 					} else if($item == 'mail') {

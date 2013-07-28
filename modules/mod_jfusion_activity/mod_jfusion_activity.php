@@ -130,7 +130,7 @@ try {
 		            try {
 			            $results = $db->loadObjectList();
 			            $error = JText::_('JLIB_DATABASE_FUNCTION_NOERROR');
-		            } catch( Exception $e ) {
+		            } catch ( Exception $e ) {
 			            $error = $e->getMessage();
 			            $results = array();
 		            }
@@ -166,18 +166,18 @@ try {
 					$output = $forum->renderActivityModule($config,$view, $pluginParam);
 					echo $output;
 				} else {
-					throw new Exception(JText::_('NOT_IMPLEMENTED_YET'));
+					throw new RuntimeException(JText::_('NOT_IMPLEMENTED_YET'));
 				}
 			}
 		} else {
 			if (empty($jname)) {
-				throw new Exception(JText::_('MODULE_NOT_CONFIGURED'));
+				throw new RuntimeException(JText::_('MODULE_NOT_CONFIGURED'));
 			} else {
-				throw new Exception(JText::_('NO_PLUGIN'));
+				throw new RuntimeException(JText::_('NO_PLUGIN'));
 			}
 		}
 	} else {
-		throw new Exception(JText::_('NO_COMPONENT'));
+		throw new RuntimeException(JText::_('NO_COMPONENT'));
 	}
 } catch (Exception $e) {
 	echo $e->getMessage();

@@ -139,7 +139,7 @@ class JFusionUser_efront extends JFusionUser
 	    try {
 	        //do not create sessions for blocked users
 	        if (!empty($userinfo->block) || !empty($userinfo->activation)) {
-		        throw new Exception(JText::_('FUSION_BLOCKED_USER'));
+		        throw new RuntimeException(JText::_('FUSION_BLOCKED_USER'));
 	        } else {
 	            //get cookiedomain, cookiepath
 	            $params = JFusionFactory::getParams($this->getJname());
@@ -362,7 +362,7 @@ class JFusionUser_efront extends JFusionUser
 
 	        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 	        if (empty($usergroups)) {
-		        throw new Exception(JText::_('USERGROUP_MISSING'));
+		        throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 	        } else {
 	            $usergroup = $usergroups[0];
 	            $user_type = '';
@@ -547,7 +547,7 @@ class JFusionUser_efront extends JFusionUser
 	    try {
 		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 		    if (empty($usergroups)) {
-			    throw new Exception(JText::_('USERGROUP_MISSING'));
+			    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 		    } else {
 			    $usergroup = $usergroups[0];
 			    $db = JFusionFactory::getDataBase($this->getJname());

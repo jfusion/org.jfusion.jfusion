@@ -49,7 +49,7 @@ class Jfusion_Joomla_Block_Module extends Mage_Core_Block_Template {
     				$out .= $this->helper ( 'joomla/module' )->getJoomlaModule ( $module ['type'], $module ['title'], $module ['id'], $module['style'], $module['debug'] );
     			}
     		}
-		}catch(Mage_Core_Exception $e){
+		}catch (Mage_Core_Exception $e){
 		    Mage::log($e);
 		    Mage::getSingleton('customer/session')->addError($e->getMessage());
 		}

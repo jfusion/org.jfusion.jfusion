@@ -585,13 +585,16 @@ class plgUserJfusion extends JPlugin
         global $JFusionActive;
         if (!$JFusionActive) {
             //A change has been made to a user without JFusion knowing about it
-            //we need to make sure that group_id is in the $user array
-            ;
-            if (!isset($user['group_id']) && !isset($user['gid'])) {
-                $user['group_id'] = $user['gid'];
-            }
-            //convert the user array into a user object
-            $JoomlaUser = (object)$user;
+
+	        //convert the user array into a user object
+	        $JoomlaUser = new stdClass();
+	        foreach($user as $key => $value) {
+		        $JoomlaUser->$key = $value;
+	        }
+
+	        if (!isset($JoomlaUser->group_id) && !empty($JoomlaUser->groups)) {
+		        $JoomlaUser->group_id = $JoomlaUser->groups[0];
+	        }
             //check to see if we need to update the master
             $master = JFusionFunction::getMaster();
             // Recover the old data of the user
@@ -612,7 +615,7 @@ class plgUserJfusion extends JPlugin
 
 	            try {
 		            $db->execute();
-	            } catch( Exception $e ) {
+	            } catch ( Exception $e ) {
 		            JFusionFunction::raiseWarning($e->getMessage());
 	            }
 

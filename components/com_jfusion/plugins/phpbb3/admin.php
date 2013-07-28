@@ -534,14 +534,14 @@ HTML;
 		    if (file_exists($auth_file)) {
 			    jimport('joomla.filesystem.file');
 			    if (!JFile::delete($auth_file)) {
-				    throw new Exception('Cant delete file: '.$auth_file);
+				    throw new RuntimeException('Cant delete file: '.$auth_file);
 			    }
 		    }
 
 		    //clear the config cache so that phpBB recognizes the change
 		    $cleared = $this->clearConfigCache();
 		    if (!$cleared) {
-			    throw new Exception('Cash not cleared!');
+			    throw new RuntimeException('Cash not cleared!');
 		    }
 	    } catch (Exception $e) {
 		    JFusionFunction::raiseWarning($e, $this->helper->getJname());

@@ -287,7 +287,7 @@ class JFusionFactory
 	 *
 	 * @param string $jname name of the JFusion plugin used
 	 *
-	 * @throws Exception
+	 * @throws RuntimeException
 	 * @return JRegistry JParam object for the JFusion plugin
 	 */
     public static function &createParams($jname)
@@ -316,7 +316,7 @@ class JFusionFactory
             }
         }
         if (!is_object($parametersInstance)) {
-	        throw new Exception(JText::_('NO_FORUM_PARAMETERS'));
+	        throw new RuntimeException(JText::_('NO_FORUM_PARAMETERS'));
         }
         return $parametersInstance;
     }

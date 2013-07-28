@@ -96,7 +96,7 @@ class JFusionHelper {
 		    $modules = $db->loadObjectList($type);
 
 		    if (null === $modules) {
-			    throw new Exception(JText::_ ('Error Loading Modules'));
+			    throw new RuntimeException(JText::_ ('Error Loading Modules'));
 		    }
 
 		    //determine if this is a custom module

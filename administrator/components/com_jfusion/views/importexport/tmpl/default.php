@@ -71,7 +71,7 @@ jimport('joomla.html.pane');
 	        </tr>
 	        <tr>
 	            <td>
-					<?php echo JText::_('DATABASE_TYPE'); ?>
+		            <label for="database_type"><?php echo JText::_('DATABASE_TYPE'); ?></label>
 	            </td>
 	            <td>
 	                <input name="database_type" id="database_type" value="" class="text_area" size="20" type="text">
@@ -79,7 +79,7 @@ jimport('joomla.html.pane');
 	        </tr>
 	        <tr>
 	            <td>
-					<?php echo JText::_('DATABASE_HOST'); ?>
+		            <label for="database_host"><?php echo JText::_('DATABASE_HOST'); ?></label>
 	            </td>
 	            <td>
 	                <input name="database_host" id="database_host" value="" class="text_area" size="20" type="text">
@@ -87,7 +87,7 @@ jimport('joomla.html.pane');
 	        </tr>
 	        <tr>
 	            <td>
-					<?php echo JText::_('DATABASE_NAME'); ?>
+		            <label for="database_name"><?php echo JText::_('DATABASE_NAME'); ?></label>
 	            </td>
 	            <td>
 	                <input name="database_name" id="database_name" value="" class="text_area" size="20" type="text">
@@ -95,7 +95,7 @@ jimport('joomla.html.pane');
 	        </tr>
 	        <tr>
 	            <td>
-					<?php echo JText::_('DATABASE_USER'); ?>
+		            <label for="database_user"><?php echo JText::_('DATABASE_USER'); ?></label>
 	            </td>
 	            <td>
 	                <input name="database_user" id="database_user" value="" class="text_area" size="20" type="text">
@@ -103,7 +103,7 @@ jimport('joomla.html.pane');
 	        </tr>
 	        <tr>
 	            <td>
-					<?php echo JText::_('DATABASE_PASSWORD'); ?>
+		            <label for="database_password"><?php echo JText::_('DATABASE_PASSWORD'); ?></label>
 	            </td>
 	            <td>
 	                <input name="database_password" id="database_password" value="" class="text_area" size="20" type="text">
@@ -111,7 +111,7 @@ jimport('joomla.html.pane');
 	        </tr>
 	        <tr>
 	            <td>
-					<?php echo JText::_('DATABASE_PREFIX'); ?>
+		            <label for="database_prefix"><?php echo JText::_('DATABASE_PREFIX'); ?></label>
 	            </td>
 	            <td>
 	                <input name="database_prefix" id="database_prefix" value="" class="text_area" size="20" type="text">
@@ -127,10 +127,10 @@ jimport('joomla.html.pane');
 	        <table>
 	            <tr>
 	                <td>
-	                    <input type=radio name="xmlname" value="" checked>
+	                    <input type=radio id="xmlname" name="xmlname" value="" checked>
 	                </td>
 	                <td>
-						<?php echo JText::_('JNONE'); ?>
+		                <label for="xmlname"><?php echo JText::_('JNONE'); ?></label>
 	                </td>
 	            </tr>
 	            <br/>
@@ -172,10 +172,10 @@ jimport('joomla.html.pane');
 	                        </script>
 	                        <tr>
 	                            <td style="vertical-align:top">
-	                                <input type=radio name="url" value="<?php echo base64_encode($remotefile); ?>">
+	                                <input type=radio name="url" id="importexport<?php echo $name; ?>" value="<?php echo base64_encode($remotefile); ?>">
 	                            </td>
 	                            <td>
-							        <?php echo ucfirst($name); ?>
+		                            <label for="importexport<?php echo $name; ?>"><?php echo ucfirst($name); ?></label>
 	                                <a href="javascript:void(0);" id="plugin<?php echo $key;?>">[+]</a>
 	                                <div style="display:none;" id="xplugin<?php echo $key; ?>">
 								        <?php echo JText::_('VERSION').': '.$version?>
@@ -205,7 +205,7 @@ jimport('joomla.html.pane');
 		<?php echo JText::_('EXPORT_DATABASE_INFO_DESC'); ?>
 	    <br>
 	    <br>
-		<?php echo JText::_('EXPORT_DATABASE_INFO'); ?> <input name="dbinfo" type="checkbox"><br/>
+		<label for="dbinfo"><?php echo JText::_('EXPORT_DATABASE_INFO'); ?></label> <input id="dbinfo" name="dbinfo" type="checkbox"><br/>
 
 	    <input type="hidden" name="jname" value="<?php echo $this->jname; ?>"/>
 		<?php

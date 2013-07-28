@@ -84,7 +84,7 @@ class JFormFieldjfusionsql extends JFormField
 					    $db->setQuery( $query );
 					    $enabled = $jdb->loadResult();
 					    if (empty($enabled)) {
-						    throw new Exception(JText::_('K2_NOT_AVAILABLE'));
+						    throw new RuntimeException(JText::_('K2_NOT_AVAILABLE'));
 					    }
 					    $query = 'SELECT id, name as title, parent FROM #__k2_categories WHERE id > 0 AND trash = 0 AND published = 1';
 					    $db->setQuery($query);
@@ -112,10 +112,10 @@ class JFormFieldjfusionsql extends JFormField
 					    return JHTML::_('select.genericlist',  $results, $param_name, 'class="inputbox" '.$multiple, $key, $val, $this->value, $this->formControl.'_'.$this->group.'_'.$this->fieldname);
 				    }
 			    } else {
-				    throw new Exception(JText::_('SAVE_CONFIG_FIRST'));
+				    throw new RuntimeException(JText::_('SAVE_CONFIG_FIRST'));
 			    }
 		    } else {
-			    throw new Exception('Programming error: You must define global $jname before the JParam object can be rendered.');
+			    throw new RuntimeException('Programming error: You must define global $jname before the JParam object can be rendered.');
 		    }
 	    } catch (Exception $e) {
 		    return '<span style="float:left; margin: 5px 0; font-weight: bold;">'.$e->getMessage().'</span>';

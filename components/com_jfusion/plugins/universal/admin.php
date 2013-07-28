@@ -217,7 +217,7 @@ class JFusionAdmin_universal extends JFusionAdmin{
 			try {
 				$db = JFusionFactory::getDatabase($jname);
 			} catch (Exception $e) {
-				throw new Exception(JText::_('SAVE_CONFIG_FIRST'));
+				throw new RuntimeException(JText::_('SAVE_CONFIG_FIRST'));
 			}
 
 			$query = 'SHOW TABLES FROM '.$database_name;
@@ -354,7 +354,7 @@ class JFusionAdmin_universal extends JFusionAdmin{
 				$output .= '</td></tr>';
 				$output .= '</table>';
 			} else {
-				throw new Exception(JText::_('SAVE_CONFIG_FIRST'));
+				throw new RuntimeException(JText::_('SAVE_CONFIG_FIRST'));
 			}
 		} catch (Exception $e) {
 			$output = $e->getMessage();

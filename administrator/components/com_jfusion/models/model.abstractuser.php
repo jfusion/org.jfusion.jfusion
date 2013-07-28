@@ -195,7 +195,7 @@ class JFusionUser
 	    try {
 		    //check to see if a valid $userinfo object was passed on
 		    if (!is_object($userinfo)) {
-			    throw new Exception(JText::_('NO_USER_DATA_FOUND'));
+			    throw new RuntimeException(JText::_('NO_USER_DATA_FOUND'));
 		    } else {
 			    //get the user
 			    $existinguser = $this->getUser($userinfo);
@@ -213,7 +213,7 @@ class JFusionUser
 						    //return a email conflict
 						    $status['debug'][] = JText::_('EMAIL_CONFLICT_OVERWITE_DISABLED');
 						    $status['userinfo'] = $existinguser;
-						    throw new Exception(JText::_('EMAIL') . ' ' . JText::_('CONFLICT') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
+						    throw new RuntimeException(JText::_('EMAIL') . ' ' . JText::_('CONFLICT') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
 					    }
 				    }
 				    if (!empty($userinfo->password_clear) && strlen($userinfo->password_clear) != 32) {
@@ -331,7 +331,7 @@ class JFusionUser
 				    }
 			    }
 		    }
-	    } catch ( Exception $e) {
+	    } catch (Exception $e) {
 		    $status['error'][] = $e->getMessage();
 	    }
         return $status;

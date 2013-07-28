@@ -267,7 +267,7 @@ class executeJFusionHook
             }
             //echo the output and return an exception to allow Joomla to continue
             echo trim($this->vars, "\n\r\t.");
-            Throw new Exception('vBulletin exited.');
+            Throw new RuntimeException('vBulletin exited.');
         }
     }
 

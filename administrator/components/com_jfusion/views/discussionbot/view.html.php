@@ -136,19 +136,19 @@ class jfusionViewdiscussionbot extends JViewLegacy
 	    $toolbar = <<<HTML
 	    <div class="btn-toolbar" id="toolbar">
 			<div class="btn-group" id="toolbar-apply">
-				<button href="#" onclick="window.parent.JFusion.submitParams('{$ename}', '{$encoded_pairs}')" class="btn btn-small btn-success">
+				<a href="#" onclick="window.parent.JFusion.submitParams('{$ename}', '{$encoded_pairs}')" class="btn btn-small btn-success">
 					<i class="icon-apply icon-white">
 					</i>
 					{$apply}
-				</button>
+				</a>
 			</div>
 
 			<div class="btn-group" id="toolbar-cancel">
-				<button href="#" onclick="window.parent.SqueezeBox.close();" class="btn btn-small">
+				<a href="#" onclick="window.parent.SqueezeBox.close();" class="btn btn-small">
 					<i class="icon-cancel ">
 					</i>
 				    {$close}
-				</button>
+				</a>
 			</div>
 		</div>
 HTML;

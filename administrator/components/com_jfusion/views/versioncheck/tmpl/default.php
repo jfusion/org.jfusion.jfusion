@@ -392,14 +392,14 @@ JFusionFunctionAdmin::displayDonate();
 		            <input type="hidden" name="task" value="install.install" />
 	                <input type="hidden" name="option" value="com_installer" />
 	                <?php echo JHTML::_('form.token'); ?>
-	                <b>
+	                <strong>
 	                    <?php echo JText::_('ADVANCED_WARNING'); ?>
-	                </b>
+	                </strong>
 	                <br/>
 	                <input id="build" type="button" value="<?php echo JText::_('INSTALL') . ' ' . JText::_('LATEST') . ' ' . JText::_('DEVELOPMENT') . ' ' . JText::_('RELEASE'); ?>"/>
 	                <br/>
-	                Git Tree:
-	                <input type="text" name="git_tree" size="40"/>
+		            <label for="git_tree">Git Tree:</label>
+	                <input id="git_tree" type="text" name="git_tree" size="40"/>
 	                <input id="git" type="button" value="<?php echo JText::_('INSTALL') . ' ' . JText::_('SPECIFIC') . ' Git Tree'; ?>"/>
 	                <br/>
 	            </form>

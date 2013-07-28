@@ -42,10 +42,10 @@ class JFormFieldJFusionCustomParam extends JFormField
 					$output = $JFusionPlugin->{$this->fieldname}($this->fieldname, $this->value, $this->element, $this->group);
 					return $output;
 				} else {
-					throw new Exception('Undefined function:' . $this->fieldname . ' in plugin:' . $jname);
+					throw new RuntimeException('Undefined function:' . $this->fieldname . ' in plugin:' . $jname);
 				}
 			} else {
-				throw new Exception('Programming error: You must define global $jname before the JParam object can be rendered.');
+				throw new RuntimeException('Programming error: You must define global $jname before the JParam object can be rendered.');
 			}
 		} catch (Exception $e) {
 			return '<span style="float:left; margin: 5px 0; font-weight: bold;">'.$e->getMessage().'</span>';

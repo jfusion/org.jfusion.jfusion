@@ -128,7 +128,7 @@ class JFusionFrameless {
 	 * @static
 	 * @param $data
 	 *
-	 * @throws Exception
+	 * @throws RuntimeException
 	 * @return bool
 	 */
 	public static function displayContent($data)
@@ -191,11 +191,11 @@ class JFusionFrameless {
 		JFusionFunction::reconnectJoomlaDb();
 
 		if ($data->buffer === 0) {
-			throw new Exception(JText::_ ( 'NO_FRAMELESS' ));
+			throw new RuntimeException(JText::_ ( 'NO_FRAMELESS' ));
 		}
 
 		if (! $data->buffer) {
-			throw new Exception(JText::_ ( 'NO_BUFFER' ));
+			throw new RuntimeException(JText::_ ( 'NO_BUFFER' ));
 		}
 
 		$data->buffer = JFusionFrameless::parseEncoding($data->buffer);
@@ -214,7 +214,7 @@ class JFusionFrameless {
 			} else {
 				unset ( $data->buffer );
 				//no output returned
-				throw new Exception(JText::_ ( 'NO_HTML' ));
+				throw new RuntimeException(JText::_ ( 'NO_HTML' ));
 			}
 		}
 		else {

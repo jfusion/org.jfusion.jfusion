@@ -213,7 +213,7 @@ class JFusionForum_vbulletin extends JFusionForum
 			    $userinfo->username = JFactory::getApplication()->input->post->get('guest_username', '');
 			    $userinfo->userid = 0;
 			    if (empty($userinfo->username)) {
-				    throw new Exception(JTEXT::_('GUEST_FIELDS_MISSING'));
+				    throw new RuntimeException(JTEXT::_('GUEST_FIELDS_MISSING'));
 			    } else {
 				    $db = JFusionFactory::getDatabase($this->getJname());
 				    $query = 'SELECT COUNT(*) FROM #__user '
@@ -222,7 +222,7 @@ class JFusionForum_vbulletin extends JFusionForum
 				    $db->setQuery($query);
 				    $result = $db->loadResult();
 				    if (!empty($result)) {
-					    throw new Exception(JTEXT::_('USERNAME_IN_USE'));
+					    throw new RuntimeException(JTEXT::_('USERNAME_IN_USE'));
 				    }
 
 				    $name_field = $this->params->get('name_field');
@@ -231,7 +231,7 @@ class JFusionForum_vbulletin extends JFusionForum
 					    $db->setQuery($query);
 					    $result = $db->loadResult();
 					    if (!empty($result)) {
-						    throw new Exception(JTEXT::_('USERNAME_IN_USE'));
+						    throw new RuntimeException(JTEXT::_('USERNAME_IN_USE'));
 					    }
 				    }
 			    }

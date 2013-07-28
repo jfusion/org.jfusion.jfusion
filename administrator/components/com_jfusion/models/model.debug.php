@@ -594,11 +594,11 @@ CSS;
         } else if (is_bool($value)) {
             if ($value) $decValue = 'true';
             else $decValue = 'false';
-            $decValue = '<b>'.$decValue.'</b>';
+            $decValue = '<strong>'.$decValue.'</strong>';
         } else if (is_null($value)) {
-            $decValue = '<b><i>null</i></b>';
+            $decValue = '<strong><i>null</i></strong>';
         } else {
-            $decValue = '<b>'.$value.'</b>';
+            $decValue = '<strong>'.$value.'</strong>';
         }
         return $decValue;
     }

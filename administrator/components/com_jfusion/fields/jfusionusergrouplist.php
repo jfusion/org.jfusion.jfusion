@@ -53,7 +53,7 @@ class JFormFieldJFusionUsergroupList extends JFormField
 				    return JText::_('SAVE_CONFIG_FIRST');
 			    }
 		    } else {
-			    throw new Exception('Programming error: You must define global $jname before the JParam object can be rendered.');
+			    throw new RuntimeException('Programming error: You must define global $jname before the JParam object can be rendered.');
 		    }
 	    } catch (Exception $e) {
 		    return '<span style="float:left; margin: 5px 0; font-weight: bold;">'.$e->getMessage().'</span>';

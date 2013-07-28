@@ -225,7 +225,7 @@ class JFusionAdmin_moodle extends JFusionAdmin
 		    try {
 			    $db = JFusionFactory::getDatabase ( $jname );
 		    } catch (Exception $e) {
-				throw new Exception(JText::_('MOODLE_CONFIG_FIRST'));
+				throw new RuntimeException(JText::_('MOODLE_CONFIG_FIRST'));
 		    }
 		    $db = JFusionFactory::getDatabase ( $jname );
 
@@ -330,7 +330,7 @@ HTML;
 				 }
 				 $status['message'] = $jname .': ' . JText::_('INSTALL_MODULE_SUCCESS');
 			 } else {
-				 throw new Exception(JText::sprintf('INSTALL_MODULE_ERROR', $src_archive, $dest));
+				 throw new RuntimeException(JText::sprintf('INSTALL_MODULE_ERROR', $src_archive, $dest));
 			 }
 		} catch (Exception $e) {
 			$status['error'] = $jname . ': ' . $e->getMessage();
@@ -499,7 +499,7 @@ HTML;
 
 			    if ($key !== false) {
 					// already enabled ?!
-				    throw new Exception('key already enabled?');
+				    throw new RuntimeException('key already enabled?');
 			    }
 			    $value .= ',jfusion';
 			    $query = 'UPDATE #__config SET value = \''.$value.'\' WHERE name = \'auth\'';

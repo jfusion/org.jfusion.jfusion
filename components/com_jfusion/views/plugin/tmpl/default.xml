@@ -26,10 +26,6 @@
                 <option value="0">JNO</option>
                 <option value="1">JYES</option>
             </field>
-            <field name="wrapper_transparency" type="radio" class="btn-group" default="1" description="WRAPPER_TRANSPARENCY">
-                <option value="0">JNO</option>
-                <option value="1">JYES</option>
-            </field>
             <field name="wrapper_scrolltotop" type="radio" class="btn-group" default="1" description="WRAPPER_SCROLLTOTOP">
                 <option value="0">JNO</option>
                 <option value="1">JYES</option>

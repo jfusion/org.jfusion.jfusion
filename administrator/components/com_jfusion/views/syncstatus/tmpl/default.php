@@ -19,9 +19,9 @@ $inline = (!empty($this->sync_completed) || JFactory::getApplication()->input->g
 //check to see if there is anything to output
 if (!isset($this->syncdata['slave_data']) || !$this->syncdata['slave_data']) {
     ?>
-    <b style="color:red;">
+    <strong style="color:red;">
         <?php echo JText::_('SYNC_NODATA') ?>
-    </b>
+    </strong>
     <?php
 } else {
     if (!empty($this->syncdata['completed'])) {
@@ -127,7 +127,9 @@ if (!isset($this->syncdata['slave_data']) || !$this->syncdata['slave_data']) {
             ?>
             </tbody>
             <tfoot>
-            <td colspan="7"><?php echo $this->pageNav->getListFooter(); ?></td>
+                <tr>
+                    <td colspan="7"><?php echo $this->pageNav->getListFooter(); ?></td>
+                </tr>
             </tfoot>
         </table>
         <input type="hidden" name="task" value="syncstatus" />

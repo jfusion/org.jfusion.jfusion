@@ -96,10 +96,10 @@ try {
 			require(JModuleHelper::getLayoutPath('mod_jfusion_whosonline'));
 
 		} else {
-			throw new Exception(JText::_('MODULE_NOT_CONFIGURED'));
+			throw new RuntimeException(JText::_('MODULE_NOT_CONFIGURED'));
 		}
 	} else {
-		throw new Exception(JText::_('NO_COMPONENT'));
+		throw new RuntimeException(JText::_('NO_COMPONENT'));
 	}
 } catch (Exception $e) {
 	echo $e->getMessage();

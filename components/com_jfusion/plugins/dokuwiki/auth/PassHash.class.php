@@ -345,7 +345,7 @@ if (!class_exists('Jfusion_PassHash')) {
 		 * @param string $salt    The salt to use, null for random
 		 * @param string $magic   The hash identifier (P or H)
 		 * @param int    $compute The iteration count for new passwords
-		 * @throws Exception
+		 * @throws RuntimeException
 		 * @return string Hashed password
 		 */
 		public function hash_pmd5($clear, $salt = null, $magic = 'P', $compute = 8) {
@@ -358,7 +358,7 @@ if (!class_exists('Jfusion_PassHash')) {
 			$iter  = strpos($itoa64, $iterc);
 
 			if($iter > 30) {
-				throw new Exception("Too high iteration count ($iter) in ".
+				throw new RuntimeException("Too high iteration count ($iter) in ".
 				__CLASS__.'::'.__FUNCTION__);
 			}
 
@@ -447,12 +447,12 @@ if (!class_exists('Jfusion_PassHash')) {
 		 * @param string $clear   The clear text to hash
 		 * @param string $salt    The salt to use, null for random
 		 * @param int    $compute The iteration count (between 4 and 31)
-		 * @throws Exception
+		 * @throws RuntimeException
 		 * @return string Hashed password
 		 */
 		public function hash_bcrypt($clear, $salt = null, $compute = 8) {
 			if(!defined('CRYPT_BLOWFISH') || CRYPT_BLOWFISH != 1) {
-				throw new Exception('This PHP installation has no bcrypt support');
+				throw new RuntimeException('This PHP installation has no bcrypt support');
 			}
 
 			if(is_null($salt)) {
@@ -473,11 +473,11 @@ if (!class_exists('Jfusion_PassHash')) {
 		 * @param string $clear The clear text to hash
 		 * @param string $salt  The salt to use, null for random
 		 * @return string Hashed password
-		 * @throws Exception
+		 * @throws RuntimeException
 		 */
 		public function hash_sha512($clear, $salt = null) {
 			if(!defined('CRYPT_SHA512') || CRYPT_SHA512 != 1) {
-				throw new Exception('This PHP installation has no SHA512 support');
+				throw new RuntimeException('This PHP installation has no SHA512 support');
 			}
 			$this->init_salt($salt, 8, false);
 			return crypt($clear, '$6$'.$salt.'$');

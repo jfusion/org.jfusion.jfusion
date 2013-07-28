@@ -158,7 +158,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 	    try {
 		    //do not create sessions for blocked users
 		    if (!empty($userinfo->block) || !empty($userinfo->activation)) {
-			    throw new Exception(JText::_('FUSION_BLOCKED_USER'));
+			    throw new RuntimeException(JText::_('FUSION_BLOCKED_USER'));
 		    } else {
 			    $jdb = JFusionFactory::getDatabase($this->getJname());
 			    $userid = $userinfo->userid;
@@ -216,7 +216,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 						    //change the current directory back to Joomla.
 						    chdir(JPATH_SITE);
 					    } else {
-						    throw new Exception(JText::sprintf('UNABLE_TO_FIND_FILE', 'common.php'));
+						    throw new RuntimeException(JText::sprintf('UNABLE_TO_FIND_FILE', 'common.php'));
 					    }
 				    } else {
 					    jimport('joomla.user.helper');
@@ -316,11 +316,11 @@ class JFusionUser_phpbb3 extends JFusionUser
 							    $_COOKIE[$phpbb_cookie_name . '_k'] = $key_id;
 						    }
 					    } else {
-						    throw new Exception(JText::_('INVALID_COOKIENAME'));
+						    throw new RuntimeException(JText::_('INVALID_COOKIENAME'));
 					    }
 				    }
 			    } else {
-				    throw new Exception(JText::_('INVALID_USERID'));
+				    throw new RuntimeException(JText::_('INVALID_USERID'));
 			    }
 		    }
 	    } catch (Exception $e) {
@@ -619,14 +619,14 @@ class JFusionUser_phpbb3 extends JFusionUser
 		    $update_activation = $params->get('update_activation');
 		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 		    if (empty($usergroups)) {
-			    throw new Exception(JText::_('USERGROUP_MISSING'));
+			    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 		    } else {
 			    $usergroup = $usergroups[0];
 			    $username_clean = $this->filterUsername($userinfo->username);
 
 			    //prevent anonymous user being created
 			    if ($username_clean == 'anonymous') {
-				    throw new Exception('reserved username');
+				    throw new RuntimeException('reserved username');
 			    } else {
 				    //prepare the variables
 				    $user = new stdClass;
@@ -766,7 +766,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 						    $db->setQuery($query);
 						    $db->execute();
 					    } catch (Exception $e) {
-							throw new Exception(JText::_('BLOCK_UPDATE_ERROR').': '. $e->getMessage());
+							throw new RuntimeException(JText::_('BLOCK_UPDATE_ERROR').': '. $e->getMessage());
 					    }
 				    }
 				    //return the good news
@@ -808,8 +808,8 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    }
 				    //$status['debug'][] = 'Retrieved all reported posts/topics by user '.$user_id;
 			    }
-		    } catch (ErrorException $e) {
-				throw new Exception('Error Could not retrieve reported posts/topics by user '.$user_id.': '.$e->getMessage());
+		    } catch (ErrorRuntimeException $e) {
+				throw new RuntimeException('Error Could not retrieve reported posts/topics by user '.$user_id.': '.$e->getMessage());
 		    }
 
 		    if (sizeof($report_posts)) {

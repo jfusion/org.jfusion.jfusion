@@ -130,32 +130,32 @@ class JFusionAdmin
 		    if ($jname == 'joomla_int') {
 			    $source_url = $params->get('source_url');
 			    if (empty($source_url)) {
-				    throw new Exception(JText::_('GOOD_CONFIG'));
+				    throw new RuntimeException(JText::_('GOOD_CONFIG'));
 			    }
 		    } else {
 			    try {
 				    $db = JFusionFactory::getDatabase($jname);
 			    } catch (Exception $e) {
-				    throw new Exception(JText::_('NO_DATABASE').' : '.$e->getMessage());
+				    throw new RuntimeException(JText::_('NO_DATABASE').' : '.$e->getMessage());
 			    }
 
 			    try {
 				    $jdb = JFactory::getDBO();
 			    } catch (Exception $e) {
-				    throw new Exception(' -> joomla_int '. JText::_('NO_DATABASE').' : '.$e->getMessage());
+				    throw new RuntimeException(' -> joomla_int '. JText::_('NO_DATABASE').' : '.$e->getMessage());
 			    }
 
 			    if (!$db->connected()) {
-				    throw new Exception(JText::_('NO_DATABASE'));
+				    throw new RuntimeException(JText::_('NO_DATABASE'));
 			    } elseif (!$jdb->connected()) {
-				    throw new Exception(' -> joomla_int '. JText::_('NO_DATABASE'));
+				    throw new RuntimeException(' -> joomla_int '. JText::_('NO_DATABASE'));
 			    } else {
 				    //added check for missing files of copied plugins after upgrade
 				    $path = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR;
 				    if (!file_exists($path.'admin.php')) {
-					    throw new Exception(JText::_('NO_FILES').' admin.php');
+					    throw new RuntimeException(JText::_('NO_FILES').' admin.php');
 				    } else if (!file_exists($path.'user.php')) {
-					    throw new Exception(JText::_('NO_FILES').' user.php');
+					    throw new RuntimeException(JText::_('NO_FILES').' user.php');
 				    } else {
 					    $cookie_domain = $params->get('cookie_domain');
 					    $jfc = JFusionFactory::getCookies();
@@ -168,12 +168,12 @@ class JFusionAdmin
 						    if (!$api->ping()) {
 							    list ($message) = $api->getError();
 
-							    throw new Exception($api->url. ' ' .$message);
+							    throw new RuntimeException($api->url. ' ' .$message);
 						    }
 					    }
 					    $source_path = $params->get('source_path');
 					    if ($source_path && (strpos($source_path, 'http://') === 0 || strpos($source_path, 'https://') === 0)) {
-						    throw new Exception(JText::_('ERROR_SOURCE_PATH'). ' : '.$source_path);
+						    throw new RuntimeException(JText::_('ERROR_SOURCE_PATH'). ' : '.$source_path);
 					    } else {
 						    //get the user table name
 						    $tablename = $this->getTablename();
@@ -181,12 +181,12 @@ class JFusionAdmin
 						    $table_list = $db->getTableList();
 						    $table_prefix = $db->getPrefix();
 						    if (!is_array($table_list)) {
-							    throw new Exception($table_prefix . $tablename . ': ' . JText::_('NO_TABLE'));
+							    throw new RuntimeException($table_prefix . $tablename . ': ' . JText::_('NO_TABLE'));
 						    } else {
 							    if (array_search($table_prefix . $tablename, $table_list) === false) {
 								    //do a final check for case insensitive windows servers
 								    if (array_search(strtolower($table_prefix . $tablename), $table_list) === false) {
-									    throw new Exception($table_prefix . $tablename . ': ' . JText::_('NO_TABLE'));
+									    throw new RuntimeException($table_prefix . $tablename . ': ' . JText::_('NO_TABLE'));
 								    }
 							    }
 						    }

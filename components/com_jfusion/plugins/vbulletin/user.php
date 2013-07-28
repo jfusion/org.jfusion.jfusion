@@ -252,7 +252,7 @@ class JFusionUser_vbulletin extends JFusionUser
 	    try {
 		    //do not create sessions for blocked users
 		    if (!empty($userinfo->block) || !empty($userinfo->activation)) {
-			    throw new Exception(JText::_('FUSION_BLOCKED_USER'));
+			    throw new RuntimeException(JText::_('FUSION_BLOCKED_USER'));
 		    } else {
 			    require_once JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.curl.php';
 			    //first check to see if striking is enabled to prevent further strikes
@@ -269,7 +269,7 @@ class JFusionUser_vbulletin extends JFusionUser
 				    $strikes = $db->loadResult();
 
 				    if ($strikes >= 5) {
-					    throw new Exception(JText::_('VB_TOO_MANY_STRIKES'));
+					    throw new RuntimeException(JText::_('VB_TOO_MANY_STRIKES'));
 				    }
 			    }
 
@@ -617,7 +617,7 @@ class JFusionUser_vbulletin extends JFusionUser
 
 		    //return if we are in advanced user group mode but the master did not pass in a group_id
 		    if (is_array($usergroups) && !isset($userinfo->group_id)) {
-			    throw new Exception(JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID'));
+			    throw new RuntimeException(JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID'));
 		    } else {
 			    if (empty($userinfo->activation)) {
 				    $defaultgroup = (is_array($usergroups)) ? $usergroups[$userinfo->group_id]['defaultgroup'] : $usergroups;

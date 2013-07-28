@@ -157,15 +157,15 @@ class JFusionUser_prestashop extends JFusionUser {
 		    $passwd = trim($passwd);
 		    $email = trim($email);
 		    if (empty($email)) {
-			    throw new Exception('invalid e-mail address');
+			    throw new RuntimeException('invalid e-mail address');
 		    } elseif (!Validate::isEmail($email)) {
-			    throw new Exception('invalid e-mail address');
+			    throw new RuntimeException('invalid e-mail address');
 		    } elseif (empty($passwd)) {
-			    throw new Exception('password is required');
+			    throw new RuntimeException('password is required');
 		    } elseif (Tools::strlen($passwd) > 32) {
-			    throw new Exception('password is too long');
+			    throw new RuntimeException('password is too long');
 		    } elseif (!Validate::isPasswd($passwd)) {
-			    throw new Exception('invalid password');
+			    throw new RuntimeException('invalid password');
 		    } else {
 			    /* Handle brute force attacks */
 			    sleep(1);
@@ -174,7 +174,7 @@ class JFusionUser_prestashop extends JFusionUser {
 			    $db->setQuery($query);
 			    $result = $db->loadResult();
 			    if (!$result) {
-				    throw new Exception('authentication failed');
+				    throw new RuntimeException('authentication failed');
 			    } else {
 				    if(md5($params->get('cookie_key') . $passwd) === $result) {
 					    $cookie->id_customer = $userinfo->userid;
@@ -184,7 +184,7 @@ class JFusionUser_prestashop extends JFusionUser {
 					    $cookie->passwd = md5($params->get('cookie_key') . $passwd);
 					    $cookie->email = $email;
 				    } else {
-					    throw new Exception('wrong password');
+					    throw new RuntimeException('wrong password');
 				    }
 			    }
 		    }
@@ -361,46 +361,46 @@ class JFusionUser_prestashop extends JFusionUser {
 
 		    // Validate gender
 		    if (!Validate::isGenderIsoCode($user_variables['id_gender'])) {
-			    throw new Exception(Tools::displayError('gender not valid'));
+			    throw new RuntimeException(Tools::displayError('gender not valid'));
 		    } elseif (!Validate::isName($user_variables['firstname'])) {
-			    throw new Exception(Tools::displayError('first name wrong'));
+			    throw new RuntimeException(Tools::displayError('first name wrong'));
 		    } elseif (!Validate::isName($user_variables['lastname'])) {
-			    throw new Exception(Tools::displayError('second name wrong'));
+			    throw new RuntimeException(Tools::displayError('second name wrong'));
 		    } elseif (!Validate::isName($user_variables['customer_firstname'])) {
-			    throw new Exception(Tools::displayError('customer first name wrong'));
+			    throw new RuntimeException(Tools::displayError('customer first name wrong'));
 		    } elseif (!Validate::isName($user_variables['customer_lastname'])) {
-			    throw new Exception(Tools::displayError('customer second name wrong'));
+			    throw new RuntimeException(Tools::displayError('customer second name wrong'));
 		    } elseif (!Validate::isEmail($user_variables['email'])) {
-			    throw new Exception(Tools::displayError('e-mail not valid'));
+			    throw new RuntimeException(Tools::displayError('e-mail not valid'));
 		    } elseif (!Validate::isPasswd($user_variables['passwd'])) {
-			    throw new Exception(Tools::displayError('invalid password'));
+			    throw new RuntimeException(Tools::displayError('invalid password'));
 		    } elseif (!@checkdate($user_variables['months'], $user_variables['days'], $user_variables['years']) AND !( $user_variables['months']== '' AND $user_variables['days'] == '' AND $user_variables['years'] == '')) {
-			    throw new Exception(Tools::displayError('invalid birthday'));
+			    throw new RuntimeException(Tools::displayError('invalid birthday'));
 		    } elseif (!Validate::isBool($user_variables['newsletter'])) {
-			    throw new Exception(Tools::displayError('newsletter invalid choice'));
+			    throw new RuntimeException(Tools::displayError('newsletter invalid choice'));
 		    } elseif (!Validate::isBool($user_variables['optin'])) {
-			    throw new Exception(Tools::displayError('optin invalid choice'));
+			    throw new RuntimeException(Tools::displayError('optin invalid choice'));
 		    } elseif (!Validate::isGenericName($user_variables['company'])) {
-			    throw new Exception(Tools::displayError('company name wrong'));
+			    throw new RuntimeException(Tools::displayError('company name wrong'));
 		    } elseif (!Validate::isAddress($user_variables['address2'])) {
-			    throw new Exception(Tools::displayError('address 2nd wrong'));
+			    throw new RuntimeException(Tools::displayError('address 2nd wrong'));
 		    } elseif (!Validate::isPhoneNumber($user_variables['phone'])) {
-			    throw new Exception(Tools::displayError('invalid phone'));
+			    throw new RuntimeException(Tools::displayError('invalid phone'));
 		    } elseif (!Validate::isPhoneNumber($user_variables['phone_mobile'])) {
-			    throw new Exception(Tools::displayError('invalid mobile'));
+			    throw new RuntimeException(Tools::displayError('invalid mobile'));
 		    } elseif (!Validate::isInt($user_variables['id_country'])) {
-			    throw new Exception(Tools::displayError('invalid country'));
+			    throw new RuntimeException(Tools::displayError('invalid country'));
 		    } elseif (Country::getIsoById($user_variables['id_country']) === '') {
-			    throw new Exception(Tools::displayError('invalid country'));
+			    throw new RuntimeException(Tools::displayError('invalid country'));
 		    } elseif (!Validate::isInt($user_variables['id_state'])) {
-			    throw new Exception(Tools::displayError('invalid state'));
+			    throw new RuntimeException(Tools::displayError('invalid state'));
 		    } else {
 			    if (!State::getNameById($user_variables['id_state'])){
 				    if($user_variables['id_state'] === '0'){
 					    /* state valid to apply for none state */
 				    } else {
 					    unset($ps_customer);
-					    throw new Exception(Tools::displayError('invalid state'));
+					    throw new RuntimeException(Tools::displayError('invalid state'));
 				    }
 			    }
 
@@ -415,13 +415,13 @@ class JFusionUser_prestashop extends JFusionUser {
 						    -3 => Tools::displayError('CIF isn\'t valid'),
 						    -4 => Tools::displayError('NIE isn\'t valid')
 					    );
-					    throw new Exception($error[$validateDni]);
+					    throw new RuntimeException($error[$validateDni]);
 				    } elseif (!Validate::isMessage($user_variables['alias'])) {
-					    throw new Exception(Tools::displayError('invalid alias'));
+					    throw new RuntimeException(Tools::displayError('invalid alias'));
 				    } elseif (!Validate::isMessage($user_variables['other'])) {
-					    throw new Exception(Tools::displayError('invalid extra information'));
+					    throw new RuntimeException(Tools::displayError('invalid extra information'));
 				    } elseif (Customer::customerExists($user_variables['email'])) {
-					    throw new Exception(Tools::displayError('someone has already registered with this e-mail address'));
+					    throw new RuntimeException(Tools::displayError('someone has already registered with this e-mail address'));
 				    } else {
 					    /* enter customer account into prestashop database */ // if all information is validated
 					    $db->insertObject('#__customer', $ps_customer, 'id_customer');
@@ -523,7 +523,7 @@ class JFusionUser_prestashop extends JFusionUser {
 	    try {
 		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 		    if (empty($usergroups)) {
-			    throw new Exception(JText::_('USERGROUP_MISSING'));
+			    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 		    } else {
 			    $db = JFusionFactory::getDatabase($this->getJname());
 			    // now delete the user

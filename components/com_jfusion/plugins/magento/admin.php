@@ -281,12 +281,12 @@ class JFusionAdmin_magento extends JFusionAdmin
 		    try {
 			    $db = JFusionFactory::getDatabase($jname);
 		    } catch (Exception $e) {
-			    throw new Exception(JText::_('MOODLE_CONFIG_FIRST'));
+			    throw new RuntimeException(JText::_('MOODLE_CONFIG_FIRST'));
 		    }
 
 		    $source_path = $params->get ( 'source_path', '' );
 		    if (! file_exists ( $source_path . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Mage.php' )) {
-			    throw new Exception(JText::_('MAGE_CONFIG_SOURCE_PATH'));
+			    throw new RuntimeException(JText::_('MAGE_CONFIG_SOURCE_PATH'));
 		    } else {
 			    $mod_exists = false;
 			    if (file_exists ( $source_path . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'Jfusion_All.xml' )) {

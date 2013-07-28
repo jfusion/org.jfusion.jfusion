@@ -336,7 +336,7 @@ class JFusionUser_universal extends JFusionUser {
 			//get the usergroup and determine if working in advanced or simple mode
 			$usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 			if (empty($usergroups)) {
-				throw new Exception(JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST'));
+				throw new RuntimeException(JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST'));
 			} else {
 				$db = JFusionFactory::getDatabase($this->getJname());
 				/**
@@ -496,9 +496,9 @@ class JFusionUser_universal extends JFusionUser {
 			$active = $helper->getFieldType('ACTIVE');
 			$inactive = $helper->getFieldType('INACTIVE');
 			if (!$userid) {
-				throw new Exception(JText::_('UNIVERSAL_NO_USERID_SET'));
+				throw new RuntimeException(JText::_('UNIVERSAL_NO_USERID_SET'));
 			} else if (!$active && !$inactive) {
-				throw new Exception(JText::_('UNIVERSAL_NO_ACTIVE_OR_INACTIVE_SET'));
+				throw new RuntimeException(JText::_('UNIVERSAL_NO_ACTIVE_OR_INACTIVE_SET'));
 			} else {
 				$userStatus = null;
 				if ( isset($inactive) ) $userStatus = $inactive->value['off'];
@@ -571,9 +571,9 @@ class JFusionUser_universal extends JFusionUser {
 			$userid = $helper->getFieldUserID();
 			$activecode = $helper->getFieldType('ACTIVECODE');
 			if (!$userid) {
-				throw new Exception(JText::_('UNIVERSAL_NO_USERID_SET'));
+				throw new RuntimeException(JText::_('UNIVERSAL_NO_USERID_SET'));
 			} else if (!$activecode) {
-				throw new Exception(JText::_('UNIVERSAL_NO_ACTIVECODE_SET'));
+				throw new RuntimeException(JText::_('UNIVERSAL_NO_ACTIVECODE_SET'));
 			} else {
 				$db = JFusionFactory::getDatabase($this->getJname());
 				$query = 'UPDATE #__'.$helper->getTable().' '.
@@ -583,7 +583,7 @@ class JFusionUser_universal extends JFusionUser {
 				$db->execute();
 				$status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 			}
-		} catch(Exception $e) {
+		} catch (Exception $e) {
 			$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' .$e->getMessage();
 		}
 	}
@@ -601,7 +601,7 @@ class JFusionUser_universal extends JFusionUser {
 
 			$usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 			if(empty($usergroups)) {
-				throw new Exception(JText::_('USERGROUP_MISSING'));
+				throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 			} else {
 				$usergroup = $usergroups[0];
 				/**
@@ -612,15 +612,15 @@ class JFusionUser_universal extends JFusionUser {
 
 				$userid = $helper->getFieldUserID();
 				if(empty($userid)) {
-					throw new Exception(JText::_('UNIVERSAL_NO_USERID_SET'));
+					throw new RuntimeException(JText::_('UNIVERSAL_NO_USERID_SET'));
 				} else {
 					$password = $helper->getFieldType('PASSWORD');
 					if(empty($password)) {
-						throw new Exception(JText::_('UNIVERSAL_NO_PASSWORD_SET'));
+						throw new RuntimeException(JText::_('UNIVERSAL_NO_PASSWORD_SET'));
 					} else {
 						$email = $helper->getFieldEmail();
 						if(empty($email)) {
-							throw new Exception(JText::_('UNIVERSAL_NO_EMAIL_SET'));
+							throw new RuntimeException(JText::_('UNIVERSAL_NO_EMAIL_SET'));
 						} else {
 							$user = new stdClass;
 							$maped = $helper->getMap();
@@ -746,7 +746,7 @@ class JFusionUser_universal extends JFusionUser {
 					}
 				}
 			}
-		} catch(Exception $e) {
+		} catch (Exception $e) {
 			$status['error'] = JText::_('USER_CREATION_ERROR'). ': ' . $e->getMessage();
 		}
 	}

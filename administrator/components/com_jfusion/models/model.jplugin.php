@@ -972,7 +972,7 @@ class JFusionJplugin
 		    //get the default user group and determine if we are using simple or advanced
 		    //check to make sure that if using the advanced group mode, $userinfo->group_id exists
 		    if (empty($usergroups)) {
-			    throw new Exception(JText::_('ERROR_CREATE_USER') . ' ' . JText::_('USERGROUP_MISSING'));
+			    throw new RuntimeException(JText::_('ERROR_CREATE_USER') . ' ' . JText::_('USERGROUP_MISSING'));
 		    } else {
 			    //load the database
 			    $db = JFusionFactory::getDatabase($jname);
@@ -1119,7 +1119,7 @@ class JFusionJplugin
 		    $update_email = $params->get('update_email');
 		    //check to see if a valid $userinfo object was passed on
 		    if (!is_object($userinfo)) {
-			    throw new Exception(JText::_('NO_USER_DATA_FOUND'));
+			    throw new RuntimeException(JText::_('NO_USER_DATA_FOUND'));
 		    } else {
 			    //check to see if user exists
 			    $existinguser = JFusionJplugin::getUser($userinfo, $jname);
@@ -1138,7 +1138,7 @@ class JFusionJplugin
 						    //return a email conflict
 						    $status['debug'][] = JText::_('EMAIL_CONFLICT_OVERWITE_DISABLED');
 						    $status['userinfo'] = $existinguser;
-						    throw new Exception(JText::_('EMAIL') . ' ' . JText::_('CONFLICT') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
+						    throw new RuntimeException(JText::_('EMAIL') . ' ' . JText::_('CONFLICT') . ': ' . $existinguser->email . ' -> ' . $userinfo->email);
 					    }
 				    }
 				    // password update ?
@@ -1257,7 +1257,7 @@ class JFusionJplugin
 		    $usergroups = JFusionFunction::getCorrectUserGroups($jname,$userinfo);
 		    //make sure the group exists
 		    if (empty($usergroups)) {
-			    throw new Exception(JText::_('GROUP_UPDATE_ERROR') . ': ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST'));
+			    throw new RuntimeException(JText::_('GROUP_UPDATE_ERROR') . ': ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST'));
 		    } else {
 			    $db = JFusionFactory::getDatabase($jname);
 			    $params = JFusionFactory::getParams($jname);

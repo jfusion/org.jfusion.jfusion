@@ -40,14 +40,11 @@ function applyAll() {
 	<form method="post" action="index.php?option=com_jfusion" name="adminForm" id="adminForm">
 		<input type="hidden" name="task" value="syncstatus" />
 
-		<?php //why is this here?
-		/*<input type="hidden" name="syncid" value="<?php echo $this->syncid;?>" />*/
-		?>
 		<table class="jfusionlist" style="border-spacing:1px;">
 			<thead>
 				<tr>
 					<th class="title" width="20px">
-						<input type='checkbox' onclick='applyAll();'/>
+						<label for="checkall"></label><input id="checkall" type="checkbox" onclick="applyAll();"/>
 					</th>
 					<th class="title" width="20px">
 						<?php echo JText::_('ID'); ?>
@@ -86,10 +83,10 @@ function applyAll() {
 
 				    ?>
 				    <td>
-				        <input type="checkbox" name="syncid[<?php echo $record->syncid; ?>]" />
+				        <input type="checkbox" id="syncid<?php echo $record->syncid; ?>" name="syncid[<?php echo $record->syncid; ?>]" />
 				    </td>
 				    <td>
-				        <?php echo $record->syncid; ?>
+					    <label for="syncid<?php echo $record->syncid; ?>"><?php echo $record->syncid; ?></label>
 				    </td>
 				    <td>
 				        <?php echo $record->action; ?>

@@ -28,7 +28,7 @@ JFusionFunctionAdmin::displayDonate();
 		<table style="width:100%;;border-spacing:1px;" class="paramlist jfusiontable">
 			<tr>
 				<td class="paramlist_key">
-					<?php echo JText::_('WIZARD_PATH'); ?>
+					<label for="paramssource_path"><?php echo JText::_('WIZARD_PATH'); ?></label>
 				</td>
 				<td class="paramlist_value">
 					<input type="text" name="params[source_path]" id="paramssource_path" value="<?php echo JPATH_ROOT; ?>" class="text_area" size="100" />

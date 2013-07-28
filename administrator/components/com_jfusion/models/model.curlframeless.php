@@ -220,7 +220,11 @@ class JFusionCurlFrameless {
      * @return mixed|string
      */
     function buildUrl($type='GET') {
-		$var = JRequest::get($type);
+	    if ($type == 'POST') {
+		    $var = $_POST;
+	    } else {
+		    $var = $_GET;
+	    }
 		unset($var['Itemid'],$var['option'],$var['view'],$var['jFusion_Route'],$var['jfile']);
 		if ($type=='POST') return $var;
 		return http_build_query($var);

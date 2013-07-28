@@ -36,7 +36,7 @@ class com_jfusionInstallerScript
 			$db->setQuery($query);
 			try {
 				$db->execute();
-			} catch( Exception $e ) {
+			} catch (Exception $e ) {
 				echo $e->getMessage() . '<br />';
 				return;
 			}
@@ -55,7 +55,7 @@ class com_jfusionInstallerScript
 			$db->setQuery($query);
 			try {
 				$db->execute();
-			} catch( Exception $e ) {
+			} catch (Exception $e ) {
 				echo $e->getMessage() . '<br />';
 				return;
 			}
@@ -77,7 +77,7 @@ class com_jfusionInstallerScript
 			$db->setQuery($query);
 			try {
 				$db->execute();
-			} catch( Exception $e ) {
+			} catch (Exception $e ) {
 				echo $e->getMessage() . '<br />';
 				return;
 			}
@@ -96,7 +96,7 @@ class com_jfusionInstallerScript
 			$db->setQuery($query);
 			try {
 				$db->execute();
-			} catch( Exception $e ) {
+			} catch (Exception $e ) {
 				echo $e->getMessage() . '<br />';
 				return;
 			}
@@ -117,7 +117,7 @@ class com_jfusionInstallerScript
 			$db->setQuery($query);
 			try {
 				$db->execute();
-			} catch( Exception $e ) {
+			} catch (Exception $e ) {
 				echo $e->getMessage() . '<br />';
 				return;
 			}
@@ -144,7 +144,7 @@ class com_jfusionInstallerScript
 			$db->setQuery($query);
 			try {
 				$db->execute();
-			} catch( Exception $e ) {
+			} catch (Exception $e ) {
 				echo $e->getMessage() . '<br />';
 				return;
 			}
@@ -189,7 +189,7 @@ class com_jfusionInstallerScript
 			$db->setQuery($query);
 			try {
 				$db->execute();
-			} catch( Exception $e ) {
+			} catch (Exception $e ) {
 				echo $e->getMessage() . '<br />';
 				return;
 			}
@@ -205,7 +205,7 @@ class com_jfusionInstallerScript
 			$db->setQuery($query);
 			try {
 				$db->execute();
-			} catch( Exception $e ) {
+			} catch (Exception $e ) {
 				echo $e->getMessage() . '<br />';
 				return;
 			}
@@ -216,7 +216,7 @@ class com_jfusionInstallerScript
 			$db->setQuery($query);
 			try {
 				$db->execute();
-			} catch( Exception $e ) {
+			} catch (Exception $e ) {
 				echo $e->getMessage() . '<br />';
 				return;
 			}
@@ -233,7 +233,7 @@ class com_jfusionInstallerScript
 			$db->setQuery($query);
 			try {
 				$db->execute();
-			} catch( Exception $e ) {
+			} catch (Exception $e ) {
 				echo $e->getMessage() . '<br />';
 				return;
 			}
@@ -273,7 +273,7 @@ class com_jfusionInstallerScript
 			$db->setQuery($query);
 			try {
 				$db->execute();
-			} catch( Exception $e ) {
+			} catch (Exception $e ) {
 				echo $e->getMessage() . '<br />';
 				return;
 			}
@@ -305,7 +305,7 @@ class com_jfusionInstallerScript
 		$db->setQuery($query);
 		try {
 			$db->execute();
-		} catch( Exception $e ) {
+		} catch (Exception $e ) {
 			echo $e->getMessage() . '<br />';
 			return;
 		}
@@ -317,7 +317,7 @@ class com_jfusionInstallerScript
 		$db->setQuery($query);
 		try {
 			$db->execute();
-		} catch( Exception $e ) {
+		} catch (Exception $e ) {
 			echo $e->getMessage() . '<br />';
 			return;
 		}
@@ -334,7 +334,7 @@ class com_jfusionInstallerScript
 			$db->setQuery($query);
 			try {
 				$db->execute();
-			} catch( Exception $e ) {
+			} catch (Exception $e ) {
 				echo $e->getMessage() . '<br />';
 				return;
 			}
@@ -354,7 +354,7 @@ class com_jfusionInstallerScript
 			$db->setQuery($query);
 			try {
 				$db->execute();
-			} catch( Exception $e ) {
+			} catch (Exception $e ) {
 				echo $e->getMessage() . '<br />';
 				return;
 			}
@@ -389,7 +389,7 @@ class com_jfusionInstallerScript
 			$db->setQuery($query);
 			try {
 				$db->execute();
-			} catch( Exception $e ) {
+			} catch (Exception $e ) {
 				echo $e->getMessage() . '<br />';
 			}
 		}
@@ -398,7 +398,7 @@ class com_jfusionInstallerScript
 			$db->setQuery($query);
 			try {
 				$db->execute();
-			} catch( Exception $e ) {
+			} catch (Exception $e ) {
 				echo $e->getMessage() . '<br />';
 			}
 		}
@@ -407,7 +407,7 @@ class com_jfusionInstallerScript
 			$db->setQuery($query);
 			try {
 				$db->execute();
-			} catch( Exception $e ) {
+			} catch (Exception $e ) {
 				echo $e->getMessage() . '<br />';
 			}
 		}
@@ -452,7 +452,7 @@ class com_jfusionInstallerScript
 				$db->setQuery($query);
 				try {
 					$db->execute();
-				} catch( Exception $e ) {
+				} catch (Exception $e ) {
 					echo $e->getMessage() . '<br />';
 				}
 
@@ -460,7 +460,7 @@ class com_jfusionInstallerScript
 				$db->setQuery($query);
 				try {
 					$db->execute();
-				} catch( Exception $e ) {
+				} catch (Exception $e ) {
 					echo $e->getMessage() . '<br />';
 					return;
 				}
@@ -483,11 +483,23 @@ class com_jfusionInstallerScript
 					$query = 'UPDATE #__jfusion_discussion_bot SET component = \'com_content\'';
 					$db->setQuery($query);
 					$db->execute();
-				} catch( Exception $e ) {
+				} catch (Exception $e ) {
 					echo $e->getMessage() . '<br />';
 				}
 			}
 		}
+
+		/**
+		 * for 2.0
+		 */
+		try {
+			$query = 'ALTER TABLE  #__jfusion_sync_details CHANGE  `message`  `message` TEXT';
+			$db->setQuery($query);
+			$db->execute();
+		} catch (Exception $e ) {
+			echo $e->getMessage() . '<br />';
+		}
+
 
 		/****
 		 * General for all upgrades
@@ -569,7 +581,7 @@ class com_jfusionInstallerScript
 			$db->setQuery($query);
 			try {
 				$db->execute();
-			} catch( Exception $e ) {
+			} catch (Exception $e ) {
 				echo $e->getMessage() . '<br />';
 			}
 		}
@@ -645,7 +657,7 @@ HTML;
 			$db->execute();
 			$db->setQuery('UPDATE #__extensions SET enabled = 1 WHERE element =\'joomla\' and folder = \'user\'');
 			$db->execute();
-		} catch( Exception $e ) {
+		} catch (Exception $e ) {
 			echo $e->getMessage() . '<br />';
 		}
 
@@ -683,7 +695,7 @@ HTML;
             <tr style="height:30px">
                 <td>
                     <h3>
-                        <b>{$description}</b>
+                        <strong>{$description}</strong>
                     </h3>
                 </td>
              </tr>
@@ -698,7 +710,7 @@ HTML;
 		$db->setQuery($query);
 		try {
 			$db->execute();
-		} catch( Exception $e ) {
+		} catch (Exception $e ) {
 			echo $e->getMessage() . '<br />';
 		}
 
@@ -706,7 +718,7 @@ HTML;
 		$db->setQuery($query);
 		try {
 			$db->execute();
-		} catch( Exception $e ) {
+		} catch (Exception $e ) {
 			echo $e->getMessage() . '<br />';
 		}
 
@@ -714,7 +726,7 @@ HTML;
 		$db->setQuery($query);
 		try {
 			$db->execute();
-		} catch( Exception $e ) {
+		} catch (Exception $e ) {
 			echo $e->getMessage() . '<br />';
 		}
 
@@ -722,7 +734,7 @@ HTML;
 		$db->setQuery($query);
 		try {
 			$db->execute();
-		} catch( Exception $e ) {
+		} catch (Exception $e ) {
 			echo $e->getMessage() . '<br />';
 		}
 
@@ -730,7 +742,7 @@ HTML;
 		$db->setQuery($query);
 		try {
 			$db->execute();
-		} catch( Exception $e ) {
+		} catch (Exception $e ) {
 			echo $e->getMessage() . '<br />';
 		}
 
@@ -738,7 +750,7 @@ HTML;
 		$db->setQuery($query);
 		try {
 			$db->execute();
-		} catch( Exception $e ) {
+		} catch (Exception $e ) {
 			echo $e->getMessage() . '<br />';
 		}
 	}
@@ -818,7 +830,7 @@ HTML;
             <tr style="height:30px">
                 <td>
                     <h3>
-                        <b>{$description}</b>
+                        <strong>{$description}</strong>
                     </h3>
                 </td>
              </tr>
@@ -883,9 +895,9 @@ HTML;
                 </td>
                 <td>
                     <h3>
-                        <b>
+                        <strong>
                             {$this->jfusionupgrade}
-                        </b>
+                        </strong>
                     </h3>
                 </td>
             </tr>
@@ -960,9 +972,9 @@ HTML;
                     </td>
                     <td>
                         <h3>
-                            <b>
+                            <strong>
                                 {$message}
-                            </b>
+                            </strong>
                         </h3>
                     </td>
                 </tr>
@@ -1015,9 +1027,9 @@ HTML;
                     </td>
                     <td>
                         <h3>
-                            <b>
+                            <strong>
                                 {$message}
-                            </b>
+                            </strong>
                         </h3>
                     </td>
                 </tr>

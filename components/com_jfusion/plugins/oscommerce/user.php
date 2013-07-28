@@ -226,7 +226,7 @@ class JFusionUser_oscommerce extends JFusionUser
 			    $db->transactionCommit();
 			    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
 		    } else {
-			    throw new Exception();
+			    throw new RuntimeException();
 		    }
 	    } catch (Exception $e) {
 		    if (isset($db)) {
@@ -287,7 +287,7 @@ class JFusionUser_oscommerce extends JFusionUser
 				    $db->execute();
 			    }
 		    } else {
-			    throw new Exception();
+			    throw new RuntimeException();
 		    }
 	    } catch (Exception $e) {
 		    if (isset($db)) {
@@ -385,7 +385,7 @@ class JFusionUser_oscommerce extends JFusionUser
 			    case 'osczen':
 				    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 				    if (empty($usergroups)) {
-					    throw new Exception(JText::_('USERGROUP_MISSING'));
+					    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 				    }
 				    $usergroup = $usergroups[0];
 				    $user->customers_group_pricing = $usergroup;
@@ -396,7 +396,7 @@ class JFusionUser_oscommerce extends JFusionUser
 			    case 'oscseo':
 				    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 				    if (empty($usergroups)) {
-					    throw new Exception(JText::_('USERGROUP_MISSING'));
+					    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 				    }
 				    $usergroup = $usergroups[0];
 				    $user->customers_status = $usergroup;
@@ -406,7 +406,7 @@ class JFusionUser_oscommerce extends JFusionUser
 			    case 'oscmax':
 				    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 				    if (empty($usergroups)) {
-					    throw new Exception(JText::_('USERGROUP_MISSING'));
+					    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 				    }
 				    $usergroup = $usergroups[0];
 				    $user->customers_group_id = $usergroup;
@@ -486,7 +486,7 @@ class JFusionUser_oscommerce extends JFusionUser
 		    //set the userid
 		    //check to see if a valid $userinfo object was passed on
 		    if (!is_object($userinfo)) {
-			    throw new Exception(JText::_('NO_USER_DATA_FOUND'));
+			    throw new RuntimeException(JText::_('NO_USER_DATA_FOUND'));
 		    }
 		    $existinguser = $this->getUser($userinfo);
 		    if (!empty($existinguser)) {
@@ -616,7 +616,7 @@ class JFusionUser_oscommerce extends JFusionUser
 		    $osCversion = $params->get('osCversion');
 		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 		    if (empty($usergroups)) {
-			    throw new Exception(JText::_('USERGROUP_MISSING'));
+			    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 		    } else {
 			    $usergroup = $usergroups[0];
 			    $db = JFusionFactory::getDataBase($this->getJname());

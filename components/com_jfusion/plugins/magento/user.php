@@ -72,7 +72,7 @@ class JFusionUser_magento extends JFusionUser {
 				$proxi = new SoapClient($apipath);
 				$sessionId = $proxi->login($apiuser, $apikey);
 				$status['debug'][] = 'Logged into Magento API as ' . $apiuser . ' using key, message:' . $apikey;
-			} catch(Soapfault $fault) {
+			} catch (Soapfault $fault) {
 				$status['error'][] = 'Could not login to Magento API as ' . $apiuser . ' using key ' . $apikey . ',message:' . $fault->faultstring;
 			}
 		}
@@ -617,7 +617,7 @@ class JFusionUser_magento extends JFusionUser {
 			}
 			try {
 				$result = $proxi->call($sessionId, 'customer.delete', $user_id);
-			} catch(Soapfault $fault) {
+			} catch (Soapfault $fault) {
 				$status['error'][] = 'Magento API: Could not delete user with id '.$user_id.' , message: ' . $fault->faultstring;
 			}
 			if (!$status['error']) {
@@ -626,7 +626,7 @@ class JFusionUser_magento extends JFusionUser {
 
 			try {
 				$proxi->endSession($sessionId);
-			} catch(Soapfault $fault) {
+			} catch (Soapfault $fault) {
 				$status['error'][] = 'Magento API: Could not end this session, message: ' . $fault->faultstring;
 			}
 		}
@@ -655,12 +655,12 @@ class JFusionUser_magento extends JFusionUser {
 		if (empty($status['error'])) {
 			try {
 				$result = $proxi->call($sessionId, 'customer.update', array($user_id, $update));
-			} catch(Soapfault $fault) {
+			} catch (Soapfault $fault) {
 				$status['error'][] = 'Magento API: Could not update email of user with id '.$user_id.' , message: ' . $fault->faultstring;
 			}
 			try {
 				$proxi->endSession($sessionId);
-			} catch(Soapfault $fault) {
+			} catch (Soapfault $fault) {
 				$status['error'][] = 'Magento API: Could not end this session, message: ' . $fault->faultstring;
 			}
 		}
@@ -677,7 +677,7 @@ class JFusionUser_magento extends JFusionUser {
 		try {
 			$usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 			if (empty($usergroups)) {
-				throw new Exception(JText::_('USERGROUP_MISSING'));
+				throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 			} else {
 				$usergroup = $usergroups[0];
 				//set the usergroup in the user table
@@ -687,7 +687,7 @@ class JFusionUser_magento extends JFusionUser {
 				$db->execute();
 				$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode (' , ', $existinguser->groups) . ' -> ' . $usergroup;
 			}
-		} catch(Exception $e) {
+		} catch (Exception $e) {
 			$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $e->getMessage();
 		}
 	}

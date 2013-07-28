@@ -459,20 +459,20 @@ HTML;
 
 				$pattern = "^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$";
 				if (empty($userinfo->username) || empty($userinfo->email) || !preg_match('/^[^@]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$/', $userinfo->email)) {
-					throw new Exception(JText::_('GUEST_FIELDS_MISSING'));
+					throw new RuntimeException(JText::_('GUEST_FIELDS_MISSING'));
 				} else {
 					//check to see if user exists to prevent user hijacking
 					$JFusionUser = JFusionFactory::getUser($this->getJname());
 					define('OVERRIDE_IDENTIFIER',3);
 					$existinguser = $JFusionUser->getUser($userinfo->username);
 					if(!empty($existinguser)) {
-						throw new Exception(JText::_('USERNAME_IN_USE'));
+						throw new RuntimeException(JText::_('USERNAME_IN_USE'));
 					}
 
 					//check for email
 					$existinguser = $JFusionUser->getUser($userinfo->email);
 					if(!empty($existinguser)) {
-						throw new Exception(JText::_('EMAIL_IN_USE'));
+						throw new RuntimeException(JText::_('EMAIL_IN_USE'));
 					}
 				}
 			}

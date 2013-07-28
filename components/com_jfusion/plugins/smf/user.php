@@ -302,7 +302,7 @@ class JFusionUser_smf extends JFusionUser
 	    try {
 		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 		    if (empty($usergroups)) {
-			    throw new Exception(JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST'));
+			    throw new RuntimeException(JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST'));
 		    } else {
 			    $usergroup = $usergroups[0];
 
@@ -456,7 +456,7 @@ class JFusionUser_smf extends JFusionUser
 
 		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 		    if (empty($usergroups)) {
-			    throw new Exception('USERGROUP_MISSING');
+			    throw new RuntimeException('USERGROUP_MISSING');
 		    } else {
 			    //prepare the user variables
 			    $user = new stdClass;

@@ -57,11 +57,11 @@ class JFusionHook {
      *
      * @param mixed $hook
      *
-     * @throws Exception
+     * @throws RuntimeException
      */
     public static function exit_handler($hook) {
         //throw an exception to allow Joomla to continue
-        throw new Exception('phpBB exited.');
+        throw new RuntimeException('phpBB exited.');
     }
 
     /**

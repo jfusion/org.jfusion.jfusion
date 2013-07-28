@@ -70,7 +70,7 @@ JHTML::_('behavior.modal', 'a.modal');
 		<input type="hidden" name="syncid" value="<?php echo $this->syncid; ?>" />
 
 		<div id="ajax_bar">
-			<?php echo JText::_('APPLY_ACTION_ALL_CONFLICTS'); ?>
+			<label for="default_value"><?php echo JText::_('APPLY_ACTION_ALL_CONFLICTS'); ?></label>
 			<?php
 			$action = $this->syncdata['action'];
 			if ($action == 'slave') {
@@ -81,7 +81,7 @@ JHTML::_('behavior.modal', 'a.modal');
 			    $conflict = JText::_('MASTER');
 			}
 			?>
-			<select name="default_value">
+			<select id="default_value" name="default_value">
 				<option value="0"><?php echo JText::_('IGNORE') ?></option>
 				<option value="1"><?php echo JText::_('UPDATE') . ' ' . $user . ' ' . JText::_('USER') ?></option>
 				<option value="2"><?php echo JText::_('UPDATE') . ' ' . $conflict . ' ' . JText::_('USER') ?></option>

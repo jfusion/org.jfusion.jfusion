@@ -417,7 +417,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 		    $source_path = $params->get('source_path');
 		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 		    if (empty($usergroups)) {
-			    throw new Exception(JText::_('USERGROUP_MISSING'));
+			    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 		    } else {
 			    //prepare the user variables
 			    $user = new stdClass;

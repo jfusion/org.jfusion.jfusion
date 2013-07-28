@@ -37,7 +37,7 @@ class JFusionControllerPlugin extends JControllerLegacy
 	 * @param   boolean $cachable   If true, the view output will be cached
 	 * @param   array   $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
 	 *
-	 * @throws Exception
+	 * @throws RuntimeException
 	 * @return $this|\JControllerLegacy
 	 */
 	public function display($cachable = false, $urlparams = array()) {
@@ -54,7 +54,7 @@ class JFusionControllerPlugin extends JControllerLegacy
 			//load custom plugin parameter
 			$JFusionPluginParam = $item->params->get('JFusionPluginParam');
 			if(empty($JFusionPluginParam)){
-				throw new Exception( JText::_ ( 'ERROR_PLUGIN_CONFIG' ) );
+				throw new RuntimeException( JText::_ ( 'ERROR_PLUGIN_CONFIG' ) );
 			}
 
 			//load custom plugin parameter
@@ -70,10 +70,10 @@ class JFusionControllerPlugin extends JControllerLegacy
 
                 if ($db->loadResult() != 1) {
                     //die gracefully as the plugin is not configured properly
-	                throw new Exception( JText::_ ( 'ERROR_PLUGIN_CONFIG' ) );
+	                throw new RuntimeException( JText::_ ( 'ERROR_PLUGIN_CONFIG' ) );
                 }
             } else {
-	            throw new Exception( JText::_ ( 'NO_VIEW_SELECTED' ) );
+	            throw new RuntimeException( JText::_ ( 'NO_VIEW_SELECTED' ) );
             }
 
             //load the view

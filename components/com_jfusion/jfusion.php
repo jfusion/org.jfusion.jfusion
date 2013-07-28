@@ -32,7 +32,7 @@ if (JFile::exists ( $path )) {
 	require_once ($path);
 } else {
 	// Hmm... an invalid controller was passed
-	throw new Exception( JText::_ ( 'Unknown controller' ) );
+	throw new RuntimeException( JText::_ ( 'Unknown controller' ) );
 }
 
 // Instanciate and execute the controller

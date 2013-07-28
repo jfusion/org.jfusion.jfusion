@@ -611,7 +611,7 @@ HTML;
 			    $userinfo->userid = 0;
 			    $pattern = "^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$";
 			    if (empty($userinfo->username) || empty($userinfo->email) || !preg_match('/^[^@]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$/', $userinfo->email)) {
-				    throw new Exception(JText::_('GUEST_FIELDS_MISSING'));
+				    throw new RuntimeException(JText::_('GUEST_FIELDS_MISSING'));
 			    } else {
 				    $db = JFusionFactory::getDatabase($this->getJname());
 				    $query = 'SELECT COUNT(*) FROM #__members '
@@ -624,7 +624,7 @@ HTML;
 				    $db->setQuery($query);
 				    $result = $db->loadResult();
 				    if (!empty($result)) {
-					    throw new Exception(JText::_('USERNAME_IN_USE'));
+					    throw new RuntimeException(JText::_('USERNAME_IN_USE'));
 				    }
 			    }
 		    }

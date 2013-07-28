@@ -26,11 +26,11 @@ var response = { 'completed' : false , 'slave_data' : [] , 'errors' : [] };
 var sync_mode = '<?php echo $this->sync_mode;?>';
 JFusion.syncid = '<?php echo $this->syncid; ?>';
 
-var periodical;
+JFusion.periodical;
 
 // refresh every 10 seconds
-var syncRunning = -1;
-var counter = 10;
+JFusion.syncRunning = -1;
+JFusion.counter = 10;
 
 JFusion.renderSyncHead = function() {
 	var root = new Element('thead');
@@ -101,30 +101,30 @@ JFusion.renderSync = function(data) {
 };
 
 JFusion.update = function() {
-	if (syncRunning != -1) {
+	if (JFusion.syncRunning != -1) {
 		var text;
 		var start = $('start');
-		if (syncRunning == 0) {
-			clearInterval(periodical);
+		if (JFusion.syncRunning == 0) {
+			clearInterval(JFusion.periodical);
 
 			text = JFusion.JText('PAUSED');
 
 			start.set('html', JFusion.JText('RESUME'));
 		} else if (response.completed) {
 			// let's stop our timed ajax
-			clearInterval(periodical);
+			clearInterval(JFusion.periodical);
 
 			text = JFusion.JText('FINISHED');
 
-			start.set('html', '<b>'+JFusion.JText('CLICK_FOR_MORE_DETAILS')+'</b>');
+			start.set('html', '<strong>'+JFusion.JText('CLICK_FOR_MORE_DETAILS')+'</strong>');
 			start.set('href', 'index.php?option=com_jfusion&task=syncstatus&syncid='+JFusion.syncid);
 			start.removeEvents('click');
 		} else {
-			text = JFusion.JText('UPDATE_IN')+ ' ' + counter + ' '+JFusion.JText('SECONDS');
+			text = JFusion.JText('UPDATE_IN')+ ' ' + JFusion.counter + ' '+JFusion.JText('SECONDS');
 
 			start.set('html', JFusion.JText('PAUSE'));
 		}
-		$("counter").set('html', '<b>'+text+'</b>');
+		$('counter').set('html', '<strong>'+text+'</strong>');
 	}
 };
 
@@ -152,6 +152,7 @@ window.addEvent('domready', function() {
 				JFusion.render(JSONobject);
 			}, onError: function(JSONobject) {
 				JFusion.OnError(JSONobject);
+				clearInterval(JFusion.periodical);
 			}
 		});
 
@@ -162,16 +163,17 @@ window.addEvent('domready', function() {
 				JFusion.render(JSONobject);
 			}, onError: function(JSONobject) {
 				JFusion.OnError(JSONobject);
+				clearInterval(JFusion.periodical);
 			}
 		});
 
 		/* our usersync status update function: */
 		var refresh = (function() {
 			//add another second to the counter
-			counter -= 1;
-			if (counter < 1) {
+			JFusion.counter -= 1;
+			if (JFusion.counter < 1) {
 				if (!response.completed) {
-					counter = 10;
+					JFusion.counter = 10;
 					// dummy to prevent caching of php
 					var dummy = Date.now() + Number.random(0, 100);
 					//generate the get variable for submission
@@ -197,9 +199,9 @@ window.addEvent('domready', function() {
 		$('start').addEvent('click', function(e) {
 			// prevent default
 			e.stop();
-			if (syncRunning != 1) {
+			if (JFusion.syncRunning != 1) {
 				// prevent insane clicks to start numerous requests
-				clearInterval(periodical);
+				clearInterval(JFusion.periodical);
 
 				if (sync_mode == 'new') {
 					var form = $('syncForm');
@@ -207,21 +209,23 @@ window.addEvent('domready', function() {
 					var i;
 
 					if (form) {
-						for(i=0; i<form.elements.length; i++) {
-							if (form.elements[i].type=="select-one") {
-								if (form.elements[i].options[form.elements[i].selectedIndex].value == 1) {
-									response.slave_data[count] = {"jname":form.elements[i].id,
-										"total":slave_data[form.elements[i].id]['total'],
-										"total_to_sync":slave_data[form.elements[i].id]['total'],
-										"created":0,
-										"deleted":0,
-										"updated":0,
-										"error":0,
-										"unchanged":0};
-									count++;
-								}
+						var select = form.getElements('select[name^=slave]');
+
+						select.each(function(el) {
+							var value = el.get('value');
+							if (value) {
+								response.slave_data[count] = {
+									"jname": value,
+									"total": slave_data[value]['total'],
+									"total_to_sync": slave_data[value]['total'],
+									"created":0,
+									"deleted":0,
+									"updated":0,
+									"error":0,
+									"unchanged":0};
+								count++;
 							}
-						}
+						});
 					}
 					if (response.slave_data.length) {
 						//give the user a last chance to opt-out
@@ -229,38 +233,29 @@ window.addEvent('domready', function() {
 						if (answer) {
 							sync_mode = 'resume';
 							//do start
-							syncRunning = 1;
-							var paramString = 'option=com_jfusion&task=syncinitiate&tmpl=component&syncid=' + JFusion.syncid;
-							for(i=0; i<form.elements.length; i++) {
-								if (form.elements[i].type=="select-one") {
-									if (form.elements[i].options[form.elements[i].selectedIndex].value) {
-										paramString = paramString + '&' + form.elements[i].name + '=' + form.elements[i].options[form.elements[i].selectedIndex].value;
-									}
-								}
-								if (form.elements[i].name=='userbatch') {
-									paramString = paramString + '&' + form.elements[i].name + '=' + form.elements[i].value;
-								}
-							}
+							JFusion.syncRunning = 1;
+
 							new Request.JSON({url: JFusion.url,
 								method: 'get' ,onSuccess: function(JSONobject) {
 									JFusion.render(JSONobject);
 								}, onError: function(JSONobject) {
 									JFusion.OnError(JSONobject);
-								}}).send(paramString);
+									clearInterval(JFusion.periodical);
+								}}).send(form.toQueryString()+'&option=com_jfusion&task=syncinitiate&tmpl=component&syncid=' + JFusion.syncid);
 						}
 					} else {
 						JFusion.OnError(JFusion.JText('SYNC_NODATA'));
 					}
 				} else {
-					syncRunning = 1;
+					JFusion.syncRunning = 1;
 				}
-				if (syncRunning == 1) {
-					periodical = refresh.periodical(1000, this);
+				if (JFusion.syncRunning == 1) {
+					JFusion.periodical = refresh.periodical(1000, this);
 
 					JFusion.renderSync(response);
 				}
 			} else {
-				syncRunning = 0;
+				JFusion.syncRunning = 0;
 			}
 			JFusion.update();
 		});
@@ -286,13 +281,13 @@ window.addEvent('domready', function() {
 				<input type="hidden" name="task" value="syncstatus" />
 				<input type="hidden" name="syncid" value="<?php echo $this->syncid; ?>" />
 				<div class="ajax_bar">
-					<?php echo JText::_('SYNC_DIRECTION_SELECT'); ?>
-					<select name="action" style="margin-right:10px; margin-left:5px;">
+					<label for="action"><?php echo JText::_('SYNC_DIRECTION_SELECT'); ?></label>
+					<select id="action" name="action" style="margin-right:10px; margin-left:5px;">
 						<option value="master"><?php echo JText::_('SYNC_MASTER'); ?></option>
 						<option value="slave"><?php echo JText::_('SYNC_SLAVE'); ?></option>
 					</select>
-					<?php echo JText::_('SYNC_NUMBER_OF_USERS'); ?>
-					<input name="userbatch" class="inputbox" style="margin-right:10px; margin-left:5px;" value="500"/>
+					<label for="userbatch"><?php echo JText::_('SYNC_NUMBER_OF_USERS'); ?></label>
+					<input id="userbatch" name="userbatch" class="inputbox" style="margin-right:10px; margin-left:5px;" value="500"/>
 				</div>
 				<br/>
 
@@ -316,13 +311,13 @@ window.addEvent('domready', function() {
 					<?php
 					foreach ($this->slave_data as $slave) { ?>
 						<tr>
-							<td><?php echo $slave['jname']; ?></td>
+							<td><label for="plugin<?php echo $slave['jname']; ?>"><?php echo $slave['jname']; ?></label></td>
 							<td><?php echo JText::_('SLAVE') ?></td>
 							<td><?php echo $slave['total']; ?></td>
 							<td>
-								<select id="<?php echo $slave['jname']; ?>" name="slave[<?php echo $slave['jname']; ?>][perform_sync]">
+								<select id="plugin<?php echo $slave['jname']; ?>" name="slave[<?php echo $slave['jname']; ?>][perform_sync]">
 									<option value=""><?php echo JText::_('SYNC_EXCLUDE_PLUGIN'); ?></option>
-									<option value="1"><?php echo JText::_('SYNC_INCLUDE_PLUGIN'); ?></option>
+									<option value="<?php echo $slave['jname']; ?>"><?php echo JText::_('SYNC_INCLUDE_PLUGIN'); ?></option>
 								</select>
 							</td>
 						</tr>
@@ -349,7 +344,7 @@ window.addEvent('domready', function() {
 	<div id="counter"></div>
 	<br/>
 	<div class="ajax_bar">
-		<b><?php echo JText::_('SYNC_CONTROLLER'); ?></b>&nbsp;&nbsp;&nbsp;
+		<strong><?php echo JText::_('SYNC_CONTROLLER'); ?></strong>&nbsp;&nbsp;&nbsp;
 		<a id="start" href="#"><?php echo JText::_('START'); ?></a>
 	</div>
 </div>

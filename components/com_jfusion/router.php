@@ -69,7 +69,7 @@ function jfusionBuildRoute(&$query)
  *
  * @param array $segments segments to parse
  *
- * @throws Exception
+ * @throws RuntimeException
  * @return string vars
  */
 function jfusionParseRoute($segments)
@@ -122,7 +122,7 @@ function jfusionParseRoute($segments)
 	if ($vars['view'] == 'plugin') {
 	    $JFusionPluginParam = $item->params->get('JFusionPluginParam');
 	    if (empty($JFusionPluginParam)) {
-		    throw new Exception( JText::_ ( 'ERROR_PLUGIN_CONFIG' ) );
+		    throw new RuntimeException( JText::_ ( 'ERROR_PLUGIN_CONFIG' ) );
 	    } else {
 	        //load custom plugin parameter
 	        $jPluginParam = new JRegistry('');
