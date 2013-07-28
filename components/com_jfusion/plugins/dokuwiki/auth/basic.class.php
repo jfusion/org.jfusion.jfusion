@@ -42,72 +42,6 @@ if (!class_exists('Jfusion_DokuWiki_Basic')) {
 		}
 
 		/**
-		 * Log off the current user [ OPTIONAL ]
-		 *
-		 * Is run in addition to the ususal logoff method. Should
-		 * only be needed when trustExternal is implemented.
-		 *
-		 * @see     auth_logoff()
-		 * @author  Andreas Gohr <andi@splitbrain.org>
-		 */
-		public function logOff() {
-		}
-
-		/**
-		 * Do all authentication [ OPTIONAL ]
-		 *
-		 *
-		 * If this function is implemented it will be used to
-		 * authenticate a user - all other DokuWiki internals
-		 * will not be used for authenticating, thus
-		 * implementing the checkPass() function is not needed
-		 * anymore.
-		 *
-		 * The function can be used to authenticate against third
-		 * party cookies or Apache auth mechanisms and replaces
-		 * the auth_login() function
-		 *
-		 * The function will be called with or without a set
-		 * username. If the Username is given it was called
-		 * from the login form and the given credentials might
-		 * need to be checked. If no username was given it
-		 * the function needs to check if the user is logged in
-		 * by other means (cookie, environment).
-		 *
-		 * The function needs to set some globals needed by
-		 * DokuWiki like auth_login() does.
-		 *
-		 * @see     auth_login()
-		 * @author  Andreas Gohr <andi@splitbrain.org>
-		 *
-		 * @param   string  $user    Username
-		 * @param   string  $pass    Cleartext Password
-		 * @param   bool    $sticky  Cookie should not expire
-		 * @return  bool             true on successful auth
-		 */
-		public function trustExternal($user, $pass, $sticky = false) {
-			/* some example:
-
-			global $USERINFO;
-			global $conf;
-			$sticky ? $sticky = true : $sticky = false; //sanity check
-
-			// do the checking here
-
-			// set the globals if authed
-			$USERINFO['name'] = 'FIXME';
-			$USERINFO['mail'] = 'FIXME';
-			$USERINFO['grps'] = array('FIXME');
-			$_SERVER['REMOTE_USER'] = $user;
-			$_SESSION[DOKU_COOKIE]['auth']['user'] = $user;
-			$_SESSION[DOKU_COOKIE]['auth']['pass'] = $pass;
-			$_SESSION[DOKU_COOKIE]['auth']['info'] = $USERINFO;
-			return true;
-
-			*/
-		}
-
-		/**
 		 * Check user+password [ MUST BE OVERRIDDEN ]
 		 *
 		 * Checks if the given user exists and the given
@@ -256,42 +190,6 @@ if (!class_exists('Jfusion_DokuWiki_Basic')) {
 		public function retrieveGroups($start = 0, $limit = 0) {
 			$this->debug("authorisation method does not support group list retrieval", -1);
 			return array();
-		}
-
-		/**
-		 * Sanitize a given username [OPTIONAL]
-		 *
-		 * This function is applied to any user name that is given to
-		 * the backend and should also be applied to any user name within
-		 * the backend before returning it somewhere.
-		 *
-		 * This should be used to enforce username restrictions.
-		 *
-		 * @author Andreas Gohr <andi@splitbrain.org>
-		 * @param string $user username
-		 * @return string the cleaned username
-		 */
-		public function cleanUser($user) {
-			return $user;
-		}
-
-		/**
-		 * Sanitize a given groupname [OPTIONAL]
-		 *
-		 * This function is applied to any groupname that is given to
-		 * the backend and should also be applied to any groupname within
-		 * the backend before returning it somewhere.
-		 *
-		 * This should be used to enforce groupname restrictions.
-		 *
-		 * Groupnames are to be passed without a leading '@' here.
-		 *
-		 * @author Andreas Gohr <andi@splitbrain.org>
-		 * @param  string $group groupname
-		 * @return string the cleaned groupname
-		 */
-		public function cleanGroup($group) {
-			return $group;
 		}
 
 		/**

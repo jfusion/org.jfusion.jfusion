@@ -231,28 +231,6 @@ if (!class_exists('Jfusion_DokuWiki_Plain')) {
 		}
 
 		/**
-		 * Only valid pageid's (no namespaces) for usernames
-		 *
-		 * @param string $user
-		 * @return string
-		 */
-		public function cleanUser($user) {
-			$conf = $this->helper->getConf();
-			return cleanID(str_replace(':', $conf['sepchar'], $user));
-		}
-
-		/**
-		 * Only valid pageid's (no namespaces) for groupnames
-		 *
-		 * @param string $group
-		 * @return string
-		 */
-		public function cleanGroup($group) {
-			$conf = $this->helper->getConf();
-			return cleanID(str_replace(':', $conf['sepchar'], $group));
-		}
-
-		/**
 		 * Load all user data
 		 *
 		 * loads the user file into a datastructure
