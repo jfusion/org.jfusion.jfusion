@@ -67,14 +67,16 @@ class JFusionAdmin_magento extends JFusionAdmin
     
     
     // get the Magento version number
-    function getMagentoVersion($forumPath) {
-    	$file = file_get_contents(rtrim($forumPath,DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.'Mage.php');
-    	$pstart = strpos($file,'function getVersionInfo()');
-    	$pend = strpos($file,'}',$pstart);
-    	eval(substr($file,$pstart,$pend-$pstart+1));
-    	$version = getVersionInfo();
-    	return $version['major'].".".$version['minor'].".".$version['revision'];
-    }
+	function getMagentoVersion($forumPath) {
+		$file = file_get_contents(rtrim($forumPath,DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.'Mage.php');
+
+		$pstart = strpos($file,'function getVersionInfo()');
+		$pstart = strpos($file,'return',$pstart);
+		$pend = strpos($file,');',$pstart);
+		$version = eval(substr($file,$pstart,$pend-$pstart+2));
+
+		return $version['major'].'.'.$version['minor'].'.'.$version['revision'];
+	}
     
     
 
