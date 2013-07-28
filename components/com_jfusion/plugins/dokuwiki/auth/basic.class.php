@@ -11,6 +11,9 @@
  * @author     Jan Schumann <js@jschumann-it.com>
  */
 if (!class_exists('Jfusion_DokuWiki_Basic')) {
+	/**
+	 * Class Jfusion_DokuWiki_Basic
+	 */
 	class Jfusion_DokuWiki_Basic {
 		/**
 		 * @var JFusionHelper_dokuwiki $helper

@@ -12,6 +12,9 @@
 require_once 'basic.class.php';
 
 if (!class_exists('Jfusion_DokuWiki_Mysql')) {
+	/**
+	 * Class Jfusion_DokuWiki_Mysql
+	 */
 	class Jfusion_DokuWiki_Mysql extends Jfusion_DokuWiki_Basic {
 		/** @var resource holds the database connection */
 		protected $dbcon = 0;

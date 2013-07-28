@@ -11,6 +11,9 @@
 require_once 'basic.class.php';
 
 if (!class_exists('Jfusion_DokuWiki_Plain')) {
+	/**
+	 * Class Jfusion_DokuWiki_Plain
+	 */
 	class Jfusion_DokuWiki_Plain extends Jfusion_DokuWiki_Basic {
 		/** @var array user cache */
 		protected $users = null;
