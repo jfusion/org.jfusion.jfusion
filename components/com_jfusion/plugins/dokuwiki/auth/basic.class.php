@@ -60,6 +60,18 @@ if (!class_exists('Jfusion_DokuWiki_Basic')) {
 		}
 
 		/**
+		 * @param string $clear
+		 * @param string $crypt
+		 *
+		 * @return bool
+		 */
+		function verifyPassword($clear, $crypt) {
+			require_once 'passhash.class.php';
+			$pass = new Jfusion_PassHash();
+			return $pass->verify_hash($clear, $crypt);
+		}
+
+		/**
 		 * Return user info [ MUST BE OVERRIDDEN ]
 		 *
 		 * Returns info about the given user needs to contain
@@ -208,6 +220,7 @@ if (!class_exists('Jfusion_DokuWiki_Basic')) {
 			global $conf;
 			if(empty($method)) $method = $conf['passcrypt'];
 
+			require_once 'passhash.class.php';
 			$pass = new Jfusion_PassHash();
 			$call = 'hash_'.$method;
 

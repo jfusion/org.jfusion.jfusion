@@ -168,7 +168,7 @@ class JFusionFunctionAdmin
                 </td>
                 -->
                 <td>
-                    <font size="3"><b>{$msg}</b></font>
+                    <h1><b>{$msg}</b></h1>
                 </td>
                 <td style="width: 15%; text-align: right;">
                     <div id="navButton">

@@ -76,7 +76,7 @@ class action_plugin_jfusion extends DokuWiki_Action_Plugin {
 
         if(!empty($user)) {
             //usual login
-            if ($auth->checkPass($user,$password)) {
+            if ($auth->checkPass($user, $password)) {
                 // make logininfo globally available
                 $_SERVER['REMOTE_USER'] = $user;
 

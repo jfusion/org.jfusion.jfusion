@@ -682,9 +682,9 @@ HTML;
         <table style="background-color:{$color}; width:100%;">
             <tr style="height:30px">
                 <td>
-                    <font size="2">
+                    <h3>
                         <b>{$description}</b>
-                    </font>
+                    </h3>
                 </td>
              </tr>
         </table>
@@ -817,9 +817,9 @@ HTML;
         <table style="background-color:{$color}; width:100%;">
             <tr style="height:30px">
                 <td>
-                    <font size="2">
+                    <h3>
                         <b>{$description}</b>
-                    </font>
+                    </h3>
                 </td>
              </tr>
         </table>
@@ -882,11 +882,11 @@ HTML;
                     <img src="components/com_jfusion/images/check_good_small.png">
                 </td>
                 <td>
-                    <font size="2">
+                    <h3>
                         <b>
                             {$this->jfusionupgrade}
                         </b>
-                    </font>
+                    </h3>
                 </td>
             </tr>
         </table>
@@ -959,11 +959,11 @@ HTML;
                         {$image}
                     </td>
                     <td>
-                        <font size="2">
+                        <h3>
                             <b>
                                 {$message}
                             </b>
-                        </font>
+                        </h3>
                     </td>
                 </tr>
             </table>
@@ -1014,11 +1014,11 @@ HTML;
                         {$image}
                     </td>
                     <td>
-                        <font size="2">
+                        <h3>
                             <b>
                                 {$message}
                             </b>
-                        </font>
+                        </h3>
                     </td>
                 </tr>
             </table>

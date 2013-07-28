@@ -210,7 +210,7 @@ class jfusionViewLoginCheckerResult extends JViewLegacy
 					$plugin = new $className($this, (array)$plugin);
 				}
 
-				if (method_exists($plugin, '')) {
+				if (method_exists($plugin, 'onUserLogin')) {
 					// Try to authenticate
 					$user_results = (array)$response;
 					$results = $plugin->onUserLogin($user_results, $options);

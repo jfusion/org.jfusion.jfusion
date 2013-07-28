@@ -38,30 +38,30 @@ JHTML::_('behavior.modal', 'a.modal');
 	</table>
 	<br/>
 	<br/>
-	<font size="2">
+	<h1>
 		<?php echo JText::_('CONFLICT_INSTRUCTION'); ?>
-	</font>
+	</h1>
 	<br/>
 	<h3>
 		<?php echo JText::_('EMAIL') . ' ' . JText::_('CONFLICTS'); ?>
 	</h3>
-	<font size="2">
+	<h1>
 		<?php echo JText::_('CONFLICTS_EMAIL'); ?>
-	</font>
+	</h1>
 	<br/>
 	<h3>
 		<?php echo JText::_('USERNAME') . ' ' . JText::_('CONFLICTS'); ?>
 	</h3>
-	<font size="2">
+	<h1>
 		<?php echo JText::_('CONFLICTS_USERNAME'); ?>
-	</font>
+	</h1>
 	<br/>
 	<h3>
 		<?php echo JText::_('USERSYNC') . ' ' . JText::_('ERROR'); ?>
 	</h3>
-	<font size="2">
+	<h1>
 		<?php echo JText::_('CONFLICTS_ERROR'); ?>
-	</font>
+	</h1>
 	<br/>
 	<br/>
 

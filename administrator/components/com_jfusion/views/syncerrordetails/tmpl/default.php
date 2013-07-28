@@ -29,9 +29,9 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DI
 	</head>
 	<body>
 		<div id="ajax_bar">
-			<font size="3">
+			<h1>
 				Detailed JFusion Error Report
-			</font>
+			</h1>
 		</div>
 		
 		<?php

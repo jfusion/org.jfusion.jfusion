@@ -772,7 +772,7 @@ class JFusionCurl
 	 *
 	 * @return string nothing
 	 */
-	public function setmycookies($status, $cookies, $cookiedomain, $cookiepath, $expires=0, $secure=0, $httponly=1)
+	public static function setmycookies($status, $cookies, $cookiedomain, $cookiepath, $expires=0, $secure=0, $httponly=1)
 	{
 		$options = array();
 		$options['cookiedomain'] = $cookiedomain;

@@ -32,7 +32,7 @@ class JFusionHelper_dokuwiki
     /**
      * @var Jfusion_DokuWiki_Basic
      */
-    var $auth = null;
+    var $auth;
 
     /**
      *

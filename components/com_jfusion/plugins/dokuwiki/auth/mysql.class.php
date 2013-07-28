@@ -102,7 +102,7 @@ if (!class_exists('Jfusion_DokuWiki_Mysql')) {
 					if($this->getConf('forwardClearPass') == 1)
 						$rc = true;
 					else
-						$rc = auth_verifyPassword($pass, $result[0]['pass']);
+						$rc = $this->checkPass($pass, $result[0]['pass']);
 				}
 				$this->_closeDB();
 			}

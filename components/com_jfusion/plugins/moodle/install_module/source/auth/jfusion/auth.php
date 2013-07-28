@@ -144,7 +144,7 @@ class auth_plugin_jfusion extends auth_plugin_base {
 		$user = $DB->get_record('user', array('username'=>$username, 'mnethostid'=>$CFG->mnet_localhost_id));
 		// now test if we have a valid user, the host should have created one
 		/**
-		 * function commented out, it do not exsist in moodle assueme it is replced by $DB
+		 * function commented out, it do not exist in moodle assume it is replaced by $DB
 		 * $user = get_record('user', 'username', $username, 'mnethostid', $CFG->mnet_localhost_id);
 		 */
 		if ($user) {

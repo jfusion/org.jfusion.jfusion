@@ -65,11 +65,11 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DI
 	                        <img src="components/com_jfusion/images/check_good.png">
 	                    </td>
 	                    <td>
-	                        <font size="2">
+	                        <h1>
 	                            <b>
 									<?php echo $title; ?>
 	                            </b>
-	                        </font>
+	                        </h1>
 	                    </td>
 	                </tr>
 	            </table>
@@ -102,11 +102,11 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DI
 	                                <img src="components/com_jfusion/images/check_good_small.png">
 	                            </td>
 	                            <td style="background-color:#d9f9e2;">
-	                                <font size="2">
+	                                <h1>
 	                                    <b>
 											<?php echo $title; ?>
 	                                    </b>
-	                                </font>
+	                                </h1>
 	                            </td>
 	                        </tr>
 							<?php
@@ -118,11 +118,11 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DI
 	                                <img src="components/com_jfusion/images/check_bad_small.png">
 	                            </td>
 	                            <td style="background-color:#f9ded9;">
-	                                <font size="2">
+	                                <h1>
 	                                    <b>
 											<?php echo $title; ?>
 	                                    </b>
-	                                </font>
+	                                </h1>
 	                            </td>
 	                        </tr>
 							<?php
@@ -144,11 +144,11 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DI
 	                        <img src="components/com_jfusion/images/check_bad_small.png">
 	                    </td>
 	                    <td>
-	                        <font size="2">
+	                        <h1>
 	                            <b>
 									<?php echo $title; ?>
 	                            </b>
-	                        </font>
+	                        </h1>
 	                    </td>
 	                </tr>
 	            </table>

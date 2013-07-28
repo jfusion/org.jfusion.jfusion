@@ -41,6 +41,24 @@ if (!class_exists('Jfusion_DokuWiki_Plain')) {
 		}
 
 		/**
+		 * Check user+password
+		 *
+		 * Checks if the given user exists and the given
+		 * plaintext password is correct
+		 *
+		 * @author  Andreas Gohr <andi@splitbrain.org>
+		 * @param string $user
+		 * @param string $pass
+		 * @return  bool
+		 */
+		public function checkPass($user, $pass) {
+			$userinfo = $this->getUserData($user);
+			if($userinfo === false) return false;
+
+			return $this->verifyPassword($pass, $this->users[$user]['pass']);
+		}
+
+		/**
 		 * Return user info
 		 *
 		 * Returns info about the given user needs to contain
