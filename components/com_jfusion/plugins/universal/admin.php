@@ -613,6 +613,10 @@ if(!isset($_COOKIE[\'jfusionframeless\']))';
 	 */
 	function isMultiGroup()
 	{
+		/**
+		 * @ignore
+		 * @var $helper JFusionHelper_universal
+		 */
 		$helper = JFusionFactory::getHelper($this->getJname());
 		$userid = $helper->getFieldType('USERID','group');
 		if ( $userid ) {
@@ -629,6 +633,10 @@ if(!isset($_COOKIE[\'jfusionframeless\']))';
 	 */
 	function debugConfigExtra()
 	{
+		/**
+		 * @ignore
+		 * @var $helper JFusionHelper_universal
+		 */
 		$helper = JFusionFactory::getHelper($this->getJname());
 
 		$usertable = $helper->getTable();

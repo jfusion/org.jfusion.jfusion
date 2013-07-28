@@ -957,26 +957,6 @@ class JFusionPublic_smf extends JFusionPublic
     }
 
     /**
-     * Function called by sh404sef for url building
-     *
-     * @param array &$title with titles for url
-     * @param array &$get   global pointer to sh404sef remaining $_GET values from the url
-     *
-     * @return void
-     */
-    function sh404sef(&$title, &$get)
-    {
-        if (isset($get['action'])) {
-            $title[] = $get['action'];
-            shRemoveFromGETVarsList('action');
-        }
-        foreach ($get as $key => $value) {
-            $title[] = $key . $value;
-            shRemoveFromGETVarsList($key);
-        }
-    }
-
-    /**
      * this is the callback for the ob_start for smf
      *
      * @param string $buffer Html buffer from the smf callback

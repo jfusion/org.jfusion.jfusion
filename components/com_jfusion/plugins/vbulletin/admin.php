@@ -540,7 +540,11 @@ HTML;
             //get the baseUR
             $app = JApplication::getInstance('site');
             $router = $app->getRouter();
-            $uri = $router->build('index.php?option=com_jfusion&Itemid=' . $itemid);
+	        /**
+	         * @ignore
+	         * @var $uri JUri
+	         */
+	        $uri = $router->build('index.php?option=com_jfusion&Itemid=' . $itemid);
             $baseURL = $uri->toString();
             $joomla_url = JFusionFunction::getJoomlaURL();
             if (!strpos($baseURL, '?')) {
@@ -794,7 +798,7 @@ JS;
 			    }
 
 			    //get a list of field names for custom profile fields
-			    $custom_fields = $db->getTableFields('#__userfield');
+			    $custom_fields = $db->getTableColumns('#__userfield');
 			    unset($custom_fields['#__userfield']['userid']);
 			    unset($custom_fields['#__userfield']['temp']);
 

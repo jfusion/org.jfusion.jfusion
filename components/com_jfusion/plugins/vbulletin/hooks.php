@@ -680,6 +680,10 @@ class JFvBulletinTask {
         $usergroups =& $this->data['usergroups'];
 
         //create the new user
+	    /**
+	     * @ignore
+	     * @var $userdm vB_DataManager
+	     */
         $userdm =& datamanager_init('User', $this->vbulletin, ERRTYPE_SILENT);
         $userdm->set('username', $userinfo->username);
         $userdm->set('email', $userinfo->email);
@@ -717,6 +721,10 @@ class JFvBulletinTask {
     }
 
     function _deleteUser() {
+	    /**
+	     * @ignore
+	     * @var $userdm vB_DataManager
+	     */
         $userdm =& datamanager_init('User', $this->vbulletin, ERRTYPE_SILENT);
         $existinguser = $this->convertUserData($this->data['userinfo']);
         $userdm->set_existing($existinguser);
@@ -733,6 +741,10 @@ class JFvBulletinTask {
         $existinguser =& $this->data['existinguser'];
         $userinfo =& $this->data['userinfo'];
 
+	    /**
+	     * @ignore
+	     * @var $userdm vB_DataManager
+	     */
         $userdm =& datamanager_init('User', $this->vbulletin, ERRTYPE_SILENT);
         $vbuserinfo = $this->convertUserData($existinguser);
         $userdm->set_existing($vbuserinfo);
@@ -776,6 +788,10 @@ class JFvBulletinTask {
     }
 
     function _updateEmail() {
+	    /**
+	     * @ignore
+	     * @var $userdm vB_DataManager
+	     */
 		$userdm =& datamanager_init('User', $this->vbulletin, ERRTYPE_SILENT);
 		$userdm->set_existing($this->convertUserData($this->data['existinguser']));
 		$userdm->set('email', $this->data['userinfo']->email);
@@ -791,6 +807,10 @@ class JFvBulletinTask {
     }
 
     function _unblockUser() {
+	    /**
+	     * @ignore
+	     * @var $userdm vB_DataManager
+	     */
         $userdm =& datamanager_init('User', $this->vbulletin, ERRTYPE_SILENT);
         $existinguser =& $this->data['existinguser'];
         $bannedgroup =& $this->data['bannedgroup'];
@@ -846,6 +866,10 @@ class JFvBulletinTask {
     }
 
     function _inactivateUser() {
+	    /**
+	     * @ignore
+	     * @var $userdm vB_DataManager
+	     */
         $userdm =& datamanager_init('User', $this->vbulletin, ERRTYPE_SILENT);
         $existinguser =& $this->data['existinguser'];
         $vbuser = $this->convertUserData($existinguser);
@@ -863,6 +887,10 @@ class JFvBulletinTask {
     }
 
     function _createThread() {
+	    /**
+	     * @ignore
+	     * @var $threaddm vB_DataManager
+	     */
         $threaddm = & datamanager_init('Thread_FirstPost', $this->vbulletin, ERRTYPE_SILENT, 'threadpost');
 
         $foruminfo = fetch_foruminfo($this->data['forumid'], false);
@@ -896,7 +924,10 @@ class JFvBulletinTask {
     function _createPost() {
         $threadinfo = fetch_threadinfo($this->data['ids']->threadid);
 		$foruminfo = fetch_foruminfo($this->data['ids']->forumid, false);
-
+	    /**
+	     * @ignore
+	     * @var $postdm vB_DataManager
+	     */
         $postdm = & datamanager_init('Post', $this->vbulletin, ERRTYPE_SILENT, 'threadpost');
         $postdm->set_info('forum', $foruminfo);
         $postdm->set_info('thread', $threadinfo);
@@ -950,6 +981,11 @@ class JFvBulletinTask {
         $threadinfo = fetch_threadinfo($ids->threadid);
 		$foruminfo = fetch_foruminfo($ids->forumid, false);
 
+	    /**
+	     * @ignore
+	     * @var $postdm vB_DataManager
+	     * @var $threaddm vB_DataManager
+	     */
         $postdm = & datamanager_init('Post', $this->vbulletin, ERRTYPE_SILENT, 'threadpost');
         $postdm->set_existing($postinfo);
         $postdm->set_info('forum', $foruminfo);

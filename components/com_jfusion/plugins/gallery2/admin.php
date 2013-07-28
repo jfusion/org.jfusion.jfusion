@@ -242,7 +242,7 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
     }
     /**
      * @param $items
-     * @param $urlGenerator
+     * @param GalleryUrlGenerator $urlGenerator
      * @param $parent
      * @return array|null
      */
@@ -251,6 +251,12 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
         if (!$items) return null;
         foreach ($items as $itemId) {
             // Fetch the details for this item
+	        /**
+	         * @ignore
+	         * @var $helper JFusionHelper_gallery2
+	         * @var $user GalleryUser
+	         * @var $entity GalleryItem
+	         */
             list($ret, $entity) = GalleryCoreApi::loadEntitiesById($itemId);
             if ($ret) {
                 // error, skip and continue, catch this error in next component version

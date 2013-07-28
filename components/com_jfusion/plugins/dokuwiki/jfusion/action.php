@@ -41,7 +41,7 @@ class action_plugin_jfusion extends DokuWiki_Action_Plugin {
     }
 
     /**
-     * @param $event
+     * @param Doku_Event $event
      * @param $param
      */
     function jfusion_login(&$event, $param) {
@@ -64,15 +64,19 @@ class action_plugin_jfusion extends DokuWiki_Action_Plugin {
      * @return bool
      */
     function loginDokuwiki($user, $password, $sticky, $silent) {
-        global $USERINFO, $conf, $lang, $auth;
+	    /**
+	     * @ignore
+	     * @var $auth DokuWiki_Auth_Plugin
+	     */
+	    global $USERINFO, $conf, $lang, $auth;
 
         if (!$auth) return false;
 
         $sticky ? $sticky = true : $sticky = false; //sanity check
 
-        if(!empty($user)){
+        if(!empty($user)) {
             //usual login
-            if ($auth->checkPass($user,$password)){
+            if ($auth->checkPass($user,$password)) {
                 // make logininfo globally available
                 $_SERVER['REMOTE_USER'] = $user;
 
@@ -138,7 +142,7 @@ class action_plugin_jfusion extends DokuWiki_Action_Plugin {
     }
 
     /**
-     * @param $event
+     * @param Doku_Event $event
      * @param $param
      */
     function jfusion_logout(&$event, $param) {
@@ -169,6 +173,10 @@ class action_plugin_jfusion extends DokuWiki_Action_Plugin {
      * @param bool $keepbc
      */
     function logoutDokuwiki($keepbc = false) {
+	    /**
+	     * @ignore
+	     * @var $auth DokuWiki_Auth_Plugin
+	     */
         global $conf, $USERINFO, $auth;
 
         // do the logout stuff

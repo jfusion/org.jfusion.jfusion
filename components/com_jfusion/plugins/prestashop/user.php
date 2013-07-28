@@ -124,13 +124,9 @@ class JFusionUser_prestashop extends JFusionUser {
 		require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'ObjectModel.php');
 		require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Db.php');
 		require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'SubDomain.php');
-        $cookie = new cookie('ps', '', '');
-		$status['error'][] = 'Random debugging text';
-	    if(!$cookie->mylogout()) {
-            $status['error'][] = 'Error Could not delete session, doe not exist';
-		} else {
-            $status['debug'][] = 'Deleted session and session data';
-		}
+        $cookie = new CookieCore('ps', '', '');
+	    $cookie->logout();
+	    $status['debug'][] = 'Deleted session and session data';
 		return $status;
     }
 
@@ -155,7 +151,7 @@ class JFusionUser_prestashop extends JFusionUser {
 		    require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Db.php');
 		    require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'SubDomain.php');
 		    require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Validate.php');
-		    $cookie = new cookie('ps', '', '');
+		    $cookie = new CookieCore('ps', '', '');
 		    $passwd = $userinfo->password_clear;
 		    $email = $userinfo->email;
 		    $passwd = trim($passwd);
@@ -181,12 +177,12 @@ class JFusionUser_prestashop extends JFusionUser {
 				    throw new Exception('authentication failed');
 			    } else {
 				    if(md5($params->get('cookie_key') . $passwd) === $result) {
-					    $cookie->__set('id_customer', $userinfo->userid);
-					    $cookie->__set('customer_lastname', $userinfo->lastname);
-					    $cookie->__set('customer_firstname', $userinfo->firstname);
-					    $cookie->__set('logged', 1);
-					    $cookie->__set('passwd', md5($params->get('cookie_key') . $passwd));
-					    $cookie->__set('email', $email);
+					    $cookie->id_customer = $userinfo->userid;
+					    $cookie->customer_lastname = $userinfo->lastname;
+					    $cookie->customer_firstname = $userinfo->firstname;
+					    $cookie->logged = 1;
+					    $cookie->passwd = md5($params->get('cookie_key') . $passwd);
+					    $cookie->email = $email;
 				    } else {
 					    throw new Exception('wrong password');
 				    }

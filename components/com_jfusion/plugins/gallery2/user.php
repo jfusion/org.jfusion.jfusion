@@ -162,6 +162,10 @@ class JFusionUser_gallery2 extends JFusionUser {
         $activeUserId = $session->getUserId();
         if ($activeUserId !== $userinfo->userid) {
             /* Logout the existing user from Gallery */
+	        /**
+	         * @ignore
+	         * @var $ret GalleryStatus
+	         */
             if (!empty($activeUserId)) {
                 list($ret, $anonymousUserId) = GalleryCoreApi::getAnonymousUserId();
                 if ($ret) {
@@ -237,6 +241,7 @@ class JFusionUser_gallery2 extends JFusionUser {
         /**
          * @ignore
          * @var $helper JFusionHelper_gallery2
+         * @var $user GalleryUser
          */
         $helper = JFusionFactory::getHelper($this->getJname());
         $helper->loadGallery2Api(false);
@@ -286,14 +291,18 @@ class JFusionUser_gallery2 extends JFusionUser {
         if (empty($usergroups)) {
             $status['error'][] = JText::_('ERROR_CREATE_USER') . ": " . JText::_('USERGROUP_MISSING');
         } else {
-            list($ret, $g2_user) = GalleryCoreApi::newFactoryInstance('GalleryEntity', 'GalleryUser');
+	        /**
+	         * @ignore
+	         * @var $user GalleryUser
+	         */
+	        list($ret, $user) = GalleryCoreApi::newFactoryInstance('GalleryEntity', 'GalleryUser');
             if ($ret) {
                 $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . $userinfo->username;
             } else {
-                if (!isset($g2_user)) {
+                if (!isset($user)) {
                     $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . $this->getJname(). ' : ' . $userinfo->username;
                 }
-                $ret = $g2_user->create($userinfo->username);
+                $ret = $user->create($userinfo->username);
                 if ($ret) {
                     $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . $this->getJname(). ' : ' . $userinfo->username;
                 } else {
@@ -301,22 +310,22 @@ class JFusionUser_gallery2 extends JFusionUser {
                     if (isset($userinfo->password_clear)) {
                         $testcrypt = GalleryUtilities::md5Salt($userinfo->password_clear);
                     }
-                    $g2_user->setHashedPassword($testcrypt);
-                    $g2_user->setUserName($userinfo->username);
-                    $g2_user->setEmail($userinfo->email);
-                    $g2_user->setFullName($userinfo->name);
-                    $ret = $g2_user->save();
+	                $user->setHashedPassword($testcrypt);
+	                $user->setUserName($userinfo->username);
+	                $user->setEmail($userinfo->email);
+	                $user->setFullName($userinfo->name);
+                    $ret = $user->save();
                     if ($ret) {
                         $status['error'][] = JText::_('ERROR_CREATE_USER') . ' '.$this->getJname().' : ' . $userinfo->username;
                     } else {
                         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
                         foreach ($usergroups as $group) {
-                            $ret = GalleryCoreApi::addUserToGroup($g2_user->id, (int)$group);
+                            $ret = GalleryCoreApi::addUserToGroup($user->id, (int)$group);
                             if ($ret) {
                                 $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . $group;
                             }
                         }
-                        $status['userinfo'] = $this->_getUser($g2_user);
+                        $status['userinfo'] = $this->_getUser($user);
                         if (empty($status['error'])) {
                             $status['action'] = 'created';
                         }
@@ -379,24 +388,26 @@ class JFusionUser_gallery2 extends JFusionUser {
         /**
          * @ignore
          * @var $helper JFusionHelper_gallery2
+         * @var $user GalleryUser
+         * @var $ret GalleryStatus
          */
         $helper = JFusionFactory::getHelper($this->getJname());
         $helper->loadGallery2Api(false);
         //find out if the user already exists
-        list($ret, $g2_existinguser) = GalleryCoreApi::fetchUserByUserName($userinfo->username);
+        list($ret, $user) = GalleryCoreApi::fetchUserByUserName($userinfo->username);
         // Initialise some variables
         $params = JFusionFactory::getParams($this->getJname());
         //Set Write Lock
-        list($ret, $id) = GalleryCoreApi::acquireWriteLock($g2_existinguser->getId());
+        list($ret, $id) = GalleryCoreApi::acquireWriteLock($user->getId());
         if ($ret) {
             $status['error'][] = $ret->getErrorMessage();
         }
         //Check Password
         $changed = false;
         if (isset($userinfo->password_clear) && !empty($userinfo->password_clear)) {
-            $testcrypt = GalleryUtilities::md5Salt($userinfo->password_clear, $g2_existinguser->hashedPassword);
-            if ($testcrypt != $g2_existinguser->hashedPassword) {
-                $g2_existinguser->setHashedPassword($testcrypt);
+            $testcrypt = GalleryUtilities::md5Salt($userinfo->password_clear, $user->hashedPassword);
+            if ($testcrypt != $user->hashedPassword) {
+	            $user->setHashedPassword($testcrypt);
                 $changed = true;
             } else {
                 $status['debug'][] = JText::_('SKIPPED_PASSWORD_UPDATE') . ':' . JText::_('PASSWORD_VALID');
@@ -405,7 +416,7 @@ class JFusionUser_gallery2 extends JFusionUser {
             $status['debug'][] = JText::_('SKIPPED_PASSWORD_UPDATE') . ': ' . JText::_('PASSWORD_UNAVAILABLE');
         }
         if ($changed) {
-            $ret = $g2_existinguser->save();
+            $ret = $user->save();
             if ($ret) {
                 $status['error'][] = $ret->getErrorMessage();
             }
@@ -421,25 +432,27 @@ class JFusionUser_gallery2 extends JFusionUser {
      * @return void
      */
     function updateEmail($userinfo, &$existinguser, &$status) {
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_gallery2
-         */
+	    /**
+	     * @ignore
+	     * @var $helper JFusionHelper_gallery2
+	     * @var $user GalleryUser
+	     * @var $ret GalleryStatus
+	     */
         $helper = JFusionFactory::getHelper($this->getJname());
         $helper->loadGallery2Api(false);
         //find out if the user already exists
-        list($ret, $g2_existinguser) = GalleryCoreApi::fetchUserByUserName($userinfo->username);
+        list($ret, $user) = GalleryCoreApi::fetchUserByUserName($userinfo->username);
         // Initialise some variables
         $params = JFusionFactory::getParams($this->getJname());
         //Set Write Lock
-        list($ret, $id) = GalleryCoreApi::acquireWriteLock($g2_existinguser->getId());
+        list($ret, $id) = GalleryCoreApi::acquireWriteLock($user->getId());
         if ($ret) {
             $status['error'][] = $ret->getErrorMessage();
         } else {
             //Set new Email
-            $g2_existinguser->setEmail($userinfo->email);
+	        $user->setEmail($userinfo->email);
             //Save to DB
-            $ret = $g2_existinguser->save();
+            $ret = $user->save();
             if ($ret) {
                 $status['error'][] = $ret->getErrorMessage();
             }

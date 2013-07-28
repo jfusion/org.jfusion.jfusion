@@ -30,7 +30,7 @@ defined('_JEXEC') or die('Restricted access');
 class JFusionHelper_dokuwiki
 {
     /**
-     * @var doku_auth_mysql|doku_auth_plain
+     * @var Jfusion_DokuWiki_Basic
      */
     var $auth = null;
 
@@ -43,16 +43,22 @@ class JFusionHelper_dokuwiki
         $database_type = $params->get('database_type');
         $database_host = $params->get('database_host');
         if ($database_host && $database_type == 'mysql') {
-            if (!class_exists('doku_auth_mysql')) {
+            if (!class_exists('Jfusion_DokuWiki_Mysql')) {
                 require_once('auth'.DIRECTORY_SEPARATOR.'mysql.class.php');
             }
-            $this->auth = new doku_auth_mysql($this);
+            $this->auth = new Jfusion_DokuWiki_Mysql($this);
         } else {
-            if (!class_exists('doku_auth_plain')) {
+            if (!class_exists('Jfusion_DokuWiki_Plain')) {
                 require_once('auth'.DIRECTORY_SEPARATOR.'plain.class.php');
             }
-            $this->auth = new doku_auth_plain($this);
+            $this->auth = new Jfusion_DokuWiki_Plain($this);
         }
+	    if (!$this->auth) {
+		    if (!class_exists('Jfusion_DokuWiki_Basic')) {
+			    require_once('auth'.DIRECTORY_SEPARATOR.'basic.class.php');
+		    }
+		    $this->auth = new Jfusion_DokuWiki_Basic($this);
+	    }
     }
 
     /**

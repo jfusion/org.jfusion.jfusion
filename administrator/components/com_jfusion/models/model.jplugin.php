@@ -1032,26 +1032,24 @@ class JFusionJplugin
 					    //store the username passed into this to prevent the user plugin from attempting to recreate users
 					    $instance->set('original_username', $userinfo->username);
 					    // save the user
-					    if (!$instance->save(false)) {
-						    throw new Exception($instance->getError());
-					    } else {
-						    $createdUser = $instance->getProperties();
-						    $createdUser = (object)$createdUser;
-						    //update the user's group to the correct group if they are an admin
-						    if ($isadmin) {
-							    $createdUser->userid = $createdUser->id;
-							    JFusionJplugin::updateUsergroup($userinfo, $createdUser, $status, $jname, false);
-						    }
-						    //create a new entry in the lookup table
-						    //if the credentialed username is available (from the auth plugin), store it; otherwise store the $userinfo username
-						    $username = (!empty($userinfo->credentialed_username)) ? $userinfo->credentialed_username : $userinfo->username;
-						    $query = 'REPLACE INTO #__jfusion_users (id, username) VALUES (' . $createdUser->id . ', ' . $db->Quote($username) . ')';
-						    $db->setQuery($query);
-						    try {
-							    $db->execute();
-						    } catch (Exception $e) {
-							    JFusionFunction::raiseWarning($e, $jname);
-						    }
+					    $instance->save(false);
+
+					    $createdUser = $instance->getProperties();
+					    $createdUser = (object)$createdUser;
+					    //update the user's group to the correct group if they are an admin
+					    if ($isadmin) {
+						    $createdUser->userid = $createdUser->id;
+						    JFusionJplugin::updateUsergroup($userinfo, $createdUser, $status, $jname, false);
+					    }
+					    //create a new entry in the lookup table
+					    //if the credentialed username is available (from the auth plugin), store it; otherwise store the $userinfo username
+					    $username = (!empty($userinfo->credentialed_username)) ? $userinfo->credentialed_username : $userinfo->username;
+					    $query = 'REPLACE INTO #__jfusion_users (id, username) VALUES (' . $createdUser->id . ', ' . $db->Quote($username) . ')';
+					    $db->setQuery($query);
+					    try {
+						    $db->execute();
+					    } catch (Exception $e) {
+						    JFusionFunction::raiseWarning($e, $jname);
 					    }
 				    } else {
 					    // joomla_ext

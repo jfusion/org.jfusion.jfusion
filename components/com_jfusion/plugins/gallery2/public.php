@@ -236,6 +236,11 @@ class JFusionPublic_gallery2 extends JFusionPublic {
                 foreach ($resultArray['results'] as $array) {
                     $info = new stdClass();
                     $info->href = $urlGenerator->generateUrl(array('view' => 'core.ShowItem', 'itemId' => $array['itemId']));
+	                /**
+	                 * @ignore
+	                 * @var $item GalleryItem
+	                 * @var $parent GalleryItem
+	                 */
                     list($ret, $item) = GalleryCoreApi::loadEntitiesById($array['itemId']);
                     if ($ret) {
                         continue;
@@ -264,6 +269,10 @@ class JFusionPublic_gallery2 extends JFusionPublic {
                     $config['debug'] = true;
                     $pluginParam->set('g2_itemId',$array['itemId']);
 
+	                /**
+	                 * @ignore
+	                 * @var $forum JFusionForum_gallery2
+	                 */
                     $forum = JFusionFactory::getForum($this->getJname());
                     $info->galleryImage = $forum->renderImageBlock($config, 'image_block', $pluginParam);
 

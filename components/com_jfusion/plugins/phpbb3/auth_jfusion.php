@@ -38,7 +38,11 @@ function login_jfusion(&$username, &$password) {
     require_once 'auth_db.php';
     $result = login_db($username, $password);
 
-    if (defined('ADMIN_START')){
+	/**
+	 * @ignore
+	 * @var $db dbal_mysql
+	 */
+	if (defined('ADMIN_START')){
         global $phpbb_root_path, $phpEx, $db, $user;
         $redirect = request_var('redirect', "{$phpbb_root_path}adm/index.$phpEx");
     }
@@ -150,6 +154,10 @@ function login_jfusion(&$username, &$password) {
  * @param $data
  */
 function logout_jfusion(&$data) {
+	/**
+	 * @ignore
+	 * @var $db dbal_mysql
+	 */
     //check to see if JFusion is not active
     global $JFusionActive, $db, $user, $phpbb_root_path, $phpEx;
     if (empty($JFusionActive)) {

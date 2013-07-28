@@ -30,7 +30,10 @@ global $baseURL, $fullURL, $integratedURL, $vbsefmode;
 class JFusionPublic_vbulletin extends JFusionPublic
 {
     var $params;
-    var $helper;
+	/**
+	 * @var JFusionHelper_vbulletin
+	 */
+	var $helper;
 
     /**
      *
@@ -678,7 +681,9 @@ JS;
                 if (!empty($vb_userlookup)) {
                     $profile_userlookup = JFusionFunction::lookupUser($profile_plugin, $vb_userlookup->id);
                     //get the profile link
-                    $url = $this->getProfileURL($profile_userlookup->userid);
+
+	                $forum = JFusionFactory::getForum($this->getJname());
+                    $url = $forum->getProfileURL($profile_userlookup->userid);
                 }
             }
         }

@@ -337,6 +337,7 @@ class auth_plugin_jfusion extends auth_plugin_base {
 	 * Processes and stores configuration data for this authentication plugin.
      *
      * @param object $config
+	 * @return void
 	 */
 	function process_config($config) {
 		set_config('jf_enabled',          $config->jf_enabled,            'auth/jfusion');

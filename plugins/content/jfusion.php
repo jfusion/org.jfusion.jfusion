@@ -300,31 +300,7 @@ class plgContentJfusion extends JPlugin
 
 						$this->ajax_request = JFactory::getApplication()->input->getInt('ajax_request',0);
 						$ajax = $this->prepareAjaxResponce();
-						/*
-				         * todo: do we need this code ?
-						if ($this->ajax_request) {
-							$threadinfo = $this->helper->getThreadInfo();
 
-
-							if ($threadinfo->valid)  {
-								//get and set the threadinfo
-								$threadid = JFactory::getApplication()->input->getInt('threadid', 0);
-								//could be a manual plug so let's get the thread info directly
-								$JFusionForum = JFusionFactory::getForum($this->jname);
-								$threadinfo = $JFusionForum->getThread($threadid);
-								if (!empty($threadinfo)) {
-									//let's set threadinfo
-									$threadinfo->published = 1;
-									$this->helper->setThreadInfo($threadinfo);
-									//set manual plug
-									$this->manual = true;
-								} elseif ($this->dbtask != 'create_thread' && $this->dbtask != 'create_threadpost') {
-									JFusionFunction::raiseError(JText::_('THREAD_NOT_FOUND'), JText::_('DISCUSSBOT_ERROR'));
-									$this->renderAjaxResponce($ajax);
-								}
-							}
-						}
-*/
 						if ($this->dbtask == 'create_thread') {
 							//this article has been manually initiated for discussion
 							$this->createThread();
@@ -1204,7 +1180,7 @@ HTML;
 						//discussion is published
 						$dbtask = 'unpublish_discussion';
 						$text = 'UNINITIATE_DISCUSSION';
-					} elseif (!$threadinfo->published) {
+					} else {
 						//discussion is unpublished
 						$dbtask = 'publish_discussion';
 						$text = 'INITIATE_DISCUSSION';

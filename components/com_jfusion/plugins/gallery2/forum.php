@@ -134,7 +134,11 @@ class JFusionForum_gallery2 extends JFusionForum {
                 $array['maxSize'] = $max_size;
             }
             $array['linkTarget'] = $link_target;
-            if ($config['debug'] && $frame == 'none') {
+		    /**
+		     * @ignore
+		     * @var $ret GalleryStatus
+		     */
+		    if ($config['debug'] && $frame == 'none') {
                 /* Load the module list */
                 list($ret, $moduleStatus) = GalleryCoreApi::fetchPluginStatus('module');
                 if ($ret) {
@@ -160,7 +164,8 @@ class JFusionForum_gallery2 extends JFusionForum {
                         $urlGenerator->init($helper->getEmbedUri($this->getJname(),$config['itemid']), $source_url, null);
                         $gallery->setUrlGenerator($urlGenerator);
                     }
-                    list($ret, $imageBlockHtml, $headContent) = GalleryEmbed::getImageBlock($array);
+
+                    list($ret, $imageBlockHtml, $headContent) =  GalleryEmbed::getBlock('imageblock', 'ImageBlock', $array);
                     if ($ret) {
                         if ($ret->getErrorCode() == 4194305 || $ret->getErrorCode() == 17) {
                             $content.= '<strong>Error</strong><br />You need to install the Gallery2 Plugin "imageblock".';
@@ -169,6 +174,10 @@ class JFusionForum_gallery2 extends JFusionForum {
                         }
                     } else {
                         $content.= ($strip_anchor == 1) ? strip_tags($imageBlockHtml, '<img><table><tr><td><div><h3>') : $imageBlockHtml;
+	                    /**
+	                     * @ignore
+	                     * @var $document JDocumentHTML
+	                     */
                         $document = JFactory::getDocument();
                         $document->addCustomTag($headContent);
                         /* finish Gallery 2 */

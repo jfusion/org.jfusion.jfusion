@@ -166,8 +166,9 @@ class JFusionUser_elgg extends JFusionUser {
             // If all is present and correct, try to log in
             $result = false;
             if (!empty($username) && !empty($password)) {
-                $user = authenticate($username, $password);
-                if ($user) {
+                $auth = elgg_authenticate($username, $password);
+                if ($auth===true) {
+	                $user = get_user_by_username($userinfo->username);
                     //if ($user->isBanned()) return false; // User is banned, return false.
                     $_SESSION['user'] = $user;
                     $_SESSION['guid'] = $user->getGUID();
@@ -178,7 +179,7 @@ class JFusionUser_elgg extends JFusionUser {
                     $user->code = md5($code);
                     $_SESSION['code'] = $code;
                     if (($persistent)) $status['debug'][] = JFusionFunction::addCookie('elggperm', $code, (86400 * 30), '/', $params->get('cookie_domain'));
-                    if (!$user->save() || !trigger_elgg_event('login', 'user', $user)) {
+                    if (!$user->save() || !elgg_trigger_event('login', 'user', $user)) {
                         unset($_SESSION['username']);
                         unset($_SESSION['name']);
                         unset($_SESSION['code']);
@@ -193,6 +194,8 @@ class JFusionUser_elgg extends JFusionUser {
                         set_last_login($_SESSION['guid']);
                         reset_login_failure_count($user->guid); // Reset any previous failed login attempts
                     }
+                } else {
+	                $status['error'][] = $auth;
                 }
             }
         }
@@ -415,7 +418,7 @@ class JFusionUser_elgg extends JFusionUser {
         global $CONFIG;
         $user = get_user_by_username($existinguser->username);
         if($user) {
-        	if (set_user_validation_status($user->guid,1,'validated:jfusion')) {
+        	if (elgg_set_user_validation_status($user->guid,1,'validated:jfusion')) {
 				$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
         	} else {
         		$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR');
@@ -443,7 +446,7 @@ class JFusionUser_elgg extends JFusionUser {
         global $CONFIG;
         $user = get_user_by_username($existinguser->username);
         if($user) {
-        	if (set_user_validation_status($user->guid,0)) {
+        	if (elgg_set_user_validation_status($user->guid,0)) {
 				$status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
         	} else {
         		$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR');

@@ -55,7 +55,11 @@ class JFormFieldGalleries extends JFormField {
                 if ($ret) {
                     return '<div>Could not query Gallery-Tree</div>';
                 } else {
-                    foreach ($items as $item) {
+	                /**
+	                 * @ignore
+	                 * @var $item GalleryItem
+	                 */
+	                foreach ($items as $item) {
                         $title = $item->getTitle() ? $item->getTitle() : $item->getPathComponent();
                         $title = preg_replace('/\r\n/', ' ', $title);
                         $titles[$item->getId() ] = $title;

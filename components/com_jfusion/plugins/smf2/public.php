@@ -992,24 +992,6 @@ class JFusionPublic_smf2 extends JFusionPublic {
 		}
 	}
 
-	/**
-	 * Function called by sh404sef for url building
-     * @param array with titles for url
-     * @param array global pointer to sh404sef remaining $_GET values from the url
-	 */
-	function sh404sef(&$title,&$get)
-	{
-		if( isset($get['action'] ) ) {
-			$title[] = $get['action'];
-			shRemoveFromGETVarsList('action');
-		}
-
-		foreach( $get as $key => $value ) {
-			$title[] = $key.$value;
-			shRemoveFromGETVarsList($key);
-		}
-	}
-
     /**
      * @param $buffer
      *

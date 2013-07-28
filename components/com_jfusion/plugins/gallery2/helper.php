@@ -191,6 +191,11 @@ class JFusionHelper_gallery2
         if ($session) {
             $session->doNotUseTempId();
         }
+	    /**
+	     * @ignore
+	     * @var $entities GalleryItem[]
+	     * @var $it GalleryItem
+	     */
         $entities = array();
         $mainframe = JFactory::getApplication();
         $urlGenerator = $gallery->getUrlGenerator();
@@ -215,7 +220,8 @@ class JFusionHelper_gallery2
         array_shift($parentSequence);
         /* study permissions */
         if (sizeof($parentSequence) > 0 && $parentSequence[0] != 0) {
-            $ret = GalleryCoreApi::studyPermissions($parentSequence);
+	        GalleryCoreApi::requireOnce('modules/core/classes/helpers/GalleryPermissionHelper_simple.class');
+	        $ret = GalleryPermissionHelper_simple::studyPermissions($parentSequence);
             if ($ret) {
                 return $ret;
             } else {

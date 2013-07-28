@@ -33,7 +33,6 @@ class JFusionHelper_phpbb3
     var $bbcodes = array();
     var $warn_msg = array();
     var $bbcode_bitfield = '';
-    var $db = '';
 
     /**
      *
@@ -172,7 +171,7 @@ class JFusionHelper_phpbb3
 	    try {
 		    $params = JFusionFactory::getParams($this->getJname());
 		    $source_path = $params->get('source_path');
-		    $this->db = JFusionFactory::getDatabase($this->getJname());
+		    $db = JFusionFactory::getDatabase($this->getJname());
 		    if (!defined('IN_PHPBB')) {
 			    define('IN_PHPBB', true);
 		    }
@@ -181,8 +180,8 @@ class JFusionHelper_phpbb3
 		    //get a bbcode_uid
 		    if (empty($this->bbcode_uid)) {
 			    $query = 'SELECT config_value FROM #__config WHERE config_name = \'rand_seed\'';
-			    $this->db->setQuery($query);
-			    $rand_seed = $this->db->loadResult();
+			    $db->setQuery($query);
+			    $rand_seed = $db->loadResult();
 			    $val = $rand_seed . microtime();
 			    $val = md5($val);
 			    $uniqueid = substr($val, 4, 16);
@@ -219,9 +218,10 @@ class JFusionHelper_phpbb3
         static $smilie_match, $smilie_replace;
         if (!is_array($smilie_match)) {
             $smilie_match = $smilie_replace = array();
+	        $db = JFusionFactory::getDatabase($this->getJname());
             $query = 'SELECT * FROM #__smilies ORDER BY LENGTH(code) DESC';
-            $this->db->setQuery($query);
-            $results = $this->db->loadObjectList();
+	        $db->setQuery($query);
+            $results = $db->loadObjectList();
             foreach ($results as $r) {
                 $smilie_match[] = '(?<=^|[\n .])' . preg_quote($r->code, '#') . '(?![^<>]*>)';
                 $smilie_replace[] = '<!-- s' . $r->code . ' --><img src="{SMILIES_PATH}/' . $r->smiley_url . '" alt="' . $r->code . '" title="' . $r->emotion . '" /><!-- s' . $r->code . ' -->';
@@ -250,9 +250,10 @@ class JFusionHelper_phpbb3
 	            'email'         => array('bbcode_id' => 10, 'regexp' => array('#\[email=?(.*?)?\](.*?)\[/email\]#ise' => "\$this->validate_email('\$1', '\$2')")),
 	            'flash'         => array('bbcode_id' => 11, 'regexp' => array('#\[flash=([0-9]+),([0-9]+)\](.*?)\[/flash\]#ie' => "\$this->bbcode_flash('\$1', '\$2', '\$3')")));
 
+	        $db = JFusionFactory::getDatabase($this->getJname());
             $query = 'SELECT * FROM #__bbcodes';
-            $this->db->setQuery($query);
-            $results = $this->db->loadObjectList();
+	        $db->setQuery($query);
+            $results = $db->loadObjectList();
             foreach ($results as $r) {
                 $this->bbcodes[$r->bbcode_tag] = array('bbcode_id' => (int)$r->bbcode_id, 'regexp' => array($r->first_pass_match => str_replace('$uid', $this->bbcode_uid, $r->first_pass_replace)));
             }

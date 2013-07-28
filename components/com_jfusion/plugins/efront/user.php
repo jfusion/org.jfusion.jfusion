@@ -553,9 +553,11 @@ class JFusionUser_efront extends JFusionUser
 			    $db = JFusionFactory::getDataBase($this->getJname());
 			    if ($usergroup< 3) {
 				    /**
-				     * TODO: Undefined function
+				     * @ignore
+				     * @var $helper JFusionHelper_efront
 				     */
-				    $user_type = $this->groupIDToName($usergroup);
+				    $helper = JFusionFactory::getHelper($this->getJname());
+				    $user_type = $helper->groupIdToName($usergroup);
 				    $user_types_ID = 0;
 			    } else {
 				    $user_types_ID = $usergroup-2;
