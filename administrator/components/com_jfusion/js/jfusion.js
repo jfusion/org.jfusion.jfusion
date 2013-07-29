@@ -77,9 +77,9 @@ JFusion.multiUsergroupSelect = function(option) {
 
 JFusion.changeSetting = function (fieldname, fieldvalue, jname) {
     //change the image
-    var syncdata = 'jname=' + jname + '&field_name=' + fieldname + '&field_value=' + fieldvalue + '&task=changesettings&option=com_jfusion';
-    new Request.JSON({ url: JFusion.url, method: 'get',
-
+    new Request.JSON({
+        url: JFusion.url,
+        noCache: true,
         onRequest: function() {
             var element = $(jname + '_' + fieldname).getFirst().getFirst();
             element.set('src', 'components/com_jfusion/images/spinner.gif');
@@ -92,14 +92,20 @@ JFusion.changeSetting = function (fieldname, fieldvalue, jname) {
             JFusion.OnError(JSONobject);
         }
 
-    }).send(syncdata);
+    }).get({'option': 'com_jfusion',
+            'task': 'changesettings',
+            'jname': jname,
+            'field_name': fieldname,
+            'field_value': fieldvalue});
 };
 
 JFusion.copyPlugin = function(jname) {
     var newjname = prompt('Please type in the name to use for the copied plugin. This name must not already be in use.', '');
     if(newjname) {
         // this code will send a data object via a GET request and alert the retrieved data.
-        new Request.JSON({url: JFusion.url ,
+        new Request.JSON({
+            url: JFusion.url ,
+            noCache: true,
             onSuccess: function(JSONobject) {
                 JFusion.OnMessages(JSONobject.messages);
 
@@ -107,7 +113,10 @@ JFusion.copyPlugin = function(jname) {
             }, onError: function(JSONobject) {
                 JFusion.OnError(JSONobject);
             }
-        }).get({'option': 'com_jfusion', 'task': 'plugincopy', 'jname': jname, 'new_jname': newjname});
+        }).get({'option': 'com_jfusion',
+                'task': 'plugincopy',
+                'jname': jname,
+                'new_jname': newjname});
     }
 };
 
@@ -115,7 +124,9 @@ JFusion.deletePlugin = function(jname) {
     var confirmdelete = confirm(JFusion.JText('DELETE')+' '+JFusion.JText('PLUGIN')+' ' + jname + '?');
     if(confirmdelete) {
         // this code will send a data object via a GET request and alert the retrieved data.
-        new Request.JSON({url: JFusion.url ,
+        new Request.JSON({
+            url: JFusion.url ,
+            noCache: true,
             onSuccess: function(JSONobject) {
                 JFusion.OnMessages(JSONobject.messages);
                 if(JSONobject.status ===  true) {
@@ -140,8 +151,9 @@ JFusion.updateList = function(html) {
 
 JFusion.initSortables = function() {
     /* allow for updates of row order */
-    var ajaxsync = new Request.JSON({ url: JFusion.url,
-        method: 'get',
+    var sort = new Request.JSON({
+        url: JFusion.url,
+        noCache: true,
         onSuccess: function(JSONobject) {
             JFusion.OnMessages(JSONobject.messages);
 
@@ -183,7 +195,11 @@ JFusion.initSortables = function() {
             });
 
             //update the database
-            ajaxsync.send('option=com_jfusion&task=saveorder&tmpl=component&sort_order='+sortorder);
+            sort.get({'option': 'com_jfusion',
+                    'task': 'saveorder',
+                    'tmpl': component,
+                    'sort_order': sortorder});
+
         }
     });
 };

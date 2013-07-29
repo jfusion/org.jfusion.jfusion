@@ -102,6 +102,7 @@ JFusion.initializeDiscussbot = function() {
     // this code will send a data object via a GET request and alert the retrieved data.
 
     JFusion.updatePostArea = new Request.JSON({
+        noCache: true,
         onSuccess: function(JSONobject) {
             JFusion.updateContent(JSONobject);
             $('quickReply').set('value','');
@@ -309,7 +310,9 @@ JFusion.clearConfirmationBox = function(id) {
 JFusion.submitAjaxRequest = function (id, task, vars, url) {
     JFusion.clearConfirmationBox(id);
 
-    new Request.JSON({url: url ,
+    new Request.JSON({
+        url: url ,
+        noCache: true,
         onSuccess: function(JSONobject) {
             window.location = url;
         }
@@ -334,16 +337,16 @@ JFusion.toggleDiscussionVisibility = function(id, override, discusslink) {
         if (override !== undefined) {
             showdiscussion = override;
         }
-        var setdiscussionvisibility;
-        setdiscussionvisibility = new Request.HTML({
-            method: 'get',
+        new Request.JSON({
+            noCache: true,
             onComplete: function () {
                 if (discusslink !== undefined) {
                     window.location = discusslink;
                 }
             }
-        });
-        setdiscussionvisibility.post('tmpl=component&ajax_request=1&show_discussion=' + showdiscussion);
+        }).post({'tmpl': 'component',
+                'ajax_request': 1,
+                'show_discussion': showdiscussion});
     } else {
         if (discusslink !== undefined) {
             window.location = discusslink;
@@ -361,6 +364,7 @@ JFusion.quote = function(pid) {
 
 JFusion.pagination = function() {
     new Request.JSON({
+        noCache: true,
         onSuccess : function (JSONobject) {
             JFusion.updateContent(JSONobject);
             window.location = '#discussion';

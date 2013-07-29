@@ -61,7 +61,7 @@ JFusion.renderSyncBody = function (data) {
 		// SYNC_PROGRESS
 		var outer = new Element('div').inject(tr);
 
-		var pct = 100;
+		var pct = 0;
 		var synced = info.total_to_sync-info.total;
 		if (synced != 0 && info.total_to_sync != 0) {
 			pct = (synced/info.total_to_sync) * 100;
@@ -152,7 +152,7 @@ window.addEvent('domready', function() {
 		/* our ajax istance for starting the sync */
 		var ajax = new Request.JSON({
 			url: JFusion.url,
-			method: 'get',
+			noCache: true,
 			onSuccess: function(JSONobject) {
 				JFusion.render(JSONobject);
 			}, onError: function(JSONobject) {
@@ -163,8 +163,8 @@ window.addEvent('domready', function() {
 
 		var ajaxsync = new Request.JSON({
 			url: JFusion.url,
-			method: 'get',
-			onSuccess: function(JSONobject) {
+			noCache: true,
+				onSuccess: function(JSONobject) {
 				JFusion.render(JSONobject);
 			}, onError: function(JSONobject) {
 				JFusion.OnError(JSONobject);
@@ -179,21 +179,16 @@ window.addEvent('domready', function() {
 			if (JFusion.counter < 1) {
 				if (!response.completed) {
 					JFusion.counter = 10;
-					// dummy to prevent caching of php
-					var dummy = Date.now() + Number.random(0, 100);
-					//generate the get variable for submission
 
-					var subvars = 'option=com_jfusion&task=syncresume&tmpl=component&dummy=' + dummy + '&syncid=' + JFusion.syncid;
-					var form = $('syncForm');
-					if (form) {
-						for (var i = 0; i < form.elements.length; i++) {
-							if (form.elements[i].name == 'userbatch') {
-								subvars = subvars + '&' + form.elements[i].name + '=' + form.elements[i].value;
-							}
-						}
-					}
-					ajax.send('option=com_jfusion&tmpl=component&task=syncprogress&syncid=' + JFusion.syncid);
-					ajaxsync.send(subvars);
+					ajax.get({'option': 'com_jfusion',
+						'task': 'syncprogress',
+						'tmpl': 'component',
+						'syncid': JFusion.syncid});
+
+					ajaxsync.get({'option': 'com_jfusion',
+						'task': 'syncresume',
+						'tmpl': 'component',
+						'syncid': JFusion.syncid});
 				}
 			} else {
 				JFusion.update();
@@ -240,13 +235,15 @@ window.addEvent('domready', function() {
 							//do start
 							JFusion.syncRunning = 1;
 
-							new Request.JSON({url: JFusion.url,
-								method: 'get' ,onSuccess: function(JSONobject) {
+							new Request.JSON({
+								url: JFusion.url,
+								noCache: true,
+								onSuccess: function(JSONobject) {
 									JFusion.render(JSONobject);
 								}, onError: function(JSONobject) {
 									JFusion.OnError(JSONobject);
 									clearInterval(JFusion.periodical);
-								}}).send(form.toQueryString()+'&option=com_jfusion&task=syncinitiate&tmpl=component&syncid=' + JFusion.syncid);
+								}}).get(form.toQueryString()+'&option=com_jfusion&task=syncinitiate&tmpl=component&syncid=' + JFusion.syncid);
 						}
 					} else {
 						JFusion.OnError(JFusion.JText('SYNC_NODATA'));
