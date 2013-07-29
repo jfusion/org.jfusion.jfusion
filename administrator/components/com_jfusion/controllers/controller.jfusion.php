@@ -371,11 +371,11 @@ class JFusionController extends JControllerLegacy
 			    $master_plugin = JFusionFunction::getMaster();
 			    $master = $master_plugin->name;
 			    $JFusionMaster = JFusionFactory::getAdmin($master);
-			    //initialise the slave data array
-			    $slave_data = array();
 			    if (empty($slaves)) {
 				    throw new RuntimeException(JText::_('SYNC_NODATA'));
 			    } else {
+				    //initialise the slave data array
+				    $slave_data = array();
 				    //lets find out which slaves need to be imported into the Master
 				    foreach ($slaves as $jname => $slave) {
 					    if ($slave['perform_sync'] == $jname) {

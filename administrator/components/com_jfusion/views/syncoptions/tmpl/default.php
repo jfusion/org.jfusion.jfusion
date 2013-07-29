@@ -60,7 +60,12 @@ JFusion.renderSyncBody = function (data) {
 
 		// SYNC_PROGRESS
 		var outer = new Element('div').inject(tr);
-		var pct = ((info.total_to_sync-info.total)/info.total_to_sync) * 100;
+
+		var pct = 100;
+		var synced = info.total_to_sync-info.total;
+		if (synced != 0 && info.total_to_sync != 0) {
+			pct = (synced/info.total_to_sync) * 100;
+		}
 		var color = 'blue';
 		if (pct == 100) {
 			color = 'green';
@@ -72,7 +77,7 @@ JFusion.renderSyncBody = function (data) {
 		progress.inject(tr);
 
 		//SYNC_USERS_TODO
-		new Element('td',{'html': info.total_to_sync-(info.total_to_sync-info.total)}).inject(tr);
+		new Element('td',{'html': info.total_to_sync-synced}).inject(tr);
 		//CREATED
 		new Element('td',{'html': info.created}).inject(tr);
 		//DELETED
