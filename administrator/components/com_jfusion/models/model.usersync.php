@@ -388,8 +388,7 @@ class JFusionUsersync
 									    $user_batch--;
 								    }
 
-								    $percent = ($syncdata['synced_users'] / $syncdata['total_to_sync']) * 100;
-								    if ($percent == '100') {
+								    if ($syncdata['synced_users'] == $syncdata['total_to_sync']) {
 									    break;
 								    } elseif ($user_batch == 0 || $syncdata['slave_data'][$i]['total'] == 0) {
 									    //exit the process to prevent an apache timeout; it will resume on the next ajax call
@@ -409,7 +408,7 @@ class JFusionUsersync
 					    }
 				    }
 
-				    if ((($syncdata['synced_users'] / $syncdata['total_to_sync']) * 100) == 100) {
+				    if ($syncdata['synced_users'] == $syncdata['total_to_sync']) {
 					    //end of sync, save the final data
 					    $syncdata['completed'] = true;
 					    JFusionUsersync::updateSyncdata($syncdata);

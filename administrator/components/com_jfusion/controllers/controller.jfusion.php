@@ -353,7 +353,10 @@ class JFusionController extends JControllerLegacy
         $syncdata['sync_errors'] = 0;
         $syncdata['total_to_sync'] = 0;
         $syncdata['synced_users'] = 0;
-        $syncdata['userbatch'] = JFactory::getApplication()->input->get('userbatch', 100);
+        $syncdata['userbatch'] = JFactory::getApplication()->input->getInt('userbatch', 100);
+	    if ($syncdata['userbatch'] < 1 ) {
+		    $syncdata['userbatch'] = 1;
+	    }
         $syncdata['user_offset'] = 0;
         $syncdata['syncid'] = $syncid;
         $syncdata['action'] = $action;
