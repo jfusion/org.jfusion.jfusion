@@ -499,8 +499,6 @@ class JFusionForum
 	function loadQuickReplyIncludes() {
 		//using markitup http://markitup.jaysalvat.com/ for bbcode textbox
 		$document = JFactory::getDocument();
-		JHtml::_('behavior.framework');
-		JHtml::_('jquery.framework');
 
 		$option = JFactory::getApplication()->input->getCmd('option');
 		$path = 'plugins/content/jfusion/discussbot/markitup';

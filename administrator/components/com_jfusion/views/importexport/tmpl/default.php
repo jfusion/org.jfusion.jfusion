@@ -37,14 +37,14 @@ defined('_JEXEC') or die('Restricted access');
         form.action.value = 'import';
         form.jname.value = jname;
         form.encoding = 'multipart/form-data';
-        submitbutton('plugineditor');
+	    Joomla.submitbutton('plugineditor');
     }
 
     function doExport(jname) {
         var form = $('adminForm');
         form.action.value = 'export';
         form.jname.value = jname;
-        submitbutton('plugineditor');
+	    Joomla.submitbutton('plugineditor');
     }
 </script>
 
@@ -165,7 +165,7 @@ jimport('joomla.html.pane');
 
 	                        <script type="text/javascript">
 	                            window.addEvent('domready',function() {
-	                                $('plugin<?php echo $key;?>').addEvent('click', function(e) {
+	                                $('plugin<?php echo $key;?>').addEvent('click', function() {
 	                                    doShowHide(this.id);
 	                                });
 	                            });

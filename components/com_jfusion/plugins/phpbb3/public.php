@@ -250,7 +250,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             $index_file = $source_path . DIRECTORY_SEPARATOR . basename($jfile);
         }
         if (!is_file($index_file)) {
-            JFusionFunction::raiseWarning('The path to the requested does not exist', $this->helper->getJname());
+            JFusionFunction::raiseWarning('The path to the requested does not exist', $this->getJname());
         } else {
             //set the current directory to phpBB3
             chdir($source_path);
@@ -504,7 +504,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 		$url = $matches[1];
 		$baseURL = $this->data->baseURL;
 		    	
-        //JFusionFunction::raiseWarning($url, $this->helper->getJname());
+        //JFusionFunction::raiseWarning($url, $this->getJname());
         //split up the timeout from url
         $parts = explode(';url=', $url);
         $timeout = $parts[0];
@@ -542,7 +542,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             $redirectURL .= '#'.$fragment;
         }
         $return = '<meta http-equiv="refresh" content="' . $timeout . ';url=' . $redirectURL . '">';
-        //JFusionFunction::raiseWarning(htmlentities($return), $this->helper->getJname());
+        //JFusionFunction::raiseWarning(htmlentities($return), $this->getJname());
         return $return;
     }
 

@@ -66,7 +66,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
         //try to open the file
         $params = array();
         if (($file_handle = @fopen($configfile, 'r')) === false) {
-            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ": $configfile " . JText::_('WIZARD_MANUAL'), $this->helper->getJname());
+            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ": $configfile " . JText::_('WIZARD_MANUAL'), $this->getJname());
         } else {
             //parse the file line by line to get only the config variables
             $file_handle = fopen($configfile, 'r');
@@ -624,12 +624,12 @@ HTML;
 							    $membergroups = $usergroups[$group->id]['membergroups'];
 							    $defaultgroup = $usergroups[$group->id]['defaultgroup'];
 							    if ((is_array($membergroups) && in_array($defaultgroup, $membergroups)) || $defaultgroup == $membergroups) {
-								    JFusionFunction::raiseWarning(JText::sprintf('VB_GROUP_MISMATCH', $group->name), $this->helper->getJname());
+								    JFusionFunction::raiseWarning(JText::sprintf('VB_GROUP_MISMATCH', $group->name), $this->getJname());
 							    }
 						    }
 					    }
 				    } else {
-					    JFusionFunction::raiseWarning(JText::_('ADVANCED_GROUPMODE_ONLY_SUPPORTED_FORSLAVES'), $this->helper->getJname());
+					    JFusionFunction::raiseWarning(JText::_('ADVANCED_GROUPMODE_ONLY_SUPPORTED_FORSLAVES'), $this->getJname());
 				    }
 			    }
 		    }
@@ -637,7 +637,7 @@ HTML;
 		    $query = 'SELECT COUNT(*) FROM #__plugin WHERE hookname = \'init_startup\' AND title = \'JFusion API Plugin - REQUIRED\' AND active = 1';
 		    $db->setQuery($query);
 		    if ($db->loadResult() == 0) {
-			    JFusionFunction::raiseWarning(JText::_('VB_API_HOOK_NOT_INSTALLED'), $this->helper->getJname());
+			    JFusionFunction::raiseWarning(JText::_('VB_API_HOOK_NOT_INSTALLED'), $this->getJname());
 		    }
 	    } catch (Exception $e) {
 		    JFusionFunction::raiseError($e, $this->getJname());

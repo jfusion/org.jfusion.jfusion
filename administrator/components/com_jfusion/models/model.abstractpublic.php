@@ -570,7 +570,7 @@ JS;
                     $return = '<pre>'.$content.'</pre>';
                     break;
                 case 'hr':
-                    return '<hr>';
+	                $return = '<hr>';
                     break;
                 case 'flash':
                     $temp = explode(',', $default);

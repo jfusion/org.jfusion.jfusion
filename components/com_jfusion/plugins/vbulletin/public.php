@@ -270,16 +270,10 @@ class JFusionPublic_vbulletin extends JFusionPublic
         }
         //define('_JFUSION_DEBUG',1);
         define('_VBFRAMELESS', 1);
-
         //frameless integration is only supported for 3.x
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_vbulletin
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
-        $version = $helper->getVersion();
+        $version = $this->helper->getVersion();
         if ((int) substr($version, 0, 1) > 3) {
-            JFusionFunction::raiseWarning(JText::sprintf('VB_FRAMELESS_NOT_SUPPORTED',$version), $this->helper->getJname());
+            JFusionFunction::raiseWarning(JText::sprintf('VB_FRAMELESS_NOT_SUPPORTED',$version), $this->getJname());
         } else {
 
 	        try {
@@ -294,7 +288,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
 	        }
 
             if ($active != '1') {
-                JFusionFunction::raiseWarning(JText::_('VB_FRAMELESS_HOOK_NOT_INSTALLED'), $this->helper->getJname());
+                JFusionFunction::raiseWarning(JText::_('VB_FRAMELESS_HOOK_NOT_INSTALLED'), $this->getJname());
             } else {
                 //have to clear this as it shows up in some text boxes
                 unset($q);
@@ -365,7 +359,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
                     $index_file = $source_path . DIRECTORY_SEPARATOR . $jfile;
                 }
                 if (!is_file($index_file)) {
-                    JFusionFunction::raiseWarning('The path to the requested does not exist', $this->helper->getJname());
+                    JFusionFunction::raiseWarning('The path to the requested does not exist', $this->getJname());
                 } else {
                     //set the current directory to vBulletin
                     chdir($source_path);

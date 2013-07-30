@@ -350,8 +350,7 @@ class JFusionFactory
             //added extra code to prevent error when $driver is incorrect
             if ($driver != 'mysql' && $driver != 'mysqli') {
                 //invalid driver
-                JFusionFunction::raiseWarning(JText::_('INVALID_DRIVER'), $jname);
-                $db = false;
+	            throw new RuntimeException(JText::_('INVALID_DRIVER'));
             } else {
 	            $options = array('driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database, 'prefix' => $prefix);
 

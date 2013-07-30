@@ -453,7 +453,6 @@ class plgContentJfusion extends JPlugin
 	 */
 	public function prepareContent()
 	{
-		JHtml::_('behavior.framework');
 		$this->helper->debug('Preparing content');
 
 		$content = '';

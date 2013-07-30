@@ -245,10 +245,9 @@ class JFusionAdmin_universal extends JFusionAdmin{
 					if( @strpos( $val[0], $database_prefix ) === 0 || $database_prefix == '' ) {
 						$table = new stdClass;
 
-						$table->id = substr($val[0], strlen($database_prefix));
-						$table->name = $val[0];
+						$table->name = $table->id = substr($val[0], strlen($database_prefix));
 
-						$query = 'SHOW COLUMNS FROM '.$table->name;
+						$query = 'SHOW COLUMNS FROM '.$val[0];
 						$db->setQuery($query);
 						$fieldslist = $db->loadObjectList();
 
@@ -269,7 +268,7 @@ class JFusionAdmin_universal extends JFusionAdmin{
 
 				$output .= '<table>';
 				$output .= '<tr><td>';
-				$output .= JHTML::_('select.genericlist', $tl, $control_name.'['.$name.']['.$type.'][table]', 'onchange="javascript: submitbutton(\'applyconfig\')"',	'id', 'name', $value['table']);
+				$output .= JHTML::_('select.genericlist', $tl, $control_name.'['.$name.']['.$type.'][table]', 'onchange="javascript: Joomla.submitbutton(\'applyconfig\')"',	'id', 'name', $value['table']);
 				$output .= '</td></tr>';
 				$output .= '<tr><td>';
 				if ( !empty($value['table']) ) {
@@ -422,6 +421,7 @@ class JFusionAdmin_universal extends JFusionAdmin{
 								case 'FIRSTNAME':
 									JFusion.Plugin.disableOptions(elements,'REALNAME');
 									break;
+								default:
 							}
 							JFusion.Plugin.disableOptions(elements,option.value);
 						}
@@ -450,7 +450,7 @@ class JFusionAdmin_universal extends JFusionAdmin{
 
 			JFusion.Plugin.update();
             if ( ref.value && TypeAry[ref.value].types !== undefined ) {
-	            var type = new Element('select', {
+	            var select = new Element('select', {
 					'type': 'option',
 					'id': 'paramsmap'+parmtype+'type'+name,
 					'name': 'params[map][user][type]['+name+']',
@@ -461,11 +461,19 @@ class JFusionAdmin_universal extends JFusionAdmin{
 			        }
 	            });
 
+				Array.each(TypeAry[ref.value].types, function(type) {
+					select.appendChild(new Element('option', {
+						'html' : type.name,
+						'value' : type.id
+					}));
+				});
+				/*
                 type.options.length = 0;
                 for (var i=0; i<TypeAry[ref.value].types.length; i++) {
-                    type.options[type.options.length] = new Option(TypeAry[ref.value].types[i].name,TypeAry[ref.value].types[i].id);
+                    type.options[type.options.length] = new Option(TypeAry[ref.value].types[i].name, TypeAry[ref.value].types[i].id);
                 }
-                id.appendChild(type);
+                */
+                id.appendChild(select);
             }
         };
 
@@ -489,40 +497,33 @@ class JFusionAdmin_universal extends JFusionAdmin{
 
             var value;
             if(ref.value == 'CUSTOM') {
-            	value = new Element('textarea', {
+                id.appendChild(new Element('textarea', {
 					'id': 'paramsmap'+parmtype+'value'+name,
 					'name': 'params[map]['+parmtype+'][value]['+name+']',
 					'rows': 8,
 					'cols': 55
-            	});
-                id.appendChild(value);
+            	}));
             } else if(ref.value == 'DATE' || ref.value == 'VALUE') {
-            	value = new Element('input', {
+                id.appendChild(new Element('input', {
 					'type': 'text',
 					'id': 'paramsmap'+parmtype+'value'+name,
 					'name': 'params[map]['+parmtype+'][value]['+name+']',
-					'size': 100
-            	});
-                if (ref.value == 'DATE') {
-                    value.setAttribute("value", 'Y-m-d H:i:s');
-                }
-                id.appendChild(value);
+					'size': 100,
+					'value': ref.value == 'DATE' ? 'Y-m-d H:i:s' : ''
+            	}));
             } else if ( ref.value == 'ONOFF') {
-				value = new Element('input', {
+                id.appendChild(new Element('input', {
 					'type': 'text',
 					'id': 'paramsmap'+parmtype+'value'+name+'on',
 					'name': 'params[map]['+parmtype+'][value]['+name+'][on]',
 					'size': 40
-            	});
-                id.appendChild(value);
-
-				value = new Element('input', {
+            	}));
+                id.appendChild(new Element('input', {
 					'type': 'text',
 					'id': 'paramsmap'+parmtype+'value'+name+'off',
 					'name': 'params[map]['+parmtype+'][value]['+name+'][off]',
 					'size': 40
-            	});
-                id.appendChild(value);
+            	}));
             }
         };
 
@@ -586,11 +587,11 @@ if(!isset($_COOKIE[\'jfusionframeless\']))';
 
 			//check to see if all vars are set
 			if (empty($joomla_url)) {
-				JFusionFunction::raiseWarning(JText::_('MISSING') . ' Joomla URL', $this->helper->getJname());
+				JFusionFunction::raiseWarning(JText::_('MISSING') . ' Joomla URL', $this->getJname());
 			} else if (empty($joomla_itemid) || !is_numeric($joomla_itemid)) {
-				JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID', $this->helper->getJname());
+				JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID', $this->getJname());
 			} else if (!$this->isValidItemID($joomla_itemid)) {
-				JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID '. JText::_('MUST BE'). ' ' . $this->getJname(), $this->helper->getJname());
+				JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID '. JText::_('MUST BE'). ' ' . $this->getJname(), $this->getJname());
 			} else {
 				header('Content-disposition: attachment; filename=jfusion_'.$this->getJname().'_redirectcode.txt');
 				header('Pragma: no-cache');
@@ -648,15 +649,15 @@ if(!isset($_COOKIE[\'jfusionframeless\']))';
 			$email = $helper->getFieldType('EMAIL');
 
 			if ( !$userid ) {
-				JFusionFunction::raiseWarning(JText::_('NO_USERID_DEFINED'), $this->helper->getJname());
+				JFusionFunction::raiseWarning(JText::_('NO_USERID_DEFINED'), $this->getJname());
 			}
 
 			if ( !$email ) {
-				JFusionFunction::raiseWarning(JText::_('NO_EMAIL_DEFINED'), $this->helper->getJname());
+				JFusionFunction::raiseWarning(JText::_('NO_EMAIL_DEFINED'), $this->getJname());
 			}
 
 			if ( !$username ) {
-				JFusionFunction::raiseWarning(JText::_('NO_USERNAME_DEFINED'), $this->helper->getJname());
+				JFusionFunction::raiseWarning(JText::_('NO_USERNAME_DEFINED'), $this->getJname());
 			}
 			$grouptable = $helper->getTable('group');
 			if ($grouptable) {
@@ -664,18 +665,18 @@ if(!isset($_COOKIE[\'jfusionframeless\']))';
 				$group_group = $helper->getFieldType('GROUP','group');
 
 				if ( !$group_userid ) {
-					JFusionFunction::raiseWarning(JText::_('NO_GROUP_USERID_DEFINED'), $this->helper->getJname());
+					JFusionFunction::raiseWarning(JText::_('NO_GROUP_USERID_DEFINED'), $this->getJname());
 				}
 				if ( !$group_group ) {
-					JFusionFunction::raiseWarning(JText::_('NO_GROUP_GROUPID_DEFINED'), $this->helper->getJname());
+					JFusionFunction::raiseWarning(JText::_('NO_GROUP_GROUPID_DEFINED'), $this->getJname());
 				}
 			}
 			$grouplist = $this->getUsergroupList();
 			if (empty($grouplist)) {
-				JFusionFunction::raiseWarning(JText::_('NO_GROUPS_MAPPED'), $this->helper->getJname());
+				JFusionFunction::raiseWarning(JText::_('NO_GROUPS_MAPPED'), $this->getJname());
 			}
 		} else {
-			JFusionFunction::raiseWarning(JText::_('NO_USERTABLE_DEFINED'), $this->helper->getJname());
+			JFusionFunction::raiseWarning(JText::_('NO_USERTABLE_DEFINED'), $this->getJname());
 		}
 	}
 }

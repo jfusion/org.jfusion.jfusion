@@ -160,12 +160,11 @@ class debug {
             $script .= <<<JS
             function {$toggleFunctionName}(event) {
                 var evtSource;
-                if (window.event) evtSource = window.event.srcElement;
-                else evtSource = event.target;
-                while (evtSource.nextSibling == null) { evtSource = evtSource.parentNode;  }
+                evtSource = window.event ? window.event.srcElement : event.target;
+                while (evtSource.nextSibling === null) { evtSource = evtSource.parentNode;  }
                 var tNode = evtSource.nextSibling;
                 while (tNode.nodeType != 1) { tNode = tNode.nextSibling; }
-                tNode.style.display = (tNode.style.display != "none") ? 'none' : 'block';
+                tNode.style.display = (tNode.style.display != 'none') ? 'none' : 'block';
             }
 JS;
             $script .= '</script>';
@@ -306,7 +305,7 @@ CSS;
             }
         } else { // the "leave"-run
             $str = debug::decorateValue($arr);
-            if ($name != '') $str = '<div class="debug_0"><table class="grid" width="100%"><thead onclick="tns(event)"><tr><th class="title">'.$name.'</th></tr></thead><tbody><tr><td class="a_key" onclick="tns(event)">'.$str.'</td></tr></tbody></table></div>';
+            if ($name != '') $str = '<div class="debug_0"><table class="grid" width="100%"><thead onclick="'.debug::$toggleFunctionName.'(event)"><tr><th class="title">'.$name.'</th></tr></thead><tbody><tr><td class="a_key" onclick="'.debug::$toggleFunctionName.'(event)">'.$str.'</td></tr></tbody></table></div>';
             //flush();
 
         }

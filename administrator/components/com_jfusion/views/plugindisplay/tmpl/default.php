@@ -24,15 +24,15 @@ $document->addScript('components/com_jfusion/js/File.Upload.js');
 	window.addEvent('domready',function() {
 		var installGIT = $('installGIT');
 		installGIT.set('send',
-			{ onSuccess: function(JSONobject) {
+			{ onSuccess: function(result) {
 				$('spinnerGIT').set('html','');
-				if (JSON.validate(JSONobject)) {
-					JSONobject = JSON.decode(JSONobject);
+				if (JSON.validate(result)) {
+					var JSONobject = JSON.decode(result);
 					JFusion.OnMessages(JSONobject.messages);
 
 					JFusion.updateList(JSONobject.pluginlist);
 				} else {
-					JFusion.OnError(JSONobject);
+					JFusion.OnError(result);
 				}
 			}, data: {
 				ajax: true
@@ -46,15 +46,15 @@ $document->addScript('components/com_jfusion/js/File.Upload.js');
 
 		var installURL = $('installURL');
 		installURL.set('send',
-			{ onSuccess: function(JSONobject) {
+			{ onSuccess: function(result) {
 				$('spinnerURL').set('html','');
-				if (JSON.validate(JSONobject)) {
-					JSONobject = JSON.decode(JSONobject);
+				if (JSON.validate(result)) {
+					var JSONobject = JSON.decode(result);
 					JFusion.OnMessages(JSONobject.messages);
 
 					JFusion.updateList(JSONobject.pluginlist);
 				} else {
-					JFusion.OnError(JSONobject);
+					JFusion.OnError(result);
 				}
 			}
 			});
@@ -66,15 +66,15 @@ $document->addScript('components/com_jfusion/js/File.Upload.js');
 
 		var installDIR = $('installDIR');
 		installDIR.set('send',
-			{ onSuccess: function(JSONobject) {
+			{ onSuccess: function(result) {
 				$('spinnerDIR').set('html','');
-				if (JSON.validate(JSONobject)) {
-					JSONobject = JSON.decode(JSONobject);
+				if (JSON.validate(result)) {
+					var JSONobject = JSON.decode(result);
 					JFusion.OnMessages(JSONobject.messages);
 
 					JFusion.updateList(JSONobject.pluginlist);
 				} else {
-					JFusion.OnError(JSONobject);
+					JFusion.OnError(result);
 				}
 			}
 			});
@@ -86,28 +86,29 @@ $document->addScript('components/com_jfusion/js/File.Upload.js');
 
 		var installZIP = $('installZIP');
 		installZIP.addEvent('submit', function(e) {
+			var upload;
 			e.stop();
 			$('spinnerZIP').set('html','<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">');
 			if (typeof FormData === 'undefined') {
 				this.submit();
 			} else {
-				var upload = new File.Upload({
-					url:  JFusion.url ,
+				upload = new File.Upload({
+					url:  JFusion.url,
 					data: {
 						option: 'com_jfusion',
 						task : 'installplugin',
 						installtype : 'upload',
 						ajax : 'true' } ,
 					images: ['install_package'],
-					onComplete : function (JSONobject) {
+					onComplete : function (result) {
 						$('spinnerZIP').set('html','');
-						if (JSON.validate(JSONobject)) {
-							JSONobject = JSON.decode(JSONobject);
+						if (JSON.validate(result)) {
+							var JSONobject = JSON.decode(result);
 							JFusion.OnMessages(JSONobject.messages);
 
 							JFusion.updateList(JSONobject.pluginlist);
 						} else {
-							JFusion.OnError(JSONobject);
+							JFusion.OnError(result);
 						}
 					}
 				});

@@ -557,50 +557,33 @@ JS;
         $document = JFactory::getDocument();
         $plugin = json_encode($plugin);
         $js = <<<JS
-			var jfPlugin = {$plugin};
+			JFusion.plugin = {$plugin};
 
 	        JFusion.groupDataArray[0] = '{$simple_usergroup}';
 	        JFusion.groupDataArray[1] = '{$advanced_usergroup}';
 
 	        JFusion.addRow = function() {
-	        	jfPlugin['count']++;
-	        	var count = jfPlugin['count'];
+	        	JFusion.plugin['count']++;
+	        	var count = JFusion.plugin['count'];
 
-	        	var master = jfPlugin['master'];
-	        	var name = jfPlugin['name'];
+	        	var master = JFusion.plugin['master'];
+	        	var name = JFusion.plugin['name'];
 
 	        	var elTrNew = new Element('tr', {
 					'id' : 'usergroups_row'+count
 	        	});
 
-
-	        	var elTdmaster = new Element('td');
-	        	elTdmaster.appendChild(JFusion.createSelect(master));
-
-	        	var elTdjname = new Element('td');
-	        	elTdjname.appendChild(JFusion.createSelect(name));
-
-	        	var elInputNew = new Element('input', {
+	        	elTrNew.appendChild(new Element('td')).appendChild(JFusion.createSelect(master));
+	        	elTrNew.appendChild(new Element('td')).appendChild(JFusion.createSelect(name));
+	        	elTrNew.appendChild(new Element('td')).appendChild(new Element('input', {
 	        		'type': 'radio',
 	        		'name': 'params[multiusergroupdefault]',
 	        		'value': count
-	        	});
-
-	        	var elTddefault = new Element('td');
-	        	elTddefault.appendChild(elInputNew);
-
-	        	var elANew = new Element('a', {
+	        	}));
+	        	elTrNew.appendChild(new Element('td')).appendChild(new Element('a', {
 					'href': 'javascript:JFusion.removeRow('+count+')',
 					'html': JFusion.JText('REMOVE')
-	        	});
-
-	        	var elTdremove = new Element('td');
-	        	elTdremove.appendChild(elANew);
-
-	        	elTrNew.appendChild(elTdmaster);
-	        	elTrNew.appendChild(elTdjname);
-	        	elTrNew.appendChild(elTddefault);
-	        	elTrNew.appendChild(elTdremove);
+	        	}));
 
 	        	var divEls = $('usergroups');
 	        	divEls.appendChild(elTrNew);
@@ -613,9 +596,9 @@ JS;
 	        };
 
 	        JFusion.createSelect = function(name) {
-	        	var count = jfPlugin['count'];
-	        	var type = jfPlugin[name]['type'];
-	        	var groups = jfPlugin[name]['groups'];
+	        	var count = JFusion.plugin['count'];
+	        	var type = JFusion.plugin[name]['type'];
+	        	var groups = JFusion.plugin[name]['groups'];
 
 				if (type == 'multi') {
 					var elSelNew = new Element('select', {
@@ -628,16 +611,12 @@ JS;
 						'name': 'params[multiusergroup]['+name+']['+count+'][]'
 					});
 				}
-				var x;
-				for (x in groups) {
-					if (groups.hasOwnProperty(x)) {
-						var elOptNew = new Element('option', {
-							'text': groups[x].name,
-							'value': groups[x].id
-						});
-						elSelNew.appendChild(elOptNew);
-					}
-				}
+				Object.each(groups, function (value) {
+					elSelNew.appendChild(new Element('option', {
+						'text': value.name,
+						'value': value.id
+					}));
+				});
 				return elSelNew;
 	        };
 JS;

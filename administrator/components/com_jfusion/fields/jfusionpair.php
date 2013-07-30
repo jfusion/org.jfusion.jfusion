@@ -140,7 +140,7 @@ HTML;
 					</div>
 	    		</div>
 			</div>
-			<a class="modal btn" title="{$configure}"  href="" rel="{target: '{$this->id}_target', handler: 'adopt', return: '{$this->id}', onClose : JFusion.closeAdopt, size: {x: 650, y: 375}}">{$configure}</a>
+			<a class="modal btn" title="{$configure}"  href="" rel="{target: '{$this->id}_target', handler: 'adopt', returnTo: '{$this->id}', onClose : JFusion.closeAdopt, size: {x: 650, y: 375}}">{$configure}</a>
 HTML;
 
 		if($this->value) {

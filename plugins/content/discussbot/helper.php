@@ -506,6 +506,8 @@ class JFusionDiscussBotHelper {
 
 	public function loadScripts()
 	{
+		JHtml::_('behavior.framework');
+		JHtml::_('jquery.framework');
 		static $scriptsLoaded;
 		if (!isset($scriptsLoaded)) {
 			$this->debug('Loading scripts into header');
@@ -524,6 +526,11 @@ class JFusionDiscussBotHelper {
 JS;
 
 			JFusionFunction::initJavaScript();
+			$document = JFactory::getDocument();
+			//check for a custom js file
+			if (file_exists(DISCUSSION_TEMPLATE_PATH.'jfusion.js')) {
+				$document->addScript(DISCUSSION_TEMPLATE_URL.'jfusion.js');
+			}
 
 			//Load quick reply includes if enabled
 			if ($this->params->get('enable_quickreply')) {
@@ -534,25 +541,29 @@ JS;
 
 			if ($view == $test_view) {
 				$js .= <<<JS
-	            window.addEvent(window.webkit ? 'load' : 'domready', function () {
-                	JFusion.initializeDiscussbot();
-	            });
+				window.addEvent({
+					'load' : function() {
+        				JFusion.initializeDiscussbot();
+				    },
+    				'domready' : function() {
+        				JFusion.initializeDiscussbot();
+    				}
+				});
 JS;
 			} else {
 				$js .= <<<JS
-	            window.addEvent(window.webkit ? 'load' : 'domready', function () {
-	                JFusion.initializeConfirmationBoxes();
-	            });
+	            window.addEvent({
+					'load' : function() {
+						JFusion.initializeConfirmationBoxes();
+					},
+    				'domready' : function() {
+						JFusion.initializeConfirmationBoxes();
+					}
+				});
 JS;
 			}
 
-			$document = JFactory::getDocument();
 			$document->addScriptDeclaration($js);
-
-			//check for a custom js file
-			if (file_exists(DISCUSSION_TEMPLATE_PATH.'jfusion.js')) {
-				$document->addScript(DISCUSSION_TEMPLATE_URL.'jfusion.js');
-			}
 
 			//add css
 			$css = DISCUSSION_TEMPLATE_PATH.'jfusion.css';

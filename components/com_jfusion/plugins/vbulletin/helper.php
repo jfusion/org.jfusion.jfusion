@@ -200,7 +200,7 @@ class JFusionHelper_vbulletin
                 $vbulletin->db->query_first('SET names \''.$this->params->get('database_charset', 'utf8').'\'');
                 $GLOBALS['db'] = $vbulletin->db;
             } else {
-                JFusionFunction::raiseWarning(JText::_('SOURCE_PATH_NOT_FOUND'), $this->helper->getJname());
+                JFusionFunction::raiseWarning(JText::_('SOURCE_PATH_NOT_FOUND'), $this->getJname());
                 $return = false;
             }
         } elseif (defined('VB_AREA') && VB_AREA == 'JFusion') {

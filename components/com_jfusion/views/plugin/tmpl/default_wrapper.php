@@ -14,7 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 
 ?>
 <script type="text/javascript">
-	if('undefined'=== typeof JFusion) {
+	if(typeof JFusion === 'undefined') {
 		var JFusion = {};
 	}
 
@@ -24,7 +24,7 @@ defined('_JEXEC') or die('Restricted access');
 
 	JFusion.getIFrameDocument = function(aID) {
 		var rv = null;
-		var frame=JFusion.getElement(aID);
+		var frame = JFusion.getElement(aID);
 		// if contentDocument exists, W3C compliant (e.g. Mozilla)
 
 		if (frame.contentDocument) {
@@ -40,11 +40,13 @@ defined('_JEXEC') or die('Restricted access');
 		var frame = JFusion.getElement("jfusioniframe");
 		frame.height = JFusion.getIFrameDocument("jfusioniframe").body.offsetHeight;
 
-		window.scrollTo(window.pageYOffset,JFusion.getOffsetTop(frame));
+		window.scrollTo(window.pageYOffset, JFusion.getOffsetTop(frame));
 	};
 
-	JFusion.getOffsetTop = function(el) {
-		var top = 0;
+	JFusion.getOffsetTop = function(element) {
+		var el, top;
+		el = element;
+		top = 0;
 		while( el && !isNaN( el.offsetTop ) ) {
 			top += el.offsetTop;
 			el = el.offsetParent;

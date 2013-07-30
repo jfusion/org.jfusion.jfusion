@@ -374,11 +374,11 @@ JFusionFunctionAdmin::displayDonate();
 	                }
 
 	                window.addEvent('domready',function() {
-	                    $('build').addEvent('click', function(e) {
+	                    $('build').addEvent('click', function() {
 	                        confirmSubmit('build');
 	                    });
 
-	                    $('git').addEvent('click', function(e) {
+	                    $('git').addEvent('click', function() {
 	                        confirmSubmit('git');
 	                    });
 	                });

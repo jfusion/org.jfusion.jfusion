@@ -21,9 +21,9 @@ JFusionFunctionAdmin::displayDonate();
 
 <script type="text/javascript">
 <!--
-var slave_data = <?php echo json_encode($this->slave_data);?>;
-var response = { 'completed' : false , 'slave_data' : [] , 'errors' : [] };
-var sync_mode = '<?php echo $this->sync_mode;?>';
+JFusion.slaveData = <?php echo json_encode($this->slave_data);?>;
+JFusion.response = { 'completed' : false , 'slave_data' : [] , 'errors' : [] };
+JFusion.syncMode = '<?php echo $this->sync_mode;?>';
 JFusion.syncid = '<?php echo $this->syncid; ?>';
 
 JFusion.periodical;
@@ -31,6 +31,7 @@ JFusion.periodical;
 // refresh every 10 seconds
 JFusion.syncRunning = -1;
 JFusion.counter = 10;
+JFusion.undateInterval = 1000;
 
 JFusion.renderSyncHead = function() {
 	var root = new Element('thead');
@@ -63,11 +64,11 @@ JFusion.renderSyncBody = function (data) {
 
 		var pct = 0;
 		var synced = info.total_to_sync-info.total;
-		if (synced != 0 && info.total_to_sync != 0) {
+		if (synced !== 0 && info.total_to_sync !== 0) {
 			pct = (synced/info.total_to_sync) * 100;
 		}
 		var color = 'blue';
-		if (pct == 100) {
+		if (pct === 100) {
 			color = 'green';
 		}
 		new Element('div',{'style': 'background-color:'+color+'; width:'+pct+'%','html': '&nbsp;'}).inject(outer);
@@ -105,25 +106,77 @@ JFusion.renderSync = function(data) {
 	root.inject(log_res);
 };
 
+JFusion.startSync = function() {
+	JFusion.syncRunning = 1;
+
+	/* our usersync status update function: */
+	var refresh = (function() {
+		//add another second to the counter
+		JFusion.counter -= 1;
+		if (JFusion.counter < 1) {
+			if (!JFusion.response.completed) {
+				JFusion.counter = 10;
+
+				/* our ajax istance for starting the sync */
+				new Request.JSON({
+					url: JFusion.url,
+					noCache: true,
+					onSuccess: function(JSONobject) {
+						JFusion.render(JSONobject);
+					}, onError: function(JSONobject) {
+						JFusion.OnError(JSONobject);
+						JFusion.stopSync();
+					}
+				}).get({'option': 'com_jfusion',
+						'task': 'syncprogress',
+						'tmpl': 'component',
+						'syncid': JFusion.syncid});
+
+				new Request.JSON({
+					url: JFusion.url,
+					noCache: true,
+					onSuccess: function(JSONobject) {
+						JFusion.render(JSONobject);
+					}, onError: function(JSONobject) {
+						JFusion.OnError(JSONobject);
+						JFusion.stopSync();
+					}
+				}).get({'option': 'com_jfusion',
+						'task': 'syncresume',
+						'tmpl': 'component',
+						'syncid': JFusion.syncid});
+			}
+		} else {
+			JFusion.update();
+		}
+	});
+
+	JFusion.periodical = refresh.periodical(JFusion.undateInterval, this);
+
+	JFusion.renderSync(JFusion.response);
+};
+
+JFusion.stopSync = function() {
+	JFusion.syncRunning = 0;
+	// let's stop our timed ajax
+	clearInterval(JFusion.periodical);
+};
+
 JFusion.update = function() {
 	if (JFusion.syncRunning != -1) {
 		var text;
 		var start = $('start');
-		if (JFusion.syncRunning == 0) {
-			clearInterval(JFusion.periodical);
-
-			text = JFusion.JText('PAUSED');
-
-			start.set('html', JFusion.JText('RESUME'));
-		} else if (response.completed) {
-			// let's stop our timed ajax
-			clearInterval(JFusion.periodical);
-
+		if (JFusion.response.completed) {
+			JFusion.stopSync();
 			text = JFusion.JText('FINISHED');
 
 			start.set('html', '<strong>'+JFusion.JText('CLICK_FOR_MORE_DETAILS')+'</strong>');
 			start.set('href', 'index.php?option=com_jfusion&task=syncstatus&syncid='+JFusion.syncid);
 			start.removeEvents('click');
+		} else if (JFusion.syncRunning === 0) {
+			text = JFusion.JText('PAUSED');
+
+			start.set('html', JFusion.JText('RESUME'));
 		} else {
 			text = JFusion.JText('UPDATE_IN')+ ' ' + JFusion.counter + ' '+JFusion.JText('SECONDS');
 
@@ -134,11 +187,11 @@ JFusion.update = function() {
 };
 
 JFusion.render = function(JSONobject) {
-	response = JSONobject;
+	JFusion.response = JSONobject;
 
 	JFusion.OnMessages(JSONobject.messages);
 	if (JSONobject.messages.error) {
-		clearInterval(periodical);
+		JFusion.stopSync();
 	} else {
 		JFusion.renderSync(JSONobject);
 
@@ -149,115 +202,62 @@ JFusion.render = function(JSONobject) {
 };
 
 window.addEvent('domready', function() {
-		/* our ajax istance for starting the sync */
-		var ajax = new Request.JSON({
-			url: JFusion.url,
-			noCache: true,
-			onSuccess: function(JSONobject) {
-				JFusion.render(JSONobject);
-			}, onError: function(JSONobject) {
-				JFusion.OnError(JSONobject);
-				clearInterval(JFusion.periodical);
-			}
-		});
-
-		var ajaxsync = new Request.JSON({
-			url: JFusion.url,
-			noCache: true,
-				onSuccess: function(JSONobject) {
-				JFusion.render(JSONobject);
-			}, onError: function(JSONobject) {
-				JFusion.OnError(JSONobject);
-				clearInterval(JFusion.periodical);
-			}
-		});
-
-		/* our usersync status update function: */
-		var refresh = (function() {
-			//add another second to the counter
-			JFusion.counter -= 1;
-			if (JFusion.counter < 1) {
-				if (!response.completed) {
-					JFusion.counter = 10;
-
-					ajax.get({'option': 'com_jfusion',
-						'task': 'syncprogress',
-						'tmpl': 'component',
-						'syncid': JFusion.syncid});
-
-					ajaxsync.get({'option': 'com_jfusion',
-						'task': 'syncresume',
-						'tmpl': 'component',
-						'syncid': JFusion.syncid});
-				}
-			} else {
-				JFusion.update();
-			}
-		});
-
 		// start and stop click events
 		$('start').addEvent('click', function(e) {
 			// prevent default
 			e.stop();
-			if (JFusion.syncRunning != 1) {
+			if (JFusion.syncRunning == 1) {
+				JFusion.stopSync();
+			} else {
 				// prevent insane clicks to start numerous requests
 				clearInterval(JFusion.periodical);
 
-				if (sync_mode == 'new') {
+				if (JFusion.syncMode == 'new') {
 					var form = $('syncForm');
 					var count = 0;
-					var i;
 
 					if (form) {
 						var select = form.getElements('select[name^=slave]');
 
-						select.each(function(el) {
+						select.each(function (el) {
 							var value = el.get('value');
 							if (value) {
-								response.slave_data[count] = {
+								JFusion.response.slave_data[count] = {
 									"jname": value,
-									"total": slave_data[value]['total'],
-									"total_to_sync": slave_data[value]['total'],
-									"created":0,
-									"deleted":0,
-									"updated":0,
-									"error":0,
-									"unchanged":0};
+									"total": JFusion.slaveData[value]['total'],
+									"total_to_sync": JFusion.slaveData[value]['total'],
+									"created": 0,
+									"deleted": 0,
+									"updated": 0,
+									"error": 0,
+									"unchanged": 0};
 								count++;
 							}
 						});
 					}
-					if (response.slave_data.length) {
+					if (JFusion.response.slave_data.length) {
 						//give the user a last chance to opt-out
 						var answer = confirm(JFusion.JText('SYNC_CONFIRM_START'));
 						if (answer) {
-							sync_mode = 'resume';
+							JFusion.syncMode = 'resume';
 							//do start
-							JFusion.syncRunning = 1;
-
 							new Request.JSON({
 								url: JFusion.url,
 								noCache: true,
-								onSuccess: function(JSONobject) {
+								onSuccess: function (JSONobject) {
 									JFusion.render(JSONobject);
-								}, onError: function(JSONobject) {
+								}, onError: function (JSONobject) {
 									JFusion.OnError(JSONobject);
-									clearInterval(JFusion.periodical);
-								}}).get(form.toQueryString()+'&option=com_jfusion&task=syncinitiate&tmpl=component&syncid=' + JFusion.syncid);
+									JFusion.stopSync();
+								}}).get(form.toQueryString() + '&option=com_jfusion&task=syncinitiate&tmpl=component&syncid=' + JFusion.syncid);
+							JFusion.startSync();
 						}
 					} else {
 						JFusion.OnError(JFusion.JText('SYNC_NODATA'));
 					}
 				} else {
-					JFusion.syncRunning = 1;
+					JFusion.startSync();
 				}
-				if (JFusion.syncRunning == 1) {
-					JFusion.periodical = refresh.periodical(1000, this);
-
-					JFusion.renderSync(response);
-				}
-			} else {
-				JFusion.syncRunning = 0;
 			}
 			JFusion.update();
 		});
@@ -336,8 +336,8 @@ window.addEvent('domready', function() {
 		</div>
 		<script type="text/javascript">
 			<!--
-			response = <?php echo json_encode($this->syncdata);?>;
-			JFusion.renderSync(response);
+			JFusion.response = <?php echo json_encode($this->syncdata);?>;
+			JFusion.renderSync(JFusion.response);
 			// -->
 		</script>
 	<?php

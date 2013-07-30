@@ -67,7 +67,7 @@ class JFusionHelper_gallery2
             $initParams['loginRedirect'] = JRoute::_('index.php?option=com_user&view=login');
             $initParams['fullInit'] = $fullInit;
             if (!is_file($index_file)) {
-                JFusionFunction::raiseWarning('The path to the Gallery2(path: '.$index_file.') embed file set in the component preferences does not exist', $this->helper->getJname());
+                JFusionFunction::raiseWarning('The path to the Gallery2(path: '.$index_file.') embed file set in the component preferences does not exist', $this->getJname());
             } else {
                 if (!class_exists('GalleryEmbed')) {
                     require_once $index_file;
@@ -82,11 +82,11 @@ class JFusionHelper_gallery2
                 }
                 $ret = GalleryEmbed::init($initParams);
                 if ($ret) {
-                    JFusionFunction::raiseWarning('Error while initialising Gallery2 API', $this->helper->getJname());
+                    JFusionFunction::raiseWarning('Error while initialising Gallery2 API', $this->getJname());
                 } else {
                     $ret = GalleryCoreApi::setPluginParameter('module', 'core', 'cookie.path', '/');
                     if ($ret) {
-                        JFusionFunction::raiseWarning('Error while setting cookie path', $this->helper->getJname());
+                        JFusionFunction::raiseWarning('Error while setting cookie path', $this->getJname());
                     } else {
                         if ($fullInit) {
                             $user = JFactory::getUser();
