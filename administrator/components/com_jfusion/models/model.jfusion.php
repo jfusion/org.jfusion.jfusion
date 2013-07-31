@@ -1319,13 +1319,13 @@ class JFusionFunction
                 	$encoding = 'ISO-8859-1';
                     break;
                 case 'utf8':
-                	//do nothing
+	                $encoding = false;
                     break;
                 default:
 	                throw new RuntimeException('JFusion Encoding support missing: '.$charset);
                     break;
             }
-            if (isset($encoding)) {
+            if ($encoding) {
             	$converted = false;
 	            if (function_exists ('iconv')) {
                     $converted = iconv('utf-8', $encoding, $string);
@@ -1767,7 +1767,7 @@ class JFusionFunction
 				$keys = array( 'SESSION_TIMEOUT', 'SYNC_NODATA', 'NOTICE', 'WARNING', 'MESSAGE', 'ERROR', 'DELETE', 'PLUGIN',
 					'SYNC_PROGRESS', 'SYNC_USERS_TODO', 'USER', 'USERS', 'NAME', 'CREATED', 'DELETED', 'UPDATED', 'CONFLICTS',
 					'UNCHANGED', 'FINISHED', 'PAUSE', 'CLICK_FOR_MORE_DETAILS', 'UPDATE_IN', 'SECONDS', 'SYNC_CONFIRM_START',
-					'DELETE_PAIR', 'REMOVE', 'COPY_MESSAGE');
+					'DELETE_PAIR', 'REMOVE', 'COPY', 'COPY_MESSAGE');
 
 				$url = JURI::root() . 'administrator/index.php';
 			} else {
