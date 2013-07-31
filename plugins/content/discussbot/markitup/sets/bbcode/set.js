@@ -31,7 +31,7 @@ JFusion.bbcodeSettings = {
         {name: 'Quotes', openWith: '[quote]', closeWith: '[/quote]'},
         {name: 'Code', openWith: '[code]', closeWith: '[/code]'},
         {separator: '---------------' },
-        {name: 'Clean', className: 'clean', replaceWith: function (markitup) { return markitup.selection.replace(/\[(.*?)\]/g, ""); } },
+        {name: 'Clean', className: 'clean', replaceWith: function (markitup) { return markitup.selection.replace(/\[(.*?)\]/g, ''); } },
         {name: 'Preview', className: 'preview', call: 'preview' },
         {name: 'Close Preview', className: 'previewClose', call: 'previewClose' }
     ]
