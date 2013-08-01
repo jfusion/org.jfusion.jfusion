@@ -544,13 +544,13 @@ JS;
 
 			if ($view == $test_view) {
 				$js .= <<<JS
-				window.addEvent('load', function() {
+				window.addEvent('domready', function() {
         				JFusion.initializeDiscussbot();
     				});
 JS;
 			} else {
 				$js .= <<<JS
-				window.addEvent('load', function() {
+				window.addEvent('domready', function() {
         				JFusion.initializeConfirmationBoxes();
     				});
 JS;
