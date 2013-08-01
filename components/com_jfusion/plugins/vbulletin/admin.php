@@ -274,28 +274,43 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
     {
         static $jsSet;
         if (empty($jsSet)) {
-	        $itemid = 'params[plugin_itemid]_id0';
-	        $fieldname = 'params_hook_name';
-	        $fieldaction = 'params_hook_action';
-
-            $empty = JText::_('VB_REDIRECT_ITEMID_EMPTY');
+	        JFusionFunction::loadJavascriptLanguage('VB_REDIRECT_ITEMID_EMPTY');
 
             $js = <<<JS
             JFusion.Plugin.toggleHook = function(hook, action) {
                 var form = $('adminForm');
-                var itemid = $('{$itemid}');
+                var itemid = $('params[plugin_itemid]_id0');
 
                 var a = (action == 'enable' || action == 'reenable');
                 var h = (hook == 'frameless' || hook == 'redirect');
-                var i = (itemid.value === '' || itemid.value == '0');
+                var i = (itemid.get('value') === '' || itemid.get('value') == '0');
                 if (a && h && i) {
-                    alert('{$empty}');
+                    var messageBox = new Element('div');
+				    messageBox.appendChild(new Element('div', {
+				        'html': JFusion.JText('VB_REDIRECT_ITEMID_EMPTY')
+				    }));
+				    messageBox.appendChild(new Element('button', {
+				        'class': 'btn btn-small',
+				        'html': JFusion.JText('OK'),
+				        'style': 'float: right;',
+				        'events': {
+				            'click': function () {
+				            	SqueezeBox.close();
+				            }
+				        }
+				    }));
+				    SqueezeBox.open(messageBox, {
+				        handler : 'adopt',
+				        overlayOpacity : 0.7,
+				        size: {x: 320,
+				            y: 120}
+				    });
                 } else {
-                    form.customcommand.value = 'toggleHook';
-                    $('{$fieldname}').value = hook;
-                    $('{$fieldaction}').value = action;
+                    form.customcommand.set('value', 'toggleHook');
+                    $('params_hook_name').set('value', hook);
+                    $('params_hook_action').set('value', action);
                     form.action.value = 'apply';
-                    submitform('saveconfig');
+                    Joomla.submitform('saveconfig', form);
                 }
                 return false;
             }
@@ -684,7 +699,7 @@ HTML;
         $query = 'SELECT slave FROM #__jfusion WHERE name = ' . $db->Quote($this->getJname());
         $db->setQuery($query);
         $slave = $db->loadResult();
-        $list_box = '<select onchange="JFusion.usergroupSelect(this.selectedIndex);">';
+        $list_box = '<select onchange="JFusion.Plugin.usergroupSelect(this.selectedIndex);">';
         if ($advanced == 1) {
             $list_box.= '<option value="0" selected="selected">Simple</option>';
         } else {
@@ -755,8 +770,8 @@ HTML;
 
 	    $jsGroups = implode(',', $jsGroups);
 	    $js = <<<JS
-        JFusion.groupDataArray[0] = '{$simple_usergroup}';
-        JFusion.groupDataArray[1] = '{$advanced_usergroup}';
+        JFusion.Plugin.groupDataArray[0] = '{$simple_usergroup}';
+        JFusion.Plugin.groupDataArray[1] = '{$advanced_usergroup}';
 
         JFusion.Plugin.toggleSecondaryGroups = function(vbid,masterid) {
         	var groups = new Array({$jsGroups});

@@ -1764,18 +1764,11 @@ class JFusionFunction
 		if (!$js) {
 			$text = array();
 			if ( JFactory::getApplication()->isAdmin() ) {
-				$keys = array( 'SESSION_TIMEOUT', 'SYNC_NODATA', 'NOTICE', 'WARNING', 'MESSAGE', 'ERROR', 'DELETE', 'PLUGIN',
-					'SYNC_PROGRESS', 'SYNC_USERS_TODO', 'USER', 'USERS', 'NAME', 'CREATED', 'DELETED', 'UPDATED', 'CONFLICTS',
-					'UNCHANGED', 'FINISHED', 'PAUSE', 'CLICK_FOR_MORE_DETAILS', 'UPDATE_IN', 'SECONDS', 'SYNC_CONFIRM_START',
-					'DELETE_PAIR', 'REMOVE', 'COPY', 'COPY_MESSAGE');
+				$keys = array( 'SESSION_TIMEOUT', 'NOTICE', 'WARNING', 'MESSAGE', 'ERROR', 'DELETED', 'DELETE_PAIR', 'REMOVE', 'OK');
 
 				$url = JURI::root() . 'administrator/index.php';
 			} else {
-				$keys = array( 'NOTICE', 'WARNING', 'MESSAGE', 'ERROR', 'BUTTON_CANCEL', 'BUTTON_INITIATE',
-					'BUTTON_PUBLISH_NEW_DISCUSSION', 'BUTTON_REPUBLISH_DISCUSSION', 'BUTTON_UNPUBLISH_DISCUSSION',
-					'CONFIRM_THREAD_CREATION', 'CONFIRM_UNPUBLISH_DISCUSSION', 'CONFIRM_PUBLISH_DISCUSSION',
-					'DISCUSSBOT_ERROR', 'HIDE_REPLIES', 'JYES', 'SHOW_REPLIES', 'SUBMITTING_QUICK_REPLY'
-				);
+				$keys = array( 'SESSION_TIMEOUT', 'NOTICE', 'WARNING', 'MESSAGE', 'ERROR');
 
 				$url = JURI::root() . 'index.php';
 			}
@@ -1788,10 +1781,36 @@ class JFusionFunction
 			$js=<<<JS
 			JFusion.url = '{$url}';
 
-			JFusion.Text = {$text};
+			JFusion.text = {$text};
 JS;
 
 			$document = JFactory::getDocument();
+			$document->addScriptDeclaration($js);
+		}
+	}
+
+	/**
+	 * @param string|array $keys
+	 */
+	public static function loadJavascriptLanguage($keys) {
+		JFusionFunction::initJavaScript();
+		if (!empty($keys)) {
+			$document = JFactory::getDocument();
+
+			$js = '';
+			if (is_array($keys)) {
+				foreach($keys as $key) {
+					$text = JText::_($key, true);
+					$js .=<<<JS
+			JFusion.text['{$key}'] = '{$text}';
+JS;
+				}
+			} else {
+				$text = JText::_($keys, true);
+				$js .=<<<JS
+			JFusion.text['{$keys}'] = '{$text}';
+JS;
+			}
 			$document->addScriptDeclaration($js);
 		}
 	}

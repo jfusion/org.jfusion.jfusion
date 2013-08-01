@@ -17,38 +17,7 @@
  */
 // no direct access
 defined('_JEXEC') or die('Restricted access');
-?>
 
-<script type="text/javascript">
-    function doShowHide(item) {
-        var obj=$('x'+item);
-        var col=$(item);
-        if (obj.style.display=='none') {
-            obj.style.display='block';
-            col.set('html', '[-]');
-        } else {
-            obj.style.display='none';
-	        col.set('html', '[+]');
-        }
-    }
-
-    function doImport(jname) {
-        var form = $('adminForm');
-        form.action.value = 'import';
-        form.jname.value = jname;
-        form.encoding = 'multipart/form-data';
-	    Joomla.submitbutton('plugineditor');
-    }
-
-    function doExport(jname) {
-        var form = $('adminForm');
-        form.action.value = 'export';
-        form.jname.value = jname;
-	    Joomla.submitbutton('plugineditor');
-    }
-</script>
-
-<?php
 jimport('joomla.html.pane');
 
 ?>
@@ -163,10 +132,10 @@ jimport('joomla.html.pane');
 					        $date = $date?$date:JText::_('UNKNOWN');
 					        ?>
 
-	                        <script type="text/javascript">
+					        <script type="text/javascript">
 	                            window.addEvent('domready',function() {
-	                                $('plugin<?php echo $key;?>').addEvent('click', function() {
-	                                    doShowHide(this.id);
+	                                $('plugin<?php echo $name;?>').addEvent('click', function() {
+		                                JFusion.doShowHide(this.get('id'));
 	                                });
 	                            });
 	                        </script>
@@ -176,17 +145,17 @@ jimport('joomla.html.pane');
 	                            </td>
 	                            <td>
 		                            <label for="importexport<?php echo $name; ?>"><?php echo ucfirst($name); ?></label>
-	                                <a href="javascript:void(0);" id="plugin<?php echo $key;?>">[+]</a>
-	                                <div style="display:none;" id="xplugin<?php echo $key; ?>">
-								        <?php echo JText::_('VERSION').': '.$version?>
+	                                <a href="javascript:void(0);" id="plugin<?php echo $name; ?>">[+]</a>
+	                                <div style="display:none;" id="xplugin<?php echo $name; ?>">
+								        <?php echo JText::_('VERSION').': '.$version; ?>
 	                                    <br/>
-		                                <?php echo JText::_('DATE').': '.$date?>
+		                                <?php echo JText::_('DATE').': '.$date; ?>
 	                                    <br/>
-								        <?php echo JText::_('DESCRIPTION').': '.ucfirst($description)?>
+								        <?php echo JText::_('DESCRIPTION').': '.ucfirst($description); ?>
 	                                    <br/>
 								        <?php echo JText::_('CREATOR').': '.$creator; ?>
 	                                    <br/>
-		                                <?php echo JText::_('URL').': <a href="'.$remotefile.'">'.$remotefile. '</a>';?>
+		                                <?php echo JText::_('URL').': <a href="'.$remotefile.'">'.$remotefile. '</a>'; ?>
 	                                </div>
 	                            </td>
 	                        </tr>

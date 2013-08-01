@@ -383,8 +383,8 @@ if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\'
             $update = JText::_('MOD_UPDATE');
             $output = <<<HTML
             <img src="components/com_jfusion/images/check_good_small.png">{$text}
-            <a href="javascript:void(0);" onclick="return JFusion.module('disableRedirectMod')">{$disable}</a>
-            <a href="javascript:void(0);" onclick="return JFusion.module('enableRedirectMod')">{$update}</a>
+            <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('disableRedirectMod')">{$disable}</a>
+            <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('enableRedirectMod')">{$update}</a>
 HTML;
             return $output;
         } else {
@@ -392,7 +392,7 @@ HTML;
             $enable = JText::_('MOD_ENABLE');
             $output = <<<HTML
             <img src="components/com_jfusion/images/check_bad_small.png">{$text}
-            <a href="javascript:void(0);" onclick="return JFusion.module('enableRedirectMod')">{$enable}</a>
+            <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('enableRedirectMod')">{$enable}</a>
 HTML;
             return $output;
         }
@@ -442,7 +442,7 @@ HTML;
 			    $disable = JText::_('MOD_DISABLE');
 			    $output = <<<HTML
             <img src="components/com_jfusion/images/check_good_small.png">{$text}
-            <a href="javascript:void(0);" onclick="return JFusion.module('disableAuthMod')">{$disable}</a>
+            <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('disableAuthMod')">{$disable}</a>
 HTML;
 			    return $output;
 		    } else {
@@ -450,7 +450,7 @@ HTML;
 			    $enable = JText::_('MOD_ENABLE');
 			    $output = <<<HTML
             <img src="components/com_jfusion/images/check_bad_small.png">{$text}
-            <a href="javascript:void(0);" onclick="return JFusion.module('enableAuthMod')">{$enable}</a>
+            <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('enableAuthMod')">{$enable}</a>
 HTML;
 			    return $output;
 		    }
@@ -579,7 +579,7 @@ HTML;
             $disable = JText::_('MOD_DISABLE');
             $output = <<<HTML
             <img src="components/com_jfusion/images/check_good_small.png">{$text}
-            <a href="javascript:void(0);" onclick="return JFusion.module('disableQuickMod')">{$disable}</a>
+            <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('disableQuickMod')">{$disable}</a>
 HTML;
             return $output;
         } else {
@@ -587,7 +587,7 @@ HTML;
             $enable = JText::_('MOD_ENABLE');
             $output = <<<HTML
             <img src="components/com_jfusion/images/check_bad_small.png">{$text}
-            <a href="javascript:void(0);" onclick="return JFusion.module('enableQuickMod')">{$enable}</a>
+            <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('enableQuickMod')">{$enable}</a>
 HTML;
             return $output;
         }

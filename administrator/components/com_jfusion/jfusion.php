@@ -54,6 +54,7 @@ $task = JFactory::getApplication()->input->get('task');
 if (!$task) {
     $task = 'cpanel';
 }
+
 $tasklist = $controller->getTasks();
 require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'toolbar.jfusion.php';
 if (in_array($task, $tasklist)) {

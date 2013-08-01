@@ -16,8 +16,6 @@ JFusionFunctionAdmin::displayDonate();
 //load mootools
 JHtml::_('behavior.framework', true);
 $images = 'components/com_jfusion/images/';
-$document = JFactory::getDocument();
-$document->addScript('components/com_jfusion/js/File.Upload.js');
 ?>
 <script type="text/javascript">
 	//<![CDATA[

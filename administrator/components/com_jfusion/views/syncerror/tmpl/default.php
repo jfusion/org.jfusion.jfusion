@@ -88,22 +88,7 @@ JHTML::_('behavior.modal', 'a.modal');
 				<option value="3"><?php echo JText::_('DELETE') . ' ' . $user . ' ' . JText::_('USER') ?></option>
 				<option value="4"><?php echo JText::_('DELETE') . ' ' . $conflict . ' ' . JText::_('USER') ?></option>
 			</select>
-
-			<script type="text/javascript">
-			<!--
-			function applyAll() {
-	            var form = $('adminForm');
-			    var defaultvalue = form.elements['default_value'].selectedIndex;
-			    for(var i=0; i<form.elements.length; i++) {
-			        if (form.elements[i].type=="select-one") {
-	                    form.elements[i].selectedIndex = defaultvalue;
-			        }
-			    }
-
-			}
-			//-->
-			</script>
-			<a href="javascript:void(0);"  onclick="applyAll();">
+			<a href="javascript:void(0);"  onclick=JFusion.applyAll();">
 				<?php echo JText::_('APPLY'); ?>
 			</a>
 		</div>

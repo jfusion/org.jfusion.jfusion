@@ -506,7 +506,7 @@ class JFusionDiscussBotHelper {
 
 	public function loadScripts()
 	{
-		JHtml::_('behavior.framework');
+		JHtml::_('behavior.framework', true);
 		JHtml::_('jquery.framework');
 		static $scriptsLoaded;
 		if (!isset($scriptsLoaded)) {
@@ -525,7 +525,10 @@ class JFusionDiscussBotHelper {
 		        JFusion.enableJumpto = {$this->params->get('jumpto_new_post',0)};
 JS;
 
-			JFusionFunction::initJavaScript();
+			JFusionFunction::loadJavascriptLanguage(array('BUTTON_CANCEL', 'BUTTON_INITIATE',
+				'BUTTON_PUBLISH_NEW_DISCUSSION', 'BUTTON_REPUBLISH_DISCUSSION', 'BUTTON_UNPUBLISH_DISCUSSION',
+				'CONFIRM_THREAD_CREATION', 'CONFIRM_UNPUBLISH_DISCUSSION', 'CONFIRM_PUBLISH_DISCUSSION',
+				'DISCUSSBOT_ERROR', 'HIDE_REPLIES', 'JYES', 'SHOW_REPLIES', 'SUBMITTING_QUICK_REPLY'));
 			$document = JFactory::getDocument();
 			//check for a custom js file
 			if (file_exists(DISCUSSION_TEMPLATE_PATH.'jfusion.js')) {
@@ -541,25 +544,15 @@ JS;
 
 			if ($view == $test_view) {
 				$js .= <<<JS
-				window.addEvent({
-					'load' : function() {
+				window.addEvent('load', function() {
         				JFusion.initializeDiscussbot();
-				    },
-    				'domready' : function() {
-        				JFusion.initializeDiscussbot();
-    				}
-				});
+    				});
 JS;
 			} else {
 				$js .= <<<JS
-	            window.addEvent({
-					'load' : function() {
-						JFusion.initializeConfirmationBoxes();
-					},
-    				'domready' : function() {
-						JFusion.initializeConfirmationBoxes();
-					}
-				});
+				window.addEvent('load', function() {
+        				JFusion.initializeConfirmationBoxes();
+    				});
 JS;
 			}
 

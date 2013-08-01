@@ -175,7 +175,7 @@ JFusionFunctionAdmin::displayDonate();
 	                        $('<?php echo $component->name ;?>').addEvent('click', function(e) {
 		                        e.stop();
 
-	                            confirmSubmit('<?php echo $component->updateurl; ?>');
+		                        JFusion.confirmSubmit('<?php echo $component->updateurl; ?>');
 	                        });
 	                    });
 	                    // -->
@@ -268,7 +268,7 @@ JFusionFunctionAdmin::displayDonate();
 	                        $('<?php echo $jfusion_plugin->id ?>').addEvent('click', function(e) {
 		                        e.stop();
 
-	                            confirmSubmitPlugin('<?php echo $jfusion_plugin->updateurl; ?>');
+		                        JFusion.confirmSubmitPlugin('<?php echo $jfusion_plugin->updateurl; ?>');
 	                        });
 	                    });
 	                    // -->
@@ -333,53 +333,15 @@ JFusionFunctionAdmin::displayDonate();
 	            </h3>
 	            <script type="text/javascript">
 	                <!--
-	                function confirmSubmitPlugin(url)
-	                {
-	                    var r = false;
-	                    var confirmtext = '<?php echo JText::_('UPGRADE_CONFIRM_PLUGIN'); ?> '+url;
-
-	                    var agree = confirm(confirmtext);
-	                    if (agree) {
-		                    var installPLUGIN = $('installPLUGIN');
-	                        installPLUGIN.installPLUGIN_url.value = url;
-	                        installPLUGIN.submit();
-	                        r = true;
-	                    }
-	                    return r;
-	                }
-
-	                function confirmSubmit(action)
-	                {
-	                    var r = false;
-	                    var installurl,confirmtext;
-		                var install = $('install');
-	                    if (action == 'build') {
-	                        confirmtext = '<?php echo JText::_('UPGRADE_CONFIRM_BUILD'); ?>';
-	                        installurl = 'https://github.com/jfusion/org.jfusion.jfusion/raw/jfusion2.0/jfusion_package.zip';
-	                    } else if (action == 'git') {
-	                        confirmtext = '<?php echo JText::_('UPGRADE_CONFIRM_GIT'); ?> ' + install.git_tree.value;
-	                        installurl = 'https://github.com/jfusion/org.jfusion.jfusion/raw/' + install.git_tree.value + '/jfusion_package.zip';
-	                    } else {
-	                        confirmtext = '<?php echo JText::_('UPGRADE_CONFIRM_RELEASE') . ' ' . $this->JFusionVersion; ?>';
-	                        installurl = action;
-	                    }
-
-	                    var agree = confirm(confirmtext);
-	                    if (agree) {
-	                        install.install_url.value = installurl;
-	                        install.submit();
-	                        r = true;
-	                    }
-	                    return r;
-	                }
+	                JFusion.version = '<?php echo $this->JFusionVersion; ?>';
 
 	                window.addEvent('domready',function() {
 	                    $('build').addEvent('click', function() {
-	                        confirmSubmit('build');
+		                    JFusion.confirmSubmit('build');
 	                    });
 
 	                    $('git').addEvent('click', function() {
-	                        confirmSubmit('git');
+		                    JFusion.confirmSubmit('git');
 	                    });
 	                });
 	                // -->

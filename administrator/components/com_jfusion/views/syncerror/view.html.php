@@ -39,6 +39,9 @@ class jfusionViewsyncerror extends JViewLegacy
      */
     function display($tpl = null)
     {
+	    $document = JFactory::getDocument();
+	    $document->addScript('components/com_jfusion/views/'.$this->getName().'/tmpl/default.js');
+
         //Load usersync library
         include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
         //check to see if the sync has already started

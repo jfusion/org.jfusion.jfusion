@@ -65,7 +65,11 @@ class jfusionViewplugindisplay extends JViewLegacy {
 	        $this->plugins = $plugins;
 	        $this->VersionData = $VersionData;
 
-	        JFusionFunction::initJavaScript();
+	        $document = JFactory::getDocument();
+	        $document->addScript('components/com_jfusion/js/File.Upload.js');
+	        $document->addScript('components/com_jfusion/views/'.$this->getName().'/tmpl/default.js');
+
+	        JFusionFunction::loadJavascriptLanguage(array('COPY_MESSAGE', 'DELETE', 'PLUGIN', 'COPY'));
 
 	        parent::display();
         } else {

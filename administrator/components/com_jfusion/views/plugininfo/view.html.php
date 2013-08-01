@@ -52,6 +52,7 @@ class jfusionViewplugininfo extends JViewLegacy
 			$features['ADMIN']['FEATURE_WIZARD'] = $this->outputFeature(JFusionFunction::hasFeature($jname,'wizard'));
 			$features['ADMIN']['FEATURE_REQUIRE_FILE_ACCESS'] = $this->outputFeature($admin->requireFileAccess());
 			$features['ADMIN']['FEATURE_MULTI_USERGROUP'] = $this->outputFeature($admin->isMultiGroup());
+	        $features['ADMIN']['FEATURE_MULTI_INSTANCE'] = $this->outputFeature($admin->multiInstance());
 
             $frameless = JFusionFunction::hasFeature($jname,'frameless');
 	        if ($jname=='joomla_int') {

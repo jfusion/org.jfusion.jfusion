@@ -22,20 +22,6 @@ JFusionFunctionAdmin::displayDonate();
 //allow for AJAX popups
 JHTML::_('behavior.modal', 'a.modal');
 ?>
-<script type="text/javascript">
-<!--
-var checked = false;
-function applyAll() {
-    var form = $('adminForm');
-    checked = (checked === false);
-    for(var i=0; i<form.elements.length; i++) {
-        if (form.elements[i].type=="checkbox") {
-            form.elements[i].checked = checked;
-        }
-    }
-}
-//-->
-</script>
 <div class="jfusion">
 	<form method="post" action="index.php?option=com_jfusion" name="adminForm" id="adminForm">
 		<input type="hidden" name="task" value="syncstatus" />
@@ -44,7 +30,7 @@ function applyAll() {
 			<thead>
 				<tr>
 					<th class="title" width="20px">
-						<label for="checkall"></label><input id="checkall" type="checkbox" onclick="applyAll();"/>
+						<label for="checkall"></label><input id="checkall" type="checkbox" onclick="JFusion.applyAll();"/>
 					</th>
 					<th class="title" width="20px">
 						<?php echo JText::_('ID'); ?>

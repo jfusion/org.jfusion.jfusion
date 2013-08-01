@@ -48,6 +48,9 @@ class jfusionViewadvancedparam extends JViewLegacy
 		jimport('joomla.form.formfield');
 		jimport('joomla.html.pane');
 
+		$document = JFactory::getDocument();
+		$document->addScript('components/com_jfusion/views/'.$this->getName().'/tmpl/default.js');
+
 		$mainframe = JFactory::getApplication();
 
 		$lang = JFactory::getLanguage();

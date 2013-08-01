@@ -39,6 +39,8 @@ class jfusionViewsynchistory extends JViewLegacy
      */
     function display($tpl = null)
     {
+	    $document = JFactory::getDocument();
+	    $document->addScript('components/com_jfusion/views/'.$this->getName().'/tmpl/default.js');
         //get the all usersync data
         $db = JFactory::getDBO();
         $query = 'SELECT * from #__jfusion_sync ORDER BY time_end DESC, time_start DESC';

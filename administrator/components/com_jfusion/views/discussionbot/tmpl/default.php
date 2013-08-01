@@ -70,10 +70,7 @@ defined('_JEXEC') or die('Restricted access');
 							elseif($this->ename=='pair_sections') echo JText::_('SECTION_NOT_EXIST');
 							elseif($this->ename=='pair_categories') echo JText::_('CATEGORY_NOT_EXIST');
 							?>
-					        <script type="text/javascript">
-					            var adminForm = $('adminForm');
-					        </script>
-							<img src="components/com_jfusion/images/delete_icon.png" onclick="adminForm.remove.value = '<?php echo $joomlaid; ?>'; adminForm.submit();"/>
+							<img src="components/com_jfusion/images/delete_icon.png" onclick="JFusion.removePair('<?php echo $joomlaid; ?>');"/>
 						</td>
 						<td>
 							<?php

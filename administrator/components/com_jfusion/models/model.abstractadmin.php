@@ -348,7 +348,7 @@ class JFusionAdmin
         $query = 'SELECT slave FROM #__jfusion WHERE name = ' . $db->Quote($jname);
         $db->setQuery($query);
         $slave = $db->loadResult();
-        $list_box = '<select onchange="JFusion.usergroupSelect(this.selectedIndex);">';
+        $list_box = '<select onchange="JFusion.Plugin.usergroupSelect(this.selectedIndex);">';
         if ($advanced == 1) {
             $list_box.= '<option value="0">'.JText::_('SIMPLE').'</option>';
         } else {
@@ -388,8 +388,8 @@ class JFusionAdmin
         $document = JFactory::getDocument();
 
         $js = <<<JS
-        JFusion.groupDataArray[0] = '{$simple_usergroup}';
-        JFusion.groupDataArray[1] = '{$advanced_usergroup}';
+        JFusion.Plugin.groupDataArray[0] = '{$simple_usergroup}';
+        JFusion.Plugin.groupDataArray[1] = '{$advanced_usergroup}';
 JS;
         $document->addScriptDeclaration($js);
 
@@ -459,7 +459,7 @@ JS;
         $query = 'SELECT slave FROM #__jfusion WHERE name = ' . $db->Quote($jname);
         $db->setQuery($query);
         $slave = $db->loadResult();
-        $list_box = '<select onchange="JFusion.multiUsergroupSelect(this.selectedIndex);">';
+        $list_box = '<select onchange="JFusion.Plugin.multiUsergroupSelect(this.selectedIndex);">';
         if ($advanced == 1) {
             $list_box.= '<option value="0">'.JText::_('SIMPLE').'</option>';
         } else {
@@ -559,8 +559,8 @@ JS;
         $js = <<<JS
 			JFusion.plugin = {$plugin};
 
-	        JFusion.groupDataArray[0] = '{$simple_usergroup}';
-	        JFusion.groupDataArray[1] = '{$advanced_usergroup}';
+	        JFusion.Plugin.groupDataArray[0] = '{$simple_usergroup}';
+	        JFusion.Plugin.groupDataArray[1] = '{$advanced_usergroup}';
 
 	        JFusion.addRow = function() {
 	        	JFusion.plugin['count']++;

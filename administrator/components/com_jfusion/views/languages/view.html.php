@@ -42,6 +42,10 @@ class jfusionViewlanguages extends JViewLegacy
         //get the jfusion news
         ob_start();
 
+	    $document = JFactory::getDocument();
+	    $document->addScript('components/com_jfusion/views/'.$this->getName().'/tmpl/default.js');
+	    JFusionFunction::loadJavascriptLanguage(array('INSTALL_UPGRADE_LANGUAGE_PACKAGE'));
+
 	    jimport('joomla.version');
 	    $jversion = new JVersion();
         $data = JFusionFunctionAdmin::getFileData('http://update.jfusion.org/jfusion/joomla/?version='.$jversion->getShortVersion());

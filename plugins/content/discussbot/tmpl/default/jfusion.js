@@ -1,7 +1,7 @@
 if (typeof JFusion === 'undefined') {
     var JFusion = {};
 }
-JFusion.Text = [];
+JFusion.text = [];
 JFusion.jumptoDiscussion = true;
 JFusion.messageSlide = false;
 JFusion.delayHiding = false;
@@ -19,7 +19,7 @@ JFusion.timeout = 15000;
 JFusion.highlightDelay = 500;
 
 JFusion.JText = function (key) {
-    return this.Text[key.toUpperCase()] || key.toUpperCase();
+    return this.text[key.toUpperCase()] || key.toUpperCase();
 };
 
 JFusion.OnError = function (messages, force) {

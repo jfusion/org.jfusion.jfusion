@@ -40,6 +40,9 @@ class jfusionViewsyncoptions extends JViewLegacy
      */
     function display($tpl = null)
     {
+	    $document = JFactory::getDocument();
+	    $document->addScript('components/com_jfusion/views/'.$this->getName().'/tmpl/default.js');
+
         //find out what the JFusion master and slaves are
         $db = JFactory::getDBO();
         $query = 'SELECT * from #__jfusion WHERE master = 1 and status = 1';
@@ -97,7 +100,9 @@ class jfusionViewsyncoptions extends JViewLegacy
 	        $this->syncid = $syncid;
 	        $this->sync_active = $sync_active;
 
-	        JFusionFunction::initJavaScript();
+	        JFusionFunction::loadJavascriptLanguage(array('SYNC_PROGRESS', 'SYNC_USERS_TODO', 'CLICK_FOR_MORE_DETAILS', 'CONFLICTS',
+		        'UNCHANGED', 'FINISHED', 'PAUSE', 'UPDATE_IN', 'SECONDS', 'SYNC_CONFIRM_START', 'UPDATED', 'PLUGIN', 'USER', 'USERS',
+		        'NAME', 'CREATED'));
 
 	        parent::display();
         } else {

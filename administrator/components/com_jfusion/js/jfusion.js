@@ -3,14 +3,15 @@ if (typeof JFusion === 'undefined') {
     var JFusion = {};
 }
 JFusion.Plugin = {};
-JFusion.Text = [];
+JFusion.View = {};
+JFusion.text = [];
 JFusion.url = '';
 
 /**
  * @return {string}
  */
 JFusion.JText = function (key) {
-    return this.Text[key.toUpperCase()] || key.toUpperCase();
+    return this.text[key.toUpperCase()] || key.toUpperCase();
 };
 
 JFusion.OnError = function (messages, force) {
@@ -52,225 +53,22 @@ JFusion.OnMessage = function (type, messages) {
     }
 };
 
-JFusion.groupDataArray = [];
-JFusion.usergroupSelect = function (option) {
-    $('JFusionUsergroup').set('html', this.groupDataArray[option]);
-};
-
-JFusion.multiUsergroupSelect = function (option) {
-    this.usergroupSelect(option);
-
-    var addgroupset = $('addgroupset');
-    if (option === 1) {
-        addgroupset.style.display = 'block';
-    } else {
-        addgroupset.style.display = 'none';
-    }
-};
-
-JFusion.changeSetting = function (fieldname, fieldvalue, jname) {
-    //change the image
-    new Request.JSON({
-        url: JFusion.url,
-        noCache: true,
-        onRequest: function () {
-            var element = $(jname + '_' + fieldname).getFirst().getFirst();
-            element.set('src', 'components/com_jfusion/images/spinner.gif');
-        },
-        onSuccess: function (JSONobject) {
-            JFusion.OnMessages(JSONobject.messages);
-
-            JFusion.updateList(JSONobject.pluginlist);
-        },
-        onError: function (JSONobject) {
-            JFusion.OnError(JSONobject);
-        }
-    }).get({'option': 'com_jfusion',
-            'task': 'changesettings',
-            'jname': jname,
-            'field_name': fieldname,
-            'field_value': fieldvalue});
-};
-
-JFusion.copyPlugin = function (jname) {
-    var messageBox = new Element('div');
-    messageBox.appendChild(new Element('div', {
-        'html': JFusion.JText('COPY_MESSAGE')
-    }));
-
-    var inputDiv = new Element('div');
-    inputDiv.appendChild(new Element('input', {
-        'id': 'plugincopyname',
-        'name': 'plugincopyname',
-        'type': 'text',
-        'width': 300
-    }));
-    messageBox.appendChild(inputDiv);
-    messageBox.appendChild(new Element('button', {
-        'class': 'btn btn-small',
-        'html': JFusion.JText('COPY'),
-        'style': 'float: right;',
-        'events': {
-            'click': function () {
-                var input = $('plugincopyname');
-                var newjname = input.get('value');
-                if (newjname) {
-                    // this code will send a data object via a GET request and alert the retrieved data.
-                    new Request.JSON({
-                        url: JFusion.url,
-                        noCache: true,
-                        onSuccess: function (JSONobject) {
-                            JFusion.OnMessages(JSONobject.messages);
-
-                            JFusion.updateList(JSONobject.pluginlist);
-                        },
-                        onError: function (JSONobject) {
-                            JFusion.OnError(JSONobject);
-                        }
-                    }).get({'option': 'com_jfusion',
-                            'task': 'plugincopy',
-                            'jname': jname,
-                            'new_jname': newjname});
-                }
-            }
-        }
-    }));
-    SqueezeBox.open(messageBox, {
-        handler : 'adopt',
-        overlayOpacity : 0.7,
-        size: {x: 320,
-            y: 120},
-        onOpen : function() {
-        },
-        onClose : function() {
-        }
-    });
-};
-
-JFusion.deletePlugin = function (jname) {
-    var confirmBox = new Element('div');
-    confirmBox.appendChild(new Element('div', {
-        'html': JFusion.JText('DELETE') + ' ' + JFusion.JText('PLUGIN') + ' ' + jname + '?'
-    }));
-
-    confirmBox.appendChild(new Element('button', {
-        'class': 'btn btn-small',
-        'html': JFusion.JText('DELETE'),
-        'style': 'float: right;',
-        'events': {
-            'click': function () {
-                // this code will send a data object via a GET request and alert the retrieved data.
-                new Request.JSON({
-                    url: JFusion.url,
-                    noCache: true,
-                    onSuccess: function (JSONobject) {
-                        JFusion.OnMessages(JSONobject.messages);
-                        if (JSONobject.status ===  true) {
-                            var el = $(JSONobject.jname);
-                            el.parentNode.removeChild(el);
-                        }
-                    },
-                    onError: function (JSONobject) {
-                        JFusion.OnError(JSONobject);
-                    }
-                }).get({'option': 'com_jfusion',
-                        'task': 'uninstallplugin',
-                        'jname': jname,
-                        'tmpl': 'component'});
-                SqueezeBox.close();
-            }
-        }
-    }));
-    SqueezeBox.open(confirmBox, {
-        handler : 'adopt',
-        overlayOpacity : 0.7,
-        size: {x: 320,
-            y: 120},
-        onOpen : function() {
-        },
-        onClose : function() {
-        }
-    });
-};
-
-JFusion.updateList = function (html) {
-    var list = $('sort_table');
-    list.empty();
-    list.set('html', html);
-    this.initSortables();
-};
-
-JFusion.initSortables = function () {
-    /* allow for updates of row order */
-    new Sortables('sort_table', {
-        /* set options */
-        handle: 'div.dragHandles',
-
-        /* initialization stuff here */
-        initialize: function () {
-            // do nothing yet
-        },
-        /* once an item is selected */
-        onStart: function (el) {
-            //a little fancy work to hide the clone which mootools 1.1 doesn't seem to give the option for
-            var checkme = $$('div tr#' + el.id);
-            if (checkme[1]) {
-                checkme[1].setStyle('display', 'none');
-            }
-        },
-        onComplete: function () {
-            var sortorder, rowcount;
-            //build a string of the order
-            sortorder = '';
-            rowcount = 0;
-            $$('#sort_table tr').each(function (tr) {
-                $(tr.id).setAttribute('class', 'row' + (rowcount % 2));
-                rowcount++;
-                sortorder = sortorder +  tr.id  + '|';
-            });
-
-            new Request.JSON({
-                url: JFusion.url,
-                noCache: true,
-                onSuccess: function (JSONobject) {
-                    JFusion.OnMessages(JSONobject.messages);
-
-                    JFusion.updateList(JSONobject.pluginlist);
-                },
-                onError: function (JSONobject) {
-                    JFusion.OnError(JSONobject);
-                }
-            }).get({'option': 'com_jfusion',
-                    'task': 'saveorder',
-                    'tmpl': 'component',
-                    'sort_order': sortorder});
-        }
-    });
-};
-
-JFusion.module = function (action) {
-    var form = $('adminForm');
-    form.customcommand.value = action;
-    form.action.value = 'apply';
-    Joomla.submitform('saveconfig', form);
-};
-
 JFusion.submitParams = function (name, value, title) {
     var id, save, n;
     id = $(name + '_id');
-    if (id.value !== value) {
+    if (id.get('value') !== value) {
         save = $(name + '_save');
         if (save) {
             save.set('src', 'components/com_jfusion/images/filesave.png');
         }
-        $(name + '_id').value = value;
+        $(name + '_id').set('value', value);
     }
     n = $(name + '_name');
     if (n) {
         if (title) {
-            n.value = title;
+            n.set('value', title);
         } else {
-            n.value = value;
+            n.set('value', value);
         }
     }
     SqueezeBox.close();
@@ -336,19 +134,6 @@ JFusion.closeAdopt = function () {
     $(this.options.target).inject($(this.options.returnTo));
 };
 
-JFusion.addPlugin = function (button) {
-    button.form.jfusion_task.value = 'add';
-    button.form.task.value = 'advancedparam';
-    button.form.submit();
-};
-
-JFusion.removePlugin = function (button, value) {
-    button.form.jfusion_task.value = 'remove';
-    button.form.jfusion_value.value = value;
-    button.form.task.value = 'advancedparam';
-    button.form.submit();
-};
-
 /**
  * Joomla stuff
  */
@@ -357,7 +142,7 @@ JFusion.removePlugin = function (button, value) {
 Joomla.submitbutton = function (pressbutton) {
     var adminForm = $('adminForm');
     if (pressbutton === 'applyconfig') {
-        adminForm.action.value = 'apply';
+        adminForm.action.set('value', 'apply');
         Joomla.submitform('saveconfig', adminForm);
     } else if (pressbutton === 'import') {
         adminForm.encoding = 'multipart/form-data';
@@ -375,12 +160,12 @@ Joomla.getCheckedValue = function (radioObj) {
         radioLength = radioObj.length;
         if (radioLength === undefined) {
             if (radioObj.checked) {
-                r = radioObj.value;
+                r = radioObj.get('value');
             }
         } else {
             for (i = 0; i < radioLength; i++) {
                 if (radioObj[i].checked) {
-                    r = radioObj[i].value;
+                    r = radioObj[i].get('value');
                 }
             }
         }
@@ -393,10 +178,10 @@ Joomla.setCheckedValue = function (radioObj, newValue) {
     if (radioObj) {
         radioLength = radioObj.length;
         if (radioLength === undefined) {
-            radioObj.checked = (radioObj.value === newValue.toString());
+            radioObj.checked = (radioObj.get('value') === newValue.toString());
         } else {
             for (i = 0; i < radioLength; i++) {
-                radioObj[i].checked = radioObj[i].value === newValue.toString();
+                radioObj[i].checked = radioObj[i].get('value') === newValue.toString();
             }
         }
     }
@@ -405,18 +190,18 @@ Joomla.setCheckedValue = function (radioObj, newValue) {
 Joomla.setSort = function (col) {
     var form, prevCol, direction;
     form = $('adminForm');
-    prevCol = form.log_sort.value;
+    prevCol = form.log_sort.get('value');
     if (prevCol === col) {
-        direction = form.log_dir.value;
+        direction = form.log_dir.get('value');
         if (direction === '1') {
-            form.log_dir.value = '-1';
+            form.log_dir.set('value', -1);
         } else {
-            form.log_dir.value = '1';
+            form.log_dir.set('value', 1);
         }
     } else {
-        form.log_dir.value = '1';
+        form.log_dir.set('value', 1);
     }
-    form.log_sort.value = col;
+    form.log_sort.set('value', col);
     form.submit();
 };
 //-->

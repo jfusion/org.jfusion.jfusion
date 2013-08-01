@@ -99,7 +99,7 @@ JFusionFunctionAdmin::displayDonate();
 	                                $('<?php echo $lang ;?>').addEvent('click', function(e) {
 		                                e.stop();
 
-	                                    confirmSubmitLanguage('<?php echo $data->file; ?>');
+		                                JFusion.confirmSubmitLanguage('<?php echo $data->file; ?>');
 	                                });
 	                            });
 	                            // -->
@@ -115,25 +115,6 @@ JFusionFunctionAdmin::displayDonate();
 	        } ?>
 	    </tbody>
 	</table>
-	<script type="text/javascript">
-	    <!--
-	    function confirmSubmitLanguage(action)
-	    {
-	        var r = false;
-	        var confirmtext;
-	        confirmtext = '<?php echo JText::_('INSTALL_UPGRADE_LANGUAGE_PACKAGE')?>';
-
-	        var agree = confirm(confirmtext);
-	        if (agree) {
-		        var install = $('install');
-	            install.install_url.value = action;
-	            install.submit();
-	            r = true;
-	        }
-	        return r;
-	    }
-	    // -->
-	</script>
 	<form enctype="multipart/form-data" action="index.php" method="post" id="install" name="languagesForm">
 	    <input type="hidden" name="install_url" value="" />
 	    <input type="hidden" name="type" value="" />
