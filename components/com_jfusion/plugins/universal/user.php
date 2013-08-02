@@ -42,60 +42,68 @@ class JFusionUser_universal extends JFusionUser {
 
 		$email = $helper->getFieldEmail();
 		$username = $helper->getFieldUsername();
+		$userid = $helper->getFieldUserID();
+		if (!$userid) {
+			$status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_USERID_SET');
+		} else if (!$email) {
+			$status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_EMAIL_SET');
+		} else if (!$username) {
+			$status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_USERNAME_SET');
+		} else {
+			//get the identifier
+			list($identifier_type,$identifier) = $this->getUserIdentifier($userinfo,$username->field,$email->field);
 
-		//get the identifier
-		list($identifier_type,$identifier) = $this->getUserIdentifier($userinfo,$username->field,$email->field);
+			$db = JFusionFactory::getDatabase($this->getJname());
 
-		$db = JFusionFactory::getDatabase($this->getJname());
-
-		$f = array('USERID','USERNAME', 'EMAIL', 'REALNAME', 'PASSWORD', 'SALT', 'GROUP', 'ACTIVE', 'INACTIVE','ACTIVECODE','FIRSTNAME','LASTNAME');
-		$field = $helper->getQuery($f);
+			$f = array('USERID','USERNAME', 'EMAIL', 'REALNAME', 'PASSWORD', 'SALT', 'GROUP', 'ACTIVE', 'INACTIVE','ACTIVECODE','FIRSTNAME','LASTNAME');
+			$field = $helper->getQuery($f);
 //        $query = 'SELECT '.$field.' NULL as reason, a.lastLogin as lastvisit'.
-		$query = 'SELECT '.$field.' '.
-			'FROM #__'.$helper->getTable().' '.
-			'WHERE '.$identifier_type.'=' . $db->Quote($identifier);
+			$query = 'SELECT '.$field.' '.
+				'FROM #__'.$helper->getTable().' '.
+				'WHERE '.$identifier_type.'=' . $db->Quote($identifier);
 
-		$db->setQuery($query );
-		$result = $db->loadObject();
-		if ( $result ) {
-			$result->activation = '';
-			if (isset($result->firstname)) {
-				$result->name = $result->firstname;
-				if (isset($result->lastname)) {
-					$result->name .= ' '.$result->lastname;
+			$db->setQuery($query );
+			$result = $db->loadObject();
+			if ( $result ) {
+				$result->activation = '';
+				if (isset($result->firstname)) {
+					$result->name = $result->firstname;
+					if (isset($result->lastname)) {
+						$result->name .= ' '.$result->lastname;
+					}
 				}
-			}
-			$result->block = 0;
+				$result->block = 0;
 
-			if ( isset($result->inactive) ) {
-				$inactive = $helper->getFieldType('INACTIVE');
-				if ($inactive->value['on'] == $result->inactive ) {
-					$result->block = 1;
+				if ( isset($result->inactive) ) {
+					$inactive = $helper->getFieldType('INACTIVE');
+					if ($inactive->value['on'] == $result->inactive ) {
+						$result->block = 1;
+					}
 				}
-			}
-			if ( isset($result->active) ) {
-				$active= $helper->getFieldType('ACTIVE');
-				if ($active->value['on'] != $result->active ) {
-					$result->block = 1;
+				if ( isset($result->active) ) {
+					$active= $helper->getFieldType('ACTIVE');
+					if ($active->value['on'] != $result->active ) {
+						$result->block = 1;
+					}
 				}
-			}
-			unset($result->inactive,$result->active);
+				unset($result->inactive,$result->active);
 
-			$group = $helper->getFieldType('GROUP','group');
-			$userid = $helper->getFieldType('USERID','group');
-			$groupt = $helper->getTable('group');
-			if ( !isset($result->group_id) && $group && $userid && $groupt ) {
-				$f = array('GROUP');
-				$field = $helper->getQuery($f,'group');
+				$group = $helper->getFieldType('GROUP','group');
+				$userid = $helper->getFieldType('USERID','group');
+				$groupt = $helper->getTable('group');
+				if ( !isset($result->group_id) && $group && $userid && $groupt ) {
+					$f = array('GROUP');
+					$field = $helper->getQuery($f,'group');
 
-				$query = 'SELECT '.$field.' '.
-					'FROM #__'.$groupt.' '.
-					'WHERE '.$userid->field.'=' . $db->Quote($result->userid);
-				$db->setQuery($query );
-				$result2 = $db->loadObject();
+					$query = 'SELECT '.$field.' '.
+						'FROM #__'.$groupt.' '.
+						'WHERE '.$userid->field.'=' . $db->Quote($result->userid);
+					$db->setQuery($query );
+					$result2 = $db->loadObject();
 
-				if ($result2) {
-					$result->group_id = base64_encode($result2->group_id);
+					if ($result2) {
+						$result->group_id = base64_encode($result2->group_id);
+					}
 				}
 			}
 		}
