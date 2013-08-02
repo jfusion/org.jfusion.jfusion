@@ -44,19 +44,14 @@ class JFusionUser_universal extends JFusionUser {
 		$username = $helper->getFieldUsername();
 		$userid = $helper->getFieldUserID();
 		if (!$userid) {
-			$status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_USERID_SET');
-		} else if (!$email) {
-			$status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_EMAIL_SET');
-		} else if (!$username) {
-			$status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_USERNAME_SET');
+			JFusionFunction::raiseError(JText::_('EMAIL_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_USERID_SET'), $this->getJname());
 		} else {
 			//get the identifier
 			list($identifier_type,$identifier) = $this->getUserIdentifier($userinfo,$username->field,$email->field);
 
 			$db = JFusionFactory::getDatabase($this->getJname());
 
-			$f = array('USERID','USERNAME', 'EMAIL', 'REALNAME', 'PASSWORD', 'SALT', 'GROUP', 'ACTIVE', 'INACTIVE','ACTIVECODE','FIRSTNAME','LASTNAME');
-			$field = $helper->getQuery($f);
+			$field = $helper->getQuery(array('USERID','USERNAME', 'EMAIL', 'REALNAME', 'PASSWORD', 'SALT', 'GROUP', 'ACTIVE', 'INACTIVE','ACTIVECODE','FIRSTNAME','LASTNAME'));
 //        $query = 'SELECT '.$field.' NULL as reason, a.lastLogin as lastvisit'.
 			$query = 'SELECT '.$field.' '.
 				'FROM #__'.$helper->getTable().' '.
@@ -88,12 +83,11 @@ class JFusionUser_universal extends JFusionUser {
 				}
 				unset($result->inactive,$result->active);
 
-				$group = $helper->getFieldType('GROUP','group');
-				$userid = $helper->getFieldType('USERID','group');
+				$group = $helper->getFieldType('GROUP', 'group');
+				$userid = $helper->getFieldType('USERID', 'group');
 				$groupt = $helper->getTable('group');
 				if ( !isset($result->group_id) && $group && $userid && $groupt ) {
-					$f = array('GROUP');
-					$field = $helper->getQuery($f,'group');
+					$field = $helper->getQuery(array('GROUP'), 'group');
 
 					$query = 'SELECT '.$field.' '.
 						'FROM #__'.$groupt.' '.
