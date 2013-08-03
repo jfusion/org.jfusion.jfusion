@@ -43,9 +43,8 @@ class JFusionUser_universal extends JFusionUser {
 		$email = $helper->getFieldType('EMAIL');
 		$username = $helper->getFieldType('USERNAME');
 		$userid = $helper->getFieldType('USERID');
-		if (!$userid) {
-			JFusionFunction::raiseError(JText::_('EMAIL_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_USERID_SET'), $this->getJname());
-		} else {
+		$result = null;
+		if ($userid) {
 			//get the identifier
 			list($identifier_type,$identifier) = $this->getUserIdentifier($userinfo,$username->field,$email->field);
 
@@ -752,7 +751,7 @@ class JFusionUser_universal extends JFusionUser {
 				}
 			}
 		} catch (Exception $e) {
-			$status['error'] = JText::_('USER_CREATION_ERROR'). ': ' . $e->getMessage();
+			$status['error'][] = JText::_('USER_CREATION_ERROR'). ': ' . $e->getMessage();
 		}
 	}
 }

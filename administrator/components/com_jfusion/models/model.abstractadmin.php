@@ -269,7 +269,7 @@ class JFusionAdmin
 		    // allow additional checking of the configuration
 		    $this->debugConfigExtra();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseWarning($e->getMessage(), $jname);
+		    JFusionFunction::raiseWarning($e, $jname);
 	    }
     }
 

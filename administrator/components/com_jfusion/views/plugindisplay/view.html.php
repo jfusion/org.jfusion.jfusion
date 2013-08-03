@@ -322,7 +322,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 						try {
 							$JFusionPlugin->debugConfig();
 						} catch (Exception $e) {
-							JFusionFunction::raiseError($e->getMessage(), $record->name);
+							JFusionFunction::raiseError($e, $record->name);
 							$record->status = 0;
 						}
 					}

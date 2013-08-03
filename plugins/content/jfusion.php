@@ -678,7 +678,7 @@ HTML;
 			$status = $this->helper->checkThreadExists(1);
 
 			if (!empty($status['error'])) {
-				JFusionFunction::raiseNotices($status['error'], JText::_('DISCUSSBOT_ERROR'));
+				JFusionFunction::raise('error', $status['error'], JText::_('DISCUSSBOT_ERROR'));
 			} else {
 				$ajax->status = true;
 				$msg = JText::sprintf('THREAD_CREATED_SUCCESSFULLY',$this->article->title);
@@ -741,7 +741,7 @@ HTML;
 						$status = $JFusionForum->createPost($this->params, $threadinfo, $this->article, $userinfo);
 
 						if (!empty($status['error'])) {
-							JFusionFunction::raiseNotices(JText::_('ACCESS_DENIED'), JText::_('DISCUSSBOT_ERROR'));
+							JFusionFunction::raiseNotice(JText::_('DISCUSSBOT_ERROR').' '.JText::_('ACCESS_DENIED'));
 						} else {
 							if ($ajaxEnabled) {
 								//if pagination is set, set $limitstart so that we go to the added post

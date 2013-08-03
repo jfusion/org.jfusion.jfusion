@@ -849,7 +849,7 @@ JS;
 		    }
 		    $mainframe->redirect('index.php?option=com_jfusion&task=plugineditor&jname='.$jname, $jname . ': ' . JText::_('IMPORT_SUCCESS'));
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseWarning($e->getMessage(), $jname);
+		    JFusionFunction::raiseWarning($e, $jname);
 		    $mainframe->redirect('index.php?option=com_jfusion&task=importexport&jname='.$jname);
 	    }
         exit();

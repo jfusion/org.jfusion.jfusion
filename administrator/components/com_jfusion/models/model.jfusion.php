@@ -1716,26 +1716,36 @@ class JFusionFunction
 	/**
 	 * Raise warning function that can handle arrays
 	 *
-	 * @param array  $warning   warning itself
+	 * @param        $type
+	 * @param array  $message   message itself
 	 * @param string $jname
 	 *
 	 * @return string nothing
 	 */
-	public static function raiseNotices($warning, $jname='') {
-		if (is_array($warning)) {
-			foreach ($warning as $warningtype => $warningtext) {
+	public static function raise($type, $message, $jname='') {
+		if (is_array($message)) {
+			foreach ($message as $msgtype => $msg) {
 				//if still an array implode for nicer display
-				if (is_numeric($warningtype)) {
-					$warningtype = $jname;
+				if (is_numeric($msgtype)) {
+					$msgtype = $jname;
 				}
-				if (is_array($warningtext)) {
-					JFusionFunction::raiseNotices($warningtext, $warningtype);
-				} else {
-					JFusionFunction::raiseNotice($warningtext, $warningtype);
-				}
+				JFusionFunction::raise($type, $msg, $msgtype);
 			}
 		} else {
-			JFusionFunction::raiseNotice($warning, $jname);
+			switch(strtolower($type)) {
+				case 'notice':
+					JFusionFunction::raiseNotice($message, $jname);
+					break;
+				case 'error':
+					JFusionFunction::raiseError($message, $jname);
+					break;
+				case 'warning':
+					JFusionFunction::raiseWarning($message, $jname);
+					break;
+				case 'message':
+					JFusionFunction::raiseMessage($message, $jname);
+					break;
+			}
 		}
 	}
 
@@ -1748,9 +1758,14 @@ class JFusionFunction
 		$messages = $app->getMessageQueue();
 
 		$list = array();
-		if(!empty($messages)) {
-			foreach ($messages as $message) {
-				$list[$message['type']][] = $message['message'];
+		if (is_array($messages) && !empty($messages))
+		{
+			foreach ($messages as $msg)
+			{
+				if (isset($msg['type']) && isset($msg['message']))
+				{
+					$list[$msg['type']][] = $msg['message'];
+				}
 			}
 		}
 		return $list;
