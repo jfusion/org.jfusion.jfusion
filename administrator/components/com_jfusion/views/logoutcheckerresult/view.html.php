@@ -50,7 +50,9 @@ class jfusionViewLogoutCheckerResult extends JViewLegacy
 		    $options['show_unsensored'] = 0;
 	    }
 	    //prevent current joomla session from being destroyed
-	    global $JFusionActivePlugin, $jfusionDebug;
+	    global $JFusionActivePlugin, $JFusionLoginCheckActive, $jfusionDebug;
+	    $JFusionActivePlugin = 'joomla_int';
+	    $JFusionLoginCheckActive = true;
 	    $jfusionDebug = array();
 	    $JFusionActivePlugin = 'joomla_int';
 	    $jfusion_user = array('type' => 'user', 'name' => 'jfusion', 'params' => '');

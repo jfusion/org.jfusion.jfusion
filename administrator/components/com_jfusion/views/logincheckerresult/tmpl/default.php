@@ -40,9 +40,8 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DI
 			<?php
 			$textOutput = array();
 			//prevent current joomla session from being destroyed
-			global $JFusionActivePlugin, $JFusionLoginCheckActive;
+			global $JFusionActivePlugin;
 			$JFusionActivePlugin = 'joomla_int';
-			$JFusionLoginCheckActive = true;
 			foreach ($this->plugins as $plugin) {
 				$title = JText::_('JFUSION') . ' ' . $plugin->name . ' ' . JText::_('PLUGIN');
 				debug::show($plugin, $title);
