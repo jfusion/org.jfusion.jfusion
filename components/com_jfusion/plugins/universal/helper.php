@@ -88,27 +88,6 @@ class JFusionHelper_universal {
 	}
 
 	/**
-	 * @return null
-	 */
-	function getFieldUserID() {
-		return $this->getFieldType('USERID');
-	}
-
-	/**
-	 * @return null
-	 */
-	function getFieldEmail() {
-		return $this->getFieldType('EMAIL');
-	}
-
-	/**
-	 * @return null
-	 */
-	function getFieldUsername() {
-		return $this->getFieldType('USERNAME');
-	}
-
-	/**
 	 * @param array $include
 	 * @param string $type
 	 * @return array|string
@@ -171,9 +150,9 @@ class JFusionHelper_universal {
 	/**
 	 * @param null $field
 	 * @param string $type
-	 * @return null
+	 * @return null|stdClass
 	 */
-	function getFieldType($field=null,$type='user') {
+	function getFieldType($field=null, $type='user') {
 		$maped = $this->getMap($type);
 		foreach ($maped as $value) {
 			foreach ($value->type as $t) {

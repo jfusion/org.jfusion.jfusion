@@ -40,9 +40,9 @@ class JFusionUser_universal extends JFusionUser {
 		 */
 		$helper = JFusionFactory::getHelper($this->getJname());
 
-		$email = $helper->getFieldEmail();
-		$username = $helper->getFieldUsername();
-		$userid = $helper->getFieldUserID();
+		$email = $helper->getFieldType('EMAIL');
+		$username = $helper->getFieldType('USERNAME');
+		$userid = $helper->getFieldType('USERID');
 		if (!$userid) {
 			JFusionFunction::raiseError(JText::_('EMAIL_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_USERID_SET'), $this->getJname());
 		} else {
@@ -127,7 +127,7 @@ class JFusionUser_universal extends JFusionUser {
 			 * @var $helper JFusionHelper_universal
 			 */
 			$helper = JFusionFactory::getHelper($this->getJname());
-			$userid = $helper->getFieldUserID();
+			$userid = $helper->getFieldType('USERID');
 			if (!$userid) {
 				$status['error'][] = JText::_('USER_DELETION_ERROR') . ': '.JText::_('UNIVERSAL_NO_USERID_SET');
 			} else {
@@ -234,9 +234,12 @@ class JFusionUser_universal extends JFusionUser {
 			$maped = $helper->getMap();
 			$params = JFusionFactory::getParams($this->getJname());
 
-			$userid = $helper->getFieldUserID();
+			$userid = $helper->getFieldType('USERID');
+			$password = $this->getFieldType('PASSWORD');
 			if (!$userid) {
 				$status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_USERID_SET');
+			} elseif (!$password) {
+				$status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_PASSWORD_SET');
 			} else {
 				$qset = array();
 
@@ -304,8 +307,8 @@ class JFusionUser_universal extends JFusionUser {
 			$helper = JFusionFactory::getHelper($this->getJname());
 			$params = JFusionFactory::getParams($this->getJname());
 
-			$userid = $helper->getFieldUserID();
-			$email = $helper->getFieldEmail();
+			$userid = $helper->getFieldType('USERID');
+			$email = $helper->getFieldType('EMAIL');
 			if (!$userid) {
 				$status['error'][] = JText::_('EMAIL_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_USERID_SET');
 			} else if (!$email) {
@@ -348,7 +351,7 @@ class JFusionUser_universal extends JFusionUser {
 				$helper = JFusionFactory::getHelper($this->getJname());
 				$params = JFusionFactory::getParams($this->getJname());
 
-				$userid = $helper->getFieldUserID();
+				$userid = $helper->getFieldType('USERID');
 				$group = $helper->getFieldType('GROUP');
 
 				if ( isset($group) && isset($userid) ) {
@@ -438,7 +441,7 @@ class JFusionUser_universal extends JFusionUser {
 			 * @var $helper JFusionHelper_universal
 			 */
 			$helper = JFusionFactory::getHelper($this->getJname());
-			$userid = $helper->getFieldUserID();
+			$userid = $helper->getFieldType('USERID');
 			$active = $helper->getFieldType('ACTIVE');
 			$inactive = $helper->getFieldType('INACTIVE');
 
@@ -494,7 +497,7 @@ class JFusionUser_universal extends JFusionUser {
 			 * @var $helper JFusionHelper_universal
 			 */
 			$helper = JFusionFactory::getHelper($this->getJname());
-			$userid = $helper->getFieldUserID();
+			$userid = $helper->getFieldType('USERID');
 			$active = $helper->getFieldType('ACTIVE');
 			$inactive = $helper->getFieldType('INACTIVE');
 			if (!$userid) {
@@ -534,7 +537,7 @@ class JFusionUser_universal extends JFusionUser {
 			 * @var $helper JFusionHelper_universal
 			 */
 			$helper = JFusionFactory::getHelper($this->getJname());
-			$userid = $helper->getFieldUserID();
+			$userid = $helper->getFieldType('USERID');
 			$activecode = $helper->getFieldType('ACTIVECODE');
 			if (!$userid) {
 				$status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_USERID_SET');
@@ -570,7 +573,7 @@ class JFusionUser_universal extends JFusionUser {
 			 * @var $helper JFusionHelper_universal
 			 */
 			$helper = JFusionFactory::getHelper($this->getJname());
-			$userid = $helper->getFieldUserID();
+			$userid = $helper->getFieldType('USERID');
 			$activecode = $helper->getFieldType('ACTIVECODE');
 			if (!$userid) {
 				throw new RuntimeException(JText::_('UNIVERSAL_NO_USERID_SET'));
@@ -612,7 +615,7 @@ class JFusionUser_universal extends JFusionUser {
 				 */
 				$helper = JFusionFactory::getHelper($this->getJname());
 
-				$userid = $helper->getFieldUserID();
+				$userid = $helper->getFieldType('USERID');
 				if(empty($userid)) {
 					throw new RuntimeException(JText::_('UNIVERSAL_NO_USERID_SET'));
 				} else {
@@ -620,7 +623,7 @@ class JFusionUser_universal extends JFusionUser {
 					if(empty($password)) {
 						throw new RuntimeException(JText::_('UNIVERSAL_NO_PASSWORD_SET'));
 					} else {
-						$email = $helper->getFieldEmail();
+						$email = $helper->getFieldType('EMAIL');
 						if(empty($email)) {
 							throw new RuntimeException(JText::_('UNIVERSAL_NO_EMAIL_SET'));
 						} else {
