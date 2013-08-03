@@ -1,6 +1,7 @@
 <?php
+
 /**
- * This is the jfusion Discussionbot element file
+ * This is the jfusion Userpostgroups element file
  *
  * PHP version 5
  *
@@ -18,6 +19,7 @@ defined('_JEXEC') or die();
  */
 require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.factory.php';
 require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jfusion.php';
+
 /**
  * JFusion Element class Discussionbot
  *
@@ -28,9 +30,9 @@ require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTOR
  * @license   http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link      http://www.jfusion.org
  */
-class JFormFieldForumUserList extends JFormField
+class JFormFieldUserpostgroups extends JFormField
 {
-    public $type = 'ForumUserList';
+    public $type = 'Userpostgroups';
     /**
      * Get an element
      *
@@ -42,12 +44,16 @@ class JFormFieldForumUserList extends JFormField
 	    try {
 		    if ($jname) {
 			    if (JFusionFunction::validPlugin($jname)) {
-				    $JFusionForum = JFusionFactory::getAdmin($jname);
-				    $users = $JFusionForum->getUserList();
-				    if (!empty($users)) {
-					    $output = JHTML::_('select.genericlist', $users, $this->name, '', 'id', 'name', $this->value);
+				    /**
+				     * @ignore
+				     * @var $JFusionAdmin JFusionAdmin_smf
+				     */
+				    $JFusionAdmin = JFusionFactory::getAdmin($jname);
+				    $usergroups = $JFusionAdmin->getUserpostgroupList();
+				    if (!empty($usergroups)) {
+					    $output = JHTML::_('select.genericlist', $usergroups, $this->name, '', 'id', 'name', $this->value);
 				    } else {
-					    throw new RuntimeException(JText::_('NO_LIST'));
+					    $output = '';
 				    }
 			    } else {
 				    throw new RuntimeException(JText::_('SAVE_CONFIG_FIRST'));

@@ -27,7 +27,7 @@
 
     <form>
         <fields name="params">
-            <fieldset name="PLUGIN_GENERAL_DETAILS" addfieldpath="/administrator/components/com_jfusion/fields">
+            <fieldset name="PLUGIN_GENERAL_DETAILS">
                 <field name="description" type="text" size="60" default="put a description" description="DESCRIPTION" label="DESCRIPTION"/>
                 <field name="source_url" type="text" size="60" default="http://site.com/" description="SOURCE_URL" label="SOURCE_URL"/>
                 <field name="cookie_domain" type="text" size="60" default="" description="CURL_COOKIE_DOMAIN_DESC" label="CURL_COOKIE_DOMAIN"/>
@@ -35,7 +35,7 @@
                 <field name="cookie_name" type="text" size="20" default="" description="COOKIE_NAME" label="COOKIE_NAME"/>
             </fieldset>
 
-            <fieldset name="DATABASE_OPTIONS" addfieldpath="/administrator/components/com_jfusion/fields">
+            <fieldset name="DATABASE_OPTIONS">
                 <field name="database_type" type="text" size="20" default="" description="DATABASE_TYPE" label="DATABASE_TYPE"/>
                 <field name="database_host" type="text" size="20" default="" description="DATABASE_HOST" label="DATABASE_HOST"/>
                 <field name="database_name" type="text" size="20" default="" description="DATABASE_NAME" label="DATABASE_NAME"/>
@@ -46,7 +46,7 @@
                 <field name="@spacer" type="spacer" default="" label=""	description=""/>
             </fieldset>
 
-            <fieldset name="USER_OPTIONS" addfieldpath="/administrator/components/com_jfusion/fields">
+            <fieldset name="USER_OPTIONS">
                 <field name="js" default="" type="JFusionCustomParam" label=" " description=" "/>
                 <field name="mapuser" default="" type="JFusionCustomParam" label="USER_MAPING" description="USER_MAPING_DESCR"/>
                 <field name="user_auth" default="md5($userinfo->password_clear)" type="JFusionCustomParam" label="USER_AUTH" description="USER_AUTH_DESCR"/>
@@ -79,12 +79,12 @@
             </fieldset>
 
 
-            <fieldset name="FRAMELESS_OPTIONS" addfieldpath="/administrator/components/com_jfusion/fields">
+            <fieldset name="FRAMELESS_OPTIONS">
                 <field name="headermap" default="" type="JFusionPair" label="HEADER_MAP" description="HEADER_MAP_DESCR"/>
                 <field name="bodymap" default="" type="JFusionPair" label="BODY_MAP" description="BODY_MAP_DESCR"/>
             </fieldset>
 
-            <fieldset name="SEF_OPTIONS" addfieldpath="/administrator/components/com_jfusion/fields">
+            <fieldset name="SEF_OPTIONS">
                 <field name=" " type="helptext" default="SEFMODE_DESCR" label=""/>
                 <field name="sefmode" type="list" default="0" label="SEFMODE" description="SEFMODE">
                     <option value="1"><![CDATA[domain.com/index.php/alias/file.php/foo,foo/]]></option>
@@ -92,7 +92,7 @@
                 </field>
             </fieldset>
 
-            <fieldset name="CURL_OPTIONS" addfieldpath="/administrator/components/com_jfusion/fields">
+            <fieldset name="CURL_OPTIONS">
                 <field name="cookie_expires" type="text" size="5" label="COOKIE_EXPIRES" default="1800" description="COOKIE_EXPIRES_DESC" />
                 <field name="secure" type="radio" class="btn-group" default="0" label="COOKIE_SECURE" description="COOKIE_SECURE">
                     <option value="1">JYES</option>

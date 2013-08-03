@@ -40,7 +40,6 @@ class JFormFieldJFusionCustomParam extends JFormField
 				$JFusionPlugin = JFusionFactory::getAdmin($jname);
 				if (method_exists($JFusionPlugin, $this->fieldname)) {
 					$output = $JFusionPlugin->{$this->fieldname}($this->fieldname, $this->value, $this->element, $this->group);
-					return $output;
 				} else {
 					throw new RuntimeException('Undefined function:' . $this->fieldname . ' in plugin:' . $jname);
 				}
@@ -48,7 +47,8 @@ class JFormFieldJFusionCustomParam extends JFormField
 				throw new RuntimeException('Programming error: You must define global $jname before the JParam object can be rendered.');
 			}
 		} catch (Exception $e) {
-			return '<span style="float:left; margin: 5px 0; font-weight: bold;">'.$e->getMessage().'</span>';
+			$output = '<span style="float:left; margin: 5px 0; font-weight: bold;">'.$e->getMessage().'</span>';
 		}
+		return $output;
 	}
 }

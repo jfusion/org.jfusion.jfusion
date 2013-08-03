@@ -25,7 +25,7 @@
 
     <form>
         <fields name="params">
-            <fieldset name="PLUGIN_GENERAL_DETAILS" addfieldpath="/administrator/components/com_jfusion/fields">
+            <fieldset name="PLUGIN_GENERAL_DETAILS">
                 <field name="jfusionbox" type="text" default="" label="PLUGIN_GENERAL_DETAILS" description="" />
                 <field name="description" type="text" size="60" label="DESCRIPTION" default="Presta Shop" description="DESCRIPTION_DESC" />
                 <field name="source_url" type="text" size="60" label="SOURCE_URL" default="http://www.yourdomain.com/prestashop/" description="SOURCE_URL_DESC" />
@@ -33,7 +33,7 @@
                 <field name="    " type="helptext" default="In order to disable registration in PrestaShop you must modify a core file currently to add a piece of code to disable it. The code extract and instructions can be found on the JFusion website" label=""/>
             </fieldset>
 
-            <fieldset name="DATABASE_OPTIONS" addfieldpath="/administrator/components/com_jfusion/fields">
+            <fieldset name="DATABASE_OPTIONS">
                 <field name="database_type" type="text" size="20" label="DATABASE_TYPE" default="mysql" description="DATABASE_TYPE_DESC" />
                 <field name="database_host" type="text" size="20" label="DATABASE_HOST" default="" description="DATABASE_HOST_DESC" />
                 <field name="database_name" type="text" size="20" label="DATABASE_NAME" default="" description="DATABASE_NAME_DESC" />
@@ -43,7 +43,7 @@
                 <field name="database_charset" type="text" size="20" label="DATABASE_CHARSET" default="utf8" description="DATABASE_CHARSET_DESC" />
             </fieldset>
 
-            <fieldset name="USER_OPTIONS" addfieldpath="/administrator/components/com_jfusion/fields">
+            <fieldset name="USER_OPTIONS">
                 <field name="username_filter" type="JFusionPlugins" label="USERNAME_FILTER" default="" description="USERNAME_FILTER_DESCR" />
                 <field name="multiusergroup" default="" type="JFusionCustomParam" label="USERGROUP_MANAGEMENT" description="ADVANCED_USERGROUP" />
                 <field name="@spacer" type="spacer" default="" label="" description="" />

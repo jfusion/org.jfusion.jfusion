@@ -56,11 +56,13 @@ class JFormFieldJFusionActivePlugins extends JFormField
 		    }
 
 		    if (!empty($rows)) {
-			    return JHTML::_('select.genericlist', $rows, $this->name, 'size="1" class="inputbox"', 'id', 'name', $this->value);
+			    $output = JHTML::_('select.genericlist', $rows, $this->name, 'size="1" class="inputbox"', 'id', 'name', $this->value);
+		    } else {
+			    throw new RuntimeException(JText::_('NO_VALID_PLUGINS'));
 		    }
 	    } catch (Exception $e) {
-			JFusionFunction::raiseError($e);
+		    $output =  '<span style="float:left; margin: 5px 0; font-weight: bold;">' . $e->getMessage() . '</span>';
 	    }
-        return '<span style="float:left; margin: 5px 0; font-weight: bold;">' . JText::_('NO_VALID_PLUGINS') . '</span>';
+	    return $output;
     }
 }

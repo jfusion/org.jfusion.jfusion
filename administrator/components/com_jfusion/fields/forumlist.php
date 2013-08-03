@@ -1,11 +1,11 @@
 <?php
 /**
- * This is the jfusion Discussionbot element file
+ * This is the jfusion Forumlist field file
  *
  * PHP version 5
  *
  * @category  JFusion
- * @package   Elements
+ * @package   Fields
  * @author    JFusion Team <webmaster@jfusion.org>
  * @copyright 2008 JFusion. All rights reserved.
  * @license   http://www.gnu.org/copyleft/gpl.html GNU/GPL
@@ -19,44 +19,65 @@ defined('_JEXEC') or die();
 require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.factory.php';
 require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jfusion.php';
 /**
- * JFusion Element class Discussionbot
+ * JFusion Field class Forumlist
  *
  * @category  JFusion
- * @package   Elements
+ * @package   Fields
  * @author    JFusion Team <webmaster@jfusion.org>
  * @copyright 2008 JFusion. All rights reserved.
  * @license   http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link      http://www.jfusion.org
  */
-class JFormFieldForumUserList extends JFormField
+class JFormFieldForumlist extends JFormField
 {
-	public $type = 'ForumUserList';
+	public $type = 'forumlist';
 	/**
-	 * Get an element
+	 * Get an field
 	 *
 	 * @return string html
 	 */
 	protected function getInput()
 	{
-		global $jname;
 		try {
-			if ($jname) {
+			//Query current selected Module Id
+			$id = JFactory::getApplication()->input->getInt('id', 0);
+			$cid = JFactory::getApplication()->input->get('cid', array($id), 'array');
+			JArrayHelper::toInteger($cid, array(0));
+			//find out which JFusion plugin is used in the activity module
+			$db = JFactory::getDBO();
+			$query = 'SELECT params FROM #__modules  WHERE module = \'mod_jfusion_activity\' and id = ' . $db->Quote($cid[0]);
+			$db->setQuery($query);
+			$params = $db->loadResult();
+			$parametersInstance = new JRegistry($params);
+			//load custom plugin parameter
+			$jPluginParam = new JRegistry('');
+			$jPluginParamRaw = unserialize(base64_decode($parametersInstance->get('JFusionPluginParam')));
+			$jname = $jPluginParamRaw['jfusionplugin'];
+
+			$control_name = $this->formControl.'['.$this->group.']';
+			if (!empty($jname)) {
 				if (JFusionFunction::validPlugin($jname)) {
-					$JFusionForum = JFusionFactory::getAdmin($jname);
-					$users = $JFusionForum->getUserList();
-					if (!empty($users)) {
-						return JHTML::_('select.genericlist', $users, $this->name, '', 'id', 'name', $this->value);
+					$JFusionPlugin = JFusionFactory::getForum($jname);
+					if (method_exists($JFusionPlugin, 'getForumList')) {
+						$forumlist = $JFusionPlugin->getForumList();
+						if (!empty($forumlist)) {
+							$selectedValue = $parametersInstance->get($this->fieldname);
+							$output = JHTML::_('select.genericlist', $forumlist, $control_name . '[' . $this->fieldname . '][]', 'multiple size="6" class="inputbox"', 'id', 'name', $selectedValue);
+						} else {
+							throw new RuntimeException($jname . ': ' .JText::_('NO_LIST'));
+						}
 					} else {
-						return '';
+						throw new RuntimeException($jname . ': ' .JText::_('NO_LIST'));
 					}
 				} else {
-					throw new RuntimeException(JText::_('SAVE_CONFIG_FIRST'));
+					throw new RuntimeException($jname . ': ' .JText::_('NO_VALID_PLUGINS'));
 				}
 			} else {
-				throw new RuntimeException('Programming error: You must define global $jname before the JParam object can be rendered.');
+				throw new RuntimeException(JText::_('NO_PLUGIN_SELECT'));
 			}
-		} catch (Exception $e) {
-			return '<span style="float:left; margin: 5px 0; font-weight: bold;">'.$e->getMessage().'</span>';
+		} catch(Exception $e){
+			$output = '<span style="float:left; margin: 5px 0; font-weight: bold;">'.$e->getMessage().'</span>';
 		}
+		return $output;
 	}
 }

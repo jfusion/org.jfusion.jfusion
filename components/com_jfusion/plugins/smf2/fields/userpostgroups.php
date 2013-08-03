@@ -30,9 +30,9 @@ require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTOR
  * @license   http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link      http://www.jfusion.org
  */
-class JFormFieldJFusionUserpostgroups extends JFormField
+class JFormFieldUserpostgroups extends JFormField
 {
-    public $type = 'JFusionUserpostgroups';
+    public $type = 'Userpostgroups';
     /**
      * Get an element
      *
@@ -46,14 +46,14 @@ class JFormFieldJFusionUserpostgroups extends JFormField
 			    if (JFusionFunction::validPlugin($jname)) {
 				    /**
 				     * @ignore
-				     * @var $JFusionAdmin JFusionAdmin_smf
+				     * @var $JFusionAdmin JFusionAdmin_smf2
 				     */
 				    $JFusionAdmin = JFusionFactory::getAdmin($jname);
 				    $usergroups = $JFusionAdmin->getUserpostgroupList();
 				    if (!empty($usergroups)) {
-					    return JHTML::_('select.genericlist', $usergroups, $this->name, '', 'id', 'name', $this->value);
+					    $output = JHTML::_('select.genericlist', $usergroups, $this->name, '', 'id', 'name', $this->value);
 				    } else {
-					    return '';
+					    $output = '';
 				    }
 			    } else {
 				    throw new RuntimeException(JText::_('SAVE_CONFIG_FIRST'));
@@ -62,7 +62,8 @@ class JFormFieldJFusionUserpostgroups extends JFormField
 			    throw new RuntimeException('Programming error: You must define global $jname before the JParam object can be rendered.');
 		    }
 	    } catch (Exception $e) {
-		    return '<span style="float:left; margin: 5px 0; font-weight: bold;">'.$e->getMessage().'</span>';
+		    $output = '<span style="float:left; margin: 5px 0; font-weight: bold;">'.$e->getMessage().'</span>';
 	    }
+	    return $output;
     }
 }

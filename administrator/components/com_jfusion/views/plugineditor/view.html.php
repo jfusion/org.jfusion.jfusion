@@ -62,7 +62,8 @@ class jfusionViewplugineditor extends JViewLegacy
 		        jimport('joomla.form.form');
 		        jimport('joomla.form.helper');
 
-		        JFormHelper::addFieldPath(JPATH_COMPONENT_ADMINISTRATOR.'/fields');
+		        JFormHelper::addFieldPath(JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'fields');
+		        JFormHelper::addFieldPath(JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'fields');
 
 		        $form->load($fields);
 		        $params = array();

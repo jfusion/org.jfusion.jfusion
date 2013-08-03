@@ -26,7 +26,7 @@
 
     <form>
         <fields name="params">
-            <fieldset name="PLUGIN_GENERAL_DETAILS" addfieldpath="/administrator/components/com_jfusion/fields">
+            <fieldset name="PLUGIN_GENERAL_DETAILS">
                 <field name="description" type="text" size="60" default="Magento Ecommerce site" description="DESCRIPTION_DESC" label="DESCRIPTION_DESC"/>
                 <field name="source_url" type="text" size="60" label="SOURCE_URL" default="http://www.yourdomain.com/yourdir/" description="SOURCE_URL_DESC" />
                 <field name="source_path" type="text" size="60" label="SOURCE_PATH" default="" description="SOURCE_PATH_DESC" />
@@ -39,7 +39,7 @@
                 </field>
             </fieldset>
 
-            <fieldset name="DATABASE_OPTIONS" addfieldpath="/administrator/components/com_jfusion/fields">
+            <fieldset name="DATABASE_OPTIONS">
                 <field name="database_type" type="text" size="20" label="DATABASE_TYPE" default="mysql" description="DATABASE_TYPE_DESC" />
                 <field name="database_host" type="text" size="20" label="DATABASE_HOST" default="" description="DATABASE_HOST_DESC" />
                 <field name="database_name" type="text" size="20" label="DATABASE_NAME" default="" description="DATABASE_NAME_DESC" />
@@ -49,7 +49,7 @@
                 <field name="database_charset" type="text" size="20" label="DATABASE_CHARSET" default="utf8" description="DATABASE_CHARSET_DESC" />
             </fieldset>
 
-            <fieldset name="USER_OPTIONS" addfieldpath="/administrator/components/com_jfusion/fields">
+            <fieldset name="USER_OPTIONS">
                 <field name="username_filter" type="JFusionPlugins" label="USERNAME_FILTER" default="" description="USERNAME_FILTER_DESCR" />
                 <field name="multiusergroup" default="" type="JFusionCustomParam" label="USERGROUP_MANAGEMENT" description="ADVANCED_USERGROUP" />
                 <field name="@spacer" type="spacer" default="" label="" description="" />
@@ -80,7 +80,7 @@
                 </field>
             </fieldset>
 
-            <fieldset name="CURL_OPTIONS_GENERAL" addfieldpath="/administrator/components/com_jfusion/fields">
+            <fieldset name="CURL_OPTIONS_GENERAL">
                 <field name="integrationtype" type="text" size="3" label="CURL_INTEGRATIONTYPE" default="1" description="CURL_INTEGRATIONTYPE_DESC" />
                 <field name="httpauth" type="list" default="" label="CURL_HTTPAUTH" description="CURL_HTTPAUTH_DESCR">
                     <option value="">DISABLED</option>
@@ -95,7 +95,7 @@
                 <field name="curl_password" type="password" default="" size="60" label="CURL_PASSWORD" description="CURL_PASSWORD_DESCR" />
             </fieldset>
 
-            <fieldset name="CURL_OPTIONS_COOKIE" addfieldpath="/administrator/components/com_jfusion/fields">
+            <fieldset name="CURL_OPTIONS_COOKIE">
                 <field name="cookie_domain" type="text" size="60" label="CURL_COOKIE_DOMAIN" default="" description="CURL_COOKIE_DOMAIN_DESC" />
                 <field name="cookie_path" type="text" size="60" label="CURL_COOKIE_PATH" default="" description="CURL_COOKIE_PATH_DESC" />
                 <field name="cookie_expires" type="text" size="5" label="COOKIE_EXPIRES" default="1800" description="COOKIE_EXPIRES_DESC" />
@@ -111,7 +111,7 @@
                 <field name="leavealone" type="text" size="60" label="CURL_COOKIE_LEAVEALONE" default="magento=>" description="CURL_COOKIE_LEAVEALONE_DESC" />
             </fieldset>
 
-            <fieldset name="CURL_OPTIONS_LOGIN" addfieldpath="/administrator/components/com_jfusion/fields">
+            <fieldset name="CURL_OPTIONS_LOGIN">
                 <field name="login_url" type="text" size="60" label="CURL_LOGIN_URL" default="customer/account/login/" description="CURL_LOGIN_URL_DESC" />
                 <field name="brute_force" type="radio" class="btn-group" default="standard" label="CURL_BRUTE_FORCE" description="CURL_BRUTE_FORCE_DESC">
                     <option value="brute_force">JYES</option>
@@ -134,7 +134,7 @@
                 </field>
             </fieldset>
 
-            <fieldset name="CURL_OPTIONS_LOGOUT" addfieldpath="/administrator/components/com_jfusion/fields">
+            <fieldset name="CURL_OPTIONS_LOGOUT">
                 <field name="logout_type" type="list" default="url" label="CURL_LOGOUT_TYPE" description="CURL_LOGOUT_TYPE_DESC">
                     <option value="url">URL</option>
                     <option value="form">FORM</option>
@@ -148,7 +148,7 @@
                 <field name="postfields" type="text" size="60" label="CURL_POSTFIELDS" default="" description="CURL_POSTFIELDS_DESC" />
             </fieldset>
 
-            <fieldset name="MOD_OPTIONS" addfieldpath="/administrator/components/com_jfusion/fields">
+            <fieldset name="MOD_OPTIONS">
                 <field name=" " type="helptext" default="MODULE_FOR_MAGENTO_DESCR" label=""/>
                 <field name="@spacer" type="spacer" default="" label="" description="" />
                 <field name="moduleInstallation" label="MODULE_INSTALLATION" type="JFusionCustomParam" description="MODULE_INSTALLATION_DESCR" />

@@ -25,12 +25,12 @@
 
     <form>
         <fields name="params">
-            <fieldset name="PLUGIN_GENERAL_DETAILS" addfieldpath="/administrator/components/com_jfusion/fields">
+            <fieldset name="PLUGIN_GENERAL_DETAILS">
                 <field name="description" type="text" size="60" default="Current Joomla Site" description="DESCRIPTION_DESC" label="DESCRIPTION"/>
                 <field name="source_url" type="text" size="60" default="" description="JOOMLA_URL" label="JOOMLA_URL"/>
             </fieldset>
 
-            <fieldset name="LOGIN_OPTIONS" addfieldpath="/administrator/components/com_jfusion/fields">
+            <fieldset name="LOGIN_OPTIONS">
                 <field name="login_identifier" type="list" default="1" description="LOGIN_IDENTIFIER_DESCR" label="LOGIN_IDENTIFIER">
                     <option value="1">USERNAME</option>
                     <option value="2">EMAIL_ADDRESS</option>
@@ -43,7 +43,7 @@
                 </field>
             </fieldset>
 
-            <fieldset name="USER_OPTIONS" addfieldpath="/administrator/components/com_jfusion/fields">
+            <fieldset name="USER_OPTIONS">
                 <field name="username_filter" type="JFusionPlugins" default="" description="USERNAME_FILTER_DESCR" label="USERNAME_FILTER"/>
                 <field name="@spacer" type="spacer" default="" label="" description="" />
 
@@ -76,7 +76,7 @@
                 </field>
             </fieldset>
 
-            <fieldset name="CONNECTION_OPTIONS" addfieldpath="/administrator/components/com_jfusion/fields">
+            <fieldset name="CONNECTION_OPTIONS">
                 <field name="allow_connections" type="radio" class="btn-group" default="0" description="ALLOW_CONNECTIONS_DESCR" label="ALLOW_CONNECTIONS">
                     <option value="0">JNO</option>
                     <option value="1">JYES</option>
@@ -85,7 +85,7 @@
                 <field name="secret" type="Secret" default="" label="Secret" description="SECRET_DESCR" />
             </fieldset>
 
-            <fieldset name="REDIRECT_OPTIONS" addfieldpath="/administrator/components/com_jfusion/fields">
+            <fieldset name="REDIRECT_OPTIONS">
                 <field name="allow_redirect_login" type="radio" class="btn-group" default="0" description="ALLOW_REDIRECT_DESCR" label="ALLOW_REDIRECT_LOGIN">
                     <option value="0">JNO</option>
                     <option value="1">JYES</option>

@@ -77,7 +77,7 @@ class JFormFieldjfusionsql extends JFormField
 						    $repeat = ( $item->level - 1 >= 0 ) ? $item->level - 1 : 0;
 						    $item->name = str_repeat('- ', $repeat).$item->name;
 					    }
-					    return JHTML::_('select.genericlist',  $items, $param_name, 'class="inputbox" '.$multiple, $key, $val, $this->value, $this->formControl.'_'.$this->group.'_'.$this->fieldname);
+					    $output = JHTML::_('select.genericlist',  $items, $param_name, 'class="inputbox" '.$multiple, $key, $val, $this->value, $this->formControl.'_'.$this->group.'_'.$this->fieldname);
 				    } elseif ($query == 'k2.categories') {
 					    $jdb = JFactory::getDBO();
 					    $query = 'SELECT enabled FROM #__extensions WHERE element = ' . $jdb->Quote('com_k2');
@@ -100,7 +100,7 @@ class JFormFieldjfusionsql extends JFormField
 					    }
 
 					    $results = JFormFieldjfusionsql::buildRecursiveTree(0, '', array(), $children);
-					    return JHTML::_('select.genericlist',  $results, $param_name, 'class="inputbox" '.$multiple, $key, $val, $this->value, $this->formControl.'_'.$this->group.'_'.$this->fieldname);
+					    $output = JHTML::_('select.genericlist',  $results, $param_name, 'class="inputbox" '.$multiple, $key, $val, $this->value, $this->formControl.'_'.$this->group.'_'.$this->fieldname);
 				    } else {
 					    $db->setQuery($this->element['query']);
 
@@ -109,7 +109,7 @@ class JFormFieldjfusionsql extends JFormField
 					    if(!empty($add_default)) {
 						    array_unshift($results, JHTML::_('select.option', '', '- '.JText::_('SELECT_ONE').' -', $key, $val));
 					    }
-					    return JHTML::_('select.genericlist',  $results, $param_name, 'class="inputbox" '.$multiple, $key, $val, $this->value, $this->formControl.'_'.$this->group.'_'.$this->fieldname);
+					    $output = JHTML::_('select.genericlist',  $results, $param_name, 'class="inputbox" '.$multiple, $key, $val, $this->value, $this->formControl.'_'.$this->group.'_'.$this->fieldname);
 				    }
 			    } else {
 				    throw new RuntimeException(JText::_('SAVE_CONFIG_FIRST'));
@@ -118,8 +118,9 @@ class JFormFieldjfusionsql extends JFormField
 			    throw new RuntimeException('Programming error: You must define global $jname before the JParam object can be rendered.');
 		    }
 	    } catch (Exception $e) {
-		    return '<span style="float:left; margin: 5px 0; font-weight: bold;">'.$e->getMessage().'</span>';
+		    $output = '<span style="float:left; margin: 5px 0; font-weight: bold;">'.$e->getMessage().'</span>';
 	    }
+	    return $output;
 	}
 
     /**

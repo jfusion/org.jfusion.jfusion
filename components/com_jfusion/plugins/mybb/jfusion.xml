@@ -26,7 +26,7 @@
 
     <form>
         <fields name="params">
-            <fieldset name="PLUGIN_GENERAL_DETAILS" addfieldpath="/administrator/components/com_jfusion/fields">
+            <fieldset name="PLUGIN_GENERAL_DETAILS">
                 <field name="description" type="text" size="60" label="DESCRIPTION" default="Mybb" description="DESCRIPTION_DESC" />
                 <field name="source_url" type="text" size="60" label="SOURCE_URL" default="http://www.yourdomain.com/mybb/" description="SOURCE_URL_DESC" />
                 <field name="source_path" type="text" size="60" label="SOURCE_PATH" default="" description="SOURCE_PATH_DESC" />
@@ -38,7 +38,7 @@
                 </field>
             </fieldset>
 
-            <fieldset name="DATABASE_OPTIONS" addfieldpath="/administrator/components/com_jfusion/fields">
+            <fieldset name="DATABASE_OPTIONS">
                 <field name="database_type" type="text" size="20" label="DATABASE_TYPE" default="mysql" description="DATABASE_TYPE_DESC" />
                 <field name="database_host" type="text" size="20" label="DATABASE_HOST" default="" description="DATABASE_HOST_DESC" />
                 <field name="database_name" type="text" size="20" label="DATABASE_NAME" default="" description="DATABASE_NAME_DESC" />
@@ -48,7 +48,7 @@
                 <field name="database_charset" type="text" size="20" label="DATABASE_CHARSET" default="utf8" description="DATABASE_CHARSET_DESC" />
             </fieldset>
 
-            <fieldset name="USER_OPTIONS" addfieldpath="/administrator/components/com_jfusion/fields">
+            <fieldset name="USER_OPTIONS">
                 <field name="multiusergroup" type="JFusionUsergroups" description="DEFAULT_USERGROUP_DESCR" label="DEFAULT_USERGROUP" />
                 <field name="activationgroup" type="JFusionUsergroups" description="DEFAULT_ACTIVATIONGROUP" label="DEFAULT_ACTIVATIONGROUP" />
                 <field name="@spacer" type="spacer" default="" label="" description="" />
@@ -75,7 +75,7 @@
                 <field name="@spacer" type="spacer" default="" label="" description="" />
             </fieldset>
 
-            <fieldset name="GENERAL_OPTIONS_COOKIE" addfieldpath="/administrator/components/com_jfusion/fields">
+            <fieldset name="GENERAL_OPTIONS_COOKIE">
                 <field name="cookie_domain" type="text" size="60" label="CURL_COOKIE_DOMAIN" default="" description="CURL_COOKIE_DOMAIN_DESC" />
                 <field name="cookie_path" type="text" size="60" label="CURL_COOKIE_PATH" default="" description="CURL_COOKIE_PATH_DESC" />
                 <field name="cookie_prefix" type="text" size="20" label="cookie_prefix" default="" description="COOKIE_PREFIX" />

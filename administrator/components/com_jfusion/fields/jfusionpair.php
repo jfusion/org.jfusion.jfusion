@@ -60,34 +60,17 @@ class JFormFieldJFusionPair extends JFormField
 		$js = '';
 		$values = '';
 		if (!is_array($this->value) || !count($this->value)) {
-			$js .=<<<JS
-			$('{$this->id}name0').addEvent('change', function () {
-				$('{$this->id}_save').set('src', 'components/com_jfusion/images/filesave.png');
-			});
-			$('{$this->id}value0').addEvent('change', function () {
-				$('{$this->id}_save').set('src', 'components/com_jfusion/images/filesave.png');
-			});
-JS;
-			$values .=<<<HTML
-			<tr id="{$this->id}0">
-				<td>
-					<input type="text" name="{$this->name}[name][0]" id="{$this->id}name0" size="50"/>
-				</td>
-				<td>
-					<input type="text" name="{$this->name}[value][0]" id="{$this->id}value0" size="50"/>
-				</td>
-				<td>
-					<a href="javascript:JFusion.removePair('{$this->id}', '0');">{$delete}</a>
-				</td>
-			</tr>
-HTML;
-		} else {
-			$i = 0;
-			foreach ($this->value['value'] as $key => $value) {
-				$v = htmlentities($value);
-				$n = htmlentities($this->value['name'][$key]);
+			$this->value = array();
+			$this->value['value'][] = '';
+			$this->value['name'][] = '';
+		}
 
-				$js .=<<<JS
+		$i = 0;
+		foreach ($this->value['value'] as $key => $value) {
+			$v = htmlentities($value);
+			$n = htmlentities($this->value['name'][$key]);
+
+			$js .=<<<JS
 				$('{$this->id}name{$i}').addEvent('change', function () {
 					$('{$this->id}_save').set('src', 'components/com_jfusion/images/filesave.png');
 				});
@@ -96,7 +79,7 @@ HTML;
 				});
 JS;
 
-				$values .=<<<HTML
+			$values .=<<<HTML
 				<tr id="{$this->id}{$i}">
 					<td>
 						<input type="text" name="{$this->name}[name][{$i}]" id="{$this->id}name{$i}" size="50" value="{$n}"/>
@@ -109,11 +92,16 @@ JS;
 					</td>
 				</tr>
 HTML;
-				$i++;
-			}
+			$i++;
 		}
 
-		$document->addScriptDeclaration('window.addEvent(\'domready\',function() { '.$js.' });');
+		$js =<<<JS
+			window.addEvent('domready',function() {
+				{$js}
+				});
+JS;
+
+		$document->addScriptDeclaration($js);
 
 		$output = <<<HTML
 			<div style="display:none;" id="{$this->id}">

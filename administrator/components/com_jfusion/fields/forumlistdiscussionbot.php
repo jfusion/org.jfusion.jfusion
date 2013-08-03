@@ -39,40 +39,36 @@ class JFormFieldForumListDiscussionbot extends JFormField
      */
     protected function getInput()
     {
-        $db = JFactory::getDBO();
-        $query = 'SELECT params FROM #__extensions WHERE element = \'jfusion\' and folder = \'content\'';
-        $db->setQuery($query);
-        $params = $db->loadResult();
-        $jPluginParam = new JRegistry($params);
-        $jname = $jPluginParam->get('jname', false);
-        $output = '<span style="float:left; margin: 5px 0; font-weight: bold;">';
-        if ($jname !== false) {
-	        try {
-		        if (JFusionFunction::validPlugin($jname)) {
-			        $JFusionPlugin = JFusionFactory::getForum($jname);
-			        if (method_exists($JFusionPlugin, 'getForumList')) {
-				        $forumlist = $JFusionPlugin->getForumList();
-				        if (!empty($forumlist)) {
-					        $selectedValue = $jPluginParam->get($this->fieldname);
-					        $output = JHTML::_('select.genericlist', $forumlist, $this->formControl.'['.$this->group.']['.$this->fieldname.']', 'class="inputbox"', 'id', 'name', $selectedValue);
-					        return $output;
-				        } else {
-					        $output.= $jname . ': ' . JText::_('NO_LIST');
-				        }
-			        } else {
-				        $output.= $jname . ': ' . JText::_('NO_LIST');
-			        }
-			        $output.= '<br />';
-		        } else {
-			        $output.= $jname . ': ' . JText::_('NO_VALID_PLUGINS');
-		        }
-	        } catch (Exception $e) {
-		        $output.= $jname . ': ' . JText::_('NO_VALID_PLUGINS') . ' '.$e->getMessage();
-	        }
-        } else {
-            $output.= JText::_('NO_PLUGIN_SELECT');
-        }
-        $output.= '</span>';
+	    try {
+		    $db = JFactory::getDBO();
+		    $query = 'SELECT params FROM #__extensions WHERE element = \'jfusion\' and folder = \'content\'';
+		    $db->setQuery($query);
+		    $params = $db->loadResult();
+		    $jPluginParam = new JRegistry($params);
+		    $jname = $jPluginParam->get('jname', false);
+		    if ($jname !== false) {
+			    if (JFusionFunction::validPlugin($jname)) {
+				    $JFusionPlugin = JFusionFactory::getForum($jname);
+				    if (method_exists($JFusionPlugin, 'getForumList')) {
+					    $forumlist = $JFusionPlugin->getForumList();
+					    if (!empty($forumlist)) {
+						    $selectedValue = $jPluginParam->get($this->fieldname);
+						    $output = JHTML::_('select.genericlist', $forumlist, $this->formControl.'['.$this->group.']['.$this->fieldname.']', 'class="inputbox"', 'id', 'name', $selectedValue);
+					    } else {
+						    throw new RuntimeException($jname . ': ' . JText::_('NO_LIST'));
+					    }
+				    } else {
+					    throw new RuntimeException($jname . ': ' . JText::_('NO_LIST'));
+				    }
+			    } else {
+				    throw new RuntimeException($jname . ': ' . JText::_('NO_VALID_PLUGINS'));
+			    }
+		    } else {
+			    throw new RuntimeException(JText::_('NO_PLUGIN_SELECT'));
+		    }
+	    } catch (Exception $e) {
+		    $output = '<span style="float:left; margin: 5px 0; font-weight: bold;">'.$e->getMessage().'</span>';
+	    }
         return $output;
     }
 }

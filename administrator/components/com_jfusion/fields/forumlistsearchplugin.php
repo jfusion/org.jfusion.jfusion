@@ -39,24 +39,23 @@ class JFormFieldForumListSearchPlugin extends JFormField
      */
     protected function getInput()
     {
-        //find out which JFusion plugin is used
-        $db = JFactory::getDBO();
-        $query = 'SELECT params FROM #__extensions  WHERE element = \'jfusion\' and folder = \'search\'';
-        $db->setQuery($query);
-        $params = $db->loadResult();
-        $parametersInstance = new JRegistry($params);
-        //load custom plugin parameter
-        $jPluginParamRaw = unserialize(base64_decode($parametersInstance->get('JFusionPluginParam')));
+	    try {
+	        //find out which JFusion plugin is used
+	        $db = JFactory::getDBO();
+	        $query = 'SELECT params FROM #__extensions  WHERE element = \'jfusion\' and folder = \'search\'';
+	        $db->setQuery($query);
+	        $params = $db->loadResult();
+	        $parametersInstance = new JRegistry($params);
+	        //load custom plugin parameter
+	        $jPluginParamRaw = unserialize(base64_decode($parametersInstance->get('JFusionPluginParam')));
 
-        $jname = '';
-        preg_match('#params\[(.*?)\]#', $this->formControl, $matches);
-        if (!empty($matches)) {
-            $jname = $matches[1];
-        }
+	        $jname = '';
+	        preg_match('#params\[(.*?)\]#', $this->formControl, $matches);
+	        if (!empty($matches)) {
+	            $jname = $matches[1];
+	        }
 
-        $output = '<span style="float:left; margin: 5px 0; font-weight: bold;">';
-        if (!empty($jname)) {
-	        try {
+	        if (!empty($jname)) {
 		        if (JFusionFunction::validPlugin($jname)) {
 			        if (!isset($jPluginParamRaw[$jname])) {
 				        $jPluginParamRaw[$jname] = array();
@@ -69,24 +68,21 @@ class JFormFieldForumListSearchPlugin extends JFormField
 				        if (!empty($forumlist)) {
 					        $selectedValue = $JPluginParam->get($this->fieldname);
 					        $output = JHTML::_('select.genericlist', $forumlist, $this->name . '[]', 'multiple size="6" class="inputbox"', 'id', 'name', $selectedValue);
-					        return $output;
 				        } else {
-					        $output.= $jname . ': ' . JText::_('NO_LIST');
+					        throw new RuntimeException($jname . ': ' . JText::_('NO_LIST'));
 				        }
 			        } else {
-				        $output.= $jname . ': ' . JText::_('NO_LIST');
+				        throw new RuntimeException($jname . ': ' . JText::_('NO_LIST'));
 			        }
-			        $output.= '<br />';
 		        } else {
-			        $output.= $jname . ': ' . JText::_('NO_VALID_PLUGINS') . '<br />';
+			        throw new RuntimeException($jname . ': ' . JText::_('NO_VALID_PLUGINS'));
 		        }
-	        } catch (Exception $e) {
-		        $output.= $jname . ': ' . JText::_('NO_VALID_PLUGINS'). ' : ' . $e->getMessage() . '<br />';
+	        } else {
+		        throw new RuntimeException(JText::_('NO_PLUGIN_SELECT'));
 	        }
-        } else {
-            $output.= JText::_('NO_PLUGIN_SELECT');
-        }
-        $output.= '</span>';
+	    } catch (Exception $e) {
+		    $output = '<span style="float:left; margin: 5px 0; font-weight: bold;">'.$e->getMessage().'</span>';
+	    }
         return $output;
     }
 }

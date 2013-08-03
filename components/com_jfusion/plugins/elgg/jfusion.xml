@@ -25,13 +25,13 @@
 
     <form>
         <fields name="params">
-            <fieldset name="PLUGIN_GENERAL_DETAILS" addfieldpath="/administrator/components/com_jfusion/fields">
+            <fieldset name="PLUGIN_GENERAL_DETAILS">
                 <field name="description" type="text" size="60" label="DESCRIPTION" default="Elgg" description="DESCRIPTION_DESC" />
                 <field name="source_url" type="text" size="60" label="SOURCE_URL" default="http://www.yourdomain.com/elgg/" description="SOURCE_URL_DESC" />
                 <field name="source_path" type="text" size="60" label="SOURCE_PATH" default="" description="SOURCE_PATH_DESC" />
             </fieldset>
 
-            <fieldset name="DATABASE_OPTIONS" addfieldpath="/administrator/components/com_jfusion/fields">
+            <fieldset name="DATABASE_OPTIONS">
                 <field name="database_type" type="text" size="20" label="DATABASE_TYPE" default="mysql" description="DATABASE_TYPE_DESC" />
                 <field name="database_host" type="text" size="20" label="DATABASE_HOST" default="" description="DATABASE_HOST_DESC" />
                 <field name="database_name" type="text" size="20" label="DATABASE_NAME" default="" description="DATABASE_NAME_DESC" />
@@ -41,7 +41,7 @@
                 <field name="database_charset" type="text" size="20" label="DATABASE_CHARSET" default="utf8" description="DATABASE_CHARSET_DESC" />
             </fieldset>
 
-            <fieldset name="USER_OPTIONS" addfieldpath="/administrator/components/com_jfusion/fields">
+            <fieldset name="USER_OPTIONS">
                 <field name="usergroup" default="" type="JFusionCustomParam" label="USERGROUP_MANAGEMENT" description="ADVANCED_USERGROUP" />
                 <field name="@spacer" type="spacer" default="" label="" description="" />
                 <field name="update_activation" type="radio" class="btn-group" default="1" label="UPDATE_ACTIVATION" description="UPDATE_ACTIVATION_DESC">
@@ -71,7 +71,7 @@
                 </field>
             </fieldset>
 
-            <fieldset name="GENERAL_OPTIONS_COOKIE" addfieldpath="/administrator/components/com_jfusion/fields">
+            <fieldset name="GENERAL_OPTIONS_COOKIE">
                 <field name="    " type="helptext" default="In order to logout correctly the  JFusion Plugin settings for cookie path and domain must be the same as in the cookie called: Elgg, which is generated when visiting elgg outside of Joomla/JFusion.  If these settings do not match PHP does not seem to be able to delete the cookie, and you will stay logged in." label=""/>
                 <field name="cookie_domain" type="text" size="60" label="CURL_COOKIE_DOMAIN" default="" description="CURL_COOKIE_DOMAIN_DESC" />
                 <field name="cookie_path" type="text" size="60" label="CURL_COOKIE_PATH" default="" description="CURL_COOKIE_PATH_DESC" />
