@@ -37,17 +37,17 @@
 	</languages>
 	
 	<administration>
-		<menu img="components/com_jfusion/images/jfusion_small.png" link="option=com_jfusion">COM_JFUSION</menu>
+		<menu link="option=com_jfusion">COM_JFUSION</menu>
 		<submenu>
-			<menu img="components/com_jfusion/images/control.png" link="option=com_jfusion&amp;task=cpanel">CPANEL</menu>
-			<menu img="components/com_jfusion/images/joomla_small.png" link="option=com_jfusion&amp;task=plugineditor&amp;jname=joomla_int">JOOMLA_OPTIONS</menu>
-			<menu img="components/com_jfusion/images/process.png" link="option=com_jfusion&amp;task=plugindisplay">CONFIGURATION</menu>
-			<menu img="components/com_jfusion/images/user.png" link="option=com_jfusion&amp;task=syncoptions">NEW_USERSYNC</menu>
-			<menu img="components/com_jfusion/images/user.png" link="option=com_jfusion&amp;task=synchistory">USERSYNC_HISTORY</menu>
-			<menu img="components/com_jfusion/images/disconnect.png" link="option=com_jfusion&amp;task=loginchecker">LOGIN_CHECKER</menu>
-			<menu img="components/com_jfusion/images/configdump_small.png" link="option=com_jfusion&amp;task=configdump">CONFIG_DUMP</menu>
-            <menu img="components/com_jfusion/images/language_icon_small.png" link="option=com_jfusion&amp;task=languages">LANGUAGE</menu>
-            <menu img="components/com_jfusion/images/version.png" link="option=com_jfusion&amp;task=versioncheck">VERSIONS</menu>
+			<menu link="option=com_jfusion&amp;task=cpanel">CPANEL</menu>
+			<menu link="option=com_jfusion&amp;task=plugineditor&amp;jname=joomla_int">JOOMLA_OPTIONS</menu>
+			<menu link="option=com_jfusion&amp;task=plugindisplay">CONFIGURATION</menu>
+			<menu link="option=com_jfusion&amp;task=syncoptions">NEW_USERSYNC</menu>
+			<menu link="option=com_jfusion&amp;task=synchistory">USERSYNC_HISTORY</menu>
+			<menu link="option=com_jfusion&amp;task=loginchecker">LOGIN_CHECKER</menu>
+			<menu link="option=com_jfusion&amp;task=configdump">CONFIG_DUMP</menu>
+            <menu link="option=com_jfusion&amp;task=languages">LANGUAGE</menu>
+            <menu link="option=com_jfusion&amp;task=versioncheck">VERSIONS</menu>
 		</submenu>
 
 		<files folder="admin">
