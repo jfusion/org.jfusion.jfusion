@@ -15,7 +15,7 @@ defined('_JEXEC') or die('Restricted access');
 	echo $this->toolbar;
 	echo '<h3>' . $this->title . '</h3>';
 	?>
-	<form name="adminForm" id='adminForm' method="post" action="index.php?option=com_jfusion">
+	<form name="adminForm" id="adminForm" method="post" action="index.php?option=com_jfusion">
 		<input type="hidden" name="task" value="discussionbot" />
 		<input type="hidden" name="tmpl" value="component" />
 		<input type="hidden" name="jname" value="<?php echo $this->jname; ?>" />

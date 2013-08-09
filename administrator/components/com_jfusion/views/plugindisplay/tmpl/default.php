@@ -118,7 +118,7 @@ $images = 'components/com_jfusion/images/';
 	//]]>
 </script>
 <div class="jfusion">
-<form method="post" action="index.php?option=com_jfusion" name="adminForm">
+<form method="post" action="index.php?option=com_jfusion" name="adminForm" id="adminForm">
 	<input type="hidden" name="task" value="saveorder" />
 
 	<table class="jfusionlist" style="border-spacing:1px;" id="sortables">
