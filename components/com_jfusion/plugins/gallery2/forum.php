@@ -161,7 +161,7 @@ class JFusionForum_gallery2 extends JFusionForum {
                         $params = JFusionFactory::getParams($this->getJname());
                         $source_url = $params->get('source_url');
                         $urlGenerator = new GalleryUrlGenerator();
-                        $urlGenerator->init($helper->getEmbedUri($this->getJname(),$config['itemid']), $source_url, null);
+                        $urlGenerator->init($helper->getEmbedUri($config['itemid']), $source_url, null);
                         $gallery->setUrlGenerator($urlGenerator);
                     }
 
