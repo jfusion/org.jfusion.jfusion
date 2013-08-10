@@ -63,7 +63,7 @@ class JFusionHelper_gallery2
                 $source_url = $base . $source_url;
             }
             $initParams['g2Uri'] = $source_url;
-            $initParams['embedUri'] = $this->getEmbedUri($this->getJname(),$itemId);
+            $initParams['embedUri'] = $this->getEmbedUri($itemId);
             $initParams['loginRedirect'] = JRoute::_('index.php?option=com_user&view=login');
             $initParams['fullInit'] = $fullInit;
             if (!is_file($index_file)) {
