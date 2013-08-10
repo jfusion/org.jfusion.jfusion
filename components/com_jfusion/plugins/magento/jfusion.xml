@@ -22,6 +22,7 @@
         <filename>jfusion.xml</filename>
         <filename>public.php</filename>
         <filename>user.php</filename>
+        <filename>soapclient.php</filename>
     </files>
 
     <form>

@@ -15,4 +15,4 @@ JFusion.confirmSubmitLanguage = function (action) {
         r = true;
     }
     return r;
-}
+};

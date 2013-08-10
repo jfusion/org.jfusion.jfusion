@@ -234,7 +234,7 @@ class JFusionUser_universal extends JFusionUser {
 			$params = JFusionFactory::getParams($this->getJname());
 
 			$userid = $helper->getFieldType('USERID');
-			$password = $this->getFieldType('PASSWORD');
+			$password = $helper->getFieldType('PASSWORD');
 			if (!$userid) {
 				$status['error'][] = JText::_('PASSWORD_UPDATE_ERROR') . ': '.JText::_('UNIVERSAL_NO_USERID_SET');
 			} elseif (!$password) {

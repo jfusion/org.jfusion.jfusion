@@ -54,29 +54,31 @@ class JFusionUser_magento extends JFusionUser {
 	 *  customer_entity_text
 	 *  customer_entity_varchar
 	 *
-	 * @param $proxi
-	 * @param $sessionId
+	 * @param $status
 	 *
-	 * @return array
+	 * @throws RuntimeException
+	 * @return MagentoSoapClient
 	 */
-	function connect_to_api(&$proxi, &$sessionId) {
-		$status = array('error' => array(),'debug' => array());
+	function connectToApi(&$status) {
 		$params = JFusionFactory::getParams($this->getJname());
 		$apipath = $params->get('source_url') . 'index.php/api/?wsdl';
 		$apiuser = $params->get('apiuser','');
 		$apikey = $params->get('apikey','');
 		if (!$apiuser || !$apikey) {
-			$status['error'][] = 'Could not login to Magento API (empty apiuser and/or apikey)';
+			throw new RuntimeException('Could not login to Magento API (empty apiuser and/or apikey)');
 		} else {
 			try {
-				$proxi = new SoapClient($apipath);
-				$sessionId = $proxi->login($apiuser, $apikey);
-				$status['debug'][] = 'Logged into Magento API as ' . $apiuser . ' using key, message:' . $apikey;
+				require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'soapclient.php';
+
+				$proxi = new MagentoSoapClient($apipath);
+				if($proxi->login($apiuser, $apikey)) {
+					$status['debug'][] = 'Logged into Magento API as ' . $apiuser . ' using key, message:' . $apikey;
+				}
 			} catch (Soapfault $fault) {
-				$status['error'][] = 'Could not login to Magento API as ' . $apiuser . ' using key ' . $apikey . ',message:' . $fault->faultstring;
+				throw new RuntimeException('Could not login to Magento API as ' . $apiuser . ' using key ' . $apikey . ',message:' . $fault->faultstring);
 			}
 		}
-		return $status;
+		return $proxi;
 	}
 
 	/**
@@ -601,33 +603,31 @@ class JFusionUser_magento extends JFusionUser {
 		//check to see if a valid $userinfo object was passed on
 		if (!is_object($userinfo)) {
 			$status['error'][] = JText::_('NO_USER_DATA_FOUND');
-			return $status;
-		}
-		$existinguser = $this->getUser($userinfo);
-		if (!empty($existinguser)) {
-			$user_id = $existinguser->userid;
-			// this can be complicated so we are going to use the Magento customer API
-			// for the time being. Speed is not a great issue here
-			// connect to host
-			$sessionId = '';
-			$proxi = '';
-			$status = $this->connect_to_api($proxi, $sessionId);
-			if ($status['error']) {
-				return $status;
-			}
-			try {
-				$result = $proxi->call($sessionId, 'customer.delete', $user_id);
-			} catch (Soapfault $fault) {
-				$status['error'][] = 'Magento API: Could not delete user with id '.$user_id.' , message: ' . $fault->faultstring;
-			}
-			if (!$status['error']) {
-				$status['debug'][] = 'Magento API: Delete user with id '.$user_id.' , email ' . $userinfo->email;
-			}
+		} else {
+			$existinguser = $this->getUser($userinfo);
+			if (!empty($existinguser)) {
+				$user_id = $existinguser->userid;
+				// this can be complicated so we are going to use the Magento customer API
+				// for the time being. Speed is not a great issue here
+				// connect to host
+				try {
+					$proxi = $this->connectToApi($status);
 
-			try {
-				$proxi->endSession($sessionId);
-			} catch (Soapfault $fault) {
-				$status['error'][] = 'Magento API: Could not end this session, message: ' . $fault->faultstring;
+					try {
+						$result = $proxi->call('customer.delete', $user_id);
+						$status['debug'][] = 'Magento API: Delete user with id '.$user_id.' , email ' . $userinfo->email;
+					} catch (Soapfault $fault) {
+						$status['error'][] = 'Magento API: Could not delete user with id '.$user_id.' , message: ' . $fault->faultstring;
+					}
+
+					try {
+						$proxi->endSession();
+					} catch (Soapfault $fault) {
+						$status['error'][] = 'Magento API: Could not end this session, message: ' . $fault->faultstring;
+					}
+				} catch (Exception $e) {
+					$status['error'][] = $e->getMessage();
+				}
 			}
 		}
 		return $status;
@@ -649,20 +649,21 @@ class JFusionUser_magento extends JFusionUser {
 		// this can be complicated so we are going to use the Magento customer API
 		// for the time being. Speed is not a great issue here
 		// connect to host
-		$sessionId = '';
-		$proxi = '';
-		$status = $this->connect_to_api($proxi, $sessionId);
-		if (empty($status['error'])) {
+		try {
+			$proxi = $this->connectToApi($status);
+
 			try {
-				$result = $proxi->call($sessionId, 'customer.update', array($user_id, $update));
+				$result = $proxi->call('customer.update', array($user_id, $update));
 			} catch (Soapfault $fault) {
 				$status['error'][] = 'Magento API: Could not update email of user with id '.$user_id.' , message: ' . $fault->faultstring;
 			}
 			try {
-				$proxi->endSession($sessionId);
+				$proxi->endSession();
 			} catch (Soapfault $fault) {
 				$status['error'][] = 'Magento API: Could not end this session, message: ' . $fault->faultstring;
 			}
+		} catch (Exception $e) {
+			$status['error'][] = $e->getMessage();
 		}
 	}
 
