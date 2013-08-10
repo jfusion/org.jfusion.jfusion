@@ -475,7 +475,6 @@ class plgContentJfusion extends JPlugin
 				if (!empty($forumthread)) {
 					//manually plugged so definitely published
 					$forumthread->published = 1;
-					//$threadinfo->manual = 1;
 					//set threadinfo
 					$this->helper->setThreadInfo($forumthread);
 
@@ -508,8 +507,6 @@ class plgContentJfusion extends JPlugin
 					if (!empty($forumthread)) {
 						//manually plugged so definitely published
 						$forumthread->published = 1;
-						//$threadinfo->manual = 1;
-
 						//create buttons for the manually plugged article
 						//set threadinfo
 						$this->helper->setThreadInfo($forumthread);
@@ -764,9 +761,6 @@ HTML;
 
 								//take note of the created post
 								$this->postid = $status['postid'];
-
-								//output only the new post div
-//								$this->helper->setThreadInfo($threadinfo);
 
 								$ajax->posts = $this->helper->renderFile('default_posts.php');
 								$ajax->status = true;
