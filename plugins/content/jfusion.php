@@ -141,7 +141,7 @@ class plgContentJfusion extends JPlugin
 		//check to see if a valid $content object was passed on
 		$result = true;
 		if (!is_object($subject)){
-			JFusionFunction::raiseNotice(JText::_('NO_CONTENT_DATA_FOUND'), JText::_('DISCUSSBOT_ERROR'));
+			JFusionFunction::raiseError(JText::_('NO_CONTENT_DATA_FOUND'), JText::_('DISCUSSBOT_ERROR'));
 			$result = false;
 		} else {
 			$this->article = $subject;
@@ -275,7 +275,7 @@ class plgContentJfusion extends JPlugin
 
 		//check to see if a valid $content object was passed on
 		if (!is_object($subject)){
-			JFusionFunction::raiseNotice(JText::_('NO_CONTENT_DATA_FOUND'), JText::_('DISCUSSBOT_ERROR'));
+			JFusionFunction::raiseError(JText::_('NO_CONTENT_DATA_FOUND'), JText::_('DISCUSSBOT_ERROR'));
 			$result = false;
 		} else {
 			//make sure there is a plugin
@@ -738,7 +738,7 @@ HTML;
 						$status = $JFusionForum->createPost($this->params, $threadinfo, $this->article, $userinfo);
 
 						if (!empty($status['error'])) {
-							JFusionFunction::raiseNotice(JText::_('DISCUSSBOT_ERROR').' '.JText::_('ACCESS_DENIED'));
+							JFusionFunction::raiseError(JText::_('ACCESS_DENIED'), JText::_('DISCUSSBOT_ERROR'));
 						} else {
 							if ($ajaxEnabled) {
 								//if pagination is set, set $limitstart so that we go to the added post

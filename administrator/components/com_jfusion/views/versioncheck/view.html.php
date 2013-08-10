@@ -215,7 +215,7 @@ class jfusionViewversioncheck extends JViewLegacy
 				$output->rev = trim((string)$xml->revision);
 			}
 			if ($xml->timestamp) {
-				$output->date = trim((string)$xml->timestamp);
+				$output->date = (int) trim((string)$xml->timestamp);
 			}
 		}
 
@@ -228,7 +228,7 @@ class jfusionViewversioncheck extends JViewLegacy
 				$output->oldrev = trim((string)$xml->revision);
 			}
 			if ($xml->timestamp) {
-				$output->olddate = trim((string)$xml->timestamp);
+				$output->olddate = (int) trim((string)$xml->timestamp);
 			}
 
 			if (version_compare($output->oldversion, $output->version) == - 1 || ($output->oldrev && $output->rev && $output->oldrev != $output->rev )) {
@@ -241,7 +241,7 @@ class jfusionViewversioncheck extends JViewLegacy
 
 			//cleanup for the next function call
 		} else {
-			JFusionFunction::raiseNotice(JText::_('ERROR').': '.JText::_('XML_FILE_MISSING') . ' '. JText::_('JFUSION') . ' ' . $name . ' ' . JText::_('PLUGIN'), $name);
+			JFusionFunction::raiseError(JText::_('XML_FILE_MISSING') . ' '. JText::_('JFUSION') . ' ' . $name . ' ' . JText::_('PLUGIN'), $name);
 		}
 		return $output;
 	}

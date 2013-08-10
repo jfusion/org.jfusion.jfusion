@@ -634,7 +634,7 @@ JS;
      */
 	function createCustomCaptcha(&$dbparams)
 	{
-		JFusionFunction::raiseNotice(JText::_('DISCUSSBOT_ERROR').': '.JText::_('CUSTOM_CAPTCHA_NOT_IMPLEMENTED'), $this->getJname());
+		JFusionFunction::raiseError(JText::_('DISCUSSBOT_ERROR').': '.JText::_('CUSTOM_CAPTCHA_NOT_IMPLEMENTED'), $this->getJname());
 		return '';
 	}
 
@@ -714,7 +714,7 @@ JS;
      */
 	function verifyCustomCaptcha(&$dbparams)
 	{
-		JFusionFunction::raiseNotice(JText::_('DISCUSSBOT_ERROR').': '.JText::_('CUSTOM_CAPTCHA_NOT_IMPLEMENTED'),$this->getJname());
+		JFusionFunction::raiseError(JText::_('DISCUSSBOT_ERROR').': '.JText::_('CUSTOM_CAPTCHA_NOT_IMPLEMENTED'),$this->getJname());
 		return false;
 	}
 

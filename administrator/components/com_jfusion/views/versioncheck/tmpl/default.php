@@ -132,9 +132,10 @@ JFusionFunctionAdmin::displayDonate();
 	        </td>
 	        <td>
 			    <?php
-		        if ($component->olddate) {
+		        if ($component->olddate && is_int($component->olddate)) {
 			        $date = JFactory::getDate($component->olddate);
-			        echo $date->toSql();
+			        $date->setTimezone(new DateTimeZone(JFusionFunction::getJoomlaTimezone()));
+			        echo $date->toSql(true);
 		        } else {
 			        echo JText::_('UNKNOWN');
 		        }
@@ -152,7 +153,8 @@ JFusionFunctionAdmin::displayDonate();
 			    <?php
 		        if ($component->date) {
 			        $date = JFactory::getDate($component->date);
-			        echo $date->toSql();
+			        $date->setTimezone(new DateTimeZone(JFusionFunction::getJoomlaTimezone()));
+			        echo $date->toSql(true);
 		        } else {
 			        echo JText::_('UNKNOWN');
 		        }
@@ -228,7 +230,7 @@ JFusionFunctionAdmin::displayDonate();
 			    <?php
 			    if ($jfusion_plugin->olddate) {
 				    $date = JFactory::getDate($jfusion_plugin->olddate);
-				    echo $date->toSql();
+				    echo $date->toSql(true);
 			    } else {
 				    echo JText::_('UNKNOWN');
 			    }
@@ -246,7 +248,8 @@ JFusionFunctionAdmin::displayDonate();
 			    <?php
 		        if ($jfusion_plugin->date) {
 			        $date = JFactory::getDate($jfusion_plugin->date);
-			        echo $date->toSql();
+			        $date->setTimezone(new DateTimeZone(JFusionFunction::getJoomlaTimezone()));
+			        echo $date->toSql(true);
 		        } else {
 			        echo JText::_('UNKNOWN');
 		        }
@@ -289,35 +292,33 @@ JFusionFunctionAdmin::displayDonate();
 	if ($this->up2date) {
 	    //output the good news
 	    ?>
-	<table style="background-color:#d9f9e2;width:100%;">
-	    <tr>
-	        <td>
-	            <img src="components/com_jfusion/images/check_good.png">
-	        <td>
-	            <h2>
-	                <?php echo JText::_('JFUSION_UP2DATE'); ?>
-	            </h2>
-	        </td>
-	    </tr>
-	</table>
+		<table style="background-color:#d9f9e2;width:100%;">
+		    <tr>
+		        <td>
+		            <img src="components/com_jfusion/images/check_good.png">
+		        <td>
+		            <h2>
+		                <?php echo JText::_('JFUSION_UP2DATE'); ?>
+		            </h2>
+		        </td>
+		    </tr>
+		</table>
 	<?php
 	} else {
 	    //output the bad news and automatic upgrade option
 	    ?>
-	<table style="background-color:#f9ded9;">
-	    <tr>
-	        <td width="50px">
-	            <img src="components/com_jfusion/images/check_bad.png">
-	        </td>
-	        <td>
-	            <h2>
-	                <?php echo JText::_('JFUSION_OUTDATED'); ?>
-	            </h2>
-	        </td>
-	    </tr>
-	</table>
-	<br/><br/>
-
+		<table style="background-color:#f9ded9;">
+		    <tr>
+		        <td width="50px">
+		            <img src="components/com_jfusion/images/check_bad.png">
+		        </td>
+		        <td>
+		            <h2>
+		                <?php echo JText::_('JFUSION_OUTDATED'); ?>
+		            </h2>
+		        </td>
+		    </tr>
+		</table>
 	<?php
 	}
 	?>
@@ -375,5 +376,4 @@ JFusionFunctionAdmin::displayDonate();
 	        </td>
 	    </tr>
 	</table>
-	<br/><br/>
 </div>
