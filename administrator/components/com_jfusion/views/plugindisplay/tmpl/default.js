@@ -120,6 +120,25 @@ JFusion.deletePlugin = function (jname) {
     });
 };
 
+JFusion.submitForm = function (type) {
+    new Request.JSON({
+        noCache: true,
+        format: 'json',
+        onRequest: function () {
+            $('spinner'+type).set('html','<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">');
+        },
+        onSuccess: function(JSONobject) {
+            $('spinner'+type).set('html','');
+            JFusion.OnMessages(JSONobject.messages);
+
+            JFusion.updateList(JSONobject.pluginlist);
+        },
+        onError: function (JSONobject) {
+            JFusion.OnError(JSONobject);
+        }
+    }).post($('install'+type).toQueryString());
+};
+
 JFusion.updateList = function (html) {
     var list = $('sort_table');
     list.empty();

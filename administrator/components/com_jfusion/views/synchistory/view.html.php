@@ -39,6 +39,9 @@ class jfusionViewsynchistory extends JViewLegacy
      */
     function display($tpl = null)
     {
+	    //Load usersync library
+	    include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
+
 	    $document = JFactory::getDocument();
 	    $document->addScript('components/com_jfusion/views/'.$this->getName().'/tmpl/default.js');
         //get the all usersync data

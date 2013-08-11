@@ -32,7 +32,6 @@ class jfusionViewsyncstatus extends JViewLegacy
 {
     var $syncid;
     var $syncdata;
-    var $sync_completed;
 
     /**
      * displays the view
@@ -80,11 +79,7 @@ class jfusionViewsyncstatus extends JViewLegacy
 	    $this->filter = $filter;
 	    $this->syncdata = $syncdata;
 
-        if (!empty($this->sync_completed)) {
-            //ajax calling this page so die so that header info is not put into the body
-            die(parent::display($tpl));
-        }
-
+	    $this->errorCount = JFusionUsersync::countLogData($this->syncid, 'error');
         parent::display($tpl);
     }
 }

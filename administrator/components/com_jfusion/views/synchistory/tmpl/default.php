@@ -97,19 +97,13 @@ JHTML::_('behavior.modal', 'a.modal');
 				        </td>
 			        <?php
 				    }
-
-				    //get the total errors
-				    $total_error = 0;
-				    if (is_array($syncdata['slave_data'])) {
-				        foreach ($syncdata['slave_data'] as $slave) {
-				            $total_error = $total_error + $slave['error'];
-				        }
-				    }
-				    echo '<td>' . $total_error . '</td>'; ?>
+					//get the total errors
+					?>
+					<td><?php echo JFusionUsersync::countLogData($record->syncid, 'error'); ?></td>
 				    <td>
-				        <a class="modal btn" rel="{handler: 'iframe', size: {x: 650, y: 375}}" href="index.php?option=com_jfusion&amp;task=syncstatus&amp;tmpl=component&amp;syncid=<?php echo $record->syncid; ?>">
-				            <?php echo JText::_('CLICK_FOR_MORE_DETAILS'); ?>
-				        </a>
+					    <a class="btn" href="index.php?option=com_jfusion&amp;task=syncstatus&amp;syncid=<?php echo $record->syncid; ?>">
+						    <?php echo JText::_('CLICK_FOR_MORE_DETAILS'); ?>
+					    </a>
 				    </td>
 				</tr>
 			    <?php

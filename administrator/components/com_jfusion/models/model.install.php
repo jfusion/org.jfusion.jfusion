@@ -89,49 +89,57 @@ class JFusionModelInstaller extends InstallerModelInstall
     {
     	$result = array();
     	$result['status'] = false;
-        $this->setState('action', 'install');
-        $package = null;
-        switch (JFactory::getApplication()->input->getWord('installtype')) {
-            case 'folder':
-                $package = $this->_getPackageFromFolder();
-                break;
-            case 'upload':
-                $package = $this->_getPackageFromUpload();
-                break;
-            case 'url':
-                $package = $this->_getPackageFromUrl();
-                break;
-            default:
-                $result['message'] = $this->raise('error', JText::_('NO_INSTALL_TYPE'));
-                break;
-        }
-        if (!isset($result['message'])) {
-            // Was the package unpacked?
-            if (!$package) {
-	            $result['message'] = $this->raise('error', JText::_('NO_PACKAGE_FOUND'));
-            } else {
-                // custom installer
-                $installer = new JfusionPluginInstaller($this);
+	    $this->setState('action', 'install');
+	    try {
+		    $package = null;
+		    switch (JFactory::getApplication()->input->getWord('installtype')) {
+			    case 'folder':
+				    $package = $this->_getPackageFromFolder();
+				    break;
+			    case 'upload':
+				    $package = $this->_getPackageFromUpload();
+				    break;
+			    case 'url':
+				    // Get the URL of the package to install
+				    $url = JFactory::getApplication()->input->getString('install_url');
+				    if(filter_var($url, FILTER_VALIDATE_URL) !== FALSE) {
+					    $package = $this->_getPackageFromUrl();
+				    } else {
+					    throw new RuntimeException(JText::_('INVALID_URL'). ': '.$url);
+				    }
+				    break;
+			    default:
+					throw new RuntimeException(JText::_('NO_INSTALL_TYPE'));
+				    break;
+		    }
+		    // Was the package unpacked?
+		    if (!$package) {
+			    throw new RuntimeException(JText::_('NO_PACKAGE_FOUND'));
+		    } else {
+			    // custom installer
+			    $installer = new JfusionPluginInstaller($this);
 
-                // Install the package
-                $installer->install($package['dir'], $result);
+			    // Install the package
+			    $installer->install($package['dir'], $result);
 
-                // Cleanup the install files
-                if (!is_file($package['packagefile'])) {
-                    $config = JFactory::getConfig();
-                    $package['packagefile'] = $config->get('tmp_path') . DIRECTORY_SEPARATOR . $package['packagefile'];
-                }
-                if ( $result['status'] && is_file($package['packagefile']) ) {
-                    //save a copy of the plugin for safe keeping
-                    $dest = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'packages' . DIRECTORY_SEPARATOR . basename($package['packagefile']);
-                    if ( $package['packagefile'] != $dest) {
-                        JFile::copy($package['packagefile'],$dest);
-                    }
-                }
+			    // Cleanup the install files
+			    if (!is_file($package['packagefile'])) {
+				    $config = JFactory::getConfig();
+				    $package['packagefile'] = $config->get('tmp_path') . DIRECTORY_SEPARATOR . $package['packagefile'];
+			    }
+			    if ( $result['status'] && is_file($package['packagefile']) ) {
+				    //save a copy of the plugin for safe keeping
+				    $dest = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'packages' . DIRECTORY_SEPARATOR . basename($package['packagefile']);
+				    if ( $package['packagefile'] != $dest) {
+					    JFile::copy($package['packagefile'],$dest);
+				    }
+			    }
 
-                JInstallerHelper::cleanupInstall($package['packagefile'], $package['extractdir']);
-            }
-        }
+			    JInstallerHelper::cleanupInstall($package['packagefile'], $package['extractdir']);
+		    }
+	    } catch (Exception $e) {
+		    $result['message'] = $this->raise('error', $e->getMessage());
+	    }
         //return the results array
         return $result;
     }

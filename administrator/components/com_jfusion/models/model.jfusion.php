@@ -1659,11 +1659,15 @@ class JFusionFunction
 
 	/**
 	 * @param string|RuntimeException $msg
+	 * @param string           $jname
 	 */
-	public static function raiseMessage($msg) {
+	public static function raiseMessage($msg, $jname='') {
 		$app = JFactory::getApplication();
 		if ($msg instanceof RuntimeException) {
 			$msg = $msg->getMessage();
+		}
+		if (!empty($jname)) {
+			$msg = $jname.': '.$msg;
 		}
 		$app->enqueueMessage($msg,'message');
 	}

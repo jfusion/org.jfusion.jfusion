@@ -299,37 +299,22 @@ class JFusionController extends JControllerLegacy
      *
      * @return void
      */
-    function syncerror()
+    function resolvesyncerror()
     {
-        //Load usersync library
-        include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
-        $syncError = JFactory::getApplication()->input->post->get('syncError', array(), 'array');
-        $syncid = JJFactory::getApplication()->input->post->get('syncid', '');
-        if ($syncError) {
-            //apply the submitted sync error instructions
-            JFusionUsersync::syncError($syncid, $syncError);
-        } else {
-            //output the sync errors to the user
-	        JFactory::getApplication()->input->get('view', 'syncerror');
-            $this->display();
-        }
-    }
+	    try {
+		    //Load usersync library
+		    include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
+		    $syncError = JFactory::getApplication()->input->post->get('syncError', array(), 'array');
+		    $syncid = JFactory::getApplication()->input->post->get('syncid', '');
+		    if ($syncError) {
+			    //apply the submitted sync error instructions
+			    JFusionUsersync::syncError($syncid, $syncError);
+		    }
+		    $this->setRedirect('index.php?option=com_jfusion&task=syncerror&syncid='.$syncid);
+	    } catch (Exception $e) {
+		    $this->setRedirect('index.php?option=com_jfusion&task=syncerror&syncid='.$syncid, $e->getMessage(), 'error');
+	    }
 
-    /**
-     * Displays the usersync history screen
-     *
-     * @return void
-     */
-    function syncerrordetails()
-    {
-        //Load usersync library
-        include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
-
-        $view = $this->getView('syncerrordetails', 'html');
-        $view->setLayout('default');
-        //$result = $view->loadTemplate();
-        $result = $view->display();
-        die($result);
     }
 
     /**
@@ -431,8 +416,8 @@ class JFusionController extends JControllerLegacy
         $model = new JFusionModelInstaller();
         $result = $model->install();
 
-        $ajax = JFactory::getApplication()->input->get('ajax');
-        if ($ajax == true) {
+        $format = JFactory::getApplication()->input->get('format', 'html');
+        if ($format == 'json') {
 	        /**
 	         * @ignore
 	         * @var $view jfusionViewplugindisplay

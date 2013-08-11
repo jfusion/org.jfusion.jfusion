@@ -36,38 +36,41 @@ JHTML::_('behavior.modal', 'a.modal');
 			</td>
 		</tr>
 	</table>
-	<br/>
-	<br/>
-	<h1>
-		<?php echo JText::_('CONFLICT_INSTRUCTION'); ?>
-	</h1>
-	<br/>
-	<h3>
-		<?php echo JText::_('EMAIL') . ' ' . JText::_('CONFLICTS'); ?>
-	</h3>
-	<h1>
-		<?php echo JText::_('CONFLICTS_EMAIL'); ?>
-	</h1>
-	<br/>
-	<h3>
-		<?php echo JText::_('USERNAME') . ' ' . JText::_('CONFLICTS'); ?>
-	</h3>
-	<h1>
-		<?php echo JText::_('CONFLICTS_USERNAME'); ?>
-	</h1>
-	<br/>
-	<h3>
-		<?php echo JText::_('USERSYNC') . ' ' . JText::_('ERROR'); ?>
-	</h3>
-	<h1>
-		<?php echo JText::_('CONFLICTS_ERROR'); ?>
-	</h1>
-	<br/>
-	<br/>
-
 	<form method="post" action="index.php?option=com_jfusion" name="adminForm" id="adminForm">
-		<input type="hidden" name="task" value="syncerror" />
+		<input type="hidden" name="task" value="resolvesyncerror" />
 		<input type="hidden" name="syncid" value="<?php echo $this->syncid; ?>" />
+
+	<?php
+	if (!empty($this->synclog)) {
+		?>
+		<br/>
+		<br/>
+		<h1>
+			<?php echo JText::_('CONFLICT_INSTRUCTION'); ?>
+		</h1>
+		<br/>
+		<h3>
+			<?php echo JText::_('EMAIL') . ' ' . JText::_('CONFLICTS'); ?>
+		</h3>
+		<h1>
+			<?php echo JText::_('CONFLICTS_EMAIL'); ?>
+		</h1>
+		<br/>
+		<h3>
+			<?php echo JText::_('USERNAME') . ' ' . JText::_('CONFLICTS'); ?>
+		</h3>
+		<h1>
+			<?php echo JText::_('CONFLICTS_USERNAME'); ?>
+		</h1>
+		<br/>
+		<h3>
+			<?php echo JText::_('USERSYNC') . ' ' . JText::_('ERROR'); ?>
+		</h3>
+		<h1>
+			<?php echo JText::_('CONFLICTS_ERROR'); ?>
+		</h1>
+		<br/>
+		<br/>
 
 		<div id="ajax_bar">
 			<label for="default_value"><?php echo JText::_('APPLY_ACTION_ALL_CONFLICTS'); ?></label>
@@ -88,7 +91,7 @@ JHTML::_('behavior.modal', 'a.modal');
 				<option value="3"><?php echo JText::_('DELETE') . ' ' . $user . ' ' . JText::_('USER') ?></option>
 				<option value="4"><?php echo JText::_('DELETE') . ' ' . $conflict . ' ' . JText::_('USER') ?></option>
 			</select>
-			<a href="javascript:void(0);"  onclick=JFusion.applyAll();">
+			<a href="javascript:void(0);"  onclick="JFusion.applyAll();">
 				<?php echo JText::_('APPLY'); ?>
 			</a>
 		</div>
@@ -182,7 +185,7 @@ JHTML::_('behavior.modal', 'a.modal');
 					    ?>
 				    </td>
 				    <td>
-				    <a class="modal btn" rel="{handler: 'iframe', size: {x: 650, y: 375}}" href="index.php?option=com_jfusion&amp;task=syncerrordetails&amp;syncid=<?php echo $this->syncdata['syncid']; ?>&amp;tmpl=component&amp;errorid=<?php echo $i; ?>"><?php echo JText::_('DETAILS'); ?></a>
+				        <a class="modal btn" rel="{handler: 'iframe', size: {x: 650, y: 375}}" href="index.php?option=com_jfusion&amp;task=syncerrordetails&amp;syncid=<?php echo $this->syncdata['syncid']; ?>&amp;tmpl=component&amp;errorid=<?php echo $i; ?>"><?php echo JText::_('DETAILS'); ?></a>
 				    </td>
 				    <td>
 					    <?php
@@ -210,5 +213,13 @@ JHTML::_('behavior.modal', 'a.modal');
 		<input type="hidden" name="filter_order_Dir" value="<?php echo $this->filter['dir']; ?>" />
 		<input type="hidden" name="filter_client" value="<?php echo $this->filter['client'];?>" />
 		<?php echo $this->pageNav->getListFooter(); ?>
+
+	<?php
+	} else {
+	?>
+		<h2><?php echo JText::_('CONFLICT_RESOLUTION_COMPLETE'); ?></h2>
+	<?php
+	}
+	?>
 	</form>
 </div>

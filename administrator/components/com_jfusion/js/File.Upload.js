@@ -1,14 +1,14 @@
 /*
 
-name: [File.Upload, Request.File]
-description: Ajax file upload with MooTools.
-license: MIT-style license
-author: Matthew Loberg
-requires: [Request]
-provides: [File.Upload, Request.File]
-credits: Based off of MooTools-Form-Upload (https://github.com/arian/mootools-form-upload/) by Arian Stolwijk
+ name: [File.Upload, Request.File]
+ description: Ajax file upload with MooTools.
+ license: MIT-style license
+ author: Matthew Loberg
+ requires: [Request]
+ provides: [File.Upload, Request.File]
+ credits: Based off of MooTools-Form-Upload (https://github.com/arian/mootools-form-upload/) by Arian Stolwijk
 
-*/
+ */
 if (typeof File === 'undefined') {
     var File = {};
 }
@@ -20,6 +20,8 @@ File.Upload = new Class({
     options: {
         onComplete: function () {
             //undefined default function
+        }, onException : function () {
+            //undefined default function
         }
     },
 
@@ -30,8 +32,11 @@ File.Upload = new Class({
             onComplete: function () {
                 self.fireEvent('complete', arguments);
                 this.reset();
+            }, onException: function () {
+                self.fireEvent('exception', arguments);
             }
         });
+        this.uploadReq.setOptions(options);
         if (this.options.data) {
             this.data(this.options.data);
         }
@@ -63,9 +68,11 @@ File.Upload = new Class({
     add: function (id) {
         var input, name, file;
         input = $(id);
-        name = input.get('name');
-        file = input.files[0];
-        this.uploadReq.append(name, file);
+        if (input.files) {
+            name = input.get('name');
+            file = input.files[0];
+            this.uploadReq.append(name, file);
+        }
     },
 
     send: function (input) {
@@ -91,45 +98,63 @@ Request.File = new Class({
         this.xhr = new Browser.Request();
         this.setOptions(options);
         this.headers = this.options.headers;
-        this.formData = new FormData();
+        this.reset();
     },
 
     append: function (key, value) {
-        this.formData.append(key, value);
-        return this.formData;
+        if (this.formData) {
+            this.formData.append(key, value);
+        }
     },
 
     reset: function () {
-        this.formData = new FormData();
+        try {
+            this.formData = new FormData();
+        } catch (e) {
+            this.formData = false;
+            this.fireEvent('exception', e);
+        }
     },
 
     send: function (options) {
         var url, xhr;
-        url = options.url || this.options.url;
+        if (this.formData) {
+            url = options.url || this.options.url;
 
-        this.options.isSuccess = this.options.isSuccess || this.isSuccess;
-        this.running = true;
-
-        xhr = this.xhr;
-        xhr.open('POST', url, true);
-        xhr.onreadystatechange = this.onStateChange.bind(this);
-
-        Object.each(this.headers, function (value, key) {
-            try {
-                xhr.setRequestHeader(key, value);
-            } catch (e) {
-                this.fireEvent('exception', [key, value]);
+            if (this.options.format) {
+                var format = 'format=' + this.options.format;
+                url = (url) ? url + '&' + format : format;
             }
-        }, this);
 
-        this.fireEvent('request');
-        xhr.send(this.formData);
+            if (this.options.noCache) {
+                var noCache = 'noCache=' + new Date().getTime();
+                url = (url) ? url + '&' + noCache : noCache;
+            }
 
-        if (!this.options.async) {
-            this.onStateChange();
-        }
-        if (this.options.timeout) {
-            this.timer = this.timeout.delay(this.options.timeout, this);
+            this.options.isSuccess = this.options.isSuccess || this.isSuccess;
+            this.running = true;
+
+            xhr = this.xhr;
+            xhr.open('POST', url, this.options.async);
+            xhr.onreadystatechange = this.onStateChange.bind(this);
+
+            Object.each(this.headers, function (value, key) {
+                try {
+                    xhr.setRequestHeader(key, value);
+                } catch (e) {
+                    this.fireEvent('exception', [key, value]);
+                }
+            }, this);
+
+            this.fireEvent('request');
+            xhr.send(this.formData);
+
+            if (!this.options.async) {
+                this.onStateChange();
+            }
+            if (this.options.timeout) {
+                this.timer = this.timeout.delay(this.options.timeout, this);
+            }
         }
         return this;
     }

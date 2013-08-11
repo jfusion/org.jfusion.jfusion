@@ -20,66 +20,19 @@ $images = 'components/com_jfusion/images/';
 <script type="text/javascript">
 	//<![CDATA[
 	window.addEvent('domready',function() {
-		var installGIT = $('installGIT');
-		installGIT.set('send',
-			{ onSuccess: function(result) {
-				$('spinnerGIT').set('html','');
-				if (JSON.validate(result)) {
-					var JSONobject = JSON.decode(result);
-					JFusion.OnMessages(JSONobject.messages);
-
-					JFusion.updateList(JSONobject.pluginlist);
-				} else {
-					JFusion.OnError(result);
-				}
-			}, data: {
-				ajax: true
-			}
-			});
-		installGIT.addEvent('submit', function(e) {
+		$('installGIT').addEvent('submit', function(e) {
 			e.stop();
-			$('spinnerGIT').set('html','<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">');
-			this.send('?ajax=true');
+			JFusion.submitForm('GIT');
 		});
 
-		var installURL = $('installURL');
-		installURL.set('send',
-			{ onSuccess: function(result) {
-				$('spinnerURL').set('html','');
-				if (JSON.validate(result)) {
-					var JSONobject = JSON.decode(result);
-					JFusion.OnMessages(JSONobject.messages);
-
-					JFusion.updateList(JSONobject.pluginlist);
-				} else {
-					JFusion.OnError(result);
-				}
-			}
-			});
-		installURL.addEvent('submit', function(e) {
+		$('installDIR').addEvent('submit', function(e) {
 			e.stop();
-			$('spinnerURL').set('html','<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">');
-			this.send('?ajax=true');
+			JFusion.submitForm('DIR');
 		});
 
-		var installDIR = $('installDIR');
-		installDIR.set('send',
-			{ onSuccess: function(result) {
-				$('spinnerDIR').set('html','');
-				if (JSON.validate(result)) {
-					var JSONobject = JSON.decode(result);
-					JFusion.OnMessages(JSONobject.messages);
-
-					JFusion.updateList(JSONobject.pluginlist);
-				} else {
-					JFusion.OnError(result);
-				}
-			}
-			});
-		installDIR.addEvent('submit', function(e) {
+		$('installURL').addEvent('submit', function(e) {
 			e.stop();
-			$('spinnerDIR').set('html','<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">');
-			this.send('?ajax=true');
+			JFusion.submitForm('URL');
 		});
 
 		var installZIP = $('installZIP');
@@ -87,31 +40,31 @@ $images = 'components/com_jfusion/images/';
 			var upload;
 			e.stop();
 			$('spinnerZIP').set('html','<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">');
-			if (typeof FormData === 'undefined') {
-				this.submit();
-			} else {
-				upload = new File.Upload({
-					url:  JFusion.url,
-					data: {
-						option: 'com_jfusion',
-						task : 'installplugin',
-						installtype : 'upload',
-						ajax : 'true' } ,
-					images: ['install_package'],
-					onComplete : function (result) {
-						$('spinnerZIP').set('html','');
-						if (JSON.validate(result)) {
-							var JSONobject = JSON.decode(result);
-							JFusion.OnMessages(JSONobject.messages);
+			upload = new File.Upload({
+				url:  JFusion.url,
+				noCache: true,
+				format: 'json',
+				data: {
+					option: 'com_jfusion',
+					task : 'installplugin',
+					installtype : 'upload'} ,
+				images: ['install_package'],
+				onComplete: function (result) {
+					$('spinnerZIP').set('html','');
+					if (JSON.validate(result)) {
+						var JSONobject = JSON.decode(result);
+						JFusion.OnMessages(JSONobject.messages);
 
-							JFusion.updateList(JSONobject.pluginlist);
-						} else {
-							JFusion.OnError(result);
-						}
+						JFusion.updateList(JSONobject.pluginlist);
+					} else {
+						JFusion.OnError(result);
 					}
-				});
-				upload.send();
-			}
+				},
+				onException:  function (result) {
+					$('installZIP').submit();
+				}
+			});
+			upload.send();
 		});
 		JFusion.initSortables();
 	});

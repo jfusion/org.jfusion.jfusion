@@ -19,10 +19,6 @@ defined('_JEXEC') or die('Restricted access');
 JFusionFunctionAdmin::displayDonate();
 
 global $jfusionDebug;
-/**
- *     Load debug library
- */
-require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.debug.php';
 
 /**
  * Output information about the server for future support queries

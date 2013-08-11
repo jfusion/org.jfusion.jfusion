@@ -31,24 +31,30 @@ if (!class_exists('MagentoSoapClient')) {
 		 * @param string $key
 		 *
 		 * @return bool
-		 */function login($user, $key) {
+		 */
+		function login($user, $key) {
+			/** @noinspection PhpUndefinedMethodInspection */
 			$sessionid = parent::login($user, $key);
 			return true;
-	}
+		}
 
 		/**
 		 * End session
 		 */
 		function endSession() {
+			/** @noinspection PhpUndefinedMethodInspection */
 			parent::endSession($this->sessionId);
 		}
 
 		/**
 		 * @param string $function
 		 * @param array $args
+		 *
+		 * @return mixed
 		 */
 		function call($function, $args) {
-			parent::call($this->sessionId, $function, $args);
+			/** @noinspection PhpUndefinedMethodInspection */
+			return parent::call($this->sessionId, $function, $args);
 		}
 	}
 }

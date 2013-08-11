@@ -39,6 +39,8 @@ class jfusionViewLoginCheckerResult extends JViewLegacy
 	 */
 	function display($tpl = null)
 	{
+		//Load debug library
+		require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.debug.php';
 
 		//get the submitted login details
 		$credentials['username'] = JFactory::getApplication()->input->get('check_username');

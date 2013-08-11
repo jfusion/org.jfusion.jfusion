@@ -3,11 +3,10 @@ if (typeof JFusion === 'undefined') {
 }
 
 JFusion.applyAll = function () {
-    var form = $('adminForm');
-    var defaultvalue = form.elements['default_value'].selectedIndex;
-    for(var i=0; i<form.elements.length; i++) {
-        if (form.elements[i].type === 'select-one') {
-            form.elements[i].selectedIndex = defaultvalue;
-        }
-    }
+    var defaultvalue = $('default_value').selectedIndex;
+
+    var elements = document.getElements('select[name^=syncError');
+    elements.each(function(element) {
+        element.selectedIndex = defaultvalue;
+    });
 };

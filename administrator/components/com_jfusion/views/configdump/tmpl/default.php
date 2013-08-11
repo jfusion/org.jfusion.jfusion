@@ -11,9 +11,6 @@
 defined('_JEXEC') or die('Restricted access');
 JFusionFunctionAdmin::displayDonate();
 
-//load debug library
-require_once(JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.debug.php');
-
 $mask = '';
 if (JFactory::getApplication()->input->get('mask',false)) {
     $mask = 'checked="yes"';

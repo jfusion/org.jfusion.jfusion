@@ -29,6 +29,9 @@ class jfusionViewconfigdump extends JViewLegacy {
 	 */
 	function display($tpl = null)
 	{
+		//load debug library
+		require_once(JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.debug.php');
+		
 		$db = JFactory::getDBO();
 
 		// menuitem Checks
