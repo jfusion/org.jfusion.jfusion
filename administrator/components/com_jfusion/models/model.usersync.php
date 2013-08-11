@@ -128,7 +128,12 @@ class JFusionUsersync
         $serialized = base64_encode(serialize($syncdata));
         //find out if the syncid already exists
         $db = JFactory::getDBO();
-        $query = 'UPDATE #__jfusion_sync SET syncdata = ' . $db->Quote($serialized) . ' WHERE syncid =' . $db->Quote($syncdata['syncid']);
+
+	    $query = $db->getQuery(true);
+	    $query->update('#__jfusion_sync')
+		    ->set('syncdata = '.$db->Quote($serialized))
+		    ->where('syncid = ' . $db->Quote($syncdata['syncid']));
+
         $db->setQuery($query);
         $db->execute();
     }
@@ -226,7 +231,12 @@ class JFusionUsersync
      */
 	public static function markResolved($id) {
         $db = JFactory::getDBO();
-        $query = 'UPDATE #__jfusion_sync_details SET action = \'resolved\' WHERE id = '.$id;
+
+		$query = $db->getQuery(true);
+		$query->update('#__jfusion_sync_details')
+			->set('action = '.$db->Quote('resolved'))
+			->where('id = ' . $db->Quote($id));
+
         $db->setQuery($query);
         $db->execute();
     }
@@ -392,7 +402,12 @@ class JFusionUsersync
 
 					    //update the finish time
 					    $db = JFactory::getDBO();
-					    $query = 'UPDATE #__jfusion_sync SET time_end = ' . $db->Quote(time()) . ' WHERE syncid =' . $db->Quote($syncdata['syncid']);
+
+					    $query = $db->getQuery(true);
+					    $query->update('#__jfusion_sync')
+						    ->set('time_end = '.$db->Quote(time()))
+						    ->where('syncid = ' . $db->Quote($syncdata['syncid']));
+
 					    $db->setQuery($query);
 					    $db->execute();
 				    }
@@ -412,7 +427,12 @@ class JFusionUsersync
      */
     public static function changeSyncStatus($syncid, $status) {
         $db = JFactory::getDBO();
-        $query = 'UPDATE #__jfusion_sync SET active = ' . (int) $status . ' WHERE syncid = ' . $db->Quote($syncid);
+
+	    $query = $db->getQuery(true);
+	    $query->update('#__jfusion_sync')
+		    ->set('active = '.(int) $status)
+		    ->where('syncid = ' . $db->Quote($syncid));
+
         $db->setQuery($query);
         $db->execute();
     }

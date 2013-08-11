@@ -392,14 +392,18 @@ class JFusionPluginInstaller extends JObject
 					            //store enabled/disabled features to update copies
 					            global $plugin_features;
 					            $plugin_features = array();
-					            $query = 'UPDATE #__jfusion SET plugin_files = ' . $db->Quote('');
+
+					            $query = $db->getQuery(true);
+					            $query->update('#__jfusion')
+						            ->set('plugin_files = ' .$db->Quote(''));
+
 					            foreach ($features as $f) {
 						            if (($$f == 3 && $plugin->$f != 3) || ($$f != 3 && $plugin->$f == 3)) {
-							            $query.= ', ' . $f . '=' . $$f;
+							            $query->set($f.' = '.$$f);
 							            $plugin_features[$f] = $$f;
 						            }
 					            }
-					            $query.= ' WHERE id = ' . $plugin->id;
+					            $query->where('id = '.$plugin->id);
 					            $db->setQuery($query);
 					            $db->execute();
 
@@ -434,7 +438,11 @@ class JFusionPluginInstaller extends JObject
 			             */
 
 			            //check to see if this is updating a plugin that has been copied
-			            $query = 'SELECT name FROM #__jfusion WHERE original_name = '.$db->Quote($name);
+			            $query = $db->getQuery(true);
+			            $query->select('name')
+				            ->from('#__jfusion')
+				            ->where('original_name = '.$db->Quote($name));
+
 			            $db->setQuery($query);
 			            $copiedPlugins = $db->loadObjectList();
 			            foreach ($copiedPlugins as $plugin) {
@@ -492,7 +500,11 @@ class JFusionPluginInstaller extends JObject
 		    }
 		    $db = JFactory::getDBO();
 
-		    $query = 'SELECT name , original_name from #__jfusion WHERE name = ' . $db->Quote($jname);
+		    $query = $db->getQuery(true);
+		    $query->select('name , original_name')
+			    ->from('#__jfusion')
+			    ->where('name = '.$db->Quote($jname));
+
 		    $db->setQuery($query);
 		    $plugin = $db->loadObject();
 		    $removeLanguage = true;
@@ -622,7 +634,10 @@ class JFusionPluginInstaller extends JObject
                 $db = JFactory::getDBO();
                 if ($update) {
                     //update the copied plugin files
-                    $query = 'UPDATE #__jfusion SET plugin_files = ' . $db->Quote('');
+
+	                $query = $db->getQuery(true);
+	                $query->update('#__jfusion')
+		                ->set('plugin_files = ' .$db->Quote(''));
                     //get the features of the updated plugin
                     global $plugin_features;
                     if (empty($plugin_features)) {
@@ -653,9 +668,10 @@ class JFusionPluginInstaller extends JObject
                         }
                     }
                     foreach ($plugin_features as $key => $val) {
-                        $query.= ', '.$key.' = '.$val;
+	                    $query->set($key.' = '.$val);
                     }
-                    $query.= ' WHERE name = ' . $db->Quote($new_jname);
+	                $query->where('name = ' . $db->Quote($new_jname));
+
                     $db->setQuery($query);
                     $db->execute();
                 } else {

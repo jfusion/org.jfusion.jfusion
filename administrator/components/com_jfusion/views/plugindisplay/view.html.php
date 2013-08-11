@@ -102,7 +102,12 @@ class jfusionViewplugindisplay extends JViewLegacy {
 			    //do a check to see if the status field is correct
 			    if ($status['config'] != $record->status) {
 				    //update the status and deactivate the plugin
-				    $db->setQuery('UPDATE #__jfusion SET status = '.$db->Quote($status['config']).' WHERE name =' . $db->Quote($record->name));
+
+				    $query = $db->getQuery(true);
+				    $query->update('#__jfusion')
+					    ->set('status = '.$db->Quote($status['config']))
+					    ->where('name = ' . $db->Quote($record->name));
+
 				    $db->execute();
 				    //update the record status for the resExecute of the code
 				    $record->status = $status['config'];
@@ -286,20 +291,32 @@ class jfusionViewplugindisplay extends JViewLegacy {
 		JHTML::_('behavior.modal', 'a.modal');
 		if(!empty($ordering)){
 			//set a new order
-			$query = 'SELECT * from #__jfusion ORDER BY ordering ASC';
+			$query = $db->getQuery(true);
+			$query->select('*')
+				->from('#__jfusion')
+				->order('ordering ASC');
 			$db->setQuery($query );
 			$rows = $db->loadObjectList();
 			$ordering = 1;
 			foreach ($rows as $row){
-				$db->setQuery('UPDATE #__jfusion SET ordering = '.$ordering.' WHERE name = '. $db->Quote($row->name));
+				$query = $db->getQuery(true);
+				$query->update('#__jfusion')
+					->set('ordering = '.$ordering)
+					->where('name = ' . $db->Quote($row->name));
+
+				$db->setQuery($query);
 				$db->execute();
 				$ordering++;
 			}
 		}
 
 		//get the data about the JFusion plugins
-		$query = 'SELECT * from #__jfusion ORDER BY ordering ASC';
-		$db->setQuery($query );
+		$query = $db->getQuery(true);
+		$query->select('*')
+			->from('#__jfusion')
+			->order('ordering ASC');
+
+		$db->setQuery($query);
 		$rows = $db->loadObjectList();
 		$plugins = array();
 

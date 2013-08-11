@@ -106,7 +106,12 @@ jimport('joomla.html.pane');
 
 				<?php
 		        $db = JFactory::getDBO();
-		        $query = 'SELECT name , original_name from #__jfusion WHERE name = ' . $db->Quote($this->jname);
+
+				$query = $db->getQuery(true);
+				$query->select('name , original_name')
+					->from('#__jfusion')
+					->where('name = '.$db->Quote($this->jname));
+
 		        $db->setQuery($query);
 		        $plugin = $db->loadObject();
 		        if ($plugin) {

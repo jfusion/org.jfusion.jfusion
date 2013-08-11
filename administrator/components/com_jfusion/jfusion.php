@@ -23,8 +23,7 @@ if (version_compare(PHP_VERSION, '5.0.0', '<')) {
 
 //Load the language files of the plugins
 $db = JFactory::getDBO();
-$query = 'SELECT name , original_name from #__jfusion';
-$db->setQuery($query);
+$db->setQuery('SELECT name , original_name from #__jfusion');
 $plugins = $db->loadObjectList();
 $lang = JFactory::getLanguage();
 foreach ($plugins as $plugin) {

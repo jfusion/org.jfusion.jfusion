@@ -75,7 +75,11 @@ class jfusionViewconfigdump extends JViewLegacy {
 		$joomla_plugin=array();
 		$menu_item=array();
 
-		$query = 'SELECT id,name,params,dual_login,original_name from #__jfusion WHERE status = 1';
+		$query = $db->getQuery(true);
+		$query->select('id, name, params, dual_login, original_name')
+			->from('#__jfusion')
+			->where('status = 1');
+
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
 
@@ -107,7 +111,13 @@ class jfusionViewconfigdump extends JViewLegacy {
 		}
 
 		$rows = array();
-		$query = 'SELECT id,published,params,module from #__modules WHERE published = 1 AND module IN (\'mod_jfusion_login\', \'mod_jfusion_activity\', \'mod_jfusion_whosonline\', \'mod_jfusion_user_activity\');';
+
+		$query = $db->getQuery(true);
+		$query->select('id, published, params ,module')
+			->from('#__modules')
+			->where('published = 1')
+			->where('module IN (\'mod_jfusion_login\', \'mod_jfusion_activity\', \'mod_jfusion_whosonline\', \'mod_jfusion_user_activity\')');
+
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
 		foreach($rows as $row) {
@@ -408,7 +418,11 @@ class jfusionViewconfigdump extends JViewLegacy {
 
 		$server_info['Browser Information'] = $_SERVER['HTTP_USER_AGENT'];
 		//display active plugins
-		$query = 'SELECT folder, element, enabled as published from #__extensions WHERE (folder = \'authentication\' OR folder = \'user\') AND (element =\'jfusion\' OR enabled = 1)';
+		$query = $db->getQuery(true);
+		$query->select('folder, element, enabled as published')
+			->from('#__extensions')
+			->where('(folder = \'authentication\' OR folder = \'user\')')
+			->where('(element =\'jfusion\' OR enabled = 1)');
 
 		$db->setQuery($query);
 		$system_plugins = $db->loadObjectList();

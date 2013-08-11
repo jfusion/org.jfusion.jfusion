@@ -76,7 +76,12 @@ class JFusionFunctionAdmin
         //serialize the $post to allow storage in a SQL field
         $serialized = base64_encode(serialize($post));
         //set the current parameters in the jfusion table
-        $query = 'UPDATE #__jfusion SET params = ' . $db->Quote($serialized) . ' WHERE name = ' . $db->Quote($jname);
+
+	    $query = $db->getQuery(true);
+	    $query->update('#__jfusion')
+		    ->set('params = '.$db->Quote($serialized))
+		    ->where('name = ' . $db->Quote($jname));
+
         $db->setQuery($query);
 	    try {
 		    $db->execute();

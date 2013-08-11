@@ -33,7 +33,13 @@ switch($task)
 		$folder = JFactory::getApplication()->input->get('folder');
 		$element = JFactory::getApplication()->input->get('element');
 		$db = JFactory::getDBO();
-		$query = 'SELECT name from #__plugins WHERE folder = '.$db->Quote($folder) . ' AND element ='.$db->Quote($element);
+
+		$query = $db->getQuery(true);
+		$query->select('name')
+			->from('#__plugins')
+			->where('folder = '.$db->Quote($folder))
+			->where('element = '.$db->Quote($element));
+
 		$db->setQuery($query);
 		$name = $db->loadResult();
 		JToolBarHelper::title( $name. ' ' . JText::_('PLUGIN_EDITOR'), 'controlpanel.png' );

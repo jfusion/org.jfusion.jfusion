@@ -52,7 +52,12 @@ class jfusionViewversioncheck extends JViewLegacy
 		JFusionFunction::loadJavascriptLanguage( array('UPGRADE_CONFIRM_PLUGIN', 'UPGRADE_CONFIRM_BUILD', 'UPGRADE_CONFIRM_GIT', 'UPGRADE_CONFIRM_RELEASE','UPGRADE'));
 
 		$db = JFactory::getDBO();
-		$query = 'SELECT name from #__jfusion WHERE original_name IS NULL';
+
+		$query = $db->getQuery(true);
+		$query->select('name')
+			->from('#__jfusion')
+			->where('original_name IS NULL');
+
 		$db->setQuery($query);
 		$plugins = $db->loadObjectList();
 

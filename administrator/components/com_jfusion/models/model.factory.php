@@ -295,7 +295,12 @@ class JFusionFactory
         jimport('joomla.html.parameter');
         //get the current parameters from the jfusion table
         $db = JFactory::getDBO();
-        $query = 'SELECT params from #__jfusion WHERE name = ' . $db->Quote($jname);
+
+	    $query = $db->getQuery(true);
+	    $query->select('params')
+		    ->from('#__jfusion')
+		    ->where('name = '.$db->Quote($jname));
+
         $db->setQuery($query);
         $serialized = $db->loadResult();
         //get the parameters from the XML file
@@ -381,27 +386,32 @@ class JFusionFactory
     public static function getPlugins($criteria = 'both' , $joomla = false, $active = true)
     {
         static $plugins;
-        $query = 'SELECT id, name, status, dual_login FROM #__jfusion';
+	    $db = JFactory::getDBO();
+
+	    $query = $db->getQuery(true);
+	    $query->select('id, name, status, dual_login')
+		    ->from('#__jfusion');
+
         switch ($criteria) {
             case 'slave':
-                $query .= ' WHERE slave = 1';
+	            $query->where('slave = 1');
                 break;
             case 'master':
-                $query .= ' WHERE master = 1 AND status = 1';
+	            $query->where('master = 1 AND status = 1');
                 break;
 	        case 'both':
-		        $query .= ' WHERE (slave = 1 OR master = 1)';
+		        $query->where('(slave = 1 OR master = 1)');
 		        break;
         }
         $key = $criteria.'_'.$joomla.'_'.$active;
         if (!isset($plugins[$key])) {
             if (!$joomla) {
-                $query .= ' AND name NOT LIKE \'joomla_int\'';
+	            $query->where('name NOT LIKE '.$db->quote('joomla_int'));
             }
             if ($active) {
-                $query .= ' AND status = 1';
+	            $query->where('status = 1');
             }
-	        $db = JFactory::getDBO();
+
 	        $db->setQuery($query);
 	        $plugins[$key] = $db->loadObjectList();
         }

@@ -137,7 +137,12 @@ HTML;
 		$JPlugin = (!empty($params['jfusionplugin'])) ? $params['jfusionplugin'] : '';
 
 		$db = JFactory::getDBO();
-		$query = 'SELECT name as id, name as name from #__jfusion WHERE status = 1';
+
+		$query = $db->getQuery(true);
+		$query->select('name as id, name as name')
+			->from('#__jfusion')
+			->where('status = 1');
+
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
 
@@ -213,7 +218,12 @@ HTML;
 	function loadElementMulti($params, $feature)
 	{
 		$db = JFactory::getDBO();
-		$query = 'SELECT name as id, name as name from #__jfusion WHERE status = 1';
+
+		$query = $db->getQuery(true);
+		$query->select('name as id, name as name')
+			->from('#__jfusion')
+			->where('status = 1');
+
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
 

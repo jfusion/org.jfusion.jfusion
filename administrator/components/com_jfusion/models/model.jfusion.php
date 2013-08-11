@@ -38,7 +38,13 @@ class JFusionFunction
 		static $jfusion_master;
 		if (!isset($jfusion_master)) {
 			$db = JFactory::getDBO();
-			$query = 'SELECT * from #__jfusion WHERE master = 1 and status = 1';
+
+			$query = $db->getQuery(true);
+			$query->select('*')
+				->from('#__jfusion')
+				->where('master = 1')
+				->where('status = 1');
+
 			$db->setQuery($query);
 			$jfusion_master = $db->loadObject();
 		}
@@ -55,7 +61,13 @@ class JFusionFunction
 		static $jfusion_slaves;
 		if (!isset($jfusion_slaves)) {
 			$db = JFactory::getDBO();
-			$query = 'SELECT * from #__jfusion WHERE slave = 1 and status = 1';
+
+			$query = $db->getQuery(true);
+			$query->select('*')
+				->from('#__jfusion')
+				->where('slave = 1')
+				->where('status = 1');
+
 			$db->setQuery($query);
 			$jfusion_slaves = $db->loadObjectList();
 		}

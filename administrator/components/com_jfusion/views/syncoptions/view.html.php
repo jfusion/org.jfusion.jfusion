@@ -45,16 +45,16 @@ class jfusionViewsyncoptions extends JViewLegacy
 
         //find out what the JFusion master and slaves are
         $db = JFactory::getDBO();
-        $query = 'SELECT * from #__jfusion WHERE master = 1 and status = 1';
-        $db->setQuery($query);
-        $master = $db->loadObject();
-        $query = 'SELECT * from #__jfusion WHERE slave = 1 and status = 1';
-        $db->setQuery($query);
-        $slaves = $db->loadObjectList();
+	    $master = JFusionFunction::getMaster();
+	    $slaves = JFusionFunction::getSlaves();
         //were we redirected here for a sync resume?
         $syncid = JFactory::getApplication()->input->get->get('syncid', '');
         if (!empty($syncid)) {
-            $query = 'SELECT syncid FROM #__jfusion_sync WHERE syncid =' . $db->Quote($syncid);
+	        $query = $db->getQuery(true);
+	        $query->select('syncid')
+		        ->from('#__jfusion_sync')
+		        ->where('syncid = '.$db->Quote($syncid));
+
             $db->setQuery($query);
             if ($db->loadResult()) {
                 include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';

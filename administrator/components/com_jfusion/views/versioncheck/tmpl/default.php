@@ -177,7 +177,7 @@ JFusionFunctionAdmin::displayDonate();
 	                        $('<?php echo md5($component->name);?>').addEvent('click', function(e) {
 		                        e.stop();
 
-		                        JFusion.confirmSubmit('<?php echo $component->updateurl; ?>');
+		                        JFusion.confirmInstall('<?php echo $component->updateurl; ?>');
 	                        });
 	                    });
 	                    // -->
@@ -271,7 +271,7 @@ JFusionFunctionAdmin::displayDonate();
 	                        $('<?php echo md5($jfusion_plugin->id); ?>').addEvent('click', function(e) {
 		                        e.stop();
 
-		                        JFusion.confirmSubmitPlugin('<?php echo $jfusion_plugin->updateurl; ?>');
+		                        JFusion.confirmInstallPlugin('<?php echo $jfusion_plugin->updateurl; ?>');
 	                        });
 	                    });
 	                    // -->
@@ -338,11 +338,11 @@ JFusionFunctionAdmin::displayDonate();
 
 	                window.addEvent('domready',function() {
 	                    $('build').addEvent('click', function() {
-		                    JFusion.confirmSubmit('build');
+		                    JFusion.confirmInstall('build');
 	                    });
 
 	                    $('git').addEvent('click', function() {
-		                    JFusion.confirmSubmit('git');
+		                    JFusion.confirmInstall('git');
 	                    });
 	                });
 	                // -->

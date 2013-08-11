@@ -75,7 +75,12 @@ class JFusionController extends JControllerLegacy
 				    //make sure the usergroup params are available on first view
 				    $config_status = $JFusionPlugin->checkConfig();
 				    $db = JFactory::getDBO();
-				    $query = 'UPDATE #__jfusion SET status = ' . $config_status['config'] . ' WHERE name =' . $db->Quote($jname);
+
+				    $query = $db->getQuery(true);
+				    $query->update('#__jfusion')
+					    ->set('status = '.$config_status['config'])
+					    ->where('name = ' . $db->Quote($jname));
+
 				    $db->setQuery($query);
 				    $db->execute();
 			    }
@@ -104,42 +109,67 @@ class JFusionController extends JControllerLegacy
         if ($jname) {
             if ($field_name == 'master') {
                 //If a master is being set make sure all other masters are disabled first
-                $query = 'UPDATE #__jfusion SET master = 0';
+	            $query = $db->getQuery(true);
+	            $query->update('#__jfusion')
+		            ->set('master = 0');
                 $db->setQuery($query);
 	            $db->execute();
             }
             //perform the update
-            $query = 'UPDATE #__jfusion SET ' . $field_name . ' =' . $db->Quote($field_value) . ' WHERE name = ' . $db->Quote($jname);
+	        $query = $db->getQuery(true);
+	        $query->update('#__jfusion')
+		        ->set($field_name.' = '.$db->Quote($field_value))
+		        ->where('name = ' . $db->Quote($jname));
             $db->setQuery($query);
             $db->execute();
+
             //get the new plugin settings
-            $query = 'SELECT * FROM #__jfusion WHERE name = ' . $db->Quote($jname);
+	        $query = $db->getQuery(true);
+	        $query->select('*')
+		        ->from('#__jfusion')
+		        ->where('name = ' . $db->Quote($jname));
             $db->setQuery($query);
             $result = $db->loadObject();
             //disable a slave when it is turned into a master
             if ($field_name == 'master' && $field_value == '1' && $result->slave == '1') {
-                $query = 'UPDATE #__jfusion SET slave = 0 WHERE name = ' . $db->Quote($jname);
+	            $query = $db->getQuery(true);
+	            $query->update('#__jfusion')
+		            ->set('slave = 0')
+		            ->where('name = ' . $db->Quote($jname));
                 $db->setQuery($query);
                 $db->execute();
             }
             //disable a master when it is turned into a slave
             if ($field_name == 'slave' && $field_value == '1' && $result->master == '1') {
-                $query = 'UPDATE #__jfusion SET master = 0 WHERE name = ' . $db->Quote($jname);
+	            $query = $db->getQuery(true);
+	            $query->update('#__jfusion')
+		            ->set('master = 0')
+		            ->where('name = ' . $db->Quote($jname));
                 $db->setQuery($query);
                 $db->execute();
             }
             //auto enable the auth and dual login for newly enabled plugins
             if (($field_name == 'slave' || $field_name == 'master') && $field_value == '1') {
-                $query = 'SELECT dual_login FROM #__jfusion WHERE name = ' . $db->Quote($jname);
+	            $query = $db->getQuery(true);
+	            $query->select('dual_login')
+		            ->from('#__jfusion')
+		            ->where('name = ' . $db->Quote($jname));
                 $db->setQuery($query);
                 $dual_login = $db->loadResult();
                 if ($dual_login > 1) {
                     //only set the encryption if dual login is disabled
-                    $query = 'UPDATE #__jfusion SET check_encryption = 1 WHERE name = ' . $db->Quote($jname);
+	                $query = $db->getQuery(true);
+	                $query->update('#__jfusion')
+		                ->set('check_encryption = 1')
+		                ->where('name = ' . $db->Quote($jname));
                     $db->setQuery($query);
                     $db->execute();
                 } else {
-                    $query = 'UPDATE #__jfusion SET dual_login = 1, check_encryption = 1 WHERE name = ' . $db->Quote($jname);
+	                $query = $db->getQuery(true);
+	                $query->update('#__jfusion')
+		                ->set('dual_login = 1')
+		                ->set('check_encryption = 1')
+		                ->where('name = ' . $db->Quote($jname));
                     $db->setQuery($query);
                     $db->execute();
                 }
@@ -147,7 +177,11 @@ class JFusionController extends JControllerLegacy
             //auto disable the auth and dual login for newly disabled plugins
             if (($field_name == 'slave' || $field_name == 'master') && $field_value == '0') {
                 //only set the encryption if dual login is disabled
-                $query = 'UPDATE #__jfusion SET check_encryption = 0, dual_login = 0 WHERE name = ' . $db->Quote($jname);
+	            $query = $db->getQuery(true);
+	            $query->update('#__jfusion')
+		            ->set('dual_login = 0')
+		            ->set('check_encryption = 0')
+		            ->where('name = ' . $db->Quote($jname));
                 $db->setQuery($query);
                 $db->execute();
             }
@@ -207,7 +241,12 @@ class JFusionController extends JControllerLegacy
 			    $JFusionPlugin = JFusionFactory::getAdmin($jname);
 			    $config_status = $JFusionPlugin->checkConfig();
 			    $db = JFactory::getDBO();
-			    $query = 'UPDATE #__jfusion SET status = ' . $config_status['config'] . ' WHERE name =' . $db->Quote($jname);
+
+			    $query = $db->getQuery(true);
+			    $query->update('#__jfusion')
+				    ->set('status = '.$config_status['config'])
+				    ->where('name = ' . $db->Quote($jname));
+
 			    $db->setQuery($query);
 			    $db->execute();
 			    if (empty($config_status['config'])) {
@@ -245,7 +284,12 @@ class JFusionController extends JControllerLegacy
     {
         $syncid = JFactory::getApplication()->input->get->get('syncid', '');
         $db = JFactory::getDBO();
-        $query = 'SELECT syncid FROM #__jfusion_sync WHERE syncid =' . $db->Quote($syncid);
+
+	    $query = $db->getQuery(true);
+	    $query->select('syncid')
+		    ->from('#__jfusion_sync')
+		    ->where('syncid =' . $db->Quote($syncid));
+
         $db->setQuery($query);
 
 	    $syncdata = array();
@@ -348,7 +392,12 @@ class JFusionController extends JControllerLegacy
 
 	    try {
 		    $db = JFactory::getDBO();
-		    $query = 'SELECT syncid FROM #__jfusion_sync WHERE syncid =' . $db->Quote($syncid);
+
+		    $query = $db->getQuery(true);
+		    $query->select('syncid')
+			    ->from('#__jfusion_sync')
+			    ->where('syncid =' . $db->Quote($syncid));
+
 		    $db->setQuery($query);
 		    if (!$db->loadResult()) {
 			    //sync has not started, lets get going :)
@@ -450,7 +499,7 @@ class JFusionController extends JControllerLegacy
 	}
 
 	/**
-	 * uninstal language
+	 * uninstall language
 	 *
 	 * @return void
 	 */
@@ -483,11 +532,21 @@ class JFusionController extends JControllerLegacy
 	    try {
 		    //check to see if an integration was selected
 		    $db = JFactory::getDBO();
-		    $query = 'SELECT count(*) from #__jfusion WHERE original_name IS NULL && name LIKE '.$db->quote($jname);
+
+		    $query = $db->getQuery(true);
+		    $query->select('count(*)')
+			    ->from('#__jfusion')
+			    ->where('original_name IS NULL')
+		        ->where('name LIKE ' . $db->Quote($jname));
+
 		    $db->setQuery($query);
 		    $record = $db->loadResult();
 
-		    $query = 'SELECT id from #__jfusion WHERE name LIKE '.$db->quote($new_jname);
+		    $query = $db->getQuery(true);
+		    $query->select('id')
+			    ->from('#__jfusion')
+			    ->where('name = ' . $db->Quote($jname));
+
 		    $db->setQuery($query);
 		    $exsist = $db->loadResult();
 		    if ($exsist) {
@@ -547,7 +606,12 @@ class JFusionController extends JControllerLegacy
 
         //set uninstall options
         $db = JFactory::getDBO();
-        $query = 'SELECT count(*) from #__jfusion WHERE original_name LIKE '. $db->Quote($jname);
+
+	    $query = $db->getQuery(true);
+	    $query->select('count(*)')
+		    ->from('#__jfusion')
+		    ->where('original_name LIKE ' . $db->Quote($jname));
+
         $db->setQuery($query);
         $copys = $db->loadResult();
 
@@ -576,7 +640,13 @@ class JFusionController extends JControllerLegacy
     {
         //enable the JFusion login behaviour, but we wanna make sure there is at least 1 master with good config
         $db = JFactory::getDBO();
-        $query = 'SELECT count(*) from #__jfusion WHERE master = 1 and status = 1';
+
+	    $query = $db->getQuery(true);
+	    $query->select('count(*)')
+		    ->from('#__jfusion')
+		    ->where('master = 1')
+		    ->where('status = 1');
+
         $db->setQuery($query);
         if ($db->loadResult()) {
             JFusionFunctionAdmin::changePluginStatus('joomla','authentication',0);
@@ -617,12 +687,18 @@ class JFusionController extends JControllerLegacy
             JFusionFunction::raiseWarning(JText::_('NO_SYNCID_SELECTED'));
         } else {
             foreach ($syncid as $key => $value) {
-                $query = 'DELETE FROM #__jfusion_sync WHERE syncid = ' . $db->Quote($key);
+	            $query = $db->getQuery(true);
+	            $query->delete('#__jfusion_sync')
+		            ->where('syncid = ' . $db->Quote($key));
+
                 $db->setQuery($query);
                 $db->execute();
 
-                $query = 'DELETE FROM #__jfusion_sync_details WHERE syncid = ' . $db->Quote($key);
-                $db->setQuery($query);
+	            $query = $db->getQuery(true);
+	            $query->delete('#__jfusion_sync_details')
+		            ->where('syncid = ' . $db->Quote($key));
+
+	            $db->setQuery($query);
                 $db->execute();
             }
         }
@@ -711,7 +787,11 @@ JS;
         foreach($ids as $index=>$id)
         {
             if($id != '') {
-                $query = 'UPDATE #__jfusion SET ordering = ' .(int) $index .' WHERE name = ' . $db->Quote($id);
+	            $query = $db->getQuery(true);
+	            $query->update('#__jfusion')
+	                ->set('ordering = ' .(int) $index)
+		            ->where('name = ' . $db->Quote($id));
+
 	            $db->setQuery($query);
 
 	            try {
@@ -808,7 +888,12 @@ JS;
 				    $att = $info->attributes();
 				    $original_name = (string)$att['original_name'];
 				    $db = JFactory::getDBO();
-				    $query = 'SELECT name , original_name from #__jfusion WHERE name = ' . $db->Quote($jname);
+
+				    $query = $db->getQuery(true);
+				    $query->select('name , original_name')
+					    ->from('#__jfusion')
+					    ->where('name = '.$db->Quote($jname));
+
 				    $db->setQuery($query);
 				    $plugin = $db->loadObject();
 
@@ -848,7 +933,12 @@ JS;
 							    $JFusionPlugin = JFusionFactory::getAdmin($jname);
 							    $config_status = $JFusionPlugin->checkConfig();
 							    $db = JFactory::getDBO();
-							    $query = 'UPDATE #__jfusion SET status = ' . $config_status['config'] . ' WHERE name =' . $db->Quote($jname);
+
+							    $query = $db->getQuery(true);
+							    $query->update('#__jfusion')
+								    ->set('status = ' .$config_status['config'])
+								    ->where('name = ' . $db->Quote($jname));
+
 							    $db->setQuery($query);
 							    $db->execute();
 							    if (empty($config_status['config'])) {
@@ -913,7 +1003,12 @@ JS;
         $info->addAttribute  ('jname', $jname);
 
         $db = JFactory::getDBO();
-        $query = 'SELECT original_name FROM #__jfusion WHERE name =' . $db->Quote($jname);
+
+	    $query = $db->getQuery(true);
+	    $query->select('original_name')
+		    ->from('#__jfusion')
+		    ->where('name = '.$db->Quote($jname));
+
         $db->setQuery($query);
         $original_name = $db->loadResult();
 

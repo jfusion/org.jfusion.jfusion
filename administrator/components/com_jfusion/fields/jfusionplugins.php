@@ -36,7 +36,11 @@ class JFormFieldJFusionPlugins extends JFormField
     {
 	    try {
 		    $db = JFactory::getDBO();
-		    $query = 'SELECT name as id, name as name from #__jfusion';
+
+		    $query = $db->getQuery(true);
+		    $query->select('name as id, name as name')
+			    ->from('#__jfusion');
+
 		    $db->setQuery($query);
 		    $rows = $db->loadObjectList();
 		    if (!empty($rows)) {

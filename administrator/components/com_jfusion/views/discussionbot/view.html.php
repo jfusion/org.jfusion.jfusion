@@ -40,7 +40,14 @@ class jfusionViewdiscussionbot extends JViewLegacy
 		switch ($ename) {
         	case 'pair_sections' :
         		$title = JText::_('ASSIGN_SECTION_PAIRS');
-				$query = 'SELECT id, title as name FROM #__sections WHERE published = 1 AND scope = \'content\' ORDER BY title';
+
+		        $query = $db->getQuery(true);
+		        $query->select('id, title as name')
+			        ->from('#__sections')
+			        ->where('published = 1')
+			        ->where('scope = '.$db->quote('content'))
+			        ->order('title');
+
         		$db->setQuery($query);
         		$joomlaoptions = $db->loadObjectList('id');
 				break;
@@ -66,7 +73,13 @@ class jfusionViewdiscussionbot extends JViewLegacy
         	case 'pair_k2_categories':
         	    $title = JText::_('ASSIGN_K2_CATEGORY_PAIRS');
 
-    	        $query = 'SELECT id, name as title, parent FROM #__k2_categories WHERE id > 0 AND trash = 0 AND published = 1';
+		        $query = $db->getQuery(true);
+		        $query->select('id, name as title, parent')
+			        ->from('#__k2_categories')
+			        ->where('id > 0')
+			        ->where('trash = 0')
+			        ->where('published = 1');
+
 	    	    $db->setQuery($query);
     			$items = $db->loadObjectList();
         		$children = array ();

@@ -279,10 +279,20 @@ class com_jfusionInstallerScript
 			}
 		}
 		//make sure that the slave and dual_login capabilties of the joomla_ext plugin is enabled
-		$query = 'UPDATE #__jfusion SET slave = 0 WHERE name = \'joomla_ext\' AND slave = 3';
+		$query = $db->getQuery(true);
+		$query->update('#__jfusion')
+			->set('slave = 0')
+			->where('name = ' . $db->Quote('joomla_ext'))
+			->where('slave = 3');
+
 		$db->setQuery($query);
 		$db->execute();
-		$query = 'UPDATE #__jfusion SET dual_login = 0 WHERE name = \'joomla_ext\' AND dual_login = 3';
+
+		$query = $db->getQuery(true);
+		$query->update('#__jfusion')
+			->set('dual_login = 0')
+			->where('name = ' . $db->Quote('joomla_ext'))
+			->where('dual_login = 3');
 		$db->setQuery($query);
 		$db->execute();
 
@@ -415,7 +425,10 @@ class com_jfusionInstallerScript
 		//migrate from #__jfusion_forum_plugin to #__jfusion_discussion_bot
 		//check to see if #__jfusion_forum_plugin exists indicating that #__jfusion_discussion_bot has not been populated
 		if(array_search($table_prefix . 'jfusion_forum_plugin',$table_list)) {
-			$query = 'SELECT * FROM #__jfusion_forum_plugin';
+			$query = $db->getQuery(true);
+			$query->select('*')
+				->from('#__jfusion_forum_plugin');
+
 			$db->setQuery($query);
 			$results = $db->loadObjectList();
 
@@ -448,7 +461,9 @@ class com_jfusionInstallerScript
 
 			if($migrate_success) {
 				//add com_content to components column
-				$query = 'UPDATE #__jfusion_discussion_bot SET component = \'com_content\'';
+				$query = $db->getQuery(true);
+				$query->update('#__jfusion_discussion_bot')
+					->set('component = '.$db->Quote('com_content'));
 				$db->setQuery($query);
 				try {
 					$db->execute();
@@ -480,7 +495,10 @@ class com_jfusionInstallerScript
 				try {
 					$db->execute();
 
-					$query = 'UPDATE #__jfusion_discussion_bot SET component = \'com_content\'';
+					$query = $db->getQuery(true);
+					$query->update('#__jfusion_discussion_bot')
+						->set('component = '.$db->Quote('com_content'));
+
 					$db->setQuery($query);
 					$db->execute();
 				} catch (Exception $e ) {
@@ -1055,10 +1073,19 @@ HTML;
 		$query = 'SELECT status FROM #__jfusion WHERE status = 3';
 		$db->setQuery($query);
 		if ($db->loadResult()) {
-			$query = 'UPDATE #__jfusion SET status = 0 WHERE status <> 3';
+			$query = $db->getQuery(true);
+			$query->update('#__jfusion')
+				->set('status = 0')
+				->where('status <> 3');
+
 			$db->setQuery($query);
 			$db->execute();
-			$query = 'UPDATE #__jfusion SET status = 1 WHERE status = 3';
+
+			$query = $db->getQuery(true);
+			$query->update('#__jfusion')
+				->set('status = 1')
+				->where('status = 3');
+
 			$db->setQuery($query);
 			$db->execute();
 		}

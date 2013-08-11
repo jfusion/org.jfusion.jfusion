@@ -217,7 +217,12 @@ class JFusionAdmin
 
 		    //get the data about the JFusion plugins
 		    $db = JFactory::getDBO();
-		    $query = 'SELECT * from #__jfusion WHERE name = ' . $db->Quote($jname);
+
+		    $query = $db->getQuery(true);
+		    $query->select('*')
+			    ->from('#__jfusion')
+			    ->where('name = ' . $db->Quote($jname));
+
 		    $db->setQuery($query);
 		    $plugin = $db->loadObject();
 		    //output a warning to the administrator if the allowRegistration setting is wrong
@@ -345,7 +350,12 @@ class JFusionAdmin
         }
         //check to see if current plugin is a slave
         $db = JFactory::getDBO();
-        $query = 'SELECT slave FROM #__jfusion WHERE name = ' . $db->Quote($jname);
+
+	    $query = $db->getQuery(true);
+	    $query->select('slave')
+		    ->from('#__jfusion')
+		    ->where('name = '.$db->Quote($jname));
+
         $db->setQuery($query);
         $slave = $db->loadResult();
         $list_box = '<select onchange="JFusion.Plugin.usergroupSelect(this.selectedIndex);">';
@@ -456,7 +466,12 @@ JS;
 
         //check to see if current plugin is a slave
         $db = JFactory::getDBO();
-        $query = 'SELECT slave FROM #__jfusion WHERE name = ' . $db->Quote($jname);
+
+	    $query = $db->getQuery(true);
+	    $query->select('slave')
+		    ->from('#__jfusion')
+		    ->where('name = '.$db->Quote($jname));
+	    
         $db->setQuery($query);
         $slave = $db->loadResult();
         $list_box = '<select onchange="JFusion.Plugin.multiUsergroupSelect(this.selectedIndex);">';
