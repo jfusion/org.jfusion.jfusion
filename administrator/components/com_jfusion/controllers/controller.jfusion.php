@@ -776,7 +776,8 @@ JS;
 			    if (!$info || !$config) {
 				    throw new RuntimeException(JText::_('ERROR_FILE_SYNTAX').': '.$file['type']);
 			    } else {
-				    $original_name = (string)$info->attributes('original_name');
+				    $att = $info->attributes();
+				    $original_name = (string)$att['original_name'];
 				    $db = JFactory::getDBO();
 				    $query = 'SELECT name , original_name from #__jfusion WHERE name = ' . $db->Quote($jname);
 				    $db->setQuery($query);
@@ -791,7 +792,8 @@ JS;
 						     * @var $val SimpleXMLElement
 						     */
 						    foreach ($config as $key => $val) {
-							    $attName = (string)$val->attributes('name');
+							    $att = $val->attributes();
+							    $attName = (string)$att['name'];
 							    $conf[$attName] = htmlspecialchars_decode((string)$val);
 							    if ( strpos($conf[$attName], 'a:') === 0 ) $conf[$attName] = unserialize($conf[$attName]);
 						    }

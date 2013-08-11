@@ -42,6 +42,8 @@ class jfusionViewplugindisplay extends JViewLegacy {
      */
     function display($tpl = null)
     {
+	    //load mootools
+	    JHtml::_('behavior.framework', true);
 	    $plugins = $this->getPlugins();
         if (!empty($plugins)) {
             //we found plugins now prepare the data

@@ -6,17 +6,30 @@ JFusion.version = 'unknown';
 
 JFusion.confirmSubmitPlugin = function (url)
 {
-    var r = false;
-    var confirmtext = JFusion.JText('UPGRADE_CONFIRM_PLUGIN') + ' ' + url;
+    var confirmBox = new Element('div');
+    confirmBox.appendChild(new Element('div', {
+        'html': JFusion.JText('UPGRADE_CONFIRM_PLUGIN') + ' ' + url
+    }));
 
-    var agree = confirm(confirmtext);
-    if (agree) {
-        var installPLUGIN = $('installPLUGIN');
-        installPLUGIN.installPLUGIN_url.value = url;
-        installPLUGIN.submit();
-        r = true;
-    }
-    return r;
+    confirmBox.appendChild(new Element('button', {
+        'class': 'btn btn-small',
+        'html': JFusion.JText('UPGRADE'),
+        'style': 'float: right;',
+        'events': {
+            'click': function () {
+                var installPLUGIN = $('installPLUGIN');
+                installPLUGIN.installPLUGIN_url.value = url;
+                installPLUGIN.submit();
+                SqueezeBox.close();
+            }
+        }
+    }));
+    SqueezeBox.open(confirmBox, {
+        handler : 'adopt',
+        overlayOpacity : 0.7,
+        size: {x: 320,
+            y: 120}
+    });
 };
 
 JFusion.confirmSubmit = function (action)
@@ -35,11 +48,27 @@ JFusion.confirmSubmit = function (action)
         installurl = action;
     }
 
-    var agree = confirm(confirmtext);
-    if (agree) {
-        install.install_url.value = installurl;
-        install.submit();
-        r = true;
-    }
-    return r;
+    var confirmBox = new Element('div');
+    confirmBox.appendChild(new Element('div', {
+        'html': confirmtext
+    }));
+
+    confirmBox.appendChild(new Element('button', {
+        'class': 'btn btn-small',
+        'html': JFusion.JText('UPGRADE'),
+        'style': 'float: right;',
+        'events': {
+            'click': function () {
+                install.install_url.value = installurl;
+                install.submit();
+                SqueezeBox.close();
+            }
+        }
+    }));
+    SqueezeBox.open(confirmBox, {
+        handler : 'adopt',
+        overlayOpacity : 0.7,
+        size: {x: 320,
+            y: 120}
+    });
 };

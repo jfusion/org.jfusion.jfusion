@@ -174,7 +174,7 @@ JFusionFunctionAdmin::displayDonate();
 	                <script type="text/javascript">
 	                    <!--
 	                    window.addEvent('domready',function() {
-	                        $('<?php echo $component->name ;?>').addEvent('click', function(e) {
+	                        $('<?php echo md5($component->name);?>').addEvent('click', function(e) {
 		                        e.stop();
 
 		                        JFusion.confirmSubmit('<?php echo $component->updateurl; ?>');
@@ -183,7 +183,7 @@ JFusionFunctionAdmin::displayDonate();
 	                    // -->
 	                </script>
 
-	                <a id="<?php echo $component->name ?>" href="<?php echo $component->updateurl; ?>"><?php echo JText::_('UPDATE') ;?></a> / <a href="<?php echo $component->updateurl; ?>"><?php echo JText::_('DOWNLOAD') ;?></a>
+	                <a id="<?php echo md5($component->name); ?>" href="<?php echo $component->updateurl; ?>"><?php echo JText::_('UPDATE') ;?></a> / <a href="<?php echo $component->updateurl; ?>"><?php echo JText::_('DOWNLOAD') ;?></a>
 
 	                <?php
 	            }
@@ -268,7 +268,7 @@ JFusionFunctionAdmin::displayDonate();
 	                <script type="text/javascript">
 	                    <!--
 	                    window.addEvent('domready',function() {
-	                        $('<?php echo $jfusion_plugin->id ?>').addEvent('click', function(e) {
+	                        $('<?php echo md5($jfusion_plugin->id); ?>').addEvent('click', function(e) {
 		                        e.stop();
 
 		                        JFusion.confirmSubmitPlugin('<?php echo $jfusion_plugin->updateurl; ?>');
@@ -277,7 +277,7 @@ JFusionFunctionAdmin::displayDonate();
 	                    // -->
 	                </script>
 
-	                <a id="<?php echo $jfusion_plugin->id ?>" href="<?php echo $jfusion_plugin->updateurl; ?>"><?php echo JText::_('UPDATE') ;?></a> / <a href="<?php echo $jfusion_plugin->updateurl; ?>"><?php echo JText::_('DOWNLOAD') ;?></a>
+	                <a id="<?php echo md5($jfusion_plugin->id); ?>" href="<?php echo $jfusion_plugin->updateurl; ?>"><?php echo JText::_('UPDATE') ;?></a> / <a href="<?php echo $jfusion_plugin->updateurl; ?>"><?php echo JText::_('DOWNLOAD') ;?></a>
 	                <?php
 	            }
 	            ?>

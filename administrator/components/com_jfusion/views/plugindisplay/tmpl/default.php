@@ -12,9 +12,6 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 JFusionFunctionAdmin::displayDonate();
-
-//load mootools
-JHtml::_('behavior.framework', true);
 $images = 'components/com_jfusion/images/';
 ?>
 <script type="text/javascript">

@@ -42,9 +42,12 @@ class jfusionViewlanguages extends JViewLegacy
         //get the jfusion news
         ob_start();
 
+	    JHTML::_('behavior.modal', 'a.modal');
+	    JHtml::_('behavior.framework', true);
+
 	    $document = JFactory::getDocument();
 	    $document->addScript('components/com_jfusion/views/'.$this->getName().'/tmpl/default.js');
-	    JFusionFunction::loadJavascriptLanguage(array('INSTALL_UPGRADE_LANGUAGE_PACKAGE'));
+	    JFusionFunction::loadJavascriptLanguage(array('INSTALL_UPGRADE_LANGUAGE_PACKAGE','INSTALL'));
 
 	    jimport('joomla.version');
 	    $jversion = new JVersion();
@@ -55,13 +58,13 @@ class jfusionViewlanguages extends JViewLegacy
         if ($xml) {
 	        if ($xml->languages) {
 		        $languages = $xml->languages->children();
+
 		        /**
 		         * @ignore
 		         * @var $language SimpleXMLElement
 		         */
-		        foreach ($languages as $language) {
-			        $name = $language->attributes('tag');
-
+		        foreach ($languages as $key => $language) {
+			        $att = $language->attributes();
 			        $lang = new stdClass;
 			        $lang->file = (string)$language->remotefile;
 			        $lang->date = (string)$language->creationdate;
@@ -71,7 +74,7 @@ class jfusionViewlanguages extends JViewLegacy
 			        $lang->currentdate = null;
 			        $lang->class = 'row';
 
-			        $lang_repo[(string) $name] = $lang;
+			        $lang_repo[(string)$att['tag']] = $lang;
 		        }
 	        }
         }

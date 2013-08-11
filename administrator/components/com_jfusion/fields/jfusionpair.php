@@ -54,8 +54,8 @@ class JFormFieldJFusionPair extends JFormField
 
 		$att = $this->element->attributes();
 
-		$col1 = isset($att['col1']) ? JText::_($att['col1']) : JText::_('NAME');
-		$col2 = isset($att['col2']) ? JText::_($att['col2']) : JText::_('VALUE');
+		$col1 = isset($att['col1']) ? JText::_((string)$att['col1']) : JText::_('NAME');
+		$col2 = isset($att['col2']) ? JText::_((string)$att['col2']) : JText::_('VALUE');
 
 		$js = '';
 		$values = '';
