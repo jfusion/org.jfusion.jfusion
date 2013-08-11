@@ -139,6 +139,10 @@ JFusion.submitForm = function (type) {
     }).post($('install'+type).toQueryString());
 };
 
+JFusion.downloadPlugin = function () {
+    window.location = $('install_url2').getSelected().get('value');
+};
+
 JFusion.updateList = function (html) {
     var list = $('sort_table');
     list.empty();

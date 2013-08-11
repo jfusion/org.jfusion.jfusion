@@ -176,7 +176,8 @@ $images = 'components/com_jfusion/images/';
 										<option value="<?php echo (string)$plugin->remotefile; ?>"><?php echo $plugin->getName() . ' - ' . (string)$plugin->description; ?></option>
 									<?php endforeach; ?>
 								</select>
-								<input type="submit" name="button" id="submitter" />
+								<input class="btn" type="submit" value="<?php echo JText::_('INSTALL'); ?>"/>
+								<a class="btn" href="javascript:JFusion.downloadPlugin();"><?php echo JText::_('DOWNLOAD'); ?></a>
 								<div id="spinnerGIT">
 								</div>
 							</td>
@@ -201,9 +202,7 @@ $images = 'components/com_jfusion/images/';
 					</tr>
 					<tr>
 						<td width="120">
-							<label for="install_url2">
-								<?php echo JText::_('PLUGIN') . ' ' . JText::_('NAME'); ?> :
-							</label>
+							<?php echo JText::_('PLUGIN') . ' ' . JText::_('NAME'); ?> :
 						</td>
 						<td>
 							<?php echo JText::_('ERROR_LOADING_REMOTE_PLUGIN_DATA_FROM_JFUSION_SERVER'); ?>
@@ -239,7 +238,7 @@ $images = 'components/com_jfusion/images/';
 						</td>
 						<td>
 							<input class="input_box" id="install_package" name="install_package" type="file" size="57" />
-							<input type="submit" value="<?php echo JText::_('UPLOAD_FILE'); ?> &amp; <?php echo JText::_('INSTALL'); ?>"/>
+							<input class="btn" type="submit" value="<?php echo JText::_('UPLOAD_FILE'); ?> &amp; <?php echo JText::_('INSTALL'); ?>"/>
 							<div id="spinnerZIP">
 							</div>
 						</td>
@@ -273,7 +272,7 @@ $images = 'components/com_jfusion/images/';
 						</td>
 						<td>
 							<input type="text" id="install_directory" name="install_directory" class="input_box" size="150" value="" />
-							<input type="submit" value="<?php echo JText::_('INSTALL'); ?>"/>
+							<input class="btn" type="submit" value="<?php echo JText::_('INSTALL'); ?>"/>
 							<div id="spinnerDIR">
 							</div>
 						</td>
@@ -308,7 +307,7 @@ $images = 'components/com_jfusion/images/';
 						</td>
 						<td>
 							<input type="text" id="install_url" name="install_url" class="input_box" size="150" value="http://" />
-							<input type="submit" value="<?php echo JText::_('INSTALL'); ?>"/>
+							<input class="btn" type="submit" value="<?php echo JText::_('INSTALL'); ?>"/>
 							<div id="spinnerURL">
 							</div>
 						</td>
