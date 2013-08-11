@@ -47,7 +47,7 @@ $images = 'components/com_jfusion/images/';
 				data: {
 					option: 'com_jfusion',
 					task : 'installplugin',
-					installtype : 'upload'} ,
+					installtype : 'upload'},
 				images: ['install_package'],
 				onComplete: function (result) {
 					$('spinnerZIP').set('html','');
@@ -60,7 +60,7 @@ $images = 'components/com_jfusion/images/';
 						JFusion.OnError(result);
 					}
 				},
-				onException:  function (result) {
+				onException:  function () {
 					$('installZIP').submit();
 				}
 			});

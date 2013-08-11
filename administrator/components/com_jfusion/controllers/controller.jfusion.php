@@ -301,11 +301,11 @@ class JFusionController extends JControllerLegacy
      */
     function resolvesyncerror()
     {
+	    $syncid = JFactory::getApplication()->input->post->get('syncid', '');
 	    try {
 		    //Load usersync library
 		    include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
 		    $syncError = JFactory::getApplication()->input->post->get('syncError', array(), 'array');
-		    $syncid = JFactory::getApplication()->input->post->get('syncid', '');
 		    if ($syncError) {
 			    //apply the submitted sync error instructions
 			    JFusionUsersync::syncError($syncid, $syncError);

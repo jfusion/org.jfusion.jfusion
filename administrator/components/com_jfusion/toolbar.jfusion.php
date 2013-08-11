@@ -54,6 +54,9 @@ switch($task)
 		JToolBarHelper::title( JText::_('USERSYNC'), 'usersync.png' );
 		JToolBarHelper::cancel('cpanel');
 		break;
+	case 'syncerror':
+		JToolBarHelper::cancel('synchistory');
+		break;
 	case 'syncstatus':
 		JToolBarHelper::title( JText::_('SYNCSTATUS'), 'syncstatus.png' );
 		JToolBarHelper::cancel('synchistory');
