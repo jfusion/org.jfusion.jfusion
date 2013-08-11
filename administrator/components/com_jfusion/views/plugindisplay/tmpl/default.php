@@ -17,9 +17,9 @@ $images = 'components/com_jfusion/images/';
 <script type="text/javascript">
 	//<![CDATA[
 	window.addEvent('domready',function() {
-		$('installGIT').addEvent('submit', function(e) {
+		$('installSERVER').addEvent('submit', function(e) {
 			e.stop();
-			JFusion.submitForm('GIT');
+			JFusion.submitForm('installSERVER');
 		});
 
 		$('installDIR').addEvent('submit', function(e) {
@@ -142,7 +142,7 @@ $images = 'components/com_jfusion/images/';
 <?php if($this->VersionData) {
 	//display installer data ?>
 
-	<form id="installGIT" method="post" action="./index.php" enctype="multipart/form-data">
+	<form id="installSERVER" method="post" action="./index.php" enctype="multipart/form-data">
 		<input type="hidden" name="option" value="com_jfusion" />
 		<input type="hidden" name="task" value="installplugin" />
 		<input type="hidden" name="installtype" value="url" />
@@ -161,12 +161,12 @@ $images = 'components/com_jfusion/images/';
 						</tr>
 						<tr>
 							<td width="120">
-								<label for="install_url2">
+								<label for="server_install_url">
 									<?php echo JText::_('PLUGIN') . ' ' . JText::_('NAME'); ?> :
 								</label>
 							</td>
 							<td>
-								<select name="install_url" id="install_url2" style="width: auto;">
+								<select name="install_url" id="server_install_url" style="width: auto;">
 									<?php
 									/**
 									 * @ignore
@@ -178,7 +178,7 @@ $images = 'components/com_jfusion/images/';
 								</select>
 								<input class="btn" type="submit" value="<?php echo JText::_('INSTALL'); ?>"/>
 								<a class="btn" href="javascript:JFusion.downloadPlugin();"><?php echo JText::_('DOWNLOAD'); ?></a>
-								<div id="spinnerGIT">
+								<div id="spinnerSERVER">
 								</div>
 							</td>
 						</tr>

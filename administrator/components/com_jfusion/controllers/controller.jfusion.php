@@ -433,18 +433,41 @@ class JFusionController extends JControllerLegacy
         }
     }
 
-    function installplugins()
-    {
-        $jfusionplugins = JFactory::getApplication()->input->post->get('jfusionplugins', array(), 'array');
-        include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.install.php';
-        foreach ($jfusionplugins as $plugin) {
-            //install updates
-            $packagename = JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'packages' . DIRECTORY_SEPARATOR . 'jfusion_' . $plugin . '.zip';
-            $model = new JFusionModelInstaller();
-            $result = $model->installZIP($packagename);
-        }
-        $this->setRedirect('index.php?option=com_jfusion&task=plugindisplay');
-    }
+	/**
+	 * install language
+	 *
+	 * @return void
+	 */
+	function installlanguage()
+	{
+		$lang = JFactory::getLanguage();
+		$lang->load('com_installer');
+		require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_installer' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'install.php';
+		$installer = JModelLegacy::getInstance('Install', 'InstallerModel');
+
+		$installer->install();
+		$this->setRedirect('index.php?option=com_jfusion&task=languages');
+	}
+
+	/**
+	 * uninstal language
+	 *
+	 * @return void
+	 */
+	function uninstallanguage()
+	{
+		$lang = JFactory::getLanguage();
+		$lang->load('com_installer');
+
+		require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_installer' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'manage.php';
+		$manager = JModelLegacy::getInstance('Manage', 'InstallerModel');
+
+		$eid = JFactory::getApplication()->input->getInt('eid', 0);
+		if ($eid) {
+			$manager->remove(array($eid));
+		}
+		$this->setRedirect('index.php?option=com_jfusion&task=languages');
+	}
 
     function plugincopy()
     {
@@ -463,7 +486,13 @@ class JFusionController extends JControllerLegacy
 		    $query = 'SELECT count(*) from #__jfusion WHERE original_name IS NULL && name LIKE '.$db->quote($jname);
 		    $db->setQuery($query);
 		    $record = $db->loadResult();
-		    if ($jname && $new_jname && $record) {
+
+		    $query = 'SELECT id from #__jfusion WHERE name LIKE '.$db->quote($new_jname);
+		    $db->setQuery($query);
+		    $exsist = $db->loadResult();
+		    if ($exsist) {
+			    throw new RuntimeException($new_jname. ' '. JText::_('ALREADY_IN_USE'));
+		    } else if ($jname && $new_jname && $record) {
 			    $JFusionPlugin = JFusionFactory::getAdmin($jname);
 			    if ($JFusionPlugin->multiInstance()) {
 				    include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.install.php';

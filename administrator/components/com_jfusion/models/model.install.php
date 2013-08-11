@@ -219,14 +219,7 @@ class JFusionModelInstaller extends InstallerModelInstall
         } else {
             $installer = new JfusionPluginInstaller($this);
             // Install the package
-            if (!$installer->copy($jname, $new_jname, $update)) {
-                // There was an error installing the package
-	            $result['message'] = $this->raise('error', 'JFusion ' . JText::_('PLUGIN') . ' ' . JText::_('COPY') . ' ' . JText::_('FAILED'), $new_jname);
-            } else {
-                // Package installed successfully
-	            $result['message'] = $this->raise('message', 'JFusion ' . JText::_('PLUGIN') . ' ' . JText::_('COPY') . ' ' . JText::_('SUCCESS'), $new_jname);
-                $result['status'] = true;
-            }
+	        $result = $installer->copy($jname, $new_jname, $update);
         }
         return $result;
     }
@@ -688,7 +681,7 @@ class JFusionPluginInstaller extends JObject
 		                return $result;
 	                }
                 }
-	            $result['message'] = $this->module->raise('message', JText::_('PLUGIN') . ' ' .$jname .' ' . JText::_('COPY') . ': ' . JText::_('SUCCESS'), $new_jname);
+	            $result['message'] = $this->module->raise('message', JText::_('PLUGIN') . ' ' .$jname .' ' . JText::_('COPY') . ' ' . JText::_('SUCCESS'), $new_jname);
                 $result['status'] = true;
             }
         }

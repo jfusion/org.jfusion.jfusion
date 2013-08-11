@@ -53,6 +53,69 @@ JFusion.OnMessage = function (type, messages) {
     }
 };
 
+JFusion.confirm = function (message, button, fn) {
+    var confirmBox = new Element('div',{ 'style': 'height: 100%;'});
+    confirmBox.appendChild(new Element('div', {
+        'style': 'min-height: 100px;',
+        'html': message
+    }));
+
+    confirmBox.appendChild(new Element('button', {
+        'class': 'btn btn-small',
+        'html': button,
+        'style': 'float: right; vertical-align: bottom;',
+        'events': {
+            'click': function () {
+                if (fn) {
+                    fn();
+                }
+                SqueezeBox.close();
+            }
+        }
+    }));
+    SqueezeBox.open(confirmBox, {
+        handler : 'adopt',
+        overlayOpacity : 0.7,
+        size: {x: 320,
+            y: 'auto'}
+    });
+};
+
+JFusion.prompt = function (message, button, fn) {
+    var messageBox = new Element('div', { 'style': 'height: 100%;'});
+    messageBox.appendChild(new Element('div', {
+        'html': message
+    }));
+
+    var inputDiv = new Element('div');
+    inputDiv.appendChild(new Element('input', {
+        'id': 'jfusionprompt',
+        'name': 'jfusionprompt',
+        'type': 'text',
+        'style': 'width: 300px'
+    }));
+    messageBox.appendChild(inputDiv);
+    messageBox.appendChild(new Element('button', {
+        'class': 'btn btn-small',
+        'html': button,
+        'style': 'float: right;',
+        'events': {
+            'click': function () {
+                var input = $('jfusionprompt');
+                var newjname = input.get('value');
+                fn(newjname);
+                SqueezeBox.close();
+            }
+        }
+    }));
+    SqueezeBox.open(messageBox, {
+        handler : 'adopt',
+        overlayOpacity : 0.7,
+        size: {x: 320,
+            y: 'auto'}
+    });
+};
+
 JFusion.submitParams = function (name, value, title) {
     var id, save, n;
     id = $(name + '_id');
@@ -134,11 +197,10 @@ JFusion.closeAdopt = function () {
     $(this.options.target).inject($(this.options.returnTo));
 };
 
+
 /**
  * Joomla stuff
  */
-
-
 Joomla.submitbutton = function (pressbutton) {
     var adminForm = $('adminForm');
     if (pressbutton === 'applyconfig') {

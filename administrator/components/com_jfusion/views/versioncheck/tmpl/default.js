@@ -6,36 +6,16 @@ JFusion.version = 'unknown';
 
 JFusion.confirmSubmitPlugin = function (url)
 {
-    var confirmBox = new Element('div');
-    confirmBox.appendChild(new Element('div', {
-        'html': JFusion.JText('UPGRADE_CONFIRM_PLUGIN') + ' ' + url
-    }));
-
-    confirmBox.appendChild(new Element('button', {
-        'class': 'btn btn-small',
-        'html': JFusion.JText('UPGRADE'),
-        'style': 'float: right;',
-        'events': {
-            'click': function () {
-                var installPLUGIN = $('installPLUGIN');
-                installPLUGIN.installPLUGIN_url.value = url;
-                installPLUGIN.submit();
-                SqueezeBox.close();
-            }
-        }
-    }));
-    SqueezeBox.open(confirmBox, {
-        handler : 'adopt',
-        overlayOpacity : 0.7,
-        size: {x: 320,
-            y: 120}
+    JFusion.confirm(JFusion.JText('UPGRADE_CONFIRM_PLUGIN') + ' ' + url, JFusion.JText('UPGRADE'), function () {
+        var installPLUGIN = $('installPLUGIN');
+        installPLUGIN.installPLUGIN_url.value = url;
+        installPLUGIN.submit();
     });
 };
 
 JFusion.confirmSubmit = function (action)
 {
-    var r = false;
-    var installurl,confirmtext;
+    var installurl, confirmtext;
     var install = $('install');
     if (action === 'build') {
         confirmtext = JFusion.JText('UPGRADE_CONFIRM_BUILD');
@@ -48,27 +28,8 @@ JFusion.confirmSubmit = function (action)
         installurl = action;
     }
 
-    var confirmBox = new Element('div');
-    confirmBox.appendChild(new Element('div', {
-        'html': confirmtext
-    }));
-
-    confirmBox.appendChild(new Element('button', {
-        'class': 'btn btn-small',
-        'html': JFusion.JText('UPGRADE'),
-        'style': 'float: right;',
-        'events': {
-            'click': function () {
-                install.install_url.value = installurl;
-                install.submit();
-                SqueezeBox.close();
-            }
-        }
-    }));
-    SqueezeBox.open(confirmBox, {
-        handler : 'adopt',
-        overlayOpacity : 0.7,
-        size: {x: 320,
-            y: 120}
+    JFusion.confirm(confirmtext, JFusion.JText('UPGRADE'), function () {
+        install.install_url.value = installurl;
+        install.submit();
     });
 };

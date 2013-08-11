@@ -72,6 +72,7 @@ class jfusionViewlanguages extends JViewLegacy
 			        $lang->progress = (string)$language->progress;
 			        $lang->translateurl = (string)$language->translateurl;
 			        $lang->currentdate = null;
+			        $lang->extension_id = null;
 			        $lang->class = 'row';
 
 			        $lang_repo[(string)$att['tag']] = $lang;
@@ -80,7 +81,7 @@ class jfusionViewlanguages extends JViewLegacy
         }
 
 	    $db = JFactory::getDBO();
-	    $query = 'SELECT element, manifest_cache FROM #__extensions WHERE name LIKE \'jfusion %\' AND type LIKE \'file\' AND client_id = 0';
+	    $query = 'SELECT element, manifest_cache, extension_id FROM #__extensions WHERE name LIKE \'jfusion %\' AND type LIKE \'file\' AND client_id = 0';
 	    $db->setQuery($query);
 	    $results = $db->loadObjectList();
 
@@ -89,6 +90,7 @@ class jfusionViewlanguages extends JViewLegacy
 			    if (isset($lang_repo[$result->element])) {
 				    $cache = json_decode($result->manifest_cache);
 				    $lang_repo[$result->element]->currentdate = $cache->creationDate;
+				    $lang_repo[$result->element]->extension_id = $result->extension_id;
 
 				    if ( $lang_repo[$result->element]->currentdate == $lang_repo[$result->element]->date ) {
 					    $lang_repo[$result->element]->class = 'good';

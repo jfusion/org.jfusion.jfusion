@@ -27,96 +27,50 @@ JFusion.changeSetting = function (fieldname, fieldvalue, jname) {
 };
 
 JFusion.copyPlugin = function (jname) {
-    var messageBox = new Element('div');
-    messageBox.appendChild(new Element('div', {
-        'html': JFusion.JText('COPY_MESSAGE')
-    }));
+    JFusion.prompt(JFusion.JText('COPY_MESSAGE'), JFusion.JText('COPY'), function (value) {
+        if (value) {
+            // this code will send a data object via a GET request and alert the retrieved data.
+            new Request.JSON({
+                url: JFusion.url,
+                noCache: true,
+                onSuccess: function (JSONobject) {
+                    JFusion.OnMessages(JSONobject.messages);
 
-    var inputDiv = new Element('div');
-    inputDiv.appendChild(new Element('input', {
-        'id': 'plugincopyname',
-        'name': 'plugincopyname',
-        'type': 'text',
-        'width': 300
-    }));
-    messageBox.appendChild(inputDiv);
-    messageBox.appendChild(new Element('button', {
-        'class': 'btn btn-small',
-        'html': JFusion.JText('COPY'),
-        'style': 'float: right;',
-        'events': {
-            'click': function () {
-                var input = $('plugincopyname');
-                var newjname = input.get('value');
-                if (newjname) {
-                    // this code will send a data object via a GET request and alert the retrieved data.
-                    new Request.JSON({
-                        url: JFusion.url,
-                        noCache: true,
-                        onSuccess: function (JSONobject) {
-                            JFusion.OnMessages(JSONobject.messages);
-
-                            JFusion.updateList(JSONobject.pluginlist);
-                        },
-                        onError: function (JSONobject) {
-                            JFusion.OnError(JSONobject);
-                        }
-                    }).get({'option': 'com_jfusion',
-                            'task': 'plugincopy',
-                            'jname': jname,
-                            'new_jname': newjname});
-                    SqueezeBox.close();
+                    JFusion.updateList(JSONobject.pluginlist);
+                },
+                onError: function (JSONobject) {
+                    JFusion.OnError(JSONobject);
                 }
-            }
+            }).get({'option': 'com_jfusion',
+                    'task': 'plugincopy',
+                    'jname': jname,
+                    'new_jname': value});
+            SqueezeBox.close();
         }
-    }));
-    SqueezeBox.open(messageBox, {
-        handler : 'adopt',
-        overlayOpacity : 0.7,
-        size: {x: 320,
-            y: 120}
     });
 };
 
 JFusion.deletePlugin = function (jname) {
-    var confirmBox = new Element('div');
-    confirmBox.appendChild(new Element('div', {
-        'html': JFusion.JText('DELETE') + ' ' + JFusion.JText('PLUGIN') + ' ' + jname + '?'
-    }));
 
-    confirmBox.appendChild(new Element('button', {
-        'class': 'btn btn-small',
-        'html': JFusion.JText('DELETE'),
-        'style': 'float: right;',
-        'events': {
-            'click': function () {
-                // this code will send a data object via a GET request and alert the retrieved data.
-                new Request.JSON({
-                    url: JFusion.url,
-                    noCache: true,
-                    onSuccess: function (JSONobject) {
-                        JFusion.OnMessages(JSONobject.messages);
-                        if (JSONobject.status ===  true) {
-                            var el = $(JSONobject.jname);
-                            el.parentNode.removeChild(el);
-                        }
-                    },
-                    onError: function (JSONobject) {
-                        JFusion.OnError(JSONobject);
-                    }
-                }).get({'option': 'com_jfusion',
-                        'task': 'uninstallplugin',
-                        'jname': jname,
-                        'tmpl': 'component'});
-                SqueezeBox.close();
+    JFusion.confirm(JFusion.JText('DELETE') + ' ' + JFusion.JText('PLUGIN') + ' ' + jname + '?', JFusion.JText('DELETE'), function () {
+        // this code will send a data object via a GET request and alert the retrieved data.
+        new Request.JSON({
+            url: JFusion.url,
+            noCache: true,
+            onSuccess: function (JSONobject) {
+                JFusion.OnMessages(JSONobject.messages);
+                if (JSONobject.status ===  true) {
+                    var el = $(JSONobject.jname);
+                    el.parentNode.removeChild(el);
+                }
+            },
+            onError: function (JSONobject) {
+                JFusion.OnError(JSONobject);
             }
-        }
-    }));
-    SqueezeBox.open(confirmBox, {
-        handler : 'adopt',
-        overlayOpacity : 0.7,
-        size: {x: 320,
-            y: 120}
+        }).get({'option': 'com_jfusion',
+                'task': 'uninstallplugin',
+                'jname': jname,
+                'tmpl': 'component'});
     });
 };
 
@@ -140,7 +94,7 @@ JFusion.submitForm = function (type) {
 };
 
 JFusion.downloadPlugin = function () {
-    window.location = $('install_url2').getSelected().get('value');
+    window.location = $('server_install_url').getSelected().get('value');
 };
 
 JFusion.updateList = function (html) {

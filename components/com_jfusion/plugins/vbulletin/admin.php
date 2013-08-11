@@ -285,26 +285,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
                 var h = (hook == 'frameless' || hook == 'redirect');
                 var i = (itemid.get('value') === '' || itemid.get('value') == '0');
                 if (a && h && i) {
-                    var messageBox = new Element('div');
-				    messageBox.appendChild(new Element('div', {
-				        'html': JFusion.JText('VB_REDIRECT_ITEMID_EMPTY')
-				    }));
-				    messageBox.appendChild(new Element('button', {
-				        'class': 'btn btn-small',
-				        'html': JFusion.JText('OK'),
-				        'style': 'float: right;',
-				        'events': {
-				            'click': function () {
-				            	SqueezeBox.close();
-				            }
-				        }
-				    }));
-				    SqueezeBox.open(messageBox, {
-				        handler : 'adopt',
-				        overlayOpacity : 0.7,
-				        size: {x: 320,
-				            y: 120}
-				    });
+                	JFusion.confirm(JFusion.JText('VB_REDIRECT_ITEMID_EMPTY'), JFusion.JText('OK'));
                 } else {
                     form.customcommand.set('value', 'toggleHook');
                     $('params_hook_name').set('value', hook);
