@@ -83,7 +83,14 @@ class JFusionDiscussBotHelper {
 		if (isset($this->article->id)) {
 			if (!isset($this->threadinfo[$this->article->id]) || $update) {
 				$db = JFactory::getDBO();
-				$query = 'SELECT * FROM #__jfusion_discussion_bot WHERE contentid = \''.$this->article->id.'\' AND jname = \''.$this->jname.'\' AND component = '.$db->Quote($this->option);
+
+				$query = $db->getQuery(true)
+					->select('*')
+					->from('#__jfusion_discussion_bot')
+					->where('contentid = '.$db->Quote($this->article->id))
+					->where('jname = '.$db->Quote($this->jname))
+					->where('component = '.$db->Quote($this->option));
+
 				$db->setQuery($query);
 				$threadinfo = $this->setThreadInfo($db->loadObject());
 			} else {
@@ -457,7 +464,11 @@ class JFusionDiscussBotHelper {
 														break;
 													} else {
 														//get the parent's parent
-														$query = 'SELECT parent FROM #__k2_categories WHERE id = '.$parent_id;
+														$query = $db->getQuery(true)
+															->select('parent')
+															->from('#__k2_categories')
+															->where('id = '.$db->Quote($parent_id));
+
 														$db->setQuery($query);
 														//keep going up
 														$parent_id = $db->loadResult();
@@ -485,7 +496,10 @@ class JFusionDiscussBotHelper {
 														break;
 													} else {
 														//get the parent's parent
-														$query = 'SELECT parent FROM #__k2_categories WHERE id = '.$parent_id;
+														$query = $db->getQuery(true)
+															->select('parent')
+															->from('#__k2_categories')
+															->where('id = '.$db->Quote($parent_id));
 														$parent_id = $db->setQuery($query);
 													}
 												} else {

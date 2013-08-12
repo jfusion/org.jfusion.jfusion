@@ -166,13 +166,15 @@ class JFusionUser_joomla_int extends JFusionUser {
 				        // Update the user related fields for the Joomla sessions table.
 				        try {
 					        $db = JFactory::getDBO();
-					        $db->setQuery(
-						        'UPDATE `#__session`' .
-						        ' SET `guest` = '.$db->quote($instance->get('guest')).',' .
-						        '	`username` = '.$db->quote($instance->get('username')).',' .
-						        '	`userid` = '.(int) $instance->get('id') .
-						        ' WHERE `session_id` = '.$db->quote($session->getId())
-					        );
+
+					        $query = $db->getQuery(true)
+						        ->update('#__session')
+						        ->set('guest = '.$db->quote($instance->get('guest')))
+						        ->set('username = '.$db->quote($instance->get('username')))
+						        ->set('userid = '.$db->quote($instance->get('id')))
+						        ->where('session_id = '.$db->quote($session->getId()));
+
+					        $db->setQuery($query);
 					        $db->execute();
 
 					        // Hit the user last visit field

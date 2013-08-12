@@ -127,7 +127,12 @@ class plgAuthenticationjfusion extends JPlugin
                 }
 
                 //otherwise check the other authentication models
-                $query = 'SELECT name FROM #__jfusion WHERE master = 0 AND check_encryption = 1';
+	            $query = $db->getQuery(true)
+		            ->select('name')
+		            ->from('#__jfusion')
+		            ->where('master = 0')
+		            ->where('check_encryption = 1');
+
                 $db->setQuery($query);
                 $auth_models = $db->loadObjectList();
                 //loop through the different models

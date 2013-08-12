@@ -65,7 +65,12 @@ class JFusionControllerPlugin extends JControllerLegacy
             if (!empty($jname)) {
                 //check to see if the plugin is configured properly
                 $db = JFactory::getDBO();
-                $query = 'SELECT status from #__jfusion WHERE name = '. $db->Quote($jname);
+
+	            $query = $db->getQuery(true)
+		            ->select('status')
+		            ->from('#__jfusion')
+		            ->where('name = '. $db->Quote($jname));
+
                 $db->setQuery($query );
 
                 if ($db->loadResult() != 1) {

@@ -42,7 +42,13 @@ class JFusionFunctionAdmin
 		//get joomla specs
         $db = JFactory::getDBO();
 
-		$db->setQuery('UPDATE #__extensions SET enabled = ' . $status .' WHERE element =' . $db->Quote($element) . ' and folder = ' . $db->Quote($folder));
+		$query = $db->getQuery(true)
+			->update('#__extensions')
+			->set('enabled = '.$db->quote($status))
+			->where('element = '.$db->quote($element))
+			->where('folder = '.$db->quote($folder));
+
+		$db->setQuery($query);
 
         $db->execute();
 	}

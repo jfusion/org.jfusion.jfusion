@@ -118,7 +118,12 @@ class plgUserJfusion extends JPlugin
             JFusionFunction::removeUser($userinfo);
             //delete any sessions that the user could have active
             $db = JFactory::getDBO();
-            $db->setQuery('DELETE FROM #__session WHERE userid = ' . $db->Quote($user['id']));
+
+	        $query = $db->getQuery(true)
+		        ->delete('#__session')
+		        ->where('userid = '. $db->Quote($user['id']));
+
+	        $db->setQuery($query);
             $db->execute();
             //return output if allowed
             $isAdministrator = JFusionFunction::isAdministrator();
@@ -605,7 +610,12 @@ class plgUserJfusion extends JPlugin
             $updateUsername = (!$isnew && $JoomlaUser->olduserinfo->username != $JoomlaUser->username) ? true : false;
             //retrieve the username stored in jfusion_users if it exists
             $db = JFactory::getDBO();
-            $query = 'SELECT username FROM #__jfusion_users WHERE id = ' . (int)$JoomlaUser->id;
+
+	        $query = $db->getQuery(true)
+		        ->select('username')
+		        ->from('#__jfusion_users')
+		        ->where('id = '.(int)$JoomlaUser->id);
+
             $db->setQuery($query);
             $storedUsername = $db->loadResult();
             if ($updateUsername) {

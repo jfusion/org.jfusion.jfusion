@@ -789,7 +789,12 @@ class JFusionJplugin
     {
 	    try {
 	        $db = JFusionFactory::getDatabase($jname);
-	        $query = 'UPDATE #__users SET email =' . $db->Quote($userinfo->email) . ' WHERE id =' . $existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->update('#__users')
+			    ->set('email = '.$db->quote($userinfo->email))
+			    ->where('id = '.$db->quote($existinguser->userid));
+
 	        $db->setQuery($query);
 		    $db->execute();
 
@@ -817,7 +822,12 @@ class JFusionJplugin
 	        $userinfo->password_salt = JUserHelper::genRandomPassword(32);
 	        $userinfo->password = JUserHelper::getCryptedPassword($userinfo->password_clear, $userinfo->password_salt);
 	        $new_password = $userinfo->password . ':' . $userinfo->password_salt;
-	        $query = 'UPDATE #__users SET password =' . $db->Quote($new_password) . ' WHERE id =' . $existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->update('#__users')
+			    ->set('password = '.$db->quote($new_password))
+			    ->where('id = '.$db->quote($existinguser->userid));
+
 	        $db->setQuery($query);
 		    $db->execute();
 
@@ -844,7 +854,12 @@ class JFusionJplugin
 	        if ($existinguser->group_id != 25) {
 	            //block the user
 	            $db = JFusionFactory::getDatabase($jname);
-	            $query = 'UPDATE #__users SET block = 1 WHERE id =' . $existinguser->userid;
+
+		        $query = $db->getQuery(true)
+			        ->update('#__users')
+			        ->set('block = 1')
+			        ->where('id = '.$db->quote($existinguser->userid));
+
 	            $db->setQuery($query);
 		        $db->execute();
 
@@ -872,7 +887,12 @@ class JFusionJplugin
 	    try {
 		    //unblock the user
 		    $db = JFusionFactory::getDatabase($jname);
-		    $query = 'UPDATE #__users SET block = 0 WHERE id =' . $existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->update('#__users')
+			    ->set('block = 0')
+			    ->where('id = '.$db->quote($existinguser->userid));
+
 		    $db->setQuery($query);
 		    $db->execute();
 
@@ -897,7 +917,13 @@ class JFusionJplugin
 	    try {
 		    //unblock the user
 		    $db = JFusionFactory::getDatabase($jname);
-		    $query = 'UPDATE #__users SET block = 0, activation = \'\' WHERE id =' . $existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->update('#__users')
+			    ->set('block = 0')
+			    ->set('activation = '.$db->quote(''))
+			    ->where('id = '.$db->quote($existinguser->userid));
+
 		    $db->setQuery($query);
 		    $db->execute();
 
@@ -923,7 +949,13 @@ class JFusionJplugin
 		    if ($existinguser->group_id != 25) {
 			    //unblock the user
 			    $db = JFusionFactory::getDatabase($jname);
-			    $query = 'UPDATE #__users SET block = 1, activation = ' . $db->Quote($userinfo->activation) . ' WHERE id =' . $existinguser->userid;
+
+			    $query = $db->getQuery(true)
+				    ->update('#__users')
+				    ->set('block = 1')
+				    ->set('activation = '.$db->quote($userinfo->activation))
+				    ->where('id = '.$db->quote($existinguser->userid));
+
 			    $db->setQuery($query);
 			    $db->execute();
 
@@ -985,7 +1017,12 @@ class JFusionJplugin
 		    $db = JFusionFactory::getDatabase($jname);
 		    $username_clean = JFusionJplugin::filterUsername($userinfo->username, $jname);
 		    $status['debug'][] = JText::_('USERNAME') . ': ' . $userinfo->username . ' -> ' . JText::_('FILTERED_USERNAME') . ':' . $username_clean;
-		    $query = 'UPDATE #__users SET username =' . $db->Quote($username_clean) . 'WHERE id =' . $existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->update('#__users')
+			    ->set('username = '.$db->quote($username_clean))
+			    ->where('id = '.$db->quote($existinguser->userid));
+
 		    $db->setQuery($query);
 		    try {
 			    $db->execute();
@@ -1341,7 +1378,11 @@ class JFusionJplugin
 			    }
 
 			    jimport('joomla.user.helper');
-			    $query = 'DELETE FROM #__user_usergroup_map WHERE user_id = ' . $db->Quote($existinguser->userid);
+
+			    $query = $db->getQuery(true)
+				    ->delete('#__user_usergroup_map')
+				    ->where('user_id = '. $db->Quote($existinguser->userid));
+
 			    $db->setQuery($query);
 
 			    $db->execute();
@@ -1484,7 +1525,12 @@ class JFusionJplugin
 		    $db = JFusionFactory::getDatabase($jname);
 		    $params = new JRegistry($existinguser->params);
 		    $params->set('language', $userinfo->language);
-		    $query = 'UPDATE #__users SET params =' . $db->Quote($params->toString()) . ' WHERE id =' . $existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->update('#__users')
+			    ->set('params = '.$db->quote($params->toString()))
+			    ->where('id = '.$db->quote($existinguser->userid));
+
 		    $db->setQuery($query);
 
 		    $db->execute();

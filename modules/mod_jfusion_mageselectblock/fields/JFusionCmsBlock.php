@@ -35,8 +35,13 @@ class JFormFieldJFusionCmsBlock extends JFormField {
 		JArrayHelper::toInteger ( $cid, array (0 ) );
 		
 		$db = JFactory::getDBO ();
-		$query = 'SELECT params FROM #__modules  WHERE module = \'mod_jfusion_mageselectblock\' and id = ' . $db->Quote ( $cid [0] );
-		
+
+		$query = $db->getQuery(true)
+			->select('params')
+			->from('#__modules')
+			->where('module = ' . $db->Quote('mod_jfusion_mageselectblock'))
+			->where('id = ' . $db->Quote ( $cid [0] ));
+
 		$db->setQuery ( $query );
 		$params = $db->loadResult ();
 		$parametersInstance = new JRegistry ( $params, '' );

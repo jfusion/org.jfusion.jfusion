@@ -531,13 +531,23 @@ class JFusionPluginInstaller extends JObject
 		    }
 
 		    // delete raw
-		    $db->setQuery('DELETE FROM #__jfusion WHERE name = ' . $db->Quote($jname));
+
+		    $query = $db->getQuery(true)
+			    ->delete('#__jfusion')
+			    ->where('name = ' . $db->Quote($jname));
+		    $db->setQuery($query);
 		    $db->execute();
 
-		    $db->setQuery('DELETE FROM #__jfusion_discussion_bot WHERE jname = ' . $db->Quote($jname));
+		    $query = $db->getQuery(true)
+			    ->delete('#__jfusion_discussion_bot')
+			    ->where('jname = ' . $db->Quote($jname));
+		    $db->setQuery($query);
 		    $db->execute();
 
-		    $db->setQuery('DELETE FROM #__jfusion_users_plugin WHERE jname = ' . $db->Quote($jname));
+		    $query = $db->getQuery(true)
+			    ->delete('#__jfusion_users_plugin')
+			    ->where('jname = ' . $db->Quote($jname));
+		    $db->setQuery($query);
 		    $db->execute();
 
 		    $dir = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname;

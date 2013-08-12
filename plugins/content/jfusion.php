@@ -818,20 +818,28 @@ HTML;
 				JFusionFunction::updateDiscussionBotLookup($this->article->id, $threadinfo, $this->jname, 0, $threadinfo->manual);
 			} else {
 				//manually plugged thus remove any db plugin tags
-				$jdb = JFactory::getDBO();
+				$db = JFactory::getDBO();
 				//retrieve the original text
-				$query = 'SELECT `introtext`, `fulltext` FROM #__content WHERE id = ' . $this->article->id;
-				$jdb->setQuery($query);
-				$texts = $jdb->loadObject();
+				$query = $db->getQuery(true)
+					->select('`introtext`, `fulltext`')
+					->from('#__content')
+					->where('id = '.$this->article->id);
+
+				$db->setQuery($query);
+				$texts = $db->loadObject();
 
 				//remove any {jfusion_discuss...}
 				$fulltext = preg_replace('/\{jfusion_discuss (.*)\}/U','',$texts->fulltext, -1, $fullTextCount);
 				$introtext = preg_replace('/\{jfusion_discuss (.*)\}/U','',$texts->introtext, -1, $introTextCount);
 
 				if (!empty($fullTextCount) || !empty($introTextCount)) {
-					$query = 'UPDATE #__content SET `fulltext` = ' . $jdb->Quote($fulltext) . ', `introtext` = ' .$jdb->Quote($introtext) . ' WHERE id = ' . (int) $this->article->id;
-					$jdb->setQuery($query);
-					$jdb->execute();
+					$query = $db->getQuery(true)
+						->update('#__content')
+						->set('`fulltext` = ' . $db->Quote($fulltext))
+						->set('`introtext` = ' . $db->Quote($introtext))
+						->where('id = ' . (int) $this->article->id);
+					$db->setQuery($query);
+					$db->execute();
 				}
 			}
 

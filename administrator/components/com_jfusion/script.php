@@ -597,7 +597,11 @@ class com_jfusionInstallerScript
 		}
 		//remove bad plugin entries from the table
 		if (count($uninstallPlugin) > 0) {
-			$query = 'DELETE FROM #__jfusion WHERE name IN (\'' . implode('\', \'', $uninstallPlugin) . '\')';
+			$query = $db->getQuery(true)
+				->delete('#__jfusion')
+				->where('name IN (\'' . implode('\', \'', $uninstallPlugin) . '\')');
+			$db->setQuery($query);
+
 			$db->setQuery($query);
 			try {
 				$db->execute();
@@ -633,7 +637,6 @@ class com_jfusionInstallerScript
 HTML;
 		}
 		*/
-
 		//cleanup unused plugins
 		$query = $db->getQuery(true)
 			->select('name')
@@ -685,9 +688,22 @@ HTML;
 		$version = $jversion->getShortVersion();
 
 		try {
-			$db->setQuery('UPDATE #__extensions SET enabled = 1 WHERE element =\'joomla\' and folder = \'authentication\'');
+			$query = $db->getQuery(true)
+				->update('#__extensions')
+				->set('enabled = 1')
+				->where('element = '.$db->quote('joomla'))
+				->where('folder = '.$db->quote('authentication'));
+
+			$db->setQuery($query);
 			$db->execute();
-			$db->setQuery('UPDATE #__extensions SET enabled = 1 WHERE element =\'joomla\' and folder = \'user\'');
+
+			$query = $db->getQuery(true)
+				->update('#__extensions')
+				->set('enabled = 1')
+				->where('element = '.$db->quote('joomla'))
+				->where('folder = '.$db->quote('user'));
+
+			$db->setQuery($query);
 			$db->execute();
 		} catch (Exception $e ) {
 			echo $e->getMessage() . '<br />';

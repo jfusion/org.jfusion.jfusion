@@ -79,18 +79,23 @@ class JFusionHelper {
 		    if ($modules [$identifier]) {
 			    return $modules [$identifier];
 		    }
+
+		    $db = JFactory::getDBO ();
+
+		    $query = $db->getQuery(true)
+			    ->select('id, title, module, params, content')
+			    ->from('#__modules');
+
 		    switch ($type) {
 			    default;
 			    case 'id' :
-				    $where = 'id=' . ( int ) $identifier;
+			        $query->where('id = ' . ( int ) $identifier);
 				    break;
 			    case 'title' :
-				    $where = 'title="' . $identifier . '"';
+				    $query->where('title = ' . $db->quote($identifier));
 				    break;
 		    }
 
-		    $db = JFactory::getDBO ();
-		    $query = 'SELECT id, title, module, params, content FROM #__modules WHERE ' . $where;
 		    $db->setQuery ( $query );
 
 		    $modules = $db->loadObjectList($type);

@@ -207,7 +207,12 @@ class JFusionUser_efront extends JFusionUser
 	        $md5_key = $params->get('md5_key');
 	        $existinguser->password = md5($userinfo->password_clear.$md5_key);
 	        $db = JFusionFactory::getDatabase($this->getJname());
-	        $query = 'UPDATE #__users SET password =' . $db->Quote($existinguser->password). 'WHERE id =' . (int)$existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->update('#__users')
+			    ->set('password =' . $db->Quote($existinguser->password))
+			    ->where('id =' . (int)$existinguser->userid);
+
 	        $db->setQuery($query);
 
 		    $db->execute();
@@ -238,7 +243,12 @@ class JFusionUser_efront extends JFusionUser
     function updateEmail($userinfo, &$existinguser, &$status) {
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'UPDATE #__users SET email =' . $db->Quote($userinfo->email) . ' WHERE id =' . (int)$existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->update('#__users')
+			    ->set('email =' . $db->Quote($userinfo->email))
+			    ->where('id =' . (int)$existinguser->userid);
+
 		    $db->setQuery($query);
 		    $db->execute();
 		    $status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
@@ -257,7 +267,12 @@ class JFusionUser_efront extends JFusionUser
     function blockUser($userinfo, &$existinguser, &$status) {
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'UPDATE #__users SET active = 0 WHERE id =' . (int)$existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->update('#__users')
+			    ->set('active = 0')
+			    ->where('id =' . (int)$existinguser->userid);
+
 		    $db->setQuery($query);
 		    $db->execute();
 
@@ -278,7 +293,12 @@ class JFusionUser_efront extends JFusionUser
 	    try {
 		    //unblock the user
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'UPDATE #__users SET active = 1 WHERE id =' . (int)$existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->update('#__users')
+			    ->set('active = 1')
+			    ->where('id =' . (int)$existinguser->userid);
+
 		    $db->setQuery($query);
 		    $db->execute();
 		    $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
@@ -297,7 +317,12 @@ class JFusionUser_efront extends JFusionUser
     function activateUser($userinfo, &$existinguser, &$status) {
 	    try {
 	        $db = JFusionFactory::getDatabase($this->getJname());
-	        $query = 'UPDATE #__users SET pending = 0 WHERE id =' . (int)$existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->update('#__users')
+			    ->set('pending = 0')
+			    ->where('id =' . (int)$existinguser->userid);
+
 	        $db->setQuery($query);
 		    $db->execute();
 
@@ -317,7 +342,12 @@ class JFusionUser_efront extends JFusionUser
     function inactivateUser($userinfo, &$existinguser, &$status) {
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'UPDATE #__users SET pending = 1 WHERE id =' . (int)$existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->update('#__users')
+			    ->set('pending = 1')
+			    ->where('id =' . (int)$existinguser->userid);
+
 		    $db->setQuery($query);
 		    $db->execute();
 
@@ -565,7 +595,13 @@ class JFusionUser_efront extends JFusionUser
 				    $db->setQuery($query);
 				    $user_type = $db->loadResult();
 			    }
-			    $query = 'UPDATE #__users SET user_type = '.$db->Quote($user_type).', user_types_ID = '.$user_types_ID.' WHERE id =' . $existinguser->userid;
+
+			    $query = $db->getQuery(true)
+				    ->update('#__users')
+				    ->set('user_type =' . $db->Quote($user_type))
+				    ->set('user_types_ID =' . $db->Quote($user_types_ID))
+				    ->where('id =' . (int)$existinguser->userid);
+
 			    $db->setQuery($query);
 			    $db->execute();
 			    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode (' , ', $existinguser->groups) . ' -> ' . $usergroup;

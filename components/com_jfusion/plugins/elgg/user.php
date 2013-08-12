@@ -224,7 +224,13 @@ class JFusionUser_elgg extends JFusionUser {
 	        $existinguser->password_salt = JUserHelper::genRandomPassword(8);
 	        $existinguser->password = md5($userinfo->password_clear . $existinguser->password_salt);
 	        $db = JFusionFactory::getDatabase($this->getJname());
-	        $query = 'UPDATE #__users_entity SET password =' . $db->Quote($existinguser->password) . ', salt = ' . $db->Quote($existinguser->password_salt) . ' WHERE guid =' . (int)$existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->update('#__users_entity')
+			    ->set('password = '.$db->quote($existinguser->password))
+			    ->set('salt = '.$db->quote($existinguser->password_salt))
+			    ->where('guid = ' . (int)$existinguser->userid);
+
 	        $db->setQuery($query);
 
 		    $db->execute();
@@ -293,7 +299,13 @@ class JFusionUser_elgg extends JFusionUser {
 			        if (empty($userinfo->password_clear)) {
 				        //we need to update the password
 				        $db = JFusionFactory::getDatabase($this->getJname());
-				        $query = 'UPDATE #__users_entity SET password =' . $db->Quote($userinfo->password) . ', salt = ' . $db->Quote($userinfo->password_salt) . ' WHERE username = ' . $db->Quote($username);
+
+				        $query = $db->getQuery(true)
+					        ->update('#__users_entity')
+					        ->set('password = '.$db->quote($userinfo->password))
+					        ->set('salt = '.$db->quote($userinfo->password_salt))
+					        ->where('username = ' . $db->Quote($username));
+
 				        $db->setQuery($query);
 				        $db->execute();
 			        }
@@ -324,7 +336,12 @@ class JFusionUser_elgg extends JFusionUser {
 	    try {
 		    //we need to update the email
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'UPDATE #__users_entity SET email =' . $db->Quote($userinfo->email) . ' WHERE guid =' . (int)$existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->update('#__users_entity')
+			    ->set('email = '.$db->quote($userinfo->email))
+			    ->where('guid = ' . (int)$existinguser->userid);
+
 		    $db->setQuery($query);
 		    $db->execute();
 

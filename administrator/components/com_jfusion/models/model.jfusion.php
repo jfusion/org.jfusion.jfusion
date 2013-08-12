@@ -237,7 +237,12 @@ class JFusionFunction
 		    if ($jname == 'joomla_int') {
 			    if ($delete) {
 				    //Delete old user data in the lookup table
-				    $query = 'DELETE FROM #__jfusion_users WHERE id =' . $joomla_id . ' OR username = ' . $db->Quote($userinfo->username) . ' OR LOWER(username) = ' . strtolower($db->Quote($userinfo->email));
+				    $query = $db->getQuery(true)
+					    ->delete('#__jfusion_users')
+					    ->where('id =' . $joomla_id, 'OR')
+					    ->where('username = ' . $db->Quote($userinfo->username))
+					    ->where('LOWER(username) = ' . strtolower($db->Quote($userinfo->email)));
+
 				    $db->setQuery($query);
 				    try {
 					    $db->execute();
@@ -246,7 +251,11 @@ class JFusionFunction
 				    }
 
 				    //Delete old user data in the lookup table
-				    $query = 'DELETE FROM #__jfusion_users_plugin WHERE id =' . $joomla_id . ' OR username = ' . $db->Quote($userinfo->username) . ' OR LOWER(username) = ' . strtolower($db->Quote($userinfo->email));
+				    $query = $db->getQuery(true)
+					    ->delete('#__jfusion_users_plugin')
+					    ->where('id =' . $joomla_id, 'OR')
+					    ->where('username = ' . $db->Quote($userinfo->username))
+					    ->where('LOWER(username) = ' . strtolower($db->Quote($userinfo->email)));
 				    $db->setQuery($query);
 				    try {
 					    $db->execute();
@@ -279,6 +288,7 @@ class JFusionFunction
 
 				    $db->setQuery($query);
 				    $jnames = $db->loadObjectList();
+
 				    foreach ($jnames as $jname) {
 					    if ($jname->name != 'joomla_int') {
 						    $user = JFusionFactory::getUser($jname->name);
@@ -294,7 +304,11 @@ class JFusionFunction
 				    }
 				    if (!empty($queries)) {
 					    if ($delete) {
-						    $query = 'DELETE FROM #__jfusion_users_plugin WHERE ' . implode(' OR ', $queries);
+						    $query = $db->getQuery(true)
+							    ->delete('#__jfusion_users_plugin');
+						    foreach ($queries as $q) {
+							    $query->where($q, 'OR');
+						    }
 					    } else {
 						    $query = 'REPLACE INTO #__jfusion_users_plugin (userid,username,id,jname) VALUES (' . implode(',', $queries) . ')';
 					    }
@@ -307,7 +321,10 @@ class JFusionFunction
 				    }
 			    } else {
 				    if ($delete) {
-					    $query = 'DELETE FROM #__jfusion_users_plugin WHERE id = '.$joomla_id.' AND jname = '.$db->Quote($jname);
+					    $query = $db->getQuery(true)
+						    ->delete('#__jfusion_users_plugin')
+					        ->where('id = '.$joomla_id)
+						    ->where('jname = '.$db->Quote($jname));
 				    } else {
 					    $query = 'REPLACE INTO #__jfusion_users_plugin (userid,username,id,jname) VALUES ('.$db->Quote($userinfo->userid) .' ,'.$db->Quote($userinfo->username) .' ,'.$joomla_id.' , '.$db->Quote($jname).' )';
 				    }
@@ -454,14 +471,23 @@ class JFusionFunction
     {
         //Delete old user data in the lookup table
         $db = JFactory::getDBO();
-        $query = 'DELETE FROM #__jfusion_users WHERE id =' . $userinfo->id . ' OR username =' . $db->Quote($userinfo->username) . ' OR LOWER(username) = ' . strtolower($db->Quote($userinfo->email));
+
+	    $query = $db->getQuery(true)
+		    ->delete('#__jfusion_users')
+		    ->where('id = '.$userinfo->id, 'OR')
+	        ->where('username =' . $db->Quote($userinfo->username))
+		    ->where('LOWER(username) = ' . strtolower($db->Quote($userinfo->email)));
+
         $db->setQuery($query);
 	    try {
 		    $db->execute();
 	    } catch (Exception $e) {
 		    JFusionFunction::raiseWarning($e);
 	    }
-        $query = 'DELETE FROM #__jfusion_users_plugin WHERE id =' . $userinfo->id;
+
+	    $query = $db->getQuery(true)
+		    ->delete('#__jfusion_users_plugin')
+		    ->where('id = '.$userinfo->id);
         $db->setQuery($query);
 	    try {
 		    $db->execute();
