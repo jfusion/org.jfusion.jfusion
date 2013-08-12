@@ -352,7 +352,12 @@ class JFusionUser_moodle extends JFusionUser {
 				$existinguser->password = md5($userinfo->password_clear);
 			}
 			$db = JFusionFactory::getDatabase($this->getJname());
-			$query = 'UPDATE #__user SET password =' . $db->Quote($existinguser->password) . ' WHERE id =' . $existinguser->userid;
+
+			$query = $db->getQuery(true)
+				->update('#__user')
+				->set('password = ' . $db->Quote($existinguser->password))
+				->where('id = ' . $existinguser->userid);
+
 			$db->setQuery($query);
 			$db->execute();
 
@@ -389,7 +394,12 @@ class JFusionUser_moodle extends JFusionUser {
 			//TODO ? check for duplicates, or leave it at db error
 			//we need to update the email
 			$db = JFusionFactory::getDatabase($this->getJname());
-			$query = 'UPDATE #__user SET email =' . $db->Quote($userinfo->email) . ' WHERE id =' . (int)$existinguser->userid;
+
+			$query = $db->getQuery(true)
+				->update('#__user')
+				->set('email = ' . $db->Quote($userinfo->email))
+				->where('id = ' . (int)$existinguser->userid);
+
 			$db->setQuery($query);
 			$db->execute();
 
@@ -415,7 +425,11 @@ class JFusionUser_moodle extends JFusionUser {
 			$db->setQuery($query);
 			$sitepolicy = $db->loadObject();
 			if ($sitepolicy->value) {
-				$query = 'UPDATE #__user SET policyagreed = false WHERE id =' . (int)$existinguser->userid;
+				$query = $db->getQuery(true)
+					->update('#__user')
+					->set('policyagreed = false')
+					->where('id = ' . (int)$existinguser->userid);
+
 				$db->setQuery($query);
 				$db->execute();
 
@@ -444,7 +458,12 @@ class JFusionUser_moodle extends JFusionUser {
 			$db->setQuery($query);
 			$sitepolicy = $db->loadObject();
 			if ($sitepolicy->value) {
-				$query = 'UPDATE #__user SET policyagreed = true WHERE id =' . (int)$existinguser->userid;
+
+				$query = $db->getQuery(true)
+					->update('#__user')
+					->set('policyagreed = true')
+					->where('id = ' . (int)$existinguser->userid);
+
 				$db->setQuery($query);
 				$db->execute();
 
@@ -470,7 +489,12 @@ class JFusionUser_moodle extends JFusionUser {
 		try {
 			//activate the user
 			$db = JFusionFactory::getDatabase($this->getJname());
-			$query = 'UPDATE #__user SET confirmed = true WHERE id =' . (int)$existinguser->userid;
+
+			$query = $db->getQuery(true)
+				->update('#__user')
+				->set('confirmed = true')
+				->where('id = ' . (int)$existinguser->userid);
+
 			$db->setQuery($query);
 			$db->execute();
 
@@ -492,7 +516,12 @@ class JFusionUser_moodle extends JFusionUser {
 	function inactivateUser($userinfo, &$existinguser, &$status) {
 		try {
 			$db = JFusionFactory::getDatabase($this->getJname());
-			$query = 'UPDATE #__user SET confirmed = false WHERE id =' . (int)$existinguser->userid;
+
+			$query = $db->getQuery(true)
+				->update('#__user')
+				->set('confirmed = false')
+				->where('id = ' . (int)$existinguser->userid);
+
 			$db->setQuery($query);
 			$db->execute();
 

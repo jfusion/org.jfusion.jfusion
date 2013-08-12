@@ -353,7 +353,13 @@ class JFusionUser_magento extends JFusionUser {
 
 				$increment_last_id_int = ( int )$db->loadresult();
 				$increment_last_id = sprintf("%'09u", ($increment_last_id_int + 1));
-				$query = 'UPDATE #__eav_entity_store SET increment_last_id = ' . $db->Quote($increment_last_id) . ' WHERE entity_type_id = ' . (int)$this->getMagentoEntityTypeID('customer') . ' AND store_id = 0';
+
+				$query = $db->getQuery(true)
+					->update('#__eav_entity_store')
+					->set('increment_last_id = '.$db->quote($increment_last_id))
+					->where('entity_type_id = ' . (int)$this->getMagentoEntityTypeID('customer'))
+					->where('store_id = 0');
+
 				$db->setQuery($query);
 				$db->execute();
 
@@ -363,7 +369,11 @@ class JFusionUser_magento extends JFusionUser {
 				$db->execute();
 				$entity_id = $db->insertid();
 			} else { // we are updating
-				$query = 'UPDATE #__customer_entity' . ' SET updated_at = ' . $db->Quote($sqlDateTime) . ' WHERE entity_id = ' . (int)$entity_id;
+				$query = $db->getQuery(true)
+					->update('#__customer_entity')
+					->set('updated_at = '.$db->quote($sqlDateTime))
+					->where('entity_id = ' . (int)$entity_id);
+
 				$db->setQuery($query);
 				$db->execute();
 			}
@@ -371,7 +381,11 @@ class JFusionUser_magento extends JFusionUser {
 			for ($i = 0;$i < count($user);$i++) {
 				if ($user[$i]['backend_type'] == 'static') {
 					if (isset($user[$i]['value'])) {
-						$query = 'UPDATE #__customer_entity' . ' SET ' . $user[$i]['attribute_code'] . '= ' . $db->Quote($user[$i]['value']) . ' WHERE entity_id = ' . $entity_id;
+						$query = $db->getQuery(true)
+							->update('#__customer_entity')
+							->set($user[$i]['attribute_code']. ' = ' . $db->Quote($user[$i]['value']))
+							->where('entity_id = ' . (int)$entity_id);
+
 						$db->setQuery($query);
 						$db->execute();
 					}
@@ -387,7 +401,13 @@ class JFusionUser_magento extends JFusionUser {
 							if ($user[$i]['value'] == '') {
 								$query = 'DELETE FROM #__customer_entity' . '_' . $user[$i]['backend_type'] . ' WHERE entity_id = ' . (int)$entity_id . ' AND entity_type_id = ' . (int)$this->getMagentoEntityTypeID('customer') . ' AND attribute_id = ' . (int)$user[$i]['attribute_id'];
 							} else {
-								$query = 'UPDATE #__customer_entity' . '_' . $user[$i]['backend_type'] . ' SET value = ' . $db->Quote($user[$i]['value']) . ' WHERE entity_id = ' . (int)$entity_id . ' AND entity_type_id = ' . (int)$this->getMagentoEntityTypeID('customer') . ' AND attribute_id = ' . (int)$user[$i]['attribute_id'];
+								$query = $db->getQuery(true)
+									->update('#__customer_entity'. '_' . $user[$i]['backend_type'])
+									->set('value = ' . $db->Quote($user[$i]['value']))
+									->where('entity_id = ' . (int)$entity_id)
+									->where('entity_type_id = ' . (int)$this->getMagentoEntityTypeID('customer'))
+									->where('attribute_id = ' . (int)$user[$i]['attribute_id']);
+
 							}
 						} else { // must create
 							$query = 'INSERT INTO #__customer_entity' . '_' . $user[$i]['backend_type'] . ' (value, attribute_id, entity_id, entity_type_id) VALUES (' . $db->Quote($user[$i]['value']) . ', ' . $user[$i]['attribute_id'] . ', ' . $entity_id . ', ' . (int)$this->getMagentoEntityTypeID('customer') . ')';
@@ -683,7 +703,12 @@ class JFusionUser_magento extends JFusionUser {
 				$usergroup = $usergroups[0];
 				//set the usergroup in the user table
 				$db = JFusionFactory::getDataBase($this->getJname());
-				$query = 'UPDATE #__customer_entity SET group_id = ' . (int)$usergroup . ' WHERE entity_id =' . (int)$existinguser->userid;
+
+				$query = $db->getQuery(true)
+					->update('#__customer_entity')
+					->set('group_id = ' . (int)$usergroup)
+					->where('entity_id = ' . (int)$existinguser->userid);
+
 				$db->setQuery($query);
 				$db->execute();
 				$status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode (' , ', $existinguser->groups) . ' -> ' . $usergroup;

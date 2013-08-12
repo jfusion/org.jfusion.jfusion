@@ -176,7 +176,11 @@ class JFusionUser_mybb extends JFusionUser {
 		    $db->insertObject('#__banned', $user, 'uid');
 
 		    //change its usergroup
-		    $query = 'UPDATE #__users SET usergroup = 7 WHERE uid = ' . (int)$existinguser->userid;
+		    $query = $db->getQuery(true)
+			    ->update('#__users')
+			    ->set('usergroup = 7')
+			    ->where('uid = ' . (int)$existinguser->userid);
+
 		    $db->setQuery($query);
 		    $db->execute();
 		    $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
@@ -216,7 +220,11 @@ class JFusionUser_mybb extends JFusionUser {
 			    $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ": " . JText::_('USERGROUP_MISSING');
 		    } else {
 			    //restore the usergroup
-			    $query = 'UPDATE #__users SET usergroup = ' . (int)$oldgroup . ' WHERE uid = ' . (int)$existinguser->userid;
+			    $query = $db->getQuery(true)
+				    ->update('#__users')
+				    ->set('usergroup = '.(int)$oldgroup)
+				    ->where('uid = ' . (int)$existinguser->userid);
+
 			    $db->setQuery($query);
 			    $db->execute();
 			    $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
@@ -239,7 +247,13 @@ class JFusionUser_mybb extends JFusionUser {
 	        $existinguser->password_salt = JUserHelper::genRandomPassword(6);
 	        $existinguser->password = md5(md5($existinguser->password_salt) . md5($userinfo->password_clear));
 	        $db = JFusionFactory::getDatabase($this->getJname());
-	        $query = 'UPDATE #__users SET password =' . $db->Quote($existinguser->password) . ', salt = ' . $db->Quote($existinguser->password_salt) . ' WHERE uid =' . (int)$existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->update('#__users')
+			    ->set('password = ' . $db->Quote($existinguser->password))
+			    ->set('salt = ' . $db->Quote($existinguser->password_salt))
+			    ->where('uid = ' . (int)$existinguser->userid);
+
 	        $db->setQuery($query);
 		    $db->execute();
 
@@ -266,7 +280,12 @@ class JFusionUser_mybb extends JFusionUser {
 				$usergroup = $usergroups[0];
 				//update the usergroup
 				$db = JFusionFactory::getDatabase($this->getJname());
-				$query = 'UPDATE #__users SET usergroup = ' . $usergroup . ' WHERE uid  = ' . (int)$existinguser->userid;
+
+				$query = $db->getQuery(true)
+					->update('#__users')
+					->set('usergroup = ' . $usergroup)
+					->where('uid = ' . (int)$existinguser->userid);
+
 				$db->setQuery($query);
 				$db->execute();
 
@@ -344,7 +363,12 @@ class JFusionUser_mybb extends JFusionUser {
 	    try {
 		    //we need to update the email
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'UPDATE #__users SET email =' . $db->Quote($userinfo->email) . ' WHERE uid =' . (int)$existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->update('#__users')
+			    ->set('email = ' . $db->Quote($userinfo->email))
+			    ->where('uid = ' . (int)$existinguser->userid);
+
 		    $db->setQuery($query);
 		    $db->execute();
 		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
@@ -371,7 +395,12 @@ class JFusionUser_mybb extends JFusionUser {
 			    $usergroup = $usergroups[0];
 			    //update the usergroup
 			    $db = JFusionFactory::getDatabase($this->getJname());
-			    $query = 'UPDATE #__users SET usergroup = ' . $usergroup . ' WHERE uid  = ' . (int)$existinguser->userid;
+
+			    $query = $db->getQuery(true)
+				    ->update('#__users')
+				    ->set('usergroup = ' . $usergroup)
+				    ->where('uid = ' . (int)$existinguser->userid);
+
 			    $db->setQuery($query);
 			    $db->execute();
 			    $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
@@ -395,7 +424,12 @@ class JFusionUser_mybb extends JFusionUser {
 		    $usergroup = $params->get('activationgroup');
 		    //update the usergroup
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'UPDATE #__users SET usergroup = ' . (int)$usergroup . ' WHERE uid  = ' . (int)$existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->update('#__users')
+			    ->set('usergroup = ' . (int)$usergroup)
+			    ->where('uid = ' . (int)$existinguser->userid);
+
 		    $db->setQuery($query);
 		    $db->execute();
 		    $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;

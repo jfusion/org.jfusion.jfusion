@@ -484,7 +484,12 @@ HTML;
 
 		    $activation = ((JFactory::getApplication()->input->get('activation', 1))?'true':'false');
 		    if ($activation == 'true') {
-			    $query = 'UPDATE #__config_plugins SET value = \'1\' WHERE plugin = \'auth/jfusion\' AND name = \'jf_enabled\'';
+			    $query = $db->getQuery(true)
+				    ->update('#__config_plugins')
+				    ->set('value = 1')
+				    ->where('plugin = ' . $db->Quote('auth/jfusion'))
+				    ->where('name = ' . $db->Quote('jf_enabled'));
+
 			    $db->setQuery($query);
 			    $db->execute();
 
@@ -502,11 +507,21 @@ HTML;
 				    throw new RuntimeException('key already enabled?');
 			    }
 			    $value .= ',jfusion';
-			    $query = 'UPDATE #__config SET value = \''.$value.'\' WHERE name = \'auth\'';
+
+			    $query = $db->getQuery(true)
+				    ->update('#__config')
+				    ->set('value = '. $db->Quote($value))
+				    ->where('name = ' . $db->Quote('auth'));
+
 			    $db->setQuery($query);
 			    $db->execute();
 		    } else {
-			    $query = 'UPDATE #__config_plugins SET value = \'0\' WHERE plugin = \'auth/jfusion\' AND name = \'jf_enabled\'';
+			    $query = $db->getQuery(true)
+				    ->update('#__config_plugins')
+				    ->set('value = 0')
+				    ->where('plugin = ' . $db->Quote('auth/jfusion'))
+				    ->where('name = ' . $db->Quote('jf_enabled'));
+
 			    $db->setQuery($query);
 			    $db->execute();
 
@@ -523,7 +538,12 @@ HTML;
 						    $authstr .= ','.$auths[$i];
 					    }
 				    }
-				    $query = 'UPDATE #__config SET value = \''.$authstr.'\' WHERE name = \'auth\'';
+
+				    $query = $db->getQuery(true)
+					    ->update('#__config')
+					    ->set('value = ' . $db->Quote($authstr))
+					    ->where('name = ' . $db->Quote('auth'));
+
 				    $db->setQuery($query);
 				    $db->execute();
 			    }

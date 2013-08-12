@@ -231,7 +231,12 @@ class JFusionUser_mediawiki extends JFusionUser {
 	    try {
 	        $existinguser->password = ':A:' . md5( $userinfo->password_clear);
 	        $db = JFusionFactory::getDatabase($this->getJname());
-	        $query = 'UPDATE #__user SET user_password = ' . $db->quote($existinguser->password). ' WHERE user_id  = ' . $existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->update('#__user')
+			    ->set('user_password = ' . $db->quote($existinguser->password))
+			    ->where('user_id = ' . (int)$existinguser->userid);
+
 	        $db->setQuery($query );
 		    $db->execute();
 
@@ -265,7 +270,11 @@ class JFusionUser_mediawiki extends JFusionUser {
 	    try {
 		    //we need to update the email
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'UPDATE #__user SET user_email ='.$db->quote($userinfo->email) .' WHERE user_id =' . $existinguser->userid;
+		    $query = $db->getQuery(true)
+			    ->update('#__user')
+			    ->set('user_email = ' . $db->quote($userinfo->email))
+			    ->where('user_id = ' . (int)$existinguser->userid);
+
 		    $db->setQuery($query);
 		    $db->execute();
 
@@ -379,7 +388,12 @@ class JFusionUser_mediawiki extends JFusionUser {
     {
 		try {
 	        $db = JFusionFactory::getDatabase($this->getJname());
-	        $query = 'UPDATE #__user SET is_activated = 1, validation_code = \'\' WHERE user_id  = ' . $existinguser->userid;
+		    $query = $db->getQuery(true)
+			    ->update('#__user')
+			    ->set('is_activated = 1')
+				->set('validation_code = ' . $db->quote(''))
+			    ->where('user_id = ' . (int)$existinguser->userid);
+
 	        $db->setQuery($query);
 			$db->execute():
 			$status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
@@ -392,7 +406,13 @@ class JFusionUser_mediawiki extends JFusionUser {
     {
 		try {
 	        $db = JFusionFactory::getDatabase($this->getJname());
-	        $query = 'UPDATE #__user SET is_activated = 0, validation_code = '.$db->Quote($userinfo->activation).' WHERE user_id  = ' . $existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->update('#__user')
+			    ->set('is_activated = 0')
+				->set('validation_code = ' . $db->quote($userinfo->activation))
+			    ->where('user_id = ' . (int)$existinguser->userid);
+
 	        $db->setQuery($query );
 			$db->execute();
 			$status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
@@ -482,7 +502,12 @@ class JFusionUser_mediawiki extends JFusionUser {
 			    //update the stats
 			    $mToken = md5( $key . mt_rand( 0, 0x7fffffff ) . $wfWikiID . $user->user_id );
 
-			    $query = 'UPDATE #__user SET user_token = '.$db->Quote($mToken).' WHERE user_id = '.$db->Quote($user->user_id);
+			    $query = $db->getQuery(true)
+				    ->update('#__user')
+				    ->set('is_activated = 0')
+				    ->set('user_token = ' . $db->quote($mToken))
+				    ->where('user_id = ' . $db->Quote($user->user_id));
+
 			    $db->setQuery($query);
 			    $db->execute();
 
