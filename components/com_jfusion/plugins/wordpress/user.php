@@ -308,7 +308,12 @@ class JFusionUser_wordpress extends JFusionUser {
 		    $existinguser->password = $t_hasher->HashPassword($userinfo->password_clear);
 		    unset($t_hasher);
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'UPDATE #__users SET user_pass =' . $db->Quote($existinguser->password) . ' WHERE ID =' . (int)$existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->update('#__users')
+			    ->set('user_pass = ' . $db->Quote($existinguser->password))
+			    ->where('ID = ' . (int)$existinguser->userid);
+
 		    $db->setQuery($query);
 		    $db->execute();
 
@@ -340,7 +345,12 @@ class JFusionUser_wordpress extends JFusionUser {
 	    try {
 		    //we need to update the email
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'UPDATE #__users SET user_email =' . $db->Quote($userinfo->email) . ' WHERE ID =' . (int)$existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->update('#__users')
+			    ->set('user_email = ' . $db->Quote($userinfo->email))
+			    ->where('ID = ' . (int)$existinguser->userid);
+
 		    $db->setQuery($query);
 		    $db->execute();
 
@@ -383,7 +393,12 @@ class JFusionUser_wordpress extends JFusionUser {
 	    try {
 		    //activate the user
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'UPDATE #__users SET user_activation_key = \'\'  WHERE ID =' . (int)$existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->update('#__users')
+			    ->set('user_activation_key = ' . $db->Quote(''))
+			    ->where('ID = ' . (int)$existinguser->userid);
+
 		    $db->setQuery($query);
 		    $db->execute();
 		    $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
@@ -403,7 +418,12 @@ class JFusionUser_wordpress extends JFusionUser {
 	    try {
 			//set activation key
 			$db = JFusionFactory::getDatabase($this->getJname());
-			$query = 'UPDATE #__users SET user_activation_key =' . $db->Quote($userinfo->activation) . ' WHERE ID =' . (int)$existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->update('#__users')
+			    ->set('user_activation_key = ' . $db->Quote($userinfo->activation))
+			    ->where('ID = ' . (int)$existinguser->userid);
+
 			$db->setQuery($query);
 		    $db->execute();
 
@@ -568,7 +588,11 @@ class JFusionUser_wordpress extends JFusionUser {
 				    $results = $db->loadObjectList();
 				    if ($results) {
 					    foreach ($results as $row) {
-						    $query = 'UPDATE #__posts SET post_author = '.$reassign. ' WHERE ID = '. $row->ID;
+						    $query = $db->getQuery(true)
+							    ->update('#__posts')
+							    ->set('post_author = ' . $reassign)
+							    ->where('ID = ' . (int)$row->ID);
+
 						    $db->setQuery($query);
 						    $db->execute();
 					    }
@@ -581,7 +605,11 @@ class JFusionUser_wordpress extends JFusionUser {
 					    $results = $db->loadObjectList();
 					    if ($results) {
 						    foreach ($results as $row) {
-							    $query = 'UPDATE #__links SET link_owner = '.$reassign. ' WHERE link_id = '. $row->link_id;
+							    $query = $db->getQuery(true)
+								    ->update('#__links')
+								    ->set('link_owner = ' . $reassign)
+								    ->where('link_id = ' . $row->link_id);
+
 							    $db->setQuery($query);
 							    $db->execute();
 						    }
@@ -648,7 +676,13 @@ class JFusionUser_wordpress extends JFusionUser {
 			    }
 
 			    $capsfield = serialize($caps);
-			    $query = 'UPDATE #__usermeta SET meta_value =' . $db->Quote($capsfield) . ' WHERE meta_key = \''.$database_prefix.'capabilities'.'\' AND user_id =' . (int)$existinguser->userid;
+
+			    $query = $db->getQuery(true)
+				    ->update('#__usermeta')
+				    ->set('meta_value = ' . $db->Quote($capsfield))
+				    ->where('meta_key = ' . $db->Quote($database_prefix.'capabilities'))
+				    ->where('user_id = ' . (int)$existinguser->userid);
+
 			    $db->setQuery($query);
 			    $db->execute();
 

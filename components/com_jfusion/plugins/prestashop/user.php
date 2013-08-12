@@ -98,7 +98,12 @@ class JFusionUser_prestashop extends JFusionUser {
 			    $identifier = $userinfo->id_customer;
 		    }
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'UPDATE #__customer SET deleted ="1" WHERE id_customer =' . $db->Quote($identifier);
+
+		    $query = $db->getQuery(true)
+			    ->update('#__customer')
+			    ->set('deleted = 1')
+			    ->where('id_customer = ' . $db->Quote($identifier));
+
 		    $db->setQuery($query);
 		    $status['debug'][] = 'Deleted user';
 	    } catch (Exception $e) {
@@ -216,7 +221,13 @@ class JFusionUser_prestashop extends JFusionUser {
 	        $existinguser->password_salt = JUserHelper::genRandomPassword(8);
 	        $existinguser->password = md5($userinfo->password_clear . $existinguser->password_salt);
 	        $db = JFusionFactory::getDatabase($this->getJname());
-	        $query = 'UPDATE #__customer SET password =' . $db->Quote($existinguser->password) . ', salt = ' . $db->Quote($existinguser->password_salt) . ' WHERE id_customer =' . (int)$existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->update('#__customer')
+			    ->set('password = ' . $db->Quote($existinguser->password))
+			    ->set('salt = ' . $db->Quote($existinguser->password_salt))
+			    ->where('id_customer = ' . $db->Quote((int)$existinguser->userid));
+
 	        $db->setQuery($query);
 
 		    $db->execute();
@@ -460,7 +471,12 @@ class JFusionUser_prestashop extends JFusionUser {
 		    //we need to update the email
 		    $params = JFusionFactory::getParams($this->getJname());
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'UPDATE #__customer SET email =' . $db->Quote($userinfo->email) . ' WHERE id_customer =' . (int)$existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->update('#__customer')
+			    ->set('email = ' . $db->Quote($userinfo->email))
+			    ->where('id_customer = ' . $db->Quote((int)$existinguser->userid));
+
 		    $db->setQuery($query);
 		    $db->execute();
 
@@ -481,7 +497,12 @@ class JFusionUser_prestashop extends JFusionUser {
 	    try {
 		    /* change the 'active' field of the customer in the ps_customer table to 1 */
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'UPDATE #__customer SET active =\'1\' WHERE id_customer =\'' . (int)$existinguser->userid . '\'';
+
+		    $query = $db->getQuery(true)
+			    ->update('#__customer')
+			    ->set('active = 1')
+			    ->where('id_customer = ' . (int)$existinguser->userid);
+
 		    $db->setQuery($query);
 		    $db->execute();
 
@@ -502,7 +523,12 @@ class JFusionUser_prestashop extends JFusionUser {
 	    try {
 		    /* change the 'active' field of the customer in the ps_customer table to 0 */
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'UPDATE #__customer SET active =\'0\' WHERE id_customer =\'' . (int)$existinguser->userid . '\'';
+
+		    $query = $db->getQuery(true)
+			    ->update('#__customer')
+			    ->set('active = 0')
+			    ->where('id_customer = ' . (int)$existinguser->userid);
+
 		    $db->setQuery($query);
 		    $db->execute();
 

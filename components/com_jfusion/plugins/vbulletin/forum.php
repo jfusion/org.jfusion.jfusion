@@ -153,30 +153,31 @@ class JFusionForum_vbulletin extends JFusionForum
             //if using the content date, manually update the forum's stats
             if ($useContentDate) {
 	            try {
-	                $jdb = JFusionFactory::getDatabase($this->getJname());
+	                $db = JFusionFactory::getDatabase($this->getJname());
 	                $user = JFusionFactory::getUser($this->getJname());
 	                $userinfo = $user->getUser($userid, 'userid');
 
-	                $query = 'UPDATE #__forum SET ';
-	                //update counters
-	                $query.= 'threadcount = threadcount + 1';
-	                $query.= ', replycount = replycount + 1';
+		            $query = $db->getQuery(true)
+			            ->update('#__forum')
+			            ->set('threadcount = threadcount + 1')
+			            ->set('replycount = replycount + 1');
+
 	                //is this really the forum's latest thread?
 	                /**
 	                 * @TODO $foruminfo undefined ... if ($timestamp > $foruminfo['lastpost']) { not sure what to replace it with
 	                 */
 	                if ($timestamp > 0) {
-	                    $query.= ', lastpost = '.$timestamp;
-	                    $query.= ', lastpostid = '.$postid;
-	                    $query.= ', lastthreadid = '.$threadid;
-	                    $query.= ', lastposter = ' . $jdb->Quote($userinfo->username);
-	                    $query.= ', lastthread = ' . $jdb->Quote($title);
-	                    $query.= ', lasticonid = 0';
+		                $query->set('lastpost = ' . $timestamp)
+			                ->set('lastpostid = ' . $postid)
+			                ->set('lastthreadid = ' . $threadid)
+			                ->set('lastposter = ' . $db->Quote($userinfo->username))
+			                ->set('lastthread = ' . $db->Quote($title))
+			                ->set('lasticonid = 0');
 	                }
-	                $query.= ' WHERE forumid = '.$forumid;
-	                $jdb->setQuery($query);
+		            $query->where('forumid = '.$forumid);
+		            $db->setQuery($query);
 
-		            $jdb->execute();
+		            $db->execute();
 	            } catch (Exception $e) {
 		            $status['error'][] = $e->getMessage();
 	            }

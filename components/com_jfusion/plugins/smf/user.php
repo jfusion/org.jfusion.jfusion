@@ -116,12 +116,20 @@ class JFusionUser_smf extends JFusionUser
 	        //setup status array to hold debug info and errors
 	        $status = array('error' => array(),'debug' => array());
 	        $db = JFusionFactory::getDatabase($this->getJname());
-	        $query = 'DELETE FROM #__members WHERE memberName = ' . $db->quote($userinfo->username);
+
+		    $query = $db->getQuery(true)
+			    ->delete('#__members')
+			    ->where('memberName = ' . $db->quote($userinfo->username));
+
 	        $db->setQuery($query);
 		    $db->execute();
 
 		    //update the stats
-		    $query = 'UPDATE #__settings SET value = value - 1     WHERE variable = \'totalMembers\' ';
+		    $query = $db->getQuery(true)
+			    ->update('#__settings')
+			    ->set('value = value - 1')
+			    ->where('variable = ' . $db->quote('totalMembers'));
+
 		    $db->setQuery($query);
 		    $db->execute();
 
@@ -236,7 +244,12 @@ class JFusionUser_smf extends JFusionUser
 	        $existinguser->password_salt = substr(md5(rand()), 0, 4);
 	        $db = JFusionFactory::getDatabase($this->getJname());
 
-	        $query = 'UPDATE #__members SET passwd = ' . $db->quote($existinguser->password) . ', passwordSalt = ' . $db->quote($existinguser->password_salt) . ' WHERE ID_MEMBER  = ' . (int)$existinguser->userid;
+		    $query = $db->getQuery(true)
+			    ->update('#__members')
+			    ->set('passwd = ' . $db->quote($existinguser->password))
+			    ->set('passwordSalt = ' . $db->quote($existinguser->password_salt))
+			    ->where('ID_MEMBER = ' . (int)$existinguser->userid);
+
 	        $db->setQuery($query);
 		    $db->execute();
 
@@ -277,7 +290,12 @@ class JFusionUser_smf extends JFusionUser
 	    try {
 		    //we need to update the email
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'UPDATE #__members SET emailAddress =' . $db->quote($userinfo->email) . ' WHERE ID_MEMBER =' . (int)$existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->update('#__members')
+			    ->set('emailAddress = ' . $db->quote($userinfo->email))
+			    ->where('ID_MEMBER = ' . (int)$existinguser->userid);
+
 		    $db->setQuery($query);
 		    $db->execute();
 		    $status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
@@ -307,7 +325,12 @@ class JFusionUser_smf extends JFusionUser
 			    $usergroup = $usergroups[0];
 
 			    $db = JFusionFactory::getDatabase($this->getJname());
-			    $query = 'UPDATE #__members SET ID_GROUP =' . $db->quote($usergroup) . ' WHERE ID_MEMBER =' . (int)$existinguser->userid;
+
+			    $query = $db->getQuery(true)
+				    ->update('#__members')
+				    ->set('ID_GROUP = ' . $db->quote($usergroup))
+				    ->where('ID_MEMBER = ' . (int)$existinguser->userid);
+
 			    $db->setQuery($query);
 			    $db->execute();
 
@@ -401,7 +424,13 @@ class JFusionUser_smf extends JFusionUser
     {
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'UPDATE #__members SET is_activated = 1, validation_code = \'\' WHERE ID_MEMBER  = ' . (int)$existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->update('#__members')
+			    ->set('is_activated = 1')
+			    ->set('validation_code = ' . $db->quote(''))
+			    ->where('ID_MEMBER = ' . (int)$existinguser->userid);
+
 		    $db->setQuery($query);
 		    $db->execute();
 		    $status['debug'][] = JText::_('ACTIVATION_UPDATE') . ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
@@ -426,7 +455,13 @@ class JFusionUser_smf extends JFusionUser
     {
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'UPDATE #__members SET is_activated = 0, validation_code = ' . $db->Quote($userinfo->activation) . ' WHERE ID_MEMBER  = ' . (int)$existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->update('#__members')
+			    ->set('is_activated = 0')
+			    ->set('validation_code = ' . $db->quote($userinfo->activation))
+			    ->where('ID_MEMBER = ' . (int)$existinguser->userid);
+
 		    $db->setQuery($query);
 		    $db->execute();
 
@@ -495,12 +530,22 @@ class JFusionUser_smf extends JFusionUser
 			    //now append the new user data
 
 			    //update the stats
-			    $query = 'UPDATE #__settings SET value = value + 1     WHERE variable = \'totalMembers\' ';
+
+			    $query = $db->getQuery(true)
+				    ->update('#__settings')
+				    ->set('value = value + 1')
+				    ->where('variable = ' . $db->quote('totalMembers'));
+
 			    $db->setQuery($query);
 			    $db->execute();
 
 			    $date = strftime('%Y-%m-%d');
-			    $query = 'UPDATE #__log_activity SET registers = registers + 1 WHERE date = \'' . $date . '\'';
+
+			    $query = $db->getQuery(true)
+				    ->update('#__log_activity')
+				    ->set('registers = registers + 1')
+				    ->where('date = ' . $db->quote($date));
+
 			    $db->setQuery($query);
 			    $db->execute();
 

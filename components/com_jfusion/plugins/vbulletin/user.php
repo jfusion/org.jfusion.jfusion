@@ -219,7 +219,12 @@ class JFusionUser_vbulletin extends JFusionUser
 			    $queries = array();
 
 			    if ($session_user) {
-				    $queries[] = 'UPDATE #__user SET lastvisit = ' . $db->Quote($timenow) . ', lastactivity = ' . $db->Quote($timenow - $cookie_expires) . ' WHERE userid = ' . $db->Quote($session_user);
+				    $queries[] = $db->getQuery(true)
+					    ->update('#__user')
+					    ->set('lastvisit = ' .  $db->Quote($timenow))
+					    ->set('lastactivity = ' .  $db->Quote($timenow - $cookie_expires))
+				        ->where('userid = ' . $db->Quote($session_user));
+
 				    $queries[] = 'DELETE FROM #__session WHERE userid = ' . $db->Quote($session_user);
 			    }
 			    $queries[] = 'DELETE FROM #__session WHERE sessionhash = ' . $db->Quote($session_hash);
@@ -356,7 +361,14 @@ class JFusionUser_vbulletin extends JFusionUser
 	        $date = date('Y-m-d');
 
 	        $db = JFusionFactory::getDatabase($this->getJname());
-	        $query = 'UPDATE #__user SET passworddate = ' . $db->Quote($date) . ', password = ' . $db->Quote($existinguser->password). ', salt = ' . $db->Quote($existinguser->password_salt). ' WHERE userid  = ' . $existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->update('#__user')
+			    ->set('passworddate = ' . $db->Quote($date))
+			    ->set('password = ' . $db->Quote($existinguser->password))
+			    ->set('salt = ' . $db->Quote($existinguser->password_salt))
+		        ->where('userid  = ' . $existinguser->userid);
+
 	        $db->setQuery($query );
 		    $db->execute();
 
@@ -407,7 +419,11 @@ class JFusionUser_vbulletin extends JFusionUser
 		    $bannedgroup = $this->params->get('bannedgroup');
 
 		    //update the usergroup to banned
-		    $query = 'UPDATE #__user SET usergroupid = ' . $bannedgroup . ' WHERE userid  = ' . $existinguser->userid;
+		    $query = $db->getQuery(true)
+			    ->update('#__user')
+			    ->set('usergroupid = ' . $bannedgroup)
+			    ->where('userid  = ' . $existinguser->userid);
+
 		    $db->setQuery($query);
 
 		    $db->execute();
@@ -529,7 +545,12 @@ class JFusionUser_vbulletin extends JFusionUser
 
 		    //update the usergroup to default group
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'UPDATE #__user SET usergroupid = ' . $usergroup . ' WHERE userid  = ' . $existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->update('#__user')
+			    ->set('usergroupid = ' . $usergroup)
+			    ->where('userid  = ' . $existinguser->userid);
+
 		    $db->setQuery($query );
 		    $db->execute();
 
@@ -559,7 +580,12 @@ class JFusionUser_vbulletin extends JFusionUser
 
 		    //update the usergroup to awaiting activation
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'UPDATE #__user SET usergroupid = ' . $usergroup . ' WHERE userid  = ' . $existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->update('#__user')
+			    ->set('usergroupid = ' . $usergroup)
+			    ->where('userid  = ' . $existinguser->userid);
+
 		    $db->setQuery($query );
 		    $db->execute();
 
@@ -657,7 +683,12 @@ class JFusionUser_vbulletin extends JFusionUser
 				    if (!isset($userinfo->password_clear)) {
 					    try {
 						    $db = JFusionFactory::getDatabase($this->getJname());
-						    $query = 'UPDATE #__user SET password = ' . $db->Quote($userinfo->password). ' WHERE userid  = ' . $userdmid;
+
+						    $query = $db->getQuery(true)
+							    ->update('#__user')
+							    ->set('password = ' . $db->Quote($userinfo->password))
+							    ->where('userid  = ' . $userdmid);
+
 						    $db->setQuery($query);
 						    $db->execute();
 					    } catch (Exception $e) {

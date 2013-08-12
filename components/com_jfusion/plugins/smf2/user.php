@@ -106,7 +106,11 @@ class JFusionUser_smf2 extends JFusionUser {
 		    $db->execute();
 
 		    //update the stats
-		    $query = 'UPDATE #__settings SET value = value - 1 	WHERE variable = \'totalMembers\' ';
+		    $query = $db->getQuery(true)
+			    ->update('#__settings')
+			    ->set('value = value - 1')
+			    ->where('variable = ' . $db->quote('totalMembers'));
+
 		    $db->setQuery($query);
 		    $db->execute();
 
@@ -203,7 +207,13 @@ class JFusionUser_smf2 extends JFusionUser {
 	        $existinguser->password = sha1(strtolower($userinfo->username) . $userinfo->password_clear);
 	        $existinguser->password_salt = substr(md5(rand()), 0, 4);
 	        $db = JFusionFactory::getDatabase($this->getJname());
-	        $query = 'UPDATE #__members SET passwd = ' . $db->quote($existinguser->password). ', password_salt = ' . $db->quote($existinguser->password_salt). ' WHERE id_member  = ' . $existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->update('#__members')
+			    ->set('passwd = ' . $db->quote($existinguser->password))
+			    ->set('password_salt = ' . $db->quote($existinguser->password_salt))
+			    ->where('id_member = ' . (int)$existinguser->userid);
+
 	        $db = JFusionFactory::getDatabase($this->getJname());
 	        $db->setQuery($query );
 
@@ -238,7 +248,12 @@ class JFusionUser_smf2 extends JFusionUser {
 	    try {
 		    //we need to update the email
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'UPDATE #__members SET email_address ='.$db->quote($userinfo->email) .' WHERE id_member =' . $existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->update('#__members')
+			    ->set('email_address = ' . $db->quote($userinfo->email))
+			    ->where('id_member = ' . (int)$existinguser->userid);
+
 		    $db->setQuery($query);
 		    $db->execute();
 
@@ -272,7 +287,12 @@ class JFusionUser_smf2 extends JFusionUser {
 	            $usergroup = $usergroups[0];
 
 				$db = JFusionFactory::getDatabase($this->getJname());
-				$query = 'UPDATE #__members SET id_group =' . $db->quote($usergroup) . ' WHERE id_member =' . (int)$existinguser->userid;
+
+		        $query = $db->getQuery(true)
+			        ->update('#__members')
+			        ->set('id_group = ' . $db->quote($usergroup))
+			        ->where('id_member = ' . (int)$existinguser->userid);
+
 				$db->setQuery($query);
 		        $db->execute();
 
@@ -358,7 +378,13 @@ class JFusionUser_smf2 extends JFusionUser {
     {
 	    try {
 	        $db = JFusionFactory::getDatabase($this->getJname());
-	        $query = 'UPDATE #__members SET is_activated = 1, validation_code = \'\' WHERE id_member  = ' . $existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->update('#__members')
+			    ->set('is_activated = 1')
+			    ->set('validation_code = ' . $db->quote(''))
+			    ->where('id_member = ' . (int)$existinguser->userid);
+
 	        $db->setQuery($query );
 		    $db->execute();
 
@@ -379,7 +405,13 @@ class JFusionUser_smf2 extends JFusionUser {
     {
 	    try {
 	        $db = JFusionFactory::getDatabase($this->getJname());
-	        $query = 'UPDATE #__members SET is_activated = 0, validation_code = '.$db->Quote($userinfo->activation).' WHERE id_member  = ' . $existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->update('#__members')
+			    ->set('is_activated = 0')
+			    ->set('validation_code = ' . $db->quote($userinfo->activation))
+			    ->where('id_member = ' . (int)$existinguser->userid);
+
 	        $db->setQuery($query );
 		    $db->execute();
 
@@ -450,12 +482,23 @@ class JFusionUser_smf2 extends JFusionUser {
 			    $db->insertObject('#__members', $user, 'id_member' );
 
 			    //update the stats
-			    $query = 'UPDATE #__settings SET value = value + 1 	WHERE variable = \'totalMembers\' ';
+
+			    $query = $db->getQuery(true)
+				    ->update('#__settings')
+				    ->set('value = value + 1')
+				    ->where('variable = ' . $db->quote('totalMembers'));
+
 			    $db->setQuery($query);
 			    $db->execute();
 
 			    $date = strftime('%Y-%m-%d');
-			    $query = 'UPDATE #__log_activity SET registers = registers + 1 WHERE date = \''.$date.'\'';
+
+			    $query = $db->getQuery(true)
+				    ->update('#__log_activity')
+				    ->set('registers = registers + 1')
+				    ->where('date = ' . $db->quote($date));
+
+
 			    $db->setQuery($query);
 			    $db->execute();
 

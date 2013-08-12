@@ -477,12 +477,18 @@ HTML;
 				    $db->setQuery($q);
 				    $images = $db->loadRowList();
 				    foreach ($images as $i) {
+					    $q = $db->getQuery(true)
+						    ->update('#__'.$tbl);
+
 					    if ($action == 'enable') {
-						    $q = 'UPDATE #__'.$tbl.' SET '.$col.' = \''.$source_url.$i[1].'\' WHERE '.$tbl.'id = '.$i[0];
+						    $q->set($col.' = '.$q->quote($source_url.$i[1]));
 					    } else {
 						    $i[1] = str_replace($source_url, '', $i[1]);
-						    $q = 'UPDATE #__'.$tbl.' SET '.$col.' = \''.$i[1].'\' WHERE '.$tbl.'id = '.$i[0];
+						    $q->set($col.' = '.$q->quote($i[1]));
 					    }
+
+					    $q->where($tbl.'id = '.$i[0]);
+
 					    $db->setQuery($q);
 					    $db->execute();
 				    }
@@ -492,12 +498,17 @@ HTML;
 			    $db->setQuery($q);
 			    $deficon = $db->loadResult();
 			    if (!empty($deficon)) {
+				    $q = $db->getQuery(true)
+					    ->update('#__setting');
+
 				    if ($action == 'enable' && strpos($deficon, 'http') === false) {
-					    $q = 'UPDATE #__setting SET value = \''.$source_url.$deficon.'\' WHERE varname = \'showdeficon\'';
+					    $q->set('value = ' . $q->quote($source_url.$deficon));
 				    } elseif ($action == 'disable') {
 					    $deficon = str_replace($source_url, '', $deficon);
-					    $q = 'UPDATE #__setting SET value = \''.$deficon.'\' WHERE varname = \'showdeficon\'';
+					    $q->set('value = ' . $q->quote($deficon));
 				    }
+				    $q->where('varname = '.$q->quote('showdeficon'));
+
 				    $db->setQuery($q);
 				    $db->execute();
 			    }
