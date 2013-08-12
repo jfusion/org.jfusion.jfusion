@@ -787,9 +787,8 @@ class plgUserJfusion extends JPlugin
 		        $levels = implode(',', $userInfo->getAuthorisedViewLevels());
 
 		        $db = JFactory::getDbo();
-		        $query = $db->getQuery(true);
-
-		        $query->select('folder, type, element, params')
+		        $query = $db->getQuery(true)
+			        ->select('folder, type, element, params')
 			        ->from('#__extensions')
 			        ->where('type =' . $db->Quote('plugin'))
 			        ->where('element =' . $db->Quote('joomla'))

@@ -41,7 +41,13 @@ class JFormFieldForumListDiscussionbot extends JFormField
     {
 	    try {
 		    $db = JFactory::getDBO();
-		    $query = 'SELECT params FROM #__extensions WHERE element = \'jfusion\' and folder = \'content\'';
+
+		    $query = $db->getQuery(true)
+			    ->select('params')
+			    ->from('#__extensions')
+			    ->where('element = ' . $db->Quote('jfusion'))
+			    ->where('folder = ' . $db->Quote('content'));
+
 		    $db->setQuery($query);
 		    $params = $db->loadResult();
 		    $jPluginParam = new JRegistry($params);

@@ -82,8 +82,8 @@ class jfusionViewlanguages extends JViewLegacy
 
 	    $db = JFactory::getDBO();
 
-	    $query = $db->getQuery(true);
-	    $query->select('element, manifest_cache, extension_id')
+	    $query = $db->getQuery(true)
+		    ->select('element, manifest_cache, extension_id')
 		    ->from('#__extensions')
 		    ->where('name LIKE '.$db->Quote('jfusion %'))
 	        ->where('type LIKE '.$db->Quote('file'))

@@ -50,8 +50,8 @@ class jfusionViewsyncoptions extends JViewLegacy
         //were we redirected here for a sync resume?
         $syncid = JFactory::getApplication()->input->get->get('syncid', '');
         if (!empty($syncid)) {
-	        $query = $db->getQuery(true);
-	        $query->select('syncid')
+	        $query = $db->getQuery(true)
+		        ->select('syncid')
 		        ->from('#__jfusion_sync')
 		        ->where('syncid = '.$db->Quote($syncid));
 

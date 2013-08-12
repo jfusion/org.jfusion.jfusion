@@ -138,8 +138,8 @@ HTML;
 
 		$db = JFactory::getDBO();
 
-		$query = $db->getQuery(true);
-		$query->select('name as id, name as name')
+		$query = $db->getQuery(true)
+			->select('name as id, name as name')
 			->from('#__jfusion')
 			->where('status = 1');
 
@@ -219,8 +219,8 @@ HTML;
 	{
 		$db = JFactory::getDBO();
 
-		$query = $db->getQuery(true);
-		$query->select('name as id, name as name')
+		$query = $db->getQuery(true)
+			->select('name as id, name as name')
 			->from('#__jfusion')
 			->where('status = 1');
 

@@ -296,8 +296,8 @@ class JFusionFactory
         //get the current parameters from the jfusion table
         $db = JFactory::getDBO();
 
-	    $query = $db->getQuery(true);
-	    $query->select('params')
+	    $query = $db->getQuery(true)
+		    ->select('params')
 		    ->from('#__jfusion')
 		    ->where('name = '.$db->Quote($jname));
 
@@ -388,8 +388,8 @@ class JFusionFactory
         static $plugins;
 	    $db = JFactory::getDBO();
 
-	    $query = $db->getQuery(true);
-	    $query->select('id, name, status, dual_login')
+	    $query = $db->getQuery(true)
+		    ->select('id, name, status, dual_login')
 		    ->from('#__jfusion');
 
         switch ($criteria) {

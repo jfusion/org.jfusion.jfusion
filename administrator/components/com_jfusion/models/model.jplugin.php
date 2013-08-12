@@ -109,7 +109,11 @@ class JFusionJplugin
     {
 	    try {
 		    $db = JFusionFactory::getDatabase($jname);
-		    $query = 'SELECT username, email from #__users';
+
+		    $query = $db->getQuery(true)
+			    ->select('username, email')
+			    ->from('#__users');
+
 		    $db->setQuery($query,$limitstart,$limit);
 		    $userlist = $db->loadObjectList();
 	    } catch (Exception $e) {
@@ -129,7 +133,11 @@ class JFusionJplugin
     {
 	    try {
 	        $db = JFusionFactory::getDatabase($jname);
-	        $query = 'SELECT count(*) from #__users';
+
+		    $query = $db->getQuery(true)
+			    ->select('count(*)')
+			    ->from('#__users');
+
 	        $db->setQuery($query);
 	        //getting the results
 	        return $db->loadResult();
@@ -151,7 +159,9 @@ class JFusionJplugin
 	    try {
 	        $db = JFusionFactory::getDatabase($jname);
 
-		    $query = 'SELECT id, title as name FROM #__usergroups';
+		    $query = $db->getQuery(true)
+			    ->select('count(*)')
+			    ->from('#__usergroups');
 
 	        $db->setQuery($query);
 	        //getting the results
@@ -179,7 +189,12 @@ class JFusionJplugin
 		    } else {
 			    $usergroup_id = $params->get('usergroup', 2);
 			    //we want to output the usergroup name
-			    $query = 'SELECT title from #__usergroups WHERE id = ' . $usergroup_id;
+
+			    $query = $db->getQuery(true)
+				    ->select('title')
+				    ->from('#__usergroups')
+			        ->where('id = ' . $usergroup_id);
+
 			    $db->setQuery($query);
 			    $group = $db->loadResult();
 		    }
@@ -205,7 +220,12 @@ class JFusionJplugin
 	        $db = JFusionFactory::getDatabase($jname);
 
 		    //we want to output the usergroup name
-		    $query = 'SELECT title from #__usergroups WHERE id = ' . $gid;
+
+		    $query = $db->getQuery(true)
+			    ->select('title')
+			    ->from('#__usergroups')
+			    ->where('id = ' . $gid);
+
 		    $db->setQuery($query);
 		    $group = $db->loadResult();
 	    } catch (Exception $e) {
@@ -231,7 +251,11 @@ class JFusionJplugin
 			    $db = JFusionFactory::getDatabase($jname);
 
 			    //we want to output the usergroup name
-			    $query = 'SELECT params from #__extensions WHERE element = \'com_users\'';
+			    $query = $db->getQuery(true)
+				    ->select('params')
+				    ->from('#__extensions')
+				    ->where('element = ' . $db->quote('com_users'));
+
 			    $db->setQuery($query);
 			    $params = $db->loadResult();
 
@@ -620,23 +644,33 @@ class JFusionJplugin
 		    list($identifier_type, $identifier) = $JFusionUser->getUserIdentifier($userinfo, 'username', 'email');
 		    if ($jname == 'joomla_int' && $identifier_type == 'username') {
 			    $params = JFusionFactory::getParams($jname);
+
+			    $query = $db->getQuery(true)
+				    ->select('b.id as userid, b.activation, a.username, b.name, b.password, b.email, b.block, b.params')
+				    ->from('#__users as b')
+			        ->innerJoin('#__jfusion_users as a ON a.id = b.id');
+
 			    if ($params->get('case_insensitive')) {
-				    $where = 'LOWER(a.' . $identifier_type . ') = ' . $db->Quote(strtolower($identifier));
+				    $query->where('LOWER(a.' . $identifier_type . ') = ' . $db->Quote(strtolower($identifier)));
 			    } else {
-				    $where = 'a.' . $identifier_type . ' = ' . $db->Quote($identifier);
+				    $query->where('a.' . $identifier_type . ' = ' . $db->Quote($identifier));
 			    }
 			    //first check the JFusion user table if the identifier_type = username
-			    $db->setQuery('SELECT b.id as userid, b.activation, a.username, b.name, b.password, b.email, b.block, b.params FROM #__users as b INNER JOIN #__jfusion_users as a ON a.id = b.id WHERE ' . $where);
+			    $db->setQuery($query);
 
 			    $result = $db->loadObject();
 			    if (!$result) {
+				    $query = $db->getQuery(true)
+					    ->select('id as userid, activation, username, name, password, email, block, params')
+					    ->from('#__users');
+
 				    if ($params->get('case_insensitive')) {
-					    $where = 'LOWER(' . $identifier_type . ') = ' . $db->Quote(strtolower($identifier));
+					    $query->where('LOWER(a.' . $identifier_type . ') = ' . $db->Quote(strtolower($identifier)));
 				    } else {
-					    $where = $identifier_type . ' = ' . $db->Quote($identifier);
+					    $query->where('a.' . $identifier_type . ' = ' . $db->Quote($identifier));
 				    }
 				    //check directly in the joomla user table
-				    $db->setQuery('SELECT id as userid, activation, username, name, password, email, block, params FROM #__users WHERE ' . $where);
+				    $db->setQuery($query);
 
 				    $result = $db->loadObject();
 				    if ($result) {
@@ -651,11 +685,21 @@ class JFusionJplugin
 				    }
 			    }
 		    } else {
-			    $db->setQuery('SELECT id as userid, activation, username, name, password, email, block, params FROM #__users WHERE ' . $identifier_type . ' = ' . $db->Quote($identifier));
+			    $query = $db->getQuery(true)
+				    ->select('id as userid, activation, username, name, password, email, block, params')
+				    ->from('#__users')
+				    ->where($identifier_type . ' = ' . $db->Quote($identifier));
+
+			    $db->setQuery($query);
 			    $result = $db->loadObject();
 		    }
 		    if ($result) {
-			    $query = 'SELECT a.group_id, b.title as name FROM #__user_usergroup_map as a INNER JOIN #__usergroups as b ON a.group_id = b.id WHERE a.user_id='.$db->Quote($result->userid);
+			    $query = $db->getQuery(true)
+				    ->select('a.group_id, b.title as name')
+				    ->from('#__user_usergroup_map as a')
+				    ->innerJoin('#__usergroups as b ON a.group_id = b.id')
+				    ->where('a.user_id = ' . $db->Quote($result->userid));
+
 			    $db->setQuery($query);
 			    $groupList = $db->loadObjectList();
 			    if ($groupList) {
@@ -697,13 +741,20 @@ class JFusionJplugin
 			    }
 
 			    //check to see if CB is installed and activated and if so update the activation and ban accordingly
-			    $query = 'SELECT enabled FROM #__extensions WHERE name LIKE \'%com_comprofiler%\'';
+			    $query = $db->getQuery(true)
+				    ->select('enabled')
+				    ->from('#__extensions')
+				    ->where('name LIKE ' . $db->quote('%com_comprofiler%'));
 
 			    $db->setQuery($query);
 			    $cbenabled = $db->loadResult();
 
 			    if (!empty($cbenabled)) {
-				    $query = 'SELECT confirmed, approved, cbactivation FROM #__comprofiler WHERE user_id = '.$result->userid;
+				    $query = $db->getQuery(true)
+					    ->select('confirmed, approved, cbactivation')
+					    ->from('#__comprofiler')
+					    ->where('user_id = ' . $result->userid);
+
 				    $db->setQuery($query);
 				    $cbresult = $db->loadObject();
 
@@ -977,17 +1028,32 @@ class JFusionJplugin
 			    //load the database
 			    $db = JFusionFactory::getDatabase($jname);
 			    //joomla does not allow duplicate email addresses, check to see if the email is unique
-			    $query = 'SELECT id as userid, username, email from #__users WHERE email =' . $db->Quote($userinfo->email);
+			    $query = $db->getQuery(true)
+				    ->select('id as userid, username, email')
+				    ->from('#__users')
+				    ->where('email = ' . $db->Quote($userinfo->email));
+
 			    $db->setQuery($query);
 			    $existinguser = $db->loadObject();
 			    if (empty($existinguser)) {
 				    //apply username filtering
 				    $username_clean = JFusionJplugin::filterUsername($userinfo->username, $jname);
 				    //now we need to make sure the username is unique in Joomla
-				    $db->setQuery('SELECT id FROM #__users WHERE username=' . $db->Quote($username_clean));
+
+				    $query = $db->getQuery(true)
+					    ->select('id')
+					    ->from('#__users')
+				        ->where('username=' . $db->Quote($username_clean));
+
+				    $db->setQuery($query);
 				    while ($db->loadResult()) {
 					    $username_clean.= '_';
-					    $db->setQuery('SELECT id FROM #__users WHERE username=' . $db->Quote($username_clean));
+					    $query = $db->getQuery(true)
+						    ->select('id')
+						    ->from('#__users')
+						    ->where('username=' . $db->Quote($username_clean));
+
+					    $db->setQuery($query);
 				    }
 				    $status['debug'][] = JText::_('USERNAME') . ':' . $userinfo->username . ' ' . JText::_('FILTERED_USERNAME') . ':' . $username_clean;
 				    //create a Joomla password hash if password_clear is available
@@ -1304,43 +1370,71 @@ class JFusionJplugin
     * Functions For JFusion Who's Online Module
     ***********************************************/
 
-    /**
-     * Returns a query to find online users
-     * Make sure columns are named as userid, username, username_clean (if applicable), name (of user), and email
-     *
-     * @param int $limit integer to use as a limiter for the number of results returned
-     *
-     * @return string online user query
-     */
-    public static function getOnlineUserQuery($limit)
+	/**
+	 * Returns a query to find online users
+	 * Make sure columns are named as userid, username, username_clean (if applicable), name (of user), and email
+	 *
+	 * @param string $jname
+	 * @param int $limit integer to use as a limiter for the number of results returned
+	 *
+	 * @return string online user query
+	 */
+    public static function getOnlineUserQuery($jname, $limit)
     {
-        $limiter = (!empty($limit)) ? "LIMIT 0,$limit" : '';
-        $query = 'SELECT DISTINCT u.id AS userid, u.username, u.name, u.email' . ' FROM #__users AS u INNER JOIN #__session AS s' . ' ON u.id = s.userid' . ' WHERE s.client_id = 0' . ' AND s.guest = 0 ' . $limiter;
-        return $query;
+	    $db = JFusionFactory::getDatabase($jname);
+
+        $limiter = (!empty($limit)) ? ' LIMIT 0,'.$limit : '';
+
+	    $query = $db->getQuery(true)
+		    ->select('DISTINCT u.id AS userid, u.username, u.name, u.email')
+		    ->from('#__users AS u')
+	        ->innerJoin('#__session AS s ON u.id = s.userid')
+		    ->where('s.client_id = 0')
+		    ->where('s.guest = 0');
+
+	    $query = (string)$query;
+        return $query.$limiter;
     }
 
-    /**
-     * Returns number of guests
-     *
-     * @return int
-     */
-    public static function getNumberOnlineGuests()
+	/**
+	 * Returns number of guests
+	 *
+	 * @param string $jname
+	 *
+	 * @return int
+	 */
+    public static function getNumberOnlineGuests($jname)
     {
-        $db = JFactory::getDBO();
-        $query = 'SELECT COUNT(*) FROM #__session WHERE guest = 1 AND usertype = \'\' AND client_id = 0';
+	    $db = JFusionFactory::getDatabase($jname);
+
+	    $query = $db->getQuery(true)
+		    ->select('COUNT(*)')
+		    ->from('#__session')
+		    ->where('guest = 1')
+		    ->where('client_id = 0')
+		    ->where('usertype = ' . $db->Quote(''));
+
         $db->setQuery($query);
         return $db->loadResult();
     }
 
-    /**
-     * Returns number of logged in users
-     *
-     * @return int
-     */
-    public static function getNumberOnlineMembers()
+	/**
+	 * Returns number of logged in users
+	 *
+	 * @param $jname
+	 *
+	 * @return int
+	 */
+    public static function getNumberOnlineMembers($jname)
     {
-        $db = JFactory::getDBO();
-        $query = 'SELECT COUNT(DISTINCT userid) AS c FROM #__session WHERE guest = 0 AND client_id = 0';
+	    $db = JFusionFactory::getDatabase($jname);
+
+	    $query = $db->getQuery(true)
+		    ->select('COUNT(DISTINCT userid) AS c')
+		    ->from('#__session')
+		    ->where('guest = 0')
+		    ->where('client_id = 0');
+
         $db->setQuery($query);
         return $db->loadResult();
     }

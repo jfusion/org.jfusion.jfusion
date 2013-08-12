@@ -53,8 +53,8 @@ class jfusionViewversioncheck extends JViewLegacy
 
 		$db = JFactory::getDBO();
 
-		$query = $db->getQuery(true);
-		$query->select('name')
+		$query = $db->getQuery(true)
+			->select('name')
 			->from('#__jfusion')
 			->where('original_name IS NULL');
 

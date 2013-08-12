@@ -62,7 +62,12 @@ class JFusionFunctionAdmin
 
         if ($wizard) {
             //data submitted by the wizard so merge the data with existing params if they do indeed exist
-            $query = 'SELECT params FROM #__jfusion WHERE name = ' . $db->Quote($jname);
+
+	        $query = $db->getQuery(true)
+		        ->select('params')
+		        ->from('#__jfusion')
+		        ->where('name = '.$db->Quote($jname));
+
             $db->setQuery($query);
             $existing_serialized = $db->loadResult();
             if (!empty($existing_serialized)) {
@@ -77,8 +82,8 @@ class JFusionFunctionAdmin
         $serialized = base64_encode(serialize($post));
         //set the current parameters in the jfusion table
 
-	    $query = $db->getQuery(true);
-	    $query->update('#__jfusion')
+	    $query = $db->getQuery(true)
+		    ->update('#__jfusion')
 		    ->set('params = '.$db->Quote($serialized))
 		    ->where('name = ' . $db->Quote($jname));
 
@@ -140,7 +145,11 @@ class JFusionFunctionAdmin
     {
         $db = JFactory::getDBO();
 
-	    $query = 'SELECT enabled FROM #__extensions WHERE element=' . $db->Quote($element) . ' AND folder=' . $db->Quote($folder);
+	    $query = $db->getQuery(true)
+		    ->select('enabled')
+		    ->from('#__extensions')
+		    ->where('element = ' . $db->Quote($element))
+		    ->where('folder = ' . $db->Quote($folder));
 
         $db->setQuery($query);
         $result = $db->loadResult();

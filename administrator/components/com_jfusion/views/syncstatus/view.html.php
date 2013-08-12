@@ -70,8 +70,8 @@ class jfusionViewsyncstatus extends JViewLegacy
 
         $db = JFactory::getDBO();
 
-	    $query = $db->getQuery(true);
-	    $query->select('COUNT(*)')
+	    $query = $db->getQuery(true)
+		    ->select('COUNT(*)')
 		    ->from('#__jfusion_sync_details')
 		    ->where('syncid = '.$db->Quote($this->syncid));
 

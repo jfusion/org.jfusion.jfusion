@@ -284,7 +284,11 @@ class JFusionForum
                                 $forumid = $categoryPairs[$parent_id];
                             } else {
                                 //get the parent's parent
-                                $query = 'SELECT parent FROM #__k2_categories WHERE id = '.$parent_id;
+	                            $query = $db->getQuery(true)
+		                            ->select('parent')
+		                            ->from('#__k2_categories')
+		                            ->where('id = '.$parent_id);
+
                                 $db->setQuery($query);
                                 //keep going up
                                 $parent_id = $db->loadResult();

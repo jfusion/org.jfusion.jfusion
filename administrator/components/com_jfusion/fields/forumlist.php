@@ -45,7 +45,13 @@ class JFormFieldForumlist extends JFormField
 			JArrayHelper::toInteger($cid, array(0));
 			//find out which JFusion plugin is used in the activity module
 			$db = JFactory::getDBO();
-			$query = 'SELECT params FROM #__modules  WHERE module = \'mod_jfusion_activity\' and id = ' . $db->Quote($cid[0]);
+
+			$query = $db->getQuery(true)
+				->select('params')
+				->from('#__modules')
+				->where('module = ' . $db->Quote('mod_jfusion_activity'))
+				->where('id = ' . $db->Quote($cid[0]));
+
 			$db->setQuery($query);
 			$params = $db->loadResult();
 			$parametersInstance = new JRegistry($params);

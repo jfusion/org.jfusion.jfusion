@@ -279,8 +279,8 @@ class com_jfusionInstallerScript
 			}
 		}
 		//make sure that the slave and dual_login capabilties of the joomla_ext plugin is enabled
-		$query = $db->getQuery(true);
-		$query->update('#__jfusion')
+		$query = $db->getQuery(true)
+			->update('#__jfusion')
 			->set('slave = 0')
 			->where('name = ' . $db->Quote('joomla_ext'))
 			->where('slave = 3');
@@ -288,8 +288,8 @@ class com_jfusionInstallerScript
 		$db->setQuery($query);
 		$db->execute();
 
-		$query = $db->getQuery(true);
-		$query->update('#__jfusion')
+		$query = $db->getQuery(true)
+			->update('#__jfusion')
 			->set('dual_login = 0')
 			->where('name = ' . $db->Quote('joomla_ext'))
 			->where('dual_login = 3');
@@ -425,8 +425,8 @@ class com_jfusionInstallerScript
 		//migrate from #__jfusion_forum_plugin to #__jfusion_discussion_bot
 		//check to see if #__jfusion_forum_plugin exists indicating that #__jfusion_discussion_bot has not been populated
 		if(array_search($table_prefix . 'jfusion_forum_plugin',$table_list)) {
-			$query = $db->getQuery(true);
-			$query->select('*')
+			$query = $db->getQuery(true)
+				->select('*')
 				->from('#__jfusion_forum_plugin');
 
 			$db->setQuery($query);
@@ -461,8 +461,8 @@ class com_jfusionInstallerScript
 
 			if($migrate_success) {
 				//add com_content to components column
-				$query = $db->getQuery(true);
-				$query->update('#__jfusion_discussion_bot')
+				$query = $db->getQuery(true)
+					->update('#__jfusion_discussion_bot')
 					->set('component = '.$db->Quote('com_content'));
 				$db->setQuery($query);
 				try {
@@ -495,8 +495,8 @@ class com_jfusionInstallerScript
 				try {
 					$db->execute();
 
-					$query = $db->getQuery(true);
-					$query->update('#__jfusion_discussion_bot')
+					$query = $db->getQuery(true)
+						->update('#__jfusion_discussion_bot')
 						->set('component = '.$db->Quote('com_content'));
 
 					$db->setQuery($query);
@@ -526,7 +526,9 @@ class com_jfusionInstallerScript
 		 * todo: Determine if we really need this in the installer ???? also remove unneeded plugin_files field from database ??? if this is NOT needed
 		//restore deleted plugins if possible and applicable
 		//get a list of installed plugins
-		$query = 'SELECT name, original_name, plugin_files FROM #__jfusion';
+		$query = $db->getQuery(true)
+			->select('name, original_name, plugin_files')
+			->from('#__jfusion');
 		$db->setQuery($query);
 		$installedPlugins = $db->loadObjectList();
 
@@ -633,12 +635,24 @@ HTML;
 		*/
 
 		//cleanup unused plugins
-		$query = 'SELECT name from #__jfusion WHERE (params IS NULL OR params = \'\' OR params = \'0\') AND (master = 0 and slave = 0) AND (name NOT LIKE "joomla_int")';
+		$query = $db->getQuery(true)
+			->select('name')
+			->from('#__jfusion')
+			->where('(params IS NULL OR params = '.$db->quote('').' OR params = '.$db->quote('0').')')
+			->where('master = 0')
+			->where('slave = 0')
+			->where('name NOT LIKE '.$db->quote('joomla_int'));
+
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
 		if(!empty($rows)) {
 			foreach ($rows as $row) {
-				$query = 'SELECT count(*) from #__jfusion WHERE (params IS NOT NULL OR params != \'\' OR params != \'0\' OR master = 1 OR slave = 1) AND original_name LIKE '. $db->Quote($row->name);
+				$query = $db->getQuery(true)
+					->select('count(*)')
+					->from('#__jfusion')
+					->where('(params IS NOT NULL OR params != '.$db->quote('').' OR params != '.$db->quote('0').' OR master = 1 OR slave = 1)')
+					->where('original_name LIKE '. $db->Quote($row->name));
+
 				$db->setQuery($query);
 				$copys = $db->loadResult();
 				if (!$copys) {
@@ -951,7 +965,10 @@ HTML;
 		//see if any plugins need upgrading
 
 		//make sure default plugins are installed
-		$query = 'SELECT original_name , name FROM #__jfusion';
+		$query = $db->getQuery(true)
+			->select('original_name , name')
+			->from('#__jfusion');
+
 		$db->setQuery($query);
 		$Plugins = $db->loadObjectList();
 
@@ -1070,19 +1087,23 @@ HTML;
 		}
 
 		//Make sure the status field in jos_jfusion has got either 0 or 1
-		$query = 'SELECT status FROM #__jfusion WHERE status = 3';
+		$query = $db->getQuery(true)
+			->select('status')
+			->from('#__jfusion')
+			->where('status = 3');
+
 		$db->setQuery($query);
 		if ($db->loadResult()) {
-			$query = $db->getQuery(true);
-			$query->update('#__jfusion')
+			$query = $db->getQuery(true)
+				->update('#__jfusion')
 				->set('status = 0')
 				->where('status <> 3');
 
 			$db->setQuery($query);
 			$db->execute();
 
-			$query = $db->getQuery(true);
-			$query->update('#__jfusion')
+			$query = $db->getQuery(true)
+				->update('#__jfusion')
 				->set('status = 1')
 				->where('status = 3');
 

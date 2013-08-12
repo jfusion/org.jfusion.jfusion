@@ -46,7 +46,11 @@ class JFormFieldDiscussionbotparam extends JFormField
 			$name = (string) $this->fieldname;
 			$value = $this->value;
 
-			$query = 'SELECT params FROM #__extensions WHERE element = \'jfusion\' AND folder = \'content\'';
+			$query = $db->getQuery(true)
+				->select('params')
+				->from('#__extensions')
+				->where('element = '.$db->quote('jfusion'))
+				->where('folder = '.$db->quote('content'));
 
 			$db->setQuery($query);
 			$results = $db->loadResult();
@@ -59,10 +63,13 @@ class JFormFieldDiscussionbotparam extends JFormField
 			$feature = $this->element['feature'];
 
 			if ($feature == 'k2') {
-				$jdb = JFactory::getDBO();
-				$query = 'SELECT enabled FROM #__extensions WHERE element = ' . $jdb->Quote('com_k2');
+				$query = $db->getQuery(true)
+					->select('enabled')
+					->from('#__extensions')
+					->where('element = '.$db->quote('com_k2'));
+
 				$db->setQuery( $query );
-				$enabled = $jdb->loadResult();
+				$enabled = $db->loadResult();
 				if (empty($enabled)) {
 					throw new RuntimeException(JText::_('K2_NOT_AVAILABLE'));
 				}

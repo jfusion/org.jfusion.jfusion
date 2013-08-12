@@ -42,7 +42,13 @@ class JFormFieldForumListSearchPlugin extends JFormField
 	    try {
 	        //find out which JFusion plugin is used
 	        $db = JFactory::getDBO();
-	        $query = 'SELECT params FROM #__extensions  WHERE element = \'jfusion\' and folder = \'search\'';
+
+		    $query = $db->getQuery(true)
+			    ->select('params')
+			    ->from('#__extensions')
+			    ->where('element = ' . $db->Quote('jfusion'))
+			    ->where('folder = ' . $db->Quote('search'));
+
 	        $db->setQuery($query);
 	        $params = $db->loadResult();
 	        $parametersInstance = new JRegistry($params);

@@ -39,8 +39,8 @@ class JFusionFunction
 		if (!isset($jfusion_master)) {
 			$db = JFactory::getDBO();
 
-			$query = $db->getQuery(true);
-			$query->select('*')
+			$query = $db->getQuery(true)
+				->select('*')
 				->from('#__jfusion')
 				->where('master = 1')
 				->where('status = 1');
@@ -62,8 +62,8 @@ class JFusionFunction
 		if (!isset($jfusion_slaves)) {
 			$db = JFactory::getDBO();
 
-			$query = $db->getQuery(true);
-			$query->select('*')
+			$query = $db->getQuery(true)
+				->select('*')
 				->from('#__jfusion')
 				->where('slave = 1')
 				->where('status = 1');
@@ -86,7 +86,11 @@ class JFusionFunction
 		//get joomla specs
         $db = JFactory::getDBO();
 
-		$query = 'SELECT published FROM #__extensions WHERE element=' . $db->Quote($element) . ' AND folder=' . $db->Quote($folder);
+		$query = $db->getQuery(true)
+			->select('published')
+			->from('#__extensions')
+			->where('element = ' . $db->Quote($element))
+			->where('folder = ' . $db->Quote($folder));
 
         $db->setQuery($query);
         $result = $db->loadResult();
@@ -253,7 +257,11 @@ class JFusionFunction
 		    } else {
 			    //check to see if we have been given a joomla id
 			    if (empty($joomla_id)) {
-				    $query = 'SELECT id FROM #__users WHERE username = ' . $db->Quote($userinfo->username);
+				    $query = $db->getQuery(true)
+					    ->select('id')
+					    ->from('#__users')
+					    ->where('username = ' . $db->Quote($userinfo->username));
+
 				    $db->setQuery($query);
 				    $joomla_id = $db->loadResult();
 				    if (empty($joomla_id)) {
@@ -263,7 +271,12 @@ class JFusionFunction
 			    if (empty($jname)) {
 				    $queries = array();
 				    //we need to update each master/slave
-				    $query = 'SELECT name FROM #__jfusion WHERE master = 1 OR slave = 1';
+				    $query = $db->getQuery(true)
+					    ->select('name')
+					    ->from('#__jfusion')
+					    ->where('master = 1')
+					    ->where('slave = 1');
+
 				    $db->setQuery($query);
 				    $jnames = $db->loadObjectList();
 				    foreach ($jnames as $jname) {
@@ -327,7 +340,14 @@ class JFusionFunction
         $result = '';
         if (!empty($userid)) {
             $column = ($isJoomlaId) ? 'a.id' : 'a.userid';
-            $query = 'SELECT a.*, b.email FROM #__jfusion_users_plugin AS a INNER JOIN #__users AS b ON a.id = b.id WHERE ' . $column . ' = ' . $db->Quote($userid) . ' AND a.jname = ' . $db->Quote($jname);
+
+	        $query = $db->getQuery(true)
+		        ->select('a.*, b.email')
+		        ->from('#__jfusion_users_plugin AS a')
+		        ->innerJoin('#__users AS b ON a.id = b.id')
+		        ->where($column . ' = ' . $db->Quote($userid))
+	            ->where('a.jname = ' . $db->Quote($jname));
+
             $db->setQuery($query);
             $result = $db->loadObject();
         }
@@ -335,19 +355,33 @@ class JFusionFunction
         if (empty($result)) {
             if ($isJoomlaId) {
                 //we have a joomla id so let's setup a temp $userinfo
-                $query = 'SELECT username, email FROM #__users WHERE id = '.$userid;
+	            $query = $db->getQuery(true)
+		            ->select('username, email')
+		            ->from('#__users')
+		            ->where('id = '.$userid);
+
                 $db->setQuery($query);
                 $result = $db->loadResult();
                 $joomla_id = $userid;
             } else {
                 //we have a plugin id so we need to find Joomla id then setup a temp $userinfo
                 //first try JFusion's user table
-                $query = 'SELECT a.id, a.email FROM #__users AS a INNER JOIN #__jfusion_users as b ON a.id = b.id WHERE b.username = ' . $db->Quote($username);
+
+	            $query = $db->getQuery(true)
+		            ->select('a.id, a.email')
+		            ->from('#__users AS a')
+		            ->innerJoin('#__jfusion_users as b ON a.id = b.id')
+		            ->where('b.username = ' . $db->Quote($username));
+
                 $db->setQuery($query);
                 $result = $db->loadObject();
                 //not created by JFusion so let's check the Joomla table directly
                 if (empty($result)) {
-                    $query = 'SELECT id, email FROM #__users WHERE username = ' . $db->Quote($username);
+	                $query = $db->getQuery(true)
+		                ->select('id, email')
+		                ->from('#__users')
+		                ->where('username = '.$db->Quote($username));
+
                     $db->setQuery($query);
                     $result = $db->loadObject();
                 }
@@ -394,7 +428,11 @@ class JFusionFunction
     public static function validPlugin($jname)
     {
         $db = JFactory::getDBO();
-        $query = 'SELECT status FROM #__jfusion WHERE name =' . $db->Quote($jname);
+	    $query = $db->getQuery(true)
+		    ->select('status')
+		    ->from('#__jfusion')
+		    ->where('name = '.$db->Quote($jname));
+
         $db->setQuery($query);
         $result = $db->loadResult();
         if ($result == '1') {
@@ -539,11 +577,13 @@ class JFusionFunction
             if (empty($contentitem->slug) || empty($contentitem->catslug)) {
                 //article was edited and saved from editor
                 $db = JFactory::getDBO();
-                $query = 'SELECT CASE WHEN CHAR_LENGTH(a.alias) THEN CONCAT_WS(":", a.id, a.alias) ELSE a.id END as slug,'.
-                ' CASE WHEN CHAR_LENGTH(cc.alias) THEN CONCAT_WS(":", cc.id, cc.alias) ELSE cc.id END as catslug'.
-                ' FROM #__content AS a' .
-                ' LEFT JOIN #__categories AS cc ON a.catid = cc.id' .
-                ' WHERE a.id = ' . $contentitem->id;
+
+	            $query = $db->getQuery(true)
+		            ->select('CASE WHEN CHAR_LENGTH(a.alias) THEN CONCAT_WS(":", a.id, a.alias) ELSE a.id END as slug, CASE WHEN CHAR_LENGTH(cc.alias) THEN CONCAT_WS(":", cc.id, cc.alias) ELSE cc.id END as catslug')
+		            ->from('#__content AS a')
+	                ->leftJoin('#__categories AS cc ON a.catid = cc.id')
+		            ->where('a.id = ' . $contentitem->id);
+
                 $db->setQuery($query);
                 $result = $db->loadObject();
 
@@ -903,19 +943,24 @@ class JFusionFunction
             }
         }
         if (!empty($uid)) {
+	        $query = $db->getQuery(true)
+		        ->select('id')
+		        ->from('#__menu')
+		        ->where('type = '.$db->Quote('component'));
+
             if ($software == 'cb') {
-                $query = 'SELECT id FROM #__menu WHERE type = \'component\' AND link LIKE \'%com_comprofiler%\' LIMIT 1';
-                $db->setQuery($query);
+	            $query->where('link LIKE '.$db->Quote('%com_comprofiler%'));
+                $db->setQuery($query,0,1);
                 $itemid = $db->loadResult();
                 $url = JRoute::_('index.php?option=com_comprofiler&task=userProfile&Itemid=' . $itemid . '&user=' . $uid);
             } elseif ($software == 'jomsocial') {
-                $query = 'SELECT id FROM #__menu WHERE type = \'component\' AND link LIKE \'%com_community%\' LIMIT 1';
-                $db->setQuery($query);
+	            $query->where('link LIKE '.$db->Quote('%com_community%'));
+                $db->setQuery($query,0,1);
                 $itemid = $db->loadResult();
                 $url = JRoute::_('index.php?option=com_community&view=profile&Itemid=' . $itemid . '&userid=' . $uid);
             } elseif ($software == 'joomunity') {
-                $query = 'SELECT id FROM #__menu WHERE type = \'component\' AND link LIKE \'%com_joomunity%\' LIMIT 1';
-                $db->setQuery($query);
+	            $query->where('link LIKE '.$db->Quote('%com_joomunity%'));
+                $db->setQuery($query,0,1);
                 $itemid = $db->loadResult();
                 $url = JRoute::_('index.php?option=com_joomunity&Itemid=' . $itemid . '&cmd=Profile.View.' . $uid);
             } else {
@@ -952,7 +997,11 @@ class JFusionFunction
             }
         }
         if ($software == 'cb') {
-            $query = 'SELECT avatar FROM #__comprofiler WHERE user_id = '.$uid;
+	        $query = $db->getQuery(true)
+		        ->select('avatar')
+		        ->from('#__comprofiler')
+		        ->where('user_id = '.$uid);
+
             $db->setQuery($query);
             $result = $db->loadResult();
             if (!empty($result)) {
@@ -961,7 +1010,11 @@ class JFusionFunction
                 $avatar = JFusionFunction::getJoomlaURL() . 'components/com_comprofiler/plugin/templates/default/images/avatar/nophoto_n.png';
             }
         } elseif ($software == 'jomsocial') {
-            $query = 'SELECT avatar FROM #__community_users WHERE userid = '.$uid;
+	        $query = $db->getQuery(true)
+		        ->select('avatar')
+		        ->from('#__community_users')
+		        ->where('userid = '.$uid);
+
             $db->setQuery($query);
             $result = $db->loadResult();
             if (!empty($result)) {
@@ -970,12 +1023,20 @@ class JFusionFunction
                 $avatar = JFusionFunction::getJoomlaURL() . 'components/com_community/assets/default_thumb.jpg';
             }
         } elseif ($software == 'joomunity') {
-            $query = 'SELECT user_picture FROM #__joom_users WHERE user_id = '.$uid;
+	        $query = $db->getQuery(true)
+		        ->select('user_picture')
+		        ->from('#__joom_users')
+		        ->where('user_id = '.$uid);
+
             $db->setQuery($query);
             $result = $db->loadResult();
             $avatar = JFusionFunction::getJoomlaURL() . 'components/com_joomunity/files/avatars/' . $result;
         } elseif ($software == 'gravatar') {
-            $query = 'SELECT email FROM #__users WHERE id = '.$uid;
+	        $query = $db->getQuery(true)
+		        ->select('email')
+		        ->from('#__users')
+		        ->where('id = ' . $uid);
+
             $db->setQuery($query);
             $email = $db->loadResult();
             $avatar = 'http://www.gravatar.com/avatar.php?gravatar_id=' . md5(strtolower($email)) . '&size=40';
@@ -1651,9 +1712,8 @@ class JFusionFunction
 		$dispatcher = JEventDispatcher::getInstance();
 
 		$db = JFactory::getDbo();
-		$query = $db->getQuery(true);
-
-		$query->select('folder, type, element AS name, params')
+		$query = $db->getQuery(true)
+			->select('folder, type, element AS name, params')
 			->from('#__extensions')
 			->where('element = ' . $db->Quote('joomla'))
 			->where('type =' . $db->Quote('plugin'))

@@ -186,7 +186,13 @@ class JFusionModelInstaller extends InstallerModelInstall
     function uninstall($jname)
     {
         $db = JFactory::getDBO();
-        $db->setQuery('SELECT id FROM #__jfusion WHERE name =' . $db->Quote($jname));
+
+	    $query = $db->getQuery(true)
+		    ->select('id')
+		    ->from('#__jfusion')
+		    ->where('name = ' . $db->Quote($jname));
+
+        $db->setQuery($query);
         $myId = $db->loadResult();
         $result['status'] = false;
         if (!$myId) {
@@ -211,7 +217,13 @@ class JFusionModelInstaller extends InstallerModelInstall
     function copy($jname, $new_jname, $update = false)
     {
         $db = JFactory::getDBO();
-        $db->setQuery('SELECT id FROM #__jfusion WHERE name =' . $db->Quote($jname));
+
+	    $query = $db->getQuery(true)
+		    ->select('id')
+		    ->from('#__jfusion')
+		    ->where('name = ' . $db->Quote($jname));
+
+        $db->setQuery($query);
         $myId = $db->loadResult();
         $result['status'] = false;
         if (!$myId) {
@@ -378,7 +390,13 @@ class JFusionPluginInstaller extends JObject
 				            }
 			            }
 			            //let's check to see if a plugin with the same name is already installed
-			            $db->setQuery('SELECT id, ' . implode(', ', $features) . ' FROM #__jfusion WHERE name = ' . $db->Quote($name));
+			            $query = $db->getQuery(true)
+				            ->select('id, ' . implode(', ', $features))
+				            ->from('#__jfusion')
+				            ->where('name = ' . $db->Quote($name));
+
+			            $db->setQuery($query);
+
 			            $plugin = $db->loadObject();
 			            if (!empty($plugin)) {
 				            if (!$this->parent->isOverwrite()) {
@@ -393,8 +411,8 @@ class JFusionPluginInstaller extends JObject
 					            global $plugin_features;
 					            $plugin_features = array();
 
-					            $query = $db->getQuery(true);
-					            $query->update('#__jfusion')
+					            $query = $db->getQuery(true)
+						            ->update('#__jfusion')
 						            ->set('plugin_files = ' .$db->Quote(''));
 
 					            foreach ($features as $f) {
@@ -438,8 +456,8 @@ class JFusionPluginInstaller extends JObject
 			             */
 
 			            //check to see if this is updating a plugin that has been copied
-			            $query = $db->getQuery(true);
-			            $query->select('name')
+			            $query = $db->getQuery(true)
+				            ->select('name')
 				            ->from('#__jfusion')
 				            ->where('original_name = '.$db->Quote($name));
 
@@ -500,8 +518,8 @@ class JFusionPluginInstaller extends JObject
 		    }
 		    $db = JFactory::getDBO();
 
-		    $query = $db->getQuery(true);
-		    $query->select('name , original_name')
+		    $query = $db->getQuery(true)
+			    ->select('name , original_name')
 			    ->from('#__jfusion')
 			    ->where('name = '.$db->Quote($jname));
 
@@ -635,8 +653,8 @@ class JFusionPluginInstaller extends JObject
                 if ($update) {
                     //update the copied plugin files
 
-	                $query = $db->getQuery(true);
-	                $query->update('#__jfusion')
+	                $query = $db->getQuery(true)
+		                ->update('#__jfusion')
 		                ->set('plugin_files = ' .$db->Quote(''));
                     //get the features of the updated plugin
                     global $plugin_features;
@@ -653,7 +671,13 @@ class JFusionPluginInstaller extends JObject
                                 $$f = 3;
                             }
                         }
-                        $db->setQuery('SELECT id ' . implode(', ', $features) . ' FROM #__jfusion WHERE name = ' . $db->Quote($new_jname));
+
+	                    $query = $db->getQuery(true)
+		                    ->select('id, ' . implode(', ', $features))
+		                    ->from('#__jfusion')
+		                    ->where('name = ' . $db->Quote($new_jname));
+
+                        $db->setQuery($query);
                         $plugin = $db->loadObject();
                         if (!empty($plugin)) {
                             //enable/disable features and update the plugin files
@@ -676,7 +700,12 @@ class JFusionPluginInstaller extends JObject
                     $db->execute();
                 } else {
                     //add the new entry in the JFusion plugin table
-                    $db->setQuery('SELECT * FROM #__jfusion WHERE name = ' . $db->Quote($jname));
+	                $query = $db->getQuery(true)
+		                ->select('*')
+		                ->from('#__jfusion')
+		                ->where('name = ' . $db->Quote($jname));
+
+                    $db->setQuery($query);
                     $plugin_entry = $db->loadObject();
                     $plugin_entry->name = $new_jname;
                     $plugin_entry->id = null;

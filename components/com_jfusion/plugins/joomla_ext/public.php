@@ -68,21 +68,21 @@ class JFusionPublic_joomla_ext extends JFusionPublic {
      * @return string
      */
     function getOnlineUserQuery($limit) {
-        return JFusionJplugin::getOnlineUserQuery($limit);
+        return JFusionJplugin::getOnlineUserQuery($this->getJname(), $limit);
     }
 
     /**
      * @return int
      */
     function getNumberOnlineGuests() {
-        return JFusionJplugin::getNumberOnlineGuests();
+        return JFusionJplugin::getNumberOnlineGuests($this->getJname());
     }
 
     /**
      * @return int
      */
     function getNumberOnlineMembers() {
-        return JFusionJplugin::getNumberOnlineMembers();
+        return JFusionJplugin::getNumberOnlineMembers($this->getJname());
     }
 
     /**

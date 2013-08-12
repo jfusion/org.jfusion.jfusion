@@ -218,8 +218,8 @@ class JFusionAdmin
 		    //get the data about the JFusion plugins
 		    $db = JFactory::getDBO();
 
-		    $query = $db->getQuery(true);
-		    $query->select('*')
+		    $query = $db->getQuery(true)
+			    ->select('*')
 			    ->from('#__jfusion')
 			    ->where('name = ' . $db->Quote($jname));
 
@@ -351,8 +351,8 @@ class JFusionAdmin
         //check to see if current plugin is a slave
         $db = JFactory::getDBO();
 
-	    $query = $db->getQuery(true);
-	    $query->select('slave')
+	    $query = $db->getQuery(true)
+		    ->select('slave')
 		    ->from('#__jfusion')
 		    ->where('name = '.$db->Quote($jname));
 
@@ -467,8 +467,8 @@ JS;
         //check to see if current plugin is a slave
         $db = JFactory::getDBO();
 
-	    $query = $db->getQuery(true);
-	    $query->select('slave')
+	    $query = $db->getQuery(true)
+		    ->select('slave')
 		    ->from('#__jfusion')
 		    ->where('name = '.$db->Quote($jname));
 	    

@@ -47,8 +47,8 @@ class jfusionViewsynchistory extends JViewLegacy
         //get the all usersync data
         $db = JFactory::getDBO();
 
-	    $query = $db->getQuery(true);
-	    $query->select('*')
+	    $query = $db->getQuery(true)
+		    ->select('*')
 		    ->from('#__jfusion_sync')
 	        ->order('time_end DESC')
 		    ->order('time_start DESC');

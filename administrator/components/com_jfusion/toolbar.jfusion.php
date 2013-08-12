@@ -34,8 +34,8 @@ switch($task)
 		$element = JFactory::getApplication()->input->get('element');
 		$db = JFactory::getDBO();
 
-		$query = $db->getQuery(true);
-		$query->select('name')
+		$query = $db->getQuery(true)
+			->select('name')
 			->from('#__plugins')
 			->where('folder = '.$db->Quote($folder))
 			->where('element = '.$db->Quote($element));

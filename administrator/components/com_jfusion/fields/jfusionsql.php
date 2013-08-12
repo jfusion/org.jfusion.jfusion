@@ -53,23 +53,19 @@ class JFormFieldjfusionsql extends JFormField
 	    try {
 		    if($jname) {
 			    if (JFusionFunction::validPlugin($jname)) {
-				    $db = JFusionFactory::getDatabase($jname);
 				    $query = (string) $this->element['query'];
 
 				    //some special queries for discussion bot
 				    if ($query == 'joomla.categories') {
-					    //joomla 1.6+
-					    /**
-					     * @ignore
-					     * @var $params JDatabaseInterface
-					     */
-					    $query = $db->getQuery(true);
-					    $query->select('a.id, a.title as name, a.level');
-					    $query->from('#__categories AS a');
-					    $query->where('a.parent_id > 0');
-					    $query->where('extension = \'com_content\'');
-					    $query->where('a.published = 1');
-					    $query->order('a.lft');
+					    $db = JFactory::getDBO();
+
+					    $query = $db->getQuery(true)
+						    ->select('a.id, a.title as name, a.level')
+						    ->from('#__categories AS a')
+						    ->where('a.parent_id > 0')
+						    ->where('extension = \'com_content\'')
+						    ->where('a.published = 1')
+						    ->order('a.lft');
 
 					    $db->setQuery($query);
 					    $items = $db->loadObjectList();
@@ -79,14 +75,25 @@ class JFormFieldjfusionsql extends JFormField
 					    }
 					    $output = JHTML::_('select.genericlist',  $items, $param_name, 'class="inputbox" '.$multiple, $key, $val, $this->value, $this->formControl.'_'.$this->group.'_'.$this->fieldname);
 				    } elseif ($query == 'k2.categories') {
-					    $jdb = JFactory::getDBO();
-					    $query = 'SELECT enabled FROM #__extensions WHERE element = ' . $jdb->Quote('com_k2');
+					    $db = JFactory::getDBO();
+
+					    $query = $db->getQuery(true)
+						    ->select('enabled')
+						    ->from('#__extensions')
+						    ->where('element = ' . $db->Quote('com_k2'));
+
 					    $db->setQuery( $query );
-					    $enabled = $jdb->loadResult();
+					    $enabled = $db->loadResult();
 					    if (empty($enabled)) {
 						    throw new RuntimeException(JText::_('K2_NOT_AVAILABLE'));
 					    }
-					    $query = 'SELECT id, name as title, parent FROM #__k2_categories WHERE id > 0 AND trash = 0 AND published = 1';
+					    $query = $db->getQuery(true)
+						    ->select('id, name as title, parent')
+						    ->from('#__k2_categories')
+						    ->where('id > 0')
+						    ->where('trash = 0')
+						    ->where('published = 1');
+
 					    $db->setQuery($query);
 					    $items = $db->loadObjectList();
 					    $children = array ();
@@ -102,6 +109,7 @@ class JFormFieldjfusionsql extends JFormField
 					    $results = JFormFieldjfusionsql::buildRecursiveTree(0, '', array(), $children);
 					    $output = JHTML::_('select.genericlist',  $results, $param_name, 'class="inputbox" '.$multiple, $key, $val, $this->value, $this->formControl.'_'.$this->group.'_'.$this->fieldname);
 				    } else {
+					    $db = JFusionFactory::getDatabase($jname);
 					    $db->setQuery($this->element['query']);
 
 					    $results = $db->loadObjectList();

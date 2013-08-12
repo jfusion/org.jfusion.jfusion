@@ -88,8 +88,8 @@ class jfusionViewitemidselect extends JViewLegacy
         //get a list of direct links for jfusion plugins
         $db = JFactory::getDBO();
 
-	    $query = $db->getQuery(true);
-	    $query->select('*')
+	    $query = $db->getQuery(true)
+		    ->select('*')
 		    ->from('#__jfusion')
 		    ->where('status = 1');
 

@@ -107,8 +107,8 @@ jimport('joomla.html.pane');
 				<?php
 		        $db = JFactory::getDBO();
 
-				$query = $db->getQuery(true);
-				$query->select('name , original_name')
+				$query = $db->getQuery(true)
+					->select('name , original_name')
 					->from('#__jfusion')
 					->where('name = '.$db->Quote($this->jname));
 

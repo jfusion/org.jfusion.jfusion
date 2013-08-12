@@ -41,8 +41,8 @@ class jfusionViewdiscussionbot extends JViewLegacy
         	case 'pair_sections' :
         		$title = JText::_('ASSIGN_SECTION_PAIRS');
 
-		        $query = $db->getQuery(true);
-		        $query->select('id, title as name')
+		        $query = $db->getQuery(true)
+			        ->select('id, title as name')
 			        ->from('#__sections')
 			        ->where('published = 1')
 			        ->where('scope = '.$db->quote('content'))
@@ -54,13 +54,13 @@ class jfusionViewdiscussionbot extends JViewLegacy
         	case 'pair_categories' :
         		$title = JText::_('ASSIGN_CATEGORY_PAIRS');
 
-		        $query	= $db->getQuery(true);
-		        $query->select('a.id, a.title as name, a.level');
-		        $query->from('#__categories AS a');
-		        $query->where('a.parent_id > 0');
-		        $query->where('extension = \'com_content\'');
-		        $query->where('a.published = 1');
-		        $query->order('a.lft');
+		        $query	= $db->getQuery(true)
+			        ->select('a.id, a.title as name, a.level')
+			        ->from('#__categories AS a')
+			        ->where('a.parent_id > 0')
+			        ->where('extension = \'com_content\'')
+			        ->where('a.published = 1')
+			        ->order('a.lft');
 
 		        $db->setQuery($query);
 		        $joomlaoptions = $db->loadObjectList('id');
@@ -73,8 +73,8 @@ class jfusionViewdiscussionbot extends JViewLegacy
         	case 'pair_k2_categories':
         	    $title = JText::_('ASSIGN_K2_CATEGORY_PAIRS');
 
-		        $query = $db->getQuery(true);
-		        $query->select('id, name as title, parent')
+		        $query = $db->getQuery(true)
+			        ->select('id, name as title, parent')
 			        ->from('#__k2_categories')
 			        ->where('id > 0')
 			        ->where('trash = 0')

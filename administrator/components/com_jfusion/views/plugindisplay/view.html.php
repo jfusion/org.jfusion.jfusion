@@ -88,7 +88,11 @@ class jfusionViewplugindisplay extends JViewLegacy {
     function initRecord($jname,$record=null) {
 	    $db = JFactory::getDBO();
 	    if (!$record) {
-		    $query = 'SELECT * from #__jfusion WHERE name LIKE '.$db->quote($jname);
+		    $query = $db->getQuery(true)
+			    ->select('*')
+			    ->from('#__jfusion')
+			    ->where('name = ' . $db->Quote($jname));
+
 		    $db->setQuery($query);
 		    $record = $db->loadObject();
 	    }
@@ -103,11 +107,11 @@ class jfusionViewplugindisplay extends JViewLegacy {
 			    if ($status['config'] != $record->status) {
 				    //update the status and deactivate the plugin
 
-				    $query = $db->getQuery(true);
-				    $query->update('#__jfusion')
+				    $query = $db->getQuery(true)
+					    ->update('#__jfusion')
 					    ->set('status = '.$db->Quote($status['config']))
 					    ->where('name = ' . $db->Quote($record->name));
-
+				    $db->setQuery($query);
 				    $db->execute();
 				    //update the record status for the resExecute of the code
 				    $record->status = $status['config'];
@@ -125,7 +129,11 @@ class jfusionViewplugindisplay extends JViewLegacy {
 		    }
 
 		    //set uninstall options
-		    $query = 'SELECT count(*) from #__jfusion WHERE original_name LIKE '. $db->Quote($record->name);
+		    $query = $db->getQuery(true)
+			    ->select('count(*)')
+			    ->from('#__jfusion')
+			    ->where('original_name = ' . $db->Quote($record->name));
+
 		    $db->setQuery($query);
 		    $copys = $db->loadResult();
 		    if ($record->name == 'joomla_int' || $copys) {
@@ -217,7 +225,11 @@ class jfusionViewplugindisplay extends JViewLegacy {
 		    }
 
 		    //see if a plugin has copies
-		    $query = 'SELECT * FROM #__jfusion WHERE original_name = \''.$record->name.' \'';
+		    $query = $db->getQuery(true)
+			    ->select('*')
+			    ->from('#__jfusion')
+			    ->where('original_name = ' . $db->Quote($record->name));
+
 		    $db->setQuery($query);
 		    $record->copies = $db->loadObjectList('name');
 
@@ -285,22 +297,28 @@ class jfusionViewplugindisplay extends JViewLegacy {
 	function getPlugins() {
 		//check to see if the ordering is correct
 		$db = JFactory::getDBO();
-		$query = 'SELECT * from #__jfusion WHERE ordering = \'\' OR ordering IS NULL';
+
+		$query = $db->getQuery(true)
+			->select('*')
+			->from('#__jfusion')
+			->where('ordering = ' . $db->Quote(''), 'OR')
+			->where('ordering IS NULL');
+
 		$db->setQuery($query );
 		$ordering = $db->loadObjectList();
 		JHTML::_('behavior.modal', 'a.modal');
 		if(!empty($ordering)){
 			//set a new order
-			$query = $db->getQuery(true);
-			$query->select('*')
+			$query = $db->getQuery(true)
+				->select('*')
 				->from('#__jfusion')
 				->order('ordering ASC');
 			$db->setQuery($query );
 			$rows = $db->loadObjectList();
 			$ordering = 1;
 			foreach ($rows as $row){
-				$query = $db->getQuery(true);
-				$query->update('#__jfusion')
+				$query = $db->getQuery(true)
+					->update('#__jfusion')
 					->set('ordering = '.$ordering)
 					->where('name = ' . $db->Quote($row->name));
 
@@ -311,8 +329,8 @@ class jfusionViewplugindisplay extends JViewLegacy {
 		}
 
 		//get the data about the JFusion plugins
-		$query = $db->getQuery(true);
-		$query->select('*')
+		$query = $db->getQuery(true)
+			->select('*')
 			->from('#__jfusion')
 			->order('ordering ASC');
 

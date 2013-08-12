@@ -66,12 +66,18 @@ class JFusionUsersync
             $limitstart = 0;
         }
 
-        $sortStatement = (!empty($sort)) ? 'ORDER BY '.$sort.' '.$dir : '';
-        $whereStatement = 'WHERE syncid = '.$db->Quote($syncid);
+	    $query = $db->getQuery(true)
+		    ->select('*')
+		    ->from('#__jfusion_sync_details')
+		    ->where('syncid = '.$db->Quote($syncid));
+
+	    if (!empty($sort)) {
+		    $query->order($sort.' '.$dir);
+	    }
+
         if ($type != 'all') {
-            $whereStatement.= ' AND action = '.$db->Quote($type);
+	        $query->where('action = '.$db->Quote($type));
         }
-        $query = 'SELECT * FROM #__jfusion_sync_details '.$whereStatement.' '.$sortStatement;
         $db->setQuery($query,$limitstart,$limit);
         $results = $db->loadObjectList('id');
 
@@ -89,11 +95,15 @@ class JFusionUsersync
     public static function countLogData($syncid, $type = 'all')
     {
         $db = JFactory::getDBO();
-        $whereStatement = 'WHERE syncid = '.$db->Quote($syncid);
+
+	    $query = $db->getQuery(true)
+		    ->select('COUNT(*)')
+		    ->from('#__jfusion_sync_details')
+		    ->where('syncid = '.$db->Quote($syncid));
+
         if ($type != 'all') {
-            $whereStatement.= ' AND action = '.$db->Quote($type);
+	        $query->where('action = '.$db->Quote($type));
         }
-        $query = 'SELECT COUNT(*) FROM #__jfusion_sync_details '.$whereStatement;
         $db->setQuery($query);
         return $db->loadResult();
     }
@@ -129,8 +139,8 @@ class JFusionUsersync
         //find out if the syncid already exists
         $db = JFactory::getDBO();
 
-	    $query = $db->getQuery(true);
-	    $query->update('#__jfusion_sync')
+	    $query = $db->getQuery(true)
+		    ->update('#__jfusion_sync')
 		    ->set('syncdata = '.$db->Quote($serialized))
 		    ->where('syncid = ' . $db->Quote($syncdata['syncid']));
 
@@ -148,7 +158,12 @@ class JFusionUsersync
     public static function getSyncdata($syncid)
     {
         $db = JFactory::getDBO();
-        $query = 'SELECT syncdata FROM #__jfusion_sync WHERE syncid =' . $db->Quote($syncid);
+
+	    $query = $db->getQuery(true)
+		    ->select('syncdata')
+		    ->from('#__jfusion_sync')
+		    ->where('syncid = '.$db->Quote($syncid));
+
         $db->setQuery($query);
         $serialized = $db->loadResult();
         $syncdata = unserialize(base64_decode($serialized));
@@ -232,8 +247,8 @@ class JFusionUsersync
 	public static function markResolved($id) {
         $db = JFactory::getDBO();
 
-		$query = $db->getQuery(true);
-		$query->update('#__jfusion_sync_details')
+		$query = $db->getQuery(true)
+			->update('#__jfusion_sync_details')
 			->set('action = '.$db->Quote('resolved'))
 			->where('id = ' . $db->Quote($id));
 
@@ -403,8 +418,8 @@ class JFusionUsersync
 					    //update the finish time
 					    $db = JFactory::getDBO();
 
-					    $query = $db->getQuery(true);
-					    $query->update('#__jfusion_sync')
+					    $query = $db->getQuery(true)
+						    ->update('#__jfusion_sync')
 						    ->set('time_end = '.$db->Quote(time()))
 						    ->where('syncid = ' . $db->Quote($syncdata['syncid']));
 
@@ -428,8 +443,8 @@ class JFusionUsersync
     public static function changeSyncStatus($syncid, $status) {
         $db = JFactory::getDBO();
 
-	    $query = $db->getQuery(true);
-	    $query->update('#__jfusion_sync')
+	    $query = $db->getQuery(true)
+		    ->update('#__jfusion_sync')
 		    ->set('active = '.(int) $status)
 		    ->where('syncid = ' . $db->Quote($syncid));
 
@@ -445,7 +460,12 @@ class JFusionUsersync
     public static function getSyncStatus($syncid = '') {
         if (!empty($syncid)) {
             $db = JFactory::getDBO();
-            $query = 'SELECT active FROM #__jfusion_sync WHERE syncid = ' . $db->Quote($syncid);
+
+	        $query = $db->getQuery(true)
+		        ->select('active')
+		        ->from('#__jfusion_sync')
+		        ->where('syncid = '.$db->Quote($syncid));
+
             $db->setQuery($query);
             $status = $db->loadResult();
             return $status;
