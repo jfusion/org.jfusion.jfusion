@@ -399,7 +399,11 @@ class JFusionUser_magento extends JFusionUser {
 						if ($result) {
 							// we do not update an empty value, but remove the record instead
 							if ($user[$i]['value'] == '') {
-								$query = 'DELETE FROM #__customer_entity' . '_' . $user[$i]['backend_type'] . ' WHERE entity_id = ' . (int)$entity_id . ' AND entity_type_id = ' . (int)$this->getMagentoEntityTypeID('customer') . ' AND attribute_id = ' . (int)$user[$i]['attribute_id'];
+								$query = $db->getQuery(true)
+									->delete('#__customer_entity' . '_' . $user[$i]['backend_type'])
+									->where('entity_id = ' .  (int)$entity_id)
+									->where('entity_type_id = ' .  (int)$this->getMagentoEntityTypeID('customer'))
+									->where('attribute_id = ' .  (int)$user[$i]['attribute_id']);
 							} else {
 								$query = $db->getQuery(true)
 									->update('#__customer_entity'. '_' . $user[$i]['backend_type'])

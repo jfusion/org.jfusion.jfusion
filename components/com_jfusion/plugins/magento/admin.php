@@ -424,7 +424,10 @@ HTML;
 		    $paths[] = 'joomla/joomlaconfig/secret_key';
 
 		    foreach($paths as $path) {
-			    $query = 'DELETE FROM #__core_config_data WHERE path = ' . $db->Quote($path);
+			    $query = $db->getQuery(true)
+				    ->delete('#__core_config_data')
+				    ->where('path = ' .  $db->Quote($path));
+
 			    $db->transactionStart();
 			    $db->setQuery($query);
 			    $db->execute();

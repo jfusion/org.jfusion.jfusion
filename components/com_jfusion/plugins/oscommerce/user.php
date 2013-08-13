@@ -206,12 +206,22 @@ class JFusionUser_oscommerce extends JFusionUser
 			    case 'oscxt':
 			    case 'oscseo':
 			    case 'oscmax':
-				    $query1 = 'UPDATE #__customers ' . 'SET customers_password =' . $db->quote($existinguser->password) . 'WHERE customers_id = ' . $db->Quote($existinguser->userid);
-				    $query2 = 'UPDATE #__customers_info ' . 'SET customers_info_date_account_last_modified =' . $db->Quote($modified_date) . ' WHERE customers_info_id =' . $db->Quote($existinguser->userid);
+			        $query1 = (string)$db->getQuery(true)
+					    ->update('#__customers')
+					    ->set('customers_password = ' . $db->quote($existinguser->password))
+					    ->where('customers_id  = ' . $db->Quote($existinguser->userid));
+
+			        $query2 = (string)$db->getQuery(true)
+					    ->update('#__customers_info')
+					    ->set('customers_info_date_account_last_modified = ' . $db->quote($modified_date))
+					    ->where('customers_info_id  = ' . $db->quote($existinguser->userid));
 				    break;
 			    case 'osc3':
-				    $query1 = 'UPDATE #__customers ' . ' SET customers_password =' . $db->quote($existinguser->password) . ',date_account_last_modified=' . $db->Quote($modified_date) . ' WHERE customers_id = ' . $db->Quote($existinguser->userid);
-				    $query2 = '';
+				    $query1 = (string)$db->getQuery(true)
+					    ->update('#__customers')
+					    ->set('customers_password = ' . $db->quote($existinguser->password))
+					    ->set('date_account_last_modified = ' . $db->quote($modified_date))
+					    ->where('customers_id  = ' . $db->Quote($existinguser->userid));
 				    break;
 		    }
 		    if ($query1) {
@@ -269,12 +279,22 @@ class JFusionUser_oscommerce extends JFusionUser
 			    case 'oscxt':
 			    case 'oscseo':
 			    case 'oscmax':
-				    $query1 = 'UPDATE #__customers ' . 'SET customers_email_address =' . $db->quote($existinguser->email) . 'WHERE customers_id = ' . $db->Quote($existinguser->userid);
-				    $query2 = 'UPDATE #__customers_info ' . 'SET customers_info_date_account_last_modified =' . $db->Quote($modified_date) . ' WHERE customers_info_id =' . $db->Quote($existinguser->userid);
+				    $query1 = (string)$db->getQuery(true)
+					    ->update('#__customers')
+					    ->set('customers_email_address = ' . $db->quote($existinguser->email))
+					    ->where('customers_id  = ' . $db->quote($existinguser->userid));
+
+				    $query2 = (string)$db->getQuery(true)
+					    ->update('#__customers_info')
+					    ->set('customers_info_date_account_last_modified = ' . $db->quote($modified_date))
+					    ->where('customers_info_id  = ' . $db->quote($existinguser->userid));
 				    break;
 			    case 'osc3':
-				    $query1 = 'UPDATE #__customers ' . ' SET customers_email_address =' . $db->quote($existinguser->email) . ',date_account_last_modified=' . $db->Quote($modified_date) . ' WHERE customers_id = ' . $db->Quote($existinguser->userid);
-				    $query2 = '';
+				    $query1 = (string)$db->getQuery(true)
+					    ->update('#__customers')
+					    ->set('customers_email_address = ' . $db->quote($existinguser->email))
+					    ->set('date_account_last_modified = ' . $db->quote($modified_date))
+					    ->where('customers_id  = ' . $db->Quote($existinguser->userid));
 				    break;
 		    }
 		    if ($query1) {
@@ -434,7 +454,11 @@ class JFusionUser_oscommerce extends JFusionUser
 			    $ok = $db->insertObject('#__address_book', $user_1, 'address_book_id');
 			    if ($ok) {
 				    $infoid = $db->insertid();
-				    $query = 'UPDATE #__customers set customers_default_address_id = \'' . (int)$infoid . '\' where customers_id = \'' . (int)$userid . '\'';
+				    $query = $db->getQuery(true)
+					    ->update('#__customers')
+					    ->set('customers_default_address_id = ' . $db->quote((int)$infoid))
+					    ->where('customers_id  = ' . $db->Quote((int)$userid));
+
 				    $db->setquery($query);
 				    $ok = $db->execute();
 				    if ($ok) {
@@ -528,7 +552,11 @@ class JFusionUser_oscommerce extends JFusionUser
 				    $errors[] = 'Error Could not delete customer reviews with userid '.$user_id;
 				    $debug[] = 'Deleted customer rieviews of user with id '.$user_id;
 			    } else {
-				    $querys[] = 'UPDATE #__reviews set customers_id = null where customers_id = \'' . (int)$user_id . '\'';
+				    $querys[] = (string)$db->getQuery(true)
+					    ->update('#__reviews')
+					    ->set('customers_id = null')
+					    ->where('customers_id  = ' . $db->Quote((int)$user_id));
+
 				    $errors[] = 'Error Could not delete customer reviews with userid '.$user_id;
 				    $debug[] = 'Deleted customer rieviews of user with id '.$user_id;
 			    }
@@ -623,7 +651,11 @@ class JFusionUser_oscommerce extends JFusionUser
 			    switch ($osCversion) {
 				    case 'osczen':
 					    //set the usergroup in the user table
-					    $query = 'UPDATE #__customers SET customers_group_pricing = ' . $usergroup . ' WHERE entity_id =' . $existinguser->userid;
+					    $query = $db->getQuery(true)
+						    ->update('#__customers')
+						    ->set('customers_group_pricing = ' . $usergroup)
+						    ->where('entity_id  = ' . $existinguser->userid);
+
 					    $db->setQuery($query);
 					    $db->execute();
 
@@ -631,7 +663,11 @@ class JFusionUser_oscommerce extends JFusionUser
 					    break;
 				    case 'oscmax':
 					    //set the usergroup in the user table
-					    $query = 'UPDATE #__customers SET customers_group_id = ' . $usergroup . ' WHERE entity_id =' . $existinguser->userid;
+					    $query = $db->getQuery(true)
+						    ->update('#__customers')
+						    ->set('customers_group_id = ' . $usergroup)
+						    ->where('entity_id  = ' . $existinguser->userid);
+
 					    $db->setQuery($query);
 					    $db->execute();
 
@@ -642,7 +678,12 @@ class JFusionUser_oscommerce extends JFusionUser
 					    $query = 'SELECT customers_group_name from #__customers_groups WHERE customers_group_id = ' . implode (' , ', $existinguser->groups) . ' AND language_id = ' . $existinguser->language;
 					    $db1->setQuery($query);
 					    $customers_group_name = $db1->loadResult();
-					    $query = 'UPDATE #__customers SET customers_group_iname = ' . $customers_group_name . ' WHERE entity_id =' . $existinguser->userid;
+
+					    $query = $db->getQuery(true)
+						    ->update('#__customers')
+						    ->set('customers_group_iname = ' . $customers_group_name)
+						    ->where('entity_id  = ' . $existinguser->userid);
+
 					    $db->setQuery($query);
 					    $db->execute();
 
@@ -650,7 +691,11 @@ class JFusionUser_oscommerce extends JFusionUser
 					    break;
 				    case 'oscxt':
 				    case 'oscseo':
-					    $query = 'UPDATE #__customers SET customers_status = ' . $usergroup . ' WHERE entity_id =' . $existinguser->userid;
+					    $query = $db->getQuery(true)
+						    ->update('#__customers')
+						    ->set('customers_status = ' . $usergroup)
+						    ->where('entity_id  = ' . $existinguser->userid);
+
 					    $db->setQuery($query);
 				        $db->execute();
 

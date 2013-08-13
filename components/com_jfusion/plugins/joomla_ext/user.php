@@ -64,15 +64,25 @@ class JFusionUser_joomla_ext extends JFusionUser {
 	        //setup status array to hold debug info and errors
 	        $status = array('error' => array(),'debug' => array());
 	        $userid = $userinfo->userid;
-	        $query = 'DELETE FROM #__users WHERE id = ' . (int)$userid;
+
+		    $query = $db->getQuery(true)
+		        ->delete('#__users')
+			    ->where('id = ' . (int)$userid);
+
 	        $db->setQuery($query);
 		    $db->execute();
 
-		    $query = 'DELETE FROM #__user_profiles WHERE user_id = ' . (int)$userid;
+		    $query = $db->getQuery(true)
+			    ->delete('#__user_profiles')
+			    ->where('user_id = ' . (int)$userid);
+
 		    $db->setQuery($query);
 		    $db->execute();
 
-		    $query = 'DELETE FROM #__user_usergroup_map WHERE user_id = ' . (int)$userid;
+		    $query = $db->getQuery(true)
+			    ->delete('#__user_usergroup_map')
+			    ->where('user_id = ' . (int)$userid);
+
 		    $db->setQuery($query);
 		    $db->execute();
 

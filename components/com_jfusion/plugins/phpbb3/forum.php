@@ -529,7 +529,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 		try {
 			//setup some variables
 			$userid = $this->getThreadAuthor($dbparams,$contentitem);
-			$jdb = JFusionFactory::getDatabase($this->getJname());
+			$db = JFusionFactory::getDatabase($this->getJname());
 			$subject = trim(strip_tags($contentitem->title));
 
 			//prepare the content body
@@ -537,8 +537,8 @@ class JFusionForum_phpbb3 extends JFusionForum {
 
 			//the user information
 			$query = 'SELECT username, username_clean, user_colour, user_permissions FROM #__users WHERE user_id = '.$userid;
-			$jdb->setQuery($query);
-			$phpbbUser = $jdb->loadObject();
+			$db->setQuery($query);
+			$phpbbUser = $db->loadObject();
 
 			if ($dbparams->get('use_content_created_date', false)) {
 				$mainframe = JFactory::getApplication();
@@ -563,9 +563,9 @@ class JFusionForum_phpbb3 extends JFusionForum {
 			$topic_row->topic_time_limit = 0;
 			$topic_row->topic_attachment = 0;
 
-			$jdb->insertObject('#__topics', $topic_row, 'topic_id' );
+			$db->insertObject('#__topics', $topic_row, 'topic_id' );
 
-			$topicid = $jdb->insertid();
+			$topicid = $db->insertid();
 
 			/**
 			 * @ignore
@@ -596,9 +596,9 @@ class JFusionForum_phpbb3 extends JFusionForum {
 			$post_row->post_postcount	= 1;
 			$post_row->post_edit_locked	= 0;
 
-			$jdb->insertObject('#__posts', $post_row, 'post_id');
+			$db->insertObject('#__posts', $post_row, 'post_id');
 
-			$postid = $jdb->insertid();
+			$postid = $db->insertid();
 
 			$topic_row = new stdClass();
 			$topic_row->topic_first_post_id			= $postid;
@@ -610,11 +610,11 @@ class JFusionForum_phpbb3 extends JFusionForum {
 			$topic_row->topic_last_post_subject		= (string) $subject;
 			$topic_row->topic_id					= $topicid;
 
-			$jdb->updateObject('#__topics', $topic_row, 'topic_id' );
+			$db->updateObject('#__topics', $topic_row, 'topic_id' );
 
 			$query = 'SELECT forum_last_post_time, forum_topics, forum_topics_real, forum_posts FROM #__forums WHERE forum_id = '.$forumid;
-			$jdb->setQuery($query);
-			$num = $jdb->loadObject();
+			$db->setQuery($query);
+			$num = $db->loadObject();
 
 			$forum_stats = new stdClass();
 
@@ -627,7 +627,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 
 			if($updateLastPost) {
 				$forum_stats->forum_last_post_id 		=  $postid;
-				$forum_stats->forum_last_post_subject	= $jdb->Quote($subject);
+				$forum_stats->forum_last_post_subject	= $db->Quote($subject);
 				$forum_stats->forum_last_post_time 		=  $timestamp;
 				$forum_stats->forum_last_poster_id 		=  (int) $userid;
 				$forum_stats->forum_last_poster_name 	=  $phpbbUser->username;
@@ -639,16 +639,24 @@ class JFusionForum_phpbb3 extends JFusionForum {
 			$forum_stats->forum_topics_real = $num->forum_topics_real + 1;
 			$forum_stats->forum_posts 		= $num->forum_posts + 1;
 
-			$jdb->updateObject('#__forums', $forum_stats, 'forum_id' );
+			$db->updateObject('#__forums', $forum_stats, 'forum_id' );
 
 			//update some stats
-			$query = 'UPDATE #__users SET user_posts = user_posts + 1 WHERE user_id = '.$userid;
-			$jdb->setQuery($query);
-			$jdb->execute();
+			$query = $db->getQuery(true)
+				->update('#__users')
+				->set('user_posts = user_posts + 1')
+				->where('user_id  = ' . $userid);
 
-			$query = 'UPDATE #__config SET config_value = config_value + 1 WHERE config_name = \'num_topics\'';
-			$jdb->setQuery($query);
-			$jdb->execute();
+			$db->setQuery($query);
+			$db->execute();
+
+			$query = $db->getQuery(true)
+				->update('#__config')
+				->set('config_value = config_value + 1')
+				->where('config_name  = ' . $db->quote('num_topics'));
+
+			$db->setQuery($query);
+			$db->execute();
 
 			if(!empty($topicid) && !empty($postid)) {
 				//add information to update forum lookup
@@ -689,7 +697,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 			$postid =& $existingthread->postid;
 
 			//setup some variables
-			$jdb = JFusionFactory::getDatabase($this->getJname());
+			$db = JFusionFactory::getDatabase($this->getJname());
 			$subject = trim(strip_tags($contentitem->title));
 
 			//prepare the content body
@@ -706,8 +714,8 @@ class JFusionForum_phpbb3 extends JFusionForum {
 			$userid = $dbparams->get('default_user');
 
 			$query = 'SELECT post_edit_count FROM #__posts WHERE post_id = '.$postid;
-			$jdb->setQuery($query);
-			$count = $jdb->loadResult();
+			$db->setQuery($query);
+			$count = $db->loadResult();
 
 			$post_row = new stdClass();
 			$post_row->post_subject		= $subject;
@@ -719,12 +727,16 @@ class JFusionForum_phpbb3 extends JFusionForum {
 			$post_row->post_edit_user	= $userid;
 			$post_row->post_edit_count	= $count + 1;
 			$post_row->post_id 			= $postid;
-			$jdb->updateObject('#__posts', $post_row, 'post_id');
+			$db->updateObject('#__posts', $post_row, 'post_id');
 
 			//update the thread title
-			$query = 'UPDATE #__topics SET topic_title = ' . $jdb->Quote($subject) . ' WHERE topic_id = ' . (int) $threadid;
-			$jdb->setQuery($query);
-			$jdb->execute();
+			$query = $db->getQuery(true)
+				->update('#__topics')
+				->set('topic_title = ' . $db->Quote($subject))
+				->where('topic_id = ' . (int) $threadid);
+
+			$db->setQuery($query);
+			$db->execute();
 		} catch (Exception $e) {
 			$status['error'][] = $e->getMessage();
 		}
@@ -744,6 +756,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 	{
         $status = array('error' => array(),'debug' => array());
 		try {
+			$db = JFusionFactory::getDatabase($this->getJname());
 			if($userinfo->guest) {
 				$userinfo->username = JFactory::getApplication()->input->post->get('guest_username', '');
 				$userinfo->userid = 1;
@@ -751,7 +764,6 @@ class JFusionForum_phpbb3 extends JFusionForum {
 				if(empty($userinfo->username)) {
 					throw new RuntimeException(JTEXT::_('GUEST_FIELDS_MISSING'));
 				} else {
-					$db = JFusionFactory::getDatabase($this->getJname());
 					$user = JFusionFactory::getUser($this->getJname());
 					$username_clean = $user->filterUsername($userinfo->username);
 					$query = 'SELECT COUNT(*) FROM #__users '
@@ -769,7 +781,6 @@ class JFusionForum_phpbb3 extends JFusionForum {
 			}
 			//setup some variables
 			$userid =& $userinfo->userid;
-			$jdb = JFusionFactory::getDatabase($this->getJname());
 			$public = JFusionFactory::getPublic($this->getJname());
 			$text = JFactory::getApplication()->input->post->get('quickReply', false);
 			//strip out html from post
@@ -787,12 +798,12 @@ class JFusionForum_phpbb3 extends JFusionForum {
 
 				//get some topic information
 				$query = 'SELECT topic_title, topic_replies, topic_replies_real FROM #__topics WHERE topic_id = '.$ids->threadid;
-				$jdb->setQuery($query);
-				$topic = $jdb->loadObject();
+				$db->setQuery($query);
+				$topic = $db->loadObject();
 				//the user information
 				$query = 'SELECT username, user_colour, user_permissions FROM #__users WHERE user_id = '.$userid;
-				$jdb->setQuery($query);
-				$phpbbUser = $jdb->loadObject();
+				$db->setQuery($query);
+				$phpbbUser = $db->loadObject();
 
 				if($userinfo->guest && !empty($userinfo->username)) {
 					$phpbbUser->username = $userinfo->username;
@@ -824,9 +835,9 @@ class JFusionForum_phpbb3 extends JFusionForum {
 				$post_row->post_postcount	= 1;
 				$post_row->post_edit_locked	= 0;
 
-				$jdb->insertObject('#__posts', $post_row, 'post_id');
+				$db->insertObject('#__posts', $post_row, 'post_id');
 
-				$postid = $jdb->insertid();
+				$postid = $db->insertid();
 				//store the postid
 				$status['postid'] = $postid;
 
@@ -842,11 +853,11 @@ class JFusionForum_phpbb3 extends JFusionForum {
 					$topic_row->topic_replies				= $topic->topic_replies + 1;
 					$topic_row->topic_replies_real 			= $topic->topic_replies_real + 1;
 					$topic_row->topic_id					= $ids->threadid;
-					$jdb->updateObject('#__topics', $topic_row, 'topic_id' );
+					$db->updateObject('#__topics', $topic_row, 'topic_id' );
 
 					$query = 'SELECT forum_posts FROM #__forums WHERE forum_id = '.$ids->forumid;
-					$jdb->setQuery($query);
-					$num = $jdb->loadObject();
+					$db->setQuery($query);
+					$num = $db->loadObject();
 
 					$forum_stats = new stdClass();
 					$forum_stats->forum_last_post_id 		= $postid;
@@ -858,27 +869,35 @@ class JFusionForum_phpbb3 extends JFusionForum {
 					$forum_stats->forum_posts				= $num->forum_posts + 1;
 					$forum_stats->forum_id 					= $ids->forumid;
 					$query = 'SELECT forum_topics, forum_topics_real, forum_posts FROM #__forums WHERE forum_id = '.$ids->forumid;
-					$jdb->setQuery($query);
-					$num = $jdb->loadObject();
+					$db->setQuery($query);
+					$num = $db->loadObject();
 					$forum_stats->forum_topics = $num->forum_topics + 1;
 					$forum_stats->forum_topics_real = $num->forum_topics_real + 1;
 					$forum_stats->forum_posts = $num->forum_posts + 1;
-					$jdb->updateObject('#__forums', $forum_stats, 'forum_id' );
+					$db->updateObject('#__forums', $forum_stats, 'forum_id' );
 
 					//update some stats
-					$query = 'UPDATE #__users SET user_posts = user_posts + 1 WHERE user_id = '.$userid;
-					$jdb->setQuery($query);
-					$jdb->execute();
+					$query = $db->getQuery(true)
+						->update('#__users')
+						->set('user_posts = user_posts + 1')
+						->where('user_id = ' . $userid);
 
-					$query = 'UPDATE #__config SET config_value = config_value + 1 WHERE config_name = \'num_posts\'';
-					$jdb->setQuery($query);
-					$jdb->execute();
+					$db->setQuery($query);
+					$db->execute();
+
+					$query = $db->getQuery(true)
+						->update('#__config')
+						->set('config_value = config_value + 1')
+						->where('config_name = ' . $db->quote('num_posts'));
+
+					$db->setQuery($query);
+					$db->execute();
 				} else {
 					//update the for real count so that phpbb notes there are unapproved messages here
 					$topic_row = new stdClass();
 					$topic_row->topic_replies_real 			= $topic->topic_replies_real + 1;
 					$topic_row->topic_id					= $ids->threadid;
-					$jdb->updateObject('#__topics', $topic_row, 'topic_id' );
+					$db->updateObject('#__topics', $topic_row, 'topic_id' );
 				}
 
 				//update moderation status to tell discussion bot to notify user

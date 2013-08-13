@@ -487,7 +487,11 @@ HTML;
 		        $db->setQuery($query);
 		        $auth_method = $db->loadResult();
 		        if ($auth_method != 'jfusion') {
-			        $query = 'UPDATE #__config SET config_value = \'jfusion\' WHERE config_name = \'auth_method\'';
+			        $query = $db->getQuery(true)
+				        ->update('#__config')
+				        ->set('config_value = ' . $db->quote('jfusion'))
+				        ->where('config_name  = ' . $db->quote('auth_method'));
+
 			        $db->setQuery($query);
 			        $db->execute();
 		        }
@@ -499,7 +503,12 @@ HTML;
 	        try {
 		        //safety catch to make sure we use phpBB default to prevent lockout from phpBB
 		        $db = JFusionFactory::getDatabase($this->getJname());
-		        $query = 'UPDATE #__config SET config_value = \'db\' WHERE config_name = \'auth_method\'';
+
+		        $query = $db->getQuery(true)
+			        ->update('#__config')
+			        ->set('config_value = ' . $db->quote('db'))
+			        ->where('config_name  = ' . $db->quote('auth_method'));
+
 		        $db->setQuery($query);
 		        $db->execute();
 	        } catch (Exception $e) {
@@ -519,7 +528,12 @@ HTML;
 	    try {
 		    //check to see if the mod is enabled
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'UPDATE #__config SET config_value = \'db\' WHERE config_name = \'auth_method\'';
+
+		    $query = $db->getQuery(true)
+			    ->update('#__config')
+			    ->set('config_value = ' . $db->quote('db'))
+			    ->where('config_name  = ' . $db->quote('auth_method'));
+
 		    $db->setQuery($query);
 		    $db->execute();
 

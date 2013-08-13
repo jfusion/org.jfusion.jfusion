@@ -111,11 +111,17 @@ class JFusionUser_mediawiki extends JFusionUser {
 
 	        $db = JFusionFactory::getDatabase($this->getJname());
 
-			$query = 'DELETE FROM #__user WHERE user_name = '.$db->quote($userinfo->username);
+		    $query = $db->getQuery(true)
+			    ->delete('#__user')
+			    ->where('user_name = ' .  $db->quote($userinfo->username));
+
 			$db->setQuery($query);
 		    $db->execute();
 
-		    $query = 'DELETE FROM #__user_groups WHERE ug_user = '.$db->quote($userinfo->userid);
+		    $query = $db->getQuery(true)
+			    ->delete('#__user_groups')
+			    ->where('ug_user = ' .  $db->quote($userinfo->userid));
+
 		    $db->setQuery($query);
 		    $db->execute();
 
@@ -301,7 +307,10 @@ class JFusionUser_mediawiki extends JFusionUser {
 			} else {
 				$db = JFusionFactory::getDatabase($this->getJname());
 				try {
-					$query = 'DELETE FROM #__user_groups WHERE ug_user = '.$db->quote($existinguser->userid);
+					$query = $db->getQuery(true)
+						->delete('#__user_groups')
+						->where('ug_user = ' .  $db->quote($userinfo->userid));
+
 					$db->setQuery($query);
 					$db->execute();
 				} catch (Exception $e) {
@@ -374,7 +383,11 @@ class JFusionUser_mediawiki extends JFusionUser {
     {
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'DELETE FROM #__ipblocks WHERE ipb_user = ' . $db->quote($existinguser->userid);
+
+		    $query = $db->getQuery(true)
+			    ->delete('#__ipblocks')
+			    ->where('ipb_user = ' .  $db->quote($userinfo->userid));
+
 		    $db->setQuery($query);
 		    $db->execute();
 

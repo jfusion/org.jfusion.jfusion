@@ -553,7 +553,10 @@ class JFusionUser_prestashop extends JFusionUser {
 		    } else {
 			    $db = JFusionFactory::getDatabase($this->getJname());
 			    // now delete the user
-			    $query = 'DELETE FROM #__customer_group WHERE id_customer = ' . $existinguser->userid;
+			    $query = $db->getQuery(true)
+				    ->delete('#__customer_group')
+				    ->where('id_customer = ' .  $existinguser->userid);
+
 			    $db->setQuery($query);
 			    $db->execute();
 

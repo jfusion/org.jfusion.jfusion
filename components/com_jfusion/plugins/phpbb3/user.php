@@ -116,7 +116,11 @@ class JFusionUser_phpbb3 extends JFusionUser
 	            $phpbb_cookie_domain = '';
 	        }
 	        //update session time for the user into user table
-	        $query = 'UPDATE #__users SET user_lastvisit =' . time() . ' WHERE user_id =' . (int)$userinfo->userid;
+		    $query = $db->getQuery(true)
+			    ->update('#__users')
+			    ->set('user_lastvisit = ' . time())
+			    ->where('user_id = ' . (int)$userinfo->userid);
+
 	        $db->setQuery($query);
 		    try {
 			    $db->execute();
@@ -361,7 +365,13 @@ class JFusionUser_phpbb3 extends JFusionUser
 		    $existinguser->password = $auth->HashPassword($userinfo->password_clear);
 
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'UPDATE #__users SET user_password =' . $db->Quote($existinguser->password) . ', user_pass_convert = 0 WHERE user_id =' . (int)$existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->update('#__users')
+			    ->set('user_password = ' . $db->Quote($existinguser->password))
+			    ->set('user_pass_convert = 0')
+			    ->where('user_id = ' . (int)$existinguser->userid);
+
 		    $db->setQuery($query);
 		    $db->execute();
 
@@ -393,7 +403,12 @@ class JFusionUser_phpbb3 extends JFusionUser
 	    try {
 		    //we need to update the email
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'UPDATE #__users SET user_email =' . $db->Quote($userinfo->email) . ' WHERE user_id =' . (int)$existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->update('#__users')
+			    ->set('user_email = ' . $db->Quote($userinfo->email))
+			    ->where('user_id = ' . (int)$existinguser->userid);
+
 		    $db->setQuery($query);
 		    $db->execute();
 		    $status['debug'][] = JText::_('EMAIL_UPDATE') . ': ' . $existinguser->email . ' -> ' . $userinfo->email;
@@ -475,17 +490,11 @@ class JFusionUser_phpbb3 extends JFusionUser
 
 			    try {
 				    //update correct group colors where applicable
-				    $query = 'UPDATE #__forums SET forum_last_poster_colour = ' . $db->Quote($user->user_colour) . ' WHERE forum_last_poster_id = ' . (int)$existinguser->userid;
-				    $db->setQuery($query);
-				    $db->execute();
-			    } catch (Exception $e) {
-				    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $e->getMessage();
-			    }
+				    $query = $db->getQuery(true)
+					    ->update('#__forums')
+					    ->set('forum_last_poster_colour = ' . $db->Quote($user->user_colour))
+					    ->where('forum_last_poster_id = ' . (int)$existinguser->userid);
 
-
-			    try {
-				    //update correct group colors where applicable
-				    $query = 'UPDATE #__topics SET topic_first_poster_colour = ' . $db->Quote($user->user_colour) . ' WHERE topic_poster = ' . (int)$existinguser->userid;
 				    $db->setQuery($query);
 				    $db->execute();
 			    } catch (Exception $e) {
@@ -493,7 +502,24 @@ class JFusionUser_phpbb3 extends JFusionUser
 			    }
 
 			    try {
-				    $query = 'UPDATE #__topics SET topic_last_poster_colour = ' . $db->Quote($user->user_colour) . ' WHERE topic_last_poster_id = ' . (int)$existinguser->userid;
+				    //update correct group colors where applicable
+				    $query = $db->getQuery(true)
+					    ->update('#__topics')
+					    ->set('topic_first_poster_colour = ' . $db->Quote($user->user_colour))
+					    ->where('topic_poster = ' . (int)$existinguser->userid);
+
+				    $db->setQuery($query);
+				    $db->execute();
+			    } catch (Exception $e) {
+				    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $e->getMessage();
+			    }
+
+			    try {
+				    $query = $db->getQuery(true)
+					    ->update('#__topics')
+					    ->set('topic_last_poster_colour = ' . $db->Quote($user->user_colour))
+					    ->where('topic_last_poster_id = ' . (int)$existinguser->userid);
+
 				    $db->setQuery($query);
 				    $db->execute();
 			    } catch (Exception $e) {
@@ -505,7 +531,11 @@ class JFusionUser_phpbb3 extends JFusionUser
 			    $newest_user_id = $db->loadResult();
 			    if ($newest_user_id == $existinguser->userid) {
 				    try {
-					    $query = 'UPDATE #__config SET config_value = ' . $db->Quote($user->user_colour) . ' WHERE config_name = \'newest_user_id\'';
+					    $query = $db->getQuery(true)
+						    ->update('#__config')
+						    ->set('config_value = ' . $db->Quote($user->user_colour))
+						    ->where('config_name = ' . $db->Quote('newest_user_id'));
+
 					    $db->setQuery($query);
 						$db->execute();
 				    } catch (Exception $e) {
@@ -573,7 +603,14 @@ class JFusionUser_phpbb3 extends JFusionUser
 	    try {
 		    //activate the user
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'UPDATE #__users SET user_type = 0, user_inactive_reason =0, user_actkey = \'\'  WHERE user_id =' . (int)$existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->update('#__users')
+			    ->set('user_type = 0')
+			    ->set('user_inactive_reason = 0')
+			    ->set('user_actkey = ' . $db->Quote(''))
+			    ->where('user_id = ' . (int)$existinguser->userid);
+
 		    $db->setQuery($query);
 		    $db->execute();
 
@@ -594,7 +631,14 @@ class JFusionUser_phpbb3 extends JFusionUser
 	    try {
 		    //set activation key
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'UPDATE #__users SET user_type = 1, user_inactive_reason = 1, user_actkey =' . $db->Quote($userinfo->activation) . ' WHERE user_id =' . (int)$existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->update('#__users')
+			    ->set('user_type = 1')
+			    ->set('user_inactive_reason = 1')
+			    ->set('user_actkey = ' . $db->Quote($userinfo->activation))
+			    ->where('user_id = ' . (int)$existinguser->userid);
+
 		    $db->setQuery($query);
 		    $db->execute();
 
@@ -739,24 +783,40 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    }
 
 				    //update the total user count
-				    $query = 'UPDATE #__config SET config_value = config_value + 1 WHERE config_name = \'num_users\'';
+				    $query = $db->getQuery(true)
+					    ->update('#__config')
+					    ->set('config_value = config_value - 1')
+					    ->where('config_name = ' . $db->Quote('num_users'));
+
 				    $db->setQuery($query);
 				    $db->execute();
 
 				    //update the newest username
-				    $query = 'UPDATE #__config SET config_value = ' . $db->Quote($userinfo->username) . ' WHERE config_name = \'newest_username\'';
+				    $query = $db->getQuery(true)
+					    ->update('#__config')
+					    ->set('config_value = ' . $db->Quote($userinfo->username))
+					    ->where('config_name = ' . $db->Quote('newest_username'));
+
 				    $db->setQuery($query);
 				    $db->execute();
 
 				    //update the newest userid
-				    $query = 'UPDATE #__config SET config_value = ' . (int)$user->id . ' WHERE config_name = \'newest_user_id\'';
+				    $query = $db->getQuery(true)
+					    ->update('#__config')
+					    ->set('config_value = ' . (int)$user->id )
+					    ->where('config_name = ' . $db->Quote('newest_user_id'));
+
 				    $db->setQuery($query);
 				    $db->execute();
 
 				    //get the username color
 				    if (!empty($user->user_colour)) {
 					    //set the correct new username color
-					    $query = 'UPDATE #__config SET config_value = ' . $db->Quote($user->user_colour) . ' WHERE config_name = \'newest_user_colour\'';
+					    $query = $db->getQuery(true)
+						    ->update('#__config')
+						    ->set('config_value = ' . $db->Quote($user->user_colour))
+						    ->where('config_name = ' . $db->Quote('newest_user_colour'));
+
 					    $db->setQuery($query);
 					    $db->execute();
 				    }
@@ -843,9 +903,11 @@ class JFusionUser_phpbb3 extends JFusionUser
 			    // Now set the flags back
 
 			    try {
-				    $query = 'UPDATE #__posts
-		                SET post_reported = 0
-		                WHERE post_id IN (' . implode(', ', $report_posts) . ')';
+				    $query = $db->getQuery(true)
+					    ->update('#__posts')
+					    ->set('post_reported = 0')
+					    ->where('post_id IN (' . implode(', ', $report_posts) . ')');
+
 				    $db->setQuery($query);
 				    $db->execute();
 			    } catch (Exception $e) {
@@ -854,9 +916,11 @@ class JFusionUser_phpbb3 extends JFusionUser
 
 			    if (sizeof($report_topics)) {
 				    try {
-					    $query = 'UPDATE #__topics
-		                    SET topic_reported = 0
-		                    WHERE topic_id IN (' . implode(', ', $report_topics) . ')';
+					    $query = $db->getQuery(true)
+						    ->update('#__topics')
+						    ->set('topic_reported = 0')
+						    ->where('topic_id IN (' . implode(', ', $report_topics) . ')');
+
 					    $db->setQuery($query);
 					    $db->execute();
 				    } catch (Exception $e) {
@@ -877,9 +941,13 @@ class JFusionUser_phpbb3 extends JFusionUser
 		    //update all topics started by and posts by the user to anonymous
 		    $post_username = (!empty($userinfo->name)) ? $userinfo->name : $userinfo->username;
 		    try {
-			    $query = 'UPDATE #__forums
-		            SET forum_last_poster_id = 1, forum_last_poster_name = ' . $db->Quote($post_username) . ", forum_last_poster_colour = ''
-		            WHERE forum_last_poster_id = $user_id";
+			    $query = $db->getQuery(true)
+				    ->update('#__forums')
+				    ->set('forum_last_poster_id = 1')
+				    ->set('forum_last_poster_name = ' . $db->Quote($post_username))
+				    ->set('forum_last_poster_colour = ' . $db->Quote(''))
+				    ->where('forum_last_poster_id = ' . $user_id);
+
 			    $db->setQuery($query);
 			    $db->execute();
 		    } catch (Exception $e) {
@@ -887,9 +955,12 @@ class JFusionUser_phpbb3 extends JFusionUser
 		    }
 
 		    try {
-			    $query = 'UPDATE #__posts
-		            SET poster_id = 1, post_username = ' . $db->Quote($post_username) . '
-		            WHERE poster_id = '.$user_id;
+			    $query = $db->getQuery(true)
+				    ->update('#__posts')
+				    ->set('poster_id = 1')
+				    ->set('post_username = ' . $db->Quote($post_username))
+				    ->where('poster_id = ' . $user_id);
+
 			    $db->setQuery($query);
 			    $db->execute();
 		    } catch (Exception $e) {
@@ -897,19 +968,25 @@ class JFusionUser_phpbb3 extends JFusionUser
 		    }
 
 		    try {
-			    $query = 'UPDATE #__posts
-		            SET post_edit_user = 1
-		            WHERE post_edit_user = '.$user_id;
-				    $db->setQuery($query);
-			        $db->execute();
+			    $query = $db->getQuery(true)
+				    ->update('#__posts')
+				    ->set('post_edit_user = 1')
+				    ->where('post_edit_user = ' . $user_id);
+
+			    $db->setQuery($query);
+		        $db->execute();
 		    } catch (Exception $e) {
 			    $status['error'][] = 'Error Could not update edited posts by user '.$user_id.': '.$e->getMessage();
 		    }
 
 		    try {
-			    $query = 'UPDATE #__topics
-		            SET topic_poster = 1, topic_first_poster_name = ' . $db->Quote($post_username) . ', topic_first_poster_colour = \'\'
-		            WHERE topic_poster = '.$user_id;
+			    $query = $db->getQuery(true)
+				    ->update('#__topics')
+				    ->set('topic_poster = 1')
+				    ->set('topic_first_poster_name = ' . $db->Quote($post_username))
+				    ->set('topic_first_poster_colour = ' . $db->Quote(''))
+				    ->where('topic_poster = ' . $user_id);
+
 			    $db->setQuery($query);
 			    $db->execute();
 		    } catch (Exception $e) {
@@ -917,9 +994,13 @@ class JFusionUser_phpbb3 extends JFusionUser
 		    }
 
 		    try {
-			    $query = 'UPDATE #__topics
-		            SET topic_last_poster_id = 1, topic_last_poster_name = ' . $db->Quote($post_username) . ', topic_last_poster_colour = \'\'
-		            WHERE topic_last_poster_id = '.$user_id;
+			    $query = $db->getQuery(true)
+				    ->update('#__topics')
+				    ->set('topic_last_poster_id = 1')
+				    ->set('topic_last_poster_name = ' . $db->Quote($post_username))
+				    ->set('topic_last_poster_colour = ' . $db->Quote(''))
+				    ->where('topic_last_poster_id = ' . $user_id);
+
 			    $db->setQuery($query);
 			    $db->execute();
 		    } catch (Exception $e) {
@@ -933,9 +1014,11 @@ class JFusionUser_phpbb3 extends JFusionUser
 		    // Update the post count for the anonymous user
 		    if ($user_posts > 0) {
 			    try {
-				    $query = 'UPDATE #__users
-		                SET user_posts = user_posts + '.$user_posts.
-					    ' WHERE user_id = 1';
+				    $query = $db->getQuery(true)
+					    ->update('#__users')
+					    ->set('user_posts = user_posts + '.$user_posts)
+					    ->where('user_id = 1');
+
 				    $db->setQuery($query);
 				    $db->execute();
 			    } catch (Exception $e) {
@@ -1007,9 +1090,10 @@ class JFusionUser_phpbb3 extends JFusionUser
 
 		    try {
 			    // Set the remaining author id to anonymous - this way users are still able to read messages from users being removed
-			    $query = 'UPDATE #__privmsgs_to
-		            SET author_id = 1
-		            WHERE author_id = ' . $user_id;
+			    $query = $db->getQuery(true)
+				    ->update('#__privmsgs_to')
+				    ->set('author_id = 1')
+				    ->where('author_id = ' . $user_id);
 			    $db->setQuery($query);
 			    $db->execute();
 		    } catch (Exception $e) {
@@ -1017,9 +1101,10 @@ class JFusionUser_phpbb3 extends JFusionUser
 		    }
 
 		    try {
-			    $query = 'UPDATE #__privmsgs
-		            SET author_id = 1
-		            WHERE author_id = ' . $user_id;
+			    $query = $db->getQuery(true)
+				    ->update('#__privmsgs')
+				    ->set('author_id = 1')
+				    ->where('author_id = ' . $user_id);
 			    $db->setQuery($query);
 			    $db->execute();
 		    } catch (Exception $e) {
@@ -1031,10 +1116,12 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    continue;
 			    }
 			    try {
-				    $query = 'UPDATE #__users
-		                SET user_new_privmsg = user_new_privmsg - ' . sizeof($ary) . ',
-		                    user_unread_privmsg = user_unread_privmsg - ' . sizeof($ary) . '
-		                WHERE user_id = ' . $_user_id;
+				    $query = $db->getQuery(true)
+					    ->update('#__users')
+					    ->set('user_new_privmsg = user_new_privmsg - ' . sizeof($ary))
+					    ->set('user_unread_privmsg = user_unread_privmsg - ' . sizeof($ary))
+					    ->where('user_id = '. $_user_id);
+
 				    $db->setQuery($query);
 				    $db->execute();
 			    } catch (Exception $e) {
@@ -1042,7 +1129,11 @@ class JFusionUser_phpbb3 extends JFusionUser
 			    }
 		    }
 		    //update the total user count
-		    $query = 'UPDATE #__config SET config_value = config_value - 1 WHERE config_name = \'num_users\'';
+		    $query = $db->getQuery(true)
+			    ->update('#__config')
+			    ->set('config_value = config_value - 1')
+			    ->where('config_name = ' . $db->Quote('num_users'));
+
 		    $db->setQuery($query);
 		    $db->execute();
 
@@ -1056,17 +1147,29 @@ class JFusionUser_phpbb3 extends JFusionUser
 			    $newest_user = $db->loadObject();
 			    if ($newest_user) {
 				    //update the newest username
-				    $query = 'UPDATE #__config SET config_value = ' . $db->Quote($newest_user->username) . ' WHERE config_name = \'newest_username\'';
+				    $query = $db->getQuery(true)
+					    ->update('#__config')
+					    ->set('config_value = ' . $db->Quote($newest_user->username))
+					    ->where('config_name = ' . $db->Quote('newest_username'));
+
 				    $db->setQuery($query);
 				    $db->execute();
 
 				    //update the newest userid
-				    $query = 'UPDATE #__config SET config_value = ' . $newest_user->user_id . ' WHERE config_name = \'newest_user_id\'';
+				    $query = $db->getQuery(true)
+					    ->update('#__config')
+					    ->set('config_value = ' . $newest_user->user_id)
+					    ->where('config_name = ' . $db->Quote('newest_user_id'));
+
 				    $db->setQuery($query);
 				    $db->execute();
 
 				    //set the correct new username color
-				    $query = 'UPDATE #__config SET config_value = ' . $db->Quote($newest_user->user_colour) . ' WHERE config_name = \'newest_user_colour\'';
+				    $query = $db->getQuery(true)
+					    ->update('#__config')
+					    ->set('config_value = ' . $db->Quote($newest_user->user_colour))
+					    ->where('config_name = ' . $db->Quote('newest_user_colour'));
+
 				    $db->setQuery($query);
 				    $db->execute();
 			    }

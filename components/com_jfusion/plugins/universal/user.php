@@ -131,8 +131,10 @@ class JFusionUser_universal extends JFusionUser {
 				$status['error'][] = JText::_('USER_DELETION_ERROR') . ': '.JText::_('UNIVERSAL_NO_USERID_SET');
 			} else {
 				$db = JFusionFactory::getDatabase($this->getJname());
-				$query = 'DELETE FROM #__'.$helper->getTable().' '.
-					'WHERE '.$userid->field.'=' . $db->Quote($userinfo->userid);
+
+				$query = $db->getQuery(true)
+					->delete('#__'.$helper->getTable())
+					->where($userid->field . ' = ' . $db->Quote($userinfo->userid));
 
 				$db->setQuery($query);
 				$db->execute();
@@ -141,23 +143,23 @@ class JFusionUser_universal extends JFusionUser {
 				if ( isset($group) ) {
 					$userid = $helper->getFieldType('USERID','group');
 
+					$query = $db->getQuery(true)
+						->delete('#__'.$helper->getTable('group'))
+						->where($userid->field . ' = ' . $db->Quote($userinfo->userid));
+
 					$maped = $helper->getMap('group');
-					$andwhere = '';
 					foreach ($maped as $value) {
 						$field = $value->field;
 						foreach ($value->type as $type) {
 							switch ($type) {
 								case 'DEFAULT':
 									if ( $value->fieldtype == 'VALUE' ) {
-										$andwhere .= ' AND '.$field.' = '.$db->Quote($value->value);
+										$query->where($field.' = '.$db->Quote($value->value));
 									}
 									break;
 							}
 						}
 					}
-
-					$query = 'DELETE FROM #__'.$helper->getTable('group').' '.
-						'WHERE '.$userid->field.'=' . $db->Quote($userinfo->userid).$andwhere;
 					$db->setQuery($query );
 					$db->execute();
 					$status['debug'][] = JText::_('USER_DELETION'). ': ' . $userinfo->username;
@@ -383,7 +385,10 @@ class JFusionUser_universal extends JFusionUser {
 					$status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . base64_decode($existinguser->group_id) . ' -> ' . base64_decode($usergroup);
 				} else {
 					$maped = $helper->getMap('group');
-					$andwhere = '';
+
+					$query = $db->getQuery(true)
+						->delete('#__'.$helper->getTable('group'))
+						->where($userid->field . ' = ' . $db->Quote($userinfo->userid));
 
 					foreach ($maped as $key => $value) {
 						$field = $value->field;
@@ -391,14 +396,13 @@ class JFusionUser_universal extends JFusionUser {
 							switch ($type) {
 								case 'DEFAULT':
 									if ( $value->fieldtype == 'VALUE' ) {
-										$andwhere .= ' AND '.$field.' = '.$db->Quote($value->value);
+										$query->where($field.' = '.$db->Quote($value->value));
 									}
 									break;
 							}
 						}
 					}
-					//remove the old usergroup for the user in the groups table
-					$query = 'DELETE FROM #__user_group WHERE '.$userid->field.'=' . $db->Quote($existinguser->userid) . $andwhere;
+
 					$db->setQuery($query);
 					$db->execute();
 

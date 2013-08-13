@@ -204,7 +204,10 @@ class JFusionUser_mybb extends JFusionUser {
 	        $db->setQuery($query);
 	        $oldgroup = $db->loadResult();
 	        //delete the ban
-	        $query = 'DELETE FROM #__banned WHERE uid = ' . (int)$existinguser->userid;
+		    $query = $db->getQuery(true)
+			    ->delete('#__banned')
+			    ->where('uid = ' .  (int)$existinguser->userid);
+
 	        $db->setQuery($query);
 		    $db->execute();
 
