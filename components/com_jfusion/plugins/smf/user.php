@@ -133,7 +133,11 @@ class JFusionUser_smf extends JFusionUser
 		    $db->setQuery($query);
 		    $db->execute();
 
-		    $query = 'SELECT MAX(ID_MEMBER) as ID_MEMBER FROM #__members WHERE is_activated = 1';
+		    $query = $db->getQuery(true)
+			    ->select('MAX(ID_MEMBER) as ID_MEMBER')
+			    ->from('#__members')
+			    ->where('is_activated = 1');
+
 		    $db->setQuery($query);
 		    $resultID = $db->loadObject();
 		    if (!$resultID) {
@@ -179,8 +183,12 @@ class JFusionUser_smf extends JFusionUser
 		    $status['debug'][] = JFusionFunction::addCookie($params->get('cookie_name'), '', 0, $params->get('cookie_path'), $params->get('cookie_domain'), $params->get('secure'), $params->get('httponly'));
 
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'DELETE FROM #__log_online WHERE ID_MEMBER = '.$userinfo->userid.' LIMIT 1';
-		    $db->setQuery($query);
+
+		    $query = $db->getQuery(true)
+			    ->delete('#__log_online')
+			    ->where('ID_MEMBER = ' . $userinfo->userid);
+
+		    $db->setQuery($query, 0 , 1);
 		    $db->execute();
 	    } catch (Exception $e) {
 		    $status['error'][] = $e->getMessage();
@@ -395,11 +403,18 @@ class JFusionUser_smf extends JFusionUser
     {
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'DELETE FROM #__ban_groups WHERE name = ' . $db->quote($existinguser->username);
+
+		    $query = $db->getQuery(true)
+			    ->delete('#__ban_groups')
+			    ->where('name = ' . $db->quote($existinguser->username));
+
 		    $db->setQuery($query);
 		    $db->execute();
 
-		    $query = 'DELETE FROM #__ban_items WHERE ID_MEMBER = ' . (int)$existinguser->userid;
+		    $query = $db->getQuery(true)
+			    ->delete('#__ban_items')
+			    ->where('ID_MEMBER = ' . (int)$existinguser->userid);
+
 		    $db->setQuery($query);
 		    $db->execute();
 

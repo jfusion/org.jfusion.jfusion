@@ -943,7 +943,7 @@ class JFusionCurl
 		}
 		curl_setopt($this->ch, CURLOPT_MAXREDIRS, 2);
 		curl_setopt($this->ch, CURLOPT_HEADERFUNCTION, array($this,'read_header'));
-		if (empty($this->options['brute_force'])){
+		if (empty($this->options['brute_force'])) {
 			curl_setopt($this->ch, CURLOPT_COOKIE, $this->buildCookie());
 		}
 
@@ -1023,7 +1023,7 @@ class JFusionCurl
 	{
 		// extra lines for passing curl options to other routines, like ambrasubs payment processor
 		// we are using the super global $_SESSION to pass data in $_SESSION[$var]
-		if (isset($this->options['usesessvar'])){
+		if (isset($this->options['usesessvar'])) {
 			$var = 'curl_options';
 			if(!array_key_exists($var,$_SESSION)) $_SESSION[$var]='';
 			$_SESSION[$var]=$this->options;
@@ -1115,7 +1115,7 @@ class JFusionCurl
 						// override keys/values from hidden inputs
 						// the $override is an array of keys/values that override existing keys/values
 
-						if (empty($this->options['logout'])){
+						if (empty($this->options['logout'])) {
 
 							if ($this->options['override']) {
 								$lines = explode(',', $this->options['override']);
@@ -1192,7 +1192,7 @@ class JFusionCurl
 
 						$input_username_name='';
 						$input_password_name = '';
-						if (empty($this->options['logout'])){
+						if (empty($this->options['logout'])) {
 							for ($i = 0; $i <= $elements_count-1; $i++) {
 								if ($this->options['input_username_id']) {
 									if (strtolower($elements_keys[$i]) == strtolower($this->options['input_username_id'])) {
@@ -1268,7 +1268,7 @@ class JFusionCurl
 							$strParameters .= '&jhost=true';
 						}
 
-						if (empty($this->options['logout'])){
+						if (empty($this->options['logout'])) {
 							$post_params = $input_username_name.'='.urlencode($this->options['username']).'&'.$input_password_name.'='.urlencode($this->options['password']);
 							$post_params_debug = $input_username_name.'='.urlencode($this->options['username']).'&'.$input_password_name.'=xxxxxx';
 							$this->status['debug'][] = JFusionCurl::_('CURL_STARTING_LOGIN').' '.$form_action.' parameters= '.$post_params_debug.$strParameters;
@@ -1288,7 +1288,7 @@ class JFusionCurl
 							curl_setopt($this->ch, CURLOPT_SSL_VERIFYHOST, $this->options['verifyhost']);
 							curl_setopt($this->ch, CURLOPT_FAILONERROR, 1);
 							curl_setopt($this->ch, CURLOPT_HEADERFUNCTION, array($this,'read_header'));
-							if (empty($this->options['brute_force'])){
+							if (empty($this->options['brute_force'])) {
 								curl_setopt($this->ch, CURLOPT_COOKIE, $this->buildCookie());
 							}
 							curl_setopt($this->ch, CURLOPT_VERBOSE, $this->options['debug']); // Display communication with server
@@ -1313,7 +1313,7 @@ class JFusionCurl
 						} else {
 							//we have to set the cookies now
 
-							if (empty($this->options['logout'])){
+							if (empty($this->options['logout'])) {
 								$this->status['debug'][] = JFusionCurl::_('CURL_LOGIN_FINISHED');
 								$this->setCookies($this->options['cookiedomain'], $this->options['cookiepath'], $this->options['expires'], $this->options['secure'], $this->options['httponly']);
 							} else {
@@ -1470,7 +1470,7 @@ class JFusionCurl
 				}
 			}
 
-			if ($this->options['postfields']){
+			if ($this->options['postfields']) {
 				curl_setopt($this->ch, CURLOPT_POST, 1);
 				curl_setopt($this->ch, CURLOPT_POSTFIELDS, $this->options['postfields']);
 			}

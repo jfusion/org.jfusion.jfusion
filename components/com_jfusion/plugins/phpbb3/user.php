@@ -137,11 +137,17 @@ class JFusionUser_phpbb3 extends JFusionUser
 	        $_COOKIE[$phpbb_cookie_name . '_sid'] = '';
 	        $_COOKIE[$phpbb_cookie_name . '_k'] = '';
 	        //delete the database sessions
-	        $query = 'DELETE FROM #__sessions WHERE session_user_id =' . (int)$userinfo->userid;
+		    $query = $db->getQuery(true)
+			    ->delete('#__sessions')
+			    ->where('session_user_id = ' . (int)$userinfo->userid);
+
 	        $db->setQuery($query);
 		    $db->execute();
 
-		    $query = 'DELETE FROM #__sessions_keys WHERE user_id =' . (int)$userinfo->userid;
+		    $query = $db->getQuery(true)
+			    ->delete('#__sessions_keys')
+			    ->where('user_id = ' . (int)$userinfo->userid);
+
 		    $db->setQuery($query);
 		    $db->execute();
 
@@ -458,7 +464,11 @@ class JFusionUser_phpbb3 extends JFusionUser
 
 			    try {
 				    //remove the old usergroup for the user in the groups table
-				    $query = 'DELETE FROM #__user_group WHERE group_id = ' . (int)$existinguser->group_id . ' AND user_id = ' . (int)$existinguser->userid;
+				    $query = $db->getQuery(true)
+					    ->delete('#__user_group')
+					    ->where('group_id = ' . (int)$existinguser->group_id)
+					    ->where('user_id = ' . (int)$existinguser->userid);
+
 				    $db->setQuery($query);
 				    $db->execute();
 			    } catch (Exception $e) {
@@ -470,7 +480,11 @@ class JFusionUser_phpbb3 extends JFusionUser
 			    $db->setQuery($query);
 			    $groups = $db->loadObjectList('group_name');
 			    if ($existinguser->group_id == $groups['NEWLY_REGISTERED']->group_id) {
-				    $query = 'DELETE FROM #__user_group WHERE group_id = ' . (int)$groups['REGISTERED']->group_id . ' AND user_id = ' . (int)$existinguser->userid;
+				    $query = $db->getQuery(true)
+					    ->delete('#__user_group')
+					    ->where('group_id = ' . (int)$groups['REGISTERED']->group_id)
+					    ->where('user_id = ' . (int)$existinguser->userid);
+
 				    $db->setQuery($query);
 
 				    $db->execute();
@@ -582,7 +596,10 @@ class JFusionUser_phpbb3 extends JFusionUser
 	    try {
 		    //unblock the user
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'DELETE FROM #__banlist WHERE ban_userid=' . (int)$existinguser->userid;
+		    $query = $db->getQuery(true)
+			    ->delete('#__banlist')
+			    ->where('ban_userid = ' . (int)$existinguser->userid);
+
 		    $db->setQuery($query);
 		    $db->execute();
 
@@ -931,7 +948,9 @@ class JFusionUser_phpbb3 extends JFusionUser
 
 		    try {
 			    // Remove reports
-			    $query = 'DELETE FROM #__reports WHERE user_id = ' . (int)$user_id;
+			    $query = $db->getQuery(true)
+				    ->delete('#__reports')
+				    ->where('user_id = ' . (int)$user_id);
 			    $db->setQuery($query);
 			    $db->execute();
 		    } catch (Exception $e) {
@@ -1028,8 +1047,10 @@ class JFusionUser_phpbb3 extends JFusionUser
 		    $table_ary = array('users', 'user_group', 'topics_watch', 'forums_watch', 'acl_users', 'topics_track', 'topics_posted', 'forums_track', 'profile_fields_data', 'moderator_cache', 'drafts', 'bookmarks');
 		    foreach ($table_ary as $table) {
 			    try {
-				    $query = 'DELETE FROM #__'.$table.
-					    ' WHERE user_id = '.$user_id;
+				    $query = $db->getQuery(true)
+					    ->delete('#__'.$table)
+					    ->where('user_id = '.$user_id);
+
 				    $db->setQuery($query);
 				    $db->execute();
 			    } catch (Exception $e) {
@@ -1059,8 +1080,10 @@ class JFusionUser_phpbb3 extends JFusionUser
 
 		    if (!empty($undelivered_msg)) {
 			    try {
-				    $query = 'DELETE FROM #__privmsgs
-                        WHERE msg_id (' . implode(', ', $undelivered_msg) . ')';
+				    $query = $db->getQuery(true)
+					    ->delete('#__privmsgs')
+					    ->where('msg_id (' . implode(', ', $undelivered_msg) . ')');
+
 				    $db->setQuery($query);
 				    $db->execute();
 			    } catch (Exception $e) {
@@ -1069,9 +1092,11 @@ class JFusionUser_phpbb3 extends JFusionUser
 		    }
 
 		    try {
-			    $query = 'DELETE FROM #__privmsgs_to
-		            WHERE author_id = ' . $user_id . '
-		                AND folder_id = -3';
+			    $query = $db->getQuery(true)
+				    ->delete('#__privmsgs_to')
+				    ->where('author_id = '.$user_id)
+				    ->where('folder_id = -3');
+
 			    $db->setQuery($query);
 			    $db->execute();
 		    } catch (Exception $e) {
@@ -1080,8 +1105,10 @@ class JFusionUser_phpbb3 extends JFusionUser
 
 		    try {
 			    // Delete all to-information
-			    $query = 'DELETE FROM #__privmsgs_to
-		            WHERE user_id = ' . $user_id;
+			    $query = $db->getQuery(true)
+				    ->delete('#__privmsgs_to')
+				    ->where('user_id = '.$user_id);
+
 			    $db->setQuery($query);
 			    $db->execute();
 		    } catch (Exception $e) {

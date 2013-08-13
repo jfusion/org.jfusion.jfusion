@@ -97,7 +97,7 @@ class JFormFieldjfusionsql extends JFormField
 					    $db->setQuery($query);
 					    $items = $db->loadObjectList();
 					    $children = array ();
-					    if(count($items)){
+					    if(count($items)) {
 						    foreach ($items as $v) {
 							    $pt = $v->parent;
 							    $list = @$children[$pt]?$children[$pt]: array ();

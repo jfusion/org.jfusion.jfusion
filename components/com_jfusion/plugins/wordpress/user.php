@@ -618,24 +618,36 @@ class JFusionUser_wordpress extends JFusionUser {
 				    }
 			    }
 		    } else {
-			    $query = 'DELETE FROM #__posts WHERE post_author = ' . $user_id;
+			    $query = $db->getQuery(true)
+				    ->delete('#__posts')
+				    ->where('post_author = ' . $user_id);
+
 			    $db->setQuery($query);
 			    $db->execute();
 			    $status['debug'][] = 'Deleted posts from user with id '.$user_id;
 
-			    $query = 'DELETE FROM #__links WHERE link_owner = ' . $user_id;
+			    $query = $db->getQuery(true)
+				    ->delete('#__links')
+				    ->where('link_owner = ' . $user_id);
+
 			    $db->setQuery($query);
 			    $db->execute();
 			    $status['debug'][] = 'Deleted links from user '.$user_id;
 		    }
 		    // now delete the user
-		    $query = 'DELETE FROM #__users WHERE ID = ' . $user_id;
+		    $query = $db->getQuery(true)
+			    ->delete('#__users')
+			    ->where('ID = ' . $user_id);
+
 		    $db->setQuery($query);
 		    $db->execute();
 		    $status['debug'][] = 'Deleted userrecord of user with userid '.$user_id;
 
 		    // delete usermeta
-		    $query = 'DELETE FROM #__usermeta WHERE user_id = ' . $user_id;
+		    $query = $db->getQuery(true)
+			    ->delete('#__usermeta')
+			    ->where('user_id = ' . $user_id);
+
 		    $db->setQuery($query);
 		    $db->execute();
 		    $status['debug'][] = 'Deleted usermetarecord of user with userid '.$user_id;

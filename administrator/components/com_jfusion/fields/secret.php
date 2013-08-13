@@ -25,7 +25,7 @@ class JFormFieldSecret extends JFormField
      */
     protected function getInput()
     {
-		if(!empty($this->value)){
+		if(!empty($this->value)) {
 	        $value = htmlspecialchars(html_entity_decode($this->value, ENT_QUOTES), ENT_QUOTES);
 		} else {
 			jimport('joomla.user.helper');

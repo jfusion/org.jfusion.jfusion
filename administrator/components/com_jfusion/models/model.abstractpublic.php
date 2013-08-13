@@ -182,7 +182,7 @@ class JFusionPublic
 
         foreach ($regex_body as $k => $v) {
             //check if we need to use callback
-            if(!empty($callback_body[$k])){
+            if(!empty($callback_body[$k])) {
                 $data->body = preg_replace_callback($regex_body[$k],array( &$this,$callback_body[$k]), $data->body);
             } else {
                 $data->body = preg_replace($regex_body[$k], $replace_body[$k], $data->body);
@@ -265,7 +265,7 @@ class JFusionPublic
         }
         foreach ($regex_header as $k => $v) {
             //check if we need to use callback
-            if(!empty($callback_header[$k])){
+            if(!empty($callback_header[$k])) {
                 $data->header = preg_replace_callback($regex_header[$k],array( &$this,$callback_header[$k]), $data->header);
             } else {
                 $data->header = preg_replace($regex_header[$k], $replace_header[$k], $data->header);
@@ -297,7 +297,7 @@ class JFusionPublic
         if(!empty($temp[3])) $data->body = $temp[3];
 
         $pattern = '#onload=["]([^"]*)#si';
-        if(!empty($temp[2])){
+        if(!empty($temp[2])) {
 	        $data->bodyAttributes = $temp[2];
             if(preg_match($pattern, $temp[2], $temp)) {
                 $js ='<script language="JavaScript" type="text/javascript">';
@@ -735,7 +735,7 @@ HTML;
                 //simple SEF mode
                 $url_details = parse_url($url);
                 $url_variables = array();
-                if(!empty($url_details['query'])){
+                if(!empty($url_details['query'])) {
                     parse_str($url_details['query'], $url_variables);
                 }
                 $jfile = basename($url_details['path']);
@@ -743,7 +743,7 @@ HTML;
             }
         }
         unset($url_variables['option'], $url_variables['jfile'], $url_variables['Itemid']);
-        if(!empty($url_variables['mode'])){
+        if(!empty($url_variables['mode'])) {
             if ($url_variables['mode'] == 'topic_view') {
                 $url_variables['t'] = JFactory::getApplication()->input->get('t');
                 $url_variables['f'] = JFactory::getApplication()->input->get('f');

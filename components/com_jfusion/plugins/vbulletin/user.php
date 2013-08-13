@@ -225,9 +225,13 @@ class JFusionUser_vbulletin extends JFusionUser
 					    ->set('lastactivity = ' .  $db->Quote($timenow - $cookie_expires))
 				        ->where('userid = ' . $db->Quote($session_user));
 
-				    $queries[] = 'DELETE FROM #__session WHERE userid = ' . $db->Quote($session_user);
+				    $queries[] = $db->getQuery(true)
+					    ->delete('#__session')
+					    ->where('userid = ' . $db->quote($session_user));
 			    }
-			    $queries[] = 'DELETE FROM #__session WHERE sessionhash = ' . $db->Quote($session_hash);
+			    $queries[] = $db->getQuery(true)
+				    ->delete('#__session')
+				    ->where('sessionhash = ' . $db->quote($session_hash));
 
 			    foreach ($queries as $q) {
 				    $db->setQuery($q);
@@ -479,10 +483,10 @@ class JFusionUser_vbulletin extends JFusionUser
 
 		    //first check to see if user is banned and if so, retrieve the prebanned fields
 		    //must be something other than $db because it conflicts with vbulletin global variables
-		    $jdb = JFusionFactory::getDatabase($this->getJname());
+		    $db = JFusionFactory::getDatabase($this->getJname());
 		    $query = 'SELECT b.*, g.usertitle AS bantitle FROM #__userban AS b INNER JOIN #__user AS u ON b.userid = u.userid INNER JOIN #__usergroup AS g ON u.usergroupid = g.usergroupid WHERE b.userid = ' . $existinguser->userid;
-		    $jdb->setQuery($query );
-		    $result = $jdb->loadObject();
+		    $db->setQuery($query );
+		    $result = $db->loadObject();
 
 		    if (is_array($usergroups)) {
 			    $defaultgroup = $usergroups[$existinguser->group_id]['defaultgroup'];
@@ -508,9 +512,12 @@ class JFusionUser_vbulletin extends JFusionUser
 
 		    if ($result) {
 			    //remove any banned user catches from vbulletin database
-			    $query = 'DELETE FROM #__userban WHERE userid='. $existinguser->userid;
-			    $jdb->setQuery($query);
-			    $jdb->execute();
+			    $query = $db->getQuery(true)
+				    ->delete('#__userban')
+				    ->where('userid = ' . $existinguser->userid);
+
+			    $db->setQuery($query);
+			    $db->execute();
 		    }
 
 		    if (empty($response['errors'])) {
@@ -555,7 +562,10 @@ class JFusionUser_vbulletin extends JFusionUser
 		    $db->execute();
 
 		    //remove any activation catches from vbulletin database
-		    $query = 'DELETE FROM #__useractivation WHERE userid = ' . $existinguser->userid;
+		    $query = $db->getQuery(true)
+			    ->delete('#__useractivation')
+			    ->where('userid = ' . $existinguser->userid);
+
 		    $db->setQuery($query);
 		    $db->execute();
 

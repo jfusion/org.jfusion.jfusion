@@ -149,7 +149,7 @@ class JFusionFrameless {
 			$sef_suffix = $mainframe->getCfg('sef_suffix');
 			$sef = $mainframe->getCfg('sef');
 
-			if($sef_suffix == 1 && $sef == 1 && !JFactory::getApplication()->input->post->count()){
+			if($sef_suffix == 1 && $sef == 1 && !JFactory::getApplication()->input->post->count()) {
 				//redirect if url non_sef
 				if (strrpos($data->fullURL, '?') !== false) {
 					$u = JUri::getInstance();

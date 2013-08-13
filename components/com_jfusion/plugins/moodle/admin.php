@@ -371,24 +371,79 @@ HTML;
 			    }
 		    }
 		    $querys = array();
-		    $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_enabled\'';
-		    $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_ismaster\'';
-		    $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_fullpath\'';
-		    $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_baseurl\'';
-		    $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_loginpath\'';
-		    $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_logoutpath\'';
-		    $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_formid\'';
-		    $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_relpath\'';
-		    $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_cookiedomain\'';
-		    $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_cookiepath\'';
-		    $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_username_id\'';
-		    $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_password_id\'';
-		    $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_cookie_secure\'';
-		    $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_cookie_httponly\'';
-		    $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_verifyhost\'';
-		    $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_leavealone\'';
-		    $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_expires\'';
-		    $querys[] = 'DELETE FROM #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_expires\'';
+		    $querys[] = $db->getQuery(true)
+			    ->delete('#__config_plugins')
+			    ->where('plugin = ' . $db->quote('auth/jfusion'))
+		        ->where('name = ' . $db->quote('jf_enabled'));
+		    $querys[] = $db->getQuery(true)
+			    ->delete('#__config_plugins')
+			    ->where('plugin = ' . $db->quote('auth/jfusion'))
+			    ->where('name = ' . $db->quote('jf_ismaster'));
+		    $querys[] = $db->getQuery(true)
+			    ->delete('#__config_plugins')
+			    ->where('plugin = ' . $db->quote('auth/jfusion'))
+			    ->where('name = ' . $db->quote('jf_fullpath'));
+		    $querys[] = $db->getQuery(true)
+			    ->delete('#__config_plugins')
+			    ->where('plugin = ' . $db->quote('auth/jfusion'))
+			    ->where('name = ' . $db->quote('jf_baseurl'));
+		    $querys[] = $db->getQuery(true)
+			    ->delete('#__config_plugins')
+			    ->where('plugin = ' . $db->quote('auth/jfusion'))
+			    ->where('name = ' . $db->quote('jf_loginpath'));
+		    $querys[] = $db->getQuery(true)
+			    ->delete('#__config_plugins')
+			    ->where('plugin = ' . $db->quote('auth/jfusion'))
+			    ->where('name = ' . $db->quote('jf_logoutpath'));
+		    $querys[] = $db->getQuery(true)
+			    ->delete('#__config_plugins')
+			    ->where('plugin = ' . $db->quote('auth/jfusion'))
+			    ->where('name = ' . $db->quote('jf_formid'));
+		    $querys[] = $db->getQuery(true)
+			    ->delete('#__config_plugins')
+			    ->where('plugin = ' . $db->quote('auth/jfusion'))
+			    ->where('name = ' . $db->quote('jf_relpath'));
+		    $querys[] = $db->getQuery(true)
+			    ->delete('#__config_plugins')
+			    ->where('plugin = ' . $db->quote('auth/jfusion'))
+			    ->where('name = ' . $db->quote('jf_cookiedomain'));
+		    $querys[] = $db->getQuery(true)
+			    ->delete('#__config_plugins')
+			    ->where('plugin = ' . $db->quote('auth/jfusion'))
+			    ->where('name = ' . $db->quote('jf_cookiepath'));
+		    $querys[] = $db->getQuery(true)
+			    ->delete('#__config_plugins')
+			    ->where('plugin = ' . $db->quote('auth/jfusion'))
+			    ->where('name = ' . $db->quote('jf_username_id'));
+		    $querys[] = $db->getQuery(true)
+			    ->delete('#__config_plugins')
+			    ->where('plugin = ' . $db->quote('auth/jfusion'))
+			    ->where('name = ' . $db->quote('jf_password_id'));
+		    $querys[] = $db->getQuery(true)
+			    ->delete('#__config_plugins')
+			    ->where('plugin = ' . $db->quote('auth/jfusion'))
+			    ->where('name = ' . $db->quote('jf_cookie_secure'));
+		    $querys[] = $db->getQuery(true)
+			    ->delete('#__config_plugins')
+			    ->where('plugin = ' . $db->quote('auth/jfusion'))
+			    ->where('name = ' . $db->quote('jf_cookie_httponly'));
+		    $querys[] = $db->getQuery(true)
+			    ->delete('#__config_plugins')
+			    ->where('plugin = ' . $db->quote('auth/jfusion'))
+			    ->where('name = ' . $db->quote('jf_verifyhost'));
+		    $querys[] = $db->getQuery(true)
+			    ->delete('#__config_plugins')
+			    ->where('plugin = ' . $db->quote('auth/jfusion'))
+			    ->where('name = ' . $db->quote('jf_leavealone'));
+		    $querys[] = $db->getQuery(true)
+			    ->delete('#__config_plugins')
+			    ->where('plugin = ' . $db->quote('auth/jfusion'))
+			    ->where('name = ' . $db->quote('jf_expires'));
+		    $querys[] = $db->getQuery(true)
+			    ->delete('#__config_plugins')
+			    ->where('plugin = ' . $db->quote('auth/jfusion'))
+			    ->where('name = ' . $db->quote('jf_expires'));
+
 		    foreach($querys as $query){
 			    $db->setQuery($query);
 			    $db->execute();

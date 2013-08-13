@@ -836,7 +836,7 @@ class JFusionFunction
 
 			foreach ($searchNS as $k => $v) {
 	            //check if we need to use callback
-	            if(is_array($replaceNS[$k])){
+	            if(is_array($replaceNS[$k])) {
 	                $text = preg_replace_callback($searchNS[$k],$replaceNS[$k], $text);
 	            } else {
 	                $text = preg_replace($searchNS[$k], $replaceNS[$k], $text);

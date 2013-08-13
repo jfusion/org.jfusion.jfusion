@@ -34,7 +34,7 @@ class JFormFieldJFusionUsergroupList extends JFormField
     {
         global $jname;
 	    try {
-		    if ($jname){
+		    if ($jname) {
 			    if (JFusionFunction::validPlugin($jname)) {
 				    $JFusionPlugin = JFusionFactory::getAdmin($jname);
 

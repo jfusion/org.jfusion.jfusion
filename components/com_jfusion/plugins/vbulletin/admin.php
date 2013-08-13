@@ -439,7 +439,11 @@ HTML;
 			    }
 			    if ($hookName) {
 				    //all three cases, we want to remove the old hook
-				    $query = 'DELETE FROM #__plugin WHERE hookname = \'init_startup\' AND title = ' . $db->Quote($hookName);
+				    $query = $db->getQuery(true)
+					    ->delete('#__plugin')
+					    ->where('hookname = ' . $db->quote('init_startup'))
+					    ->where('title = ' . $db->quote($hookName));
+
 				    $db->setQuery($query);
 				    $db->execute();
 
@@ -838,13 +842,17 @@ JS;
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
 		    $hookNames = array();
-		    $hookNames[] = 'JFusion Global Fix Plugin';
-		    $hookNames[] = 'JFusion Frameless Integration Plugin';
-		    $hookNames[] = 'JFusion Dual Login Plugin';
-		    $hookNames[] = 'JFusion Redirect Plugin';
-		    $hookNames[] = 'JFusion API Plugin - REQUIRED';
+		    $hookNames[] = $db->quote('JFusion Global Fix Plugin');
+		    $hookNames[] = $db->quote('JFusion Frameless Integration Plugin');
+		    $hookNames[] = $db->quote('JFusion Dual Login Plugin');
+		    $hookNames[] = $db->quote('JFusion Redirect Plugin');
+		    $hookNames[] = $db->quote('JFusion API Plugin - REQUIRED');
 
-		    $query = 'DELETE FROM #__plugin WHERE hookname = \'init_startup\' AND title IN (\'' . implode('\', \'', $hookNames) . '\')';
+		    $query = $db->getQuery(true)
+			    ->delete('#__plugin')
+			    ->where('hookname = ' . $db->quote('init_startup'))
+			    ->where('title IN (' . implode(', ', $hookNames) . ')');
+
 		    $db->setQuery($query);
 		    $db->execute();
 

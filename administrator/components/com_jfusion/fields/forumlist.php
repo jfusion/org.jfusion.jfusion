@@ -81,7 +81,7 @@ class JFormFieldForumlist extends JFormField
 			} else {
 				throw new RuntimeException(JText::_('NO_PLUGIN_SELECT'));
 			}
-		} catch(Exception $e){
+		} catch(Exception $e) {
 			$output = '<span style="float:left; margin: 5px 0; font-weight: bold;">'.$e->getMessage().'</span>';
 		}
 		return $output;
