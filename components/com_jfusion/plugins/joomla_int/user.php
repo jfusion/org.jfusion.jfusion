@@ -284,7 +284,6 @@ class JFusionUser_joomla_int extends JFusionUser {
 		    $options['clientid'] = array($options['clientid']);
 		}
 
-
 	    if ($userinfo->id) {
 		    $my = JFactory::getUser();
 		    if ($my->id == $userinfo->id) {
