@@ -226,21 +226,19 @@ class JFusionUser_joomla_int extends JFusionUser {
 		    $options['clientid'] = array($options['clientid']);
 		}
 
-        //destroy the Joomla session but do so directly based on what $options is
-        $table = JTable::getInstance('session');
-        $table->destroy($userinfo->id, $options['clientid']);
-        $my = JFactory::getUser();
-        if ($my->id == $userinfo->id) {
-            // Hit the user last visit field
-            $my->setLastVisit();
-            // Destroy the php session for this user
-            $session = JFactory::getSession();
-            $session->destroy();
-        } else {
-            // Force logout all users with that userid
-            $table = JTable::getInstance('session');
-            $table->destroy($userinfo->id, $options['clientid']);
-        }
+	    if ($userinfo->id) {
+		    $my = JFactory::getUser();
+		    if ($my->id == $userinfo->id) {
+			    // Hit the user last visit field
+			    $my->setLastVisit();
+			    // Destroy the php session for this user
+			    $session = JFactory::getSession();
+			    $session->destroy();
+		    }
+		    //destroy the Joomla session but do so directly based on what $options is
+		    $table = JTable::getInstance('session');
+		    $table->destroy($userinfo->id, $options['clientid']);
+	    }
         return array();
     }
 
