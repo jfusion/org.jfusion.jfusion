@@ -98,8 +98,12 @@ class JFusionHelper_efront {
 		    // correct id
 		    $group_id = $group_id - 2;
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    if (!empty($db)){
-			    $query = 'SELECT name, basic_user_type from #__user_types WHERE id = '.$group_id;
+		    if (!empty($db)) {
+			    $query = $db->getQuery(true)
+				    ->select('name, basic_user_type')
+				    ->from('#__user_types')
+				    ->where('id = ' . $db->quote($group_id));
+
 			    $db->setQuery($query);
 			    $user_type = (array)$db->loadObject();
 			    return $user_type['name'].' ('.$user_type['basic_user_type'].')';
@@ -149,7 +153,11 @@ class JFusionHelper_efront {
 		try {
 	        //get the connection to the db
 	        $db = JFusionFactory::getDatabase($this->getJname());
-	        $query = 'SELECT id, name, basic_user_type from #__user_types;';
+
+			$query = $db->getQuery(true)
+				->select('id, name, basic_user_type')
+				->from('#__user_types');
+
 	        $db->setQuery($query);
 	        //getting the results
 	        $additional_types = $db->loadObjectList();

@@ -45,7 +45,11 @@ class JFusionUser_elgg extends JFusionUser {
 		    // Get user info from database
 		    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    $query = 'SELECT guid as userid, username, name, name as lastname, email, password, salt as password_salt,banned as block FROM #__users_entity WHERE username = ' . $db->Quote($identifier);
+		    $query = $db->getQuery(true)
+			    ->select('guid as userid, username, name, name as lastname, email, password, salt as password_salt,banned as block')
+			    ->from('#__users_entity')
+		        ->where('username = ' . $db->Quote($identifier));
+
 		    $db->setQuery($query);
 		    $result = $db->loadObject();
 

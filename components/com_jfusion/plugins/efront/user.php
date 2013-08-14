@@ -47,7 +47,11 @@ class JFusionUser_efront extends JFusionUser
 	        }
 
 	        //initialise some params
-	        $query = 'SELECT * FROM #__users WHERE ' . $identifier_type . ' = ' . $db->Quote($identifier);
+		    $query = $db->getQuery(true)
+			    ->select('*')
+			    ->from('#__users')
+			    ->where($identifier_type . ' = ' . $db->Quote($identifier));
+
 	        $db->setQuery($query);
 	        $result = $db->loadObject();
 	        if ($result) {
@@ -102,8 +106,13 @@ class JFusionUser_efront extends JFusionUser
 	        $db = JFusionFactory::getDatabase($this->getJname());
 	        $status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname(),$params->get('logout_type'));
 
-	        $query = 'SELECT action FROM #__logs WHERE users_LOGIN = ' . $db->Quote($userinfo->username).' timestamp desc limit 1';
-	        $db->setQuery($query);
+		    $query = $db->getQuery(true)
+			    ->select('action')
+			    ->from('#__logs')
+			    ->where('users_LOGIN = ' . $db->Quote($userinfo->username))
+		        ->order('timestamp desc');
+
+	        $db->setQuery($query, 0 , 1);
 	        $action = $db->loadResult();
 	        if ($action != 'logout') {
 	            $log = new stdClass;
@@ -148,11 +157,20 @@ class JFusionUser_efront extends JFusionUser
 	            $httponly = $params->get('httponly',0);
 	            $secure = $params->get('secure',0);
 	            $db = JFusionFactory::getDatabase($this->getJname());
-	            $query = 'SELECT password FROM #__users WHERE login=' . $db->Quote($userinfo->username);
+
+		        $query = $db->getQuery(true)
+			        ->select('password')
+			        ->from('#__users')
+			        ->where('login = ' . $db->Quote($userinfo->username));
+
 	            $db->setQuery($query);
 	            $user = $db->loadObject();
 	            // Set cookie values
-	            $query = 'SELECT value FROM #__configuration WHERE name = \'autologout_time\'';
+		        $query = $db->getQuery(true)
+			        ->select('value')
+			        ->from('#__configuration')
+			        ->where('name = ' . $db->Quote('autologout_time'));
+
 	            $db->setQuery($query);
 	            $autologout_time = $db->loadResult(); // this is in minutes
 	            $expires = 60 * $autologout_time; // converted to seconds
@@ -410,7 +428,12 @@ class JFusionUser_efront extends JFusionUser
 	                default:
 	                    // correct id
 	                    $user_types_ID = $usergroup - 2;
-	                    $query = 'SELECT basic_user_type from #__user_types WHERE id = '.$user_types_ID;
+
+	                    $query = $db->getQuery(true)
+		                    ->select('basic_user_type')
+		                    ->from('#__user_types')
+		                    ->where('id = ' . $db->Quote($user_types_ID));
+
 	                    $db->setQuery($query);
 	                    $user_type = $db->loadResult();
 	            }
@@ -424,7 +447,11 @@ class JFusionUser_efront extends JFusionUser
 	            }
 	            // note that we will plan to propagate the language setting for a user from version 2.0
 	            // for now we just use the default defined in eFront
-	            $query = 'SELECT value from #__configuration WHERE name = \'default_language\'';
+		        $query = $db->getQuery(true)
+			        ->select('value')
+			        ->from('#__configuration')
+			        ->where('name = ' . $db->Quote('default_language'));
+
 	            $db->setQuery($query);
 	            $default_language = $db->loadResult();
 	            $user->languages_NAME = $default_language;
@@ -591,7 +618,12 @@ class JFusionUser_efront extends JFusionUser
 				    $user_types_ID = 0;
 			    } else {
 				    $user_types_ID = $usergroup-2;
-				    $query = 'SELECT basic_user_type from #__user_types WHERE id = '.$user_types_ID;
+
+				    $query = $db->getQuery(true)
+					    ->select('basic_user_type')
+					    ->from('#__user_types')
+					    ->where('id = ' . $db->Quote($user_types_ID));
+
 				    $db->setQuery($query);
 				    $user_type = $db->loadResult();
 			    }

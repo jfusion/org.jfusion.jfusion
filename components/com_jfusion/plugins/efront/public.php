@@ -68,12 +68,20 @@ class JFusionPublic_efront extends JFusionPublic
      * @return string
      */
     function getOnlineUserQuery($limit) {
-        $limiter = (!empty($limit)) ? 'LIMIT 0,'.$limit : '';
+        $limiter = (!empty($limit)) ? ' LIMIT 0,'.$limit : '';
         //get a unix time from 5 minutes ago
         date_default_timezone_set('UTC');
         //$active = strtotime('-5 minutes', time());
-        $query = 'SELECT DISTINCT u.id AS userid, u.login as username, u.login as username_clean, concat(u.name,\' \', u.surname) AS name, u.email as email FROM #__users AS u INNER JOIN #__users_online AS s ON u.login = s.users_LOGIN '.$limiter; //WHERE  s.timestamp > '.$active.' '.$limiter;
-        return $query;
+
+	    $db = JFusionFactory::getDatabase($this->getJname());
+
+	    $query = $db->getQuery(true)
+		    ->select('DISTINCT u.id AS userid, u.login as username, u.login as username_clean, concat(u.name,\' \', u.surname) AS name, u.email as email')
+		    ->from('#__users AS u')
+	        ->innerJoin('#__users_online AS s ON u.login = s.users_LOGIN');
+
+	    $query = (string)$query;
+        return $query.$limiter;
     }
 
     /**
@@ -92,7 +100,11 @@ class JFusionPublic_efront extends JFusionPublic
 	        date_default_timezone_set('UTC');
 	        // $active = strtotime('-5 minutes', time());
 	        $db = JFusionFactory::getDatabase($this->getJname());
-	        $query = 'SELECT COUNT(*) FROM #__users_online'; // WHERE  timestamp > '.$active;
+
+		    $query = $db->getQuery(true)
+			    ->select('COUNT(*)')
+			    ->from('#__users_online');
+
 	        $db->setQuery($query);
 	        $result = $db->loadResult();
 	    } catch (Exception $e) {

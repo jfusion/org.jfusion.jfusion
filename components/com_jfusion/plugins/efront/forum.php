@@ -47,9 +47,21 @@ class JFusionForum_efront extends JFusionForum {
 		    //get the connection to the db
 		    $db = JFusionFactory::getDatabase($this->getJname());
 		    // read unread count
-		    $db->setQuery('SELECT avatar FROM #__users WHERE id = ' . (int)$userid);
+
+		    $query = $db->getQuery(true)
+			    ->select('avatar')
+			    ->from('#__users')
+			    ->where('id = ' . $db->quote((int)$userid));
+
+		    $db->setQuery($query);
 		    $avatar_id = $db->loadResult();
-		    $db->setQuery('SELECT path FROM #__files WHERE id = ' . (int)$avatar_id);
+
+		    $query = $db->getQuery(true)
+			    ->select('path')
+			    ->from('#__files')
+			    ->where('id = ' . $db->quote((int)$avatar_id));
+
+		    $db->setQuery($query);
 		    $params = JFusionFactory::getParams($this->getJname());
 		    $avatar = $db->loadResult();
 		    $url = $params->get('avatar_url') . $avatar;

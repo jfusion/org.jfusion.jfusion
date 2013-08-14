@@ -126,7 +126,11 @@ class JFusionAdmin_efront extends JFusionAdmin
 	    try {
 		    //getting the connection to the db
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT login AS username, email from #__users';
+
+		    $query = $db->getQuery(true)
+			    ->select('login AS username, email')
+		        ->from('#__users');
+
 		    $db->setQuery($query,$limitstart,$limit);
 		    //getting the results
 		    $userlist = $db->loadObjectList();
@@ -161,7 +165,11 @@ class JFusionAdmin_efront extends JFusionAdmin
 			    $db->setQuery($query);
 			    $db->execute();
 		    }
-		    $query = 'SELECT count(*) from #__users';
+
+		    $query = $db->getQuery(true)
+			    ->select('count(*)')
+			    ->from('#__users');
+
 		    $db->setQuery($query);
 		    //getting the results
 		    return $db->loadResult();
@@ -207,7 +215,12 @@ class JFusionAdmin_efront extends JFusionAdmin
     function allowRegistration() {
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT value FROM #__configuration WHERE name = \'signup\'';
+
+		    $query = $db->getQuery(true)
+			    ->select('value')
+			    ->from('#__configuration')
+		        ->where('name = ' . $db->quote('signup'));
+
 		    $db->setQuery($query);
 		    $signup = $db->loadResult();
 		    if ($signup == 0) {
@@ -248,7 +261,11 @@ class JFusionAdmin_efront extends JFusionAdmin
                 JFusionFunction::raiseWarning(JText::_('EFRONT_NO_API_DATA'), $this->getJname());
         } else {
             //check if the apiuser and apikey are valid
-            $query = 'SELECT password FROM #__users WHERE login = ' . $db->Quote($apiuser);
+	        $query = $db->getQuery(true)
+		        ->select('password')
+		        ->from('#__users')
+		        ->where('login = ' . $db->quote($apiuser));
+
             $db->setQuery($query);
             $api_key = $db->loadResult();
             $md5_key = $params->get('md5_key');

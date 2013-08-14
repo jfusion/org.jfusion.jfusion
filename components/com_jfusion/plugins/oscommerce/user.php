@@ -547,11 +547,11 @@ class JFusionUser_oscommerce extends JFusionUser
 			    $delete_reviews = $params->get('delete_reviews');
 			    if ($delete_reviews == '1') {
 				    try {
-					    $db->setQuery('select reviews_id from #__reviews where customers_id = \'' . (int)$user_id . '\'');
+					    $db->setQuery('SELECT reviews_id from #__reviews where customers_id = \'' . (int)$user_id . '\'');
 					    $db->execute();
 					    $reviews = $db->loadObjectList();
 					    foreach ($reviews as $review) {
-						    $db->setQuery('delete from #__reviews_description where reviews_id = \'' . (int)$review->reviews_id . '\'');
+						    $db->setQuery('DELETE from #__reviews_description where reviews_id = \'' . (int)$review->reviews_id . '\'');
 						    $db->execute();
 					    }
 				    } catch (Exception $e) {

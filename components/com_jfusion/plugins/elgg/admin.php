@@ -112,7 +112,11 @@ class JFusionAdmin_elgg extends JFusionAdmin
 	    try {
 		    //getting the connection to the db
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT username, email from #__users_entity';
+
+		    $query = $db->getQuery(true)
+			    ->select('username, email')
+			    ->from('#__users_entity');
+
 		    $db->setQuery($query,$limitstart,$limit);
 		    //getting the results
 		    $userlist = $db->loadObjectList();
@@ -130,7 +134,11 @@ class JFusionAdmin_elgg extends JFusionAdmin
 	    try {
 	        //getting the connection to the db
 	        $db = JFusionFactory::getDatabase($this->getJname());
-	        $query = 'SELECT count(*) from #__users_entity';
+
+		    $query = $db->getQuery(true)
+			    ->select('count(*)')
+			    ->from('#__users_entity');
+
 	        $db->setQuery($query);
 	        //getting the results
 	        return $db->loadResult();
