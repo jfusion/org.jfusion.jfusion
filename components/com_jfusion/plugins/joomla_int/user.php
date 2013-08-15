@@ -67,7 +67,13 @@ class JFusionUser_joomla_int extends JFusionUser {
         $status = array('error' => array(),'debug' => array());
         $username = $userinfo->username;
         //since the jfusion_user table will be updated to the user's email if they use it as an identifier, we must check for both the username and email
-        $query = 'SELECT id FROM #__jfusion_users WHERE username=' . $db->Quote($username) . ' OR LOWER(username)=' . strtolower($db->Quote($userinfo->email));
+
+	    $query = $db->getQuery(true)
+		    ->select('id')
+		    ->from('#__jfusion_users')
+		    ->where('username = ' . $db->Quote($username), 'OR')
+		    ->where('LOWER(username) = ' . $db->Quote(strtolower($userinfo->email)));
+
         $db->setQuery($query);
         $userid = $db->loadResult();
         if ($userid) {
@@ -91,7 +97,12 @@ class JFusionUser_joomla_int extends JFusionUser {
             $status['debug'][] = JText::_('USER_DELETION') . ' ' . $username;
         } else {
             //this user was NOT create by JFusion. Therefore we need to delete it in the Joomla user table only
-            $query = 'SELECT id from #__users WHERE username = ' . $db->Quote($username);
+
+	        $query = $db->getQuery(true)
+		        ->select('id')
+		        ->from('#__users')
+		        ->where('username  = ' . $db->Quote($username));
+
             $db->setQuery($query);
             $userid = $db->loadResult();
             if ($userid) {

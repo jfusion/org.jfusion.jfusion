@@ -51,10 +51,11 @@ class JFusionUser_universal extends JFusionUser {
 			$db = JFusionFactory::getDatabase($this->getJname());
 
 			$field = $helper->getQuery(array('USERID','USERNAME', 'EMAIL', 'REALNAME', 'PASSWORD', 'SALT', 'GROUP', 'ACTIVE', 'INACTIVE','ACTIVECODE','FIRSTNAME','LASTNAME'));
-//        $query = 'SELECT '.$field.' NULL as reason, a.lastLogin as lastvisit'.
-			$query = 'SELECT '.$field.' '.
-				'FROM #__'.$helper->getTable().' '.
-				'WHERE '.$identifier_type.'=' . $db->Quote($identifier);
+
+			$query = $db->getQuery(true)
+				->select($field)
+				->from('#__'.$helper->getTable())
+				->where($identifier_type.' = ' . $db->Quote($identifier));
 
 			$db->setQuery($query );
 			$result = $db->loadObject();
@@ -88,9 +89,11 @@ class JFusionUser_universal extends JFusionUser {
 				if ( !isset($result->group_id) && $group && $userid && $groupt ) {
 					$field = $helper->getQuery(array('GROUP'), 'group');
 
-					$query = 'SELECT '.$field.' '.
-						'FROM #__'.$groupt.' '.
-						'WHERE '.$userid->field.'=' . $db->Quote($result->userid);
+					$query = $db->getQuery(true)
+						->select($field)
+						->from('#__'.$groupt)
+						->where($userid->field . ' = ' . $db->Quote($result->userid));
+
 					$db->setQuery($query );
 					$result2 = $db->loadObject();
 
@@ -663,8 +666,13 @@ class JFusionUser_universal extends JFusionUser {
 												$user->$field = NULL;
 											} else {
 												$f = $helper->getQuery(array('USERID'));
-												$query = 'SELECT '.$f.' FROM #__'.$helper->getTable().' ORDER BY userid DESC LIMIT 1';
-												$db->setQuery($query);
+
+												$query = $db->getQuery(true)
+													->select($f)
+													->from('#__'.$helper->getTable())
+													->order('userid DESC');
+
+												$db->setQuery($query, 0 , 1);
 												$value = $db->loadResult();
 												if (!$value) {
 													$value = 1;

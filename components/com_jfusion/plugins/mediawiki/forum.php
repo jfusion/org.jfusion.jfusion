@@ -41,7 +41,7 @@ class JFusionForum_mediawiki extends JFusionForum
 		    // configuration
 		    $display_limit_subject = $pluginParam->get('character_limit_subject');
 		    $display_limit = $pluginParam->get('character_limit');
-		    $result_limit = $pluginParam->get('result_limit');
+		    $result_limit = $pluginParam->get('result_limit', 0);
 		    $itemid = $pluginParam->get('itemid');
 		    $avatar = $pluginParam->get('avatar');
 		    $avatar_height = $pluginParam->get('avatar_height');
@@ -60,15 +60,17 @@ class JFusionForum_mediawiki extends JFusionForum
 			    $new_window = '_self';
 		    }
 
-		    $query = 'SELECT p.page_id , p.page_title AS title, SUBSTRING(t.old_text,1,'.$display_limit.') as text,
+		    $query = $db->getQuery(true)
+			    ->select('p.page_id , p.page_title AS title, SUBSTRING(t.old_text,1,'.$display_limit.') as text,
 					STR_TO_DATE(r.rev_timestamp, "%Y%m%d%H%i%S") AS created,
 					p.page_title AS section,
-					r.rev_user_text as user
-					FROM #__page AS p
-					INNER JOIN #__revision AS r ON r.rev_page = p.page_id AND r.rev_id = p.page_latest
-					INNER JOIN #__text AS t on t.old_id = r.rev_text_id ORDER BY r.rev_timestamp DESC LIMIT '.$result_limit;
+					r.rev_user_text as user')
+			    ->from('#__page AS p')
+		        ->innerJoin('#__revision AS r ON r.rev_page = p.page_id AND r.rev_id = p.page_latest')
+			    ->innerJoin('#__text AS t on t.old_id = r.rev_text_id')
+		        ->order('r.rev_timestamp DESC');
 
-		    $db->setQuery($query);
+		    $db->setQuery($query, 0 , (int)$result_limit);
 
 		    $results = $db->loadObjectList();
 		    //reorder the keys for the for loop

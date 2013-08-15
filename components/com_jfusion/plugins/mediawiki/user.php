@@ -48,16 +48,20 @@ class JFusionUser_mediawiki extends JFusionUser {
 		    // initialise some objects
 		    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    $query = 'SELECT user_id as userid, user_name as username, user_token, user_real_name as name, user_email as email, user_password as password, NULL as password_salt, NULL as activation, TRUE as is_activated, NULL as reason, user_touched as lastvisit '.
-			    'FROM #__user '.
-			    'WHERE user_name=' . $db->Quote($username);
-		    $db->setQuery($query );
+		    $query = $db->getQuery(true)
+			    ->select('user_id as userid, user_name as username, user_token, user_real_name as name, user_email as email, user_password as password, NULL as password_salt, NULL as activation, TRUE as is_activated, NULL as reason, user_touched as lastvisit')
+			    ->from('#__user')
+		        ->where('user_name = ' . $db->Quote($username));
+
+		    $db->setQuery($query);
 		    $result = $db->loadObject();
 
 		    if ($result) {
-			    $query = 'SELECT ug_group '.
-				    'FROM #__user_groups '.
-				    'WHERE ug_user=' . $db->Quote($result->userid);
+			    $query = $db->getQuery(true)
+				    ->select('ug_group')
+				    ->from('#__user_groups')
+				    ->where('ug_user = ' . $db->Quote($result->userid));
+
 			    $db->setQuery( $query );
 			    $grouplist = $db->loadObjectList();
 			    $groups = array();
@@ -67,9 +71,11 @@ class JFusionUser_mediawiki extends JFusionUser {
 			    $result->group_id = implode( ',' , $groups );
 			    $result->groups = $groups;
 
-			    $query = 'SELECT ipb_user, ipb_expiry '.
-				    'FROM #__ipblocks '.
-				    'WHERE ipb_user=' . $db->Quote($result->userid);
+			    $query = $db->getQuery(true)
+				    ->select('ipb_user, ipb_expiry')
+				    ->from('#__ipblocks')
+				    ->where('ipb_user = ' . $db->Quote($result->userid));
+
 			    $db->setQuery($query);
 			    $block = $db->loadObject();
 

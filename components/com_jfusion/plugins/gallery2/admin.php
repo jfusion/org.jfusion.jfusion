@@ -122,7 +122,12 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
 	    try {
 	        // initialise some objects
 	        $db = JFusionFactory::getDatabase($this->getJname());
-	        $query = 'SELECT g_userName as username, g_email as email, g_id as userid from #__User where g_id != 5';
+
+		    $query = $db->getQuery(true)
+			    ->select('g_userName as username, g_email as email, g_id as userid')
+			    ->from('#__User')
+			    ->where('g_id != 5');
+
 	        $db->setQuery($query,$limitstart,$limit);
 	        $userlist = $db->loadObjectList();
 	    } catch (Exception $e) {
@@ -139,7 +144,12 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
 	    try {
 	        //getting the connection to the db
 	        $db = JFusionFactory::getDatabase($this->getJname());
-	        $query = 'SELECT count(*) from #__User where g_id != 5';
+
+		    $query = $db->getQuery(true)
+			    ->select('count(*)')
+			    ->from('#__User')
+			    ->where('g_id != 5');
+
 	        $db->setQuery($query);
 	        //getting the results
 	        $no_users = $db->loadResult();
@@ -157,8 +167,12 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
 	    try {
 	        //getting the connection to the db
 	        $db = JFusionFactory::getDatabase($this->getJname());
-	        $query = 'SELECT g_id as id, g_groupName as name FROM #__Group
-	                WHERE g_id != 4';
+
+		    $query = $db->getQuery(true)
+			    ->select('g_id as id, g_groupName as name')
+			    ->from('#__Group')
+			    ->where('g_id != 4');
+
 	        $db->setQuery($query);
 	        //getting the results
 	        return $db->loadObjectList();
@@ -180,7 +194,13 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
 	        }
 	        //we want to output the usergroup name
 	        $db = JFusionFactory::getDatabase($this->getJname());
-	        $query = 'SELECT g_groupName FROM #__Group WHERE g_id = ' . (int)$usergroup_id;
+
+		    $query = $db->getQuery(true)
+			    ->select('g_groupName')
+			    ->from('#__Group')
+			    ->where('g_id = ' . $db->quote((int)$usergroup_id));
+
+
 	        $db->setQuery($query);
 	        return $db->loadResult();
 	    } catch (Exception $e) {
@@ -195,7 +215,13 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
 	    $result = false;
 	    try {
 	        $db = JFusionFactory::getDatabase($this->getJname());
-	        $query = 'SELECT g_active FROM #__PluginMap WHERE g_pluginType = \'module\' and g_pluginId = \'register\';';
+
+		    $query = $db->getQuery(true)
+			    ->select('g_active')
+			    ->from('#__PluginMap')
+			    ->where('g_pluginType = ' . $db->quote('module'))
+			    ->where('g_pluginId = ' . $db->quote('register'));
+
 	        $db->setQuery($query);
 	        $new_registration = $db->loadResult();
 		    if ($new_registration != 0) {

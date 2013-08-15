@@ -295,13 +295,22 @@ class JFusionPublic_gallery2 extends JFusionPublic {
      * @return string
      */
     function getOnlineUserQuery($limit) {
-        $limiter = (!empty($limit)) ? "LIMIT 0,$limit" : '';
+	    $db = JFusionFactory::getDatabase($this->getJname());
+
+        $limiter = (!empty($limit)) ? ' LIMIT 0,'.$limit : '';
         //get a unix time from 5 minutes ago
         date_default_timezone_set('UTC');
         $now = time();
         $active = strtotime('-5 minutes', $now);
-        $query = 'SELECT DISTINCT u.g_id AS userid, u.g_userName as username, u.g_fullName AS name FROM #__User AS u INNER JOIN #__SessionMap AS s ON s.g_userId = u.g_id WHERE s.g_modificationTimestamp > '.$active.' '.$limiter;
-        return $query;
+
+	    $query = $db->getQuery(true)
+		    ->select('DISTINCT u.g_id AS userid, u.g_userName as username, u.g_fullName AS name')
+		    ->from('#__User AS u')
+	        ->innerJoin('#__SessionMap AS s ON s.g_userId = u.g_id')
+		    ->where('s.g_modificationTimestamp > ' . $active);
+
+	    $query = (string)$query;
+        return $query.$limiter;
     }
     /**
      * Returns number of members
@@ -314,7 +323,13 @@ class JFusionPublic_gallery2 extends JFusionPublic {
 		    $now = time();
 		    $active = strtotime('-5 minutes', $now);
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT COUNT(*) FROM #__SessionMap s WHERE g_modificationTimestamp > '.$active.' AND s.g_userId != 5';
+
+		    $query = $db->getQuery(true)
+			    ->select('COUNT(*)')
+			    ->from('#__SessionMap')
+			    ->where('g_modificationTimestamp  > ' . $active)
+			    ->where('g_userId != 5');
+
 		    $db->setQuery($query);
 		    $result = $db->loadResult();
 	    } catch (Exception $e) {
@@ -334,7 +349,13 @@ class JFusionPublic_gallery2 extends JFusionPublic {
 	        $now = time();
 	        $active = strtotime('-5 minutes', $now);
 	        $db = JFusionFactory::getDatabase($this->getJname());
-	        $query = 'SELECT COUNT(*) FROM #__SessionMap s WHERE g_modificationTimestamp > '.$active.' AND s.g_userId = 5';
+
+		    $query = $db->getQuery(true)
+			    ->select('COUNT(*)')
+			    ->from('#__SessionMap')
+			    ->where('g_modificationTimestamp  > ' . $active)
+			    ->where('g_userId = 5');
+
 	        $db->setQuery($query);
 	        $result = $db->loadResult();
 	    } catch (Exception $e) {

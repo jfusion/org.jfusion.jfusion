@@ -109,8 +109,12 @@ class JFusionAdmin_universal extends JFusionAdmin{
 
 			// initialise some objects
 			$db = JFusionFactory::getDatabase($this->getJname());
-			$query = 'SELECT '.$field.' from #__'.$this->getTablename();
-			$db->setQuery($query,$limitstart,$limit);
+
+			$query = $db->getQuery(true)
+				->select($field)
+				->from('#__'.$this->getTablename());
+
+			$db->setQuery($query, $limitstart, $limit);
 			$userlist = $db->loadObjectList();
 		} catch (Exception $e) {
 			JFusionFunction::raiseError($e, $this->getJname());
@@ -127,8 +131,12 @@ class JFusionAdmin_universal extends JFusionAdmin{
 		try {
 			//getting the connection to the db
 			$db = JFusionFactory::getDatabase($this->getJname());
-			$query = 'SELECT count(*) from #__'.$this->getTablename();
-			$db->setQuery($query );
+
+			$query = $db->getQuery(true)
+				->select('count(*)')
+				->from('#__'.$this->getTablename());
+
+			$db->setQuery($query);
 
 			//getting the results
 			return $db->loadResult();

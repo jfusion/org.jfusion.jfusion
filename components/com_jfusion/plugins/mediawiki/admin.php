@@ -92,8 +92,12 @@ class JFusionAdmin_mediawiki extends JFusionAdmin {
 	    try {
 		    // initialise some objects
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT user_name as username, user_email as email from #__user';
-		    $db->setQuery($query,$limitstart,$limit);
+
+		    $query = $db->getQuery(true)
+			    ->select('user_name as username, user_email as email')
+			    ->from('#__user');
+
+		    $db->setQuery($query, $limitstart, $limit);
 		    $userlist = $db->loadObjectList();
 
 		    return $userlist;
@@ -112,7 +116,11 @@ class JFusionAdmin_mediawiki extends JFusionAdmin {
 	    try {
 		    //getting the connection to the db
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT count(*) from #__user';
+
+		    $query = $db->getQuery(true)
+			    ->select('count(*)')
+			    ->from('#__user');
+
 		    $db->setQuery($query );
 
 		    //getting the results

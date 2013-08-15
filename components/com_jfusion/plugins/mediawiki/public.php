@@ -59,13 +59,17 @@ class JFusionPublic_mediawiki extends JFusionPublic {
      */
     function getSearchQuery(&$pluginParam)
 	{
-		$query = 'SELECT p.page_id , p.page_title AS title, t.old_text as text,
+		$db = JFusionFactory::getDatabase($this->getJname());
+
+		$query = $db->getQuery(true)
+			->select('p.page_id , p.page_title AS title, t.old_text as text,
 					STR_TO_DATE(p.page_touched, "%Y%m%d%H%i%S") AS created,
-					p.page_title AS section
-					FROM #__page AS p
-					INNER JOIN #__revision AS r ON r.rev_page = p.page_id AND r.rev_id = p.page_latest
-					INNER JOIN #__text AS t on t.old_id = r.rev_text_id';
-		return $query;
+					p.page_title AS section')
+			->from('#__page AS p')
+			->innerJoin('#__revision AS r ON r.rev_page = p.page_id AND r.rev_id = p.page_latest')
+			->innerJoin('#__text AS t on t.old_id = r.rev_text_id');
+
+		return (string)$query;
 	}
 
     /**
