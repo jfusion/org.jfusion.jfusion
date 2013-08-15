@@ -296,9 +296,11 @@ class JFusionPluginInstaller extends JObject
                 $this->manifest = $manifest;
 
 	            $file = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'jfusion.xml';
-	            $jfusionxml = JFusionFunction::getXml($file);
-
-	            $jfusionversion = $jfusionxml->version;
+	            if (file_exists($file)) {
+		            $jfusionxml = JFusionFunction::getXml($file);
+	            } else {
+		            $jfusionxml = false;
+	            }
 
 	            $version = $this->getAttribute($this->manifest,'version');
 
@@ -314,9 +316,7 @@ class JFusionPluginInstaller extends JObject
 	            $name = $this->manifest->name;
 	            $name = $this->filterInput->clean($name, 'string');
 
-	            if (!$jfusionversion || !$version || version_compare($jfusionversion, $version) >= 0) {
-
-
+	            if (!$jfusionxml || !$version || version_compare($jfusionxml->version, $version) >= 0) {
 		            $result['jname'] = $name;
 		            $this->set('name', $name);
 
