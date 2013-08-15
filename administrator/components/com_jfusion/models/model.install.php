@@ -256,18 +256,25 @@ class JFusionPluginInstaller extends JObject
                 $this->manifest = $manifest;
 
 	            $file = JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_jfusion' . DS . 'jfusion.xml';
-	            if(JFusionFunction::isJoomlaVersion('1.6')) {
-		            /**
-		             *  @ignore
-		             * @var $jfusionxml JXMLElement
-		             */
-		            $jfusionxml = JFactory::getXML($file);
+
+	            if (file_exists($file)) {
+		            if(JFusionFunction::isJoomlaVersion('1.6')) {
+			            /**
+			             *  @ignore
+			             * @var $jfusionxml JXMLElement
+			             */
+			            $jfusionxml = JFactory::getXML($file);
+		            } else {
+			            $jfusionxml = JFusionFunction::getXml($file);
+		            }
+
+		            $jfusionversion = $this->getElementByPath($jfusionxml,'version');
+		            $jfusionversion = $this->getData($jfusionversion);
 	            } else {
-		            $jfusionxml = JFusionFunction::getXml($file);
+		            $jfusionversion = false;
 	            }
 
-	            $jfusionversion = $this->getElementByPath($jfusionxml,'version');
-	            $jfusionversion = $this->getData($jfusionversion);
+
 
 	            $version = $this->getAttribute($this->manifest,'version');
 
