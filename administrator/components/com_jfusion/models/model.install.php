@@ -274,8 +274,6 @@ class JFusionPluginInstaller extends JObject
 		            $jfusionversion = false;
 	            }
 
-
-
 	            $version = $this->getAttribute($this->manifest,'version');
 
 	            /**
