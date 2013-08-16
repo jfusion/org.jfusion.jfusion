@@ -52,8 +52,7 @@ class JFusionModelInstaller extends InstallerModelInstall
     {
 	    $this->raise = $raise;
         // Load the language file
-        $lang = JFactory::getLanguage();
-        $lang->load('com_installer');
+	    JFactory::getLanguage()->load('com_installer');
         parent::__construct();
     }
 

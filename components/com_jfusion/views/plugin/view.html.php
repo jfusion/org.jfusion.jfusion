@@ -46,10 +46,9 @@ class jfusionViewPlugin extends JViewLegacy {
         $plugin = $db->loadObject();
 
         if ($plugin) {
-            $lang = JFactory::getLanguage();
             $name = $plugin->original_name ? $plugin->original_name : $plugin->name;
 
-            $lang->load('com_jfusion.plg_' . $name, JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion');
+	        JFactory::getLanguage()->load('com_jfusion.plg_' . $name, JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion');
         }
 
 		$result = JFusionFrameless::displayContent($data);

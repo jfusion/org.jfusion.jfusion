@@ -824,8 +824,7 @@ class plgUserJfusion extends JPlugin
 				        if ($mail_to_user) {
 
 					        // Load user_joomla plugin language (not done automatically).
-					        $lang = JFactory::getLanguage();
-					        $lang->load('plg_user_joomla', JPATH_ADMINISTRATOR);
+					        JFactory::getLanguage()->load('plg_user_joomla', JPATH_ADMINISTRATOR);
 
 					        // Compute the mail subject.
 					        $emailSubject = JText::sprintf(

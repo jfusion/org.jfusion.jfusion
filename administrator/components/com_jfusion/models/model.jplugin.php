@@ -728,9 +728,9 @@ class JFusionJplugin
 			    }
 			    // Get the language of the user and store it as variable in the user object
 			    $user_params = new JRegistry($result->params);
-			    $JLang = JFactory::getLanguage();
-			    $result->language = $user_params->get('language', $JLang->getTag());
-			    unset($JLang);
+
+			    $result->language = $user_params->get('language', JFactory::getLanguage()->getTag());
+
 			    //unset the activation status if not blocked
 			    if ($result->block == 0) {
 				    $result->activation = '';
@@ -1495,8 +1495,7 @@ class JFusionJplugin
         $existinguser = (isset($userinfo)) ? JFusionJplugin::getUser($userinfo, $jname) : null;
         // If the user is connected we change his account parameter in function of the language front end
         if ($existinguser) {
-            $JLang = JFactory::getLanguage();
-            $userinfo->language = $JLang->getTag();
+            $userinfo->language = JFactory::getLanguage()->getTag();
             JFusionJplugin::updateUserLanguage($userinfo, $existinguser, $status, $jname);
         } else {
             $status['debug'] = JText::_('NO_USER_DATA_FOUND');

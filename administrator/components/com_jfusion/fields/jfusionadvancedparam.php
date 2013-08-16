@@ -46,8 +46,7 @@ class JFormFieldJFusionAdvancedParam extends JFormField
 
 		$ename = 'jfusionadvancedparam'.$elNum;
 
-		$lang = JFactory::getLanguage();
-		$lang->load('com_jfusion');
+		JFactory::getLanguage()->load('com_jfusion');
 
 		$feature = $this->element['feature'];
 		if (!$feature) {

@@ -71,7 +71,6 @@ class JFusionPublic_magento extends JFusionPublic {
             $status['debug'] = JText::_('STEP_SKIPPED_MAGELIB_INSTALLED');
             return $status;
         }*/
-        $JLang = JFactory::getLanguage();
         $cookies_to_set = array();
         $params = JFusionFactory::getParams($this->getJname());
         /**
@@ -94,7 +93,7 @@ class JFusionPublic_magento extends JFusionPublic {
                 $codes = explode('=', $lang);
                 $joomla_code = $codes[0];
                 $store_code = $codes[1];
-                if ($joomla_code == $JLang->getTag()) {
+                if ($joomla_code == JFactory::getLanguage()->getTag()) {
                     $cookies_to_set[0] = array("store=$store_code");
                     break;
                 }

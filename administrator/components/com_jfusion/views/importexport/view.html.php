@@ -46,8 +46,7 @@ class jfusionViewimportexport extends JViewLegacy
     {
         $mainframe = JFactory::getApplication();
 
-        $lang = JFactory::getLanguage();
-        $lang->load('com_jfusion');
+	    JFactory::getLanguage()->load('com_jfusion');
 
         $jname = JFactory::getApplication()->input->get('jname');
 

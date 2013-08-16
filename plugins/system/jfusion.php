@@ -168,11 +168,11 @@ class plgSystemJfusion extends JPlugin
      * Can be invoked from components, modules or else
      */
     public static function setLanguagePluginsFrontend() {
-		$JLang = JFactory::getLanguage();
+		$lang = JFactory::getLanguage();
 		$session = JFactory::getSession();
 		$oldlang = $session->get('oldlang');
-		if (!isset($oldlang) || $oldlang != $JLang->getTag()) {
-			$session->set('oldlang', $JLang->getTag());
+		if (!isset($oldlang) || $oldlang != $lang->getTag()) {
+			$session->set('oldlang', $lang->getTag());
 			// The instance of the user is not obligatory. Without to be logged, the user can change the language of the integrated software
 			// if those implement it.
 			$userinfo = JFactory::getUser();

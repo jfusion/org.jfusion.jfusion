@@ -30,11 +30,10 @@ $query = $db->getQuery(true)
 
 $db->setQuery($query);
 $plugins = $db->loadObjectList();
-$lang = JFactory::getLanguage();
 foreach ($plugins as $plugin) {
     $name = $plugin->original_name ? $plugin->original_name : $plugin->name;
 
-	$lang->load('com_jfusion.plg_' . $name , JPATH_COMPONENT_ADMINISTRATOR );
+	JFactory::getLanguage()->load('com_jfusion.plg_' . $name , JPATH_COMPONENT_ADMINISTRATOR );
 }
 
 //load the JFusion CSS and javascript

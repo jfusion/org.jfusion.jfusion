@@ -489,8 +489,7 @@ class JFusionController extends JControllerLegacy
 	 */
 	function installlanguage()
 	{
-		$lang = JFactory::getLanguage();
-		$lang->load('com_installer');
+		JFactory::getLanguage()->load('com_installer');
 		require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_installer' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'install.php';
 		$installer = JModelLegacy::getInstance('Install', 'InstallerModel');
 
@@ -505,8 +504,7 @@ class JFusionController extends JControllerLegacy
 	 */
 	function uninstallanguage()
 	{
-		$lang = JFactory::getLanguage();
-		$lang->load('com_installer');
+		JFactory::getLanguage()->load('com_installer');
 
 		require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_installer' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'manage.php';
 		$manager = JModelLegacy::getInstance('Manage', 'InstallerModel');
