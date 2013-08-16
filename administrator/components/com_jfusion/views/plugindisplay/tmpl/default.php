@@ -19,7 +19,7 @@ $images = 'components/com_jfusion/images/';
 	window.addEvent('domready',function() {
 		$('installSERVER').addEvent('submit', function(e) {
 			e.stop();
-			JFusion.submitForm('installSERVER');
+			JFusion.submitForm('SERVER');
 		});
 
 		$('installDIR').addEvent('submit', function(e) {

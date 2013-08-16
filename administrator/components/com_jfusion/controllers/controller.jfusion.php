@@ -84,7 +84,7 @@ class JFusionController extends JControllerLegacy
 				    $db->setQuery($query);
 				    $db->execute();
 			    }
-			    $this->setRedirect('index.php?option=com_jfusion&task=plugineditor&jname=' . $jname, 'notice', JText::_('WIZARD_SUCCESS'));
+			    $this->setRedirect('index.php?option=com_jfusion&task=plugineditor&jname=' . $jname, JText::_('WIZARD_SUCCESS'), 'message');
 		    } catch (Exception $e) {
 			    $this->setRedirect('index.php?option=com_jfusion&task=plugineditor&jname=' . $jname, $e->getMessage(), 'warning');
 		    }
