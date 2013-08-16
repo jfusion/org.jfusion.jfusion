@@ -48,10 +48,8 @@ class jfusionViewPlugin extends JViewLegacy {
         if ($plugin) {
             $lang = JFactory::getLanguage();
             $name = $plugin->original_name ? $plugin->original_name : $plugin->name;
-            // Language file is loaded in function of the context
-            // of the selected language in Joomla
-            // and of the JPATH_BASE (in admin = JPATH_ADMINISTRATOR, in site = JPATH_SITE)
-            $lang->load('com_jfusion.plg_' . $name,JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion');
+
+            $lang->load('com_jfusion.plg_' . $name, JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion');
         }
 
 		$result = JFusionFrameless::displayContent($data);
