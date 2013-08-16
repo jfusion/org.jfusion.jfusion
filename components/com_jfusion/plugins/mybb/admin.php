@@ -81,21 +81,36 @@ class JFusionAdmin_mybb extends JFusionAdmin
             $database = $params['database_name'];
             $prefix = $params['database_prefix'];
             $options = array('driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database, 'prefix' => $prefix);
-            $bb = JDatabaseDriver::getInstance($options);
-            $query = 'SELECT value FROM #__settings WHERE name = \'bburl\'';
-            $bb->setQuery($query);
-            $bb_url = $bb->loadResult();
+	        $db = JDatabaseDriver::getInstance($options);
+
+	        $query = $db->getQuery(true)
+		        ->select('value')
+		        ->from('#__settings')
+		        ->where('name = ' . $db->Quote('bburl'));
+
+	        $db->setQuery($query);
+            $bb_url = $db->loadResult();
             if (substr($bb_url, -1) != DIRECTORY_SEPARATOR) {
                 $bb_url.= DIRECTORY_SEPARATOR;
             }
             $params['source_url'] = $bb_url;
-            $query = 'SELECT value FROM #__settings WHERE name=\'cookiedomain\'';
-            $bb->setQuery($query);
-            $cookiedomain = $bb->loadResult();
+
+	        $query = $db->getQuery(true)
+		        ->select('value')
+		        ->from('#__settings')
+		        ->where('name = ' . $db->Quote('cookiedomain'));
+
+	        $db->setQuery($query);
+            $cookiedomain = $db->loadResult();
             $params['cookie_domain'] = $cookiedomain;
-            $query = 'SELECT value FROM #__settings WHERE name=\'cookiepath\'';
-            $bb->setQuery($query);
-            $cookiepath = $bb->loadResult();
+
+	        $query = $db->getQuery(true)
+		        ->select('value')
+		        ->from('#__settings')
+		        ->where('name = ' . $db->Quote('cookiepath'));
+
+	        $db->setQuery($query);
+            $cookiepath = $db->loadResult();
             $params['cookie_path'] = $cookiepath;
         }
         return $params;
@@ -113,7 +128,10 @@ class JFusionAdmin_mybb extends JFusionAdmin
 	    try {
 		    //getting the connection to the db
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT username, email from #__users';
+		    $query = $db->getQuery(true)
+			    ->select('username, email')
+			    ->from('#__users');
+
 		    $db->setQuery($query,$limitstart,$limit);
 		    $userlist = $db->loadObjectList();
 	    } catch (Exception $e) {
@@ -130,7 +148,11 @@ class JFusionAdmin_mybb extends JFusionAdmin
 	    try {
 	        //getting the connection to the db
 	        $db = JFusionFactory::getDatabase($this->getJname());
-	        $query = 'SELECT count(*) from #__users';
+
+		    $query = $db->getQuery(true)
+			    ->select('count(*)')
+			    ->from('#__users');
+
 	        $db->setQuery($query);
 	        //getting the results
 	        return $db->loadResult();
@@ -147,7 +169,11 @@ class JFusionAdmin_mybb extends JFusionAdmin
 	    try {
 	        //getting the connection to the db
 	        $db = JFusionFactory::getDatabase($this->getJname());
-	        $query = 'SELECT gid as id, title as name FROM #__usergroups';
+
+		    $query = $db->getQuery(true)
+			    ->select('gid as id, title as name')
+			    ->from('#__usergroups');
+
 	        $db->setQuery($query);
 	        //getting the results
 	        return $db->loadObjectList();
@@ -170,7 +196,11 @@ class JFusionAdmin_mybb extends JFusionAdmin
 		    }
 		    //we want to output the usergroup name
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT title from #__usergroups WHERE gid = ' . (int)$usergroup_id;
+
+		    $query = $db->getQuery(true)
+			    ->select('title')
+			    ->from('gid = ' . (int)$usergroup_id);
+
 		    $db->setQuery($query);
 		    return $db->loadResult();
 	    } catch (Exception $e) {
@@ -186,7 +216,12 @@ class JFusionAdmin_mybb extends JFusionAdmin
 	    $result = false;
 	    try {
 	        $db = JFusionFactory::getDatabase($this->getJname());
-	        $query = 'SELECT value FROM #__settings  WHERE name =\'disableregs\'';
+
+		    $query = $db->getQuery(true)
+			    ->select('value')
+			    ->from('#__settings')
+			    ->where('name = ' . $db->Quote('disableregs'));
+
 	        $db->setQuery($query);
 	        $disableregs = $db->loadResult();
 	        if ($disableregs == '0') {

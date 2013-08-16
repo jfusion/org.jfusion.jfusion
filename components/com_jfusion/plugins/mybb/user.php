@@ -37,7 +37,13 @@ class JFusionUser_mybb extends JFusionUser {
 		    list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'a.username', 'a.email');
 		    // Get user info from database
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT a.uid as userid, a.username, a.usergroup as group_id, a.username as name, a.email, a.password, a.salt as password_salt, a.usergroup as activation, b.isbannedgroup as block FROM #__users as a LEFT OUTER JOIN #__usergroups as b ON a.usergroup = b.gid WHERE ' . $identifier_type . ' = ' . $db->Quote($identifier);
+
+		    $query = $db->getQuery(true)
+			    ->select('a.uid as userid, a.username, a.usergroup as group_id, a.username as name, a.email, a.password, a.salt as password_salt, a.usergroup as activation, b.isbannedgroup as block')
+			    ->from('#__users as a')
+			    ->join('LEFT OUTER', '#__usergroups as b ON a.usergroup = b.gid')
+			    ->where($identifier_type . ' = ' . $db->Quote($identifier));
+
 		    $db->setQuery($query);
 		    $result = $db->loadObject();
 		    if ($result) {
@@ -113,7 +119,12 @@ class JFusionUser_mybb extends JFusionUser {
 	            //get myBB uid, loginkey
 
 		        $db = JFusionFactory::getDatabase($this->getJname());
-		        $query = 'SELECT uid, loginkey FROM #__users WHERE username=' . $db->Quote($userinfo->username);
+
+		        $query = $db->getQuery(true)
+			        ->select('uid, loginkey')
+			        ->from('#__users')
+			        ->where('username = '. $db->Quote($userinfo->username));
+
 		        $db->setQuery($query);
 		        $user = $db->loadObject();
 		        // Set cookie values
@@ -200,7 +211,12 @@ class JFusionUser_mybb extends JFusionUser {
 	    try {
 	        $db = JFusionFactory::getDatabase($this->getJname());
 	        //found out what the old usergroup was
-	        $query = 'SELECT oldgroup from #__banned WHERE uid =' . (int)$existinguser->userid;;
+
+		    $query = $db->getQuery(true)
+			    ->select('oldgroup')
+			    ->from('#__banned')
+			    ->where('uid = '. (int)$existinguser->userid);
+
 	        $db->setQuery($query);
 	        $oldgroup = $db->loadResult();
 	        //delete the ban

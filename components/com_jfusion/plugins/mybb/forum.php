@@ -89,7 +89,12 @@ class JFusionForum_mybb extends JFusionForum {
     function getThread($threadid) {
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT tid AS threadid, fid AS forumid, firstpost AS postid FROM #__threads WHERE tid = '. (int)$threadid;
+
+		    $query = $db->getQuery(true)
+			    ->select('tid AS threadid, fid AS forumid, firstpost AS postid')
+			    ->from('#__threads')
+		        ->where('tid = '. (int)$threadid);
+
 		    $db->setQuery($query);
 		    $results = $db->loadObject();
 	    } catch (Exception $e) {
@@ -107,7 +112,12 @@ class JFusionForum_mybb extends JFusionForum {
     function getReplyCount($existingthread) {
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT replies FROM #__threads WHERE tid = ' .(int) $existingthread->threadid;
+
+		    $query = $db->getQuery(true)
+			    ->select('replies')
+			    ->from('#__threads')
+			    ->where('tid = '. (int)$existingthread->threadid);
+
 		    $db->setQuery($query);
 		    $result = $db->loadResult();
 	    } catch (Exception $e) {
@@ -124,7 +134,11 @@ class JFusionForum_mybb extends JFusionForum {
 	    try {
 		    //get the connection to the db
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT fid as id, name FROM #__forums';
+
+		    $query = $db->getQuery(true)
+			    ->select('fid as id, name')
+			    ->from('#__forums');
+
 		    $db->setQuery($query);
 		    //getting the results
 		    return $db->loadObjectList();
@@ -143,8 +157,14 @@ class JFusionForum_mybb extends JFusionForum {
 		    if ($userid) {
 			    //get the connection to the db
 			    $db = JFusionFactory::getDatabase($this->getJname());
+
+			    $query = $db->getQuery(true)
+				    ->select('totalpms, unreadpms')
+				    ->from('#__users')
+				    ->where('uid = '. (int)$userid);
 			    // read unread count
-			    $db->setQuery('SELECT totalpms, unreadpms FROM #__users WHERE uid = ' . (int)$userid);
+			    $db->setQuery($query);
+
 			    $pminfo = $db->loadObject();
 			    return array('unread' => $pminfo->unreadpms, 'total' => $pminfo->totalpms);
 		    }
@@ -177,7 +197,13 @@ class JFusionForum_mybb extends JFusionForum {
 		    //get the connection to the db
 		    $db = JFusionFactory::getDatabase($this->getJname());
 		    // read unread count
-		    $db->setQuery('SELECT avatar FROM #__users WHERE uid = ' . (int)$userid);
+
+		    $query = $db->getQuery(true)
+			    ->select('avatar')
+			    ->from('#__users')
+			    ->where('uid = '. (int)$userid);
+
+		    $db->setQuery($query);
 		    $avatar = $db->loadResult();
 		    $avatar = substr($avatar, 2);
 		    $params = JFusionFactory::getParams($this->getJname());

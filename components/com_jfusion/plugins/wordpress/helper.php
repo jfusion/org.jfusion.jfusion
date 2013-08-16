@@ -44,7 +44,12 @@ class JFusionHelper_wordpress {
 		    $db = JFusionFactory::getDatabase($this->getJname());
 		    $params = JFusionFactory::getParams($this->getJname());
 		    $database_prefix = $params->get('database_prefix');
-		    $query = 'SELECT option_value FROM #__options WHERE option_name = '.$db->quote($database_prefix.'user_roles');
+
+		    $query = $db->getQuery(true)
+			    ->select('option_value')
+			    ->from('#__options')
+			    ->where('option_name = ' . $db->quote($database_prefix.'user_roles'));
+
 		    $db->setQuery($query);
 		    $roles_ser = $db->loadResult();
 		    $roles = unserialize($roles_ser);
@@ -109,7 +114,11 @@ class JFusionHelper_wordpress {
 				$params = JFusionFactory::getParams($this->getJname());
 				$database_prefix = $params->get('database_prefix');
 
-				$query = 'SELECT option_value FROM #__options WHERE option_name = \''.$database_prefix.'user_roles\'';
+				$query = $db->getQuery(true)
+					->select('option_value')
+					->from('#__options')
+					->where('option_name = ' . $db->quote($database_prefix.'user_roles'));
+
 				$db->setQuery($query);
 				$roles_ser = $db->loadResult();
 				$allroles = unserialize($roles_ser);

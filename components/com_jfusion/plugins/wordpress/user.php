@@ -61,19 +61,25 @@ class JFusionUser_wordpress extends JFusionUser {
 		    if ($identifier_type == 'user_login') {
 			    $identifier = $this->filterUsername($identifier);
 		    }
-		    //    $query = 'SELECT ID as userid, user_login as username, user_email as email, user_pass as password, null as password_salt, user_activation_key as activation, user_status as status FROM #__users WHERE ' . $identifier_type . ' = ' . $db->Quote($identifier);
-
 		    // internal note: working toward the JFusion 2.0 plugin system, we read all available userdata into the user object
 		    // conversion to the JFusion user object will be done at the end for JFusion 1.x
 		    // we add an local user field to keep the original data
 		    // will be further developed for 2.0 allowing centralized registration
 
-		    $query = 'SELECT * FROM #__users WHERE ' . $identifier_type . ' = ' . $db->Quote($identifier);
+		    $query = $db->getQuery(true)
+			    ->select('*')
+			    ->from('#__users')
+			    ->where($identifier_type . ' = ' . $db->Quote($identifier));
+
 		    $db->setQuery($query);
 		    $result = $db->loadObject();
 		    if ($result) {
 			    // get the meta userdata
-			    $query = 'SELECT * FROM #__usermeta WHERE user_id = ' . $db->Quote($result->ID);
+			    $query = $db->getQuery(true)
+				    ->select('*')
+				    ->from('#__usermeta')
+				    ->where('user_id = ' . $db->Quote($result->ID));
+
 			    $db->setQuery($query);
 			    $result1 = $db->loadObjectList();
 			    if ($result1) {
@@ -568,7 +574,11 @@ class JFusionUser_wordpress extends JFusionUser {
 		    // decide if we need to reassign
 		    if (($reassign == '1') && (trim($reassign_to))){
 			    // see if we have a valid user
-			    $query = 'SELECT * FROM #__users WHERE user_login = ' . $db->Quote($reassign_to);
+			    $query = $db->getQuery(true)
+				    ->select('*')
+				    ->from('#__users')
+				    ->where('user_login = ' . $db->Quote($reassign_to));
+
 			    $db->setQuery($query);
 			    $result = $db->loadObject();
 			    if (!$result) {
@@ -582,7 +592,11 @@ class JFusionUser_wordpress extends JFusionUser {
 
 		    // handle posts and links
 		    if ($reassign){
-			    $query = 'SELECT ID FROM #__posts WHERE post_author = '.$user_id;
+			    $query = $db->getQuery(true)
+				    ->select('ID')
+				    ->from('#__posts')
+				    ->where('post_author = ' . $user_id);
+
 			    $db->setQuery($query);
 			    if ($db->execute()) {
 				    $results = $db->loadObjectList();
@@ -599,7 +613,11 @@ class JFusionUser_wordpress extends JFusionUser {
 					    $status['debug'][] = 'Reassigned posts from user with id '.$user_id.' to user '.$reassign;
 				    }
 
-				    $query = 'SELECT link_id FROM #__links WHERE link_owner = '.$user_id;
+				    $query = $db->getQuery(true)
+					    ->select('link_id')
+					    ->from('#__links')
+				        ->where('link_owner = '.$user_id);
+
 				    $db->setQuery($query);
 				    if ($db->execute()) {
 					    $results = $db->loadObjectList();

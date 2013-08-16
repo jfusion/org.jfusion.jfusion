@@ -54,7 +54,11 @@ class JFusionAdmin_wordpress extends JFusionAdmin
      * @return array
      */
     function getUsergroupListWPA($db, $database_prefix) {
-		$query = 'SELECT option_value FROM #__options WHERE option_name = '. $db->quote($database_prefix.'user_roles');
+	    $query = $db->getQuery(true)
+		    ->select('option_value')
+		    ->from('#__options')
+		    ->where('option_name = ' . $db->quote($database_prefix.'user_roles'));
+
 		$db->setQuery($query);
 		$roles_ser = $db->loadResult();
 		$roles = unserialize($roles_ser);
@@ -114,7 +118,11 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 			$db = JDatabaseDriver::getInstance($options );
 
 			//Find the url to Wordpress
-			$query = 'SELECT option_value FROM #__options WHERE option_name = \'siteurl\'';
+	        $query = $db->getQuery(true)
+		        ->select('option_value')
+		        ->from('#__options')
+		        ->where('option_name = ' . $db->quote('siteurl'));
+
 			$db->setQuery($query);
 			$params['source_url'] = $db-> loadResult();
 			if (substr($params['source_url'], -1) != '/') {
@@ -124,7 +132,11 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 
 			// now get the default usergroup
 			// Cannot user
-			$query = 'SELECT option_value FROM #__options WHERE option_name = \'default_role\'';
+	        $query = $db->getQuery(true)
+		        ->select('option_value')
+		        ->from('#__options')
+		        ->where('option_name = ' . $db->quote('default_role'));
+
 			$db->setQuery($query);
 			$default_role=$db->loadResult();
 			
@@ -153,7 +165,11 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 		try {
 			//getting the connection to the db
 			$db = JFusionFactory::getDatabase($this->getJname());
-			$query = 'SELECT user_login as username, user_email as email from #__users';
+
+			$query = $db->getQuery(true)
+				->select('user_login as username, user_email as email')
+				->from('#__users');
+
 			$db->setQuery($query,$limitstart,$limit);
 
 			//getting the results
@@ -172,7 +188,11 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 	    try {
 			//getting the connection to the db
 			$db = JFusionFactory::getDatabase($this->getJname());
-			$query = 'SELECT count(*) from #__users';
+
+		    $query = $db->getQuery(true)
+			    ->select('count(*)')
+			    ->from('#__users');
+
 			$db->setQuery($query);
 			//getting the results
 			$no_users = $db->loadResult();
@@ -221,7 +241,12 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 	    $result = false;
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT option_value FROM #__options WHERE option_name = \'users_can_register\'';
+
+		    $query = $db->getQuery(true)
+			    ->select('option_value')
+			    ->from('#__options')
+			    ->where('option_name = ' . $db->quote('users_can_register'));
+
 		    $db->setQuery($query);
 		    $auths = $db->loadResult();
 
