@@ -45,35 +45,70 @@ class JFusionUser_oscommerce extends JFusionUser
 		    $params = JFusionFactory::getParams($this->getJname());
 		    $osCversion = $params->get('osCversion');
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT customers_id FROM #__customers WHERE customers_email_address = ' . $db->Quote($identifier);
+
+		    $query = $db->getQuery(true)
+			    ->select('customers_id')
+			    ->from('#__customers')
+			    ->where('customers_email_address = ' . $db->Quote($identifier));
+
 		    $db->setQuery($query);
 		    $userid = $db->loadResult();
 		    if ($userid) {
 			    $query1 = $query2 = null;
 			    switch ($osCversion) {
 				    case 'osc2':
-					    $query1 = 'SELECT ' . 'customers_id          as userid,' . '0                        as group_id,' . 'customers_firstname   as name,' . 'customers_lastname    as lastname,' . 'customers_password    as password,' . 'null                  as password_salt ' . 'FROM #__customers WHERE customers_id = ' . $db->Quote($userid);
-					    $query2 = 'SELECT ' . 'customers_info_date_account_created as registerDate,' . 'customers_info_date_of_last_logon   as lastvisitDate, ' . 'customers_info_date_account_last_modified as modifiedDate ' . 'FROM #__customers_info WHERE customers_info_id = ' . $db->Quote($userid);
+					    $query1 = $db->getQuery(true)
+						    ->select('customers_id as userid, 0 as group_id, customers_firstname as name, customers_lastname as lastname, customers_password as password, null as password_salt')
+						    ->from('#__customers')
+						    ->where('customers_id = ' . $db->Quote($userid));
+
+					    $query2 = $db->getQuery(true)
+						    ->select('customers_info_date_account_created as registerDate, customers_info_date_of_last_logon as lastvisitDate, customers_info_date_account_last_modified as modifiedDate')
+						    ->from('#__customers_info')
+						    ->where('customers_info_id = ' . $db->Quote($userid));
 					    break;
 				    case 'osc3':
-					    $query1 = 'SELECT ' . 'customers_id          as userid,' . '0                     as group_id,' . 'customers_firstname   as name,' . 'customers_lastname    as lastname,' . 'customers_password    as password,' . 'null                  as password_salt,' . 'date_account_created  as registerDate, ' . 'date_last_logon       as lastvisitDate,' . 'date_account_last_modified as modifiedDate ' . 'FROM #__customers WHERE customers_id = ' . $db->Quote($userid);
-					    $query2 = '';
+					    $query1 = $db->getQuery(true)
+						    ->select('customers_id as userid, 0 as group_id, customers_firstname as name, customers_lastname as lastname, customers_password as password, null as password_salt, date_account_created as registerDate, date_last_logon as lastvisitDate, date_account_last_modified as modifiedDate')
+						    ->from('#__customers')
+						    ->where('customers_id = ' . $db->Quote($userid));
 					    break;
 				    case 'osczen':
-					    $query1 = 'SELECT ' . 'customers_id          as userid,' . 'customers_group_pricing as group_id,' . 'customers_firstname   as name,' . 'customers_lastname    as lastname,' . 'customers_password    as password,' . 'null                  as password_salt ' . 'FROM #__customers WHERE customers_id = ' . $db->Quote($userid);
-					    $query2 = 'SELECT ' . 'customers_info_date_account_created as registerDate,' . 'customers_info_date_of_last_logon   as lastvisitDate, ' . 'customers_info_date_account_last_modified as modifiedDate ' . 'FROM #__customers_info WHERE customers_info_id = ' . $db->Quote($userid);
+					    $query1 = $db->getQuery(true)
+						    ->select('customers_id as userid, customers_group_pricing as group_id, customers_firstname as name, customers_lastname as lastname, customers_password as password, null as password_salt')
+						    ->from('#__customers')
+						    ->where('customers_id = ' . $db->Quote($userid));
+
+					    $query2 = $db->getQuery(true)
+						    ->select('customers_info_date_account_created as registerDate, customers_info_date_of_last_logon as lastvisitDate, customers_info_date_account_last_modified as modifiedDate')
+						    ->from('#__customers_info')
+						    ->where('customers_info_id = ' . $db->Quote($userid));
 					    break;
 				    case 'oscxt':
 				    case 'oscseo':
-					    $query1 = 'SELECT ' . 'customers_id             as userid,' . 'customers_status         as group_id,' . 'customers_firstname     as name,' . 'customers_lastname     as lastname,' . 'customers_password     as password,' . 'null                     as password_salt ' . 'FROM #__customers WHERE customers_id = ' . $db->Quote($userid);
-					    $query2 = 'SELECT ' . 'customers_info_date_account_created as registerDate,' . 'customers_info_date_of_last_logon   as lastvisitDate, ' . 'customers_info_date_account_last_modified as modifiedDate ' . 'FROM #__customers_info WHERE customers_info_id = ' . $db->Quote($userid);
+					    $query1 = $db->getQuery(true)
+						    ->select('customers_id as userid, customers_status as group_id, customers_firstname as name, customers_lastname as lastname, customers_password as password, null as password_salt')
+						    ->from('#__customers')
+						    ->where('customers_id = ' . $db->Quote($userid));
+
+					    $query2 = $db->getQuery(true)
+						    ->select('customers_info_date_account_created as registerDate, customers_info_date_of_last_logon as lastvisitDate, customers_info_date_account_last_modified as modifiedDate')
+						    ->from('#__customers_info')
+						    ->where('customers_info_id = ' . $db->Quote($userid));
 					    break;
 				    case 'oscmax':
-					    $query1 = 'SELECT ' . 'customers_id             as userid,' . 'customers_group_id        as group_id,' . 'customers_firstname     as name,' . 'customers_lastname     as lastname,' . 'customers_password     as password,' . 'null                     as password_salt ' . 'FROM #__customers WHERE customers_id = ' . $db->Quote($userid);
-					    $query2 = 'SELECT ' . 'customers_info_date_account_created as registerDate,' . 'customers_info_date_of_last_logon   as lastvisitDate, ' . 'customers_info_date_account_last_modified as modifiedDate ' . 'FROM #__customers_info WHERE customers_info_id = ' . $db->Quote($userid);
+					    $query1 = $db->getQuery(true)
+						    ->select('customers_id as userid, customers_group_id as group_id, customers_firstname as name, customers_lastname as lastname, customers_password as password, null as password_salt ')
+						    ->from('#__customers')
+						    ->where('customers_id = ' . $db->Quote($userid));
+
+					    $query2 = $db->getQuery(true)
+						    ->select('customers_info_date_account_created as registerDate, customers_info_date_of_last_logon as lastvisitDate, customers_info_date_account_last_modified as modifiedDate')
+						    ->from('#__customers_info')
+						    ->where('customers_info_id = ' . $db->Quote($userid));
 					    break;
 			    }
-			    if ($query1 && $query2) {
+			    if ($query1) {
 				    // get the details
 				    $db->setQuery($query1);
 				    $result = $db->loadObject();
@@ -435,7 +470,13 @@ class JFusionUser_oscommerce extends JFusionUser
 				    $user->customers_group_id = $usergroup;
 				    // get the groupname
 				    $db1 = JFusionFactory::getDatabase($this->getJname());
-				    $query = 'SELECT customers_group_name from #__customers_groups WHERE customers_group_id = ' . $usergroup . ' AND language_id = ' . $userinfo->language;
+
+				    $query = $db->getQuery(true)
+					    ->select('customers_group_name')
+					    ->from('#__customers_groups')
+					    ->where('customers_group_id = ' . $usergroup)
+				        ->where('language_id = ' . $userinfo->language);
+
 				    $db1->setQuery($query);
 				    $user->customers_group_name = $db1->loadResult();
 				    break;
@@ -547,7 +588,12 @@ class JFusionUser_oscommerce extends JFusionUser
 			    $delete_reviews = $params->get('delete_reviews');
 			    if ($delete_reviews == '1') {
 				    try {
-					    $db->setQuery('SELECT reviews_id from #__reviews where customers_id = \'' . (int)$user_id . '\'');
+					    $query = $db->getQuery(true)
+						    ->select('reviews_id')
+						    ->from('#__reviews')
+						    ->where('customers_id = ' . $db->quote((int)$user_id));
+
+					    $db->setQuery($query);
 					    $db->execute();
 					    $reviews = $db->loadObjectList();
 					    foreach ($reviews as $review) {
@@ -705,10 +751,14 @@ class JFusionUser_oscommerce extends JFusionUser
 					    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode (' , ', $existinguser->groups) . ' -> ' . $usergroup;
 
 					    //set the usergroup name  in the user table
-					    $db1 = JFusionFactory::getDatabase($this->getJname());
-					    $query = 'SELECT customers_group_name from #__customers_groups WHERE customers_group_id = ' . implode (' , ', $existinguser->groups) . ' AND language_id = ' . $existinguser->language;
-					    $db1->setQuery($query);
-					    $customers_group_name = $db1->loadResult();
+					    $query = $db->getQuery(true)
+						    ->select('customers_group_name')
+						    ->from('#__customers_groups')
+						    ->where('customers_group_id = ' . implode (' , ', $existinguser->groups))
+					        ->where('language_id = ' . $existinguser->language);
+
+					    $db->setQuery($query);
+					    $customers_group_name = $db->loadResult();
 
 					    $query = $db->getQuery(true)
 						    ->update('#__customers')
