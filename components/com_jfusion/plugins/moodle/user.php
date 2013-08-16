@@ -134,7 +134,12 @@ class JFusionUser_moodle extends JFusionUser {
 			list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'username', 'email');
 			//initialise some params
 			$update_block = $params->get('update_block');
-			$query = 'SELECT * FROM #__user WHERE ' . $identifier_type . ' = ' . $db->Quote($identifier);
+
+			$query = $db->getQuery(true)
+				->select('*')
+				->from('#__user')
+				->where($identifier_type . ' = ' . $db->Quote($identifier));
+
 			$db->setQuery($query);
 			$result = $db->loadObject();
 			if ($result)
@@ -148,7 +153,12 @@ class JFusionUser_moodle extends JFusionUser {
 					$result->name = trim($result->firstname . ' ' . $result->lastname);
 					$result->activation = !$result->confirmed;
 					// get the policy agreed stuff
-					$query = 'SELECT value FROM #__config WHERE  name = \'sitepolicy\'';
+
+					$query = $db->getQuery(true)
+						->select('value')
+						->from('#__config')
+						->where('name = ' . $db->Quote('sitepolicy'));
+
 					$db->setQuery($query);
 					$sitepolicy = $db->loadResult();
 					if ($sitepolicy) {
@@ -421,7 +431,10 @@ class JFusionUser_moodle extends JFusionUser {
 	function blockUser($userinfo, &$existinguser, &$status) {
 		try {
 			$db = JFusionFactory::getDatabase($this->getJname());
-			$query = 'SELECT value FROM #__config WHERE  name = \'sitepolicy\'';
+			$query = $db->getQuery(true)
+				->select('value')
+				->from('#__config')
+				->where('name = ' . $db->Quote('sitepolicy'));
 			$db->setQuery($query);
 			$sitepolicy = $db->loadObject();
 			if ($sitepolicy->value) {
@@ -454,7 +467,10 @@ class JFusionUser_moodle extends JFusionUser {
 	function unblockUser($userinfo, &$existinguser, &$status) {
 		try {
 			$db = JFusionFactory::getDatabase($this->getJname());
-			$query = 'SELECT value FROM #__config WHERE  name = sitepolicy';
+			$query = $db->getQuery(true)
+				->select('value')
+				->from('#__config')
+				->where('name = ' . $db->Quote('sitepolicy'));
 			$db->setQuery($query);
 			$sitepolicy = $db->loadObject();
 			if ($sitepolicy->value) {
@@ -547,7 +563,12 @@ class JFusionUser_moodle extends JFusionUser {
 			$params = JFusionFactory::getParams($this->getJname());
 			//get the identifier
 			list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'username', 'email');
-			$query = 'SELECT * FROM #__user WHERE ' . $identifier_type . ' = ' . $db->Quote($identifier);
+
+			$query = $db->getQuery(true)
+				->select('*')
+				->from('#__user')
+				->where( $identifier_type . ' = ' . $db->Quote($identifier));
+
 			$db->setQuery($query);
 			$result = $db->loadObject();
 			if ($result) {
@@ -567,13 +588,25 @@ class JFusionUser_moodle extends JFusionUser {
 				}
 				$default_group_id = (is_array($usergroups)) ? $usergroups[$userinfo->group_id] : $usergroups;
 				// get some config items
-				$query = 'SELECT value FROM #__config WHERE  name = \'mnet_localhost_id\'';
+				$query = $db->getQuery(true)
+					->select('value')
+					->from('#__config')
+					->where('name = ' . $db->Quote('mnet_localhost_id'));
+
 				$db->setQuery($query);
 				$mnet_localhost_id = $db->loadResult();
-				$query = 'SELECT value FROM #__config WHERE  name = \'lang\'';
+				$query = $db->getQuery(true)
+					->select('value')
+					->from('#__config')
+					->where('name = ' . $db->Quote('lang'));
+
 				$db->setQuery($query);
 				$lang = $db->loadResult();
-				$query = 'SELECT value FROM #__config WHERE  name = \'country\'';
+				$query = $db->getQuery(true)
+					->select('value')
+					->from('#__config')
+					->where('name = ' . $db->Quote('country'));
+
 				$db->setQuery($query);
 				$country = $db->loadResult();
 

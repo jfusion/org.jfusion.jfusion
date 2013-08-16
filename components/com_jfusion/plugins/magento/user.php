@@ -93,7 +93,12 @@ class JFusionUser_magento extends JFusionUser {
 		try {
 			if (!isset($eav_entity_types)) {
 				$db = JFusionFactory::getDataBase($this->getJname());
-				$db->setQuery('SELECT entity_type_id,entity_type_code FROM #__eav_entity_type');
+
+				$query = $db->getQuery(true)
+					->select('entity_type_id, entity_type_code')
+					->from('#__eav_entity_type');
+
+				$db->setQuery($query);
 
 				$result = $db->loadObjectList();
 				for ($i = 0;$i < count($result);$i++) {
@@ -126,7 +131,12 @@ class JFusionUser_magento extends JFusionUser {
 				$entity_type_id = $this->getMagentoEntityTypeID('customer');
 				$db = JFusionFactory::getDataBase($this->getJname());
 				// Get a database object
-				$db->setQuery('SELECT attribute_id, attribute_code, backend_type FROM #__eav_attribute WHERE entity_type_id =' . (int)$entity_type_id);
+				$query = $db->getQuery(true)
+					->select('attribute_id, attribute_code, backend_type')
+					->from('#__eav_attribute')
+					->where('entity_type_id = ' . (int)$entity_type_id);
+
+				$db->setQuery($query);
 				//getting the results
 				$result = $db->loadObjectList();
 				for ($i = 0;$i < count($result);$i++) {
@@ -178,13 +188,19 @@ class JFusionUser_magento extends JFusionUser {
 				$filled_object = array();
 				$db = JFusionFactory::getDataBase($this->getJname());
 				for ($i = 0;$i < count($result);$i++) {
+					$query = $db->getQuery(true)
+						->where('entity_id = ' . (int)$entity_id)
+						->where('entity_type_id = ' . (int)$entity_type_id);
+
 					if ($result[$i]['backend_type'] == 'static') {
-						$query = 'SELECT ' . $result[$i]['attribute_code'] . ' FROM #__' . $entity_type_code . '_entity' . ' WHERE entity_type_id =' . (int)$entity_type_id . ' AND entity_id =' . (int)$entity_id;
-						$db->setQuery($query);
+						$query->select($result[$i]['attribute_code'])
+							->from('#__' . $entity_type_code . '_entity');
 					} else {
-						$query = 'SELECT value FROM #__' . $entity_type_code . '_entity_' . $result[$i]['backend_type'] . ' WHERE entity_type_id =' . (int)$entity_type_id . ' AND attribute_id =' . (int)$result[$i]['attribute_id'] . ' AND entity_id =' . (int)$entity_id;
-						$db->setQuery($query);
+						$query->select('value')
+							->from('#__' . $entity_type_code . '_entity_' . $result[$i]['backend_type']);
 					}
+					$db->setQuery($query);
+
 					$filled_object[$result[$i]['attribute_code']]['value'] = $db->loadResult();
 					$filled_object[$result[$i]['attribute_code']]['attribute_id'] = $result[$i]['attribute_id'];
 					$filled_object[$result[$i]['attribute_code']]['backend_type'] = $result[$i]['backend_type'];
@@ -208,7 +224,12 @@ class JFusionUser_magento extends JFusionUser {
 
 		// Get the user id
 		$db = JFusionFactory::getDataBase($this->getJname());
-		$query = 'SELECT entity_id FROM #__customer_entity WHERE email = ' . $db->Quote($identifier);
+
+		$query = $db->getQuery(true)
+			->select('entity_id')
+			->from('#__customer_entity')
+			->where('email = ' . $db->Quote($identifier));
+
 		$db->setQuery($query);
 		$entity = (int)$db->loadResult();
 		// check if we have found the user, if not return failure
@@ -218,7 +239,11 @@ class JFusionUser_magento extends JFusionUser {
 			$magento_user = $this->fillMagentoDataObject('customer', $entity, 1);
 			if ($magento_user) {
 				// get the static data also
-				$query = 'SELECT email, group_id, created_at, updated_at, is_active FROM #__customer_entity ' . 'WHERE entity_id = ' . $db->Quote($entity);
+				$query = $db->getQuery(true)
+					->select('email, group_id, created_at, updated_at, is_active')
+					->from('#__customer_entity')
+					->where('entity_id = ' . $db->Quote($entity));
+
 				$db->setQuery($query);
 				$result = $db->loadObject();
 				if ($result) {
@@ -227,7 +252,11 @@ class JFusionUser_magento extends JFusionUser {
 					if ($instance->group_id == 0) {
 						$instance->group_name = 'Default Usergroup';
 					} else {
-						$query = 'SELECT customer_group_code from #__customer_group WHERE customer_group_id = ' . $result->group_id;
+						$query = $db->getQuery(true)
+							->select('customer_group_code')
+							->from('#__customer_group')
+							->where('customer_group_id = ' . $result->group_id);
+
 						$db->setQuery($query);
 						$instance->group_name = $db->loadResult();
 					}
@@ -347,7 +376,12 @@ class JFusionUser_magento extends JFusionUser {
 				// This method is an empty implemented method into the core of joomla database class
 				// So, we need to implement it for our purpose that's why there is a new factory for magento
 				$db->transactionStart();
-				$query = 'SELECT increment_last_id FROM #__eav_entity_store WHERE entity_type_id = ' . (int)$this->getMagentoEntityTypeID('customer') . ' AND store_id = 0';
+				$query = $db->getQuery(true)
+					->select('increment_last_id')
+					->from('#__eav_entity_store')
+					->where('entity_type_id = ' . (int)$this->getMagentoEntityTypeID('customer'))
+					->where('store_id = 0');
+
 				$db->setQuery($query);
 				$db->execute();
 
@@ -391,7 +425,13 @@ class JFusionUser_magento extends JFusionUser {
 					}
 				} else {
 					if (isset($user[$i]['value'])) {
-						$query = 'SELECT value FROM #__customer_entity' . '_' . $user[$i]['backend_type'] . ' WHERE entity_id = ' . (int)$entity_id . ' AND entity_type_id = ' . (int)$this->getMagentoEntityTypeID('customer') . ' AND attribute_id = ' . (int)$user[$i]['attribute_id'];
+						$query = $db->getQuery(true)
+							->select('value')
+							->from('#__customer_entity' . '_' . $user[$i]['backend_type'])
+							->where('entity_id = ' . (int)$entity_id)
+							->where('entity_type_id = ' . (int)$this->getMagentoEntityTypeID('customer'))
+							->where('attribute_id = ' . (int)$user[$i]['attribute_id']);
+
 						$db->setQuery($query);
 						$db->execute();
 						$result = $db->loadresult();
@@ -465,11 +505,29 @@ class JFusionUser_magento extends JFusionUser {
 			$db = JFusionFactory::getDataBase($this->getJname());
 			//prepare the variables
 			// first get some default stuff from Magento
-			//        $db->setQuery('SELECT default_group_id FROM #__core_website WHERE is_default = 1');
+/*
+			$query = $db->getQuery(true)
+				->select('default_group_id')
+				->from('#__core_website')
+				->where('is_default = 1');
+*/
+
 			//        $default_group_id = (int) $db->loadResult();
-			$db->setQuery('SELECT default_store_id FROM #__core_store_group WHERE group_id =' . (int)$usergroup);
+
+			$query = $db->getQuery(true)
+				->select('default_store_id')
+				->from('#__core_store_group')
+				->where('group_id = ' . (int)$usergroup);
+
+			$db->setQuery($query);
 			$default_store_id = (int)$db->loadResult();
-			$db->setQuery('SELECT name, website_id FROM #__core_store WHERE store_id =' . (int)$default_store_id);
+
+			$query = $db->getQuery(true)
+				->select('name, website_id')
+				->from('#__core_store')
+				->where('store_id = ' . (int)$default_store_id);
+
+			$db->setQuery($query);
 			$result = $db->loadObject();
 			$default_website_id = (int)$result->website_id;
 			$default_created_in_store = $result->name;

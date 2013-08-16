@@ -114,8 +114,12 @@ class JFusionAdmin_moodle extends JFusionAdmin
 	    try {
 		    //getting the connection to the db
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT username, email from #__user';
-		    $db->setQuery($query,$limitstart,$limit);
+
+		    $query = $db->getQuery(true)
+			    ->select('username, email')
+			    ->from('#__user');
+
+		    $db->setQuery($query, $limitstart, $limit);
 
 		    //getting the results
 		    $userlist = $db->loadObjectList();
@@ -133,7 +137,11 @@ class JFusionAdmin_moodle extends JFusionAdmin
 	    try {
 		    //getting the connection to the db
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT count(*) from #__user';
+
+		    $query = $db->getQuery(true)
+			    ->select('count(*)')
+			    ->from('#__user');
+
 		    $db->setQuery($query);
 		    //getting the results
 		    $no_users = $db->loadResult();
@@ -150,7 +158,11 @@ class JFusionAdmin_moodle extends JFusionAdmin
 	    try {
 		    //get the connection to the db
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT id, name from #__role;';
+
+		    $query = $db->getQuery(true)
+			    ->select('id, name')
+			    ->from('#__role');
+
 		    $db->setQuery($query);
 		    //getting the results
 		    return $db->loadObjectList();
@@ -172,7 +184,12 @@ class JFusionAdmin_moodle extends JFusionAdmin
 		    }
 		    //we want to output the usergroup name
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT name from #__role WHERE id = ' . (int)$usergroup_id;
+
+		    $query = $db->getQuery(true)
+			    ->select('name')
+			    ->from('#__role')
+		        ->where('id = ' . (int)$usergroup_id);
+
 		    $db->setQuery($query);
 		    return $db->loadResult();
 	    } catch (Exception $e) {
@@ -188,7 +205,13 @@ class JFusionAdmin_moodle extends JFusionAdmin
 	    $result = false;
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT value FROM #__config WHERE name = \'auth\' and value != \'jfusion\'';
+
+		    $query = $db->getQuery(true)
+			    ->select('value')
+			    ->from('#__config')
+			    ->where('name = ' . $db->quote('auth'))
+			    ->where('value = ' . $db->quote('jfusion'));
+
 		    $db->setQuery($query);
 		    $auths = $db->loadResult();
 		    if (!empty($auths)) {
@@ -452,7 +475,11 @@ HTML;
 		    $status['message'] = $jname .': ' . JText::_('UNINSTALL_MODULE_SUCCESS');
 
 		    // remove jfusion as active plugin
-		    $query = 'SELECT value from #__config WHERE name = \'auth\'';
+		    $query = $db->getQuery(true)
+			    ->select('value')
+			    ->from('#__config')
+			    ->where('name = ' . $db->quote('auth'));
+
 		    $db->setQuery($query);
 		    $value = $db->loadResult();
 		    $auths = explode(',',$value);
@@ -486,12 +513,21 @@ HTML;
 		    $jfusion_auth = $source_path . DIRECTORY_SEPARATOR .'auth'. DIRECTORY_SEPARATOR .'jfusion'. DIRECTORY_SEPARATOR .'auth.php';
 		    if(file_exists($jfusion_auth)){
 			    // find out if jfusion is listed in the active auth plugins
-			    $query = 'SELECT value from #__config WHERE name = \'auth\'';
+			    $query = $db->getQuery(true)
+				    ->select('value')
+				    ->from('#__config')
+				    ->where('name = ' . $db->quote('auth'));
+
 			    $db->setQuery($query);
 			    $value = $db->loadResult();
 			    if (stripos($value,'jfusion')!== false ){
 				    // now find out if we have enabled the plugin
-				    $query = 'SELECT value from #__config_plugins WHERE plugin = \'auth/jfusion\' AND name = \'jf_enabled\'';
+				    $query = $db->getQuery(true)
+					    ->select('value')
+					    ->from('#__config_plugins')
+					    ->where('plugin = ' . $db->quote('auth/jfusion'))
+					    ->where('name = ' . $db->quote('jf_enabled'));
+
 				    $db->setQuery($query);
 				    $value = $db->loadResult();
 				    if  ($value == '1'){
@@ -549,7 +585,11 @@ HTML;
 			    $db->execute();
 
 			    // add jfusion plugin jfusion as active plugin
-			    $query = 'SELECT value from #__config WHERE name = \'auth\'';
+			    $query = $db->getQuery(true)
+				    ->select('value')
+				    ->from('#__config')
+				    ->where('name = ' . $db->quote('auth'));
+
 			    $db->setQuery($query);
 
 			    $value = $db->loadResult();
@@ -581,7 +621,11 @@ HTML;
 			    $db->execute();
 
 			    // remove jfusion as active plugin
-			    $query = 'SELECT value from #__config WHERE name = \'auth\'';
+			    $query = $db->getQuery(true)
+				    ->select('value')
+				    ->from('#__config')
+				    ->where('name = ' . $db->quote('auth'));
+
 			    $db->setQuery($query);
 			    $value = $db->loadResult();
 			    $auths = explode(',',$value);

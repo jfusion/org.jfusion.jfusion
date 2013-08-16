@@ -135,7 +135,10 @@ class JFusionAdmin_magento extends JFusionAdmin
     function getUserList($limitstart = 0, $limit = 0) {
         //getting the connection to the db
         $db = JFusionFactory::getDataBase($this->getJname());
-        $query = 'SELECT email as username, email from #__customer_entity';
+
+	    $query = $db->getQuery(true)
+		    ->select('email as username, email')
+		    ->from('#__customer_entity');
 
         $db->setQuery($query,$limitstart,$limit);
         //getting the results
@@ -148,7 +151,11 @@ class JFusionAdmin_magento extends JFusionAdmin
     function getUserCount() {
         //getting the connection to the db
         $db = JFusionFactory::getDataBase($this->getJname());
-        $query = 'SELECT count(*) from #__customer_entity';
+
+	    $query = $db->getQuery(true)
+		    ->select('count(*)')
+		    ->from('#__customer_entity');
+
         $db->setQuery($query);
         //getting the results
         $no_users = $db->loadResult();
@@ -161,7 +168,11 @@ class JFusionAdmin_magento extends JFusionAdmin
     function getUsergroupList() {
         //get the connection to the db
         $db = JFusionFactory::getDataBase($this->getJname());
-        $query = 'SELECT customer_group_id as id, customer_group_code as name from #__customer_group;';
+
+	    $query = $db->getQuery(true)
+		    ->select('customer_group_id as id, customer_group_code as name')
+		    ->from('#__customer_group');
+
         $db->setQuery($query);
         //getting the results
         return $db->loadObjectList();
@@ -179,7 +190,12 @@ class JFusionAdmin_magento extends JFusionAdmin
 		    }
 		    //we want to output the usergroup name
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT customer_group_code from #__customer_group WHERE customer_group_id = ' . (int)$usergroup_id;
+
+		    $query = $db->getQuery(true)
+			    ->select('customer_group_code')
+			    ->from('#__customer_group')
+		        ->where('customer_group_id = ' . (int)$usergroup_id);
+
 		    $db->setQuery($query);
 		    return $db->loadResult();
 	    } catch (Exception $e) {
@@ -207,7 +223,11 @@ class JFusionAdmin_magento extends JFusionAdmin
 		    // see if we have an api user in Magento
 		    $jname = $this->getJname();
 		    $db = JFusionFactory::getDataBase($this->getJname());
-		    $query = 'SELECT count(*) from #__api_user';
+
+		    $query = $db->getQuery(true)
+			    ->select('count(*)')
+			    ->from('#__api_user');
+
 		    $db->setQuery($query);
 		    $no_users = $db->loadResult();
 		    if ($no_users <= 0) {
@@ -221,7 +241,11 @@ class JFusionAdmin_magento extends JFusionAdmin
 				    JFusionFunction::raiseWarning(JText::_('MAGENTO_NO_API_DATA'), $this->getJname());
 			    } else {
 				    //finally check if the apiuser and apikey are valid
-				    $query = 'SELECT api_key FROM #__api_user WHERE username = ' . $db->Quote($apiuser);
+				    $query = $db->getQuery(true)
+					    ->select('api_key')
+					    ->from('#__api_user')
+						->where('username = ' . $db->Quote($apiuser));
+
 				    $db->setQuery($query);
 				    $api_key = $db->loadResult();
 				    $hashArr = explode(':', $api_key);
@@ -241,7 +265,11 @@ class JFusionAdmin_magento extends JFusionAdmin
 		    }
 		    try {
 			    // check the user_remote_addr security settings
-			    $query = 'SELECT  value FROM #__core_config_data WHERE path = \'web/session/use_remote_addr\'';
+			    $query = $db->getQuery(true)
+				    ->select('value')
+				    ->from('#__core_config_data')
+				    ->where('path = ' . $db->Quote('web/session/use_remote_addr'));
+
 			    $db->setQuery($query);
 			    $value = $db->loadResult();
 			    if ($value) {
