@@ -249,7 +249,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 			    ->set('user_password = ' . $db->quote($existinguser->password))
 			    ->where('user_id = ' . (int)$existinguser->userid);
 
-	        $db->setQuery($query );
+	        $db->setQuery($query);
 		    $db->execute();
 
 		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password,0,6) . '********';
@@ -432,7 +432,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 				->set('validation_code = ' . $db->quote($userinfo->activation))
 			    ->where('user_id = ' . (int)$existinguser->userid);
 
-	        $db->setQuery($query );
+	        $db->setQuery($query);
 			$db->execute();
 			$status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 		} catch (Exception $e) {

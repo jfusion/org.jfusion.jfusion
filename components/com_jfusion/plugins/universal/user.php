@@ -57,7 +57,7 @@ class JFusionUser_universal extends JFusionUser {
 				->from('#__'.$helper->getTable())
 				->where($identifier_type.' = ' . $db->Quote($identifier));
 
-			$db->setQuery($query );
+			$db->setQuery($query);
 			$result = $db->loadObject();
 			if ( $result ) {
 				$result->activation = '';
@@ -94,7 +94,7 @@ class JFusionUser_universal extends JFusionUser {
 						->from('#__'.$groupt)
 						->where($userid->field . ' = ' . $db->Quote($result->userid));
 
-					$db->setQuery($query );
+					$db->setQuery($query);
 					$result2 = $db->loadObject();
 
 					if ($result2) {
@@ -163,7 +163,7 @@ class JFusionUser_universal extends JFusionUser {
 							}
 						}
 					}
-					$db->setQuery($query );
+					$db->setQuery($query);
 					$db->execute();
 					$status['debug'][] = JText::_('USER_DELETION'). ': ' . $userinfo->username;
 				}
@@ -272,7 +272,7 @@ class JFusionUser_universal extends JFusionUser {
 
 				$query->where($userid->field.' = ' . $db->Quote($existinguser->userid));
 
-				$db->setQuery($query );
+				$db->setQuery($query);
 				$db->execute();
 
 				$status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password,0,6) . '********';
@@ -325,7 +325,7 @@ class JFusionUser_universal extends JFusionUser {
 					->set($email->field.' = '.$db->quote($userinfo->email))
 					->where($userid->field.'=' . $db->Quote($existinguser->userid));
 
-				$db->setQuery($query );
+				$db->setQuery($query);
 				$db->execute();
 
 				$status['debug'][] = JText::_('EMAIL_UPDATE'). ': ' . $existinguser->email . ' -> ' . $userinfo->email;
@@ -382,7 +382,7 @@ class JFusionUser_universal extends JFusionUser {
 						->set($group->field.' = '.$db->quote(base64_decode($usergroup)))
 						->where($userid->field.'=' . $db->Quote($existinguser->userid));
 
-					$db->setQuery($query );
+					$db->setQuery($query);
 					$db->execute();
 
 					$status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . base64_decode($existinguser->group_id) . ' -> ' . base64_decode($usergroup);
@@ -486,7 +486,7 @@ class JFusionUser_universal extends JFusionUser {
 						->set($active->field.' = '.$db->quote($userStatus))
 						->where($userid->field.'=' . $db->Quote($existinguser->userid));
 
-					$db->setQuery($query );
+					$db->setQuery($query);
 					$db->execute();
 
 					$status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
@@ -531,7 +531,7 @@ class JFusionUser_universal extends JFusionUser {
 					->set($active->field.' = '.$db->quote($userStatus))
 					->where($userid->field.'=' . $db->Quote($existinguser->userid));
 
-				$db->setQuery($query );
+				$db->setQuery($query);
 				$db->execute();
 				$status['debug'][] = JText::_('BLOCK_UPDATE'). ': ' . $existinguser->block . ' -> ' . $userinfo->block;
 			}
@@ -569,7 +569,7 @@ class JFusionUser_universal extends JFusionUser {
 					->set($activecode->field.' = '.$db->quote($userinfo->activation))
 					->where($userid->field.'=' . $db->Quote($existinguser->userid));
 
-				$db->setQuery($query );
+				$db->setQuery($query);
 				$db->execute();
 
 				$status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
@@ -608,7 +608,7 @@ class JFusionUser_universal extends JFusionUser {
 					->set($activecode->field.' = '.$db->quote($userinfo->activation))
 					->where($userid->field.'=' . $db->Quote($existinguser->userid));
 
-				$db->setQuery($query );
+				$db->setQuery($query);
 				$db->execute();
 				$status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
 			}

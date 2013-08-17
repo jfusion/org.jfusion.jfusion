@@ -639,7 +639,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 				->from('#__members')
 				->where('id_topic = ' . $db->Quote($topic_id));
 
-			$db->setQuery($query );
+			$db->setQuery($query);
 			$topic = $db->loadObject();
 
 			if ($topic) {
@@ -657,7 +657,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 						->innerJoin('#__categories AS c ON b.id_cat = c.id_cat')
 						->where('id_board = ' . $db->Quote($board_id));
 
-					$db->setQuery($query );
+					$db->setQuery($query);
 					$result = $db->loadObject();
 
 					$board_id = 0;

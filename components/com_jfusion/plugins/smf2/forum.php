@@ -93,7 +93,7 @@ class JFusionForum_smf2 extends JFusionForum
 			    ->select('id_board as id, name')
 			    ->from('#__boards');
 
-		    $db->setQuery($query );
+		    $db->setQuery($query);
 
 		    //getting the results
 		    return $db->loadObjectList('id');

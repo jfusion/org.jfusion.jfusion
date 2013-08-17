@@ -121,7 +121,7 @@ class JFusionAdmin_mediawiki extends JFusionAdmin {
 			    ->select('count(*)')
 			    ->from('#__user');
 
-		    $db->setQuery($query );
+		    $db->setQuery($query);
 
 		    //getting the results
 		    return $db->loadResult();

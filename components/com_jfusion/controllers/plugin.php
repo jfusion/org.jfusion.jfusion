@@ -71,7 +71,7 @@ class JFusionControllerPlugin extends JControllerLegacy
 		            ->from('#__jfusion')
 		            ->where('name = '. $db->Quote($jname));
 
-                $db->setQuery($query );
+                $db->setQuery($query);
 
                 if ($db->loadResult() != 1) {
                     //die gracefully as the plugin is not configured properly

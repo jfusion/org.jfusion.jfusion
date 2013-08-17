@@ -657,7 +657,7 @@ class JFusionPublic_smf extends JFusionPublic
 			    ->from('#__messages')
 			    ->order('ID_TOPIC = ' . $db->Quote($topic_id));
 
-		    $db->setQuery($query );
+		    $db->setQuery($query);
 		    $topic = $db->loadObject();
 
 		    if ($topic) {
@@ -675,7 +675,7 @@ class JFusionPublic_smf extends JFusionPublic
 				        ->innerJoin('#__categories AS c ON b.ID_CAT = c.ID_CAT')
 					        ->where('ID_BOARD = ' . $db->Quote($board_id));
 
-				    $db->setQuery($query );
+				    $db->setQuery($query);
 				    $result = $db->loadObject();
 
 				    $board_id = 0;

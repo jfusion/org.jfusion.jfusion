@@ -304,7 +304,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 			->where('ordering = ' . $db->Quote(''), 'OR')
 			->where('ordering IS NULL');
 
-		$db->setQuery($query );
+		$db->setQuery($query);
 		$ordering = $db->loadObjectList();
 		JHTML::_('behavior.modal', 'a.modal');
 		if(!empty($ordering)){
@@ -313,7 +313,7 @@ class jfusionViewplugindisplay extends JViewLegacy {
 				->select('*')
 				->from('#__jfusion')
 				->order('ordering ASC');
-			$db->setQuery($query );
+			$db->setQuery($query);
 			$rows = $db->loadObjectList();
 			$ordering = 1;
 			foreach ($rows as $row){

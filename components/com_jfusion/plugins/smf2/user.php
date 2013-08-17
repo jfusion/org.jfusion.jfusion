@@ -43,7 +43,7 @@ class JFusionUser_smf2 extends JFusionUser {
 			    ->from('#__members as a')
 		        ->where($identifier_type . ' = ' . $db->Quote($identifier));
 
-		    $db->setQuery($query );
+		    $db->setQuery($query);
 		    $result = $db->loadObject();
 
 		    if ($result) {
@@ -55,7 +55,7 @@ class JFusionUser_smf2 extends JFusionUser {
 					    ->from('#__membergroups')
 					    ->where('id_group = ' . $result->group_id);
 
-				    $db->setQuery($query );
+				    $db->setQuery($query);
 				    $result->group_name = $db->loadResult();
 			    }
 			    $result->groups = array($result->group_id);
@@ -239,7 +239,7 @@ class JFusionUser_smf2 extends JFusionUser {
 			    ->where('id_member = ' . (int)$existinguser->userid);
 
 	        $db = JFusionFactory::getDatabase($this->getJname());
-	        $db->setQuery($query );
+	        $db->setQuery($query);
 
 		    $db->execute();
 		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password,0,6) . '********';
@@ -416,7 +416,7 @@ class JFusionUser_smf2 extends JFusionUser {
 			    ->set('validation_code = ' . $db->quote(''))
 			    ->where('id_member = ' . (int)$existinguser->userid);
 
-	        $db->setQuery($query );
+	        $db->setQuery($query);
 		    $db->execute();
 
 		    $status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;
@@ -443,7 +443,7 @@ class JFusionUser_smf2 extends JFusionUser {
 			    ->set('validation_code = ' . $db->quote($userinfo->activation))
 			    ->where('id_member = ' . (int)$existinguser->userid);
 
-	        $db->setQuery($query );
+	        $db->setQuery($query);
 		    $db->execute();
 
 		    $status['debug'][] = JText::_('ACTIVATION_UPDATE'). ': ' . $existinguser->activation . ' -> ' . $userinfo->activation;

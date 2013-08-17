@@ -125,7 +125,7 @@ class JFusionAdmin_smf2 extends JFusionAdmin{
 			    ->select('count(*)')
 			    ->from('#__members');
 
-		    $db->setQuery($query );
+		    $db->setQuery($query);
 
 		    //getting the results
 		    return $db->loadResult();

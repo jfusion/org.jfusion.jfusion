@@ -78,10 +78,16 @@ class JFusionUser_vbulletin extends JFusionUser
 
 		    $name_field = $this->params->get('name_field');
 
-		    $query = 'SELECT u.userid, u.username, u.email, u.usergroupid AS group_id, u.membergroupids, u.displaygroupid, u.password, u.salt as password_salt, u.usertitle, u.customtitle, u.posts, u.username as name FROM #__user AS u WHERE ' . $identifier_type . ' = ' . $db->Quote($identifier);
-		    $query.= ($ignore_id) ? ' AND u.userid != '.$ignore_id : '';
+		    $query = $db->getQuery(true)
+			    ->select('u.userid, u.username, u.email, u.usergroupid AS group_id, u.membergroupids, u.displaygroupid, u.password, u.salt as password_salt, u.usertitle, u.customtitle, u.posts, u.username as name')
+			    ->from('#__user AS u')
+			    ->where($identifier_type . ' = ' . $db->Quote($identifier));
 
-		    $db->setQuery($query );
+		    if ($ignore_id) {
+			    $query->where('u.userid != ' . $ignore_id);
+		    }
+
+		    $db->setQuery($query);
 		    $result = $db->loadObject();
 
 		    if ($result) {
@@ -94,8 +100,6 @@ class JFusionUser_vbulletin extends JFusionUser
 			    $result->group_name = $db->loadResult();
 
 			    if (!empty($name_field)) {
-				    $query = 'SELECT $name_field FROM #__userfield WHERE userid = '.$result->userid;
-
 				    $query = $db->getQuery(true)
 					    ->select($name_field)
 					    ->from('#__userfield')
@@ -108,7 +112,11 @@ class JFusionUser_vbulletin extends JFusionUser
 				    }
 			    }
 			    //Check to see if they are banned
-			    $query = 'SELECT userid FROM #__userban WHERE userid='. $result->userid;
+			    $query = $db->getQuery(true)
+				    ->select('userid')
+				    ->from('#__userban')
+				    ->where('userid = '.$result->userid);
+
 			    $db->setQuery($query);
 			    if ($db->loadObject() || ($this->params->get('block_coppa_users', 1) && (int) $result->group_id == 4)) {
 				    $result->block = 1;
@@ -276,14 +284,25 @@ class JFusionUser_vbulletin extends JFusionUser
 			    require_once JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.curl.php';
 			    //first check to see if striking is enabled to prevent further strikes
 			    $db = JFusionFactory::getDatabase($this->getJname());
-			    $query = 'SELECT value FROM #__setting WHERE varname = \'usestrikesystem\'';
+
+			    $query = $db->getQuery(true)
+				    ->select('value')
+				    ->from('#__setting')
+				    ->where('varname = ' . $db->quote('usestrikesystem'));
+
 			    $db->setQuery($query);
 			    $strikeEnabled = $db->loadResult();
 
 			    if ($strikeEnabled) {
 				    $ip = $_SERVER['REMOTE_ADDR'];
 				    $time = strtotime('-15 minutes');
-				    $query = 'SELECT COUNT(*) FROM #__strikes WHERE strikeip = '.$db->Quote($ip).' AND striketime >= '.$time;
+
+				    $query = $db->getQuery(true)
+					    ->select('COUNT(*)')
+					    ->from('#__strikes')
+					    ->where('strikeip = ' . $db->Quote($ip))
+					    ->where('striketime >= ' . $time);
+
 				    $db->setQuery($query);
 				    $strikes = $db->loadResult();
 
@@ -312,7 +331,11 @@ class JFusionUser_vbulletin extends JFusionUser
 			    $debug_expiration = date('Y-m-d H:i:s', $expires_time);
 			    $passwordhash = md5($userinfo->password.$cookie_salt);
 
-			    $query = 'SELECT sessionhash FROM #__session WHERE userid = ' . $userinfo->userid;
+			    $query = $db->getQuery(true)
+				    ->select('sessionhash')
+				    ->from('#__session')
+				    ->where('userid = ' . $userinfo->userid);
+
 			    $db->setQuery($query);
 			    $sessionhash = $db->loadResult();
 
@@ -383,7 +406,7 @@ class JFusionUser_vbulletin extends JFusionUser
 			    ->set('salt = ' . $db->Quote($existinguser->password_salt))
 		        ->where('userid  = ' . $existinguser->userid);
 
-	        $db->setQuery($query );
+	        $db->setQuery($query);
 		    $db->execute();
 
 		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password,0,6) . '********';
@@ -455,7 +478,12 @@ class JFusionUser_vbulletin extends JFusionUser
 		    $ban->reason = (!empty($status['aec'])) ? $status['block_message'] : $this->params->get('blockmessage');
 
 		    //now append or update the new user data
-		    $query = 'SELECT COUNT(*) FROM #__userban WHERE userid = ' . $existinguser->userid;
+
+		    $query = $db->getQuery(true)
+			    ->select('COUNT(*)')
+			    ->from('#__userban')
+			    ->where('userid = ' . $existinguser->userid);
+
 		    $db->setQuery($query);
 		    $banned = $db->loadResult();
 
@@ -494,8 +522,15 @@ class JFusionUser_vbulletin extends JFusionUser
 		    //first check to see if user is banned and if so, retrieve the prebanned fields
 		    //must be something other than $db because it conflicts with vbulletin global variables
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT b.*, g.usertitle AS bantitle FROM #__userban AS b INNER JOIN #__user AS u ON b.userid = u.userid INNER JOIN #__usergroup AS g ON u.usergroupid = g.usergroupid WHERE b.userid = ' . $existinguser->userid;
-		    $db->setQuery($query );
+
+		    $query = $db->getQuery(true)
+			    ->select('b.*, g.usertitle AS bantitle')
+			    ->from('#__userban AS b')
+		        ->innerJoin('#__user AS u ON b.userid = u.userid')
+			    ->innerJoin('#__usergroup AS g ON u.usergroupid = g.usergroupid')
+			    ->where('b.userid = ' . $existinguser->userid);
+
+		    $db->setQuery($query);
 		    $result = $db->loadObject();
 
 		    if (is_array($usergroups)) {
@@ -568,7 +603,7 @@ class JFusionUser_vbulletin extends JFusionUser
 			    ->set('usergroupid = ' . $usergroup)
 			    ->where('userid  = ' . $existinguser->userid);
 
-		    $db->setQuery($query );
+		    $db->setQuery($query);
 		    $db->execute();
 
 		    //remove any activation catches from vbulletin database
@@ -606,12 +641,16 @@ class JFusionUser_vbulletin extends JFusionUser
 			    ->set('usergroupid = ' . $usergroup)
 			    ->where('userid  = ' . $existinguser->userid);
 
-		    $db->setQuery($query );
+		    $db->setQuery($query);
 		    $db->execute();
 
 		    //update the activation status
 		    //check to see if the user is already inactivated
-		    $query = 'SELECT COUNT(*) FROM #__useractivation WHERE userid = ' . $existinguser->userid;
+		    $query = $db->getQuery(true)
+			    ->select('COUNT(*)')
+			    ->from('#__useractivation')
+			    ->where('userid = ' . $existinguser->userid);
+
 		    $db->setQuery($query);
 		    $count = $db->loadResult();
 		    if (empty($count)) {
@@ -838,13 +877,23 @@ class JFusionUser_vbulletin extends JFusionUser
     {
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT usertitle FROM #__usergroup WHERE usergroupid = '.$groupid;
+
+		    $query = $db->getQuery(true)
+			    ->select('usertitle')
+			    ->from('#__usergroup')
+			    ->where('usergroupid = ' . $groupid);
+
 		    $db->setQuery($query);
 		    $title = $db->loadResult();
 
 		    if (empty($title)) {
-			    $query = 'SELECT title FROM #__usertitle WHERE minposts <= ' . $posts . ' ORDER BY minposts DESC LIMIT 1';
-			    $db->setQuery($query);
+			    $query = $db->getQuery(true)
+				    ->select('title')
+				    ->from('#__usertitle')
+				    ->where('minposts <= ' . $posts)
+			        ->order('minposts DESC');
+
+			    $db->setQuery($query, 0, 1);
 			    $title = $db->loadResult();
 		    }
 	    } catch (Exception $e) {
@@ -887,7 +936,12 @@ class JFusionUser_vbulletin extends JFusionUser
 			    $joomla_persistant_cookie = '';
 		    }
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT userid FROM #__session WHERE sessionhash = ' . $db->Quote($cookie_sessionhash);
+
+		    $query = $db->getQuery(true)
+			    ->select('userid')
+			    ->from('#__session')
+			    ->where('sessionhash = ' . $db->quote($cookie_sessionhash));
+
 		    $db->setQuery($query);
 		    $session_userid = $db->loadResult();
 
@@ -921,7 +975,12 @@ class JFusionUser_vbulletin extends JFusionUser
 					    //enable remember me as this is a keep alive function anyway
 					    $options['remember'] = 1;
 					    //get the user's info
-					    $query = 'SELECT username, email FROM #__user WHERE userid = '.$userlookup->userid;
+
+					    $query = $db->getQuery(true)
+						    ->select('username, email')
+						    ->from('#__user')
+						    ->where('userid = ' . $userlookup->userid);
+
 					    $db->setQuery($query);
 					    $user_identifiers = $db->loadObject();
 					    $userinfo = $this->getUser($user_identifiers);
@@ -998,7 +1057,12 @@ class JFusionUser_vbulletin extends JFusionUser
 				    }
 				    //get the user's info
 				    $db = JFactory::getDBO();
-				    $query = 'SELECT username, email FROM #__users WHERE id = '.$userlookup->id;
+
+				    $query = $db->getQuery(true)
+					    ->select('username, email')
+					    ->from('#__users')
+					    ->where('id = ' . $userlookup->id);
+
 				    $db->setQuery($query);
 				    $user_identifiers = $db->loadObject();
 				    $JoomlaUser = JFusionFactory::getUser('joomla_int');
