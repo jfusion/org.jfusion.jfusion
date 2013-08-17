@@ -44,7 +44,13 @@ class JFusionUser_phpbb3 extends JFusionUser
 		    if ($identifier_type == 'a.username_clean') {
 			    $identifier = $this->filterUsername($identifier);
 		    }
-		    $query = 'SELECT a.user_id as userid, a.username as name, a.username_clean as username, a.user_email as email, a.user_password as password, null as password_salt, a.user_actkey as activation, a.user_inactive_reason as reason, a.user_lastvisit as lastvisit, a.group_id, b.group_name, a.user_type, a.user_avatar, a.user_avatar_type ' . 'FROM #__users as a LEFT OUTER JOIN #__groups as b ON a.group_id = b.group_id ' . 'WHERE ' . $identifier_type . ' = ' . $db->Quote($identifier);
+
+		    $query = $db->getQuery(true)
+			    ->select('a.user_id as userid, a.username as name, a.username_clean as username, a.user_email as email, a.user_password as password, null as password_salt, a.user_actkey as activation, a.user_inactive_reason as reason, a.user_lastvisit as lastvisit, a.group_id, b.group_name, a.user_type, a.user_avatar, a.user_avatar_type')
+			    ->from('#__users as a')
+		        ->join('LEFT OUTER', '#__groups as b ON a.group_id = b.group_id')
+		        ->where($identifier_type . ' = ' . $db->Quote($identifier));
+
 		    $db->setQuery($query);
 		    $result = $db->loadObject();
 		    if ($result) {
@@ -56,7 +62,11 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    $result->groupnames = array($result->group_name);
 
 				    //Check to see if they are banned
-				    $query = 'SELECT ban_userid FROM #__banlist WHERE ban_userid =' . (int)$result->userid;
+				    $query = $db->getQuery(true)
+					    ->select('ban_userid')
+					    ->from('#__banlist')
+					    ->where('ban_userid = ' . (int)$result->userid);
+
 				    $db->setQuery($query);
 				    if ($db->loadObject()) {
 					    $result->block = 1;
@@ -232,7 +242,13 @@ class JFusionUser_phpbb3 extends JFusionUser
 					    jimport('joomla.user.helper');
 					    $session_key = JApplication::getHash(JUserHelper::genRandomPassword(32));
 					    //Check for admin access
-					    $query = 'SELECT b.group_name FROM #__user_group as a INNER JOIN #__groups as b ON a.group_id = b.group_id WHERE b.group_name = \'ADMINISTRATORS\' and a.user_id = ' . (int)$userinfo->userid;
+					    $query = $jdb->getQuery(true)
+						    ->select('b.group_name')
+						    ->from('#__user_group as a')
+					        ->innerJoin('#__groups as b ON a.group_id = b.group_id')
+						    ->where('b.group_name = ' . $jdb->quote('ADMINISTRATORS'))
+						    ->where('a.user_id = ' . (int)$userinfo->userid);
+
 					    $jdb->setQuery($query);
 					    $usergroup = $jdb->loadResult();
 					    if ($usergroup == 'ADMINISTRATORS') {
@@ -262,7 +278,11 @@ class JFusionUser_phpbb3 extends JFusionUser
 							    //check for a valid persistent cookie
 							    $persistant_cookie = ($phpbb_allow_autologin) ? JFactory::getApplication()->input->cookie->get($phpbb_cookie_name . '_k', '') : '';
 							    if (!empty($persistant_cookie)) {
-								    $query = 'SELECT user_id FROM #__sessions_keys WHERE key_id = ' . $jdb->Quote(md5($persistant_cookie));
+								    $query = $jdb->getQuery(true)
+									    ->select('user_id')
+									    ->from('#__sessions_keys')
+									    ->where('key_id = ' . $jdb->Quote(md5($persistant_cookie)));
+
 								    $jdb->setQuery($query);
 								    $persistant_cookie_userid = $jdb->loadResult();
 								    if ($persistant_cookie_userid == $userinfo->userid) {
@@ -278,7 +298,11 @@ class JFusionUser_phpbb3 extends JFusionUser
 						    }
 
 						    if ($jautologin) {
-							    $query = 'SELECT config_value FROM #__config WHERE config_name = \'max_autologin_time\'';
+							    $query = $jdb->getQuery(true)
+								    ->select('config_value')
+								    ->from('#__config')
+								    ->where('config_name = ' . $jdb->quote('max_autologin_time'));
+
 							    $jdb->setQuery($query);
 							    $max_autologin_time = $jdb->loadResult();
 							    $expires = ($max_autologin_time) ? 86400 * (int) $max_autologin_time : 31536000;
@@ -445,7 +469,11 @@ class JFusionUser_phpbb3 extends JFusionUser
 			    //clear out cached permissions so that those of the new group are generated
 			    $user->user_permissions = '';
 			    //update the user colour, avatar, etc to the groups if applicable
-			    $query = 'SELECT group_colour, group_rank, group_avatar, group_avatar_type, group_avatar_width, group_avatar_height FROM #__groups WHERE group_id = '.$user->group_id;
+			    $query = $db->getQuery(true)
+				    ->select('group_colour, group_rank, group_avatar, group_avatar_type, group_avatar_width, group_avatar_height')
+				    ->from('#__groups')
+				    ->where('group_id = ' . $user->group_id);
+
 			    $db->setQuery($query);
 			    $group_attribs = $db->loadAssoc();
 			    if (!empty($group_attribs)) {
@@ -476,7 +504,12 @@ class JFusionUser_phpbb3 extends JFusionUser
 			    }
 
 			    //if the user was in the newly registered group, remove the registered group as well
-			    $query = 'SELECT group_id, group_name FROM #__groups WHERE group_name IN (\'NEWLY_REGISTERED\',\'REGISTERED\') AND group_type = 3';
+			    $query = $db->getQuery(true)
+				    ->select('group_id, group_name')
+				    ->from('#__groups')
+			        ->where('group_name IN (\'NEWLY_REGISTERED\',\'REGISTERED\')')
+				    ->where('group_type = 3');
+
 			    $db->setQuery($query);
 			    $groups = $db->loadObjectList('group_name');
 			    if ($existinguser->group_id == $groups['NEWLY_REGISTERED']->group_id) {
@@ -540,7 +573,11 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $e->getMessage();
 			    }
 
-			    $query = 'SELECT config_value FROM #__config WHERE config_name = \'newest_user_id\'';
+			    $query = $db->getQuery(true)
+				    ->select('config_value')
+				    ->from('#__config')
+				    ->where('config_name = ' . $db->quote('newest_user_id'));
+
 			    $db->setQuery($query);
 			    $newest_user_id = $db->loadResult();
 			    if ($newest_user_id == $existinguser->userid) {
@@ -751,7 +788,12 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    $user->user_sig_bbcode_uid = '';
 				    $user->user_sig_bbcode_bitfield = '';
 				    //Find some default values
-				    $query = 'SELECT config_name, config_value FROM #__config WHERE config_name IN(\'board_timezone\', \'default_dateformat\', \'default_lang\', \'default_style\', \'board_dst\', \'rand_seed\')';
+
+				    $query = $db->getQuery(true)
+					    ->select('config_name, config_value')
+					    ->from('#__config')
+					    ->where('config_name IN (\'board_timezone\', \'default_dateformat\', \'default_lang\', \'default_style\', \'board_dst\', \'rand_seed\')');
+
 				    $db->setQuery($query);
 				    $rows = $db->loadObjectList();
 				    $config = array();
@@ -770,7 +812,11 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    $user->user_form_salt = JUserHelper::genRandomPassword(13);
 
 				    //update the user colour, avatar, etc to the groups if applicable
-				    $query = 'SELECT group_colour, group_rank, group_avatar, group_avatar_type, group_avatar_width, group_avatar_height FROM #__groups WHERE group_id = '.$usergroup;
+				    $query = $db->getQuery(true)
+					    ->select('group_colour, group_rank, group_avatar, group_avatar_type, group_avatar_width, group_avatar_height')
+					    ->from('#__groups')
+					    ->where('group_id = ' . $usergroup);
+
 				    $db->setQuery($query);
 				    $group_attribs = $db->loadAssoc();
 				    if (!empty($group_attribs)) {
@@ -789,7 +835,12 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    $db->execute();
 
 				    //is this group the newly registered group?
-				    $query = 'SELECT group_id, group_name FROM #__groups WHERE group_name IN (\'NEWLY_REGISTERED\',\'REGISTERED\') AND group_type = 3';
+				    $query = $db->getQuery(true)
+					    ->select('group_id, group_name')
+					    ->from('#__groups')
+					    ->where('group_name IN (\'NEWLY_REGISTERED\',\'REGISTERED\')')
+					    ->where('group_type = 3');
+
 				    $db->setQuery($query);
 				    $groups = $db->loadObjectList('group_name');
 				    if ($usergroup == $groups['NEWLY_REGISTERED']->group_id) {
@@ -872,10 +923,12 @@ class JFusionUser_phpbb3 extends JFusionUser
 
 		    $report_posts = $report_topics = array();
 		    try {
-			    $query = 'SELECT r.post_id, p.topic_id
-		            FROM #__reports r, #__posts p
-		            WHERE r.user_id = ' . (int)$user_id . '
-		                AND p.post_id = r.post_id';
+			    $query = $db->getQuery(true)
+				    ->select('r.post_id, p.topic_id')
+				    ->from('#__reports r, #__posts p')
+				    ->where('r.user_id = ' . (int)$user_id)
+				    ->where('p.post_id = r.post_id');
+
 			    $db->setQuery($query);
 			    $results = $db->loadObjectList();
 			    if ($results) {
@@ -896,11 +949,13 @@ class JFusionUser_phpbb3 extends JFusionUser
 
 			    $keep_report_topics = array();
 			    try {
-				    $query = 'SELECT DISTINCT topic_id
-	                FROM #__posts
-	                WHERE topic_id IN (' . implode(', ', $report_topics) . ')
-	                    AND post_reported = 1
-	                    AND post_id IN (' . implode(', ', $report_posts) . ')';
+				    $query = $db->getQuery(true)
+					    ->select('DISTINCT topic_id')
+					    ->from('#__posts')
+					    ->where('topic_id IN (' . implode(', ', $report_topics) . ')')
+					    ->where('post_id IN (' . implode(', ', $report_posts) . ')')
+					    ->where('post_reported = 1');
+
 				    $db->setQuery($query);
 				    $results = $db->loadObjectList();
 				    if ($results) {
@@ -1027,7 +1082,11 @@ class JFusionUser_phpbb3 extends JFusionUser
 		    }
 
 		    // Since we change every post by this author, we need to count this amount towards the anonymous user
-		    $query = 'SELECT user_posts FROM #__users WHERE user_id = '.$user_id;
+		    $query = $db->getQuery(true)
+			    ->select('user_posts')
+			    ->from('#__users')
+			    ->where('user_id = '.$user_id);
+
 		    $db->setQuery($query);
 		    $user_posts = $db->loadResult();
 		    // Update the post count for the anonymous user
@@ -1048,7 +1107,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 		    foreach ($table_ary as $table) {
 			    try {
 				    $query = $db->getQuery(true)
-					    ->delete('#__'.$table)
+					    ->delete('#__' . $table)
 					    ->where('user_id = '.$user_id);
 
 				    $db->setQuery($query);
@@ -1061,10 +1120,12 @@ class JFusionUser_phpbb3 extends JFusionUser
 		    $undelivered_msg = $undelivered_user = array();
 		    try {
 			    // Remove any undelivered mails...
-			    $query = 'SELECT msg_id, user_id
-			            FROM #__privmsgs_to
-			            WHERE author_id = ' . $user_id . '
-		                AND folder_id = -3';
+			    $query = $db->getQuery(true)
+				    ->select('msg_id, user_id')
+				    ->from('#__privmsgs_to')
+				    ->where('author_id = ' . $user_id)
+				    ->where('folder_id = -3');
+
 			    $db->setQuery($query);
 			    $results = $db->loadObjectList();
 			    if ($results) {
@@ -1165,11 +1226,20 @@ class JFusionUser_phpbb3 extends JFusionUser
 		    $db->execute();
 
 		    //check to see if this user was the newest user
-		    $query = 'SELECT COUNT(*) FROM #__config WHERE config_name = \'newest_user_id\' AND config_value = '.$db->Quote($user_id);
+		    $query = $db->getQuery(true)
+			    ->select('COUNT(*)')
+			    ->from('#__config')
+			    ->where('config_name = ' . $db->quote('newest_user_id'))
+			    ->where('config_value = ' . $db->quote($user_id));
+
 		    $db->setQuery($query);
 		    if ($db->loadResult()) {
 			    //retrieve the new newest user
-			    $query = 'SELECT user_id, username, user_colour FROM #__users WHERE user_regdate = (SELECT MAX(user_regdate) FROM #__users)';
+			    $query = $db->getQuery(true)
+				    ->select('user_id, username, user_colour')
+				    ->from('#__users')
+				    ->where('user_regdate = (SELECT MAX(user_regdate) FROM #__users)');
+
 			    $db->setQuery($query);
 			    $newest_user = $db->loadObject();
 			    if ($newest_user) {
@@ -1269,7 +1339,12 @@ class JFusionUser_phpbb3 extends JFusionUser
 						    //get the user's info
 						    if (!empty($userlookup)) {
 							    $db = JFusionFactory::getDatabase($this->getJname());
-							    $query = 'SELECT username_clean AS username, user_email as email FROM #__users WHERE user_id = '.$userlookup->userid;
+
+							    $query = $db->getQuery(true)
+								    ->select('username_clean AS username, user_email as email')
+								    ->from('#__users')
+								    ->where('user_id = '.$userlookup->userid);
+
 							    $db->setQuery($query);
 							    $user_identifiers = $db->loadObject();
 							    $userinfo = $this->getUser($user_identifiers);
@@ -1351,12 +1426,20 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    } else {
 					    $db = JFusionFactory::getDatabase($this->getJname());
 					    if (!empty($persistant_cookie)) {
-						    $query = 'SELECT user_id FROM #__sessions_keys WHERE key_id = ' . $db->Quote(md5($persistant_cookie));
+						    $query = $db->getQuery(true)
+							    ->select('user_id')
+							    ->from('#__sessions_keys')
+							    ->where('key_id = ' . $db->Quote(md5($persistant_cookie)));
+
 						    if ($debug) {
 							    JFusionFunction::raiseNotice('Using phpBB persistant cookie to find user', $this->getJname());
 						    }
 					    } else {
-						    $query = 'SELECT session_user_id FROM #__sessions WHERE session_id = ' . $db->Quote($sid_cookie_value);
+						    $query = $db->getQuery(true)
+							    ->select('session_user_id')
+							    ->from('#__sessions')
+							    ->where('session_id = ' . $db->Quote($sid_cookie_value));
+
 						    if ($debug) {
 							    JFusionFunction::raiseNotice('Using phpBB sid cookie to find user', $this->getJname());
 						    }
@@ -1370,7 +1453,12 @@ class JFusionUser_phpbb3 extends JFusionUser
 						    }
 						    //get the user's info
 						    $jdb = JFactory::getDBO();
-						    $query = 'SELECT username, email FROM #__users WHERE id = '.$userlookup->id;
+
+						    $query = $jdb->getQuery(true)
+							    ->select('username, email')
+							    ->from('#__users')
+							    ->where('id = '.$userlookup->id);
+
 						    $jdb->setQuery($query);
 						    $user_identifiers = $jdb->loadObject();
 						    $JoomlaUser = JFusionFactory::getUser('joomla_int');

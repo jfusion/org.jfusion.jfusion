@@ -179,7 +179,11 @@ class JFusionHelper_phpbb3
 		    include_once ($source_path . '/includes/constants.php');
 		    //get a bbcode_uid
 		    if (empty($this->bbcode_uid)) {
-			    $query = 'SELECT config_value FROM #__config WHERE config_name = \'rand_seed\'';
+			    $query = $db->getQuery(true)
+				    ->select('config_value')
+				    ->from('#__config')
+				    ->where('config_name = ' . $db->quote('rand_seed'));
+
 			    $db->setQuery($query);
 			    $rand_seed = $db->loadResult();
 			    $val = $rand_seed . microtime();
@@ -219,7 +223,12 @@ class JFusionHelper_phpbb3
         if (!is_array($smilie_match)) {
             $smilie_match = $smilie_replace = array();
 	        $db = JFusionFactory::getDatabase($this->getJname());
-            $query = 'SELECT * FROM #__smilies ORDER BY LENGTH(code) DESC';
+
+	        $query = $db->getQuery(true)
+		        ->select('*')
+		        ->from('#__smilies')
+		        ->order('LENGTH(code) DESC');
+
 	        $db->setQuery($query);
             $results = $db->loadObjectList();
             foreach ($results as $r) {
@@ -251,7 +260,11 @@ class JFusionHelper_phpbb3
 	            'flash'         => array('bbcode_id' => 11, 'regexp' => array('#\[flash=([0-9]+),([0-9]+)\](.*?)\[/flash\]#ie' => "\$this->bbcode_flash('\$1', '\$2', '\$3')")));
 
 	        $db = JFusionFactory::getDatabase($this->getJname());
-            $query = 'SELECT * FROM #__bbcodes';
+
+	        $query = $db->getQuery(true)
+		        ->select('*')
+		        ->from('#__bbcodes');
+
 	        $db->setQuery($query);
             $results = $db->loadObjectList();
             foreach ($results as $r) {

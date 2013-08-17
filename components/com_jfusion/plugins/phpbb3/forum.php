@@ -93,7 +93,13 @@ class JFusionForum_phpbb3 extends JFusionForum {
 		    if ($puser_id) {
 			    $dbparams = JFusionFactory::getParams($this->getJname());
 			    $db = JFusionFactory::getDatabase($this->getJname());
-			    $db->setQuery('SELECT user_avatar, user_avatar_type FROM #__users WHERE user_id=' . (int)$puser_id);
+
+			    $query = $db->getQuery(true)
+				    ->select('user_avatar, user_avatar_type')
+				    ->from('#__users')
+				    ->where('user_id = ' . (int)$puser_id);
+
+			    $db->setQuery($query);
 			    $db->execute();
 			    $result = $db->loadObject();
 			    if (!empty($result)) {
@@ -136,18 +142,27 @@ class JFusionForum_phpbb3 extends JFusionForum {
 		    if ($puser_id) {
 			    // read pm counts
 			    $db = JFusionFactory::getDatabase($this->getJname());
+
 			    // read unread count
-			    $db->setQuery('SELECT COUNT(msg_id)
-            FROM #__privmsgs_to
-            WHERE pm_unread = 1
-            AND folder_id <> -2
-            AND user_id = ' . (int)$puser_id);
+			    $query = $db->getQuery(true)
+				    ->select('COUNT(msg_id)')
+				    ->from('#__privmsgs_to')
+				    ->where('pm_unread = 1')
+				    ->where('folder_id <> -2')
+				    ->where('user_id = ' . (int)$puser_id);
+
+			    $db->setQuery($query);
 			    $unreadCount = $db->loadResult();
+
 			    // read total pm count
-			    $db->setQuery('SELECT COUNT(msg_id)
-            FROM #__privmsgs_to
-            WHERE folder_id NOT IN (-1, -2)
-            AND user_id = ' . (int)$puser_id);
+			    $query = $db->getQuery(true)
+				    ->select('COUNT(msg_id)')
+				    ->from('#__privmsgs_to')
+				    ->where('pm_unread = 1')
+				    ->where('folder_id NOT IN (-1, -2)')
+				    ->where('user_id = ' . (int)$puser_id);
+
+			    $db->setQuery($query);
 			    $totalCount = $db->loadResult();
 		    }
 	    } catch (Exception $e) {
@@ -220,15 +235,27 @@ class JFusionForum_phpbb3 extends JFusionForum {
 
 				    $userlookup = JFusionFunction::lookupUser($this->getJname(), $JUser->id);
 				    if (!empty($userlookup)) {
-					    $query = 'SELECT topic_id, mark_time FROM #__topics_track WHERE user_id = '.$userlookup->userid;
+					    $query = $db->getQuery(true)
+						    ->select('topic_id, mark_time')
+						    ->from('#__topics_track')
+						    ->where('user_id = ' . $userlookup->userid);
+
 					    $db->setQuery($query);
 					    $marktimes['thread'] = $db->loadObjectList('topic_id');
 
-					    $query = 'SELECT forum_id, mark_time FROM #__forums_track WHERE user_id = '.$userlookup->userid;
+					    $query = $db->getQuery(true)
+						    ->select('forum_id, mark_time')
+						    ->from('#__forums_track')
+						    ->where('user_id = ' . $userlookup->userid);
+
 					    $db->setQuery($query);
 					    $marktimes['forum'] = $db->loadObjectList('forum_id');
 
-					    $query = 'SELECT user_lastmark FROM #__users WHERE user_id = '.$userlookup->userid;
+					    $query = $db->getQuery(true)
+						    ->select('user_lastmark')
+						    ->from('#__users')
+						    ->where('user_id = ' . $userlookup->userid);
+
 					    $db->setQuery($query);
 					    $marktimes['user'] = $db->loadResult();
 				    }
@@ -258,8 +285,13 @@ class JFusionForum_phpbb3 extends JFusionForum {
 	    try {
 		    //get the connection to the db
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT forum_id as id, forum_name as name FROM #__forums
-                    WHERE forum_type = 1 ORDER BY left_id';
+
+		    $query = $db->getQuery(true)
+			    ->select('forum_id as id, forum_name as name')
+			    ->from('#__forums')
+			    ->where('forum_type = 1')
+		        ->order('left_id');
+
 		    $db->setQuery($query);
 		    //getting the results
 		    return $db->loadObjectList('id');
@@ -280,7 +312,13 @@ class JFusionForum_phpbb3 extends JFusionForum {
 		    if (empty($forumids)) {
 			    $db = JFusionFactory::getDatabase($this->getJname());
 			    //no forums were selected so pull them all
-			    $query = 'SELECT forum_id FROM #__forums WHERE forum_type = 1 ORDER BY left_id';
+
+			    $query = $db->getQuery(true)
+				    ->select('forum_id')
+				    ->from('#__forums')
+				    ->where('forum_type = 1')
+				    ->order('left_id');
+
 			    $db->setQuery($query);
 			    $forumids = $db->loadColumn();
 		    } elseif (!is_array($forumids)) {
@@ -318,7 +356,13 @@ class JFusionForum_phpbb3 extends JFusionForum {
 
 			    //get permissions for all forums in case more than one module/plugin is present with different settings
 			    $db = JFusionFactory::getDatabase($this->getJname());
-			    $query = 'SELECT forum_id FROM #__forums WHERE forum_type = 1 ORDER BY left_id';
+
+			    $query = $db->getQuery(true)
+				    ->select('forum_id')
+				    ->from('#__forums')
+				    ->where('forum_type = 1')
+				    ->order('left_id');
+
 			    $db->setQuery($query);
 			    $forumids = $db->loadColumn();
 
@@ -335,23 +379,42 @@ class JFusionForum_phpbb3 extends JFusionForum {
 					    $userinfo = JFusionFunction::lookupUser($this->getJname(), $JUser->id);
 					    if (!empty($userinfo)) {
 						    $userid = $userinfo->userid;
-						    $query = 'SELECT group_id FROM #__user_group WHERE user_id = '.$userid;
+
+						    $query = $db->getQuery(true)
+							    ->select('group_id')
+							    ->from('#__user_group')
+							    ->where('user_id = ' . $userid);
+
 						    $db->setQuery($query);
 						    $groupids = $db->loadColumn();
 
-						    $query = 'SELECT user_type FROM #__users WHERE user_id = '.$userid;
+						    $query = $db->getQuery(true)
+							    ->select('user_type')
+							    ->from('#__users')
+							    ->where('user_id = ' . $userid);
+
 						    $db->setQuery($query);
 						    $usertype = (int) $db->loadResult();
 					    } else {
 						    //oops, something has failed so use the anonymous user
 						    $userid = 1;
-						    $query = 'SELECT group_id FROM #__groups WHERE group_name = \'GUESTS\'';
+
+						    $query = $db->getQuery(true)
+							    ->select('group_id')
+							    ->from('#__groups')
+							    ->where('group_name = ' . $db->quote('GUESTS'));
+
 						    $db->setQuery($query);
 						    $groupids[] = $db->loadResult();
 					    }
 				    } else {
 					    $userid = 1;
-					    $query = 'SELECT group_id FROM #__groups WHERE group_name = \'GUESTS\'';
+
+					    $query = $db->getQuery(true)
+						    ->select('group_id')
+						    ->from('#__groups')
+						    ->where('group_name = ' . $db->quote('GUESTS'));
+
 					    $db->setQuery($query);
 					    $groupids[] = $db->loadResult();
 				    }
@@ -365,7 +428,12 @@ class JFusionForum_phpbb3 extends JFusionForum {
 			    //set the permissions for non-founders
 			    if ($usertype != 3) {
 				    //get the option id for f_read
-				    $query = 'SELECT auth_option_id, auth_option FROM #__acl_options WHERE auth_option IN (\'f_\', \'f_read\')';
+
+				    $query = $db->getQuery(true)
+					    ->select('auth_option_id, auth_option')
+					    ->from('#__acl_options')
+					    ->where('auth_option IN (\'f_\', \'f_read\')');
+
 				    $db->setQuery($query);
 				    $option_ids = $db->loadObjectList('auth_option');
 
@@ -382,7 +450,14 @@ class JFusionForum_phpbb3 extends JFusionForum {
 				    $auth_option_ids = array(0, $global_id, $read_id);
 
 				    //get the permissions for groups
-				    $query = 'SELECT * FROM #__acl_groups WHERE group_id IN (' . implode(', ', $groupids) . ') AND auth_option_id IN (' . implode(', ', $auth_option_ids) . ') AND forum_id IN (' . implode(', ', $forumids) . ')';
+
+				    $query = $db->getQuery(true)
+					    ->select('*')
+					    ->from('#__acl_groups')
+					    ->where('group_id IN (' . implode(', ', $groupids) . ')')
+					    ->where('auth_option_id IN (' . implode(', ', $auth_option_ids) . ')')
+					    ->where('forum_id IN (' . implode(', ', $forumids) . ')');
+
 				    $db->setQuery($query);
 				    $results = $db->loadObjectList();
 
@@ -396,7 +471,12 @@ class JFusionForum_phpbb3 extends JFusionForum {
 								    $this->setPremission($phpbb_acl[$r->forum_id], $r->auth_setting);
 							    } else {
 								    //there is a role assigned so find out what the role's permission is
-								    $query = 'SELECT auth_option_id, auth_setting FROM #__acl_roles_data WHERE role_id = '.$r->auth_role_id.' AND auth_option_id IN (\''.$global_id.'\', \''.$read_id.'\')';
+								    $query = $db->getQuery(true)
+									    ->select('auth_option_id, auth_setting')
+									    ->from('#__acl_roles_data')
+								        ->where('role_id = '.$r->auth_role_id)
+									    ->where('auth_option_id = IN (\''.$global_id.'\', \''.$read_id.'\')');
+
 								    $db->setQuery($query);
 								    $role_permissions = $db->loadObjectList('auth_option_id');
 								    if (isset($role_permissions[$global_id])) {
@@ -410,7 +490,13 @@ class JFusionForum_phpbb3 extends JFusionForum {
 					    }
 				    }
 
-				    $query = 'SELECT * FROM #__acl_users WHERE user_id = '.$userid.' AND auth_option_id IN (' . implode(', ', $auth_option_ids) . ') AND forum_id IN (' . implode(', ', $forumids) . ')';
+				    $query = $db->getQuery(true)
+					    ->select('*')
+					    ->from('#__acl_users')
+					    ->where('user_id = ' . $userid)
+					    ->where('auth_option_id IN (' . implode(', ', $auth_option_ids) . ')')
+					    ->where('forum_id IN (' . implode(', ', $forumids) . ')');
+
 				    $db->setQuery($query);
 				    $results = $db->loadObjectList();
 
@@ -425,7 +511,12 @@ class JFusionForum_phpbb3 extends JFusionForum {
 								    $this->setPremission($phpbb_acl[$r->forum_id], $r->auth_setting);
 							    } else {
 								    //there is a role assigned so find out what the role's permission is
-								    $query = 'SELECT auth_option_id, auth_setting FROM #__acl_roles_data WHERE role_id = '.$r->auth_role_id.' AND auth_option_id IN (\''.$global_id.'\', \''.$read_id.'\')';
+								    $query = $db->getQuery(true)
+									    ->select('auth_option_id, auth_setting')
+									    ->from('#__acl_roles_data')
+									    ->where('role_id = '.$r->auth_role_id)
+									    ->where('auth_option_id = IN (\''.$global_id.'\', \''.$read_id.'\')');
+
 								    $db->setQuery($query);
 								    $role_permissions = $db->loadObjectList('auth_option_id');
 								    if (isset($role_permissions[$global_id])) {
@@ -505,7 +596,12 @@ class JFusionForum_phpbb3 extends JFusionForum {
     {
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT topic_id AS threadid, forum_id AS forumid, topic_first_post_id AS postid FROM #__topics WHERE topic_id = '.$threadid;
+
+		    $query = $db->getQuery(true)
+			    ->select('topic_id AS threadid, forum_id AS forumid, topic_first_post_id AS postid')
+			    ->from('#__topics')
+			    ->where('topic_id = ' . $threadid);
+
 		    $db->setQuery($query);
 		    $result = $db->loadObject();
 	    } catch (Exception $e)  {
@@ -536,7 +632,12 @@ class JFusionForum_phpbb3 extends JFusionForum {
 			$text = $this->prepareFirstPostBody($dbparams, $contentitem);
 
 			//the user information
-			$query = 'SELECT username, username_clean, user_colour, user_permissions FROM #__users WHERE user_id = '.$userid;
+
+			$query = $db->getQuery(true)
+				->select('username, username_clean, user_colour, user_permissions')
+				->from('#__users')
+				->where('user_id = ' . $userid);
+
 			$db->setQuery($query);
 			$phpbbUser = $db->loadObject();
 
@@ -612,7 +713,11 @@ class JFusionForum_phpbb3 extends JFusionForum {
 
 			$db->updateObject('#__topics', $topic_row, 'topic_id' );
 
-			$query = 'SELECT forum_last_post_time, forum_topics, forum_topics_real, forum_posts FROM #__forums WHERE forum_id = '.$forumid;
+			$query = $db->getQuery(true)
+				->select('forum_last_post_time, forum_topics, forum_topics_real, forum_posts')
+				->from('#__forums')
+				->where('forum_id = ' . $forumid);
+
 			$db->setQuery($query);
 			$num = $db->loadObject();
 
@@ -713,7 +818,11 @@ class JFusionForum_phpbb3 extends JFusionForum {
 			$timestamp = $dbparams->get('use_content_created_date', false) ? JFactory::getDate($contentitem->created)->toUnix() : time();
 			$userid = $dbparams->get('default_user');
 
-			$query = 'SELECT post_edit_count FROM #__posts WHERE post_id = '.$postid;
+			$query = $db->getQuery(true)
+				->select('post_edit_count')
+				->from('#__posts')
+				->where('post_id = ' . $postid);
+
 			$db->setQuery($query);
 			$count = $db->loadResult();
 
@@ -766,12 +875,16 @@ class JFusionForum_phpbb3 extends JFusionForum {
 				} else {
 					$user = JFusionFactory::getUser($this->getJname());
 					$username_clean = $user->filterUsername($userinfo->username);
-					$query = 'SELECT COUNT(*) FROM #__users '
-						. ' WHERE username = ' . $db->Quote($userinfo->username)
-						. ' OR username = ' . $db->Quote($username_clean)
-						. ' OR username_clean = ' . $db->Quote($userinfo->username)
-						. ' OR username_clean = ' . $db->Quote($username_clean)
-						. ' OR LOWER(user_email) = ' . strtolower($db->Quote($userinfo->username));
+
+					$query = $db->getQuery(true)
+						->select('COUNT(*)')
+						->from('#__users')
+						->where('username = ' . $db->Quote($userinfo->username))
+						->where('username = ' . $db->Quote($username_clean))
+						->where('username_clean = ' . $db->Quote($userinfo->username))
+						->where('username_clean = ' . $db->Quote($username_clean))
+						->where('LOWER(user_email) = ' . $db->Quote(strtolower($userinfo->username)));
+
 					$db->setQuery($query);
 					$result = $db->loadResult();
 					if(!empty($result)) {
@@ -797,11 +910,20 @@ class JFusionForum_phpbb3 extends JFusionForum {
 				$bbcode = $helper->bbcode_parser($text);
 
 				//get some topic information
-				$query = 'SELECT topic_title, topic_replies, topic_replies_real FROM #__topics WHERE topic_id = '.$ids->threadid;
+				$query = $db->getQuery(true)
+					->select('topic_title, topic_replies, topic_replies_real')
+					->from('#__topics')
+					->where('topic_id = ' . $ids->threadid);
+
 				$db->setQuery($query);
 				$topic = $db->loadObject();
 				//the user information
-				$query = 'SELECT username, user_colour, user_permissions FROM #__users WHERE user_id = '.$userid;
+
+				$query = $db->getQuery(true)
+					->select('username, user_colour, user_permissions')
+					->from('#__users')
+					->where('user_id = ' . $userid);
+
 				$db->setQuery($query);
 				$phpbbUser = $db->loadObject();
 
@@ -855,7 +977,11 @@ class JFusionForum_phpbb3 extends JFusionForum {
 					$topic_row->topic_id					= $ids->threadid;
 					$db->updateObject('#__topics', $topic_row, 'topic_id' );
 
-					$query = 'SELECT forum_posts FROM #__forums WHERE forum_id = '.$ids->forumid;
+					$query = $db->getQuery(true)
+						->select('forum_posts')
+						->from('#__forums')
+						->where('forum_id = ' . $ids->forumid);
+
 					$db->setQuery($query);
 					$num = $db->loadObject();
 
@@ -868,7 +994,12 @@ class JFusionForum_phpbb3 extends JFusionForum {
 					$forum_stats->forum_last_poster_colour 	= $phpbbUser->user_colour;
 					$forum_stats->forum_posts				= $num->forum_posts + 1;
 					$forum_stats->forum_id 					= $ids->forumid;
-					$query = 'SELECT forum_topics, forum_topics_real, forum_posts FROM #__forums WHERE forum_id = '.$ids->forumid;
+
+					$query = $db->getQuery(true)
+						->select('forum_topics, forum_topics_real, forum_posts')
+						->from('#__forums')
+						->where('forum_id = ' . $ids->forumid);
+
 					$db->setQuery($query);
 					$num = $db->loadObject();
 					$forum_stats->forum_topics = $num->forum_topics + 1;
@@ -950,25 +1081,31 @@ class JFusionForum_phpbb3 extends JFusionForum {
 	function getPosts($dbparams, $existingthread)
 	{
 		try {
-			//set the query
-			$sort = $dbparams->get('sort_posts');
-			$where = 'WHERE p.topic_id = '.$existingthread->threadid.' AND p.post_id != '.$existingthread->postid.' AND p.post_approved = 1';
-			$query = 'SELECT p.post_id , CASE WHEN p.poster_id = 1 THEN 1 ELSE 0 END AS guest, CASE WHEN p.poster_id = 1 AND p.post_username != \'\' THEN p.post_username ELSE u.username END AS name, CASE WHEN p.poster_id = 1 AND p.post_username != \'\' THEN p.post_username ELSE u.username_clean END AS username, u.user_id, p.post_subject, p.post_time, p.post_text, p.topic_id FROM `#__posts` as p INNER JOIN `#__users` as u ON p.poster_id = u.user_id '.$where.' ORDER BY p.post_time '.$sort;
+			$db = JFusionFactory::getDatabase($this->getJname());
 
-			$jdb = JFusionFactory::getDatabase($this->getJname());
+			$sort = $dbparams->get('sort_posts');
+			//set the query
+			$query = $db->getQuery(true)
+				->select('p.post_id , CASE WHEN p.poster_id = 1 THEN 1 ELSE 0 END AS guest, CASE WHEN p.poster_id = 1 AND p.post_username != \'\' THEN p.post_username ELSE u.username END AS name, CASE WHEN p.poster_id = 1 AND p.post_username != \'\' THEN p.post_username ELSE u.username_clean END AS username, u.user_id, p.post_subject, p.post_time, p.post_text, p.topic_id')
+				->from('#__posts as p')
+				->innerJoin('#__users as u ON p.poster_id = u.user_id')
+				->where('p.topic_id = ' . $existingthread->threadid)
+				->where('p.post_id = ' . $existingthread->postid)
+				->where('p.post_approved = 1')
+				->order('p.post_time ' . $sort);
 
 			if($dbparams->get('enable_pagination',true)) {
 				$application = JFactory::getApplication() ;
 				$limit = (int) $application->getUserStateFromRequest( 'global.list.limit_discuss', 'limit_discuss', 5, 'int' );
 				$limitstart = (int) $application->getUserStateFromRequest( 'global.list.limitstart_discuss', 'limitstart_discuss', 0, 'int' );
-				$jdb->setQuery($query,$limitstart,$limit);
+				$db->setQuery($query,$limitstart,$limit);
 			} else {
 				$limit_posts = $dbparams->get('limit_posts');
 				$query .= empty($limit_posts) || trim($limit_posts)==0 ? '' :  ' LIMIT 0,'.$limit_posts;
-				$jdb->setQuery($query);
+				$db->setQuery($query);
 			}
 
-			$posts = $jdb->loadObjectList();
+			$posts = $db->loadObjectList();
 		} catch (Exception $e) {
 			JFusionFunction::raiseError($e, $this->getJname());
 			$posts = array();
@@ -985,7 +1122,14 @@ class JFusionForum_phpbb3 extends JFusionForum {
 	{
 		try {
 			$db = JFusionFactory::getDatabase($this->getJname());
-			$query = 'SELECT count(*) FROM #__posts WHERE topic_id = '.$existingthread->threadid.' AND post_approved = 1 AND post_id != '.$existingthread->postid;
+
+			$query = $db->getQuery(true)
+				->select('count(*)')
+				->from('#__posts')
+				->where('topic_id = ' . $existingthread->threadid)
+				->where('post_approved = 1')
+				->where('post_id = ' . $existingthread->postid);
+
 			$db->setQuery($query);
 			$result = $db->loadResult();
 		} catch (Exception $e) {

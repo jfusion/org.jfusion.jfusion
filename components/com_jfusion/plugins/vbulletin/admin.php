@@ -106,7 +106,11 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
             $vdb = JDatabaseDriver::getInstance($options);
             if (method_exists($vdb, 'setQuery')) {
                 //Find the path to vbulletin
-                $query = 'SELECT value, varname FROM #__setting WHERE varname IN (\'bburl\',\'cookietimeout\',\'cookiepath\',\'cookiedomain\')';
+	            $query = $vdb->getQuery(true)
+		            ->select('value, varname')
+		            ->from('#__setting')
+		            ->where('varname IN (\'bburl\',\'cookietimeout\',\'cookiepath\',\'cookiedomain\')');
+
                 $vdb->setQuery($query);
                 $settings = $vdb->loadObjectList('varname');
                 $params['source_url'] = $settings['bburl']->value;
@@ -173,7 +177,11 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
 	    try {
 		    // initialise some objects
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT username, email from #__user';
+
+		    $query = $db->getQuery(true)
+			    ->select('username, email')
+			    ->from('#__user');
+
 		    $db->setQuery($query, $limitstart, $limit);
 		    //getting the results
 		    $userlist = $db->loadObjectList();
@@ -192,7 +200,11 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
 	    try {
 		    //getting the connection to the db
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT count(*) from #__user';
+
+		    $query = $db->getQuery(true)
+			    ->select('count(*)')
+			    ->from('#__user');
+
 		    $db->setQuery($query);
 		    //getting the results
 		    $no_users = $db->loadResult();
@@ -211,7 +223,11 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
 	    try {
 		    //get the connection to the db
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT usergroupid as id, title as name from #__usergroup';
+
+		    $query = $db->getQuery(true)
+			    ->select('usergroupid as id, title as name')
+			    ->from('#__usergroup');
+
 		    $db->setQuery($query);
 		    //getting the results
 		    return $db->loadObjectList();
@@ -235,7 +251,12 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
 		    }
 		    //we want to output the usergroup name
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT title from #__usergroup WHERE usergroupid = ' . $usergroup_id;
+
+		    $query = $db->getQuery(true)
+			    ->select('title')
+			    ->from('#__usergroup')
+		        ->where('usergroupid = ' . $usergroup_id);
+
 		    $db->setQuery($query);
 		    return $db->loadResult();
 	    } catch (Exception $e) {
@@ -252,7 +273,12 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
 	    $result = false;
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT value FROM #__setting WHERE varname = \'allowregistration\'';
+
+		    $query = $db->getQuery(true)
+			    ->select('value')
+			    ->from('#__setting')
+			    ->where('varname = ' . $db->quote('allowregistration'));
+
 		    $db->setQuery($query);
 		    //getting the results
 		    $new_registration = $db->loadResult();
@@ -329,7 +355,13 @@ JS;
 						break;
 				}
 				if ($hookName) {
-					$query = 'SELECT COUNT(*) FROM #__plugin WHERE hookname = \'init_startup\' AND title = \''.$hookName.'\' AND active = 1';
+					$query = $db->getQuery(true)
+						->select('COUNT(*)')
+						->from('#__plugin')
+						->where('hookname = ' . $db->quote('init_startup'))
+						->where('title = ' . $db->quote($hookName))
+						->where('active = 1');
+
 					$db->setQuery($query);
 					$check = ($db->loadResult() > 0) ? true : false;
 				} else {
@@ -361,16 +393,24 @@ HTML;
 			} else {
 				//let's first check the default icon
 				$check = true;
-				$q = 'SELECT value FROM #__setting WHERE varname = \'showdeficon\'';
-				$db->setQuery($q);
+
+				$query = $db->getQuery(true)
+					->select('value')
+					->from('#__setting')
+					->where('varname = ' . $db->quote('showdeficon'));
+
+				$db->setQuery($query);
 				$deficon = $db->loadResult();
 				$check = (!empty($deficon) && strpos($deficon, 'http') === false) ? false : true;
 				if ($check) {
 					//this will perform functions like rewriting image paths to include the full URL to images to save processing time
 					$tables = array('smilie' => 'smiliepath', 'avatar' => 'avatarpath', 'icon' => 'iconpath');
 					foreach ($tables as $tbl => $col) {
-						$q = 'SELECT '.$col.' FROM #__'.$tbl;
-						$db->setQuery($q);
+						$query = $db->getQuery(true)
+							->select($col)
+							->from('#__'.$tbl);
+
+						$db->setQuery($query);
 						$images = $db->loadRowList();
 						if ($images) {
 							foreach ($images as $image) {
@@ -477,8 +517,13 @@ HTML;
 			    $tables = array('smilie' => 'smiliepath', 'avatar' => 'avatarpath', 'icon' => 'iconpath');
 			    foreach ($tables as $tbl => $col) {
 				    $criteria = ($action == 'enable') ? 'NOT LIKE \'http%\'' : 'LIKE \'%http%\'';
-				    $q = 'SELECT '.$tbl.'id, '.$col.' FROM #__'.$tbl.' WHERE '.$col.' '.$criteria;
-				    $db->setQuery($q);
+
+				    $query = $db->getQuery(true)
+					    ->select($tbl.'id, '.$col)
+					    ->from('#__'.$tbl)
+				        ->where($col.' '.$criteria);
+
+				    $db->setQuery($query);
 				    $images = $db->loadRowList();
 				    foreach ($images as $i) {
 					    $q = $db->getQuery(true)
@@ -498,22 +543,26 @@ HTML;
 				    }
 			    }
 			    //let's update the default icon
-			    $q = 'SELECT value FROM #__setting WHERE varname = \'showdeficon\'';
-			    $db->setQuery($q);
+			    $query = $db->getQuery(true)
+				    ->select('value')
+				    ->from('#__setting')
+				    ->where('varname = ' . $db->quote('showdeficon'));
+
+			    $db->setQuery($query);
 			    $deficon = $db->loadResult();
 			    if (!empty($deficon)) {
-				    $q = $db->getQuery(true)
+				    $query = $db->getQuery(true)
 					    ->update('#__setting');
 
 				    if ($action == 'enable' && strpos($deficon, 'http') === false) {
-					    $q->set('value = ' . $q->quote($source_url.$deficon));
+					    $query->set('value = ' . $db->quote($source_url.$deficon));
 				    } elseif ($action == 'disable') {
 					    $deficon = str_replace($source_url, '', $deficon);
-					    $q->set('value = ' . $q->quote($deficon));
+					    $query->set('value = ' . $db->quote($deficon));
 				    }
-				    $q->where('varname = '.$q->quote('showdeficon'));
+				    $query->where('varname = '.$db->quote('showdeficon'));
 
-				    $db->setQuery($q);
+				    $db->setQuery($query);
 				    $db->execute();
 			    }
 		    }
@@ -645,7 +694,14 @@ HTML;
 			    }
 		    }
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT COUNT(*) FROM #__plugin WHERE hookname = \'init_startup\' AND title = \'JFusion API Plugin - REQUIRED\' AND active = 1';
+
+		    $query = $db->getQuery(true)
+			    ->select('COUNT(*)')
+			    ->from('#__plugin')
+			    ->where('hookname = ' . $db->quote('init_startup'))
+			    ->where('title = ' . $db->quote('JFusion API Plugin - REQUIRED'))
+			    ->where('active = 1');
+
 		    $db->setQuery($query);
 		    if ($db->loadResult() == 0) {
 			    JFusionFunction::raiseWarning(JText::_('VB_API_HOOK_NOT_INSTALLED'), $this->getJname());
@@ -692,7 +748,12 @@ HTML;
         }
         //check to see if current plugin is a slave
         $db = JFactory::getDBO();
-        $query = 'SELECT slave FROM #__jfusion WHERE name = ' . $db->Quote($this->getJname());
+
+	    $query = $db->getQuery(true)
+		    ->select('slave')
+		    ->from('#__jfusion')
+		    ->where('name = ' . $db->quote($this->getJname()));
+
         $db->setQuery($query);
         $slave = $db->loadResult();
         $list_box = '<select onchange="JFusion.Plugin.usergroupSelect(this.selectedIndex);">';
@@ -816,8 +877,13 @@ JS;
 			    $vb_options = array();
 			    $vb_options = array(JHTML::_('select.option', '', '', 'id', 'name'));
 			    foreach($custom_fields['#__userfield'] as $field  => $type) {
-				    $query = 'SELECT text FROM #__phrase WHERE varname = \''.$field.'_title\' AND fieldname = \'cprofilefield\' LIMIT 0,1';
-				    $db->setQuery($query);
+				    $query = $db->getQuery(true)
+					    ->select('text')
+					    ->from('#__phrase')
+					    ->where('varname = ' . $db->quote($field.'_title'))
+					    ->where('fieldname = ' . $db->quote('cprofilefield'));
+
+				    $db->setQuery($query, 0, 1);
 				    $title = $db->loadResult();
 				    $vb_options[] = JHTML::_('select.option', $field, $title, 'id', 'name');
 			    }

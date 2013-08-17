@@ -98,7 +98,12 @@ class JFusionPublic_phpbb3 extends JFusionPublic
                 //must convert smilies
 	            try {
 		            $db = JFusionFactory::getDatabase($this->getJname());
-		            $query = 'SELECT config_value FROM #__config WHERE config_name = \'smilies_path\'';
+
+		            $query = $db->getQuery(true)
+			            ->select('config_value')
+			            ->from('#__config')
+			            ->where('config_name = ' . $db->quote('smilies_path'));
+
 		            $db->setQuery($query);
 		            $smilie_path = $db->loadResult();
 		            $jfparams = JFusionFactory::getParams($this->getJname());
@@ -142,11 +147,21 @@ class JFusionPublic_phpbb3 extends JFusionPublic
      * @return string
      */
     function getOnlineUserQuery($limit) {
-        $limiter = (!empty($limit)) ? 'LIMIT 0,'.$limit : '';
+	    $db = JFusionFactory::getDatabase($this->getJname());
+        $limiter = (!empty($limit)) ? ' LIMIT 0,'.$limit : '';
         //get a unix time from 5 minutes ago
         date_default_timezone_set('UTC');
         $active = strtotime('-5 minutes', time());
-        $query = 'SELECT DISTINCT u.user_id AS userid, u.username_clean AS username, u.username AS name, u.user_email as email FROM #__users AS u INNER JOIN #__sessions AS s ON u.user_id = s.session_user_id WHERE s.session_viewonline =1 AND  s.session_user_id != 1 AND s.session_time > '.$active.' '.$limiter;
+
+	    $query = $db->getQuery(true)
+		    ->select('DISTINCT u.user_id AS userid, u.username_clean AS username, u.username AS name, u.user_email as email')
+		    ->from('#__users AS u')
+		    ->innerJoin('#__sessions AS s ON u.user_id = s.session_user_id')
+		    ->where('s.session_viewonline = 1')
+		    ->where('s.session_user_id != 1')
+		    ->where('s.session_time > '.$active);
+
+	    $query = (string)$query.$limiter;
         return $query;
     }
 
@@ -159,7 +174,13 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 		    date_default_timezone_set('UTC');
 		    $active = strtotime('-5 minutes', time());
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT COUNT(DISTINCT(session_ip)) FROM #__sessions WHERE session_user_id = 1 AND session_time > '.$active;
+
+		    $query = $db->getQuery(true)
+			    ->select('COUNT(DISTINCT(session_ip))')
+			    ->from('#__sessions')
+			    ->where('session_user_id = 1')
+			    ->where('session_time > '.$active);
+
 		    $db->setQuery($query);
 		    $result = $db->loadResult();
 	    } catch (Exception $e) {
@@ -178,7 +199,14 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 		    date_default_timezone_set('UTC');
 		    $active = strtotime('-5 minutes', time());
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT COUNT(DISTINCT(session_user_id)) FROM #__sessions WHERE session_viewonline = 1 AND session_user_id != 1 AND session_time > '.$active;
+
+		    $query = $db->getQuery(true)
+			    ->select('COUNT(DISTINCT(session_user_id))')
+			    ->from('#__sessions')
+			    ->where('session_viewonline = 1')
+			    ->where('session_user_id != 1')
+			    ->where('session_time > '.$active);
+
 		    $db->setQuery($query);
 		    $result = $db->loadResult();
 	    } catch (Exception $e) {
@@ -456,7 +484,12 @@ class JFusionPublic_phpbb3 extends JFusionPublic
                 //the first item listed in the profile module is the edit profile link so must rewrite it to go to signature instead
 	            try {
 		            $db = JFusionFactory::getDatabase($this->getJname());
-		            $query = 'SELECT module_id FROM #__modules WHERE module_langname = \'UCP_PROFILE\'';
+
+		            $query = $db->getQuery(true)
+			            ->select('module_id')
+			            ->from('#__modules')
+			            ->where('module_langname = ' . $db->quote('UCP_PROFILE'));
+
 		            $db->setQuery($query);
 		            $profile_mod_id = $db->loadResult();
 	            } catch (Exception $e) {
@@ -668,13 +701,25 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 		    $forum_id = JFactory::getApplication()->input->getInt('f');
 		    if (!empty($forum_id)) {
 			    //get the forum's info
-			    $query = 'SELECT forum_name, parent_id, left_id, right_id, forum_parents FROM #__forums WHERE forum_id = '.$db->Quote($forum_id);
+
+			    $query = $db->getQuery(true)
+				    ->select('forum_name, parent_id, left_id, right_id, forum_parents')
+				    ->from('#__forums')
+				    ->where('forum_id = ' . $db->quote($forum_id));
+
 			    $db->setQuery($query);
 			    $forum_info = $db->loadObject();
 
 			    if (!empty($forum_info)) {
 				    //get forum parents
-				    $query = 'SELECT forum_id, forum_name FROM #__forums WHERE left_id < '.$forum_info->left_id.' AND right_id > '.$forum_info->right_id.' ORDER BY left_id ASC';
+
+				    $query = $db->getQuery(true)
+					    ->select('forum_id, forum_name')
+					    ->from('#__forums')
+					    ->where('left_id < '.$forum_info->left_id)
+					    ->where('right_id > '.$forum_info->right_id)
+				        ->order('left_id ASC');
+
 				    $db->setQuery($query);
 				    $forum_parents = $db->loadObjectList();
 
@@ -696,7 +741,11 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 
 		    $topic_id = JFactory::getApplication()->input->getInt('t');
 		    if (!empty($topic_id)) {
-			    $query = 'SELECT topic_title FROM #__topics WHERE topic_id = '.$db->Quote($topic_id);
+			    $query = $db->getQuery(true)
+				    ->select('topic_title')
+				    ->from('#__topics')
+				    ->where('topic_id = '.$db->Quote($topic_id));
+
 			    $db->setQuery($query);
 			    $topic_title = $db->loadObject();
 
@@ -730,15 +779,18 @@ class JFusionPublic_phpbb3 extends JFusionPublic
      * @return string
      */
     function getSearchQuery(&$pluginParam) {
+	    $db = JFusionFactory::getDatabase($this->getJname());
         //need to return threadid, postid, title, text, created, section
-        $query = 'SELECT p.topic_id, p.post_id, p.forum_id, CASE WHEN p.post_subject = "" THEN CONCAT("Re: ",t.topic_title) ELSE p.post_subject END AS title, p.post_text AS text,
+	    $query = $db->getQuery(true)
+		    ->select('p.topic_id, p.post_id, p.forum_id, CASE WHEN p.post_subject = "" THEN CONCAT("Re: ",t.topic_title) ELSE p.post_subject END AS title, p.post_text AS text,
                     FROM_UNIXTIME(p.post_time, "%Y-%m-%d %h:%i:%s") AS created,
                     CONCAT_WS( "/", f.forum_name, t.topic_title ) AS section,
-                    t.topic_views AS hits
-                    FROM #__posts AS p
-                    INNER JOIN #__topics AS t ON t.topic_id = p.topic_id
-                    INNER JOIN #__forums AS f on f.forum_id = p.forum_id';
-        return $query;
+                    t.topic_views AS hits')
+		    ->from('#__posts AS p')
+	        ->innerJoin('#__topics AS t ON t.topic_id = p.topic_id')
+		    ->innerJoin('#__forums AS f on f.forum_id = p.forum_id');
+
+        return (string)$query;
     }
 
     /**
@@ -758,7 +810,13 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 	        try {
 		        $db = JFusionFactory::getDatabase($this->getJname());
 		        //no forums were selected so pull them all then filter
-		        $query = 'SELECT forum_id FROM #__forums WHERE forum_type = 1 ORDER BY left_id';
+
+		        $query = $db->getQuery(true)
+			        ->select('forum_id')
+			        ->from('#__forums')
+			        ->where('forum_type = 1')
+			        ->order('left_id');
+
 		        $db->setQuery($query);
 		        $forumids = $db->loadColumn();
 		        $forumids = $forum->filterForumList($forumids);

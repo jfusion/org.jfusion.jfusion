@@ -88,15 +88,19 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
             $options = array('driver' => $params['database_type'], 'host' => $params['database_host'], 'user' => $params['database_user'], 'password' => $params['database_password'], 'database' => $params['database_name'], 'prefix' => $params['database_prefix']);
             //Get configuration settings stored in the database
 	        try {
-		        $vdb = JDatabaseDriver::getInstance($options);
+		        $db = JDatabaseDriver::getInstance($options);
 
-		        if (!$vdb) {
+		        if (!$db) {
 			        JFusionFunction::raiseWarning(JText::_('NO_DATABASE'), $this->getJname());
 			        return false;
 		        } else {
-			        $query = 'SELECT config_name, config_value FROM #__config WHERE config_name IN (\'script_path\', \'cookie_path\', \'server_name\', \'cookie_domain\', \'cookie_name\', \'allow_autologin\')';
-			        $vdb->setQuery($query);
-			        $rows = $vdb->loadObjectList();
+			        $query = $db->getQuery(true)
+				        ->select('config_name, config_value')
+				        ->from('#__config')
+				        ->where('config_name IN (\'script_path\', \'cookie_path\', \'server_name\', \'cookie_domain\', \'cookie_name\', \'allow_autologin\')');
+
+			        $db->setQuery($query);
+			        $rows = $db->loadObjectList();
 			        foreach ($rows as $row) {
 				        $config[$row->config_name] = $row->config_value;
 			        }
@@ -142,7 +146,13 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
 	    try {
 		    //getting the connection to the db
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT username_clean as username, user_email as email, user_id as userid from #__users WHERE user_email NOT LIKE \'\' and user_email IS NOT null';
+
+		    $query = $db->getQuery(true)
+			    ->select('username_clean as username, user_email as email, user_id as userid')
+			    ->from('#__users')
+		        ->where('user_email NOT LIKE ' . $db->quote(''))
+			    ->where('user_email IS NOT null');
+
 		    $db->setQuery($query, $limitstart, $limit);
 		    //getting the results
 		    $userlist = $db->loadObjectList();
@@ -160,7 +170,13 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
 	    try {
 		    //getting the connection to the db
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT count(*) from #__users WHERE user_email NOT LIKE \'\' and user_email IS NOT null ';
+
+		    $query = $db->getQuery(true)
+			    ->select('count(*)')
+			    ->from('#__users')
+			    ->where('user_email NOT LIKE ' . $db->quote(''))
+			    ->where('user_email IS NOT null');
+
 		    $db->setQuery($query);
 		    //getting the results
 		    $no_users = $db->loadResult();
@@ -178,7 +194,11 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
 	    try {
 		    //get the connection to the db
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT group_id as id, group_name as name from #__groups;';
+
+		    $query = $db->getQuery(true)
+			    ->select('group_id as id, group_name as name')
+			    ->from('#__groups');
+
 		    $db->setQuery($query);
 		    //getting the results
 		    return $db->loadObjectList();
@@ -201,7 +221,12 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
 		    }
 		    //we want to output the usergroup name
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT group_name from #__groups WHERE group_id = ' . (int)$usergroup_id;
+
+		    $query = $db->getQuery(true)
+			    ->select('group_name')
+			    ->from('#__groups')
+		        ->where('group_id = ' . (int)$usergroup_id);
+
 		    $db->setQuery($query);
 		    return $db->loadResult();
 	    } catch (Exception $e) {
@@ -217,7 +242,12 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
 	    $result = false;
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT config_value FROM #__config WHERE config_name = \'require_activation\'';
+
+		    $query = $db->getQuery(true)
+			    ->select('config_value')
+			    ->from('#__config')
+			    ->where('config_name = ' . $db->quote('require_activation'));
+
 		    $db->setQuery($query);
 		    //getting the results
 		    $new_registration = $db->loadResult();
@@ -265,7 +295,14 @@ if (isset($_GET[\'jfile\'])) {
 		    if (!empty($allow_mods)) {
 			    //get a userlist of mod ids
 			    $db = JFusionFactory::getDatabase($this->getJname());
-			    $query = 'SELECT b.user_id, a.group_name FROM #__groups as a INNER JOIN #__user_group as b ON a.group_id = b.group_id WHERE a.group_name = \'GLOBAL_MODERATORS\' or a.group_name = \'ADMINISTRATORS\'';
+
+			    $query = $db->getQuery(true)
+				    ->select('b.user_id, a.group_name')
+				    ->from('#__groups as a')
+			        ->innerJoin('#__user_group as b ON a.group_id = b.group_id')
+				    ->where('a.group_name = ' . $db->quote('GLOBAL_MODERATORS'))
+				    ->where('a.group_name = ' . $db->quote('ADMINISTRATORS'));
+
 			    $db->setQuery($query);
 			    $mod_list = $db->loadObjectList();
 			    $mod_array = array();
@@ -427,7 +464,11 @@ HTML;
 		    }
 		    if ($error == 0) {
 			    //check to see if the mod is enabled
-			    $query = 'SELECT config_value FROM #__config WHERE config_name = \'auth_method\'';
+			    $query = $db->getQuery(true)
+				    ->select('config_value')
+				    ->from('#__config')
+				    ->where('config_name = ' . $db->quote('auth_method'));
+
 			    $db->setQuery($query);
 			    $auth_method = $db->loadResult();
 			    if ($auth_method != 'jfusion') {
@@ -483,7 +524,12 @@ HTML;
 	        try {
 		        //check to see if the mod is enabled
 		        $db = JFusionFactory::getDatabase($this->getJname());
-		        $query = 'SELECT config_value FROM #__config WHERE config_name = \'auth_method\'';
+
+		        $query = $db->getQuery(true)
+			        ->select('config_value')
+			        ->from('#__config')
+			        ->where('config_name = ' . $db->quote('auth_method'));
+
 		        $db->setQuery($query);
 		        $auth_method = $db->loadResult();
 		        if ($auth_method != 'jfusion') {
