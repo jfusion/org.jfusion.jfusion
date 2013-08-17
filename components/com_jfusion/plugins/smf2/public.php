@@ -98,10 +98,21 @@ class JFusionPublic_smf2 extends JFusionPublic {
                 $custom_smileys = array();
 	            try {
 	                $db = JFusionFactory::getDatabase($this->getJname());
-	                $query = 'SELECT value, variable FROM #__settings WHERE variable = \'smileys_url\' OR variable = \'smiley_sets_default\'';
+
+		            $query = $db->getQuery(true)
+			            ->select('value, variable')
+			            ->from('#__settings')
+			            ->where('variable = ' . $db->quote('smileys_url'), 'OR')
+			            ->where('variable = ' . $db->quote('smiley_sets_default'));
+
 	                $db->setQuery($query);
 	                $settings = $db->loadObjectList('variable');
-	                $query = 'SELECT code, filename FROM #__smileys ORDER BY smileyOrder';
+
+		            $query = $db->getQuery(true)
+			            ->select('code, filename')
+			            ->from('#__smileys')
+			            ->order('smileyOrder');
+
 	                $db->setQuery($query);
 	                $smilies = $db->loadObjectList();
 	                if (!empty($smilies)) {
@@ -623,9 +634,11 @@ class JFusionPublic_smf2 extends JFusionPublic {
 
 			$msg = JFactory::getApplication()->input->get('msg');
 
-			$query = 'SELECT id_topic,id_board, subject '.
-				'FROM #__messages '.
-				'WHERE id_topic = ' . $db->Quote($topic_id);
+			$query = $db->getQuery(true)
+				->select('id_topic, id_board, subject')
+				->from('#__members')
+				->where('id_topic = ' . $db->Quote($topic_id));
+
 			$db->setQuery($query );
 			$topic = $db->loadObject();
 
@@ -638,9 +651,12 @@ class JFusionPublic_smf2 extends JFusionPublic {
 				// Loop while the parent is non-zero.
 				while ($board_id != 0)
 				{
-					$query = 'SELECT b.id_parent , b.id_board, b.id_cat, b.name , c.name as catname '.
-						'FROM #__boards AS b INNER JOIN #__categories AS c ON b.id_cat = c.id_cat '.
-						'WHERE id_board = ' . $db->Quote($board_id);
+					$query = $db->getQuery(true)
+						->select('b.id_parent , b.id_board, b.id_cat, b.name , c.name as catname')
+						->from('#__boards AS b')
+						->innerJoin('#__categories AS c ON b.id_cat = c.id_cat')
+						->where('id_board = ' . $db->Quote($board_id));
+
 					$db->setQuery($query );
 					$result = $db->loadObject();
 
@@ -778,16 +794,20 @@ class JFusionPublic_smf2 extends JFusionPublic {
      */
     function getSearchQuery(&$pluginParam)
 	{
+		$db = JFusionFactory::getDatabase($this->getJname());
 		//need to return threadid, postid, title, text, created, section
-		$query = 'SELECT p.id_topic, p.id_msg, p.id_board, CASE WHEN p.subject = "" THEN CONCAT("Re: ",fp.subject) ELSE p.subject END AS title, p.body AS text,
+
+		$query = $db->getQuery(true)
+			->select('p.id_topic, p.id_msg, p.id_board, CASE WHEN p.subject = "" THEN CONCAT("Re: ",fp.subject) ELSE p.subject END AS title, p.body AS text,
 					FROM_UNIXTIME(p.poster_time, "%Y-%m-%d %h:%i:%s") AS created,
 					CONCAT_WS( "/", f.name, fp.subject ) AS section,
-					t.num_views as hits
-					FROM #__messages AS p
-					INNER JOIN #__topics AS t ON t.id_topic = p.id_topic
-					INNER JOIN #__messages AS fp ON fp.id_msg = t.id_first_msg
-					INNER JOIN #__boards AS f on f.id_board = p.id_board';
-		return $query;
+					t.num_views as hits')
+			->from('#__messages AS p')
+			->innerJoin('#__topics AS t ON t.id_topic = p.id_topic')
+			->innerJoin('#__messages AS fp ON fp.id_msg = t.id_first_msg')
+			->innerJoin('#__boards AS f on f.id_board = p.id_board');
+
+		return (string)$query;
 	}
 
 	/**
@@ -817,14 +837,16 @@ class JFusionPublic_smf2 extends JFusionPublic {
 				$group_id = '-1';
 			}
 
+			$query = $db->getQuery(true)
+				->select('member_groups, id_board')
+				->from('#__boards');
+
 			if ($pluginParam->get('forum_mode', 0)) {
 				$forumids = $pluginParam->get('selected_forums', array());
-				$selected_boards = ' WHERE id_board IN (' . implode(',', $forumids) . ')';
-			} else {
-				$selected_boards = '';
+
+				$query->where('id_board IN (' . implode(',', $forumids) . ')');
 			}
 
-			$query = 'SELECT member_groups, id_board FROM #__boards' . $selected_boards;
 			$db->setQuery($query);
 			$boards = $db->loadObjectList();
 
@@ -870,12 +892,22 @@ class JFusionPublic_smf2 extends JFusionPublic {
 	{
 		try {
 			$db = JFusionFactory::getDatabase($this->getJname());
-			$query = 'SELECT value FROM #__settings WHERE variable=\'censor_vulgar\'';
+
+			$query = $db->getQuery(true)
+				->select('value')
+				->from('#__settings')
+				->where('variable = ' . $db->quote('censor_vulgar'));
+
 			$db->setQuery($query);
 			$vulgar = $db->loadResult();
 
 			$db = JFusionFactory::getDatabase($this->getJname());
-			$query = 'SELECT value FROM #__settings WHERE variable=\'censor_proper\'';
+
+			$query = $db->getQuery(true)
+				->select('value')
+				->from('#__settings')
+				->where('variable = ' . $db->quote('censor_proper'));
+
 			$db->setQuery($query);
 			$proper = $db->loadResult();
 
@@ -919,23 +951,32 @@ class JFusionPublic_smf2 extends JFusionPublic {
 	 **/
 	function getOnlineUserQuery($limit, $usergroups = array())
 	{
-		$usergroup_query = '';
+		$db = JFusionFactory::getDatabase($this->getJname());
+
+		$limiter = (!empty($limit)) ? ' LIMIT 0,'.$limit : '';
+
+		$query = $db->getQuery(true)
+			->select('DISTINCT u.id_member AS userid, u.member_name AS username, u.real_name AS name, u.email_address as email')
+			->from('#__members AS u')
+			->innerJoin('#__log_online AS s ON u.id_member = s.id_member')
+			->where('s.id_member != 0');
+
 		if(!empty($usergroups)) {
 			if(is_array($usergroups)) {
 				$usergroups_string = implode(',',$usergroups);
-				$usergroup_query .= 'AND (u.id_group IN ('.$usergroups_string.') OR u.id_post_group IN ('.$usergroups_string.')';
+				$usergroup_query = '(u.id_group IN ('.$usergroups_string.') OR u.id_post_group IN ('.$usergroups_string.')';
 				foreach($usergroups AS $usergroup) {
 					$usergroup_query .= ' OR FIND_IN_SET(' . intval($usergroup) . ', u.additional_groups)';
 				}
 				$usergroup_query .= ')';
 			} else {
-				$usergroup_query .= 'AND (u.id_group = '.$usergroups.' OR u.id_post_group = '.$usergroups.' OR FIND_IN_SET('.$usergroups.', u.additional_groups))';
+				$usergroup_query = '(u.id_group = '.$usergroups.' OR u.id_post_group = '.$usergroups.' OR FIND_IN_SET('.$usergroups.', u.additional_groups))';
 			}
+			$query->where($usergroup_query);
 		}
 
-		$limiter = (!empty($limit)) ? 'LIMIT 0,'.$limit : '';
-
-		return 'SELECT DISTINCT u.id_member AS userid, u.member_name AS username, u.real_name AS name, u.email_address as email FROM #__members AS u INNER JOIN #__log_online AS s ON u.id_member = s.id_member WHERE s.id_member != 0 '.$usergroup_query.' '.$limiter;
+		$query = (string)$query;
+		return $query.$limiter;
 	}
 
 	/**
@@ -946,7 +987,12 @@ class JFusionPublic_smf2 extends JFusionPublic {
 	{
 		try {
 			$db = JFusionFactory::getDatabase($this->getJname());
-			$query = 'SELECT COUNT(DISTINCT(ip)) FROM #__log_online WHERE id_member = 0';
+
+			$query = $db->getQuery(true)
+				->select('COUNT(DISTINCT(ip))')
+				->from('#__log_online')
+				->where('id_member = 0');
+
 			$db->setQuery($query);
 			return $db->loadResult();
 		} catch (Exception $e) {
@@ -965,24 +1011,29 @@ class JFusionPublic_smf2 extends JFusionPublic {
 	 */
 	function getNumberOnlineMembers($usergroups = array(), $total = 1)
 	{
-		$usergroup_query = '';
-		if(!empty($usergroups) && empty($total)) {
-			if(is_array($usergroups)) {
-                $usergroups_string = implode(',',$usergroups);
-				$usergroup_query .= 'AND (u.id_group IN ('.$usergroups_string.') OR u.id_post_group IN ('.$usergroups_string.')';
-				foreach($usergroups AS $usergroup) {
-					$usergroup_query .= ' OR FIND_IN_SET(' . intval($usergroup) . ', u.additional_groups)';
-				}
-				$usergroup_query .= ')';
-			} else {
-				$usergroup_query .= 'AND (u.id_group = '.$usergroups.' OR u.id_post_group = '.$usergroups.' OR FIND_IN_SET('.$usergroups.', u.additional_groups))';
-			}
-		}
-
 		try {
 			$db = JFusionFactory::getDatabase($this->getJname());
 
-			$query = 'SELECT COUNT(DISTINCT(l.ip)) FROM #__log_online AS l JOIN #__members AS u ON l.id_member = u.id_member WHERE l.id_member != 0 '.$usergroup_query;
+			$query = $db->getQuery(true)
+				->select('COUNT(DISTINCT(l.ip))')
+				->from('#__log_online AS l')
+				->join('', '#__members AS u ON l.id_member = u.id_member')
+				->where('l.id_member != 0');
+
+
+			if(!empty($usergroups) && empty($total)) {
+				if(is_array($usergroups)) {
+	                $usergroups_string = implode(',',$usergroups);
+					$usergroup_query = 'AND (u.id_group IN ('.$usergroups_string.') OR u.id_post_group IN ('.$usergroups_string.')';
+					foreach($usergroups AS $usergroup) {
+						$usergroup_query .= ' OR FIND_IN_SET(' . intval($usergroup) . ', u.additional_groups)';
+					}
+					$usergroup_query .= ')';
+				} else {
+					$usergroup_query = '(u.id_group = '.$usergroups.' OR u.id_post_group = '.$usergroups.' OR FIND_IN_SET('.$usergroups.', u.additional_groups))';
+				}
+				$query->where($usergroup_query);
+			}
 
 			$db->setQuery($query);
 			return $db->loadResult();
