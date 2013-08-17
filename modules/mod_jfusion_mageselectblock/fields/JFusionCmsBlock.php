@@ -30,8 +30,9 @@ class JFormFieldJFusionCmsBlock extends JFormField {
 		$output = "";
 		
 		//Query current selected Module Id
-		$id = JRequest::getVar ( 'id', 0, 'method', 'int' );
-		$cid = JRequest::getVar ( 'cid', array ($id ), 'method', 'array' );
+		$id = JFactory::getApplication()->input->getInt('cid', 0);
+		$cid = JFactory::getApplication()->input->get('cid', array($id), 'array');
+
 		JArrayHelper::toInteger ( $cid, array (0 ) );
 		
 		$db = JFactory::getDBO ();
@@ -49,14 +50,20 @@ class JFormFieldJFusionCmsBlock extends JFormField {
 		$jname = $parametersInstance->get ( 'magento_plugin', '' );
 		if (! empty ( $jname )) {
 			if (JFusionFunction::validPlugin ( $jname )) {
-				$dbplugin = JFusionFactory::getDatabase ( $jname );
+				$db = JFusionFactory::getDatabase ( $jname );
 				
 				//@todo - take in charge the different stores
-				$query = "SELECT block_id as value, title as name FROM #__cms_block WHERE is_active = '1' ORDER BY block_id";
-				$dbplugin->setQuery ( $query );
-				$rows = $dbplugin->loadObjectList ();
+
+				$query = $db->getQuery(true)
+					->select('block_id as value, title as name')
+					->from('#__cms_block')
+					->where('is_active = ' . $db->quote('1'))
+					->order('block_id');
+
+				$db->setQuery ( $query );
+				$rows = $db->loadObjectList ();
 				if (! empty ( $rows )) {
-					$output .= JHTML::_ ( 'select.genericlist', $rows, $this->getFieldName(null) . '[' .  $this->getName(null) . ']', 'size="1" class="inputbox"', 'value', 'name', $this->getValue() );
+					$output .= JHTML::_ ( 'select.genericlist', $rows, $this->getFieldName(null) . '[' .  $this->getName(null) . ']', 'size="1" class="inputbox"', 'value', 'name', $this->value );
 				} else {
 					$output .= $jname . ': ' . JText::_('No list');
 				}

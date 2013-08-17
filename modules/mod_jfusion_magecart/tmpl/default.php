@@ -13,7 +13,14 @@ defined('_JEXEC') or die('Restricted access');
  * @ignore
  * @var $cart object
  * @var $sidebar object
+ *
+ * @var $checkout Mage_Checkout_Helper_Data
+ * @var $checkoutUrl Mage_Checkout_Helper_Url
+ * @var $tax Mage_Tax_Helper_Data
  */
+$checkout = Mage::helper('checkout');
+$checkoutUrl = Mage::helper('checkout/url');
+$tax = Mage::helper('tax');
 $_cartQty = $cart->getSummaryQty() ?>
 <?php if ($_cartQty>0): ?>
 	<?php if ($_cartQty==1): ?>
@@ -22,15 +29,15 @@ $_cartQty = $cart->getSummaryQty() ?>
 	<?php echo JText::sprintf('There are <a href="%s"><strong>%s items</strong></a> in your cart.', Mage::getUrl('checkout/cart'), $_cartQty) ?>
 <?php endif ?>
 
-<p class="subtotal"><?php echo JText::_('Cart Subtotal:') ?> <strong><?php echo Mage::helper('checkout')->formatPrice($sidebar->getSubtotal()) ?></strong>
-<?php $_subtotalInclTax = $sidebar->getSubtotalInclTax(); if ($_subtotalInclTax): ?> <br /> (<strong><?php echo Mage::helper('checkout')->formatPrice($_subtotalInclTax) ?></strong>
-<?php echo Mage::helper('tax')->getIncExcText(true) ?>) <?php endif; ?>
+<p class="subtotal"><?php echo JText::_('Cart Subtotal:') ?> <strong><?php echo $checkout->formatPrice($sidebar->getSubtotal()) ?></strong>
+<?php $_subtotalInclTax = $sidebar->getSubtotalInclTax(); if ($_subtotalInclTax): ?> <br /> (<strong><?php echo $checkout->formatPrice($_subtotalInclTax) ?></strong>
+<?php echo $tax->getIncExcText(true) ?>) <?php endif; ?>
 </p>
 <?php endif ?>
 
-<?php if($_cartQty && Mage::helper('checkout')->canOnepageCheckout()): ?>
+<?php if($_cartQty && $checkout->canOnepageCheckout()): ?>
 <div class="actions">
-	<button class="form-button" type="button" onclick="window.location.href='<?php echo Mage::helper('checkout/url')->getCheckoutUrl(); ?>';">
+	<button class="form-button" type="button" onclick="window.location.href='<?php echo $checkoutUrl->getCheckoutUrl(); ?>';">
 	<span><?php echo JText::_('CHECKOUT') ?></span></button>
 </div>
 <?php endif ?>
