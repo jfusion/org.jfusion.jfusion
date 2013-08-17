@@ -677,6 +677,7 @@ HTML;
     {
         $status = array('error' => array(),'debug' => array());
 	    try {
+		    $db = JFusionFactory::getDatabase($this->getJname());
 		    if ($userinfo->guest) {
 			    $userinfo->username = JFactory::getApplication()->input->post->get('guest_username', '');
 			    $userinfo->email = JFactory::getApplication()->input->post->get('guest_email', '');
@@ -685,8 +686,6 @@ HTML;
 			    if (empty($userinfo->username) || empty($userinfo->email) || !preg_match('/^[^@]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$/', $userinfo->email)) {
 				    throw new RuntimeException(JText::_('GUEST_FIELDS_MISSING'));
 			    } else {
-				    $db = JFusionFactory::getDatabase($this->getJname());
-
 				    $query = $db->getQuery(true)
 					    ->select('COUNT(*)')
 					    ->from('#__members')
@@ -706,7 +705,6 @@ HTML;
 		    }
 		    //setup some variables
 		    $userid = $userinfo->userid;
-		    $jdb = JFusionFactory::getDatabase($this->getJname());
 		    $public = JFusionFactory::getPublic($this->getJname());
 		    $text = JFactory::getApplication()->input->post->get('quickReply', false);
 		    //strip out html from post
@@ -723,8 +721,8 @@ HTML;
 				    ->where('t.ID_TOPIC = '.$ids->threadid)
 				    ->where('m.ID_MSG = t.ID_FIRST_MSG');
 
-			    $jdb->setQuery($query);
-			    $topic = $jdb->loadObject();
+			    $db->setQuery($query);
+			    $topic = $db->loadObject();
 			    //the user information
 			    if ($userinfo->guest) {
 				    $smfUser = new stdClass();
@@ -736,8 +734,8 @@ HTML;
 					    ->from('#__members')
 					    ->where('ID_MEMBER = ' . $userid);
 
-				    $jdb->setQuery($query);
-				    $smfUser = $jdb->loadObject();
+				    $db->setQuery($query);
+				    $smfUser = $db->loadObject();
 			    }
 			    $timestamp = time();
 			    $post_row = new stdClass();
@@ -754,13 +752,13 @@ HTML;
 			    $post_row->modifiedName = '';
 			    $post_row->body = $text;
 			    $post_row->icon = 'xx';
-			    $jdb->insertObject('#__messages', $post_row, 'ID_MSG');
+			    $db->insertObject('#__messages', $post_row, 'ID_MSG');
 
-			    $postid = $jdb->insertid();
+			    $postid = $db->insertid();
 			    $post_row = new stdClass();
 			    $post_row->ID_MSG = $postid;
 			    $post_row->ID_MSG_MODIFIED = $postid;
-			    $jdb->updateObject('#__messages', $post_row, 'ID_MSG');
+			    $db->updateObject('#__messages', $post_row, 'ID_MSG');
 
 			    //store the postid
 			    $status['postid'] = $postid;
@@ -769,7 +767,7 @@ HTML;
 			    $topic_row->ID_MEMBER_UPDATED = (int)$userid;
 			    $topic_row->numReplies = $topic->numReplies + 1;
 			    $topic_row->ID_TOPIC = $ids->threadid;
-			    $jdb->updateObject('#__topics', $topic_row, 'ID_TOPIC');
+			    $db->updateObject('#__topics', $topic_row, 'ID_TOPIC');
 
 			    $forum_stats = new stdClass();
 			    $forum_stats->ID_LAST_MSG = $postid;
@@ -780,20 +778,20 @@ HTML;
 				    ->from('#__boards')
 			        ->where('ID_BOARD = '.$ids->forumid);
 
-			    $jdb->setQuery($query);
-			    $num = $jdb->loadObject();
+			    $db->setQuery($query);
+			    $num = $db->loadObject();
 			    $forum_stats->numPosts = $num->numPosts + 1;
 			    $forum_stats->ID_BOARD = $ids->forumid;
-			    $jdb->updateObject('#__boards', $forum_stats, 'ID_BOARD');
+			    $db->updateObject('#__boards', $forum_stats, 'ID_BOARD');
 
 			    //update stats for threadmarking purposes
 			    $query = 'REPLACE INTO #__log_topics SET ID_MEMBER = '.$userid.', ID_TOPIC = '.$ids->threadid.', ID_MSG = ' . ($postid + 1);
-			    $jdb->setQuery($query);
-			    $jdb->execute();
+			    $db->setQuery($query);
+			    $db->execute();
 
 			    $query = 'REPLACE INTO #__log_boards SET ID_MEMBER = '.$userid.', ID_BOARD = '.$ids->forumid.', ID_MSG = '.$postid;
-			    $jdb->setQuery($query);
-			    $jdb->execute();
+			    $db->setQuery($query);
+			    $db->execute();
 		    }
 	    } catch (Exception $e) {
 		    $status['error'] = $e->getMessage();

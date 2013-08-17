@@ -79,10 +79,12 @@ class plgSystemMagelib {
 		/**
 		 * If joomla is called from a curl call and the curl is dealing with magento session, a problem will come with this plugin
 		 * The session of the user will be destroyed and a new one will be created. We don't want that. So the curl must provide the jnodeid to fix it.
-		 * I think it's a temporar solution, the JFusion curl must know how to deal better with session cookies
+		 * I think it's a temporary solution, the JFusion curl must know how to deal better with session cookies
 		 */
 		//@todo perform for a plugin name different of 'magento' in the getPluginNodeId()
-		if (JRequest::getVar ( 'jnodeid', null ) != JFusionFactory::getPluginNodeId ( 'magento' )) {
+
+
+		if (JFactory::getApplication()->input->get('jnodeid', null) != JFusionFactory::getPluginNodeId ( 'magento' )) {
 			
 			$defaultStore = null;
 			
@@ -106,9 +108,10 @@ class plgSystemMagelib {
 			
 			if (! file_exists ( $bootstrap )) {
 				$error_message = JText::sprintf ( 'The file %s doesn\'t exists', $bootstrap );
-				$error = JFusionFunction::raiseWarning($error_message );
-				$error->message = get_class ( $this ) . '::loadAndStartMagentoBootstrap - ' . $error_message;
-				JError::handleLog ( $error, array() );
+
+				$error_message = get_class ( $this ) . '::loadAndStartMagentoBootstrap - ' . $error_message;
+
+				JFusionFunction::raiseWarning($error_message);
 				return false;
 			}
 			
@@ -199,7 +202,7 @@ class plgSystemMagelib {
 	}
 	
 	/**
-	 * Conflict with Joomla autoload if Varien instance not unregister
+	 * Conflict with Joomla autoload if Varien instance not unregistered
 	 *
 	 * @param none
 	 * @return void

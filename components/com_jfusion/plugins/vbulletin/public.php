@@ -234,8 +234,8 @@ class JFusionPublic_vbulletin extends JFusionPublic
 
 	    if (!empty($name_field)) {
 		    $query->select('CASE WHEN f.'.$name_field.' IS NULL OR f.'.$name_field.' = \'\' THEN u.username ELSE f.'.$name_field.' END AS name')
-		    ->format('#__userfield as f')
-		    ->innerjoin('#__user AS u ON f.userid = u.userid');
+		    ->from('#__userfield as f')
+		    ->innerJoin('#__user AS u ON f.userid = u.userid');
 	    } else {
 		    $query->select('u.username as name')
 		    ->from('#__user AS u');

@@ -31,7 +31,13 @@ if (JPluginHelper::importPlugin ( 'system', 'magelib' )) {
 		}
 		
 		$xml_output = $params->get ( 'xml_output', '' );
-		
+
+		/**
+		 * @ignore
+		 * @var $layout Mage_Core_Model_Layout
+		 * @var $block Mage_Core_Block_Template
+		 */
+
 		if(strlen($xml_output) <= 0){
 		$block_type = $params->get ( 'block_type', '' );
 		$block_name = $params->get ( 'block_name', '' );
@@ -70,6 +76,5 @@ if (JPluginHelper::importPlugin ( 'system', 'magelib' )) {
 		endif;
 	$plgMageLib->restartJoomlaSession ();
 } else {
-	$error = JFusionFunction::raiseWarning(JText::_ ( 'Plugin system magelib not installed or activated!' ) );
-	JError::handleLog ( $error, array() );
+	JFusionFunction::raiseWarning(JText::_ ( 'Plugin system magelib not installed or activated!' ) );
 }

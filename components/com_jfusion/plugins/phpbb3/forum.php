@@ -108,7 +108,12 @@ class JFusionForum_phpbb3 extends JFusionForum {
 					    $url = $dbparams->get('source_url') . 'download/file.php?avatar=' . $result->user_avatar;
 				    } else if ($result->user_avatar_type == 3) {
 					    // AVATAR_GALLERY
-					    $db->setQuery("SELECT config_value FROM #__config WHERE config_name='avatar_gallery_path'");
+					    $query = $db->getQuery(true)
+						    ->select('config_value')
+						    ->from('#__config')
+						    ->where('config_name = ' . $db->quote('avatar_gallery_path'));
+
+					    $db->setQuery($query);
 					    $db->execute();
 					    $path = $db->loadResult();
 					    if (!empty($path)) {

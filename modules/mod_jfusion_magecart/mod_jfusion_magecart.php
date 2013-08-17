@@ -38,8 +38,14 @@ if (JPluginHelper::importPlugin ( 'system', 'magelib' )) {
 		$plgMageLib->startMagentoSession ();
 		
 		/* Content of Magento logic, blocks or else */
+
 		
 		if ($template_selection) {
+			/**
+			 * @ignore
+			 * @var $layout Mage_Core_Model_Layout
+			 * @var $block Mage_Core_Block_Template
+			 */
 			$layout = Mage::getSingleton ( 'core/layout' );
 			$block = $layout->createBlock ( 'checkout/cart_sidebar' );
 			$block->setTemplate ( $mage_template_path );
@@ -61,6 +67,5 @@ if (JPluginHelper::importPlugin ( 'system', 'magelib' )) {
 		endif;
 	$plgMageLib->restartJoomlaSession ();
 } else {
-	$error = JFusionFunction::raiseWarning (JText::_ ( 'Plugin system magelib not installed or activated!' ) );
-	JError::handleLog ( $error, array() );
+	JFusionFunction::raiseWarning (JText::_ ( 'Plugin system magelib not installed or activated!' ) );
 }

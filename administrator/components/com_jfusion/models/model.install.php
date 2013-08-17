@@ -112,7 +112,7 @@ class JFusionModelInstaller extends InstallerModelInstall
 				    break;
 		    }
 		    // Was the package unpacked?
-		    if (!$package) {
+		    if ($package == false) {
 			    throw new RuntimeException(JText::_('NO_PACKAGE_FOUND'));
 		    } else {
 			    // custom installer

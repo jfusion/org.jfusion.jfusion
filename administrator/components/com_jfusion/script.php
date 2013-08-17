@@ -678,15 +678,11 @@ HTML;
 	 */
 	function uninstall($parent)
 	{
-
 		$this->init();
 		echo '<h2>JFusion ' . JText::_('UNINSTALL') . '</h2><br/>';
 
 		//restore the normal login behaviour
 		$db = JFactory::getDBO();
-
-		$jversion = new JVersion;
-		$version = $jversion->getShortVersion();
 
 		try {
 			$query = $db->getQuery(true)
@@ -839,31 +835,23 @@ HTML;
 	{
 		$db = JFactory::getDBO();
 		$result = $id;
-		$jversion = new JVersion;
-		$version = $jversion->getShortVersion();
-		if(version_compare($version, '1.6') >= 0) {
-			switch ($type) {
-				case 'plugin':
-					$db->setQuery("SELECT extension_id FROM #__extensions WHERE folder = '$group' AND element = '$id'");
-					$result = $db->loadResult();
-					break;
-				case 'module':
-					$db->setQuery("SELECT extension_id FROM #__extensions WHERE element = '$id'");
-					$result = $db->loadResult();
-					break;
-			}
-		} else {
-			switch ($type) {
-				case 'plugin':
-					$db->setQuery("SELECT id FROM #__plugins WHERE folder = '$group' AND element = '$id'");
-					$result = $db->loadResult();
-					break;
-				case 'module':
-					$db->setQuery("SELECT id FROM #__modules WHERE module = '$id'");
-					$result = $db->loadResult();
-					break;
-			}
+
+		$query = $db->getQuery(true)
+			->select('extension_id')
+			->from('#__extensions')
+			->where('element = ' . $db->quote($id));
+		switch ($type) {
+			case 'plugin':
+				$query->where('folder = ' . $db->quote($group));
+				$db->setQuery($query);
+				$result = $db->loadResult();
+				break;
+			case 'module':
+				$db->setQuery($query);
+				$result = $db->loadResult();
+				break;
 		}
+
 		if ($result) {
 			$tmpinstaller = new JInstaller();
 			$uninstall_result = $tmpinstaller->uninstall($type, $result, 0);
