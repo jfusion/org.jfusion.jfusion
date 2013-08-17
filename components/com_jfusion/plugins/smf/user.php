@@ -53,14 +53,23 @@ class JFusionUser_smf extends JFusionUser
 		    list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'a.memberName', 'a.emailAddress');
 		    // initialise some objects
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT a.ID_MEMBER as userid, a.memberName as username, a.realName as name, a.emailAddress as email, a.passwd as password, a.passwordSalt as password_salt, a.validation_code as activation, a.is_activated, null as reason, a.lastLogin as lastvisit, a.ID_GROUP as group_id ' . 'FROM #__members as a ' . 'WHERE ' . $identifier_type . '=' . $db->Quote($identifier);
+
+		    $query = $db->getQuery(true)
+			    ->select('a.ID_MEMBER as userid, a.memberName as username, a.realName as name, a.emailAddress as email, a.passwd as password, a.passwordSalt as password_salt, a.validation_code as activation, a.is_activated, null as reason, a.lastLogin as lastvisit, a.ID_GROUP as group_id')
+			    ->from('#__members as a')
+		        ->where($identifier_type . ' = ' . $db->Quote($identifier));
+
 		    $db->setQuery($query);
 		    $result = $db->loadObject();
 		    if ($result) {
 			    if ($result->group_id == 0) {
 				    $result->group_name = 'Default Usergroup';
 			    } else {
-				    $query = 'SELECT groupName FROM #__membergroups WHERE ID_GROUP = ' . (int)$result->group_id;
+				    $query = $db->getQuery(true)
+					    ->select('groupName')
+					    ->from('#__membergroups')
+					    ->where('ID_GROUP = ' . (int)$result->group_id);
+
 				    $db->setQuery($query);
 				    $result->group_name = $db->loadResult();
 			    }
@@ -68,7 +77,11 @@ class JFusionUser_smf extends JFusionUser
 			    $result->groupnames = array($result->group_name);
 
 			    //Check to see if they are banned
-			    $query = 'SELECT ID_BAN_GROUP, expire_time FROM #__ban_groups WHERE name= ' . $db->quote($result->username);
+			    $query = $db->getQuery(true)
+				    ->select('ID_BAN_GROUP, expire_time')
+				    ->from('#__ban_groups')
+				    ->where('name = ' . $db->quote($result->username));
+
 			    $db->setQuery($query);
 			    $expire_time = $db->loadObject();
 			    if ($expire_time) {
@@ -144,8 +157,12 @@ class JFusionUser_smf extends JFusionUser
 			    //return the error
 			    $status['error'][] = JText::_('USER_DELETION_ERROR');
 		    } else {
-			    $query = 'SELECT realName as name FROM #__members WHERE ID_MEMBER = ' . $db->quote($resultID->ID_MEMBER) . ' LIMIT 1';
-			    $db->setQuery($query);
+			    $query = $db->getQuery(true)
+				    ->select('realName as name')
+				    ->from('#__members')
+				    ->where('ID_MEMBER = ' . $db->quote($resultID->ID_MEMBER));
+
+			    $db->setQuery($query, 0 , 1);
 			    $resultName = $db->loadObject();
 			    if (!$resultName) {
 				    //return the error

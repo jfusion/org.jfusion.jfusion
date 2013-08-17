@@ -119,7 +119,11 @@ class JFusionAdmin_smf extends JFusionAdmin
 	    try {
 		    // initialise some objects
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT memberName as username, emailAddress as email from #__members';
+
+		    $query = $db->getQuery(true)
+			    ->select('memberName as username, emailAddress as email')
+			    ->from('#__members');
+
 		    $db->setQuery($query,$limitstart,$limit);
 		    $userlist = $db->loadObjectList();
 	    } catch (Exception $e) {
@@ -139,7 +143,11 @@ class JFusionAdmin_smf extends JFusionAdmin
 	    try {
 		    //getting the connection to the db
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT count(*) from #__members';
+
+		    $query = $db->getQuery(true)
+			    ->select('count(*)')
+			    ->from('#__members');
+
 		    $db->setQuery($query);
 		    //getting the results
 		    return $db->loadResult();
@@ -159,7 +167,12 @@ class JFusionAdmin_smf extends JFusionAdmin
 	    try {
 		    //getting the connection to the db
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT ID_GROUP as id, groupName as name FROM #__membergroups WHERE minPosts = -1';
+
+		    $query = $db->getQuery(true)
+			    ->select('ID_GROUP as id, groupName as name')
+			    ->from('#__membergroups')
+		        ->where('minPosts = -1');
+
 		    $db->setQuery($query);
 		    $usergrouplist = $db->loadObjectList();
 	    } catch (Exception $e) {
@@ -193,7 +206,12 @@ class JFusionAdmin_smf extends JFusionAdmin
 	        if ($usergroup_id!=0) {
 		        //we want to output the usergroup name
 		        $db = JFusionFactory::getDatabase($this->getJname());
-		        $query = 'SELECT groupName FROM #__membergroups WHERE ID_GROUP = ' . (int)$usergroup_id;
+
+		        $query = $db->getQuery(true)
+			        ->select('groupName')
+			        ->from('#__membergroups')
+			        ->where('ID_GROUP = ' . (int)$usergroup_id);
+
 		        $db->setQuery($query);
 		        $group = $db->loadResult();
 	        }
@@ -215,7 +233,12 @@ class JFusionAdmin_smf extends JFusionAdmin
 	    try {
 		    //getting the connection to the db
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT ID_GROUP as id, groupName as name FROM #__membergroups WHERE minPosts != -1';
+
+		    $query = $db->getQuery(true)
+			    ->select('ID_GROUP as id, groupName as name')
+			    ->from('#__membergroups')
+			    ->where('minPosts != -1');
+
 		    $db->setQuery($query);
 		    return $db->loadObjectList();
 	    } catch (Exception $e) {
@@ -234,7 +257,12 @@ class JFusionAdmin_smf extends JFusionAdmin
 	    $result = false;
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT value FROM #__settings WHERE variable =\'registration_method\';';
+
+		    $query = $db->getQuery(true)
+			    ->select('value')
+			    ->from('#__settings')
+			    ->where('variable = ' . $db->quote('registration_method'));
+
 		    $db->setQuery($query);
 		    $new_registration = $db->loadResult();
 		    if ($new_registration != 3) {

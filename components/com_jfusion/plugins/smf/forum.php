@@ -214,11 +214,19 @@ class JFusionForum_smf extends JFusionForum
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    $query = 'SELECT value FROM #__settings WHERE variable=\'censor_vulgar\'';
+		    $query = $db->getQuery(true)
+			    ->select('value')
+			    ->from('#__settings')
+			    ->where('variable = ' . $db->quote('censor_vulgar'));
+
 		    $db->setQuery($query);
 		    $vulgar = $db->loadResult();
 
-		    $query = 'SELECT value FROM #__settings WHERE variable=\'censor_proper\'';
+		    $query = $db->getQuery(true)
+			    ->select('value')
+			    ->from('#__settings')
+			    ->where('variable = ' . $db->quote('censor_proper'));
+
 		    $db->setQuery($query);
 		    $proper = $db->loadResult();
 
@@ -256,15 +264,27 @@ class JFusionForum_smf extends JFusionForum
 				    $db = JFusionFactory::getDatabase($this->getJname());
 				    $userlookup = JFusionFunction::lookupUser($this->getJname(), $JUser->id);
 				    if (!empty($userlookup)) {
-					    $query = 'SELECT ID_MSG, ID_TOPIC FROM #__log_topics WHERE ID_MEMBER = '.$userlookup->userid;
+					    $query = $db->getQuery(true)
+						    ->select('ID_MSG, ID_TOPIC')
+						    ->from('#__log_topics')
+						    ->where('ID_MEMBER = ' . $userlookup->userid);
+
 					    $db->setQuery($query);
 					    $markread['topic'] = $db->loadObjectList('ID_TOPIC');
 
-					    $query = 'SELECT ID_MSG, ID_BOARD FROM #__log_mark_read WHERE ID_MEMBER = '.$userlookup->userid;
+					    $query = $db->getQuery(true)
+						    ->select('ID_MSG, ID_BOARD')
+						    ->from('#__log_mark_read')
+						    ->where('ID_MEMBER = ' . $userlookup->userid);
+
 					    $db->setQuery($query);
 					    $markread['mark_read'] = $db->loadObjectList('ID_BOARD');
 
-					    $query = 'SELECT ID_MSG, ID_BOARD FROM #__log_boards WHERE ID_MEMBER = '.$userlookup->userid;
+					    $query = $db->getQuery(true)
+						    ->select('ID_MSG, ID_BOARD')
+						    ->from('#__log_boards')
+						    ->where('ID_MEMBER = ' . $userlookup->userid);
+
 					    $db->setQuery($query);
 					    $markread['board'] = $db->loadObjectList('ID_BOARD');
 				    }
@@ -297,7 +317,11 @@ class JFusionForum_smf extends JFusionForum
 	    try {
 		    // initialise some objects
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT ID_BOARD as id, name FROM #__boards';
+
+		    $query = $db->getQuery(true)
+			    ->select('ID_BOARD as id, name')
+			    ->from('#__boards');
+
 		    $db->setQuery($query);
 		    //getting the results
 		    return $db->loadObjectList('id');
@@ -321,10 +345,22 @@ class JFusionForum_smf extends JFusionForum
 		        // initialise some objects
 		        $db = JFusionFactory::getDatabase($this->getJname());
 		        // read unread count
-		        $db->setQuery('SELECT unreadMessages FROM #__members WHERE ID_MEMBER = ' . $userid);
+
+		        $query = $db->getQuery(true)
+			        ->select('unreadMessages')
+			        ->from('#__members')
+			        ->where('ID_MEMBER = ' . $userid);
+
+		        $db->setQuery($query);
 		        $unreadCount = $db->loadResult();
 		        // read total pm count
-		        $db->setQuery('SELECT instantMessages FROM #__members WHERE ID_MEMBER = ' . $userid);
+
+		        $query = $db->getQuery(true)
+			        ->select('instantMessages')
+			        ->from('#__members')
+			        ->where('ID_MEMBER = ' . $userid);
+
+		        $db->setQuery($query);
 		        $totalCount = $db->loadResult();
 		        return array('unread' => $unreadCount, 'total' => $totalCount);
 	        } catch (Exception $e) {
@@ -350,13 +386,23 @@ class JFusionForum_smf extends JFusionForum
 			    $params = JFusionFactory::getParams($this->getJname());
 			    $db = JFusionFactory::getDatabase($this->getJname());
 			    // Load member params from database "mainly to get the avatar"
-			    $db->setQuery('SELECT * FROM #__members WHERE ID_MEMBER=' . $puser_id);
+
+			    $query = $db->getQuery(true)
+				    ->select('*')
+				    ->from('#__members')
+				    ->where('ID_MEMBER = ' . $puser_id);
+
 			    $db->execute();
 			    $result = $db->loadObject();
 			    if (!empty($result)) {
 				    $url = '';
 				    // SMF has a wired way of holding attachments. Get instance of the attachments table
-				    $db->setQuery('SELECT * FROM #__attachments WHERE ID_MEMBER=' . $puser_id);
+				    $query = $db->getQuery(true)
+					    ->select('*')
+					    ->from('#__attachments')
+					    ->where('ID_MEMBER = ' . $puser_id);
+
+				    $db->setQuery($query);
 				    $db->execute();
 				    $attachment = $db->loadObject();
 				    // See if the user has a specific attachment meant for an avatar
@@ -368,7 +414,12 @@ class JFusionForum_smf extends JFusionForum
 					    $url = $result->avatar;
 				    } else if ($result->avatar) {
 					    // If the avatar specified in the first query is not a url but is a file name. Make it one
-					    $db->setQuery('SELECT * FROM #__settings WHERE variable = \'avatar_url\'');
+					    $query = $db->getQuery(true)
+						    ->select('*')
+						    ->from('#__settings')
+						    ->where('variable = ' . $db->quote('avatar_url'));
+
+					    $db->setQuery($query);
 					    $avatarurl = $db->loadObject();
 					    // Check for trailing slash. If there is one DON'T ADD ONE!
 					    if (substr($avatarurl->value, -1) == DIRECTORY_SEPARATOR) {
@@ -403,16 +454,21 @@ class JFusionForum_smf extends JFusionForum
 	    try {
 		    //setup some variables
 		    $userid = $this->getThreadAuthor($dbparams, $contentitem);
-		    $jdb = JFusionFactory::getDatabase($this->getJname());
+		    $db = JFusionFactory::getDatabase($this->getJname());
 		    $subject = trim(strip_tags($contentitem->title));
 
 		    //prepare the content body
 		    $text = $this->prepareFirstPostBody($dbparams, $contentitem);
 
 		    //the user information
-		    $query = 'SELECT memberName, emailAddress FROM #__members WHERE ID_MEMBER = '.$userid;
-		    $jdb->setQuery($query);
-		    $smfUser = $jdb->loadObject();
+
+		    $query = $db->getQuery(true)
+			    ->select('memberName, emailAddress')
+			    ->from('#__members')
+			    ->where('ID_MEMBER = ' . $userid);
+
+		    $db->setQuery($query);
+		    $smfUser = $db->loadObject();
 		    if ($dbparams->get('use_content_created_date', false)) {
 			    $mainframe = JFactory::getApplication();
 			    $timezone = $mainframe->getCfg('offset');
@@ -432,9 +488,9 @@ class JFusionForum_smf extends JFusionForum
 		    $topic_row->numViews = 0;
 		    $topic_row->locked = 0;
 
-		    $jdb->insertObject('#__topics', $topic_row, 'ID_TOPIC');
+		    $db->insertObject('#__topics', $topic_row, 'ID_TOPIC');
 
-		    $topicid = $jdb->insertid();
+		    $topicid = $db->insertid();
 		    $post_row = new stdClass();
 		    $post_row->ID_BOARD = $forumid;
 		    $post_row->ID_TOPIC = $topicid;
@@ -449,25 +505,31 @@ class JFusionForum_smf extends JFusionForum
 		    $post_row->modifiedName = '';
 		    $post_row->body = $text;
 		    $post_row->icon = 'xx';
-		    $jdb->insertObject('#__messages', $post_row, 'ID_MSG');
+		    $db->insertObject('#__messages', $post_row, 'ID_MSG');
 
-		    $postid = $jdb->insertid();
+		    $postid = $db->insertid();
 		    $post_row = new stdClass();
 		    $post_row->ID_MSG = $postid;
 		    $post_row->ID_MSG_MODIFIED = $postid;
-		    $jdb->updateObject('#__messages', $post_row, 'ID_MSG');
+		    $db->updateObject('#__messages', $post_row, 'ID_MSG');
 
 		    $topic_row = new stdClass();
 		    $topic_row->ID_FIRST_MSG = $postid;
 		    $topic_row->ID_LAST_MSG = $postid;
 		    $topic_row->ID_TOPIC = $topicid;
-		    $jdb->updateObject('#__topics', $topic_row, 'ID_TOPIC');
+		    $db->updateObject('#__topics', $topic_row, 'ID_TOPIC');
 
 		    $forum_stats = new stdClass();
 		    $forum_stats->ID_BOARD = $forumid;
-		    $query = 'SELECT m.posterTime FROM #__messages AS m INNER JOIN #__boards AS b ON b.ID_LAST_MSG = m.ID_MSG WHERE b.ID_BOARD = '.$forumid;
-		    $jdb->setQuery($query);
-		    $lastPostTime = (int)$jdb->loadResult();
+
+		    $query = $db->getQuery(true)
+			    ->select('m.posterTime')
+			    ->from('#__messages as m')
+		        ->innerJoin('#__boards AS b ON b.ID_LAST_MSG = m.ID_MSG')
+			    ->where('b.ID_BOARD = ' . $forumid);
+
+		    $db->setQuery($query);
+		    $lastPostTime = (int)$db->loadResult();
 		    if ($dbparams->get('use_content_created_date', false)) {
 			    //only update the last post for the board if it really is newer
 			    $updateLastPost = ($timestamp > $lastPostTime) ? true : false;
@@ -478,21 +540,26 @@ class JFusionForum_smf extends JFusionForum
 			    $forum_stats->ID_LAST_MSG = $postid;
 			    $forum_stats->ID_MSG_UPDATED = $postid;
 		    }
-		    $query = 'SELECT numTopics, numPosts FROM #__boards WHERE ID_BOARD = '.$forumid;
-		    $jdb->setQuery($query);
-		    $num = $jdb->loadObject();
+
+		    $query = $db->getQuery(true)
+			    ->select('numTopics, numPosts')
+			    ->from('#__boards')
+			    ->where('ID_BOARD = ' . $forumid);
+
+		    $db->setQuery($query);
+		    $num = $db->loadObject();
 		    $forum_stats->numPosts = $num->numPosts + 1;
 		    $forum_stats->numTopics = $num->numTopics + 1;
-		    $jdb->updateObject('#__boards', $forum_stats, 'ID_BOARD');
+		    $db->updateObject('#__boards', $forum_stats, 'ID_BOARD');
 
 		    if ($updateLastPost) {
 			    $query = 'REPLACE INTO #__log_topics SET ID_MEMBER = '.$userid.', ID_TOPIC = '.$topicid.', ID_MSG = ' . ($postid + 1);
-			    $jdb->setQuery($query);
-			    $jdb->execute();
+			    $db->setQuery($query);
+			    $db->execute();
 
 			    $query = 'REPLACE INTO #__log_boards SET ID_MEMBER = '.$userid.', ID_BOARD = '.$forumid.', ID_MSG = '.$postid;
-			    $jdb->setQuery($query);
-			    $jdb->execute();
+			    $db->setQuery($query);
+			    $db->execute();
 		    }
 		    if (!empty($topicid) && !empty($postid)) {
 			    //add information to update forum lookup
@@ -522,7 +589,7 @@ class JFusionForum_smf extends JFusionForum
 		    $forumid = $existingthread->forumid;
 		    $postid = $existingthread->postid;
 		    //setup some variables
-		    $jdb = JFusionFactory::getDatabase($this->getJname());
+		    $db = JFusionFactory::getDatabase($this->getJname());
 		    $subject = trim(strip_tags($contentitem->title));
 
 		    //prepare the content body
@@ -530,9 +597,14 @@ class JFusionForum_smf extends JFusionForum
 
 		    $timestamp = time();
 		    $userid = $dbparams->get('default_user');
-		    $query = 'SELECT memberName FROM #__members WHERE ID_MEMBER = '.$userid;
-		    $jdb->setQuery($query);
-		    $smfUser = $jdb->loadObject();
+
+		    $query = $db->getQuery(true)
+			    ->select('memberName')
+			    ->from('#__members')
+			    ->where('ID_MEMBER = ' . $userid);
+
+		    $db->setQuery($query);
+		    $smfUser = $db->loadObject();
 		    $post_row = new stdClass();
 		    $post_row->subject = $subject;
 		    $post_row->body = $text;
@@ -540,7 +612,7 @@ class JFusionForum_smf extends JFusionForum
 		    $post_row->modifiedName = $smfUser->memberName;
 		    $post_row->ID_MSG_MODIFIED = $postid;
 		    $post_row->ID_MSG = $postid;
-		    $jdb->updateObject('#__messages', $post_row, 'ID_MSG');
+		    $db->updateObject('#__messages', $post_row, 'ID_MSG');
 	    } catch (Exception $e) {
 		    $status['error'][] = $e->getMessage();
 	    }
@@ -614,13 +686,17 @@ HTML;
 				    throw new RuntimeException(JText::_('GUEST_FIELDS_MISSING'));
 			    } else {
 				    $db = JFusionFactory::getDatabase($this->getJname());
-				    $query = 'SELECT COUNT(*) FROM #__members '
-					    . ' WHERE memberName = ' . $db->Quote($userinfo->username)
-					    . ' OR memberName = ' . $db->Quote($userinfo->email)
-					    . ' OR realName = ' . $db->Quote($userinfo->username)
-					    . ' OR realName = ' . $db->Quote($userinfo->email)
-					    . ' OR LOWER(emailAddress) = ' . strtolower($db->Quote($userinfo->username))
-					    . ' OR LOWER(emailAddress) = ' . strtolower($db->Quote($userinfo->email));
+
+				    $query = $db->getQuery(true)
+					    ->select('COUNT(*)')
+					    ->from('#__members')
+					    ->where('memberName = ' . $db->Quote($userinfo->username), 'OR')
+					    ->where('memberName = ' . $db->Quote($userinfo->email))
+					    ->where('realName = ' . $db->Quote($userinfo->username))
+					    ->where('realName = ' . $db->Quote($userinfo->email))
+					    ->where('LOWER(emailAddress) = ' . $db->Quote($userinfo->username))
+					    ->where('LOWER(emailAddress) = ' . $db->Quote($userinfo->email));
+
 				    $db->setQuery($query);
 				    $result = $db->loadResult();
 				    if (!empty($result)) {
@@ -639,8 +715,14 @@ HTML;
 		    if (!empty($text)) {
 			    $public->prepareText($text);
 			    //get some topic information
-			    $where = 'WHERE t.ID_TOPIC = '.$ids->threadid.' AND m.ID_MSG = t.ID_FIRST_MSG';
-			    $query = 'SELECT t.ID_FIRST_MSG , t.numReplies, m.subject FROM `#__messages` as m INNER JOIN `#__topics` as t ON t.ID_TOPIC = m.ID_TOPIC '.$where;
+
+			    $query = $db->getQuery(true)
+				    ->select('t.ID_FIRST_MSG , t.numReplies, m.subject')
+				    ->from('#__messages as m')
+			        ->innerJoin('#__topics as t ON t.ID_TOPIC = m.ID_TOPIC')
+				    ->where('t.ID_TOPIC = '.$ids->threadid)
+				    ->where('m.ID_MSG = t.ID_FIRST_MSG');
+
 			    $jdb->setQuery($query);
 			    $topic = $jdb->loadObject();
 			    //the user information
@@ -649,7 +731,11 @@ HTML;
 				    $smfUser->memberName = $userinfo->username;
 				    $smfUser->emailAddress = $userinfo->email;
 			    } else {
-				    $query = 'SELECT memberName,emailAddress FROM #__members WHERE ID_MEMBER = '.$userid;
+				    $query = $db->getQuery(true)
+					    ->select('memberName, emailAddress')
+					    ->from('#__members')
+					    ->where('ID_MEMBER = ' . $userid);
+
 				    $jdb->setQuery($query);
 				    $smfUser = $jdb->loadObject();
 			    }
@@ -688,7 +774,12 @@ HTML;
 			    $forum_stats = new stdClass();
 			    $forum_stats->ID_LAST_MSG = $postid;
 			    $forum_stats->ID_MSG_UPDATED = $postid;
-			    $query = 'SELECT numPosts FROM #__boards WHERE ID_BOARD = '.$ids->forumid;
+
+			    $query = $db->getQuery(true)
+				    ->select('numPosts')
+				    ->from('#__boards')
+			        ->where('ID_BOARD = '.$ids->forumid);
+
 			    $jdb->setQuery($query);
 			    $num = $jdb->loadObject();
 			    $forum_stats->numPosts = $num->numPosts + 1;
@@ -760,7 +851,12 @@ HTML;
     {
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT numReplies FROM #__topics WHERE ID_TOPIC = '.$existingthread->threadid;
+
+		    $query = $db->getQuery(true)
+			    ->select('numReplies')
+			    ->from('#__topics')
+			    ->where('ID_TOPIC = ' . $existingthread->threadid);
+
 		    $db->setQuery($query);
 		    $result = $db->loadResult();
 	    } catch (Exception $e) {
@@ -811,7 +907,12 @@ HTML;
     {
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT ID_TOPIC AS threadid, ID_BOARD AS forumid, ID_FIRST_MSG AS postid FROM #__topics WHERE ID_TOPIC = '.$threadid;
+
+		    $query = $db->getQuery(true)
+			    ->select('ID_TOPIC AS threadid, ID_BOARD AS forumid, ID_FIRST_MSG AS postid')
+			    ->from('#__topics')
+			    ->where('ID_TOPIC = ' . $threadid);
+
 		    $db->setQuery($query);
 		    $results = $db->loadObject();
 	    } catch (Exception $e) {
@@ -828,7 +929,12 @@ HTML;
     function getThreadLockedStatus($threadid) {
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT locked FROM #__topics WHERE ID_TOPIC = '.$threadid;
+
+		    $query = $db->getQuery(true)
+			    ->select('locked')
+			    ->from('#__topics')
+			    ->where('ID_TOPIC = ' . $threadid);
+
 		    $db->setQuery($query);
 		    $locked = $db->loadResult();
 	    } catch (Exception $e) {

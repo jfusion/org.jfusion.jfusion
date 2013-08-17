@@ -114,11 +114,21 @@ class JFusionPublic_smf extends JFusionPublic
                 $custom_smileys = array();
 	            try {
 		            $db = JFusionFactory::getDatabase($this->getJname());
-		            $query = 'SELECT value, variable FROM #__settings WHERE variable = \'smileys_url\' OR variable = \'smiley_sets_default\'';
+
+		            $query = $db->getQuery(true)
+			            ->select('value, variable')
+			            ->from('#__settings')
+			            ->where('variable = ' . $db->quote('smileys_url'), 'OR')
+						->where('variable = ' . $db->quote('smiley_sets_default'));
+
 		            $db->setQuery($query);
 		            $settings = $db->loadObjectList('variable');
 
-		            $query = 'SELECT code, filename FROM #__smileys ORDER BY smileyOrder';
+		            $query = $db->getQuery(true)
+			            ->select('code, filename')
+			            ->from('#__smileys')
+		                ->order('smileyOrder');
+
 		            $db->setQuery($query);
 		            $smilies = $db->loadObjectList();
 		            if (!empty($smilies)) {
@@ -642,9 +652,11 @@ class JFusionPublic_smf extends JFusionPublic
 
 		    $msg = JFactory::getApplication()->input->get('msg');
 
-		    $query = 'SELECT ID_TOPIC,ID_BOARD, subject '.
-			    'FROM #__messages '.
-			    'WHERE ID_TOPIC = ' . $db->Quote($topic_id);
+		    $query = $db->getQuery(true)
+			    ->select('ID_TOPIC,ID_BOARD, subject')
+			    ->from('#__messages')
+			    ->order('ID_TOPIC = ' . $db->Quote($topic_id));
+
 		    $db->setQuery($query );
 		    $topic = $db->loadObject();
 
@@ -657,9 +669,12 @@ class JFusionPublic_smf extends JFusionPublic
 			    // Loop while the parent is non-zero.
 			    while ($board_id != 0)
 			    {
-				    $query = 'SELECT b.ID_PARENT , b.ID_BOARD, b.ID_CAT, b.name , c.name as catname '.
-					    'FROM #__boards AS b INNER JOIN #__categories AS c ON b.ID_CAT = c.ID_CAT '.
-					    'WHERE ID_BOARD = ' . $db->Quote($board_id);
+				    $query = $db->getQuery(true)
+					    ->select('b.ID_PARENT , b.ID_BOARD, b.ID_CAT, b.name , c.name as catname')
+					    ->from('#__boards AS b')
+				        ->innerJoin('#__categories AS c ON b.ID_CAT = c.ID_CAT')
+					        ->where('ID_BOARD = ' . $db->Quote($board_id));
+
 				    $db->setQuery($query );
 				    $result = $db->loadObject();
 
@@ -805,16 +820,18 @@ class JFusionPublic_smf extends JFusionPublic
      */
     function getSearchQuery(&$pluginParam)
     {
+	    $db = JFusionFactory::getDatabase($this->getJname());
         //need to return threadid, postid, title, text, created, section
-        $query = 'SELECT p.ID_TOPIC, p.ID_MSG, p.ID_BOARD, CASE WHEN p.subject = "" THEN CONCAT("Re: ",fp.subject) ELSE p.subject END AS title, p.body AS text,
+	    $query = $db->getQuery(true)
+		    ->select('p.ID_TOPIC, p.ID_MSG, p.ID_BOARD, CASE WHEN p.subject = "" THEN CONCAT("Re: ",fp.subject) ELSE p.subject END AS title, p.body AS text,
                     FROM_UNIXTIME(p.posterTime, "%Y-%m-%d %h:%i:%s") AS created,
                     CONCAT_WS( "/", f.name, fp.subject ) AS section,
-                    t.numViews as hits
-                    FROM #__messages AS p
-                    INNER JOIN #__topics AS t ON t.ID_TOPIC = p.ID_TOPIC
-                    INNER JOIN #__messages AS fp ON fp.ID_MSG = t.ID_FIRST_MSG
-                    INNER JOIN #__boards AS f on f.ID_BOARD = p.ID_BOARD';
-        return $query;
+                    t.numViews as hits')
+		    ->from('#__messages AS p')
+		    ->innerJoin('#__topics AS t ON t.ID_TOPIC = p.ID_TOPIC')
+		    ->innerJoin('#__messages AS fp ON fp.ID_MSG = t.ID_FIRST_MSG')
+		    ->innerJoin('#__boards AS f on f.ID_BOARD = p.ID_BOARD');
+        return (string)$query;
     }
 
     /**
@@ -867,11 +884,20 @@ class JFusionPublic_smf extends JFusionPublic
     {
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT value FROM #__settings WHERE variable=\'censor_vulgar\'';
+
+		    $query = $db->getQuery(true)
+			    ->select('value')
+			    ->from('#__settings')
+			    ->where('variable = ' . $db->quote('censor_vulgar'));
+
 		    $db->setQuery($query);
 		    $vulgar = $db->loadResult();
 
-		    $query = 'SELECT value FROM #__settings WHERE variable=\'censor_proper\'';
+		    $query = $db->getQuery(true)
+			    ->select('value')
+			    ->from('#__settings')
+			    ->where('variable = ' . $db->quote('censor_proper'));
+
 		    $db->setQuery($query);
 		    $proper = $db->loadResult();
 
@@ -916,8 +942,18 @@ class JFusionPublic_smf extends JFusionPublic
      */
     function getOnlineUserQuery($limit)
     {
-        $limiter = (!empty($limit)) ? 'LIMIT 0,'.$limit : '';
-        return 'SELECT DISTINCT u.ID_MEMBER AS userid, u.memberName AS username, u.realName AS name, u.emailAddress as email FROM #__members AS u INNER JOIN #__log_online AS s ON u.ID_MEMBER = s.ID_MEMBER WHERE s.ID_MEMBER != 0 '.$limiter;
+        $limiter = (!empty($limit)) ? ' LIMIT 0,'.$limit : '';
+
+	    $db = JFusionFactory::getDatabase($this->getJname());
+
+	    $query = $db->getQuery(true)
+		    ->select('DISTINCT u.ID_MEMBER AS userid, u.memberName AS username, u.realName AS name, u.emailAddress as email')
+		    ->from('#__members AS u')
+		    ->innerJoin('#__log_online AS s ON u.ID_MEMBER = s.ID_MEMBER WHERE s.ID_MEMBER != 0');
+
+	    $query = (string)$query;
+
+        return $query.$limiter;
     }
 
     /**
@@ -929,7 +965,12 @@ class JFusionPublic_smf extends JFusionPublic
     {
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT COUNT(DISTINCT(ip)) FROM #__log_online WHERE ID_MEMBER = 0';
+
+		    $query = $db->getQuery(true)
+			    ->select('COUNT(DISTINCT(ip))')
+			    ->from('#__log_online')
+			    ->where('ID_MEMBER = 0');
+
 		    $db->setQuery($query);
 		    return $db->loadResult();
 	    } catch (Exception $e) {
@@ -947,7 +988,12 @@ class JFusionPublic_smf extends JFusionPublic
     {
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT COUNT(DISTINCT(ip)) FROM #__log_online WHERE ID_MEMBER != 0';
+
+		    $query = $db->getQuery(true)
+			    ->select('COUNT(DISTINCT(ip))')
+			    ->from('#__log_online')
+			    ->where('ID_MEMBER != 0');
+
 		    $db->setQuery($query);
 		    return $db->loadResult();
 	    } catch (Exception $e) {
