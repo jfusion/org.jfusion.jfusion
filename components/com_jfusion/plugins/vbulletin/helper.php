@@ -293,8 +293,13 @@ class JFusionHelper_vbulletin
 	    try {
 		    if(empty($jfusion_vb_version)) {
 			    $db = JFusionFactory::getDatabase($this->getJname());
-			    $q = 'SELECT value FROM #__setting WHERE varname = \'templateversion\'';
-			    $db->setQuery($q);
+
+			    $query = $db->getQuery(true)
+				    ->select('value')
+				    ->from('#__setting')
+				    ->where('varname = ' . $db->quote('templateversion'));
+
+			    $db->setQuery($query);
 			    $jfusion_vb_version = $db->loadResult();
 		    }
 		    return $jfusion_vb_version;
@@ -322,7 +327,11 @@ class JFusionHelper_vbulletin
 			    $db = JFusionFactory::getDatabase($this->getJname());
 
 			    if (!defined('JFVB_FRIENDLYURL')) {
-				    $query = 'SELECT value FROM #__setting WHERE varname = \'friendlyurl\'';
+				    $query = $db->getQuery(true)
+					    ->select('value')
+					    ->from('#__setting')
+					    ->where('varname = ' . $db->quote('friendlyurl'));
+
 				    $db->setQuery($query);
 				    $sefmode = $db->loadResult();
 				    define('JFVB_FRIENDLYURL', (int) $sefmode);
@@ -332,14 +341,22 @@ class JFusionHelper_vbulletin
 
 			    switch ($type) {
 				    case 'members':
-					    $query = 'SELECT username FROM #__user WHERE userid = ' . $uri->getVar('u');
+					    $query = $db->getQuery(true)
+						    ->select('username')
+						    ->from('#__user')
+						    ->where('userid = ' . $uri->getVar('u'));
+
 					    $db->setQuery($query);
 					    $username = $db->loadResult();
 					    $this->cleanForVbURL($username);
 					    $vburi = $uri->getVar('u') . '-' . $username;
 					    break;
 				    case 'threads':
-					    $query = 'SELECT title FROM #__thread WHERE threadid = ' . $uri->getVar('t');
+					    $query = $db->getQuery(true)
+						    ->select('title')
+						    ->from('#__thread')
+						    ->where('threadid = ' . $uri->getVar('t'));
+
 					    $db->setQuery($query);
 					    $title = $db->loadResult();
 					    $this->cleanForVbURL($title);
@@ -351,10 +368,19 @@ class JFusionHelper_vbulletin
 
 					    $title = null;
 					    if (empty($tid)) {
-						    $query = 'SELECT threadid FROM #__post WHERE postid = ' . $pid;
+						    $query = $db->getQuery(true)
+							    ->select('threadid')
+							    ->from('#__post')
+							    ->where('postid = ' . $pid);
+
 						    $db->setQuery($query);
 						    $tid = $db->loadResult();
-						    $query = 'SELECT title FROM #__thread WHERE threadid = ' . $tid;
+
+						    $query = $db->getQuery(true)
+							    ->select('title')
+							    ->from('#__thread')
+							    ->where('threadid = ' . $tid);
+
 						    $db->setQuery($query);
 						    $title = $db->loadResult();
 						    $this->cleanForVbURL($title);

@@ -109,7 +109,10 @@ class JFusionPublic_vbulletin extends JFusionPublic
 
 		        //parse smilies
 		        if (!is_array($custom_smileys)) {
-			        $query = 'SELECT title, smilietext, smiliepath FROM #__smilie';
+			        $query = $db->getQuery(true)
+				        ->select('title, smilietext, smiliepath')
+				        ->from('#__smilie');
+
 			        $db->setQuery($query);
 			        $smilies = $db->loadObjectList();
 			        $vburl = $this->params->get('source_url');
@@ -134,7 +137,10 @@ class JFusionPublic_vbulletin extends JFusionPublic
 	            try {
 		            $db = JFusionFactory::getDatabase($this->getJname());
 
-		            $query = 'SELECT bbcodetag, bbcodereplacement, twoparams FROM #__bbcode';
+		            $query = $db->getQuery(true)
+			            ->select('bbcodetag, bbcodereplacement, twoparams')
+			            ->from('#__bbcode');
+
 		            $db->setQuery($query);
 		            $bbcodes = $db->loadObjectList();
 		            foreach ($bbcodes as $bb) {
@@ -172,7 +178,11 @@ class JFusionPublic_vbulletin extends JFusionPublic
 		        //add custom bbcode rules
 		        if (!is_array($vb_bbcodes_plain)) {
 			        $vb_bbcodes_plain = array();
-			        $query = 'SELECT bbcodetag FROM #__bbcode';
+
+			        $query = $db->getQuery(true)
+				        ->select('bbcodetag')
+				        ->from('#__bbcode');
+
 			        $db->setQuery($query);
 			        $vb_bbcodes_plain = $db->loadColumn();
 		        }
@@ -214,12 +224,28 @@ class JFusionPublic_vbulletin extends JFusionPublic
      */
     function getOnlineUserQuery($limit)
     {
-        $limiter = (!empty($limit)) ? 'LIMIT 0,'.$limit : '';
+	    $db = JFusionFactory::getDatabase($this->getJname());
+        $limiter = (!empty($limit)) ? ' LIMIT 0,'.$limit : '';
+
         $name_field = $this->params->get('name_field');
-        $query = 'SELECT DISTINCT u.userid, u.username AS username, u.email';
-        $query.= (!empty($name_field)) ? ", CASE WHEN f.$name_field IS NULL OR f.$name_field = '' THEN u.username ELSE f.$name_field END AS name FROM #__userfield as f INNER JOIN #__user AS u ON f.userid = u.userid" : ", u.username as name FROM #__user AS u";
-        $query.= ' INNER JOIN #__session AS s ON u.userid = s.userid WHERE s.userid != 0 '.$limiter;
-        return $query;
+
+	    $query = $db->getQuery(true)
+		    ->select('DISTINCT u.userid, u.username AS username, u.email');
+
+	    if (!empty($name_field)) {
+		    $query->select('CASE WHEN f.'.$name_field.' IS NULL OR f.'.$name_field.' = \'\' THEN u.username ELSE f.'.$name_field.' END AS name')
+		    ->format('#__userfield as f')
+		    ->innerjoin('#__user AS u ON f.userid = u.userid');
+	    } else {
+		    $query->select('u.username as name')
+		    ->from('#__user AS u');
+	    }
+
+	    $query->innerJoin('#__session AS s ON u.userid = s.userid')
+	        ->where('s.userid != 0');
+
+	    $query = (string)$query;
+        return $query.$limiter;
     }
     /**
      * Returns number of guests
@@ -230,7 +256,12 @@ class JFusionPublic_vbulletin extends JFusionPublic
     {
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT COUNT(DISTINCT(host)) FROM #__session WHERE userid = 0';
+
+		    $query = $db->getQuery(true)
+			    ->select('COUNT(DISTINCT(host))')
+			    ->from('#__session')
+		        ->where('userid = 0');
+
 		    $db->setQuery($query);
 		    return $db->loadResult();
 	    } catch (Exception $e) {
@@ -247,7 +278,12 @@ class JFusionPublic_vbulletin extends JFusionPublic
     {
 	    try {
 	        $db = JFusionFactory::getDatabase($this->getJname());
-	        $query = 'SELECT COUNT(DISTINCT(userid)) FROM #__session WHERE userid != 0';
+
+		    $query = $db->getQuery(true)
+			    ->select('COUNT(DISTINCT(userid))')
+			    ->from('#__session')
+			    ->where('userid != 0');
+
 	        $db->setQuery($query);
 	        return $db->loadResult();
 	    } catch (Exception $e) {
@@ -279,8 +315,14 @@ class JFusionPublic_vbulletin extends JFusionPublic
 	        try {
 		        //check to make sure the frameless hook is installed
 		        $db = JFusionFactory::getDatabase($this->getJname());
-		        $q = 'SELECT active FROM #__plugin WHERE hookname = \'init_startup\' AND title = \'JFusion Frameless Integration Plugin\'';
-		        $db->setQuery($q);
+
+		        $query = $db->getQuery(true)
+			        ->select('active')
+			        ->from('#__plugin')
+			        ->where('hookname = ' . $db->quote('init_startup'))
+			        ->where('title = ' . $db->quote('JFusion Frameless Integration Plugin'));
+
+		        $db->setQuery($query);
 		        $active = $db->loadResult();
 	        } catch (Exception $e) {
 		        JFusionFunction::raiseError($e, $this->getJname());
@@ -492,14 +534,23 @@ JS;
 		    //we are viewing a forum
 		    if (JFactory::getApplication()->input->get('f', false) !== false) {
 			    $fid = JFactory::getApplication()->input->get('f');
-			    $query = 'SELECT title, parentlist, parentid from #__forum WHERE forumid = '.$db->Quote($fid);
+
+			    $query = $db->getQuery(true)
+				    ->select('title, parentlist, parentid')
+				    ->from('#__forum')
+				    ->where('forumid = ' . $db->quote($fid));
+
 			    $db->setQuery($query);
 			    $forum = $db->loadObject();
 			    if ($forum->parentid != '-1') {
 				    $parents = array_reverse(explode(',', $forum->parentlist));
 				    foreach ($parents as $p) {
 					    if ($p != '-1') {
-						    $query = 'SELECT title from #__forum WHERE forumid = '.$p;
+						    $query = $db->getQuery(true)
+							    ->select('title')
+							    ->from('#__forum')
+							    ->where('forumid = ' . $p);
+
 						    $db->setQuery($query);
 						    $title = $db->loadResult();
 						    $crumb = new stdClass();
@@ -516,14 +567,24 @@ JS;
 			    }
 		    } elseif (JFactory::getApplication()->input->get('t', false) !== false) {
 			    $tid = JFactory::getApplication()->input->get('t');
-			    $query = 'SELECT t.title AS thread, f.title AS forum, f.forumid, f.parentid, f.parentlist FROM #__thread AS t JOIN #__forum AS f ON t.forumid = f.forumid WHERE t.threadid = '.$db->Quote($tid);
+
+			    $query = $db->getQuery(true)
+				    ->select('t.title AS thread, f.title AS forum, f.forumid, f.parentid, f.parentlist')
+				    ->from('#__thread AS t')
+			        ->join('', '#__forum AS f ON t.forumid = f.forumid')
+				    ->where('t.threadid = '.$db->Quote($tid));
+
 			    $db->setQuery($query);
 			    $result = $db->loadObject();
 			    if ($result->parentid != '-1') {
 				    $parents = array_reverse(explode(',', $result->parentlist));
 				    foreach ($parents as $p) {
 					    if ($p != '-1') {
-						    $query = 'SELECT title from #__forum WHERE forumid = '.$p;
+						    $query = $db->getQuery(true)
+							    ->select('title')
+							    ->from('#__forum')
+							    ->where('forumid = ' . $p);
+
 						    $db->setQuery($query);
 						    $title = $db->loadResult();
 						    $crumb = new stdClass();
@@ -544,14 +605,24 @@ JS;
 			    $pathway[] = $crumb;
 		    } elseif (JFactory::getApplication()->input->get('p', false) !== false) {
 			    $pid = JFactory::getApplication()->input->get('p');
-			    $query = 'SELECT t.title AS thread, t.threadid, f.title AS forum, f.forumid, f.parentid, f.parentlist FROM #__thread AS t JOIN #__forum AS f JOIN #__post AS p ON t.forumid = f.forumid AND t.threadid = p.threadid WHERE p.postid = '.$db->Quote($pid);
+
+			    $query = $db->getQuery(true)
+				    ->select('t.title AS thread, t.threadid, f.title AS forum, f.forumid, f.parentid, f.parentlist')
+				    ->from('#__thread AS t')
+			        ->join('', '#__post AS p ON t.forumid = f.forumid AND t.threadid = p.threadid')
+				    ->where('p.postid = '.$db->Quote($pid));
+
 			    $db->setQuery($query);
 			    $result = $db->loadObject();
 			    if ($result->parentid != '-1') {
 				    $parents = array_reverse(explode(',', $result->parentlist));
 				    foreach ($parents as $p) {
 					    if ($p != '-1') {
-						    $query = 'SELECT title from #__forum WHERE forumid = '.$p;
+						    $query = $db->getQuery(true)
+							    ->select('title')
+							    ->from('#__forum')
+							    ->where('forumid = ' . $p);
+
 						    $db->setQuery($query);
 						    $title = $db->loadResult();
 						    $crumb = new stdClass();
@@ -578,7 +649,12 @@ JS;
 				    $crumb->title = 'Members List';
 				    $crumb->url = 'memberslist.php';
 				    $pathway[] = $crumb;
-				    $query = 'SELECT username FROM #__user WHERE userid = '.$db->Quote($uid);
+
+				    $query = $db->getQuery(true)
+					    ->select('username')
+					    ->from('#__user')
+					    ->where('userid = '.$db->Quote($uid));
+
 				    $db->setQuery($query);
 				    $username = $db->loadResult();
 				    $crumb = new stdClass();
@@ -702,15 +778,18 @@ JS;
      */
     function getSearchQuery(&$pluginParam)
     {
+	    $db = JFusionFactory::getDatabase($this->getJname());
         //need to return threadid, postid, title, text, created, section
-        $query = 'SELECT p.userid, p.threadid, p.postid, f.forumid, CASE WHEN p.title = "" THEN CONCAT("Re: ",t.title) ELSE p.title END AS title, p.pagetext AS text,
+	    $query = $db->getQuery(true)
+		    ->select('p.userid, p.threadid, p.postid, f.forumid, CASE WHEN p.title = "" THEN CONCAT("Re: ",t.title) ELSE p.title END AS title, p.pagetext AS text,
                     FROM_UNIXTIME(p.dateline, "%Y-%m-%d %h:%i:%s") AS created,
                     CONCAT_WS( "/", f.title_clean, t.title ) AS section,
-                    t.views AS hits
-                    FROM #__post AS p
-                    INNER JOIN #__thread AS t ON p.threadid = t.threadid
-                    INNER JOIN #__forum AS f on f.forumid = t.forumid';
-        return $query;
+                    t.views AS hits')
+		    ->from('#__post AS p')
+	        ->innerJoin('#__thread AS t ON p.threadid = t.threadid')
+		    ->innerJoin('#__forum AS f on f.forumid = t.forumid');
+
+        return (string)$query;
     }
 
     /**

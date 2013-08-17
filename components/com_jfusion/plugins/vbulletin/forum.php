@@ -77,7 +77,12 @@ class JFusionForum_vbulletin extends JFusionForum
     {
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT threadid, forumid, firstpostid AS postid FROM #__thread WHERE threadid = '.$threadid;
+
+		    $query = $db->getQuery(true)
+			    ->select('threadid, forumid, firstpostid AS postid')
+			    ->from('#__thread')
+			    ->where('threadid = '.$threadid);
+
 		    $db->setQuery($query);
 		    $results = $db->loadObject();
 	    } catch (Exception $e) {
@@ -96,7 +101,12 @@ class JFusionForum_vbulletin extends JFusionForum
     {
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT open FROM #__thread WHERE threadid = '.$threadid;
+
+		    $query = $db->getQuery(true)
+			    ->select('open')
+			    ->from('#__thread')
+			    ->where('threadid = '.$threadid);
+
 		    $db->setQuery($query);
 		    $open = $db->loadResult();
 		    $locked = ($open) ? false : true;
@@ -217,9 +227,13 @@ class JFusionForum_vbulletin extends JFusionForum
 				    throw new RuntimeException(JTEXT::_('GUEST_FIELDS_MISSING'));
 			    } else {
 				    $db = JFusionFactory::getDatabase($this->getJname());
-				    $query = 'SELECT COUNT(*) FROM #__user '
-					    . ' WHERE LOWER(username) = ' . strtolower($db->Quote($userinfo->username))
-					    . ' OR LOWER(email) = ' . strtolower($db->Quote($userinfo->username));
+
+				    $query = $db->getQuery(true)
+					    ->select('COUNT(*)')
+					    ->from('#__user')
+					    ->where('LOWER(username) = ' . $db->Quote(strtolower($userinfo->username)), 'OR')
+					    ->where('LOWER(email) = ' . $db->Quote(strtolower($userinfo->username)));
+
 				    $db->setQuery($query);
 				    $result = $db->loadResult();
 				    if (!empty($result)) {
@@ -228,7 +242,12 @@ class JFusionForum_vbulletin extends JFusionForum
 
 				    $name_field = $this->params->get('name_field');
 				    if (!empty($name_field)) {
-					    $query = 'SELECT COUNT(*) FROM #__userfield WHERE LOWER('.$name_field.') = ' . strtolower($db->Quote($userinfo->username)) . ' OR LOWER('.$name_field.') = ' . strtolower($db->Quote($userinfo->username));
+					    $query = $db->getQuery(true)
+						    ->select('COUNT(*)')
+						    ->from('#__userfield')
+						    ->where('LOWER('.$name_field.') = ' . strtolower($db->Quote($userinfo->username)), 'OR')
+						    ->where('LOWER('.$name_field.') = ' . strtolower($db->Quote($userinfo->username)));
+
 					    $db->setQuery($query);
 					    $result = $db->loadResult();
 					    if (!empty($result)) {
@@ -324,9 +343,12 @@ class JFusionForum_vbulletin extends JFusionForum
 	    try {
 		    $threadid = intval($id);
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT if (visible = 2, 1, 0) AS isdeleted,';
-		    $query.= ' thread.* FROM #__thread AS thread';
-		    $query.= ' WHERE thread.threadid = '.$threadid;
+
+		    $query = $db->getQuery(true)
+			    ->select('if (visible = 2, 1, 0) AS isdeleted, thread.*')
+			    ->from('#__thread AS thread')
+			    ->where('thread.threadid = '.$threadid);
+
 		    $db->setQuery($query);
 		    $threadinfo = $db->loadAssoc();
 	    } catch (Exception $e) {
@@ -343,10 +365,15 @@ class JFusionForum_vbulletin extends JFusionForum
      */
     function getForumInfo($id) {
 	    try {
-		    $jdb = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT * FROM #__forum WHERE forumid = ' . (int) $id;
-		    $jdb->setQuery($query);
-		    $foruminfo = $jdb->loadAssoc();
+		    $db = JFusionFactory::getDatabase($this->getJname());
+
+		    $query = $db->getQuery(true)
+			    ->select('*')
+			    ->from('#__forum')
+			    ->where('forumid = ' . (int) $id);
+
+		    $db->setQuery($query);
+		    $foruminfo = $db->loadAssoc();
 
 		    //set the forum options
 		    $options = array(
@@ -434,7 +461,12 @@ class JFusionForum_vbulletin extends JFusionForum
     {
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT replycount FROM #__thread WHERE threadid = '.$existingthread->threadid;
+
+		    $query = $db->getQuery(true)
+			    ->select('replycount')
+			    ->from('#__thread')
+			    ->where('threadid = '.$existingthread->threadid);
+
 		    $db->setQuery($query);
 		    $result = $db->loadResult();
 	    } catch (Exception $e) {
@@ -504,10 +536,15 @@ class JFusionForum_vbulletin extends JFusionForum
 	    $pmcount = array('total' => 0, 'unread' => 0);
 	    try {
 		    // initialise some objects
-		    $jdb = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT pmtotal,pmunread FROM #__user WHERE userid = ' . $userid;
-		    $jdb->setQuery($query);
-		    $vbPMData = $jdb->loadObject();
+		    $db = JFusionFactory::getDatabase($this->getJname());
+
+		    $query = $db->getQuery(true)
+			    ->select('pmtotal, pmunread')
+			    ->from('#__user')
+			    ->where('userid = ' . $userid);
+
+		    $db->setQuery($query);
+		    $vbPMData = $db->loadObject();
 		    $pmcount['total'] = $vbPMData->pmtotal;
 		    $pmcount['unread'] = $vbPMData->pmunread;
 	    } catch (Exception $e) {
@@ -544,16 +581,24 @@ class JFusionForum_vbulletin extends JFusionForum
 		    if ($userid) {
 			    $db = JFusionFactory::getDatabase($this->getJname());
 
-			    $query = 'SELECT u.avatarid, u.avatarrevision, avatarpath, NOT ISNULL(c.userid) AS usecustom, c.dateline
-                        FROM #__user AS u
-                        LEFT JOIN #__avatar AS a ON a.avatarid = u.avatarid
-                        LEFT JOIN #__customavatar AS c ON c.userid = u.userid
-                        WHERE u.userid = '.$userid;
+			    $query = $db->getQuery(true)
+				    ->select('u.avatarid, u.avatarrevision, avatarpath, NOT ISNULL(c.userid) AS usecustom, c.dateline')
+				    ->from('#__user AS u')
+			        ->leftJoin('#__avatar AS a ON a.avatarid = u.avatarid')
+				    ->leftJoin('#__customavatar AS c ON c.userid = u.userid')
+				    ->where('u.userid = ' . $userid);
+
 			    $db->setQuery($query);
 			    $avatar = $db->loadObject();
 
 			    $usefileavatar = $avatarurl = null;
-			    $query = 'SELECT varname, value FROM #__setting WHERE varname = \'usefileavatar\' OR varname = \'avatarurl\'';
+
+			    $query = $db->getQuery(true)
+				    ->select('varname, value')
+				    ->from('#__setting')
+				    ->where('varname = ' . $db->quote('usefileavatar'))
+				    ->where('varname = ' . $db->quote('avatarurl'));
+
 			    $db->setQuery($query);
 			    $settings = $db->loadObjectList();
 			    if ($settings) {
@@ -674,15 +719,27 @@ class JFusionForum_vbulletin extends JFusionForum
 				    $db = JFusionFactory::getDatabase($this->getJname());
 				    $userlookup = JFusionFunction::lookupUser($this->getJname(), $JUser->id);
 				    if (!empty($userlookup)) {
-					    $query = 'SELECT threadid, readtime FROM #__threadread WHERE userid = '.$userlookup->userid;
+					    $query = $db->getQuery(true)
+						    ->select('threadid, readtime')
+						    ->from('#__threadread')
+						    ->where('userid = '.$userlookup->userid);
+
 					    $db->setQuery($query);
 					    $marktimes['thread'] = $db->loadObjectList('threadid');
 
-					    $query = 'SELECT forumid, readtime FROM #__forumread WHERE userid = '.$userlookup->userid;
+					    $query = $db->getQuery(true)
+						    ->select('forumid, readtime')
+						    ->from('#__forumread')
+						    ->where('userid = '.$userlookup->userid);
+
 					    $db->setQuery($query);
 					    $marktimes['forum'] = $db->loadObjectList('forumid');
 
-					    $query = 'SELECT lastvisit FROM #__user WHERE userid = '.$userlookup->userid;
+					    $query = $db->getQuery(true)
+						    ->select('lastvisit')
+						    ->from('#__user')
+						    ->where('userid = '.$userlookup->userid);
+
 					    $db->setQuery($query);
 					    $marktimes['user'] = $db->loadResult();
 				    }
@@ -716,7 +773,12 @@ class JFusionForum_vbulletin extends JFusionForum
 	    try {
 		    //get the connection to the db
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'SELECT forumid as id, title_clean as name, options FROM #__forum ORDER BY forumid';
+
+		    $query = $db->getQuery(true)
+			    ->select('forumid as id, title_clean as name, options')
+			    ->from('#__forum')
+		        ->order('forumid');
+
 		    $db->setQuery($query);
 		    $results = $db->loadObjectList('id');
 		    //we have to filter out those that are considered categories
@@ -773,9 +835,16 @@ class JFusionForum_vbulletin extends JFusionForum
 			    //get the usergroup permissions
 			    $db = JFusionFactory::getDatabase($this->getJname());
 			    if ($userid != 0) {
-				    $query = 'SELECT u.usergroupid AS gid, u.membergroupids, g.forumpermissions AS perms FROM #__user AS u INNER JOIN #__usergroup AS g ON u.usergroupid = g.usergroupid WHERE u.userid = '.$userid;
+				    $query = $db->getQuery(true)
+					    ->select('u.usergroupid AS gid, u.membergroupids, g.forumpermissions AS perms')
+					    ->from('#__user AS u')
+				        ->innerJoin('#__usergroup AS g ON u.usergroupid = g.usergroupid')
+					    ->where('u.userid = '.$userid);
 			    } else {
-				    $query = 'SELECT usergroupid AS gid, forumpermissions AS perms FROM #__usergroup WHERE usergroupid = \'1\'';
+				    $query = $db->getQuery(true)
+					    ->select('usergroupid AS gid, forumpermissions AS perms')
+					    ->from('#__usergroup')
+					    ->where('usergroupid = '.$db->quote('1'));
 			    }
 			    $db->setQuery($query);
 			    $usergroup = $db->loadObject();
@@ -783,7 +852,12 @@ class JFusionForum_vbulletin extends JFusionForum
 			    //merge the permissions of member groups
 			    if (!empty($usergroup->membergroupids)) {
 				    $membergroups = explode(',', $usergroup->membergroupids);
-				    $query = 'SELECT forumpermissions FROM #__usergroup WHERE usergroupid IN ('.$usergroup->membergroupids.')';
+
+				    $query = $db->getQuery(true)
+					    ->select('forumpermissions')
+					    ->from('#__usergroup')
+					    ->where('usergroupid IN ('.$usergroup->membergroupids.')');
+
 				    $db->setQuery($query);
 				    $perms = $db->loadObjectList();
 				    foreach ($perms as $p) {
@@ -794,7 +868,13 @@ class JFusionForum_vbulletin extends JFusionForum
 				    }
 			    }
 			    //get custom forum permissions
-			    $query = 'SELECT p.forumpermissions, p.forumid, p.usergroupid, f.parentlist, f.childlist FROM #__forumpermission AS p INNER JOIN #__forum AS f ON p.forumid = f.forumid WHERE p.usergroupid = '.$usergroup->gid.' ORDER BY p.forumid';
+			    $query = $db->getQuery(true)
+				    ->select('p.forumpermissions, p.forumid, p.usergroupid, f.parentlist, f.childlist')
+				    ->from('#__forumpermission AS p')
+			        ->innerJoin('#__forum AS f ON p.forumid = f.forumid')
+				    ->where('p.usergroupid = '.$usergroup->gid)
+			        ->order('p.forumid');
+
 			    $db->setQuery($query);
 			    $perms = $db->loadObjectList();
 			    $tempPerms = array();
@@ -807,7 +887,13 @@ class JFusionForum_vbulletin extends JFusionForum
 			    }
 			    //get custom forum permissions for member groups
 			    if (!empty($membergroups)) {
-				    $query = 'SELECT p.forumpermissions, p.forumid, p.usergroupid, f.parentlist, f.childlist FROM #__forumpermission AS p INNER JOIN #__forum AS f ON p.forumid = f.forumid WHERE p.usergroupid IN ('.$usergroup->membergroupids.') ORDER BY p.forumid';
+				    $query = $db->getQuery(true)
+					    ->select('p.forumpermissions, p.forumid, p.usergroupid, f.parentlist, f.childlist')
+					    ->from('#__forumpermission AS p')
+					    ->innerJoin('#__forum AS f ON p.forumid = f.forumid')
+					    ->where('p.usergroupid IN ('.$usergroup->membergroupids.')')
+					    ->order('p.forumid');
+
 				    $db->setQuery($query);
 				    $perms = $db->loadObjectList();
 				    foreach ($perms as $p) {
