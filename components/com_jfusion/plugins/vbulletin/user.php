@@ -89,7 +89,7 @@ class JFusionUser_vbulletin extends JFusionUser
             $result->group_name = $db->loadResult();
 
             if (!empty($name_field)) {
-                $query = 'SELECT $name_field FROM #__userfield WHERE userid = '.$result->userid;
+                $query = 'SELECT '.$name_field.' FROM #__userfield WHERE userid = '.$result->userid;
                 $db->setQuery($query);
                 $name = $db->loadResult();
                 if (!empty($name)) {
