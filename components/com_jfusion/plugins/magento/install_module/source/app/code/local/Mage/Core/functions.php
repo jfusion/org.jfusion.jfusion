@@ -30,7 +30,13 @@
  * @link http://us3.php.net/manual/en/security.magicquotes.disabling.php
  */
 if (get_magic_quotes_gpc()) {
-    function mageUndoMagicQuotes($array, $topLevel=true) {
+	/**
+	 * @param      $array
+	 * @param bool $topLevel
+	 *
+	 * @return array
+	 */
+	function mageUndoMagicQuotes($array, $topLevel=true) {
         $newArray = array();
         foreach($array as $key => $value) {
             if (!$topLevel) {
@@ -132,6 +138,11 @@ function is_empty_date($date)
     return preg_replace('#[ 0:-]#', '', $date)==='';
 }
 
+/**
+ * @param $class
+ *
+ * @return bool|string
+ */
 function mageFindClassFile($class)
 {
     if (defined('COMPILER_INCLUDE_PATH')) {
@@ -253,6 +264,13 @@ function mageCoreErrorHandler($errno, $errstr, $errfile, $errline){
     return false;
 }
 
+/**
+ * @param bool $return
+ * @param bool $html
+ * @param bool $showFirst
+ *
+ * @return bool|string
+ */
 function mageDebugBacktrace($return=false, $html=true, $showFirst=false)
 {
     $d = debug_backtrace();
@@ -297,6 +315,9 @@ function mageSendErrorFooter()
     */
 }
 
+/**
+ * @param $path
+ */
 function mageDelTree($path) {
     if (is_dir($path)) {
         $entries = scandir($path);
@@ -311,6 +332,14 @@ function mageDelTree($path) {
     }
 }
 
+/**
+ * @param        $string
+ * @param string $delimiter
+ * @param string $enclosure
+ * @param string $escape
+ *
+ * @return array
+ */
 function mageParseCsv($string, $delimiter=",", $enclosure='"', $escape='\\')
 {
     $elements = explode($delimiter, $string);
@@ -337,6 +366,11 @@ function mageParseCsv($string, $delimiter=",", $enclosure='"', $escape='\\')
     return $elements;
 }
 
+/**
+ * @param $dir
+ *
+ * @return bool
+ */
 function is_dir_writeable($dir)
 {
     if (is_dir($dir) && is_writable($dir)) {
@@ -361,7 +395,10 @@ function is_dir_writeable($dir)
 if ( !function_exists('sys_get_temp_dir') ) {
     // Based on http://www.phpit.net/
     // article/creating-zip-tar-archives-dynamically-php/2/
-    function sys_get_temp_dir()
+	/**
+	 * @return bool|string
+	 */
+	function sys_get_temp_dir()
     {
         // Try to get from environment variable
         if ( !empty($_ENV['TMP']) ) {
@@ -386,6 +423,9 @@ if ( !function_exists('sys_get_temp_dir') ) {
 }
 
 /* Determine correct language store based on browser */
+/**
+ * @return Mage_Core_Model_Store
+ */
 function getStoreForLanguage()
 {
     if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {

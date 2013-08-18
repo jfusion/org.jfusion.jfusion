@@ -12,9 +12,9 @@ class Jfusion_Joomla_Block_Module extends Mage_Core_Block_Template {
 
 	/**
 	 * Save the data of each modules before to render them
-	 * $type: it should be the name of the type of module loaded (exple: mod_mainmenu -> $type=mainmenu) - required
-	 * $title: the title provided in the backend of Joomla for the specified module (exple: Footer) - optionnal
-	 * $id: it's the id of the module, you can find it in the module list in your backend, in the right column ID - optionnal
+	 * $type: it should be the name of the type of module loaded (example: mod_mainmenu -> $type=mainmenu) - required
+	 * $title: the title provided in the backend of Joomla for the specified module (example: Footer) - optional
+	 * $id: it's the id of the module, you can find it in the module list in your backend, in the right column ID - optional
 	 * $style: xhtml, none or chrome style of your template
 	 * If you don't provide id or title but type, it will generate a dummy module of the module's type
 	 *
@@ -42,8 +42,8 @@ class Jfusion_Joomla_Block_Module extends Mage_Core_Block_Template {
 	 * @return string $output
 	 */
 	public function getModule() {
+		$out = '';
 		try{
-    	    $out = '';
     		if (is_array ( $this->_data ['modules'] )) {
     			foreach ( $this->_data ['modules'] as $module ) {
     				$out .= $this->helper ( 'joomla/module' )->getJoomlaModule ( $module ['type'], $module ['title'], $module ['id'], $module['style'], $module['debug'] );
@@ -67,7 +67,7 @@ class Jfusion_Joomla_Block_Module extends Mage_Core_Block_Template {
 	
 	/**
 	* This method allows you to get only li tags from a Joomla menu or any module using only <ul><li>...</li></ul>
-	* Very usefull to integrate a menu module to Magento for example. You need then to bring the module into the catalog/navigation/top.html for example
+	* Very useful to integrate a menu module to Magento for example. You need then to bring the module into the catalog/navigation/top.html for example
 	*
     * @param $value
 	*/	

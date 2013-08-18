@@ -38,6 +38,7 @@ class Jfusion_Joomla_Helper_Adapter_Curl extends Varien_Http_Adapter_Curl {
 
     /**
      * @param $array
+     * @return void
      */
     function setOptions($array) {
 		foreach ( $array as $value ) {

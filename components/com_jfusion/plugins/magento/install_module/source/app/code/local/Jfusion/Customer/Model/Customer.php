@@ -12,14 +12,15 @@
  */
 class Jfusion_Customer_Model_Customer extends Mage_Customer_Model_Customer{
 
-    /**
-     * Authenticate customer
-     *
-     * @param  string $login
-     * @param  string $password
-     * @return true
-     * @throws RuntimeException
-     */
+	/**
+	 * Authenticate customer
+	 *
+	 * @param  string $login
+	 * @param  string $password
+	 *
+	 * @throws Mage_Core_Exception
+	 * @return true
+	 */
     public function authenticate($login, $password)
     {
         if(strpos($login, '@') !== false){

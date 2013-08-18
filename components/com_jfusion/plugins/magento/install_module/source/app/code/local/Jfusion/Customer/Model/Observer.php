@@ -13,7 +13,7 @@ class Jfusion_Customer_Model_Observer extends Mage_Customer_Model_Observer {
      * @throws Mage_Core_Exception
      */
     public function isActive($observer)
-    {   
+    {
     	$customer = $observer->getEvent()->getModel();
     	// Add the inactive option - rissip
         if($customer->getIsActive () != '1' ){
