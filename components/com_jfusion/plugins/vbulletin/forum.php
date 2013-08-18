@@ -419,32 +419,58 @@ class JFusionForum_vbulletin extends JFusionForum
     function getPosts($dbparams, $existingthread)
     {
 	    try {
+		    $db = JFusionFactory::getDatabase($this->getJname());
+
 		    //set the query
 		    $sort = $dbparams->get('sort_posts');
-		    $where = 'WHERE a.threadid = '.$existingthread->threadid.' AND a.postid != '.$existingthread->postid.' AND a.visible = 1';
-		    $name_field = $this->params->get('name_field');
+		    $where = 'a.threadid = '.$existingthread->threadid.' AND a.postid != '.$existingthread->postid.' AND a.visible = 1';
+
 		    if (empty($name_field)) {
-			    $query = 'SELECT a.postid , a.username, a.username as name, a.userid, CASE WHEN a.userid = 0 THEN 1 ELSE 0 END AS guest, a.title, a.dateline, a.pagetext, a.threadid, b.title AS threadtitle FROM `#__post` as a INNER JOIN `#__thread` as b ON a.threadid = b.threadid '.$where.' ORDER BY a.dateline '.$sort;
+			    $query = $db->getQuery(true)
+				    ->select('a.postid , a.username, a.username as name, a.userid, CASE WHEN a.userid = 0 THEN 1 ELSE 0 END AS guest, a.title, a.dateline, a.pagetext, a.threadid, b.title AS threadtitle')
+				    ->from('#__post as a')
+			        ->innerJoin('#__thread` as b ON a.threadid = b.threadid')
+				    ->where('a.threadid = '.$existingthread->threadid)
+				    ->where('a.postid != '.$existingthread->postid)
+				    ->where('a.visible = 1')
+			        ->order('a.dateline '.$sort);
 		    } else {
-			    $query = '(SELECT a.postid , a.username, CASE WHEN f.'.$name_field.' IS NULL OR f.'.$name_field.' = \'\' THEN a.username ELSE f.'.$name_field.' END AS name, a.userid, 0 AS guest, a.title, a.dateline, a.dateline as order_by_date, a.pagetext, a.threadid, b.title AS threadtitle FROM `#__post` as a INNER JOIN `#__thread` as b ON a.threadid = b.threadid INNER JOIN `#__userfield` as f ON f.userid = a.userid '.$where.' AND a.userid != 0)';
-			    $query.= ' UNION ';
-			    $query.= '(SELECT a.postid , a.username, a.username as name, a.userid, 1 AS guest, a.title, a.dateline, a.dateline as order_by_date, a.pagetext, a.threadid, b.title AS threadtitle FROM `#__post` as a INNER JOIN `#__thread` as b ON a.threadid = b.threadid '.$where.' AND a.userid = 0)';
-			    $query.= ' ORDER BY order_by_date '.$sort;
+			    $name_field = $this->params->get('name_field');
+
+			    $q1 = $db->getQuery(true)
+				    ->select('a.postid , a.username, CASE WHEN f.'.$name_field.' IS NULL OR f.'.$name_field.' = \'\' THEN a.username ELSE f.'.$name_field.' END AS name, a.userid, 0 AS guest, a.title, a.dateline, a.dateline as order_by_date, a.pagetext, a.threadid, b.title AS threadtitle')
+				    ->from('#__post as a')
+				    ->innerJoin('#__thread as b ON a.threadid = b.threadid')
+				    ->innerJoin('#__userfield as f ON f.userid = a.userid')
+				    ->where('a.threadid = '.$existingthread->threadid)
+				    ->where('a.postid != '.$existingthread->postid)
+				    ->where('a.visible = 1')
+				    ->where('a.userid != 0');
+
+			    $q2 = $db->getQuery(true)
+				    ->select('a.postid , a.username, a.username as name, a.userid, 1 AS guest, a.title, a.dateline, a.dateline as order_by_date, a.pagetext, a.threadid, b.title AS threadtitle')
+				    ->from('#__post as a')
+				    ->innerJoin('#__thread as b ON a.threadid = b.threadid')
+				    ->where('a.threadid = '.$existingthread->threadid)
+				    ->where('a.postid != '.$existingthread->postid)
+				    ->where('a.visible = 1')
+				    ->where('a.userid != 0');
+
+			    $query = '( '.(string)$q1.' ) UNION ( '.(string)$q2.' ) ORDER BY order_by_date '.$sort;
 		    }
-		    $jdb = JFusionFactory::getDatabase($this->getJname());
 
 		    if($dbparams->get('enable_pagination',true)) {
 			    $application = JFactory::getApplication() ;
 			    $limit = (int) $application->getUserStateFromRequest( 'global.list.limit_discuss', 'limit_discuss', 5, 'int' );
 			    $limitstart = (int) $application->getUserStateFromRequest( 'global.list.limitstart_discuss', 'limitstart_discuss', 0, 'int' );
-			    $jdb->setQuery($query, $limitstart, $limit);
+			    $db->setQuery($query, $limitstart, $limit);
 		    } else {
 			    $limit_posts = $dbparams->get('limit_posts');
 			    $query .= empty($limit_posts) || trim($limit_posts)==0 ? '' :  ' LIMIT 0,'.$limit_posts;
-			    $jdb->setQuery($query);
+			    $db->setQuery($query);
 		    }
 
-		    $posts = $jdb->loadObjectList();
+		    $posts = $db->loadObjectList();
 	    } catch (Exception $e) {
 		    JFusionFunction::raiseError($e, $this->getJname());
 		    $posts = array();
