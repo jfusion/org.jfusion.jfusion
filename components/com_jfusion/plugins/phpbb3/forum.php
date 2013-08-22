@@ -513,7 +513,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 									    ->select('auth_option_id, auth_setting')
 									    ->from('#__acl_roles_data')
 								        ->where('role_id = '.$r->auth_role_id)
-									    ->where('auth_option_id = IN (\''.$global_id.'\', \''.$read_id.'\')');
+									    ->where('auth_option_id IN (\''.$global_id.'\', \''.$read_id.'\')');
 
 								    $db->setQuery($query);
 								    $role_permissions = $db->loadObjectList('auth_option_id');
@@ -553,7 +553,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 									    ->select('auth_option_id, auth_setting')
 									    ->from('#__acl_roles_data')
 									    ->where('role_id = '.$r->auth_role_id)
-									    ->where('auth_option_id = IN (\''.$global_id.'\', \''.$read_id.'\')');
+									    ->where('auth_option_id IN (\''.$global_id.'\', \''.$read_id.'\')');
 
 								    $db->setQuery($query);
 								    $role_permissions = $db->loadObjectList('auth_option_id');
