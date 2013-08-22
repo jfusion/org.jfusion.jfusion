@@ -1166,7 +1166,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 				->from('#__posts')
 				->where('topic_id = ' . $existingthread->threadid)
 				->where('post_approved = 1')
-				->where('post_id = ' . $existingthread->postid);
+				->where('post_id != ' . $existingthread->postid);
 
 			$db->setQuery($query);
 			$result = $db->loadResult();
