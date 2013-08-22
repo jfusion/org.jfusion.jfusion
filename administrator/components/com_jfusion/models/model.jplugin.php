@@ -667,7 +667,7 @@ class JFusionJplugin
 				    if ($params->get('case_insensitive')) {
 					    $query->where('LOWER(' . $identifier_type . ') = ' . $db->Quote(strtolower($identifier)));
 				    } else {
-					    $query->where('' . $identifier_type . ' = ' . $db->Quote($identifier));
+					    $query->where($identifier_type . ' = ' . $db->Quote($identifier));
 				    }
 				    //check directly in the joomla user table
 				    $db->setQuery($query);
