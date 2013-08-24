@@ -630,9 +630,9 @@ class JFusionPublic_smf extends JFusionPublic
         $db = JFusionFactory::getDatabase($this->getJname());
         $pathway = array();
 
-        list ($board_id ) = split  ( '.'  , JRequest::getVar('board'),1 );
-        list ($topic_id ) = split  ( '.'  , JRequest::getVar('topic'),1 );
-        list ($action ) = split  ( ';'  , JRequest::getVar('action'),1 );
+        list ($board_id ) = explode( '.'  , JRequest::getVar('board'),1 );
+        list ($topic_id ) = explode( '.'  , JRequest::getVar('topic'),1 );
+        list ($action ) = explode( ';'  , JRequest::getVar('action'),1 );
 
         $msg = JRequest::getVar('msg');
 
