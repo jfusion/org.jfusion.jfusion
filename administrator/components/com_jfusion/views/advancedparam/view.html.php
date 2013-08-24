@@ -137,7 +137,7 @@ class jfusionViewadvancedparam extends JView
 		$noSelected->id = null;
 		$noSelected->name = JText::_('SELECT_ONE');
 		$rows = array_merge(array($noSelected), $rows);
-		$attributes = array('size' => '1', 'class' => 'inputbox', 'onchange' => 'jPluginChange(this);');
+		$attributes = array('size' => '1', 'class' => 'inputbox');
 		$output = JHTML::_('select.genericlist', $rows, 'params[jfusionplugin]', $attributes, 'id', 'name', $JPlugin);
 		$featureLink = '';
 		if (isset($this->featureArray[$feature])) {
