@@ -871,22 +871,25 @@ JS;
 
 			    //get a list of field names for custom profile fields
 			    $custom_fields = $db->getTableColumns('#__userfield');
-			    unset($custom_fields['#__userfield']['userid']);
-			    unset($custom_fields['#__userfield']['temp']);
+			    if ($custom_fields) {
+				    unset($custom_fields['userid']);
+				    unset($custom_fields['temp']);
 
-			    $vb_options = array();
-			    $vb_options = array(JHTML::_('select.option', '', '', 'id', 'name'));
-			    foreach($custom_fields['#__userfield'] as $field  => $type) {
-				    $query = $db->getQuery(true)
-					    ->select('text')
-					    ->from('#__phrase')
-					    ->where('varname = ' . $db->quote($field.'_title'))
-					    ->where('fieldname = ' . $db->quote('cprofilefield'));
+				    $vb_options = array();
+				    $vb_options = array(JHTML::_('select.option', '', '', 'id', 'name'));
+				    foreach($custom_fields as $field  => $type) {
+					    $query = $db->getQuery(true)
+						    ->select('text')
+						    ->from('#__phrase')
+						    ->where('varname = ' . $db->quote($field.'_title'))
+						    ->where('fieldname = ' . $db->quote('cprofilefield'));
 
-				    $db->setQuery($query, 0, 1);
-				    $title = $db->loadResult();
-				    $vb_options[] = JHTML::_('select.option', $field, $title, 'id', 'name');
+					    $db->setQuery($query, 0, 1);
+					    $title = $db->loadResult();
+					    $vb_options[] = JHTML::_('select.option', $field, $title, 'id', 'name');
+				    }
 			    }
+
 			    $value = (empty($value)) ? '' : $value;
 
 			    return JHTML::_('select.genericlist', $vb_options, $control_name . '[' . $name . ']', 'class="inputbox"', 'id', 'name', $value);

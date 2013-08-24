@@ -155,15 +155,17 @@ class JFusionAdmin_efront extends JFusionAdmin
 		    // Also we need an indication that the module initialisation needs to be performed for this user
 		    // because we cannot run this from outside eFront (unless we load the whole framework on top of Joomla)
 		    $tableFields = $db->getTableColumns('users',false);
-		    if (!array_key_exists('id',$tableFields['users'])) {
-			    $query = 'ALTER TABLE users ADD id int(11) NOT null AUTO_INCREMENT FIRST, ADD UNIQUE (id)';
-			    $db->setQuery($query);
-			    $db->execute();
-		    }
-		    if (!array_key_exists('need_mod_init',$tableFields['users'])) {
-			    $query = 'ALTER TABLE users ADD need_mod_init int(11) NOT null DEFAULT 0';
-			    $db->setQuery($query);
-			    $db->execute();
+		    if ($tableFields) {
+			    if (!array_key_exists('id', $tableFields)) {
+				    $query = 'ALTER TABLE users ADD id int(11) NOT null AUTO_INCREMENT FIRST, ADD UNIQUE (id)';
+				    $db->setQuery($query);
+				    $db->execute();
+			    }
+			    if (!array_key_exists('need_mod_init', $tableFields)) {
+				    $query = 'ALTER TABLE users ADD need_mod_init int(11) NOT null DEFAULT 0';
+				    $db->setQuery($query);
+				    $db->execute();
+			    }
 		    }
 
 		    $query = $db->getQuery(true)
