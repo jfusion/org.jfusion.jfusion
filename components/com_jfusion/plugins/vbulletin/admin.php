@@ -871,12 +871,12 @@ JS;
 
 			    //get a list of field names for custom profile fields
 			    $custom_fields = $db->getTableColumns('#__userfield');
+
+			    $vb_options = array(JHTML::_('select.option', '', '', 'id', 'name'));
 			    if ($custom_fields) {
 				    unset($custom_fields['userid']);
 				    unset($custom_fields['temp']);
 
-				    $vb_options = array();
-				    $vb_options = array(JHTML::_('select.option', '', '', 'id', 'name'));
 				    foreach($custom_fields as $field  => $type) {
 					    $query = $db->getQuery(true)
 						    ->select('text')
