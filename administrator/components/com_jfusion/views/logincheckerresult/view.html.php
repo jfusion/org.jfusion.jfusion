@@ -31,6 +31,11 @@ defined('_JEXEC') or die('Restricted access');
 class jfusionViewLoginCheckerResult extends JViewLegacy
 {
 	/**
+	 * @var array $options
+	 */
+	var $options;
+
+	/**
 	 * displays the view
 	 *
 	 * @param string $tpl template name

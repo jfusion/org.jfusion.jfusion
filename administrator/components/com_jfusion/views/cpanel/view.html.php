@@ -29,6 +29,11 @@ defined('_JEXEC') or die('Restricted access');
  */
 class jfusionViewcpanel extends JViewLegacy
 {
+	/**
+	 * @var SimpleXMLElement $JFusionCpanel
+	 */
+	var $JFusionCpanel;
+
     /**
      * displays the view
      *

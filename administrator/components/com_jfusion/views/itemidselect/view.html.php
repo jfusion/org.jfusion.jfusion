@@ -30,6 +30,16 @@ defined('_JEXEC') or die('Restricted access');
  */
 class jfusionViewitemidselect extends JViewLegacy
 {
+	/**
+	 * @var array $menuitems
+	 */
+	var $menuitems;
+
+	/**
+	 * @var array $directlinks
+	 */
+	var $directlinks;
+
     /**
      * displays the view
      *

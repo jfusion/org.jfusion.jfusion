@@ -153,7 +153,7 @@ class JFusionUsersync
      *
      * @param string $syncid the usersync id
      *
-     * @return string nothing
+     * @return array
      */
     public static function getSyncdata($syncid)
     {

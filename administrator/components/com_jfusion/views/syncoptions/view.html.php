@@ -30,8 +30,37 @@ defined('_JEXEC') or die('Restricted access');
  */
 class jfusionViewsyncoptions extends JViewLegacy
 {
+	/**
+	 * @var $syncid string
+	 */
+	var $syncid;
 
-    /**
+	/**
+	 * @var $sync_mode string
+	 */
+	var $sync_mode;
+
+	/**
+	 * @var $master_data array
+	 */
+	var $master_data;
+
+	/**
+	 * @var $slave_data array
+	 */
+	var $slave_data;
+
+	/**
+	 * @var $sync_active int
+	 */
+	var $sync_active;
+
+	/**
+	 * @var $syncdata array
+	 */
+	var $syncdata;
+
+	/**
      * displays the view
      *
      * @param string $tpl template name
@@ -89,9 +118,6 @@ class jfusionViewsyncoptions extends JViewLegacy
                 $slave_data[$slave->name]['jname'] = $slave->name;
                 unset($JFusionSlave);
             }
-            //serialise the data for storage in the usersync table
-            $slave_serial = serialize($slave_data);
-            $master_serial = serialize($master_data);
 
             //print out results to user
 	        $this->sync_mode = $mode;

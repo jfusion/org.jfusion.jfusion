@@ -30,6 +30,21 @@ defined('_JEXEC') or die('Restricted access');
  */
 class jfusionViewsyncerrordetails extends JViewLegacy
 {
+	/**
+	 * @var $syncdata array
+	 */
+	var $syncdata;
+
+	/**
+	 * @var $synclog array
+	 */
+	var $synclog;
+
+	/**
+	 * @var $syncid string
+	 */
+	var $syncid;
+
     /**
      * displays the view
      *

@@ -30,6 +30,10 @@ defined('_JEXEC') or die('Restricted access');
  */
 class jfusionViewwizard extends JViewLegacy
 {
+	/**
+	 * @var $jname string
+	 */
+	var $jname;
 
     /**
      * displays the view

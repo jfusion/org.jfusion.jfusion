@@ -30,8 +30,30 @@ defined('_JEXEC') or die('Restricted access');
  */
 class jfusionViewsyncstatus extends JViewLegacy
 {
-    var $syncid;
-    var $syncdata;
+ 	/**
+	 * @var string $syncid
+	 */
+	var $syncid;
+
+	/**
+	 * @var int $errorCount
+	 */
+	var $errorCount;
+
+	/**
+	 * @var $pageNav JPagination
+	 */
+	var $pageNav;
+
+	/**
+	 * @var $filter array
+	 */
+	var $filter;
+
+	/**
+	 * @var $syncdata array
+	 */
+	var $syncdata;
 
     /**
      * displays the view
@@ -66,7 +88,7 @@ class jfusionViewsyncstatus extends JViewLegacy
         $limit              = (int)$mainframe->getUserStateFromRequest( 'global.list.limit', 'limit', $mainframe->getCfg('list_limit'), 'int' );
         $limitstart         = (int)$mainframe->getUserStateFromRequest( $option.'.limitstart', 'limitstart', 0, 'int' );
         $syncdata['log'] = JFusionUsersync::getLogData($this->syncid, 'all', $limitstart, $limit, $filter_order, $filter_order_Dir);
-        $filter = array('order' => $filter_order, 'dir' => $filter_order_Dir, 'limit' => $limit, 'limitstart' => $limitstart, 'client' => $client);
+        $filter =
 
         $db = JFactory::getDBO();
 
@@ -78,10 +100,9 @@ class jfusionViewsyncstatus extends JViewLegacy
         $db->setQuery($query);
         $total = $db->loadResult();
         jimport('joomla.html.pagination');
-        $pageNav = new JPagination($total, $limitstart, $limit);
 
-	    $this->pageNav = $pageNav;
-	    $this->filter = $filter;
+	    $this->pageNav = new JPagination($total, $limitstart, $limit);
+	    $this->filter = array('order' => $filter_order, 'dir' => $filter_order_Dir, 'limit' => $limit, 'limitstart' => $limitstart, 'client' => $client);
 	    $this->syncdata = $syncdata;
 
 	    $this->errorCount = JFusionUsersync::countLogData($this->syncid, 'error');

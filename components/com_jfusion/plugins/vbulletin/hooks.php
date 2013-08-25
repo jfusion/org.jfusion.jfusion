@@ -104,7 +104,7 @@ class executeJFusionHook
                 $redirect = false;
             }
 
-            if ($redirect) {
+            if ($redirect && defined('JOOMLABASEURL')) {
                 $filename = basename($s);
                 $query = $_SERVER['QUERY_STRING'];
                 if (defined('SEFENABLED') && SEFENABLED) {
@@ -240,34 +240,38 @@ class executeJFusionHook
             }
             */
             //we need to update the session table
-            $vdb = JFusionFactory::getDatabase(_VBJNAME);
-            if (!empty($vdb)) {
-                $vars = & $vbulletin->session->vars;
-                if ($vbulletin->session->created) {
-                    $bypass = ($vars[bypass]) ? 1 : 0;
-                    $query = "INSERT IGNORE INTO #__session
+	        if (defined('_VBJNAME')) {
+		        $vdb = JFusionFactory::getDatabase(_VBJNAME);
+		        if (!empty($vdb)) {
+			        $vars = & $vbulletin->session->vars;
+			        if ($vbulletin->session->created) {
+				        $bypass = ($vars['bypass']) ? 1 : 0;
+				        $query = "INSERT IGNORE INTO #__session
                             (sessionhash, userid, host, idhash, lastactivity, location, styleid, languageid, loggedin, inforum, inthread, incalendar, badlocation, useragent, bypass, profileupdate) VALUES
                             ({$vdb->Quote($vars[dbsessionhash]) },$vars[userid],{$vdb->Quote($vars[host]) },{$vdb->Quote($vars[idhash]) },$vars[lastactivity],{$vdb->Quote($vars[location]) },$vars[styleid],$vars[languageid],
                             $vars[loggedin],$vars[inforum],$vars[inthread],$vars[incalendar],$vars[badlocation],{$vdb->Quote($vars[useragent]) },$bypass,$vars[profileupdate])";
-                } else {
-                    $query = "UPDATE #__session SET lastactivity = $vars[lastactivity], inforum = $vars[inforum], inthread = $vars[inthread], incalendar = $vars[incalendar], badlocation = $vars[badlocation]
+			        } else {
+				        $query = "UPDATE #__session SET lastactivity = $vars[lastactivity], inforum = $vars[inforum], inthread = $vars[inthread], incalendar = $vars[incalendar], badlocation = $vars[badlocation]
                             WHERE sessionhash = {$vdb->Quote($vars[dbsessionhash]) }";
-                }
-                $vdb->setQuery($query);
-                $vdb->execute();
-            }
-            //we need to perform the shutdown queries that mark PMs read, etc
-            if (is_array($vbulletin->db->shutdownqueries)) {
-                foreach ($vbulletin->db->shutdownqueries AS $name => $query) {
-                    if (!empty($query) AND ($name !== 'pmpopup' OR !defined('NOPMPOPUP'))) {
-                        $vdb->setQuery($query);
-                        $vdb->execute();
-                    }
-                }
-            }
-            //echo the output and return an exception to allow Joomla to continue
-            echo trim($this->vars, "\n\r\t.");
-            Throw new RuntimeException('vBulletin exited.');
+			        }
+			        $vdb->setQuery($query);
+			        $vdb->execute();
+		        }
+		        //we need to perform the shutdown queries that mark PMs read, etc
+		        if (is_array($vbulletin->db->shutdownqueries)) {
+			        foreach ($vbulletin->db->shutdownqueries AS $name => $query) {
+				        if (!empty($query) AND ($name !== 'pmpopup' OR !defined('NOPMPOPUP'))) {
+					        $vdb->setQuery($query);
+					        $vdb->execute();
+				        }
+			        }
+		        }
+		        //echo the output and return an exception to allow Joomla to continue
+		        echo trim($this->vars, "\n\r\t.");
+		        Throw new RuntimeException('vBulletin exited.');
+	        } else {
+		        Throw new RuntimeException('vBulletin exited. _VBJNAME not defined');
+	        }
         }
     }
 
@@ -400,7 +404,9 @@ class executeJFusionHook
             }
             // do the login
             global $JFusionActivePlugin;
-            $JFusionActivePlugin =  _VBJNAME;
+	        if (defined('_VBJNAME')) {
+		        $JFusionActivePlugin =  _VBJNAME;
+	        }
             $baseURL = (class_exists('JFusionFunction')) ? JFusionFunction::getJoomlaURL() : JURI::root();
             $loginURL = JRoute::_($baseURL . 'index.php?option=com_user&task=login', false);
             $credentials = array('username' => $vbulletin->userinfo['username'], 'password' => $password, 'password_salt' => $vbulletin->userinfo['salt']);
@@ -443,7 +449,9 @@ class executeJFusionHook
                 define('_VBULLETIN_JFUSION_HOOK', true);
             }
             global $JFusionActivePlugin;
-            $JFusionActivePlugin =  _VBJNAME;
+	        if (defined('_VBJNAME')) {
+		        $JFusionActivePlugin =  _VBJNAME;
+	        }
             // logout any joomla users
             $mainframe->logout();
             // clean up session
@@ -479,12 +487,12 @@ class executeJFusionHook
     {
         global $vbsefmode, $vbsefenabled, $baseURL;
         static $profileurlSet;
-        if (!empty($this->vars[profileurl]) && $profileurlSet !== true) {
+        if (!empty($this->vars['profileurl']) && $profileurlSet !== true) {
             $uid = JFactory::getApplication()->input->get('u');
             if ($vbsefenabled && $vbsefmode) {
-                $this->vars[profileurl] = str_replace('member.php?u='.$uid, '', $this->vars[profileurl]);
+                $this->vars['profileurl'] = str_replace('member.php?u='.$uid, '', $this->vars['profileurl']);
             } else {
-                $this->vars[profileurl] = $baseURL . '&jfile=member.php&u='.$uid;
+                $this->vars['profileurl'] = $baseURL . '&jfile=member.php&u='.$uid;
             }
             $profileurlSet = true;
         }
@@ -528,17 +536,19 @@ class executeJFusionHook
         }
 
         //parse AJAX output
-        $public = JFusionFactory::getPublic(_VBJNAME);
-        $params = JFusionFactory::getParams(_VBJNAME);
+	    if (defined('_VBJNAME')) {
+		    $public = JFusionFactory::getPublic(_VBJNAME);
+		    $params = JFusionFactory::getParams(_VBJNAME);
 
-        $jdata = new stdClass();
-        $jdata->body = & $this->vars;
-        $jdata->Itemid = $params->get('plugin_itemid');
-        //Get the base URL to the specific JFusion plugin
-        $jdata->baseURL = JFusionFunction::getPluginURL($jdata->Itemid);
-        //Get the integrated URL
-        $jdata->integratedURL = $params->get('source_url');
-        $public->parseBody($jdata);
+		    $jdata = new stdClass();
+		    $jdata->body = & $this->vars;
+		    $jdata->Itemid = $params->get('plugin_itemid');
+		    //Get the base URL to the specific JFusion plugin
+		    $jdata->baseURL = JFusionFunction::getPluginURL($jdata->Itemid);
+		    //Get the integrated URL
+		    $jdata->integratedURL = $params->get('source_url');
+		    $public->parseBody($jdata);
+	    }
     }
 
     /**

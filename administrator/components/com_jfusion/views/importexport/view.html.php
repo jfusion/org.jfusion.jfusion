@@ -35,6 +35,11 @@ class jfusionViewimportexport extends JViewLegacy
 	 */
 	var $list;
 
+	/**
+	 * @var $jname string
+	 */
+	var $jname;
+
     /**
      * displays the view
      *

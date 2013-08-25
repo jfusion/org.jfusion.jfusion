@@ -33,6 +33,17 @@ jimport('joomla.application.component.view');
  */
 
 class jfusionViewplugindisplay extends JViewLegacy {
+
+	/**
+	 * @var $plugins array
+	 */
+	var $plugins;
+
+	/**
+	 * @var $VersionData array
+	 */
+	var $VersionData;
+
     /**
      * displays the view
      *

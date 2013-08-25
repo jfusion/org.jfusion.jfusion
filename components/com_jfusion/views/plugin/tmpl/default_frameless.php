@@ -6,7 +6,7 @@
  * @copyright Copyright (C) 2008 JFusion. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
  *
- * @var jfusionViewPlugin $this
+ * @var $this jfusionViewPlugin
  */
 
 // no direct access

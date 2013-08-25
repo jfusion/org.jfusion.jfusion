@@ -30,6 +30,11 @@ defined('_JEXEC') or die('Restricted access');
  */
 class jfusionViewLogoutCheckerResult extends JViewLegacy
 {
+	/**
+	 * @var $debug array
+	 */
+	var $debug;
+
     /**
      * displays the view
      *

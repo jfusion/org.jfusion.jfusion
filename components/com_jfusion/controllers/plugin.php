@@ -19,7 +19,6 @@ jimport('joomla.application.component.controller');
 
 class JFusionControllerPlugin extends JControllerLegacy
 {
-
 	/**
 	 * Displays the profile for a user
 	 */
@@ -82,6 +81,10 @@ class JFusionControllerPlugin extends JControllerLegacy
             }
 
             //load the view
+			/**
+			 * @ignore
+			 * @var $view jfusionViewPlugin
+			 */
             $view = $this->getView('plugin', 'html');
             //render the view
             $view->jname = $jname;

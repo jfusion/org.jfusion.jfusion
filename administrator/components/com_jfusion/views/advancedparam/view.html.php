@@ -36,6 +36,17 @@ class jfusionViewadvancedparam extends JViewLegacy
 		'useractivity' => 'useractivity.xml');
 
 	/**
+	 * @var $toolbar string
+	 */
+	var $toolbar;
+
+	/**
+	 * @var $comp array
+	 */
+	var $comp;
+
+
+	/**
 	 * displays the view
 	 *
 	 * @param string $tpl template name

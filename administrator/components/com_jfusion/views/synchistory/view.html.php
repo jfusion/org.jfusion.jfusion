@@ -30,6 +30,11 @@ defined('_JEXEC') or die('Restricted access');
  */
 class jfusionViewsynchistory extends JViewLegacy
 {
+	/**
+	 * @var $rows array
+	 */
+	var $rows;
+
     /**
      * displays the view
      *

@@ -38,7 +38,6 @@ class JFusionControllerWeb extends JControllerLegacy
             $params = $menu->getParams ( null );
         }
 
-
         // Set the default view name from the Request
         /**
          * @ignore

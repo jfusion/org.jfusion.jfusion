@@ -22,6 +22,26 @@ require_once (JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTO
  */
 class jfusionViewWeb extends JViewLegacy {
 
+	/**
+	 * @var $rows array
+	 */
+	var $rows;
+
+	/**
+	 * @var $style string
+	 */
+	var $style;
+
+	/**
+	 * @var $body string
+	 */
+	var $body;
+
+	/**
+	 * @var $params JRegistry
+	 */
+	var $params;
+
     /**
      * @param null $tpl
      *

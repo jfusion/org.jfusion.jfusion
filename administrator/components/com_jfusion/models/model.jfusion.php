@@ -585,7 +585,7 @@ class JFusionFunction
     /**
      * Creates the URL of a Joomla article
      *
-     * @param string &$contentitem contentitem
+     * @param stdClass &$contentitem contentitem
      * @param string $text         string to place as the link
      * @param string $jname        jname
      *
@@ -599,7 +599,7 @@ class JFusionFunction
         if ($option == 'com_k2') {
             include_once JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_k2' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'route.php';
 	        /** @noinspection PhpUndefinedClassInspection */
-	        $article_url = urldecode(K2HelperRoute::getItemRoute($contentitem->id.':'.urlencode($contentitem->alias),$contentitem->catid.':'.urlencode($contentitem->category->alias)));
+	        $article_url = urldecode(K2HelperRoute::getItemRoute($contentitem->id.':'.urlencode($contentitem->alias), $contentitem->catid.':'.urlencode($contentitem->category->alias)));
         } else {
             if (empty($contentitem->slug) || empty($contentitem->catslug)) {
                 //article was edited and saved from editor

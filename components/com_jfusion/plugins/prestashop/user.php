@@ -333,8 +333,6 @@ class JFusionUser_prestashop extends JFusionUser {
 		    $ps_customer->date_add = date('Y-m-d h:m:s');
 		    $ps_customer->date_upd = date('Y-m-d h:m:s');
 
-		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
-
 		    /* array to go into table ps_address */
 		    $ps_address = new stdClass;
 		    $ps_address->id_address = null;
@@ -380,7 +378,10 @@ class JFusionUser_prestashop extends JFusionUser {
 		    }*/
 
 		    // Validate gender
-		    if (!Validate::isGenderIsoCode($user_variables['id_gender'])) {
+
+
+
+		    if (!preg_match('/^[0|1|2|9]$/ui', $user_variables['id_gender'])) {
 			    throw new RuntimeException(Tools::displayError('gender not valid'));
 		    } elseif (!ValidateCore::isName($user_variables['firstname'])) {
 			    throw new RuntimeException(Tools::displayError('first name wrong'));
@@ -448,6 +449,8 @@ class JFusionUser_prestashop extends JFusionUser {
 
 					    // enter customer group into database
 					    $ps_address->id_customer = $ps_customer->id_customer;
+
+					    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
 
 					    foreach($usergroups as $value) {
 						    $ps_customer_group = new stdClass;
