@@ -191,31 +191,6 @@ class JFusionHelper_dokuwiki
         return $config_path;
     }
 
-
-
-
-
-
-
-    /**
-     * This method should handle any login logic and report back to the subject
-     *
-     * @param string $jname
-     *
-     * @return Dokuwiki object instance
-     * @since 1.5
-     * @access public
-     */
-    public static function &getInstance($jname)
-    {
-        static $instances;
-        if (!isset($instances[$jname])) {
-            $instance = new Dokuwiki($jname);
-            $instances[$jname] = $instance;
-        }
-        return $instances[$jname];
-    }
-
     /**
      * This method should handle any login logic and report back to the subject
      *

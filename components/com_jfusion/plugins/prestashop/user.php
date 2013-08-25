@@ -173,13 +173,13 @@ class JFusionUser_prestashop extends JFusionUser {
 		    $email = trim($email);
 		    if (empty($email)) {
 			    throw new RuntimeException('invalid e-mail address');
-		    } elseif (!Validate::isEmail($email)) {
+		    } elseif (!ValidateCore::isEmail($email)) {
 			    throw new RuntimeException('invalid e-mail address');
 		    } elseif (empty($passwd)) {
 			    throw new RuntimeException('password is required');
 		    } elseif (Tools::strlen($passwd) > 32) {
 			    throw new RuntimeException('password is too long');
-		    } elseif (!Validate::isPasswd($passwd)) {
+		    } elseif (!ValidateCore::isPasswd($passwd)) {
 			    throw new RuntimeException('invalid password');
 		    } else {
 			    /* Handle brute force attacks */
@@ -262,13 +262,13 @@ class JFusionUser_prestashop extends JFusionUser {
 		    $db = JFusionFactory::getDatabase($this->getJname());
 		    $params = JFusionFactory::getParams($this->getJname());
 		    $errors = array();
-		    require($params->get('source_path') . DIRECTORY_SEPARATOR . "classes" . DIRECTORY_SEPARATOR . "Validate.php");
-		    require($params->get('source_path') . DIRECTORY_SEPARATOR . "classes" . DIRECTORY_SEPARATOR . "ObjectModel.php");
-		    require($params->get('source_path') . DIRECTORY_SEPARATOR . "classes" . DIRECTORY_SEPARATOR . "Db.php");
-		    require($params->get('source_path') . DIRECTORY_SEPARATOR . "classes" . DIRECTORY_SEPARATOR . "Country.php");
-		    require($params->get('source_path') . DIRECTORY_SEPARATOR . "classes" . DIRECTORY_SEPARATOR . "State.php");
-		    require($params->get('source_path') . DIRECTORY_SEPARATOR . "classes" . DIRECTORY_SEPARATOR . "Tools.php");
-		    require($params->get('source_path') . DIRECTORY_SEPARATOR . "classes" . DIRECTORY_SEPARATOR . "Customer.php");
+		    require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Validate.php');
+		    require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'ObjectModel.php');
+		    require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Db.php');
+		    require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Country.php');
+		    require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'State.php');
+		    require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Tools.php');
+		    require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Customer.php');
 
 		    /* split full name into first and with/or without middlename, and lastname */
 		    $users_name = $userinfo->name;
@@ -333,7 +333,6 @@ class JFusionUser_prestashop extends JFusionUser {
 		    $ps_customer->date_add = date('Y-m-d h:m:s');
 		    $ps_customer->date_upd = date('Y-m-d h:m:s');
 
-
 		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 
 		    /* array to go into table ps_address */
@@ -368,15 +367,11 @@ class JFusionUser_prestashop extends JFusionUser {
 			  unset($ps_address);
 		    }*/
 
-
-
 		    // Do not validate postcode since a placeholder is been currently used
 		    /*if (!Validate::isPostCode($user_variables['postcode'])){
 			  $errors[] = Tools::displayError('postcode wrong');
 			  unset($ps_address);
 		    }*/
-
-
 
 		    // Do not validate village/town/city since a placeholder is been currently used
 		    /*if (!Validate::isCityName($user_variables['city'])){
@@ -387,40 +382,40 @@ class JFusionUser_prestashop extends JFusionUser {
 		    // Validate gender
 		    if (!Validate::isGenderIsoCode($user_variables['id_gender'])) {
 			    throw new RuntimeException(Tools::displayError('gender not valid'));
-		    } elseif (!Validate::isName($user_variables['firstname'])) {
+		    } elseif (!ValidateCore::isName($user_variables['firstname'])) {
 			    throw new RuntimeException(Tools::displayError('first name wrong'));
-		    } elseif (!Validate::isName($user_variables['lastname'])) {
+		    } elseif (!ValidateCore::isName($user_variables['lastname'])) {
 			    throw new RuntimeException(Tools::displayError('second name wrong'));
-		    } elseif (!Validate::isName($user_variables['customer_firstname'])) {
+		    } elseif (!ValidateCore::isName($user_variables['customer_firstname'])) {
 			    throw new RuntimeException(Tools::displayError('customer first name wrong'));
-		    } elseif (!Validate::isName($user_variables['customer_lastname'])) {
+		    } elseif (!ValidateCore::isName($user_variables['customer_lastname'])) {
 			    throw new RuntimeException(Tools::displayError('customer second name wrong'));
-		    } elseif (!Validate::isEmail($user_variables['email'])) {
+		    } elseif (!ValidateCore::isEmail($user_variables['email'])) {
 			    throw new RuntimeException(Tools::displayError('e-mail not valid'));
-		    } elseif (!Validate::isPasswd($user_variables['passwd'])) {
+		    } elseif (!ValidateCore::isPasswd($user_variables['passwd'])) {
 			    throw new RuntimeException(Tools::displayError('invalid password'));
 		    } elseif (!@checkdate($user_variables['months'], $user_variables['days'], $user_variables['years']) AND !( $user_variables['months']== '' AND $user_variables['days'] == '' AND $user_variables['years'] == '')) {
 			    throw new RuntimeException(Tools::displayError('invalid birthday'));
-		    } elseif (!Validate::isBool($user_variables['newsletter'])) {
+		    } elseif (!ValidateCore::isBool($user_variables['newsletter'])) {
 			    throw new RuntimeException(Tools::displayError('newsletter invalid choice'));
-		    } elseif (!Validate::isBool($user_variables['optin'])) {
+		    } elseif (!ValidateCore::isBool($user_variables['optin'])) {
 			    throw new RuntimeException(Tools::displayError('optin invalid choice'));
-		    } elseif (!Validate::isGenericName($user_variables['company'])) {
+		    } elseif (!ValidateCore::isGenericName($user_variables['company'])) {
 			    throw new RuntimeException(Tools::displayError('company name wrong'));
-		    } elseif (!Validate::isAddress($user_variables['address2'])) {
+		    } elseif (!ValidateCore::isAddress($user_variables['address2'])) {
 			    throw new RuntimeException(Tools::displayError('address 2nd wrong'));
-		    } elseif (!Validate::isPhoneNumber($user_variables['phone'])) {
+		    } elseif (!ValidateCore::isPhoneNumber($user_variables['phone'])) {
 			    throw new RuntimeException(Tools::displayError('invalid phone'));
-		    } elseif (!Validate::isPhoneNumber($user_variables['phone_mobile'])) {
+		    } elseif (!ValidateCore::isPhoneNumber($user_variables['phone_mobile'])) {
 			    throw new RuntimeException(Tools::displayError('invalid mobile'));
-		    } elseif (!Validate::isInt($user_variables['id_country'])) {
+		    } elseif (!ValidateCore::isInt($user_variables['id_country'])) {
 			    throw new RuntimeException(Tools::displayError('invalid country'));
-		    } elseif (Country::getIsoById($user_variables['id_country']) === '') {
+		    } elseif (CountryCore::getIsoById($user_variables['id_country']) === '') {
 			    throw new RuntimeException(Tools::displayError('invalid country'));
-		    } elseif (!Validate::isInt($user_variables['id_state'])) {
+		    } elseif (!ValidateCore::isInt($user_variables['id_state'])) {
 			    throw new RuntimeException(Tools::displayError('invalid state'));
 		    } else {
-			    if (!State::getNameById($user_variables['id_state'])){
+			    if (!StateCore::getNameById($user_variables['id_state'])){
 				    if($user_variables['id_state'] === '0'){
 					    /* state valid to apply for none state */
 				    } else {
@@ -431,7 +426,7 @@ class JFusionUser_prestashop extends JFusionUser {
 
 			    if(isset($ps_customer)) {
 				    // Validate DNI
-				    $validateDni = Validate::isDni($user_variables['dni']);
+				    $validateDni = ValidateCore::isDniLite($user_variables['dni']);
 				    if ($user_variables['dni'] != NULL && $validateDni != 1) {
 					    $error = array(
 						    0 => Tools::displayError('DNI isn\'t valid'),
@@ -441,11 +436,11 @@ class JFusionUser_prestashop extends JFusionUser {
 						    -4 => Tools::displayError('NIE isn\'t valid')
 					    );
 					    throw new RuntimeException($error[$validateDni]);
-				    } elseif (!Validate::isMessage($user_variables['alias'])) {
+				    } elseif (!ValidateCore::isMessage($user_variables['alias'])) {
 					    throw new RuntimeException(Tools::displayError('invalid alias'));
-				    } elseif (!Validate::isMessage($user_variables['other'])) {
+				    } elseif (!ValidateCore::isMessage($user_variables['other'])) {
 					    throw new RuntimeException(Tools::displayError('invalid extra information'));
-				    } elseif (Customer::customerExists($user_variables['email'])) {
+				    } elseif (CustomerCore::customerExists($user_variables['email'])) {
 					    throw new RuntimeException(Tools::displayError('someone has already registered with this e-mail address'));
 				    } else {
 					    /* enter customer account into prestashop database */ // if all information is validated

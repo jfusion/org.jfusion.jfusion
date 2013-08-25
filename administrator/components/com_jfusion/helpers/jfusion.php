@@ -29,7 +29,7 @@ class JFusionHelper
 	/**
 	 * Configure the Linkbar.
 	 *
-	 * @param	string	The name of the active view.
+	 * @param string $vName	The name of the active view.
 	 *
 	 * @return	void
 	 * @since	1.6

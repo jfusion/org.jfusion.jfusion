@@ -34,7 +34,7 @@ class JFusionHelper_vbulletin
 
     /**
      *
-     * @return unknown_type
+     * @return void
      */
     function JFusionHelper_vbulletin()
     {

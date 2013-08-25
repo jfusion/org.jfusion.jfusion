@@ -80,7 +80,7 @@ class plgContentJfusion extends JPlugin
 		//retrieve plugin software for discussion bot
 		if ($this->params===false) {
 			if (is_array($params)) {
-				$this->params = new JRegistry( $params[params]);
+				$this->params = new JRegistry( $params['params']);
 			} else {
 				$this->params = new JRegistry( $params->params);
 			}
@@ -166,9 +166,6 @@ class plgContentJfusion extends JPlugin
 				if ($this->mode=='auto' && empty($manually_plugged)) {
 					$this->helper->debug('In auto mode');
 					if ($this->valid) {
-						$JFusionForum = JFusionFactory::getForum($this->jname);
-						$forumid = $JFusionForum->getDefaultForum($this->params, $this->article);
-
 						if (($this->creationMode=='load') ||
 							($this->creationMode=='new' && ($isNew || (!$isNew && $threadinfo->valid))) ||
 							($this->creationMode=='reply' && $threadinfo->valid)) {
@@ -707,7 +704,7 @@ HTML;
 
 		$jumpto = '';
 		$url = $this->helper->getArticleUrl($jumpto,'',false);
-		$msg = '';
+
 		//process quick replies
 		if (($allowGuests || !$JoomlaUser->guest) && !$JoomlaUser->block) {
 			//make sure something was submitted
@@ -1090,11 +1087,9 @@ HTML;
 		 * @ignore
 		 * @var $article_params JRegistry
 		 */
-		$attribs = $readmore_param = $article_params = null;
 		$show_readmore = $readmore_catch = 0;
+		$readmore_param = null;
 		if ($this->helper->option == 'com_content') {
-			$attribs = new JRegistry($this->article->attribs);
-
 			if (isset($this->article->params)) {
 				//blog view
 				$article_params = $this->article->params;

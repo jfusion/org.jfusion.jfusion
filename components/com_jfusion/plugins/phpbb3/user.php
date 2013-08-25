@@ -938,7 +938,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    }
 				    //$status['debug'][] = 'Retrieved all reported posts/topics by user '.$user_id;
 			    }
-		    } catch (ErrorRuntimeException $e) {
+		    } catch (RuntimeException $e) {
 				throw new RuntimeException('Error Could not retrieve reported posts/topics by user '.$user_id.': '.$e->getMessage());
 		    }
 

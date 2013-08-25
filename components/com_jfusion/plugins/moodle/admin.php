@@ -302,7 +302,7 @@ HTML;
 
 			 $pear_path = JPATH_ADMINISTRATOR.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR. 'pear';
 			 require_once $pear_path.DIRECTORY_SEPARATOR.'PEAR.php';
-			 $pear_archive_path = $pear_path.DIRECTORY_SEPARATOR.archive_tar.DIRECTORY_SEPARATOR.'Archive_Tar.php';
+			 $pear_archive_path = $pear_path.DIRECTORY_SEPARATOR.'archive_tar'.DIRECTORY_SEPARATOR.'Archive_Tar.php';
 			 require_once $pear_archive_path;
 
 			 $archive_filename = 'moodle_module_jfusion.tar.gz';

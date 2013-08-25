@@ -195,7 +195,7 @@ class JFusionDiscussBotHelper {
 	 * @param string $jumpto
 	 * @param string $query
 	 * @param bool $xhtml
-	 * @return string|The
+	 * @return string
 	 */
 	public function getArticleUrl($jumpto = '', $query = '', $xhtml = true)
 	{
@@ -222,6 +222,7 @@ class JFusionDiscussBotHelper {
 			}
 			$url .= $query;
 		} else {
+			/** @noinspection PhpUndefinedClassInspection */
 			$url = urldecode(K2HelperRoute::getItemRoute($this->article->id.':'.urlencode($this->article->alias),$this->article->catid.':'.urlencode($this->article->category->alias)));
 		}
 
@@ -588,11 +589,11 @@ JS;
 	/**
 	 * @param $file
 	 *
-	 * @return bool|string
+	 * @throws RuntimeException
+	 * @return string
 	 */
 	public function renderFile($file)
 	{
-		$captured_content = false;
 		$this->debug('Rendering file ' . $file);
 		if (file_exists(DISCUSSION_TEMPLATE_PATH . $file)) {
 			ob_start();
@@ -600,7 +601,7 @@ JS;
 			$captured_content = ob_get_contents();
 			ob_end_clean();
 		} else {
-			die(DISCUSSION_TEMPLATE_PATH . $file . " is missing!");
+			throw new RuntimeException(DISCUSSION_TEMPLATE_PATH . $file . ' is missing!');
 		}
 		return $captured_content;
 	}

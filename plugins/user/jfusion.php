@@ -340,7 +340,6 @@ class plgUserJfusion extends JPlugin
 								}
 							} else {
 								//joomla already setup, we can copy its details from the master
-								$JFusionJoomla = $JFusionMaster;
 								$JoomlaUser = array('userinfo' => $userinfo, 'error' => '');
 							}
 							if ( $success === 0 ) {

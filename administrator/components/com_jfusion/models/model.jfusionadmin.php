@@ -60,7 +60,7 @@ class JFusionFunctionAdmin
      * @param array  $post  Array of JFusion plugin parameters posted to the JFusion component
      * @param boolean $wizard Notes if function was called by wizardresult();
      *
-     * @return true|false returns true if successful and false if an error occurred
+     * @return boolean returns true if successful and false if an error occurred
      */
     public static function saveParameters($jname, $post, $wizard = false)
     {
@@ -145,7 +145,7 @@ class JFusionFunctionAdmin
      * @param string $folder        folder name of the plugin
      * @param int    $testPublished Variable to determine if the function should test to see if the plugin is published
      *
-     * @return true|false returns true if successful and false if an error occurred
+     * @return boolean returns true if successful and false if an error occurred
      */
     public static function isPluginInstalled($element, $folder, $testPublished)
     {

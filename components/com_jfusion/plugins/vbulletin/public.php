@@ -265,7 +265,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
 		    $db->setQuery($query);
 		    return $db->loadResult();
 	    } catch (Exception $e) {
-		    FusionFunction::raiseError($e, $this->getJname());
+		    JFusionFunction::raiseError($e, $this->getJname());
 		    return 0;
 	    }
     }
@@ -287,7 +287,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
 	        $db->setQuery($query);
 	        return $db->loadResult();
 	    } catch (Exception $e) {
-			FusionFunction::raiseError($e, $this->getJname());
+		    JFusionFunction::raiseError($e, $this->getJname());
 			return 0;
 		}
     }

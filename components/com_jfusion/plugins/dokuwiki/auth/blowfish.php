@@ -474,8 +474,8 @@ if (!class_exists('JFusion_Horde_Cipher_blowfish')) {
 	/**
 	 * Encryption using blowfish algorithm
 	 *
-	 * @param   string  original data
-	 * @param   string  the secret
+	 * @param   string  $data original data
+	 * @param   string  $secret the secret
 	 *
 	 * @return  string  the encrypted result
 	 *
@@ -504,8 +504,8 @@ if (!class_exists('JFusion_Horde_Cipher_blowfish')) {
 	/**
 	 * Decryption using blowfish algorithm
 	 *
-	 * @param   string  encrypted data
-	 * @param   string  the secret
+	 * @param   string  $encdata encrypted data
+	 * @param   string  $secret the secret
 	 *
 	 * @return  string  original data
 	 *

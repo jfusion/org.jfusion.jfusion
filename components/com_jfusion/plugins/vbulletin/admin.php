@@ -316,7 +316,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
                     form.customcommand.set('value', 'toggleHook');
                     $('params_hook_name').set('value', hook);
                     $('params_hook_action').set('value', action);
-                    form.action.value = 'apply';
+                    form.action.set('value', 'apply');
                     Joomla.submitform('saveconfig', form);
                 }
                 return false;

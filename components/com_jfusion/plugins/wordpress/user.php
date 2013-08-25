@@ -122,7 +122,7 @@ class JFusionUser_wordpress extends JFusionUser {
 		// unserialize. Gives an array with capabilities
 
 	    $database_prefix = $params->get('database_prefix');
-		$capabilities = $database_prefix.capabilities;
+		$capabilities = $database_prefix.'capabilities';
 		$capabilities = unserialize($user->$capabilities);
 		// make sure we only have activated capabilities
 		$x = array_keys($capabilities,'1');

@@ -148,7 +148,7 @@ class JFusionModelInstaller extends InstallerModelInstall
      *
      * @param string $filename
      *
-     * @return true|false Result of the JFusion plugin install
+     * @return boolean Result of the JFusion plugin install
      */
     function installZIP($filename)
     {
@@ -180,7 +180,7 @@ class JFusionModelInstaller extends InstallerModelInstall
      *
      * @param string $jname name of the JFusion plugin used
      *
-     * @return true|false Result of the JFusion plugin uninstall
+     * @return boolean Result of the JFusion plugin uninstall
      */
     function uninstall($jname)
     {
@@ -211,7 +211,7 @@ class JFusionModelInstaller extends InstallerModelInstall
      * @param string $new_jname name of the new plugin
      * @param bool $update    update existing plugin
      *
-     * @return true|false Result of the JFusion plugin uninstall
+     * @return boolean Result of the JFusion plugin uninstall
      */
     function copy($jname, $new_jname, $update = false)
     {

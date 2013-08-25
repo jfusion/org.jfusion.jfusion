@@ -247,7 +247,7 @@ class JFusionFunction
 				    try {
 					    $db->execute();
 				    } catch (Exception $e) {
-					    FusionFunction::raiseWarning($e, $jname);
+					    JFusionFunction::raiseWarning($e, $jname);
 				    }
 
 				    //Delete old user data in the lookup table
@@ -260,7 +260,7 @@ class JFusionFunction
 				    try {
 					    $db->execute();
 				    } catch (Exception $e) {
-					    FusionFunction::raiseWarning($e, $jname);
+					    JFusionFunction::raiseWarning($e, $jname);
 				    }
 			    }
 		    } else {
@@ -598,7 +598,8 @@ class JFusionFunction
 
         if ($option == 'com_k2') {
             include_once JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_k2' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'route.php';
-            $article_url = urldecode(K2HelperRoute::getItemRoute($contentitem->id.':'.urlencode($contentitem->alias),$contentitem->catid.':'.urlencode($contentitem->category->alias)));
+	        /** @noinspection PhpUndefinedClassInspection */
+	        $article_url = urldecode(K2HelperRoute::getItemRoute($contentitem->id.':'.urlencode($contentitem->alias),$contentitem->catid.':'.urlencode($contentitem->category->alias)));
         } else {
             if (empty($contentitem->slug) || empty($contentitem->catslug)) {
                 //article was edited and saved from editor
@@ -1209,7 +1210,7 @@ class JFusionFunction
      * Defaults to Joomla global config for timezone
      * Hopefully the need for this will be deprecated in Joomla 1.6
      *
-     * @return timezone in -6 format
+     * @return int timezone in -6 format
      */
     public static function getJoomlaTimezone()
     {
@@ -1309,7 +1310,7 @@ class JFusionFunction
      * @param object $userinfo user with current usergroups
      * @param array $usergroups array with the correct usergroups
      *
-     * @return true/false
+     * @return boolean
      */
     public static function compareUserGroups($userinfo,$usergroups) {
     	if (!is_array($usergroups)) {
@@ -1344,7 +1345,7 @@ class JFusionFunction
      *
      * @param string $jname plugin name
      *
-     * @return true/false
+     * @return boolean
      */
     public static function isAdvancedUsergroupMode($jname) {
         static $advanced = array();
@@ -1412,13 +1413,13 @@ class JFusionFunction
         }
 
         if (isset($data[$jname][$table][$field]) ) {
+	        $encoding = false;
         	list($charset) = explode('_', $data[$jname][$table][$field]);
             switch ($charset) {
                 case 'latin1':
                 	$encoding = 'ISO-8859-1';
                     break;
                 case 'utf8':
-	                $encoding = false;
                     break;
                 default:
 	                throw new RuntimeException('JFusion Encoding support missing: '.$charset);

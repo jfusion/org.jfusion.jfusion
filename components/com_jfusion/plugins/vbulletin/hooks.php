@@ -107,8 +107,8 @@ class executeJFusionHook
             if ($redirect) {
                 $filename = basename($s);
                 $query = $_SERVER['QUERY_STRING'];
-                if (SEFENABLED) {
-                    if (SEFMODE == 1) {
+                if (defined('SEFENABLED') && SEFENABLED) {
+                    if (defined('SEFMODE') && SEFMODE == 1) {
                         $url = JOOMLABASEURL . $filename.'/';
                         if (!empty($query)) {
                             $q = explode('&', $query);

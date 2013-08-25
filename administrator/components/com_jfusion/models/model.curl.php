@@ -779,7 +779,7 @@ class JFusionCurl
 		$options['cookiepath'] = $cookiepath;
 		$options['expires'] = $expires;
 		$options['secure'] = $secure;
-		$options['httponly'] = httponly;
+		$options['httponly'] = $httponly;
 
 		$curl = new JFusionCurl($options);
 		$curl->cookies = $cookies;
@@ -901,7 +901,7 @@ class JFusionCurl
 		$options['cookiedomain'] = $cookiedomain;
 		$options['cookiepath'] = $cookiepath;
 		$options['secure'] = $secure;
-		$options['httponly'] = httponly;
+		$options['httponly'] = $httponly;
 
 		$curl = new JFusionCurl($options);
 		$curl->cookies = $cookies;

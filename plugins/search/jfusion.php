@@ -77,10 +77,10 @@ class plgSearchJfusion extends JPlugin
 	 * Content Search method
 	 * The sql must return the following fields that are used in a common display
 	 * routine: href, title, section, created, text, browsernav
-	 * @param string Target search string
-	 * @param string matching option, exact|any|all
-	 * @param string ordering option, newest|oldest|popular|alpha|category
-	 * @param mixed An array if the search it to be restricted to areas, null if search all
+	 * @param string $text Target search string
+	 * @param string $phrase matching option, exact|any|all
+	 * @param string $ordering ordering option, newest|oldest|popular|alpha|category
+	 * @param mixed $areas An array if the search it to be restricted to areas, null if search all
 	 *
 	 * @return array
 	 */

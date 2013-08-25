@@ -457,7 +457,7 @@ class jfusionViewconfigdump extends JViewLegacy {
 	 * @param string $name             name
 	 * @param string &$jfusion_version version number of the current jfusion
 	 *
-	 * @return unknown_type
+	 * @return void
 	 */
 	function getVersionNumber($filename, $name, &$jfusion_version)
 	{

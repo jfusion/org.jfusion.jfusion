@@ -621,7 +621,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
     ***********************************************/
     /**
      * Retrieves thread information
-     * @param int Id of specific thread
+     * @param int $threadid Id of specific thread
      *
      * @return object Returns object with thread information
      *

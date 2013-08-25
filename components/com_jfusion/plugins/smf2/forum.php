@@ -909,8 +909,8 @@ HTML;
 
 	/**
 	 * Filter forums from a set of results sent in / useful if the plugin needs to restrict the forums visible to a user
-	 * @param $results set of results from query
-	 * @param $limit int limit results parameter as set in the module's params; used for plugins that cannot limit using a query limiter
+	 * @param array $results set of results from query
+	 * @param int $limit limit results parameter as set in the module's params; used for plugins that cannot limit using a query limiter
 	 *
 	 * @return void
 	 */
