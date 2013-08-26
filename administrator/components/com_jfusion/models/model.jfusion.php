@@ -1320,7 +1320,7 @@ class JFusionFunction
     	if (isset($userinfo->groups)) {
 			$count = 0;
 			if ( count($usergroups) == count($userinfo->groups) ) {
-				foreach ($usergroups as $key => $group) {
+				foreach ($usergroups as $group) {
     	    		if (in_array($group, $userinfo->groups, true)) {
     					$count++;
 					}
@@ -1330,7 +1330,7 @@ class JFusionFunction
 				}
 			}
     	} else {
-    		foreach ($usergroups as $key => $group) {
+    		foreach ($usergroups as $group) {
     			if ($group == $userinfo->group_id) {
                     $correct = true;
                     break;
@@ -1398,7 +1398,10 @@ class JFusionFunction
 	 */
     public static function encodeDBString($string, $jname, $table, $field) {
         static $data;
-        $data = array();
+	    if (!isset($data)) {
+		    $data = array();
+	    }
+
         if (!isset($data[$jname][$table])) {
             $db = JFusionFactory::getDatabase($jname);
             $query = 'SHOW FULL FIELDS FROM '.$table;
@@ -1752,7 +1755,6 @@ class JFusionFunction
 		$path = JPATH_PLUGINS . '/authentication/joomla/joomla.php';
 		require_once $path;
 
-		$className = 'plg' . $plugin->type . $plugin->name;
 		return new plgAuthenticationJoomla($dispatcher, (array) ($plugin));
 	}
 

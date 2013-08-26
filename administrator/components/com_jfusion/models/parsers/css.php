@@ -325,7 +325,7 @@ class cssparser {
 		while(count($sorcepath)) {
 			$temp = $sorcepathoriginal;
 			$path ='';
-			foreach($sorcepath as $key => $values) {
+			foreach($sorcepath as $values) {
 				$path .= '\.\.\/';
 				array_pop($temp);
 			}

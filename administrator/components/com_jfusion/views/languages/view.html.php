@@ -30,6 +30,11 @@ defined('_JEXEC') or die('Restricted access');
  */
 class jfusionViewlanguages extends JViewLegacy
 {
+	/**
+	 * @var $lang_repo array
+	 */
+	var $lang_repo = array();
+
     /**
      * displays the view
      *
@@ -53,7 +58,6 @@ class jfusionViewlanguages extends JViewLegacy
 	    $jversion = new JVersion();
         $data = JFusionFunctionAdmin::getFileData('http://update.jfusion.org/jfusion/joomla/?version='.$jversion->getShortVersion());
 
-        $lang_repo = array();
 	    $xml = JFusionFunction::getXml($data,false);
         if ($xml) {
 	        if ($xml->languages) {
@@ -63,7 +67,7 @@ class jfusionViewlanguages extends JViewLegacy
 		         * @ignore
 		         * @var $language SimpleXMLElement
 		         */
-		        foreach ($languages as $key => $language) {
+		        foreach ($languages as $language) {
 			        $att = $language->attributes();
 			        $lang = new stdClass;
 			        $lang->file = (string)$language->remotefile;
@@ -75,7 +79,7 @@ class jfusionViewlanguages extends JViewLegacy
 			        $lang->extension_id = null;
 			        $lang->class = 'row';
 
-			        $lang_repo[(string)$att['tag']] = $lang;
+			        $this->lang_repo[(string)$att['tag']] = $lang;
 		        }
 	        }
         }
@@ -94,22 +98,21 @@ class jfusionViewlanguages extends JViewLegacy
 
 	    if(!empty($results)) {
 		    foreach ($results as $result) {
-			    if (isset($lang_repo[$result->element])) {
+			    if (isset($this->lang_repo[$result->element])) {
 				    $cache = json_decode($result->manifest_cache);
-				    $lang_repo[$result->element]->currentdate = $cache->creationDate;
-				    $lang_repo[$result->element]->extension_id = $result->extension_id;
+				    $this->lang_repo[$result->element]->currentdate = $cache->creationDate;
+				    $this->lang_repo[$result->element]->extension_id = $result->extension_id;
 
-				    if ( $lang_repo[$result->element]->currentdate == $lang_repo[$result->element]->date ) {
-					    $lang_repo[$result->element]->class = 'good';
+				    if ( $this->lang_repo[$result->element]->currentdate == $this->lang_repo[$result->element]->date ) {
+					    $this->lang_repo[$result->element]->class = 'good';
 				    } else {
-					    $lang_repo[$result->element]->class = 'bad';
+					    $this->lang_repo[$result->element]->class = 'bad';
 				    }
 			    }
 		    }
 	    }
         ob_end_clean();
-	    ksort($lang_repo);
-	    $this->lang_repo = $lang_repo;
+	    ksort($this->lang_repo);
 
         parent::display($tpl);
     }

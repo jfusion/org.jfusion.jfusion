@@ -180,9 +180,7 @@ class JFusionUser_wordpress extends JFusionUser {
     $status = array('error' => array(),'debug' => array());
 		$params = JFusionFactory::getParams($this->getJname());
 		$wpnonce=array();
-		
-    $jname = $this->getJname();
-		$params = & JFusionFactory::getParams($jname);
+
 		$logout_url = $params->get('logout_url');
 
 		$curl_options['post_url'] = $params->get('source_url') . $logout_url;

@@ -70,7 +70,7 @@ class jfusionViewLogoutCheckerResult extends JViewLegacy
 	        $plugin = new $className($this, (array)$plugin);
 	    }
 	    if (method_exists($plugin, 'onUserLogout')) {
-	        $response = $plugin->onUserLogout($user, $options);
+	        $plugin->onUserLogout($user, $options);
 	    }
 
 	    $this->debug = $jfusionDebug;

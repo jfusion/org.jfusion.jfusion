@@ -225,7 +225,7 @@ class JFusionPublic_smf extends JFusionPublic
         $jFusion_Route = JFactory::getApplication()->input->get('jFusion_Route',null,'raw');
         if ($jFusion_Route) {
         	$jFusion_Route = unserialize ($jFusion_Route);
-        	foreach ($jFusion_Route as $key => $value) {
+        	foreach ($jFusion_Route as $value) {
         		if (stripos($value, 'action') === 0) {
 	        		list ($key,$value) = explode ( ',' , $value);
 	        		if ($key == 'action') {
@@ -1013,7 +1013,7 @@ class JFusionPublic_smf extends JFusionPublic
     {
         $data = $this->callbackdata;
         $headers_list = headers_list();
-		foreach ($headers_list as $key => $value) {
+		foreach ($headers_list as $value) {
         	$matches = array();
             if (stripos($value, 'location') === 0) {
                 if (preg_match('#'.preg_quote($data->integratedURL,'#').'(.*?)\z#Sis' , $value , $matches)) {

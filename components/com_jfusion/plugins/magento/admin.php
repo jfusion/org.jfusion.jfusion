@@ -182,7 +182,6 @@ class JFusionAdmin_magento extends JFusionAdmin
      */
     function getDefaultUsergroup() {
 	    try {
-		    $params = JFusionFactory::getParams($this->getJname());
 		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
 		    $usergroup_id = null;
 		    if(!empty($usergroups)) {
@@ -221,7 +220,6 @@ class JFusionAdmin_magento extends JFusionAdmin
     function debugConfigExtra() {
 	    try {
 		    // see if we have an api user in Magento
-		    $jname = $this->getJname();
 		    $db = JFusionFactory::getDataBase($this->getJname());
 
 		    $query = $db->getQuery(true)

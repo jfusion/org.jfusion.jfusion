@@ -108,7 +108,6 @@ class JFusionPublic_mybb extends JFusionPublic {
         $regex_body = array();
         $replace_body = array();
         $callback_body = array();
-        $params = JFusionFactory::getParams($this->getJname());
 
         $regex_body[] = '#action="(.*?)"(.*?)>#m';
         $replace_body[] = '';//$this->fixAction("index.php$1","$2","' . $data->baseURL . '")';

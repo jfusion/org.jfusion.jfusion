@@ -555,7 +555,7 @@ class JFusionAPI_User extends JFusionAPIBase {
 	 */
 	public function getUser()
 	{
-		$mainframe = JFusionAPIInternal::startJoomla();
+		JFusionAPIInternal::startJoomla();
 		$plugin = isset($this->payload['plugin']) ? $this->payload['plugin'] : 'joomla_int';
 
 		$userPlugin = JFusionFactory::getUser($plugin);
@@ -722,7 +722,7 @@ class JFusionAPI_Cookie extends JFusionAPIBase {
 			$session = JFusionAPI::getSession('cookie',true);
 
 			if ( isset($session['cookies']) && count($session['cookies']) && is_array($session['cookies']) ) {
-				foreach($session['cookies'] as $key => $value ) {
+				foreach($session['cookies'] as $value ) {
 					header('Set-Cookie: '.$value, false);
 				}
 			}
@@ -935,7 +935,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 	 */
 	public function register($userinfo)
 	{
-		$mainframe = $this->startJoomla();
+		$this->startJoomla();
 
 		$plugins = JFusionFunction::getSlaves();
 		$plugins[] = JFusionFunction::getMaster();
@@ -977,7 +977,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 	 */
 	public function update($userinfo,$overwrite)
 	{
-		$mainframe = $this->startJoomla();
+		$this->startJoomla();
 
 		$plugins = JFusionFunction::getSlaves();
 		$plugins[] = JFusionFunction::getMaster();
@@ -1022,7 +1022,7 @@ class JFusionAPIInternal extends JFusionAPIBase {
 	 */
 	public function delete($userid)
 	{
-		$mainframe = $this->startJoomla();
+		$this->startJoomla();
 
 		/**
 		 * @ignore

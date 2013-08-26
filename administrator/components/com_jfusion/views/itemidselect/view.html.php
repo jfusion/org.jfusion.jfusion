@@ -40,6 +40,11 @@ class jfusionViewitemidselect extends JViewLegacy
 	 */
 	var $directlinks;
 
+	/**
+	 * @var string $ename
+	 */
+	var $ename;
+
     /**
      * displays the view
      *
@@ -63,7 +68,7 @@ class jfusionViewitemidselect extends JViewLegacy
         $document->addStyleSheet('components/com_jfusion/css/jfusion.css');
         $css = '.jfusion table.jfusionlist, .jfusion table.jfusiontable{ font-size:11px; }';
         $document->addStyleDeclaration($css);
-        $ename = JFactory::getApplication()->input->getString('ename');
+
         //get the number to attach to the id of the input to update after selecting a menu item
         $feature = JFactory::getApplication()->input->get('feature', 'any');
         JHTML::_('behavior.tooltip');
@@ -116,8 +121,7 @@ class jfusionViewitemidselect extends JViewLegacy
 
 	    $this->menuitems = $menuitems;
 	    $this->directlinks = $directlinks;
-
-	    $this->ename = $ename;
+	    $this->ename = JFactory::getApplication()->input->getString('ename');
         parent::display($tpl);
     }
 }

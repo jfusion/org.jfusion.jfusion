@@ -236,7 +236,6 @@ class JFusionUser_universal extends JFusionUser {
 			$helper = JFusionFactory::getHelper($this->getJname());
 			$db = JFusionFactory::getDatabase($this->getJname());
 			$maped = $helper->getMap();
-			$params = JFusionFactory::getParams($this->getJname());
 
 			$userid = $helper->getFieldType('USERID');
 			$password = $helper->getFieldType('PASSWORD');
@@ -654,7 +653,7 @@ class JFusionUser_universal extends JFusionUser {
 							$user = new stdClass;
 							$maped = $helper->getMap();
 							$db = JFusionFactory::getDatabase($this->getJname());
-							foreach ($maped as $key => $value) {
+							foreach ($maped as $value) {
 								$field = $value->field;
 								foreach ($value->type as $type) {
 									switch ($type) {
@@ -753,7 +752,7 @@ class JFusionUser_universal extends JFusionUser {
 									$addgroup = new stdClass;
 
 									$maped = $helper->getMap('group');
-									foreach ($maped as $key => $value) {
+									foreach ($maped as $value) {
 										$field = $value->field;
 										foreach ($value->type as $type) {
 											switch ($type) {

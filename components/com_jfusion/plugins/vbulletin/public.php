@@ -527,7 +527,6 @@ JS;
     {
 	    $pathway = array();
 	    try {
-		    $mainframe = JFactory::getApplication();
 		    $db = JFusionFactory::getDatabase($this->getJname());
 		    //let's get the jfile
 		    $jfile = JFactory::getApplication()->input->get('jfile');

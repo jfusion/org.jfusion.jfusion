@@ -1030,7 +1030,6 @@ class JFusionCurl
 			$GLOBALS[$var]=&$_SESSION[$var];
 		}
 		// end extra lines
-		$tmpurl = array();
 		$overridearr = array();
 		$newhidden = array();
 		$lines = array();
@@ -1349,8 +1348,6 @@ class JFusionCurl
 	 */
 	public function logout()
 	{
-		$tmpurl = array();
-
 		// check parameters and set defaults
 		if (!isset($this->options['post_url'])) {
 			$this->status['error'][]= 'Fatal programming error : no post_url!';
@@ -1437,7 +1434,6 @@ class JFusionCurl
 	 */
 	public function logoutUrl()
 	{
-		$tmpurl = array();
 		$open_basedir = ini_get('open_basedir');
 		$safe_mode = ini_get('safe_mode');
 

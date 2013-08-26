@@ -56,7 +56,6 @@ class JFormFieldForumlist extends JFormField
 			$params = $db->loadResult();
 			$parametersInstance = new JRegistry($params);
 			//load custom plugin parameter
-			$jPluginParam = new JRegistry('');
 			$jPluginParamRaw = unserialize(base64_decode($parametersInstance->get('JFusionPluginParam')));
 			$jname = $jPluginParamRaw['jfusionplugin'];
 

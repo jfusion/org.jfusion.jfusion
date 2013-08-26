@@ -1152,7 +1152,7 @@ class JFusionUser_vbulletin extends JFusionUser
                 if (empty($response['errors'])) {
                     $status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . $existinguser->group_id . ' -> ' . $settings['vb_expiration_groupid'];
                 } else {
-                    foreach ($response['errors'] AS $index => $error) {
+                    foreach ($response['errors'] AS $error) {
                         $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . $error;
                     }
                 }
@@ -1196,7 +1196,7 @@ class JFusionUser_vbulletin extends JFusionUser
                 if (empty($response['errors'])) {
                     $status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . $existinguser->group_id . ' -> ' . $settings['vb_subscription_groupid'];
                 } else {
-                    foreach ($response['errors'] AS $index => $error) {
+                    foreach ($response['errors'] AS $error) {
                         $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . $error;
                     }
                 }

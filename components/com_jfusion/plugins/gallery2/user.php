@@ -214,11 +214,11 @@ class JFusionUser_gallery2 extends JFusionUser {
                     if ($isSiteAdmin) {
                         $session->put('session.siteAdminActivityTimestamp', $phpVm->time());
                     }
-                    $ret = $session->regenerate();
+                    $session->regenerate();
                     $session = & $gallery->getSession();
                     /* Touch this session - Done for WhoIsOnline*/
                     $session->put('touch', time());
-                    $ret = $session->save();
+                    $session->save();
                     //Close GalleryApi
                     if ($framework) {
                         GalleryEmbed::done();
@@ -394,7 +394,7 @@ class JFusionUser_gallery2 extends JFusionUser {
         $helper = JFusionFactory::getHelper($this->getJname());
         $helper->loadGallery2Api(false);
         //find out if the user already exists
-        list($ret, $user) = GalleryCoreApi::fetchUserByUserName($userinfo->username);
+        list(, $user) = GalleryCoreApi::fetchUserByUserName($userinfo->username);
         // Initialise some variables
         $params = JFusionFactory::getParams($this->getJname());
         //Set Write Lock
@@ -441,7 +441,7 @@ class JFusionUser_gallery2 extends JFusionUser {
         $helper = JFusionFactory::getHelper($this->getJname());
         $helper->loadGallery2Api(false);
         //find out if the user already exists
-        list($ret, $user) = GalleryCoreApi::fetchUserByUserName($userinfo->username);
+        list(, $user) = GalleryCoreApi::fetchUserByUserName($userinfo->username);
         // Initialise some variables
         $params = JFusionFactory::getParams($this->getJname());
         //Set Write Lock

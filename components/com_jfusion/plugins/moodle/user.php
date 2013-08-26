@@ -202,11 +202,7 @@ class JFusionUser_moodle extends JFusionUser {
 		global $cookies_to_set;
 		global $cookies_to_set_index;
 		$status = array('debug' => array(), 'error' => array());
-		$tmpurl = array();
-		$overridearr = array();
-		$newhidden = array();
-		$lines = array();
-		$line=array();
+
 		$status['cURL']=array();
 		$status['cURL']['moodle']='';
 		$status['cURL']['data']= array();

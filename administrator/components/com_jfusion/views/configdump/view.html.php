@@ -23,6 +23,37 @@ class jfusionViewconfigdump extends JViewLegacy {
 	 */
 	var $checkvalue =array();
 
+
+	/**
+	 * @var array $joomla_plugin
+	 */
+	var $joomla_plugin = array();
+
+	/**
+	 * @var array $jfusion_module
+	 */
+	var $jfusion_module =array();
+
+	/**
+	 * @var array $jfusion_plugin
+	 */
+	var $jfusion_plugin = array();
+
+	/**
+	 * @var array $menu_item
+	 */
+	var $menu_item = array();
+
+	/**
+	 * @var array $jfusion_version
+	 */
+	var $jfusion_version = array();
+
+	/**
+	 * @var array $server_info
+	 */
+	var $server_info = array();
+
 	/**
 	 * @param null $tpl
 	 * @return mixed|void
@@ -70,11 +101,6 @@ class jfusionViewconfigdump extends JViewLegacy {
 		$this->checkvalue['jfusion_plugin']['*']['database_password'] = 'is_string|not_empty|mask';
 		$this->checkvalue['jfusion_plugin']['*']['database_prefix'] = 'is_string';
 
-		$jfusion_plugin=array();
-		$jfusion_module=array();
-		$joomla_plugin=array();
-		$menu_item=array();
-
 		$query = $db->getQuery(true)
 			->select('id, name, params, dual_login, original_name')
 			->from('#__jfusion')
@@ -93,7 +119,7 @@ class jfusionViewconfigdump extends JViewLegacy {
 
 				$this->clearParameters($new,'jfusion_plugin');
 
-				$jfusion_plugin[$row->name] = $new;
+				$this->jfusion_plugin[$row->name] = $new;
 			}
 		}
 
@@ -107,7 +133,7 @@ class jfusionViewconfigdump extends JViewLegacy {
 			$this->clearParameters($new,'joomla_plugin',$row->type);
 			$this->addMissingParameters($new,'joomla_plugin',$row->type);
 
-			$joomla_plugin[$row->type] = $new;
+			$this->joomla_plugin[$row->type] = $new;
 		}
 
 		$rows = array();
@@ -127,7 +153,7 @@ class jfusionViewconfigdump extends JViewLegacy {
 			$this->addMissingParameters($new,'jfusion_module',$row->module);
 
 			$name = !empty($row->title) ? $row->module.' '.$row->title : $row->module;
-			$jfusion_module[$name] = $new;
+			$this->jfusion_module[$name] = $new;
 		}
 
 		$app		= JFactory::getApplication();
@@ -144,17 +170,13 @@ class jfusionViewconfigdump extends JViewLegacy {
 				$new = $this->loadParams($row);
 				$this->clearParameters($new,'menu_item');
 
-				$menu_item[$new->id] = $new;
+				$this->menu_item[$new->id] = $new;
 			}
 		}
 
 		$this->getServerInfo();
 		$this->getVersion();
 
-		$this->jfusion_plugin = $jfusion_plugin;
-		$this->jfusion_module = $jfusion_module;
-		$this->joomla_plugin = $joomla_plugin;
-		$this->menu_item = $menu_item;
 		parent::display($tpl);
 	}
 
@@ -281,7 +303,7 @@ class jfusionViewconfigdump extends JViewLegacy {
 			}
 		}
 		if (isset($this->checkvalue[$name][$type]['*'])) {
-			foreach($new->params as $key => &$value) {
+			foreach($new->params as &$value) {
 				if (is_array($value) || is_object($value)) {
 					foreach($this->checkvalue[$name][$type]['*'] as $key2 => $value2) {
 						if (!isset($value->$key2)) {
@@ -396,12 +418,11 @@ class jfusionViewconfigdump extends JViewLegacy {
 		//get server specs
 		$version = new JVersion;
 		//put the relevant specs into an array
-		$server_info = array();
-		$server_info['Joomla Version'] = $version->getShortVersion();
-		$server_info['PHP Version'] = phpversion();
+		$this->server_info['Joomla Version'] = $version->getShortVersion();
+		$this->server_info['PHP Version'] = phpversion();
 		$db = JFactory::getDBO();
 		$mysql_version = $db->getVersion();
-		$server_info['MySQL Version'] = $mysql_version;
+		$this->server_info['MySQL Version'] = $mysql_version;
 
 		$disabled = ini_get('disable_functions');
 		if ($disabled) {
@@ -411,12 +432,12 @@ class jfusionViewconfigdump extends JViewLegacy {
 			$disabled = array();
 		}
 		if (!in_array('php_uname', $disabled)) {
-			$server_info['System Information'] = php_uname();
+			$this->server_info['System Information'] = php_uname();
 		} else {
-			$server_info['System Information'] = JText::_('UNKNOWN');
+			$this->server_info['System Information'] = JText::_('UNKNOWN');
 		}
 
-		$server_info['Browser Information'] = $_SERVER['HTTP_USER_AGENT'];
+		$this->server_info['Browser Information'] = $_SERVER['HTTP_USER_AGENT'];
 		//display active plugins
 		$query = $db->getQuery(true)
 			->select('folder, element, enabled as published')
@@ -428,26 +449,23 @@ class jfusionViewconfigdump extends JViewLegacy {
 		$system_plugins = $db->loadObjectList();
 		foreach ($system_plugins as $system_plugin) {
 			if ($system_plugin->published == 1) {
-				$server_info[$system_plugin->element . ' ' . $system_plugin->folder . ' Plugin'] = JText::_('ENABLED');
+				$this->server_info[$system_plugin->element . ' ' . $system_plugin->folder . ' Plugin'] = JText::_('ENABLED');
 			} else {
-				$server_info[$system_plugin->element . ' ' . $system_plugin->folder . ' Plugin'] = JText::_('DISABLED');
+				$this->server_info[$system_plugin->element . ' ' . $system_plugin->folder . ' Plugin'] = JText::_('DISABLED');
 			}
 		}
-		$this->server_info = $server_info;
 	}
 
 	function getVersion()
 	{
-		$jfusion_version = array();
-		$this->getVersionNumber(JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'jfusion.xml', JText::_('COMPONENT'), $jfusion_version);
-		$this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'mod_jfusion_activity' . DIRECTORY_SEPARATOR . 'mod_jfusion_activity.xml', JText::_('ACTIVITY') . ' ' . JText::_('MODULE'), $jfusion_version);
-		$this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'mod_jfusion_login' . DIRECTORY_SEPARATOR . 'mod_jfusion_login.xml', JText::_('LOGIN') . ' ' . JText::_('MODULE'), $jfusion_version);
+		$this->getVersionNumber(JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'jfusion.xml', JText::_('COMPONENT'));
+		$this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'mod_jfusion_activity' . DIRECTORY_SEPARATOR . 'mod_jfusion_activity.xml', JText::_('ACTIVITY') . ' ' . JText::_('MODULE'));
+		$this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'mod_jfusion_login' . DIRECTORY_SEPARATOR . 'mod_jfusion_login.xml', JText::_('LOGIN') . ' ' . JText::_('MODULE'));
 
-		$this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'authentication' . DIRECTORY_SEPARATOR . 'jfusion' . DIRECTORY_SEPARATOR . 'jfusion.xml', JText::_('AUTHENTICATION') . ' ' . JText::_('PLUGIN'), $jfusion_version);
-		$this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'user' . DIRECTORY_SEPARATOR . 'jfusion' . DIRECTORY_SEPARATOR .'jfusion.xml', JText::_('USER') . ' ' . JText::_('PLUGIN'), $jfusion_version);
-		$this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'search' . DIRECTORY_SEPARATOR . 'jfusion' . DIRECTORY_SEPARATOR .'jfusion.xml', JText::_('SEARCH') . ' ' . JText::_('PLUGIN'), $jfusion_version);
-		$this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . 'jfusion' . DIRECTORY_SEPARATOR .'jfusion.xml', JText::_('DISCUSSION') . ' ' . JText::_('PLUGIN'), $jfusion_version);
-		$this->jfusion_version = $jfusion_version;
+		$this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'authentication' . DIRECTORY_SEPARATOR . 'jfusion' . DIRECTORY_SEPARATOR . 'jfusion.xml', JText::_('AUTHENTICATION') . ' ' . JText::_('PLUGIN'));
+		$this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'user' . DIRECTORY_SEPARATOR . 'jfusion' . DIRECTORY_SEPARATOR .'jfusion.xml', JText::_('USER') . ' ' . JText::_('PLUGIN'));
+		$this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'search' . DIRECTORY_SEPARATOR . 'jfusion' . DIRECTORY_SEPARATOR .'jfusion.xml', JText::_('SEARCH') . ' ' . JText::_('PLUGIN'));
+		$this->getVersionNumber(JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . 'jfusion' . DIRECTORY_SEPARATOR .'jfusion.xml', JText::_('DISCUSSION') . ' ' . JText::_('PLUGIN'));
 	}
 
 	/**
@@ -455,20 +473,19 @@ class jfusionViewconfigdump extends JViewLegacy {
 	 *
 	 * @param string $filename         filename
 	 * @param string $name             name
-	 * @param string &$jfusion_version version number of the current jfusion
 	 *
 	 * @return void
 	 */
-	function getVersionNumber($filename, $name, &$jfusion_version)
+	function getVersionNumber($filename, $name)
 	{
 		if (file_exists($filename)) {
 			//get the version number
 			$xml = JFusionFunction::getXml($filename);
 
-			$jfusion_version[JText::_('JFUSION') . ' ' . $name . ' ' . JText::_('VERSION') ] = ' ' . (string)$xml->version . ' ';
+			$this->jfusion_version[JText::_('JFUSION') . ' ' . $name . ' ' . JText::_('VERSION') ] = ' ' . (string)$xml->version . ' ';
 			$revision = $xml->revision;
 			if (!empty($revision)) {
-				$jfusion_version[JText::_('JFUSION') . ' ' . $name . ' ' . JText::_('VERSION') ].= '(Rev '.(string)$revision.') ';
+				$this->jfusion_version[JText::_('JFUSION') . ' ' . $name . ' ' . JText::_('VERSION') ].= '(Rev '.(string)$revision.') ';
 			}
 			unset($parser);
 		}

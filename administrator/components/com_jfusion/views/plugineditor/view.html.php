@@ -35,6 +35,11 @@ class jfusionViewplugineditor extends JViewLegacy
 	 */
 	var $jname;
 
+	/**
+	 * @var JForm $form
+	 */
+	var $form;
+
     /**
      * displays the view
      *

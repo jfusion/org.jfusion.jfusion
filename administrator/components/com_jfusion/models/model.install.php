@@ -153,7 +153,7 @@ class JFusionModelInstaller extends InstallerModelInstall
     function installZIP($filename)
     {
     	$result = array();
-        $mainframe = JFactory::getApplication();
+
         $this->setState('action', 'install');
 
         // custom installer

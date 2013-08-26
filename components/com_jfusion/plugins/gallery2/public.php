@@ -219,8 +219,6 @@ class JFusionPublic_gallery2 extends JFusionPublic {
         $helper = JFusionFactory::getHelper($this->getJname());
         $helper->loadGallery2Api(true, $itemid);
         global $gallery;
-        $params = JFusionFactory::getParams($this->getJname());
-        $source_url = $params->get('source_url');
         $urlGenerator = $gallery->getUrlGenerator();
         /* start preparing */
         $text = trim($text);
@@ -276,7 +274,7 @@ class JFusionPublic_gallery2 extends JFusionPublic {
                     $forum = JFusionFactory::getForum($this->getJname());
                     $info->galleryImage = $forum->renderImageBlock($config, 'image_block', $pluginParam);
 
-                    list(, $views) = GalleryCoreApi::fetchItemViewCount($array['itemId']);
+//                    list(, $views) = GalleryCoreApi::fetchItemViewCount($array['itemId']);
                     $return[] = $info;
                 }
             }

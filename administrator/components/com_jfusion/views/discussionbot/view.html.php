@@ -17,6 +17,51 @@ jimport('joomla.application.component.view');
 */
 class jfusionViewdiscussionbot extends JViewLegacy
 {
+	/**
+	 * @var string $jname
+	 */
+	var $jname;
+
+	/**
+	 * @var string $title
+	 */
+	var $title;
+
+	/**
+	 * @var string $ename
+	 */
+	var $ename;
+
+	/**
+	 * @var string $hash
+	 */
+	var $hash;
+
+	/**
+	 * @var array $pairs
+	 */
+	var $pairs = array();
+
+	/**
+	 * @var array $joomlaoptions
+	 */
+	var $joomlaoptions = array();
+
+	/**
+	 * @var array $joomlaSelectOptions
+	 */
+	var $joomlaSelectOptions = array();
+
+	/**
+	 * @var array $forumSelectOptions
+	 */
+	var $forumSelectOptions = array();
+
+	/**
+	 * @var string $toolbar
+	 */
+	var $toolbar;
+
     /**
      * @param null $tpl
      * @return mixed
@@ -34,12 +79,12 @@ class jfusionViewdiscussionbot extends JViewLegacy
         $mainframe = JFactory::getApplication();
  		$document	= JFactory::getDocument();
         $db			= JFactory::getDBO();
-        $ename = JFactory::getApplication()->input->get('ename');
-		$jname = JFactory::getApplication()->input->get('jname');
+	    $this->ename = JFactory::getApplication()->input->get('ename');
+	    $this->jname = JFactory::getApplication()->input->get('jname');
 
-		switch ($ename) {
+		switch ($this->ename) {
         	case 'pair_sections' :
-        		$title = JText::_('ASSIGN_SECTION_PAIRS');
+		        $this->title = JText::_('ASSIGN_SECTION_PAIRS');
 
 		        $query = $db->getQuery(true)
 			        ->select('id, title as name')
@@ -49,10 +94,10 @@ class jfusionViewdiscussionbot extends JViewLegacy
 			        ->order('title');
 
         		$db->setQuery($query);
-        		$joomlaoptions = $db->loadObjectList('id');
+		        $this->joomlaoptions = $db->loadObjectList('id');
 				break;
         	case 'pair_categories' :
-        		$title = JText::_('ASSIGN_CATEGORY_PAIRS');
+		        $this->title = JText::_('ASSIGN_CATEGORY_PAIRS');
 
 		        $query	= $db->getQuery(true)
 			        ->select('a.id, a.title as name, a.level')
@@ -63,15 +108,15 @@ class jfusionViewdiscussionbot extends JViewLegacy
 			        ->order('a.lft');
 
 		        $db->setQuery($query);
-		        $joomlaoptions = $db->loadObjectList('id');
-		        foreach ($joomlaoptions as &$item) {
+		        $this->joomlaoptions = $db->loadObjectList('id');
+		        foreach ($this->joomlaoptions as &$item) {
 			        $repeat = ( $item->level - 1 >= 0 ) ? $item->level - 1 : 0;
 			        $item->name = str_repeat('- ', $repeat).$item->name;
 		        }
 
         		break;
         	case 'pair_k2_categories':
-        	    $title = JText::_('ASSIGN_K2_CATEGORY_PAIRS');
+		        $this->title = JText::_('ASSIGN_K2_CATEGORY_PAIRS');
 
 		        $query = $db->getQuery(true)
 			        ->select('id, name as title, parent')
@@ -92,67 +137,64 @@ class jfusionViewdiscussionbot extends JViewLegacy
         			}
         		}
 
-        		$joomlaoptions = jfusionViewdiscussionbot::buildRecursiveTree(0, '', array(), $children);
+		        $this->joomlaoptions = jfusionViewdiscussionbot::buildRecursiveTree(0, '', array(), $children);
         	    break;
         	default:
         		return;
         }
 
-		$hash = JFactory::getApplication()->input->get($ename);
+	    $this->hash = JFactory::getApplication()->input->get($this->ename);
 	    $session = JFactory::getSession();
-	    $encoded_pairs = $session->get($hash);
+	    $encoded_pairs = $session->get($this->hash);
 		if($encoded_pairs) {
-			$pairs = unserialize(base64_decode($encoded_pairs));
-		} else {
-			$pairs = array();
+			$this->pairs = unserialize(base64_decode($encoded_pairs));
 		}
 
 		//remove pair
 		if(JFactory::getApplication()->input->getInt('remove')) {
 			$joomlaid = JFactory::getApplication()->input->getInt('remove');
-			unset($pairs[$joomlaid]);
+			unset($this->pairs[$joomlaid]);
 
 			//recode pairs to be added as hidden var to make sure none are lost on submitting another pair
-			$encoded_pairs = base64_encode(serialize($pairs));
-			$session->set($hash, $encoded_pairs);
+			$encoded_pairs = base64_encode(serialize($this->pairs));
+			$session->set($this->hash, $encoded_pairs);
 		} elseif (JFactory::getApplication()->input->getInt('joomlaid',0)) {
 			//add submitted pair
 			$joomlaid = JFactory::getApplication()->input->getInt('joomlaid');
 			$forumid = JFactory::getApplication()->input->getInt('forumid');
-			$pairs[$joomlaid] = $forumid;
+			$this->pairs[$joomlaid] = $forumid;
 
 			//recode pairs to be added as hidden var to make sure none are lost on submitting another pair
-			$encoded_pairs = base64_encode(serialize($pairs));
-			$session->set($hash, $encoded_pairs);
+			$encoded_pairs = base64_encode(serialize($this->pairs));
+			$session->set($this->hash, $encoded_pairs);
 		}
 
 		//get the forum listings
-		$JFusionForum = JFusionFactory::getForum($jname);
+		$JFusionForum = JFusionFactory::getForum($this->jname);
 	    try {
-		    $forumSelectOptions = $JFusionForum->getForumList();
+		    $this->forumSelectOptions = $JFusionForum->getForumList();
 	    } catch (Exception $e) {
 			JFusionFunction::raiseError($e);
-		    $forumSelectOptions = array();
 	    }
 
 		//joomla select options
-        $joomlaSelectOptions = $joomlaoptions;
+
 
 		$document->addStyleSheet('components/com_jfusion/css/jfusion.css');
         $template = $mainframe->getTemplate();
 		$document->addStyleSheet('templates/'.$template.'/css/general.css');
 		$document->addStyleSheet('templates/'.$template.'/css/icon.css');
-		$document->setTitle($title);
+		$document->setTitle($this->title);
 		$css = '.jfusion table.jfusionlist, table.jfusiontable{ font-size:11px; } .jfusion table.jfusionlist tbody tr td { vertical-align:top; }';
 		$document->addStyleDeclaration($css);
 
 		//prepare a toolbar
         $apply = JText::_('APPLY');
         $close = JText::_('CLOSE');
-	    $toolbar = <<<HTML
+	    $this->toolbar = <<<HTML
 	    <div class="btn-toolbar" id="toolbar">
 			<div class="btn-group" id="toolbar-apply">
-				<a href="#" onclick="window.parent.JFusion.submitParams('{$ename}', '{$encoded_pairs}')" class="btn btn-small btn-success">
+				<a href="#" onclick="window.parent.JFusion.submitParams('{$this->ename}', '{$encoded_pairs}')" class="btn btn-small btn-success">
 					<i class="icon-apply icon-white">
 					</i>
 					{$apply}
@@ -170,17 +212,7 @@ class jfusionViewdiscussionbot extends JViewLegacy
 HTML;
 
 	    //assign references
-
-	    $this->jname = $jname;
-	    $this->toolbar = $toolbar;
-	    $this->title = $title;
-	    $this->joomlaoptions = $joomlaoptions;
-	    $this->joomlaSelectOptions = $joomlaSelectOptions;
-	    $this->forumSelectOptions = $forumSelectOptions;
-	    $this->pairs = $pairs;
-
-	    $this->ename = $ename;
-	    $this->hash = $hash;
+	    $this->joomlaSelectOptions = $this->joomlaoptions;
 
 		parent::display($tpl);
 	}

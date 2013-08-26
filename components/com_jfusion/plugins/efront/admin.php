@@ -197,7 +197,6 @@ class JFusionAdmin_efront extends JFusionAdmin
      * @return bool|string
      */
     function getDefaultUsergroup() {
-        $params = JFusionFactory::getParams($this->getJname());
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
         $usergroup_id = null;
         if(!empty($usergroups)) {
@@ -253,7 +252,6 @@ class JFusionAdmin_efront extends JFusionAdmin
 
     function debugConfigExtra() {
         // see if we have an api user in Magento
-        $jname = $this->getJname();
         $db = JFusionFactory::getDataBase($this->getJname());
         // check if we have valid parameters  for apiuser and api key
         $params = JFusionFactory::getParams($this->getJname());

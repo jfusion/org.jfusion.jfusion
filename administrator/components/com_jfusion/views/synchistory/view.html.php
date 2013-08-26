@@ -94,7 +94,6 @@ class jfusionViewsynchistory extends JViewLegacy
     	$mins = (int)intval($timediff / $INT_MINUTE);
     	$timediff = (int)intval($timediff - ($INT_MINUTE * $mins));
     	$sec = (int)intval($timediff / $INT_SECOND);
-    	$timediff = (int)intval($timediff - ($sec * $INT_SECOND));
     	$str = '';
     	if ($weeks) {
     		$str.= intval($weeks);

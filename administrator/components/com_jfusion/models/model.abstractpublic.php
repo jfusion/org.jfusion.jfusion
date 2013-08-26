@@ -59,7 +59,7 @@ class JFusionPublic
             $mainframe->redirect($location);
         }
         if ( isset($status['error']) ) {
-            foreach ( $status['error'] as $key => $value ) {
+            foreach ( $status['error'] as $value ) {
                 JFusionFunction::raiseWarning($value, $this->getJname());
             }
         }
@@ -74,7 +74,6 @@ class JFusionPublic
         $regex_body = array();
         $replace_body = array();
         $callback_body = array();
-        $params = JFusionFactory::getParams($this->getJname());
 
         //parse anchors
         if(!empty($data->parse_anchors)) {
@@ -329,7 +328,6 @@ JS;
     function parseCSS(&$data,&$html,$infile_only=false)
     {
         $jname = $this->getJname();
-        $param = JFusionFactory::getParams ( $this->getJname() );
 
         if (empty($jname)) {
             $jname = JFactory::getApplication()->input->get('Itemid');
@@ -353,7 +351,7 @@ JS;
                     require_once (JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'parsers' . DIRECTORY_SEPARATOR . 'css.php');
 
                     jimport('joomla.filesystem.file');
-                    foreach ($css[1] as $key => $values) {
+                    foreach ($css[1] as $values) {
                         if( preg_match( '#href=[\'|"](.*?)[\'|"]#Si', $values, $cssUrl )) {
                             $cssUrlRaw = $cssUrl[1];
 

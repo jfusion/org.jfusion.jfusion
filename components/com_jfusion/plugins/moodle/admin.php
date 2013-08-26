@@ -176,7 +176,6 @@ class JFusionAdmin_moodle extends JFusionAdmin
      */
     function getDefaultUsergroup() {
 	    try {
-		    $params = JFusionFactory::getParams($this->getJname());
 		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
 		    $usergroup_id = null;
 		    if(!empty($usergroups)) {
@@ -250,7 +249,6 @@ class JFusionAdmin_moodle extends JFusionAdmin
 		    } catch (Exception $e) {
 				throw new RuntimeException(JText::_('MOODLE_CONFIG_FIRST'));
 		    }
-		    $db = JFusionFactory::getDatabase ( $jname );
 
 		    $source_path = $params->get ( 'source_path', '' );
 		    if (! file_exists ( $source_path . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'auth.php' )) {

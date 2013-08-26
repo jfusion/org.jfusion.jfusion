@@ -36,12 +36,9 @@ class JFormFieldDiscussionbotparam extends JFormField
      */
 	function getInput()
 	{
-		$html = '';
 		try {
-			$mainframe = JFactory::getApplication();
-
 			$db			= JFactory::getDBO();
-			$doc 		= JFactory::getDocument();
+
 			$fieldName = $this->formControl.'['.$this->group.'][' . $this->fieldname . ']';
 			$name = (string) $this->fieldname;
 			$value = $this->value;
@@ -79,7 +76,6 @@ class JFormFieldDiscussionbotparam extends JFormField
 				throw new RuntimeException(JText::_('NO_PLUGIN_SELECT'));
 			} else {
 				JHtml::_('behavior.framework');
-
 				$document = JFactory::getDocument();
 				$document->addScript('components/com_jfusion/js/jfusion.js');
 

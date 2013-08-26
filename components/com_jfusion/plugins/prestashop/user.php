@@ -261,7 +261,7 @@ class JFusionUser_prestashop extends JFusionUser {
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
 		    $params = JFusionFactory::getParams($this->getJname());
-		    $errors = array();
+
 		    require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Validate.php');
 		    require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'ObjectModel.php');
 		    require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Db.php');
@@ -378,9 +378,6 @@ class JFusionUser_prestashop extends JFusionUser {
 		    }*/
 
 		    // Validate gender
-
-
-
 		    if (!preg_match('/^[0|1|2|9]$/ui', $user_variables['id_gender'])) {
 			    throw new RuntimeException(Tools::displayError('gender not valid'));
 		    } elseif (!ValidateCore::isName($user_variables['firstname'])) {

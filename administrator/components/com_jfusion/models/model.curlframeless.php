@@ -208,7 +208,7 @@ class JFusionCurlFrameless {
 		curl_close($this->ch);
 
 		if (count($filepath)) {
-			foreach($filepath as $key=>$value) {
+			foreach($filepath as $value) {
 				unlink($value);
 			}
 		}

@@ -851,7 +851,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 			$boards = $db->loadObjectList();
 
 			$list = array();
-			foreach( $boards as $key => $value ) {
+			foreach( $boards as $value ) {
 				$member_groups = explode( ',' , $value->member_groups );
 				if ( in_array($group_id, $member_groups) || $group_id == 1) {
 					$list[] =  $value->id_board;
@@ -1051,7 +1051,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
     function callback($buffer) {
 		$data = $this->callbackdata;
 		$headers_list = headers_list();
-		foreach ($headers_list as $key => $value) {
+		foreach ($headers_list as $value) {
         	$matches = array();
             if (stripos($value, 'location') === 0) {
                 if (preg_match('#'.preg_quote($data->integratedURL,'#').'(.*?)\z#Sis' , $value , $matches)) {

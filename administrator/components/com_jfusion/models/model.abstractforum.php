@@ -504,7 +504,6 @@ class JFusionForum
 		//using markitup http://markitup.jaysalvat.com/ for bbcode textbox
 		$document = JFactory::getDocument();
 
-		$option = JFactory::getApplication()->input->getCmd('option');
 		$path = 'plugins/content/jfusion/discussbot/markitup';
 
 		$document->addScript(JFusionFunction::getJoomlaURL().$path.'/jquery.markitup.js');

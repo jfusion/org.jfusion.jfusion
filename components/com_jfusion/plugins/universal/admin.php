@@ -72,7 +72,6 @@ class JFusionAdmin_universal extends JFusionAdmin{
 	 */
 	function getDefaultUsergroup()
 	{
-		$params = JFusionFactory::getParams($this->getJname());
 		$usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
 		$usergroup_id = null;
 		if(!empty($usergroups)) {
@@ -249,7 +248,7 @@ class JFusionAdmin_universal extends JFusionAdmin{
 				$tl[] = $table;
 
 				$firstTable = null;
-				foreach ($tabelslist as $key => $val) {
+				foreach ($tabelslist as $val) {
 					if( @strpos( $val[0], $database_prefix ) === 0 || $database_prefix == '' ) {
 						$table = new stdClass;
 

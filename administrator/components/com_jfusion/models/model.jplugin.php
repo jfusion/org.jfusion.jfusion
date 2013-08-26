@@ -216,7 +216,6 @@ class JFusionJplugin
     function getUsergroupName($jname,$gid)
     {
 	    try {
-	        $params = JFusionFactory::getParams($jname);
 	        $db = JFusionFactory::getDatabase($jname);
 
 		    //we want to output the usergroup name
@@ -1218,7 +1217,6 @@ class JFusionJplugin
 	    try {
 		    // Initialise some variables
 		    $params = JFusionFactory::getParams($jname);
-		    $db = JFusionFactory::getDatabase($jname);
 		    $update_block = $params->get('update_block');
 		    $update_activation = $params->get('update_activation');
 		    $update_email = $params->get('update_email');
@@ -1365,7 +1363,6 @@ class JFusionJplugin
 			    throw new RuntimeException(JText::_('GROUP_UPDATE_ERROR') . ': ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST'));
 		    } else {
 			    $db = JFusionFactory::getDatabase($jname);
-			    $params = JFusionFactory::getParams($jname);
 			    $dispatcher = JEventDispatcher::getInstance();
 
 			    //Fire the user plugin functions for joomla_int
@@ -1387,7 +1384,7 @@ class JFusionJplugin
 
 			    $db->execute();
 
-			    foreach ($usergroups as $key => $group) {
+			    foreach ($usergroups as $group) {
 				    $temp = new stdClass;
 				    $temp->user_id = $existinguser->userid;
 				    $temp->group_id = $group;

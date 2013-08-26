@@ -85,7 +85,7 @@ class JFormFieldJFusionAdvancedParam extends JFormField
 			$title = $params['jfusionplugin'];
 		} else if ($multiselect) {
 			$del = '';
-			foreach ($params as $key => $param) {
+			foreach ($params as $param) {
 				if (isset($param['jfusionplugin'])) {
 					$title.= $del . $param['jfusionplugin'];
 					$del = '; ';

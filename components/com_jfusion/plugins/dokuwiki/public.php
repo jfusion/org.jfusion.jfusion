@@ -243,10 +243,7 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
      */
     function fixUrl($matches) {
 		$q = $matches[1];
-		$integratedURL = $this->data->integratedURL;		
-		$baseURL = $this->data->baseURL;
-		$fullURL = $this->data->fullURL;
-		    	
+
         $q = urldecode($q);
         $q = str_replace(':', ';', $q);
         if (strpos($q, '#') === 0) {
@@ -294,10 +291,10 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
                     $url = 'doku.php';
                 }
             }
-            if (substr($baseURL, -1) != '/') {
+            if (substr($this->data->baseURL, -1) != '/') {
                 //non sef URls
                 $url = str_replace('?', '&amp;', $url);
-                $url = $baseURL . '&amp;jfile=' . $url;
+                $url = $this->data->baseURL . '&amp;jfile=' . $url;
             } else {
                 $params = JFusionFactory::getParams($this->getJname());
                 $sefmode = $params->get('sefmode');
@@ -305,7 +302,7 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
                     $url = JFusionFunction::routeURL($url, JFactory::getApplication()->input->getInt('Itemid'));
                 } else {
                     //we can just append both variables
-                    $url = $baseURL . $url;
+                    $url = $this->data->baseURL . $url;
                 }
             }
         }

@@ -820,7 +820,7 @@ HTML;
         $boards = $db->loadObjectList();
 
 		$list = array();
-		foreach( $boards as $key => $value ) {
+		foreach($boards as $value) {
 			$member_groups = explode( ',' , $value->member_groups );
 			if ( in_array($group_id, $member_groups) || $group_id == 1) {
 				$list[] =  $value->id_board;

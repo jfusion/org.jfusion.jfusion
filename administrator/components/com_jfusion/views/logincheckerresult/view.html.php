@@ -36,6 +36,26 @@ class jfusionViewLoginCheckerResult extends JViewLegacy
 	var $options;
 
 	/**
+	 * @var $plugins array
+	 */
+	var $plugins = array();
+
+	/**
+	 * @var $auth_results array
+	 */
+	var $auth_results = array();
+
+	/**
+	 * @var $response JAuthenticationResponse
+	 */
+	var $response;
+
+	/**
+	 * @var $auth_userinfo srdClass
+	 */
+	var $auth_userinfo;
+
+	/**
 	 * displays the view
 	 *
 	 * @param string $tpl template name
@@ -88,7 +108,6 @@ class jfusionViewLoginCheckerResult extends JViewLegacy
 
 	function getPlugin()
 	{
-		$plugins = array();
 		//output the current configuration
 		$db = JFactory::getDBO();
 
@@ -101,21 +120,20 @@ class jfusionViewLoginCheckerResult extends JViewLegacy
 			->order('master DESC');
 
 		$db->setQuery($query);
-		$plugin_list = $db->loadObjectList();
-		foreach ($plugin_list as $plugin_details) {
+		$plugins = $db->loadObjectList();
+		foreach ($plugins as $plug) {
 			$plugin = new stdClass;
-			$plugin->name = $plugin_details->name;
-			if ($plugin_details->original_name) {
-				$plugin->original_name = $plugin_details->original_name;
+			$plugin->name = $plug->name;
+			if ($plug->original_name) {
+				$plugin->original_name = $plug->original_name;
 			}
 			$plugin->configuration = new stdClass;
-			$plugin->configuration->master = $plugin_details->master;
-			$plugin->configuration->slave = $plugin_details->slave;
-			$plugin->configuration->dual_login = $plugin_details->dual_login;
-			$plugin->configuration->check_encryption = $plugin_details->check_encryption;
-			$plugins[] = $plugin;
+			$plugin->configuration->master = $plug->master;
+			$plugin->configuration->slave = $plug->slave;
+			$plugin->configuration->dual_login = $plug->dual_login;
+			$plugin->configuration->check_encryption = $plug->check_encryption;
+			$this->plugins[] = $plugin;
 		}
-		$this->plugins = $plugins;
 	}
 
 	/**
@@ -131,7 +149,7 @@ class jfusionViewLoginCheckerResult extends JViewLegacy
 		// Initialize variables
 		jimport('joomla.user.authentication');
 		$authenticate = JAuthentication::getInstance();
-		$auth = false;
+
 		// Get plugins
 		$plugins = JPluginHelper::getPlugin('authentication');
 		//add Jfusion plugin
@@ -194,7 +212,6 @@ class jfusionViewLoginCheckerResult extends JViewLegacy
 			unset($auth_userinfo->fullname, $auth_userinfo->birthdate, $auth_userinfo->gender, $auth_userinfo->postcode, $auth_userinfo->country, $auth_userinfo->language, $auth_userinfo->timezone, $auth_userinfo->type);
 		}
 
-		$auth_results = array();
 		if ($response->status === JAuthentication::STATUS_SUCCESS) {
 			/**
 			 * Launch User Plugin Code
@@ -233,14 +250,13 @@ class jfusionViewLoginCheckerResult extends JViewLegacy
 					$result = new stdClass;
 					$result->result = $results;
 					$result->debug = $jfusionDebug;
-					$auth_results[$plugin_name] = $result;
+					$this->auth_results[$plugin_name] = $result;
 				}
 			}
 		}
 
 		$this->auth_userinfo = $auth_userinfo;
 		$this->response = $response;
-		$this->auth_results = $auth_results;
 	}
 
 	/**

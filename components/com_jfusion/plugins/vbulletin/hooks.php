@@ -532,7 +532,7 @@ class executeJFusionHook
     function xml_print_output()
     {
         if (!defined('_JEXEC')) {
-            $mainframe = $this->startJoomla();
+            $this->startJoomla();
         }
 
         //parse AJAX output

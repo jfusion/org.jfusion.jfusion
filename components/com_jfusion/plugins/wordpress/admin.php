@@ -220,7 +220,6 @@ class JFusionAdmin_wordpress extends JFusionAdmin
      * @return string
      */
     function getDefaultUsergroup() {
-		$params = JFusionFactory::getParams($this->getJname());
         /**
          * @ignore
          * @var $helper JFusionHelper_wordpress

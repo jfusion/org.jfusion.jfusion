@@ -83,7 +83,6 @@ class JFusionAdmin_joomla_ext extends JFusionAdmin
      * @return string
      */
     function getDefaultUsergroup() {
-		$params = JFusionFactory::getParams($this->getJname());
 		return JFusionJplugin::getDefaultUsergroup($this->getJname());
 	}
 

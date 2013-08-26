@@ -710,7 +710,6 @@ class JFusionController extends JControllerLegacy
      */
     function resolveerror()
     {
-        $db = JFactory::getDBO();
         $syncid = JFactory::getApplication()->input->get('syncid', array(), 'array');
         if(!is_array($syncid) || empty($syncid)) {
             JFusionFunction::raiseWarning(JText::_('NO_SYNCID_SELECTED'));
@@ -754,7 +753,7 @@ class JFusionController extends JControllerLegacy
 		} else if ($multiselect) {
 			$del = '';
 			if (is_array($params)) {
-				foreach ($params as $key => $value) {
+				foreach ($params as $value) {
 					if (isset($value['jfusionplugin'])) {
 						$title.= $del . $value['jfusionplugin'];
 						$del = '; ';
@@ -869,7 +868,7 @@ JS;
 			     * @var $val SimpleXMLElement
 			     */
 			    $info = $config = null;
-			    foreach ($xml->children() as $key => $val) {
+			    foreach ($xml->children() as $val) {
 				    switch ($val->getName()) {
 					    case 'info':
 						    $info = $val;
@@ -903,7 +902,7 @@ JS;
 						     * @ignore
 						     * @var $val SimpleXMLElement
 						     */
-						    foreach ($config as $key => $val) {
+						    foreach ($config as $val) {
 							    $att = $val->attributes();
 							    $attName = (string)$att['name'];
 							    $conf[$attName] = htmlspecialchars_decode((string)$val);

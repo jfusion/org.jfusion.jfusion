@@ -229,7 +229,6 @@ class JFusionUser_mybb extends JFusionUser {
 
 		    //check the oldgroup
 		    if (empty($oldgroup)) {
-			    $params = JFusionFactory::getParams($this->getJname());
 			    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 			    if (!empty($usergroups)) {
 				    $oldgroup = $usergroups[0];

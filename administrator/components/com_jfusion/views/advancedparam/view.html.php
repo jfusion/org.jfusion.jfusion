@@ -45,6 +45,10 @@ class jfusionViewadvancedparam extends JViewLegacy
 	 */
 	var $comp;
 
+	/**
+	 * @var $output string
+	 */
+	var $output;
 
 	/**
 	 * displays the view
@@ -78,17 +82,14 @@ class jfusionViewadvancedparam extends JViewLegacy
 			//Load Plugin XML Parameter
 			$params = $this->loadXMLParamMulti($feature);
 			//Load enabled Plugin List
-			$output = $this->loadElementMulti($params, $feature);
+			$this->output = $this->loadElementMulti($params, $feature);
 		} else {
 			$multiselect = false;
 			//Load Plugin XML Parameter
 			$params = $this->loadXMLParamSingle($feature);
 			//Load enabled Plugin List
-			$output = $this->loadElementSingle($params, $feature);
+			$this->output = $this->loadElementSingle($params, $feature);
 		}
-		//load the element number for multiple advanceparam elements
-		$ename = JFactory::getApplication()->input->getInt('ename');
-		$this->ename = $ename;
 
 		//Add Document dependent things like javascript, css
 		$document = JFactory::getDocument();
@@ -100,8 +101,6 @@ class jfusionViewadvancedparam extends JViewLegacy
 		$document->addStyleDeclaration($css);
 
 		JFusionFunction::initJavaScript();
-
-		$this->output = $output;
 
 		$apply = JText::_('APPLY');
 		$close = JText::_('CLOSE');
@@ -168,10 +167,7 @@ HTML;
 		$rows = array_merge(array($noSelected), $rows);
 		$attributes = array('size' => '1', 'class' => 'inputbox');
 		$output = JHTML::_('select.genericlist', $rows, 'params[jfusionplugin]', $attributes, 'id', 'name', $JPlugin);
-		$featureLink = '';
-		if (isset($this->featureArray[$feature])) {
-			$featureLink = '&feature=' . $feature;
-		}
+
 		return $output;
 	}
 
@@ -257,10 +253,6 @@ HTML;
 		$output = JHTML::_('select.genericlist', $rows, 'jfusionplugin', $attributes, 'id', 'name');
 		$output.= ' <input type="button" value="add" name="add" onclick="JFusion.addPlugin(this);" />';
 
-		$featureLink = '';
-		if (isset($this->featureArray[$feature])) {
-			$featureLink = '&feature=' . $feature;
-		}
 		return $output;
 	}
 

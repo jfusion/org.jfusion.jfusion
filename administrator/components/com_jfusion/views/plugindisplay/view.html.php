@@ -353,7 +353,6 @@ class jfusionViewplugindisplay extends JViewLegacy {
 			//we found plugins now prepare the data
 			foreach($rows as $record) {
 				$JFusionPlugin = JFusionFactory::getAdmin($record->name);
-				$JFusionParam = JFusionFactory::getParams($record->name);
 
 				//output detailed configuration warnings for enabled plugins
 				if ($record->status==1) {

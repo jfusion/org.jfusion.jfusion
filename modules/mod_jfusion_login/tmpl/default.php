@@ -29,6 +29,7 @@ defined('_JEXEC') or die('Restricted access');
  * @var $lostpassword_url string
  * @var $lostusername_url string
  * @var $register_url string
+ * @var $avatar string
  */
 
 $output = '';

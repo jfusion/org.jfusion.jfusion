@@ -213,7 +213,6 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
      */
     function getDefaultUsergroup() {
 	    try {
-		    $params = JFusionFactory::getParams($this->getJname());
 		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
 		    $usergroup_id = null;
 		    if(!empty($usergroups)) {

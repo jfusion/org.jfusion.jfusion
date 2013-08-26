@@ -1409,7 +1409,7 @@ $/Dx", $string)) return true;
             $output = Array();
             if (count($chunks)) {
                 $is_a_url = false;
-                foreach($chunks as $index => $chunk) {
+                foreach($chunks as $chunk) {
                     if (!$is_a_url) {
                         $chunk = $this->Internal_ProcessSmileys($chunk);
                     }
