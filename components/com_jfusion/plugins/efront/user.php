@@ -32,6 +32,11 @@ require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTOR
  */
 class JFusionUser_efront extends JFusionUser
 {
+	/**
+	 * @var $helper JFusionHelper_efront
+	 */
+	var $helper;
+
     /**
      * @param object $userinfo
      *
@@ -55,16 +60,11 @@ class JFusionUser_efront extends JFusionUser
 	        $db->setQuery($query);
 	        $result = $db->loadObject();
 	        if ($result) {
-	            /**
-	             * @ignore
-	             * @var $helper JFusionHelper_efront
-	             */
-	            $helper = JFusionFactory::getHelper($this->getJname());
 	            // change/add fields used by jFusion
 	            $result->userid = $result->id;
 	            $result->username = $result->login;
-	            $result->group_id = $helper->groupNameToID($result->user_type,$result->user_types_ID);
-	            $result->group_name = $helper->groupIdToName($result->group_id);
+	            $result->group_id = $this->helper->groupNameToID($result->user_type,$result->user_types_ID);
+	            $result->group_name = $this->helper->groupIdToName($result->group_id);
 
 	            $result->groups = array($result->group_id);
 	            $result->groupnames = array($result->group_name);
@@ -102,9 +102,8 @@ class JFusionUser_efront extends JFusionUser
             }
         }
 	    try {
-	        $params = JFusionFactory::getParams($this->getJname());
 	        $db = JFusionFactory::getDatabase($this->getJname());
-	        $status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname(),$params->get('logout_type'));
+	        $status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname(),$this->params->get('logout_type'));
 
 		    $query = $db->getQuery(true)
 			    ->select('action')
@@ -151,11 +150,10 @@ class JFusionUser_efront extends JFusionUser
 		        throw new RuntimeException(JText::_('FUSION_BLOCKED_USER'));
 	        } else {
 	            //get cookiedomain, cookiepath
-	            $params = JFusionFactory::getParams($this->getJname());
-	            $cookiedomain = $params->get('cookie_domain', '');
-	            $cookiepath = $params->get('cookie_path', '/');
-	            $httponly = $params->get('httponly',0);
-	            $secure = $params->get('secure',0);
+	            $cookiedomain = $this->params->get('cookie_domain', '');
+	            $cookiepath = $this->params->get('cookie_path', '/');
+	            $httponly = $this->params->get('httponly',0);
+	            $secure = $this->params->get('secure',0);
 	            $db = JFusionFactory::getDatabase($this->getJname());
 
 		        $query = $db->getQuery(true)
@@ -221,8 +219,7 @@ class JFusionUser_efront extends JFusionUser
      */
     function updatePassword($userinfo, &$existinguser, &$status) {
 	    try {
-	        $params = JFusionFactory::getParams($this->getJname());
-	        $md5_key = $params->get('md5_key');
+	        $md5_key = $this->params->get('md5_key');
 	        $existinguser->password = md5($userinfo->password_clear.$md5_key);
 	        $db = JFusionFactory::getDatabase($this->getJname());
 
@@ -387,7 +384,6 @@ class JFusionUser_efront extends JFusionUser
         */
         $status = array('error' => array(),'debug' => array());
 	    try {
-	        $params = JFusionFactory::getParams($this->getJname());
 	        $db = JFusionFactory::getDatabase($this->getJname());
 	        //prepare the variables
 	        $user = new stdClass;
@@ -440,7 +436,7 @@ class JFusionUser_efront extends JFusionUser
 	            $user->user_type = $user_type;
 	            $user->user_types_ID = $user_types_ID;
 	            if (isset($userinfo->password_clear) && strlen($userinfo->password_clear) != 32) {
-	                $md5_key = $params->get('md5_key');
+	                $md5_key = $this->params->get('md5_key');
 	                $user->password = md5($userinfo->password_clear.$md5_key);
 	            } else {
 	                $user->password = $userinfo->password;
@@ -467,15 +463,10 @@ class JFusionUser_efront extends JFusionUser
 		        $db->insertObject('#__users', $user, 'id');
 
                 // we need to create the user directories. Can't use Joomla API because it uses the Joomla Root Path
-                $uploadpath = $params->get('uploadpath');
+                $uploadpath = $this->params->get('uploadpath');
                 $user_dir = $uploadpath.$user->login.'/';
                 if (is_dir($user_dir)) {
-	                /**
-	                 * @ignore
-	                 * @var $helper JFusionHelper_efront
-	                 */
-	                $helper = JFusionFactory::getHelper($this->getJname());
-	                $helper->delete_directory($user_dir); //If the folder already exists, delete it first, including files
+	                $this->helper->delete_directory($user_dir); //If the folder already exists, delete it first, including files
                 }
                 // we are not interested in the result of the deletion, just continue
                 if (mkdir($user_dir, 0755) || is_dir($user_dir))
@@ -534,14 +525,8 @@ class JFusionUser_efront extends JFusionUser
         } else {
             $existinguser = $this->getUser($userinfo);
             if (!empty($existinguser)) {
-                $params = JFusionFactory::getParams($this->getJname());
-                /**
-                 * @ignore
-                 * @var $helper JFusionHelper_efront
-                 */
-                $helper = JFusionFactory::getHelper($this->getJname());
-                $apiuser = $params->get('apiuser');
-                $apikey = $params->get('apikey');
+                $apiuser = $this->params->get('apiuser');
+                $apikey = $this->params->get('apikey');
                 $login = $existinguser->username;
                 $jname = $this->getJname();
                 if (!$apiuser || !$apikey) {
@@ -549,14 +534,14 @@ class JFusionUser_efront extends JFusionUser
                 } else {
                     // get token
                     $curl_options['action'] ='token';
-                    $status = $helper->send_to_api($curl_options,$status);
+                    $status = $this->helper->send_to_api($curl_options,$status);
                     if (!$status['error']) {
                         $result = $status['result'][0];
                         $token = $result->token;
                         // login
                         $curl_options['action']='login';
                         $curl_options['parms'] = '&token='.$token.'&username='.$apiuser.'&password='.$apikey;
-                        $status = $helper->send_to_api($curl_options,$status);
+                        $status = $this->helper->send_to_api($curl_options,$status);
                         if (!$status['error']){
                             $result = $status['result'][0];
                             if($result->status == 'ok'){
@@ -564,7 +549,7 @@ class JFusionUser_efront extends JFusionUser
                                 // delete user
                                 $curl_options['action'] = 'remove_user';
                                 $curl_options['parms'] = '&token='.$token.'&login='.$login;
-                                $status = $helper->send_to_api($curl_options,$status);
+                                $status = $this->helper->send_to_api($curl_options,$status);
                                 $errorstatus = $status;
                                 if ($status['error']){
                                     $status['debug'][] = $status['error'][0];
@@ -577,7 +562,7 @@ class JFusionUser_efront extends JFusionUser
                                 // logout
                                 $curl_options['action']='logout';
                                 $curl_options['parms'] = '&token='.$token;
-                                $status = $helper->send_to_api($curl_options,$status);
+                                $status = $this->helper->send_to_api($curl_options,$status);
                                 $result = $status['result'][0];
                                 if($result->status != 'ok'){
                                     $errorstatus['error'][] = $jname.' eFront API--'.$result->message;
@@ -609,12 +594,7 @@ class JFusionUser_efront extends JFusionUser
 			    $usergroup = $usergroups[0];
 			    $db = JFusionFactory::getDataBase($this->getJname());
 			    if ($usergroup< 3) {
-				    /**
-				     * @ignore
-				     * @var $helper JFusionHelper_efront
-				     */
-				    $helper = JFusionFactory::getHelper($this->getJname());
-				    $user_type = $helper->groupIdToName($usergroup);
+				    $user_type = $this->helper->groupIdToName($usergroup);
 				    $user_types_ID = 0;
 			    } else {
 				    $user_types_ID = $usergroup-2;

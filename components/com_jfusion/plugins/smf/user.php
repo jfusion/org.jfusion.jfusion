@@ -196,8 +196,7 @@ class JFusionUser_smf extends JFusionUser
         $status = array('error' => array(),'debug' => array());
 	    try {
 		    //        $status = JFusionJplugin::destroySession($userinfo, $options,$this->getJname());
-		    $params = JFusionFactory::getParams($this->getJname());
-		    $status['debug'][] = JFusionFunction::addCookie($params->get('cookie_name'), '', 0, $params->get('cookie_path'), $params->get('cookie_domain'), $params->get('secure'), $params->get('httponly'));
+		    $status['debug'][] = JFusionFunction::addCookie($this->params->get('cookie_name'), '', 0, $this->params->get('cookie_path'), $this->params->get('cookie_domain'), $this->params->get('secure'), $this->params->get('httponly'));
 
 		    $db = JFusionFactory::getDatabase($this->getJname());
 
@@ -230,8 +229,7 @@ class JFusionUser_smf extends JFusionUser
         if (!empty($userinfo->block) || !empty($userinfo->activation)) {
             $status['error'][] = JText::_('FUSION_BLOCKED_USER');
         } else {
-            $params = JFusionFactory::getParams($this->getJname());
-            $status = JFusionJplugin::createSession($userinfo, $options, $this->getJname(),$params->get('brute_force'));
+            $status = JFusionJplugin::createSession($userinfo, $options, $this->getJname(), $this->params->get('brute_force'));
         }
         return $status;
     }
@@ -518,8 +516,6 @@ class JFusionUser_smf extends JFusionUser
 	    try {
 		    //we need to create a new SMF user
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $params = JFusionFactory::getParams($this->getJname());
-		    $source_path = $params->get('source_path');
 
 		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 		    if (empty($usergroups)) {
@@ -557,7 +553,7 @@ class JFusionUser_smf extends JFusionUser
 			    $user->ID_THEME = 0;
 
 			    $user->ID_GROUP = $usergroups[0];
-			    $user->ID_POST_GROUP = $params->get('userpostgroup', 4);
+			    $user->ID_POST_GROUP = $this->params->get('userpostgroup', 4);
 			    $db->insertObject('#__members', $user, 'ID_MEMBER');
 			    //now append the new user data
 
@@ -592,57 +588,5 @@ class JFusionUser_smf extends JFusionUser
 	    } catch (Exception $e) {
 		    $status['error'][] = JText::_('USER_CREATION_ERROR') . $e->getMessage();
 	    }
-    }
-
-    /**
-     * Keep alive function called by system plugin to keep session alive
-     *
-     * @access public
-     *
-     * @param bool $keepalive
-     *
-     * @return int False on Error
-     */
-    function syncSessions($keepalive = false)
-    {
-    	return 0;
-        /*
-        //retrieve the smf cookie name
-        $params = JFusionFactory::getParams($this->getJname());
-        $cookie_name = $params->get('cookie_name');
-        $cookie_value = isset($_COOKIE[$cookie_name]) ? $_COOKE[$cookie_name] : '';
-        $JUser = JFactory::getUser();
-        if (!$JUser->get('guest', true)) {
-            //JFusionFunction::raiseNotice('joomla logged in', $this->getJname());
-            //user logged into Joomla so let's check for an active SMF session
-            if (empty($cookie_value)) {
-                //JFusionFunction::raiseNotice('logged out:' . $cookie_name . ','.$cookie_value, $this->getJname());
-                //no SMF session present.
-                //Since we can not recreate it due to license issues, logout from joomla instead
-                $mainframe = JFactory::getApplication();
-                $mainframe->logout();
-                $session = JFactory::getSession();
-                $session->close();
-                return 1;
-            } else {
-                //JFusionFunction::raiseNotice('logged in:' . $cookie_name . ','.$cookie_value, $this->getJname());
-
-            }
-        } else {
-            //JFusionFunction::raiseNotice('joomla logged out', $this->getJname());
-            if (!empty($cookie_value)) {
-                //JFusionFunction::raiseNotice('logged in:' . $cookie_name . ','.$cookie_value, $this->getJname());
-                //the user is not logged into Joomla and we have an active SMF session
-                //destroy the SMF session
-                $params = JFusionFactory::getParams($this->getJname());
-                JFusionFunction::addCookie($params->get('cookie_name'), '', 0, $params->get('cookie_path'), $params->get('cookie_domain'), $params->get('secure'), $params->get('httponly'));
-                return 1;
-            } else {
-                //JFusionFunction::raiseNotice('logged out:' . $cookie_name . ','.$cookie_value, $this->getJname());
-
-            }
-        }
-        return 1;
-        */
     }
 }

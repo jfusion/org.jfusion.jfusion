@@ -30,6 +30,11 @@ defined('_JEXEC') or die('Restricted access');
  */
 class JFusionUser_phpbb3 extends JFusionUser
 {
+	/**
+	 * @var $helper JFusionHelper_phpbb3
+	 */
+	var $helper;
+
     /**
      * @param object $userinfo
      * @return null|object
@@ -115,13 +120,12 @@ class JFusionUser_phpbb3 extends JFusionUser
 	    try {
 	        $db = JFusionFactory::getDatabase($this->getJname());
 	        //get the cookie parameters
-	        $params = JFusionFactory::getParams($this->getJname());
-	        $phpbb_cookie_name = $params->get('cookie_prefix');
-	        $phpbb_cookie_path = $params->get('cookie_path');
-	        $secure = $params->get('secure',false);
-	        $httponly = $params->get('httponly',true);
+	        $phpbb_cookie_name = $this->params->get('cookie_prefix');
+	        $phpbb_cookie_path = $this->params->get('cookie_path');
+	        $secure = $this->params->get('secure',false);
+	        $httponly = $this->params->get('httponly',true);
 	        //baltie cookie domain fix
-	        $phpbb_cookie_domain = $params->get('cookie_domain');
+	        $phpbb_cookie_domain = $this->params->get('cookie_domain');
 	        if ($phpbb_cookie_domain == 'localhost' || $phpbb_cookie_domain == '127.0.0.1') {
 	            $phpbb_cookie_domain = '';
 	        }
@@ -183,12 +187,11 @@ class JFusionUser_phpbb3 extends JFusionUser
 			    $jdb = JFusionFactory::getDatabase($this->getJname());
 			    $userid = $userinfo->userid;
 			    if ($userid && !empty($userid) && ($userid > 0)) {
-				    $params = JFusionFactory::getParams($this->getJname());
 				    //check if we need to let phpbb3 handle the login
-				    $login_type = $params->get('login_type');
+				    $login_type = $this->params->get('login_type');
 				    if ($login_type != 1 && !function_exists('deregister_globals')) {
 					    //let phpbb3 handle login
-					    $source_path = $params->get('source_path');
+					    $source_path = $this->params->get('source_path');
 					    //combine the path and filename
 					    if (substr($source_path, -1) != DIRECTORY_SEPARATOR) {
 						    $source_path .= DIRECTORY_SEPARATOR;
@@ -256,17 +259,17 @@ class JFusionUser_phpbb3 extends JFusionUser
 					    } else {
 						    $admin_access = 0;
 					    }
-					    $phpbb_cookie_name = $params->get('cookie_prefix');
+					    $phpbb_cookie_name = $this->params->get('cookie_prefix');
 					    if ($phpbb_cookie_name) {
 						    //get cookie domain from config table
-						    $phpbb_cookie_domain = $params->get('cookie_domain');
+						    $phpbb_cookie_domain = $this->params->get('cookie_domain');
 						    if ($phpbb_cookie_domain == 'localhost' || $phpbb_cookie_domain == '127.0.0.1') {
 							    $phpbb_cookie_domain = '';
 						    }
 						    //get cookie path from config table
-						    $phpbb_cookie_path = $params->get('cookie_path');
+						    $phpbb_cookie_path = $this->params->get('cookie_path');
 						    //get autologin perm
-						    $phpbb_allow_autologin = $params->get('allow_autologin');
+						    $phpbb_allow_autologin = $this->params->get('allow_autologin');
 						    $jautologin = 0;
 						    //set the remember me option if set in Joomla and is allowed per config
 						    if (isset($options['remember']) && !empty($phpbb_allow_autologin)) {
@@ -309,8 +312,8 @@ class JFusionUser_phpbb3 extends JFusionUser
 						    } else {
 							    $expires = 31536000;
 						    }
-						    $secure = $params->get('secure',false);
-						    $httponly = $params->get('httponly',true);
+						    $secure = $this->params->get('secure',false);
+						    $httponly = $this->params->get('httponly',true);
 						    $session_start = time();
 						    //Insert the session into sessions table
 						    $session_obj = new stdClass;
@@ -368,12 +371,7 @@ class JFusionUser_phpbb3 extends JFusionUser
      * @return string
      */
     function filterUsername($username) {
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_phpbb3
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
-        $username_clean = $helper->utf8_clean_string($username);
+        $username_clean = $this->helper->utf8_clean_string($username);
         //die($username . ':' . $username_clean);
         return $username_clean;
     }
@@ -712,9 +710,8 @@ class JFusionUser_phpbb3 extends JFusionUser
 	    try {
 		    //found out what usergroup should be used
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $params = JFusionFactory::getParams($this->getJname());
-		    $update_block = $params->get('update_block');
-		    $update_activation = $params->get('update_activation');
+		    $update_block = $this->params->get('update_block');
+		    $update_activation = $this->params->get('update_activation');
 		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 		    if (empty($usergroups)) {
 			    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
@@ -1288,9 +1285,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 	    try {
 		    $debug = (defined('DEBUG_SYSTEM_PLUGIN') ? true : false);
 
-		    $params = JFusionFactory::getParams($this->getJname());
-
-		    $login_type = $params->get('login_type');
+		    $login_type = $this->params->get('login_type');
 		    if ($login_type == 1) {
 			    if ($debug) {
 				    JFusionFunction::raiseNotice('syncSessions called', $this->getJname());
@@ -1300,10 +1295,10 @@ class JFusionUser_phpbb3 extends JFusionUser
 			    $options['action'] = 'core.login.site';
 
 			    //phpbb variables
-			    $phpbb_cookie_prefix = $params->get('cookie_prefix');
+			    $phpbb_cookie_prefix = $this->params->get('cookie_prefix');
 			    $userid_cookie_value = JFactory::getApplication()->input->cookie->get($phpbb_cookie_prefix . '_u', '');
 			    $sid_cookie_value = JFactory::getApplication()->input->cookie->get($phpbb_cookie_prefix . '_sid', '');
-			    $phpbb_allow_autologin = $params->get('allow_autologin');
+			    $phpbb_allow_autologin = $this->params->get('allow_autologin');
 			    $persistant_cookie = ($phpbb_allow_autologin) ? JFactory::getApplication()->input->cookie->get($phpbb_cookie_prefix . '_k', '') : '';
 			    //joomla variables
 			    $JUser = JFactory::getUser();
@@ -1408,11 +1403,10 @@ class JFusionUser_phpbb3 extends JFusionUser
 						    JFusionFunction::raiseNotice('Keep alive disabled so kill phpBBs session', $this->getJname());
 					    }
 					    //something fishy or person chose not to use remember me so let's destroy phpBBs session
-					    $params = JFusionFactory::getParams($this->getJname());
-					    $phpbb_cookie_name = $params->get('cookie_prefix');
-					    $phpbb_cookie_path = $params->get('cookie_path');
+					    $phpbb_cookie_name = $this->params->get('cookie_prefix');
+					    $phpbb_cookie_path = $this->params->get('cookie_path');
 					    //baltie cookie domain fix
-					    $phpbb_cookie_domain = $params->get('cookie_domain');
+					    $phpbb_cookie_domain = $this->params->get('cookie_domain');
 					    if ($phpbb_cookie_domain == 'localhost' || $phpbb_cookie_domain == '127.0.0.1') {
 						    $phpbb_cookie_domain = '';
 					    }

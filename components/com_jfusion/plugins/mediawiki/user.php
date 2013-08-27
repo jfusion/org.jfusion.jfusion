@@ -145,24 +145,18 @@ class JFusionUser_mediawiki extends JFusionUser {
      * @return array
      */
     function destroySession($userinfo, $options){
-        $params = JFusionFactory::getParams($this->getJname());
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_mediawiki
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
-        $cookie_path = $params->get('cookie_path');
-        $cookie_domain = $params->get('cookie_domain');
-        $cookie_secure = $params->get('secure');
-        $cookie_httponly = $params->get('httponly');
-        $cookie_name = $helper->getCookieName();
+        $cookie_path = $this->params->get('cookie_path');
+        $cookie_domain = $this->params->get('cookie_domain');
+        $cookie_secure = $this->params->get('secure');
+        $cookie_httponly = $this->params->get('httponly');
+        $cookie_name = $this->helper->getCookieName();
         $expires = -3600;
 
-        $helper->startSession($options);
+	    $this->helper->startSession($options);
    		$_SESSION['wsUserID'] = 0;
    		$_SESSION['wsUserName'] = '';
    		$_SESSION['wsToken'] = '';
-        $helper->closeSession();
+	    $this->helper->closeSession();
 
         $status['debug'][] = JFusionFunction::addCookie($cookie_name  . 'UserName', '', $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
         $status['debug'][] = JFusionFunction::addCookie($cookie_name  . 'UserID', '', $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
@@ -189,20 +183,13 @@ class JFusionUser_mediawiki extends JFusionUser {
 		} else {
             //$status = JFusionJplugin::createSession($userinfo, $options,$this->getJname());
 
-            $params = JFusionFactory::getParams($this->getJname());
-            /**
-             * @ignore
-             * @var $helper JFusionHelper_mediawiki
-             */
-            $helper = JFusionFactory::getHelper($this->getJname());
-
-            $cookie_path = $params->get('cookie_path');
-            $cookie_domain = $params->get('cookie_domain');
-            $cookie_secure = $params->get('secure');
-            $cookie_httponly = $params->get('httponly');
-			$expires = $params->get('cookie_expires', 3100);
-            $cookie_name = $helper->getCookieName();
-            $helper->startSession($options);
+            $cookie_path = $this->params->get('cookie_path');
+            $cookie_domain = $this->params->get('cookie_domain');
+            $cookie_secure = $this->params->get('secure');
+            $cookie_httponly = $this->params->get('httponly');
+			$expires = $this->params->get('cookie_expires', 3100);
+            $cookie_name = $this->helper->getCookieName();
+			$this->helper->startSession($options);
 
 			$status['debug'][] = JFusionFunction::addCookie($cookie_name  . 'UserName', $userinfo->username, $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
             $_SESSION['wsUserName'] = $userinfo->username;
@@ -215,7 +202,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 	            $status['debug'][] = JFusionFunction::addCookie($cookie_name  . 'Token', $userinfo->user_token, $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
             }
 
-            $helper->closeSession();
+			$this->helper->closeSession();
         }
 		return $status;
 	}
@@ -306,7 +293,6 @@ class JFusionUser_mediawiki extends JFusionUser {
     function updateUsergroup($userinfo, &$existinguser, &$status)
 	{
 		try {
-			$params = JFusionFactory::getParams($this->getJname());
 			$usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 			if (empty($usergroups)) {
 				$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('USERGROUP_MISSING');
@@ -452,8 +438,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 	    try {
 		    //we need to create a new SMF user
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $params = JFusionFactory::getParams($this->getJname());
-		    $source_path = $params->get('source_path');
+		    $source_path = $this->params->get('source_path');
 		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 		    if (empty($usergroups)) {
 			    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
@@ -495,21 +480,17 @@ class JFusionUser_mediawiki extends JFusionUser {
 			    //now append the new user data
 			    $db->insertObject('#__user', $user, 'user_id' );
 
-			    $wgDBprefix = $params->get('database_prefix');
-			    $wgDBname = $params->get('database_name');
+			    $wgDBprefix = $this->params->get('database_prefix');
+			    $wgDBname = $this->params->get('database_name');
 
 			    if ( $wgDBprefix ) {
 				    $wfWikiID = $wgDBname.'-'.$wgDBprefix;
 			    } else {
 				    $wfWikiID = $wgDBname;
 			    }
-			    /**
-			     * @ignore
-			     * @var $helper JFusionHelper_mediawiki
-			     */
-			    $helper = JFusionFactory::getHelper($this->getJname());
-			    $wgSecretKey = $helper->getConfig('wgSecretKey');
-			    $wgProxyKey = $helper->getConfig('wgProxyKey');
+
+			    $wgSecretKey = $this->helper->getConfig('wgSecretKey');
+			    $wgProxyKey = $this->helper->getConfig('wgProxyKey');
 
 			    if ( $wgSecretKey ) {
 				    $key = $wgSecretKey;

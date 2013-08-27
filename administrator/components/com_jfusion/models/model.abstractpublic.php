@@ -28,7 +28,26 @@ defined('_JEXEC') or die('Restricted access');
  */
 class JFusionPublic
 {
+	var $helper;
+
     var $data;
+
+	/**
+	 * @var JRegistry
+	 */
+	var $params;
+
+	/**
+	 *
+	 */
+	function __construct()
+	{
+		//get the params object
+		$this->params = JFusionFactory::getParams($this->getJname());
+		//get the helper object
+		$this->helper = JFusionFactory::getHelper($this->getJname());
+	}
+
     /**
      * returns the name of this JFusion plugin
      *
@@ -209,7 +228,6 @@ class JFusionPublic
         $regex_header = array();
         $replace_header	= array();
         $callback_header = array();
-        $params = JFusionFactory::getParams($this->getJname());
 
         //convert relative links into absolute links
         $path = preg_replace( '#(\w{0,10}://)(.*?)/(.*?)#is'  , '$3' , $data->integratedURL );
@@ -236,7 +254,7 @@ class JFusionPublic
 	    $callback_header[] = '';
 
         //fix for URL redirects
-        $parse_redirect = $params->get('parse_redirect');
+        $parse_redirect = $this->params->get('parse_redirect');
         if(!empty($parse_redirect)) {
             $regex_header[] = '#(?<=<meta http-equiv="refresh" content=")(.*?)(?=")#mis';
             $replace_header[] = '';
@@ -783,8 +801,7 @@ HTML;
             }
         } else {
             //check to see what SEF mode is selected
-            $params = JFusionFactory::getParams($this->getJname());
-            $sefmode = $params->get('sefmode');
+            $sefmode = $this->params->get('sefmode');
             if ($sefmode == 1) {
                 //extensive SEF parsing was selected
                 $url = $jfile;

@@ -28,6 +28,16 @@ defined('_JEXEC') or die('Restricted access');
  */
 class JFusionAuth
 {
+	/**
+	 * returns the name of this JFusion plugin
+	 *
+	 * @return string name of current JFusion plugin
+	 */
+	function getJname()
+	{
+		return '';
+	}
+
     /**
      * Generates an encrypted password based on the userinfo passed to this function
      *

@@ -54,12 +54,10 @@ class JFusionUser_elgg extends JFusionUser {
 		    $result = $db->loadObject();
 
 		    if ($result) {
-			    $params = JFusionFactory::getParams($this->getJname());
-
 			    if (defined('externalpage')) {
 				    define('externalpage', true);
 			    }
-			    require_once $params->get('source_path') . DIRECTORY_SEPARATOR . 'engine' . DIRECTORY_SEPARATOR . 'start.php';
+			    require_once $this->params->get('source_path') . DIRECTORY_SEPARATOR . 'engine' . DIRECTORY_SEPARATOR . 'start.php';
 			    // Get variables
 			    global $CONFIG;
 
@@ -97,12 +95,10 @@ class JFusionUser_elgg extends JFusionUser {
      * @return array
      */
     function deleteUser($userinfo) {
-        $params = JFusionFactory::getParams($this->getJname());
-
     	if (defined('externalpage')) {
         	define('externalpage', true);	
         }
-        require_once $params->get('source_path') . DIRECTORY_SEPARATOR . 'engine' . DIRECTORY_SEPARATOR . 'start.php';
+        require_once $this->params->get('source_path') . DIRECTORY_SEPARATOR . 'engine' . DIRECTORY_SEPARATOR . 'start.php';
         // Get variables
         global $CONFIG;
         $user = get_user_by_username($userinfo->username);
@@ -131,10 +127,9 @@ class JFusionUser_elgg extends JFusionUser {
         !Can not include elgg engine and use core elgg logout functions since it conflicts with Community Builder Logout function!
         unsetting the elgg cookies has been problematic as well.
         */
-        $params = JFusionFactory::getParams($this->getJname());
         $expire = -3600;
-        $status['debug'][] = JFusionFunction::addCookie('Elgg', '', $expire, $params->get('cookie_path'), $params->get('cookie_domain'));
-        $status['debug'][] = JFusionFunction::addCookie('elggperm', '', $expire, '/', $params->get('cookie_domain'));
+        $status['debug'][] = JFusionFunction::addCookie('Elgg', '', $expire, $this->params->get('cookie_path'), $this->params->get('cookie_domain'));
+        $status['debug'][] = JFusionFunction::addCookie('elggperm', '', $expire, '/', $this->params->get('cookie_domain'));
         return array();
     }
 
@@ -153,12 +148,10 @@ class JFusionUser_elgg extends JFusionUser {
         if (!empty($userinfo->block) || !empty($userinfo->activation)) {
             $status['error'][] = JText::_('FUSION_BLOCKED_USER');
         } else {
-            $params = JFusionFactory::getParams($this->getJname());
-
             if (defined('externalpage')) {
                 define('externalpage', true);
             }
-            require_once $params->get('source_path') . DIRECTORY_SEPARATOR . 'engine' . DIRECTORY_SEPARATOR . 'start.php';
+            require_once $this->params->get('source_path') . DIRECTORY_SEPARATOR . 'engine' . DIRECTORY_SEPARATOR . 'start.php';
             // Get variables
             global $CONFIG;
             // Action Gatekeep not necessary as person should already be validated by Joomla!
@@ -182,7 +175,7 @@ class JFusionUser_elgg extends JFusionUser {
                     $code = (md5($user->name . $user->username . time() . rand()));
                     $user->code = md5($code);
                     $_SESSION['code'] = $code;
-                    if (($persistent)) $status['debug'][] = JFusionFunction::addCookie('elggperm', $code, (86400 * 30), '/', $params->get('cookie_domain'));
+                    if (($persistent)) $status['debug'][] = JFusionFunction::addCookie('elggperm', $code, (86400 * 30), '/', $this->params->get('cookie_domain'));
                     if (!$user->save() || !elgg_trigger_event('login', 'user', $user)) {
                         unset($_SESSION['username']);
                         unset($_SESSION['name']);
@@ -190,7 +183,7 @@ class JFusionUser_elgg extends JFusionUser {
                         unset($_SESSION['guid']);
                         unset($_SESSION['id']);
                         unset($_SESSION['user']);
-                        $status['debug'][] = JFusionFunction::addCookie('elggperm', '', -3600, '/', $params->get('cookie_domain'));
+                        $status['debug'][] = JFusionFunction::addCookie('elggperm', '', -3600, '/', $this->params->get('cookie_domain'));
                     } else {
                         // Users privilege has been elevated, so change the session id (help prevent session hijacking)
                         //session_regenerate_id();
@@ -253,7 +246,6 @@ class JFusionUser_elgg extends JFusionUser {
     function createUser($userinfo, &$status) {
 	    try {
 	        //found out what usergroup should be used
-	        $params = JFusionFactory::getParams($this->getJname());
 	        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 	        if (empty($usergroups)) {
 		        throw new RuntimeException(JText::_('USERGROUP_MISSING'));
@@ -286,7 +278,7 @@ class JFusionUser_elgg extends JFusionUser {
 	            if (defined('externalpage')) {
 	                define('externalpage', true);
 	            }
-	            require_once $params->get('source_path') . DIRECTORY_SEPARATOR . 'engine' . DIRECTORY_SEPARATOR . 'start.php';
+	            require_once $this->params->get('source_path') . DIRECTORY_SEPARATOR . 'engine' . DIRECTORY_SEPARATOR . 'start.php';
 	            // Get variables
 	            global $CONFIG;
 	            $username = $user->username;
@@ -368,12 +360,10 @@ class JFusionUser_elgg extends JFusionUser {
      */
     function blockUser($userinfo, &$existinguser, &$status)
     {
-        $params = JFusionFactory::getParams($this->getJname());
-
     	if (defined('externalpage')) {
         	define('externalpage', true);	
         }
-        require_once $params->get('source_path') . DIRECTORY_SEPARATOR . 'engine' . DIRECTORY_SEPARATOR . 'start.php';
+        require_once $this->params->get('source_path') . DIRECTORY_SEPARATOR . 'engine' . DIRECTORY_SEPARATOR . 'start.php';
         // Get variables
         global $CONFIG;
         $user = get_user_by_username($existinguser->username);
@@ -401,12 +391,10 @@ class JFusionUser_elgg extends JFusionUser {
      */
     function unblockUser($userinfo, &$existinguser, &$status)
     {
-        $params = JFusionFactory::getParams($this->getJname());
-
     	if (defined('externalpage')) {
         	define('externalpage', true);	
         }
-        require_once $params->get('source_path') . DIRECTORY_SEPARATOR . 'engine' . DIRECTORY_SEPARATOR . 'start.php';
+        require_once $this->params->get('source_path') . DIRECTORY_SEPARATOR . 'engine' . DIRECTORY_SEPARATOR . 'start.php';
         // Get variables
         global $CONFIG;
         $user = get_user_by_username($existinguser->username);
@@ -429,12 +417,10 @@ class JFusionUser_elgg extends JFusionUser {
      * @return void
      */
     function activateUser($userinfo, &$existinguser, &$status) {
-        $params = JFusionFactory::getParams($this->getJname());
-
     	if (defined('externalpage')) {
         	define('externalpage', true);	
         }
-        require_once $params->get('source_path') . DIRECTORY_SEPARATOR . 'engine' . DIRECTORY_SEPARATOR . 'start.php';
+        require_once $this->params->get('source_path') . DIRECTORY_SEPARATOR . 'engine' . DIRECTORY_SEPARATOR . 'start.php';
         // Get variables
         global $CONFIG;
         $user = get_user_by_username($existinguser->username);
@@ -457,12 +443,10 @@ class JFusionUser_elgg extends JFusionUser {
      * @return void
      */
     function inactivateUser($userinfo, &$existinguser, &$status) {
-        $params = JFusionFactory::getParams($this->getJname());
-
 		if (defined('externalpage')) {
         	define('externalpage', true);	
         }
-        require_once $params->get('source_path') . DIRECTORY_SEPARATOR . 'engine' . DIRECTORY_SEPARATOR . 'start.php';
+        require_once $this->params->get('source_path') . DIRECTORY_SEPARATOR . 'engine' . DIRECTORY_SEPARATOR . 'start.php';
         // Get variables
         global $CONFIG;
         $user = get_user_by_username($existinguser->username);

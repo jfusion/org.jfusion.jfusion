@@ -60,10 +60,9 @@ class JFusionUser_magento extends JFusionUser {
 	 * @return MagentoSoapClient
 	 */
 	function connectToApi(&$status) {
-		$params = JFusionFactory::getParams($this->getJname());
-		$apipath = $params->get('source_url') . 'index.php/api/?wsdl';
-		$apiuser = $params->get('apiuser','');
-		$apikey = $params->get('apikey','');
+		$apipath = $this->params->get('source_url') . 'index.php/api/?wsdl';
+		$apiuser = $this->params->get('apiuser','');
+		$apikey = $this->params->get('apikey','');
 		if (!$apiuser || !$apikey) {
 			throw new RuntimeException('Could not login to Magento API (empty apiuser and/or apikey)');
 		} else {
@@ -316,8 +315,7 @@ class JFusionUser_magento extends JFusionUser {
 	 * @return array
 	 */
 	function destroySession($userinfo, $options) {
-		$params = JFusionFactory::getParams($this->getJname());
-		return JFusionJplugin::destroySession($userinfo, $options, $this->getJname(),$params->get('logout_type'));
+		return JFusionJplugin::destroySession($userinfo, $options, $this->getJname(),$this->params->get('logout_type'));
 	}
 
 	/**
@@ -331,8 +329,7 @@ class JFusionUser_magento extends JFusionUser {
 		if (!empty($userinfo->block) || !empty($userinfo->activation)) {
 			$status['error'][] = JText::_('FUSION_BLOCKED_USER');
 		} else {
-			$params = JFusionFactory::getParams($this->getJname());
-			$status = JFusionJplugin::createSession($userinfo, $options, $this->getJname(),$params->get('brute_force'));
+			$status = JFusionJplugin::createSession($userinfo, $options, $this->getJname(),$this->params->get('brute_force'));
 		}
 		return $status;
 	}
@@ -494,8 +491,7 @@ class JFusionUser_magento extends JFusionUser {
 	 * @return void
 	 */
 	function createUser($userinfo, &$status) {
-		$params = JFusionFactory::getParams($this->getJname());
-		$magentoVersion = $params->get('magento_version','1.7');
+		$magentoVersion = $this->params->get('magento_version','1.7');
 
 		$usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 		if (empty($usergroups)) {
@@ -605,8 +601,7 @@ class JFusionUser_magento extends JFusionUser {
 	 * @return void
 	 */
 	function updatePassword($userinfo, $existinguser, &$status) {
-		$params = JFusionFactory::getParams($this->getJname());
-		$magentoVersion = $params->get('magento_version','1.7');
+		$magentoVersion = $this->params->get('magento_version','1.7');
 		
 
 		$magento_user = $this->getMagentoDataObjectRaw('customer');

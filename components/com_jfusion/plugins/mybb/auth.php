@@ -27,7 +27,18 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionAuth_mybb extends JFusionAuth {
+class JFusionAuth_mybb extends JFusionAuth
+{
+	/**
+	 * returns the name of this JFusion plugin
+	 *
+	 * @return string name of current JFusion plugin
+	 */
+	function getJname()
+	{
+		return 'mybb';
+	}
+
     /**
      * @param array|object $userinfo
      * @return string

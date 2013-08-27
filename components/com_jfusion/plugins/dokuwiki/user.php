@@ -28,7 +28,13 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionUser_dokuwiki extends JFusionUser {
+class JFusionUser_dokuwiki extends JFusionUser
+{
+	/**
+	 * @var $helper JFusionHelper_dokuwiki
+	 */
+	var $helper;
+
     /**
      * @param object $userinfo
      * @param int $overwrite
@@ -37,14 +43,8 @@ class JFusionUser_dokuwiki extends JFusionUser {
      */
     function updateUser($userinfo, $overwrite = 0) {
         // Initialise some variables
-        $params = JFusionFactory::getParams($this->getJname());
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_dokuwiki
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
         $userinfo->username = $this->filterUsername($userinfo->username);
-        $update_email = $params->get('update_email');
+        $update_email = $this->params->get('update_email');
         $status = array('error' => array(),'debug' => array());
         //check to see if a valid $userinfo object was passed on
 	    try {
@@ -76,7 +76,7 @@ class JFusionUser_dokuwiki extends JFusionUser {
 					    $status['debug'][] = JText::_('SKIPPED_NAME_UPDATE');
 				    }
 				    if (isset($userinfo->password_clear) && strlen($userinfo->password_clear)) {
-					    if (!$helper->auth->verifyPassword($userinfo->password_clear, $existinguser->password)) {
+					    if (!$this->helper->auth->verifyPassword($userinfo->password_clear, $existinguser->password)) {
 						    // add password_clear to existinguser for the Joomla helper routines
 						    $existinguser->password_clear = $userinfo->password_clear;
 						    $changes['pass'] = $userinfo->password_clear;
@@ -101,7 +101,7 @@ class JFusionUser_dokuwiki extends JFusionUser {
 					    }
 				    }
 				    if (count($changes)) {
-					    if (!$helper->auth->modifyUser($userinfo->username, $changes)) {
+					    if (!$this->helper->auth->modifyUser($userinfo->username, $changes)) {
 						    throw new RuntimeException('ERROR: Updating ' . $userinfo->username);
 					    }
 				    }
@@ -130,17 +130,12 @@ class JFusionUser_dokuwiki extends JFusionUser {
      * @return null|object
      */
     function getUser($userinfo) {
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_dokuwiki
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
     	if (is_object($userinfo)) {
     		$username = $this->filterUsername($userinfo->username);
 		} else {
 			$username = $this->filterUsername($userinfo);
 		}
-		$raw_user = $helper->auth->getUserData($username);
+		$raw_user = $this->helper->auth->getUserData($username);
         if (is_array($raw_user)) {
             $user = new stdClass;
             $user->block = 0;
@@ -191,12 +186,8 @@ class JFusionUser_dokuwiki extends JFusionUser {
         $status = array('error' => array(),'debug' => array());
         $username = $this->filterUsername($userinfo->username);
         $user[$username] = $username;
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_dokuwiki
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
-        if (!$helper->auth->deleteUsers($user)) {
+
+        if (!$this->helper->auth->deleteUsers($user)) {
             $status['error'][] = JText::_('USER_DELETION_ERROR') . ' ' . 'No User Deleted';
         } else {
             $status['debug'][] = JText::_('USER_DELETION') . ' ' . $username;
@@ -213,25 +204,18 @@ class JFusionUser_dokuwiki extends JFusionUser {
     function destroySession($userinfo, $options) {
         $status = array('error' => array(),'debug' => array());
 
-        $params = JFusionFactory::getParams($this->getJname());
-
-        $cookie_path = $params->get('cookie_path', '/');
-        $cookie_domain = $params->get('cookie_domain');
-        $cookie_secure = $params->get('secure', false);
-        $httponly = $params->get('httponly', true);
+        $cookie_path = $this->params->get('cookie_path', '/');
+        $cookie_domain = $this->params->get('cookie_domain');
+        $cookie_secure = $this->params->get('secure', false);
+        $httponly = $this->params->get('httponly', true);
 
         //setup Dokuwiki constants
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_dokuwiki
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
-        $helper->defineConstants();
+	    $this->helper->defineConstants();
 
         $time = -3600;
         $status['debug'][] = JFusionFunction::addCookie(DOKU_COOKIE, '', $time, $cookie_path, $cookie_domain, $cookie_secure, $httponly);
         // remove blank domain name cookie just in case we are using wrapper
-        $source_url = $params->get('source_url');
+        $source_url = $this->params->get('source_url');
         $cookie_path = preg_replace('#(\w{0,10}://)(.*?)/(.*?)#is', '$3', $source_url);
         $cookie_path = preg_replace('#//+#', '/', "/$cookie_path/");
         $status['debug'][] = JFusionFunction::addCookie(DOKU_COOKIE, '', $time, $cookie_path, '', $cookie_secure, $httponly);
@@ -249,27 +233,20 @@ class JFusionUser_dokuwiki extends JFusionUser {
         $status = array('error' => array(),'debug' => array());
 
         if(!empty($userinfo->password_clear)){
-            $params = JFusionFactory::getParams($this->getJname());
-
             //set login cookie
             require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'auth' . DIRECTORY_SEPARATOR .'blowfish.php';
-            $cookie_path = $params->get('cookie_path', '/');
-            $cookie_domain = $params->get('cookie_domain');
-            $cookie_secure = $params->get('secure', false);
-            $httponly = $params->get('httponly', true);
+            $cookie_path = $this->params->get('cookie_path', '/');
+            $cookie_domain = $this->params->get('cookie_domain');
+            $cookie_secure = $this->params->get('secure', false);
+            $httponly = $this->params->get('httponly', true);
 
             //setup Dokuwiki constants
-            /**
-             * @ignore
-             * @var $helper JFusionHelper_dokuwiki
-             */
-            $helper = JFusionFactory::getHelper($this->getJname());
-            $helper->defineConstants();
-            $salt = $helper->getCookieSalt();
+	        $this->helper->defineConstants();
+            $salt = $this->helper->getCookieSalt();
             $pass = JFusion_PMA_blowfish_encrypt($userinfo->password_clear,$salt);
 //            $sticky = (!empty($options['remember'])) ? 1 : 0;
             $sticky = 1;
-        	$version = $helper->getVersion();
+        	$version = $this->helper->getVersion();
 			if ( version_compare($version, '2009-12-02 "Mulled Wine"') >= 0) {
 				$cookie_value = base64_encode($userinfo->username).'|'. $sticky . '|'.base64_encode($pass);
 			} else {
@@ -305,11 +282,6 @@ class JFusionUser_dokuwiki extends JFusionUser {
 		    if (empty($usergroups)) {
 			    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 		    } else {
-			    /**
-			     * @ignore
-			     * @var $helper JFusionHelper_dokuwiki
-			     */
-			    $helper = JFusionFactory::getHelper($this->getJname());
 			    if (isset($userinfo->password_clear)) {
 				    $pass = $userinfo->password_clear;
 			    } else {
@@ -321,7 +293,7 @@ class JFusionUser_dokuwiki extends JFusionUser {
 			    if (!count($usergroup)) $usergroup = null;
 
 			    //now append the new user data
-			    if (!$helper->auth->createUser($userinfo->username, $pass, $userinfo->name, $userinfo->email, $usergroup)) {
+			    if (!$this->helper->auth->createUser($userinfo->username, $pass, $userinfo->name, $userinfo->email, $usergroup)) {
 				    //return the error
 					throw new RuntimeException();
 			    }

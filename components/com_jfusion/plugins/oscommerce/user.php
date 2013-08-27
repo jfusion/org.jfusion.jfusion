@@ -42,8 +42,7 @@ class JFusionUser_oscommerce extends JFusionUser
 		    if (is_object($userinfo)) {
 			    $identifier = $userinfo->email;
 		    }
-		    $params = JFusionFactory::getParams($this->getJname());
-		    $osCversion = $params->get('osCversion');
+		    $osCversion = $this->params->get('osCversion');
 		    $db = JFusionFactory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
@@ -165,8 +164,7 @@ class JFusionUser_oscommerce extends JFusionUser
         $status = array('error' => array(),'debug' => array());
 	    try {
 		    $userinfo->username = $userinfo->email;
-		    $params = JFusionFactory::getParams($this->getJname());
-		    $osCversion = $params->get('osCversion');
+		    $osCversion = $this->params->get('osCversion');
 
 		    switch ($osCversion) {
 			    case 'osc3':
@@ -189,7 +187,7 @@ class JFusionUser_oscommerce extends JFusionUser
 				    }
 				    break;
 			    default:
-				    $status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname(),$params->get('logout_type'));
+				    $status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname(), $this->params->get('logout_type'));
 		    }
 	    } catch (Exception $e) {
 		    JFusionFunction::raiseError($e, $this->getJname());
@@ -203,10 +201,9 @@ class JFusionUser_oscommerce extends JFusionUser
      * @return array|string
      */
     function createSession($userinfo, $options) {
-        $params = JFusionFactory::getParams($this->getJname());
         // need to make the username equal the email
         $userinfo->username = $userinfo->email;
-        return JFusionJplugin::createSession($userinfo, $options, $this->getJname(),$params->get('brute_force'));
+        return JFusionJplugin::createSession($userinfo, $options, $this->getJname(), $this->params->get('brute_force'));
     }
 
     /**
@@ -227,8 +224,7 @@ class JFusionUser_oscommerce extends JFusionUser
      */
     function updatePassword($userinfo, &$existinguser, &$status) {
 	    try {
-		    $params = JFusionFactory::getParams($this->getJname());
-		    $osCversion = $params->get('osCversion');
+		    $osCversion = $this->params->get('osCversion');
 		    $existinguser->password = '';
 		    for ($i = 0;$i < 10;$i++) {
 			    $existinguser->password.= mt_rand((double)microtime() * 1000000);
@@ -305,8 +301,7 @@ class JFusionUser_oscommerce extends JFusionUser
      */
     function updateEmail($userinfo, &$existinguser, &$status) {
 	    try {
-		    $params = JFusionFactory::getParams($this->getJname());
-		    $osCversion = $params->get('osCversion');
+		    $osCversion = $this->params->get('osCversion');
 		    //we need to update the email
 		    $db = JFusionFactory::getDatabase($this->getJname());
 		    $modified_date = date('Y-m-d H:i:s', time());
@@ -387,8 +382,7 @@ class JFusionUser_oscommerce extends JFusionUser
      */
     function createUser($userinfo, &$status) {
 	    try {
-		    $params = JFusionFactory::getParams($this->getJname());
-		    $osCversion = $params->get('osCversion');
+		    $osCversion = $this->params->get('osCversion');
 		    $db = JFusionFactory::getDatabase($this->getJname());
 		    //prepare the variables
 		    $user = new stdClass;
@@ -492,8 +486,8 @@ class JFusionUser_oscommerce extends JFusionUser
 			    $user_1->entry_gender = $user->customers_gender;
 			    $user_1->entry_firstname = $user->customers_firstname;
 			    $user_1->entry_lastname = $user->customers_lastname;
-			    $params = JFusionFactory::getParams($this->getJname());
-			    $default_country = $params->get('default_country');
+
+			    $default_country = $this->params->get('default_country');
 			    $user_1->entry_country_id = $default_country;
 			    $ok = $db->insertObject('#__address_book', $user_1, 'address_book_id');
 			    if ($ok) {
@@ -546,8 +540,7 @@ class JFusionUser_oscommerce extends JFusionUser
     function deleteUser($userinfo) {
 	    $status = array('error' => array(),'debug' => array());
 	    try {
-		    $params = JFusionFactory::getParams($this->getJname());
-		    $osCversion = $params->get('osCversion');
+		    $osCversion = $this->params->get('osCversion');
 		    $db = JFusionFactory::getDatabase($this->getJname());
 		    //setup status array to hold debug info and errors
 
@@ -585,7 +578,7 @@ class JFusionUser_oscommerce extends JFusionUser
 			    $debug[] = 'Deleted customer online entry of user with id '.$user_id;
 
 			    // delete review items osc2 & osc3 &  osczen & oscxt
-			    $delete_reviews = $params->get('delete_reviews');
+			    $delete_reviews = $this->params->get('delete_reviews');
 			    if ($delete_reviews == '1') {
 				    try {
 					    $query = $db->getQuery(true)
@@ -717,8 +710,7 @@ class JFusionUser_oscommerce extends JFusionUser
      */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
 	    try {
-		    $params = JFusionFactory::getParams($this->getJname());
-		    $osCversion = $params->get('osCversion');
+		    $osCversion = $this->params->get('osCversion');
 		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 		    if (empty($usergroups)) {
 			    throw new RuntimeException(JText::_('USERGROUP_MISSING'));

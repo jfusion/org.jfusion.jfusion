@@ -131,14 +131,14 @@ class JFusionUser_prestashop extends JFusionUser {
     function destroySession($userinfo, $option) {
         $status = array('error' => array(),'debug' => array());
 	    // use prestashop cookie class and functions to delete cookie
-		$params = JFusionFactory::getParams($this->getJname());
-		require_once $params->get('source_path') . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'settings.inc.php';
-	    require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Cookie.php');
-		require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Blowfish.php');
-		require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Tools.php');
-		require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'ObjectModel.php');
-		require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Db.php');
-		require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'SubDomain.php');
+	    $source_path = $this->params->get('source_path');
+		require_once($source_path . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'settings.inc.php');
+	    require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Cookie.php');
+		require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Blowfish.php');
+		require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Tools.php');
+		require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'ObjectModel.php');
+		require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Db.php');
+		require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'SubDomain.php');
         $cookie = new CookieCore('ps', '', '');
 	    $cookie->logout();
 	    $status['debug'][] = 'Deleted session and session data';
@@ -154,18 +154,19 @@ class JFusionUser_prestashop extends JFusionUser {
      */
     function createSession($userinfo, $options, $framework = true) {
 	    try {
-		    $params = JFusionFactory::getParams($this->getJname());
 		    $status = array('error' => array(),'debug' => array());
 		    // this uses a code extract from authentication.php that deals with logging in completely
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    require_once $params->get('source_path') . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'settings.inc.php';
-		    require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Cookie.php');
-		    require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Blowfish.php');
-		    require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Tools.php');
-		    require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'ObjectModel.php');
-		    require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Db.php');
-		    require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'SubDomain.php');
-		    require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Validate.php');
+
+		    $source_path = $this->params->get('source_path');
+		    require_once($source_path . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'settings.inc.php');
+		    require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Cookie.php');
+		    require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Blowfish.php');
+		    require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Tools.php');
+		    require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'ObjectModel.php');
+		    require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Db.php');
+		    require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'SubDomain.php');
+		    require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Validate.php');
 		    $cookie = new CookieCore('ps', '', '');
 		    $passwd = $userinfo->password_clear;
 		    $email = $userinfo->email;
@@ -195,12 +196,12 @@ class JFusionUser_prestashop extends JFusionUser {
 			    if (!$result) {
 				    throw new RuntimeException('authentication failed');
 			    } else {
-				    if(md5($params->get('cookie_key') . $passwd) === $result) {
+				    if(md5($this->params->get('cookie_key') . $passwd) === $result) {
 					    $cookie->id_customer = $userinfo->userid;
 					    $cookie->customer_lastname = $userinfo->lastname;
 					    $cookie->customer_firstname = $userinfo->firstname;
 					    $cookie->logged = 1;
-					    $cookie->passwd = md5($params->get('cookie_key') . $passwd);
+					    $cookie->passwd = md5($this->params->get('cookie_key') . $passwd);
 					    $cookie->email = $email;
 				    } else {
 					    throw new RuntimeException('wrong password');
@@ -260,15 +261,16 @@ class JFusionUser_prestashop extends JFusionUser {
     function createUser($userinfo, &$status) {
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $params = JFusionFactory::getParams($this->getJname());
 
-		    require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Validate.php');
-		    require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'ObjectModel.php');
-		    require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Db.php');
-		    require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Country.php');
-		    require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'State.php');
-		    require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Tools.php');
-		    require($params->get('source_path') . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Customer.php');
+		    $source_path = $this->params->get('source_path');
+
+		    require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Validate.php');
+		    require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'ObjectModel.php');
+		    require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Db.php');
+		    require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Country.php');
+		    require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'State.php');
+		    require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Tools.php');
+		    require($source_path . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Customer.php');
 
 		    /* split full name into first and with/or without middlename, and lastname */
 		    $users_name = $userinfo->name;
@@ -319,7 +321,7 @@ class JFusionUser_prestashop extends JFusionUser {
 		    $ps_customer->id_default_group = 1;
 		    $ps_customer->secure_key = md5(uniqid(rand(), true));
 		    $ps_customer->email = $user_variables['email'];
-		    $ps_customer->passwd = md5($params->get('cookie_key') . $user_variables['passwd']);
+		    $ps_customer->passwd = md5($this->params->get('cookie_key') . $user_variables['passwd']);
 		    $ps_customer->last_passwd_gen = date('Y-m-d h:m:s',strtotime("-6 hours"));
 		    $ps_customer->birthday = date('Y-m-d',mktime(0,0,0,$user_variables['months'],$user_variables['days'],$user_variables['years']));
 		    $ps_customer->lastname = $user_variables['lastname'];
@@ -478,7 +480,6 @@ class JFusionUser_prestashop extends JFusionUser {
     function updateEmail($userinfo, &$existinguser, &$status) {
 	    try {
 		    //we need to update the email
-		    $params = JFusionFactory::getParams($this->getJname());
 		    $db = JFusionFactory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)

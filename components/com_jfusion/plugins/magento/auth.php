@@ -30,17 +30,17 @@ require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTOR
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionAuth_magento extends JFusionAuth {
-
+class JFusionAuth_magento extends JFusionAuth
+{
 	/**
-	 * @return string
+	 * returns the name of this JFusion plugin
+	 *
+	 * @return string name of current JFusion plugin
 	 */
 	function getJname()
 	{
 		return 'magento';
 	}
-
-
 
 	/**
 	 * @param array|object $userinfo

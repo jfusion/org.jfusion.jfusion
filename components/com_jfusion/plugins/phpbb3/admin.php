@@ -267,8 +267,7 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
      */
     function generateRedirectCode($url, $itemid) {
 	    try {
-		    $params = JFusionFactory::getParams($this->getJname());
-		    $cookie_name = $params->get('cookie_prefix') . '_u';
+		    $cookie_name = $this->params->get('cookie_prefix') . '_u';
 		    //create the new redirection code
 		    $redirect_code = '
 //JFUSION REDIRECT START
@@ -290,7 +289,7 @@ if (isset($_GET[\'jfile\'])) {
      $jfile = $_GET[\'jfile\'];
 }
     ';
-		    $allow_mods = $params->get('mod_ids');
+		    $allow_mods = $this->params->get('mod_ids');
 		    if (!empty($allow_mods)) {
 			    //get a userlist of mod ids
 			    $db = JFusionFactory::getDatabase($this->getJname());
@@ -335,10 +334,9 @@ if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\'
      * @return mixed
      */
     function enableRedirectMod() {
-        $params = JFusionFactory::getParams($this->getJname());
         $joomla_params = JFusionFactory::getParams('joomla_int');
         $joomla_url = $joomla_params->get('source_url');
-        $joomla_itemid = $params->get('redirect_itemid');
+        $joomla_itemid = $this->params->get('redirect_itemid');
 
         //check to see if all vars are set
         if (empty($joomla_url)) {
@@ -583,8 +581,7 @@ HTML;
 		    $db->execute();
 
 		    //remove the file as well to allow for updates of the auth mod content
-		    $params = JFusionFactory::getParams($this->getJname());
-		    $path = $params->get('source_path');
+		    $path = $this->params->get('source_path');
 		    if (substr($path, -1) == DIRECTORY_SEPARATOR) {
 			    $auth_file = $path . 'includes' . DIRECTORY_SEPARATOR . 'auth' . DIRECTORY_SEPARATOR . 'auth_jfusion.php';
 		    } else {
@@ -690,8 +687,7 @@ HTML;
      * @return bool
      */
     function clearConfigCache() {
-        $params = JFusionFactory::getParams($this->getJname());
-        $source_path = $params->get('source_path');
+        $source_path = $this->params->get('source_path');
         $cache = $source_path . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'data_global.php';
         if (file_exists($cache)) {
             jimport('joomla.filesystem.file');

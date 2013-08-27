@@ -241,8 +241,6 @@ class JFusionAdmin_moodle extends JFusionAdmin
      */
     public function moduleInstallation() {
         $jname = $this->getJname ();
-        $params = JFusionFactory::getParams ( $jname );
-
 	    try {
 		    try {
 			    $db = JFusionFactory::getDatabase ( $jname );
@@ -250,7 +248,7 @@ class JFusionAdmin_moodle extends JFusionAdmin
 				throw new RuntimeException(JText::_('MOODLE_CONFIG_FIRST'));
 		    }
 
-		    $source_path = $params->get ( 'source_path', '' );
+		    $source_path = $this->params->get('source_path', '');
 		    if (! file_exists ( $source_path . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'auth.php' )) {
 			    return JText::_ ( 'MOODLE_CONFIG_SOURCE_PATH' );
 		    }
@@ -293,8 +291,7 @@ HTML;
 	    $jname =  $this->getJname ();
 		try {
 			 $db = JFusionFactory::getDatabase($jname);
-			 $params = JFusionFactory::getParams ( $jname );
-			 $source_path = $params->get ( 'source_path' );
+			 $source_path = $this->params->get ( 'source_path' );
 			 jimport ( 'joomla.filesystem.archive' );
 			 jimport ( 'joomla.filesystem.file' );
 
@@ -370,8 +367,7 @@ HTML;
 
 		    $jname =  $this->getJname ();
 		    $db = JFusionFactory::getDatabase($jname);
-		    $params = JFusionFactory::getParams ( $jname );
-		    $source_path = $params->get ( 'source_path' );
+		    $source_path = $this->params->get ( 'source_path' );
 		    $xmlfile = realpath ( dirname ( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'install_module' . DIRECTORY_SEPARATOR . 'source' . DIRECTORY_SEPARATOR . 'listfiles.xml';
 
 		    $listfiles = JFusionFunction::getXml($xmlfile);
@@ -504,10 +500,9 @@ HTML;
 	    $html = JText::_('MOODLE_CONFIG_FIRST');
 	    try {
 		    $jname = $this->getJname ();
-		    $params = JFusionFactory::getParams($jname);
 		    $db = JFusionFactory::getDatabase($jname);
 
-		    $source_path = $params->get ( 'source_path' );
+		    $source_path = $this->params->get ( 'source_path' );
 		    $jfusion_auth = $source_path . DIRECTORY_SEPARATOR .'auth'. DIRECTORY_SEPARATOR .'jfusion'. DIRECTORY_SEPARATOR .'auth.php';
 		    if(file_exists($jfusion_auth)){
 			    // find out if jfusion is listed in the active auth plugins
@@ -568,7 +563,6 @@ HTML;
     public function activateModule(){
 	    try {
 		    $jname =  $this->getJname ();
-		    $params = JFusionFactory::getParams ( $jname );
 		    $db = JFusionFactory::getDatabase($jname);
 
 		    $activation = ((JFactory::getApplication()->input->get('activation', 1))?'true':'false');

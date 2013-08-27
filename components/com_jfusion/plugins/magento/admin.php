@@ -232,9 +232,8 @@ class JFusionAdmin_magento extends JFusionAdmin
 			    JFusionFunction::raiseWarning(JText::_('MAGENTO_NEED_API_USER'), $this->getJname());
 		    } else {
 			    // check if we have valid parameters  for apiuser and api key
-			    $params = JFusionFactory::getParams($this->getJname());
-			    $apiuser = $params->get('apiuser');
-			    $apikey = $params->get('apikey');
+			    $apiuser = $this->params->get('apiuser');
+			    $apikey = $this->params->get('apikey');
 			    if (!$apiuser || !$apikey) {
 				    JFusionFunction::raiseWarning(JText::_('MAGENTO_NO_API_DATA'), $this->getJname());
 			    } else {
@@ -290,8 +289,7 @@ class JFusionAdmin_magento extends JFusionAdmin
      */
     function allowRegistration() {
         $result = true;
-        $params = JFusionFactory::getParams($this->getJname());
-        $registration_disabled = $params->get('disabled_registration');
+        $registration_disabled = $this->params->get('disabled_registration');
 		if ($registration_disabled){$result = false;}
 		return $result;
 	}
@@ -301,8 +299,6 @@ class JFusionAdmin_magento extends JFusionAdmin
      */
     public function moduleInstallation() {
         $jname = $this->getJname();
-        $params = JFusionFactory::getParams($jname);
-
 	    try {
 		    try {
 			    $db = JFusionFactory::getDatabase($jname);
@@ -310,7 +306,7 @@ class JFusionAdmin_magento extends JFusionAdmin
 			    throw new RuntimeException(JText::_('MOODLE_CONFIG_FIRST'));
 		    }
 
-		    $source_path = $params->get ( 'source_path', '' );
+		    $source_path = $this->params->get ( 'source_path', '' );
 		    if (! file_exists ( $source_path . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Mage.php' )) {
 			    throw new RuntimeException(JText::_('MAGE_CONFIG_SOURCE_PATH'));
 		    } else {
@@ -354,8 +350,7 @@ HTML;
 		try {
 			$jname =  $this->getJname ();
 			$db = JFusionFactory::getDatabase($jname);
-			$params = JFusionFactory::getParams ( $jname );
-			$source_path = $params->get ( 'source_path' );
+			$source_path = $this->params->get('source_path');
 			jimport ( 'joomla.filesystem.archive' );
 			jimport ( 'joomla.filesystem.file' );
 			$pear_path = JPATH_ADMINISTRATOR.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR. 'pear';
@@ -423,8 +418,7 @@ HTML;
 
 		    $jname =  $this->getJname ();
 		    $db = JFusionFactory::getDatabase($jname);
-		    $params = JFusionFactory::getParams ( $jname );
-		    $source_path = $params->get ( 'source_path' );
+		    $source_path = $this->params->get ( 'source_path' );
 		    $xmlfile = realpath ( dirname ( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'install_module' . DIRECTORY_SEPARATOR . 'source' . DIRECTORY_SEPARATOR . 'listfiles.xml';
 
 		    $listfiles = JFusionFunction::getXml($xmlfile);
@@ -474,8 +468,7 @@ HTML;
      */
     public function moduleActivation() {
 		$jname =  $this->getJname ();
-		$params = JFusionFactory::getParams ( $jname );
-		$source_path = $params->get ( 'source_path' );
+		$source_path = $this->params->get('source_path');
 		
 		$jfusion_mod_xml = $source_path . DIRECTORY_SEPARATOR .'app'. DIRECTORY_SEPARATOR .'etc'. DIRECTORY_SEPARATOR .'modules'. DIRECTORY_SEPARATOR .'Jfusion_All.xml';
 		
@@ -521,8 +514,7 @@ HTML;
 		
 		$activation = ((JFactory::getApplication()->input->get('activation', 1))?'true':'false');
 		$jname =  $this->getJname ();
-		$params = JFusionFactory::getParams ( $jname );
-		$source_path = $params->get ( 'source_path' );
+		$source_path = $this->params->get('source_path');
 		$jfusion_mod_xml = $source_path . DIRECTORY_SEPARATOR .'app'. DIRECTORY_SEPARATOR .'etc'. DIRECTORY_SEPARATOR .'modules'. DIRECTORY_SEPARATOR .'Jfusion_All.xml';
 
 		$xml = JFusionFunction::getXml($jfusion_mod_xml);

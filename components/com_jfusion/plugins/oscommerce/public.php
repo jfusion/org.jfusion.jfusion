@@ -40,8 +40,7 @@ class JFusionPublic_oscommerce extends JFusionPublic
      * @return string
      */
     function getRegistrationURL() {
-		$params = JFusionFactory::getParams($this->getJname());
-		$osCversion = $params->get('osCversion');
+		$osCversion = $this->params->get('osCversion');
 		switch ($osCversion) {
 			case 'osc2':
 			case 'osc3':
@@ -59,8 +58,7 @@ class JFusionPublic_oscommerce extends JFusionPublic
      * @return string
      */
     function getLostPasswordURL() {
-		$params = JFusionFactory::getParams($this->getJname());
-		$osCversion = $params->get('osCversion');
+		$osCversion = $this->params->get('osCversion');
 		switch ($osCversion) {
 			case 'osc2':
 			case 'oscmax':
@@ -80,8 +78,7 @@ class JFusionPublic_oscommerce extends JFusionPublic
      * @return string
      */
     function getLostUsernameURL() {
-		$params = JFusionFactory::getParams($this->getJname());
-		$osCversion = $params->get('osCversion');
+		$osCversion = $this->params->get('osCversion');
 		switch ($osCversion) {
 			case 'osc2':
 			case 'oscmax':

@@ -34,7 +34,12 @@ require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTOR
 /**
  *
  */
-class JFusionUser_wordpress extends JFusionUser {
+class JFusionUser_wordpress extends JFusionUser
+{
+	/**
+	 * @var $helper JFusionHelper_wordpress
+	 */
+	var $helper;
 
 	/**
 	 * returns the name of this JFusion plugin
@@ -105,7 +110,6 @@ class JFusionUser_wordpress extends JFusionUser {
      * @return \stdClass
      */
     function convertUserobjectToJFusion($user) {
-	    $params = JFusionFactory::getParams($this->getJname());
 		$result = new stdClass;
 
 		$result->userid       = $user->ID;
@@ -121,7 +125,7 @@ class JFusionUser_wordpress extends JFusionUser {
 		// usergroup (actually role) is in a serialized field of the user metadata table
 		// unserialize. Gives an array with capabilities
 
-	    $database_prefix = $params->get('database_prefix');
+	    $database_prefix = $this->params->get('database_prefix');
 		$capabilities = $database_prefix.'capabilities';
 		$capabilities = unserialize($user->$capabilities);
 		// make sure we only have activated capabilities
@@ -131,12 +135,8 @@ class JFusionUser_wordpress extends JFusionUser {
 		// now find out what we have
 		$groupid=4; // default to subscriber
 		$groupname='subscriber';
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_wordpress
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
-		$groups = $helper->getUsergroupListWP();
+
+		$groups = $this->helper->getUsergroupListWP();
 
         $result->groups[] = array();
         $result->groupnames[] = array();
@@ -178,21 +178,20 @@ class JFusionUser_wordpress extends JFusionUser {
     function destroySession($userinfo, $options) {
 
     $status = array('error' => array(),'debug' => array());
-		$params = JFusionFactory::getParams($this->getJname());
 		$wpnonce=array();
 
-		$logout_url = $params->get('logout_url');
+		$logout_url = $this->params->get('logout_url');
 
-		$curl_options['post_url'] = $params->get('source_url') . $logout_url;
-		$curl_options['cookiedomain'] = $params->get('cookie_domain');
-		$curl_options['cookiepath'] = $params->get('cookie_path');
-		$curl_options['leavealone'] = $params->get('leavealone');
-		$curl_options['secure'] = $params->get('secure');
-		$curl_options['httponly'] = $params->get('httponly');
-		$curl_options['verifyhost'] = 0; //$params->get('ssl_verifyhost');
-		$curl_options['httpauth'] = $params->get('httpauth');
-		$curl_options['httpauth_username'] = $params->get('curl_username');
-		$curl_options['httpauth_password'] = $params->get('curl_password');
+		$curl_options['post_url'] = $this->params->get('source_url') . $logout_url;
+		$curl_options['cookiedomain'] = $this->params->get('cookie_domain');
+		$curl_options['cookiepath'] = $this->params->get('cookie_path');
+		$curl_options['leavealone'] = $this->params->get('leavealone');
+		$curl_options['secure'] = $this->params->get('secure');
+		$curl_options['httponly'] = $this->params->get('httponly');
+		$curl_options['verifyhost'] = 0; //$this->params->get('ssl_verifyhost');
+		$curl_options['httpauth'] = $this->params->get('httpauth');
+		$curl_options['httpauth_username'] = $this->params->get('curl_username');
+		$curl_options['httpauth_password'] = $this->params->get('curl_password');
 		$curl_options['integrationtype']=0;
 		$curl_options['debug'] =0;
 
@@ -216,16 +215,16 @@ class JFusionUser_wordpress extends JFusionUser {
         preg_match("/action=logout.+?_wpnonce=([\w\s-]*)[\"']/i",$remotedata,$wpnonce);
         if (!empty($wpnonce[1])){
  					$curl_options['post_url'] = $curl_options['post_url']."?action=logout&_wpnonce=".$wpnonce[1];
-					$status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname(),$params->get('logout_type'),$curl_options);
+					$status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname(), $this->params->get('logout_type'), $curl_options);
         } else {
           // non wpnonce, we are probably not on the logout page. Just report
           $status['debug'][]= JText::_('NO_WPNONCE_FOUND: ');
   
           //try to delete all cookies
-          $cookie_name = $params->get('cookie_name');
-          $cookie_domain = $params->get('cookie_domain');
-          $cookie_path = $params->get('cookie_path');
-          $cookie_hash = $params->get('cookie_hash');
+          $cookie_name = $this->params->get('cookie_name');
+          $cookie_domain = $this->params->get('cookie_domain');
+          $cookie_path = $this->params->get('cookie_path');
+          $cookie_hash = $this->params->get('cookie_hash');
 
           $cookies = array();
           $cookies[0][0] ='wordpress_logged_in'.$cookie_name.'=';
@@ -257,8 +256,7 @@ class JFusionUser_wordpress extends JFusionUser {
         if (!empty($userinfo->block) || !empty($userinfo->activation)) {
             $status['error'][] = JText::_('FUSION_BLOCKED_USER');
         } else {
-            $params = JFusionFactory::getParams($this->getJname());
-            $status = JFusionJplugin::createSession($userinfo, $options, $this->getJname(),$params->get('brute_force'));
+            $status = JFusionJplugin::createSession($userinfo, $options, $this->getJname(), $this->params->get('brute_force'));
         }
 		return $status;
 	}
@@ -275,12 +273,7 @@ class JFusionUser_wordpress extends JFusionUser {
 		$username = preg_replace('/[\r\n\t ]+/', ' ', $username);
 		$username = trim($username);
 		// remove accents
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_wordpress
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
-		$username = $helper->remove_accentsWP( $username );
+		$username = $this->helper->remove_accentsWP( $username );
 		// Kill octets
 		$username = preg_replace( '|%([a-fA-F0-9][a-fA-F0-9])|', '', $username );
 		$username = preg_replace( '/&.+?;/', '', $username ); // Kill entities
@@ -447,24 +440,17 @@ class JFusionUser_wordpress extends JFusionUser {
 	    try {
 		    //find out what usergroup should be used
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $params = JFusionFactory::getParams($this->getJname());
-		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
 		    if (empty($usergroups)) {
 			    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 		    } else {
-			    /**
-			     * @ignore
-			     * @var $helper JFusionHelper_wordpress
-			     */
-			    $helper = JFusionFactory::getHelper($this->getJname());
-
-			    $update_activation = $params->get('update_activation');
+			    $update_activation = $this->params->get('update_activation');
 			    $default_role_id = $usergroups[0];
-			    $default_role_name = strtolower($helper->getUsergroupNameWP($default_role_id));
+			    $default_role_name = strtolower($this->helper->getUsergroupNameWP($default_role_id));
 			    $default_role = array();
 			    $default_role[$default_role_name]=1;
 
-			    $default_userlevel = $helper->WP_userlevel_from_role(0,$default_role_name);
+			    $default_userlevel = $this->helper->WP_userlevel_from_role(0, $default_role_name);
 			    $username_clean = $this->filterUsername($userinfo->username);
 			    if (isset($userinfo->password_clear)) {
 				    //we can update the password
@@ -516,7 +502,7 @@ class JFusionUser_wordpress extends JFusionUser {
 				    }
 			    }
 
-			    $database_prefix = $params->get('database_prefix');
+			    $database_prefix = $this->params->get('database_prefix');
 
 			    $metadata['nickname']         = $userinfo->username;
 			    $metadata['description']      = '';
@@ -564,9 +550,8 @@ class JFusionUser_wordpress extends JFusionUser {
 		    }
 
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $params = JFusionFactory::getParams($this->getJname());
-		    $reassign = $params->get('reassign_blogs');
-		    $reassign_to=$params->get('reassign_username');
+		    $reassign = $this->params->get('reassign_blogs');
+		    $reassign_to = $this->params->get('reassign_username');
 		    $user_id=$userinfo->userid;
 
 		    // decide if we need to reassign
@@ -688,18 +673,11 @@ class JFusionUser_wordpress extends JFusionUser {
 		    } else {
 			    $db = JFusionFactory::getDatabase($this->getJname());
 
-			    $params = JFusionFactory::getParams($this->getJname());
-			    $database_prefix = $params->get('database_prefix');
-
-			    /**
-			     * @ignore
-			     * @var $helper JFusionHelper_wordpress
-			     */
-			    $helper = JFusionFactory::getHelper($this->getJname());
+			    $database_prefix = $this->params->get('database_prefix');
 
 			    $caps = array();
 			    foreach($usergroups as $usergroup) {
-				    $newgroupname = strtolower($helper->getUsergroupNameWP($usergroup));
+				    $newgroupname = strtolower($this->helper->getUsergroupNameWP($usergroup));
 				    $caps[$newgroupname]='1';
 			    }
 

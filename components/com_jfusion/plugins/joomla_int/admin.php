@@ -105,9 +105,7 @@ class JFusionAdmin_joomla_int extends JFusionAdmin {
      */
     function usergroup($name, $value, $node, $control_name)
     {
-        $params = JFusionFactory::getParams($this->getJname());
-
-	    $value = $params->get('multiusergroup');
+	    $value = $this->params->get('multiusergroup');
 	    return parent::multiusergroup('multiusergroup', $value, $node, $control_name);
     }
 

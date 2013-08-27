@@ -32,7 +32,13 @@ require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTOR
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionPublic_gallery2 extends JFusionPublic {
+class JFusionPublic_gallery2 extends JFusionPublic
+{
+	/**
+	 * @var $helper JFusionHelper_gallery2
+	 */
+	var $helper;
+
     /**
      * returns the name of this JFusion plugin
      * @return string name of current JFusion plugin
@@ -75,12 +81,8 @@ class JFusionPublic_gallery2 extends JFusionPublic {
             $path_info = str_replace(':', '-', $path_info);
             $_SERVER['PATH_INFO'] = $path_info;
         }
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_gallery2
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
-        $helper->loadGallery2Api(true);
+
+	    $this->helper->loadGallery2Api(true);
         global $gallery, $user;
         $album = $jPluginParam->get('album', -1);
         if ($album != - 1) {
@@ -118,9 +120,9 @@ class JFusionPublic_gallery2 extends JFusionPublic {
         }
         /* Register Sidebare for Module Usage */
         if (isset($g2data['sidebarBlocksHtml'])) {
-            $helper->setVar('sidebar', $g2data['sidebarBlocksHtml']);
+	        $this->helper->setVar('sidebar', $g2data['sidebarBlocksHtml']);
         }
-        $helper->setPathway();
+	    $this->helper->setPathway();
         if (isset($g2data['bodyHtml']) && isset($g2data['headHtml'])) {
             $buffer = '<html><head>' . $g2data['headHtml'] . '</head><body>' . $g2data['bodyHtml'] . '</body></html>';
             $data->body = $g2data['bodyHtml'];
@@ -177,8 +179,7 @@ class JFusionPublic_gallery2 extends JFusionPublic {
 			$replacement.= '<input type="hidden" name="option" value="com_jfusion"/>';
         } else {
             //check to see what SEF mode is selected
-            $params = JFusionFactory::getParams($this->getJname());
-            $sefmode = $params->get('sefmode');
+            $sefmode = $this->params->get('sefmode');
             if ($sefmode == 1) {
                 //extensive SEF parsing was selected
                 $url = JFusionFunction::routeURL($url, $Itemid);
@@ -212,12 +213,7 @@ class JFusionPublic_gallery2 extends JFusionPublic {
      * @return array
      */
     function getSearchResults(&$text, &$phrase, &$pluginParam, $itemid, $ordering) {
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_gallery2
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
-        $helper->loadGallery2Api(true, $itemid);
+	    $this->helper->loadGallery2Api(true, $itemid);
         global $gallery;
         $urlGenerator = $gallery->getUrlGenerator();
         /* start preparing */

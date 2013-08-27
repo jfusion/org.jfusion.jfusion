@@ -31,25 +31,9 @@ defined('_JEXEC' ) or die('Restricted access' );
 class JFusionUser_vbulletin extends JFusionUser
 {
     /**
-     * @var $params JRegistry
-     */
-    var $params;
-    /**
      * @var $helper JFusionHelper_vbulletin
      */
     var $helper;
-
-    /**
-     *
-     */
-    function __construct()
-    {
-        //get the params object
-        $this->params = JFusionFactory::getParams($this->getJname());
-        //get the helper object
-
-        $this->helper = JFusionFactory::getHelper($this->getJname());
-    }
 
     /**
      * @param object $userinfo

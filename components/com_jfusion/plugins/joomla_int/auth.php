@@ -32,7 +32,18 @@ require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTOR
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionAuth_joomla_int extends JFusionAuth {
+class JFusionAuth_joomla_int extends JFusionAuth
+{
+	/**
+	 * returns the name of this JFusion plugin
+	 *
+	 * @return string name of current JFusion plugin
+	 */
+	function getJname()
+	{
+		return 'joomla_int';
+	}
+
     /**
      * @param array|object $userinfo
      * @return string

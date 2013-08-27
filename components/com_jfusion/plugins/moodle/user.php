@@ -129,11 +129,10 @@ class JFusionUser_moodle extends JFusionUser {
 	function &getUser($userinfo) {
 		try {
 			$db = JFusionFactory::getDatabase($this->getJname());
-			$params = JFusionFactory::getParams($this->getJname());
 			//get the identifier
 			list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'username', 'email');
 			//initialise some params
-			$update_block = $params->get('update_block');
+			$update_block = $this->params->get('update_block');
 
 			$query = $db->getQuery(true)
 				->select('*')
@@ -213,20 +212,18 @@ class JFusionUser_moodle extends JFusionUser {
 			return $status;
 		}
 
-		$jname = $this->getJname();
-		$params = & JFusionFactory::getParams($jname);
-		$logout_url = $params->get('logout_url');
+		$logout_url = $this->params->get('logout_url');
 
-		$curl_options['post_url'] = $params->get('source_url') . $logout_url;
-		$curl_options['cookiedomain'] = $params->get('cookie_domain');
-		$curl_options['cookiepath'] = $params->get('cookie_path');
-		$curl_options['leavealone'] = $params->get('leavealone');
-		$curl_options['secure'] = $params->get('secure');
-		$curl_options['httponly'] = $params->get('httponly');
-		$curl_options['verifyhost'] = 0; //$params->get('ssl_verifyhost');
-		$curl_options['httpauth'] = $params->get('httpauth');
-		$curl_options['httpauth_username'] = $params->get('curl_username');
-		$curl_options['httpauth_password'] = $params->get('curl_password');
+		$curl_options['post_url'] = $this->params->get('source_url') . $logout_url;
+		$curl_options['cookiedomain'] = $this->params->get('cookie_domain');
+		$curl_options['cookiepath'] = $this->params->get('cookie_path');
+		$curl_options['leavealone'] = $this->params->get('leavealone');
+		$curl_options['secure'] = $this->params->get('secure');
+		$curl_options['httponly'] = $this->params->get('httponly');
+		$curl_options['verifyhost'] = 0; //$this->params->get('ssl_verifyhost');
+		$curl_options['httpauth'] = $this->params->get('httpauth');
+		$curl_options['httpauth_username'] = $this->params->get('curl_username');
+		$curl_options['httpauth_password'] = $this->params->get('curl_password');
 		$curl_options['integrationtype']=0;
 		$curl_options['debug'] =0;
 
@@ -280,7 +277,7 @@ class JFusionUser_moodle extends JFusionUser {
 					$status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname());
 				} else {
 					$curl_options['post_url'] = $curl_options['post_url']."?sesskey=$sessionkey";
-					$status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname(),$params->get('logout_type'),$curl_options);
+					$status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname(), $this->params->get('logout_type'), $curl_options);
 				}
 			}
 		}
@@ -305,8 +302,7 @@ class JFusionUser_moodle extends JFusionUser {
 		// we find out by reading the MOODLEID_ cookie and brute force login if MOODLE_ID is not nobody
 		$curl_options = array();
 		$curl_options['hidden']='0';
-		$params = JFusionFactory::getParams($this->getJname());
-		$logintype = $params->get('brute_force');
+		$logintype = $this->params->get('brute_force');
 		if (isset($_COOKIE['MOODLEID_'])){
 			$loggedin_user = $this->rc4decrypt($_COOKIE['MOODLEID_']);
 			if ($loggedin_user == 'nobody') {
@@ -351,9 +347,8 @@ class JFusionUser_moodle extends JFusionUser {
 	 */
 	function updatePassword($userinfo, $existinguser, &$status) {
 		try {
-			$params = JFusionFactory::getParams('moodle');
-			if ($params->get('passwordsaltmain')) {
-				$existinguser->password = md5($userinfo->password_clear . $params->get('passwordsaltmain'));
+			if ($this->params->get('passwordsaltmain')) {
+				$existinguser->password = md5($userinfo->password_clear . $this->params->get('passwordsaltmain'));
 			} else {
 				$existinguser->password = md5($userinfo->password_clear);
 			}
@@ -556,7 +551,6 @@ class JFusionUser_moodle extends JFusionUser {
 		try {
 			// first find out if the user already exists, but with deleted flag set
 			$db = JFusionFactory::getDatabase($this->getJname());
-			$params = JFusionFactory::getParams($this->getJname());
 			//get the identifier
 			list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'username', 'email');
 
@@ -576,8 +570,7 @@ class JFusionUser_moodle extends JFusionUser {
 			} else {
 				//find out what usergroup should be used
 				$db = JFusionFactory::getDatabase($this->getJname());
-				$params = JFusionFactory::getParams($this->getJname());
-				$usergroups = (substr($params->get('usergroup'), 0, 2) == 'a:') ? unserialize($params->get('usergroup')) : $params->get('usergroup', 18);
+				$usergroups = (substr($this->params->get('usergroup'), 0, 2) == 'a:') ? unserialize($this->params->get('usergroup')) : $this->params->get('usergroup', 18);
 				//check to make sure that if using the advanced group mode, $userinfo->group_id exists
 				if (is_array($usergroups) && !isset($userinfo->group_id)) {
 					throw new RuntimeException(JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID'));
@@ -620,9 +613,8 @@ class JFusionUser_moodle extends JFusionUser {
 				$user->mnethostid = $mnet_localhost_id;
 				$user->username = $userinfo->username;
 				if (isset($userinfo->password_clear) && strlen($userinfo->password_clear) != 32) {
-					$params = JFusionFactory::getParams('moodle');
-					if ($params->get('passwordsaltmain')) {
-						$user->password = md5($userinfo->password_clear . $params->get('passwordsaltmain'));
+					if ($this->params->get('passwordsaltmain')) {
+						$user->password = md5($userinfo->password_clear . $this->params->get('passwordsaltmain'));
 					} else {
 						$user->password = md5($userinfo->password_clear);
 					}

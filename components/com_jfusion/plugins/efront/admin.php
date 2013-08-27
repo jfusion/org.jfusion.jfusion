@@ -35,6 +35,11 @@ require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTOR
 
 class JFusionAdmin_efront extends JFusionAdmin
 {
+	/**
+	 * @var $helper JFusionHelper_efront
+	 */
+	var $helper;
+
     /**
      * returns the name of this JFusion plugin
      * @return string name of current JFusion plugin
@@ -185,12 +190,7 @@ class JFusionAdmin_efront extends JFusionAdmin
      * @return array
      */
     function getUsergroupList() {
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_efront
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
-         return $helper->getUsergroupList();
+         return $this->helper->getUsergroupList();
     }
 
     /**
@@ -202,12 +202,7 @@ class JFusionAdmin_efront extends JFusionAdmin
         if(!empty($usergroups)) {
             $usergroup_id = $usergroups[0];
         }
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_efront
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
-        return $helper->groupIdToName($usergroup_id);
+        return $this->helper->groupIdToName($usergroup_id);
     }
 
     /**
@@ -254,9 +249,8 @@ class JFusionAdmin_efront extends JFusionAdmin
         // see if we have an api user in Magento
         $db = JFusionFactory::getDataBase($this->getJname());
         // check if we have valid parameters  for apiuser and api key
-        $params = JFusionFactory::getParams($this->getJname());
-        $apiuser = $params->get('apiuser');
-        $apikey = $params->get('apikey');
+        $apiuser = $this->params->get('apiuser');
+        $apikey = $this->params->get('apikey');
         if (!$apiuser || !$apikey) {
                 JFusionFunction::raiseWarning(JText::_('EFRONT_NO_API_DATA'), $this->getJname());
         } else {
@@ -268,7 +262,7 @@ class JFusionAdmin_efront extends JFusionAdmin
 
             $db->setQuery($query);
             $api_key = $db->loadResult();
-            $md5_key = $params->get('md5_key');
+            $md5_key = $this->params->get('md5_key');
             $params_hash = md5($apikey.$md5_key);
             if ($params_hash != $api_key) {
                 JFusionFunction::raiseWarning(JText::_('EFRONT_WRONG_APIUSER_APIKEY_COMBINATION'), $this->getJname());

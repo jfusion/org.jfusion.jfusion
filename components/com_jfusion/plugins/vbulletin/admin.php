@@ -32,6 +32,11 @@ defined('_JEXEC') or die('Restricted access');
 
 class JFusionAdmin_vbulletin extends JFusionAdmin
 {
+	/**
+	 * @var $helper JFusionHelper_vbulletin
+	 */
+	var $helper;
+
     /**
      * returns the name of this JFusion plugin
      * @return string name of current JFusion plugin
@@ -507,8 +512,7 @@ HTML;
 			    }
 		    } else {
 			    //this will perform functions like rewriting image paths to include the full URL to images to save processing time
-			    $params = JFusionFactory::getParams($this->getJname());
-			    $source_url = $params->get('source_url');
+			    $source_url = $this->params->get('source_url');
 			    if (substr($source_url, -1) != '/') {
 				    $source_url.= '/';
 			    }
@@ -577,7 +581,6 @@ HTML;
      */
     function getHookPHP($plugin, $itemid)
     {
-        $params = JFusionFactory::getParams($this->getJname());
         $hookFile = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'hooks.php';
         $php = "defined('_VBJNAME') or define('_VBJNAME', '{$this->getJname()}');\n";
         $php.= "defined('JPATH_PATH') or define('JPATH_BASE', '" . (str_replace(DIRECTORY_SEPARATOR.'administrator', '', JPATH_BASE)) . "');\n";
@@ -593,7 +596,7 @@ HTML;
             $php.= "if (defined('_JEXEC') || isset(\$_GET['jfusion'])){\n";
         } elseif ($plugin == 'redirect') {
             $php.= "if (!defined('_JEXEC')){\n";
-            $sefmode = $params->get('sefmode', 0);
+            $sefmode = $this->params->get('sefmode', 0);
             $config = JFactory::getConfig();
             $sef = $config->get('sef');
             //get the baseUR
@@ -635,7 +638,7 @@ HTML;
             $php.= "define('SEFENABLED','$sef');\n";
             $php.= "define('SEFMODE','$sefmode');\n";
             $php.= "define('JOOMLABASEURL','$baseURL');\n";
-            $php.= "define('REDIRECT_IGNORE','" . $params->get('redirect_ignore') . "');\n";
+            $php.= "define('REDIRECT_IGNORE','" . $this->params->get('redirect_ignore') . "');\n";
         } elseif ($plugin == 'duallogin') {
             //only login if not logging into the frontend of the forum and if $JFusionActivePlugin is not active for this plugin
             $php.= "global \$JFusionActivePlugin,\$JFusionLoginCheckActive;\n";
@@ -648,14 +651,10 @@ HTML;
         $php.= "if (file_exists(JFUSION_VB_HOOK_FILE)) {\n";
         $php.= "include_once(JFUSION_VB_HOOK_FILE);\n";
         $php.= "\$val = '$plugin';\n";
-        $secret = $params->get('vb_secret', JFactory::getConfig()->get('secret'));
+        $secret = $this->params->get('vb_secret', JFactory::getConfig()->get('secret'));
         $php.= "\$JFusionHook = new executeJFusionHook('init_startup', \$val, '$secret');\n";
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_vbulletin
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
-        $version = $helper->getVersion();
+
+        $version = $this->helper->getVersion();
         if (substr($version, 0, 1) > 3) {
             $php.= "vBulletinHook::set_pluginlist(\$vbulletin->pluginlist);\n";
         }
@@ -670,9 +669,8 @@ HTML;
     {
 	    try {
 		    //check for usergroups to make sure membergroups do not include default or display group
-		    $params = JFusionFactory::getParams($this->getJname());
 		    if (JFusionFunction::isAdvancedUsergroupMode($this->getJname())) {
-			    $usergroups = unserialize($params->get('usergroup'));
+			    $usergroups = unserialize($this->params->get('usergroup'));
 			    $master = JFusionFunction::getMaster();
 			    if (!empty($master)) {
 				    if ($master->name != $this->getJName()) {

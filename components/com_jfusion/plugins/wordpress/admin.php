@@ -33,6 +33,11 @@ defined('_JEXEC') or die('Restricted access');
 class JFusionAdmin_wordpress extends JFusionAdmin
 {
 	/**
+	 * @var $helper JFusionHelper_wordpress
+	 */
+	var $helper;
+
+	/**
 	 * returns the name of this JFusion plugin
 	 * @return string name of current JFusion plugin
 	 */
@@ -207,12 +212,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
      * @return array
      */
     function getUsergroupList() {
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_wordpress
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
-		$usergroups = $helper->getUsergroupListWP();
+		$usergroups = $this->helper->getUsergroupListWP();
 		return $usergroups;
 	}
 
@@ -220,17 +220,12 @@ class JFusionAdmin_wordpress extends JFusionAdmin
      * @return string
      */
     function getDefaultUsergroup() {
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_wordpress
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
         $usergroup_id = null;
         if(!empty($usergroups)) {
             $usergroup_id = $usergroups[0];
         }
-		return $helper->getUsergroupNameWP($usergroup_id);
+		return $this->helper->getUsergroupNameWP($usergroup_id);
 	}
 
 	/**

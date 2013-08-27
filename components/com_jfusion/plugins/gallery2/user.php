@@ -33,7 +33,13 @@ require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTOR
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionUser_gallery2 extends JFusionUser {
+class JFusionUser_gallery2 extends JFusionUser
+{
+	/**
+	 * @var $helper JFusionHelper_gallery2
+	 */
+	var $helper;
+
     /**
      * @param object $userinfo
      *
@@ -46,12 +52,8 @@ class JFusionUser_gallery2 extends JFusionUser {
         } else {
             $username = $userinfo;
         }
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_gallery2
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
-        $helper->loadGallery2Api(false);
+
+	    $this->helper->loadGallery2Api(false);
         list($ret, $g2_user) = GalleryCoreApi::fetchUserByUserName($username);
         if ($ret) {
             return null;
@@ -125,12 +127,7 @@ class JFusionUser_gallery2 extends JFusionUser {
      * @return array
      */
     function destroySession($userinfo, $options) {
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_gallery2
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
-        $helper->loadGallery2Api(false);
+	    $this->helper->loadGallery2Api(false);
         GalleryInitSecondPass();
         GalleryEmbed::logout();
         GalleryEmbed::done();
@@ -149,12 +146,7 @@ class JFusionUser_gallery2 extends JFusionUser {
         $status = array('error' => array(),'debug' => array());
         
         if ($framework) {
-            /**
-             * @ignore
-             * @var $helper JFusionHelper_gallery2
-             */
-            $helper = JFusionFactory::getHelper($this->getJname());
-            $helper->loadGallery2Api(false);
+	        $this->helper->loadGallery2Api(false);
         }
         global $gallery;
         //Code is taken from GalleryEmbed::checkActiveUser function
@@ -238,13 +230,12 @@ class JFusionUser_gallery2 extends JFusionUser {
         //setup status array to hold debug info and errors
         $status = array('error' => array(),'debug' => array());
         $username = $userinfo->username;
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_gallery2
-         * @var $user GalleryUser
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
-        $helper->loadGallery2Api(false);
+	    /**
+	     * @ignore
+	     * @var $user GalleryUser
+	     * @var $ret GalleryStatus
+	     */
+	    $this->helper->loadGallery2Api(false);
         //Fetch GalleryUser
         list($ret, $user) = GalleryCoreApi::fetchUserByUserName($username);
         if ($ret) {
@@ -280,13 +271,7 @@ class JFusionUser_gallery2 extends JFusionUser {
      * @return void
      */
     function createUser($userinfo, &$status) {
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_gallery2
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
-        $helper->loadGallery2Api(false);
-        $params = JFusionFactory::getParams($this->getJname());
+	    $this->helper->loadGallery2Api(false);
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
         if (empty($usergroups)) {
             $status['error'][] = JText::_('ERROR_CREATE_USER') . ": " . JText::_('USERGROUP_MISSING');
@@ -344,12 +329,7 @@ class JFusionUser_gallery2 extends JFusionUser {
      * @return void
      */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_gallery2
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
-        $helper->loadGallery2Api(false);
+	    $this->helper->loadGallery2Api(false);
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
         if (empty($usergroups)) {
             $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('USERGROUP_MISSING');
@@ -387,16 +367,13 @@ class JFusionUser_gallery2 extends JFusionUser {
     function updatePassword($userinfo, &$existinguser, &$status) {
         /**
          * @ignore
-         * @var $helper JFusionHelper_gallery2
          * @var $user GalleryUser
          * @var $ret GalleryStatus
          */
-        $helper = JFusionFactory::getHelper($this->getJname());
-        $helper->loadGallery2Api(false);
+	    $this->helper->loadGallery2Api(false);
         //find out if the user already exists
         list(, $user) = GalleryCoreApi::fetchUserByUserName($userinfo->username);
         // Initialise some variables
-        $params = JFusionFactory::getParams($this->getJname());
         //Set Write Lock
         list($ret, $id) = GalleryCoreApi::acquireWriteLock($user->getId());
         if ($ret) {
@@ -434,16 +411,13 @@ class JFusionUser_gallery2 extends JFusionUser {
     function updateEmail($userinfo, &$existinguser, &$status) {
 	    /**
 	     * @ignore
-	     * @var $helper JFusionHelper_gallery2
 	     * @var $user GalleryUser
 	     * @var $ret GalleryStatus
 	     */
-        $helper = JFusionFactory::getHelper($this->getJname());
-        $helper->loadGallery2Api(false);
+	    $this->helper->loadGallery2Api(false);
         //find out if the user already exists
         list(, $user) = GalleryCoreApi::fetchUserByUserName($userinfo->username);
         // Initialise some variables
-        $params = JFusionFactory::getParams($this->getJname());
         //Set Write Lock
         list($ret, $id) = GalleryCoreApi::acquireWriteLock($user->getId());
         if ($ret) {

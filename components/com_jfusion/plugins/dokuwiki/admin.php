@@ -32,6 +32,11 @@ defined('_JEXEC') or die('Restricted access');
 
 class JFusionAdmin_dokuwiki extends JFusionAdmin
 {
+	/**
+	 * @var $helper JFusionHelper_dokuwiki
+	 */
+	var $helper;
+
     /**
      * returns the name of this JFusion plugin
      *
@@ -50,14 +55,8 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
     function checkConfig()
     {
         $status = array();
-        $params = JFusionFactory::getParams($this->getJname());
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_dokuwiki
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
-        $source_path = $params->get('source_path');
-        $config = $helper->getConf($source_path);
+        $source_path = $this->params->get('source_path');
+        $config = $this->helper->getConf($source_path);
         if (is_array($config)) {
             $status['config'] = 1;
             $status['message'] = JText::_('GOOD_CONFIG');
@@ -77,13 +76,8 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
      */
     function setupFromPath($Path)
     {
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_dokuwiki
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
         //try to open the file
-        $config = $helper->getConf($Path);
+        $config = $this->helper->getConf($Path);
         $params = array();
         if ($config === false) {
             JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ": $Path " . JText::_('WIZARD_MANUAL'), $this->getJname());
@@ -144,12 +138,7 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
      */
     function getUserList($limitstart = 0, $limit = 0)
     {
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_dokuwiki
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
-        $list = $helper->auth->retrieveUsers($limitstart,$limit);
+        $list = $this->helper->auth->retrieveUsers($limitstart,$limit);
         $userlist = array();
         foreach ($list as $value) {
             $user = new stdClass;
@@ -167,12 +156,7 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
      */
     function getUserCount()
     {
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_dokuwiki
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
-        return $helper->auth->getUserCount();
+        return $this->helper->auth->getUserCount();
     }
 
     /**
@@ -182,8 +166,7 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
      */
     function getUsergroupList()
     {
-		$params = JFusionFactory::getParams($this->getJname());
-		$usergroupmap = $params->get('usergroupmap','user,admin');
+		$usergroupmap = $this->params->get('usergroupmap','user,admin');
 		
 		$usergroupmap = explode (',', $usergroupmap);
         $usergrouplist = array();
@@ -210,12 +193,7 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
      */
     function getDefaultUsergroup()
     {
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_dokuwiki
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
-        return $helper->getDefaultUsergroup();
+        return $this->helper->getDefaultUsergroup();
     }
 
     /**
@@ -225,12 +203,7 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
      */
     function allowRegistration()
     {
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_dokuwiki
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
-        $conf = $helper->getConf();
+        $conf = $this->helper->getConf();
         if (strpos($conf['disableactions'], 'register') !== false) {
             return false;
         } else {
@@ -284,10 +257,9 @@ if (!defined(\'_JEXEC\'))';
      * @return void
      */
     function enableRedirectMod() {
-        $params = JFusionFactory::getParams($this->getJname());
         $joomla_params = JFusionFactory::getParams('joomla_int');
         $joomla_url = $joomla_params->get('source_url');
-        $joomla_itemid = $params->get('redirect_itemid');
+        $joomla_itemid = $this->params->get('redirect_itemid');
 
         //check to see if all vars are set
         if (empty($joomla_url)) {
@@ -407,14 +379,10 @@ HTML;
     {
         $error = 0;
         $reason = '';
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_dokuwiki
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
-        $conf = $helper->getConf();
-        $params = JFusionFactory::getParams($this->getJname());
-        $source_path = $params->get('source_path');
+
+
+        $conf = $this->helper->getConf();
+        $source_path = $this->params->get('source_path');
         $plugindir = $source_path . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'plugins';
 
         //check to see if plugin installed and config options available
@@ -455,8 +423,7 @@ HTML;
      */
     function enableAuthMod()
     {
-        $params = JFusionFactory::getParams($this->getJname());
-        $source_path = $params->get('source_path');
+        $source_path = $this->params->get('source_path');
         $plugindir = $source_path . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'jfusion';
         $pluginsource = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . 'dokuwiki' . DIRECTORY_SEPARATOR . 'jfusion';
 
@@ -466,14 +433,10 @@ HTML;
 
         if (JFolder::copy($pluginsource, $plugindir, '', true)) {
             //update the config file
-            $cookie_domain = $params->get('cookie_domain');
-            $cookie_path = $params->get('cookie_path');
-            /**
-             * @ignore
-             * @var $helper JFusionHelper_dokuwiki
-             */
-            $helper = JFusionFactory::getHelper($this->getJname());
-            $config_path = $helper->getConfigPath();
+            $cookie_domain = $this->params->get('cookie_domain');
+            $cookie_path = $this->params->get('cookie_path');
+
+            $config_path = $this->helper->getConfigPath();
 
             if (JFolder::exists($config_path)) {
                 $config_file = $config_path . 'local.php';
@@ -509,8 +472,7 @@ PHP;
      */
     function disableAuthMod()
     {
-        $params = JFusionFactory::getParams($this->getJname());
-        $source_path = $params->get('source_path');
+        $source_path = $this->params->get('source_path');
         $plugindir = $source_path . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'jfusion';
 
         jimport('joomla.filesystem.folder');
@@ -522,12 +484,7 @@ PHP;
         }
 
         //update the config file
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_dokuwiki
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
-        $config_path = $helper->getConfigPath();
+        $config_path = $this->helper->getConfigPath();
 
         if (JFolder::exists($config_path)) {
             $config_file = $config_path . 'local.php';

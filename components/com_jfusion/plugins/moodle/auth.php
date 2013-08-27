@@ -60,13 +60,24 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionAuth_moodle extends JFusionAuth {
+class JFusionAuth_moodle extends JFusionAuth
+{
+	/**
+	 * returns the name of this JFusion plugin
+	 *
+	 * @return string name of current JFusion plugin
+	 */
+	function getJname()
+	{
+		return 'moodle';
+	}
+
     /**
      * @param array|object $userinfo
      * @return string
      */
     function generateEncryptedPassword($userinfo) {
-        $params = JFusionFactory::getParams('moodle');
+        $params = JFusionFactory::getParams($this->getJname());
         $validated = false;
         if ($userinfo->password == md5($userinfo->password_clear . $params->get('passwordsaltmain')) or $userinfo->password == md5($userinfo->password_clear)) {
             $validated = true;

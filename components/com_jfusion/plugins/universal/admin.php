@@ -21,7 +21,13 @@ require_once(JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEP
  * For detailed descriptions on these functions please check the model.abstractadmin.php
  * @package JFusion_universal
  */
-class JFusionAdmin_universal extends JFusionAdmin{
+class JFusionAdmin_universal extends JFusionAdmin
+{
+	/**
+	 * @var $helper JFusionHelper_universal
+	 */
+	var $helper;
+
 	/**
 	 * @return string
 	 */
@@ -35,12 +41,7 @@ class JFusionAdmin_universal extends JFusionAdmin{
 	 */
 	function getTablename()
 	{
-		/**
-		 * @ignore
-		 * @var $helper JFusionHelper_universal
-		 */
-		$helper = JFusionFactory::getHelper($this->getJname());
-		return $helper->getTable();
+		return $this->helper->getTable();
 	}
 
 	/**
@@ -48,8 +49,7 @@ class JFusionAdmin_universal extends JFusionAdmin{
 	 */
 	function getUsergroupList()
 	{
-		$params = JFusionFactory::getParams($this->getJname());
-		$usergroupmap = $params->get('usergroupmap');
+		$usergroupmap = $this->params->get('usergroupmap');
 		$usergroupmap = @unserialize($usergroupmap);
 		$usergrouplist = array();
 		if ( is_array($usergroupmap) && isset($usergroupmap['name']) ) {
@@ -98,13 +98,8 @@ class JFusionAdmin_universal extends JFusionAdmin{
 	function getUserList($limitstart = 0, $limit = 0)
 	{
 		try {
-			/**
-			 * @ignore
-			 * @var $helper JFusionHelper_universal
-			 */
-			$helper = JFusionFactory::getHelper($this->getJname());
 			$f = array('USERNAME', 'EMAIL');
-			$field = $helper->getQuery($f);
+			$field = $this->helper->getQuery($f);
 
 			// initialise some objects
 			$db = JFusionFactory::getDatabase($this->getJname());
@@ -162,12 +157,7 @@ class JFusionAdmin_universal extends JFusionAdmin{
 	 */
 	function mapuser($name, $value, $node, $control_name)
 	{
-		/**
-		 * @ignore
-		 * @var $helper JFusionHelper_universal
-		 */
-		$helper = JFusionFactory::getHelper($this->getJname());
-		$value = $helper->getMapRaw('user');
+		$value = $this->helper->getMapRaw('user');
 
 		return $this->map('map', $value, $node, $control_name,'user');
 	}
@@ -194,12 +184,7 @@ class JFusionAdmin_universal extends JFusionAdmin{
 	 */
 	function mapgroup($name, $value, $node, $control_name)
 	{
-		/**
-		 * @ignore
-		 * @var $helper JFusionHelper_universal
-		 */
-		$helper = JFusionFactory::getHelper($this->getJname());
-		$value = $helper->getMapRaw('group');
+		$value = $this->helper->getMapRaw('group');
 		return $this->map('map', $value, $node, $control_name,'group');
 	}
 
@@ -216,10 +201,9 @@ class JFusionAdmin_universal extends JFusionAdmin{
 		$output = '';
 		try {
 			$jname = $this->getJname();
-			$params = JFusionFactory::getParams($jname);
 
-			$database_name = $params->get('database_name');
-			$database_prefix = $params->get('database_prefix');
+			$database_name = $this->params->get('database_name');
+			$database_prefix = $this->params->get('database_prefix');
 
 			try {
 				$db = JFusionFactory::getDatabase($jname);
@@ -234,13 +218,8 @@ class JFusionAdmin_universal extends JFusionAdmin{
 			if ($tabelslist) {
 				$tl = array();
 				$fl = array();
-				/**
-				 * @ignore
-				 * @var $helper JFusionHelper_universal
-				 */
-				$helper = JFusionFactory::getHelper($this->getJname());
 
-				$fieldtypes = $helper->getField();
+				$fieldtypes = $this->helper->getField();
 
 				$table = new stdClass;
 				$table->id = null;
@@ -377,12 +356,8 @@ class JFusionAdmin_universal extends JFusionAdmin{
 	 */
 	function js($name, $value, $node, $control_name) {
 		$document = JFactory::getDocument();
-		/**
-		 * @ignore
-		 * @var $helper JFusionHelper_universal
-		 */
-		$helper = JFusionFactory::getHelper($this->getJname());
-		$list = $helper->getField();
+
+		$list = $this->helper->getField();
 
 		$list = json_encode($list);
 
@@ -550,8 +525,7 @@ JS;
 	 */
 	function generateRedirectCode($url, $itemid)
 	{
-		$params = JFusionFactory::getParams($this->getJname());
-		$universal_url = $params->get('source_url');
+		$universal_url = $this->params->get('source_url');
 
 		//create the new redirection code
 
@@ -587,10 +561,9 @@ if(!isset($_COOKIE[\'jfusionframeless\']))';
 	{
 		$action = JFactory::getApplication()->input->get('action');
 		if ($action == 'redirectcode') {
-			$params = JFusionFactory::getParams($this->getJname());
 			$joomla_params = JFusionFactory::getParams('joomla_int');
 			$joomla_url = $joomla_params->get('source_url');
-			$joomla_itemid = $params->get('redirect_itemid');
+			$joomla_itemid = $this->params->get('redirect_itemid');
 
 			//check to see if all vars are set
 			if (empty($joomla_url)) {
@@ -621,12 +594,7 @@ if(!isset($_COOKIE[\'jfusionframeless\']))';
 	 */
 	function isMultiGroup()
 	{
-		/**
-		 * @ignore
-		 * @var $helper JFusionHelper_universal
-		 */
-		$helper = JFusionFactory::getHelper($this->getJname());
-		$userid = $helper->getFieldType('USERID','group');
+		$userid = $this->helper->getFieldType('USERID','group');
 		if ( $userid ) {
 			return true;
 		} else {
@@ -641,19 +609,14 @@ if(!isset($_COOKIE[\'jfusionframeless\']))';
 	 */
 	function debugConfigExtra()
 	{
-		/**
-		 * @ignore
-		 * @var $helper JFusionHelper_universal
-		 */
-		$helper = JFusionFactory::getHelper($this->getJname());
 
-		$usertable = $helper->getTable();
+		$usertable = $this->helper->getTable();
 		if ($usertable) {
-			$userid = $helper->getFieldType('USERID');
+			$userid = $this->helper->getFieldType('USERID');
 
-			$username = $helper->getFieldType('USERNAME');
+			$username = $this->helper->getFieldType('USERNAME');
 
-			$email = $helper->getFieldType('EMAIL');
+			$email = $this->helper->getFieldType('EMAIL');
 
 			if ( !$userid ) {
 				JFusionFunction::raiseWarning(JText::_('NO_USERID_DEFINED'), $this->getJname());
@@ -666,10 +629,10 @@ if(!isset($_COOKIE[\'jfusionframeless\']))';
 			if ( !$username ) {
 				JFusionFunction::raiseWarning(JText::_('NO_USERNAME_DEFINED'), $this->getJname());
 			}
-			$grouptable = $helper->getTable('group');
+			$grouptable = $this->helper->getTable('group');
 			if ($grouptable) {
-				$group_userid = $helper->getFieldType('USERID','group');
-				$group_group = $helper->getFieldType('GROUP','group');
+				$group_userid = $this->helper->getFieldType('USERID','group');
+				$group_group = $this->helper->getFieldType('GROUP','group');
 
 				if ( !$group_userid ) {
 					JFusionFunction::raiseWarning(JText::_('NO_GROUP_USERID_DEFINED'), $this->getJname());

@@ -319,10 +319,9 @@ if (!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') ===
      */
     function enableRedirectMod()
     {
-        $params = JFusionFactory::getParams($this->getJname());
         $joomla_params = JFusionFactory::getParams('joomla_int');
         $joomla_url = $joomla_params->get('source_url');
-        $joomla_itemid = $params->get('redirect_itemid');
+        $joomla_itemid = $this->params->get('redirect_itemid');
 
         //check to see if all vars are set
         if (empty($joomla_url)) {

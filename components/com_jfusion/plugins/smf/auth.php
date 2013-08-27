@@ -28,6 +28,16 @@ defined('_JEXEC') or die('Restricted access');
  */
 class JFusionAuth_smf extends JFusionAuth
 {
+	/**
+	 * returns the name of this JFusion plugin
+	 *
+	 * @return string name of current JFusion plugin
+	 */
+	function getJname()
+	{
+		return 'smf';
+	}
+
     /**
      * Generate a encrypted password from clean password
      *

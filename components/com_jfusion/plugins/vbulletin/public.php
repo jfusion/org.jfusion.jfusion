@@ -29,22 +29,10 @@ global $baseURL, $fullURL, $integratedURL, $vbsefmode;
  */
 class JFusionPublic_vbulletin extends JFusionPublic
 {
-    var $params;
 	/**
 	 * @var JFusionHelper_vbulletin
 	 */
 	var $helper;
-
-    /**
-     *
-     */
-    function __construct()
-    {
-        //get the params object
-        $this->params = JFusionFactory::getParams($this->getJname());
-        //get the helper object
-        $this->helper = JFusionFactory::getHelper($this->getJname());
-    }
 
     /**
      * returns the name of this JFusion plugin
@@ -335,10 +323,9 @@ class JFusionPublic_vbulletin extends JFusionPublic
                 //have to clear this as it shows up in some text boxes
                 unset($q);
                 // Get some params
-                $params = JFusionFactory::getParams($this->getJname());
-                $vbsefmode = $params->get('sefmode', 0);
-                $source_path = $params->get('source_path');
-                $source_url = $params->get('source_url');
+                $vbsefmode = $this->params->get('sefmode', 0);
+                $source_path = $this->params->get('source_path');
+                $source_url = $this->params->get('source_url');
                 $baseURL = $jfdata->baseURL;
                 $integratedURL = $jfdata->integratedURL;
                 $config = JFactory::getConfig();
@@ -353,7 +340,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
                 $vbJname = $this->getJname();
                 //fix for some instances of vB redirecting
                 $redirects = array('ajax.php', 'attachment.php', 'clientscript', 'member.php', 'misc.php', 'picture.php', 'sendmessage.php');
-                $custom_files = explode(',', $params->get('redirect_ignore'));
+                $custom_files = explode(',', $this->params->get('redirect_ignore'));
                 if (is_array($custom_files)) {
                     foreach ($custom_files as $file) {
                         //add file to the array of files to be redirected to forum
@@ -441,8 +428,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
         $baseURL = $data->baseURL;
         $fullURL = $data->fullURL;
         $integratedURL = $data->integratedURL;
-        $params = JFusionFactory::getParams($this->getJname());
-        $vbsefmode = $params->get('sefmode', 0);
+        $vbsefmode = $this->params->get('sefmode', 0);
         $config = JFactory::getConfig();
         $vbsefenabled = $config->get('sef');
         //fix for form actions
@@ -466,15 +452,15 @@ class JFusionPublic_vbulletin extends JFusionPublic
         //we need to fix the cron.php file
         $data->body = preg_replace('#src="(.*)cron.php(.*)>#mS', 'src="' . $integratedURL . 'cron.php$2>', $data->body);
         //if we have custom register and lost password urls and vBulletin uses an absolute URL, fixURL will not catch it
-        $register_url = $params->get('register_url');
+        $register_url = $this->params->get('register_url');
         if (!empty($register_url)) {
             $data->body = str_replace($integratedURL . 'register.php', $register_url, $data->body);
         }
-        $lostpassword_url = $params->get('lostpassword_url');
+        $lostpassword_url = $this->params->get('lostpassword_url');
         if (!empty($lostpassword_url)) {
             $data->body = str_replace($integratedURL . 'login.php?do=lostpw', $lostpassword_url, $data->body);
         }
-        if ($params->get('parseCSS', false)) {
+        if ($this->params->get('parseCSS', false)) {
             //we need to wrap the body in a div to prevent some CSS clashes
             $data->body = '<div id="framelessVb">'.$data->body.'</div>';
         }
@@ -495,8 +481,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
         $baseURL = $data->baseURL;
         $fullURL = $data->fullURL;
         $integratedURL = $data->integratedURL;
-        $params = JFusionFactory::getParams($this->getJname());
-        $vbsefmode = $params->get('sefmode', 0);
+        $vbsefmode = $this->params->get('sefmode', 0);
         $config = JFactory::getConfig();
         $vbsefenabled = $config->get('sef');
         $js = '<script type="text/javascript">';
@@ -512,7 +497,7 @@ JS;
         //convert relative links into absolute links
         $url_search = '#(src="|background="|href="|url\("|url\(\'?)(?!http)(.*?)("\)|\'\)|"?)#mS';
         $data->header = preg_replace_callback($url_search, array(&$this,'fixInclude'), $data->header);
-        if ($params->get('parseCSS', false)) {
+        if ($this->params->get('parseCSS', false)) {
             $css_search = '#<style type="text/css" id="vbulletin(.*?)">(.*?)</style>#ms';
             $data->header = preg_replace_callback($css_search, array(&$this,'fixCSS'), $data->header);
         }
@@ -735,8 +720,7 @@ JS;
      */
     function getAlternateProfileURL($vb_url)
     {
-        $params = JFusionFactory::getParams($this->getJname());
-        $profile_plugin = $params->get('profile_plugin');
+        $profile_plugin = $this->params->get('profile_plugin');
         $url = '';
         if (!empty($profile_plugin) && JFusionFunction::validPlugin($profile_plugin)) {
             $juri = new JURI($vb_url);
@@ -929,8 +913,7 @@ JS;
     function fixURL($matches)
     {
         global $baseURL, $integratedURL, $vbsefmode, $vbsefenabled;
-        $params = JFusionFactory::getParams($this->getJname());
-        $plugin_itemid = $params->get('plugin_itemid');
+        $plugin_itemid = $this->params->get('plugin_itemid');
 
         $url = $matches[1];
         $extra = $matches[2];
@@ -956,7 +939,7 @@ JS;
             return $replacement;
         }
         //admincp, mocp, archive, printthread.php or attachment.php
-        if (strpos($url, $params->get('admincp', 'admincp')) !== false || strpos($url, $params->get('modcp', 'modcp')) !== false || strpos($url, 'archive') !== false || strpos($url, 'printthread.php') !== false || strpos($url, 'attachment.php') !== false) {
+        if (strpos($url, $this->params->get('admincp', 'admincp')) !== false || strpos($url, $this->params->get('modcp', 'modcp')) !== false || strpos($url, 'archive') !== false || strpos($url, 'printthread.php') !== false || strpos($url, 'attachment.php') !== false) {
             $replacement = 'href="' . $integratedURL . $url . "\" $extra>";
             if (defined('_JFUSION_DEBUG')) {
                 $debug['parsed'] = $replacement;
@@ -1026,8 +1009,7 @@ JS;
     function fixJS($matches)
     {
         global $baseURL, $integratedURL, $vbsefmode, $vbsefenabled;
-        $params = JFusionFactory::getParams($this->getJname());
-        $plugin_itemid = $params->get('plugin_itemid');
+        $plugin_itemid = $this->params->get('plugin_itemid');
 
         $url = $matches[1];
         if (defined('_JFUSION_DEBUG')) {

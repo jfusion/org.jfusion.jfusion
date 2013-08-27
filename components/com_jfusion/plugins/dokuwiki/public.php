@@ -28,8 +28,12 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionPublic_dokuwiki extends JFusionPublic {
-
+class JFusionPublic_dokuwiki extends JFusionPublic
+{
+	/**
+	 * @var $helper JFusionHelper_dokuwiki
+	 */
+	var $helper;
     /**
      * returns the name of this JFusion plugin
      * @return string name of current JFusion plugin
@@ -69,20 +73,14 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
         global $updateVersion;
 
         // Get the path
-        $params = JFusionFactory::getParams($this->getJname());
-        $source_path = $params->get('source_path');
+        $source_path = $this->params->get('source_path');
 
         if (substr($source_path, -1) != DIRECTORY_SEPARATOR) {
             $source_path .= DIRECTORY_SEPARATOR;
         }
 
         //setup constants needed by Dokuwiki
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_dokuwiki
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
-        $helper->defineConstants();
+        $this->helper->defineConstants();
 
         $do = JFactory::getApplication()->input->get('do');
         if ($do == 'logout') {
@@ -157,8 +155,7 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
         $regex_body = array();
         $replace_body = array();
         $callback_body = array();
-        $params = JFusionFactory::getParams($this->getJname());
-        $source_url = $params->get('source_url');
+        $source_url = $this->params->get('source_url');
         $doku_path = preg_replace('#(\w{0,10}://)(.*?)/(.*?)#is', '$3', $source_url);
         $doku_path = preg_replace('#//+#', '/', "/$doku_path/");
         
@@ -218,8 +215,7 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
             $regex_header = array();
             $replace_header = array();
             /*
-            $params = JFusionFactory::getParams($this->getJname());
-            $source_url = $params->get('source_url');
+            $source_url = $this->params->get('source_url');
 
             $doku_path = preg_replace( '#(\w{0,10}://)(.*?)/(.*?)#is'  , '$3' , $source_url );
             $doku_path = preg_replace('#//+#','/',"/$doku_path/");
@@ -296,8 +292,7 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
                 $url = str_replace('?', '&amp;', $url);
                 $url = $this->data->baseURL . '&amp;jfile=' . $url;
             } else {
-                $params = JFusionFactory::getParams($this->getJname());
-                $sefmode = $params->get('sefmode');
+                $sefmode = $this->params->get('sefmode');
                 if ($sefmode == 1) {
                     $url = JFusionFunction::routeURL($url, JFactory::getApplication()->input->getInt('Itemid'));
                 } else {
@@ -363,8 +358,6 @@ class JFusionPublic_dokuwiki extends JFusionPublic {
      * $result->created = (optional) date when the content was created
      */
     function getSearchResults(&$text, &$phrase, &$pluginParam, $itemid, $ordering) {
-        $params = JFusionFactory::getParams($this->getJname());
-
         require_once 'doku_search.php';
         $highlights = array();
         $search = new DokuWikiSearch($this->getJname());

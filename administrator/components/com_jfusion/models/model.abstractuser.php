@@ -28,6 +28,24 @@ defined('_JEXEC') or die('Restricted access');
  */
 class JFusionUser
 {
+	var $helper;
+
+	/**
+	 * @var JRegistry
+	 */
+	var $params;
+
+	/**
+	 *
+	 */
+	function __construct()
+	{
+		//get the params object
+		$this->params = JFusionFactory::getParams($this->getJname());
+		//get the helper object
+		$this->helper = JFusionFactory::getHelper($this->getJname());
+	}
+
     /**
      * gets the userinfo from the JFusion integrated software. Definition of object:
      * $userinfo->userid
@@ -62,14 +80,13 @@ class JFusionUser
      */
     function getUserIdentifier(&$userinfo, $username_col, $email_col, $lowerEmail = true)
     {
-        $params = JFusionFactory::getParams($this->getJname());
         //the discussion bot may need to override the identifier_type to prevent user hijacking by guests
         $override = (defined('OVERRIDE_IDENTIFIER')) ? OVERRIDE_IDENTIFIER : 'default';
         $options = array('0', '1', '2');
         if (in_array($override, $options)) {
             $login_identifier = $override;
         } else {
-            $login_identifier = $params->get('login_identifier', 1);
+            $login_identifier = $this->params->get('login_identifier', 1);
         }
         $identifier = $userinfo; // saves some code lines, only change if userinfo is an object
         switch ($login_identifier) {
@@ -184,13 +201,12 @@ class JFusionUser
     function updateUser($userinfo, $overwrite = 0)
     {
         // Initialise some variables
-        $params = JFusionFactory::getParams($this->getJname());
         if (!empty($userinfo->params)) {
             $user_params = new JRegistry($userinfo->params);
         }
-        $update_block = $params->get('update_block');
-        $update_activation = $params->get('update_activation');
-        $update_email = $params->get('update_email');
+        $update_block = $this->params->get('update_block');
+        $update_activation = $this->params->get('update_activation');
+        $update_email = $this->params->get('update_email');
         $status = array('error' => array(),'debug' => array());
 	    try {
 		    //check to see if a valid $userinfo object was passed on
@@ -314,8 +330,8 @@ class JFusionUser
 			    } else {
 				    $status['debug'][] = JText::_('NO_USER_FOUND_CREATING_ONE');
 				    //check activation and block status
-				    $create_inactive = $params->get('create_inactive', 1);
-				    $create_blocked = $params->get('create_blocked', 1);
+				    $create_inactive = $this->params->get('create_inactive', 1);
+				    $create_blocked = $this->params->get('create_blocked', 1);
 				    if ((empty($create_inactive) && !empty($userinfo->activation)) || (empty($create_blocked) && !empty($userinfo->block))) {
 					    //block user creation
 					    $status['debug'][] = JText::_('SKIPPED_USER_CREATION');

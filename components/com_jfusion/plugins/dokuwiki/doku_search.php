@@ -20,7 +20,8 @@ if ( !class_exists('DokuWikiSearch') ) {
     /**
      * Dokuwiki Search class
      */
-    class DokuWikiSearch {
+    class DokuWikiSearch
+    {
         var $path;
         var $conf;
 

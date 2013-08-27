@@ -51,7 +51,7 @@ class jfusionViewLoginCheckerResult extends JViewLegacy
 	var $response;
 
 	/**
-	 * @var $auth_userinfo srdClass
+	 * @var $auth_userinfo stdClass
 	 */
 	var $auth_userinfo;
 

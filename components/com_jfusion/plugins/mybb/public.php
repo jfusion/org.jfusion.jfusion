@@ -67,8 +67,7 @@ class JFusionPublic_mybb extends JFusionPublic {
     /* temp disabled native frameless
     function getBuffer(&$data) {
         // Get the path
-        $params = JFusionFactory::getParams($this->getJname());
-        $source_path = $params->get('source_path');
+        $source_path = $this->params->get('source_path');
         //get the filename
         $jfile = JFactory::getApplication()->input->get('jfile' , 'index.php');
         if (!$jfile) {

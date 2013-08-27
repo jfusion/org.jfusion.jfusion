@@ -191,8 +191,7 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
     function getUsergroupList() {
 	    $result = array();
 	    try {
-	        $params = JFusionFactory::getParams($this->getJname());
-	        $osCversion = $params->get('osCversion');
+	        $osCversion = $this->params->get('osCversion');
 	        switch ($osCversion) {
 	            case 'osc2':
 	            case 'osc3':
@@ -271,8 +270,7 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
     function getDefaultUsergroup() {
 	    $group = '';
 	    try {
-		    $params = JFusionFactory::getParams($this->getJname());
-		    $osCversion = $params->get('osCversion');
+		    $osCversion = $this->params->get('osCversion');
 		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
 		    $usergroup_id = null;
 		    if(!empty($usergroups)) {
@@ -348,8 +346,7 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
      */
     function allowRegistration() {
         $result = true;
-        $params = JFusionFactory::getParams($this->getJname());
-        $registration_disabled = $params->get('disabled_registration');
+        $registration_disabled = $this->params->get('disabled_registration');
         if ($registration_disabled) {
             $result = false;
         }

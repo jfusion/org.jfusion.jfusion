@@ -37,6 +37,11 @@ require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTOR
 
 class JFusionAdmin_gallery2 extends JFusionAdmin 
 {
+	/**
+	 * @var $helper JFusionHelper_gallery2
+	 */
+	var $helper;
+
     /**
      * returns the name of this JFusion plugin
      * @return string name of current JFusion plugin
@@ -240,17 +245,11 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
      * @return array|null
      */
     function getSitemapTree($jFusionParam, $jPluginParam, $itemId) {
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_gallery2
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
-        $helper->loadGallery2Api(true);
+        $this->helper->loadGallery2Api(true);
         global $gallery;
-        $params = JFusionFactory::getParams($this->getJname());
-        $source_url = $params->get('source_url');
+        $source_url = $this->params->get('source_url');
         $urlGenerator = new GalleryUrlGenerator();
-        $urlGenerator->init($helper->getEmbedUri($itemId), $source_url, null);
+        $urlGenerator->init($this->helper->getEmbedUri($itemId), $source_url, null);
         $album = $jPluginParam->get('album');
         if ($album == - 1) {
             $album = 7;
@@ -322,12 +321,7 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
      * @return array|string
      */
     function show_templateList($name, $value, $node, $control_name) {
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_gallery2
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
-        $helper->loadGallery2Api(false);
+	    $this->helper->loadGallery2Api(false);
         list($ret, $themes) = GalleryCoreApi::fetchPluginStatus('theme', true);
         if ($ret) {
             return array($ret, null);

@@ -106,8 +106,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 
 		            $db->setQuery($query);
 		            $smilie_path = $db->loadResult();
-		            $jfparams = JFusionFactory::getParams($this->getJname());
-		            $source_url = $jfparams->get('source_url');
+		            $source_url = $this->params->get('source_url');
 		            $text = preg_replace('#<!-- s(.*?) --><img src="\{SMILIES_PATH\}\/(.*?)" alt="(.*?)" title="(.*?)" \/><!-- s\\1 -->#si', "[img]{$source_url}{$smilie_path}/$2[/img]", $text);
 	            } catch (Exception $e) {
 					JFusionFunction::raiseError($e, $this->getJname());
@@ -255,10 +254,9 @@ class JFusionPublic_phpbb3 extends JFusionPublic
         }
 
         // Get the path
-        $params = JFusionFactory::getParams($this->getJname());
         global $source_url;
-        $source_url = $params->get('source_url');
-        $source_path = $params->get('source_path');
+        $source_url = $this->params->get('source_url');
+        $source_path = $this->params->get('source_path');
         //get the filename
         $jfile = JFactory::getApplication()->input->get('jfile');
         if (!$jfile) {
@@ -267,7 +265,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
         }
         //redirect for file download requests
         if ($jfile == 'file.php') {
-            $url = 'Location: ' . $params->get('source_url') . 'download/file.php?' . $_SERVER['QUERY_STRING'];
+            $url = 'Location: ' . $this->params->get('source_url') . 'download/file.php?' . $_SERVER['QUERY_STRING'];
             header($url);
             exit();
         }
@@ -292,7 +290,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             }
 
             //see if we need to force the database to use a new connection
-            if ($params->get('database_new_link', 0) && !defined('PHPBB_DB_NEW_LINK')) {
+            if ($this->params->get('database_new_link', 0) && !defined('PHPBB_DB_NEW_LINK')) {
                 define('PHPBB_DB_NEW_LINK', 1);
             }
 
@@ -465,14 +463,13 @@ class JFusionPublic_phpbb3 extends JFusionPublic
         }
 
         //these are custom links that are based on modules and thus no as easy to replace as register and lost password links in the hooks.php file so we'll just parse them
-        $params = JFusionFactory::getParams($this->getJname());
-        $edit_account_url = $params->get('edit_account_url');
+        $edit_account_url = $this->params->get('edit_account_url');
         if (strstr($q, 'mode=reg_details') && !empty($edit_account_url)) {
              $url = $edit_account_url;
              return 'href="' . $url . '"';
         }
 
-        $edit_profile_url = $params->get('edit_profile_url');
+        $edit_profile_url = $this->params->get('edit_profile_url');
         if (!empty($edit_profile_url)) {
             if (strstr($q, 'mode=profile_info')) {
                  $url = $edit_profile_url;
@@ -504,7 +501,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             }
         }
 
-        $edit_avatar_url = $params->get('edit_avatar_url');
+        $edit_avatar_url = $this->params->get('edit_avatar_url');
         if (strstr($q, 'mode=avatar') && !empty($edit_avatar_url)) {
              $url = $edit_avatar_url;
              return 'href="' . $url . '"';
@@ -516,8 +513,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             $url = $baseURL . '&amp;jfile=' . $q;
         } else {
             //check to see what SEF mode is selected
-            $params = JFusionFactory::getParams($this->getJname());
-            $sefmode = $params->get('sefmode');
+            $sefmode = $this->params->get('sefmode');
             if ($sefmode == 1) {
                 //extensive SEF parsing was selected
                 $url = JFusionFunction::routeURL($q, JFactory::getApplication()->input->getInt('Itemid'));
@@ -554,8 +550,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             }
         } else {
             //check to see what SEF mode is selected
-            $params = JFusionFactory::getParams($this->getJname());
-            $sefmode = $params->get('sefmode');
+            $sefmode = $this->params->get('sefmode');
             if ($sefmode == 1) {
                 //extensive SEF parsing was selected
                 $redirectURL = $jfile;
@@ -609,8 +604,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
             $replacement.= '<input type="hidden" name="option" value="com_jfusion"/>';
         } else {
             //check to see what SEF mode is selected
-            $params = JFusionFactory::getParams($this->getJname());
-            $sefmode = $params->get('sefmode');
+            $sefmode = $this->params->get('sefmode');
             if ($sefmode == 1) {
                 //extensive SEF parsing was selected
                 $url = JFusionFunction::routeURL($url, $Itemid);

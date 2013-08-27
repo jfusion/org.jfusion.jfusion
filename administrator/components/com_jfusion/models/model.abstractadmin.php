@@ -30,6 +30,23 @@ require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTOR
  */
 class JFusionAdmin
 {
+	var $helper;
+
+	/**
+	 * @var JRegistry
+	 */
+	var $params;
+
+	/**
+	 *
+	 */
+	function __construct()
+	{
+		//get the params object
+		$this->params = JFusionFactory::getParams($this->getJname());
+		//get the helper object
+		$this->helper = JFusionFactory::getHelper($this->getJname());
+	}
     /**
      * returns the name of this JFusion plugin
      *
@@ -125,10 +142,9 @@ class JFusionAdmin
 	    $status['message'] = JText::_('UNKNOWN');
         $jname = $this->getJname();
         //for joomla_int check to see if the source_url does not equal the default
-        $params = JFusionFactory::getParams($jname);
 	    try {
 		    if ($jname == 'joomla_int') {
-			    $source_url = $params->get('source_url');
+			    $source_url = $this->params->get('source_url');
 			    if (empty($source_url)) {
 				    throw new RuntimeException(JText::_('GOOD_CONFIG'));
 			    }
@@ -157,7 +173,7 @@ class JFusionAdmin
 				    } else if (!file_exists($path.'user.php')) {
 					    throw new RuntimeException(JText::_('NO_FILES').' user.php');
 				    } else {
-					    $cookie_domain = $params->get('cookie_domain');
+					    $cookie_domain = $this->params->get('cookie_domain');
 					    $jfc = JFusionFactory::getCookies();
 					    list($url) = $jfc->getApiUrl($cookie_domain);
 					    if ($url) {
@@ -171,7 +187,7 @@ class JFusionAdmin
 							    throw new RuntimeException($api->url. ' ' .$message);
 						    }
 					    }
-					    $source_path = $params->get('source_path');
+					    $source_path = $this->params->get('source_path');
 					    if ($source_path && (strpos($source_path, 'http://') === 0 || strpos($source_path, 'https://') === 0)) {
 						    throw new RuntimeException(JText::_('ERROR_SOURCE_PATH'). ' : '.$source_path);
 					    } else {
@@ -234,9 +250,8 @@ class JFusionAdmin
 		    }
 		    //most dual login problems are due to incorrect cookie domain settings
 		    //therefore we should check it and output a warning if needed.
-		    $params = JFusionFactory::getParams($jname);
 
-		    $cookie_domain = $params->get('cookie_domain',-1);
+		    $cookie_domain = $this->params->get('cookie_domain',-1);
 		    if ($cookie_domain!==-1) {
 			    $cookie_domain = str_replace(array('http://', 'https://'), array('', ''), $cookie_domain);
 			    $correct_domain = '';
@@ -258,7 +273,7 @@ class JFusionAdmin
 		    }
 
 		    //also check the cookie path as it can interfere with frameless
-		    $cookie_path = $params->get('cookie_path',-1);
+		    $cookie_path = $this->params->get('cookie_path',-1);
 		    if ($cookie_path!==-1) {
 			    if ($cookie_path != '/' && !$this->allowEmptyCookiePath()) {
 				    JFusionFunction::raiseNotice(JText::_('BEST_COOKIE_PATH') . ' /', $jname);
@@ -455,8 +470,7 @@ JS;
             return JText::_('SAVE_CONFIG_FIRST');
         }
 
-        $params = JFusionFactory::getParams($jname);
-        $multiusergroupdefault = $params->get('multiusergroupdefault');
+        $multiusergroupdefault = $this->params->get('multiusergroupdefault');
         $master_usergroups = array();
         $JFusionMaster = null;
         if ( !empty($master) ) {
@@ -666,8 +680,7 @@ JS;
     function getModFile($filename, &$error, &$reason)
     {
         //check to see if a path is defined
-        $params = JFusionFactory::getParams($this->getJname());
-        $path = $params->get('source_path');
+        $path = $this->params->get('source_path');
         if (empty($path)) {
             $error = 1;
             $reason = JText::_('SET_PATH_FIRST');
@@ -705,8 +718,7 @@ JS;
     {
         static $muiltisupport;
         if (!isset($muiltisupport)) {
-            $params = JFusionFactory::getParams($this->getJname());
-            $multiusergroup = $params->get('multiusergroup',null);
+            $multiusergroup = $this->params->get('multiusergroup',null);
             if ($multiusergroup !== null) {
                 $muiltisupport = true;
             } else {

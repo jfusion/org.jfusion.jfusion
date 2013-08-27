@@ -16,7 +16,12 @@ defined('_JEXEC' ) or die('Restricted access' );
  * @package JFusion_mediawiki
  */
 
-class JFusionAdmin_mediawiki extends JFusionAdmin {
+class JFusionAdmin_mediawiki extends JFusionAdmin
+{
+	/**
+	 * @var $helper JFusionHelper_mediawiki
+	 */
+	var $helper;
 
     /**
      * @return string
@@ -53,12 +58,8 @@ class JFusionAdmin_mediawiki extends JFusionAdmin {
             JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE'). ': '.$myfile.' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
         } else {
             $wgDBserver = $wgDBtype = $wgDBname = $wgDBuser = $wgDBpassword = $wgDBprefix = '';
-            /**
-             * @ignore
-             * @var $helper JFusionHelper_mediawiki
-             */
-            $helper = JFusionFactory::getHelper($this->getJname());
-            $paths = $helper->includeFramework($source_path);
+
+            $paths = $this->helper->includeFramework($source_path);
             $IP = $source_path;
             foreach($paths as $path) {
                 include($path);
@@ -136,12 +137,7 @@ class JFusionAdmin_mediawiki extends JFusionAdmin {
      */
     function getUsergroupList()
     {
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_mediawiki
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
-        $wgGroupPermissions = $helper->getConfig('wgGroupPermissions');
+        $wgGroupPermissions = $this->helper->getConfig('wgGroupPermissions');
 
         $usergrouplist = array();
         foreach($wgGroupPermissions as $key => $value) {
@@ -173,12 +169,7 @@ class JFusionAdmin_mediawiki extends JFusionAdmin {
      */
     function allowRegistration()
     {
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_mediawiki
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
-		$wgGroupPermissions = $helper->getConfig('wgGroupPermissions');
+		$wgGroupPermissions = $this->helper->getConfig('wgGroupPermissions');
         if (is_array($wgGroupPermissions) && $wgGroupPermissions['*']['createaccount'] == true) {
             return true;
         } else {

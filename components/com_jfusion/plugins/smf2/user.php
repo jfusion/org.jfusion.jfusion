@@ -171,8 +171,7 @@ class JFusionUser_smf2 extends JFusionUser {
     {
         $status = array('error' => array(),'debug' => array());
 	    try {
-	        $params = JFusionFactory::getParams($this->getJname());
-	        $status['debug'][] = JFusionFunction::addCookie($params->get('cookie_name'), '',0,$params->get('cookie_path'),$params->get('cookie_domain'),$params->get('secure'),$params->get('httponly'));
+	        $status['debug'][] = JFusionFunction::addCookie($this->params->get('cookie_name'), '', 0, $this->params->get('cookie_path'), $this->params->get('cookie_domain'), $this->params->get('secure'), $this->params->get('httponly'));
 
 		    $db = JFusionFactory::getDatabase($this->getJname());
 
@@ -201,8 +200,7 @@ class JFusionUser_smf2 extends JFusionUser {
 		if (!empty($userinfo->block) || !empty($userinfo->activation)) {
             $status['error'][] = JText::_('FUSION_BLOCKED_USER');
 		} else {
-            $params = JFusionFactory::getParams($this->getJname());
-            $status = JFusionJplugin::createSession($userinfo, $options,$this->getJname(),$params->get('brute_force'));
+            $status = JFusionJplugin::createSession($userinfo, $options, $this->getJname(), $this->params->get('brute_force'));
         }
 		return $status;
     }
@@ -301,7 +299,6 @@ class JFusionUser_smf2 extends JFusionUser {
     function updateUsergroup($userinfo, &$existinguser, &$status)
     {
 	    try {
-	        $params = JFusionFactory::getParams($this->getJname());
 	        //get the usergroup and determine if working in advanced or simple mode
 
 	        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
@@ -463,8 +460,6 @@ class JFusionUser_smf2 extends JFusionUser {
 	    try {
 		    //we need to create a new SMF user
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $params = JFusionFactory::getParams($this->getJname());
-		    $source_path = $params->get('source_path');
 
 		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 		    if (empty($usergroups)) {
@@ -507,7 +502,7 @@ class JFusionUser_smf2 extends JFusionUser {
 			    $user->id_theme = 0;
 
 			    $user->id_group = $usergroups[0];
-			    $user->id_post_group = $params->get('userpostgroup', 4);
+			    $user->id_post_group = $this->params->get('userpostgroup', 4);
 
 			    //now append the new user data
 			    $db->insertObject('#__members', $user, 'id_member' );

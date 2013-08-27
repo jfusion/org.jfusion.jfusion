@@ -172,8 +172,7 @@ class JFusionAdmin_elgg extends JFusionAdmin
      * @return bool
      */
     function allowRegistration() {
-        $params = JFusionFactory::getParams($this->getJname());
-        include_once $params->get('source_path') . DIRECTORY_SEPARATOR . 'engine' . DIRECTORY_SEPARATOR . 'start.php';
+        include_once $this->params->get('source_path') . DIRECTORY_SEPARATOR . 'engine' . DIRECTORY_SEPARATOR . 'start.php';
         // Get variables
         global $CONFIG;
         $result = true;

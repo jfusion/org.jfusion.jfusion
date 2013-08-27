@@ -217,8 +217,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
             $master = JFusionFunction::getMaster();
             if ($master->name != $this->getJname()) {
                 $JFusionMaster = JFusionFactory::getPublic($master->name);
-                $params = JFusionFactory::getParams($master->name);
-                $source_url = $params->get('source_url');
+                $source_url = $this->params->get('source_url');
                 $source_url = rtrim($source_url, '/');
 				if ($action == 'register') {
                     header('Location: ' . $source_url . '/' . $JFusionMaster->getRegistrationURL());
@@ -229,7 +228,6 @@ class JFusionPublic_smf2 extends JFusionPublic {
             }
         }
         //handle dual logout
-        $params = JFusionFactory::getParams($this->getJname());
         if ($action == 'logout') {
             //destroy the SMF session first
             $JFusionUser = JFusionFactory::getUser($this->getJname());
@@ -239,7 +237,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
             $mainframe->logout();
             $session = JFactory::getSession();
             $session->close();
-            JFusionFunction::addCookie($params->get('cookie_name'), '', 0, $params->get('cookie_path'), $params->get('cookie_domain'), $params->get('secure'), $params->get('httponly'));
+            JFusionFunction::addCookie($this->params->get('cookie_name'), '', 0, $this->params->get('cookie_path'), $this->params->get('cookie_domain'), $this->params->get('secure'), $this->params->get('httponly'));
             //redirect so the changes are applied
             $mainframe->redirect(str_replace('&amp;', '&', $data->baseURL));
             exit();
@@ -280,7 +278,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 		global $forum_version;
 
 		// Get the path
-		$source_path = $params->get('source_path');
+		$source_path = $this->params->get('source_path');
 
 		if (substr($source_path, -1) == DIRECTORY_SEPARATOR) {
 			$index_file = $source_path .'index.php';
@@ -481,8 +479,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
 	            $q = str_replace('?', '&amp;', $q);
 	            $url = $baseURL . '&amp;jfile=' . $q;
 	        } else {
-	            $params = JFusionFactory::getParams($this->getJname());
-	            $sefmode = $params->get('sefmode');
+	            $sefmode = $this->params->get('sefmode');
 	            if ($sefmode == 1) {
 	                $url = JFusionFunction::routeURL($q, JFactory::getApplication()->input->getInt('Itemid'));
 	            } else {
@@ -539,8 +536,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
             $replacement.= '<input type="hidden" name="option" value="com_jfusion"/>';
         } else {
             //check to see what SEF mode is selected
-            $params = JFusionFactory::getParams($this->getJname());
-            $sefmode = $params->get('sefmode');
+            $sefmode = $this->params->get('sefmode');
             if ($sefmode == 1) {
                 //extensive SEF parsing was selected
                 $url = JFusionFunction::routeURL($url, $Itemid);
@@ -595,8 +591,7 @@ class JFusionPublic_smf2 extends JFusionPublic {
             }
         } else {
             //check to see what SEF mode is selected
-            $params = JFusionFactory::getParams($this->getJname());
-            $sefmode = $params->get('sefmode');
+            $sefmode = $this->params->get('sefmode');
             if ($sefmode == 1) {
                 //extensive SEF parsing was selected
                 $redirectURL = $jfile;

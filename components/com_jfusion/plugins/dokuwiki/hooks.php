@@ -28,7 +28,8 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionDokuWikiHook {
+class JFusionDokuWikiHook
+{
     /**
      * Register its handlers with the DokuWiki's event controller
      *

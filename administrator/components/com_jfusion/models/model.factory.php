@@ -210,7 +210,7 @@ class JFusionFactory
      *
      * @param string $jname name of the JFusion plugin used
      *
-     * @return JFusionHelper JFusion Helper class for the JFusion plugin
+     * @return object JFusionHelper JFusion Helper class for the JFusion plugin
      */
     public static function &getHelper($jname)
     {
@@ -226,14 +226,11 @@ class JFusionFactory
                 include_once $filename;
                 $class = 'JFusionHelper_' . $jname;
                 $helper_instances[$jname] = new $class;
-                return $helper_instances[$jname];
             } else {
-                $return = false;
-                return $return;
+	            $helper_instances[$jname] = false;
             }
-        } else {
-            return $helper_instances[$jname];
         }
+	    return $helper_instances[$jname];
     }
 
     /**

@@ -78,9 +78,8 @@ class JFusionUser_mybb extends JFusionUser {
      */
     function destroySession($userinfo, $options) {
         $status = array('error' => array(),'debug' => array());
-        $params = JFusionFactory::getParams($this->getJname());
-        $cookiedomain = $params->get('cookie_domain');
-        $cookiepath = $params->get('cookie_path', '/');
+        $cookiedomain = $this->params->get('cookie_domain');
+        $cookiepath = $this->params->get('cookie_path', '/');
         //Set cookie values
         $expires = -3600;
         if (!$cookiepath) {
@@ -113,9 +112,8 @@ class JFusionUser_mybb extends JFusionUser {
 	            $status['error'][] = JText::_('FUSION_BLOCKED_USER');
 	        } else {
 	            //get cookiedomain, cookiepath (theIggs solution)
-	            $params = JFusionFactory::getParams($this->getJname());
-	            $cookiedomain = $params->get('cookie_domain', '');
-	            $cookiepath = $params->get('cookie_path', '/');
+	            $cookiedomain = $this->params->get('cookie_domain', '');
+	            $cookiepath = $this->params->get('cookie_path', '/');
 	            //get myBB uid, loginkey
 
 		        $db = JFusionFactory::getDatabase($this->getJname());
@@ -324,7 +322,6 @@ class JFusionUser_mybb extends JFusionUser {
 	    try {
 		    //found out what usergroup should be used
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $params = JFusionFactory::getParams($this->getJname());
 		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 		    if (empty($usergroups)) {
 			    $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . JText::_('USERGROUP_MISSING');
@@ -352,7 +349,7 @@ class JFusionUser_mybb extends JFusionUser {
 				    $user->loginkey = JUserHelper::genRandomPassword(50);
 			    }
 			    if (!empty($userinfo->activation)) {
-				    $user->usergroup = $params->get('activationgroup');
+				    $user->usergroup = $this->params->get('activationgroup');
 			    } elseif (!empty($userinfo->block)) {
 				    $user->usergroup = 7;
 			    } else {
@@ -405,7 +402,6 @@ class JFusionUser_mybb extends JFusionUser {
     function activateUser($userinfo, &$existinguser, &$status) {
 	    try {
 		    //found out what usergroup should be used
-		    $params = JFusionFactory::getParams($this->getJname());
 		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 		    if (empty($usergroups)) {
 			    $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ": " . JText::_('USERGROUP_MISSING');
@@ -438,8 +434,7 @@ class JFusionUser_mybb extends JFusionUser {
     function inactivateUser($userinfo, &$existinguser, &$status) {
 	    try {
 		    //found out what usergroup should be used
-		    $params = JFusionFactory::getParams($this->getJname());
-		    $usergroup = $params->get('activationgroup');
+		    $usergroup = $this->params->get('activationgroup');
 		    //update the usergroup
 		    $db = JFusionFactory::getDatabase($this->getJname());
 

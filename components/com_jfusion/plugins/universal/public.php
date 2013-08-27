@@ -32,8 +32,7 @@ class JFusionPublic_universal extends JFusionPublic{
      */
     function getRegistrationURL()
 	{
-        $params = JFusionFactory::getParams($this->getJname());
-		return $params->get('registerurl');
+		return $this->params->get('registerurl');
 	}
 
     /**
@@ -41,8 +40,7 @@ class JFusionPublic_universal extends JFusionPublic{
      */
     function getLostPasswordURL()
 	{
-        $params = JFusionFactory::getParams($this->getJname());
-		return $params->get('lostpasswordurl');
+		return $this->params->get('lostpasswordurl');
 	}
 
     /**
@@ -50,7 +48,6 @@ class JFusionPublic_universal extends JFusionPublic{
      */
     function getLostUsernameURL()
 	{
-        $params = JFusionFactory::getParams($this->getJname());
-		return $params->get('lostusernameurl');
+		return $this->params->get('lostusernameurl');
 	}
 }

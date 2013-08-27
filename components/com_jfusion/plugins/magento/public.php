@@ -72,7 +72,6 @@ class JFusionPublic_magento extends JFusionPublic {
             return $status;
         }*/
         $cookies_to_set = array();
-        $params = JFusionFactory::getParams($this->getJname());
         /**
          * To store the good information in the cookie concerning the language
          * We need to get the code of the store view which should correspond to the language selected from Joomla
@@ -83,7 +82,7 @@ class JFusionPublic_magento extends JFusionPublic {
          * Then in joomla the english code is en-GB but in the store view code of magento it's 'en'
 		 **/
 
-        $language_store_view = $params->get('language_store_view', '');
+        $language_store_view = $this->params->get('language_store_view', '');
         if (strlen($language_store_view) <= 0) {
             $status['debug'] = JText::_('NO_STORE_LANGUAGE_LIST');
         } else {
@@ -98,11 +97,11 @@ class JFusionPublic_magento extends JFusionPublic {
                     break;
                 }
             }
-            $curl_options['cookiedomain'] = $params->get('cookie_domain');
-            $curl_options['cookiepath'] = $params->get('cookie_path');
-            $curl_options['expires'] = $params->get('cookie_expires');
-            $curl_options['secure'] = $params->get('secure');
-            $curl_options['httponly'] = $params->get('httponly');
+            $curl_options['cookiedomain'] = $this->params->get('cookie_domain');
+            $curl_options['cookiepath'] = $this->params->get('cookie_path');
+            $curl_options['expires'] = $this->params->get('cookie_expires');
+            $curl_options['secure'] = $this->params->get('secure');
+            $curl_options['httponly'] = $this->params->get('httponly');
             $status = JFusionCurl::setmycookies($status, $cookies_to_set, $curl_options['cookiedomain'], $curl_options['cookiepath'], $curl_options['expires'], $curl_options['secure'], $curl_options['httponly']);
         }
         return $status;
