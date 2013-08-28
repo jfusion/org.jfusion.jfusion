@@ -771,7 +771,6 @@ HTML;
             //prepare the advanced options
             $JFusionMaster = JFusionFactory::getAdmin($master->name);
             $master_usergroups = $JFusionMaster->getUsergroupList();
-            $jsGroup = array();
 
             //setup display group list
             $default = array(JHTML::_('select.option', '0', JText::_('DEFAULT'), 'id', 'name'));

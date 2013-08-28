@@ -81,7 +81,6 @@ if ( !class_exists('DokuWikiSearch') ) {
             }
             if (!count($docs)) return array();
             // create a list of hidden pages in the result
-            $hidden = array();
             $hidden = array_filter(array_keys($docs), array($this,'isHiddenPage'));
             $not = array_merge($not, $hidden);
             // filter unmatched namespaces

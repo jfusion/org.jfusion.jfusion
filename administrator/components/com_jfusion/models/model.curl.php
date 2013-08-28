@@ -721,7 +721,6 @@ class JFusionCurl
 	 */
 	public function setCookies($cookiedomain, $cookiepath, $expires=0, $secure=0, $httponly=1)
 	{
-		$cookies=array();
 		$cookies = $this->parsecookies($this->cookies);
 		foreach ($cookies as $cookie) {
 			$name='';
@@ -799,7 +798,6 @@ class JFusionCurl
 	 */
 	public function deleteCookies($cookiedomain, $cookiepath, $leavealone, $secure=0, $httponly=1)
 	{
-		$cookies=array();
 		$cookies = $this->parsecookies($this->cookies);
 		// leavealone keys/values while deleting
 		// the $leavealone is an array of key=value that controls cookiedeletion

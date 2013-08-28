@@ -79,7 +79,7 @@ class JFusionUser_moodle extends JFusionUser {
 		$key[] = '';
 		$box[] = '';
 		$temp_swap = '';
-		$pwd_length = 0;
+
 		$pwd_length = strlen($pwd);
 
 		for ($i = 0; $i <= 255; $i++) {
@@ -131,8 +131,6 @@ class JFusionUser_moodle extends JFusionUser {
 			$db = JFusionFactory::getDatabase($this->getJname());
 			//get the identifier
 			list($identifier_type, $identifier) = $this->getUserIdentifier($userinfo, 'username', 'email');
-			//initialise some params
-			$update_block = $this->params->get('update_block');
 
 			$query = $db->getQuery(true)
 				->select('*')
@@ -295,8 +293,6 @@ class JFusionUser_moodle extends JFusionUser {
 	 * @return array result Array containing the result of the session creation
 	 */
 	function createSession($userinfo, $options) {
-		$status = array();
-
 		// If a session expired by not accessing Moodle for a long time we cannot login normally.
 		// Also we want to disable the remember me effects, we are going to login anyway
 		// we find out by reading the MOODLEID_ cookie and brute force login if MOODLE_ID is not nobody
@@ -310,7 +306,7 @@ class JFusionUser_moodle extends JFusionUser {
 				$curl_options['hidden']='1' ;
 			}
 		}
-		$status = JFusionJplugin::createSession($userinfo, $options, $this->getJname(),$logintype,$curl_options);
+		$status = JFusionJplugin::createSession($userinfo, $options, $this->getJname(), $logintype, $curl_options);
 		// check if the login was successful
 		if (!empty($status['cURL']['moodle'])) {
 			$loggedin_user = $this->rc4decrypt($status['cURL']['moodle']);

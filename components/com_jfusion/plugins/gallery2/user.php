@@ -375,7 +375,7 @@ class JFusionUser_gallery2 extends JFusionUser
         list(, $user) = GalleryCoreApi::fetchUserByUserName($userinfo->username);
         // Initialise some variables
         //Set Write Lock
-        list($ret, $id) = GalleryCoreApi::acquireWriteLock($user->getId());
+        list($ret,) = GalleryCoreApi::acquireWriteLock($user->getId());
         if ($ret) {
             $status['error'][] = $ret->getErrorMessage();
         }
@@ -419,7 +419,7 @@ class JFusionUser_gallery2 extends JFusionUser
         list(, $user) = GalleryCoreApi::fetchUserByUserName($userinfo->username);
         // Initialise some variables
         //Set Write Lock
-        list($ret, $id) = GalleryCoreApi::acquireWriteLock($user->getId());
+        list($ret,) = GalleryCoreApi::acquireWriteLock($user->getId());
         if ($ret) {
             $status['error'][] = $ret->getErrorMessage();
         } else {

@@ -57,14 +57,13 @@ class JText {
 /**
  *
  */
-class DualLogin {
-
+class DualLogin
+{
     /**
      * @param $curl_options
      * @return array|string
      */
-    function login($curl_options){
-		$status = array();
+    function login($curl_options) {
 		$helper = new JFusionCurl;
 		$status = $helper->RemoteLogin($curl_options);
 		unset($helper);
@@ -75,14 +74,13 @@ class DualLogin {
      * @param $curl_options
      * @return array|string
      */
-    function logout($curl_options){
-		$status = array();
+    function logout($curl_options) {
 		$helper = new JFusionCurl;
 		/**
 		 * @TODO to fix: For info, with J! 1.6 there is problem with a form token and it's not provided to the post data
 		 */
 		// RemoteLogoutUrl not work but RemoteLogout() work. 
-		$status= $helper->RemoteLogoutUrl($curl_options);
+		$status = $helper->RemoteLogoutUrl($curl_options);
 		unset($helper);
 		return $status;
 	}
@@ -455,8 +453,8 @@ class auth_plugin_jfusion extends auth_plugin_base {
 
             if (!empty($status['error']))
             {
-                $message= 'Fatal JFusion Dual login Error : statusdump: '.print_r($status,true) ;
-                //      $session->addError($message);
+                $message = 'Fatal JFusion Dual login Error : statusdump: '.print_r($status,true) ;
+                //$session->addError($message);
             }
 		}
 		return false;

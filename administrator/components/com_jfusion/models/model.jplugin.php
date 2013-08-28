@@ -346,8 +346,6 @@ class JFusionJplugin
         global $cookies_to_set_index;
         $cookiearr = array();
         $cookies_to_set = array();
-        $cookies = array();
-        $cookie = array();
         $curl_options = array();
         $status = array('error' => array(),'debug' => array());
         $cookies_to_set_index = 0;
@@ -501,8 +499,6 @@ class JFusionJplugin
         global $cookies_to_set_index;
         $cookiearr = array();
         $cookies_to_set = array();
-        $cookies = array();
-        $cookie = array();
         $curl_options = array();
         $status = array('error' => array(),'debug' => array());
         $cookies_to_set_index = 0;

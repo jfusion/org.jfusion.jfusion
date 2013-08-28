@@ -316,9 +316,10 @@ class JFusionHelper_universal {
 	 * @param $type
 	 * @param $value
 	 * @param null $userinfo
+	 *
 	 * @return int|null|string
 	 */
-	function getValue($type,$value, $userinfo=null ) {
+	function getValue($type, $value, $userinfo=null ) {
 		$out = '';
 		$value = html_entity_decode($value);
 		switch ($type) {

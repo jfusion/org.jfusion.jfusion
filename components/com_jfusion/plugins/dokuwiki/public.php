@@ -398,7 +398,6 @@ class JFusionPublic_dokuwiki extends JFusionPublic
         if (JFactory::getApplication()->input->get('id')) {
             $bread = explode(';', JFactory::getApplication()->input->get('id'));
             $url = '';
-            $i = 0;
             foreach ($bread as $key) {
                 if ($url) {
                     $url.= ';' . $key;

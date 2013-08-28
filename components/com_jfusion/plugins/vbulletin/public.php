@@ -325,7 +325,6 @@ class JFusionPublic_vbulletin extends JFusionPublic
                 // Get some params
                 $vbsefmode = $this->params->get('sefmode', 0);
                 $source_path = $this->params->get('source_path');
-                $source_url = $this->params->get('source_url');
                 $baseURL = $jfdata->baseURL;
                 $integratedURL = $jfdata->integratedURL;
                 $config = JFactory::getConfig();

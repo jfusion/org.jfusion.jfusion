@@ -124,7 +124,7 @@ class JFusionUser_efront extends JFusionUser
 	            $ip = explode('.',$_SERVER['REMOTE_ADDR']);
 	            $log->session_ip = sprintf('%02x%02x%02x%02x',  $ip[0],  $ip[1],  $ip[2],  $ip[3]);
 		        try {
-			        $ok = $db->insertObject('#__logs', $log, 'id');
+			        $db->insertObject('#__logs', $log, 'id');
 
 			        $status['debug'][] = 'Logged the logout action for user '.$userinfo->username;
 		        } catch (Exception $e) {
@@ -182,11 +182,7 @@ class JFusionUser_efront extends JFusionUser
 	            $name = 'cookie_login';
 	            $value = $userinfo->username;
 	            $status['debug'][] = JFusionFunction::addCookie($name, $value, $expires, $cookiepath, $cookiedomain, false, $httponly);
-	            if ( ($expires) == 0) {
-	                $expires_time='Session_cookie';
-	            } else {
-	                $expires_time=date('d-m-Y H:i:s',time()+$expires);
-	            }
+
 	            $name = 'cookie_password';
 	            $value = $user->password;
 	            $status['debug'][] = JFusionFunction::addCookie($name, $value, $expires, $cookiepath, $cookiedomain, false, $httponly);

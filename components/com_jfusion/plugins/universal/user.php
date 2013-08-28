@@ -367,7 +367,7 @@ class JFusionUser_universal extends JFusionUser
 						->delete('#__'.$this->helper->getTable('group'))
 						->where($userid->field . ' = ' . $db->Quote($userinfo->userid));
 
-					foreach ($maped as $key => $value) {
+					foreach ($maped as $value) {
 						$field = $value->field;
 						foreach ($value->type as $type) {
 							switch ($type) {
@@ -633,11 +633,11 @@ class JFusionUser_universal extends JFusionUser
 											$user->$field = $userinfo->name;
 											break;
 										case 'FIRSTNAME':
-											list($firstname,$lastname) = explode(' ',$userinfo->name ,2);
+											list($firstname,) = explode(' ',$userinfo->name ,2);
 											$user->$field = $firstname;
 											break;
 										case 'LASTNAME':
-											list($firstname,$lastname) = explode(' ',$userinfo->name ,2);
+											list(,$lastname) = explode(' ',$userinfo->name ,2);
 											$user->$field = $lastname;
 											break;
 										case 'GROUP':

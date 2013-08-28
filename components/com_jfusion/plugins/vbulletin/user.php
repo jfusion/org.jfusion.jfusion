@@ -189,7 +189,6 @@ class JFusionUser_vbulletin extends JFusionUser
 		    }
 		    $cookie_domain = $this->params->get('cookie_domain');
 		    $cookie_path = $this->params->get('cookie_path');
-		    $cookie_salt = $this->params->get('cookie_salt');
 		    $cookie_expires = $this->params->get('cookie_expires', '15') * 60;
 		    $secure = $this->params->get('secure',false);
 		    $httponly = $this->params->get('httponly',true);
@@ -312,7 +311,6 @@ class JFusionUser_vbulletin extends JFusionUser
 			    } else {
 				    $expires_time = time() + ( 60 * $cookie_expires );
 			    }
-			    $debug_expiration = date('Y-m-d H:i:s', $expires_time);
 			    $passwordhash = md5($userinfo->password.$cookie_salt);
 
 			    $query = $db->getQuery(true)
