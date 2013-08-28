@@ -392,6 +392,7 @@ class JFusionForum_smf extends JFusionForum
 				    ->from('#__members')
 				    ->where('ID_MEMBER = ' . $puser_id);
 
+			    $db->setQuery($query);
 			    $db->execute();
 			    $result = $db->loadObject();
 			    if (!empty($result)) {
@@ -585,8 +586,6 @@ class JFusionForum_smf extends JFusionForum
     function updateThread(&$dbparams, &$existingthread, &$contentitem, &$status)
     {
 	    try {
-		    $threadid = $existingthread->threadid;
-		    $forumid = $existingthread->forumid;
 		    $postid = $existingthread->postid;
 		    //setup some variables
 		    $db = JFusionFactory::getDatabase($this->getJname());

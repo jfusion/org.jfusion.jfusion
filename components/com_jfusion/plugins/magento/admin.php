@@ -467,7 +467,6 @@ HTML;
      * @return mixed|string
      */
     public function moduleActivation() {
-		$jname =  $this->getJname ();
 		$source_path = $this->params->get('source_path');
 		
 		$jfusion_mod_xml = $source_path . DIRECTORY_SEPARATOR .'app'. DIRECTORY_SEPARATOR .'etc'. DIRECTORY_SEPARATOR .'modules'. DIRECTORY_SEPARATOR .'Jfusion_All.xml';
@@ -513,7 +512,7 @@ HTML;
 		jimport ( 'joomla.filesystem.file' );
 		
 		$activation = ((JFactory::getApplication()->input->get('activation', 1))?'true':'false');
-		$jname =  $this->getJname ();
+
 		$source_path = $this->params->get('source_path');
 		$jfusion_mod_xml = $source_path . DIRECTORY_SEPARATOR .'app'. DIRECTORY_SEPARATOR .'etc'. DIRECTORY_SEPARATOR .'modules'. DIRECTORY_SEPARATOR .'Jfusion_All.xml';
 

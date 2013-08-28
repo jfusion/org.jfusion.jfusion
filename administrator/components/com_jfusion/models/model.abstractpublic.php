@@ -374,8 +374,7 @@ JS;
                             $cssUrlRaw = $cssUrl[1];
 
                             if (strpos($cssUrlRaw,'/') === 0) {
-                                $uri = JURI::getInstance($data->integratedURL);
-                                $uri = new JURI ($data->integratedURL);
+                                $uri = new JURI($data->integratedURL);
 
                                 $cssUrlRaw = $uri->toString(array('scheme', 'user', 'pass', 'host', 'port')).$cssUrlRaw;
                             }
@@ -577,7 +576,7 @@ JS;
                     $color = (!empty($temp[0])) ? $temp[0] : '#6374AB';
                     $dir = (!empty($temp[1])) ? $temp[1] : 'left';
                     $x = ($dir == 'left') ? '-0.2em' : '0.2em';
-                    $return = '<span style="text-shadow: '.$color.' $x 0.1em 0.2em;">'.$content.'</span>';
+                    $return = '<span style="text-shadow: '.$color.' '.$x.' 0.1em 0.2em;">'.$content.'</span>';
                     break;
                 case 'move':
                     $return = '<marquee>'.$content.'</marquee>';
@@ -698,17 +697,15 @@ HTML;
     {
         $q = $matches[1];
 
-        $integratedURL = $this->data->integratedURL;
-        $baseURL = $this->data->baseURL;
-        if (substr($baseURL, -1) != '/') {
+        if (substr($this->data->baseURL, -1) != '/') {
             //non sef URls
             $q = str_replace('?', '&amp;', $q);
-            $url = $baseURL . '&amp;jfile=' . $q;
+            $url = $this->data->baseURL . '&amp;jfile=' . $q;
         } elseif ($this->data->sefmode == 1) {
             $url = JFusionFunction::routeURL($q, JFactory::getApplication()->input->getInt('Itemid'));
         } else {
             //we can just append both variables
-            $url = $baseURL . $q;
+            $url = $this->data->baseURL . $q;
         }
         return $url;
     }
@@ -786,9 +783,6 @@ HTML;
         preg_match ( '#(.*?;url=)(.*)#mi' , $matches[1] , $matches2 );
         list(,$timeout , $url) = $matches2;
 
-        //JFusionFunction::raiseWarning($url, $this->getJname());
-        //split up the timeout from url
-        $parts = explode(';URL=', $url);
         $uri = new JURI($url);
         $jfile = basename($uri->getPath());
         $query = $uri->getQuery(false);

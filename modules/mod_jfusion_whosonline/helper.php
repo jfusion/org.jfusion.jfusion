@@ -126,8 +126,8 @@ class modjfusionWhosOnlineHelper {
 
                         $u->output->avatar_source = $avatar;
 
-                        $maxheight =& $config['avatar_height'];
-                        $maxwidth =& $config['avatar_width'];
+                        $maxheight = $config['avatar_height'];
+                        $maxwidth = $config['avatar_width'];
                         $size = ($config['avatar_keep_proportional']) ? @getimagesize($avatar) : false;
                         //size the avatar to fit inside the dimensions if larger
                         if($size!==false && ($size[0] > $maxwidth || $size[1] > $maxheight)) {

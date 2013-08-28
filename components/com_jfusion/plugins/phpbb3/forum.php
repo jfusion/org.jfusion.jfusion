@@ -393,8 +393,6 @@ class JFusionForum_phpbb3 extends JFusionForum {
 			    $phpbb_acl = array();
 
 			    //get permissions for all forums in case more than one module/plugin is present with different settings
-			    $db = JFusionFactory::getDatabase($this->getJname());
-
 			    $query = $db->getQuery(true)
 				    ->select('forum_id')
 				    ->from('#__forums')
@@ -835,9 +833,8 @@ class JFusionForum_phpbb3 extends JFusionForum {
 	function updateThread(&$dbparams, &$existingthread, &$contentitem, &$status)
 	{
 		try {
-			$threadid =& $existingthread->threadid;
-			$forumid =& $existingthread->forumid;
-			$postid =& $existingthread->postid;
+			$threadid = $existingthread->threadid;
+			$postid = $existingthread->postid;
 
 			//setup some variables
 			$db = JFusionFactory::getDatabase($this->getJname());
@@ -931,7 +928,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 				}
 			}
 			//setup some variables
-			$userid =& $userinfo->userid;
+			$userid = $userinfo->userid;
 			$public = JFusionFactory::getPublic($this->getJname());
 			$text = JFactory::getApplication()->input->post->get('quickReply', false);
 			//strip out html from post

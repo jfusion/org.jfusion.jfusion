@@ -641,8 +641,6 @@ class JFusionPluginInstaller extends JObject
 	            $result['message'] = $this->module->raise('error', JText::_('INSTALL_NOT_VALID_PLUGIN'), $new_jname);
             } else {
                 $this->manifest = $manifest;
-                $childrens = array();
-                $path = '';
 
                 /**
                  * ---------------------------------------------------------------------------------------------

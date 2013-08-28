@@ -556,16 +556,6 @@ class JFusionController extends JControllerLegacy
 				    $model = new JFusionModelInstaller();
 				    $result = $model->copy($jname, $new_jname);
 
-				    //get description
-				    $plugin_xml = JFUSION_PLUGIN_PATH .DIRECTORY_SEPARATOR. $jname .DIRECTORY_SEPARATOR. 'jfusion.xml';
-				    if(file_exists($plugin_xml) && is_readable($plugin_xml)) {
-					    $xml = JFusionFunction::getXml($plugin_xml);
-
-					    $description = $xml->description;
-					    if(!empty($description)) {
-						    $description = (string)$description;
-					    }
-				    }
 				    if ($result['status']) {
 					    $result['new_jname'] =  $new_jname;
 				    }
@@ -815,7 +805,7 @@ JS;
     {
         $jname = JFactory::getApplication()->input->get('jname');
 
-        $msg = $xml = $error = null;
+        $xml = $error = null;
 	    $mainframe = JFactory::getApplication();
 	    try {
 		    jimport('joomla.utilities.simplexml');

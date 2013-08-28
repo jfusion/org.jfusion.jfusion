@@ -152,7 +152,6 @@ class JFormFieldjfusionsql extends JFormField
     			} else {
     				$txt	= $pre . $v->title;
     			}
-    			$pt = $v->parent;
     			$list[$id] = $v;
     			$list[$id]->name = $indent.$txt;
     			$list = JFormFieldjfusionsql::buildRecursiveTree($id, $indent . '- ', $list, $children, $level+1);

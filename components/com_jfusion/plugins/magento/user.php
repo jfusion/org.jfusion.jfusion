@@ -476,7 +476,6 @@ class JFusionUser_magento extends JFusionUser {
 	 * @param $value
 	 */
 	function fillMagentouser(&$Magento_user, $attribute_code, $value) {
-		$result = array();
 		for ($i = 0;$i < count($Magento_user);$i++) {
 			if ($Magento_user[$i]['attribute_code'] == $attribute_code) {
 				$Magento_user[$i]['value'] = $value;
@@ -549,7 +548,7 @@ class JFusionUser_magento extends JFusionUser {
 				$this->fillMagentouser($magento_user, 'middlename', $middlename);
 			}
 
-			if (version_compare($this->integration_version_number,'1.8','<')) {
+			if (version_compare($magentoVersion,'1.8','<')) {
 				if (isset($userinfo->password_clear) && strlen($userinfo->password_clear) != 32) {
 					$password_salt = $this->getRandomString(2);
 					$this->fillMagentouser($magento_user, 'password_hash', md5($password_salt . $userinfo->password_clear) . ':' . $password_salt);
@@ -602,10 +601,9 @@ class JFusionUser_magento extends JFusionUser {
 	 */
 	function updatePassword($userinfo, $existinguser, &$status) {
 		$magentoVersion = $this->params->get('magento_version','1.7');
-		
 
 		$magento_user = $this->getMagentoDataObjectRaw('customer');
-		if (version_compare($this->integration_version_number,'1.8','<')) {
+		if (version_compare($magentoVersion,'1.8','<')) {
 			$password_salt = $this->getRandomString(2);
 			$this->fillMagentouser($magento_user, 'password_hash', md5($password_salt . $userinfo->password_clear) . ':' . $password_salt);
 		} else {
@@ -691,7 +689,7 @@ class JFusionUser_magento extends JFusionUser {
 					$proxi = $this->connectToApi($status);
 
 					try {
-						$result = $proxi->call('customer.delete', $user_id);
+						$proxi->call('customer.delete', $user_id);
 						$status['debug'][] = 'Magento API: Delete user with id '.$user_id.' , email ' . $userinfo->email;
 					} catch (Soapfault $fault) {
 						$status['error'][] = 'Magento API: Could not delete user with id '.$user_id.' , message: ' . $fault->faultstring;
@@ -730,7 +728,7 @@ class JFusionUser_magento extends JFusionUser {
 			$proxi = $this->connectToApi($status);
 
 			try {
-				$result = $proxi->call('customer.update', array($user_id, $update));
+				$proxi->call('customer.update', array($user_id, $update));
 			} catch (Soapfault $fault) {
 				$status['error'][] = 'Magento API: Could not update email of user with id '.$user_id.' , message: ' . $fault->faultstring;
 			}

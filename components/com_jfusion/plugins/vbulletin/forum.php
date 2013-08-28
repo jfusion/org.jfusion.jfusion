@@ -423,7 +423,6 @@ class JFusionForum_vbulletin extends JFusionForum
 
 		    //set the query
 		    $sort = $dbparams->get('sort_posts');
-		    $where = 'a.threadid = '.$existingthread->threadid.' AND a.postid != '.$existingthread->postid.' AND a.visible = 1';
 
 		    if (empty($name_field)) {
 			    $query = $db->getQuery(true)

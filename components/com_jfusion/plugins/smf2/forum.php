@@ -421,9 +421,7 @@ class JFusionForum_smf2 extends JFusionForum
 	function updateThread(&$dbparams, &$existingthread, &$contentitem, &$status)
 	{
 		try {
-			$threadid =& $existingthread->threadid;
-			$forumid =& $existingthread->forumid;
-			$postid =& $existingthread->postid;
+			$postid = $existingthread->postid;
 
 			//setup some variables
 			$db = JFusionFactory::getDatabase($this->getJname());

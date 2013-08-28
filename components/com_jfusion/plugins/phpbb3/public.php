@@ -717,7 +717,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 				    $forum_parents = $db->loadObjectList();
 
 				    if (!empty($forum_parents)) {
-					    foreach ($forum_parents as $k => $data) {
+					    foreach ($forum_parents as $data) {
 						    $crumb = new stdClass();
 						    $crumb->title = $data->forum_name;
 						    $crumb->url = 'viewforum.php?f='.$data->forum_id;

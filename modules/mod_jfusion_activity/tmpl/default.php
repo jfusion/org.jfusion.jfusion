@@ -23,7 +23,7 @@ else :
 <ul style='list-style: none;'>
 <?php
 foreach($results as $r) {
-	$output =& $r->output;
+	$output = $r->output;
 
 	if(!empty($r->output->avatar_source)) :
 		echo '<li style="clear:left; margin-bottom: 5px;">';

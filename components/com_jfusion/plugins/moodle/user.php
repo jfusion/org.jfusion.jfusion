@@ -575,7 +575,6 @@ class JFusionUser_moodle extends JFusionUser {
 				if (is_array($usergroups) && !isset($userinfo->group_id)) {
 					throw new RuntimeException(JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID'));
 				}
-				$default_group_id = (is_array($usergroups)) ? $usergroups[$userinfo->group_id] : $usergroups;
 				// get some config items
 				$query = $db->getQuery(true)
 					->select('value')

@@ -840,25 +840,12 @@ JS;
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
     /**
      * @param $matches
      * @return string
      */
     function fixAction($matches)
     {
-        global $baseURL, $integratedURL, $vbsefmode, $vbsefenabled;
-
         $url = $matches[1];
         $extra = $matches[2];
         if (defined('_JFUSION_DEBUG')) {
@@ -1008,7 +995,7 @@ JS;
      */
     function fixJS($matches)
     {
-        global $baseURL, $integratedURL, $vbsefmode, $vbsefenabled;
+        global $baseURL, $vbsefmode, $vbsefenabled;
         $plugin_itemid = $this->params->get('plugin_itemid');
 
         $url = $matches[1];

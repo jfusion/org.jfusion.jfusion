@@ -484,15 +484,17 @@ class JFusionUser_efront extends JFusionUser
 	                $f_folder->id = null;
 	                $f_folder->name = 'Incoming';
 	                $f_folder->users_LOGIN = $user->login;
-	                $errors = $db->insertObject('#__f_folders', $f_folder, 'id');
+	                $db->insertObject('#__f_folders', $f_folder, 'id');
+
 	                $f_folder->id = null;
 	                $f_folder->name = 'Sent';
 	                $f_folder->users_LOGIN = $user->login;
-	                $errors = $db->insertObject('#__f_folders', $f_folder, 'id');
+	                $db->insertObject('#__f_folders', $f_folder, 'id');
+
 	                $f_folder->id = null;
 	                $f_folder->name = 'Drafts';
 	                $f_folder->users_LOGIN = $user->login;
-	                $errors = $db->insertObject('#__f_folders', $f_folder, 'id');
+	                $db->insertObject('#__f_folders', $f_folder, 'id');
 
 	                // for eFront Educational and enterprise versions we now should assign skill gap tests
 	                // not sure I should implemented it, anyway I have only the community version to work on

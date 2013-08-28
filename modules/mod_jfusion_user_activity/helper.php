@@ -45,9 +45,8 @@ class modjfusionUserActivityHelper {
 		//get the avatar of the logged in user
 		if ($config['avatar']) {
 			//retrieve avatar
-			$avatarSrc =& $config['avatar_software'];
-			if(!empty($avatarSrc) && $avatarSrc!='jfusion') {
-				$avatar = JFusionFunction::getAltAvatar($avatarSrc, $joomlaUser->id);
+			if(!empty($config['avatar_software']) && $config['avatar_software'] != 'jfusion') {
+				$avatar = JFusionFunction::getAltAvatar($config['avatar_software'], $joomlaUser->id);
 			} else {
 				$avatar = $forum->getAvatar($userinfo->userid);
 			}
@@ -56,8 +55,8 @@ class modjfusionUserActivityHelper {
 				$avatar = JFusionFunction::getJoomlaURL().'components/com_jfusion/images/noavatar.png';
 			}
 
-			$maxheight =& $config['avatar_height'];
-			$maxwidth =& $config['avatar_width'];
+			$maxheight = $config['avatar_height'];
+			$maxwidth = $config['avatar_width'];
 			$size = ($config['avatar_keep_proportional']) ? @getimagesize($avatar) : false;
 				//size the avatar to fit inside the dimensions if larger
 			if($size!==false && ($size[0] > $maxwidth || $size[1] > $maxheight)) {

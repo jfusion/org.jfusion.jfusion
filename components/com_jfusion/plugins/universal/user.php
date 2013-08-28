@@ -385,7 +385,7 @@ class JFusionUser_universal extends JFusionUser
 
 					foreach ($usergroups as $usergroup) {
 						$addgroup = new stdClass;
-						foreach ($maped as $key => $value) {
+						foreach ($maped as $value) {
 							$field = $value->field;
 							foreach ($value->type as $type) {
 								switch ($type) {

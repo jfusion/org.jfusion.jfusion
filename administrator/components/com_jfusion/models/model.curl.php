@@ -625,11 +625,10 @@ class JFusionCurl
 	 */
 	function parsecookies($cookielines)
 	{
-		$line=array();
+		$line = array();
 		$cookies=array();
 		foreach ($cookielines as $line) {
 			$cdata = array();
-			$data = array();
 			foreach ($line as $data) {
 				$cinfo = explode('=', $data);
 				$cinfo[0] = trim($cinfo[0]);
@@ -817,8 +816,6 @@ class JFusionCurl
 
 		$leavealonearr = array();
 		if (trim($leavealone)) {
-			$lines = array();
-			$line=array();
 			$lines = explode(',', $leavealone);
 			$i = 0;
 
@@ -847,7 +844,6 @@ class JFusionCurl
 				}
 			}
 			$name='';
-			$value='';
 			if (isset($cookie['value']['key'])) {
 				$name= $cookie['value']['key'];
 			}
@@ -872,8 +868,7 @@ class JFusionCurl
 
 			if (!$leaveit) {
 				$expires_time=time()-30*60;
-				$value = '';
-				$this->status['debug'][] = $this->addCookie($name, urldecode($value), $expires_time, $cookiepath, $cookiedomain, $secure, $httponly);
+				$this->status['debug'][] = $this->addCookie($name, urldecode(''), $expires_time, $cookiepath, $cookiedomain, $secure, $httponly);
 			} else {
 				$this->status['debug'][] = $this->addCookie($name, urldecode($cookie['value']['value']), $expires_time, $cookiepath, $cookiedomain, $secure, $httponly);
 			}
@@ -1031,9 +1026,6 @@ class JFusionCurl
 		}
 		// end extra lines
 		$overridearr = array();
-		$newhidden = array();
-		$lines = array();
-		$line=array();
 
 		$open_basedir = ini_get('open_basedir');
 		$safe_mode = ini_get('safe_mode');
@@ -1123,7 +1115,7 @@ class JFusionCurl
 									$overridearr[$cinfo[0]]['value'] = $cinfo[1];
 									$overridearr[$cinfo[0]]['type'] = 'hidden';
 								}
-								$newhidden= array_merge($result[$myfrm]['form_elements'], $overridearr);
+								$newhidden = array_merge($result[$myfrm]['form_elements'], $overridearr);
 								$elements_keys = array_keys($newhidden);
 								$elements_values = array_values($newhidden);
 								$elements_count  = count($newhidden);

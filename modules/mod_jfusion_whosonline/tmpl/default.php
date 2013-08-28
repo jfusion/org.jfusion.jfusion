@@ -40,7 +40,7 @@ foreach($outputs as $output) {
 			 echo '<ul>';
 
 			 foreach($output->online_users as $u) {
-			 	$user_output =& $u->output;
+			 	$user_output = $u->output;
 				echo '<li>';
 			 	if(!empty($user_output->avatar_source)) {
 			 		echo "<img style='vertical-align:middle; margin:3px; max-width: {$user_output->avatar_width}px; max-height: {$user_output->avatar_height}px;' src='{$user_output->avatar_source}' alt='avatar' />";

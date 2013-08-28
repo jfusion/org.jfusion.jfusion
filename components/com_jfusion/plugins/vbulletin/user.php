@@ -819,8 +819,8 @@ class JFusionUser_vbulletin extends JFusionUser
         } else {
             $usergroups = unserialize($this->params->get('usergroup'));
             if (isset($usergroups[$userinfo->group_id])) {
-                $defaultgroup =& $usergroups[$userinfo->group_id]['defaultgroup'];
-                $displaygroup =& $usergroups[$userinfo->group_id]['displaygroup'];
+                $defaultgroup = $usergroups[$userinfo->group_id]['defaultgroup'];
+                $displaygroup = $usergroups[$userinfo->group_id]['displaygroup'];
                 $titlegroupid = (!empty($displaygroup)) ? $displaygroup : $defaultgroup;
                 $usertitle = $this->getDefaultUserTitle($titlegroupid);
 
@@ -835,7 +835,7 @@ class JFusionUser_vbulletin extends JFusionUser
                 if (empty($response['errors'])) {
                     $status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . $existinguser->group_id . ' -> ' . $usergroups[$userinfo->group_id]['defaultgroup'];
                 } else {
-                    foreach ($response['errors'] AS $index => $error) {
+                    foreach ($response['errors'] AS $error) {
                         $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . $error;
                     }
                 }

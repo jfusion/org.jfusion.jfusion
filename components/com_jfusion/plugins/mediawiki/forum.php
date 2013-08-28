@@ -85,15 +85,14 @@ class JFusionForum_mediawiki extends JFusionForum
 					    $o_avatar_height = $o_avatar_width = '';
 					    if ($avatar) {
 						    // retrieve avatar
-						    $avatarSrc =& $avatar_software;
-						    if(!empty($avatarSrc) && $avatarSrc!='jfusion' && !empty($userlookup)) {
-							    $o_avatar = JFusionFunction::getAltAvatar($avatarSrc, $userlookup->id);
+						    if(!empty($avatar_software) && $avatar_software!='jfusion' && !empty($userlookup)) {
+							    $o_avatar = JFusionFunction::getAltAvatar($avatar_software, $userlookup->id);
 						    }
 						    if(empty($o_avatar)) {
 							    $o_avatar = JFusionFunction::getJoomlaURL().'components/com_jfusion/images/noavatar.png';
 						    }
-						    $maxheight =& $avatar_height;
-						    $maxwidth =& $avatar_width;
+						    $maxheight = $avatar_height;
+						    $maxwidth = $avatar_width;
 						    $size = ($avatar_keep_proportional) ? @getimagesize($o_avatar) : false;
 						    //size the avatar to fit inside the dimensions if larger
 						    if($size!==false && ($size[0] > $maxwidth || $size[1] > $maxheight)) {

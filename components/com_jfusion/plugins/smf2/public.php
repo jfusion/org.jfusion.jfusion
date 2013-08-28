@@ -465,7 +465,6 @@ class JFusionPublic_smf2 extends JFusionPublic {
     {
 		$q = $matches[1];
 
-		$integratedURL = $this->data->integratedURL;		
 		$baseURL = $this->data->baseURL;
 		$fullURL = $this->data->fullURL;
 

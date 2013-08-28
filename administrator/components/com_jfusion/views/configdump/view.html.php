@@ -136,8 +136,6 @@ class jfusionViewconfigdump extends JViewLegacy {
 			$this->joomla_plugin[$row->type] = $new;
 		}
 
-		$rows = array();
-
 		$query = $db->getQuery(true)
 			->select('id, published, params ,module')
 			->from('#__modules')
@@ -146,15 +144,18 @@ class jfusionViewconfigdump extends JViewLegacy {
 
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
-		foreach($rows as $row) {
-			$new = $this->loadParams($row);
+		if ($rows) {
+			foreach($rows as $row) {
+				$new = $this->loadParams($row);
 
-			$this->clearParameters($new,'jfusion_module',$row->module);
-			$this->addMissingParameters($new,'jfusion_module',$row->module);
+				$this->clearParameters($new,'jfusion_module',$row->module);
+				$this->addMissingParameters($new,'jfusion_module',$row->module);
 
-			$name = !empty($row->title) ? $row->module.' '.$row->title : $row->module;
-			$this->jfusion_module[$name] = $new;
+				$name = !empty($row->title) ? $row->module.' '.$row->title : $row->module;
+				$this->jfusion_module[$name] = $new;
+			}
 		}
+
 
 		$app		= JFactory::getApplication();
 		$menus		= $app->getMenu('site');
@@ -326,8 +327,7 @@ class jfusionViewconfigdump extends JViewLegacy {
 	 * @param null $name
 	 * @return array
 	 */
-	function check($type,$key,$value,$name=null) {
-		$newStatus = new stdClass;
+	function check($type, $key, $value, $name=null) {
 		$check = null;
 
 		if ( $name != null && isset($this->checkvalue[$type][$name]['*'][$key]) ) {

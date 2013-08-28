@@ -438,7 +438,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 	    try {
 		    //we need to create a new SMF user
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $source_path = $this->params->get('source_path');
+
 		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 		    if (empty($usergroups)) {
 			    throw new RuntimeException(JText::_('USERGROUP_MISSING'));

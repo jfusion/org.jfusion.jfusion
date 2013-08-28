@@ -187,7 +187,7 @@ class JFusionHelper_gallery2
      */
     function setPathway() {
         global $gallery;
-        $session =& $gallery->getSession();
+        $session = $gallery->getSession();
         if ($session) {
             $session->doNotUseTempId();
         }
