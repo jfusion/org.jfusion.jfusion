@@ -254,7 +254,6 @@ class JFusionAdmin
 		    $cookie_domain = $this->params->get('cookie_domain',-1);
 		    if ($cookie_domain!==-1) {
 			    $cookie_domain = str_replace(array('http://', 'https://'), array('', ''), $cookie_domain);
-			    $correct_domain = '';
 			    $correct_array = explode('.', html_entity_decode($_SERVER['SERVER_NAME']));
 
 			    //check for domain names with double extentions

@@ -791,11 +791,17 @@ HTML;
             $options[] = JHTML::_('select.option', '0', JText::_('JNO'), 'id', 'value');
             //option to compare display groups
             $option_value = ($advanced && is_array($value) && isset($value['options']['compare_displaygroups'])) ? $value['options']['compare_displaygroups'] : '';
+/**
+ * @TODO: unused ?
             $check = ($advanced && !empty($value['option']['compare_displaygroups'])) ? 'checked' : '';
+*/
             $advanced_usergroup .= '<tr><td>'.JText::_('COMPARE_DISPLAYGROUPS').'</td><td>' . JHTML::_('select.genericlist', $options, $control_name . '[' . $name . '][options][compare_displaygroups]', 'class="inputbox"', 'id', 'value', $option_value);
             //option to compare member groups
-            $option_value = ($advanced && isset($value['options']['compare_membergroups'])) ? $value['options']['compare_membergroups'] : '';
-            $check = ($advanced && !empty($value['option']['compares_membergroups'])) ? 'checked' : '';
+	        $option_value = ($advanced && isset($value['options']['compare_membergroups'])) ? $value['options']['compare_membergroups'] : '';
+/**
+ * @TODO: unused ?
+			$check = ($advanced && !empty($value['option']['compares_membergroups'])) ? 'checked' : '';
+*/
             $advanced_usergroup .= '<tr><td>'.JText::_('COMPARE_MEMBERGROUPS').'</td><td>' . JHTML::_('select.genericlist', $options, $control_name . '[' . $name . '][options][compare_membergroups]', 'class="inputbox"', 'id', 'value', $option_value);
 
             foreach ($master_usergroups as $master_usergroup) {

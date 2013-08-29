@@ -675,7 +675,6 @@ class JFusionForum_vbulletin extends JFusionForum
 	        try {
 		        $db = JFusionFactory::getDatabase($this->getJname());
 		        $filters = func_get_args();
-		        $i = 3;
 		        for ($i = 3; $i < $numargs; $i++) {
 			        if ($filters[$i][0] == 'userid') {
 				        $where.= ' AND b.userid = ' . $db->quote($filters[$i][1]);

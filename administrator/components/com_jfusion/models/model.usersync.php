@@ -311,7 +311,6 @@ class JFusionUsersync
 							    if (count($userlist) != $syncdata['slave_data'][$i]['total_to_sync']) {
 								    //the userlist has already been limited so just start with the first one from the retrieved results
 								    $user_offset = 0;
-								    $users_limited = true;
 							    }
 							    //perform the actual sync
 							    for ($j = $user_offset;$j < count($userlist);$j++) {

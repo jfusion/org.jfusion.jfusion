@@ -710,7 +710,7 @@ HTML;
         }
 
         //doesn't really matter if the quick mod is not disabled so don't return an error
-        $error = $this->disableQuickMod();
+        $this->disableQuickMod();
 
         $error = $this->disableRedirectMod();
         if (!empty($error)) {

@@ -540,14 +540,19 @@ class JFusionCurl
 				$curl_loops = 0;
 				return $data;
 			}
+			/*
 			$last_url = parse_url(curl_getinfo($this->ch, CURLINFO_EFFECTIVE_URL));
-			/*      if (!$url['scheme'])
-			 $url['scheme'] = $last_url['scheme'];
-			if (!$url['host'])
-			$url['host'] = $last_url['host'];
-			if (!$url['path'])
-			$url['path'] = $last_url['path'];
-			*/      $new_url = $url['scheme'] . '://' . $url['host'] . $url['path'] . ($url['query']?'?'.$url['query']:'');
+			if (!$url['scheme']) {
+				$url['scheme'] = $last_url['scheme'];
+			}
+			if (!$url['host']) {
+				$url['host'] = $last_url['host'];
+			}
+			if (!$url['path']) {
+				$url['path'] = $last_url['path'];
+			}
+			*/
+			$new_url = $url['scheme'] . '://' . $url['host'] . $url['path'] . ($url['query']?'?'.$url['query']:'');
 			curl_setopt($this->ch, CURLOPT_URL, $new_url);
 			return $this->curl_redir_exec();
 		} else {
@@ -1024,9 +1029,6 @@ class JFusionCurl
 		}
 		// end extra lines
 		$overridearr = array();
-
-		$open_basedir = ini_get('open_basedir');
-		$safe_mode = ini_get('safe_mode');
 
 		// find out if we have a SSL enabled website
 		if (strpos($this->options['post_url'], 'https://') === false) {
