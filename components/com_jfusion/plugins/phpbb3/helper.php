@@ -175,7 +175,6 @@ class JFusionHelper_phpbb3
 		    if (!defined('IN_PHPBB')) {
 			    define('IN_PHPBB', true);
 		    }
-		    $table_prefix = $params->get('database_prefix');
 		    include_once ($source_path . '/includes/constants.php');
 		    //get a bbcode_uid
 		    if (empty($this->bbcode_uid)) {

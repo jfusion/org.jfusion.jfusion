@@ -681,7 +681,6 @@ HTML;
 			    $userinfo->username = JFactory::getApplication()->input->post->get('guest_username', '');
 			    $userinfo->email = JFactory::getApplication()->input->post->get('guest_email', '');
 			    $userinfo->userid = 0;
-			    $pattern = "^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$";
 			    if (empty($userinfo->username) || empty($userinfo->email) || !preg_match('/^[^@]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$/', $userinfo->email)) {
 				    throw new RuntimeException(JText::_('GUEST_FIELDS_MISSING'));
 			    } else {

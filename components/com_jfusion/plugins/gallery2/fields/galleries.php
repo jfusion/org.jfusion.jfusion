@@ -36,7 +36,6 @@ class JFormFieldGalleries extends JFormField {
 	{
     	global $jname;
 		$fieldName = $this->formControl.'[params][' . $this->fieldname . ']';
-        $name = (string) $this->fieldname;
         $value = $this->value;
         /**
          * @ignore

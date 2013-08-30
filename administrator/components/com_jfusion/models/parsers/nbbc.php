@@ -1651,7 +1651,6 @@ $/Dx", $string)) return true;
             } else {
                 $name = @$token[BBCODE_STACK_TAG]['_name'];
                 $rule = @$this->tag_rules[$name];
-                $end_tag = @$rule['end_tag'];
                 if (!isset($rule['end_tag'])) $end_tag = BBCODE_REQUIRED;
                 else $end_tag = $rule['end_tag'];
                 array_pop($this->start_tags[$name]);

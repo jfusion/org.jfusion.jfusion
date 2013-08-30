@@ -34,7 +34,7 @@ if (!class_exists('MagentoSoapClient')) {
 		 */
 		function login($user, $key) {
 			/** @noinspection PhpUndefinedMethodInspection */
-			$sessionid = parent::login($user, $key);
+			$this->sessionId = parent::login($user, $key);
 			return true;
 		}
 

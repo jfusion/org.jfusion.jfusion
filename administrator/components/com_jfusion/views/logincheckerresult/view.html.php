@@ -148,7 +148,7 @@ class jfusionViewLoginCheckerResult extends JViewLegacy
 		 */
 		// Initialize variables
 		jimport('joomla.user.authentication');
-		$authenticate = JAuthentication::getInstance();
+		JAuthentication::getInstance();
 
 		// Get plugins
 		$plugins = JPluginHelper::getPlugin('authentication');

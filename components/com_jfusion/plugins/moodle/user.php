@@ -78,7 +78,6 @@ class JFusionUser_moodle extends JFusionUser {
 
 		$key[] = '';
 		$box[] = '';
-		$temp_swap = '';
 
 		$pwd_length = strlen($pwd);
 
@@ -95,9 +94,6 @@ class JFusionUser_moodle extends JFusionUser {
 			$box[$x] = $temp_swap;
 		}
 
-		$temp = '';
-		$k = '';
-		$cipherby = '';
 		$cipher = '';
 		$a = 0;
 		$j = 0;
@@ -193,11 +189,6 @@ class JFusionUser_moodle extends JFusionUser {
 	 * @return array result Array containing the result of the session destroy
 	 */
 	function destroySession($userinfo, $options) {
-
-		global $ch;
-		global $cookiearr;
-		global $cookies_to_set;
-		global $cookies_to_set_index;
 		$status = array('debug' => array(), 'error' => array());
 
 		$status['cURL']=array();

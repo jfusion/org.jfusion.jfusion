@@ -152,8 +152,8 @@ class JFusionUser_efront extends JFusionUser
 	            //get cookiedomain, cookiepath
 	            $cookiedomain = $this->params->get('cookie_domain', '');
 	            $cookiepath = $this->params->get('cookie_path', '/');
-	            $httponly = $this->params->get('httponly',0);
-	            $secure = $this->params->get('secure',0);
+	            $httponly = $this->params->get('httponly', 0);
+	            $secure = $this->params->get('secure', false);
 	            $db = JFusionFactory::getDatabase($this->getJname());
 
 		        $query = $db->getQuery(true)
@@ -181,11 +181,11 @@ class JFusionUser_efront extends JFusionUser
 	            }
 	            $name = 'cookie_login';
 	            $value = $userinfo->username;
-	            $status['debug'][] = JFusionFunction::addCookie($name, $value, $expires, $cookiepath, $cookiedomain, false, $httponly);
+	            $status['debug'][] = JFusionFunction::addCookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
 
 	            $name = 'cookie_password';
 	            $value = $user->password;
-	            $status['debug'][] = JFusionFunction::addCookie($name, $value, $expires, $cookiepath, $cookiedomain, false, $httponly);
+	            $status['debug'][] = JFusionFunction::addCookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
 	        }
 	    } catch (Exception $e) {
 		    $status['error'][] = $e->getMessage();
@@ -405,7 +405,6 @@ class JFusionUser_efront extends JFusionUser
 		        throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 	        } else {
 	            $usergroup = $usergroups[0];
-	            $user_type = '';
 	            $user_types_ID = 0;
 	            switch ($usergroup){
 	                case 0:

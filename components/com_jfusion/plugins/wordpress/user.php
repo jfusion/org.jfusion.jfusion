@@ -93,7 +93,7 @@ class JFusionUser_wordpress extends JFusionUser
 				    }
 			    }
 			    $jFusionUserObject = $this->convertUserobjectToJFusion($result);
-			    $jFusionUserObject->{$this->getJname().'_UserObject'}=$result;
+			    $jFusionUserObject->{$this->getJname().'_UserObject'} = $result;
 			    $result = $jFusionUserObject;
 		    }
 	    } catch (Exception $e) {
@@ -214,7 +214,7 @@ class JFusionUser_wordpress extends JFusionUser
         // get _wpnonce security value
         preg_match("/action=logout.+?_wpnonce=([\w\s-]*)[\"']/i",$remotedata,$wpnonce);
         if (!empty($wpnonce[1])){
- 					$curl_options['post_url'] = $curl_options['post_url']."?action=logout&_wpnonce=".$wpnonce[1];
+ 					$curl_options['post_url'] = $curl_options['post_url'].'?action=logout&_wpnonce='.$wpnonce[1];
 					$status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname(), $this->params->get('logout_type'), $curl_options);
         } else {
           // non wpnonce, we are probably not on the logout page. Just report
@@ -229,16 +229,16 @@ class JFusionUser_wordpress extends JFusionUser
           $cookies = array();
           $cookies[0][0] ='wordpress_logged_in'.$cookie_name.'=';
           $cookies[1][0] ='wordpress'.$cookie_name.'=';
-          $status = $curl->deletemycookies($status, $cookies, $cookie_domain, $cookie_path, "");
+          $status = $curl->deletemycookies($status, $cookies, $cookie_domain, $cookie_path, '');
 
           $cookies = array();
           $cookies[1][0] ='wordpress'.$cookie_name.'=';
 
           $path = $cookie_path.'wp-content/plugins';
-          $status = $curl->deletemycookies($status, $cookies, $cookie_domain, $path, "");
+          $status = $curl->deletemycookies($status, $cookies, $cookie_domain, $path, '');
 
           $path = $cookie_path.'wp-admin';
-          $status = $curl->deletemycookies($status, $cookies, $cookie_domain, $path, "");
+          $status = $curl->deletemycookies($status, $cookies, $cookie_domain, $path, '');
         }
     }      
 		return $status;
@@ -451,7 +451,6 @@ class JFusionUser_wordpress extends JFusionUser
 			    $default_role[$default_role_name]=1;
 
 			    $default_userlevel = $this->helper->WP_userlevel_from_role(0, $default_role_name);
-			    $username_clean = $this->filterUsername($userinfo->username);
 			    if (isset($userinfo->password_clear)) {
 				    //we can update the password
 				    if (!class_exists('PasswordHashOrg')) {
@@ -472,7 +471,7 @@ class JFusionUser_wordpress extends JFusionUser
 			    //prepare the variables
 			    $user = new stdClass;
 			    $user->ID                 = null;
-			    $user->user_login         = $userinfo->username;
+			    $user->user_login         = $this->filterUsername($userinfo->username);
 			    $user->user_pass          = $user_password;
 			    $user->user_nicename      = strtolower($userinfo->username);
 			    $user->user_email         = strtolower($userinfo->email);

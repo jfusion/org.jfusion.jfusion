@@ -630,7 +630,6 @@ class JFusionCurl
 	 */
 	function parsecookies($cookielines)
 	{
-		$line = array();
 		$cookies=array();
 		foreach ($cookielines as $line) {
 			$cdata = array();
@@ -1098,7 +1097,6 @@ class JFusionCurl
 						// we went to all this trouble to get to the hidden input entries.
 						// The stuff is there to enhance security and is, yes, hidden
 						$form_action = htmlspecialchars_decode($result[$myfrm]['form_data']['action']);
-						$form_method = $result[$myfrm]['form_data']['method'];
 						$elements_keys = array_keys($result[$myfrm]['form_elements']);
 						$elements_values = array_values($result[$myfrm]['form_elements']);
 						$elements_count  = count($result[$myfrm]['form_elements']);

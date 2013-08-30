@@ -252,9 +252,7 @@ class JFusionUser_dokuwiki extends JFusionUser
 			} else {
                 $cookie_value = base64_encode($userinfo->username.'|'.$sticky.'|'.$pass);
 			}
-            $time = 60*60*24*365;
-            $debug_expiration = date('Y-m-d H:i:s', time()+$time);
-            $status['debug'][] = JFusionFunction::addCookie(DOKU_COOKIE, $cookie_value, $time, $cookie_path, $cookie_domain, $cookie_secure, $httponly);
+            $status['debug'][] = JFusionFunction::addCookie(DOKU_COOKIE, $cookie_value, 60*60*24*365, $cookie_path, $cookie_domain, $cookie_secure, $httponly);
         }
 
         return $status;

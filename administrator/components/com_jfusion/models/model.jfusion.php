@@ -1429,7 +1429,6 @@ class JFusionFunction
                     break;
             }
             if ($encoding) {
-            	$converted = false;
 	            if (function_exists ('iconv')) {
                     $converted = iconv('utf-8', $encoding, $string);
 	            } else if (function_exists('mb_convert_encoding')) {

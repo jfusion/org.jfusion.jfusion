@@ -161,7 +161,6 @@ class JFusionUser_elgg extends JFusionUser {
             $password = $userinfo->password_clear;
             $persistent = true;
             // If all is present and correct, try to log in
-            $result = false;
             if (!empty($username) && !empty($password)) {
                 $auth = elgg_authenticate($username, $password);
                 if ($auth===true) {

@@ -222,7 +222,6 @@ HTML;
     public static function getFileData($url, $save = 0, $unpack = 0)
     {
         ob_start();
-        $FileData = false;
         if (function_exists('curl_init')) {
             //curl is the preferred function
             $crl = curl_init();

@@ -42,111 +42,109 @@ function login_jfusion(&$username, &$password) {
 	 * @ignore
 	 * @var $db dbal_mysql
 	 */
+	global $phpbb_root_path, $phpEx, $db, $user;
 	if (defined('ADMIN_START')){
-        global $phpbb_root_path, $phpEx, $db, $user;
-        $redirect = request_var('redirect', "{$phpbb_root_path}adm/index.$phpEx");
-    }
+//        $redirect = request_var('redirect', "{$phpbb_root_path}adm/index.$phpEx");
+    } else {
+		//check to see if login successful and jFusion is not active
+		//backup phpbb globals
+		jfusion_backup_restore_globals('backup');
 
-    if (!defined('ADMIN_START')) {
-        //check to see if login successful and jFusion is not active
-        //backup phpbb globals
-        jfusion_backup_restore_globals('backup');
+		global $JFusionActive;
+		if ($result['status'] == LOGIN_SUCCESS && empty($JFusionActive)) {
+			$mainframe = startJoomla();
+			//define that the phpBB3 JFusion plugin needs to be excluded
+			global $JFusionActivePlugin;
+			$JFusionActivePlugin = 'JFUSION_JNAME';
+			// do the login
+			$credentials = array('username' => $username, 'password' => $password);
+			$options = array('entry_url' => JURI::root() . 'index.php?option=com_user&task=login', 'silent' => true);
 
-        global $JFusionActive, $phpbb_root_path, $phpEx, $db, $user;
-        if ($result['status'] == LOGIN_SUCCESS && empty($JFusionActive)) {
-            $mainframe = startJoomla();
-            //define that the phpBB3 JFusion plugin needs to be excluded
-            global $JFusionActivePlugin;
-            $JFusionActivePlugin ='JFUSION_JNAME';
-            // do the login
-            $credentials = array('username' => $username, 'password' => $password);
-            $options = array('entry_url' => JURI::root() . 'index.php?option=com_user&task=login', 'silent' => true);
+			//detect if the session should be remembered
+			if (!empty($_POST['autologin'])) {
+				$options['remember'] = 1;
+			} else {
+				$options['remember'] = 0;
+			}
 
-            //detect if the session should be remembered
-            if (!empty($_POST['autologin'])) {
-                $options['remember'] = 1;
-            } else {
-                $options['remember'] = 0;
-            }
+			$mainframe->login($credentials, $options);
 
-            $mainframe->login($credentials, $options);
+			//clean up the joomla session object before continuing
+			$session = JFactory::getSession();
+			$id = $session->getId();
+			$session_data = session_encode();
+			$session->close();
 
-            //clean up the joomla session object before continuing
-            $session = JFactory::getSession();
-            $id = $session->getId();
-            $session_data = session_encode();
-            $session->close();
-
-            //if we are not frameless, then we need to manually update the session data as on some servers, this data is getting corrupted
-            //by php session_write_close and thus the user is not logged into Joomla.  php bug?
-            if (!defined('IN_JOOMLA')) {
-                /**
-                 * @ignore
-                 * @var $session_table JTableSession
-                 */
-                $session_table = JTable::getInstance('session');
-                if ($session_table->load($id)) {
-                    $session_table->data = $session_data;
-                    $session_table->store();
-                } else {
-                    // if load failed then we assume that it is because
-                    // the session doesn't exist in the database
-                    // therefore we use insert instead of store
-                    $app = JFactory::getApplication();
-                    $session_table->data = $session_data;
-                    $session_table->insert($id, $app->getClientId());
-                }
-            }
+			//if we are not frameless, then we need to manually update the session data as on some servers, this data is getting corrupted
+			//by php session_write_close and thus the user is not logged into Joomla.  php bug?
+			if (!defined('IN_JOOMLA')) {
+				/**
+				 * @ignore
+				 * @var $session_table JTableSession
+				 */
+				$session_table = JTable::getInstance('session');
+				if ($session_table->load($id)) {
+					$session_table->data = $session_data;
+					$session_table->store();
+				} else {
+					// if load failed then we assume that it is because
+					// the session doesn't exist in the database
+					// therefore we use insert instead of store
+					$app = JFactory::getApplication();
+					$session_table->data = $session_data;
+					$session_table->insert($id, $app->getClientId());
+				}
+			}
 
 
-            if (FORCE_REDIRECT_AFTER_LOGIN) {
-                if (isset($_REQUEST['redirect']) && defined('IN_JOOMLA')) {
-                    $itemid = JFactory::getApplication()->input->getInt('Itemid');
-                    $url = JFusionFunction::getPluginURL($itemid, false);
-                    $redirect = str_replace('./', '', $_REQUEST['redirect']);
-                    if (strpos($redirect, 'mode=login') !== false) {
-                        $redirect = 'index.php';
-                    }
-                    $redirect = str_replace('?', '&', $redirect);
-                    $redirect = $url . "&jfile=" . $redirect;
-                } else {
-                        //redirect to prevent fatal errors on some servers
-                        $uri = JURI::getInstance();
-                        //remove sid from URL
-                        $query = $uri->getQuery(true);
-                        if (isset($query['sid'])) {
-                            unset($query['sid']);
-                        }
-                        $uri->setQuery($query);
-                        //add a variable to ensure refresh
-                        $redirect = $uri->toString();
-                }
+			if (FORCE_REDIRECT_AFTER_LOGIN) {
+				if (isset($_REQUEST['redirect']) && defined('IN_JOOMLA')) {
+					$itemid = JFactory::getApplication()->input->getInt('Itemid');
+					$url = JFusionFunction::getPluginURL($itemid, false);
+					$redirect = str_replace('./', '', $_REQUEST['redirect']);
+					if (strpos($redirect, 'mode=login') !== false) {
+						$redirect = 'index.php';
+					}
+					$redirect = str_replace('?', '&', $redirect);
+					$redirect = $url . "&jfile=" . $redirect;
+				} else {
+					//redirect to prevent fatal errors on some servers
+					$uri = JURI::getInstance();
+					//remove sid from URL
+					$query = $uri->getQuery(true);
+					if (isset($query['sid'])) {
+						unset($query['sid']);
+					}
+					$uri->setQuery($query);
+					//add a variable to ensure refresh
+					$redirect = $uri->toString();
+				}
 
-                //recreate phpBB database connection
-                $dbhost = $dbuser = $dbpasswd = $dbname = $dbport = null;
-                include $phpbb_root_path . 'config.' . $phpEx;
-                $db->sql_connect($dbhost, $dbuser, $dbpasswd, $dbname, $dbport, false, false);
-                unset($dbpasswd);
+				//recreate phpBB database connection
+				$dbhost = $dbuser = $dbpasswd = $dbname = $dbport = null;
+				include $phpbb_root_path . 'config.' . $phpEx;
+				$db->sql_connect($dbhost, $dbuser, $dbpasswd, $dbname, $dbport, false, false);
+				unset($dbpasswd);
 
-                //create phpBB user session
-                $user->session_create($result['user_row']['user_id'], 0, $options['remember']);
+				//create phpBB user session
+				$user->session_create($result['user_row']['user_id'], 0, $options['remember']);
 
-                $url = str_replace('&amp;', '&', $redirect);
+				$url = str_replace('&amp;', '&', $redirect);
 
-                header('Location: '.$url);
-                exit();
-            } else {
-                //recreate phpBB database connection
-                $dbhost = $dbuser = $dbpasswd = $dbname = $dbport = null;
-                include $phpbb_root_path . 'config.' . $phpEx;
-                $db->sql_connect($dbhost, $dbuser, $dbpasswd, $dbname, $dbport, false, false);
-                unset($dbpasswd);
-            }
-        }
+				header('Location: '.$url);
+				exit();
+			} else {
+				//recreate phpBB database connection
+				$dbhost = $dbuser = $dbpasswd = $dbname = $dbport = null;
+				include $phpbb_root_path . 'config.' . $phpEx;
+				$db->sql_connect($dbhost, $dbuser, $dbpasswd, $dbname, $dbport, false, false);
+				unset($dbpasswd);
+			}
+		}
 
-        //backup phpbb globals
-        jfusion_backup_restore_globals('restore');
-    }
+		//backup phpbb globals
+		jfusion_backup_restore_globals('restore');
+	}
     return $result;
 }
 

@@ -256,7 +256,6 @@ class JFusionForum_vbulletin extends JFusionForum
 				    }
 			    }
 		    }
-		    $guest = $userinfo->guest;
 		    $text = JFactory::getApplication()->input->post->get('quickReply', false);
 		    //strip out html from post
 		    $text = strip_tags($text);

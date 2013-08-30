@@ -396,8 +396,6 @@ HTML;
 
 			} else {
 				//let's first check the default icon
-				$check = true;
-
 				$query = $db->getQuery(true)
 					->select('value')
 					->from('#__setting')

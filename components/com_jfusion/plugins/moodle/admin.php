@@ -243,7 +243,7 @@ class JFusionAdmin_moodle extends JFusionAdmin
         $jname = $this->getJname ();
 	    try {
 		    try {
-			    $db = JFusionFactory::getDatabase ( $jname );
+			    JFusionFactory::getDatabase ( $jname );
 		    } catch (Exception $e) {
 				throw new RuntimeException(JText::_('MOODLE_CONFIG_FIRST'));
 		    }

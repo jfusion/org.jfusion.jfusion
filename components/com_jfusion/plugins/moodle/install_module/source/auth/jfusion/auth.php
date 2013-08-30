@@ -453,8 +453,11 @@ class auth_plugin_jfusion extends auth_plugin_base {
 
             if (!empty($status['error']))
             {
-                $message = 'Fatal JFusion Dual login Error : statusdump: '.print_r($status,true) ;
-                //$session->addError($message);
+	            /**
+	            $message = 'Fatal JFusion Dual login Error : statusdump: '.print_r($status,true) ;
+	            $session->addError($message);
+	             */
+
             }
 		}
 		return false;

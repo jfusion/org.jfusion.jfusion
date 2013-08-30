@@ -174,7 +174,7 @@ class JFusionUser_gallery2 extends JFusionUser
                         } else {
                             $event = GalleryCoreApi::newEvent('Gallery::Logout');
                             $event->setEntity($activeUser);
-                            list($ret, $ignored) = GalleryCoreApi::postEvent($event);
+                            list($ret,) = GalleryCoreApi::postEvent($event);
                             if ($ret) {
                                 $status['error'][] = $ret->getErrorMessage();
                                 return $status;

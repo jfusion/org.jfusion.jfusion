@@ -200,7 +200,6 @@ class JFusionForum_phpbb3 extends JFusionForum {
 		    $numargs = func_num_args();
 		    if ($numargs > 3) {
 			    $filters = func_get_args();
-			    $i = 3;
 			    for ($i = 3; $i < $numargs; $i++) {
 				    if ($filters[$i][0] == 'userid') {
 					    $where.= ' HAVING userid = ' . $db->Quote($filters[$i][1]);

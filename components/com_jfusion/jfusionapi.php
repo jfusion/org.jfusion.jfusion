@@ -921,11 +921,6 @@ class JFusionAPIInternal extends JFusionAPIBase {
 		// clean up session
 		$session = JFactory::getSession();
 		$session->close();
-
-		//redirect to prevent fatal errors on some servers
-		$uri = JURI::getInstance();
-		//add a variable to ensure refresh
-		$link = $uri->toString();
 	}
 
 	/**

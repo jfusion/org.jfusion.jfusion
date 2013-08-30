@@ -340,15 +340,8 @@ class JFusionJplugin
      */
     public static function createSession($userinfo, $options, $jname, $type = 'brute_force',$curl_options_merge=array())
     {
-        global $ch;
-        global $cookiearr;
-        global $cookies_to_set;
-        global $cookies_to_set_index;
-        $cookiearr = array();
-        $cookies_to_set = array();
         $curl_options = array();
         $status = array('error' => array(),'debug' => array());
-        $cookies_to_set_index = 0;
         $params = JFusionFactory::getParams($jname);
         $source_url = $params->get('source_url');
         $login_url = $params->get('login_url');
@@ -493,15 +486,8 @@ class JFusionJplugin
      */
     public static function destroySession($userinfo, $options, $jname, $type = 'brute_force',$curl_options_merge=array())
     {
-        global $ch;
-        global $cookiearr;
-        global $cookies_to_set;
-        global $cookies_to_set_index;
-        $cookiearr = array();
-        $cookies_to_set = array();
         $curl_options = array();
         $status = array('error' => array(),'debug' => array());
-        $cookies_to_set_index = 0;
 
         $params = JFusionFactory::getParams($jname);
         $source_url = $params->get('source_url');

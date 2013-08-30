@@ -241,30 +241,55 @@ class executeJFusionHook
             */
             //we need to update the session table
 	        if (defined('_VBJNAME')) {
-		        $vdb = JFusionFactory::getDatabase(_VBJNAME);
-		        if (!empty($vdb)) {
+		        try {
+			        $vdb = JFusionFactory::getDatabase(_VBJNAME);
 			        $vars = & $vbulletin->session->vars;
 			        if ($vbulletin->session->created) {
 				        $bypass = ($vars['bypass']) ? 1 : 0;
-				        $query = "INSERT IGNORE INTO #__session
-                            (sessionhash, userid, host, idhash, lastactivity, location, styleid, languageid, loggedin, inforum, inthread, incalendar, badlocation, useragent, bypass, profileupdate) VALUES
-                            ({$vdb->Quote($vars[dbsessionhash]) },$vars[userid],{$vdb->Quote($vars[host]) },{$vdb->Quote($vars[idhash]) },$vars[lastactivity],{$vdb->Quote($vars[location]) },$vars[styleid],$vars[languageid],
-                            $vars[loggedin],$vars[inforum],$vars[inthread],$vars[incalendar],$vars[badlocation],{$vdb->Quote($vars[useragent]) },$bypass,$vars[profileupdate])";
+
+				        $query = 'INSERT IGNORE INTO #__session
+                            ( sessionhash, userid, host, idhash, lastactivity, location, styleid, languageid, loggedin, inforum, inthread, incalendar, badlocation, useragent, bypass, profileupdate )
+                            VALUES ( '.
+					            $vdb->Quote($vars['dbsessionhash']).
+					            ' ,'.$vars['userid'].
+					            ' ,'.$vdb->Quote($vars['host']).
+					            ' ,'.$vdb->Quote($vars['idhash']).
+					            ' ,'.$vars['lastactivity'].
+					            ' ,'.$vdb->Quote($vars['location']).
+					            ' ,'.$vars['styleid'].
+					            ' ,'.$vars['languageid'].
+					            ' ,'.$vars['loggedin'].
+					            ' ,'.$vars['inforum'].
+					            ' ,'.$vars['inthread'].
+					            ' ,'.$vars['incalendar'].
+					            ' ,'.$vars['badlocation'].
+					            ' ,'.$vdb->Quote($vars['useragent']).
+					            ' ,'.$bypass.
+					            ' ,'.
+					            $vars['profileupdate'].
+					        ' )';
 			        } else {
-				        $query = "UPDATE #__session SET lastactivity = $vars[lastactivity], inforum = $vars[inforum], inthread = $vars[inthread], incalendar = $vars[incalendar], badlocation = $vars[badlocation]
-                            WHERE sessionhash = {$vdb->Quote($vars[dbsessionhash]) }";
+				        $query = $vdb->getQuery(true)
+					        ->update('#__session')
+					        ->set('lastactivity = ' . $vdb->quote($vars['lastactivity']))
+					        ->set('inforum = ' . $vdb->quote($vars['inforum']))
+					        ->set('inthread = ' . $vdb->quote($vars['inthread']))
+					        ->set('incalendar = ' . $vdb->quote($vars['incalendar']))
+					        ->set('badlocation = ' . $vdb->quote($vars['badlocation']))
+					        ->where('sessionhash = ' . $vdb->quote($vars['dbsessionhash']));
 			        }
 			        $vdb->setQuery($query);
 			        $vdb->execute();
-		        }
-		        //we need to perform the shutdown queries that mark PMs read, etc
-		        if (is_array($vbulletin->db->shutdownqueries)) {
-			        foreach ($vbulletin->db->shutdownqueries AS $name => $query) {
-				        if (!empty($query) AND ($name !== 'pmpopup' OR !defined('NOPMPOPUP'))) {
-					        $vdb->setQuery($query);
-					        $vdb->execute();
+			        //we need to perform the shutdown queries that mark PMs read, etc
+			        if (is_array($vbulletin->db->shutdownqueries)) {
+				        foreach ($vbulletin->db->shutdownqueries AS $name => $query) {
+					        if (!empty($query) AND ($name !== 'pmpopup' OR !defined('NOPMPOPUP'))) {
+						        $vdb->setQuery($query);
+						        $vdb->execute();
+					        }
 				        }
 			        }
+		        } catch (Exception $e) {
 		        }
 		        //echo the output and return an exception to allow Joomla to continue
 		        echo trim($this->vars, "\n\r\t.");
