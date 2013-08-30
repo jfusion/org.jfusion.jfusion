@@ -176,9 +176,9 @@ class JFusionAdmin_elgg extends JFusionAdmin
         // Get variables
         global $CONFIG;
         $result = true;
-	    if (isset($CONFIG->allow_registration) && $CONFIG->allow_registration == false) {
+	    if (isset($CONFIG->allow_registration) && $CONFIG->allow_registration == 'alse') {
 		    $result = false;
-	    } else if (isset($CONFIG->disable_registration) && $CONFIG->disable_registration == true) {
+	    } else if (isset($CONFIG->disable_registration) && $CONFIG->disable_registration == 'true') {
 			$result = false;
         }
         return $result;
