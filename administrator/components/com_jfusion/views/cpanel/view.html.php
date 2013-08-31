@@ -52,10 +52,10 @@ class jfusionViewcpanel extends JView
         if (function_exists('curl_init')) {
             //curl is the preferred function
             $crl = curl_init();
-            $timeout = 5;
             curl_setopt($crl, CURLOPT_URL, $cpanel);
             curl_setopt($crl, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($crl, CURLOPT_CONNECTTIMEOUT, $timeout);
+	        curl_setopt($crl, CURLOPT_CONNECTTIMEOUT, 5);
+	        curl_setopt($crl, CURLOPT_TIMEOUT, 10);
             $JFusionCpanelRaw = curl_exec($crl);
             curl_close($crl);
         } else {

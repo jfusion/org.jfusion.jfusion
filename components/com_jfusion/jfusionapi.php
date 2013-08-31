@@ -377,6 +377,7 @@ class JFusionAPI {
 			curl_setopt($crl, CURLOPT_HEADER, 0);
 			curl_setopt($crl, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt($crl, CURLOPT_CONNECTTIMEOUT, 5);
+			curl_setopt($crl, CURLOPT_TIMEOUT, 10);
 			curl_setopt($crl, CURLOPT_SSL_VERIFYPEER, false);
 			curl_setopt($crl, CURLOPT_POST ,1);
 			curl_setopt($crl, CURLOPT_POSTFIELDS , $post);
