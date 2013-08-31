@@ -362,46 +362,36 @@ JS;
         JFolder::create($sourcepath.'infile');
         if (!$infile_only) {
             //Outputs: apearpearle pear
-            $urlPattern = array('http://', 'https://', '.css', '\\', '/', '|', '*', ':', ';', '?', '"', '<', '>', '=', '&');
-            $urlReplace = array('', '', '', '', '-', '', '', '', '', '', '', '', '', ',', '_');
             if ($data->parse_css) {
                 if (preg_match_all( '#<link(.*?type=[\'|"]text\/css[\'|"][^>]*)>#Si', $html, $css )) {
                     require_once (JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'parsers' . DIRECTORY_SEPARATOR . 'css.php');
 
                     jimport('joomla.filesystem.file');
                     foreach ($css[1] as $values) {
-                        if( preg_match( '#href=[\'|"](.*?)[\'|"]#Si', $values, $cssUrl )) {
-                            $cssUrlRaw = $cssUrl[1];
+	                    if( preg_match( '#href=[\'|"](.*?)[\'|"]#Si', $values, $cssUrl )) {
+		                    $cssUrlRaw = $cssUrl[1];
 
-                            if (strpos($cssUrlRaw,'/') === 0) {
-                                $uri = new JURI($data->integratedURL);
+		                    if (strpos($cssUrlRaw,'/') === 0) {
+			                    $uri = new JURI($data->integratedURL);
 
-                                $cssUrlRaw = $uri->toString(array('scheme', 'user', 'pass', 'host', 'port')).$cssUrlRaw;
-                            }
+			                    $cssUrlRaw = $uri->toString(array('scheme', 'user', 'pass', 'host', 'port')).$cssUrlRaw;
+		                    }
+		                    $filename = $this->cssCacheName(urldecode(htmlspecialchars_decode($cssUrl[1])));
+		                    $filenamesource = $sourcepath.$filename;
 
-                            $cssUrl = urldecode(htmlspecialchars_decode($cssUrl[1]));
+		                    if ( !JFile::exists($filenamesource) ) {
+			                    $cssparser = new cssparser('#jfusionframeless');
+			                    $result = $cssparser->ParseUrl($cssUrlRaw);
+			                    if ($result !== false ) {
+				                    $content = $cssparser->GetCSS();
+				                    JFile::write($filenamesource, $content);
+			                    }
+		                    }
 
-                            if ( preg_match( '#media=[\'|"](.*?)[\'|"]#Si', $values, $cssMedia ) ) {
-                                $cssMedia = $cssMedia[1];
-                            } else {
-                                $cssMedia = '';
-                            }
-                            $filename = str_replace($urlPattern, $urlReplace, $cssUrl).'.css';
-                            $filenamesource = $sourcepath.$filename;
-
-                            if ( !JFile::exists($filenamesource) ) {
-                                $cssparser = new cssparser('#jfusionframeless');
-                                $result = $cssparser->ParseUrl($cssUrlRaw);
-                                if ($result !== false ) {
-                                    $content = $cssparser->GetCSS();
-                                    JFile::write($filenamesource, $content);
-                                }
-                            }
-
-                            if ( JFile::exists($filenamesource) ) {
-                                $html = str_replace($cssUrlRaw  , $urlpath.$filename  , $html );
-                            }
-                        }
+		                    if ( JFile::exists($filenamesource) ) {
+			                    $html = str_replace($cssUrlRaw  , $urlpath.$filename  , $html );
+		                    }
+	                    }
                     }
                 }
             }
@@ -434,6 +424,23 @@ JS;
             }
         }
     }
+
+	/**
+	 * @param $url
+	 *
+	 * @return string
+	 */
+	function cssCacheName($url) {
+		$uri = new JURI($url);
+		$filename = $uri->toString(array('path', 'query'));
+		$filename = trim($filename, '/');
+
+		$filename = str_replace(array('.css','\\', '/', '|', '*', ':', ';', '?', '"', '<', '>', '=', '&'),
+		                        array('', '', '-', '', '', '', '', '', '', '', '', ',', '_'),
+		                        $filename);
+		$filename .= '.css';
+		return $filename;
+	}
 
     /**
      * extends JFusion's parseRoute function to reconstruct the SEF URL
