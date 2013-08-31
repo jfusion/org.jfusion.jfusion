@@ -60,21 +60,19 @@ class JFusionAdmin_elgg extends JFusionAdmin
         }
         $config = array();
         //check if the file exists
-        if (($file_handle = @fopen($myfile, 'r')) === false) {
-            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'), $this->getJname());
+	    $lines = $this->readFile($myfile);
+        if ($lines === false) {
+            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': '.$myfile. ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
         } else {
             //parse the file line by line to get only the config variables
-            $file_handle = fopen($myfile, 'r');
-            while (!feof($file_handle)) {
-                $line = fgets($file_handle);
-                $parts = explode('=', $line);
-                if (isset($parts[0]) && isset($parts[1])) {
-                    $key = trim(preg_replace('/[^\n]*\$CONFIG->/ ', '', $parts[0]));
-                    $value = trim(str_replace(array('"', '\'', ';'), '', $parts[1]));
-                    $config[$key] = $value;
-                }
-            }
-            fclose($file_handle);
+	        foreach ($lines as $line) {
+		        $parts = explode('=', $line);
+		        if (isset($parts[0]) && isset($parts[1])) {
+			        $key = trim(preg_replace('/[^\n]*\$CONFIG->/ ', '', $parts[0]));
+			        $value = trim(str_replace(array('"', '\'', ';'), '', $parts[1]));
+			        $config[$key] = $value;
+		        }
+	        }
         }
         return $config;
     }

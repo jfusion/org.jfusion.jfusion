@@ -258,7 +258,7 @@ if (!class_exists('Jfusion_DokuWiki_Plain')) {
 		protected function _loadUserData() {
 			$this->users = array();
 
-			if(!@file_exists($this->file)) return;
+			if(!file_exists($this->file)) return;
 
 			$lines = file($this->file);
 			foreach($lines as $line) {
@@ -344,7 +344,7 @@ if (!class_exists('Jfusion_DokuWiki_Plain')) {
 		function saveFile($file, $content, $append = false) {
 			$conf = $this->helper->getConf();
 			$mode = ($append) ? 'ab' : 'wb';
-			$fileexists = @file_exists($file);
+			$fileexists = file_exists($file);
 			$this->makefiledir($file);
 			$this->lock($file);
 			if (substr($file, -3) == '.gz') {
@@ -366,6 +366,8 @@ if (!class_exists('Jfusion_DokuWiki_Plain')) {
 				bzwrite($fh, $content);
 				bzclose($fh);
 			} else {
+				/** @noinspection PhpUsageOfSilenceOperatorInspection */
+				/** @noinspection PhpUsageOfSilenceOperatorInspection */
 				$fh = @fopen($file, $mode);
 				if ($fh === false) {
 					$this->debug("Writing $file failed",-1);
@@ -397,7 +399,7 @@ if (!class_exists('Jfusion_DokuWiki_Plain')) {
 		 * @return bool true on success
 		 */
 		function deleteFromFile($file, $badline, $regex = false) {
-			if (!@file_exists($file)) return true;
+			if (!file_exists($file)) return true;
 			$this->lock($file);
 			// load into array
 			if (substr($file, -3) == '.gz') {
@@ -516,7 +518,7 @@ if (!class_exists('Jfusion_DokuWiki_Plain')) {
 		function mkdir_p($target) {
 			$conf = $this->helper->getConf();
 			if (@is_dir($target) || empty($target)) return 1; // best case check first
-			if (@file_exists($target) && !is_dir($target)) return 0;
+			if (file_exists($target) && !is_dir($target)) return 0;
 			//recursion
 			if ($this->mkdir_p(substr($target, 0, strrpos($target, '/')))) {
 				if ($conf['safemodehack']) {

@@ -75,24 +75,23 @@ class JFusionAdmin_smf extends JFusionAdmin
         }
         $params = array();
         //try to open the file
-        if (($file_handle = @fopen($myfile, 'r')) === false) {
-            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'), $this->getJname());
+	    $lines = $this->readFile($myfile);
+        if ($lines === false) {
+            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': '.$myfile. ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
         } else {
             //parse the file line by line to get only the config variables
-            $file_handle = fopen($myfile, 'r');
             $config = array();
-            while (!feof($file_handle)) {
-                $line = fgets($file_handle);
-                if (strpos($line, '$') === 0) {
-                    $vars = explode("'", $line);
-                    if (isset($vars[1]) && isset($vars[0])) {
-                        $name = trim($vars[0], ' $=');
-                        $value = trim($vars[1], ' $=');
-                        $config[$name] = $value;
-                    }
-                }
-            }
-            fclose($file_handle);
+	        foreach ($lines as $line) {
+		        if (strpos($line, '$') === 0) {
+			        $vars = explode("'", $line);
+			        if (isset($vars[1]) && isset($vars[0])) {
+				        $name = trim($vars[0], ' $=');
+				        $value = trim($vars[1], ' $=');
+				        $config[$name] = $value;
+			        }
+		        }
+	        }
+
             $params['database_host'] = isset($config['db_server']) ? $config['db_server'] : '';
             $params['database_type'] = 'mysql';
             $params['database_name'] = isset($config['db_name']) ? $config['db_name'] : '';

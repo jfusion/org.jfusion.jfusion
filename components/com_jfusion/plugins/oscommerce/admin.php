@@ -56,11 +56,9 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
             $myfile = $forumPath . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'configure.php';
         }
         $params = array();
-        if (($file_handle = @fopen($myfile, 'r')) === false) {
-            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'), $this->getJname());
+        if (!file_exists($myfile)) {
+            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': '.$myfile.' '. JText::_('WIZARD_MANUAL'), $this->getJname());
         } else {
-            //parse the file line by line to get only the config variables
-            fclose($file_handle);
             include_once ($myfile);
             //save the parameters into array
             $params = array();

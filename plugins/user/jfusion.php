@@ -633,7 +633,7 @@ class plgUserJfusion extends JPlugin
                 }
             } else {
                 if (!empty($JoomlaUser->original_username)) {
-                    //the user was created by JFusion's JFusionJplugin::createUser and we have the original username which must be used as the jfusion_user table has not been updated yet
+                    //the user was created by JFusion's JFusionJoomlaUser::createUser and we have the original username which must be used as the jfusion_user table has not been updated yet
                     $JoomlaUser->username = $JoomlaUser->original_username;
                 } elseif (!empty($storedUsername)) {
                     //the username is not being updated but if there is a username stored in jfusion_users table, it must be used instead to prevent user duplication

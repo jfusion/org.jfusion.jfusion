@@ -24,6 +24,7 @@ defined('_JEXEC') or die('Restricted access');
 @ini_set('upload_max_filesize', '128M');
 @ini_set('post_max_size', '256M');
 @ini_set('max_input_time', '7200');
+/** @noinspection PhpUsageOfSilenceOperatorInspection */
 @ini_set('max_execution_time', '0');
 @ini_set('expect.timeout', '7200');
 @ini_set('default_socket_timeout', '7200');

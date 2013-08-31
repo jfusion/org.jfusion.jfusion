@@ -62,33 +62,32 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
     {
         //check for trailing slash and generate file path
         if (substr($forumPath, -1) == DIRECTORY_SEPARATOR) {
-            $configfile = $forumPath . 'includes' . DIRECTORY_SEPARATOR . 'config.php';
+	        $myfile = $forumPath . 'includes' . DIRECTORY_SEPARATOR . 'config.php';
             $funcfile = $forumPath . 'includes' . DIRECTORY_SEPARATOR . 'functions.php';
         } else {
-            $configfile = $forumPath . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'config.php';
+	        $myfile = $forumPath . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'config.php';
             $funcfile = $forumPath . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'functions.php';
         }
         //try to open the file
         $params = array();
-        if (($file_handle = @fopen($configfile, 'r')) === false) {
-            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ": $configfile " . JText::_('WIZARD_MANUAL'), $this->getJname());
+	    $lines = $this->readFile($myfile);
+        if ($lines === false) {
+            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': '.$myfile. ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
         } else {
             //parse the file line by line to get only the config variables
-            $file_handle = fopen($configfile, 'r');
             $config = array();
-            while (!feof($file_handle)) {
-                $line = fgets($file_handle);
-                if (strpos($line, '$config') === 0) {
-                    $vars = explode("'", $line);
-                    if (isset($vars[5])) {
-                        $name1 = trim($vars[1], ' $=');
-                        $name2 = trim($vars[3], ' $=');
-                        $value = trim($vars[5], ' $=');
-                        $config[$name1][$name2] = $value;
-                    }
-                }
-            }
-            fclose($file_handle);
+
+	        foreach ($lines as $line) {
+		        if (strpos($line, '$config') === 0) {
+			        $vars = explode("'", $line);
+			        if (isset($vars[5])) {
+				        $name1 = trim($vars[1], ' $=');
+				        $name2 = trim($vars[3], ' $=');
+				        $value = trim($vars[5], ' $=');
+				        $config[$name1][$name2] = $value;
+			        }
+		        }
+	        }
 
             //save the parameters into the standard JFusion params format
             $params = array();
@@ -124,21 +123,19 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
                 $params['cookie_domain'] = $settings['cookiedomain']->value;
             }
 
-            if (($file_handle = @fopen($funcfile, 'r')) !== false) {
-                //parse the functions file line by line to get the cookie salt
-                $file_handle = fopen($funcfile, 'r');
-                $cookie_salt = '';
-                while (!feof($file_handle)) {
-                    $line = fgets($file_handle);
-                    if (strpos($line, 'COOKIE_SALT') !== false) {
-                        $vars = explode("'", $line);
-                        if (isset($vars[3])) {
-                            $cookie_salt = $vars[3];
-                        }
-                        break;
-                    }
-                }
-                fclose($file_handle);
+	        $lines = $this->readFile($funcfile);
+            if ($lines !== false) {
+	            $cookie_salt = '';
+	            foreach ($lines as $line) {
+		            if (strpos($line, 'COOKIE_SALT') !== false) {
+			            $vars = explode("'", $line);
+			            if (isset($vars[3])) {
+				            $cookie_salt = $vars[3];
+			            }
+			            break;
+		            }
+	            }
+
                 $params['cookie_salt'] = $cookie_salt;
             }
         }

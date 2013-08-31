@@ -18,7 +18,7 @@ defined('_JEXEC') or die('Restricted access');
 /**
  * load the common Joomla JFusion plugin functions
  */
-require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jplugin.php';
+require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.joomlapublic.php';
 /**
  * JFusion Public Class for the internal Joomla database
  * For detailed descriptions on these functions please check the model.abstractapublic.php
@@ -31,7 +31,7 @@ require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTOR
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionPublic_joomla_int extends JFusionPublic {
+class JFusionPublic_joomla_int extends JFusionJoomlaPublic {
     /**
      * returns the name of this JFusion plugin
      * @return string name of current JFusion plugin
@@ -39,61 +39,5 @@ class JFusionPublic_joomla_int extends JFusionPublic {
     function getJname() 
     {
         return 'joomla_int';
-    }
-
-    /**
-     * @return string
-     */
-    function getRegistrationURL() {
-        return JFusionJplugin::getRegistrationURL();
-    }
-
-    /**
-     * @return string
-     */
-    function getLostPasswordURL() {
-        return JFusionJplugin::getLostPasswordURL();
-    }
-
-    /**
-     * @return string
-     */
-    function getLostUsernameURL() {
-        return JFusionJplugin::getLostUsernameURL();
-    }
-
-    /**
-     * @param int $limit
-     *
-     * @return string
-     */
-    function getOnlineUserQuery($limit) {
-        return JFusionJplugin::getOnlineUserQuery($this->getJname(), $limit);
-    }
-
-    /**
-     * @return int
-     */
-    function getNumberOnlineGuests() {
-        return JFusionJplugin::getNumberOnlineGuests($this->getJname());
-    }
-
-    /**
-     * @return int
-     */
-    function getNumberOnlineMembers() {
-        return JFusionJplugin::getNumberOnlineMembers($this->getJname());
-    }
-    /**
-     * Update the language front end param in the account of the user if this one changes it
-     * NORMALLY THE LANGUAGE SELECTION AND CHANGEMENT FOR JOOMLA IS PROVIDED BY THIRD PARTY LIKE JOOMFISH
-     *
-     * @TODO - to implement after the release 1.1.2
-     *
-     * @param object $userinfo
-     * @return array status
-     */
-    function setLanguageFrontEnd($userinfo = null) {
-        return JFusionJplugin::setLanguageFrontEnd($this->getJname(),$userinfo);
     }
 }

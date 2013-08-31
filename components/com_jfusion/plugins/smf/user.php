@@ -195,7 +195,6 @@ class JFusionUser_smf extends JFusionUser
     {
         $status = array('error' => array(),'debug' => array());
 	    try {
-		    //        $status = JFusionJplugin::destroySession($userinfo, $options,$this->getJname());
 		    $status['debug'][] = JFusionFunction::addCookie($this->params->get('cookie_name'), '', 0, $this->params->get('cookie_path'), $this->params->get('cookie_domain'), $this->params->get('secure'), $this->params->get('httponly'));
 
 		    $db = JFusionFactory::getDatabase($this->getJname());

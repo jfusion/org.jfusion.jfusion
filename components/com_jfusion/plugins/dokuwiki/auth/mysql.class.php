@@ -958,7 +958,7 @@ if (!class_exists('Jfusion_DokuWiki_Mysql')) {
 			$path = $params->get('source_path').'/authmysql/conf/';
 			$conf = array();
 
-			if (@file_exists($path.'default.php')) {
+			if (file_exists($path.'default.php')) {
 				include($path.'default.php');
 			}
 			return $conf;

@@ -35,7 +35,7 @@ require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTOR
  * @link       http://www.jfusion.org
  */
 
-class JFusionAdmin_joomla_int extends JFusionAdmin {
+class JFusionAdmin_joomla_int extends JFusionJoomlaAdmin {
     /**
      * returns the name of this JFusion plugin
      * @return string name of current JFusion plugin
@@ -45,54 +45,6 @@ class JFusionAdmin_joomla_int extends JFusionAdmin {
         return 'joomla_int';
     }
 
-    /**
-     * @return string
-     */
-    function getTablename() {
-        return JFusionJplugin::getTablename();
-    }
-
-    /**
-     * Returns the a list of users of the integrated software
-     *
-     * @param int $limitstart start at
-     * @param int $limit number of results
-     *
-     * @return array
-     *
-     */
-    function getUserList($limitstart = 0, $limit = 0) {
-        return JFusionJplugin::getUserList($this->getJname(),$limitstart,$limit);
-    }
-
-    /**
-     * @return int
-     */
-    function getUserCount() {
-        return JFusionJplugin::getUserCount($this->getJname());
-    }
-
-    /**
-     * @return array
-     */
-    function getUsergroupList() {
-        return JFusionJplugin::getUsergroupList($this->getJname());
-    }
-
-    /**
-     * @return string
-     */
-    function getDefaultUsergroup() {
-        return JFusionJplugin::getDefaultUsergroup($this->getJname());
-    }
-
-    /**
-     * @return bool
-     */
-    function allowRegistration() {
-        return JFusionJplugin::allowRegistration($this->getJname());
-    }
-    
     /**
      * Get an usergroup element
      *
@@ -108,14 +60,6 @@ class JFusionAdmin_joomla_int extends JFusionAdmin {
 	    $value = $this->params->get('multiusergroup');
 	    return parent::multiusergroup('multiusergroup', $value, $node, $control_name);
     }
-
-    /**
-     * @return string UNKNOWN or JNO or JYES or ??
-     */
-    function requireFileAccess()
-	{
-		return 'JNO';
-	}
 
 	/**
 	 * @return bool do the plugin support multi instance

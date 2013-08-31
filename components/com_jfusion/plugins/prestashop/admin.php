@@ -63,32 +63,30 @@ class JFusionAdmin_prestashop extends JFusionAdmin
             $myfile = $storePath . DIRECTORY_SEPARATOR . 'config/settings.inc.php';
         }
         $config = array();
-        if (($file_handle = @fopen($myfile, 'r')) === false) {
-            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'), $this->getJname());
+	    $lines = $this->readFile($myfile);
+        if ($lines === false) {
+            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': '.$myfile. ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
         } else {
             //parse the file line by line to get only the config variables
-            $file_handle = fopen($myfile, 'r');
-            while (!feof($file_handle)) {
-                $line = fgets($file_handle);
-                if (strpos($line, 'define(') === 0 && count($config) <= 8) {
-                    /* extract the name and value, it was coded to avoid the use of eval() function */
-                    // name
-                    $vars_strt[0] = strpos($line, "'");
-                    $vars_end[0] = strpos($line, "',");
-                    $name = trim(substr($line, $vars_strt[0], $vars_end[0] - $vars_strt[0]), "'");     
-                    // value
-                    $vars_strt[1] = strpos($line, " '");
-                    $vars_strt[1]++;
-                    $vars_end[1] = strpos($line, "')");
-                    $value = trim(substr($line, $vars_strt[1], $vars_end[1] - $vars_strt[1]), "'");
-                    if($name == '_DB_TYPE_')
-                    {
-                     $value = strtolower($value);
-                    }    
-                    $config[$name] = $value;
-                }
-            }
-	        fclose($file_handle);
+	        foreach ($lines as $line) {
+		        if (strpos($line, 'define(') === 0 && count($config) <= 8) {
+			        /* extract the name and value, it was coded to avoid the use of eval() function */
+			        // name
+			        $vars_strt[0] = strpos($line, "'");
+			        $vars_end[0] = strpos($line, "',");
+			        $name = trim(substr($line, $vars_strt[0], $vars_end[0] - $vars_strt[0]), "'");
+			        // value
+			        $vars_strt[1] = strpos($line, " '");
+			        $vars_strt[1]++;
+			        $vars_end[1] = strpos($line, "')");
+			        $value = trim(substr($line, $vars_strt[1], $vars_end[1] - $vars_strt[1]), "'");
+			        if($name == '_DB_TYPE_')
+			        {
+				        $value = strtolower($value);
+			        }
+			        $config[$name] = $value;
+		        }
+	        }
 	    }
         return $config;
 	}

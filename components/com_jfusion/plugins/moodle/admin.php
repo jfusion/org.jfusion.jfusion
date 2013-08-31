@@ -59,19 +59,20 @@ class JFusionAdmin_moodle extends JFusionAdmin
             $myfile = $forumPath . DIRECTORY_SEPARATOR . 'config.php';
         }
         $params = array();
-        if (($file_handle = @fopen($myfile, 'r')) === false) {
-            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'), $this->getJname());
+	    $lines = $this->readFile($myfile);
+        if ($lines === false) {
+            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': '.$myfile. ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
         } else {
             //parse the file line by line to get only the config variables
         	$CFG = new stdClass();
-            $file_handle = fopen($myfile, 'r');
-            while (!feof($file_handle)) {
-                $line = trim(fgets($file_handle));
-                 if (strpos($line, '$CFG->') !== false && strpos($line, ';') != 0) {
-                    eval($line);
-                }
-            }
-            fclose($file_handle);
+
+	        foreach ($lines as $line) {
+		        $line = trim($line);
+		        if (strpos($line, '$CFG->') !== false && strpos($line, ';') != 0) {
+			        eval($line);
+		        }
+	        }
+
             //save the parameters into array
             $params['database_host'] = $CFG->dbhost;
             $params['database_name'] = $CFG->dbname;

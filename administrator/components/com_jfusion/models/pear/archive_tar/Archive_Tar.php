@@ -107,7 +107,7 @@ class Archive_Tar extends PEAR
         $this->_compress = false;
         $this->_compress_type = 'none';
         if (($p_compress === null) || ($p_compress == '')) {
-            if (@file_exists($p_tarname)) {
+            if (file_exists($p_tarname)) {
                 if ($fp = @fopen($p_tarname, "rb")) {
                     // look for gzip magic cookie
                     $data = fread($fp, 2);
@@ -1550,7 +1550,7 @@ class Archive_Tar extends PEAR
 
         if ($v_extract_file) {
           if ($v_header['typeflag'] == "5") {
-            if (!@file_exists($v_header['filename'])) {
+            if (!file_exists($v_header['filename'])) {
                 if (!@mkdir($v_header['filename'], 0777)) {
                     $this->_error('Unable to create directory {'
 					              .$v_header['filename'].'}');
@@ -1558,7 +1558,7 @@ class Archive_Tar extends PEAR
                 }
             }
           } elseif ($v_header['typeflag'] == "2") {
-              if (@file_exists($v_header['filename'])) {
+              if (file_exists($v_header['filename'])) {
                   @unlink($v_header['filename']);
               }
               if (!@symlink($v_header['link'], $v_header['filename'])) {

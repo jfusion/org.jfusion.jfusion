@@ -60,23 +60,22 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
             $myfile = $forumPath . DIRECTORY_SEPARATOR . 'config.php';
         }
         $params = array();
-        if (($file_handle = @fopen($myfile, 'r')) === false) {
-            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'), $this->getJname());
+	    $lines = $this->readFile($myfile);
+        if ($lines === false) {
+            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': '.$myfile. ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
         } else {
             //parse the file line by line to get only the config variables
-            $file_handle = fopen($myfile, 'r');
             $config = array();
-            while (!feof($file_handle)) {
-                $line = fgets($file_handle);
-                if (strpos($line, '$') === 0) {
-                    //extract the name and value, it was coded to avoid the use of eval() function
-                    $vars = explode("'", $line);
-                    $name = trim($vars[0], ' $=');
-                    $value = trim($vars[1], ' $=');
-                    $config[$name] = $value;
-                }
-            }
-            fclose($file_handle);
+	        foreach ($lines as $line) {
+		        if (strpos($line, '$') === 0) {
+			        //extract the name and value, it was coded to avoid the use of eval() function
+			        $vars = explode("'", $line);
+			        $name = trim($vars[0], ' $=');
+			        $value = trim($vars[1], ' $=');
+			        $config[$name] = $value;
+		        }
+	        }
+
             //save the parameters into array
             $params['database_host'] = isset($config['dbhost']) ? $config['dbhost'] : '';
             $params['database_name'] = isset($config['dbname']) ? $config['dbname'] : '';

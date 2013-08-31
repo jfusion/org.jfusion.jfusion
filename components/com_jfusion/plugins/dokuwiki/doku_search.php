@@ -174,7 +174,7 @@ if ( !class_exists('DokuWikiSearch') ) {
         function ft_queryParser($query) {
             $conf = $this->conf;
             $swfile = $this->path . 'inc/lang/' . $conf['lang'] . '/stopwords.txt';
-            if (@file_exists($swfile)) {
+            if (file_exists($swfile)) {
                 $stopwords = file($swfile);
             } else {
                 $stopwords = array();
@@ -396,7 +396,7 @@ if ( !class_exists('DokuWikiSearch') ) {
                 }
             } else {
                 // Exact match first.
-                if (@file_exists($this->path . 'data/index' . "/i$filter.idx")) $idx[] = $filter;
+                if (file_exists($this->path . 'data/index' . "/i$filter.idx")) $idx[] = $filter;
                 while (($f = readdir($dir)) !== false) {
                     if (substr($f, 0, 1) == 'i' && substr($f, -4) == '.idx') {
                         $i = substr($f, 1, -4);
@@ -433,7 +433,7 @@ if ( !class_exists('DokuWikiSearch') ) {
         function idx_getIndex($pre, $wlen) {
             $conf = $this->conf;
             $fn = $this->path . 'data/index' . '/' . $pre . $wlen . '.idx';
-            if (!@file_exists($fn)) return array();
+            if (!file_exists($fn)) return array();
             return file($fn);
         }
 
@@ -467,7 +467,7 @@ if ( !class_exists('DokuWikiSearch') ) {
          * @return bool
          */
         function page_exists($id, $rev = '', $clean = true) {
-            return @file_exists($this->wikiFN($id, $rev, $clean));
+            return file_exists($this->wikiFN($id, $rev, $clean));
         }
 
         /**
@@ -492,9 +492,9 @@ if ( !class_exists('DokuWikiSearch') ) {
                 $fn = $conf['olddir'] . '/' . $this->utf8_encodeFN($id) . '.' . $rev . '.txt';
                 if ($conf['compression']) {
                     //test for extensions here, we want to read both compressions
-                    if (@file_exists($fn . '.gz')) {
+                    if (file_exists($fn . '.gz')) {
                         $fn.= '.gz';
-                    } else if (@file_exists($fn . '.bz2')) {
+                    } else if (file_exists($fn . '.bz2')) {
                         $fn.= '.bz2';
                     } else {
                         //file doesn't exist yet, so we take the configured extension

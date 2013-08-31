@@ -133,15 +133,16 @@ if (file_exists($model_file) && file_exists($factory_file)) {
         $pmcount = $url_viewnewmessages = false;
     }
 }
+$public = JFusionFactory::getPublic('joomla_int');
 //use the Joomla default if JFusion specified none
 if (empty($lostpassword_url)) {
-    $lostpassword_url = JRoute::_( JFusionJplugin::getLostPasswordURL());
+    $lostpassword_url = JRoute::_( $public->getLostPasswordURL());
 }
 if (empty($lostusername_url)) {
-    $lostusername_url = JRoute::_(JFusionJplugin::getLostUsernameURL());
+    $lostusername_url = JRoute::_($public->getLostUsernameURL());
 }
 if (empty($register_url)) {
-    $register_url = JRoute::_(JFusionJplugin::getRegistrationUrl());
+    $register_url = JRoute::_($public->getRegistrationUrl());
 }
 //render the login module
 require_once JModuleHelper::getLayoutPath('mod_jfusion_login');

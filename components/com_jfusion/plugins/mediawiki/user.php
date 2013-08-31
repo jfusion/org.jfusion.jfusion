@@ -181,8 +181,6 @@ class JFusionUser_mediawiki extends JFusionUser {
 		if (!empty($userinfo->block) || !empty($userinfo->activation)) {
             $status['error'][] = JText::_('FUSION_BLOCKED_USER');
 		} else {
-            //$status = JFusionJplugin::createSession($userinfo, $options,$this->getJname());
-
             $cookie_path = $this->params->get('cookie_path');
             $cookie_domain = $this->params->get('cookie_domain');
             $cookie_secure = $this->params->get('secure');

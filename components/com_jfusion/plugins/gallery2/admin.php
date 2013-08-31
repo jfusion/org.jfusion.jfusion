@@ -72,27 +72,26 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
         $params = array();
         $config = array();
         //try to open the file
-        if (($file_handle = @fopen($myfile, 'r')) === false) {
-            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'), $this->getJname());
+	    $lines = $this->readFile($myfile);
+        if ($lines === false) {
+            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': '.$myfile. ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
             //get the default parameters object
         } else {
             //parse the file line by line to get only the config variables
-            $file_handle = fopen($myfile, 'r');
-            while (!feof($file_handle)) {
-                $line = fgets($file_handle);
-                if (strpos($line, '$storeConfig') === 0) {
-                    preg_match("/.storeConfig\['(.*)'\] = (.*);/", $line, $matches);
-                    $name = trim($matches[1], " '");
-                    $value = trim($matches[2], " '");
-                    $config[$name] = $value;
-                }
-                if (strpos($line, '$gallery->setConfig') === 0) {
-                    preg_match("/.gallery->setConfig\('(.*)',(.*)\)/", $line, $matches);
-                    $name = trim($matches[1], " '");
-                    $value = trim($matches[2], " '");
-                    $config[$name] = $value;
-                }
-            }
+	        foreach ($lines as $line) {
+		        if (strpos($line, '$storeConfig') === 0) {
+			        preg_match("/.storeConfig\['(.*)'\] = (.*);/", $line, $matches);
+			        $name = trim($matches[1], " '");
+			        $value = trim($matches[2], " '");
+			        $config[$name] = $value;
+		        }
+		        if (strpos($line, '$gallery->setConfig') === 0) {
+			        preg_match("/.gallery->setConfig\('(.*)',(.*)\)/", $line, $matches);
+			        $name = trim($matches[1], " '");
+			        $value = trim($matches[2], " '");
+			        $config[$name] = $value;
+		        }
+	        }
             $params['database_host'] = $config['hostname'];
             $params['database_type'] = $config['type'];
             $params['database_name'] = $config['database'];
@@ -110,7 +109,6 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
                 }
             }
         }
-        fclose($file_handle);
         //Save the parameters into the standard JFusion params format
         return $params;
     }

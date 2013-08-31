@@ -91,22 +91,22 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 			$myfile = $forumPath . DIRECTORY_SEPARATOR . 'wp-config.php';
 		}
         $params = array();
-        if (($file_handle = @fopen($myfile, 'r')) === false) {
-			JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ": $myfile " . JText::_('WIZARD_MANUAL'), $this->getJname());
+	    $lines = $this->readFile($myfile);
+        if ($lines === false) {
+			JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': '.$myfile. ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
 		} else {
 			//parse the file line by line to get only the config variables
 			//			$file_handle = fopen($myfile, 'r');
             $table_prefix = '';
-			while (!feof($file_handle)) {
-				$line = fgets($file_handle);
-				if (strpos(trim($line), 'define') === 0) {
-					eval($line);
-				}
-				if (strpos(trim($line), '$table_prefix') === 0) {
-					eval($line);
-				}
-			}
-			fclose($file_handle);
+	        foreach ($lines as $line) {
+		        if (strpos(trim($line), 'define') === 0) {
+			        eval($line);
+		        }
+		        if (strpos(trim($line), '$table_prefix') === 0) {
+			        eval($line);
+		        }
+	        }
+
 			//save the parameters into array
 			$params['database_host'] = DB_HOST;
 			$params['database_name'] = DB_NAME;

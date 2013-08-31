@@ -769,4 +769,26 @@ JS;
         }
         return $result;
     }
+
+	/**
+	 * read a given file (use to read config files)
+	 *
+	 * @param $file
+	 *
+	 * @return bool|array returns false or file content
+	 */
+	function readFile($file)
+	{
+		$fh = @fopen($file, 'r');
+
+		$lines = false;
+		if ($fh !== false) {
+			$lines = array();
+			while (!feof($fh)) {
+				$lines[] = fgets($fh);
+			}
+			fclose($fh);
+		}
+		return $lines;
+	}
 }
