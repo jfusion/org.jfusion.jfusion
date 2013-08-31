@@ -410,6 +410,11 @@ JS;
         }
     }
 
+	/**
+	 * @param $url
+	 *
+	 * @return string
+	 */
 	function cssCacheName($url) {
 		$uri = new JURI($url);
 		$filename = $uri->toString(array('path', 'query'));

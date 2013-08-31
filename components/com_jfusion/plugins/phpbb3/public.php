@@ -369,6 +369,11 @@ class JFusionPublic_phpbb3 extends JFusionPublic
         }    
     }
 
+	/**
+	 * @param $url
+	 *
+	 * @return string
+	 */
 	function cssCacheName($url) {
 		$uri = new JURI($url);
 		$uri->delVar('sid');
