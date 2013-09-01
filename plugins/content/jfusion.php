@@ -1347,20 +1347,20 @@ HTML;
 					$post_output[$i]->avatar_src = JFusionFunction::getJoomlaURL().'components/com_jfusion/images/noavatar.png';
 				}
 
-				$size = ($resize_avatar) ? @getimagesize($post_output[$i]->avatar_src) : false;
+				$size = ($resize_avatar) ? JFusionFunction::getImageSize($post_output[$i]->avatar_src) : false;
 				$maxheight = $this->params->get('avatar_height',80);
 				$maxwidth = $this->params->get('avatar_width',60);
 				//size the avatar to fit inside the dimensions if larger
-				if ($size!==false && ($size[0] > $maxwidth || $size[1] > $maxheight)) {
-					$wscale = $maxwidth/$size[0];
-					$hscale = $maxheight/$size[1];
+				if ($size!==false && ($size->width > $maxwidth || $size->height > $maxheight)) {
+					$wscale = $maxwidth/$size->width;
+					$hscale = $maxheight/$size->height;
 					$scale = min($hscale, $wscale);
-					$post_output[$i]->avatar_width = floor($scale*$size[0]);
-					$post_output[$i]->avatar_height = floor($scale*$size[1]);
+					$post_output[$i]->avatar_width = floor($scale*$size->width);
+					$post_output[$i]->avatar_height = floor($scale*$size->height);
 				} elseif ($size!==false) {
 					//the avatar is within the limits
-					$post_output[$i]->avatar_width = $size[0];
-					$post_output[$i]->avatar_height = $size[1];
+					$post_output[$i]->avatar_width = $size->width;
+					$post_output[$i]->avatar_height = $size->height;
 				} else {
 					//getimagesize failed
 					$post_output[$i]->avatar_width = $maxwidth;

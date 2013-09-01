@@ -1933,4 +1933,135 @@ JS;
 			$document->addScriptDeclaration($js);
 		}
 	}
+
+	/**
+	 * @param string $filename file name or url
+	 *
+	 * @return boolean|stdClass
+	 */
+	public static function getImageSize($filename) {
+		$result = false;
+		ob_start();
+		if (strpos($filename, '://') !== false) {
+			$stream = fopen($filename,'r');
+
+			$rawdata = stream_get_contents($stream, 24);
+			if($rawdata) {
+				$type = null;
+				/**
+				 * check for gif
+				 */
+				if (strlen($rawdata) >= 10 && ($rawdata[0] == 'G' && $rawdata[1] == 'I' && $rawdata[2] == 'F')) {
+					$type = 'gif';
+				}
+				/**
+				 * check for png
+				 */
+				if (!$type) {
+					if (strlen($rawdata) >= 24) {
+						$head = unpack('C8', $rawdata);
+						$png = array(1 => 137, 2 => 80, 3 => 78, 4 => 71, 5 => 13, 6 => 10, 7 => 26, 8 => 10);
+						if ($head === $png) {
+							$type = 'png';
+						}
+					}
+				}
+				/**
+				 * check for jpg
+				 */
+				if (!$type) {
+					$soi = unpack('nmagic/nmarker', $rawdata);
+					if ($soi['magic'] == 0xFFD8) {
+						$type = 'jpg';
+					}
+				}
+				if (!$type) {
+					if ( substr($rawdata,0,2) == 'BM' ) {
+						$type = 'bmp';
+					}
+				}
+				switch($type) {
+					case 'gif':
+						$data = unpack("c10", $rawdata);
+
+						$height = $data[8]*256 + $data[7];
+						$width = $data[10]*256 + $data[9];
+
+						$result = array($height, $width);
+						break;
+					case 'png':
+						$type = substr($rawdata, 12, 4);
+						if ($type === 'IHDR') {
+							$info = unpack('Nwidth/Nheight', substr($rawdata, 16, 8));
+
+							$result = new stdClass;
+							$result->width = $info['width'];
+							$result->height = $info['height'];
+						}
+						break;
+					case 'bmp':
+						$header = unpack("H*",$rawdata);
+						// Process the header
+						// Structure: http://www.fastgraph.com/help/bmp_header_format.html
+						// Cut it in parts of 2 bytes
+						$header = str_split($header[1], 2);
+						$result = new stdClass;
+						$result->width = hexdec($header[19].$header[18]);
+						$result->height = hexdec($header[23].$header[22]);
+						break;
+					case 'jpg':
+						$pos = 0;
+						while(1) {
+							$pos += 2;
+							$data = substr($rawdata, $pos, 9);
+							if (strlen($data) < 4) {
+								break;
+							}
+							$info = unpack('nmarker/nlength', $data);
+							if ($info['marker'] == 0xFFC0) {
+								if (strlen($data) >= 9) {
+									$info = unpack('nmarker/nlength/Cprecision/nheight/nwidth', $data);
+
+									$result = new stdClass;
+									$result->width = $info['width'];
+									$result->height = $info['height'];
+								}
+								break;
+							} else {
+								$pos += $info['length'];
+								if (strlen($rawdata) < $pos+9) {
+									$rawdata .= stream_get_contents($stream, $info['length']+9);
+								}
+							}
+						}
+						break;
+					default:
+						/**
+						 * Fallback to original getimagesize this may be slower than the original but safer.
+						 */
+						$rawdata .= stream_get_contents($stream);
+						$temp = tmpfile();
+						fwrite($temp, $rawdata);
+						$meta_data = stream_get_meta_data($temp);
+
+						$info = getimagesize($meta_data['uri']);
+
+						$result = new stdClass;
+						$result->width = $info[0];
+						$result->height = $info[1];
+						fclose($temp);
+						break;
+				}
+			}
+			fclose($stream);
+		} else {
+			$info = getimagesize($filename);
+
+			$result = new stdClass;
+			$result->width = $info[0];
+			$result->height = $info[1];
+		}
+		ob_end_clean();
+		return $result;
+	}
 }

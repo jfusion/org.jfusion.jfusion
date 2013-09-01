@@ -66,19 +66,19 @@ class modjfusionActivityHelper
 
                     $maxheight = $config['avatar_height'];
                     $maxwidth = $config['avatar_width'];
-                    $size = ($config['avatar_keep_proportional']) ? @getimagesize($avatar) : false;
+                    $size = ($config['avatar_keep_proportional']) ? JFusionFunction::getImageSize($avatar) : false;
 
                     //size the avatar to fit inside the dimensions if larger
-                    if ($size!==false && ($size[0] > $maxwidth || $size[1] > $maxheight)) {
-                        $wscale = $maxwidth/$size[0];
-                        $hscale = $maxheight/$size[1];
+                    if ($size!==false && ($size->width > $maxwidth || $size->height > $maxheight)) {
+                        $wscale = $maxwidth/$size->width;
+                        $hscale = $maxheight/$size->height;
                         $scale = min($hscale, $wscale);
-                        $w = floor($scale*$size[0]);
-                        $h = floor($scale*$size[1]);
+                        $w = floor($scale*$size->width);
+                        $h = floor($scale*$size->height);
                     } elseif ($size!==false) {
                         //the avatar is within the limits
-                        $w = $size[0];
-                        $h = $size[1];
+                        $w = $size->width;
+                        $h = $size->height;
                     } else {
                         //getimagesize failed
                         $w = $maxwidth;

@@ -93,18 +93,20 @@ class JFusionForum_mediawiki extends JFusionForum
 						    }
 						    $maxheight = $avatar_height;
 						    $maxwidth = $avatar_width;
-						    $size = ($avatar_keep_proportional) ? @getimagesize($o_avatar) : false;
+
+
+						    $size = ($avatar_keep_proportional) ? JFusionFunction::getImageSize($o_avatar) : false;
 						    //size the avatar to fit inside the dimensions if larger
-						    if($size!==false && ($size[0] > $maxwidth || $size[1] > $maxheight)) {
-							    $wscale = $maxwidth/$size[0];
-							    $hscale = $maxheight/$size[1];
+						    if($size!==false && ($size->width > $maxwidth || $size->height > $maxheight)) {
+							    $wscale = $maxwidth/$size->width;
+							    $hscale = $maxheight/$size->height;
 							    $scale = min($hscale, $wscale);
-							    $w = floor($scale*$size[0]);
-							    $h = floor($scale*$size[1]);
+							    $w = floor($scale*$size->width);
+							    $h = floor($scale*$size->height);
 						    } elseif($size!==false) {
 							    //the avatar is within the limits
-							    $w = $size[0];
-							    $h = $size[1];
+							    $w = $size->width;
+							    $h = $size->height;
 						    } else {
 							    //getimagesize failed
 							    $w = $maxwidth;
