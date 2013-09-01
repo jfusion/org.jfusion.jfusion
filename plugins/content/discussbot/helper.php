@@ -178,11 +178,6 @@ class JFusionDiscussBotHelper {
         if (!class_exists('ContentHelperRoute')) {
             require_once JPATH_SITE . DS . 'components' . DS . 'com_content' . DS . 'helpers' . DS . 'route.php';
         }
-        if ($this->option == 'com_k2') {
-            if (!class_exists('K2HelperRoute')) {
-                include_once JPATH_SITE . DS . 'components' . DS . 'com_k2' . DS . 'helpers' . DS . 'route.php';
-            }
-        }
 
         if ($this->option == 'com_content') {
             //take into account page breaks
@@ -200,10 +195,14 @@ class JFusionDiscussBotHelper {
                 $url .= '&limitstart='.$limitstart;
             }
             $url .= $query;
-        } else {
+        } else if ($this->option == 'com_k2') {
+	        if (!class_exists('K2HelperRoute')) {
+		        include_once JPATH_SITE . DS . 'components' . DS . 'com_k2' . DS . 'helpers' . DS . 'route.php';
+	        }
             $url = urldecode(K2HelperRoute::getItemRoute($this->article->id.':'.urlencode($this->article->alias),$this->article->catid.':'.urlencode($this->article->category->alias)));
+        } else {
+	        $url = '';
         }
-
 
         $url = JRoute::_($url, $xhtml);
 
