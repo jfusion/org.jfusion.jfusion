@@ -199,17 +199,11 @@ class JFusionDiscussBotHelper {
 	 */
 	public function getArticleUrl($jumpto = '', $query = '', $xhtml = true)
 	{
-		//make sure Joomla content helper is loaded
-		if (!class_exists('ContentHelperRoute')) {
-			require_once JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_content' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'route.php';
-		}
-		if ($this->option == 'com_k2') {
-			if (!class_exists('K2HelperRoute')) {
-				include_once JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_k2' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'route.php';
-			}
-		}
-
 		if ($this->option == 'com_content') {
+			//make sure Joomla content helper is loaded
+			if (!class_exists('ContentHelperRoute')) {
+				require_once JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_content' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'route.php';
+			}
 			//take into account page breaks
 			$url = ContentHelperRoute::getArticleRoute($this->article->slug, $this->article->catid);
 			$start = JFactory::getApplication()->input->getInt('start',0);
@@ -221,11 +215,15 @@ class JFusionDiscussBotHelper {
 				$url .= '&limitstart='.$limitstart;
 			}
 			$url .= $query;
-		} else {
+		} else if ($this->option == 'com_k2') {
+			if (!class_exists('K2HelperRoute')) {
+				require_once JPATH_SITE . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_k2' . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'route.php';
+			}
 			/** @noinspection PhpUndefinedClassInspection */
 			$url = urldecode(K2HelperRoute::getItemRoute($this->article->id.':'.urlencode($this->article->alias),$this->article->catid.':'.urlencode($this->article->category->alias)));
+		} else {
+			$url = '';
 		}
-
 
 		$url = JRoute::_($url, $xhtml);
 
