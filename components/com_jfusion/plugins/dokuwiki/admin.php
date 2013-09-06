@@ -81,6 +81,7 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
         $params = array();
         if ($config === false) {
             JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ": $Path " . JText::_('WIZARD_MANUAL'), $this->getJname());
+	        return false;
         } else {
             if (isset($config['auth']['mysql']) && isset($config['authtype']) && $config['authtype'] == 'mysql') {
 	            $params['database_type'] = 'mysql';

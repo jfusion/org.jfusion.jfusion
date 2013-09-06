@@ -68,6 +68,7 @@ class JFusionAdmin_joomla_ext extends JFusionJoomlaAdmin
 		$lines = $this->readFile($configfile);
 		if ($lines === false) {
 			JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $configfile . ' ' . JText::_('WIZARD_MANUAL'));
+			return false;
 		} else {
 			//parse the file line by line to get only the config variables
 			//we can not directly include the config file as JConfig is already defined

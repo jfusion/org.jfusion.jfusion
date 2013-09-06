@@ -104,6 +104,7 @@ class JFusionAdmin_magento extends JFusionAdmin
 	        $xml = JFusionFunction::getXml($xmlfile);
             if (!$xml) {
                 JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . " $xmlfile " . JText::_('WIZARD_MANUAL'), $this->getJname());
+	            return false;
             } else {
                 //save the parameters into array
                 $params['database_host'] = (string)$xml->global->resources->default_setup->connection->host;
@@ -117,6 +118,7 @@ class JFusionAdmin_magento extends JFusionAdmin
             unset($xml);
         } else {
             JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . " $xmlfile " . JText::_('WIZARD_MANUAL'), $this->getJname());
+	        return false;
         }
         
         $params['magento_version'] = $this->normalize_version($this->getMagentoVersion($forumPath));

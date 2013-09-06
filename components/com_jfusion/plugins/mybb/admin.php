@@ -63,6 +63,7 @@ class JFusionAdmin_mybb extends JFusionAdmin
         //include config file
         if (!file_exists($myfile)) {
             JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': '.$myfile. ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
+	        return false;
         } else {
             $config = array();
             include_once($myfile);

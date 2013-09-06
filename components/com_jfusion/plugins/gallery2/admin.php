@@ -75,6 +75,7 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
 	    $lines = $this->readFile($myfile);
         if ($lines === false) {
             JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': '.$myfile. ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
+	        return false;
             //get the default parameters object
         } else {
             //parse the file line by line to get only the config variables
