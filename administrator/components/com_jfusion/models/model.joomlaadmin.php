@@ -102,7 +102,7 @@ class JFusionJoomlaAdmin extends JFusionAdmin
 			$db = JFusionFactory::getDatabase($this->getJname());
 
 			$query = $db->getQuery(true)
-				->select('count(*)')
+				->select('id, title as name')
 				->from('#__usergroups');
 
 			$db->setQuery($query);
