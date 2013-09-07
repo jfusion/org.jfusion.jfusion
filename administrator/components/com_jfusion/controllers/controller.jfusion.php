@@ -543,7 +543,7 @@ class JFusionController extends JControllerLegacy
 		    $query = $db->getQuery(true)
 			    ->select('id')
 			    ->from('#__jfusion')
-			    ->where('name = ' . $db->Quote($jname));
+			    ->where('name = ' . $db->Quote($new_jname));
 
 		    $db->setQuery($query);
 		    $exsist = $db->loadResult();

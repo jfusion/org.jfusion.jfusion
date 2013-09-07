@@ -1347,7 +1347,7 @@ class JFusionFunction
     public static function isAdvancedUsergroupMode($jname) {
 	    $usergroups = JFusionFunction::getUpdateUserGroups();
 	    $advanced = false;
-        if (isset($usergroups[$jname]) && $usergroups[$jname]) {
+        if (isset($usergroups->{$jname}) && $usergroups->{$jname}) {
 	        $advanced = true;
         }
         return $advanced;

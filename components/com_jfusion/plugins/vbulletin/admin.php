@@ -246,10 +246,11 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
     function getDefaultUsergroup()
     {
 	    try {
-		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
+		    $usergroup = JFusionFunction::getCorrectUserGroups($this->getJname(), null);
 		    $usergroup_id = null;
-		    if(!empty($usergroups)) {
-			    $usergroup_id = $usergroups[0];
+
+		    if(!empty($usergroup)) {
+			    $usergroup_id = $usergroup[0]->defaultgroup;
 		    }
 		    //we want to output the usergroup name
 		    $db = JFusionFactory::getDatabase($this->getJname());
