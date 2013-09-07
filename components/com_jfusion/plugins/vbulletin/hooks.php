@@ -726,8 +726,8 @@ class JFvBulletinTask {
 
         if (is_array($usergroups)) {
             $userdm->set('usergroupid', $defaultgroup);
-            $userdm->set('displaygroupid', $usergroups[$userinfo->group_id]['displaygroup']);
-            $userdm->set('membergroupids', $usergroups[$userinfo->group_id]['membergroups']);
+            $userdm->set('displaygroupid', $usergroups['displaygroup']);
+            $userdm->set('membergroupids', $usergroups['membergroups']);
         } else {
             $userdm->set('usergroupid', $defaultgroup);
             $userdm->set('displaygroupid', 0);
@@ -786,9 +786,9 @@ class JFvBulletinTask {
 
         if (empty($this->data['aec'])) {
             $usergroups =& $this->data['usergroups'];
-            $defaultgroup =& $usergroups[$userinfo->group_id]['defaultgroup'];
-            $displaygroup =& $usergroups[$userinfo->group_id]['displaygroup'];
-            $membergroups =& $usergroups[$userinfo->group_id]['membergroups'];
+            $defaultgroup =& $usergroups['defaultgroup'];
+            $displaygroup =& $usergroups['displaygroup'];
+            $membergroups =& $usergroups['membergroups'];
         } else {
             $defaultgroup = $membergroups = $displaygroup = $this->data['aecgroupid'];
         }

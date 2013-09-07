@@ -606,7 +606,7 @@ class JFusionJoomlaUser extends JFusionUser
      *
      * @return array result Array containing the result of the user update
      */
-    public function updateUser($userinfo, $overwrite)
+    public function updateUser($userinfo, $overwrite = 0)
     {
 	    $status = array('error' => array(),'debug' => array());
 	    try {

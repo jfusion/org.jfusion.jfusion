@@ -212,7 +212,6 @@ Joomla.submitbutton = function (pressbutton) {
     } else {
         Joomla.submitform(pressbutton, adminForm);
     }
-
 };
 
 Joomla.getCheckedValue = function (radioObj) {

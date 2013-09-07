@@ -213,4 +213,14 @@ class JFusionJoomlaAdmin extends JFusionAdmin
 	{
 		return 'JNO';
 	}
+
+	/**
+	 * do plugin support multi usergroups
+	 *
+	 * @return bool
+	 */
+	function isMultiGroup()
+	{
+		return true;
+	}
 }

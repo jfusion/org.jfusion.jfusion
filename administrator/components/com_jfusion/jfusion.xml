@@ -42,6 +42,7 @@
 			<menu link="option=com_jfusion&amp;task=cpanel">CPANEL</menu>
 			<menu link="option=com_jfusion&amp;task=plugineditor&amp;jname=joomla_int">JOOMLA_OPTIONS</menu>
 			<menu link="option=com_jfusion&amp;task=plugindisplay">CONFIGURATION</menu>
+            <menu link="option=com_jfusion&amp;task=usergroups">USERGROUPS</menu>
 			<menu link="option=com_jfusion&amp;task=syncoptions">NEW_USERSYNC</menu>
 			<menu link="option=com_jfusion&amp;task=synchistory">USERSYNC_HISTORY</menu>
 			<menu link="option=com_jfusion&amp;task=loginchecker">LOGIN_CHECKER</menu>

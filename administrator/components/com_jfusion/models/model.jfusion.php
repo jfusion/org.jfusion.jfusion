@@ -1227,6 +1227,28 @@ class JFusionFunction
         return $timezone;
     }
 
+	/**
+	 * @return array;
+	 */
+	public static function getUserGroups() {
+		jimport('joomla.application.component.helper');
+		$params = JComponentHelper::getParams('com_jfusion');
+		$usergroups = $params->get('usergroups', new stdClass());
+
+		return $usergroups;
+	}
+
+	/**
+	 * @return stdClass;
+	 */
+	public static function getUpdateUserGroups() {
+		jimport('joomla.application.component.helper');
+		$params = JComponentHelper::getParams('com_jfusion');
+		$usergroupmodes = $params->get('updateusergroups', new stdClass());
+
+		return $usergroupmodes;
+	}
+
     /**
      * return the correct usergroups for a given user
      *
@@ -1235,74 +1257,49 @@ class JFusionFunction
      *
      * @return array
      */
-    public static function getCorrectUserGroups($jname,$userinfo) {
-        $params = JFusionFactory::getParams($jname);
-        $usergroups = $params->get('usergroup',null);
-		$multiusergroup = $params->get('multiusergroup',null);
-        $group = array();
-        if ($usergroups !== null) {
-            if ($userinfo === null) {
-                if (substr($usergroups, 0, 2) != 'a:') {
-                    $group = array($usergroups);
-                }
-            } else {
-                $usergroups = (substr($usergroups, 0, 2) == 'a:') ? unserialize($usergroups) : $usergroups;
-                if (is_array($usergroups) ) {
-                    if (isset($userinfo->group_id) && isset($usergroups[$userinfo->group_id])) {
-                        $usergroup = $usergroups[$userinfo->group_id];
-	                    if (is_array($usergroup)) {
-		                    //use the first var in the array
-		                    $keys = array_keys($usergroup);
-		                    $usergroup = $usergroup[$keys[0]];
-	                    }
-                        $group = array($usergroup);
-                    }
-                } else {
-                    $group = array($usergroups);
-                }
-            }
-        } else if ($multiusergroup !== null) {
-        	$master = JFusionFunction::getMaster();
+	public static function getCorrectUserGroups($jname, $userinfo) {
+		$usergroups = JFusionFunction::getUserGroups();
 
-	        $multiusergroupdefault = $params->get('multiusergroupdefault');
-	        $multiusergroup = (substr($multiusergroup, 0, 2) == 'a:') ? unserialize($multiusergroup) : $multiusergroup;
+		$group = array();
 
-			if (!is_array($multiusergroup)) {
-				$group = array($multiusergroup);
-	        } else {
-                $groups = array();
-                if ($userinfo) {
-                    if (isset($userinfo->groups)) {
-                        $groups = $userinfo->groups;
-                    } elseif (isset($userinfo->group_id)) {
-                        $groups[] = $userinfo->group_id;
-                    }
-                }
+		$master = JFusionFunction::getMaster();
 
-                $mastergroups = isset($multiusergroup[$master->name]) ? $multiusergroup[$master->name] : array();
-                $slavegroups = isset($multiusergroup[$jname]) ? $multiusergroup[$jname] : array();
+		$groups = array();
+		if ($userinfo) {
+			if (isset($userinfo->groups)) {
+				$groups = $userinfo->groups;
+			} elseif (isset($userinfo->group_id)) {
+				$groups[] = $userinfo->group_id;
+			}
+		}
 
-                foreach ($mastergroups as $key => $mastergroup) {
-                    if ( count($mastergroup) == count($groups) ) {
-                        $count = 0;
-                        foreach ($mastergroup as $value) {
-                            if (in_array($value, $groups, true)) {
-                                $count++;
-                            }
-                        }
-                        if (count($groups) == $count ) {
-                            $group =  $slavegroups[$key];
-                            break;
-                        }
-                    }
-                }
-                if (!count($group) && isset($slavegroups[$multiusergroupdefault])) {
-                    $group =  $slavegroups[$multiusergroupdefault];
-                }
-            }
-        }
+		$mastergroups = isset($usergroups->{$master->name}) ? $usergroups->{$master->name} : array();
+		$slavegroups = isset($usergroups->{$jname}) ? $usergroups->{$jname} : array();
+
+		foreach ($mastergroups as $key => $mastergroup) {
+			if ( count($mastergroup) == count($groups) ) {
+				$count = 0;
+				foreach ($mastergroup as $value) {
+					if (in_array($value, $groups, true)) {
+						$count++;
+					}
+				}
+				if (count($groups) == $count ) {
+					if (isset($slavegroups[$key])) {
+						$group = $slavegroups[$key];
+					}
+					break;
+				}
+			}
+		}
+		if (!count($group) && isset($slavegroups[0])) {
+			$group =  $slavegroups[0];
+		}
+		if (!is_array($group)) {
+			$group = array($group);
+		}
 		return $group;
-    }
+	}
 
     /**
      * compare set of usergroup with a user returns true if the usergroups are correct
@@ -1312,7 +1309,7 @@ class JFusionFunction
      *
      * @return boolean
      */
-    public static function compareUserGroups($userinfo,$usergroups) {
+    public static function compareUserGroups($userinfo, $usergroups) {
     	if (!is_array($usergroups)) {
     		$usergroups = array($usergroups);
     	}
@@ -1348,18 +1345,12 @@ class JFusionFunction
      * @return boolean
      */
     public static function isAdvancedUsergroupMode($jname) {
-        static $advanced = array();
-        if (!isset($advanced[$jname])) {
-            $params = JFusionFactory::getParams($jname);
-            $usergroup = $params->get('usergroup');
-            $multiusergroup = $params->get('multiusergroup');
-            if (substr($usergroup, 0, 2) == 'a:' || substr($multiusergroup, 0, 2) == 'a:') {
-                $advanced[$jname] = true;
-            } else {
-                $advanced[$jname] = false;
-            }
+	    $usergroups = JFusionFunction::getUpdateUserGroups();
+	    $advanced = false;
+        if (isset($usergroups[$jname]) && $usergroups[$jname]) {
+	        $advanced = true;
         }
-        return $advanced[$jname];
+        return $advanced;
     }
 
     /**

@@ -47,8 +47,6 @@
                 <field name="username_filter" type="JFusionPlugins" default="" description="USERNAME_FILTER_DESCR" label="USERNAME_FILTER"/>
                 <field name="@spacer" type="spacer" default="" label="" description="" />
 
-                <field name="multiusergroup" default="" type="JFusionCustomParam" label="USERGROUP_MANAGEMENT" description="ADVANCED_USERGROUP" />
-                <field name="@spacer" type="spacer" default="" label="" description="" />
                 <field name="autoregister" type="radio" class="btn-group" default="0" label="AUTOREGISTER" description="AUTOREGISTER_DESCR">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>

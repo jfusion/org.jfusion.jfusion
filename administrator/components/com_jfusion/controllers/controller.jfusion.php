@@ -1016,4 +1016,50 @@ JS;
 	    echo $xml->asXML();
 	    exit();
     }
+
+	/**
+	 * resolve error
+	 *
+	 * @return void
+	 */
+	function saveusergroups()
+	{
+		$usergroups = JFactory::getApplication()->input->post->get('usergroups', null, 'ARRAY');
+		$updateusergroups = JFactory::getApplication()->input->post->get('updateusergroups', null, 'ARRAY');
+		$sort = JFactory::getApplication()->input->post->get('sort', null, 'ARRAY');
+
+		$groups = array();
+		if ($usergroups && $sort) {
+			foreach ($sort as $index => $id) {
+				foreach ($usergroups as $jname => $group) {
+					$groups[$jname][$index] = $group[$id];
+				}
+			}
+		}
+
+		jimport('joomla.application.component.helper');
+		$jfusion = JComponentHelper::getComponent('com_jfusion');
+
+		$table = JTable::getInstance('extension');
+		$table->load( $jfusion->id ); // pass your component id
+
+		$jfusion->params->set('usergroups', $groups);
+		$jfusion->params->set('updateusergroups', $updateusergroups);
+
+		$post = array();
+		$post['params'] = (string)$jfusion->params;
+		$table->bind( $post );
+		// pre-save checks
+		if (!$table->check()) {
+			JError::raiseWarning( 500, $table->getError() );
+		} else {
+			// save the changes
+			if (!$table->store()) {
+				JError::raiseWarning( 500, $table->getError() );
+			} else {
+				JFusionFunction::raiseMessage(JText::_('USERGROUPS_SAVED'));
+			}
+		}
+		$this->setRedirect('index.php?option=com_jfusion&task=usergroups');
+	}
 }

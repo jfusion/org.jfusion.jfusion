@@ -293,7 +293,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 		try {
 			$usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 			if (empty($usergroups)) {
-				$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('USERGROUP_MISSING');
+				$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . JText::_('USERGROUP_MISSING');
 			} else {
 				$db = JFusionFactory::getDatabase($this->getJname());
 				try {

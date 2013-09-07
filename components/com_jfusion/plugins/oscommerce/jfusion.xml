@@ -50,7 +50,6 @@
             </fieldset>
 
             <fieldset name="USER_OPTIONS">
-                <field name="multiusergroup" default="" type="JFusionCustomParam" label="USERGROUP_MANAGEMENT" description="ADVANCED_USERGROUP" />
                 <field name="@spacer" type="spacer" default="" label="" description="" />
                 <field name="update_activation" type="radio" class="btn-group" default="1" label="UPDATE_ACTIVATION" description="UPDATE_ACTIVATION_DESC">
                     <option value="1">JYES</option>

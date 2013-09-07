@@ -58,7 +58,6 @@
 
             <fieldset name="USER_OPTIONS">
                 <field name="usergroupmap" type="text" size="100" label="USERGROUP_MAP" default="user,admin" description="USERGROUP_MAP_DESC" />
-                <field name="multiusergroup" default="" type="JFusionCustomParam" label="USERGROUP_MANAGEMENT" description="ADVANCED_USERGROUP" />
                 <field name="@spacer" type="spacer" default="" label="" description="" />
                 <field name="update_activation" type="radio" class="btn-group" default="1" label="UPDATE_ACTIVATION" description="UPDATE_ACTIVATION_DESC">
                     <option value="1">JYES</option>

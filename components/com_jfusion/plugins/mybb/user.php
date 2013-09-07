@@ -233,7 +233,7 @@ class JFusionUser_mybb extends JFusionUser {
 			    }
 		    }
 		    if (empty($oldgroup)) {
-			    $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ": " . JText::_('USERGROUP_MISSING');
+			    $status['error'][] = JText::_('BLOCK_UPDATE_ERROR') . ': ' . JText::_('USERGROUP_MISSING');
 		    } else {
 			    //restore the usergroup
 			    $query = $db->getQuery(true)
@@ -291,7 +291,7 @@ class JFusionUser_mybb extends JFusionUser {
 		try {
 			$usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 			if (empty($usergroups)) {
-				$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('USERGROUP_MISSING');
+				$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . JText::_('USERGROUP_MISSING');
 			} else {
 				$usergroup = $usergroups[0];
 				//update the usergroup
@@ -404,7 +404,7 @@ class JFusionUser_mybb extends JFusionUser {
 		    //found out what usergroup should be used
 		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 		    if (empty($usergroups)) {
-			    $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ": " . JText::_('USERGROUP_MISSING');
+			    $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' . JText::_('USERGROUP_MISSING');
 		    } else {
 			    $usergroup = $usergroups[0];
 			    //update the usergroup

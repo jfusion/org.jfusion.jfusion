@@ -200,4 +200,14 @@ class JFusionAdmin_elgg extends JFusionAdmin
 	{
 		return false;
 	}
+
+	/**
+	 * do plugin support multi usergroups
+	 *
+	 * @return bool
+	 */
+	function isMultiGroup()
+	{
+		return false;
+	}
 }

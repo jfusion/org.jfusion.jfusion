@@ -497,8 +497,8 @@ class JFusionUser_vbulletin extends JFusionUser
     function unblockUser($userinfo, &$existinguser, &$status)
     {
 	    try {
+		    $usergroup = JFusionFunction::getCorrectUserGroups($this->getJname(), $existinguser);
 		    //found out what usergroup should be used
-		    $usergroups = JFusionFunction::isAdvancedUsergroupMode($this->getJname()) ? unserialize($this->params->get('usergroup')) : $this->params->get('usergroup');
 		    $bannedgroup = $this->params->get('bannedgroup');
 
 		    //first check to see if user is banned and if so, retrieve the prebanned fields
@@ -515,20 +515,15 @@ class JFusionUser_vbulletin extends JFusionUser
 		    $db->setQuery($query);
 		    $result = $db->loadObject();
 
-		    if (is_array($usergroups)) {
-			    $defaultgroup = $usergroups[$existinguser->group_id]['defaultgroup'];
-			    $displaygroup = $usergroups[$existinguser->group_id]['displaygroup'];
-		    } else {
-			    $defaultgroup = $usergroups;
-			    $displaygroup = $usergroups;
-		    }
+		    $defaultgroup = $usergroup['defaultgroup'];
+		    $displaygroup = $usergroup['displaygroup'];
 
 		    $defaulttitle = $this->getDefaultUserTitle($defaultgroup, $existinguser->posts);
 
 		    $apidata = array(
 			    "userinfo" => $userinfo,
 			    "existinguser" => $existinguser,
-			    "usergroups" => $usergroups,
+			    "usergroups" => $usergroup,
 			    "bannedgroup" => $bannedgroup,
 			    "defaultgroup" => $defaultgroup,
 			    "displaygroup" => $displaygroup,
@@ -574,8 +569,8 @@ class JFusionUser_vbulletin extends JFusionUser
     {
 	    try {
 		    //found out what usergroup should be used
-		    $usergroups = JFusionFunction::isAdvancedUsergroupMode($this->getJname()) ? unserialize($this->params->get('usergroup')) : $this->params->get('usergroup');
-		    $usergroup = (is_array($usergroups)) ? $usergroups[$userinfo->group_id]['defaultgroup'] : $usergroups;
+		    $usergroup = JFusionFunction::getCorrectUserGroups($this->getJname(), $existinguser);
+		    $usergroup = $usergroup['defaultgroup'];
 
 		    //update the usergroup to default group
 		    $db = JFusionFactory::getDatabase($this->getJname());
@@ -643,9 +638,8 @@ class JFusionUser_vbulletin extends JFusionUser
 			    jimport('joomla.user.helper');
 			    $useractivation->activationid = JUserHelper::genRandomPassword(40);
 
-			    $usergroups = JFusionFunction::isAdvancedUsergroupMode($this->getJname()) ? unserialize($this->params->get('usergroup')) : $this->params->get('usergroup');
-			    $usergroup = (is_array($usergroups)) ? $usergroups[$userinfo->group_id]['defaultgroup'] : $usergroups;
-			    $useractivation->usergroupid = $usergroup;
+			    $usergroup = JFusionFunction::getCorrectUserGroups($this->getJname(), $existinguser);
+			    $useractivation->usergroupid = $usergroup['defaultgroup'];
 
 			    $db->insertObject('#__useractivation', $useractivation, 'useractivationid' );
 
@@ -680,14 +674,14 @@ class JFusionUser_vbulletin extends JFusionUser
     {
 	    try {
 		    //get the default user group and determine if we are using simple or advanced
-		    $usergroups = JFusionFunction::isAdvancedUsergroupMode($this->getJname()) ? unserialize($this->params->get('usergroup')) : $this->params->get('usergroup');
+		    $usergroup = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
 
 		    //return if we are in advanced user group mode but the master did not pass in a group_id
-		    if (is_array($usergroups) && !isset($userinfo->group_id)) {
+		    if (empty($usergroup)) {
 			    throw new RuntimeException(JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID'));
 		    } else {
 			    if (empty($userinfo->activation)) {
-				    $defaultgroup = (is_array($usergroups)) ? $usergroups[$userinfo->group_id]['defaultgroup'] : $usergroups;
+				    $defaultgroup = $usergroup['defaultgroup'];
 				    $setAsNeedsActivation = false;
 			    } else {
 				    $defaultgroup = $this->params->get('activationgroup');
@@ -695,7 +689,7 @@ class JFusionUser_vbulletin extends JFusionUser
 			    }
 
 			    $apidata = array();
-			    $apidata['usergroups'] = $usergroups;
+			    $apidata['usergroups'] = $usergroup;
 			    $apidata['defaultgroup'] = $defaultgroup;
 
 			    $usertitle = $this->getDefaultUserTitle($defaultgroup);
@@ -772,19 +766,19 @@ class JFusionUser_vbulletin extends JFusionUser
     function executeUpdateUsergroup(&$userinfo, &$existinguser, &$status)
     {
         $update_groups = false;
-        $usergroups = unserialize($this->params->get('usergroup'));
+	    $usergroup = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
 
-        $usergroupid = $usergroups[$userinfo->group_id]['defaultgroup'];
-        $displaygroupid = $usergroups[$userinfo->group_id]['displaygroup'];
-        $membergroupids = (isset($usergroups[$userinfo->group_id]['membergroups'])) ? $usergroups[$userinfo->group_id]['membergroups'] : array();
+        $usergroupid = $usergroup['defaultgroup'];
+        $displaygroupid = $usergroup['displaygroup'];
+        $membergroupids = (isset($usergroup['membergroups'])) ? $usergroup['membergroups'] : array();
 
         //check to see if the default groups are different
         if ($usergroupid != $existinguser->group_id ) {
             $update_groups = true;
-        } elseif (!empty($usergroups['options']['compare_displaygroups']) && $displaygroupid != $existinguser->displaygroupid ) {
+        } elseif ($this->params->get('compare_displaygroups', true) && $displaygroupid != $existinguser->displaygroupid ) {
             //check to see if the display groups are different
             $update_groups = true;
-        } elseif (!empty($usergroups['options']['compare_membergroups'])) {
+        } elseif ($this->params->get('compare_membergroups', true)) {
             //check to see if member groups are different
             $current_membergroups = explode(',', $existinguser->membergroupids);
             foreach ($membergroupids as $gid) {
@@ -812,34 +806,30 @@ class JFusionUser_vbulletin extends JFusionUser
     function updateUsergroup($userinfo, &$existinguser, &$status)
     {
         //check to see if we have a group_id in the $userinfo, if not return
-        if (!isset($userinfo->group_id)) {
-            $status['error'][] = JText::_('GROUP_UPDATE_ERROR'). ": " . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
+	    $usergroup = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
+        if (empty($usergroup)) {
+            $status['error'][] = JText::_('GROUP_UPDATE_ERROR'). ': ' . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
         } else {
-            $usergroups = unserialize($this->params->get('usergroup'));
-            if (isset($usergroups[$userinfo->group_id])) {
-                $defaultgroup = $usergroups[$userinfo->group_id]['defaultgroup'];
-                $displaygroup = $usergroups[$userinfo->group_id]['displaygroup'];
-                $titlegroupid = (!empty($displaygroup)) ? $displaygroup : $defaultgroup;
-                $usertitle = $this->getDefaultUserTitle($titlegroupid);
+	        $defaultgroup = $usergroup['defaultgroup'];
+	        $displaygroup = $usergroup['displaygroup'];
+	        $titlegroupid = (!empty($displaygroup)) ? $displaygroup : $defaultgroup;
+	        $usertitle = $this->getDefaultUserTitle($titlegroupid);
 
-                $apidata = array(
-                    "existinguser" => $existinguser,
-                    "userinfo" => $userinfo,
-                    "usergroups" => $usergroups,
-                    "usertitle" => $usertitle
-                );
-                $response = $this->helper->apiCall('updateUsergroup', $apidata);
+	        $apidata = array(
+		        'existinguser' => $existinguser,
+		        'userinfo' => $userinfo,
+		        'usergroups' => $usergroup,
+		        'usertitle' => $usertitle
+	        );
+	        $response = $this->helper->apiCall('updateUsergroup', $apidata);
 
-                if (empty($response['errors'])) {
-                    $status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . $existinguser->group_id . ' -> ' . $usergroups[$userinfo->group_id]['defaultgroup'];
-                } else {
-                    foreach ($response['errors'] AS $error) {
-                        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . $error;
-                    }
-                }
-            } else {
-                $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST');
-            }
+	        if (empty($response['errors'])) {
+		        $status['debug'][] = JText::_('GROUP_UPDATE'). ': ' . $existinguser->group_id . ' -> ' . $usergroup['defaultgroup'];
+	        } else {
+		        foreach ($response['errors'] AS $error) {
+			        $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . $error;
+		        }
+	        }
 
             if (!empty($response['debug'])) {
                 $status['debug']['api_call'] = $response['debug'];

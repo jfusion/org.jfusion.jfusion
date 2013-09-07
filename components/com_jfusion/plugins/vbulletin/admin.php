@@ -705,152 +705,6 @@ HTML;
     }
 
     /**
-     * @param string $name
-     * @param string $value
-     * @param string $node
-     * @param string $control_name
-     * @return mixed|string
-     */
-    function usergroup($name, $value, $node, $control_name)
-    {
-        //get the master plugin to be throughout
-        $master = JFusionFunction::getMaster();
-        //detect is value is a serialized array
-        $advanced = 0;
-
-	    JHTML::setFormatOptions(array('format.eol' => "", 'format.indent' => ""));
-
-        if (substr($value, 0, 2) == 'a:') {
-            $value = unserialize($value);
-            if (!empty($master) && $master->name != $this->getJname()) $advanced = 1;
-        }
-        if (JFusionFunction::validPlugin($this->getJname())) {
-            $usergroups = $this->getUsergroupList();
-            if (!empty($usergroups)) {
-                $simple_value = (empty($value) || is_array($value)) ? 2 : $value;
-                $simple_usergroup = '<table style="width:100%; border:0;">';
-                $simple_usergroup.= '<tr><td>' . JText::_('DEFAULT_USERGROUP') . '</td><td>' . JHTML::_('select.genericlist', $usergroups, $control_name . '[' . $name . ']', '', 'id', 'name', $simple_value) . '</td></tr>';
-                $simple_usergroup.= '</table>';
-                //escape single quotes to prevent JS errors
-                $simple_usergroup = str_replace("'", "\'", $simple_usergroup);
-            } else {
-                $simple_usergroup = '';
-            }
-        } else {
-            return JText::_('SAVE_CONFIG_FIRST');
-        }
-        //check to see if current plugin is a slave
-        $db = JFactory::getDBO();
-
-	    $query = $db->getQuery(true)
-		    ->select('slave')
-		    ->from('#__jfusion')
-		    ->where('name = ' . $db->quote($this->getJname()));
-
-        $db->setQuery($query);
-        $slave = $db->loadResult();
-        $list_box = '<select onchange="JFusion.Plugin.usergroupSelect(this.selectedIndex);">';
-        if ($advanced == 1) {
-            $list_box.= '<option value="0" selected="selected">Simple</option>';
-        } else {
-            $list_box.= '<option value="0">Simple</option>';
-        }
-        $advanced_usergroup = '';
-        $jsGroups = array();
-        if ($slave == 1 && !empty($master) && JFusionFunction::hasFeature($this->getJname(),'updateusergroup')) {
-            //allow usergroup sync
-            if ($advanced == 1) {
-                $list_box.= '<option selected="selected" value="1">Avanced</option>';
-            } else {
-                $list_box.= '<option value="1">Avanced</option>';
-            }
-            //prepare the advanced options
-            $JFusionMaster = JFusionFactory::getAdmin($master->name);
-            $master_usergroups = $JFusionMaster->getUsergroupList();
-
-            //setup display group list
-            $default = array(JHTML::_('select.option', '0', JText::_('DEFAULT'), 'id', 'name'));
-            $displaygroups = array_merge($default, $usergroups);
-            //remove non-applicable usergroups from displaygroup list
-            $non_displaygroups = array(1, 3, 4);
-            foreach ($displaygroups as $key => $group) {
-                if (in_array($group->id, $non_displaygroups)) {
-                    unset($displaygroups[$key]);
-                }
-            }
-            //create advanced usergroup html
-            $advanced_usergroup = '<table style="width:100%; border:0">';
-            //add options to compare display and member groups in addition to default usergroups
-            $advanced_usergroup .= '<tr><td colspan=2><b>'.JText::_('OPTIONS').'</b></td></tr>';
-            $options = array();
-            $options[] = JHTML::_('select.option', '1', JText::_('JYES'), 'id', 'value');
-            $options[] = JHTML::_('select.option', '0', JText::_('JNO'), 'id', 'value');
-            //option to compare display groups
-            $option_value = ($advanced && is_array($value) && isset($value['options']['compare_displaygroups'])) ? $value['options']['compare_displaygroups'] : '';
-/**
- * @TODO: unused ?
-            $check = ($advanced && !empty($value['option']['compare_displaygroups'])) ? 'checked' : '';
-*/
-            $advanced_usergroup .= '<tr><td>'.JText::_('COMPARE_DISPLAYGROUPS').'</td><td>' . JHTML::_('select.genericlist', $options, $control_name . '[' . $name . '][options][compare_displaygroups]', 'class="inputbox"', 'id', 'value', $option_value);
-            //option to compare member groups
-	        $option_value = ($advanced && isset($value['options']['compare_membergroups'])) ? $value['options']['compare_membergroups'] : '';
-/**
- * @TODO: unused ?
-			$check = ($advanced && !empty($value['option']['compares_membergroups'])) ? 'checked' : '';
-*/
-            $advanced_usergroup .= '<tr><td>'.JText::_('COMPARE_MEMBERGROUPS').'</td><td>' . JHTML::_('select.genericlist', $options, $control_name . '[' . $name . '][options][compare_membergroups]', 'class="inputbox"', 'id', 'value', $option_value);
-
-            foreach ($master_usergroups as $master_usergroup) {
-                $defaultgroup = ($advanced && isset($value[$master_usergroup->id]['defaultgroup'])) ? $value[$master_usergroup->id]['defaultgroup'] : '';
-                $displaygroup = ($advanced && isset($value[$master_usergroup->id]['displaygroup'])) ? $value[$master_usergroup->id]['displaygroup'] : '';
-                $membergroups = ($advanced && isset($value[$master_usergroup->id]['membergroups'])) ? $value[$master_usergroup->id]['membergroups'] : '';
-                $advanced_usergroup.= '<tr><td colspan="2"><b>' . $master_usergroup->name . '</b></td></tr>';
-                $advanced_usergroup.= '<tr><td>' . JText::_('DEFAULT_USERGROUP') . '</td><td>' . JHTML::_('select.genericlist', $usergroups, $control_name . '[' . $name . '][' . $master_usergroup->id . '][defaultgroup]', 'onclick="JFusion.Plugin.toggleSecondaryGroups(this.value,' . $master_usergroup->id . ');" class="inputbox"', 'id', 'name', $defaultgroup) . '</td></tr>';
-
-                $advanced_usergroup.= '<tr><td>' . JText::_('DEFAULT_DISPLAYGROUP') . '</td><td>' . JHTML::_('select.genericlist', $displaygroups, $control_name . '[' . $name . '][' . $master_usergroup->id . '][displaygroup]', 'class="inputbox"', 'id', 'name', $displaygroup) . '</td></tr>';
-                $advanced_usergroup.= '<tr><td>' . JText::_('DEFAULT_MEMBERGROUPS') . '</td><td>';
-                foreach ($usergroups as $group) {
-                    $check = (((is_array($membergroups) && in_array($group->id, $membergroups)) || $membergroups == $group->id) && $defaultgroup != $group->id) ? 'checked' : '';
-                    $disabled = ($defaultgroup == $group->id) ? 'disabled' : '';
-                    $advanced_usergroup.= '<input id="vbgroup' . $master_usergroup->id . '-' . $group->id . '" type=checkbox value="' . $group->id . '" name="' . $control_name . '[' . $name . '][' . $master_usergroup->id . '][membergroups][]" ' . $check . ' ' . $disabled . '/>  ' . $group->name . '<br>';
-                    $jsGroups[] = $group->id;
-                }
-                $advanced_usergroup.= '</td></tr>';
-            }
-            $advanced_usergroup.= '</table>';
-            //escape single quotes to prevent JS errors
-            $advanced_usergroup = str_replace("'", "\'", $advanced_usergroup);
-        }
-        $list_box.= '</select>';
-
-	    $jsGroups = implode(',', $jsGroups);
-	    $js = <<<JS
-        JFusion.Plugin.groupDataArray[0] = '{$simple_usergroup}';
-        JFusion.Plugin.groupDataArray[1] = '{$advanced_usergroup}';
-
-        JFusion.Plugin.toggleSecondaryGroups = function(vbid,masterid) {
-        	var groups = new Array({$jsGroups});
-	        for(var i=0; i<groups.length; i++) {
-        		var element = $('vbgroup'+masterid+'-'+groups[i]);
-        		if (element.value==vbid) {
-        			element.disabled = true;
-        			element.checked = false;
-        		} else {
-        			element.disabled = false;
-        		}
-        	}
-        }
-JS;
-        $document = JFactory::getDocument();
-        $document->addScriptDeclaration($js);
-        if ($advanced == 1) {
-            return JText::_('USERGROUP') . ' ' . JText::_('MODE') . ': ' . $list_box . '<br/><div id="JFusionUsergroup">' . $advanced_usergroup . '</div>';
-        } else {
-            return JText::_('USERGROUP') . ' ' . JText::_('MODE') . ': ' . $list_box . '<br/><div id="JFusionUsergroup">' . $simple_usergroup . '</div>';
-        }
-    }
-
-    /**
      * @param $name
      * @param $value
      * @param $node
@@ -944,5 +798,124 @@ JS;
     function requireFileAccess()
 	{
 		return 'JYES';
+	}
+
+	/**
+	 * create the render group function
+	 */
+	function getRenderGroup()
+	{
+		$jname = $this->getJname();
+		$js = <<<JS
+		JFusion.renderPlugin['{$jname}'] = function(index, plugin, pair) {
+			var usergroups = JFusion.usergroups[plugin.name];
+
+			var div = new Element('div');
+
+			// render default group
+			div.appendChild(new Element('div', {'html': JFusion.JText('DEFAULT_USERGROUP')}));
+
+		    var defaultselect = new Element('select', {
+		    	'name': 'usergroups['+plugin.name+']['+index+'][defaultgroup]',
+		    	'id': 'usergroups_'+plugin.name+index+'defaultgroup',
+		    	'events': {
+                    'change': function () {
+                    	var value = this.get('value');
+						Array.each(usergroups, function (group) {
+							var element = $('usergroups_'+plugin.name+index+'membergroups'+group.id);
+			                if (element.get('value') == value) {
+			                    element.set('disabled', true);
+			                    element.set('checked', false);
+			                } else {
+			                    element.set('disabled', false);
+			                }
+					    });
+				    }
+		    	}
+		    });
+
+		    Array.each(usergroups, function (group) {
+		        var defaultselected = '';
+		        if (pair && pair.defaultgroup && pair.defaultgroup == group.id) {
+		            defaultselected = 'selected';
+		        }
+
+				defaultselect.appendChild(new Element('option', {'value': group.id,
+					'selected': defaultselected,
+					'html': group.name}
+				));
+		    });
+		    div.appendChild(defaultselect);
+
+
+			// render display group
+			div.appendChild(new Element('div', {'html': JFusion.JText('DEFAULT_DISPLAYGROUP')}));
+
+		    var displayselect = new Element('select', {
+			    'name': 'usergroups['+plugin.name+']['+index+'][displaygroup]',
+			    'id': 'usergroups_'+plugin.name+index+'displaygroup'});
+
+			displayselect.appendChild(new Element('option', {'value': 0, 'html': JFusion.JText('DEFAULT')}));
+		    Array.each(usergroups, function (group) {
+			    if (group.id != 1 && group.id != 3 && group.id != 4) {
+                    var displayselected = '';
+				    if (pair && pair['displaygroup'] !== null && pair['displaygroup'] == group.id) {
+				        displayselected = 'selected';
+				    }
+
+			    	displayselect.appendChild(new Element('option', {'value': group.id,
+			    		'selected': displayselected,
+			    		'html': group.name}));
+			    }
+		    });
+			div.appendChild(displayselect);
+
+
+			// render default mmber groups
+			div.appendChild(new Element('div', {'html': JFusion.JText('DEFAULT_MEMBERGROUPS')}));
+
+		    Array.each(usergroups, function (group, i) {
+		    	var cdiv = new Element('div');
+
+				var membergroupsdisabled = '';
+				var membergroupschecked = '';
+		        if ((pair && pair.defaultgroup == group.id) || (!pair && i === 0)) {
+					membergroupsdisabled = 'disabled';
+		        } else {
+		            if (pair && pair.membergroups && pair.membergroups.contains(group.id)) {
+			            membergroupschecked = 'checked';
+			        }
+		        }
+
+				var checkbox = new Element('input', {'type': 'checkbox',
+					'id': 'usergroups_'+plugin.name+index+'membergroups'+group.id,
+					'value': group.id,
+					'disabled': membergroupsdisabled,
+					'checked': membergroupschecked,
+					'name': 'usergroups['+plugin.name+']['+index+'][membergroups][]'
+				});
+				cdiv.appendChild(checkbox);
+
+				cdiv.appendChild(new Element('span', {'html': group.name}));
+
+		    	div.appendChild(cdiv);
+		    });
+		    return div;
+		};
+JS;
+
+		$document = JFactory::getDocument();
+		$document->addScriptDeclaration($js);
+		return $js;
+	}
+
+	/**
+	 * do plugin support multi usergroups
+	 *
+	 * @return bool
+	 */
+	function isMultiGroup()
+	{
+		return false;
 	}
 }

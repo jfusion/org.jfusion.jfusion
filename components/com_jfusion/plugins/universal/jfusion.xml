@@ -51,8 +51,6 @@
                 <field name="mapuser" default="" type="JFusionCustomParam" label="USER_MAPING" description="USER_MAPING_DESCR"/>
                 <field name="user_auth" default="md5($userinfo->password_clear)" type="JFusionCustomParam" label="USER_AUTH" description="USER_AUTH_DESCR"/>
                 <field name="usergroupmap" default="" type="JFusionPair" label="USERGROUP_MAP" description="USERGROUP_MAP"/>
-                <field name=" " type="helptext" default="DEFAULT_USERGROUP_DESCR" label=""/>
-                <field name="multiusergroup" default="" type="JFusionCustomParam" label="USERGROUP_MANAGEMENT" description="ADVANCED_USERGROUP"/>
                 <field name="mapgroup" default="" type="JFusionCustomParam" label="GROUP_MAPING" description="GROUP_MAPING_DESCR"/>
                 <field name="registerurl" type="text" size="100" default="index.php?action=register" description="REGISTERURL" label="REGISTERURL"/>
                 <field name="lostpasswordurl" type="text" size="100" default="index.php?action=reminder" description="LOSTPASSWORDURL" label="LOSTPASSWORDURL"/>

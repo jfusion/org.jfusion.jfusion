@@ -274,7 +274,7 @@ class JFusionUser_gallery2 extends JFusionUser
 	    $this->helper->loadGallery2Api(false);
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
         if (empty($usergroups)) {
-            $status['error'][] = JText::_('ERROR_CREATE_USER') . ": " . JText::_('USERGROUP_MISSING');
+            $status['error'][] = JText::_('ERROR_CREATE_USER') . ': ' . JText::_('USERGROUP_MISSING');
         } else {
 	        /**
 	         * @ignore
@@ -332,7 +332,7 @@ class JFusionUser_gallery2 extends JFusionUser
 	    $this->helper->loadGallery2Api(false);
         $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
         if (empty($usergroups)) {
-            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ": " . JText::_('USERGROUP_MISSING');
+            $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . JText::_('USERGROUP_MISSING');
         } else {
             foreach($existinguser->groups as $group) {
                 if (!in_array($group, $usergroups, true)) {

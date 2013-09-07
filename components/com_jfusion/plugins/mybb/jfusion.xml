@@ -49,7 +49,6 @@
             </fieldset>
 
             <fieldset name="USER_OPTIONS">
-                <field name="multiusergroup" type="JFusionUsergroups" description="DEFAULT_USERGROUP_DESCR" label="DEFAULT_USERGROUP" />
                 <field name="activationgroup" type="JFusionUsergroups" description="DEFAULT_ACTIVATIONGROUP" label="DEFAULT_ACTIVATIONGROUP" />
                 <field name="@spacer" type="spacer" default="" label="" description="" />
                 <field name="update_activation" type="radio" class="btn-group" default="1" label="UPDATE_ACTIVATION" description="UPDATE_ACTIVATION_DESC">

@@ -80,7 +80,7 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
         $config = $this->helper->getConf($Path);
         $params = array();
         if ($config === false) {
-            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ": $Path " . JText::_('WIZARD_MANUAL'), $this->getJname());
+            JFusionFunction::raiseWarning(JText::_('WIZARD_FAILURE') . ': ' . $Path . ' ' . JText::_('WIZARD_MANUAL'), $this->getJname());
 	        return false;
         } else {
             if (isset($config['auth']['mysql']) && isset($config['authtype']) && $config['authtype'] == 'mysql') {
@@ -545,5 +545,15 @@ PHP;
 	function multiInstance()
 	{
 		return false;
+	}
+
+	/**
+	 * do plugin support multi usergroups
+	 *
+	 * @return bool
+	 */
+	function isMultiGroup()
+	{
+		return true;
 	}
 }

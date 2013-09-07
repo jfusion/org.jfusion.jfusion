@@ -172,7 +172,8 @@ class JFusionAdmin_prestashop extends JFusionAdmin
     /**
      * @return array
      */
-    function getUsergroupList() {
+    function getUsergroupList()
+    {
 	    try {
 		    //get the connection to the db
 		    $db = JFusionFactory::getDatabase($this->getJname());
@@ -207,7 +208,8 @@ class JFusionAdmin_prestashop extends JFusionAdmin
     /**
      * @return string
      */
-    function getDefaultUsergroup() {
+    function getDefaultUsergroup()
+    {
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
 		    //we want to output the usergroup name
@@ -237,7 +239,8 @@ class JFusionAdmin_prestashop extends JFusionAdmin
     /**
      * @return bool
      */
-    function allowRegistration() {
+    function allowRegistration()
+    {
         //you cannot disable registration
         return true;
     }
@@ -245,14 +248,16 @@ class JFusionAdmin_prestashop extends JFusionAdmin
     /**
      * @return bool
      */
-    function allowEmptyCookiePath(){
+    function allowEmptyCookiePath()
+    {
 		return true;
 	}
 
     /**
      * @return bool
      */
-    function allowEmptyCookieDomain(){
+    function allowEmptyCookieDomain()
+    {
 		return true;
 	}
 
@@ -272,5 +277,15 @@ class JFusionAdmin_prestashop extends JFusionAdmin
 	function multiInstance()
 	{
 		return false;
+	}
+
+	/**
+	 * do plugin support multi usergroups
+	 *
+	 * @return bool
+	 */
+	function isMultiGroup()
+	{
+		return true;
 	}
 }

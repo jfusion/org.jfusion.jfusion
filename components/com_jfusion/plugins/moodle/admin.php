@@ -656,5 +656,15 @@ HTML;
     function requireFileAccess()
 	{
 		return 'JNO';
-	}    
+	}
+
+	/**
+	 * do plugin support multi usergroups
+	 *
+	 * @return bool
+	 */
+	function isMultiGroup()
+	{
+		return false;
+	}
 }

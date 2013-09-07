@@ -45,22 +45,6 @@ class JFusionAdmin_joomla_int extends JFusionJoomlaAdmin {
         return 'joomla_int';
     }
 
-    /**
-     * Get an usergroup element
-     *
-     * @param string $name         name of element
-     * @param string $value        value of element
-     * @param string $node         node of element
-     * @param string $control_name name of controller
-     *
-     * @return string html
-     */
-    function usergroup($name, $value, $node, $control_name)
-    {
-	    $value = $this->params->get('multiusergroup');
-	    return parent::multiusergroup('multiusergroup', $value, $node, $control_name);
-    }
-
 	/**
 	 * @return bool do the plugin support multi instance
 	 */

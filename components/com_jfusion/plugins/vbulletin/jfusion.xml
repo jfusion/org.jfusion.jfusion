@@ -63,9 +63,19 @@
             <fieldset name="USER_OPTIONS">
                 <field name="name_field" type="JFusionCustomParam" label="NAME_FIELD_OPTION" description="NAME_FIELD_OPTION_DESCR" />
                 <field name="@spacer" type="spacer" default="" label="" description="" />
-                <field name="usergroup" default="" type="JFusionCustomParam" label="USERGROUP_MANAGEMENT" description="ADVANCED_USERGROUP" />
                 <field name="activationgroup" type="JFusionUsergroups" description="DEFAULT_ACTIVATIONGROUP" label="DEFAULT_ACTIVATIONGROUP" />
                 <field name="bannedgroup" type="JFusionUsergroups" description="DEFAULT_BANNEDGROUP" label="DEFAULT_BANNEDGROUP" />
+
+                <field name="compare_displaygroups" type="radio" class="btn-group" default="1" label="COMPARE_DISPLAYGROUPS" description="COMPARE_DISPLAYGROUPS">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+
+                <field name="compare_membergroups" type="radio" class="btn-group" default="1" label="COMPARE_MEMBERGROUPS" description="COMPARE_MEMBERGROUPS">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+
                 <field name="@spacer" type="spacer" default="" label="" description="" />
                 <field name="block_coppa_users" type="radio" class="btn-group" default="1" label="BLOCK_COPPA_USERS" description="BLOCK_COPPA_USERS_DESCR">
                     <option value="1">JYES</option>

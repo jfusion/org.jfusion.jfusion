@@ -136,6 +136,7 @@ class com_jfusionInstallerScript
 			        dual_login tinyint(4) NOT null,
 			        check_encryption tinyint(4) NOT null,
 			        plugin_files LONGBLOB,
+			        usergroups text,
 			        original_name varchar(50) null,
 			        ordering tinyint(4),
 			        PRIMARY KEY  (id)
@@ -392,9 +393,6 @@ class com_jfusionInstallerScript
 		}
 
 		//remove columns
-		$query = 'SHOW COLUMNS FROM #__jfusion';
-		$db->setQuery($query);
-		$columns = $db->loadColumn();
 		if (in_array('activity', $columns)) {
 			$query = 'ALTER TABLE #__jfusion DROP column activity';
 			$db->setQuery($query);
@@ -519,6 +517,21 @@ class com_jfusionInstallerScript
 			echo $e->getMessage() . '<br />';
 		}
 
+		$query = 'SHOW COLUMNS FROM #__jfusion';
+		$db->setQuery($query);
+		$columns = $db->loadColumn();
+		if (!in_array('usergroups', $columns)) {
+			//add the column
+			$query = 'ALTER TABLE #__jfusion
+              ADD COLUMN usergroups text';
+			$db->setQuery($query);
+			try {
+				$db->execute();
+			} catch (Exception $e ) {
+				echo $e->getMessage() . '<br />';
+				return;
+			}
+		}
 
 		/****
 		 * General for all upgrades

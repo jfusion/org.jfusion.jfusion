@@ -360,4 +360,14 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
 	{
 		return false;
 	}
+
+	/**
+	 * do plugin support multi usergroups
+	 *
+	 * @return bool
+	 */
+	function isMultiGroup()
+	{
+		return true;
+	}
 }

@@ -43,6 +43,16 @@ JFusionFunctionAdmin::displayDonate();
 				                </a>
 				            </div>
 				    </div>
+					<div style="float:left;">
+						<div class="icon">
+							<a href="index.php?option=com_jfusion&task=usergroups" >
+								<img src="components/com_jfusion/images/usergroup.png">
+	                                <span>
+	                                    <?php echo JText::_('USERGROUPS'); ?>
+	                                </span>
+							</a>
+						</div>
+					</div>
 				    <div style="float:left;">
 				            <div class="icon">
 				                <a href="index.php?option=com_jfusion&task=syncoptions" >
