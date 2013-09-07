@@ -256,7 +256,7 @@ class JFusionUser_vbulletin extends JFusionUser
      * @param array $options
      * @return array
      */
-    function createSession(&$userinfo, $options)
+    function createSession($userinfo, $options)
     {
         $status = array('error' => array(),'debug' => array());
 	    try {
@@ -424,12 +424,12 @@ class JFusionUser_vbulletin extends JFusionUser
 
     /**
      * @param object $userinfo
-     * @param object $existinguser
+     * @param object &$existinguser
      * @param array $status
      *
      * @return void
      */
-    function blockUser (&$userinfo, &$existinguser, &$status)
+    function blockUser($userinfo, &$existinguser, &$status)
     {
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
