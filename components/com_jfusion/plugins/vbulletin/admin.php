@@ -241,31 +241,32 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
     }
 
     /**
-     * @return string
+     * @return string|array
      */
     function getDefaultUsergroup()
     {
 	    try {
-		    $usergroup = JFusionFunction::getCorrectUserGroups($this->getJname(), null);
-		    $usergroup_id = null;
+		    $usergroup = JFusionFunction::getUserGroups($this->getJname(), true);
 
-		    if(!empty($usergroup)) {
-			    $usergroup_id = $usergroup[0]->defaultgroup;
+		    if ($usergroup !== null) {
+			    //we want to output the usergroup name
+			    $db = JFusionFactory::getDatabase($this->getJname());
+
+			    $query = $db->getQuery(true)
+				    ->select('title')
+				    ->from('#__usergroup')
+				    ->where('usergroupid = ' . $usergroup->defaultgroup);
+
+			    $db->setQuery($query);
+			    $group = $db->loadResult();
+		    } else {
+			    $group = '';
 		    }
-		    //we want to output the usergroup name
-		    $db = JFusionFactory::getDatabase($this->getJname());
-
-		    $query = $db->getQuery(true)
-			    ->select('title')
-			    ->from('#__usergroup')
-		        ->where('usergroupid = ' . $usergroup_id);
-
-		    $db->setQuery($query);
-		    return $db->loadResult();
 	    } catch (Exception $e) {
 		    JFusionFunction::raiseError($e, $this->getJname());
-		    return '';
+		    $group = '';
 	    }
+	    return $group;
     }
 
     /**
@@ -665,28 +666,6 @@ HTML;
     function debugConfigExtra()
     {
 	    try {
-		    //check for usergroups to make sure membergroups do not include default or display group
-		    if (JFusionFunction::isAdvancedUsergroupMode($this->getJname())) {
-			    $usergroups = unserialize($this->params->get('usergroup'));
-			    $master = JFusionFunction::getMaster();
-			    if (!empty($master)) {
-				    if ($master->name != $this->getJName()) {
-					    $JFusionMaster = JFusionFactory::getAdmin($master->name);
-					    $master_usergroups = $JFusionMaster->getUsergroupList();
-					    foreach ($master_usergroups as $group) {
-						    if (isset($usergroups[$group->id]['membergroups']) && isset($usergroups[$group->id]['defaultgroup'])) {
-							    $membergroups = $usergroups[$group->id]['membergroups'];
-							    $defaultgroup = $usergroups[$group->id]['defaultgroup'];
-							    if ((is_array($membergroups) && in_array($defaultgroup, $membergroups)) || $defaultgroup == $membergroups) {
-								    JFusionFunction::raiseWarning(JText::sprintf('VB_GROUP_MISMATCH', $group->name), $this->getJname());
-							    }
-						    }
-					    }
-				    } else {
-					    JFusionFunction::raiseWarning(JText::_('ADVANCED_GROUPMODE_ONLY_SUPPORTED_FORSLAVES'), $this->getJname());
-				    }
-			    }
-		    }
 		    $db = JFusionFactory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)

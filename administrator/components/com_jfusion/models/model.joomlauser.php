@@ -691,10 +691,9 @@ class JFusionJoomlaUser extends JFusionUser
 					    }
 				    }
 				    //check for advanced usergroup sync
-				    $master = JFusionFunction::getMaster();
-				    if (!$userinfo->block && empty($userinfo->activation) && $master->name != $this->getJname()) {
-					    if (JFusionFunction::isAdvancedUsergroupMode($this->getJname())) {
-						    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+				    if (!$userinfo->block && empty($userinfo->activation)) {
+					    if (JFusionFunction::updateUsergroups($this->getJname())) {
+						    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
 
 						    if (!JFusionFunction::compareUserGroups($existinguser,$usergroups)) {
 							    $this->updateUsergroup($userinfo, $existinguser, $status);

@@ -68,23 +68,27 @@ class JFusionAdmin_universal extends JFusionAdmin
 	}
 
 	/**
-	 * @return null|string
+	 * @return string|array
 	 */
 	function getDefaultUsergroup()
 	{
-		$usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
-		$usergroup_id = null;
-		if(!empty($usergroups)) {
-			$usergroup_id = $usergroups[0];
-		}
+		$usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
 
-		$usergrouplist = $this->getUsergroupList();
-		foreach ($usergrouplist as $value) {
-			if($value ->id == $usergroup_id){
-				return $value->name;
+		$groups = array();
+		if ($usergroups !== null) {
+			if (!$this->isMultiGroup()) {
+				$usergroups = array($usergroups);
+			}
+
+
+			$list = $this->getUsergroupList();
+			foreach ($list as $group) {
+				if(in_array($group ->id, $usergroups)){
+					$groups[] = $group->name;
+				}
 			}
 		}
-		return null;
+		return $groups;
 	}
 
 	/**

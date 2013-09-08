@@ -135,8 +135,6 @@ class com_jfusionInstallerScript
 			        status tinyint(4) NOT null,
 			        dual_login tinyint(4) NOT null,
 			        check_encryption tinyint(4) NOT null,
-			        plugin_files LONGBLOB,
-			        usergroups text,
 			        original_name varchar(50) null,
 			        ordering tinyint(4),
 			        PRIMARY KEY  (id)
@@ -198,19 +196,6 @@ class com_jfusionInstallerScript
 		/***
 		 * UPGRADES FOR 1.1.1 Beta
 		 ***/
-		//add the plugin_files and original columns if it does not exist
-		if (!in_array('plugin_files', $columns)) {
-			//add the column
-			$query = 'ALTER TABLE #__jfusion
-              ADD COLUMN plugin_files LONGBLOB ';
-			$db->setQuery($query);
-			try {
-				$db->execute();
-			} catch (Exception $e ) {
-				echo $e->getMessage() . '<br />';
-				return;
-			}
-		}
 		if (!in_array('original_name', $columns)) {
 			//add the column
 			$query = 'ALTER TABLE #__jfusion ADD COLUMN original_name varchar(50) null';
@@ -520,10 +505,11 @@ class com_jfusionInstallerScript
 		$query = 'SHOW COLUMNS FROM #__jfusion';
 		$db->setQuery($query);
 		$columns = $db->loadColumn();
-		if (!in_array('usergroups', $columns)) {
-			//add the column
-			$query = 'ALTER TABLE #__jfusion
-              ADD COLUMN usergroups text';
+
+		//remove the plugin_files if it exists
+		if (in_array('plugin_files', $columns)) {
+			//remove the column
+			$query = 'ALTER TABLE #__jfusion DROP column plugin_files';
 			$db->setQuery($query);
 			try {
 				$db->execute();
@@ -533,124 +519,6 @@ class com_jfusionInstallerScript
 			}
 		}
 
-		/****
-		 * General for all upgrades
-		 ***/
-		/*
-		 * todo: Determine if we really need this in the installer ???? also remove unneeded plugin_files field from database ??? if this is NOT needed
-		//restore deleted plugins if possible and applicable
-		//get a list of installed plugins
-		$query = $db->getQuery(true)
-			->select('name, original_name, plugin_files')
-			->from('#__jfusion');
-		$db->setQuery($query);
-		$installedPlugins = $db->loadObjectList();
-
-		//stores the plugins that are to be removed from the database during the upgrade process
-		$uninstallPlugin = array();
-		//stores the reason why the plugin had to be unsinstalled
-		$uninstallReason = array();
-		//stores plugin names of plugins that was attempted to be restored
-		$restorePlugins = array();
-		//require the model.install.php file to recreate copied plugins
-		include_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.install.php';
-		$model = new JFusionModelInstaller();
-		foreach ($installedPlugins as $plugin) {
-			//attempt to restore missing plugins
-			if (!file_exists(JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $plugin->name)) {
-				//restore files for custom/copied plugins if available
-				$restorePlugins[] = $plugin->name;
-				$config = JFactory::getConfig();
-				$tmpDir = $config->get('tmp_path');
-				//check to see if this is a copy of a default plugin
-				if (in_array($plugin->original_name, $defaultPlugins)) {
-					//recreate the copy and update the database
-					if (!$model->copy($plugin->original_name, $plugin->name, true)) {
-						//the original plugin could not be copied so uninstall the plugin
-						$uninstallPlugin[] = $plugin->name;
-						$uninstallReason[$plugin->name] = JText::_('UPGRADE_CREATINGCOPY_FAILED');
-					}
-				} elseif (!empty($plugin->plugin_files)) {
-					//save the compressed file to the tmp dir
-					$zipfile = $tmpDir . DIRECTORY_SEPARATOR . $plugin->name . '.zip';
-					if (@JFile::write($zipfile, $plugin->plugin_files)) {
-						//decompress the file
-						if (!@JArchive::extract($zipfile, JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $plugin->name)) {
-							//decompression failed
-							$uninstallPlugin[] = $plugin->name;
-							$uninstallReason[$plugin->name] = JText::_('UPGRADE_DECOMPRESS_FAILED');
-							//remove the file
-							unlink($zipfile);
-						} else {
-							//extra check to make sure the files were decompressed to prevent possible fatal errors
-							if (!file_exists(JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $plugin->name)) {
-								$uninstallPlugin[] = $plugin->name;
-								$uninstallReason[$plugin->name] = JText::_('UPGRADE_DECOMPRESS_FAILED');
-							}
-							//remove the file
-							unlink($zipfile);
-						}
-					} else {
-						//the compressed file was not able to be written to the tmp dir so remove it
-						$uninstallPlugin[] = $plugin->name;
-						$uninstallReason[$plugin->name] = JText::_('UPGRADE_WRITEFILE_FAILED');
-					}
-				} else {
-					//the backup file was missing so remove plugin
-					$uninstallPlugin[] = $plugin->name;
-					$uninstallReason[$plugin->name] = JText::_('UPGRADE_NO_BACKUP');
-				}
-			} elseif (in_array($plugin->original_name, $defaultPlugins)) {
-				//we need to upgrade the files of copied plugins
-				if (!$model->copy($plugin->original_name, $plugin->name, true)) {
-					//the original plugin could not be copied so uninstall the plugin
-					$uninstallPlugin[] = $plugin->name;
-					$uninstallReason[$plugin->name] = JText::_('UPGRADE_CREATINGCOPY_FAILED');
-				}
-			}
-		}
-		//remove bad plugin entries from the table
-		if (count($uninstallPlugin) > 0) {
-			$query = $db->getQuery(true)
-				->delete('#__jfusion')
-				->where('name IN (\'' . implode('\', \'', $uninstallPlugin) . '\')');
-			$db->setQuery($query);
-
-			$db->setQuery($query);
-			try {
-				$db->execute();
-			} catch (Exception $e ) {
-				echo $e->getMessage() . '<br />';
-			}
-		}
-        $restorePluginOutput = '';
-		foreach ($restorePlugins as $plugin) {
-			if (!in_array($plugin, $uninstallPlugin)) {
-                $color = '#d9f9e2';
-                $text = JText::_('RESTORED') . ' ' . $plugin . ' ' . JText::_('SUCCESS');
-			} else {
-                $color = '#f9ded9';
-                $text = JText::_('ERROR') . ' ' . JText::_('RESTORING') . ' ' . $plugin . '. ' . JText::_('UPGRADE_CUSTOM_PLUGIN_FAILED') . ': ' . $uninstallReason[$plugin];
-			}
-
-            $restorePluginOutput .= <<<HTML
-            <table style="background-color: {$color};" width="100%">
-                <tr style="height:30px">
-                    <td width="50px">
-			            <img src="components/com_jfusion/images/check_bad_small.png">
-                    </td>
-			        <td>
-			            <font size="2">
-			                <b>
-			                    {$text}
-			                </b>
-                        </font>
-                    </td>
-                </tr>
-            </table>
-HTML;
-		}
-		*/
 		//cleanup unused plugins
 		$query = $db->getQuery(true)
 			->select('name')
@@ -719,7 +587,7 @@ HTML;
 			echo $e->getMessage() . '<br />';
 		}
 
-		echo '<table style="background-color:#d9f9e2;" width ="100%"><tr style="height:30px">';
+		echo '<table style="background-color:#dff0d8;" width ="100%"><tr style="height:30px">';
 		echo '<td><font size="2"><b>' . JText::_('NORMAL_JOOMLA_BEHAVIOR_RESTORED') . '</b></font></td></tr></table>';
 
 		//uninstall the JFusion plugins
@@ -742,10 +610,10 @@ HTML;
 			$result = $model->uninstall($plugin->name);
 
 			if (!$result['status']) {
-				$color = '#f9ded9';
+				$color = '#f2dede';
 				$description = JText::_('UNINSTALL') . ' ' . $plugin->name . ' ' . JText::_('FAILED');
 			} else {
-				$color = '#d9f9e2';
+				$color = '#dff0d8';
 				$description = JText::_('UNINSTALL') . ' ' . $plugin->name . ' ' . JText::_('SUCCESS');
 			}
 			$html = <<<HTML
@@ -869,10 +737,10 @@ HTML;
 			$tmpinstaller = new JInstaller();
 			$uninstall_result = $tmpinstaller->uninstall($type, $result, 0);
 			if (!$uninstall_result) {
-				$color = '#f9ded9';
+				$color = '#f2dede';
 				$description = JText::_('UNINSTALL') . ' ' . $description . ' ' . JText::_('FAILED');
 			} else {
-				$color = '#d9f9e2';
+				$color = '#dff0d8';
 				$description = JText::_('UNINSTALL') . ' ' . $description . ' ' . JText::_('SUCCESS');
 			}
 			$html = <<<HTML
@@ -938,7 +806,7 @@ HTML;
 	<?php
 
 		$html = <<<HTML
-        <table style="background-color:#d9f9e2;width:100%;">
+        <table style="background-color:#dff0d8;width:100%;">
             <tr>
                 <td width="50px">
                     <img src="components/com_jfusion/images/check_good_small.png">
@@ -1010,10 +878,10 @@ HTML;
 
 				$message = $result['message'];
 				if ($result['status']) {
-					$color = '#d9f9e2';
+					$color = '#dff0d8';
 					$image = '<img src="components/com_jfusion/images/check_good_small.png">';
 				} else {
-					$color = '#f9ded9';
+					$color = '#f2dede';
 					$image = '<img src="components/com_jfusion/images/check_bad_small.png">';
 				}
 
@@ -1063,11 +931,11 @@ HTML;
 			$package = JInstallerHelper::unpack($filename);
 			$tmpInstaller = new JInstaller();
 			if (!$tmpInstaller->install($package['dir'])) {
-				$color = '#f9ded9';
+				$color = '#f2dede';
 				$message = JText::_('ERROR') . ' ' . JText::_('INSTALLING') . ' ' . JText::_('JFUSION') . ' ' . $name;
 				$image = '<img src="components/com_jfusion/images/check_bad_small.png">';
 			} else {
-				$color = '#d9f9e2';
+				$color = '#dff0d8';
 				$message = JText::_('SUCCESS') . ' ' . JText::_('INSTALLING') . ' ' . JText::_('JFUSION') . ' ' . $name;
 				$image = '<img src="components/com_jfusion/images/check_good_small.png">';
 			}

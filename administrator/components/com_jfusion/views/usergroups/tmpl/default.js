@@ -5,22 +5,21 @@ if (typeof JFusion === 'undefined') {
 JFusion.createRows = function() {
     if (JFusion.pairs && JFusion.pairs.joomla_int) {
         Array.each(JFusion.pairs.joomla_int, function (pair) {
-            JFusion.createRow();
+            JFusion.createRow(false);
         });
     } else {
-        JFusion.createRow();
+        JFusion.createRow(true);
     }
     JFusion.initSortables();
 };
 
 JFusion.createDragHandle = function(index) {
     var td = new Element('td', {
-        'width': '20px'
-    });
-    var div = new Element('div', {
+        'width': '20px',
         'class': 'dragHandles',
         'id' : 'dragHandles'
     });
+    var div = new Element('div');
 
     var img = new Element('img', {
         'src': 'components/com_jfusion/images/draggable.png',
@@ -55,18 +54,22 @@ JFusion.createRemove = function(index) {
     return td;
 };
 
-JFusion.createRow = function() {
+JFusion.createRow = function(newrow) {
     var sort_table = $('sort_table');
 
     var index = sort_table.getChildren().length;
-    var num = index % 2;
+
+    var classes = 'row' + (index % 2);
+    if (!index) {
+        classes = classes + ' defaultusergroup';
+    }
 
     var tr = new Element('tr', { 'id': 'usergroup'+index,
-        'class': 'row'+num});
+        'class': classes});
     tr.appendChild(JFusion.createDragHandle(index));
 
     Array.each(JFusion.plugins, function (plugin) {
-        tr.appendChild(JFusion.render(index, plugin));
+        tr.appendChild(JFusion.render(index, plugin, newrow));
     });
 
     tr.appendChild(JFusion.createRemove(index));
@@ -74,22 +77,21 @@ JFusion.createRow = function() {
     sort_table.appendChild(tr);
 };
 
-JFusion.render = function(index, plugin) {
+JFusion.render = function(index, plugin, newrow) {
     var td = new Element('td');
 
     var div = new Element('div', {'id': plugin.name});
 
-    div.appendChild(JFusion.renderGroup(index, plugin));
+    div.appendChild(JFusion.renderGroup(index, plugin, newrow));
 
     td.appendChild(div);
     return td;
 };
 
-JFusion.renderGroup = function(index, plugin) {
-    var mode = $('usergroupmodes_'+plugin.name);
+JFusion.renderGroup = function(index, plugin, newrow) {
     if(plugin.name in JFusion.renderPlugin && typeof JFusion.renderPlugin[plugin.name] === 'function') {
         var pair = null;
-        if (plugin.name in JFusion.pairs && index in JFusion.pairs[plugin.name]) {
+        if (!newrow && plugin.name in JFusion.pairs && index in JFusion.pairs[plugin.name]) {
             pair = JFusion.pairs[plugin.name][index];
         }
 
@@ -115,6 +117,11 @@ JFusion.renderDefault = function(index, plugin, pair) {
 
     var groups = JFusion.usergroups[plugin.name];
 
+    if (!plugin.isMultiGroup) {
+        select.appendChild(new Element('option', {'value': 'JFUSION_NO_USERGROUP',
+            'html': JFusion.JText('SELECT_ONE')}));
+    }
+
     Array.each(groups, function (group) {
         var selected = '';
         if (pair !== null && pair.contains(group.id)) {
@@ -131,7 +138,7 @@ JFusion.initSortables = function () {
     /* allow for updates of row order */
     new Sortables('sort_table', {
         /* set options */
-        handle: 'div.dragHandles',
+        handle: 'td.dragHandles',
 
         /* initialization stuff here */
         initialize: function () {
@@ -146,13 +153,20 @@ JFusion.initSortables = function () {
             }
         },
         onComplete: function () {
+            $$('#sort_table tr').each(function (tr, index) {
+                if (index) {
+                    tr.setAttribute('class', 'row' + (index % 2));
+                } else {
+                    tr.setAttribute('class', 'row' + (index % 2) + ' defaultusergroup');
+                }
+            });
         }
     });
 };
 
 Joomla.submitbutton = function (pressbutton) {
     if (pressbutton === 'add') {
-        JFusion.createRow();
+        JFusion.createRow(true);
         JFusion.initSortables();
     }  else {
         Joomla.submitform(pressbutton, $('adminForm'));

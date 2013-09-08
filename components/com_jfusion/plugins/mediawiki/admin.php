@@ -153,16 +153,16 @@ class JFusionAdmin_mediawiki extends JFusionAdmin
     }
 
     /**
-     * @return string
+     * @return string|array
      */
     function getDefaultUsergroup()
     {
-        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
-        $usergroup_id = null;
-        if(!empty($usergroups)) {
-            $usergroup_id = $usergroups[0];
-        }
-        return $usergroup_id;
+	    $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
+	    if ($usergroups !== null) {
+		    return $usergroups;
+	    } else {
+		    return '';
+	    }
     }
 
     /**

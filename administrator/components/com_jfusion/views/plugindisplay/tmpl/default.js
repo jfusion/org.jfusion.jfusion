@@ -108,7 +108,7 @@ JFusion.initSortables = function () {
     /* allow for updates of row order */
     new Sortables('sort_table', {
         /* set options */
-        handle: 'div.dragHandles',
+        handle: 'td.dragHandles',
 
         /* initialization stuff here */
         initialize: function () {
@@ -126,10 +126,8 @@ JFusion.initSortables = function () {
             var sortorder, rowcount;
             //build a string of the order
             sortorder = '';
-            rowcount = 0;
-            $$('#sort_table tr').each(function (tr) {
-                $(tr.id).setAttribute('class', 'row' + (rowcount % 2));
-                rowcount++;
+            $$('#sort_table tr').each(function (tr, index) {
+                tr.setAttribute('class', 'row' + (index % 2));
                 sortorder = sortorder +  tr.id  + '|';
             });
 

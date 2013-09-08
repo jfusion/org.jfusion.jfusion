@@ -73,43 +73,43 @@ $images = 'components/com_jfusion/images/';
 
 	<table class="jfusionlist" style="border-spacing:1px;" id="sortables">
 		<thead>
-		<tr>
-			<th class="title" width="20px;">
-			</th>
-			<th class="title" align="left">
-				<?php echo JText::_('NAME');?>
-			</th>
-			<th class="title" width="75px" align="center">
-				<?php echo JText::_('ACTIONS');?>
-			</th>
-			<th class="title" align="center">
-				<?php echo JText::_('DESCRIPTION');?>
-			</th>
-			<th class="title" width="40px" align="center">
-				<?php echo JText::_('MASTER'); ?>
-			</th>
-			<th class="title" width="40px" align="center">
-				<?php echo JText::_('SLAVE'); ?>
-			</th>
-			<th class="title" width="40px" align="center">
-				<?php echo JText::_('CHECK_ENCRYPTION'); ?>
-			</th>
-			<th class="title" width="40px" align="center">
-				<?php echo JText::_('DUAL_LOGIN');?>
-			</th>
-			<th class="title" align="center">
-				<?php echo JText::_('STATUS');?>
-			</th>
-			<th class="title" align="center">
-				<?php echo JText::_('USERS');?>
-			</th>
-			<th class="title" align="center">
-				<?php echo JText::_('REGISTRATION');?>
-			</th>
-			<th class="title" align="center">
-				<?php echo JText::_('DEFAULT_USERGROUP');?>
-			</th>
-		</tr>
+			<tr>
+				<th class="title" width="20px;">
+				</th>
+				<th class="title" align="left">
+					<?php echo JText::_('NAME');?>
+				</th>
+				<th class="title" width="100px" align="center">
+					<?php echo JText::_('ACTIONS');?>
+				</th>
+				<th class="title" align="center">
+					<?php echo JText::_('DESCRIPTION');?>
+				</th>
+				<th class="title" width="40px" align="center">
+					<?php echo JText::_('MASTER'); ?>
+				</th>
+				<th class="title" width="40px" align="center">
+					<?php echo JText::_('SLAVE'); ?>
+				</th>
+				<th class="title" width="20px" align="center">
+					<img src="<?php echo $images; ?>encryption.png" border="0" alt="<?php echo JText::_('CHECK_ENCRYPTION');?>"/>
+				</th>
+				<th class="title" width="20px" align="center">
+					<img src="<?php echo $images; ?>login.png" border="0" alt="<?php echo JText::_('DUAL_LOGIN');?>"/>
+				</th>
+				<th class="title" width="100px" align="center">
+					<?php echo JText::_('STATUS');?>
+				</th>
+				<th class="title" width="60px" align="center">
+					<?php echo JText::_('USERS');?>
+				</th>
+				<th class="title" width="60px" align="center">
+					<?php echo JText::_('REGISTRATION');?>
+				</th>
+				<th class="title" align="center">
+					<?php echo JText::_('DEFAULT_USERGROUP');?>
+				</th>
+			</tr>
 		</thead>
 		<tbody id="sort_table">
 		<?php echo $this->generateListHTML($this->plugins); ?>
@@ -125,6 +125,8 @@ $images = 'components/com_jfusion/images/';
 				<img src="<?php echo $images; ?>copy_icon.png" border="0" alt="<?php echo JText::_('COPY');?>" style="margin-left: 10px;" /> = <?php echo JText::_('COPY');?>
 				<img src="<?php echo $images; ?>delete_icon.png" border="0" alt="<?php echo JText::_('DELETE');?>" style="margin-left: 10px;" /> = <?php echo JText::_('DELETE');?>
 				<img src="<?php echo $images; ?>info.png" border="0" alt="<?php echo JText::_('INFO');?>" style="margin-left: 10px;" /> = <?php echo JText::_('INFO');?>
+				<img src="<?php echo $images; ?>encryption.png" border="0" alt="<?php echo JText::_('CHECK_ENCRYPTION');?>" style="margin-left: 10px;" /> = <?php echo JText::_('CHECK_ENCRYPTION');?>
+				<img src="<?php echo $images; ?>login.png" border="0" alt="<?php echo JText::_('DUAL_LOGIN');?>" style="margin-left: 10px;" /> = <?php echo JText::_('DUAL_LOGIN');?>
 			</td>
 			<td style="text-align: right;">
 				<img src="<?php echo $images; ?>tick.png" border="0" alt="<?php echo JText::_('ENABLED'); ?>" /> = <?php echo JText::_('ENABLED'); ?>

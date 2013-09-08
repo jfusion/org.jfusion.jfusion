@@ -97,7 +97,6 @@ class JFusionAdmin_moodle extends JFusionAdmin
                 //no slashes found, we need to add one
                 $params['source_url'] = $CFG->wwwroot . '/';
             }
-            $params['usergroup'] = '7'; #make sure we do not assign roles with more capabilities automatically
             //return the parameters so it can be saved permanently
         }
         return $params;
@@ -174,29 +173,31 @@ class JFusionAdmin_moodle extends JFusionAdmin
 	    }
     }
     /**
-     * @return string
+     * @return string|array
      */
     function getDefaultUsergroup() {
 	    try {
-		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
-		    $usergroup_id = null;
-		    if(!empty($usergroups)) {
-			    $usergroup_id = $usergroups[0];
+		    $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
+
+		    if ($usergroups !== null) {
+			    //we want to output the usergroup name
+			    $db = JFusionFactory::getDatabase($this->getJname());
+
+			    $query = $db->getQuery(true)
+				    ->select('name')
+				    ->from('#__role')
+				    ->where('id = ' . (int)$usergroups);
+
+			    $db->setQuery($query);
+			    $group = $db->loadResult();
+		    } else {
+			    $group = '';
 		    }
-		    //we want to output the usergroup name
-		    $db = JFusionFactory::getDatabase($this->getJname());
-
-		    $query = $db->getQuery(true)
-			    ->select('name')
-			    ->from('#__role')
-		        ->where('id = ' . (int)$usergroup_id);
-
-		    $db->setQuery($query);
-		    return $db->loadResult();
 	    } catch (Exception $e) {
 		    JFusionFunction::raiseError($e, $this->getJname());
-		    return '';
+		    $group = '';
 	    }
+	    return $group;
     }
 
     /**

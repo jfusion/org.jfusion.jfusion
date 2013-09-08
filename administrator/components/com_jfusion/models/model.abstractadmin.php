@@ -91,7 +91,7 @@ class JFusionAdmin
     /**
      * Function used to display the default usergroup in the JFusion plugin overview
      *
-     * @return string Default usergroup name
+     * @return string|array Default usergroup name
      */
     function getDefaultUsergroup()
     {
@@ -277,12 +277,6 @@ class JFusionAdmin
 			    if ($cookie_path != '/' && !$this->allowEmptyCookiePath()) {
 				    JFusionFunction::raiseNotice(JText::_('BEST_COOKIE_PATH') . ' /', $jname);
 			    }
-		    }
-
-		    //check that master plugin does not have advanced group mode data stored
-		    $master = JFusionFunction::getMaster();
-		    if (!empty($master) && $master->name == $jname && JFusionFunction::isAdvancedUsergroupMode($jname)) {
-			    JFusionFunction::raiseWarning(JText::_('ADVANCED_GROUPMODE_ONLY_SUPPORTED_FORSLAVES'), $jname);
 		    }
 
 		    // allow additional checking of the configuration

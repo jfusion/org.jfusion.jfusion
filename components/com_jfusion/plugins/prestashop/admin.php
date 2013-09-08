@@ -109,7 +109,6 @@ class JFusionAdmin_prestashop extends JFusionAdmin
             $params['database_type'] = $config['_DB_TYPE_'];
             $params['source_path'] = $storePath;
             $params['cookie_key'] = $config['_COOKIE_KEY_'];
-			$params['usergroup'] = 1;
 			//return the parameters so it can be saved permanently
 
         }
@@ -206,34 +205,44 @@ class JFusionAdmin_prestashop extends JFusionAdmin
     }
 
     /**
-     * @return string
+     * @return string|array
      */
     function getDefaultUsergroup()
     {
 	    try {
-		    $db = JFusionFactory::getDatabase($this->getJname());
-		    //we want to output the usergroup name
-		    $query = $db->getQuery(true)
-			    ->select('value')
-			    ->from('#__configuration')
-			    ->where('name IN (' . $db->Quote('PS_LANG_DEFAULT') . ')');
+		    $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
 
-		    $db->setQuery($query);
-		    //getting the default language to load groups
-		    $default_language = $db->loadResult();
+		    if ($usergroups !== null) {
+			    $db = JFusionFactory::getDatabase($this->getJname());
+			    //we want to output the usergroup name
+			    $query = $db->getQuery(true)
+				    ->select('value')
+				    ->from('#__configuration')
+				    ->where('name IN (' . $db->Quote('PS_LANG_DEFAULT') . ')');
 
-		    $query = $db->getQuery(true)
-			    ->select('name as name')
-			    ->from('#__group_lang')
-			    ->where('id_lang IN (' . $db->Quote($default_language) . ')')
-			    ->where('id_group IN (' . $db->Quote(1) . ')');
+			    $db->setQuery($query);
+			    //getting the default language to load groups
+			    $default_language = $db->loadResult();
 
-		    $db->setQuery($query);
-		    return $db->loadResult();
+			    $group = array();
+			    foreach($usergroups as $usergroup) {
+				    $query = $db->getQuery(true)
+					    ->select('name as name')
+					    ->from('#__group_lang')
+					    ->where('id_lang IN (' . $db->Quote($default_language) . ')')
+					    ->where('id_group IN (' . $db->Quote($usergroup) . ')');
+
+				    $db->setQuery($query);
+				    $group[] = $db->loadResult();
+			    }
+		    } else {
+			    $group = '';
+		    }
 	    } catch (Exception $e) {
 		    JFusionFunction::raiseError($e, $this->getJname());
+		    $group = '';
 	    }
-	    return '';
+	    return $group;
     }
 
     /**

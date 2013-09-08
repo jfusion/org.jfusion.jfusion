@@ -190,11 +190,12 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
     /**
      * get default user group
      *
-     * @return string with default user group
+     * @return string|array with default user group
      */
     function getDefaultUsergroup()
     {
-        return $this->helper->getDefaultUsergroup();
+	    $usergroup = JFusionFunction::getUserGroups($this->getJname(), true);
+        return $usergroup;
     }
 
     /**

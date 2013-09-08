@@ -166,30 +166,31 @@ class JFusionAdmin_smf2 extends JFusionAdmin{
     }
 
     /**
-     * @return string
+     * @return string|array
      */
     function getDefaultUsergroup()
     {
-	    $group = 'Default Usergroup';
 	    try {
-		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
-		    $usergroup_id = 0;
-		    if(!empty($usergroups)) {
-			    $usergroup_id = $usergroups[0];
+		    $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
+
+		    if ($usergroups !== null) {
+			    if ($usergroups != 0) {
+				    //we want to output the usergroup name
+				    $db = JFusionFactory::getDatabase($this->getJname());
+
+				    $query = $db->getQuery(true)
+					    ->select('group_name')
+					    ->from('#__membergroups')
+					    ->where('id_group = ' . (int)$usergroups);
+
+				    $db->setQuery($query);
+				    $group = $db->loadResult();
+			    } else {
+				    $group = 'Default Usergroup';
+			    }
+		    } else {
+			    $group = '';
 		    }
-		    if ($usergroup_id!=0) {
-			    //we want to output the usergroup name
-			    $db = JFusionFactory::getDatabase($this->getJname());
-
-			    $query = $db->getQuery(true)
-				    ->select('group_name')
-				    ->from('#__membergroups')
-				    ->where('id_group = ' . (int)$usergroup_id);
-
-			    $db->setQuery($query);
-			    $group = $db->loadResult();
-		    }
-
 	    } catch (Exception $e) {
 		    JFusionFunction::raiseError($e, $this->getJname());
 		    $group = '';

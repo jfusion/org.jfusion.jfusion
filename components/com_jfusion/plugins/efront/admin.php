@@ -109,7 +109,6 @@ class JFusionAdmin_efront extends JFusionAdmin
                 $params['database_password'] = G_DBPASSWD;
                 $params['database_type'] = G_DBTYPE;
                 $params['source_path'] = $forumPath;
-                $params['usergroup'] = '0'; #make sure we do not assign roles with more capabilities automatically
                 $params['md5_key'] = G_MD5KEY;
                 $params['uploadpath'] = G_UPLOADPATH;
             }
@@ -192,15 +191,16 @@ class JFusionAdmin_efront extends JFusionAdmin
     }
 
     /**
-     * @return bool|string
+     * @return string|array
      */
     function getDefaultUsergroup() {
-        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
-        $usergroup_id = null;
-        if(!empty($usergroups)) {
-            $usergroup_id = $usergroups[0];
-        }
-        return $this->helper->groupIdToName($usergroup_id);
+	    $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
+	    if ($usergroups !== null) {
+			$group = $this->helper->groupIdToName($usergroups);
+	    } else {
+		    $group = '';
+	    }
+	    return $group;
     }
 
     /**

@@ -288,9 +288,8 @@ class JFusionUser
 					    }
 				    }
 				    //check for advanced usergroup sync
-				    $master = JFusionFunction::getMaster();
-				    if (!$userinfo->block && empty($userinfo->activation) && $master->name != $this->getJname()) {
-					    if (JFusionFunction::isAdvancedUsergroupMode($this->getJname())) {
+				    if (!$userinfo->block && empty($userinfo->activation)) {
+					    if (JFusionFunction::updateUsergroups($this->getJname())) {
 						    $usergroup_updated = $this->executeUpdateUsergroup($userinfo, $existinguser, $status);
 						    if ($usergroup_updated) {
 							    $changed = true;

@@ -1228,13 +1228,35 @@ class JFusionFunction
     }
 
 	/**
-	 * @return array;
+	 * @param string $jname
+	 * @param bool   $default
+	 *
+	 * @return array|stdClass;
 	 */
-	public static function getUserGroups() {
+	public static function getUserGroups($jname='',$default = false) {
 		jimport('joomla.application.component.helper');
 		$params = JComponentHelper::getParams('com_jfusion');
 		$usergroups = $params->get('usergroups', new stdClass());
 
+		if ($jname) {
+			if (isset($usergroups->{$jname})) {
+				$usergroups = $usergroups->{$jname};
+
+				if ($default) {
+					if (isset($usergroups[0])) {
+						$usergroups = $usergroups[0];
+
+						if (!is_array($usergroups) && $usergroups == 'JFUSION_NO_USERGROUP') {
+							$usergroups = null;
+						}
+					} else {
+						$usergroups = null;
+					}
+				}
+			} else {
+				$usergroups = array();
+			}
+		}
 		return $usergroups;
 	}
 
@@ -1257,46 +1279,57 @@ class JFusionFunction
      *
      * @return array
      */
-	public static function getCorrectUserGroups($jname, $userinfo) {
-		$usergroups = JFusionFunction::getUserGroups();
-
+	public static function getCorrectUserGroups($jname, $userinfo)
+	{
 		$group = array();
 
 		$master = JFusionFunction::getMaster();
 
-		$groups = array();
-		if ($userinfo) {
-			if (isset($userinfo->groups)) {
-				$groups = $userinfo->groups;
-			} elseif (isset($userinfo->group_id)) {
-				$groups[] = $userinfo->group_id;
+		$mastergroups = JFusionFunction::getUserGroups($master->name);
+		$slavegroups = JFusionFunction::getUserGroups($jname);
+
+		if ($master->name == $jname) {
+			if (isset($mastergroups[0])) {
+				$group = $mastergroups[0];
 			}
-		}
-
-		$mastergroups = isset($usergroups->{$master->name}) ? $usergroups->{$master->name} : array();
-		$slavegroups = isset($usergroups->{$jname}) ? $usergroups->{$jname} : array();
-
-		foreach ($mastergroups as $key => $mastergroup) {
-			if ( count($mastergroup) == count($groups) ) {
-				$count = 0;
-				foreach ($mastergroup as $value) {
-					if (in_array($value, $groups, true)) {
-						$count++;
-					}
-				}
-				if (count($groups) == $count ) {
-					if (isset($slavegroups[$key])) {
-						$group = $slavegroups[$key];
-					}
-					break;
+		} else {
+			$groups = array();
+			if ($userinfo) {
+				if (isset($userinfo->groups)) {
+					$groups = $userinfo->groups;
+				} elseif (isset($userinfo->group_id)) {
+					$groups[] = $userinfo->group_id;
 				}
 			}
-		}
-		if (!count($group) && isset($slavegroups[0])) {
-			$group =  $slavegroups[0];
+
+			foreach ($mastergroups as $key => $mastergroup) {
+				if ($mastergroup) {
+					if ( count($mastergroup) == count($groups) ) {
+						$count = 0;
+						foreach ($mastergroup as $value) {
+							if (in_array($value, $groups, true)) {
+								$count++;
+							}
+						}
+						if (count($groups) == $count ) {
+							if (isset($slavegroups[$key])) {
+								$group = $slavegroups[$key];
+							}
+							break;
+						}
+					}
+				}
+			}
+			if (empty($group) && isset($slavegroups[0])) {
+				$group =  $slavegroups[0];
+			}
 		}
 		if (!is_array($group)) {
-			$group = array($group);
+			if ($group != 'JFUSION_NO_USERGROUP') {
+				$group = array($group);
+			} else {
+				$group = array();
+			}
 		}
 		return $group;
 	}
@@ -1344,11 +1377,14 @@ class JFusionFunction
      *
      * @return boolean
      */
-    public static function isAdvancedUsergroupMode($jname) {
-	    $usergroups = JFusionFunction::getUpdateUserGroups();
+    public static function updateUsergroups($jname) {
+	    $updateusergroups = JFusionFunction::getUpdateUserGroups();
 	    $advanced = false;
-        if (isset($usergroups->{$jname}) && $usergroups->{$jname}) {
-	        $advanced = true;
+        if (isset($updateusergroups->{$jname}) && $updateusergroups->{$jname}) {
+	        $master = JFusionFunction::getMaster();
+	        if ($master->name != $jname) {
+		        $advanced = true;
+	        }
         }
         return $advanced;
     }

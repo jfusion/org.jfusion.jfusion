@@ -66,16 +66,24 @@ class jfusionViewusergroups extends JViewLegacy {
 	        $document->addScript('components/com_jfusion/js/File.Upload.js');
 	        $document->addScript('components/com_jfusion/views/'.$this->getName().'/tmpl/default.js');
 
-	        JFusionFunction::loadJavascriptLanguage(array('COPY_MESSAGE', 'DELETE', 'PLUGIN', 'COPY'));
+	        JFusionFunction::loadJavascriptLanguage(array('SELECT_ONE'));
 
 	        $groups = array();
 
 	        $update = JFusionFunction::getUpdateUserGroups();
 
+	        $master = JFusionFunction::getMaster();
+
 	        foreach ($this->plugins as $key => $plugin) {
 		        $admin = JFusionFactory::getAdmin($plugin->name);
 		        $this->plugins[$key]->isMultiGroup = $admin->isMultiGroup();
 		        $this->plugins[$key]->update = false;
+
+		        if ($master && $master->name == $plugin->name) {
+			        $this->plugins[$key]->master = true;
+		        } else {
+			        $this->plugins[$key]->master = false;
+		        }
 		        if (isset($update->{$plugin->name})) {
 			        $this->plugins[$key]->update = $update->{$plugin->name};
 		        }

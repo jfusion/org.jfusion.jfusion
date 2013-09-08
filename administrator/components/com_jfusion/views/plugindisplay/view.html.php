@@ -280,14 +280,13 @@ class jfusionViewplugindisplay extends JViewLegacy {
 		    }
 
 		    if($record->status == 1) {
-			    //display the default usergroup
-			    if (JFusionFunction::isAdvancedUsergroupMode($record->name)) {
-				    $usergroup = JText::_('ADVANCED_GROUP_MODE');
-			    } else {
-				    $usergroup = $JFusionPlugin->getDefaultUsergroup();
-			    }
+			    $usergroup = $JFusionPlugin->getDefaultUsergroup();
 
 			    if ($usergroup) {
+					if (is_array($usergroup)) {
+						$usergroup = join(', ', $usergroup);
+					}
+
 				    $record->usergrouptext = $usergroup;
 			    } else {
 				    $record->usergrouptext = '<img src="components/com_jfusion/images/cross.png" border="0" alt="'.JText::_('DISABLED').'" />' . JText::_('MISSING') . ' ' . JText::_('DEFAULT_USERGROUP') ;
@@ -416,32 +415,40 @@ HTML;
 	    $delete = JText::_('DELETE');
 	    $info = JText::_('INFO');
 	    $html =<<<HTML
-    	<td width="20px;"><div class="dragHandles" id="dragHandles"><img src="components/com_jfusion/images/draggable.png" name="handle"></div></td>
-        <td>{$record->name}</td>
-		<td width="96px;">
+    	<td class="dragHandles" id="dragHandles">
+    		<div><img src="components/com_jfusion/images/draggable.png" name="handle"></div>
+    	</td>
+        <td>
+        	{$record->name}
+        </td>
+		<td>
 		    <a href="{$record->wizardscript}" title="{$wizard}"><img src="{$record->wizardimage}" alt="{$wizard}" /></a>
 			<a href="index.php?option=com_jfusion&task=plugineditor&jname={$record->name}" title="{$edit}"><img src="components/com_jfusion/images/edit.png" alt="{$edit}" /></a>
 	        <a href="{$record->copyscript}" title="{$copy}"><img src="{$record->copyimage}" alt="{$copy}" /></a>
 	        <a href="{$record->deletescript}" title="{$delete}"><img src="{$record->deleteimage}" alt="{$delete}" /></a>
 			<a class="modal" title="{$info}"  href="index.php?option=com_jfusion&task=plugininfo&tmpl=component&jname={$record->name}" rel="{handler: 'iframe', size: {x: 375, y: 375}}"><img src="components/com_jfusion/images/info.png" alt="{$info}" /></a>
 		</td>
-        <td>{$record->description}</td>
-        <td width="40px;" id="{$record->name}_master">
+        <td>
+        	{$record->description}
+        </td>
+        <td id="{$record->name}_master">
         	<a href="{$record->masterscript}"><img src="{$record->masterimage}" border="0" alt="{$record->masteralt}" /></a>
 		</td>
-        <td width="40px;" id="{$record->name}_slave">
+        <td id="{$record->name}_slave">
         	<a href="{$record->slavescript}"><img src="{$record->slaveimage}" border="0" alt="{$record->slavealt}" /></a>
         </td>
-        <td width="40px;" id="{$record->name}_check_encryption">
+        <td id="{$record->name}_check_encryption">
         	<a href="{$record->encryptscript}"><img src="{$record->encryptimage}" border="0" alt="{$record->encryptalt}" /></a>
         </td>
-        <td width="40px;" id="{$record->name}_dual_login">
+        <td id="{$record->name}_dual_login">
         	<a href="{$record->dualscript}"><img src="{$record->dualimage}" border="0" alt="{$record->dualalt}" /></a>
         </td>
 		<td>
 			<img src="{$record->statusimage}" border="0" alt="{$record->statusalt}" /><a href="index.php?option=com_jfusion&task=plugineditor&jname={$record->name}">{$record->statusalt}</a>
 		</td>
-       	<td>{$record->usercount}</td>
+       	<td>
+       		{$record->usercount}
+       	</td>
         <td>
         	<img src="{$record->registrationimage}" border="0" alt="{$record->registrationalt}" />{$record->registrationalt}
         </td>

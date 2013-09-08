@@ -144,16 +144,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 		        ->where('option_name = ' . $db->quote('default_role'));
 
 			$db->setQuery($query);
-			$default_role=$db->loadResult();
-			
-			$userGroupList = $this->getUsergroupListWPA($db,$table_prefix);
-			$params['usergroup']='0';
-			foreach ($userGroupList as $usergroup) {
-				if($usergroup->name == $default_role){
-					$params['usergroup'] = $usergroup->id;
-					break;
-				}
-			}
+			$default_role = $db->loadResult();
 		}
         return $params;
 	}
@@ -218,15 +209,16 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 	}
 
 	/**
-     * @return string
+     * @return string|array
      */
     function getDefaultUsergroup() {
-        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
-        $usergroup_id = null;
-        if(!empty($usergroups)) {
-            $usergroup_id = $usergroups[0];
-        }
-		return $this->helper->getUsergroupNameWP($usergroup_id);
+	    $usergroup = JFusionFunction::getUserGroups($this->getJname(), true);
+	    if ($usergroup !== null) {
+		    $group =  $this->helper->getUsergroupNameWP($usergroup);
+	    } else {
+		    $group = '';
+	    }
+	    return $group;
 	}
 
 	/**

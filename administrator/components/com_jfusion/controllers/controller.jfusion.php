@@ -765,7 +765,7 @@ JS;
     function saveorder()
     {
         //split the value of the sort action
-        $sort_order = JFactory::getApplication()->input->get('sort_order');
+        $sort_order = JFactory::getApplication()->input->getString('sort_order');
         $ids = explode('|',$sort_order);
         $db = JFactory::getDBO();
 

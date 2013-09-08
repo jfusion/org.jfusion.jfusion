@@ -405,25 +405,6 @@ class JFusionPluginInstaller extends JObject
 					            $result['message'] = $this->module->raise('error', $msg, $name);
 					            return $result;
 				            } else {
-					            //enable/disable features and update the plugin files
-					            //store enabled/disabled features to update copies
-					            global $plugin_features;
-					            $plugin_features = array();
-
-					            $query = $db->getQuery(true)
-						            ->update('#__jfusion')
-						            ->set('plugin_files = ' .$db->Quote(''));
-
-					            foreach ($features as $f) {
-						            if (($$f == 3 && $plugin->$f != 3) || ($$f != 3 && $plugin->$f == 3)) {
-							            $query->set($f.' = '.$$f);
-							            $plugin_features[$f] = $$f;
-						            }
-					            }
-					            $query->where('id = '.$plugin->id);
-					            $db->setQuery($query);
-					            $db->execute();
-
 					            //set the overwrite tag
 					            $result['overwrite'] = 1;
 				            }
@@ -435,7 +416,6 @@ class JFusionPluginInstaller extends JObject
 				            $plugin_entry->name = $name;
 				            $plugin_entry->dual_login = $dual_login;
 				            $plugin_entry->slave = $slave;
-				            $plugin_entry->plugin_files = '';
 				            //now append the new plugin data
 				            try {
 					            $db->insertObject('#__jfusion', $plugin_entry, 'id');
@@ -657,55 +637,7 @@ class JFusionPluginInstaller extends JObject
                     }
                 }
                 $db = JFactory::getDBO();
-                if ($update) {
-                    //update the copied plugin files
-
-	                $query = $db->getQuery(true)
-		                ->update('#__jfusion')
-		                ->set('plugin_files = ' .$db->Quote(''));
-                    //get the features of the updated plugin
-                    global $plugin_features;
-                    if (empty($plugin_features)) {
-                        //copy() was called directly because we are upgrading the component
-                        $features = array('master', 'slave', 'dual_login', 'check_encryption');
-                        foreach ($features as $f) {
-                            $xml = $this->manifest->$f;
-	                        if ($xml instanceof SimpleXMLElement) {
-                                $$f = $this->filterInput->clean($xml, 'integer');
-	                        } elseif ($f == 'master' || $f == 'check_encryption') {
-                                $$f = 0;
-                            } else {
-                                $$f = 3;
-                            }
-                        }
-
-	                    $query = $db->getQuery(true)
-		                    ->select('id, ' . implode(', ', $features))
-		                    ->from('#__jfusion')
-		                    ->where('name = ' . $db->Quote($new_jname));
-
-                        $db->setQuery($query);
-                        $plugin = $db->loadObject();
-                        if (!empty($plugin)) {
-                            //enable/disable features and update the plugin files
-                            $plugin_features = array();
-                            foreach ($features as $f) {
-                                if (($$f == 3 && $plugin->$f != 3) || ($$f != 3 && $plugin->$f == 3)) {
-                                    $plugin_features[$f] = $$f;
-                                }
-                            }
-                        } else {
-                            $plugin_features = array();
-                        }
-                    }
-                    foreach ($plugin_features as $key => $val) {
-	                    $query->set($key.' = '.$val);
-                    }
-	                $query->where('name = ' . $db->Quote($new_jname));
-
-                    $db->setQuery($query);
-                    $db->execute();
-                } else {
+                if (!$update) {
                     //add the new entry in the JFusion plugin table
 	                $query = $db->getQuery(true)
 		                ->select('*')
@@ -718,7 +650,6 @@ class JFusionPluginInstaller extends JObject
                     $plugin_entry->id = null;
                     $plugin_entry->master = ($plugin_entry->master == 3) ? 3 : 0;
                     $plugin_entry->slave = ($plugin_entry->slave == 3) ? 3 : 0;
-                    $plugin_entry->plugin_files = '';
                     //only change the original name if this is not a copy itself
                     if (empty($plugin_entry->original_name)) {
                         $plugin_entry->original_name = $jname;

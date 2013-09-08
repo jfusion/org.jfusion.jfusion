@@ -160,11 +160,17 @@ class JFusionAdmin_elgg extends JFusionAdmin
     }
 
     /**
-     * @return string
+     * @return string|array
      */
     function getDefaultUsergroup() {
         //Only seems to be 2 usergroups in elgg (without any acl setup): Administrator, and user.  So just return 'user'
-        return 'user';
+	    $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
+	    if ($usergroups !== null) {
+		    $group = 'user';
+	    } else {
+		    $group = '';
+	    }
+        return $group;
     }
 
     /**

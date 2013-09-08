@@ -180,29 +180,30 @@ class JFusionAdmin_magento extends JFusionAdmin
         return $db->loadObjectList();
     }
     /**
-     * @return string
+     * @return string|array
      */
     function getDefaultUsergroup() {
 	    try {
-		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),null);
-		    $usergroup_id = null;
-		    if(!empty($usergroups)) {
-			    $usergroup_id = $usergroups[0];
+		    $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
+		    if ($usergroups !== null) {
+			    //we want to output the usergroup name
+			    $db = JFusionFactory::getDatabase($this->getJname());
+
+			    $query = $db->getQuery(true)
+				    ->select('customer_group_code')
+				    ->from('#__customer_group')
+				    ->where('customer_group_id = ' . (int)$usergroups);
+
+			    $db->setQuery($query);
+			    $group = $db->loadResult();
+		    } else {
+			    $group = '';
 		    }
-		    //we want to output the usergroup name
-		    $db = JFusionFactory::getDatabase($this->getJname());
-
-		    $query = $db->getQuery(true)
-			    ->select('customer_group_code')
-			    ->from('#__customer_group')
-		        ->where('customer_group_id = ' . (int)$usergroup_id);
-
-		    $db->setQuery($query);
-		    return $db->loadResult();
 	    } catch (Exception $e) {
 		    JFusionFunction::raiseError($e, $this->getJname());
-		    return '';
+		    $group = '';
 	    }
+	    return $group;
     }
 
     /**
