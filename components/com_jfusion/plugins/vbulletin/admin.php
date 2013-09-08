@@ -815,15 +815,14 @@ HTML;
 		    });
 
 		    Array.each(usergroups, function (group) {
-		        var defaultselected = '';
+			    var options = {'value': group.id,
+					            'html': group.name};
+
 		        if (pair && pair.defaultgroup && pair.defaultgroup == group.id) {
-		            defaultselected = 'selected';
+					options.selected = 'selected';
 		        }
 
-				defaultselect.appendChild(new Element('option', {'value': group.id,
-					'selected': defaultselected,
-					'html': group.name}
-				));
+				defaultselect.appendChild(new Element('option', options));
 		    });
 		    div.appendChild(defaultselect);
 
@@ -838,42 +837,41 @@ HTML;
 			displayselect.appendChild(new Element('option', {'value': 0, 'html': JFusion.JText('DEFAULT')}));
 		    Array.each(usergroups, function (group) {
 			    if (group.id != 1 && group.id != 3 && group.id != 4) {
-                    var displayselected = '';
+				    var options = {'value': group.id,
+				            'html': group.name};
 				    if (pair && pair['displaygroup'] !== null && pair['displaygroup'] == group.id) {
-				        displayselected = 'selected';
+				    	options.selected = 'selected';
 				    }
 
-			    	displayselect.appendChild(new Element('option', {'value': group.id,
-			    		'selected': displayselected,
-			    		'html': group.name}));
+			    	displayselect.appendChild(new Element('option', options));
 			    }
 		    });
 			div.appendChild(displayselect);
 
 
-			// render default mmber groups
+			// render default member groups
 			div.appendChild(new Element('div', {'html': JFusion.JText('DEFAULT_MEMBERGROUPS')}));
 
 		    Array.each(usergroups, function (group, i) {
 		    	var cdiv = new Element('div');
 
-				var membergroupsdisabled = '';
-				var membergroupschecked = '';
-		        if ((pair && pair.defaultgroup == group.id) || (!pair && i === 0)) {
-					membergroupsdisabled = 'disabled';
+				var options = {'type': 'checkbox',
+					'id': 'usergroups_'+plugin.name+index+'membergroups'+group.id,
+					'value': group.id,
+					'name': 'usergroups['+plugin.name+']['+index+'][membergroups][]'
+				};
+
+		        if (pair && pair.defaultgroup == group.id) {
+					options.disabled = 'disabled';
+		        } else if (!pair && i === 0) {
+		        	options.disabled = 'disabled';
 		        } else {
 		            if (pair && pair.membergroups && pair.membergroups.contains(group.id)) {
-			            membergroupschecked = 'checked';
+		            	options.checked = 'checked';
 			        }
 		        }
 
-				var checkbox = new Element('input', {'type': 'checkbox',
-					'id': 'usergroups_'+plugin.name+index+'membergroups'+group.id,
-					'value': group.id,
-					'disabled': membergroupsdisabled,
-					'checked': membergroupschecked,
-					'name': 'usergroups['+plugin.name+']['+index+'][membergroups][]'
-				});
+				var checkbox = new Element('input', options);
 				cdiv.appendChild(checkbox);
 
 				cdiv.appendChild(new Element('span', {'html': group.name}));

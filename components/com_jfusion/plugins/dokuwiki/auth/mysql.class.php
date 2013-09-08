@@ -30,6 +30,8 @@ if (!class_exists('Jfusion_DokuWiki_Mysql')) {
 		 */
 		protected $helper;
 
+		var $configloaded = false;
+
 		var $conf = array();
 		/**
 		 * Constructor

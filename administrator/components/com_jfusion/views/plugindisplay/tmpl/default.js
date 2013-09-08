@@ -123,7 +123,7 @@ JFusion.initSortables = function () {
             }
         },
         onComplete: function () {
-            var sortorder, rowcount;
+            var sortorder;
             //build a string of the order
             sortorder = '';
             $$('#sort_table tr').each(function (tr, index) {

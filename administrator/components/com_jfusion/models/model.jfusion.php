@@ -1231,7 +1231,7 @@ class JFusionFunction
 	 * @param string $jname
 	 * @param bool   $default
 	 *
-	 * @return array|stdClass;
+	 * @return mixed;
 	 */
 	public static function getUserGroups($jname='',$default = false) {
 		jimport('joomla.application.component.helper');

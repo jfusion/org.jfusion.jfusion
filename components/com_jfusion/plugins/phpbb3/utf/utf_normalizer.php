@@ -269,7 +269,7 @@ class utf_normalizer_phpbb {
                                         $tmp.= substr($str, $tmp_pos, $pos - $tmp_pos) . UTF8_REPLACEMENT;
                                         $pos+= $utf_len;
                                         $tmp_pos = $pos;
-                                        continue2;
+//                                        continue2;
                                     }
                                 break;
                                     // Note: 0xEF is quite common in Japanese
@@ -280,7 +280,7 @@ class utf_normalizer_phpbb {
                                         $tmp.= substr($str, $tmp_pos, $pos - $tmp_pos) . UTF8_REPLACEMENT;
                                         $pos+= $utf_len;
                                         $tmp_pos = $pos;
-                                        continue2;
+//                                        continue2;
                                     }
                                 break;
                                 case "\xC0":
@@ -290,7 +290,7 @@ class utf_normalizer_phpbb {
                                         $tmp.= substr($str, $tmp_pos, $pos - $tmp_pos) . UTF8_REPLACEMENT;
                                         $pos+= $utf_len;
                                         $tmp_pos = $pos;
-                                        continue2;
+//                                        continue2;
                                     }
                                 break;
                                 case "\xE0":
@@ -299,7 +299,7 @@ class utf_normalizer_phpbb {
                                         $tmp.= substr($str, $tmp_pos, $pos - $tmp_pos) . UTF8_REPLACEMENT;
                                         $pos+= $utf_len;
                                         $tmp_pos = $pos;
-                                        continue2;
+//                                        continue2;
                                     }
                                 break;
                                 case "\xF0":
@@ -308,7 +308,7 @@ class utf_normalizer_phpbb {
                                         $tmp.= substr($str, $tmp_pos, $pos - $tmp_pos) . UTF8_REPLACEMENT;
                                         $pos+= $utf_len;
                                         $tmp_pos = $pos;
-                                        continue2;
+//                                        continue2;
                                     }
                                 break;
                                 default:
@@ -327,7 +327,7 @@ class utf_normalizer_phpbb {
                                         $tmp.= substr($str, $tmp_pos, $pos - $tmp_pos) . UTF8_REPLACEMENT;
                                         $pos+= strspn($str, UTF8_TRAILING_BYTES, ++$pos, $trailing_bytes);
                                         $tmp_pos = $pos;
-                                        continue2;
+//                                        continue2;
                                     }
                                     break;
                                 }
@@ -854,7 +854,7 @@ class utf_normalizer_phpbb {
                                         $tmp.= UTF8_REPLACEMENT;
                                         $dump = $sort = 0;
                                         $tmp_pos = $starter_pos = $pos;
-                                        continue2;
+//                                        continue2;
                                     }
                                 break;
                                     // Note: 0xEF is quite common in Japanese
@@ -873,7 +873,7 @@ class utf_normalizer_phpbb {
                                         $tmp.= UTF8_REPLACEMENT;
                                         $dump = $sort = 0;
                                         $tmp_pos = $starter_pos = $pos;
-                                        continue2;
+//                                        continue2;
                                     }
                                 break;
                                 case "\xC0":
@@ -891,7 +891,7 @@ class utf_normalizer_phpbb {
                                         $tmp.= UTF8_REPLACEMENT;
                                         $dump = $sort = 0;
                                         $tmp_pos = $starter_pos = $pos;
-                                        continue2;
+//                                        continue2;
                                     }
                                 break;
                                 case "\xE0":
@@ -908,7 +908,7 @@ class utf_normalizer_phpbb {
                                         $tmp.= UTF8_REPLACEMENT;
                                         $dump = $sort = 0;
                                         $tmp_pos = $starter_pos = $pos;
-                                        continue2;
+//                                        continue2;
                                     }
                                 break;
                                 case "\xF0":
@@ -925,7 +925,7 @@ class utf_normalizer_phpbb {
                                         $tmp.= UTF8_REPLACEMENT;
                                         $dump = $sort = 0;
                                         $tmp_pos = $starter_pos = $pos;
-                                        continue2;
+//                                        continue2;
                                     }
                                 break;
                                 default:
@@ -942,7 +942,7 @@ class utf_normalizer_phpbb {
                                         $tmp.= UTF8_REPLACEMENT;
                                         $dump = $sort = 0;
                                         $tmp_pos = $starter_pos = $pos;
-                                        continue2;
+//                                        continue2;
                                     }
                                 break;
                             }

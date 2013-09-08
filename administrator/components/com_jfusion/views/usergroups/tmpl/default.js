@@ -4,7 +4,7 @@ if (typeof JFusion === 'undefined') {
 
 JFusion.createRows = function() {
     if (JFusion.pairs && JFusion.pairs.joomla_int) {
-        Array.each(JFusion.pairs.joomla_int, function (pair) {
+        Array.each(JFusion.pairs.joomla_int, function () {
             JFusion.createRow(false);
         });
     } else {
@@ -61,7 +61,7 @@ JFusion.createRow = function(newrow) {
 
     var classes = 'row' + (index % 2);
     if (!index) {
-        classes = classes + ' defaultusergroup';
+        classes += ' defaultusergroup';
     }
 
     var tr = new Element('tr', { 'id': 'usergroup'+index,
@@ -123,13 +123,13 @@ JFusion.renderDefault = function(index, plugin, pair) {
     }
 
     Array.each(groups, function (group) {
-        var selected = '';
+        var options = {'value': group.id,
+            'html': group.name};
+
         if (pair !== null && pair.contains(group.id)) {
-            selected = 'selected';
+            options.selected = 'selected';
         }
-        select.appendChild(new Element('option', {'value': group.id,
-            'selected': selected,
-            'html': group.name}));
+        select.appendChild(new Element('option', options));
     });
     return select;
 };

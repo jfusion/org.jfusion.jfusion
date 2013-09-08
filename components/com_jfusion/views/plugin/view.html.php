@@ -43,6 +43,11 @@ class jfusionViewPlugin extends JViewLegacy {
 	 */
 	var $url;
 
+	/**
+	 * @var string $type
+	 */
+	var $type;
+
     /**
      * @param null $tpl
      * @return bool
