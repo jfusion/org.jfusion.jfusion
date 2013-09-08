@@ -170,7 +170,7 @@ class jfusionViewLoginCheckerResult extends JViewLegacy
 		 * @var $plugin plgAuthenticationjfusion|plgUserJfusion
 		 */
 		foreach ($plugins as $plugin) {
-			$className = 'plg' . $plugin->type . $plugin->name;
+			$className = 'plg' . ucfirst($plugin->type) . $plugin->name;
 			if (class_exists($className)) {
 				$plugin = new $className($this, (array)$plugin);
 			}

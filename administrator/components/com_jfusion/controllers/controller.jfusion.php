@@ -1030,9 +1030,16 @@ JS;
 
 		$groups = array();
 		if ($usergroups && $sort) {
+			if (!isset($usergroups['joomla_int'])) {
+				$usergroups['joomla_int'] = array();
+			}
 			foreach ($sort as $index => $id) {
 				foreach ($usergroups as $jname => $group) {
-					$groups[$jname][$index] = $group[$id];
+					if (isset($group[$id])) {
+						$groups[$jname][$index] = $group[$id];
+					} else {
+						$groups[$jname][$index] = null;
+					}
 				}
 			}
 		}
