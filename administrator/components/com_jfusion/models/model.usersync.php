@@ -19,15 +19,16 @@ defined('_JEXEC') or die('Restricted access');
 /**
  * Prevent time-outs
  */
-@set_time_limit(0);
-@ini_set('memory_limit', '256M');
-@ini_set('upload_max_filesize', '128M');
-@ini_set('post_max_size', '256M');
-@ini_set('max_input_time', '7200');
-/** @noinspection PhpUsageOfSilenceOperatorInspection */
-@ini_set('max_execution_time', '0');
-@ini_set('expect.timeout', '7200');
-@ini_set('default_socket_timeout', '7200');
+ob_start();
+set_time_limit(0);
+ini_set('memory_limit', '256M');
+ini_set('upload_max_filesize', '128M');
+ini_set('post_max_size', '256M');
+ini_set('max_input_time', '7200');
+ini_set('max_execution_time', '0');
+ini_set('expect.timeout', '7200');
+ini_set('default_socket_timeout', '7200');
+ob_end_clean();
 
 /**
  * Class for usersync JFusion functions

@@ -127,14 +127,14 @@ class JFusionCookies {
                 $api = null;
                 $data = array();
 		    	foreach( $this->_cookies as $key => $cookies ) {
-		    		$api = new JFusionAPI($key,$this->secret);
-		    		if ($api->set('Cookie','Cookies',$cookies)) {
+		    		$api = new JFusionAPI($key, $this->secret);
+		    		if ($api->set('Cookie', 'Cookies', $cookies)) {
 		    			$data['url'][$api->url] = $api->sid;
 		    		}
 				}
                 if ($api) {
                     unset($data['url'][$api->url]);
-                    $api->execute('cookie','cookies',$data,$return);
+                    $api->execute('cookie', 'cookies', $data, $return);
                 }
 	    	}
 	    	if (!empty($return)) {

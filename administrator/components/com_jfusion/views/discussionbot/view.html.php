@@ -131,7 +131,7 @@ class jfusionViewdiscussionbot extends JViewLegacy
         		if(count($items)){
         			foreach ($items as $v) {
         				$pt = $v->parent;
-        				$list = @$children[$pt]?$children[$pt]: array ();
+				        $list = (isset($children[$pt]) && $children[$pt]) ? $children[$pt] : array ();
         				array_push($list, $v);
         				$children[$pt] = $list;
         			}
@@ -228,7 +228,7 @@ HTML;
      */
     public static function buildRecursiveTree($id, $indent, $list, &$children, $level = 0)
 	{
-	    if (@$children[$id]) {
+	    if (isset($children[$id]) && $children[$id]) {
     		foreach ($children[$id] as $v)
     		{
     			$id = $v->id;

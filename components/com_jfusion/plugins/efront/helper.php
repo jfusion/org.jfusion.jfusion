@@ -37,26 +37,29 @@ class JFusionHelper_efront {
     {
         return 'efront';
     }
+
     /**
      * @param $dir
      */
     function delete_directory($dir) {
         $handle = opendir($dir);
+	    ob_start();
         if ($handle) {
             while (false !== ($file = readdir($handle))){
                 if ($file != '.' && $file != '..'){
                     if(is_dir($dir.$file)){
-                        if(!@rmdir($dir.$file)){ // Empty directory? Remove it
+                        if(!rmdir($dir.$file)){ // Empty directory? Remove it
                             $this->delete_directory($dir.$file.'/'); // Not empty? Delete the files inside it
                         }
                     } else {
-                        @unlink($dir.$file);
+                        unlink($dir.$file);
                     }
                 }
             }
             closedir($handle);
-            @rmdir($dir);
+            rmdir($dir);
         }
+	    ob_end_clean();
     }
 
     /**

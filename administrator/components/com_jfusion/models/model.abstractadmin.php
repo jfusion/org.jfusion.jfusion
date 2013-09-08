@@ -180,7 +180,7 @@ class JFusionAdmin
 						    require_once(JPATH_SITE.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'jfusionapi.php');
 
 						    $joomla_int = JFusionFactory::getParams('joomla_int');
-						    $api = new JFusionAPI($url,$joomla_int->get('secret'));
+						    $api = new JFusionAPI($url, $joomla_int->get('secret'));
 						    if (!$api->ping()) {
 							    list ($message) = $api->getError();
 

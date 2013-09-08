@@ -5,7 +5,7 @@ function initJFusionAPI() {
 		if ($secretkey == 'secret passphrase') {
 			exit('JFusion Api Disabled');
 		}
-		$JFusionAPI = new JFusionAPI('',$secretkey);
+		$JFusionAPI = new JFusionAPI('', $secretkey);
 		$JFusionAPI->parse();
 	}
 }
@@ -227,7 +227,7 @@ class JFusionAPI {
 	public function execute($class, $task, $payload=array(), $return='')
 	{
 		if (!empty($return)) {
-			header('Location: '.$this->getExecuteURL($class,$task,$return).'&jfpayload='.base64_encode(serialize($payload)));
+			header('Location: '.$this->getExecuteURL($class,$task,$return).'&jfpayload='.base64_encode(json_encode($payload)));
 			return true;
 		} else {
 			return $this->raw('execute',$class, $task, $payload);
@@ -317,7 +317,7 @@ class JFusionAPI {
 	public static function encrypt($keyinfo, $payload=array())
 	{
 		if (isset($keyinfo->secret) && isset($keyinfo->hash) && function_exists('mcrypt_encrypt')) {
-			$encrypted = trim(base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $keyinfo->secret, serialize($payload), MCRYPT_MODE_NOFB, $keyinfo->hash)));
+			$encrypted = trim(base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $keyinfo->secret, json_encode($payload), MCRYPT_MODE_NOFB, $keyinfo->hash)));
 		} else {
 			$encrypted = null;
 		}
@@ -334,7 +334,9 @@ class JFusionAPI {
 	public static function decrypt($keyinfo, $payload)
 	{
 		if (isset($keyinfo->secret) && isset($keyinfo->hash) && function_exists('mcrypt_decrypt')) {
-			$decrypted = @unserialize(trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $keyinfo->secret, base64_decode($payload), MCRYPT_MODE_NOFB, $keyinfo->hash)));
+			ob_start();
+			$decrypted = json_decode(trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $keyinfo->secret, base64_decode($payload), MCRYPT_MODE_NOFB, $keyinfo->hash)));
+			ob_end_clean();
 		} else {
 			$decrypted = false;
 		}
@@ -409,7 +411,7 @@ class JFusionAPI {
 			}
 		}
 		if ($result == null) {
-			$result = base64_encode(serialize($output));
+			$result = base64_encode(json_encode($output));
 		}
 		echo $result;
 		exit();
@@ -424,7 +426,9 @@ class JFusionAPI {
 	{
 		$return = JFusionAPI::decrypt($this->createkey() , $input);
 		if (!is_array($return)) {
-			$return = @unserialize(trim(base64_decode($input)));
+			ob_start();
+			$return = json_decode(trim(base64_decode($input)));
+			ob_end_clean();
 		}
 		if (!is_array($return)) {
 			$this->error[] = 'JfusionAPI: error output: '. $input;
@@ -472,7 +476,9 @@ class JFusionAPIBase {
 	protected function readPayload($encrypt)
 	{
 		if (!$encrypt && isset($_GET['jfpayload'])) {
-			$payload = @unserialize(trim(base64_decode($_GET['jfpayload'])));
+			ob_start();
+			$payload = json_decode(trim(base64_decode($_GET['jfpayload'])));
+			ob_end_clean();
 		} else if ($encrypt && isset($_POST['jfpayload'])) {
 			$payload = JFusionAPI::decrypt($this->key , $_POST['jfpayload']);
 		}
@@ -490,7 +496,7 @@ class JFusionAPIBase {
 	 */
 	protected function buildPayload($payload)
 	{
-		return base64_encode(serialize($payload));
+		return base64_encode(json_encode($payload));
 	}
 
 	/**

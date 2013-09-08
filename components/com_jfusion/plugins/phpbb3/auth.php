@@ -236,10 +236,12 @@ class JFusionAuth_phpbb3 extends JFusionAuth
      */
     function get_random_bytes($count) {
         $output = '';
-        if (($fh = @fopen('/dev/urandom', 'rb'))) {
+	    ob_start();
+        if (($fh = fopen('/dev/urandom', 'rb'))) {
             $output = fread($fh, $count);
             fclose($fh);
         }
+	    ob_end_clean();
         if (strlen($output) < $count) {
             $output = '';
             for ($i = 0;$i < $count;$i+= 16) {
