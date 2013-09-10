@@ -100,6 +100,7 @@ class jfusionViewconfigdump extends JViewLegacy {
 		$this->checkvalue['jfusion_plugin']['*']['database_user'] = 'is_string|not_empty';
 		$this->checkvalue['jfusion_plugin']['*']['database_password'] = 'is_string|not_empty|mask';
 		$this->checkvalue['jfusion_plugin']['*']['database_prefix'] = 'is_string';
+		$this->checkvalue['jfusion_plugin']['*']['usergroups'] = 'is_validusergrouparray';
 
 		$query = $db->getQuery(true)
 			->select('id, name, params, dual_login, original_name')
@@ -108,6 +109,9 @@ class jfusionViewconfigdump extends JViewLegacy {
 
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
+
+		$update = JFusionFunction::getUpdateUserGroups();
+		$usergroups = JFusionFunction::getUserGroups();
 
 		if(count($rows) ) {
 			foreach($rows as $row) {
@@ -118,6 +122,18 @@ class jfusionViewconfigdump extends JViewLegacy {
 				$new = $this->loadParams($row);
 
 				$this->clearParameters($new,'jfusion_plugin');
+
+				if (isset($usergroups->{$row->name})) {
+					$new->usergroups = $usergroups->{$row->name};
+				} else {
+					$new->usergroups = null;
+				}
+
+				if (isset($update->{$row->name}) && $update->{$row->name}) {
+					$new->updateusergroups = true;
+				} else {
+					$new->updateusergroups = false;
+				}
 
 				$this->jfusion_plugin[$row->name] = $new;
 			}
@@ -346,6 +362,21 @@ class jfusionViewconfigdump extends JViewLegacy {
 			$valid = 0;
 			foreach($checks as $check) {
 				switch ( $check ) {
+					case 'is_validusergrouparray';
+						if (is_array($value) && !empty($value)) {
+							$valid = 1;
+							foreach($value as $index => $group) {
+								if ($group === null) {
+									if ($index == 0) {
+										$valid = 0;
+									} else {
+										$valid = 2;
+									}
+									break;
+								}
+							}
+						}
+						break;
 					case 'not_empty';
 						if (empty($value) || $value === null) {
 							$valid = 0;
@@ -353,7 +384,7 @@ class jfusionViewconfigdump extends JViewLegacy {
 						break;
 					case 'mask':
 						$valid = 1;
-						if (JFactory::getApplication()->input->get('mask',false)) {
+						if (!JFactory::getApplication()->input->get('show', false)) {
 							$value = '************';
 						}
 						break;

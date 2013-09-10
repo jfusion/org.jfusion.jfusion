@@ -1036,7 +1036,11 @@ JS;
 			foreach ($sort as $index => $id) {
 				foreach ($usergroups as $jname => $group) {
 					if (isset($group[$id])) {
-						$groups[$jname][$index] = $group[$id];
+						if ($group[$id] !== 'JFUSION_NO_USERGROUP') {
+							$groups[$jname][$index] = $group[$id];
+						} else {
+							$groups[$jname][$index] = null;
+						}
 					} else {
 						$groups[$jname][$index] = null;
 					}
@@ -1048,7 +1052,7 @@ JS;
 
 		foreach ($groups as $jname => $plugin) {
 			foreach ($plugin as $index => $group) {
-				if ($group === null || $group == 'JFUSION_NO_USERGROUP') {
+				if ($group === null) {
 					if ($index == 0) {
 						JFusionFunction::raiseError(JText::_('NO_DEFAULT_GROUP_FOR_PAIR').': '. ($index+1), $jname);
 					} else if (($master && $master->name == $jname) || (isset($updateusergroups[$jname]) && $updateusergroups[$jname])) {

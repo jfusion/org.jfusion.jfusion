@@ -1325,7 +1325,7 @@ class JFusionFunction
 			}
 		}
 		if (!is_array($group)) {
-			if ($group != 'JFUSION_NO_USERGROUP') {
+			if ($group !==  null) {
 				$group = array($group);
 			} else {
 				$group = array();

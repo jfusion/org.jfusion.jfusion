@@ -11,13 +11,13 @@
 defined('_JEXEC') or die('Restricted access');
 JFusionFunctionAdmin::displayDonate();
 
-$mask = '';
-if (JFactory::getApplication()->input->get('mask',false)) {
-    $mask = 'checked="yes"';
+$show = '';
+if (JFactory::getApplication()->input->get('show', false)) {
+	$show = 'checked="yes"';
 }
 
 $filter = '';
-if (JFactory::getApplication()->input->get('filter',false)) {
+if (JFactory::getApplication()->input->get('filter', false)) {
     $filter = 'checked="yes"';
 }
 ?>
@@ -42,12 +42,12 @@ if (JFactory::getApplication()->input->get('filter',false)) {
 	        </tr>
 	        <tr>
 	            <td>
-	                <input id="filter" type="checkbox" <?php echo $filter; ?> name="filter" value="true" /> <label for="filter"><?php echo JText::_('CONFIGDUMP_SEEMS_OK'); ?></label>
+	                <input id="filter" type="checkbox" <?php echo $filter; ?> name="filter" value="true" /> <label for="filter"><?php echo JText::_('CONFIGDUMP_FILTER'); ?></label>
 	            </td>
 	        </tr>
 	        <tr>
 	            <td>
-	                <input id="mask" type="checkbox" <?php echo $mask; ?> name="mask" value="true" /> <label for="mask"><?php echo JText::_('CONFIGDUMP_MASK'); ?></label>
+	                <input id="show" type="checkbox" <?php echo $show; ?> name="show" value="true" /> <label for="show"><?php echo JText::_('CONFIGDUMP_SHOW'); ?></label>
 	            </td>
 	        </tr>
 	    </table>
