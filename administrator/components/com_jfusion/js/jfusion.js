@@ -4,21 +4,13 @@ if (typeof JFusion === 'undefined') {
 }
 JFusion.Plugin = {};
 JFusion.View = {};
-JFusion.text = [];
 JFusion.url = '';
-
-/**
- * @return {string}
- */
-JFusion.JText = function (key) {
-    return this.text[key.toUpperCase()] || key.toUpperCase();
-};
 
 JFusion.OnError = function (messages, force) {
     var systemMessageContainer = $('system-message-container');
     systemMessageContainer.empty();
     if (messages.indexOf('<!') === 0) {
-        this.OnMessage('error', [ this.JText('SESSION_TIMEOUT') ], force);
+        this.OnMessage('error', [ Joomla.JText._('SESSION_TIMEOUT') ], force);
     } else {
         this.OnMessage('error', [ messages ], force);
     }
@@ -44,7 +36,7 @@ JFusion.OnMessage = function (type, messages) {
 
             div = new Element('div', {'class': 'alert' + ' ' + errorlist[type] });
 
-            new Element('h4', {'class': 'alert-heading', 'html' : this.JText(type) }).inject(div);
+            new Element('h4', {'class': 'alert-heading', 'html' : Joomla.JText._(type) }).inject(div);
             Array.each(messages, function (message) {
                 new Element('p', { 'html' : message }).inject(div);
             });
@@ -177,7 +169,7 @@ JFusion.addPair = function (name, id) {
 
     tr.appendChild(new Element('td')).appendChild(new Element('a', {
         'href': 'javascript:void(0);',
-        'html': this.JText('DELETE_PAIR'),
+        'html': Joomla.JText._('DELETE_PAIR'),
         'events': {
             'click': function () {
                 JFusion.removePair(id, index);

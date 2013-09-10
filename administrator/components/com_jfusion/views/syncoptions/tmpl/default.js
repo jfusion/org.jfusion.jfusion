@@ -14,14 +14,14 @@ JFusion.renderSyncHead = function() {
     var root = new Element('thead');
     var tr = new Element('tr');
 
-    new Element('th',{'html': JFusion.JText('PLUGIN') + ' ' + JFusion.JText('NAME')}).inject(tr);
-    new Element('th',{'html': JFusion.JText('SYNC_PROGRESS'), 'width': 200}).inject(tr);
-    new Element('th',{'html': JFusion.JText('SYNC_USERS_TODO')}).inject(tr);
-    new Element('th',{'html': JFusion.JText('USERS') + ' ' + JFusion.JText('CREATED')}).inject(tr);
-    new Element('th',{'html': JFusion.JText('USERS') + ' ' + JFusion.JText('DELETED')}).inject(tr);
-    new Element('th',{'html': JFusion.JText('USERS') + ' ' + JFusion.JText('UPDATED')}).inject(tr);
-    new Element('th',{'html': JFusion.JText('USER') + ' ' + JFusion.JText('CONFLICTS')}).inject(tr);
-    new Element('th',{'html': JFusion.JText('USERS') + ' ' + JFusion.JText('UNCHANGED')}).inject(tr);
+    new Element('th',{'html': Joomla.JText._('PLUGIN') + ' ' + Joomla.JText._('NAME')}).inject(tr);
+    new Element('th',{'html': Joomla.JText._('SYNC_PROGRESS'), 'width': 200}).inject(tr);
+    new Element('th',{'html': Joomla.JText._('SYNC_USERS_TODO')}).inject(tr);
+    new Element('th',{'html': Joomla.JText._('USERS') + ' ' + Joomla.JText._('CREATED')}).inject(tr);
+    new Element('th',{'html': Joomla.JText._('USERS') + ' ' + Joomla.JText._('DELETED')}).inject(tr);
+    new Element('th',{'html': Joomla.JText._('USERS') + ' ' + Joomla.JText._('UPDATED')}).inject(tr);
+    new Element('th',{'html': Joomla.JText._('USER') + ' ' + Joomla.JText._('CONFLICTS')}).inject(tr);
+    new Element('th',{'html': Joomla.JText._('USERS') + ' ' + Joomla.JText._('UNCHANGED')}).inject(tr);
 
     tr.inject(root);
     return root;
@@ -145,19 +145,19 @@ JFusion.update = function() {
         var start = $('start');
         if (JFusion.response.completed) {
             JFusion.stopSync();
-            text = JFusion.JText('FINISHED');
+            text = Joomla.JText._('FINISHED');
 
-            start.set('html', '<strong>'+JFusion.JText('CLICK_FOR_MORE_DETAILS')+'</strong>');
+            start.set('html', '<strong>'+Joomla.JText._('CLICK_FOR_MORE_DETAILS')+'</strong>');
             start.set('href', 'index.php?option=com_jfusion&task=syncstatus&syncid='+JFusion.syncid);
             start.removeEvents('click');
         } else if (JFusion.syncRunning === 0) {
-            text = JFusion.JText('PAUSED');
+            text = Joomla.JText._('PAUSED');
 
-            start.set('html', JFusion.JText('RESUME'));
+            start.set('html', Joomla.JText._('RESUME'));
         } else {
-            text = JFusion.JText('UPDATE_IN')+ ' ' + JFusion.counter + ' '+JFusion.JText('SECONDS');
+            text = Joomla.JText._('UPDATE_IN')+ ' ' + JFusion.counter + ' '+Joomla.JText._('SECONDS');
 
-            start.set('html', JFusion.JText('PAUSE'));
+            start.set('html', Joomla.JText._('PAUSE'));
         }
         $('counter').set('html', '<strong>'+text+'</strong>');
     }

@@ -1044,6 +1044,20 @@ JS;
 			}
 		}
 
+		$master = JFusionFunction::getMaster();
+
+		foreach ($groups as $jname => $plugin) {
+			foreach ($plugin as $index => $group) {
+				if ($group === null || $group == 'JFUSION_NO_USERGROUP') {
+					if ($index == 0) {
+						JFusionFunction::raiseError(JText::_('NO_DEFAULT_GROUP_FOR_PAIR').': '. ($index+1), $jname);
+					} else if (($master && $master->name == $jname) || (isset($updateusergroups[$jname]) && $updateusergroups[$jname])) {
+						JFusionFunction::raiseError(JText::_('NO_GROUP_FOR_PAIR').': '. ($index+1), $jname);
+					}
+				}
+			}
+		}
+
 		jimport('joomla.application.component.helper');
 		$jfusion = JComponentHelper::getComponent('com_jfusion');
 

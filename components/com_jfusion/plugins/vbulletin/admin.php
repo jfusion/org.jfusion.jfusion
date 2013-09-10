@@ -303,8 +303,9 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
     function showHook($ignore, $hook)
     {
         static $jsSet;
+
         if (empty($jsSet)) {
-	        JFusionFunction::loadJavascriptLanguage('VB_REDIRECT_ITEMID_EMPTY');
+	        JFusionFunction::loadJavascriptLanguage(array('VB_REDIRECT_ITEMID_EMPTY', 'OK'));
 
             $js = <<<JS
             JFusion.Plugin.toggleHook = function(hook, action) {
@@ -315,7 +316,7 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
                 var h = (hook == 'frameless' || hook == 'redirect');
                 var i = (itemid.get('value') === '' || itemid.get('value') == '0');
                 if (a && h && i) {
-                	JFusion.confirm(JFusion.JText('VB_REDIRECT_ITEMID_EMPTY'), JFusion.JText('OK'));
+                	JFusion.confirm(Joomla.JText._('VB_REDIRECT_ITEMID_EMPTY'), Joomla.JText._('OK'));
                 } else {
                     form.customcommand.set('value', 'toggleHook');
                     $('params_hook_name').set('value', hook);
@@ -786,6 +787,8 @@ HTML;
 	function getRenderGroup()
 	{
 		$jname = $this->getJname();
+
+		JFusionFunction::loadJavascriptLanguage(array('DEFAULT_USERGROUP', 'DEFAULT_DISPLAYGROUP', 'DEFAULT', 'DEFAULT_MEMBERGROUPS'));
 		$js = <<<JS
 		JFusion.renderPlugin['{$jname}'] = function(index, plugin, pair) {
 			var usergroups = JFusion.usergroups[plugin.name];
@@ -793,7 +796,7 @@ HTML;
 			var div = new Element('div');
 
 			// render default group
-			div.appendChild(new Element('div', {'html': JFusion.JText('DEFAULT_USERGROUP')}));
+			div.appendChild(new Element('div', {'html': Joomla.JText._('DEFAULT_USERGROUP')}));
 
 		    var defaultselect = new Element('select', {
 		    	'name': 'usergroups['+plugin.name+']['+index+'][defaultgroup]',
@@ -828,13 +831,13 @@ HTML;
 
 
 			// render display group
-			div.appendChild(new Element('div', {'html': JFusion.JText('DEFAULT_DISPLAYGROUP')}));
+			div.appendChild(new Element('div', {'html': Joomla.JText._('DEFAULT_DISPLAYGROUP')}));
 
 		    var displayselect = new Element('select', {
 			    'name': 'usergroups['+plugin.name+']['+index+'][displaygroup]',
 			    'id': 'usergroups_'+plugin.name+index+'displaygroup'});
 
-			displayselect.appendChild(new Element('option', {'value': 0, 'html': JFusion.JText('DEFAULT')}));
+			displayselect.appendChild(new Element('option', {'value': 0, 'html': Joomla.JText._('DEFAULT')}));
 		    Array.each(usergroups, function (group) {
 			    if (group.id != 1 && group.id != 3 && group.id != 4) {
 				    var options = {'value': group.id,
@@ -850,7 +853,7 @@ HTML;
 
 
 			// render default member groups
-			div.appendChild(new Element('div', {'html': JFusion.JText('DEFAULT_MEMBERGROUPS')}));
+			div.appendChild(new Element('div', {'html': Joomla.JText._('DEFAULT_MEMBERGROUPS')}));
 
 		    Array.each(usergroups, function (group, i) {
 		    	var cdiv = new Element('div');

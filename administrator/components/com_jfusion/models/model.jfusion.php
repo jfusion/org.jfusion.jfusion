@@ -1908,7 +1908,6 @@ class JFusionFunction
 	public static function initJavaScript() {
 		static $js;
 		if (!$js) {
-			$text = array();
 			if ( JFactory::getApplication()->isAdmin() ) {
 				$keys = array( 'SESSION_TIMEOUT', 'NOTICE', 'WARNING', 'MESSAGE', 'ERROR', 'DELETED', 'DELETE_PAIR', 'REMOVE', 'OK');
 
@@ -1919,15 +1918,10 @@ class JFusionFunction
 				$url = JURI::root() . 'index.php';
 			}
 
-			foreach($keys as $key) {
-				$text[$key] = JText::_($key);
-			}
-			$text = json_encode($text);
+			static::loadJavascriptLanguage($keys);
 
 			$js=<<<JS
 			JFusion.url = '{$url}';
-
-			JFusion.text = {$text};
 JS;
 
 			$document = JFactory::getDocument();
@@ -1939,25 +1933,16 @@ JS;
 	 * @param string|array $keys
 	 */
 	public static function loadJavascriptLanguage($keys) {
-		JFusionFunction::initJavaScript();
 		if (!empty($keys)) {
 			$document = JFactory::getDocument();
 
-			$js = '';
 			if (is_array($keys)) {
 				foreach($keys as $key) {
-					$text = JText::_($key, true);
-					$js .=<<<JS
-			JFusion.text['{$key}'] = '{$text}';
-JS;
+					JText::script($key);
 				}
 			} else {
-				$text = JText::_($keys, true);
-				$js .=<<<JS
-			JFusion.text['{$keys}'] = '{$text}';
-JS;
+				JText::script($keys);
 			}
-			$document->addScriptDeclaration($js);
 		}
 	}
 

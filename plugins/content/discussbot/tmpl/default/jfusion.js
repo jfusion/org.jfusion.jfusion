@@ -1,7 +1,7 @@
 if (typeof JFusion === 'undefined') {
     var JFusion = {};
 }
-JFusion.text = [];
+
 JFusion.jumptoDiscussion = true;
 JFusion.messageSlide = false;
 JFusion.delayHiding = false;
@@ -18,14 +18,10 @@ JFusion.loadMarkitup = false;
 JFusion.timeout = 15000;
 JFusion.highlightDelay = 500;
 
-JFusion.JText = function (key) {
-    return this.text[key.toUpperCase()] || key.toUpperCase();
-};
-
 JFusion.OnError = function (messages, force) {
     JFusion.emptyMessage();
     if (messages.indexOf('<!') === 0) {
-        this.OnMessage('error', [ this.JText('SESSION_TIMEOUT') ], force);
+        this.OnMessage('error', [ Joomla.JText._('SESSION_TIMEOUT') ], force);
     } else {
         this.OnMessage('error', [ messages ], force);
     }
@@ -64,7 +60,7 @@ JFusion.OnMessage = function (type, messages) {
 
             div = new Element('div', {'class' : 'alert' + ' ' + errorlist[type] });
 
-            new Element('h4', {'class': 'alert-heading', 'html' : this.JText(type) }).inject(div);
+            new Element('h4', {'class': 'alert-heading', 'html' : Joomla.JText._(type) }).inject(div);
             Array.each(messages, function (message) {
                 new Element('p', { 'html' : message }).inject(div);
             });
@@ -193,11 +189,11 @@ JFusion.confirmThreadAction = function (id, task, vars, url) {
         container.empty();
         msg = '';
         if (task === 'create_thread') {
-            msg = JFusion.JText('CONFIRM_THREAD_CREATION');
+            msg = Joomla.JText._('CONFIRM_THREAD_CREATION');
         } else if (task === 'unpublish_discussion') {
-            msg = JFusion.JText('CONFIRM_UNPUBLISH_DISCUSSION');
+            msg = Joomla.JText._('CONFIRM_UNPUBLISH_DISCUSSION');
         } else if (task === 'publish_discussion') {
-            msg = JFusion.JText('CONFIRM_PUBLISH_DISCUSSION');
+            msg = Joomla.JText._('CONFIRM_PUBLISH_DISCUSSION');
         }
 
         //set the confirmation text
@@ -225,7 +221,7 @@ JFusion.confirmThreadAction = function (id, task, vars, url) {
         new Element('input', {
             type: 'button',
             'class': 'button',
-            value: JFusion.JText('BUTTON_CANCEL'),
+            value: Joomla.JText._('BUTTON_CANCEL'),
             events: {
                 click: function () {
                     JFusion.clearConfirmationBox(id);
@@ -238,7 +234,7 @@ JFusion.confirmThreadAction = function (id, task, vars, url) {
             new Element('input', {
                 type: 'button',
                 'class': 'button',
-                value: JFusion.JText('BUTTON_INITIATE'),
+                value: Joomla.JText._('BUTTON_INITIATE'),
                 styles: {
                     marginLeft: '3px'
                 },
@@ -252,7 +248,7 @@ JFusion.confirmThreadAction = function (id, task, vars, url) {
             new Element('input', {
                 type: 'button',
                 'class': 'button',
-                value: JFusion.JText('BUTTON_REPUBLISH_DISCUSSION'),
+                value: Joomla.JText._('BUTTON_REPUBLISH_DISCUSSION'),
                 styles: {
                     marginLeft: '3px'
                 },
@@ -266,7 +262,7 @@ JFusion.confirmThreadAction = function (id, task, vars, url) {
             new Element('input', {
                 type: 'button',
                 'class': 'button',
-                value: JFusion.JText('BUTTON_PUBLISH_NEW_DISCUSSION'),
+                value: Joomla.JText._('BUTTON_PUBLISH_NEW_DISCUSSION'),
                 styles: {
                     marginLeft: '3px'
                 },
@@ -280,7 +276,7 @@ JFusion.confirmThreadAction = function (id, task, vars, url) {
             new Element('input', {
                 type: 'button',
                 'class': 'button',
-                value: JFusion.JText('BUTTON_UNPUBLISH_DISCUSSION'),
+                value: Joomla.JText._('BUTTON_UNPUBLISH_DISCUSSION'),
                 styles: {
                     marginLeft: '3px'
                 },
@@ -327,10 +323,10 @@ JFusion.toggleDiscussionVisibility = function (id, override, discusslink) {
     if (discussion) {
         jfusionBtnShowreplies = $('jfusionBtnShowreplies' + id);
         if (discussion.isDisplayed()) {
-            jfusionBtnShowreplies.set('html', JFusion.JText('HIDE_REPLIES'));
+            jfusionBtnShowreplies.set('html', Joomla.JText._('HIDE_REPLIES'));
             showdiscussion = 1;
         } else {
-            jfusionBtnShowreplies.set('html', JFusion.JText('SHOW_REPLIES'));
+            jfusionBtnShowreplies.set('html', Joomla.JText._('SHOW_REPLIES'));
             showdiscussion = 0;
         }
         discussion.toggle();
@@ -381,7 +377,7 @@ JFusion.submitReply = function (id) {
         //show a loading
         JFusion.emptyMessage();
 
-        JFusion.OnMessage('message', [JFusion.JText('SUBMITTING_QUICK_REPLY')]);
+        JFusion.OnMessage('message', [Joomla.JText._('SUBMITTING_QUICK_REPLY')]);
 
         //update the post area content
         JFusion.updatePostArea.post(form.toQueryString() + '&tmpl=component&ajax_request=1');

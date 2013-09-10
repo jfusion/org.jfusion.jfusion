@@ -11,6 +11,10 @@ JFusion.createRows = function() {
         JFusion.createRow(true);
     }
     JFusion.initSortables();
+    jQuery('select').chosen({
+        disable_search_threshold : 10,
+        allow_single_deselect : true
+    });
 };
 
 JFusion.createDragHandle = function(index) {
@@ -39,8 +43,7 @@ JFusion.createDragHandle = function(index) {
 };
 
 JFusion.createRemove = function(index) {
-    var td = new Element('td', {
-        'width': '20px'});
+    var td = new Element('td');
     var img = new Element('img', {
         'src': 'components/com_jfusion/images/cross.png',
         'name' : 'handle',
@@ -82,6 +85,12 @@ JFusion.render = function(index, plugin, newrow) {
 
     var div = new Element('div', {'id': plugin.name});
 
+    var update = $('updateusergroups_'+plugin.name);
+
+    if (!plugin.master && (update && !update.checked) && index !== 0) {
+        div.hide();
+    }
+
     div.appendChild(JFusion.renderGroup(index, plugin, newrow));
 
     td.appendChild(div);
@@ -119,7 +128,7 @@ JFusion.renderDefault = function(index, plugin, pair) {
 
     if (!plugin.isMultiGroup) {
         select.appendChild(new Element('option', {'value': 'JFUSION_NO_USERGROUP',
-            'html': JFusion.JText('SELECT_ONE')}));
+            'html': Joomla.JText._('SELECT_ONE')}));
     }
 
     Array.each(groups, function (group) {
@@ -146,11 +155,7 @@ JFusion.initSortables = function () {
         },
         /* once an item is selected */
         onStart: function (el) {
-            //a little fancy work to hide the clone which mootools 1.1 doesn't seem to give the option for
-            var checkme = $$('div tr#' + el.id);
-            if (checkme[1]) {
-                checkme[1].setStyle('display', 'none');
-            }
+            // do nothing yet
         },
         onComplete: function () {
             $$('#sort_table tr').each(function (tr, index) {
@@ -160,7 +165,21 @@ JFusion.initSortables = function () {
                     tr.setAttribute('class', 'row' + (index % 2) + ' defaultusergroup');
                 }
             });
+            JFusion.updatePlugins();
         }
+    });
+};
+
+JFusion.updatePlugins = function () {
+    Array.each(JFusion.plugins, function (plugin) {
+        var update = $('updateusergroups_'+plugin.name);
+        $$('div #'+ plugin.name).each(function (div, index) {
+            if (!plugin.master && (update && !update.checked) && index !== 0) {
+                div.hide();
+            } else {
+                div.show();
+            }
+        });
     });
 };
 
@@ -168,6 +187,10 @@ Joomla.submitbutton = function (pressbutton) {
     if (pressbutton === 'add') {
         JFusion.createRow(true);
         JFusion.initSortables();
+        jQuery('select').chosen({
+            disable_search_threshold : 10,
+            allow_single_deselect : true
+        });
     }  else {
         Joomla.submitform(pressbutton, $('adminForm'));
     }

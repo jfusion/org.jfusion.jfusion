@@ -18,6 +18,15 @@ $images = 'components/com_jfusion/images/';
 	//<![CDATA[
 	window.addEvent('domready',function() {
 		JFusion.createRows();
+
+		Array.each(JFusion.plugins, function (plugin) {
+			var update = $('updateusergroups_'+plugin.name);
+			if (update){
+				update.addEvent('click', function(e) {
+					JFusion.updatePlugins();
+				});
+			}
+		});
 	});
 	//]]>
 </script>
@@ -39,7 +48,7 @@ $images = 'components/com_jfusion/images/';
 					<?php
 					}
 					?>
-					<th width="100px">
+					<th width="60px">
 						<?php echo JText::_('REMOVE'); ?>
 					</th>
 				</tr>
@@ -54,12 +63,20 @@ $images = 'components/com_jfusion/images/';
 						}
 						?>
 						<th class="title" align="center">
-							<input id="updateusergroups_<?php echo $plugin->name; ?>" <?php echo $checked; ?> type="checkbox" name="updateusergroups[<?php echo $plugin->name; ?>]" value="1"> <?php echo JText::_('UPDATE_ON_CHANGE'); ?>
+							<?php
+							if ($plugin->master) {
+								echo JText::_('Master');
+							} else {
+							?>
+								<input id="updateusergroups_<?php echo $plugin->name; ?>" <?php echo $checked; ?> type="checkbox" name="updateusergroups[<?php echo $plugin->name; ?>]" value="1"> <?php echo JText::_('UPDATE_ON_CHANGE'); ?>
+							<?php
+							}
+							?>
 						</th>
 					<?php
 					}
 					?>
-					<th width="100px">
+					<th>
 					</th>
 				</tr>
 			</thead>

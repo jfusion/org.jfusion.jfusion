@@ -62,7 +62,7 @@ window.addEvent('domready', function() {
 					}
 					if (JFusion.response.slave_data.length) {
 						//give the user a last chance to opt-out
-						var answer = confirm(JFusion.JText('SYNC_CONFIRM_START'));
+						var answer = confirm(Joomla.JText._('SYNC_CONFIRM_START'));
 						if (answer) {
 							JFusion.syncMode = 'resume';
 							//do start
@@ -78,7 +78,7 @@ window.addEvent('domready', function() {
 							JFusion.startSync();
 						}
 					} else {
-						JFusion.OnError(JFusion.JText('SYNC_NODATA'));
+						JFusion.OnError(Joomla.JText._('SYNC_NODATA'));
 					}
 				} else {
 					JFusion.startSync();

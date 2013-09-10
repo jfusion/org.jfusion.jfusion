@@ -55,6 +55,7 @@ class jfusionViewusergroups extends JViewLegacy {
     {
 	    //load mootools
 	    JHtml::_('behavior.framework', true);
+	    JHtml::_('Formbehavior.chosen');
 
 	    $plugins = JFusionFactory::getPlugins('both', true);
 
@@ -84,6 +85,7 @@ class jfusionViewusergroups extends JViewLegacy {
 		        } else {
 			        $this->plugins[$key]->master = false;
 		        }
+
 		        if (isset($update->{$plugin->name})) {
 			        $this->plugins[$key]->update = $update->{$plugin->name};
 		        }
@@ -93,9 +95,7 @@ class jfusionViewusergroups extends JViewLegacy {
 	        $groups = json_encode($groups);
 	        $plugins = json_encode($this->plugins);
 
-	        $pairs = JFusionFunction::getUserGroups();
-
-	        $pairs = json_encode($pairs);
+	        $pairs = json_encode(JFusionFunction::getUserGroups());
 
 	        $js=<<<JS
 	        JFusion.renderPlugin = [];

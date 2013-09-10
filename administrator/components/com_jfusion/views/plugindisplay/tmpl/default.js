@@ -27,7 +27,7 @@ JFusion.changeSetting = function (fieldname, fieldvalue, jname) {
 };
 
 JFusion.copyPlugin = function (jname) {
-    JFusion.prompt(JFusion.JText('COPY_MESSAGE'), JFusion.JText('COPY'), function (value) {
+    JFusion.prompt(Joomla.JText._('COPY_MESSAGE'), Joomla.JText._('COPY'), function (value) {
         if (value) {
             // this code will send a data object via a GET request and alert the retrieved data.
             new Request.JSON({
@@ -52,7 +52,7 @@ JFusion.copyPlugin = function (jname) {
 
 JFusion.deletePlugin = function (jname) {
 
-    JFusion.confirm(JFusion.JText('DELETE') + ' ' + JFusion.JText('PLUGIN') + ' ' + jname + '?', JFusion.JText('DELETE'), function () {
+    JFusion.confirm(Joomla.JText._('DELETE') + ' ' + Joomla.JText._('PLUGIN') + ' ' + jname + '?', Joomla.JText._('DELETE'), function () {
         // this code will send a data object via a GET request and alert the retrieved data.
         new Request.JSON({
             url: JFusion.url,
@@ -116,11 +116,7 @@ JFusion.initSortables = function () {
         },
         /* once an item is selected */
         onStart: function (el) {
-            //a little fancy work to hide the clone which mootools 1.1 doesn't seem to give the option for
-            var checkme = $$('div tr#' + el.id);
-            if (checkme[1]) {
-                checkme[1].setStyle('display', 'none');
-            }
+            // do nothing yet
         },
         onComplete: function () {
             var sortorder;
