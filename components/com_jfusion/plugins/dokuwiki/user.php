@@ -90,7 +90,7 @@ class JFusionUser_dokuwiki extends JFusionUser
 				    if (JFusionFunction::updateUsergroups($this->getJname())) {
 					    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
 					    if (!empty($usergroups)) {
-						    if (!JFusionFunction::compareUserGroups($existinguser,$usergroups)) {
+						    if (!$this->compareUserGroups($existinguser, $usergroups)) {
 							    $changes['grps'] = $usergroups;
 						    } else {
 							    $status['debug'][] = JText::_('SKIPPED_GROUP_UPDATE') . ': ' . JText::_('GROUP_VALID');
@@ -275,7 +275,7 @@ class JFusionUser_dokuwiki extends JFusionUser
      */
     function createUser($userinfo, &$status) {
 	    try {
-		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
 		    if (empty($usergroups)) {
 			    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 		    } else {

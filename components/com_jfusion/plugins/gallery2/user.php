@@ -272,7 +272,7 @@ class JFusionUser_gallery2 extends JFusionUser
      */
     function createUser($userinfo, &$status) {
 	    $this->helper->loadGallery2Api(false);
-        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
         if (empty($usergroups)) {
             $status['error'][] = JText::_('ERROR_CREATE_USER') . ': ' . JText::_('USERGROUP_MISSING');
         } else {
@@ -303,7 +303,6 @@ class JFusionUser_gallery2 extends JFusionUser
                     if ($ret) {
                         $status['error'][] = JText::_('ERROR_CREATE_USER') . ' '.$this->getJname().' : ' . $userinfo->username;
                     } else {
-                        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
                         foreach ($usergroups as $group) {
                             $ret = GalleryCoreApi::addUserToGroup($user->id, (int)$group);
                             if ($ret) {
@@ -330,7 +329,7 @@ class JFusionUser_gallery2 extends JFusionUser
      */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
 	    $this->helper->loadGallery2Api(false);
-        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
         if (empty($usergroups)) {
             $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . JText::_('USERGROUP_MISSING');
         } else {

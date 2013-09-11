@@ -123,16 +123,24 @@ class jfusionViewconfigdump extends JViewLegacy {
 
 				$this->clearParameters($new,'jfusion_plugin');
 
-				if (isset($usergroups->{$row->name})) {
-					$new->usergroups = $usergroups->{$row->name};
-				} else {
-					$new->usergroups = null;
-				}
-
 				if (isset($update->{$row->name}) && $update->{$row->name}) {
 					$new->updateusergroups = true;
 				} else {
 					$new->updateusergroups = false;
+				}
+
+				if (isset($usergroups->{$row->name})) {
+					$new->usergroups = $usergroups->{$row->name};
+				} else {
+					$new->usergroups = array();
+				}
+
+				if ($new->updateusergroups === false) {
+					foreach($new->usergroups as $index => $group) {
+						if ($index) {
+							unset($new->usergroups[$index]);
+						}
+					}
 				}
 
 				$this->jfusion_plugin[$row->name] = $new;
@@ -367,11 +375,7 @@ class jfusionViewconfigdump extends JViewLegacy {
 							$valid = 1;
 							foreach($value as $index => $group) {
 								if ($group === null) {
-									if ($index == 0) {
-										$valid = 0;
-									} else {
-										$valid = 2;
-									}
+									$valid = 0;
 									break;
 								}
 							}

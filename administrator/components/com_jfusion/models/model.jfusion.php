@@ -1271,14 +1271,14 @@ class JFusionFunction
 		return $usergroupmodes;
 	}
 
-    /**
-     * return the correct usergroups for a given user
-     *
-     * @param string $jname plugin name
-     * @param object|null $userinfo user with correct usergroups, if null it will return the usergroup for new users
-     *
-     * @return array
-     */
+	/**
+	 * return the correct usergroups for a given user
+	 *
+	 * @param string $jname plugin name
+	 * @param object|null $userinfo user with correct usergroups, if null it will return the usergroup for new users
+	 *
+	 * @return array
+	 */
 	public static function getCorrectUserGroups($jname, $userinfo)
 	{
 		$group = array();
@@ -1293,34 +1293,14 @@ class JFusionFunction
 				$group = $mastergroups[0];
 			}
 		} else {
-			$groups = array();
-			if ($userinfo) {
-				if (isset($userinfo->groups)) {
-					$groups = $userinfo->groups;
-				} elseif (isset($userinfo->group_id)) {
-					$groups[] = $userinfo->group_id;
-				}
+			$user = JFusionFactory::getUser($master->name);
+			$index = $user->getUserGroupIndex($mastergroups, $userinfo);
+
+			if (isset($slavegroups[$index])) {
+				$group = $slavegroups[$index];
 			}
 
-			foreach ($mastergroups as $key => $mastergroup) {
-				if ($mastergroup) {
-					if ( count($mastergroup) == count($groups) ) {
-						$count = 0;
-						foreach ($mastergroup as $value) {
-							if (in_array($value, $groups, true)) {
-								$count++;
-							}
-						}
-						if (count($groups) == $count ) {
-							if (isset($slavegroups[$key])) {
-								$group = $slavegroups[$key];
-							}
-							break;
-						}
-					}
-				}
-			}
-			if (empty($group) && isset($slavegroups[0])) {
+			if ($group === null && isset($slavegroups[0])) {
 				$group =  $slavegroups[0];
 			}
 		}
@@ -1333,42 +1313,6 @@ class JFusionFunction
 		}
 		return $group;
 	}
-
-    /**
-     * compare set of usergroup with a user returns true if the usergroups are correct
-     *
-     * @param object $userinfo user with current usergroups
-     * @param array $usergroups array with the correct usergroups
-     *
-     * @return boolean
-     */
-    public static function compareUserGroups($userinfo, $usergroups) {
-    	if (!is_array($usergroups)) {
-    		$usergroups = array($usergroups);
-    	}
-        $correct = false;
-    	if (isset($userinfo->groups)) {
-			$count = 0;
-			if ( count($usergroups) == count($userinfo->groups) ) {
-				foreach ($usergroups as $group) {
-    	    		if (in_array($group, $userinfo->groups, true)) {
-    					$count++;
-					}
-	        	}
-				if (count($userinfo->groups) == $count) {
-                    $correct = true;
-				}
-			}
-    	} else {
-    		foreach ($usergroups as $group) {
-    			if ($group == $userinfo->group_id) {
-                    $correct = true;
-                    break;
-    			}
-        	}
-    	}
-		return $correct;
-    }
 
     /**
      * returns true / false if the plugin is in advanced usergroup mode or not...

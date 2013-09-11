@@ -340,7 +340,7 @@ class JFusionUser_smf extends JFusionUser
     function updateUsergroup($userinfo, &$existinguser, &$status)
     {
 	    try {
-		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
 		    if (empty($usergroups)) {
 			    throw new RuntimeException(JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST'));
 		    } else {
@@ -516,7 +516,7 @@ class JFusionUser_smf extends JFusionUser
 		    //we need to create a new SMF user
 		    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
 		    if (empty($usergroups)) {
 			    throw new RuntimeException('USERGROUP_MISSING');
 		    } else {

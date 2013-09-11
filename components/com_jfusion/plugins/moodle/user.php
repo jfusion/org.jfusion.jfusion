@@ -558,104 +558,106 @@ class JFusionUser_moodle extends JFusionUser {
 				//find out what usergroup should be used
 				$db = JFusionFactory::getDatabase($this->getJname());
 
-				$usergroup = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
-				if (empty($usergroup)) {
+				$usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
+				if (empty($usergroups)) {
 					throw new RuntimeException(JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID'));
-				}
-
-				// get some config items
-				$query = $db->getQuery(true)
-					->select('value')
-					->from('#__config')
-					->where('name = ' . $db->Quote('mnet_localhost_id'));
-
-				$db->setQuery($query);
-				$mnet_localhost_id = $db->loadResult();
-				$query = $db->getQuery(true)
-					->select('value')
-					->from('#__config')
-					->where('name = ' . $db->Quote('lang'));
-
-				$db->setQuery($query);
-				$lang = $db->loadResult();
-				$query = $db->getQuery(true)
-					->select('value')
-					->from('#__config')
-					->where('name = ' . $db->Quote('country'));
-
-				$db->setQuery($query);
-				$country = $db->loadResult();
-
-				//prepare the variables
-				$user = new stdClass;
-				$user->id = null;
-				$user->auth = 'manual';
-				if ($userinfo->activation) {
-					$user->confirmed = 0;
 				} else {
-					$user->confirmed = 1;
-				}
-				$user->policyagreed = !$userinfo->block; // just write, true doesn't harm
-				$user->deleted = 0;
-				$user->mnethostid = $mnet_localhost_id;
-				$user->username = $userinfo->username;
-				if (isset($userinfo->password_clear) && strlen($userinfo->password_clear) != 32) {
-					if ($this->params->get('passwordsaltmain')) {
-						$user->password = md5($userinfo->password_clear . $this->params->get('passwordsaltmain'));
+					// get some config items
+					$query = $db->getQuery(true)
+						->select('value')
+						->from('#__config')
+						->where('name = ' . $db->Quote('mnet_localhost_id'));
+
+					$db->setQuery($query);
+					$mnet_localhost_id = $db->loadResult();
+
+					$query = $db->getQuery(true)
+						->select('value')
+						->from('#__config')
+						->where('name = ' . $db->Quote('lang'));
+
+					$db->setQuery($query);
+					$lang = $db->loadResult();
+
+					$query = $db->getQuery(true)
+						->select('value')
+						->from('#__config')
+						->where('name = ' . $db->Quote('country'));
+
+					$db->setQuery($query);
+					$country = $db->loadResult();
+
+					//prepare the variables
+					$user = new stdClass;
+					$user->id = null;
+					$user->auth = 'manual';
+					if ($userinfo->activation) {
+						$user->confirmed = 0;
 					} else {
-						$user->password = md5($userinfo->password_clear);
+						$user->confirmed = 1;
 					}
-				} else {
-					if (!empty($userinfo->password_salt)) {
-						$user->password = $userinfo->password . ':' . $userinfo->password_salt;
-					} else {
-						$user->password = $userinfo->password;
-					}
-				}
-				// $user->idnumber= ??
-				$parts = explode(' ', $userinfo->name);
-				$user->firstname = trim($parts[0]);
-				$lastname = '';
-				if ($parts[(count($parts) - 1) ]) {
-					for ($i = 1;$i < (count($parts));$i++) {
-						if (!empty($lastname)) {
-							$lastname = $lastname . ' ' . $parts[$i];
+					$user->policyagreed = !$userinfo->block; // just write, true doesn't harm
+					$user->deleted = 0;
+					$user->mnethostid = $mnet_localhost_id;
+					$user->username = $userinfo->username;
+					if (isset($userinfo->password_clear) && strlen($userinfo->password_clear) != 32) {
+						if ($this->params->get('passwordsaltmain')) {
+							$user->password = md5($userinfo->password_clear . $this->params->get('passwordsaltmain'));
 						} else {
-							$lastname = $parts[$i];
+							$user->password = md5($userinfo->password_clear);
 						}
-
+					} else {
+						if (!empty($userinfo->password_salt)) {
+							$user->password = $userinfo->password . ':' . $userinfo->password_salt;
+						} else {
+							$user->password = $userinfo->password;
+						}
 					}
+					// $user->idnumber= ??
+					$parts = explode(' ', $userinfo->name);
+					$user->firstname = trim($parts[0]);
+					$lastname = '';
+					if ($parts[(count($parts) - 1) ]) {
+						for ($i = 1;$i < (count($parts));$i++) {
+							if (!empty($lastname)) {
+								$lastname = $lastname . ' ' . $parts[$i];
+							} else {
+								$lastname = $parts[$i];
+							}
+
+						}
+					}
+					$user->lastname = trim($lastname);
+					$user->email = strtolower($userinfo->email);
+					$user->country = $country;
+					$user->lang = $lang;
+					$user->firstaccess = time();
+					$user->timemodified = time();
+					//now append the new user data
+					$db->insertObject('#__user', $user, 'id');
+
+					// get new ID
+					$userid = $db->insertid();
+					// have to set user preferences
+					$user_1 = new stdClass;
+					$user_1->id = null;
+					$user_1->userid = $userid;
+					$user_1->name = 'auth_forcepasswordchange';
+					$user_1->value = 0;
+					$db->insertObject('#__user_preferences', $user_1, 'id');
+
+					$user_1->id = null;
+					$user_1->userid = $userid;
+					$user_1->name = 'email_bounce_count';
+					$user_1->value = 1;
+					$db->insertObject('#__user_preferences', $user_1, 'id');
+
+					$user_1->id = null;
+					$user_1->userid = $userid;
+					$user_1->name = 'email_send_count';
+					$user_1->value = 1;
+					$db->insertObject('#__user_preferences', $user_1, 'id');
 				}
-				$user->lastname = trim($lastname);
-				$user->email = strtolower($userinfo->email);
-				$user->country = $country;
-				$user->lang = $lang;
-				$user->firstaccess = time();
-				$user->timemodified = time();
-				//now append the new user data
-				$db->insertObject('#__user', $user, 'id');
-
-				// get new ID
-				$userid = $db->insertid();
-				// have to set user preferences
-				$user_1 = new stdClass;
-				$user_1->id = null;
-				$user_1->userid = $userid;
-				$user_1->name = 'auth_forcepasswordchange';
-				$user_1->value = 0;
-				$db->insertObject('#__user_preferences', $user_1, 'id');
-
-				$user_1->id = null;
-				$user_1->userid = $userid;
-				$user_1->name = 'email_bounce_count';
-				$user_1->value = 1;
-				$db->insertObject('#__user_preferences', $user_1, 'id');
-
-				$user_1->id = null;
-				$user_1->userid = $userid;
-				$user_1->name = 'email_send_count';
-				$user_1->value = 1;
-				$db->insertObject('#__user_preferences', $user_1, 'id');
 			}
 
 			//return the good news

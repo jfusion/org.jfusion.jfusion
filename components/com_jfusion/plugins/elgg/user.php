@@ -245,7 +245,7 @@ class JFusionUser_elgg extends JFusionUser {
     function createUser($userinfo, &$status) {
 	    try {
 	        //found out what usergroup should be used
-	        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+	        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
 	        if (empty($usergroups)) {
 		        throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 	        } else {

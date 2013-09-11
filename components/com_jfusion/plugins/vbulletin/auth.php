@@ -32,7 +32,7 @@ class JFusionAuth_vbulletin extends JFusionAuth
      * @param array|object $userinfo
      * @return string
      */
-    function generateEncryptedPassword(&$userinfo)
+    function generateEncryptedPassword($userinfo)
     {
         //are we logging in with the dual login plugin?
         if (strlen($userinfo->password_clear) == 32 && defined('_VBULLETIN_JFUSION_HOOK') && defined('_VB_SECURITY_CHECK')) {

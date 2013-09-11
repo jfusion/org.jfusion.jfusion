@@ -420,6 +420,7 @@ class JFusionUser_oscommerce extends JFusionUser
 				    $user->customers_password = $userinfo->password;
 			    }
 		    }
+		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
 		    //    $user->customers_newsletter = null;
 		    switch ($osCversion) {
 			    case 'osc2':
@@ -435,40 +436,34 @@ class JFusionUser_oscommerce extends JFusionUser
 				    $user->global_product_notifications = 0;
 				    break;
 			    case 'osczen':
-				    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 				    if (empty($usergroups)) {
 					    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 				    }
-				    $usergroup = $usergroups[0];
-				    $user->customers_group_pricing = $usergroup;
+				    $user->customers_group_pricing = $usergroups[0];
 				    //        $user->customers_paypal_ec = '0';   // must be an unique number?????.
 
 				    break;
 			    case 'oscxt':
 			    case 'oscseo':
-				    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 				    if (empty($usergroups)) {
 					    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 				    }
-				    $usergroup = $usergroups[0];
-				    $user->customers_status = $usergroup;
+				    $user->customers_status = $usergroups[0];
 				    //        $user->customers_paypal_ec = '0';   // must be an unique number?????.
 
 				    break;
 			    case 'oscmax':
-				    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
 				    if (empty($usergroups)) {
 					    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 				    }
-				    $usergroup = $usergroups[0];
-				    $user->customers_group_id = $usergroup;
+				    $user->customers_group_id = $usergroups[0];
 				    // get the groupname
 				    $db1 = JFusionFactory::getDatabase($this->getJname());
 
 				    $query = $db->getQuery(true)
 					    ->select('customers_group_name')
 					    ->from('#__customers_groups')
-					    ->where('customers_group_id = ' . $usergroup)
+					    ->where('customers_group_id = ' . $user->customers_group_id)
 				        ->where('language_id = ' . $userinfo->language);
 
 				    $db1->setQuery($query);
@@ -711,7 +706,7 @@ class JFusionUser_oscommerce extends JFusionUser
     function updateUsergroup($userinfo, &$existinguser, &$status) {
 	    try {
 		    $osCversion = $this->params->get('osCversion');
-		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
 		    if (empty($usergroups)) {
 			    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 		    } else {

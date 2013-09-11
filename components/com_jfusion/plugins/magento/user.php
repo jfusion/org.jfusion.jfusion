@@ -492,7 +492,7 @@ class JFusionUser_magento extends JFusionUser {
 	function createUser($userinfo, &$status) {
 		$magentoVersion = $this->params->get('magento_version','1.7');
 
-		$usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+		$usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
 		if (empty($usergroups)) {
 			$status['error'][] = JText::_('ERROR_CREATING_USER') . ': ' . JText::_('USERGROUP_MISSING');
 		} else {
@@ -751,7 +751,7 @@ class JFusionUser_magento extends JFusionUser {
 	 */
 	function updateUsergroup($userinfo, &$existinguser, &$status) {
 		try {
-			$usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+			$usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
 			if (empty($usergroups)) {
 				throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 			} else {

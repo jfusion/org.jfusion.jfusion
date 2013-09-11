@@ -724,14 +724,9 @@ class JFvBulletinTask {
         $userdm->set('email', $userinfo->email);
         $userdm->set('password', $userinfo->password_clear);
 
-        if (is_array($usergroups)) {
-            $userdm->set('usergroupid', $defaultgroup);
-            $userdm->set('displaygroupid', $usergroups['displaygroup']);
-            $userdm->set('membergroupids', $usergroups['membergroups']);
-        } else {
-            $userdm->set('usergroupid', $defaultgroup);
-            $userdm->set('displaygroupid', 0);
-        }
+	    $userdm->set('usergroupid', $defaultgroup);
+	    $userdm->set('displaygroupid', $usergroups->displaygroup);
+	    $userdm->set('membergroupids', $usergroups->membergroups);
 
         $userdm->set('usertitle', $userinfo->usertitle);
 
@@ -786,9 +781,9 @@ class JFvBulletinTask {
 
         if (empty($this->data['aec'])) {
             $usergroups =& $this->data['usergroups'];
-            $defaultgroup =& $usergroups['defaultgroup'];
-            $displaygroup =& $usergroups['displaygroup'];
-            $membergroups =& $usergroups['membergroups'];
+            $defaultgroup =& $usergroups->defaultgroup;
+            $displaygroup =& $usergroups->displaygroup;
+            $membergroups =& $usergroups->membergroups;
         } else {
             $defaultgroup = $membergroups = $displaygroup = $this->data['aecgroupid'];
         }
@@ -870,12 +865,12 @@ class JFvBulletinTask {
             // This will activate the rank update
 
             //keep user from getting stuck as banned
-            if ($result->usergroupid==$bannedgroup) {
+            if ($result->usergroupid == $bannedgroup) {
                 $usergroupid = $defaultgroup;
             } else {
                 $usergroupid = $result->group_id;
             }
-            if ($result->displaygroupid==$bannedgroup) {
+            if ($result->displaygroupid == $bannedgroup) {
                 $displaygroupid = $displaygroup;
             } else {
                 $displaygroupid = $result->displaygroupid;

@@ -454,15 +454,22 @@ class JFusionUser_phpbb3 extends JFusionUser
      */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
 	    try {
-		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
 		    if (empty($usergroups)) {
 			    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST');
 		    } else {
 			    $usergroup = $usergroups[0];
+
+			    if (!isset($usergroup->groups)) {
+				    $usergroup->groups = array($usergroup->defaultgroup);
+			    } else if (!in_array($usergroup->defaultgroup, $usergroup->groups)) {
+				    $usergroup->groups[] = $usergroup->defaultgroup;
+			    }
+
 			    $db = JFusionFactory::getDatabase($this->getJname());
 			    $user = new stdClass;
 			    $user->user_id = $existinguser->userid;
-			    $user->group_id = $usergroup;
+			    $user->group_id = $usergroup->defaultgroup;
 			    $user->user_colour = '';
 			    //clear out cached permissions so that those of the new group are generated
 			    $user->user_permissions = '';
@@ -492,7 +499,6 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    //remove the old usergroup for the user in the groups table
 				    $query = $db->getQuery(true)
 					    ->delete('#__user_group')
-					    ->where('group_id = ' . (int)$existinguser->group_id)
 					    ->where('user_id = ' . (int)$existinguser->userid);
 
 				    $db->setQuery($query);
@@ -501,34 +507,9 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $e->getMessage();
 			    }
 
-			    //if the user was in the newly registered group, remove the registered group as well
-			    $query = $db->getQuery(true)
-				    ->select('group_id, group_name')
-				    ->from('#__groups')
-			        ->where('group_name IN (\'NEWLY_REGISTERED\',\'REGISTERED\')')
-				    ->where('group_type = 3');
-
-			    $db->setQuery($query);
-			    $groups = $db->loadObjectList('group_name');
-			    if ($existinguser->group_id == $groups['NEWLY_REGISTERED']->group_id) {
-				    $query = $db->getQuery(true)
-					    ->delete('#__user_group')
-					    ->where('group_id = ' . (int)$groups['REGISTERED']->group_id)
-					    ->where('user_id = ' . (int)$existinguser->userid);
-
-				    $db->setQuery($query);
-
-				    $db->execute();
-			    }
-
-			    //add the user in the groups table
-			    $query = 'INSERT INTO #__user_group (group_id, user_id ,group_leader, user_pending) VALUES (' . (int)$usergroup . ', ' . (int)$existinguser->userid . ',0,0)';
-			    $db->setQuery($query);
-			    $db->execute();
-
-			    if ($usergroup == $groups['NEWLY_REGISTERED']->group_id) {
-				    //we need to also add the user to the regular registered group or they may find themselves groupless
-				    $query = 'INSERT INTO #__user_group (group_id, user_id, group_leader, user_pending) VALUES (' . $groups['REGISTERED']->group_id . ',' . (int)$existinguser->userid . ', 0,0 )';
+			    foreach($usergroup->groups as $group) {
+				    //add the user in the groups table
+				    $query = 'INSERT INTO #__user_group (group_id, user_id ,group_leader, user_pending) VALUES (' . (int)$group . ', ' . (int)$existinguser->userid . ', 0, 0)';
 				    $db->setQuery($query);
 				    $db->execute();
 			    }
@@ -592,12 +573,51 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    }
 			    }
 			    //log the group change success
-			    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode (' , ', $existinguser->groups) . ' -> ' . $usergroup;
+			    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode (' , ', $existinguser->groups) . ' -> ' . implode (' , ', $usergroup->groups);
 		    }
 	    } catch (Exception $e) {
 		    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $e->getMessage();
 	    }
     }
+
+	/**
+	 * @param object &$userinfo
+	 * @param object &$existinguser
+	 * @param array &$status
+	 *
+	 * @return bool
+	 */
+	function executeUpdateUsergroup(&$userinfo, &$existinguser, &$status)
+	{
+		$update_groups = false;
+		$usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
+		$usergroup = $usergroups[0];
+
+		$groups = (isset($usergroup->groups)) ? $usergroup->groups : array();
+
+		//check to see if the default groups are different
+		if ($usergroup->defaultgroup != $existinguser->group_id ) {
+			$update_groups = true;
+		} else {
+			if (count($existinguser->groups) != count($groups)) {
+				$update_groups = true;
+			} else {
+				foreach ($groups as $gid) {
+					if (!in_array($gid, $existinguser->groups)) {
+						$update_groups = true;
+						break;
+					}
+				}
+			}
+
+		}
+
+		if ($update_groups) {
+			$this->updateUsergroup($userinfo, $existinguser, $status);
+		}
+
+		return $update_groups;
+	}
 
     /**
      * @param object $userinfo
@@ -712,11 +732,18 @@ class JFusionUser_phpbb3 extends JFusionUser
 		    $db = JFusionFactory::getDatabase($this->getJname());
 		    $update_block = $this->params->get('update_block');
 		    $update_activation = $this->params->get('update_activation');
-		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
 		    if (empty($usergroups)) {
 			    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 		    } else {
 			    $usergroup = $usergroups[0];
+
+			    if (!isset($usergroup->groups)) {
+				    $usergroup->groups = array($usergroup->defaultgroup);
+			    } else if (!in_array($usergroup->defaultgroup, $usergroup->groups)) {
+				    $usergroup->groups[] = $usergroup->defaultgroup;
+			    }
+
 			    $username_clean = $this->filterUsername($userinfo->username);
 
 			    //prevent anonymous user being created
@@ -741,7 +768,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    $user->user_pass_convert = 0;
 				    $user->user_email = strtolower($userinfo->email);
 				    $user->user_email_hash = crc32(strtolower($userinfo->email)) . strlen($userinfo->email);
-				    $user->group_id = $usergroup;
+				    $user->group_id = $usergroup->defaultgroup;
 				    $user->user_permissions = '';
 				    $user->user_allow_pm = 1;
 				    $user->user_actkey = '';
@@ -812,7 +839,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    $query = $db->getQuery(true)
 					    ->select('group_colour, group_rank, group_avatar, group_avatar_type, group_avatar_width, group_avatar_height')
 					    ->from('#__groups')
-					    ->where('group_id = ' . $usergroup);
+					    ->where('group_id = ' . $usergroup->defaultgroup);
 
 				    $db->setQuery($query);
 				    $group_attribs = $db->loadAssoc();
@@ -827,7 +854,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    $db->insertObject('#__users', $user, 'id');
 				    //now append the new user data
 				    //now create a user_group entry
-				    $query = 'INSERT INTO #__user_group (group_id, user_id, group_leader, user_pending) VALUES (' . $usergroup . ',' . (int)$user->id . ', 0,0 )';
+				    $query = 'INSERT INTO #__user_group (group_id, user_id, group_leader, user_pending) VALUES (' . $usergroup->defaultgroup . ',' . (int)$user->id . ', 0,0 )';
 				    $db->setQuery($query);
 				    $db->execute();
 
@@ -840,7 +867,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 
 				    $db->setQuery($query);
 				    $groups = $db->loadObjectList('group_name');
-				    if ($usergroup == $groups['NEWLY_REGISTERED']->group_id) {
+				    if ($usergroup->defaultgroup == $groups['NEWLY_REGISTERED']->group_id) {
 					    //we need to also add the user to the regular registered group or they may find themselves groupless
 					    $query = 'INSERT INTO #__user_group (group_id, user_id, group_leader, user_pending) VALUES (' . $groups['REGISTERED']->group_id . ',' . (int)$user->id . ', 0,0 )';
 					    $db->setQuery($query);

@@ -741,5 +741,71 @@ HTML;
     function requireFileAccess()
 	{
 		return 'DEPENDS';
-	}    
+	}
+
+	/**
+	 * create the render group function
+	 */
+	function getRenderGroup()
+	{
+		$jname = $this->getJname();
+
+		JFusionFunction::loadJavascriptLanguage(array('MAIN_USERGROUP', 'USERGROUPS'));
+		$js = <<<JS
+		JFusion.renderPlugin['{$jname}'] = function(index, plugin, pair) {
+			var usergroups = JFusion.usergroups[plugin.name];
+
+			var div = new Element('div');
+
+			// render default group
+			div.appendChild(new Element('div', {'html': Joomla.JText._('MAIN_USERGROUP')}));
+
+		    var defaultselect = new Element('select', {
+		    	'name': 'usergroups['+plugin.name+']['+index+'][defaultgroup]',
+		    	'id': 'usergroups_'+plugin.name+index+'defaultgroup'
+		    });
+
+		    Array.each(usergroups, function (group) {
+			    var options = {'value': group.id,
+					            'html': group.name};
+
+		        if (pair && pair.defaultgroup && pair.defaultgroup == group.id) {
+					options.selected = 'selected';
+		        }
+
+				defaultselect.appendChild(new Element('option', options));
+		    });
+		    div.appendChild(defaultselect);
+
+
+			// render default member groups
+			div.appendChild(new Element('div', {'html': Joomla.JText._('USERGROUPS')}));
+
+
+		    var membergroupsselect = new Element('select', {
+		    	'name': 'usergroups['+plugin.name+']['+index+'][groups][]',
+		    	'multiple': 'multiple',
+		    	'id': 'usergroups_'+plugin.name+index+'groups'
+		    });
+
+
+		    Array.each(usergroups, function (group) {
+			    var options = {'value': group.id,
+					            'html': group.name};
+
+		        if (pair && pair.groups && pair.groups.contains(group.id)) {
+					options.selected = 'selected';
+		        }
+
+				membergroupsselect.appendChild(new Element('option', options));
+		    });
+		    div.appendChild(membergroupsselect);
+		    return div;
+		};
+JS;
+
+		$document = JFactory::getDocument();
+		$document->addScriptDeclaration($js);
+		return $js;
+	}
 }

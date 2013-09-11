@@ -514,7 +514,7 @@ class JFusionJoomlaUser extends JFusionUser
 				    //the $userinfo object was probably reconstructed in the user plugin and autoregister = 1
 				    $isadmin = false;
 				    if (isset($usergroups[0])) {
-					    $isadmin = (in_array ( 7 , $usergroups,true ) || in_array ( 8 , $usergroups,true )) ? true : false;
+					    $isadmin = (in_array (7 , $usergroups, true) || in_array (8 , $usergroups, true)) ? true : false;
 				    } else {
 					    $usergroups = array(2);
 				    }
@@ -694,8 +694,7 @@ class JFusionJoomlaUser extends JFusionUser
 				    if (!$userinfo->block && empty($userinfo->activation)) {
 					    if (JFusionFunction::updateUsergroups($this->getJname())) {
 						    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
-
-						    if (!JFusionFunction::compareUserGroups($existinguser,$usergroups)) {
+						    if (!$this->compareUserGroups($existinguser,$usergroups)) {
 							    $this->updateUsergroup($userinfo, $existinguser, $status);
 							    $changed = true;
 						    } else {

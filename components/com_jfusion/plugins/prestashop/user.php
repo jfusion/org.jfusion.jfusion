@@ -557,7 +557,7 @@ class JFusionUser_prestashop extends JFusionUser {
      */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
 	    try {
-		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
 		    if (empty($usergroups)) {
 			    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 		    } else {

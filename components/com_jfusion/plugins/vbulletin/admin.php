@@ -788,7 +788,7 @@ HTML;
 	{
 		$jname = $this->getJname();
 
-		JFusionFunction::loadJavascriptLanguage(array('DEFAULT_USERGROUP', 'DEFAULT_DISPLAYGROUP', 'DEFAULT', 'DEFAULT_MEMBERGROUPS'));
+		JFusionFunction::loadJavascriptLanguage(array('MAIN_USERGROUP', 'DISPLAYGROUP', 'DEFAULT', 'MEMBERGROUPS'));
 		$js = <<<JS
 		JFusion.renderPlugin['{$jname}'] = function(index, plugin, pair) {
 			var usergroups = JFusion.usergroups[plugin.name];
@@ -796,26 +796,28 @@ HTML;
 			var div = new Element('div');
 
 			// render default group
-			div.appendChild(new Element('div', {'html': Joomla.JText._('DEFAULT_USERGROUP')}));
+			div.appendChild(new Element('div', {'html': Joomla.JText._('MAIN_USERGROUP')}));
 
 		    var defaultselect = new Element('select', {
 		    	'name': 'usergroups['+plugin.name+']['+index+'][defaultgroup]',
-		    	'id': 'usergroups_'+plugin.name+index+'defaultgroup',
-		    	'events': {
-                    'change': function () {
-                    	var value = this.get('value');
-						Array.each(usergroups, function (group) {
-							var element = $('usergroups_'+plugin.name+index+'membergroups'+group.id);
-			                if (element.get('value') == value) {
-			                    element.set('disabled', true);
-			                    element.set('checked', false);
-			                } else {
-			                    element.set('disabled', false);
-			                }
-					    });
-				    }
-		    	}
+		    	'id': 'usergroups_'+plugin.name+index+'defaultgroup'
 		    });
+
+			jQuery(document).on('change', '#usergroups_'+plugin.name+index+'defaultgroup', function(evt, params) {
+                var value = this.get('value');
+
+				jQuery('#'+'usergroups_'+plugin.name+index+'membergroups'+' option').each(function() {
+					if (jQuery(this).attr('value') == value) {
+						jQuery(this).prop('selected', false);
+						jQuery(this).prop('disabled', true);
+
+						jQuery(this).trigger('chosen:updated').trigger('liszt:updated');
+	                } else if (jQuery(this).prop('disabled')== true) {
+						jQuery(this).prop('disabled', false);
+						jQuery(this).trigger('chosen:updated').trigger('liszt:updated');
+					}
+				});
+			});
 
 		    Array.each(usergroups, function (group) {
 			    var options = {'value': group.id,
@@ -831,7 +833,7 @@ HTML;
 
 
 			// render display group
-			div.appendChild(new Element('div', {'html': Joomla.JText._('DEFAULT_DISPLAYGROUP')}));
+			div.appendChild(new Element('div', {'html': Joomla.JText._('DISPLAYGROUP')}));
 
 		    var displayselect = new Element('select', {
 			    'name': 'usergroups['+plugin.name+']['+index+'][displaygroup]',
@@ -853,16 +855,20 @@ HTML;
 
 
 			// render default member groups
-			div.appendChild(new Element('div', {'html': Joomla.JText._('DEFAULT_MEMBERGROUPS')}));
+			div.appendChild(new Element('div', {'html': Joomla.JText._('MEMBERGROUPS')}));
 
-		    Array.each(usergroups, function (group, i) {
-		    	var cdiv = new Element('div');
 
-				var options = {'type': 'checkbox',
-					'id': 'usergroups_'+plugin.name+index+'membergroups'+group.id,
-					'value': group.id,
-					'name': 'usergroups['+plugin.name+']['+index+'][membergroups][]'
-				};
+		    var membergroupsselect = new Element('select', {
+		    	'name': 'usergroups['+plugin.name+']['+index+'][membergroups][]',
+		    	'multiple': 'multiple',
+		    	'id': 'usergroups_'+plugin.name+index+'membergroups'
+		    });
+
+
+		    Array.each(usergroups, function (group) {
+			    var options = {'id': 'usergroups_'+plugin.name+index+'membergroups'+group.id,
+			    				'value': group.id,
+					            'html': group.name};
 
 		        if (pair && pair.defaultgroup == group.id) {
 					options.disabled = 'disabled';
@@ -870,17 +876,13 @@ HTML;
 		        	options.disabled = 'disabled';
 		        } else {
 		            if (pair && pair.membergroups && pair.membergroups.contains(group.id)) {
-		            	options.checked = 'checked';
+		            	options.selected = 'selected';
 			        }
 		        }
 
-				var checkbox = new Element('input', options);
-				cdiv.appendChild(checkbox);
-
-				cdiv.appendChild(new Element('span', {'html': group.name}));
-
-		    	div.appendChild(cdiv);
+				membergroupsselect.appendChild(new Element('option', options));
 		    });
+			div.appendChild(membergroupsselect);
 		    return div;
 		};
 JS;

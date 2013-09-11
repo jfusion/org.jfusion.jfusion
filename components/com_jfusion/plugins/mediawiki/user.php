@@ -291,7 +291,7 @@ class JFusionUser_mediawiki extends JFusionUser {
     function updateUsergroup($userinfo, &$existinguser, &$status)
 	{
 		try {
-			$usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+			$usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
 			if (empty($usergroups)) {
 				$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . JText::_('USERGROUP_MISSING');
 			} else {
@@ -437,7 +437,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 		    //we need to create a new SMF user
 		    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
 		    if (empty($usergroups)) {
 			    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 		    } else {

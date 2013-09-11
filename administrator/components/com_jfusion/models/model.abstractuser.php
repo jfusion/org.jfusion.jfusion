@@ -366,8 +366,8 @@ class JFusionUser
     function executeUpdateUsergroup(&$userinfo, &$existinguser, &$status)
     {
         $changed = false;
-        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
-		if (!JFusionFunction::compareUserGroups($existinguser,$usergroups)) {
+        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
+		if (!$this->compareUserGroups($existinguser, $usergroups)) {
             $this->updateUsergroup($userinfo, $existinguser, $status);
             $changed = true;
         }
@@ -538,4 +538,82 @@ class JFusionUser
     {
         return 0;
     }
+
+	/**
+	 * compare set of usergroup with a user returns true if the usergroups are correct
+	 *
+	 * @param object $userinfo user with current usergroups
+	 * @param array $usergroups array with the correct usergroups
+	 *
+	 * @return boolean
+	 */
+	public function compareUserGroups($userinfo, $usergroups) {
+		if (!is_array($usergroups)) {
+			$usergroups = array($usergroups);
+		}
+		$correct = false;
+		if (isset($userinfo->groups)) {
+			$count = 0;
+			if ( count($usergroups) == count($userinfo->groups) ) {
+				foreach ($usergroups as $group) {
+					if (in_array($group, $userinfo->groups, true)) {
+						$count++;
+					}
+				}
+				if (count($userinfo->groups) == $count) {
+					$correct = true;
+				}
+			}
+		} else {
+			foreach ($usergroups as $group) {
+				if ($group == $userinfo->group_id) {
+					$correct = true;
+					break;
+				}
+			}
+		}
+		return $correct;
+	}
+
+	/**
+	 * Function That find the correct user group index
+	 *
+	 * @param array $mastergroups
+	 * @param stdClass $userinfo
+	 *
+	 * @return int
+	 */
+	function getUserGroupIndex($mastergroups, $userinfo)
+	{
+		$index = 0;
+
+		$groups = array();
+		if ($userinfo) {
+			if (isset($userinfo->groups)) {
+				$groups = $userinfo->groups;
+			} elseif (isset($userinfo->group_id)) {
+				$groups[] = $userinfo->group_id;
+			}
+		}
+
+		foreach ($mastergroups as $key => $mastergroup) {
+			if ($mastergroup) {
+				if ( count($mastergroup) == count($groups) ) {
+					$count = 0;
+					foreach ($mastergroup as $value) {
+						if (in_array($value, $groups, true)) {
+							$count++;
+						}
+					}
+					if (count($groups) == $count ) {
+						if (isset($slavegroups[$key])) {
+							$index = $key;
+						}
+						break;
+					}
+				}
+			}
+		}
+		return $index;
+	}
 }
