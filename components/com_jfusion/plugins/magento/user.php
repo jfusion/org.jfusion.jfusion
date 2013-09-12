@@ -394,10 +394,15 @@ class JFusionUser_magento extends JFusionUser {
 				$db->setQuery($query);
 				$db->execute();
 
+				$entry = new stdClass;
+				$entry->entity_type_id = (int)$this->getMagentoEntityTypeID('customer');
+				$entry->increment_id = $increment_last_id;
+				$entry->is_active = 1;
+				$entry->created_at = $sqlDateTime;
+				$entry->updated_at = $sqlDateTime;
+
+				$db->insertObject('#__customer_entity', $entry);
 				// so far so good, now create an empty user, to be updates later
-				$query = 'INSERT INTO #__customer_entity   (entity_type_id, increment_id, is_active, created_at, updated_at) VALUES ' . '(' . (int)$this->getMagentoEntityTypeID('customer') . ',' . $db->Quote($increment_last_id) . ',1,' . $db->Quote($sqlDateTime) . ', ' . $db->Quote($sqlDateTime) . ')';
-				$db->setQuery($query);
-				$db->execute();
 				$entity_id = $db->insertid();
 			} else { // we are updating
 				$query = $db->getQuery(true)
@@ -451,7 +456,13 @@ class JFusionUser_magento extends JFusionUser {
 
 							}
 						} else { // must create
-							$query = 'INSERT INTO #__customer_entity' . '_' . $user[$i]['backend_type'] . ' (value, attribute_id, entity_id, entity_type_id) VALUES (' . $db->Quote($user[$i]['value']) . ', ' . $user[$i]['attribute_id'] . ', ' . $entity_id . ', ' . (int)$this->getMagentoEntityTypeID('customer') . ')';
+							$entry = new stdClass;
+							$entry->value = $user[$i]['value'];
+							$entry->attribute_id = $user[$i]['attribute_id'];
+							$entry->entity_id = $entity_id;
+							$entry->entity_type_id = (int)$this->getMagentoEntityTypeID('customer');
+
+							$db->insertObject('#__customer_entity' . '_' . $user[$i]['backend_type'], $entry);
 						}
 						$db->setQuery($query);
 						$db->execute();

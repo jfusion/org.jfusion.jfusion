@@ -122,9 +122,14 @@ class JFusionUsersync
         //serialize the $syncdata to allow storage in a SQL field
         $serialized = base64_encode(serialize($syncdata));
         $db = JFactory::getDBO();
-        $query = 'INSERT INTO #__jfusion_sync (syncdata, syncid, time_start, action) VALUES (' . $db->Quote($serialized) . ', ' . $db->Quote($syncdata['syncid']) . ', ' . $db->Quote(time()) . ', ' . $db->Quote($syncdata['action']) . ')';
-        $db->setQuery($query);
-        $db->execute();
+
+	    $syncdata = new stdClass;
+	    $syncdata->syncdata = $db->Quote($serialized);
+	    $syncdata->syncid = $db->Quote($syncdata['syncid']);
+	    $syncdata->time_start = $db->Quote(time());
+	    $syncdata->action = $db->Quote($syncdata['action']);
+
+	    $db->insertObject('#__jfusion_sync', $syncdata);
     }
 
     /**

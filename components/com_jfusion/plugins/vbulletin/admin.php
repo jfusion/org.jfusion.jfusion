@@ -506,15 +506,17 @@ HTML;
 					    } else {
 						    //install the hook
 						    $php = $this->getHookPHP($hook, $itemid);
-						    $query = 'INSERT INTO #__plugin SET
-                        title = ' . $db->Quote($hookName) . ',
-                        hookname = \'init_startup\',
-                        phpcode = ' . $db->Quote($php) . ',
-                        product = \'vbulletin\',
-                        active = 1,
-                        executionorder = 1';
-						    $db->setQuery($query);
-						    $db->execute();
+
+						    //add the post to the approval queue
+						    $plugin = new stdClass;
+						    $plugin->title = $hookName;
+						    $plugin->hookname = 'init_startup';
+						    $plugin->phpcode = $php;
+						    $plugin->product = 'vbulletin';
+						    $plugin->active = 1;
+						    $plugin->executionorder = 1;
+
+						    $db->insertObject('#__plugin', $plugin);
 					    }
 				    }
 			    }
@@ -812,7 +814,7 @@ HTML;
 		    	'id': 'usergroups_'+plugin.name+index+'defaultgroup'
 		    });
 
-			jQuery(document).on('change', '#usergroups_'+plugin.name+index+'defaultgroup', function(evt, params) {
+			jQuery(document).on('change', '#usergroups_'+plugin.name+index+'defaultgroup', function() {
                 var value = this.get('value');
 
 				jQuery('#'+'usergroups_'+plugin.name+index+'membergroups'+' option').each(function() {
@@ -821,7 +823,7 @@ HTML;
 						jQuery(this).prop('disabled', true);
 
 						jQuery(this).trigger('chosen:updated').trigger('liszt:updated');
-	                } else if (jQuery(this).prop('disabled')== true) {
+	                } else if (jQuery(this).prop('disabled') === true) {
 						jQuery(this).prop('disabled', false);
 						jQuery(this).trigger('chosen:updated').trigger('liszt:updated');
 					}

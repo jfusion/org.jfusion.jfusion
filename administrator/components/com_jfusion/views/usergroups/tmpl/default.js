@@ -87,8 +87,10 @@ JFusion.render = function(index, plugin, newrow) {
 
     var update = $('updateusergroups_'+plugin.name);
 
-    if (!plugin.master && (update && !update.checked) && index !== 0) {
-        div.hide();
+    if (!plugin.master && index !== 0) {
+        if (update && !update.checked) {
+            div.hide();
+        }
     }
 
     div.appendChild(JFusion.renderGroup(index, plugin, newrow));

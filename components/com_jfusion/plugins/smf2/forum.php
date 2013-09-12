@@ -635,9 +635,10 @@ HTML;
 					$db->execute();
 				} else {
 					//add the post to the approval queue
-					$query = 'INSERT INTO #__approval_queue id_msg VALUES ('.$postid.')';
-					$db->setQuery($query);
-					$db->execute();
+					$approval_queue = new stdClass;
+					$approval_queue->id_msg = $postid;
+
+					$db->insertObject('#__approval_queue', $approval_queue);
 				}
 
 				//update moderation status to tell discussion bot to notify user

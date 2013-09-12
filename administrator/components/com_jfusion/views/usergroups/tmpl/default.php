@@ -22,7 +22,7 @@ $images = 'components/com_jfusion/images/';
 		Array.each(JFusion.plugins, function (plugin) {
 			var update = $('updateusergroups_'+plugin.name);
 			if (update){
-				update.addEvent('click', function(e) {
+				update.addEvent('click', function() {
 					JFusion.updatePlugins();
 				});
 			}

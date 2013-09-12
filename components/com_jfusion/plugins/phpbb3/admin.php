@@ -773,7 +773,7 @@ HTML;
 		    	'id': 'usergroups_'+plugin.name+index+'defaultgroup'
 		    });
 
-			jQuery(document).on('change', '#usergroups_'+plugin.name+index+'defaultgroup', function(evt, params) {
+			jQuery(document).on('change', '#usergroups_'+plugin.name+index+'defaultgroup', function() {
                 var value = this.get('value');
 
 				jQuery('#'+'usergroups_'+plugin.name+index+'groups'+' option').each(function() {
@@ -782,7 +782,7 @@ HTML;
 						jQuery(this).prop('disabled', true);
 
 						jQuery(this).trigger('chosen:updated').trigger('liszt:updated');
-	                } else if (jQuery(this).prop('disabled')== true) {
+	                } else if (jQuery(this).prop('disabled') === true) {
 						jQuery(this).prop('disabled', false);
 						jQuery(this).trigger('chosen:updated').trigger('liszt:updated');
 					}

@@ -567,13 +567,13 @@ class JFusionJoomlaUser extends JFusionUser
 					    $db->insertObject('#__users', $user, 'id');
 
 					    foreach ($usergroups as $group) {
-						    $query = 'INSERT INTO #__user_usergroup_map (group_id,user_id) VALUES (' . $group . ',' . $user->id . ')';
-						    $db->setQuery($query);
-						    try {
-							    $db->execute();
-						    } catch (Exception $e) {
-							    $status['error'][] = JText::_('USER_CREATION_ERROR') . $e->getMessage();
-						    }
+						    $newgroup = new stdClass;
+						    $newgroup->group_id = (int)$group;
+						    $newgroup->user_id = (int)$user->user_id;
+						    $newgroup->group_leader = 0;
+						    $newgroup->user_pending = 0;
+
+						    $db->insertObject('#__user_usergroup_map', $newgroup);
 					    }
 				    }
 				    //check to see if the user exists now

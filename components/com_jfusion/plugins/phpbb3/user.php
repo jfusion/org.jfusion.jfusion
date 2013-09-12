@@ -523,10 +523,13 @@ class JFusionUser_phpbb3 extends JFusionUser
 			    }
 
 			    foreach($usergroup->groups as $group) {
-				    //add the user in the groups table
-				    $query = 'INSERT INTO #__user_group (group_id, user_id ,group_leader, user_pending) VALUES (' . (int)$group . ', ' . (int)$existinguser->userid . ', 0, 0)';
-				    $db->setQuery($query);
-				    $db->execute();
+				    $newgroup = new stdClass;
+				    $newgroup->group_id = (int)$group;
+				    $newgroup->user_id = (int)$existinguser->user_id;
+				    $newgroup->group_leader = 0;
+				    $newgroup->user_pending = 0;
+
+				    $db->insertObject('#__user_group', $newgroup);
 			    }
 
 			    try {
@@ -645,9 +648,12 @@ class JFusionUser_phpbb3 extends JFusionUser
 	    try {
 		    //block the user
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $query = 'INSERT INTO #__banlist (ban_userid, ban_start) VALUES (' . (int)$existinguser->userid . ',' . time() . ')';
-		    $db->setQuery($query);
-		    $db->execute();
+
+		    $ban = new stdClass;
+		    $ban->ban_userid = $existinguser->userid;
+		    $ban->ban_start = time();
+
+		    $db->insertObject('#__banlist', $ban);
 
 		    $status['debug'][] = JText::_('BLOCK_UPDATE') . ': ' . $existinguser->block . ' -> ' . $userinfo->block;
 	    } catch (Exception $e) {
@@ -767,7 +773,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 			    } else {
 				    //prepare the variables
 				    $user = new stdClass;
-				    $user->id = null;
+				    $user->user_id = null;
 				    $user->username = $userinfo->username;
 				    $user->username_clean = $username_clean;
 				    if (isset($userinfo->password_clear)) {
@@ -866,11 +872,16 @@ class JFusionUser_phpbb3 extends JFusionUser
 					    }
 				    }
 
+				    $db->insertObject('#__users', $user, 'user_id');
+
 				    foreach($usergroup->groups as $group) {
-					    //add the user in the groups table
-					    $query = 'INSERT INTO #__user_group (group_id, user_id ,group_leader, user_pending) VALUES (' . (int)$group . ', ' . (int)$user->id . ', 0, 0)';
-					    $db->setQuery($query);
-					    $db->execute();
+						$newgroup = new stdClass;
+					    $newgroup->group_id = (int)$group;
+					    $newgroup->user_id = (int)$user->user_id;
+					    $newgroup->group_leader = 0;
+					    $newgroup->user_pending = 0;
+
+					    $db->insertObject('#__user_group', $newgroup);
 				    }
 
 				    //update the total user count
@@ -894,7 +905,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    //update the newest userid
 				    $query = $db->getQuery(true)
 					    ->update('#__config')
-					    ->set('config_value = ' . (int)$user->id )
+					    ->set('config_value = ' . (int)$user->user_id )
 					    ->where('config_name = ' . $db->Quote('newest_user_id'));
 
 				    $db->setQuery($query);
@@ -913,9 +924,11 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    }
 				    if (!empty($userinfo->block) && $update_block) {
 					    try {
-						    $query = 'INSERT INTO #__banlist (ban_userid, ban_start) VALUES (' . (int)$user->id . ',' . time() . ')';
-						    $db->setQuery($query);
-						    $db->execute();
+						    $ban = new stdClass;
+						    $ban->ban_userid = $user->user_id;
+						    $ban->ban_start = time();
+
+						    $db->insertObject('#__banlist', $ban);
 					    } catch (Exception $e) {
 							throw new RuntimeException(JText::_('BLOCK_UPDATE_ERROR').': '. $e->getMessage());
 					    }
