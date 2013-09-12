@@ -773,6 +773,22 @@ HTML;
 		    	'id': 'usergroups_'+plugin.name+index+'defaultgroup'
 		    });
 
+			jQuery(document).on('change', '#usergroups_'+plugin.name+index+'defaultgroup', function(evt, params) {
+                var value = this.get('value');
+
+				jQuery('#'+'usergroups_'+plugin.name+index+'groups'+' option').each(function() {
+					if (jQuery(this).attr('value') == value) {
+						jQuery(this).prop('selected', false);
+						jQuery(this).prop('disabled', true);
+
+						jQuery(this).trigger('chosen:updated').trigger('liszt:updated');
+	                } else if (jQuery(this).prop('disabled')== true) {
+						jQuery(this).prop('disabled', false);
+						jQuery(this).trigger('chosen:updated').trigger('liszt:updated');
+					}
+				});
+			});
+
 		    Array.each(usergroups, function (group) {
 			    var options = {'value': group.id,
 					            'html': group.name};
@@ -797,12 +813,18 @@ HTML;
 		    });
 
 
-		    Array.each(usergroups, function (group) {
+		    Array.each(usergroups, function (group, i) {
 			    var options = {'value': group.id,
 					            'html': group.name};
 
-		        if (pair && pair.groups && pair.groups.contains(group.id)) {
-					options.selected = 'selected';
+		        if (pair && pair.defaultgroup == group.id) {
+					options.disabled = 'disabled';
+		        } else if (!pair && i === 0) {
+		        	options.disabled = 'disabled';
+		        } else {
+		            if (pair && pair.groups && pair.groups.contains(group.id)) {
+						options.selected = 'selected';
+		        	}
 		        }
 
 				membergroupsselect.appendChild(new Element('option', options));
