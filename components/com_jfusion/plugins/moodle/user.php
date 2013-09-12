@@ -551,7 +551,10 @@ class JFusionUser_moodle extends JFusionUser {
 			if ($result) {
 				//We have a record, probably with the deleted flag set.
 				// Thus for Moodle internal working we need to use this record and resurrect the user
-				$query = "UPDATE #__user SET deleted = '0' WHERE id = ". $db->Quote($result->id);
+				$query = $db->getQuery(true)
+					->update('#__user')
+					->set('deleted = 0')
+					->where('id = '.$db->Quote($result->id));
 				$db->setQuery($query);
 				$db->execute();
 			} else {
@@ -685,7 +688,12 @@ class JFusionUser_moodle extends JFusionUser {
 				throw new RuntimeException(JText::_('NO_USER_DATA_FOUND'));
 			}
 			$db = JFusionFactory::getDatabase($this->getJname());
-			$query = "UPDATE #__user SET deleted = '1' WHERE id =" . (int)$userinfo->userid;
+
+			$query = $db->getQuery(true)
+				->update('#__user')
+				->set('deleted = 1')
+				->where('id = '.(int)$userinfo->userid);
+
 			$db->setQuery($query);
 			$db->execute();
 
