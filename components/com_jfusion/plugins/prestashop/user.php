@@ -394,7 +394,7 @@ class JFusionUser_prestashop extends JFusionUser {
 			    throw new RuntimeException(Tools::displayError('e-mail not valid'));
 		    } elseif (!ValidateCore::isPasswd($user_variables['passwd'])) {
 			    throw new RuntimeException(Tools::displayError('invalid password'));
-		    } elseif (!@checkdate($user_variables['months'], $user_variables['days'], $user_variables['years']) AND !( $user_variables['months']== '' AND $user_variables['days'] == '' AND $user_variables['years'] == '')) {
+		    } elseif (!@checkdate($user_variables['months'], $user_variables['days'], $user_variables['years']) && !($user_variables['months']== '' && $user_variables['days'] == '' && $user_variables['years'] == '')) {
 			    throw new RuntimeException(Tools::displayError('invalid birthday'));
 		    } elseif (!ValidateCore::isBool($user_variables['newsletter'])) {
 			    throw new RuntimeException(Tools::displayError('newsletter invalid choice'));

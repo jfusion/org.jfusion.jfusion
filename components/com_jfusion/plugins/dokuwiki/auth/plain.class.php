@@ -460,14 +460,22 @@ if (!class_exists('Jfusion_DokuWiki_Plain')) {
 		function lock($file) {
 			$conf = $this->helper->getConf();
 			// no locking if safemode hack
-			if (@$conf['safemodehack']) return;
-			$lockDir = @$conf['lockdir'] . '/' . md5($file);
+			if (isset($conf['safemodehack']) && $conf['safemodehack']) return;
+			$lockDir = '/' . md5($file);
+			if (isset($conf['lockdir'])) {
+				$lockDir = $conf['lockdir'] . $lockDir;
+			}
+
 			@ignore_user_abort(1);
 			$timeStart = time();
 			do {
 				//waited longer than 3 seconds? -> stale lock
 				if ((time() - $timeStart) > 3) break;
-				$locked = @mkdir($lockDir, @$conf['dmode']);
+				$dmode = null;
+				if (isset($conf['dmode'])) {
+					$dmode = $conf['dmode'];
+				}
+				$locked = @mkdir($lockDir, $dmode);
 				if ($locked) {
 					if (!empty($conf['dperm'])) chmod($lockDir, $conf['dperm']);
 					break;
@@ -486,8 +494,11 @@ if (!class_exists('Jfusion_DokuWiki_Plain')) {
 		function unlock($file) {
 			$conf = $this->helper->getConf();;
 			// no locking if safemode hack
-			if (@$conf['safemodehack']) return;
-			$lockDir = @$conf['lockdir'] . '/' . md5($file);
+			if (isset($conf['safemodehack']) && $conf['safemodehack']) return;
+			$lockDir = '/' . md5($file);
+			if (isset($conf['lockdir'])) {
+				$lockDir = $conf['lockdir'] . $lockDir;
+			}
 			@rmdir($lockDir);
 			@ignore_user_abort(0);
 		}

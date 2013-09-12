@@ -215,10 +215,7 @@ class JFusionAdmin_universal extends JFusionAdmin
 				throw new RuntimeException(JText::_('SAVE_CONFIG_FIRST'));
 			}
 
-			$query = 'SHOW TABLES FROM '.$database_name;
-			$db->setQuery($query);
-			$tabelslist = $db->loadRowList();
-
+			$tabelslist = $db->getTableList();
 			if ($tabelslist) {
 				$tl = array();
 				$fl = array();
@@ -232,12 +229,12 @@ class JFusionAdmin_universal extends JFusionAdmin
 
 				$firstTable = null;
 				foreach ($tabelslist as $val) {
-					if( @strpos( $val[0], $database_prefix ) === 0 || $database_prefix == '' ) {
+					if( strpos( $val, $database_prefix ) === 0 || $database_prefix == '' ) {
 						$table = new stdClass;
 
-						$table->name = $table->id = substr($val[0], strlen($database_prefix));
+						$table->name = $table->id = substr($val, strlen($database_prefix));
 
-						$query = 'SHOW COLUMNS FROM '.$val[0];
+						$query = 'SHOW COLUMNS FROM '.$val;
 						$db->setQuery($query);
 						$fieldslist = $db->loadObjectList();
 
