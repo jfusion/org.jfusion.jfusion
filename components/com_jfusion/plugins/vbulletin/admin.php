@@ -252,13 +252,22 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
 			    //we want to output the usergroup name
 			    $db = JFusionFactory::getDatabase($this->getJname());
 
-			    $query = $db->getQuery(true)
-				    ->select('title')
-				    ->from('#__usergroup')
-				    ->where('usergroupid = ' . $usergroup->defaultgroup);
+			    if (!isset($usergroup->membergroups)) {
+				    $usergroup->membergroups = array($usergroup->defaultgroup);
+			    } else if (!in_array($usergroup->defaultgroup, $usergroup->membergroups)) {
+				    $usergroup->membergroups[] = $usergroup->defaultgroup;
+			    }
 
-			    $db->setQuery($query);
-			    $group = $db->loadResult();
+			    $group = array();
+			    foreach ($usergroup->membergroups as $g) {
+				    $query = $db->getQuery(true)
+					    ->select('title')
+					    ->from('#__usergroup')
+					    ->where('usergroupid = ' . $db->quote($g));
+
+				    $db->setQuery($query);
+				    $group[] = $db->loadResult();
+			    }
 		    } else {
 			    $group = '';
 		    }
@@ -865,7 +874,7 @@ HTML;
 		    });
 
 
-		    Array.each(usergroups, function (group) {
+		    Array.each(usergroups, function (group, i) {
 			    var options = {'id': 'usergroups_'+plugin.name+index+'membergroups'+group.id,
 			    				'value': group.id,
 					            'html': group.name};

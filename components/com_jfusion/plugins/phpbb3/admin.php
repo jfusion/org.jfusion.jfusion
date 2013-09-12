@@ -213,19 +213,27 @@ class JFusionAdmin_phpbb3 extends JFusionAdmin
      */
     function getDefaultUsergroup() {
 	    try {
-		    $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
+		    $usergroup = JFusionFunction::getUserGroups($this->getJname(), true);
 
-		    if ($usergroups !== null) {
+		    if ($usergroup !== null) {
 			    //we want to output the usergroup name
 			    $db = JFusionFactory::getDatabase($this->getJname());
 
-			    $query = $db->getQuery(true)
-				    ->select('group_name')
-				    ->from('#__groups')
-				    ->where('group_id = ' . (int)$usergroups);
+			    if (!isset($usergroup->groups)) {
+				    $usergroup->groups = array($usergroup->defaultgroup);
+			    } else if (!in_array($usergroup->defaultgroup, $usergroup->groups)) {
+				    $usergroup->groups[] = $usergroup->defaultgroup;
+			    }
+			    $group = array();
+			    foreach ($usergroup->groups as $g) {
+				    $query = $db->getQuery(true)
+					    ->select('group_name')
+					    ->from('#__groups')
+					    ->where('group_id = ' . $db->quote($g));
 
-			    $db->setQuery($query);
-			    $group = $db->loadResult();
+				    $db->setQuery($query);
+				    $group[] = $db->loadResult();
+			    }
 		    } else {
 			    $group = '';
 		    }

@@ -606,9 +606,7 @@ class JFusionUser
 						}
 					}
 					if (count($groups) == $count ) {
-						if (isset($slavegroups[$key])) {
-							$index = $key;
-						}
+						$index = $key;
 						break;
 					}
 				}

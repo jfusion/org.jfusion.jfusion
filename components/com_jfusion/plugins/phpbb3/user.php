@@ -63,8 +63,23 @@ class JFusionUser_phpbb3 extends JFusionUser
 			    if ($result->username == 'anonymous') {
 				    $result = null;
 			    } else {
-				    $result->groups = array($result->group_id);
-				    $result->groupnames = array($result->group_name);
+				    $query = $db->getQuery(true)
+					    ->select('ug.group_id as group_id, g.group_name')
+					    ->from('#__user_group as ug')
+					    ->join('LEFT OUTER', '#__groups as g ON ug.group_id = g.group_id')
+					    ->where('ug.user_id = ' . $db->Quote($result->userid));
+
+				    $db->setQuery($query);
+				    $groups = $db->loadObjectList();
+
+				    $result->groups = array();
+				    $result->groupnames = array();
+				    if ($groups) {
+					    foreach ($groups as $group) {
+						    $result->groups[] = $group->group_id;
+						    $result->groupnames[] = $group->group_name;
+					    }
+				    }
 
 				    //Check to see if they are banned
 				    $query = $db->getQuery(true)
@@ -851,25 +866,9 @@ class JFusionUser_phpbb3 extends JFusionUser
 					    }
 				    }
 
-				    $db->insertObject('#__users', $user, 'id');
-				    //now append the new user data
-				    //now create a user_group entry
-				    $query = 'INSERT INTO #__user_group (group_id, user_id, group_leader, user_pending) VALUES (' . $usergroup->defaultgroup . ',' . (int)$user->id . ', 0,0 )';
-				    $db->setQuery($query);
-				    $db->execute();
-
-				    //is this group the newly registered group?
-				    $query = $db->getQuery(true)
-					    ->select('group_id, group_name')
-					    ->from('#__groups')
-					    ->where('group_name IN (\'NEWLY_REGISTERED\',\'REGISTERED\')')
-					    ->where('group_type = 3');
-
-				    $db->setQuery($query);
-				    $groups = $db->loadObjectList('group_name');
-				    if ($usergroup->defaultgroup == $groups['NEWLY_REGISTERED']->group_id) {
-					    //we need to also add the user to the regular registered group or they may find themselves groupless
-					    $query = 'INSERT INTO #__user_group (group_id, user_id, group_leader, user_pending) VALUES (' . $groups['REGISTERED']->group_id . ',' . (int)$user->id . ', 0,0 )';
+				    foreach($usergroup->groups as $group) {
+					    //add the user in the groups table
+					    $query = 'INSERT INTO #__user_group (group_id, user_id ,group_leader, user_pending) VALUES (' . (int)$group . ', ' . (int)$user->id . ', 0, 0)';
 					    $db->setQuery($query);
 					    $db->execute();
 				    }
@@ -1506,4 +1505,52 @@ class JFusionUser_phpbb3 extends JFusionUser
 	    }
         return $return;
     }
+
+	/**
+	 * Function That find the correct user group index
+	 *
+	 * @param array $mastergroups
+	 * @param stdClass $userinfo
+	 *
+	 * @return int
+	 */
+	function getUserGroupIndex($mastergroups, $userinfo)
+	{
+		$index = 0;
+
+		foreach ($mastergroups as $key => $mastergroup) {
+			if ($mastergroup) {
+				$found = true;
+
+				if (!isset($mastergroup->groups)) {
+					$mastergroup->groups = array($mastergroup->defaultgroup);
+				} else if (!in_array($mastergroup->defaultgroup, $mastergroup->groups)) {
+					$mastergroup->groups[] = $mastergroup->defaultgroup;
+				}
+
+				//check to see if the default groups are different
+				if ($mastergroup->defaultgroup != $userinfo->group_id ) {
+					$found = false;
+				} else {
+					//check to see if member groups are different
+					if (count($userinfo->groups) != count($mastergroup->groups)) {
+						$found = false;
+						break;
+					} else {
+						foreach ($mastergroup->groups as $gid) {
+							if (!in_array($gid, $userinfo->groups)) {
+								$found = false;
+								break;
+							}
+						}
+					}
+				}
+				if ($found) {
+					$index = $key;
+					break;
+				}
+			}
+		}
+		return $index;
+	}
 }

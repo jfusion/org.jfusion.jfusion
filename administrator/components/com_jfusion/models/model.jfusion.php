@@ -1245,16 +1245,16 @@ class JFusionFunction
 				if ($default) {
 					if (isset($usergroups[0])) {
 						$usergroups = $usergroups[0];
-
-						if (!is_array($usergroups) && $usergroups == 'JFUSION_NO_USERGROUP') {
-							$usergroups = null;
-						}
 					} else {
 						$usergroups = null;
 					}
 				}
 			} else {
-				$usergroups = array();
+				if ($default) {
+					$usergroups = null;
+				} else {
+					$usergroups = array();
+				}
 			}
 		}
 		return $usergroups;
