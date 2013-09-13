@@ -27,7 +27,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionHelper_dokuwiki
+class JFusionHelper_dokuwiki extends JFusionPlugin
 {
     /**
      * @var Jfusion_DokuWiki_Basic
@@ -39,9 +39,9 @@ class JFusionHelper_dokuwiki
      */
     function __construct()
     {
-        $params = JFusionFactory::getParams($this->getJname());
-        $database_type = $params->get('database_type');
-        $database_host = $params->get('database_host');
+        parent::__construct();
+        $database_type = $this->params->get('database_type');
+        $database_host = $this->params->get('database_host');
         if ($database_host && $database_type == 'mysql') {
             if (!class_exists('Jfusion_DokuWiki_Mysql')) {
                 require_once('auth'.DIRECTORY_SEPARATOR.'mysql.class.php');
@@ -77,8 +77,8 @@ class JFusionHelper_dokuwiki
      */
     function defineConstants($nosession = false) {
         $conf = $this->getConf();
-        $params = JFusionFactory::getParams($this->getJname());
-        $source_url = $params->get('source_url');
+
+        $source_url = $this->params->get('source_url');
         $doku_rel = preg_replace('#(\w{0,10}://)(.*?)/(.*?)#is', '$3', $source_url);
         $doku_rel = preg_replace('#//+#', '/', "/$doku_rel/");
         if (!defined('DOKU_REL')) {
@@ -107,8 +107,7 @@ class JFusionHelper_dokuwiki
         static $dokuwiki_cookie_salt;
 
         if (empty($dokuwiki_cookie_salt)) {
-            $params = JFusionFactory::getParams($this->getJname());
-            $source_path = $params->get('source_path');
+            $source_path = $this->params->get('source_path');
 
             $conf = $this->getConf();
             $data_dir = (isset($conf['savedir'])) ? $source_path . DIRECTORY_SEPARATOR . $conf['savedir'] : $source_path . DIRECTORY_SEPARATOR . 'data';
@@ -137,8 +136,7 @@ class JFusionHelper_dokuwiki
         static $dokuwiki_version;
 
         if (empty($dokuwiki_version)) {
-            $params = JFusionFactory::getParams($this->getJname());
-            $source_path = $params->get('source_path');
+            $source_path = $this->params->get('source_path');
 
             jimport('joomla.filesystem.file');
             $file_version = file_get_contents($source_path.DIRECTORY_SEPARATOR.'VERSION');
@@ -163,8 +161,7 @@ class JFusionHelper_dokuwiki
         static $config_path;
 
         if (empty($config_path)) {
-            $params = JFusionFactory::getParams($this->getJname());
-            $source_path = $params->get('source_path');
+            $source_path = $this->params->get('source_path');
             $config_path = (empty($path)) ? $source_path : $path;
 
             //make sure the source path ends with a DIRECTORY_SEPARATOR
@@ -205,8 +202,7 @@ class JFusionHelper_dokuwiki
         static $config;
         if (!is_array($config)) {
             if (!$path) {
-                $params = JFusionFactory::getParams($this->getJname());
-                $path = $params->get('source_path');
+                $path = $this->params->get('source_path');
             }
             /**
              * @ignore

@@ -32,8 +32,7 @@ class JFusionAuth_oscommerce extends JFusionAuth
      * @return string
      */
     function generateEncryptedPassword($userinfo) {
-        $params = JFusionFactory::getParams($this->getJname());
-        $osCversion = $params->get('osCversion');
+        $osCversion = $this->params->get('osCversion');
         switch ($osCversion) {
             case 'osc2':
             case 'osc3':

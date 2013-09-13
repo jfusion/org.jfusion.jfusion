@@ -27,19 +27,12 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionHelper_phpbb3
+class JFusionHelper_phpbb3 extends JFusionPlugin
 {
     var $bbcode_uid = false;
     var $bbcodes = array();
     var $warn_msg = array();
     var $bbcode_bitfield = '';
-
-    /**
-     *
-     */
-    function __construct()
-    {
-    }
 
     /**
      * Returns the name for this plugin
@@ -110,8 +103,7 @@ class JFusionHelper_phpbb3
         // do the case fold
         $text = $this->utf8_case_fold($text, $option);
         // convert to NFKC
-        $params = JFusionFactory::getParams($this->getJname());
-        $utf8_advanced = $params->get('utf8_advanced');
+        $utf8_advanced = $this->params->get('utf8_advanced');
         if ($utf8_advanced == 'enabled') {
             if (!class_exists('utf_normalizer_phpbb')) {
                 require_once JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $this->getJname() . DIRECTORY_SEPARATOR . 'utf' . DIRECTORY_SEPARATOR . 'utf_normalizer.php';
@@ -169,8 +161,7 @@ class JFusionHelper_phpbb3
         $this->bbcode_bitfield = '';
 
 	    try {
-		    $params = JFusionFactory::getParams($this->getJname());
-		    $source_path = $params->get('source_path');
+		    $source_path = $this->params->get('source_path');
 		    $db = JFusionFactory::getDatabase($this->getJname());
 		    if (!defined('IN_PHPBB')) {
 			    define('IN_PHPBB', true);
@@ -857,8 +848,7 @@ class JFusionHelper_phpbb3
         $valid = false;
         $url = str_replace(' ', '%20', $url);
         // Checking urls
-        $params = JFusionFactory::getParams($this->getJname());
-        $source_url = $params->get('source_url');
+        $source_url = $this->params->get('source_url');
 
         if (preg_match('#^' . $this->get_preg_expression('url') . '$#i', $url) || preg_match('#^' . $this->get_preg_expression('www_url') . '$#i', $url) || preg_match('#^' . preg_quote($source_url, '#') . $this->get_preg_expression('relative_url') . '$#i', $url)) {
             $valid = true;

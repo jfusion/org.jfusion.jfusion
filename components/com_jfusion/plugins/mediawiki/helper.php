@@ -12,7 +12,7 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionHelper_mediawiki
+class JFusionHelper_mediawiki extends JFusionPlugin
 {
     var $joomlaSessionName = '';
     var $joomlaSessionId = '';
@@ -37,11 +37,11 @@ class JFusionHelper_mediawiki
         if (!empty($mediawiki_cookieName)) {
             return $mediawiki_cookieName;
         }
-        $params = JFusionFactory::getParams($this->getJname());
+
         $cookie_name = $this->getConfig('wgCookiePrefix');
         if (empty($cookie_name)) {
-            $db_name = $params->get('database_name');
-            $db_prefix = $params->get('database_prefix');
+            $db_name = $this->params->get('database_name');
+            $db_prefix = $this->params->get('database_prefix');
             $cookie_name = (!empty($db_prefix)) ? $db_name . '_' . $db_prefix : $db_name;
         }
         $mediawiki_cookieName = strtr($cookie_name, "=,; +.\"'\\[", '__________');
@@ -54,7 +54,6 @@ class JFusionHelper_mediawiki
      * @param array $options login options
      */
     function startSession($options = array()) {
-        $params = JFusionFactory::getParams($this->getJname());
 		$this->joomlaSessionName = session_name();
 		$this->joomlaSessionId = session_id();
 		$this->joomlaSessionCookieParams = session_get_cookie_params();
@@ -69,10 +68,10 @@ class JFusionHelper_mediawiki
 		ini_set('session.save_handler', 'files');
 		$lifetime = (empty($options['remember'])) ? 0 : 31536000;
 		$cookie_name = $this->getCookieName();
-		$cookie_domain = $params->get('cookie_domain', null);
-		$cookie_path = $params->get('cookie_path', null);
-		$secure = $params->get('secure', null);
-		$httponly = $params->get('httponly', null);
+		$cookie_domain = $this->params->get('cookie_domain', null);
+		$cookie_path = $this->params->get('cookie_path', null);
+		$secure = $this->params->get('secure', null);
+		$httponly = $this->params->get('httponly', null);
 		$session_name = $cookie_name . '_session';
 		session_set_cookie_params($lifetime, $cookie_path, $cookie_domain, $secure, $httponly);
 		session_name($session_name);
@@ -102,8 +101,7 @@ class JFusionHelper_mediawiki
             return $config[$getVar];
         }
 
-        $params = JFusionFactory::getParams($this->getJname());
-        $source_path = $params->get('source_path');
+        $source_path = $this->params->get('source_path');
 
         $paths = $this->includeFramework($source_path);
         $IP = $source_path;

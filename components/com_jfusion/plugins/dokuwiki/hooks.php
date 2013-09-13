@@ -82,8 +82,7 @@ class JFusionDokuWikiHook
             $url = $baseURL . '&jfile=' . $q;
         } else {
             global $jname;
-            $params = JFusionFactory::getParams($jname);
-            $sefmode = $params->get('sefmode');
+            $sefmode = JFusionFactory::getParams($jname)->get('sefmode');
             if ($sefmode == 1) {
                 $url = JFusionFunction::routeURL($q, JFactory::getApplication()->input->getInt('Itemid'));
             } else {

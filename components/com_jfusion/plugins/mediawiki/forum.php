@@ -35,7 +35,6 @@ class JFusionForum_mediawiki extends JFusionForum
 	    $output = '';
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $params = JFusionFactory::getParams($this->getJname());
 		    defined('_DATE_FORMAT_LC2') or define('_DATE_FORMAT_LC2','Y M d h:i:s A');
 
 		    // configuration
@@ -54,7 +53,7 @@ class JFusionForum_mediawiki extends JFusionForum
 		    $showuser = $pluginParam->get('showuser');
 		    $display_body = $pluginParam->get('display_body');
 
-		    if ($params->get('new_window')) {
+		    if ($this->params->get('new_window')) {
 			    $new_window = '_blank';
 		    } else {
 			    $new_window = '_self';

@@ -55,22 +55,6 @@ class jfusionViewPlugin extends JViewLegacy {
     function frameless($tpl = null) {
 		$data = JFusionFrameless::initData($this->jname);
 
-        $db = JFactory::getDBO();
-
-	    $query = $db->getQuery(true)
-		    ->select('name , original_name')
-		    ->from('#__jfusion')
-	        ->where('name = ' . $db->Quote($this->jname));
-
-        $db->setQuery($query);
-        $plugin = $db->loadObject();
-
-        if ($plugin) {
-            $name = $plugin->original_name ? $plugin->original_name : $plugin->name;
-
-	        JFactory::getLanguage()->load('com_jfusion.plg_' . $name, JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion');
-        }
-
 		$result = JFusionFrameless::displayContent($data);
 		if (!$result) return false;
 	    $this->data = $data;

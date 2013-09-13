@@ -16,6 +16,8 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
+require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.abstractplugin.php';
+
 /**
  * Abstract interface for all JFusion forum implementations.
  *
@@ -26,18 +28,8 @@ defined('_JEXEC') or die('Restricted access');
  * @license   http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link      http://www.jfusion.org
  */
-class JFusionForum
+class JFusionForum extends JFusionPlugin
 {
-    /**
-     * returns the name of this JFusion plugin
-     *
-     * @return string name of current JFusion plugin
-     */
-    function getJname()
-    {
-        return '';
-    }
-
     /**
      * Returns the URL to a thread of the integrated software
      *

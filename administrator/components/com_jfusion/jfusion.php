@@ -21,21 +21,6 @@ if (version_compare(PHP_VERSION, '5.0.0', '<')) {
     die(JText::_('PHP_VERSION_OUTDATED') . PHP_VERSION . '<br/><br/>' . JText::_('PHP_VERSION_UPGRADE'));
 }
 
-//Load the language files of the plugins
-$db = JFactory::getDBO();
-
-$query = $db->getQuery(true)
-	->select('name , original_name')
-	->from('#__jfusion');
-
-$db->setQuery($query);
-$plugins = $db->loadObjectList();
-foreach ($plugins as $plugin) {
-    $name = $plugin->original_name ? $plugin->original_name : $plugin->name;
-
-	JFactory::getLanguage()->load('com_jfusion.plg_' . $name , JPATH_COMPONENT_ADMINISTRATOR );
-}
-
 //load the JFusion CSS and javascript
 $document = JFactory::getDocument();
 $document->addStyleSheet('components/com_jfusion/css/jfusion.css');

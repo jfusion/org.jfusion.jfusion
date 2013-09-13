@@ -28,7 +28,7 @@ defined('_JEXEC') or die('Restricted access');
  * @link       http://www.jfusion.org
  */
 
-class JFusionHelper_efront {
+class JFusionHelper_efront extends JFusionPlugin {
 
     /**
      * @return string
@@ -189,8 +189,7 @@ class JFusionHelper_efront {
     function send_to_api($curl_options,$status) {
         $status = array('error' => array(),'debug' => array());
 
-    	$params = JFusionFactory::getParams($this->getJname());
-        $source_url = $params->get('source_url');
+        $source_url = JFusionFactory::getParams($this->getJname())->get('source_url');
         // prevent user error by not supplying trailing backslash.
         if (!(substr($source_url, -1) == '/')) {
             $source_url = $source_url.'/';

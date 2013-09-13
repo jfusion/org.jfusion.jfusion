@@ -47,14 +47,12 @@ class JFusionJoomlaUser extends JFusionUser
 		    $JFusionUser = JFusionFactory::getUser($this->getJname());
 		    list($identifier_type, $identifier) = $JFusionUser->getUserIdentifier($userinfo, 'username', 'email');
 		    if ($this->getJname() == 'joomla_int' && $identifier_type == 'username') {
-			    $params = JFusionFactory::getParams($this->getJname());
-
 			    $query = $db->getQuery(true)
 				    ->select('b.id as userid, b.activation, a.username, b.name, b.password, b.email, b.block, b.params')
 				    ->from('#__users as b')
 			        ->innerJoin('#__jfusion_users as a ON a.id = b.id');
 
-			    if ($params->get('case_insensitive')) {
+			    if ($this->params->get('case_insensitive')) {
 				    $query->where('LOWER(a.' . $identifier_type . ') = ' . $db->Quote(strtolower($identifier)));
 			    } else {
 				    $query->where('a.' . $identifier_type . ' = ' . $db->Quote($identifier));
@@ -68,7 +66,7 @@ class JFusionJoomlaUser extends JFusionUser
 					    ->select('id as userid, activation, username, name, password, email, block, params')
 					    ->from('#__users');
 
-				    if ($params->get('case_insensitive')) {
+				    if ($this->params->get('case_insensitive')) {
 					    $query->where('LOWER(' . $identifier_type . ') = ' . $db->Quote(strtolower($identifier)));
 				    } else {
 					    $query->where($identifier_type . ' = ' . $db->Quote($identifier));
@@ -376,8 +374,7 @@ class JFusionJoomlaUser extends JFusionUser
     public function filterUsername($username)
     {
 	    //check to see if additional username filtering need to be applied
-	    $params = JFusionFactory::getParams($this->getJname());
-	    $added_filter = $params->get('username_filter');
+	    $added_filter = $this->params->get('username_filter');
 	    if ($added_filter && $added_filter != $this->getJname()) {
 		    $JFusionPlugin = JFusionFactory::getUser($added_filter);
 		    if (method_exists($JFusionPlugin, 'filterUsername')) {
@@ -611,10 +608,9 @@ class JFusionJoomlaUser extends JFusionUser
 	    $status = array('error' => array(),'debug' => array());
 	    try {
 		    // Initialise some variables
-		    $params = JFusionFactory::getParams($this->getJname());
-		    $update_block = $params->get('update_block');
-		    $update_activation = $params->get('update_activation');
-		    $update_email = $params->get('update_email');
+		    $update_block = $this->params->get('update_block');
+		    $update_activation = $this->params->get('update_activation');
+		    $update_email = $this->params->get('update_email');
 		    //check to see if a valid $userinfo object was passed on
 		    if (!is_object($userinfo)) {
 			    throw new RuntimeException(JText::_('NO_USER_DATA_FOUND'));

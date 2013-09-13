@@ -31,8 +31,7 @@ class JFusionAuth_universal extends JFusionAuth {
      */
     function generateEncryptedPassword($userinfo)
     {
-        $params = JFusionFactory::getParams($this->getJname());
-		$user_auth = $params->get('user_auth');
+		$user_auth = $this->params->get('user_auth');
 
 		$user_auth = rtrim(trim($user_auth),';');
     	ob_start();

@@ -320,8 +320,7 @@ HTML;
 			 JFile::delete($src_code . DIRECTORY_SEPARATOR . $archive_filename);
 
 			 if ($ret) {
-				 $joomla = JFusionFactory::getParams('joomla_int');
-				 $joomla_baseurl = $joomla->get('source_url');
+				 $joomla_baseurl = JFusionFactory::getParams('joomla_int')->get('source_url');
 				 $joomla_source_path = JPATH_ROOT.DIRECTORY_SEPARATOR;
 
 				 // now set all relevant parameters in Moodles database

@@ -16,6 +16,8 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
+require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.abstractplugin.php';
+
 /**
  * Abstract interface for all JFusion functions that are accessed through the Joomla front-end
  *
@@ -26,37 +28,21 @@ defined('_JEXEC') or die('Restricted access');
  * @license   http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link      http://www.jfusion.org
  */
-class JFusionPublic
+class JFusionPublic extends JFusionPlugin
 {
 	var $helper;
 
     var $data;
 
 	/**
-	 * @var JRegistry
-	 */
-	var $params;
-
-	/**
 	 *
 	 */
 	function __construct()
 	{
-		//get the params object
-		$this->params = JFusionFactory::getParams($this->getJname());
+		parent::__construct();
 		//get the helper object
 		$this->helper = JFusionFactory::getHelper($this->getJname());
 	}
-
-    /**
-     * returns the name of this JFusion plugin
-     *
-     * @return string name of current JFusion plugin
-     */
-    function getJname()
-    {
-        return '';
-    }
 
     /**
      * gets the visual html output from the plugin

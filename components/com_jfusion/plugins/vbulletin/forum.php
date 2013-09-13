@@ -30,7 +30,6 @@ defined('_JEXEC') or die('Restricted access');
  */
 class JFusionForum_vbulletin extends JFusionForum
 {
-    var $params;
     /**
      * @var $helper JFusionHelper_vbulletin
      */
@@ -41,8 +40,6 @@ class JFusionForum_vbulletin extends JFusionForum
      */
     function __construct()
     {
-        //get the params object
-        $this->params = JFusionFactory::getParams($this->getJname());
         //get the helper object
         $this->helper = JFusionFactory::getHelper($this->getJname());
     }

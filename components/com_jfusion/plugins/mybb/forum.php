@@ -240,8 +240,8 @@ class JFusionForum_mybb extends JFusionForum {
 		    $db->setQuery($query);
 		    $avatar = $db->loadResult();
 		    $avatar = substr($avatar, 2);
-		    $params = JFusionFactory::getParams($this->getJname());
-		    $url = $params->get('source_url') . $avatar;
+
+		    $url = $this->params->get('source_url') . $avatar;
 	    } catch (Exception $e) {
 		    JFusionFunction::raiseError($e, $this->getJname());
 		    $url = '';

@@ -16,7 +16,7 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
-require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'defines.php';
+require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.abstractplugin.php';
 
 /**
  * Abstract interface for all JFusion functions that are accessed through the Joomla administrator interface
@@ -28,34 +28,19 @@ require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTOR
  * @license   http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link      http://www.jfusion.org
  */
-class JFusionAdmin
+class JFusionAdmin extends JFusionPlugin
 {
 	var $helper;
-
-	/**
-	 * @var JRegistry
-	 */
-	var $params;
 
 	/**
 	 *
 	 */
 	function __construct()
 	{
-		//get the params object
-		$this->params = JFusionFactory::getParams($this->getJname());
+		parent::__construct();
 		//get the helper object
 		$this->helper = JFusionFactory::getHelper($this->getJname());
 	}
-    /**
-     * returns the name of this JFusion plugin
-     *
-     * @return string name of current JFusion plugin
-     */
-    function getJname()
-    {
-        return '';
-    }
 
     /**
      * Returns the a list of users of the integrated software
@@ -179,8 +164,7 @@ class JFusionAdmin
 					    if ($url) {
 						    require_once(JPATH_SITE.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'jfusionapi.php');
 
-						    $joomla_int = JFusionFactory::getParams('joomla_int');
-						    $api = new JFusionAPI($url, $joomla_int->get('secret'));
+						    $api = new JFusionAPI($url, JFusionFactory::getParams('joomla_int')->get('secret'));
 						    if (!$api->ping()) {
 							    list ($message) = $api->getError();
 

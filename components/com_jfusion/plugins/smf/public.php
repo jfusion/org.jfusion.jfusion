@@ -422,8 +422,7 @@ class JFusionPublic_smf extends JFusionPublic
     {
         static $regex_header, $replace_header;
         if (!$regex_header || !$replace_header) {
-            $params = JFusionFactory::getParams('joomla_int');
-            $joomla_url = $params->get('source_url');
+            $joomla_url = JFusionFactory::getParams('joomla_int')->get('source_url');
             $baseURLnoSef = 'index.php?option=com_jfusion&Itemid=' . JFactory::getApplication()->input->getInt('Itemid');
             if (substr($joomla_url, -1) == '/') {
                 $baseURLnoSef = $joomla_url . $baseURLnoSef;

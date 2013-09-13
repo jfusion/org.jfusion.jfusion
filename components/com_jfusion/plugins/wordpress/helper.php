@@ -27,7 +27,8 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionHelper_wordpress {
+class JFusionHelper_wordpress extends JFusionPlugin
+{
     /**
      * @return string
      */
@@ -42,8 +43,7 @@ class JFusionHelper_wordpress {
 	    $usergroups=array();
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $params = JFusionFactory::getParams($this->getJname());
-		    $database_prefix = $params->get('database_prefix');
+		    $database_prefix = $this->params->get('database_prefix');
 
 		    $query = $db->getQuery(true)
 			    ->select('option_value')
@@ -111,8 +111,7 @@ class JFusionHelper_wordpress {
 		if (!isset($allroles)) {
 			try {
 				$db = JFusionFactory::getDatabase($this->getJname());
-				$params = JFusionFactory::getParams($this->getJname());
-				$database_prefix = $params->get('database_prefix');
+				$database_prefix = $this->params->get('database_prefix');
 
 				$query = $db->getQuery(true)
 					->select('option_value')

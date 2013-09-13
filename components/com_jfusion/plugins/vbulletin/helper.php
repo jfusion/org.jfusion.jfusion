@@ -27,19 +27,10 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionHelper_vbulletin
+class JFusionHelper_vbulletin extends JFusionPlugin
 {
     var $vb_data;
     var $backup;
-
-    /**
-     *
-     * @return void
-     */
-    function JFusionHelper_vbulletin()
-    {
-        $this->params = JFusionFactory::getParams($this->getJname());
-    }
 
     /**
      * Returns the name for this plugin
@@ -320,8 +311,7 @@ class JFusionHelper_vbulletin
     function getVbURL($url, $type = false)
     {
 	    try {
-		    $params = JFusionFactory::getParams($this->getJname());
-		    $allow_sef = $params->get('allow_sef', 1);
+		    $allow_sef = $this->params->get('allow_sef', 1);
 		    $vbversion = $this->getVersion();
 		    if (!empty($allow_sef) && (int) substr($vbversion, 0, 1) > 3) {
 			    $db = JFusionFactory::getDatabase($this->getJname());

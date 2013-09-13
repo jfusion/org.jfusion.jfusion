@@ -84,15 +84,9 @@ class plgContentJfusion extends JPlugin
 			} else {
 				$this->params = new JRegistry( $params->params);
 			}
-
 		}
 
 		$this->jname = $this->params->get('jname', false);
-
-		if ($this->jname !== false) {
-			//load the plugin language file
-			$this->loadLanguage('com_jfusion.plg_' . $this->jname, JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion');
-		}
 
 		//determine what mode we are to operate in
 		if ($this->params->get('auto_create',0)) {

@@ -17,7 +17,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionHelper_universal {
+class JFusionHelper_universal extends JFusionPlugin {
 	var $map = array();
 	var $mapraw = null;
 
@@ -43,8 +43,7 @@ class JFusionHelper_universal {
 	 */
 	function getMapRaw($type='user') {
 		if( !is_array($this->mapraw) ) {
-			$params = JFusionFactory::getParams($this->getJname());
-			$map = $params->get('map');
+			$map = $this->params->get('map');
 			$map = @unserialize($map);
 			if(is_array($map)) {
 				$this->mapraw = $map;

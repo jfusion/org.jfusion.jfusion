@@ -344,8 +344,7 @@ if (!defined(\'_JEXEC\') && !defined(\'ADMIN_START\') && !defined(\'IN_MOBIQUO\'
      * @return mixed
      */
     function enableRedirectMod() {
-        $joomla_params = JFusionFactory::getParams('joomla_int');
-        $joomla_url = $joomla_params->get('source_url');
+        $joomla_url = JFusionFactory::getParams('joomla_int')->get('source_url');
         $joomla_itemid = $this->params->get('redirect_itemid');
 
         //check to see if all vars are set
@@ -758,7 +757,7 @@ HTML;
 	{
 		$jname = $this->getJname();
 
-		JFusionFunction::loadJavascriptLanguage(array('MAIN_USERGROUP', 'USERGROUPS'));
+		JFusionFunction::loadJavascriptLanguage(array('MAIN_USERGROUP', 'MEMBERGROUPS'));
 		$js = <<<JS
 		JFusion.renderPlugin['{$jname}'] = function(index, plugin, pair) {
 			var usergroups = JFusion.usergroups[plugin.name];
@@ -803,7 +802,7 @@ HTML;
 
 
 			// render default member groups
-			div.appendChild(new Element('div', {'html': Joomla.JText._('USERGROUPS')}));
+			div.appendChild(new Element('div', {'html': Joomla.JText._('MEMBERGROUPS')}));
 
 
 		    var membergroupsselect = new Element('select', {

@@ -28,7 +28,7 @@ defined('_JEXEC') or die('Restricted access');
  * @link       http://www.jfusion.org
  */
 
-class JFusionHelper_gallery2
+class JFusionHelper_gallery2 extends JFusionPlugin
 {
     var $loadedGallery = false;
     var $registry = array();
@@ -49,9 +49,8 @@ class JFusionHelper_gallery2
      */
     function loadGallery2Api($fullInit, $itemId = null) {
         if (!$this->loadedGallery) {
-            $params = JFusionFactory::getParams($this->getJname());
-            $source_url = $params->get('source_url');
-            $source_path = $params->get('source_path');
+            $source_url = $this->params->get('source_url');
+            $source_path = $this->params->get('source_path');
             if (substr($source_path, -1) == DIRECTORY_SEPARATOR) {
                 $index_file = $source_path . 'embed.php';
             } else {
@@ -98,14 +97,14 @@ class JFusionHelper_gallery2
                                 // commented out we will need to keep an eye on if this will cause problems..
                                 //GalleryEmbed::logout();
                             }
-                            $cookie_domain = $params->get('cookie_domain');
+                            $cookie_domain = $this->params->get('cookie_domain');
                             if (!empty($cookie_domain)) {
                                 $ret = GalleryCoreApi::setPluginParameter('module', 'core', 'cookie.domain', $cookie_domain);
                                 if ($ret) {
                                     return false;
                                 }
                             }
-                            $cookie_path = $params->get('cookie_path');
+                            $cookie_path = $this->params->get('cookie_path');
                             if (!empty($cookie_path)) {
                                 $ret = GalleryCoreApi::setPluginParameter('module', 'core', 'cookie.path', $cookie_path);
                                 if ($ret) {
@@ -137,8 +136,7 @@ class JFusionHelper_gallery2
         if ($id > 0) {
             $path.= '&Itemid=' . $id;
         } else if ($this->getJname() == $itemId) {
-            $params = JFusionFactory::getParams($this->getJname());
-            $source_url = $params->get('source_url');
+            $source_url = $this->params->get('source_url');
             return $source_url;
         } else {
             $path.= '&view=frameless&jname='.$this->getJname();

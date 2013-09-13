@@ -62,9 +62,8 @@ class JFusionForum_efront extends JFusionForum {
 			    ->where('id = ' . $db->quote((int)$avatar_id));
 
 		    $db->setQuery($query);
-		    $params = JFusionFactory::getParams($this->getJname());
 		    $avatar = $db->loadResult();
-		    $url = $params->get('avatar_url') . $avatar;
+		    $url = $this->params->get('avatar_url') . $avatar;
 	    } catch (Exception $e) {
 		    JFusionFunction::raiseError($e, $this->getJname());
 		    $url = '';

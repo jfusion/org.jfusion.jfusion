@@ -158,8 +158,8 @@ class JFusionForum_gallery2 extends JFusionForum {
                 } else {
                     if (isset($config['itemid']) && $config['itemid'] != 150) {
                         global $gallery;
-                        $params = JFusionFactory::getParams($this->getJname());
-                        $source_url = $params->get('source_url');
+
+                        $source_url = $this->params->get('source_url');
                         $urlGenerator = new GalleryUrlGenerator();
                         $urlGenerator->init($helper->getEmbedUri($config['itemid']), $source_url, null);
                         $gallery->setUrlGenerator($urlGenerator);

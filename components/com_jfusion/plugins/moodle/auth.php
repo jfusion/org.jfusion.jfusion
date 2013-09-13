@@ -77,15 +77,14 @@ class JFusionAuth_moodle extends JFusionAuth
      * @return string
      */
     function generateEncryptedPassword($userinfo) {
-        $params = JFusionFactory::getParams($this->getJname());
         $validated = false;
-        if ($userinfo->password == md5($userinfo->password_clear . $params->get('passwordsaltmain')) or $userinfo->password == md5($userinfo->password_clear)) {
+        if ($userinfo->password == md5($userinfo->password_clear . $this->params->get('passwordsaltmain')) or $userinfo->password == md5($userinfo->password_clear)) {
             $validated = true;
         } else {
             for ($i = 1;$i <= 20;$i++) { //20 alternative salts should be enough, right?
                 $alt = 'passwordsaltalt' . $i;
-                if ($params->get($alt)) {
-                    if ($userinfo->password == md5($userinfo->password_clear . $params->get($alt))) {
+                if ($this->params->get($alt)) {
+                    if ($userinfo->password == md5($userinfo->password_clear . $this->params->get($alt))) {
                         $validated = true;
                         break;
                     }

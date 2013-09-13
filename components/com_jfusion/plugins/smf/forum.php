@@ -383,7 +383,6 @@ class JFusionForum_smf extends JFusionForum
 	    try {
 		    if ($puser_id) {
 			    // Get SMF Params and get an instance of the database
-			    $params = JFusionFactory::getParams($this->getJname());
 			    $db = JFusionFactory::getDatabase($this->getJname());
 			    // Load member params from database "mainly to get the avatar"
 
@@ -408,7 +407,7 @@ class JFusionForum_smf extends JFusionForum
 				    $attachment = $db->loadObject();
 				    // See if the user has a specific attachment meant for an avatar
 				    if (!empty($attachment) && $attachment->ID_THUMB == 0 && $attachment->ID_MSG == 0 && empty($result->avatar)) {
-					    $url = $params->get('source_url') . 'index.php?action=dlattach;attach=' . $attachment->ID_ATTACH . ';type=avatar';
+					    $url = $this->params->get('source_url') . 'index.php?action=dlattach;attach=' . $attachment->ID_ATTACH . ';type=avatar';
 					    // If user didn't, check to see if the avatar specified in the first query is a url. If so use it.
 
 				    } else if (preg_match("/http(s?):\/\//", $result->avatar)) {

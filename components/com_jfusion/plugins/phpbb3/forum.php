@@ -91,7 +91,6 @@ class JFusionForum_phpbb3 extends JFusionForum {
 	    $url = false;
 	    try {
 		    if ($puser_id) {
-			    $dbparams = JFusionFactory::getParams($this->getJname());
 			    $db = JFusionFactory::getDatabase($this->getJname());
 
 			    $query = $db->getQuery(true)
@@ -105,7 +104,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 			    if (!empty($result)) {
 				    if ($result->user_avatar_type == 1) {
 					    // AVATAR_UPLOAD
-					    $url = $dbparams->get('source_url') . 'download/file.php?avatar=' . $result->user_avatar;
+					    $url = $this->params->get('source_url') . 'download/file.php?avatar=' . $result->user_avatar;
 				    } else if ($result->user_avatar_type == 3) {
 					    // AVATAR_GALLERY
 					    $query = $db->getQuery(true)
@@ -117,7 +116,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 					    $db->execute();
 					    $path = $db->loadResult();
 					    if (!empty($path)) {
-						    $url = $dbparams->get('source_url') . $path . '/' . $result->user_avatar;
+						    $url = $this->params->get('source_url') . $path . '/' . $result->user_avatar;
 					    } else {
 						    $url = '';
 					    }
