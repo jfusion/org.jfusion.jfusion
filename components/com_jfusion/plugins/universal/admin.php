@@ -258,7 +258,7 @@ class JFusionAdmin_universal extends JFusionAdmin
 				$output .= JHTML::_('select.genericlist', $tl, $control_name.'['.$name.']['.$type.'][table]', 'onchange="javascript: Joomla.submitbutton(\'applyconfig\')"',	'id', 'name', $value['table']);
 				$output .= '</td></tr>';
 				$output .= '<tr><td>';
-				if ( !empty($value['table']) ) {
+				if (!empty($value['table']) ) {
 					$output .= '<table>';
 					foreach ($mapuser as $val) {
 						$output .= '<tr><td>';
@@ -363,13 +363,13 @@ class JFusionAdmin_universal extends JFusionAdmin
 		$list = json_encode($list);
 
 		$output = <<<JS
-        var TypeAry = {$list};
+        JFusion.Plugin.TypeAry = {$list};
 
 		JFusion.Plugin.disableOptions = function(elements, disable) {
 			elements.each(function(element) {
 				var options = element.getElements('option');
 				options.each(function(option) {
-				    if (option.value == disable && !option.selected) {
+				    if (option.get('value') == disable && !option.selected) {
 				        option.disabled = true;
 				    }
 				});
@@ -384,40 +384,43 @@ class JFusionAdmin_universal extends JFusionAdmin
         JFusion.Plugin.updateOptions = function(type) {
 			var elements = document.getElements('select[id^=paramsmap'+type+'field]');
 			elements.each(function(element) {
-				for (var i = 0; i < element.options.length; i++) {
-					if (element.options[i].disabled) {
-						element.options[i].disabled = false;
-					}
-				}
+				var options = element.getElements('option');
+				options.each(function(option) {
+				    if (option.disabled) {
+				        option.disabled = false;
+				    }
+				});
 			});
 			elements.each(function(element) {
 				var options = element.getElements('option');
 				options.each(function(option) {
 					if (option.selected) {
-						if (option.value != 'DEFAULT') {
-							switch (option.value) {
+						var value = option.get('value');
+						if (value != 'DEFAULT') {
+							switch (value) {
 								case 'REALNAME':
-									JFusion.Plugin.disableOptions(elements,'LASTNAME');
-									JFusion.Plugin.disableOptions(elements,'FIRSTNAME');
+									JFusion.Plugin.disableOptions(elements, 'LASTNAME');
+									JFusion.Plugin.disableOptions(elements, 'FIRSTNAME');
 									break;
 								case 'LASTNAME':
 								case 'FIRSTNAME':
-									JFusion.Plugin.disableOptions(elements,'REALNAME');
+									JFusion.Plugin.disableOptions(elements, 'REALNAME');
 									break;
 								default:
 							}
-							JFusion.Plugin.disableOptions(elements,option.value);
+							JFusion.Plugin.disableOptions(elements, value);
 						}
 					}
 				});
 			});
         };
 
-        JFusion.Plugin.changeField = function(ref,name,parmtype) {
+        JFusion.Plugin.changeField = function(ref, name, parmtype) {
         	var options = ref.getElements('option');
         	options.each(function(option) {
-				if (option.selected && option.value) {
-					if (TypeAry[option.value].types !== undefined) {
+        		var value = option.get('value');
+				if (option.selected && value) {
+					if (JFusion.Plugin.TypeAry[value].types !== undefined) {
 						options.each(function(option) {
 							option.selected = false;
 						});
@@ -428,11 +431,12 @@ class JFusionAdmin_universal extends JFusionAdmin
 
             var id = $(parmtype+name);
             id.empty();
-            var value = $(parmtype+name+'value');
-			value.empty();
+
+            $(parmtype+name+'value').empty();
 
 			JFusion.Plugin.update();
-            if ( ref.value && TypeAry[ref.value].types !== undefined ) {
+			var value = ref.get('value');
+            if ( value && JFusion.Plugin.TypeAry[value].types !== undefined ) {
 	            var select = new Element('select', {
 					'type': 'option',
 					'id': 'paramsmap'+parmtype+'type'+name,
@@ -444,7 +448,7 @@ class JFusionAdmin_universal extends JFusionAdmin
 			        }
 	            });
 
-				Array.each(TypeAry[ref.value].types, function(type) {
+				Array.each(JFusion.Plugin.TypeAry[value].types, function(type) {
 					select.appendChild(new Element('option', {
 						'html' : type.name,
 						'value' : type.id
@@ -452,15 +456,15 @@ class JFusionAdmin_universal extends JFusionAdmin
 				});
 				/*
                 type.options.length = 0;
-                for (var i=0; i<TypeAry[ref.value].types.length; i++) {
-                    type.options[type.options.length] = new Option(TypeAry[ref.value].types[i].name, TypeAry[ref.value].types[i].id);
+                for (var i=0; i<JFusion.Plugin.TypeAry[value].types.length; i++) {
+                    type.options[type.options.length] = new Option(JFusion.Plugin.TypeAry[value].types[i].name, JFusion.Plugin.TypeAry[value].types[i].id);
                 }
                 */
                 id.appendChild(select);
             }
         };
 
-        JFusion.Plugin.changeValue = function(ref,name,parmtype) {
+        JFusion.Plugin.changeValue = function(ref, name, parmtype) {
             var id = $(parmtype+name+'value');
 
 			var paramsmap = $("paramsmap"+parmtype+"value"+name);
@@ -478,23 +482,23 @@ class JFusionAdmin_universal extends JFusionAdmin
                 paramsmapoff.dispose();
             }
 
-            var value;
-            if(ref.value == 'CUSTOM') {
+            var value = ref.get('value');
+            if(value == 'CUSTOM') {
                 id.appendChild(new Element('textarea', {
 					'id': 'paramsmap'+parmtype+'value'+name,
 					'name': 'params[map]['+parmtype+'][value]['+name+']',
 					'rows': 8,
 					'cols': 55
             	}));
-            } else if(ref.value == 'DATE' || ref.value == 'VALUE') {
+            } else if(value == 'DATE' || value == 'VALUE') {
                 id.appendChild(new Element('input', {
 					'type': 'text',
 					'id': 'paramsmap'+parmtype+'value'+name,
 					'name': 'params[map]['+parmtype+'][value]['+name+']',
 					'size': 100,
-					'value': ref.value == 'DATE' ? 'Y-m-d H:i:s' : ''
+					'value': value == 'DATE' ? 'Y-m-d H:i:s' : ''
             	}));
-            } else if ( ref.value == 'ONOFF') {
+            } else if ( value == 'ONOFF') {
                 id.appendChild(new Element('input', {
 					'type': 'text',
 					'id': 'paramsmap'+parmtype+'value'+name+'on',

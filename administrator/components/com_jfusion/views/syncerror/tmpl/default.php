@@ -154,18 +154,18 @@ JHTML::_('behavior.modal', 'a.modal');
 				    </td>
 				    <td>
 					    <?php
-
 					    //check to see what sort of an error it is
 					    if (empty($error['conflict']['userinfo']->username)) {
-					        $error_type = 'Error';
+					        $error_type = 'ERROR';
 					    } elseif ($error['user']['userinfo']->username != $error['conflict']['userinfo']->username) {
-					        $error_type = 'Username';
+					        $error_type = 'USERNAME';
 					    } elseif ($error['user']['userinfo']->email != $error['conflict']['userinfo']->email) {
-					        $error_type = 'Email';
+					        $error_type = 'EMAIL';
 					    } else {
-					        $error_type = 'Error';
+					        $error_type = 'ERROR';
 					    }
-					    echo $error_type; ?>
+					    ?>
+					    <label for="syncError<?php echo $i; ?>"><?php echo JText::_($error_type) ?></label>
 				    </td>
 				    <td>
 					    <?php echo $error['user']['jname'] . ': ' . $error['user']['userinfo']->userid . ' / ' . $error['user']['userlist']->username . ' / ' . $error['user']['userlist']->email;
@@ -178,8 +178,8 @@ JHTML::_('behavior.modal', 'a.modal');
 					    ?>
 				    </td>
 				    <td>
-				    <?php
-					    if ($error_type != 'Error') {
+					    <?php
+					    if ($error_type != 'ERROR') {
 					        echo $error['conflict']['jname'] . ': ' . $error['conflict']['userinfo']->userid . ' / ' . $error['conflict']['userinfo']->username . ' / ' . $error['conflict']['userinfo']->email;
 					    }
 					    ?>
@@ -189,8 +189,8 @@ JHTML::_('behavior.modal', 'a.modal');
 				    </td>
 				    <td>
 					    <?php
-					    if ($error_type != 'Error') { ?>
-					        <select name="syncError[<?php echo $i; ?>][action]">
+					    if ($error_type != 'ERROR') { ?>
+					        <select id="syncError<?php echo $i; ?>" name="syncError[<?php echo $i; ?>][action]">
 						        <option value="0"><?php echo JText::_('IGNORE') ?></option>
 						        <option value="1"><?php echo JText::_('UPDATE') . ' ' . $error['user']['jname'] . ' ' . JText::_('USER') ?></option>
 						        <option value="2"><?php echo JText::_('UPDATE') . ' ' . $error['conflict']['jname'] . ' ' . JText::_('USER') ?></option>

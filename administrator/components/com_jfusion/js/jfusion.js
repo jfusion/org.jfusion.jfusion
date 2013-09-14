@@ -227,15 +227,16 @@ Joomla.getCheckedValue = function (radioObj) {
 };
 
 Joomla.setCheckedValue = function (radioObj, newValue) {
-    var i, radioLength;
+    var radioLength;
     if (radioObj) {
         radioLength = radioObj.length;
         if (radioLength === undefined) {
             radioObj.checked = (radioObj.get('value') === newValue.toString());
         } else {
-            for (i = 0; i < radioLength; i++) {
-                radioObj[i].checked = radioObj[i].get('value') === newValue.toString();
-            }
+            var options = radioObj.getElements('option');
+            options.each(function(option) {
+                option.checked = option.get('value') === newValue.toString();
+            });
         }
     }
 };
