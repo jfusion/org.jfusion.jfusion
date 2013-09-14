@@ -74,6 +74,7 @@ class JFusionUser_magento extends JFusionUser {
 					$status['debug'][] = 'Logged into Magento API as ' . $apiuser . ' using key, message:' . $apikey;
 				}
 			} catch (Soapfault $fault) {
+				/** @noinspection PhpUndefinedFieldInspection */
 				throw new RuntimeException('Could not login to Magento API as ' . $apiuser . ' using key ' . $apikey . ',message:' . $fault->faultstring);
 			}
 		}
@@ -703,12 +704,14 @@ class JFusionUser_magento extends JFusionUser {
 						$proxi->call('customer.delete', $user_id);
 						$status['debug'][] = 'Magento API: Delete user with id '.$user_id.' , email ' . $userinfo->email;
 					} catch (Soapfault $fault) {
+						/** @noinspection PhpUndefinedFieldInspection */
 						$status['error'][] = 'Magento API: Could not delete user with id '.$user_id.' , message: ' . $fault->faultstring;
 					}
 
 					try {
 						$proxi->endSession();
 					} catch (Soapfault $fault) {
+						/** @noinspection PhpUndefinedFieldInspection */
 						$status['error'][] = 'Magento API: Could not end this session, message: ' . $fault->faultstring;
 					}
 				} catch (Exception $e) {
@@ -741,11 +744,13 @@ class JFusionUser_magento extends JFusionUser {
 			try {
 				$proxi->call('customer.update', array($user_id, $update));
 			} catch (Soapfault $fault) {
+				/** @noinspection PhpUndefinedFieldInspection */
 				$status['error'][] = 'Magento API: Could not update email of user with id '.$user_id.' , message: ' . $fault->faultstring;
 			}
 			try {
 				$proxi->endSession();
 			} catch (Soapfault $fault) {
+				/** @noinspection PhpUndefinedFieldInspection */
 				$status['error'][] = 'Magento API: Could not end this session, message: ' . $fault->faultstring;
 			}
 		} catch (Exception $e) {

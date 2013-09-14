@@ -84,6 +84,7 @@ function login_jfusion(&$username, &$password) {
 				 */
 				$session_table = JTable::getInstance('session');
 				if ($session_table->load($id)) {
+					/** @noinspection PhpUndefinedFieldInspection */
 					$session_table->data = $session_data;
 					$session_table->store();
 				} else {
@@ -91,6 +92,7 @@ function login_jfusion(&$username, &$password) {
 					// the session doesn't exist in the database
 					// therefore we use insert instead of store
 					$app = JFactory::getApplication();
+					/** @noinspection PhpUndefinedFieldInspection */
 					$session_table->data = $session_data;
 					$session_table->insert($id, $app->getClientId());
 				}

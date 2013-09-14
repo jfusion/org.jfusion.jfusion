@@ -68,7 +68,7 @@ $images = 'components/com_jfusion/images/';
 								echo JText::_('Master');
 							} else {
 							?>
-								<input id="updateusergroups_<?php echo $plugin->name; ?>" <?php echo $checked; ?> type="checkbox" name="updateusergroups[<?php echo $plugin->name; ?>]" value="1"> <?php echo JText::_('UPDATE_ON_CHANGE'); ?>
+								<input id="updateusergroups_<?php echo $plugin->name; ?>" <?php echo $checked; ?> type="checkbox" name="updateusergroups[<?php echo $plugin->name; ?>]" value="1"> <label for="updateusergroups_<?php echo $plugin->name; ?>"><?php echo JText::_('UPDATE_ON_CHANGE'); ?></label>
 							<?php
 							}
 							?>

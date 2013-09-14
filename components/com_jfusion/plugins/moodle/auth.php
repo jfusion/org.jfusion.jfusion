@@ -95,7 +95,7 @@ class JFusionAuth_moodle extends JFusionAuth
             return $userinfo->password;  // better would be to alter the password, but we need to fool JFusions core
                                          // don't worry about password updates in the debugger, after 2 times it will be stable.
         } else {
-            return md5($userinfo->password_clear . $params->get('passwordsaltmain')); //return default
+            return md5($userinfo->password_clear . $this->params->get('passwordsaltmain')); //return default
         }
     }
 }
