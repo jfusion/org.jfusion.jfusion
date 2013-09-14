@@ -562,7 +562,7 @@ HTML;
     /**
      * @return array|bool
      */
-    public function activateModule(){
+    public function activateModule() {
 	    try {
 		    $jname =  $this->getJname ();
 		    $db = JFusionFactory::getDatabase($jname);

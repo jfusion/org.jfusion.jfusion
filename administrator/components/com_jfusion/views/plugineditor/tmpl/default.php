@@ -23,6 +23,8 @@ JFusionFunctionAdmin::displayDonate();
 		<input type="hidden" name="task" value="" />
 		<input type="hidden" name="action" value="" />
 		<input type="hidden" name="customcommand" value="" />
+		<input type="hidden" name="customarg1" value="" />
+		<input type="hidden" name="customarg2" value="" />
 		<style type="text/css">
 
 		</style>

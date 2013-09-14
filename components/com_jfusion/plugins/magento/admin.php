@@ -510,7 +510,7 @@ HTML;
         return $html;
 	}
 	
-	public function activateModule(){
+	public function activateModule() {
 		
 		jimport ( 'joomla.filesystem.file' );
 		

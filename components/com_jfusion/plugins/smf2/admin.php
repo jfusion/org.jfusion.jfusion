@@ -282,64 +282,66 @@ if(!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') === 
 	}
 }
 //JFUSION REDIRECT END';
-	return $redirect_code;
+		return $redirect_code;
 	}
 
-    function enableRedirectMod()
-    {
-        $joomla_url = JFusionFactory::getParams('joomla_int')->get('source_url');
-        $joomla_itemid = $this->params->get('redirect_itemid');
+	/**
+	 * @param $action
+	 *
+	 * @return int
+	 */
+	function redirectMod($action)
+	{
+		$error = 0;
+		$reason = '';
+		$mod_file = $this->getModFile('index.php', $error, $reason);
+		switch($action) {
+			case 'reenable':
+			case 'disable':
+				if ($error == 0) {
+					//get the joomla path from the file
+					jimport('joomla.filesystem.file');
+					$file_data = file_get_contents($mod_file);
+					$search = '/(\r?\n)\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END/si';
+					preg_match_all($search, $file_data, $matches);
+					//remove any old code
+					if (!empty($matches[1][0])) {
+						$file_data = preg_replace($search, '', $file_data);
+						if (!JFile::write($mod_file, $file_data)) {
+							$error = 1;
+						}
+					}
+				}
+				if ($action == 'disable') {
+					break;
+				}
+			case 'enable':
+				$joomla_url = JFusionFactory::getParams('joomla_int')->get('source_url');
+				$joomla_itemid = $this->params->get('redirect_itemid');
 
-        //check to see if all vars are set
-        if (empty($joomla_url)) {
-            JFusionFunction::raiseWarning(JText::_('MISSING') . ' Joomla URL', $this->getJname(), $this->getJname());
-        } else if (empty($joomla_itemid) || !is_numeric($joomla_itemid)) {
-            JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID', $this->getJname(), $this->getJname());
-        } else if (!$this->isValidItemID($joomla_itemid)) {
-            JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID '. JText::_('MUST BE'). ' ' . $this->getJname(), $this->getJname(), $this->getJname());
-        } else {
-            $error = $this->disableRedirectMod();
-            $reason = '';
-            $mod_file = $this->getModFile('index.php',$error,$reason);
-            if($error == 0) {
-                //get the joomla path from the file
-                jimport('joomla.filesystem.file');
-                $file_data = file_get_contents($mod_file);
-                $redirect_code = $this->generateRedirectCode($joomla_url,$joomla_itemid);
+				//check to see if all vars are set
+				if (empty($joomla_url)) {
+					JFusionFunction::raiseWarning(JText::_('MISSING') . ' Joomla URL', $this->getJname(), $this->getJname());
+				} else if (empty($joomla_itemid) || !is_numeric($joomla_itemid)) {
+					JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID', $this->getJname(), $this->getJname());
+				} else if (!$this->isValidItemID($joomla_itemid)) {
+					JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID '. JText::_('MUST BE'). ' ' . $this->getJname(), $this->getJname(), $this->getJname());
+				} else if($error == 0) {
+					//get the joomla path from the file
+					jimport('joomla.filesystem.file');
+					$file_data = file_get_contents($mod_file);
+					$redirect_code = $this->generateRedirectCode($joomla_url, $joomla_itemid);
 
-                $search = '/\<\?php/si';
-                $replace = '<?php' . $redirect_code;
+					$search = '/\<\?php/si';
+					$replace = '<?php' . $redirect_code;
 
-                $file_data = preg_replace($search, $replace, $file_data);
-                JFile::write($mod_file, $file_data);
-            }
-        }
-    }
-
-    /**
-     * @return int
-     */
-    function disableRedirectMod()
-    {
-    	$error = 0;
-    	$reason = '';
-    	$mod_file = $this->getModFile('index.php',$error,$reason);
-        if ($error == 0) {
-            //get the joomla path from the file
-            jimport('joomla.filesystem.file');
-            $file_data = file_get_contents($mod_file);
-            $search = '/(\r?\n)\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END/si';
-            preg_match_all($search, $file_data, $matches);
-            //remove any old code
-            if (!empty($matches[1][0])) {
-                $file_data = preg_replace($search, '', $file_data);
-                if (!JFile::write($mod_file, $file_data)) {
-                    $error = 1;
-                }
-            }
-        }
-        return $error;
-    }
+					$file_data = preg_replace($search, $replace, $file_data);
+					JFile::write($mod_file, $file_data);
+				}
+				break;
+		}
+		return $error;
+	}
 
     /**
      * @param $name
@@ -352,7 +354,7 @@ if(!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') === 
     {
     	$error = 0;
     	$reason = '';
-    	$mod_file = $this->getModFile('index.php',$error,$reason);
+    	$mod_file = $this->getModFile('index.php', $error, $reason);
 
 		if($error == 0) {
 			//get the joomla path from the file
@@ -375,8 +377,8 @@ if(!defined(\'_JEXEC\') && strpos($_SERVER[\'QUERY_STRING\'], \'dlattach\') === 
             $update = JText::_('MOD_UPDATE');
             $output = <<<HTML
             <img src="components/com_jfusion/images/check_good_small.png">{$text}
-            <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('disableRedirectMod')">{$disable}</a>
-            <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('enableRedirectMod')">{$update}</a>
+            <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('redirectMod', 'disable');">{$disable}</a>
+            <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('redirectMod', 'reenable');">{$update}</a>
 HTML;
             return $output;
         } else {
@@ -384,7 +386,7 @@ HTML;
             $enable = JText::_('MOD_ENABLE');
             $output = <<<HTML
             <img src="components/com_jfusion/images/check_bad_small.png">{$text}
-            <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('enableRedirectMod')">{$enable}</a>
+            <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('redirectMod', 'enable');">{$enable}</a>
 HTML;
             return $output;
         }
@@ -397,8 +399,7 @@ HTML;
      */
     function uninstall()
     {
-        $error = $this->disableRedirectMod();
-
+	    $error = $this->redirectMod('disable');
         if (!empty($error)) {
            $reason = JText::_('REDIRECT_MOD_UNINSTALL_FAILED');
            return array(false, $reason);

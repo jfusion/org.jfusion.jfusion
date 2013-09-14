@@ -108,7 +108,7 @@ JS;
 
 	        foreach ($this->plugins as $plugin) {
 		        $admin = JFusionFactory::getAdmin($plugin->name);
-		        $admin->getRenderGroup();
+		        $document->addScriptDeclaration($admin->getRenderGroup());
 	        }
 
 	        parent::display();

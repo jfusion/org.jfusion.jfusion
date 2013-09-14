@@ -253,69 +253,65 @@ if (!defined(\'_JEXEC\'))';
         return $redirect_code;
     }
 
-    /**
-     * Enable redirect mod
-     *
-     * @return void
-     */
-    function enableRedirectMod() {
-        $joomla_url = JFusionFactory::getParams('joomla_int')->get('source_url');
-        $joomla_itemid = $this->params->get('redirect_itemid');
+	/**
+	 * @param $action
+	 *
+	 * @return int
+	 */
+	function redirectMod($action)
+	{
+		$error = 0;
+		$reason = '';
+		$mod_file = $this->getModFile('doku.php', $error, $reason);
+		switch($action) {
+			case 'reenable':
+			case 'disable':
+				if ($error == 0) {
+					//get the joomla path from the file
+					jimport('joomla.filesystem.file');
+					$file_data = file_get_contents($mod_file);
+					$search = '/(\r?\n)\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END/si';
+					preg_match_all($search, $file_data, $matches);
+					//remove any old code
+					if (!empty($matches[1][0])) {
+						$file_data = preg_replace($search, '', $file_data);
+						if (!JFile::write($mod_file, $file_data)) {
+							$error = 1;
+						}
+					}
+				}
+				if ($action == 'disable') {
+					break;
+				}
+			case 'enable':
+				$joomla_url = JFusionFactory::getParams('joomla_int')->get('source_url');
+				$joomla_itemid = $this->params->get('redirect_itemid');
 
-        //check to see if all vars are set
-        if (empty($joomla_url)) {
-            JFusionFunction::raiseWarning(JText::_('MISSING') . ' Joomla URL', $this->getJname());
-        } else if (empty($joomla_itemid) || !is_numeric($joomla_itemid)) {
-            JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID', $this->getJname());
-        } else if (!$this->isValidItemID($joomla_itemid)) {
-            JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID '. JText::_('MUST BE'). ' ' . $this->getJname(), $this->getJname());
-        } else {
-            $error = $this->disableRedirectMod();
-            $reason = '';
-            $mod_file = $this->getModFile('doku.php', $error, $reason);
-            if ($error == 0) {
-                //get the joomla path from the file
-                jimport('joomla.filesystem.file');
-                $file_data = file_get_contents($mod_file);
-                $redirect_code = $this->generateRedirectCode($joomla_url,$joomla_itemid);
+				//check to see if all vars are set
+				if (empty($joomla_url)) {
+					JFusionFunction::raiseWarning(JText::_('MISSING') . ' Joomla URL', $this->getJname());
+				} else if (empty($joomla_itemid) || !is_numeric($joomla_itemid)) {
+					JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID', $this->getJname());
+				} else if (!$this->isValidItemID($joomla_itemid)) {
+					JFusionFunction::raiseWarning(JText::_('MISSING') . ' ItemID '. JText::_('MUST BE'). ' ' . $this->getJname(), $this->getJname());
+				} else {
+					if ($error == 0) {
+						//get the joomla path from the file
+						jimport('joomla.filesystem.file');
+						$file_data = file_get_contents($mod_file);
+						$redirect_code = $this->generateRedirectCode($joomla_url,$joomla_itemid);
 
-//                $search = '/getID\(\)\;/si';
-//                $replace = 'getID();' . $redirect_code;
-                $search = '/\<\?php/si';
-                $replace = '<?php' . $redirect_code;
+						$search = '/\<\?php/si';
+						$replace = '<?php' . $redirect_code;
 
-                $file_data = preg_replace($search, $replace, $file_data);
-                JFile::write($mod_file, $file_data);
-            }
-        }
-    }
-
-    /**
-     * Disable redirect mod
-     *
-     * @return string
-     */
-    function disableRedirectMod()
-    {
-        $error = 0;
-        $reason = '';
-        $mod_file = $this->getModFile('doku.php', $error, $reason);
-        if ($error == 0) {
-            //get the joomla path from the file
-            jimport('joomla.filesystem.file');
-            $file_data = file_get_contents($mod_file);
-            $search = '/(\r?\n)\/\/JFUSION REDIRECT START(.*)\/\/JFUSION REDIRECT END/si';
-            preg_match_all($search, $file_data, $matches);
-            //remove any old code
-            if (!empty($matches[1][0])) {
-                $file_data = preg_replace($search, '', $file_data);
-                if (!JFile::write($mod_file, $file_data)) {
-                    $error = 1;
-                }
-            }
-        }
-        return $error;
-    }
+						$file_data = preg_replace($search, $replace, $file_data);
+						JFile::write($mod_file, $file_data);
+					}
+				}
+				break;
+		}
+		return $error;
+	}
 
     /**
      * Used to display and configure the redirect mod
@@ -351,19 +347,18 @@ if (!defined(\'_JEXEC\'))';
             $update = JText::_('MOD_UPDATE');
             $output = <<<HTML
             <img src="components/com_jfusion/images/check_good_small.png">{$text}
-            <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('disableRedirectMod')">{$disable}</a>
-            <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('enableRedirectMod')">{$update}</a>
+            <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('redirectMod', 'disable')">{$disable}</a>
+            <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('redirectMod', 'reenable')">{$update}</a>
 HTML;
-            return $output;
         } else {
             $text = JText::_('REDIRECTION_MOD') . ' ' . JText::_('DISABLED') . ': ' . $reason;
             $enable = JText::_('MOD_ENABLE');
             $output = <<<HTML
             <img src="components/com_jfusion/images/check_bad_small.png">{$text}
-            <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('enableRedirectMod')">{$enable}</a>
+            <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('redirectMod', 'enable')">{$enable}</a>
 HTML;
-            return $output;
         }
+	    return $output;
     }
 
     /**
@@ -402,55 +397,90 @@ HTML;
 
             $output = <<<HTML
             <img src="components/com_jfusion/images/check_good_small.png">{$text}
-            <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('disableAuthMod')">{$disable}</a>';
-            <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('enableAuthMod')">{$update}</a>';
+            <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('authMod', 'disable')">{$disable}</a>
+            <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('authMod', 'reenable')">{$update}</a>
 HTML;
-            return $output;
         } else {
             $text = JText::_('AUTHENTICATION_MOD') . ' ' . JText::_('DISABLED') . ': ' . $reason;
             $enable = JText::_('MOD_ENABLE');
             $output = <<<HTML
             <img src="components/com_jfusion/images/check_bad_small.png">{$text}
-            <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('enableAuthMod')">{$enable}</a>
+            <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('authMod', 'enable')">{$enable}</a>
 HTML;
-            return $output;
         }
+	    return $output;
     }
 
-    /**
-     * Enable auth mod
-     *
-     * @return void
-     */
-    function enableAuthMod()
-    {
-        $source_path = $this->params->get('source_path');
-        $plugindir = $source_path . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'jfusion';
-        $pluginsource = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . 'dokuwiki' . DIRECTORY_SEPARATOR . 'jfusion';
+	/**
+	 * @param $action
+	 *
+	 * @return bool
+	 */
+	function authMod($action)
+	{
+		$error = 0;
+		switch($action) {
+			case 'reenable':
+			case 'disable':
+				$source_path = $this->params->get('source_path');
+				$plugindir = $source_path . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'jfusion';
 
-        //copy the jfusion plugin to Dokuwiki plugin directory
-        jimport('joomla.filesystem.folder');
-        jimport('joomla.filesystem.file');
+				jimport('joomla.filesystem.folder');
+				jimport('joomla.filesystem.file');
 
-        if (JFolder::copy($pluginsource, $plugindir, '', true)) {
-            //update the config file
-            $cookie_domain = $this->params->get('cookie_domain');
-            $cookie_path = $this->params->get('cookie_path');
+				//delete the jfusion plugin from Dokuwiki plugin directory
+				if (JFolder::exists($plugindir) && !JFolder::delete($plugindir)) {
+					$error = 1;
+				}
 
-            $config_path = $this->helper->getConfigPath();
+				//update the config file
+				$config_path = $this->helper->getConfigPath();
 
-            if (JFolder::exists($config_path)) {
-                $config_file = $config_path . 'local.php';
-                if (JFile::exists($config_file)) {
-	                $file_data = file_get_contents($config_file);
-	                preg_match_all('/\/\/JFUSION AUTOGENERATED CONFIG START(.*)\/\/JFUSION AUTOGENERATED CONFIG END/ms', $file_data, $matches);
-	                //remove any old code
-	                if (!empty($matches[1][0])) {
-		                $search = '/\/\/JFUSION AUTOGENERATED CONFIG START(.*)\/\/JFUSION AUTOGENERATED CONFIG END/ms';
-		                $file_data = preg_replace($search, '', $file_data);
-	                }
-	                $joomla_basepath = JPATH_SITE;
-	                $config_code = <<<PHP
+				if (JFolder::exists($config_path)) {
+					$config_file = $config_path . 'local.php';
+					if (JFile::exists($config_file)) {
+						$file_data = file_get_contents($config_file);
+						preg_match_all('/\/\/JFUSION AUTOGENERATED CONFIG START(.*)\/\/JFUSION AUTOGENERATED CONFIG END/ms', $file_data, $matches);
+						//remove any old code
+						if (!empty($matches[1][0])) {
+							$search = '/\/\/JFUSION AUTOGENERATED CONFIG START(.*)\/\/JFUSION AUTOGENERATED CONFIG END/ms';
+							$file_data = preg_replace($search, '', $file_data);
+						}
+
+						JFile::write($config_file, $file_data);
+					}
+				}
+				if ($action == 'disable') {
+					break;
+				}
+			case 'enable':
+				$source_path = $this->params->get('source_path');
+				$plugindir = $source_path . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'jfusion';
+				$pluginsource = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . 'dokuwiki' . DIRECTORY_SEPARATOR . 'jfusion';
+
+				//copy the jfusion plugin to Dokuwiki plugin directory
+				jimport('joomla.filesystem.folder');
+				jimport('joomla.filesystem.file');
+
+				if (JFolder::copy($pluginsource, $plugindir, '', true)) {
+					//update the config file
+					$cookie_domain = $this->params->get('cookie_domain');
+					$cookie_path = $this->params->get('cookie_path');
+
+					$config_path = $this->helper->getConfigPath();
+
+					if (JFolder::exists($config_path)) {
+						$config_file = $config_path . 'local.php';
+						if (JFile::exists($config_file)) {
+							$file_data = file_get_contents($config_file);
+							preg_match_all('/\/\/JFUSION AUTOGENERATED CONFIG START(.*)\/\/JFUSION AUTOGENERATED CONFIG END/ms', $file_data, $matches);
+							//remove any old code
+							if (!empty($matches[1][0])) {
+								$search = '/\/\/JFUSION AUTOGENERATED CONFIG START(.*)\/\/JFUSION AUTOGENERATED CONFIG END/ms';
+								$file_data = preg_replace($search, '', $file_data);
+							}
+							$joomla_basepath = JPATH_SITE;
+							$config_code = <<<PHP
 //JFUSION AUTOGENERATED CONFIG START
 \$conf['jfusion']['cookie_path'] = '{$cookie_path}';
 \$conf['jfusion']['cookie_domain'] = '{$cookie_domain}';
@@ -459,50 +489,15 @@ HTML;
 \$conf['jfusion']['jfusion_plugin_name'] = '{$this->getJname()}';
 //JFUSION AUTOGENERATED CONFIG END
 PHP;
-	                $file_data .= $config_code;
-	                JFile::write($config_file, $file_data);
-                }
-            }
-        }
-    }
-
-    /**
-     * Disable redirect mod
-     *
-     * @return string
-     */
-    function disableAuthMod()
-    {
-        $source_path = $this->params->get('source_path');
-        $plugindir = $source_path . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'jfusion';
-
-        jimport('joomla.filesystem.folder');
-        jimport('joomla.filesystem.file');
-
-        //delete the jfusion plugin from Dokuwiki plugin directory
-        if (JFolder::exists($plugindir) && !JFolder::delete($plugindir)) {
-            return false;
-        }
-
-        //update the config file
-        $config_path = $this->helper->getConfigPath();
-
-        if (JFolder::exists($config_path)) {
-            $config_file = $config_path . 'local.php';
-            if (JFile::exists($config_file)) {
-                $file_data = file_get_contents($config_file);
-                preg_match_all('/\/\/JFUSION AUTOGENERATED CONFIG START(.*)\/\/JFUSION AUTOGENERATED CONFIG END/ms', $file_data, $matches);
-                //remove any old code
-                if (!empty($matches[1][0])) {
-                    $search = '/\/\/JFUSION AUTOGENERATED CONFIG START(.*)\/\/JFUSION AUTOGENERATED CONFIG END/ms';
-                    $file_data = preg_replace($search, '', $file_data);
-                }
-
-                JFile::write($config_file, $file_data);
-            }
-        }
-        return true;
-    }
+							$file_data .= $config_code;
+							JFile::write($config_file, $file_data);
+						}
+					}
+				}
+				break;
+		}
+		return $error;
+	}
 
     /**
      * uninstall function is to disable verious mods
@@ -514,14 +509,14 @@ PHP;
         $return = true;
         $reasons = array();
 
-    	$error = $this->disableRedirectMod();
+    	$error = $this->redirectMod('disable');
     	if (!empty($error)) {
            $reasons[] = JText::_('REDIRECT_MOD_UNINSTALL_FAILED');
            $return = false;
         }
 
-        $error = $this->disableAuthMod();
-        if (!$error) {
+        $error = $this->authMod('disable');
+        if ($error) {
             $reasons[] = JText::_('AUTH_MOD_UNINSTALL_FAILED');
             $return = false;
         }

@@ -417,6 +417,8 @@ class JFusionAdmin extends JFusionPlugin
 
 	/**
 	 * create the render group function
+	 *
+	 * @return string
 	 */
 	function getRenderGroup()
 	{
@@ -424,8 +426,6 @@ class JFusionAdmin extends JFusionPlugin
 		$js = <<<JS
 		JFusion.renderPlugin['{$jname}'] = JFusion.renderDefault;
 JS;
-		$document = JFactory::getDocument();
-		$document->addScriptDeclaration($js);
 		return $js;
 	}
 }

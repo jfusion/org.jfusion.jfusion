@@ -257,9 +257,11 @@ class JFusionController extends JControllerLegacy
 				    //check for any custom commands
 				    $customcommand = JFactory::getApplication()->input->get('customcommand');
 				    if (!empty($customcommand)) {
+					    $customarg1 = JFactory::getApplication()->input->getString('customarg1', null);
+					    $customarg2 = JFactory::getApplication()->input->getString('customarg2', null);
 					    $JFusionPlugin = JFusionFactory::getAdmin($jname);
 					    if (method_exists($JFusionPlugin, $customcommand)) {
-						    $JFusionPlugin->$customcommand();
+						    $JFusionPlugin->$customcommand($customarg1, $customarg2);
 					    }
 				    }
 			    }
