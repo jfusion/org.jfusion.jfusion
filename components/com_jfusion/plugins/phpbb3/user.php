@@ -887,7 +887,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 				    //update the total user count
 				    $query = $db->getQuery(true)
 					    ->update('#__config')
-					    ->set('config_value = config_value - 1')
+					    ->set('config_value = config_value + 1')
 					    ->where('config_name = ' . $db->Quote('num_users'));
 
 				    $db->setQuery($query);
