@@ -280,10 +280,10 @@ class JFusionAdmin_moodle extends JFusionAdmin
 
                 <img src="{$src}" style="margin-left:10px;" id="usergroups_img"/>
 HTML;
-		    return $html;
 	    } catch (Exception $e) {
-		    return $e->getMessage();
+		    $html = $e->getMessage();
 	    }
+	    return $html;
     }
 
     /**
