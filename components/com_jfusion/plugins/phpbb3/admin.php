@@ -505,6 +505,7 @@ HTML;
             return $e->getMessage();
 	    }
     }
+
     function enableAuthMod() {
         $error = 0;
         $reason = '';
@@ -644,7 +645,7 @@ HTML;
             $disable = JText::_('MOD_DISABLE');
             $output = <<<HTML
             <img src="components/com_jfusion/images/check_good_small.png">{$text}
-            <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('disableQuickMod')">{$disable}</a>
+            <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('quickMod', 'disable')">{$disable}</a>
 HTML;
             return $output;
         } else {
@@ -652,45 +653,52 @@ HTML;
             $enable = JText::_('MOD_ENABLE');
             $output = <<<HTML
             <img src="components/com_jfusion/images/check_bad_small.png">{$text}
-            <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('enableQuickMod')">{$enable}</a>
+            <a href="javascript:void(0);" onclick="return JFusion.Plugin.module('quickMod', 'enable')">{$enable}</a>
 HTML;
             return $output;
         }
     }
-    function enableQuickMod() {
-        $error = 0;
-        $reason = '';
-        $mod_file = $this->getModFile('mcp.php', $error, $reason);
-        if ($error == 0) {
-            //get the joomla path from the file
-            jimport('joomla.filesystem.file');
-            $file_data = file_get_contents($mod_file);
-            $search = '/\$action \= request_var/si';
-            $replace = 'global $action; $action = request_var';
-            $file_data = preg_replace($search, $replace, $file_data);
-            JFile::write($mod_file, $file_data);
-        }
-    }
 
-    /**
-     * @return int
-     */
-    function disableQuickMod() {
-        $error = 0;
-        $reason = '';
-        $mod_file = $this->getModFile('mcp.php', $error, $reason);
-        if ($error == 0) {
-            //get the joomla path from the file
-            jimport('joomla.filesystem.file');
-            $file_data = file_get_contents($mod_file);
-            $search = '/global \$action\;/si';
-            $file_data = preg_replace($search, '', $file_data);
-            if (!JFile::write($mod_file, $file_data)) {
-                $error = 1;
-            }
-        }
-        return $error;
-    }
+	/**
+	 * @param $action
+	 *
+	 * @return int
+	 */
+	function quickMod($action)
+	{
+		$error = 0;
+		$reason = '';
+		$mod_file = $this->getModFile('mcp.php', $error, $reason);
+		switch($action) {
+			case 'reenable':
+			case 'disable':
+				if ($error == 0) {
+					//get the joomla path from the file
+					jimport('joomla.filesystem.file');
+					$file_data = file_get_contents($mod_file);
+					$search = '/global \$action\;/si';
+					$file_data = preg_replace($search, '', $file_data);
+					if (!JFile::write($mod_file, $file_data)) {
+						$error = 1;
+					}
+				}
+				if ($action == 'disable') {
+					break;
+				}
+			case 'enable':
+				if ($error == 0) {
+					//get the joomla path from the file
+					jimport('joomla.filesystem.file');
+					$file_data = file_get_contents($mod_file);
+					$search = '/\$action \= request_var/si';
+					$replace = 'global $action; $action = request_var';
+					$file_data = preg_replace($search, $replace, $file_data);
+					JFile::write($mod_file, $file_data);
+				}
+				break;
+		}
+		return $error;
+	}
 
     /**
      * @return bool
@@ -719,9 +727,9 @@ HTML;
         }
 
         //doesn't really matter if the quick mod is not disabled so don't return an error
-        $this->disableQuickMod();
+        $this->quickMod('disable');
 
-        $error = $this->disableRedirectMod();
+        $error = $this->redirectMod('disable');
         if (!empty($error)) {
            $reasons[] = JText::_('REDIRECT_MOD_UNINSTALL_FAILED');
            $return = false;
