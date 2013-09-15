@@ -26,10 +26,9 @@
 }
 
 .jfusion #cpanel div.icon a:hover {
-    border-left: 1px solid #eee;
-    border-top: 1px solid #eee;
-    border-right: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
+    border: 1px solid #eee;
+    border-right-color: #ccc;
+    border-bottom-color: #ccc;
     background-color: #CCE6FF;
     color: #0B55C4;
 }
@@ -69,14 +68,12 @@
 }
 
 .jfusion a.navButton {
-    vertical-align:middle;
+    vertical-align: middle;
     display: inline-block;
     width: 160px;
     height: 30px;
     outline: none;
-    background-image: url(../images/donate.png);
-    background-repeat: no-repeat;
-    background-position: 0 0;
+    background: url(../images/donate.png) no-repeat 0 0;
     z-index: 2;
 }
 
@@ -90,8 +87,7 @@
     border: solid 1px #d5d5d5;
     width: 100%;
     border-collapse: collapse;
-    margin: 8px 0 10px 0;
-    margin-bottom: 15px;
+    margin: 8px 0 15px;
 }
 
 .jfusion table.jfusionform th {

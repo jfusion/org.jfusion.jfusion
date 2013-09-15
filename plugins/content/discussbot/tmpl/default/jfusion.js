@@ -136,7 +136,7 @@ JFusion.updateContent = function (JSONobject) {
 
             //remove the preview iframe if exists
             if ($('markItUpQuickReply')) {
-                jQuery.markItUp({ call: 'previewClose' });
+                jQuery.markItUp({call: 'previewClose'});
             }
         }
     }

@@ -55,7 +55,7 @@ global $jfusionDebug;
 				$title = JText::_('AUTHENTICATION') . ' ' . JText::_('PLUGIN') . ' ' . JText::_('SUCCESS');
 				?>
 	            <table style="background-color:#d9f9e2;width:100%;">
-	                <tr style="height:30px">
+	                <tr style="height: 30px;">
 	                    <td width="50px">
 	                        <img src="components/com_jfusion/images/check_good.png">
 	                    </td>
@@ -80,8 +80,8 @@ global $jfusionDebug;
 					$title = $name . ' ' . JText::_('USER') . ' ' . JText::_('PLUGIN');
 					?>
 	                <br/><br/>
-	                <table style="width:100%">
-	                    <tr style="height:30px">
+	                <table style="width: 100%;">
+	                    <tr style="height: 30px;">
 	                        <td ALIGN="center" colspan="2" bgcolor="#D6F2FF">
 	                            <strong>
 									<?php echo $title; ?>
@@ -92,8 +92,8 @@ global $jfusionDebug;
 						if ($auth_result->result == true) {
 							$title .= ' ' . JText::_('SUCCESS');
 							?>
-	                        <tr style="height:30px">
-	                            <td width="50px" style="background-color:#d9f9e2;">
+	                        <tr style="height: 30px;">
+	                            <td width="50px" style="background-color: #d9f9e2;">
 	                                <img src="components/com_jfusion/images/check_good_small.png">
 	                            </td>
 	                            <td style="background-color:#d9f9e2;">
@@ -108,8 +108,8 @@ global $jfusionDebug;
 						} else {
 							$title .= ' ' . JText::_('ERROR');
 							?>
-	                        <tr style="height:30px">
-	                            <td width="50px" style="background-color:#f9ded9;">
+	                        <tr style="height: 30px;">
+	                            <td width="50px" style="background-color: #f9ded9;">
 	                                <img src="components/com_jfusion/images/check_bad_small.png">
 	                            </td>
 	                            <td style="background-color:#f9ded9;">
@@ -134,7 +134,7 @@ global $jfusionDebug;
 				$title = JText::_('AUTHENTICATION') . ' ' . JText::_('PLUGIN') . ' ' . JText::_('ERROR');
 				?>
 	            <table style="background-color:#f9ded9;width:100%;">
-	                <tr style="height:30px">
+	                <tr style="height: 30px;">
 	                    <td width="50px">
 	                        <img src="components/com_jfusion/images/check_bad_small.png">
 	                    </td>

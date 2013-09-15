@@ -20,12 +20,15 @@ JFusionFunctionAdmin::displayDonate();
 ?>
 
 <style type="text/css">
-	tr.good0 { background-color: #ecfbf0; }
-	tr.good1 { background-color: #d9f9e2; }
-	tr.bad0 { background-color: #f9ded9; }
-	tr.bad1 { background-color: #f9e5e2; }
-	.percentbar { background:#CCCCCC; border:1px solid #666666; height:10px; }
-	.percentbar div { background: #28B8C0; height: 10px; }
+	.percentbar {
+		background: #CCCCCC;
+		border: 1px solid #666666;
+		height: 10px;
+	}
+	.percentbar div {
+		background: #28B8C0;
+		height: 10px;
+	}
 </style>
 <form method="post" action="index.php?option=com_jfusion" name="adminForm" id="adminForm">
 	<input type="hidden" name="task" value="languages" />

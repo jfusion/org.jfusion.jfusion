@@ -26,17 +26,17 @@ if (JFactory::getApplication()->input->get('filter', false)) {
 	    <input type="hidden" name="task" value="configdump" />
 	    <table>
 	        <tr>
-	            <td style="background-color:#F5A9A9">
+	            <td style="background-color: #F5A9A9;">
 	                <?php echo JText::_('CONFIGDUMP_ERROR');?>
 	            </td>
 	        </tr>
 	        <tr>
-	            <td style="background-color:#FFFF00">
+	            <td style="background-color: #FFFF00;">
 	                <?php echo JText::_('CONFIGDUMP_POSIBLE_ERROR');?>
 	            </td>
 	        </tr>
 	        <tr>
-	            <td style="background-color:#088A08">
+	            <td style="background-color: #088A08;">
 				    <?php echo JText::_('CONFIGDUMP_SEEMS_OK');?>
 	            </td>
 	        </tr>

@@ -210,7 +210,7 @@ JS;
                 background-color: {$tc};
             }
             div.debug_{$schema} .grid {
-                font-family:arial;
+                font-family: arial, serif;
                 background-color: {$gc};
                 vertical-align:top;
             }

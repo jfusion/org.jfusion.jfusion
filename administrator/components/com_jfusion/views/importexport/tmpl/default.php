@@ -145,7 +145,7 @@ jimport('joomla.html.pane');
 	                            });
 	                        </script>
 	                        <tr>
-	                            <td style="vertical-align:top">
+	                            <td style="vertical-align: top;">
 	                                <input type=radio name="url" id="importexport<?php echo $name; ?>" value="<?php echo base64_encode($remotefile); ?>">
 	                            </td>
 	                            <td>

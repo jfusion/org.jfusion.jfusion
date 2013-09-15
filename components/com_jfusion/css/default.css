@@ -1,4 +1,5 @@
-#jfusionframeless , body #jfusionframeless {
+#jfusionframeless,
+body #jfusionframeless {
 	position: relative;
 }
 
@@ -14,13 +15,32 @@
 	background: none;
 }
 
-#jfusionframeless html, #jfusionframeless address, #jfusionframeless blockquote,
-#jfusionframeless dd, #jfusionframeless div, #jfusionframeless dl,
-#jfusionframeless dt, #jfusionframeless fieldset, #jfusionframeless form, #jfusionframeless frame,
-#jfusionframeless frameset, #jfusionframeless h1, #jfusionframeless h2, #jfusionframeless h3,
-#jfusionframeless h4, #jfusionframeless h5, #jfusionframeless h6, #jfusionframeless noframes,
-#jfusionframeless ol, #jfusionframeless p, #jfusionframeless ul, #jfusionframeless center,
-#jfusionframeless dir, #jfusionframeless hr, #jfusionframeless menu, #jfusionframeless pre {
+#jfusionframeless html,
+#jfusionframeless address,
+#jfusionframeless blockquote,
+#jfusionframeless dd,
+#jfusionframeless div,
+#jfusionframeless dl,
+#jfusionframeless dt,
+#jfusionframeless fieldset,
+#jfusionframeless form,
+#jfusionframeless frame,
+#jfusionframeless frameset,
+#jfusionframeless h1,
+#jfusionframeless h2,
+#jfusionframeless h3,
+#jfusionframeless h4,
+#jfusionframeless h5,
+#jfusionframeless h6,
+#jfusionframeless noframes,
+#jfusionframeless ol,
+#jfusionframeless p,
+#jfusionframeless ul,
+#jfusionframeless center,
+#jfusionframeless dir,
+#jfusionframeless hr,
+#jfusionframeless menu,
+#jfusionframeless pre {
 	display: block;
 }
 
@@ -63,7 +83,8 @@
 	display: table-column-group;
 }
 
-#jfusionframeless td, #jfusionframeless th {
+#jfusionframeless td,
+#jfusionframeless th {
 	display: table-cell;
 }
 
@@ -82,7 +103,7 @@
 
 body #jfusionframeless {
 	margin: 8px;
-	background: white;
+	background: #ffffff;
 	line-height: 1;
 	color: black;
 	display: block;
@@ -103,16 +124,22 @@ body #jfusionframeless {
 	margin: .83em 0;
 }
 
-#jfusionframeless h4, #jfusionframeless p,
-#jfusionframeless blockquote, #jfusionframeless ul,
-#jfusionframeless fieldset, #jfusionframeless form,
-#jfusionframeless ol, #jfusionframeless dl, #jfusionframeless dir,
+#jfusionframeless h4,
+#jfusionframeless p,
+#jfusionframeless blockquote,
+#jfusionframeless ul,
+#jfusionframeless fieldset,
+#jfusionframeless form,
+#jfusionframeless ol,
+#jfusionframeless dl,
+#jfusionframeless dir,
 #jfusionframeless menu {
 	margin: 1.12em 0;
 }
 
 #jfusionframeless h5 {
-	font-size: .83em; margin: 1.5em 0;
+	font-size: .83em;
+    margin: 1.5em 0;
 }
 
 #jfusionframeless h6 {
@@ -120,8 +147,13 @@ body #jfusionframeless {
 	margin: 1.67em 0;
 }
 
-#jfusionframeless h1, #jfusionframeless h2, #jfusionframeless h3, #jfusionframeless h4,
-#jfusionframeless h5, #jfusionframeless h6, #jfusionframeless b,
+#jfusionframeless h1,
+#jfusionframeless h2,
+#jfusionframeless h3,
+#jfusionframeless h4,
+#jfusionframeless h5,
+#jfusionframeless h6,
+#jfusionframeless b,
 #jfusionframeless strong {
 	font-weight: bolder;
 }
@@ -131,32 +163,70 @@ body #jfusionframeless {
 	margin-right: 40px;
 }
 
-#jfusionframeless i, #jfusionframeless cite, #jfusionframeless em,
-#jfusionframeless var, #jfusionframeless address {
+#jfusionframeless i,
+#jfusionframeless cite,
+#jfusionframeless em,
+#jfusionframeless var,
+#jfusionframeless address {
 	font-style: italic;
 }
 
-#jfusionframeless pre, #jfusionframeless tt, #jfusionframeless code,
-#jfusionframeless kbd, #jfusionframeless samp {
+#jfusionframeless pre,
+#jfusionframeless tt,
+#jfusionframeless code,
+#jfusionframeless kbd,
+#jfusionframeless samp {
 	font-family: monospace;
 }
 
-#jfusionframeless code, #jfusionframeless kbd, #jfusionframeless samp, #jfusionframeless pre, #jfusionframeless tt, #jfusionframeless var, #jfusionframeless textarea,
-#jfusionframeless input, #jfusionframeless select, isindex, #jfusionframeless listing, #jfusionframeless xmp, #jfusionframeless plaintext {
+#jfusionframeless code,
+#jfusionframeless kbd,
+#jfusionframeless samp,
+#jfusionframeless pre,
+#jfusionframeless tt,
+#jfusionframeless var,
+#jfusionframeless textarea,
+#jfusionframeless input,
+#jfusionframeless select,
+#jfusionframeless isindex,
+#jfusionframeless listing,
+#jfusionframeless xmp,
+#jfusionframeless plaintext {
 	white-space: normal;
 	font: inherit;
 }
 
-#jfusionframeless dfn, #jfusionframeless i, #jfusionframeless cite, #jfusionframeless var, #jfusionframeless address, #jfusionframeless em {
+#jfusionframeless dfn,
+#jfusionframeless i,
+#jfusionframeless cite,
+#jfusionframeless var,
+#jfusionframeless address,
+#jfusionframeless em {
 	font-style: normal;
 }
 
-#jfusionframeless th, #jfusionframeless b, #jfusionframeless strong, #jfusionframeless h1, #jfusionframeless h2, #jfusionframeless h3, #jfusionframeless h4, #jfusionframeless h5, #jfusionframeless h6 {
+#jfusionframeless th,
+#jfusionframeless b,
+#jfusionframeless strong,
+#jfusionframeless h1,
+#jfusionframeless h2,
+#jfusionframeless h3,
+#jfusionframeless h4,
+#jfusionframeless h5,
+#jfusionframeless h6 {
 	font-weight: normal;
 }
 
-#jfusionframeless a, #jfusionframeless img, #jfusionframeless a img, #jfusionframeless iframe, #jfusionframeless form, #jfusionframeless fieldset,
-#jfusionframeless abbr, #jfusionframeless acronym, #jfusionframeless object, #jfusionframeless applet {
+#jfusionframeless a,
+#jfusionframeless img,
+#jfusionframeless a img,
+#jfusionframeless iframe,
+#jfusionframeless form,
+#jfusionframeless fieldset,
+#jfusionframeless abbr,
+#jfusionframeless acronym,
+#jfusionframeless object,
+#jfusionframeless applet {
 	border: none;
 }
 
@@ -169,11 +239,15 @@ body #jfusionframeless {
 	quotes: "" "";
 }
 
-#jfusionframeless ul, #jfusionframeless ol, #jfusionframeless dir, #jfusionframeless menu {
+#jfusionframeless ul,
+#jfusionframeless ol,
+#jfusionframeless dir,
+#jfusionframeless menu {
 	list-style: none;
 }
 
-#jfusionframeless sub, #jfusionframeless sup {
+#jfusionframeless sub,
+#jfusionframeless sup {
 	vertical-align: baseline;
 }
 
@@ -207,8 +281,10 @@ body #jfusionframeless {
 	white-space: pre;
 }
 
-#jfusionframeless button, #jfusionframeless textarea,
-#jfusionframeless input, #jfusionframeless select {
+#jfusionframeless button,
+#jfusionframeless textarea,
+#jfusionframeless input,
+#jfusionframeless select {
 	display: inline-block;
 }
 
@@ -216,7 +292,9 @@ body #jfusionframeless {
 	font-size: 1.17em;
 }
 
-#jfusionframeless small, #jfusionframeless sub, #jfusionframeless sup {
+#jfusionframeless small,
+#jfusionframeless sub,
+#jfusionframeless sup {
 	font-size: .83em;
 }
 
@@ -232,25 +310,33 @@ body #jfusionframeless {
 	border-spacing: 2px;
 }
 
-#jfusionframeless thead, #jfusionframeless tbody,
+#jfusionframeless thead,
+#jfusionframeless tbody,
 #jfusionframeless tfoot {
 	vertical-align: middle;
 }
 
-#jfusionframeless td, #jfusionframeless th, #jfusionframeless tr {
+#jfusionframeless td,
+#jfusionframeless th,
+#jfusionframeless tr {
 	vertical-align: inherit;
 }
 
-#jfusionframeless s, #jfusionframeless strike, #jfusionframeless del {
+#jfusionframeless s,
+#jfusionframeless strike,
+#jfusionframeless del {
 	text-decoration: line-through;
 }
 
 #jfusionframeless hr {
-	border: 1px inset
+	border: 1px inset;
 }
 
-#jfusionframeless ol, #jfusionframeless ul, #jfusionframeless dir,
-#jfusionframeless menu, #jfusionframeless dd {
+#jfusionframeless ol,
+#jfusionframeless ul,
+#jfusionframeless dir,
+#jfusionframeless menu,
+#jfusionframeless dd {
 	margin-left: 40px;
 }
 
@@ -258,27 +344,32 @@ body #jfusionframeless {
 	list-style-type: decimal;
 }
 
-#jfusionframeless ol ul, #jfusionframeless ul ol,
-#jfusionframeless ul ul, #jfusionframeless ol ol {
+#jfusionframeless ol ul,
+#jfusionframeless ul ol,
+#jfusionframeless ul ul,
+#jfusionframeless ol ol {
 	margin-top: 0;
 	margin-bottom: 0;
 }
 
 #jfusionframeless ul {
-	list-style-position:outside;
+	list-style-position: outside;
 }
 
-#jfusionframeless u, #jfusionframeless ins {
+#jfusionframeless u,
+#jfusionframeless ins {
 	text-decoration: underline;
 }
 #jfusionframeless br:before {
-	content: "A"; white-space: normal;
+	content: "A";
+    white-space: normal;
 }
 #jfusionframeless center {
 	text-align: center;
 }
 
-#jfusionframeless :link, #jfusionframeless :visited {
+#jfusionframeless :link,
+#jfusionframeless :visited {
 	text-decoration: none;
 }
 
@@ -297,21 +388,31 @@ body #jfusionframeless {
 }
 
 #jfusionframeless *[DIR="ltr"] {
-	direction: ltr; unicode-bidi: embed;
+	direction: ltr;
+    unicode-bidi: embed;
 }
 #jfusionframeless *[DIR="rtl"] {
-	direction: rtl; unicode-bidi: embed;
+	direction: rtl;
+    unicode-bidi: embed;
 }
 
 @media print {
 	#jfusionframeless h1 {
 		page-break-before: always;
 	}
-	#jfusionframeless h1, #jfusionframeless h2, #jfusionframeless h3,
-	#jfusionframeless h4, #jfusionframeless h5, #jfusionframeless h6 {
+
+	#jfusionframeless h1,
+    #jfusionframeless h2,
+    #jfusionframeless h3,
+	#jfusionframeless h4,
+    #jfusionframeless h5,
+    #jfusionframeless h6 {
 		page-break-after: avoid;
 	}
-	#jfusionframeless ul, #jfusionframeless ol, #jfusionframeless dl {
+
+	#jfusionframeless ul,
+    #jfusionframeless ol,
+    #jfusionframeless dl {
 		page-break-before: avoid;
 	}
 }

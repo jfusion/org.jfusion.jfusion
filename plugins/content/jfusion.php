@@ -1192,8 +1192,7 @@ HTML;
 			}
 		}
 
-		if($view==$this->view() && $this->params->get('show_posts') && $this->params->get('show_refresh_link',1) && $threadinfo->published) {
-			//class='jfusionRefreshLink'
+		if($view == $this->view() && $this->params->get('show_posts') && $this->params->get('show_refresh_link',1) && $threadinfo->published) {
 			$this->helper->output['buttons']['refresh']['href'] = 'javascript:void(0);';
 			$this->helper->output['buttons']['refresh']['js']['onclick'] = 'JFusion.refreshPosts();';
 			$this->helper->output['buttons']['refresh']['text'] = JText::_('REFRESH_POSTS');

@@ -18,12 +18,6 @@ defined('_JEXEC') or die('Restricted access');
 //display the paypal donation button
 JFusionFunctionAdmin::displayDonate();
 ?>
-<style type="text/css">
-    tr.good0 { background-color: #ecfbf0; }
-    tr.good1 { background-color: #d9f9e2; }
-    tr.bad0 { background-color: #f9ded9; }
-    tr.bad1 { background-color: #f9e5e2; }
-</style>
 <form method="post" action="index.php?option=com_jfusion" name="adminForm" id="adminForm">
 	<input type="hidden" name="task" value="languages" />
 </form>

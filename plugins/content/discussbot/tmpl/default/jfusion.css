@@ -1,61 +1,53 @@
-#jfusionButtonArea {
-	margin-bottom: 10px;
-}
-
 .jfusionPostArea {
-	width:99%;
+	width: 99%;
 }
 
 .jfusionPostHeader {
-	font-size:15px; 
-	color:#000000; 
-	font-weight:bold; 
-}
-
-.jfusionRefreshLink {
-		
+	font-size: 15px;
+	color: #000000;
+	font-weight: bold;
 }
 
 .jfusionPostBody {
-	border:2px solid #afafaf; 
+	border: 2px solid #afafaf;
 	min-height: 90px;
-	padding:10px;
-	margin-top:10px;
+	padding: 10px;
+	margin-top: 10px;
 	position: relative;
 }
 
 .jfusionPostTitle {
-	 color:#000000; 
-	 float:left; 
-	 margin-right:4px;
-	 font-size:15px;
+	 color: #000000;
+	 float: left;
+	 margin-right: 4px;
+	 font-size: 15px;
 }
 
 .jfusionNoPostMsg {
-	 font-weight:bold; 
+	 font-weight: bold;
 }
 
 .jfusionPostUser {
-	font-size:15px;
+	font-size: 15px;
 }
 
 .jfusionUserAvatar {
-	 float:left; 
-	 margin-right:10px; 
+	 float: left;
+	 margin-right: 10px;
 }
 
 .jfusionPostDate {
-	 font-size:10px; 
+	 font-size: 10px;
 }
 
 .jfusionPostText {
-	 margin-top:5px;
-	 font-size:12px;
+	 margin-top: 5px;
+	 font-size: 12px;
 }
 
 .jfusionToolbar {	
-	text-align:right;
-	width:100%;
+	text-align: right;
+	width: 100%;
 	position: absolute;
 	bottom: 0;
 	margin-bottom: 5px;
@@ -63,11 +55,11 @@
 }
 
 .jfusionToolbar span {
-	float:right;
+	float: right;
 }
 
 .jfusionToolbar a, .jfusionToolbar a:hover, .jfusionToolbar a:active, .jfusionToolbar a:focus {
-	text-decoration:none;
+	text-decoration: none;
 }
 
 .jfusionQuickReply {
@@ -75,12 +67,12 @@
 }
 
 .jfusionQuickReply textarea {
-	 width:99%; 
+	 width: 99%;
 	 height: 150px; 
 }
 
 .jfusionQuickReplyHeader {
-	 font-weight:bold; 
+	 font-weight: bold;
 }
 
 .jfusionButton {
@@ -108,7 +100,6 @@
     padding: 4px;
     border: 1px dashed black;
     background-color: #F5F5F5;
-    
 }
 
 .bbcode_quote .bbcode_quote {
@@ -117,7 +108,7 @@
 
 .bbcode_quote .bbcode_quote .bbcode_quote {
 	background-color: #E5E5E5;
-	margin-bottom:4px;
+	margin-bottom: 4px;
 }
 
 .bbcode_quote_head, .bbcode_code_head {
@@ -129,8 +120,20 @@
 }
 
 /* debug styles put here as well so that IE does not loose CSS formatting when ajax rewrites data */
-div.debug_0 .value {  background-color:#ecf8fd;  }
-div.debug_0 .a_key {  background-color:#dbfede;  }
-div.debug_0 .o_key {  background-color:#dbfede;  }
-div.debug_0 .title {  background-color:#d6f2ff;  }
-div.debug_0 .grid  {  font-family:arial; background-color:#fbfed6; vertical-align:top;  }
+div.debug_0 .value {
+    background-color: #ecf8fd;
+}
+div.debug_0 .a_key {
+    background-color: #dbfede;
+}
+div.debug_0 .o_key {
+    background-color: #dbfede;
+}
+div.debug_0 .title {
+    background-color: #d6f2ff;
+}
+div.debug_0 .grid {
+    font-family: arial, serif;
+    background-color: #fbfed6;
+    vertical-align: top;
+}
