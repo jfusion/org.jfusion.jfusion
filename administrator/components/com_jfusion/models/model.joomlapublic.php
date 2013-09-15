@@ -137,7 +137,7 @@ class JFusionJoomlaPublic extends JFusionPublic
 	 *
 	 * @return array status
 	 */
-	public function setLanguageFrontEnd($userinfo)
+	public function setLanguageFrontEnd($userinfo = null)
 	{
 		$status = array('error' => array(),'debug' => array());
 		$user = JFusionFactory::getUser($this->getJname());

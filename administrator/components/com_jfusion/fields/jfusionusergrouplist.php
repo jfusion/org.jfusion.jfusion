@@ -43,7 +43,7 @@ class JFormFieldJFusionUsergroupList extends JFormField
 
 				    $multiple = ($this->element['multiple']) ? ' MULTIPLE ' : '';
 				    if (!empty($usergroups)) {
-					    $param_name = ($multiple) ? $this->formControl.'['.$this->group.']['.$this->fieldname.'][]' : $this->formControl.'['.$this->group.']['.$this->fieldname.']';
+					    $param_name = ($multiple) ? $this->formControl.'['.$this->fieldname.'][]' : $this->formControl.'['.$this->fieldname.']';
 					    $output = JHTML::_('select.genericlist', $usergroups, $param_name, $multiple,
 						    'id', 'name', $this->value);
 				    } else {

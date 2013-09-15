@@ -1493,112 +1493,112 @@ class JFusionFunction
      *
      * @return bool
      */
-    public static function hasFeature($jname,$feature,$itemid=null) {
+    public static function hasFeature($jname, $feature, $itemid = null) {
         $return = false;
         switch ($feature) {
             //admin
             case 'wizard':
                 $admin = JFusionFactory::getAdmin($jname);
-                $return = self::methodDefined($admin,'setupFromPath');
+                $return = self::methodDefined($admin, 'setupFromPath');
                 break;
             //public
             case 'search':
                 $public = JFusionFactory::getPublic($jname);
-                $return = (self::methodDefined($public,'getSearchQuery') || self::methodDefined($public,'getSearchResults'));
+                $return = (self::methodDefined($public, 'getSearchQuery') || self::methodDefined($public, 'getSearchResults'));
                 break;
             case 'whosonline':
                 $public = JFusionFactory::getPublic($jname);
-                $return = self::methodDefined($public,'getOnlineUserQuery');
+                $return = self::methodDefined($public, 'getOnlineUserQuery');
                 break;
             case 'breadcrumb':
                 $public = JFusionFactory::getPublic($jname);
-                $return = self::methodDefined($public,'getPathWay');
+                $return = self::methodDefined($public, 'getPathWay');
                 break;
             case 'frontendlanguage':
                 $public = JFusionFactory::getPublic($jname);
-                $return = self::methodDefined($public,'setLanguageFrontEnd');
+                $return = self::methodDefined($public, 'setLanguageFrontEnd');
                 break;
             case 'frameless':
                 $public = JFusionFactory::getPublic($jname);
-                $return = self::methodDefined($public,'getBuffer');
+                $return = self::methodDefined($public, 'getBuffer');
                 break;
             //forum
             case 'discussion':
                 $forum = JFusionFactory::getForum($jname);
-                $return = self::methodDefined($forum,'createThread');
+                $return = self::methodDefined($forum, 'createThread');
                 break;
             case 'activity':
                 $forum = JFusionFactory::getForum($jname);
-                $return = (self::methodDefined($forum,'getActivityQuery') || self::methodDefined($forum,'renderActivityModule'));
+                $return = (self::methodDefined($forum, 'getActivityQuery') || self::methodDefined($forum, 'renderActivityModule'));
                 break;
             case 'threadurl':
                 $forum = JFusionFactory::getForum($jname);
-                $return = self::methodDefined($forum,'getThreadURL');
+                $return = self::methodDefined($forum, 'getThreadURL');
                 break;
             case 'posturl':
                 $forum = JFusionFactory::getForum($jname);
-                $return = self::methodDefined($forum,'getPostURL');
+                $return = self::methodDefined($forum, 'getPostURL');
                 break;
             case 'profileurl':
                 $forum = JFusionFactory::getForum($jname);
-                $return = self::methodDefined($forum,'getProfileURL');
+                $return = self::methodDefined($forum, 'getProfileURL');
                 break;
             case 'avatarurl':
                 $forum = JFusionFactory::getForum($jname);
-                $return = self::methodDefined($forum,'getAvatar');
+                $return = self::methodDefined($forum, 'getAvatar');
                 break;
             case 'privatemessageurl':
                 $forum = JFusionFactory::getForum($jname);
-                $return = self::methodDefined($forum,'getPrivateMessageURL');
+                $return = self::methodDefined($forum, 'getPrivateMessageURL');
                 break;
             case 'viewnewmessagesurl':
                 $forum = JFusionFactory::getForum($jname);
-                $return = self::methodDefined($forum,'getViewNewMessagesURL');
+                $return = self::methodDefined($forum, 'getViewNewMessagesURL');
                 break;
             case 'privatemessagecounts':
                 $forum = JFusionFactory::getForum($jname);
-                $return = self::methodDefined($forum,'getPrivateMessageCounts');
+                $return = self::methodDefined($forum, 'getPrivateMessageCounts');
                 break;
             //user
             case 'useractivity':
                 $user = JFusionFactory::getUser($jname);
-                $return = self::methodDefined($user,'activateUser');
+                $return = self::methodDefined($user, 'activateUser');
                 break;
             case 'duallogin':
                 $user = JFusionFactory::getUser($jname);
-                $return = self::methodDefined($user,'createSession');
+                $return = self::methodDefined($user, 'createSession');
                 break;
             case 'duallogout':
                 $user = JFusionFactory::getUser($jname);
-                $return = self::methodDefined($user,'destroySession');
+                $return = self::methodDefined($user, 'destroySession');
                 break;
             case 'updatepassword':
                 $user = JFusionFactory::getUser($jname);
-                $return = self::methodDefined($user,'updatePassword');
+                $return = self::methodDefined($user, 'updatePassword');
                 break;
             case 'updateusername':
                 $user = JFusionFactory::getUser($jname);
-                $return = self::methodDefined($user,'updateUsername');
+                $return = self::methodDefined($user, 'updateUsername');
                 break;
             case 'updateemail':
                 $user = JFusionFactory::getUser($jname);
-                $return = self::methodDefined($user,'updateEmail');
+                $return = self::methodDefined($user, 'updateEmail');
                 break;
             case 'updateusergroup':
                 $user = JFusionFactory::getUser($jname);
-                $return = self::methodDefined($user,'updateUsergroup');
+                $return = self::methodDefined($user, 'updateUsergroup');
                 break;
             case 'updateuserlanguage':
                 $user = JFusionFactory::getUser($jname);
-                $return = self::methodDefined($user,'updateUserLanguage');
+                $return = self::methodDefined($user, 'updateUserLanguage');
                 break;
             case 'syncsessions':
                 $user = JFusionFactory::getUser($jname);
-                $return = self::methodDefined($user,'syncSessions');
+                $return = self::methodDefined($user, 'syncSessions');
                 break;
             case 'blockuser':
                 $user = JFusionFactory::getUser($jname);
-                $return = self::methodDefined($user,'blockUser');
+                $return = self::methodDefined($user, 'blockUser');
                 break;
             case 'activateuser':
                 $user = JFusionFactory::getUser($jname);
@@ -1606,7 +1606,7 @@ class JFusionFunction
                 break;
             case 'deleteuser':
                 $user = JFusionFactory::getUser($jname);
-                $return = self::methodDefined($user,'deleteUser');
+                $return = self::methodDefined($user, 'deleteUser');
                 break;
             case 'redirect_itemid':
                 if ($itemid) {
@@ -1639,7 +1639,7 @@ class JFusionFunction
      *
      * @return bool
      */
-    public static function methodDefined($class,$method) {
+    public static function methodDefined($class, $method) {
         if ( is_object($class) ) {
             $name = get_class  ( $class );
         } else {
@@ -1647,20 +1647,17 @@ class JFusionFunction
         }
 
         //if the class name is the abstract class then return false
-        $abstractClassNames = array('JFusionAdmin', 'JFusionAuth', 'JFusionForum', 'JFusionPublic', 'JFusionUser');
-        if (in_array($name, $abstractClassNames)) {
-            $return = false;
-        } else {
-            try {
-                $m = new ReflectionMethod($class, $method);
-                if ( $m->getDeclaringClass()->getName() == $name ) {
-                    $return = true;
-                } else {
-                    $return = false;
-                }
-            } catch (Exception $e) {
-                $return = false;
-            }
+        $abstractClassNames = array('JFusionAdmin', 'JFusionAuth', 'JFusionForum', 'JFusionPublic', 'JFusionUser', 'JFusionPlugin');
+	    $return = false;
+        if (!in_array($name, $abstractClassNames)) {
+	        try {
+		        $m = new ReflectionMethod($class, $method);
+		        if ( $m->getDeclaringClass()->getName() == $name || !in_array($m->getDeclaringClass()->getName(), $abstractClassNames)) {
+			        $return = true;
+		        }
+	        } catch (Exception $e) {
+		        $return = false;
+	        }
         }
         return $return;
     }

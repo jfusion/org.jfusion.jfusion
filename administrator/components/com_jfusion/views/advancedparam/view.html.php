@@ -68,13 +68,29 @@ class jfusionViewadvancedparam extends JViewLegacy
 
 		$mainframe = JFactory::getApplication();
 
-		JFactory::getLanguage()->load('com_jfusion');
+		$lang = JFactory::getLanguage();
+		$lang->load('com_jfusion');
 
 		//Load Current feature
 		$feature = JFactory::getApplication()->input->get('feature');
 		if (empty($feature)) {
 			$feature = 'any';
 		}
+		switch ($feature) {
+			case 'whosonline':
+				$lang->load('mod_jfusion_whosonline', JPATH_SITE);
+				break;
+			case 'search':
+				$lang->load('mod_jfusion_search', JPATH_SITE);
+				break;
+			case 'activity':
+				$lang->load('mod_jfusion_activity', JPATH_SITE);
+				break;
+			case 'useractivity':
+				$lang->load('mod_jfusion_user_activity', JPATH_SITE);
+				break;
+		}
+
 		//Load multiselect
 		$multiselect = JFactory::getApplication()->input->get('multiselect');
 		if ($multiselect) {
