@@ -63,6 +63,21 @@ class jfusionViewadvancedparam extends JView
 		if (empty($feature)) {
 			$feature = 'any';
 		}
+		switch ($feature) {
+			case 'whosonline':
+				$lang->load('mod_jfusion_whosonline', JPATH_SITE);
+				break;
+			case 'search':
+				$lang->load('mod_jfusion_search', JPATH_SITE);
+				break;
+			case 'activity':
+				$lang->load('mod_jfusion_activity', JPATH_SITE);
+				break;
+			case 'useractivity':
+				$lang->load('mod_jfusion_user_activity', JPATH_SITE);
+				break;
+		}
+
 		//Load multiselect
 		$multiselect = JRequest::getVar('multiselect');
 		if ($multiselect) {
