@@ -953,15 +953,15 @@ HTML;
      * Functions For JFusion Who's Online Module
      ***********************************************/
 
-    /**
-     * Returns a query to find online users
-     * Make sure columns are named as userid, username, username_clean (if applicable), name (of user), and email
-     *
-     * @param int $limit integer to use as a limiter for the number of results returned
-     *
-     * @return string online user query
-     */
-    function getOnlineUserQuery($limit)
+	/**
+	 * Returns a query to find online users
+	 * Make sure columns are named as userid, username, username_clean (if applicable), name (of user), and email
+	 *
+	 * @param array $usergroups
+	 *
+	 * @return string online user query
+	 */
+    function getOnlineUserQuery($usergroups = array())
     {
         return '';
     }

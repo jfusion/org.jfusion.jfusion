@@ -23,7 +23,6 @@
         <filename>public.php</filename>
         <filename>search.xml</filename>
         <filename>user.php</filename>
-        <folder>fields</folder>
     </files>
 
     <form>
@@ -51,8 +50,16 @@
             </fieldset>
 
             <fieldset name="USER_OPTIONS">
-                <field name="userpostgroup" type="Userpostgroups" description="DEFAULT_USERPOSTGROUP_DESCR" label="DEFAULT_USERPOSTGROUP" />
-                <field name="@spacer" type="spacer" default="" label="" description="" />
+                <field name="compare_postgroup" type="radio" class="btn-group" default="0" label="COMPARE_POSTGROUP" description="COMPARE_POSTGROUP">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+
+                <field name="compare_membergroups" type="radio" class="btn-group" default="1" label="COMPARE_MEMBERGROUPS" description="COMPARE_MEMBERGROUPS">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+
                 <field name="update_activation" type="radio" class="btn-group" default="1" label="UPDATE_ACTIVATION" description="UPDATE_ACTIVATION_DESC">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>

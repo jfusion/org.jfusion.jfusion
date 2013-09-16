@@ -60,15 +60,15 @@ class JFusionPublic_efront extends JFusionPublic
         return 'index.php?ctg=reset_pwd';
     }
 
-    /**
-     * getOnlineUserQuery
-     *
-     * @param int $limit
-     *
-     * @return string
-     */
-    function getOnlineUserQuery($limit) {
-        $limiter = (!empty($limit)) ? ' LIMIT 0,'.$limit : '';
+	/**
+	 * getOnlineUserQuery
+	 *
+	 * @param array $usergroups
+	 *
+	 * @return string
+	 */
+    function getOnlineUserQuery($usergroups = array())
+    {
         //get a unix time from 5 minutes ago
         date_default_timezone_set('UTC');
         //$active = strtotime('-5 minutes', time());
@@ -81,7 +81,7 @@ class JFusionPublic_efront extends JFusionPublic
 	        ->innerJoin('#__users_online AS s ON u.login = s.users_LOGIN');
 
 	    $query = (string)$query;
-        return $query.$limiter;
+        return $query;
     }
 
     /**

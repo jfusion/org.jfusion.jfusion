@@ -1231,15 +1231,6 @@ class JFusionUser_vbulletin extends JFusionUser
 	{
 		$index = 0;
 
-		$groups = array();
-		if ($userinfo) {
-			if (isset($userinfo->groups)) {
-				$groups = $userinfo->groups;
-			} elseif (isset($userinfo->group_id)) {
-				$groups[] = $userinfo->group_id;
-			}
-		}
-
 		foreach ($mastergroups as $key => $mastergroup) {
 			if ($mastergroup) {
 				$found = true;

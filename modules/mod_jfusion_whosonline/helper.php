@@ -57,7 +57,7 @@ class modjfusionWhosOnlineHelper {
 
             //show the number of people online if set to do so
             $output->num_guests = $public_users->getNumberOnlineGuests();
-            $output->num_members = $public_users->getNumberOnlineMembers($config['group_limit'], $config['show_total_users']);
+            $output->num_members = $public_users->getNumberOnlineMembers();
 
             if(is_array($output->online_users)) {
                 // process result

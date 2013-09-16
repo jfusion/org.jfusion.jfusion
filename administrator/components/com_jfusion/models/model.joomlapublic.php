@@ -69,25 +69,31 @@ class JFusionJoomlaPublic extends JFusionPublic
 	 * Returns a query to find online users
 	 * Make sure columns are named as userid, username, username_clean (if applicable), name (of user), and email
 	 *
-	 * @param int $limit integer to use as a limiter for the number of results returned
+	 * @param array $usergroups
 	 *
 	 * @return string online user query
 	 */
-	public function getOnlineUserQuery($limit)
+	public function getOnlineUserQuery($usergroups = array())
 	{
 		$db = JFusionFactory::getDatabase($this->getJname());
-
-		$limiter = (!empty($limit)) ? ' LIMIT 0,'.$limit : '';
 
 		$query = $db->getQuery(true)
 			->select('DISTINCT u.id AS userid, u.username, u.name, u.email')
 			->from('#__users AS u')
-			->innerJoin('#__session AS s ON u.id = s.userid')
-			->where('s.client_id = 0')
+			->innerJoin('#__session AS s ON u.id = s.userid');
+
+		if (!empty($usergroups)) {
+			$usergroups = implode(',', $usergroups);
+
+			$query->innerJoin('#__user_usergroup_map AS g ON u.id = g.user_id')
+				->where('g.group_id IN (' . $usergroups . ')');
+		}
+
+		$query->where('s.client_id = 0')
 			->where('s.guest = 0');
 
 		$query = (string)$query;
-		return $query.$limiter;
+		return $query;
 	}
 
 	/**
@@ -103,8 +109,7 @@ class JFusionJoomlaPublic extends JFusionPublic
 			->select('COUNT(*)')
 			->from('#__session')
 			->where('guest = 1')
-			->where('client_id = 0')
-			->where('usertype = ' . $db->Quote(''));
+			->where('client_id = 0');
 
 		$db->setQuery($query);
 		return $db->loadResult();

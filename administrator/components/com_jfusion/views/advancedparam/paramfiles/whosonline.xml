@@ -19,10 +19,7 @@
                     <option value="1">GROUP_LIMIT_SELECTED</option>
                 </field>
                 <field name="group_limit" type="JFusionUsergroupList" grouptype="all" multiple="yes" label="GROUP_LIMIT" />
-                <field name="show_total_users" type="radio" class="btn-group" default="1" label="SHOW_TOTAL_MEMEBER_COUNT" description="SHOW_TOTAL_MEMEBER_COUNT_DESCR">
-                    <option value="0">JNO</option>
-                    <option value="1">JYES</option>
-                </field>
+
                 <field name="itemid" type="JFusionItemid" size="5" default="" label="MENU_ITEM" description="MENU_ITEM_DESCR" />
 
                 <field name="name" type="list" default="0" label="DISPLAY_USERNAME_NAME" description="DISPLAY_USERNAME_NAME_DESCR">

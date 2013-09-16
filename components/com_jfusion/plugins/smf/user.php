@@ -55,7 +55,7 @@ class JFusionUser_smf extends JFusionUser
 		    $db = JFusionFactory::getDatabase($this->getJname());
 
 		    $query = $db->getQuery(true)
-			    ->select('a.ID_MEMBER as userid, a.memberName as username, a.realName as name, a.emailAddress as email, a.passwd as password, a.passwordSalt as password_salt, a.validation_code as activation, a.is_activated, null as reason, a.lastLogin as lastvisit, a.ID_GROUP as group_id')
+			    ->select('a.ID_MEMBER as userid, a.memberName as username, a.realName as name, a.emailAddress as email, a.passwd as password, a.passwordSalt as password_salt, a.validation_code as activation, a.is_activated, null as reason, a.lastLogin as lastvisit, a.ID_GROUP as group_id, a.ID_POST_GROUP as postgroup, a.additionalGroups')
 			    ->from('#__members as a')
 		        ->where($identifier_type . ' = ' . $db->Quote($identifier));
 
@@ -75,6 +75,21 @@ class JFusionUser_smf extends JFusionUser
 			    }
 			    $result->groups = array($result->group_id);
 			    $result->groupnames = array($result->group_name);
+
+			    if (!empty($result->additionalGroups)) {
+				    $groups = explode(',', $result->additionalGroups);
+
+				    foreach($groups as $group) {
+					    $query = $db->getQuery(true)
+						    ->select('groupName')
+						    ->from('#__membergroups')
+						    ->where('ID_GROUP = ' . (int)$group);
+
+					    $db->setQuery($query);
+					    $result->groups[] = $group;
+					    $result->groupnames[] = $db->loadResult();
+				    }
+			    }
 
 			    //Check to see if they are banned
 			    $query = $db->getQuery(true)
@@ -346,22 +361,79 @@ class JFusionUser_smf extends JFusionUser
 		    } else {
 			    $usergroup = $usergroups[0];
 
+			    if (!isset($usergroup->groups)) {
+				    $usergroup->groups = array();
+			    }
+
 			    $db = JFusionFactory::getDatabase($this->getJname());
 
 			    $query = $db->getQuery(true)
 				    ->update('#__members')
-				    ->set('ID_GROUP = ' . $db->quote($usergroup))
-				    ->where('ID_MEMBER = ' . (int)$existinguser->userid);
+				    ->set('ID_GROUP = ' . $db->quote($usergroup->defaultgroup));
+
+			    if ($this->params->get('compare_postgroup', false) ) {
+				    $query->set('ID_POST_GROUP = ' . $db->quote($usergroup->postgroup));
+			    }
+			    if ($this->params->get('compare_membergroups', true) ) {
+				    $query->set('additionalGroups = ' . $db->quote(join(',',$usergroup->groups)));
+			    }
+			    $query->where('ID_MEMBER = ' . (int)$existinguser->userid);
 
 			    $db->setQuery($query);
 			    $db->execute();
 
-			    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode (' , ', $existinguser->groups) . ' -> ' . $usergroup;
+			    $groups = $usergroup->groups;
+			    $groups[] = $usergroup->defaultgroup;
+
+			    $existinggroups = $existinguser->groups;
+			    $existinggroups[] = $existinguser->group_id;
+
+			    $status['debug'][] = JText::_('GROUP_UPDATE') . ': ' . implode (' , ', $existinggroups) . ' -> ' . implode (' , ', $groups);
 		    }
 	    } catch (Exception $e) {
 		    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . $e->getMessage();
 	    }
     }
+
+	/**
+	 * @param object &$userinfo
+	 * @param object &$existinguser
+	 * @param array &$status
+	 *
+	 * @return bool
+	 */
+	function executeUpdateUsergroup(&$userinfo, &$existinguser, &$status)
+	{
+		$update_groups = false;
+		$usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
+		$usergroup = $usergroups[0];
+
+		$groups = (isset($usergroup->groups)) ? $usergroup->groups : array();
+
+		//check to see if the default groups are different
+		if ($usergroup->defaultgroup != $existinguser->group_id ) {
+			$update_groups = true;
+		} else if ($this->params->get('compare_postgroup', false) && $usergroup->postgroup != $existinguser->postgroup ) {
+			$update_groups = true;
+		} elseif ($this->params->get('compare_membergroups', true)) {
+			if (count($existinguser->groups) != count($groups)) {
+				$update_groups = true;
+			} else {
+				foreach ($groups as $gid) {
+					if (!in_array($gid, $existinguser->groups)) {
+						$update_groups = true;
+						break;
+					}
+				}
+			}
+		}
+
+		if ($update_groups) {
+			$this->updateUsergroup($userinfo, $existinguser, $status);
+		}
+
+		return $update_groups;
+	}
 
     /**
      * blockUser
@@ -520,6 +592,12 @@ class JFusionUser_smf extends JFusionUser
 		    if (empty($usergroups)) {
 			    throw new RuntimeException('USERGROUP_MISSING');
 		    } else {
+			    $usergroup = $usergroups[0];
+
+			    if (!isset($usergroup->groups)) {
+				    $usergroup->groups = array();
+			    }
+
 			    //prepare the user variables
 			    $user = new stdClass;
 			    $user->ID_MEMBER = null;
@@ -551,8 +629,10 @@ class JFusionUser_smf extends JFusionUser
 			    $user->hideEmail = 1;
 			    $user->ID_THEME = 0;
 
-			    $user->ID_GROUP = $usergroups[0];
-			    $user->ID_POST_GROUP = $this->params->get('userpostgroup', 4);
+			    $user->ID_GROUP = $usergroup->defaultgroup;
+			    $user->additionalGroups = join(',', $usergroup->groups);
+			    $user->ID_POST_GROUP = $usergroup->postgroup;
+
 			    $db->insertObject('#__members', $user, 'ID_MEMBER');
 			    //now append the new user data
 
@@ -588,4 +668,61 @@ class JFusionUser_smf extends JFusionUser
 		    $status['error'][] = JText::_('USER_CREATION_ERROR') . $e->getMessage();
 	    }
     }
+
+	/**
+	 * Function That find the correct user group index
+	 *
+	 * @param array $mastergroups
+	 * @param stdClass $userinfo
+	 *
+	 * @return int
+	 */
+	function getUserGroupIndex($mastergroups, $userinfo)
+	{
+		$index = 0;
+
+		$groups = array();
+		if ($userinfo) {
+			if (isset($userinfo->groups)) {
+				$groups = $userinfo->groups;
+			} elseif (isset($userinfo->group_id)) {
+				$groups[] = $userinfo->group_id;
+			}
+		}
+
+		foreach ($mastergroups as $key => $mastergroup) {
+			if ($mastergroup) {
+				$found = true;
+				//check to see if the default groups are different
+				if ($mastergroup->defaultgroup != $userinfo->group_id ) {
+					$found = false;
+				} else {
+					if ($this->params->get('compare_postgroup', false) && $mastergroup->postgroup != $userinfo->postgroup ) {
+						//check to see if the display groups are different
+						$found = false;
+					} else {
+						if ($this->params->get('compare_membergroups', true) && isset($mastergroup->membergroups)) {
+							//check to see if member groups are different
+							if (count($userinfo->groups) != count($mastergroup->membergroups)) {
+								$found = false;
+								break;
+							} else {
+								foreach ($mastergroup->membergroups as $gid) {
+									if (!in_array($gid, $userinfo->groups)) {
+										$found = false;
+										break;
+									}
+								}
+							}
+						}
+					}
+				}
+				if ($found) {
+					$index = $key;
+					break;
+				}
+			}
+		}
+		return $index;
+	}
 }

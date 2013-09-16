@@ -141,13 +141,14 @@ class JFusionPublic_phpbb3 extends JFusionPublic
         return $status;
     }
 
-    /**
-     * @param int $limit
-     * @return string
-     */
-    function getOnlineUserQuery($limit) {
+	/**
+	 * @param array $usergroups
+	 *
+	 * @return string
+	 */
+    function getOnlineUserQuery($usergroups = array())
+    {
 	    $db = JFusionFactory::getDatabase($this->getJname());
-        $limiter = (!empty($limit)) ? ' LIMIT 0,'.$limit : '';
         //get a unix time from 5 minutes ago
         date_default_timezone_set('UTC');
         $active = strtotime('-5 minutes', time());
@@ -160,7 +161,14 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 		    ->where('s.session_user_id != 1')
 		    ->where('s.session_time > '.$active);
 
-	    $query = (string)$query.$limiter;
+	    if (!empty($usergroups)) {
+		    $usergroups = implode(',', $usergroups);
+
+		    $query->innerJoin('#___user_group AS g ON u.user_id = g.user_id')
+			    ->where('g.group_id IN (' . $usergroups . ')');
+	    }
+
+	    $query = (string)$query;
         return $query;
     }
 

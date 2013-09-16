@@ -63,7 +63,7 @@ class JFusionUser_efront extends JFusionUser
 	            // change/add fields used by jFusion
 	            $result->userid = $result->id;
 	            $result->username = $result->login;
-	            $result->group_id = $this->helper->groupNameToID($result->user_type,$result->user_types_ID);
+	            $result->group_id = $this->helper->groupNameToID($result->user_type, $result->user_types_ID);
 	            $result->group_name = $this->helper->groupIdToName($result->group_id);
 
 	            $result->groups = array($result->group_id);

@@ -925,18 +925,16 @@ class JFusionPublic_smf extends JFusionPublic
     * Functions For JFusion Who's Online Module
     ***********************************************/
 
-    /**
-     * Returns a query to find online users
-     * Make sure columns are named as userid, username, username_clean (if applicable), name (of user), and email
-     *
-     * @param int $limit limit of user online
-     *
-     * @return string
-     */
-    function getOnlineUserQuery($limit)
+	/**
+	 * Returns a query to find online users
+	 * Make sure columns are named as userid, username, username_clean (if applicable), name (of user), and email
+	 *
+	 * @param array $usergroups
+	 *
+	 * @return string
+	 */
+    function getOnlineUserQuery($usergroups = array())
     {
-        $limiter = (!empty($limit)) ? ' LIMIT 0,'.$limit : '';
-
 	    $db = JFusionFactory::getDatabase($this->getJname());
 
 	    $query = $db->getQuery(true)
@@ -944,9 +942,23 @@ class JFusionPublic_smf extends JFusionPublic
 		    ->from('#__members AS u')
 		    ->innerJoin('#__log_online AS s ON u.ID_MEMBER = s.ID_MEMBER WHERE s.ID_MEMBER != 0');
 
+	    if(!empty($usergroups)) {
+		    if(is_array($usergroups)) {
+			    $usergroups_string = implode(',', $usergroups);
+			    $usergroup_query = '(u.ID_GROUP IN (' . $usergroups_string . ') OR u.ID_POST_GROUP IN (' . $usergroups_string . ')';
+			    foreach($usergroups AS $usergroup) {
+				    $usergroup_query .= ' OR FIND_IN_SET(' . intval($usergroup) . ', u.additionalGroups)';
+			    }
+			    $usergroup_query .= ')';
+		    } else {
+			    $usergroup_query = '(u.ID_GROUP = ' . $usergroups . ' OR u.ID_POST_GROUP = ' . $usergroups . ' OR FIND_IN_SET(' . $usergroups . ', u.additionalGroups))';
+		    }
+		    $query->where($usergroup_query);
+	    }
+
 	    $query = (string)$query;
 
-        return $query.$limiter;
+        return $query;
     }
 
     /**

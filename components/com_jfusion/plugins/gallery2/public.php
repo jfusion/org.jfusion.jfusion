@@ -280,18 +280,18 @@ class JFusionPublic_gallery2 extends JFusionPublic
     /************************************************
     * Functions For JFusion Who's Online Module
     ***********************************************/
-    /**
-     * Returns a query to find online users
-     * Make sure columns are named as userid, username, username_clean (if applicable), name (of user), and email
-     *
-     * @param int $limit
-     *
-     * @return string
-     */
-    function getOnlineUserQuery($limit) {
+	/**
+	 * Returns a query to find online users
+	 * Make sure columns are named as userid, username, username_clean (if applicable), name (of user), and email
+	 *
+	 * @param array $usergroups
+	 *
+	 * @return string
+	 */
+    function getOnlineUserQuery($usergroups = array())
+    {
 	    $db = JFusionFactory::getDatabase($this->getJname());
 
-        $limiter = (!empty($limit)) ? ' LIMIT 0,'.$limit : '';
         //get a unix time from 5 minutes ago
         date_default_timezone_set('UTC');
         $now = time();
@@ -303,8 +303,15 @@ class JFusionPublic_gallery2 extends JFusionPublic
 	        ->innerJoin('#__SessionMap AS s ON s.g_userId = u.g_id')
 		    ->where('s.g_modificationTimestamp > ' . $active);
 
+	    if (!empty($usergroups)) {
+		    $usergroups = implode(',', $usergroups);
+
+		    $query->innerJoin('#__usergroupmap AS g ON u.g_id = g.g_userId')
+			    ->where('g.g_groupId IN (' . $usergroups . ')');
+	    }
+
 	    $query = (string)$query;
-        return $query.$limiter;
+        return $query;
     }
     /**
      * Returns number of members

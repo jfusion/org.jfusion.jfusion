@@ -202,18 +202,17 @@ class JFusionPublic_vbulletin extends JFusionPublic
     /************************************************
     * Functions For JFusion Who's Online Module
     ***********************************************/
-    /**
-     * Returns a query to find online users
-     * Make sure columns are named as userid, username, username_clean (if applicable), name (of user), and email
-     *
-     * @param int $limit
-     *
-     * @return string
-     */
-    function getOnlineUserQuery($limit)
+	/**
+	 * Returns a query to find online users
+	 * Make sure columns are named as userid, username, username_clean (if applicable), name (of user), and email
+	 *
+	 * @param array $usergroups
+	 *
+	 * @return string
+	 */
+    function getOnlineUserQuery($usergroups = array())
     {
 	    $db = JFusionFactory::getDatabase($this->getJname());
-        $limiter = (!empty($limit)) ? ' LIMIT 0,'.$limit : '';
 
         $name_field = $this->params->get('name_field');
 
@@ -232,8 +231,14 @@ class JFusionPublic_vbulletin extends JFusionPublic
 	    $query->innerJoin('#__session AS s ON u.userid = s.userid')
 	        ->where('s.userid != 0');
 
+	    if (!empty($usergroups)) {
+		    $usergroups = implode(',', $usergroups);
+
+		    $query->where('u.usergroupid IN (' . $usergroups . ')');
+	    }
+
 	    $query = (string)$query;
-        return $query.$limiter;
+        return $query;
     }
     /**
      * Returns number of guests

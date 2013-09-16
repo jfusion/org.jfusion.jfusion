@@ -68,10 +68,10 @@ class JFusionHelper_efront extends JFusionPlugin {
      *
      * @return int
      */
-    function groupNameToID($user_type,$user_types_ID){
+    function groupNameToID($user_type, $user_types_ID){
         $group_id = 0;
-        if ($user_types_ID == 0){
-            switch ($user_type){
+        if ($user_types_ID == 0) {
+            switch ($user_type) {
                 case 'professor': 
                     $group_id = 1;
                     break;
@@ -80,7 +80,7 @@ class JFusionHelper_efront extends JFusionPlugin {
                     break;
            }    
         } else {
-            $group_id = $user_types_ID +2;
+            $group_id = $user_types_ID+2;
         }
         return $group_id;
     }
