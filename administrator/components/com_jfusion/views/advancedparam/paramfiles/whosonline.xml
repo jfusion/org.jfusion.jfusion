@@ -11,11 +11,7 @@
 	        </field>
 	        
 	        <field name="member_limit" type="text" size="20" default="10" label="MEMBER_LIMIT" description="MEMBER_LIMIT_DESCR" />
-	        <field name="group_limit_mode" type="radio" default="0" label="GROUP_LIMIT_MODE">
-	            <option value="0">GROUP_LIMIT_ALL</option>
-	            <option value="1">GROUP_LIMIT_SELECTED</option>
-	        </field>    
-	        <field name="group_limit" type="JFusionUsergroupList" grouptype="all" multiple="yes" label="GROUP_LIMIT" />
+
 	        <field name="show_total_users" type="radio" value="1" default="1" label="SHOW_TOTAL_MEMEBER_COUNT" description="SHOW_TOTAL_MEMEBER_COUNT_DESCR">
 	            <option value="0">JNO</option>
 	            <option value="1">JYES</option>          
@@ -68,11 +64,7 @@
 		</param>
 		
 		<param name="member_limit" type="text" size="20" default="10" label="MEMBER_LIMIT" description="MEMBER_LIMIT_DESCR" />
-		<param name="group_limit_mode" type="radio" default="0" label="GROUP_LIMIT_MODE">
-			<option value="0">GROUP_LIMIT_ALL</option>
-			<option value="1">GROUP_LIMIT_SELECTED</option>
-		</param>	
-		<param name="group_limit" type="JFusionUsergroupList" grouptype="all" multiple="yes" label="GROUP_LIMIT" />
+
 		<param name="show_total_users" type="radio" value="1" default="1" label="SHOW_TOTAL_MEMEBER_COUNT" description="SHOW_TOTAL_MEMEBER_COUNT_DESCR">
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>			

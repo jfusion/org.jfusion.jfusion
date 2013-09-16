@@ -57,25 +57,21 @@ if (file_exists($model_file) && file_exists($factory_file)) {
 					$config = array();
 					$config['showmode'] = intval($pluginParam->get('showmode'));
 					$config['member_limit'] = $pluginParam->get('member_limit');
-					$config['group_limit'] = $pluginParam->get('group_limit','');
-					$config['group_limit_mode'] = $pluginParam->get('group_limit_mode','');
-
-					//overwrite the group limit if the mode is set to display all
-					$config['group_limit'] = (!empty($config['group_limit_mode'])) ? $config['group_limit'] : '';
 
 					$config['show_total_users'] = $pluginParam->get('show_total_users', 0);
 					$config['name'] = $pluginParam->get('name');
-					$config['userlink'] = intval($pluginParam->get('userlink'),false);
-					$config['userlink_software'] = $pluginParam->get('userlink_software',false);
-					$config['userlink_custom'] = $pluginParam->get('userlink_custom',false);
+					$config['userlink'] = intval($pluginParam->get('userlink'), false);
+					$config['userlink_software'] = $pluginParam->get('userlink_software', false);
+					$config['userlink_custom'] = $pluginParam->get('userlink_custom', false);
 					$config['itemid'] = $pluginParam->get('itemid');
-					$config['avatar'] = $pluginParam->get('avatar',false);
-					$config['avatar_height'] = $pluginParam->get('avatar_height',53);
-					$config['avatar_width'] = $pluginParam->get('avatar_width',40);
-					$config['avatar_software'] = $pluginParam->get('avatar_software','jfusion');
-					$config['avatar_keep_proportional'] = $pluginParam->get('avatar_keep_proportional',false);
+					$config['avatar'] = $pluginParam->get('avatar', false);
+					$config['avatar_height'] = $pluginParam->get('avatar_height', 53);
+					$config['avatar_width'] = $pluginParam->get('avatar_width', 40);
+					$config['avatar_software'] = $pluginParam->get('avatar_software', 'jfusion');
+					$config['avatar_keep_proportional'] = $pluginParam->get('avatar_keep_proportional', false);
+
 					$db = JFusionFactory::getDatabase($jname);
-					$query = $public->getOnlineUserQuery($config['member_limit'], $config['group_limit']);
+					$query = $public->getOnlineUserQuery($config['member_limit']);
 					$db->setQuery($query);
 					$output->online_users = $db->loadObjectList();
 

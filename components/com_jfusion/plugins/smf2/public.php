@@ -902,11 +902,10 @@ class JFusionPublic_smf2 extends JFusionPublic {
 	 * Make sure columns are named as userid, username, username_clean (if applicable), name (of user), and email
      *
      * @param int $limit
-     * @param array $usergroups
      *
      * @return string
 	 **/
-	function getOnlineUserQuery($limit, $usergroups = array())
+	function getOnlineUserQuery($limit)
 	{
 		$usergroup_query = '';
 		if(!empty($usergroups)) {
@@ -942,30 +941,13 @@ class JFusionPublic_smf2 extends JFusionPublic {
 	/**
 	 * Returns number of logged in users
      *
-     * @param array $usergroups
-     * @param int $total
-     *
 	 * @return int
 	 */
-	function getNumberOnlineMembers($usergroups = array(), $total = 1)
+	function getNumberOnlineMembers()
 	{
-		$usergroup_query = '';
-		if(!empty($usergroups) && empty($total)) {
-			if(is_array($usergroups)) {
-                $usergroups_string = implode(',',$usergroups);
-				$usergroup_query .= 'AND (u.id_group IN ('.$usergroups_string.') OR u.id_post_group IN ('.$usergroups_string.')';
-				foreach($usergroups AS $usergroup) {
-					$usergroup_query .= ' OR FIND_IN_SET(' . intval($usergroup) . ', u.additional_groups)';
-				}
-				$usergroup_query .= ')';
-			} else {
-				$usergroup_query .= 'AND (u.id_group = '.$usergroups.' OR u.id_post_group = '.$usergroups.' OR FIND_IN_SET('.$usergroups.', u.additional_groups))';
-			}
-		}
-
 		$db = JFusionFactory::getDatabase($this->getJname());
 
-		$query = 'SELECT COUNT(DISTINCT(l.ip)) FROM #__log_online AS l JOIN #__members AS u ON l.id_member = u.id_member WHERE l.id_member != 0 '.$usergroup_query;
+		$query = 'SELECT COUNT(DISTINCT(l.ip)) FROM #__log_online AS l JOIN #__members AS u ON l.id_member = u.id_member WHERE l.id_member != 0 ';
 
 		$db->setQuery($query);
 		return $db->loadResult();
