@@ -66,6 +66,9 @@ class jfusionViewPlugin extends JViewLegacy {
      * @param null $tpl
      */
     function wrapper($tpl = null) {
+	    $document = JFactory::getDocument();
+	    $document->addScript('components/com_jfusion/views/plugin/tmpl/wrapper.js');
+
         $data = JFusionFrameless::initData($this->jname);
 
         $JFusionPlugin = JFusionFactory::getPublic( $data->jname );

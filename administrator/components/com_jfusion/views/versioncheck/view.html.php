@@ -202,6 +202,12 @@ class jfusionViewversioncheck extends JViewLegacy
 		}
 		ob_end_clean();
 
+		$js=<<<JS
+			JFusion.version = '{$this->JFusionVersion}';
+JS;
+
+		$document->addScriptDeclaration($js);
+
 		parent::display($tpl);
 	}
 

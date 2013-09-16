@@ -130,6 +130,27 @@ class jfusionViewsyncoptions extends JViewLegacy
 		        'UNCHANGED', 'FINISHED', 'PAUSE', 'UPDATE_IN', 'SECONDS', 'SYNC_CONFIRM_START', 'UPDATED', 'PLUGIN', 'USER', 'USERS',
 		        'NAME', 'CREATED'));
 
+			$slave_data = json_encode($this->slave_data);
+
+	        $js=<<<JS
+	        JFusion.slaveData = {$slave_data};
+	        JFusion.syncMode = '{$this->sync_mode}';
+			JFusion.syncid = '{$this->syncid}';
+JS;
+			$document->addScriptDeclaration($js);
+			if ($this->sync_mode != 'new') {
+				$syncdata = json_encode($this->syncdata);
+
+				$js=<<<JS
+	        JFusion.response = {$syncdata};
+
+			window.addEvent('domready',function() {
+				JFusion.renderSync(JFusion.response)
+			});
+JS;
+				$document->addScriptDeclaration($js);
+			}
+
 	        parent::display();
         } else {
             JFusionFunctionAdmin::displayDonate();

@@ -14,59 +14,6 @@ defined('_JEXEC') or die('Restricted access');
 JFusionFunctionAdmin::displayDonate();
 $images = 'components/com_jfusion/images/';
 ?>
-<script type="text/javascript">
-	//<![CDATA[
-	window.addEvent('domready',function() {
-		$('installSERVER').addEvent('submit', function(e) {
-			e.stop();
-			JFusion.submitForm('SERVER');
-		});
-
-		$('installDIR').addEvent('submit', function(e) {
-			e.stop();
-			JFusion.submitForm('DIR');
-		});
-
-		$('installURL').addEvent('submit', function(e) {
-			e.stop();
-			JFusion.submitForm('URL');
-		});
-
-		var installZIP = $('installZIP');
-		installZIP.addEvent('submit', function(e) {
-			var upload;
-			e.stop();
-			$('spinnerZIP').set('html','<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">');
-			upload = new File.Upload({
-				url:  JFusion.url,
-				noCache: true,
-				format: 'json',
-				data: {
-					option: 'com_jfusion',
-					task : 'installplugin',
-					installtype : 'upload'},
-				images: ['install_package'],
-				onComplete: function (result) {
-					$('spinnerZIP').set('html','');
-					if (JSON.validate(result)) {
-						var JSONobject = JSON.decode(result);
-						JFusion.OnMessages(JSONobject.messages);
-
-						JFusion.updateList(JSONobject.pluginlist);
-					} else {
-						JFusion.OnError(result);
-					}
-				},
-				onException:  function () {
-					$('installZIP').submit();
-				}
-			});
-			upload.send();
-		});
-		JFusion.initSortables();
-	});
-	//]]>
-</script>
 <div class="jfusion">
 <form method="post" action="index.php?option=com_jfusion" name="adminForm" id="adminForm">
 	<input type="hidden" name="task" value="saveorder" />

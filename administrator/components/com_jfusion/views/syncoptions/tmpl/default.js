@@ -177,3 +177,66 @@ JFusion.render = function(JSONobject) {
         }
     }
 };
+
+window.addEvent('domready', function() {
+        // start and stop click events
+        $('start').addEvent('click', function(e) {
+            // prevent default
+            e.stop();
+            if (JFusion.syncRunning == 1) {
+                JFusion.stopSync();
+            } else {
+                // prevent insane clicks to start numerous requests
+                clearInterval(JFusion.periodical);
+
+                if (JFusion.syncMode == 'new') {
+                    var form = $('syncForm');
+                    var count = 0;
+
+                    if (form) {
+                        var select = form.getElements('select[name^=slave]');
+
+                        select.each(function (el) {
+                            var value = el.get('value');
+                            if (value) {
+                                JFusion.response.slave_data[count] = {
+                                    "jname": value,
+                                    "total": JFusion.slaveData[value]['total'],
+                                    "total_to_sync": JFusion.slaveData[value]['total'],
+                                    "created": 0,
+                                    "deleted": 0,
+                                    "updated": 0,
+                                    "error": 0,
+                                    "unchanged": 0};
+                                count++;
+                            }
+                        });
+                    }
+                    if (JFusion.response.slave_data.length) {
+                        //give the user a last chance to opt-out
+                        var answer = confirm(Joomla.JText._('SYNC_CONFIRM_START'));
+                        if (answer) {
+                            JFusion.syncMode = 'resume';
+                            //do start
+                            new Request.JSON({
+                                url: JFusion.url,
+                                noCache: true,
+                                onSuccess: function (JSONobject) {
+                                    JFusion.render(JSONobject);
+                                }, onError: function (JSONobject) {
+                                    JFusion.OnError(JSONobject);
+                                    JFusion.stopSync();
+                                }}).get(form.toQueryString() + '&option=com_jfusion&task=syncinitiate&tmpl=component&syncid=' + JFusion.syncid);
+                            JFusion.startSync();
+                        }
+                    } else {
+                        JFusion.OnError(Joomla.JText._('SYNC_NODATA'));
+                    }
+                } else {
+                    JFusion.startSync();
+                }
+            }
+            JFusion.update();
+        });
+    }
+);

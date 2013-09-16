@@ -14,3 +14,10 @@ JFusion.removePlugin = function (button, value) {
     button.form.task.set('value', 'advancedparam');
     button.form.submit();
 };
+
+jQuery(document).ready(function (){
+    jQuery('select').chosen({
+        disable_search_threshold : 10,
+        allow_single_deselect : true
+    });
+});

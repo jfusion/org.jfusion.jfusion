@@ -197,3 +197,16 @@ Joomla.submitbutton = function (pressbutton) {
         Joomla.submitform(pressbutton, $('adminForm'));
     }
 };
+
+window.addEvent('domready',function() {
+    JFusion.createRows();
+
+    Array.each(JFusion.plugins, function (plugin) {
+        var update = $('updateusergroups_'+plugin.name);
+        if (update){
+            update.addEvent('click', function() {
+                JFusion.updatePlugins();
+            });
+        }
+    });
+});

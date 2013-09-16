@@ -326,21 +326,6 @@ JFusionFunctionAdmin::displayDonate();
 	            <h3>
 	                <?php echo JText::_('ADVANCED') . ' ' . JText::_('VERSION') . ' ' . JText::_('MANAGEMENT'); ?>
 	            </h3>
-	            <script type="text/javascript">
-	                <!--
-	                JFusion.version = '<?php echo $this->JFusionVersion; ?>';
-
-	                window.addEvent('domready',function() {
-	                    $('build').addEvent('click', function() {
-		                    JFusion.confirmInstall('build');
-	                    });
-
-	                    $('git').addEvent('click', function() {
-		                    JFusion.confirmInstall('git');
-	                    });
-	                });
-	                // -->
-	            </script>
 
 	            <form enctype="multipart/form-data" action="index.php" method="post" id="install" name="install">
 	                <input type="hidden" name="install_url" value="" />

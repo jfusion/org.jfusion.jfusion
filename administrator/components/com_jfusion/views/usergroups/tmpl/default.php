@@ -14,22 +14,6 @@ defined('_JEXEC') or die('Restricted access');
 JFusionFunctionAdmin::displayDonate();
 $images = 'components/com_jfusion/images/';
 ?>
-<script type="text/javascript">
-	//<![CDATA[
-	window.addEvent('domready',function() {
-		JFusion.createRows();
-
-		Array.each(JFusion.plugins, function (plugin) {
-			var update = $('updateusergroups_'+plugin.name);
-			if (update){
-				update.addEvent('click', function() {
-					JFusion.updatePlugins();
-				});
-			}
-		});
-	});
-	//]]>
-</script>
 <div class="jfusion">
 	<form method="post" action="index.php?option=com_jfusion" name="adminForm" id="adminForm">
 		<input type="hidden" name="task" value="saveusergroups"/>

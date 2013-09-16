@@ -31,3 +31,13 @@ JFusion.confirmInstall = function (action) {
         install.submit();
     });
 };
+
+window.addEvent('domready',function() {
+    $('build').addEvent('click', function() {
+        JFusion.confirmInstall('build');
+    });
+
+    $('git').addEvent('click', function() {
+        JFusion.confirmInstall('git');
+    });
+});
