@@ -17,11 +17,6 @@
 defined('_JEXEC') or die('Restricted access');
 
 /**
- * load the jplugin model
- */
-require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jplugin.php';
-
-/**
  * @category   JFusion
  * @package    JFusionPlugins
  * @subpackage osCommerce
@@ -187,7 +182,7 @@ class JFusionUser_oscommerce extends JFusionUser
 				    }
 				    break;
 			    default:
-				    $status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname(), $this->params->get('logout_type'));
+				    $status = $this->curlLogout($userinfo, $options, $this->params->get('logout_type'));
 		    }
 	    } catch (Exception $e) {
 		    JFusionFunction::raiseError($e, $this->getJname());
@@ -203,7 +198,7 @@ class JFusionUser_oscommerce extends JFusionUser
     function createSession($userinfo, $options) {
         // need to make the username equal the email
         $userinfo->username = $userinfo->email;
-        return JFusionJplugin::createSession($userinfo, $options, $this->getJname(), $this->params->get('brute_force'));
+        return $this->curlLogin($userinfo, $options, $this->params->get('brute_force'));
     }
 
     /**

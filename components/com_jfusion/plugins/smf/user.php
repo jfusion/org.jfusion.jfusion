@@ -18,12 +18,6 @@
 defined('_JEXEC') or die('Restricted access');
 
 /**
- * Load the JFusion framework
- */
-require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jfusion.php';
-require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.abstractuser.php';
-require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jplugin.php';
-/**
  * JFusion User Class for SMF 1.1.x
  * For detailed descriptions on these functions please check the model.abstractuser.php
  *
@@ -243,7 +237,7 @@ class JFusionUser_smf extends JFusionUser
         if (!empty($userinfo->block) || !empty($userinfo->activation)) {
             $status['error'][] = JText::_('FUSION_BLOCKED_USER');
         } else {
-            $status = JFusionJplugin::createSession($userinfo, $options, $this->getJname(), $this->params->get('brute_force'));
+            $status = $this->curlLogin($userinfo, $options, $this->params->get('brute_force'));
         }
         return $status;
     }

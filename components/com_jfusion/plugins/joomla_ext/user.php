@@ -90,7 +90,7 @@ class JFusionUser_joomla_ext extends JFusionJoomlaUser {
      * @return array
      */
     function destroySession($userinfo, $options) {
-        $status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname(),$this->params->get('logout_type'));
+        $status = $this->curlLogout($userinfo, $options, $this->params->get('logout_type'));
         return $status;
     }
 
@@ -105,7 +105,7 @@ class JFusionUser_joomla_ext extends JFusionJoomlaUser {
         if (!empty($userinfo->block) || !empty($userinfo->activation)) {
             $status['error'][] = JText::_('FUSION_BLOCKED_USER');
         } else {
-            $status = JFusionJplugin::createSession($userinfo, $options, $this->getJname(),$this->params->get('brute_force'));
+            $status = $this->curlLogin($userinfo, $options, $this->params->get('brute_force'));
         }
         return $status;
     }

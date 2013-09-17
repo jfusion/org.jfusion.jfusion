@@ -17,11 +17,6 @@
 defined('_JEXEC') or die('Restricted access');
 
 /**
- * load the jplugin model
- */
-require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jplugin.php';
-
-/**
  * @category   JFusion
  * @package    JFusionPlugins
  * @subpackage efront
@@ -103,7 +98,7 @@ class JFusionUser_efront extends JFusionUser
         }
 	    try {
 	        $db = JFusionFactory::getDatabase($this->getJname());
-	        $status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname(),$this->params->get('logout_type'));
+	        $status = $this->curlLogout($userinfo, $options,$this->params->get('logout_type'));
 
 		    $query = $db->getQuery(true)
 			    ->select('action')

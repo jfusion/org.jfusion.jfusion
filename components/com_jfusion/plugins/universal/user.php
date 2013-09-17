@@ -10,13 +10,6 @@
 // no direct access
 defined('_JEXEC' ) or die('Restricted access' );
 
-/**
- * Load the JFusion framework
- */
-require_once(JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.jfusion.php');
-require_once(JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.abstractuser.php');
-require_once(JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.jplugin.php');
-
 require_once(dirname(__FILE__).DIRECTORY_SEPARATOR.'map.php');
 
 /**
@@ -178,7 +171,7 @@ class JFusionUser_universal extends JFusionUser
 		$cookie_backup = $_COOKIE;
 		$_COOKIE = array();
 		$_COOKIE['jfusionframeless'] = true;
-		$status = JFusionJplugin::destroySession($userinfo, $options,$this->getJname(),'no_brute_force');
+		$status = $this->curlLogout($userinfo, $options, 'no_brute_force');
 		$_COOKIE = $cookie_backup;
 		$status['debug'][] = JFusionFunction::addCookie($this->params->get('cookie_name'), '', 0, $this->params->get('cookie_path'), $this->params->get('cookie_domain'), $this->params->get('secure'), $this->params->get('httponly'));
 		return $status;
@@ -199,7 +192,7 @@ class JFusionUser_universal extends JFusionUser
 			$cookie_backup = $_COOKIE;
 			$_COOKIE = array();
 			$_COOKIE['jfusionframeless'] = true;
-			$status = JFusionJplugin::createSession($userinfo, $options,$this->getJname(),'no_brute_force');
+			$status = $this->curlLogin($userinfo, $options, 'no_brute_force');
 			$_COOKIE = $cookie_backup;
 		}
 		return $status;

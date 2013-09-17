@@ -28,8 +28,6 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
-require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jplugin.php';
-
 /**
  * JFusion User Class for Moodle 1.8+
  * For detailed descriptions on these functions please check the model.abstractuser.php
@@ -249,7 +247,7 @@ class JFusionUser_moodle extends JFusionUser {
 
 			if ($myfrm == -1) {
 				// did not find a session key, so perform a brute force logout
-				$status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname());
+				$status = $this->curlLogout($userinfo, $options);
 			} else {
 				$elements_keys = array_keys($result[$myfrm]['form_elements']);
 				$elements_values = array_values($result[$myfrm]['form_elements']);
@@ -263,10 +261,10 @@ class JFusionUser_moodle extends JFusionUser {
 				}
 				if ($sessionkey == '') {
 					// did not find a session key, so perform a brute force logout
-					$status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname());
+					$status = $this->curlLogout($userinfo, $options);
 				} else {
 					$curl_options['post_url'] = $curl_options['post_url']."?sesskey=$sessionkey";
-					$status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname(), $this->params->get('logout_type'), $curl_options);
+					$status = $this->curlLogout($userinfo, $options, $this->params->get('logout_type'), $curl_options);
 				}
 			}
 		}
@@ -297,7 +295,7 @@ class JFusionUser_moodle extends JFusionUser {
 				$curl_options['hidden']='1' ;
 			}
 		}
-		$status = JFusionJplugin::createSession($userinfo, $options, $this->getJname(), $logintype, $curl_options);
+		$status = $this->curlLogin($userinfo, $options, $logintype, $curl_options);
 		// check if the login was successful
 		if (!empty($status['cURL']['moodle'])) {
 			$loggedin_user = $this->rc4decrypt($status['cURL']['moodle']);

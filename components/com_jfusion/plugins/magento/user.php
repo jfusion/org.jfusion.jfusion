@@ -15,10 +15,6 @@
 
 // no direct access
 defined('_JEXEC') or die('Restricted access');
-/**
- * load the Factory and jplugin model
- */
-require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jplugin.php';
 
 /**
  * JFusion User Class for Magento 1.1
@@ -316,7 +312,7 @@ class JFusionUser_magento extends JFusionUser {
 	 * @return array
 	 */
 	function destroySession($userinfo, $options) {
-		return JFusionJplugin::destroySession($userinfo, $options, $this->getJname(),$this->params->get('logout_type'));
+		return $this->curlLogout($userinfo, $options,$this->params->get('logout_type'));
 	}
 
 	/**
@@ -330,7 +326,7 @@ class JFusionUser_magento extends JFusionUser {
 		if (!empty($userinfo->block) || !empty($userinfo->activation)) {
 			$status['error'][] = JText::_('FUSION_BLOCKED_USER');
 		} else {
-			$status = JFusionJplugin::createSession($userinfo, $options, $this->getJname(),$this->params->get('brute_force'));
+			$status = $this->curlLogin($userinfo, $options, $this->params->get('brute_force'));
 		}
 		return $status;
 	}

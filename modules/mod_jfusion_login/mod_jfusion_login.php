@@ -21,7 +21,6 @@ defined('_JEXEC') or die('Restricted access');
  * require the module helper
  */
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'helper.php';
-require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jplugin.php';
 $user = JFactory::getUser();
 /**
  * @ignore

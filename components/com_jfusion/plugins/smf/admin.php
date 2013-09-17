@@ -18,12 +18,6 @@
 defined('_JEXEC') or die('Restricted access');
 
 /**
- * Load the JFusion framework
- */
-require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jfusion.php';
-require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.abstractadmin.php';
-
-/**
  * JFusion Admin Class for SMF 1.1.x
  * For detailed descriptions on these functions please check the model.abstractadmin.php
  *

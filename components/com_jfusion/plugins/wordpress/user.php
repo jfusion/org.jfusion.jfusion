@@ -16,8 +16,6 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
-require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jplugin.php';
-
 /**
  * JFusion User Class for Wordpress 3+
  * For detailed descriptions on these functions please check the model.abstractuser.php
@@ -215,7 +213,7 @@ class JFusionUser_wordpress extends JFusionUser
         preg_match("/action=logout.+?_wpnonce=([\w\s-]*)[\"']/i",$remotedata,$wpnonce);
         if (!empty($wpnonce[1])){
  					$curl_options['post_url'] = $curl_options['post_url'].'?action=logout&_wpnonce='.$wpnonce[1];
-					$status = JFusionJplugin::destroySession($userinfo, $options, $this->getJname(), $this->params->get('logout_type'), $curl_options);
+					$status = $this->curlLogout($userinfo, $options, $this->params->get('logout_type'), $curl_options);
         } else {
           // non wpnonce, we are probably not on the logout page. Just report
           $status['debug'][]= JText::_('NO_WPNONCE_FOUND: ');
@@ -256,7 +254,7 @@ class JFusionUser_wordpress extends JFusionUser
         if (!empty($userinfo->block) || !empty($userinfo->activation)) {
             $status['error'][] = JText::_('FUSION_BLOCKED_USER');
         } else {
-            $status = JFusionJplugin::createSession($userinfo, $options, $this->getJname(), $this->params->get('brute_force'));
+            $status = $this->curlLogin($userinfo, $options, $this->params->get('brute_force'));
         }
 		return $status;
 	}
