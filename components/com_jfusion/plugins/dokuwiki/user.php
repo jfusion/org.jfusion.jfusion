@@ -88,7 +88,7 @@ class JFusionUser_dokuwiki extends JFusionUser
 				    }
 				    //check for advanced usergroup sync
 				    if (JFusionFunction::updateUsergroups($this->getJname())) {
-					    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
+					    $usergroups = $this->getCorrectUserGroups($userinfo);
 					    if (!empty($usergroups)) {
 						    if (!$this->compareUserGroups($existinguser, $usergroups)) {
 							    $changes['grps'] = $usergroups;
@@ -212,12 +212,12 @@ class JFusionUser_dokuwiki extends JFusionUser
 	    $this->helper->defineConstants();
 
         $time = -3600;
-        $status['debug'][] = JFusionFunction::addCookie(DOKU_COOKIE, '', $time, $cookie_path, $cookie_domain, $cookie_secure, $httponly);
+        $status['debug'][] = $this->addCookie(DOKU_COOKIE, '', $time, $cookie_path, $cookie_domain, $cookie_secure, $httponly);
         // remove blank domain name cookie just in case we are using wrapper
         $source_url = $this->params->get('source_url');
         $cookie_path = preg_replace('#(\w{0,10}://)(.*?)/(.*?)#is', '$3', $source_url);
         $cookie_path = preg_replace('#//+#', '/', "/$cookie_path/");
-        $status['debug'][] = JFusionFunction::addCookie(DOKU_COOKIE, '', $time, $cookie_path, '', $cookie_secure, $httponly);
+        $status['debug'][] = $this->addCookie(DOKU_COOKIE, '', $time, $cookie_path, '', $cookie_secure, $httponly);
 
         return $status;
     }
@@ -251,7 +251,7 @@ class JFusionUser_dokuwiki extends JFusionUser
 			} else {
                 $cookie_value = base64_encode($userinfo->username.'|'.$sticky.'|'.$pass);
 			}
-            $status['debug'][] = JFusionFunction::addCookie(DOKU_COOKIE, $cookie_value, 60*60*24*365, $cookie_path, $cookie_domain, $cookie_secure, $httponly);
+            $status['debug'][] = $this->addCookie(DOKU_COOKIE, $cookie_value, 60*60*24*365, $cookie_path, $cookie_domain, $cookie_secure, $httponly);
         }
 
         return $status;
@@ -275,7 +275,7 @@ class JFusionUser_dokuwiki extends JFusionUser
      */
     function createUser($userinfo, &$status) {
 	    try {
-		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
+		    $usergroups = $this->getCorrectUserGroups($userinfo);
 		    if (empty($usergroups)) {
 			    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 		    } else {

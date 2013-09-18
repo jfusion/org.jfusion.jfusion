@@ -43,8 +43,8 @@ class JFormFieldJFusionUsergroups extends JFormField
         global $jname;
 	    try {
 	        if ($jname) {
-	            if (JFusionFunction::validPlugin($jname) || $jname == 'joomla_int') {
-	                $JFusionPlugin = JFusionFactory::getAdmin($jname);
+		        $JFusionPlugin = JFusionFactory::getAdmin($jname);
+	            if ($JFusionPlugin->isConfigured() || $jname == 'joomla_int') {
 	                $usergroups = $JFusionPlugin->getUsergroupList();
 	                $multiple = $this->multiple;
 	                if (!empty($usergroups)) {

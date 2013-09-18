@@ -158,9 +158,9 @@ class JFusionUser_phpbb3 extends JFusionUser
 		    }
 
 	        //delete the cookies
-	        $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_u', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly);
-	        $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_sid', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly);
-	        $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_k', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly);
+	        $status['debug'][] = $this->addCookie($phpbb_cookie_name . '_u', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly);
+	        $status['debug'][] = $this->addCookie($phpbb_cookie_name . '_sid', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly);
+	        $status['debug'][] = $this->addCookie($phpbb_cookie_name . '_k', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly);
 
 	        $_COOKIE[$phpbb_cookie_name . '_u'] = '';
 	        $_COOKIE[$phpbb_cookie_name . '_sid'] = '';
@@ -346,8 +346,8 @@ class JFusionUser_phpbb3 extends JFusionUser
 						    $jdb->insertObject('#__sessions', $session_obj);
 
 						    //Set cookies
-						    $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_u', $userid, $expires, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly);
-						    $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_sid', $session_key, $expires, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly, true);
+						    $status['debug'][] = $this->addCookie($phpbb_cookie_name . '_u', $userid, $expires, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly);
+						    $status['debug'][] = $this->addCookie($phpbb_cookie_name . '_sid', $session_key, $expires, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly, true);
 
 						    //Force the values into the $_COOKIE variable just in case Joomla remember me plugin fired this in which the cookie will not be available until after the browser refreshes.  This will hopefully trick phpBB into thinking the cookie is present now and thus handle sessions correctly when in frameless mode
 						    $_COOKIE[$phpbb_cookie_name . '_u'] = $userid;
@@ -364,7 +364,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 							    $session_key_ins->last_login = $session_start;
 							    $jdb->insertObject('#__sessions_keys', $session_key_ins);
 
-							    $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_k', $key_id, $expires, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly, true);
+							    $status['debug'][] = $this->addCookie($phpbb_cookie_name . '_k', $key_id, $expires, $phpbb_cookie_path, $phpbb_cookie_domain, $secure, $httponly, true);
 							    $_COOKIE[$phpbb_cookie_name . '_k'] = $key_id;
 						    }
 					    } else {
@@ -469,7 +469,7 @@ class JFusionUser_phpbb3 extends JFusionUser
      */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
 	    try {
-		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
+		    $usergroups = $this->getCorrectUserGroups($userinfo);
 		    if (empty($usergroups)) {
 			    $status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ' ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST');
 		    } else {
@@ -608,7 +608,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 	function executeUpdateUsergroup(&$userinfo, &$existinguser, &$status)
 	{
 		$update_groups = false;
-		$usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
+		$usergroups = $this->getCorrectUserGroups($userinfo);
 		$usergroup = $usergroups[0];
 
 		$groups = (isset($usergroup->groups)) ? $usergroup->groups : array();
@@ -753,7 +753,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 		    $db = JFusionFactory::getDatabase($this->getJname());
 		    $update_block = $this->params->get('update_block');
 		    $update_activation = $this->params->get('update_activation');
-		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
+		    $usergroups = $this->getCorrectUserGroups($userinfo);
 		    if (empty($usergroups)) {
 			    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 		    } else {
@@ -1450,9 +1450,9 @@ class JFusionUser_phpbb3 extends JFusionUser
 						    $phpbb_cookie_domain = '';
 					    }
 					    //delete the cookies
-					    $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_u', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain);
-					    $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_sid', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain);
-					    $status['debug'][] = JFusionFunction::addCookie($phpbb_cookie_name . '_k', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain);
+					    $status['debug'][] = $this->addCookie($phpbb_cookie_name . '_u', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain);
+					    $status['debug'][] = $this->addCookie($phpbb_cookie_name . '_sid', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain);
+					    $status['debug'][] = $this->addCookie($phpbb_cookie_name . '_k', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain);
 					    $return = 1;
 				    } elseif ($debug) {
 					    JFusionFunction::raiseNotice('Keep alive enabled so renew Joomla\'s session', $this->getJname());

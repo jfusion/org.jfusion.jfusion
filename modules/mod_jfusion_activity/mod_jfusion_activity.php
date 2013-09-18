@@ -49,7 +49,8 @@ try {
 		}
 		$jname = $parametersInstance->get('jfusionplugin');
 
-		if(JFusionFunction::validPlugin($jname)) {
+		$forum = JFusionFactory::getForum($jname);
+		if($forum->isConfigured()) {
 			$pluginParam = new JRegistry('');
 			$data = $parametersInstance->get($jname);
 			if (is_array($data)) {
@@ -59,7 +60,6 @@ try {
 			}
 
 			$view = $pluginParam->get('view', 'auto');
-	        $forum = JFusionFactory::getForum($jname);
 
 			defined('_DATE_FORMAT_LC2') or define('_DATE_FORMAT_LC2','Y M d h:i:s A');
 			defined('LAT') or define('LAT', 0);
@@ -162,7 +162,7 @@ try {
 	                }
 	            }
 			} else {
-				if (JFusionFunction::methodDefined($forum, 'renderActivityModule')) {
+				if ($forum->methodDefined('renderActivityModule')) {
 					$output = $forum->renderActivityModule($config,$view, $pluginParam);
 					echo $output;
 				} else {

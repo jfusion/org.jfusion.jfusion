@@ -176,11 +176,11 @@ class JFusionUser_efront extends JFusionUser
 	            }
 	            $name = 'cookie_login';
 	            $value = $userinfo->username;
-	            $status['debug'][] = JFusionFunction::addCookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
+	            $status['debug'][] = $this->addCookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
 
 	            $name = 'cookie_password';
 	            $value = $user->password;
-	            $status['debug'][] = JFusionFunction::addCookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
+	            $status['debug'][] = $this->addCookie($name, $value, $expires, $cookiepath, $cookiedomain, $secure, $httponly);
 	        }
 	    } catch (Exception $e) {
 		    $status['error'][] = $e->getMessage();
@@ -395,7 +395,7 @@ class JFusionUser_efront extends JFusionUser
 	        }
 	        $user->email = $userinfo->email;
 
-	        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+	        $usergroups = $this->getCorrectUserGroups($userinfo);
 	        if (empty($usergroups)) {
 		        throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 	        } else {
@@ -579,7 +579,7 @@ class JFusionUser_efront extends JFusionUser
      */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
 	    try {
-		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(),$userinfo);
+		    $usergroups = $this->getCorrectUserGroups($userinfo);
 		    if (empty($usergroups)) {
 			    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 		    } else {

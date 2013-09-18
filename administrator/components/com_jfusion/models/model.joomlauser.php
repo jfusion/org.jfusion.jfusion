@@ -447,7 +447,7 @@ class JFusionJoomlaUser extends JFusionUser
      */
     public function createUser($userinfo, &$status)
     {
-        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
+        $usergroups = $this->getCorrectUserGroups($userinfo);
 	    try {
 		    //get the default user group and determine if we are using simple or advanced
 		    //check to make sure that if using the advanced group mode, $userinfo->group_id exists
@@ -689,7 +689,7 @@ class JFusionJoomlaUser extends JFusionUser
 				    //check for advanced usergroup sync
 				    if (!$userinfo->block && empty($userinfo->activation)) {
 					    if (JFusionFunction::updateUsergroups($this->getJname())) {
-						    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
+						    $usergroups = $this->getCorrectUserGroups($userinfo);
 						    if (!$this->compareUserGroups($existinguser,$usergroups)) {
 							    $this->updateUsergroup($userinfo, $existinguser, $status);
 							    $changed = true;
@@ -745,7 +745,7 @@ class JFusionJoomlaUser extends JFusionUser
     public function updateUsergroup($userinfo, &$existinguser, &$status, $fire_user_plugins = true)
     {
 	    try {
-		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
+		    $usergroups = $this->getCorrectUserGroups($userinfo);
 		    //make sure the group exists
 		    if (empty($usergroups)) {
 			    throw new RuntimeException(JText::_('GROUP_UPDATE_ERROR') . ': ' . JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST'));

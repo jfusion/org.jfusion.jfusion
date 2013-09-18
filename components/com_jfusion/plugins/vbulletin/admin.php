@@ -730,7 +730,7 @@ HTML;
 	function name_field($name, $value, $node, $control_name)
 	{
 		try {
-			if (JFusionFunction::validPlugin($this->getJname())) {
+			if ($this->isConfigured()) {
 				try {
 					$db = JFusionFactory::getDatabase($this->getJname());
 				} catch (Exception $e) {

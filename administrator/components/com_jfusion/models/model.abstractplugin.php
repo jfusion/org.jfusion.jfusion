@@ -30,7 +30,8 @@ require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTOR
  */
 class JFusionPlugin
 {
-	static public $language = array();
+	static protected $language = array();
+	static protected $status = array();
 
 	/**
 	 * @var JRegistry
@@ -85,5 +86,65 @@ class JFusionPlugin
 	function getJname()
 	{
 		return '';
+	}
+
+	/**
+	 * Function to check if a method has been defined inside a plugin like: setupFromPath
+	 *
+	 * @param $method
+	 *
+	 * @return bool
+	 */
+	final public function methodDefined($method) {
+		$name = get_class($this);
+
+		//if the class name is the abstract class then return false
+		$abstractClassNames = array('JFusionAdmin', 'JFusionAuth', 'JFusionForum', 'JFusionPublic', 'JFusionUser', 'JFusionPlugin');
+		$return = false;
+		if (!in_array($name, $abstractClassNames)) {
+			try {
+				$m = new ReflectionMethod($this, $method);
+				$classname = $m->getDeclaringClass()->getName();
+				if ( $classname == $name || !in_array($classname, $abstractClassNames)) {
+					$return = true;
+				}
+			} catch (Exception $e) {
+				$return = false;
+			}
+		}
+		return $return;
+	}
+
+	/**
+	 * Checks to see if the JFusion plugin is properly configured
+	 *
+	 * @return boolean returns true if plugin is correctly configured
+	 */
+	final public function isConfigured()
+	{
+		$jname = $this->getJname();
+		$result = false;
+
+		if (!empty($jname)) {
+			if (!isset(static::$status[$jname])) {
+				$db = JFactory::getDBO();
+				$query = $db->getQuery(true)
+					->select('status')
+					->from('#__jfusion')
+					->where('name = '.$db->Quote($jname));
+
+				$db->setQuery($query);
+				$result = $db->loadResult();
+				if ($result == '1') {
+					$result = true;
+				} else {
+					$result = false;
+				}
+				static::$status[$jname] = $result;
+			} else {
+				$result = static::$status[$jname];
+			}
+		}
+		return $result;
 	}
 }

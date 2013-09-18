@@ -52,7 +52,8 @@ class JFormFieldjfusionsql extends JFormField
 
 	    try {
 		    if($jname) {
-			    if (JFusionFunction::validPlugin($jname)) {
+			    $user = JFusionFactory::getUser($jname);
+			    if ($user->isConfigured()) {
 				    $query = (string) $this->element['query'];
 
 				    //some special queries for discussion bot

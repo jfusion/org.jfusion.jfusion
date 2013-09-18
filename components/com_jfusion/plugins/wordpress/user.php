@@ -438,7 +438,7 @@ class JFusionUser_wordpress extends JFusionUser
 	    try {
 		    //find out what usergroup should be used
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
+		    $usergroups = $this->getCorrectUserGroups($userinfo);
 		    if (empty($usergroups)) {
 			    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 		    } else {
@@ -664,7 +664,7 @@ class JFusionUser_wordpress extends JFusionUser
      */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
 	    try {
-		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
+		    $usergroups = $this->getCorrectUserGroups($userinfo);
 		    if (empty($usergroups)) {
 			    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 		    } else {

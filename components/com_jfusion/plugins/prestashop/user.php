@@ -449,7 +449,7 @@ class JFusionUser_prestashop extends JFusionUser {
 					    // enter customer group into database
 					    $ps_address->id_customer = $ps_customer->id_customer;
 
-					    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
+					    $usergroups = $this->getCorrectUserGroups($userinfo);
 
 					    foreach($usergroups as $value) {
 						    $ps_customer_group = new stdClass;
@@ -557,7 +557,7 @@ class JFusionUser_prestashop extends JFusionUser {
      */
     function updateUsergroup($userinfo, &$existinguser, &$status) {
 	    try {
-		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
+		    $usergroups = $this->getCorrectUserGroups($userinfo);
 		    if (empty($usergroups)) {
 			    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 		    } else {

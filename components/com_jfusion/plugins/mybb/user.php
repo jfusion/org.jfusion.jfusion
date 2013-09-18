@@ -89,11 +89,11 @@ class JFusionUser_mybb extends JFusionUser {
         $remove_cookies = array('mybb', 'mybbuser', 'mybbadmin');
         if ($cookiedomain) {
             foreach ($remove_cookies as $name) {
-                $status['debug'][] = JFusionFunction::addCookie($name,  '', $expires, $cookiepath, '', $cookiedomain);
+                $status['debug'][] = $this->addCookie($name,  '', $expires, $cookiepath, '', $cookiedomain);
             }
         } else {
             foreach ($remove_cookies as $name) {
-                $status['debug'][] = JFusionFunction::addCookie($name,  '', $expires, $cookiepath, '');
+                $status['debug'][] = $this->addCookie($name,  '', $expires, $cookiepath, '');
             }
         }
         return $status;
@@ -143,7 +143,7 @@ class JFusionUser_mybb extends JFusionUser {
 		        }
 		        $cookiepath = str_replace(array("\n", "\r"), '', $cookiepath);
 		        $cookiedomain = str_replace(array("\n", "\r"), '', $cookiedomain);
-		        $status['debug'][] = JFusionFunction::addCookie($name, $value, $expires, $cookiepath, $cookiedomain, false, $httponly ,true);
+		        $status['debug'][] = $this->addCookie($name, $value, $expires, $cookiepath, $cookiedomain, false, $httponly ,true);
 	        }
 	    } catch (Exception $e) {
 		    $status['error'][] = $e->getMessage();
@@ -227,7 +227,7 @@ class JFusionUser_mybb extends JFusionUser {
 
 		    //check the oldgroup
 		    if (empty($oldgroup)) {
-			    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
+			    $usergroups = $this->getCorrectUserGroups($userinfo);
 			    if (!empty($usergroups)) {
 				    $oldgroup = $usergroups[0];
 			    }
@@ -289,7 +289,7 @@ class JFusionUser_mybb extends JFusionUser {
     function updateUsergroup($userinfo, &$existinguser, &$status)
     {
 		try {
-			$usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
+			$usergroups = $this->getCorrectUserGroups($userinfo);
 			if (empty($usergroups)) {
 				$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . JText::_('USERGROUP_MISSING');
 			} else {
@@ -322,7 +322,7 @@ class JFusionUser_mybb extends JFusionUser {
 	    try {
 		    //found out what usergroup should be used
 		    $db = JFusionFactory::getDatabase($this->getJname());
-		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
+		    $usergroups = $this->getCorrectUserGroups($userinfo);
 		    if (empty($usergroups)) {
 			    $status['error'][] = JText::_('ERROR_CREATE_USER') . ' ' . JText::_('USERGROUP_MISSING');
 		    } else {
@@ -402,7 +402,7 @@ class JFusionUser_mybb extends JFusionUser {
     function activateUser($userinfo, &$existinguser, &$status) {
 	    try {
 		    //found out what usergroup should be used
-		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
+		    $usergroups = $this->getCorrectUserGroups($userinfo);
 		    if (empty($usergroups)) {
 			    $status['error'][] = JText::_('ACTIVATION_UPDATE_ERROR') . ': ' . JText::_('USERGROUP_MISSING');
 		    } else {

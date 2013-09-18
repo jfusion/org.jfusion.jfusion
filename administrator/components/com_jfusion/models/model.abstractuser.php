@@ -353,7 +353,7 @@ class JFusionUser extends JFusionPlugin
     function executeUpdateUsergroup(&$userinfo, &$existinguser, &$status)
     {
         $changed = false;
-        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
+        $usergroups = $this->getCorrectUserGroups($userinfo);
 		if (!$this->compareUserGroups($existinguser, $usergroups)) {
             $this->updateUsergroup($userinfo, $existinguser, $status);
             $changed = true;
@@ -612,7 +612,7 @@ class JFusionUser extends JFusionPlugin
 	 *
 	 * @return string nothing
 	 */
-	public function curlLogin($userinfo, $options, $type = 'brute_force',$curl_options_merge=array())
+	final public function curlLogin($userinfo, $options, $type = 'brute_force', $curl_options_merge = array())
 	{
 		require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.curl.php';
 		$curl_options = array();
@@ -750,7 +750,7 @@ class JFusionUser extends JFusionPlugin
 	 *
 	 * @return array result Array containing the result of the session destroy
 	 */
-	public function curlLogout($userinfo, $options, $type = 'brute_force',$curl_options_merge=array())
+	final public function curlLogout($userinfo, $options, $type = 'brute_force', $curl_options_merge = array())
 	{
 		require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.curl.php';
 		$curl_options = array();
@@ -865,5 +865,68 @@ class JFusionUser extends JFusionPlugin
 		}
 		$status['debug'][] = JText::_('CURL_LOGOUTTYPE') . '=' . $type;
 		return $status;
+	}
+
+	/**
+	 * return the correct usergroups for a given user
+	 *
+	 * @param object|null $userinfo user with correct usergroups, if null it will return the usergroup for new users
+	 *
+	 * @return array
+	 */
+	final public function getCorrectUserGroups($userinfo)
+	{
+		$jname = $this->getJname();
+		$group = array();
+
+		$master = JFusionFunction::getMaster();
+
+		$mastergroups = JFusionFunction::getUserGroups($master->name);
+		$slavegroups = JFusionFunction::getUserGroups($jname);
+
+		if ($master->name == $jname) {
+			if (isset($mastergroups[0])) {
+				$group = $mastergroups[0];
+			}
+		} else {
+			$user = JFusionFactory::getUser($master->name);
+			$index = $user->getUserGroupIndex($mastergroups, $userinfo);
+
+			if (isset($slavegroups[$index])) {
+				$group = $slavegroups[$index];
+			}
+
+			if ($group === null && isset($slavegroups[0])) {
+				$group =  $slavegroups[0];
+			}
+		}
+		if (!is_array($group)) {
+			if ($group !==  null) {
+				$group = array($group);
+			} else {
+				$group = array();
+			}
+		}
+		return $group;
+	}
+
+	/**
+	 * Adds a cookie to the php header
+	 *
+	 * @param string $name      cookie name
+	 * @param string $value     cookie value
+	 * @param int    $expires   cookie expiry time
+	 * @param string $path      cookie path
+	 * @param string $domain    cookie domain
+	 * @param bool $secure      is the secure
+	 * @param bool $httponly    is the cookie http only
+	 * @param bool $mask        should debug info be masked ?
+	 *
+	 * @return array            cookie debug info
+	 */
+	final public function addCookie($name, $value, $expires, $path, $domain, $secure = false, $httponly = false, $mask = false)
+	{
+		$cookies = JFusionFactory::getCookies();
+		return $cookies->addCookie($name, $value, $expires, $path, $domain, $secure, $httponly, $mask);
 	}
 }

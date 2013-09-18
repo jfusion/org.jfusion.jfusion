@@ -61,8 +61,8 @@ class JFormFieldForumlist extends JFormField
 
 			$control_name = $this->formControl.'['.$this->group.']';
 			if (!empty($jname)) {
-				if (JFusionFunction::validPlugin($jname)) {
-					$JFusionPlugin = JFusionFactory::getForum($jname);
+				$JFusionPlugin = JFusionFactory::getForum($jname);
+				if ($JFusionPlugin->isConfigured()) {
 					if (method_exists($JFusionPlugin, 'getForumList')) {
 						$forumlist = $JFusionPlugin->getForumList();
 						if (!empty($forumlist)) {

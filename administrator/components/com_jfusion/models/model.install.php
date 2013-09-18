@@ -476,9 +476,9 @@ class JFusionPluginInstaller extends JObject
     {
     	$result['status'] = false;
 	    try {
-		    if (JFusionFunction::validPlugin($jname)) {
+		    $JFusionAdmin = JFusionFactory::getAdmin($jname);
+		    if ($JFusionAdmin->isConfigured()) {
 			    //if this plugin had been valid, call its uninstall function if it exists
-			    $JFusionAdmin = JFusionFactory::getAdmin($jname);
 			    $result = $JFusionAdmin->uninstall();
 			    $reason = '';
 			    if (is_array($result)) {

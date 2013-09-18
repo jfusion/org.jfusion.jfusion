@@ -237,7 +237,9 @@ class JFusionPublic_smf2 extends JFusionPublic {
             $mainframe->logout();
             $session = JFactory::getSession();
             $session->close();
-            JFusionFunction::addCookie($this->params->get('cookie_name'), '', 0, $this->params->get('cookie_path'), $this->params->get('cookie_domain'), $this->params->get('secure'), $this->params->get('httponly'));
+
+	        $cookies = JFusionFactory::getCookies();
+	        $cookies->addCookie($this->params->get('cookie_name'), '', 0, $this->params->get('cookie_path'), $this->params->get('cookie_domain'), $this->params->get('secure'), $this->params->get('httponly'));
             //redirect so the changes are applied
             $mainframe->redirect(str_replace('&amp;', '&', $data->baseURL));
             exit();

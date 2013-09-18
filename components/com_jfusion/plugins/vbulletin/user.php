@@ -207,12 +207,11 @@ class JFusionUser_vbulletin extends JFusionUser
 			//If blocking a user in Joomla User Manager, Joomla will initiate a logout.
 			//Thus, prevent a logout of the currently logged in user if a user has been blocked:
 			if (!defined('VBULLETIN_BLOCKUSER_CALLED')) {
-				require_once JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.curl.php';
-
+				$cookies = JFusionFactory::getCookies();
 				//clear out all of vB's cookies
 				foreach ($_COOKIE AS $key => $val) {
 					if (strpos($key, $cookie_prefix) !== false) {
-						$status['debug'][] = JFusionCurl::addCookie($key , 0, $timenow - 3600, $cookie_path, $cookie_domain, $secure, $httponly);
+						$status['debug'][] = $cookies->addCookie($key , 0, -3600, $cookie_path, $cookie_domain, $secure, $httponly);
 					}
 				}
 
@@ -335,8 +334,9 @@ class JFusionUser_vbulletin extends JFusionUser
 					$secure = $this->params->get('secure', false);
 					$httponly = $this->params->get('httponly', true);
 
-					$status['debug'][] = JFusionCurl::addCookie($cookie_prefix.'userid' , $userinfo->userid, $expires_time,  $cookie_path, $cookie_domain, $secure, $httponly);
-					$status['debug'][] = JFusionCurl::addCookie($cookie_prefix.'password' , $passwordhash, $expires_time, $cookie_path, $cookie_domain, $secure, $httponly, true);
+					$cookies = JFusionFactory::getCookies();
+					$status['debug'][] = $cookies->addCookie($cookie_prefix.'userid' , $userinfo->userid, $expires_time,  $cookie_path, $cookie_domain, $secure, $httponly);
+					$status['debug'][] = $cookies->addCookie($cookie_prefix.'password' , $passwordhash, $expires_time, $cookie_path, $cookie_domain, $secure, $httponly, true);
 				} else {
 					$status['debug'][] = JText::_('VB_SESSION_ALREADY_ACTIVE');
 					/*
@@ -497,7 +497,7 @@ class JFusionUser_vbulletin extends JFusionUser
 	function unblockUser($userinfo, &$existinguser, &$status)
 	{
 		try {
-			$usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $existinguser);
+			$usergroups = $this->getCorrectUserGroups($existinguser);
 			$usergroup = $usergroups[0];
 
 			//found out what usergroup should be used
@@ -571,7 +571,7 @@ class JFusionUser_vbulletin extends JFusionUser
 	{
 		try {
 			//found out what usergroup should be used
-			$usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $existinguser);
+			$usergroups = $this->getCorrectUserGroups($existinguser);
 			$usergroup = $usergroups[0];
 
 			//update the usergroup to default group
@@ -640,7 +640,7 @@ class JFusionUser_vbulletin extends JFusionUser
 				jimport('joomla.user.helper');
 				$useractivation->activationid = JUserHelper::genRandomPassword(40);
 
-				$usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $existinguser);
+				$usergroups = $this->getCorrectUserGroups($existinguser);
 				$usergroup = $usergroups[0];
 				$useractivation->usergroupid = $usergroup->defaultgroup;
 
@@ -677,7 +677,7 @@ class JFusionUser_vbulletin extends JFusionUser
 	{
 		try {
 			//get the default user group and determine if we are using simple or advanced
-			$usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
+			$usergroups = $this->getCorrectUserGroups($userinfo);
 
 			//return if we are in advanced user group mode but the master did not pass in a group_id
 			if (empty($usergroups)) {
@@ -770,7 +770,7 @@ class JFusionUser_vbulletin extends JFusionUser
 	function executeUpdateUsergroup(&$userinfo, &$existinguser, &$status)
 	{
 		$update_groups = false;
-		$usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
+		$usergroups = $this->getCorrectUserGroups($userinfo);
 		$usergroup = $usergroups[0];
 
 		$membergroupids = (isset($usergroup->membergroups)) ? $usergroup->membergroups : array();
@@ -814,7 +814,7 @@ class JFusionUser_vbulletin extends JFusionUser
 	function updateUsergroup($userinfo, &$existinguser, &$status)
 	{
 		//check to see if we have a group_id in the $userinfo, if not return
-		$usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
+		$usergroups = $this->getCorrectUserGroups($userinfo);
 		if (empty($usergroups)) {
 			$status['error'][] = JText::_('GROUP_UPDATE_ERROR'). ': ' . JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID');
 		} else {

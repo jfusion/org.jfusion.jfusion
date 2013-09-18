@@ -82,7 +82,7 @@ class JFusionFunction
      *
      * @return object master details
      */
-	public static function getPluginStatus($element,$folder) {
+	public static function getPluginStatus($element, $folder) {
 		//get joomla specs
         $db = JFactory::getDBO();
 
@@ -436,31 +436,6 @@ class JFusionFunction
     }
 
     /**
-     * Checks to see if a JFusion plugin is properly configured
-     *
-     * @param string $jname name of the JFusion plugin used
-     *
-     * @return boolean returns true if plugin is correctly configured
-     */
-    public static function validPlugin($jname)
-    {
-        $db = JFactory::getDBO();
-	    $query = $db->getQuery(true)
-		    ->select('status')
-		    ->from('#__jfusion')
-		    ->where('name = '.$db->Quote($jname));
-
-        $db->setQuery($query);
-        $result = $db->loadResult();
-        if ($result == '1') {
-            $result = true;
-        } else {
-            $result = false;
-        }
-        return $result;
-    }
-
-    /**
      * Delete old user data in the lookup table
      *
      * @param object $userinfo userinfo of the user to be deleted
@@ -494,26 +469,6 @@ class JFusionFunction
 	    } catch (Exception $e) {
 		    JFusionFunction::raiseWarning($e);
 	    }
-    }
-
-    /**
-     * Adds a cookie to the php header
-     *
-     * @param string $name      cookie name
-     * @param string $value     cookie value
-     * @param int    $expires   cookie expiry time
-     * @param string $path      cookie path
-     * @param string $domain    cookie domain
-     * @param bool $secure      is the secure
-     * @param bool $httponly    is the cookie http only
-     * @param bool $mask        should debug info be masked ?
-     *
-     * @return array            cookie debug info
-     */
-    public static function addCookie($name, $value, $expires, $path, $domain, $secure=false, $httponly=false, $mask = false)
-    {
-    	$cookies = JFusionFactory::getCookies();
-    	return $cookies->addCookie($name, $value, $expires, $path, $domain, $secure, $httponly, $mask);
     }
 
     /**
@@ -1233,7 +1188,7 @@ class JFusionFunction
 	 *
 	 * @return mixed;
 	 */
-	public static function getUserGroups($jname='',$default = false) {
+	public static function getUserGroups($jname='', $default = false) {
 		jimport('joomla.application.component.helper');
 		$params = JComponentHelper::getParams('com_jfusion');
 		$usergroups = $params->get('usergroups', new stdClass());
@@ -1269,49 +1224,6 @@ class JFusionFunction
 		$usergroupmodes = $params->get('updateusergroups', new stdClass());
 
 		return $usergroupmodes;
-	}
-
-	/**
-	 * return the correct usergroups for a given user
-	 *
-	 * @param string $jname plugin name
-	 * @param object|null $userinfo user with correct usergroups, if null it will return the usergroup for new users
-	 *
-	 * @return array
-	 */
-	public static function getCorrectUserGroups($jname, $userinfo)
-	{
-		$group = array();
-
-		$master = JFusionFunction::getMaster();
-
-		$mastergroups = JFusionFunction::getUserGroups($master->name);
-		$slavegroups = JFusionFunction::getUserGroups($jname);
-
-		if ($master->name == $jname) {
-			if (isset($mastergroups[0])) {
-				$group = $mastergroups[0];
-			}
-		} else {
-			$user = JFusionFactory::getUser($master->name);
-			$index = $user->getUserGroupIndex($mastergroups, $userinfo);
-
-			if (isset($slavegroups[$index])) {
-				$group = $slavegroups[$index];
-			}
-
-			if ($group === null && isset($slavegroups[0])) {
-				$group =  $slavegroups[0];
-			}
-		}
-		if (!is_array($group)) {
-			if ($group !==  null) {
-				$group = array($group);
-			} else {
-				$group = array();
-			}
-		}
-		return $group;
 	}
 
     /**
@@ -1502,88 +1414,88 @@ class JFusionFunction
         switch ($feature) {
             //Admin Features
             case 'wizard':
-                $return = self::methodDefined($admin, 'setupFromPath');
+	            $return = $admin->methodDefined('setupFromPath');
                 break;
             //Public Features
             case 'search':
-                $return = (self::methodDefined($public, 'getSearchQuery') || self::methodDefined($public, 'getSearchResults'));
+                $return = ($public->methodDefined('getSearchQuery') || $public->methodDefined('getSearchResults'));
                 break;
             case 'whosonline':
-                $return = self::methodDefined($public, 'getOnlineUserQuery');
+                $return = $public->methodDefined('getOnlineUserQuery');
                 break;
             case 'breadcrumb':
-                $return = self::methodDefined($public, 'getPathWay');
+                $return = $public->methodDefined('getPathWay');
                 break;
             case 'frontendlanguage':
-                $return = self::methodDefined($public, 'setLanguageFrontEnd');
+                $return = $public->methodDefined('setLanguageFrontEnd');
                 break;
             case 'frameless':
-                $return = self::methodDefined($public, 'getBuffer');
+                $return = $public->methodDefined('getBuffer');
                 break;
             //Forum Features
             case 'discussion':
-                $return = self::methodDefined($forum, 'createThread');
+                $return = $forum->methodDefined('createThread');
                 break;
             case 'activity':
-                $return = (self::methodDefined($forum, 'getActivityQuery') || self::methodDefined($forum, 'renderActivityModule'));
+                $return = ($forum->methodDefined('getActivityQuery') || $forum->methodDefined('renderActivityModule'));
                 break;
             case 'threadurl':
-                $return = self::methodDefined($forum, 'getThreadURL');
+                $return = $forum->methodDefined('getThreadURL');
                 break;
             case 'posturl':
-                $return = self::methodDefined($forum, 'getPostURL');
+                $return = $forum->methodDefined('getPostURL');
                 break;
             case 'profileurl':
-                $return = self::methodDefined($forum, 'getProfileURL');
+                $return = $forum->methodDefined('getProfileURL');
                 break;
             case 'avatarurl':
-                $return = self::methodDefined($forum, 'getAvatar');
+                $return = $forum->methodDefined('getAvatar');
                 break;
             case 'privatemessageurl':
-                $return = self::methodDefined($forum, 'getPrivateMessageURL');
+                $return = $forum->methodDefined('getPrivateMessageURL');
                 break;
             case 'viewnewmessagesurl':
-                $return = self::methodDefined($forum, 'getViewNewMessagesURL');
+                $return = $forum->methodDefined('getViewNewMessagesURL');
                 break;
             case 'privatemessagecounts':
-                $return = self::methodDefined($forum, 'getPrivateMessageCounts');
+                $return = $forum->methodDefined('getPrivateMessageCounts');
                 break;
             //User Features
             case 'useractivity':
-                $return = self::methodDefined($user, 'activateUser');
+                $return = $user->methodDefined('activateUser');
                 break;
             case 'duallogin':
-                $return = self::methodDefined($user, 'createSession');
+                $return = $user->methodDefined('createSession');
                 break;
             case 'duallogout':
-                $return = self::methodDefined($user, 'destroySession');
+                $return = $user->methodDefined('destroySession');
                 break;
             case 'updatepassword':
-                $return = self::methodDefined($user, 'updatePassword');
+                $return = $user->methodDefined('updatePassword');
                 break;
             case 'updateusername':
-                $return = self::methodDefined($user, 'updateUsername');
+                $return = $user->methodDefined('updateUsername');
                 break;
             case 'updateemail':
-                $return = self::methodDefined($user, 'updateEmail');
+                $return = $user->methodDefined('updateEmail');
                 break;
             case 'updateusergroup':
-                $return = self::methodDefined($user, 'updateUsergroup');
+                $return = $user->methodDefined('updateUsergroup');
                 break;
             case 'updateuserlanguage':
-                $return = self::methodDefined($user, 'updateUserLanguage');
+                $return = $user->methodDefined('updateUserLanguage');
                 break;
             case 'syncsessions':
-                $return = self::methodDefined($user, 'syncSessions');
+                $return = $user->methodDefined('syncSessions');
                 break;
             case 'blockuser':
-                $return = self::methodDefined($user, 'blockUser');
+                $return = $user->methodDefined('blockUser');
                 break;
             case 'activateuser':
-                $return = self::methodDefined($user, 'activateUser');
+                $return = $user->methodDefined('activateUser');
                 break;
             case 'deleteuser':
-                $return = self::methodDefined($user, 'deleteUser');
+                $return = $user->methodDefined('deleteUser');
                 break;
             case 'redirect_itemid':
                 if ($itemid) {
@@ -1603,39 +1515,6 @@ class JFusionFunction
             case 'any':
                 $return = true;
                 break;
-        }
-        return $return;
-    }
-
-    /**
-     * Function to check if a method has been defined inside a plugin like: setupFromPath
-     *
-     * @static
-     * @param object|string $class
-     * @param $method
-     *
-     * @return bool
-     */
-    public static function methodDefined($class, $method) {
-        if ( is_object($class) ) {
-            $name = get_class($class);
-        } else {
-            $name = $class;
-        }
-
-        //if the class name is the abstract class then return false
-        $abstractClassNames = array('JFusionAdmin', 'JFusionAuth', 'JFusionForum', 'JFusionPublic', 'JFusionUser', 'JFusionPlugin');
-	    $return = false;
-        if (!in_array($name, $abstractClassNames)) {
-	        try {
-		        $m = new ReflectionMethod($class, $method);
-		        $classname = $m->getDeclaringClass()->getName();
-		        if ( $classname == $name || !in_array($classname, $abstractClassNames)) {
-			        $return = true;
-		        }
-	        } catch (Exception $e) {
-		        $return = false;
-	        }
         }
         return $return;
     }

@@ -415,7 +415,7 @@ class JFusionUser_oscommerce extends JFusionUser
 				    $user->customers_password = $userinfo->password;
 			    }
 		    }
-		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
+		    $usergroups = $this->getCorrectUserGroups($userinfo);
 		    //    $user->customers_newsletter = null;
 		    switch ($osCversion) {
 			    case 'osc2':
@@ -701,7 +701,7 @@ class JFusionUser_oscommerce extends JFusionUser
     function updateUsergroup($userinfo, &$existinguser, &$status) {
 	    try {
 		    $osCversion = $this->params->get('osCversion');
-		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
+		    $usergroups = $this->getCorrectUserGroups($userinfo);
 		    if (empty($usergroups)) {
 			    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 		    } else {

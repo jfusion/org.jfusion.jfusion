@@ -85,8 +85,8 @@ class jfusionViewplugineditor extends JViewLegacy
 	        $this->form = $form;
 	        $this->jname = $jname;
 	        //output detailed configuration warnings for the plugin
-	        if (JFusionFunction::validPlugin($jname)) {
-		        $JFusionPlugin = JFusionFactory::getAdmin($jname);
+	        $JFusionPlugin = JFusionFactory::getAdmin($jname);
+	        if ($JFusionPlugin->isConfigured()) {
 		        $JFusionPlugin->debugConfig();
 	        }
             //render view

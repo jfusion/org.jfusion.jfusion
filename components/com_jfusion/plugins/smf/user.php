@@ -204,7 +204,7 @@ class JFusionUser_smf extends JFusionUser
     {
         $status = array('error' => array(),'debug' => array());
 	    try {
-		    $status['debug'][] = JFusionFunction::addCookie($this->params->get('cookie_name'), '', 0, $this->params->get('cookie_path'), $this->params->get('cookie_domain'), $this->params->get('secure'), $this->params->get('httponly'));
+		    $status['debug'][] = $this->addCookie($this->params->get('cookie_name'), '', 0, $this->params->get('cookie_path'), $this->params->get('cookie_domain'), $this->params->get('secure'), $this->params->get('httponly'));
 
 		    $db = JFusionFactory::getDatabase($this->getJname());
 
@@ -349,7 +349,7 @@ class JFusionUser_smf extends JFusionUser
     function updateUsergroup($userinfo, &$existinguser, &$status)
     {
 	    try {
-		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
+		    $usergroups = $this->getCorrectUserGroups($userinfo);
 		    if (empty($usergroups)) {
 			    throw new RuntimeException(JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST'));
 		    } else {
@@ -399,7 +399,7 @@ class JFusionUser_smf extends JFusionUser
 	function executeUpdateUsergroup(&$userinfo, &$existinguser, &$status)
 	{
 		$update_groups = false;
-		$usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
+		$usergroups = $this->getCorrectUserGroups($userinfo);
 		$usergroup = $usergroups[0];
 
 		$groups = (isset($usergroup->groups)) ? $usergroup->groups : array();
@@ -582,7 +582,7 @@ class JFusionUser_smf extends JFusionUser
 		    //we need to create a new SMF user
 		    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
+		    $usergroups = $this->getCorrectUserGroups($userinfo);
 		    if (empty($usergroups)) {
 			    throw new RuntimeException('USERGROUP_MISSING');
 		    } else {

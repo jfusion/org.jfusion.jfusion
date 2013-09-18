@@ -559,7 +559,7 @@ class JFusionUser_moodle extends JFusionUser {
 				//find out what usergroup should be used
 				$db = JFusionFactory::getDatabase($this->getJname());
 
-				$usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
+				$usergroups = $this->getCorrectUserGroups($userinfo);
 				if (empty($usergroups)) {
 					throw new RuntimeException(JText::_('ADVANCED_GROUPMODE_MASTER_NOT_HAVE_GROUPID'));
 				} else {

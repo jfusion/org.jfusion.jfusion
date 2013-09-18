@@ -156,14 +156,14 @@ class JFusionUser_mediawiki extends JFusionUser {
    		$_SESSION['wsToken'] = '';
 	    $this->helper->closeSession();
 
-        $status['debug'][] = JFusionFunction::addCookie($cookie_name  . 'UserName', '', $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
-        $status['debug'][] = JFusionFunction::addCookie($cookie_name  . 'UserID', '', $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
-        $status['debug'][] = JFusionFunction::addCookie($cookie_name  . 'Token', '', $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
+        $status['debug'][] = $this->addCookie($cookie_name  . 'UserName', '', $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
+        $status['debug'][] = $this->addCookie($cookie_name  . 'UserID', '', $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
+        $status['debug'][] = $this->addCookie($cookie_name  . 'Token', '', $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
 
    		$now = time();
         $expiration = 86400;
 
-        $status['debug'][] = JFusionFunction::addCookie('LoggedOut', $now, $expiration, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
+        $status['debug'][] = $this->addCookie('LoggedOut', $now, $expiration, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
 		return $status;
      }
 
@@ -187,15 +187,15 @@ class JFusionUser_mediawiki extends JFusionUser {
             $cookie_name = $this->helper->getCookieName();
 			$this->helper->startSession($options);
 
-			$status['debug'][] = JFusionFunction::addCookie($cookie_name  . 'UserName', $userinfo->username, $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
+			$status['debug'][] = $this->addCookie($cookie_name  . 'UserName', $userinfo->username, $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
             $_SESSION['wsUserName'] = $userinfo->username;
 
-			$status['debug'][] = JFusionFunction::addCookie($cookie_name  . 'UserID', $userinfo->userid, $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
+			$status['debug'][] = $this->addCookie($cookie_name  . 'UserID', $userinfo->userid, $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
             $_SESSION['wsUserID'] = $userinfo->userid;
 
             $_SESSION[ 'wsToken'] = $userinfo->user_token;
             if (!empty($options['remember'])) {
-	            $status['debug'][] = JFusionFunction::addCookie($cookie_name  . 'Token', $userinfo->user_token, $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
+	            $status['debug'][] = $this->addCookie($cookie_name  . 'Token', $userinfo->user_token, $expires, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly);
             }
 
 			$this->helper->closeSession();
@@ -289,7 +289,7 @@ class JFusionUser_mediawiki extends JFusionUser {
     function updateUsergroup($userinfo, &$existinguser, &$status)
 	{
 		try {
-			$usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
+			$usergroups = $this->getCorrectUserGroups($userinfo);
 			if (empty($usergroups)) {
 				$status['error'][] = JText::_('GROUP_UPDATE_ERROR') . ': ' . JText::_('USERGROUP_MISSING');
 			} else {
@@ -435,7 +435,7 @@ class JFusionUser_mediawiki extends JFusionUser {
 		    //we need to create a new SMF user
 		    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
+		    $usergroups = $this->getCorrectUserGroups($userinfo);
 		    if (empty($usergroups)) {
 			    throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 		    } else {

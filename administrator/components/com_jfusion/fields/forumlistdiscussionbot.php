@@ -53,8 +53,8 @@ class JFormFieldForumListDiscussionbot extends JFormField
 		    $jPluginParam = new JRegistry($params);
 		    $jname = $jPluginParam->get('jname', false);
 		    if ($jname !== false) {
-			    if (JFusionFunction::validPlugin($jname)) {
-				    $JFusionPlugin = JFusionFactory::getForum($jname);
+			    $JFusionPlugin = JFusionFactory::getForum($jname);
+			    if ($JFusionPlugin->isConfigured()) {
 				    if (method_exists($JFusionPlugin, 'getForumList')) {
 					    $forumlist = $JFusionPlugin->getForumList();
 					    if (!empty($forumlist)) {

@@ -49,7 +49,8 @@ class executeJFusionHook
 
         if (!defined('_JFVB_PLUGIN_VERIFIED') && $hook != 'init_startup' && defined('_VBJNAME') && defined('_JEXEC') && empty($_POST['logintype'])) {
             define('_JFVB_PLUGIN_VERIFIED', 1);
-            if (!JFusionFunction::validPlugin(_VBJNAME)) {
+	        $user = JFusionFactory::getUser(_VBJNAME);
+            if (!$user->isConfigured()) {
                 die('JFusion plugin is invalid.  Reinstall desired plugins in JFusions config for vBulletin.');
             }
         }
@@ -235,8 +236,9 @@ class executeJFusionHook
                 } else {
                     $expire = 0;
                 }
-                JFusionCurl::addCookie(COOKIE_PREFIX . 'userid', $vbulletin->userinfo['userid'], $expire, $vbulletin->options['cookiepath'], $vbulletin->options['cookiedomain'], false, true);
-                JFusionCurl::addCookie(COOKIE_PREFIX . 'password', md5($vbulletin->userinfo['password'] . COOKIE_SALT), $expire, $vbulletin->options['cookiepath'], $vbulletin->options['cookiedomain'], false, true);
+                $cookies = JFusionFactory::getCookies();
+                $cookies->addCookie(COOKIE_PREFIX . 'userid', $vbulletin->userinfo['userid'], $expire, $vbulletin->options['cookiepath'], $vbulletin->options['cookiedomain'], false, true);
+                $cookies->addCookie(COOKIE_PREFIX . 'password', md5($vbulletin->userinfo['password'] . COOKIE_SALT), $expire, $vbulletin->options['cookiepath'], $vbulletin->options['cookiedomain'], false, true);
             }
             */
             //we need to update the session table
@@ -460,8 +462,9 @@ class executeJFusionHook
         if (defined('_JEXEC')) {
             //we are in frameless mode and need to kill the cookies to prevent getting stuck logged in
             global $vbulletin;
-            JFusionCurl::addCookie(COOKIE_PREFIX . 'userid', 0, 0, $vbulletin->options['cookiepath'], $vbulletin->options['cookiedomain'], false, true);
-            JFusionCurl::addCookie(COOKIE_PREFIX . 'password', 0, 0, $vbulletin->options['cookiepath'], $vbulletin->options['cookiedomain'], false, true);
+	        $cookies = JFusionFactory::getCookies();
+	        $cookies->addCookie(COOKIE_PREFIX . 'userid', 0, 0, $vbulletin->options['cookiepath'], $vbulletin->options['cookiedomain'], false, true);
+	        $cookies->addCookie(COOKIE_PREFIX . 'password', 0, 0, $vbulletin->options['cookiepath'], $vbulletin->options['cookiedomain'], false, true);
             //prevent global_complete from recreating the cookies
             $vbulletin->userinfo['userid'] = 0;
             $vbulletin->userinfo['password'] = 0;

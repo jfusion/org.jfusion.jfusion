@@ -726,23 +726,27 @@ JS;
     {
         $profile_plugin = $this->params->get('profile_plugin');
         $url = '';
-        if (!empty($profile_plugin) && JFusionFunction::validPlugin($profile_plugin)) {
-            $juri = new JURI($vb_url);
-            $vbUid = $juri->getVar('u');
-            if (!empty($vbUid)) {
-                //first get Joomla id for the vBulletin user
-                $vbUser = JFusionFactory::getUser($this->getJname());
-				$userinfo = $vbUser->getUser($vbUid, 'userid');
-                $vb_userlookup = JFusionFunction::lookupUser($this->getJname(), $vbUid, false, $userinfo->username);
-                //now get the id of the selected plugin based on Joomla id
-                if (!empty($vb_userlookup)) {
-                    $profile_userlookup = JFusionFunction::lookupUser($profile_plugin, $vb_userlookup->id);
-                    //get the profile link
 
-	                $forum = JFusionFactory::getForum($this->getJname());
-                    $url = $forum->getProfileURL($profile_userlookup->userid);
-                }
-            }
+        if (!empty($profile_plugin)) {
+	        $user = JFusionFactory::getUser($profile_plugin);
+	        if ($user->isConfigured()) {
+		        $juri = new JURI($vb_url);
+		        $vbUid = $juri->getVar('u');
+		        if (!empty($vbUid)) {
+			        //first get Joomla id for the vBulletin user
+			        $vbUser = JFusionFactory::getUser($this->getJname());
+			        $userinfo = $vbUser->getUser($vbUid, 'userid');
+			        $vb_userlookup = JFusionFunction::lookupUser($this->getJname(), $vbUid, false, $userinfo->username);
+			        //now get the id of the selected plugin based on Joomla id
+			        if (!empty($vb_userlookup)) {
+				        $profile_userlookup = JFusionFunction::lookupUser($profile_plugin, $vb_userlookup->id);
+				        //get the profile link
+
+				        $forum = JFusionFactory::getForum($this->getJname());
+				        $url = $forum->getProfileURL($profile_userlookup->userid);
+			        }
+		        }
+	        }
         }
         return $url;
     }

@@ -195,8 +195,9 @@ class JFusionCurlFrameless {
 		$data->cookie_domain = isset($data->cookie_domain) ? $data->cookie_domain : '';
 		$data->cookie_path = isset($data->cookie_path) ? $data->cookie_path : '';
 
+	    $cookies = JFusionFactory::getCookies();
         foreach ($this->cookies as $cookie) {
-            JFusionFunction::addCookie($cookie->name, urldecode($cookie->value),$cookie->expires,$data->cookie_path,$data->cookie_domain);
+	        $cookies->addCookie($cookie->name, urldecode($cookie->value), $cookie->expires, $data->cookie_path, $data->cookie_domain);
         }
 
 		if (curl_error($this->ch)) {

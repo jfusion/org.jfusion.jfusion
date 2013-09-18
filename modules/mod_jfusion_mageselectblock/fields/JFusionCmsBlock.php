@@ -49,7 +49,8 @@ class JFormFieldJFusionCmsBlock extends JFormField {
 		
 		$jname = $parametersInstance->get ( 'magento_plugin', '' );
 		if (! empty ( $jname )) {
-			if (JFusionFunction::validPlugin ( $jname )) {
+			$user = JFusionFactory::getUser($jname);
+			if ($user->isConfigured()) {
 				$db = JFusionFactory::getDatabase ( $jname );
 				
 				//@todo - take in charge the different stores

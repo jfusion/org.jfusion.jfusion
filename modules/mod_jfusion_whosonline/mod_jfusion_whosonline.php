@@ -46,9 +46,9 @@ try {
 				$pluginParam = new JRegistry('');
 				$pluginParam->loadArray($value);
 				$view = $pluginParam->get('view', 'auto');
-				if(JFusionFunction::validPlugin($jname)) {
-					$public = JFusionFactory::getPublic($jname);
 
+				$public = JFusionFactory::getPublic($jname);
+				if($public->isConfigured()) {
 					$output = new stdClass();
 					$title = $pluginParam->get('title', NULL);
 					$output->title = $title;
@@ -83,7 +83,7 @@ try {
 
 						modjfusionWhosOnlineHelper::appendAutoOutput($jname, $config, $params, $output);
 					} else {
-						if (JFusionFunction::methodDefined($public, 'renderWhosOnlineModule')) {
+						if ($public->methodDefined('renderWhosOnlineModule')) {
 							$output->custom_output = $public->renderWhosOnlineModule($config, $view, $pluginParam);
 						} else {
 							$output->error = JText::_('NOT_IMPLEMENTED_YET');

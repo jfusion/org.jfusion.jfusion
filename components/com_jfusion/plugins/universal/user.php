@@ -173,7 +173,7 @@ class JFusionUser_universal extends JFusionUser
 		$_COOKIE['jfusionframeless'] = true;
 		$status = $this->curlLogout($userinfo, $options, 'no_brute_force');
 		$_COOKIE = $cookie_backup;
-		$status['debug'][] = JFusionFunction::addCookie($this->params->get('cookie_name'), '', 0, $this->params->get('cookie_path'), $this->params->get('cookie_domain'), $this->params->get('secure'), $this->params->get('httponly'));
+		$status['debug'][] = $this->addCookie($this->params->get('cookie_name'), '', 0, $this->params->get('cookie_path'), $this->params->get('cookie_domain'), $this->params->get('secure'), $this->params->get('httponly'));
 		return $status;
 	}
 
@@ -319,7 +319,7 @@ class JFusionUser_universal extends JFusionUser
 	{
 		try {
 			//get the usergroup and determine if working in advanced or simple mode
-			$usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
+			$usergroups = $this->getCorrectUserGroups($userinfo);
 			if (empty($usergroups)) {
 				throw new RuntimeException(JText::_('ADVANCED_GROUPMODE_MASTERGROUP_NOTEXIST'));
 			} else {
@@ -573,7 +573,7 @@ class JFusionUser_universal extends JFusionUser
 	function createUser($userinfo, &$status)
 	{
 		try {
-			$usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
+			$usergroups = $this->getCorrectUserGroups($userinfo);
 			if(empty($usergroups)) {
 				throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 			} else {

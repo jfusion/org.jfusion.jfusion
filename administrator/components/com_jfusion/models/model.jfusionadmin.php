@@ -54,61 +54,6 @@ class JFusionFunctionAdmin
 	}
 
     /**
-     * Saves the posted JFusion component variables
-     *
-     * @param string $jname name of the JFusion plugin used
-     * @param array  $post  Array of JFusion plugin parameters posted to the JFusion component
-     * @param boolean $wizard Notes if function was called by wizardresult();
-     *
-     * @return boolean returns true if successful and false if an error occurred
-     */
-    public static function saveParameters($jname, $post, $wizard = false)
-    {
-        $db = JFactory::getDBO();
-
-        if ($wizard) {
-            //data submitted by the wizard so merge the data with existing params if they do indeed exist
-
-	        $query = $db->getQuery(true)
-		        ->select('params')
-		        ->from('#__jfusion')
-		        ->where('name = '.$db->Quote($jname));
-
-            $db->setQuery($query);
-            $existing_serialized = $db->loadResult();
-            if (!empty($existing_serialized)) {
-                $existing_params = unserialize(base64_decode($existing_serialized));
-                if (is_array($existing_params)) {
-                    $post = array_merge($existing_params, $post);
-                }
-            }
-        }
-
-        //serialize the $post to allow storage in a SQL field
-        $serialized = base64_encode(serialize($post));
-        //set the current parameters in the jfusion table
-
-	    $query = $db->getQuery(true)
-		    ->update('#__jfusion')
-		    ->set('params = '.$db->Quote($serialized))
-		    ->where('name = ' . $db->Quote($jname));
-
-        $db->setQuery($query);
-	    try {
-		    $db->execute();
-
-		    //reset the params instance for this plugin
-		    JFusionFactory::getParams($jname, true);
-		    $result = true;
-	    } catch (Exception $e ) {
-		    //there was an error saving the parameters
-		    JFusionFunction::raiseWarning($e, $jname);
-		    $result = false;
-	    }
-        return $result;
-    }
-
-    /**
      * Checks to see if the JFusion plugins are installed and enabled
      *
      * @return string nothing

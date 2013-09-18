@@ -41,7 +41,8 @@ if (file_exists($model_file) && file_exists($factory_file)) {
 
 	$view = $params->get('view','auto');
 
-	if(JFusionFunction::validPlugin($jname)) {
+	$public = JFusionFactory::getPublic($jname);
+	if($public->isConfigured()) {
 		if($view == 'auto') {
 			//configuration
 			$config['itemid'] = $params->get('itemid');
@@ -70,8 +71,7 @@ if (file_exists($model_file) && file_exists($factory_file)) {
 
 			require(JModuleHelper::getLayoutPath('mod_jfusion_user_activity'));
 		} else {
-			$public = JFusionFactory::getPublic($jname);
-			if (JFusionFunction::methodDefined($public, 'renderUserActivityModule')) {
+			if ($public->methodDefined('renderUserActivityModule')) {
 				$output = $public->renderUserActivityModule($config, $view, $params);
 				echo $output;
 			} else {

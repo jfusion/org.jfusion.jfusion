@@ -70,7 +70,7 @@ class JFusionController extends JControllerLegacy
 			    $params = $JFusionPlugin->setupFromPath($post['source_path']);
 			    if (!empty($params)) {
 				    //save the params first in order for elements to utilize data
-				    JFusionFunctionAdmin::saveParameters($jname, $params, true);
+				    $JFusionPlugin->saveParameters($params, true);
 
 				    //make sure the usergroup params are available on first view
 				    $config_status = $JFusionPlugin->checkConfig();
@@ -234,11 +234,11 @@ class JFusionController extends JControllerLegacy
 	            }
 	        }
 
-		    if (!JFusionFunctionAdmin::saveParameters($jname, $post)) {
+		    $JFusionPlugin = JFusionFactory::getAdmin($jname);
+		    if (!$JFusionPlugin->saveParameters($post)) {
 			    throw new RuntimeException(JText::_('SAVE_FAILURE'));
 		    } else {
 			    //update the status field
-			    $JFusionPlugin = JFusionFactory::getAdmin($jname);
 			    $config_status = $JFusionPlugin->checkConfig();
 			    $db = JFactory::getDBO();
 
@@ -915,11 +915,12 @@ JS;
 						    if( !empty($database_password) ) $conf['database_password'] = $database_password;
 						    if( !empty($database_prefix) ) $conf['database_prefix'] = $database_prefix;
 
-						    if (!JFusionFunctionAdmin::saveParameters($jname, $conf)) {
+						    $JFusionPlugin = JFusionFactory::getAdmin($jname);
+						    if (!$JFusionPlugin->saveParameters($conf)) {
 							    throw new RuntimeException(JText::_('SAVE_FAILURE'));
 						    } else {
 							    //update the status field
-							    $JFusionPlugin = JFusionFactory::getAdmin($jname);
+
 							    $config_status = $JFusionPlugin->checkConfig();
 							    $db = JFactory::getDBO();
 

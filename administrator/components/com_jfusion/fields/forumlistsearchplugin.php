@@ -62,13 +62,13 @@ class JFormFieldForumListSearchPlugin extends JFormField
 	        }
 
 	        if (!empty($jname)) {
-		        if (JFusionFunction::validPlugin($jname)) {
+		        $JFusionPlugin = JFusionFactory::getForum($jname);
+		        if ($JFusionPlugin->isConfigured()) {
 			        if (!isset($jPluginParamRaw[$jname])) {
 				        $jPluginParamRaw[$jname] = array();
 			        }
 			        $JPluginParam = new JRegistry('');
 			        $JPluginParam->loadArray($jPluginParamRaw[$jname]);
-			        $JFusionPlugin = JFusionFactory::getForum($jname);
 			        if (method_exists($JFusionPlugin, 'getForumList')) {
 				        $forumlist = $JFusionPlugin->getForumList();
 				        if (!empty($forumlist)) {

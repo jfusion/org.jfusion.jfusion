@@ -128,8 +128,8 @@ class JFusionUser_elgg extends JFusionUser {
         unsetting the elgg cookies has been problematic as well.
         */
         $expire = -3600;
-        $status['debug'][] = JFusionFunction::addCookie('Elgg', '', $expire, $this->params->get('cookie_path'), $this->params->get('cookie_domain'));
-        $status['debug'][] = JFusionFunction::addCookie('elggperm', '', $expire, '/', $this->params->get('cookie_domain'));
+        $status['debug'][] = $this->addCookie('Elgg', '', $expire, $this->params->get('cookie_path'), $this->params->get('cookie_domain'));
+        $status['debug'][] = $this->addCookie('elggperm', '', $expire, '/', $this->params->get('cookie_domain'));
         return array();
     }
 
@@ -174,7 +174,7 @@ class JFusionUser_elgg extends JFusionUser {
                     $code = (md5($user->name . $user->username . time() . rand()));
                     $user->code = md5($code);
                     $_SESSION['code'] = $code;
-                    if (($persistent)) $status['debug'][] = JFusionFunction::addCookie('elggperm', $code, (86400 * 30), '/', $this->params->get('cookie_domain'));
+                    if (($persistent)) $status['debug'][] = $this->addCookie('elggperm', $code, (86400 * 30), '/', $this->params->get('cookie_domain'));
                     if (!$user->save() || !elgg_trigger_event('login', 'user', $user)) {
                         unset($_SESSION['username']);
                         unset($_SESSION['name']);
@@ -182,7 +182,7 @@ class JFusionUser_elgg extends JFusionUser {
                         unset($_SESSION['guid']);
                         unset($_SESSION['id']);
                         unset($_SESSION['user']);
-                        $status['debug'][] = JFusionFunction::addCookie('elggperm', '', -3600, '/', $this->params->get('cookie_domain'));
+                        $status['debug'][] = $this->addCookie('elggperm', '', -3600, '/', $this->params->get('cookie_domain'));
                     } else {
                         // Users privilege has been elevated, so change the session id (help prevent session hijacking)
                         //session_regenerate_id();
@@ -245,7 +245,7 @@ class JFusionUser_elgg extends JFusionUser {
     function createUser($userinfo, &$status) {
 	    try {
 	        //found out what usergroup should be used
-	        $usergroups = JFusionFunction::getCorrectUserGroups($this->getJname(), $userinfo);
+	        $usergroups = $this->getCorrectUserGroups($userinfo);
 	        if (empty($usergroups)) {
 		        throw new RuntimeException(JText::_('USERGROUP_MISSING'));
 	        } else {
