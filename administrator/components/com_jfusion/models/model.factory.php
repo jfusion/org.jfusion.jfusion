@@ -250,7 +250,7 @@ class JFusionFactory
         }
         //only create a new database instance if it has not been created before
         if (!isset($database_instances[$jname])) {
-            $database_instances[$jname] = JFusionFactory::createDatabase($jname);
+            $database_instances[$jname] = static::createDatabase($jname);
             return $database_instances[$jname];
         } else {
             return $database_instances[$jname];
@@ -273,7 +273,7 @@ class JFusionFactory
         }
         //only create a new parameter instance if it has not been created before
         if (!isset($params_instances[$jname]) || $reset) {
-            $params_instances[$jname] = JFusionFactory::createParams($jname);
+            $params_instances[$jname] = static::createParams($jname);
             return $params_instances[$jname];
         } else {
             return $params_instances[$jname];
@@ -341,7 +341,7 @@ class JFusionFactory
 	        $conf = JFactory::getConfig();
             $debug = $conf->get('debug');
             //get config values
-            $params = JFusionFactory::getParams($jname);
+            $params = static::getParams($jname);
             //prepare the data for creating a database connection
             $host = $params->get('database_host');
             $user = $params->get('database_user');
@@ -422,7 +422,7 @@ class JFusionFactory
      * @return string jnodeid for the JFusion Plugin
      */
     public static function getPluginNodeId($jname) {
-        $params = JFusionFactory::getParams($jname);
+        $params = static::getParams($jname);
         $source_url = $params->get('source_url');
         return strtolower(rtrim(parse_url($source_url, PHP_URL_HOST) . parse_url($source_url, PHP_URL_PATH), '/'));
     }
@@ -435,9 +435,9 @@ class JFusionFactory
     public static function getPluginNameFromNodeId($jnode_id) {
         $result = '';
         //$jid = $jnode_id;
-        $plugins = JFusionFactory::getPlugins('both',true);
+        $plugins = static::getPlugins('both',true);
         foreach($plugins as $plugin) {
-            $id = rtrim(JFusionFactory::getPluginNodeId($plugin->name), '/');
+            $id = rtrim(static::getPluginNodeId($plugin->name), '/');
             if (strcasecmp($jnode_id, $id) == 0) {
                 $result = $plugin->name;
                 break;
@@ -487,7 +487,7 @@ class JFusionFactory
     		//  load the Abstract Public Class
     		require_once (JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.cookie.php');
     		
-			$params = JFusionFactory::getParams('joomla_int');
+			$params = static::getParams('joomla_int');
     		$instances = new JFusionCookies($params->get('secret'));
     	}
     	return $instances;

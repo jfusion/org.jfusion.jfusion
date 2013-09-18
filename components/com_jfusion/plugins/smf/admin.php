@@ -190,24 +190,35 @@ class JFusionAdmin_smf extends JFusionAdmin
     function getDefaultUsergroup()
     {
 	    try {
-		    $usergroups = JFusionFunction::getUserGroups($this->getJname(), true);
-		    if ($usergroups !== null) {
-			    if ($usergroups != 0) {
-				    //we want to output the usergroup name
-				    $db = JFusionFactory::getDatabase($this->getJname());
+		    $usergroup = JFusionFunction::getUserGroups($this->getJname(), true);
 
-				    $query = $db->getQuery(true)
-					    ->select('groupName')
-					    ->from('#__membergroups')
-					    ->where('ID_GROUP = ' . (int)$usergroups);
+		    $group = '';
+		    if ($usergroup !== null) {
+			    $db = JFusionFactory::getDatabase($this->getJname());
 
-				    $db->setQuery($query);
-				    $group = $db->loadResult();
+			    if (isset($usergroup->groups)) {
+				    $groups = $usergroup->groups;
 			    } else {
-				    $group = 'Default Usergroup';
+				    $groups = array();
 			    }
-		    } else {
-			    $group = '';
+
+			    $groups[] = $usergroup->defaultgroup;
+			    $group = array();
+			    foreach($groups as $g) {
+				    if ($g != 0) {
+					    //we want to output the usergroup name
+
+					    $query = $db->getQuery(true)
+						    ->select('groupName')
+						    ->from('#__membergroups')
+						    ->where('ID_GROUP = ' . (int)$g);
+
+					    $db->setQuery($query);
+					    $group[] = $db->loadResult();
+				    } else {
+					    $group[] = 'Default Usergroup';
+				    }
+			    }
 		    }
 	    } catch (Exception $e) {
 			JFusionFunction::raiseError($e, $this->getJname());

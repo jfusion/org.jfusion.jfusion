@@ -27,8 +27,6 @@ $document->addStyleSheet('components/com_jfusion/css/jfusion.css');
 /**
  * Require the base controller
  */
-require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'defines.php';
-
 JHtml::_('behavior.framework');
 $document->addScript('components/com_jfusion/js/jfusion.js');
 
