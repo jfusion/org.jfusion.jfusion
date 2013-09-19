@@ -300,24 +300,13 @@ class JFusionFactory
 		    ->where('name = '.$db->Quote($jname));
 
         $db->setQuery($query);
-        $serialized = $db->loadResult();
+        $params = $db->loadResult();
         //get the parameters from the XML file
         //$file = JFUSION_PLUGIN_PATH .DIRECTORY_SEPARATOR. $jname . DIRECTORY_SEPARATOR.'jfusion.xml';
         //$parametersInstance = new JRegistry('', $file );
         //now load params without XML files, as this creates overhead when only values are needed
-        $parametersInstance = new JRegistry('');
-        //apply the stored valued
-        if ($serialized) {
-            $params = unserialize(base64_decode($serialized));
-            if (is_array($params)) {
-                foreach ($params as $key => $value) {
-                    if (is_array($value)) {
-                        $value = serialize($value);
-                    }
-                    $parametersInstance->set($key, $value);
-                }
-            }
-        }
+        $parametersInstance = new JRegistry($params);
+
         if (!is_object($parametersInstance)) {
 	        throw new RuntimeException(JText::_('NO_FORUM_PARAMETERS'));
         }

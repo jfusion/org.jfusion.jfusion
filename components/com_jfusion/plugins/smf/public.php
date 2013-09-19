@@ -222,12 +222,12 @@ class JFusionPublic_smf extends JFusionPublic
      */
     function getBuffer(&$data)
     {
-        $jFusion_Route = JFactory::getApplication()->input->get('jFusion_Route',null,'raw');
+        $jFusion_Route = JFactory::getApplication()->input->get('jFusion_Route', null, 'raw');
         if ($jFusion_Route) {
-        	$jFusion_Route = unserialize ($jFusion_Route);
+        	$jFusion_Route = unserialize($jFusion_Route);
         	foreach ($jFusion_Route as $value) {
         		if (stripos($value, 'action') === 0) {
-	        		list ($key,$value) = explode ( ',' , $value);
+	        		list ($key, $value) = explode (',' , $value);
 	        		if ($key == 'action') {
 				        JFactory::getApplication()->input->set('action',$value);
 	        		}

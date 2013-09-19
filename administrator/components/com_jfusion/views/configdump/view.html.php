@@ -21,7 +21,7 @@ class jfusionViewconfigdump extends JViewLegacy {
 	/**
 	 * @var array
 	 */
-	var $checkvalue =array();
+	var $checkvalue = array();
 
 
 	/**
@@ -32,7 +32,7 @@ class jfusionViewconfigdump extends JViewLegacy {
 	/**
 	 * @var array $jfusion_module
 	 */
-	var $jfusion_module =array();
+	var $jfusion_module = array();
 
 	/**
 	 * @var array $jfusion_plugin
@@ -62,7 +62,7 @@ class jfusionViewconfigdump extends JViewLegacy {
 	{
 		//load debug library
 		require_once(JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.debug.php');
-		
+
 		$db = JFactory::getDBO();
 
 		// menuitem Checks
@@ -76,10 +76,12 @@ class jfusionViewconfigdump extends JViewLegacy {
 		// jfusion module Checks
 		$this->checkvalue['jfusion_module']['mod_jfusion_user_activity']['jfusionplugin'] = 'is_string|not_empty';
 		$this->checkvalue['jfusion_module']['mod_jfusion_user_activity']['itemid'] = 'is_string|not_empty';
+
 		$this->checkvalue['jfusion_module']['mod_jfusion_activity']['jfusionplugin'] = 'is_string|not_empty';
 		$this->checkvalue['jfusion_module']['mod_jfusion_activity']['itemid'] = 'is_string|not_empty';
+
 		$this->checkvalue['jfusion_module']['mod_jfusion_whosonline']['*']['jfusionplugin'] = 'is_string';
-		$this->checkvalue['jfusion_module']['mod_jfusion_whosonline']['*']['itemid'] = 'is_numeric';
+		$this->checkvalue['jfusion_module']['mod_jfusion_whosonline']['*']['itemid'] = 'is_numeric|is_string|not_empty';
 
 		// joomla plugin Checks
 		$this->checkvalue['joomla_plugin']['search']['*']['itemid'] = 'is_string|not_empty';
@@ -112,18 +114,17 @@ class jfusionViewconfigdump extends JViewLegacy {
 
 		$update = JFusionFunction::getUpdateUserGroups();
 		$usergroups = JFusionFunction::getUserGroups();
-
+		$master = JFusionFunction::getMaster();
 		if(count($rows) ) {
 			foreach($rows as $row) {
-				$jPluginParam = new JRegistry('');
-				if ( $row->params ) $jPluginParam->loadArray(unserialize(base64_decode($row->params)));
+				$jPluginParam = new JRegistry($row->params);
 				$row->params = $jPluginParam->toString();
 
 				$new = $this->loadParams($row);
 
-				$this->clearParameters($new,'jfusion_plugin');
+				$this->clearParameters($new, 'jfusion_plugin');
 
-				if (isset($update->{$row->name}) && $update->{$row->name}) {
+				if ((isset($update->{$row->name}) && $update->{$row->name}) || ($master && $master->name == $row->name)) {
 					$new->updateusergroups = true;
 				} else {
 					$new->updateusergroups = false;
@@ -148,14 +149,14 @@ class jfusionViewconfigdump extends JViewLegacy {
 		}
 
 		$rows = array();
-		if ( JPluginHelper::isEnabled('search','jfusion') ) $rows[] = JPluginHelper::getPlugin('search','jfusion');
-		if ( JPluginHelper::isEnabled('content','jfusion') ) $rows[] = JPluginHelper::getPlugin('content','jfusion');
+		if ( JPluginHelper::isEnabled('search', 'jfusion') ) $rows[] = JPluginHelper::getPlugin('search', 'jfusion');
+		if ( JPluginHelper::isEnabled('content', 'jfusion') ) $rows[] = JPluginHelper::getPlugin('content', 'jfusion');
 
 		foreach($rows as $row) {
 			$new = $this->loadParams($row);
 
-			$this->clearParameters($new,'joomla_plugin',$row->type);
-			$this->addMissingParameters($new,'joomla_plugin',$row->type);
+			$this->clearParameters($new,'joomla_plugin', $row->type);
+			$this->addMissingParameters($new,'joomla_plugin', $row->type);
 
 			$this->joomla_plugin[$row->type] = $new;
 		}
@@ -172,8 +173,8 @@ class jfusionViewconfigdump extends JViewLegacy {
 			foreach($rows as $row) {
 				$new = $this->loadParams($row);
 
-				$this->clearParameters($new,'jfusion_module',$row->module);
-				$this->addMissingParameters($new,'jfusion_module',$row->module);
+				$this->clearParameters($new,'jfusion_module', $row->module);
+				$this->addMissingParameters($new,'jfusion_module', $row->module);
 
 				$name = !empty($row->title) ? $row->module.' '.$row->title : $row->module;
 				$this->jfusion_module[$name] = $new;
@@ -189,11 +190,11 @@ class jfusionViewconfigdump extends JViewLegacy {
 
 		if ($items && is_array($items)) {
 			foreach($items as $row) {
-				unset($row->note,$row->route,$row->level,$row->language,$row->browserNav,$row->access,$row->home,$row->img);
-				unset($row->type,$row->template_style_id,$row->component_id,$row->parent_id,$row->component,$row->tree);
+				unset($row->note, $row->route, $row->level, $row->language, $row->browserNav, $row->access, $row->home, $row->img);
+				unset($row->type, $row->template_style_id, $row->component_id, $row->parent_id, $row->component, $row->tree);
 
 				$new = $this->loadParams($row);
-				$this->clearParameters($new,'menu_item');
+				$this->clearParameters($new, 'menu_item');
 
 				$this->menu_item[$new->id] = $new;
 			}
@@ -210,8 +211,8 @@ class jfusionViewconfigdump extends JViewLegacy {
 	 * @param $value
 	 * @return array
 	 */
-	function jfusion_plugin($key,$value) {
-		return $this->check('jfusion_plugin',$key,$value);
+	function jfusion_plugin($key, $value) {
+		return $this->check('jfusion_plugin', $key, $value);
 	}
 
 	/**
@@ -219,18 +220,8 @@ class jfusionViewconfigdump extends JViewLegacy {
 	 * @param $value
 	 * @return array
 	 */
-	function menu_item($key,$value) {
-		return $this->check('menu_item',$key,$value);
-	}
-
-	/**
-	 * @param $key
-	 * @param $value
-	 * @param $name
-	 * @return array
-	 */
-	function joomla_plugin($key,$value,$name) {
-		return $this->check('joomla_plugin',$key,$value,$name);
+	function menu_item($key, $value) {
+		return $this->check('menu_item', $key, $value);
 	}
 
 	/**
@@ -239,8 +230,18 @@ class jfusionViewconfigdump extends JViewLegacy {
 	 * @param $name
 	 * @return array
 	 */
-	function jfusion_module($key,$value,$name) {
-		return $this->check('jfusion_module',$key,$value,$name);
+	function joomla_plugin($key, $value, $name) {
+		return $this->check('joomla_plugin', $key, $value, $name);
+	}
+
+	/**
+	 * @param $key
+	 * @param $value
+	 * @param $name
+	 * @return array
+	 */
+	function jfusion_module($key, $value, $name) {
+		return $this->check('jfusion_module', $key, $value, $name);
 	}
 
 	/**
@@ -289,12 +290,10 @@ class jfusionViewconfigdump extends JViewLegacy {
 	 * @param $name
 	 * @param null $type
 	 */
-	function clearParameters(&$new,$name,$type=null) {
-		if (JFactory::getApplication()->input->get('filter',false)) {
+	function clearParameters(&$new, $name, $type = null) {
+		if (JFactory::getApplication()->input->get('filter', false)) {
 			foreach($new->params as $key => $value) {
-				if ( !isset($this->checkvalue[$name]['*'][$key]) && !isset($this->checkvalue[$name][$type][$key]) ) {
-					unset($new->params->$key);
-				} else if (is_array($value) || is_object($value)) {
+				if (is_array($value) || is_object($value)) {
 					foreach($value as $akey => $avalue) {
 						if ( !isset($this->checkvalue[$name]['*'][$akey])
 							&& !isset($this->checkvalue[$name][$type][$akey])
@@ -302,6 +301,8 @@ class jfusionViewconfigdump extends JViewLegacy {
 							unset($new->params->$key->$akey);
 						}
 					}
+				} else if( !isset($this->checkvalue[$name]['*'][$key]) && !isset($this->checkvalue[$name][$type][$key]) ) {
+					unset($new->params->$key);
 				}
 			}
 		}
@@ -312,7 +313,7 @@ class jfusionViewconfigdump extends JViewLegacy {
 	 * @param $name
 	 * @param null $type
 	 */
-	function addMissingParameters(&$new,$name,$type=null) {
+	function addMissingParameters(&$new, $name, $type = null) {
 		if (isset($this->checkvalue[$name]['*'])) {
 			foreach($this->checkvalue[$name]['*'] as $key => $value) {
 				if (!isset($new->params->$key)) {
@@ -351,7 +352,7 @@ class jfusionViewconfigdump extends JViewLegacy {
 	 * @param null $name
 	 * @return array
 	 */
-	function check($type, $key, $value, $name=null) {
+	function check($type, $key, $value, $name = null) {
 		$check = null;
 
 		if ( $name != null && isset($this->checkvalue[$type][$name]['*'][$key]) ) {
@@ -434,16 +435,16 @@ class jfusionViewconfigdump extends JViewLegacy {
 
 		switch ($valid) {
 			case 0:
-				$result = array('background-color:#F5A9A9',$value);
+				$result = array('background-color:#F5A9A9', $value);
 				break;
 			case 1:
-				$result = array('background-color:#088A08',$value);
+				$result = array('background-color:#088A08', $value);
 				break;
 			case 2:
-				$result = array('background-color:#FFFF00',$value);
+				$result = array('background-color:#FFFF00', $value);
 				break;
 			default:
-				$result = array('',$value);
+				$result = array(null, $value);
 		}
 		return $result;
 	}

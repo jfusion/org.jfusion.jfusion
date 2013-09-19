@@ -43,8 +43,7 @@ class JFusionAdmin_universal extends JFusionAdmin
 	 */
 	function getUsergroupList()
 	{
-		$usergroupmap = $this->params->get('usergroupmap');
-		$usergroupmap = @unserialize($usergroupmap);
+		$usergroupmap = $this->params->get('usergroupmap', array());
 		$usergrouplist = array();
 		if ( is_array($usergroupmap) && isset($usergroupmap['name']) ) {
 			foreach ($usergroupmap['name'] as $key => $value) {

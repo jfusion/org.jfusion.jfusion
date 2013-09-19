@@ -43,8 +43,7 @@ class JFusionHelper_universal extends JFusionPlugin {
 	 */
 	function getMapRaw($type='user') {
 		if( !is_array($this->mapraw) ) {
-			$map = $this->params->get('map');
-			$map = @unserialize($map);
+			$map = $this->params->get('map', array());
 			if(is_array($map)) {
 				$this->mapraw = $map;
 			}

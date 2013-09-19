@@ -217,22 +217,6 @@ class JFusionController extends JControllerLegacy
 		    if (empty($post)) {
 			    throw new RuntimeException(JText::_('SAVE_FAILURE'));
 		    }
-	        //check for trailing slash in URL, in order for us not to worry about it later
-	        if (substr($post['source_url'], -1) == '/') {
-	        } else {
-	            $post['source_url'].= '/';
-	        }
-	        //now also check to see that the url starts with http:// or https://
-	        if (substr($post['source_url'], 0, 7) != 'http://' && substr($post['source_url'], 0, 8) != 'https://') {
-	            if (substr($post['source_url'], 0, 1) != '/') {
-	                $post['source_url'] = 'http://' . $post['source_url'];
-	            }
-	        }
-	        if (!empty($post['source_path'])) {
-	            if (!is_dir($post['source_path'])) {
-	                JFusionFunction::raiseWarning(JText::_('SOURCE_PATH_NOT_FOUND'));
-	            }
-	        }
 
 		    $JFusionPlugin = JFusionFactory::getAdmin($jname);
 		    if (!$JFusionPlugin->saveParameters($post)) {

@@ -70,7 +70,7 @@ class JFusionPublic_gallery2 extends JFusionPublic
          */
         $jPluginParam = $data->jParam;
         //Handle PHP based Gallery Rewrite
-        $segments = JFactory::getApplication()->input->get('jFusion_Route',null,'raw');
+        $segments = JFactory::getApplication()->input->get('jFusion_Route', null, 'raw');
         if (!empty($segments)) {
             $path_info = '/' . implode('/', unserialize($segments));
             $path_info = str_replace(':', '-', $path_info);

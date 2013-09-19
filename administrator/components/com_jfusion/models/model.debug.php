@@ -235,7 +235,7 @@ CSS;
 	 * @return string a HTML-Code Snippet (e.g. to be Viewed in a Browser)
 	 ** ************************
 	 */
-	public static function get($arr, $start = true, $style = false) {
+	public static function get($arr, $start = true, $style = null) {
 		$schema = 0;
 		$str = '';
 		$name = '';
@@ -262,18 +262,18 @@ CSS;
 			if (static::isOneDimensional($arr) && !$start) {
 				foreach ($arr as $key => $value) {
 					$empty = false;
-
+					$temp = $style;
 					if (static::$callback) {
-						list($target,$function,$args) = static::$callback;
-						if ($style == false) {
-							$style = '';
-							list($style,$value) = $target->$function($key,$value,$args);
+						list($target, $function, $args) = static::$callback;
+						if ($style === null) {
+							list($style, $value) = $target->$function($key, $value, $args);
 						} else {
-							list(,$value) = $target->$function($key,$value,$args);
+							list(, $value) = $target->$function($key, $value, $args);
 						}
 					}
 					$str.= '<span class="'.$keyClass.'" style="'.$style.'"> ' . static::decorateValue($key) . '</span> ';
 					$str.= '<span class="value" style="'.$style.'" > ' . static::decorateValue($value) . '</span><br/>';
+					$style = $temp;
 				}
 				if ($empty) {
 					$str.= '<span class="'.$keyClass.'">'.$emptyWhat.'</span><br>'."\n";
@@ -290,13 +290,13 @@ CSS;
 					$temp = $style;
 					$empty = false;
 					if (static::$callback) {
-						list($target,$function,$args) = static::$callback;
-						if ($style == false) {
-							$style = '';
-							list($style,$value) = $target->$function($key,$value,$args);
+						list($target, $function, $args) = static::$callback;
+						if ($style === null) {
+							list($style, $value) = $target->$function($key, $value, $args);
 						} else {
-							list(,$value) = $target->$function($key,$value,$args);
+							list(, $value) = $target->$function($key, $value, $args);
 						}
+
 					}
 					$str.= '<tr>';
 					$str.= '<td class="'.$keyClass.'" '.$onClick.' style="'.$style.'">'.static::decorateValue($key).'</td>';

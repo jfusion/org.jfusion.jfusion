@@ -519,6 +519,31 @@ class com_jfusionInstallerScript
 			}
 		}
 
+		// let's update to json
+		$query = $db->getQuery(true)
+			->select('params, id')
+			->from('#__jfusion');
+
+		$db->setQuery($query);
+		$rows = $db->loadObjectList();
+		if(!empty($rows)) {
+			foreach ($rows as $row) {
+				if ($row->params) {
+					$params = base64_decode($row->params);
+					if (strpos($params, 'a:') === 0) {
+						ob_start();
+						$params = unserialize($params);
+						ob_end_clean();
+						if (is_array($params)) {
+							$params = new JRegistry($params);
+							$row->params  = $params->toString();
+							$db->updateObject('#__jfusion', $row, 'id');
+						}
+					}
+				}
+			}
+		}
+
 		//cleanup unused plugins
 		$query = $db->getQuery(true)
 			->select('name')
@@ -546,7 +571,6 @@ class com_jfusionInstallerScript
 				}
 			}
 		}
-
 		$this->display();
 	}
 

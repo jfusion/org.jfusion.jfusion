@@ -444,6 +444,28 @@ JS;
 		if (!empty($jname)) {
 			$db = JFactory::getDBO();
 
+			if (isset($post['source_url'])) {
+				//check for trailing slash in URL, in order for us not to worry about it later
+				if (substr($post['source_url'], -1) == '/') {
+				} else {
+					$post['source_url'].= '/';
+				}
+
+				//now also check to see that the url starts with http:// or https://
+				if (substr($post['source_url'], 0, 7) != 'http://' && substr($post['source_url'], 0, 8) != 'https://') {
+					if (substr($post['source_url'], 0, 1) != '/') {
+						$post['source_url'] = 'http://' . $post['source_url'];
+					}
+				}
+			}
+			if (isset($post['source_path'])) {
+				if (!empty($post['source_path'])) {
+					if (!is_dir($post['source_path'])) {
+						JFusionFunction::raiseWarning(JText::_('SOURCE_PATH_NOT_FOUND'));
+					}
+				}
+			}
+
 			if ($wizard) {
 				//data submitted by the wizard so merge the data with existing params if they do indeed exist
 
@@ -453,22 +475,21 @@ JS;
 					->where('name = '.$db->Quote($jname));
 
 				$db->setQuery($query);
-				$existing_serialized = $db->loadResult();
-				if (!empty($existing_serialized)) {
-					$existing_params = unserialize(base64_decode($existing_serialized));
-					if (is_array($existing_params)) {
-						$post = array_merge($existing_params, $post);
-					}
+				$params = $db->loadResult();
+				$params = new JRegistry($params);
+
+				$existing_params = $params->toArray();
+				if (is_array($existing_params)) {
+					$post = array_merge($existing_params, $post);
 				}
 			}
 
-			//serialize the $post to allow storage in a SQL field
-			$serialized = base64_encode(serialize($post));
+			$data = new JRegistry($post);
 			//set the current parameters in the jfusion table
 
 			$query = $db->getQuery(true)
 				->update('#__jfusion')
-				->set('params = '.$db->Quote($serialized))
+				->set('params = '.$db->Quote($data->toString()))
 				->where('name = ' . $db->Quote($jname));
 
 			$db->setQuery($query);
