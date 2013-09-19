@@ -153,8 +153,8 @@ class JFusionFunction
             $params = JFusionFactory::getParams($jname);
             $sefmode = $params->get('sefmode', 1);
             if ($sefenabled && !$sefmode) {
-                //otherwise just tak on the URL
-                $baseURL = JFusionFunction::getPluginURL($itemid, false);
+                //otherwise just tak on the
+                $baseURL = static::getPluginURL($itemid, false);
                 $url = $baseURL . $url;
                 if ($xhtml) {
                     $url = str_replace('&', '&amp;', $url);
@@ -247,7 +247,7 @@ class JFusionFunction
 				    try {
 					    $db->execute();
 				    } catch (Exception $e) {
-					    JFusionFunction::raiseWarning($e, $jname);
+					    static::raiseWarning($e, $jname);
 				    }
 
 				    //Delete old user data in the lookup table
@@ -260,7 +260,7 @@ class JFusionFunction
 				    try {
 					    $db->execute();
 				    } catch (Exception $e) {
-					    JFusionFunction::raiseWarning($e, $jname);
+					    static::raiseWarning($e, $jname);
 				    }
 			    }
 		    } else {
@@ -316,7 +316,7 @@ class JFusionFunction
 					    try {
 						    $db->execute();
 					    } catch (Exception $e) {
-						    JFusionFunction::raiseWarning($e, $jname);
+						    static::raiseWarning($e, $jname);
 					    }
 				    }
 			    } else {
@@ -332,7 +332,7 @@ class JFusionFunction
 				    try {
 					    $db->execute();
 				    } catch (Exception $e) {
-					    JFusionFunction::raiseWarning($e, $jname);
+					    static::raiseWarning($e, $jname);
 				    }
 			    }
 		    }
@@ -414,7 +414,7 @@ class JFusionFunction
                 $existinguser = $user->getUser($result);
                 if (!empty($existinguser)) {
                     //update the lookup table with the new acquired info
-                    JFusionFunction::updateLookup($existinguser, $joomla_id, $jname);
+	                static::updateLookup($existinguser, $joomla_id, $jname);
                     //return the results
                     $result = new stdClass();
                     $result->userid = $existinguser->userid;
@@ -457,7 +457,7 @@ class JFusionFunction
 	    try {
 		    $db->execute();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseWarning($e);
+		    static::raiseWarning($e);
 	    }
 
 	    $query = $db->getQuery(true)
@@ -467,7 +467,7 @@ class JFusionFunction
 	    try {
 		    $db->execute();
 	    } catch (Exception $e) {
-		    JFusionFunction::raiseWarning($e);
+		    static::raiseWarning($e);
 	    }
     }
 
@@ -596,7 +596,7 @@ class JFusionFunction
         }
 
         //make the URL absolute and clean it up a bit
-        $joomla_url = JFusionFunction::getJoomlaURL();
+        $joomla_url = static::getJoomlaURL();
 
         $juri = new JURI($joomla_url);
         $path = $juri->getPath();
@@ -703,7 +703,7 @@ class JFusionFunction
             }
 
             if (!empty($options['parse_smileys'])) {
-                $bbcode->SetSmileyURL(JFusionFunction::getJoomlaURL() . 'components/com_jfusion/images/smileys');
+                $bbcode->SetSmileyURL(static::getJoomlaURL() . 'components/com_jfusion/images/smileys');
             } else {
                 $bbcode->SetEnableSmileys(false);
             }
@@ -757,7 +757,7 @@ class JFusionFunction
                 $search[] = "#<li[^>]*>(.*?)<\/li>#si";
                 $replace[] = "[*]$1";
                 $search[] = "#<img [^>]*src=['|\"](?!\w{0,10}://)(.*?)['|\"][^>]*>#si";
-                $replace[] = array( 'JFusionFunction','_callback_parseTag_img');
+                $replace[] = array( 'static','_callback_parseTag_img');
                 $search[] = "#<img [^>]*src=['|\"](.*?)['|\"][^>]*>#sim";
                 $replace[] = "[img]$1[/img]";
                 $search[] = "#<a [^>]*href=['|\"]mailto:(.*?)['|\"][^>]*>(.*?)<\/a>#si";
@@ -847,7 +847,7 @@ class JFusionFunction
                 $return = $text . "\n\n";
             }
         } elseif ($tag == 'img') {
-            $joomla_url = JFusionFunction::getJoomlaURL();
+            $joomla_url = static::getJoomlaURL();
             $juri = new JURI($joomla_url);
             $path = $juri->getPath();
             if ($path != '/'){
@@ -917,7 +917,7 @@ class JFusionFunction
     {
         $db = JFactory::getDBO();
         if ($isPluginUid && !empty($jname)) {
-            $userlookup = JFusionFunction::lookupUser($jname, $uid, false, $username);
+            $userlookup = static::lookupUser($jname, $uid, false, $username);
             if (!empty($userlookup)) {
                 $uid = $userlookup->id;
             } else {
@@ -969,12 +969,12 @@ class JFusionFunction
     {
         $db = JFactory::getDBO();
         if ($isPluginUid && !empty($jname)) {
-            $userlookup = JFusionFunction::lookupUser($jname, $uid, false, $username);
+            $userlookup = static::lookupUser($jname, $uid, false, $username);
             if (!empty($userlookup)) {
                 $uid = $userlookup->id;
             } else {
                 //no user was found
-                $avatar = JFusionFunction::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
+                $avatar = static::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
                 return $avatar;
             }
         }
@@ -987,9 +987,9 @@ class JFusionFunction
             $db->setQuery($query);
             $result = $db->loadResult();
             if (!empty($result)) {
-                $avatar = JFusionFunction::getJoomlaURL() . 'images/comprofiler/'.$result;
+                $avatar = static::getJoomlaURL() . 'images/comprofiler/'.$result;
             } else {
-                $avatar = JFusionFunction::getJoomlaURL() . 'components/com_comprofiler/plugin/templates/default/images/avatar/nophoto_n.png';
+                $avatar = static::getJoomlaURL() . 'components/com_comprofiler/plugin/templates/default/images/avatar/nophoto_n.png';
             }
         } elseif ($software == 'jomsocial') {
 	        $query = $db->getQuery(true)
@@ -1000,9 +1000,9 @@ class JFusionFunction
             $db->setQuery($query);
             $result = $db->loadResult();
             if (!empty($result)) {
-                $avatar = JFusionFunction::getJoomlaURL() . $result;
+                $avatar = static::getJoomlaURL() . $result;
             } else {
-                $avatar = JFusionFunction::getJoomlaURL() . 'components/com_community/assets/default_thumb.jpg';
+                $avatar = static::getJoomlaURL() . 'components/com_community/assets/default_thumb.jpg';
             }
         } elseif ($software == 'joomunity') {
 	        $query = $db->getQuery(true)
@@ -1012,7 +1012,7 @@ class JFusionFunction
 
             $db->setQuery($query);
             $result = $db->loadResult();
-            $avatar = JFusionFunction::getJoomlaURL() . 'components/com_joomunity/files/avatars/' . $result;
+            $avatar = static::getJoomlaURL() . 'components/com_joomunity/files/avatars/' . $result;
         } elseif ($software == 'gravatar') {
 	        $query = $db->getQuery(true)
 		        ->select('email')
@@ -1023,7 +1023,7 @@ class JFusionFunction
             $email = $db->loadResult();
             $avatar = 'http://www.gravatar.com/avatar.php?gravatar_id=' . md5(strtolower($email)) . '&size=40';
         } else {
-            $avatar = JFusionFunction::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
+            $avatar = static::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
         }
         return $avatar;
     }
@@ -1058,7 +1058,7 @@ class JFusionFunction
             $jfusionPluginURL = array();
         }
         if (!isset($jfusionPluginURL[$itemid])) {
-            $joomla_url = JFusionFunction::getJoomlaURL();
+            $joomla_url = static::getJoomlaURL();
             $baseURL = JRoute::_('index.php?option=com_jfusion&Itemid=' . $itemid, false);
             if (!strpos($baseURL, '?')) {
                 $baseURL = preg_replace('#\.[\w]{3,4}\z#is', '', $baseURL);
@@ -1234,10 +1234,10 @@ class JFusionFunction
      * @return boolean
      */
     public static function updateUsergroups($jname) {
-	    $updateusergroups = JFusionFunction::getUpdateUserGroups();
+	    $updateusergroups = static::getUpdateUserGroups();
 	    $advanced = false;
         if (isset($updateusergroups->{$jname}) && $updateusergroups->{$jname}) {
-	        $master = JFusionFunction::getMaster();
+	        $master = static::getMaster();
 	        if ($master->name != $jname) {
 		        $advanced = true;
 	        }
@@ -1370,7 +1370,7 @@ class JFusionFunction
      */
     public static function _callback_parseTag_img($matches)
     {
-        return '[img]'.JFusionFunction::parseTag($matches[1],'img').'[/img]';
+        return '[img]'.static::parseTag($matches[1],'img').'[/img]';
     }
 
     /**
@@ -1381,7 +1381,7 @@ class JFusionFunction
      */
     public static function _callback_parseTag_p($matches)
     {
-        return JFusionFunction::parseTag($matches[1], 'p');
+        return static::parseTag($matches[1], 'p');
     }
 
     /**
@@ -1392,7 +1392,7 @@ class JFusionFunction
      */
     public static function _callback_url($matches)
     {
-    	return '[url='.JRoute::_(JFusionFunction::getJoomlaURL().$matches[1]).']'.$matches[2].'[/url]';
+    	return '[url='.JRoute::_(static::getJoomlaURL().$matches[1]).']'.$matches[2].'[/url]';
     }
 
     /**
@@ -1541,13 +1541,13 @@ class JFusionFunction
 		}
 
 		if ($xml === false) {
-			JFusionFunction::raiseError(JText::_('JLIB_UTIL_ERROR_XML_LOAD'));
+			static::raiseError(JText::_('JLIB_UTIL_ERROR_XML_LOAD'));
 
 			if ($isFile) {
-				JFusionFunction::raiseError($data);
+				static::raiseError($data);
 			}
 			foreach (libxml_get_errors() as $error) {
-				JFusionFunction::raiseError($error->message);
+				static::raiseError($error->message);
 			}
 		}
 		return $xml;
@@ -1652,21 +1652,21 @@ class JFusionFunction
 				if (is_numeric($msgtype)) {
 					$msgtype = $jname;
 				}
-				JFusionFunction::raise($type, $msg, $msgtype);
+				static::raise($type, $msg, $msgtype);
 			}
 		} else {
 			switch(strtolower($type)) {
 				case 'notice':
-					JFusionFunction::raiseNotice($message, $jname);
+					static::raiseNotice($message, $jname);
 					break;
 				case 'error':
-					JFusionFunction::raiseError($message, $jname);
+					static::raiseError($message, $jname);
 					break;
 				case 'warning':
-					JFusionFunction::raiseWarning($message, $jname);
+					static::raiseWarning($message, $jname);
 					break;
 				case 'message':
-					JFusionFunction::raiseMessage($message, $jname);
+					static::raiseMessage($message, $jname);
 					break;
 			}
 		}

@@ -62,17 +62,17 @@ class JFusionFunctionAdmin
     {
         $userPlugin = true;
         $authPlugin = true;
-        if (!JFusionFunctionAdmin::isPluginInstalled('jfusion', 'authentication', false)) {
+        if (!static::isPluginInstalled('jfusion', 'authentication', false)) {
             JFusionFunction::raiseWarning(JText::_('FUSION_MISSING_AUTH'));
             $authPlugin = false;
         }
-        if (!JFusionFunctionAdmin::isPluginInstalled('jfusion', 'user', false)) {
+        if (!static::isPluginInstalled('jfusion', 'user', false)) {
             JFusionFunction::raiseWarning(JText::_('FUSION_MISSING_USER'));
             $userPlugin = false;
         }
         if ($authPlugin && $userPlugin) {
-            $jAuth = JFusionFunctionAdmin::isPluginInstalled('jfusion', 'user', true);
-            $jUser = JFusionFunctionAdmin::isPluginInstalled('jfusion', 'authentication', true);
+            $jAuth = static::isPluginInstalled('jfusion', 'user', true);
+            $jUser = static::isPluginInstalled('jfusion', 'authentication', true);
             if (!$jAuth) {
                 JFusionFunction::raiseNotice(JText::_('FUSION_READY_TO_USE_AUTH'));
             }

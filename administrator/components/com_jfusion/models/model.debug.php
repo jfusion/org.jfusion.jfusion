@@ -136,15 +136,15 @@ class debug {
 	 *        - gc = ValueColor, the color of the structuring-grid, i.e. the background of the table
 	 */
 	private static function initColorScheme() {
-		debug::$colorScheme[] = array('vc' => "#ecf8fd", 'akc' => "#dbfede", 'okc' => "#dbfede", 'tc' => '#d6f2ff', 'gc' => '#fbfed6');
-		debug::$colorScheme[] = array('vc' => "#f2bb94", 'akc' => "#cc9e7c", 'okc' => "#a68065", 'tc' => '#CCCCCC', 'gc' => '#AAAAFF');
-		debug::$colorScheme[] = array('vc' => "#faea37", 'akc' => "#d4c62f", 'okc' => "#ada226", 'tc' => '#CCCCCC', 'gc' => '#AAAAFF');
-		debug::$colorScheme[] = array('vc' => "#4bf8d0", 'akc' => "#3fd1af", 'okc' => "#33ab8f", 'tc' => '#CCCCCC', 'gc' => '#AAAAFF');
-		debug::$colorScheme[] = array('vc' => "#7a7a7a", 'akc' => "#a1a1a1", 'okc' => "#c7c7c7", 'tc' => '#CCCCCC', 'gc' => '#AAAAFF');
-		debug::$colorScheme[] = array('vc' => "#0099cc", 'akc' => "#009999", 'okc' => "#00ff00", 'tc' => '#CCCCCC', 'gc' => '#AAAAFF');
-		debug::$colorScheme[] = array('vc' => "#cfc", 'akc' => "#cf6", 'okc' => "#cf0", 'tc' => '#CCCCCC', 'gc' => '#AAAAFF');
-		debug::$colorScheme[] = array('vc' => "#ffc", 'akc' => "#ff6", 'okc' => "#ff0", 'tc' => '#CCCCCC', 'gc' => '#AAAAFF');
-		debug::$colorScheme[] = array('vc' => "#f96", 'akc' => "#c66", 'okc' => "#966", 'tc' => '#CCCCCC', 'gc' => '#AAAAFF');
+		static::$colorScheme[] = array('vc' => "#ecf8fd", 'akc' => "#dbfede", 'okc' => "#dbfede", 'tc' => '#d6f2ff', 'gc' => '#fbfed6');
+		static::$colorScheme[] = array('vc' => "#f2bb94", 'akc' => "#cc9e7c", 'okc' => "#a68065", 'tc' => '#CCCCCC', 'gc' => '#AAAAFF');
+		static::$colorScheme[] = array('vc' => "#faea37", 'akc' => "#d4c62f", 'okc' => "#ada226", 'tc' => '#CCCCCC', 'gc' => '#AAAAFF');
+		static::$colorScheme[] = array('vc' => "#4bf8d0", 'akc' => "#3fd1af", 'okc' => "#33ab8f", 'tc' => '#CCCCCC', 'gc' => '#AAAAFF');
+		static::$colorScheme[] = array('vc' => "#7a7a7a", 'akc' => "#a1a1a1", 'okc' => "#c7c7c7", 'tc' => '#CCCCCC', 'gc' => '#AAAAFF');
+		static::$colorScheme[] = array('vc' => "#0099cc", 'akc' => "#009999", 'okc' => "#00ff00", 'tc' => '#CCCCCC', 'gc' => '#AAAAFF');
+		static::$colorScheme[] = array('vc' => "#cfc", 'akc' => "#cf6", 'okc' => "#cf0", 'tc' => '#CCCCCC', 'gc' => '#AAAAFF');
+		static::$colorScheme[] = array('vc' => "#ffc", 'akc' => "#ff6", 'okc' => "#ff0", 'tc' => '#CCCCCC', 'gc' => '#AAAAFF');
+		static::$colorScheme[] = array('vc' => "#f96", 'akc' => "#c66", 'okc' => "#966", 'tc' => '#CCCCCC', 'gc' => '#AAAAFF');
 	}
 	/**
 	 * Creates and returns the JavaScript-Snippet used to toggle values by klicking on the keys
@@ -154,8 +154,8 @@ class debug {
 	 */
 	private static function getToggleScript() {
 		$script = '';
-		if (debug::$toggleScriptInited == false && debug::$toggleFunctionName != '') {
-			$toggleFunctionName = debug::$toggleFunctionName;
+		if (static::$toggleScriptInited == false && static::$toggleFunctionName != '') {
+			$toggleFunctionName = static::$toggleFunctionName;
 			$script = '<script type="text/javascript">';
 			$script .= <<<JS
             function {$toggleFunctionName}(event) {
@@ -169,7 +169,7 @@ class debug {
 JS;
 			$script .= '</script>';
 
-			debug::$toggleScriptInited = true;
+			static::$toggleScriptInited = true;
 		}
 		return $script;
 	}
@@ -182,14 +182,14 @@ JS;
 	 */
 	private static function setStylesForScheme($schema) {
 		$style = '';
-		if (count(debug::$colorScheme) == 0) debug::initColorScheme();
-		if (!isset(debug::$colorSchemeInited[$schema])) {
+		if (count(static::$colorScheme) == 0) static::initColorScheme();
+		if (!isset(static::$colorSchemeInited[$schema])) {
 
-			$vc = debug::$colorScheme[$schema]['vc'];
-			$akc = debug::$colorScheme[$schema]['akc'];
-			$okc = debug::$colorScheme[$schema]['okc'];
-			$tc = debug::$colorScheme[$schema]['tc'];
-			$gc = debug::$colorScheme[$schema]['gc'];
+			$vc = static::$colorScheme[$schema]['vc'];
+			$akc = static::$colorScheme[$schema]['akc'];
+			$okc = static::$colorScheme[$schema]['okc'];
+			$tc = static::$colorScheme[$schema]['tc'];
+			$gc = static::$colorScheme[$schema]['gc'];
 
 
 			$style = '<style  type="text/css">';
@@ -216,7 +216,7 @@ JS;
             }
 CSS;
 			$style.= '</style>';
-			debug::$colorSchemeInited[$schema] = true;
+			static::$colorSchemeInited[$schema] = true;
 			//print($style);
 
 		}
@@ -248,8 +248,8 @@ CSS;
 		}
 		if (is_array($arr) || is_object($arr)) {
 			if ($start == true) { // the "root" run
-				$neededScriptCode = debug::getToggleScript();
-				$neededStyleCode = debug::setStylesForScheme($schema);
+				$neededScriptCode = static::getToggleScript();
+				$neededStyleCode = static::setStylesForScheme($schema);
 				$str = $neededScriptCode . '<div class="debug_'.$schema.'">'."\n" . $neededStyleCode;
 			}
 			$emptyWhat = 'empty-array';
@@ -259,12 +259,12 @@ CSS;
 				$emptyWhat = 'empty-object';
 			}
 			$empty = true;
-			if (debug::isOneDimensional($arr) && !$start) {
+			if (static::isOneDimensional($arr) && !$start) {
 				foreach ($arr as $key => $value) {
 					$empty = false;
 
-					if (debug::$callback) {
-						list($target,$function,$args) = debug::$callback;
+					if (static::$callback) {
+						list($target,$function,$args) = static::$callback;
 						if ($style == false) {
 							$style = '';
 							list($style,$value) = $target->$function($key,$value,$args);
@@ -272,15 +272,15 @@ CSS;
 							list(,$value) = $target->$function($key,$value,$args);
 						}
 					}
-					$str.= '<span class="'.$keyClass.'" style="'.$style.'"> ' . debug::decorateValue($key) . '</span> ';
-					$str.= '<span class="value" style="'.$style.'" > ' . debug::decorateValue($value) . '</span><br/>';
+					$str.= '<span class="'.$keyClass.'" style="'.$style.'"> ' . static::decorateValue($key) . '</span> ';
+					$str.= '<span class="value" style="'.$style.'" > ' . static::decorateValue($value) . '</span><br/>';
 				}
 				if ($empty) {
 					$str.= '<span class="'.$keyClass.'">'.$emptyWhat.'</span><br>'."\n";
 				}
 			} else {
 				$onClick = '';
-				if (debug::$toggleFunctionName != '') $onClick = 'onclick="' . debug::$toggleFunctionName . '(event)"';
+				if (static::$toggleFunctionName != '') $onClick = 'onclick="' . static::$toggleFunctionName . '(event)"';
 				$str.= '<table class="grid" width="100%">';
 				if ($name != '') {
 					$str.= '<thead '.$onClick.'><tr><th colspan="2" class="title">'.$name.'</th></tr></thead>';
@@ -289,8 +289,8 @@ CSS;
 				foreach ($arr as $key => $value) {
 					$temp = $style;
 					$empty = false;
-					if (debug::$callback) {
-						list($target,$function,$args) = debug::$callback;
+					if (static::$callback) {
+						list($target,$function,$args) = static::$callback;
 						if ($style == false) {
 							$style = '';
 							list($style,$value) = $target->$function($key,$value,$args);
@@ -299,8 +299,8 @@ CSS;
 						}
 					}
 					$str.= '<tr>';
-					$str.= '<td class="'.$keyClass.'" '.$onClick.' style="'.$style.'">'.debug::decorateValue($key).'</td>';
-					$str.= '<td class="value" style="'.$style.'">'.debug::get($value, false, $style).'</td>';
+					$str.= '<td class="'.$keyClass.'" '.$onClick.' style="'.$style.'">'.static::decorateValue($key).'</td>';
+					$str.= '<td class="value" style="'.$style.'">'.static::get($value, false, $style).'</td>';
 					$str.= '</tr>';
 					$style = $temp;
 				}
@@ -313,8 +313,8 @@ CSS;
 				$str.= '</div>';
 			}
 		} else { // the "leave"-run
-			$str = debug::decorateValue($arr);
-			if ($name != '') $str = '<div class="debug_0"><table class="grid" width="100%"><thead onclick="'.debug::$toggleFunctionName.'(event)"><tr><th class="title">'.$name.'</th></tr></thead><tbody><tr><td class="a_key" onclick="'.debug::$toggleFunctionName.'(event)">'.$str.'</td></tr></tbody></table></div>';
+			$str = static::decorateValue($arr);
+			if ($name != '') $str = '<div class="debug_0"><table class="grid" width="100%"><thead onclick="'.static::$toggleFunctionName.'(event)"><tr><th class="title">'.$name.'</th></tr></thead><tbody><tr><td class="a_key" onclick="'.static::$toggleFunctionName.'(event)">'.$str.'</td></tr></tbody></table></div>';
 			//flush();
 
 		}
@@ -345,14 +345,14 @@ CSS;
 				$emptyWhat = 'empty-object';
 			}
 			$empty = true;
-			if (debug::isOneDimensional($arr)) {
+			if (static::isOneDimensional($arr)) {
 				foreach ($arr as $key => $value) {
 					$empty = false;
-					if (debug::$callback) {
-						list($target,$function,$args) = debug::$callback;
+					if (static::$callback) {
+						list($target,$function,$args) = static::$callback;
 						list(,$value) = $target->$function($key, $value, $args);
 					}
-					$str.= $levelText.$key.' &rarr; '.debug::decorateValue($value, false)."\n";
+					$str.= $levelText.$key.' &rarr; '.static::decorateValue($value, false)."\n";
 				}
 				if ($empty) {
 					$str.= $levelText.$emptyWhat."\n";
@@ -364,17 +364,17 @@ CSS;
 					if (is_object($value)) {
 						$emptyWhat = 'empty-object';
 					}
-					if (debug::$callback) {
-						list($target,$function,$args) = debug::$callback;
+					if (static::$callback) {
+						list($target,$function,$args) = static::$callback;
 						list(,$value) = $target->$function($key, $value, $args);
 					}
 					if ( is_array($value) || is_object($value) ) {
 						if (count($value) == 0) {
 							$str.= $emptyWhat."\n";
 						}
-						$str.= $levelText.$key.' - &darr; '."\n".debug::getText($value, false, $level+1);
+						$str.= $levelText.$key.' - &darr; '."\n".static::getText($value, false, $level+1);
 					} else {
-						$str.= $levelText.$key.' &rarr; '.debug::decorateValue($value, false)."\n";
+						$str.= $levelText.$key.' &rarr; '.static::decorateValue($value, false)."\n";
 					}
 				}
 				if ($empty) {
@@ -420,7 +420,7 @@ CSS;
 	 * @return void
 	 */
 	public static function show($arr, $title = false) {
-		print (debug::get($arr, $title));
+		print (static::get($arr, $title));
 		//flush();
 
 	}
@@ -436,11 +436,11 @@ CSS;
 	 */
 	function messung($name) {
 		$nowTime = std::getMicroTime();
-		if (!isset(debug::$messungen[$name])) debug::$messungen[$name] = 0;
-		if (isset(debug::$lastTime)) {
-			debug::$messungen[$name]+= (($nowTime - debug::$lastTime) * 1000);
+		if (!isset(static::$messungen[$name])) static::$messungen[$name] = 0;
+		if (isset(static::$lastTime)) {
+			static::$messungen[$name]+= (($nowTime - static::$lastTime) * 1000);
 		}
-		debug::$lastTime = $nowTime;
+		static::$lastTime = $nowTime;
 	}
 	/**
 	 *    Shows the result of the measurements
@@ -449,7 +449,7 @@ CSS;
 	 *    @uses debug::show()
 	 */
 	function showTime() {
-		debug::show(debug::$messungen, "Zeitmessungen");
+		static::show(static::$messungen, "Zeitmessungen");
 	}
 	/**
 	 *    Returns the results of the measurements, HTML-Encoded
@@ -459,7 +459,7 @@ CSS;
 	 *    @return string the HTML-Code
 	 */
 	function getTime() {
-		return debug::get(debug::$messungen, "Zeitmessungen");
+		return static::get(static::$messungen, "Zeitmessungen");
 	}
 	/**
 	 *    Shows the Stacktrace
@@ -478,7 +478,7 @@ CSS;
 			$arglist = join(', ', $argv);
 			$niceStack[$key] = $stack[$n]['class'] . $stack[$n]['type'] . $stack[$n]['function'] . '(' . $arglist . ')';
 		}
-		debug::show($niceStack, "{$stack[0]['file']} ({$stack[0]['line']})");
+		static::show($niceStack, "{$stack[0]['file']} ({$stack[0]['line']})");
 	}
 	static $laufzeit = array();
 	static $laufzeitStack = array();
@@ -496,17 +496,17 @@ CSS;
 	 *
 	 */
 	static function startMessung($name) {
-		if (count(debug::$laufzeitStack) == 0) {
-			$prtLaufzeit = & debug::$laufzeit;
+		if (count(static::$laufzeitStack) == 0) {
+			$prtLaufzeit = & static::$laufzeit;
 		} else {
-			$prtLaufzeit = & debug::$laufzeitStack[count(debug::$laufzeitStack) - 1];
+			$prtLaufzeit = & static::$laufzeitStack[count(static::$laufzeitStack) - 1];
 		}
 		if (!isset($prtLaufzeit['childs'][$name])) {
 			$prtLaufzeit['childs'][$name] = array('count' => 0, 'time' => 0);
 		}
 		$prtLaufzeit['childs'][$name]['start'] = std::getMicroTime();
-		debug::$laufzeitStack[count(debug::$laufzeitStack) ] = & $prtLaufzeit['childs'][$name];
-		debug::$stackName[count(debug::$stackName) ] = $name;
+		static::$laufzeitStack[count(static::$laufzeitStack) ] = & $prtLaufzeit['childs'][$name];
+		static::$stackName[count(static::$stackName) ] = $name;
 	}
 	/**
 	 *    stops the Measurement with teh given Name
@@ -515,21 +515,21 @@ CSS;
 	 */
 	static function stopMessung($name) {
 		$tiefe = 0;
-		for ($n = count(debug::$laufzeitStack) - 1;$n >= 0;$n--) {
-			if (debug::$stackName[$n] == $name) $tiefe = max($tiefe, $n);
+		for ($n = count(static::$laufzeitStack) - 1;$n >= 0;$n--) {
+			if (static::$stackName[$n] == $name) $tiefe = max($tiefe, $n);
 		}
-		$cnt = count(debug::$laufzeitStack);
+		$cnt = count(static::$laufzeitStack);
 		for ($n = $tiefe;$n < $cnt;$n++) {
-			$aktLz = & debug::$laufzeitStack[$n];
+			$aktLz = & static::$laufzeitStack[$n];
 			if ($n == $tiefe) {
 				$aktLz['time']+= std::getMicroTime() - $aktLz['start'];
 				$aktLz['count']++;
 			} else {
 				$aktLz['time']+= std::getMicroTime() - $aktLz['start'];
-				$aktLz['count'] = 'Error, Measurement ' . debug::$stackName[$n] . ' not closed';
+				$aktLz['count'] = 'Error, Measurement ' . static::$stackName[$n] . ' not closed';
 			}
-			unset(debug::$laufzeitStack[$n]);
-			unset(debug::$stackName[$n]);
+			unset(static::$laufzeitStack[$n]);
+			unset(static::$stackName[$n]);
 		}
 	}
 	/**
@@ -547,7 +547,7 @@ CSS;
 			$childTime = 0;
 			if (isset($laufzeit['time'])) $result['Calls'] = $laufzeit['count'];
 			foreach ($laufzeit['childs'] as $name => $child) {
-				$result[$name] = debug::createLaufzeitResult($child);
+				$result[$name] = static::createLaufzeitResult($child);
 				$childTime+= $child['time'];
 			}
 			if (isset($laufzeit['time'])) {
@@ -567,8 +567,8 @@ CSS;
 	 *
 	 */
 	function showLaufzeit() {
-		$lz_nice = debug::createLaufzeitResult(debug::$laufzeit);
-		debug::show($lz_nice, "Time measurements in ms");
+		$lz_nice = static::createLaufzeitResult(static::$laufzeit);
+		static::show($lz_nice, "Time measurements in ms");
 	}
 	/**
 	 *    Returns the measurements results HTML-Encoded(they from start- and stopMessung).
@@ -578,9 +578,9 @@ CSS;
 	 *
 	 */
 	function getLaufzeit() {
-		$lz_nice = debug::createLaufzeitResult(debug::$laufzeit);
+		$lz_nice = static::createLaufzeitResult(static::$laufzeit);
 		// $str =  debug::get(debug::$laufzeit, "Zeitmessungen in s");
-		return debug::get($lz_nice, "Time measurements in ms");
+		return static::get($lz_nice, "Time measurements in ms");
 	}
 
 	/**
@@ -954,7 +954,7 @@ class trans {
 			$error['Zeile'] = xml_get_current_line_number($xp);
 			$error['Spalte'] = xml_get_current_column_number($xp);
 			$error['Byte'] = xml_get_current_byte_index($xp);
-			debug::show($error, "XML-Fehler");
+			static::show($error, "XML-Fehler");
 		} else {
 			$data = array();
 			$parentList = array($data);
@@ -1031,7 +1031,7 @@ class arrayfunc {
 	 *        - Runtime: O(n * ln(n))    if one criteria is given, O(m * (n * ln(n)) if m criterias given (worst case!!)
 	 */
 	public static function tableSort($data, $criteria, $direction = 'ASC', $holdIndizes = false) {
-		debug::startMessung('tableSort');
+		static::startMessung('tableSort');
 		$sortArr = array();
 		$retArr = array();
 		if (!is_array($criteria)) $criteria = explode(',', $criteria);
@@ -1057,7 +1057,7 @@ class arrayfunc {
 				else $retArr[] = $row;
 			}
 		}
-		debug::stopMessung('tableSort');
+		static::stopMessung('tableSort');
 		return $retArr;
 	}
 	/*------------     HOW TO  -------------------------
@@ -1089,7 +1089,7 @@ class arrayfunc {
 	 *        - Runtime: O(n)    if one criteria is given O(m * n) if m criterias given
 	 */
 	public static function tableGroup($data, $criteria, $holdIndizes = false) {
-		debug::startMessung('tableGroup');
+		static::startMessung('tableGroup');
 		$groupedArr = array();
 		if (!is_array($criteria)) $criteria = explode(',', $criteria);
 		$thisCrit = trim($criteria[0]);
@@ -1103,7 +1103,7 @@ class arrayfunc {
 				$groupedArr[$critValue] = arrayfunc::tableGroup($matches, join(',', $criteria));
 			}
 		}
-		debug::stopMessung('tableGroup');
+		static::stopMessung('tableGroup');
 		return $groupedArr;
 	}
 	/**
@@ -1124,7 +1124,7 @@ class arrayfunc {
 	 *            !! IF NOT YOU WILL LOOSE DATA WITHOUT WARNING !!
 	 */
 	public static function uniqueTableGroup($data, $criteria, $field = false) {
-		debug::startMessung('uniqueTableGroup');
+		static::startMessung('uniqueTableGroup');
 		$groupedArr = array();
 		if (!is_array($criteria)) $criteria = explode(',', $criteria);
 		$thisCrit = trim($criteria[0]);
@@ -1142,7 +1142,7 @@ class arrayfunc {
 				$groupedArr[$critValue] = arrayfunc::uniqueTableGroup($matches, join(",", $criteria), $field);
 			}
 		}
-		debug::stopMessung('uniqueTableGroup');
+		static::stopMessung('uniqueTableGroup');
 		return $groupedArr;
 	}
 	/**

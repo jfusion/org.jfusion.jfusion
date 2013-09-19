@@ -176,7 +176,7 @@ class JFusionCookies {
 				break;
 			case 'string':
 			default:
-				return JFusionCookies::implodeCookies( $_COOKIE, ';' );
+				return static::implodeCookies( $_COOKIE, ';' );
 			break;
 		}
 	}

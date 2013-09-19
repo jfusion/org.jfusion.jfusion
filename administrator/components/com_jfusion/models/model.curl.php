@@ -697,19 +697,19 @@ class JFusionCurl
 			}
 
 			$debug = array();
-			$debug[JFusionCurl::_('COOKIE')][JFusionCurl::_('JFUSION_CROSS_DOMAIN_URL')] = null;
-			$debug[JFusionCurl::_('COOKIE')][JFusionCurl::_('COOKIE_DOMAIN')] = $cookiedomain;
-			$debug[JFusionCurl::_('COOKIE')][JFusionCurl::_('NAME')] = $name;
-			$debug[JFusionCurl::_('COOKIE')][JFusionCurl::_('VALUE')] = $value;
+			$debug[static::_('COOKIE')][static::_('JFUSION_CROSS_DOMAIN_URL')] = null;
+			$debug[static::_('COOKIE')][static::_('COOKIE_DOMAIN')] = $cookiedomain;
+			$debug[static::_('COOKIE')][static::_('NAME')] = $name;
+			$debug[static::_('COOKIE')][static::_('VALUE')] = $value;
 			if (($expires) == 0) {
 				$expires='Session_cookie';
 			} else {
 				$expires=date('d-m-Y H:i:s', $expires);
 			}
-			$debug[JFusionCurl::_('COOKIE')][JFusionCurl::_('COOKIE_EXPIRES')] = $expires;
-			$debug[JFusionCurl::_('COOKIE')][JFusionCurl::_('COOKIE_PATH')] = $cookiepath;
-			$debug[JFusionCurl::_('COOKIE')][JFusionCurl::_('COOKIE_SECURE')] = $secure;
-			$debug[JFusionCurl::_('COOKIE')][JFusionCurl::_('COOKIE_HTTPONLY')] = $httponly;
+			$debug[static::_('COOKIE')][static::_('COOKIE_EXPIRES')] = $expires;
+			$debug[static::_('COOKIE')][static::_('COOKIE_PATH')] = $cookiepath;
+			$debug[static::_('COOKIE')][static::_('COOKIE_SECURE')] = $secure;
+			$debug[static::_('COOKIE')][static::_('COOKIE_HTTPONLY')] = $httponly;
 		}
 		return $debug;
 	}
@@ -981,7 +981,7 @@ class JFusionCurl
 			$this->status['debug'][]='CURL_INFO'.': '.print_r(curl_getinfo($this->ch), true);
 		}
 		if (curl_error($this->ch)) {
-			$this->status['error'][] = JFusionCurl::_('CURL_ERROR_MSG').': '.curl_error($this->ch);
+			$this->status['error'][] = static::_('CURL_ERROR_MSG').': '.curl_error($this->ch);
 			curl_close($this->ch);
 			$remotedata =  null;
 		} else if ($this->options['integrationtype'] ==1) {
@@ -1038,15 +1038,15 @@ class JFusionCurl
 
 		// check if curl extension is loaded
 		if (!isset($this->options['post_url']) || !isset($this->options['formid'])) {
-			$this->status['error'][] = JFusionCurl::_('CURL_FATAL');
+			$this->status['error'][] = static::_('CURL_FATAL');
 		} else {
 			if (!extension_loaded('curl')) {
-				$this->status['error'][] = JFusionCurl::_('CURL_NOTINSTALLED');
+				$this->status['error'][] = static::_('CURL_NOTINSTALLED');
 			} else {
-				$this->status['debug'][] = JFusionCurl::_('CURL_POST_URL_1').' '.$this->options['post_url'];
+				$this->status['debug'][] = static::_('CURL_POST_URL_1').' '.$this->options['post_url'];
 				$remotedata = $this->ReadPage(true);
 				if (empty($this->status['error'])) {
-					$this->status['debug'][] = JFusionCurl::_('CURL_PHASE_1');
+					$this->status['debug'][] = static::_('CURL_PHASE_1');
 					$this->setCookies($this->options['cookiedomain'], $this->options['cookiepath'], $this->options['expires'], $this->options['secure'], $this->options['httponly']);
 					//find out if we have the form with the name/id specified
 					$parser = new JFusionCurlHtmlFormParser($remotedata);
@@ -1088,9 +1088,9 @@ class JFusionCurl
 								$i +=1;
 							} while ($i<$frmcount);
 						}
-						$this->status['debug'][] = JFusionCurl::_('CURL_NO_LOGINFORM').' '.$helpthem;
+						$this->status['debug'][] = static::_('CURL_NO_LOGINFORM').' '.$helpthem;
 					} else {
-						$this->status['debug'][] = JFusionCurl::_('CURL_VALID_FORM');
+						$this->status['debug'][] = static::_('CURL_VALID_FORM');
 
 
 						// by now we have the specified  login/logout form, lets get the data needed to login/logout
@@ -1143,7 +1143,7 @@ class JFusionCurl
 								}
 								// we need to correct various situations like
 								// relative url from basedir, relative url from post dir etc
-								$tmpurl   = JFusionCurl::parseUrl($this->options['post_url']);
+								$tmpurl   = static::parseUrl($this->options['post_url']);
 								$pathinfo1  = pathinfo($form_action);
 								$pathinfo = pathinfo($tmpurl[6]);
 								//$this->status['debug'][] = 'post_url   : '.print_r($this->options['post_url'],true);
@@ -1201,7 +1201,7 @@ class JFusionCurl
 
 
 							if ($input_username_name == '') {
-								$this->status['error'][] = JFusionCurl::_('CURL_NO_NAMEFIELD');
+								$this->status['error'][] = static::_('CURL_NO_NAMEFIELD');
 								return $this->status;
 							}
 
@@ -1218,10 +1218,10 @@ class JFusionCurl
 							}
 
 							if ($input_password_name=='') {
-								$this->status['error'][] = JFusionCurl::_('CURL_NO_PASSWORDFIELD');
+								$this->status['error'][] = static::_('CURL_NO_PASSWORDFIELD');
 								return $this->status;
 							}
-							$this->status['debug'][] = JFusionCurl::_('CURL_VALID_USERNAME');
+							$this->status['debug'][] = static::_('CURL_VALID_USERNAME');
 						}
 						// we now set the submit parameters. These are:
 						// all form_elements name=value combinations with value != '' and type hidden
@@ -1260,10 +1260,10 @@ class JFusionCurl
 						if (empty($this->options['logout'])) {
 							$post_params = $input_username_name.'='.urlencode($this->options['username']).'&'.$input_password_name.'='.urlencode($this->options['password']);
 							$post_params_debug = $input_username_name.'='.urlencode($this->options['username']).'&'.$input_password_name.'=xxxxxx';
-							$this->status['debug'][] = JFusionCurl::_('CURL_STARTING_LOGIN').' '.$form_action.' parameters= '.$post_params_debug.$strParameters;
+							$this->status['debug'][] = static::_('CURL_STARTING_LOGIN').' '.$form_action.' parameters= '.$post_params_debug.$strParameters;
 						} else {
 							$post_params = '';
-							$this->status['debug'][] = JFusionCurl::_('CURL_STARTING_LOGOUT').' '.$form_action.' parameters= '.$strParameters;
+							$this->status['debug'][] = static::_('CURL_STARTING_LOGOUT').' '.$form_action.' parameters= '.$strParameters;
 						}
 
 						// finally submit the login/logout form:
@@ -1298,15 +1298,15 @@ class JFusionCurl
 							$this->status['debug'][]='CURL_INFO'.': '.print_r(curl_getinfo($this->ch), true);
 						}
 						if (curl_error($this->ch)) {
-							$this->status['error'][] = JFusionCurl::_('CURL_ERROR_MSG').': '.curl_error($this->ch);
+							$this->status['error'][] = static::_('CURL_ERROR_MSG').': '.curl_error($this->ch);
 						} else {
 							//we have to set the cookies now
 
 							if (empty($this->options['logout'])) {
-								$this->status['debug'][] = JFusionCurl::_('CURL_LOGIN_FINISHED');
+								$this->status['debug'][] = static::_('CURL_LOGIN_FINISHED');
 								$this->setCookies($this->options['cookiedomain'], $this->options['cookiepath'], $this->options['expires'], $this->options['secure'], $this->options['httponly']);
 							} else {
-								$this->status['debug'][] = JFusionCurl::_('CURL_LOGOUT_FINISHED');
+								$this->status['debug'][] = static::_('CURL_LOGOUT_FINISHED');
 								$this->deleteCookies($this->options['cookiedomain'], $this->options['cookiepath'], $this->options['expires'], $this->options['secure'], $this->options['httponly']);
 							}
 						}
@@ -1395,7 +1395,7 @@ class JFusionCurl
 				$this->status['debug'][]='CURL_INFO'.': '.print_r(curl_getinfo($this->ch), true);
 			}
 			if (curl_error($this->ch)) {
-				$this->status['error'][] = JFusionCurl::_('CURL_ERROR_MSG').': '.curl_error($this->ch);
+				$this->status['error'][] = static::_('CURL_ERROR_MSG').': '.curl_error($this->ch);
 			} else {
 				//we have to delete the cookies now
 				$this->deleteCookies($this->options['cookiedomain'], $this->options['cookiepath'], $this->options['leavealone'], $this->options['secure'], $this->options['httponly']);
@@ -1500,9 +1500,9 @@ class JFusionCurl
 				$this->status['cURL']['data'][]= $remotedata;
 				$this->status['debug'][]='CURL_INFO'.': '.print_r(curl_getinfo($this->ch), true);
 			}
-			$this->status['debug'][]= JFusionCurl::_('CURL_LOGOUT_URL').': '.  $this->options['post_url'];
+			$this->status['debug'][]= static::_('CURL_LOGOUT_URL').': '.  $this->options['post_url'];
 			if (curl_error($this->ch)) {
-				$this->status['error'][] = JFusionCurl::_('CURL_ERROR_MSG').': '.curl_error($this->ch);
+				$this->status['error'][] = static::_('CURL_ERROR_MSG').': '.curl_error($this->ch);
 			} else {
 				$this->setCookies($this->options['cookiedomain'], $this->options['cookiepath'], $this->options['expires'], $this->options['secure'], $this->options['httponly']);
 			}

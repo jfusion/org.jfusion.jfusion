@@ -24,12 +24,10 @@ class JFusionCurlFrameless {
 
 	var $cookies = array();
 
-    /**
-    * Gets an Fusion front object
-    *
-    * @return object JFusionCurlFrameless JFusionCurlFrameless object for the JFusionCurlFrameless
-    */
-    function JFusionCurlFrameless()
+	/**
+	 *
+	 */
+	function __construct()
     {
     }
 

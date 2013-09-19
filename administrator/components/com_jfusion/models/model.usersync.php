@@ -190,7 +190,7 @@ class JFusionUsersync
      */
     public static function syncError($syncid, $syncError)
     {
-	    $synclog = JFusionUsersync::getLogData($syncid, 'error');
+	    $synclog = static::getLogData($syncid, 'error');
 	    foreach ($syncError as $id => $error) {
 		    if (isset($error['action']) && isset($synclog[$id]) && $error['action']) {
 			    $data = unserialize($synclog[$id]->data);
@@ -202,7 +202,7 @@ class JFusionUsersync
 					    JFusionFunction::raise('error',$status['error'], $data['user']['jname'] . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE'));
 				    } else {
 					    JFusionFunction::raiseMessage(JText::_('USER') . ' ' . $userinfo->username . ' ' . JText::_('UPDATE'), $data['user']['jname']);
-					    JFusionUsersync::markResolved($id);
+					    static::markResolved($id);
 					    JFusionFunction::updateLookup($data['user']['userinfo'], 0, $data['user']['jname']);
 				    }
 			    } elseif ($error['action'] == '2') {
@@ -213,7 +213,7 @@ class JFusionUsersync
 					    JFusionFunction::raise('error',$status['error'], $data['conflict']['jname'] . ' ' . JText::_('USER') . ' ' . JText::_('UPDATE'));
 				    } else {
 					    JFusionFunction::raiseMessage(JText::_('USER') . ' ' . $userinfo->username . ' ' . JText::_('UPDATE'), $data['conflict']['jname']);
-					    JFusionUsersync::markResolved($id);
+					    static::markResolved($id);
 					    JFusionFunction::updateLookup($data['user']['userinfo'], 0, $data['user']['jname']);
 				    }
 			    } elseif ($error['action'] == '3') {
@@ -225,7 +225,7 @@ class JFusionUsersync
 				    if (!empty($status['error'])) {
 					    JFusionFunction::raise('error',$status['error'], $error['user_jname'] . ' ' . JText::_('ERROR') . ' ' .  JText::_('DELETING') . ' ' . JText::_('USER') . ' ' . $error['user_username']);
 				    } else {
-					    JFusionUsersync::markResolved($id);
+					    static::markResolved($id);
 					    JFusionFunction::raiseMessage(JText::_('SUCCESS') . ' ' . JText::_('DELETING') . ' ' . JText::_('USER') . ' ' . $error['user_username'], $error['user_jname']);
 					    JFusionFunction::updateLookup($data['user']['userinfo'], 0, $error['conflict_jname'], true);
 				    }
@@ -238,7 +238,7 @@ class JFusionUsersync
 				    if (!empty($status['error'])) {
 					    JFusionFunction::raise('error',$status['error'], $error['conflict_jname'] . ' ' . JText::_('ERROR') . ' ' . JText::_('DELETING') . ' ' .  JText::_('USER') . ' ' . $error['conflict_username']);
 				    } else {
-					    JFusionUsersync::markResolved($id);
+					    static::markResolved($id);
 					    JFusionFunction::raiseMessage(JText::_('SUCCESS') . ' ' . JText::_('DELETING') . ' ' . JText::_('USER') . ' ' . $error['user_username'], $error['conflict_jname']);
 					    JFusionFunction::updateLookup($data['conflict']['userinfo'], 0, $error['conflict_jname'], true);
 				    }
@@ -282,11 +282,11 @@ class JFusionUsersync
 			    $MasterUser = JFusionFactory::getUser($syncdata['master']);
 			    $sync_log = new stdClass;
 			    $syncid = $syncdata['syncid'];
-			    $sync_active = JFusionUsersync::getSyncStatus($syncid);
+			    $sync_active = static::getSyncStatus($syncid);
 			    $db = JFactory::getDBO();
 			    if (!$sync_active) {
 				    //tell JFusion a sync is in progress
-				    JFusionUsersync::changeSyncStatus($syncid, 1);
+				    static::changeSyncStatus($syncid, 1);
 				    //only store syncdata every 20 users for better performance
 				    $store_interval = 20;
 				    $user_count = 1;
@@ -386,7 +386,7 @@ class JFusionUsersync
 										    $syncdata['plugin_offset'] += 1;
 										    $syncdata['user_offset'] = 0;
 									    }
-									    JFusionUsersync::updateSyncdata($syncdata);
+									    static::updateSyncdata($syncdata);
 									    //update counters
 									    $user_count = 1;
 									    $user_batch--;
@@ -406,9 +406,9 @@ class JFusionUsersync
 										    $syncdata['plugin_offset'] += 1;
 										    $syncdata['user_offset'] = 0;
 									    }
-									    JFusionUsersync::updateSyncdata($syncdata);
+									    static::updateSyncdata($syncdata);
 									    //tell Joomla the batch has completed
-									    JFusionUsersync::changeSyncStatus($syncid, 0);
+									    static::changeSyncStatus($syncid, 0);
 									    return;
 								    }
 							    }
@@ -419,7 +419,7 @@ class JFusionUsersync
 				    if ($syncdata['synced_users'] == $syncdata['total_to_sync']) {
 					    //end of sync, save the final data
 					    $syncdata['completed'] = true;
-					    JFusionUsersync::updateSyncdata($syncdata);
+					    static::updateSyncdata($syncdata);
 
 					    //update the finish time
 					    $db = JFactory::getDBO();
@@ -432,8 +432,8 @@ class JFusionUsersync
 					    $db->setQuery($query);
 					    $db->execute();
 				    }
-				    JFusionUsersync::updateSyncdata($syncdata);
-				    JFusionUsersync::changeSyncStatus($syncid, 0);
+				    static::updateSyncdata($syncdata);
+				    static::changeSyncStatus($syncid, 0);
 			    }
 		    }
 	    } catch (Exception $e) {

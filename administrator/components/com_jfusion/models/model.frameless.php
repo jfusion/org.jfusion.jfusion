@@ -198,7 +198,7 @@ class JFusionFrameless {
 			throw new RuntimeException(JText::_ ( 'NO_BUFFER' ));
 		}
 
-		$data->buffer = JFusionFrameless::parseEncoding($data->buffer);
+		$data->buffer = static::parseEncoding($data->buffer);
 
 		//we set the backtrack_limit to twice the buffer length just in case!
 		$backtrack_limit = ini_get ( 'pcre.backtrack_limit' );
@@ -292,7 +292,7 @@ class JFusionFrameless {
 			if (isset ( $data->body )) {
 				$JFusionPlugin->parseCSS($data,$data->body,true);
 
-				JFusionFrameless::parseBody($data);
+				static::parseBody($data);
 
 				// parse the URL's'
 				$JFusionPlugin->parseBody ( $data );
