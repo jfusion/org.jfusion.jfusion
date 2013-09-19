@@ -166,7 +166,7 @@ window.addEvent('domready',function() {
     installZIP.addEvent('submit', function(e) {
         var upload;
         e.stop();
-        $('spinnerZIP').set('html','<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">');
+        $('spinnerZIP').set('html', '<img border="0" alt="loading" src="components/com_jfusion/images/spinner.gif">');
         upload = new File.Upload({
             url:  JFusion.url,
             noCache: true,

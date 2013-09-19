@@ -53,8 +53,6 @@ class jfusionViewusergroups extends JViewLegacy {
      */
     function display($tpl = null)
     {
-	    //load mootools
-	    JHtml::_('behavior.framework', true);
 	    JHtml::_('Formbehavior.chosen');
 
 	    $plugins = JFusionFactory::getPlugins('both', true);

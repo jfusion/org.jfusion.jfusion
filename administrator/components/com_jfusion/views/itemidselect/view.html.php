@@ -59,19 +59,15 @@ class jfusionViewitemidselect extends JViewLegacy
         $lang = JFactory::getLanguage();
         $lang->load('com_jfusion');
 
-        // Initialize variables
-        JHTML::_('behavior.modal');
         $document = JFactory::getDocument();
         $document->setTitle('Plugin Selection');
         $template = $mainframe->getTemplate();
         $document->addStyleSheet('templates/'.$template.'/css/general.css');
-        $document->addStyleSheet('components/com_jfusion/css/jfusion.css');
         $css = '.jfusion table.jfusionlist, .jfusion table.jfusiontable{ font-size:11px; }';
         $document->addStyleDeclaration($css);
 
         //get the number to attach to the id of the input to update after selecting a menu item
         $feature = JFactory::getApplication()->input->get('feature', 'any');
-        JHTML::_('behavior.tooltip');
         
         //get a list of jfusion menuitems
         $app		= JFactory::getApplication();

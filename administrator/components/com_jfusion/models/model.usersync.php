@@ -123,13 +123,13 @@ class JFusionUsersync
         $serialized = base64_encode(serialize($syncdata));
         $db = JFactory::getDBO();
 
-	    $syncdata = new stdClass;
-	    $syncdata->syncdata = $db->Quote($serialized);
-	    $syncdata->syncid = $db->Quote($syncdata['syncid']);
-	    $syncdata->time_start = $db->Quote(time());
-	    $syncdata->action = $db->Quote($syncdata['action']);
+	    $data = new stdClass;
+	    $data->syncdata = $serialized;
+	    $data->syncid = $syncdata['syncid'];
+	    $data->time_start = time();
+	    $data->action = $syncdata['action'];
 
-	    $db->insertObject('#__jfusion_sync', $syncdata);
+	    $db->insertObject('#__jfusion_sync', $data);
     }
 
     /**

@@ -40,12 +40,6 @@ class JFormFieldJFusionPair extends JFormField
 	 */
 	protected function getInput()
 	{
-		JHtml::_('behavior.framework');
-		JHTML::_('behavior.modal', 'a.modal');
-
-		$document = JFactory::getDocument();
-		$document->addScript('components/com_jfusion/js/jfusion.js');
-
 		JFusionFunction::initJavaScript();
 
 		$delete = JText::_('DELETE_PAIR');
@@ -100,7 +94,7 @@ HTML;
 				{$js}
 				});
 JS;
-
+		$document = JFactory::getDocument();
 		$document->addScriptDeclaration($js);
 
 		$output = <<<HTML

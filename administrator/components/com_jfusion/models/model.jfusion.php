@@ -1700,10 +1700,20 @@ class JFusionFunction
 	public static function initJavaScript() {
 		static $js;
 		if (!$js) {
+			JHtml::_('behavior.framework', true);
+			JHTML::_('behavior.modal');
+			JHTML::_('behavior.tooltip');
+
+			$document = JFactory::getDocument();
 			if ( JFactory::getApplication()->isAdmin() ) {
+
 				$keys = array('SESSION_TIMEOUT', 'NOTICE', 'WARNING', 'MESSAGE', 'ERROR', 'DELETED', 'DELETE_PAIR', 'REMOVE', 'OK');
 
 				$url = JURI::root() . 'administrator/index.php';
+
+
+				$document->addScript('components/com_jfusion/js/jfusion.js');
+
 			} else {
 				$keys = array('SESSION_TIMEOUT', 'NOTICE', 'WARNING', 'MESSAGE', 'ERROR');
 
@@ -1715,8 +1725,6 @@ class JFusionFunction
 			$js=<<<JS
 			JFusion.url = '{$url}';
 JS;
-
-			$document = JFactory::getDocument();
 			$document->addScriptDeclaration($js);
 		}
 	}

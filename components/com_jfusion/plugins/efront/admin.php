@@ -16,7 +16,6 @@
 
 // no direct access
 defined('_JEXEC') or die('Restricted access');
-require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.abstractuser.php';
 
 /**
  * JFusion Admin Class for eFront 3.5+

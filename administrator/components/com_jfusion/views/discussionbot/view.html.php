@@ -74,8 +74,6 @@ class jfusionViewdiscussionbot extends JViewLegacy
 	    $document = JFactory::getDocument();
 	    $document->addScript('components/com_jfusion/views/'.$this->getName().'/tmpl/default.js');
 
-		JHTML::_('behavior.modal');
-
         $mainframe = JFactory::getApplication();
  		$document	= JFactory::getDocument();
         $db			= JFactory::getDBO();
@@ -178,9 +176,6 @@ class jfusionViewdiscussionbot extends JViewLegacy
 	    }
 
 		//joomla select options
-
-
-		$document->addStyleSheet('components/com_jfusion/css/jfusion.css');
         $template = $mainframe->getTemplate();
 		$document->addStyleSheet('templates/'.$template.'/css/general.css');
 		$document->addStyleSheet('templates/'.$template.'/css/icon.css');

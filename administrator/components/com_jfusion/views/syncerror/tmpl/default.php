@@ -17,8 +17,6 @@
 defined('_JEXEC') or die('Restricted access');
 //display the paypal donation button
 JFusionFunctionAdmin::displayDonate();
-//allow for AJAX popups
-JHTML::_('behavior.modal', 'a.modal');
 ?>
 <div class="jfusion">
 	<table>

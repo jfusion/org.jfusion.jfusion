@@ -35,11 +35,7 @@ class JFormFieldJFusionItemid extends JFormField
      */
     protected function getInput()
     {
-	    JHtml::_('behavior.framework');
-        JHTML::_('behavior.modal', 'a.modal');
-
-	    $document = JFactory::getDocument();
-	    $document->addScript('components/com_jfusion/js/jfusion.js');
+	    JFusionFunction::initJavaScript();
 
     	$value = $this->value;
 

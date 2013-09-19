@@ -389,7 +389,7 @@ class JFusionUser_universal extends JFusionUser
 										$addgroup->$field = base64_decode($usergroup);
 										break;
 									case 'DEFAULT':
-										$addgroup->$field = $this->helper->getValue($value->fieldtype,$value->value,$userinfo);
+										$addgroup->$field = $this->helper->getValue($value->fieldtype, $value->value, $userinfo);
 										break;
 								}
 							}

@@ -482,7 +482,7 @@ HTML;
 		    	'id': 'usergroups_'+plugin.name+index+'postgroup'
 		    });
 
-		    Array.each(postgroups, function (group, i) {
+		    Array.each(postgroups, function (group) {
 			    var options = {'value': group.id,
 					            'html': group.name};
 
@@ -504,8 +504,8 @@ HTML;
 		    	'id': 'usergroups_'+plugin.name+index+'groups'
 		    });
 
-		    Array.each(usergroups, function (group, i) {
-			    if (group.id != 0) {
+		    Array.each(usergroups, function (group) {
+			    if (group.id !== 0) {
 					var options = {'value': group.id,
 						            'html': group.name};
 

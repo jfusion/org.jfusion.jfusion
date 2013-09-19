@@ -34,10 +34,8 @@ class JFormFieldJFusionAdvancedParam extends JFormField
 	 */
 	protected function getInput()
 	{
-		JHtml::_('behavior.framework');
+		JFusionFunction::initJavaScript();
 
-		$document = JFactory::getDocument();
-		$document->addScript('components/com_jfusion/js/jfusion.js');
 		//used to give unique ids to elements when more than one advanced param is loaded (for example in configuring JoomFish)
 		static $elNum;
 		if (!isset($elNum)) {
@@ -98,9 +96,6 @@ class JFormFieldJFusionAdvancedParam extends JFormField
 
 		$select_plugin = JText::_('SELECT_PLUGIN');
 		$select = JText::_('SELECT');
-
-		//Replace new Lines with the placeholder \n
-		JHTML::_('behavior.modal', 'a.modal');
 
 		$html =<<<HTML
         <div style="float: left; margin-right:5px">

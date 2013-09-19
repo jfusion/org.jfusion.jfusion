@@ -15,10 +15,7 @@
 
 // no direct access
 defined('_JEXEC') or die('Restricted access');
-/**
- * load the Abstract Auth Class
- */
-require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.abstractauth.php';
+
 /**
  * @category  Gallery2
  * @package   JFusionPlugins

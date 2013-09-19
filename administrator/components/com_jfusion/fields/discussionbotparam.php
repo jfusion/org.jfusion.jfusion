@@ -37,7 +37,7 @@ class JFormFieldDiscussionbotparam extends JFormField
 	function getInput()
 	{
 		try {
-			$db			= JFactory::getDBO();
+			$db = JFactory::getDBO();
 
 			$fieldName = $this->formControl.'['.$this->group.'][' . $this->fieldname . ']';
 			$name = (string) $this->fieldname;
@@ -75,9 +75,7 @@ class JFormFieldDiscussionbotparam extends JFormField
 			if(empty($jname)) {
 				throw new RuntimeException(JText::_('NO_PLUGIN_SELECT'));
 			} else {
-				JHtml::_('behavior.framework');
-				$document = JFactory::getDocument();
-				$document->addScript('components/com_jfusion/js/jfusion.js');
+				JFusionFunction::initJavaScript();
 
 				jimport( 'joomla.user.helper' );
 				$hash = JApplication::getHash( $name.JUserHelper::genRandomPassword());
@@ -85,8 +83,6 @@ class JFormFieldDiscussionbotparam extends JFormField
 				$session->set($hash, $value);
 
 				$link = 'index.php?option=com_jfusion&amp;task=discussionbot&amp;tmpl=component&amp;jname='.$jname.'&amp;ename='.$name.'&amp;'.$name.'='.$hash;
-
-				JHTML::_('behavior.modal', 'a.modal');
 
 				$assign_paits = JText::_('ASSIGN_PAIRS');
 

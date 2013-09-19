@@ -63,7 +63,6 @@ class jfusionViewadvancedparam extends JViewLegacy
 		jimport('joomla.form.formfield');
 		jimport('joomla.html.pane');
 
-		JHtml::_('behavior.framework', true);
 		JHtml::_('Formbehavior.chosen');
 
 		$document = JFactory::getDocument();
@@ -115,7 +114,7 @@ class jfusionViewadvancedparam extends JViewLegacy
 		$document->setTitle('Plugin Selection');
 		$template = $mainframe->getTemplate();
 		$document->addStyleSheet('templates/'.$template.'/css/general.css');
-		$document->addStyleSheet('components/com_jfusion/css/jfusion.css');
+
 		$css = '.jfusion table.jfusionlist, table.jfusiontable{ font-size:11px; }';
 		$document->addStyleDeclaration($css);
 
@@ -146,9 +145,6 @@ HTML;
 
 		//for J1.6+ single select modes, params is an array
 		$this->comp = is_array($params) ? $params : array();
-
-		JHTML::_('behavior.modal');
-		JHTML::_('behavior.tooltip');
 		parent::display($multiselect ? 'multi' : 'single');
 	}
 

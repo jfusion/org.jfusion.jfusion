@@ -183,13 +183,13 @@ window.addEvent('domready', function() {
         $('start').addEvent('click', function(e) {
             // prevent default
             e.stop();
-            if (JFusion.syncRunning == 1) {
+            if (JFusion.syncRunning === 1) {
                 JFusion.stopSync();
             } else {
                 // prevent insane clicks to start numerous requests
                 clearInterval(JFusion.periodical);
 
-                if (JFusion.syncMode == 'new') {
+                if (JFusion.syncMode === 'new') {
                     var form = $('syncForm');
                     var count = 0;
 
@@ -201,8 +201,8 @@ window.addEvent('domready', function() {
                             if (value) {
                                 JFusion.response.slave_data[count] = {
                                     "jname": value,
-                                    "total": JFusion.slaveData[value]['total'],
-                                    "total_to_sync": JFusion.slaveData[value]['total'],
+                                    "total": JFusion.slaveData[value].total,
+                                    "total_to_sync": JFusion.slaveData[value].total,
                                     "created": 0,
                                     "deleted": 0,
                                     "updated": 0,
@@ -214,8 +214,8 @@ window.addEvent('domready', function() {
                     }
                     if (JFusion.response.slave_data.length) {
                         //give the user a last chance to opt-out
-                        var answer = confirm(Joomla.JText._('SYNC_CONFIRM_START'));
-                        if (answer) {
+
+                        JFusion.confirm(Joomla.JText._('SYNC_CONFIRM_START'), Joomla.JText._('OK'), function () {
                             JFusion.syncMode = 'resume';
                             //do start
                             new Request.JSON({
@@ -228,7 +228,7 @@ window.addEvent('domready', function() {
                                     JFusion.stopSync();
                                 }}).get(form.toQueryString() + '&option=com_jfusion&task=syncinitiate&tmpl=component&syncid=' + JFusion.syncid);
                             JFusion.startSync();
-                        }
+                        });
                     } else {
                         JFusion.OnError(Joomla.JText._('SYNC_NODATA'));
                     }

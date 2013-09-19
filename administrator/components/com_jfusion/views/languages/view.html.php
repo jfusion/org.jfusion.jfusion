@@ -47,9 +47,6 @@ class jfusionViewlanguages extends JViewLegacy
         //get the jfusion news
         ob_start();
 
-	    JHTML::_('behavior.modal', 'a.modal');
-	    JHtml::_('behavior.framework', true);
-
 	    $document = JFactory::getDocument();
 	    $document->addScript('components/com_jfusion/views/'.$this->getName().'/tmpl/default.js');
 	    JFusionFunction::loadJavascriptLanguage(array('INSTALL_UPGRADE_LANGUAGE_PACKAGE','INSTALL'));

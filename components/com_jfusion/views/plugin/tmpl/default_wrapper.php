@@ -45,5 +45,3 @@ $html =<<<HTML
 HTML;
 
 echo $html;
-?>
-

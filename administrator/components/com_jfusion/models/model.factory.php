@@ -58,12 +58,11 @@ class JFusionFactory
         //only create a new plugin instance if it has not been created before
         if (!isset($public_instances[$jname])) {
             //load the Abstract Public Class
-	        require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.abstractpublic.php';
-
+	        require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR . 'model.abstractpublic.php';
             $filename = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'public.php';
             if (file_exists($filename)) {
                 //load the plugin class itself
-                include_once $filename;
+	            require_once $filename;
                 $class = 'JFusionPublic_' . $jname;
             } else {
                 $class = 'JFusionPublic';
@@ -90,13 +89,13 @@ class JFusionFactory
         //only create a new plugin instance if it has not been created before
         if (!isset($admin_instances[$jname])) {
             //load the Abstract Admin Class
-	        require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.abstractadmin.php';
+	        require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR . 'model.abstractadmin.php';
 
             $filename = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'admin.php';
             if (file_exists($filename)) {
                 //load the plugin class itself
                 $jn = $jname;
-                include_once $filename;
+	            require_once $filename;
                 $jname = $jn; // (stop gap bug #: some plugins seems to alter $jname, have to find put why
                 $class = 'JFusionAdmin_' . $jname;
             } else {
@@ -123,11 +122,11 @@ class JFusionFactory
         //only create a new authentication instance if it has not been created before
         if (!isset($auth_instances[$jname])) {
             //load the Abstract Auth Class
-	        require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.abstractauth.php';
+	        require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR . 'model.abstractauth.php';
             $filename = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'auth.php';
             if (file_exists($filename)) {
                 //load the plugin class itself
-                include_once $filename;
+	            require_once $filename;
                 $class = 'JFusionAuth_' . $jname;
             } else {
                 $class = 'JFusionAuth';
@@ -156,11 +155,11 @@ class JFusionFactory
         //only create a new user instance if it has not been created before
         if (!isset($user_instances[$jname])) {
             //load the User Public Class
-	        require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.abstractuser.php';
+	        require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR . 'model.abstractuser.php';
             $filename = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'user.php';
             if (file_exists($filename)) {
                 //load the plugin class itself
-                include_once $filename;
+	            require_once $filename;
                 $class = 'JFusionUser_' . $jname;
             } else {
                 $class = 'JFusionUser';
@@ -189,11 +188,11 @@ class JFusionFactory
         //only create a new thread instance if it has not been created before
         if (!isset($forum_instances[$jname])) {
             //load the Abstract Forum Class
-	        require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.abstractforum.php';
+	        require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR . 'model.abstractforum.php';
             $filename = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'forum.php';
             if (file_exists($filename)) {
                 //load the plugin class itself
-                include_once $filename;
+	            require_once $filename;
                 $class = 'JFusionForum_' . $jname;
             } else {
                 $class = 'JFusionForum';
@@ -220,11 +219,11 @@ class JFusionFactory
         }
         //only create a new thread instance if it has not been created before
         if (!isset($helper_instances[$jname])) {
-	        require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.abstractplugin.php';
+	        require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR . 'model.abstractplugin.php';
             $filename = JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $jname . DIRECTORY_SEPARATOR . 'helper.php';
             if (file_exists($filename)) {
                 //load the plugin class itself
-                include_once $filename;
+	            require_once $filename;
                 $class = 'JFusionHelper_' . $jname;
                 $helper_instances[$jname] = new $class;
             } else {
@@ -424,7 +423,7 @@ class JFusionFactory
     public static function getPluginNameFromNodeId($jnode_id) {
         $result = '';
         //$jid = $jnode_id;
-        $plugins = static::getPlugins('both',true);
+        $plugins = static::getPlugins('both', true);
         foreach($plugins as $plugin) {
             $id = rtrim(static::getPluginNodeId($plugin->name), '/');
             if (strcasecmp($jnode_id, $id) == 0) {

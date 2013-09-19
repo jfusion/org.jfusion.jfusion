@@ -67,11 +67,8 @@ class jfusionViewsyncstatus extends JViewLegacy
         $mainframe = JFactory::getApplication();
         //add css
         $document = JFactory::getDocument();
-        $document->addStyleSheet('components/com_jfusion/css/jfusion.css');
         $template = $mainframe->getTemplate();
         $document->addStyleSheet('templates/'.$template.'/css/general.css');
-        JHTML::_('behavior.modal');
-        JHTML::_('behavior.tooltip');
 
         //Load usersync library
         include_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.usersync.php';
@@ -83,8 +80,8 @@ class jfusionViewsyncstatus extends JViewLegacy
         $mainframe = JFactory::getApplication();
         $client             = JFactory::getApplication()->input->getWord( 'filter_client', 'site' );
         $option = JFactory::getApplication()->input->getCmd('option');
-        $filter_order       = $mainframe->getUserStateFromRequest( "$option.$client.filter_order",      'filter_order',     'id',       'cmd' );
-        $filter_order_Dir   = $mainframe->getUserStateFromRequest( "$option.$client.filter_order_Dir",  'filter_order_Dir', '',         'word' );
+        $filter_order       = $mainframe->getUserStateFromRequest( "$option.$client.filter_order", 'filter_order', 'id', 'cmd' );
+        $filter_order_Dir   = $mainframe->getUserStateFromRequest( "$option.$client.filter_order_Dir", 'filter_order_Dir', '', 'word' );
         $limit              = (int)$mainframe->getUserStateFromRequest( 'global.list.limit', 'limit', $mainframe->getCfg('list_limit'), 'int' );
         $limitstart         = (int)$mainframe->getUserStateFromRequest( $option.'.limitstart', 'limitstart', 0, 'int' );
         $syncdata['log'] = JFusionUsersync::getLogData($this->syncid, 'all', $limitstart, $limit, $filter_order, $filter_order_Dir);

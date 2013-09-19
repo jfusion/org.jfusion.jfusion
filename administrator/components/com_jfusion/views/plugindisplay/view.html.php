@@ -53,8 +53,6 @@ class jfusionViewplugindisplay extends JViewLegacy {
      */
     function display($tpl = null)
     {
-	    //load mootools
-	    JHtml::_('behavior.framework', true);
 	    $plugins = $this->getPlugins();
         if (!empty($plugins)) {
             //we found plugins now prepare the data
@@ -316,7 +314,6 @@ class jfusionViewplugindisplay extends JViewLegacy {
 
 		$db->setQuery($query);
 		$ordering = $db->loadObjectList();
-		JHTML::_('behavior.modal', 'a.modal');
 		if(!empty($ordering)){
 			//set a new order
 			$query = $db->getQuery(true)

@@ -57,7 +57,6 @@ class jfusionViewsyncerrordetails extends JViewLegacy
         $mainframe = JFactory::getApplication();
         // add the JFusion CSS
         $document = JFactory::getDocument();
-        $document->addStyleSheet('components/com_jfusion/css/jfusion.css');
         $template = $mainframe->getTemplate();
         $document->addStyleSheet('templates/'.$template.'/css/general.css');
         $css = 'table.jfusionlist, table.jfusiontable{ font-size:11px; }';
