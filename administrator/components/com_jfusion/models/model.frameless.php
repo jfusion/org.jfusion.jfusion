@@ -30,7 +30,7 @@ class JFusionFrameless {
 	 */
 	public static function initData($jname, $isPlugin = true)
 	{
-		$uri = JURI::getInstance ();
+		$uri = JURI::getInstance();
 
 		// declare Data object
 		$data = new stdClass ( );
