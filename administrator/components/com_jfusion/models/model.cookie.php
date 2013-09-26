@@ -40,7 +40,7 @@ class JFusionCookies {
      *
      * @return array Cookie debug info
      */
-    function addCookie($cookie_name, $cookie_value='', $cookie_expires_time=0, $cookiepath='', $cookiedomain='', $cookie_secure=0, $cookie_httponly=0, $mask = false) {
+    function addCookie($cookie_name, $cookie_value = '', $cookie_expires_time = 0, $cookiepath = '', $cookiedomain = '', $cookie_secure = 0, $cookie_httponly = 0, $mask = false) {
     	if ($cookie_expires_time != 0) {
     		$cookie_expires_time = time() + intval($cookie_expires_time);
     	} else {
@@ -107,7 +107,7 @@ class JFusionCookies {
      * @param string $source_url
      * @param string $return
      */
-    function executeRedirect($source_url=null,$return=null) {
+    function executeRedirect($source_url = null, $return = null) {
     	$mainframe = JFactory::getApplication();
     	if (!$mainframe->isAdmin() || !$this->secret) {
 	    	if(count($this->_cookies)) {
@@ -115,8 +115,8 @@ class JFusionCookies {
                     $return = JFactory::getApplication()->input->getBase64('return', '');
 	    			if ($return) {
 	    				$return = base64_decode ( $return );
-	    				if( stripos($return,'http://') === false && stripos($return,'https://') === false ) {
-	    					$return = ltrim($return,'/');
+	    				if( stripos($return,'http://') === false && stripos($return, 'https://') === false ) {
+	    					$return = ltrim($return, '/');
 	    					$return = $source_url.$return;
 	    				}
 	    			}

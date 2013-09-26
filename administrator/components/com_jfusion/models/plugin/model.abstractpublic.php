@@ -58,7 +58,7 @@ class JFusionPublic extends JFusionPlugin
 
         $status = $frameless->display($data);
         if ( isset($data->location) ) {
-            $location = str_replace($data->integratedURL,'',$data->location);
+            $location = str_replace($data->integratedURL, '', $data->location);
 	        $location = $this->fixUrl(array(1 => $location));
             $mainframe = JFactory::getApplication();
             $mainframe->redirect($location);
@@ -91,7 +91,7 @@ class JFusionPublic extends JFusionPlugin
         $path = '';
 
         if(!empty($data->parse_abs_path)) {
-            $path = preg_replace( '#(\w{0,10}://)(.*?)/(.*?)#is'  , '$3' , $data->integratedURL );
+            $path = preg_replace('#(\w{0,10}://)(.*?)/(.*?)#is' , '$3' , $data->integratedURL);
             $path = preg_replace('#//+#','/',"/$path/");
 
             $regex_body[]	= '#(action="|href="|src="|background="|url\(\'?)'.$path.'(.*?)("|\'?\))#mS';
@@ -125,11 +125,11 @@ class JFusionPublic extends JFusionPlugin
         if(!empty($data->parse_rel_img)) {
 // (?<quote>["\'])
 // \k<quote>
-            $regex_body[]	= '#(src=["\']|background=["\']|url\()[./|/](.*?)(["\']|\))#mS';
+            $regex_body[] = '#(src=["\']|background=["\']|url\()[./|/](.*?)(["\']|\))#mS';
             $replace_body[]	= '$1'.$data->integratedURL.'$2$3';
             $callback_body[] = '';
 
-            $regex_body[]	= '#(src=["\']|background=["\']|url\()(?!\w{0,10}://|\w{0,10}:)(.*?)(["\']|\))#mS';
+            $regex_body[] = '#(src=["\']|background=["\']|url\()(?!\w{0,10}://|\w{0,10}:)(.*?)(["\']|\))#mS';
             $replace_body[]	= '$1'.$data->integratedURL.'$2$3';
             $callback_body[] = '';
         }
@@ -137,21 +137,21 @@ class JFusionPublic extends JFusionPlugin
         //parse form actions
         if(!empty($data->parse_action)) {
 	        if (!empty($data->parse_abs_path)) {
-		        $regex_body[]	= '#action=[\'"]'.$path.'(.*?)[\'"](.*?)>#m';
+		        $regex_body[] = '#action=[\'"]'.$path.'(.*?)[\'"](.*?)>#m';
 		        $replace_body[]	= '';
 		        $callback_body[] = 'fixAction';
 	        }
 	        if (!empty($data->parse_abs_url)) {
-		        $regex_body[]	= '#action=[\'"]'.$data->integratedURL.'(.*?)[\'"](.*?)>#m';
+		        $regex_body[] = '#action=[\'"]'.$data->integratedURL.'(.*?)[\'"](.*?)>#m';
 		        $replace_body[]	= '';
 		        $callback_body[] = 'fixAction';
 	        }
 	        if (!empty($data->parse_rel_url)) {
-		        $regex_body[]	= '#action=[\'"][./|/](.*?)[\'"](.*?)>#m';
+		        $regex_body[] = '#action=[\'"][./|/](.*?)[\'"](.*?)>#m';
 		        $replace_body[]	= '';
 		        $callback_body[] = 'fixAction';
 
-		        $regex_body[]	= '#action=[\'"](?!\w{0,10}://|\w{0,10}:)(.*?)[\'"](.*?)>#m';
+		        $regex_body[] = '#action=[\'"](?!\w{0,10}://|\w{0,10}:)(.*?)[\'"](.*?)>#m';
 		        $replace_body[]	= '';
 		        $callback_body[] = 'fixAction';
 	        }
@@ -159,7 +159,7 @@ class JFusionPublic extends JFusionPlugin
 
         //parse relative popup links to full url links
         if(!empty($data->parse_popup)) {
-            $regex_body[]	= "#window\.open\('(?!\w{0,10}://)(.*?)'\)#mS";
+            $regex_body[] = "#window\.open\('(?!\w{0,10}://)(.*?)'\)#mS";
             $replace_body[]	= 'window.open(\''.$data->integratedURL.'$1\'';
             $callback_body[] = '';
         }
@@ -187,7 +187,7 @@ class JFusionPublic extends JFusionPlugin
         foreach ($regex_body as $k => $v) {
             //check if we need to use callback
             if(!empty($callback_body[$k])) {
-                $data->body = preg_replace_callback($regex_body[$k],array( &$this,$callback_body[$k]), $data->body);
+                $data->body = preg_replace_callback($regex_body[$k], array(&$this, $callback_body[$k]), $data->body);
             } else {
                 $data->body = preg_replace($regex_body[$k], $replace_body[$k], $data->body);
             }
@@ -269,7 +269,7 @@ class JFusionPublic extends JFusionPlugin
         foreach ($regex_header as $k => $v) {
             //check if we need to use callback
             if(!empty($callback_header[$k])) {
-                $data->header = preg_replace_callback($regex_header[$k],array( &$this,$callback_header[$k]), $data->header);
+                $data->header = preg_replace_callback($regex_header[$k], array(&$this, $callback_header[$k]), $data->header);
             } else {
                 $data->header = preg_replace($regex_header[$k], $replace_header[$k], $data->header);
             }
@@ -315,7 +315,7 @@ class JFusionPublic extends JFusionPlugin
                     });
                 }
 JS;
-                $js .='</script>';
+                $js .= '</script>';
                 $data->header .= $js;
             }
         }
@@ -1047,15 +1047,8 @@ HTML;
 
         $wrap = $jfile . '?'. implode($queries,'&');
 
-        $source_url = $data->jParam->get('source_url');
+        $source_url = $this->params->get('source_url');
 
-        //check for trailing slash
-        if (substr($source_url, -1) == '/') {
-            $url = $source_url . $wrap;
-        } else {
-            $url = $source_url . '/'. $wrap;
-        }
-
-        return $url;
+        return $source_url . $wrap;
     }
 }

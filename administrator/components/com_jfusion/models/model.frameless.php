@@ -28,7 +28,7 @@ class JFusionFrameless {
 	 * @return \stdClass
 	 *
 	 */
-	public static function initData($jname,$isPlugin=true)
+	public static function initData($jname, $isPlugin = true)
 	{
 		$uri = JURI::getInstance ();
 
@@ -43,10 +43,10 @@ class JFusionFrameless {
 		$data->jname = $jname;
 		$data->integratedURL = null;
 		$data->isPlugin = $isPlugin;
-		$data->Itemid = JFactory::getApplication()->input->get( 'Itemid' );
+		$data->Itemid = JFactory::getApplication()->input->get('Itemid');
 
 		//Get the base URL to the specific JFusion plugin
-		$data->baseURL = JFusionFunction::getPluginURL ( $data->Itemid );
+		$data->baseURL = JFusionFunction::getPluginURL($data->Itemid);
 
 		//Get the full current URL
 		$query = $uri->getQuery ();
@@ -55,22 +55,21 @@ class JFusionFrameless {
 		$data->fullURL = str_replace('&', '&amp;', $data->fullURL);
 
 		$menu = JMenu::getInstance('site');
-		if(!$isPlugin) {
+		if(!$data->isPlugin) {
 			$item = $menu->getItem($jname);
 
 			if ($item) {
-				$JFusionParam = $menu->getParams ( $item->id );
-				$MenuParam = $menu->getParams ( $item->id );
+				$JFusionParam = $menu->getParams($item->id);
+				$MenuParam = $menu->getParams($item->id);
 			} else {
-				$JFusionParam = $menu->getParams( null );
-				$MenuParam = $menu->getParams( null );
+				$JFusionParam = $menu->getParams(null);
+				$MenuParam = $menu->getParams(null);
 			}
 		} else {
-			$MenuParam = $menu->getParams ( $data->Itemid );
-			$JFusionParam = JFusionFactory::getParams ( $jname );
+			$MenuParam = $menu->getParams($data->Itemid);
+			$JFusionParam = JFusionFactory::getParams($jname);
 		}
 
-		$data->jParam = $JFusionParam;
 		$data->mParam = $MenuParam;
 
 		$JFusionPluginParam = $MenuParam->get('JFusionPluginParam');
@@ -95,30 +94,30 @@ class JFusionFrameless {
 		$data->httpauth = $JFusionParam->get('httpauth');
 		$data->httpauth_username = $JFusionParam->get('curl_username');
 		$data->httpauth_password = $JFusionParam->get('curl_password');
-		$data->verifyhost = $JFusionParam->get('verifyhost',2);
+		$data->verifyhost = $JFusionParam->get('verifyhost', 2);
 
-		$data->sefmode = $MenuParam->get('sefmode',$JFusionParam->get('sefmode',0));
+		$data->sefmode = $MenuParam->get('sefmode', $JFusionParam->get('sefmode', 0));
 
 		$data->bodyextract = $JFusionParam->get('bodyextract');
 		$data->bodyremove = $JFusionParam->get('bodyremove');
 
 		// CSS PARSER INFO
-		$data->default_css = $MenuParam->get('default_css',1);
-		$data->default_css_overflow = $MenuParam->get('default_css_overflow' ,'visible');
+		$data->default_css = $MenuParam->get('default_css', 1);
+		$data->default_css_overflow = $MenuParam->get('default_css_overflow', 'visible');
 
-		$data->parse_infile_css = $MenuParam->get('parse_infile_css',1);
-		$data->parse_css = $MenuParam->get('parse_css',1);
+		$data->parse_infile_css = $MenuParam->get('parse_infile_css', 1);
+		$data->parse_css = $MenuParam->get('parse_css', 1);
 
-		$data->parse_anchors = $MenuParam->get('parse_anchors',$JFusionParam->get('parse_anchors',1));
-		$data->parse_rel_url = $MenuParam->get('parse_rel_url',$JFusionParam->get('parse_rel_url',1));
-		$data->parse_abs_url = $MenuParam->get('parse_abs_url',$JFusionParam->get('parse_abs_url',1));
-		$data->parse_abs_path = $MenuParam->get('parse_abs_path',$JFusionParam->get('parse_abs_path',1));
-		$data->parse_rel_img = $MenuParam->get('parse_rel_img',$JFusionParam->get('parse_rel_img',1));
-		$data->parse_action = $MenuParam->get('parse_action',$JFusionParam->get('parse_action',1));
-		$data->parse_popup = $MenuParam->get('parse_popup',$JFusionParam->get('parse_popup',1));
+		$data->parse_anchors = $MenuParam->get('parse_anchors', $JFusionParam->get('parse_anchors', 1));
+		$data->parse_rel_url = $MenuParam->get('parse_rel_url', $JFusionParam->get('parse_rel_url', 1));
+		$data->parse_abs_url = $MenuParam->get('parse_abs_url', $JFusionParam->get('parse_abs_url', 1));
+		$data->parse_abs_path = $MenuParam->get('parse_abs_path', $JFusionParam->get('parse_abs_path', 1));
+		$data->parse_rel_img = $MenuParam->get('parse_rel_img', $JFusionParam->get('parse_rel_img', 1));
+		$data->parse_action = $MenuParam->get('parse_action', $JFusionParam->get('parse_action', 1));
+		$data->parse_popup = $MenuParam->get('parse_popup', $JFusionParam->get('parse_popup', 1));
 
-		$data->bodymap = $JFusionParam->get('bodymap',$JFusionParam->get('bodymap'));
-		$data->headermap = $JFusionParam->get('headermap',$JFusionParam->get('headermap'));
+		$data->bodymap = $JFusionParam->get('bodymap', $JFusionParam->get('bodymap'));
+		$data->headermap = $JFusionParam->get('headermap', $JFusionParam->get('headermap'));
 
 		return $data;
 	}
@@ -144,7 +143,7 @@ class JFusionFrameless {
 			require_once(JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR . 'model.abstractpublic.php');
 			$JFusionPlugin = new JFusionPublic();
 		} else {
-			$JFusionPlugin = JFusionFactory::getPublic ( $data->jname );
+			$JFusionPlugin = JFusionFactory::getPublic($data->jname);
 
 			$sef_suffix = $mainframe->getCfg('sef_suffix');
 			$sef = $mainframe->getCfg('sef');
@@ -161,7 +160,7 @@ class JFusionFrameless {
 							$u->delVar('jfile');
 						}
 						$url = $u->getQuery();
-						$url = JFusionFunction::routeURL($jfile.'?'.$url,$data->Itemid,'',true,false);
+						$url = JFusionFunction::routeURL($jfile.'?'.$url, $data->Itemid, '', true, false);
 						$mainframe->redirect($url);
 					}
 				}
@@ -175,7 +174,7 @@ class JFusionFrameless {
 		$REQUEST = $_REQUEST; // backup variables
 
 		$JFusionPlugin->data = $data;
-		$JFusionPlugin->getBuffer ( $data );
+		$JFusionPlugin->getBuffer($data);
 
 		$_REQUEST = $REQUEST; // restore backup
 
@@ -191,44 +190,44 @@ class JFusionFrameless {
 		JFusionFunction::reconnectJoomlaDb();
 
 		if ($data->buffer === 0) {
-			throw new RuntimeException(JText::_ ( 'NO_FRAMELESS' ));
+			throw new RuntimeException(JText::_('NO_FRAMELESS'));
 		}
 
 		if (! $data->buffer) {
-			throw new RuntimeException(JText::_ ( 'NO_BUFFER' ));
+			throw new RuntimeException(JText::_('NO_BUFFER'));
 		}
 
 		$data->buffer = static::parseEncoding($data->buffer);
 
 		//we set the backtrack_limit to twice the buffer length just in case!
 		$backtrack_limit = ini_get ( 'pcre.backtrack_limit' );
-		ini_set ( 'pcre.backtrack_limit', strlen ( $data->buffer ) * 2 );
+		ini_set ( 'pcre.backtrack_limit', strlen($data->buffer) * 2 );
 
 		$JFusionPlugin->parseBuffer($data);
 
 		// Check if we found something
-		if (! strlen ( $data->header ) || ! strlen ( $data->body )) {
-			if (! empty ( $data->buffer )) {
+		if (!strlen($data->header) || !strlen($data->body)) {
+			if (!empty($data->buffer)) {
 				//non html output, return without parsing
-				die ( $data->buffer );
+				die($data->buffer);
 			} else {
-				unset ( $data->buffer );
+				unset($data->buffer);
 				//no output returned
 				throw new RuntimeException(JText::_ ( 'NO_HTML' ));
 			}
 		}
 		else {
-			unset ( $data->buffer );
+			unset($data->buffer);
 			// Add the header information
-			if (isset ( $data->header )) {
-				$regex_header = array ();
-				$replace_header = array ();
+			if (isset($data->header)) {
+				$regex_header = array();
+				$replace_header = array();
 
 				//change the page title
 				$pattern = '#<title>(.*?)<\/title>#si';
 				preg_match ( $pattern, $data->header, $page_title );
 
-				$document->setTitle( html_entity_decode ( $page_title [1], ENT_QUOTES, "utf-8" ) );
+				$document->setTitle(html_entity_decode( $page_title [1], ENT_QUOTES, "utf-8" ));
 
 				$regex_header [] = $pattern;
 				$replace_header [] = '';
@@ -250,7 +249,7 @@ class JFusionFrameless {
 				$pattern = '#<meta name=["|\']generator["|\'](.*?)content=["|\'](.*?)["|\'](.*?)>#Si';
 				if (preg_match ( $pattern, $data->header, $page_generator )) {
 					if ($page_generator [2]) {
-						$document->setGenerator ( $document->getGenerator () . ', ' . $page_generator [2] );
+						$document->setGenerator($document->getGenerator () . ', ' . $page_generator[2]);
 					}
 					$regex_header [] = $pattern;
 					$replace_header [] = '';
@@ -277,7 +276,7 @@ class JFusionFrameless {
 
 				$JFusionPlugin->parseCSS($data,$data->header);
 
-				$document->addCustomTag ( $data->header );
+				$document->addCustomTag($data->header );
 
 				$pathway = $JFusionPlugin->getPathWay();
 				if (is_array($pathway)) {
@@ -290,7 +289,7 @@ class JFusionFrameless {
 
 			// Output the body
 			if (isset ( $data->body )) {
-				$JFusionPlugin->parseCSS($data,$data->body,true);
+				$JFusionPlugin->parseCSS($data, $data->body, true);
 
 				static::parseBody($data);
 

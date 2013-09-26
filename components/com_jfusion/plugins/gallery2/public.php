@@ -64,11 +64,6 @@ class JFusionPublic_gallery2 extends JFusionPublic
 	 * @return void
 	 */
     function getBuffer(&$data) {
-        /**
-         * @ignore
-         * @var $jPluginParam JRegistry
-         */
-        $jPluginParam = $data->jParam;
         //Handle PHP based Gallery Rewrite
         $segments = JFactory::getApplication()->input->get('jFusion_Route', null, 'raw');
         if (!empty($segments)) {
@@ -79,17 +74,17 @@ class JFusionPublic_gallery2 extends JFusionPublic
 
 	    $this->helper->loadGallery2Api(true);
         global $gallery, $user;
-        $album = $jPluginParam->get('album', -1);
+        $album = $data->mParam->get('album', -1);
         if ($album != - 1) {
             $gallery->setConfig('defaultAlbumId', $album);
             $gallery->setConfig('breadcrumbRootId', $album);
         }
-        $theme = $jPluginParam->get('show_templateList', '');
+        $theme = $data->mParam->get('show_templateList', '');
         if (!empty($theme)) {
             GalleryEmbed::setThemeForRequest($theme);
         }
         //Check displaying Sidebar
-        GalleryCapabilities::set('showSidebarBlocks', ($jPluginParam->get('dispSideBar') == 1));
+        GalleryCapabilities::set('showSidebarBlocks', ($data->mParam->get('dispSideBar') == 1));
         // Start the Embed Handler
         ob_start();
         //$ret = $gallery->setActiveUser($userinfo);
@@ -399,7 +394,7 @@ class JFusionPublic_gallery2 extends JFusionPublic
 
         $wrap = $jfile . '?'. implode($queries,'&');
 
-        $source_url = $data->jParam->get('source_url');
+        $source_url = $this->params->get('source_url');
 
         //check for trailing slash
         if (substr($source_url, -1) == '/') {

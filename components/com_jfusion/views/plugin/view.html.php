@@ -71,7 +71,7 @@ class jfusionViewPlugin extends JViewLegacy {
 
         $data = JFusionFrameless::initData($this->jname);
 
-        $JFusionPlugin = JFusionFactory::getPublic( $data->jname );
+        $JFusionPlugin = JFusionFactory::getPublic($data->jname);
 
         $url = $JFusionPlugin->getWrapperURL($data);
 

@@ -446,9 +446,8 @@ JS;
 
 			if (isset($post['source_url'])) {
 				//check for trailing slash in URL, in order for us not to worry about it later
-				if (substr($post['source_url'], -1) == '/') {
-				} else {
-					$post['source_url'].= '/';
+				if (substr($post['source_url'], -1) != '/') {
+					$post['source_url'] .= '/';
 				}
 
 				//now also check to see that the url starts with http:// or https://
@@ -460,6 +459,9 @@ JS;
 			}
 			if (isset($post['source_path'])) {
 				if (!empty($post['source_path'])) {
+					if (substr($post['source_path'], -1) != DIRECTORY_SEPARATOR) {
+						$post['source_path'] .= DIRECTORY_SEPARATOR;
+					}
 					if (!is_dir($post['source_path'])) {
 						JFusionFunction::raiseWarning(JText::_('SOURCE_PATH_NOT_FOUND'));
 					}

@@ -45,10 +45,10 @@ class JFusionControllerPlugin extends JControllerLegacy
 		//we do not want the front page menuitem as it will cause a 500 error in some cases
 		$jPluginParam = new JRegistry('');
 		//added to prevent a notice of $jview being undefined;
-		if ($menuitemid && $menuitemid!=1) {
+		if ($menuitemid && $menuitemid != 1) {
             $menu = JMenu::getInstance('site');
             $item = $menu->getItem($menuitemid);
-			$jview = $item->params->get('visual_integration','wrapper');
+			$jview = $item->params->get('visual_integration', 'wrapper');
 
 			//load custom plugin parameter
 			$JFusionPluginParam = $item->params->get('JFusionPluginParam');
