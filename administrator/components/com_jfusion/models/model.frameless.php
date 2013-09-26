@@ -33,7 +33,7 @@ class JFusionFrameless {
 		$uri = JURI::getInstance();
 
 		// declare Data object
-		$data = new stdClass ( );
+		$data = new stdClass();
 		$data->buffer = null;
 		$data->header = null;
 		$data->bodyAttributes = null;
