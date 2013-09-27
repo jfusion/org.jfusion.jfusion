@@ -295,7 +295,7 @@ class JFusionPublic_vbulletin extends JFusionPublic
         global $vbsefmode, $vbJname, $vbsefenabled, $baseURL, $integratedURL, $hookFile;
         //make sure the curl model is loaded for the hooks file
         if (!class_exists('JFusionCurl')) {
-            require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.curl.php';
+	        require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.curl.php';
         }
         //define('_JFUSION_DEBUG',1);
         define('_VBFRAMELESS', 1);

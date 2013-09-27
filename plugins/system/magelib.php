@@ -10,11 +10,11 @@
 // no direct access
 defined ( '_JEXEC' ) or trigger_error ( 'Restricted access' );
 
-$jfusion_component = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.factory.php';
-if(file_exists ( $jfusion_component )):
-	require_once $jfusion_component;
+$factory_file = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.factory.php';
+if(file_exists ( $factory_file )):
+	require_once $factory_file;
 else:
-	JFusionFunction::raiseWarning('MageLib: The file '.$jfusion_component.' doesn\'t exists. Please install JFusion component or update it.');
+	JFusionFunction::raiseWarning('MageLib: The file '.$factory_file.' doesn\'t exists. Please install JFusion component or update it.');
 endif;
 
 /**

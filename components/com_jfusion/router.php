@@ -128,11 +128,8 @@ function jfusionParseRoute($segments)
 	        $jPluginParam = new JRegistry('');
 	        $jPluginParam->loadArray(unserialize(base64_decode($JFusionPluginParam)));
 	        $jname = $jPluginParam->get('jfusionplugin');
-	
-	        if (!function_exists('JFusionFactory')) {
-	            require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.factory.php';
-	            require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jfusion.php';
-	        }
+
+		    require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.factory.php';
 	
 	        if (!empty($jname)) {
 	            $public = JFusionFactory::getPublic($jname);

@@ -15,6 +15,10 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 /**
+ * Require the Jfusion plugin factory
+ */
+require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.factory.php';
+/**
  * JFusion Element class ActivePlugins
  *
  * @category  JFusion
@@ -49,10 +53,6 @@ class JFormFieldJFusionActivePlugins extends JFormField
 
 		    $db->setQuery($query);
 		    $rows = $db->loadObjectList();
-
-		    require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.factory.php';
-		    require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jfusion.php';
-		    require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jfusionadmin.php';
 
 		    foreach ($rows as $key => &$row) {
 			    if (!JFusionFunction::hasFeature($row->name,$feature)) {

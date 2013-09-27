@@ -263,7 +263,7 @@ class JFusionUser_vbulletin extends JFusionUser
 			if (!empty($userinfo->block) || !empty($userinfo->activation)) {
 				throw new RuntimeException(JText::_('FUSION_BLOCKED_USER'));
 			} else {
-				require_once JPATH_ADMINISTRATOR .DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_jfusion'.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'model.curl.php';
+				require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.curl.php';
 				//first check to see if striking is enabled to prevent further strikes
 				$db = JFusionFactory::getDatabase($this->getJname());
 

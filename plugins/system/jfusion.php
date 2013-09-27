@@ -20,13 +20,11 @@ defined('_JEXEC') or die('Restricted access');
  * Load the JFusion framework if installed
  */
 jimport('joomla.plugin.plugin');
-$model_file = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.factory.php';
-$factory_file = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.jfusion.php';
-if (file_exists($model_file) && file_exists($factory_file)) {
+$factory_file = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.factory.php';
+if (file_exists($factory_file)) {
     /**
      * require the JFusion libraries
      */
-    include_once $model_file;
     include_once $factory_file;
 }
 /**

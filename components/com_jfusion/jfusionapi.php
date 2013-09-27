@@ -820,7 +820,6 @@ class JFusionAPIInternal extends JFusionAPIBase {
 
 			//load JFusion's libraries
 			require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR  . 'models' . DIRECTORY_SEPARATOR . 'model.factory.php';
-			require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_jfusion' . DIRECTORY_SEPARATOR  . 'models' . DIRECTORY_SEPARATOR . 'model.jfusion.php';
 		} elseif (!defined('IN_JOOMLA')) {
 			define('IN_JOOMLA', 1);
 			JFusionFunction::reconnectJoomlaDb();
