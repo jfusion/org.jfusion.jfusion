@@ -162,7 +162,6 @@ class JFusionForum_phpbb3 extends JFusionForum {
 			    $query = $db->getQuery(true)
 				    ->select('COUNT(msg_id)')
 				    ->from('#__privmsgs_to')
-				    ->where('pm_unread = 1')
 				    ->where('folder_id NOT IN (-1, -2)')
 				    ->where('user_id = ' . (int)$puser_id);
 
