@@ -1429,81 +1429,91 @@ class JFusionUser_phpbb3 extends JFusionUser
 					    }
 				    }
 			    } elseif ((!empty($sid_cookie_value) || !empty($persistant_cookie)) && $userid_cookie_value != '1') {
-				    if ($debug) {
-					    JFusionFunction::raiseNotice('Joomla has a guest session', $this->getJname());
-				    }
-				    //the user is not logged into Joomla and we have an active phpBB session
-				    if (!empty($joomla_persistant_cookie)) {
-					    if ($debug) {
-						    JFusionFunction::raiseNotice('Joomla persistant cookie found so let Joomla handle renewal', $this->getJname());
-					    }
-				    } elseif (empty($keepalive)) {
-					    if ($debug) {
-						    JFusionFunction::raiseNotice('Keep alive disabled so kill phpBBs session', $this->getJname());
-					    }
-					    //something fishy or person chose not to use remember me so let's destroy phpBBs session
-					    $phpbb_cookie_name = $this->params->get('cookie_prefix');
-					    $phpbb_cookie_path = $this->params->get('cookie_path');
-					    //baltie cookie domain fix
-					    $phpbb_cookie_domain = $this->params->get('cookie_domain');
-					    if ($phpbb_cookie_domain == 'localhost' || $phpbb_cookie_domain == '127.0.0.1') {
-						    $phpbb_cookie_domain = '';
-					    }
-					    //delete the cookies
-					    $status['debug'][] = $this->addCookie($phpbb_cookie_name . '_u', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain);
-					    $status['debug'][] = $this->addCookie($phpbb_cookie_name . '_sid', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain);
-					    $status['debug'][] = $this->addCookie($phpbb_cookie_name . '_k', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain);
-					    $return = 1;
-				    } elseif ($debug) {
-					    JFusionFunction::raiseNotice('Keep alive enabled so renew Joomla\'s session', $this->getJname());
-				    } else {
-					    $db = JFusionFactory::getDatabase($this->getJname());
-					    if (!empty($persistant_cookie)) {
-						    $query = $db->getQuery(true)
-							    ->select('user_id')
-							    ->from('#__sessions_keys')
-							    ->where('key_id = ' . $db->Quote(md5($persistant_cookie)));
+				    $db = JFusionFactory::getDatabase($this->getJname());
+				    $query = $db->getQuery(true)
+					    ->select('b.group_name')
+					    ->from('#__users as a')
+					    ->join('LEFT OUTER', '#__groups as b ON a.group_id = b.group_id')
+					    ->where('a.user_id = ' . $db->Quote($userid_cookie_value));
 
+				    $db->setQuery($query);
+				    $group_name = $db->loadresult();
+				    if ($group_name !== 'BOTS') {
+					    if ($debug) {
+						    JFusionFunction::raiseNotice('Joomla has a guest session', $this->getJname());
+					    }
+					    //the user is not logged into Joomla and we have an active phpBB session
+					    if (!empty($joomla_persistant_cookie)) {
 						    if ($debug) {
-							    JFusionFunction::raiseNotice('Using phpBB persistant cookie to find user', $this->getJname());
+							    JFusionFunction::raiseNotice('Joomla persistant cookie found so let Joomla handle renewal', $this->getJname());
 						    }
+					    } elseif (empty($keepalive)) {
+						    if ($debug) {
+							    JFusionFunction::raiseNotice('Keep alive disabled so kill phpBBs session', $this->getJname());
+						    }
+						    //something fishy or person chose not to use remember me so let's destroy phpBBs session
+						    $phpbb_cookie_name = $this->params->get('cookie_prefix');
+						    $phpbb_cookie_path = $this->params->get('cookie_path');
+						    //baltie cookie domain fix
+						    $phpbb_cookie_domain = $this->params->get('cookie_domain');
+						    if ($phpbb_cookie_domain == 'localhost' || $phpbb_cookie_domain == '127.0.0.1') {
+							    $phpbb_cookie_domain = '';
+						    }
+						    //delete the cookies
+						    $status['debug'][] = $this->addCookie($phpbb_cookie_name . '_u', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain);
+						    $status['debug'][] = $this->addCookie($phpbb_cookie_name . '_sid', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain);
+						    $status['debug'][] = $this->addCookie($phpbb_cookie_name . '_k', '', -3600, $phpbb_cookie_path, $phpbb_cookie_domain);
+						    $return = 1;
+					    } elseif ($debug) {
+						    JFusionFunction::raiseNotice('Keep alive enabled so renew Joomla\'s session', $this->getJname());
 					    } else {
-						    $query = $db->getQuery(true)
-							    ->select('session_user_id')
-							    ->from('#__sessions')
-							    ->where('session_id = ' . $db->Quote($sid_cookie_value));
+						    if (!empty($persistant_cookie)) {
+							    $query = $db->getQuery(true)
+								    ->select('user_id')
+								    ->from('#__sessions_keys')
+								    ->where('key_id = ' . $db->Quote(md5($persistant_cookie)));
 
-						    if ($debug) {
-							    JFusionFunction::raiseNotice('Using phpBB sid cookie to find user', $this->getJname());
-						    }
-					    }
-					    $db->setQuery($query);
-					    $userid = $db->loadresult();
-					    $userlookup = JFusionFunction::lookupUser($this->getJname(), $userid, false);
-					    if (!empty($userlookup)) {
-						    if ($debug) {
-							    JFusionFunction::raiseNotice('Found a phpBB user so attempting to renew Joomla\'s session.', $this->getJname());
-						    }
-						    //get the user's info
-						    $jdb = JFactory::getDBO();
-
-						    $query = $jdb->getQuery(true)
-							    ->select('username, email')
-							    ->from('#__users')
-							    ->where('id = '.$userlookup->id);
-
-						    $jdb->setQuery($query);
-						    $user_identifiers = $jdb->loadObject();
-						    $JoomlaUser = JFusionFactory::getUser('joomla_int');
-						    $userinfo = $JoomlaUser->getUser($user_identifiers);
-						    if (!empty($userinfo)) {
-							    global $JFusionActivePlugin;
-							    $JFusionActivePlugin = $this->getJname();
-							    $status = $JoomlaUser->createSession($userinfo, $options);
 							    if ($debug) {
-								    JFusionFunction::raise('notice', $status, $this->getJname());
+								    JFusionFunction::raiseNotice('Using phpBB persistant cookie to find user', $this->getJname());
 							    }
-							    //no need to signal refresh as Joomla will recognize this anyway
+						    } else {
+							    $query = $db->getQuery(true)
+								    ->select('session_user_id')
+								    ->from('#__sessions')
+								    ->where('session_id = ' . $db->Quote($sid_cookie_value));
+
+							    if ($debug) {
+								    JFusionFunction::raiseNotice('Using phpBB sid cookie to find user', $this->getJname());
+							    }
+						    }
+						    $db->setQuery($query);
+						    $userid = $db->loadresult();
+						    $userlookup = JFusionFunction::lookupUser($this->getJname(), $userid, false);
+						    if (!empty($userlookup)) {
+							    if ($debug) {
+								    JFusionFunction::raiseNotice('Found a phpBB user so attempting to renew Joomla\'s session.', $this->getJname());
+							    }
+							    //get the user's info
+							    $jdb = JFactory::getDBO();
+
+							    $query = $jdb->getQuery(true)
+								    ->select('username, email')
+								    ->from('#__users')
+								    ->where('id = '.$userlookup->id);
+
+							    $jdb->setQuery($query);
+							    $user_identifiers = $jdb->loadObject();
+							    $JoomlaUser = JFusionFactory::getUser('joomla_int');
+							    $userinfo = $JoomlaUser->getUser($user_identifiers);
+							    if (!empty($userinfo)) {
+								    global $JFusionActivePlugin;
+								    $JFusionActivePlugin = $this->getJname();
+								    $status = $JoomlaUser->createSession($userinfo, $options);
+								    if ($debug) {
+									    JFusionFunction::raise('notice', $status, $this->getJname());
+								    }
+								    //no need to signal refresh as Joomla will recognize this anyway
+							    }
 						    }
 					    }
 				    }
