@@ -255,8 +255,8 @@ class JFusionPublic_smf2 extends JFusionPublic {
 		global $db_connection, $db_server, $db_name, $db_user, $db_prefix, $db_persist, $db_error_send, $db_last_error;
 		global $modSettings, $context, $sc, $user_info, $topic, $board, $txt;
 		global $scripturl, $ID_MEMBER, $func;
-
 	    global $settings, $options, $board_info, $attachments, $messages_request ,$memberContext, $db_character_set;
+		global $db_cache, $db_count, $db_show_debug;
 
 		// new in smf 2
 		global $smcFunc, $mysql_set_mode,$cachedir,$db_passwd,$db_type, $ssi_db_user, $ssi_db_passwd,$board_info, $options;
