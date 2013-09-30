@@ -763,9 +763,9 @@ JS;
         if ($itemid) {
             $app = JFactory::getApplication();
             $menus = $app->getMenu('site');
-            $item = $menus->getItem($itemid);
-            if ($item) {
-                $jPluginParam = unserialize(base64_decode($item->params->get('JFusionPluginParam')));
+	        $params = $menus->getParams($itemid);
+            if ($params) {
+                $jPluginParam = unserialize(base64_decode($params->get('JFusionPluginParam')));
                 if (is_array($jPluginParam) && $jPluginParam['jfusionplugin'] == $this->getJname()) {
                     $result = true;
                 }
