@@ -292,6 +292,7 @@ class JFusionPublic_smf extends JFusionPublic
         global $modSettings, $context, $sc, $user_info, $topic, $board, $txt;
         global $scripturl, $ID_MEMBER, $func,$newpassemail,$user_profile, $validationCode;
         global $settings, $options, $board_info, $attachments, $messages_request, $memberContext, $db_character_set;
+	    global $db_cache, $db_count, $db_show_debug;
         // Required to avoid a warning about a license violation even though this is not the case
         global $forum_version;
         // require_once JFUSION_PLUGIN_PATH.DIRECTORY_SEPARATOR.$this->getJname().DIRECTORY_SEPARATOR.'hooks.php';
