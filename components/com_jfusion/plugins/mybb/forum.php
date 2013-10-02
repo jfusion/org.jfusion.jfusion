@@ -56,11 +56,12 @@ class JFusionForum_mybb extends JFusionForum {
     }
 
     /**
-     * @param int $uid
-     * @return string
+     * @param int $userid
+     *
+     * @return int|string
      */
-    function getProfileURL($uid) {
-        return 'member.php?action=profile&uid=' . $uid;
+    function getProfileURL($userid) {
+        return 'member.php?action=profile&uid=' . $userid;
     }
 
     /**

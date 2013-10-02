@@ -1381,7 +1381,7 @@ HTML;
 					if ($link_software=='custom' && !empty($userlink_custom)  && !empty($userlookup)) {
 						$post_output[$i]->username_url = $userlink_custom.$userlookup->id;
 					} else {
-						$post_output[$i]->username_url = JFusionFunction::routeURL($JFusionForum->getProfileURL($userid, $username), $itemid);
+						$post_output[$i]->username_url = JFusionFunction::routeURL($JFusionForum->getProfileURL($userid), $itemid);
 					}
 				}
 				$post_output[$i]->username = $username;

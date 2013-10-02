@@ -213,12 +213,12 @@ class JFusionForum_gallery2 extends JFusionForum {
      * Returns the Profile Url in Gallery2
      * This Link requires Modules:members enabled in gallery2
      *
-     * @param string $uid
+     * @param int|string $userid
      *
      * @return string
      * @see Gallery2:Modules:members
      */
-    function getProfileURL($uid) {
-        return 'main.php?g2_view=members.MembersProfile&amp;g2_userId='.$uid;
+    function getProfileURL($userid) {
+        return 'main.php?g2_view=members.MembersProfile&amp;g2_userId='.$userid;
     }
 }

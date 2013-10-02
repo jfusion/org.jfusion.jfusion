@@ -954,79 +954,89 @@ class JFusionFunction
         return $url;
     }
 
-    /**
-     * Retrieves the source of the avatar for a Joomla supported component
-     *
-     * @param string  $software    software name
-     * @param int     $uid         uid
-     * @param boolean $isPluginUid boolean if true, look up the Joomla id in the look up table
-     * @param string  $jname       needed if $isPluginId = true
-     * @param string  $username    username
-     *
-     * @return string nothing
-     */
-    public static function getAltAvatar($software, $uid, $isPluginUid = false, $jname = '', $username = '')
-    {
-        $db = JFactory::getDBO();
-        if ($isPluginUid && !empty($jname)) {
-            $userlookup = static::lookupUser($jname, $uid, false, $username);
-            if (!empty($userlookup)) {
-                $uid = $userlookup->id;
-            } else {
-                //no user was found
-                $avatar = static::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
-                return $avatar;
-            }
-        }
-        if ($software == 'cb') {
-	        $query = $db->getQuery(true)
-		        ->select('avatar')
-		        ->from('#__comprofiler')
-		        ->where('user_id = '.$uid);
+	/**
+	 * Retrieves the source of the avatar for a Joomla supported component
+	 *
+	 * @param string  $software    software name
+	 * @param int     $uid         uid
+	 * @param boolean $isPluginUid boolean if true, look up the Joomla id in the look up table
+	 * @param string  $jname       needed if $isPluginId = true
+	 * @param string  $username    username
+	 *
+	 * @return string nothing
+	 */
+	public static function getAltAvatar($software, $uid, $isPluginUid = false, $jname = '', $username = '')
+	{
+		try {
+			$db = JFactory::getDBO();
+			if ($isPluginUid && !empty($jname)) {
+				$userlookup = static::lookupUser($jname, $uid, false, $username);
+				if (!empty($userlookup)) {
+					$uid = $userlookup->id;
+				} else {
+					//no user was found
+					$avatar = static::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
+					return $avatar;
+				}
+			}
+			switch($software) {
+				case 'cb':
+					$query = $db->getQuery(true)
+						->select('avatar')
+						->from('#__comprofiler')
+						->where('user_id = '.$uid);
 
-            $db->setQuery($query);
-            $result = $db->loadResult();
-            if (!empty($result)) {
-                $avatar = static::getJoomlaURL() . 'images/comprofiler/'.$result;
-            } else {
-                $avatar = static::getJoomlaURL() . 'components/com_comprofiler/plugin/templates/default/images/avatar/nophoto_n.png';
-            }
-        } elseif ($software == 'jomsocial') {
-	        $query = $db->getQuery(true)
-		        ->select('avatar')
-		        ->from('#__community_users')
-		        ->where('userid = '.$uid);
+					$db->setQuery($query);
+					$result = $db->loadResult();
+					if (!empty($result)) {
+						$avatar = static::getJoomlaURL() . 'images/comprofiler/'.$result;
+					} else {
+						$avatar = static::getJoomlaURL() . 'components/com_comprofiler/plugin/templates/default/images/avatar/nophoto_n.png';
+					}
+					break;
+				case 'jomsocial':
+					$query = $db->getQuery(true)
+						->select('avatar')
+						->from('#__community_users')
+						->where('userid = '.$uid);
 
-            $db->setQuery($query);
-            $result = $db->loadResult();
-            if (!empty($result)) {
-                $avatar = static::getJoomlaURL() . $result;
-            } else {
-                $avatar = static::getJoomlaURL() . 'components/com_community/assets/default_thumb.jpg';
-            }
-        } elseif ($software == 'joomunity') {
-	        $query = $db->getQuery(true)
-		        ->select('user_picture')
-		        ->from('#__joom_users')
-		        ->where('user_id = '.$uid);
+					$db->setQuery($query);
+					$result = $db->loadResult();
+					if (!empty($result)) {
+						$avatar = static::getJoomlaURL() . $result;
+					} else {
+						$avatar = static::getJoomlaURL() . 'components/com_community/assets/default_thumb.jpg';
+					}
+					break;
+				case 'joomunity':
+					$query = $db->getQuery(true)
+						->select('user_picture')
+						->from('#__joom_users')
+						->where('user_id = '.$uid);
 
-            $db->setQuery($query);
-            $result = $db->loadResult();
-            $avatar = static::getJoomlaURL() . 'components/com_joomunity/files/avatars/' . $result;
-        } elseif ($software == 'gravatar') {
-	        $query = $db->getQuery(true)
-		        ->select('email')
-		        ->from('#__users')
-		        ->where('id = ' . $uid);
+					$db->setQuery($query);
+					$result = $db->loadResult();
+					$avatar = static::getJoomlaURL() . 'components/com_joomunity/files/avatars/' . $result;
+					break;
+				case 'gravatar':
+					$query = $db->getQuery(true)
+						->select('email')
+						->from('#__users')
+						->where('id = ' . $uid);
 
-            $db->setQuery($query);
-            $email = $db->loadResult();
-            $avatar = 'http://www.gravatar.com/avatar.php?gravatar_id=' . md5(strtolower($email)) . '&size=40';
-        } else {
-            $avatar = static::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
-        }
-        return $avatar;
-    }
+					$db->setQuery($query);
+					$email = $db->loadResult();
+					$avatar = 'http://www.gravatar.com/avatar.php?gravatar_id=' . md5(strtolower($email)) . '&size=40';
+					break;
+				default:
+					$avatar = static::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
+					break;
+			}
+		} catch (Exception $e) {
+			$avatar = static::getJoomlaURL() . 'components/com_jfusion/images/noavatar.png';
+		}
+		return $avatar;
+	}
 
     /**
      * Gets the source_url from the joomla_int plugin

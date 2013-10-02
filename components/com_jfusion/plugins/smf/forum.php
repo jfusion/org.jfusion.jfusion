@@ -78,13 +78,13 @@ class JFusionForum_smf extends JFusionForum
     /**
      * Get profile url
      *
-     * @param int $uid user id
+     * @param int|string $userid user id
      *
      * @return string url
      */
-    function getProfileURL($uid)
+    function getProfileURL($userid)
     {
-        return 'index.php?action=profile&u=' . $uid;
+        return 'index.php?action=profile&u=' . $userid;
     }
 
     /**

@@ -56,12 +56,13 @@ class JFusionForum_smf2 extends JFusionForum
     }
 
     /**
-     * @param int $uid
+     * @param int|string $userid
+     *
      * @return string
      */
-    function getProfileURL($uid)
+    function getProfileURL($userid)
     {
-        return  'index.php?action=profile&u='.$uid;
+        return  'index.php?action=profile&u='.$userid;
     }
 
     /**

@@ -51,11 +51,9 @@ class modjfusionWhosOnlineHelper {
 		} else{
 			$forum_links = JFusionFactory::getForum($link_jname);
 			$public_users = JFusionFactory::getPublic($jname);
-			if(!$forum_links->isConfigured()) {
-				$output->error = $link_jname . ': '. JText::_('NOT_CONFIGURED');
-			} elseif(!$public_users->isConfigured()) {
+			if(!$public_users->isConfigured()) {
 				$output->error = $jname . ': '. JText::_('NOT_CONFIGURED');
-			}else {
+			} else {
 				//show the number of people online if set to do so
 				$output->num_guests = $public_users->getNumberOnlineGuests();
 				$output->num_members = $public_users->getNumberOnlineMembers();
@@ -66,10 +64,10 @@ class modjfusionWhosOnlineHelper {
 						$u->output = new stdClass();
 						$jfusion_userid = 0;
 						//assign the joomla_userid and jfusion_userid variables
-						if($link_jname==$jname) {
+						if($link_jname == $jname) {
 							$jfusion_userid = $u->userid;
 
-							if($jname=='joomla_int') {
+							if($jname == 'joomla_int') {
 								//Joomla userid is readily available
 								$joomla_userid = $u->userid;
 							} elseif(!empty($userlookup)) {
@@ -89,7 +87,7 @@ class modjfusionWhosOnlineHelper {
 							if(!empty($userinfo)) {
 								$jfusion_userid = $userinfo->userid;
 
-								if($jname=="joomla_int") {
+								if($jname == 'joomla_int') {
 									//Joomla userid is readily available
 									$joomla_userid = $u->userid;
 								} else {
@@ -101,13 +99,13 @@ class modjfusionWhosOnlineHelper {
 							}
 						}
 
-						$u->output->display_name = ($config['name']==1) ? $u->name : $u->username;
+						$u->output->display_name = ($config['name'] == 1) ? $u->name : $u->username;
 						$user_url = '';
 						if ($config['userlink']) {
-							if ($config['userlink_software']=='custom' && !empty($config['userlink_custom'])  && !empty($joomla_userid)) {
+							if ($config['userlink_software'] == 'custom' && !empty($config['userlink_custom'])  && !empty($joomla_userid)) {
 								$user_url = $config['userlink_custom'].$joomla_userid;
 							} else if ($jfusion_userid) {
-								$user_url = JFusionFunction::routeURL($forum_links->getProfileURL($jfusion_userid, $u->username), $config['itemid'], $link_jname);
+								$user_url = JFusionFunction::routeURL($forum_links->getProfileURL($jfusion_userid), $config['itemid'], $link_jname);
 							}
 						}
 						$u->output->user_url = $user_url;
@@ -115,7 +113,8 @@ class modjfusionWhosOnlineHelper {
 						if ($config['avatar']) {
 							// retrieve avatar
 							$avatarSrc = $config['avatar_software'];
-							if(!empty($avatarSrc) && $avatarSrc!='jfusion' && !empty($joomla_userid)) {
+							$avatar = '';
+							if(!empty($avatarSrc) && $avatarSrc != 'jfusion' && !empty($joomla_userid)) {
 								$avatar = JFusionFunction::getAltAvatar($avatarSrc, $joomla_userid);
 							} else if ($jfusion_userid) {
 								$avatar = $forum_links->getAvatar($jfusion_userid);
@@ -131,14 +130,14 @@ class modjfusionWhosOnlineHelper {
 							$maxwidth = $config['avatar_width'];
 							$size = ($config['avatar_keep_proportional']) ? JFusionFunction::getImageSize($avatar) : false;
 							//size the avatar to fit inside the dimensions if larger
-							if($size!==false && ($size->width > $maxwidth || $size->height > $maxheight)) {
+							if($size !== false && ($size->width > $maxwidth || $size->height > $maxheight)) {
 								$wscale = $maxwidth/$size->width;
 								$hscale = $maxheight/$size->height;
 								$scale = min($hscale, $wscale);
 								$w = floor($scale*$size->width);
 								$h = floor($scale*$size->height);
 							}
-							elseif($size!==false) {
+							elseif($size !== false) {
 								//the avatar is within the limits
 								$w = $size->width;
 								$h = $size->height;

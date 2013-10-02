@@ -59,13 +59,13 @@ class modjfusionUserActivityHelper {
 			$maxwidth = $config['avatar_width'];
 			$size = ($config['avatar_keep_proportional']) ? JFusionFunction::getImageSize($avatar) : false;
 				//size the avatar to fit inside the dimensions if larger
-			if($size!==false && ($size->width > $maxwidth || $size->height > $maxheight)) {
+			if($size !== false && ($size->width > $maxwidth || $size->height > $maxheight)) {
 				$wscale = $maxwidth/$size->width;
 				$hscale = $maxheight/$size->height;
 				$scale = min($hscale, $wscale);
 				$w = floor($scale*$size->width);
 				$h = floor($scale*$size->height);
-			} elseif($size!==false) {
+			} elseif($size !== false) {
 				//the avatar is within the limits
 				$w = $size->width;
 				$h = $size->height;
@@ -86,7 +86,7 @@ class modjfusionUserActivityHelper {
 
 		//get the PM count of the logged in user
 		if($config['pmcount']) {
-			$output->pm_url = JFusionFunction::routeURL($forum->getPrivateMessageURL(),$config['itemid'], $jname);
+			$output->pm_url = JFusionFunction::routeURL($forum->getPrivateMessageURL(), $config['itemid'], $jname);
 			$output->pm_count = $forum->getPrivateMessageCounts($userinfo->userid);
 		} else {
 			$output->pm_url = '';

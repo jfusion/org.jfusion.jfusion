@@ -99,7 +99,7 @@ class modjfusionActivityHelper
                     if ($config['userlink_software']=='custom' && !empty($config['userlink_custom'])  && !empty($userlookup)) {
                         $user_url = $config['userlink_custom'].$userlookup->id;
                     } else {
-                        $user_url = JFusionFunction::routeURL($forum->getProfileURL($r->userid, $r->username), $config['itemid'], $jname);
+                        $user_url = JFusionFunction::routeURL($forum->getProfileURL($r->userid), $config['itemid'], $jname);
                     }
 
                     if (empty($user_url)) {

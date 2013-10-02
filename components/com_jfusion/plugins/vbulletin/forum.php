@@ -538,17 +538,17 @@ class JFusionForum_vbulletin extends JFusionForum
     }
 
     /**
-     * @param int $uid
+     * @param int|string $userid
      *
      * @return string
      */
-    function getProfileURL($uid)
+    function getProfileURL($userid)
     {
-        return $this->helper->getVbURL('member.php?u=' . $uid, 'members');
+        return $this->helper->getVbURL('member.php?u=' . $userid, 'members');
     }
 
     /**
-     * @param int $userid
+     * @param int|string $userid
      *
      * @return array
      */

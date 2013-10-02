@@ -58,11 +58,11 @@ class JFusionForum extends JFusionPlugin
     /**
      * Returns the URL to a userprofile of the integrated software
      *
-     * @param int $uid userid
+     * @param int|string $userid userid
      *
      * @return string URL
      */
-    function getProfileURL($uid)
+    function getProfileURL($userid)
     {
         return '';
     }
@@ -70,7 +70,7 @@ class JFusionForum extends JFusionPlugin
     /**
      * Retrieves the source path to the user's avatar
      *
-     * @param int $uid software user id
+     * @param int|string $uid software user id
      *
      * @return string with source path to users avatar
      */
@@ -102,7 +102,7 @@ class JFusionForum extends JFusionPlugin
     /**
      * Returns the URL to a get private messages URL of the integrated software
      *
-     * @param int $puser_id userid
+     * @param int|string $puser_id userid
      *
      * @return array
      */

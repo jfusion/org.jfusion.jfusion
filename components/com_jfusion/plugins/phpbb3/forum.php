@@ -60,12 +60,12 @@ class JFusionForum_phpbb3 extends JFusionForum {
     }
 
     /**
-     * @param int $uid
+     * @param int|string $userid
      *
      * @return string
      */
-    function getProfileURL($uid) {
-        return 'memberlist.php?mode=viewprofile&u=' . $uid;
+    function getProfileURL($userid) {
+        return 'memberlist.php?mode=viewprofile&u=' . $userid;
     }
 
     /**

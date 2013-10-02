@@ -18,9 +18,9 @@
                     <option value="0">GROUP_LIMIT_ALL</option>
                     <option value="1">GROUP_LIMIT_SELECTED</option>
                 </field>
-                <field name="group_limit" type="JFusionUsergroupList" grouptype="all" multiple="yes" label="GROUP_LIMIT" />
+                <field name="group_limit" type="JFusionUsergroupList" grouptype="all" multiple="yes" label="GROUP_LIMIT"/>
 
-                <field name="itemid" type="JFusionItemid" size="5" default="" label="MENU_ITEM" description="MENU_ITEM_DESCR" />
+                <field name="itemid" type="JFusionItemid" size="5" default="" label="MENU_ITEM" description="MENU_ITEM_DESCR"/>
 
                 <field name="name" type="list" default="0" label="DISPLAY_USERNAME_NAME" description="DISPLAY_USERNAME_NAME_DESCR">
                     <option value="0">USERNAME</option>
