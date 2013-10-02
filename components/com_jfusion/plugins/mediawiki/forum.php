@@ -84,7 +84,7 @@ class JFusionForum_mediawiki extends JFusionForum
 					    $o_avatar_height = $o_avatar_width = '';
 					    if ($avatar) {
 						    // retrieve avatar
-						    if(!empty($avatar_software) && $avatar_software!='jfusion' && !empty($userlookup)) {
+						    if(!empty($avatar_software) && $avatar_software != 'jfusion' && !empty($userlookup)) {
 							    $o_avatar = JFusionFunction::getAltAvatar($avatar_software, $userlookup->id);
 						    }
 						    if(empty($o_avatar)) {

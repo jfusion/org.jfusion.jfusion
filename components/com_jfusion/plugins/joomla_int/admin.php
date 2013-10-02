@@ -28,7 +28,7 @@ require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTOR
  * 
  * @category   JFusion
  * @package    JFusionPlugins
- * @subpackage JoomlaInt 
+ * @subpackage Joomla_int
  * @author     JFusion Team <webmaster@jfusion.org>
  * @copyright  2008 JFusion. All rights reserved.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL

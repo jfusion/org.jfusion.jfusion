@@ -32,11 +32,8 @@
                 </field>
 
                 <field name="userlink_software" type="list" default="jfusion" label="USERLINK_SOFTWARE" description="USERLINK_SOFTWARE_DESC">
-                    <option value="cb">Community Builder</option>
                     <option value="custom">CUSTOM</option>
                     <option value="jfusion">JFusion</option>
-                    <option value="jomsocial">JomSocial</option>
-                    <option value="joomunity">Joomunity</option>
                 </field>
                 <field name="userlink_custom" type="text" size="20" default="" label="USERLINK_CUSTOM" description="USERLINK_CUSTOM_DESC" />
                 <field name="avatar" type="radio" class="btn-group" default="1"
@@ -45,11 +42,8 @@
                     <option value="1">SHOW</option>
                 </field>
                 <field name="avatar_software" type="list" default="jfusion" label="AVATAR_SOFTWARE" description="AVATAR_SOFTWARE_DESC">
-                    <option value="cb">Community Builder</option>
-                    <option value="gravatar">Gravatar</option>
                     <option value="jfusion">JFusion</option>
-                    <option value="jomsocial">JomSocial</option>
-                    <option value="joomunity">Joomunity</option>
+                    <option value="gravatar">Gravatar</option>
                 </field>
                 <field name="avatar_height" label="AVATAR_HEIGHT" type="text" size="5" default="53"/>
                 <field name="avatar_width" label="AVATAR_WIDTH" type="text" size="5" default="40"/>

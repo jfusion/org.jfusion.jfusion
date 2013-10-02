@@ -45,13 +45,13 @@ class modjfusionUserActivityHelper {
 		//get the avatar of the logged in user
 		if ($config['avatar']) {
 			//retrieve avatar
-			if(!empty($config['avatar_software']) && $config['avatar_software'] != 'jfusion') {
+			if (!empty($config['avatar_software']) && $config['avatar_software'] != 'jfusion') {
 				$avatar = JFusionFunction::getAltAvatar($config['avatar_software'], $joomlaUser->id);
 			} else {
 				$avatar = $forum->getAvatar($userinfo->userid);
 			}
 
-			if(empty($avatar)) {
+			if (empty($avatar)) {
 				$avatar = JFusionFunction::getJoomlaURL().'components/com_jfusion/images/noavatar.png';
 			}
 
@@ -59,13 +59,13 @@ class modjfusionUserActivityHelper {
 			$maxwidth = $config['avatar_width'];
 			$size = ($config['avatar_keep_proportional']) ? JFusionFunction::getImageSize($avatar) : false;
 				//size the avatar to fit inside the dimensions if larger
-			if($size !== false && ($size->width > $maxwidth || $size->height > $maxheight)) {
+			if ($size !== false && ($size->width > $maxwidth || $size->height > $maxheight)) {
 				$wscale = $maxwidth/$size->width;
 				$hscale = $maxheight/$size->height;
 				$scale = min($hscale, $wscale);
 				$w = floor($scale*$size->width);
 				$h = floor($scale*$size->height);
-			} elseif($size !== false) {
+			} elseif ($size !== false) {
 				//the avatar is within the limits
 				$w = $size->width;
 				$h = $size->height;
@@ -94,12 +94,11 @@ class modjfusionUserActivityHelper {
 		}
 
 		//get the new message url
-		if($config['viewnewmessages']) {
+		if ($config['viewnewmessages']) {
 			$output->newmessages_url = JFusionFunction::routeURL($forum->getViewNewMessagesURL(), $config['itemid'], $jname);
 		} else {
 			$output->newmessages_url = '';
 		}
-
 		return $output;
 	}
 }

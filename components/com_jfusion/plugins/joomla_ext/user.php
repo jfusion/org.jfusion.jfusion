@@ -28,7 +28,7 @@ jimport('joomla.user.helper');
  * 
  * @category   JFusion
  * @package    JFusionPlugins
- * @subpackage JoomlaExt 
+ * @subpackage Joomla_ext
  * @author     JFusion Team <webmaster@jfusion.org>
  * @copyright  2008 JFusion. All rights reserved.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL

@@ -17,6 +17,7 @@
     <files>
         <filename>admin.php</filename>
         <filename>auth.php</filename>
+        <filename>forum.php</filename>
         <filename>index.html</filename>
         <filename>jfusion.xml</filename>
         <filename>public.php</filename>

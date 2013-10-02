@@ -776,7 +776,7 @@ class JFusionFunction
             $searchNS = $replaceNS = array();
             //convert anything between code or pre tags to html entities to prevent conversion
             $searchNS[] = "#<(code|pre)[^>]*>(.*?)<\/\\1>#si";
-            $replaceNS[] = array( 'JFusionFunction','_callback_code');
+            $replaceNS[] = array('JFusionFunction', '_callback_code');
             $morePatterns = $options['bbcode_patterns'];
             if (is_array($morePatterns) && isset($morePatterns[0]) && isset($morePatterns[1])) {
                 $searchNS = array_merge($searchNS, $morePatterns[0]);
@@ -800,7 +800,7 @@ class JFusionFunction
 	        }
 
             //decode html entities that we converted for code and pre tags
-            $text = preg_replace_callback("#\[code\](.*?)\[\/code\]#si",array( 'JFusionFunction','_callback_code_decode'), $text);
+            $text = preg_replace_callback("#\[code\](.*?)\[\/code\]#si",array('JFusionFunction', '_callback_code_decode'), $text);
             //to prevent a billion line breaks in post, let's convert three line breaks into two
             $text = str_ireplace("\n\n\n", "\n\n", $text);
             //and one more time for good measure (there's gotta be a better way)
@@ -900,60 +900,6 @@ class JFusionFunction
         }
     }
 
-
-
-    /**
-     * Retrieves the URL to a userprofile of a Joomla supported component
-     *
-     * @param string  $software    string name of the software
-     * @param int     $uid         int userid of the user
-     * @param boolean $isPluginUid indicator of plugin in uid
-     * @param string  $jname       jname of the plugin
-     * @param string  $username    username
-     *
-     * @return string URL
-     */
-    public static function getAltProfileURL($software, $uid, $isPluginUid = false, $jname = '', $username = '')
-    {
-        $db = JFactory::getDBO();
-        if ($isPluginUid && !empty($jname)) {
-            $userlookup = static::lookupUser($jname, $uid, false, $username);
-            if (!empty($userlookup)) {
-                $uid = $userlookup->id;
-            } else {
-                return '';
-            }
-        }
-        if (!empty($uid)) {
-	        $query = $db->getQuery(true)
-		        ->select('id')
-		        ->from('#__menu')
-		        ->where('type = '.$db->Quote('component'));
-
-            if ($software == 'cb') {
-	            $query->where('link LIKE '.$db->Quote('%com_comprofiler%'));
-                $db->setQuery($query,0,1);
-                $itemid = $db->loadResult();
-                $url = JRoute::_('index.php?option=com_comprofiler&task=userProfile&Itemid=' . $itemid . '&user=' . $uid);
-            } elseif ($software == 'jomsocial') {
-	            $query->where('link LIKE '.$db->Quote('%com_community%'));
-                $db->setQuery($query,0,1);
-                $itemid = $db->loadResult();
-                $url = JRoute::_('index.php?option=com_community&view=profile&Itemid=' . $itemid . '&userid=' . $uid);
-            } elseif ($software == 'joomunity') {
-	            $query->where('link LIKE '.$db->Quote('%com_joomunity%'));
-                $db->setQuery($query,0,1);
-                $itemid = $db->loadResult();
-                $url = JRoute::_('index.php?option=com_joomunity&Itemid=' . $itemid . '&cmd=Profile.View.' . $uid);
-            } else {
-                $url = false;
-            }
-        } else {
-            $url = false;
-        }
-        return $url;
-    }
-
 	/**
 	 * Retrieves the source of the avatar for a Joomla supported component
 	 *
@@ -980,44 +926,6 @@ class JFusionFunction
 				}
 			}
 			switch($software) {
-				case 'cb':
-					$query = $db->getQuery(true)
-						->select('avatar')
-						->from('#__comprofiler')
-						->where('user_id = '.$uid);
-
-					$db->setQuery($query);
-					$result = $db->loadResult();
-					if (!empty($result)) {
-						$avatar = static::getJoomlaURL() . 'images/comprofiler/'.$result;
-					} else {
-						$avatar = static::getJoomlaURL() . 'components/com_comprofiler/plugin/templates/default/images/avatar/nophoto_n.png';
-					}
-					break;
-				case 'jomsocial':
-					$query = $db->getQuery(true)
-						->select('avatar')
-						->from('#__community_users')
-						->where('userid = '.$uid);
-
-					$db->setQuery($query);
-					$result = $db->loadResult();
-					if (!empty($result)) {
-						$avatar = static::getJoomlaURL() . $result;
-					} else {
-						$avatar = static::getJoomlaURL() . 'components/com_community/assets/default_thumb.jpg';
-					}
-					break;
-				case 'joomunity':
-					$query = $db->getQuery(true)
-						->select('user_picture')
-						->from('#__joom_users')
-						->where('user_id = '.$uid);
-
-					$db->setQuery($query);
-					$result = $db->loadResult();
-					$avatar = static::getJoomlaURL() . 'components/com_joomunity/files/avatars/' . $result;
-					break;
 				case 'gravatar':
 					$query = $db->getQuery(true)
 						->select('email')
@@ -1048,7 +956,7 @@ class JFusionFunction
         static $joomla_source_url;
         if (empty($joomla_source_url)) {
             $params = JFusionFactory::getParams('joomla_int');
-            $joomla_source_url = $params->get('source_url');
+            $joomla_source_url = $params->get('source_url', '/');
         }
         return $joomla_source_url;
     }
@@ -1094,7 +1002,6 @@ class JFusionFunction
                     $baseURL = $joomla_url . '/' . $baseURL;
                 }
             }
-
             $jfusionPluginURL[$itemid] = $baseURL;
         }
 
@@ -1198,7 +1105,7 @@ class JFusionFunction
 	 *
 	 * @return mixed;
 	 */
-	public static function getUserGroups($jname='', $default = false) {
+	public static function getUserGroups($jname = '', $default = false) {
 		jimport('joomla.application.component.helper');
 		$params = JComponentHelper::getParams('com_jfusion');
 		$usergroups = $params->get('usergroups', new stdClass());
@@ -1232,7 +1139,6 @@ class JFusionFunction
 		jimport('joomla.application.component.helper');
 		$params = JComponentHelper::getParams('com_jfusion');
 		$usergroupmodes = $params->get('updateusergroups', new stdClass());
-
 		return $usergroupmodes;
 	}
 

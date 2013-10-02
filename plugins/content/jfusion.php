@@ -1329,7 +1329,7 @@ HTML;
 
 			//avatar
 			if ($showavatar){
-				if (!empty($avatar_software) && $avatar_software!='jfusion' && !empty($userlookup)) {
+				if (!empty($avatar_software) && $avatar_software != 'jfusion' && !empty($userlookup)) {
 					$post_output[$i]->avatar_src = JFusionFunction::getAltAvatar($avatar_software, $userlookup->id);
 				} else {
 					$post_output[$i]->avatar_src = $JFusionForum->getAvatar($userid);
