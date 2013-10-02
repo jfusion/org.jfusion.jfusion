@@ -437,7 +437,7 @@ class JFusionPublic_smf extends JFusionPublic
         $data->header = preg_replace($regex_header, $replace_header, $data->header);
 
         //fix for URL redirects
-	    $data->header = preg_replace_callback('#<meta http-equiv="refresh" content="(.*?)"(.*?)>#m',array( &$this,'fixRedirect'), $data->header);
+	    $data->header = preg_replace_callback('#<meta http-equiv="refresh" content="(.*?)"(.*?)>#m',array(&$this, 'fixRedirect'), $data->header);
     }
 
     /**

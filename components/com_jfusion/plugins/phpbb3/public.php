@@ -498,8 +498,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
 		    	
         //JError::raiseWarning(500, $url);
         //split up the timeout from url
-        $parts = explode(';url=', $url);
-        $timeout = $parts[0];
+        $parts = explode('url=', $url, 2);
         $uri = new JURI($parts[1]);
         $jfile = $uri->getPath();
         $jfile = basename($jfile);
@@ -533,7 +532,7 @@ class JFusionPublic_phpbb3 extends JFusionPublic
         if (!empty($fragment)) {
             $redirectURL .= '#'.$fragment;
         }
-        $return = '<meta http-equiv="refresh" content="' . $timeout . ';url=' . $redirectURL . '">';
+        $return = '<meta http-equiv="refresh" content="' . $parts[0] . 'url=' . $redirectURL . '">';
         //JError::raiseWarning(500, htmlentities($return));
         return $return;
     }
