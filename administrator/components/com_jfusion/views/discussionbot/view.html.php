@@ -69,7 +69,9 @@ class jfusionViewdiscussionbot extends JViewLegacy
     function display($tpl = null)
     {
     	//load language file
-		JFusionFunction::loadLanguage('plg', 'content', 'jfusion');
+	    $lang = JFactory::getLanguage();
+	    $lang->load('com_jfusion');
+	    $lang->load('plg_content_jfusion', JPATH_ADMINISTRATOR);
 
 	    $document = JFactory::getDocument();
 	    $document->addScript('components/com_jfusion/views/'.$this->getName().'/tmpl/default.js');

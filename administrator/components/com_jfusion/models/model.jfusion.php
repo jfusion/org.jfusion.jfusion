@@ -1161,27 +1161,6 @@ class JFusionFunction
         return $advanced;
     }
 
-    /**
-     * @static
-     * @param $extension
-     * @param $type
-     * @param $name
-     * @param null $basePath
-     *
-     * @return bool
-     */
-    public static function loadLanguage($extension,$type,$name, $basePath = null){
-		$extension = $extension.'_'.$type.'_'.$name;
-	    if ($basePath == null) {
-		    $basePath = JPATH_ADMINISTRATOR;
-	    }
-	    $lang = JFactory::getLanguage();
-	    return $lang->load(strtolower($extension), $basePath, null, false, false)
-	    ||	$lang->load(strtolower($extension), JPATH_PLUGINS .DIRECTORY_SEPARATOR.$type.DIRECTORY_SEPARATOR.$name, null, false, false)
-	    ||	$lang->load(strtolower($extension), $basePath, $lang->getDefault(), false, false)
-	    ||	$lang->load(strtolower($extension), JPATH_PLUGINS .DIRECTORY_SEPARATOR.$type.DIRECTORY_SEPARATOR.$name, $lang->getDefault(), false, false);
-    }
-
 	/**
 	 * Convert a utf-8 joomla string in to a valid encoding matching the table/filed it will be sent to
 	 *

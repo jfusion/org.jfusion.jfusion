@@ -83,7 +83,7 @@ class jfusionViewadvancedparam extends JViewLegacy
 				$lang->load('mod_jfusion_whosonline', JPATH_SITE);
 				break;
 			case 'search':
-				$lang->load('mod_jfusion_search', JPATH_SITE);
+				$lang->load('plg_search_jfusion', JPATH_ADMINISTRATOR);
 				break;
 			case 'activity':
 				$lang->load('mod_jfusion_activity', JPATH_SITE);

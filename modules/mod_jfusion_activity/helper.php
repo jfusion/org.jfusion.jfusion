@@ -114,7 +114,7 @@ class modjfusionActivityHelper
                 //process date info
                 if ($config['showdate']) {
                     if ($config['showdate']==2) {
-                        list( $count,$name ) = modjfusionActivityHelper::timeSince($r->dateline);
+                        list( $count,$name ) = static::timeSince($r->dateline);
                     
                         $r->output->date = ($count == 1) ? '1 '.JText::_($name.'_AGO') : $count.' '.JText::_($name.'S_AGO');
                     } else {
@@ -124,7 +124,7 @@ class modjfusionActivityHelper
                         if (empty($config['date_format'])) {
                             $r->output->date = $JDate->toISO8601(true);
                         } else {
-                            $r->output->date = $JDate->format($config['date_format'],true);
+                            $r->output->date = $JDate->format($config['date_format'], true);
                         }
                     }
                 } else {
@@ -139,7 +139,7 @@ class modjfusionActivityHelper
                     $subject = JText::_('NO_SUBJECT');
                 } elseif (!empty($config['character_limit_subject']) && JString::strlen($subject) > $config['character_limit_subject']) {
                     //we need to shorten the subject
-                    $subject = JString::substr($subject,0,$config['character_limit_subject']) . '...';
+                    $subject = JString::substr($subject, 0, $config['character_limit_subject']) . '...';
                 }
 
                 $r->output->subject = $subject;
@@ -165,7 +165,7 @@ class modjfusionActivityHelper
                     if ($config['display_body']==1) {
                         $status = $public->prepareText($r->body, 'activity', $params, $r);
                         if (!empty($config['character_limit']) && empty($status['limit_applied']) && JString::strlen($r->body) > $config['character_limit']) {
-                            $r->body = JString::substr($r->body,0,$config['character_limit']) . '...';
+                            $r->body = JString::substr($r->body, 0, $config['character_limit']) . '...';
                         }
                     } else {
                         $r->body = '';
@@ -192,7 +192,7 @@ class modjfusionActivityHelper
      *
      * @return array
      */
-    function timeSince($original)
+    public static function timeSince($original)
     {
         // array of time period chunks
         $chunks = array(
