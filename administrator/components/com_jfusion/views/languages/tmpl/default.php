@@ -67,7 +67,7 @@ JFusionFunctionAdmin::displayDonate();
 				<td style="width:50px;">
 					<?php echo $lang; ?>
 				</td>
-				<td style="width:50px;">
+				<td>
 					<?php echo $data->description; ?>
 				</td>
 				<td style="width:150px;">
