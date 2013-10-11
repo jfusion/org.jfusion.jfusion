@@ -1649,8 +1649,9 @@ JS;
 	public static function getImageSize($filename) {
 		$result = false;
 		ob_start();
-		if (strpos($filename, '://') !== false) {
-			$stream = fopen($filename,'r');
+
+		if (strpos($filename, '://') !== false && function_exists('fopen') && ini_get('allow_url_fopen')) {
+			$stream = fopen($filename, 'r');
 
 			$rawdata = stream_get_contents($stream, 24);
 			if($rawdata) {
@@ -1658,19 +1659,17 @@ JS;
 				/**
 				 * check for gif
 				 */
-				if (strlen($rawdata) >= 10 && ($rawdata[0] == 'G' && $rawdata[1] == 'I' && $rawdata[2] == 'F')) {
+				if (strlen($rawdata) >= 10 && strpos($rawdata, 'GIF89a') === 0 || strpos($rawdata, 'GIF87a') === 0) {
 					$type = 'gif';
 				}
 				/**
 				 * check for png
 				 */
-				if (!$type) {
-					if (strlen($rawdata) >= 24) {
-						$head = unpack('C8', $rawdata);
-						$png = array(1 => 137, 2 => 80, 3 => 78, 4 => 71, 5 => 13, 6 => 10, 7 => 26, 8 => 10);
-						if ($head === $png) {
-							$type = 'png';
-						}
+				if (!$type && strlen($rawdata) >= 24) {
+					$head = unpack('C8', $rawdata);
+					$png = array(1 => 137, 2 => 80, 3 => 78, 4 => 71, 5 => 13, 6 => 10, 7 => 26, 8 => 10);
+					if ($head === $png) {
+						$type = 'png';
 					}
 				}
 				/**
@@ -1683,18 +1682,17 @@ JS;
 					}
 				}
 				if (!$type) {
-					if ( substr($rawdata,0,2) == 'BM' ) {
+					if ( substr($rawdata, 0, 2) == 'BM' ) {
 						$type = 'bmp';
 					}
 				}
 				switch($type) {
 					case 'gif':
-						$data = unpack("c10", $rawdata);
+						$data = unpack('c10', $rawdata);
 
-						$height = $data[8]*256 + $data[7];
-						$width = $data[10]*256 + $data[9];
-
-						$result = array($height, $width);
+						$result = new stdClass;
+						$result->width = $data[8]*256 + $data[7];
+						$result->height = $data[10]*256 + $data[9];
 						break;
 					case 'png':
 						$type = substr($rawdata, 12, 4);
@@ -1707,7 +1705,7 @@ JS;
 						}
 						break;
 					case 'bmp':
-						$header = unpack("H*",$rawdata);
+						$header = unpack('H*',$rawdata);
 						// Process the header
 						// Structure: http://www.fastgraph.com/help/bmp_header_format.html
 						// Cut it in parts of 2 bytes
@@ -1753,20 +1751,25 @@ JS;
 
 						$info = getimagesize($meta_data['uri']);
 
-						$result = new stdClass;
-						$result->width = $info[0];
-						$result->height = $info[1];
+						if ($info) {
+							$result = new stdClass;
+							$result->width = $info[0];
+							$result->height = $info[1];
+						}
 						fclose($temp);
 						break;
 				}
 			}
 			fclose($stream);
-		} else {
+		}
+		if (!$result) {
 			$info = getimagesize($filename);
 
-			$result = new stdClass;
-			$result->width = $info[0];
-			$result->height = $info[1];
+			if ($info) {
+				$result = new stdClass;
+				$result->width = $info[0];
+				$result->height = $info[1];
+			}
 		}
 		ob_end_clean();
 		return $result;
