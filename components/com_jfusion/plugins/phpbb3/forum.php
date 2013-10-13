@@ -1122,20 +1122,19 @@ class JFusionForum_phpbb3 extends JFusionForum {
 				->from('#__posts as p')
 				->innerJoin('#__users as u ON p.poster_id = u.user_id')
 				->where('p.topic_id = ' . $existingthread->threadid)
-				->where('p.post_id = ' . $existingthread->postid)
+				->where('p.post_id != ' . $existingthread->postid)
 				->where('p.post_approved = 1')
 				->order('p.post_time ' . $sort);
 
-			if($dbparams->get('enable_pagination',true)) {
+			if ($dbparams->get('enable_pagination', true)) {
 				$application = JFactory::getApplication() ;
-				$limit = (int) $application->getUserStateFromRequest( 'global.list.limit_discuss', 'limit_discuss', 5, 'int' );
-				$limitstart = (int) $application->getUserStateFromRequest( 'global.list.limitstart_discuss', 'limitstart_discuss', 0, 'int' );
-				$db->setQuery($query,$limitstart,$limit);
+				$limit = (int) $application->getUserStateFromRequest('global.list.limit_discuss', 'limit_discuss', 5, 'int');
+				$limitstart = (int) $application->getUserStateFromRequest('global.list.limitstart_discuss', 'limitstart_discuss', 0, 'int');
 			} else {
-				$limit_posts = $dbparams->get('limit_posts');
-				$query .= empty($limit_posts) || trim($limit_posts)==0 ? '' :  ' LIMIT 0,'.$limit_posts;
-				$db->setQuery($query);
+				$limitstart = 0;
+				$limit = trim($dbparams->get('limit_posts'));
 			}
+			$db->setQuery($query, 0, (int)$limit);
 
 			$posts = $db->loadObjectList();
 		} catch (Exception $e) {

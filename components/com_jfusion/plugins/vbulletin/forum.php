@@ -454,16 +454,15 @@ class JFusionForum_vbulletin extends JFusionForum
 			    $query = '( '.(string)$q1.' ) UNION ( '.(string)$q2.' ) ORDER BY order_by_date '.$sort;
 		    }
 
-		    if($dbparams->get('enable_pagination',true)) {
-			    $application = JFactory::getApplication() ;
-			    $limit = (int) $application->getUserStateFromRequest( 'global.list.limit_discuss', 'limit_discuss', 5, 'int' );
-			    $limitstart = (int) $application->getUserStateFromRequest( 'global.list.limitstart_discuss', 'limitstart_discuss', 0, 'int' );
-			    $db->setQuery($query, $limitstart, $limit);
+		    if($dbparams->get('enable_pagination', true)) {
+			    $application = JFactory::getApplication();
+			    $limit = (int) $application->getUserStateFromRequest('global.list.limit_discuss', 'limit_discuss', 5, 'int');
+			    $limitstart = (int) $application->getUserStateFromRequest('global.list.limitstart_discuss', 'limitstart_discuss', 0, 'int');
 		    } else {
-			    $limit_posts = $dbparams->get('limit_posts');
-			    $query .= empty($limit_posts) || trim($limit_posts)==0 ? '' :  ' LIMIT 0,'.$limit_posts;
-			    $db->setQuery($query);
+			    $limit = trim($dbparams->get('limit_posts'));
+			    $limitstart = 0;
 		    }
+		    $db->setQuery($query, $limitstart, (int)$limit);
 
 		    $posts = $db->loadObjectList();
 	    } catch (Exception $e) {

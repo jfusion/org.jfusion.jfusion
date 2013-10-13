@@ -668,20 +668,19 @@ HTML;
 	        $query.= ' UNION ';
 	        $query.= '(SELECT a.id_topic , a.id_msg, a.poster_name, a.poster_name as real_name, a.id_member, 1 AS guest, a.subject, a.poster_time, a.body, a.poster_time AS order_by_date FROM `#__messages` as a '.$where.' AND a.id_member = 0)';
 	        $query.= ' ORDER BY order_by_date '.$sort;
-			$jdb = JFusionFactory::getDatabase($this->getJname());
+			$db = JFusionFactory::getDatabase($this->getJname());
 
-			if($dbparams->get('enable_pagination',true)) {
-				$application = JFactory::getApplication() ;
-				$limit = (int) $application->getUserStateFromRequest( 'global.list.limit_discuss', 'limit_discuss', 5, 'int' );
-				$limitstart = (int) $application->getUserStateFromRequest( 'global.list.limitstart_discuss', 'limitstart_discuss', 0, 'int' );
-				$jdb->setQuery($query,$limitstart,$limit);
+			if($dbparams->get('enable_pagination', true)) {
+				$application = JFactory::getApplication();
+				$limit = (int) $application->getUserStateFromRequest('global.list.limit_discuss', 'limit_discuss', 5, 'int');
+				$limitstart = (int) $application->getUserStateFromRequest('global.list.limitstart_discuss', 'limitstart_discuss', 0, 'int');
 			} else {
-				$limit_posts = $dbparams->get('limit_posts');
-				$query .= empty($limit_posts) || trim($limit_posts)==0 ? '' :  ' LIMIT 0,'.$limit_posts;
-				$jdb->setQuery($query);
+				$limit = trim($dbparams->get('limit_posts'));
+				$limitstart = 0;
 			}
+			$db->setQuery($query, $limitstart, (int)$limit);
 
-			$posts = $jdb->loadObjectList();
+			$posts = $db->loadObjectList();
 		} catch (Exception $e) {
 			JFusionFunction::raiseError($e, $this->getJname());
 			$posts = array();
