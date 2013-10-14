@@ -1134,7 +1134,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 				$limitstart = 0;
 				$limit = trim($dbparams->get('limit_posts'));
 			}
-			$db->setQuery($query, 0, (int)$limit);
+			$db->setQuery($query, $limitstart, (int)$limit);
 
 			$posts = $db->loadObjectList();
 		} catch (Exception $e) {
