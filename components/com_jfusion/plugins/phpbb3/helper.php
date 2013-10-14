@@ -166,6 +166,7 @@ class JFusionHelper_phpbb3 extends JFusionPlugin
 		    if (!defined('IN_PHPBB')) {
 			    define('IN_PHPBB', true);
 		    }
+		    $table_prefix = $this->params->get('database_prefix');
 		    include_once ($source_path . '/includes/constants.php');
 		    //get a bbcode_uid
 		    if (empty($this->bbcode_uid)) {
@@ -281,8 +282,8 @@ class JFusionHelper_phpbb3 extends JFusionPlugin
         if (strlen($this->bbcode_bitfield) >= $byte + 1) {
             $this->bbcode_bitfield[$byte] = $this->bbcode_bitfield[$byte] | chr(1 << $bit);
         } else {
-            $this->bbcode_bitfield.= str_repeat("\0", $byte - strlen($this->bbcode_bitfield));
-            $this->bbcode_bitfield.= chr(1 << $bit);
+            $this->bbcode_bitfield .= str_repeat("\0", $byte - strlen($this->bbcode_bitfield));
+            $this->bbcode_bitfield .= chr(1 << $bit);
         }
     }
     /**
@@ -537,13 +538,13 @@ class JFusionHelper_phpbb3 extends JFusionPlugin
             if ($pos !== false && $pos < $pos2) {
                 // Open new block
                 if (!$open) {
-                    $out.= substr($in, 0, $pos);
+                    $out .= substr($in, 0, $pos);
                     $in = substr($in, $pos);
                     $stx = (isset($buffer[3])) ? $buffer[3] : '';
                     $code_block = '';
                 } else {
                     // Already opened block, just append to the current block
-                    $code_block.= substr($in, 0, $pos) . ((isset($buffer[2])) ? $buffer[2] : '');
+                    $code_block .= substr($in, 0, $pos) . ((isset($buffer[2])) ? $buffer[2] : '');
                     $in = substr($in, $pos);
                 }
                 $in = substr($in, $tag_length);
@@ -551,19 +552,19 @@ class JFusionHelper_phpbb3 extends JFusionPlugin
             } else {
                 // Close the block
                 if ($open == 1) {
-                    $code_block.= substr($in, 0, $pos2);
+                    $code_block .= substr($in, 0, $pos2);
                     $code_block = preg_replace($htm_match, $htm_replace, $code_block);
                     // Parse this code block
-                    $out.= $this->bbcode_parse_code($stx, $code_block);
+                    $out .= $this->bbcode_parse_code($stx, $code_block);
                     $code_block = '';
                     $open--;
                 } else if ($open) {
                     // Close one open tag... add to the current code block
-                    $code_block.= substr($in, 0, $pos2 + 7);
+                    $code_block .= substr($in, 0, $pos2 + 7);
                     $open--;
                 } else {
                     // end code without opening code... will be always outside code block
-                    $out.= substr($in, 0, $pos2 + 7);
+                    $out .= substr($in, 0, $pos2 + 7);
                 }
                 $in = substr($in, $pos2 + 7);
             }
@@ -572,7 +573,7 @@ class JFusionHelper_phpbb3 extends JFusionPlugin
         if ($code_block) {
             $code_block = substr($code_block, 0, -7);
             $code_block = preg_replace($htm_match, $htm_replace, $code_block);
-            $out.= $this->bbcode_parse_code($stx, $code_block);
+            $out .= $this->bbcode_parse_code($stx, $code_block);
         }
         return $out;
     }
@@ -613,7 +614,7 @@ class JFusionHelper_phpbb3 extends JFusionPlugin
                         // current li tag has not been closed
                         $out = preg_replace('/\n?\[$/', '[', $out) . array_pop($item_end_tags) . '][';
                     }
-                    $out.= array_pop($list_end_tags) . ']';
+                    $out .= array_pop($list_end_tags) . ']';
                     $tok = '[';
                 } else if (preg_match('#^list(=[0-9a-z]+)?$#i', $buffer, $m)) {
                     // sub-list, add a closing tag
@@ -622,14 +623,14 @@ class JFusionHelper_phpbb3 extends JFusionPlugin
                     } else {
                         array_push($list_end_tags, '/list:o:' . $this->bbcode_uid);
                     }
-                    $out.= 'list' . substr($buffer, 4) . ':' . $this->bbcode_uid . ']';
+                    $out .= 'list' . substr($buffer, 4) . ':' . $this->bbcode_uid . ']';
                     $tok = '[';
                 } else {
                     if (($buffer == '*' || substr($buffer, -2) == '[*') && sizeof($list_end_tags)) {
                         // the buffer holds a bullet tag and we have a [list] tag open
                         if (sizeof($item_end_tags) >= sizeof($list_end_tags)) {
                             if (substr($buffer, -2) == '[*') {
-                                $out.= substr($buffer, 0, -2) . '[';
+                                $out .= substr($buffer, 0, -2) . '[';
                             }
                             // current li tag has not been closed
                             if (preg_match('/\n\[$/', $out, $m)) {
@@ -646,22 +647,22 @@ class JFusionHelper_phpbb3 extends JFusionPlugin
                         array_pop($item_end_tags);
                         $buffer = '/*:' . $this->bbcode_uid;
                     }
-                    $out.= $buffer . $tok;
+                    $out .= $buffer . $tok;
                     $tok = '[]';
                 }
             } else {
                 // Not within a tag, just add buffer to the return string
-                $out.= $buffer . $tok;
+                $out .= $buffer . $tok;
                 $tok = ($tok == '[') ? ']' : '[]';
             }
         }
         while ($in);
         // do we have some tags open? close them now
         if (sizeof($item_end_tags)) {
-            $out.= '[' . implode('][', $item_end_tags) . ']';
+            $out .= '[' . implode('][', $item_end_tags) . ']';
         }
         if (sizeof($list_end_tags)) {
-            $out.= '[' . implode('][', $list_end_tags) . ']';
+            $out .= '[' . implode('][', $list_end_tags) . ']';
         }
         return $out;
     }
@@ -703,13 +704,13 @@ class JFusionHelper_phpbb3 extends JFusionPlugin
                     $pos = $tmp_pos;
                 }
             }
-            $buffer.= substr($in, 0, $pos);
+            $buffer .= substr($in, 0, $pos);
             $tok = $in[$pos];
             $in = substr($in, $pos + 1);
             if ($tok == ']') {
                 if (strtolower($buffer) == '/quote' && sizeof($close_tags) && substr($out, -1, 1) == '[') {
                     // we have found a closing tag
-                    $out.= array_pop($close_tags) . ']';
+                    $out .= array_pop($close_tags) . ']';
                     $tok = '[';
                     $buffer = '';
                     /* Add space at the end of the closing tag if not happened before to allow following urls/smilies to be parsed correctly
@@ -724,7 +725,7 @@ class JFusionHelper_phpbb3 extends JFusionPlugin
                     if ($config['max_quote_depth'] && sizeof($close_tags) >= $config['max_quote_depth']) {
                         // there are too many nested quotes
                         $error_ary['quote_depth'] = sprintf($user->lang['QUOTE_DEPTH_EXCEEDED'], $config['max_quote_depth']);
-                        $out.= $buffer . $tok;
+                        $out .= $buffer . $tok;
                         $tok = '[]';
                         $buffer = '';
                         continue;
@@ -747,17 +748,17 @@ class JFusionHelper_phpbb3 extends JFusionPlugin
                         if ($error) {
                             $username = $m[1];
                         }
-                        $out.= 'quote=&quot;' . $username . '&quot;:' . $this->bbcode_uid . ']';
+                        $out .= 'quote=&quot;' . $username . '&quot;:' . $this->bbcode_uid . ']';
                     } else {
-                        $out.= 'quote:' . $this->bbcode_uid . ']';
+                        $out .= 'quote:' . $this->bbcode_uid . ']';
                     }
                     $tok = '[';
                     $buffer = '';
                 } else if (preg_match('#^quote=&quot;(.*?)#is', $buffer, $m)) {
                     // the buffer holds an invalid opening tag
-                    $buffer.= ']';
+                    $buffer .= ']';
                 } else {
-                    $out.= $buffer . $tok;
+                    $out .= $buffer . $tok;
                     $tok = '[]';
                     $buffer = '';
                 }
@@ -769,7 +770,7 @@ class JFusionHelper_phpbb3 extends JFusionPlugin
                  *                $tok = ($tok == '[') ? ']' : '[]';
                  *                $buffer = '';
                  */
-                $out.= $buffer . $tok;
+                $out .= $buffer . $tok;
                 if ($tok == '[') {
                     // Search the text for the next tok... if an ending quote comes first, then change tok to []
                     $pos1 = stripos($in, '[/quote');
@@ -792,7 +793,7 @@ class JFusionHelper_phpbb3 extends JFusionPlugin
         }
         while ($in);
         if (sizeof($close_tags)) {
-            $out.= '[' . implode('][', $close_tags) . ']';
+            $out .= '[' . implode('][', $close_tags) . ']';
         }
         foreach ($error_ary as $error_msg) {
             $this->warn_msg[] = $error_msg;

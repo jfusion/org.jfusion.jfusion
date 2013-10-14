@@ -1103,19 +1103,21 @@ class JFusionForum_phpbb3 extends JFusionForum {
 	}
 
 	/**
-     * Retrieves the posts to be displayed in the content item if enabled
-     *
-     * @param JRegistry $dbparams with discussion bot parameters
-     * @param object $existingthread
-     *
-     * @return array or object Returns retrieved posts
-     */
-	function getPosts($dbparams, $existingthread)
+	 * Retrieves the posts to be displayed in the content item if enabled
+	 *
+	 * @param JRegistry $dbparams with discussion bot parameters
+	 * @param object $existingthread object with forumid, threadid, and postid (first post in thread)
+	 * @param int $start
+	 * @param int $limit
+	 * @param string $sort
+	 *
+	 * @return array or object Returns retrieved posts
+	 */
+	function getPosts($dbparams, $existingthread, $start, $limit, $sort)
 	{
 		try {
 			$db = JFusionFactory::getDatabase($this->getJname());
 
-			$sort = $dbparams->get('sort_posts');
 			//set the query
 			$query = $db->getQuery(true)
 				->select('p.post_id , CASE WHEN p.poster_id = 1 THEN 1 ELSE 0 END AS guest, CASE WHEN p.poster_id = 1 AND p.post_username != \'\' THEN p.post_username ELSE u.username END AS name, CASE WHEN p.poster_id = 1 AND p.post_username != \'\' THEN p.post_username ELSE u.username_clean END AS username, u.user_id, p.post_subject, p.post_time, p.post_text, p.topic_id')
@@ -1126,15 +1128,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 				->where('p.post_approved = 1')
 				->order('p.post_time ' . $sort);
 
-			if ($dbparams->get('enable_pagination', true)) {
-				$application = JFactory::getApplication() ;
-				$limit = (int) $application->getUserStateFromRequest('global.list.limit_discuss', 'limit_discuss', 5, 'int');
-				$limitstart = (int) $application->getUserStateFromRequest('global.list.limitstart_discuss', 'limitstart_discuss', 0, 'int');
-			} else {
-				$limitstart = 0;
-				$limit = trim($dbparams->get('limit_posts'));
-			}
-			$db->setQuery($query, $limitstart, (int)$limit);
+			$db->setQuery($query, $start, $limit);
 
 			$posts = $db->loadObjectList();
 		} catch (Exception $e) {

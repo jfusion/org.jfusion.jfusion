@@ -322,6 +322,7 @@ JFusion.toggleDiscussionVisibility = function (id, override, discusslink) {
     discussion = $('discussion');
     if (discussion) {
         jfusionBtnShowreplies = $('jfusionBtnShowreplies' + id);
+        discussion.toggle();
         if (discussion.isDisplayed()) {
             jfusionBtnShowreplies.set('html', Joomla.JText._('HIDE_REPLIES'));
             showdiscussion = 1;
@@ -329,7 +330,6 @@ JFusion.toggleDiscussionVisibility = function (id, override, discusslink) {
             jfusionBtnShowreplies.set('html', Joomla.JText._('SHOW_REPLIES'));
             showdiscussion = 0;
         }
-        discussion.toggle();
         if (override !== undefined) {
             showdiscussion = override;
         }

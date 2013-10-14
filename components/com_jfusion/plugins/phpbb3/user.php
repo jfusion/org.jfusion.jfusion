@@ -525,7 +525,7 @@ class JFusionUser_phpbb3 extends JFusionUser
 			    foreach($usergroup->groups as $group) {
 				    $newgroup = new stdClass;
 				    $newgroup->group_id = (int)$group;
-				    $newgroup->user_id = (int)$existinguser->user_id;
+				    $newgroup->user_id = (int)$existinguser->userid;
 				    $newgroup->group_leader = 0;
 				    $newgroup->user_pending = 0;
 

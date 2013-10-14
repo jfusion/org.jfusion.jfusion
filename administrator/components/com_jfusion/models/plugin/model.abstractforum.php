@@ -461,15 +461,19 @@ class JFusionForum extends JFusionPlugin
 		return $text;
 	}
 
-    /**
-     * Retrieves the posts to be displayed in the content item if enabled
-     *
-     * @param object $params         object with discussion bot parameters
-     * @param object $existingthread object with forumid, threadid, and postid (first post in thread)
-     *
-     * @return array or object Returns retrieved posts
-     */
-    function getPosts($params, $existingthread)
+	/**
+	 * Retrieves the posts to be displayed in the content item if enabled
+	 *
+	 * @param JRegistry $dbparams
+	 * @param object $existingthread object with forumid, threadid, and postid (first post in thread)
+	 * @param int $start
+	 * @param int $limit
+	 * @param string $sort
+	 *
+	 * @internal param object $params object with discussion bot parameters
+	 * @return array or object Returns retrieved posts
+	 */
+    function getPosts($dbparams, $existingthread, $start, $limit, $sort)
     {
         return array();
     }

@@ -796,19 +796,21 @@ HTML;
         return $status;
     }
 
-    /**
-     * Retrieves the posts to be displayed in the content item if enabled
-     *
-     * @param JRegistry $dbparams       with discussion bot parameters
-     * @param object $existingthread info about thread
-     *
-     * @return array or object Returns retrieved posts
-     */
-	function getPosts($dbparams, $existingthread)
+	/**
+	 * Retrieves the posts to be displayed in the content item if enabled
+	 *
+	 * @param JRegistry $dbparams with discussion bot parameters
+	 * @param object $existingthread object with forumid, threadid, and postid (first post in thread)
+	 * @param int $start
+	 * @param int $limit
+	 * @param string $sort
+	 *
+	 * @return array or object Returns retrieved posts
+	 */
+	function getPosts($dbparams, $existingthread, $start, $limit, $sort)
     {
 	    try {
 		    //set the query
-		    $sort = $dbparams->get('sort_posts');
 		    $where = 'WHERE ID_TOPIC = '.$existingthread->threadid.' AND ID_MSG != '.$existingthread->postid;
 		    $query = '(SELECT a.ID_TOPIC , a.ID_MSG, a.posterName, b.realName, a.ID_MEMBER, 0 AS guest, a.subject, a.posterTime, a.body, a.posterTime AS order_by_date FROM `#__messages` as a INNER JOIN #__members as b ON a.ID_MEMBER = b.ID_MEMBER '.$where.' AND a.ID_MEMBER != 0)';
 		    $query.= ' UNION ';
@@ -816,15 +818,7 @@ HTML;
 		    $query.= ' ORDER BY order_by_date '.$sort;
 		    $db = JFusionFactory::getDatabase($this->getJname());
 
-		    if($dbparams->get('enable_pagination', true)) {
-			    $application = JFactory::getApplication();
-			    $limit = (int) $application->getUserStateFromRequest('global.list.limit_discuss', 'limit_discuss', 5, 'int');
-			    $limitstart = (int) $application->getUserStateFromRequest('global.list.limitstart_discuss', 'limitstart_discuss', 0, 'int');
-		    } else {
-			    $limit = trim($dbparams->get('limit_posts'));
-			    $limitstart = 0;
-		    }
-		    $db->setQuery($query, $limitstart, (int)$limit);
+		    $db->setQuery($query, $start, $limit);
 
 		    $posts = $db->loadObjectList();
 	    } catch (Exception $e) {

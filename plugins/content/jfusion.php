@@ -728,6 +728,7 @@ HTML;
 						if (!empty($status['error'])) {
 							JFusionFunction::raiseError(JText::_('ACCESS_DENIED'), JText::_('DISCUSSBOT_ERROR'));
 						} else {
+							$threadinfo = $this->helper->getThreadInfo(true);
 							if ($ajaxEnabled) {
 								//if pagination is set, set $limitstart so that we go to the added post
 								if ($this->params->get('enable_pagination', 0)) {
@@ -735,17 +736,15 @@ HTML;
 									$application = JFactory::getApplication();
 									$limit = $application->getUserStateFromRequest('global.list.limit_discuss', 'limit_discuss', 5, 'int');
 
-									if ($this->params->get('sort_posts','ASC') == 'ASC') {
+									if ($this->params->get('sort_posts', 'ASC') == 'ASC') {
 										$limitstart = floor(($replyCount-1)/$limit) * $limit;
 									} else {
 										$limitstart = 0;
 									}
 									JFactory::getApplication()->input->set('limitstart_discuss', $limitstart);
 								}
-
-								$posts = $JFusionForum->getPosts($this->params, $threadinfo);
 								$this->helper->output = array();
-								$this->helper->output['posts'] = $this->preparePosts($posts);
+								$this->helper->output['posts'] = $this->preparePosts();
 
 								//take note of the created post
 								$this->postid = $status['postid'];
@@ -756,7 +755,7 @@ HTML;
 								if ($this->params->get('jumpto_new_post', 0)) {
 									$jumpto = (isset($status['postid'])) ? 'post' . $status['postid'] : '';
 								}
-								$url = $this->helper->getArticleUrl($jumpto,'',false);
+								$url = $this->helper->getArticleUrl($jumpto, '', false);
 							}
 							if (isset($status['post_moderated'])) {
 								$this->moderated = $status['post_moderated'];
@@ -985,12 +984,7 @@ HTML;
 
 			//add posts to content if enabled
 			if ($this->params->get('show_posts')) {
-				//get the posts
-				$posts = $JFusionForum->getPosts($this->params, $threadinfo);
-
-				if (!empty($posts)){
-					$this->helper->output['posts'] = $this->preparePosts($posts);
-				}
+				$this->helper->output['posts'] = $this->preparePosts();
 
 				if ($this->params->get('enable_pagination', 0)) {
 					$this->helper->output['post_pagination'] = $this->updatePagination(true);
@@ -1277,12 +1271,29 @@ HTML;
 	}
 
 	/**
-	 * @param $posts
-	 *
 	 * @return array|string
 	 */
-	public function preparePosts(&$posts)
+	public function preparePosts()
 	{
+		$JFusionForum = JFusionFactory::getForum($this->jname);
+		$threadinfo = $this->helper->getThreadInfo();
+
+		$sort = $this->params->get('sort_posts', 'ASC');
+		if ($this->params->get('enable_pagination', true)) {
+			$application = JFactory::getApplication() ;
+			$limit = (int)$application->getUserStateFromRequest('global.list.limit_discuss', 'limit_discuss', 5, 'int');
+			$start = (int)$application->getUserStateFromRequest('global.list.limitstart_discuss', 'limitstart_discuss', 0, 'int');
+		} else {
+			$start = 0;
+			$limit = (int)trim($this->params->get('limit_posts', 0));
+		}
+
+		if ($limit == 0) {
+			$start = 0;
+		}
+
+		$posts = $JFusionForum->getPosts($this->params, $threadinfo, (int)$start, (int)$limit, $sort);
+
 		$this->helper->debug('Preparing posts output');
 
 		//get required params
@@ -1305,8 +1316,7 @@ HTML;
 		if (empty($columns)) return '';
 
 		$post_output = array();
-		for ($i=0; $i<count($posts); $i++)
-		{
+		for ($i=0; $i<count($posts); $i++) {
 			$p = $posts[$i];
 			$userid = $p->{$columns->userid};
 			$username = ($this->params->get('display_name') && isset($p->{$columns->name})) ? $p->{$columns->name} : $p->{$columns->username};
@@ -1424,7 +1434,6 @@ HTML;
 				$post_output[$i]->toolbar = '';
 			}
 		}
-
 		return $post_output;
 	}
 
@@ -1462,12 +1471,10 @@ HTML;
 	{
 		$ajax = $this->prepareAjaxResponce();
 
-		$JFusionForum = JFusionFactory::getForum($this->jname);
 		$threadinfo = $this->helper->getThreadInfo();
 		if ($threadinfo->published && $threadinfo->threadid) {
-			$posts = $JFusionForum->getPosts($this->params, $threadinfo);
 			$this->helper->output = array();
-			$this->helper->output['posts'] = $this->preparePosts($posts);
+			$this->helper->output['posts'] = $this->preparePosts();
 			$ajax->posts = $this->helper->renderFile('default_posts.php');
 			$ajax->status = true;
 		} else {

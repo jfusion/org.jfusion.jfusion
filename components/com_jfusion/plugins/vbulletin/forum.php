@@ -406,20 +406,21 @@ class JFusionForum_vbulletin extends JFusionForum
 		return $foruminfo;
 	}
 
-    /**
-     * @param JRegistry $dbparams
-     * @param object $existingthread
-     *
-     * @return array
-     */
-    function getPosts($dbparams, $existingthread)
+	/**
+	 * @param JRegistry $dbparams with discussion bot parameters
+	 * @param object $existingthread object with forumid, threadid, and postid (first post in thread)
+	 * @param int $start
+	 * @param int $limit
+	 * @param string $sort
+	 *
+	 * @return array
+	 */
+    function getPosts($dbparams, $existingthread, $start, $limit, $sort)
     {
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
 
 		    //set the query
-		    $sort = $dbparams->get('sort_posts');
-
 		    if (empty($name_field)) {
 			    $query = $db->getQuery(true)
 				    ->select('a.postid , a.username, a.username as name, a.userid, CASE WHEN a.userid = 0 THEN 1 ELSE 0 END AS guest, a.title, a.dateline, a.pagetext, a.threadid, b.title AS threadtitle')
@@ -454,15 +455,7 @@ class JFusionForum_vbulletin extends JFusionForum
 			    $query = '( '.(string)$q1.' ) UNION ( '.(string)$q2.' ) ORDER BY order_by_date '.$sort;
 		    }
 
-		    if($dbparams->get('enable_pagination', true)) {
-			    $application = JFactory::getApplication();
-			    $limit = (int) $application->getUserStateFromRequest('global.list.limit_discuss', 'limit_discuss', 5, 'int');
-			    $limitstart = (int) $application->getUserStateFromRequest('global.list.limitstart_discuss', 'limitstart_discuss', 0, 'int');
-		    } else {
-			    $limit = trim($dbparams->get('limit_posts'));
-			    $limitstart = 0;
-		    }
-		    $db->setQuery($query, $limitstart, (int)$limit);
+		    $db->setQuery($query, $start, $limit);
 
 		    $posts = $db->loadObjectList();
 	    } catch (Exception $e) {

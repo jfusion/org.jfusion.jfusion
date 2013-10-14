@@ -651,18 +651,20 @@ HTML;
 	}
 
 	/**
-     * Retrieves the posts to be displayed in the content item if enabled
-     *
-     * @param JRegistry $dbparams with discussion bot parameters
-     * @param object $existingthread
-     *
-     * @return array or object Returns retrieved posts
-     */
-	function getPosts($dbparams, $existingthread)
+	 * Retrieves the posts to be displayed in the content item if enabled
+	 *
+	 * @param JRegistry $dbparams with discussion bot parameters
+	 * @param object $existingthread object with forumid, threadid, and postid (first post in thread)
+	 * @param int $start
+	 * @param int $limit
+	 * @param string $sort
+	 *
+	 * @return array or object Returns retrieved posts
+	 */
+	function getPosts($dbparams, $existingthread, $start, $limit, $sort)
 	{
 		try {
 			//set the query
-			$sort = $dbparams->get('sort_posts');
 			$where = 'WHERE id_topic = '.$existingthread->threadid.' AND id_msg != '.$existingthread->postid.' AND approved = 1';
 	        $query = '(SELECT a.id_topic , a.id_msg, a.poster_name, b.real_name, a.id_member, 0 AS guest, a.subject, a.poster_time, a.body, a.poster_time AS order_by_date FROM `#__messages` as a INNER JOIN #__members as b ON a.id_member = b.id_member '.$where.' AND a.id_member != 0)';
 	        $query.= ' UNION ';
@@ -670,15 +672,7 @@ HTML;
 	        $query.= ' ORDER BY order_by_date '.$sort;
 			$db = JFusionFactory::getDatabase($this->getJname());
 
-			if($dbparams->get('enable_pagination', true)) {
-				$application = JFactory::getApplication();
-				$limit = (int) $application->getUserStateFromRequest('global.list.limit_discuss', 'limit_discuss', 5, 'int');
-				$limitstart = (int) $application->getUserStateFromRequest('global.list.limitstart_discuss', 'limitstart_discuss', 0, 'int');
-			} else {
-				$limit = trim($dbparams->get('limit_posts'));
-				$limitstart = 0;
-			}
-			$db->setQuery($query, $limitstart, (int)$limit);
+			$db->setQuery($query, $start, $limit);
 
 			$posts = $db->loadObjectList();
 		} catch (Exception $e) {
