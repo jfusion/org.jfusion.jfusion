@@ -119,8 +119,8 @@ class JFusionUser_wordpress extends JFusionUser {
 		// get the values to test
 		$y = array_values($x);
 		// now find out what we have
-		$groupid=4; // default to subscriber
-		$groupname='subscriber';
+		$groupid = 4; // default to subscriber
+		$groupname = 'subscriber';
         /**
          * @ignore
          * @var $helper JFusionHelper_wordpress
@@ -128,8 +128,8 @@ class JFusionUser_wordpress extends JFusionUser {
         $helper = JFusionFactory::getHelper($this->getJname());
 		$groups = $helper->getUsergroupListWP();
 
-        $result->groups[] = array();
-        $result->groupnames[] = array();
+        $result->groups = array();
+        $result->groupnames = array();
 		// find the most capable one
 		foreach ($y as $cap) {
 			foreach ($groups as $group) {
