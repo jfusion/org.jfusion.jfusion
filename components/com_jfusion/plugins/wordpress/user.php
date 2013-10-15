@@ -127,17 +127,17 @@ class JFusionUser_wordpress extends JFusionUser
 		$capabilities = $database_prefix.'capabilities';
 		$capabilities = unserialize($user->$capabilities);
 		// make sure we only have activated capabilities
-		$x = array_keys($capabilities,'1');
+		$x = array_keys($capabilities, '1');
 		// get the values to test
 		$y = array_values($x);
 		// now find out what we have
-		$groupid=4; // default to subscriber
-		$groupname='subscriber';
+		$groupid = 4; // default to subscriber
+		$groupname = 'subscriber';
 
 		$groups = $this->helper->getUsergroupListWP();
 
-        $result->groups[] = array();
-        $result->groupnames[] = array();
+        $result->groups = array();
+        $result->groupnames = array();
 		// find the most capable one
 		foreach ($y as $cap) {
 			foreach ($groups as $group) {
