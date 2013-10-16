@@ -333,7 +333,7 @@ CSS;
 	 * @return void
 	 */
 	public static function show($arr, $title = false) {
-		print (staticvatar::get($arr, $title));
+		print (static::get($arr, $title));
 		//flush();
 
 	}
