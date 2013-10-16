@@ -38,7 +38,6 @@ class JFusionUser extends JFusionPlugin
 	function __construct()
 	{
 		parent::__construct();
-
 		//get the helper object
 		$this->helper = JFusionFactory::getHelper($this->getJname());
 	}

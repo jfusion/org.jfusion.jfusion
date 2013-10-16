@@ -30,6 +30,18 @@ require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTOR
  */
 class JFusionAuth extends JFusionPlugin
 {
+	var $helper;
+
+	/**
+	 *
+	 */
+	function __construct()
+	{
+		parent::__construct();
+		//get the helper object
+		$this->helper = JFusionFactory::getHelper($this->getJname());
+	}
+
     /**
      * Generates an encrypted password based on the userinfo passed to this function
      *

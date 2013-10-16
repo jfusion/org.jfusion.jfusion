@@ -30,6 +30,18 @@ require_once JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTOR
  */
 class JFusionForum extends JFusionPlugin
 {
+	var $helper;
+
+	/**
+	 *
+	 */
+	function __construct()
+	{
+		parent::__construct();
+		//get the helper object
+		$this->helper = JFusionFactory::getHelper($this->getJname());
+	}
+
     /**
      * Returns the URL to a thread of the integrated software
      *
