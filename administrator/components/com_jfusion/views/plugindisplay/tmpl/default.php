@@ -44,7 +44,7 @@ $images = 'components/com_jfusion/images/';
 				<th class="title" width="20px" align="center">
 					<img src="<?php echo $images; ?>login.png" border="0" alt="<?php echo JText::_('DUAL_LOGIN');?>"/>
 				</th>
-				<th class="title" width="100px" align="center">
+				<th class="title" width="120px" align="center">
 					<?php echo JText::_('STATUS');?>
 				</th>
 				<th class="title" width="60px" align="center">

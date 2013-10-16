@@ -375,12 +375,12 @@ class com_jfusionInstallerScript
 			foreach ($folders as $folder) {
 				if (!JFolder::exists(JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $folder) ) {
 					$r = JFolder::copy($dir . DIRECTORY_SEPARATOR . $folder, JFUSION_PLUGIN_PATH . DIRECTORY_SEPARATOR . $folder);
-					if ($results===true) {
+					if ($results === true) {
 						$results = $r;
 					}
 				}
 			}
-			if ($results===true) {
+			if ($results === true) {
 				JFolder::delete($dir);
 			}
 		}
@@ -416,7 +416,7 @@ class com_jfusionInstallerScript
 
 		//migrate from #__jfusion_forum_plugin to #__jfusion_discussion_bot
 		//check to see if #__jfusion_forum_plugin exists indicating that #__jfusion_discussion_bot has not been populated
-		if(array_search($table_prefix . 'jfusion_forum_plugin',$table_list)) {
+		if(array_search($table_prefix . 'jfusion_forum_plugin', $table_list)) {
 			$query = $db->getQuery(true)
 				->select('*')
 				->from('#__jfusion_forum_plugin');
@@ -557,6 +557,7 @@ class com_jfusionInstallerScript
 			->select('name')
 			->from('#__jfusion')
 			->where('(params IS NULL OR params = '.$db->quote('').' OR params = '.$db->quote('0').')')
+			->where('status = 0')
 			->where('master = 0')
 			->where('slave = 0')
 			->where('name NOT LIKE '.$db->quote('joomla_int'));
@@ -568,7 +569,6 @@ class com_jfusionInstallerScript
 				$query = $db->getQuery(true)
 					->select('count(*)')
 					->from('#__jfusion')
-					->where('(params IS NOT NULL OR params != '.$db->quote('').' OR params != '.$db->quote('0').' OR master = 1 OR slave = 1)')
 					->where('original_name LIKE '. $db->Quote($row->name));
 
 				$db->setQuery($query);
