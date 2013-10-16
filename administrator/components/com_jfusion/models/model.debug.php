@@ -355,12 +355,15 @@ CSS;
 	 */
 	private static function decorateValue($value, $html = true) {
 		if (is_string($value)) {
-			if (trim($value) == '') $decValue = '\''.$value.'\'';
-			else $decValue = str_replace(array('<', '>'), array('&lt;', '&gt;'), $value);
+			if (trim($value) == '') {
+				$decValue = '\''.$value.'\'';
+			} else {
+				$decValue = htmlspecialchars($value);
+			}
 		} else if (is_bool($value)) {
 			if ($value) $decValue = 'true';
 			else $decValue = 'false';
-			if ($html){
+			if ($html) {
 				$decValue = '<strong>'.$decValue.'</strong>';
 			}
 		} else if (is_null($value)) {
@@ -370,7 +373,7 @@ CSS;
 			}
 		} else {
 			$decValue = $value;
-			if ($html){
+			if ($html) {
 				$decValue = '<strong>'.$decValue.'</strong>';
 			}
 		}
