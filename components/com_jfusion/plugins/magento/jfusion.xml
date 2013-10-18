@@ -33,8 +33,8 @@
 		<param name="source_url" type="text" size="60" label="SOURCE_URL" default="http://www.yourdomain.com/yourdir/" description="SOURCE_URL_DESC" />
 		<param name="source_path" type="text" size="60" label="SOURCE_PATH" default="" description="SOURCE_PATH_DESC" />
 		<param name="magento_version" type = "text" size = "60" default = "1.7" label ="MAGENTO_VERSION" description = "MAGENTO_VERSION_DESC" />
-		
-		<param name="language_store_view" type="text" size="60" default="" label="LANGUAGE_STORE_VIEW" description="LANGUAGE_STORE_VIEW_DESC" />
+        <param name="magento_encryption" type = "text" size = "60" default = "MD5" label ="MAGENTO_ENCRYPTION" description = "MAGENTO_ENCRYPTION_DESC" />
+        <param name="language_store_view" type="text" size="60" default="" label="LANGUAGE_STORE_VIEW" description="LANGUAGE_STORE_VIEW_DESC" />
 		<param name="apiuser" type="text" size="60" label="APIUSER" default="" description="APIUSER_DESC" />
 		<param name="apikey" type="text" size="60" label="APIKEY" default="" description="APIKEY_DESC" />
         <param name="disabled_registration" type="list" default="0" label="MAGENTO_DID_REGISTRATION_DISABLE" description="MAGENTO_DISABLE_REGISTRATION_MANUAL">
