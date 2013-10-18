@@ -284,7 +284,7 @@ class JFusionUser_smf extends JFusionUser
 	        $db->setQuery($query);
 		    $db->execute();
 
-		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password,0,6) . '********';
+		    $status['debug'][] = JText::_('PASSWORD_UPDATE') . ' ' . substr($existinguser->password, 0, 6) . '********';
 	    } catch (Exception $e) {
 		    $status['error'][] = JText::_('PASSWORD_UPDATE_ERROR')  . $e->getMessage();
 	    }
@@ -369,7 +369,7 @@ class JFusionUser_smf extends JFusionUser
 				    $query->set('ID_POST_GROUP = ' . $db->quote($usergroup->postgroup));
 			    }
 			    if ($this->params->get('compare_membergroups', true) ) {
-				    $query->set('additionalGroups = ' . $db->quote(join(',',$usergroup->groups)));
+				    $query->set('additionalGroups = ' . $db->quote(join(',', $usergroup->groups)));
 			    }
 			    $query->where('ID_MEMBER = ' . (int)$existinguser->userid);
 
@@ -688,10 +688,10 @@ class JFusionUser_smf extends JFusionUser
 			if ($mastergroup) {
 				$found = true;
 				//check to see if the default groups are different
-				if ($mastergroup->defaultgroup != $userinfo->group_id ) {
+				if ($mastergroup->defaultgroup != $userinfo->group_id) {
 					$found = false;
 				} else {
-					if ($this->params->get('compare_postgroup', false) && $mastergroup->postgroup != $userinfo->postgroup ) {
+					if ($this->params->get('compare_postgroup', false) && $mastergroup->postgroup != $userinfo->postgroup) {
 						//check to see if the display groups are different
 						$found = false;
 					} else {

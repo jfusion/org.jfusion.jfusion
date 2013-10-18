@@ -18,8 +18,7 @@
 
     <config>
         <fields name="params" addfieldpath="/administrator/components/com_jfusion/fields">
-            <fieldset name="basic">
-                <field name=" " type="helptext" label="" default="SYNCSESSION_DESCR"/>
+            <fieldset name="SESSION" label="SESSION">
                 <field name="syncsessions" type="radio" class="btn-group" default="0" label="SYNCSESSION" description="SYNCSESSION_DESCR">
                     <option value="0">JNO</option>
                     <option value="1">JYES</option>
@@ -28,13 +27,14 @@
                     <option value="0">JNO</option>
                     <option value="1">JYES</option>
                 </field>
-                <field name="@spacer" type="spacer" default="" label="" description="" />
-                <field name=" " type="helptext" label="" default="SYNCLANGUAGE_DESCR"/>
+            </fieldset>
+            <fieldset name="LANGUAGE" label="LANGUAGE">
                 <field name="synclanguage" type="radio" class="btn-group" default="0" label="SYNCLANGUAGE" description="SYNCLANGUAGE_DESCR">
                     <option value="0">JNO</option>
                     <option value="1">JYES</option>
                 </field>
-                <field name="@spacer" type="spacer" default="" label="" description="" />
+            </fieldset>
+            <fieldset name="ADVANCED_SETTINGS" label="ADVANCED_SETTINGS">
                 <field name="debug" type="radio" class="btn-group" default="0" label="Debug" description="Debug">
                     <option value="0">JNO</option>
                     <option value="1">JYES</option>

@@ -206,11 +206,11 @@ class JFusionDiscussBotHelper {
 			}
 			//take into account page breaks
 			$url = ContentHelperRoute::getArticleRoute($this->article->slug, $this->article->catid);
-			$start = JFactory::getApplication()->input->getInt('start',0);
+			$start = JFactory::getApplication()->input->getInt('start', 0);
 			if ($start) {
 				$url .= '&start='.$start;
 			}
-			$limitstart = JFactory::getApplication()->input->getInt('limitstart',0);
+			$limitstart = JFactory::getApplication()->input->getInt('limitstart', 0);
 			if ($limitstart) {
 				$url .= '&limitstart='.$limitstart;
 			}
@@ -537,9 +537,9 @@ class JFusionDiscussBotHelper {
 			$js = <<<JS
 		        JFusion.view = '{$view}';
 		        JFusion.jumptoDiscussion = {$jumpto_discussion};
-		        JFusion.enablePagination = {$this->params->get('enable_pagination',0)};
-		        JFusion.enableAjax = {$this->params->get('enable_ajax',0)};
-		        JFusion.enableJumpto = {$this->params->get('jumpto_new_post',0)};
+		        JFusion.enablePagination = {$this->params->get('enable_pagination', 0)};
+		        JFusion.enableAjax = {$this->params->get('enable_ajax', 0)};
+		        JFusion.enableJumpto = {$this->params->get('jumpto_new_post', 0)};
 JS;
 
 			JFusionFunction::loadJavascriptLanguage(array('BUTTON_CANCEL', 'BUTTON_INITIATE',

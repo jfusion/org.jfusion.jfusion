@@ -28,12 +28,11 @@
 
     <config>
         <fields name="params" addfieldpath="/administrator/components/com_jfusion/fields">
-            <fieldset name="basic">
-                <field name="spacer" type="spacer" class="text" label="DISCUSSBOT_GENERAL_DESC" />
-                <field name="jname" type="JFusionActivePlugins" feature="discussion" default="" label="JFUSION_PLUGIN" description="JFUSION_PLUGIN_DESC" />
+            <fieldset name="DISCUSSBOT_GENERAL_DESC" label="DISCUSSBOT_GENERAL_DESC">
+                <field name="jname" type="JFusionActivePlugins" feature="discussion" default="" label="JFUSION_PLUGIN" description="JFUSION_PLUGIN_DESC"/>
 
                 <field name="itemid" type="JFusionItemid" default="" label="ITEMID" description="ITEMID_DESCR" feature="discussion"/>
-                <field name="link_text" type="text" size="20" default="" label="DISCUSSBOT_LINK_TEXT" description="DISCUSSBOT_LINK_TEXT_DESC" />
+                <field name="link_text" type="text" size="20" default="" label="DISCUSSBOT_LINK_TEXT" description="DISCUSSBOT_LINK_TEXT_DESC"/>
                 <field name="link_type" type="radio" class="btn-group" default="text" label="LINK_TYPE" description="LINK_TYPE_DESCR">
                     <option value="text">TEXT</option>
                     <option value="image">IMAGE</option>
@@ -73,8 +72,8 @@
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
                 </field>
-                <field name="spacerhr1" type="spacer" hr="true" />
-                <field name="spacer2" type="spacer" class="text" label="DISCUSSBOT_POST_SETUP_DESC" />
+            </fieldset>
+            <fieldset name="DISCUSSBOT_POST_SETUP_DESC" label="DISCUSSBOT_POST_SETUP_DESC">
                 <field name="show_posts" type="radio" class="btn-group" default="0" label="SHOW_POSTS" description="SHOW_POSTS_DESC">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
@@ -109,7 +108,6 @@
                     <option value="0">JNO</option>
                 </field>
                 <field name="date_format" type="text" size="20" default="" label="DATE_FORMAT" description="DATE_FORMAT_DESC" />
-                <field name="spacerhr2" type="spacer" hr="true" />
                 <field name="show_user" type="radio" class="btn-group" default="1" label="SHOW_USER" description="SHOW_USER_DESC">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
@@ -144,9 +142,6 @@
                     <option value="gravatar">Gravatar</option>
                     <option value="jfusion">JFusion</option>
                 </field>
-
-                <field name="spacerhr3" type="spacer" hr="true" />
-
                 <field name="enable_quickreply" type="radio" class="btn-group" default="0" label="SHOW_QUICKREPLY" description="SHOW_QUICKREPLY_DESC">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
@@ -197,9 +192,8 @@
                     <option value="es">Spanish</option>
                     <option value="tr">Turkish</option>
                 </field>
-                <field name="spacerhr4" type="spacer" hr="true" />
-                <field name="spacer4" type="spacer" class="text" label="DISCUSSBOT_AUTO_DESC" />
-
+            </fieldset>
+            <fieldset name="DISCUSSBOT_AUTO_DESC" label="DISCUSSBOT_AUTO_DESC">
                 <field name="auto_create" type="radio" class="btn-group" default="0" label="AUTO_CREATE" description="AUTO_CREATE_DESC">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
@@ -245,8 +239,8 @@
                     <option value="text">TEXT</option>
                     <option value="image">IMAGE</option>
                 </field>
-                <field name="spacerhr5" type="spacer" hr="true" />
-                <field name="spacer5" type="spacer" class="text" label="ADVANCED_SETTINGS" />
+            </fieldset>
+            <fieldset name="ADVANCED_SETTINGS" label="ADVANCED_SETTINGS">
                 <field name="debug" type="radio" class="btn-group" default="0" label="DEBUG_MODE" description="DEBUG_MODE_DESCR">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
