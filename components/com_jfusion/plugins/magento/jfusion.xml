@@ -31,6 +31,8 @@
                 <field name="description" type="text" size="60" default="Magento Ecommerce site" description="DESCRIPTION_DESC" label="DESCRIPTION_DESC"/>
                 <field name="source_url" type="text" size="60" label="SOURCE_URL" default="http://www.yourdomain.com/yourdir/" description="SOURCE_URL_DESC" />
                 <field name="source_path" type="text" size="60" label="SOURCE_PATH" default="" description="SOURCE_PATH_DESC" />
+                <param name="magento_version" type = "text" size = "60" default = "1.7" label ="MAGENTO_VERSION" description = "MAGENTO_VERSION_DESC" />
+                <param name="magento_encryption" type = "text" size = "60" default = "MD5" label ="MAGENTO_ENCRYPTION" description = "MAGENTO_ENCRYPTION_DESC" />
                 <field name="language_store_view" type="text" size="60" default="" label="LANGUAGE_STORE_VIEW" description="LANGUAGE_STORE_VIEW_DESC" />
                 <field name="apiuser" type="text" size="60" label="APIUSER" default="" description="APIUSER_DESC" />
                 <field name="apikey" type="text" size="60" label="APIKEY" default="" description="APIKEY_DESC" />
