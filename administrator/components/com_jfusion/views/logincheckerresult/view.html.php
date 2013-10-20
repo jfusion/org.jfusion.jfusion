@@ -68,7 +68,7 @@ class jfusionViewLoginCheckerResult extends JViewLegacy
 		require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'model.debug.php';
 
 		//get the submitted login details
-		$credentials['username'] = JFactory::getApplication()->input->get('check_username');
+		$credentials['username'] = JFactory::getApplication()->input->get('check_username', '', 'username');
 		$credentials['password'] = JFactory::getApplication()->input->post->get('check_password', '', 'raw');
 		//setup the options array
 		$options = array();
