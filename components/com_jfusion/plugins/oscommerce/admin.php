@@ -151,7 +151,7 @@ class JFusionAdmin_oscommerce extends JFusionAdmin
 			    ->select('customers_email_address as username, customers_email_address as email')
 			    ->from('#__customers');
 
-		    $db->setQuery($query,$limitstart,$limit);
+		    $db->setQuery($query, $limitstart, $limit);
 		    //getting the results
 		    $userlist = $db->loadObjectList();
 	    } catch (Exception $e) {

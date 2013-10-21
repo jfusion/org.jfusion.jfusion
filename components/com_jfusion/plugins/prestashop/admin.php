@@ -134,7 +134,7 @@ class JFusionAdmin_prestashop extends JFusionAdmin
 		        ->where('email NOT LIKE ' . $db->quote(''))
 		        ->where('email IS NOT null');
 
-		    $db->setQuery($query,$limitstart,$limit);
+		    $db->setQuery($query, $limitstart, $limit);
 		    //getting the results
 		    $userlist = $db->loadObjectList();
 	    } catch (Exception $e) {

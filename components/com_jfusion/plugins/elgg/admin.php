@@ -116,7 +116,7 @@ class JFusionAdmin_elgg extends JFusionAdmin
 			    ->select('username, email')
 			    ->from('#__users_entity');
 
-		    $db->setQuery($query,$limitstart,$limit);
+		    $db->setQuery($query, $limitstart, $limit);
 		    //getting the results
 		    $userlist = $db->loadObjectList();
 	    } catch (Exception $e) {

@@ -133,7 +133,7 @@ class JFusionAdmin_mybb extends JFusionAdmin
 			    ->select('username, email')
 			    ->from('#__users');
 
-		    $db->setQuery($query,$limitstart,$limit);
+		    $db->setQuery($query, $limitstart, $limit);
 		    $userlist = $db->loadObjectList();
 	    } catch (Exception $e) {
 		    JFusionFunction::raiseError($e, $this->getJname());

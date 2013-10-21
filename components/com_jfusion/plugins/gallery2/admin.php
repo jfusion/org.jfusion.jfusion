@@ -126,7 +126,7 @@ class JFusionAdmin_gallery2 extends JFusionAdmin
 			    ->from('#__User')
 			    ->where('g_id != 5');
 
-	        $db->setQuery($query,$limitstart,$limit);
+	        $db->setQuery($query, $limitstart, $limit);
 	        $userlist = $db->loadObjectList();
 	    } catch (Exception $e) {
 			JFusionFunction::raiseError($e, $this->getJname());

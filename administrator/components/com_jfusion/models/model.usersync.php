@@ -54,17 +54,17 @@ class JFusionUsersync
      *
      * @return string nothing
      */
-    public static function getLogData($syncid, $type = 'all', $limitstart=null, $limit=null, $sort='id', $dir='')
+    public static function getLogData($syncid, $type = 'all', $limitstart = null, $limit = null, $sort = 'id', $dir = '')
     {
         $db = JFactory::getDBO();
 
         if (empty($limit)) {
-            $mainframe  = JFactory::getApplication();
-            $client     = JFactory::getApplication()->input->getWord( 'filter_client', 'site' );
-            $option     = JFactory::getApplication()->input->getCmd('option');
-            $sort       = $mainframe->getUserStateFromRequest( "$option.$client.filter_order",      'filter_order',     'id',       'cmd' );
-            $dir        = $mainframe->getUserStateFromRequest( "$option.$client.filter_order_Dir",  'filter_order_Dir', '',         'word' );
-            $limit      = (int)$mainframe->getUserStateFromRequest( 'global.list.limit', 'limit', $mainframe->getCfg('list_limit'), 'int' );
+            $mainframe = JFactory::getApplication();
+            $client = JFactory::getApplication()->input->getWord( 'filter_client', 'site' );
+            $option = JFactory::getApplication()->input->getCmd('option');
+            $sort = $mainframe->getUserStateFromRequest("$option.$client.filter_order", 'filter_order', 'id', 'cmd');
+            $dir = $mainframe->getUserStateFromRequest("$option.$client.filter_order_Dir", 'filter_order_Dir', '', 'word');
+            $limit = (int)$mainframe->getUserStateFromRequest('global.list.limit', 'limit', $mainframe->getCfg('list_limit'), 'int' );
             $limitstart = 0;
         }
 
@@ -80,7 +80,7 @@ class JFusionUsersync
         if ($type != 'all') {
 	        $query->where('action = '.$db->Quote($type));
         }
-        $db->setQuery($query,$limitstart,$limit);
+        $db->setQuery($query, $limitstart, $limit);
         $results = $db->loadObjectList('id');
 
         return $results;

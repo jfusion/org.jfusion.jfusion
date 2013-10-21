@@ -132,7 +132,7 @@ class JFusionAdmin_efront extends JFusionAdmin
 			    ->select('login AS username, email')
 		        ->from('#__users');
 
-		    $db->setQuery($query,$limitstart,$limit);
+		    $db->setQuery($query, $limitstart, $limit);
 		    //getting the results
 		    $userlist = $db->loadObjectList();
 	    } catch (Exception $e) {

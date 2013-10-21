@@ -526,6 +526,7 @@ class JFusionDiscussBotHelper {
 		JHtml::_('behavior.framework', true);
 		JHtml::_('jquery.framework');
 		static $scriptsLoaded;
+		$document = JFactory::getDocument();
 		if (!isset($scriptsLoaded)) {
 			$this->debug('Loading scripts into header');
 
@@ -540,13 +541,16 @@ class JFusionDiscussBotHelper {
 		        JFusion.enablePagination = {$this->params->get('enable_pagination', 0)};
 		        JFusion.enableAjax = {$this->params->get('enable_ajax', 0)};
 		        JFusion.enableJumpto = {$this->params->get('jumpto_new_post', 0)};
+				JFusion.enableJumpto = {$this->params->get('jumpto_new_post', 0)};
+
+		        JFusion.articelID = {$this->article->id};
 JS;
 
 			JFusionFunction::loadJavascriptLanguage(array('BUTTON_CANCEL', 'BUTTON_INITIATE',
 				'BUTTON_PUBLISH_NEW_DISCUSSION', 'BUTTON_REPUBLISH_DISCUSSION', 'BUTTON_UNPUBLISH_DISCUSSION',
 				'CONFIRM_THREAD_CREATION', 'CONFIRM_UNPUBLISH_DISCUSSION', 'CONFIRM_PUBLISH_DISCUSSION',
 				'DISCUSSBOT_ERROR', 'HIDE_REPLIES', 'JYES', 'SHOW_REPLIES', 'SUBMITTING_QUICK_REPLY'));
-			$document = JFactory::getDocument();
+
 			//check for a custom js file
 			if (file_exists(DISCUSSION_TEMPLATE_PATH.'jfusion.js')) {
 				$document->addScript(DISCUSSION_TEMPLATE_URL.'jfusion.js');
@@ -582,6 +586,11 @@ JS;
 			}
 			$scriptsLoaded = true;
 		}
+
+		$js = <<<JS
+JFusion.articelUrl[{$this->article->id}] = '{$this->getArticleUrl()}';
+JS;
+		$document->addScriptDeclaration($js);
 	}
 
 	/**

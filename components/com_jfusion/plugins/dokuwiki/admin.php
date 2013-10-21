@@ -139,7 +139,7 @@ class JFusionAdmin_dokuwiki extends JFusionAdmin
      */
     function getUserList($limitstart = 0, $limit = 0)
     {
-        $list = $this->helper->auth->retrieveUsers($limitstart,$limit);
+        $list = $this->helper->auth->retrieveUsers($limitstart, $limit);
         $userlist = array();
         foreach ($list as $value) {
             $user = new stdClass;

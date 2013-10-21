@@ -142,7 +142,7 @@ class JFusionAdmin_magento extends JFusionAdmin
 		    ->select('email as username, email')
 		    ->from('#__customer_entity');
 
-        $db->setQuery($query,$limitstart,$limit);
+        $db->setQuery($query, $limitstart, $limit);
         //getting the results
         $userlist = $db->loadObjectList();
         return $userlist;

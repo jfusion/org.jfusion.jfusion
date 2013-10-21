@@ -18,6 +18,8 @@ JFusion.loadMarkitup = false;
 JFusion.timeout = 15000;
 JFusion.highlightDelay = 500;
 
+JFusion.articelUrl = [];
+
 JFusion.OnError = function (messages, force) {
     JFusion.emptyMessage();
     if (messages.indexOf('<!') === 0) {
@@ -25,7 +27,6 @@ JFusion.OnError = function (messages, force) {
     } else {
         this.OnMessage('error', [ messages ], force);
     }
-
 };
 
 JFusion.OnMessages = function (messages) {
@@ -181,7 +182,7 @@ JFusion.refreshPosts = function () {
     JFusion.updatePostArea.post('tmpl=component&ajax_request=1&dbtask=update_posts');
 };
 
-JFusion.confirmThreadAction = function (id, task, vars, url) {
+JFusion.confirmThreadAction = function (id, task, vars) {
     var container, divBtnContainer, msg;
     container = $('jfusionButtonConfirmationBox' + id);
     if (container) {
@@ -240,7 +241,7 @@ JFusion.confirmThreadAction = function (id, task, vars, url) {
                 },
                 events: {
                     click: function () {
-                        JFusion.submitAjaxRequest(id, task, vars, url);
+                        JFusion.submitAjaxRequest(id, task, vars);
                     }
                 }
             }).inject(divBtnContainer);
@@ -254,7 +255,7 @@ JFusion.confirmThreadAction = function (id, task, vars, url) {
                 },
                 events: {
                     click: function () {
-                        JFusion.submitAjaxRequest(id, task, vars, url);
+                        JFusion.submitAjaxRequest(id, task, vars);
                     }
                 }
             }).inject(divBtnContainer);
@@ -268,7 +269,7 @@ JFusion.confirmThreadAction = function (id, task, vars, url) {
                 },
                 events: {
                     click: function () {
-                        JFusion.submitAjaxRequest(id, 'create_thread', vars, url);
+                        JFusion.submitAjaxRequest(id, 'create_thread', vars);
                     }
                 }
             }).inject(divBtnContainer);
@@ -282,7 +283,7 @@ JFusion.confirmThreadAction = function (id, task, vars, url) {
                 },
                 events: {
                     click: function () {
-                        JFusion.submitAjaxRequest(id, task, vars, url);
+                        JFusion.submitAjaxRequest(id, task, vars);
                     }
                 }
             }).inject(divBtnContainer);
@@ -305,9 +306,9 @@ JFusion.clearConfirmationBox = function (id) {
     }
 };
 
-JFusion.submitAjaxRequest = function (id, task, vars, url) {
+JFusion.submitAjaxRequest = function (id, task, vars) {
     JFusion.clearConfirmationBox(id);
-
+    var url = JFusion.articelUrl[id];
     new Request.JSON({
         url: url,
         noCache: true,
@@ -317,7 +318,7 @@ JFusion.submitAjaxRequest = function (id, task, vars, url) {
     }).post('tmpl=component&ajax_request=1&dbtask=' + task + '&articleId=' + id + vars);
 };
 
-JFusion.toggleDiscussionVisibility = function (id, override, discusslink) {
+JFusion.toggleDiscussionVisibility = function (id, discusslink) {
     var showdiscussion, discussion, jfusionBtnShowreplies;
     discussion = $('discussion');
     if (discussion) {
@@ -330,10 +331,11 @@ JFusion.toggleDiscussionVisibility = function (id, override, discusslink) {
             jfusionBtnShowreplies.set('html', Joomla.JText._('SHOW_REPLIES'));
             showdiscussion = 0;
         }
-        if (override !== undefined) {
-            showdiscussion = override;
+        if (discusslink !== undefined) {
+            showdiscussion = 1;
         }
         new Request.JSON({
+            url: JFusion.articelUrl[id],
             noCache: true,
             onComplete: function () {
                 if (discusslink !== undefined) {
@@ -360,6 +362,7 @@ JFusion.quote = function (pid) {
 
 JFusion.pagination = function () {
     new Request.JSON({
+        url: JFusion.articelUrl[JFusion.articelID],
         noCache: true,
         onSuccess : function (JSONobject) {
             JFusion.updateContent(JSONobject);
@@ -368,7 +371,7 @@ JFusion.pagination = function () {
         onError: function (JSONobject) {
             JFusion.OnError(JSONobject);
         }
-    }).get($('jfusionPaginationForm').toQueryString() + '&tmpl=component&ajax_request=1&dbtask=update_posts');
+    }).post($('jfusionPaginationForm').toQueryString() + '&tmpl=component&ajax_request=1&dbtask=update_posts');
 };
 
 JFusion.submitReply = function (id) {

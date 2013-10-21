@@ -167,7 +167,7 @@ class JFusionAdmin_wordpress extends JFusionAdmin
 				->select('user_login as username, user_email as email')
 				->from('#__users');
 
-			$db->setQuery($query,$limitstart,$limit);
+			$db->setQuery($query, $limitstart, $limit);
 
 			//getting the results
 			$userlist = $db->loadObjectList();

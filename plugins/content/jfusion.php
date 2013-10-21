@@ -962,6 +962,12 @@ HTML;
 						} else {
 							$limitstart = '';
 						}
+						$showall = JFactory::getApplication()->input->getInt('showall', 0);
+						if ($showall) {
+							$showall = '<input type="hidden" name="limitstart" value="'.$showall.'" />';
+						} else {
+							$showall = '';
+						}
 
 						$form = $JFusionForum->createQuickReply($this->params, $showGuestInputs);
 						$submit = JText::_('SUBMIT');
@@ -970,6 +976,7 @@ HTML;
 						<form id="jfusionQuickReply{$this->article->id}" name="jfusionQuickReply{$this->article->id}" method="post" action="{$action_url}">
 							<input type="hidden" name="dbtask" value="create_post" />
 							{$limitstart}
+							{$showall}
 							{$form}
 							<div style="width:99%; text-align:right;">
 			                    <input type="submit" class="button" id="submitpost" onclick="return JFusion.submitReply('{$this->article->id}');" value="{$submit}"/>
@@ -1004,6 +1011,12 @@ HTML;
 					} else {
 						$limitstart = '';
 					}
+					$showall = JFactory::getApplication()->input->getInt('showall', 0);
+					if ($showall) {
+						$showall = '<input type="hidden" name="limitstart" value="'.$showall.'" />';
+					} else {
+						$showall = '';
+					}
 
 					$form = $JFusionForum->createQuickReply($this->params, $showGuestInputs);
 					$submit = JText::_('SUBMIT');
@@ -1012,6 +1025,7 @@ HTML;
 						<form id="jfusionQuickReply{$this->article->id}" name="jfusionQuickReply{$this->article->id}" method="post" action="{$action_url}">
 							<input type="hidden" name="dbtask" value="create_threadpost" />
 							{$limitstart}
+							{$showall}
 							{$form}
 							<div style="width:99%; text-align:right;">
 			                    <input type="submit" class="button" id="submitpost" onclick="return JFusion.submitReply('{$this->article->id}');" value="{$submit}"/>
@@ -1177,7 +1191,7 @@ HTML;
 				$vars  = '&view_override='.$view;
 				$vars .= ($this->params->get('overwrite_readmore', 1)) ? '&readmore='.$readmore_catch.'&show_readmore='.$show_readmore : '';
 
-				$this->helper->output['buttons']['initiate']['js']['onclick'] = 'JFusion.confirmThreadAction('.$this->article->id.',\''.$dbtask.'\', \''.$vars.'\', \''.$this->helper->getArticleUrl().'\');';
+				$this->helper->output['buttons']['initiate']['js']['onclick'] = 'JFusion.confirmThreadAction('.$this->article->id.',\''.$dbtask.'\', \''.$vars.'\');';
 				$this->helper->output['buttons']['initiate']['text'] = JText::_($text);
 				$this->helper->output['buttons']['initiate']['target'] = '_self';
 			}
@@ -1223,7 +1237,7 @@ HTML;
 							$discuss_link = JRoute::_('index.php?option=com_user&view=login&return='.$return_url);
 						}
 						$this->helper->output['buttons']['discuss']['href'] = 'javascript: void(0);';
-						$this->helper->output['buttons']['discuss']['js']['onclick'] = 'JFusion.toggleDiscussionVisibility('.$this->article->id.', 1, \''.$discuss_link.'\');';
+						$this->helper->output['buttons']['discuss']['js']['onclick'] = 'JFusion.toggleDiscussionVisibility('.$this->article->id.', \''.$discuss_link.'\');';
 						$this->helper->output['buttons']['discuss']['target'] = '_self';
 					} else {
 						$this->helper->output['buttons']['discuss']['href'] = JFusionFunction::routeURL($JFusionForum->getThreadURL($threadinfo->threadid), $itemid, $this->jname);

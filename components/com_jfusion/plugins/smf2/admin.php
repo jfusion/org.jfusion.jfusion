@@ -97,7 +97,7 @@ class JFusionAdmin_smf2 extends JFusionAdmin{
 			    ->select('member_name as username, email_address as email')
 			    ->from('#__members');
 
-		    $db->setQuery($query,$limitstart,$limit);
+		    $db->setQuery($query, $limitstart, $limit);
 		    $userlist = $db->loadObjectList();
 	    } catch (Exception $e) {
 		    JFusionFunction::raiseError($e, $this->getJname());
