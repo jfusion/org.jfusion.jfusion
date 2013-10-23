@@ -729,17 +729,18 @@ JS;
 		return false;
 	}
 
-    /**
-     * Creates a post from the quick reply
-     *
-     * @param object &$params      object with discussion bot parameters
-     * @param array  &$ids         array with forum id ($ids['forumid'], thread id ($ids['threadid']) and first post id ($ids['postid'])
-     * @param object &$contentitem object of content item
-     * @param object &$userinfo    object info of the forum user
-     *
-     * @return array with status
-     */
-	function createPost(&$params, &$ids, &$contentitem, &$userinfo)
+	/**
+	 * Creates a post from the quick reply
+	 *
+	 * @param JRegistry $params      object with discussion bot parameters
+	 * @param array  $ids         array with forum id ($ids['forumid'], thread id ($ids['threadid']) and first post id ($ids['postid'])
+	 * @param object $contentitem object of content item
+	 * @param object $userinfo    object info of the forum user
+	 * @param stdClass $postinfo object with post info
+	 *
+	 * @return array with status
+	 */
+	function createPost($params, $ids, $contentitem, $userinfo, $postinfo)
 	{
         $status = array('error' => array(),'debug' => array());
         $status['debug'] = JText::_('METHOD_NOT_IMPLEMENTED');

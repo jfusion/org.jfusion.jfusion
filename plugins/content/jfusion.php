@@ -699,9 +699,10 @@ HTML;
 		//process quick replies
 		if (($allowGuests || !$JoomlaUser->guest) && !$JoomlaUser->block) {
 			//make sure something was submitted
-			$quickReplyText = JFactory::getApplication()->input->post->get('quickReply', '');
+			$postinfo = new stdClass();
+			$postinfo->text = JFactory::getApplication()->input->post->getString('quickReply', '');
 
-			if (!empty($quickReplyText)) {
+			if (!empty($postinfo->text)) {
 				//retrieve the userid from forum software
 				if ($allowGuests && $JoomlaUser->guest) {
 					$userinfo = new stdClass();
@@ -723,7 +724,11 @@ HTML;
 					$threadinfo = $this->helper->getThreadInfo();
 					//create the post
 					if ($threadinfo->valid && $threadinfo->threadid && $threadinfo->forumid) {
-						$status = $JFusionForum->createPost($this->params, $threadinfo, $this->article, $userinfo);
+						$postinfo->username = JFactory::getApplication()->input->post->getString('guest_username', '');
+						$postinfo->name = JFactory::getApplication()->input->post->getString('guest_name', '');
+						$postinfo->email = JFactory::getApplication()->input->post->getString('guest_email', '');
+
+						$status = $JFusionForum->createPost($this->params, $threadinfo, $this->article, $userinfo, $postinfo);
 
 						if (!empty($status['error'])) {
 							JFusionFunction::raiseError(JText::_('ACCESS_DENIED'), JText::_('DISCUSSBOT_ERROR'));
@@ -1199,7 +1204,7 @@ HTML;
 
 		if($view == $this->view() && $this->params->get('show_posts') && $this->params->get('show_refresh_link',1) && $threadinfo->published) {
 			$this->helper->output['buttons']['refresh']['href'] = 'javascript:void(0);';
-			$this->helper->output['buttons']['refresh']['js']['onclick'] = 'JFusion.refreshPosts();';
+			$this->helper->output['buttons']['refresh']['js']['onclick'] = 'JFusion.refreshPosts('.$this->article->id.');';
 			$this->helper->output['buttons']['refresh']['text'] = JText::_('REFRESH_POSTS');
 			$this->helper->output['buttons']['refresh']['target'] = $linkTarget;
 		}
@@ -1467,7 +1472,7 @@ HTML;
 		$limitstart = (int) $application->getUserStateFromRequest('global.list.limitstart_discuss', 'limitstart_discuss', 0, 'int');
 
 		if ($this->helper->replyCount && $this->helper->replyCount > 5) {
-			$pageNav = new JFusionPagination($this->helper->replyCount, $limitstart, $limit, '_discuss');
+			$pageNav = new JFusionPagination($this->helper->replyCount, $limitstart, $limit, $this->article->id,'_discuss');
 
 			$pagination = '<form method="post" id="jfusionPaginationForm" name="jfusionPaginationForm" action="'.$action_url.'">';
 			$pagination .= $pageNav->getListFooter();

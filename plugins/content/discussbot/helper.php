@@ -542,8 +542,6 @@ class JFusionDiscussBotHelper {
 		        JFusion.enableAjax = {$this->params->get('enable_ajax', 0)};
 		        JFusion.enableJumpto = {$this->params->get('jumpto_new_post', 0)};
 				JFusion.enableJumpto = {$this->params->get('jumpto_new_post', 0)};
-
-		        JFusion.articelID = {$this->article->id};
 JS;
 
 			JFusionFunction::loadJavascriptLanguage(array('BUTTON_CANCEL', 'BUTTON_INITIATE',
@@ -586,9 +584,9 @@ JS;
 			}
 			$scriptsLoaded = true;
 		}
-
+		$url = $this->getArticleUrl('', '', false);
 		$js = <<<JS
-JFusion.articelUrl[{$this->article->id}] = '{$this->getArticleUrl()}';
+JFusion.articelUrl[{$this->article->id}] = '{$url}';
 JS;
 		$document->addScriptDeclaration($js);
 	}
@@ -644,11 +642,13 @@ class JFusionPagination extends JPagination {
 	 * @param int $total
 	 * @param int $limitstart
 	 * @param int $limit
+	 * @param int $articleid
 	 * @param string $identifier
 	 */
-	public function __construct($total, $limitstart, $limit, $identifier = '')
+	public function __construct($total, $limitstart, $limit, $articleid, $identifier = '')
 	{
 		$this->identifier = $identifier;
+		$this->articleid = $articleid;
 		parent::__construct($total, $limitstart, $limit);
 	}
 
@@ -817,9 +817,9 @@ class JFusionPagination extends JPagination {
 	public function jfusion_item_active(&$item)
 	{
 		if($item->base>0) {
-			return '<a href="#" title="'.$item->text.'" onclick="javascript: document.jfusionPaginationForm.limitstart'.$this->identifier.'.value='.$item->base.'; JFusion.pagination(); return false;">'.$item->text.'</a>';
+			return '<a href="#" title="'.$item->text.'" onclick="javascript: document.jfusionPaginationForm.limitstart'.$this->identifier.'.value='.$item->base.'; JFusion.pagination('.$this->articleid.'); return false;">'.$item->text.'</a>';
 		} else {
-			return '<a href="#" title="'.$item->text.'" onclick="javascript: document.jfusionPaginationForm.limitstart'.$this->identifier.'.value=0; JFusion.pagination(); return false;">'.$item->text.'</a>';
+			return '<a href="#" title="'.$item->text.'" onclick="javascript: document.jfusionPaginationForm.limitstart'.$this->identifier.'.value=0; JFusion.pagination('.$this->articleid.'); return false;">'.$item->text.'</a>';
 		}
 	}
 

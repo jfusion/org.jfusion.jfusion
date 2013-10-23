@@ -7,8 +7,6 @@ JFusion.messageSlide = false;
 JFusion.delayHiding = false;
 JFusion.confirmationBoxSlides = [];
 
-JFusion.updatePostArea = false;
-
 JFusion.view = false;
 JFusion.enablePagination = false;
 JFusion.enableAjax = false;
@@ -90,19 +88,6 @@ JFusion.initializeDiscussbot = function () {
 
     JFusion.initializeConfirmationBoxes();
 
-    // this code will send a data object via a GET request and alert the retrieved data.
-
-    JFusion.updatePostArea = new Request.JSON({
-        noCache: true,
-        onSuccess: function (JSONobject) {
-            JFusion.updateContent(JSONobject);
-            $('quickReply').set('value', '');
-        },
-        onError: function (JSONobject) {
-            JFusion.OnError(JSONobject);
-        }
-    });
-
     //load markItUp
     if (JFusion.loadMarkitup) {
         var quickReply = jQuery('#quickReply');
@@ -178,8 +163,19 @@ JFusion.highlightPost = function (postid) {
     }
 };
 
-JFusion.refreshPosts = function () {
-    JFusion.updatePostArea.post('tmpl=component&ajax_request=1&dbtask=update_posts');
+JFusion.refreshPosts = function (id) {
+    new Request.JSON({
+        url: JFusion.articelUrl[id],
+        noCache: true,
+        onSuccess: function (JSONobject) {
+            JFusion.updateContent(JSONobject);
+        },
+        onError: function (JSONobject) {
+            JFusion.OnError(JSONobject);
+        }
+    }).post({'tmpl': 'component',
+            'ajax_request': '1',
+            'dbtask': 'update_posts'});
 };
 
 JFusion.confirmThreadAction = function (id, task, vars) {
@@ -360,9 +356,9 @@ JFusion.quote = function (pid) {
     window.location = '#jfusionQuickReply';
 };
 
-JFusion.pagination = function () {
+JFusion.pagination = function (id) {
     new Request.JSON({
-        url: JFusion.articelUrl[JFusion.articelID],
+        url: JFusion.articelUrl[id],
         noCache: true,
         onSuccess : function (JSONobject) {
             JFusion.updateContent(JSONobject);
@@ -383,7 +379,17 @@ JFusion.submitReply = function (id) {
         JFusion.OnMessage('message', [Joomla.JText._('SUBMITTING_QUICK_REPLY')]);
 
         //update the post area content
-        JFusion.updatePostArea.post(form.toQueryString() + '&tmpl=component&ajax_request=1');
+        new Request.JSON({
+            url: JFusion.articelUrl[id],
+            noCache: true,
+            onSuccess: function (JSONobject) {
+                JFusion.updateContent(JSONobject);
+                $('quickReply').set('value', '');
+            },
+            onError: function (JSONobject) {
+                JFusion.OnError(JSONobject);
+            }
+        }).post(form.toQueryString() + '&tmpl=component&ajax_request=1');
         return false;
     }
     return true;

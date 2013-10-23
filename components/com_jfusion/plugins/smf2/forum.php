@@ -499,19 +499,22 @@ HTML;
 
 	/**
 	 * Creates a post from the quick reply
-	 * @param JRegistry &$dbparams with discussion bot parameters
-	 * @param object &$ids stdClass with thread id ($ids->threadid) and first post id ($ids->postid)
-	 * @param $contentitem object of content item
-	 * @param $userinfo object info of the forum user
+	 *
+	 * @param JRegistry $params      object with discussion bot parameters
+	 * @param object $ids         array with forum id ($ids['forumid'], thread id ($ids['threadid']) and first post id ($ids['postid'])
+	 * @param object $contentitem object of content item
+	 * @param object $userinfo    object info of the forum user
+	 * @param stdClass $postinfo object with post info
+	 *
 	 * @return array with status
 	 */
-	function createPost(&$dbparams, &$ids, &$contentitem, &$userinfo)
+	function createPost($params, $ids, $contentitem, $userinfo, $postinfo)
 	{
         $status = array('error' => array(),'debug' => array());
 		try {
 			if($userinfo->guest) {
-				$userinfo->username = JFactory::getApplication()->input->post->get('guest_username', '');
-				$userinfo->email = JFactory::getApplication()->input->post->get('guest_email', '');
+				$userinfo->username = $postinfo->username;
+				$userinfo->email = $postinfo->email;
 				$userinfo->userid = 0;
 				if (empty($userinfo->username) || empty($userinfo->email) || !preg_match('/^[^@]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$/', $userinfo->email)) {
 					throw new RuntimeException(JText::_('GUEST_FIELDS_MISSING'));
@@ -536,9 +539,8 @@ HTML;
 			$userid = $userinfo->userid;
 			$db = JFusionFactory::getDatabase($this->getJname());
 	        $public = JFusionFactory::getPublic($this->getJname());
-			$text = JFactory::getApplication()->input->post->get('quickReply', false);
 			//strip out html from post
-			$text = strip_tags($text);
+			$text = strip_tags($postinfo->text);
 
 			if(!empty($text)) {
 				$public->prepareText($text);
@@ -571,7 +573,7 @@ HTML;
 
 	            $timestamp = time();
 
-				$post_approved = ($userinfo->guest && $dbparams->get('moderate_guests',1)) ? 0 : 1;
+				$post_approved = ($userinfo->guest && $params->get('moderate_guests',1)) ? 0 : 1;
 
 				$post_row = new stdClass();
 				$post_row->id_board			= $ids->forumid;

@@ -664,21 +664,22 @@ HTML;
     /**
      * Creates a post from the quick reply
      *
-     * @param object &$dbparams    with discussion bot parameters
-     * @param object &$ids         stdClass with thread id ($ids->threadid) and first post id ($ids->postid)
-     * @param object &$contentitem object of content item
-     * @param object &$userinfo    object info of the forum user
+     * @param JRegistry $params      object with discussion bot parameters
+     * @param object $ids         array with forum id ($ids['forumid'], thread id ($ids['threadid']) and first post id ($ids['postid'])
+     * @param object $contentitem object of content item
+     * @param object $userinfo    object info of the forum user
+     * @param stdClass $postinfo object with post info
      *
      * @return array with status
      */
-    function createPost(&$dbparams, &$ids, &$contentitem, &$userinfo)
+    function createPost($params, $ids, $contentitem, $userinfo, $postinfo)
     {
         $status = array('error' => array(),'debug' => array());
 	    try {
 		    $db = JFusionFactory::getDatabase($this->getJname());
 		    if ($userinfo->guest) {
-			    $userinfo->username = JFactory::getApplication()->input->post->get('guest_username', '');
-			    $userinfo->email = JFactory::getApplication()->input->post->get('guest_email', '');
+			    $userinfo->username = $postinfo->username;
+			    $userinfo->email = $postinfo->email;
 			    $userinfo->userid = 0;
 			    if (empty($userinfo->username) || empty($userinfo->email) || !preg_match('/^[^@]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$/', $userinfo->email)) {
 				    throw new RuntimeException(JText::_('GUEST_FIELDS_MISSING'));
@@ -703,9 +704,8 @@ HTML;
 		    //setup some variables
 		    $userid = $userinfo->userid;
 		    $public = JFusionFactory::getPublic($this->getJname());
-		    $text = JFactory::getApplication()->input->post->get('quickReply', false);
 		    //strip out html from post
-		    $text = strip_tags($text);
+		    $text = strip_tags($postinfo->text);
 
 		    if (!empty($text)) {
 			    $public->prepareText($text);

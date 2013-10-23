@@ -206,19 +206,20 @@ class JFusionForum_vbulletin extends JFusionForum
     }
 
     /**
-     * @param JRegistry $dbparams
+     * @param JRegistry $params
      * @param object $ids
      * @param object $contentitem
      * @param object $userinfo
+     * @param stdClass $postinfo object with post info
      *
      * @return array
      */
-    function createPost(&$dbparams, &$ids, &$contentitem, &$userinfo)
+    function createPost($params, $ids, $contentitem, $userinfo, $postinfo)
     {
         $status = array('error' => array(),'debug' => array());
 	    try {
 		    if ($userinfo->guest) {
-			    $userinfo->username = JFactory::getApplication()->input->post->get('guest_username', '');
+			    $userinfo->username = $postinfo->username;
 			    $userinfo->userid = 0;
 			    if (empty($userinfo->username)) {
 				    throw new RuntimeException(JTEXT::_('GUEST_FIELDS_MISSING'));
@@ -253,14 +254,13 @@ class JFusionForum_vbulletin extends JFusionForum
 				    }
 			    }
 		    }
-		    $text = JFactory::getApplication()->input->post->get('quickReply', false);
 		    //strip out html from post
-		    $text = strip_tags($text);
+		    $text = strip_tags($postinfo->text);
 
 		    if (!empty($text)) {
 			    $foruminfo = $this->getForumInfo($ids->forumid);
-			    $threadinfo = $this->getThreadInfo($ids->threadid, $dbparams);
-			    $post_approved = ($userinfo->guest && ($foruminfo['moderatenewposts'] || $dbparams->get('moderate_guests',1))) ? 0 : 1;
+			    $threadinfo = $this->getThreadInfo($ids->threadid, $params);
+			    $post_approved = ($userinfo->guest && ($foruminfo['moderatenewposts'] || $params->get('moderate_guests',1))) ? 0 : 1;
 			    $title = 'Re: ' . $threadinfo['title'];
 			    $public = JFusionFactory::getPublic($this->getJname());
 			    $public->prepareText($title);
