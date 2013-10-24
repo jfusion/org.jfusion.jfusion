@@ -328,18 +328,20 @@ JS;
                     <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return toggleHook('{$hook}','disable')">{$disable}</a>
                     <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return toggleHook('{$hook}','reenable')">{$reenable}</a>
 HTML;
-                    return $output;
                 } else {
-                    $disabled = JText::_('DISABLED');
-                    $enable = JText::_('ENABLE_THIS_PLUGIN');
-                    $output = <<<HTML
+	                $secret = $this->params->get('vb_secret', null);
+	                if (empty($secret)) {
+		                $output = JText::_('VB_SECRET_EMPTY');
+					} else {
+		                $disabled = JText::_('DISABLED');
+		                $enable = JText::_('ENABLE_THIS_PLUGIN');
+		                $output = <<<HTML
                     <img style="float: left;" src="components/com_jfusion/images/check_bad_small.png">
                     <span style="float: left; margin-left: 5px;">{$disabled}</span>
                     <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return toggleHook('{$hook}','enable')">{$enable}</a>
 HTML;
-                    return $output;
+	                }
                 }
-
             } else {
                 //let's first check the default icon
                 $check = true;
@@ -372,7 +374,6 @@ HTML;
                     <span style="float: left; margin-left: 5px;">{$complete}</span>
                     <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return toggleHook('{$hook}','disable')">{$undo}</a>
 HTML;
-                    return $output;
                 } else {
                     $incomplete = JText::_('INCOMPLETE');
                     $do = JText::_('VB_DO_OPTIMIZATION');
@@ -381,12 +382,12 @@ HTML;
                     <span style="float: left; margin-left: 5px;">{$incomplete}</span>
                     <a style="margin-left:5px; float: left;" href="javascript:void(0);" onclick="return toggleHook('{$hook}','enable')">{$do}</a>
 HTML;
-                    return $output;
                 }
             }
         } else {
-            return JText::_('VB_CONFIG_FIRST');
+	        $output = JText::_('VB_CONFIG_FIRST');
         }
+	    return $output;
     }
 
     /**
@@ -427,7 +428,12 @@ HTML;
                 }
                 //enable or re-enable the plugin
                 if ($action != 'disable') {
-                    if (($hook == 'redirect' || $hook == 'frameless') && !$this->isValidItemID($itemid)) {
+	                $params = JFusionFactory::getParams($this->getJname());
+
+	                $secret = $params->get('vb_secret', null);
+	                if (empty($secret)) {
+		                JError::raiseWarning(500, JText::_('VB_SECRET_EMPTY'));
+		            } elseif (($hook == 'redirect' || $hook == 'frameless') && !$this->isValidItemID($itemid)) {
                         JError::raiseWarning(500, JText::_('VB_REDIRECT_HOOK_ITEMID_EMPTY'));
                     } else {
                         //install the hook
