@@ -388,6 +388,10 @@ class JFusionAdmin_vbulletin extends JFusionAdmin
 			} catch (Exception $e) {
 				throw new RuntimeException(JText::_('VB_CONFIG_FIRST'));
 			}
+			$secret = $this->params->get('vb_secret', null);
+			if (empty($secret)) {
+				throw new RuntimeException(JText::_('VB_SECRET_EMPTY'));
+			}
 
 			$query = $db->getQuery(true)
 				->select('COUNT(*)')
@@ -525,7 +529,10 @@ HTML;
 
 					//enable or re-enable the plugin
 					if ($action != 'disable') {
-						if (($hook == 'redirect' || $hook == 'frameless') && !$this->isValidItemID($itemid)) {
+						$secret = $this->params->get('vb_secret', null);
+						if (empty($secret)) {
+							JFusionFunction::raiseWarning(JText::_('VB_SECRET_EMPTY'));
+						} else if (($hook == 'redirect' || $hook == 'frameless') && !$this->isValidItemID($itemid)) {
 							JFusionFunction::raiseWarning(JText::_('VB_REDIRECT_HOOK_ITEMID_EMPTY'));
 						} else {
 							//install the hook

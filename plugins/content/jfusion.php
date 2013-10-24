@@ -1472,7 +1472,7 @@ HTML;
 		$limitstart = (int) $application->getUserStateFromRequest('global.list.limitstart_discuss', 'limitstart_discuss', 0, 'int');
 
 		if ($this->helper->replyCount && $this->helper->replyCount > 5) {
-			$pageNav = new JFusionPagination($this->helper->replyCount, $limitstart, $limit, $this->article->id,'_discuss');
+			$pageNav = new JFusionPagination($this->helper->replyCount, $limitstart, $limit, $this->article->id, '_discuss');
 
 			$pagination = '<form method="post" id="jfusionPaginationForm" name="jfusionPaginationForm" action="'.$action_url.'">';
 			$pagination .= $pageNav->getListFooter();

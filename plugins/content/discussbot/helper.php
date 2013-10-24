@@ -574,7 +574,6 @@ JS;
     				});
 JS;
 			}
-
 			$document->addScriptDeclaration($js);
 
 			//add css
@@ -586,7 +585,7 @@ JS;
 		}
 		$url = $this->getArticleUrl('', '', false);
 		$js = <<<JS
-JFusion.articelUrl[{$this->article->id}] = '{$url}';
+			JFusion.articelUrl[{$this->article->id}] = '{$url}';
 JS;
 		$document->addScriptDeclaration($js);
 	}
