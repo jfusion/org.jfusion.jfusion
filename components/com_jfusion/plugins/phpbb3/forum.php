@@ -28,7 +28,13 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org
  */
-class JFusionForum_phpbb3 extends JFusionForum {
+class JFusionForum_phpbb3 extends JFusionForum
+{
+	/**
+	 * @var $helper JFusionHelper_phpbb3
+	 */
+	var $helper;
+
     var $joomlaGlobals;
     /**
      * returns the name of this JFusion plugin
@@ -701,12 +707,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 
 			$topicid = $db->insertid();
 
-			/**
-			 * @ignore
-			 * @var $helper JFusionHelper_phpbb3
-			 */
-			$helper = JFusionFactory::getHelper($this->getJname());
-			$bbcode = $helper->bbcode_parser($text);
+			$bbcode = $this->helper->bbcode_parser($text);
 
 			$post_row = new stdClass();
 			$post_row->forum_id			= $forumid;
@@ -840,12 +841,7 @@ class JFusionForum_phpbb3 extends JFusionForum {
 			//prepare the content body
 			$text = $this->prepareFirstPostBody($dbparams, $contentitem);
 
-			/**
-			 * @ignore
-			 * @var $helper JFusionHelper_phpbb3
-			 */
-			$helper = JFusionFactory::getHelper($this->getJname());
-			$bbcode = $helper->bbcode_parser($text);
+			$bbcode = $this->helper->bbcode_parser($text);
 
 			$timestamp = $dbparams->get('use_content_created_date', false) ? JFactory::getDate($contentitem->created)->toUnix() : time();
 			$userid = $dbparams->get('default_user');
@@ -933,13 +929,9 @@ class JFusionForum_phpbb3 extends JFusionForum {
 
 			if(!empty($text)) {
 				$public->prepareText($text);
+				$text = htmlspecialchars($text);
 
-				/**
-				 * @ignore
-				 * @var $helper JFusionHelper_phpbb3
-				 */
-				$helper = JFusionFactory::getHelper($this->getJname());
-				$bbcode = $helper->bbcode_parser($text);
+				$bbcode = $this->helper->bbcode_parser($text);
 
 				//get some topic information
 				$query = $db->getQuery(true)

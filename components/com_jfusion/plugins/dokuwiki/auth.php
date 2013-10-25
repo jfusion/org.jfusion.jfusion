@@ -30,6 +30,11 @@ defined('_JEXEC') or die('Restricted access');
  */
 class JFusionAuth_dokuwiki extends JFusionAuth
 {
+	/**
+	 * @var $helper JFusionHelper_dokuwiki
+	 */
+	var $helper;
+
     /**
      * returns the name of this JFusion plugin
      *
@@ -49,11 +54,6 @@ class JFusionAuth_dokuwiki extends JFusionAuth
      */
     function generateEncryptedPassword($userinfo)
     {
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_dokuwiki
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
-        return $helper->auth->cryptPassword($userinfo->password_clear);
+        return $this->helper->auth->cryptPassword($userinfo->password_clear);
     }
 }

@@ -743,7 +743,7 @@ class JFusionFunction
             }
 
             //remove all line breaks to prevent massive empty space in bbcode
-            $text = str_replace(array("\n","\r","\n\r"), '', $text);
+	        $text = preg_replace('/(?:(?:\r\n|\r|\n)\s*){2}/s', "\n\n", $text);
 
             static $search, $replace;
             if (!is_array($search)) {
@@ -801,10 +801,9 @@ class JFusionFunction
 
             //decode html entities that we converted for code and pre tags
             $text = preg_replace_callback("#\[code\](.*?)\[\/code\]#si",array('JFusionFunction', '_callback_code_decode'), $text);
-            //to prevent a billion line breaks in post, let's convert three line breaks into two
-            $text = str_ireplace("\n\n\n", "\n\n", $text);
-            //and one more time for good measure (there's gotta be a better way)
-            $text = str_ireplace("\n\n\n", "\n\n", $text);
+
+	        $text = preg_replace('/(?:(?:\r\n|\r|\n)\s*){2}/s', "\n\n", $text);
+
             //Change to ensure that the discussion bot posts the article to the forums when there
             //is an issue with preg_replace( '/\p{Z}/u', ' ', $text ) returning an empty string
             //or a series of whitespace.

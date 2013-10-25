@@ -28,7 +28,13 @@ defined('_JEXEC') or die('Restricted access');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       http://www.jfusion.org 
  */
-class JFusionForum_gallery2 extends JFusionForum {
+class JFusionForum_gallery2 extends JFusionForum
+{
+	/**
+	 * @var $helper JFusionHelper_gallery2
+	 */
+	var $helper;
+
     /**
      * returns the name of this JFusion plugin
      * @return string name of current JFusion plugin
@@ -74,12 +80,7 @@ class JFusionForum_gallery2 extends JFusionForum {
             $content = '<div align="' . $align . '">';
         }
 
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_gallery2
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
-    	if (!$helper->loadGallery2Api(true)) {
+    	if (!$this->helper->loadGallery2Api(true)) {
 			$content = '<strong>Error</strong><br />Can\'t initialise G2Bridge.';
         } else {
             //Load Parameters
@@ -161,7 +162,7 @@ class JFusionForum_gallery2 extends JFusionForum {
 
                         $source_url = $this->params->get('source_url');
                         $urlGenerator = new GalleryUrlGenerator();
-                        $urlGenerator->init($helper->getEmbedUri($config['itemid']), $source_url, null);
+                        $urlGenerator->init($this->helper->getEmbedUri($config['itemid']), $source_url, null);
                         $gallery->setUrlGenerator($urlGenerator);
                     }
 
@@ -197,12 +198,7 @@ class JFusionForum_gallery2 extends JFusionForum {
      * @return string
      */
     function renderSideBar($config, $view, $pluginParam) {
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_gallery2
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
-        $g2sidebar = $helper->getVar('sidebar', -1);
+        $g2sidebar = $this->helper->getVar('sidebar', -1);
         if ($g2sidebar != - 1) {
             return '<div id="gsSidebar" class="gcBorder1"> ' . implode('', $g2sidebar) . '</div>';
         } else {

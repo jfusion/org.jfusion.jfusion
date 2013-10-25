@@ -36,15 +36,6 @@ class JFusionForum_vbulletin extends JFusionForum
     var $helper;
 
     /**
-     *
-     */
-    function __construct()
-    {
-        //get the helper object
-        $this->helper = JFusionFactory::getHelper($this->getJname());
-    }
-
-    /**
      * returns the name of this JFusion plugin
      *
      * @return string name of current JFusion plugin

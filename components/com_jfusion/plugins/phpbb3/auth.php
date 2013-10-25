@@ -30,6 +30,11 @@ defined('_JEXEC') or die('Restricted access');
  */
 class JFusionAuth_phpbb3 extends JFusionAuth 
 {
+	/**
+	 * @var $helper JFusionHelper_phpbb3
+	 */
+	var $helper;
+
     var $itoa64;
     var $iteration_count_log2;
     var $portable_hashes;
@@ -62,12 +67,7 @@ class JFusionAuth_phpbb3 extends JFusionAuth
      * @return string
      */
     function generateEncryptedPassword($userinfo) {
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_phpbb3
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
-        $userinfo->password_clear = $helper->clean_string($userinfo->password_clear);
+        $userinfo->password_clear = $this->helper->clean_string($userinfo->password_clear);
 
         $check = $this->CheckPassword($userinfo->password_clear, $userinfo->password);
 
@@ -388,12 +388,7 @@ class JFusionAuth_phpbb3 extends JFusionAuth
      * @return string
      */
     function HashPassword($password) {
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_phpbb3
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
-        $password = $helper->clean_string($password);
+        $password = $this->helper->clean_string($password);
 
         $random = '';
         if (CRYPT_BLOWFISH == 1 && !$this->portable_hashes) {

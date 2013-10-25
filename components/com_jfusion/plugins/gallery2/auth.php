@@ -24,7 +24,13 @@ defined('_JEXEC') or die('Restricted access');
  * @license   http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link      http://www.jfusion.org 
  */
-class JFusionAuth_gallery2 extends JFusionAuth {
+class JFusionAuth_gallery2 extends JFusionAuth
+{
+	/**
+	 * @var $helper JFusionHelper_gallery2
+	 */
+	var $helper;
+
     /**
      * @return string
      */
@@ -38,12 +44,7 @@ class JFusionAuth_gallery2 extends JFusionAuth {
      * @return string
      */
     function generateEncryptedPassword($userinfo) {
-        /**
-         * @ignore
-         * @var $helper JFusionHelper_gallery2
-         */
-        $helper = JFusionFactory::getHelper($this->getJname());
-        $helper->loadGallery2Api(false);
+        $this->helper->loadGallery2Api(false);
         $testcrypt = GalleryUtilities::md5Salt($userinfo->password_clear, $userinfo->password_salt);
         return $testcrypt;
     }

@@ -204,12 +204,8 @@ class JFusionHelper_dokuwiki extends JFusionPlugin
             if (!$path) {
                 $path = $this->params->get('source_path');
             }
-            /**
-             * @ignore
-             * @var $helper JFusionHelper_dokuwiki
-             */
-            $helper = JFusionFactory::getHelper($this->getJname());
-            $path = $helper->getConfigPath($path);
+
+            $path = $this->getConfigPath($path);
 
             $myfile = array();
             $myfile[] = $path . 'dokuwiki.php';
