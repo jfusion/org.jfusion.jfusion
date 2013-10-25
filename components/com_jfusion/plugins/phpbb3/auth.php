@@ -55,6 +55,8 @@ class JFusionAuth_phpbb3 extends JFusionAuth
      */
     function __construct($iteration_count_log2 = 8, $portable_hashes = true)
     {
+	    parent::__construct();
+
         $this->itoa64 = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
         if ($iteration_count_log2 < 4 || $iteration_count_log2 > 31) $iteration_count_log2 = 8;
         $this->iteration_count_log2 = $iteration_count_log2;
