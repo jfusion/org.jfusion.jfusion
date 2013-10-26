@@ -434,7 +434,7 @@ HTML;
             $copy_file = JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'auth_jfusion.php';
             JFile::copy($copy_file, $auth_file);
         }
-	    if (!file_exists($auth_file)) {
+	    if (file_exists($auth_file)) {
 		    //get the joomla path from the file
 		    jimport('joomla.filesystem.file');
 		    $file_data = JFile::read($auth_file);
