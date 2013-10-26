@@ -434,43 +434,47 @@ HTML;
             $copy_file = JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'auth_jfusion.php';
             JFile::copy($copy_file, $auth_file);
         }
-        //get the joomla path from the file
-        jimport('joomla.filesystem.file');
-        $file_data = JFile::read($auth_file);
-        //compare it with our joomla path
-        if (preg_match_all('/JFUSION_PATH/', $file_data, $matches)) {
-            $file_data = preg_replace('/JFUSION_JNAME/', $this->getJname(), $file_data);
-	        $file_data = preg_replace('/JFUSION_PATH/', JPATH_SITE . DS . 'components' . DS . 'com_jfusion', $file_data);
-            JFile::write($auth_file, $file_data);
-        }
+	    if (!file_exists($auth_file)) {
+		    //get the joomla path from the file
+		    jimport('joomla.filesystem.file');
+		    $file_data = JFile::read($auth_file);
+		    //compare it with our joomla path
+		    if (preg_match_all('/JFUSION_PATH/', $file_data, $matches)) {
+			    $file_data = preg_replace('/JFUSION_JNAME/', $this->getJname(), $file_data);
+			    $file_data = preg_replace('/JFUSION_PATH/', JPATH_SITE . DS . 'components' . DS . 'com_jfusion', $file_data);
+			    JFile::write($auth_file, $file_data);
+		    }
 
-        //only update the database if the file now exists
-        if (file_exists($auth_file)) {
-            //check to see if the mod is enabled
-            $db = JFusionFactory::getDatabase($this->getJname());
-            $query = 'SELECT config_value FROM #__config WHERE config_name = \'auth_method\'';
-            $db->setQuery($query);
-            $auth_method = $db->loadResult();
-            if ($auth_method != 'jfusion') {
-                $query = 'UPDATE #__config SET config_value = \'jfusion\' WHERE config_name = \'auth_method\'';
-                $db->setQuery($query);
-                if (!$db->query()) {
-                    //there was an error saving the parameters
-                    JError::raiseWarning(0, $db->stderr());
-                }
-            }
-        } else {
-            //safety catch to make sure we use phpBB default to prevent lockout from phpBB
-            $db = JFusionFactory::getDatabase($this->getJname());
-            $query = 'UPDATE #__config SET config_value = \'db\' WHERE config_name = \'auth_method\'';
-            $db->setQuery($query);
-            if (!$db->query()) {
-                //there was an error saving the parameters
-                JError::raiseWarning(0, $db->stderr());
-            }
-        }
-        //clear the config cache so that phpBB recognizes the change
-        $this->clearConfigCache();
+		    //only update the database if the file now exists
+		    if (file_exists($auth_file)) {
+			    //check to see if the mod is enabled
+			    $db = JFusionFactory::getDatabase($this->getJname());
+			    $query = 'SELECT config_value FROM #__config WHERE config_name = \'auth_method\'';
+			    $db->setQuery($query);
+			    $auth_method = $db->loadResult();
+			    if ($auth_method != 'jfusion') {
+				    $query = 'UPDATE #__config SET config_value = \'jfusion\' WHERE config_name = \'auth_method\'';
+				    $db->setQuery($query);
+				    if (!$db->query()) {
+					    //there was an error saving the parameters
+					    JError::raiseWarning(0, $db->stderr());
+				    }
+			    }
+		    } else {
+			    //safety catch to make sure we use phpBB default to prevent lockout from phpBB
+			    $db = JFusionFactory::getDatabase($this->getJname());
+			    $query = 'UPDATE #__config SET config_value = \'db\' WHERE config_name = \'auth_method\'';
+			    $db->setQuery($query);
+			    if (!$db->query()) {
+				    //there was an error saving the parameters
+				    JError::raiseWarning(0, $db->stderr());
+			    }
+		    }
+		    //clear the config cache so that phpBB recognizes the change
+		    $this->clearConfigCache();
+	    } else {
+		    JError::raiseWarning(0, 'FAILED_TO_COPY_AUTHFILE' . $auth_file);
+	    }
     }
 
     /**
