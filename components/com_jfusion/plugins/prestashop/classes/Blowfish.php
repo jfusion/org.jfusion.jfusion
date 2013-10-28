@@ -1,7 +1,7 @@
 <?php
 /**
- * Class Cookie
+ * Class Blowfish
  */
-class Cookie extends CookieCore {
+class Blowfish extends BlowfishCore {
 
 }
