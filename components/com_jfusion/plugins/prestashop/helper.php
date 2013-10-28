@@ -53,13 +53,15 @@ class JFusionHelper_prestashop
 		$this->loadClass('Blowfish');
 		$this->loadClass('Cookie');
 		$this->loadClass('Tools');
-		require_once($source_path . DS . 'tools' . DS . 'profiling' . DS . 'Tools.php');
+		//require_once($source_path . DS . 'tools' . DS . 'profiling' . DS . 'Tools.php');
 
 		$this->loadClass('ObjectModel');
-		require_once($source_path . DS . 'tools' . DS . 'profiling' . DS . 'ObjectModel.php');
+		//require_once($source_path . DS . 'tools' . DS . 'profiling' . DS . 'ObjectModel.php');
 
 		require_once($source_path . DS . 'classes' . DS . 'db' . DS . 'Db.php');
 		require_once($source_path . DS . 'tools' . DS . 'profiling' . DS . 'Db.php');
+
+		require_once(JFUSION_PLUGIN_PATH . DS . $this->getJname() . DS . 'classes' . DS . 'db' . DS . 'DbPDO.php');
 
 		$this->loadClass('Validate');
 		$this->loadClass('Country');
